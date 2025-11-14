@@ -3,10 +3,6 @@
 require 'spec_helper'
 
 RSpec.describe 'Issues shortcut', :js, feature_category: :team_planning do
-  before do
-    stub_feature_flags(work_item_view_for_issues: true)
-  end
-
   context 'New Issue shortcut' do
     context 'issues are enabled' do
       let(:project) { create(:project) }

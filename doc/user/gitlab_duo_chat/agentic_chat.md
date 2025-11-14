@@ -16,7 +16,7 @@ title: GitLab Duo Chat (Agentic)
 
 {{< collapsible title="Model information" >}}
 
-- LLM: Anthropic [Claude Sonnet 4](https://console.cloud.google.com/vertex-ai/publishers/anthropic/model-garden/claude-sonnet-4)
+- Default LLM: Anthropic [Claude Sonnet 4.5](https://console.cloud.google.com/vertex-ai/publishers/anthropic/model-garden/claude-sonnet-4-5)
 - Available on [GitLab Duo with self-hosted models](../../administration/gitlab_duo_self_hosted/_index.md): Yes
 
 {{< /collapsible >}}
@@ -34,6 +34,7 @@ title: GitLab Duo Chat (Agentic)
 - Feature flags `duo_workflow_workhorse` and `duo_workflow_web_chat_mutation_tools` [removed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/198487) in GitLab 18.4.
 - [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/19213) GitLab Duo Agent Platform on GitLab Self-Managed (both with [self-hosted models](../../administration/gitlab_duo_self_hosted/_index.md) and cloud-connected GitLab models) in GitLab 18.4 as an [experiment](../../policy/development_stages_support.md#experiment) with a [feature flag](../../administration/feature_flags/_index.md) named `self_hosted_agent_platform`. Disabled by default.
 - GitLab Duo Agent Platform on GitLab Self-Managed changed from experiment to [beta](https://gitlab.com/groups/gitlab-org/-/epics/19402) in GitLab 18.5.
+- [Updated default LLM](https://gitlab.com/gitlab-org/modelops/applied-ml/code-suggestions/ai-assist/-/issues/1541) to Claude Sonnet 4.5 in GitLab 18.6.
 
 {{< /history >}}
 

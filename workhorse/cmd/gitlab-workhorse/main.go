@@ -20,7 +20,6 @@ import (
 	"gitlab.com/gitlab-org/gitlab/workhorse/internal/config"
 	"gitlab.com/gitlab-org/gitlab/workhorse/internal/gitaly"
 	"gitlab.com/gitlab-org/gitlab/workhorse/internal/healthcheck"
-	"gitlab.com/gitlab-org/gitlab/workhorse/internal/helper/shutdown"
 	"gitlab.com/gitlab-org/gitlab/workhorse/internal/listener"
 	"gitlab.com/gitlab-org/gitlab/workhorse/internal/queueing"
 	"gitlab.com/gitlab-org/gitlab/workhorse/internal/redis"
@@ -334,8 +333,6 @@ func run(boot bootConfig, cfg config.Config) error {
 	case sig := <-done:
 		log.WithFields(log.Fields{"shutdown_timeout_s": cfg.ShutdownTimeout.Duration.Seconds(), "signal": sig.String()}).Infof("shutdown initiated")
 
-		// Initiate graceful shutdown for health check server
-		var gracefulShutdownDelay time.Duration
 		if healthCheckServer != nil {
 			healthCheckServer.InitiateShutdown()
 			// Signal upstream to stop accepting long polling requests because
@@ -343,22 +340,23 @@ func run(boot bootConfig, cfg config.Config) error {
 			close(shutdownCh)
 			// Kick out any long poll requests
 			redisKeyWatcher.Shutdown()
-			gracefulShutdownDelay = healthCheckServer.GetGracefulShutdownDelay()
-		}
 
-		// Wait for the graceful shutdown delay to complete before shutting down the server
-		if gracefulShutdownDelay > 0 {
-			log.WithField("shutdown_delay_s", gracefulShutdownDelay.Seconds()).Info("Waiting for graceful shutdown delay")
-			time.Sleep(gracefulShutdownDelay)
-		}
+			// Wait for the graceful shutdown delay to complete before shutting down the server
+			gracefulShutdownDelay := healthCheckServer.GetGracefulShutdownDelay()
+			if gracefulShutdownDelay > 0 {
+				log.WithField("shutdown_delay_s", gracefulShutdownDelay.Seconds()).Info("Waiting for graceful shutdown delay")
 
-		if healthCheckServer == nil {
+				go upgradedConnsManager.Shutdown(gracefulShutdownDelay)
+
+				time.Sleep(gracefulShutdownDelay)
+			}
+		} else {
 			redisKeyWatcher.Shutdown()
 		}
 
 		ctx, cancel := context.WithTimeout(context.Background(), cfg.ShutdownTimeout.Duration) // lint:allow context.Background
 		defer cancel()
 
-		return shutdown.ShutdownAll(ctx, srv, upgradedConnsManager)
+		return srv.Shutdown(ctx)
 	}
 }

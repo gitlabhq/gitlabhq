@@ -8,7 +8,6 @@ RSpec.describe 'Thread Comments Issue', :js, feature_category: :source_code_mana
   let(:issue) { create(:issue, project: project) }
 
   before do
-    stub_feature_flags(work_item_view_for_issues: true)
     project.add_maintainer(user)
     sign_in(user)
 

@@ -124,7 +124,7 @@ Be sure to run the Rake task from the GitLab Rails root directory (typically `/p
    ```
 
   After the script finishes without error, now go to `gitlab-duo/test` and validate that you can see Duo Chat. Send a question to Chat
-  and make sure there are no errors. If there are, the two most common problems in development are [A1003](../../administration/gitlab_duo_self_hosted/troubleshooting.md#error-a1003) and [A9999](../../administration/gitlab_duo_self_hosted/troubleshooting.md#error-a9999).
+  and make sure there are no errors. If there are, the two most common problems in development are [A1003](../../user/gitlab_duo_chat/troubleshooting.md#error-a1003) and [A9999](../../user/gitlab_duo_chat/troubleshooting.md#error-a9999).
 
   A9999 is a catchall error. The biggest offender is not having the ai gateway URL setup properly as described in [Install AI gateway](#install-ai-gateway). If not, make sure to check the tests are passing in the `gitlab-ai-gateway` repository with `make test` and that `gdk tail gitlab-ai-gateway` returns no error.
 

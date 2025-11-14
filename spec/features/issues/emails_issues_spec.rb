@@ -8,7 +8,6 @@ RSpec.describe "E-Mails > Issues", :js, feature_category: :team_planning do
   let_it_be(:current_user) { create(:user, username: 'current_user', name: 'Shi-mi') }
 
   before do
-    stub_feature_flags(work_item_view_for_issues: true)
     project.add_developer(current_user)
     sign_in(current_user)
   end

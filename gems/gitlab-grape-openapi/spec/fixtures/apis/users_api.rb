@@ -26,6 +26,10 @@ module TestApis
       success code: 201, model: TestEntities::UserEntity
       tags %w[users_api]
     end
+    params do
+      requires :version, type: 'String', desc: "A version string"
+      requires :name, type: 'String', desc: 'A non-path parameter in a POST request'
+    end
     post '/api/:version/users' do
       status 201
       { id: 3, name: params[:name], email: params[:email], created_at: '2025-10-20 15:55:15.465357 -0700' }
@@ -35,6 +39,11 @@ module TestApis
       detail 'Replaces all user information with the provided data'
       success TestEntities::UserEntity
       tags %w[users_api]
+    end
+    params do
+      requires :id, type: String, desc: 'User ID'
+      requires :name, type: String, desc: 'User name'
+      optional :email, type: String, desc: 'User email'
     end
     put '/api/:version/users/:id' do
       status 200
@@ -51,6 +60,10 @@ module TestApis
       success TestEntities::UserEntity
       tags %w[users_api]
     end
+    params do
+      requires :id, type: String, desc: 'User ID'
+      optional :name, type: String, desc: 'User name'
+    end
     patch '/api/:version/users/:id' do
       status 200
       { id: params[:id].to_i, name: params[:name], updated_at: '2025-10-20 15:55:15.465357 -0700' }
@@ -60,6 +73,9 @@ module TestApis
       detail 'Permanently removes a user from the system'
       success code: 204
       tags %w[users_api]
+    end
+    params do
+      requires :id, type: String, desc: 'User ID'
     end
     delete '/api/:version/users/:id' do
       status 204

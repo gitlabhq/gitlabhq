@@ -11,7 +11,6 @@ RSpec.describe 'User creates confidential merge request on issue page', :js, fea
   let(:issue) { create(:issue, project: project, confidential: true) }
 
   before do
-    stub_feature_flags(work_item_view_for_issues: true)
     project.add_developer(user)
   end
 

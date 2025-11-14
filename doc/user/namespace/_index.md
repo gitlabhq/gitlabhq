@@ -1,5 +1,5 @@
 ---
-stage: Runtime
+stage: Tenant Scale
 group: Organizations
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 title: Namespaces
@@ -46,3 +46,14 @@ To determine whether you're in a group or personal namespace, you can view the U
 | A user named `alex`. | `https://gitlab.example.com/alex` | `alex` |
 | A group named `alex-team`. | `https://gitlab.example.com/alex-team` | `alex-team` |
 | A group named `alex-team` with a subgroup named `marketing`. |  `https://gitlab.example.com/alex-team/marketing` | `alex-team/marketing` |
+
+## Determine the namespace ID
+
+The namespace ID is the group ID or project ID. Use the group ID
+to interact with groups and the project ID to interact with
+projects.
+
+You can find the group and project ID in the UI:
+
+- [Find the group ID](../../user/group/_index.md#find-the-group-id).
+- [Find the project ID](../../user/project/working_with_projects.md#find-the-project-id).

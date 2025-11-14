@@ -11,7 +11,6 @@ RSpec.describe 'issuable templates', :js, feature_category: :team_planning do
   let(:issue_form_location) { '[data-testid="work-item-description-wrapper"]' }
 
   before do
-    stub_feature_flags(work_item_view_for_issues: true)
     project.add_maintainer(user)
     sign_in user
   end

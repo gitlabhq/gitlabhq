@@ -129,9 +129,15 @@ You can configure your mirror to automatically trigger pipelines when
 the remote repository updates branches or tags. Before you enable this feature:
 
 - Ensure your CI runners can handle the additional load from the remote repository activity.
-- Consider the security implications. The pipelines use the credentials from pull mirroring and run unreviewed code.
+- Consider the security risks, because the pipelines use the credentials of the user that set up the pull mirroring. For example, a malicious maintainer could:
+  - Make an update to the remote repository that attempts to fetch stored CI/CD variable values when the pipeline runs.
+  - Could push commits to your mirrored project if the [**Allow Git push requests to the repository**](../../../../ci/jobs/ci_job_token.md#allow-git-push-requests-to-your-project-repository) setting is enabled.
 
-  Only enable this feature for your own projects or those with trusted maintainers.
+{{< alert type="warning" >}}
+
+Only enable this feature for your own projects or those with trusted maintainers.
+
+{{< /alert >}}
 
 ## Trigger an update by using the API
 

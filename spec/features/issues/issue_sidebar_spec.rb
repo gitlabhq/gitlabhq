@@ -18,7 +18,6 @@ RSpec.describe 'Issue Sidebar', :js, feature_category: :team_planning do
   let_it_be(:mock_date) { Date.today.at_beginning_of_month + 2.days }
 
   before do
-    stub_feature_flags(work_item_view_for_issues: true)
     stub_incoming_email_setting(enabled: true, address: "p+%{key}@gl.ab")
   end
 

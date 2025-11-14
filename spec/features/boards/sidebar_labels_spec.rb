@@ -27,7 +27,6 @@ RSpec.describe 'Project issue boards sidebar labels', :js, feature_category: :po
   let(:labels_widget)     { find_by_testid('work-item-labels') }
 
   before do
-    stub_feature_flags(work_item_view_for_issues: true)
     project.add_maintainer(user)
     sign_in(user)
     visit project_board_path(project, board)

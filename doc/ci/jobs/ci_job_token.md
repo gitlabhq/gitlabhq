@@ -369,6 +369,14 @@ the same access permissions as the user who started the job.
 
 If you use the tool semantic-release, with **Allow Git push requests to the repository** setting enabled, the tool gives precedence to CI_JOB_TOKEN embedded over a GitLab personal access token, if one is configured. There is an [open issue](https://github.com/semantic-release/gitlab/issues/891) that tracks resolution for this edge case.
 
+{{< alert type="warning" >}}
+
+Do not enable this setting on projects configured as [pull mirrors](../../user/project/repository/mirror/pull.md),
+especially if [pipelines are triggered for mirror updates](../../user/project/repository/mirror/pull.md#trigger-pipelines-for-mirror-updates).
+The upstream repository owner could attempt to use the `CI_JOB_TOKEN` to push commits to the mirrored project.
+
+{{< /alert >}}
+
 Prerequisites:
 
 - You must have at least the Maintainer role for the project.

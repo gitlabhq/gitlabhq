@@ -271,6 +271,10 @@ ci_running_builds:
   - table: ci_runners
     column: runner_id
     on_delete: async_delete
+ci_secure_file_states:
+  - table: ci_secure_files
+    column: ci_secure_file_id
+    on_delete: async_delete
 ci_secure_files:
   - table: projects
     column: project_id
@@ -412,6 +416,13 @@ dependency_list_exports:
     on_delete: async_delete
   - table: organizations
     column: organization_id
+    on_delete: async_delete
+dependency_proxy_blob_states:
+  - table: dependency_proxy_blobs
+    column: dependency_proxy_blob_id
+    on_delete: async_delete
+  - table: namespaces
+    column: group_id
     on_delete: async_delete
 deployment_approvals:
   - table: p_ci_builds

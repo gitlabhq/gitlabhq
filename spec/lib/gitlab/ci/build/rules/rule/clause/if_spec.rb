@@ -9,7 +9,7 @@ RSpec.describe Gitlab::Ci::Build::Rules::Rule::Clause::If, feature_category: :co
 
   describe '#satisfied_by?' do
     let(:context_class) { Gitlab::Ci::Build::Context::Base }
-    let(:rules_context) { instance_double(context_class, variables_hash_expanded: {}) }
+    let(:rules_context) { instance_double(context_class, variables_hash: {}) }
 
     subject(:satisfied_by?) { if_clause.satisfied_by?(nil, rules_context) }
 
@@ -45,7 +45,7 @@ RSpec.describe Gitlab::Ci::Build::Rules::Rule::Clause::If, feature_category: :co
 
         context 'when comparison is true' do
           let(:rules_context) do
-            instance_double(context_class, variables_hash_expanded: { 'teststring' => 'abcde', 'pattern' => '/^ab.*/' })
+            instance_double(context_class, variables_hash: { 'teststring' => 'abcde', 'pattern' => '/^ab.*/' })
           end
 
           it { is_expected.to eq(true) }
@@ -53,7 +53,7 @@ RSpec.describe Gitlab::Ci::Build::Rules::Rule::Clause::If, feature_category: :co
 
         context 'when comparison is false' do
           let(:rules_context) do
-            instance_double(context_class, variables_hash_expanded: { 'teststring' => 'abcde', 'pattern' => '/^af.*/' })
+            instance_double(context_class, variables_hash: { 'teststring' => 'abcde', 'pattern' => '/^af.*/' })
           end
 
           it { is_expected.to eq(false) }

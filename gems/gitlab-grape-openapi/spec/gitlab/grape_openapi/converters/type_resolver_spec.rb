@@ -133,6 +133,7 @@ RSpec.describe Gitlab::GrapeOpenapi::Converters::TypeResolver do
         expected_mappings = {
           'dateTime' => 'string',
           'date' => 'string',
+          'Date' => 'string',
           'symbol' => 'string',
           'String' => 'string',
           String => 'string',

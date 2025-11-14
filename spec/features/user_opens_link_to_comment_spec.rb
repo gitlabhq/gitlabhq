@@ -6,10 +6,6 @@ RSpec.describe 'User opens link to comment', :js, feature_category: :team_planni
   let(:project) { create(:project, :public) }
   let(:note) { create(:note_on_issue, project: project) }
 
-  before do
-    stub_feature_flags(work_item_view_for_issues: true)
-  end
-
   context 'authenticated user' do
     let(:user) { create(:user) }
 

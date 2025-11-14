@@ -15,7 +15,7 @@ title: GitLab Duo Chat (Classic)
 
 {{< collapsible title="Model information" >}}
 
-- LLMs: Anthropic Claude and Vertex AI Search. The LLM depends on the question asked.
+- Default LLM: Anthropic [Claude Sonnet 4.5](https://console.cloud.google.com/vertex-ai/publishers/anthropic/model-garden/claude-sonnet-4-5)
 - LLM for Amazon Q: Amazon Q Developer
 - Available on [GitLab Duo with self-hosted models](../../administration/gitlab_duo_self_hosted/_index.md): Yes
 
@@ -31,6 +31,7 @@ title: GitLab Duo Chat (Classic)
 - Changed to require GitLab Duo add-on in GitLab 17.6 and later.
 - Updated naming to GitLab Duo Chat (Classic) in GitLab 18.3.
 - [Added](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/201721) to GitLab Duo Core in GitLab 18.3.
+- [Updated default LLM](https://gitlab.com/gitlab-org/modelops/applied-ml/code-suggestions/ai-assist/-/issues/1541) to Claude Sonnet 4.5 in GitLab 18.6.
 
 {{< /history >}}
 

@@ -13,8 +13,6 @@ RSpec.describe 'Comment sort direction', feature_category: :team_planning do
   let_it_be(:developer) { create(:user, developer_of: project) }
 
   before do
-    stub_feature_flags(work_item_view_for_issues: true)
-
     sign_in(developer)
   end
 

@@ -36,7 +36,7 @@ RSpec.describe 'Merge request > User sees empty state', :js, feature_category: :
 
       expect(page).to have_selector('.gl-empty-state')
       expect(page).to have_content('No results found')
-      expect(page).to have_content('Edit your search and try again.')
+      expect(page).to have_content('To widen your search, change or remove filters above.')
     end
   end
 

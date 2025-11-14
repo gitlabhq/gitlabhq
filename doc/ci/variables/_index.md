@@ -119,6 +119,12 @@ all variables become available to the pipeline.
 
 ### For a project
 
+{{< history >}}
+
+- Default visibility [changed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/195494) from **Visible** to **Masked** in GitLab 18.3.
+
+{{< /history >}}
+
 You can add CI/CD variables to a project's settings. Projects can have a maximum of 8000 CI/CD variables.
 
 Prerequisites:
@@ -140,13 +146,19 @@ To add or update variables in the project settings:
      or a wildcard environment scope.
    - **Protect variable** Optional. If selected, the variable is only available in pipelines
      that run on protected branches or protected tags.
-   - **Visibility**: Select **Visible** (default), **Masked**, or **Masked and hidden**.
+   - **Visibility**: Select **Visible**, **Masked** (default), or **Masked and hidden**.
    - **Expand variable reference**: Optional. If selected, the variable can reference another variable.
      It is not possible to reference another variable if **Visibility** is set to **Masked** or **Masked and hidden**.
 
 Alternatively, project variables can be added [by using the API](../../api/project_level_variables.md).
 
 ### For a group
+
+{{< history >}}
+
+- Default visibility [changed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/195494) from **Visible** to **Masked** in GitLab 18.3.
+
+{{< /history >}}
 
 You can make a CI/CD variable available to all projects in a group. Groups can have a maximum of 30000 CI/CD variables.
 
@@ -167,7 +179,7 @@ To add a group variable:
    - **Type**: `Variable` (default) or [`File`](#use-file-type-cicd-variables).
    - **Protect variable** Optional. If selected, the variable is only available in pipelines
      that run on protected branches or protected tags.
-   - **Visibility**: Select **Visible** (default), **Masked**, **Masked and hidden**.
+   - **Visibility**: Select **Visible**, **Masked** (default), **Masked and hidden**.
    - **Expand variable reference**: Optional. If selected, the variable can reference another variable.
      It is not possible to reference another variable if **Visibility** is set to **Masked** or **Masked and hidden**.
 
@@ -202,6 +214,12 @@ To set a group CI/CD variable to only be available for certain environments:
 
 {{< /details >}}
 
+{{< history >}}
+
+- Default visibility [changed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/195494) from **Visible** to **Masked** in GitLab 18.3.
+
+{{< /history >}}
+
 You can make a CI/CD variable available to all projects and groups in a GitLab instance.
 
 Prerequisites:
@@ -220,7 +238,7 @@ To add an instance variable:
    - **Type**: `Variable` (default) or `File`.
    - **Protect variable** Optional. If selected, the variable is only available in pipelines
      that run on protected branches or tags.
-   - **Visibility**: Select **Visible** (default), **Masked**, or **Masked and hidden**.
+   - **Visibility**: Select **Visible**, **Masked** (default), or **Masked and hidden**.
    - **Expand variable reference**: Optional. If selected, the variable can reference another variable.
      It is not possible to reference another variable if **Visibility** is set to **Masked** or **Masked and hidden**.
 

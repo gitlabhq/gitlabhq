@@ -8,10 +8,6 @@ RSpec.describe 'Issue notes polling', :js, feature_category: :team_planning do
   let(:project) { create(:project, :public) }
   let(:issue) { create(:issue, project: project) }
 
-  before do
-    stub_feature_flags(work_item_view_for_issues: true)
-  end
-
   describe 'creates' do
     it 'displays the new comment' do
       visit project_issue_path(project, issue)

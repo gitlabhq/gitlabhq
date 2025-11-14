@@ -1814,6 +1814,22 @@ RETURN NEW;
 END
 $$;
 
+CREATE FUNCTION trigger_1996c9e5bea0() RETURNS trigger
+    LANGUAGE plpgsql
+    AS $$
+BEGIN
+IF NEW."organization_id" IS NULL THEN
+  SELECT "organization_id"
+  INTO NEW."organization_id"
+  FROM "abuse_reports"
+  WHERE "abuse_reports"."id" = NEW."abuse_report_id";
+END IF;
+
+RETURN NEW;
+
+END
+$$;
+
 CREATE FUNCTION trigger_1c0f1ca199a3() RETURNS trigger
     LANGUAGE plpgsql
     AS $$
@@ -9816,7 +9832,8 @@ CREATE TABLE abuse_report_events (
     reason smallint,
     comment text,
     organization_id bigint,
-    CONSTRAINT check_bb4cd85618 CHECK ((char_length(comment) <= 1024))
+    CONSTRAINT check_bb4cd85618 CHECK ((char_length(comment) <= 1024)),
+    CONSTRAINT check_ed2aa0210e CHECK ((organization_id IS NOT NULL))
 );
 
 CREATE SEQUENCE abuse_report_events_id_seq
@@ -10608,6 +10625,7 @@ CREATE TABLE ai_settings (
     duo_agent_platform_service_url text,
     duo_agent_platform_request_count integer DEFAULT 0 NOT NULL,
     foundational_agents_default_enabled boolean DEFAULT true,
+    ai_gateway_timeout_seconds integer DEFAULT 60,
     CONSTRAINT check_3cf9826589 CHECK ((char_length(ai_gateway_url) <= 2048)),
     CONSTRAINT check_900d7a89b3 CHECK ((char_length(duo_agent_platform_service_url) <= 2048)),
     CONSTRAINT check_a02bd8868c CHECK ((char_length(amazon_q_role_arn) <= 2048)),
@@ -47539,11 +47557,15 @@ CREATE TRIGGER ci_runner_machines_loose_fk_trigger AFTER DELETE ON ci_runner_mac
 
 CREATE TRIGGER ci_runners_loose_fk_trigger AFTER DELETE ON ci_runners REFERENCING OLD TABLE AS old_table FOR EACH STATEMENT EXECUTE FUNCTION insert_into_loose_foreign_keys_deleted_records_override_table('ci_runners');
 
+CREATE TRIGGER ci_secure_files_loose_fk_trigger AFTER DELETE ON ci_secure_files REFERENCING OLD TABLE AS old_table FOR EACH STATEMENT EXECUTE FUNCTION insert_into_loose_foreign_keys_deleted_records();
+
 CREATE TRIGGER ci_triggers_loose_fk_trigger AFTER DELETE ON ci_triggers REFERENCING OLD TABLE AS old_table FOR EACH STATEMENT EXECUTE FUNCTION insert_into_loose_foreign_keys_deleted_records();
 
 CREATE TRIGGER cluster_agents_loose_fk_trigger AFTER DELETE ON cluster_agents REFERENCING OLD TABLE AS old_table FOR EACH STATEMENT EXECUTE FUNCTION insert_into_loose_foreign_keys_deleted_records();
 
 CREATE TRIGGER clusters_loose_fk_trigger AFTER DELETE ON clusters REFERENCING OLD TABLE AS old_table FOR EACH STATEMENT EXECUTE FUNCTION insert_into_loose_foreign_keys_deleted_records();
+
+CREATE TRIGGER dependency_proxy_blobs_loose_fk_trigger AFTER DELETE ON dependency_proxy_blobs REFERENCING OLD TABLE AS old_table FOR EACH STATEMENT EXECUTE FUNCTION insert_into_loose_foreign_keys_deleted_records();
 
 CREATE TRIGGER duo_workflows_workflows_loose_fk_trigger AFTER DELETE ON duo_workflows_workflows REFERENCING OLD TABLE AS old_table FOR EACH STATEMENT EXECUTE FUNCTION insert_into_loose_foreign_keys_deleted_records();
 
@@ -47668,6 +47690,8 @@ CREATE TRIGGER trigger_158ac875f254 BEFORE INSERT OR UPDATE ON approval_group_ru
 CREATE TRIGGER trigger_174b23fa3dfb BEFORE INSERT OR UPDATE ON approval_project_rules_users FOR EACH ROW EXECUTE FUNCTION trigger_174b23fa3dfb();
 
 CREATE TRIGGER trigger_18bc439a6741 BEFORE INSERT OR UPDATE ON packages_conan_metadata FOR EACH ROW EXECUTE FUNCTION trigger_18bc439a6741();
+
+CREATE TRIGGER trigger_1996c9e5bea0 BEFORE INSERT OR UPDATE ON abuse_report_events FOR EACH ROW EXECUTE FUNCTION trigger_1996c9e5bea0();
 
 CREATE TRIGGER trigger_1c0f1ca199a3 BEFORE INSERT OR UPDATE ON ci_resources FOR EACH ROW EXECUTE FUNCTION trigger_1c0f1ca199a3();
 
@@ -49630,9 +49654,6 @@ ALTER TABLE ONLY milestones
 ALTER TABLE ONLY boards_epic_list_user_preferences
     ADD CONSTRAINT fk_95eac55851 FOREIGN KEY (epic_list_id) REFERENCES boards_epic_lists(id) ON DELETE CASCADE;
 
-ALTER TABLE ONLY dependency_proxy_blob_states
-    ADD CONSTRAINT fk_95ee495fd6 FOREIGN KEY (group_id) REFERENCES namespaces(id) ON DELETE CASCADE;
-
 ALTER TABLE ONLY issues
     ADD CONSTRAINT fk_96b1dd429c FOREIGN KEY (milestone_id) REFERENCES milestones(id) ON DELETE SET NULL;
 
@@ -51385,9 +51406,6 @@ ALTER TABLE ONLY vulnerability_triggered_workflows
 ALTER TABLE ONLY project_metrics_settings
     ADD CONSTRAINT fk_rails_4c6037ee4f FOREIGN KEY (project_id) REFERENCES projects(id) ON DELETE CASCADE;
 
-ALTER TABLE ONLY dependency_proxy_blob_states
-    ADD CONSTRAINT fk_rails_4cdbb92cbd FOREIGN KEY (dependency_proxy_blob_id) REFERENCES dependency_proxy_blobs(id) ON DELETE CASCADE;
-
 ALTER TABLE ONLY scim_identities
     ADD CONSTRAINT fk_rails_4d2056ebd9 FOREIGN KEY (group_id) REFERENCES namespaces(id) ON DELETE CASCADE;
 
@@ -51495,9 +51513,6 @@ ALTER TABLE ONLY badges
 
 ALTER TABLE ONLY resource_label_events
     ADD CONSTRAINT fk_rails_5ac1d2fc24 FOREIGN KEY (issue_id) REFERENCES issues(id) ON DELETE CASCADE;
-
-ALTER TABLE ONLY ci_secure_file_states
-    ADD CONSTRAINT fk_rails_5adba40c5f FOREIGN KEY (ci_secure_file_id) REFERENCES ci_secure_files(id) ON DELETE CASCADE;
 
 ALTER TABLE ONLY approval_merge_request_rules_groups
     ADD CONSTRAINT fk_rails_5b2ecf6139 FOREIGN KEY (approval_merge_request_rule_id) REFERENCES approval_merge_request_rules(id) ON DELETE CASCADE;

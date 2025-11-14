@@ -19,7 +19,7 @@ RSpec.describe 'User applies parent filter', :js, feature_category: :team_planni
   context 'for signed in user' do
     context 'when accessing work item from project issues list' do
       before do
-        stub_feature_flags(work_item_view_for_issues: true, work_item_planning_view: false)
+        stub_feature_flags(work_item_planning_view: false)
         sign_in(user)
         visit project_issues_path(project)
       end

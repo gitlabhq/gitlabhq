@@ -14,6 +14,7 @@ require_relative "gitlab/grape_openapi/converters/operation_converter"
 require_relative "gitlab/grape_openapi/converters/path_converter"
 require_relative "gitlab/grape_openapi/converters/parameter_converter"
 require_relative "gitlab/grape_openapi/converters/response_converter"
+require_relative "gitlab/grape_openapi/converters/request_body_converter"
 
 # Models
 require_relative "gitlab/grape_openapi/models/schema"

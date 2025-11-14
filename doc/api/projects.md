@@ -1,5 +1,5 @@
 ---
-stage: Runtime
+stage: Tenant Scale
 group: Organizations
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 title: Projects API
@@ -390,7 +390,7 @@ Supported attributes:
 | `last_activity_after`         | datetime | No       | Limit results to projects with last activity after specified time. Format: ISO 8601 (`YYYY-MM-DDTHH:MM:SSZ`) |
 | `last_activity_before`        | datetime | No       | Limit results to projects with last activity before specified time. Format: ISO 8601 (`YYYY-MM-DDTHH:MM:SSZ`) |
 | `membership`                  | boolean  | No       | Limit by projects that the current user is a member of. |
-| `min_access_level`            | integer  | No       | Limit by current user minimal [role (`access_level`)](members.md#roles). |
+| `min_access_level`            | integer  | No       | Limit by current user minimal [role (`access_level`)](project_members.md#roles). |
 | `order_by`                    | string   | No       | Return projects ordered by `id`, `name`, `path`, `created_at`, `updated_at`, `star_count`, `last_activity_at`, or `similarity` fields. `repository_size`, `storage_size`, `packages_size` or `wiki_size` fields are only allowed for administrators. `similarity` is only available when searching and is limited to projects that the current user is a member of. Default is `created_at`. |
 | `owned`                       | boolean  | No       | Limit by projects explicitly owned by the current user. |
 | `repository_checksum_failed`  | boolean  | No       | Limit projects where the repository checksum calculation has failed. Premium and Ultimate only. |
@@ -676,7 +676,7 @@ Supported attributes:
 | `id_after`                    | integer  | No       | Limit results to projects with IDs greater than the specified ID. |
 | `id_before`                   | integer  | No       | Limit results to projects with IDs less than the specified ID. |
 | `membership`                  | boolean  | No       | Limit by projects that the current user is a member of. |
-| `min_access_level`            | integer  | No       | Limit by current user minimal [role (`access_level`)](members.md#roles). |
+| `min_access_level`            | integer  | No       | Limit by current user minimal [role (`access_level`)](project_members.md#roles). |
 | `order_by`                    | string   | No       | Return projects ordered by `id`, `name`, `path`, `created_at`, `updated_at`, `star_count`, or `last_activity_at` fields. Default is `created_at`. |
 | `owned`                       | boolean  | No       | Limit by projects explicitly owned by the current user. |
 | `search`                      | string   | No       | Return list of projects matching the search criteria. |
@@ -1287,7 +1287,7 @@ Supported attributes:
 |:--------------------------|:------------------|:---------|:------------|
 | `id`                      | integer or string | Yes      | The ID or [URL-encoded path of the project](rest/_index.md#namespaced-paths). |
 | `search`                  | string            | No       | Search for specific groups. |
-| `shared_min_access_level` | integer           | No       | Limit to shared groups with at least this [role (`access_level`)](members.md#roles). |
+| `shared_min_access_level` | integer           | No       | Limit to shared groups with at least this [role (`access_level`)](group_members.md#roles). |
 | `shared_visible_only`     | boolean           | No       | Limit to shared groups user has access to. |
 | `skip_groups`             | array of integers | No       | Skip the group IDs passed. |
 | `with_shared`             | boolean           | No       | Include projects shared with this group. Default is `false`. |
@@ -1373,7 +1373,7 @@ Supported attributes:
 |:-------------------------|:-----------------|:---------|:------------|
 | `id`                     | integer or string   | yes      | The ID or [URL-encoded path](rest/_index.md#namespaced-paths) of the group |
 | `search`                 | string           | no       | Return the list of authorized groups matching the search criteria |
-| `min_access_level`       | integer          | no       | Limit to groups where current user has at least the specified [role (`access_level`)](members.md#roles) |
+| `min_access_level`       | integer          | no       | Limit to groups where current user has at least the specified [role (`access_level`)](project_members.md#roles) |
 | `relation`               | array of strings | no       | Filter the groups by relation (direct or inherited) |
 | `with_custom_attributes` | boolean          | no       | Include [custom attributes](custom_attributes.md) in response (administrators only) |
 
@@ -2525,7 +2525,7 @@ Supported attributes:
 
 | Attribute      | Type              | Required | Description |
 |:---------------|:------------------|:---------|:------------|
-| `group_access` | integer           | Yes      | The [role (`access_level`)](members.md#roles) to grant the group. |
+| `group_access` | integer           | Yes      | The [role (`access_level`)](project_members.md#roles) to grant the group. |
 | `group_id`     | integer           | Yes      | The ID of the group to share with. |
 | `id`           | integer or string | Yes      | The ID or [URL-encoded path of the project](rest/_index.md#namespaced-paths). |
 | `expires_at`   | string            | No       | Share expiration date in ISO 8601 format. For example, `2016-09-26`. |

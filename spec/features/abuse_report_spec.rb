@@ -16,7 +16,6 @@ RSpec.describe 'Abuse reports', :js, feature_category: :insider_threat do
     # the work items listing page.
     stub_feature_flags(work_item_planning_view: false)
     stub_feature_flags(hide_incident_management_features: false)
-    stub_feature_flags(work_item_view_for_issues: true)
 
     sign_in(reporter1)
   end

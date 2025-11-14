@@ -10,7 +10,6 @@ RSpec.describe 'User views issue designs', :js, feature_category: :design_manage
   let_it_be(:design) { create(:design, :with_file, issue: issue) }
 
   before do
-    stub_feature_flags(work_item_view_for_issues: true)
     enable_design_management
   end
 

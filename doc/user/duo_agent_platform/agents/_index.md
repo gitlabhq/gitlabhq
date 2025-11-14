@@ -9,8 +9,8 @@ title: Agents
 
 - Tier: Premium, Ultimate
 - Add-on: GitLab Duo Core, Pro, or Enterprise
-- Offering: GitLab.com
-- Status: Experiment
+- Offering: GitLab.com, GitLab Self-Managed
+- Status: Beta
 
 {{< /details >}}
 
@@ -22,7 +22,7 @@ title: Agents
 
 {{< history >}}
 
-- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/549914) in GitLab 18.5 [with a flag](../../../administration/feature_flags/_index.md) named `global_ai_catalog`. Enabled on GitLab.com. This feature is an [experiment](../../../policy/development_stages_support.md).
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/549914) in GitLab 18.5 [with a flag](../../../administration/feature_flags/_index.md) named `global_ai_catalog`. Enabled on GitLab.com.
 
 {{< /history >}}
 
@@ -48,7 +48,7 @@ There are additional requirements depending on the agent's visibility.
 
 ### Agent visibility
 
-When you create an agent, you associate it with a source project and choose whether it is public or private.
+When you create a custom agent, you associate it with a source project and choose whether it is public or private.
 
 - A public agent can be viewed by anyone and can be enabled in any project that meets the prerequisites.
 - A private agent can be viewed only by members of the source project who have at least the Developer role.
@@ -56,6 +56,12 @@ When you create an agent, you associate it with a source project and choose whet
   You cannot make a private agent public if the agent is currently enabled.
 
 ## View the agents for your project
+
+{{< details >}}
+
+- Status: Experiment
+
+{{< /details >}}
 
 Prerequisites:
 
@@ -70,9 +76,21 @@ Select an agent to view its details.
 
 ## Create an agent
 
+{{< details >}}
+
+- Status: Experiment
+
+{{< /details >}}
+
+You can create an agent from a project, or by using the AI Catalog.
+
 Prerequisites:
 
 - You must have at least the Maintainer role for the project.
+
+{{< tabs >}}
+
+{{< tab title="From a project" >}}
 
 To create an agent:
 
@@ -92,9 +110,43 @@ To create an agent:
    For a list of available tools, see the [built-in tool definitions](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/lib/ai/catalog/built_in_tool_definitions.rb).
 1. Select **Create agent**.
 
+{{< /tab >}}
+
+{{< tab title="From the AI Catalog" >}}
+
+To create an agent:
+
+1. On the left sidebar, select **Search or go to** > **Explore**. If you've [turned on the new navigation](../../interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
+1. Select **AI Catalog**, then select the **Agents** tab.
+1. Select **New agent**.
+1. Under **Basic information**:
+   1. In **Display name**, enter a name for the agent.
+   1. In **Description**, enter a description for the agent.
+1. Under **Visibility & access**:
+   1. For **Visibility**, select **Private** or **Public**.
+   1. From the **Source project** dropdown list, select a project for the agent.
+1. Under **Prompts**, in **System prompt**, enter a prompt to define
+   the agent's personality, expertise, and behavior.
+1. Optional. Under **Available tools**, from the **Tools** dropdown list,
+   select which tools the agent can access.
+   For example, for the agent to create issues automatically, select **Create issue**.
+
+   For a list of available tools, see the [built-in tool definitions](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/lib/ai/catalog/built_in_tool_definitions.rb).
+1. Select **Create agent**.
+
+{{< /tab >}}
+
+{{< /tabs >}}
+
 The agent appears in the AI Catalog. To use the agent with Chat, enable it in a project.
 
 ## Enable an agent
+
+{{< details >}}
+
+- Status: Experiment
+
+{{< /details >}}
 
 Enable an agent in a project to use it with Chat.
 
@@ -129,6 +181,12 @@ The agent no longer appears in the project, and is not available in Chat.
 
 ## Duplicate an agent
 
+{{< details >}}
+
+- Status: Experiment
+
+{{< /details >}}
+
 Create a copy of an existing agent in a different source project.
 Do this if you want to use an agent someone else created, or make changes to an agent without overwriting the original.
 
@@ -145,6 +203,12 @@ To duplicate an agent:
 1. Select **Create agent**.
 
 ## Manage agents
+
+{{< details >}}
+
+- Status: Experiment
+
+{{< /details >}}
 
 Edit an agent to change its configuration, or delete it to remove it from the AI Catalog.
 

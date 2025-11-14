@@ -19,7 +19,6 @@ RSpec.describe 'Group Issue Boards', :js, feature_category: :portfolio_managemen
   let(:card)             { find('[data-testid="board-list"]:nth-child(1)').first('.board-card') }
 
   before do
-    stub_feature_flags(work_item_view_for_issues: true)
     sign_in(user)
     visit group_board_path(group, board)
   end

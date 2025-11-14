@@ -12,10 +12,6 @@ RSpec.describe 'issue header', :js, feature_category: :team_planning do
   let_it_be(:authored_issue) { create(:issue, project: project, author: user) }
   let_it_be(:confidential_issue) { create(:issue, :confidential, project: project) }
 
-  before do
-    stub_feature_flags(work_item_view_for_issues: true)
-  end
-
   context 'when user has permission to update' do
     before do
       group.add_owner(user)

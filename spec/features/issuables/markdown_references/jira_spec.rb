@@ -11,10 +11,6 @@ RSpec.describe "Jira", :js, feature_category: :team_planning do
   let!(:issue_other_project) { create(:issue, project: other_project) }
   let(:issues) { [issue_actual_project, issue_other_project] }
 
-  before do
-    stub_feature_flags(work_item_view_for_issues: true)
-  end
-
   shared_examples "correct references" do
     before do
       remotelink = double(:remotelink, all: [], build: double(save!: true))

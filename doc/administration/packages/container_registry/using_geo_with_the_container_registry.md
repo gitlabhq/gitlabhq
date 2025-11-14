@@ -21,7 +21,7 @@ Prerequisites:
 To set up Geo support:
 
 1. Set up Geo for a primary and secondary site. For more information, see [Set up Geo for two single-node sites](../../geo/setup/two_single_node_sites.md).
-1. On the primary and the secondary sites, set up [the metadata database](../container_registry_metadata_database.md#new-installations) using a separate, [external database](../container_registry_metadata_database.md#using-an-external-database) for each site.
+1. On the primary and the secondary sites, set up [the metadata database](../container_registry_metadata_database_new_install.md) using a separate, [external database](../container_registry_metadata_database.md#using-an-external-database) for each site.
 1. Configure [container registry replication](../../geo/replication/container_registry.md#configure-container-registry-replication).
 
 ## Add container registries to existing Geo sites
@@ -34,7 +34,7 @@ Prerequisites:
 To add container registries to existing Geo secondary sites:
 
 1. On the secondary site, [enable the container registry](../container_registry.md).
-1. On the primary and the secondary sites, set up [the metadata database](../container_registry_metadata_database.md#new-installations) using a separate, [external database](../container_registry_metadata_database.md#using-an-external-database) for each site.
+1. On the primary and the secondary sites, set up [the metadata database](../container_registry_metadata_database_new_install.md) using a separate, [external database](../container_registry_metadata_database.md#using-an-external-database) for each site.
 1. Configure [container registry replication](../../geo/replication/container_registry.md#configure-container-registry-replication).
 
 ## Add Geo support and container registry to an existing instance of GitLab
@@ -49,7 +49,7 @@ To add Geo support to an existing instance and container registries to both Geo 
 1. Set up Geo for the existing instance (primary) and add a secondary site. For more information, see [Set up Geo for two single-node sites](../../geo/setup/two_single_node_sites.md).
 1. On the primary and the secondary sites:
    1. [Enable the container registry](../container_registry.md#enable-the-container-registry).
-   1. Set up [the metadata database](../container_registry_metadata_database.md#new-installations) using a separate, [external database](../container_registry_metadata_database.md#using-an-external-database) for each site.
+   1. Set up [the metadata database](../container_registry_metadata_database_new_install.md) using a separate, [external database](../container_registry_metadata_database.md#using-an-external-database) for each site.
 1. Configure [container registry replication](../../geo/replication/container_registry.md#configure-container-registry-replication).
 
 ## Add Geo support to an instance with a configured container registry
@@ -73,7 +73,7 @@ To add Geo support to an existing instance and container registry to the seconda
 1. Set up Geo for the existing instance (primary) and add a secondary site. For more information, see [Set up Geo for two single-node sites](../../geo/setup/two_single_node_sites.md).
 1. On the secondary site:
    1. [enable the container registry](../container_registry.md#enable-the-container-registry).
-   1. Set up [the metadata database](../container_registry_metadata_database.md#new-installations) using a separate, [external database](../container_registry_metadata_database.md#using-an-external-database).
+   1. Set up [the metadata database](../container_registry_metadata_database_new_install.md) using a separate, [external database](../container_registry_metadata_database.md#using-an-external-database).
 1. Configure [container registry replication](../../geo/replication/container_registry.md#configure-container-registry-replication).
 
 ### Use the default container registry metadata database
@@ -115,6 +115,6 @@ During migration, the rest of Geo replication continues.
 
 To migrate your metadata database:
 
-1. On secondary site, [migrate the existing legacy metadata to the new metadata database](../container_registry_metadata_database.md#existing-registries).
-1. On the primary site, [migrate the existing legacy metadata to the new metadata database](../container_registry_metadata_database.md#existing-registries).
+1. On secondary site, [migrate the existing legacy metadata to the new metadata database](../container_registry_metadata_database.md#enable-the-database-for-existing-registries).
+1. On the primary site, [migrate the existing legacy metadata to the new metadata database](../container_registry_metadata_database.md#enable-the-database-for-existing-registries).
 1. Verify Geo replication continues working.

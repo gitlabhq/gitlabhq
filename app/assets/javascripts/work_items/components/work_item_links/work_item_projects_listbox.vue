@@ -76,8 +76,8 @@ export default {
       },
       result() {
         this.selectedProject =
-          this.frequentProjects?.at(0) ||
           this.findSelectedProject(this.selectedProjectFullPath) ||
+          this.frequentProjects?.at(0) ||
           this.projects?.at(0);
         this.$emit('selectProject', this.selectedProject?.fullPath);
       },

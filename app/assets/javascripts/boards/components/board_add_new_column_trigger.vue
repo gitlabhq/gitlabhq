@@ -24,16 +24,14 @@ export default {
 </script>
 
 <template>
-  <span>
-    <gl-button
-      v-show="!isNewListShowing"
-      id="boards-create-list"
-      data-testid="boards-create-list"
-      variant="default"
-      @click="handleClick"
-    >
-      <gl-icon name="plus" :size="16" />
-      {{ __('New list') }}
-    </gl-button>
-  </span>
+  <gl-button
+    v-show="!isNewListShowing"
+    id="boards-create-list"
+    data-testid="boards-create-list"
+    variant="default"
+    @click="handleClick"
+  >
+    <gl-icon name="plus" :size="16" />
+    {{ __('New list') }}
+  </gl-button>
 </template>

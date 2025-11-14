@@ -1,5 +1,5 @@
 ---
-stage: Runtime
+stage: Tenant Scale
 group: Organizations
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 description: API endpoints for managing starred projects, including listing starred projects, listing users who starred projects, and starring or unstarring projects.
@@ -24,7 +24,7 @@ Supported attributes:
 | `user_id`                     | string   | Yes      | The ID or username of the user. |
 | `archived`                    | boolean  | No       | Limit by archived status. |
 | `membership`                  | boolean  | No       | Limit by projects that the current user is a member of. |
-| `min_access_level`            | integer  | No       | Limit by current user minimal [role (`access_level`)](members.md#roles). |
+| `min_access_level`            | integer  | No       | Limit by current user minimal [role (`access_level`)](group_members.md#roles). |
 | `order_by`                    | string   | No       | Return projects ordered by `id`, `name`, `path`, `created_at`, `updated_at`, `star_count`, or `last_activity_at` fields. Default is `created_at`. |
 | `owned`                       | boolean  | No       | Limit by projects explicitly owned by the current user. |
 | `search`                      | string   | No       | Return list of projects matching the search criteria. |

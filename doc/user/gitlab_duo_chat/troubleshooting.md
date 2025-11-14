@@ -163,7 +163,7 @@ Some possible reasons:
 
 - A client-side error caused by a bug in the GitLab code.
 - A server-side error caused by a bug in the Anthropic code.
-- An HTTP request that didn't reach the AI gateway.
+- An HTTP request that did not reach the AI gateway.
 
 [An issue exists](https://gitlab.com/gitlab-org/gitlab/-/issues/479465) to more clearly specify the reason for the error.
 
@@ -172,12 +172,26 @@ To resolve the issue, try your request again.
 If the error persists, use the `/new` or `/reset` command to start a new conversation.
 If the problem continues, report the issue to the GitLab Support team.
 
+### GitLab Duo Self-Hosted
+
+If you encounter this error when using Chat with GitLab Duo Self-Hosted, there was a
+problem connecting to the AI gateway.
+
+To resolve this, use the [self-hosted debugging script](../../administration/gitlab_duo_self_hosted/troubleshooting.md#use-debugging-scripts) to check that the AI gateway is accessible from the
+GitLab instance and working as expected.
+
+If the problem persists, report the issue to the GitLab support team.
+
 ## `Error A1002`
 
 You might get an error that states
 `I'm sorry, I couldn't respond in time. Please try again. Error code: A1002`.
 
-This error occurs when no events are returned from AI gateway or GitLab failed to parse the events. Try your request again.
+This error occurs when no events are returned from the AI gateway or GitLab
+failed to parse the events.
+
+Try your request again, or check the [AI Gateway logs](../../administration/gitlab_duo_self_hosted/logging.md)
+for any errors.
 
 ## `Error A1003`
 
@@ -185,6 +199,61 @@ You might get an error that states
 `I'm sorry, I couldn't respond in time. Please try again. Error code: A1003`.
 
 This error occurs when streaming response from AI gateway failed. Try your request again.
+
+### GitLab Duo Self-Hosted
+
+If you encounter this issue when using Chat with GitLab Duo Self-Hosted, check
+if streaming is working:
+
+1. In the AI gateway container, run the following command:
+
+   ```shell
+   curl --request 'POST' \
+   'http://localhost:5052/v2/chat/agent' \
+   --header 'accept: application/json' \
+   --header 'Content-Type: application/json' \
+   --header 'x-gitlab-enabled-feature-flags: expanded_ai_logging' \
+   --data '{
+     "messages": [
+       {
+         "role": "user",
+         "content": "Hello",
+         "context": null,
+         "current_file": null,
+         "additional_context": []
+       }
+     ],
+     "model_metadata": {
+       "provider": "custom_openai",
+       "name": "mistral",
+       "endpoint": "<change here>",
+       "api_key": "<change here>",
+       "identifier": "<change here>"
+     },
+     "unavailable_resources": [],
+     "options": {
+       "agent_scratchpad": {
+         "agent_type": "react",
+         "steps": []
+       }
+     }
+   }'
+   ```
+
+   If streaming is working, chunked responses should be displayed. If it is not working,
+   the response will be empty.
+
+1. To check if this is a model deployment issue, check the
+   [AI gateway logs](../../administration/gitlab_duo_self_hosted/logging.md)
+   for specific error messages.
+
+1. To validate the connection, disable streaming by setting the
+   `AIGW_CUSTOM_MODELS__DISABLE_STREAMING` environment variable in your AI gateway
+   container:
+
+   ```shell
+   docker run .... -e AIGW_CUSTOM_MODELS__DISABLE_STREAMING=true ...
+   ```
 
 ## `Error A1004`
 
@@ -233,6 +302,8 @@ You might get an error that states
 `I'm sorry, I couldn't respond in time. Please try again. Error code: A9999`.
 
 This error occurs when an unknown error occurs in ReAct agent. Try your request again.
+
+If the problem persists, [report the issue to the GitLab support team](https://about.gitlab.com/support/).
 
 ## `Error G3001`
 

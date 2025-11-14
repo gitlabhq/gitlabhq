@@ -15,10 +15,6 @@ RSpec.describe 'Issue Boards new issue', :js, feature_category: :portfolio_manag
   let(:board_list_header) { first('[data-testid="board-list-header"]') }
   let(:project_select_dropdown) { find_by_testid('project-select-dropdown') }
 
-  before do
-    stub_feature_flags(work_item_view_for_issues: true)
-  end
-
   context 'authorized user' do
     before do
       project.add_maintainer(user)

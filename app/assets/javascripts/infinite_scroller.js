@@ -33,10 +33,10 @@ export class InfiniteScroller {
   destroy() {
     this.#debouncedIntersectionHandler.cancel();
     if (this.#controller) this.#controller.abort();
-    this.#observer.disconnect();
+    if (this.#observer) this.#observer.disconnect();
   }
 
-  #setLoadingVisibility(visible) {
+  setLoadingVisibility(visible) {
     const el = this.#root.querySelector('.js-infinite-scrolling-loading');
     el.style.visibility = visible ? '' : 'hidden';
   }
@@ -52,7 +52,7 @@ export class InfiniteScroller {
 
   async #loadNextPage() {
     if (this.#controller) this.#controller.abort();
-    this.#setLoadingVisibility(true);
+    this.setLoadingVisibility(true);
     this.#controller = new AbortController();
     const result = await this.#fetchNextPage(this.#offset, this.#controller.signal);
     this.#controller = null;
@@ -60,7 +60,7 @@ export class InfiniteScroller {
     const { html, count } = result;
     this.#insertPage(html, count === 0);
     if (count !== this.#limit) {
-      this.#setLoadingVisibility(false);
+      this.setLoadingVisibility(false);
       this.#observer.disconnect();
       return false;
     }

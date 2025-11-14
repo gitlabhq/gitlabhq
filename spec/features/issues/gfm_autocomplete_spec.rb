@@ -21,10 +21,6 @@ RSpec.describe 'GFM autocomplete', :js, feature_category: :text_editors do
   let_it_be(:label_xss_title) { 'alert label &lt;img src=x onerror="alert(\'Hello xss\');" a' }
   let_it_be(:label_xss) { create(:label, project: project, title: label_xss_title) }
 
-  before do
-    stub_feature_flags(work_item_view_for_issues: true)
-  end
-
   describe 'new issue page' do
     before do
       sign_in(user)

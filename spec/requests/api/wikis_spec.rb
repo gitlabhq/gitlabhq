@@ -815,4 +815,53 @@ RSpec.describe API::Wikis, feature_category: :wiki do
       let(:request) { post api(url, personal_access_token: pat), params: payload }
     end
   end
+
+  context 'when authenticated with a token that has the ai_workflows scope' do
+    let_it_be(:project) { create(:project, :wiki_repo) }
+    let_it_be(:wiki) { create(:project_wiki, project: project, user: user) }
+    let_it_be(:wiki_page) { create(:wiki_page, wiki: wiki) }
+    let(:oauth_access_token) { create(:oauth_access_token, user: user, scopes: [:ai_workflows]) }
+
+    before do
+      project.add_developer(user)
+    end
+
+    it 'allows access to GET endpoint for listing wiki pages' do
+      get api("/projects/#{project.id}/wikis", oauth_access_token: oauth_access_token)
+
+      expect(response).to have_gitlab_http_status(:ok)
+    end
+
+    it 'allows access to GET endpoint for retrieving a wiki page' do
+      get api("/projects/#{project.id}/wikis/#{wiki_page.slug}", oauth_access_token: oauth_access_token)
+
+      expect(response).to have_gitlab_http_status(:ok)
+    end
+
+    it 'allows access to HEAD endpoint for checking wiki page existence' do
+      head api("/projects/#{project.id}/wikis/#{wiki_page.slug}", oauth_access_token: oauth_access_token)
+
+      expect(response).to have_gitlab_http_status(:ok)
+    end
+
+    it 'allows access to POST endpoint for creating wiki pages' do
+      post api("/projects/#{project.id}/wikis", oauth_access_token: oauth_access_token),
+        params: { title: 'New Page', content: 'New content' }
+
+      expect(response).to have_gitlab_http_status(:created)
+    end
+
+    it 'allows access to PUT endpoint for updating wiki pages' do
+      put api("/projects/#{project.id}/wikis/#{wiki_page.slug}", oauth_access_token: oauth_access_token),
+        params: { content: 'Updated content' }
+
+      expect(response).to have_gitlab_http_status(:ok)
+    end
+
+    it 'does not allow access to DELETE endpoint' do
+      delete api("/projects/#{project.id}/wikis/#{wiki_page.slug}", oauth_access_token: oauth_access_token)
+
+      expect(response).to have_gitlab_http_status(:forbidden)
+    end
+  end
 end

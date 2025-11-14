@@ -13,7 +13,6 @@ RSpec.describe 'Member autocomplete', :js, feature_category: :groups_and_project
   let(:noteable) { create(:issue, author: author, project: project) }
 
   before do
-    stub_feature_flags(work_item_view_for_issues: true)
     note # actually create the note
     sign_in(user)
   end

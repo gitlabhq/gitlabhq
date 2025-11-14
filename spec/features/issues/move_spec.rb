@@ -18,7 +18,6 @@ RSpec.describe 'issue move to another project', :js, feature_category: :team_pla
   end
 
   before do
-    stub_feature_flags(work_item_view_for_issues: true)
     sign_in(user)
   end
 
@@ -30,7 +29,9 @@ RSpec.describe 'issue move to another project', :js, feature_category: :team_pla
     end
 
     it 'moving issue to another project not allowed' do
-      expect(page).to have_no_selector('.js-issuable-move-block')
+      click_button 'More actions', match: :first
+
+      expect(page).not_to have_button 'Move'
     end
   end
 

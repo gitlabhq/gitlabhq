@@ -4,21 +4,21 @@ module Gitlab
   module GrapeOpenapi
     module Converters
       class ParameterConverter
-        attr_reader :name, :options, :validations, :route_path
+        attr_reader :name, :options, :validations, :route
 
-        def self.convert(name, options:, route_path:, validations: [])
-          new(name, options: options, validations: validations, route_path: route_path).convert
+        def self.convert(name, options:, route:, validations: [])
+          new(name, options: options, validations: validations, route: route).convert
         end
 
-        def initialize(name, options:, validations:, route_path:)
+        def initialize(name, options:, validations:, route:)
           @name = name
           @options = options
           @validations = validations
-          @route_path = route_path # Useful for detecting `in` value.
+          @route = route # Useful for detecting `in` value.
         end
 
         def in_value
-          route_path.include?("/:#{name}") ? 'path' : 'query'
+          route.path.gsub('version', '').include?("/:#{name}") ? 'path' : 'query'
         end
 
         def example
@@ -37,11 +37,13 @@ module Gitlab
         end
 
         def resolve_object_format
-          'date-time' if options[:type] == 'DateTime'
+          return 'date-time' if options[:type] == 'DateTime'
+
+          'date' if options[:type] == 'Date'
         end
 
         def resolve_object_type
-          return 'string' if options[:type] == 'DateTime'
+          return 'string' if options[:type] == 'DateTime' || options[:type] == 'Date'
 
           TypeResolver.resolve_type(options[:type]) || 'string'
         end
@@ -80,13 +82,19 @@ module Gitlab
           return unless validations
 
           # Only support one Regex validation per attribute
-          validation = validations.find { |v| v[:validator_class] == Grape::Validations::Validators::RegexpValidator }
+          validation = validations&.find { |v| v[:validator_class] == Grape::Validations::Validators::RegexpValidator }
           return unless validation
 
           schema[:pattern] = validation[:options].inspect.delete("/")
         end
 
         def convert
+          # For requests that can have a request body (POST, PUT, PATCH, etc.), only return a param if it's in the path,
+          # otherwise it'll be a body parameter and shouldn't be included as a query parameter.
+          # GET and DELETE requests don't have request bodies, so all their parameters are included.
+          method = route.instance_variable_get(:@options)[:method]
+          return nil if method != 'GET' && method != 'DELETE' && in_value != 'path'
+
           Gitlab::GrapeOpenapi::Models::Parameter.new(name, options: options, schema: schema, in_value: in_value,
             example: example)
         end

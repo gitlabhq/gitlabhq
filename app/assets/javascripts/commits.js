@@ -1,5 +1,5 @@
 import $ from 'jquery';
-import { n__, s__ } from '~/locale';
+import { __, n__, s__ } from '~/locale';
 import { createAlert } from '~/alert';
 import createDefaultClient from '~/lib/graphql';
 import { sanitize } from '~/lib/dompurify';
@@ -36,39 +36,13 @@ const fetchCommitDetails = async (commitId) => {
 
 export default class CommitsList {
   constructor(limit = 0) {
+    this.limit = limit;
     this.timer = null;
 
     this.$contentList = $('.content_list');
-    const root = document.querySelector('.js-infinite-scrolling-root');
-
-    const scroller = new InfiniteScroller({
-      root,
-      fetchNextPage: async (offset, signal) => {
-        return axios
-          .get(removeParams(['limit', 'offset']), {
-            params: { limit, offset },
-            signal,
-          })
-          .then(({ data }) => {
-            const html = this.processCommits(data);
-            return { count: data.count, html };
-          })
-          .catch((error) => {
-            if (axios.isCancel(error)) return null;
-            throw error;
-          });
-      },
-      limit,
-      startingOffset: parseInt(getParameterByName('offset'), 10) || limit,
-    });
-    if (this.$contentList.find('[data-empty-list]').length) {
-      root.querySelector('.js-infinite-scrolling-loading').hidden = true;
-    } else {
-      scroller.initialize();
-    }
-
     this.searchField = $('#commits-search');
     this.lastSearch = this.searchField.val();
+    this.startInfiniteScroller();
     this.initSearch();
     this.initCommitDetails();
   }
@@ -112,38 +86,69 @@ export default class CommitsList {
     const form = $('.commits-search-form');
     const search = this.searchField.val();
     if (search === this.lastSearch) return Promise.resolve();
-    const commitsUrl = `${form.attr('action')}?${form.serialize()}`;
+    const baseUrl = form.attr('action');
+    const requestUrl = new URL(baseUrl, window.location.origin);
+    const params = new URLSearchParams(form.serialize());
+    for (const [key, value] of params) {
+      if (value) requestUrl.searchParams.append(key, value);
+    }
+    const serializedRequestUrl = requestUrl.toString();
+
     this.$contentList.addClass('gl-opacity-5');
-    const params = form.serializeArray().reduce(
-      (acc, obj) =>
-        Object.assign(acc, {
-          [obj.name]: obj.value,
-        }),
-      {},
-    );
 
     return axios
-      .get(form.attr('action'), {
-        params,
-      })
+      .get(serializedRequestUrl)
       .then(({ data }) => {
         this.lastSearch = search;
         this.$contentList.html(data.html);
         this.$contentList.removeClass('gl-opacity-5');
-
-        // Change url so if user reload a page - search results are saved
+        this.startInfiniteScroller();
         window.history.replaceState(
           {
-            page: commitsUrl,
+            page: serializedRequestUrl,
           },
           document.title,
-          commitsUrl,
+          serializedRequestUrl,
         );
       })
-      .catch(() => {
+      .catch((error) => {
+        createAlert({
+          message: __('Failed to load more commits. Please try to reload the page'),
+          error,
+        });
         this.$contentList.removeClass('gl-opacity-5');
         this.lastSearch = null;
       });
+  }
+
+  startInfiniteScroller() {
+    if (this.scroller) this.scroller.destroy();
+    const root = document.querySelector('.js-infinite-scrolling-root');
+    this.scroller = new InfiniteScroller({
+      root,
+      fetchNextPage: async (offset, signal) => {
+        return axios
+          .get(removeParams(['limit', 'offset']), {
+            params: { limit: this.limit, offset },
+            signal,
+          })
+          .then(({ data }) => {
+            const html = this.processCommits(data);
+            return { count: data.count, html };
+          })
+          .catch((error) => {
+            if (axios.isCancel(error)) return null;
+            throw error;
+          });
+      },
+      limit: this.limit,
+      startingOffset: parseInt(getParameterByName('offset'), 10) || this.limit,
+    });
+    if (this.$contentList.find('[data-empty-list]').length) {
+      this.scroller.setLoadingVisibility(false);
+    } else {
+      this.scroller.initialize();
+    }
   }
 
   // Prepare loaded data.

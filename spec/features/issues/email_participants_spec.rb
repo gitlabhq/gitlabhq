@@ -11,7 +11,6 @@ RSpec.describe 'viewing an issue', :js, feature_category: :service_desk do
   let_it_be(:participants) { create_list(:issue_email_participant, 4, issue: issue) }
 
   before do
-    stub_feature_flags(work_item_view_for_issues: true)
     project.add_reporter(user)
   end
 

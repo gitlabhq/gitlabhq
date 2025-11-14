@@ -7,10 +7,6 @@ RSpec.describe 'ActionCable logging', :js, feature_category: :shared do
   let_it_be(:issue) { create(:issue, project: project) }
   let_it_be(:user) { create(:user, developer_of: project) }
 
-  before do
-    stub_feature_flags(work_item_view_for_issues: true)
-  end
-
   it 'adds extra context to logs' do
     allow(ActiveSupport::Notifications).to receive(:instrument).and_call_original
 

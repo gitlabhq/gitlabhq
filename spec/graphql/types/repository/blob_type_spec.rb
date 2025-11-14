@@ -64,9 +64,9 @@ RSpec.describe Types::Repository::BlobType, feature_category: :source_code_manag
   end
 
   it 'applies higher complexity to blob content fields' do
-    expect(described_class.fields['rawBlob'].complexity).to eq(25)
-    expect(described_class.fields['rawTextBlob'].complexity).to eq(25)
-    expect(described_class.fields['base64EncodedBlob'].complexity).to eq(25)
-    expect(described_class.fields['plainData'].complexity).to eq(150)
+    expect(described_class.fields['rawBlob'].complexity).to eq(2)
+    expect(described_class.fields['rawTextBlob'].complexity).to eq(2)
+    expect(described_class.fields['base64EncodedBlob'].complexity).to eq(3)
+    expect(described_class.fields['plainData'].complexity).to eq(5)
   end
 end

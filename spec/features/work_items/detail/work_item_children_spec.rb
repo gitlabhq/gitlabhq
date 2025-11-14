@@ -19,7 +19,6 @@ RSpec.describe 'Work item children', :js, feature_category: :team_planning do
 
     before do
       sign_in(user)
-      stub_feature_flags(work_item_view_for_issues: true)
 
       visit project_issue_path(project, issue)
 

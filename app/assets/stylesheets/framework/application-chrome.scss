@@ -591,8 +591,12 @@
     @apply gl-gap-3;
   }
 
-  .board.board {
+  .boards-list .board.board {
     padding: 0;
+  }
+
+  .board-swimlanes .board:first-of-type {
+    padding-left: 0;
   }
 
   // Sidebar adjustments
@@ -877,7 +881,7 @@
  * Animations
  */
 
-.application-chrome {
+:where(.application-chrome) {
   .nav-flyout-menu {
     @include gl-prefers-reduced-motion-transition;
     transition: opacity .2s .1s $gl-easing-out-cubic;

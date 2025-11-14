@@ -9,7 +9,6 @@ RSpec.describe 'viewing participants of an issue', :js, feature_category: :servi
   let_it_be_with_refind(:issue) { create(:issue, project: project) }
 
   before do
-    stub_feature_flags(work_item_view_for_issues: true)
     sign_in(user)
   end
 

@@ -14,10 +14,6 @@ RSpec.describe "Internal references", :js, feature_category: :team_planning do
   let(:public_project_issue) { create(:issue, project: public_project) }
   let(:public_project_merge_request) { create(:merge_request, source_project: public_project) }
 
-  before do
-    stub_feature_flags(work_item_view_for_issues: true)
-  end
-
   context "when referencing to open issue" do
     context "from private project" do
       context "from issue" do

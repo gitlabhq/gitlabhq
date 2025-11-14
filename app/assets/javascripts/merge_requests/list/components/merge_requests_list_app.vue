@@ -835,6 +835,7 @@ export default {
       issuable-item-class="merge-request"
       :show-bulk-edit-sidebar="showBulkEditSidebar"
       :search-timeout="searchTimeout"
+      always-allow-custom-empty-state
       @click-tab="handleClickTab"
       @next-page="handleNextPage"
       @previous-page="handlePreviousPage"

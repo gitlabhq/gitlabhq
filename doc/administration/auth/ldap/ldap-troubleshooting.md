@@ -443,7 +443,7 @@ the rails console.
 
 When LDAP sync is enabled for a group, you cannot use the "invite" dialog to invite new group members.
 
-To resolve this issue in GitLab 16.8 and later, you can invite service accounts to and remove them from a group using the [group members API endpoints](../../../api/members.md#add-a-member-to-a-group-or-project).
+To resolve this issue in GitLab 16.8 and later, you can invite service accounts to and remove them from a group using the [group members API endpoints](../../../api/group_members.md#add-a-member-to-a-group).
 
 #### Administrator privileges not granted
 

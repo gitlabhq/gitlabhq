@@ -2,9 +2,15 @@
 
 module API
   class Wikis < ::API::Base
+    include APIGuard
+
     helpers ::API::Helpers::WikisHelpers
 
     feature_category :wiki
+
+    allow_access_with_scope :ai_workflows, if: ->(request) do
+      request.get? || request.head? || request.post? || request.put?
+    end
 
     helpers do
       attr_reader :container

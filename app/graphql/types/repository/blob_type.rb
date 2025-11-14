@@ -54,17 +54,17 @@ module Types
       field :raw_blob, GraphQL::Types::String, null: true, method: :data,
         description: 'Raw content of the blob.',
         calls_gitaly: true,
-        complexity: 25
+        complexity: 2
 
       field :base64_encoded_blob, GraphQL::Types::String, null: true,
         experiment: { milestone: '17.1' }, description: 'Content of blob is encoded base64. Returns `null` if the `unicode_escaped_data` feature flag is disabled.',
         calls_gitaly: true,
-        complexity: 25
+        complexity: 3
 
       field :raw_text_blob, GraphQL::Types::String, null: true, method: :raw_plain_data,
         description: 'Raw content of the blob, if the blob is text data.',
         calls_gitaly: true,
-        complexity: 25
+        complexity: 2
 
       field :stored_externally, GraphQL::Types::Boolean, null: true, method: :stored_externally?,
         description: "Whether the blob's content is stored externally (for instance, in LFS)."
@@ -129,7 +129,7 @@ module Types
         description: 'Blob plain highlighted data.',
         null: true,
         calls_gitaly: true,
-        complexity: 150
+        complexity: 5
 
       field :can_modify_blob, GraphQL::Types::Boolean, null: true, method: :can_modify_blob?,
         calls_gitaly: true,

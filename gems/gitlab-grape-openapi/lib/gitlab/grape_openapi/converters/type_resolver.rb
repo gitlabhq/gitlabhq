@@ -7,6 +7,7 @@ module Gitlab
         TYPE_MAPPINGS = {
           'dateTime' => 'string',
           'date' => 'string',
+          'Date' => 'string',
           'symbol' => 'string',
           'String' => 'string',
           String => 'string',

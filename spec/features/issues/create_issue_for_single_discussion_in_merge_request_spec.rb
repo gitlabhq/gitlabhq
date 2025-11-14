@@ -8,10 +8,6 @@ RSpec.describe 'Resolve an open thread in a merge request by creating an issue',
   let(:merge_request) { create(:merge_request, source_project: project) }
   let!(:discussion) { create(:diff_note_on_merge_request, noteable: merge_request, project: project).to_discussion }
 
-  before do
-    stub_feature_flags(work_item_view_for_issues: true)
-  end
-
   def resolve_discussion_selector
     title = 'Create issue to resolve thread'
     url = new_project_issue_path(project, discussion_to_resolve: discussion.id, merge_request_to_resolve_discussions_of: merge_request.iid, merge_request_id: merge_request.id)

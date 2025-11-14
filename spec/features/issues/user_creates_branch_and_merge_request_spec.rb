@@ -10,10 +10,6 @@ RSpec.describe 'User creates branch and merge request on issue page', :js, featu
   let!(:project) { create(:project, :repository, :public) }
   let(:issue) { create(:issue, project: project, title: 'Cherry-Coloured Funk') }
 
-  before do
-    stub_feature_flags(work_item_view_for_issues: true)
-  end
-
   context 'when signed out' do
     before do
       visit project_issue_path(project, issue)
@@ -192,7 +188,6 @@ RSpec.describe 'User creates branch and merge request on issue page', :js, featu
       let(:branch_name) { "#{issue.iid}-foo" }
 
       before do
-        stub_feature_flags(work_item_view_for_issues: false)
         project.repository.create_branch(branch_name)
 
         visit project_issue_path(project, issue)
@@ -200,7 +195,7 @@ RSpec.describe 'User creates branch and merge request on issue page', :js, featu
 
       context 'when user is developer' do
         it 'shows related branches' do
-          within('#related-branches', match: :first) do
+          within_testid('work-item-development') do
             expect(page).to have_link(branch_name)
           end
         end
@@ -210,7 +205,7 @@ RSpec.describe 'User creates branch and merge request on issue page', :js, featu
         let(:membership_level) { :guest }
 
         it 'does not show related branches' do
-          expect(page).not_to have_css('[data-testid="work-item-development"]')
+          expect(page).not_to have_testid('work-item-development')
         end
       end
     end

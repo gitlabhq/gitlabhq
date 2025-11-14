@@ -12,7 +12,6 @@ RSpec.describe 'Issue boards sidebar labels select', :js, feature_category: :por
   let(:card) { find('[data-testid="board-list"]:nth-child(1)').first('[data-testid="board-card"]') }
 
   before do
-    stub_feature_flags(work_item_view_for_issues: true)
     load_board group_board_path(group, group_board)
   end
 

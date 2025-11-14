@@ -21,6 +21,7 @@ import {
   BoardType,
 } from 'ee_else_ce/boards/constants';
 import { DETAIL_VIEW_QUERY_PARAM_NAME } from '~/work_items/constants';
+import glFeatureFlagMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import { calculateNewPosition } from 'ee_else_ce/boards/boards_util';
 import { setError } from '../graphql/cache_updates';
 import BoardColumn from './board_column.vue';
@@ -37,6 +38,7 @@ export default {
     GlAlert,
     WorkItemDrawer,
   },
+  mixins: [glFeatureFlagMixin()],
   inject: [
     'boardType',
     'canAdminList',
@@ -333,7 +335,11 @@ export default {
       <template #create-list-button>
         <div
           v-if="!addColumnFormVisible"
-          class="gl-sticky gl-top-5 gl-mt-5 gl-inline-block gl-pl-3"
+          class="gl-sticky gl-inline-block gl-pl-3"
+          :class="{
+            'gl-top-0': glFeatures.projectStudioEnabled,
+            'gl-top-5 gl-mt-5': !glFeatures.projectStudioEnabled,
+          }"
         >
           <board-add-new-column-trigger
             v-if="canAdminList"
@@ -344,7 +350,8 @@ export default {
       </template>
       <div v-if="addColumnFormVisible" class="gl-pl-2">
         <board-add-new-column
-          class="gl-sticky gl-top-5"
+          class="gl-sticky"
+          :class="{ 'gl-top-5': !glFeatures.projectStudioEnabled }"
           :filter-params="filterParams"
           :list-query-variables="listQueryVariables"
           :board-id="boardId"

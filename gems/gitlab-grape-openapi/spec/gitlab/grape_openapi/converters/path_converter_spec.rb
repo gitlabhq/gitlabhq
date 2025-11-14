@@ -19,14 +19,14 @@ RSpec.describe Gitlab::GrapeOpenapi::Converters::PathConverter do
       get_operation = paths['/api/v1/users']['get']
 
       expect(get_operation[:operationId]).to eq('getApiV1Users')
-      expect(get_operation[:description]).to eq('Get all users')
+      expect(get_operation[:description]).to eq('Returns a list of all users')
     end
 
     it 'has correct POST operation details' do
       post_operation = paths['/api/v1/users']['post']
 
       expect(post_operation[:operationId]).to eq('postApiV1Users')
-      expect(post_operation[:description]).to eq('Create a user')
+      expect(post_operation[:description]).to eq('Creates a new user with the provided information')
     end
 
     context 'with empty routes' do

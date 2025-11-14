@@ -36,7 +36,8 @@ Gitlab::GrapeOpenapi.configure do |config|
           authorizationUrl: Gitlab::Utils.append_path(Gitlab.config.gitlab.url, "/oauth/authorize"),
           tokenUrl: Gitlab::Utils.append_path(Gitlab.config.gitlab.url, "/oauth/token"),
           refreshUrl: Gitlab::Utils.append_path(Gitlab.config.gitlab.url, "/oauth/refresh"),
-          scopes: Gitlab::Auth::API_SCOPES.index_with { |scope| I18n.t(scope, scope: [:doorkeeper, :scopes]) }
+          scopes: Gitlab::Auth::API_SCOPES.reject { |k, _| k == :granular }
+                                          .index_with { |s| I18n.t(s, scope: [:doorkeeper, :scope_desc]) }
         }
       }
     )

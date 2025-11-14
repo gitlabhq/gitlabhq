@@ -14,6 +14,7 @@ RSpec.describe Projects::IssuesController, :request_store, feature_category: :te
   let(:spam_action_response_fields) { { 'stub_spam_action_response_fields' => true } }
 
   before do
+    stub_feature_flags(work_item_view_for_issues: false)
     # We need the spam_params object to be present in the request context
     Gitlab::RequestContext.start_request_context(request: request)
   end

@@ -14,7 +14,7 @@ class SentNotificationsController < ApplicationController
   urgency :low
 
   def unsubscribe
-    return render_404 unless unsubscribe_prerequisites_met?
+    return render_expired_link unless unsubscribe_prerequisites_met?
 
     @notification_id_from_request = params[:id]
 
@@ -88,6 +88,10 @@ class SentNotificationsController < ApplicationController
     else
       root_path
     end
+  end
+
+  def render_expired_link
+    render template: "errors/expired_sent_notification", formats: :html, layout: "errors", status: :not_found
   end
 end
 

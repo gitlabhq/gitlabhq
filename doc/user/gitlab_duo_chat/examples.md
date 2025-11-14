@@ -13,6 +13,12 @@ title: Ask GitLab Duo Chat
 
 {{< /details >}}
 
+{{< history >}}
+
+- Updated default LLM to Claude Sonnet 4.5 for Chat (Classic) and Chat (Agentic) in GitLab 18.6.
+
+{{< /history >}}
+
 GitLab Duo Chat helps you:
 
 - Get explanations of code, errors, and GitLab features.
@@ -21,7 +27,13 @@ GitLab Duo Chat helps you:
 - Summarize issues, epics, and merge requests.
 - Resolve security vulnerabilities.
 
-The following examples provide more information on Duo Chat capabilities.
+The following examples provide more information on Chat capabilities.
+
+{{< alert type="note" >}}
+
+Unless stated otherwise, the default LLM for Chat is Anthropic [Claude Sonnet 4.5](https://console.cloud.google.com/vertex-ai/publishers/anthropic/model-garden/claude-sonnet-4-5) for both GitLab Duo Chat (Classic) and GitLab Duo Chat (Agentic).
+
+{{< /alert >}}
 
 For additional practical examples, see the [GitLab Duo use cases](../gitlab_duo/use_cases.md).
 
@@ -33,10 +45,9 @@ The example questions on this page, including the [slash commands](#gitlab-duo-c
 
 ## Ask about GitLab
 
-{{< collapsible title="Editor and model information" >}}
+{{< collapsible title="Editor information" >}}
 
 - Editors: GitLab UI, Web IDE, VS Code, and JetBrains IDEs
-- LLM: Anthropic [Claude 4.0 Sonnet](https://console.cloud.google.com/vertex-ai/publishers/anthropic/model-garden/claude-sonnet-4)
 
 {{< /collapsible >}}
 
@@ -71,10 +82,9 @@ To keep Chat up to date with the documentation, its knowledge base is updated da
 
 {{< /details >}}
 
-{{< collapsible title="Editor and model information" >}}
+{{< collapsible title="Editor information" >}}
 
 - Editors: GitLab UI, Web IDE, VS Code, JetBrains IDEs
-- LLM: Anthropic [Claude 4.0 Sonnet](https://console.cloud.google.com/vertex-ai/publishers/anthropic/model-garden/claude-sonnet-4)
 
 {{< /collapsible >}}
 
@@ -112,10 +122,9 @@ For tips on how GitLab Duo Chat can improve your productivity with issues and ep
 
 {{< /details >}}
 
-{{< collapsible title="Editor and model information" >}}
+{{< collapsible title="Editor information" >}}
 
 - Editors: GitLab UI, Web IDE, VS Code, JetBrains IDEs
-- LLM: Anthropic [Claude 4.0 Sonnet](https://console.cloud.google.com/vertex-ai/publishers/anthropic/model-garden/claude-sonnet-4)
 
 {{< /collapsible >}}
 
@@ -149,10 +158,9 @@ If the epic contains a large amount of text (more than 40,000 words), GitLab Duo
 
 {{< /details >}}
 
-{{< collapsible title="Editor and model information" >}}
+{{< collapsible title="Editor information" >}}
 
 - Editors: GitLab UI
-- LLM: Anthropic [Claude 4.0 Sonnet](https://console.cloud.google.com/vertex-ai/publishers/anthropic/model-garden/claude-sonnet-4)
 
 {{< /collapsible >}}
 
@@ -186,10 +194,9 @@ While in the merge request, open Chat and type your question. For example:
 
 {{< /details >}}
 
-{{< collapsible title="Editor and model information" >}}
+{{< collapsible title="Editor information" >}}
 
 - Editors: GitLab UI
-- LLM: Anthropic [Claude 4.0 Sonnet](https://console.cloud.google.com/vertex-ai/publishers/anthropic/model-garden/claude-sonnet-4)
 
 {{< /collapsible >}}
 
@@ -214,10 +221,9 @@ You can ask about a specific GitLab commit. For example:
 
 {{< /details >}}
 
-{{< collapsible title="Editor and model information" >}}
+{{< collapsible title="Editor information" >}}
 
 - Editors: GitLab UI
-- LLM: Anthropic [Claude 4.0 Sonnet](https://console.cloud.google.com/vertex-ai/publishers/anthropic/model-garden/claude-sonnet-4)
 
 {{< /collapsible >}}
 
@@ -243,10 +249,9 @@ You can ask about a specific GitLab pipeline job. For example:
 
 {{< /details >}}
 
-{{< collapsible title="Editor and model information" >}}
+{{< collapsible title="Editor information" >}}
 
 - Editors: GitLab UI, Web IDE, VS Code, JetBrains IDEs
-- LLM: Anthropic [Claude 4.0 Sonnet](https://console.cloud.google.com/vertex-ai/publishers/anthropic/model-garden/claude-sonnet-4)
 
 {{< /collapsible >}}
 
@@ -279,7 +284,6 @@ If the work item contains a large amount of text (more than 40,000 words), GitLa
 {{< collapsible title="Editor and model information" >}}
 
 - Editors: GitLab UI, Web IDE, VS Code, JetBrains IDEs
-- LLM: Anthropic [Claude 4.0 Sonnet](https://console.cloud.google.com/vertex-ai/publishers/anthropic/model-garden/claude-sonnet-4)
 - LLM for Amazon Q: Amazon Q Developer
 - Available on [GitLab Duo with self-hosted models](../../administration/gitlab_duo_self_hosted/_index.md): Yes
 
@@ -332,10 +336,9 @@ In the GitLab UI, you can also explain code in:
 
 {{< /details >}}
 
-{{< collapsible title="Editor and model information" >}}
+{{< collapsible title="Editor information" >}}
 
 - Editors: GitLab UI, Web IDE, VS Code, JetBrains IDEs
-- LLM: Anthropic [Claude 4.0 Sonnet](https://console.cloud.google.com/vertex-ai/publishers/anthropic/model-garden/claude-sonnet-4)
 
 {{< /collapsible >}}
 
@@ -374,11 +377,9 @@ You can also ask Chat to generate code. For example:
 
 {{< /details >}}
 
-{{< collapsible title="Editor and model information" >}}
+{{< collapsible title="Editor information" >}}
 
 - Editors: GitLab UI, Web IDE, VS Code, JetBrains IDEs
-- LLM for GitLab Self-Managed, GitLab Dedicated: Anthropic [Claude 3.5 Sonnet V2](https://console.cloud.google.com/vertex-ai/publishers/anthropic/model-garden/claude-3-5-sonnet-v2)
-- LLM for GitLab.com: Anthropic [Claude 4.0 Sonnet](https://console.cloud.google.com/vertex-ai/publishers/anthropic/model-garden/claude-sonnet-4)
 
 {{< /collapsible >}}
 
@@ -409,11 +410,9 @@ A follow-up to the question `How to start a C# project?` could be:
 
 {{< /details >}}
 
-{{< collapsible title="Editor and model information" >}}
+{{< collapsible title="Editor information" >}}
 
 - Editors: GitLab UI, Web IDE, VS Code, JetBrains IDEs
-- LLM for GitLab Self-Managed, GitLab Dedicated: Anthropic [Claude 3.5 Sonnet V2](https://console.cloud.google.com/vertex-ai/publishers/anthropic/model-garden/claude-3-5-sonnet-v2)
-- LLM for GitLab.com: Anthropic [Claude 4.0 Sonnet](https://console.cloud.google.com/vertex-ai/publishers/anthropic/model-garden/claude-sonnet-4)
 
 {{< /collapsible >}}
 
@@ -440,10 +439,9 @@ Programming languages that require compiling the source code may throw cryptic e
 
 {{< /details >}}
 
-{{< collapsible title="Editor and model information" >}}
+{{< collapsible title="Editor information" >}}
 
 - Editors: VS Code, JetBrains IDEs
-- LLM: Anthropic [Claude 4.0 Sonnet](https://console.cloud.google.com/vertex-ai/publishers/anthropic/model-garden/claude-sonnet-4)
 
 {{< /collapsible >}}
 
@@ -494,7 +492,6 @@ You cannot use [Quick Chat](_index.md#in-an-editor-window) to add files or ask q
 {{< collapsible title="Editor and model information" >}}
 
 - Editors: Web IDE, VS Code, JetBrains IDEs
-- LLM: Anthropic [Claude 4.0 Sonnet](https://console.cloud.google.com/vertex-ai/publishers/anthropic/model-garden/claude-sonnet-4)
 - LLM for Amazon Q: Amazon Q Developer
 - Available on [GitLab Duo with self-hosted models](../../administration/gitlab_duo_self_hosted/_index.md): Yes
 
@@ -543,7 +540,6 @@ For more information, see:
 {{< collapsible title="Editor and model information" >}}
 
 - Editors: Web IDE, VS Code, JetBrains IDEs
-- LLM: Anthropic [Claude 4.0 Sonnet](https://console.cloud.google.com/vertex-ai/publishers/anthropic/model-garden/claude-sonnet-4)
 - LLM for Amazon Q: Amazon Q Developer
 - Available on [GitLab Duo with self-hosted models](../../administration/gitlab_duo_self_hosted/_index.md): Yes
 
@@ -584,7 +580,6 @@ You can include additional instructions to be considered. For example:
 {{< collapsible title="Editor and model information" >}}
 
 - Editors: Web IDE, VS Code, JetBrains IDEs
-- LLM: Anthropic [Claude 4.0 Sonnet](https://console.cloud.google.com/vertex-ai/publishers/anthropic/model-garden/claude-sonnet-4)
 - LLM for Amazon Q: Amazon Q Developer
 - Available on [GitLab Duo with self-hosted models](../../administration/gitlab_duo_self_hosted/_index.md): Yes
 
@@ -626,10 +621,9 @@ For more information, see [Use GitLab Duo Chat in VS Code](_index.md#use-gitlab-
 
 {{< /details >}}
 
-{{< collapsible title="Editor and model information" >}}
+{{< collapsible title="Editor information" >}}
 
 - Editors: GitLab UI, Web IDE, VS Code, JetBrains IDEs
-- LLM: Anthropic [Claude 4.0 Sonnet](https://console.cloud.google.com/vertex-ai/publishers/anthropic/model-garden/claude-sonnet-4)
 
 {{< /collapsible >}}
 
@@ -671,7 +665,7 @@ Alternatively, you can use GitLab Duo Root Cause Analysis to [troubleshoot faile
 {{< collapsible title="Editor and model information" >}}
 
 - Editors: GitLab UI
-- LLM: Anthropic [Claude 4.0 Sonnet](https://console.cloud.google.com/vertex-ai/publishers/anthropic/model-garden/claude-sonnet-4)
+- Default LLM: Anthropic [Claude Sonnet 4.0](https://console.cloud.google.com/vertex-ai/publishers/anthropic/model-garden/claude-sonnet-4)
 - LLM for Amazon Q: Amazon Q Developer
 - Available on [GitLab Duo with self-hosted models](../../administration/gitlab_duo_self_hosted/_index.md): Yes
 
@@ -739,7 +733,7 @@ To troubleshoot a failed CI/CD job from the job log:
 {{< collapsible title="Editor and model information" >}}
 
 - Editors: GitLab UI
-- LLM: Anthropic [Claude 4.0 Sonnet](https://console.cloud.google.com/vertex-ai/publishers/anthropic/model-garden/claude-sonnet-4)
+- Default LLM: Anthropic [Claude Sonnet 3.7](https://console.cloud.google.com/vertex-ai/publishers/anthropic/model-garden/claude-3-7-sonnet)
 - LLM for Amazon Q: Amazon Q Developer
 - Available on [GitLab Duo with self-hosted models](../../administration/gitlab_duo_self_hosted/_index.md): Yes
 

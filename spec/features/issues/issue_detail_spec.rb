@@ -14,7 +14,6 @@ RSpec.describe 'Issue Detail', :js, feature_category: :team_planning do
     # we won't need the tests for the issues listing page, since we'll be using
     # the work items listing page.
     stub_feature_flags(work_item_planning_view: false)
-    stub_feature_flags(work_item_view_for_issues: true)
   end
 
   context 'when issue description has emojis' do
@@ -107,41 +106,6 @@ RSpec.describe 'Issue Detail', :js, feature_category: :team_planning do
 
     before_all do
       project.add_reporter(reporter)
-    end
-
-    describe 'when an issue `issue_type` is edited' do
-      before do
-        # Unstub when https://gitlab.com/gitlab-org/gitlab/-/issues/543718 is completed
-        stub_feature_flags(work_item_view_for_issues: false)
-        sign_in(user)
-        visit project_issue_path(project, issue)
-        wait_for_requests
-      end
-
-      context 'by non-member author' do
-        it 'cannot see Incident option' do
-          open_issue_edit_form
-
-          within_testid('issuable-form') do
-            expect(page).to have_content('Issue')
-            expect(page).not_to have_content('Incident')
-          end
-        end
-      end
-
-      context 'by reporter' do
-        let(:user) { reporter }
-
-        it 'routes the user to the incident details page when the `issue_type` is set to incident' do
-          open_issue_edit_form
-
-          within_testid('issuable-form') do
-            update_type_select('Issue', 'Incident')
-
-            expect(page).to have_current_path(incident_project_issues_path(project, issue))
-          end
-        end
-      end
     end
 
     describe 'when an incident `issue_type` is edited' do

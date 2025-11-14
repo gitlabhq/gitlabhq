@@ -1,5 +1,5 @@
 ---
-stage: Runtime
+stage: Tenant Scale
 group: Organizations
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 title: Rate limits on Members API
@@ -19,7 +19,7 @@ title: Rate limits on Members API
 {{< /history >}}
 
 You can configure the rate limit per group (or project) per user to the
-[delete members API](../../api/members.md#remove-a-member-from-a-group-or-project).
+[delete members endpoint](../../api/group_members.md#remove-a-member-from-a-group).
 
 To change the rate limit:
 
@@ -39,7 +39,7 @@ The default value of the rate limit is `60`.
 Requests over the rate limit are logged into the `auth.log` file.
 
 For example, if you set a limit of 60, requests sent to the
-[delete members API](../../api/members.md#remove-a-member-from-a-group-or-project) exceeding a rate of 300 per minute
+[delete members API](../../api/group_members.md#remove-a-member-from-a-group) exceeding a rate of 300 per minute
 are blocked. Access to the endpoint is allowed after one minute.
 
 ## Configure rate limits for listing project members
@@ -70,6 +70,6 @@ The default value of the rate limit is `60`.
 Requests over the rate limit are logged into the `auth.log` file.
 
 For example, if you set a limit of 60, requests sent to the
-[list members API](../../api/members.md#list-all-members-of-a-group-or-project) project endpoint that
+[list members endpoint](../../api/project_members.md#list-all-members-of-a-project) project endpoint that
 exceed a rate of 300 per minute
 are blocked. Access to the endpoint is allowed after one minute.

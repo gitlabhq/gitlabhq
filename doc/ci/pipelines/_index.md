@@ -286,6 +286,13 @@ capitalization, to your commit message.
 Alternatively, with Git 2.10 or later, use the `ci.skip` [Git push option](../../topics/git/commit.md#push-options-for-gitlab-cicd).
 The `ci.skip` push option does not skip merge request pipelines.
 
+{{< alert type="note" >}}
+
+Pipeline execution policies can restrict or disable the `[skip ci]` directive.
+For more information, see [`skip_ci` type](../../user/application_security/policies/pipeline_execution_policies.md#skip_ci-type).
+
+{{< /alert >}}
+
 ### Delete a pipeline
 
 Users with the Owner role for a project can delete a pipeline:

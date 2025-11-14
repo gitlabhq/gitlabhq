@@ -6,6 +6,8 @@ module Gitlab
       class OperationConverter
         # https://github.com/OAI/OpenAPI-Specification/blob/main/versions/3.0.0.md#operation-object
 
+        DASH_SEGMENT = 'Dash'
+
         def self.convert(route, schema_registry)
           new(route, schema_registry).convert
         end
@@ -14,29 +16,40 @@ module Gitlab
           @route = route
           @schema_registry = schema_registry
           @config = Gitlab::GrapeOpenapi.configuration
+          @options = route.instance_variable_get(:@options)
+          @pattern = route.instance_variable_get(:@pattern)
+          @endpoint = route.instance_variable_get(:@app)
         end
 
         def convert
           Models::Operation.new.tap do |operation|
             operation.operation_id = operation_id
-            operation.description = extract_description
+            operation.summary = extract_description
+            operation.description = extract_detail
             operation.tags = extract_tags
             operation.parameters = extract_parameters
             operation.responses = ResponseConverter.new(@route, @schema_registry).convert
+            operation.request_body = extract_request_body || {}
           end
         end
 
         private
 
-        attr_reader :config, :route, :schema_registry
+        attr_reader :config, :route, :options, :pattern, :endpoint, :schema_registry
+
+        def route_method
+          options = @route.instance_variable_get(:@options)
+          options[:method]
+        end
 
         def extract_parameters
-          return if options[:params].empty?
+          return [] if options[:params].empty?
 
-          # For each parameter, send it to the converter which responds with a Parameter object
-          options[:params].map do |key, options|
+          # For non-GET requests, only path parameters are included here
+          # Body parameters are handled separately in extract_request_body
+          options[:params].filter_map do |key, options|
             Converters::ParameterConverter.convert(key, options: options, validations: validations_for(key.to_sym),
-              route_path: route.path)
+              route: route)
           end
         end
 
@@ -46,7 +59,7 @@ module Gitlab
           segments = normalized.split('/').reject(&:empty?)
 
           parts = segments.filter_map do |seg|
-            next 'Dash' if seg == '-'
+            next DASH_SEGMENT if seg == '-'
 
             if seg.start_with?('{')
               param_name = seg[1..-2]
@@ -70,6 +83,10 @@ module Gitlab
           description_hash[:description] if description_hash.is_a?(Hash)
         end
 
+        def extract_detail
+          options.dig(:settings, :description, :detail)
+        end
+
         def extract_tags
           @route.settings.dig(:description, :tags)
         end
@@ -83,6 +100,13 @@ module Gitlab
         end
 
         def normalized_path
+          @normalized_path ||= begin
+            path = normalize_path_pattern
+            path.gsub('{version}', config.api_version)
+          end
+        end
+
+        def normalize_path_pattern
           path = pattern.instance_variable_get(:@origin)
           path
             .gsub(/\(\.:format\)$/, '')
@@ -96,18 +120,6 @@ module Gitlab
 
         def http_method
           options[:method]
-        end
-
-        def pattern
-          route.instance_variable_get(:@pattern)
-        end
-
-        def options
-          route.instance_variable_get(:@options)
-        end
-
-        def endpoint
-          route.instance_variable_get(:@app)
         end
 
         # Get all validations for a single attribute
@@ -125,6 +137,14 @@ module Gitlab
             .namespace_stackable
             .new_values[:validations]
             &.select { |v| v[:attributes].include?(attribute) }
+        end
+
+        def extract_request_body
+          RequestBodyConverter.convert(
+            route: route,
+            options: options,
+            params: options[:params]
+          )
         end
       end
     end

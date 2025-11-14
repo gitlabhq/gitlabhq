@@ -364,10 +364,6 @@ RSpec.configure do |config|
       # Please see https://gitlab.com/groups/gitlab-org/-/epics/17482 for tracking the progress.
       stub_feature_flags(project_commits_refactor: false)
 
-      # New issue page can cause tests to fail if they link to issue or issue list page
-      # Default false while we make it compatible
-      stub_feature_flags(work_item_view_for_issues: false)
-
       # New approval rules cause tests to fail
       # Default false while we make them compatible
       stub_feature_flags(v2_approval_rules: false)

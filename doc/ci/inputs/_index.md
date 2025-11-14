@@ -401,6 +401,96 @@ trigger-job:
 
 {{< /tabs >}}
 
+## Use inputs from external files
+
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/206931) in GitLab 18.6 [with a flag](../../administration/feature_flags/_index.md) named `ci_file_inputs`. Disabled by default.
+
+{{< /history >}}
+
+{{< alert type="flag" >}}
+
+The availability of this feature is controlled by a feature flag.
+For more information, see the history.
+This feature is available for testing, but not ready for production use.
+
+{{< /alert >}}
+
+You can reuse input definitions across multiple CI/CD configurations by defining them in external files
+and including them with [`spec:include`](../yaml/_index.md#specinclude).
+
+Create a file with input definitions, for example in a file named `shared-inputs.yml`:
+
+```yaml
+inputs:
+  environment:
+    description: "Deployment environment"
+    options: ['staging', 'production']
+  region:
+    default: 'us-east-1'
+```
+
+Then you can include the external inputs in your `.gitlab-ci.yml` with `local`:
+
+```yaml
+spec:
+  include:
+    - local: /shared-inputs.yml
+---
+
+deploy:
+  script: echo "Deploying to $[[ inputs.environment ]] in $[[ inputs.region ]]"
+```
+
+If the file is stored outside your project, you can use:
+
+- `project` for files in another GitLab project. Use the full project path and define the filename with `file`.
+  You can optionally also define the `ref` to fetch the file from.
+- `remote` for file on another server. Use the full URL to the file.
+
+You can also include multiple input files at the same time, for example:
+
+```yaml
+spec:
+  include:
+    - local: /shared-inputs.yml
+    - project: 'my-group/shared-configs'
+      ref: main
+      file: '/ci/common-inputs.yml'
+    - remote: 'https://example.com/ci/shared-inputs.yml'
+---
+```
+
+### Override inputs from an external file
+
+If you define an input in both an included input file, and the `inputs:` section in the `.gitlab-ci.yml` configuration,
+the inputs from the file are overridden.
+
+For example, in a `shared-inputs.yml` file:
+
+```yaml
+inputs:
+  environment:
+    options: ['staging', 'production']
+  region:
+    default: 'us-east-1'
+```
+
+Then then you include the file in your `.gitlab-ci.yml`:
+
+```yaml
+spec:
+  include:
+    - local: /shared-inputs.yml
+  inputs:
+    environment: 'canary'
+---
+```
+
+In this case, the `environment` input options in the file are overridden by the
+`inputs: environment` configuration in the `.gitlab-ci.yml` file.
+
 ## Specify functions to manipulate input values
 
 {{< history >}}

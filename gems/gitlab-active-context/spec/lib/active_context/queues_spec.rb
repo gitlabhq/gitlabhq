@@ -160,4 +160,30 @@ RSpec.describe ActiveContext::Queues do
       })
     end
   end
+
+  describe '.queue_counts' do
+    before do
+      allow(ActiveContext::Config).to receive(:queue_classes).and_return([test_queue_class])
+    end
+
+    it 'returns counts for all queue shards' do
+      allow(redis).to receive(:zcard).with('testmodule:{test_queue}:0:zset').and_return(4)
+      allow(redis).to receive(:zcard).with('testmodule:{test_queue}:1:zset').and_return(0)
+      allow(redis).to receive(:zcard).with('testmodule:{test_queue}:2:zset').and_return(2)
+
+      result = described_class.queue_counts
+
+      expect(result).to contain_exactly(
+        { queue_name: 'TestModule::TestQueue', shard: 0, count: 4 },
+        { queue_name: 'TestModule::TestQueue', shard: 1, count: 0 },
+        { queue_name: 'TestModule::TestQueue', shard: 2, count: 2 }
+      )
+    end
+
+    it 'returns an empty array when no queues are registered' do
+      allow(ActiveContext::Config).to receive(:queue_classes).and_return([])
+
+      expect(described_class.queue_counts).to eq([])
+    end
+  end
 end

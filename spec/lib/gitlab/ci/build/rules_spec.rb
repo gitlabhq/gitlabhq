@@ -9,8 +9,7 @@ RSpec.describe Gitlab::Ci::Build::Rules, feature_category: :pipeline_composition
   let(:seed) do
     double('build seed',
       to_resource: ci_build,
-      variables_hash: ci_build.scoped_variables.to_hash,
-      variables_hash_expanded: ci_build.scoped_variables.to_hash
+      variables_hash: ci_build.scoped_variables.to_hash
     )
   end
 

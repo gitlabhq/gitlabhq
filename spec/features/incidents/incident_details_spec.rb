@@ -47,7 +47,6 @@ RSpec.describe 'Incident details', :js, feature_category: :incident_management d
     # the work items listing page.
     stub_feature_flags(work_item_planning_view: false)
     stub_feature_flags(hide_incident_management_features: false)
-    stub_feature_flags(work_item_view_for_issues: true)
 
     sign_in(developer)
   end

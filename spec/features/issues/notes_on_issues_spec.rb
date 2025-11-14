@@ -5,10 +5,6 @@ require 'spec_helper'
 RSpec.describe 'Create notes on issues', :js, feature_category: :team_planning do
   let(:user) { create(:user) }
 
-  before do
-    stub_feature_flags(work_item_view_for_issues: true)
-  end
-
   shared_examples 'notes with reference' do
     let(:issue) { create(:issue, project: project) }
     let(:note_text) { "Check #{mention.to_reference}" }

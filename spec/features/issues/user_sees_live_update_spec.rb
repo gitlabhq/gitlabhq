@@ -7,7 +7,6 @@ RSpec.describe 'Issues > User sees live update', :js, feature_category: :team_pl
   let_it_be(:user) { project.creator }
 
   before do
-    stub_feature_flags(work_item_view_for_issues: true)
     sign_in(user)
   end
 

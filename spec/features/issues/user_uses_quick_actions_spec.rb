@@ -11,7 +11,6 @@ RSpec.describe 'Issues > User uses quick actions', :js, feature_category: :team_
   include Features::NotesHelpers
 
   before do
-    stub_feature_flags(work_item_view_for_issues: true)
     allow(Gitlab::QueryLimiting::Transaction).to receive(:threshold).and_return(105)
   end
 

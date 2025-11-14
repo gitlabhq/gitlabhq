@@ -8,7 +8,6 @@ RSpec.describe 'User filters issues', :js, feature_category: :team_planning do
     # we won't need these tests for issues, since we'll be using
     # the work items listing page.
     stub_feature_flags(work_item_planning_view: false)
-    stub_feature_flags(work_item_view_for_issues: true)
 
     %w[foobar barbaz].each do |title|
       create(

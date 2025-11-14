@@ -1308,7 +1308,6 @@ RSpec/FeatureCategory:
     - 'spec/finders/packages/helm/package_files_finder_spec.rb'
     - 'spec/finders/packages/package_file_finder_spec.rb'
     - 'spec/finders/packages/package_finder_spec.rb'
-    - 'spec/finders/packages/packages_finder_spec.rb'
     - 'spec/finders/projects/export_job_finder_spec.rb'
     - 'spec/finders/projects/groups_finder_spec.rb'
     - 'spec/finders/projects/members/effective_access_level_finder_spec.rb'

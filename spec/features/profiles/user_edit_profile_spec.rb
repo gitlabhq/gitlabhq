@@ -10,7 +10,6 @@ RSpec.describe 'User edit profile', feature_category: :user_profile do
 
   before do
     stub_feature_flags(edit_user_profile_vue: false)
-    stub_feature_flags(work_item_view_for_issues: true)
     sign_in(user)
     visit(user_settings_profile_path)
   end

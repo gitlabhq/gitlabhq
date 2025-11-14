@@ -15,7 +15,6 @@ RSpec.describe 'Project issue boards sidebar', :js, feature_category: :portfolio
   let_it_be(:issue, reload: true) { create(:issue, project: project, relative_position: 1) }
 
   before do
-    stub_feature_flags(work_item_view_for_issues: true)
     project.add_maintainer(user)
   end
 

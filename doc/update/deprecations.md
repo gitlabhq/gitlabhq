@@ -331,27 +331,6 @@ You can set this variable in your project, group, or policy now to prevent Advan
 
 <div class="deprecation breaking-change" data-milestone="19.0">
 
-### Pipeline execution policies `inject_ci` strategy replaced by `inject_policy`
-
-<div class="deprecation-notes">
-
-- Announced in GitLab <span class="milestone">17.11</span>
-- End of Support in GitLab <span class="milestone">19.0</span>
-- Removal in GitLab <span class="milestone">19.0</span> ([breaking change](https://docs.gitlab.com/update/terminology/#breaking-change))
-- To discuss this change or learn more, see the [deprecation issue](https://gitlab.com/gitlab-org/gitlab/-/issues/573447).
-
-</div>
-
-With the introduction of [custom stages](https://gitlab.com/gitlab-org/gitlab/-/issues/475152) in pipeline execution policies (available in GitLab 17.9), we've introduced the configuration option `inject_policy` to replace the deprecated `inject_ci`.
-
-This new strategy allows for a graceful rollout of the custom stages functionality for users with existing pipeline execution policies that use the `inject_ci` strategy.
-
-To prepare for the 19.0 removal, update all pipeline execution policies that use `inject_ci` to use `inject_policy` instead.
-
-</div>
-
-<div class="deprecation breaking-change" data-milestone="19.0">
-
 ### Replace GraphQL field `take_ownership_pipeline_schedule` with `admin_pipeline_schedule` in PipelineSchedulePermissions
 
 <div class="deprecation-notes">
@@ -511,24 +490,6 @@ The Git binaries provided by Gitaly will be the only supported way to execute Gi
 </div>
 
 With the [upcoming default behavior change to the CI/CD job token](https://docs.gitlab.com/update/deprecations/#default-cicd-job-token-ci_job_token-scope-changed) in GitLab 18.0, we are also deprecating the associated `ciJobTokenScopeAddProject` GraphQL mutation in favor of `ciJobTokenScopeAddGroupOrProject`.
-
-</div>
-
-<div class="deprecation breaking-change" data-milestone="19.0">
-
-### `scanResultPolicies` GraphQL field is deprecated
-
-<div class="deprecation-notes">
-
-- Announced in GitLab <span class="milestone">17.8</span>
-- Removal in GitLab <span class="milestone">19.0</span> ([breaking change](https://docs.gitlab.com/update/terminology/#breaking-change))
-- To discuss this change or learn more, see the [deprecation issue](https://gitlab.com/gitlab-org/gitlab/-/issues/439199).
-
-</div>
-
-In 16.10, scan result policies were renamed to merge request approval policies to more accurately reflect the change in scope and capability for the policy type.
-
-As a result, we updated the GraphQL endpoints. Use `approvalPolicies` instead of `scanResultPolicies`.
 
 </div>
 
@@ -7599,6 +7560,30 @@ For information about migrating from the CI/CD template to the component, see th
 
 <div class="deprecation breaking-change">
 
+### Pipeline execution policies `inject_ci` strategy replaced by `inject_policy`
+
+<div class="deprecation-notes">
+
+- Announced in GitLab <span class="milestone">17.11</span>
+- To discuss this change or learn more, see the [deprecation issue](https://gitlab.com/gitlab-org/gitlab/-/issues/573447).
+
+</div>
+{{< alert type="note" >}}
+
+This change has been removed from its original milestone and is being reassessed.
+
+{{< /alert >}}
+
+With the introduction of [custom stages](https://gitlab.com/gitlab-org/gitlab/-/issues/475152) in pipeline execution policies (available in GitLab 17.9), we've introduced the configuration option `inject_policy` to replace the deprecated `inject_ci`.
+
+This new strategy allows for a graceful rollout of the custom stages functionality for users with existing pipeline execution policies that use the `inject_ci` strategy.
+
+To prepare for the pending removal, update all pipeline execution policies that use `inject_ci` to use `inject_policy` instead.
+
+</div>
+
+<div class="deprecation breaking-change">
+
 ### Rate limits for common User, Project, and Group API endpoints
 
 <div class="deprecation-notes">
@@ -7807,6 +7792,28 @@ The GraphQL field `mergeTrainIndex` and `mergeTrainsCount` in `MergeRequest` are
 determine the position of the merge request on the merge train use the
 `index` field in `MergeTrainCar` instead. To get the count of MRs in a merge train,
 use `count` from `cars` in `MergeTrains::TrainType` instead.
+
+</div>
+
+<div class="deprecation breaking-change">
+
+### `scanResultPolicies` GraphQL field is deprecated
+
+<div class="deprecation-notes">
+
+- Announced in GitLab <span class="milestone">17.8</span>
+- To discuss this change or learn more, see the [deprecation issue](https://gitlab.com/gitlab-org/gitlab/-/issues/439199).
+
+</div>
+{{< alert type="note" >}}
+
+This change has been removed from its original milestone and is being reassessed.
+
+{{< /alert >}}
+
+In 16.10, scan result policies were renamed to merge request approval policies to more accurately reflect the change in scope and capability for the policy type.
+
+As a result, we updated the GraphQL endpoints. Use `approvalPolicies` instead of `scanResultPolicies`.
 
 </div>
 </div>

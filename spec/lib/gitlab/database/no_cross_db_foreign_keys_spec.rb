@@ -17,9 +17,6 @@ RSpec.describe 'cross-database foreign keys', feature_category: :database do
       'system_access_microsoft_applications.namespace_id',
       'ci_job_artifact_states.partition_id.job_artifact_id',
       'p_ci_build_tags.tag_id',                                          # https://gitlab.com/gitlab-org/gitlab/-/issues/470872
-      'ci_secure_file_states.ci_secure_file_id',                         # https://gitlab.com/groups/gitlab-org/-/epics/17347
-      'dependency_proxy_blob_states.dependency_proxy_blob_id',           # https://gitlab.com/groups/gitlab-org/-/epics/17347
-      'dependency_proxy_blob_states.group_id',                           # https://gitlab.com/groups/gitlab-org/-/epics/17347
       'dependency_proxy_manifest_states.dependency_proxy_manifest_id',   # https://gitlab.com/groups/gitlab-org/-/epics/17347
       'dependency_proxy_manifest_states.group_id',                       # https://gitlab.com/groups/gitlab-org/-/epics/17347
       'lfs_objects_projects.lfs_object_id',                              # https://gitlab.com/groups/gitlab-org/-/epics/17347

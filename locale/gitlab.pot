@@ -2133,6 +2133,9 @@ msgstr ""
 msgid "404|Application cannot get access to a branch or commit in your repository. It might have been moved"
 msgstr ""
 
+msgid "404|Expired link"
+msgstr ""
+
 msgid "404|Make sure the address is correct and the page has not moved."
 msgstr ""
 
@@ -2140,6 +2143,12 @@ msgid "404|Not found"
 msgstr ""
 
 msgid "404|Please contact your GitLab administrator if you think this is a mistake."
+msgstr ""
+
+msgid "404|This link is no longer valid."
+msgstr ""
+
+msgid "404|Use a direct link to the item to unsubscribe."
 msgstr ""
 
 msgid "409|409: There was a conflict with your request"
@@ -28243,6 +28252,9 @@ msgid "Failed to load labels. Please try again."
 msgstr ""
 
 msgid "Failed to load milestones. Please try again."
+msgstr ""
+
+msgid "Failed to load more commits. Please try to reload the page"
 msgstr ""
 
 msgid "Failed to load projects"

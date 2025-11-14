@@ -33,26 +33,4 @@ RSpec.describe 'getting blobs in a project repository', feature_category: :sourc
 
     expect(blobs).to match_array(paths.map { |path| a_hash_including('path' => path) })
   end
-
-  %w[rawTextBlob rawBlob base64EncodedBlob plainData].each do |field_name|
-    context "for multiple paths with #{field_name}" do
-      it 'blocks the query because of high complexity' do
-        query_string = <<~GRAPHQL
-        {
-          project(fullPath: "#{project.full_path}") {
-            repository {
-              blobs(paths: ["a", "b"]) {
-                nodes {
-                  #{field_name}
-                }
-              }
-            }
-          }
-        }
-        GRAPHQL
-
-        expect(calculate_query_complexity(query_string)).to be > GitlabSchema::DEFAULT_MAX_COMPLEXITY
-      end
-    end
-  end
 end

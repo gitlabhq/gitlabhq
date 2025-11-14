@@ -29,8 +29,8 @@ describe('Commits List', () => {
   beforeEach(() => {
     jest.spyOn(InfiniteScroller.prototype, 'initialize');
     setHTMLFixture(`
-      <form class="commits-search-form" action="/h5bp/html5-boilerplate/commits/main">
-        <input id="commits-search">
+      <form class="commits-search-form" action="/h5bp/html5-boilerplate/commits/main?ref_type=heads">
+        <input name="search" id="commits-search">
       </form>
       <div id="commits-list" class="js-infinite-scrolling-root">
         <ol class="content_list">
@@ -98,7 +98,7 @@ describe('Commits List', () => {
       jest.spyOn(window.history, 'replaceState').mockImplementation(() => {});
       mock = new MockAdapter(axios);
 
-      mock.onGet('/h5bp/html5-boilerplate/commits/main').reply(HTTP_STATUS_OK, {
+      mock.onGet('/h5bp/html5-boilerplate/commits/main?ref_type=heads').reply(HTTP_STATUS_OK, {
         html: '<li>Result</li>',
       });
 
@@ -110,6 +110,16 @@ describe('Commits List', () => {
     });
 
     it('should save the last search string', async () => {
+      mock
+        .onGet(
+          new URL(
+            '/h5bp/html5-boilerplate/commits/main?ref_type=heads&search=GitLab',
+            window.location.origin,
+          ).toString(),
+        )
+        .reply(HTTP_STATUS_OK, {
+          html: '<li>Result</li>',
+        });
       commitsList.searchField.val('GitLab');
       await commitsList.filterResults();
       expect(ajaxSpy).toHaveBeenCalled();
@@ -172,6 +182,39 @@ describe('Commits List', () => {
         expect(contentElement.dataset.contentLoaded).toBe('true');
         expect(findLoadingSpinner()).toBe(null);
       });
+    });
+  });
+
+  describe('filterResults', () => {
+    let mockAdapter;
+
+    beforeEach(() => {
+      mockAdapter = new MockAdapter(axios);
+    });
+
+    it('makes request with form action and serialized form data', async () => {
+      const searchTerm = 'feature';
+      const requestPath = new URL(
+        `/h5bp/html5-boilerplate/commits/main?ref_type=heads&search=${searchTerm}`,
+        window.location.origin,
+      ).toString();
+      mockAdapter.onGet(requestPath).reply(HTTP_STATUS_OK, {
+        html: '<li id="result">Search results</li>',
+      });
+      commitsList.searchField.val(searchTerm);
+      commitsList.lastSearch = '';
+
+      commitsList.searchField.trigger('keyup');
+      jest.runAllTimers();
+
+      expect(commitsList.$contentList.hasClass('gl-opacity-5')).toBe(true);
+
+      await axios.waitForAll();
+
+      expect(document.getElementById('result')).not.toBe(null);
+      expect(window.location.href).toBe(requestPath);
+      expect(commitsList.$contentList.hasClass('gl-opacity-5')).toBe(false);
+      expect(InfiniteScroller.prototype.initialize).toHaveBeenCalledTimes(2);
     });
   });
 });

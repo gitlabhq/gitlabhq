@@ -1210,6 +1210,71 @@ title: The pipeline configuration would follow...
 
 ---
 
+##### `spec:include`
+
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/206931) in GitLab 18.6 [with a flag](../../administration/feature_flags/_index.md) named `ci_file_inputs`. Disabled by default.
+
+{{< /history >}}
+
+Use `spec:include` to include external input definitions from other files.
+You can share and reuse input definitions across multiple pipeline configurations.
+
+**Keyword type**: Header keyword. `spec` must be declared at the top of the configuration file,
+in a header section.
+
+**Supported values**: An array of include locations. Supports `local`, `remote`, and `project` includes only.
+
+**Example of `spec:include`**:
+
+```yaml
+spec:
+  include:
+    - local: /shared-inputs.yml
+  inputs:
+    environment:
+      default: production
+---
+
+deploy:
+  script: echo "Deploying to $[[ inputs.environment ]]"
+```
+
+With multiple includes from different sources:
+
+```yaml
+spec:
+  include:
+    - local: /base-inputs.yml
+    - remote: 'https://example.com/ci/common-inputs.yml'
+    - project: 'my-group/shared-configs'
+      ref: main
+      file: '/ci/team-inputs.yml'
+  inputs:
+    environment:
+      default: production
+---
+
+deploy:
+  script: echo "Deploying to $[[ inputs.environment ]]"
+```
+
+**Additional details**:
+
+- External input files must contain only the `inputs` key. Other keys cause validation errors.
+- External inputs are merged first, then inline inputs are applied.
+- Inline inputs take precedence over external inputs with the same name.
+- When you include multiple input files, they are merged in the order specified.
+- Supports [`local`](#includelocal), [`remote`](#includeremote), and [`project`](#includeproject) include types.
+  Does not support `template`, `component`, or `artifact` includes.
+
+**Related topics**:
+
+- [Use inputs from external files](../inputs/_index.md#use-inputs-from-external-files).
+
+---
+
 ##### `spec:component`
 
 {{< history >}}

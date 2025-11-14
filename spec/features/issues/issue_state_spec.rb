@@ -8,7 +8,6 @@ RSpec.describe 'issue state', :js, feature_category: :team_planning do
   let_it_be(:user) { create(:user) }
 
   before do
-    stub_feature_flags(work_item_view_for_issues: true)
     project.add_developer(user)
     sign_in(user)
   end
