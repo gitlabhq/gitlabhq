@@ -19,6 +19,8 @@ class SshKeyValidator < ActiveModel::EachValidator # rubocop:disable Gitlab/Name
     elsif public_key.bits < restriction
       record.errors.add(attribute, "must be at least #{restriction} bits")
     end
+  rescue OpenSSL::OpenSSLError
+    record.errors.add(attribute, "is not a valid SSH key")
   end
 
   private

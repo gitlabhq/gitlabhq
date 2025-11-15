@@ -429,6 +429,23 @@ RSpec.describe Key, :mailer, feature_category: :system_access do
     subject { build(:key) }
 
     it_behaves_like 'meets ssh key restrictions'
+
+    context 'when OpenSSL::OpenSSLError is raised' do
+      let(:key) { build(:key) }
+      let(:error_message) { 'OpenSSL error occurred' }
+
+      before do
+        allow_next_instance_of(Gitlab::SSHPublicKey) do |instance|
+          allow(instance).to receive(:bits).and_raise(OpenSSL::OpenSSLError, error_message)
+        end
+      end
+
+      it 'adds the error to the key attribute' do
+        key.valid?
+
+        expect(key.errors[:key]).to eq(['is not a valid SSH key'])
+      end
+    end
   end
 
   context 'callbacks' do
