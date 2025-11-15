@@ -26,15 +26,13 @@ RSpec.describe Projects::ImportExport::RelationExportWorker, type: :worker, feat
       end
 
       if exception.present?
-        expect_next_instance_of(Gitlab::ExceptionLogFormatter) do |formatter|
-          expect(formatter).to receive(:format!).with(
-            exception,
-            hash_including(
-              message: 'Project relation export failed',
-              export_error: error_message
-            )
+        expect(Gitlab::ExceptionLogFormatter).to receive(:format!).with(
+          exception,
+          hash_including(
+            message: 'Project relation export failed',
+            export_error: error_message
           )
-        end
+        )
       end
 
       worker
@@ -97,6 +95,24 @@ RSpec.describe Projects::ImportExport::RelationExportWorker, type: :worker, feat
 
     it_behaves_like 'marks relation export failed' do
       let(:error_message) { 'Sidekiq error message' }
+    end
+  end
+
+  describe '.sidekiq_interruptions_exhausted' do
+    let(:job) { { 'args' => job_args } }
+
+    subject(:worker) { described_class.interruptions_exhausted_block.call(job) }
+
+    it_behaves_like 'marks relation export failed' do
+      let(:error_message) do
+        start_with('Relation export process reached the maximum number of interruptions while exporting')
+      end
+
+      let(:exception) do
+        Import::Exceptions::SidekiqExhaustedInterruptionsError.new(
+          'Relation export process reached the maximum number of interruptions'
+        )
+      end
     end
   end
 end

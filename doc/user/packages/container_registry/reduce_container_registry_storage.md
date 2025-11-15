@@ -206,7 +206,7 @@ workaround to delete tags when interacting with third-party container registries
 issue [15737](https://gitlab.com/gitlab-org/gitlab/-/issues/15737)
 for more information. Due to possible implementation variations, this workaround is not guaranteed
 to work with all third-party registries in the same predictable way. If you use the GitLab Container
-Registry, this workaround is not required because we implemented a special tag delete operation. In
+Registry, this workaround is not required because GitLab implemented a special tag delete operation. In
 this case, you can expect cleanup policies to be consistent and predictable.
 {{< /alert >}}
 

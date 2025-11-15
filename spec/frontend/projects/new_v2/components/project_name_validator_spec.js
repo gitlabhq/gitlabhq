@@ -97,4 +97,23 @@ describe('Project name availability alert', () => {
       expect(findAlert().text()).toContain('name');
     });
   });
+
+  describe('when namespace path is missing', () => {
+    it('query does not run', async () => {
+      const mockHandler = jest.fn();
+      wrapper = shallowMountExtended(ProjectNameValidator, {
+        apolloProvider: createMockApollo([[searchProjectNameAvailabilityQuery, mockHandler]]),
+        propsData: {
+          namespaceFullPath: null,
+          projectName: 'Test Project',
+          projectPath: 'test-project',
+        },
+      });
+
+      await waitForQuery();
+
+      expect(mockHandler).not.toHaveBeenCalled();
+      expect(findAlert().exists()).toBe(false);
+    });
+  });
 });

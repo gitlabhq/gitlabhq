@@ -17,7 +17,7 @@ title: GitLab Duo Agent Platform
 {{< collapsible title="Model information" >}}
 
 - LLM: Anthropic [Claude Sonnet 4](https://www.anthropic.com/claude/sonnet)
-- Available on [GitLab Duo with self-hosted models](../../administration/gitlab_duo_self_hosted/_index.md): Yes
+- Available on [GitLab Duo with self-hosted models](../../administration/gitlab_duo_self_hosted/_index.md)
 
 {{< /collapsible >}}
 

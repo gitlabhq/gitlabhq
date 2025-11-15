@@ -1322,7 +1322,6 @@ production: &base
         connector:
           provider: Gcs
           project_id: 'my-project'
-          credentials: '/path/to/keyfile.json'
           bucket: 'my-bucket'
 
   cell:

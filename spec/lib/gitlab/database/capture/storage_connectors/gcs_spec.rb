@@ -10,7 +10,6 @@ RSpec.describe Gitlab::Database::Capture::StorageConnectors::Gcs, feature_catego
     GitlabSettings::Options.build(
       provider: 'Gcs',
       project_id: 'my-project',
-      credentials: '/path/to/keyfile.json',
       bucket: 'my-bucket'
     )
   end

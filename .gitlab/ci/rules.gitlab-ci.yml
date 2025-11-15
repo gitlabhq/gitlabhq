@@ -1485,6 +1485,8 @@
     - <<: *if-default-refs
       changes: *workhorse-patterns
     - <<: *if-dot-com-gitlab-org-schedule
+      variables:
+        BABEL_ENV: "istanbul"
 
 .frontend:rules:eslint-changed-files:
   rules:
@@ -2046,7 +2048,7 @@
         QA_RUN_IN_PARALLEL: "false"
         # https://gitlab.com/gitlab-org/gitlab/-/blob/master/babel.config.js
         # This sets the environmental variable enabling `istanbul` plugin in Babel
-        GLCI_E2E_FRONTEND_COVERAGE_TRACKING: "true"
+        BABEL_ENV: "istanbul"
 
 .qa:rules:e2e:test-on-cng:
   rules:

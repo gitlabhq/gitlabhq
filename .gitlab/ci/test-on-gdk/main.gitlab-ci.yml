@@ -56,7 +56,7 @@ workflow:
       job: clone-gitlab-repo
   variables:
     COVERBAND_ENABLED: "$COVERBAND_ENABLED"  # explicitly define variable so it is passed in to gdk service container
-    GLCI_E2E_FRONTEND_COVERAGE_TRACKING: "$GLCI_E2E_FRONTEND_COVERAGE_TRACKING"
+    BABEL_ENV: "$BABEL_ENV"
     GITLAB_CRON_JOBS_POLL_INTERVAL: "0"
     GITLAB_DEVELOPMENT_USE_PRECOMPILED_ASSETS: "true"
     GITLAB_QA_ADMIN_ACCESS_TOKEN: $QA_ADMIN_ACCESS_TOKEN

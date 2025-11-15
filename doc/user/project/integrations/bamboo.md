@@ -103,7 +103,7 @@ For example:
 
    repo_url="${bamboo_planRepository_repositoryUrl}"
 
-   # Check if we use SSH or HTTPS
+   # Check if SSH or HTTPS is in use
    protocol=${repo_url::4}
    if [ "$protocol" == "git@" ]; then
      repo=${repo_url:${#protocol}};

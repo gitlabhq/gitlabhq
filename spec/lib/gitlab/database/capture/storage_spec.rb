@@ -35,7 +35,6 @@ RSpec.describe Gitlab::Database::Capture::Storage, feature_category: :database d
         {
           provider: 'Gcs',
           project_id: 'my-project',
-          credentials: '/path/to/keyfile.json',
           bucket: 'my-bucket'
         }
       end
@@ -88,7 +87,6 @@ RSpec.describe Gitlab::Database::Capture::Storage, feature_category: :database d
         {
           provider: 'Gcs',
           project_id: 'my-project',
-          credentials: '/path/to/keyfile.json',
           bucket: 'my-bucket'
         }
       end

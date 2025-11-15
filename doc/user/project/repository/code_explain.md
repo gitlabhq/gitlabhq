@@ -17,7 +17,7 @@ title: Explain code in a file
 
 - Default LLM: Anthropic [Claude Sonnet 4.5](https://console.cloud.google.com/vertex-ai/publishers/anthropic/model-garden/claude-sonnet-4-5)
 - LLM for Amazon Q: Amazon Q Developer
-- Available on [GitLab Duo with self-hosted models](../../../administration/gitlab_duo_self_hosted/_index.md): Yes
+- Available on [GitLab Duo with self-hosted models](../../../administration/gitlab_duo_self_hosted/_index.md)
 
 {{< /collapsible >}}
 

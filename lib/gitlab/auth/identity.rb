@@ -134,6 +134,7 @@ module Gitlab
 
       def valid?
         return true unless composite?
+
         return false unless linked?
 
         !scoped_user.composite_identity_enforced?

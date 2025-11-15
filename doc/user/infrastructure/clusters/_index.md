@@ -35,12 +35,11 @@ This integration had the following issues:
 - The integration was flaky.
 - Users were constantly reporting issues with features based on this model.
 
-For this reason, we decided to deprecate the certificate-based integration to focus on the new model,
+For this reason, the certificate-based integration was deprecated to focus on the new model,
 [GitLab agent for Kubernetes](../../clusters/agent/_index.md).
 Maintaining both methods in parallel caused a lot of confusion
 and significantly increased the complexity to use, develop, maintain, and
-document them. For this reason, we decided to deprecate them to focus on the
-new model.
+document them. As a result, both were deprecated in favor of the new model.
 Certificate-based features continue to:
 
 - Receive security and critical fixes.

@@ -53,6 +53,12 @@ config/bounded_contexts.yml @fabiopitino @grzesiek @stanhu @cwoolley-gitlab @tku
 *.rb
 *.rake
 .rubocop_todo/
+Gemfile
+Gemfile.lock
+Gemfile.checksum
+Gemfile.next
+Gemfile.next.lock
+Gemfile.next.checksum
 
 ^[Frontend] @gitlab-org/maintainers/frontend
 *.scss

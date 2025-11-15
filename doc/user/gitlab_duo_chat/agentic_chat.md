@@ -17,7 +17,7 @@ title: GitLab Duo Chat (Agentic)
 {{< collapsible title="Model information" >}}
 
 - Default LLM: Anthropic [Claude Sonnet 4.5](https://console.cloud.google.com/vertex-ai/publishers/anthropic/model-garden/claude-sonnet-4-5)
-- Available on [GitLab Duo with self-hosted models](../../administration/gitlab_duo_self_hosted/_index.md): Yes
+- Available on [GitLab Duo with self-hosted models](../../administration/gitlab_duo_self_hosted/_index.md)
 
 {{< /collapsible >}}
 
@@ -98,7 +98,7 @@ Prerequisites:
 
 - Ensure you meet [the prerequisites](../duo_agent_platform/_index.md#prerequisites).
 
-Instructions are provided for the new navigation and classic navigation. 
+Instructions are provided for the new navigation and classic navigation.
 Select the tab for your navigation type, or [learn how to switch](../interface_redesign.md#turn-new-navigation-on-or-off).
 
 {{< tabs >}}
@@ -402,7 +402,7 @@ you can select a specific agent for Chat to use.
 
 Prerequisites:
 
-- You must [enable an agent in your project](../duo_agent_platform/agents/_index.md#enable-an-agent)
+- You must [enable an agent in your project](../duo_agent_platform/agents/custom.md#enable-an-agent)
   from the AI Catalog.
 - For VS Code, [install and configure the GitLab Workflow extension for VS Code](../../editor_extensions/visual_studio_code/setup.md) version 6.49.12 or later.
 - For a JetBrains IDE, [install and configure the GitLab plugin for JetBrains](../../editor_extensions/jetbrains_ide/setup.md) version 3.22.0 or later.

@@ -86,7 +86,7 @@ To create a `.gitlab-ci.yml` file:
 
 1. Select **Commit changes**.
 
-Here's a quick explanation of the code we committed:
+Here's a quick explanation of the committed code:
 
 - `image` - Specifies which Docker image to use.
 - `stages` - Defines the three stages for this pipeline.
@@ -115,14 +115,14 @@ To publish to external PyPI registries, you must configure a secret variable in 
 
 When you commit your changes, you should check to make sure the pipeline runs correctly:
 
-- On the left sidebar, select **Build** > **Pipelines**. The most recent pipeline should have the three stages we defined earlier.
+- On the left sidebar, select **Build** > **Pipelines**. The most recent pipeline should have the three stages defined earlier.
 
 If the pipeline hasn't run, manually run a fresh pipeline and make sure it completes successfully.
 
 ## Best practices
 
 To ensure the security and stability of your packages, you should follow best practices for publishing to the package registry.
-The configuration we added:
+The configuration you added:
 
 - Implements caching to speed up your pipeline.
 - Uses artifacts to pass the built package between stages.

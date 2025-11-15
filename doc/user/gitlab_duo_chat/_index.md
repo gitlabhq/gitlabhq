@@ -17,7 +17,7 @@ title: GitLab Duo Chat (Classic)
 
 - Default LLM: Anthropic [Claude Sonnet 4.5](https://console.cloud.google.com/vertex-ai/publishers/anthropic/model-garden/claude-sonnet-4-5)
 - LLM for Amazon Q: Amazon Q Developer
-- Available on [GitLab Duo with self-hosted models](../../administration/gitlab_duo_self_hosted/_index.md): Yes
+- Available on [GitLab Duo with self-hosted models](../../administration/gitlab_duo_self_hosted/_index.md)
 
 {{< /collapsible>}}
 
@@ -93,7 +93,7 @@ Prerequisites:
   - Your **User settings** page.
   - The **Help** menu.
 
-Instructions are provided for the new navigation and classic navigation. 
+Instructions are provided for the new navigation and classic navigation.
 Select the tab for your navigation type, or [learn how to switch](../interface_redesign.md#turn-new-navigation-on-or-off).
 
 {{< tabs >}}

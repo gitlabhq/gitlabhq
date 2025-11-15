@@ -17,7 +17,7 @@ title: GitLab MCP clients
 
 {{< collapsible title="Model information" >}}
 
-- Available on GitLab Duo with self-hosted models: Not supported
+- Not available on GitLab Duo with self-hosted models
 
 {{< /collapsible >}}
 

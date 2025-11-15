@@ -29,7 +29,7 @@ in Mattermost:
 1. [Enable incoming webhooks](https://docs.mattermost.com/configure/integrations-configuration-settings.html#enable-incoming-webhooks).
 1. [Add an incoming webhook](https://developers.mattermost.com/integrate/webhooks/incoming/#create-an-incoming-webhook).
 1. Choose a display name, description and channel, those can be overridden on GitLab.
-1. Save it and copy the **Webhook URL** because we need this later for GitLab.
+1. Save it and copy the **Webhook URL** that is needed for GitLab.
 
 Incoming Webhooks might be blocked on your Mattermost instance. Ask your Mattermost administrator
 to enable it on:

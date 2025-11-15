@@ -212,7 +212,7 @@ To delete the root account, in the Rails console:
      # This needs to be a current admin user
      current_user = User.find(username: 'Username')
 
-     # This is the root user we want to block
+     # This is the root user to block
      user = User.find(username: 'Username')
 
      ::Users::BlockService.new(current_user).execute(user)
@@ -224,7 +224,7 @@ To delete the root account, in the Rails console:
      # This needs to be a current admin user
      current_user = User.find(username: 'Username')
 
-     # This is the root user we want to deactivate
+     # This is the root user to deactivate
      user = User.find(username: 'Username')
 
      ::Users::DeactivateService.new(current_user, skip_authorization: true).execute(user)

@@ -285,7 +285,7 @@ If the work item contains a large amount of text (more than 40,000 words), GitLa
 
 - Editors: GitLab UI, Web IDE, VS Code, JetBrains IDEs
 - LLM for Amazon Q: Amazon Q Developer
-- Available on [GitLab Duo with self-hosted models](../../administration/gitlab_duo_self_hosted/_index.md): Yes
+- Available on [GitLab Duo with self-hosted models](../../administration/gitlab_duo_self_hosted/_index.md)
 
 {{< /collapsible >}}
 
@@ -493,7 +493,7 @@ You cannot use [Quick Chat](_index.md#in-an-editor-window) to add files or ask q
 
 - Editors: Web IDE, VS Code, JetBrains IDEs
 - LLM for Amazon Q: Amazon Q Developer
-- Available on [GitLab Duo with self-hosted models](../../administration/gitlab_duo_self_hosted/_index.md): Yes
+- Available on [GitLab Duo with self-hosted models](../../administration/gitlab_duo_self_hosted/_index.md)
 
 {{< /collapsible >}}
 
@@ -541,7 +541,7 @@ For more information, see:
 
 - Editors: Web IDE, VS Code, JetBrains IDEs
 - LLM for Amazon Q: Amazon Q Developer
-- Available on [GitLab Duo with self-hosted models](../../administration/gitlab_duo_self_hosted/_index.md): Yes
+- Available on [GitLab Duo with self-hosted models](../../administration/gitlab_duo_self_hosted/_index.md)
 
 {{< /collapsible >}}
 
@@ -581,7 +581,7 @@ You can include additional instructions to be considered. For example:
 
 - Editors: Web IDE, VS Code, JetBrains IDEs
 - LLM for Amazon Q: Amazon Q Developer
-- Available on [GitLab Duo with self-hosted models](../../administration/gitlab_duo_self_hosted/_index.md): Yes
+- Available on [GitLab Duo with self-hosted models](../../administration/gitlab_duo_self_hosted/_index.md)
 
 {{< /collapsible >}}
 
@@ -667,7 +667,7 @@ Alternatively, you can use GitLab Duo Root Cause Analysis to [troubleshoot faile
 - Editors: GitLab UI
 - Default LLM: Anthropic [Claude Sonnet 4.0](https://console.cloud.google.com/vertex-ai/publishers/anthropic/model-garden/claude-sonnet-4)
 - LLM for Amazon Q: Amazon Q Developer
-- Available on [GitLab Duo with self-hosted models](../../administration/gitlab_duo_self_hosted/_index.md): Yes
+- Available on [GitLab Duo with self-hosted models](../../administration/gitlab_duo_self_hosted/_index.md)
 
 {{< /collapsible >}}
 
@@ -735,7 +735,7 @@ To troubleshoot a failed CI/CD job from the job log:
 - Editors: GitLab UI
 - Default LLM: Anthropic [Claude Sonnet 3.7](https://console.cloud.google.com/vertex-ai/publishers/anthropic/model-garden/claude-3-7-sonnet)
 - LLM for Amazon Q: Amazon Q Developer
-- Available on [GitLab Duo with self-hosted models](../../administration/gitlab_duo_self_hosted/_index.md): Yes
+- Available on [GitLab Duo with self-hosted models](../../administration/gitlab_duo_self_hosted/_index.md)
 
 {{< /collapsible >}}
 

@@ -61,7 +61,7 @@ Not all group and project resources are copied. See list of copied resources bel
 After you start a migration, you should not make any changes to imported groups or projects
 on the source instance because these changes might not be copied to the destination instance.
 
-We invite you to leave your feedback about migrating by direct transfer in
+You are encouraged to leave your feedback about migrating by direct transfer in
 [the feedback issue](https://gitlab.com/gitlab-org/gitlab/-/issues/284495).
 
 ## Migrating specific projects
@@ -131,7 +131,7 @@ There's no exact formula to reliably estimate a migration. However, the average 
 | References                  | 5                                            |
 | Push rule                   | 0.1                                          |
 
-Though it's difficult to predict migration duration, we've seen:
+Though it's difficult to predict migration duration, the following have been observed:
 
 - 100 projects (19.9k issues, 83k merge requests, 100k+ pipelines) migrated in 8 hours.
 - 1926 projects (22k issues, 160k merge requests, 1.1 million pipelines) migrated in 34 hours.

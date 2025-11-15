@@ -58,7 +58,7 @@ To edit an issue:
 {{< collapsible title="Model information" >}}
 
 - LLM: Anthropic [Claude 3.5 Sonnet](https://console.cloud.google.com/vertex-ai/publishers/anthropic/model-garden/claude-3-5-sonnet)
-- Available on GitLab Duo with self-hosted models: Not supported
+- Not available on GitLab Duo with self-hosted models
 
 {{< /collapsible >}}
 

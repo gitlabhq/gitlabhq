@@ -298,7 +298,7 @@ Duo Chat explains the code. It might take a moment for the explanation to be gen
 
 If you'd like, you can provide feedback about the quality of the explanation.
 
-We cannot guarantee that the large language model produces results that are correct. Use the explanation with caution.
+GitLab cannot guarantee that the large language model produces results that are correct. Use the explanation with caution.
 
 You can also explain code in:
 
@@ -355,10 +355,10 @@ Files marked as viewed are not shown to you again unless either:
 
 ## Show merge request conflicts in diff
 
-To avoid displaying changes already on target branch, we compare the merge request's
+To avoid displaying changes already on target branch, GitLab compares the merge request's
 source branch with the `HEAD` of the target branch.
 
-When the source and target branch conflict, we show an alert
+When the source and target branch conflict, GitLab show an alert
 per conflicted file on the merge request diff:
 
 ![A conflict alert in a merge request diff.](img/conflict_ui_v15_6.png)

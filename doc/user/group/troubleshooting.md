@@ -13,7 +13,7 @@ Performs the following checks when creating or updating namespaces or groups:
 - Group parents must be groups and not namespaces.
 
 In the unlikely event that you see these errors in your GitLab installation,
-[contact Support](https://about.gitlab.com/support/) so that we can improve this validation.
+[contact Support](https://about.gitlab.com/support/) so that GitLab can improve this validation.
 
 ## Find groups using an SQL query
 

@@ -31,7 +31,7 @@ module Gitlab
           attr_reader :settings
 
           def client
-            @client ||= Google::Cloud::Storage.new(project_id: settings.project_id, credentials: settings.credentials)
+            @client ||= Google::Cloud::Storage.new(project_id: settings.project_id)
           end
 
           # Permission 'storage.buckets.get' must be granted to access to the Google Cloud Storage bucket

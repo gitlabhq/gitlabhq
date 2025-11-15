@@ -25,3 +25,21 @@ class IsolatedRequestStore
     RequestStore.store = old_store
   end
 end
+
+class IsolatedCurrent
+  def call(_worker, msg, queue)
+    old_current = Current.attributes.except(:organization_assigned)
+
+    Current.reset
+    Current.instance_variable_set(:@attributes, {})
+
+    yield
+
+    Current.reset
+    Current.instance_variable_set(:@attributes, {})
+
+    old_current.each do |key, value|
+      Current.send(:"#{key}=", value)
+    end
+  end
+end

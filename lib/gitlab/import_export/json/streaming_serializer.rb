@@ -301,9 +301,11 @@ module Gitlab
         end
 
         def log_relation_export(relation, size = nil)
-          message = "Exporting #{relation} relation"
-          message += ". Number of records to export: #{size}" if size
-          logger.info(message: message, **log_base_data)
+          message = "Exporting relation: #{relation}"
+          payload = log_base_data
+          payload[:relation] = relation.to_s
+          payload[:number_of_records] = size if size
+          logger.info(message: message, **payload)
         end
 
         def increment_exported_objects_counter

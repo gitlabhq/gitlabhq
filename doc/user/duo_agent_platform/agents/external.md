@@ -16,7 +16,7 @@ title: External agents
 
 {{< collapsible title="Model information" >}}
 
-- Available on [GitLab Duo with self-hosted models](../../../administration/gitlab_duo_self_hosted/_index.md): No
+- Not available on GitLab Duo with self-hosted models
 
 {{< /collapsible >}}
 

@@ -179,8 +179,12 @@ class Ability
     end
 
     def with_composite_identity_check(user, ability, subject = :global, **opts)
+      check_user = find_user_for_composite_identity_check(user)
+
+      return false if check_user.nil?
+
       allowed?(
-        find_user_for_composite_identity_check(user),
+        check_user,
         ability,
         subject,
         **opts.merge(composite_identity_check: false)

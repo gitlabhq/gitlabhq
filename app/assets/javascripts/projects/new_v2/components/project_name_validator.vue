@@ -21,7 +21,10 @@ export default {
         return data.namespace.projects.nodes || [];
       },
       skip() {
-        return this.projectPath === null && this.projectName === null;
+        return (
+          this.namespaceFullPath === null ||
+          (this.projectPath === null && this.projectName === null)
+        );
       },
       debounce: DEBOUNCE_DELAY,
     },
@@ -29,7 +32,8 @@ export default {
   props: {
     namespaceFullPath: {
       type: String,
-      required: true,
+      required: false,
+      default: null,
     },
     projectPath: {
       type: String,

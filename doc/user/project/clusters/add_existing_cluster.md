@@ -90,9 +90,9 @@ To add a Kubernetes cluster to your project, group, or instance:
    1. **Environment scope** (required) - The
       [associated environment](multiple_kubernetes_clusters.md#setting-the-environment-scope) to this cluster.
    1. **API URL** (required) -
-      It's the URL that GitLab uses to access the Kubernetes API. Kubernetes
-      exposes several APIs, we want the "base" URL that is common to all of them.
-      For example, `https://kubernetes.example.com` rather than `https://kubernetes.example.com/api/v1`.
+      It's the URL that GitLab uses to access the Kubernetes API. Kubernetes exposes several
+      APIs. Use the "base" URL that is common to all of them. For example,
+      `https://kubernetes.example.com` rather than `https://kubernetes.example.com/api/v1`.
 
       Get the API URL by running this command:
 
@@ -100,7 +100,7 @@ To add a Kubernetes cluster to your project, group, or instance:
       kubectl cluster-info | grep -E 'Kubernetes master|Kubernetes control plane' | awk '/http/ {print $NF}'
       ```
 
-   1. **CA certificate** (required) - A valid Kubernetes certificate is needed to authenticate to the cluster. We use the certificate created by default.
+   1. **CA certificate** (required) - A valid Kubernetes certificate is needed to authenticate to the cluster. Use the certificate created by default.
       1. List the secrets with `kubectl get secrets`, and one should be named similar to
          `default-token-xxxxx`. Copy that token name for use below.
       1. Get the certificate by running this command:

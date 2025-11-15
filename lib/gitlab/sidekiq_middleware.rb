@@ -89,7 +89,8 @@ module Gitlab
           skip_jobs ? ::Gitlab::SidekiqMiddleware::SkipJobs : nil,
           ::Gitlab::Database::LoadBalancing::SidekiqServerMiddleware,
           ::Gitlab::SidekiqMiddleware::ResourceUsageLimit::Server,
-          ::Gitlab::SidekiqMiddleware::Identity::Restore
+          ::Gitlab::SidekiqMiddleware::Identity::Restore,
+          ::Gitlab::SidekiqMiddleware::CurrentOrganization::Server
         ].compact
       end
 

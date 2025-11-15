@@ -507,6 +507,7 @@ RSpec.configure do |config|
       ).call(chain)
 
       chain.insert_after ::Gitlab::SidekiqMiddleware::RequestStoreMiddleware, IsolatedRequestStore
+      chain.insert_after ::Gitlab::SidekiqMiddleware::RequestStoreMiddleware, IsolatedCurrent
 
       example.run
     end

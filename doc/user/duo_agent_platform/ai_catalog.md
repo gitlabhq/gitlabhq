@@ -36,12 +36,11 @@ For more information, see the history.
 
 The AI Catalog is a central list of agents and flows.
 Add these agents and flows to your project to get started orchestrating agentic AI tasks.
-Agents perform tasks for you, like creating merge requests, and can answer complex questions.
 
 Use the AI Catalog to:
 
 - Discover agents and flows created by the GitLab team and community members.
-- Create agents and flows, and share them with other users.
+- Create custom agents and flows, and share them with other users.
 - Enable agents and flows in your projects to use them across the GitLab Duo Agent Platform.
 
 ## View the AI Catalog

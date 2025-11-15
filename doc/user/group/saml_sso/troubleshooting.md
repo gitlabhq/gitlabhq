@@ -26,9 +26,9 @@ If you cannot install a browser plugin, you can [manually generate and capture a
 
 Pay specific attention to:
 
-- The `NameID`, which we use to identify which user is signing in. If the user has previously signed in, this
-  [must match the value we have stored](#verify-nameid).
-- The presence of a `X509Certificate`, which we require to verify the response signature.
+- The `NameID`, which identifies the user signing in. If the user has previously
+  signed in, this must match the value that [GitLab stored](#verify-nameid).
+- The presence of a `X509Certificate`, which is required to verify the response signature.
 - The `SubjectConfirmation` and `Conditions`, which can cause errors if misconfigured.
 
 ### Generate a SAML response
@@ -216,7 +216,9 @@ You can use one of the following to troubleshoot SAML:
 
 ## Verify configuration
 
-For convenience, we've included some [example resources](example_saml_config.md) used by our Support Team. While they may help you verify the SAML app configuration, they are not guaranteed to reflect the current state of third-party products.
+For convenience, some [example resources](example_saml_config.md) used by the GitLab
+Support Team are included. While they may help you verify the SAML app configuration,
+they are not guaranteed to reflect the current state of third-party products.
 
 ### Calculate the fingerprint
 
@@ -420,7 +422,9 @@ For GitLab Self-Managed, administrators can use the [users API](../../../api/use
 
 When using SAML for groups, group members of a role with the appropriate permissions can make use of the [members API](../../../api/members.md) to view group SAML identity information for members of the group.
 
-This can then be compared to the `NameID` being sent by the identity provider by decoding the message with a [SAML debugging tool](#saml-debugging-tools). We require that these match to identify users.
+This can then be compared to the `NameID` sent by the identity provider by decoding the
+message with a [SAML debugging tool](#saml-debugging-tools). These values must match to
+identify users.
 
 ### Stuck in a login "loop"
 

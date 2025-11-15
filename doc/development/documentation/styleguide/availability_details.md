@@ -99,18 +99,21 @@ For status, choose one:
 
 Generally available features should not have a status.
 
-### Available on GitLab Duo with self-hosted models
+### GitLab Duo with self-hosted models
 
-For GitLab Duo features, the possibilities are:
+For GitLab Duo features available with self-hosted models, use:
 
 ```markdown
 {{< collapsible title="Model information" >}}
 
-- Available on [GitLab Duo with self-hosted models](<relative_link_to_gitlab_duo_self_hosted_documentation>): Yes
-- Available on GitLab Duo with self-hosted models: No
+- Available on [GitLab Duo with self-hosted models](<relative_link_to_gitlab_duo_self_hosted_documentation>)
 
 {{< /collapsible >}}
 ```
+
+Avoid stating that the feature is not available on GitLab Duo with self-hosted models.
+If you must state that a feature is not available, use `Not available on GitLab Duo with self-hosted models`. Do not include
+a link to the documentation.
 
 ### LLMs
 

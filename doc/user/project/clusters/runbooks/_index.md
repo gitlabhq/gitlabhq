@@ -104,7 +104,7 @@ the components outlined previously and the pre-loaded demo runbook.
 
            async def add_auth_env(spawner):
               '''
-              We set user's id, login and access token on single user image to
+              Set user's id, login and access token on single user image to
               enable repository integration for JupyterHub.
               See: https://gitlab.com/gitlab-org/gitlab-foss/-/issues/47138#note_154294790
               '''
@@ -186,7 +186,7 @@ the components outlined previously and the pre-loaded demo runbook.
       ```
 
 1. To configure the operation of a runbook, create and configure variables.
-   For this example, we are using the **Run SQL queries in Notebook** section in the
+   This example uses the **Run SQL queries in Notebook** section in the
    sample runbook to query a PostgreSQL database. The first four lines of the following
    code block define the variables that are required for this query to function:
 

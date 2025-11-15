@@ -54,7 +54,7 @@ which is what happens behind the scenes when following the
 
 ### Error: `"address": required field is not set`
 
-By default, we set `TF_ADDRESS` to `${CI_API_V4_URL}/projects/${CI_PROJECT_ID}/terraform/state/${TF_STATE_NAME}`.
+By default, GitLab sets `TF_ADDRESS` to `${CI_API_V4_URL}/projects/${CI_PROJECT_ID}/terraform/state/${TF_STATE_NAME}`.
 If you don't set `TF_STATE_NAME` or `TF_ADDRESS` in your job, the job fails with the error message
 `Error: "address": required field is not set`.
 
