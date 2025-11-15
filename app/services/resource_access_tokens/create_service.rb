@@ -149,7 +149,7 @@ module ResourceAccessTokens
 
       user_access_level = resource.max_member_access_for_user(current_user)
 
-      Authz::Role.access_level_encompasses?(
+      Gitlab::Access.level_encompasses?(
         current_access_level: user_access_level,
         level_to_assign: access_level.to_i
       )

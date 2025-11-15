@@ -1298,7 +1298,7 @@ class Group < Namespace
 
     max_access_level = max_member_access(current_user)
 
-    !Authz::Role.access_level_encompasses?(current_access_level: max_access_level, level_to_assign: access_level)
+    !Gitlab::Access.level_encompasses?(current_access_level: max_access_level, level_to_assign: access_level)
   end
 
   private

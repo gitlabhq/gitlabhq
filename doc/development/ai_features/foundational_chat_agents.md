@@ -18,7 +18,7 @@ more flexibility for complex cases.
 ### Using the AI catalog
 
 1. Create your agent on the [AI Catalog](https://gitlab.com/explore/ai-catalog/agents/), and note its ID. Make sure the agent is set to
-   public. Example: [Duo Planner](https://gitlab.com/explore/ai-catalog/agents/356/) has ID 356.
+   public. Example: [Planner Agent](https://gitlab.com/explore/ai-catalog/agents/356/) has ID 356.
 
 1. Agents created on the AI Catalog need to be bundled into Duo Workflow Service, so they can be available to self-hosted
    setups that do not have access to our SaaS. To achieve this, open an MR to Duo Workflow Service adding the ID of the

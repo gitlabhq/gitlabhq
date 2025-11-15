@@ -666,7 +666,7 @@ class Member < ApplicationRecord
     current_access_level = params[:current_access_level]
 
     # check if it's a valid downgrade, if the member's current access level encompasses the target level
-    return false if Authz::Role.access_level_encompasses?(
+    return false if Gitlab::Access.level_encompasses?(
       current_access_level: current_access_level,
       level_to_assign: assigning_access_level
     )
