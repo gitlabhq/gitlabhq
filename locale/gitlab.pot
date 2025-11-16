@@ -29143,9 +29143,6 @@ msgstr ""
 msgid "For more information on how the number of active users is calculated, see the %{self_managed_subscriptions_doc_link} documentation."
 msgstr ""
 
-msgid "For more information, go to the "
-msgstr ""
-
 msgid "For more information, see the %{link_start}documentation%{link_end}."
 msgstr ""
 
@@ -53843,9 +53840,6 @@ msgstr ""
 msgid "PumbleIntegration|Send notifications about project events to Pumble."
 msgstr ""
 
-msgid "Purchase more minutes"
-msgstr ""
-
 msgid "Purchase more seats"
 msgstr ""
 
@@ -56050,9 +56044,6 @@ msgstr ""
 msgid "Runners are processes that pick up and execute CI/CD jobs for GitLab."
 msgstr ""
 
-msgid "Runners page."
-msgstr ""
-
 msgid "Runners|%d selected runner deleted"
 msgid_plural "Runners|%d selected runners deleted"
 msgstr[0] ""
@@ -57255,9 +57246,6 @@ msgid "Runners|Yes, disable instance runners"
 msgstr ""
 
 msgid "Runners|Yes, start deleting stale runners"
-msgstr ""
-
-msgid "Runners|You have used %{quotaUsed} out of %{quotaLimit} of your instance runners compute minutes."
 msgstr ""
 
 msgid "Runners|You may lose access to the runner token if you leave this page."

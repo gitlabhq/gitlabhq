@@ -37,7 +37,6 @@ export default {
     UnmetPrerequisitesBlock,
     Sidebar,
     GlLoadingIcon,
-    SharedRunner: () => import('ee_component/ci/runner/components/shared_runner_limit_block.vue'),
     GlAlert,
   },
   directives: {
@@ -57,11 +56,6 @@ export default {
       default: null,
     },
     deploymentHelpUrl: {
-      type: String,
-      required: false,
-      default: null,
-    },
-    subscriptionsMoreMinutesUrl: {
       type: String,
       required: false,
       default: null,
@@ -98,7 +92,6 @@ export default {
       'hasUnmetPrerequisitesFailure',
       'shouldRenderCalloutMessage',
       'hasEnvironment',
-      'shouldRenderSharedRunnerLimitWarning',
       'hasJobLog',
       'emptyStateIllustration',
       'emptyStateAction',
@@ -261,13 +254,6 @@ export default {
         <unmet-prerequisites-block
           v-if="hasUnmetPrerequisitesFailure"
           :help-path="deploymentHelpUrl"
-        />
-
-        <shared-runner
-          v-if="shouldRenderSharedRunnerLimitWarning"
-          :quota-used="job.runners.quota.used"
-          :quota-limit="job.runners.quota.limit"
-          :subscriptions-more-minutes-url="subscriptionsMoreMinutesUrl"
         />
 
         <environments-block

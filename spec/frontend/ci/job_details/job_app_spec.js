@@ -46,7 +46,6 @@ describe('Job App', () => {
     runnerSettingsUrl: 'settings/ci-cd/runners',
     terminalPath: 'jobs/123/terminal',
     projectPath: 'user-name/project-name',
-    subscriptionsMoreMinutesUrl: 'https://customers.gitlab.com/buy_pipeline_minutes',
   };
 
   const createComponent = ({ abilities = {}, ...options } = {}) => {

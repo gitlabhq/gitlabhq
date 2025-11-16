@@ -27,7 +27,6 @@ export const initJobDetails = () => {
     artifactHelpUrl,
     deploymentHelpUrl,
     runnerSettingsUrl,
-    subscriptionsMoreMinutesUrl,
     retryOutdatedJobDocsUrl,
     aiRootCauseAnalysisAvailable,
     testReportSummaryUrl,
@@ -67,7 +66,6 @@ export const initJobDetails = () => {
           artifactHelpUrl,
           deploymentHelpUrl,
           runnerSettingsUrl,
-          subscriptionsMoreMinutesUrl,
           logViewerPath,
         },
       });

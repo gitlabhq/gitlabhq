@@ -23,17 +23,6 @@ export const emptyStateIllustration = (state) => state?.job?.status?.illustratio
 
 export const emptyStateAction = (state) => state?.job?.status?.action || null;
 
-/**
- * Instance/shared runners limit is only rendered when
- * used quota is bigger or equal than the limit
- *
- * @returns {Boolean}
- */
-export const shouldRenderSharedRunnerLimitWarning = (state) =>
-  !isEmpty(state.job.runners) &&
-  !isEmpty(state.job.runners.quota) &&
-  state.job.runners.quota.used >= state.job.runners.quota.limit;
-
 export const hasOfflineRunnersForProject = (state) =>
   state?.job?.runners?.available && !state?.job?.runners?.online;
 

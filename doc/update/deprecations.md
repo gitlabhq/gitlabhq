@@ -124,24 +124,6 @@ The metadata database provides better performance, reliability, and enables new 
 The [GitLab Runner Docker Machine executor](https://docs.gitlab.com/runner/executors/docker_machine/) is deprecated and will be fully removed from the product as a supported feature in GitLab 20.0 (May 2027). The replacement for Docker Machine, [GitLab Runner Autoscaler](https://docs.gitlab.com/runner/runner_autoscale/) with GitLab developed plugins for Amazon Web Services (AWS) EC2, Google Compute Engine (GCE) and Microsoft Azure virtual machines (VMs) is generally available. With this announcement, the GitLab Runner team will no longer accept community contributions for the GitLab maintained Docker Machine fork, or resolve newly identified bugs.
 
 </div>
-
-<div class="deprecation breaking-change" data-milestone="20.0">
-
-### GitLab Runner platforms and setup instructions in GraphQL API
-
-<div class="deprecation-notes">
-
-- Announced in GitLab <span class="milestone">15.9</span>
-- Removal in GitLab <span class="milestone">20.0</span> ([breaking change](https://docs.gitlab.com/update/terminology/#breaking-change))
-- To discuss this change or learn more, see the [deprecation issue](https://gitlab.com/gitlab-org/gitlab/-/issues/387937).
-
-</div>
-
-The `runnerPlatforms` and `runnerSetup` queries to get GitLab Runner platforms and installation instructions
-are deprecated and will be removed from the GraphQL API. For installation instructions, you should use the
-[GitLab Runner documentation](https://docs.gitlab.com/runner/)
-
-</div>
 </div>
 
 <div class="milestone-wrapper" data-milestone="19.0">
@@ -7405,6 +7387,28 @@ See the corresponding [deprecation announcement](https://docs.gitlab.com/update/
 - The [Dependency Scanning for JavaScript vendored libraries](https://docs.gitlab.com/user/application_security/dependency_scanning/#javascript) feature is deprecated in GitLab 17.9.
 While this functionality will continue to work when using the Gemnasium analyzer, it will not be available after migrating to the new Dependency Scanning analyzer.
 See the corresponding [deprecation announcement](https://docs.gitlab.com/update/deprecations/#dependency-scanning-for-javascript-vendored-libraries) for more details.
+
+</div>
+
+<div class="deprecation breaking-change">
+
+### GitLab Runner platforms and setup instructions in GraphQL API
+
+<div class="deprecation-notes">
+
+- Announced in GitLab <span class="milestone">15.9</span>
+- To discuss this change or learn more, see the [deprecation issue](https://gitlab.com/gitlab-org/gitlab/-/issues/387937).
+
+</div>
+{{< alert type="note" >}}
+
+This change has been removed from its original milestone and is being reassessed.
+
+{{< /alert >}}
+
+The `runnerPlatforms` and `runnerSetup` queries to get GitLab Runner platforms and installation instructions
+are deprecated and will be removed from the GraphQL API. For installation instructions, see the
+[GitLab Runner documentation](https://docs.gitlab.com/runner/) instead of using these API queries.
 
 </div>
 
