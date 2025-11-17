@@ -97,7 +97,6 @@ gdk-instance-ff-inverse:
   extends: gdk-instance
   variables:
     QA_FEATURE_FLAGS: $FEATURE_FLAGS
-    QA_PROJECT_STUDIO: false
   rules:
     - !reference [.rules:test:feature-flags-set, rules]
 

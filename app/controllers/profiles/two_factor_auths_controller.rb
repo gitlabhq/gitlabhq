@@ -14,6 +14,7 @@ class Profiles::TwoFactorAuthsController < Profiles::ApplicationController
 
   include SafeFormatHelper
   include BaseServiceUtility
+  include AuthHelper
 
   def show
     setup_show_page
@@ -163,10 +164,6 @@ class Profiles::TwoFactorAuthsController < Profiles::ApplicationController
     setup_show_page
 
     render 'show'
-  end
-
-  def current_password_required?
-    !current_user.password_automatically_set? && current_user.allow_password_authentication_for_web?
   end
 
   def build_qr_code

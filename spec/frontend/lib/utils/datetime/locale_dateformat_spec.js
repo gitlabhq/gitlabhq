@@ -175,4 +175,18 @@ describe('localeDateFormat (en-US)', () => {
       expect(spy).toHaveBeenCalledTimes(1);
     });
   });
+
+  describe('#asMonthYear', () => {
+    it('exposes a working date formatter', () => {
+      expectDateString(localeDateFormat.asMonthYear.format(date)).toBe('Jul 1983');
+      expectDateString(localeDateFormat.asMonthYear.format(nextYear)).toBe('Jan 1984');
+    });
+
+    it('exposes a working date range formatter', () => {
+      expectDateString(localeDateFormat.asMonthYear.formatRange(date, sameMonth)).toBe('Jul 1983');
+      expectDateString(localeDateFormat.asMonthYear.formatRange(date, nextYear)).toBe(
+        'Jul 1983 – Jan 1984',
+      );
+    });
+  });
 });

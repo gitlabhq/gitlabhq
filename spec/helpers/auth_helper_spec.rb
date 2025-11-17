@@ -878,6 +878,34 @@ RSpec.describe AuthHelper, feature_category: :system_access do
     end
   end
 
+  describe '#current_password_required?' do
+    let(:user) { create(:user) }
+
+    subject(:current_password_required) { helper.current_password_required? }
+
+    before do
+      allow(helper).to receive(:current_user).and_return(user)
+    end
+
+    where(:password_automatically_set, :allow_password_authentication_for_web, :expectation) do
+      [
+        [true, false, false],
+        [true, true, false],
+        [false, false, false],
+        [false, true, true]
+      ]
+    end
+
+    with_them do
+      it "returns the correct expectation" do
+        user.update_attribute(:password_automatically_set, password_automatically_set)
+        stub_application_setting(password_authentication_enabled_for_web: allow_password_authentication_for_web)
+
+        expect(current_password_required).to eq(expectation)
+      end
+    end
+  end
+
   def omniauth_providers_with_step_up_auth_config(step_up_auth_scope)
     auth_providers.map { |provider| Gitlab::Auth::OAuth::Provider.config_for(provider) }
                   .select { |provider_config| provider_config.dig("step_up_auth", step_up_auth_scope.to_s).present? }
