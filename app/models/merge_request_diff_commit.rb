@@ -147,6 +147,27 @@ class MergeRequestDiffCommit < ApplicationRecord
       .group(:sha)
   end
 
+  def self.commit_shas_from_metadata(project_id:, limit:)
+    # Until `merge_request_commits_metadata` records are backfilled, SHAs data may be in found in either table
+    metadata_join_sql = <<~SQL.squish
+      LEFT JOIN merge_request_commits_metadata
+      ON merge_request_commits_metadata.id = merge_request_diff_commits.merge_request_commits_metadata_id
+      AND merge_request_commits_metadata.project_id = ?
+    SQL
+
+    # raw SQL in pluck() bypass ActiveRecord's type casting, so encode() is needed to convert bytea to hex
+    shas_sql = Arel.sql("encode(COALESCE(merge_request_commits_metadata.sha, merge_request_diff_commits.sha), 'hex')")
+
+    relation = self.joins(self.sanitize_sql_array([metadata_join_sql, project_id]))
+      .order(:relative_order)
+
+    relation = relation.limit(limit) if limit
+
+    # rubocop:disable Database/AvoidUsingPluckWithoutLimit -- limit may be applied in the caller
+    relation.pluck(shas_sql)
+    # rubocop:enable Database/AvoidUsingPluckWithoutLimit
+  end
+
   def author_name
     commit_author&.name
   end

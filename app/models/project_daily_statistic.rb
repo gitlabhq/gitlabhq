@@ -2,6 +2,11 @@
 
 class ProjectDailyStatistic < ApplicationRecord
   include CounterAttribute
+  include PartitionedTable
+
+  self.primary_key = :id
+
+  partitioned_by :date, strategy: :monthly, retain_for: 3.months
 
   belongs_to :project
 

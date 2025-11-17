@@ -50,7 +50,7 @@ When a merge request is ready to merge, you can remove the `Draft` flag in sever
   in a comment in the merge request.
 
 When you mark a merge request as ready, GitLab notifies
-[merge request participants and watchers](../../profile/notifications.md#notifications-on-issues-merge-requests-and-epics).
+[merge request participants and watchers](../../profile/notifications.md#issue-merge-request-and-epic-events).
 
 ## Include or exclude drafts when searching
 

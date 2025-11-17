@@ -1769,26 +1769,124 @@ RSpec.describe MergeRequestDiff, feature_category: :code_review_workflow do
 
     let_it_be(:target) { create(:project, :test_repo) }
     let_it_be(:forked) { fork_project(target, nil, repository: true) }
-    let_it_be(:mr) { create(:merge_request, source_project: forked, target_project: target) }
+    let(:merge_request) { create(:merge_request, source_project: forked, target_project: target) }
+    let(:diff) { merge_request.merge_request_diff }
 
     it 'returns a CommitCollection whose container points to the target project' do
-      expect(mr.merge_request_diff.commits.container).to eq(target)
-    end
-
-    it 'returns a non-empty CommitCollection' do
-      expect(mr.merge_request_diff.commits.commits.size).to be > 0
+      expect(diff.commits.container).to eq(target)
     end
 
     context 'with a page' do
       it 'returns a limited number of commits for page' do
-        expect(mr.merge_request_diff.commits(limit: 1, page: 1).map(&:sha)).to eq(
+        expect(diff.commits(limit: 1, page: 1).map(&:sha)).to eq(
           %w[
             b83d6e391c22777fca1ed3012fce84f633d7fed0
           ])
-        expect(mr.merge_request_diff.commits(limit: 1, page: 2).map(&:sha)).to eq(
+        expect(diff.commits(limit: 1, page: 2).map(&:sha)).to eq(
           %w[
             498214de67004b1da3d820901307bed2a68a8ef6
           ])
+      end
+    end
+
+    context 'when load_from_gitaly is true' do
+      context 'when diff_commits_dedup is enabled' do
+        it 'queries the metadata table directly using commit_shas_from_metadata' do
+          expect(diff.merge_request_diff_commits).to receive(:commit_shas_from_metadata).and_call_original
+
+          commits = diff.commits(load_from_gitaly: true)
+
+          expect(commits).to be_a(CommitCollection)
+          expect(commits.commits.size).to be > 0
+        end
+
+        it 'returns the expected commit collections' do
+          without_limit = diff.commits(load_from_gitaly: true)
+          with_limit = diff.commits(limit: 1, load_from_gitaly: true)
+
+          expect(with_limit).to be_a(CommitCollection)
+          expect(with_limit.commits.size).to be 1
+
+          expect(without_limit).to be_a(CommitCollection)
+          expect(without_limit.commits.size).to be > 1
+        end
+
+        it 'does not load ActiveRecord objects' do
+          expect_any_instance_of(MergeRequestDiffCommit).not_to receive(:sha)
+
+          diff.commits(load_from_gitaly: true)
+        end
+      end
+
+      context 'when diff_commits_dedup is disabled' do
+        before do
+          stub_feature_flags(merge_request_diff_commits_dedup: false)
+        end
+
+        it 'does not load the SHAs from commits_metadata' do
+          diff_commits = diff.merge_request_diff_commits
+
+          expect(diff_commits).not_to receive(:commit_shas_from_metadata)
+
+          diff.commits(load_from_gitaly: true)
+        end
+
+        it 'returns the expected commit collections' do
+          without_limit = diff.commits(load_from_gitaly: true)
+          with_limit = diff.commits(limit: 1, load_from_gitaly: true)
+
+          expect(with_limit).to be_a(CommitCollection)
+          expect(with_limit.commits.size).to be 1
+
+          expect(without_limit).to be_a(CommitCollection)
+          expect(without_limit.commits.size).to be > 1
+        end
+      end
+    end
+
+    context 'when load_from_gitaly is false' do
+      it 'returns the expected commit collections' do
+        without_limit = diff.commits(load_from_gitaly: false)
+        with_limit = diff.commits(limit: 1, load_from_gitaly: false)
+
+        expect(with_limit).to be_a(CommitCollection)
+        expect(with_limit.commits.size).to be 1
+
+        expect(without_limit).to be_a(CommitCollection)
+        expect(without_limit.commits.size).to be > 1
+      end
+
+      it 'loads the include_metadata' do
+        diff_commits = diff.merge_request_diff_commits
+
+        expect(diff_commits).to receive(:with_users).with(include_metadata: true).and_call_original
+
+        diff.commits(load_from_gitaly: false)
+      end
+
+      context 'when diff_commits_dedup is disabled' do
+        before do
+          stub_feature_flags(merge_request_diff_commits_dedup: false)
+        end
+
+        it 'returns the expected commit collections' do
+          without_limit = diff.commits(load_from_gitaly: false)
+          with_limit = diff.commits(limit: 1, load_from_gitaly: false)
+
+          expect(with_limit).to be_a(CommitCollection)
+          expect(with_limit.commits.size).to be 1
+
+          expect(without_limit).to be_a(CommitCollection)
+          expect(without_limit.commits.size).to be > 1
+        end
+
+        it 'does not load the include_metadata' do
+          diff_commits = diff.merge_request_diff_commits
+
+          expect(diff_commits).to receive(:with_users).with(include_metadata: false).and_call_original
+
+          diff.commits(load_from_gitaly: false)
+        end
       end
     end
   end

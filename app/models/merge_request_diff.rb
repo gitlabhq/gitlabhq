@@ -903,10 +903,15 @@ class MergeRequestDiff < ApplicationRecord
     diff_commits = merge_request_diff_commits
     diff_commits = diff_commits.page(page).per(limit) if page.present?
     diff_commits = diff_commits.limit(limit) if limit.present?
-    preload_metadata_for_commits(diff_commits) if diff_commits_dedup_enabled?
 
     if load_from_gitaly
-      commits = Gitlab::Git::Commit.batch_by_oid(repository, diff_commits.map(&:sha))
+      shas = if diff_commits_dedup_enabled?
+               diff_commits.commit_shas_from_metadata(project_id: project.id, limit: nil)
+             else
+               diff_commits.map(&:sha)
+             end
+
+      commits = Gitlab::Git::Commit.batch_by_oid(repository, shas)
       commits = Commit.decorate(commits, project)
     else
       commits = diff_commits.with_users(include_metadata: diff_commits_dedup_enabled?)
@@ -1059,22 +1064,7 @@ class MergeRequestDiff < ApplicationRecord
   end
 
   def commit_shas_from_metadata(limit)
-    # Until `merge_request_commits_metadata` records are backfilled, SHAs data may be in found in either table
-    metadata_join_sql = <<~SQL.squish
-      LEFT JOIN merge_request_commits_metadata
-      ON merge_request_commits_metadata.id = merge_request_diff_commits.merge_request_commits_metadata_id
-      AND merge_request_commits_metadata.project_id = ?
-    SQL
-
-    # raw SQL in pluck() bypass ActiveRecord's type casting, so encode() is needed to convert bytea to hex
-    shas_sql = Arel.sql("encode(COALESCE(merge_request_commits_metadata.sha, merge_request_diff_commits.sha), 'hex')")
-
-    MergeRequestDiffCommit
-      .for_merge_request_diff(id)
-      .joins(self.class.sanitize_sql_array([metadata_join_sql, self.project_id]))
-      .order(:relative_order)
-      .limit(limit)
-      .pluck(shas_sql)
+    MergeRequestDiffCommit.for_merge_request_diff(id).commit_shas_from_metadata(project_id: project.id, limit: limit)
   end
 
   def diff_commits_dedup_enabled?

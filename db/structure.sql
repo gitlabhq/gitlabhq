@@ -1407,15 +1407,15 @@ CREATE FUNCTION table_sync_function_c237afdf68() RETURNS trigger
     AS $$
 BEGIN
 IF (TG_OP = 'DELETE') THEN
-  DELETE FROM project_daily_statistics_b8088ecbd2 where "id" = OLD."id";
+  DELETE FROM project_daily_statistics_archived where "id" = OLD."id";
 ELSIF (TG_OP = 'UPDATE') THEN
-  UPDATE project_daily_statistics_b8088ecbd2
+  UPDATE project_daily_statistics_archived
   SET "project_id" = NEW."project_id",
     "fetch_count" = NEW."fetch_count",
     "date" = NEW."date"
-  WHERE project_daily_statistics_b8088ecbd2."id" = NEW."id";
+  WHERE project_daily_statistics_archived."id" = NEW."id";
 ELSIF (TG_OP = 'INSERT') THEN
-  INSERT INTO project_daily_statistics_b8088ecbd2 ("id",
+  INSERT INTO project_daily_statistics_archived ("id",
     "project_id",
     "fetch_count",
     "date")
@@ -5836,7 +5836,7 @@ CREATE TABLE project_audit_events (
 )
 PARTITION BY RANGE (created_at);
 
-CREATE TABLE project_daily_statistics_b8088ecbd2 (
+CREATE TABLE project_daily_statistics (
     id bigint NOT NULL,
     project_id bigint NOT NULL,
     fetch_count integer NOT NULL,
@@ -23980,7 +23980,7 @@ CREATE SEQUENCE project_custom_attributes_id_seq
 
 ALTER SEQUENCE project_custom_attributes_id_seq OWNED BY project_custom_attributes.id;
 
-CREATE TABLE project_daily_statistics (
+CREATE TABLE project_daily_statistics_archived (
     id bigint NOT NULL,
     project_id bigint NOT NULL,
     fetch_count integer NOT NULL,
@@ -35258,11 +35258,11 @@ ALTER TABLE ONLY project_control_compliance_statuses
 ALTER TABLE ONLY project_custom_attributes
     ADD CONSTRAINT project_custom_attributes_pkey PRIMARY KEY (id);
 
-ALTER TABLE ONLY project_daily_statistics_b8088ecbd2
-    ADD CONSTRAINT project_daily_statistics_b8088ecbd2_pkey PRIMARY KEY (id, date);
+ALTER TABLE ONLY project_daily_statistics_archived
+    ADD CONSTRAINT project_daily_statistics_archived_pkey PRIMARY KEY (id);
 
 ALTER TABLE ONLY project_daily_statistics
-    ADD CONSTRAINT project_daily_statistics_pkey PRIMARY KEY (id);
+    ADD CONSTRAINT project_daily_statistics_pkey PRIMARY KEY (id, date);
 
 ALTER TABLE ONLY project_data_transfers
     ADD CONSTRAINT project_data_transfers_pkey PRIMARY KEY (id);
@@ -38601,9 +38601,9 @@ CREATE INDEX idx_p_ai_active_context_code_repositories_enabled_namespace_id ON O
 
 CREATE INDEX idx_p_ci_finished_pipeline_ch_sync_evts_on_project_namespace_id ON ONLY p_ci_finished_pipeline_ch_sync_events USING btree (project_namespace_id);
 
-CREATE INDEX idx_p_project_daily_statistics_on_date_and_id ON ONLY project_daily_statistics_b8088ecbd2 USING btree (date, id);
+CREATE INDEX idx_p_project_daily_statistics_on_date_and_id ON ONLY project_daily_statistics USING btree (date, id);
 
-CREATE UNIQUE INDEX idx_p_project_daily_statistics_on_project_id_and_date ON ONLY project_daily_statistics_b8088ecbd2 USING btree (project_id, date DESC);
+CREATE UNIQUE INDEX idx_p_project_daily_statistics_on_project_id_and_date ON ONLY project_daily_statistics USING btree (project_id, date DESC);
 
 CREATE INDEX idx_packages_debian_group_component_files_on_architecture_id ON packages_debian_group_component_files USING btree (architecture_id);
 
@@ -42281,9 +42281,9 @@ CREATE INDEX index_project_custom_attributes_on_key_and_value ON project_custom_
 
 CREATE UNIQUE INDEX index_project_custom_attributes_on_project_id_and_key ON project_custom_attributes USING btree (project_id, key);
 
-CREATE INDEX index_project_daily_statistics_on_date_and_id ON project_daily_statistics USING btree (date, id);
+CREATE INDEX index_project_daily_statistics_on_date_and_id ON project_daily_statistics_archived USING btree (date, id);
 
-CREATE UNIQUE INDEX index_project_daily_statistics_on_project_id_and_date ON project_daily_statistics USING btree (project_id, date DESC);
+CREATE UNIQUE INDEX index_project_daily_statistics_on_project_id_and_date ON project_daily_statistics_archived USING btree (project_id, date DESC);
 
 CREATE INDEX index_project_data_transfers_on_namespace_id ON project_data_transfers USING btree (namespace_id);
 
@@ -51079,7 +51079,7 @@ ALTER TABLE ONLY group_push_rules
 ALTER TABLE ONLY incident_management_oncall_rotations
     ADD CONSTRAINT fk_rails_256e0bc604 FOREIGN KEY (oncall_schedule_id) REFERENCES incident_management_oncall_schedules(id) ON DELETE CASCADE;
 
-ALTER TABLE project_daily_statistics_b8088ecbd2
+ALTER TABLE project_daily_statistics
     ADD CONSTRAINT fk_rails_2572a8ecfe FOREIGN KEY (project_id) REFERENCES projects(id) ON DELETE CASCADE;
 
 ALTER TABLE ONLY ci_unit_test_failures
@@ -52006,7 +52006,7 @@ ALTER TABLE ONLY clusters_kubernetes_namespaces
 ALTER TABLE ONLY alert_management_alert_user_mentions
     ADD CONSTRAINT fk_rails_8e48eca0fe FOREIGN KEY (alert_management_alert_id) REFERENCES alert_management_alerts(id) ON DELETE CASCADE;
 
-ALTER TABLE ONLY project_daily_statistics
+ALTER TABLE ONLY project_daily_statistics_archived
     ADD CONSTRAINT fk_rails_8e549b272d FOREIGN KEY (project_id) REFERENCES projects(id) ON DELETE CASCADE;
 
 ALTER TABLE ONLY project_secrets_managers

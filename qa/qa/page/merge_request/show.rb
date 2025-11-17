@@ -222,6 +222,10 @@ module QA
 
         def click_diffs_tab
           click_element('diffs-tab')
+
+          wait_until(message: 'Wait for MR to be built') do
+            page.has_no_text?('Building your merge request')
+          end
         end
 
         def has_reports_tab?

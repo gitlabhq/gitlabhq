@@ -316,5 +316,5 @@ they have the following actions in common:
 - [Assign a milestone](../../user/project/milestones/_index.md#assign-a-milestone-to-an-item)
 - [Make an incident confidential](../../user/project/issues/confidential_issues.md)
 - [Set a due date](../../user/project/issues/due_dates.md)
-- [Toggle notifications](../../user/profile/notifications.md#edit-notification-settings-for-issues-merge-requests-and-epics)
+- [Toggle notifications](../../user/profile/notifications.md#subscribe-to-notifications-for-a-specific-issue-merge-request-or-epic)
 - [Track time spent](../../user/project/time_tracking.md)

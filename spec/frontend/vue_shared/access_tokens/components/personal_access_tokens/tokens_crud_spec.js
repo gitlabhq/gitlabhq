@@ -1,21 +1,35 @@
-import { GlBadge, GlDisclosureDropdown, GlDisclosureDropdownItem } from '@gitlab/ui';
-import { nextTick } from 'vue';
+import { GlBadge, GlDisclosureDropdown, GlDisclosureDropdownItem, GlModal } from '@gitlab/ui';
+import Vue, { nextTick } from 'vue';
+import { createTestingPinia } from '@pinia/testing';
+import { PiniaVuePlugin } from 'pinia';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import { RENDER_ALL_SLOTS_TEMPLATE, stubComponent } from 'helpers/stub_component';
 import TokensCrud from '~/vue_shared/access_tokens/components/personal_access_tokens/tokens_crud.vue';
 import TokensTable from '~/vue_shared/access_tokens/components/personal_access_tokens/tokens_table.vue';
 import CrudComponent from '~/vue_shared/components/crud_component.vue';
 import DetailsDrawer from '~/vue_shared/access_tokens/components/personal_access_tokens/details_drawer.vue';
+import ConfirmActionModal from '~/vue_shared/components/confirm_action_modal.vue';
+import { useAccessTokens } from '~/vue_shared/access_tokens/stores/access_tokens';
+import waitForPromises from 'helpers/wait_for_promises';
+
+Vue.use(PiniaVuePlugin);
 
 describe('Personal access tokens crud component', () => {
   let wrapper;
-  const tokens = [{}, {}];
+  const pinia = createTestingPinia();
+  const store = useAccessTokens();
+  const tokens = [
+    { id: 1, name: 'Token 1', expiresAt: '2025-10-05' },
+    { id: 2, name: 'Token 2', expiresAt: '2025-09-14' },
+  ];
   const createWrapper = () => {
     wrapper = shallowMountExtended(TokensCrud, {
+      pinia,
       propsData: { tokens, loading: false },
       provide: { accessTokenNew: 'new/path' },
       stubs: {
         GlDisclosureDropdown,
+        ConfirmActionModal,
         CrudComponent: stubComponent(CrudComponent, {
           template: RENDER_ALL_SLOTS_TEMPLATE,
         }),
@@ -28,6 +42,15 @@ describe('Personal access tokens crud component', () => {
   const findDropdownItems = () => wrapper.findAllComponents(GlDisclosureDropdownItem);
   const findTokensTable = () => wrapper.findComponent(TokensTable);
   const findDetailsDrawer = () => wrapper.findComponent(DetailsDrawer);
+  const findConfirmActionModal = () => wrapper.findComponent(ConfirmActionModal);
+
+  const confirmModal = () => {
+    findConfirmActionModal()
+      .findComponent(GlModal)
+      .vm.$emit('primary', { preventDefault: jest.fn() });
+
+    return waitForPromises();
+  };
 
   describe('on page load', () => {
     beforeEach(() => createWrapper());
@@ -95,6 +118,65 @@ describe('Personal access tokens crud component', () => {
         expect(findDropdownItems().at(1).text()).toContain(
           'Scoped to all groups and projects with broad permissions to resources.',
         );
+      });
+    });
+
+    describe.each`
+      type                | findComponent
+      ${'tokens table'}   | ${findTokensTable}
+      ${'details drawer'} | ${findDetailsDrawer}
+    `('for $type', ({ findComponent }) => {
+      it('shows confirm action modal for token rotate', async () => {
+        findComponent().vm.$emit('rotate', tokens[1]);
+        await nextTick();
+
+        expect(findConfirmActionModal().props()).toMatchObject({
+          modalId: 'token-action-confirm-modal',
+          title: "Rotate the token 'Token 2'?",
+          actionText: 'Rotate',
+        });
+      });
+
+      it('shows confirm action modal for token revoke', async () => {
+        findComponent().vm.$emit('revoke', tokens[1]);
+        await nextTick();
+
+        expect(findConfirmActionModal().props()).toMatchObject({
+          modalId: 'token-action-confirm-modal',
+          title: "Revoke the token 'Token 2'?",
+          actionText: 'Revoke',
+        });
+      });
+    });
+
+    describe.each`
+      event       | storeAction          | expectedParameters
+      ${'rotate'} | ${store.rotateToken} | ${[2, '2025-09-14']}
+      ${'revoke'} | ${store.revokeToken} | ${[2]}
+    `('for $event confirm modal', ({ event, storeAction, expectedParameters }) => {
+      beforeEach(() => {
+        findTokensTable().vm.$emit('select', tokens[1]);
+        findDetailsDrawer().vm.$emit(event, tokens[1]);
+      });
+
+      it('unrenders modal when the modal closes', async () => {
+        findConfirmActionModal().vm.$emit('close');
+        await nextTick();
+
+        expect(findConfirmActionModal().exists()).toBe(false);
+      });
+
+      describe('when modal is confirmed', () => {
+        beforeEach(() => confirmModal());
+
+        it(`performs token ${event}`, () => {
+          expect(storeAction).toHaveBeenCalledTimes(1);
+          expect(storeAction).toHaveBeenCalledWith(...expectedParameters);
+        });
+
+        it('closes details drawer', () => {
+          expect(findDetailsDrawer().props('token')).toBe(null);
+        });
       });
     });
   });

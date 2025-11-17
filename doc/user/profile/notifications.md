@@ -39,8 +39,8 @@ that happen there.
 You might receive notifications for one of the following reasons:
 
 - You participate in an issue, merge request, epic, or design. You become a participant when you comment
-  or edit, or someone mentions <sup>1</sup> you.
-- You've [enabled notifications in an issue, merge request, or epic](#notifications-on-issues-merge-requests-and-epics).
+  or edit, or someone mentions your username.
+- You've [enabled notifications in an issue, merge request, or epic](#issue-merge-request-and-epic-events).
 - You've configured notifications for the [project](#change-level-of-project-notifications) or [group](#group-notifications).
 - You're subscribed to group or project pipeline notifications through the pipeline emails [integration](../project/integrations/_index.md).
 
@@ -78,16 +78,16 @@ To edit your notification settings:
 
 ### Notification levels
 
-For each project and group you can select one of the following levels:
+To the right of each project and group you can select a notification level:
 
-| Level       | Description |
-| ----------- | ----------- |
-| Global      | Your default global settings apply. |
-| Watch       | Receive notifications for [most activity](#events-not-included-in-the-watch-level). |
-| Participate | Receive notifications for threads you have participated in. |
-| On mention  | Receive notifications when you are [mentioned](../discussions/_index.md#mentions) in a comment. |
-| Disabled    | Receive no notifications. |
-| Custom      | Receive notifications for selected events and threads you have participated in. |
+| Level           | Description |
+|-----------------|-------------|
+| **Global**      | Your default global settings apply. |
+| **Watch**       | Receive notifications for most activity. |
+| **Participate** | Receive notifications for threads you have participated in. |
+| **On mention**  | Receive notifications when you are [mentioned](../discussions/_index.md#mentions) in a comment. |
+| **Disabled**    | Receive no notifications. |
+| **Custom**      | Same as **Participate**, plus any additional notification events you select. |
 
 ### Notification scope
 
@@ -183,95 +183,168 @@ To learn how to be notified when a new release is available, watch [Notification
 
 ## Notification events
 
-Users are notified of the following events:
+Notifications are sent for user, project, or group events, and for activity
+on work items.
 
-<!-- The table is sorted first by recipient, then alphabetically. -->
+### User events
 
-| Event                                    | Sent to         | Settings level                                                                                                                          |
-|------------------------------------------|-----------------|-----------------------------------------------------------------------------------------------------------------------------------------|
-| New release                              | Project members | Custom notification.                                                                                                                    |
-| Project moved                            | Project members | Any other than disabled.                                                                                                                |
-| Email changed                            | User            | Security email, always sent.                                                                                                            |
-| Group access level changed               | User            | Sent when user group access level is changed.                                                                                           |
-| New email address added                  | User            | Security email, sent to primary email address.                                                                                          |
-| New email address added                  | User            | Security email, sent to newly-added email address.                                                                                      |
-| New SAML/SCIM user provisioned           | User            | Sent when a user is provisioned through SAML/SCIM.                                                                                      |
-| New SSH key added                        | User            | Security email, always sent.                                                                                                            |
-| New user created                         | User            | Sent on user creation, except for OmniAuth (LDAP).                                                                                      |
-| Password changed                         | User            | Security email, always sent when user changes their own password.                                                                       |
-| Password changed by administrator        | User            | Security email, always sent when an administrator changes the password of another user.                                                 |
-| Personal access tokens expiring soon     | User            | Security email, always sent.                                                                                                            |
-| Personal access tokens have been created | User            | Security email, always sent.                                                                                                            |
-| Personal access tokens have expired      | User            | Security email, always sent.                                                                                                            |
-| Personal access token has been revoked   | User            | Security email, always sent.  [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/98911) in GitLab 15.5.                 |
-| Project deploy tokens expiring soon      | Project owners and maintainers | Security email, always sent. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/512197) in GitLab 18.3.           |
-| Personal access token has been rotated   | User            | Security email, always sent. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/199360) in GitLab 18.3.                                                                                                           |
-| Group access tokens expiring soon        | Direct Group Owners | Security email, always sent.  [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/367705) in GitLab 16.4.                 |
-| Project access tokens expiring soon      | Direct Project Owners and Maintainers | Security email, always sent.  [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/367706) in GitLab 16.4.                 |
-| Project access level changed             | User            | Sent when user project access level is changed.                                                                                         |
-| SSH key has expired                      | User            | Security email, always sent.                                                                                                            |
-| Two-factor authentication disabled       | User            | Security email, always sent.                                                                                                            |
-| User added to group                      | User            | Sent when user is added to group.                                                                                                       |
-| User added to project                    | User            | Sent when user is added to project.                                                                                                     |
-| Group access expired                     | Group members   | Sent when user's access to a group expires in seven days. _[Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/12704) in GitLab 16.3._                                                                                 |
-| Project access expired                   | Project members | Sent when user's access to a project expires in seven days. _[Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/12704) in GitLab 16.3._                                                                                                   |
-| Group scheduled for deletion             | Group Owners    | Sent when group is scheduled for deletion. _[Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/522883) in GitLab 17.11_         |
-| Project scheduled for deletion           | Project Owners  | Sent when project is scheduled for deletion. _[Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/522883) in GitLab 17.11_          |
+{{< history >}}
 
-To disable `always sent` emails on GitLab Self-Managed and GitLab Dedicated, you must disable individual [background jobs](../../administration/maintenance_mode/_index.md#background-jobs), for example:
+- Notification for personal access token rotated [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/199360) in GitLab 18.3.
 
-- `personal_access_tokens_expiring_worker`
-- `personal_access_tokens_expired_notification_worker`
-- `ssh_keys_expiring_soon_notification_worker`
-- `ssh_keys_expired_notification_worker`
-- `send_recurring_notifications_worker`
-- `deploy_tokens_expiring_worker`
-- `members_expiring_worker`
+{{< /history >}}
 
-To disable background jobs, you must be an administrator.
+User notification events:
 
-## Notifications on issues, merge requests, and epics
+| Event                                    | Sent to | Details |
+|------------------------------------------|---------|---------|
+| Email changed                            | User    | Security email, always sent. |
+| Group access level changed               | User    |         |
+| New email address added                  | User    | Security email, sent to newly-added email address. |
+| New email address added                  | User    | Security email, sent to primary email address. |
+| New SSH key added                        | User    | Security email, always sent. |
+| New user created                         | User    | Sent on user creation, except for OmniAuth (LDAP). |
+| Password changed                         | User    | Security email, always sent when user changes their own password. |
+| Password changed by administrator        | User    | Security email, always sent when an administrator changes the password of another user. |
+| Personal access token has been revoked   | User    | Security email, always sent. |
+| Personal access token has been rotated   | User    | Security email, always sent. |
+| Personal access tokens expiring soon     | User    | Security email, always sent. |
+| Personal access tokens have been created | User    | Security email, always sent. |
+| Personal access tokens have expired      | User    | Security email, always sent. |
+| SSH key has expired                      | User    | Security email, always sent. |
+| Two-factor authentication disabled       | User    | Security email, always sent. |
 
-You also receive notifications for events happening on
-issues, merge requests, and epics.
+### Project events
 
-### Who receives notifications on issues, merge requests, and epics
+{{< history >}}
 
-In issues, merge requests, and epics, for most events, the notification is sent to:
+- Notification for project access expired [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/12704) in GitLab 16.3.
+- Notification for project access tokens expiring soon [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/367706) in GitLab 16.4.
+- Notification for project deploy tokens expiring soon [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/512197) in GitLab 18.3.
+- Notification for project scheduled for deletion [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/522883) in GitLab 17.11.
 
-- Participants:
-  - The author and assignee.
-  - Authors of comments.
-  - Anyone [mentioned](../discussions/_index.md#mentions) by username in the title
-    or description.
-  - Anyone mentioned by username in a comment if their notification level is "Participating" or higher.
-- Watchers: users with notification level "Watch" ([with some exceptions](#events-not-included-in-the-watch-level)).
-- Subscribers: anyone who manually subscribed to notifications.
-- Custom: users with notification level "Custom" who turned on notifications for a fitting type of events.
+{{< /history >}}
 
-To minimize the number of notifications that do not require any action, eligible
-approvers are not notified for all the activities in their projects.
+Project notification events:
 
-To get notified about all events, change your user notification settings to **Custom** and select
-all the options.
+| Event                               | Sent to                               | Details |
+|-------------------------------------|---------------------------------------|---------|
+| New release                         | Project members                       | Only sent when the  **Release is created** custom notification level is selected. |
+| Project access expired              | Project members                       | Sent when user's access to a project expires in seven days. |
+| Project access level changed        | Project members                       | Sent when user project access level is changed. |
+| Project access tokens expiring soon | Direct project Owners and Maintainers | Security email, always sent. |
+| Project deploy tokens expiring soon | Project Owners and Maintainers        | Security email, always sent. |
+| Project moved                       | Project members                       | Sent for all notification levels except disabled, or when the  **Project is moved** custom notification level is selected. |
+| Project scheduled for deletion      | Project Owners                        | Sent when project is scheduled for deletion. |
+| User added to project               | User                                  | Sent when user is added to project. |
 
-#### Events not included in the Watch level
+### Group events
 
-If you set the notification level to **Watch**, you get notified about almost all events, with
-these exceptions:
+{{< history >}}
 
-- Somebody pushes to a merge request.
-- Issue is due the next day.
-- Pipeline succeeds.
-- Merge request that you're eligible to approve is created.
+- Notification for group access expired [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/12704) in GitLab 16.3. 
+- Notification for group access tokens expiring soon [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/367705) in GitLab 16.4.
+- Notification for group scheduled for deletion [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/522883) in GitLab 17.11.
 
-Issue [501083](https://gitlab.com/gitlab-org/gitlab/-/issues/501083) tracks adding these events to
-the **Watch** level.
+{{< /history >}}
 
-### Edit notification settings for issues, merge requests, and epics
+Group notification events:
 
-To toggle notifications on an issue, merge request, or epic: on the right sidebar,
-select the vertical ellipsis ({{< icon name="ellipsis_v" >}}), then turn on or off the **Notifications** toggle.
+| Event                             | Sent to             | Details |
+|-----------------------------------|---------------------|---------|
+| Group access expired              | Group members       | Sent when user's access to a group expires in seven days. |
+| Group access tokens expiring soon | Direct Group Owners | Security email, always sent. |
+| Group scheduled for deletion      | Group Owners        | Sent when group is scheduled for deletion. |
+| User added to group               | User                | Sent when user is added to group. |
+| New SAML/SCIM user provisioned    | User                | Sent when a user is provisioned through SAML/SCIM. |
+
+### Issue, merge request, and epic events
+
+{{< history >}}
+
+- Notifications for merge requests you're eligible to approve [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/12855) in GitLab 16.7 and [renamed](https://gitlab.com/gitlab-org/gitlab/-/issues/465347) in GitLab 17.11.
+- Service account pipeline notifications [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/178740) in GitLab 18.1.
+
+{{< /history >}}
+
+Events generate notifications based on the [notification level](#notification-levels) selected.
+Some notifications can be optionally enabled by selecting the **Custom** notification level, and selecting the desired events. You can also manually [subscribe to notifications](#subscribe-to-notifications-for-a-specific-issue-merge-request-or-epic)
+for and epic, issue, or merge request.
+
+By default, you don't receive notifications for issues, merge requests, or epics you create.
+You can turn on [notifications about your own activity](#global-notification-settings).
+
+Epic event notifications are sent for the following notification levels:
+
+| Event       | Watch | Participate | On Mention | Subscribed | Custom   | Additional details |
+|-------------|-------|-------------|------------|------------|----------|--------------------|
+| Closed      | Yes   | Yes         |            | Yes        | Yes      |                    |
+| New epic    | Yes   | Yes         | Yes        |            | Yes      | Sent when someone is mentioned by username in the description. |
+| New comment | Yes   | Yes         | Yes        | Yes        | If **Comment is added** is selected | Also sent when someone is mentioned by username in the comment. |
+| Reopened    | Yes   | Yes         |            | Yes        | Yes      |                    |
+
+Issue event notifications are sent for the following notification levels:
+
+| Event                        | Watch | Participate | On Mention | Subscribed | Custom   | Additional details |
+|------------------------------|-------|-------------|------------|------------|----------|--------------------|
+| Closed                       | Yes   | Yes         |            | Yes        | If **Issue is closed** is selected |                    |
+| Due tomorrow                 |       | Yes         |            |            | If **Issue is due tomorrow** is selected | The notification is sent at 00:50 in the server's time zone (UTC for GitLab.com) for open issues with a due date of the next calendar day. |
+| Milestone changed            | Yes   | Yes         |            | Yes        | Yes      |                    |
+| Milestone removed            | Yes   | Yes         |            | Yes        | Yes      |                    |
+| New issue                    | Yes   | Yes         | Yes        |            | If **Issue is created** is selected | Also sent when someone is mentioned by username in the description. |
+| New comment                  | Yes   | Yes         | Yes        | Yes        | If **Comment is added** is selected | Also sent when someone is mentioned by username in the comment. |
+| Title or description changed | Yes   |             | Yes        |            |          | Any new mentions by username. |
+| Reassigned                   | Yes   | Yes         |            | Yes        | If **Issue is reassigned** is selected | Also sent to the previous assignee. |
+| Reopened                     | Yes   | Yes         |            | Yes        | If **Issue is reopened** is selected |                    |
+
+<!-- For issue due timing source, see 'issue_due_scheduler_worker' in https://gitlab.com/gitlab-org/gitlab/-/blob/master/config/initializers/1_settings.rb -->
+
+Merge request notifications are sent for the following notification levels:
+
+| Event                                                  | Watch | Participate | On Mention | Subscribed | Custom   | Additional details |
+|--------------------------------------------------------|-------|-------------|------------|------------|----------|--------------------|
+| Closed                                                 | Yes   | Yes         |            | Yes        | If **Merge request is closed** is selected |                    |
+| Conflict                                               | Yes   |             |            |            |          | Author and any user that has set the merge request to auto-merge. |
+| [Marked as ready](../project/merge_requests/drafts.md) | Yes   | Yes         |            |            | Yes      |                    |
+| Merged                                                 | Yes   | Yes         |            | Yes        | If **Merge request is merged** is selected |                    |
+| Set to auto-merge                                      | Yes   | Yes         |            | Yes        | If **Merge request is set to auto-merge** is selected | Custom notification level is ignored for author, watcher, and subscribers. |
+| Milestone changed                                      | Yes   | Yes         |            | Yes        | Yes      |                    |
+| Milestone removed                                      | Yes   | Yes         |            | Yes        | Yes      |                    |
+| New merge request                                      | Yes   | Yes         | Yes        |            | If **Merge request is created** is selected | Anyone mentioned by username in the description. |
+| New comment                                            | Yes   | Yes         | Yes        | Yes        | If **Comment is added** is selected | Anyone mentioned by username in the comment. |
+| New push                                               |       | Yes         |            |            | If **Merge request receives a push** is selected |                    |
+| Reassigned                                             | Yes   | Yes         |            | Yes        | If **Merge request is reassigned** is selected | Also sent to the previous assignee. |
+| Reviewers are changed                                  | Yes   | Yes         |            | Yes        | If **Merge request reviewers are changed** is selected | Also sent to the previous reviewer. |
+| Reopened                                               | Yes   | Yes         |            | Yes        | If **Merge request is reopened** is selected |                    |
+| Title or description changed                           | Yes   |             | Yes        |            |          | Any new mentions by username. |
+| New merge request you're eligible to approve.          |       |             |            |            | If **Merge request you're eligible to approve is created** is selected |                    |
+
+Pipeline event notifications are sent for the following notification levels:
+
+| Event      | Watch | Pipeline author | Custom   | Additional Details |
+|------------|-------|-----------------|----------|--------------------|
+| Failed     | Yes   | Yes             | If **Pipeline fails** is selected |                    |
+| Fixed      |       | Yes             | If **Pipeline is fixed** is selected |                    |
+| Successful | Yes   | Yes             | If **Pipeline is successful** is selected | If the pipeline failed previously, a "Fixed pipeline" message is sent for the first successful pipeline after the failure, and then a "Successful pipeline" message for any further successful pipelines. |
+
+Service account pipeline event notifications are sent for the following notification levels:
+
+| Event      | Watch | Custom |
+|------------|-------|--------|
+| Failed     | Yes   | If **Pipeline by Service Account fails** is selected |
+| Fixed      |       | If **Pipeline by Service Account is fixed** is selected |
+| Successful | Yes   | If **Pipeline by Service Account is successful** is selected |
+
+Issue [501083](https://gitlab.com/gitlab-org/gitlab/-/issues/501083) tracks adding all events
+to the **Watch** level.
+
+#### Subscribe to notifications for a specific issue, merge request, or epic
+
+To toggle notifications on a specific issue, merge request, or epic:
+
+1. At the top of the right sidebar, select:
+   - **Notifications on** ({{< icon name="notifications" >}}) to enable notifications.
+   - **Notifications off** ({{< icon name="notifications-off" >}}) to disable notifications.
 
 #### Moved notifications
 
@@ -302,59 +375,20 @@ When you **turn off** notifications, you stop receiving notifications for update
 Turning this toggle off only unsubscribes you from updates related to this issue, merge request, or epic.
 Learn how to [opt out of all emails from GitLab](#opt-out-of-all-gitlab-emails).
 
-### Notification events on issues, merge requests, and epics
+### Disable specific events
 
-{{< history >}}
+To disable `always sent` security emails on GitLab Self-Managed and GitLab Dedicated,
+an instance administrator can disable individual [background jobs](../../administration/maintenance_mode/_index.md#background-jobs).
 
-- Service account pipeline notifications [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/178740) in GitLab 18.1.
+For example:
 
-{{< /history >}}
-
-The following table presents the events that generate notifications for issues, merge requests, and
-epics:
-
-<!-- For issue due timing source, see 'issue_due_scheduler_worker' in https://gitlab.com/gitlab-org/gitlab/-/blob/master/config/initializers/1_settings.rb -->
-
-| Type | Event | Sent to |
-|------|-------|---------|
-| Epic | Closed | Subscribers and participants. |
-| Epic | New | Anyone mentioned by username in the description, with notification level "Mention" or higher. |
-| Epic | New note | Participants, Watchers, Subscribers, and Custom notification level with this event selected. Also anyone mentioned by username in the comment, with notification level "Mention" or higher. |
-| Epic | Reopened | Subscribers and participants. |
-| Issue | Closed | Subscribers and participants. |
-| Issue | Due tomorrow. The notification is sent at 00:50 in the server's time zone (for GitLab.com this is UTC) for open issues with a due date of the next calendar day. | Participants and Custom notification level with this event selected. |
-| Issue | Milestone changed | Subscribers and participants. |
-| Issue | Milestone removed | Subscribers and participants. |
-| Issue | New | Anyone mentioned by username in the description, with notification level "Mention" or higher. |
-| Issue | New note | Participants, Watchers, Subscribers, and Custom notification level with this event selected. Also anyone mentioned by username in the comment, with notification level "Mention" or higher. |
-| Issue | Title or description changed | Any new mentions by username. |
-| Issue | Reassigned | Participants, Watchers, Subscribers, Custom notification level with this event selected, and the old assignee. |
-| Issue | Reopened | Subscribers and participants. |
-| Merge Request | Closed | Subscribers and participants. |
-| Merge Request | Conflict | Author and any user that has set the merge request to auto-merge. |
-| Merge Request | [Marked as ready](../project/merge_requests/drafts.md) | Watchers and participants. |
-| Merge Request | Merged | Subscribers and participants. |
-| Merge Request | Merged when pipeline succeeds | Author, Participants, Watchers, Subscribers, and Custom notification level with this event selected. Custom notification level is ignored for Author, Watchers and Subscribers. |
-| Merge Request | Milestone changed | Subscribers and participants. |
-| Merge Request | Milestone removed | Subscribers and participants. |
-| Merge Request | New | Anyone mentioned by username in the description, with notification level "Mention" or higher. |
-| Merge Request | New note | Participants, Watchers, Subscribers, and Custom notification level with this event selected. Also anyone mentioned by username in the comment, with notification level "Mention" or higher. |
-| Merge Request | Pushed | Participants and Custom notification level with this event selected. |
-| Merge Request | Reassigned | Participants, Watchers, Subscribers, Custom notification level with this event selected, and the old assignee. |
-| Merge Request | Review requested | Participants, Watchers, Subscribers, Custom notification level with this event selected, and the old reviewer. |
-| Merge Request | Reopened | Subscribers and participants. |
-| Merge Request | Title or description changed | Any new mentions by username. |
-| Merge Request | Merge request you're [eligible to approve](../project/merge_requests/approvals/rules.md#eligible-approvers) is created | Custom notification level with this event selected. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/12855) in GitLab 16.7. [Renamed](https://gitlab.com/gitlab-org/gitlab/-/issues/465347) from "Added as approver" in GitLab 17.11. |
-| Pipeline | Failed | The author of the pipeline. |
-| Pipeline | Fixed | The author of the pipeline. Enabled by default. |
-| Pipeline | Successful | The author of the pipeline, with Custom notification level for successful pipelines. If the pipeline failed previously, a "Fixed pipeline" message is sent for the first successful pipeline after the failure, and then a "Successful pipeline" message for any further successful pipelines. |
-| Pipeline by service account | Failed | Custom notification level for failed pipelines triggered by service accounts. |
-| Pipeline by service account | Fixed | Custom notification level for fixed pipelines triggered by service accounts. |
-| Pipeline by service account | Successful | Custom notification level for successful pipelines triggered by service accounts. |
-
-By default, you don't receive notifications for issues, merge requests, or epics created by yourself.
-To always receive notifications on your own issues, merge requests, and so on, turn on
-[notifications about your own activity](#global-notification-settings).
+- `personal_access_tokens_expiring_worker`
+- `personal_access_tokens_expired_notification_worker`
+- `ssh_keys_expiring_soon_notification_worker`
+- `ssh_keys_expired_notification_worker`
+- `send_recurring_notifications_worker`
+- `deploy_tokens_expiring_worker`
+- `members_expiring_worker`
 
 ## Notifications for unknown sign-ins
 

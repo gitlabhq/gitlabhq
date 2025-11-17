@@ -23,7 +23,7 @@ RSpec.describe Banzai::Filter::JsonTableFilter, feature_category: :markdown do
         ],
         "items": [
           {
-            "starts_at": "_2024-10-07_"
+            "starts_at": "_2024-10-07_ :white_check_mark: 👍"
           },
           {
             "url": "https://example.com/page2.html"
@@ -50,7 +50,8 @@ RSpec.describe Banzai::Filter::JsonTableFilter, feature_category: :markdown do
       </thead>
       <tbody>
       <tr>
-      <td><em>2024-10-07</em></td>
+      <td>
+      <em>2024-10-07</em> :white_check_mark: 👍</td>
       <td></td>
       </tr>
       <tr>

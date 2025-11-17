@@ -125,6 +125,18 @@ addHook('beforeSanitizeAttributes', (node, _, config) => {
   }
 });
 
+// Permit "title", "data-name" and "data-unicode-version" attributes on
+// <gl-emoji /> (when allowed), even when ALLOW_DATA_ATTR is false.
+addHook('uponSanitizeAttribute', (node, hookEvent) => {
+  if (
+    node.tagName === 'GL-EMOJI' &&
+    ['title', 'data-name', 'data-unicode-version'].includes(hookEvent.attrName)
+  ) {
+    // eslint-disable-next-line no-param-reassign
+    hookEvent.forceKeepAttr = true;
+  }
+});
+
 addHook('afterSanitizeAttributes', (node, _, config) => {
   if (node.tagName === 'A' && node.hasAttribute(TEMPORARY_ATTRIBUTE)) {
     node.setAttribute('target', node.getAttribute(TEMPORARY_ATTRIBUTE));

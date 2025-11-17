@@ -75,7 +75,7 @@ RSpec.describe ActiveContext::Preprocessors::ContentFetcher do
       end
 
       it 'does not add the ref to the failed refs result', :aggregate_failures do
-        expect(ActiveContext::Logger).to receive(:skippable_exception) do |e, kwargs|
+        expect(ActiveContext::Logger).to receive(:retryable_exception) do |e, kwargs|
           expect(e).to be_a(ActiveContext::Preprocessors::ContentFetcher::ContentNotFoundError)
           expect(e.message).to eq("content not found for chunk with id: id2")
           expect(kwargs[:class]).to eq("Class")
@@ -86,7 +86,7 @@ RSpec.describe ActiveContext::Preprocessors::ContentFetcher do
         result = process_refs
 
         expect(result[:successful]).to eq([reference_1])
-        expect(result[:failed]).to be_empty
+        expect(result[:failed]).to eq([reference_2])
       end
     end
   end
