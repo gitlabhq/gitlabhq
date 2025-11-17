@@ -245,6 +245,7 @@ RSpec.describe User, :with_current_organization, feature_category: :user_profile
     it { is_expected.to have_many(:notes).dependent(:destroy) }
     it { is_expected.to have_many(:merge_requests).dependent(:destroy) }
     it { is_expected.to have_many(:identities).dependent(:destroy) }
+    it { is_expected.to have_many(:webauthn_registrations) }
     it { is_expected.to have_many(:passkeys) }
     it { is_expected.to have_many(:second_factor_webauthn_registrations) }
     it { is_expected.to have_many(:spam_logs).dependent(:destroy) }
@@ -2996,6 +2997,18 @@ RSpec.describe User, :with_current_organization, feature_category: :user_profile
       user = create(:user, incoming_email_token: incoming_email_token)
 
       expect(user.enabled_incoming_email_token).to be_nil
+    end
+  end
+
+  describe '#get_all_webauthn_credential_ids' do
+    let_it_be(:user) { create(:user) }
+    let_it_be(:second_factor_authenticator) { create(:webauthn_registration, user: user) }
+    let_it_be(:passkey) { create(:webauthn_registration, :passkey, user: user) }
+
+    it 'returns all webauthn credentials ids' do
+      expect(user.get_all_webauthn_credential_ids).to match_array(
+        [second_factor_authenticator.credential_xid, passkey.credential_xid]
+      )
     end
   end
 

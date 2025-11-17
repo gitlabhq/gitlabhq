@@ -14447,6 +14447,11 @@ Input type: `VulnerabilityIssueLinkCreateInput`
 
 ### `Mutation.vulnerabilityLinkMergeRequest`
 
+{{< details >}}
+**Introduced** in GitLab 18.4.
+**Status**: Experiment.
+{{< /details >}}
+
 Link a merge request to a vulnerability.
 
 Input type: `VulnerabilityLinkMergeRequestInput`
@@ -14457,6 +14462,7 @@ Input type: `VulnerabilityLinkMergeRequestInput`
 | ---- | ---- | ----------- |
 | <a id="mutationvulnerabilitylinkmergerequestclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
 | <a id="mutationvulnerabilitylinkmergerequestmergerequestid"></a>`mergeRequestId` | [`MergeRequestID!`](#mergerequestid) | ID of the merge request. |
+| <a id="mutationvulnerabilitylinkmergerequestreadinessscore"></a>`readinessScore` | [`Float`](#float) | Confidence rating representing the estimated accuracy of the fix in the AI generated merge request. Decimal value between 0 and 1, with 1 being the highest. |
 | <a id="mutationvulnerabilitylinkmergerequestvulnerabilityid"></a>`vulnerabilityId` | [`VulnerabilityID!`](#vulnerabilityid) | ID of the vulnerability. |
 
 #### Fields

@@ -50600,6 +50600,12 @@ msgstr ""
 msgid "ProfilesAuthentication|Delete passkey"
 msgstr ""
 
+msgid "ProfilesAuthentication|Delete passkey and disable passkey sign-in?"
+msgstr ""
+
+msgid "ProfilesAuthentication|Disable passkey sign-in"
+msgstr ""
+
 msgid "ProfilesAuthentication|Increase your account's security by enabling passkeys and two-factor authentication."
 msgstr ""
 

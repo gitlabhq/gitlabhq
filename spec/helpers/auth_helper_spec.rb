@@ -611,28 +611,61 @@ RSpec.describe AuthHelper, feature_category: :system_access do
   describe '#delete_passkey_data' do
     let(:path) { 'test/path' }
 
-    context 'when password is required' do
-      it 'returns data to delete a passkey' do
-        expect(helper.delete_passkey_data(true, path)).to match(a_hash_including({
-          button_text: s_('ProfilesAuthentication|Delete passkey'),
-          icon: 'remove',
-          message: s_('ProfilesAuthentication|Are you sure you want to delete this passkey? ' \
-            'Enter your password to continue.'),
-          path: path,
-          password_required: 'true'
-        }))
+    context 'when there is 1 passkey remaining' do
+      context 'when password is required' do
+        it 'returns data to delete a passkey' do
+          expect(helper.delete_passkey_data(true, path, 1)).to match(a_hash_including({
+            button_text: s_('ProfilesAuthentication|Disable passkey sign-in'),
+            icon: 'remove',
+            message: s_('ProfilesAuthentication|Are you sure you want to delete this passkey? ' \
+              'Enter your password to continue.'),
+            modal_title: s_('ProfilesAuthentication|Delete passkey and disable passkey sign-in?'),
+            path: path,
+            password_required: 'true'
+          }))
+        end
+      end
+
+      context 'when password is not required' do
+        it 'returns data to delete a passkey' do
+          expect(helper.delete_passkey_data(false, path, 1)).to match(a_hash_including({
+            button_text: s_('ProfilesAuthentication|Disable passkey sign-in'),
+            icon: 'remove',
+            message: s_('ProfilesAuthentication|Are you sure you want to delete this passkey?'),
+            modal_title: s_('ProfilesAuthentication|Delete passkey and disable passkey sign-in?'),
+            path: path,
+            password_required: 'false'
+          }))
+        end
       end
     end
 
-    context 'when password is not required' do
-      it 'returns data to delete a passkey' do
-        expect(helper.delete_passkey_data(false, path)).to match(a_hash_including({
-          button_text: s_('ProfilesAuthentication|Delete passkey'),
-          icon: 'remove',
-          message: s_('ProfilesAuthentication|Are you sure you want to delete this passkey?'),
-          path: path,
-          password_required: 'false'
-        }))
+    context 'when there are many passkeys remaining' do
+      context 'when password is required' do
+        it 'returns data to delete a passkey' do
+          expect(helper.delete_passkey_data(true, path, 2)).to match(a_hash_including({
+            button_text: s_('ProfilesAuthentication|Delete passkey'),
+            icon: 'remove',
+            message: s_('ProfilesAuthentication|Are you sure you want to delete this passkey? ' \
+              'Enter your password to continue.'),
+            modal_title: s_('ProfilesAuthentication|Delete passkey'),
+            path: path,
+            password_required: 'true'
+          }))
+        end
+      end
+
+      context 'when password is not required' do
+        it 'returns data to delete a passkey' do
+          expect(helper.delete_passkey_data(false, path, 2)).to match(a_hash_including({
+            button_text: s_('ProfilesAuthentication|Delete passkey'),
+            icon: 'remove',
+            message: s_('ProfilesAuthentication|Are you sure you want to delete this passkey?'),
+            modal_title: s_('ProfilesAuthentication|Delete passkey'),
+            path: path,
+            password_required: 'false'
+          }))
+        end
       end
     end
   end

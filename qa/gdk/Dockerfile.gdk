@@ -125,11 +125,12 @@ RUN yarn install --frozen-lockfile
 RUN yarn build:prod
 
 # Collect dists using reliable shell commands (using absolute paths)
+# Preserve the dist directory structure that webpack expects
 RUN mkdir -p ${GDK_DIR}/gitlab/ee/frontend_islands/islands_dist && \
     find apps -name "dist" -type d | while read dist_path; do \
         app_name=$(echo "$dist_path" | cut -d'/' -f2); \
-        mkdir -p "${GDK_DIR}/gitlab/ee/frontend_islands/islands_dist/$app_name" && \
-        cp -r "$dist_path/"* "${GDK_DIR}/gitlab/ee/frontend_islands/islands_dist/$app_name/"; \
+        mkdir -p "${GDK_DIR}/gitlab/ee/frontend_islands/islands_dist/$app_name/dist" && \
+        cp -r "$dist_path/"* "${GDK_DIR}/gitlab/ee/frontend_islands/islands_dist/$app_name/dist/"; \
     done
 
 # Compile frontend assets
@@ -148,12 +149,13 @@ ENV SKIP_FRONTEND_ISLANDS_BUILD=true
 WORKDIR ${GDK_DIR}/gitlab
 
 COPY --chown=gdk:gdk ./ ./
-COPY --from=frontend-islands --chown=gdk:gdk ${GDK_DIR}/gitlab/ee/frontend_islands/islands_dist/ ./gitlab/ee/frontend_islands/apps
+COPY --from=frontend-islands --chown=gdk:gdk ${GDK_DIR}/gitlab/ee/frontend_islands/islands_dist/ ./ee/frontend_islands/apps
 
 RUN --mount=type=bind,target=node_modules,source=${GDK_DIR}/gitlab/node_modules,from=gitlab-node-modules \
     cp config/gitlab.yml.example config/gitlab.yml; \
     cp config/database.yml.decomposed-postgresql config/database.yml; \
-    [ -s "${GLCI_GITLAB_ASSETS_HASH_FILE}" ] && echo "Cached assets found, skipping asset compilation!" || (echo "Compiling assets!" && bin/rake gitlab:assets:compile)
+    echo "BABEL_ENV value: '${BABEL_ENV}'"; \
+    [ "$BABEL_ENV" != "istanbul" ] && [ -s "${GLCI_GITLAB_ASSETS_HASH_FILE}" ] && echo "Cached assets found, skipping asset compilation!" || (echo "Compiling assets!" && bin/rake gitlab:assets:compile)
 
 # Build final image
 #

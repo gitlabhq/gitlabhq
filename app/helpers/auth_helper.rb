@@ -263,7 +263,7 @@ module AuthHelper
       password_required: password_required.to_s }
   end
 
-  def delete_passkey_data(password_required, path)
+  def delete_passkey_data(password_required, path, passkey_count)
     message = if password_required
                 s_('ProfilesAuthentication|Are you sure you want to delete this passkey? ' \
                   'Enter your password to continue.')
@@ -271,7 +271,16 @@ module AuthHelper
                 s_('ProfilesAuthentication|Are you sure you want to delete this passkey?')
               end
 
-    { button_text: s_('ProfilesAuthentication|Delete passkey'),
+    if passkey_count > 1
+      modal_title = s_('ProfilesAuthentication|Delete passkey')
+      button_text = s_('ProfilesAuthentication|Delete passkey')
+    else
+      modal_title = s_('ProfilesAuthentication|Delete passkey and disable passkey sign-in?')
+      button_text = s_('ProfilesAuthentication|Disable passkey sign-in')
+    end
+
+    { modal_title: modal_title,
+      button_text: button_text,
       icon: 'remove',
       message: message,
       path: path,

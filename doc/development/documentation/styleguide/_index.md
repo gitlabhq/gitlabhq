@@ -1217,8 +1217,19 @@ elements:
 All UI elements [should be **bold**](#bold). The `>` in the navigation path should not be bold.
 
 Guidance for individual UI elements is in [the word list](word_list.md).
-For guidance about the paneled UI while it is in development, see
-[Names for external communication](https://design.gitlab.com/product-foundations/layout/#names-for-external-communication) in Pajamas.
+
+In the [redesigned](../../../user/interface_redesign.md) GitLab UI, use the following names:
+
+![Wireframe of a typical GitLab application page composition.](img/layout_external_names_v18_6.svg)
+
+1. **Top bar**
+1. **Left sidebar**
+1. **... panel** based on the primary context. For example, if the context is a merge request, refer to it as the **merge request panel**.
+1. **Details panel** supports the primary context
+1. **GitLab Duo panel**
+1. **GitLab Duo sidebar**
+
+With the exception of **GitLab Duo**, use lowercase for all above terms.
 
 ### How to write navigation task steps
 

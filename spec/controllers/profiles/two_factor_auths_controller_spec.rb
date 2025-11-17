@@ -315,9 +315,18 @@ RSpec.describe Profiles::TwoFactorAuthsController, feature_category: :system_acc
     def challenge
       @_challenge ||= begin
         options_for_create = WebAuthn::Credential.options_for_create(
-          user: { id: user.webauthn_xid, name: user.username },
-          authenticator_selection: { user_verification: 'discouraged' },
-          rp: { name: 'GitLab' }
+          user: {
+            id: user.webauthn_xid,
+            name: user.username,
+            display_name: user.name
+          },
+          exclude: user.get_all_webauthn_credential_ids,
+          authenticator_selection: {
+            user_verification: 'discouraged',
+            resident_key: 'preferred'
+          },
+          rp: { name: 'GitLab' },
+          extensions: { credProps: true }
         )
         options_for_create.challenge
       end
@@ -330,6 +339,35 @@ RSpec.describe Profiles::TwoFactorAuthsController, feature_category: :system_acc
     it 'update failed_attempts when proper password is not given' do
       go
       expect(user.failed_attempts).to be_eql(1)
+    end
+
+    context 'when it sets ups its view form' do
+      it 'renders relevant view variables (2FA & Passkeys)', :freeze_time do
+        stored_second_factor_webauthn_registration = create(:webauthn_registration, user: user)
+        stored_passkey = create(:webauthn_registration, :passkey, user: user)
+
+        go
+
+        rendered_second_factor_webauthn_registration = assigns[:registrations].first
+        rendered_passkey = assigns[:passkeys].first
+
+        expect(assigns[:registrations].count).to eq(user.second_factor_webauthn_registrations.count)
+        expect(rendered_second_factor_webauthn_registration[:name]).to eq(
+          stored_second_factor_webauthn_registration.name
+        )
+        expect(rendered_second_factor_webauthn_registration[:created_at]).to eq(
+          stored_second_factor_webauthn_registration.created_at
+        )
+        expect(rendered_second_factor_webauthn_registration[:delete_path]).to eq(
+          destroy_webauthn_profile_two_factor_auth_path(stored_second_factor_webauthn_registration)
+        )
+
+        expect(assigns[:passkeys].count).to eq(user.passkeys.count)
+        expect(rendered_passkey[:name]).to eq(stored_passkey.name)
+        expect(rendered_passkey[:created_at]).to eq(stored_passkey.created_at)
+        expect(rendered_passkey[:last_used_at]).to eq(stored_passkey.last_used_at)
+        expect(rendered_passkey[:delete_path]).to eq(profile_passkey_path(stored_passkey))
+      end
     end
 
     context "when valid password is given" do

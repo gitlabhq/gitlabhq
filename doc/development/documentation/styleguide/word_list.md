@@ -2086,8 +2086,10 @@ The docs should match the case in the UI, and the page name should be bold. For 
 
 ## panel
 
-For guidance about the paneled UI while it is in development, see
-[Names for external communication](https://design.gitlab.com/product-foundations/layout/#names-for-external-communication) in Pajamas.
+Use **panel** to refer to a main area of the [redesigned](../../../user/interface_redesign.md) GitLab UI
+that is not fixed on the side of the screen. The content of a panel changes depending on the context.
+
+See also: [names for UI elements](_index.md#names-for-ui-elements), [**top bar**, and **sidebar**](#sidebar-top-bar).
 
 ## parent
 
@@ -2450,6 +2452,8 @@ to the GitLab [reference architectures](../../../administration/reference_archit
 ## search
 
 When you search, you type a string in the search box in the left sidebar.
+If you've [turned on the new navigation](../../../user/interface_redesign.md#turn-new-navigation-on-or-off),
+this field is on the top bar.
 The search results are displayed on a search page.
 
 Searching is different from [filtering](#filter).
@@ -2537,10 +2541,14 @@ Do not confuse **set up** with [**configure**](#configure).
 1. Set up your installation.
 1. Configure your installation.
 
-## sidebar
+## sidebar, top bar
 
-For guidance about the paneled UI while it is in development, see
-[Names for external communication](https://design.gitlab.com/product-foundations/layout/#names-for-external-communication) in Pajamas.
+Use **sidebar** to refer to the fixed areas on the left and right of the [redesigned](../../../user/interface_redesign.md) GitLab UI.
+Use **top bar** to refer to the top fixed area that contains the search box and a user's avatar.
+
+For the main areas that change depending on the context, use [**panel**](#panel).
+
+See also: [names for UI elements](_index.md#names-for-ui-elements).
 
 ## sign in, sign-in
 

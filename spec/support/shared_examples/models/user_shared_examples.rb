@@ -12,6 +12,7 @@ RSpec.shared_examples 'associations with defined deletion strategies', :aggregat
       gpg_keys
       emails
       expiring_soon_and_unnotified_personal_access_tokens
+      webauthn_registrations
       second_factor_webauthn_registrations
       passkeys
       saved_replies

@@ -173,6 +173,7 @@ class User < ApplicationRecord
   has_many :expiring_soon_and_unnotified_personal_access_tokens, -> { expiring_and_not_notified_without_impersonation }, class_name: 'PersonalAccessToken'
 
   has_many :identities, dependent: :destroy, autosave: true # rubocop:disable Cop/ActiveRecordDependent
+  has_many :webauthn_registrations
   has_many :passkeys, -> { passkey }, class_name: 'WebauthnRegistration'
   has_many :second_factor_webauthn_registrations, -> { second_factor_authenticator }, class_name: 'WebauthnRegistration'
   has_many :chat_names, dependent: :destroy # rubocop:disable Cop/ActiveRecordDependent
@@ -1188,6 +1189,10 @@ class User < ApplicationRecord
   # Instance methods
   #
 
+  def get_all_webauthn_credential_ids
+    webauthn_registrations.pluck(:credential_xid)
+  end
+
   def full_path
     username
   end
@@ -1362,6 +1367,10 @@ class User < ApplicationRecord
 
   def two_factor_webauthn_enabled?
     second_factor_webauthn_registrations.any?
+  end
+
+  def passkeys_enabled?
+    passkeys.any?
   end
 
   def needs_new_otp_secret?

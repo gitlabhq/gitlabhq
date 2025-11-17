@@ -393,41 +393,44 @@ the [projects API](../../api/projects.md#edit-a-project).
 
 ## Fine-grained permissions for job tokens
 
-You can use fine-grained permissions to explicitly allow access to a limited set of REST API endpoints. For more information, see [fine-grained permissions for CI/CD job tokens](fine_grained_permissions.md). Feedback is welcome on this [issue](https://gitlab.com/gitlab-org/gitlab/-/issues/519575).
+You can use fine-grained permissions to explicitly allow access to a limited set of REST API endpoints.
+For more information, see [fine-grained permissions for CI/CD job tokens](fine_grained_permissions.md).
 
-## Use a job token
+Feedback is welcome on this [issue](https://gitlab.com/gitlab-org/gitlab/-/issues/519575).
 
-### To `git clone` a private project's repository
+## Git repository cloning
 
 You can use the job token to authenticate and clone a repository from a private project
-in a CI/CD job. Use `gitlab-ci-token` as the user, and the value of the job token as the password. For example:
+in a CI/CD job. Use `gitlab-ci-token` as the user, and the value of the job token as the password.
+
+For example:
 
 ```shell
 git clone https://gitlab-ci-token:${CI_JOB_TOKEN}@gitlab.example.com/<namespace>/<project>
 ```
 
-You can use this job token to clone a repository even if the HTTPS protocol is [disabled by group, project, or instance settings](../../administration/settings/visibility_and_access_controls.md#configure-enabled-git-access-protocols).
+You can use this job token to clone a repository even if the HTTPS protocol is
+[disabled by group, project, or instance settings](../../administration/settings/visibility_and_access_controls.md#configure-enabled-git-access-protocols).
 
-### To authenticate a REST API request
+## REST API authentication
 
-You can use a job token to authenticate requests for allowed REST API endpoints. For example:
+You can use a job token to authenticate requests for specific
+REST API endpoints using these methods:
+
+- Header: `--header "JOB-TOKEN: $CI_JOB_TOKEN"` (recommended)
+- Form: `--form "token=$CI_JOB_TOKEN"`
+- Data: `--data "job_token=$CI_JOB_TOKEN"`
+- Query string in URL: `?job_token=$CI_JOB_TOKEN` (not recommended)
+
+For example, using the recommended header method:
 
 ```shell
-curl --verbose --request POST --form "token=$CI_JOB_TOKEN" --form ref=master "https://gitlab.com/api/v4/projects/1234/trigger/pipeline"
+curl --verbose --request POST --header "JOB-TOKEN: $CI_JOB_TOKEN" --form ref=master "https://gitlab.com/api/v4/projects/1234/trigger/pipeline"
 ```
 
-Additionally, there are multiple valid methods for passing the job token in the request:
+For token security guidance, see [security considerations](../../security/tokens/_index.md#security-considerations).
 
-- Form: `--form "token=$CI_JOB_TOKEN"`
-- Header: `--header "JOB-TOKEN: $CI_JOB_TOKEN"`
-- Data: `--data "job_token=$CI_JOB_TOKEN"`
-- Query string in the URL: `?job_token=$CI_JOB_TOKEN`
-
-{{< alert type="note" >}}
-
-You cannot use a job token to authenticate requests to GraphQL endpoints.
-
-{{< /alert >}}
+You cannot use job tokens to authenticate GraphQL requests.
 
 ## Job token authentication log
 

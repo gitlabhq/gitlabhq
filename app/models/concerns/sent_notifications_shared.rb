@@ -45,7 +45,9 @@ module SentNotificationsShared # rubocop:disable Gitlab/BoundedContexts -- Tempo
         ::PartitionedSentNotification.find_by(partition: matches[:partition], reply_key: matches[:reply_key])
       else
         partitioned_record = ::PartitionedSentNotification.find_by(reply_key: matches[:legacy_key])
-        return partitioned_record if partitioned_record.present?
+        if partitioned_record.present? || Feature.enabled?(:sent_notifications_without_fallback, :instance)
+          return partitioned_record
+        end
 
         legacy_record = ::SentNotification.find_by(reply_key: matches[:legacy_key])
 

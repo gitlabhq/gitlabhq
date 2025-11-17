@@ -31,7 +31,7 @@ projects.
 
 To authenticate to the Terraform Module Registry, you need either:
 
-- A [personal access token](../../../api/rest/authentication.md#personalprojectgroup-access-tokens) with at least the `read_api` scope.
+- A [personal access token](../../profile/personal_access_tokens.md) with at least the `read_api` scope.
 - A [CI/CD job token](../../../ci/jobs/ci_job_token.md).
 - A [deploy token](../../project/deploy_tokens/_index.md) with the `read_package_registry` or `write_package_registry` scope, or both.
 

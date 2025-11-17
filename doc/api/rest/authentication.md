@@ -18,7 +18,7 @@ You can authenticate with the GitLab REST API in several ways:
 - [Project access tokens](../../user/project/settings/project_access_tokens.md)
 - [Group access tokens](../../user/group/settings/group_access_tokens.md)
 - [Session cookie](#session-cookie)
-- [GitLab CI/CD job token](../../ci/jobs/ci_job_token.md) **(Specific endpoints only)**
+- [CI/CD job tokens](#job-tokens) (specific endpoints only)
 
 Project access tokens are supported by:
 
@@ -77,19 +77,12 @@ how to request a new access token using a refresh token.
 
 {{< /alert >}}
 
-## Personal/project/group access tokens
+## Personal, project, and group access tokens
 
-You can use access tokens to authenticate with the API by passing it in either the `private_token`
-parameter or the `PRIVATE-TOKEN` header.
+You can use access tokens to authenticate with the API.
+Pass the token using the `PRIVATE-TOKEN` header (recommended) or other methods.
 
-Example of using the personal, project, or group access token in a parameter:
-
-```shell
-curl --request GET \
-  --url "https://gitlab.example.com/api/v4/projects?private_token=<your_access_token>"
-```
-
-Example of using the personal, project, or group access token in a header:
+For example, using the recommended header method:
 
 ```shell
 curl --request GET \
@@ -97,7 +90,8 @@ curl --request GET \
   --url "https://gitlab.example.com/api/v4/projects"
 ```
 
-You can also use personal, project, or group access tokens with OAuth-compliant headers:
+You can also use personal, project, or group access tokens with OAuth-compliant headers.
+For example:
 
 ```shell
 curl --request GET \
@@ -107,23 +101,17 @@ curl --request GET \
 
 ## Job tokens
 
-You can use job tokens to authenticate with [specific API endpoints](../../ci/jobs/ci_job_token.md)
-by passing the token in the `job_token` parameter or the `JOB-TOKEN` header. To pass the token in
-GitLab CI/CD jobs, use the `CI_JOB_TOKEN` variable.
+You can use job tokens to authenticate with [specific API endpoints](../../ci/jobs/ci_job_token.md#job-token-access).
+In GitLab CI/CD jobs, the token is available as the `CI_JOB_TOKEN` variable.
 
-Example of using the job token in a parameter:
+Pass the token using the `JOB-TOKEN` header (recommended) or other methods.
+For all authentication methods, see [CI/CD job token authentication](../../ci/jobs/ci_job_token.md#rest-api-authentication).
 
-```shell
-curl --request GET \
-  --location --output artifacts.zip \
-  --url "https://gitlab.example.com/api/v4/projects/1/jobs/42/artifacts?job_token=$CI_JOB_TOKEN"
-```
-
-Example of using the job token in a header:
+For example, using the header method:
 
 ```shell
 curl --request GET \
-  --header "JOB-TOKEN:$CI_JOB_TOKEN" \
+  --header "JOB-TOKEN: $CI_JOB_TOKEN" \
   --url "https://gitlab.example.com/api/v4/projects/1/releases"
 ```
 
