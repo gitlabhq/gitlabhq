@@ -13,7 +13,7 @@ import {
 import { isEmpty, isNil } from 'lodash';
 import axios from '~/lib/utils/axios_utils';
 import readyToMergeMixin from 'ee_else_ce/vue_merge_request_widget/mixins/ready_to_merge';
-import readyToMergeQuery from 'ee_else_ce/vue_merge_request_widget/queries/states/ready_to_merge.query.graphql';
+import readyToMergeQuery from '~/vue_merge_request_widget/queries/states/ready_to_merge.query.graphql';
 import { createAlert } from '~/alert';
 import { fetchPolicies } from '~/lib/graphql';
 import { TYPENAME_MERGE_REQUEST } from '~/graphql_shared/constants';
@@ -88,7 +88,6 @@ export default {
           ...data.project.mergeRequest,
           mergeRequestsFfOnlyEnabled: data.project.mergeRequestsFfOnlyEnabled,
           onlyAllowMergeIfPipelineSucceeds: data.project.onlyAllowMergeIfPipelineSucceeds,
-          mergeTrainsCount: data.project?.mergeTrains?.nodes[0]?.cars?.count,
         };
         this.loading = false;
 
@@ -99,7 +98,7 @@ export default {
           this.squashCommitMessage = this.state.defaultSquashCommitMessage;
         }
 
-        if (!isNil(this.state.mergeTrainsCount) && !this.pollingInterval) {
+        if (!isNil(this.mr.mergeTrainsCount) && !this.pollingInterval) {
           this.initPolling();
         }
       },
@@ -241,7 +240,7 @@ export default {
       return this.state.commitsWithoutMergeCommits?.nodes;
     },
     commitsCount() {
-      return this.state.commitCount || 0;
+      return this.mr.commitCount || 0;
     },
     preferredAutoMergeStrategy() {
       return MergeRequestStore.getPreferredAutoMergeStrategy(this.mr.availableAutoMergeStrategies);

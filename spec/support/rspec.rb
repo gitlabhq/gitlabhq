@@ -9,10 +9,10 @@ require_relative 'helpers/stub_configuration'
 require_relative 'helpers/stub_metrics'
 require_relative 'helpers/stub_object_storage'
 require_relative 'helpers/fast_rails_root'
+require_relative 'helpers/test_metrics_helper'
 
 require 'gitlab/rspec/all'
 require 'gitlab/utils/all'
-require 'gitlab_quality/test_tooling'
 
 RSpec::Expectations.configuration.on_potential_false_positives = :raise
 
@@ -84,74 +84,7 @@ RSpec.configure do |config|
     end
   end
 
-  if (ENV["CI"] && ENV["GLCI_EXPORT_TEST_METRICS"] == "true") && !config.dry_run?
-    clickhouse_url = ENV["GLCI_CLICKHOUSE_METRICS_URL"]
-    clickhouse_username = ENV["GLCI_CLICKHOUSE_METRICS_USERNAME"]
-    clickhouse_password = ENV["GLCI_CLICKHOUSE_METRICS_PASSWORD"]
-
-    owners_table = GitlabQuality::TestTooling::CodeCoverage::ClickHouse::CategoryOwnersTable.new(
-      database: ENV["GLCI_CLICKHOUSE_TEST_COVERAGE_DB"],
-      url: clickhouse_url,
-      username: clickhouse_username,
-      password: clickhouse_password
-    )
-
-    GitlabQuality::TestTooling::TestMetricsExporter::Config.configure do |exporter_config|
-      exporter_config.run_type = "backend-rspec-tests"
-
-      exporter_config.test_retried_proc = ->(_example) {
-        ENV["RSPEC_RETRY_PROCESS"] == "true"
-      }
-
-      exporter_config.custom_metrics_proc = ->(example) {
-        default_branch = ENV["CI_COMMIT_REF_NAME"] == ENV["CI_DEFAULT_BRANCH"]
-        feature_category = example.metadata[:feature_category]
-        pipeline_type = if default_branch && ENV["SCHEDULE_TYPE"].present?
-                          "default_branch_scheduled_pipeline"
-                        elsif default_branch
-                          "default_branch_pipeline"
-                        elsif ENV["CI_MERGE_REQUEST_IID"].present?
-                          "merge_request_pipeline"
-                        else
-                          "any"
-                        end
-
-        owners = begin
-          feature_category ? owners_table.owners(feature_category.to_s) : {}
-        rescue GitlabQuality::TestTooling::CodeCoverage::ClickHouse::CategoryOwnersTable::MissingMappingError
-          exporter_config.logger.error(
-            "Example '#{example.location}' contains unknown feature_category '#{feature_category}'"
-          )
-          {}
-        rescue StandardError => e
-          exporter_config.logger.error("Failed to fetch owners for feature category '#{feature_category}'")
-          exporter_config.logger.error(e.message)
-          {}
-        end
-
-        {
-          pipeline_type: pipeline_type,
-          # TODO: remove boolean fields once schemas and dashboards are updated
-          default_branch_pipeline: default_branch,
-          default_branch_scheduled_pipeline: default_branch && ENV["SCHEDULE_TYPE"].present?,
-          merge_request_pipeline: ENV["CI_MERGE_REQUEST_IID"].present?,
-          **owners
-        }
-      }
-
-      exporter_config.clickhouse_config = GitlabQuality::TestTooling::TestMetricsExporter::Config::ClickHouse.new(
-        database: ENV["GLCI_CLICKHOUSE_METRICS_DB"],
-        table_name: ENV["GLCI_CLICKHOUSE_METRICS_TABLE"],
-        url: clickhouse_url,
-        username: clickhouse_username,
-        password: clickhouse_password
-      )
-
-      if clickhouse_url && clickhouse_username && clickhouse_password
-        config.add_formatter GitlabQuality::TestTooling::TestMetricsExporter::Formatter
-      else
-        exporter_config.logger.warn("Test metrics export is enabled but environment variables are not set!")
-      end
-    end
+  TestMetricsHelper.configure_exporter!(config, 'backend-rspec-tests') do |exporter_config|
+    exporter_config.test_retried_proc = ->(_example) { ENV["RSPEC_RETRY_PROCESS"] == "true" }
   end
 end

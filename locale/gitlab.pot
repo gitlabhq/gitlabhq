@@ -2514,9 +2514,6 @@ msgstr ""
 msgid "AICatalog|Agent not found."
 msgstr ""
 
-msgid "AICatalog|Agent removed from this project."
-msgstr ""
-
 msgid "AICatalog|Agent updated."
 msgstr ""
 
@@ -2541,13 +2538,13 @@ msgstr ""
 msgid "AICatalog|Are you sure you want to disable agent %{name}? The agent and any associated flows and triggers will no longer work in this project."
 msgstr ""
 
-msgid "AICatalog|Are you sure you want to remove agent %{name}?"
+msgid "AICatalog|Are you sure you want to disable agent %{name}? The agent and any associated flows, triggers, and service accounts will no longer work in this project."
 msgstr ""
 
-msgid "AICatalog|Are you sure you want to remove flow %{name}?"
+msgid "AICatalog|Are you sure you want to disable flow %{name}?"
 msgstr ""
 
-msgid "AICatalog|Are you sure you want to remove flow %{name}? The flow will also be removed from any projects in this group."
+msgid "AICatalog|Are you sure you want to disable flow %{name}? The flow will also be disabled from any projects in this group."
 msgstr ""
 
 msgid "AICatalog|Available tools"
@@ -2655,6 +2652,12 @@ msgstr ""
 msgid "AICatalog|Disable agent"
 msgstr ""
 
+msgid "AICatalog|Disable agent in this project"
+msgstr ""
+
+msgid "AICatalog|Disable flow from this %{namespaceType}"
+msgstr ""
+
 msgid "AICatalog|Display name"
 msgstr ""
 
@@ -2709,13 +2712,10 @@ msgstr ""
 msgid "AICatalog|Failed to disable agent. %{error}"
 msgstr ""
 
+msgid "AICatalog|Failed to disable flow. %{error}"
+msgstr ""
+
 msgid "AICatalog|Failed to load group flows"
-msgstr ""
-
-msgid "AICatalog|Failed to remove agent. %{error}"
-msgstr ""
-
-msgid "AICatalog|Failed to remove flow. %{error}"
 msgstr ""
 
 msgid "AICatalog|Flow"
@@ -2733,6 +2733,9 @@ msgstr ""
 msgid "AICatalog|Flow deleted."
 msgstr ""
 
+msgid "AICatalog|Flow disabled in this %{namespaceType}."
+msgstr ""
+
 msgid "AICatalog|Flow does not exist"
 msgstr ""
 
@@ -2743,9 +2746,6 @@ msgid "AICatalog|Flow is required."
 msgstr ""
 
 msgid "AICatalog|Flow not found."
-msgstr ""
-
-msgid "AICatalog|Flow removed from this %{namespaceType}."
 msgstr ""
 
 msgid "AICatalog|Flow updated."
@@ -2770,6 +2770,9 @@ msgid "AICatalog|Is visible only to users with at least the Developer role for t
 msgstr ""
 
 msgid "AICatalog|Is visible to all users."
+msgstr ""
+
+msgid "AICatalog|Managed"
 msgstr ""
 
 msgid "AICatalog|Modify the agent settings and configuration."
@@ -2823,12 +2826,6 @@ msgstr ""
 msgid "AICatalog|Public %{itemTypePlural} are best for:"
 msgstr ""
 
-msgid "AICatalog|Remove agent from this project"
-msgstr ""
-
-msgid "AICatalog|Remove flow from this %{namespaceType}"
-msgstr ""
-
 msgid "AICatalog|Save changes"
 msgstr ""
 
@@ -2866,6 +2863,9 @@ msgid "AICatalog|System prompt is required."
 msgstr ""
 
 msgid "AICatalog|The item consumer must belong to only one organization, group, or project"
+msgstr ""
+
+msgid "AICatalog|There was a problem fetching agents."
 msgstr ""
 
 msgid "AICatalog|This %{itemType} is private and can only be enabled in the project it was created in or its top-level group. Duplicate the agent to use the same configuration in other projects."
@@ -25228,9 +25228,6 @@ msgstr ""
 msgid "DuoChat|Duo Agentic Chat is not available at the moment in this page. To work with Duo Agentic Chat in pages outside the scope of a project please select a %{strong_start}Default GitLab Duo namespace%{strong_end} in your %{preferences_link_start}User Profile Preferences%{preferences_link_end}."
 msgstr ""
 
-msgid "DuoChat|Duo Agentic Chat is not available in this page, please visit a project page to have access to chat."
-msgstr ""
-
 msgid "DuoChat|For example, %{linkStart}what is a fork%{linkEnd}?"
 msgstr ""
 
@@ -33496,6 +33493,9 @@ msgid "HealthCheck|No health problems detected"
 msgstr ""
 
 msgid "HealthCheck|Unhealthy"
+msgstr ""
+
+msgid "Healthy"
 msgstr ""
 
 msgid "Hello %{name},"
@@ -50972,6 +50972,9 @@ msgstr ""
 msgid "Profiles|No designated account successor assigned."
 msgstr ""
 
+msgid "Profiles|No eligible namespaces available"
+msgstr ""
+
 msgid "Profiles|No file chosen."
 msgstr ""
 
@@ -51198,6 +51201,9 @@ msgid "Profiles|You can upload your avatar here or change it at %{gravatar_link}
 msgstr ""
 
 msgid "Profiles|You do not own any active scheduled pipelines."
+msgstr ""
+
+msgid "Profiles|You don't have access to any namespaces eligible for GitLab Duo."
 msgstr ""
 
 msgid "Profiles|You don't have access to delete this user."
@@ -58904,6 +58910,21 @@ msgid "SecretsManager|Secret %{secretName} has been deleted."
 msgstr ""
 
 msgid "SecretsManager|Secret %{secretName} was successfully updated."
+msgstr ""
+
+msgid "SecretsManager|Secret created or updated successfully."
+msgstr ""
+
+msgid "SecretsManager|Secret creation failed. Delete the secret and try again."
+msgstr ""
+
+msgid "SecretsManager|Secret is being created."
+msgstr ""
+
+msgid "SecretsManager|Secret is being updated."
+msgstr ""
+
+msgid "SecretsManager|Secret update failed. Retry the update or delete the secret."
 msgstr ""
 
 msgid "SecretsManager|Secrets"

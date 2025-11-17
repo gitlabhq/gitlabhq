@@ -50,7 +50,7 @@ The following default roles are available:
 | -------------- | ----------- |
 | Minimal Access | View limited group information without access to projects. For more information, see [Users with Minimal Access](#users-with-minimal-access). |
 | Guest          | View and comment on issues and epics. Cannot push code or access repository. This role applies to [private and internal projects](public_access.md) only. |
-| Planner        | Create and manage issues, epics, milestones, and iterations. Focused on project planning and tracking without code access. |
+| Planner        | Create and manage issues, epics, milestones, and iterations. Focused on project planning and tracking with the ability to view and collaborate on code changes. |
 | Reporter       | View code, create issues, and generate reports. Cannot push code or manage protected branches. |
 | Developer      | Push code to non-protected branches, create merge requests, and run CI/CD pipelines. Cannot manage project settings. |
 | Maintainer     | Manage branches, merge requests, CI/CD settings, and project members. Cannot delete the project. |
