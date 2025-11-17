@@ -1,6 +1,6 @@
 <script>
 import { GlAlert, GlFormInputGroup, GlLink, GlSprintf, GlIcon } from '@gitlab/ui';
-import ModalCopyButton from '~/vue_shared/components/modal_copy_button.vue';
+import SimpleCopyButton from '~/vue_shared/components/simple_copy_button.vue';
 import CodeBlock from '~/vue_shared/components/code_block.vue';
 import { generateAgentRegistrationCommand } from '../clusters_util';
 import { I18N_AGENT_TOKEN, HELM_VERSION_POLICY_URL } from '../constants';
@@ -15,7 +15,7 @@ export default {
     GlLink,
     GlSprintf,
     GlIcon,
-    ModalCopyButton,
+    SimpleCopyButton,
   },
   inject: ['kasAddress', 'kasInstallVersion'],
   props: {
@@ -24,10 +24,6 @@ export default {
       type: String,
     },
     agentToken: {
-      required: true,
-      type: String,
-    },
-    modalId: {
       required: true,
       type: String,
     },
@@ -52,11 +48,7 @@ export default {
     <p>
       <gl-form-input-group readonly :value="agentToken" :select-on-click="true">
         <template #append>
-          <modal-copy-button
-            :text="agentToken"
-            :title="$options.i18n.copyToken"
-            :modal-id="modalId"
-          />
+          <simple-copy-button :text="agentToken" :title="$options.i18n.copyToken" />
         </template>
       </gl-form-input-group>
     </p>
@@ -84,11 +76,10 @@ export default {
 
     <p class="gl-flex gl-items-start">
       <code-block class="gl-w-full" :code="agentRegistrationCommand" />
-      <modal-copy-button
+      <simple-copy-button
         data-testid="agent-registration-command"
         :title="$options.i18n.copyCommand"
         :text="agentRegistrationCommand"
-        :modal-id="modalId"
       />
     </p>
   </div>

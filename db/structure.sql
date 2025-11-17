@@ -207,6 +207,32 @@ BEGIN
 END
 $$;
 
+CREATE FUNCTION custom_dashboard_search_vector_update() RETURNS trigger
+    LANGUAGE plpgsql
+    AS $$
+BEGIN
+  INSERT INTO custom_dashboard_search_data (
+    custom_dashboard_id,
+    organization_id,
+    search_vector,
+    created_at,
+    updated_at
+  )
+  VALUES (
+    NEW.id,
+    NEW.organization_id,
+    to_tsvector('english', NEW.name || ' ' || NEW.description),
+    CURRENT_TIMESTAMP,
+    CURRENT_TIMESTAMP
+  )
+  ON CONFLICT (custom_dashboard_id) DO UPDATE
+  SET search_vector = EXCLUDED.search_vector,
+      updated_at = CURRENT_TIMESTAMP;
+
+  RETURN NEW;
+END
+$$;
+
 CREATE FUNCTION delete_associated_project_namespace() RETURNS trigger
     LANGUAGE plpgsql
     AS $$
@@ -15519,6 +15545,75 @@ CREATE SEQUENCE csv_issue_imports_id_seq
     CACHE 1;
 
 ALTER SEQUENCE csv_issue_imports_id_seq OWNED BY csv_issue_imports.id;
+
+CREATE TABLE custom_dashboard_search_data (
+    id bigint NOT NULL,
+    custom_dashboard_id bigint NOT NULL,
+    name text DEFAULT ''::text NOT NULL,
+    description text DEFAULT ''::text NOT NULL,
+    search_vector tsvector,
+    created_at timestamp with time zone NOT NULL,
+    updated_at timestamp with time zone NOT NULL,
+    organization_id bigint NOT NULL,
+    CONSTRAINT check_8a2d9ffee0 CHECK ((char_length(name) <= 255)),
+    CONSTRAINT check_8b9b792eb5 CHECK ((char_length(description) <= 2048))
+);
+
+CREATE SEQUENCE custom_dashboard_search_data_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+ALTER SEQUENCE custom_dashboard_search_data_id_seq OWNED BY custom_dashboard_search_data.id;
+
+CREATE TABLE custom_dashboard_versions (
+    id bigint NOT NULL,
+    custom_dashboard_id bigint NOT NULL,
+    version_number integer NOT NULL,
+    config jsonb DEFAULT '{}'::jsonb NOT NULL,
+    updated_by_id bigint,
+    created_at timestamp with time zone NOT NULL,
+    updated_at timestamp with time zone NOT NULL,
+    organization_id bigint NOT NULL,
+    CONSTRAINT chk_dashboard_versions_config_object CHECK ((jsonb_typeof(config) = 'object'::text))
+);
+
+CREATE SEQUENCE custom_dashboard_versions_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+ALTER SEQUENCE custom_dashboard_versions_id_seq OWNED BY custom_dashboard_versions.id;
+
+CREATE TABLE custom_dashboards (
+    id bigint NOT NULL,
+    namespace_id bigint,
+    organization_id bigint NOT NULL,
+    created_by_id bigint,
+    updated_by_id bigint,
+    lock_version integer DEFAULT 0 NOT NULL,
+    name text NOT NULL,
+    description text DEFAULT ''::text NOT NULL,
+    config jsonb DEFAULT '{}'::jsonb NOT NULL,
+    created_at timestamp with time zone NOT NULL,
+    updated_at timestamp with time zone NOT NULL,
+    CONSTRAINT check_4e13e6f9f9 CHECK ((char_length(name) <= 255)),
+    CONSTRAINT check_686309f24f CHECK ((char_length(description) <= 2048)),
+    CONSTRAINT chk_custom_dashboards_config_object CHECK ((jsonb_typeof(config) = 'object'::text))
+);
+
+CREATE SEQUENCE custom_dashboards_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+ALTER SEQUENCE custom_dashboards_id_seq OWNED BY custom_dashboards.id;
 
 CREATE TABLE custom_emoji (
     id bigint NOT NULL,
@@ -31211,6 +31306,12 @@ ALTER TABLE ONLY coverage_fuzzing_corpuses ALTER COLUMN id SET DEFAULT nextval('
 
 ALTER TABLE ONLY csv_issue_imports ALTER COLUMN id SET DEFAULT nextval('csv_issue_imports_id_seq'::regclass);
 
+ALTER TABLE ONLY custom_dashboard_search_data ALTER COLUMN id SET DEFAULT nextval('custom_dashboard_search_data_id_seq'::regclass);
+
+ALTER TABLE ONLY custom_dashboard_versions ALTER COLUMN id SET DEFAULT nextval('custom_dashboard_versions_id_seq'::regclass);
+
+ALTER TABLE ONLY custom_dashboards ALTER COLUMN id SET DEFAULT nextval('custom_dashboards_id_seq'::regclass);
+
 ALTER TABLE ONLY custom_emoji ALTER COLUMN id SET DEFAULT nextval('custom_emoji_id_seq'::regclass);
 
 ALTER TABLE ONLY custom_field_select_options ALTER COLUMN id SET DEFAULT nextval('custom_field_select_options_id_seq'::regclass);
@@ -34023,6 +34124,15 @@ ALTER TABLE ONLY coverage_fuzzing_corpuses
 
 ALTER TABLE ONLY csv_issue_imports
     ADD CONSTRAINT csv_issue_imports_pkey PRIMARY KEY (id);
+
+ALTER TABLE ONLY custom_dashboard_search_data
+    ADD CONSTRAINT custom_dashboard_search_data_pkey PRIMARY KEY (id);
+
+ALTER TABLE ONLY custom_dashboard_versions
+    ADD CONSTRAINT custom_dashboard_versions_pkey PRIMARY KEY (id);
+
+ALTER TABLE ONLY custom_dashboards
+    ADD CONSTRAINT custom_dashboards_pkey PRIMARY KEY (id);
 
 ALTER TABLE ONLY custom_emoji
     ADD CONSTRAINT custom_emoji_pkey PRIMARY KEY (id);
@@ -40043,6 +40153,26 @@ CREATE INDEX index_csv_issue_imports_on_project_id ON csv_issue_imports USING bt
 
 CREATE INDEX index_csv_issue_imports_on_user_id ON csv_issue_imports USING btree (user_id);
 
+CREATE UNIQUE INDEX index_custom_dashboard_search_data_on_custom_dashboard_id ON custom_dashboard_search_data USING btree (custom_dashboard_id);
+
+CREATE INDEX index_custom_dashboard_search_data_on_organization_id ON custom_dashboard_search_data USING btree (organization_id);
+
+CREATE INDEX index_custom_dashboard_search_data_on_search_vector_gin ON custom_dashboard_search_data USING gin (search_vector);
+
+CREATE INDEX index_custom_dashboard_versions_on_created_at ON custom_dashboard_versions USING btree (created_at);
+
+CREATE INDEX index_custom_dashboard_versions_on_organization_id ON custom_dashboard_versions USING btree (organization_id);
+
+CREATE INDEX index_custom_dashboard_versions_on_updated_by_id ON custom_dashboard_versions USING btree (updated_by_id);
+
+CREATE INDEX index_custom_dashboards_on_created_by_id ON custom_dashboards USING btree (created_by_id);
+
+CREATE INDEX index_custom_dashboards_on_namespace_id ON custom_dashboards USING btree (namespace_id);
+
+CREATE INDEX index_custom_dashboards_on_organization_id ON custom_dashboards USING btree (organization_id);
+
+CREATE INDEX index_custom_dashboards_on_updated_by_id ON custom_dashboards USING btree (updated_by_id);
+
 CREATE INDEX index_custom_emoji_on_creator_id ON custom_emoji USING btree (creator_id);
 
 CREATE UNIQUE INDEX index_custom_emoji_on_namespace_id_and_name ON custom_emoji USING btree (namespace_id, name);
@@ -40064,6 +40194,8 @@ CREATE UNIQUE INDEX index_customer_relations_contacts_on_unique_email_per_group 
 CREATE UNIQUE INDEX index_cycle_analytics_stage_event_hashes_on_org_id_sha_256 ON analytics_cycle_analytics_stage_event_hashes USING btree (organization_id, hash_sha256);
 
 CREATE UNIQUE INDEX index_daily_build_group_report_results_unique_columns ON ci_daily_build_group_report_results USING btree (project_id, ref_path, date, group_name);
+
+CREATE UNIQUE INDEX index_dashboard_versions_on_dashboard_and_version ON custom_dashboard_versions USING btree (custom_dashboard_id, version_number);
 
 CREATE INDEX index_dast_pre_scan_verification_steps_on_project_id ON dast_pre_scan_verification_steps USING btree (project_id);
 
@@ -47567,6 +47699,8 @@ CREATE TRIGGER cluster_agents_loose_fk_trigger AFTER DELETE ON cluster_agents RE
 
 CREATE TRIGGER clusters_loose_fk_trigger AFTER DELETE ON clusters REFERENCING OLD TABLE AS old_table FOR EACH STATEMENT EXECUTE FUNCTION insert_into_loose_foreign_keys_deleted_records();
 
+CREATE TRIGGER custom_dashboard_search_vector_trigger AFTER INSERT OR UPDATE OF name, description ON custom_dashboards FOR EACH ROW EXECUTE FUNCTION custom_dashboard_search_vector_update();
+
 CREATE TRIGGER dependency_proxy_blobs_loose_fk_trigger AFTER DELETE ON dependency_proxy_blobs REFERENCING OLD TABLE AS old_table FOR EACH STATEMENT EXECUTE FUNCTION insert_into_loose_foreign_keys_deleted_records();
 
 CREATE TRIGGER duo_workflows_workflows_loose_fk_trigger AFTER DELETE ON duo_workflows_workflows REFERENCING OLD TABLE AS old_table FOR EACH STATEMENT EXECUTE FUNCTION insert_into_loose_foreign_keys_deleted_records();
@@ -48150,6 +48284,9 @@ ALTER TABLE ONLY projects_branch_rules_merge_request_approval_settings
 ALTER TABLE ONLY work_item_custom_lifecycles
     ADD CONSTRAINT fk_00c659d395 FOREIGN KEY (namespace_id) REFERENCES namespaces(id) ON DELETE CASCADE;
 
+ALTER TABLE ONLY custom_dashboard_versions
+    ADD CONSTRAINT fk_00e49d2f22 FOREIGN KEY (organization_id) REFERENCES organizations(id) ON DELETE CASCADE;
+
 ALTER TABLE ONLY epics
     ADD CONSTRAINT fk_013c9f36ca FOREIGN KEY (due_date_sourcing_epic_id) REFERENCES epics(id) ON DELETE SET NULL;
 
@@ -48551,6 +48688,9 @@ ALTER TABLE ONLY audit_events_streaming_http_instance_namespace_filters
 
 ALTER TABLE ONLY zentao_tracker_data
     ADD CONSTRAINT fk_2417fd4262 FOREIGN KEY (project_id) REFERENCES projects(id) ON DELETE CASCADE NOT VALID;
+
+ALTER TABLE ONLY custom_dashboards
+    ADD CONSTRAINT fk_24479e649c FOREIGN KEY (created_by_id) REFERENCES users(id) ON DELETE SET NULL;
 
 ALTER TABLE ONLY work_item_transitions
     ADD CONSTRAINT fk_247358ddff FOREIGN KEY (work_item_id) REFERENCES issues(id) ON DELETE CASCADE;
@@ -49233,6 +49373,9 @@ ALTER TABLE ONLY ai_conversation_messages
 ALTER TABLE ONLY merge_requests
     ADD CONSTRAINT fk_6a5165a692 FOREIGN KEY (milestone_id) REFERENCES milestones(id) ON DELETE SET NULL;
 
+ALTER TABLE ONLY custom_dashboard_versions
+    ADD CONSTRAINT fk_6b53f240d7 FOREIGN KEY (updated_by_id) REFERENCES users(id) ON DELETE SET NULL;
+
 ALTER TABLE ONLY ai_agent_versions
     ADD CONSTRAINT fk_6c2f682587 FOREIGN KEY (agent_id) REFERENCES ai_agents(id) ON DELETE CASCADE;
 
@@ -49424,6 +49567,9 @@ ALTER TABLE ONLY catalog_resource_versions
 
 ALTER TABLE ONLY merge_requests_approval_rules
     ADD CONSTRAINT fk_7af76dbd21 FOREIGN KEY (project_id) REFERENCES projects(id) ON DELETE CASCADE;
+
+ALTER TABLE ONLY custom_dashboards
+    ADD CONSTRAINT fk_7b372b1657 FOREIGN KEY (namespace_id) REFERENCES namespaces(id) ON DELETE SET NULL;
 
 ALTER TABLE ONLY organization_cluster_agent_mappings
     ADD CONSTRAINT fk_7b441007e5 FOREIGN KEY (creator_id) REFERENCES users(id) ON DELETE SET NULL;
@@ -49886,6 +50032,9 @@ ALTER TABLE ONLY boards
 
 ALTER TABLE ONLY import_failures
     ADD CONSTRAINT fk_ab7859bdc5 FOREIGN KEY (project_id) REFERENCES projects(id) ON DELETE CASCADE NOT VALID;
+
+ALTER TABLE ONLY custom_dashboard_search_data
+    ADD CONSTRAINT fk_abd7df31b5 FOREIGN KEY (custom_dashboard_id) REFERENCES custom_dashboards(id) ON DELETE CASCADE;
 
 ALTER TABLE ONLY audit_events_streaming_http_instance_namespace_filters
     ADD CONSTRAINT fk_abe44125bc FOREIGN KEY (audit_events_instance_external_audit_event_destination_id) REFERENCES audit_events_instance_external_audit_event_destinations(id) ON DELETE CASCADE;
@@ -50463,6 +50612,9 @@ ALTER TABLE ONLY fork_networks
 ALTER TABLE ONLY packages_conan_package_references
     ADD CONSTRAINT fk_e7b5f3afc7 FOREIGN KEY (project_id) REFERENCES projects(id) ON DELETE CASCADE;
 
+ALTER TABLE ONLY custom_dashboards
+    ADD CONSTRAINT fk_e81a33f775 FOREIGN KEY (organization_id) REFERENCES organizations(id) ON DELETE CASCADE;
+
 ALTER TABLE ONLY sbom_graph_paths
     ADD CONSTRAINT fk_e83002e9da FOREIGN KEY (descendant_id) REFERENCES sbom_occurrences(id) ON DELETE CASCADE;
 
@@ -50634,6 +50786,9 @@ ALTER TABLE ONLY ml_model_metadata
 ALTER TABLE ONLY abuse_reports
     ADD CONSTRAINT fk_f748646298 FOREIGN KEY (organization_id) REFERENCES organizations(id) ON DELETE CASCADE;
 
+ALTER TABLE ONLY custom_dashboards
+    ADD CONSTRAINT fk_f7685b13bc FOREIGN KEY (updated_by_id) REFERENCES users(id) ON DELETE SET NULL;
+
 ALTER TABLE ONLY workspaces
     ADD CONSTRAINT fk_f78aeddc77 FOREIGN KEY (cluster_agent_id) REFERENCES cluster_agents(id) ON DELETE CASCADE;
 
@@ -50663,6 +50818,9 @@ ALTER TABLE ONLY application_settings
 
 ALTER TABLE ONLY clusters
     ADD CONSTRAINT fk_f9a4914fd4 FOREIGN KEY (project_id) REFERENCES projects(id) ON DELETE CASCADE;
+
+ALTER TABLE ONLY custom_dashboard_search_data
+    ADD CONSTRAINT fk_f9b264b416 FOREIGN KEY (organization_id) REFERENCES organizations(id) ON DELETE CASCADE;
 
 ALTER TABLE ONLY issuable_severities
     ADD CONSTRAINT fk_f9df19ecb6 FOREIGN KEY (namespace_id) REFERENCES namespaces(id) ON DELETE CASCADE;
@@ -51944,6 +52102,9 @@ ALTER TABLE ONLY achievements
 
 ALTER TABLE ONLY ai_feature_settings
     ADD CONSTRAINT fk_rails_8907fb7bbb FOREIGN KEY (ai_self_hosted_model_id) REFERENCES ai_self_hosted_models(id) ON DELETE CASCADE;
+
+ALTER TABLE ONLY custom_dashboard_versions
+    ADD CONSTRAINT fk_rails_8984e20b50 FOREIGN KEY (custom_dashboard_id) REFERENCES custom_dashboards(id);
 
 ALTER TABLE ONLY protected_environment_deploy_access_levels
     ADD CONSTRAINT fk_rails_898a13b650 FOREIGN KEY (protected_environment_id) REFERENCES protected_environments(id) ON DELETE CASCADE;

@@ -11,13 +11,13 @@ import {
 import { debounce } from 'lodash';
 import axios from '~/lib/utils/axios_utils';
 import { __, s__, sprintf } from '~/locale';
-import { toggleArrayItem } from '~/lib/utils/array_utility';
 import {
   fetchRefs,
   fetchMostRecentlyUpdated,
   createRefId,
 } from '../security_attributes/api/refs_api';
 import RefTrackingMetadata from './ref_tracking_metadata.vue';
+import RefTrackingSelectionSummary from './ref_tracking_selection_summary.vue';
 
 const SEARCH_DEBOUNCE_DELAY = 300;
 const SEARCH_TERM_MIN_LENGTH = 3;
@@ -34,6 +34,7 @@ export default {
     GlAlert,
     GlEmptyState,
     RefTrackingMetadata,
+    RefTrackingSelectionSummary,
   },
   inject: ['projectFullPath'],
   props: {
@@ -42,11 +43,15 @@ export default {
       required: false,
       default: () => [],
     },
+    maxTrackedRefs: {
+      type: Number,
+      required: true,
+    },
   },
   data() {
     return {
       searchTerm: '',
-      selectedRefIds: [],
+      selectedRefs: [],
       mostRecentlyUpdatedRefs: [],
       searchResults: [],
       errorMessage: '',
@@ -56,6 +61,9 @@ export default {
     };
   },
   computed: {
+    selectedRefIds() {
+      return this.selectedRefs.map((ref) => ref.id);
+    },
     searchTermHasMinLength() {
       return this.searchTerm.length >= SEARCH_TERM_MIN_LENGTH;
     },
@@ -112,6 +120,12 @@ export default {
       return {
         text: __('Cancel'),
       };
+    },
+    availableSpots() {
+      return Math.max(
+        0,
+        this.maxTrackedRefs - (this.trackedRefs.length + this.selectedRefs.length),
+      );
     },
   },
   watch: {
@@ -182,8 +196,22 @@ export default {
         this.isSearching = false;
       }
     },
-    toggleRef(refId) {
-      this.selectedRefIds = toggleArrayItem(this.selectedRefIds, refId);
+    isRefSelected(ref) {
+      return this.selectedRefIds.includes(ref.id);
+    },
+    canRefBeToggled(ref) {
+      return this.availableSpots > 0 || this.isRefSelected(ref);
+    },
+    toggleRef(ref) {
+      if (!this.canRefBeToggled(ref)) {
+        return;
+      }
+
+      if (this.isRefSelected(ref)) {
+        this.selectedRefs = this.selectedRefs.filter((selectedRef) => selectedRef.id !== ref.id);
+      } else {
+        this.selectedRefs.push(ref);
+      }
     },
     handleHidden() {
       this.$emit('cancel');
@@ -217,6 +245,12 @@ export default {
       data-testid="ref-search-input"
     />
 
+    <ref-tracking-selection-summary
+      :selected-refs="selectedRefs"
+      :available-spots="availableSpots"
+      @remove="toggleRef"
+    />
+
     <gl-alert
       v-if="errorMessage"
       variant="danger"
@@ -238,7 +272,7 @@ export default {
     <template v-if="!showLoadingState && !errorMessage">
       <h3
         v-if="!showEmptyState"
-        class="gl-mb-4 gl-text-base gl-font-semibold"
+        class="gl-my-4 gl-text-base gl-font-semibold"
         data-testid="list-header"
       >
         {{
@@ -255,16 +289,25 @@ export default {
         :svg-height="150"
         data-testid="empty-state"
       />
-      <gl-form-checkbox-group v-else v-model="selectedRefIds">
+      <gl-form-checkbox-group v-else :checked="selectedRefIds">
         <ul class="gl-m-0 gl-list-none gl-p-0">
           <li
             v-for="ref in displayedRefs"
             :key="ref.id"
             class="gl-border-b gl-cursor-pointer gl-p-4 last:gl-border-b-0 hover:gl-bg-gray-50"
-            @click="toggleRef(ref.id)"
+            :class="{
+              '!gl-cursor-not-allowed': !canRefBeToggled(ref),
+              'hover:gl-bg-inherit': !canRefBeToggled(ref),
+            }"
+            :data-testid="`ref-list-item-${ref.id}`"
+            @click="toggleRef(ref)"
           >
             <!-- We use the `@click` handler within the `li` so the whole item is clickable, not just the checkbox, therefor we need to disable pointer events on the checkbox -->
-            <gl-form-checkbox :value="ref.id" class="gl-pointer-events-none gl-grid gl-items-start">
+            <gl-form-checkbox
+              :value="ref.id"
+              class="gl-pointer-events-none gl-grid gl-items-start"
+              :disabled="!canRefBeToggled(ref)"
+            >
               <div class="gl-ml-2">
                 <ref-tracking-metadata :tracked-ref="ref" :disable-commit-link="true" />
               </div>

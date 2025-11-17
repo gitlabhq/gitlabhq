@@ -92,7 +92,7 @@ module LoadedInGroupList
   end
 
   def project_count
-    @project_count ||= try(:preloaded_project_count) || projects.non_archived.count
+    @project_count ||= try(:preloaded_project_count) || projects.count
   end
 
   def subgroup_count

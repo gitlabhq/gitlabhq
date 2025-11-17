@@ -10,6 +10,7 @@ import axios from '~/lib/utils/axios_utils';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import waitForPromises from 'helpers/wait_for_promises';
 import RefTrackingSelection from '~/security_configuration/components/ref_tracking_selection.vue';
+import RefTrackingSelectionSummary from '~/security_configuration/components/ref_tracking_selection_summary.vue';
 import * as refsApi from '~/security_configuration/security_attributes/api/refs_api';
 import { createTrackedRef } from '../mock_data';
 
@@ -40,6 +41,7 @@ describe('RefTrackingSelection component', () => {
     apiHandler = null,
     mostRecentlyUpdatedHandler = null,
     trackedRefs = [],
+    maxTrackedRefs = 3,
   } = {}) => {
     const defaultHandler = jest.fn().mockResolvedValue(mockRefs);
     const searchHandler = apiHandler || defaultHandler;
@@ -56,12 +58,14 @@ describe('RefTrackingSelection component', () => {
       },
       propsData: {
         trackedRefs,
+        maxTrackedRefs,
       },
     });
   };
 
   const findModal = () => wrapper.findComponent(GlModal);
   const findSearchBox = () => wrapper.findComponent(GlSearchBoxByType);
+  const findSelectionSummary = () => wrapper.findComponent(RefTrackingSelectionSummary);
   const findCheckboxGroup = () => wrapper.findComponent(GlFormCheckboxGroup);
   const findAllCheckboxes = () => wrapper.findAllComponents(GlFormCheckbox);
   const findErrorAlert = () => wrapper.findByTestId('fetch-error-alert');
@@ -75,13 +79,20 @@ describe('RefTrackingSelection component', () => {
     await waitForPromises();
   };
 
-  const selectRefs = async (refIds) => {
-    await findCheckboxGroup().vm.$emit('input', refIds);
+  const clickRefs = async (refs) => {
+    for (const ref of refs) {
+      wrapper.findByTestId(`ref-list-item-${ref.id}`).trigger('click');
+    }
+    await nextTick();
   };
 
   const getSelectedRefs = () => {
     const checked = findCheckboxGroup().attributes('checked');
     return checked ? checked.split(',') : [];
+  };
+
+  const findCheckboxForRef = (ref) => {
+    return findAllCheckboxes().wrappers.find((checkbox) => checkbox.props('value') === ref.id);
   };
 
   describe('modal rendering', () => {
@@ -201,13 +212,109 @@ describe('RefTrackingSelection component', () => {
     });
 
     it('allows refs to be selected', async () => {
-      const refsToSelect = ['branch-main', 'branch-feature-branch'];
+      const refsToSelect = [mockRefs[0], mockRefs[1]];
       expect(findModal().props('actionPrimary').attributes.disabled).toBe(true);
 
-      await selectRefs(refsToSelect);
+      await clickRefs(refsToSelect);
 
-      expect(getSelectedRefs()).toEqual(refsToSelect);
+      expect(getSelectedRefs()).toEqual(refsToSelect.map((ref) => ref.id));
       expect(findModal().props('actionPrimary').attributes.disabled).toBe(false);
+    });
+  });
+
+  describe('selection summary', () => {
+    const MAX_TRACKED_REFS = 3;
+
+    beforeEach(async () => {
+      createComponent({ maxTrackedRefs: MAX_TRACKED_REFS });
+      await waitForPromises();
+    });
+
+    it('passes the selected refs to the summary component', async () => {
+      await clickRefs([mockRefs[0], mockRefs[1]]);
+
+      expect(findSelectionSummary().props('selectedRefs')).toEqual([mockRefs[0], mockRefs[1]]);
+    });
+
+    it('passes the available spots to the summary component', async () => {
+      const selectedRefs = [mockRefs[0], mockRefs[1]];
+      await clickRefs(selectedRefs);
+
+      expect(findSelectionSummary().props('availableSpots')).toEqual(
+        MAX_TRACKED_REFS - selectedRefs.length,
+      );
+    });
+
+    it('handles the remove event from the summary component', async () => {
+      await clickRefs([mockRefs[0], mockRefs[1]]);
+      expect(getSelectedRefs()).toHaveLength(2);
+
+      findSelectionSummary().vm.$emit('remove', mockRefs[0]);
+      await nextTick();
+
+      expect(getSelectedRefs()).toHaveLength(1);
+      expect(getSelectedRefs()).toEqual([mockRefs[1].id]);
+    });
+  });
+
+  describe('maximum tracked refs limit', () => {
+    describe('without any refs that are already tracked', () => {
+      beforeEach(async () => {
+        createComponent({
+          trackedRefs: [],
+          maxTrackedRefs: 2,
+        });
+        await waitForPromises();
+      });
+
+      it('prevents selecting new refs when the max limit is reached', async () => {
+        await clickRefs([mockRefs[0], mockRefs[1]]);
+        expect(getSelectedRefs()).toHaveLength(2);
+
+        expect(findCheckboxForRef(mockRefs[2]).props('disabled')).toBe(true);
+
+        await clickRefs([mockRefs[2]]);
+
+        expect(getSelectedRefs()).toHaveLength(2);
+        expect(getSelectedRefs()).toEqual([mockRefs[0].id, mockRefs[1].id]);
+      });
+
+      it('allows deselecting refs when the max limit is reached', async () => {
+        const selectedRefs = [mockRefs[0], mockRefs[1]];
+        await clickRefs(selectedRefs);
+        expect(getSelectedRefs()).toHaveLength(selectedRefs.length);
+
+        selectedRefs.forEach((ref) => {
+          expect(findCheckboxForRef(ref).props('disabled')).toBe(false);
+        });
+
+        await clickRefs([selectedRefs[0]]);
+
+        expect(getSelectedRefs()).toHaveLength(selectedRefs.length - 1);
+        expect(getSelectedRefs()).toEqual(selectedRefs.slice(1).map((ref) => ref.id));
+      });
+    });
+
+    describe('with some refs that are already tracked', () => {
+      beforeEach(async () => {
+        createComponent({
+          trackedRefs: [mockRefs[0]],
+          maxTrackedRefs: 2,
+        });
+        await waitForPromises();
+      });
+
+      it('takes the tracked refs into account when checking if the max limit is reached', async () => {
+        expect(findCheckboxForRef(mockRefs[2]).props('disabled')).toBe(false);
+
+        await clickRefs([mockRefs[1], mockRefs[2]]);
+        await nextTick();
+
+        expect(findCheckboxForRef(mockRefs[2]).props('disabled')).toBe(true);
+
+        expect(getSelectedRefs()).toHaveLength(1);
+        expect(getSelectedRefs()).toEqual([mockRefs[1].id]);
+      });
     });
   });
 

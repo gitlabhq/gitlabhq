@@ -121,7 +121,6 @@ RSpec.describe Gitlab::Auth, :use_clean_rails_memory_store_caching, feature_cate
         write_repository
         read_virtual_registry
         write_virtual_registry
-        granular
       ]
     end
 

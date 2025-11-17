@@ -344,6 +344,7 @@ table {
 .diff-td > .content > .discussion-reply-holder {
   padding-top: $gl-padding-12;
   @apply gl-bg-subtle;
+  @apply gl-rounded-b-none;
 }
 
 .discussion-with-resolve-btn {

@@ -173,12 +173,6 @@ project = Project.find_by_full_path("gitlab-duo/test")
 namespace = project.namespace
 ```
 
-Enable indexing for your namespace:
-
-```ruby
-Feature.enable(:active_context_saas_initial_indexing_namespace, namespace)
-```
-
 #### Check if the namespace is eligible
 
 ```ruby
@@ -511,4 +505,3 @@ This error occurs when AI Gateway (AIGW) lacks the necessary permissions to acce
 Refer to the [AIGW Authentication and Authorization doc](https://gitlab.com/gitlab-org/modelops/applied-ml/code-suggestions/ai-assist/-/blob/main/docs/auth.md) for further details on configuring AIGW permissions.
 
 If you are still stuck, you can contact `#subteam-codebase-as-chat-context` or `#f_ai-gateway` for assistance.
-

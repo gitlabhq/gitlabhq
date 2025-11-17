@@ -46,7 +46,7 @@ on behalf of users.
 - To use an HTTP/S proxy, both `gitLab_workhorse` and `gitLab_rails` must have the necessary
   [web proxy environment variables](https://docs.gitlab.com/omnibus/settings/environment-variables.html) set.
 - In multi-node GitLab installations, configure the HTTP/S proxy on all **Rails** and **Sidekiq** nodes.
-- The GitLab application nodes must be able to connect to the [GitLab Duo Workflow service](https://duo-workflow-svc.runway.gitlab.net).
+- GitLab application nodes must connect to the GitLab Duo Workflow at `https://duo-workflow-svc.runway.gitlab.net` with HTTP/2. The application and service communicate with gRPC.
 
 ## Allow inbound connections from clients to the GitLab instance
 

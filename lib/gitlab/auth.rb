@@ -481,7 +481,8 @@ module Gitlab
 
       # Other available scopes
       def optional_scopes
-        all_available_scopes + OPENID_SCOPES + PROFILE_SCOPES + AI_WORKFLOW_SCOPES + DYNAMIC_SCOPES - DEFAULT_SCOPES
+        all_available_scopes + OPENID_SCOPES + PROFILE_SCOPES + AI_WORKFLOW_SCOPES + DYNAMIC_SCOPES - DEFAULT_SCOPES -
+          [GRANULAR_SCOPE]
       end
 
       def registry_scopes

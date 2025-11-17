@@ -41,7 +41,7 @@ RSpec.describe ProjectsController, :with_license, feature_category: :groups_and_
             sign_in(user)
           end
 
-          it_behaves_like 'enforces step-up authentication'
+          it_behaves_like 'enforces step-up authentication (request spec)'
         end
       end
 
@@ -53,7 +53,7 @@ RSpec.describe ProjectsController, :with_license, feature_category: :groups_and_
             sign_in(user)
           end
 
-          it_behaves_like 'enforces step-up authentication'
+          it_behaves_like 'enforces step-up authentication (request spec)'
         end
 
         context 'when user unauthenticated' do
@@ -78,7 +78,7 @@ RSpec.describe ProjectsController, :with_license, feature_category: :groups_and_
         let_it_be(:user, reload: true) { create(:user, maintainer_of: project) }
         let(:expected_success_status) { :ok }
 
-        it_behaves_like 'enforces step-up authentication'
+        it_behaves_like 'enforces step-up authentication (request spec)'
       end
 
       context 'when user is developer' do
@@ -108,7 +108,7 @@ RSpec.describe ProjectsController, :with_license, feature_category: :groups_and_
       sign_in(user)
     end
 
-    it_behaves_like 'enforces step-up authentication'
+    it_behaves_like 'enforces step-up authentication (request spec)'
 
     context 'with invalid namespace_id' do
       subject(:make_request) { get new_project_path(namespace_id: non_existing_record_id) }
@@ -141,7 +141,7 @@ RSpec.describe ProjectsController, :with_license, feature_category: :groups_and_
       sign_in(user)
     end
 
-    it_behaves_like 'enforces step-up authentication'
+    it_behaves_like 'enforces step-up authentication (request spec)'
 
     context 'with invalid namespace_id' do
       let(:project_params) do

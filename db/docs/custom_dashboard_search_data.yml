@@ -1,0 +1,13 @@
+---
+table_name: custom_dashboard_search_data
+classes:
+- Analytics::CustomDashboardSearchData
+feature_categories:
+- custom_dashboards_foundation
+description: Stores full-text search vectors for custom dashboards.
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/211458
+milestone: '18.6'
+gitlab_schema: gitlab_main_org
+sharding_key:
+  organization_id: organizations
+table_size: small

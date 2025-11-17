@@ -14,10 +14,21 @@ export default {
       type: Number,
       required: true,
     },
+    // Temporary prop to avoid using 100 page size on vulnerability report
+    // when some feature flags are enabled to avoid GraphQL complexity issues
+    // See https://gitlab.com/gitlab-org/gitlab/-/issues/580593
+    excludeLargePageSize: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
   },
   computed: {
+    availablePageSizes() {
+      return this.excludeLargePageSize ? PAGE_SIZES.filter(({ value }) => value < 100) : PAGE_SIZES;
+    },
     selectedItem() {
-      return PAGE_SIZES.find(({ value }) => value === this.value);
+      return this.availablePageSizes.find(({ value }) => value === this.value);
     },
     toggleText() {
       return this.selectedItem.text;
@@ -28,14 +39,13 @@ export default {
       this.$emit('input', pageSize);
     },
   },
-  PAGE_SIZES,
 };
 </script>
 
 <template>
   <gl-collapsible-listbox
     :toggle-text="toggleText"
-    :items="$options.PAGE_SIZES"
+    :items="availablePageSizes"
     :selected="value"
     @select="emitInput($event)"
   />

@@ -12,7 +12,7 @@ import {
 import { cloneDeep } from 'lodash';
 import { helpPagePath } from '~/helpers/help_page_helper';
 import Tracking from '~/tracking';
-import ModalCopyButton from '~/vue_shared/components/modal_copy_button.vue';
+import SimpleCopyButton from '~/vue_shared/components/simple_copy_button.vue';
 import CodeBlockHighlighted from '~/vue_shared/components/code_block_highlighted.vue';
 import createAgent from 'ee_else_ce/clusters_list/graphql/mutations/create_agent.mutation.graphql';
 import getAgentsQuery from 'ee_else_ce/clusters_list/graphql/queries/get_agents.query.graphql';
@@ -56,7 +56,7 @@ export default {
     GlLink,
     GlModal,
     GlSprintf,
-    ModalCopyButton,
+    SimpleCopyButton,
     CodeBlockHighlighted,
   },
   mixins: [trackingMixin],
@@ -226,7 +226,7 @@ export default {
             class="gl-border gl-mb-0 gl-mr-3 gl-w-full gl-px-3 gl-py-2"
             :code="glabCommand"
           />
-          <modal-copy-button :text="glabCommand" :modal-id="$options.modalId" category="tertiary" />
+          <simple-copy-button :text="glabCommand" category="tertiary" />
         </p>
         <gl-sprintf :message="$options.i18n.bootstrapWithFluxOptions">
           <template #code="{ content }">
@@ -281,11 +281,7 @@ export default {
             <template #agentName>{{ agentName }}</template>
           </gl-sprintf></gl-alert
         >
-        <agent-token
-          :agent-name="agentName"
-          :agent-token="agentToken"
-          :modal-id="$options.modalId"
-        />
+        <agent-token :agent-name="agentName" :agent-token="agentToken" />
       </template>
     </template>
 

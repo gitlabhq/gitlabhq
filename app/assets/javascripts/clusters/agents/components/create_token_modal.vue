@@ -172,12 +172,7 @@ export default {
       </gl-form-group>
     </template>
 
-    <agent-token
-      v-else
-      :agent-name="agentName"
-      :agent-token="agentToken"
-      :modal-id="$options.modalId"
-    />
+    <agent-token v-else :agent-name="agentName" :agent-token="agentToken" />
 
     <template #modal-footer>
       <gl-button

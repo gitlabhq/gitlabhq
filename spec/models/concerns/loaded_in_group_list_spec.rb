@@ -92,6 +92,14 @@ RSpec.describe LoadedInGroupList, feature_category: :groups_and_projects do
     end
   end
 
+  describe '#project_count' do
+    let_it_be(:archived_project) { create(:project, :archived, namespace: parent) }
+
+    it 'counts all child projects' do
+      expect(found_group.project_count).to eq(2)
+    end
+  end
+
   describe 'has_subgroups' do
     it { expect(found_group.has_subgroups?).to be_truthy }
   end

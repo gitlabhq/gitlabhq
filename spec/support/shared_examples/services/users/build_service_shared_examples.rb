@@ -69,6 +69,16 @@ RSpec.shared_examples 'common user build items' do
       expect(user.email_otp_required_after).to be <= Time.current
     end
 
+    context 'when user was created via SSO or SAML' do
+      before do
+        params.merge!({ password_automatically_set: true })
+      end
+
+      it 'does not enroll new users in email-based OTP' do
+        expect(user.email_otp_required_after).to be_nil
+      end
+    end
+
     context 'when feature flag is disabled' do
       before do
         stub_feature_flags(enrol_new_users_in_email_otp: false)

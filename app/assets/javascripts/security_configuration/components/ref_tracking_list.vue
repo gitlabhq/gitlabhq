@@ -213,6 +213,7 @@ export default {
     <ref-tracking-selection
       v-if="showTrackingModal"
       :tracked-refs="trackedRefs"
+      :max-tracked-refs="$options.MAX_TRACKED_REFS"
       @cancel="showTrackingModal = false"
     />
   </gl-card>

@@ -34,17 +34,6 @@ RSpec.shared_examples 'enforces step-up authentication' do
   before do
     stub_omniauth_setting(enabled: true, providers: [oidc_provider_config])
     allow(Devise).to receive(:omniauth_providers).and_return([oidc_provider_name])
-
-    # Handle session stubbing centrally
-    if session_data
-      test_session = ActionController::TestSession.new({
-        'warden.user.user.key' => [[user.id], user.authenticatable_salt]
-      }.merge(session_data))
-
-      allow_next_instance_of(ActionDispatch::Request) do |instance|
-        allow(instance).to receive(:session).and_return(test_session)
-      end
-    end
   end
 
   context 'when group requires step-up auth' do
@@ -117,6 +106,22 @@ RSpec.shared_examples 'enforces step-up authentication' do
   end
 end
 
+RSpec.shared_examples 'enforces step-up authentication (request spec)' do
+  before do
+    if session_data
+      test_session = ActionController::TestSession.new({
+        Warden::SessionSerializer.new(session_data).key_for('user') => [[user.id], user.authenticatable_salt]
+      }.merge(session_data))
+
+      allow_next_instance_of(ActionDispatch::Request) do |instance|
+        allow(instance).to receive(:session).and_return(test_session)
+      end
+    end
+  end
+
+  it_behaves_like 'enforces step-up authentication'
+end
+
 RSpec.shared_examples 'does not enforce step-up authentication' do
   let(:oidc_provider_config) do
     GitlabSettings::Options.new(
@@ -136,6 +141,7 @@ RSpec.shared_examples 'does not enforce step-up authentication' do
   before do
     stub_omniauth_setting(enabled: true, providers: [oidc_provider_config])
     allow(Devise).to receive(:omniauth_providers).and_return([oidc_provider_name])
+
     group.namespace_settings.update!(step_up_auth_required_oauth_provider: oidc_provider_name)
   end
 

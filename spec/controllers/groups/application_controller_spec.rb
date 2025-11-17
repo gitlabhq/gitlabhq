@@ -3,8 +3,8 @@
 require 'spec_helper'
 
 RSpec.describe Groups::ApplicationController, feature_category: :groups_and_projects do
-  let_it_be(:user)  { create(:user) }
-  let_it_be(:group) { create(:group) }
+  let_it_be(:user) { create(:user) }
+  let_it_be_with_reload(:group) { create(:group) }
 
   describe '#respond_to_missing?' do
     it 'returns true if the method matches the name structure' do
@@ -41,5 +41,26 @@ RSpec.describe Groups::ApplicationController, feature_category: :groups_and_proj
 
       expect(response).to have_gitlab_http_status(:ok)
     end
+  end
+
+  context 'for step-up auth' do
+    controller do
+      before_action :authenticate_user!
+
+      def any_action
+        head :ok
+      end
+    end
+
+    let(:expected_success_status) { :ok }
+
+    subject(:make_request) { get :any_action, params: { group_id: group.to_param }, session: session_data }
+
+    before do
+      routes.draw { get 'any_action' => 'groups/application#any_action' }
+      sign_in(user)
+    end
+
+    it_behaves_like 'enforces step-up authentication'
   end
 end

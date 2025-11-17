@@ -159,6 +159,9 @@ RSpec.shared_examples 'associations with defined deletion strategies', :aggregat
       terraform_states
       user_namespace_callouts
       uploads_9ba88c4165
+      custom_dashboards
+      custom_dashboard_search_data
+      custom_dashboard_versions
     ]
   end
 

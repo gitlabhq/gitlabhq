@@ -139,7 +139,7 @@ RSpec.describe GroupsController, feature_category: :groups_and_projects do
             sign_in(user)
           end
 
-          it_behaves_like 'enforces step-up authentication'
+          it_behaves_like 'enforces step-up authentication (request spec)'
         end
       end
 
@@ -152,7 +152,7 @@ RSpec.describe GroupsController, feature_category: :groups_and_projects do
             sign_in(user)
           end
 
-          it_behaves_like 'enforces step-up authentication'
+          it_behaves_like 'enforces step-up authentication (request spec)'
         end
 
         context 'when user unauthenticated' do
@@ -306,7 +306,7 @@ RSpec.describe GroupsController, feature_category: :groups_and_projects do
         sign_in(user)
       end
 
-      it_behaves_like 'enforces step-up authentication'
+      it_behaves_like 'enforces step-up authentication (request spec)'
     end
   end
 
@@ -323,7 +323,7 @@ RSpec.describe GroupsController, feature_category: :groups_and_projects do
         sign_in(user)
       end
 
-      it_behaves_like 'enforces step-up authentication'
+      it_behaves_like 'enforces step-up authentication (request spec)'
     end
   end
 
@@ -339,7 +339,7 @@ RSpec.describe GroupsController, feature_category: :groups_and_projects do
         sign_in(user)
       end
 
-      it_behaves_like 'enforces step-up authentication'
+      it_behaves_like 'enforces step-up authentication (request spec)'
     end
   end
 
@@ -387,7 +387,7 @@ RSpec.describe GroupsController, feature_category: :groups_and_projects do
         sign_in(user)
       end
 
-      it_behaves_like 'enforces step-up authentication'
+      it_behaves_like 'enforces step-up authentication (request spec)'
     end
   end
 
@@ -407,7 +407,7 @@ RSpec.describe GroupsController, feature_category: :groups_and_projects do
         parent_group.add_owner(user)
       end
 
-      it_behaves_like 'enforces step-up authentication'
+      it_behaves_like 'enforces step-up authentication (request spec)'
     end
   end
 
@@ -423,7 +423,7 @@ RSpec.describe GroupsController, feature_category: :groups_and_projects do
         sign_in(user)
       end
 
-      it_behaves_like 'enforces step-up authentication'
+      it_behaves_like 'enforces step-up authentication (request spec)'
     end
   end
 end

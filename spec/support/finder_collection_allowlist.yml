@@ -10,11 +10,11 @@
 - Llm::ExtraResourceFinder # Reason: The finder does not deal with DB-backend resource for now.
 - WorkItems::Statuses::Finder # Reason: The finder intentionally returns a single model instance.
 - Sbom::PathFinder # Reason: we need an [[Sbom::Occurrence]]
-- Security::VulnerabilityElasticSearchFinder # Reason: The finder deals with Elasticsearch records and not DB records
-- Security::VulnerabilityElasticIdentifierNamesFinder # Reason: The finder deals with Elasticsearch records and not DB records
-- Security::VulnerabilityElasticCountBySeverityFinder # Reason: The finder deals with Elasticsearch records and not DB records
-- Security::VulnerabilityElasticCountOverTimeFinder # Reason: The finder deals with Elasticsearch records and not DB records
-- Security::VulnerabilityElasticRiskScoresFinder # Reason: The finder deals with Elasticsearch records and not DB records
+- Search::AdvancedFinders::Security::Vulnerability::SearchFinder # Reason: The finder deals with Elasticsearch records and not DB records
+- Search::AdvancedFinders::Security::Vulnerability::IdentifierNamesFinder # Reason: The finder deals with Elasticsearch records and not DB records
+- Search::AdvancedFinders::Security::Vulnerability::CountBySeverityFinder # Reason: The finder deals with Elasticsearch records and not DB records
+- Search::AdvancedFinders::Security::Vulnerability::CountOverTimeFinder # Reason: The finder deals with Elasticsearch records and not DB records
+- Search::AdvancedFinders::Security::Vulnerability::RiskScoresFinder # Reason: The finder deals with Elasticsearch records and not DB records
 - AuditEvents::CombinedAuditEventFinder # Reason: The finder combines result from 4 different tables and also returns cursor to next page
 - Security::AnalyzerGroupStatusFinder # Reason: To give accurate counts, return all analyzer types, even when there is no DB record
 - Ai::ClickHouseUsageEventsFinder # Reason: The finder's data is coming from Clickhouse and not Postgres, no ActiveRelation involved

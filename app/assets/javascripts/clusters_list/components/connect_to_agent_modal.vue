@@ -3,7 +3,7 @@ import { GlLink, GlModal, GlSprintf, GlButton } from '@gitlab/ui';
 import { helpPagePath } from '~/helpers/help_page_helper';
 import { s__, __ } from '~/locale';
 import { isGid, getIdFromGraphQLId } from '~/graphql_shared/utils';
-import ModalCopyButton from '~/vue_shared/components/modal_copy_button.vue';
+import SimpleCopyButton from '~/vue_shared/components/simple_copy_button.vue';
 import CodeBlockHighlighted from '~/vue_shared/components/code_block_highlighted.vue';
 import { CONNECT_MODAL_ID } from '../constants';
 
@@ -27,7 +27,7 @@ export default {
     GlModal,
     GlSprintf,
     GlButton,
-    ModalCopyButton,
+    SimpleCopyButton,
     CodeBlockHighlighted,
   },
   props: {
@@ -130,7 +130,7 @@ export default {
         class="gl-border gl-mb-0 gl-mr-3 gl-w-full gl-px-3 gl-py-2"
         :code="command"
       />
-      <modal-copy-button :text="command" :modal-id="$options.modalId" category="tertiary" />
+      <simple-copy-button :text="command" category="tertiary" />
     </p>
 
     <p>

@@ -1,0 +1,58 @@
+---
+key_path: counts.count_total_work_item_update
+description: Count of interactions where a work item was updated
+product_group: project_management
+product_categories:
+- team_planning
+performance_indicator_type: []
+value_type: number
+status: active
+milestone: '18.7'
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/212668
+time_frame:
+- 28d
+- 7d
+- all
+data_source: internal_events
+data_category: optional
+tiers:
+- free
+- premium
+- ultimate
+events:
+- name: work_item_assignees_update
+- name: work_item_blocked_by_item_add
+- name: work_item_blocked_by_item_remove
+- name: work_item_blocking_item_add
+- name: work_item_blocking_item_remove
+- name: work_item_child_add
+- name: work_item_clone
+- name: work_item_close
+- name: work_item_confidentiality_disable
+- name: work_item_confidentiality_enable
+- name: work_item_description_update
+- name: work_item_design_create
+- name: work_item_design_destroy
+- name: work_item_design_note_create
+- name: work_item_design_note_destroy
+- name: work_item_design_update
+- name: work_item_due_date_update
+- name: work_item_health_status_update
+- name: work_item_iteration_update
+- name: work_item_labels_update
+- name: work_item_lock
+- name: work_item_marked_as_duplicate
+- name: work_item_milestone_update
+- name: work_item_move
+- name: work_item_parent_set
+- name: work_item_parent_set_quick_action
+- name: work_item_reference_add
+- name: work_item_related_item_add
+- name: work_item_related_item_remove
+- name: work_item_reopen
+- name: work_item_start_date_update
+- name: work_item_time_estimate_update
+- name: work_item_time_spent_update
+- name: work_item_title_update
+- name: work_item_unlock
+- name: work_item_weight_update
