@@ -8,7 +8,7 @@
         = _('New group')
 
 - if Feature.enabled?(:admin_groups_vue, current_user)
-  #js-admin-groups-app
+  #js-admin-groups-app{ data: { app_data: admin_groups_app_data } }
 - else
   #js-admin-groups-filtered-search-and-sort
     -# This element takes up space while Vue is rendering to avoid page jump

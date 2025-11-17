@@ -15,7 +15,9 @@ title: GitLab Pages public folder
 
 {{< history >}}
 
-- With GitLab 16.1 we introduced the ability to configure the published folder in `.gitlab-ci.yml`, so you longer need to change your framework config. For more information, see how to [set a custom folder to be deployed with Pages](introduction.md#customize-the-default-folder).
+- GitLab 16.1 introduced support for configuring the published folder in
+  `.gitlab-ci.yml`. You no longer need to change your framework config. For more
+  information, see [set a custom folder to be deployed with Pages](introduction.md#customize-the-default-folder).
 
 {{< /history >}}
 
@@ -54,8 +56,7 @@ rename that folder to a collision-free alternative first:
    mv public static
    ```
 
-1. Add the following to your `astro.config.mjs`. This code informs Astro about
-   our folder name remapping:
+1. Add the following to your `astro.config.mjs` to configure Astro for the renamed folder:
 
    ```javascript
    // astro.config.mjs
@@ -63,12 +64,11 @@ rename that folder to a collision-free alternative first:
 
    export default defineConfig({
      // GitLab Pages requires exposed files to be located in a folder called "public".
-     // So we're instructing Astro to put the static build output in a folder of that name.
+     // This instructs Astro to put the static build output in a folder of that name.
      outDir: 'public',
 
      // The folder name Astro uses for static files (`public`) is already reserved
-     // for the build output. So in deviation from the defaults we're using a folder
-     // called `static` instead.
+     // for the build output. This uses a folder called `static` instead.
      publicDir: 'static',
    });
    ```
@@ -163,8 +163,7 @@ Pages, rename the `public` folder to a collision-free alternative first:
      },
      dir: {
        // The folder name Nuxt uses for static files (`public`) is already
-       // reserved for the build output. So in deviation from the defaults we're
-       // using a folder called `static` instead.
+       // reserved for the build output. This uses a folder called `static` instead.
        public: 'static'
      }
    }

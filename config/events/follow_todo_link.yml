@@ -9,6 +9,8 @@ additional_properties:
     description: Type of the todo interacted with (e.g. Merge Request, Issue, etc.)
   property:
     description: Type of todo action (e.g. ssh_key_expired, review_submitted, etc.)
+  source:
+    description: The location from which the link was followed (e.g. personal_homepage)
 product_group: engagement
 milestone: '17.6'
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/170590

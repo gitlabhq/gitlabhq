@@ -459,7 +459,8 @@ GitLab API endpoints (`/api/*`) must include the following HTTP response headers
 | `Access-Control-Expose-Headers` | `Link, X-Total, X-Total-Pages, X-Per-Page, X-Page, X-Next-Page, X-Prev-Page, X-Gitlab-Blob-Id, X-Gitlab-Commit-Id, X-Gitlab-Content-Sha256, X-Gitlab-Encoding, X-Gitlab-File-Name, X-Gitlab-File-Path, X-Gitlab-Last-Commit-Id X-Gitlab-Ref, X-Gitlab-Size, X-Request-Id, ETag` | Headers used by GitLab Rest and GraphQL APIs. |
 | `Vary` | `Origin` | Ensures proper caching behavior for CORS responses. |
 
-Since the subdomain portion of the Web IDE origin is dynamically generated, your CORS configuration must:
+The Web IDE dynamically generates the subdomain portion of the extension host domain. Ensure that
+the CORS headers satisfy the following rules:
 
 - **Pattern matching**: Accept origins matching the pattern `https://*.cdn.web-ide.gitlab-static.net`.
 - **Validation**: Ensure the subdomain contains only alphanumeric characters and is ≤52 characters.
@@ -468,24 +469,11 @@ Since the subdomain portion of the Web IDE origin is dynamically generated, your
 A GitLab instance default CORS configuration satisfies these requirements. You might find issues when the GitLab Self-Managed
 instance is behind an HTTP reverse proxy server or it uses a custom CORS policy configuration.
 
-{{< alert type="note" >}}
+### Offline environments
 
-If these headers are not provided, the Web IDE will still work on GitLab Self-Managed although
-features such as Extension Marketplace will be disabled for security reasons. The Web IDE uses
-the `https://*.cdn.web-ide.gitlab-static.net` origin to run third-party extensions in a sandboxed
-environment.
-
-{{< /alert >}}
-
-### Air-gapped or offline environments
-
-The Web IDE disables the Extension Marketplace and Web Views in air-gapped or offline environments where a
-user's web browser can't connect to the `https://*.cdn.web-ide.gitlab-static.net` external assets host.
-The Web IDE uses the external assets host to run third-party code coming from VSCode Extensions and Web Views
-in a sandboxed environment to secure user data.
-
-The Web IDE engineering team will provide better support for air-gapped environments in the future.
-You can keep track of the latest developments in this [epic](https://gitlab.com/groups/gitlab-org/-/epics/15146).
+The Web IDE has limited functionality when it can't connect to the default extension host domain
+(`https://*.cdn.web-ide.gitlab-static.net`). In offline environments, GitLab administrators can
+set up a [custom extension host domain](../../../administration/settings/web_ide.md) as a workaround.
 
 ### Report a problem
 

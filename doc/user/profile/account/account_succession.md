@@ -2,8 +2,8 @@
 stage: Software Supply Chain Security
 group: Authentication
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
-title: Designate an account successor or account manager
-description: Designate an account successor or account manager for your GitLab account.
+title: Designate an account succession beneficiary
+description: Designate an individual who can take ownership of your GitLab account.
 ---
 
 {{< details >}}
@@ -12,6 +12,12 @@ description: Designate an account successor or account manager for your GitLab a
 - Offering: GitLab.com
 
 {{< /details >}}
+
+{{< history >}}
+
+- Introduced in [GitLab 18.6](https://gitlab.com/gitlab-org/gitlab/-/issues/330669)
+
+{{< /history >}}
 
 You can grant individuals permission to access your GitLab account if you are unable to manage it
 yourself. This ensures continuity of your work and projects.

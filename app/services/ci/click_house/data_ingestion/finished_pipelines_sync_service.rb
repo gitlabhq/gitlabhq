@@ -109,7 +109,7 @@ module Ci
         end
 
         def use_simplified_query_for_ch_pipeline_ingestion?
-          @total_workers == 1 && Feature.enabled?(:use_simplified_query_for_ch_pipeline_ingestion, :instance)
+          @total_workers == 1
         end
 
         def csv_batches

@@ -202,7 +202,7 @@ token = 'githubAccessToken'
 Project.where(mirror: true).each do |project|
   import_url = project.unsafe_import_url
 
-  # The url we want is https://token@project/path.git
+  # The expected url output is https://token@project/path.git
   repo_url = if import_url.include?('@')
                # Case 1: The url is something like https://23423432@project/path.git
                import_url.split('@').last

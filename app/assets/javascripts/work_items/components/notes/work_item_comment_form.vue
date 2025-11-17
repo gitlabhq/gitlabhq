@@ -340,7 +340,8 @@ export default {
         return;
       }
 
-      if (this.isSubmitting) {
+      const isUploadingFile = this.$el.querySelector('.uploading-progress-container:not(.hide)');
+      if (this.isSubmitting || isUploadingFile) {
         return;
       }
 

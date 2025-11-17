@@ -16,7 +16,7 @@ is used instead.
 ## Tag name
 
 The release tag name should include the release version. GitLab uses [Semantic Versioning](https://semver.org/)
-for our releases, and we recommend you do too. Use `(Major).(Minor).(Patch)`, as detailed in the
+for releases, and you can use it too. Use `(Major).(Minor).(Patch)`, as detailed in the
 [GitLab Policy for Versioning](../../../policy/maintenance.md#versioning).
 
 For example, for GitLab version `16.10.1`:
@@ -29,8 +29,8 @@ Any part of the version number can be multiple digits, for example, `16.10.11`.
 
 ## Release notes description
 
-Every release has a description. You can add any text you like, but we recommend
-including a changelog to describe the content of your release. This helps users
+Every release has a description. You can add any text you like, but consider including a
+changelog to describe the content of your release. This helps users
 quickly scan the differences between each release you publish.
 
 [Tagging messages in Git](https://git-scm.com/book/en/v2/Git-Basics-Tagging) can

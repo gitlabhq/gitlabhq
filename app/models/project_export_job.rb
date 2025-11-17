@@ -19,7 +19,7 @@ class ProjectExportJob < ApplicationRecord
     failed: 3
   }.freeze
 
-  scope :prunable, -> { where("updated_at < ?", EXPIRES_IN.ago) }
+  scope :updated_at_before, ->(timestamp) { where("updated_at < ?", timestamp) }
   scope :order_by_updated_at, -> { order(:updated_at, :id) }
   scope :by_user_id, ->(user_id) { where(user_id: user_id) }
   scope :queued_or_started, -> { where(status: [STATUS[:queued], STATUS[:started]]) }

@@ -551,6 +551,7 @@ Prerequisites:
 - The group must allow creation of new projects.
 - For projects where the container registry is enabled:
   - On GitLab.com: You can only transfer projects within the same top-level namespace.
+    Projects with more than 1,000 container repositories cannot be transferred. For more information, see [Move or rename container registry repositories](../packages/container_registry/_index.md#move-or-rename-container-registry-repositories).
   - On GitLab Self-Managed: The project must not contain [container images](../packages/container_registry/_index.md#move-or-rename-container-registry-repositories).
 - The project must not have a security policy.
   If a security policy is assigned to the project, it is automatically unassigned during the transfer.

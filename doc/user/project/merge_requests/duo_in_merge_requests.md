@@ -317,7 +317,7 @@ You can ask [GitLab Duo Agentic Chat](../../gitlab_duo_chat/agentic_chat.md) to 
 
 Example prompt:
 
-```markdown
+```plaintext
 I need more Duo Code Review custom rules - when you look at the source code, which languages are missing and need to be added to the mr-review-instructions.yaml file?
 ```
 
@@ -445,7 +445,7 @@ Use glob patterns in `fileFilters` to target specific files for [customized MR r
 
 The difference between `**/*.rb` and `*.rb` can be illustrated with the following structure:
 
-```markdown
+```plaintext
 project/
 ├── app.rb              ← matched by both *.rb and **/*.rb
 ├── lib/
