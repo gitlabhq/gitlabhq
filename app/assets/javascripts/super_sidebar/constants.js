@@ -35,6 +35,8 @@ export const duoChatGlobalState = Vue.observable({
   chatMode: CHAT_MODES.CLASSIC, // CHAT_MODES.CLASSIC or CHAT_MODES.AGENTIC - single source of truth for chat mode
   activeTab: null, // For embedded mode: which tab is active in the AI panel ('chat', 'history', etc.)
   lastRoutePerTab: {}, // Tracks the last visited route for each tab (e.g., { sessions: '/agent-sessions/123' })
+  activeThread: undefined, // Persisted across component recreations when overlay closes/reopens
+  multithreadedView: 'chat', // Persisted view state: 'chat' or 'list'
 });
 
 export const SUPER_SIDEBAR_PEEK_OPEN_DELAY = 200;

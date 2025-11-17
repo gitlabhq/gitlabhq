@@ -1,4 +1,5 @@
 <script>
+import { mapState } from 'pinia';
 import { GlTooltipDirective, GlLoadingIcon, GlFormInput, GlIcon, GlTooltip } from '@gitlab/ui';
 import micromatch from 'micromatch';
 import { createAlert } from '~/alert';
@@ -14,6 +15,7 @@ import { FOCUS_FILE_TREE_BROWSER_FILTER_BAR, keysFor } from '~/behaviors/shortcu
 import { shouldDisableShortcuts } from '~/behaviors/shortcuts/shortcuts_toggle';
 import { Mousetrap } from '~/lib/mousetrap';
 import Shortcut from '~/behaviors/shortcuts/shortcut.vue';
+import { useFileTreeBrowserVisibility } from '~/repository/stores/file_tree_browser_visibility';
 import {
   normalizePath,
   dedupeByFlatPathAndId,
@@ -23,9 +25,12 @@ import {
   hasMorePages,
   isExpandable,
   handleTreeKeydown,
+  createItemVisibilityObserver,
+  observeElements,
 } from '../utils';
 
 export default {
+  name: 'FileTreeBrowser',
   FOCUS_FILE_TREE_BROWSER_FILTER_BAR,
   directives: {
     GlTooltip: GlTooltipDirective,
@@ -61,10 +66,15 @@ export default {
       directoriesCache: {},
       expandedPathsMap: {},
       loadingPathsMap: {},
-      flatFilesList: [],
+      appearedItems: {},
+      itemObserver: null,
     };
   },
   computed: {
+    flatFilesList() {
+      if (this.isRootLoading) return [];
+      return this.buildList('/', 0);
+    },
     isRootLoading() {
       return this.isDirectoryLoading('/');
     },
@@ -104,12 +114,18 @@ export default {
       });
       return map;
     },
+    ...mapState(useFileTreeBrowserVisibility, ['fileTreeBrowserIsPeekOn']),
   },
   watch: {
-    directoriesCache: { deep: true, handler: 'updateFlatFilesList' },
-    expandedPathsMap: { deep: true, handler: 'updateFlatFilesList' },
+    filteredFlatFilesList() {
+      this.$nextTick(() => this.observeListItems());
+    },
+    fileTreeBrowserIsPeekOn() {
+      this.$nextTick(() => this.observeItemVisibility());
+    },
   },
   mounted() {
+    this.observeItemVisibility();
     this.expandPathAncestors(this.currentRouterPath || '/');
     this.mousetrap = new Mousetrap();
 
@@ -118,13 +134,20 @@ export default {
     }
   },
   beforeDestroy() {
+    this.itemObserver?.disconnect();
     this.mousetrap.unbind(keysFor(FOCUS_FILE_TREE_BROWSER_FILTER_BAR));
   },
   methods: {
-    updateFlatFilesList() {
-      if (this.isRootLoading) return;
-      // Replace array contents in-place to maintain reactivity
-      this.flatFilesList.splice(0, this.flatFilesList.length, ...this.buildList('/', 0));
+    observeItemVisibility() {
+      this.itemObserver?.disconnect();
+      const rootElement = this.fileTreeBrowserIsPeekOn
+        ? document.querySelector('.file-tree-browser-peek')
+        : document.querySelector('.js-static-panel-inner');
+      this.itemObserver = createItemVisibilityObserver((itemId, isVisible) => {
+        this.appearedItems = { ...this.appearedItems, [itemId]: isVisible };
+      }, rootElement);
+
+      this.observeListItems();
     },
     isCurrentPath(path) {
       if (!this.$route.params.path) return path === '/';
@@ -156,7 +179,7 @@ export default {
           directoryList.push(generateShowMoreItem(tree.id, path, level));
 
         // Recursively add children for expanded directories
-        if (this.expandedPathsMap[treePath] && !this.isDirectoryLoading(treePath)) {
+        if (this.expandedPathsMap[treePath]) {
           directoryList.push(...this.buildList(treePath, level + 1));
         }
       });
@@ -355,6 +378,15 @@ export default {
     onTreeKeydown(event) {
       handleTreeKeydown(event);
     },
+    observeListItems() {
+      this.$nextTick(() => observeElements(this.$refs.fileTreeList, this.itemObserver));
+    },
+    async handleShowMore(parentPath, event) {
+      const prevItem = event.target.closest('li')?.previousElementSibling;
+      await this.fetchDirectory(parentPath);
+      await this.$nextTick();
+      prevItem?.nextElementSibling?.firstElementChild?.focus(); // Ensures the next available item is focussed after loading more items
+    },
   },
   filterPlaceholder: s__('Repository|Filter files (*.vue, *.rb...)'),
 };
@@ -399,22 +431,17 @@ export default {
       class="repository-tree-list gl-mt-2 gl-flex gl-min-h-0 gl-flex-col"
       :aria-label="__('File tree')"
     >
-      <div
+      <ul
         v-if="filteredFlatFilesList.length"
-        class="gl-h-full gl-min-h-0 gl-flex-grow gl-overflow-y-auto gl-pl-2"
+        ref="fileTreeList"
+        class="gl-h-full gl-min-h-0 gl-flex-grow gl-list-none gl-overflow-y-auto !gl-pl-2"
         role="tree"
         @keydown="onTreeKeydown"
       >
-        <file-row
-          v-for="(item, index) in filteredFlatFilesList"
-          :key="item.id + index"
-          :file="item"
-          :file-url="item.routerPath"
-          :level="item.level"
-          :opened="item.opened"
-          :loading="item.loading"
-          show-tree-toggle
-          tabindex="-1"
+        <li
+          v-for="item in filteredFlatFilesList"
+          :key="`${item.path}-${item.type}`"
+          :data-item-id="item.id"
           :aria-current="isCurrentPath(item.path)"
           role="treeitem"
           :aria-expanded="item.opened"
@@ -422,17 +449,30 @@ export default {
           :aria-level="item.level + 1"
           :aria-setsize="siblingInfo(item)[0]"
           :aria-posinset="siblingInfo(item)[1]"
-          :style="{ '--level': item.level }"
-          :class="{
-            'tree-list-parent': item.level > 0,
-            '!gl-bg-gray-50': isCurrentPath(item.path),
-          }"
-          class="gl-relative !gl-mx-0"
-          truncate-middle
-          @clickTree="(options) => toggleDirectory(item.path, options)"
-          @showMore="fetchDirectory(item.parentPath)"
-        />
-      </div>
+          :aria-label="item.name"
+          tabindex="-1"
+        >
+          <file-row
+            v-if="appearedItems[item.id]"
+            :file="item"
+            :file-url="item.routerPath"
+            :level="item.level"
+            :opened="item.opened"
+            :loading="item.loading"
+            show-tree-toggle
+            :style="{ '--level': item.level }"
+            :class="{
+              'tree-list-parent': item.level > 0,
+              '!gl-bg-gray-50': isCurrentPath(item.path),
+            }"
+            class="gl-relative !gl-mx-0 gl-w-fit gl-min-w-full"
+            truncate-middle
+            @clickTree="(options) => toggleDirectory(item.path, options)"
+            @showMore="handleShowMore(item.parentPath, $event)"
+          />
+          <div v-else data-placeholder-item class="gl-h-7" tabindex="0"></div>
+        </li>
+      </ul>
       <p v-else class="gl-my-6 gl-text-center">
         {{ __('No files found') }}
       </p>

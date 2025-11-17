@@ -104,5 +104,35 @@ export const handleTreeKeydown = (event) => {
   }
 
   event.preventDefault();
-  items[nextIndex]?.focus();
+  items[nextIndex]?.querySelector('button')?.focus();
 };
+
+/**
+ * Creates an IntersectionObserver that toggles item visibility based on viewport intersection
+ * @param {Function} setItemVisibility - Callback to update item visibility (itemId, isVisible)
+ * @returns {IntersectionObserver}
+ */
+export const createItemVisibilityObserver = (setItemVisibility, rootElement = null) =>
+  new IntersectionObserver(
+    (entries) =>
+      entries?.forEach(({ target, isIntersecting }) => {
+        setItemVisibility(target.dataset?.itemId, isIntersecting);
+        const isFocussed =
+          target.querySelector('[data-placeholder-item]') === document.activeElement;
+        if (isIntersecting && isFocussed)
+          requestAnimationFrame(() => target.querySelector('button')?.focus());
+      }),
+    {
+      root: rootElement,
+      scrollMargin: '1500px', // Pre-render items before scrolling into view (prevent white flashing)
+    },
+  );
+
+/**
+ * Observes all elements matching the selector
+ * @param {HTMLElement} container - Container element to query within
+ * @param {IntersectionObserver} observer - The observer instance
+ * @param {string} selector - CSS selector for elements to observe
+ */
+export const observeElements = (container, observer, selector = 'li[data-item-id]') =>
+  container?.querySelectorAll(selector).forEach((el) => observer?.observe(el));

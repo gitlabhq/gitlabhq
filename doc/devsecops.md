@@ -37,6 +37,16 @@ DevSecOps fundamentals include:
 
 For details, see [this article about DevSecOps](https://about.gitlab.com/topics/devsecops/).
 
+## DevSecOps in practice
+
+The following GitLab features are all part of a robust DevSecOps platform:
+
+- Shift-left security: Static application security testing (SAST) and dependency scanning in merge requests catch vulnerabilities before code merge.
+- Container security: Image scanning for CVEs, runtime protection, and Kubernetes security policies enforce least-privilege access.
+- Infrastructure as Code (IaC) scanning: Automated detection of misconfigurations in Terraform, CloudFormation, and Kubernetes manifests.
+- Secret detection: Pre-commit hooks and CI/CD pipeline scans prevent credential leaks in repositories.
+- Security dashboards: Centralized vulnerability tracking with CVSS scoring, exploitability metrics, and remediation workflows.
+
 ## Is DevSecOps right for you?
 
 If your organization is facing any of the following challenges, a DevSecOps approach might be for you.

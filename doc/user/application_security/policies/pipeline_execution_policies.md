@@ -916,7 +916,7 @@ For improved security, consider enabling the experimental `ensure_pipeline_polic
 #### Detect duplicate security configurations
 
 You can use `.pipeline-policy-pre` to create custom validation jobs that check for existing
-security configurations and provide guidance. For example, when you enforce security scans across an organization with pipeline execution policies, but some projects already have their own security scanning implementations, you can use `.pipeline-policy-pre` to identify duplicated scans. 
+security configurations and provide guidance. For example, when you enforce security scans across an organization with pipeline execution policies, but some projects already have their own security scanning implementations, you can use `.pipeline-policy-pre` to identify duplicated scans.
 
 Example policy CI/CD configuration:
 

@@ -21,13 +21,13 @@ This guide targets GitLab-managed agents and flows. The patterns should also ext
 
 #### Initial Comment on an Issue or MR: Create an Initial Comment
 
-Behavior Pattern: When a flow or agent begins work on an issue or MR, create an initial comment to signal activity. 
+Behavior Pattern: When a flow or agent begins work on an issue or MR, create an initial comment to signal activity.
 
 - Makes agent activity visible to all collaborators on the item
 - Provides a persistent record beyond the sessions UI
 - Establishes a comment that can be updated with progress
 
-Resources: 
+Resources:
 
 - To do: add example template
 - To do: add example how-to in the prompt
@@ -41,7 +41,7 @@ Behavior Pattern: While an agent is actively working on a task, it should update
 - Provides a clean, consolidated view of agent progress
 - Prevents issues and MRs from becoming cluttered with AI-generated content
 
-Resources: 
+Resources:
 
 - To do: add example template
 - To do: add example how-to in the prompt
@@ -55,7 +55,7 @@ Behavior Pattern: When an agent completes its work or requires human review and 
 - Signals a clear transition from "agent working" to "human action required"
 - Ensures important milestones don't get lost in updated content
 
-Resources: 
+Resources:
 
 - To do: add example template
 - To do: add example how-to in the prompt
@@ -65,7 +65,7 @@ Resources:
 
 Behavior Pattern: When a flow completes (successfully or with errors), always post a summary comment to the work item.
 
-Resources: 
+Resources:
 
 - To do: add example template for success and failure
 - To do: add example how-to in the prompt

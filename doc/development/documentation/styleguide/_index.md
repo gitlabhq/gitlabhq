@@ -1521,7 +1521,7 @@ Prerequisites:
 - Install GraphicsMagick:
 
   ```shell
-  # macOS: 
+  # macOS:
   brew install graphicsmagick
   ```
 

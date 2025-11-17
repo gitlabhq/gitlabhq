@@ -110,7 +110,10 @@ describe('MrWidgetOptions', () => {
           data: {
             project: {
               id: 1,
-              mergeRequest: { id: 1, userPermissions: { adminMergeRequest: false } },
+              mergeRequest: {
+                id: 1,
+                userPermissions: { adminMergeRequest: false, canMerge: true },
+              },
             },
           },
         }),

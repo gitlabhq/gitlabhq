@@ -55255,9 +55255,6 @@ msgstr ""
 msgid "Reports|Test summary results are being parsed"
 msgstr ""
 
-msgid "Reports|Tool"
-msgstr ""
-
 msgid "Reports|View partial report"
 msgstr ""
 
@@ -74034,9 +74031,6 @@ msgid "Vulnerability|Detection method"
 msgstr ""
 
 msgid "Vulnerability|Dismiss False Positive Flag"
-msgstr ""
-
-msgid "Vulnerability|Dismiss as False Positive"
 msgstr ""
 
 msgid "Vulnerability|Dismiss false positive flag for this vulnerability?"

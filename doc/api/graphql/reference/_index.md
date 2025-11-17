@@ -992,6 +992,23 @@ Returns [`Group`](#group).
 | ---- | ---- | ----------- |
 | <a id="querygroupfullpath"></a>`fullPath` | [`ID!`](#id) | Full path of the group. For example, `gitlab-org/gitlab-foss`. |
 
+### `Query.groupSecretsManager`
+
+{{< details >}}
+**Introduced** in GitLab 18.6.
+**Status**: Experiment.
+{{< /details >}}
+
+Find a group secrets manager.
+
+Returns [`GroupSecretsManager`](#groupsecretsmanager).
+
+#### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="querygroupsecretsmanagergrouppath"></a>`groupPath` | [`ID!`](#id) | Group of the secrets manager. |
+
 ### `Query.groups`
 
 Find groups.
@@ -2043,7 +2060,6 @@ four standard [pagination arguments](#pagination-arguments):
 | <a id="queryvulnerabilitiespolicyviolations"></a>`policyViolations` {{< icon name="warning-solid" >}} | [`[PolicyViolations!]`](#policyviolations) | **Introduced** in GitLab 18.6. **Status**: Experiment. Filter by security policy violations. To use this argument, you must have Elasticsearch configured and the `advanced_vulnerability_management` feature flag enabled. Not supported on Instance Security Dashboard queries. |
 | <a id="queryvulnerabilitiesprojectid"></a>`projectId` | [`[ID!]`](#id) | Filter vulnerabilities by project. |
 | <a id="queryvulnerabilitiesreachability"></a>`reachability` {{< icon name="warning-solid" >}} | [`ReachabilityType`](#reachabilitytype) | **Introduced** in GitLab 18.2. **Status**: Experiment. Filter vulnerabilities by reachability. |
-| <a id="queryvulnerabilitiesreducecomplexitymultiplier"></a>`reduceComplexityMultiplier` {{< icon name="warning-solid" >}} | [`Boolean`](#boolean) | **Deprecated** in GitLab 18.6. This field is a temporary bug mitigation and will be removed. |
 | <a id="queryvulnerabilitiesreporttype"></a>`reportType` | [`[VulnerabilityReportType!]`](#vulnerabilityreporttype) | Filter vulnerabilities by report type. |
 | <a id="queryvulnerabilitiesscanner"></a>`scanner` | [`[String!]`](#string) | Filter vulnerabilities by VulnerabilityScanner.externalId. |
 | <a id="queryvulnerabilitiesscannerid"></a>`scannerId` | [`[VulnerabilitiesScannerID!]`](#vulnerabilitiesscannerid) | Filter vulnerabilities by scanner ID. |
@@ -7631,6 +7647,25 @@ Input type: `GroupSavedReplyUpdateInput`
 | <a id="mutationgroupsavedreplyupdateclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
 | <a id="mutationgroupsavedreplyupdateerrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during the mutation. |
 | <a id="mutationgroupsavedreplyupdatesavedreply"></a>`savedReply` | [`GroupSavedReply`](#groupsavedreply) | Saved reply after mutation. |
+
+### `Mutation.groupSecretsManagerDeprovision`
+
+Input type: `GroupSecretsManagerDeprovisionInput`
+
+#### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mutationgroupsecretsmanagerdeprovisionclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutationgroupsecretsmanagerdeprovisiongrouppath"></a>`groupPath` | [`ID!`](#id) | Group of the secrets manager. |
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mutationgroupsecretsmanagerdeprovisionclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutationgroupsecretsmanagerdeprovisionerrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during the mutation. |
+| <a id="mutationgroupsecretsmanagerdeprovisiongroupsecretsmanager"></a>`groupSecretsManager` | [`GroupSecretsManager`](#groupsecretsmanager) | Group secrets manager. |
 
 ### `Mutation.groupSecretsManagerInitialize`
 
@@ -33256,7 +33291,6 @@ four standard [pagination arguments](#pagination-arguments):
 | <a id="groupvulnerabilitiespolicyviolations"></a>`policyViolations` {{< icon name="warning-solid" >}} | [`[PolicyViolations!]`](#policyviolations) | **Introduced** in GitLab 18.6. **Status**: Experiment. Filter by security policy violations. To use this argument, you must have Elasticsearch configured and the `advanced_vulnerability_management` feature flag enabled. Not supported on Instance Security Dashboard queries. |
 | <a id="groupvulnerabilitiesprojectid"></a>`projectId` | [`[ID!]`](#id) | Filter vulnerabilities by project. |
 | <a id="groupvulnerabilitiesreachability"></a>`reachability` {{< icon name="warning-solid" >}} | [`ReachabilityType`](#reachabilitytype) | **Introduced** in GitLab 18.2. **Status**: Experiment. Filter vulnerabilities by reachability. |
-| <a id="groupvulnerabilitiesreducecomplexitymultiplier"></a>`reduceComplexityMultiplier` {{< icon name="warning-solid" >}} | [`Boolean`](#boolean) | **Deprecated** in GitLab 18.6. This field is a temporary bug mitigation and will be removed. |
 | <a id="groupvulnerabilitiesreporttype"></a>`reportType` | [`[VulnerabilityReportType!]`](#vulnerabilityreporttype) | Filter vulnerabilities by report type. |
 | <a id="groupvulnerabilitiesscanner"></a>`scanner` | [`[String!]`](#string) | Filter vulnerabilities by VulnerabilityScanner.externalId. |
 | <a id="groupvulnerabilitiesscannerid"></a>`scannerId` | [`[VulnerabilitiesScannerID!]`](#vulnerabilitiesscannerid) | Filter vulnerabilities by scanner ID. |
@@ -42370,7 +42404,6 @@ four standard [pagination arguments](#pagination-arguments):
 | <a id="projectvulnerabilitiespolicyviolations"></a>`policyViolations` {{< icon name="warning-solid" >}} | [`[PolicyViolations!]`](#policyviolations) | **Introduced** in GitLab 18.6. **Status**: Experiment. Filter by security policy violations. To use this argument, you must have Elasticsearch configured and the `advanced_vulnerability_management` feature flag enabled. Not supported on Instance Security Dashboard queries. |
 | <a id="projectvulnerabilitiesprojectid"></a>`projectId` | [`[ID!]`](#id) | Filter vulnerabilities by project. |
 | <a id="projectvulnerabilitiesreachability"></a>`reachability` {{< icon name="warning-solid" >}} | [`ReachabilityType`](#reachabilitytype) | **Introduced** in GitLab 18.2. **Status**: Experiment. Filter vulnerabilities by reachability. |
-| <a id="projectvulnerabilitiesreducecomplexitymultiplier"></a>`reduceComplexityMultiplier` {{< icon name="warning-solid" >}} | [`Boolean`](#boolean) | **Deprecated** in GitLab 18.6. This field is a temporary bug mitigation and will be removed. |
 | <a id="projectvulnerabilitiesreporttype"></a>`reportType` | [`[VulnerabilityReportType!]`](#vulnerabilityreporttype) | Filter vulnerabilities by report type. |
 | <a id="projectvulnerabilitiesscanner"></a>`scanner` | [`[String!]`](#string) | Filter vulnerabilities by VulnerabilityScanner.externalId. |
 | <a id="projectvulnerabilitiesscannerid"></a>`scannerId` | [`[VulnerabilitiesScannerID!]`](#vulnerabilitiesscannerid) | Filter vulnerabilities by scanner ID. |

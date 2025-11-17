@@ -10,7 +10,10 @@ import ImportByUrlForm from '~/projects/new_v2/components/import_by_url_form.vue
 import SharedProjectCreationFields from '~/projects/new_v2/components/shared_project_creation_fields.vue';
 import MultiStepFormTemplate from '~/vue_shared/components/multi_step_form_template.vue';
 
-jest.mock('~/lib/utils/url_utility');
+jest.mock('~/lib/utils/url_utility', () => ({
+  ...jest.requireActual('~/lib/utils/url_utility'),
+  visitUrl: jest.fn(),
+}));
 
 const $toast = {
   show: jest.fn(),

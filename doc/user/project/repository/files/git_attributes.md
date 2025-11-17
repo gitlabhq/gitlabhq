@@ -126,7 +126,7 @@ How to configure a custom merge driver depends on the type of installation.
 {{< /tabs >}}
 
 In this example, during a merge, Git uses the `driver` value as the command to execute.
-Because the example uses [`true`](https://man7.org/linux/man-pages/man1/true.1.html) 
+Because the example uses [`true`](https://man7.org/linux/man-pages/man1/true.1.html)
 with no arguments, it always returns a non-zero return code. This means that for the
 files specified in `.gitattributes`, merges do nothing.
 

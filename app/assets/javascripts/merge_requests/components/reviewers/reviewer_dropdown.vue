@@ -151,6 +151,9 @@ export default {
         username: gon?.current_username,
         name: gon?.current_user_fullname,
         avatarUrl: gon?.current_user_avatar_url,
+        mergeRequestInteraction: {
+          canMerge: Boolean(this.userPermissions?.canMerge),
+        },
       };
     },
     isSearchEmpty() {
@@ -275,15 +278,13 @@ export default {
 
       if (!currentUsername || isSelected || !this.isSearchEmpty) return users;
 
-      const currentUserIndex = users.findIndex((user) => user.username === currentUsername);
+      const currentUserInList = users.find((user) => user.username === currentUsername);
 
-      if (currentUserIndex <= 0) return users;
+      if (currentUserInList) {
+        return [currentUserInList, ...users.filter((user) => user.username !== currentUsername)];
+      }
 
-      return [
-        users[currentUserIndex],
-        ...users.slice(0, currentUserIndex),
-        ...users.slice(currentUserIndex + 1),
-      ];
+      return [this.mapUser(this.currentUser), ...users];
     },
   },
   i18n: {

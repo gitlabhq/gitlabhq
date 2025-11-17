@@ -7,6 +7,8 @@ import {
   hasMorePages,
   isExpandable,
   handleTreeKeydown,
+  createItemVisibilityObserver,
+  observeElements,
 } from '~/repository/file_tree_browser/utils';
 import { FTB_MAX_PAGES, FTB_MAX_DEPTH } from '~/repository/constants';
 
@@ -165,9 +167,9 @@ describe('File tree browser utilities', () => {
       container = document.createElement('div');
       container.setAttribute('role', 'tree');
       container.innerHTML = `
-      <button role="treeitem">Item 0</button>
-      <button role="treeitem">Item 1</button>
-      <button role="treeitem">Item 2</button>
+      <div role="treeitem"><button>Item 0</button></div>
+      <div role="treeitem"><button>Item 1</button></div>
+      <div role="treeitem"><button>Item 2</button></div>
     `;
       document.body.appendChild(container);
       items = container.querySelectorAll('[role="treeitem"]');
@@ -185,8 +187,64 @@ describe('File tree browser utilities', () => {
       it(`moves focus to item ${to}`, () => {
         triggerKey(key, from);
 
-        expect(document.activeElement).toBe(items[to]);
+        expect(document.activeElement).toBe(items[to].querySelector('button'));
       });
+    });
+  });
+
+  describe('createItemVisibilityObserver', () => {
+    afterEach(() => document.querySelector('.js-static-panel-inner')?.remove());
+
+    it('creates an IntersectionObserver instance', () => {
+      const observer = createItemVisibilityObserver(jest.fn());
+
+      expect(observer).toBeInstanceOf(IntersectionObserver);
+      observer.disconnect();
+    });
+
+    it('creates observer with scrollMargin option and custom root element', () => {
+      const customRoot = document.createElement('div');
+      const mockIntersectionObserver = jest.fn();
+      global.IntersectionObserver = mockIntersectionObserver;
+      createItemVisibilityObserver(jest.fn(), customRoot);
+
+      expect(mockIntersectionObserver).toHaveBeenCalledWith(expect.any(Function), {
+        root: customRoot,
+        scrollMargin: '1500px',
+      });
+    });
+
+    it('creates observer with null root when panel does not exist', () => {
+      const mockIntersectionObserver = jest.fn();
+      global.IntersectionObserver = mockIntersectionObserver;
+      createItemVisibilityObserver(jest.fn());
+
+      expect(mockIntersectionObserver).toHaveBeenCalledWith(expect.any(Function), {
+        root: null,
+        scrollMargin: '1500px',
+      });
+    });
+  });
+
+  describe('observeElements', () => {
+    it('observes all elements matching the default selector', () => {
+      const container = document.createElement('div');
+      container.innerHTML = '<li data-item-id="1"></li><li data-item-id="2"></li>';
+      const observer = { observe: jest.fn() };
+
+      observeElements(container, observer);
+
+      expect(observer.observe).toHaveBeenCalledTimes(2);
+    });
+
+    it('observes elements matching a custom selector', () => {
+      const container = document.createElement('div');
+      container.innerHTML = '<div class="item"></div><div class="item"></div>';
+      const observer = { observe: jest.fn() };
+
+      observeElements(container, observer, '.item');
+
+      expect(observer.observe).toHaveBeenCalledTimes(2);
     });
   });
 });

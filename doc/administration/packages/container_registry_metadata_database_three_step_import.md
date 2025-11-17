@@ -14,7 +14,7 @@ description: Enable the container registry metadata database with minimal downti
 {{< /details >}}
 
 Import your existing container registry metadata.
-The following procedure is recommended for larger registries (200 GiB or more), or if you want to 
+The following procedure is recommended for larger registries (200 GiB or more), or if you want to
 minimize downtime while completing the import.
 
 ### Pre-import repositories (step one)

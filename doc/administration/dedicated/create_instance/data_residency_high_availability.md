@@ -77,7 +77,7 @@ advanced analytical features are not available for your instance.
 
 GitLab Dedicated instances in supported regions include a ClickHouse Cloud database deployed in your tenant's
 primary region. The database connects through AWS PrivateLink and is not publicly accessible.
-Your data is encrypted in transit and at rest using cloud provider-managed AES 256 keys and 
+Your data is encrypted in transit and at rest using cloud provider-managed AES 256 keys and
 transparent data encryption.
 
 When you configure your GitLab Dedicated instance to

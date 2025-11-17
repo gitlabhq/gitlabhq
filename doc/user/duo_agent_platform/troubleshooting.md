@@ -175,7 +175,7 @@ If a session for your flow does not start:
 
 Flows that use a [composite identity](security.md) need to add the `@duo-developer`
 service account to your project. If your group is restricted, you cannot add users directly to projects,
-and your flows will not run. 
+and your flows will not run.
 
 Turn off the setting prior to running a flow in your project.
 This step only needs to be done one time, for the first flow to run.

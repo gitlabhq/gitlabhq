@@ -98,26 +98,10 @@ module QA
         #
         # @return [void]
         def create_noop(reason: nil)
-          noop_yml = noop_pipeline_yml(reason || "no-op run, nothing will be executed!")
-
           (FUNCTIONAL_E2E_PIPELINE_TYPES + NON_FUNCTIONAL_PIPELINE_TYPES).each do |type|
-            # omnibus pipeline trigger defined an input and if it isn't present in no-op pipeline, it will fail
-            # see trigger job definition 'e2e:test-on-omnibus-ee' in '.gitlab/ci/qa.gitlab-ci.yml'
-            yml = if type == :test_on_omnibus
-                    <<~YML
-                      spec:
-                        inputs:
-                          pipeline-type:
-                            type: string
-                            default: external
-                      ---
-                      #{noop_yml}
-                    YML
-                  else
-                    noop_yml
-                  end
-
-            File.write(generated_yml_file_name(type), yml)
+            reason_text = reason || "no-op run, nothing will be executed!"
+            noop_yml = noop_pipeline_yml(reason_text, pipeline_type: type)
+            File.write(generated_yml_file_name(type), noop_yml)
           end
           logger.info("Created noop pipeline definitions for all E2E test pipelines")
         end
@@ -303,7 +287,8 @@ module QA
             zero_runtime = jobs.all? { |job| job[:runtime] == 0 }
             if zero_runtime
               logger.info("  All jobs have zero runtime, creating 'no-op' pipeline")
-              next definitions[pipeline_type] = noop_pipeline_yml("no-op run, pipeline has no executable tests")
+              yml = noop_pipeline_yml("no-op run, pipeline has no executable tests", pipeline_type: pipeline_type)
+              next definitions[pipeline_type] = yml
             end
 
             pipeline = jobs.reduce(functional_pipeline_definitions[pipeline_type]) do |pipeline_yml, job|
@@ -383,13 +368,28 @@ module QA
         # No-op pipeline yml with skip reason message
         #
         # @param reason [String]
+        # @param pipeline_type [Symbol, nil]
         # @return [String]
-        def noop_pipeline_yml(reason)
-          <<~YML
+        def noop_pipeline_yml(reason, pipeline_type: nil)
+          base_yml = <<~YML
             variables:
               SKIP_MESSAGE: "#{reason}"
 
             #{noop_pipeline}
+          YML
+
+          # omnibus pipeline trigger defined an input and if it isn't present in no-op pipeline, it will fail
+          # see trigger job definition 'e2e:test-on-omnibus-ee' in '.gitlab/ci/qa.gitlab-ci.yml'
+          return base_yml unless pipeline_type == :test_on_omnibus
+
+          <<~YML
+            spec:
+              inputs:
+                pipeline-type:
+                  type: string
+                  default: external
+            ---
+            #{base_yml}
           YML
         end
       end

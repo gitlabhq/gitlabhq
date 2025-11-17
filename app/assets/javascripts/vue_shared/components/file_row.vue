@@ -157,7 +157,7 @@ export default {
     :loading="file.loading"
     class="!gl-border-none !gl-pl-6"
     button-text-classes="gl-text-blue-700"
-    @click="$emit('showMore')"
+    @click="$emit('showMore', $event)"
   >
     {{ __('Show more') }}
   </gl-button>
@@ -238,7 +238,6 @@ export default {
   height: var(--file-row-height, 32px);
   padding: 4px 8px;
   margin-left: -8px;
-  margin-right: -8px;
   border-radius: 3px;
   text-align: left;
   cursor: pointer;

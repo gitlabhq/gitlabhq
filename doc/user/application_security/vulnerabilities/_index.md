@@ -321,11 +321,11 @@ Vulnerability Resolution in a merge request sometimes cannot generate a suggeste
 
 {{< /details >}}
 
-For specific types of vulnerabilities, GitLab Advanced SAST provides [code flow](../sast/gitlab_advanced_sast.md#vulnerability-code-flow) information.
+For specific types of vulnerabilities, GitLab Advanced SAST provides [code flow](../sast/gitlab_advanced_sast.md#code-flow) information.
 A vulnerability's code flow is the path the data takes from the user input (source) to the vulnerable line of code (sink), through all assignments, manipulation, and sanitization.
 
 For details on how to view a vulnerability's code flow, see
-[Vulnerability code flow](../sast/gitlab_advanced_sast.md#vulnerability-code-flow).
+[Vulnerability code flow](../sast/gitlab_advanced_sast.md#code-flow).
 
 ![A code flow of a Python application across two files](img/code_flow_view_v17_7.png)
 

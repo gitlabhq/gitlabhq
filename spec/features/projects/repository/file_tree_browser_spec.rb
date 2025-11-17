@@ -38,7 +38,7 @@ RSpec.describe 'Repository file tree browser', :js, feature_category: :source_co
 
     it 'displays files and directories' do
       within('.file-tree-browser') do
-        expect(page).to have_file('README.md')
+        expect(page).to have_file('CONTRIBUTING.md')
         expect(page).to have_file('files')
       end
     end
@@ -49,10 +49,10 @@ RSpec.describe 'Repository file tree browser', :js, feature_category: :source_co
 
     it 'navigates to a file' do
       within('.file-tree-browser') do
-        click_file('README.md')
+        click_file('CONTRIBUTING.md')
       end
 
-      expect(page).to have_current_path(project_blob_path(project, "#{project.default_branch}/README.md"))
+      expect(page).to have_current_path(project_blob_path(project, "#{project.default_branch}/CONTRIBUTING.md"))
     end
 
     it 'expands and collapses directories' do
@@ -68,6 +68,8 @@ RSpec.describe 'Repository file tree browser', :js, feature_category: :source_co
     it 'expands parent directories when navigating directly to a nested file' do
       visit project_blob_path(project, "#{project.default_branch}/files/ruby/popen.rb")
       wait_for_requests
+      # File tree starts collapsed in Project Studio
+      click_button('Show file tree browser') if Users::ProjectStudio.enabled_for_user?(user) # rubocop:disable RSpec/AvoidConditionalStatements -- temporary Project Studio rollout
 
       within('.file-tree-browser') do
         # Should auto-expand parent directories

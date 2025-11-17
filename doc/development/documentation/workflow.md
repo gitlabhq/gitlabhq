@@ -381,8 +381,8 @@ or for other similar reasons. Hiding documentation is problematic for several re
 - Dropped features leave orphaned content that clutters the repository until discovered.
 
 If documentation needs to be removed because it was added prematurely, delete it. In the merge
-request that removes the content, add a link to the merge request that added it originally. If it's 
-needed in the future, you can use Git history, or the earlier MR, to recover the content 
+request that removes the content, add a link to the merge request that added it originally. If it's
+needed in the future, you can use Git history, or the earlier MR, to recover the content
 and add it back.
 
 To avoid documentation being added prematurely, development teams should consider including documentation with the code.

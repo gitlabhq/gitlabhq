@@ -113,7 +113,7 @@ Use this information to:
 
 ### Container registry
 
-The **Container registry** section provides the FQDN (Fully Qualified Domain Name) for your 
+The **Container registry** section provides the FQDN (Fully Qualified Domain Name) for your
 instance's container registry S3 bucket.
 
 Use this information to:

@@ -68,7 +68,10 @@ function createComponent(
         userPermissionsQuery,
         jest.fn().mockResolvedValue({
           data: {
-            project: { id: 1, mergeRequest: { id: 1, userPermissions: { adminMergeRequest } } },
+            project: {
+              id: 1,
+              mergeRequest: { id: 1, userPermissions: { adminMergeRequest, canMerge: true } },
+            },
           },
         }),
       ],
@@ -219,26 +222,52 @@ describe('Reviewer dropdown component', () => {
       });
 
       describe('when current user is not selected', () => {
-        beforeEach(async () => {
-          createComponent(true, { selectedReviewers: [] }, [
-            createMockUser(),
-            createMockUser({ id: 2, name: 'Nonadmin', username: 'bob' }),
-            createMockUser({ id: 3, name: 'Current User', username: 'currentuser' }),
-          ]);
-          await waitForPromises();
+        describe('when current user is in the first page of query results', () => {
+          beforeEach(async () => {
+            createComponent(true, { selectedReviewers: [] }, [
+              createMockUser(),
+              createMockUser({ id: 2, name: 'Nonadmin', username: 'bob' }),
+              createMockUser({ id: 3, name: 'Current User', username: 'currentuser' }),
+            ]);
+            await waitForPromises();
 
-          findDropdown().vm.$emit('shown');
-          await waitForPromises();
+            findDropdown().vm.$emit('shown');
+            await waitForPromises();
+          });
+
+          it('moves current user to the top of the unselected users list', () => {
+            const items = findDropdown().props('items');
+            const usersGroup = items.find((group) => group.text === 'Users');
+
+            expect(usersGroup.options[0]).toMatchObject({
+              value: 'currentuser',
+              text: 'Current User',
+              secondaryText: '@currentuser',
+            });
+          });
         });
 
-        it('moves current user to the top of the unselected users list', () => {
-          const items = findDropdown().props('items');
-          const usersGroup = items.find((group) => group.text === 'Users');
+        describe('when current user is not in the first page of query results', () => {
+          beforeEach(async () => {
+            createComponent(true, { selectedReviewers: [] }, [
+              createMockUser(),
+              createMockUser({ id: 2, name: 'Nonadmin', username: 'bob' }),
+            ]);
+            await waitForPromises();
 
-          expect(usersGroup.options[0]).toMatchObject({
-            value: 'currentuser',
-            text: 'Current User',
-            secondaryText: '@currentuser',
+            findDropdown().vm.$emit('shown');
+            await waitForPromises();
+          });
+
+          it('adds current user to the top of the unselected users list', () => {
+            const items = findDropdown().props('items');
+            const usersGroup = items.find((group) => group.text === 'Users');
+
+            expect(usersGroup.options[0]).toMatchObject({
+              value: 'currentuser',
+              text: 'Current User',
+              secondaryText: '@currentuser',
+            });
           });
         });
       });

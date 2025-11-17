@@ -949,6 +949,8 @@
   - 1
 - - search_zoekt_update_index_used_storage_bytes_event
   - 1
+- - secrets_management_deprovision_group_secrets_manager
+  - 1
 - - secrets_management_deprovision_project_secrets_manager
   - 1
 - - secrets_management_provision_group_secrets_manager

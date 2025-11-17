@@ -59,7 +59,7 @@ If it doesn't, open a [new issue](https://gitlab.com/gitlab-org/gitlab/-/issues/
 Select the appropriate template and add all the necessary information about the work you plan to do.
 Tag a [merge request coach](merge_request_coaches.md)
 with `@gitlab-bot help` on the issue or through the contributors platform to help [validate the issue](issue_workflow.md#clarifyingvalidating-an-issue).
-You do not need to be assigned to the issue to get started.    
+You do not need to be assigned to the issue to get started.
 If the issue already has an assignee, ask if they are still working on the issue or if they would like to collaborate.
 
 For details, see [the issues workflow](issue_workflow.md).

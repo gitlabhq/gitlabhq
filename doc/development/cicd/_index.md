@@ -172,7 +172,7 @@ You can watch a walkthrough of the architecture in [CI Backend Architectural Wal
 
 ### Pipeline processing
 
-When a pipeline is created, the `ProcessPipelineService` runs automatically via `Ci::InitialPipelineProcessWorker`. 
+When a pipeline is created, the `ProcessPipelineService` runs automatically via `Ci::InitialPipelineProcessWorker`.
 This service is also triggered via `PipelineProcessWorker` [whenever a job changes statuses.](https://gitlab.com/gitlab-org/gitlab/-/blob/12da0553647706202c2113e84d92dff0ef12d668/app/models/commit_status.rb#L230)
 
 This service is responsible for moving all the pipeline's jobs to a completed state by setting them to either:

@@ -67,7 +67,7 @@ The support team will help you regain access to your account.
 
 ## Email notifications
 
-GitLab sends email notifications about instance incidents, maintenance, performance issues, 
+GitLab sends email notifications about instance incidents, maintenance, performance issues,
 and security updates.
 
 Notifications are sent to:

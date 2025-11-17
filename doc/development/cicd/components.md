@@ -84,7 +84,7 @@ Follow these guidelines to determine the appropriate version type for your compo
 
 - 1. Ensure all tests pass on the `main` branch.
 - 1. Create a new tag using [Semantic Versioning](https://semver.org/).
-- 1. Expect a pipeline for the tag to run and create a release automatically. 
+- 1. Expect a pipeline for the tag to run and create a release automatically.
 - 1. Ensure the new version is published on the CI/CD Components catalog.
 - 1. Manually test the new version from the CI/CD Components catalog in the scenarios where it would typically be used.
 

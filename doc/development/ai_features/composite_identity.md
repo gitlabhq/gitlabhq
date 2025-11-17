@@ -61,7 +61,7 @@ app.save!
 - Create an authorization grant for a service account + human user:
 
 ```ruby
-# Assuming you want to create a composite OAuth token for the Duo Workflow OAuth application and service account + root user in your GDK. 
+# Assuming you want to create a composite OAuth token for the Duo Workflow OAuth application and service account + root user in your GDK.
 org = Organizations::Organization.default_organization
 user = User.first
 

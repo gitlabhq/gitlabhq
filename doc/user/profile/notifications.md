@@ -242,7 +242,7 @@ Project notification events:
 
 {{< history >}}
 
-- Notification for group access expired [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/12704) in GitLab 16.3. 
+- Notification for group access expired [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/12704) in GitLab 16.3.
 - Notification for group access tokens expiring soon [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/367705) in GitLab 16.4.
 - Notification for group scheduled for deletion [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/522883) in GitLab 17.11.
 

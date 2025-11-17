@@ -138,6 +138,7 @@
 - switchboard
 - system_access
 - team_planning
+- tenant_scale_metrics
 - text_editors
 - user_management
 - user_profile
