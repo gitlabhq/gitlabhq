@@ -2,7 +2,7 @@ PATH
   remote: .
   specs:
     gitlab-topology-service-client (0.1)
-      google-protobuf (~> 3)
+      google-protobuf (>= 3.25, < 5.0)
       grpc
 
 GEM

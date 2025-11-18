@@ -116,7 +116,7 @@ export default {
   <gl-disclosure-dropdown
     v-gl-tooltip.bottom="dropdownOpen ? '' : $options.i18n.createNew"
     category="tertiary"
-    :icon="projectStudioEnabled ? 'plus-square-o' : 'plus'"
+    icon="plus"
     no-caret
     text-sr-only
     :toggle-text="$options.i18n.createNew"

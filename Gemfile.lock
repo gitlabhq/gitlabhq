@@ -47,7 +47,7 @@ PATH
       concurrent-ruby (~> 1.1)
       faraday (~> 2)
       google-cloud-storage_transfer (~> 1.2.0)
-      google-protobuf (~> 3.25, >= 3.25.3)
+      google-protobuf (>= 3.25, < 5.0)
       googleauth (~> 1.14)
       grpc (~> 1.75)
       json (~> 2.7)
@@ -162,7 +162,7 @@ PATH
   remote: vendor/gems/gitlab-topology-service-client
   specs:
     gitlab-topology-service-client (0.1)
-      google-protobuf (~> 3)
+      google-protobuf (>= 3.25, < 5.0)
       grpc
 
 PATH
@@ -775,11 +775,11 @@ GEM
       rb_sys (~> 0.9.109)
     gitlab-kas-grpc (18.5.0.pre.rc4)
       grpc (~> 1.0)
-    gitlab-labkit (0.42.2)
+    gitlab-labkit (1.0.1)
       actionpack (>= 5.0.0, < 8.1.0)
       activesupport (>= 5.0.0, < 8.1.0)
-      google-protobuf (~> 3)
-      grpc (>= 1.62)
+      google-protobuf (>= 3.25, < 5.0)
+      grpc (>= 1.75)
       jaeger-client (~> 1.1.0)
       json-schema (~> 5.1)
       opentracing (~> 0.4)
@@ -2197,7 +2197,7 @@ DEPENDENCIES
   gitlab-housekeeper!
   gitlab-http!
   gitlab-kas-grpc (~> 18.5.0.pre.rc4)
-  gitlab-labkit (~> 0.42.2)
+  gitlab-labkit (~> 1.0.0)
   gitlab-license (~> 2.6)
   gitlab-mail_room (~> 0.0.24)
   gitlab-markup (~> 2.0.0)
@@ -2232,7 +2232,7 @@ DEPENDENCIES
   google-cloud-bigquery (~> 1.0)
   google-cloud-compute-v1 (~> 2.6.0)
   google-cloud-storage (~> 1.57.0)
-  google-protobuf (~> 3.25, >= 3.25.3)
+  google-protobuf (>= 3.25, < 5.0)
   googleauth (~> 1.14)
   gpgme (~> 2.0.24)
   grape (~> 2.0.0)

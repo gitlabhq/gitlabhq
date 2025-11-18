@@ -17,7 +17,7 @@ PATH
       concurrent-ruby (~> 1.1)
       faraday (~> 2)
       google-cloud-storage_transfer (~> 1.2.0)
-      google-protobuf (~> 3.25, >= 3.25.3)
+      google-protobuf (>= 3.25, < 5.0)
       googleauth (~> 1.14)
       grpc (~> 1.75)
       json (~> 2.7)

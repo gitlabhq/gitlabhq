@@ -396,7 +396,6 @@ class ProjectPolicy < BasePolicy
     enable :read_snippet
     enable :read_project_member
     enable :read_note
-    enable :create_project
     enable :create_issue
     enable :create_note
     enable :upload_file
