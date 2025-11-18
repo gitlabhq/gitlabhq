@@ -13,54 +13,46 @@ description: Repository migration, third-party repositories, and user contributi
 
 {{< /details >}}
 
-Bring your existing work into GitLab and preserve your contribution history.
-Consolidate projects from multiple platforms or transfer data between GitLab instances.
-
-GitLab offers different methods to:
-
-- Migrate GitLab groups and projects by using direct transfer.
-- Import projects from a variety of supported sources.
-
-## Migrate from GitLab to GitLab by using direct transfer
-
-The best way to copy GitLab groups and projects between GitLab instances, or in the same GitLab instance, is
-[by using direct transfer](../../group/import/_index.md).
-
-Another option is to move GitLab groups using [group transfer](../../group/manage.md#transfer-a-group).
-
-You can also copy GitLab projects by using a GitLab file export, which is a supported import source.
-
-## Supported import sources
-
 {{< history >}}
 
-- All importers default to disabled for GitLab Self-Managed instances. This change was [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/118970) in GitLab 16.0.
+- All importers defaulting to disabled for GitLab Self-Managed instances [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/118970) in GitLab 16.0.
 
 {{< /history >}}
 
-The import sources that are available to you by default depend on which GitLab you use:
+Bring your existing work into GitLab. You can migrate to GitLab from:
 
-- GitLab.com: all available import sources are [enabled by default](../../gitlab_com/_index.md#default-import-sources).
-- GitLab Self-Managed: no import sources are enabled by default and must be
-  [enabled](../../../administration/settings/import_and_export_settings.md#configure-allowed-import-sources).
+- Other GitLab instances or the same GitLab instance.
+- Third-party source code management platforms.
 
-GitLab can import projects from these supported import sources.
-
-| Import source                                 | Description |
-|:----------------------------------------------|:------------|
-| [Bitbucket Cloud](bitbucket.md)               | Using [Bitbucket.org as an OmniAuth provider](../../../integration/bitbucket.md), import Bitbucket repositories. |
-| [Bitbucket Server](bitbucket_server.md)       | Import repositories from Bitbucket Server (also known as Stash). |
-| [FogBugz](fogbugz.md)                         | Import FogBugz projects. |
-| [Gitea](gitea.md)                             | Import Gitea projects. |
-| [GitHub](github.md)                           | Import from either GitHub.com or GitHub Enterprise. |
-| [GitLab export](../settings/import_export.md) | Migrate projects one by one by using a GitLab export file. |
-| [Manifest file](manifest.md)                  | Upload a manifest file. |
-| [Repository by URL](repo_by_url.md)           | Provide a Git repository URL to create a new project from. |
+| Migrate from                                                      | GitLab migration tool available? |
+|:------------------------------------------------------------------|:---------------------------------|
+| [Bitbucket Cloud](bitbucket.md)                                   | {{< icon name="check-circle-filled" >}} Yes |
+| [Bitbucket Server](bitbucket_server.md)                           | {{< icon name="check-circle-filled" >}} Yes |
+| [ClearCase](clearcase.md)                                         | {{< icon name="dash-circle" >}} No |
+| [CVS](cvs.md)                                                     | {{< icon name="dash-circle" >}} No |
+| [FogBugz](fogbugz.md)                                             | {{< icon name="check-circle-filled" >}} Yes |
+| [GitHub](github.md)                                               | {{< icon name="check-circle-filled" >}} Yes |
+| [GitLab (by using direct transfer)](../../group/import/_index.md) | {{< icon name="check-circle-filled" >}} Yes |
+| [GitLab (by using file export)](../settings/import_export.md)     | {{< icon name="check-circle-filled" >}} Yes |
+| [Gitea](gitea.md)                                                 | {{< icon name="check-circle-filled" >}} Yes |
+| Git repository through a [manifest file](manifest.md)             | {{< icon name="check-circle-filled" >}} Yes |
+| Git repository through a [repository URL](repo_by_url.md)         | {{< icon name="check-circle-filled" >}} Yes |
+| [Jira (issues only)](jira.md)                                     | {{< icon name="check-circle-filled" >}} Yes |
+| [Perforce Helix](perforce.md)                                     | {{< icon name="dash-circle" >}} No |
+| [Team Foundation Version Control (TFVC)](tfvc.md)                 | {{< icon name="dash-circle" >}} No |
 
 After you start a migration, you should not make any changes to imported groups or projects
 on the source instance because these changes might not be copied to the destination instance.
 
-### Disable unused import sources
+## Import repositories from Subversion
+
+GitLab cannot automatically migrate Subversion repositories to Git. Converting Subversion repositories to Git can be
+difficult, but several tools exist including:
+
+- [`git svn`](https://git-scm.com/book/en/v2/Git-and-Other-Systems-Migrating-to-Git), for very small and basic repositories.
+- [`reposurgeon`](http://www.catb.org/~esr/reposurgeon/repository-editing.html), for larger and more complex repositories.
+
+## Disable unused import sources
 
 Only import projects from sources you trust. If you import a project from an untrusted source,
 an attacker could steal your sensitive data. For example, an imported project
@@ -73,24 +65,6 @@ GitLab Self-Managed administrators can reduce their attack surface by disabling 
 1. Expand **Import and export settings**.
 1. Scroll to **Import sources**.
 1. Clear checkboxes for importers that are not required.
-
-## Other import sources
-
-You can also read information on importing from these other import sources:
-
-- [ClearCase](clearcase.md)
-- [Concurrent Versions System (CVS)](cvs.md)
-- [Jira (issues only)](jira.md)
-- [Perforce Helix](perforce.md)
-- [Team Foundation Version Control (TFVC)](tfvc.md)
-
-### Import repositories from Subversion
-
-GitLab can not automatically migrate Subversion repositories to Git. Converting Subversion repositories to Git can be
-difficult, but several tools exist including:
-
-- [`git svn`](https://git-scm.com/book/en/v2/Git-and-Other-Systems-Migrating-to-Git), for very small and basic repositories.
-- [`reposurgeon`](http://www.catb.org/~esr/reposurgeon/repository-editing.html), for larger and more complex repositories.
 
 ## User contribution and membership mapping
 
@@ -280,7 +254,7 @@ To filter for placeholder users created during imports for an entire instance:
 
 #### Creating placeholder users
 
-Placeholder users are created per [import source](#supported-import-sources) and per top-level group:
+Placeholder users are created per import source and per top-level group:
 
 - If you import the same project twice to the same top-level group on the destination instance, the second import uses
   the same placeholder users as the first import.

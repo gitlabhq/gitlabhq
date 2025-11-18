@@ -53,9 +53,16 @@ module Gitlab
           payload = event.payload
           return if ignored_query?(payload)
 
+          db_role = ::Gitlab::Database::LoadBalancing.db_role_for_connection(payload[:connection])
           db_config_name = db_config_name(event.payload)
           cached_query = cached_query?(payload)
-          select_sql_command = select_sql_command?(payload)
+
+          # 1. Queries executed on replicas are always SELECT queries without the`FOR UPDATE` or the `FOR SHARE` modifier
+          # 2. Cached query is always a SELECT without the`FOR UPDATE` or the `FOR SHARE` modifier
+          # 3. Parse the query and check if it's SELECT
+          select_sql_command = db_role == Gitlab::Database::LoadBalancing::ROLE_REPLICA ||
+            cached_query ||
+            select_sql_command?(payload)
 
           increment(:count, db_config_name: db_config_name)
           increment(:cached_count, db_config_name: db_config_name) if cached_query
@@ -65,7 +72,6 @@ module Gitlab
             buckets SQL_DURATION_BUCKET
           end
 
-          db_role = ::Gitlab::Database::LoadBalancing.db_role_for_connection(payload[:connection])
           return if db_role.blank?
 
           increment_db_role_counters(db_role, payload, cached_query: cached_query, select_sql_command: select_sql_command)
@@ -103,7 +109,7 @@ module Gitlab
         private
 
         def wal_command?(payload)
-          payload[:sql].match?(SQL_WAL_LOCATION_REGEX)
+          SQL_WAL_LOCATION_REGEX.match?(payload[:sql])
         end
 
         def increment_db_role_counters(db_role, payload, cached_query:, select_sql_command:)
@@ -143,7 +149,7 @@ module Gitlab
         end
 
         def select_sql_command?(payload)
-          payload[:sql].match?(SQL_COMMANDS_WITH_COMMENTS_REGEX)
+          SQL_COMMANDS_WITH_COMMENTS_REGEX.match?(payload[:sql])
         end
 
         def increment(counter, db_config_name:, db_role: nil)

@@ -17,6 +17,7 @@ Google::Protobuf::DescriptorPool.generated_pool.build do
       value :UNSPECIFIED, 0
       value :ROUTES, 1
       value :ORGANIZATION_PATH, 2
+      value :REDIRECT_ROUTES, 3
     end
     add_message "gitlab.cells.topology_service.claims.v1.Subject" do
       optional :type, :enum, 1, "gitlab.cells.topology_service.claims.v1.Subject.Type", json_name: "type"
@@ -41,6 +42,7 @@ Google::Protobuf::DescriptorPool.generated_pool.build do
       value :RAILS_TABLE_PROJECTS, 4
       value :RAILS_TABLE_GROUPS, 5
       value :RAILS_TABLE_ORGANIZATIONS, 6
+      value :RAILS_TABLE_REDIRECT_ROUTES, 7
     end
     add_message "gitlab.cells.topology_service.claims.v1.Metadata" do
       optional :bucket, :message, 1, "gitlab.cells.topology_service.claims.v1.Bucket", json_name: "bucket"

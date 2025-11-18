@@ -394,9 +394,8 @@ the [projects API](../../api/projects.md#edit-a-project).
 ## Fine-grained permissions for job tokens
 
 You can use fine-grained permissions to explicitly allow access to a limited set of REST API endpoints.
-For more information, see [fine-grained permissions for CI/CD job tokens](fine_grained_permissions.md).
 
-Feedback is welcome on this [issue](https://gitlab.com/gitlab-org/gitlab/-/issues/519575).
+For more information, see [fine-grained permissions for CI/CD job tokens](fine_grained_permissions.md).
 
 ## Git repository cloning
 

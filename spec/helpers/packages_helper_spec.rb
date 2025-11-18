@@ -576,4 +576,17 @@ RSpec.describe PackagesHelper, feature_category: :package_registry do
       presenter
     end
   end
+
+  describe '#packages_and_registries_group_settings_template_data' do
+    before do
+      helper.instance_variable_set(:@group, group)
+    end
+
+    it 'includes group and dependency proxy paths' do
+      expect(helper.packages_and_registries_group_settings_template_data(group)).to include(
+        group_path: group.full_path,
+        group_dependency_proxy_path: group_dependency_proxy_path(group)
+      )
+    end
+  end
 end

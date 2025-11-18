@@ -68,36 +68,33 @@ Using the nightly version is **not recommended** because it can cause incompatib
 
 ### Start a container from the image
 
-1. Run the following command, replacing `<your_gitlab_instance>` and `<your_gitlab_domain>` with your GitLab instance's URL and domain:
+1. Run the following command to start the container:
 
    ```shell
    docker run -d -p 5052:5052 -p 50052:50052 \
     -e AIGW_GITLAB_URL=<your_gitlab_instance> \
     -e AIGW_GITLAB_API_URL=https://<your_gitlab_domain>/api/v4/ \
     -e DUO_WORKFLOW_SELF_SIGNED_JWT__SIGNING_KEY="$(cat duo_workflow_jwt.key)" \
-    registry.gitlab.com/gitlab-org/modelops/applied-ml/code-suggestions/ai-assist/model-gateway:<ai-gateway-tag> \
+    registry.gitlab.com/gitlab-org/modelops/applied-ml/code-suggestions/ai-assist/model-gateway:<ai-gateway-tag>
    ```
 
-   Replace `<ai-gateway-tag>` with the version that matches your GitLab instance. For example, if your GitLab version is `vX.Y.0`, use `self-hosted-vX.Y.0-ee`.
+   Replace the following placeholders:
+
+   - `<your_gitlab_instance>`: Your GitLab instance URL (for example, `https://gitlab.example.com`).
+   - `<your_gitlab_domain>`: Your domain (for example, `gitlab.example.com`).
+   - `<ai-gateway-tag>`: Version matching your GitLab instance. If your GitLab version is `vX.Y.0`, use `self-hosted-vX.Y.0-ee`.
+
    From the container host, accessing `http://localhost:5052` should return `{"error":"No authorization header presented"}`.
 
 1. Ensure that ports `5052` and `50052` are forwarded to the container from the host.
 1. Configure the [AI gateway URL](../administration/gitlab_duo_self_hosted/configure_duo_features.md#configure-access-to-the-local-ai-gateway) and the [GitLab Duo Agent Platform service URL](../administration/gitlab_duo_self_hosted/configure_duo_features.md#configure-access-to-the-gitlab-duo-agent-platform).
+1. Configure the `DUO_AGENT_PLATFORM_SERVICE_SECURE` environment variable based on your model setup:
+   - If you are using a self-hosted model without TLS, set the `DUO_AGENT_PLATFORM_SERVICE_SECURE` environment variable to `false` in your GitLab instance:
 
-1. If you are going to use your own self-hosted model for GitLab Duo Agent Platform, and the URL is not set up with TLS, you must set the `DUO_AGENT_PLATFORM_SERVICE_SECURE` environment variable in your GitLab instance:
-   - For Linux package installations, in `gitlab_rails['env']`, set `'DUO_AGENT_PLATFORM_SERVICE_SECURE' => false`
-   - For self-compiled installations, in `/etc/default/gitlab`, set `export DUO_AGENT_PLATFORM_SERVICE_SECURE=false`
+     - For Linux package installations: In `gitlab_rails['env']`, set `'DUO_AGENT_PLATFORM_SERVICE_SECURE' => false`.
+     - For self-compiled installations: In `/etc/default/gitlab`, set `export DUO_AGENT_PLATFORM_SERVICE_SECURE=false`.
 
-1. If you are going to use a [GitLab AI vendor model](../administration/gitlab_duo_self_hosted/supported_models_and_hardware_requirements.md#gitlab-ai-vendor-models) for GitLab Duo Agent Platform, you must not set the `DUO_AGENT_PLATFORM_SERVICE_SECURE` environment variable in your GitLab instance.
-
-If you encounter issues loading the PEM file, resulting in errors like `JWKError`, you may need to resolve an SSL certificate error.
-
-To fix this issue, set the appropriate certificate bundle path in the Docker container by using the following environment variables:
-
-- `SSL_CERT_FILE=/path/to/ca-bundle.pem`
-- `REQUESTS_CA_BUNDLE=/path/to/ca-bundle.pem`
-
-Replace `/path/to/ca-bundle.pem` with the actual path to your certificate bundle.
+   - If you are using a [GitLab AI vendor model](../administration/gitlab_duo_self_hosted/supported_models_and_hardware_requirements.md#gitlab-ai-vendor-models), do not set the `DUO_AGENT_PLATFORM_SERVICE_SECURE` environment variable.
 
 ## Set up Docker with NGINX and SSL
 
@@ -109,11 +106,14 @@ is implemented.
 
 {{< /alert >}}
 
-You can set up SSL for an AI gateway instance by using Docker,
-NGINX as a reverse proxy, and Let's Encrypt for SSL certificates.
+To use SSL for an AI gateway instance, use:
 
-NGINX manages the secure connection with external clients, decrypting incoming HTTPS requests before
-passing them to the AI gateway.
+- Docker
+- NGINX as a reverse proxy
+- Let's Encrypt for SSL certificates
+
+NGINX manages the secure connection with external clients. It decrypts incoming HTTPS requests before
+it passes them to the AI gateway.
 
 Prerequisites:
 
@@ -242,13 +242,13 @@ http {
 
 ### Set up SSL certificate by using Let's Encrypt
 
-Now set up an SSL certificate:
+To set up an SSL certificate:
 
 - For Docker-based NGINX servers, Certbot
   [provides an automated way to implement Let's Encrypt certificates](https://phoenixnap.com/kb/letsencrypt-docker).
 - Alternatively, you can use the [Certbot manual installation](https://eff-certbot.readthedocs.io/en/stable/using.html#manual).
 
-### Create environment file
+### Create an environment file
 
 Create a `.env` file to store the JWT signing key:
 
@@ -256,7 +256,7 @@ Create a `.env` file to store the JWT signing key:
 echo "DUO_WORKFLOW_SELF_SIGNED_JWT__SIGNING_KEY=\"$(cat duo_workflow_jwt.key)\"" > .env
 ```
 
-### Create Docker-compose file
+### Create a Docker Compose file
 
 Now create a `docker-compose.yaml` file.
 
@@ -710,3 +710,16 @@ A `[SSL: CERTIFICATE_VERIFY_FAILED] certificate verify failed: self-signed certi
 when the AI gateway tries to connect to a GitLab instance or model endpoint using either a certificate signed by a custom certificate authority (CA), or a self-signed certificate.
 
 To resolve this, see [Connect to a GitLab instance or model endpoint with a self-signed SSL certificate](#connect-to-a-gitlab-instance-or-model-endpoint-with-a-self-signed-ssl-certificate).
+
+### SSL certificate errors when loading PEM files
+
+If you get an error that says `JWKError` while loading the PEM file into the Docker container,
+you might need to resolve an SSL certificate error.
+
+To fix this issue, use the following environment variables to set the appropriate
+certificate bundle path in the Docker container:
+
+- `SSL_CERT_FILE=/path/to/ca-bundle.pem`
+- `REQUESTS_CA_BUNDLE=/path/to/ca-bundle.pem`
+
+Replace `/path/to/ca-bundle.pem` with the path to your certificate bundle.

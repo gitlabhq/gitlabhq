@@ -38,7 +38,7 @@
 }
 
 // Avoid background scrolling when zen is in fullscreen
-body:has(.zen-backdrop.fullscreen) {
+.zen-mode-fullscreen {
   overflow-y: clip;
 }
 

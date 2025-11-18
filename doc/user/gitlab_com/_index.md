@@ -282,7 +282,7 @@ GitLab.com uses settings to limit importing data into GitLab.
 
 ### Default import sources
 
-The [import sources](../project/import/_index.md#supported-import-sources) that are available to you by default depend on
+The [import sources](../project/import/_index.md) (migration tools) that are available to you by default depend on
 which GitLab you use:
 
 - GitLab.com: All available import sources are enabled by default.

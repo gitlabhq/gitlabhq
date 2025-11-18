@@ -212,11 +212,6 @@
     }
   }
 
-  .panel-content-inner:has(.issue-boards-content, .group-epics-roadmap) {
-    @apply gl-px-0;
-    overflow: auto;
-  }
-
   // work item drawer correct background colors
   .work-item-drawer {
     .description-more::before {
@@ -387,22 +382,22 @@
     @apply gl-pl-3;
   }
 
-  .paneled-view:has(.ai-panel-maximized) {
+  .ai-panel-maximized .paneled-view {
     flex-grow: 1;
   }
 
   // Hiding all other panels when DAP is maximized
-  .panels-container:has(~ .paneled-view .ai-panel-maximized) {
+  .ai-panel-maximized .panels-container {
     display: none;
   }
 
   // Preserving other panels when DAP is maximized on bigger screens
   @media(min-width: #{$paneled-layout-ultra-wide-breakpoint}) {
-    .paneled-view:has(.ai-panel-maximized) {
+    .ai-panel-maximized .paneled-view {
       width: auto;
     }
 
-    .panels-container:has(~ .paneled-view .ai-panel-maximized) {
+    .ai-panel-maximized .panels-container {
       display: flex;
     }
   }
@@ -434,10 +429,11 @@
     // a margin is required for the panel element so that it works exactly like the native viewport,
     // which compensates for the scrollbar size when using fixed position
     margin-right: var(--scrollbar-width, 0);
+  }
 
-    &:has(.boards-list) {
-      @apply gl-pb-0;
-    }
+  &.issue-boards-page .panel-content,
+  &.issue-boards-page .work-item-drawer {
+    @apply gl-pb-0;
   }
 
   .panel-content-inner,
@@ -474,7 +470,7 @@
   }
 
   // Fix design management fullscreen display in panels
-  .panel-content:has(.design-detail) {
+  .design-detail-layout .panel-content {
     @apply gl-fixed gl-inset-0 gl-overflow-visible gl-rounded-none gl-max-w-none gl-z-1 gl-h-screen #{!important};
   }
 
@@ -555,6 +551,12 @@
         }
       }
     }
+  }
+
+  &.issue-boards-page .panel-content-inner,
+  &.group-epics-roadmap-html .panel-content-inner {
+    @apply gl-px-0;
+    overflow: auto;
   }
 
   // Override Tailwind
@@ -660,15 +662,6 @@
 
   .content-wrapper.paneled-view {
     @apply gl-pt-0;
-  }
-
-  /* Hide all .paneled-view elements when the last .paneled-view contains .fullscreen */
-  .panels-container:has(~ .paneled-view .fullscreen) {
-    @apply gl-hidden;
-  }
-
-  .paneled-view:has(.fullscreen) {
-    @apply gl-grow;
   }
 
   .gl-drawer {

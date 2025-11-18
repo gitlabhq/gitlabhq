@@ -1,6 +1,6 @@
 - @main_wrapper_class =  "container-queries-enabled gl-@container/panel js-container-queries-enabled" if project_studio_enabled?
 
-.layout-page{ class: page_with_sidebar_class }
+.layout-page.js-page-layout{ class: page_with_sidebar_class }
   -# this is required to exactly match the main container width to the viewport inner width, which includes scrollbar
   - if project_studio_enabled?
     = javascript_tag do

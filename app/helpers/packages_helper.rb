@@ -159,6 +159,13 @@ module PackagesHelper
     )
   end
 
+  def packages_and_registries_group_settings_template_data(group)
+    {
+      group_path: group.full_path,
+      group_dependency_proxy_path: group_dependency_proxy_path(group)
+    }
+  end
+
   private
 
   def packages_template_data

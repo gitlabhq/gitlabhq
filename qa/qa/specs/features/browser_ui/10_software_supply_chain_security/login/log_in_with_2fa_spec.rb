@@ -42,11 +42,7 @@ module QA
 
       it(
         'allows enforcing 2FA via UI and logging in with 2FA',
-        testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/347931',
-        quarantine: {
-          issue: 'https://gitlab.com/gitlab-org/gitlab/-/issues/567702',
-          type: :bug
-        }
+        testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/347931'
       ) do
         enforce_two_factor_authentication_on_group(group)
 

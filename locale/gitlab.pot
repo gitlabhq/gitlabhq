@@ -1524,6 +1524,9 @@ msgstr ""
 msgid "%{strong_start}%{human_size}%{strong_end} Project Storage"
 msgstr ""
 
+msgid "%{strong_start}%{model_name}%{strong_end} (deprecated %{strong_start}%{deprecation_date}%{strong_end} - Removes in: %{strong_start}%{removal_version}%{strong_end})"
+msgstr ""
+
 msgid "%{strong_start}%{release_count}%{strong_end} Release"
 msgid_plural "%{strong_start}%{release_count}%{strong_end} Releases"
 msgstr[0] ""
@@ -6634,6 +6637,15 @@ msgid "AiImpactAnalytics|Value can't be calculated due to division by zero."
 msgstr ""
 
 msgid "AiImpactAnalytics|Value can't be calculated due to insufficient data."
+msgstr ""
+
+msgid "AiModelDeprecation|Change model"
+msgstr ""
+
+msgid "AiModelDeprecation|Model %{strong_start}%{model_name}%{strong_end} was deprecated on %{strong_start}%{deprecation_date}%{strong_end} and will stop working after GitLab removes it in %{strong_start}%{removal_version}%{strong_end}. Please change to an alternative model before %{strong_start}%{removal_version}%{strong_end} to avoid disruption."
+msgstr ""
+
+msgid "AiModelDeprecation|The following models have been deprecated and will stop working after GitLab removes them. Please change to an alternative model before the removal version to avoid disruption."
 msgstr ""
 
 msgid "AiPowered|AI logs"
@@ -42569,6 +42581,11 @@ msgstr ""
 
 msgid "Model registry"
 msgstr ""
+
+msgid "Model scheduled for removal"
+msgid_plural "Models scheduled for removal"
+msgstr[0] ""
+msgstr[1] ""
 
 msgid "Model version not found"
 msgstr ""
