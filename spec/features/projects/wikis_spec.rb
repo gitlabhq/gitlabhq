@@ -11,7 +11,8 @@ RSpec.describe 'Project wikis', :js, feature_category: :wiki do
   it_behaves_like 'User creates wiki page'
   it_behaves_like 'User deletes wiki page'
   it_behaves_like 'User previews wiki changes'
-  it_behaves_like 'User updates wiki page'
+  # Quarantined https://gitlab.com/gitlab-org/gitlab/-/issues/480101
+  # it_behaves_like 'User updates wiki page'
   it_behaves_like 'User uses wiki shortcuts'
   it_behaves_like 'User views AsciiDoc page with includes'
   it_behaves_like 'User views a wiki page'
