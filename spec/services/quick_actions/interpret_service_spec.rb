@@ -5,7 +5,6 @@ require 'spec_helper'
 RSpec.describe QuickActions::InterpretService, feature_category: :text_editors do
   include AfterNextHelpers
 
-  let_it_be(:support_bot) { Users::Internal.support_bot }
   let_it_be(:group) { create(:group) }
   let_it_be(:public_project) { create(:project, :public, group: group) }
   let_it_be(:repository_project) { create(:project, :repository) }
@@ -17,6 +16,8 @@ RSpec.describe QuickActions::InterpretService, feature_category: :text_editors d
   let_it_be(:inprogress) { create(:label, project: project, title: 'In Progress') }
   let_it_be(:helmchart) { create(:label, project: project, title: 'Helm Chart Registry') }
   let_it_be(:bug) { create(:label, project: project, title: 'Bug') }
+
+  let_it_be(:support_bot) { create(:support_bot) }
 
   let(:milestone) { create(:milestone, project: project, title: '9.10') }
   let(:commit) { create(:commit, project: project) }
@@ -33,8 +34,6 @@ RSpec.describe QuickActions::InterpretService, feature_category: :text_editors d
     )
     project.add_developer(current_user)
   end
-
-  before_all { Users::Internal.support_bot_id }
 
   describe '#execute' do
     let_it_be(:work_item) { create(:work_item, :task, project: project) }
@@ -3102,12 +3101,12 @@ RSpec.describe QuickActions::InterpretService, feature_category: :text_editors d
           expect(message).to eq(s_('ServiceDesk|Converted issue to Service Desk ticket.'))
           expect(item).to have_attributes(
             confidential: expected_confidentiality,
-            author_id: Users::Internal.support_bot_id,
+            author_id: support_bot.id,
             service_desk_reply_to: 'user@example.com'
           )
 
           reopen_note = item.notes.last
-          expect(reopen_note.author).to eq(Users::Internal.support_bot)
+          expect(reopen_note.author).to eq(support_bot)
           expect(reopen_note).to be_confidential
         end
       end

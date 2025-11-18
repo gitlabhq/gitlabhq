@@ -1785,7 +1785,7 @@ RSpec.describe Projects::IssuesController, :request_store, feature_category: :te
 
   describe 'GET service_desk' do
     let_it_be(:project) { create(:project_empty_repo, :public) }
-    let_it_be(:support_bot) { Users::Internal.support_bot }
+    let_it_be(:support_bot) { create(:support_bot) }
     let_it_be(:other_user) { create(:user) }
     let_it_be(:service_desk_issue_1) { create(:issue, project: project, author: support_bot) }
     let_it_be(:service_desk_issue_2) { create(:issue, project: project, author: support_bot, assignees: [other_user]) }

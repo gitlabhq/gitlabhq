@@ -1299,7 +1299,6 @@ RSpec/BeEq:
     - 'spec/services/users/unblock_service_spec.rb'
     - 'spec/services/users/update_service_spec.rb'
     - 'spec/services/web_hooks/create_service_spec.rb'
-    - 'spec/services/webauthn/authenticate_service_spec.rb'
     - 'spec/services/work_items/import_csv_service_spec.rb'
     - 'spec/services/work_items/update_service_spec.rb'
     - 'spec/support/helpers/click_house_helpers.rb'

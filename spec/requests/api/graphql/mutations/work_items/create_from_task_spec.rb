@@ -34,7 +34,7 @@ RSpec.describe "Create a work item from a task in a work item's description", fe
     # Ensure support bot user is created so creation doesn't count towards query limit
     # and we don't try to obtain an exclusive lease within a transaction.
     # See https://gitlab.com/gitlab-org/gitlab/-/issues/509629
-    Users::Internal.support_bot_id
+    create(:support_bot)
   end
 
   context 'the user is not allowed to update a work item' do

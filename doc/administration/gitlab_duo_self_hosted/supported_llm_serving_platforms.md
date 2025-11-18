@@ -79,7 +79,7 @@ In this example, if the model's `id` is `Mixtral-8x22B-Instruct-v0.1`, you would
 For more information on:
 
 - vLLM supported models, see the [vLLM Supported Models documentation](https://docs.vllm.ai/en/latest/models/supported_models.html).
-- Available options when using vLLM to run a model, see the [vLLM documentation on engine arguments](https://docs.vllm.ai/en/stable/usage/engine_args.html).
+- Available options when using vLLM to run a model, see the [vLLM documentation on engine arguments](https://docs.vllm.ai/en/stable/configuration/engine_args.html).
 - The hardware needed for the models, see the [Supported models and Hardware requirements documentation](supported_models_and_hardware_requirements.md).
 
 Examples:

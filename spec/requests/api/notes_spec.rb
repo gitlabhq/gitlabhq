@@ -53,7 +53,7 @@ RSpec.describe API::Notes, feature_category: :team_planning do
       let!(:email) { 'user@example.com' }
       let!(:note_text) { "added #{email}" }
       let!(:note) do
-        create(:note, :system, project: project, noteable: issue, author: Users::Internal.support_bot, note: note_text)
+        create(:note, :system, project: project, noteable: issue, author: create(:support_bot), note: note_text)
       end
 
       let!(:system_note_metadata) { create(:system_note_metadata, note: note, action: :issue_email_participants) }

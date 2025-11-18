@@ -18,7 +18,7 @@ RSpec.describe WorkItems::Callbacks::Hierarchy, feature_category: :portfolio_man
     # Ensure support bot user is created so creation doesn't count towards query limit
     # and we don't try to obtain an exclusive lease within a transaction.
     # See https://gitlab.com/gitlab-org/gitlab/-/issues/509629
-    Users::Internal.support_bot_id
+    create(:support_bot)
   end
 
   shared_examples 'raises a callback error' do |message_arg|

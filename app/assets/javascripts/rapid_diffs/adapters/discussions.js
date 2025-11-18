@@ -15,6 +15,8 @@ function mountVueApp(el, id, appData) {
         endpoints: {
           previewMarkdown: appData.previewMarkdownEndpoint,
           markdownDocs: appData.markdownDocsEndpoint,
+          register: appData.registerPath,
+          signIn: appData.signInPath,
         },
         noteableType: appData.noteableType,
       };

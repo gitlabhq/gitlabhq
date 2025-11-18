@@ -4,16 +4,10 @@ require 'spec_helper'
 
 RSpec.describe UsersController, feature_category: :user_management do
   # This user should have the same e-mail address associated with the GPG key prepared for tests
-  let(:user) { create(:user, email: GpgHelpers::User1.emails[0]) }
+  let_it_be_with_reload(:user) { create(:user, email: GpgHelpers::User1.emails[0]) }
+  let_it_be(:support_bot) { create(:support_bot) }
   let(:private_user) { create(:user, private_profile: true) }
   let(:public_user) { create(:user) }
-
-  before_all do
-    # Ensure support bot user is created so creation doesn't count towards query limit
-    # and we don't try to obtain an exclusive lease within a transaction.
-    # See https://gitlab.com/gitlab-org/gitlab/-/issues/509629
-    Users::Internal.support_bot_id
-  end
 
   describe 'GET #show' do
     shared_examples_for 'renders the show template' do

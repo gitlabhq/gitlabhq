@@ -315,13 +315,13 @@ replication or verification.
 
 #### Resync all resources of one component
 
-You can schedule a full resync of all resources of one component from the UI:
-
 {{< alert type="warning" >}}
 
-This operation triggers a synchronization of all resources, regardless of whether they are already synced or not. It should not be executed when there are thousands of an object type in the instance.
+This operation triggers a full synchronization of data, regardless of whether it is already synced or not. For large systems this can take many days to complete. It is not recommended to execute this operation on data types that can have a large number of objects such as CI Job Artifacts.
 
 {{< /alert >}}
+
+You can schedule a full resync of all resources of one component from the UI:
 
 1. On the left sidebar, at the bottom, select **Admin**. If you've [turned on the new navigation](../../../../user/interface_redesign.md#turn-new-navigation-on-or-off), in the upper-right corner, select **Admin**.
 1. Select **Geo** > **Sites**.
@@ -404,11 +404,11 @@ reverification sooner:
    end
    ```
 
-#### Reverify one component on one secondary site
+#### Reverify all resources of one component
 
 {{< alert type="warning" >}}
 
-This operation triggers a verification of all resources, regardless of whether they are already verified or not. It should not be executed when there are thousands of an object type in the instance.
+This operation triggers a verification of all resources, regardless of whether they are already verified or not. It should not be executed when there are thousands of an object type in the instance (for example, CI Job Artifacts).
 
 {{< /alert >}}
 

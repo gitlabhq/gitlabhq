@@ -10,7 +10,7 @@ import { detectAndConfirmSensitiveTokens } from '~/lib/utils/secret_detection';
 import TimelineEntryItem from '~/vue_shared/components/notes/timeline_entry_item.vue';
 import DiscussionReplyPlaceholder from '~/notes/components/discussion_reply_placeholder.vue';
 import NoteForm from '~/rapid_diffs/app/discussions/note_form.vue';
-import NoteSignedOutWidget from '~/notes/components/note_signed_out_widget.vue';
+import NoteSignedOutWidget from '~/rapid_diffs/app/discussions/note_signed_out_widget.vue';
 import NoteableDiscussion from '~/rapid_diffs/app/discussions/noteable_discussion.vue';
 import DiscussionNotes from '~/rapid_diffs/app/discussions/discussion_notes.vue';
 import { isLoggedIn } from '~/lib/utils/common_utils';

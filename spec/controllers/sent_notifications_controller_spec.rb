@@ -104,8 +104,9 @@ RSpec.describe SentNotificationsController, feature_category: :shared do
 
   shared_examples 'unsubscribes an external participant' do
     context 'when support bot is the notification recipient' do
+      let(:support_bot) { create(:support_bot) }
       let(:sent_notification) do
-        create_sent_notification(project: target_project, noteable: noteable, recipient: Users::Internal.support_bot)
+        create_sent_notification(project: target_project, noteable: noteable, recipient: support_bot)
       end
 
       it 'deletes the external author on the issue' do
@@ -121,7 +122,7 @@ RSpec.describe SentNotificationsController, feature_category: :shared do
           create_sent_notification(
             project: target_project,
             noteable: noteable,
-            recipient: Users::Internal.support_bot,
+            recipient: support_bot,
             issue_email_participant: other_issue_email_participant
           )
         end

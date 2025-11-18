@@ -122,7 +122,6 @@ RSpec/ContextWording:
     - 'ee/spec/features/projects/audit_events_spec.rb'
     - 'ee/spec/features/projects/custom_projects_template_spec.rb'
     - 'ee/spec/features/projects/iterations/user_views_iteration_spec.rb'
-    - 'ee/spec/features/projects/jobs_spec.rb'
     - 'ee/spec/features/projects/kerberos_clone_instructions_spec.rb'
     - 'ee/spec/features/projects/members/manage_groups_spec.rb'
     - 'ee/spec/features/projects/members/member_leaves_project_spec.rb'

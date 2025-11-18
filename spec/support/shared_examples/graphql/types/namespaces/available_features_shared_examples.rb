@@ -10,6 +10,7 @@ RSpec.shared_examples "expose all available feature fields for the namespace" do
       has_blocked_issues_feature
       has_custom_fields_feature
       has_design_management_feature
+      has_duo_remote_flows_feature
       has_epics_feature
       has_group_bulk_edit_feature
       has_issuable_health_status_feature
@@ -21,6 +22,7 @@ RSpec.shared_examples "expose all available feature fields for the namespace" do
       has_quality_management_feature
       has_scoped_labels_feature
       has_subepics_feature
+      has_work_item_planning_view_feature
       has_work_item_status_feature
     ]
 

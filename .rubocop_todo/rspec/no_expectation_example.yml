@@ -26,7 +26,6 @@ RSpec/NoExpectationExample:
     - 'ee/spec/models/ee/project_spec.rb'
     - 'ee/spec/requests/api/boards_spec.rb'
     - 'ee/spec/services/boards/lists/update_service_spec.rb'
-    - 'ee/spec/services/ee/merge_requests/update_service_spec.rb'
     - 'ee/spec/services/ee/notification_service_spec.rb'
     - 'ee/spec/services/protected_environments/create_service_spec.rb'
     - 'ee/spec/services/todo_service_spec.rb'

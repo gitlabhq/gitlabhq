@@ -139,7 +139,7 @@ RSpec.describe IssuePresenter do
 
     context 'when issue is a service desk issue' do
       let(:service_desk_issue) do
-        create(:issue, project: project, author: Users::Internal.support_bot, service_desk_reply_to: email)
+        create(:issue, project: project, author: create(:support_bot), service_desk_reply_to: email)
       end
 
       let(:user) { nil }

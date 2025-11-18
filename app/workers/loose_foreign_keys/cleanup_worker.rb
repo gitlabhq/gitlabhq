@@ -8,7 +8,7 @@ module LooseForeignKeys
 
     sidekiq_options retry: false
     feature_category :database
-    data_consistency :always
+    data_consistency :sticky
     idempotent!
 
     def perform

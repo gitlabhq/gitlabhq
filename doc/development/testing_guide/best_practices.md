@@ -557,7 +557,8 @@ You can use `if: Gitlab.ee?` or `unless: Gitlab.ee?` on context/spec blocks to e
 
 ### Tests depending on SaaS
 
-You can use the `:saas` RSpec metadata tag helper on context/spec blocks to test code that only runs on GitLab.com. This helper sets `Gitlab.config.gitlab['url']` to `Gitlab.com_url`.
+For comprehensive guidance on testing SaaS-only features, see
+the [SaaS-only features testing guide](../ee_features.md#saas-only-features-in-tests).
 
 ### Coverage
 

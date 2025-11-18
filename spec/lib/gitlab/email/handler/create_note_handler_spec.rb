@@ -7,6 +7,7 @@ RSpec.describe Gitlab::Email::Handler::CreateNoteHandler, feature_category: :sha
 
   let_it_be_with_reload(:user) { create(:user, email: 'jake@adventuretime.ooo') }
   let_it_be(:project) { create(:project, :public, :repository) }
+  let_it_be(:support_bot) { create(:support_bot) }
 
   let(:noteable)  { note.noteable }
   let(:note)      { create(:diff_note_on_merge_request, project: project) }
@@ -69,7 +70,7 @@ RSpec.describe Gitlab::Email::Handler::CreateNoteHandler, feature_category: :sha
     end
 
     context 'when the issue is a Service Desk issue' do
-      let(:original_recipient) { Users::Internal.support_bot }
+      let(:original_recipient) { support_bot }
 
       it 'does not raise a UserNotFoundError' do
         expect { receiver.execute }.not_to raise_error
@@ -221,7 +222,7 @@ RSpec.describe Gitlab::Email::Handler::CreateNoteHandler, feature_category: :sha
 
   context 'when note is authored from external author for service desk' do
     before do
-      SentNotification.for(mail_key).update!(recipient: Users::Internal.support_bot)
+      SentNotification.for(mail_key).update!(recipient: support_bot)
     end
 
     context 'when email contains text, quoted text and quick commands' do
@@ -248,7 +249,7 @@ RSpec.describe Gitlab::Email::Handler::CreateNoteHandler, feature_category: :sha
 
     let!(:sent_notification) do
       allow(::ServiceDesk).to receive(:enabled?).with(project).and_return(true)
-      SentNotification.record_note(note, Users::Internal.support_bot.id)
+      SentNotification.record_note(note, support_bot.id)
     end
 
     let(:reply_address) { "support+#{sent_notification.partitioned_reply_key}@example.com" }
@@ -279,7 +280,7 @@ RSpec.describe Gitlab::Email::Handler::CreateNoteHandler, feature_category: :sha
 
       let!(:sent_notification) do
         allow(::ServiceDesk).to receive(:enabled?).with(project).and_return(true)
-        SentNotification.record_note(note, Users::Internal.support_bot.id)
+        SentNotification.record_note(note, support_bot.id)
       end
 
       it 'does not reopen issue but adds external participants comment' do
@@ -295,7 +296,7 @@ RSpec.describe Gitlab::Email::Handler::CreateNoteHandler, feature_category: :sha
           expect(noteable.reset).to be_open
 
           expect(reopen_note).to be_confidential
-          expect(reopen_note.author).to eq(Users::Internal.support_bot)
+          expect(reopen_note.author).to eq(support_bot)
           expect(reopen_note.note).to include(reopen_comment_body)
         end
       end

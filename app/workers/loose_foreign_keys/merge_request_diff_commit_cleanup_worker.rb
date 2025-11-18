@@ -8,7 +8,7 @@ module LooseForeignKeys # rubocop: disable Gitlab/BoundedContexts -- This module
 
     sidekiq_options retry: false
     feature_category :code_review_workflow
-    data_consistency :always # rubocop:disable SidekiqLoadBalancing/WorkerDataConsistency -- this is a cronjob.
+    data_consistency :sticky
     idempotent!
 
     def perform

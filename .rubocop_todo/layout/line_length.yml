@@ -8,7 +8,6 @@ Layout/LineLength:
     - 'app/controllers/projects/milestones_controller.rb'
     - 'app/controllers/projects/notes_controller.rb'
     - 'app/controllers/projects/pipeline_schedules_controller.rb'
-    - 'app/controllers/projects/pipelines_controller.rb'
     - 'app/controllers/projects/settings/ci_cd_controller.rb'
     - 'app/controllers/projects/settings/repository_controller.rb'
     - 'app/controllers/projects/templates_controller.rb'

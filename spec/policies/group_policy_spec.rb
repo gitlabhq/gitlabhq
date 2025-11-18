@@ -1499,7 +1499,7 @@ RSpec.describe GroupPolicy, feature_category: :system_access do
 
   context 'support bot' do
     let_it_be_with_refind(:group) { create(:group, :private) }
-    let_it_be(:current_user) { Users::Internal.support_bot }
+    let_it_be(:current_user) { Users::Internal.for_organization(group.organization_id).support_bot }
 
     before do
       allow(::ServiceDesk).to receive(:supported?).and_return(true)

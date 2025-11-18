@@ -59,9 +59,8 @@ RSpec.describe GitlabSchema.types['Note'], feature_category: :team_planning do
     # Create project and issue separately because we need a public project.
     # rubocop:disable RSpec/FactoryBot/AvoidCreate -- Notes::RenderService updates #note and #cached_markdown_version
     let_it_be(:issue) { create(:issue, project: project) }
-    let_it_be(:note) do
-      create(:note, :system, project: project, noteable: issue, author: Users::Internal.support_bot, note: note_text)
-    end
+    let_it_be(:support_bot) { create(:support_bot) }
+    let_it_be(:note) { create(:note, :system, project: project, noteable: issue, author: support_bot, note: note_text) }
 
     let_it_be(:system_note_metadata) { create(:system_note_metadata, note: note, action: :issue_email_participants) }
     # rubocop:enable RSpec/FactoryBot/AvoidCreate
@@ -82,7 +81,8 @@ RSpec.describe GitlabSchema.types['Note'], feature_category: :team_planning do
   context 'when note is from external author', feature_category: :service_desk do
     let(:note_text) { 'Note body from external participant' }
 
-    let!(:note) { build(:note, note: note_text, project: project, author: Users::Internal.support_bot) }
+    let!(:note) { build(:note, note: note_text, project: project, author: build_stubbed(:support_bot)) }
+
     let!(:note_metadata) { build(:note_metadata, note: note) }
 
     describe '#external_author' do

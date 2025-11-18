@@ -42,11 +42,15 @@ describe('discussions adapters', () => {
   const endpoints = {
     previewMarkdown: 'previewMarkdownEndpoint',
     markdownDocs: 'markdownDocsEndpoint',
+    register: 'registerPath',
+    signIn: 'signInPath',
   };
   const appData = {
     userPermissions,
     previewMarkdownEndpoint: 'previewMarkdownEndpoint',
     markdownDocsEndpoint: 'markdownDocsEndpoint',
+    registerPath: 'registerPath',
+    signInPath: 'signInPath',
     noteableType: 'Commit',
   };
 

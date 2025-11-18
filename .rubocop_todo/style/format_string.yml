@@ -177,7 +177,6 @@ Style/FormatString:
     - 'spec/controllers/graphql_controller_spec.rb'
     - 'spec/factories/lfs_objects.rb'
     - 'spec/features/admin/admin_users_spec.rb'
-    - 'spec/features/issues/new/form_spec.rb'
     - 'spec/graphql/resolvers/projects/jira_projects_resolver_spec.rb'
     - 'spec/helpers/profiles_helper_spec.rb'
     - 'spec/lib/api/entities/release_spec.rb'

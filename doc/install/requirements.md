@@ -172,7 +172,7 @@ For example, a node should have:
 - Eight workers for 8 CPU cores and 16 GB of memory
 
 By default, each Puma worker is limited to 1.2 GB of memory.
-You can [adjust this setting](../administration/operations/puma.md#reducing-memory-use) in `/etc/gitlab/gitlab.rb`.
+You can [adjust this setting](../administration/operations/puma.md#tuning-memory-use) in `/etc/gitlab/gitlab.rb`.
 
 You can also increase the number of Puma workers, provided enough CPU and memory capacity is available.
 More workers would reduce response times and improve the ability to handle parallel requests.

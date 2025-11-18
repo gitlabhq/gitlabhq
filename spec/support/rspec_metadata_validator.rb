@@ -22,8 +22,16 @@ class RspecMetadataValidator
 
     private
 
+    def keys_from_file
+      YAML.load_file(known_keys_file)
+    end
+
     def known_keys
-      @known_keys ||= YAML.load_file(known_keys_file)
+      @known_keys ||= keys_from_file + keys_not_from_file
+    end
+
+    def keys_not_from_file
+      []
     end
 
     def known_keys_file

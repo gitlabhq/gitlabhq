@@ -190,22 +190,73 @@ Introducing a SaaS-only feature into the codebase creates an additional code pat
 Include automated tests for all code affected by a SaaS-only feature, both when the feature is **enabled**
 and **disabled** to ensure the feature works properly.
 
-#### Use the `stub_saas_features` helper
+Just as we use `Gitlab::Saas.feature_available?(:specific_feature)` instead of `Gitlab.com?` in application code
+to convey **why** something is SaaS-only, we should use specific SaaS feature metadata tags in tests for the same
+reason.
+This creates a clear connection between the feature implementation and its tests, making the codebase more maintainable
+and self-documenting.
 
-To enable a SaaS-only feature in a test, use the `stub_saas_features`
-helper. For example, to globally disable the `purchases_additional_minutes` feature
-flag in a test:
+#### Use SaaS feature metadata tags (Recommended)
+
+For most test scenarios, use metadata tags to automatically enable SaaS features without manually calling
+`stub_saas_features`. This approach is particularly useful for integration tests or when you need SaaS features enabled
+for an entire test context.
+
+Add the SaaS feature name, with `saas_` prepended, as metadata to your test context or individual examples:
 
 ```ruby
-stub_saas_features(purchases_additional_minutes: false)
+# Context-level metadata (applies to all examples in the context)
+describe 'some feature', :saas_gitlab_com_subscriptions do
+  it 'shows SaaS-specific functionality' do
+    expect(page).to have_content('SaaS Feature')
+  end
+end
 
-::Gitlab::Saas.feature_available?(:purchases_additional_minutes) # => false
+# Individual example metadata
+describe 'some feature' do
+  it 'shows SaaS-specific functionality', :saas_gitlab_com_subscriptions do
+    expect(page).to have_content('SaaS Feature')
+  end
+
+  it 'works without SaaS features' do
+    expect(page).not_to have_content('SaaS Feature')
+  end
+end
+
+# Multiple SaaS features
+context 'with multiple SaaS features', :saas_onboarding, :saas_gitlab_com_subscriptions do
+  # Both 'onboarding' and 'duo_enterprise' features are enabled
+end
+```
+
+This metadata approach:
+
+- Automatically calls `stub_saas_features(feature_name: true)` for each tagged feature
+- Works at both context level (describe/context blocks) and individual example level (it blocks)
+- Works with any SaaS feature defined in `Gitlab::Saas::FEATURES`
+- Is cleaner than manually calling `stub_saas_features` in `before` blocks
+
+Use this approach when you need SaaS features enabled for test contexts or specific examples. For more granular control
+or when testing both enabled/disabled states within the same example, continue using the `stub_saas_features` helper
+directly.
+
+#### Use the `stub_saas_features` helper (Advanced scenarios)
+
+For complex scenarios where you need granular control over feature states or need to test both enabled/disabled paths
+within the same test, use the `stub_saas_features` helper directly.
+
+To enable a SaaS-only feature in a test, use the `stub_saas_features` helper:
+
+```ruby
+stub_saas_features(purchases_additional_minutes: true)
+
+::Gitlab::Saas.feature_available?(:purchases_additional_minutes) # => true
 ```
 
 A common pattern of testing both paths looks like:
 
 ```ruby
-it 'purchases/additional_minutes is not available' do
+it 'purchases/additional_minutes is not available by default' do
   # tests assuming purchases_additional_minutes is not enabled by default
   ::Gitlab::Saas.feature_available?(:purchases_additional_minutes) # => false
 end
@@ -221,27 +272,37 @@ context 'when purchases_additional_minutes is available' do
 end
 ```
 
-#### Use the `:saas` metadata helper
+#### Use the `:saas` metadata helper (Specific scenarios)
 
-Depending on the type of tests, the `stub_saas_features` approach might not be enough to enable SaaS.
-In those cases, you can use the `:saas` RSpec metadata helper.
+The `:saas` metadata helper should be used in specific scenarios where the code relies on the `Gitlab.com?`
+approach rather than specific SaaS features. This includes:
+
+- Code that hasn't been converted to use specific SaaS features yet
+- Areas like database migrations where `Gitlab.com?` checks are the appropriate approach (as exceptions to the SaaS
+  feature pattern)
+
+For new SaaS-only features, use the [SaaS feature metadata tags](#use-saas-feature-metadata-tags-recommended) instead.
 
 For more information about tests, see
 [Tests depending on SaaS](testing_guide/best_practices.md#tests-depending-on-saas).
 
-Testing both paths with the metadata helper looks like:
+Example usage in specs:
 
 ```ruby
-it 'shows custom projects templates tab' do
-  page.within '.project-template .custom-instance-project-templates-tab' do
-    expect(page).to have_content 'Instance'
-  end
-end
+# spec/migrations/20240510113339_add_saas_specific_column_spec.rb
+RSpec.describe AddSaasSpecificColumn do
+  it 'adds column for self-managed instances' do
+    migrate!
 
-context 'when SaaS', :saas do
-  it 'does not show Instance tab' do
-    page.within '.project-template' do
-      expect(page).not_to have_content 'Instance'
+    expect(table(:projects)).to have_column(:some_column)
+  end
+
+  context 'when SaaS', :saas do
+    it 'adds additional SaaS-specific column' do
+      migrate!
+
+      expect(table(:projects)).to have_column(:some_column)
+      expect(table(:projects)).to have_column(:saas_specific_column)
     end
   end
 end

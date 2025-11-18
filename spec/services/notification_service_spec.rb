@@ -1084,9 +1084,11 @@ RSpec.describe NotificationService, :mailer, feature_category: :team_planning do
           allow(::Gitlab::Email::IncomingEmail).to receive(:supports_wildcard?).and_return(true)
         end
 
+        let_it_be(:project) { create(:project) }
+        let_it_be(:support_bot) { create(:support_bot) }
         let(:mailer) { double(deliver_later: true) }
-        let(:issue) { create(:issue, author: Users::Internal.support_bot) }
-        let(:project) { issue.project }
+        let(:issue) { create(:issue, project: project, author: support_bot) }
+
         let(:note) { create(:note, noteable: issue, project: project) }
 
         subject(:notification_service) { described_class.new }
@@ -1165,7 +1167,7 @@ RSpec.describe NotificationService, :mailer, feature_category: :team_planning do
               let!(:note) do
                 create(
                   :note_on_issue,
-                  author: Users::Internal.support_bot,
+                  author: support_bot,
                   noteable: issue,
                   project_id: issue.project_id,
                   note: '@mention referenced, @unsubscribed_mentioned and @outsider also'

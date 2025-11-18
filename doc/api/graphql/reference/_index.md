@@ -31666,6 +31666,7 @@ GPG signature for a signed commit.
 | <a id="groupmaxaccesslevel"></a>`maxAccessLevel` | [`AccessLevel!`](#accesslevel) | Maximum access level of the current user in the group. |
 | <a id="groupmentionsdisabled"></a>`mentionsDisabled` | [`Boolean`](#boolean) | Indicates if a group is disabled from getting mentioned. |
 | <a id="groupmergerequestsenabled"></a>`mergeRequestsEnabled` {{< icon name="warning-solid" >}} | [`Boolean!`](#boolean) | **Introduced** in GitLab 18.3. **Status**: Experiment. Indicates if merge requests are enabled for the namespace. |
+| <a id="groupmetadata"></a>`metadata` {{< icon name="warning-solid" >}} | [`NamespaceMetadata`](#namespacemetadata) | **Introduced** in GitLab 18.6. **Status**: Experiment. Metadata information for the namespace. |
 | <a id="groupname"></a>`name` | [`String`](#string) | Name of the group. |
 | <a id="groupnamespacesettings"></a>`namespaceSettings` | [`NamespaceSettings`](#namespacesettings) | Namespace settings for the namespace. |
 | <a id="grouporganizationeditpath"></a>`organizationEditPath` {{< icon name="warning-solid" >}} | [`String`](#string) | **Introduced** in GitLab 17.1. **Status**: Experiment. Path for editing group at the organization level. |
@@ -33936,6 +33937,20 @@ Returns [`String`](#string).
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | <a id="groupnamespacemarkdownpathsmarkdownpreviewpathiid"></a>`iid` | [`String`](#string) | IID of the target item for markdown preview. |
+
+### `GroupNamespaceMetadata`
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="groupnamespacemetadatagroupid"></a>`groupId` {{< icon name="warning-solid" >}} | [`String`](#string) | **Introduced** in GitLab 18.6. **Status**: Experiment. ID of the group. Returns null for user namespaces. |
+| <a id="groupnamespacemetadatahasprojects"></a>`hasProjects` {{< icon name="warning-solid" >}} | [`Boolean`](#boolean) | **Introduced** in GitLab 18.6. **Status**: Experiment. Whether the group has any projects. |
+| <a id="groupnamespacemetadatainitialsort"></a>`initialSort` {{< icon name="warning-solid" >}} | [`String`](#string) | **Introduced** in GitLab 18.6. **Status**: Experiment. User preference for initial sort order. |
+| <a id="groupnamespacemetadataisissuerepositioningdisabled"></a>`isIssueRepositioningDisabled` {{< icon name="warning-solid" >}} | [`Boolean`](#boolean) | **Introduced** in GitLab 18.6. **Status**: Experiment. Whether issue repositioning is disabled for the namespace. |
+| <a id="groupnamespacemetadatamaxattachmentsize"></a>`maxAttachmentSize` {{< icon name="warning-solid" >}} | [`String`](#string) | **Introduced** in GitLab 18.6. **Status**: Experiment. Maximum allowed attachment size (humanized). |
+| <a id="groupnamespacemetadatashownewworkitem"></a>`showNewWorkItem` {{< icon name="warning-solid" >}} | [`Boolean`](#boolean) | **Introduced** in GitLab 18.6. **Status**: Experiment. Whether to show the new work item link. |
+| <a id="groupnamespacemetadatatimetrackinglimittohours"></a>`timeTrackingLimitToHours` {{< icon name="warning-solid" >}} | [`Boolean`](#boolean) | **Introduced** in GitLab 18.6. **Status**: Experiment. Time tracking limit to hours setting. |
 
 ### `GroupPermissions`
 
@@ -37735,6 +37750,7 @@ Version of a machine learning model.
 | <a id="namespacelinkpaths"></a>`linkPaths` {{< icon name="warning-solid" >}} | [`NamespacesLinkPaths`](#namespaceslinkpaths) | **Introduced** in GitLab 18.1. **Status**: Experiment. Namespace relevant paths to create links on the UI. |
 | <a id="namespacemarkdownpaths"></a>`markdownPaths` {{< icon name="warning-solid" >}} | [`MarkdownPaths`](#markdownpaths) | **Introduced** in GitLab 18.1. **Status**: Experiment. Namespace relevant paths to create markdown links on the UI. |
 | <a id="namespacemergerequestsenabled"></a>`mergeRequestsEnabled` {{< icon name="warning-solid" >}} | [`Boolean!`](#boolean) | **Introduced** in GitLab 18.3. **Status**: Experiment. Indicates if merge requests are enabled for the namespace. |
+| <a id="namespacemetadata"></a>`metadata` {{< icon name="warning-solid" >}} | [`NamespaceMetadata`](#namespacemetadata) | **Introduced** in GitLab 18.6. **Status**: Experiment. Metadata information for the namespace. |
 | <a id="namespacename"></a>`name` | [`String!`](#string) | Name of the namespace. |
 | <a id="namespacenamespacesettings"></a>`namespaceSettings` | [`NamespaceSettings`](#namespacesettings) | Namespace settings for the namespace. |
 | <a id="namespacepackagesettings"></a>`packageSettings` | [`PackageSettings`](#packagesettings) | Package settings for the namespace. |
@@ -38329,6 +38345,7 @@ four standard [pagination arguments](#pagination-arguments):
 | <a id="namespaceavailablefeatureshasblockedissuesfeature"></a>`hasBlockedIssuesFeature` {{< icon name="warning-solid" >}} | [`Boolean!`](#boolean) | **Introduced** in GitLab 18.3. **Status**: Experiment. Whether blocked issues are enabled for the namespace. |
 | <a id="namespaceavailablefeatureshascustomfieldsfeature"></a>`hasCustomFieldsFeature` {{< icon name="warning-solid" >}} | [`Boolean!`](#boolean) | **Introduced** in GitLab 18.3. **Status**: Experiment. Whether custom fields are enabled for the namespace. |
 | <a id="namespaceavailablefeatureshasdesignmanagementfeature"></a>`hasDesignManagementFeature` {{< icon name="warning-solid" >}} | [`Boolean!`](#boolean) | **Introduced** in GitLab 18.6. **Status**: Experiment. Whether design management is enabled for the namespace. |
+| <a id="namespaceavailablefeatureshasduoremoteflowsfeature"></a>`hasDuoRemoteFlowsFeature` {{< icon name="warning-solid" >}} | [`Boolean!`](#boolean) | **Introduced** in GitLab 18.6. **Status**: Experiment. Whether Duo remote flows are enabled for the namespace. |
 | <a id="namespaceavailablefeatureshasepicsfeature"></a>`hasEpicsFeature` {{< icon name="warning-solid" >}} | [`Boolean!`](#boolean) | **Introduced** in GitLab 18.1. **Status**: Experiment. Whether epics are enabled for the namespace. |
 | <a id="namespaceavailablefeatureshasgroupbulkeditfeature"></a>`hasGroupBulkEditFeature` {{< icon name="warning-solid" >}} | [`Boolean!`](#boolean) | **Introduced** in GitLab 18.3. **Status**: Experiment. Whether group bulk edit is enabled for the namespace. |
 | <a id="namespaceavailablefeatureshasissuablehealthstatusfeature"></a>`hasIssuableHealthStatusFeature` {{< icon name="warning-solid" >}} | [`Boolean!`](#boolean) | **Introduced** in GitLab 18.1. **Status**: Experiment. Whether issuable health status is enabled for the namespace. |
@@ -38340,6 +38357,7 @@ four standard [pagination arguments](#pagination-arguments):
 | <a id="namespaceavailablefeatureshasqualitymanagementfeature"></a>`hasQualityManagementFeature` {{< icon name="warning-solid" >}} | [`Boolean!`](#boolean) | **Introduced** in GitLab 18.1. **Status**: Experiment. Whether quality management is enabled for the namespace. |
 | <a id="namespaceavailablefeatureshasscopedlabelsfeature"></a>`hasScopedLabelsFeature` {{< icon name="warning-solid" >}} | [`Boolean!`](#boolean) | **Introduced** in GitLab 18.1. **Status**: Experiment. Whether scoped labels are enabled for the namespace. |
 | <a id="namespaceavailablefeatureshassubepicsfeature"></a>`hasSubepicsFeature` {{< icon name="warning-solid" >}} | [`Boolean!`](#boolean) | **Introduced** in GitLab 18.1. **Status**: Experiment. Whether subepics are enabled for the namespace. |
+| <a id="namespaceavailablefeatureshasworkitemplanningviewfeature"></a>`hasWorkItemPlanningViewFeature` {{< icon name="warning-solid" >}} | [`Boolean!`](#boolean) | **Introduced** in GitLab 18.6. **Status**: Experiment. Whether work item planning view is enabled for the namespace. |
 | <a id="namespaceavailablefeatureshasworkitemstatusfeature"></a>`hasWorkItemStatusFeature` {{< icon name="warning-solid" >}} | [`Boolean!`](#boolean) | **Introduced** in GitLab 18.3. **Status**: Experiment. Whether work item statuses are enabled for the namespace. |
 
 ### `NamespaceBan`
@@ -42952,6 +42970,20 @@ Returns [`String`](#string).
 | ---- | ---- | ----------- |
 | <a id="projectnamespacemarkdownpathsmarkdownpreviewpathiid"></a>`iid` | [`String`](#string) | IID of the target item for markdown preview. |
 
+### `ProjectNamespaceMetadata`
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="projectnamespacemetadatadefaultbranch"></a>`defaultBranch` {{< icon name="warning-solid" >}} | [`String`](#string) | **Introduced** in GitLab 18.6. **Status**: Experiment. Default branch of the project. |
+| <a id="projectnamespacemetadatagroupid"></a>`groupId` {{< icon name="warning-solid" >}} | [`String`](#string) | **Introduced** in GitLab 18.6. **Status**: Experiment. ID of the group. Returns null for user namespaces. |
+| <a id="projectnamespacemetadatainitialsort"></a>`initialSort` {{< icon name="warning-solid" >}} | [`String`](#string) | **Introduced** in GitLab 18.6. **Status**: Experiment. User preference for initial sort order. |
+| <a id="projectnamespacemetadataisissuerepositioningdisabled"></a>`isIssueRepositioningDisabled` {{< icon name="warning-solid" >}} | [`Boolean`](#boolean) | **Introduced** in GitLab 18.6. **Status**: Experiment. Whether issue repositioning is disabled for the namespace. |
+| <a id="projectnamespacemetadatamaxattachmentsize"></a>`maxAttachmentSize` {{< icon name="warning-solid" >}} | [`String`](#string) | **Introduced** in GitLab 18.6. **Status**: Experiment. Maximum allowed attachment size (humanized). |
+| <a id="projectnamespacemetadatashownewworkitem"></a>`showNewWorkItem` {{< icon name="warning-solid" >}} | [`Boolean`](#boolean) | **Introduced** in GitLab 18.6. **Status**: Experiment. Whether to show the new work item link. |
+| <a id="projectnamespacemetadatatimetrackinglimittohours"></a>`timeTrackingLimitToHours` {{< icon name="warning-solid" >}} | [`Boolean`](#boolean) | **Introduced** in GitLab 18.6. **Status**: Experiment. Time tracking limit to hours setting. |
+
 ### `ProjectPermissions`
 
 #### Fields
@@ -46079,6 +46111,19 @@ Returns [`String`](#string).
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | <a id="usernamespacemarkdownpathsmarkdownpreviewpathiid"></a>`iid` | [`String`](#string) | IID of the target item for markdown preview. |
+
+### `UserNamespaceMetadata`
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="usernamespacemetadatagroupid"></a>`groupId` {{< icon name="warning-solid" >}} | [`String`](#string) | **Introduced** in GitLab 18.6. **Status**: Experiment. ID of the group. Returns null for user namespaces. |
+| <a id="usernamespacemetadatainitialsort"></a>`initialSort` {{< icon name="warning-solid" >}} | [`String`](#string) | **Introduced** in GitLab 18.6. **Status**: Experiment. User preference for initial sort order. |
+| <a id="usernamespacemetadataisissuerepositioningdisabled"></a>`isIssueRepositioningDisabled` {{< icon name="warning-solid" >}} | [`Boolean`](#boolean) | **Introduced** in GitLab 18.6. **Status**: Experiment. Whether issue repositioning is disabled for the namespace. |
+| <a id="usernamespacemetadatamaxattachmentsize"></a>`maxAttachmentSize` {{< icon name="warning-solid" >}} | [`String`](#string) | **Introduced** in GitLab 18.6. **Status**: Experiment. Maximum allowed attachment size (humanized). |
+| <a id="usernamespacemetadatashownewworkitem"></a>`showNewWorkItem` {{< icon name="warning-solid" >}} | [`Boolean`](#boolean) | **Introduced** in GitLab 18.6. **Status**: Experiment. Whether to show the new work item link. |
+| <a id="usernamespacemetadatatimetrackinglimittohours"></a>`timeTrackingLimitToHours` {{< icon name="warning-solid" >}} | [`Boolean`](#boolean) | **Introduced** in GitLab 18.6. **Status**: Experiment. Time tracking limit to hours setting. |
 
 ### `UserPermissions`
 
@@ -55192,6 +55237,25 @@ Implementations:
 | ---- | ---- | ----------- |
 | <a id="memberroleinterfacememberscount"></a>`membersCount` {{< icon name="warning-solid" >}} | [`Int`](#int) | **Introduced** in GitLab 17.3. **Status**: Experiment. Number of times the role has been directly assigned to a group or project member. |
 | <a id="memberroleinterfaceuserscount"></a>`usersCount` {{< icon name="warning-solid" >}} | [`Int`](#int) | **Introduced** in GitLab 17.5. **Status**: Experiment. Number of users who have been directly assigned the role in at least one group or project. |
+
+#### `NamespaceMetadata`
+
+Implementations:
+
+- [`GroupNamespaceMetadata`](#groupnamespacemetadata)
+- [`ProjectNamespaceMetadata`](#projectnamespacemetadata)
+- [`UserNamespaceMetadata`](#usernamespacemetadata)
+
+##### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="namespacemetadatagroupid"></a>`groupId` {{< icon name="warning-solid" >}} | [`String`](#string) | **Introduced** in GitLab 18.6. **Status**: Experiment. ID of the group. Returns null for user namespaces. |
+| <a id="namespacemetadatainitialsort"></a>`initialSort` {{< icon name="warning-solid" >}} | [`String`](#string) | **Introduced** in GitLab 18.6. **Status**: Experiment. User preference for initial sort order. |
+| <a id="namespacemetadataisissuerepositioningdisabled"></a>`isIssueRepositioningDisabled` {{< icon name="warning-solid" >}} | [`Boolean`](#boolean) | **Introduced** in GitLab 18.6. **Status**: Experiment. Whether issue repositioning is disabled for the namespace. |
+| <a id="namespacemetadatamaxattachmentsize"></a>`maxAttachmentSize` {{< icon name="warning-solid" >}} | [`String`](#string) | **Introduced** in GitLab 18.6. **Status**: Experiment. Maximum allowed attachment size (humanized). |
+| <a id="namespacemetadatashownewworkitem"></a>`showNewWorkItem` {{< icon name="warning-solid" >}} | [`Boolean`](#boolean) | **Introduced** in GitLab 18.6. **Status**: Experiment. Whether to show the new work item link. |
+| <a id="namespacemetadatatimetrackinglimittohours"></a>`timeTrackingLimitToHours` {{< icon name="warning-solid" >}} | [`Boolean`](#boolean) | **Introduced** in GitLab 18.6. **Status**: Experiment. Time tracking limit to hours setting. |
 
 #### `NamespacesLinkPaths`
 

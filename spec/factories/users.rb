@@ -288,5 +288,9 @@ FactoryBot.define do
     end
 
     factory :admin, traits: [:admin]
+
+    factory :support_bot do
+      user_type { :support_bot }
+    end
   end
 end

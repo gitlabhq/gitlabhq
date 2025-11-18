@@ -82,7 +82,7 @@ RSpec.describe Gitlab::UrlBuilder do
     end
 
     context 'when passing a Service Desk issue', feature_category: :service_desk do
-      let(:service_desk_issue) { create(:work_item, :issue, author: Users::Internal.support_bot) }
+      let(:service_desk_issue) { create(:work_item, :issue, author: create(:support_bot)) }
 
       subject { described_class.build(service_desk_issue, only_path: true) }
 

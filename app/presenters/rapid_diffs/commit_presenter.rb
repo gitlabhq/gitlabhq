@@ -54,5 +54,13 @@ module RapidDiffs
     def markdown_docs_path
       help_page_path('user/markdown.md')
     end
+
+    def register_path
+      new_user_registration_path(redirect_to_referer: 'yes')
+    end
+
+    def sign_in_path
+      new_user_session_path(redirect_to_referer: 'yes')
+    end
   end
 end

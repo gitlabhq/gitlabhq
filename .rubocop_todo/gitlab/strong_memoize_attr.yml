@@ -181,8 +181,6 @@ Gitlab/StrongMemoizeAttr:
     - 'app/services/projects/update_statistics_service.rb'
     - 'app/services/releases/base_service.rb'
     - 'app/services/resource_access_tokens/revoke_service.rb'
-    - 'app/services/search/global_service.rb'
-    - 'app/services/search/project_service.rb'
     - 'app/services/security/ci_configuration/sast_parser_service.rb'
     - 'app/services/test_hooks/project_service.rb'
     - 'app/services/test_hooks/system_service.rb'

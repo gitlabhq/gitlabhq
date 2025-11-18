@@ -121,7 +121,6 @@ Style/SymbolProc:
     - 'spec/controllers/projects/merge_requests/conflicts_controller_spec.rb'
     - 'spec/factories/application_settings.rb'
     - 'spec/factories/ci/builds.rb'
-    - 'spec/factories/clusters/providers/aws.rb'
     - 'spec/factories/oauth_openid_requests.rb'
     - 'spec/factories/pool_repositories.rb'
     - 'spec/features/merge_request/user_creates_image_diff_notes_spec.rb'

@@ -175,6 +175,15 @@ module Types
       method: :itself,
       experiment: { milestone: '18.1' }
 
+    field :metadata,
+      Types::Namespaces::Metadata,
+      null: true,
+      description: 'Metadata information for the namespace.',
+      method: :itself,
+      experiment: { milestone: '18.6' } do
+      extension(::Gitlab::Graphql::Limit::FieldCallCount, limit: 1)
+    end
+
     field :markdown_paths,
       Types::Namespaces::MarkdownPaths,
       null: true,

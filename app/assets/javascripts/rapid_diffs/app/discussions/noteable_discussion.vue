@@ -10,7 +10,7 @@ import TimelineEntryItem from '~/vue_shared/components/notes/timeline_entry_item
 import { detectAndConfirmSensitiveTokens } from '~/lib/utils/secret_detection';
 import DiscussionReplyPlaceholder from '~/notes/components/discussion_reply_placeholder.vue';
 import { createNoteErrorMessages } from '~/notes/utils';
-import NoteSignedOutWidget from '~/notes/components/note_signed_out_widget.vue';
+import NoteSignedOutWidget from './note_signed_out_widget.vue';
 import NoteForm from './note_form.vue';
 import DiscussionNotes from './discussion_notes.vue';
 

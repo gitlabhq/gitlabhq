@@ -1271,7 +1271,7 @@ RSpec.describe ProjectPolicy, feature_category: :system_access do
   end
 
   context 'support bot' do
-    let(:current_user) { Users::Internal.support_bot }
+    let(:current_user) { create(:support_bot) }
 
     context 'with service desk disabled' do
       it { expect_allowed(:public_access) }

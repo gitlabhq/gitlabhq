@@ -1347,11 +1347,11 @@ export default {
               {{ __('Cancel') }}
             </gl-button>
             <gl-button
+              type="submit"
               variant="confirm"
               :disabled="!isTitleValid"
               :loading="loading"
               data-testid="create-button"
-              @click="createWorkItem"
             >
               {{ createWorkItemText }}
             </gl-button>

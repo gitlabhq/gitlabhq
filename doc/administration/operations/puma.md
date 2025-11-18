@@ -16,7 +16,7 @@ Puma is a fast, multi-threaded, and highly concurrent HTTP 1.1 server for
 Ruby applications. It runs the core Rails application that provides the user-facing
 features of GitLab.
 
-## Reducing memory use
+## Tuning memory use
 
 To reduce memory use, Puma forks worker processes. Each time a worker is created,
 it shares memory with the primary process. The worker uses additional memory only
@@ -154,7 +154,7 @@ for details.
 When running Puma in single mode, some features are not supported:
 
 - [Phased restart](https://gitlab.com/gitlab-org/gitlab/-/issues/300665)
-- [Memory killers](#reducing-memory-use)
+- [Memory killers](#tuning-memory-use)
 
 For more information, see [epic 5303](https://gitlab.com/groups/gitlab-org/-/epics/5303).
 

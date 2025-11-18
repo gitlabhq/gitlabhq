@@ -8,6 +8,8 @@ RSpec.describe RapidDiffs::CommitAppComponent, feature_category: :code_review_wo
   let(:user_permissions) { { can_create_note: true } }
   let(:noteable_type) { 'Commit' }
   let(:preview_markdown_endpoint) { '/preview_markdown_endpoint' }
+  let(:register_path) { '/register_path' }
+  let(:sign_in_path) { '/sign_in_path' }
   let(:markdown_docs_path) { '/markdown_docs_path' }
 
   let(:presenter) do
@@ -17,6 +19,8 @@ RSpec.describe RapidDiffs::CommitAppComponent, feature_category: :code_review_wo
       user_permissions: user_permissions,
       noteable_type: noteable_type,
       preview_markdown_endpoint: preview_markdown_endpoint,
+      register_path: register_path,
+      sign_in_path: sign_in_path,
       markdown_docs_path: markdown_docs_path
     )
   end
@@ -37,6 +41,8 @@ RSpec.describe RapidDiffs::CommitAppComponent, feature_category: :code_review_wo
         user_permissions: user_permissions,
         noteable_type: noteable_type,
         preview_markdown_endpoint: preview_markdown_endpoint,
+        register_path: register_path,
+        sign_in_path: sign_in_path,
         markdown_docs_path: markdown_docs_path
       },
       extra_prefetch_endpoints: [discussions_endpoint]
