@@ -200,7 +200,7 @@ RSpec.describe NamespaceSettings::AssignAttributesService, feature_category: :gr
           it "doesn't change early_access_program_joined_by" do
             expect { service.execute }
               .to not_change { namespace_settings.early_access_program_participant }
-              .and not_change { namespace_settings.early_access_program_joined_by_id }
+                    .and not_change { namespace_settings.early_access_program_joined_by_id }
           end
         end
 

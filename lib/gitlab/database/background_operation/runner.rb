@@ -21,6 +21,7 @@ module Gitlab
         attr_reader :connection, :executor
 
         def execute_job_and_handle_failure(worker, job)
+          worker.execute!
           executor.perform(job)
           adjust_operation(worker)
 

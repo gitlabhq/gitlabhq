@@ -143,10 +143,6 @@ module Ci
         end
 
         def yield_pipelines(events_batch, records_yielder)
-          if Feature.disabled?(:discard_project_mirrors_join_for_ch_pipeline_ingestion, :instance)
-            return yield_pipelines_legacy(events_batch, records_yielder)
-          end
-
           # NOTE: The `.to_a` call is necessary here to materialize the ActiveRecord relationship, so that the call
           # to `.last` in `.each_batch` (see https://gitlab.com/gitlab-org/gitlab/-/blob/a38c93c792cc0d2536018ed464862076acb8d3d7/lib/gitlab/pagination/keyset/iterator.rb#L27)
           # doesn't mess it up and cause duplicates (see https://gitlab.com/gitlab-org/gitlab/-/merge_requests/138066)
@@ -175,37 +171,6 @@ module Ci
             end
 
           @processed_record_ids += pipeline_ids_to_proj_namespace_ids.keys
-        end
-
-        def yield_pipelines_legacy(events_batch, records_yielder)
-          # NOTE: The `.to_a` call is necessary here to materialize the ActiveRecord relationship, so that the call
-          # to `.last` in `.each_batch` (see https://gitlab.com/gitlab-org/gitlab/-/blob/a38c93c792cc0d2536018ed464862076acb8d3d7/lib/gitlab/pagination/keyset/iterator.rb#L27)
-          # doesn't mess it up and cause duplicates (see https://gitlab.com/gitlab-org/gitlab/-/merge_requests/138066)
-          # rubocop: disable CodeReuse/ActiveRecord -- this is an expression that is specific to this service
-          # rubocop: disable Database/AvoidUsingPluckWithoutLimit -- the batch is already limited by definition
-          events_batch = events_batch.to_a
-          pipeline_ids = events_batch.pluck(:pipeline_id)
-          project_namespace_ids = events_batch.pluck(:pipeline_id, :project_namespace_id).to_h
-          # rubocop: enable Database/AvoidUsingPluckWithoutLimit
-          # rubocop: enable CodeReuse/ActiveRecord
-
-          pipelines = Ci::Pipeline.id_in(pipeline_ids)
-          pipelines
-            .left_outer_joins(project_mirror: :namespace_mirror, pipeline_metadata: [])
-            .select(:finished_at, *finished_pipeline_projections)
-            .each do |pipeline|
-              pipeline_attrs = pipeline.attributes.symbolize_keys
-
-              next pipeline_ids -= [pipeline.id] if check_pipeline_errors(pipeline_attrs)
-
-              # append the project namespace ID segment to the path selected in the query
-              pipeline_attrs[:path] += "#{project_namespace_ids[pipeline_attrs[:id]]}/"
-              pipeline_attrs[:duration] = 0 if pipeline_attrs[:duration].nil? || pipeline_attrs[:duration] < 0
-
-              records_yielder << pipeline_attrs
-            end
-
-          @processed_record_ids += pipeline_ids
         end
 
         def fixup_pipeline_attrs(pipeline_attrs, pipeline_ids_to_project_namespace_ids, project_namespace_ids_to_paths)
@@ -246,11 +211,7 @@ module Ci
             *PIPELINE_EPOCH_FIELD_NAMES
                .map { |n| "COALESCE(EXTRACT(epoch FROM #{::Ci::Pipeline.table_name}.#{n}), 0) AS casted_#{n}" },
             *PIPELINE_META_FIELD_NAMES.map { |n| "#{::Ci::PipelineMetadata.table_name}.#{n} AS #{n}" }
-          ].tap do |projections|
-            if Feature.disabled?(:discard_project_mirrors_join_for_ch_pipeline_ingestion, :instance)
-              projections << "ARRAY_TO_STRING(#{::Ci::NamespaceMirror.table_name}.traversal_ids, '/') || '/' AS path"
-            end
-          end
+          ]
         end
         strong_memoize_attr :finished_pipeline_projections
 

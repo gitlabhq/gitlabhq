@@ -1,0 +1,34 @@
+fragment WorkItemAvailableFeatures on NamespaceAvailableFeatures {
+  hasIssueWeightsFeature
+  hasIterationsFeature
+  hasOkrsFeature
+  hasSubepicsFeature
+  hasIssuableHealthStatusFeature
+  hasEpicsFeature
+  hasScopedLabelsFeature
+  hasQualityManagementFeature
+  hasLinkedItemsEpicsFeature
+  hasIssueDateFilterFeature
+  hasBlockedIssuesFeature
+  hasGroupBulkEditFeature
+  hasCustomFieldsFeature
+}
+
+fragment WorkItemLinkPaths on NamespacesLinkPaths {
+  issuesList
+  contributionGuidePath
+  labelsManage
+  newProject
+  register
+  reportAbuse
+  signIn
+  userExportEmail
+  emailsHelpPagePath
+  markdownHelpPath
+  quickActionsHelpPath
+  calendarPath
+  rssPath
+  ... on ProjectNamespaceLinks {
+    newWorkItemEmailAddress
+  }
+}

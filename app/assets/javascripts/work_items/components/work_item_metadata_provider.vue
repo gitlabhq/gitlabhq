@@ -4,6 +4,7 @@ import { TYPENAME_GROUP } from '~/graphql_shared/constants';
 import workItemMetadataQuery from 'ee_else_ce/work_items/graphql/work_item_metadata.query.graphql';
 
 export default {
+  name: 'WorkItemMetadataProvider',
   provide() {
     // We provide the metadata values as computed properties
     // so that they can be reactive and update when the Apollo query updates.
@@ -20,6 +21,9 @@ export default {
       hasLinkedItemsEpicsFeature: computed(() => this.metadata.hasLinkedItemsEpicsFeature),
       hasIssueDateFilterFeature: computed(() => this.metadata.hasIssueDateFilterFeature),
       hasStatusFeature: computed(() => this.metadata?.hasWorkItemStatusFeature),
+      hasBlockedIssuesFeature: computed(() => this.metadata.hasBlockedIssuesFeature),
+      hasGroupBulkEditFeature: computed(() => this.metadata.hasGroupBulkEditFeature),
+      hasCustomFieldsFeature: computed(() => this.metadata.hasCustomFieldsFeature),
       issuesListPath: computed(() => this.metadata.issuesList),
       contributionGuidePath: computed(() => this.metadata.contributionGuidePath),
       epicsListPath: computed(() => this.metadata.epicsList),
@@ -41,8 +45,9 @@ export default {
       canAdminLabel: computed(() => Boolean(this.metadata?.adminLabel)),
       canCreateProjects: computed(() => Boolean(this.metadata?.createProjects)),
       canBulkEditEpics: computed(() => Boolean(this.metadata?.bulkAdminEpic)),
-      // newCommentTemplatePaths not included as it is already available on the `WorkItem` type.
       isGroup: computed(() => this.metadata.id?.includes(TYPENAME_GROUP) || false),
+      calendarPath: computed(() => this.metadata.calendarPath),
+      rssPath: computed(() => this.metadata.rssPath),
     };
   },
   props: {

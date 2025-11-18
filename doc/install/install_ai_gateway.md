@@ -225,8 +225,8 @@ http {
         listen 8443 ssl;
         http2 on;
 
-        ssl_certificate /etc/nginx/ssl/fullchain.pem;
-        ssl_certificate_key /etc/nginx/ssl/privkey.pem;
+        ssl_certificate /etc/nginx/ssl/server.crt;
+        ssl_certificate_key /etc/nginx/ssl/server.key;
 
         ssl_protocols TLSv1.2 TLSv1.3;
         ssl_ciphers HIGH:!aNULL:!MD5;
@@ -284,10 +284,9 @@ grpc-proxy:
     ports:
       - "8443:8443"
     volumes:
-      # SSL certificates for GitLab Duo Agent Platform endpoint (distinct from AI Gateway endpoint)
       - /path/to/grpc-nginx.conf:/etc/nginx/nginx.conf:ro
-      - /path/to/fullchain.pem:/etc/nginx/ssl/fullchain.pem:ro
-      - /path/to/privkey.pem:/etc/nginx/ssl/privkey.pem:ro
+      - /path/to/fullchain.pem:/etc/nginx/ssl/server.crt:ro
+      - /path/to/privkey.pem:/etc/nginx/ssl/server.key:ro
     networks:
       - proxy-network
     depends_on:

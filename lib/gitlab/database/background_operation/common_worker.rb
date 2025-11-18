@@ -104,6 +104,10 @@ module Gitlab
               transition any => :paused
             end
 
+            event :execute do
+              transition any => :active
+            end
+
             before_transition any => [:paused] do |worker|
               worker.on_hold_until = RETRY_DELAY.from_now
 

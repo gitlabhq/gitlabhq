@@ -291,7 +291,6 @@ RSpec.describe WorkItemsHelper, feature_category: :team_planning do
             releases_path: project_releases_path(project, format: :json),
             project_import_jira_path: project_import_jira_path(project),
             can_read_crm_contact: 'true',
-            rss_path: project_work_items_path(project, format: :atom, feed_token: 'atom-feed-token'),
             can_import_work_items: "true",
             export_csv_path: export_csv_project_issues_path(project),
             new_issue_path: new_project_issue_path(project),

@@ -9,7 +9,7 @@ title: Planner Agent
 
 - Tier: Premium, Ultimate
 - Add-on: GitLab Duo Core, Pro, or Enterprise
-- Offering: GitLab.com
+- Offering: GitLab.com, GitLab Self-Managed
 - Status: Beta
 
 {{< /details >}}
@@ -59,8 +59,7 @@ Prerequisites:
 
    {{< tab title="New navigation" >}}
 
-   On the GitLab Duo sidebar, select either **Current GitLab Duo Chat** ({{< icon name="comment" >}})
-   or **New GitLab Duo Chat** ({{< icon name="plus" >}}).
+   On the GitLab Duo sidebar, select either **New GitLab Duo Chat** ({{< icon name="pencil-square" >}}) or **Current GitLab Duo Chat** ({{< icon name="duo-chat" >}}).
 
    A Chat conversation opens in the GitLab Duo sidebar on the right side of your screen.
 

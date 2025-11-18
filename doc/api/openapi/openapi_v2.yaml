@@ -47881,6 +47881,9 @@ definitions:
       duo_remote_flows_availability:
         type: boolean
         description: Enable GitLab Duo remote flows for this group
+      duo_foundational_flows_availability:
+        type: boolean
+        description: Enable GitLab foundational Duo flows for this group
       amazon_q_auto_review_enabled:
         type: boolean
         description: Enable Amazon Q auto review for merge request
@@ -48084,6 +48087,9 @@ definitions:
       duo_remote_flows_availability:
         type: boolean
         description: Enable GitLab Duo remote flows for this group
+      duo_foundational_flows_availability:
+        type: boolean
+        description: Enable GitLab foundational Duo flows for this group
       amazon_q_auto_review_enabled:
         type: boolean
         description: Enable Amazon Q auto review for merge request
@@ -48749,6 +48755,8 @@ definitions:
       auto_duo_code_review_enabled:
         type: string
       duo_remote_flows_enabled:
+        type: string
+      duo_foundational_flows_enabled:
         type: string
       web_based_commit_signing_enabled:
         type: string
@@ -65109,6 +65117,8 @@ definitions:
       auto_duo_code_review_enabled:
         type: string
       duo_remote_flows_enabled:
+        type: string
+      duo_foundational_flows_enabled:
         type: string
       web_based_commit_signing_enabled:
         type: string

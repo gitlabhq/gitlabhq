@@ -1,4 +1,3 @@
-# spec/lib/authz/permission_spec.rb
 # frozen_string_literal: true
 
 require 'spec_helper'
@@ -9,7 +8,6 @@ RSpec.describe Authz::Permission, feature_category: :permissions do
   let(:action) { nil }
   let(:resource) { nil }
   let(:boundaries) { %w[project] }
-  let(:available_for_tokens) { true }
   let(:definition) do
     {
       name: name,
@@ -18,30 +16,15 @@ RSpec.describe Authz::Permission, feature_category: :permissions do
       action: action,
       resource: resource,
       boundaries: boundaries,
-      available_for_tokens: available_for_tokens
+      available_for_tokens: true
     }
   end
 
   subject(:permission) { described_class.new(definition, source_file) }
 
-  describe '.all' do
-    it 'loads all permission definitions' do
-      expect(described_class.all).to be_a(Hash)
-      expect(described_class.all).not_to be_empty
-    end
-  end
-
-  describe '.get' do
-    it 'returns the permission by name' do
-      permission = described_class.get(:create_issue)
-
-      expect(permission).to be_a(described_class)
-      expect(permission.name).to eq('create_issue')
-    end
-
-    it 'returns nil for non-existent permission' do
-      expect(described_class.get(:non_existent_permission)).to be_nil
-    end
+  it_behaves_like 'loadable yaml permission or permission group' do
+    let(:definition_name) { :create_issue }
+    let(:definition) { super() }
   end
 
   describe '.all_for_tokens' do
@@ -52,41 +35,62 @@ RSpec.describe Authz::Permission, feature_category: :permissions do
       expect(all_for_tokens).not_to be_empty
       expect(all_for_tokens.first.available_for_tokens?).to be(true)
     end
-  end
 
-  describe '.defined?' do
-    subject(:defined) { described_class.defined?(permission) }
-
-    context 'when the permission exists' do
-      context 'when the permission is passed as a symbol' do
-        let(:permission) { :create_issue }
-
-        it { is_expected.to be(true) }
+    context 'with permission groups' do
+      let(:individual_permission) { permission }
+      let(:group1) do
+        {
+          name: 'update_wiki',
+          description: 'Grants the ability to update wikis',
+          permissions: %w[upload_wiki_attachment],
+          available_for_tokens: true
+        }
       end
 
-      context 'when the permission is passed as a string' do
-        let(:permission) { 'create_issue' }
-
-        it { is_expected.to be(true) }
+      let(:group2) do
+        {
+          name: 'run_job',
+          description: 'Grants the ability to run jobs',
+          permissions: %w[play_job retry_job]
+        }
       end
-    end
 
-    context 'when the permission does not exist' do
-      let(:permission) { :non_existent_permission }
+      let(:group1_permission) do
+        {
+          name: group1[:permissions].first,
+          description: 'Upload wiki attachment',
+          feature_category: 'wiki',
+          action: nil,
+          resource: nil,
+          available_for_tokens: true
+        }
+      end
 
-      it { is_expected.to be(false) }
-    end
-  end
+      before do
+        all_groups = {
+          group1[:name] => Authz::PermissionGroup.new(group1, 'group1.yml'),
+          group2[:name] => Authz::PermissionGroup.new(group2, 'group2.yml')
+        }
+        allow(Authz::PermissionGroup).to receive(:all).and_return(all_groups)
 
-  describe '#name' do
-    specify do
-      expect(permission.name).to eq('test_permission')
-    end
-  end
+        all_permissions = {
+          group1_permission[:name] => described_class.new(group1_permission, source_file),
+          permission.name => permission
+        }
+        allow(described_class).to receive(:all).and_return(all_permissions)
+      end
 
-  describe '#description' do
-    specify do
-      expect(permission.description).to eq('Test permission description')
+      it 'includes permission groups with available_for_tokens = true' do
+        expect(all_for_tokens.map(&:name)).to include(group1[:name])
+      end
+
+      it 'excludes permission groups without available_for_tokens = true' do
+        expect(all_for_tokens.map(&:name)).not_to include(group2[:name])
+      end
+
+      it 'excludes permissions under a permission group' do
+        expect(all_for_tokens.map(&:name)).not_to include(group1_permission[:name])
+      end
     end
   end
 
@@ -177,18 +181,6 @@ RSpec.describe Authz::Permission, feature_category: :permissions do
       let(:boundaries) { nil }
 
       it { is_expected.to eq([]) }
-    end
-  end
-
-  describe '#available_for_tokens?' do
-    subject { permission.available_for_tokens? }
-
-    it { is_expected.to be(true) }
-
-    context 'when available_for_tokens is not defined' do
-      let(:available_for_tokens) { nil }
-
-      it { is_expected.to be(false) }
     end
   end
 end

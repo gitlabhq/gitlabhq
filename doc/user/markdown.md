@@ -2096,12 +2096,52 @@ A backslash doesn't always escape the character that follows it. The backslash a
 
 - When the backslash appears before a non-reserved character, such as `A`, `3`, or a space.
 - When the backslash appears inside of these Markdown elements:
-  - Code blocks
-  - Code spans
   - Auto-links
   - Inline HTML, such as `<kbd>`
+  - Code blocks
+  - Code spans
 
 In these instances you might need to use the equivalent HTML entity, such as `&#93;` for `]`.
+
+### Use additional backticks
+
+The previous advice does not apply to code blocks or code spans, where literal contents are always displayed.
+Instead, use additional backticks to nest the code.
+
+If you need to include three backticks in a code block, use a greater number of backticks
+to create the code block:
+
+`````markdown
+To create a code block in Markdown, use three or more matching backticks:
+
+````markdown
+```
+code
+```
+````
+`````
+
+When rendered, the example looks similar to:
+
+> To create a code block in Markdown, use three or more matching backticks:
+>
+> ````markdown
+> ```
+> code
+> ```
+> ````
+
+To include one or more backticks in a code span, use a greater number of matching backticks
+to create the code span. If the content begins and ends with a space, those spaces are also
+trimmed:
+
+```markdown
+To create a code span in Markdown, use matching backticks: `` `hello, world` ``
+```
+
+When rendered, the example looks similar to:
+
+> To create a code span in Markdown, use matching backticks: `` `hello, world` ``
 
 ### Use backslash with backticks
 

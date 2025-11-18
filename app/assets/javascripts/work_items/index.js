@@ -32,9 +32,6 @@ export const initWorkItemsRoot = ({ workItemType, workspaceType, withTabs } = {}
     groupId,
     issuesListPath,
     epicsListPath,
-    hasBlockedIssuesFeature,
-    hasGroupBulkEditFeature,
-    hasCustomFieldsFeature,
     newTrialPath,
     defaultBranch,
     initialSort,
@@ -49,8 +46,6 @@ export const initWorkItemsRoot = ({ workItemType, workspaceType, withTabs } = {}
     canReadCrmContact,
     releasesPath,
     projectImportJiraPath,
-    rssPath,
-    calendarPath,
     maxAttachmentSize,
     canImportWorkItems,
     isGroupIssuesList,
@@ -63,12 +58,10 @@ export const initWorkItemsRoot = ({ workItemType, workspaceType, withTabs } = {}
 
   const isGroup = workspaceType === WORKSPACE_GROUP;
   const router = createRouter({ fullPath, workspaceType, defaultBranch });
-  let listPath = issuesListPath;
 
   const breadcrumbParams = { workItemType, isGroup };
 
   if (workItemType === WORK_ITEM_TYPE_NAME_EPIC) {
-    listPath = epicsListPath;
     breadcrumbParams.listPath = epicsListPath;
   } else {
     breadcrumbParams.listPath = issuesListPath;
@@ -99,10 +92,6 @@ export const initWorkItemsRoot = ({ workItemType, workspaceType, withTabs } = {}
       isGroup,
       isProject: !isGroup,
       isGroupIssuesList: parseBoolean(isGroupIssuesList),
-      hasBlockedIssuesFeature: parseBoolean(hasBlockedIssuesFeature),
-      hasGroupBulkEditFeature: parseBoolean(hasGroupBulkEditFeature),
-      issuesListPath: listPath,
-      hasCustomFieldsFeature: parseBoolean(hasCustomFieldsFeature),
       newTrialPath,
       groupPath,
       groupId,
@@ -119,8 +108,6 @@ export const initWorkItemsRoot = ({ workItemType, workspaceType, withTabs } = {}
       canReadCrmContact: parseBoolean(canReadCrmContact),
       releasesPath,
       projectImportJiraPath,
-      rssPath,
-      calendarPath,
       maxAttachmentSize,
       canImportWorkItems: parseBoolean(canImportWorkItems),
       showImportButton: parseBoolean(canImportWorkItems),

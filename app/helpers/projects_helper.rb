@@ -1035,6 +1035,11 @@ module ProjectsHelper
         :duo_remote_flows_enabled,
         project,
         method(:edit_group_path)
+      ),
+      duo_foundational_flows_cascading_settings: project_cascading_namespace_settings_tooltip_data(
+        :duo_foundational_flows_enabled,
+        project,
+        method(:edit_group_path)
       )
     }
   end

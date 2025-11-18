@@ -375,7 +375,7 @@ Marked stuck import jobs as failed. JIDs: xyz
 
 [Slow JSON](https://gitlab.com/gitlab-org/gitlab/-/issues/25251) loading/dumping models from the database:
 
-- [split the worker](https://gitlab.com/gitlab-org/gitlab/-/issues/25252) |
+- [split the worker](https://gitlab.com/gitlab-org/gitlab/-/issues/25252)
 - Batch export
 - Optimize SQL
 - Move away from `ActiveRecord` callbacks (difficult)

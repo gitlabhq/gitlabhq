@@ -101,7 +101,7 @@ Select the tab for your navigation type, or [learn how to switch](../interface_r
 {{< tab title="New navigation" >}}
 
 1. On the top bar, select **Search or go to** and find your project.
-1. On the GitLab Duo sidebar, select either **Current GitLab Duo Chat** ({{< icon name="comment" >}}) or **New GitLab Duo Chat** ({{< icon name="plus" >}}).
+1. On the GitLab Duo sidebar, select either **New GitLab Duo Chat** ({{< icon name="pencil-square" >}}) or **Current GitLab Duo Chat** ({{< icon name="duo-chat" >}}).
    A Chat conversation opens in the GitLab Duo sidebar on the right side of your screen.
 1. Enter your question in the message box and press <kbd>Enter</kbd> or select **Send**.
    - You can provide additional [context](../gitlab_duo/context.md#gitlab-duo-chat) for your chat.
@@ -167,7 +167,7 @@ In GitLab 17.10 and later, you can have an unlimited number of simultaneous conv
 {{< tab title="New navigation" >}}
 
 1. Create a new Chat conversation by doing either of the following:
-   - On the GitLab Duo sidebar, select **New GitLab Duo Chat** ({{< icon name="plus" >}}).
+   - On the GitLab Duo sidebar, select **New GitLab Duo Chat** ({{< icon name="pencil-square" >}}).
    - In the message box, type `/new` and press <kbd>Enter</kbd> or select **Send**.
    A new Chat conversation replaces the previous one.
 1. To view all of your conversations, view the [Chat history](#view-the-chat-history).

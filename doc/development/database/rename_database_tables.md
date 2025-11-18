@@ -88,6 +88,14 @@ Consider the next release as "Release N.M+1".
 - As the index names might change, verify that the model does not use bulk insert
   (for example, `insert_all` and `upsert_all`) with the `unique_by: index_name` option.
   Renaming an index while using these methods may break functionality.
+- For tables with composite primary keys: The database view does not preserve composite primary key metadata. Explicitly set `self.primary_key` in the model before deploying the rename migration:
+
+```ruby
+  class ModelName < ApplicationRecord
+    self.primary_key = [:column1, :column2, :column3]
+  end
+```
+
 - Modify the model code to point to the new database table. Do this by
   renaming the model directly or setting the `self.table_name` variable.
 

@@ -21,17 +21,8 @@ Updating the message can be tricky if you don't have much practice using Git
 from the command-line interface (CLI). But don't worry, even if you have only ever worked in
 the GitLab UI, you can follow these steps to use the CLI.
 
-This tutorial explains how to rewrite commit messages in both cases:
-
-- If you work in the GitLab UI only, start at step 1.
-- If you already have your repository cloned locally, you can skip to step 2.
-
-To rewrite any number of commit messages:
-
-1. [Clone your project's repository to your local machine](#clone-your-repository-to-your-local-machine).
-1. [Fetch and check out your branch locally](#fetch-and-check-out-your-branch).
-1. [Update the commit messages](#update-the-commit-messages).
-1. [Push the changes up to GitLab](#push-the-changes-up-to-gitlab).
+This tutorial explains how to rewrite commit messages. If you work in the GitLab UI only,
+start from the beginning. If you already have your repository cloned locally, you can skip to the step to fetch and check out your branch.
 
 ## Before you begin
 
@@ -57,15 +48,23 @@ disabled to authenticate from the CLI. Alternatively, you can [use an SSH key to
 
 ## Clone your repository to your local machine
 
-The first step is to get a clone of the repository on your local machine:
+To get started, create a local copy of your repository on your machine.
 
-1. In GitLab, on your project's overview page, in the upper-right corner, select **Code**.
-1. In the dropdown list, copy the URL for your repository by selecting {{< icon name="copy-to-clipboard" >}} next to:
+{{< guide >}}
+
+1. Copy the repository URL.
+
+   In GitLab, on your project's overview page, in the upper-right corner, select **Code**.
+   In the dropdown list, copy the URL for your repository by selecting {{< icon name="copy-to-clipboard" >}} next to:
+
    - **Clone with HTTPS** if your GitLab account uses basic username and password authentication.
    - **Clone with SSH** if you use SSH to authenticate with GitLab.
-1. Now switch to the CLI (Terminal, PowerShell, or similar) on your local machine, and go to
+
+1. Clone the repository.
+
+   Switch to the CLI (Terminal, PowerShell, or similar) on your local machine, and go to
    the directory where you want to clone the repository. For example, `/users/my-username/my-projects/`.
-1. Run `git clone` and paste the URL you copied earlier, for example:
+   Run `git clone` and paste the URL you copied earlier:
 
    ```shell
    git clone https://gitlab.com/my-username/my-awesome-project.git
@@ -73,41 +72,59 @@ The first step is to get a clone of the repository on your local machine:
 
    This clones the repository into a new directory called `my-awesome-project/`.
 
-Now your repository is on your computer, ready for your Git CLI commands!
+{{< /guide >}}
+
+Now your repository is on your computer, ready for your Git CLI commands.
 
 ## Fetch and check out your branch
 
-Next, you need to check out the branch that contains the commits to update.
+Next, switch to the branch that contains the commits you want to update.
 
-1. Assuming you are still at the same place in the CLI as the previous step,
+{{< guide >}}
+
+1. Change to your project directory.
+
+   Assuming you are still at the same place in the CLI as the previous step,
    change to your project directory with `cd`:
 
    ```shell
    cd my-awesome-project
    ```
 
-1. Optional. If you've just cloned the repository, your branch should already be
-   on your computer too. But if you've previously cloned the repository and skipped
-   to this step, you might need to fetch your branch with:
+1. Fetch your branch if needed.
+
+   If you've just cloned the repository, your branch should already be
+   on your computer. However, if you previously cloned the repository and skipped
+   to this step, you might need to fetch your branch:
 
    ```shell
    git fetch origin my-branch-name
    ```
 
-1. Now that you know for sure that the branch is on your local system, switch to it:
+1. Check out the branch.
+
+   Now that the branch is on your local system, switch to it:
 
    ```shell
    git checkout my-branch-name
    ```
 
-1. Verify that it's the correct branch with `git log` and check that the most recent commits
+1. Verify you're on the correct branch.
+
+   Run `git log` and check that the most recent commits
    match the commits in your branch on GitLab. To exit the log, use `q`.
+
+{{< /guide >}}
 
 ## Update the commit messages
 
-Now you are ready to update the commit messages:
+Now you're ready to rewrite the commit messages using an interactive rebase.
 
-1. In GitLab, check how far back in the commit history you need to go:
+{{< guide >}}
+
+1. Determine how many commits to update.
+
+   In GitLab, check how far back in the commit history you need to go:
 
    - If you already have a merge request open for your branch, you can check the
      **Commits** tab and use the total number of commits.
@@ -117,8 +134,10 @@ Now you are ready to update the commit messages:
      1. Find the oldest commit you want to update, and count how far back that commit is.
         For example, if you want to update the second and fourth commit, the count would be 4.
 
-1. From the CLI, start an interactive rebase, which is the Git process to update commits.
-   Add the count of commits from the previous step to the end of `HEAD~`, for example:
+1. Start an interactive rebase.
+
+   From the CLI, start the rebase process by adding the count of commits from the previous step
+   to the end of `HEAD~`:
 
    ```shell
    git rebase -i HEAD~4
@@ -126,7 +145,9 @@ Now you are ready to update the commit messages:
 
    In this example, Git selects the four most recent commits in the branch to update.
 
-1. Git launches a text editor and lists the selected commits.
+1. Mark which commits to reword.
+
+   Git launches a text editor and lists the selected commits.
    For example, it should look similar to:
 
    ```shell
@@ -147,7 +168,7 @@ Now you are ready to update the commit messages:
    # [and so on...]
    ```
 
-1. The `pick` command tells Git to use the commits without change. You must change
+   The `pick` command tells Git to use the commits without change. Change
    the command from `pick` to `reword` for the commits you want to update.
    Type `i` to enter `INSERT` mode, and then start editing the text.
 
@@ -161,42 +182,55 @@ Now you are ready to update the commit messages:
    reword d211d03 update template.md
    ```
 
-1. Save the edited text. Press <kbd>Escape</kbd> to exit `INSERT` mode,
+1. Save your changes.
+
+   Press <kbd>Escape</kbd> to exit `INSERT` mode,
    then type `:wq` and <kbd>Enter</kbd> to save and exit.
 
-1. Git now goes through each commit one at a time and applies the commands you selected.
-   Any commits with `pick` are added back to the branch unchanged. When Git reaches a commit
-   with `reword`, it stops and again opens up the text editor. Now it's time to finally update
-   the text of the commit message!
+1. Update each commit message.
 
-   - If you only need a one line commit message, update the text as needed. For example:
+   Git now goes through each commit one at a time. Any commits with `pick` are added back to
+   the branch unchanged. When Git reaches a commit with `reword`, it stops and opens the text
+   editor again.
 
-     ```plaintext
-     Update the monthly milestone plan
-     ```
+   Update the commit message as needed:
 
-   - If the commit message needs a title and a body, separate these with a blank line. For example:
+   - For a one-line commit message, update the text. For example:
 
-     ```plaintext
-     Update the monthly milestone plan
+   ```plaintext
+   Update the monthly milestone plan
+   ```
 
-     Make the milestone plan clearer by listing the responsibilities
-     of each maintainer.
-     ```
+   - For a commit message with a title and body, separate them with a blank line. For example:
 
-   After you save and exit, Git updates the commit message, and processes the next
+   ```plaintext
+   Update the monthly milestone plan
+
+   Make the milestone plan clearer by listing the responsibilities
+   of each maintainer.
+   ```
+
+   After you save and exit, Git updates the commit message and processes the next
    commits in order. You should see the message `Successfully rebased and update refs/heads/my-branch-name`
    when finished.
 
-1. Optional. To verify that the commit messages were updated, you can run `git log`
+1. Verify the updates.
+
+   To confirm the commit messages were updated, run `git log`
    and scroll down to see the commit messages.
 
-## Push the changes up to GitLab
+{{< /guide >}}
 
-Now all that's left is to push these changes up to GitLab:
+## Push the changes to GitLab
 
-1. From the CLI, push the changes back to GitLab. You must use the `-f` "force push" option,
-   because the commits were updated and a force push overwrites the old commits in GitLab.
+Finally, push your updated commits back to GitLab.
+
+{{< guide >}}
+
+1. Force push the changes.
+
+   From the CLI, push the changes back to GitLab. You must use the `-f` "force push" option,
+   because the commits were updated and a force push overwrites the old commits in GitLab:
 
    ```shell
    git push -f origin
@@ -205,12 +239,16 @@ Now all that's left is to push these changes up to GitLab:
    Your terminal might prompt you for your username and password before overwriting
    the commit messages in GitLab.
 
-1. In your project in GitLab, verify that the commits have been updated:
+1. Verify the changes in GitLab.
+
+   In your project in GitLab, confirm that the commits have been updated:
 
    - If you already have a merge request open for your branch, check the **Commits** tab.
    - If you are working from a branch only:
      1. Go to **Code** > **Commits**.
      1. Select the dropdown list in the upper left and find your branch.
      1. Verify that the relevant commits in the list are now updated.
+
+{{< /guide >}}
 
 Congratulations, you have successfully updated your commit messages and pushed them to GitLab!

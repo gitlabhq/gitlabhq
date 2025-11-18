@@ -81,14 +81,16 @@ export const config = {
         },
       },
       WorkItemPermissions: {
-        merge(existing = {}, incoming = {}) {
-          return { ...existing, ...incoming };
-        },
+        merge: true,
       },
       NamespacePermissions: {
-        merge(existing = {}, incoming = {}) {
-          return { ...existing, ...incoming };
-        },
+        merge: true,
+      },
+      ProjectPermissions: {
+        merge: true,
+      },
+      ProjectNamespaceMarkdownPaths: {
+        merge: true,
       },
       WorkItemWidgetDescription: {
         fields: {

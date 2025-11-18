@@ -106,7 +106,7 @@ Select the tab for your navigation type, or [learn how to switch](../interface_r
 {{< tab title="New navigation" >}}
 
 1. On the top bar, select **Search or go to** and find your project.
-1. On the GitLab Duo sidebar, select either **Current GitLab Duo Chat** ({{< icon name="comment" >}}) or **New GitLab Duo Chat** ({{< icon name="plus" >}}).
+1. On the GitLab Duo sidebar, select either **New GitLab Duo Chat** ({{< icon name="pencil-square" >}}) or **Current GitLab Duo Chat** ({{< icon name="duo-chat" >}}).
    A Chat conversation opens in the GitLab Duo sidebar on the right side of your screen.
 1. Under the chat text box, turn on the **Agentic mode (Beta)** toggle.
 1. Enter your question in the chat text box and press <kbd>Enter</kbd> or select **Send**.
@@ -256,7 +256,7 @@ Your conversations synchronize across GitLab Duo Chat in the GitLab UI and your 
      {{< tab title="New navigation" >}}
 
      You can do either of the following:
-     - On the GitLab Duo sidebar, select **New GitLab Duo Chat** ({{< icon name="plus" >}}).
+     - On the GitLab Duo sidebar, select **New GitLab Duo Chat** ({{< icon name="pencil-square" >}}).
      - In the message box, type `/new` and press <kbd>Enter</kbd> or select **Send**.
         A new Chat conversation replaces the previous one.
 

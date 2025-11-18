@@ -45,13 +45,37 @@ are applied directly without validation against the fork's push rules.
 
 {{< /alert >}}
 
+Push rules work as templates, not inherited settings:
+
+- Global push rules serve as a template for new projects. When you create global push rules,
+  they are copied to all projects created after that point.
+- Project push rules are independent copies. After a project is created, its push rules do not
+  automatically update when you change global or group rules.
+- Deleting project push rules removes all push rule controls from the project.
+  The project does not revert to using global or group rules.
+
+To apply updated global push rules to existing projects, you must [override the global push rules](#override-global-push-rules-per-project)
+for each project individually.
+
+{{< alert type="note" >}}
+
+If you delete push rules from a project, the project has no push rules at all.
+The project does not automatically inherit rules from the group or instance.
+To restore push rules, you must configure them again for the project.
+
+{{< /alert >}}
+
 ## Enable global push rules
 
-You can create push rules for all new projects to inherit, but they can be overridden
-in a project or [group](../../group/access_and_permissions.md#group-push-rules).
-All projects created after you configure global push rules inherit this
-configuration. However, each existing project must be updated manually, using the
-process described in [Override global push rules per project](#override-global-push-rules-per-project).
+You can create push rules that serve as a template for all new projects.
+You can override these rules in individual projects or [groups](../../group/access_and_permissions.md#group-push-rules).
+
+When you configure global push rules:
+
+- All projects created after you configure global push rules inherit a copy of this configuration.
+- Existing projects are not affected. To update these projects manually, see
+  [override global push rules per project](#override-global-push-rules-per-project).
+- Changes to global push rules do not update projects that already have push rules configured.
 
 Prerequisites:
 
@@ -67,15 +91,19 @@ To create global push rules:
 
 ## Override global push rules per project
 
-The push rule of an individual project overrides the global push rule.
-To override global push rules for a specific project, or to update the rules
-for an existing project to match new global push rules:
+Project push rules are independent of global push rules.
+When you set push rules for a project, those rules replace any previously configured rules for that project.
+
+To set push rules for a project:
 
 1. On the left sidebar, select **Search or go to** and find your project. If you've [turned on the new navigation](../../interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
 1. Select **Settings** > **Repository**.
 1. Expand **Push rules**.
 1. Set the rule you want.
 1. Select **Save push rules**.
+
+For a project to match new global push rules, you must configure the project's push rules to match
+the global settings. Projects do not automatically inherit changes to global push rules.
 
 ## Verify users
 
@@ -161,8 +189,8 @@ Some validation examples:
 Use these rules to prevent unintended consequences.
 
 - **Reject unsigned commits**: Commit [must be signed](signed_commits/_index.md). This rule
-  can block some legitimate commits [created in the Web IDE](#reject-unsigned-commits-push-rule-disables-web-ide),
-  and allow [unsigned commits to appear in commit history](#unsigned-commits-appear-in-commit-history).
+  can block some legitimate commits [created in the Web IDE](#reject-unsigned-commits-and-the-web-ide),
+  and allow [unsigned commits created by GitLab to appear in commit history](#require-signed-commits).
 - **Do not allow users to remove Git tags with `git push`**: Users cannot use `git push` to remove Git tags.
 
 ## Validate files
@@ -318,15 +346,36 @@ You can combine multiple patterns into one expression. This example combines all
 
 ## Require signed commits
 
-[Signed commits](signed_commits/_index.md) are digital signatures used to verify authenticity.
-Use the **Reject unsigned commits** push rule to require all commits to have cryptographic signatures.
+[Signed commits](signed_commits/_index.md) are digital signatures used to verify the authenticity
+and integrity of Git commits. Use the **Reject unsigned commits** push rule to enforce signed commits
+for external contributors while allowing GitLab-created commits to remain unsigned.
 
-When you enable this rule:
+When you enable the **Reject unsigned commits** push rule:
 
-- All new commits pushed to the repository must contain a valid cryptographic signature.
-- The signature must be created using a supported signing method (GPG, SSH, or X.509).
-- Commits without any signature are rejected at push time.
-- Commits with invalid or corrupted signatures are rejected.
+- Commits pushed from outside GitLab (with `git push`) must contain a valid cryptographic signature.
+  Unsigned commits are rejected.
+- Commits created through the GitLab UI or API are allowed even without signatures.
+  These commits can come from the Web IDE, merge request actions, and API operations.
+
+{{< alert type="warning" >}}
+
+Because commits created in GitLab are exempt from this rule, unsigned commits can still appear
+in your commit history even when the rule is enabled. The rule only validates commits pushed
+from external Git clients.
+
+For more information, see [issue 5361](https://gitlab.com/gitlab-org/gitaly/-/issues/5361).
+
+{{< /alert >}}
+
+The signature must be created with a supported signing method:
+
+- GPG
+- SSH
+- X.509
+
+Commits with invalid or corrupt signatures are rejected.
+
+### Enable the rule
 
 To enable the **Reject unsigned commits** push rule:
 
@@ -335,6 +384,21 @@ To enable the **Reject unsigned commits** push rule:
 1. Expand **Push rules**.
 1. Select **Reject unsigned commits**.
 1. Select **Save push rules**.
+
+### Reject unsigned commits and the Web IDE
+
+If a project has the **Reject unsigned commits** push rule, users cannot create commits through
+the GitLab Web IDE by default.
+
+To allow committing through the Web IDE in a project with this push rule, a GitLab administrator
+must disable the feature flag `reject_unsigned_commits_by_gitlab`:
+
+```ruby
+Feature.disable(:reject_unsigned_commits_by_gitlab)
+```
+
+When this feature flag is disabled, commits created in the Web IDE are allowed without signatures.
+For more information, see [enable or disable the feature](../../../administration/feature_flags/_index.md#enable-or-disable-the-feature).
 
 ## Reject commits that aren't DCO certified
 
@@ -352,27 +416,6 @@ You can require all commits to your project to comply with the DCO. This push ru
 - [Secret detection](../../application_security/secret_detection/_index.md)
 
 ## Troubleshooting
-
-### Reject unsigned commits push rule disables Web IDE
-
-If a project has the **Reject unsigned commits** push rule, the user cannot
-create commits through the GitLab Web IDE.
-
-To allow committing through the Web IDE on a project with this push rule, a GitLab administrator
-must disable the feature flag `reject_unsigned_commits_by_gitlab` [with a flag](../../../administration/feature_flags/_index.md).
-
-```ruby
-Feature.disable(:reject_unsigned_commits_by_gitlab)
-```
-
-### Unsigned commits appear in commit history
-
-The **Reject unsigned commits** push rule ignores commits that are authenticated and created by
-GitLab (either through the UI or API). When this push rule is enabled, unsigned commits might still
-appear in the commit history if a commit was created in GitLab itself.
-
-As expected, commits created outside GitLab and pushed to the repository are rejected.
-For more information, see [issue #5361](https://gitlab.com/gitlab-org/gitaly/-/issues/5361).
 
 ### Bulk update push rules for all projects
 

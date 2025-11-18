@@ -8,6 +8,12 @@ title: GitLab Duo Chat best practices
 When prompting GitLab Duo Chat with questions, apply the following best practices
 to receive concrete examples and specific guidance.
 
+{{< alert type="note" >}}
+
+Unless stated otherwise, the following best practices apply to both [GitLab Duo Chat (Classic)](_index.md) and [GitLab Duo Chat (Agentic)](agentic_chat.md).
+
+{{< /alert >}}
+
 ## Have a conversation
 
 Treat chats like conversations, not search forms. Start with a search-like question,
@@ -61,6 +67,10 @@ When implementing a pure virtual function in an inherited C++ class,
 should I use virtual function override, or just function override?
 ```
 
+This context is less important when you use GitLab Duo Chat (Agentic) because it autonomously searches,
+retrieves, and combines information from multiple sources. However, you should
+still be explicit to help Chat work as efficiently as possible.
+
 ## Repeat yourself
 
 Try rephrasing a question if you get an unexpected or strange response. Add more context.
@@ -100,6 +110,19 @@ Or:
 ```plaintext
 /explain why this code has multiple vulnerabilities
 ```
+
+Although slash commands still work for GitLab Duo Chat (Agentic), they are less important because
+you can use [agentic capabilities](agentic_chat.md#gitlab-duo-chat-capabilities)
+such as autonomous project search and file access, and multi-source analysis.
+
+## Use GitLab Duo Chat (Agentic) capabilities
+
+Use the [GitLab Duo Chat (Agentic)-specific capabilities](agentic_chat.md#gitlab-duo-chat-capabilities)
+to help answer complex questions more comprehensively and efficiently, such as:
+
+- Searching across projects.
+- Creating and editing files.
+- Analyzing information from multiple sources simultaneously.
 
 ## Related topics
 
