@@ -175,7 +175,7 @@ To resolve this issue, [configure GitLab to no longer fetch runner release versi
 
 ### GitLab subscription management is blocked
 
-When you [filter requests](#filter-requests), [GitLab subscription management](../subscriptions/self_managed/_index.md)
+When you [filter requests](#filter-requests), [GitLab subscription management](../subscriptions/manage_subscription.md)
 is blocked.
 
 To work around this problem, add `customers.gitlab.com:443` to the

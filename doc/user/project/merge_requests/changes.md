@@ -294,7 +294,7 @@ To explain the code in a merge request:
 
    ![Icon to explain the selected code snippet using GitLab Duo in a merge request.](img/explain_code_v17_1.png)
 
-Duo Chat explains the code. It might take a moment for the explanation to be generated.
+GitLab Duo Chat explains the code. It might take a moment for the explanation to be generated.
 
 If you'd like, you can provide feedback about the quality of the explanation.
 

@@ -4,8 +4,7 @@
 - @hide_search_settings = true
 
 - if Feature.enabled?(:passkeys, @user)
-  -# TODO: change the conditions, check if user has passkeys.
-  - if @user.two_factor_webauthn_enabled?
+  - if @user.passkeys_enabled?
     = render Pajamas::AlertComponent.new(dismissible: false, alert_options: { class: 'gl-my-5' }) do |c|
       = c.with_body do
         - two_factor_link = link_to('', profile_two_factor_auth_path)

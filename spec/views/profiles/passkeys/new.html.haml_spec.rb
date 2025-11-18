@@ -8,13 +8,13 @@ RSpec.describe 'profiles/passkeys/new', feature_category: :system_access do
   before do
     assign(:user, user)
     allow(view).to receive(:current_user).and_return(user)
-
+    allow(view).to receive(:current_password_required?)
     render
   end
 
   context 'for passkey creation' do
     it 'renders the vue container' do
-      expect(rendered).to have_css('.js-passkeys')
+      expect(rendered).to have_css('#js-passkey-registration')
     end
   end
 end

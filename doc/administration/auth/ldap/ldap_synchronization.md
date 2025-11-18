@@ -623,9 +623,9 @@ task.
 
 ### GitLab Duo add-on for groups
 
-The `duo_add_on_groups` setting automatically [manages Duo add-on seats](../../duo_add_on_seat_management_with_ldap.md) for users who authenticate through LDAP. This feature helps organizations to streamline their **GitLab Duo** seat allocation process based on LDAP group memberships.
+The `duo_add_on_groups` setting automatically [manages GitLab Duo add-on seats](../../duo_add_on_seat_management_with_ldap.md) for users who authenticate through LDAP. This feature helps organizations to streamline their **GitLab Duo** seat allocation process based on LDAP group memberships.
 
-Duo seat synchronization occurs in two ways:
+GitLab Duo seat synchronization occurs in two ways:
 
 - **On user sign-in**: When a user signs in through LDAP, GitLab immediately checks their group memberships.
 - **Scheduled sync**: GitLab automatically syncs all LDAP users daily at 02:00 AM (server time) to ensure seat assignments are up to date even without user sign-ins.
@@ -807,7 +807,7 @@ network and LDAP server response time affects these metrics.
 
 ## Adjust LDAP sync schedule
 
-You can change the time and interval when LDAP synchronizes users, groups, and Duo add-on seats.
+You can change the time and interval when LDAP synchronizes users, groups, and GitLab Duo add-on seats.
 
 ### For users
 
@@ -1022,10 +1022,10 @@ sync to run once every two hours at the top of the hour.
 
 {{< /tabs >}}
 
-### For Duo add-on seats
+### For GitLab Duo add-on seats
 
-By default, GitLab runs a Duo add-on seat sync process once per day at 02:00 AM server time to
-check LDAP group membership and assign or remove Duo add-on seats accordingly.
+By default, GitLab runs a GitLab Duo add-on seat sync process once per day at 02:00 AM server time to
+check LDAP group membership and assign or remove GitLab Duo add-on seats accordingly.
 
 {{< alert type="warning" >}}
 
@@ -1033,7 +1033,7 @@ Do not start the sync process too frequently as this could lead to multiple sync
 
 {{< /alert >}}
 
-You can manually configure LDAP Duo add-on seat sync times by setting configuration values. The following example shows how to set the sync to run once every four hours.
+You can manually configure LDAP GitLab Duo add-on seat sync times by setting configuration values. The following example shows how to set the sync to run once every four hours.
 
 {{< tabs >}}
 

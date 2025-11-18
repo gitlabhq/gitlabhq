@@ -20,7 +20,8 @@ RSpec.describe GitlabSchema.types['Group'], feature_category: :groups_and_projec
     expected_fields = %w[
       id name path full_name full_path description description_html visibility archived
       is_self_archived lfs_enabled request_access_enabled projects root_storage_statistics
-      web_url web_path edit_path avatar_url share_with_group_lock project_creation_level
+      web_url web_path edit_path admin_show_path admin_edit_path avatar_url
+      share_with_group_lock project_creation_level
       descendant_groups_count group_members_count projects_count
       subgroup_creation_level require_two_factor_authentication
       two_factor_grace_period auto_devops_enabled emails_disabled emails_enabled
@@ -560,6 +561,80 @@ RSpec.describe GitlabSchema.types['Group'], feature_category: :groups_and_projec
 
     it 'returns edit_path field' do
       expect(edit_path).to eq("/groups/#{group.full_path}/-/edit")
+    end
+  end
+
+  describe 'admin_show_path' do
+    let_it_be(:group) { create(:group, :public) }
+
+    let(:query) do
+      %(
+        query {
+          group(fullPath: "#{group.full_path}") {
+            adminShowPath
+          }
+        }
+      )
+    end
+
+    subject(:admin_show_path) do
+      GitlabSchema
+        .execute(query, context: { current_user: current_user })
+        .as_json
+        .dig('data', 'group', 'adminShowPath')
+    end
+
+    context 'when current user is an admin', :enable_admin_mode do
+      let_it_be(:current_user) { create(:user, :admin) }
+
+      it 'returns admin_show_path field' do
+        expect(admin_show_path).to eq("/admin/groups/#{group.full_path}")
+      end
+    end
+
+    context 'when current user is not an admin' do
+      let_it_be(:current_user) { create(:user) }
+
+      it 'returns admin_show_path field as null' do
+        expect(admin_show_path).to be_nil
+      end
+    end
+  end
+
+  describe 'admin_edit_path' do
+    let_it_be(:group) { create(:group, :public) }
+
+    let(:query) do
+      %(
+        query {
+          group(fullPath: "#{group.full_path}") {
+            adminEditPath
+          }
+        }
+      )
+    end
+
+    subject(:admin_edit_path) do
+      GitlabSchema
+        .execute(query, context: { current_user: current_user })
+        .as_json
+        .dig('data', 'group', 'adminEditPath')
+    end
+
+    context 'when current user is an admin', :enable_admin_mode do
+      let_it_be(:current_user) { create(:user, :admin) }
+
+      it 'returns admin_edit_path field' do
+        expect(admin_edit_path).to eq("/admin/groups/#{group.full_path}/edit")
+      end
+    end
+
+    context 'when current user is not an admin' do
+      let_it_be(:current_user) { create(:user) }
+
+      it 'returns admin_edit_path field as null' do
+        expect(admin_edit_path).to be_nil
+      end
     end
   end
 end

@@ -9,7 +9,7 @@ module Types
         permission_field :resolve_note
 
         def resolve_note
-          object.can_resolve_discussion?(context[:current_user])
+          object.can_resolve?(context[:current_user])
         end
       end
     end

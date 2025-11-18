@@ -48,7 +48,7 @@ your GitLab MCP server for the first time, it:
 1. Requests authorization to access your GitLab data.
 1. Receives an access token for secure API access.
 
-For a click-through demo, see [Duo Agent Platform - MCP server](https://gitlab.navattic.com/gitlab-mcp-server).
+For a click-through demo, see [GitLab Duo Agent Platform - MCP server](https://gitlab.navattic.com/gitlab-mcp-server).
 <!-- Demo published on 2025-09-11 -->
 
 ## Prerequisites

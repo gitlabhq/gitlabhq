@@ -1,5 +1,5 @@
 import Vue from 'vue';
-import { parseBoolean } from '~/lib/utils/common_utils';
+import { convertObjectPropsToCamelCase, parseBoolean } from '~/lib/utils/common_utils';
 import WebAuthnAuthenticate from './components/authenticate.vue';
 
 export const initWebauthnAuthenticate = () => {
@@ -30,7 +30,9 @@ export const initWebauthnAuthenticate = () => {
           rememberMe,
           sendEmailOtpPath,
           username,
-          emailVerificationData: emailVerificationData && JSON.parse(emailVerificationData),
+          emailVerificationData:
+            emailVerificationData &&
+            convertObjectPropsToCamelCase(JSON.parse(emailVerificationData)),
         },
       });
     },

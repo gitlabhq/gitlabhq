@@ -51,7 +51,7 @@ To use a feature with MCP:
 1. Turn on MCP for your group.
 1. Configure the MCP servers you want the feature to connect to.
 
-For a click-through demo, see [Duo Agent Platform - MCP integration](https://gitlab.navattic.com/mcp).
+For a click-through demo, see [GitLab Duo Agent Platform - MCP integration](https://gitlab.navattic.com/mcp).
 <!-- Demo published on 2025-08-05 -->
 
 ## Prerequisites

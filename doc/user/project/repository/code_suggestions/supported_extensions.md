@@ -108,7 +108,7 @@ You can do this by editing your `settings.json` file directly, or from the VS Co
 1. To disable Code Suggestions for a language, clear its checkbox.
 1. Your changes are automatically saved, and take effect immediately.
 
-When you disable Code Suggestions for a language, the Duo icon changes to show that suggestions are disabled
+When you disable Code Suggestions for a language, the GitLab Duo icon changes to show that suggestions are disabled
 for this language. On hover, it shows **Code Suggestions are disabled for this language**.
 
 ## Add support for more languages

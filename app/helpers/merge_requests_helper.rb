@@ -301,7 +301,7 @@ module MergeRequestsHelper
   def sticky_header_data(project, merge_request)
     data = {
       iid: merge_request.iid,
-      canResolveDiscussion: merge_request.resolvable_discussions.first&.can_resolve_discussion?(current_user).to_s,
+      canResolveDiscussion: merge_request.resolvable_discussions.first&.can_resolve?(current_user).to_s,
       defaultBranchName: project.default_branch,
       projectPath: project.full_path,
       sourceProjectPath: merge_request.source_project_path,

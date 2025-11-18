@@ -26,7 +26,7 @@ In the Agent Platform, sessions are created when you:
 
 Sessions are not created when:
 
-- You use Agentic Duo Chat in VS Code or the GitLab UI.
+- You use GitLab Duo Chat (Agentic) in VS Code or the GitLab UI.
 - You invoke a custom flow from the GitLab Duo Chat UI.
 
 ## View the sessions for your project

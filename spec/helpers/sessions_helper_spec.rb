@@ -106,6 +106,46 @@ RSpec.describe SessionsHelper, feature_category: :system_access do
     end
   end
 
+  describe '#render_email_otp_fallback_for_totp?' do
+    let(:user) { build_stubbed(:user) }
+
+    context 'when fallback_to_email_otp is not permitted' do
+      before do
+        allow(helper).to receive(:fallback_to_email_otp_permitted?).with(user).and_return(false)
+      end
+
+      it 'returns false' do
+        expect(helper.render_email_otp_fallback_for_totp?(user)).to be false
+      end
+    end
+
+    context 'when fallback_to_email_otp is permitted' do
+      before do
+        allow(helper).to receive(:fallback_to_email_otp_permitted?).with(user).and_return(true)
+      end
+
+      context 'when user has webauthn enabled' do
+        before do
+          allow(user).to receive(:two_factor_webauthn_enabled?).and_return(true)
+        end
+
+        it 'returns false' do
+          expect(helper.render_email_otp_fallback_for_totp?(user)).to be false
+        end
+      end
+
+      context 'when user does not have webauthn enabled' do
+        before do
+          allow(user).to receive(:two_factor_webauthn_enabled?).and_return(false)
+        end
+
+        it 'returns true' do
+          expect(helper.render_email_otp_fallback_for_totp?(user)).to be true
+        end
+      end
+    end
+  end
+
   describe '#fallback_to_email_otp_permitted?' do
     let(:user) { build_stubbed(:user) }
 
@@ -142,15 +182,13 @@ RSpec.describe SessionsHelper, feature_category: :system_access do
         end
       end
 
-      context 'when user is locked' do
-        let(:user) do
-          # rubocop:disable RSpec/FactoryBot/AvoidCreate -- We need to create the user to access db and lock it
-          create(:user, :locked, email_otp_required_after: Time.zone.today - 1.day)
-          # rubocop:enable RSpec/FactoryBot/AvoidCreate
+      context 'when user is treated as locked by having an unlock token' do
+        before do
+          allow(user).to receive(:unlock_token).and_return('1234')
         end
 
         it 'returns false' do
-          expect(helper.fallback_to_email_otp_permitted?(user)).to be false
+          expect(helper.fallback_to_email_otp_permitted?(user)).to be_falsy
         end
       end
 
@@ -265,7 +303,7 @@ RSpec.describe SessionsHelper, feature_category: :system_access do
         expect(data[:email_verification_data]).to be_present
         parsed_data = Gitlab::Json.parse(data[:email_verification_data])
         expect(parsed_data['username']).to eq(user.username)
-        expect(parsed_data['obfuscatedEmail']).to eq('u***@example.com')
+        expect(parsed_data['obfuscated_email']).to eq('u***@example.com')
       end
     end
 

@@ -6,7 +6,7 @@ description: Gateway between GitLab and large language models.
 title: Install the GitLab AI gateway
 ---
 
-The [AI gateway](../user/gitlab_duo/gateway.md)
+The [AI gateway](../administration/gitlab_duo/gateway.md)
 is a combination of two services that give access to AI-native GitLab Duo features:
 
 - AI Gateway service
@@ -531,7 +531,7 @@ For information on alternative ways to install the AI gateway, see
 
 ## Health check and debugging
 
-To debug issues with your self-hosted Duo installation, run the following command:
+To debug issues with your GitLab Duo Self-Hosted installation, run the following command:
 
 ```shell
 sudo gitlab-rake gitlab:duo:verify_self_hosted_setup
@@ -540,7 +540,7 @@ sudo gitlab-rake gitlab:duo:verify_self_hosted_setup
 Ensure that:
 
 - The AI gateway URL is correctly configured (through `Ai::Setting.instance.ai_gateway_url`).
-- Duo access has been explicitly enabled for the root user through `/admin/code_suggestions`.
+- GitLab Duo access has been explicitly enabled for the root user through `/admin/code_suggestions`.
 
 If access issues persist, check that authentication is correctly configured, and that the health check passes.
 
@@ -552,7 +552,7 @@ These tests are performed for offline environments:
 
 | Test | Description |
 |-----------------|-------------|
-| Network | Tests whether: <br>- The AI gateway URL has been properly configured in the database through the `ai_settings` table.<br> - Your instance can connect to the configured URL.<br><br>If your instance cannot connect to the URL, ensure that your firewall or proxy server settings [allow connection](../user/gitlab_duo/setup.md). Although the environment variable `AI_GATEWAY_URL` is still supported for legacy compatibility, configuring the URL through the database is recommended for better manageability. |
+| Network | Tests whether: <br>- The AI gateway URL has been properly configured in the database through the `ai_settings` table.<br> - Your instance can connect to the configured URL.<br><br>If your instance cannot connect to the URL, ensure that your firewall or proxy server settings [allow connection](../administration/gitlab_duo/setup.md). Although the environment variable `AI_GATEWAY_URL` is still supported for legacy compatibility, configuring the URL through the database is recommended for better manageability. |
 | License | Tests whether your license has the ability to access Code Suggestions feature. |
 | System exchange | Tests whether Code Suggestions can be used in your instance. If the system exchange assessment fails, users might not be able to use GitLab Duo features. |
 
@@ -634,7 +634,7 @@ You can deploy a single AI gateway to support multiple GitLab instances, or depl
 
 The AI gateway is available in multiple regions globally to ensure optimal performance for users regardless of location, through:
 
-- Improved response times for Duo features.
+- Improved response times for GitLab Duo features.
 - Reduced latency for geographically distributed users.
 - Data sovereignty requirements compliance.
 

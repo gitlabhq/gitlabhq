@@ -64,33 +64,12 @@ describe('TwoFactorEmailFallback', () => {
     });
   });
 
-  describe('when showEmailVerification is true', () => {
-    beforeEach(() => {
-      createComponent();
-      wrapper.vm.showEmailVerification = true;
-    });
-
-    it('hides footer and shows email verification', async () => {
-      await nextTick();
-
-      expect(findEmailOtpFallbackFooter().exists()).toBe(false);
-      expect(findEmailVerification().exists()).toBe(true);
-    });
-
-    it('passes email verification data to component', async () => {
-      await nextTick();
-      const emailVerification = findEmailVerification();
-
-      expect(emailVerification.props()).toMatchObject(defaultProps.emailVerificationData);
-    });
-  });
-
   describe('when emailVerificationData is null', () => {
     beforeEach(() => {
       createComponent({ emailVerificationData: null });
     });
 
-    it('does not show email verification component', async () => {
+    it('does not show anything', async () => {
       await nextTick();
 
       expect(findEmailVerification().exists()).toBe(false);
@@ -112,6 +91,9 @@ describe('TwoFactorEmailFallback', () => {
       expect(wrapper.vm.showEmailVerification).toBe(true);
 
       await nextTick();
+      const emailVerification = findEmailVerification();
+      expect(emailVerification.props()).toMatchObject(defaultProps.emailVerificationData);
+
       expect(findEmailVerification().exists()).toBe(true);
       expect(findEmailOtpFallbackFooter().exists()).toBe(false);
     });

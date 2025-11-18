@@ -7,6 +7,7 @@ RSpec.describe 'Create a work item', feature_category: :team_planning do
 
   let_it_be(:group) { create(:group) }
   let_it_be(:project) { create(:project, group: group) }
+  let_it_be(:guest) { create(:user, guest_of: group) }
   let_it_be(:developer) { create(:user, developer_of: group) }
 
   let(:work_item_create_type) { WorkItems::Type.default_by_type(:task) }
@@ -797,6 +798,19 @@ RSpec.describe 'Create a work item', feature_category: :team_planning do
       GRAPHQL
     end
 
+    shared_examples 'returns unauthorized access error' do
+      it 'returns an error' do
+        post_graphql_mutation(mutation, current_user: current_user)
+
+        expect(graphql_errors).to contain_exactly(
+          hash_including(
+            'message' => "The resource that you are attempting to access does not exist or you don't " \
+              'have permission to perform this action'
+          )
+        )
+      end
+    end
+
     context 'when a noteable that is not a merge reques is specified' do
       let(:resolve_discussion_arguments) do
         {
@@ -830,16 +844,33 @@ RSpec.describe 'Create a work item', feature_category: :team_planning do
           .and(change { WorkItem.count }.by(1))
       end
 
-      context 'when user cannot resolve discussions' do
-        it 'returns an error' do
-          post_graphql_mutation(mutation, current_user: create(:user, guest_of: project))
+      context 'with internal notes' do
+        before_all do
+          discussion_note1.confidential = true
+          discussion_note2.confidential = true
+        end
 
-          expect(graphql_errors).to contain_exactly(
-            hash_including(
-              'message' => "The resource that you are attempting to access does not exist or you don't " \
-                'have permission to perform this action'
-            )
-          )
+        it 'resolves all discussions for the MR' do
+          expect do
+            post_graphql_mutation(mutation, current_user: current_user)
+          end.to change { discussion_note1.reload.resolved? }.from(false).to(true)
+            .and(change { discussion_note1.reload.resolved? }.from(false).to(true))
+            .and(change { WorkItem.count }.by(1))
+        end
+      end
+
+      context 'when user cannot resolve discussions' do
+        let(:current_user) { guest }
+
+        it_behaves_like 'returns unauthorized access error'
+
+        context 'with internal notes' do
+          before_all do
+            discussion_note1.confidential = true
+            discussion_note2.confidential = true
+          end
+
+          it_behaves_like 'returns unauthorized access error'
         end
       end
     end
@@ -862,6 +893,36 @@ RSpec.describe 'Create a work item', feature_category: :team_planning do
           .and(not_change { discussion_note2.reload.resolved? }.from(false))
           .and(not_change { discussion_reply2.reload.resolved? }.from(false))
           .and(change { WorkItem.count }.by(1))
+      end
+
+      context 'with internal notes' do
+        before_all do
+          discussion_note1.confidential = true
+        end
+
+        it 'resolves only the specified discussion' do
+          expect do
+            post_graphql_mutation(mutation, current_user: current_user)
+          end.to change { discussion_note1.reload.resolved? }.from(false).to(true)
+            .and(change { discussion_reply1.reload.resolved? }.from(false).to(true))
+            .and(not_change { discussion_note2.reload.resolved? }.from(false))
+            .and(not_change { discussion_reply2.reload.resolved? }.from(false))
+            .and(change { WorkItem.count }.by(1))
+        end
+      end
+
+      context 'when user cannot resolve discussions' do
+        let(:current_user) { guest }
+
+        it_behaves_like 'returns unauthorized access error'
+
+        context 'with internal notes' do
+          before_all do
+            discussion_note1.confidential = true
+          end
+
+          it_behaves_like 'returns unauthorized access error'
+        end
       end
     end
   end

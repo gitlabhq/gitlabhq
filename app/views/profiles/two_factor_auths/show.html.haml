@@ -3,8 +3,6 @@
 - page_title title, _('Account')
 - add_to_breadcrumbs _('Account'), profile_account_path
 - troubleshooting_link = link_to _('Try the troubleshooting steps here.'), help_page_path('user/profile/account/two_factor_authentication_troubleshooting.md'), target: '_blank', rel: 'noopener noreferrer'
--# TODO: Swap out for real passkeys once backend is complete
-- @passkeys = ['todo']
 
 - content_for :after_flash_content do
   - if @error

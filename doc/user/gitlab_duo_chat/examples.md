@@ -302,7 +302,7 @@ If the work item contains a large amount of text (more than 40,000 words), GitLa
 You can ask GitLab Duo Chat to explain selected code:
 
 1. Select some code in your IDE.
-1. In Duo Chat, type `/explain`.
+1. In GitLab Duo Chat, type `/explain`.
 
    ![Selecting code and asking GitLab Duo Chat to explain using the /explain slash command.](img/code_selection_duo_chat_v17_4.png)
 
@@ -455,7 +455,7 @@ Programming languages that require compiling the source code may throw cryptic e
 
 {{< /history >}}
 
-Add repository files to your Duo Chat conversations in VS Code or JetBrains IDEs
+Add repository files to your GitLab Duo Chat conversations in VS Code or JetBrains IDEs
 by typing `/include` and choosing the files.
 
 Prerequisites:
@@ -510,7 +510,7 @@ You cannot use [Quick Chat](_index.md#in-an-editor-window) to add files or ask q
 You can ask GitLab Duo Chat to refactor selected code:
 
 1. Select some code in your IDE.
-1. In Duo Chat, type `/refactor`.
+1. In GitLab Duo Chat, type `/refactor`.
 
 You can include additional instructions to be considered. For example:
 
@@ -557,7 +557,7 @@ For more information, see:
 You can ask GitLab Duo Chat to fix selected code:
 
 1. Select some code in your IDE.
-1. In Duo Chat, type `/fix`.
+1. In GitLab Duo Chat, type `/fix`.
 
 You can include additional instructions to be considered. For example:
 
@@ -598,7 +598,7 @@ You can include additional instructions to be considered. For example:
 You can ask GitLab Duo Chat to create tests for the selected code:
 
 1. Select some code in your IDE.
-1. In Duo Chat, type `/tests`.
+1. In GitLab Duo Chat, type `/tests`.
 
 You can include additional instructions to be considered. For example:
 
@@ -780,11 +780,11 @@ type `/reset` and select **Send**.
 
 In both cases, the conversation history will not be considered when you ask new questions.
 Starting a new conversation might help improve the answers when you switch contexts,
-because Duo Chat will not get confused by the unrelated conversations.
+because GitLab Duo Chat will not get confused by the unrelated conversations.
 
 ## GitLab Duo Chat slash commands
 
-Duo Chat has a list of universal, GitLab UI, and IDE commands, each of which is preceded by a slash (`/`).
+GitLab Duo Chat has a list of universal, GitLab UI, and IDE commands, each of which is preceded by a slash (`/`).
 
 Use the commands to quickly accomplish specific tasks.
 
@@ -808,7 +808,7 @@ Use the commands to quickly accomplish specific tasks.
 |---------|-------------------------------------------------------------------------------------------------------------------------------|
 | /new    | [Start a new conversation, but keep the previous conversations in the chat history](#delete-or-start-a-new-conversation)      |
 | /reset  | [Clear the chat window and reset the conversation](#delete-or-start-a-new-conversation)                                       |
-| /help   | Learn more about how Duo Chat works                                                                                           |
+| /help   | Learn more about how GitLab Duo Chat works                                                                                           |
 
 {{< alert type="note" >}}
 
@@ -831,7 +831,7 @@ On GitLab.com, in GitLab 17.10 and later, when having [multiple conversations](_
 
 {{< /history >}}
 
-These commands are dynamic and are available only in the GitLab UI when using Duo Chat:
+These commands are dynamic and are available only in the GitLab UI when using GitLab Duo Chat:
 
 | Command                | Purpose                                                                                                            | Area |
 | ---------------------- | ------------------------------------------------------------------------------------------------------------------ | ---- |
@@ -855,7 +855,7 @@ These commands are dynamic and are available only in the GitLab UI when using Du
 
 {{< /history >}}
 
-These commands work only when using Duo Chat in supported IDEs:
+These commands work only when using GitLab Duo Chat in supported IDEs:
 
 | Command   | Purpose                                           |
 |-----------|---------------------------------------------------|

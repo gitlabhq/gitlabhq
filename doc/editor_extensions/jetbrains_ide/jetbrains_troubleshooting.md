@@ -151,7 +151,7 @@ Gather this information from affected users, and provide it in your bug report:
 1. Describe how other GitLab Duo features are affected:
    - Is GitLab Quick Chat functional?
    - Is Code Suggestions working?
-   - Does Web IDE Duo Chat return responses?
+   - Does GitLab Duo Chat in the Web IDE return responses?
 1. Perform extension isolation testing. Try disabling (or uninstalling) all other extensions to determine
    if another extension is causing the issue. This helps determine if the problem is with our extension,
    or from an external source.

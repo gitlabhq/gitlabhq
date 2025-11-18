@@ -102,7 +102,7 @@ Logging in the `application.json`, `production_json.log`, and `production.log` f
 
 ### Logging Control
 
-You control a subset of these logs by turning [AI Logs](#enable-logging) on and off through the Duo settings page. Turning AI logs off disables logging for specific operations.
+You control a subset of these logs by turning [AI Logs](#enable-logging) on and off through the GitLab Duo settings page. Turning AI logs off disables logging for specific operations.
 
 ### The `llm.log` file
 

@@ -47,10 +47,10 @@ effective.
 
 For some vulnerabilities detected by SAST, GitLab can:
 
-- [Explain the vulnerability](../vulnerabilities/_index.md#vulnerability-explanation), using GitLab
-  Duo Chat.
-- [Resolve the vulnerability](../vulnerabilities/_index.md#vulnerability-resolution), using GitLab
-  Duo Chat.
+- [Explain the vulnerability](../vulnerabilities/_index.md#vulnerability-explanation) by using
+  GitLab Duo Chat.
+- [Resolve the vulnerability](../vulnerabilities/_index.md#vulnerability-resolution) by using
+  GitLab Duo Chat.
 - Provide the complete data path from input to the vulnerable line of code, if you're using
   GitLab Advanced SAST.
 

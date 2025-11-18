@@ -207,7 +207,7 @@ Use the imported files in your IDE to provide context about your code project. I
 
 You can control which project content is excluded as context for GitLab Duo. Use this to protect sensitive information such as password files and configuration files.
 
-For Duo Chat, excluded context is enforced within [GitLab Duo Chat (Agentic)](../gitlab_duo_chat/agentic_chat.md). Excluded context is not enforced within [GitLab Duo Chat (Classic)](../gitlab_duo_chat/_index.md).
+For GitLab Duo Chat, excluded context is enforced within [GitLab Duo Chat (Agentic)](../gitlab_duo_chat/agentic_chat.md). Excluded context is not enforced within [GitLab Duo Chat (Classic)](../gitlab_duo_chat/_index.md).
 
 ### Manage GitLab Duo context exclusions
 

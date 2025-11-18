@@ -152,7 +152,7 @@ In addition to managing your storage usage you can consider these options for in
   - GitLab for Education
   - GitLab for Open Source
   - GitLab for Startups
-- Consider a [GitLab Self-Managed subscription](../subscriptions/self_managed/_index.md), which does not have storage limits.
+- Consider a [GitLab Self-Managed subscription](../subscriptions/manage_subscription.md), which does not have storage limits.
 - [Talk to an expert](https://page.gitlab.com/usage_limits_help.html) for more information about your options.
 
 ## Purchase more storage

@@ -157,7 +157,12 @@ module Mutations
             _('Only Merge Requests are allowed as a noteable to resolve discussions of at the moment.')
         end
 
-        raise_resource_not_available_error! unless current_user.can?(:resolve_note, noteable)
+        if discussion_attributes[:discussion_id].present?
+          discussion = noteable.find_discussion(discussion_attributes[:discussion_id])
+          raise_resource_not_available_error! unless discussion&.can_resolve?(current_user)
+        else
+          raise_resource_not_available_error! unless noteable.discussions_can_be_resolved_by?(current_user)
+        end
 
         attributes[:discussion_to_resolve] = discussion_attributes[:discussion_id]
         attributes[:merge_request_to_resolve_discussions_object] = noteable

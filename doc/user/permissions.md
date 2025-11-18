@@ -173,7 +173,7 @@ Group permissions for [group features](group/_index.md):
 | Archive group                                                                               |       |         |          |           |            |   ✓   |
 | Delete group                                                                                |       |         |          |           |            |   ✓   |
 | Transfer group                                                                              |       |         |          |           |            |   ✓   |
-| Manage [subscriptions, storage, and compute minutes](../subscriptions/gitlab_com/_index.md) |       |         |          |           |            |   ✓   |
+| Manage [subscriptions, storage, and compute minutes](../subscriptions/manage_users_and_seats.md#gitlabcom-billing-and-usage) |       |         |          |           |            |   ✓   |
 | Manage [group access tokens](group/settings/group_access_tokens.md)                         |       |         |          |           |            |   ✓   |
 | Change group visibility level                                                               |       |         |          |           |            |   ✓   |
 | Edit group settings                                                                         |       |         |          |           |            |   ✓   |

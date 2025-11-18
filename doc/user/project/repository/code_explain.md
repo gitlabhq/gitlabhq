@@ -49,7 +49,7 @@ To explain the code in a file:
 
    ![File view showing selected lines and the question mark icon which you can use to explain the code.](img/explain_code_v17_1.png)
 
-Duo Chat explains the code. It might take a moment for the explanation to be generated.
+GitLab Duo Chat explains the code. It might take a moment for the explanation to be generated.
 
 If you'd like, you can provide feedback about the quality of the explanation.
 

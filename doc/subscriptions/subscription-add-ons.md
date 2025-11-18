@@ -180,7 +180,7 @@ The user is sent a confirmation email.
   This flag is enabled by default.
 
 After you assign seats,
-[ensure GitLab Duo is set up for your GitLab Self-Managed instance](../user/gitlab_duo/setup.md).
+[ensure GitLab Duo is set up for your GitLab Self-Managed instance](../administration/gitlab_duo/setup.md).
 
 ## Assign and remove GitLab Duo seats in bulk
 
@@ -228,10 +228,10 @@ You can automatically assign and remove GitLab Duo seats for LDAP-enabled users 
 
 To enable this functionality, you must [configure the `duo_add_on_groups` property](../administration/auth/ldap/ldap_synchronization.md#gitlab-duo-add-on-for-groups) in your LDAP settings.
 
-When `duo_add_on_groups` is configured, it becomes the single source of truth for Duo seat management among LDAP-enabled users.
+When `duo_add_on_groups` is configured, it becomes the single source of truth for GitLab Duo seat management among LDAP-enabled users.
 For more information, see [seat assignment workflow](../administration/duo_add_on_seat_management_with_ldap.md#seat-management-workflow).
 
-This automated process ensures that Duo seats are efficiently allocated based on your organization's LDAP group structure.
+This automated process ensures that GitLab Duo seats are efficiently allocated based on your organization's LDAP group structure.
 For more information, see [GitLab Duo add-on seat management with LDAP](../administration/duo_add_on_seat_management_with_ldap.md).
 
 ## View assigned GitLab Duo users

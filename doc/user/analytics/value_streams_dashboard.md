@@ -451,10 +451,10 @@ along with their descriptions and the name of the drill-down report where they a
 | Pipeline success rate              | The percentage of pipelines that completed successfully. | CI/CD analytics | `pipeline_success_rate` |
 | Pipeline failure rate              | The percentage of pipelines that failed. | CI/CD analytics | `pipeline_failed_rate` |
 | Duo features usage                 | Number of contributors who used any GitLab Duo feature. |  | `duo_used_count` |
-| Code Suggestions usage             | Users with assigned Duo seats who used at least one Duo feature. |  | `code_suggestions_usage_rate` |
+| Code Suggestions usage             | Users with assigned GitLab Duo seats who used at least one GitLab Duo feature. |  | `code_suggestions_usage_rate` |
 | Code Suggestions acceptance rate   | Code Suggestions accepted out of total Code Suggestions generated. |  | `code_suggestions_acceptance_rate` |
-| Duo Chat usage                     | Users with assigned Duo seats who used Duo Chat. |  | `duo_chat_usage_rate` |
-| Duo RCA usage                      | Users with assigned Duo seats who used Root Cause Analysis. |  | `duo_rca_usage_rate` |
+| Duo Chat usage                     | Users with assigned GitLab Duo seats who used GitLab Duo Chat. |  | `duo_chat_usage_rate` |
+| Duo RCA usage                      | Users with assigned GitLab Duo seats who used Root Cause Analysis. |  | `duo_rca_usage_rate` |
 
 ## Metrics with Jira
 

@@ -593,7 +593,7 @@ Now, you will use Chat to help implement validation rules for the `Article` clas
 
    If needed, use the `/explain` Slash command to understand any additional techniques.
 
-You've used Duo Chat to implement data validation for the `Article` class.
+You've used GitLab Duo Chat to implement data validation for the `Article` class.
 
 Next you'll use Code Suggestions to improve error handling in the routes.
 

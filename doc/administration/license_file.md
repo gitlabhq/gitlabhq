@@ -100,7 +100,7 @@ For example, if a license has a start date of January 1, 2024 and an end date of
 
 To remove the read-only state and resume functionality, [renew your subscription](../subscriptions/manage_subscription.md#renew-manually).
 
-If the license has been expired for more than 30 days, you must purchase a [new subscription](../subscriptions/self_managed/_index.md) to resume functionality.
+If the license has been expired for more than 30 days, you must purchase a [new subscription](../subscriptions/manage_subscription.md) to resume functionality.
 
 To go back to Free features, [delete all expired licenses](#remove-a-license).
 
@@ -127,7 +127,7 @@ the current date range is the active license.
 When you add a future-dated license, it doesn't take effect until its applicable date.
 You can view all active subscriptions in the **Subscription history** table.
 
-You can also [export](../subscriptions/self_managed/_index.md) your license usage information to a CSV file.
+You can also [export](../subscriptions/manage_subscription.md) your license usage information to a CSV file.
 
 ## License commands in the Rails console
 
@@ -248,7 +248,7 @@ This issue might occur if:
 - You're running GitLab Community Edition. Before you add your license, you
   must upgrade to Enterprise Edition.
 - You're using GitLab.com. You cannot add a GitLab Self-Managed license to GitLab.com.
-  To use paid features on GitLab.com, [purchase a separate subscription](../subscriptions/gitlab_com/_index.md).
+  To use paid features on GitLab.com, [purchase a separate subscription](../subscriptions/manage_users_and_seats.md#gitlabcom-billing-and-usage).
 
 ### Users exceed license limit upon renewal
 

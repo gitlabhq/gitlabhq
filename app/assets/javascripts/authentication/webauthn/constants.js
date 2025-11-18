@@ -3,7 +3,7 @@ import { helpPagePath } from '~/helpers/help_page_helper';
 
 export const I18N_BUTTON_REGISTER = __('Register device');
 export const I18N_BUTTON_SETUP = __('Set up new device');
-export const I18N_BUTTON_TRY_AGAIN = __('Try again?');
+export const I18N_BUTTON_TRY_AGAIN = __('Try again');
 export const I18N_DEVICE_NAME = __('Device name');
 export const I18N_DEVICE_NAME_DESCRIPTION = __(
   'Excluding USB security keys, you should include the browser name together with the device name.',

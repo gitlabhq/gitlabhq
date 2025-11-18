@@ -120,7 +120,7 @@ raise an issue on the issue tracker.
 
 When you [run a health check for GitLab Duo](../../administration/gitlab_duo/setup.md#run-a-health-check-for-gitlab-duo), you might get an error like a `401 response from the AI gateway`.
 
-To resolve, first check if GitLab Duo features are functioning correctly. For example, send a message to Duo Chat.
+To resolve, first check if GitLab Duo features are functioning correctly. For example, send a message to GitLab Duo Chat.
 
 If this does not work, the error might be because of a known issue with GitLab Duo health check. For more information, see [issue 517097](https://gitlab.com/gitlab-org/gitlab/-/issues/517097).
 
@@ -396,7 +396,7 @@ If no logs are generated in the **AI gateway server**, follow these steps to tro
 
 ## SSL certificate errors and key de-serialization issues in the AI gateway Container
 
-When attempting to initiate a Duo Chat inside the AI gateway container, SSL certificate errors and key deserialization issues may occur.
+When attempting to initiate a GitLab Duo Chat inside the AI gateway container, SSL certificate errors and key deserialization issues may occur.
 
 The system might encounter issues loading the PEM file, resulting in errors like:
 

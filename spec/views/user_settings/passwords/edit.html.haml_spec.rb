@@ -5,8 +5,8 @@ require 'spec_helper'
 RSpec.describe 'user_settings/passwords/edit.html.haml', feature_category: :system_access do
   include SafeFormatHelper
 
-  let_it_be(:user_with_passkeys) { create(:user, :two_factor_via_webauthn) } # rubocop:disable RSpec/FactoryBot/AvoidCreate -- User is needed
-  let_it_be(:user_without_passkeys) { build_stubbed(:user) }
+  let_it_be(:user_with_passkeys) { create(:user, :with_passkey) } # rubocop:disable RSpec/FactoryBot/AvoidCreate -- trait works after :create
+  let_it_be(:user_without_passkeys) { build_stubbed(:user, :two_factor) }
 
   context 'when the user has a passkey' do
     before do

@@ -55,7 +55,7 @@ We will install GitLab, GitLab AI Gateway and Ollama each in their own separate 
 | **AI Gateway** | e2-medium     | t2.medium   | Ubuntu 24 | 20 GB    |
 | **Ollama**     | n1-standard-4 | g4dn.xlarge | Ubuntu 24 | 50 GB    |
 
-For more information about the component and its purpose, see [AI Gateway](../../user/gitlab_duo/gateway.md).
+For more information about the component and its purpose, see [AI Gateway](../../administration/gitlab_duo/gateway.md).
 
 ```mermaid
 %%{init: { "fontFamily": "GitLab Sans" }}%%

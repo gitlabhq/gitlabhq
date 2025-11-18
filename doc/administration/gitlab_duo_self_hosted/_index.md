@@ -66,7 +66,7 @@ The following tables state:
 
 You must have the GitLab Duo Enterprise add-on to use these features with GitLab Duo Self-Hosted.
 This applies even if you can use these features with GitLab Duo Core or GitLab Duo Pro
-when GitLab hosts and connects to those models through the cloud-based [AI gateway](../../user/gitlab_duo/gateway.md).
+when GitLab hosts and connects to those models through the cloud-based [AI gateway](../../administration/gitlab_duo/gateway.md).
 
 {{< /alert >}}
 
@@ -105,7 +105,7 @@ For more examples of a question you can ask, see
 | Feature                                                                                                                          | Available on GitLab Duo Self-Hosted         | GitLab version         | Status |
 | -------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------- | ---------------------- | --- |
 | [Issue Description Generation](../../user/project/issues/managing_issues.md#populate-an-issue-with-issue-description-generation) | {{< icon name="dash-circle" >}} No  | Not applicable   | Not applicable |
-| [Discussion Summary](../../user/discussions/_index.md#summarize-issue-discussions-with-duo-chat)                           | {{< icon name="check-circle-filled" >}} Yes | GitLab 18.1.2 and later | Beta |
+| [Discussion Summary](../../user/discussions/_index.md#summarize-issue-discussions-with-gitlab-duo-chat)                           | {{< icon name="check-circle-filled" >}} Yes | GitLab 18.1.2 and later | Beta |
 
 ### Other features
 
@@ -234,7 +234,7 @@ offering a ready-to-use AI solution without the need for on-premise infrastructu
 
 For more information, see the [GitLab.com AI gateway configuration diagram](configuration_types.md#gitlabcom-ai-gateway).
 
-To set up this infrastructure, see [how to configure GitLab Duo on a GitLab Self-Managed instance](../../user/gitlab_duo/setup.md).
+To set up this infrastructure, see [how to configure GitLab Duo on a GitLab Self-Managed instance](../../administration/gitlab_duo/setup.md).
 
 ## Set up a GitLab Duo Self-Hosted infrastructure
 

@@ -71,7 +71,7 @@ Installs GitLab and its components from scratch.
 
 Use if none of the previous methods are available for your platform. Can use for unsupported systems like \*BSD.
 
-For more information, see [self-compiled installation](installation.md).
+For more information, see [self-compiled installation](self_compiled/_index.md).
 
 ## GitLab Environment Toolkit (GET)
 
@@ -83,7 +83,7 @@ This installation methods has some [limitations](https://gitlab.com/gitlab-org/g
 
 ## Unsupported Linux distributions and Unix-like operating systems
 
-[Self-compiled installation](installation.md) of GitLab on the following operating systems is possible, but not supported:
+[Self-compiled installation](self_compiled/_index.md) of GitLab on the following operating systems is possible, but not supported:
 
 - Arch Linux
 - FreeBSD

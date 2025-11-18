@@ -76,6 +76,30 @@ RSpec.describe Projects::DiscussionsController, feature_category: :team_planning
 
         expect(response).to have_gitlab_http_status(:not_found)
       end
+
+      context 'when user is the issuable author' do
+        let_it_be(:project) { create(:project, :public) }
+        let_it_be(:issue) { create(:issue, project: project, author: user) }
+        let_it_be(:note, reload: true) { create(:discussion_note_on_issue, confidential: true, noteable: issue, project: project) }
+
+        let(:request_params) do
+          {
+            namespace_id: project.namespace,
+            project_id: project,
+            noteable_type: 'issues',
+            noteable_id: issue,
+            id: note.discussion_id
+          }
+        end
+
+        context 'with confidential discussion' do
+          it "returns status 404" do
+            post :resolve, params: request_params
+
+            expect(response).to have_gitlab_http_status(:not_found)
+          end
+        end
+      end
     end
 
     context "when the user is authorized to resolve the discussion" do
@@ -132,6 +156,17 @@ RSpec.describe Projects::DiscussionsController, feature_category: :team_planning
           post :resolve, params: request_params
         end
 
+        context 'with confidential discussion' do
+          let_it_be(:note, reload: true) { create(:discussion_note_on_merge_request, :confidential, noteable: merge_request, project: project) }
+
+          it 'resolves the discussion and returns status 200' do
+            post :resolve, params: request_params
+
+            expect(note.reload.resolved_at).not_to be_nil
+            expect(response).to have_gitlab_http_status(:ok)
+          end
+        end
+
         context 'diff discussion' do
           let(:note) { create(:diff_note_on_merge_request, noteable: merge_request, project: project) }
 
@@ -161,6 +196,17 @@ RSpec.describe Projects::DiscussionsController, feature_category: :team_planning
 
           expect(note.reload.resolved_at).not_to be_nil
           expect(response).to have_gitlab_http_status(:ok)
+        end
+
+        context 'with confidential discussion' do
+          let_it_be(:note, reload: true) { create(:discussion_note_on_issue, :confidential, noteable: issue, project: project) }
+
+          it 'resolves the discussion and returns status 200' do
+            post :resolve, params: request_params
+
+            expect(note.reload.resolved_at).not_to be_nil
+            expect(response).to have_gitlab_http_status(:ok)
+          end
         end
       end
     end

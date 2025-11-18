@@ -399,6 +399,27 @@ RSpec.describe NotePolicy, feature_category: :team_planning do
           it 'disallows noteable author to read and resolve all notes' do
             expect(permissions(author, internal_note)).to be_disallowed(:read_note, :resolve_note, :award_emoji, :mark_note_as_internal, :admin_note, :reposition_note)
           end
+
+          context 'when discussion is locked' do
+            before do
+              internal_note.noteable.update!(discussion_locked: true)
+            end
+
+            it 'does not allow noteable author to resolve internal notes' do
+              expect(permissions(author, internal_note)).to be_disallowed(:resolve_note)
+            end
+
+            it 'does not allow non-members to resolve internal notes' do
+              expect(permissions(non_member, internal_note)).to be_disallowed(:resolve_note)
+            end
+
+            it 'allows project members with developer+ role to resolve internal notes' do
+              expect(permissions(guest, internal_note)).to be_disallowed(:resolve_note)
+              expect(permissions(reporter, internal_note)).to be_disallowed(:resolve_note)
+              expect(permissions(developer, internal_note)).to be_allowed(:resolve_note)
+              expect(permissions(maintainer, internal_note)).to be_allowed(:resolve_note)
+            end
+          end
         end
 
         context 'for issues' do

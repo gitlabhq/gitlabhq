@@ -44,7 +44,7 @@ Please leave feedback in [issue 576622](https://gitlab.com/gitlab-org/gitlab/-/i
 Prerequisites:
 
 - You must be working in a project, not a group.
-- Foundational agents must be [turned on](../foundational_agents#controlling-foundational-agents-availability).
+- Foundational agents must be [turned on](_index.md#turn-foundational-agents-on-or-off).
 - During the beta, Planner Agent is in read-only mode.
 
 1. On the left sidebar, select **Search or go to** and find your project.

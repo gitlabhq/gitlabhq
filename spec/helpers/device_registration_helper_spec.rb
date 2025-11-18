@@ -15,6 +15,7 @@ RSpec.describe DeviceRegistrationHelper, feature_category: :system_access do
         {
           initial_error: nil,
           target_path: "/my/path",
+          two_factor_auth_path: "/-/profile/two_factor_auth",
           password_required: "false"
         })
     end
@@ -30,6 +31,7 @@ RSpec.describe DeviceRegistrationHelper, feature_category: :system_access do
         {
           initial_error: "my error",
           target_path: "/my/path",
+          two_factor_auth_path: "/-/profile/two_factor_auth",
           password_required: "true"
         })
     end

@@ -4445,6 +4445,24 @@ msgstr ""
 msgid "Add or subtract spent time"
 msgstr ""
 
+msgid "Add passkey|Add a name to help you identify the passkey later"
+msgstr ""
+
+msgid "Add passkey|Add passkey"
+msgstr ""
+
+msgid "Add passkey|Follow the instructions on your browser to add a passkey. %{link_start}Learn more about passkeys%{link_end}."
+msgstr ""
+
+msgid "Add passkey|Passkeys only works with HTTPS-enabled websites. Contact your administrator for more details."
+msgstr ""
+
+msgid "Add passkey|Verify your password to add the passkey"
+msgstr ""
+
+msgid "Add passkey|Your browser doesn't support passkeys."
+msgstr ""
+
 msgid "Add people"
 msgstr ""
 

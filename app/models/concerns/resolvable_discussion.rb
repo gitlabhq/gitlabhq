@@ -80,11 +80,8 @@ module ResolvableDiscussion
     resolvable? && !resolved?
   end
 
-  def can_resolve?(current_user)
-    return false unless current_user
-    return false unless resolvable?
-
-    current_user.can?(:resolve_note, self.noteable)
+  def can_resolve?(user)
+    resolvable? && Ability.allowed?(user, :resolve_note, first_note)
   end
 
   def resolve!(current_user)

@@ -38,7 +38,7 @@ User limits do not apply to users in the Free tier of:
     - GitLab for Open Source
     - GitLab for Education
     - GitLab for Startups
-- [GitLab Self-Managed subscriptions](../subscriptions/self_managed/_index.md)
+- [GitLab Self-Managed subscriptions](../subscriptions/manage_subscription.md)
 
 For more information, you can [talk to an expert](https://page.gitlab.com/usage_limits_help.html).
 

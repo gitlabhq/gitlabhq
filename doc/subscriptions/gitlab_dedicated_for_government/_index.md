@@ -62,7 +62,7 @@ GitLab Dedicated regularly backs up all datastores, including databases and Git 
 
 {{< /details >}}
 
-GitLab Dedicated supports [SAML](../../administration/dedicated/configure_instance/saml.md) and [OpenID Connect (OIDC)](../../administration/dedicated/configure_instance/openid_connect.md) providers for single sign-on (SSO).
+GitLab Dedicated supports [SAML](../../administration/dedicated/configure_instance/authentication/saml.md) and [OpenID Connect (OIDC)](../../administration/dedicated/configure_instance/authentication/openid_connect.md) providers for single sign-on (SSO).
 
 You can configure single sign-on (SSO) using the supported providers for authentication. Your instance acts as the service provider, and you provide the necessary configuration for GitLab to communicate with your Identity Providers (IdPs).
 

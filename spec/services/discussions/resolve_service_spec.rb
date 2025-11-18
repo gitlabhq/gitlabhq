@@ -3,6 +3,8 @@
 require 'spec_helper'
 
 RSpec.describe Discussions::ResolveService, feature_category: :code_review_workflow do
+  include DesignManagementTestHelpers
+
   describe '#execute' do
     let_it_be(:project) { create(:project, :repository) }
     let_it_be(:user) { create(:user, developer_of: project) }
@@ -137,14 +139,13 @@ RSpec.describe Discussions::ResolveService, feature_category: :code_review_workf
 
       context 'in a design' do
         let_it_be(:design) { create(:design, :with_file, issue: create(:issue, project: project)) }
-        let_it_be(:user_1) { create(:user) }
-        let_it_be(:user_2) { create(:user) }
+        let_it_be(:user_1) { create(:user, developer_of: project) }
+        let_it_be(:user_2) { create(:user, developer_of: project) }
         let_it_be(:discussion_1) { create(:diff_note_on_design, noteable: design, project: project, author: user_1).to_discussion }
         let_it_be(:discussion_2) { create(:diff_note_on_design, noteable: design, project: project, author: user_2).to_discussion }
 
         before do
-          project.add_developer(user_1)
-          project.add_developer(user_2)
+          enable_design_management
         end
 
         context 'when user resolving discussion has open todos' do

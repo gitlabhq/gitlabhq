@@ -8,12 +8,15 @@ class NotePolicy < BasePolicy
 
   condition(:is_author) { @user && @subject.author == @user }
   condition(:is_noteable_author) { @user && @subject.noteable.try(:author_id) == @user.id }
+  condition(:is_member) { parent_namespace&.member?(@user) }
 
   condition(:editable, scope: :subject) { @subject.editable? }
 
   condition(:can_read_noteable) { can?(:"read_#{@subject.noteable_ability_name}") }
   condition(:commit_is_deleted) { @subject.for_commit? && @subject.noteable.blank? }
   condition(:for_personal_snippet) { @subject.for_personal_snippet? }
+
+  condition(:discussion_locked) { @subject.noteable&.try(:discussion_locked?) }
 
   condition(:for_design) { @subject.for_design? }
 
@@ -54,6 +57,10 @@ class NotePolicy < BasePolicy
 
   rule { is_noteable_author & for_personal_snippet }.policy do
     enable :admin_note
+  end
+
+  rule { discussion_locked & ~is_member }.policy do
+    prevent :resolve_note
   end
 
   rule { ~is_visible }.policy do

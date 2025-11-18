@@ -365,7 +365,7 @@ such as:
 - Move open threads to a new issue.
 - Prevent merging until all threads are resolved.
 
-## Summarize issue discussions with Duo Chat
+## Summarize issue discussions with GitLab Duo Chat
 
 {{< details >}}
 

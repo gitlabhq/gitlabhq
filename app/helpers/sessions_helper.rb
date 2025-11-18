@@ -22,6 +22,10 @@ module SessionsHelper
     Gitlab::CurrentSettings.allow_user_remember_me?
   end
 
+  def render_email_otp_fallback_for_totp?(user)
+    fallback_to_email_otp_permitted?(user) && !user.two_factor_webauthn_enabled?
+  end
+
   def verification_data(user)
     permitted_to_skip = permitted_to_skip_email_otp_in_grace_period?(user)
 
@@ -31,19 +35,6 @@ module SessionsHelper
       verify_path: session_path(:user),
       resend_path: users_resend_verification_code_path,
       skip_path: permitted_to_skip ? users_skip_verification_for_now_path : nil
-    }
-  end
-
-  # Convert verification data to camelCase for JavaScript consumption
-  # also used by app/views/devise/shared/_totp_recovery_code_or_webauthn.html.haml
-  def verification_data_for_js(user)
-    data = verification_data(user)
-    {
-      username: data[:username],
-      obfuscatedEmail: data[:obfuscated_email],
-      verifyPath: data[:verify_path],
-      resendPath: data[:resend_path],
-      skipPath: data[:skip_path]
     }
   end
 
@@ -70,7 +61,7 @@ module SessionsHelper
     }
 
     # This is additional data needed to complete the email verification workflow
-    data[:email_verification_data] = verification_data_for_js(user).to_json if send_email_otp_path
+    data[:email_verification_data] = verification_data(user).to_json if send_email_otp_path
 
     data
   end

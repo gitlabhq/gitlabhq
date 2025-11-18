@@ -27,6 +27,7 @@ module Gitlab
       HISTORY_PATTERN = %r{\{\{<\s*history\s*>\}\}(.*?)\{\{<\s*/history\s*>\}\}}m
       MAINTAINED_VERSIONS_PATTERN = %r{\{\{<\s*maintained-versions\s*/?\s*>\}\}}
       COLLAPSIBLE_PATTERN = %r{\{\{<\s*collapsible\s+title="([^"]+)"\s*>\}\}(.*?)\{\{<\s*/collapsible\s*>\}\}}m
+      YES_NO_PATTERN = /\{\{<\s*(yes|no)\s*>\}\}/
 
       # Markdown heading constants
       HEADING_PATTERN = /^(\#{1,6})\s+[^\n]+$/m
@@ -51,6 +52,7 @@ module Gitlab
         handle_tab_shortcodes(processed_content)
         handle_maintained_versions_shortcodes(processed_content)
         handle_collapsible_shortcodes(processed_content)
+        handle_yes_no_shortcodes(processed_content)
         remove_generic_shortcodes(processed_content)
         clean_up_blank_lines(processed_content)
 
@@ -145,6 +147,13 @@ module Gitlab
           heading_level = find_next_heading_level(content, match_data.begin(0))
 
           "#{'#' * heading_level} #{title}\n\n#{collapsible_content}"
+        end
+        content
+      end
+
+      def handle_yes_no_shortcodes(content)
+        content.gsub!(YES_NO_PATTERN) do
+          ::Regexp.last_match(1)
         end
         content
       end

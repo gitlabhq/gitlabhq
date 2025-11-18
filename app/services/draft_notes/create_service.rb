@@ -65,10 +65,7 @@ module DraftNotes
     end
 
     def can_resolve_discussion?
-      note = discussion&.notes&.first
-      return false unless note
-
-      current_user && Ability.allowed?(current_user, :resolve_note, note)
+      discussion&.can_resolve?(current_user)
     end
   end
 end

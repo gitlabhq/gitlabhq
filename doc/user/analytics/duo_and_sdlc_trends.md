@@ -35,7 +35,7 @@ You can use the dashboard to measure which metrics have improved from your AI in
 
 Use GitLab Duo and SDLC trends to:
 
-- Track SDLC trends in relation to your Duo journey: Examine how trends in GitLab Duo usage in a project or group influence other crucial productivity metrics such as mean time to merge and CI/CD statistics. Duo usage metrics are displayed for the last six months, including the current one.
+- Track SDLC trends in relation to your GitLab Duo journey: Examine how trends in GitLab Duo usage in a project or group influence other crucial productivity metrics such as mean time to merge and CI/CD statistics. GitLab Duo usage metrics are displayed for the last six months, including the current one.
 - Monitor GitLab Duo feature adoption: Track the use of seats and features in a project or group over the last 30 days.
 
 To learn how you can optimize your license utilization,
@@ -52,10 +52,10 @@ For an overview, see [GitLab Duo AI Impact Dashboard](https://youtu.be/FxSWX64aU
 
 ## Key metrics
 
-- **Assigned Duo seat engagement**: Percentage of users that are assigned a Duo seat and used at least one AI feature in the last 30 days.
-It is calculated as the number of users with Duo seats that use AI features divided by the total number of assigned Duo seats.
-- **Code Suggestions usage**: Percentage of users with assigned Duo seats that used Code Suggestions in the last 30 days.
-It is calculated as the number of unique users with Duo seats that interact with Code Suggestions divided by the total number of unique code contributors (users with `pushed` events) with Duo seats.
+- **Assigned Duo seat engagement**: Percentage of users that are assigned a GitLab Duo seat and used at least one AI feature in the last 30 days.
+It is calculated as the number of users with GitLab Duo seats that use AI features divided by the total number of assigned GitLab Duo seats.
+- **Code Suggestions usage**: Percentage of users with assigned GitLab Duo seats that used Code Suggestions in the last 30 days.
+It is calculated as the number of unique users with GitLab Duo seats that interact with Code Suggestions divided by the total number of unique code contributors (users with `pushed` events) with GitLab Duo seats.
 For calculating Code Suggestions metrics, GitLab collects data only from code editor extensions.
 - **Code Suggestions acceptance rate**: Percentage of code suggestions provided by GitLab Duo that have been accepted by code contributors in the last 30 days.
 It is calculated as the number of accepted code suggestions divided by the total number of generated code suggestions.
@@ -66,7 +66,7 @@ It is calculated as the number of monthly unique GitLab Duo Chat users divided b
 
 The **Metric trends** table displays metrics for the last six months, with monthly values, percentage changes in the past six months, and trend sparklines.
 
-### Duo usage metrics
+### GitLab Duo usage metrics
 
 {{< history >}}
 
@@ -94,12 +94,12 @@ The **Metric trends** table displays metrics for the last six months, with month
 
   {{< /alert >}}
 
-- **Duo RCA usage**: Monthly user engagement with Duo Root Cause Analysis.
-  Tracks the percentage of Duo users who use GitLab Duo Chat to troubleshoot a failed CI/CD job from a merge request.
+- **Duo RCA usage**: Monthly user engagement with GitLab Duo Root Cause Analysis.
+  Tracks the percentage of GitLab Duo users who use GitLab Duo Chat to troubleshoot a failed CI/CD job from a merge request.
 
   {{< alert type="note" >}}
 
-  Usage rate for Duo RCA is calculated with data starting from GitLab 18.0.
+  Usage rate for GitLab Duo RCA is calculated with data starting from GitLab 18.0.
 
   {{< /alert >}}
 

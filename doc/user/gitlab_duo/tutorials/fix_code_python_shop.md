@@ -117,7 +117,7 @@ How you use Chat in your IDE differs depending on which IDE you use.
 1. In the chat pane, in the upper-right corner, select **Show Status** to show information
    in the Command Palette.
 
-You can also interact with Duo Chat while you're working with a subset of code.
+You can also interact with GitLab Duo Chat while you're working with a subset of code.
 
 1. In VS Code, open a file. The file does not need to be a file in a Git repository.
 1. In the file, select some code.
@@ -1420,7 +1420,7 @@ identify any issues that need to be fixed.
 
 <!-- markdownlint-disable -->
 <i class="fa-youtube-play" aria-hidden="true"></i>
-For more information, see [Using Duo /fix](https://youtu.be/agTqx__j6Ko?si=vpLfVvmFVcBivB1g).
+For more information, see [Using GitLab Duo /fix](https://youtu.be/agTqx__j6Ko?si=vpLfVvmFVcBivB1g).
 <!-- Video published on 2025-02-13 -->
 
 ## Related topics

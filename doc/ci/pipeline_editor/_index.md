@@ -187,7 +187,7 @@ a branch. The branch field defaults to your project's default branch.
 If you enter a new branch name, the **Start a new merge request with these changes**
 checkbox appears. Select it to start a new merge request after you commit the changes.
 
-![The commit form with a new branch](img/pipeline_editor_commit_v13_8.png)
+![The commit form, showing a commit message, branch, and merge request checkmark.](img/pipeline_editor_commit_v13_8.png)
 
 ## Editor accessibility options
 

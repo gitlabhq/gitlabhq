@@ -2,9 +2,7 @@
 
 require 'spec_helper'
 
-# rubocop:disable RSpec/FeatureCategory -- Help pages are not part of a feature category. This feature is supported by the Technical Writing team.
-RSpec.describe Gitlab::Help::HugoTransformer do
-  # rubocop:enable RSpec/FeatureCategory
+RSpec.describe Gitlab::Help::HugoTransformer, feature_category: :gitlab_docs do
   describe '#transform' do
     let(:transformer) { described_class.new }
 
@@ -513,6 +511,32 @@ RSpec.describe Gitlab::Help::HugoTransformer do
         - example 1
         - example 1 escaped backticks \`backticks\`
         ```
+      MARKDOWN
+
+      expect(transformer.transform(content).strip).to eq(expected_content.strip)
+    end
+
+    it 'handles yes / no shortcodes' do
+      content = <<~MARKDOWN
+        # Documentation
+
+        Is this feature available?
+
+        | feature 1 | feature 2 |
+        | --------- | --------- |
+        | {{< yes >}} | {{< no >}} |
+
+      MARKDOWN
+
+      expected_content = <<~MARKDOWN
+        # Documentation
+
+        Is this feature available?
+
+        | feature 1 | feature 2 |
+        | --------- | --------- |
+        | yes | no |
+
       MARKDOWN
 
       expect(transformer.transform(content).strip).to eq(expected_content.strip)
