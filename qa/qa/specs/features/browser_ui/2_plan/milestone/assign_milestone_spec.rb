@@ -3,7 +3,7 @@
 module QA
   RSpec.describe 'Plan', :smoke, feature_category: :team_planning do
     describe 'Milestones' do
-      include Support::Dates
+      include QA::Support::Dates
 
       let(:start_date) { current_date_yyyy_mm_dd }
       let(:due_date) { next_month_yyyy_mm_dd }
@@ -22,10 +22,7 @@ module QA
         it 'is assigned', testcase: testcase do
           issue.visit!
 
-          work_item_enabled = Page::Project::Issue::Show.perform(&:work_item_enabled?)
-          page_type = work_item_enabled ? Page::Project::WorkItem::Show : Page::Project::Issue::Show
-
-          page_type.perform do |existing_issue|
+          Page::Project::WorkItem::Show.perform do |existing_issue|
             existing_issue.assign_milestone(milestone)
 
             expect(existing_issue).to have_milestone(milestone.title)
@@ -37,16 +34,12 @@ module QA
         it 'is assigned', testcase: testcase do
           issue.visit!
 
-          work_item_enabled = Page::Project::Issue::Show.perform(&:work_item_enabled?)
-          resource_type = work_item_enabled ? Resource::WorkItem : Resource::Issue
-          page_type = work_item_enabled ? Page::Project::WorkItem::Show : Page::Project::Issue::Show
-
-          resource_type.fabricate_via_browser_ui! do |new_issue|
+          Resource::WorkItem.fabricate_via_browser_ui! do |new_issue|
             new_issue.project = project
             new_issue.milestone = milestone
           end
 
-          page_type.perform do |issue|
+          Page::Project::WorkItem::Show.perform do |issue|
             expect(issue).to have_milestone(milestone.title)
           end
         end

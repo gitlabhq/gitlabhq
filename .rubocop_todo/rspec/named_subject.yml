@@ -3024,7 +3024,6 @@ RSpec/NamedSubject:
     - 'spec/services/web_hooks/destroy_service_spec.rb'
     - 'spec/services/webauthn/destroy_service_spec.rb'
     - 'spec/services/wiki_pages/base_service_spec.rb'
-    - 'spec/services/wiki_pages/event_create_service_spec.rb'
     - 'spec/services/work_items/callbacks/award_emoji_spec.rb'
     - 'spec/services/work_items/export_csv_service_spec.rb'
     - 'spec/services/work_items/import_csv_service_spec.rb'

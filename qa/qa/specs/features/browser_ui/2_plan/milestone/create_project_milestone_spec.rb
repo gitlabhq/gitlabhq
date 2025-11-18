@@ -3,7 +3,7 @@
 module QA
   RSpec.describe 'Plan', :smoke, feature_category: :team_planning do
     describe 'Project milestone' do
-      include Support::Dates
+      include QA::Support::Dates
 
       let(:title) { 'Project milestone' }
       let(:description) { 'This issue tests out project milestones.' }

@@ -29,3 +29,6 @@ module QA
     end
   end
 end
+
+QA::Page::Project::Settings::VisibilityFeaturesPermissions.prepend_mod_with( # rubocop:disable Cop/InjectEnterpriseEditionModule -- Some reason
+  "Page::Project::Settings::VisibilityFeaturesPermissions", namespace: QA)

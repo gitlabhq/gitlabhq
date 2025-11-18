@@ -69,15 +69,7 @@ module QA
           # It accepts a `class:` option, but that only works for class attributes
           # It doesn't work as a CSS selector.
           # So instead we use the name attribute as a locator
-
-          if work_item_enabled?
-            page.attach_file("design_file", design_file_path, make_visible: { display: 'block' }, match: :first)
-
-          else
-            within_element('design-dropzone-content') do
-              page.attach_file("upload_file", design_file_path, make_visible: { display: 'block' })
-            end
-          end
+          page.attach_file("design_file", design_file_path, make_visible: { display: 'block' }, match: :first)
 
           filename = ::File.basename(design_file_path)
 
@@ -113,15 +105,11 @@ module QA
         end
 
         def has_design?(filename)
-          if work_item_enabled?
-            has_element?('design-item', text: filename)
-          else
-            has_element?('design-file-name', text: filename)
-          end
+          has_element?('design-item', text: filename)
         end
 
         def has_no_design?(filename)
-          has_no_element?('design-file-name', text: filename)
+          has_no_element?('design-item', text: filename)
         end
 
         def has_created_icon?

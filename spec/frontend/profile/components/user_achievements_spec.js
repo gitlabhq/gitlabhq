@@ -6,6 +6,7 @@ import getUserAchievementsLongResponse from 'test_fixtures/graphql/get_user_achi
 import getUserAchievementsResponse from 'test_fixtures/graphql/get_user_achievements_with_avatar_and_description_response.json';
 import getUserAchievementsPrivateGroupResponse from 'test_fixtures/graphql/get_user_achievements_from_private_group.json';
 import getUserAchievementsNoAvatarResponse from 'test_fixtures/graphql/get_user_achievements_without_avatar_or_description_response.json';
+import getUserAchievementsWithRelativeRootResponse from 'test_fixtures/graphql/get_user_achievements_with_relative_root_response.json';
 import createMockApollo from 'helpers/mock_apollo_helper';
 import waitForPromises from 'helpers/wait_for_promises';
 import UserAchievements from '~/profile/components/user_achievements.vue';
@@ -15,6 +16,7 @@ import { mountExtended } from 'helpers/vue_test_utils_helper';
 
 const USER_ID = 123;
 const ROOT_URL = 'https://gitlab.com/';
+const RELATIVE_ROOT_URL = 'https://gitlab.com/gitlab/';
 const PLACEHOLDER_URL = 'https://gitlab.com/assets/gitlab_logo.png';
 const userAchievement1 = getUserAchievementsResponse.data.user.userAchievements.nodes[0];
 
@@ -27,13 +29,16 @@ describe('UserAchievements', () => {
   const findUserAchievement = () => wrapper.findByTestId('user-achievement');
   const findAvatar = () => wrapper.findComponent(GlAvatar);
 
-  const createComponent = ({ queryHandler = getUserAchievementsQueryHandler } = {}) => {
+  const createComponent = ({
+    queryHandler = getUserAchievementsQueryHandler,
+    rootUrl = ROOT_URL,
+  } = {}) => {
     const fakeApollo = createMockApollo([[getUserAchievements, queryHandler]]);
 
     wrapper = mountExtended(UserAchievements, {
       apolloProvider: fakeApollo,
       provide: {
-        rootUrl: ROOT_URL,
+        rootUrl,
         userId: USER_ID,
       },
     });
@@ -118,5 +123,26 @@ describe('UserAchievements', () => {
     await waitForPromises();
 
     expect(wrapper.findAllByTestId('achievement-description')).toHaveLength(0);
+  });
+
+  it('constructs correct URL when using relative root', async () => {
+    window.gon = { relative_url_root: '/gitlab' };
+
+    createComponent({
+      queryHandler: jest.fn().mockResolvedValue(getUserAchievementsWithRelativeRootResponse),
+      rootUrl: RELATIVE_ROOT_URL,
+    });
+
+    await waitForPromises();
+
+    const {
+      achievement: {
+        namespace: { achievementsPath },
+      },
+    } = getUserAchievementsWithRelativeRootResponse.data.user.userAchievements.nodes[0];
+    const expectedHref = new URL(RELATIVE_ROOT_URL).origin + achievementsPath;
+
+    const link = findUserAchievement().find('a');
+    expect(link.attributes('href')).toBe(expectedHref);
   });
 });

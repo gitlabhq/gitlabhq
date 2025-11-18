@@ -17,10 +17,7 @@ module QA
           type: :flaky
         }
       ) do
-        work_item_enabled = Page::Project::Issue::Show.perform(&:work_item_enabled?)
-        page_type = work_item_enabled ? Page::Project::WorkItem::Show : Page::Project::Issue::Show
-
-        page_type.perform do |show|
+        Page::Project::WorkItem::Show.perform do |show|
           my_own_comment = "My own comment"
           made_the_issue_confidential = "made the issue confidential"
 

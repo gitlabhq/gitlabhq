@@ -16,3 +16,10 @@ tiers:
 - free
 - premium
 - ultimate
+extra_trackers:
+  - tracking_class: Gitlab::Tracking::ContributionAnalyticsTracking
+    protected_properties:
+      meta:
+        description: Wikipage meta object (WikiPage::Meta)
+      fingerprint:
+        description: SHA of the commit

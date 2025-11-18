@@ -118,6 +118,18 @@ gdk-instance-with-load-balancer:
     - !reference [".rules:test:never-schedule-pipeline", rules]
     - !reference [".rules:test:gdk-load-balancer-changes", rules]
 
+# Run E2E tests for Secrets Manager (requires OpenBao)
+gdk-instance-secrets-manager:
+  extends:
+    - .gdk-qa-base
+  variables:
+    QA_SCENARIO: Test::Integration::SecretsManager
+    QA_RSPEC_TAGS: --tag secrets_manager
+    WITH_SECRETS_MANAGER: "true"
+    QA_FEATURE_FLAGS: "secrets_manager=enabled"
+  rules:
+    - when: on_success
+
 # ==========================================
 # Post test stage
 # ==========================================

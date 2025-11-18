@@ -198,6 +198,11 @@
     }
   }
 
+  // Siderail agents selector icon
+  .ai-nav-icon-agents .gl-new-dropdown-icon-only {
+    border-radius: 100% !important;
+  }
+
   // Position for search overlay when Performance bar is visible
   &.with-performance-bar #super-sidebar-search-modal {
     padding-top: $performance-bar-height;

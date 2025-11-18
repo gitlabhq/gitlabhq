@@ -23,7 +23,7 @@ module RuboCop
       #
       #   # good - valid migration
       #   def disable_project_joins_for_blob?
-      #     Elastic::DataMigrationService.migration_has_finished?(:backfill_work_items_incorrect_data)
+      #     Elastic::DataMigrationService.migration_has_finished?(:valid_migration)
       #   end
 
       class AvoidCheckingFinishedOnInvalidMigrations < RuboCop::Cop::Base

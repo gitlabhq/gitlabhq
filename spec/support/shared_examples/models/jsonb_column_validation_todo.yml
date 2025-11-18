@@ -15,6 +15,7 @@
 - ApplicationSetting#token_prefixes
 - Ci::BuildMetadata#config_options
 - Ci::BuildMetadata#config_variables
+- Ci::JobDefinition#config
 - GeoNodeStatus#status
 - Geo::Event#payload
 - Geo::SecondaryUsageData#payload

@@ -4409,6 +4409,9 @@ msgstr ""
 msgid "Add new application"
 msgstr ""
 
+msgid "Add new chat"
+msgstr ""
+
 msgid "Add new comment template"
 msgstr ""
 
@@ -20455,6 +20458,9 @@ msgstr ""
 msgid "Created a branch and a merge request to resolve this issue."
 msgstr ""
 
+msgid "Created and maintained by GitLab"
+msgstr ""
+
 msgid "Created at"
 msgstr ""
 
@@ -22188,6 +22194,9 @@ msgid "Data refresh"
 msgstr ""
 
 msgid "Data type"
+msgstr ""
+
+msgid "Data updated"
 msgstr ""
 
 msgid "DataExplorer|// TYPE YOUR QUERY HERE"

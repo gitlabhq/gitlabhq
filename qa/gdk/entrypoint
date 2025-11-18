@@ -17,13 +17,18 @@ if [[ "${QA_GITALY_TRANSACTIONS_ENABLED}" == "true" ]]; then
   gdk reconfigure
 fi
 
+if [[ "${WITH_SECRETS_MANAGER}" == "true" ]]; then
+  gdk config set openbao.enabled true
+  gdk reconfigure
+fi
+
 # Split logs in to multiple files when running in CI
 if [ -z "$CI" ]; then
   gdk start
 
   exec "$@" | tee -a ${HOME}/gitlab-development-kit/gitlab/log/gdk-container.log
 else
-  logs=("gitaly" "gitlab-workhorse" "postgresql" "rails-background-jobs" "redis" "sshd" "vite" "rails-web" "sidekiq-cron" "webpack" "gitlab-http-router" "gitlab-topology-service")
+  logs=("gitaly" "gitlab-workhorse" "postgresql" "rails-background-jobs" "redis" "sshd" "vite" "rails-web" "sidekiq-cron" "webpack" "gitlab-http-router" "gitlab-topology-service" "openbao")
   for log in "${logs[@]}"; do
     gdk tail $log &>${CI_BUILDS_DIR}/gdk.${log}.log &
   done

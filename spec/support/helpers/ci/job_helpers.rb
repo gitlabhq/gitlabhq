@@ -23,7 +23,7 @@ module Ci
 
       new_job_definition.validate
       config_errors = new_job_definition.errors[:config]
-      raise ActiveRecord::RecordInvalid, config_errors.join(', ') if config_errors.any?
+      raise ActiveRecord::RecordInvalid, new_job_definition if config_errors.any?
 
       allow(job).to receive(:job_definition).and_return(new_job_definition)
     end

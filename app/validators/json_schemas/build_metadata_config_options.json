@@ -195,6 +195,9 @@
         "sast": {
           "$ref": "#/definitions/reportPath"
         },
+        "scip": {
+          "$ref": "#/definitions/reportPath"
+        },
         "secret_detection": {
           "$ref": "#/definitions/reportPath"
         },
@@ -387,6 +390,7 @@
           "type": "object",
           "additionalProperties": false,
           "properties": {
+            "alias": true,
             "entrypoint": true,
             "executor_opts": {
               "type": "object",

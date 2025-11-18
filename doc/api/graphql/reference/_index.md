@@ -1411,6 +1411,17 @@ Returns [`Note`](#note).
 | ---- | ---- | ----------- |
 | <a id="querynoteid"></a>`id` | [`NoteID!`](#noteid) | Global ID of the note. |
 
+### `Query.openbaoHealth`
+
+{{< details >}}
+**Introduced** in GitLab 18.7.
+**Status**: Experiment.
+{{< /details >}}
+
+Check if OpenBao instance is healthy and reachable.
+
+Returns [`Boolean!`](#boolean).
+
 ### `Query.organization`
 
 {{< details >}}

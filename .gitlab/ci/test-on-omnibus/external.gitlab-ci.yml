@@ -3,7 +3,7 @@
 
 include:
   - project: gitlab-org/quality/pipeline-common
-    ref: 11.6.1
+    ref: 11.17.0
     file:
       - /ci/base.gitlab-ci.yml
 

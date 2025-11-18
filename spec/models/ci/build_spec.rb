@@ -178,7 +178,7 @@ RSpec.describe Ci::Build, feature_category: :continuous_integration, factory_def
       it { expect(query).to be_empty }
 
       context 'when job definition has secure report options' do
-        let!(:build) { create(:ci_build, pipeline: pipeline, options: { artifacts: { reports: ['sast'] } }) }
+        let!(:build) { create(:ci_build, pipeline: pipeline, options: { artifacts: { reports: { sast: "gl-sast-report.json" } } }) }
 
         it { expect(query).to contain_exactly(build) }
       end
@@ -2822,7 +2822,7 @@ RSpec.describe Ci::Build, feature_category: :continuous_integration, factory_def
               allow(builder).to receive(:pipeline_variables_builder) { pipeline_variables_builder }
             end
 
-            stub_ci_job_definition(build, yaml_variables: [build_yaml_var])
+            stub_ci_job_definition(build, yaml_variables: [build_yaml_var.except(:masked)])
             allow(build).to receive(:persisted_variables) { [] }
             allow(build).to receive(:job_jwt_variables) { [job_jwt_var] }
             allow(build).to receive(:dependency_variables) { [job_dependency_var] }
@@ -4524,10 +4524,6 @@ RSpec.describe Ci::Build, feature_category: :continuous_integration, factory_def
 
   describe '#pages_generator?', feature_category: :pages do
     where(:name, :pages_config, :enabled, :result) do
-      'foo' | nil | false | false
-      'pages' | nil | false | false
-      'pages:preview' | nil | true | false
-      'pages' | nil | true | true
       'foo' | true | true | true
       'foo' | { expire_in: '1 day' } | true | true
       'foo' | false | true | false

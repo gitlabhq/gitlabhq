@@ -114,6 +114,23 @@ RSpec.describe 'Users (JavaScript fixtures)', feature_category: :user_profile do
 
         expect_graphql_errors_to_be_empty
       end
+
+      it "graphql/get_user_achievements_with_relative_root_response.json" do
+        achievement = create(
+          :achievement,
+          namespace: group,
+          name: 'Relative Root Test',
+          description: 'Testing relative root handling'
+        )
+        create(:user_achievement, user: user, achievement: achievement)
+
+        # generate fixture while temporarily setting relative_url_root so
+        # GraphQL resolvers produce paths that include the relative root
+        get_graphql_query_as_string(user_achievements_query_path, relative_url_root: '/gitlab') do |query|
+          post_graphql(query, current_user: user, variables: { id: user.to_global_id })
+          expect_graphql_errors_to_be_empty
+        end
+      end
     end
   end
 end

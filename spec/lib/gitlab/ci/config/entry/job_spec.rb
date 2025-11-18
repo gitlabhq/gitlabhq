@@ -897,7 +897,6 @@ RSpec.describe Gitlab::Ci::Config::Entry::Job, feature_category: :pipeline_compo
       :pages | {} | true
       :pages | { pages: false } | false
       :pages | { pages: true } | true
-      :pages | { pages: nil } | true
       :pages | { pages: { path_prefix: 'foo' } } | true
       :'pages:staging' | {} | false
       :'something:pages:else' | {} | false
@@ -906,7 +905,6 @@ RSpec.describe Gitlab::Ci::Config::Entry::Job, feature_category: :pipeline_compo
       :'something-else' | { pages: { path_prefix: 'foo' } } | true
       :'something-else' | { pages: { publish: '/some-folder' } } | true
       :'something-else' | { pages: false } | false
-      :'something-else' | { pages: nil } | false
     end
 
     with_them do

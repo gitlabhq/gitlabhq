@@ -31,10 +31,7 @@ module Ci
     belongs_to :project
 
     validates :project, presence: true
-
-    # rubocop:disable Database/JsonbSizeLimit -- no updates
-    validates :config, json_schema: { filename: 'ci_job_definitions_config' }
-    # rubocop:enable Database/JsonbSizeLimit
+    validate :validate_config_json_schema
 
     attribute :config, ::Gitlab::Database::Type::SymbolizedJsonb.new
 
@@ -74,6 +71,30 @@ module Ci
 
     def readonly?
       persisted?
+    end
+
+    def validate_config_json_schema
+      return if config.blank?
+      return if Feature.disabled?(:ci_job_definition_config_schema_validation, project)
+
+      validator = JsonSchemaValidator.new({
+        filename: 'ci_job_definition_config',
+        attributes: [:config],
+        detail_errors: true
+      })
+
+      validator.validate(self)
+      return if errors[:config].empty?
+
+      Gitlab::AppJsonLogger.warn(
+        class: self.class.name,
+        message: 'Invalid config schema detected',
+        job_definition_checksum: checksum,
+        project_id: project_id,
+        schema_errors: errors[:config]
+      )
+
+      errors.delete(:config) if Rails.env.production?
     end
   end
 end

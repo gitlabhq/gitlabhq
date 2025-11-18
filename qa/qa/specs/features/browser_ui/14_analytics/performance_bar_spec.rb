@@ -37,18 +37,13 @@ module QA
           # Issue pages always make AJAX requests
           issue.visit!
 
-          work_item_enabled = Page::Project::Issue::Show.perform(&:work_item_enabled?)
-          resource_type = work_item_enabled ? Resource::WorkItem : Resource::Issue
-
-          resource_type.fabricate_via_browser_ui! do |issue|
+          Resource::WorkItem.fabricate_via_browser_ui! do |issue|
             issue.title = 'Performance bar test'
           end
 
           Page::Layout::PerformanceBar.perform do |bar_component|
             expect(bar_component).to have_performance_bar
             expect(bar_component).to have_detailed_metrics(minimum_metrics_count)
-            # Always requested on issue pages, but not work items
-            expect(bar_component).to have_request_for('realtime_changes') unless work_item_enabled
           end
         end
       end

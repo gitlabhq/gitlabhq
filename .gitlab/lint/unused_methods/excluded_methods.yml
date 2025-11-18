@@ -20,3 +20,6 @@ toggle_award_emoji_project_project_snippet_url:
 attribute_names_for_serialization:
   file: app/models/note.rb
   reason: Acts as an override of an existing private ActiveRecord method
+user_group_saml_omniauth_metadata_path:
+  file: ee/app/helpers/ee/gitlab_routing_helper.rb
+  reason: Used to dynamically generate a method via `#url_helper`

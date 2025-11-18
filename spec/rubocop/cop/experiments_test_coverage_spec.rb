@@ -211,6 +211,169 @@ RSpec.describe RuboCop::Cop::ExperimentsTestCoverage, feature_category: :acquisi
 
         it_behaves_like 'covered experiment block'
       end
+
+      context 'when experiment is in a Base class' do
+        let(:file_path) { 'app/services/base_class_example.rb' }
+        let(:test_file_path) { 'spec/services/base_class_example_spec.rb' }
+        let(:dir) { File.dirname(test_file_path) }
+        let(:tests_code) { '' }
+        let(:child) { 'standard_namespace_create_service_spec.rb' }
+        let(:child_path) { File.join(dir, child) }
+
+        before do
+          allow(Dir).to receive(:exist?).with(dir).and_return(true)
+          allow(Dir).to receive(:children).with(dir).and_return([child])
+
+          stub_file_read(child_path,
+            content: "stub_experiments(premium_trial_positioning: :candidate)"
+          )
+        end
+
+        it 'does not register an offense, if the child class has tests' do
+          expect_no_offenses(<<~RUBY)
+            class BaseClassExample
+              experiment(:premium_trial_positioning, actor: user) do |e|
+                e.candidate { 'candidate' }
+              end
+            end
+          RUBY
+        end
+
+        it 'registers an offense, if the child class does not have tests' do
+          stub_file_read(child_path,
+            content: ""
+          )
+
+          expect_offense(<<~RUBY)
+            class BaseClassExample
+              experiment(:premium_trial_positioning, actor: user) do |e|
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ #{block_offense}
+                e.candidate { 'candidate' }
+              end
+            end
+          RUBY
+        end
+
+        it 'registers an offense, if test directory does not exist' do
+          allow(Dir).to receive(:exist?).with(dir).and_return(false)
+
+          expect_offense(<<~RUBY)
+            class BaseClassExample
+              experiment(:premium_trial_positioning, actor: user) do |e|
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ #{block_offense}
+                e.candidate { 'candidate' }
+              end
+            end
+          RUBY
+        end
+
+        it 'does not register an offense, if there is a non spec file in the directory' do
+          allow(Dir).to receive(:children).with(dir).and_return([child, 'README.md'])
+
+          expect_no_offenses(<<~RUBY)
+            class BaseClassExample
+              experiment(:premium_trial_positioning, actor: user) do |e|
+                e.candidate { 'candidate' }
+              end
+            end
+          RUBY
+        end
+      end
+
+      context 'when using shared examples' do
+        let(:file_path) { 'app/controllers/test_controller.rb' }
+        let(:test_file_path) { 'spec/requests/test_controller_spec.rb' }
+        let(:shared_examples_path) { 'spec/support/shared_examples/experiments/coverage_spec_helpers.rb' }
+
+        let(:tests_code) do
+          <<~RUBY
+            include_examples 'experiment coverage'
+          RUBY
+        end
+
+        before do
+          allow(Dir).to receive(:glob)
+            .with('spec/support/shared_examples/**/*.rb')
+            .and_return([shared_examples_path])
+          allow(Dir).to receive(:glob)
+            .with('ee/spec/support/shared_examples/**/*.rb')
+            .and_return([])
+
+          stub_file_read(
+            shared_examples_path,
+            content: <<~RUBY
+              shared_examples 'experiment coverage' do
+                stub_experiments(experiment_name: :candidate, experiment_name: :third)
+              end
+            RUBY
+          )
+        end
+
+        it 'does not register an offense, if shared examples test variants' do
+          expect_no_offenses(<<~RUBY)
+            experiment(:experiment_name) do |e|
+              e.candidate { 'candidate' }
+              e.variant(:third) { 'third option' }
+              e.run
+            end
+          RUBY
+        end
+
+        it 'registers an offense, if shared examples do not test variants' do
+          stub_file_read(
+            shared_examples_path,
+            content: <<~RUBY
+              shared_examples 'experiment coverage' do
+                # test code
+              end
+            RUBY
+          )
+
+          expect_offense(<<~RUBY)
+            experiment(:experiment_name) do |e|
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ #{block_offense}
+              e.candidate { 'candidate' }
+              e.variant(:third) { 'third option' }
+              e.run
+            end
+          RUBY
+        end
+
+        it 'registers an offense, if there are no matching shared examples' do
+          stub_file_read(
+            shared_examples_path,
+            content: <<~RUBY
+              shared_examples 'something else' do
+                # test code
+              end
+            RUBY
+          )
+
+          expect_offense(<<~RUBY)
+            experiment(:experiment_name) do |e|
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ #{block_offense}
+              e.candidate { 'candidate' }
+              e.variant(:third) { 'third option' }
+              e.run
+            end
+          RUBY
+        end
+
+        context 'if no shared example methods are used' do
+          let(:tests_code) { '' }
+
+          it 'registers an offense' do
+            expect_offense(<<~RUBY)
+              experiment(:experiment_name) do |e|
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ #{block_offense}
+                e.candidate { 'candidate' }
+                e.variant(:third) { 'third option' }
+                e.run
+              end
+            RUBY
+          end
+        end
+      end
     end
   end
 end

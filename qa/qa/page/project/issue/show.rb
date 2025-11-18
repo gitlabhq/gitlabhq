@@ -43,10 +43,6 @@ module QA
             element 'related-issues-loading-placeholder'
           end
 
-          def work_item_enabled?
-            Page::Project::Issue::Index.perform(&:work_item_enabled?)
-          end
-
           def edit_description(new_description)
             within_element('issue-header') do
               click_element('edit-button')

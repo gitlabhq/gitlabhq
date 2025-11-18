@@ -1753,7 +1753,6 @@ Gitlab/BoundedContexts:
     - 'app/services/wiki_pages/base_service.rb'
     - 'app/services/wiki_pages/create_service.rb'
     - 'app/services/wiki_pages/destroy_service.rb'
-    - 'app/services/wiki_pages/event_create_service.rb'
     - 'app/services/wiki_pages/update_service.rb'
     - 'app/services/x509_certificate_revoke_service.rb'
     - 'app/uploaders/attachment_uploader.rb'

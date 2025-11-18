@@ -17,6 +17,7 @@ Here is a list of all of the main steps to go through from a fresh, GDK-less com
 1. [Configure license](ai_development_license.md#set-up-gitlab-team-member-license-for-gdk)
 1. [Setup your Google Cloud Platform account and the CLI](https://gitlab-org.gitlab.io/gitlab-development-kit/howto/gitlab_ai_gateway/#set-up-google-cloud-platform-in-ai-gateway)
 1. Get your Anthropic license key by [making an access request like this](https://gitlab.com/gitlab-com/team-member-epics/access-requests/-/issues/37278)
+1. Get your OpenAI API key by [making an access request like this](https://gitlab.com/gitlab-com/team-member-epics/access-requests/-/issues/40277)
 1. [If you want to use Duo Chat, Code Suggestions, and other non-Duo Agent Platform features, install and configure AI gateway](https://gitlab-org.gitlab.io/gitlab-development-kit/howto/gitlab_ai_gateway/)
 1. [If you want to use Duo Agent Platform or Agentic Chat locally, setup Duo Workflow Service](https://gitlab-org.gitlab.io/gitlab-development-kit/howto/duo_agent_platform/)
 1. [Run the Duo setup Rake task](#run-gitlabduosetup-script)

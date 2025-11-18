@@ -180,12 +180,6 @@ class EventCreateService
 
     Gitlab::UsageDataCounters::HLLRedisCounter.track_event(:git_write_action, values: author.id)
 
-    track_internal_event("performed_wiki_action",
-      project: wiki_page_meta.project,
-      user: author,
-      additional_properties: { label: action.to_s }
-    )
-
     duplicate = Event.for_wiki_meta(wiki_page_meta).for_fingerprint(fingerprint).first
     return duplicate if duplicate.present?
 
