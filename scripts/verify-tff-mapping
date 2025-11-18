@@ -9,6 +9,16 @@ require 'test_file_finder'
 # so they would fail if one of the test files mentioned here is deleted.
 # To minimize the chance of this test failing due to unrelated changes,
 # the test files are chosen to be critical files that are unlikely to be deleted in a typical merge request
+
+specs_for_cells_claims_models = %w[
+  spec/cells/claims/organizations/organization_spec.rb
+].freeze
+
+specs_for_all_models = %w[
+  spec/models/every_model_spec.rb
+  spec/lib/gitlab/import_export/model_configuration_spec.rb
+].freeze
+
 tests = [
   {
     explanation: 'EE code should map to respective spec',
@@ -20,6 +30,12 @@ tests = [
     explanation: 'FOSS code should map to respective spec',
     changed_file: 'app/finders/admin/projects_finder.rb',
     expected: ['spec/finders/admin/projects_finder_spec.rb']
+  },
+
+  {
+    explanation: 'Map spec support to corresponding support specs',
+    changed_file: 'spec/support/database/prevent_cross_joins.rb',
+    expected: 'spec/support_specs/database/prevent_cross_joins_spec.rb'
   },
 
   {
@@ -121,13 +137,13 @@ tests = [
 
   {
     explanation: 'Migration should map to its non-timestamped spec',
-    changed_file: 'db/migrate/20240228144013_migrate_custom_permissions.rb',
-    expected: ['spec/migrations/migrate_custom_permissions_spec.rb']
+    changed_file: 'db/migrate/20251020001530_cleanup_duplicate_work_item_type_custom_lifecycles.rb',
+    expected: ['spec/migrations/cleanup_duplicate_work_item_type_custom_lifecycles_spec.rb']
   },
   {
     explanation: 'Migration should map to its timestamped spec',
-    changed_file: 'db/post_migrate/20241118124301_requeue_backfill_security_policies.rb',
-    expected: ['spec/migrations/20241118124301_requeue_backfill_security_policies_spec.rb']
+    changed_file: 'db/post_migrate/20251027104235_queue_backfill_missing_namespace_details.rb',
+    expected: ['spec/migrations/20251027104235_queue_backfill_missing_namespace_details_spec.rb']
   },
   {
     explanation: 'FOSS views should map to respective spec',
@@ -208,19 +224,13 @@ tests = [
   {
     explanation: 'Spec for FOSS model',
     changed_file: 'app/models/uploads/base.rb',
-    expected: %w[
-      spec/models/every_model_spec.rb
-      spec/lib/gitlab/import_export/model_configuration_spec.rb
-    ]
+    expected: specs_for_all_models
   },
 
   {
     explanation: 'Spec for EE model',
     changed_file: 'ee/app/models/geo/base_registry.rb',
-    expected: %w[
-      spec/models/every_model_spec.rb
-      spec/lib/gitlab/import_export/model_configuration_spec.rb
-    ]
+    expected: specs_for_all_models
   },
 
   {
@@ -403,11 +413,6 @@ tests = [
     ]
   },
   {
-    explanation: 'Map FOSS GraphQL resolvers to request specs',
-    changed_file: 'app/graphql/resolvers/abuse_report_labels_resolver.rb',
-    expected: ['spec/requests/api/graphql/abuse_report_labels_spec.rb']
-  },
-  {
     explanation: 'Map FOSS GraphQL resolvers to request query specs',
     changed_file: 'app/graphql/resolvers/achievements/user_achievements_resolver.rb',
     expected: ['spec/requests/api/graphql/achievements/user_achievements_query_spec.rb']
@@ -416,11 +421,6 @@ tests = [
     explanation: 'Map EE GraphQL resolvers to request specs',
     changed_file: 'ee/app/graphql/resolvers/geo/registries_resolver.rb',
     expected: ['ee/spec/requests/api/graphql/geo/registries_spec.rb']
-  },
-  {
-    explanation: 'Map FOSS GraphQL mutations to request specs',
-    changed_file: 'app/graphql/mutations/admin/abuse_report_labels/create.rb',
-    expected: ['spec/requests/api/graphql/mutations/admin/abuse_report_labels/create_spec.rb']
   },
   {
     explanation: 'Map EE GraphQL mutations to request specs',
@@ -810,6 +810,33 @@ tests = [
     explanation: 'Map any yaml file changes in project root',
     changed_file: '.devfile.yaml',
     expected: ['spec/dot_gitlab_ci/rules_spec.rb']
+  },
+  {
+    explanation: 'Changing claimable should run all claiming tests',
+    changed_file: 'app/models/concerns/cells/claimable.rb',
+    expected: specs_for_cells_claims_models + specs_for_all_models + [
+      'spec/models/concerns/cells/claimable_spec.rb'
+    ]
+  },
+  {
+    explanation: 'Changing cells lease should run all claiming tests',
+    changed_file: 'app/models/cells/outstanding_lease.rb',
+    expected: specs_for_cells_claims_models + specs_for_all_models + [
+      'spec/models/cells/outstanding_lease_spec.rb'
+    ]
+  },
+  {
+    explanation: 'Changing cells claims shared examples should run all claiming tests',
+    changed_file: 'spec/support/shared_examples/cells/claims_shared_examples.rb',
+    expected: specs_for_cells_claims_models
+  },
+  {
+    explanation: 'Changing a model that is claimable should run corresponding claims test',
+    changed_file: 'app/models/organizations/organization.rb',
+    expected: specs_for_all_models + %w[
+      spec/models/organizations/organization_spec.rb
+      spec/cells/claims/organizations/organization_spec.rb
+    ]
   }
 ]
 

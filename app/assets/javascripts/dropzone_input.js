@@ -6,7 +6,7 @@ import { spriteIcon, insertText } from '~/lib/utils/common_utils';
 import { getFilename } from '~/lib/utils/file_upload';
 import { truncate } from '~/lib/utils/text_utility';
 import { n__, __ } from '~/locale';
-import { getRetinaDimensions } from '~/lib/utils/image_utils';
+import { getLimitedMediaDimensions } from '~/lib/utils/media_utils';
 import PasteMarkdownTable from './behaviors/markdown/paste_markdown_table';
 import axios from './lib/utils/axios_utils';
 import csrf from './lib/utils/csrf';
@@ -24,6 +24,13 @@ function getErrorMessage(res) {
   }
 
   return res.message;
+}
+
+async function transformImageMarkdown(md, file) {
+  const dimensions = await getLimitedMediaDimensions(file);
+  if (!dimensions) return md;
+  // eslint-disable-next-line @gitlab/require-i18n-strings
+  return `${md}{width=${dimensions.width} height=${dimensions.height}}`;
 }
 
 export default function dropzoneInput(form, config = { parallelUploads: 2 }) {
@@ -85,12 +92,13 @@ export default function dropzoneInput(form, config = { parallelUploads: 2 }) {
       form.find('.div-dropzone-hover').css('opacity', 0);
       formTextarea.focus();
     },
-    success(header, response) {
+    async success(header, response) {
       const processingFileCount = this.getQueuedFiles().length + this.getUploadingFiles().length;
       const shouldPad = processingFileCount >= 1;
 
       addFileToForm(response.link.url, header.size);
-      pasteText(response.link.markdown, shouldPad);
+      const md = await transformImageMarkdown(response.link.markdown, header);
+      pasteText(md, shouldPad);
     },
     error: (file, errorMessage = __('Attaching the file failed.'), xhr) => {
       // If 'error' event is fired by dropzone, the second parameter is error message.
@@ -251,13 +259,7 @@ export default function dropzoneInput(form, config = { parallelUploads: 2 }) {
     axios
       .post(uploadsPath, formData)
       .then(async ({ data }) => {
-        let md = data.link.markdown;
-
-        const { width, height } = (await getRetinaDimensions(item)) || {};
-        if (width && height) {
-          // eslint-disable-next-line @gitlab/require-i18n-strings
-          md += `{width=${width} height=${height}}`;
-        }
+        const md = await transformImageMarkdown(data.link.markdown, item);
         insertToTextArea(filename, md);
         closeSpinner();
       })

@@ -41,7 +41,7 @@ module QA
       end
 
       it 'uploads a generic package and downloads it',
-        testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/348017' do
+        testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/565080' do
         project.visit_job('upload')
         Page::Project::Job::Show.perform do |job|
           expect(job).to be_successful(timeout: 180)

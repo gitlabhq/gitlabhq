@@ -34,4 +34,5 @@
           = render 'help/instance_configuration/rate_limit_row', title: _('Group export download requests'), rate_limit: rate_limits[:group_export_download]
           = render 'help/instance_configuration/rate_limit_row', title: _('Group import requests'), rate_limit: rate_limits[:group_import]
           = render 'help/instance_configuration/rate_limit_row', title: _('Raw blob requests'), rate_limit: rate_limits[:raw_blob]
+          = render 'help/instance_configuration/rate_limit_row', title: _('Pipeline creation requests per project, commit, and user'), rate_limit: rate_limits[:pipeline_creation]
     %br

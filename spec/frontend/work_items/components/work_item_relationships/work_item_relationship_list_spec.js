@@ -101,7 +101,7 @@ describe('WorkItemRelationshipList', () => {
 
   it('opens the drawer on click when the item is not an incident', () => {
     createComponent({ linkedItems: mockLinkedItems });
-    findWorkItemLinkChildContents().vm.$emit('click');
+    findWorkItemLinkChildContents().vm.$emit('click', { target: null });
 
     expect(wrapper.emitted('showModal')).toEqual([
       [expect.objectContaining({ child: mockLinkedItems[0].workItem })],

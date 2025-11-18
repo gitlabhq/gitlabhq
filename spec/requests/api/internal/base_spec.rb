@@ -226,6 +226,27 @@ RSpec.describe API::Internal::Base, feature_category: :system_access do
       end
     end
 
+    context 'allowed scopes' do
+      [
+        :api, :read_api, :read_user, :create_runner, :manage_runner,
+        :k8s_proxy, :self_rotate, :mcp, :granular, :read_repository,
+        :write_repository, :ai_features
+      ].each do |scope|
+        it "returns a token for scope: #{scope}" do
+          post api('/internal/personal_access_token'),
+            params: {
+              key_id: key.id,
+              name: 'newtoken',
+              scopes: [scope]
+            },
+            headers: gitlab_shell_internal_api_request_header
+
+          expect(json_response['success']).to be_truthy
+          expect(json_response['token']).to start_with(PersonalAccessToken.token_prefix)
+        end
+      end
+    end
+
     it 'returns token with expiry as PersonalAccessToken::MAX_PERSONAL_ACCESS_TOKEN_LIFETIME_IN_DAYS' do
       freeze_time do
         post api('/internal/personal_access_token'),
@@ -981,7 +1002,7 @@ RSpec.describe API::Internal::Base, feature_category: :system_access do
             pull(key, project)
 
             expect(response).to have_gitlab_http_status(:ok)
-            expect(json_response['gl_console_messages']).to eq(['INFO: Your SSH key is expiring soon. Please generate a new key.'])
+            expect(json_response['gl_console_messages']).to eq(['INFO: Your SSH key expires soon. Please generate a new key.'])
           end
         end
 
@@ -1635,7 +1656,7 @@ RSpec.describe API::Internal::Base, feature_category: :system_access do
     end
 
     it 'sticks to the primary' do
-      expect(User.sticking).to receive(:find_caught_up_replica).with(:user, user.id)
+      expect(User.sticking).to receive(:find_caught_up_replica).with(:user, user.id, hash_id: false)
 
       post api("/internal/pre_receive"), params: valid_params, headers: gitlab_shell_internal_api_request_header
     end

@@ -18,11 +18,11 @@ export default {
       const { id } = this.$route.params;
       const matchedRoutes = (this.$route?.matched || [])
         .map((route) => {
-          const hasMeta = route.meta && Object.keys(route.meta).length > 0;
-          const to = route.parent ? { name: route.name } : { path: route.path };
-
+          const useRouteId = Boolean(route?.meta?.useId);
+          const name = route.name || route.meta?.defaultRoute;
+          const to = route.parent ? { name } : { path: route.path };
           return {
-            text: !hasMeta && id ? String(id) : route.meta?.text,
+            text: useRouteId && id ? String(id) : route.meta?.text,
             to,
           };
         })

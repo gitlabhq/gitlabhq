@@ -25,6 +25,16 @@ module QA
           formatted_start_date = format_date(start_date)
           has_element?('start-date-content', text: formatted_start_date)
         end
+
+        def expand_sidebar_if_collapsed
+          # With the ProjectStudio UI, the sidebar is initially expanded and then automatically collapses,
+          # so we need to wait for it to collapse
+          Support::Waiter.wait_until(max_duration: 3, raise_on_failure: false) do
+            has_css?('.issuable-sidebar.collapsed')
+          end
+
+          find_element('.issuable-sidebar-header').click if has_css?('.issuable-sidebar-header', wait: 0)
+        end
       end
     end
   end

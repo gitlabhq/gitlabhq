@@ -21,17 +21,56 @@ RSpec.describe Ci::AuthJobFinder, feature_category: :continuous_integration do
     context 'with a database token' do
       before do
         stub_feature_flags(ci_job_token_jwt: false)
+        token # preloads the job
       end
 
       it { is_expected.to eq(job) }
+
+      it 'uses partition_id as a filter' do
+        recorder = ActiveRecord::QueryRecorder.new { execute }
+
+        expect(recorder).not_to exceed_query_limit(1).for_query(/FROM "p_ci_builds"/)
+        expect(recorder).not_to exceed_query_limit(1).for_query(/"p_ci_builds"."partition_id" = #{job.partition_id}/)
+        expect(recorder).not_to exceed_query_limit(1).for_query(/"p_ci_builds"."token_encrypted" IN/)
+      end
+
+      context 'when the partition_id is incorrect' do
+        before do
+          allow(::Ci::Builds::TokenPrefix).to receive(:decode_partition).with(job.token).and_return(123)
+        end
+
+        it 'queries all partitions' do
+          recorder = ActiveRecord::QueryRecorder.new { execute }
+
+          expect(recorder).not_to exceed_query_limit(2).for_query(/FROM "p_ci_builds"/)
+          expect(recorder).not_to exceed_query_limit(2).for_query(/"p_ci_builds"."token_encrypted" IN/)
+          expect(recorder).not_to exceed_query_limit(1).for_query(/"p_ci_builds"."partition_id" = #{job.partition_id}/)
+        end
+
+        it { is_expected.to eq(job) }
+      end
+
+      context 'when the partition_id can not be decoded' do
+        before do
+          allow(::Ci::Builds::TokenPrefix).to receive(:decode_partition).with(job.token).and_return(nil)
+        end
+
+        it 'queries all partitions' do
+          recorder = ActiveRecord::QueryRecorder.new { execute }
+
+          expect(recorder).not_to exceed_query_limit(1).for_query(/FROM "p_ci_builds"/)
+          expect(recorder).not_to exceed_query_limit(1).for_query(/"p_ci_builds"."token_encrypted" IN/)
+          expect(recorder).not_to exceed_query_limit(0).for_query(/"p_ci_builds"."partition_id" = #{job.partition_id}/)
+        end
+
+        it { is_expected.to eq(job) }
+      end
     end
 
     context 'when job has a `scoped_user_id` tracked' do
       let(:scoped_user) { create(:user) }
 
       before do
-        # Remove stub with stop_writing_builds_metadata
-        stub_ci_job_definition(job, options: job.options.merge(scoped_user_id: scoped_user.id))
         job.update!(scoped_user_id: scoped_user.id)
       end
 

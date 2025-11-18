@@ -1,17 +1,17 @@
 import { GlSprintf } from '@gitlab/ui';
 import { mount, shallowMount } from '@vue/test-utils';
-import MockAdapter from 'axios-mock-adapter';
 import { mockTracking, triggerEvent, unmockTracking } from 'helpers/tracking_helper';
-import axios from '~/lib/utils/axios_utils';
+import { makeMockUserCalloutDismisser } from 'helpers/mock_user_callout_dismisser';
 import MrWidgetIcon from '~/vue_merge_request_widget/components/mr_widget_icon.vue';
 import suggestPipelineComponent from '~/vue_merge_request_widget/components/mr_widget_suggest_pipeline.vue';
+import UserCalloutDismisser from '~/vue_shared/components/user_callout_dismisser.vue';
 import {
   SP_TRACK_LABEL,
   SP_SHOW_TRACK_EVENT,
   SP_SHOW_TRACK_VALUE,
   SP_HELP_URL,
 } from '~/vue_merge_request_widget/constants';
-import dismissibleContainer from '~/vue_shared/components/dismissible_container.vue';
+
 import { suggestProps, iconName } from './pipeline_tour_mock_data';
 
 describe('MRWidgetSuggestPipeline', () => {
@@ -21,7 +21,6 @@ describe('MRWidgetSuggestPipeline', () => {
     describe('core functionality', () => {
       const findOkBtn = () => wrapper.find('[data-testid="ok"]');
       let trackingSpy;
-      let mockAxios;
 
       const mockTrackingOnWrapper = () => {
         unmockTracking();
@@ -29,7 +28,6 @@ describe('MRWidgetSuggestPipeline', () => {
       };
 
       beforeEach(() => {
-        mockAxios = new MockAdapter(axios);
         document.body.dataset.page = 'projects:merge_requests:show';
         trackingSpy = mockTracking('_category_', undefined, jest.spyOn);
 
@@ -37,13 +35,15 @@ describe('MRWidgetSuggestPipeline', () => {
           propsData: suggestProps,
           stubs: {
             GlSprintf,
+            UserCalloutDismisser: makeMockUserCalloutDismisser({
+              shouldShowCallout: true,
+            }),
           },
         });
       });
 
       afterEach(() => {
         unmockTracking();
-        mockAxios.restore();
       });
 
       it('renders the expected text', () => {
@@ -111,19 +111,52 @@ describe('MRWidgetSuggestPipeline', () => {
     });
 
     describe('dismissible', () => {
-      const findDismissContainer = () => wrapper.findComponent(dismissibleContainer);
+      const findDismissContainer = () => wrapper.findComponent(UserCalloutDismisser);
+      const findCloseButton = () => wrapper.find('[data-testid="close"]');
+
+      let userCalloutDismissSpy;
+
+      const createWrapper = ({ shouldShowCallout = true } = {}) => {
+        userCalloutDismissSpy = jest.fn();
+
+        wrapper = shallowMount(suggestPipelineComponent, {
+          propsData: suggestProps,
+          stubs: {
+            GlSprintf,
+            UserCalloutDismisser: makeMockUserCalloutDismisser({
+              dismiss: userCalloutDismissSpy,
+              shouldShowCallout,
+            }),
+          },
+        });
+      };
 
       beforeEach(() => {
-        wrapper = shallowMount(suggestPipelineComponent, { propsData: suggestProps });
+        createWrapper();
       });
 
-      it('renders the dismissal container', () => {
+      it('renders the UserCalloutDismisser component', () => {
         expect(findDismissContainer().exists()).toBe(true);
       });
 
-      it('emits dismiss upon dismissal button click', () => {
-        findDismissContainer().vm.$emit('dismiss');
+      it('passes the correct feature-name prop', () => {
+        expect(findDismissContainer().props('featureName')).toBe(suggestProps.userCalloutFeatureId);
+      });
 
+      it('renders content when shouldShowCallout is true', () => {
+        expect(wrapper.text()).toContain("Looks like there's no pipeline here");
+      });
+
+      it('does not render content when shouldShowCallout is false', () => {
+        createWrapper({ shouldShowCallout: false });
+
+        expect(wrapper.text()).not.toContain("Looks like there's no pipeline here");
+      });
+
+      it('calls dismiss and emits dismiss event when close button is clicked', async () => {
+        await findCloseButton().trigger('click');
+
+        expect(userCalloutDismissSpy).toHaveBeenCalled();
         expect(wrapper.emitted().dismiss).toHaveLength(1);
       });
     });

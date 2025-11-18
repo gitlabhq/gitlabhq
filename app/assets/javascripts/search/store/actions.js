@@ -127,10 +127,9 @@ export const fetchSidebarCount = ({ commit, state }, skipBlobs) => {
         modifications[REGEX_PARAM] = true;
       }
 
-      navigationItem.count_link = setUrlParams(
-        modifications,
-        getNormalizedURL(navigationItem.count_link),
-      );
+      navigationItem.count_link = setUrlParams(modifications, {
+        url: getNormalizedURL(navigationItem.count_link),
+      });
       return navigationItem;
     });
 
@@ -163,7 +162,11 @@ export const setQuery = async ({ state, commit, getters, dispatch }, { key, valu
   if (isZoektSearch && key === 'search') {
     const shouldResetPage = state.query?.page > 1 || state.urlQuery?.page > 1;
     const query = shouldResetPage ? { ...state.query, page: 1 } : { ...state.query };
-    const newUrl = setUrlParams(query, window.location.href, true, true);
+    const newUrl = setUrlParams(query, {
+      url: window.location.href,
+      clearParams: true,
+      railsArraySyntax: true,
+    });
     document.title = buildDocumentTitle(state.query.search);
 
     updateHistory({ state: query, title: state.query.search, url: newUrl, replace: true });
@@ -180,7 +183,10 @@ export const setQuery = async ({ state, commit, getters, dispatch }, { key, valu
     updateHistory({
       state: state.query,
       title: state.query.search,
-      url: setUrlParams({ ...state.query }, window.location.href, true, true),
+      url: setUrlParams(
+        { ...state.query },
+        { url: window.location.href, clearParams: true, railsArraySyntax: true },
+      ),
       replace: true,
     });
   }
@@ -188,7 +194,12 @@ export const setQuery = async ({ state, commit, getters, dispatch }, { key, valu
 
 export const applyQuery = ({ state }) => {
   const query = omitBy(state.query, (item) => item === '');
-  visitUrl(setUrlParams({ ...query, page: null }, window.location.href, true, true));
+  visitUrl(
+    setUrlParams(
+      { ...query, page: null },
+      { url: window.location.href, clearParams: true, railsArraySyntax: true },
+    ),
+  );
 };
 
 export const resetQuery = ({ state }) => {
@@ -204,8 +215,7 @@ export const resetQuery = ({ state }) => {
         page: null,
         ...resetParams,
       },
-      undefined,
-      true,
+      { clearParams: true },
     ),
   );
 };

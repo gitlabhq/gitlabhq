@@ -7,7 +7,7 @@ import { mockTracking, triggerEvent } from 'helpers/tracking_helper';
 import DiffFileHeader from '~/diffs/components/diff_file_header.vue';
 import { DIFF_FILE_AUTOMATIC_COLLAPSE, DIFF_FILE_MANUAL_COLLAPSE } from '~/diffs/constants';
 import { diffViewerModes } from '~/ide/constants';
-import { scrollToElement } from '~/lib/utils/common_utils';
+import { scrollToElement } from '~/lib/utils/scroll_utils';
 import { truncateSha } from '~/lib/utils/text_utility';
 import { sprintf } from '~/locale';
 import ClipboardButton from '~/vue_shared/components/clipboard_button.vue';
@@ -21,9 +21,9 @@ jest.mock('~/lib/utils/common_utils', () => ({
   convertObjectPropsToCamelCase: jest.requireActual('~/lib/utils/common_utils')
     .convertObjectPropsToCamelCase,
   isInMRPage: jest.requireActual('~/lib/utils/common_utils').isInMRPage,
-  scrollToElement: jest.fn(),
   isLoggedIn: () => true,
 }));
+jest.mock('~/lib/utils/scroll_utils');
 jest.mock('~/diffs/event_hub');
 
 const createDiffFile = () => ({

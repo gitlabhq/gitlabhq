@@ -7,8 +7,10 @@ RSpec.describe 'Edit group settings', :with_current_organization, feature_catego
   include Features::WebIdeSpecHelpers
   include SafeFormatHelper
   include ActionView::Helpers::TagHelper
+  include Namespaces::DeletableHelper
 
   let_it_be(:user) { create(:user, organization: current_organization) }
+  let_it_be(:admin) { create(:user, :admin, organization: current_organization) }
   let_it_be_with_reload(:group) { create(:group, path: 'foo', owners: [user]) }
 
   before do
@@ -392,29 +394,98 @@ RSpec.describe 'Edit group settings', :with_current_organization, feature_catego
     end
   end
 
-  describe 'delayed project deletion' do
+  describe 'group deletion', :js, :freeze_time do
     def remove_with_confirm(button_text, confirm_with, confirm_button_text = 'Confirm')
       click_button button_text
       fill_in 'confirm_name_input', with: confirm_with
       click_button confirm_button_text
     end
 
-    context 'when group is marked for deletion', :js do
+    before do
+      stub_application_setting(deletion_adjourned_period: 7)
+    end
+
+    context 'when group is not marked for deletion' do
+      before do
+        visit edit_group_path(group)
+      end
+
+      it 'allows delayed deletion' do
+        remove_with_confirm('Delete', group.path)
+
+        expect(page).to have_content "This group and its subgroups and projects are pending deletion, and will be deleted on #{permanent_deletion_date_formatted}."
+      end
+    end
+
+    context 'when group is marked for deletion' do
       before do
         create(:group_deletion_schedule, group: group)
       end
 
-      context 'when the :disallow_immediate_deletion feature flag is disabled' do
+      context 'when "Allow immediate deletion" setting is enabled' do
         before do
-          stub_feature_flags(disallow_immediate_deletion: false)
-
+          stub_application_setting(usage_ping_enabled: true)
           visit edit_group_path(group)
         end
 
-        it 'deletes the project immediately', :sidekiq_inline do
-          expect { remove_with_confirm('Delete group immediately', group.path) }.to change { Group.count }.by(-1)
+        it 'allows immediate deletion', :sidekiq_inline do
+          expect { remove_with_confirm('Delete immediately', group.path) }.to change { Group.count }.by(-1)
 
-          expect(page).to have_content "is being deleted"
+          expect(page).to have_content "Group '#{group.name}' is being deleted"
+        end
+      end
+
+      context 'when there are subgroups and projects' do
+        let_it_be(:subgroup) { create(:group, parent: group) }
+        let_it_be(:project) { create(:project, namespace: group) }
+
+        it 'does not allow immediate deletion of subgroup' do
+          visit edit_group_path(subgroup)
+
+          expect(page).not_to have_button('Delete immediately')
+          expect(page).to have_content "This group will be deleted on #{permanent_deletion_date_formatted(group)} because its parent group is scheduled for deletion."
+        end
+
+        it 'does not allow immediate deletion of project' do
+          visit edit_project_path(project)
+
+          expect(page).not_to have_button('Delete immediately')
+          expect(page).to have_content "This project will be deleted on #{permanent_deletion_date_formatted(group)} because its parent group is scheduled for deletion."
+        end
+      end
+
+      context 'when "Allow immediate deletion" setting is disabled' do
+        before do
+          stub_application_setting(allow_immediate_namespaces_deletion: false)
+        end
+
+        context 'when allow_immediate_namespaces_deletion feature flag is disabled' do
+          before do
+            stub_feature_flags(allow_immediate_namespaces_deletion: false)
+            visit edit_group_path(group)
+          end
+
+          it 'allows immediate deletion', :sidekiq_inline do
+            expect { remove_with_confirm('Delete immediately', group.path) }.to change { Group.count }.by(-1)
+
+            expect(page).to have_content "Group '#{group.name}' is being deleted"
+          end
+        end
+
+        it 'allows immediate deletion for admins', :enable_admin_mode, :sidekiq_inline do
+          sign_in(admin)
+          visit edit_group_path(group)
+
+          expect { remove_with_confirm('Delete immediately', group.path) }.to change { Group.count }.by(-1)
+
+          expect(page).to have_content "Group '#{group.name}' is being deleted"
+        end
+
+        it 'does not allow immediate deletion' do
+          visit edit_group_path(group)
+
+          expect(page).not_to have_button('Delete immediately')
+          expect(page).to have_content "This group and its subgroups and projects are pending deletion, and will be deleted on #{permanent_deletion_date_formatted(group)}."
         end
       end
     end
@@ -439,6 +510,123 @@ RSpec.describe 'Edit group settings', :with_current_organization, feature_catego
           expect { save_permissions_group }.to change {
             project.private_pages?
           }.from(false).to(true)
+        end
+      end
+    end
+  end
+
+  describe 'step-up authentication settings', :js do
+    context 'with configured step-up omniauth providers' do
+      let_it_be(:omniauth_provider_config_oidc) do
+        GitlabSettings::Options.new(
+          name: 'openid_connect',
+          label: 'OpenID Connect',
+          step_up_auth: {
+            namespace: {
+              id_token: {
+                required: { acr: 'gold' }
+              }
+            }
+          }
+        )
+      end
+
+      before do
+        stub_omniauth_setting(enabled: true, providers: [omniauth_provider_config_oidc])
+        allow(Devise).to receive(:omniauth_providers).and_return([omniauth_provider_config_oidc.name])
+      end
+
+      context 'when group has no parent' do
+        it 'allows configuring step-up authentication' do
+          visit edit_group_path(group)
+
+          within_testid('permissions-settings') do
+            expect(page).to have_content('Step-up authentication')
+            expect(page).to have_select('Step-up authentication', disabled: false, with_options: ['OpenID Connect'])
+          end
+        end
+
+        it 'can select and save step-up authentication provider' do
+          visit edit_group_path(group)
+
+          within_testid('permissions-settings') do
+            select 'OpenID Connect', from: 'group_step_up_auth_required_oauth_provider'
+            click_button 'Save changes'
+          end
+
+          expect(page).to have_text("Group '#{group.name}' was successfully updated")
+          expect(group.reload.namespace_settings.step_up_auth_required_oauth_provider).to eq('openid_connect')
+        end
+
+        it 'can disable step-up authentication' do
+          group.namespace_settings.update!(step_up_auth_required_oauth_provider: 'openid_connect')
+
+          visit edit_group_path(group)
+
+          within_testid('permissions-settings') do
+            select 'Disabled', from: 'group_step_up_auth_required_oauth_provider'
+            click_button 'Save changes'
+          end
+
+          expect(page).to have_text("Group '#{group.name}' was successfully updated")
+          expect(group.reload.namespace_settings.step_up_auth_required_oauth_provider).to be_nil
+        end
+      end
+
+      context 'when group inherits step-up authentication from parent' do
+        let_it_be_with_reload(:grandparent_group) { create(:group, owners: [user]) }
+        let_it_be_with_reload(:parent_group) { create(:group, parent: grandparent_group, owners: [user]) }
+        let_it_be_with_reload(:child_group) { create(:group, parent: parent_group, owners: [user]) }
+
+        before do
+          parent_group.namespace_settings.update!(step_up_auth_required_oauth_provider: 'openid_connect')
+        end
+
+        it 'shows complete inheritance alert with parent group name and guidance' do
+          visit edit_group_path(child_group)
+
+          within_testid('permissions-settings') do
+            expect(page).to have_content('Step-up authentication')
+
+            # Check the alert exists and has correct properties
+            alert = find_by_testid('step-up-auth-inheritance-alert')
+            expect(alert).to be_present
+            expect(alert[:class]).to include('gl-alert-info')
+            expect(alert).to have_content("Step-up authentication is inherited from parent group \"#{parent_group.name}\"")
+          end
+        end
+
+        it 'disables form controls and shows inherited value with proper accessibility' do
+          visit edit_group_path(child_group)
+
+          within_testid('permissions-settings') do
+            expect(page).to have_content('Step-up authentication')
+
+            # Check inheritance alert with complete messaging
+            expect(find_by_testid('step-up-auth-inheritance-alert'))
+              .to have_content("Step-up authentication is inherited from parent group \"#{parent_group.name}\"")
+
+            # Form controls should be disabled with correct inherited value
+            expect(page).to have_select('Step-up authentication', disabled: true, selected: 'OpenID Connect')
+
+            child_group.namespace_settings.update!(step_up_auth_required_oauth_provider: nil)
+          end
+        end
+      end
+    end
+
+    context 'without configured step-up omniauth providers' do
+      before do
+        stub_omniauth_setting(enabled: true, providers: [])
+        allow(Devise).to receive(:omniauth_providers).and_return([])
+      end
+
+      it 'shows only disabled option' do
+        visit edit_group_path(group)
+
+        within_testid('permissions-settings') do
+          expect(page).to have_content('Step-up authentication')
+          expect(page).to have_select('Step-up authentication', disabled: false, selected: 'Disabled', with_options: [])
         end
       end
     end

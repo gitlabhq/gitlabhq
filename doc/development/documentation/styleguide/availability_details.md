@@ -99,14 +99,21 @@ For status, choose one:
 
 Generally available features should not have a status.
 
-### Available on GitLab Duo with self-hosted models
+### GitLab Duo with self-hosted models
 
-For GitLab Duo features, the possibilities are:
+For GitLab Duo features available with self-hosted models, use:
 
 ```markdown
-- Available on [GitLab Duo with self-hosted models](<relative_link_to_gitlab_duo_self_hosted_documentation>): Yes
-- Available on GitLab Duo with self-hosted models: No
+{{< collapsible title="Model information" >}}
+
+- Available on [GitLab Duo with self-hosted models](<relative_link_to_gitlab_duo_self_hosted_documentation>)
+
+{{< /collapsible >}}
 ```
+
+Avoid stating that the feature is not available on GitLab Duo with self-hosted models.
+If you must state that a feature is not available, use `Not available on GitLab Duo with self-hosted models`. Do not include
+a link to the documentation.
 
 ### LLMs
 
@@ -120,9 +127,13 @@ If you need to document the LLMs that the GitLab Duo feature uses:
 For example:
 
 ```markdown
+{{< collapsible title="Model information" >}}
+
 - LLMs for code completion: Anthropic [Claude 4.0 Sonnet](https://console.cloud.google.com/vertex-ai/publishers/anthropic/model-garden/claude-sonnet-4)
 - LLMs for code generation: Anthropic [Claude 3.7 Sonnet](https://console.cloud.google.com/vertex-ai/publishers/anthropic/model-garden/claude-3-7-sonnet)
 - LLM for Amazon Q: Amazon Q Developer
+
+{{< /collapsible >}}
 ```
 
 ### History
@@ -147,7 +158,8 @@ In addition:
 - Ensure the version history begins with `-`.
 - If possible, include a link to the related issue. If there is no related issue, link to a merge request, or epic.
 - Do not link to [confidential issues](_index.md#confidential-or-restricted-access-links).
-- Do not link to the pricing page. Do not include the subscription tier.
+- Do not link to the pricing page.
+- Do not include the subscription tier, unless it's changing from one tier to another.
 
 #### Updated features
 
@@ -336,15 +348,3 @@ merge request, or epic. For example:
 The voting strategy [in GitLab 13.4 and later](https://issue-link) requires the primary and secondary
 voters to agree.
 ```
-
-## Administrator documentation for availability details
-
-Topics that are only for instance administrators should have the `GitLab Self-Managed` tier.
-Instance administrator documentation often includes sections that mention:
-
-- Changing the `gitlab.rb` or `gitlab.yml` files.
-- Accessing the rails console or running Rake tasks.
-- Doing things in the **Admin** area.
-
-These pages should also mention if the tasks can only be accomplished by an
-instance administrator.

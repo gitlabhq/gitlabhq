@@ -17,7 +17,7 @@ title: GitLab Duo Agent Platform
 {{< collapsible title="Model information" >}}
 
 - LLM: Anthropic [Claude Sonnet 4](https://www.anthropic.com/claude/sonnet)
-- Available on [GitLab Duo with self-hosted models](../../administration/gitlab_duo_self_hosted/_index.md): Yes
+- Available on [GitLab Duo with self-hosted models](../../administration/gitlab_duo_self_hosted/_index.md)
 
 {{< /collapsible >}}
 
@@ -32,8 +32,8 @@ With the GitLab Duo Agent Platform, multiple AI agents can work in parallel, hel
 research results, and perform tasks simultaneously.
 The agents have full context across your entire software development lifecycle.
 
-The Agent Platform is made up of [GitLab Duo Chat (Agentic)](../gitlab_duo_chat/agentic_chat.md)
-and [flows](flows/_index.md), which are available in the GitLab UI and IDEs.
+The Agent Platform is made up of [GitLab Duo Chat (Agentic)](../gitlab_duo_chat/agentic_chat.md),
+[agents](agents/_index.md), and [flows](flows/_index.md), which are available in the GitLab UI and IDEs.
 
 {{< alert type="note" >}}
 
@@ -53,7 +53,8 @@ To use the Agent Platform:
 
 - [GitLab Duo, including GitLab Duo Core and flow execution, must be turned on](../gitlab_duo/turn_on_off.md).
 - [Beta and experimental features must be turned on](../gitlab_duo/turn_on_off.md#turn-on-beta-and-experimental-features).
-- For GitLab Self-Managed, you must [ensure your instance is configured](../../administration/gitlab_duo/setup.md).
+- For GitLab Self-Managed, you must [ensure your instance is configured](../../administration/gitlab_duo/setup.md)
+  and the composite identity turned on.
 - For [GitLab Duo with self-hosted models](../../administration/gitlab_duo_self_hosted/_index.md),
   you must [install and run the AI gateway with GitLab Duo Agent Platform service](../../install/install_ai_gateway.md).
 

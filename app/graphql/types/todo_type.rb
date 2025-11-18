@@ -34,7 +34,12 @@ module Types
     field :target, Types::TodoableInterface,
       description: 'Target of the to-do item.',
       calls_gitaly: true,
-      deprecated: { reason: 'Use `target_entity` field', milestone: '17.4' },
+      deprecated: {
+        reason: 'Under certain circumstances, the `target` field on a to-do item can be `null`. ' \
+          'The GraphQL schema currently declares `target` field as non-nullable. ' \
+          'Use the new `target_entity` field instead',
+        milestone: '17.4'
+      },
       null: false
 
     field :target_entity, Types::TodoableInterface,

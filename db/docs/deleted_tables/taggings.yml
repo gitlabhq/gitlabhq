@@ -2,7 +2,7 @@
 table_name: taggings
 feature_categories:
 - continuous_integration
-- runner
+- runner_core
 gitlab_schema: gitlab_ci
 removed_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/178462
 removed_in_milestone: '18.0'

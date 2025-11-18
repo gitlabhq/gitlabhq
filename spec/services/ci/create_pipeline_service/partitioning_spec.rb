@@ -62,25 +62,6 @@ RSpec.describe Ci::CreatePipelineService, :aggregate_failures,
     expect(processables_partition_ids).to eq([current_partition_id])
   end
 
-  context 'when the FF stop_writing_builds_metadata is disabled' do
-    before do
-      stub_feature_flags(stop_writing_builds_metadata: false)
-    end
-
-    it 'assigns partition_id to metadata' do
-      metadata_partition_ids = pipeline.processables.map { |job| job.metadata.partition_id }.uniq
-
-      expect(metadata_partition_ids).to eq([current_partition_id])
-    end
-
-    it 'correctly assigns partition and environment' do
-      metadata = find_metadata('deploy')
-
-      expect(metadata.partition_id).to eq(current_partition_id)
-      expect(metadata.expanded_environment_name).to eq('review/deploy')
-    end
-  end
-
   context 'with pipeline variables' do
     let(:variables_attributes) do
       [

@@ -1,7 +1,14 @@
+- is_project_overview = local_assigns.fetch(:is_project_overview, false)
+
 #js-repository-blob-header-app{ data: vue_tree_header_app_data(project, repository, ref, pipeline, ref_type) }
 
 - if project.forked?
   #js-fork-info{ data: vue_fork_divergence_data(project, ref) }
+
+- if is_project_overview
+  = render_if_exists 'shared/projects/premium_message_during_trial/project'
+- else
+  = render_if_exists 'shared/projects/premium_message_during_trial/repository'
 
 .info-well.project-last-commit.gl-mt-5
   #js-last-commit.gl-flex.gl-items-center.gl-justify-center.gl-m-auto.gl-min-h-9{ class: '@lg/panel:gl-min-h-[4.5rem]', data: {ref_type: ref_type.to_s, history_link: project_commits_path(project, ref)} }

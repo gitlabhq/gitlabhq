@@ -212,26 +212,9 @@ RSpec.describe ProjectMemberPresenter do
   end
 
   describe 'valid level roles' do
-    before do
-      allow(Ability).to receive(:allowed?).and_call_original
-      allow(Ability).to receive(:allowed?).with(member_user, :manage_owners, entity).and_return(can_manage_owners)
-    end
-
-    context 'when user cannot manage owners' do
+    context 'when current user is a developer' do
       it_behaves_like '#valid_level_roles', :project do
         let(:expected_roles) { { 'Developer' => 30, 'Reporter' => 20 } }
-        let(:can_manage_owners) { false }
-
-        before do
-          entity.group = group
-        end
-      end
-    end
-
-    context 'when user can manage owners' do
-      it_behaves_like '#valid_level_roles', :project do
-        let(:expected_roles) { { 'Developer' => 30, 'Maintainer' => 40, 'Owner' => 50, 'Reporter' => 20 } }
-        let(:can_manage_owners) { true }
 
         before do
           entity.group = group

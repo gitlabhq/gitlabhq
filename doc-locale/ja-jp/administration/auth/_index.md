@@ -2,20 +2,20 @@
 stage: Software Supply Chain Security
 group: Authentication
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
-description: Third-party authentication providers.
+description: サードパーティの認証プロバイダー。
 title: GitLabの認証と認可
 ---
 
 {{< details >}}
 
 - プラン: Free、Premium、Ultimate
-- 製品: GitLab Self-Managed
+- 提供形態: GitLab Self-Managed
 
 {{< /details >}}
 
 GitLabは多数の[OmniAuthプロバイダー](../../integration/omniauth.md#supported-providers)のほか、次の外部認証および認可プロバイダーと連携します。
 
-- [LDAP](ldap/_index.md): Active Directory、Apple Open Directory、OpenLDAP、389 Serverを含みます。
+- [LDAP](ldap/_index.md): Active Directory、Apple Open Directory、OpenLDAP、および389 Serverが含まれます。
   - [Google Secure LDAP](ldap/google_secure_ldap.md)
 - [GitLab.comグループのSAML](../../user/group/saml_sso/_index.md)
 - [スマートカード](smartcard.md)
@@ -26,7 +26,7 @@ UltraAuthは、OmniAuthインテグレーションをサポートするソフト
 
 {{< /alert >}}
 
-## GitLab.comとGitLab Self-Managedの比較
+## GitLab.comとGitLab Self-Managedの比較 {#gitlabcom-compared-to-gitlab-self-managed}
 
 外部認証および認可プロバイダーは、次の機能をサポートしている場合があります。詳細については、このページに記載されている各外部プロバイダーへのリンクを参照してください。
 
@@ -38,10 +38,10 @@ UltraAuthは、OmniAuthインテグレーションをサポートするソフト
 | **プロバイダーからGitLabへのロール同期**                | SAMLグループ同期                         | LDAPグループ同期<br>SAMLグループ同期（[GitLab 15.1](https://gitlab.com/gitlab-org/gitlab/-/issues/285150)以降） |
 | **ユーザーの削除**                                | SCIM（トップレベルグループからユーザーを削除） | LDAP（グループからユーザーを削除し、インスタンスへのアクセスをブロック）<br>SCIM |
 
-**脚注:**
+**脚注**:
 
 1. Just-In-Time（JIT）プロビジョニングを使用すると、ユーザーが初めてサインインしたときにユーザーアカウントが作成されます。
 
-## GitLabでOIDC/OAuthをテストする
+## GitLabでOIDC/OAuthをテストする {#test-oidcoauth-in-gitlab}
 
 クライアントアプリケーションを使用してGitLabインスタンスでOIDC/OAuth認証をテストする方法については、[GitLabでOIDC/OAuthをテストする](test_oidc_oauth.md)を参照してください。

@@ -14,6 +14,7 @@ import {
 import LinkedPipeline from './linked_pipeline.vue';
 
 export default {
+  name: 'LinkedPipelinesColumn',
   components: {
     LinkedPipeline,
     PipelineGraph: () => import(/* webpackChunkName: 'pipeline_graph' */ './graph_component.vue'),
@@ -47,6 +48,10 @@ export default {
     },
     viewType: {
       type: String,
+      required: true,
+    },
+    userPermissions: {
+      type: Object,
       required: true,
     },
   },
@@ -85,6 +90,12 @@ export default {
     },
     minWidth() {
       return this.isUpstream ? 0 : this.$options.minWidth;
+    },
+    currentPipelinePermissions() {
+      if (!this.currentPipeline) {
+        return {};
+      }
+      return this.getPipelinePermissions(this.currentPipeline.id);
     },
   },
   methods: {
@@ -125,7 +136,7 @@ export default {
           this.$emit('error', { type: LOAD_FAILURE, skipSentry: true });
 
           reportToSentry(
-            'linked_pipelines_column',
+            this.$options.name,
             `error type: ${LOAD_FAILURE}, error: ${serializeLoadErrors(err)}`,
           );
         },
@@ -185,6 +196,9 @@ export default {
     showContainer(id) {
       return this.isExpanded(id) || this.isLoadingPipeline(id);
     },
+    getPipelinePermissions(id) {
+      return this.userPermissions[id] || {};
+    },
   },
 };
 </script>
@@ -206,6 +220,7 @@ export default {
             :pipeline="pipeline"
             :type="type"
             :expanded="isExpanded(pipeline.id)"
+            :user-permissions="getPipelinePermissions(pipeline.id)"
             @downstreamHovered="onDownstreamHovered"
             @pipelineClicked="onPipelineClick(pipeline)"
             @pipelineExpandToggle="onPipelineExpandToggle"
@@ -222,6 +237,7 @@ export default {
               class="gl-inline-block"
               :config-paths="configPaths"
               :pipeline="currentPipeline"
+              :user-permissions="currentPipelinePermissions"
               :computed-pipeline-info="getPipelineLayers(pipeline.id)"
               :show-links="showLinks"
               :skip-retry-modal="skipRetryModal"

@@ -20,7 +20,7 @@ to them.
 {{< history >}}
 
 - [Changed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/169256) the minimum user role from Reporter to Planner in GitLab 17.7.
-- Ability to assign milestones to epics [introduced](https://gitlab.com/groups/gitlab-org/-/epics/329) in GitLab 18.2.
+- Assigning milestones to epics [introduced](https://gitlab.com/groups/gitlab-org/-/epics/329) in GitLab 18.2.
 
 {{< /history >}}
 
@@ -32,14 +32,14 @@ To create an epic in the group you're in:
 
 1. Get to the New Epic form:
    - Go to your group and from the left sidebar select **Epics**. Then select **New epic**.
-   - From an epic in your group, select **Epic actions** ({{< icon name="ellipsis_v" >}}). Then select **New epic**.
+   - From an epic in your group, in the upper-right corner, select **More actions** ({{< icon name="ellipsis_v" >}}). Then select **New related epic**.
    - From anywhere, in the top menu, select **New** ({{< icon name="plus-square" >}}). Then select **New epic**.
    - In an empty [roadmap](../roadmap/_index.md), select **New epic**.
 
 1. Enter a title.
 1. Complete the fields.
    - Enter a description.
-   - To [make the epic confidential](#make-an-epic-confidential), select the checkbox under **Confidentiality**.
+   - To [make the epic confidential](#make-an-epic-confidential), select the checkbox next to **Turn on confidentiality**.
    - Choose labels.
    - Select a start and due date, or [inherit](#start-and-due-date-inheritance) them.
    - Select a [color](#epic-color).
@@ -106,7 +106,6 @@ To edit an epic's start date, due date, milestone, or labels:
 
 {{< history >}}
 
-- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/15260) in GitLab 15.1.
 - [Changed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/169256) the minimum user role from Reporter to Planner in GitLab 17.7.
 
 {{< /history >}}
@@ -160,7 +159,7 @@ When bulk editing epics in a group, you can edit the following attributes:
 - [Confidentiality](#make-an-epic-confidential)
 - [Parent](#add-a-parent-epic-to-an-epic)
 
-## Prevent truncating descriptions with "Read more"
+## Prevent truncating descriptions with **Read more**
 
 {{< history >}}
 
@@ -237,7 +236,7 @@ Prerequisites:
 
 To change the assignee on an epic:
 
-1. On the left sidebar, select **Search or go to** and find your group.
+1. On the left sidebar, select **Search or go to** and find your group. If you've [turned on the new navigation](../../interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
 1. Select **Plan** > **Epics**, then select your epic to view it.
 1. On the right sidebar, in the **Assignees** section, select **Edit**.
 1. From the dropdown list, select the users to add as an assignee.
@@ -292,7 +291,7 @@ Prerequisites:
 
 To change an epic's color:
 
-1. On the left sidebar, select **Search or go to** and find your group.
+1. On the left sidebar, select **Search or go to** and find your group. If you've [turned on the new navigation](../../interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
 1. Select **Plan** > **Epics**.
 1. Select **New epic** or select an existing epic.
 1. On the right sidebar, in the **Color** section, select **Edit**.
@@ -316,7 +315,7 @@ Prerequisites:
 
 To delete an epic:
 
-1. Select **Epic actions** ({{< icon name="ellipsis_v" >}}), then **Delete epic**.
+1. In the upper-right corner, select **More actions** ({{< icon name="ellipsis_v" >}}), then **Delete epic**.
 1. Select **Delete**. On the confirmation dialog, select **Delete epic**.
 
 Deleting an epic releases all existing issues from their associated epic in the system.
@@ -335,7 +334,7 @@ Prerequisites:
 
 To close an epic:
 
-- In the upper-right corner, select **Epic actions** ({{< icon name="ellipsis_v" >}}), then **Close epic**.
+- In the upper-right corner, select **More actions** ({{< icon name="ellipsis_v" >}}), then **Close epic**.
 
 You can also use the `/close` [quick action](../../project/quick_actions.md).
 
@@ -355,7 +354,7 @@ Prerequisites:
 
 To do so, either:
 
-- In the upper-right corner, select **Epic actions** ({{< icon name="ellipsis_v" >}}) and then **Reopen epic**.
+- In the upper-right corner, select **More actions** ({{< icon name="ellipsis_v" >}}) and then **Reopen epic**.
 - Use the `/reopen` [quick action](../../project/quick_actions.md).
 
 You can also create an epic by
@@ -363,10 +362,12 @@ You can also create an epic by
 
 ## Go to an epic from an issue
 
-If an issue belongs to an epic, you can go to the parent epic with the
-link in the right sidebar.
+<!-- Update this section after flag work_item_view_for_issues is removed to refer to the Parent section in the sidebar -->
 
-![containing epic](img/containing_epic_v10_3.png)
+If an issue belongs to an epic, you can go to the parent epic from:
+
+- Breadcrumbs at the top of the issue.
+- The **Epic** section in the right sidebar.
 
 ## View epics list
 
@@ -383,7 +384,7 @@ Prerequisites:
 
 To view epics in a group:
 
-1. On the left sidebar, select **Search or go to** and find your group.
+1. On the left sidebar, select **Search or go to** and find your group. If you've [turned on the new navigation](../../interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
 1. Select **Plan** > **Epics**.
 
 ### Who can view an epic
@@ -423,9 +424,9 @@ GitLab saves your display preferences at different levels:
 
 To configure epic display preferences:
 
-1. On the left sidebar, select **Search or go to** and find your group.
+1. On the left sidebar, select **Search or go to** and find your group. If you've [turned on the new navigation](../../interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
 1. Select **Plan** > **Epics**.
-1. In the top right corner, select **Display options** ({{< icon name="preferences" >}}).
+1. In the upper-right corner, select **Display options** ({{< icon name="preferences" >}}).
 1. Under **Fields**, turn on or turn off the metadata you want to display:
    - **Assignee**: Who the epic is assigned to.
    - **Labels**: Epic labels.
@@ -445,16 +446,10 @@ To configure epic display preferences:
 {{< history >}}
 
 - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/464698) in GitLab 17.4 [with a flag](../../../administration/feature_flags/_index.md) named `work_item_view_for_issues`. Enabled by default.
-- Ability to toggle between drawer and full page view [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/536620) in GitLab 18.2.
+- Toggling between drawer and full page view [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/536620) in GitLab 18.2.
+- [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/500367) in GitLab 18.6. Feature flag `epics_list_drawer` removed.
 
 {{< /history >}}
-
-{{< alert type="flag" >}}
-
-The availability of this feature is controlled by a feature flag.
-For more information, see the history.
-
-{{< /alert >}}
 
 When you select an epic from the Epics page or an epic board, it opens in a drawer.
 You can then view and edit its details without losing context of the epic list or board.
@@ -466,6 +461,9 @@ When using the drawer:
 - You can edit the epic directly in the drawer.
 - To close the drawer, select the close icon ({{< icon name="close" >}}) or press **Escape**.
 
+If you've [turned on the new navigation](../../interface_redesign.md#turn-new-navigation-on-or-off),
+the epic opens in a details panel.
+
 #### Open an epic in full page view
 
 To open an epic in the full page view:
@@ -473,15 +471,15 @@ To open an epic in the full page view:
 - Open the epic in a new tab. From the list of epics, either:
   - Right-click the epic and open it in a new browser tab.
   - Hold <kbd>Command</kbd> or <kbd>Control</kbd> and select the epic.
-- Select an epic, and from the drawer, in the top-left corner, select **Open in full page** ({{< icon name="maximize" >}}).
+- Select an epic, and from the drawer, in the upper-left corner, select **Open in full page** ({{< icon name="maximize" >}}).
 
 #### Set preference whether to open epics in a drawer
 
 To configure how epics open on the Epics page:
 
-1. On the left sidebar, select **Search or go to** and find your group.
+1. On the left sidebar, select **Search or go to** and find your group. If you've [turned on the new navigation](../../interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
 1. Select **Plan** > **Epics**.
-1. In the top right corner, select **Display options** ({{< icon name="preferences" >}}).
+1. In the upper-right corner, select **Display options** ({{< icon name="preferences" >}}).
 1. Toggle **Open items in side panel**:
    - **On** (default): Epics open in a drawer overlay.
    - **Off**: Epics open in a full page view.
@@ -497,27 +495,27 @@ than 1000. The cached value is rounded to thousands or millions and updated ever
 
 {{< history >}}
 
-- Filtering by group was [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/385191) in GitLab 15.9.
 - Filtering by custom fields was [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/525462) in GitLab 17.11.
 
 {{< /history >}}
 
 You can filter the list of epics by:
 
-- Title or description
+- Title or description (select **Search within**)
 - Author name / username
+- Confidentiality
+- Groups
+- Health
 - Labels
 - Milestones
-- Confidentiality
 - Reaction emoji
-- Groups
+- Parent
+- Subscribed
 - [Custom fields](../../../user/work_items/custom_fields.md) enabled for epics
-
-![epics filter](img/epics_filter_v14_7.png)
 
 To filter:
 
-1. On the left sidebar, select **Search or go to** and find your group.
+1. On the left sidebar, select **Search or go to** and find your group. If you've [turned on the new navigation](../../interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
 1. Select **Plan** > **Epics**.
 1. Select the field **Search or filter results**.
 1. From the dropdown list, select the scope or enter plain text to search by epic title or description.
@@ -545,15 +543,20 @@ You can use the OR operator (**is one of: `||`**) when you [filter the list of e
 
 You can sort the epics list by:
 
-- Start date
+- Created date
+- Updated date
+- Closed date
+- Milestone due date
 - Due date
+- Popularity
 - Title
+- Start date
+- Health
+- Blocking
 
 Each option contains a button that can toggle the order between **Ascending** and **Descending**.
 The sort option and order is saved and used wherever you browse epics, including the
 [Roadmap](../roadmap/_index.md).
-
-![epics sort](img/epics_sort_v14_7.png)
 
 ## Change activity sort order
 
@@ -563,8 +566,6 @@ you view.
 
 To change the activity sort order, select the **Oldest first** dropdown list and select either oldest
 or newest items to be shown first.
-
-![Issue activity sort order dropdown list](img/epic_activity_sort_order_v13_2.png)
 
 ## Make an epic confidential
 
@@ -591,11 +592,10 @@ Prerequisites:
 
 To make an epic confidential:
 
-- **When creating an epic**: select the checkbox under **Confidentiality**.
-- **In an existing epic**: on the right sidebar, select **Edit** next to **Confidentiality**, and then
-  select **Turn on**.
+- **When creating an epic**: Select the checkbox next to **Turn on confidentiality**.
+- **In an existing epic**: In the upper-right corner, select **More actions** ({{< icon name="ellipsis_v" >}}). Then select **Turn on confidentiality**.
 
-In GitLab 15.6 and later, you can also use the `/confidential` [quick action](../../project/quick_actions.md).
+You can also use the `/confidential` [quick action](../../project/quick_actions.md).
 
 ## Manage issues assigned to an epic
 
@@ -687,7 +687,7 @@ Prerequisites:
 
 To change the health status of an epic:
 
-1. On the left sidebar, select **Search or go to** and find your group.
+1. On the left sidebar, select **Search or go to** and find your group. If you've [turned on the new navigation](../../interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
 1. Select **Plan** > **Epics**.
 1. Select an epic.
 1. In the right sidebar, in the **Health status** section, select **Edit**.
@@ -712,12 +712,6 @@ The maximum number of direct child issues and epics is 5000.
 
 #### Add an existing issue to an epic
 
-{{< history >}}
-
-- Minimum required role for the project [changed](https://gitlab.com/gitlab-org/gitlab/-/issues/382506) from Reporter to Guest in GitLab 15.8.
-
-{{< /history >}}
-
 You can add existing issues to an epic, including issues in a project from a [different group hierarchy](_index.md#child-issues-from-different-group-hierarchies).
 Newly added issues appear at the top of the list of issues in the **Child items** section.
 
@@ -732,7 +726,7 @@ Prerequisites:
 To add an existing issue to an epic:
 
 1. On the epic's page, under **Child items**, select **Add**.
-1. Select **Add an existing issue**.
+1. Select **Existing issue**.
 1. Identify the issue to be added, using either of the following methods:
    - Paste the link of the issue.
    - Search for the desired issue by entering part of the issue's title, then selecting the desired
@@ -743,12 +737,6 @@ To add an existing issue to an epic:
 1. Select **Add**.
 
 #### Create an issue from an epic
-
-{{< history >}}
-
-- Minimum required role for the project [changed](https://gitlab.com/gitlab-org/gitlab/-/issues/382506) from Reporter to Guest in GitLab 15.8.
-
-{{< /history >}}
 
 Creating an issue from an epic enables you to maintain focus on the broader context of the epic
 while dividing work into smaller parts.
@@ -775,12 +763,6 @@ The new issue is assigned to the epic.
 
 ### Remove an issue from an epic
 
-{{< history >}}
-
-- Minimum required role for the project [changed](https://gitlab.com/gitlab-org/gitlab/-/issues/382506) from Reporter to Guest in GitLab 15.8.
-
-{{< /history >}}
-
 You can remove issues from an epic when you're on the epic's details page.
 After you remove an issue from an epic, the issue is no longer associated with this epic.
 
@@ -797,12 +779,6 @@ To remove an issue from an epic:
 ![List of issues assigned to an epic](img/issue_list_v15_11.png)
 
 ### Reorder issues assigned to an epic
-
-{{< history >}}
-
-- Minimum required role for the project [changed](https://gitlab.com/gitlab-org/gitlab/-/issues/382506) from Reporter to Guest in GitLab 15.8.
-
-{{< /history >}}
 
 New issues show at the top of the list in the **Child items** section.
 You can reorder the list of issues by dragging them.
@@ -824,12 +800,6 @@ To reorder issues assigned to an epic:
 - Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
 
 {{< /details >}}
-
-{{< history >}}
-
-- Minimum required role for the project [changed](https://gitlab.com/gitlab-org/gitlab/-/issues/382506) from Reporter to Guest in GitLab 15.8.
-
-{{< /history >}}
 
 New issues appear at the top of the list in the **Child items**
 tab. You can move issues from one epic to another.
@@ -876,7 +846,7 @@ Prerequisites:
 
 To add a parent epic:
 
-1. On the left sidebar, select **Search or go to** and find your group.
+1. On the left sidebar, select **Search or go to** and find your group. If you've [turned on the new navigation](../../interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
 1. Select **Plan** > **Epics**.
 1. Select an epic.
 1. In the right sidebar, in the **Parent** section, select **Edit**.
@@ -887,15 +857,6 @@ To add a parent epic:
 The parent epic is added.
 
 ### Child epics from other groups
-
-{{< history >}}
-
-- [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/8502) in GitLab 15.6 [with a flag](../../../administration/feature_flags/_index.md) named `child_epics_from_different_hierarchies`. Disabled by default.
-- Minimum required role for the group [changed](https://gitlab.com/gitlab-org/gitlab/-/issues/382503) from Reporter to Guest in GitLab 15.7.
-- Cross-group child epics [enabled on GitLab.com and GitLab Self-Managed](https://gitlab.com/gitlab-org/gitlab/-/issues/375622) in GitLab 15.9. Enabled by default.
-- [Feature flag `child_epics_from_different_hierarchies`](https://gitlab.com/gitlab-org/gitlab/-/issues/382719) removed in GitLab 15.10.
-
-{{< /history >}}
 
 Add a child epic that belongs to a group that is different from the parent epic's group.
 
@@ -920,12 +881,6 @@ To view child epics from the parent:
 
 ### Add a child epic to an epic
 
-{{< history >}}
-
-- Minimum required role for the group [changed](https://gitlab.com/gitlab-org/gitlab/-/issues/382503) from Reporter to Guest in GitLab 15.7.
-
-{{< /history >}}
-
 Prerequisites:
 
 - You must have at least the Guest role for the parent epic's group.
@@ -943,7 +898,7 @@ To add a new epic as child epic:
 
 To add an existing epic as child epic:
 
-1. In an epic, in the **Child items** section, select **Add** > **Add an existing epic**.
+1. In an epic, in the **Child items** section, select **Add** > **Existing epic**.
 1. Identify the epic to be added, using either of the following methods:
    - Paste the link of the epic.
    - Search for the desired issue by entering part of the epic's title, then selecting the desired match. This search is only available for epics in the same group hierarchy.
@@ -952,12 +907,6 @@ To add an existing epic as child epic:
 1. Select **Add**.
 
 ### Move child epics between epics
-
-{{< history >}}
-
-- Minimum required role for the group [changed](https://gitlab.com/gitlab-org/gitlab/-/issues/382503) from Reporter to Guest in GitLab 15.7.
-
-{{< /history >}}
 
 New child epics appear at the top of the list in the **Child items** section.
 You can move child epics from one epic to another.
@@ -975,12 +924,6 @@ To move child epics to another epic:
 
 ### Reorder child epics assigned to an epic
 
-{{< history >}}
-
-- Minimum required role for the group [changed](https://gitlab.com/gitlab-org/gitlab/-/issues/382503) from Reporter to Guest in GitLab 15.7.
-
-{{< /history >}}
-
 New child epics appear at the top of the list in the **Child items** section.
 You can reorder the list of child epics.
 
@@ -994,12 +937,6 @@ To reorder child epics assigned to an epic:
 1. Drag epics into the desired order.
 
 ### Remove a child epic from a parent epic
-
-{{< history >}}
-
-- Minimum required role for the group [changed](https://gitlab.com/gitlab-org/gitlab/-/issues/382503) from Reporter to Guest in GitLab 15.7.
-
-{{< /history >}}
 
 Prerequisites:
 

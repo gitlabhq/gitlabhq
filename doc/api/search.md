@@ -12,7 +12,8 @@ title: Search API
 
 {{< /details >}}
 
-Every API call to search must be authenticated.
+Use this API to [search across GitLab](../user/search/_index.md).
+Every call to this API requires authentication.
 
 Some scopes are available for [basic search](../user/search/_index.md#available-scopes).
 When [advanced search](../user/search/advanced_search.md#available-scopes) or
@@ -612,7 +613,7 @@ Example response:
 
 {{< alert type="note" >}}
 
-`assignee` column is deprecated, now we show it as a single-sized array `assignees` to conform to the GitLab EE API.
+The `assignee` column is deprecated. It is now a single-sized `assignees` array.
 
 {{< /alert >}}
 
@@ -1002,7 +1003,7 @@ Example response:
 
 {{< alert type="note" >}}
 
-`assignee` column is deprecated, now we show it as a single-sized array `assignees` to conform to the GitLab EE API.
+The `assignee` column is deprecated. It is now a single-sized `assignees` array.
 
 {{< /alert >}}
 

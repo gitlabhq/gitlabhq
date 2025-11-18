@@ -38,7 +38,7 @@ You cannot use [`$$` to escape the `$` character in a CI/CD variable](../variabl
 when [passing a CI/CD variable to a downstream pipeline](downstream_pipelines.md#pass-cicd-variables-to-a-downstream-pipeline).
 The downstream pipeline still treats the `$` as the start of a variable reference.
 
-You can [Prevent CI/CD variable expansion](../variables/_index.md#prevent-cicd-variable-expansion) when configuring
+You can [Prevent CI/CD variable expansion](../variables/_index.md#allow-cicd-variable-expansion) when configuring
 a variable in the UI, or use the [`variables:expand` keyword](../yaml/_index.md#variablesexpand) to
 set a variable value to not be expanded. This variable can then be passed to the downstream pipeline
 without the `$` being interpreted as a variable reference.
@@ -62,7 +62,7 @@ When using [`needs:pipeline:job`](../yaml/_index.md#needspipelinejob) with dynam
 you might receive this error:
 
 ```plaintext
-Unable to create pipeline
+Unable to run pipeline
 - jobs:<job_name>:needs:need pipeline should be a string
 ```
 

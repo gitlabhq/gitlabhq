@@ -17,6 +17,8 @@ import {
   DETAIL_VIEW_QUERY_PARAM_NAME,
   NAME_TO_TEXT_LOWERCASE_MAP,
   NAME_TO_TEXT_MAP,
+  WORK_ITEM_TREE_COLLAPSE_TRACKING_ACTION_COLLAPSED,
+  WORK_ITEM_TREE_COLLAPSE_TRACKING_ACTION_EXPANDED,
 } from '../../constants';
 import {
   findHierarchyWidget,
@@ -24,6 +26,7 @@ import {
   saveToggleToLocalStorage,
   getToggleFromLocalStorage,
   getItems,
+  trackCrudCollapse,
 } from '../../utils';
 import getWorkItemTreeQuery from '../../graphql/work_item_tree.query.graphql';
 import namespaceWorkItemTypesQuery from '../../graphql/namespace_work_item_types.query.graphql';
@@ -254,11 +257,6 @@ export default {
     workItemNamespaceName() {
       return this.workItem?.namespace?.fullName;
     },
-    showTaskWeight() {
-      return (
-        this.glFeatures.useCachedRolledUpWeights || this.workItemType !== WORK_ITEM_TYPE_NAME_EPIC
-      );
-    },
     allowedChildrenByType() {
       return this.workItemTypes.reduce((acc, type) => {
         const definition = type.widgetDefinitions?.find(
@@ -387,6 +385,13 @@ export default {
         }
       }
     },
+    handleCrudCollapsed(collapsed) {
+      trackCrudCollapse(
+        collapsed
+          ? WORK_ITEM_TREE_COLLAPSE_TRACKING_ACTION_COLLAPSED
+          : WORK_ITEM_TREE_COLLAPSE_TRACKING_ACTION_EXPANDED,
+      );
+    },
   },
   i18n: {
     noChildItemsOpen: s__('WorkItem|No child items are currently open.'),
@@ -404,6 +409,8 @@ export default {
     is-collapsible
     persist-collapsed-state
     data-testid="work-item-tree"
+    @click-collapsed="handleCrudCollapsed(true)"
+    @click-expanded="handleCrudCollapsed(false)"
   >
     <template #count>
       <work-item-rolled-up-count
@@ -415,7 +422,6 @@ export default {
         v-if="!isLoadingChildren"
         class="gl-hidden @sm/panel:gl-flex"
         :work-item-iid="workItemIid"
-        :work-item-type="workItemType"
         :full-path="fullPath"
       />
     </template>
@@ -425,7 +431,6 @@ export default {
         v-if="!isLoadingChildren"
         class="gl-mt-2 @sm/panel:gl-hidden"
         :work-item-iid="workItemIid"
-        :work-item-type="workItemType"
         :full-path="fullPath"
       />
     </template>
@@ -491,7 +496,6 @@ export default {
           :show-labels="showLabels"
           :show-closed="showClosed"
           :disable-content="disableContent"
-          :show-task-weight="showTaskWeight"
           :has-indirect-children="hasIndirectChildren"
           :allowed-children-by-type="allowedChildrenByType"
           :dragged-item-type="draggedItemType"
@@ -507,7 +511,6 @@ export default {
           v-if="hasNextPage"
           data-testid="work-item-load-more"
           :class="{ '!gl-pl-5': hasIndirectChildren }"
-          :show-task-weight="showTaskWeight"
           :fetch-next-page-in-progress="fetchNextPageInProgress"
           @fetch-next-page="fetchNextPage"
         />

@@ -335,7 +335,7 @@ The following time units are available:
 On GitLab Self-Managed, you can limit the display of time units to hours.
 To do so:
 
-1. On the left sidebar, select **Search or go to**.
+1. On the left sidebar, select **Search or go to**. If you've [turned on the new navigation](../interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
 1. Select **Settings** > **Preferences**.
 1. Expand **Localization**.
 1. Under **Time tracking**, select the **Limit display of time tracking units to hours** checkbox.

@@ -60,7 +60,7 @@ Prerequisites:
 - You must have at least the Maintainer role for the project.
 
 1. Create an access token:
-   1. On the left sidebar, select **Search or go to** and find your project.
+   1. On the left sidebar, select **Search or go to** and find your project. If you've [turned on the new navigation](../user/interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
    1. Select **Settings** > **Access tokens**.
    1. Create an access token with the `api` scope and **Developer** role or greater.
       Save the access token value for later.
@@ -87,7 +87,7 @@ If your traces are exported successfully, you can see them in the project.
 
 To view the list of traces:
 
-1. On the left sidebar, select **Search or go to** and find your project.
+1. On the left sidebar, select **Search or go to** and find your project. If you've [turned on the new navigation](../user/interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
 1. Select **Monitor** > **Traces**.
 1. Optional. To view the details of a trace, select it from the list.
 
@@ -105,7 +105,7 @@ To view the list of traces:
 
 You can create an issue to track any action taken to resolve or investigate a trace. To create an issue for a trace:
 
-1. On the left sidebar, select **Search or go to** and find your project.
+1. On the left sidebar, select **Search or go to** and find your project. If you've [turned on the new navigation](../user/interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
 1. Select **Monitor** > **Traces**.
 1. From the list of traces, select a trace.
 1. Select **Create issue**.
@@ -115,7 +115,7 @@ You can edit the issue title and description.
 
 ## View issues related to a trace
 
-1. On the left sidebar, select **Search or go to** and find your project.
+1. On the left sidebar, select **Search or go to** and find your project. If you've [turned on the new navigation](../user/interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
 1. Select **Monitor** > **Traces**.
 1. From the list of traces, select a trace.
 1. Scroll to **Related issues**.

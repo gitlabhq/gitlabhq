@@ -10,7 +10,7 @@ RSpec.describe Gitlab::GithubImport::Importer::Events::Closed, :clean_gitlab_red
   let_it_be_with_reload(:project) do
     create(
       :project, :in_group, :github_import,
-      :import_user_mapping_enabled, :user_mapping_to_personal_namespace_owner_enabled
+      :import_user_mapping_enabled
     )
   end
 
@@ -195,48 +195,6 @@ RSpec.describe Gitlab::GithubImport::Importer::Events::Closed, :clean_gitlab_red
 
         it_behaves_like 'new event'
         it_behaves_like 'do not push placeholder references'
-      end
-
-      context 'when user_mapping_to_personal_namespace_owner is disabled' do
-        let_it_be(:source_user) { generate_source_user(project, 1000) }
-        let(:mapped_user_id) { source_user.mapped_user_id }
-
-        before_all do
-          project.build_or_assign_import_data(
-            data: { user_mapping_to_personal_namespace_owner_enabled: false }
-          ).save!
-        end
-
-        context 'with Issue' do
-          let(:expected_state_event_attrs) do
-            {
-              user_id: mapped_user_id,
-              issue_id: issuable.id,
-              state: 'closed',
-              created_at: issue_event.created_at,
-              imported_from: 'github'
-            }.stringify_keys
-          end
-
-          it_behaves_like 'new event'
-          it_behaves_like 'push placeholder references'
-        end
-
-        context 'with MergeRequest' do
-          let(:issuable) { create(:merge_request, source_project: project, target_project: project) }
-          let(:expected_state_event_attrs) do
-            {
-              user_id: mapped_user_id,
-              merge_request_id: issuable.id,
-              state: 'closed',
-              created_at: issue_event.created_at,
-              imported_from: 'github'
-            }.stringify_keys
-          end
-
-          it_behaves_like 'new event'
-          it_behaves_like 'push placeholder references'
-        end
       end
     end
   end

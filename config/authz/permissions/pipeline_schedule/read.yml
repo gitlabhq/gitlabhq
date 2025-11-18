@@ -1,0 +1,4 @@
+---
+name: read_pipeline_schedule
+description: Grants the ability to read pipeline schedules
+feature_category: continuous_integration

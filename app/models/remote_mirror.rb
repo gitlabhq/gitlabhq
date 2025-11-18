@@ -285,10 +285,6 @@ class RemoteMirror < ApplicationRecord
     project.update(remote_mirror_available_overridden: enabled)
   end
 
-  def mirror_url_changed?
-    url_changed? || attribute_changed?(:credentials)
-  end
-
   def saved_change_to_mirror_url?
     saved_change_to_url? || saved_change_to_credentials?
   end

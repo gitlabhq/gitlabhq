@@ -38,25 +38,23 @@ RSpec.shared_examples 'User previews wiki changes' do
       end
     end
 
-    # rubocop:disable Layout/LineLength -- short lived quarantine link
-    context "when there are no spaces or hyphens in the page name", :js, quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/572733' do
+    context "when there are no spaces or hyphens in the page name", :js do
       let(:wiki_page) { build(:wiki_page, wiki: wiki, title: 'a/b/c/d', content: page_content) }
 
       it_behaves_like 'rewrites relative links'
     end
 
-    context "when there are spaces in the page name", :js, quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/572733' do
+    context "when there are spaces in the page name", :js do
       let(:wiki_page) { build(:wiki_page, wiki: wiki, title: 'a page/b page/c page/d page', content: page_content) }
 
       it_behaves_like 'rewrites relative links'
     end
 
-    context "when there are hyphens in the page name", :js, quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/572733' do
+    context "when there are hyphens in the page name", :js do
       let(:wiki_page) { build(:wiki_page, wiki: wiki, title: 'a-page/b-page/c-page/d-page', content: page_content) }
 
       it_behaves_like 'rewrites relative links'
     end
-    # rubocop:enable Layout/LineLength
   end
 
   context "when rendering a new wiki page", :js do
@@ -70,8 +68,7 @@ RSpec.shared_examples 'User previews wiki changes' do
     end
   end
 
-  # rubocop:disable Layout/LineLength -- short lived quarantine link
-  context "when previewing an existing wiki page", :js, quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/572733' do
+  context "when previewing an existing wiki page", :js do
     let(:preview) { page.find('.md-preview-holder') }
 
     before do
@@ -112,5 +109,4 @@ RSpec.shared_examples 'User previews wiki changes' do
       expect(preview).to have_content('[[also_do_not_linkify]]')
     end
   end
-  # rubocop:enable Layout/LineLength
 end

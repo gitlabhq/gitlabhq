@@ -66,14 +66,14 @@ module API
             optional :start, type: Hash, desc: 'Start line for a multi-line note' do
               optional :line_code, type: String, desc: 'Start line code for multi-line note'
               optional :type, type: String, desc: 'Start line type for multi-line note'
-              optional :old_line, type: String, desc: 'Start old_line line number'
-              optional :new_line, type: String, desc: 'Start new_line line number'
+              optional :old_line, type: Integer, desc: 'Start old_line line number'
+              optional :new_line, type: Integer, desc: 'Start new_line line number'
             end
             optional :end, type: Hash, desc: 'End line for a multi-line note' do
               optional :line_code, type: String, desc: 'End line code for multi-line note'
               optional :type, type: String, desc: 'End line type for multi-line note'
-              optional :old_line, type: String, desc: 'End old_line line number'
-              optional :new_line, type: String, desc: 'End new_line line number'
+              optional :old_line, type: Integer, desc: 'End old_line line number'
+              optional :new_line, type: Integer, desc: 'End new_line line number'
             end
           end
         end

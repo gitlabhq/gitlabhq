@@ -68,11 +68,6 @@ describe('Work Item Note Actions', () => {
         maxAccessLevelOfAuthor,
         projectName,
       },
-      provide: {
-        glFeatures: {
-          workItemsAlpha: true,
-        },
-      },
       stubs: {
         EmojiPicker,
         GlDisclosureDropdown: stubComponent(GlDisclosureDropdown, {

@@ -18,6 +18,19 @@ include:
     paths:
       - pg_dumpall.sql
 
+clickhouse:check-schema:
+  variables:
+    DISABLE_WEBMOCK: "true"
+    ENABLE_CLICKHOUSE_DB_DUMP: "true"
+  extends:
+    - .rspec-base
+    - .use-pg16-clickhouse25
+    - .rails:rules:clickhouse-migration-changes
+  allow_failure: true
+  script:
+    - !reference [.clickhouse-setup, script]
+    - ruby scripts/validate_clickhouse_schema.rb
+
 db:setup pg16:
   extends:
     - .db:setup pg16
@@ -36,7 +49,7 @@ db:rollback single-db-ci-connection:
 
 db:migrate:reset single-db-ci-connection:
   extends:
-    - db:migrate:reset
+    - .db:migrate:reset
     - .single-db-ci-connection
     - .rails:rules:single-db-ci-connection
 
@@ -60,7 +73,7 @@ db:rollback single-db-sec-connection:
 
 db:migrate:reset single-db-sec-connection:
   extends:
-    - db:migrate:reset
+    - .db:migrate:reset
     - .single-db-sec-connection
     - .rails:rules:single-db-sec-connection
 
@@ -81,7 +94,7 @@ db:rollback:
     - .db-job-base
     - .rails:rules:db-rollback
   script:
-    - bundle exec rake db:migrate VERSION=20240116205430 # First 16-11-stable-ee migration
+    - bundle exec rake db:migrate VERSION=20240708182825 # First migration after InitSchema based on db:migrate:status
     - bundle exec rake db:migrate
 
 db:rollback single-db:
@@ -113,16 +126,15 @@ db:migrate:multi-version-upgrade-pg17:
     - db:migrate:multi-version-upgrade
     - .use-pg17
 
-db:migrate:reset:
+.db:migrate:reset:
   extends: .db-job-base
   script:
     - bundle exec rake db:migrate:reset
 
 db:migrate:reset single-db:
   extends:
-    - db:migrate:reset
+    - .db:migrate:reset
     - .single-db
-    - .rails:rules:single-db
 
 db:check-schema:
   extends:

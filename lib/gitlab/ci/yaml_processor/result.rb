@@ -32,6 +32,7 @@ module Gitlab
             { name: stage, index: stages.index(stage), builds: seeds }
           end
         end
+        strong_memoize_attr :stages_attributes
 
         def builds
           jobs.map do |name, _|
@@ -109,6 +110,7 @@ module Gitlab
             when: job[:when] || 'on_success',
             environment: job[:environment_name],
             coverage_regex: job[:coverage],
+            inputs: job[:inputs],
             # yaml_variables is calculated with using job_variables in Seed::Build
             job_variables: transform_to_array(job[:job_variables]),
             root_variables_inheritance: job[:root_variables_inheritance],

@@ -94,7 +94,7 @@ export default {
         </gl-tooltip>
       </div>
     </div>
-    <div class="-gl-mt-6 gl-line-clamp-6 gl-whitespace-pre-line gl-text-sm gl-font-monospace">
+    <div class="-gl-mt-6 gl-line-clamp-6 gl-whitespace-pre-line gl-font-monospace gl-text-sm">
       {{ template.content }}
     </div>
     <gl-modal

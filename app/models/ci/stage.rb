@@ -176,13 +176,14 @@ module Ci
     end
 
     def number_of_warnings
-      BatchLoader.for(id).batch(default_value: 0) do |stage_ids, loader|
-        ::CommitStatus.where(stage_id: stage_ids)
+      BatchLoader.for([id, partition_id]).batch(default_value: 0) do |items, loader|
+        ::CommitStatus
+          .where([:stage_id, :partition_id] => items)
           .latest
           .failed_but_allowed
-          .group(:stage_id)
+          .group(:stage_id, :partition_id)
           .count
-          .each { |id, amount| loader.call(id, amount) }
+          .each { |item, amount| loader.call(item, amount) }
       end
     end
 
@@ -212,7 +213,8 @@ module Ci
     end
 
     def ordered_latest_statuses
-      preload_metadata(statuses.in_order_of(:status, Ci::HasStatus::ORDERED_STATUSES).latest_ordered)
+      statuses_list = statuses.in_order_of(:status, Ci::HasStatus::ORDERED_STATUSES).latest_ordered.to_a
+      preload_metadata(statuses_list.sort_by { |s| [Ci::HasStatus::ORDERED_STATUSES.index(s.status), s.sortable_name] })
     end
 
     def ordered_retried_statuses

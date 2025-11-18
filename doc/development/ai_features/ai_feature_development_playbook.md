@@ -55,6 +55,9 @@ Teams must consider requirements for supporting [GitLab Duo Self-Hosted](../../a
 - Model integration and API development
 - [Connecting a new feature via Cloud Connector](cloud_connector.md)
 - [Feature flag implementation](_index.md#push-feature-flags-to-ai-gateway)
+- Event tracking instrumentation:
+  - [AI usage tracking metrics](usage_tracking.md)
+  - [Duo feature classification](../internal_analytics/internal_event_instrumentation/duo_classification.md)
 
 #### Resources
 

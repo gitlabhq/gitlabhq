@@ -2,6 +2,7 @@
 stage: Deploy
 group: Environments
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+description: Deploy a GitLab project to Amazon ECS. Containerize the application and set up continuous deployment, review apps, and security testing.
 title: Deploy to Amazon Elastic Container Service
 ---
 
@@ -45,7 +46,7 @@ For the first step here, you create a demo application from a project template.
 Use a GitLab project template to get started. As the name suggests, these projects provide a
 bare-bones application built on some well-known frameworks.
 
-1. In GitLab on the left sidebar, at the top, select **Create new** ({{< icon name="plus" >}}) and **New project/repository**.
+1. In GitLab on the left sidebar, at the top, select **Create new** ({{< icon name="plus" >}}) and **New project/repository**. If you've [turned on the new navigation](../../../user/interface_redesign.md#turn-new-navigation-on-or-off), this button is in the upper-right corner.
 1. Select **Create from template**, where you can choose from a Ruby on Rails, Spring, or
    NodeJS Express project. For this guide, use the Ruby on Rails template.
 1. Give your project a name. In this example, it's named `ecs-demo`. Make it public so that you can
@@ -63,7 +64,7 @@ provide a containerized application image during the infrastructure build. To do
 GitLab [Auto Build](../../../topics/autodevops/stages.md#auto-build)
 and [Container Registry](../../../user/packages/container_registry/_index.md).
 
-1. On the left sidebar, select **Search or go to** and find your `ecs-demo` project.
+1. On the left sidebar, select **Search or go to** and find your `ecs-demo` project. If you've [turned on the new navigation](../../../user/interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
 1. Select **Set up CI/CD**. It brings you to a `.gitlab-ci.yml`
    creation form.
 1. Copy and paste the following content into the empty `.gitlab-ci.yml`. This defines
@@ -214,7 +215,7 @@ Do not share the secret access key in a public place. You must save it in a secu
 You can register the access information in [GitLab CI/CD Variables](../../variables/_index.md).
 These variables are injected into the pipeline jobs and can access the ECS API.
 
-1. On the left sidebar, select **Search or go to** and find your `ecs-demo` project.
+1. On the left sidebar, select **Search or go to** and find your `ecs-demo` project. If you've [turned on the new navigation](../../../user/interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
 1. Go to **Settings** > **CI/CD** > **Variables**.
 1. Select **Add Variable** and set the following key-value pairs.
 
@@ -231,7 +232,7 @@ These variables are injected into the pipeline jobs and can access the ECS API.
 
 Change a file in the project and see if it's reflected in the demo application on ECS:
 
-1. On the left sidebar, select **Search or go to** and find your `ecs-demo` project.
+1. On the left sidebar, select **Search or go to** and find your `ecs-demo` project. If you've [turned on the new navigation](../../../user/interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
 1. Open the `app/views/welcome/index.html.erb` file.
 1. Select **Edit**.
 1. Change the text to `You're on ECS!`.

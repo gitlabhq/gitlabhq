@@ -5,7 +5,7 @@ require 'spec_helper'
 RSpec.describe Tasks::Gitlab::Permissions::ValidateTask, feature_category: :permissions do
   let(:task) { described_class.new }
 
-  describe '#run' do
+  describe '#run', :unlimited_max_formatted_output_length do
     let(:exclusion_list) { ['undefined_permission'] }
     let(:exclusion_list_data) { exclusion_list.join("\n") }
     let(:exclusion_file) { Tempfile.new("definitions_todo.txt") }
@@ -124,6 +124,8 @@ RSpec.describe Tasks::Gitlab::Permissions::ValidateTask, feature_category: :perm
           name: permission_name,
           description: 'a defined permission',
           feature_category: 'unknown',
+          action: 'defined',
+          resource: 'permission',
           key: 'not allowed'
         }
       end

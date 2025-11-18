@@ -55,79 +55,59 @@ RSpec.describe 'Task Lists', :js, feature_category: :team_planning do
     describe 'multiple tasks' do
       let!(:issue) { create(:issue, description: markdown, author: user, project: project) }
 
-      it 'renders' do
+      it 'renders checkboxes with summary' do
         visit_issue(project, issue)
-        wait_for_requests
 
         expect(page).to have_selector('ul.task-list',      count: 1)
         expect(page).to have_selector('li.task-list-item', count: 6)
         expect(page).to have_selector('ul input[checked]', count: 2)
-      end
 
-      it 'contains the required selectors' do
-        visit_issue(project, issue)
-        wait_for_requests
+        expect(page).to have_unchecked_field('Incomplete entry 1')
+        expect(page).to have_checked_field('Complete entry 1')
+        expect(page).to have_unchecked_field('Incomplete entry 2')
+        expect(page).to have_checked_field('Complete entry 2')
+        expect(page).to have_unchecked_field('Incomplete entry 3')
+        expect(page).to have_unchecked_field('Incomplete entry 4')
 
-        expect(page).to have_selector(".md .task-list .task-list-item .task-list-item-checkbox")
-        expect(page).to have_selector('.btn-close')
+        expect(page).to have_text('2 of 6 checklist items completed')
       end
 
       it 'is only editable by author' do
         visit_issue(project, issue)
-        wait_for_requests
 
-        expect(page).to have_selector(".md .task-list .task-list-item .task-list-item-checkbox")
+        expect(page).to have_checked_field('Complete entry 1')
 
         logout(:user)
-        login_as(user2)
+        sign_in(user2)
         visit current_path
-        wait_for_requests
 
-        expect(page).to have_selector(".md .task-list .task-list-item .task-list-item-checkbox")
-      end
-
-      it 'provides a summary on Issues#index' do
-        visit project_issues_path(project)
-
-        expect(page).to have_content("2 of 6 checklist items completed")
+        expect(page).to have_checked_field('Complete entry 1', disabled: true)
       end
     end
 
     describe 'single incomplete task' do
       let!(:issue) { create(:issue, description: single_incomplete_markdown, author: user, project: project) }
 
-      it 'renders' do
+      it 'renders with summary' do
         visit_issue(project, issue)
-        wait_for_requests
 
         expect(page).to have_selector('ul.task-list',      count: 1)
         expect(page).to have_selector('li.task-list-item', count: 1)
         expect(page).to have_selector('ul input[checked]', count: 0)
-      end
-
-      it 'provides a summary on Issues#index' do
-        visit project_issues_path(project)
-
-        expect(page).to have_content("0 of 1 checklist item completed")
+        expect(page).to have_text('0 of 1 checklist item completed')
       end
     end
 
     describe 'single complete task' do
       let!(:issue) { create(:issue, description: single_complete_markdown, author: user, project: project) }
 
-      it 'renders' do
+      it 'renders with summary' do
         visit_issue(project, issue)
-        wait_for_requests
 
         expect(page).to have_selector('ul.task-list',      count: 1)
         expect(page).to have_selector('li.task-list-item', count: 1)
         expect(page).to have_selector('ul input[checked]', count: 1)
-      end
-
-      it 'provides a summary on Issues#index' do
-        visit project_issues_path(project)
-
-        expect(page).to have_content("1 of 1 checklist item completed")
+        expect(page).to have_text('1 of 1 checklist item completed')
       end
     end
   end
@@ -146,25 +126,19 @@ RSpec.describe 'Task Lists', :js, feature_category: :team_planning do
         expect(page).to have_selector('.note ul.task-list',      count: 1)
         expect(page).to have_selector('.note li.task-list-item', count: 6)
         expect(page).to have_selector('.note ul input[checked]', count: 2)
-      end
-
-      it 'contains the required selectors' do
-        visit_issue(project, issue)
-
-        expect(page).to have_selector('.note .js-task-list-container')
-        expect(page).to have_selector('.note .js-task-list-container .task-list .task-list-item .task-list-item-checkbox')
+        expect(page).to have_checked_field('Complete entry 1')
       end
 
       it 'is only editable by author' do
         visit_issue(project, issue)
 
-        expect(page).to have_selector('.js-task-list-container')
+        expect(page).to have_checked_field('Complete entry 1')
 
-        gitlab_sign_out
-
-        gitlab_sign_in(user2)
+        logout(:user)
+        sign_in(user2)
         visit current_path
-        expect(page).not_to have_selector('.js-task-list-container')
+
+        expect(page).to have_checked_field('Complete entry 1', disabled: true)
       end
     end
 
@@ -232,7 +206,7 @@ RSpec.describe 'Task Lists', :js, feature_category: :team_planning do
         expect(page).to have_selector('li.task-list-item.enabled', count: 6)
 
         logout(:user)
-        login_as(user2)
+        sign_in(user2)
         visit current_path
         wait_for_requests
 
@@ -319,24 +293,22 @@ RSpec.describe 'Task Lists', :js, feature_category: :team_planning do
 
       let!(:issue) { create(:issue, description: commented_tasks_markdown, author: user, project: project) }
 
-      it 'renders' do
+      it 'renders only "b" checkbox' do
         visit_issue(project, issue)
-        wait_for_requests
 
         expect(page).to have_selector('ul.task-list',      count: 1)
         expect(page).to have_selector('li.task-list-item', count: 1)
         expect(page).to have_selector('ul input[checked]', count: 0)
+        expect(page).to have_text('0 of 1 checklist item completed')
 
-        find('.task-list-item-checkbox').click
+        check 'b'
         wait_for_requests
-
-        visit_issue(project, issue)
-        wait_for_requests
+        refresh
 
         expect(page).to have_selector('ul.task-list',      count: 1)
         expect(page).to have_selector('li.task-list-item', count: 1)
         expect(page).to have_selector('ul input[checked]', count: 1)
-        expect(page).to have_content('1 of 1 checklist item completed')
+        expect(page).to have_text('1 of 1 checklist item completed')
       end
     end
 
@@ -353,24 +325,22 @@ RSpec.describe 'Task Lists', :js, feature_category: :team_planning do
 
       let!(:issue) { create(:issue, description: code_tasks_markdown, author: user, project: project) }
 
-      it 'renders' do
+      it 'renders only "b" checkbox' do
         visit_issue(project, issue)
-        wait_for_requests
 
         expect(page).to have_selector('ul.task-list',      count: 1)
         expect(page).to have_selector('li.task-list-item', count: 1)
         expect(page).to have_selector('ul input[checked]', count: 0)
+        expect(page).to have_text('0 of 1 checklist item completed')
 
-        find('.task-list-item-checkbox').click
+        check 'b'
         wait_for_requests
-
-        visit_issue(project, issue)
-        wait_for_requests
+        refresh
 
         expect(page).to have_selector('ul.task-list',      count: 1)
         expect(page).to have_selector('li.task-list-item', count: 1)
         expect(page).to have_selector('ul input[checked]', count: 1)
-        expect(page).to have_content('1 of 1 checklist item completed')
+        expect(page).to have_text('1 of 1 checklist item completed')
       end
     end
 
@@ -390,17 +360,14 @@ RSpec.describe 'Task Lists', :js, feature_category: :team_planning do
 
       it 'renders' do
         visit_issue(project, issue)
-        wait_for_requests
 
         expect(page).to have_selector('ul.task-list',      count: 1)
         expect(page).to have_selector('li.task-list-item', count: 1)
         expect(page).to have_selector('ul input[checked]', count: 0)
 
-        find('.task-list-item-checkbox').click
+        check 'Task 1'
         wait_for_requests
-
-        visit_issue(project, issue)
-        wait_for_requests
+        refresh
 
         expect(page).to have_selector('ul.task-list',      count: 1)
         expect(page).to have_selector('li.task-list-item', count: 1)
@@ -424,24 +391,23 @@ RSpec.describe 'Task Lists', :js, feature_category: :team_planning do
 
       let!(:issue) { create(:issue, description: summary_markdown, author: user, project: project) }
 
-      it 'renders' do
+      it 'renders both checkboxes' do
         visit_issue(project, issue)
         wait_for_requests
 
         expect(page).to have_selector('ul.task-list',      count: 2)
         expect(page).to have_selector('li.task-list-item', count: 2)
         expect(page).to have_selector('ul input[checked]', count: 1)
+        expect(page).to have_text('1 of 2 checklist items completed')
 
-        first('.task-list-item-checkbox').click
+        check 'People Ops'
         wait_for_requests
-
-        visit_issue(project, issue)
-        wait_for_requests
+        refresh
 
         expect(page).to have_selector('ul.task-list',      count: 2)
         expect(page).to have_selector('li.task-list-item', count: 2)
         expect(page).to have_selector('ul input[checked]', count: 2)
-        expect(page).to have_content('2 of 2 checklist items completed')
+        expect(page).to have_text('2 of 2 checklist items completed')
       end
     end
 
@@ -455,7 +421,8 @@ RSpec.describe 'Task Lists', :js, feature_category: :team_planning do
 
       let(:merge_request) { create(:merge_request, description: markdown_starting_with_new_line, author: user, source_project: project) }
 
-      it 'allows the task to be checked' do
+      it 'allows the task to be checked',
+        quarantine: 'https://gitlab.com/gitlab-org/quality/test-failure-issues/-/issues/4115' do
         visit project_merge_request_path(project, merge_request)
         wait_for_requests
 

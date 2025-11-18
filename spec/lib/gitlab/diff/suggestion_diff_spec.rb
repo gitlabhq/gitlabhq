@@ -25,8 +25,6 @@ RSpec.describe Gitlab::Diff::SuggestionDiff do
       instance_double(Suggestion, from_line: 12, from_content: from_content, to_content: to_content)
     end
 
-    subject { described_class.new(suggestion).diff_lines }
-
     let(:expected_diff_lines) do
       [
         { old_pos: 12, new_pos: 12, type: "match", text: "@@ -12 +12" },
@@ -39,6 +37,8 @@ RSpec.describe Gitlab::Diff::SuggestionDiff do
         { old_pos: 15, new_pos: 15, type: "new", text: "+\"bar\": \"bar\"," }
       ]
     end
+
+    subject { described_class.new(suggestion).diff_lines }
 
     it 'returns diff lines with correct line numbers' do
       diff_lines = subject

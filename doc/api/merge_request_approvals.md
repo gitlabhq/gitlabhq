@@ -19,11 +19,7 @@ title: Merge request approvals API
 
 {{< /history >}}
 
-This API manages the configuration for approvals on merge requests in your project or group:
-
-- Approve and unapprove a merge request as a user.
-- Reset all approvals, not just your own, on a merge request.
-- View and manage approval rules for a project.
+Use this API to manage [merge request approvals](../user/project/merge_requests/approvals/_index.md).
 
 All endpoints require authentication.
 

@@ -23,7 +23,8 @@ For guidance not on this page, we defer to these style guides:
 <!-- vale off -->
 
 <!-- Disable trailing punctuation in heading rule https://github.com/DavidAnson/markdownlint/blob/main/doc/Rules.md#md026---trailing-punctuation-in-heading -->
-<!-- markdownlint-disable MD026 -->
+<!-- Proper names should have the correct capitalization rule https://github.com/DavidAnson/markdownlint/blob/main/doc/Rules.md#md044---proper-names-should-have-the-correct-capitalization -->
+<!-- markdownlint-disable MD026 MD044 -->
 
 ## `.gitlab-ci.yml` file
 
@@ -105,6 +106,22 @@ Access levels are different than [roles](#roles) or [permissions](#permissions).
 When you create a user, you choose an access level: **Regular**, **Auditor**, or **Administrator**.
 
 Capitalize these words when you refer to the UI. Otherwise use lowercase.
+
+When a specific access level is required, use one of these patterns:
+
+- You must have **at least** the Administrator access level.
+- You must have the Administrator access level **or higher**.
+- You must be an Administrator.
+
+When there is no specific access level, use **minimum** access level as a noun phrase. For example:
+
+- The **minimum** access level for push is the minimum role required to push a package.
+
+Use **higher** and **lower** to describe the hierarchy:
+
+- **Higher** access levels have more permissions.
+- Administrator is a **higher** access level than Regular.
+- Regular is a **lower** access level than Administrator.
 
 ## add
 
@@ -276,7 +293,7 @@ However, if the UI has different capitalization, make the documentation match th
 
 For example:
 
-- You can view merge request analytics for a project. They are displayed on the Merge Request Analytics dashboard.
+- You can view merge request analytics for a project. They are displayed in the Merge Request Analytics dashboard.
 
 ## ancestor
 
@@ -459,7 +476,7 @@ Use:
 
 Instead of:
 
-- On the **Seat utilization** card, select **Assign seats**.
+- In the **Seat utilization** card, select **Assign seats**.
 
 ## Chat, GitLab Duo Chat (Classic)
 
@@ -689,7 +706,7 @@ For example:
 
 Use **confirmation dialog** to describe the dialog that asks you to confirm an action. For example:
 
-- On the confirmation dialog, select **OK**.
+- In the confirmation dialog, select **OK**.
 
 Do not use **confirmation box** or **confirmation dialog box**. See also [**dialog**](#dialog).
 
@@ -822,11 +839,11 @@ See also [**confirmation dialog**](#confirmation-dialog). For more information, 
 Before you use this term, confirm whether **dialog** or [**drawer**](#drawer) is
 the correct term for your use case.
 
-When the dialog is the location of an action, use **on** as a preposition. For example:
+When the dialog is the location of an action, use **in** as a preposition. For example:
 
-- On the **Grant permission** dialog, select **Group**.
+- In the **Grant permission** dialog, select **Group**.
 
-See also [**on**](#on).
+See also [**in, on**](#in-on).
 
 ## disable
 
@@ -1073,7 +1090,7 @@ Instead of:
 However, you can make an exception when you are writing a task and you want to refer to all
 of the fields at once. For example:
 
-1. On the left sidebar, select **Search or go to** and find your project.
+1. In the left sidebar, select **Search or go to** and find your project. If you've [turned on the new navigation](../../../user/interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
 1. Select **Settings** > **CI/CD**.
 1. Expand **General pipelines**.
 1. Complete the fields.
@@ -1246,6 +1263,13 @@ Always use **GitLab Duo Enterprise** for the add-on. Do not use **Duo Enterprise
 You can use **the GitLab Duo Enterprise add-on** (with this capitalization) but you are not required to use **add-on**
 and should leave it off when you can.
 
+## GitLab Duo plugin for JetBrains IDEs
+
+Use **GitLab Duo plugin for JetBrains IDEs** to refer to the extension. You can also use **Plugins for JetBrains IDEs**
+or **Plugins for JetBrains**.
+
+Do not use **GitLab plugin**. Ensure you include **Duo** in the name.
+
 ## GitLab Duo Pro
 
 Always use **GitLab Duo Pro** for the add-on. Do not use **Duo Pro** unless approved by legal.
@@ -1287,6 +1311,16 @@ You use the **GitLab Helm chart** to deploy **cloud-native GitLab** in a Kuberne
 If you use it in a context of describing the
 [different installation methods](_index.md#how-to-document-different-installation-methods)
 use `Helm chart (Kubernetes)`.
+
+## GitLab Operator
+
+You use **GitLab Operator** to install GitLab.
+
+Do not use **the Operator** or **Operator**.
+
+If you use it in a context of describing the
+[different installation methods](_index.md#how-to-document-different-installation-methods)
+use **GitLab Operator (Kubernetes)**.
 
 ## GitLab Pages
 
@@ -1346,7 +1380,7 @@ Use **GitLab.com** to refer to the URL or product offering. GitLab.com is the in
 Use **GitLab Workflow extension for VS Code** to refer to the extension.
 You can also use **GitLab Workflow for VS Code** or **GitLab Workflow**.
 
-For terms in VS Code, see [VS Code user interface](#vs-code-user-interface)
+For terms in VS Code, see [VS Code user interface](#vs-code-user-interface).
 
 ## GraphiQL
 
@@ -1429,6 +1463,21 @@ Do not use first-person singular. Use **you** or rewrite the phrase instead.
 ## i.e.
 
 Do not use Latin abbreviations. Use **that is** instead. ([Vale](../testing/vale.md) rule: [`LatinTerms.yml`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/doc/.vale/gitlab_base/LatinTerms.yml))
+
+## in, on
+
+Use **in** as a preposition when describing UI element locations. For example:
+
+- In the left sidebar, select **Settings** > **CI/CD**.
+- In the **Grant permission** dialog, select **Group**.
+- In the upper-right corner, select your avatar. If you've [turned on the new navigation](../../../user/interface_redesign.md#turn-new-navigation-on-or-off), this button is in the upper-right corner.
+
+Use **on** only for:
+
+- Physical objects: Use the arrow keys on your keyboard.
+- Pages as surfaces: On the **Settings** page, you can configure multiple options.
+
+Do not use **from**.
 
 ## in order to
 
@@ -1931,15 +1980,6 @@ Instead of:
 For more information, see the
 [different installation methods](_index.md#how-to-document-different-installation-methods).
 
-## on
-
-When documenting high-level UI elements, use **on** as a preposition. For example:
-
-- On the left sidebar, select **Settings** > **CI/CD**.
-- On the **Grant permission** dialog, select **Group**.
-
-Do not use **from** or **in**. For more information, see the [Microsoft Style Guide](https://learn.microsoft.com/en-us/style-guide/a-z-word-list-term-collections/f/from-vs-on).
-
 ## once
 
 The word **once** means **one time**. Don't use it to mean **after** or **when**.
@@ -2044,6 +2084,13 @@ The docs should match the case in the UI, and the page name should be bold. For 
 
 - On the **Test cases** page, ...
 
+## panel
+
+Use **panel** to refer to a main area of the [redesigned](../../../user/interface_redesign.md) GitLab UI
+that is not fixed on the side of the screen. The content of a panel changes depending on the context.
+
+See also: [names for UI elements](_index.md#names-for-ui-elements), [**top bar**, and **sidebar**](#sidebar-top-bar).
+
 ## parent
 
 Always use as a compound noun.
@@ -2077,6 +2124,13 @@ Use the specific prepositional phrase instead:
 - according to
 
 ## permissions
+
+When comparing the permissions required for certain actions, use **more** or **fewer**.
+For example:
+
+- The Guest role has fewer permissions than the Developer role.
+- To get more permissions, you must have a higher role.
+- The Owner role has the most permissions.
 
 Do not use [**roles**](#roles) and **permissions** interchangeably. Each user is assigned a role. Each role includes a set of permissions.
 
@@ -2293,6 +2347,10 @@ Instead of:
 
 - You must have the Owner role of the group.
 
+When referring to the minimum role a user must have to perform an action, use **at least**:
+
+- You must have at least the Developer role.
+
 Do not use **roles** and [**permissions**](#permissions) interchangeably. Each user is assigned a role. Each role includes a set of permissions.
 
 Two types of roles exist: [custom](#custom-role) and [default](#default-role).
@@ -2354,6 +2412,19 @@ To specify offerings and operating systems use:
 
 Do not use **hosted runners** without the **GitLab-** prefix or without the offering or operating system.
 
+## rules
+
+When describing rules and their behavior, use:
+
+- **Restrictive** to describe rules that limit or constrain actions.
+- **Permissive** to describe rules that allow or enable actions.
+
+For example:
+
+- This rule is more restrictive than the default setting.
+- Permissive rules allow broader access.
+- When multiple rules match, the most restrictive rule applies.
+
 ## (s)
 
 Do not use **(s)** to make a word optionally plural. It can slow down comprehension. For example:
@@ -2380,7 +2451,9 @@ to the GitLab [reference architectures](../../../administration/reference_archit
 
 ## search
 
-When you search, you type a string in the search box on the left sidebar.
+When you search, you type a string in the search box in the left sidebar.
+If you've [turned on the new navigation](../../../user/interface_redesign.md#turn-new-navigation-on-or-off),
+this field is on the top bar.
 The search results are displayed on a search page.
 
 Searching is different from [filtering](#filter).
@@ -2467,6 +2540,15 @@ Do not confuse **set up** with [**configure**](#configure).
 
 1. Set up your installation.
 1. Configure your installation.
+
+## sidebar, top bar
+
+Use **sidebar** to refer to the fixed areas on the left and right of the [redesigned](../../../user/interface_redesign.md) GitLab UI.
+Use **top bar** to refer to the top fixed area that contains the search box and a user's avatar.
+
+For the main areas that change depending on the context, use [**panel**](#panel).
+
+See also: [names for UI elements](_index.md#names-for-ui-elements).
 
 ## sign in, sign-in
 

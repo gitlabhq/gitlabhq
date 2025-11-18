@@ -1,11 +1,10 @@
 - return unless context.self_deletion_scheduled?
 
-= render Pajamas::CardComponent.new(body_options: { class: 'gl-bg-orange-50' }) do |c|
+= render Pajamas::CardComponent.new do |c|
   - c.with_header do
-    .gl-flex.gl-grow
-      %h4.gl-text-base.gl-text-warning.gl-leading-24.gl-m-0= restore_namespace_title(context)
+    %h4.gl-text-base.gl-leading-24.gl-m-0= restore_namespace_title(context)
 
   - c.with_body do
     %p= restore_namespace_scheduled_for_deletion_message(context)
-    = render Pajamas::ButtonComponent.new(variant: :confirm, method: :post, href: restore_namespace_path(context)) do
-      = restore_namespace_title(context)
+    = render Pajamas::ButtonComponent.new(method: :post, href: restore_namespace_path(context)) do
+      = _('Restore')

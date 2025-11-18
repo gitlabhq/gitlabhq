@@ -231,7 +231,7 @@ glab cluster agent update-kubeconfig --agent '<agent-id>' --kubeconfig ~/gitlab.
 
 You can configure access to a Kubernetes cluster using a long-lived personal access token:
 
-1. On the left sidebar, select **Search or go to** and find your project.
+1. On the left sidebar, select **Search or go to** and find your project. If you've [turned on the new navigation](../../interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
 1. Select **Operate** > **Kubernetes clusters** and retrieve the numerical ID of the agent you want to access. You need the ID to construct the full API token.
 1. Create a [personal access token](../../profile/personal_access_tokens.md) with the `k8s_proxy` scope. You need the access token to construct the full API token.
 1. Construct `kubeconfig` entries to access the cluster:

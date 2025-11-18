@@ -370,16 +370,16 @@ RSpec.describe 'Admin updates settings', feature_category: :shared do
         expect(current_settings.terminal_max_session_time).to eq(15)
       end
 
-      context 'Configure Gitpod' do
-        it 'changes gitpod settings' do
+      context 'Configure Ona' do
+        it 'changes ona settings' do
           page.within('#js-gitpod-settings') do
-            check 'Enable Gitpod integration'
-            fill_in 'Gitpod URL', with: 'https://gitpod.test/'
+            check 'Enable Ona integration'
+            fill_in 'Ona URL', with: 'https://ona.test/'
             click_button 'Save changes'
           end
 
           expect(page).to have_content 'Application settings saved successfully'
-          expect(current_settings.gitpod_url).to eq('https://gitpod.test/')
+          expect(current_settings.gitpod_url).to eq('https://ona.test/')
           expect(current_settings.gitpod_enabled).to be(true)
         end
       end
@@ -473,6 +473,31 @@ RSpec.describe 'Admin updates settings', feature_category: :shared do
               expect(page).to have_field('application_setting_use_clickhouse_for_analytics', disabled: true)
             end
           end
+        end
+      end
+
+      context 'Web IDE Settings' do
+        it 'changes and restores web ide extension host domain setting' do
+          default_host_domain = ::WebIde::ExtensionMarketplace::DEFAULT_EXTENSION_HOST_DOMAIN
+
+          page.within('#js-web-ide-settings') do
+            expect(page).to have_field('Extension host domain', with: default_host_domain)
+
+            fill_in 'Extension host domain', with: 'example.com'
+            click_button 'Save changes'
+          end
+
+          expect(page).to have_content 'Application settings saved successfully'
+          expect(current_settings.vscode_extension_marketplace_extension_host_domain)
+            .to eq('example.com')
+
+          page.within('#js-web-ide-settings') do
+            click_link 'Restore default domain'
+          end
+
+          expect(page).to have_content 'The Web IDE extension host domain was restored to its default value.'
+          expect(current_settings.vscode_extension_marketplace_extension_host_domain)
+            .to eq(default_host_domain)
         end
       end
     end
@@ -1216,6 +1241,16 @@ RSpec.describe 'Admin updates settings', feature_category: :shared do
           end
 
           let_it_be(:application_setting_key) { :project_api_limit }
+
+          it_behaves_like 'API rate limit setting'
+        end
+
+        context 'for GET /projects/:id/members/all API requests' do
+          let_it_be(:rate_limit_field) do
+            format(_('Maximum requests to the %{api_name} API per %{timeframe} per user or IP address'), api_name: 'GET /projects/:id/members/all', timeframe: 'minute')
+          end
+
+          let_it_be(:application_setting_key) { :project_members_api_limit }
 
           it_behaves_like 'API rate limit setting'
         end

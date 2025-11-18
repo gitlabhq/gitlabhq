@@ -12,9 +12,14 @@ module Types
 
         implements ::Types::WorkItems::WidgetInterface
 
+        def self.authorization_scopes
+          super + [:ai_workflows]
+        end
+
         field :milestone,
           ::Types::MilestoneType,
           skip_type_authorization: [:read_milestone],
+          scopes: [:api, :read_api, :ai_workflows],
           null: true,
           description: 'Milestone of the work item.'
       end

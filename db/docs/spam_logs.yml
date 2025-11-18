@@ -8,5 +8,14 @@ description: Logs users flagged by the Akismet anti-spam integration.
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/2266
 milestone: '8.5'
 gitlab_schema: gitlab_main_org
+desired_sharding_key:
+  organization_id:
+    references: organizations
+    backfill_via:
+      parent:
+        foreign_key: user_id
+        table: users
+        table_primary_key: id
+        sharding_key: organization_id
+        belongs_to: user
 table_size: small
-sharding_key_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/553470

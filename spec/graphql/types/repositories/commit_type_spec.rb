@@ -11,11 +11,11 @@ RSpec.describe GitlabSchema.types['Commit'], feature_category: :source_code_mana
 
   it 'contains attributes related to commit' do
     expect(described_class).to have_graphql_fields(
-      :id, :sha, :short_id, :title, :full_title, :full_title_html, :description, :description_html, :message,
-      :title_html, :authored_date,
-      :author_name, :author_email, :author_gravatar, :author, :diffs, :web_url, :web_path,
-      :pipelines, :signature_html, :signature, :committer_name, :committer_email, :committed_date,
-      :name
+      :id, :parent_sha, :sha, :short_id, :title, :full_title, :full_title_html,
+      :description, :description_html, :message, :title_html, :authored_date,
+      :author_name, :author_email, :author_gravatar, :author, :diffs, :web_url,
+      :web_path, :pipelines, :signature_html, :signature, :committer_name,
+      :committer_email, :committed_date, :name
     )
   end
 

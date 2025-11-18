@@ -80,6 +80,7 @@ module Gitlab
         @target_details = @context[:target_details]
         @authentication_event = @context.fetch(:authentication_event, false)
         @authentication_provider = @context[:authentication_provider]
+        @organization = @context[:organization]
 
         return if @is_audit_event_yaml_defined
 
@@ -157,7 +158,8 @@ module Gitlab
           user_name: @author.name,
           ip_address: Gitlab::RequestContext.instance.client_ip || @author.current_sign_in_ip,
           result: AuthenticationEvent.results[:success],
-          provider: @authentication_provider
+          provider: @authentication_provider,
+          organization: @organization
         }
       end
 

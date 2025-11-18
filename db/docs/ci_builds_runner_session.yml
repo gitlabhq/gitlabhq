@@ -3,7 +3,7 @@ table_name: ci_builds_runner_session
 classes:
 - Ci::BuildRunnerSession
 feature_categories:
-- runner
+- runner_core
 description: Store build-related runner session. Data is removed after the respective
   job transitions from running to any state.
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/6208

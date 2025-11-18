@@ -8,7 +8,6 @@ Gitlab/Rails/AttrEncrypted:
     - 'app/models/bulk_imports/configuration.rb'
     - 'app/models/chat_name.rb'
     - 'app/models/cloud_connector/service_access_token.rb'
-    - 'app/models/clusters/integrations/prometheus.rb'
     - 'app/models/clusters/kubernetes_namespace.rb'
     - 'app/models/clusters/platforms/kubernetes.rb'
     - 'app/models/clusters/providers/aws.rb'

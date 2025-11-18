@@ -123,6 +123,24 @@ RSpec.describe Gitlab::Ci::Pipeline::Expression::Statement do
       '("string" == ("string" || (("1" == "1") && ("2" == "3"))))' | true
     end
 
+    context 'with input references' do
+      let(:variables) { { inputs: { 'cloud_provider' => 'aws', 'environment' => 'production' } } }
+
+      where(:expression, :value) do
+        '$[[ inputs.cloud_provider ]] == "aws"'                                                      | true
+        '$[[ inputs.cloud_provider ]] == "gcp"'                                                      | false
+        '$[[ inputs.cloud_provider ]] == "aws" && $[[ inputs.environment ]] == "production"'         | true
+      end
+
+      with_them do
+        let(:text) { expression }
+
+        it "evaluates to `#{params[:value].inspect}`" do
+          expect(evaluate).to eq(value)
+        end
+      end
+    end
+
     with_them do
       let(:text) { expression }
 
@@ -190,6 +208,58 @@ RSpec.describe Gitlab::Ci::Pipeline::Expression::Statement do
         let(:text) { expression }
 
         it { is_expected.to eq(result) }
+      end
+    end
+  end
+
+  describe '#input_names' do
+    subject(:input_names) { statement.input_names }
+
+    context 'with simple input expression' do
+      let(:text) { '$[[ inputs.cloud_provider ]] == "aws"' }
+
+      it { is_expected.to eq(['cloud_provider']) }
+    end
+
+    context 'with multiple inputs using AND' do
+      let(:text) { '$[[ inputs.a ]] == "x" && $[[ inputs.b ]] == "y"' }
+
+      it { is_expected.to contain_exactly('a', 'b') }
+    end
+
+    context 'with multiple inputs using OR' do
+      let(:text) { '$[[ inputs.env ]] == "prod" || $[[ inputs.env ]] == "stage"' }
+
+      it 'deduplicates repeated inputs' do
+        expect(input_names).to eq(['env'])
+      end
+    end
+
+    context 'with nested expressions' do
+      let(:text) { '($[[ inputs.a ]] == "x" && $[[ inputs.b ]] == "y") || $[[ inputs.c ]] == "z"' }
+
+      it { is_expected.to contain_exactly('a', 'b', 'c') }
+    end
+
+    context 'with inputs and variables mixed' do
+      let(:text) { '$[[ inputs.region ]] == "us" && $CI_COMMIT_BRANCH == "main"' }
+
+      it 'returns only inputs, not variables' do
+        expect(input_names).to eq(['region'])
+      end
+    end
+
+    context 'with no inputs' do
+      let(:text) { '$PRESENT_VARIABLE == "value"' }
+
+      it { is_expected.to be_empty }
+    end
+
+    context 'with invalid expression' do
+      let(:text) { 'invalid &&' }
+
+      it 'returns empty array on error' do
+        expect(input_names).to be_empty
       end
     end
   end

@@ -33,6 +33,49 @@ RSpec.describe Gitlab::Database::Dictionary, feature_category: :database do
     end
   end
 
+  describe '#find_detach_allowed_partitions' do
+    around do |example|
+      described_class.instance_variable_set(:@entries, nil)
+      test_yaml_path = Rails.root.join('db/docs/p_foo_table.yml')
+      test_yaml_path.open('w') do |f|
+        f.write <<~YAML
+          ---
+          table_name: p_foo_table
+          classes:
+          - PFooTable
+          feature_categories:
+          - database
+          description: Table that does nothing more than contain partition detach info
+          introduced_by_url: https://gitlab.com/
+          milestone: '16.5'
+          gitlab_schema: gitlab_main_org
+          sharding_key:
+            project_id: projects
+          table_size: small
+          partition_detach_info:
+            - partition_name: foo_table_100
+              bounds_clause: "FOR VALUES IN ('100')"
+              required_constraint: "((partition_id = 100))"
+              parent_schema: "public"
+
+        YAML
+      end
+      example.run
+      test_yaml_path.unlink
+    end
+
+    it 'returns a hash with the parent table and detachable partition info' do
+      expect(dictionary.find_detach_allowed_partitions).to include(
+        {
+          foo_table_100: { bounds_clause: "FOR VALUES IN ('100')",
+                           required_constraint: "((partition_id = 100))",
+                           parent_table: "p_foo_table",
+                           parent_schema: "public" }
+        }
+      )
+    end
+  end
+
   describe '#to_name_and_schema_mapping' do
     it 'returns a hash of name and schema mappings' do
       expect(dictionary.to_name_and_schema_mapping).to include(

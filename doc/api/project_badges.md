@@ -1,5 +1,5 @@
 ---
-stage: Runtime
+stage: Tenant Scale
 group: Organizations
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 title: Project badges API
@@ -12,7 +12,7 @@ title: Project badges API
 
 {{< /details >}}
 
-Use this API to manage and review [project badges](../user/project/badges.md).
+Use this API to manage project [badges](../user/project/badges.md).
 
 Badges can include placeholders that are replaced in both the
 link and image URL. The available placeholders are:

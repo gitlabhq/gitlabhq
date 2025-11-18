@@ -1,0 +1,6 @@
+mutation securityTrackedRefsUntrack($input: SecurityTrackedRefsUntrackInput!) {
+  securityTrackedRefsUntrack(input: $input) @client {
+    untrackedRefIds
+    errors
+  }
+}

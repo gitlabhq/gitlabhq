@@ -4,9 +4,12 @@ module Packages
   module Nuget
     class Symbol < ApplicationRecord
       include FileStoreMounter
+      include ObjectStorable
       include ShaAttribute
       include Packages::Destructible
       include UpdateProjectStatistics
+
+      STORE_COLUMN = :file_store
 
       # Used in destroying orphan symbols in worker
       enum :status, default: 0, processing: 1, error: 3
@@ -66,3 +69,5 @@ module Packages
     end
   end
 end
+
+Packages::Nuget::Symbol.prepend_mod

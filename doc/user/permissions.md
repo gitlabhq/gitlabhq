@@ -13,23 +13,10 @@ description: Understand the permissions and capabilities available to each user 
 
 {{< /details >}}
 
-When you add a user to a project or group, you assign them a role.
-The role determines which actions they can take in GitLab.
+Roles define a user's permissions in a group or project.
 
-If you add a user to both a project's group and the
-project itself, the higher role is used.
-
-GitLab [administrators](../administration/_index.md) have all permissions.
-
-<!-- Keep these tables sorted according the following rules in order:
-1. By minimum role.
-2. By the object being accessed (for example, issue, security dashboard, or pipeline)
-3. By the action: view, create, change, edit, manage, run, delete, all others
-4. Alphabetically.
-
-List only one action (for example, view, create, or delete) per line.
-It's okay to list multiple related objects per line (for example, "View pipelines and pipeline details").
--->
+Users with [administrator access](../administration/_index.md) have all permissions and can
+perform any action.
 
 ## Roles
 
@@ -39,24 +26,49 @@ It's okay to list multiple related objects per line (for example, "View pipeline
 
 {{< /history >}}
 
-You can assign users a default role or a [custom role](custom_roles/_index.md).
+When you add a user to a group or project, you assign them a role.
+The role determines their permissions. Assign either a [default role](#default-roles)
+or a [custom role](custom_roles/_index.md).
 
-The available default roles are:
+A user can have different roles for each group and project. Users always retain the
+permissions for their highest role. For example, if a user has:
 
-- Guest (This role applies to [private and internal projects](public_access.md) only.)
-- Planner
-- Reporter
-- Developer
-- Maintainer
-- Owner
-- Minimal Access (available for the top-level group only)
+- The Maintainer role for a parent group
+- The Developer role for a project in that group
 
-A user assigned the Guest role has the least permissions,
-and the Owner has the most.
+The user inherits the permissions for their Maintainer role in the project.
 
-By default, all users can create top-level groups and change their
-usernames. A GitLab administrator can [change this behavior](../administration/user_settings.md)
-for the GitLab instance.
+To view assigned roles, go to the **Members** page for a
+[group](group/_index.md#view-group-members) or
+[project](project/members/_index.md#view-project-members).
+
+### Default roles
+
+The following default roles are available:
+
+| Role           | Description |
+| -------------- | ----------- |
+| Minimal Access | View limited group information without access to projects. For more information, see [Users with Minimal Access](#users-with-minimal-access). |
+| Guest          | View and comment on issues and epics. Cannot push code or access repository. This role applies to [private and internal projects](public_access.md) only. |
+| Planner        | Create and manage issues, epics, milestones, and iterations. Focused on project planning and tracking with the ability to view and collaborate on code changes. |
+| Reporter       | View code, create issues, and generate reports. Cannot push code or manage protected branches. |
+| Developer      | Push code to non-protected branches, create merge requests, and run CI/CD pipelines. Cannot manage project settings. |
+| Maintainer     | Manage branches, merge requests, CI/CD settings, and project members. Cannot delete the project. |
+| Owner          | Full control over the project or group, including deletion and visibility settings. |
+
+By default, all users can create top-level groups and change their usernames.
+Users with [administrator access](../administration/user_settings.md) can change this behavior.
+
+<!--
+Sort these permissions according the following rules in order:
+1. By minimum role.
+2. By the object being accessed (for example, issue, security dashboard, or pipeline)
+3. By the action: view, create, change, edit, manage, run, delete, all others
+4. Alphabetically.
+
+List only one action (for example, view, create, or delete) per line.
+It's okay to list multiple related objects per line (for example, "View pipelines and pipeline details").
+-->
 
 ## Group members permissions
 
@@ -158,8 +170,9 @@ Group permissions for [group features](group/_index.md):
 | View [Billing](../subscriptions/manage_subscription.md#view-subscription) <sup>4</sup>      |       |         |          |           |            |   ✓   |
 | View group [Usage quotas](storage_usage_quotas.md) page <sup>4</sup>                        |       |         |          |           |            |   ✓   |
 | [Migrate group](group/import/_index.md)                                                     |       |         |          |           |            |   ✓   |
-| Archive group                                                                                |       |         |          |           |            |   ✓   |
+| Archive group                                                                               |       |         |          |           |            |   ✓   |
 | Delete group                                                                                |       |         |          |           |            |   ✓   |
+| Transfer group                                                                              |       |         |          |           |            |   ✓   |
 | Manage [subscriptions, storage, and compute minutes](../subscriptions/gitlab_com/_index.md) |       |         |          |           |            |   ✓   |
 | Manage [group access tokens](group/settings/group_access_tokens.md)                         |       |         |          |           |            |   ✓   |
 | Change group visibility level                                                               |       |         |          |           |            |   ✓   |
@@ -190,6 +203,7 @@ Group permissions for [group features](group/_index.md):
 | [Search](search/_index.md) epics <sup>1</sup>                                       |   ✓   |    ✓    |    ✓     |     ✓     |     ✓      |   ✓   |
 | Add issues to an [epic](group/epics/_index.md) <sup>2</sup>                         |   ✓   |    ✓    |    ✓     |     ✓     |     ✓      |   ✓   |
 | Add [child epics](group/epics/manage_epics.md#multi-level-child-epics) <sup>3</sup> |   ✓   |    ✓    |    ✓     |     ✓     |     ✓      |   ✓   |
+| Add parent epic <sup>4</sup>                                                        |   ✓   |    ✓    |    ✓     |     ✓     |     ✓      |   ✓   |
 | Add internal notes                                                                  |       |    ✓    |    ✓     |     ✓     |     ✓      |   ✓   |
 | Create epics                                                                        |       |    ✓    |    ✓     |     ✓     |     ✓      |   ✓   |
 | Update epic details                                                                 |       |    ✓    |    ✓     |     ✓     |     ✓      |   ✓   |
@@ -201,6 +215,7 @@ Group permissions for [group features](group/_index.md):
 1. You must have permission to [view the epic](group/epics/manage_epics.md#who-can-view-an-epic).
 1. You must have permission to [view the epic](group/epics/manage_epics.md#who-can-view-an-epic) and edit the issue.
 1. You must have permission to [view](group/epics/manage_epics.md#who-can-view-an-epic) the parent and child epics.
+1. You must have permission to [view](group/epics/manage_epics.md#who-can-view-an-epic) the parent epic.
 
 Group permissions for [wikis](project/wiki/group.md):
 
@@ -219,13 +234,15 @@ Group permissions for [wikis](project/wiki/group.md):
 
 ### Packages and registries group permissions
 
-Group permissions for [container registry](packages/_index.md):
+Group permissions for the [package and container registry](packages/_index.md):
 
 | Action                                          | Guest | Planner | Reporter | Developer | Maintainer | Owner |
 | ----------------------------------------------- | :---: | :-----: | :------: | :-------: | :--------: | :---: |
 | Pull container registry images <sup>1</sup>     |   ✓   |    ✓    |    ✓     |     ✓     |     ✓      |   ✓   |
 | Pull container images with the dependency proxy |   ✓   |    ✓    |    ✓     |     ✓     |     ✓      |   ✓   |
 | Delete container registry images                |       |         |          |     ✓     |     ✓      |   ✓   |
+| Configure a virtual registry                    |       |         |          |           |     ✓      |   ✓   |
+| Pull an artifact from a virtual registry        |   ✓   |         |    ✓     |     ✓     |     ✓      |   ✓   |
 
 **Footnotes**
 
@@ -414,7 +431,8 @@ Project Owners can perform any listed action, and can delete pipelines:
    and [`artifacts:public: false`](../ci/yaml/_index.md#artifactspublic) is not set on the job.
    <br>Guests: Only if **Project-based pipeline visibility** is enabled and
    `artifacts:public: false` is not set on the job.<br>Reporters: Only if `artifacts:public: false`
-   is not set on the job.
+   is not set on the job.<br>The `artifacts:public` setting only affects GitLab UI and API access.
+   CI/CD job tokens can still access artifacts with the runner API.
 4. Guests: Only if **Project-based pipeline visibility** is enabled.
 5. Reporters: Only if the user is [part of a group with access to the protected environment](../ci/environments/protected_environments.md#deployment-only-access-to-protected-environments).
    <br>Developers and maintainers: Only if the user is [allowed to deploy to the protected environment](../ci/environments/protected_environments.md#protecting-environments).
@@ -561,7 +579,7 @@ Project permissions for [issues](project/issues/_index.md):
 | Reopen [test cases](../ci/test_cases/_index.md)                                   |       |    ✓    |    ✓     |     ✓     |     ✓      |   ✓   |
 | [Import](project/issues/csv_import.md) issues from a CSV file                     |       |    ✓    |          |     ✓     |     ✓      |   ✓   |
 | [Export](project/issues/csv_export.md) issues to a CSV file                       |   ✓   |    ✓    |    ✓     |     ✓     |     ✓      |   ✓   |
-| Delete issues                                                                     |       |         |          |           |            |   ✓   |
+| Delete issues                                                                     |       |    ✓    |          |           |            |   ✓   |
 | Manage [Feature flags](../operations/feature_flags.md)                            |       |         |          |     ✓     |     ✓      |   ✓   |
 
 **Footnotes**
@@ -800,11 +818,12 @@ Project permissions for [merge requests](project/merge_requests/_index.md):
 | ----------------------------------------------------------------------------------------- | :---: | :-----: | :------: | :-------: | :--------: | :---: |
 | [View](project/merge_requests/_index.md#view-merge-requests) a merge request <sup>1</sup> |   ✓   |    ✓    |    ✓     |     ✓     |     ✓      |   ✓   |
 | [Search](search/_index.md) merge requests and comments <sup>1</sup>                       |   ✓   |         |    ✓     |     ✓     |     ✓      |   ✓   |
+| [Approve](project/merge_requests/approvals/_index.md) merge requests <sup>2</sup>         |       |    ✓    |    ✓     |     ✓     |     ✓      |   ✓   |
 | Add internal note                                                                         |       |    ✓    |    ✓     |     ✓     |     ✓      |   ✓   |
 | Comment and add suggestions                                                               |       |    ✓    |    ✓     |     ✓     |     ✓      |   ✓   |
 | Create [snippets](snippets.md)                                                            |       |         |    ✓     |     ✓     |     ✓      |   ✓   |
-| Create [merge request](project/merge_requests/creating_merge_requests.md) <sup>2</sup>    |       |         |          |     ✓     |     ✓      |   ✓   |
-| Update merge request details <sup>3</sup>                                                 |       |         |          |     ✓     |     ✓      |   ✓   |
+| Create [merge request](project/merge_requests/creating_merge_requests.md) <sup>3</sup>    |       |         |          |     ✓     |     ✓      |   ✓   |
+| Update merge request details <sup>4</sup>                                                 |       |         |          |     ✓     |     ✓      |   ✓   |
 | Manage [merge request settings](project/merge_requests/approvals/settings.md)             |       |         |          |           |     ✓      |   ✓   |
 | Manage [merge request approval rules](project/merge_requests/approvals/rules.md)          |       |         |          |           |     ✓      |   ✓   |
 | Delete merge request                                                                      |       |         |          |           |            |   ✓   |
@@ -816,12 +835,15 @@ Project permissions for [merge requests](project/merge_requests/_index.md):
    must be given explicit access (at least the **Reporter** role) even if the project is internal. Users
    with the Guest role on GitLab.com are only able to perform this action on public projects because
    internal visibility is not available.
+1. Approval from Planner and Reporter roles is available only if
+   [enabled for the project](project/merge_requests/approvals/rules.md#enable-approval-permissions-for-additional-users).
 1. In projects that accept contributions from external members, users can create, edit, and close their
    own merge requests. For **private** projects, this excludes the Guest role as those users
    [cannot clone private projects](public_access.md#private-projects-and-groups). For **internal**
    projects, includes users with read-only access to the project, as
    [they can clone internal projects](public_access.md#internal-projects-and-groups).
-1. For information on eligible approvers for merge requests, see [eligible approvers](project/merge_requests/approvals/rules.md#eligible-approvers).
+1. In projects that accept contributions from external members, users can create, edit, and close their
+   own merge requests. They cannot edit some fields, like assignees, reviewers, labels, and milestones.
 
 ### User management
 
@@ -831,7 +853,7 @@ Project permissions for [user management](project/members/_index.md).
 | ---------------------------------------------------------------- | :---: | :-----: | :------: | :-------: | :--------: | :---: |
 | View 2FA status of members                                       |       |         |          |           |     ✓      |   ✓   |
 | Manage [project members](project/members/_index.md) <sup>1</sup> |       |         |          |           |     ✓      |   ✓   |
-| Share (invite) projects with groups <sup>2</sup>                 |       |         |          |           |     ✓      |   ✓   |
+| Share (invite) projects with groups <sup>2</sup>                 |       |         |          |           |            |   ✓   |
 
 **Footnotes**
 
@@ -876,7 +898,7 @@ You can use the Minimal Access role with [SAML SSO for GitLab.com groups](group/
 to control access to groups and projects in the group hierarchy. You can set the default role to
 Minimal Access for members automatically added to the top-level group through SSO.
 
-1. On the left sidebar, select **Search or go to** and find your group.
+1. On the left sidebar, select **Search or go to** and find your group. If you've [turned on the new navigation](interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
 1. Select **Settings** > **SAML SSO**.
 1. From the **Default membership role** dropdown list, select **Minimal Access**.
 1. Select **Save changes**.
@@ -888,7 +910,7 @@ Because of an [outstanding issue](https://gitlab.com/gitlab-org/gitlab/-/issues/
 - Signs in with standard web authentication, they receive a `404` error when accessing the parent group.
 - Signs in with Group SSO, they receive a `404` error immediately because they are redirected to the parent group page.
 
-To work around the issue, give these users the Guest role or higher to any project or subgroup in the parent group. Guest users consume a license seat in the Premium tier but do not in the Ultimate tier.
+To work around the issue, give these users at least the Guest role to any project or subgroup in the parent group. Guest users consume a license seat in the Premium tier but do not in the Ultimate tier.
 
 ## Related topics
 

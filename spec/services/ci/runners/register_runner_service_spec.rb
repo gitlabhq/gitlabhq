@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe ::Ci::Runners::RegisterRunnerService, '#execute', :freeze_time, feature_category: :runner do
+RSpec.describe ::Ci::Runners::RegisterRunnerService, '#execute', :freeze_time, feature_category: :runner_core do
   let(:registration_token) { 'abcdefg123456' }
   let(:token) {}
   let(:args) { {} }

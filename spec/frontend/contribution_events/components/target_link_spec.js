@@ -1,7 +1,7 @@
 import { GlLink } from '@gitlab/ui';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import TargetLink from '~/contribution_events/components/target_link.vue';
-import { eventApproved, eventJoined } from '../utils';
+import { eventApproved, eventPushed } from '../utils';
 
 describe('TargetLink', () => {
   let wrapper;
@@ -40,7 +40,8 @@ describe('TargetLink', () => {
 
   describe('when target type is not defined', () => {
     beforeEach(() => {
-      createComponent({ propsData: { event: eventJoined() } });
+      const event = { ...eventPushed(), target: {} };
+      createComponent({ propsData: { event } });
     });
 
     it('renders nothing', () => {

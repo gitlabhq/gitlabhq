@@ -50,10 +50,15 @@ export default {
         };
       });
     },
+    totalPages() {
+      return Math.ceil(this.items.length / this.pageSize);
+    },
   },
   watch: {
     items() {
-      this.currentPage = 1;
+      if (this.currentPage > this.totalPages && this.totalPages > 0) {
+        this.currentPage = this.totalPages;
+      }
     },
   },
   methods: {
@@ -65,6 +70,10 @@ export default {
       const actions = item.actions || [];
 
       return actions.find((action) => action.name === 'delete-pod') || null;
+    },
+    // eslint-disable-next-line vue/no-unused-properties -- triggered from outside of the component
+    resetPagination() {
+      this.currentPage = 1;
     },
   },
   i18n: {

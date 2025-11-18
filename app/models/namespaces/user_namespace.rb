@@ -28,6 +28,11 @@ module Namespaces
       'User'
     end
 
+    override :owner_entity
+    def owner_entity
+      owner
+    end
+
     def owners
       Array.wrap(owner)
     end

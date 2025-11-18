@@ -26,7 +26,6 @@
     "InstanceAuditEventStreamingDestination"
   ],
   "BaseDiscussionInterface": [
-    "AbuseReportDiscussion",
     "Discussion"
   ],
   "BaseHeaderInterface": [
@@ -34,7 +33,6 @@
     "AuditEventsStreamingInstanceHeader"
   ],
   "BaseNoteInterface": [
-    "AbuseReportNote",
     "Note"
   ],
   "CiJobInterface": [
@@ -119,6 +117,10 @@
     "ExternalAuditEventDestination",
     "InstanceExternalAuditEventDestination"
   ],
+  "GitlabSubscriptionUsageEventLocation": [
+    "Group",
+    "Project"
+  ],
   "GoogleCloudArtifactRegistryArtifact": [
     "GoogleCloudArtifactRegistryDockerImage"
   ],
@@ -144,7 +146,6 @@
     "CiJob"
   ],
   "LabelInterface": [
-    "AbuseReportLabel",
     "Label"
   ],
   "MarkdownPaths": [
@@ -215,6 +216,10 @@
     "PendingGroupMember",
     "PendingProjectMember"
   ],
+  "PersonalAccessTokenScope": [
+    "AccessTokenGranularScope",
+    "AccessTokenLegacyScope"
+  ],
   "PipelineInterface": [
     "Pipeline",
     "PipelineMinimalAccess"
@@ -246,16 +251,16 @@
     "LfsObjectRegistry",
     "MergeRequestDiffRegistry",
     "PackageFileRegistry",
+    "PackagesNugetSymbolRegistry",
     "PagesDeploymentRegistry",
     "PipelineArtifactRegistry",
+    "ProjectRepositoryRegistry",
     "ProjectWikiRepositoryRegistry",
     "SnippetRepositoryRegistry",
     "TerraformStateVersionRegistry",
     "UploadRegistry"
   ],
   "ResolvableInterface": [
-    "AbuseReportDiscussion",
-    "AbuseReportNote",
     "Discussion",
     "Note"
   ],

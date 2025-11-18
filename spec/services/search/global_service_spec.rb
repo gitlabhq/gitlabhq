@@ -95,4 +95,59 @@ RSpec.describe Search::GlobalService, feature_category: :global_search do
       end
     end
   end
+
+  describe '#scope' do
+    subject(:service) { described_class.new(nil, search: "searchable", scope: scope) }
+
+    context 'when no scope is passed' do
+      let(:scope) { nil }
+
+      it 'returns the first allowed scope which the user has permission for' do
+        first_allowed_scope = service.allowed_scopes.first
+
+        expect(service.scope).to eq(first_allowed_scope)
+      end
+
+      context 'and there is a default scope set' do
+        before do
+          stub_application_setting(default_search_scope: 'users')
+        end
+
+        it 'returns the default scope' do
+          expect(service.scope).to eq('users')
+        end
+
+        context 'when default scope is not included in allowed_scopes' do
+          before do
+            # epics are EE only
+            stub_application_setting(default_search_scope: 'epics')
+          end
+
+          it 'chooses the first allowed scope' do
+            first_allowed_scope = service.allowed_scopes.first
+
+            expect(service.scope).to eq(first_allowed_scope)
+          end
+        end
+      end
+    end
+
+    context 'when scope passed is included in allowed_scopes' do
+      let(:scope) { 'issues' }
+
+      it 'returns that scope' do
+        expect(service.scope).to eq('issues')
+      end
+    end
+
+    context 'when scope passed is not included in allowed_scopes' do
+      let(:scope) { 'epics' }
+
+      it 'chooses the first allowed scope' do
+        first_allowed_scope = service.allowed_scopes.first
+
+        expect(service.scope).to eq(first_allowed_scope)
+      end
+    end
+  end
 end

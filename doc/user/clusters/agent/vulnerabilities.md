@@ -54,7 +54,7 @@ The `cadence` field is required. GitLab supports the following types of CRON syn
 
 {{< alert type="note" >}}
 
-Other elements of the [CRON syntax](https://docs.oracle.com/cd/E12058_01/doc/doc.1014/e12030/cron_expressions.htm) may work in the cadence field if supported by the [cron](https://github.com/robfig/cron) we are using in our implementation, however, GitLab does not officially test or support them.
+Other elements of the [CRON syntax](https://docs.oracle.com/cd/E12058_01/doc/doc.1014/e12030/cron_expressions.htm) may work in the cadence field if supported by the [cron](https://github.com/robfig/cron) used in your implementation. However, GitLab does not officially test or support them.
 
 {{< /alert >}}
 
@@ -131,7 +131,7 @@ The keys for a schedule rule are:
 
 {{< alert type="note" >}}
 
-Other elements of the [CRON syntax](https://docs.oracle.com/cd/E12058_01/doc/doc.1014/e12030/cron_expressions.htm) may work in the cadence field if supported by the [cron](https://github.com/robfig/cron) we are using in our implementation, however, GitLab does not officially test or support them.
+Other elements of the [CRON syntax](https://docs.oracle.com/cd/E12058_01/doc/doc.1014/e12030/cron_expressions.htm) may work in the cadence field if supported by the [cron](https://github.com/robfig/cron) used in your implementation. However, GitLab does not officially test or support them.
 
 {{< /alert >}}
 
@@ -326,7 +326,7 @@ container_scanning:
 
 To view vulnerability information in GitLab:
 
-1. On the left sidebar, select **Search or go to** and find the project that contains the agent configuration file.
+1. On the left sidebar, select **Search or go to** and find the project that contains the agent configuration file. If you've [turned on the new navigation](../../interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
 1. Select **Operate** > **Kubernetes clusters**.
 1. Select the **Agent** tab.
 1. Select an agent to view the cluster vulnerabilities.

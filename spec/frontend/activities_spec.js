@@ -1,46 +1,41 @@
-/* eslint-disable no-unused-expressions, no-prototype-builtins, no-new, no-shadow */
-
-import $ from 'jquery';
 import htmlEventFilter from 'test_fixtures_static/event_filter.html';
 import { setHTMLFixture, resetHTMLFixture } from 'helpers/fixtures';
 import Activities from '~/activities';
-import Pager from '~/pager';
+import { InfiniteScroller } from '~/infinite_scroller';
+import { setCookie } from '~/lib/utils/common_utils';
+
+jest.mock('~/infinite_scroller');
+
+class FakeInfiniteScroller {
+  eventTarget = new EventTarget();
+  initialize = jest.fn();
+  destroy = jest.fn();
+}
 
 describe('Activities', () => {
-  window.gon || (window.gon = {});
-  const filters = [
-    {
-      id: 'all',
-    },
-    {
-      id: 'push',
-      name: 'push events',
-    },
-    {
-      id: 'merged',
-      name: 'merge events',
-    },
-    {
-      id: 'comments',
-    },
-    {
-      id: 'team',
-    },
+  const filterIds = [
+    'all_event_filter',
+    'push_event_filter',
+    'merged_event_filter',
+    'comments_event_filter',
+    'team_event_filter',
   ];
 
-  function getEventName(index) {
-    const filter = filters[index];
-    return filter.hasOwnProperty('name') ? filter.name : filter.id;
-  }
-
-  function getSelector(index) {
-    const filter = filters[index];
-    return `#${filter.id}_event_filter`;
-  }
-
   beforeEach(() => {
-    setHTMLFixture(htmlEventFilter);
-    jest.spyOn(Pager, 'init').mockImplementation(() => {});
+    InfiniteScroller.mockImplementation((...args) => new FakeInfiniteScroller(...args));
+    setHTMLFixture(`
+      <div class="js-infinite-scrolling-root">
+        <div class="js-infinite-scrolling-content">
+          ${htmlEventFilter}
+        </div>
+        <div class="js-infinite-scrolling-page-end">
+          <div class="js-infinite-scrolling-loading"></div>
+        </div>
+      </div>
+    `);
+    // this cookie is initially set by the server using 'set-cookie' header
+    setCookie('event_filter', filterIds[0].split('_')[0]);
+    // eslint-disable-next-line no-new
     new Activities();
   });
 
@@ -48,24 +43,23 @@ describe('Activities', () => {
     resetHTMLFixture();
   });
 
-  for (let i = 0; i < filters.length; i += 1) {
-    ((i) => {
-      describe(`when selecting ${getEventName(i)}`, () => {
-        beforeEach(() => {
-          $(getSelector(i)).click();
-        });
+  describe.each(filterIds)("when selecting tab with an id '%s'", (id) => {
+    beforeEach(() => {
+      document.getElementById(id).click();
+    });
 
-        for (let x = 0; x < filters.length; x += 1) {
-          ((x) => {
-            const shouldHighlight = i === x;
-            const testName = shouldHighlight ? 'should highlight' : 'should not highlight';
-
-            it(`${testName} ${getEventName(x)}`, () => {
-              expect($(getSelector(x)).parent().hasClass('active')).toEqual(shouldHighlight);
-            });
-          })(x);
-        }
+    it('should highlight only the active tab', () => {
+      filterIds.forEach((filterId) => {
+        expect(document.getElementById(filterId).parentElement.classList.contains('active')).toBe(
+          id === filterId,
+        );
       });
-    })(i);
-  }
+    });
+  });
+
+  it('does not activate the tab twice', () => {
+    document.getElementById(filterIds[0]).click();
+    document.getElementById(filterIds[0]).click();
+    expect(InfiniteScroller).toHaveBeenCalledTimes(1);
+  });
 });

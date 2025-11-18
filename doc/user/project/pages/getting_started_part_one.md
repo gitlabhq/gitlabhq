@@ -147,12 +147,11 @@ configuration file, `_config.yml`. If your website URL is
 baseurl: "/blog"
 ```
 
-On the contrary, if you deploy your website after forking one of
-our [default examples](https://gitlab.com/pages), the `baseurl` is
-already configured this way, as all examples there are project
-websites. If you decide to make yours a user or group website, you
-must remove this configuration from your project. For the Jekyll
-example we just mentioned, you must change Jekyll's `_config.yml` to:
+If you deploy your website after forking one of the
+[default examples](https://gitlab.com/pages), the `baseurl` is already configured this
+way. All of the examples are project websites. If you decide to make yours a user or
+group website, you must remove this configuration from your project. For the Jekyll
+example, change the Jekyll `_config.yml` to:
 
 ```yaml
 baseurl: ""

@@ -5,7 +5,7 @@ Please read the below documentations for a workflow of triaging and resolving br
 
 - https://about.gitlab.com/handbook/engineering/workflow/#triage-broken-master
 - https://gitlab.com/gitlab-org/quality/engineering-productivity/team/-/blob/main/runbooks/master-broken.md
-- https://gitlab.com/gitlab-org/gitlab/-/blob/master/doc/development/testing_guide/flaky_tests.md
+- https://gitlab.com/gitlab-org/gitlab/-/blob/master/doc/development/testing_guide/unhealthy_tests.md#flaky-tests
 --->
 
 ### Summary
@@ -16,7 +16,7 @@ Please read the below documentations for a workflow of triaging and resolving br
 
 <!-- If the pipeline failure is reproducible, provide steps to recreate the issue locally. Please use an ordered list. -->
 
-Please refer to [Flaky tests documentation](https://docs.gitlab.com/development/testing_guide/flaky_tests/) to
+Please refer to [Flaky tests documentation](https://docs.gitlab.com/development/testing_guide/unhealthy_tests/#flaky-tests/) to
 learn more about how to reproduce them.
 
 ### Proposed Resolution

@@ -1,5 +1,5 @@
 ---
-stage: Runtime
+stage: Tenant Scale
 group: Organizations
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 title: Groups API
@@ -305,7 +305,7 @@ Parameters:
 | `visibility`             | string            | no       | Limit to groups with `public`, `internal`, or `private` visibility. |
 | `with_custom_attributes` | boolean           | no       | Include [custom attributes](custom_attributes.md) in response (administrators only). |
 | `owned`                  | boolean           | no       | Limit to groups explicitly owned by the current user. |
-| `min_access_level`       | integer           | no       | Limit to groups where current user has at least this [role (`access_level`)](members.md#roles). |
+| `min_access_level`       | integer           | no       | Limit to groups where current user has at least this [role (`access_level`)](group_members.md#roles). |
 | `top_level_only`         | boolean           | no       | Limit to top-level groups, excluding all subgroups. |
 | `repository_storage`     | string            | no       | Filter by repository storage used by the group (administrators only). [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/419643) in GitLab 16.3. Premium and Ultimate only. |
 | `marked_for_deletion_on` | date              | no       | Filter by date when group was marked for deletion. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/429315) in GitLab 17.1. Premium and Ultimate only. |
@@ -531,7 +531,7 @@ Parameters:
 | `with_merge_requests_enabled` | boolean        | no       | Limit by projects with merge requests feature enabled. Default is `false`. |
 | `with_shared`                 | boolean        | no       | Include projects shared to this group. Default is `true`. |
 | `include_subgroups`           | boolean        | no       | Include projects in subgroups of this group. Default is `false`. |
-| `min_access_level`            | integer        | no       | Limit to projects where current user has at least this [role (`access_level`)](members.md#roles). |
+| `min_access_level`            | integer        | no       | Limit to projects where current user has at least this [role (`access_level`)](project_members.md#roles). |
 | `with_custom_attributes`      | boolean        | no       | Include [custom attributes](custom_attributes.md) in response (administrators only). |
 | `with_security_reports`       | boolean        | no       | Return only projects that have security reports artifacts present in any of their builds. This means "projects with security reports enabled". Default is `false`. Ultimate only. |
 
@@ -616,7 +616,7 @@ Parameters:
 | `starred`                     | boolean        | no       | Limit by projects starred by the current user. |
 | `with_issues_enabled`         | boolean        | no       | Limit by projects with issues feature enabled. Default is `false`. |
 | `with_merge_requests_enabled` | boolean        | no       | Limit by projects with merge requests feature enabled. Default is `false`. |
-| `min_access_level`            | integer        | no       | Limit to projects where current user has at least this [role (`access_level`)](members.md#roles). |
+| `min_access_level`            | integer        | no       | Limit to projects where current user has at least this [role (`access_level`)](project_members.md#roles). |
 | `with_custom_attributes`      | boolean        | no       | Include [custom attributes](custom_attributes.md) in response (administrators only). |
 
 Example response:
@@ -933,7 +933,7 @@ Parameters:
 | `statistics`             | boolean           | no       | Include group statistics (administrators only). |
 | `with_custom_attributes` | boolean           | no       | Include [custom attributes](custom_attributes.md) in response (administrators only). |
 | `owned`                  | boolean           | no       | Limit to groups explicitly owned by the current user. |
-| `min_access_level`       | integer           | no       | Limit to groups where current user has at least this [role (`access_level`)](members.md#roles). |
+| `min_access_level`       | integer           | no       | Limit to groups where current user has at least this [role (`access_level`)](group_members.md#roles). |
 | `all_available`          | boolean           | no       | When `true`, returns all accessible groups. When `false`, returns only groups where the user is a member. Defaults to `false` for users, `true` for administrators. Unauthenticated requests always return all public groups. The `owned` and `min_access_level` attributes take precedence. |
 | `active`                 | boolean           | no       | Limit by groups that are not archived and not marked for deletion. |
 
@@ -1012,7 +1012,7 @@ Parameters:
 | `statistics`             | boolean           | no       | Include group statistics (administrators only). |
 | `with_custom_attributes` | boolean           | no       | Include [custom attributes](custom_attributes.md) in response (administrators only). |
 | `owned`                  | boolean           | no       | Limit to groups explicitly owned by the current user. |
-| `min_access_level`       | integer           | no       | Limit to groups where current user has at least this [role (`access_level`)](members.md#roles). |
+| `min_access_level`       | integer           | no       | Limit to groups where current user has at least this [role (`access_level`)](group_members.md#roles). |
 | `active`                 | boolean           | no       | Limit by groups that are not archived and not marked for deletion. |
 
 ```plaintext
@@ -1125,7 +1125,7 @@ Parameters:
 | `order_by`                            | string            | no       | Order groups by `name`, `path`, `id`, or `similarity`. Default is `name`. |
 | `sort`                                | string            | no       | Order groups in `asc` or `desc` order. Default is `asc`. |
 | `visibility`                          | string            | no       | Limit to groups with `public`, `internal`, or `private` visibility. |
-| `min_access_level`                    | integer           | no       | Limit to groups where current user has at least the specified [role (`access_level`)](members.md#roles). |
+| `min_access_level`                    | integer           | no       | Limit to groups where current user has at least the specified [role (`access_level`)](group_members.md#roles). |
 | `with_custom_attributes`              | boolean           | no       | Include [custom attributes](custom_attributes.md) in response (administrators only). |
 
 ```plaintext
@@ -1200,7 +1200,7 @@ Parameters:
 | ------------------------------------- | ----------------- | -------- | ---------- |
 | `id`                                  | integer or string    | yes      | The ID or [URL-encoded path](rest/_index.md#namespaced-paths) of the group. |
 | `search`                              | string            | no       | Return the list of authorized groups matching the search criteria. |
-| `min_access_level`                    | integer           | no       | Limit to groups where current user has at least the specified [role (`access_level`)](members.md#roles). |
+| `min_access_level`                    | integer           | no       | Limit to groups where current user has at least the specified [role (`access_level`)](group_members.md#roles). |
 | `relation`                            | array of strings  | no       | Filter the groups by relation (direct or inherited). |
 | `with_custom_attributes`              | boolean           | no       | Include [custom attributes](custom_attributes.md) in response (administrators only). |
 
@@ -1405,11 +1405,11 @@ DELETE /groups/:id
 
 Parameters:
 
-| Attribute | Type           | Required | Description |
-|-----------|----------------|----------|-------------|
+| Attribute            | Type              | Required | Description |
+|----------------------|-------------------|----------|-------------|
 | `id`                 | integer or string | yes      | The ID or [URL-encoded path](rest/_index.md#namespaced-paths) of the group. |
-| `permanently_remove` | boolean/string | no       | If `true`, immediately deletes a subgroup that is already marked for deletion. Cannot delete top-level groups. Disabled on GitLab.com and Dedicated. |
-| `full_path`          | string         | no       | The full path to the subgroup. Used to confirm deletion of the subgroup. If `permanently_remove` is `true`, this attribute is required. To find the subgroup path, see the [group details](groups.md#get-a-single-group). |
+| `permanently_remove` | boolean/string    | no       | If `true`, immediately deletes a subgroup that is already marked for deletion. Cannot delete top-level groups. Disabled on GitLab.com and Dedicated. |
+| `full_path`          | string            | no       | The full path to the subgroup. Used to confirm deletion of the subgroup. If `permanently_remove` is `true`, this attribute is required. To find the subgroup path, see the [group details](groups.md#get-a-single-group). |
 
 The response is `202 Accepted` if the user has authorization.
 
@@ -1469,9 +1469,9 @@ POST /groups/:id/archive
 
 Parameters:
 
-| Attribute                             | Type              | Required | Description |
-| ------------------------------------- | ----------------- | -------- | ---------- |
-| `id`                                  | integer or string | yes      | The ID or [URL-encoded path](rest/_index.md#namespaced-paths) of the group owned by the authenticated user. |
+| Attribute | Type              | Required | Description |
+|-----------|-------------------|----------|-------------|
+| `id`      | integer or string | yes      | The ID or [URL-encoded path](rest/_index.md#namespaced-paths) of the group owned by the authenticated user. |
 
 Example response:
 
@@ -1569,9 +1569,9 @@ POST /groups/:id/unarchive
 
 Parameters:
 
-| Attribute                             | Type              | Required | Description |
-| ------------------------------------- | ----------------- | -------- | ---------- |
-| `id`                                  | integer or string | yes      | The ID or [URL-encoded path](rest/_index.md#namespaced-paths) of the group owned by the authenticated user. |
+| Attribute | Type              | Required | Description |
+|-----------|-------------------|----------|-------------|
+| `id`      | integer or string | yes      | The ID or [URL-encoded path](rest/_index.md#namespaced-paths) of the group owned by the authenticated user. |
 
 Example response:
 
@@ -1751,11 +1751,15 @@ Creates a group invitation that adds a target group to a specified group.
 POST /groups/:id/share
 ```
 
-| `id`           | integer or string | yes      | The ID or [URL-encoded path of the target group](rest/_index.md#namespaced-paths). |
-| `group_id`     | integer        | yes      | The ID of the group to invite. |
-| `group_access` | integer        | yes      | The default [role (`access_level`)](members.md#roles) to assign to the invited group. |
-| `expires_at`   | date (ISO 8601) | no       | The date the group invitation expires. |
-| `member_role_id`   | integer         | no       | The ID of a [custom role](../user/custom_roles/_index.md#assign-a-custom-role-to-an-invited-group) to assign to the invited group. If defined, `group_access` must match the base role used to create the custom role. |
+Parameters:
+
+| Attribute        | Type              | Required | Description |
+|------------------|-------------------|----------|-------------|
+| `id`             | integer or string | yes      | The ID or [URL-encoded path of the target group](rest/_index.md#namespaced-paths). |
+| `group_id`       | integer           | yes      | The ID of the group to invite. |
+| `group_access`   | integer           | yes      | The default [role (`access_level`)](group_members.md#roles) to assign to the invited group. |
+| `expires_at`     | date (ISO 8601)   | no       | The date the group invitation expires. |
+| `member_role_id` | integer           | no       | The ID of a [custom role](../user/custom_roles/_index.md#assign-a-custom-role-to-an-invited-group) to assign to the invited group. If defined, `group_access` must match the base role used to create the custom role. |
 
 Returns `200` and the group details on success.
 
@@ -2095,8 +2099,7 @@ POST /groups/:id/ldap_sync
 | --------- | ------------------- | -------- | -------------------------------------- |
 | `id`      | integer or string   | Yes      | The ID or URL-encoded path of a group. |
 
-<!--
-### Credentials inventory management
+## Credentials inventory management
 
 {{< details >}}
 
@@ -2107,7 +2110,7 @@ POST /groups/:id/ldap_sync
 
 {{< history >}}
 
-- [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/16343) in GitLab 18.1 [with a flag](../administration/feature_flags/_index.md) named `manage_pat_by_group_owners_ready`. Disabled by default.
+- [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/16343) in GitLab 18.6 [with a flag](../administration/feature_flags/_index.md) named `manage_pat_by_group_owners_ready`. Disabled by default.
 
 {{< /history >}}
 
@@ -2117,7 +2120,7 @@ Prerequisites:
 
 - You must have the Owner role for the group.
 
-#### List all personal access tokens for a group
+### List all personal access tokens for a group
 
 Lists all personal access tokens associated with enterprise users in a top-level group.
 
@@ -2159,12 +2162,12 @@ Example response:
     "user_id": 3,
     "last_used_at": "2021-10-06T17:58:37.550Z",
     "active": true,
-    "expires_at": 2025-11-08
+    "expires_at": "2025-11-08"
   }
 ]
 ```
 
-#### List all group and project access tokens for a group
+### List all group and project access tokens for a group
 
 Lists all group and project access tokens associated with a top-level-group.
 
@@ -2214,7 +2217,7 @@ Example response:
 ]
 ```
 
-#### List all SSH keys for a group
+### List all SSH keys for a group
 
 Lists all SSH public keys associated with enterprise users in a top-level-group.
 
@@ -2243,14 +2246,14 @@ Example response:
     "title":"Sample key 3",
     "created_at":"2024-12-23T05:40:11.891Z",
     "expires_at":null,
-    "last_used_at":"2024-13-23T05:40:11.891Z",
+    "last_used_at":"2024-12-23T05:40:11.891Z",
     "usage_type":"auth_and_signing",
     "user_id":3
   }
 ]
 ```
 
-#### Revoke a personal access token for an enterprise user
+### Revoke a personal access token for an enterprise user
 
 Revokes a specified personal access token for an enterprise user.
 
@@ -2260,12 +2263,12 @@ DELETE groups/:id/manage/personal_access_tokens/:id
 
 | Attribute | Type    | Required | Description         |
 |-----------|---------|----------|---------------------|
-| `id` | integer or string | yes | ID of a personal access token or the keyword `self`. |
+| `id` | integer or string | Yes | ID of a personal access token or the keyword `self`. |
 
 ```shell
 curl --request DELETE \
   --header "PRIVATE-TOKEN: <your_access_token>" \
-  --url "https://gitlab.example.com/api/v4/groups/1/personal_access_tokens/<personal_access_token_id>"
+  --url "https://gitlab.example.com/api/v4/groups/1/manage/personal_access_tokens/<personal_access_token_id>"
 ```
 
 If successful, returns `204: No Content`.
@@ -2276,7 +2279,7 @@ Other possible responses:
 - `401: Unauthorized` if the access token is invalid.
 - `403: Forbidden` if the access token does not have the required permissions.
 
-#### Revoke a group or project access token for an enterprise user
+### Revoke a group or project access token for an enterprise user
 
 Revokes a specified group or project access token for an enterprise user associated with the top-level group.
 
@@ -2286,12 +2289,12 @@ DELETE groups/:id/manage/resource_access_tokens/:id
 
 | Attribute | Type    | Required | Description         |
 |-----------|---------|----------|---------------------|
-| `id` | integer or string | yes | ID of a resource access token or the keyword `self`. |
+| `id` | integer or string | Yes | ID of a resource access token or the keyword `self`. |
 
 ```shell
 curl --request DELETE \
   --header "PRIVATE-TOKEN: <your_access_token>" \
-  --url "https://gitlab.example.com/api/v4/groups/1/resource_access_tokens/<personal_access_token_id>"
+  --url "https://gitlab.example.com/api/v4/groups/1/manage/resource_access_tokens/<personal_access_token_id>"
 ```
 
 If successful, returns `204: No Content`.
@@ -2302,7 +2305,7 @@ Other possible responses:
 - `401: Unauthorized` if the access token is invalid.
 - `403: Forbidden` if the access token does not have the required permissions.
 
-#### Delete an SSH key for an enterprise user
+### Delete an SSH key for an enterprise user
 
 Deletes a specified SSH public key for an enterprise user associated with the top-level group.
 
@@ -2314,7 +2317,7 @@ Supported attributes:
 
 | Attribute | Type    | Required | Description |
 |:----------|:--------|:---------|:------------|
-| `key_id`  | integer | yes      | ID of existing key.  |
+| `key_id`  | integer | Yes      | ID of existing key.  |
 
 If successful, returns `204: No Content`.
 
@@ -2324,7 +2327,7 @@ Other possible responses:
 - `401: Unauthorized` if the SSH Key is invalid.
 - `403: Forbidden` if the user does not have the required permissions.
 
-#### Rotate a personal access token for an enterprise user
+### Rotate a personal access token for an enterprise user
 
 Rotates a specified personal access token for an enterprise user associated with the top-level group. This revokes the previous token and creates a new token
 that expires after one week.
@@ -2335,13 +2338,13 @@ POST groups/:id/manage/personal_access_tokens/:id/rotate
 
 | Attribute | Type      | Required | Description         |
 |-----------|-----------|----------|---------------------|
-| `id` | integer or string | yes      | ID of a personal access token or the keyword `self`. |
-| `expires_at` | date   | no       | Expiration date of the access token in ISO format (`YYYY-MM-DD`). The date must be one year or less from the rotation date. If undefined, the token expires after one week. |
+| `id` | integer or string | Yes      | ID of a personal access token or the keyword `self`. |
+| `expires_at` | date   | No       | Expiration date of the access token in ISO format (`YYYY-MM-DD`). The date must be one year or less from the rotation date. If undefined, the token expires after one week. |
 
 ```shell
 curl --request POST \
   --header "PRIVATE-TOKEN: <your_access_token>" \
-  --url "https://gitlab.example.com/api/v4/groups/:id/managepersonal_access_tokens/<personal_access_token_id>/rotate"
+  --url "https://gitlab.example.com/api/v4/groups/:id/manage/personal_access_tokens/<personal_access_token_id>/rotate"
 ```
 
 Example response:
@@ -2376,7 +2379,7 @@ Other possible responses:
 - `404: Not Found` if the user has the Owner role, but the token does not exist.
 - `405: Method Not Allowed` if the token is not a personal access token.
 
-#### Rotate a group or project access token for an enterprise user
+### Rotate a group or project access token for an enterprise user
 
 Rotates a specified group or project access token for an enterprise user associated with the top-level group. This revokes the previous token and creates a new token
 that expires after one week.
@@ -2387,8 +2390,8 @@ POST groups/:id/manage/resource_access_tokens/:id/rotate
 
 | Attribute | Type      | Required | Description         |
 |-----------|-----------|----------|---------------------|
-| `id` | integer or string | yes      | ID of a personal access token or the keyword `self`. |
-| `expires_at` | date   | no       | Expiration date of the access token in ISO format (`YYYY-MM-DD`). The date must be one year or less from the rotation date. If undefined, the token expires after one week. |
+| `id` | integer or string | Yes      | ID of a personal access token or the keyword `self`. |
+| `expires_at` | date   | No       | Expiration date of the access token in ISO format (`YYYY-MM-DD`). The date must be one year or less from the rotation date. If undefined, the token expires after one week. |
 
 ```shell
 curl --request POST \
@@ -2426,4 +2429,3 @@ Other possible responses:
   - You do not have access to the specified token.
 - `403: Forbidden` if the token is not allowed to rotate itself or token is not a bot user token.
 - `404: Not Found` if the user has the Owner role, but the token does not exist.
--->

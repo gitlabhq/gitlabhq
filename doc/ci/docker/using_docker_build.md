@@ -130,12 +130,12 @@ To use Docker-in-Docker with TLS enabled:
      --executor docker \
      --description "My Docker Runner" \
      --tag-list "tls-docker-runner" \
-     --docker-image "docker:24.0.5" \
+     --docker-image "docker:24.0.5-cli" \
      --docker-privileged \
      --docker-volumes "/certs/client"
    ```
 
-   - This command registers a new runner to use the `docker:24.0.5` image (if none is specified at the job level).
+   - This command registers a new runner to use the `docker:24.0.5-cli` image (if none is specified at the job level).
      To start the build and service containers, it uses the `privileged` mode.
      If you want to use Docker-in-Docker,
      you must always use `privileged = true` in your Docker containers.
@@ -152,7 +152,7 @@ To use Docker-in-Docker with TLS enabled:
      executor = "docker"
      [runners.docker]
        tls_verify = false
-       image = "docker:24.0.5"
+       image = "docker:24.0.5-cli"
        privileged = true
        disable_cache = false
        volumes = ["/certs/client", "/cache"]
@@ -165,7 +165,7 @@ To use Docker-in-Docker with TLS enabled:
 
    ```yaml
    default:
-     image: docker:24.0.5
+     image: docker:24.0.5-cli
      services:
        - docker:24.0.5-dind
      before_script:
@@ -216,7 +216,7 @@ The following is a sample `config.toml` with temporary volume shared between bui
   token = TOKEN
   executor = "docker"
   [runners.docker]
-    image = "docker:24.0.5"
+    image = "docker:24.0.5-cli"
     privileged = true
     volumes = ["/runner/services/docker"] # Temporary volume shared between build and service containers.
 ```
@@ -232,7 +232,7 @@ job:
     DOCKER_HOST: "unix:///runner/services/docker/docker.sock"
   services:
     - docker:24.0.5-dind
-  image: docker:24.0.5
+  image: docker:24.0.5-cli
   script:
     - docker version
 ```
@@ -252,7 +252,7 @@ that you are using.
      --executor docker \
      --description "My Docker Runner" \
      --tag-list "no-tls-docker-runner" \
-     --docker-image "docker:24.0.5" \
+     --docker-image "docker:24.0.5-cli" \
      --docker-privileged
    ```
 
@@ -265,7 +265,7 @@ that you are using.
      executor = "docker"
      [runners.docker]
        tls_verify = false
-       image = "docker:24.0.5"
+       image = "docker:24.0.5-cli"
        privileged = true
        disable_cache = false
        volumes = ["/cache"]
@@ -278,7 +278,7 @@ that you are using.
 
    ```yaml
    default:
-     image: docker:24.0.5
+     image: docker:24.0.5-cli
      services:
        - docker:24.0.5-dind
      before_script:
@@ -343,7 +343,7 @@ To use Docker-in-Docker with TLS enabled in Kubernetes:
 
    ```yaml
    default:
-     image: docker:24.0.5
+     image: docker:24.0.5-cli
      services:
        - name: docker:24.0.5-dind
          variables:
@@ -410,7 +410,7 @@ For example:
 
    ```yaml
    default:
-     image: docker:24.0.5
+     image: docker:24.0.5-cli
      services:
        - name: docker:24.0.5-dind
          variables:
@@ -489,7 +489,7 @@ To mount the Docker socket with the Docker executor, add `"/var/run/docker.sock:
      --executor "docker" \
      --description "docker-runner" \
      --tag-list "socket-binding-docker-runner" \
-     --docker-image "docker:24.0.5" \
+     --docker-image "docker:24.0.5-cli" \
      --docker-volumes "/var/run/docker.sock:/var/run/docker.sock"
    ```
 
@@ -502,7 +502,7 @@ To mount the Docker socket with the Docker executor, add `"/var/run/docker.sock:
      executor = "docker"
      [runners.docker]
        tls_verify = false
-       image = "docker:24.0.5"
+       image = "docker:24.0.5-cli"
        privileged = false
        disable_cache = false
        volumes = ["/var/run/docker.sock:/var/run/docker.sock", "/cache"]
@@ -514,7 +514,7 @@ To mount the Docker socket with the Docker executor, add `"/var/run/docker.sock:
 
    ```yaml
    default:
-     image: docker:24.0.5
+     image: docker:24.0.5-cli
      before_script:
        - docker info
 
@@ -556,7 +556,7 @@ To mount the Docker socket with the Kubernetes executor, add `"/var/run/docker.s
 
    ```yaml
    default:
-     image: docker:24.0.5
+     image: docker:24.0.5-cli
      before_script:
        - docker info
    build:
@@ -595,7 +595,7 @@ you use the Docker-in-Docker executor:
 
 ```yaml
 default:
-  image: docker:24.0.5
+  image: docker:24.0.5-cli
   before_script:
     - docker info
 

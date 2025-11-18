@@ -22,7 +22,7 @@ to GitLab code using the Web IDE.
 1. Search the GitLab code for the string `Syntax highlighting`.
    From the [GitLab Community Fork](https://gitlab.com/gitlab-community/gitlab-org/gitlab):
 
-   1. On the left sidebar, select **Search or go to**.
+   1. On the left sidebar, select **Search or go to**. If you've [turned on the new navigation](../../../user/interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
    1. Enter the search string `"Syntax highlighting"`.
 
 1. Select the filename

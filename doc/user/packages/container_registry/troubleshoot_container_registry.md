@@ -94,7 +94,7 @@ The following procedure uses these sample project names:
    There may be a delay while the images are queued and deleted.
 1. Change the path or transfer the project:
 
-   1. On the left sidebar, select **Search or go to** and find your project.
+   1. On the left sidebar, select **Search or go to** and find your project. If you've [turned on the new navigation](../../interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
    1. Select **Settings** > **General**.
    1. Expand the **Advanced** section.
    1. In the **Change path** text box, edit the path.

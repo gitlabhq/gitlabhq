@@ -17,7 +17,7 @@ RSpec.describe 'getting group information', :with_license, feature_category: :gr
   # similar to the API "GET /groups/:id"
   describe "Query group(fullPath)" do
     def group_query(group)
-      fields = all_graphql_fields_for('Group', excluded: %w[runners ciQueueingHistory])
+      fields = all_graphql_fields_for('Group', excluded: %w[runners ciQueueingHistory securityCategories])
       # TODO: Set required timelogs args elsewhere https://gitlab.com/gitlab-org/gitlab/-/issues/325499
       fields.selection['timelogs(startDate: "2021-03-01" endDate: "2021-03-30")'] = fields.selection.delete('timelogs')
 

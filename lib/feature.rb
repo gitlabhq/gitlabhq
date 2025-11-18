@@ -102,7 +102,7 @@ module Feature
     end
 
     def persisted_names
-      return [] unless FlipperRecord.database.exists?
+      return [] unless database_exists?
 
       # This loads names of all stored feature flags
       # and returns a stable Set in the following order:
@@ -307,6 +307,10 @@ module Feature
 
     private
 
+    def database_exists?
+      FlipperRecord.database.exists?
+    end
+
     def sanitized_thing(thing)
       case thing
       when :instance
@@ -354,7 +358,7 @@ module Feature
       # During setup the database does not exist yet. So we haven't stored a value
       # for the feature yet and return the default.
 
-      return unless FlipperRecord.database.exists?
+      return unless database_exists?
 
       flag_stack = ::Thread.current[:feature_flag_recursion_check] || []
       Thread.current[:feature_flag_recursion_check] = flag_stack

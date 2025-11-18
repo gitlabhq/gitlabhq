@@ -26,7 +26,7 @@ module Gitlab
                 location: masked_location,
                 blob: masked_blob,
                 raw: masked_raw,
-                extra: {}
+                extra: extra_params
               )
             end
 
@@ -36,7 +36,7 @@ module Gitlab
               errors.push("Local file `#{masked_location}` does not have project!")
             end
 
-            def validate_content!
+            def validate_content_presence!
               if content.nil?
                 errors.push("Local file `#{masked_location}` does not exist!")
               elsif content.blank?
@@ -45,6 +45,10 @@ module Gitlab
             end
 
             private
+
+            def extra_params
+              params.except(:local)
+            end
 
             def fetch_local_content
               BatchLoader.for([context.sha, location])

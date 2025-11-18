@@ -4,6 +4,7 @@ require 'spec_helper'
 
 RSpec.describe Import::BulkImports::SourceUsersMapper, feature_category: :importers do
   let_it_be(:portable) { create(:group) }
+  let_it_be(:ghost_user) { Users::Internal.for_organization(portable.organization).ghost }
   let_it_be(:bulk_import) { create(:bulk_import, :with_configuration) }
   let_it_be(:entity) do
     create(
@@ -67,8 +68,8 @@ RSpec.describe Import::BulkImports::SourceUsersMapper, feature_category: :import
       end
 
       it 'returns the destination ghost user ID' do
-        expect(mapper.map['10']).to eq(Users::Internal.ghost.id)
-        expect(mapper.map[10]).to eq(Users::Internal.ghost.id)
+        expect(mapper.map['10']).to eq(ghost_user.id)
+        expect(mapper.map[10]).to eq(ghost_user.id)
       end
     end
   end
@@ -99,17 +100,17 @@ RSpec.describe Import::BulkImports::SourceUsersMapper, feature_category: :import
   end
 
   describe Import::BulkImports::SourceUsersMapper::MockedHash do
-    let(:source_user_mapper) { instance_double(Import::BulkImports::SourceUsersMapper) }
+    let(:source_user_mapper) { instance_double(Gitlab::Import::SourceUserMapper, ghost_user: ghost_user) }
     let(:source_ghost_user_id) { '123' }
     let(:mocked_hash) { described_class.new(source_user_mapper, source_ghost_user_id) }
 
     describe '#ghost_user_id' do
       it 'returns the ghost user ID' do
-        expect(mocked_hash.ghost_user_id).to eq(Users::Internal.ghost.id)
+        expect(mocked_hash.ghost_user_id).to eq(ghost_user.id)
       end
 
       it 'memoizes the ghost user ID' do
-        expect(Users::Internal).to receive(:ghost).once.and_call_original
+        expect(source_user_mapper).to receive(:ghost_user).once
 
         2.times { mocked_hash.ghost_user_id }
       end

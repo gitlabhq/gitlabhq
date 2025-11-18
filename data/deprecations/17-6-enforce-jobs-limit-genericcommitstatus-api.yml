@@ -1,6 +1,6 @@
 - title: "Pipeline job limits extended to the Commits API"
   # The milestones for the deprecation announcement, and the removal.
-  removal_milestone: "19.0"
+  removal_milestone: "18.1"
   announcement_milestone: "17.7"
   breaking_change: true
   window: 1 # Can be 1, 2, or 3 - The window when the breaking change will be deployed on GitLab.com

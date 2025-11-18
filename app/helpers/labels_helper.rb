@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 module LabelsHelper
+  include ActionView::Helpers::TagHelper
   extend self
 
   def show_label_issuables_link?(label, issuables_type, current_user: nil)
@@ -35,7 +36,7 @@ module LabelsHelper
   #   # Customize link body with a block
   #   link_to_label(label) { "My Custom Label Text" }
   #
-  # Returns a String
+  # Returns a String containing HTML.
   def link_to_label(label, type: :issue, tooltip: true, css_class: nil, &block)
     link = label.filter_path(type: type)
 
@@ -46,6 +47,7 @@ module LabelsHelper
     end
   end
 
+  # Returns a String containing HTML.
   def render_label(label, link: nil, tooltip: true, dataset: nil, tooltip_shows_title: false)
     html = render_colored_label(label)
 
@@ -57,10 +59,11 @@ module LabelsHelper
     wrap_label_html(html, label: label)
   end
 
-  def render_colored_label(label, suffix: '')
+  # Renders a label, with the given suffix HTML.
+  def render_colored_label(label, in_reference: nil)
     render_label_text(
       label.name,
-      suffix: suffix,
+      in_reference: in_reference,
       css_class: "gl-label-text #{label.text_color_class}",
       bg_color: label.color
     )
@@ -73,8 +76,9 @@ module LabelsHelper
     %(<span class="#{wrapper_classes.join(' ')}">#{label_html}</span>).html_safe
   end
 
+  # Returns a String containing text.
   def label_tooltip_title(label, tooltip_shows_title: false)
-    Sanitize.clean(tooltip_shows_title ? label.title : label.description)
+    tooltip_shows_title ? label.title : label.description
   end
 
   def suggested_colors
@@ -224,15 +228,13 @@ module LabelsHelper
     link_to(label_html, link, class: classes.join(' '), data: dataset)
   end
 
-  def render_label_text(name, suffix: '', css_class: nil, bg_color: nil)
-    <<~HTML.chomp.html_safe
-      <span
-        class="#{css_class}"
-        data-container="body"
-        data-html="true"
-        #{"style=\"background-color: #{h bg_color}\"" if bg_color}
-      >#{ERB::Util.html_escape_once(name)}#{suffix}</span>
-    HTML
+  def render_label_text(name, in_reference: nil, css_class: nil, bg_color: nil)
+    label_name_html = CGI.escapeHTML(name)
+    label_name_html << " " << content_tag(:i, "in #{in_reference}") if in_reference.present?
+
+    attrs = { "class" => css_class, "data-container" => "body", "data-html" => "true" }
+    attrs["style"] = "background-color: #{bg_color}" if bg_color
+    content_tag(:span, label_name_html.html_safe, **attrs)
   end
 end
 

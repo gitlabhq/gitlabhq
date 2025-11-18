@@ -34,17 +34,6 @@ RSpec.describe Ci::DeleteExpiredTriggerTokenWorker, feature_category: :continuou
       expect(Ci::Trigger.find_by(id: never_expires_trigger.id)).to be_present
     end
 
-    it 'does not delete expired tokens when delete_expired_trigger_tokens disabled' do
-      stub_feature_flags(delete_expired_trigger_tokens: false)
-
-      expect { worker.perform }.not_to change { Ci::Trigger.count }
-
-      expect(Ci::Trigger.find_by(id: expired_and_deleted_trigger.id)).to be_present
-      expect(Ci::Trigger.find_by(id: expired_and_retained_trigger.id)).to be_present
-      expect(Ci::Trigger.find_by(id: not_expired_trigger.id)).to be_present
-      expect(Ci::Trigger.find_by(id: never_expires_trigger.id)).to be_present
-    end
-
     it 'does not raise error when no trigger exists' do
       Ci::Trigger.delete_all
 

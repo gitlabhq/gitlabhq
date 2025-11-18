@@ -1,6 +1,6 @@
 - position = local_assigns.fetch(:position, nil)
 
-.search-result-row.row.gl-flex.gl-flex-col.gl-mt-5{ class: '!gl-pb-5 !gl-mb-0 @sm/panel:gl-flex-row' }
+.search-result-row.gl-row.gl-no-gutters.gl-flex.gl-flex-col.gl-mt-5{ class: '!gl-pb-5 !gl-mb-0 @sm/panel:gl-flex-row' }
   .gl-col-sm-9
     %span.gl-flex.gl-items-center
       = gl_badge_tag issuable_state_text(issuable), variant: issuable_state_to_badge_class(issuable)

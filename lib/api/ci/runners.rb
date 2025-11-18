@@ -8,7 +8,7 @@ module API
 
       before { authenticate! }
 
-      feature_category :runner
+      feature_category :runner_core
       urgency :low
 
       helpers do
@@ -166,12 +166,13 @@ module API
         end
         params do
           requires :id, type: Integer, desc: 'The ID of a runner'
+          optional :include_projects, type: Boolean, desc: 'Include projects in the response. Set to false to improve performance for runners with many projects.', default: true
         end
         get ':id' do
           runner = get_runner(params[:id])
           authenticate_show_runner!(runner)
 
-          present runner, with: Entities::Ci::RunnerDetails, current_user: current_user
+          present runner, with: Entities::Ci::RunnerDetails, current_user: current_user, include_projects: params[:include_projects]
         end
 
         desc "Get a list of all runner's managers" do
@@ -186,6 +187,31 @@ module API
           authenticate_show_runner!(runner)
 
           present runner.runner_managers, with: Entities::Ci::RunnerManager
+        end
+
+        desc 'Get projects associated with a runner' do
+          summary "List runner's projects"
+          detail 'Get a paginated list of all projects associated with the specified runner. ' \
+                 'Access is restricted based on user permissions.'
+          success Entities::BasicProjectDetails
+          failure [[401, 'Unauthorized'], [403, 'No access granted'], [404, 'Runner not found']]
+          tags %w[runners projects]
+        end
+        params do
+          requires :id, type: Integer, desc: 'The ID of a runner'
+          use :pagination
+        end
+        get ':id/projects' do
+          runner = get_runner(params[:id])
+          authenticate_show_runner!(runner)
+
+          projects = ProjectsFinder.new(
+            current_user: current_user,
+            project_ids_relation: runner.projects.select(:id)
+          ).execute
+
+          projects = Entities::BasicProjectDetails.preload_relation(projects)
+          present paginate(projects), with: Entities::BasicProjectDetails
         end
 
         desc "Update runner's details" do
@@ -315,6 +341,7 @@ module API
           use :deprecated_filter_params
           use :filter_params
         end
+        route_setting :authorization, permissions: :read_runner, boundary_type: :project
         get ':id/runners' do
           runners = ::Ci::Runner.owned_or_instance_wide(user_project.id).with_api_entity_associations
           # scope is deprecated (for project runners), however api documentation still supports it.
@@ -336,6 +363,7 @@ module API
         params do
           requires :runner_id, type: Integer, desc: 'The ID of a runner'
         end
+        route_setting :authorization, permissions: :create_runner, boundary_type: :project
         post ':id/runners' do
           authorize! :create_runners, user_project # Ensure the user is allowed to create a runner on the target project
 
@@ -363,6 +391,7 @@ module API
         params do
           requires :runner_id, type: Integer, desc: 'The ID of a runner'
         end
+        route_setting :authorization, permissions: :delete_runner, boundary_type: :project
         delete ':id/runners/:runner_id' do
           runner_project = user_project.runner_projects.find_by_runner_id(params[:runner_id])
           authenticate_disable_runner!(runner_project)
@@ -391,6 +420,7 @@ module API
         params do
           use :filter_params
         end
+        route_setting :authorization, permissions: :read_runner, boundary_type: :group
         get ':id/runners' do
           runners = ::Ci::Runner.group_or_instance_wide(user_group).with_api_entity_associations
           runners = apply_filter(runners, params)
@@ -428,6 +458,7 @@ module API
           failure [[401, 'Unauthorized'], [403, 'Forbidden'], [404, 'Project Not Found']]
           tags %w[runners projects]
         end
+        route_setting :authorization, permissions: :reset_runner_registration_token, boundary_type: :project
         post ':id/runners/reset_registration_token' do
           project = find_project! user_project.id
           authorize! :update_runners_registration_token, project
@@ -449,6 +480,7 @@ module API
           failure [[401, 'Unauthorized'], [403, 'Forbidden'], [404, 'Group Not Found']]
           tags %w[runners groups]
         end
+        route_setting :authorization, permissions: :reset_runner_registration_token, boundary_type: :group
         post ':id/runners/reset_registration_token' do
           group = find_group! user_group.id
           authorize! :update_runners_registration_token, group

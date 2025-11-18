@@ -59,7 +59,9 @@ GET /member_roles
 Example request:
 
 ```shell
-curl --header "Authorization: Bearer <your_access_token>" "https://gitlab.example.com/api/v4/member_roles"
+curl --request GET \
+  --header "Authorization: Bearer <your_access_token>" \
+  --url "https://gitlab.example.com/api/v4/member_roles"
 ```
 
 Example response:
@@ -137,7 +139,11 @@ For more information on available permissions, see [custom permissions](../user/
 Example request:
 
 ```shell
- curl --request POST --header "Content-Type: application/json" --header "Authorization: Bearer <your_access_token>" --data '{"name" : "Custom guest (instance)", "base_access_level" : 10, "read_code" : true}' "https://gitlab.example.com/api/v4/member_roles"
+curl --request POST \
+  --header "Content-Type: application/json" \
+  --header "Authorization: Bearer <your_access_token>" \
+  --data '{"name" : "Custom guest (instance)", "base_access_level" : 10, "read_code" : true}' \
+  --url "https://gitlab.example.com/api/v4/member_roles"
 ```
 
 Example response:
@@ -191,7 +197,10 @@ If successful, returns [`204`](rest/troubleshooting.md#status-codes) and an empt
 Example request:
 
 ```shell
-curl --request DELETE --header "Content-Type: application/json" --header "Authorization: Bearer <your_access_token>" "https://gitlab.example.com/api/v4/member_roles/1"
+curl --request DELETE \
+  --header "Content-Type: application/json" \
+  --header "Authorization: Bearer <your_access_token>" \
+  --url "https://gitlab.example.com/api/v4/member_roles/1"
 ```
 
 ## Manage group member roles
@@ -222,7 +231,9 @@ Supported attributes:
 Example request:
 
 ```shell
-curl --header "Authorization: Bearer <your_access_token>" "https://gitlab.example.com/api/v4/groups/84/member_roles"
+curl --request GET \
+  --header "Authorization: Bearer <your_access_token>" \
+  --url "https://gitlab.example.com/api/v4/groups/84/member_roles"
 ```
 
 Example response:
@@ -329,7 +340,11 @@ Parameters:
 Example request:
 
 ```shell
- curl --request POST --header "Content-Type: application/json" --header "Authorization: Bearer <your_access_token>" --data '{"name" : "Custom guest", "base_access_level" : 10, "read_code" : true}' "https://gitlab.example.com/api/v4/groups/84/member_roles"
+curl --request POST \
+  --header "Content-Type: application/json" \
+  --header "Authorization: Bearer <your_access_token>" \
+  --data '{"name" : "Custom guest", "base_access_level" : 10, "read_code" : true}' \
+  --url "https://gitlab.example.com/api/v4/groups/84/member_roles"
 ```
 
 Example response:
@@ -388,5 +403,8 @@ If successful, returns [`204`](rest/troubleshooting.md#status-codes) and an empt
 Example request:
 
 ```shell
-curl --request DELETE --header "Content-Type: application/json" --header "Authorization: Bearer <your_access_token>" "https://gitlab.example.com/api/v4/groups/84/member_roles/1"
+curl --request DELETE \
+  --header "Content-Type: application/json" \
+  --header "Authorization: Bearer <your_access_token>" \
+  --url "https://gitlab.example.com/api/v4/groups/84/member_roles/1"
 ```

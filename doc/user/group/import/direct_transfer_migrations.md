@@ -151,10 +151,10 @@ a lot of user accounts to have public email addresses, see
 On the destination GitLab instance, create the group you want to import to and connect the source GitLab instance:
 
 1. Create either:
-   - A new group. On the left sidebar, at the top, select **Create new** ({{< icon name="plus" >}}) and **New group**. Then select **Import group**.
+   - A new group. On the left sidebar, at the top, select **Create new** ({{< icon name="plus" >}}) and **New group**. If you've [turned on the new navigation](../../interface_redesign.md#turn-new-navigation-on-or-off), this button is in the upper-right corner. Then select **Import group**.
    - A new subgroup. On existing group's page, either:
      - Select **New subgroup**.
-     - On the left sidebar, at the top, select **Create new** ({{< icon name="plus" >}}) and **New subgroup**. Then select the **import an existing group** link.
+     - On the left sidebar, at the top, select **Create new** ({{< icon name="plus" >}}) and **New subgroup**. If you've [turned on the new navigation](../../interface_redesign.md#turn-new-navigation-on-or-off), this button is in the upper-right corner. Then select the **import an existing group** link.
 1. Enter the base URL of a GitLab instance.
 1. Enter the [personal access token](../../profile/personal_access_tokens.md) for your source GitLab instance.
 1. Select **Connect instance**.
@@ -217,7 +217,7 @@ You can view all groups migrated by you by direct transfer listed on the group i
 To view group import history:
 
 1. Sign in to GitLab.
-1. On the left sidebar, at the top, select **Create new** ({{< icon name="plus" >}}) and **New group**.
+1. On the left sidebar, at the top, select **Create new** ({{< icon name="plus" >}}) and **New group**. If you've [turned on the new navigation](../../interface_redesign.md#turn-new-navigation-on-or-off), this button is in the upper-right corner.
 1. Select **Import group**.
 1. In the upper-right corner, select **View import history**.
 1. If there are any errors for a particular import, select **Show errors** to see their details.

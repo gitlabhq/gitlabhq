@@ -53,7 +53,7 @@ You can create snippets in multiple ways, depending on whether you want to creat
    - To create a personal snippet, do one of the following:
      - On the [Snippets dashboard](https://gitlab.com/dashboard/snippets), select **New snippet**.
      - From a project: On the left sidebar, select **Create new** ({{< icon name="plus" >}}). Below **In GitLab**, select **New snippet**.
-     - From any other page: On the left sidebar, select **Create new** ({{< icon name="plus" >}}) and then **New snippet**.
+     - From any other page: On the left sidebar, select **Create new** ({{< icon name="plus" >}}) and then **New snippet**. If you've [turned on the new navigation](interface_redesign.md#turn-new-navigation-on-or-off), this button is in the upper-right corner.
      - From the `glab` CLI, using the
        [`glab snippet create`](https://gitlab.com/gitlab-org/cli/-/blob/main/docs/source/snippet/create.md) command.
        For full instructions, see the command's documentation.
@@ -79,17 +79,17 @@ Snippets are [versioned by default](#versioned-snippets).
 To discover all snippets visible to you in GitLab, you can:
 
 - View a project's snippets:
-  1. On the left sidebar, select **Search or go to** and find your project.
+  1. On the left sidebar, select **Search or go to** and find your project. If you've [turned on the new navigation](interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
   1. Select **Code** > **Snippets**.
 - View all the snippets you created:
-  1. On the left sidebar, select **Search or go to**.
+  1. On the left sidebar, select **Search or go to**. If you've [turned on the new navigation](interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
   1. Select **Your work**.
   1. Select **Snippets**.
 
   On GitLab.com, you can also visit your [snippets directly](https://gitlab.com/dashboard/snippets).
 
 - Explore all public snippets:
-  1. On the left sidebar, select **Search or go to**.
+  1. On the left sidebar, select **Search or go to**. If you've [turned on the new navigation](interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
   1. Select **Explore**.
   1. Select **Snippets**.
 
@@ -245,7 +245,7 @@ Prerequisites:
 
 To do this task:
 
-1. On the left sidebar, select **Search or go to** and find your project.
+1. On the left sidebar, select **Search or go to** and find your project. If you've [turned on the new navigation](interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
 1. Select **Code** > **Snippets**.
 1. Select the snippet you want to report as spam.
 1. Select **Submit as spam**.
@@ -257,7 +257,6 @@ GitLab forwards the spam to Akismet.
 ### Snippet limitations
 
 - No limits exist as to how many snippets you can create.
-- Binary files are not supported.
 - Creating or deleting branches is not supported. Only the default branch is used.
 - Git tags are not supported in snippet repositories.
 - Snippets' repositories are limited to 10 files. Attempting to push more

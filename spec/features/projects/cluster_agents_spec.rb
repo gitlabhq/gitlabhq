@@ -50,7 +50,8 @@ RSpec.describe 'ClusterAgents', :js, feature_category: :environment_management d
         visit project_cluster_agent_path(project, agent.name)
       end
 
-      it 'displays agent information', :aggregate_failures do
+      it 'displays agent information', :aggregate_failures,
+        quarantine: 'https://gitlab.com/gitlab-org/quality/test-failure-issues/-/issues/8416' do
         expect(page).to have_content(agent.name)
       end
 
@@ -58,7 +59,8 @@ RSpec.describe 'ClusterAgents', :js, feature_category: :environment_management d
         expect(page).to have_content('Activity')
       end
 
-      it 'displays agent tokens tab', :aggregate_failures do
+      it 'displays agent tokens tab', :aggregate_failures,
+        quarantine: 'https://gitlab.com/gitlab-org/quality/test-failure-issues/-/issues/7095' do
         expect(page).to have_content('Access tokens')
         click_link 'Access tokens'
         expect(page).to have_content(token.description)

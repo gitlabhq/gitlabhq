@@ -16,13 +16,28 @@ export default class PersistentUserCallout {
     this.featureId = featureId;
     this.groupId = groupId;
     this.projectId = projectId;
+    this.storageKey = this.createStorageKey();
     this.deferLinks = parseBoolean(deferLinks);
     this.closeButtons = this.container.querySelectorAll('.js-close');
+    this.calloutElement = parseBoolean(this.container.dataset.hasWrapper)
+      ? this.container.parentElement
+      : this.container;
 
     this.init();
   }
 
+  createStorageKey() {
+    return ['user_callout_dismissed', this.projectId || this.groupId, this.featureId]
+      .filter(Boolean)
+      .join('_');
+  }
+
   init() {
+    if (sessionStorage.getItem(this.storageKey)) {
+      this.calloutElement?.remove();
+      return;
+    }
+
     this.closeButtons.forEach((closeButton) => {
       closeButton.addEventListener('click', this.dismiss);
     });
@@ -49,7 +64,10 @@ export default class PersistentUserCallout {
         project_id: this.projectId,
       })
       .then(() => {
-        this.container.remove();
+        sessionStorage.setItem(this.storageKey, new Date().toISOString());
+
+        this.calloutElement?.remove();
+
         this.closeButtons.forEach((closeButton) => {
           closeButton.removeEventListener('click', this.dismiss);
         });

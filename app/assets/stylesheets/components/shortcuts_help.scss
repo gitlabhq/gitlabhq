@@ -1,29 +1,27 @@
-.shortcut-help {
-  &-body {
-    height: 80vh;
-    overflow-y: scroll;
+.shortcut-help-body {
+  height: 80vh;
+  overflow-y: scroll;
+}
+
+.shortcut-help-container {
+  column-count: 1;
+  @include media-breakpoint-up(md) {
+    column-count: 2;
   }
+  column-gap: 1rem;
+}
 
-  &-container {
-    column-count: 1;
-    @include media-breakpoint-up(md) {
-      column-count: 2;
-    }
-    column-gap: 1rem;
+.shortcut-help-mapping {
+  overflow: hidden;
+  break-inside: avoid;
+
+  kbd {
+    margin: 0.1rem 0;
+    line-height: unset;
+    font-size: unset;
   }
+}
 
-  &-mapping {
-    overflow: hidden;
-    break-inside: avoid;
-
-    &-title {
-      margin-left: 40%;
-    }
-
-    kbd {
-      margin: 0.1rem 0;
-      line-height: unset;
-      font-size: unset;
-    }
-  }
+.shortcut-help-mapping-title {
+  margin-left: 40%;
 }

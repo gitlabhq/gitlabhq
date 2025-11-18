@@ -28,7 +28,6 @@ describe('BoardApp', () => {
   const createComponent = ({
     issue = rawIssue,
     handler = boardListQueryHandler,
-    workItemDrawerEnabled = true,
     isIssueBoard = true,
   } = {}) => {
     mockApollo = createMockApollo([[boardListsQuery, handler]]);
@@ -49,10 +48,6 @@ describe('BoardApp', () => {
         boardType: isIssueBoard ? 'project' : 'group',
         isIssueBoard,
         isGroupBoard: false,
-        glFeatures: {
-          issuesListDrawer: workItemDrawerEnabled,
-          epicsListDrawer: !workItemDrawerEnabled,
-        },
         hasCustomFieldsFeature: false,
       },
       stubs: ['router-view'],
@@ -103,27 +98,5 @@ describe('BoardApp', () => {
     await waitForPromises();
 
     expect(cacheUpdates.setError).toHaveBeenCalled();
-  });
-
-  describe('when on issue board', () => {
-    describe('when `issuesListDrawer` feature is disabled', () => {
-      beforeEach(() => {
-        createComponent({ workItemDrawerEnabled: false });
-      });
-
-      it('passes `useWorkItemDrawer` as false', () => {
-        expect(findBoardContent().props('useWorkItemDrawer')).toBe(false);
-      });
-    });
-
-    describe('when `issuesListDrawer` feature is enabled', () => {
-      beforeEach(() => {
-        createComponent({ workItemDrawerEnabled: true });
-      });
-
-      it('passes `useWorkItemDrawer` as true', () => {
-        expect(findBoardContent().props('useWorkItemDrawer')).toBe(true);
-      });
-    });
   });
 });

@@ -46,7 +46,7 @@ For additional information for Helm chart installations, see
   - The instance generates 500 errors until all the database changes are finished, after which
     Puma and Sidekiq must restarted.
   - For Linux package installations, a timeout occurs and a
-    [manual workaround to complete the migrations](../package/package_troubleshooting.md#mixlibshelloutcommandtimeout-rails_migrationgitlab-rails--command-timed-out-after-3600s)
+    [manual workaround to complete the migrations](../package/package_troubleshooting.md#error-command-timed-out-after-3600s)
     is necessary.
 
 - GitLab 16.0 introduced changes around enforcing limits on project sizes. On self-managed, if you use
@@ -779,9 +779,8 @@ Specific information applies to installations using Geo:
 ### Self-compiled installations
 
 - A new method of configuring paths for the GitLab secret and custom hooks is preferred in GitLab 16.4 and later:
-  1. Update your configuration `[gitlab] secret_file` to [configure the path](../../administration/gitaly/reference.md) to the GitLab secret token.
-  1. If you have custom hooks, update your configuration `[hooks] custom_hooks_dir` to [configure the path](../../administration/gitaly/reference.md) to
-     server-side custom hooks.
+  1. Update your configuration `[gitlab] secret_file` to configure the path to the GitLab secret token.
+  1. If you have custom hooks, update your configuration `[hooks] custom_hooks_dir` to configure the path to server-side custom hooks.
   1. Remove the `[gitlab-shell] dir` configuration.
 
 ### Geo installations
@@ -1734,7 +1733,7 @@ FATAL: Mixlib::ShellOut::CommandTimeout: rails_migration[gitlab-rails]
 Mixlib::ShellOut::CommandTimeout: Command timed out after 3600s:
 ```
 
-[There is a fix-forward workaround for this issue](../package/package_troubleshooting.md#mixlibshelloutcommandtimeout-rails_migrationgitlab-rails--command-timed-out-after-3600s).
+[There is a fix-forward workaround for this issue](../package/package_troubleshooting.md#error-command-timed-out-after-3600s).
 
 While the workaround is completing the database changes, GitLab is likely to be in
 an unusable state, generating `500` errors. The errors are caused by Sidekiq and Puma running

@@ -26,6 +26,10 @@ module Import
         .group(:model, :user_reference_column, :alias_version)
     end
 
+    scope :for_source_user, ->(source_user) do
+      where(source_user: source_user)
+    end
+
     MODEL_BATCH_LIMIT = 500
 
     # If an element is ever added to this array, ensure that `.from_serialized` handles receiving

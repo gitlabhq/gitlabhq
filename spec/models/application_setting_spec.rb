@@ -34,6 +34,7 @@ RSpec.describe ApplicationSetting, feature_category: :shared, type: :model do
         allow_project_creation_for_guest_and_below: true,
         allow_runner_registration_token: true,
         anonymous_searches_allowed: true,
+        default_search_scope: described_class::SEARCH_SCOPE_SYSTEM_DEFAULT,
         asset_proxy_enabled: false,
         asciidoc_max_includes: 32,
         authorized_keys_enabled: true,
@@ -199,6 +200,7 @@ RSpec.describe ApplicationSetting, feature_category: :shared, type: :model do
         personal_access_token_prefix: 'glpat-',
         plantuml_enabled: false,
         project_api_limit: 400,
+        project_members_api_limit: 60,
         project_download_export_limit: 1,
         project_export_enabled: true,
         project_export_limit: 6,
@@ -242,6 +244,7 @@ RSpec.describe ApplicationSetting, feature_category: :shared, type: :model do
         security_approval_policies_limit: 5,
         session_expire_delay: Settings.gitlab['session_expire_delay'],
         session_expire_from_init: false,
+        require_minimum_email_based_otp_for_users_with_passwords: false,
         shared_runners_enabled: Settings.gitlab_ci['shared_runners_enabled'],
         shared_runners_text: nil,
         show_migrate_from_jenkins_banner: true,
@@ -252,7 +255,8 @@ RSpec.describe ApplicationSetting, feature_category: :shared, type: :model do
         sign_in_restrictions: {
           'disable_password_authentication_for_users_with_sso_identities' => false,
           'root_moved_permanently_redirection' => false,
-          'session_expire_from_init' => false
+          'session_expire_from_init' => false,
+          'require_minimum_email_based_otp_for_users_with_passwords' => false
         },
         signup_enabled: Settings.gitlab['signup_enabled'],
         silent_admin_exports_enabled: false,
@@ -299,8 +303,13 @@ RSpec.describe ApplicationSetting, feature_category: :shared, type: :model do
         users_get_by_id_limit: 300,
         users_get_by_id_limit_allowlist: [],
         valid_runner_registrars: ApplicationSettingImplementation::VALID_RUNNER_REGISTRAR_TYPES,
-        vscode_extension_marketplace: { 'enabled' => false },
+        vscode_extension_marketplace: {
+          'enabled' => false,
+          'extension_host_domain' => ::WebIde::ExtensionMarketplace::DEFAULT_EXTENSION_HOST_DOMAIN
+        },
         vscode_extension_marketplace_enabled?: false,
+        vscode_extension_marketplace_extension_host_domain:
+          ::WebIde::ExtensionMarketplace::DEFAULT_EXTENSION_HOST_DOMAIN,
         whats_new_variant: 'all_tiers', # changed from 0 to "all_tiers" due to enum conversion
         wiki_asciidoc_allow_uri_includes: false,
         wiki_page_max_content_bytes: 5.megabytes
@@ -769,6 +778,37 @@ RSpec.describe ApplicationSetting, feature_category: :shared, type: :model do
                 'Admin area > Settings > Metrics and profiling > Metrics - Grafana'
             ])
         end
+      end
+    end
+
+    describe 'default_search_scope validations' do
+      it 'allows blank value' do
+        setting.default_search_scope = ''
+
+        expect(setting).to be_valid
+      end
+
+      it 'allows system default' do
+        setting.default_search_scope = described_class::SEARCH_SCOPE_SYSTEM_DEFAULT
+
+        expect(setting).to be_valid
+      end
+
+      it 'allows valid scopes' do
+        %w[projects issues merge_requests blobs users milestones snippet_titles wiki_blobs commits
+          notes].each do |scope|
+          setting.default_search_scope = scope
+
+          expect(setting).to be_valid, "expected #{scope} to be valid"
+        end
+      end
+
+      it 'rejects invalid scopes' do
+        setting.default_search_scope = 'invalid_scope'
+
+        expect(setting).not_to be_valid
+        expect(setting.errors[:default_search_scope]).to be_present
+        expect(setting.errors[:default_search_scope].first).to include('invalid scope selected')
       end
     end
 
@@ -1648,20 +1688,20 @@ RSpec.describe ApplicationSetting, feature_category: :shared, type: :model do
       end
     end
 
-    context 'with gitpod settings' do
-      it 'is invalid if gitpod is enabled and no url is provided' do
+    context 'with ona settings' do
+      it 'is invalid if ona is enabled and no url is provided' do
         allow(setting).to receive_messages(gitpod_enabled: true, gitpod_url: nil)
 
         is_expected.to be_invalid
       end
 
-      it 'is invalid if gitpod is enabled and an empty url is provided' do
+      it 'is invalid if ona is enabled and an empty url is provided' do
         allow(setting).to receive_messages(gitpod_enabled: true, gitpod_url: '')
 
         is_expected.to be_invalid
       end
 
-      it 'is invalid if gitpod is enabled and an invalid url is provided' do
+      it 'is invalid if ona is enabled and an invalid url is provided' do
         allow(setting).to receive_messages(gitpod_enabled: true, gitpod_url: 'javascript:alert("test")//')
 
         is_expected.to be_invalid
@@ -2473,6 +2513,34 @@ RSpec.describe ApplicationSetting, feature_category: :shared, type: :model do
     end
   end
 
+  describe '#vscode_extension_marketplace_extension_host_domain' do
+    context 'with valid domain' do
+      it { is_expected.to allow_value({ extension_host_domain: 'foo.net' }).for(:vscode_extension_marketplace) }
+      it { is_expected.to allow_value({ extension_host_domain: 'cdn.foo.net' }).for(:vscode_extension_marketplace) }
+    end
+
+    context "with invalid domain" do
+      using RSpec::Parameterized::TableSyntax
+
+      where(:domain) do
+        %w[
+          foo
+          invalid domain
+          http://foo.com
+          example..com
+          -example.com
+          example.com-
+          .example.com
+          example.com.
+        ]
+      end
+
+      with_them do
+        it { is_expected.not_to allow_value({ extension_host_domain: domain }).for(:vscode_extension_marketplace) }
+      end
+    end
+  end
+
   describe '#static_objects_external_storage_auth_token=', :aggregate_failures do
     subject(:set_auth_token) { setting.static_objects_external_storage_auth_token = token }
 
@@ -2632,5 +2700,31 @@ RSpec.describe ApplicationSetting, feature_category: :shared, type: :model do
 
   describe '#ci_delete_pipelines_in_seconds_limit_human_readable_long' do
     it { expect(setting.ci_delete_pipelines_in_seconds_limit_human_readable_long).to eq('1 year') }
+  end
+
+  describe '#custom_default_search_scope_set?' do
+    context 'when it is set to empty string' do
+      it 'returns false' do
+        setting.update!(default_search_scope: '')
+
+        expect(setting.custom_default_search_scope_set?).to be(false)
+      end
+    end
+
+    context 'when no default is set' do
+      it 'returns false' do
+        setting.update!(default_search_scope: described_class::SEARCH_SCOPE_SYSTEM_DEFAULT)
+
+        expect(setting.custom_default_search_scope_set?).to be(false)
+      end
+    end
+
+    context 'when a default is set' do
+      it 'returns true' do
+        setting.update!(default_search_scope: 'users')
+
+        expect(setting.custom_default_search_scope_set?).to be(true)
+      end
+    end
   end
 end

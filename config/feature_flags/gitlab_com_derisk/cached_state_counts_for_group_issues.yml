@@ -1,0 +1,10 @@
+---
+name: cached_state_counts_for_group_issues
+description:
+feature_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/572737
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/209505
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/578515
+milestone: '18.6'
+group: group::product planning
+type: gitlab_com_derisk
+default_enabled: false

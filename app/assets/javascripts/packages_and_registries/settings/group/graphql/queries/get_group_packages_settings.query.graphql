@@ -1,10 +1,16 @@
 #import "~/packages_and_registries/settings/group/graphql/fragments/package_settings_fields.fragment.graphql"
-#import "ee_else_ce/packages_and_registries/settings/group/graphql/fragments/group_packages_settings.fragment.graphql"
 
 query getGroupPackagesSettings($fullPath: ID!) {
   group(fullPath: $fullPath) {
     id
-    ...GroupPackagesSettings
+    dependencyProxySetting {
+      enabled
+      identity
+    }
+    dependencyProxyImageTtlPolicy {
+      ttl
+      enabled
+    }
     packageSettings {
       ...PackageSettingsFields
     }

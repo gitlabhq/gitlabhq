@@ -1,0 +1,10 @@
+---
+name: ci_build_uses_job_definition_tag_list
+description: Allow checking for CI job `tag_list` in `ci_job_definitions`, scoped by project actor
+feature_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/569119
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/211215
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/579692
+milestone: '18.6'
+group: group::ci platform
+type: gitlab_com_derisk
+default_enabled: false

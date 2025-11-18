@@ -9,6 +9,7 @@ import { mountExtended, shallowMountExtended } from 'helpers/vue_test_utils_help
 import { stubPerformanceWebAPI } from 'helpers/performance';
 import waitForPromises from 'helpers/wait_for_promises';
 import getPipelineDetails from 'shared_queries/pipelines/get_pipeline_details.query.graphql';
+import getPipelinePermissions from '~/ci/pipeline_details/graph/graphql/queries/get_pipeline_permissions.query.graphql';
 import getUserCallouts from '~/graphql_shared/queries/get_user_callouts.query.graphql';
 import axios from '~/lib/utils/axios_utils';
 import { HTTP_STATUS_OK } from '~/lib/utils/http_status';
@@ -38,6 +39,7 @@ import {
   mapCallouts,
   mockCalloutsResponse,
   mockPipelineResponseWithTooManyJobs,
+  mockPipelinePermissions,
 } from './mock_data';
 
 const defaultProvide = {
@@ -99,12 +101,14 @@ describe('Pipeline graph wrapper', () => {
       getUserCalloutsHandler: jest.fn().mockResolvedValue(mockCalloutsResponse(callouts)),
       getPipelineHeaderDataHandler: jest.fn().mockResolvedValue(mockRunningPipelineHeaderData),
       getPipelineDetailsHandler: pipelineDetailsHandler,
+      getPipelinePermissionsHandler: jest.fn().mockResolvedValue(mockPipelinePermissions),
     };
 
     const handlers = [
       [getPipelineHeaderData, requestHandlers.getPipelineHeaderDataHandler],
       [getPipelineDetails, requestHandlers.getPipelineDetailsHandler],
       [getUserCallouts, requestHandlers.getUserCalloutsHandler],
+      [getPipelinePermissions, requestHandlers.getPipelinePermissionsHandler],
     ];
 
     const apolloProvider = createMockApollo(handlers);
@@ -154,6 +158,13 @@ describe('Pipeline graph wrapper', () => {
 
     it('displays the graph', () => {
       expect(findGraph().exists()).toBe(true);
+    });
+
+    it('provides the user permissions data', () => {
+      expect(findGraph().props('userPermissions')).toMatchObject({
+        122: { updatePipeline: false },
+        123: { updatePipeline: true },
+      });
     });
 
     it('passes the etag resource and metrics path to the graph', () => {

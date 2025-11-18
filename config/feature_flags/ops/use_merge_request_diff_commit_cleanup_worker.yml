@@ -1,8 +1,0 @@
----
-name: use_merge_request_diff_commit_cleanup_worker
-introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/200333
-rollout_issue_url:
-milestone: '18.3'
-type: ops
-group: group::code review
-default_enabled: true

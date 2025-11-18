@@ -1,0 +1,16 @@
+---
+table_name: custom_dashboard_versions
+classes:
+- Analytics::CustomDashboardVersion
+feature_categories:
+- custom_dashboards_foundation
+description: |
+  Stores historical versions of custom dashboards. Each record represents a
+  snapshot of a dashboard's configuration (`config` JSONB field) taken whenever
+  the dashboard definition changes. Supports rollback and auditing features.
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/211458
+milestone: '18.6'
+gitlab_schema: gitlab_main_org
+sharding_key:
+  organization_id: organizations
+table_size: small

@@ -7,7 +7,7 @@ RSpec.describe Gitlab::Gpg::Tag, feature_category: :source_code_management do
 
   let(:git_tag) { project.repository.tags.first }
 
-  subject(:tag) { described_class.new(project.repository, git_tag) }
+  subject(:tag) { described_class.new(project.repository, described_class.context_from_tag(git_tag)) }
 
   describe '#signature' do
     it 'returns a signature' do

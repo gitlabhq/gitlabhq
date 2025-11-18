@@ -159,7 +159,7 @@ It can also be helpful to
 [debug a user sync](#sync-all-users) to
 investigate further.
 
-#### Users see an error "Invalid login or password."
+#### Users see an error `Invalid login or password.`
 
 {{< history >}}
 
@@ -191,7 +191,7 @@ may see the following message: `Access denied for your LDAP account`.
 
 We have a workaround, based on toggling the access level of affected users:
 
-1. On the left sidebar, at the bottom, select **Admin**.
+1. On the left sidebar, at the bottom, select **Admin**. If you've [turned on the new navigation](../../../user/interface_redesign.md#turn-new-navigation-on-or-off), in the upper-right corner, select **Admin**.
 1. Select **Overview** > **Users**.
 1. Select the name of the affected user.
 1. In the upper-right corner, select **Edit**.
@@ -248,7 +248,7 @@ field contains no data:
 
 To resolve this:
 
-1. On the left sidebar, at the bottom, select **Admin**.
+1. On the left sidebar, at the bottom, select **Admin**. If you've [turned on the new navigation](../../../user/interface_redesign.md#turn-new-navigation-on-or-off), in the upper-right corner, select **Admin**.
 1. Select **Settings** > **General**.
 1. Expand both of the following:
    - **Account and limit**.
@@ -412,14 +412,14 @@ things to debug the situation.
 - Ensure the correct [LDAP group link is added to the GitLab group](ldap_synchronization.md#add-group-links).
 - Check that the user has an LDAP identity:
   1. Sign in to GitLab as an administrator user.
-  1. On the left sidebar, at the bottom, select **Admin**.
+  1. On the left sidebar, at the bottom, select **Admin**. If you've [turned on the new navigation](../../../user/interface_redesign.md#turn-new-navigation-on-or-off), in the upper-right corner, select **Admin**.
   1. On the left sidebar, select **Overview** > **Users**.
   1. Search for the user.
   1. Open the user by selecting their name. Do not select **Edit**.
   1. Select the **Identities** tab. There should be an LDAP identity with
      an LDAP DN as the `Identifier`. If not, this user hasn't signed in with
      LDAP yet and must do so first.
-- You've waited an hour or [the configured interval](ldap_synchronization.md#adjust-ldap-group-sync-schedule) for
+- You've waited an hour or [the configured interval](ldap_synchronization.md#adjust-ldap-sync-schedule) for
   the group to sync. To speed up the process, either go to the GitLab group **Manage** > **Members**
   and press **Sync now** (sync one group) or [run the group sync Rake task](../../raketasks/ldap.md#run-a-group-sync)
   (sync all groups).
@@ -443,7 +443,7 @@ the rails console.
 
 When LDAP sync is enabled for a group, you cannot use the "invite" dialog to invite new group members.
 
-To resolve this issue in GitLab 16.8 and later, you can invite service accounts to and remove them from a group using the [group members API endpoints](../../../api/members.md#add-a-member-to-a-group-or-project).
+To resolve this issue in GitLab 16.8 and later, you can invite service accounts to and remove them from a group using the [group members API endpoints](../../../api/group_members.md#add-a-member-to-a-group).
 
 #### Administrator privileges not granted
 
@@ -719,7 +719,7 @@ end
 You can then [run a UserSync](#sync-all-users) to sync the latest DN
 for each of these users.
 
-## Could not authenticate from AzureActivedirectoryV2 because "Invalid grant"
+## Could not authenticate from AzureActivedirectoryV2 because `Invalid grant`
 
 When converting from LDAP to SAML you might get an error in Azure that states the following:
 
@@ -736,9 +736,9 @@ You would receive both LDAP and Azure metadata in the logs, which generates the 
 
 The workaround for a single user is to remove the LDAP identity from the user in **Admin** > **Identities**.
 
-To remove multiple LDAP identities, use either of the workarounds for the [`Could not authenticate you from Ldapmain because "Unknown provider"` error](#could-not-authenticate-you-from-ldapmain-because-unknown-provider).
+To remove multiple LDAP identities, use either of the workarounds for the `Could not authenticate you from Ldapmain because "Unknown provider"` error below.
 
-## `Could not authenticate you from Ldapmain because "Unknown provider"`
+## Error: `Could not authenticate you from Ldapmain because "Unknown provider"`
 
 You can receive the following error when authenticating with an LDAP server:
 

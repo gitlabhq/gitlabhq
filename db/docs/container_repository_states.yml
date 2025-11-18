@@ -1,13 +1,11 @@
 ---
 table_name: container_repository_states
-description: Checksum states of container repositories for Geo verification
+description: Checksum states of container repositories for Geo verification. Actually has a sharding key `project_id` but it's not needed for replication.
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/111077
 milestone: '15.10'
 classes:
 - Geo::ContainerRepositoryState
 feature_categories:
 - geo_replication
-gitlab_schema: gitlab_main_org
-sharding_key:
-  project_id: projects
+gitlab_schema: gitlab_main_cell_local
 table_size: small

@@ -10,16 +10,16 @@ RSpec.describe Gitlab::Git::Blame, feature_category: :source_code_management do
   let(:range) { nil }
   let(:ignore_revisions_blob) { nil }
 
-  subject(:blame) do
-    described_class.new(repository, sha, path, range: range, ignore_revisions_blob: ignore_revisions_blob)
-  end
-
   let(:result) do
     [].tap do |data|
       blame.each do |commit, line, previous_path, span|
         data << { commit: commit, line: line, previous_path: previous_path, span: span }
       end
     end
+  end
+
+  subject(:blame) do
+    described_class.new(repository, sha, path, range: range, ignore_revisions_blob: ignore_revisions_blob)
   end
 
   describe 'blaming a file' do

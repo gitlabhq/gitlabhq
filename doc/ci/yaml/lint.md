@@ -31,7 +31,7 @@ configuration added with the [`includes` keyword](_index.md#include).
 
 To check CI/CD configuration with the CI lint tool:
 
-1. On the left sidebar, select **Search or go to** and find your project.
+1. On the left sidebar, select **Search or go to** and find your project. If you've [turned on the new navigation](../../user/interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
 1. Select **Build** > **Pipeline editor**.
 1. Select the **Validate** tab.
 1. Select **Lint CI/CD sample**.
@@ -51,7 +51,7 @@ Prerequisites:
 
 To simulate a pipeline:
 
-1. On the left sidebar, select **Search or go to** and find your project.
+1. On the left sidebar, select **Search or go to** and find your project. If you've [turned on the new navigation](../../user/interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
 1. Select **Build** > **Pipeline editor**.
 1. Select the **Validate** tab.
 1. Select **Lint CI/CD sample**.

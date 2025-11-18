@@ -1,13 +1,16 @@
 <script>
 import { GlLoadingIcon } from '@gitlab/ui';
 import uniqueId from 'lodash/uniqueId';
-import { __ } from '~/locale';
+import { s__, __, sprintf } from '~/locale';
+import { copyToClipboard } from '~/lib/utils/copy_to_clipboard';
+import * as Sentry from '~/sentry/sentry_browser_wrapper';
 import { createAlert } from '~/alert';
 import ListActions from '~/vue_shared/components/list_actions/list_actions.vue';
 import GroupListItemLeaveModal from '~/vue_shared/components/groups_list/group_list_item_leave_modal.vue';
 import GroupListItemDeleteModal from '~/vue_shared/components/groups_list/group_list_item_delete_modal.vue';
 import GroupListItemPreventDeleteModal from '~/vue_shared/components/groups_list/group_list_item_prevent_delete_modal.vue';
 import {
+  ACTION_COPY_ID,
   ACTION_ARCHIVE,
   ACTION_DELETE,
   ACTION_DELETE_IMMEDIATELY,
@@ -60,6 +63,10 @@ export default {
     },
     actions() {
       return {
+        [ACTION_COPY_ID]: {
+          text: sprintf(s__('Groups|Copy group ID: %{id}'), { id: this.group.id }),
+          action: this.onCopyId,
+        },
         [ACTION_EDIT]: {
           href: this.group.editPath,
         },
@@ -97,6 +104,7 @@ export default {
           action: this.onActionDelete,
         },
         [ACTION_LEAVE]: {
+          text: __('Leave group'),
           action: this.onActionLeave,
         },
       };
@@ -149,6 +157,16 @@ export default {
         createAlert({ message: errorMessage, error, captureError: true });
       } finally {
         this.actionsLoading = false;
+      }
+    },
+    async onCopyId() {
+      this.trackEvent('click_copy_id_in_group_quick_actions');
+
+      try {
+        await copyToClipboard(this.group.id);
+        this.$toast.show(s__('Groups|Group ID copied to clipboard.'));
+      } catch (error) {
+        Sentry.captureException(error);
       }
     },
     onActionDelete() {

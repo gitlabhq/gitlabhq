@@ -7,6 +7,6 @@ feature_categories:
 description: Stores Amazon S3 configurations used for instance level audit event streaming.
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/136492
 milestone: '16.7'
-gitlab_schema: gitlab_main
+gitlab_schema: gitlab_main_cell_setting
 table_size: small
 sharding_key_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/553441

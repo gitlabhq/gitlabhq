@@ -2,3 +2,4 @@
 
 GraphQL::Schema::Validator.install(:mutually_exclusive, Gitlab::Graphql::Validators::MutuallyExclusiveValidator)
 GraphQL::Schema::Validator.install(:exactly_one_of, Gitlab::Graphql::Validators::ExactlyOneOfValidator)
+GraphQL::Schema::Validator.install(:at_least_one_of, Gitlab::Graphql::Validators::AtLeastOneOfValidator)

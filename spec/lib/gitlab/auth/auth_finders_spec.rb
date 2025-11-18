@@ -838,6 +838,22 @@ RSpec.describe Gitlab::Auth::AuthFinders, feature_category: :system_access do
       expect(find_personal_access_token).to be_nil
     end
 
+    context 'with instance wide prefix configured' do
+      let(:instance_prefix) { 'instanceprefix' }
+
+      before do
+        stub_application_setting(instance_token_prefix: instance_prefix)
+      end
+
+      it 'returns nil if PAT looks like a build token with instance wide prefix' do
+        set_header('SCRIPT_NAME', nil)
+        set_header('PATH_INFO', '/api/v4/jobs/1')
+        set_header(described_class::PRIVATE_TOKEN_HEADER, "#{instance_prefix}-#{::Ci::Build::TOKEN_PREFIX}ABCD")
+
+        expect(find_personal_access_token).to be_nil
+      end
+    end
+
     it 'returns exception if invalid personal_access_token' do
       set_header(described_class::PRIVATE_TOKEN_HEADER, 'invalid_token')
 
@@ -863,6 +879,12 @@ RSpec.describe Gitlab::Auth::AuthFinders, feature_category: :system_access do
 
       it 'returns token if valid oauth_access_token' do
         expect(find_oauth_access_token.token).to eq oauth_access_token.token
+      end
+
+      it 'calls find_caught_up_replica to ensure a recent replica is used' do
+        expect(OauthAccessToken.sticking).to receive(:find_caught_up_replica)
+
+        find_oauth_access_token
       end
     end
 

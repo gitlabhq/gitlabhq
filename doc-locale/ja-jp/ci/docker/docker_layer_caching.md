@@ -2,7 +2,7 @@
 stage: Verify
 group: Pipeline Execution
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
-title: Dockerレイヤのキャッシュを使用して、Docker-in-Dockerのビルドを高速化する
+title: Dockerレイヤーのキャッシュを使用して、Docker-in-Dockerのビルドを高速化する
 ---
 
 {{< details >}}
@@ -12,24 +12,24 @@ title: Dockerレイヤのキャッシュを使用して、Docker-in-Dockerのビ
 
 {{< /details >}}
 
-Docker-in-Dockerを使用すると、ビルドを作成するたびに、Dockerはイメージのすべてのレイヤをダウンロードします。Dockerの最新バージョン（Docker 1.13以降）では、`docker build`ステップ中に既存のイメージをキャッシュとして使用できます。これにより、ビルドプロセスが大幅に高速化されます。
+Docker-in-Dockerを使用すると、ビルドを作成するたびに、Dockerはイメージのすべてのレイヤーをダウンロードします。Dockerの最新バージョン（Docker 1.13以降）では、`docker build`ステップ中に既存のイメージをキャッシュとして使用できます。これにより、ビルドプロセスが大幅に高速化されます。
 
 Docker 27.0.1以降では、デフォルトの`docker`ビルドドライバーは、`containerd`イメージストアが有効になっている場合にのみキャッシュバックエンドをサポートします。
 
-Docker 27.0.1以降でDockerキャッシュを使用するには、次のいずれかを実行します。
+Docker 27.0.1以降でDockerキャッシュを使用するには、次のいずれかを実行します:
 
 - Dockerデーモン設定で`containerd`イメージストアを有効にします。
 - 別のビルドドライバーを選択します。
 
 詳細については、[キャッシュストレージバックエンド](https://docs.docker.com/build/cache/backends/)を参照してください。
 
-## Dockerキャッシュの仕組み
+## Dockerキャッシュの仕組み {#how-docker-caching-works}
 
-`docker build`を実行すると、`Dockerfile`内の各コマンドがレイヤを作成します。これらのレイヤはキャッシュとして保持され、変更がない場合は再利用できます。1つのレイヤを変更すると、後続のすべてのレイヤが再作成されます。
+`docker build`を実行すると、`Dockerfile`内の各コマンドがレイヤーを作成します。これらのレイヤーはキャッシュとして保持され、変更がない場合は再利用できます。1つのレイヤーを変更すると、後続のすべてのレイヤーが再作成されます。
 
 `docker build`コマンドのキャッシュソースとして使用するタグ付きイメージを指定するには、`--cache-from`引数を使用します。複数の`--cache-from`引数を使用すると、複数のイメージをキャッシュソースとして指定できます。
 
-## Dockerインラインキャッシュの例
+## Dockerインラインキャッシュの例 {#docker-inline-caching-example}
 
 次の例の`.gitlab-ci.yml`ファイルは、デフォルトの`docker build`コマンドで`inline`キャッシュバックエンドを使用したDockerキャッシュの使用方法を示しています。
 
@@ -61,7 +61,7 @@ build:
 1. 2番目のコマンドは、プルされたイメージがキャッシュとして使用可能であればそれを使用して（`--cache-from $CI_REGISTRY_IMAGE:latest`引数を参照）、Dockerイメージをビルドし、タグを付けます。`--build-arg BUILDKIT_INLINE_CACHE=1`は、[インラインキャッシュ](https://docs.docker.com/build/cache/backends/inline/)を使用するようにDockerに指示し、ビルドキャッシュをイメージ自体に埋め込みます。
 1. 最後の2つのコマンドは、タグ付けされたDockerイメージをコンテナレジストリにプッシュして、後続のビルドのキャッシュとしても使用できるようにします。
 
-## Dockerレジストリキャッシュの例
+## Dockerレジストリキャッシュの例 {#docker-registry-caching-example}
 
 Dockerビルドを、レジストリ内の専用キャッシュイメージに直接キャッシュできます。
 
@@ -93,7 +93,7 @@ build:
 `build`ジョブの`script`:
 
 1. `registry`キャッシュバックエンドをサポートする`docker-container` BuildKitドライバーを作成し、構成します。
-1. 以下を使用してDockerイメージをビルドし、プッシュします。
+1. 以下を使用してDockerイメージをビルドし、プッシュします:
 
    - `--cache-from type=registry,ref=$CI_REGISTRY_IMAGE/cache-image`を使用した専用キャッシュイメージ。
-   - `--cache-to type=registry,ref=$CI_REGISTRY_IMAGE/cache-image,mode=max`を使用したキャッシュの更新。ここで、`max`モードは中間レイヤをキャッシュします。
+   - `--cache-to type=registry,ref=$CI_REGISTRY_IMAGE/cache-image,mode=max`を使用したキャッシュの更新。ここで、`max`モードは中間レイヤーをキャッシュします。

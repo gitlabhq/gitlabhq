@@ -322,4 +322,8 @@ RSpec.describe Banzai::Filter::References::UserReferenceFilter, feature_category
     let(:text) { "#{reference} #{reference} #{reference}" }
     let(:ends_with) { "</a> #{reference}" }
   end
+
+  it_behaves_like 'ReferenceFilter#references_in' do
+    let(:filter_instance) { described_class.new(nil, { project: nil }) }
+  end
 end

@@ -634,32 +634,6 @@ RSpec.describe Ci::CreatePipelineService, feature_category: :pipeline_compositio
           end
         end
       end
-
-      context 'with nested variables' do
-        let(:config) do
-          <<-EOY
-          variables:
-            NESTED_VAR: ${CI_DEFAULT_BRANCH}
-
-          stages:
-            - test
-
-          is-default:
-            stage: 'test'
-            script:
-              - "echo '$CI_COMMIT_BRANCH == $NESTED_VAR'"
-            rules:
-              - if: '$CI_COMMIT_BRANCH == $NESTED_VAR'
-                when: 'always'
-              - when: 'never'
-          EOY
-        end
-
-        it 'matches the rule' do
-          expect(pipeline).to be_persisted
-          expect(build_names).to contain_exactly('is-default')
-        end
-      end
     end
 
     context 'changes:' do

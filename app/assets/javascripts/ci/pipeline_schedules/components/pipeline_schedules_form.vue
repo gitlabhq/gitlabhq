@@ -19,7 +19,7 @@ import PipelineInputsForm from '~/ci/common/pipeline_inputs/pipeline_inputs_form
 import createPipelineScheduleMutation from '../graphql/mutations/create_pipeline_schedule.mutation.graphql';
 import updatePipelineScheduleMutation from '../graphql/mutations/update_pipeline_schedule.mutation.graphql';
 import getPipelineSchedulesQuery from '../graphql/queries/get_pipeline_schedules.query.graphql';
-import PipelineVariablesFormGroup from './pipeline_variables_form_group.vue';
+import VariablesForm from '../../common/variables_form.vue';
 
 const scheduleId = queryToObject(window.location.search).id;
 
@@ -39,7 +39,7 @@ export default {
     GlLoadingIcon,
     IntervalPatternInput,
     PipelineInputsForm,
-    PipelineVariablesFormGroup,
+    VariablesForm,
     RefSelector,
     TimezoneDropdown,
   },
@@ -156,6 +156,7 @@ export default {
       'PipelineSchedules|An error occurred while trying to fetch the pipeline schedule.',
     ),
   },
+  userCalloutsFeatureName: 'pipeline_new_inputs_adoption_banner',
   computed: {
     dropdownTranslations() {
       return {
@@ -374,10 +375,11 @@ export default {
       @update-inputs-metadata="handleInputsMetadataUpdate"
     />
     <!--Variable List-->
-    <pipeline-variables-form-group
+    <variables-form
       v-if="canSetPipelineVariables"
       :initial-variables="variables"
       :editing="editing"
+      :user-callouts-feature-name="$options.userCalloutsFeatureName"
       @update-variables="updatedVariables = $event"
     />
 

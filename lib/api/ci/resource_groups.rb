@@ -56,6 +56,27 @@ module API
           present resource_group, with: Entities::Ci::ResourceGroup
         end
 
+        desc 'Show current job for a specific resource group' do
+          success Entities::Ci::JobBasic
+          failure [
+            { code: 401, message: 'Unauthorized' },
+            { code: 404, message: 'Not found' }
+          ]
+          tags ci_resource_groups_tags
+        end
+        params do
+          requires :key, type: String, desc: 'The key of the resource group'
+        end
+        get ':id/resource_groups/:key/current_job', requirements: RESOURCE_GROUP_ENDPOINT_REQUIREMENTS do
+          authorize! :read_resource_group, resource_group
+          authorize! :read_build, user_project
+
+          current_processable = resource_group
+            .current_processable
+
+          present current_processable, with: Entities::Ci::JobBasic
+        end
+
         desc 'List upcoming jobs for a specific resource group' do
           success Entities::Ci::JobBasic
           failure [

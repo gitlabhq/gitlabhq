@@ -24,18 +24,18 @@ RSpec.describe NewMergeRequestWorker, feature_category: :code_review_workflow do
       end
 
       it 'completes the covered experience' do
-        Labkit::CoveredExperience.start(:create_merge_request)
+        Labkit::UserExperienceSli.start(:create_merge_request)
 
         expect do
           worker.perform(non_existing_record_id, user.id)
-        end.to resume_covered_experience(:create_merge_request)
-        .and complete_covered_experience(:create_merge_request, error: true)
+        end.to resume_user_experience(:create_merge_request)
+        .and complete_user_experience(:create_merge_request, error: true)
       end
 
       it 'does not resume covered experience when not started' do
         expect do
           worker.perform(non_existing_record_id, user.id)
-        end.not_to resume_covered_experience(:create_merge_request)
+        end.not_to resume_user_experience(:create_merge_request)
       end
     end
 
@@ -58,18 +58,18 @@ RSpec.describe NewMergeRequestWorker, feature_category: :code_review_workflow do
       end
 
       it 'completes the covered experience' do
-        Labkit::CoveredExperience.start(:create_merge_request)
+        Labkit::UserExperienceSli.start(:create_merge_request)
 
         expect do
           worker.perform(merge_request.id, non_existing_record_id)
-        end.to resume_covered_experience(:create_merge_request)
-        .and complete_covered_experience(:create_merge_request, error: true)
+        end.to resume_user_experience(:create_merge_request)
+        .and complete_user_experience(:create_merge_request, error: true)
       end
 
       it 'does not resume covered experience when not started' do
         expect do
           worker.perform(merge_request.id, non_existing_record_id)
-        end.not_to resume_covered_experience(:create_merge_request)
+        end.not_to resume_user_experience(:create_merge_request)
       end
     end
 
@@ -114,18 +114,18 @@ RSpec.describe NewMergeRequestWorker, feature_category: :code_review_workflow do
           end
 
           it 'completes the covered experience' do
-            Labkit::CoveredExperience.start(:create_merge_request)
+            Labkit::UserExperienceSli.start(:create_merge_request)
 
             expect do
               worker.perform(merge_request.id, user.id)
-            end.to resume_covered_experience(:create_merge_request)
-            .and complete_covered_experience(:create_merge_request)
+            end.to resume_user_experience(:create_merge_request)
+            .and complete_user_experience(:create_merge_request)
           end
 
           it 'does not resume covered experience when not started' do
             expect do
               worker.perform(merge_request.id, user.id)
-            end.not_to resume_covered_experience(:create_merge_request)
+            end.not_to resume_user_experience(:create_merge_request)
           end
 
           it 'creates a notification for the mentioned user' do

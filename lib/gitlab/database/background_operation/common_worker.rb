@@ -7,9 +7,15 @@ module Gitlab
         extend ActiveSupport::Concern
 
         include PartitionedTable
+        include FromUnion
 
         MINIMUM_PAUSE_MS = 100
         PARTITION_DURATION = 14.days
+        JOB_CLASS_MODULE = 'Gitlab::BackgroundOperation'
+        BATCH_CLASS_MODULE = 'Gitlab::Database::Batch::Strategies'
+        MINIMUM_JOBS_FOR_FAILURE_CHECK = 50
+        MAXIMUM_FAILURE_RATIO = 0.5
+        RETRY_DELAY = 10.minutes
 
         REQUIRED_COLUMNS = %i[
           batch_size
@@ -24,6 +30,8 @@ module Gitlab
         ].freeze
 
         included do |worker_class|
+          include ::Gitlab::Utils::StrongMemoize
+
           # Partition should not be changed once the record is created
           attr_readonly :partition
 
@@ -38,10 +46,15 @@ module Gitlab
           }
 
           scope :for_partition, ->(partition) { where(partition: partition) }
-          scope :executable, -> { with_statuses(:queued, :active, :paused) }
+          scope :unfinished, -> { with_statuses(:queued, :active, :paused) }
           scope :with_job_arguments, ->(args) { where("job_arguments = ?", args.to_json) } # rubocop:disable Rails/WhereEquals -- to override Rails comparison
+          scope :not_on_hold, -> { where('on_hold_until IS NULL OR on_hold_until < NOW()') }
 
-          scope :executables_with_config, ->(job_class_name, table_name, column_name, job_arguments, org_id: nil) do
+          scope :executable, -> do
+            with_statuses(:queued, :paused).not_on_hold
+          end
+
+          scope :unfinished_with_config, ->(job_class_name, table_name, column_name, job_arguments, org_id: nil) do
             config = {
               job_class_name: job_class_name,
               table_name: table_name,
@@ -50,7 +63,7 @@ module Gitlab
 
             config = config.merge(organization_id: org_id) if org_id.present?
 
-            executable.with_job_arguments(job_arguments).where(config)
+            unfinished.with_job_arguments(job_arguments).where(config)
           end
 
           partitioned_by :partition, strategy: :sliding_list,
@@ -68,7 +81,7 @@ module Gitlab
             detach_partition_if: ->(partition) do
               !worker_class
                  .for_partition(partition.value)
-                 .executable
+                 .unfinished
                  .exists?
             end
 
@@ -78,6 +91,129 @@ module Gitlab
             state :paused, value: 2
             state :finished, value: 3
             state :failed, value: 4
+
+            event :finish do
+              transition [:paused, :finished, :active, :finalizing] => :finished
+            end
+
+            event :failure do
+              transition [:failed, :finalizing, :active] => :failed
+            end
+
+            event :hold do
+              transition any => :paused
+            end
+
+            before_transition any => [:paused] do |worker|
+              worker.on_hold_until = RETRY_DELAY.from_now
+
+              Gitlab::AppLogger.info(
+                message: "#{self} put on hold until #{RETRY_DELAY.from_now}",
+                worker_id: worker.id,
+                job_class_name: worker.job_class_name,
+                duration_s: RETRY_DELAY.to_i
+              )
+            end
+          end
+
+          def job_class
+            "#{JOB_CLASS_MODULE}::#{job_class_name}".constantize
+          end
+
+          def batch_class
+            "#{BATCH_CLASS_MODULE}::#{batch_class_name}".constantize
+          end
+
+          def should_stop?
+            return false unless started_at
+            return false unless sufficient_jobs_for_failure_check?
+
+            failure_ratio_exceeded?
+          end
+
+          def create_job!(min, max)
+            jobs.create!(
+              batch_size: batch_size,
+              sub_batch_size: sub_batch_size,
+              pause_ms: pause_ms,
+              min_cursor: min,
+              max_cursor: max,
+              worker_partition: partition,
+              organization_id: organization_id
+            )
+          end
+
+          # Returns the end cursor of the last batch as the starting point for the next batch.
+          # The cursor must be positioned before the actual start of iteration to avoid
+          # skipping the first row, as required by KeysetIterator.
+          def next_min_cursor
+            last_job&.max_cursor || min_cursor
+          end
+
+          def health_context
+            Gitlab::Database::HealthStatus::Context.new(
+              self,
+              connection,
+              [table_name]
+            )
+          end
+          strong_memoize_attr :health_context
+
+          def on_hold?
+            return false unless on_hold_until
+
+            on_hold_until.future?
+          end
+
+          def optimize!
+            return false unless optimizer.should_optimize?
+
+            new_batch_size = optimizer.optimized_batch_size
+            return false if new_batch_size == batch_size
+
+            update!(batch_size: new_batch_size)
+          end
+
+          private
+
+          def sufficient_jobs_for_failure_check?
+            total_jobs_since(started_at) >= MINIMUM_JOBS_FOR_FAILURE_CHECK
+          end
+
+          def failure_ratio_exceeded?
+            total_jobs = total_jobs_since(started_at)
+            failed_jobs = jobs.failed.created_since(started_at).count
+            failed_jobs.fdiv(total_jobs) > MAXIMUM_FAILURE_RATIO
+          end
+
+          def total_jobs_since(date)
+            strong_memoize_with(:total_jobs_since, date) do
+              jobs.created_since(started_at).count
+            end
+          end
+
+          def optimizer
+            Gitlab::Database::Batch::EfficiencyCalculator.new(record: self).optimizer
+          end
+          strong_memoize_attr :optimizer
+        end
+
+        class_methods do
+          def schedulable_workers(limit)
+            unions = Gitlab::Database::PostgresPartitionedTable.each_partition(table_name).map do |partition|
+              partition_name = partition.name
+
+              select('id, partition, created_at')
+                .from("#{Gitlab::Database::DYNAMIC_PARTITIONS_SCHEMA}.#{partition_name} AS #{table_name}")
+                .executable
+                .order(created_at: :asc)
+                .limit(limit)
+            end
+
+            select('id, partition')
+              .from_union(unions, remove_duplicates: false, remove_order: false)
+              .order(partition: :asc, created_at: :asc)
+              .limit(limit)
           end
         end
       end

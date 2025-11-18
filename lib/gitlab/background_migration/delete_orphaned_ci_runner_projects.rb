@@ -4,7 +4,7 @@ module Gitlab
   module BackgroundMigration
     class DeleteOrphanedCiRunnerProjects < BatchedMigrationJob
       operation_name :delete_orphaned_ci_runner_projects
-      feature_category :runner
+      feature_category :runner_core
 
       class CiRunner < ::Ci::ApplicationRecord
         self.table_name = :ci_runners

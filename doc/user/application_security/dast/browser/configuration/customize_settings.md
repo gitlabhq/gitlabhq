@@ -88,7 +88,7 @@ target website to be disabled to ensure the scan works as intended.
 For example, for a target website that contains forms with Anti-CSRF tokens, a passive scan works as
 intended because the browser displays pages and forms as if a user is viewing the page. However,
 active vulnerability checks that run in a full scan cannot submit forms containing Anti-CSRF tokens.
-In such cases, we recommend you disable Anti-CSRF tokens when running a full scan.
+In such cases, disable Anti-CSRF tokens when running a full scan.
 
 ## Managing scan time
 

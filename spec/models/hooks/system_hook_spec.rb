@@ -32,6 +32,7 @@ RSpec.describe SystemHook, feature_category: :webhooks do
       let(:url) { 'http://localhost:9000' }
 
       it { is_expected.not_to allow_value(url).for(:url) }
+      it { is_expected.to validate_presence_of(:organization_id) }
 
       it 'is valid if application settings allow local requests from system hooks' do
         settings = ApplicationSetting.new(allow_local_requests_from_system_hooks: true)

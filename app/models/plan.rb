@@ -11,6 +11,30 @@ class Plan < ApplicationRecord
   DEFAULT_PLANS = [DEFAULT].freeze
   private_constant :ALL_PLANS, :DEFAULT_PLANS
 
+  PLAN_NAME_UID_LIST = {
+    default: 1,
+    free: 2,
+    bronze: 3,
+    silver: 4,
+    premium: 5,
+    gold: 6,
+    ultimate: 7,
+    ultimate_trial: 8,
+    premium_trial: 9,
+    ultimate_trial_paid_customer: 10,
+    opensource: 11,
+    early_adopter: 12
+  }.freeze
+
+  enum :plan_name_uid, PLAN_NAME_UID_LIST
+
+  validates :plan_name_uid,
+    presence: true,
+    uniqueness: true,
+    on: :create
+
+  before_validation :set_plan_name_uid
+
   # This always returns an object
   def self.default
     Gitlab::SafeRequestStore.fetch(:plan_default) do
@@ -52,6 +76,15 @@ class Plan < ApplicationRecord
 
   def paid?
     false
+  end
+
+  private
+
+  def set_plan_name_uid
+    return unless name.present?
+
+    uid_value = self.class.plan_name_uids[name]
+    self.plan_name_uid = uid_value if uid_value
   end
 end
 

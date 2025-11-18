@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Groups::PackagesController do
+RSpec.describe Groups::PackagesController, feature_category: :package_registry do
   let_it_be(:group) { create(:group) }
 
   let(:page) { :index }

@@ -10,7 +10,6 @@ RSpec.describe 'User uploads file to note', :js, feature_category: :text_editors
   let(:issue) { create(:issue, project: project, author: user) }
 
   before do
-    stub_feature_flags(work_item_view_for_issues: true)
     sign_in(user)
     visit project_issue_path(project, issue)
   end

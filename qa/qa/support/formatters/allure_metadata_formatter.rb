@@ -11,8 +11,6 @@ module QA
       #   * devops stage and group as epic and feature behavior tags
       #
       class AllureMetadataFormatter < ::RSpec::Core::Formatters::BaseFormatter
-        include Support::InfluxdbTools
-
         ISSUE_PROJECT = "gitlab-org/quality/e2e-test-issues"
 
         ::RSpec::Core::Formatters.register(self, :example_finished)

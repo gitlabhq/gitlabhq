@@ -92,6 +92,12 @@ module Resolvers
                Requires state, targetBranches, and createdAfter arguments.
       DESC
 
+    argument :closed_after, Types::TimeType,
+      required: false,
+      description: 'Merge requests closed after the date.'
+    argument :closed_before, Types::TimeType,
+      required: false,
+      description: 'Merge requests closed before the date.'
     argument :created_after, Types::TimeType,
       required: false,
       description: 'Merge requests created after the timestamp.'

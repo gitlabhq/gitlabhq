@@ -1,0 +1,4 @@
+---
+name: disable_passkey
+description: Grants the ability to disable a passkey
+feature_category: system_access

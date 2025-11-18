@@ -72,7 +72,14 @@ module WikiActions
   end
 
   def new
-    redirect_to wiki_page_path(wiki, SecureRandom.uuid, random_title: true, view: 'create')
+    selected_template_slug = request.query_parameters[:selected_template_slug]
+    redirect_to wiki_page_path(
+      wiki,
+      SecureRandom.uuid,
+      random_title: true,
+      view: 'create',
+      selected_template_slug: selected_template_slug
+    )
   end
 
   # rubocop:disable Gitlab/ModuleWithInstanceVariables

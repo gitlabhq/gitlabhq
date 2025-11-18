@@ -21,6 +21,7 @@ import {
   BoardType,
 } from 'ee_else_ce/boards/constants';
 import { DETAIL_VIEW_QUERY_PARAM_NAME } from '~/work_items/constants';
+import glFeatureFlagMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import { calculateNewPosition } from 'ee_else_ce/boards/boards_util';
 import { setError } from '../graphql/cache_updates';
 import BoardColumn from './board_column.vue';
@@ -33,13 +34,11 @@ export default {
     BoardAddNewColumnTrigger,
     BoardColumn,
     BoardDrawerWrapper,
-    BoardContentSidebar: () => import('~/boards/components/board_content_sidebar.vue'),
-    EpicBoardContentSidebar: () =>
-      import('ee_component/boards/components/epic_board_content_sidebar.vue'),
     EpicsSwimlanes: () => import('ee_component/boards/components/epics_swimlanes.vue'),
     GlAlert,
     WorkItemDrawer,
   },
+  mixins: [glFeatureFlagMixin()],
   inject: [
     'boardType',
     'canAdminList',
@@ -78,10 +77,6 @@ export default {
       required: true,
     },
     addColumnFormVisible: {
-      type: Boolean,
-      required: true,
-    },
-    useWorkItemDrawer: {
       type: Boolean,
       required: true,
     },
@@ -340,7 +335,11 @@ export default {
       <template #create-list-button>
         <div
           v-if="!addColumnFormVisible"
-          class="gl-sticky gl-top-5 gl-mt-5 gl-inline-block gl-pl-3"
+          class="gl-sticky gl-inline-block gl-pl-3"
+          :class="{
+            'gl-top-0': glFeatures.projectStudioEnabled,
+            'gl-top-5 gl-mt-5': !glFeatures.projectStudioEnabled,
+          }"
         >
           <board-add-new-column-trigger
             v-if="canAdminList"
@@ -351,7 +350,8 @@ export default {
       </template>
       <div v-if="addColumnFormVisible" class="gl-pl-2">
         <board-add-new-column
-          class="gl-sticky gl-top-5"
+          class="gl-sticky"
+          :class="{ 'gl-top-5': !glFeatures.projectStudioEnabled }"
           :filter-params="filterParams"
           :list-query-variables="listQueryVariables"
           :board-id="boardId"
@@ -361,11 +361,7 @@ export default {
         />
       </div>
     </epics-swimlanes>
-    <board-drawer-wrapper
-      v-if="useWorkItemDrawer"
-      :backlog-list-id="backlogListId"
-      :closed-list-id="closedListId"
-    >
+    <board-drawer-wrapper :backlog-list-id="backlogListId" :closed-list-id="closedListId">
       <template
         #default="{
           activeIssuable,
@@ -395,20 +391,5 @@ export default {
         />
       </template>
     </board-drawer-wrapper>
-
-    <template v-else>
-      <board-content-sidebar
-        v-if="isIssueBoard"
-        :backlog-list-id="backlogListId"
-        :closed-list-id="closedListId"
-        data-testid="issue-boards-sidebar"
-      />
-      <epic-board-content-sidebar
-        v-else-if="isEpicBoard"
-        :backlog-list-id="backlogListId"
-        :closed-list-id="closedListId"
-        data-testid="epic-boards-sidebar"
-      />
-    </template>
   </div>
 </template>

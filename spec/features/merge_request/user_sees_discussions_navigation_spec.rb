@@ -181,7 +181,13 @@ RSpec.describe 'Merge request > User sees discussions navigation', :js, feature_
       it_behaves_like 'a page with no code discussions'
     end
 
-    context 'on pipelines page' do
+    context 'on pipelines page',
+      quarantine: {
+        issue: [
+          'https://gitlab.com/gitlab-org/quality/test-failure-issues/-/issues/6901',
+          'https://gitlab.com/gitlab-org/quality/test-failure-issues/-/issues/6900'
+        ]
+      } do
       before do
         visit project_merge_request_path(project, merge_request)
         click_link 'Pipelines'

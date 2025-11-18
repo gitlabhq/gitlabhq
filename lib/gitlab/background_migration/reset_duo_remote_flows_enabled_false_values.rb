@@ -4,7 +4,7 @@ module Gitlab
   module BackgroundMigration
     class ResetDuoRemoteFlowsEnabledFalseValues < BatchedMigrationJob
       operation_name :update_all
-      feature_category :agent_foundations
+      feature_category :duo_agent_platform
 
       def perform
         each_sub_batch do |sub_batch|

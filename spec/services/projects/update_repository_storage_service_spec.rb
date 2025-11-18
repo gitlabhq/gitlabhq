@@ -333,6 +333,7 @@ RSpec.describe Projects::UpdateRepositoryStorageService, feature_category: :sour
               expect(new_pool_repository.state).to eq('ready')
               expect(new_pool_repository.source_project).to eq(nil)
               expect(new_pool_repository.disk_path).to eq(pool_repository.disk_path)
+              expect(new_pool_repository.organization).to eq(pool_repository.organization)
             end
           end
 

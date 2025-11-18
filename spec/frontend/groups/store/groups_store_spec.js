@@ -34,7 +34,7 @@ describe('ProjectsStore', () => {
       store.setGroups(mockGroups, false);
 
       expect(store.state.groups).toHaveLength(mockGroups.length);
-      expect(store.formatGroupItem).toHaveBeenCalledWith(expect.any(Object), false);
+      expect(store.formatGroupItem).toHaveBeenCalledWith(expect.any(Object));
       expect(Object.keys(store.state.groups[0]).indexOf('fullName')).toBeGreaterThan(-1);
     });
   });
@@ -80,15 +80,6 @@ describe('ProjectsStore', () => {
       expect(updatedGroupItem.isChildrenLoading).toBe(false);
       expect(updatedGroupItem.isBeingRemoved).toBe(false);
       expect(updatedGroupItem.microdata).toEqual({});
-    });
-
-    describe('when isOpenOverride is set', () => {
-      it('sets isOpen', () => {
-        const store = new GroupsStore();
-        const updatedGroupItem = store.formatGroupItem(mockSearchedGroups[0], false);
-
-        expect(updatedGroupItem.isOpen).toBe(false);
-      });
     });
 
     it('formats children', () => {

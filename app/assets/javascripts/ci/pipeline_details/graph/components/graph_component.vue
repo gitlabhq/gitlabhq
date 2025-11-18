@@ -56,6 +56,10 @@ export default {
       required: false,
       default: MAIN,
     },
+    userPermissions: {
+      type: Object,
+      required: true,
+    },
   },
   pipelineTypeConstants: {
     DOWNSTREAM,
@@ -131,6 +135,12 @@ export default {
     upstreamPipelines() {
       return this.hasUpstreamPipelines ? this.pipeline.upstream : [];
     },
+    currentPipelinePermissions() {
+      if (!this.pipeline?.id) {
+        return {};
+      }
+      return this.userPermissions[this.pipeline?.id] || {};
+    },
   },
   mounted() {
     this.getMeasurements();
@@ -193,6 +203,7 @@ export default {
             :skip-retry-modal="skipRetryModal"
             :type="$options.pipelineTypeConstants.UPSTREAM"
             :view-type="viewType"
+            :user-permissions="userPermissions"
             @error="onError"
             @setSkipRetryModal="$emit('setSkipRetryModal')"
           />
@@ -225,7 +236,7 @@ export default {
                 :source-job-hovered="hoveredSourceJobName"
                 :pipeline-expanded="pipelineExpanded"
                 :pipeline-id="pipeline.id"
-                :user-permissions="pipeline.userPermissions"
+                :user-permissions="currentPipelinePermissions"
                 @refreshPipelineGraph="$emit('refreshPipelineGraph')"
                 @setSkipRetryModal="$emit('setSkipRetryModal')"
                 @jobHover="setJob"
@@ -245,6 +256,7 @@ export default {
             :show-links="showJobLinks"
             :type="$options.pipelineTypeConstants.DOWNSTREAM"
             :view-type="viewType"
+            :user-permissions="userPermissions"
             data-testid="downstream-pipelines"
             @downstreamHovered="setSourceJob"
             @pipelineExpandToggle="togglePipelineExpanded"

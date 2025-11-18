@@ -203,8 +203,8 @@ RSpec.describe BlobPresenter do
     end
   end
 
-  context 'Gitpod' do
-    let(:gitpod_url) { "https://gitpod.io" }
+  context 'Ona' do
+    let(:gitpod_url) { "https://app.ona.com" }
     let(:gitpod_application_enabled) { true }
     let(:gitpod_user_enabled) { true }
 
@@ -214,13 +214,13 @@ RSpec.describe BlobPresenter do
       allow(Gitlab::CurrentSettings).to receive(:gitpod_url).and_return(gitpod_url)
     end
 
-    context 'Gitpod enabled for application and user' do
+    context 'Ona enabled for application and user' do
       describe '#gitpod_blob_url' do
         it { expect(presenter.gitpod_blob_url).to eq("#{gitpod_url}##{"http://localhost/#{project.full_path}/-/tree/#{ref}/#{path}"}") }
       end
     end
 
-    context 'Gitpod disabled at application level' do
+    context 'Ona disabled at application level' do
       let(:gitpod_application_enabled) { false }
 
       describe '#gitpod_blob_url' do
@@ -228,7 +228,7 @@ RSpec.describe BlobPresenter do
       end
     end
 
-    context 'Gitpod disabled at user level' do
+    context 'Ona disabled at user level' do
       let(:gitpod_user_enabled) { false }
 
       describe '#gitpod_blob_url' do

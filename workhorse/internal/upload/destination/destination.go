@@ -112,6 +112,39 @@ type consumer interface {
 	ConsumeWithoutDelete(context.Context, io.Reader, time.Time) (int64, error)
 }
 
+// setupSizeLimiter sets up size limit checking and returns a hard limit reader if needed
+func setupSizeLimiter(reader io.Reader, size int64, opts *UploadOpts) (*hardLimitReader, io.Reader, error) {
+	if opts.MaximumSize <= 0 {
+		return nil, reader, nil
+	}
+
+	if size > opts.MaximumSize {
+		if opts.LsifProcessing {
+			return nil, nil, fmt.Errorf("the upload size %d is over maximum of %d bytes (LSIF processing may have increased file size): %w", size, opts.MaximumSize, ErrEntityTooLarge)
+		}
+		return nil, nil, fmt.Errorf("the upload size %d is over maximum of %d bytes: %w", size, opts.MaximumSize, ErrEntityTooLarge)
+	}
+
+	hlr := &hardLimitReader{r: reader, n: opts.MaximumSize}
+	return hlr, hlr, nil
+}
+
+// handleUploadError handles errors that occur during upload consumption
+func handleUploadError(ctx context.Context, err error, hlr *hardLimitReader, fh *FileHandler, opts *UploadOpts) error {
+	if (err == objectstore.ErrNotEnoughParts) || (hlr != nil && hlr.n < 0) {
+		if opts.LsifProcessing {
+			log.WithContextFields(ctx, log.Fields{
+				"uploaded_bytes":  fh.Size,
+				"maximum_bytes":   opts.MaximumSize,
+				"lsif_processing": true,
+			}).Error("upload size limit exceeded during LSIF file upload")
+			return fmt.Errorf("upload exceeded maximum size of %d bytes (LSIF processing may have increased file size): %w", opts.MaximumSize, ErrEntityTooLarge)
+		}
+		return ErrEntityTooLarge
+	}
+	return err
+}
+
 // Upload persists the provided reader content to all the location specified in opts. A cleanup will be performed once ctx is Done
 // Make sure the provided context will not expire before finalizing upload with GitLab Rails.
 func Upload(ctx context.Context, reader io.Reader, size int64, name string, opts *UploadOpts) (*FileHandler, error) {
@@ -131,14 +164,9 @@ func Upload(ctx context.Context, reader io.Reader, size int64, name string, opts
 		return nil, err
 	}
 
-	var hlr *hardLimitReader
-	if opts.MaximumSize > 0 {
-		if size > opts.MaximumSize {
-			return nil, fmt.Errorf("the upload size %d is over maximum of %d bytes: %w", size, opts.MaximumSize, ErrEntityTooLarge)
-		}
-
-		hlr = &hardLimitReader{r: reader, n: opts.MaximumSize}
-		reader = hlr
+	hlr, reader, err := setupSizeLimiter(reader, size, opts)
+	if err != nil {
+		return nil, err
 	}
 
 	if opts.SkipDelete {
@@ -148,10 +176,7 @@ func Upload(ctx context.Context, reader io.Reader, size int64, name string, opts
 	}
 
 	if err != nil {
-		if (err == objectstore.ErrNotEnoughParts) || (hlr != nil && hlr.n < 0) {
-			err = ErrEntityTooLarge
-		}
-		return nil, err
+		return nil, handleUploadError(ctx, err, hlr, fh, opts)
 	}
 
 	if size != -1 && size != fh.Size {

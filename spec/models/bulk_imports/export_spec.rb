@@ -6,6 +6,7 @@ RSpec.describe BulkImports::Export, type: :model, feature_category: :importers d
   describe 'associations' do
     it { is_expected.to belong_to(:group) }
     it { is_expected.to belong_to(:project) }
+    it { is_expected.to belong_to(:offline_export).class_name('Import::Offline::Export') }
     it { is_expected.to have_one(:upload) }
     it { is_expected.to have_many(:batches) }
   end
@@ -174,6 +175,20 @@ RSpec.describe BulkImports::Export, type: :model, feature_category: :importers d
       let(:relation) { 'labels' }
 
       it { is_expected.to eq(false) }
+    end
+  end
+
+  describe '#offline?' do
+    context 'when associated to an offline export' do
+      subject(:export) { create(:bulk_import_export, :offline) }
+
+      it { is_expected.to be_offline }
+    end
+
+    context 'when not associated to an offline export' do
+      subject(:export) { create(:bulk_import_export) }
+
+      it { is_expected.not_to be_offline }
     end
   end
 end

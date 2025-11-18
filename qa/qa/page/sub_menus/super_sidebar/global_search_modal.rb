@@ -63,7 +63,7 @@ module QA
           end
 
           def search_for(term)
-            click_element('super-sidebar-search-button')
+            open_global_search_modal
             fill_element('global-search-input', "#{term}\n")
           end
 

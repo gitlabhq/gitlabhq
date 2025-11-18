@@ -22,6 +22,8 @@ module QA
           milestone.due_date = due_date
         end
 
+        Page::Milestone::Show.perform(&:expand_sidebar_if_collapsed)
+
         Page::Group::Menu.perform(&:go_to_milestones)
         Page::Group::Milestone::Index.perform do |milestone_list|
           expect(milestone_list).to have_milestone(group_milestone)
@@ -30,6 +32,7 @@ module QA
         end
 
         Page::Milestone::Show.perform do |milestone|
+          milestone.expand_sidebar_if_collapsed
           expect(milestone).to have_element('data-testid': 'milestone-title-content', text: title)
           expect(milestone).to have_element('data-testid': 'milestone-description-content', text: description)
           expect(milestone).to have_start_date(start_date)

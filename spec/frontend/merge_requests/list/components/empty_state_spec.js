@@ -58,4 +58,13 @@ describe('Merge request list app empty state component', () => {
       expect(findEmptyState().attributes('description')).toBeUndefined();
     });
   });
+
+  describe('when searchTimeout is true', () => {
+    it('sets the correct title and description', () => {
+      createComponent({ searchTimeout: true });
+
+      expect(findEmptyState().attributes('title')).toBe('Too many results to display');
+      expect(findEmptyState().attributes('description')).toBe('Edit your search or add a filter.');
+    });
+  });
 });

@@ -4,7 +4,7 @@ module Gitlab
   module BackgroundMigration
     class BackfillTagNameOnCiRunnerTaggings < BatchedMigrationJob
       operation_name :backfill_tag_name_on_ci_runner_taggings
-      feature_category :runner
+      feature_category :runner_core
 
       def perform
         each_sub_batch do |sub_batch|

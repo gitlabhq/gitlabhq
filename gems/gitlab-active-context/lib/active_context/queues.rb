@@ -56,5 +56,20 @@ module ActiveContext
         end
       end
     end
+
+    def self.queue_counts
+      queue_counts = []
+
+      raw_queues&.each do |raw_queue|
+        queue_key = "#{raw_queue.redis_key}:zset"
+        count = ActiveContext::Redis.with_redis do |redis|
+          redis.zcard(queue_key)
+        end
+
+        queue_counts << { queue_name: raw_queue.class.name, shard: raw_queue.shard, count: count }
+      end
+
+      queue_counts
+    end
   end
 end

@@ -1,5 +1,11 @@
 <!-- eslint-disable vue/multi-word-component-names -->
 <script>
+/*
+  Important: This component is considered the legacy component,
+  and will be removed soon. If you add code to this one, please be sure
+  to mirror that functionality in `ci/pipelines_page/pipelines_graphql.vue`
+  https://gitlab.com/groups/gitlab-org/-/epics/16394
+*/
 import NO_PIPELINES_SVG from '@gitlab/svgs/dist/illustrations/empty-state/empty-pipeline-md.svg?url';
 import ERROR_STATE_SVG from '@gitlab/svgs/dist/illustrations/empty-state/empty-job-failed-md.svg?url';
 import { GlCollapsibleListbox, GlEmptyState, GlIcon, GlLoadingIcon } from '@gitlab/ui';
@@ -23,6 +29,7 @@ import NavigationTabs from '~/vue_shared/components/navigation_tabs.vue';
 import TablePagination from '~/vue_shared/components/pagination/table_pagination.vue';
 import { isLoggedIn } from '~/lib/utils/common_utils';
 import setSortPreferenceMutation from '~/issues/list/queries/set_sort_preference.mutation.graphql';
+import ExternalConfigEmptyState from '~/ci/common/empty_state/external_config_empty_state.vue';
 import PipelinesService from './services/pipelines_service';
 import { ANY_TRIGGER_AUTHOR } from './constants';
 import NoCiEmptyState from './components/empty_state/no_ci_empty_state.vue';
@@ -41,6 +48,7 @@ export default {
     PipelinesFilteredSearch,
     PipelinesTable,
     TablePagination,
+    ExternalConfigEmptyState,
     PipelineAccountVerificationAlert: () =>
       import('ee_component/vue_shared/components/pipeline_account_verification_alert.vue'),
   },
@@ -100,6 +108,7 @@ export default {
 
     // without tabs
     emptyState: 'emptyState',
+    externalConfigEmptyState: 'externalConfigEmptyState',
   },
   scopes: {
     all: 'all',
@@ -139,6 +148,10 @@ export default {
 
       if (this.hasLocalCiConfig) {
         return stateMap.emptyTab;
+      }
+
+      if (this.usesExternalConfig) {
+        return stateMap.externalConfigEmptyState;
       }
 
       return stateMap.emptyState;
@@ -398,6 +411,10 @@ export default {
         :label="s__('Pipelines|Loading Pipelines')"
         size="lg"
         class="gl-mt-5"
+      />
+      <external-config-empty-state
+        v-else-if="stateToRender === $options.stateMap.externalConfigEmptyState"
+        :new-pipeline-path="newPipelinePath"
       />
 
       <no-ci-empty-state

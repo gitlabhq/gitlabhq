@@ -18,10 +18,11 @@ Prerequisites:
   GitLab issues, see [Change project visibility](../../public_access.md#change-project-visibility), and also
   [Configure project features and permissions](../settings/_index.md#configure-project-features-and-permissions).
 
-You can use [Redmine](https://www.redmine.org/) as an external issue tracker.
+You can use [Redmine](https://www.redmine.org/) as an
+[external issue tracker](../../../integration/external-issue-tracker.md).
 To enable the Redmine integration in a project:
 
-1. On the left sidebar, select **Search or go to** and find your project.
+1. On the left sidebar, select **Search or go to** and find your project. If you've [turned on the new navigation](../../interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
 1. Select **Settings** > **Integrations**.
 1. Select **Redmine**.
 1. Under **Enable integration**, select the **Active** checkbox.
@@ -32,9 +33,15 @@ To enable the Redmine integration in a project:
      The URL must contain `:id`. GitLab replaces this ID with the issue number.
    - **New issue URL**: The URL to use to create a new issue in the Redmine project linked to
      this GitLab project.
-     <!-- The line below was originally added in January 2018: https://gitlab.com/gitlab-org/gitlab/-/commit/778b231f3a5dd42ebe195d4719a26bf675093350 -->
-     **This URL is not used and removal is planned in a future release**.
+
+     <!-- The note below was originally added in January 2018: https://gitlab.com/gitlab-org/gitlab/-/commit/778b231f3a5dd42ebe195d4719a26bf675093350 -->
+
+     {{< alert type="note" >}}
+
+     This URL is not used and removal is planned in a future release.
      For more information, see [issue 327503](https://gitlab.com/gitlab-org/gitlab/-/issues/327503).
+
+     {{< /alert >}}
 
 1. Optional. Select **Test settings**.
 1. Select **Save changes**.

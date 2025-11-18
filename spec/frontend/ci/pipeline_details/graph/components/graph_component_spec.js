@@ -23,14 +23,20 @@ describe('graph component', () => {
   const findStageColumnTitle = () => wrapper.findByTestId('stage-column-title');
   const findJobItem = () => wrapper.findComponent(JobItem);
 
+  const pipeline = generateResponse(mockPipelineResponse, 'root/fungi-xoxo');
+  const userPermissions = {
+    122: { updatePipeline: false },
+    [pipeline.id]: { updatePipeline: true },
+  };
   const defaultProps = {
-    pipeline: generateResponse(mockPipelineResponse, 'root/fungi-xoxo'),
+    pipeline,
     showLinks: false,
     viewType: STAGE_VIEW,
     configPaths: {
       metricsPath: '',
       graphqlResourceEtag: 'this/is/a/path',
     },
+    userPermissions,
   };
 
   const defaultData = {
@@ -74,6 +80,10 @@ describe('graph component', () => {
 
     it('renders the main columns in the graph', () => {
       expect(findStageColumns()).toHaveLength(defaultProps.pipeline.stages.length);
+    });
+
+    it('provides the current pipeline user permissions to the column', () => {
+      expect(findStageColumns().at(0).props('userPermissions')).toEqual({ updatePipeline: true });
     });
 
     it('renders the links layer', () => {
@@ -145,6 +155,10 @@ describe('graph component', () => {
 
     it('should render linked pipelines columns', () => {
       expect(findLinkedColumns()).toHaveLength(2);
+    });
+
+    it('should provide user permissions', () => {
+      expect(findLinkedColumns().at(0).props('userPermissions')).toEqual(userPermissions);
     });
   });
 

@@ -16,7 +16,7 @@ import { mapActions, mapState } from 'pinia';
 import { keysFor, MR_TOGGLE_REVIEW } from '~/behaviors/shortcuts/keybindings';
 import { shouldDisableShortcuts } from '~/behaviors/shortcuts/shortcuts_toggle';
 import SafeHtml from '~/vue_shared/directives/safe_html';
-import { scrollToElement } from '~/lib/utils/common_utils';
+import { scrollToElement } from '~/lib/utils/scroll_utils';
 import { truncateSha } from '~/lib/utils/text_utility';
 import { sanitize } from '~/lib/dompurify';
 import { __, s__, sprintf } from '~/locale';

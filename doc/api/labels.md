@@ -2,7 +2,7 @@
 stage: Plan
 group: Project Management
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
-title: Labels API
+title: Project labels API
 ---
 
 {{< details >}}
@@ -18,7 +18,9 @@ title: Labels API
 
 {{< /history >}}
 
-Interact with [labels](../user/project/labels.md) using the REST API.
+Use this API to manage [project labels](../user/project/labels.md).
+
+For group labels, use the [group labels API](group_labels.md).
 
 ## List labels
 

@@ -5,10 +5,17 @@ class Projects::ApplicationController < ApplicationController
   include CookiesHelper
   include RoutableActions
   include SafeFormatHelper
+  include EnforcesStepUpAuthenticationForNamespace
 
   skip_before_action :authenticate_user!
   before_action :project
   before_action :repository
+
+  # This before_action must execute AFTER the :project before_action.
+  # The enforce_step_up_auth_for_namespace method depends on @project being loaded first.
+  # By placing it after `before_action :project`, we guarantee the correct execution order.
+  before_action :enforce_step_up_auth_for_namespace
+
   layout 'project'
 
   before_action do
@@ -112,6 +119,16 @@ class Projects::ApplicationController < ApplicationController
       flash[:alert] = result[:message]
       @project.reset
       render 'edit'
+    end
+  end
+
+  def enforce_step_up_auth_for_namespace
+    # Use @project instance variable instead of calling project method
+    # to avoid triggering find_routable! when the :project before_action was skipped
+    if @project&.namespace.present?
+      enforce_step_up_auth_for(@project.namespace)
+    elsif params[:namespace_id].present?
+      enforce_step_up_auth_for_namespace_id(params[:namespace_id])
     end
   end
 end

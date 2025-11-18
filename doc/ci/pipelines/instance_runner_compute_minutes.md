@@ -63,7 +63,7 @@ Project and group runners are not affected by the compute quota and continue pro
 
 ## View usage
 
-You can view the compute usage for a group or personal namespace to understand
+You can view the compute usage (including [additional minutes](../../subscriptions/gitlab_com/compute_minutes.md)) for a group or personal namespace to understand
 compute usage trends and how many compute minutes remain.
 
 In some cases, the quota limit is replaced by one of the following labels:
@@ -79,8 +79,7 @@ Prerequisites:
 
 To view compute usage for your group:
 
-1. On the left sidebar, select **Search or go to** and
-   find your group. The group must not be a subgroup.
+1. On the left sidebar, select **Search or go to** and find your group. If you've [turned on the new navigation](../../user/interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar. The group must not be a subgroup.
 1. Select **Settings** > **Usage quotas**.
 1. Select the **Pipelines** tab.
 
@@ -92,7 +91,7 @@ subgroups, sorted in descending order of compute usage.
 
 You can view the compute usage for your personal namespace:
 
-1. On the left sidebar, select your avatar.
+1. On the left sidebar, select your avatar. If you've [turned on the new navigation](../../user/interface_redesign.md#turn-new-navigation-on-or-off), this button is in the upper-right corner.
 1. Select **Edit profile**.
 1. On the left sidebar, select **Usage quotas**.
 

@@ -31,7 +31,7 @@ RSpec.describe 'Projects > Show > Redirects', feature_category: :groups_and_proj
     expect(page).to have_current_path(new_user_session_path, ignore_query: true)
   end
 
-  it 'redirects to public project page after signing in' do
+  it 'redirects to public project page after signing in', :js do
     visit project_path(public_project)
 
     first(:link, 'Sign in').click
@@ -40,7 +40,6 @@ RSpec.describe 'Projects > Show > Redirects', feature_category: :groups_and_proj
     fill_in 'user_password', with: user.password
     click_button 'Sign in'
 
-    expect(status_code).to eq(200)
     expect(page).to have_current_path("/#{public_project.full_path}", ignore_query: true)
   end
 

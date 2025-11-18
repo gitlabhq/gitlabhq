@@ -307,6 +307,25 @@ RSpec.describe Gitlab::SidekiqMiddleware::DuplicateJobs::DuplicateJob,
     end
   end
 
+  describe '#concurrency_limit_resumed?' do
+    it 'returns false for jobs not resumed by concurrency limit' do
+      expect(duplicate_job.concurrency_limit_resumed?).to be(false)
+    end
+
+    context 'with job resumed by concurrency limit' do
+      let(:job) do
+        { 'class' => 'AuthorizedProjectsWorker',
+          'args' => [1],
+          'jid' => '123',
+          'concurrency_limit_resume' => true }
+      end
+
+      it 'returns true' do
+        expect(duplicate_job.concurrency_limit_resumed?).to be(true)
+      end
+    end
+  end
+
   describe '#reschedule' do
     it 'reschedules the current job' do
       fake_logger = instance_double(Gitlab::SidekiqLogging::DeduplicationLogger)

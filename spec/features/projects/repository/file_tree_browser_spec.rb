@@ -20,17 +20,25 @@ RSpec.describe 'Repository file tree browser', :js, feature_category: :source_co
 
   describe 'basic functionality' do
     it 'shows and hides the file tree browser' do
-      expect(page).to have_css('.file-tree-browser-expanded')
+      if Users::ProjectStudio.enabled_for_user?(user) # rubocop:disable RSpec/AvoidConditionalStatements -- temporary Project Studio rollout
+        expect(page).to have_css('.file-tree-browser-peek')
+      else
+        expect(page).to have_css('.file-tree-browser-expanded')
+      end
 
       click_button 'Hide file tree browser'
       wait_for_requests
 
-      expect(page).not_to have_css('.file-tree-browser-expanded')
+      if Users::ProjectStudio.enabled_for_user?(user) # rubocop:disable RSpec/AvoidConditionalStatements -- temporary Project Studio rollout
+        expect(page).not_to have_css('.file-tree-browser-peek')
+      else
+        expect(page).not_to have_css('.file-tree-browser-expanded')
+      end
     end
 
     it 'displays files and directories' do
       within('.file-tree-browser') do
-        expect(page).to have_file('README.md')
+        expect(page).to have_file('CONTRIBUTING.md')
         expect(page).to have_file('files')
       end
     end
@@ -41,18 +49,18 @@ RSpec.describe 'Repository file tree browser', :js, feature_category: :source_co
 
     it 'navigates to a file' do
       within('.file-tree-browser') do
-        click_file('README.md')
+        click_file('CONTRIBUTING.md')
       end
 
-      expect(page).to have_current_path(project_blob_path(project, "#{project.default_branch}/README.md"))
+      expect(page).to have_current_path(project_blob_path(project, "#{project.default_branch}/CONTRIBUTING.md"))
     end
 
     it 'expands and collapses directories' do
       within('.file-tree-browser') do
-        click_file('files')
+        click_button('Expand files directory')
         expect(page).to have_file('ruby')
 
-        click_file('files')
+        click_button('Collapse files directory')
         expect(page).not_to have_file('ruby')
       end
     end
@@ -60,6 +68,8 @@ RSpec.describe 'Repository file tree browser', :js, feature_category: :source_co
     it 'expands parent directories when navigating directly to a nested file' do
       visit project_blob_path(project, "#{project.default_branch}/files/ruby/popen.rb")
       wait_for_requests
+      # File tree starts collapsed in Project Studio
+      click_button('Show file tree browser') if Users::ProjectStudio.enabled_for_user?(user) # rubocop:disable RSpec/AvoidConditionalStatements -- temporary Project Studio rollout
 
       within('.file-tree-browser') do
         # Should auto-expand parent directories
@@ -70,8 +80,7 @@ RSpec.describe 'Repository file tree browser', :js, feature_category: :source_co
         expect(ruby_folder[:class]).to include('is-open')
 
         # Should highlight the current file
-        popen_row = find_button('popen.rb')
-        expect(popen_row['aria-current']).to eq('true')
+        expect(find('[aria-current="true"]')).to be_present
       end
     end
   end

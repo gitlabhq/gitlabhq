@@ -197,6 +197,101 @@ RSpec.describe ProfilesHelper, feature_category: :user_profile do
     end
   end
 
+  describe '#email_profile_data' do
+    include Devise::Test::ControllerHelpers
+
+    let(:user) { build_stubbed(:user) }
+
+    before do
+      allow(helper).to receive(:current_user).and_return(user)
+    end
+
+    it 'returns email profile data' do
+      data = helper.email_profile_data(user)
+
+      expect(data[:email]).to eq(user.email)
+      expect(data[:public_email]).to eq(user.public_email)
+      expect(data[:commit_email]).to eq(user.commit_email)
+      expect(data[:public_email_options]).to be_a(String)
+      expect(Gitlab::Json.parse(data[:public_email_options])).to be_an(Array)
+      expect(data[:commit_email_options]).to be_a(String)
+      expect(Gitlab::Json.parse(data[:commit_email_options])).to be_an(Array)
+      expect(data[:email_help_text]).to be_present
+      expect(data[:managing_group_name]).to be_nil.or(be_a(String))
+      expect(data[:provider_label]).to be_nil.or(be_a(String))
+      expect(data[:is_email_readonly]).to eq(user.read_only_attribute?(:email))
+      expect(data[:email_change_disabled]).to eq(user.respond_to?(:managing_group) && user.managing_group.present?)
+      expect(data[:needs_password_confirmation]).to eq(
+        (!user.password_automatically_set? && user.allow_password_authentication_for_web?).to_s
+      )
+      expect(data[:password_automatically_set]).to eq(user.password_automatically_set?.to_s)
+      expect(data[:allow_password_authentication_for_web]).to eq(user.allow_password_authentication_for_web?.to_s)
+    end
+
+    it 'returns empty email for temp oauth email' do
+      allow(user).to receive(:temp_oauth_email?).and_return(true)
+
+      data = helper.email_profile_data(user)
+
+      expect(data[:email]).to eq('')
+    end
+
+    context 'when help text contains resend confirmation link' do
+      let(:user_with_unconfirmed_email) { build_stubbed(:user, unconfirmed_email: 'test@example.com') }
+
+      it 'removes the confirmation link paragraph from email help text' do
+        help_text_with_link = 'Some text <p><a href="/users/user_confirmation">Resend confirmation e-mail</a></p> more text'
+        allow(helper).to receive(:user_email_help_text).and_return(help_text_with_link)
+
+        data = helper.email_profile_data(user_with_unconfirmed_email)
+
+        expect(data[:email_help_text]).to eq('Some text  more text')
+        expect(data[:email_help_text]).not_to include('Resend confirmation')
+        expect(data[:email_help_text]).not_to include('user_confirmation')
+      end
+
+      it 'preserves other links in help text' do
+        help_text = 'Text <p><a href="/users/user_confirmation">Resend</a></p> and <p><a href="/other">Other link</a></p>'
+        allow(helper).to receive(:user_email_help_text).and_return(help_text)
+
+        data = helper.email_profile_data(user_with_unconfirmed_email)
+
+        expect(data[:email_help_text]).to include('Other link')
+        expect(data[:email_help_text]).not_to include('Resend')
+      end
+
+      it 'returns original text when no links present' do
+        help_text_without_link = 'Simple text without links'
+        allow(helper).to receive(:user_email_help_text).and_return(help_text_without_link)
+
+        data = helper.email_profile_data(user_with_unconfirmed_email)
+
+        expect(data[:email_help_text]).to eq(help_text_without_link)
+      end
+    end
+  end
+
+  describe '#email_resend_confirmation_link' do
+    context 'when user has no unconfirmed email' do
+      it 'returns nil' do
+        user = build_stubbed(:user, unconfirmed_email: nil)
+
+        expect(helper.email_resend_confirmation_link(user)).to be_nil
+      end
+    end
+
+    context 'when user has unconfirmed email' do
+      it 'returns confirmation path with encoded email' do
+        user = build_stubbed(:user, unconfirmed_email: 'new@example.com')
+
+        result = helper.email_resend_confirmation_link(user)
+
+        expect(result).to include('confirmation')
+        expect(result).to include('new%40example.com')
+      end
+    end
+  end
+
   def stub_auth0_omniauth_provider
     provider = OpenStruct.new(
       'name' => example_omniauth_provider,

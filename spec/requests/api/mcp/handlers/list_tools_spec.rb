@@ -7,6 +7,10 @@ RSpec.describe API::Mcp, 'List tools request', feature_category: :mcp_server do
   let_it_be(:user) { create(:user) }
   let_it_be(:access_token) { create(:oauth_access_token, user: user, scopes: [:mcp]) }
 
+  before do
+    stub_application_setting(instance_level_ai_beta_features_enabled: true)
+  end
+
   describe 'POST /mcp with tools/list method' do
     let(:params) do
       {
@@ -16,11 +20,13 @@ RSpec.describe API::Mcp, 'List tools request', feature_category: :mcp_server do
       }
     end
 
-    before do
+    def post_list_tools
       post api('/mcp', user, oauth_access_token: access_token), params: params
     end
 
     it 'returns success' do
+      post_list_tools
+
       expect(response).to have_gitlab_http_status(:ok)
       expect(json_response['jsonrpc']).to eq(params[:jsonrpc])
       expect(json_response['id']).to eq(params[:id])
@@ -28,6 +34,8 @@ RSpec.describe API::Mcp, 'List tools request', feature_category: :mcp_server do
     end
 
     it 'returns all expected tools' do
+      post_list_tools
+
       tools = json_response['result']['tools']
       tool_names = tools.pluck('name')
 
@@ -45,19 +53,64 @@ RSpec.describe API::Mcp, 'List tools request', feature_category: :mcp_server do
       )
     end
 
+    it 'validates all array parameters have proper JSON Schema structure with items property' do
+      post api('/mcp', user, oauth_access_token: access_token), params: params
+
+      tools = json_response['result']['tools']
+
+      tools.each do |tool|
+        tool_name = tool['name']
+        properties = tool.dig('inputSchema', 'properties') || {}
+
+        properties.each do |param_name, param_schema|
+          next unless param_schema['type'] == 'array'
+
+          expect(param_schema).to have_key('items'),
+            "Tool '#{tool_name}' has array parameter '#{param_name}' without 'items' property. " \
+              "JSON Schema requires array types to specify what's in the array using the 'items' property. " \
+              "Current schema: #{param_schema.inspect}"
+
+          expect(param_schema['items']).to have_key('type'),
+            "Tool '#{tool_name}' has array parameter '#{param_name}' with 'items' but missing 'type' in items. " \
+              "Current schema: #{param_schema.inspect}"
+        end
+      end
+    end
+
+    context 'when a service tool is not available' do
+      before do
+        # We have to use `allow_any_instance_of` since tools are initialized
+        # *on class definition time* in Mcp::Tools::Manager
+        allow_any_instance_of(::Mcp::Tools::GetServerVersionService).to receive(:available?).and_return(false) # rubocop: disable RSpec/AnyInstanceOf -- see explanation above
+      end
+
+      it 'is excluded from the list' do
+        post_list_tools
+
+        tool_names = json_response['result']['tools'].pluck('name')
+        expect(tool_names).not_to include('get_mcp_server_version')
+      end
+    end
+
     context 'when running with EE features', if: Gitlab.ee? do
       it 'validates that fields parameter is available' do
+        post_list_tools
+
         tools = json_response['result']['tools']
         gitlab_search_tool = tools.find { |tool| tool['name'] == 'gitlab_search' }
 
         fields_property = gitlab_search_tool['inputSchema']['properties']['fields']
 
         expect(fields_property).to be_present
-        expect(fields_property['type']).to eq('string')
+        expect(fields_property['type']).to eq('array')
       end
     end
 
     context 'when running CE', unless: Gitlab.ee? do
+      before do
+        post_list_tools
+      end
+
       it 'returns get_pipeline_jobs tool with correct structure' do
         tools = json_response['result']['tools']
         pipeline_jobs_tool = tools.find { |tool| tool['name'] == 'get_pipeline_jobs' }

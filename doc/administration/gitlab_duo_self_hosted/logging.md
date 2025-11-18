@@ -34,12 +34,10 @@ logging for GitLab Duo Self-Hosted.
 Prerequisites:
 
 - You must be an administrator.
-- You must have a Premium or Ultimate subscription.
-- You must have a GitLab Duo Enterprise add-on.
 
 To enable logging:
 
-1. On the left sidebar, at the bottom, select **Admin**.
+1. On the left sidebar, at the bottom, select **Admin**. If you've [turned on the new navigation](../../user/interface_redesign.md#turn-new-navigation-on-or-off), in the upper-right corner, select **Admin**.
 1. Select **GitLab Duo**.
 1. In the GitLab Duo section, select **Change configuration**.
 1. Under **Enable AI logs**, select **Capture detailed information about AI-related activities and requests**.

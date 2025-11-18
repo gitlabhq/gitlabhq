@@ -1,8 +1,0 @@
----
-migration_job_name: BackfillDeploymentApprovalsProjectId
-description: Backfills sharding key `deployment_approvals.project_id` from `deployments`.
-feature_category: continuous_delivery
-introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/149031
-milestone: '16.11'
-queued_migration_version: 20240410004337
-finalized_by: '20240602231839'

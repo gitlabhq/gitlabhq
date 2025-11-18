@@ -5,6 +5,7 @@ module Types
     graphql_name 'Project'
 
     include ::Namespaces::DeletableHelper
+    include Gitlab::Graphql::Authorize::AuthorizeResource
 
     connection_type_class Types::CountableConnectionType
 
@@ -34,6 +35,10 @@ module Types
       authorize: :create_pipeline,
       experiment: { milestone: '15.3' },
       description: 'CI/CD config variable.' do
+      argument :fail_on_cache_miss, GraphQL::Types::Boolean,
+        required: false,
+        default_value: false,
+        description: 'Whether to throw an error if cache is not ready.'
       argument :ref, GraphQL::Types::String,
         required: true,
         description: 'Ref.'
@@ -154,8 +159,14 @@ module Types
 
     field :archived, GraphQL::Types::Boolean,
       null: true,
-      description: 'Indicates the archived status of the project.',
+      description: 'Indicates if the project or any ancestor is archived.',
       method: :self_or_ancestors_archived?
+
+    field :is_self_archived, GraphQL::Types::Boolean,
+      null: true,
+      description: 'Indicates if the project is archived.',
+      method: :self_archived?,
+      experiment: { milestone: '18.6' }
 
     field :is_self_deletion_in_progress, GraphQL::Types::Boolean,
       null: false,
@@ -235,6 +246,11 @@ module Types
       null: true,
       description: 'Path to the project catalog resource.'
 
+    field :is_published, GraphQL::Types::Boolean,
+      experiment: { milestone: '18.6' },
+      null: true,
+      description: 'Indicates if a project\'s catalog resource is published.'
+
     field :public_jobs, GraphQL::Types::Boolean,
       null: true,
       description: 'Indicates if there is public access to pipelines and job details of the project, ' \
@@ -304,6 +320,10 @@ module Types
     field :group, 'Types::GroupType',
       null: true,
       description: 'Group of the project.'
+
+    field :root_group, 'Types::GroupType',
+      null: true,
+      description: 'Top-level group of the project.'
 
     field :namespace, Types::NamespaceType,
       null: true,
@@ -542,10 +562,6 @@ module Types
 
     field :services, Types::Projects::ServiceType.connection_type,
       null: true,
-      deprecated: {
-        reason: 'A `Project.integrations` field is proposed instead in [issue 389904](https://gitlab.com/gitlab-org/gitlab/-/issues/389904)',
-        milestone: '15.9'
-      },
       description: 'Project services.',
       resolver: Resolvers::Projects::ServicesResolver
 
@@ -887,6 +903,12 @@ module Types
       null: false,
       description: "Project's Pages site uses a unique subdomain."
 
+    field :webhook, ::Types::WebHooks::ProjectHookType,
+      null: true,
+      resolver: Resolvers::WebHooks::ProjectHooksResolver.single,
+      experiment: { milestone: '18.5' },
+      description: 'A single project webhook.'
+
     def ci_pipeline_creation_request(request_id:)
       ::Ci::PipelineCreation::Requests.get_request(object, request_id)
     end
@@ -993,6 +1015,10 @@ module Types
       Gitlab::Routing.url_helpers.explore_catalog_path(project.catalog_resource)
     end
 
+    def is_published # rubocop:disable Naming/PredicateName -- disabled to match the field name.
+      project&.catalog_resource&.published?
+    end
+
     def statistics
       Gitlab::Graphql::Loaders::BatchProjectStatisticsLoader.new(object.id).find
     end
@@ -1012,8 +1038,12 @@ module Types
       response.payload[:inputs].all_inputs
     end
 
-    def ci_config_variables(ref:)
+    def ci_config_variables(ref:, fail_on_cache_miss: false)
       result = ::Ci::ListConfigVariablesService.new(object, context[:current_user]).execute(ref)
+
+      if result.nil? && fail_on_cache_miss
+        raise_resource_not_available_error! "Failed to retrieve CI/CD variables from cache."
+      end
 
       return if result.nil?
 

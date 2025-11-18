@@ -12,7 +12,6 @@ Style/MutableConstant:
     - 'ee/app/services/security/ingestion/tasks/ingest_vulnerability_statistics.rb'
     - 'ee/app/services/vulnerabilities/statistics/adjustment_service.rb'
     - 'ee/app/services/vulnerabilities/statistics/update_service.rb'
-    - 'lib/banzai/filter/references/abstract_reference_filter.rb'
     - 'lib/banzai/filter/spaced_link_filter.rb'
     - 'lib/gitlab/cleanup/project_upload_file_finder.rb'
     - 'lib/gitlab/counters/buffered_counter.rb'

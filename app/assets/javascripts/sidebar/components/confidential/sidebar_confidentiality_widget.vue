@@ -145,14 +145,13 @@ export default {
         <sidebar-confidentiality-content
           v-if="!isLoading"
           :confidential="confidential"
-          :issuable-type="issuableType"
           :class="{ 'gl-mt-3': !isClassicSidebar }"
           @expandSidebar="expandSidebar"
         />
       </div>
     </template>
     <template #default>
-      <sidebar-confidentiality-content :confidential="confidential" :issuable-type="issuableType" />
+      <sidebar-confidentiality-content :confidential="confidential" />
       <sidebar-confidentiality-form
         :iid="iid"
         :full-path="fullPath"

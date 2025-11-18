@@ -19,7 +19,7 @@ title: Assign GitLab Duo seats by using GraphQL
 
 {{< /history >}}
 
-Use the GraphQL API to assign GitLab Duo seats to users.
+Use this API to assign [GitLab Duo seats](../../user/gitlab_duo/_index.md) to users.
 
 ## Prerequisites
 

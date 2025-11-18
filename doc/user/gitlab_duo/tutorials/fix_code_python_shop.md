@@ -62,15 +62,37 @@ Depending on your subscription add-on, you can use Chat in the GitLab UI, the We
 
 #### Use Chat in the GitLab UI
 
-1. In the upper-right corner, select **GitLab Duo Chat**. A drawer opens on the
-   right side of your browser tab.
-1. Enter your question in the chat input box. Press **Enter**, or select **Send**.
+Instructions are provided for the new navigation and classic navigation.
+Select the tab for your navigation type, or [learn how to switch](../../interface_redesign.md#turn-new-navigation-on-or-off).
+
+{{< tabs >}}
+
+{{< tab title="New navigation" >}}
+
+1. On the top bar, select **Search or go to** and find your project.
+1. On the GitLab Duo sidebar, select either **Current GitLab Duo Chat** ({{< icon name="comment" >}}) or **New GitLab Duo Chat** ({{< icon name="plus" >}}).
+   A Chat conversation opens in the GitLab Duo sidebar on the right side of your screen.
+1. Enter your question in the chat text box and press <kbd>Enter</kbd> or select **Send**.
    It might take a few seconds for the interactive AI chat to produce an answer.
+
+{{< /tab >}}
+
+{{< tab title="Classic navigation" >}}
+
+1. On the left sidebar, select **Search or go to** and find your project.
+1. In the upper-right corner, select **Open GitLab Duo Chat** ({{< icon name="duo-chat" >}}).
+   A drawer opens on the right side of your screen.
+1. Enter your question in the chat text box and press <kbd>Enter</kbd> or select **Send**.
+   It might take a few seconds for the interactive AI chat to produce an answer.
+
+{{< /tab >}}
+
+{{< /tabs >}}
 
 #### Use Chat in the Web IDE
 
 1. Open the Web IDE:
-   1. In the GitLab UI, on the left sidebar, select **Search or go to** and find your project.
+   1. In the GitLab UI, on the left sidebar, select **Search or go to** and find your project. If you've [turned on the new navigation](../../interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
    1. Select a file. Then in the upper right, select **Edit** > **Open in Web IDE**.
 1. Open Chat by using one of these methods:
    - On the left sidebar, select **GitLab Duo Chat**.
@@ -92,7 +114,7 @@ How you use Chat in your IDE differs depending on which IDE you use.
 1. In VS Code, open a file. The file does not need to be a file in a Git repository.
 1. On the left sidebar, select **GitLab Duo Chat** ({{< icon name="duo-chat" >}}).
 1. In the message box, enter your question. Press **Enter**, or select **Send**.
-1. In the chat pane, on the top right corner, select **Show Status** to show information
+1. In the chat pane, in the upper-right corner, select **Show Status** to show information
    in the Command Palette.
 
 You can also interact with Duo Chat while you're working with a subset of code.

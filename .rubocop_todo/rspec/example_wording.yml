@@ -2,7 +2,7 @@
 # Cop supports --autocorrect.
 RSpec/ExampleWording:
   Exclude:
-    - 'ee/spec/controllers/projects/pipelines_controller_spec.rb'
+    - 'ee/spec/controllers/ee/projects/pipelines_controller_spec.rb'
     - 'ee/spec/features/groups/analytics/cycle_analytics/filters_and_data_spec.rb'
     - 'ee/spec/features/groups/group_settings_spec.rb'
     - 'ee/spec/features/merge_request/user_creates_merge_request_spec.rb'
@@ -61,7 +61,6 @@ RSpec/ExampleWording:
     - 'spec/tasks/gitlab/db/decomposition/rollback/bump_ci_sequences_rake_spec.rb'
     - 'spec/tooling/lib/tooling/api/job_spec.rb'
     - 'spec/uploaders/dependency_proxy/file_uploader_spec.rb'
-    - 'spec/views/projects/jobs/_generic_commit_status.html.haml_spec.rb'
     - 'spec/views/shared/projects/_list.html.haml_spec.rb'
     - 'spec/workers/container_registry/delete_container_repository_worker_spec.rb'
     - 'spec/workers/container_registry/record_data_repair_detail_worker_spec.rb'

@@ -3,7 +3,7 @@
 require 'spec_helper'
 
 RSpec.describe Admin::PlanLimitsController do
-  let_it_be(:plan) { create(:plan) }
+  let_it_be(:plan) { create(:default_plan) }
   let_it_be(:plan_limits) { create(:plan_limits, plan: plan) }
 
   describe 'POST create' do

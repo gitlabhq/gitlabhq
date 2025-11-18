@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe '1_settings', feature_category: :shared do
+RSpec.describe '1_settings', feature_category: :settings do
   include_context 'when loading 1_settings initializer'
 
   it 'settings do not change after reload', quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/501317' do
@@ -180,6 +180,28 @@ RSpec.describe '1_settings', feature_category: :shared do
     end
   end
 
+  describe 'openbao_authentication_token_secret_file_path' do
+    after do
+      Settings.openbao['authentication_token_secret_file_path'] = nil
+      load_settings
+    end
+
+    it 'is set the correct default path' do
+      Settings.openbao['authentication_token_secret_file_path'] = nil
+      load_settings
+
+      expect(Settings.openbao.authentication_token_secret_file_path)
+      .to eq(Rails.root.join('.gitlab_openbao_authentication_token_secret'))
+    end
+
+    it 'uses the configured value' do
+      Settings.openbao['authentication_token_secret_file_path'] = '/custom/path'
+      load_settings
+
+      expect(Settings.openbao.authentication_token_secret_file_path).to eq('/custom/path')
+    end
+  end
+
   describe 'cron jobs', unless: Gitlab.ee? do
     let(:expected_jobs) do
       %w[
@@ -187,6 +209,7 @@ RSpec.describe '1_settings', feature_category: :shared do
         adjourned_projects_deletion_cron_worker
         admin_email_worker
         analytics_usage_trends_count_job_trigger_worker
+        authn_data_retention_authentication_event_archive_worker
         authn_data_retention_oauth_access_grant_archive_worker
         authn_data_retention_oauth_access_token_archive_worker
         authorized_project_update_periodic_recalculate_worker
@@ -232,6 +255,7 @@ RSpec.describe '1_settings', feature_category: :shared do
         issue_due_scheduler_worker
         issues_reschedule_stuck_issue_rebalances
         jira_import_stuck_jira_import_jobs
+        loose_foreign_keys_ci_pipelines_builds_cleanup_worker
         loose_foreign_keys_cleanup_worker
         loose_foreign_keys_merge_request_diff_commit_cleanup_worker
         manage_evidence_worker

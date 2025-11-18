@@ -89,7 +89,13 @@ export default {
     <div class="gl-flex">
       <div class="avatar-image">
         <gl-avatar-link :href="avatarUrl" target="blank">
-          <gl-avatar class="gl-mr-5" :src="avatarUrl" :size="96" shape="circle" />
+          <gl-avatar
+            class="gl-mr-5"
+            :src="avatarUrl"
+            :size="96"
+            shape="circle"
+            :alt="s__(`Profiles|User's avatar`)"
+          />
         </gl-avatar-link>
       </div>
       <div class="gl-grow">

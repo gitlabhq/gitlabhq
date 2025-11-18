@@ -10,7 +10,6 @@ milestone: '11.5'
 gitlab_schema: gitlab_main_org
 desired_sharding_key:
   sharding_project_id:
-    awaiting_backfill_on_parent: true
     references: projects
     backfill_via:
       parent:
@@ -19,7 +18,6 @@ desired_sharding_key:
         sharding_key: project_id
         belongs_to: cluster
   group_id:
-    awaiting_backfill_on_parent: true
     references: namespaces
     backfill_via:
       parent:
@@ -28,7 +26,6 @@ desired_sharding_key:
         sharding_key: group_id
         belongs_to: cluster
   organization_id:
-    awaiting_backfill_on_parent: true
     references: organizations
     backfill_via:
       parent:

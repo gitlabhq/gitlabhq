@@ -14,6 +14,8 @@ RSpec.describe RapidDiffs::AppComponent, type: :component, feature_category: :co
   let(:diff_file_endpoint) { '/diff_file' }
   let(:should_sort_metadata_files) { false }
   let(:lazy) { false }
+  let(:extra_app_data) { nil }
+  let(:extra_prefetch_endpoints) { [] }
 
   let(:diff_presenter) do
     instance_double(
@@ -29,7 +31,13 @@ RSpec.describe RapidDiffs::AppComponent, type: :component, feature_category: :co
     )
   end
 
-  subject(:component) { described_class.new(diff_presenter) }
+  subject(:component) do
+    described_class.new(
+      diff_presenter,
+      extra_app_data: extra_app_data,
+      extra_prefetch_endpoints: extra_prefetch_endpoints
+    )
+  end
 
   before do
     allow(component).to receive(:helpers).and_wrap_original do |original_method, *args|
@@ -66,6 +74,18 @@ RSpec.describe RapidDiffs::AppComponent, type: :component, feature_category: :co
     expect(data['show_whitespace']).to eq(show_whitespace)
     expect(data['diff_view_type']).to eq(diff_view.to_s)
     expect(data['lazy']).to eq(lazy)
+  end
+
+  context "with extra_app_data" do
+    let(:extra_app_data) { { custom_field: 'custom_value', another_field: 123 } }
+
+    it "merges extra app data into app data" do
+      render_component
+      app = page.find('[data-rapid-diffs]')
+      data = Gitlab::Json.parse(app['data-app-data'])
+      expect(data['custom_field']).to eq('custom_value')
+      expect(data['another_field']).to eq(123)
+    end
   end
 
   context "with should_sort_metadata_files set to true" do
@@ -121,6 +141,15 @@ RSpec.describe RapidDiffs::AppComponent, type: :component, feature_category: :co
     expect(page).to have_css("[data-stream-remaining-diffs]")
   end
 
+  it "renders before_diffs_list slot" do
+    result = render_component do |c|
+      c.with_before_diffs_list do
+        'custom_before_content'
+      end
+    end
+    expect(result).to have_text('custom_before_content')
+  end
+
   it "renders diffs_list slot" do
     result = render_component do |c|
       c.with_diffs_list do
@@ -143,12 +172,42 @@ RSpec.describe RapidDiffs::AppComponent, type: :component, feature_category: :co
     expect(vc_test_controller.view_context.content_for?(:startup_js)).not_to be_nil
   end
 
-  context 'when lazy loading' do
-    let(:lazy) { true }
+  context 'with extra_prefetch_endpoints' do
+    let(:extra_prefetch_endpoints) { %w[/custom_endpoint_1 /custom_endpoint_2] }
 
-    it 'shows loading icon' do
+    it 'includes extra prefetch endpoints in preloads' do
       render_component
-      expect(page).to have_css('[data-testid="rd-diffs-list-loading"]')
+      expect(component.helpers.page_startup_api_calls).to include(diffs_stats_endpoint)
+      expect(component.helpers.page_startup_api_calls).to include(diff_files_endpoint)
+      expect(component.helpers.page_startup_api_calls).to include('/custom_endpoint_1')
+      expect(component.helpers.page_startup_api_calls).to include('/custom_endpoint_2')
+    end
+  end
+
+  it 'adds application stylesheet' do
+    style_added = false
+    allow(component).to receive(:helpers).and_wrap_original do |original_method, *args|
+      helpers = original_method.call(*args)
+      allow(helpers).to receive(:add_page_specific_style).with('page_bundles/rapid_diffs') do
+        style_added = true
+      end
+      helpers
+    end
+    render_component
+    expect(style_added).to be(true)
+  end
+
+  it 'has loading indicator' do
+    render_component
+    expect(page).to have_css('[data-list-loading]')
+  end
+
+  context 'when has no diffs for streaming' do
+    let(:diffs_stream_url) { nil }
+
+    it 'hides loading indicator' do
+      render_component
+      expect(page).to have_css('[data-list-loading][hidden]', visible: :hidden)
     end
   end
 

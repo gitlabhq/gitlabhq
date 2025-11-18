@@ -65,6 +65,30 @@ RSpec.describe 'OAuth tokens', feature_category: :system_access do
       end
     end
 
+    context 'with email-based OTP enabled' do
+      let(:user) { create(:user, email_otp_required_after: 1.second.ago) }
+
+      it 'does not create an access token' do
+        request_oauth_token(user, client_basic_auth_header(client))
+
+        expect(response).to have_gitlab_http_status(:bad_request)
+        expect(json_response['error']).to eq('invalid_grant')
+      end
+
+      context 'when :email_based_mfa feature flag disabled' do
+        before do
+          stub_feature_flags(email_based_mfa: false)
+        end
+
+        it 'creates an access token' do
+          request_oauth_token(user, client_basic_auth_header(client))
+
+          expect(response).to have_gitlab_http_status(:ok)
+          expect(json_response['access_token']).not_to be_nil
+        end
+      end
+    end
+
     context 'when user does not have 2FA enabled' do
       context 'when no client credentials provided' do
         context 'with valid credentials' do

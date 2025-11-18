@@ -2,6 +2,7 @@
 import DraggableList from 'vuedraggable';
 
 import { isLoggedIn } from '~/lib/utils/common_utils';
+import { scrollToElement } from '~/lib/utils/scroll_utils';
 import { ESC_KEY_CODE } from '~/lib/utils/keycodes';
 import { visitUrl } from '~/lib/utils/url_utility';
 import { defaultSortableOptions, DRAG_DELAY } from '~/sortable/constants';
@@ -72,6 +73,7 @@ export default {
     return {
       dragCancelled: false,
       updateInProgress: false,
+      lastActiveElement: null,
     };
   },
   computed: {
@@ -94,6 +96,14 @@ export default {
         sort: false,
         'data-relationship-type': this.relationshipType,
       };
+    },
+  },
+  watch: {
+    activeChildItemId(newVal) {
+      if (!newVal && this.lastActiveElement) {
+        scrollToElement(this.lastActiveElement, { offset: -80, behavior: 'auto' });
+        this.lastActiveElement = null;
+      }
     },
   },
   methods: {
@@ -199,6 +209,10 @@ export default {
         visitUrl(linkedItem.workItem.webUrl);
       } else {
         this.$emit('showModal', { event, child: linkedItem.workItem });
+        this.$nextTick(() => {
+          this.lastActiveElement = event.target;
+          scrollToElement(this.lastActiveElement, { offset: -80, behavior: 'auto' });
+        });
       }
     },
   },

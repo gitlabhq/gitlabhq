@@ -221,7 +221,7 @@ RSpec.describe Gitlab::Email::Handler::CreateNoteHandler, feature_category: :sha
 
   context 'when note is authored from external author for service desk' do
     before do
-      SentNotification.find_by(reply_key: mail_key).update!(recipient: Users::Internal.support_bot)
+      SentNotification.for(mail_key).update!(recipient: Users::Internal.support_bot)
     end
 
     context 'when email contains text, quoted text and quick commands' do
@@ -232,11 +232,12 @@ RSpec.describe Gitlab::Email::Handler::CreateNoteHandler, feature_category: :sha
       end
 
       it 'links external participant' do
-        receiver.execute
+        expect { receiver.execute }.to change { Notes::NoteMetadata.count }.by(1)
 
         new_note = noteable.notes.last
 
         expect(new_note.note_metadata.external_author).to eq('jake@adventuretime.ooo')
+        expect(new_note.note_metadata.namespace_id).to eq(new_note.namespace_id)
       end
     end
   end

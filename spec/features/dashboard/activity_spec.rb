@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe 'Dashboard > Activity', :js, :with_organization_url_helpers, feature_category: :user_profile do
+RSpec.describe 'Dashboard > Activity', :js, feature_category: :user_profile do
   let(:user) { create(:user) }
   let(:current_organization) { user.organization }
   let(:page_path) { activity_dashboard_path }

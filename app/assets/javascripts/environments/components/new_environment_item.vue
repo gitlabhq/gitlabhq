@@ -235,7 +235,6 @@ export default {
             :actions="actions"
             data-track-action="click_dropdown"
             data-track-label="environment_actions"
-            size="small"
           />
 
           <stop-component
@@ -252,7 +251,6 @@ export default {
             icon="ellipsis_v"
             category="secondary"
             placement="bottom-end"
-            size="small"
             :toggle-text="__('More actions')"
           >
             <rollback

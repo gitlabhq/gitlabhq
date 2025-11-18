@@ -133,7 +133,8 @@ Here are some required settings for externally managed PostgreSQL instances.
 | `maintenance_work_mem` | minimum `64 MB` | You require [more for larger database servers](https://gitlab.com/gitlab-org/omnibus-gitlab/-/issues/8377#note_1728173087). |
 | `max_connections`      | minimum `400`   | Calculate based on your GitLab components. See [Tune PostgreSQL](../administration/postgresql/tune.md) page for detailed guidance. |
 | `shared_buffers`       | minimum `2 GB`  | You require more for larger database servers. The Linux package default is set to 25% of server RAM. |
-| `statement_timeout`    | maximum 1 min  | A statement timeout prevents runaway issues with locks and the database rejecting new clients. One minute matches the Puma rack timeout setting. |
+| `statement_timeout`    | 15000 to 60000 | A statement timeout prevents runaway issues with locks and the database rejecting new clients. You should use values between 15 and 60 seconds (15000 to 60000 milliseconds), where one minute matches the Puma rack timeout setting. |
+| `hot_standby_feedback` | `on` | For configurations with multiple nodes and [database load balancing](../administration/postgresql/database_load_balancing.md#configuring-database-load-balancing) configured, ensure that all replica nodes have `hot_standby_feedback` enabled to prevent lag buildup. |
 
 You can configure some PostgreSQL settings for the specific database, rather than for all
 databases on the server.

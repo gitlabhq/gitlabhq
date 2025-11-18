@@ -381,7 +381,7 @@ RSpec.describe ProjectPolicy, feature_category: :system_access do
     end
   end
 
-  context 'with archive_group feature flag' do
+  context 'with self or ancestor archived' do
     let_it_be_with_reload(:group) { create(:group) }
     let_it_be_with_reload(:subgroup) { create(:group, parent: group) }
     let_it_be_with_reload(:group_project) { create(:project, :repository, group: group) }
@@ -416,68 +416,12 @@ RSpec.describe ProjectPolicy, feature_category: :system_access do
       end
     end
 
-    context 'when archive_group feature flag is enabled' do
-      context 'when parent group is archived' do
-        before do
-          group.archive
-        end
-
-        context 'project in parent group' do
-          let(:project) { group_project }
-
-          subject(:policy) { described_class.new(current_user, project) }
-
-          it_behaves_like 'archived project behavior'
-        end
-
-        context 'project in subgroup of parent group' do
-          let(:project) { subgroup_project }
-
-          subject(:policy) { described_class.new(current_user, project) }
-
-          it_behaves_like 'archived project behavior'
-        end
-
-        context 'project with no group' do
-          let(:project) { user_namespace_project }
-
-          subject(:policy) { described_class.new(current_user, project) }
-
-          it 'allows read and write operations' do
-            expect_allowed(:create_issue, :push_code, :create_merge_request_in)
-          end
-        end
+    context 'when parent group is archived' do
+      before do
+        group.archive
       end
 
-      context 'when ancestor group is archived' do
-        before do
-          subgroup.archive
-        end
-
-        context 'project in subgroup (with ancestor archived)' do
-          let(:project) { subgroup_project }
-
-          subject(:policy) { described_class.new(current_user, project) }
-
-          it_behaves_like 'archived project behavior'
-        end
-
-        context 'project in parent group (not archived)' do
-          let(:project) { group_project }
-
-          subject(:policy) { described_class.new(current_user, project) }
-
-          it 'allows read and write operations' do
-            expect_allowed(:create_issue, :push_code, :create_merge_request_in)
-          end
-        end
-      end
-
-      context 'when project itself is archived' do
-        before do
-          group_project.update!(archived: true)
-        end
-
+      context 'project in parent group' do
         let(:project) { group_project }
 
         subject(:policy) { described_class.new(current_user, project) }
@@ -485,59 +429,81 @@ RSpec.describe ProjectPolicy, feature_category: :system_access do
         it_behaves_like 'archived project behavior'
       end
 
-      context 'when both project and group are archived' do
-        before do
-          group.archive
-          group_project.update!(archived: true)
-        end
-
-        let(:project) { group_project }
+      context 'project in subgroup of parent group' do
+        let(:project) { subgroup_project }
 
         subject(:policy) { described_class.new(current_user, project) }
 
         it_behaves_like 'archived project behavior'
       end
 
-      context 'when neither project nor group is archived' do
+      context 'project with no group' do
+        let(:project) { user_namespace_project }
+
+        subject(:policy) { described_class.new(current_user, project) }
+
+        it 'allows read and write operations' do
+          expect_allowed(:create_issue, :push_code, :create_merge_request_in)
+        end
+      end
+    end
+
+    context 'when ancestor group is archived' do
+      before do
+        subgroup.archive
+      end
+
+      context 'project in subgroup (with ancestor archived)' do
+        let(:project) { subgroup_project }
+
+        subject(:policy) { described_class.new(current_user, project) }
+
+        it_behaves_like 'archived project behavior'
+      end
+
+      context 'project in parent group (not archived)' do
         let(:project) { group_project }
 
         subject(:policy) { described_class.new(current_user, project) }
 
         it 'allows read and write operations' do
-          expect_allowed(:create_issue, :push_code, :create_merge_request_in, :create_wiki)
+          expect_allowed(:create_issue, :push_code, :create_merge_request_in)
         end
       end
     end
 
-    context 'when archive_group feature flag is disabled' do
+    context 'when project itself is archived' do
       before do
-        stub_feature_flags(archive_group: false)
+        group_project.update!(archived: true)
       end
 
-      context 'when group is archived but project is not' do
-        before do
-          group.archive
-        end
+      let(:project) { group_project }
 
-        let(:project) { group_project }
+      subject(:policy) { described_class.new(current_user, project) }
 
-        subject(:policy) { described_class.new(current_user, project) }
+      it_behaves_like 'archived project behavior'
+    end
 
-        it 'ignores group archived status' do
-          expect_allowed(:create_issue, :push_code, :create_merge_request_in, :create_wiki)
-        end
+    context 'when both project and group are archived' do
+      before do
+        group.archive
+        group_project.update!(archived: true)
       end
 
-      context 'when project is archived' do
-        before do
-          group_project.update!(archived: true)
-        end
+      let(:project) { group_project }
 
-        let(:project) { group_project }
+      subject(:policy) { described_class.new(current_user, project) }
 
-        subject(:policy) { described_class.new(current_user, project) }
+      it_behaves_like 'archived project behavior'
+    end
 
-        it_behaves_like 'archived project behavior'
+    context 'when neither project nor group is archived' do
+      let(:project) { group_project }
+
+      subject(:policy) { described_class.new(current_user, project) }
+
+      it 'allows read and write operations' do
+        expect_allowed(:create_issue, :push_code, :create_merge_request_in, :create_wiki)
       end
     end
   end
@@ -576,7 +542,7 @@ RSpec.describe ProjectPolicy, feature_category: :system_access do
 
       it 'disallows all permissions except pipeline when the feature is disabled' do
         builds_permissions = [
-          :create_build, :read_build, :update_build, :cancel_build, :admin_build, :destroy_build,
+          :create_build, :read_build, :update_build, :cancel_build, :admin_build, :destroy_build, :admin_cicd_variables,
           :create_pipeline_schedule, :read_pipeline_schedule_variables, :update_pipeline_schedule, :admin_pipeline_schedule, :destroy_pipeline_schedule,
           :create_environment, :read_environment, :update_environment, :admin_environment, :destroy_environment,
           :create_deployment, :read_deployment, :update_deployment, :admin_deployment, :destroy_deployment,
@@ -609,7 +575,7 @@ RSpec.describe ProjectPolicy, feature_category: :system_access do
     let(:repository_permissions) do
       [
         :create_pipeline, :update_pipeline, :cancel_pipeline, :admin_pipeline, :destroy_pipeline,
-        :create_build, :read_build, :cancel_build, :update_build, :admin_build, :destroy_build,
+        :create_build, :read_build, :cancel_build, :update_build, :admin_build, :destroy_build, :admin_cicd_variables,
         :create_pipeline_schedule, :read_pipeline_schedule, :update_pipeline_schedule, :admin_pipeline_schedule, :destroy_pipeline_schedule,
         :create_environment, :read_environment, :update_environment, :admin_environment, :destroy_environment,
         :create_cluster, :read_cluster, :update_cluster, :admin_cluster,
@@ -3746,12 +3712,6 @@ RSpec.describe ProjectPolicy, feature_category: :system_access do
         end
       end
     end
-  end
-
-  describe 'read_namespace_catalog' do
-    let(:current_user) { owner }
-
-    it { is_expected.to be_disallowed(:read_namespace_catalog) }
   end
 
   describe 'add_catalog_resource' do

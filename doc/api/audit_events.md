@@ -27,7 +27,7 @@ title: Audit events API
 
 {{< /details >}}
 
-Use this API to retrieve instance audit events.
+Use this API to retrieve [instance audit events](../administration/compliance/audit_event_reports.md).
 
 To retrieve audit events using the API, you must [authenticate yourself](rest/authentication.md) as an Administrator.
 
@@ -202,7 +202,7 @@ Example response:
 
 {{< /history >}}
 
-Use this API to retrieve group audit events.
+Use this API to retrieve [group audit events](../user/compliance/audit_events.md#group-audit-events).
 
 A user with:
 
@@ -333,7 +333,7 @@ Example response:
 
 ## Project audit events
 
-Use this API to retrieve project audit events.
+Use this API to retrieve [project audit events](../user/compliance/audit_events.md#project-audit-events).
 
 A user with a Maintainer role (or above) can retrieve project audit events of all users.
 A user with a Developer role is limited to project audit events based on their individual actions.

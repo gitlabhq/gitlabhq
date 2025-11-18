@@ -64,8 +64,6 @@ To change profile details, including name and email address:
 1. Edit **Your personal details**.
 1. Select **Save changes**.
 
-You can also [transfer ownership of the Customers Portal profile and billing account](https://support.gitlab.com/hc/en-us/articles/17767356437148-How-to-transfer-subscription-ownership) to another person.
-
 ## Change your company details
 
 To change your company details, including company name and tax ID:
@@ -81,7 +79,7 @@ To change your company details, including company name and tax ID:
 Users involved in subscription management can have three distinct roles
 with varying levels of permissions and visibility into the subscription:
 
-- Billing account manager: Has access to view and edit subscriptions, payment methods, and billing account settings, and can pay and download invoices in the Customers Portal.
+- Billing account manager: Has access to view and edit subscriptions, payment methods, and billing account settings. Can pay and download invoices, and update the subscription contact to any listed billing account manager.
 - Subscription contact (or "Sold to" contact): The subscription owner and primary contact
   for your billing account. Receives notifications about subscription events and information
   about applying the subscription. This role is also a billing account manager by default.
@@ -253,13 +251,59 @@ To change the GitLab.com account linked to your Customers Portal profile:
 1. Under **Your GitLab.com account**, select **Change linked account**.
 1. Sign in to the [GitLab.com](https://gitlab.com/users/sign_in) account you want to link to the Customers Portal profile.
 
+## Transfer subscription ownership
+
+You can transfer subscription ownership in Customers Portal to or from a contact.
+
+### To a new billing account manager
+
+To transfer subscription ownership to a contact who is not listed as a billing account manager:
+
+1. Invite the contact as a billing account manager.
+1. After the contact accepts the invitation, change the subscription contact to the new billing account manager.
+
+### To a new subscription contact
+
+If you are the current subscription contact and want to transfer ownership to a different person who doesn't have a Customers Portal account:
+
+1. Change your profile owner information to the new contact's details.
+1. Have the new contact sign in to Customers Portal with their email address using a one-time sign-in link.
+1. Have the new contact change the linked GitLab.com account to their own GitLab.com account.
+
+### From a contact who has left the organization
+
+If you have access to the subscription contact's email mailbox:
+
+1. Sign in to Customers Portal with the subscription contact's email address using a one-time sign-in link.
+1. Change the subscription contact information to your details.
+1. Change the linked account to your GitLab.com account.
+
+If you don't have access to the subscription contact's email mailbox,
+[contact Support](https://support.gitlab.com/hc/en-us/requests/new?ticket_form_id=360000071293)
+to request transferring the subscription ownership.
+You must provide proof of ownership for Support to process your request.
+
+You can use the following template for the Support request:
+
+```plaintext
+Hi Support,
+
+Please update subscription ownership for my subscription/billing account. I confirm that I am not able to make this change in the Customers Portal. Here are the relevant details:
+
+- Old subscription contact's email address:
+- New subscription contact's email address:
+- (Optional) Subscription or Billing account name:
+- Proof of ownership:
+```
+
 ## Tax ID for non-US customers
 
 A Tax ID is a unique number assigned by tax authorities to businesses registered for Value Added Tax (VAT), Goods and Services Tax (GST), or similar indirect taxes.
 
-Providing a valid Tax ID may reduce your tax burden by allowing us to apply reverse charge mechanisms instead of charging VAT/GST on your invoices. Without a valid Tax ID, we charge applicable VAT/GST rates based on your location.
+Providing a valid Tax ID may reduce your tax burden by allowing us to apply reverse charge mechanisms instead of charging VAT/GST on your invoices. Without a valid Tax ID, applicable VAT/GST rates are based on your location.
 
-If your business isn't registered for indirect taxes (due to size thresholds or other reasons), we apply the standard VAT/GST rate according to local regulations.
+If your business is not registered for indirect taxes (due to size thresholds or other
+reasons), GitLab applies the standard VAT/GST rate according to local regulations.
 
 For detailed Tax ID formats by country and additional information, see our [complete Tax ID reference guide](https://handbook.gitlab.com/handbook/finance/tax/#frequently-asked-questions---tax-id-for-non-us-customers).
 
@@ -304,3 +348,10 @@ If you are not the billing account manager, notify them to update their personal
 
 If the subscription contact is no longer a billing account manager, you will be prompted to select a new contact.
 Follow the instructions to [change your subscription contact](#change-your-subscription-contact).
+
+### Error: `Email has already been taken`
+
+If the email address you want to register with is already in use in Customers Portal, you can either:
+
+- Provide an alternative email address.
+- Transfer the subscription ownership.

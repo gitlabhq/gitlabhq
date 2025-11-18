@@ -93,6 +93,35 @@ RSpec.describe Resolvers::NestedGroupsResolver, feature_category: :groups_and_pr
               is_expected.to contain_exactly(subgroup1, subgroup2)
             end
           end
+
+          context 'with `archived` argument' do
+            let_it_be(:archived_subgroup) { create(:group, :archived, parent: group, name: 'Archived') }
+            let(:params) { { include_parent_descendants: true, archived: archived_value } }
+
+            context 'when archived is nil' do
+              let(:archived_value) { nil }
+
+              it 'returns all subgroups' do
+                is_expected.to contain_exactly(archived_subgroup, subgroup1, subgroup2)
+              end
+            end
+
+            context 'when archived is true' do
+              let(:archived_value) { true }
+
+              it 'returns only archived subgroups' do
+                is_expected.to contain_exactly(archived_subgroup)
+              end
+            end
+
+            context 'when archived is false' do
+              let(:archived_value) { false }
+
+              it 'returns only non-archived subgroups' do
+                is_expected.to contain_exactly(subgroup1, subgroup2)
+              end
+            end
+          end
         end
       end
     end

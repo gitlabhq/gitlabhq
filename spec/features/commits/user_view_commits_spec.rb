@@ -10,7 +10,7 @@ RSpec.describe 'Commit > User view commits', feature_category: :source_code_mana
 
   shared_examples 'can view commits' do
     it 'lists the correct number of commits' do
-      expect(page).to have_selector('#commits-list > li:nth-child(2) > ul', count: 1)
+      expect(page).to have_selector('#commits-list ol > li:nth-child(2) > ul', count: 1)
     end
   end
 

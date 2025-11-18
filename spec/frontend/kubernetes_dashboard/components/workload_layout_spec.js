@@ -16,6 +16,7 @@ const defaultProps = {
 };
 
 const toggleDetailsDrawerSpy = jest.fn();
+const resetPaginationSpy = jest.fn();
 
 const createWrapper = (propsData = {}) => {
   wrapper = shallowMount(WorkloadLayout, {
@@ -26,6 +27,9 @@ const createWrapper = (propsData = {}) => {
     stubs: {
       WorkloadDetailsDrawer: stubComponent(WorkloadDetailsDrawer, {
         methods: { toggle: toggleDetailsDrawerSpy },
+      }),
+      WorkloadTable: stubComponent(WorkloadTable, {
+        methods: { resetPagination: resetPaginationSpy },
       }),
     },
   });
@@ -124,6 +128,14 @@ describe('Workload layout component', () => {
 
         const filteredItems = mockPodsTableItems.filter((item) => item.status === status);
         expect(findWorkloadTable().props('items')).toMatchObject(filteredItems);
+      });
+
+      it('resets pagination when filter changes', async () => {
+        const status = 'Failed';
+        findWorkloadStats().vm.$emit('select', status);
+        await nextTick();
+
+        expect(resetPaginationSpy).toHaveBeenCalled();
       });
     });
 

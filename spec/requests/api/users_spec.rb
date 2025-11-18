@@ -1899,12 +1899,45 @@ RSpec.describe API::Users, :with_current_organization, :aggregate_failures, feat
       expect(user.reload.bio).to eq('')
     end
 
-    it "updates user with organization" do
-      put api(path, admin, admin_mode: true), params: { organization: 'GitLab' }
+    context 'when updating organization' do
+      using RSpec::Parameterized::TableSyntax
 
-      expect(response).to have_gitlab_http_status(:ok)
-      expect(json_response['organization']).to eq('GitLab')
-      expect(user.reload.user_detail_organization).to eq('GitLab')
+      shared_examples '200 response' do
+        it 'responds :ok and sets organization correctly' do
+          put api(path, admin, admin_mode: true), params: { organization: param_organization }
+
+          expect(response).to have_gitlab_http_status(:ok)
+          expect(json_response['organization']).to eq(expected_organization)
+          expect(user.reload.user_detail_organization).to eq(expected_organization)
+        end
+      end
+
+      shared_examples '400 response because organization too long' do
+        it 'responds :bad_request and sets organization correctly' do
+          put api(path, admin, admin_mode: true), params: { organization: param_organization }
+
+          expect(response).to have_gitlab_http_status(:bad_request)
+          expect(json_response['message']).to eq({ 'user_detail.organization' => ['is too long (maximum is 500 characters)'] })
+          expect(user.reload.user_detail_organization).to eq(expected_organization)
+        end
+      end
+
+      before_all do
+        user.update!(user_detail_organization: 'Previous org')
+      end
+
+      where(:param_organization, :expected_organization, :example) do
+        'GitLab'                                    | 'GitLab'          | '200 response'
+        ''                                          | ''                | '200 response'
+        nil                                         | ''                | '200 response'
+        ('a' * 501)                                 | 'Previous org'    | '400 response because organization too long'
+        '<script>alert("xss")</script>Company Name' | 'Company Name'    | '200 response'
+        'Marks & Spencer'                           | 'Marks & Spencer' | '200 response'
+      end
+
+      with_them do
+        it_behaves_like params[:example]
+      end
     end
 
     it 'updates user with avatar' do

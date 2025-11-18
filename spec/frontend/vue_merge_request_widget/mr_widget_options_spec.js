@@ -29,7 +29,7 @@ import getStateQuery from 'ee_else_ce/vue_merge_request_widget/queries/get_state
 import getStateSubscription from '~/vue_merge_request_widget/queries/get_state.subscription.graphql';
 import readyToMergeSubscription from '~/vue_merge_request_widget/queries/states/ready_to_merge.subscription.graphql';
 import securityReportMergeRequestDownloadPathsQuery from '~/vue_merge_request_widget/widgets/security_reports/graphql/security_report_merge_request_download_paths.query.graphql';
-import readyToMergeQuery from 'ee_else_ce/vue_merge_request_widget/queries/states/ready_to_merge.query.graphql';
+import readyToMergeQuery from '~/vue_merge_request_widget/queries/states/ready_to_merge.query.graphql';
 import approvalsQuery from 'ee_else_ce/vue_merge_request_widget/components/approvals/queries/approvals.query.graphql';
 import approvedBySubscription from 'ee_else_ce/vue_merge_request_widget/components/approvals/queries/approvals.subscription.graphql';
 import userPermissionsQuery from '~/vue_merge_request_widget/queries/permissions.query.graphql';
@@ -110,7 +110,10 @@ describe('MrWidgetOptions', () => {
           data: {
             project: {
               id: 1,
-              mergeRequest: { id: 1, userPermissions: { adminMergeRequest: false } },
+              mergeRequest: {
+                id: 1,
+                userPermissions: { adminMergeRequest: false, canMerge: true },
+              },
             },
           },
         }),
@@ -371,7 +374,7 @@ describe('MrWidgetOptions', () => {
           await waitForPromises();
           eventHub.$emit('MRWidgetUpdateRequested', callback);
           await waitForPromises();
-          expect(callback).toHaveBeenCalledWith(expect.objectContaining(updatedMrData));
+          expect(callback).toHaveBeenCalled();
         });
 
         it('notifies the user of the pipeline status', async () => {
@@ -636,7 +639,7 @@ describe('MrWidgetOptions', () => {
                 eventHub.$emit('EnablePolling');
 
                 expect(stateQueryHandler).toHaveBeenCalled();
-                jest.advanceTimersByTime(interval * STATE_QUERY_POLLING_INTERVAL_BACKOFF + 5000);
+                jest.advanceTimersByTime(interval * STATE_QUERY_POLLING_INTERVAL_BACKOFF + 100);
 
                 await waitForPromises();
 

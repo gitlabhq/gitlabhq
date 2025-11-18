@@ -5,7 +5,6 @@ RSpec/RepeatedSubjectCall:
     - 'ee/spec/graphql/mutations/compliance_management/frameworks/update_spec.rb'
     - 'ee/spec/graphql/mutations/vulnerabilities/bulk_dismiss_spec.rb'
     - 'ee/spec/lib/ee/gitlab/background_migration/backfill_has_vulnerability_resolution_spec.rb'
-    - 'ee/spec/lib/ee/gitlab/background_migration/delete_invalid_epic_issues_spec.rb'
     - 'ee/spec/models/burndown_spec.rb'
     - 'ee/spec/requests/api/graphql/mutations/branch_rules/destroy_spec.rb'
     - 'ee/spec/requests/api/graphql/mutations/compliance_management/frameworks/update_spec.rb'

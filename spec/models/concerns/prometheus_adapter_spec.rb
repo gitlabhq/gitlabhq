@@ -2,17 +2,15 @@
 
 require 'spec_helper'
 
-RSpec.describe PrometheusAdapter, :use_clean_rails_memory_store_caching do
-  include PrometheusHelpers
-  include ReactiveCachingHelpers
-
-  let_it_be(:project) { create(:project, :with_prometheus_integration) }
-  let(:integration) { project.prometheus_integration }
-
-  let(:described_class) do
+RSpec.describe PrometheusAdapter, feature_category: :integrations do
+  # Temporary dummy class to test PrometheusAdapter independently.
+  # The original PrometheusIntegration class has been removed, but we keep
+  # this spec to ensure the concern itself is still covered. The adapter
+  # classes (and their specs) will be fully removed in a follow-up MR.
+  let(:integration) do
     Class.new do
       include PrometheusAdapter
-    end
+    end.new
   end
 
   describe '#build_query_args' do

@@ -59,7 +59,6 @@ RSpec.describe 'Work items bulk editing', :js, feature_category: :team_planning 
 
     context 'when bulk editing labels on project issues list' do
       before do
-        stub_feature_flags(work_item_view_for_issues: true)
         visit project_issues_path(project)
         wait_for_requests
         # clear the type filter as we will also update task
@@ -91,7 +90,6 @@ RSpec.describe 'Work items bulk editing', :js, feature_category: :team_planning 
     context 'when bulk editing parent on project issue list' do
       before do
         allow(Gitlab::QueryLimiting).to receive(:threshold).and_return(137)
-        stub_feature_flags(work_item_view_for_issues: true)
 
         visit project_issues_path(project)
         # clear the type filter as we will also update task

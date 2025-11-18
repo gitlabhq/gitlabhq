@@ -191,7 +191,6 @@ module Ci
     validates :yaml_errors, bytesize: { maximum: -> { YAML_ERRORS_MAX_LENGTH } }, if: :yaml_errors_changed?
 
     after_create :keep_around_commits, unless: :importing?
-    after_commit :trigger_status_change_subscriptions, if: :saved_change_to_status?
     after_commit :track_ci_pipeline_created_event, on: :create, if: :internal_pipeline?
     after_find :observe_age_in_minutes, unless: :importing?
 
@@ -437,10 +436,17 @@ module Ci
           end
         end
       end
+
+      after_transition any => any do |pipeline|
+        pipeline.run_after_commit do
+          trigger_status_change_subscriptions
+        end
+      end
     end
 
     scope :with_unlockable_status, -> { with_status(*UNLOCKABLE_STATUSES) }
     scope :internal, -> { where(source: internal_sources) }
+    scope :tag, -> { where(tag: true) }
     scope :no_tag, -> { where(tag: false) }
     scope :no_child, -> { where.not(source: :parent_pipeline) }
     scope :ci_sources, -> { where(source: Enums::Ci::Pipeline.ci_sources.values) }
@@ -456,8 +462,20 @@ module Ci
     scope :for_source_sha, ->(source_sha) { where(source_sha: source_sha) }
     scope :for_sha_or_source_sha, ->(sha) { for_sha(sha).or(for_source_sha(sha)) }
     scope :for_ref, ->(ref) { where(ref: ref) }
+    # Expects a list of ref and sha pairs e.g. [[ref1, sha1], [ref2, sha2]]
+    scope :for_ref_sha_pairs, ->(pairs) do
+      return none if pairs.blank?
+
+      joins(<<~SQL)
+        INNER JOIN (#{Arel::Nodes::ValuesList.new(pairs).to_sql})
+        AS pipelines(ref, sha)
+        ON p_ci_pipelines.ref = pipelines.ref
+        AND p_ci_pipelines.sha = pipelines.sha
+      SQL
+    end
     scope :for_branch, ->(branch) { for_ref(branch).where(tag: false) }
     scope :for_iid, ->(iid) { where(iid: iid) }
+    scope :for_pipeline_schedule, ->(pipeline_schedule) { where(pipeline_schedule: pipeline_schedule) }
     scope :for_project, ->(project_id) { where(project_id: project_id) }
     scope :for_name, ->(name) do
       name_column = Ci::PipelineMetadata.arel_table[:name]
@@ -604,6 +622,28 @@ module Ci
       sql.index_by(&:sha)
     end
 
+    # Returns a hash containing latest pipeline for each ref which aligns with
+    # the sha value. This allows us to look up all of the latest pipelines for
+    # a list of refs, ensuring that we are referencing the correct sha. If a
+    # pipeline is started for a commit in the history of one of the refs, we
+    # will ignore this in favor of the older pipeline for the correct commit.
+    #
+    # Supplied refs must be uniq, we only return a single pipeline per ref.
+    #
+    # ref_sha_pairs - An array of ref and a sha pairs
+    #           value e.g.
+    #           [
+    #             ['master', '6b9027b'],
+    #             ['dev', '2a207bd']
+    #           ]
+    def self.latest_pipeline_per_ref(ref_sha_pairs)
+      return none if ref_sha_pairs.blank?
+
+      for_ref_sha_pairs(ref_sha_pairs)
+        .order(arel_table[:ref].asc, arel_table[:id].desc)
+        .select('DISTINCT ON(p_ci_pipelines.ref) *')
+    end
+
     def self.latest_successful_ids_per_project
       success.group(:project_id).select('max(id) as id')
     end
@@ -646,12 +686,21 @@ module Ci
       :ci_pipelines
     end
 
+    def ci_pipeline_statuses_rate_limited?
+      Gitlab::ApplicationRateLimiter.throttled?(
+        :ci_pipeline_statuses_subscription,
+        scope: project
+      )
+    end
+
     def trigger_status_change_subscriptions
       GraphqlTriggers.ci_pipeline_status_updated(self)
 
-      return unless self.pipeline_schedule_id.present?
+      GraphqlTriggers.ci_pipeline_schedule_status_updated(self.pipeline_schedule) if self.pipeline_schedule_id.present?
 
-      GraphqlTriggers.ci_pipeline_schedule_status_updated(self.pipeline_schedule)
+      return if ci_pipeline_statuses_rate_limited?
+
+      GraphqlTriggers.ci_pipeline_statuses_updated(self)
     end
 
     def uses_needs?
@@ -780,7 +829,7 @@ module Ci
     end
 
     def cancelable?
-      cancelable_statuses.any? && internal_pipeline?
+      CANCELABLE_STATUSES.include?(self.status) && internal_pipeline?
     end
 
     def auto_canceled?
@@ -874,13 +923,14 @@ module Ci
     end
 
     def number_of_warnings
-      BatchLoader.for(id).batch(default_value: 0) do |pipeline_ids, loader|
-        ::CommitStatus.where(commit_id: pipeline_ids)
+      BatchLoader.for([id, partition_id]).batch(default_value: 0) do |items, loader|
+        ::CommitStatus
+          .where([:commit_id, :partition_id] => items)
           .latest
           .failed_but_allowed
-          .group(:commit_id)
+          .group(:commit_id, :partition_id)
           .count
-          .each { |id, amount| loader.call(id, amount) }
+          .each { |item, amount| loader.call(item, amount) }
       end
     end
 
@@ -1011,7 +1061,7 @@ module Ci
           MergeRequest.where(id: merge_request_id)
         else
           MergeRequest.where(source_project_id: project_id, source_branch: ref)
-            .by_commit_sha(sha)
+            .by_commit_sha(project, sha)
         end
     end
 
@@ -1064,10 +1114,7 @@ module Ci
 
     def builds_in_self_and_project_descendants
       latest_pipelines = self_and_project_descendants.preload(:source_bridge)
-
-      if Feature.enabled?(:show_child_reports_in_mr_page, project)
-        latest_pipelines = latest_pipelines.reject { |pipeline| pipeline&.source_bridge&.retried? }
-      end
+      latest_pipelines = latest_pipelines.reject { |pipeline| pipeline&.source_bridge&.retried? }
 
       Ci::Build.in_partition(self).latest.where(pipeline: latest_pipelines)
     end
@@ -1262,35 +1309,19 @@ module Ci
     end
 
     def can_generate_codequality_reports?
-      if Feature.enabled?(:show_child_reports_in_mr_page, project)
-        complete_and_has_self_or_descendant_reports?(Ci::JobArtifact.of_report_type(:codequality))
-      else
-        complete_and_has_reports?(Ci::JobArtifact.of_report_type(:codequality))
-      end
+      complete_and_has_self_or_descendant_reports?(Ci::JobArtifact.of_report_type(:codequality))
     end
 
     def test_report_summary
       strong_memoize(:test_report_summary) do
-        if Feature.enabled?(:show_child_reports_in_mr_page, project)
-          Gitlab::Ci::Reports::TestReportSummary.new(latest_builds_report_results_in_self_and_descendants)
-        else
-          Gitlab::Ci::Reports::TestReportSummary.new(latest_builds_report_results)
-        end
+        Gitlab::Ci::Reports::TestReportSummary.new(latest_builds_report_results_in_self_and_descendants)
       end
     end
 
     def test_reports
-      if Feature.enabled?(:show_child_reports_in_mr_page, project)
-        Gitlab::Ci::Reports::TestReport.new.tap do |test_reports|
-          latest_test_report_builds_in_self_and_project_descendants.find_each do |build|
-            build.collect_test_reports!(test_reports)
-          end
-        end
-      else
-        Gitlab::Ci::Reports::TestReport.new.tap do |test_reports|
-          latest_test_report_builds.find_each do |build|
-            build.collect_test_reports!(test_reports)
-          end
+      Gitlab::Ci::Reports::TestReport.new.tap do |test_reports|
+        latest_test_report_builds_in_self_and_project_descendants.find_each do |build|
+          build.collect_test_reports!(test_reports)
         end
       end
     end
@@ -1304,33 +1335,17 @@ module Ci
     end
 
     def codequality_reports
-      if Feature.enabled?(:show_child_reports_in_mr_page, project)
-        Gitlab::Ci::Reports::CodequalityReports.new.tap do |codequality_reports|
-          latest_report_builds_in_self_and_project_descendants(Ci::JobArtifact.of_report_type(:codequality)).each do |build|
-            build.collect_codequality_reports!(codequality_reports)
-          end
-        end
-      else
-        Gitlab::Ci::Reports::CodequalityReports.new.tap do |codequality_reports|
-          latest_report_builds(Ci::JobArtifact.of_report_type(:codequality)).each do |build|
-            build.collect_codequality_reports!(codequality_reports)
-          end
+      Gitlab::Ci::Reports::CodequalityReports.new.tap do |codequality_reports|
+        latest_report_builds_in_self_and_project_descendants(Ci::JobArtifact.of_report_type(:codequality)).each do |build|
+          build.collect_codequality_reports!(codequality_reports)
         end
       end
     end
 
     def terraform_reports
-      if Feature.enabled?(:show_child_reports_in_mr_page, project)
-        ::Gitlab::Ci::Reports::TerraformReports.new.tap do |terraform_reports|
-          latest_report_builds_in_self_and_project_descendants(::Ci::JobArtifact.of_report_type(:terraform)).each do |build|
-            build.collect_terraform_reports!(terraform_reports)
-          end
-        end
-      else
-        ::Gitlab::Ci::Reports::TerraformReports.new.tap do |terraform_reports|
-          latest_report_builds(::Ci::JobArtifact.of_report_type(:terraform)).each do |build|
-            build.collect_terraform_reports!(terraform_reports)
-          end
+      ::Gitlab::Ci::Reports::TerraformReports.new.tap do |terraform_reports|
+        latest_report_builds_in_self_and_project_descendants(::Ci::JobArtifact.of_report_type(:terraform)).each do |build|
+          build.collect_terraform_reports!(terraform_reports)
         end
       end
     end
@@ -1353,7 +1368,10 @@ module Ci
       end
     end
 
-    # Returns the modified paths.
+    # Returns the modified paths, the results are subject to
+    # https://docs.gitlab.com/user/gitlab_com/#diff-display-limits
+    # See #changed_paths for a similar method that returns all
+    # changes, regardless of the diff display limits.
     #
     # The returned value is
     # * Array: List of modified paths that should be evaluated
@@ -1376,7 +1394,11 @@ module Ci
       end
     end
 
-    # Returns the changed paths from Gitaly ChangedPaths RPC
+    # Returns the changed paths from Gitaly ChangedPaths RPC.
+    # This method is similar to #modified_paths, but the results
+    # are not subject to the diff display limits. This method is
+    # thus suited well for use in e.g. `rules:changes:`, when
+    # needing to make decisions based on the complete changeset.
     #
     # The returned value is
     # * Array: List of Gitlab::Git::ChangedPath objects
@@ -1559,11 +1581,7 @@ module Ci
 
     def has_test_reports?
       strong_memoize(:has_test_reports) do
-        if Feature.enabled?(:show_child_reports_in_mr_page, project)
-          latest_report_builds_in_self_and_project_descendants(::Ci::JobArtifact.of_report_type(:test)).exists?
-        else
-          has_reports?(::Ci::JobArtifact.of_report_type(:test))
-        end
+        latest_report_builds_in_self_and_project_descendants(::Ci::JobArtifact.of_report_type(:test)).exists?
       end
     end
 

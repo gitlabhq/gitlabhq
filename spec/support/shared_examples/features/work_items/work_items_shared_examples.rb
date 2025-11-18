@@ -52,7 +52,7 @@ RSpec.shared_examples 'work items comments' do |type|
   end
 
   context 'for work item note actions signed in user with developer role' do
-    let_it_be(:owner) { create(:user) }
+    let_it_be_with_refind(:owner) { create(:user) }
 
     before do
       project.add_owner(owner)
@@ -179,7 +179,8 @@ end
 RSpec.shared_examples 'work items labels' do |namespace_type|
   it 'shows a label with a link pointing to filtered work items list' do
     within_testid 'work-item-labels' do
-      expect(page).to have_link(label.title, href: "#{list_path}?label_name[]=#{label.title}")
+      link = find_link(label.title)
+      expect(link[:href]).to include("label_name[]=#{label.title}")
     end
   end
 
@@ -327,7 +328,7 @@ RSpec.shared_examples 'work items description' do
   end
 
   context 'on conflict' do
-    let_it_be(:other_user) { create(:user) }
+    let_it_be_with_refind(:other_user) { create(:user) }
     let(:expected_warning) { 'Someone edited the description at the same time you did.' }
 
     before do
@@ -425,10 +426,6 @@ RSpec.shared_examples 'authored work item guest user permissions' do
       expect(page).to have_button 'Delete key result'
     end
 
-    within_testid 'work-item-overview-right-sidebar' do
-      expect(page).not_to have_button 'Edit'
-    end
-
     page.within('.main-notes-list') do
       click_button _('More actions'), match: :first
 
@@ -452,10 +449,6 @@ RSpec.shared_examples 'non-authored work item guest user permissions' do
       expect(page).to have_button 'Copy reference'
       expect(page).to have_button 'Report abuse'
       expect(page).not_to have_button 'Delete key result'
-    end
-
-    within_testid 'work-item-overview-right-sidebar' do
-      expect(page).not_to have_button 'Edit'
     end
 
     page.within('.main-notes-list') do
@@ -650,8 +643,8 @@ end
 RSpec.shared_examples 'work items iteration' do
   include Features::IterationHelpers
   let(:work_item_iteration_selector) { '[data-testid="work-item-iteration"]' }
-  let_it_be(:iteration_cadence) { create(:iterations_cadence, group: group, active: true) }
-  let_it_be(:iteration) do
+  let_it_be_with_refind(:iteration_cadence) { create(:iterations_cadence, group: group, active: true) }
+  let_it_be_with_refind(:iteration) do
     create(
       :iteration,
       iterations_cadence: iteration_cadence,
@@ -661,7 +654,7 @@ RSpec.shared_examples 'work items iteration' do
     )
   end
 
-  let_it_be(:iteration2) do
+  let_it_be_with_refind(:iteration2) do
     create(
       :iteration,
       iterations_cadence: iteration_cadence,
@@ -705,6 +698,80 @@ RSpec.shared_examples 'work items iteration' do
   end
 end
 
+RSpec.shared_examples 'work items due dates' do
+  let(:due_dates_selector) { '[data-testid="work-item-due-dates"]' }
+  let(:start_date_picker) { '[data-testid="start-date-picker"]' }
+  let(:due_date_picker) { '[data-testid="due-date-picker"]' }
+
+  it 'displays the default state with no dates' do
+    within(due_dates_selector) do
+      expect(page).to have_text('Start: None')
+      expect(page).to have_text('Due: None')
+    end
+  end
+
+  it 'reveals both date pickers when editing dates' do
+    find_and_click_edit due_dates_selector
+
+    expect(page).to have_selector(start_date_picker)
+    expect(page).to have_selector(due_date_picker)
+  end
+
+  it 'displays selected dates in the user’s preferred format' do
+    find_and_click_edit due_dates_selector
+
+    fill_in 'Start', with: '2020-12-01'
+    fill_in 'Due', with: '2020-12-02'
+
+    within(due_dates_selector) do
+      click_button 'Apply'
+    end
+
+    wait_for_all_requests
+
+    within(due_dates_selector) do
+      expect(page).to have_text('Start: Dec 1, 2020')
+      expect(page).to have_text('Due: Dec 2, 2020')
+    end
+  end
+
+  it 'fallbacks to start date when due date < start date' do
+    find_and_click_edit due_dates_selector
+
+    fill_in 'Start', with: '2020-12-03'
+    fill_in 'Due', with: '2020-12-01'
+
+    within(due_dates_selector) do
+      click_button 'Apply'
+    end
+
+    wait_for_all_requests
+
+    within(due_dates_selector) do
+      expect(page).to have_text('Start: Dec 3, 2020')
+      expect(page).to have_text('Due: Dec 3, 2020')
+    end
+  end
+
+  it 'fallbacks to due date when start date > due date' do
+    find_and_click_edit due_dates_selector
+
+    fill_in 'Due', with: '2020-11-01'
+    fill_in 'Start', with: '2020-11-03'
+
+    within(due_dates_selector) do
+      click_button 'Apply'
+    end
+
+    wait_for_all_requests
+
+    within(due_dates_selector) do
+      expect(page).to have_text('Start: None')
+      expect(page).to have_text('Due: None')
+    end
+  end
+end
+
 RSpec.shared_examples 'work items time tracking' do
   include WorkItemsHelpers
 
@@ -738,7 +805,8 @@ RSpec.shared_examples 'work items time tracking' do
     expect(page).to have_button 'estimate'
   end
 
-  it 'adds and deletes time entries and view report', :aggregate_failures do
+  it 'adds and deletes time entries and view report',
+    quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/570667' do
     add_time_entry('1d', 'First summary')
     add_time_entry('2d', 'Second summary')
     wait_for_all_requests
@@ -1067,6 +1135,7 @@ RSpec.shared_examples 'work items hierarchy' do |testid, type|
   it 'creates and reorders child items', :aggregate_failures do
     # https://gitlab.com/gitlab-org/gitlab/-/issues/467207
     allow(Gitlab::QueryLimiting::Transaction).to receive(:threshold).and_return(300)
+    page.current_window.resize_to(1200, 2400)
 
     within_testid testid do
       create_child(type, 'Child 1')

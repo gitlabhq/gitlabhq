@@ -240,6 +240,55 @@ module Gitlab
         checkout_opts + %w[--]
       )
     end
+
+    def get_partition_info(partition_name, connection)
+      partition_info_query = <<~SQL
+        SELECT
+          child_ns.nspname   AS target_schema,
+          child.relname      AS target_partition,
+          parent_ns.nspname  AS parent_schema,
+          parent.relname     AS parent_table,
+          (inh.inhrelid IS NOT NULL) AS is_attached,
+          pg_get_expr(child.relpartbound, child.oid) AS partition_bounds
+        FROM pg_class child
+        JOIN pg_namespace child_ns ON child.relnamespace = child_ns.oid
+        LEFT JOIN pg_inherits inh   ON child.oid = inh.inhrelid
+        LEFT JOIN pg_class parent   ON inh.inhparent = parent.oid
+        LEFT JOIN pg_namespace parent_ns ON parent.relnamespace = parent_ns.oid
+        WHERE child.relname = $1 LIMIT 1
+      SQL
+
+      check_constraints_query = <<~SQL
+        SELECT
+          tc.constraint_name,
+          format('CONSTRAINT %I CHECK (%s)',
+            tc.constraint_name,
+            cc.check_clause
+          ) AS constraint_clause,
+          cc.check_clause AS raw_check_clause
+        FROM information_schema.table_constraints tc
+        JOIN information_schema.check_constraints cc
+          ON tc.constraint_name = cc.constraint_name
+          AND tc.constraint_schema = cc.constraint_schema
+        WHERE tc.table_schema = $1
+          AND tc.table_name = $2
+          AND tc.constraint_type = 'CHECK'
+        ORDER BY tc.constraint_name;
+      SQL
+      partition_info = connection.exec_query(partition_info_query, nil, [partition_name])
+
+      return if partition_info.empty?
+
+      partition_info = partition_info.first
+
+      check_constraints = connection.exec_query(
+        check_constraints_query,
+        nil,
+        [partition_info['target_schema'], partition_name]
+      ).to_a
+
+      partition_info.merge({ 'check_constraints' => check_constraints })
+    end
   end
 end
 # rubocop:enable Rails/Output

@@ -65,6 +65,21 @@ RSpec.describe UserPreference, feature_category: :user_profile do
       it { is_expected.not_to allow_value("").for(:pass_user_identities_to_ci_jwt) }
     end
 
+    describe 'project_studio_enabled' do
+      it { is_expected.to validate_inclusion_of(:project_studio_enabled).in_array([true, false]) }
+      it { is_expected.not_to allow_value(nil).for(:project_studio_enabled) }
+    end
+
+    describe 'new_ui_enabled' do
+      it { is_expected.to validate_inclusion_of(:new_ui_enabled).in_array([true, false]) }
+      it { is_expected.to allow_value(nil).for(:new_ui_enabled) }
+    end
+
+    describe 'early_access_studio_participant' do
+      it { is_expected.to validate_inclusion_of(:early_access_studio_participant).in_array([true, false]) }
+      it { is_expected.not_to allow_value(nil).for(:early_access_studio_participant) }
+    end
+
     describe 'visibility_pipeline_id_type' do
       it 'is set to 0 by default' do
         pref = described_class.new
@@ -238,30 +253,6 @@ RSpec.describe UserPreference, feature_category: :user_profile do
       pref = described_class.new(keyboard_shortcuts_enabled: false)
 
       expect(pref.keyboard_shortcuts_enabled).to eq(false)
-    end
-  end
-
-  describe '#early_access_event_tracking?' do
-    let(:participant) { true }
-    let(:tracking) { true }
-    let(:user_preference) do
-      build(:user_preference, early_access_program_participant: participant, early_access_program_tracking: tracking)
-    end
-
-    context 'when user participate in beta and agreed on tracking' do
-      it { expect(user_preference.early_access_event_tracking?).to be true }
-    end
-
-    context 'when user does not participate' do
-      let(:participant) { false }
-
-      it { expect(user_preference.early_access_event_tracking?).to be false }
-    end
-
-    context 'when user did not agree on tracking' do
-      let(:tracking) { false }
-
-      it { expect(user_preference.early_access_event_tracking?).to be false }
     end
   end
 

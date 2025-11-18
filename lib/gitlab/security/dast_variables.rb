@@ -455,6 +455,16 @@ module Gitlab
                   "`trailer`, `transfer-encoding`, and all headers with a `proxy-` prefix."
               )
             },
+            DAST_REQUEST_USER_AGENT: {
+              additional: false,
+              type: "String",
+              example: nil,
+              name: s_("DastProfiles|Request headers"),
+              description: s_(
+                "DastProfiles|Set to change the user-agent string sent by the browser. " \
+                  "The default user-agent is Google Chrome on Linux."
+              )
+            },
             DAST_SCOPE_ALLOW_HOSTS: {
               additional: true,
               type: "List of strings",

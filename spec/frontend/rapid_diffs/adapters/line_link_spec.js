@@ -2,6 +2,13 @@ import { DiffFile } from '~/rapid_diffs/web_components/diff_file';
 import { INVISIBLE, VISIBLE } from '~/rapid_diffs/adapter_events';
 import { lineLinkAdapter } from '~/rapid_diffs/adapters/line_link';
 import { NO_SCROLL_TO_HASH_CLASS } from '~/lib/utils/common_utils';
+import { scrollTo } from '~/lib/utils/scroll_utils';
+
+jest.mock('~/lib/utils/scroll_utils', () => ({
+  ...jest.requireActual('~/lib/utils/scroll_utils'),
+  scrollTo: jest.fn(),
+  scrollToElement: jest.fn(),
+}));
 
 describe('lineLinkAdapter', () => {
   const getComponent = () => document.querySelector('diff-file');
@@ -46,7 +53,7 @@ describe('lineLinkAdapter', () => {
     getLink().click();
     expect(getTarget().classList.contains(NO_SCROLL_TO_HASH_CLASS)).toBe(true);
     expect(window.location.hash).toBe('#target');
-    expect(window.scrollTo).toHaveBeenCalledWith(0, 0);
+    expect(scrollTo).toHaveBeenCalledWith({ left: 0, top: 0 });
   });
 
   it('does nothing when file becomes invisible', () => {
@@ -55,6 +62,6 @@ describe('lineLinkAdapter', () => {
     hide();
     expect(getTarget().classList.contains(NO_SCROLL_TO_HASH_CLASS)).toBe(false);
     expect(window.location.hash).toBe('');
-    expect(window.scrollTo).not.toHaveBeenCalled();
+    expect(scrollTo).not.toHaveBeenCalled();
   });
 });

@@ -2,20 +2,20 @@
 stage: Create
 group: Source Code
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
-description: Documentation for the REST API for managing Git repository files in GitLab.
+description: GitLabのGitリポジトリ管理のためのREST APIに関するドキュメント
 title: リポジトリファイルAPI
 ---
 
 {{< details >}}
 
-- プラン:Free、Premium、Ultimate
-- 提供形態:GitLab.com、GitLab Self-Managed、GitLab Dedicated
+- プラン: Free、Premium、Ultimate
+- 提供形態: GitLab.com、GitLab Self-Managed、GitLab Dedicated
 
 {{< /details >}}
 
 このAPIを使用して、リポジトリ内のファイルをフェッチ、作成、更新、および削除できます。このAPIの[レート制限を設定する](../administration/settings/files_api_rate_limits.md)こともできます。
 
-## パーソナルアクセストークンで使用可能なスコープ
+## パーソナルアクセストークンで使用可能なスコープ {#available-scopes-for-personal-access-tokens}
 
 [パーソナルアクセストークン](../user/profile/personal_access_tokens.md)では、次のスコープがサポートされています。
 
@@ -25,24 +25,44 @@ title: リポジトリファイルAPI
 | `read_api`        | リポジトリファイルへの読み取りアクセスを許可します。 |
 | `read_repository` | リポジトリファイルへの読み取りアクセスを許可します。 |
 
-## リポジトリからファイルを取得する
+## リポジトリからファイルを取得する {#get-file-from-repository}
 
 名前、サイズ、内容など、リポジトリ内のファイルに関する情報を受け取ることができるようにします。ファイルの内容はBase64でエンコードされています。リポジトリが公開されている場合、このエンドポイントには認証なしでアクセスできます。
+
+10 MBを超えるblobの場合、このエンドポイントには1分あたり5リクエストというレート制限があります。
 
 ```plaintext
 GET /projects/:id/repository/files/:file_path
 ```
 
+サポートされている属性:
+
+| 属性   | 型              | 必須 | 説明 |
+|-------------|-------------------|----------|-------------|
+| `file_path` | 文字列            | はい      | ファイルのURLエンコードされたフルパス（`lib%2Fclass%2Erb`など）。 |
+| `id`        | 整数または文字列 | はい      | プロジェクトのID、または[URLエンコードされたパス](rest/_index.md#namespaced-paths)。 |
+| `ref`       | 文字列            | はい      | ブランチ、タグ、またはコミットの名前。デフォルトブランチを自動的に使用するには、`HEAD`を使用します。 |
+
+成功した場合は、[`200 OK`](rest/troubleshooting.md#status-codes)と以下のレスポンス属性が返されます。
+
+| 属性          | 型    | 説明 |
+|--------------------|---------|-------------|
+| `blob_id`          | 文字列  | blob SHA。   |
+| `commit_id`        | 文字列  | ファイルのコミットSHA。 |
+| `content`          | 文字列  | Base64エンコードされたファイルの内容。 |
+| `content_sha256`   | 文字列  | ファイルの内容のSHA256ハッシュ。 |
+| `encoding`         | 文字列  | ファイルの内容に対して使用されるエンコード。 |
+| `execute_filemode` | ブール値 | `true`の場合、ファイルに実行フラグが設定されます。 |
+| `file_name`        | 文字列  | ファイルの名前。 |
+| `file_path`        | 文字列  | ファイルのフルパス。 |
+| `last_commit_id`   | 文字列  | このファイルを変更した最後のコミットのSHA。 |
+| `ref`              | 文字列  | 使用されるブランチ、タグ、またはコミットの名前。 |
+| `size`             | 整数 | ファイルのサイズ（バイト単位）。 |
+
 ```shell
 curl --header "PRIVATE-TOKEN: <your_access_token>" \
   --url "https://gitlab.example.com/api/v4/projects/13083/repository/files/app%2Fmodels%2Fkey%2Erb?ref=main"
 ```
-
-| 属性   | 型           | 必須 | 説明 |
-|-------------|----------------|----------|-------------|
-| `id`        | 整数または文字列 | はい   | プロジェクトのIDまたは[URLエンコードされたパス](rest/_index.md#namespaced-paths)。 |
-| `file_path` | 文字列         | はい      | 新しいファイルのURLエンコードされたフルパス（`lib%2Fclass%2Erb`など）。 |
-| `ref`       | 文字列         | はい      | ブランチ、タグ、またはコミットの名前。デフォルトブランチを自動的に使用するには、`HEAD`を使用します。 |
 
 ブランチ名がわからない場合、またはデフォルトブランチを使用する場合は、`ref`の値として`HEAD`を使用できます。次に例を示します。
 
@@ -50,10 +70,6 @@ curl --header "PRIVATE-TOKEN: <your_access_token>" \
 curl --header "PRIVATE-TOKEN: " \
   --url "https://gitlab.example.com/api/v4/projects/13083/repository/files/app%2Fmodels%2Fkey%2Erb?ref=HEAD"
 ```
-
-### 応答
-
-応答の`blob_id`はblob SHAです。リポジトリAPIの[リポジトリからblobを取得する](repositories.md#get-a-blob-from-repository)を参照してください。
 
 応答の例:
 
@@ -73,9 +89,9 @@ curl --header "PRIVATE-TOKEN: " \
 }
 ```
 
-### ファイルメタデータのみを取得する
+### ファイルメタデータのみを取得する {#get-file-metadata-only}
 
-`HEAD`を使用して、ファイルメタデータのみを取得することもできます。
+`HEAD`を使用して、ファイルのメタデータのみをフェッチすることもできます。
 
 ```plaintext
 HEAD /projects/:id/repository/files/:file_path
@@ -104,7 +120,7 @@ X-Gitlab-Execute-Filemode: false
 ...
 ```
 
-## リポジトリからファイルblameを取得する
+## リポジトリからファイルblameを取得する {#get-file-blame-from-repository}
 
 blame情報を取得します。各blame範囲には、行と対応するコミット情報が含まれています。
 
@@ -112,14 +128,23 @@ blame情報を取得します。各blame範囲には、行と対応するコミ�
 GET /projects/:id/repository/files/:file_path/blame
 ```
 
-| 属性       | 型              | 必須 | 説明 |
-|-----------------|-------------------|----------|-------------|
-| `file_path`     | 文字列            | はい   | 新しいファイルのURLエンコードされたフルパス（`lib%2Fclass%2Erb`など）。 |
-| `id`            | 整数または文字列 | はい   | プロジェクトのIDまたは[URLエンコードされたパス](rest/_index.md#namespaced-paths)。 |
-| `range[end]`    | 整数           | はい   | blame対象範囲の最後の行。 |
-| `range[start]`  | 整数           | はい   | blame対象範囲の最初の行。 |
-| `ref`           | 文字列            | はい   | ブランチ、タグ、またはコミットの名前。デフォルトブランチを自動的に使用するには、`HEAD`を使用します。 |
-| `range`         | ハッシュ              | いいえ    | blame範囲。 |
+サポートされている属性:
+
+| 属性      | 型              | 必須 | 説明 |
+|----------------|-------------------|----------|-------------|
+| `file_path`    | 文字列            | はい      | ファイルのURLエンコードされたフルパス（`lib%2Fclass%2Erb`など）。 |
+| `id`           | 整数または文字列 | はい      | プロジェクトのID、または[URLエンコードされたパス](rest/_index.md#namespaced-paths)。 |
+| `ref`          | 文字列            | はい      | ブランチ、タグ、またはコミットの名前。デフォルトブランチを自動的に使用するには、`HEAD`を使用します。 |
+| `range`        | ハッシュ              | いいえ       | blame範囲 |
+| `range[end]`   | 整数           | いいえ       | blame対象範囲の最後の行。 |
+| `range[start]` | 整数           | いいえ       | blame対象範囲の最初の行。 |
+
+成功した場合は、[`200 OK`](rest/troubleshooting.md#status-codes)と以下のレスポンス属性が返されます。
+
+| 属性 | 型   | 説明 |
+|-----------|--------|-------------|
+| `commit`  | オブジェクト | blame範囲のコミット情報。 |
+| `lines`   | 配列  | このblame範囲の行の配列。 |
 
 ```shell
 curl --header "PRIVATE-TOKEN: <your_access_token>" \
@@ -149,21 +174,18 @@ curl --header "PRIVATE-TOKEN: <your_access_token>" \
       "require 'open3'",
       ""
     ]
-  },
-  ...
+  }
 ]
 ```
 
-### ファイルメタデータのみを取得する
+### ファイルメタデータのみを取得する {#get-file-metadata-only-1}
 
-[リポジトリからファイルを取得する](repository_files.md#get-file-from-repository)のように、ファイルメタデータのみを返すには、`HEAD`メソッドを使用します。
+[リポジトリからファイルを取得する](repository_files.md#get-file-from-repository)場合と同様に、ファイルメタデータのみを返すには、`HEAD`メソッドを使用します。
 
 ```shell
 curl --head --header "PRIVATE-TOKEN: <your_access_token>" \
   --url "https://gitlab.example.com/api/v4/projects/13083/repository/files/path%2Fto%2Ffile.rb/blame?ref=main"
 ```
-
-#### 応答
 
 応答の例:
 
@@ -183,9 +205,9 @@ X-Gitlab-Execute-Filemode: false
 ...
 ```
 
-### blame範囲をリクエストする
+### blame範囲をリクエストする {#request-a-blame-range}
 
-blame範囲をリクエストするには、`range[start]`パラメーターにファイルの開始行番号を指定し、`range[end]`パラメーターに終了行番号を指定します。
+blame範囲をリクエストするには、`range[start]`パラメータにファイルの開始行番号を指定し、`range[end]`パラメータに終了行番号を指定します。
 
 ```shell
 curl --head --header "PRIVATE-TOKEN: <your_access_token>" \
@@ -214,23 +236,24 @@ curl --head --header "PRIVATE-TOKEN: <your_access_token>" \
       "require 'fileutils'",
       "require 'open3'"
     ]
-  },
-  ...
+  }
 ]
 ```
 
-## リポジトリからrawファイルを取得する
+## リポジトリからrawファイルを取得する {#get-raw-file-from-repository}
 
 ```plaintext
 GET /projects/:id/repository/files/:file_path/raw
 ```
 
-| 属性   | 型           | 必須 | 説明 |
-|-------------|----------------|----------|------------|
-| `file_path` | 文字列         | はい      | 新しいファイルのURLエンコードされたフルパス（`lib%2Fclass%2Erb`など）。 |
-| `id`        | 整数または文字列 | はい   | プロジェクトのIDまたは[URLエンコードされたパス](rest/_index.md#namespaced-paths)。 |
-| `lfs`       | ブール値        | いいえ       | 応答をポインターではなく、Git LFSファイルの内容にするかどうかを決定します。ファイルがGit LFSで追跡されていない場合は無視されます。デフォルトは`false`です。GitLab 15.7で[導入](https://gitlab.com/gitlab-org/gitlab/-/issues/27892)されました。 |
-| `ref`       | 文字列         | いいえ       | ブランチ、タグ、またはコミットの名前。デフォルトはプロジェクトの`HEAD`です。 |
+サポートされている属性:
+
+| 属性   | 型              | 必須 | 説明 |
+|-------------|-------------------|----------|-------------|
+| `file_path` | 文字列            | はい      | ファイルのURLエンコードされたフルパス（`lib%2Fclass%2Erb`など）。 |
+| `id`        | 整数または文字列 | はい      | プロジェクトのID、または[URLエンコードされたパス](rest/_index.md#namespaced-paths)。 |
+| `lfs`       | ブール値           | いいえ       | `true`の場合、応答をポインターではなく、Git LFSファイルの内容にするかどうかを決定します。ファイルがGit LFSで追跡されていない場合は無視されます。デフォルトは`false`です。 |
+| `ref`       | 文字列            | いいえ       | ブランチ、タグ、またはコミットの名前。デフォルトはプロジェクトの`HEAD`です。 |
 
 ```shell
 curl --header "PRIVATE-TOKEN: <your_access_token>" \
@@ -239,11 +262,11 @@ curl --header "PRIVATE-TOKEN: <your_access_token>" \
 
 {{< alert type="note" >}}
 
-[リポジトリからファイルを取得する](repository_files.md#get-file-from-repository)と同様に、`HEAD`を使用してファイルメタデータのみを取得できます。
+[リポジトリからファイルを取得する](repository_files.md#get-file-from-repository)場合と同様に、`HEAD`を使用してファイルメタデータのみを取得できます。
 
 {{< /alert >}}
 
-## リポジトリに新しいファイルを作成する
+## リポジトリに新しいファイルを作成する {#create-new-file-in-repository}
 
 1つのファイルを作成できるようにします。1つのリクエストで複数のファイルを作成するには、[コミットAPI](commits.md#create-a-commit-with-multiple-files-and-actions)を参照してください。
 
@@ -251,18 +274,27 @@ curl --header "PRIVATE-TOKEN: <your_access_token>" \
 POST /projects/:id/repository/files/:file_path
 ```
 
-| 属性          | 型           | 必須 | 説明 |
-| ------------------ | -------------- | -------- | ----------- |
-| `branch`           | 文字列         | はい      | 作成する新しいブランチの名前。コミットはこのブランチに追加されます。 |
-| `commit_message`   | 文字列         | はい      | コミットメッセージ。 |
-| `content`          | 文字列         | はい      | ファイルの内容。 |
-| `file_path`        | 文字列         | はい      | 新しいファイルのURLエンコードされたフルパス。たとえば`lib%2Fclass%2Erb`などです。 |
-| `id`               | 整数または文字列 | はい   | プロジェクトのIDまたは[URLエンコードされたパス](rest/_index.md#namespaced-paths)。 |
-| `author_email`     | 文字列         | いいえ       | コミット作成者のメールアドレス。 |
-| `author_name`      | 文字列         | いいえ       | コミット作成者の名前。 |
-| `encoding`         | 文字列         | いいえ       | エンコードを`base64`に変更します。デフォルトは`text`です。 |
-| `execute_filemode` | ブール値        | いいえ       | ファイルの`execute`フラグを有効または無効にします。`true`または`false`を指定できます。 |
-| `start_branch`     | 文字列         | いいえ       | 新しいブランチの作成元となるベースブランチの名前。 |
+サポートされている属性:
+
+| 属性          | 型              | 必須 | 説明 |
+|--------------------|-------------------|----------|-------------|
+| `branch`           | 文字列            | はい      | 作成するブランチの名前。コミットはこのブランチに追加されます。 |
+| `commit_message`   | 文字列            | はい      | コミットメッセージ。 |
+| `content`          | 文字列            | はい      | ファイルの内容。 |
+| `file_path`        | 文字列            | はい      | ファイルのURLエンコードされたフルパス。例: `lib%2Fclass%2Erb`。 |
+| `id`               | 整数または文字列 | はい      | プロジェクトのID、または[URLエンコードされたパス](rest/_index.md#namespaced-paths)。 |
+| `author_email`     | 文字列            | いいえ       | コミット作成者のメールアドレス。 |
+| `author_name`      | 文字列            | いいえ       | コミット作成者の名前。 |
+| `encoding`         | 文字列            | いいえ       | エンコードを`base64`に変更します。デフォルトは`text`です。 |
+| `execute_filemode` | ブール値           | いいえ       | `true`の場合、ファイルの`execute`フラグが有効になります。`false`の場合、ファイルの`execute`フラグが無効になります。 |
+| `start_branch`     | 文字列            | いいえ       | ブランチの作成元となるベースブランチの名前。 |
+
+成功した場合は、[`201 Created`](rest/troubleshooting.md#status-codes)と以下のレスポンス属性が返されます。
+
+| 属性   | 型   | 説明 |
+|-------------|--------|-------------|
+| `branch`    | 文字列 | ファイルが作成されたブランチの名前。 |
+| `file_path` | 文字列 | 作成されたファイルのパス。 |
 
 ```shell
 curl --request POST \
@@ -282,7 +314,7 @@ curl --request POST \
 }
 ```
 
-## リポジトリ内の既存のファイルを更新する
+## リポジトリ内の既存のファイルを更新する {#update-existing-file-in-repository}
 
 1つのファイルを更新できるようにします。1つのリクエストで複数のファイルを更新するには、[コミットAPI](commits.md#create-a-commit-with-multiple-files-and-actions)を参照してください。
 
@@ -290,19 +322,28 @@ curl --request POST \
 PUT /projects/:id/repository/files/:file_path
 ```
 
-| 属性        | 型           | 必須 | 説明 |
-| ---------------- | -------------- | -------- | ----------- |
-| `branch`         | 文字列         | はい      | 作成する新しいブランチの名前。コミットはこのブランチに追加されます。 |
-| `commit_message` | 文字列         | はい      | コミットメッセージ。 |
-| `content`        | 文字列         | はい      | ファイルの内容。 |
-| `file_path`      | 文字列         | はい      | 新しいファイルのURLエンコードされたフルパス。たとえば`lib%2Fclass%2Erb`などです。 |
-| `id`             | 整数または文字列 | はい   | プロジェクトのIDまたは[URLエンコードされたパス](rest/_index.md#namespaced-paths)  |
-| `author_email`   | 文字列         | いいえ       | コミット作成者のメールアドレス。 |
-| `author_name`    | 文字列         | いいえ       | コミット作成者の名前。 |
-| `encoding`       | 文字列         | いいえ       | エンコードを`base64`に変更します。デフォルトは`text`です。 |
-| `execute_filemode` | ブール値      | いいえ       | ファイルの`execute`フラグを有効または無効にします。`true`または`false`を指定できます。 |
-| `last_commit_id` | 文字列         | いいえ       | 既知の最新のファイルコミットID。 |
-| `start_branch`   | 文字列         | いいえ       | 新しいブランチの作成元となるベースブランチの名前。 |
+サポートされている属性:
+
+| 属性        | 型              | 必須 | 説明 |
+| ---------------- | ----------------- | -------- | ----------- |
+| `branch`         | 文字列            | はい      | 作成するブランチの名前。コミットはこのブランチに追加されます。 |
+| `commit_message` | 文字列            | はい      | コミットメッセージ。 |
+| `content`        | 文字列            | はい      | ファイルの内容。 |
+| `file_path`      | 文字列            | はい      | ファイルのURLエンコードされたフルパス。例: `lib%2Fclass%2Erb`。 |
+| `id`             | 整数または文字列 | はい      | プロジェクトのID、または[URLエンコードされたパス](rest/_index.md#namespaced-paths)  |
+| `author_email`   | 文字列            | いいえ       | コミット作成者のメールアドレス。 |
+| `author_name`    | 文字列            | いいえ       | コミット作成者の名前。 |
+| `encoding`       | 文字列            | いいえ       | エンコードを`base64`に変更します。デフォルトは`text`です。 |
+| `execute_filemode` | ブール値         | いいえ       | `true`の場合、ファイルの`execute`フラグが有効になります。`false`の場合、ファイルの`execute`フラグが無効になります。 |
+| `last_commit_id` | 文字列            | いいえ       | 既知の最新のファイルコミットID。 |
+| `start_branch`   | 文字列            | いいえ       | ブランチの作成元となるベースブランチの名前。 |
+
+成功した場合は、[`200 OK`](rest/troubleshooting.md#status-codes)と以下のレスポンス属性が返されます。
+
+| 属性   | 型   | 説明 |
+|-------------|--------|-------------|
+| `branch`    | 文字列 | ファイルが更新されたブランチの名前。 |
+| `file_path` | 文字列 | 更新されたファイルのパス。 |
 
 ```shell
 curl --request PUT \
@@ -330,7 +371,7 @@ curl --request PUT \
 
 [GitLab Shell](https://gitlab.com/gitlab-org/gitlab-shell/)の戻りコードはブール値であるため、GitLabはエラーを指定できません。
 
-## リポジトリ内の既存のファイルを削除する
+## リポジトリ内の既存のファイルを削除する {#delete-existing-file-in-repository}
 
 1つのファイルを削除します。1つのリクエストで複数のファイルを削除するには、[コミットAPI](commits.md#create-a-commit-with-multiple-files-and-actions)を参照してください。
 
@@ -338,16 +379,20 @@ curl --request PUT \
 DELETE /projects/:id/repository/files/:file_path
 ```
 
-| 属性        | 型           | 必須 | 説明 |
-| ---------------- | -------------- | -------- | ----------- |
-| `branch`         | 文字列         | はい      | 作成する新しいブランチの名前。コミットはこのブランチに追加されます。 |
-| `commit_message` | 文字列         | はい      | コミットメッセージ。 |
-| `file_path`      | 文字列         | はい      | 新しいファイルのURLエンコードされたフルパス。たとえば`lib%2Fclass%2Erb`などです。 |
-| `id`             | 整数または文字列 | はい   | プロジェクトのIDまたは[URLエンコードされたパス](rest/_index.md#namespaced-paths)。 |
-| `author_email`   | 文字列         | いいえ       | コミット作成者のメールアドレス。 |
-| `author_name`    | 文字列         | いいえ       | コミット作成者の名前。 |
-| `last_commit_id` | 文字列         | いいえ       | 既知の最新のファイルコミットID。 |
-| `start_branch`   | 文字列         | いいえ       | 新しいブランチの作成元となるベースブランチの名前。 |
+サポートされている属性:
+
+| 属性        | 型              | 必須 | 説明 |
+|------------------|-------------------|----------|-------------|
+| `branch`         | 文字列            | はい      | 作成するブランチの名前。コミットはこのブランチに追加されます。 |
+| `commit_message` | 文字列            | はい      | コミットメッセージ。 |
+| `file_path`      | 文字列            | はい      | ファイルのURLエンコードされたフルパス。例: `lib%2Fclass%2Erb`。 |
+| `id`             | 整数または文字列 | はい      | プロジェクトのID、または[URLエンコードされたパス](rest/_index.md#namespaced-paths)。 |
+| `author_email`   | 文字列            | いいえ       | コミット作成者のメールアドレス。 |
+| `author_name`    | 文字列            | いいえ       | コミット作成者の名前。 |
+| `last_commit_id` | 文字列            | いいえ       | 既知の最新のファイルコミットID。 |
+| `start_branch`   | 文字列            | いいえ       | ブランチの作成元となるベースブランチの名前。 |
+
+成功すると、[`200 OK`](rest/troubleshooting.md#status-codes)を返します。
 
 ```shell
 curl --request DELETE \

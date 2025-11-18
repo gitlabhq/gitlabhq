@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 RSpec.shared_examples 'updating of user activity' do |paths_to_visit|
-  let(:user) { create(:user, last_activity_on: nil) }
+  let(:user) { create(:user, :with_namespace, last_activity_on: nil) }
 
   before do
     group = create(:group, name: 'group')

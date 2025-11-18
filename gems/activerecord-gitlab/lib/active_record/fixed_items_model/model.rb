@@ -2,6 +2,9 @@
 
 module ActiveRecord
   module FixedItemsModel
+    RecordNotFound = Class.new(StandardError)
+    UnknownAttribute = Class.new(StandardError)
+
     # Includes handy AR-like methods to models that have a fixed set
     # of items that are stored in code instead of the database.
     #
@@ -41,14 +44,16 @@ module ActiveRecord
         end
 
         def find(id)
-          find_by(id: id.to_i)
+          find_by(id: id.to_i) || raise(RecordNotFound, "Couldn't find #{name} with 'id'=#{id}")
         end
 
         def find_by(**conditions)
+          validate_attributes_exist!(conditions.keys)
           all.find { |item| item.matches?(conditions) }
         end
 
         def where(**conditions)
+          validate_attributes_exist!(conditions.keys)
           all.select { |item| item.matches?(conditions) }
         end
 
@@ -75,6 +80,14 @@ module ActiveRecord
           return if unique_ids.size == self::ITEMS.size
 
           raise "Static definition ITEMS has #{self::ITEMS.size - unique_ids.size} duplicated IDs!"
+        end
+
+        def validate_attributes_exist!(attribute_names_to_check)
+          invalid_attributes = attribute_names_to_check.reject { |attr| attribute_names.include?(attr.to_s) }
+
+          return if invalid_attributes.empty?
+
+          raise(UnknownAttribute, "Unknown attribute '#{invalid_attributes.first}' for #{name}")
         end
       end
 

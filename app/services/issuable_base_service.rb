@@ -543,7 +543,12 @@ class IssuableBaseService < ::BaseContainerService
     associations[:total_time_spent] = issuable.total_time_spent if issuable.respond_to?(:total_time_spent)
     associations[:time_change] = issuable.time_change if issuable.respond_to?(:time_change)
     associations[:description] = issuable.description
-    associations[:reviewers] = issuable.reviewers.to_a if issuable.allows_reviewers?
+
+    if issuable.allows_reviewers?
+      associations[:reviewers] = issuable.reviewers.to_a
+      associations[:reviewers_hook_attrs] = issuable.reviewers_hook_attrs
+    end
+
     associations[:severity] = issuable.severity if issuable.supports_severity?
     associations[:target_branch] = issuable.target_branch if issuable.is_a?(MergeRequest)
 

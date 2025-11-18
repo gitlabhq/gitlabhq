@@ -315,7 +315,7 @@ class Repository
   def lazy_ref_exists?(ref_name)
     BatchLoader.for(ref_name).batch(key: self) do |ref_names, loader, _args|
       # Make a single Gitaly call to check all refs at once
-      existing_refs = list_refs(ref_names).to_h { |r| [r.name, true] }
+      existing_refs = list_refs(ref_names).to_h { |r| [Gitlab::Git.ref_name(r.name, types: nil), true] }
 
       # Load results for each requested ref
       ref_names.each do |ref|
@@ -425,10 +425,6 @@ class Repository
 
   def expire_all_method_caches
     expire_method_caches(CACHED_METHODS)
-  end
-
-  def expire_avatar_cache
-    expire_method_caches(%i[avatar])
   end
 
   # Refreshes the method caches of this repository.
@@ -657,10 +653,10 @@ class Repository
   end
 
   delegate :branch_names, to: :raw_repository
-  cache_method_as_redis_set :branch_names, fallback: []
+  cache_method_as_redis_set :branch_names, fallback: [], avoid_cache: -> { Feature.enabled?(:avoid_branch_names_cache, project) }
 
   delegate :tag_names, to: :raw_repository
-  cache_method_as_redis_set :tag_names, fallback: []
+  cache_method_as_redis_set :tag_names, fallback: [], avoid_cache: -> { Feature.enabled?(:avoid_tag_names_cache, project) }
 
   delegate :branch_count, :tag_count, :has_visible_content?, to: :raw_repository
   cache_method :branch_count, fallback: 0
@@ -1147,10 +1143,13 @@ class Repository
     # We need to use RE2 to match Gitaly's regexp engine
     regexp_string = RE2::Regexp.escape(path)
 
-    anything = '.*?'
-    anything_but_not_slash = '([^\/])*?'
-    regexp_string.gsub!('\*\*', anything)
-    regexp_string.gsub!('\*', anything_but_not_slash)
+    any_directories_or_root = '(.*?\/)?'
+    any_characters = '.*?'
+    any_characters_except_slash = '([^\/])*?'
+
+    regexp_string.gsub!('\*\*\/', any_directories_or_root)
+    regexp_string.gsub!('\*\*', any_characters)
+    regexp_string.gsub!('\*', any_characters_except_slash)
 
     raw_repository.search_files_by_regexp("^#{regexp_string}$", ref)
   end
@@ -1267,12 +1266,6 @@ class Repository
     raw.create_from_bundle(bundle_path).tap do |result|
       after_create if result
     end
-  end
-
-  def blobs_metadata(paths, ref = 'HEAD')
-    references = Array.wrap(paths).map { |path| [ref, path] }
-
-    Gitlab::Git::Blob.batch_metadata(raw, references).map { |raw_blob| Blob.decorate(raw_blob) }
   end
 
   def project

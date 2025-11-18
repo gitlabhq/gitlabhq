@@ -6,6 +6,7 @@ module MergeRequests
       return merge_request unless current_user&.can?(:set_merge_request_metadata, merge_request)
 
       old_reviewers = merge_request.reviewers.to_a
+      old_reviewers_hook_attrs = merge_request.reviewers_hook_attrs
       old_ids = old_reviewers.map(&:id)
       new_ids = new_user_ids(merge_request, update_attrs[:reviewer_ids], :reviewers)
 
@@ -16,7 +17,7 @@ module MergeRequests
       merge_request.update!(update_attrs.merge(reviewer_ids: new_ids))
       handle_reviewers_change(merge_request, old_reviewers)
       resolve_todos_for(merge_request)
-      execute_reviewers_hooks(merge_request, old_reviewers)
+      execute_reviewers_hooks(merge_request, old_reviewers_hook_attrs)
 
       merge_request
     end
@@ -31,11 +32,13 @@ module MergeRequests
       @attrs ||= { updated_by: current_user, reviewer_ids: reviewer_ids }
     end
 
-    def execute_reviewers_hooks(merge_request, old_reviewers)
+    def execute_reviewers_hooks(merge_request, old_reviewers_hook_attrs)
       execute_hooks(
         merge_request,
         'update',
-        old_associations: { reviewers: old_reviewers }
+        old_associations: {
+          reviewers_hook_attrs: old_reviewers_hook_attrs
+        }
       )
     end
   end

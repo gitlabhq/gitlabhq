@@ -14,7 +14,7 @@ title: Spamcheck anti-spam service
 
 {{< alert type="warning" >}}
 
-Spamcheck is available to all tiers, but only on instances using GitLab Enterprise Edition (EE). For [licensing reasons](https://gitlab.com/gitlab-org/omnibus-gitlab/-/issues/6259#note_726605397), it is not included in the GitLab Community Edition (CE) package. You can [migrate from CE to EE](../../update/package/convert_to_ee.md).
+Spamcheck is available to all tiers, but only on instances using GitLab Enterprise Edition (EE). For [licensing reasons](https://gitlab.com/gitlab-org/omnibus-gitlab/-/issues/6259#note_726605397), it is not included in the GitLab Community Edition (CE) package. You can [migrate from CE to EE](../../update/convert_to_ee/package.md).
 
 {{< /alert >}}
 
@@ -47,7 +47,7 @@ Spamcheck is only available for package-based installations:
 
 ## Configure GitLab to use Spamcheck
 
-1. On the left sidebar, at the bottom, select **Admin**.
+1. On the left sidebar, at the bottom, select **Admin**. If you've [turned on the new navigation](../../user/interface_redesign.md#turn-new-navigation-on-or-off), in the upper-right corner, select **Admin**.
 1. Select **Settings** > **Reporting**.
 1. Expand **Spam and Anti-bot Protection**.
 1. Update the Spam Check settings:

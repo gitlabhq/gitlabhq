@@ -3,6 +3,7 @@ import { nextTick } from 'vue';
 import { mountExtended } from 'helpers/vue_test_utils_helper';
 import DeleteModal from '~/projects/components/shared/delete_modal.vue';
 import { sprintf } from '~/locale';
+import HelpPageLink from '~/vue_shared/components/help_page_link/help_page_link.vue';
 import { stubComponent } from 'helpers/stub_component';
 
 jest.mock('lodash/uniqueId', () => () => 'fake-id');
@@ -14,12 +15,14 @@ describe('DeleteModal', () => {
     visible: false,
     confirmPhrase: 'foo',
     isFork: false,
-    issuesCount: 1,
-    mergeRequestsCount: 2,
-    forksCount: 3,
-    starsCount: 4,
+    issuesCount: 1000,
+    mergeRequestsCount: 1,
+    forksCount: 1000000,
+    starsCount: 100,
     confirmLoading: false,
     nameWithNamespace: 'Foo / Bar',
+    markedForDeletion: false,
+    permanentDeletionDate: '2025-11-28',
   };
 
   const createComponent = (propsData) => {
@@ -31,15 +34,13 @@ describe('DeleteModal', () => {
       stubs: {
         GlModal: stubComponent(GlModal),
       },
-      scopedSlots: {
-        'modal-footer': '<div data-testid="modal-footer-slot"></div>',
-      },
     });
   };
 
   const findGlModal = () => wrapper.findComponent(GlModal);
   const alertText = () => wrapper.findComponent(GlAlert).text();
   const findFormInput = () => wrapper.findComponent(GlFormInput);
+  const findRestoreMessage = () => wrapper.findByTestId('restore-message');
 
   it('renders modal with correct props', () => {
     createComponent();
@@ -65,10 +66,10 @@ describe('DeleteModal', () => {
     it('displays resource counts', () => {
       createComponent();
 
-      expect(alertText()).toContain(`${defaultPropsData.issuesCount} issue`);
-      expect(alertText()).toContain(`${defaultPropsData.mergeRequestsCount} merge requests`);
-      expect(alertText()).toContain(`${defaultPropsData.forksCount} forks`);
-      expect(alertText()).toContain(`${defaultPropsData.starsCount} stars`);
+      expect(alertText()).toContain('1k issues');
+      expect(alertText()).toContain('1 merge request');
+      expect(alertText()).toContain('1m forks');
+      expect(alertText()).toContain('100 stars');
     });
   });
 
@@ -81,10 +82,7 @@ describe('DeleteModal', () => {
         starsCount: null,
       });
 
-      expect(alertText()).not.toContain('issue');
-      expect(alertText()).not.toContain('merge requests');
-      expect(alertText()).not.toContain('forks');
-      expect(alertText()).not.toContain('stars');
+      expect(wrapper.findByTestId('project-delete-modal-stats').exists()).toBe(false);
     });
   });
 
@@ -164,10 +162,31 @@ describe('DeleteModal', () => {
     expect(wrapper.emitted('change')).toEqual([[true]]);
   });
 
-  it('renders `modal-footer` slot', () => {
-    createComponent();
+  describe('when markedForDeletion prop is false', () => {
+    it('renders restore message', () => {
+      createComponent();
 
-    expect(wrapper.findByTestId('modal-footer-slot').exists()).toBe(true);
+      const helpPageLinkComponent = wrapper.findComponent(HelpPageLink);
+
+      expect(findRestoreMessage().text()).toContain(
+        `This project can be restored until ${defaultPropsData.permanentDeletionDate}.`,
+      );
+      expect(helpPageLinkComponent.props()).toEqual({
+        href: 'user/project/working_with_projects',
+        anchor: 'restore-a-project',
+      });
+      expect(helpPageLinkComponent.text()).toBe('Learn more');
+    });
+  });
+
+  describe('when markedForDeletion prop is true', () => {
+    it('does not render restore message', () => {
+      createComponent({
+        markedForDeletion: true,
+      });
+
+      expect(findRestoreMessage().exists()).toBe(false);
+    });
   });
 
   it('renders aria-label', () => {

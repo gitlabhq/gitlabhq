@@ -235,7 +235,7 @@ RSpec.describe Banzai::Pipeline::PlainMarkdownPipeline, feature_category: :markd
       end
 
       def error_message(filename, reason)
-        %(Error including '<a href="#{filename}">#{filename}</a>' : #{reason})
+        %(Error including '<a href="#{filename}">#{filename}</a>': #{reason})
       end
     end
   end

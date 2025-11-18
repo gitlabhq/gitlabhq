@@ -49,4 +49,8 @@ export const PIPELINE_SOURCES = [
     text: s__('PipelineSource|Parent Pipeline'),
     value: 'parent_pipeline',
   },
+  {
+    text: s__('PipelineSource|Agent Session'),
+    value: 'duo_workflow',
+  },
 ];

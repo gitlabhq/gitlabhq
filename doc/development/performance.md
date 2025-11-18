@@ -25,10 +25,9 @@ This document describes various guidelines to ensure good and consistent perform
   - [Performance guidelines and monitoring](fe_guide/performance.md)
   - [Browser performance testing guidelines](../ci/testing/browser_performance_testing.md)
   - [`gdk measure` and `gdk measure-workflow`](https://gitlab-org.gitlab.io/gitlab-development-kit/gdk_commands/#measure-performance)
-- QA:
+- E2E:
   - [Load performance testing](../ci/testing/load_performance_testing.md)
   - [GitLab Performance Tool project](https://gitlab.com/gitlab-org/quality/performance)
-  - [Review apps performance metrics](testing_guide/review_apps.md#performance-metrics)
 - Monitoring & Overview:
   - [GitLab performance monitoring](../administration/monitoring/performance/_index.md)
   - [Development department performance indicators](https://handbook.gitlab.com/handbook/engineering/development/performance-indicators/)

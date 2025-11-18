@@ -378,7 +378,7 @@ export default {
   secret_detection_comparison_path: '/secret_detection_comparison_path',
   gitpod_enabled: true,
   show_gitpod_button: true,
-  gitpod_url: 'http://gitpod.localhost',
+  gitpod_url: 'http://ona.localhost',
   user_preferences_gitpod_path: '/-/profile/preferences#user_gitpod_enabled',
   user_profile_enable_gitpod_path: '/-/user_settings/profile?user%5Bgitpod_enabled%5D=true',
 };
@@ -431,6 +431,7 @@ export const mockStore = {
   targetProjectFullPath: '/group2/project2',
   sourceBranch: 'source-branch',
   sourceBranchLink: 'source-branch-link',
+  mergeRequestPath: '/gitlab-org/gitlab/-/merge_requests/1',
   deployments: [
     {
       id: 0,

@@ -43,7 +43,7 @@ In this section, you'll use the GitLab pipeline integration to create a secret i
        AGENT_KUBECONTEXT: my-group/optional-subgroup/my-repository:testing
      before_script:
        # The available agents are automatically injected into the runner environment
-       # We need to select the agent to use
+       # You need to select the agent to use
        - kubectl config use-context $AGENT_KUBECONTEXT
      script:
        - kubectl delete secret gitlab-registry-auth -n flux-system --ignore-not-found
@@ -60,7 +60,7 @@ In this section, you'll use the GitLab pipeline integration to create a secret i
        AGENT_KUBECONTEXT: my-group/optional-subgroup/my-repository:testing
      before_script:
        # The available agents are automatically injected into the runner environment
-       # We need to select the agent to use
+       # You need to select the agent to use
        - kubectl config use-context $AGENT_KUBECONTEXT
      script:
        - kubectl delete secret -n flux-system gitlab-registry-auth
@@ -102,7 +102,7 @@ In this section, you'll build a simple Kubernetes manifest as an OCI artifact, t
     --export >> clusters/testing/nginx.yaml
    ```
 
-1. We'll deploy NGINX as an example. Add the following YAML to `clusters/applications/nginx/nginx.yaml`:
+1. Deploy NGINX as an example. Add the following YAML to `clusters/applications/nginx/nginx.yaml`:
 
    ```yaml
     apiVersion: apps/v1
@@ -162,7 +162,7 @@ In this section, you'll build a simple Kubernetes manifest as an OCI artifact, t
                 agent: $AGENT_KUBECONTEXT
                 dashboard:
                   namespace: default
-                  flux_resource_path: kustomize.toolkit.fluxcd.io/v1/namespaces/flux-system/kustomizations/nginx-example  # We will deploy this resource in the next step
+                  flux_resource_path: kustomize.toolkit.fluxcd.io/v1/namespaces/flux-system/kustomizations/nginx-example  # You will deploy this resource in the next step
         image:
             name: "fluxcd/flux-cli:v2.4.0"
             entrypoint: [""]
@@ -204,7 +204,7 @@ By default, this access uses the deployed agent's service account to run command
 This access can be restricted either to a static service account identity or by using the CI/CD job as an identity in the cluster.
 Finally, regular Kubernetes RBAC can be used to limit the access of the CI/CD jobs in the cluster.
 
-In this section, we'll restrict CI/CD access by adding an identity to every CI/CD job, and impersonating the job in the cluster.
+This section shows how to restrict CI/CD access by adding an identity to every CI/CD job, and impersonating the job in the cluster.
 
 1. To configure the CI/CD job impersonation, edit the `.gitlab/agents/testing/config.yaml` file, and add the following snippet to it (replacing `path/to/project`):
 
@@ -216,7 +216,7 @@ In this section, we'll restrict CI/CD access by adding an identity to every CI/C
               ci_job: {}
    ```
 
-1. As the CI/CD jobs don't have any cluster bindings yet, we can not run any Kubernetes commands from GitLab CI/CD.
+1. Because the CI/CD jobs don't have any cluster bindings yet, you can't run any Kubernetes commands from GitLab CI/CD.
    Let's enable CI/CD jobs to create `Secret` objects in the `flux-system` namespace.
    Create the `clusters/testing/gitlab-ci-job-secret-write.yaml` file with the following content:
 
@@ -279,7 +279,7 @@ For more information about CI/CD access, see [Using GitLab CI/CD with a Kubernet
 
 ## Clean up resources
 
-To finish, let's remove the deployed resources and delete the secret we used to access the container registry:
+To finish, remove the deployed resources and delete the secret you used to access the container registry:
 
 1. Delete the `clusters/testing/nginx.yaml` file.
    Flux will take care of removing the related resources from the cluster.

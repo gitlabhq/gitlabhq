@@ -39,15 +39,7 @@ FactoryBot.define do
         )
       end
 
-      if updated_options
-        # TODO: Remove this when FF `stop_writing_builds_metadata` is removed.
-        # https://gitlab.com/gitlab-org/gitlab/-/issues/552065
-        if Feature.disabled?(:stop_writing_builds_metadata, bridge.project)
-          bridge.metadata.write_attribute(:config_options, updated_options)
-        end
-
-        Ci::JobFactoryHelpers.mutate_temp_job_definition(bridge, options: updated_options)
-      end
+      Ci::JobFactoryHelpers.mutate_temp_job_definition(bridge, options: updated_options) if updated_options
     end
 
     trait :retried do

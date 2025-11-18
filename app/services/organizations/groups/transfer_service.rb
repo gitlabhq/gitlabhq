@@ -4,35 +4,62 @@ module Organizations
   module Groups
     class TransferService
       include Gitlab::Utils::StrongMemoize
+      include Concerns::TransferUsers
 
       TransferError = Class.new(StandardError)
       BATCH_SIZE = 50
 
-      attr_accessor :error
-
       def initialize(group:, new_organization:, current_user:)
         @group = group
         @new_organization = new_organization
-        @old_organization = @group.organization
         @current_user = current_user
+      end
+
+      def async_execute
+        return ServiceResponse.error(message: error) unless transfer_allowed?
+
+        Organizations::Groups::TransferWorker.perform_async(
+          {
+            'group_id' => group.id,
+            'organization_id' => new_organization.id,
+            'current_user_id' => current_user.id
+          }
+        )
+
+        ServiceResponse.success(
+          message: s_("TransferOrganization|Group transfer to organization initiated")
+        )
       end
 
       def execute
         return ServiceResponse.error(message: error) unless transfer_allowed?
 
+        # Find or create bot users before transaction to avoid exclusive lease errors.
+        # If the transaction is rolled back, new bots will still exist
+        # but this does not affect data integrity
+        new_organization_bots
+
         Group.transaction do
-          update_namespaces_and_projects
+          transfer_namespaces_and_projects
+          transfer_users
         end
 
         log_transfer_success
         ServiceResponse.success
+      rescue StandardError => e
+        log_transfer_error(e.message)
+        ServiceResponse.error(message: e.message)
       end
 
       private
 
-      attr_reader :group, :new_organization, :old_organization, :current_user
+      attr_reader :group, :new_organization, :current_user
 
-      def update_namespaces_and_projects
+      def users
+        group.users_with_descendants
+      end
+
+      def transfer_namespaces_and_projects
         # `skope: Namespace` ensures we get both Group and ProjectNamespace types
         descendant_ids = group.self_and_descendant_ids(skope: Namespace)
 
@@ -49,17 +76,16 @@ module Organizations
       end
 
       def transfer_allowed?
-        return true if transfer_validator.can_transfer?
+        transfer_validator.can_transfer?
+      end
 
+      def error
         error_message = transfer_validator.error_message
 
-        self.error = format(
+        format(
           s_("TransferOrganization|Group organization transfer failed: %{error_message}"),
           error_message: error_message
         )
-
-        log_transfer_error(error_message)
-        false
       end
 
       def transfer_validator

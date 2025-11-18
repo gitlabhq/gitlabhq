@@ -10,7 +10,7 @@ export default {
   inject: ['isIconOnly'],
   computed: {
     icon() {
-      return 'sidebar';
+      return this.isIconOnly ? 'collapse-right' : 'collapse-left';
     },
     text() {
       return this.isIconOnly
@@ -35,7 +35,9 @@ export default {
     ]"
     :button-text-classes="isIconOnly ? 'gl-hidden' : null"
     :icon="icon"
+    :aria-label="text"
     category="tertiary"
+    data-testid="super-sidebar-collapse-button"
     @click="emitToggle"
     >{{ text }}</gl-button
   >

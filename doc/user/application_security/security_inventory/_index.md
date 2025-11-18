@@ -41,7 +41,7 @@ The security inventory shows:
   - Infrastructure-as-code (IaC) scanning
 - The number of vulnerabilities in each group or project, sorted by severity level.
 
-This feature is in beta. Track the development of the security inventory in [epic 16484](https://gitlab.com/groups/gitlab-org/-/epics/16484). Share [your feedback](https://gitlab.com/gitlab-org/gitlab/-/issues/553062) with us as we continue to develop this feature. The security inventory is enabled by default.
+This feature is in beta. Track the development of the security inventory in [epic 16484](https://gitlab.com/groups/gitlab-org/-/epics/16484). Share [your feedback](https://gitlab.com/gitlab-org/gitlab/-/issues/553062) as development continues on this feature. The security inventory is enabled by default.
 
 ## View the security inventory
 
@@ -51,7 +51,7 @@ Prerequisites:
 
 To view the security inventory:
 
-1. On the left sidebar, select **Search or go to** and find your group.
+1. On the left sidebar, select **Search or go to** and find your group. If you've [turned on the new navigation](../../interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
 1. Select **Secure** > **Security inventory**.
 1. Complete one of the following actions:
    - To view a group's subgroups, projects, and security assets, select the group.
@@ -97,4 +97,4 @@ When working with the security inventory, you might encounter the following issu
 
 ### Security inventory menu item missing
 
-Some users do not have the required permissions to access the **Security inventory** menu item. The menu item only displays for groups when the authenticated user has the Developer role or higher.
+Some users do not have the required permissions to access the **Security inventory** menu item. The menu item only displays for groups when the authenticated user has at least the Developer role.

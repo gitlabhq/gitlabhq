@@ -39,47 +39,56 @@ RSpec.describe Import::SourceUserPlaceholderReference, feature_category: :import
   end
 
   describe 'scopes' do
+    let_it_be(:source_user_1) { create(:import_source_user) }
+    let_it_be(:source_user_2) { create(:import_source_user) }
+
+    let_it_be(:issue_references_1) do
+      create_list(
+        :import_source_user_placeholder_reference,
+        2,
+        source_user: source_user_1,
+        model: Issue.to_s,
+        user_reference_column: 'author_id'
+      )
+    end
+
+    let_it_be(:issue_reference_2) do
+      create(
+        :import_source_user_placeholder_reference,
+        source_user: source_user_2,
+        model: Issue.to_s,
+        user_reference_column: 'author_id'
+      )
+    end
+
+    let_it_be(:note_author_id_reference_1) do
+      create(
+        :import_source_user_placeholder_reference,
+        source_user: source_user_1,
+        model: Note.to_s,
+        user_reference_column: 'author_id'
+      )
+    end
+
+    let_it_be(:note_updated_by_id_reference_1) do
+      create(
+        :import_source_user_placeholder_reference,
+        source_user: source_user_1,
+        model: Note.to_s,
+        user_reference_column: 'updated_by_id'
+      )
+    end
+
+    let_it_be(:merge_request_reference_2) do
+      create(
+        :import_source_user_placeholder_reference,
+        source_user: source_user_2,
+        model: MergeRequest.to_s,
+        user_reference_column: 'author_id'
+      )
+    end
+
     describe '.model_groups_for_source_user' do
-      let_it_be(:source_user_1) { create(:import_source_user) }
-      let_it_be(:source_user_2) { create(:import_source_user) }
-
-      let_it_be(:issue_references_1) do
-        create_list(
-          :import_source_user_placeholder_reference,
-          2,
-          source_user: source_user_1,
-          model: Issue.to_s,
-          user_reference_column: 'author_id'
-        )
-      end
-
-      let_it_be(:note_author_id_reference_1) do
-        create(
-          :import_source_user_placeholder_reference,
-          source_user: source_user_1,
-          model: Note.to_s,
-          user_reference_column: 'author_id'
-        )
-      end
-
-      let_it_be(:note_updated_by_id_reference_1) do
-        create(
-          :import_source_user_placeholder_reference,
-          source_user: source_user_1,
-          model: Note.to_s,
-          user_reference_column: 'updated_by_id'
-        )
-      end
-
-      let_it_be(:merge_request_reference_2) do
-        create(
-          :import_source_user_placeholder_reference,
-          source_user: source_user_2,
-          model: MergeRequest.to_s,
-          user_reference_column: 'author_id'
-        )
-      end
-
       it 'returns groups of models and user reference columns for a source user' do
         mapped_reference_groups = described_class
           .model_groups_for_source_user(source_user_1)
@@ -88,6 +97,15 @@ RSpec.describe Import::SourceUserPlaceholderReference, feature_category: :import
         expect(mapped_reference_groups).to match_array(
           [%w[Note author_id], %w[Note updated_by_id], %w[Issue author_id]]
         )
+      end
+    end
+
+    describe '.for_source_user' do
+      it 'returns references associated to source user' do
+        references = described_class.for_source_user(source_user_2)
+
+        expected_references = [issue_reference_2, merge_request_reference_2]
+        expect(references).to match_array(expected_references)
       end
     end
   end

@@ -4,12 +4,9 @@ module Packages
   module Composer
     class PackageFinder < ::Packages::GroupOrProjectPackageFinder
       extend ::Gitlab::Utils::Override
-      include Gitlab::Utils::StrongMemoize
 
       def execute
-        return packages if packages_composer_read_from_detached_table?
-
-        packages.preload_composer
+        packages
       end
 
       private
@@ -31,17 +28,8 @@ module Packages
 
       override :packages_class
       def packages_class
-        if packages_composer_read_from_detached_table?
-          ::Packages::Composer::Package
-        else
-          ::Packages::Composer::Sti::Package
-        end
+        ::Packages::Composer::Package
       end
-
-      def packages_composer_read_from_detached_table?
-        Feature.enabled?(:packages_composer_read_from_detached_table, Feature.current_request)
-      end
-      strong_memoize_attr :packages_composer_read_from_detached_table?
     end
   end
 end

@@ -12,7 +12,7 @@ title: Helm API
 
 {{< /details >}}
 
-This is the API documentation for [Helm](../../user/packages/helm_repository/_index.md).
+Use this API to interact with [Helm package clients](../../user/packages/helm_repository/_index.md).
 
 {{< alert type="warning" >}}
 
@@ -21,9 +21,6 @@ and [`helm-push`](https://github.com/chartmuseum/helm-push/#readme),
 and is generally not meant for manual consumption.
 
 {{< /alert >}}
-
-For instructions on how to upload and install Helm packages from the GitLab
-package registry, see the [Helm registry documentation](../../user/packages/helm_repository/_index.md).
 
 {{< alert type="note" >}}
 

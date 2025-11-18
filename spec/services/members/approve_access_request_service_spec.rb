@@ -146,8 +146,14 @@ RSpec.describe Members::ApproveAccessRequestService, feature_category: :groups_a
         end
 
         context 'when assigning planner access level' do
-          it_behaves_like 'a service approving an access request' do
+          it_behaves_like 'a service raising Gitlab::Access::AccessDeniedError' do
             let(:access_level_to_assign) { Gitlab::Access::PLANNER }
+          end
+        end
+
+        context 'when assigning developer access level' do
+          it_behaves_like 'a service approving an access request' do
+            let(:access_level_to_assign) { Gitlab::Access::DEVELOPER }
           end
         end
       end

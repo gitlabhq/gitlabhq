@@ -64,7 +64,7 @@ RSpec.describe Repositories::ChangelogService, feature_category: :source_code_ma
     let(:commit_to_changelog) { true }
 
     it 'generates and commits a changelog section' do
-      allow(MergeRequestDiffCommit)
+      allow(MergeRequest::CommitsMetadata)
         .to receive(:oldest_merge_request_id_per_commit)
         .with(project.id, [commit2.id, commit1.id])
         .and_return(
@@ -79,7 +79,7 @@ RSpec.describe Repositories::ChangelogService, feature_category: :source_code_ma
       recorder = ActiveRecord::QueryRecorder.new { service.execute(commit_to_changelog: commit_to_changelog) }
       changelog = project.repository.blob_at('master', 'CHANGELOG.md')&.data
 
-      expect(recorder.count).to eq(16)
+      expect(recorder.count).to eq(15)
       expect(changelog).to include('Title 1', 'Title 2')
     end
 
@@ -133,7 +133,7 @@ RSpec.describe Repositories::ChangelogService, feature_category: :source_code_ma
       let(:commit_to_changelog) { false }
 
       it 'generates changelog section' do
-        allow(MergeRequestDiffCommit)
+        allow(MergeRequest::CommitsMetadata)
           .to receive(:oldest_merge_request_id_per_commit)
           .with(project.id, [commit2.id, commit1.id])
           .and_return(
@@ -151,20 +151,34 @@ RSpec.describe Repositories::ChangelogService, feature_category: :source_code_ma
       end
     end
 
-    it 'avoids N+1 queries', :request_store do
-      RequestStore.clear!
+    context 'with queries count check' do
+      shared_examples 'request without extra queries' do
+        it 'avoids N+1 queries', :request_store do
+          RequestStore.clear!
 
-      request = ->(to) do
-        described_class
-          .new(project, creator, version: '1.0.0', from: sha1, to: to)
-          .execute(commit_to_changelog: false)
+          request = ->(to) do
+            described_class
+              .new(project, creator, version: '1.0.0', from: sha1, to: to)
+              .execute(commit_to_changelog: false)
+          end
+
+          control = ActiveRecord::QueryRecorder.new { request.call(sha2) }
+
+          RequestStore.clear!
+
+          expect { request.call(sha3) }.not_to exceed_query_limit(control)
+        end
       end
 
-      control = ActiveRecord::QueryRecorder.new { request.call(sha2) }
+      it_behaves_like 'request without extra queries'
 
-      RequestStore.clear!
+      context 'when feature flag merge_request_diff_commits_dedup is disabled' do
+        before do
+          stub_feature_flags(merge_request_diff_commits_dedup: false)
+        end
 
-      expect { request.call(sha3) }.not_to exceed_query_limit(control)
+        it_behaves_like 'request without extra queries'
+      end
     end
 
     context 'when one of commits does not exist' do

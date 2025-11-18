@@ -2,6 +2,7 @@
 stage: Solutions Architecture
 group: Solutions Architecture
 info: This page is owned by the Solutions Architecture team.
+description: Step-by-step guide for deploying GitLab Duo Self-Hosted with a self-hosted LLM on Ollama, covering AWS and Google Cloud setups, AI Gateway integration, and feature configuration.
 title: 'GitLab Duo Self-Hosted: Complete AWS/Google Cloud Deployment Guide with Ollama Integration'
 ---
 
@@ -326,7 +327,7 @@ These settings establish the connection between your GitLab instance and the sel
 ## Verification
 
 1. Create a test group in GitLab
-1. The GitLab Duo Chat icon should appear in the top right corner
+1. The GitLab Duo Chat icon should appear in the upper-right corner
 1. This indicates successful integration between GitLab and the AI Gateway
 
 ![Talk in Duo Chat](img/self_hosted_model/self-hosted-model-talk-in-duochat_v17_10.png)

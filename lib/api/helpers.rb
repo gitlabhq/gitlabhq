@@ -113,7 +113,8 @@ module API
     def set_current_organization(user: current_user)
       ::Current.organization = Gitlab::Current::Organization.new(
         params: {},
-        user: user
+        user: user,
+        headers: request.headers
       ).organization
     end
 
@@ -326,7 +327,7 @@ module API
       ::IssuesFinder.new(
         current_user,
         project_id: project.id,
-        issue_types: WorkItems::Type.allowed_types_for_issues
+        issue_types: ::WorkItems::TypesFilter.allowed_types_for_issues
       ).find_by!(iid: iid)
     end
     # rubocop: enable CodeReuse/ActiveRecord
@@ -659,8 +660,13 @@ module API
 
     def handle_api_exception(exception)
       if report_exception?(exception)
+        context_user = begin
+          current_user
+        rescue StandardError
+          nil
+        end
         define_params_for_grape_middleware
-        Gitlab::ApplicationContext.push(user: current_user, remote_ip: request.ip)
+        Gitlab::ApplicationContext.push(user: context_user, remote_ip: request.ip)
         Gitlab::ErrorTracking.track_exception(exception)
       end
 
@@ -871,16 +877,18 @@ module API
       return unless token_info
       return unless TOKEN_SCOPES_TO_AUDIT.intersect?(Array.wrap(token_info[:token_scopes]))
 
+      request_author = Gitlab::Auth::Identity.invert_composite_identity(user)
       context = {
         name: 'api_request_access_with_scope',
-        author: user,
-        scope: user,
+        author: request_author,
+        scope: request_author,
         target: ::Gitlab::Audit::NullTarget.new,
         message: "API request with token scopes #{token_info[:token_scopes]} - #{request.request_method} #{request.path}",
         additional_details: {
           request: request.path,
           method: request.request_method,
-          token_scopes: token_info[:token_scopes]
+          token_scopes: token_info[:token_scopes],
+          scoped_user_id: user.id
         }
       }
 
@@ -1028,12 +1036,11 @@ module API
     end
 
     def url_with_project_id(project)
-      new_params = params.merge(id: project.id.to_s).transform_values { |v| v.is_a?(String) ? CGI.escape(v) : v }
-      new_path = GrapePathHelpers::DecoratedRoute.new(route).path_segments_with_values(new_params).join('/')
+      path_values = params.merge(id: project.id).transform_values { |v| v.is_a?(String) ? CGI.escape(v) : v }
+      path = GrapePathHelpers::DecoratedRoute.new(route).path_segments_with_values(path_values).join('/')
+      extension = File.extname(request.path_info)
 
-      Rack::Request.new(env).tap do |r|
-        r.path_info = "/#{new_path}"
-      end.url
+      Rack::Request.new(env).tap { |r| r.path_info = "/#{path}#{extension}" }.url
     end
 
     def handle_job_token_failure!(project)

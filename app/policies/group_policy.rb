@@ -128,14 +128,10 @@ class GroupPolicy < Namespaces::GroupProjectNamespaceSharedPolicy
     Feature.enabled?(:allow_guest_plus_roles_to_pull_packages, @subject.root_ancestor)
   end
 
-  condition(:archive_group_enabled, scope: :subject) do
-    Feature.enabled?(:archive_group, @subject.root_ancestor)
-  end
-
   condition(:archived, scope: :subject) { @subject.self_or_ancestors_archived? }
   condition(:group_scheduled_for_deletion, scope: :subject) { @subject.scheduled_for_deletion_in_hierarchy_chain? }
 
-  rule { archived & archive_group_enabled }.policy do
+  rule { archived }.policy do
     prevent :activate_group_member
     prevent :add_cluster
     prevent :admin_achievement
@@ -203,7 +199,6 @@ class GroupPolicy < Namespaces::GroupProjectNamespaceSharedPolicy
     prevent :create_incident
     prevent :admin_software_license_policy
     prevent :create_test_case
-    prevent :admin_ai_catalog_item
     prevent :set_issue_created_at
     prevent :set_issue_updated_at
     prevent :set_epic_created_at
@@ -246,7 +241,7 @@ class GroupPolicy < Namespaces::GroupProjectNamespaceSharedPolicy
     prevent :admin_compliance_pipeline_configuration
   end
 
-  rule { archived & archive_group_enabled & ~group_scheduled_for_deletion }.policy do
+  rule { archived & ~group_scheduled_for_deletion }.policy do
     prevent :delete_custom_emoji
     prevent :delete_o11y_settings
     prevent :destroy_issue
@@ -287,6 +282,7 @@ class GroupPolicy < Namespaces::GroupProjectNamespaceSharedPolicy
     enable :admin_issue_board_list
     enable :admin_issue
     enable :admin_work_item
+    enable :destroy_issue
     enable :update_issue
     enable :read_confidential_issues
     enable :read_crm_organization

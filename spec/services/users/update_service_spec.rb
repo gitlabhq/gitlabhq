@@ -69,6 +69,32 @@ RSpec.describe Users::UpdateService, feature_category: :user_profile do
       expect(user.job_title).to eq('Backend Engineer')
     end
 
+    context 'Authn::EmailOtpEnrollment updater', :freeze_time do
+      it 'calls Authn::EmailOtpEnrollment updater' do
+        allow(user).to receive(:set_email_otp_required_after_based_on_restrictions).and_call_original
+
+        update_user(user, { email_otp_required_after: 30.days.ago })
+        user.reload
+        expect(user).to have_received(:set_email_otp_required_after_based_on_restrictions).with(no_args)
+        expect(user.email_otp_required_after).to eq(30.days.ago)
+      end
+
+      it 'calls Authn::EmailOtpEnrollment updater after setting the attribute' do
+        # Create pre-conditions where email_otp_required_after is not
+        # nil and may not be set to nil.
+        stub_application_setting(require_minimum_email_based_otp_for_users_with_passwords: true)
+        user.update!(email_otp_required_after: 30.days.ago)
+
+        # UpdateService will first set the attribute to nil as
+        # requested, followed by setting it back to 30 days ago during
+        # set_email_otp_required_after_based_on_restrictions.
+        update_user(user, { email_otp_required_after: nil })
+
+        user.reload
+        expect(user.email_otp_required_after).to eq(30.days.ago)
+      end
+    end
+
     context 'updating email' do
       context 'if email was changed' do
         subject do

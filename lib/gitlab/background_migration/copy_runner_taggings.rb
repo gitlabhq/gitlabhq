@@ -4,7 +4,7 @@ module Gitlab
   module BackgroundMigration
     class CopyRunnerTaggings < BatchedMigrationJob
       operation_name :copy_runner_taggings
-      feature_category :runner
+      feature_category :runner_core
 
       def perform
         each_sub_batch do |sub_batch|

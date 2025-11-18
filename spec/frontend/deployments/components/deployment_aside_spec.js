@@ -21,6 +21,8 @@ const {
 } = mockEnvironmentFixture;
 const { bindInternalEventDocument } = useMockInternalEventsTracking();
 
+jest.mock('~/panel_breakpoint_instance');
+
 describe('~/deployments/components/deployment_aside.vue', () => {
   let wrapper;
 
@@ -43,6 +45,10 @@ describe('~/deployments/components/deployment_aside.vue', () => {
       },
     });
   };
+
+  beforeEach(() => {
+    PanelBreakpointInstance.isDesktop.mockReturnValue(true);
+  });
 
   describe('loading', () => {
     it('hides everything', () => {
@@ -425,7 +431,11 @@ describe('~/deployments/components/deployment_aside.vue', () => {
   });
 
   describe('on window resize after transition from mobile to desktop', () => {
+    let triggerResize;
     beforeEach(() => {
+      PanelBreakpointInstance.addResizeListener.mockImplementation((callback) => {
+        triggerResize = callback;
+      });
       jest.spyOn(PanelBreakpointInstance, 'isDesktop').mockReturnValue(false);
 
       createComponent();
@@ -437,7 +447,7 @@ describe('~/deployments/components/deployment_aside.vue', () => {
       expect(sidebarItems.exists()).toBe(false);
 
       jest.spyOn(PanelBreakpointInstance, 'isDesktop').mockReturnValue(true);
-      window.dispatchEvent(new Event('resize'));
+      triggerResize();
       await nextTick();
 
       sidebarItems = findSidebarItems();

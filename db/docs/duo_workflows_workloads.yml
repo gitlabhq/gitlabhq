@@ -3,7 +3,7 @@ table_name: duo_workflows_workloads
 classes:
 - Ai::DuoWorkflows::WorkflowsWorkload
 feature_categories:
-- agent_foundations
+- duo_agent_platform
 description: This represents a join table between duo_workflows_workflows and ci_workloads.
   It has a unique index on workload_id so it is really a has_many relationship but
   we do not want the foreign key on the ci_workloads table so we use this

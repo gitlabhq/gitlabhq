@@ -1,0 +1,16 @@
+---
+description: Copy ID in group quick actions
+internal_events: true
+status: active
+action: click_copy_id_in_group_quick_actions
+identifiers:
+- user
+product_group: organizations
+product_categories:
+- groups_and_projects
+milestone: '18.6'
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/211512
+tiers:
+- free
+- premium
+- ultimate

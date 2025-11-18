@@ -23,7 +23,7 @@
     %br
     = _('Used by more than 100,000 organizations, GitLab is the most popular solution to manage git repositories on-premises.')
     %br
-    - link_to_promo = link_to(::Gitlab::Saas.promo_host, promo_url, target: '_blank', rel: 'noopener noreferrer')
+    - link_to_promo = link_to(::Gitlab.promo_host, promo_url, target: '_blank', rel: 'noopener noreferrer')
     = _("Read more about GitLab at %{link_to_promo}.").html_safe % { link_to_promo: link_to_promo }
 
 %p= link_to _('Check the current instance configuration '), help_instance_configuration_url

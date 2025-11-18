@@ -80,8 +80,8 @@ Before proceeding, review the [requirements](_index.md#requirements) for the ref
 
 {{< alert type="warning" >}}
 
-**The node's specifications are based on high percentiles of both usage patterns and repository sizes in good health**.
-**However, if you have [large monorepos](_index.md#large-monorepos) (larger than several gigabytes) or [additional workloads](_index.md#additional-workloads), they might significantly impact the performance of the environment**.
+The node's specifications are based on high percentiles of both usage patterns and repository sizes in good health.
+However, if you have [large monorepos](_index.md#large-monorepos) (larger than several gigabytes) or [additional workloads](_index.md#additional-workloads), they might significantly impact the performance of the environment.
 If this applies to you, [further adjustments might be required](_index.md#scaling-an-environment). See the linked documentation and contact us if required for further guidance.
 
 {{< /alert >}}

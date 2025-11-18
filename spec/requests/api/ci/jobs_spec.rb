@@ -450,6 +450,27 @@ RSpec.describe API::Ci::Jobs, feature_category: :continuous_integration do
         expect(json_response.pluck("id")).to match_array([running_job.id, job.id, canceling_job.id])
       end
 
+      context 'with jobs across many commits', :skip_before_request do
+        let_it_be(:branch) { project.default_branch }
+        let_it_be(:commit_count) do
+          project.repository.list_commits(ref: branch).reduce(0) do |count, commit|
+            create(:ci_pipeline, :with_job, project: project, sha: commit.id, ref: branch)
+            count + 1
+          end
+        end
+
+        specify do
+          # sanity check for the essential test setup pre-condition
+          expect(commit_count).to be > Gitlab::GitalyClient::MAXIMUM_GITALY_CALLS
+        end
+
+        it 'does not have a gitaly N+1' do
+          get(api("/projects/#{project.id}/jobs", api_user), params: { per_page: commit_count })
+
+          expect(response).to have_gitlab_http_status(:ok)
+        end
+      end
+
       it 'returns correct values' do
         expect(json_response).not_to be_empty
         expect(json_response.first['commit']['id']).to eq project.commit.id
@@ -558,6 +579,12 @@ RSpec.describe API::Ci::Jobs, feature_category: :continuous_integration do
       let(:request) do
         get api("/projects/#{project.id}/jobs"), params: { job_token: target_job.token }
       end
+    end
+
+    it_behaves_like 'authorizing granular token permissions', :read_job do
+      let(:user) { maintainer }
+      let(:boundary_object) { project }
+      let(:request) { get api("/projects/#{project.id}/jobs", personal_access_token: pat) }
     end
   end
 
@@ -707,6 +734,12 @@ RSpec.describe API::Ci::Jobs, feature_category: :continuous_integration do
         expect(json_response['artifacts'][0]['filename']).to eq('job.log')
       end
     end
+
+    it_behaves_like 'authorizing granular token permissions', :read_job do
+      let(:user) { maintainer }
+      let(:boundary_object) { project }
+      let(:request) { get api("/projects/#{project.id}/jobs/#{job.id}", personal_access_token: pat) }
+    end
   end
 
   describe 'GET /projects/:id/jobs/:job_id/trace' do
@@ -850,6 +883,12 @@ RSpec.describe API::Ci::Jobs, feature_category: :continuous_integration do
 
       it_behaves_like "additional access criteria"
     end
+
+    it_behaves_like 'authorizing granular token permissions', :read_job do
+      let(:user) { maintainer }
+      let(:boundary_object) { project }
+      let(:request) { get api("/projects/#{project.id}/jobs/#{job.id}/trace", personal_access_token: pat) }
+    end
   end
 
   describe 'POST /projects/:id/jobs/:job_id/cancel' do
@@ -882,6 +921,12 @@ RSpec.describe API::Ci::Jobs, feature_category: :continuous_integration do
         expect(response).to have_gitlab_http_status(:unauthorized)
       end
     end
+
+    it_behaves_like 'authorizing granular token permissions', :cancel_job do
+      let(:user) { maintainer }
+      let(:boundary_object) { project }
+      let(:request) { post api("/projects/#{project.id}/jobs/#{running_job.id}/cancel", personal_access_token: pat) }
+    end
   end
 
   describe "POST /projects/:id/jobs/:job_id/cancel?force" do
@@ -913,14 +958,22 @@ RSpec.describe API::Ci::Jobs, feature_category: :continuous_integration do
   end
 
   describe 'POST /projects/:id/jobs/:job_id/retry' do
+    let(:skip_before) { false }
     let!(:job) { create(:ci_build, :canceled, pipeline: pipeline) }
+    let(:retry_inputs) { {} }
+    let(:ci_job_inputs_flag) { true }
 
     def call_retry_job
-      post api("/projects/#{project.id}/jobs/#{job.id}/retry", api_user)
+      post api("/projects/#{project.id}/jobs/#{job.id}/retry", api_user),
+        headers: { 'Content-Type' => 'application/json' },
+        params: { inputs: retry_inputs }.to_json
     end
 
     before do
+      next if skip_before
+
       allow(Gitlab::QueryLimiting::Transaction).to receive(:threshold).and_return(103)
+      stub_feature_flags(ci_job_inputs: ci_job_inputs_flag)
       call_retry_job
     end
 
@@ -1005,6 +1058,53 @@ RSpec.describe API::Ci::Jobs, feature_category: :continuous_integration do
 
     it_behaves_like 'job retry API call handler'
 
+    context 'when given job inputs' do
+      let_it_be(:job) do
+        create(:ci_build, :canceled, pipeline: pipeline, options: {
+          inputs: {
+            'environment' => { 'type' => 'string', 'default' => 'staging', 'options' => %w[staging production] },
+            'debug' => { 'type' => 'boolean', 'default' => false }
+          }
+        })
+      end
+
+      let(:retry_inputs) { { 'environment' => 'production', 'debug' => true } }
+
+      it 'applies them to the retried job' do
+        expect(response).to have_gitlab_http_status(:created)
+
+        new_job = Ci::Build.find(json_response['id'])
+        expect(new_job.inputs.count).to be(2)
+
+        environment_input = new_job.inputs.find_by(name: 'environment')
+        expect(environment_input.value).to eq('production')
+        expect(environment_input.project_id).to eq(project.id)
+
+        debug_input = new_job.inputs.find_by(name: 'debug')
+        expect(debug_input.value).to be true
+        expect(debug_input.project_id).to eq(project.id)
+      end
+
+      context 'when inputs are invalid' do
+        let(:retry_inputs) { { 'environment' => 'development' } }
+
+        it 'returns validation errors' do
+          expect(response).to have_gitlab_http_status(:bad_request)
+          expect(json_response['message']).to eq('400 Bad request - `environment` input: `development` cannot be used because it is not in the list of allowed options')
+        end
+      end
+
+      context 'when the ci_job_inputs feature flag is disabled' do
+        let(:ci_job_inputs_flag) { false }
+        let(:retry_inputs) { { 'environment' => 'production', 'debug' => true } }
+
+        it 'returns an error when inputs are provided' do
+          expect(response).to have_gitlab_http_status(:forbidden)
+          expect(json_response['message']).to eq('403 Forbidden - The inputs parameter is not available')
+        end
+      end
+    end
+
     context "when executed on SaaS", :saas, if: Gitlab.ee? do
       let_it_be(:free_plan) { create(:free_plan) }
       let_it_be(:ultimate_plan) { create(:ultimate_plan) }
@@ -1028,6 +1128,13 @@ RSpec.describe API::Ci::Jobs, feature_category: :continuous_integration do
           end
         end
       end
+    end
+
+    it_behaves_like 'authorizing granular token permissions', :retry_job do
+      let(:skip_before) { true }
+      let(:user) { maintainer }
+      let(:boundary_object) { project }
+      let(:request) { post api("/projects/#{project.id}/jobs/#{job.id}/retry", personal_access_token: pat) }
     end
   end
 
@@ -1112,6 +1219,13 @@ RSpec.describe API::Ci::Jobs, feature_category: :continuous_integration do
         end
       end
     end
+
+    it_behaves_like 'authorizing granular token permissions', :erase_job do
+      let(:user) { maintainer }
+      let(:boundary_object) { project }
+      let(:job) { create(:ci_build, :trace_artifact, :artifacts, :test_reports, :success, project: project, pipeline: pipeline) }
+      let(:request) { post api("/projects/#{project.id}/jobs/#{job.id}/erase", personal_access_token: pat) }
+    end
   end
 
   describe 'POST /projects/:id/jobs/:job_id/play' do
@@ -1120,6 +1234,13 @@ RSpec.describe API::Ci::Jobs, feature_category: :continuous_integration do
     before do
       project.update!(ci_pipeline_variables_minimum_override_role: :developer)
       post api("/projects/#{project.id}/jobs/#{job.id}/play", api_user), params: params
+    end
+
+    it_behaves_like 'authorizing granular token permissions', :play_job do
+      let(:user) { maintainer }
+      let(:boundary_object) { project }
+      let_it_be(:playable_job) { create(:ci_build, :manual, pipeline: pipeline, project: project) }
+      let(:request) { post api("/projects/#{project.id}/jobs/#{playable_job.id}/play", personal_access_token: pat) }
     end
 
     context 'on a playable job' do

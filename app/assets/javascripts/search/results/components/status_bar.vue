@@ -1,5 +1,5 @@
 <script>
-import { GlSprintf, GlLink } from '@gitlab/ui';
+import { GlSprintf, GlLink, GlButton } from '@gitlab/ui';
 // eslint-disable-next-line no-restricted-imports
 import { mapState } from 'vuex';
 import { n__ } from '~/locale';
@@ -12,6 +12,7 @@ export default {
   components: {
     GlSprintf,
     GlLink,
+    GlButton,
     RefSelector,
   },
   props: {
@@ -131,6 +132,9 @@ export default {
         <template #filesTo>{{ showingFilesTo }}</template>
         <template #filesTotal>{{ allFilesResults }}</template>
       </gl-sprintf>
+      <gl-button id="js-open-mobile-filters" icon="filter" class="@md/panel:gl-hidden">{{
+        s__('GlobalSearch|Filters')
+      }}</gl-button>
     </div>
   </div>
 </template>

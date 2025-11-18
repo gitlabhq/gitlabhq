@@ -2,6 +2,7 @@
 stage: Software Supply Chain Security
 group: Compliance
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+description: Manage audit event streaming destinations for top-level groups using the GraphQL API, including HTTP and Google Cloud Logging configurations.
 title: Audit event streaming GraphQL API for top-level groups
 ---
 

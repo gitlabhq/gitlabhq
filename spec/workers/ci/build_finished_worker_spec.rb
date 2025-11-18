@@ -9,7 +9,7 @@ RSpec.describe Ci::BuildFinishedWorker, feature_category: :continuous_integratio
 
   describe '#perform' do
     context 'when build exists' do
-      let_it_be(:build) do
+      let_it_be_with_reload(:build) do
         create(:ci_build, :success, user: create(:user), pipeline: create(:ci_pipeline))
       end
 
@@ -65,6 +65,18 @@ RSpec.describe Ci::BuildFinishedWorker, feature_category: :continuous_integratio
           expect(ChatNotificationWorker).to receive(:perform_async).with(build.id)
 
           subject
+        end
+      end
+
+      context 'when pipeline is nil' do
+        before do
+          allow(build).to receive(:pipeline).and_return(nil)
+        end
+
+        it 'does not raise an error and does not schedule ChatNotificationWorker' do
+          expect(ChatNotificationWorker).not_to receive(:perform_async)
+
+          expect { subject }.not_to raise_error
         end
       end
 

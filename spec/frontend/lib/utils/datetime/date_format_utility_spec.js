@@ -400,6 +400,34 @@ describe('date_format_utility.js', () => {
     });
   });
 
+  describe('setUTCTime', () => {
+    describe('when input argument is a string', () => {
+      it('returns a UTC date when input is a date without a time', () => {
+        expect(utils.setUTCTime('2025-10-13')).toEqual(new Date('2025-10-13T00:00:00.000Z'));
+      });
+
+      it('returns a UTC date when input is a date with time', () => {
+        expect(utils.setUTCTime('2025-10-13T19:56:59.460Z')).toEqual(
+          new Date('2025-10-13T00:00:00.000Z'),
+        );
+      });
+    });
+
+    describe('when input argument is a date', () => {
+      it('returns a UTC date when input is a date without a time', () => {
+        expect(utils.setUTCTime(new Date('2025-10-13'))).toEqual(
+          new Date('2025-10-13T00:00:00.000Z'),
+        );
+      });
+
+      it('returns a UTC date when input is a date with time', () => {
+        expect(utils.setUTCTime(new Date('2025-10-13T19:56:59.460Z'))).toEqual(
+          new Date('2025-10-13T00:00:00.000Z'),
+        );
+      });
+    });
+  });
+
   describe('toISOStringWithoutMilliseconds', () => {
     it('should format a Date object into ISO string without milliseconds', () => {
       const date = new Date('2020-01-29:12:34:56.789');

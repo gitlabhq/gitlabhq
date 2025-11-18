@@ -11,6 +11,7 @@ module Gitlab
         created_at
         discussion_id
         id
+        internal
         line_code
         note
         noteable_id

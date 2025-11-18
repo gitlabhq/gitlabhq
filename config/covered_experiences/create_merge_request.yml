@@ -1,4 +1,0 @@
-# yaml-language-server: $schema=https://gitlab.com/gitlab-org/ruby/gems/labkit-ruby/-/raw/master/config/covered_experiences/schema.json
-description: "Creating a new merge request"
-feature_category: "code_review_workflow"
-urgency: "async_fast"

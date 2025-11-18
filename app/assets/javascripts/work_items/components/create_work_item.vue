@@ -12,7 +12,6 @@ import {
 } from '@gitlab/ui';
 import glFeatureFlagMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 
-import { createAlert } from '~/alert';
 import { clearDraft } from '~/lib/utils/autosave';
 import { isMetaEnterKeyPair, parseBoolean } from '~/lib/utils/common_utils';
 import { getParameterByName } from '~/lib/utils/url_utility';
@@ -218,11 +217,23 @@ export default {
       required: false,
       default: '',
     },
+    isEpicsList: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
+    fromGlobalMenu: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
   },
   data() {
     return {
       isTitleValid: true,
-      isConfidential: parseBoolean(getParameterByName('issue[confidential]')),
+      isConfidential:
+        Boolean(getParameterByName('vulnerability_id')) ||
+        parseBoolean(getParameterByName('issue[confidential]')),
       isRelatedToItem: true,
       localTitle: this.title || '',
       error: null,
@@ -328,7 +339,7 @@ export default {
           const defaultSelectedWorkItemType =
             this.findWorkItemType(WORK_ITEM_TYPE_NAME_ISSUE) || this.workItemTypes?.at(0);
           this.selectedWorkItemTypeId = defaultSelectedWorkItemType?.id;
-          this.$emit('changeType', defaultSelectedWorkItemType);
+          this.$emit('changeType', defaultSelectedWorkItemType?.name);
         }
       },
       error() {
@@ -608,13 +619,13 @@ export default {
       return findWidget(WIDGET_TYPE_CUSTOM_FIELDS, this.workItem)?.customFieldValues ?? null;
     },
     inputNamespacePath() {
-      if (this.workItemPlanningViewEnabled) {
+      if (this.shouldShowNamespaceSelector) {
         return this.selectedNamespacePath;
       }
       return this.selectedProjectFullPath;
     },
     showItemTypeSelect() {
-      if (this.workItemPlanningViewEnabled) {
+      if (this.shouldShowNamespaceSelector) {
         return true;
       }
       return this.showWorkItemTypeSelect || this.alwaysShowWorkItemTypeSelect;
@@ -632,6 +643,12 @@ export default {
       return this.selectedProjectFullPath
         ? this.selectedProjectFullPath.substring(0, this.selectedProjectFullPath.lastIndexOf('/'))
         : this.groupPath;
+    },
+    shouldShowNamespaceSelector() {
+      if (this.workItemPlanningViewEnabled) {
+        return this.fromGlobalMenu || (this.isGroup && !this.isEpicsList);
+      }
+      return false;
     },
   },
   watch: {
@@ -928,14 +945,8 @@ export default {
           },
         });
 
-        // We can get user-facing errors here. Show them in page alert
-        // because if we're in a modal the modal closes after submission.
         if (data.workItemCreate.errors.length) {
-          createAlert({
-            message: data.workItemCreate.errors.join(' '),
-            error: data.workItemCreate.errors,
-            captureError: true,
-          });
+          throw new Error(data.workItemCreate.errors);
         }
 
         this.$emit('workItemCreated', {
@@ -944,9 +955,10 @@ export default {
         });
 
         this.clearAutosaveDraft();
-      } catch {
-        this.error = this.createErrorText;
+      } catch (error) {
+        this.error = error.message || this.createErrorText;
         this.loading = false;
+        Sentry.captureException(error);
       }
     },
     async handleUpdateWidgetDraft(input) {
@@ -1015,12 +1027,13 @@ export default {
         <page-heading v-if="!hideFormTitle" :heading="titleText" />
 
         <div class="gl-flex gl-items-center gl-gap-4">
-          <template v-if="workItemPlanningViewEnabled">
+          <template v-if="shouldShowNamespaceSelector">
             <gl-form-group class="gl-mr-4 gl-max-w-26 gl-flex-grow" :label="__('Group/project')">
               <work-item-namespace-listbox
                 v-model="selectedNamespacePath"
                 :full-path="fullPath"
                 :is-group="isGroup"
+                :limit-to-current-namespace="!fromGlobalMenu"
               />
             </gl-form-group>
           </template>

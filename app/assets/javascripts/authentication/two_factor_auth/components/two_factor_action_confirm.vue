@@ -22,6 +22,11 @@ export default {
     GlTooltip: GlTooltipDirective,
   },
   props: {
+    modalTitle: {
+      type: String,
+      required: false,
+      default: null,
+    },
     buttonText: {
       type: String,
       required: true,
@@ -100,7 +105,7 @@ export default {
   <div class="gl-contents">
     <gl-modal
       v-model="modalVisible"
-      :title="buttonText"
+      :title="modalTitle || buttonText"
       size="sm"
       :modal-id="modalId"
       :action-primary="actionPrimary"

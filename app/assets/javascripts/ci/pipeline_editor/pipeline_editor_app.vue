@@ -4,7 +4,9 @@ import { debounce } from 'lodash';
 import { fetchPolicies } from '~/lib/graphql';
 import { DEFAULT_DEBOUNCE_AND_THROTTLE_MS } from '~/lib/utils/constants';
 import { mergeUrlParams, queryToObject, visitUrl } from '~/lib/utils/url_utility';
+import { scrollTo } from '~/lib/utils/scroll_utils';
 import { __, s__ } from '~/locale';
+import { unwrapStagesFromMutation } from '~/ci/pipeline_details/utils/unwrapping_utils';
 import ConfirmUnsavedChangesDialog from './components/ui/confirm_unsaved_changes_dialog.vue';
 import PipelineEditorEmptyState from './components/ui/pipeline_editor_empty_state.vue';
 import PipelineEditorMessages from './components/ui/pipeline_editor_messages.vue';
@@ -297,10 +299,10 @@ export default {
       this.showFailure = true;
       this.failureType = type;
       this.failureReasons = reasons;
-      window.scrollTo({ top: 0, behavior: 'smooth' });
+      scrollTo({ top: 0, behavior: 'smooth' }, this.$el);
     },
     reportSuccess(type) {
-      window.scrollTo({ top: 0, behavior: 'smooth' });
+      scrollTo({ top: 0, behavior: 'smooth' }, this.$el);
       const { success } = this.$options;
       this.$toast.show(success[type] ?? success[DEFAULT_SUCCESS]);
     },
@@ -369,7 +371,14 @@ export default {
             ref: this.currentBranch,
           },
         });
-        this.ciConfigData = data?.ciLint?.config || {};
+
+        const config = structuredClone(data?.ciLint?.config || {});
+        if (config.stages) {
+          config.stages = unwrapStagesFromMutation(config.stages);
+        }
+
+        this.ciConfigData = config;
+
         if (this.ciConfigData?.status) {
           this.setAppStatus(this.ciConfigData.status);
           if (this.isLintUnavailable) {

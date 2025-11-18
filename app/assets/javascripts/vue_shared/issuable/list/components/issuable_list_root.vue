@@ -230,6 +230,16 @@ export default {
       required: false,
       default: () => [],
     },
+    alwaysAllowCustomEmptyState: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
+    searchTimeout: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
   },
   data() {
     return {
@@ -268,7 +278,11 @@ export default {
       handler(params) {
         if (Object.keys(params).length) {
           updateHistory({
-            url: setUrlParams(params, window.location.href, true, false, true),
+            url: setUrlParams(params, {
+              url: window.location.href,
+              clearParams: true,
+              decodeParams: true,
+            }),
             title: document.title,
             replace: true,
           });
@@ -359,7 +373,7 @@ export default {
       </template>
     </filtered-search-bar>
     <gl-alert
-      v-if="error"
+      v-if="error && !searchTimeout"
       variant="danger"
       :class="{ 'gl-mt-5': !hasItems && !issuablesLoading }"
       :dismissible="hasItems"
@@ -453,7 +467,8 @@ export default {
           </template>
         </issuable-item>
       </component>
-      <empty-result v-else-if="initialFilterValue.length > 0" />
+      <empty-result v-else-if="!alwaysAllowCustomEmptyState && initialFilterValue.length > 0" />
+      <slot v-else-if="searchTimeout" name="search-timeout"></slot>
       <slot v-else-if="!error" name="empty-state"></slot>
     </template>
 

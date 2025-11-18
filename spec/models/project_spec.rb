@@ -245,6 +245,16 @@ RSpec.describe Project, factory_default: :keep, feature_category: :groups_and_pr
       expect(project.lfs_objects.to_a).to eql([lfs_object])
     end
 
+    describe '#triggers' do
+      let_it_be(:project) { create(:project) }
+      let_it_be(:expired_trigger) { create(:ci_trigger, expires_at: 5.years.ago, project: project) }
+      let_it_be(:valid_trigger) { create(:ci_trigger, expires_at: 1.month.from_now, project: project) }
+
+      it 'returns non-expired triggers by default' do
+        expect(project.triggers).to contain_exactly(valid_trigger)
+      end
+    end
+
     describe 'maintainers association' do
       let_it_be(:project) { create(:project) }
       let_it_be(:maintainer1) { create(:user) }
@@ -1346,25 +1356,6 @@ RSpec.describe Project, factory_default: :keep, feature_category: :groups_and_pr
         'project_org_2'
       )
     end
-
-    context 'when template_labels_scoped_by_org feature flag is disabled' do
-      before do
-        stub_feature_flags(template_labels_scoped_by_org: false)
-      end
-
-      it 'creates all label templates from all organizations' do
-        expect do
-          project.create_labels
-        end.to change { Label.count }.by(4)
-
-        expect(project.reload.labels.pluck(:title)).to contain_exactly(
-          'project_org_1',
-          'project_org_2',
-          'org1_1',
-          'org1_2'
-        )
-      end
-    end
   end
 
   describe '#notification_group' do
@@ -1537,6 +1528,26 @@ RSpec.describe Project, factory_default: :keep, feature_category: :groups_and_pr
     context 'when project and any its ancestor are not archived' do
       it 'returns false' do
         expect(user_namespace_project.ancestors_archived?).to eq(false)
+      end
+    end
+  end
+
+  describe '#root_group' do
+    context 'when root_namespace is not personal' do
+      let_it_be(:group) { build(:group) }
+      let_it_be(:project) { build(:project, group: group) }
+
+      it 'returns the root_namespace' do
+        expect(project.root_group).to eq(group)
+      end
+    end
+
+    context 'when root_namespace is personal' do
+      let_it_be(:user) { build(:user) }
+      let_it_be(:project) { build(:project, namespace: user.namespace) }
+
+      it 'returns nil' do
+        expect(project.root_group).to be_nil
       end
     end
   end
@@ -3601,20 +3612,6 @@ RSpec.describe Project, factory_default: :keep, feature_category: :groups_and_pr
       it { expect(internal_project.visibility_level_allowed?(Gitlab::VisibilityLevel::PUBLIC)).to be false }
       it { expect(internal_project.visibility_level_allowed?(Gitlab::VisibilityLevel::INTERNAL)).to be true }
       it { expect(internal_project.visibility_level_allowed?(Gitlab::VisibilityLevel::PRIVATE)).to be true }
-
-      context 'when the feature flag is disabled' do
-        before do
-          stub_feature_flags(user_namespace_allowed_visibility: false)
-        end
-
-        it { expect(private_project.visibility_level_allowed?(Gitlab::VisibilityLevel::PUBLIC)).to be true }
-        it { expect(private_project.visibility_level_allowed?(Gitlab::VisibilityLevel::INTERNAL)).to be true }
-        it { expect(private_project.visibility_level_allowed?(Gitlab::VisibilityLevel::PRIVATE)).to be true }
-
-        it { expect(internal_project.visibility_level_allowed?(Gitlab::VisibilityLevel::PUBLIC)).to be true }
-        it { expect(internal_project.visibility_level_allowed?(Gitlab::VisibilityLevel::INTERNAL)).to be true }
-        it { expect(internal_project.visibility_level_allowed?(Gitlab::VisibilityLevel::PRIVATE)).to be true }
-      end
     end
   end
 
@@ -9010,26 +9007,6 @@ RSpec.describe Project, factory_default: :keep, feature_category: :groups_and_pr
     end
   end
 
-  describe '#parent_loaded?' do
-    let_it_be(:project) { create(:project) }
-
-    before do
-      project.namespace = create(:namespace)
-
-      project.reload
-    end
-
-    it 'is false when the parent is not loaded' do
-      expect(project.parent_loaded?).to be_falsey
-    end
-
-    it 'is true when the parent is loaded' do
-      project.parent
-
-      expect(project.parent_loaded?).to be_truthy
-    end
-  end
-
   describe '#bots' do
     subject { project.bots }
 
@@ -9658,42 +9635,12 @@ RSpec.describe Project, factory_default: :keep, feature_category: :groups_and_pr
     end
   end
 
-  describe '#work_items_feature_flag_enabled?' do
-    let_it_be(:group_project) { create(:project, :in_subgroup) }
-
-    it_behaves_like 'checks parent group and self feature flag' do
-      let(:feature_flag_method) { :work_items_feature_flag_enabled? }
-      let(:feature_flag) { :work_items }
-      let(:subject_project) { group_project }
-    end
-  end
-
   describe '#glql_load_on_click_feature_flag_enabled?' do
     let_it_be(:group_project) { create(:project, :in_subgroup) }
 
     it_behaves_like 'checks parent group and self feature flag' do
       let(:feature_flag_method) { :glql_load_on_click_feature_flag_enabled? }
       let(:feature_flag) { :glql_load_on_click }
-      let(:subject_project) { group_project }
-    end
-  end
-
-  describe '#work_items_beta_feature_flag_enabled?' do
-    let_it_be(:group_project) { create(:project, :in_subgroup) }
-
-    it_behaves_like 'checks parent group feature flag' do
-      let(:feature_flag_method) { :work_items_beta_feature_flag_enabled? }
-      let(:feature_flag) { :work_items_beta }
-      let(:subject_project) { group_project }
-    end
-  end
-
-  describe '#work_items_alpha_feature_flag_enabled?' do
-    let_it_be(:group_project) { create(:project, :in_subgroup) }
-
-    it_behaves_like 'checks parent group feature flag' do
-      let(:feature_flag_method) { :work_items_alpha_feature_flag_enabled? }
-      let(:feature_flag) { :work_items_alpha }
       let(:subject_project) { group_project }
     end
   end
@@ -9959,6 +9906,12 @@ RSpec.describe Project, factory_default: :keep, feature_category: :groups_and_pr
 
       it { expect(project.archived).to be_falsey }
       it { expect(project.archived?).to be_falsey }
+    end
+  end
+
+  describe '#self_archived?' do
+    it 'is an alias of #archived' do
+      expect(subject.method(:self_archived?).original_name).to eq(:archived)
     end
   end
 
@@ -10454,6 +10407,11 @@ RSpec.describe Project, factory_default: :keep, feature_category: :groups_and_pr
       expect { project.ensure_pool_repository }.to change { PoolRepository.count }.by(1)
       expect(project.ensure_pool_repository).to be_a(PoolRepository)
     end
+
+    it 'sets the organization to its own organization' do
+      expect(project.ensure_pool_repository.organization)
+        .to eq(project.organization)
+    end
   end
 
   describe '#assigning_role_too_high?' do
@@ -10499,6 +10457,22 @@ RSpec.describe Project, factory_default: :keep, feature_category: :groups_and_pr
           expect(assigning_role_too_high).to be_falsey
         end
       end
+    end
+  end
+
+  describe '#owner_entity' do
+    let(:project) { build_stubbed(:project) }
+
+    it 'returns itself' do
+      expect(project.owner_entity).to be(project)
+    end
+  end
+
+  describe '#owner_entity_name' do
+    let(:project) { build_stubbed(:project) }
+
+    it 'returns :project' do
+      expect(project.owner_entity_name).to be(:project)
     end
   end
 

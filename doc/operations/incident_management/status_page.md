@@ -50,7 +50,7 @@ Prerequisites:
 
 To provide GitLab with the AWS account information needed to push content to your Status Page:
 
-1. On the left sidebar, select **Search or go to** and find your project.
+1. On the left sidebar, select **Search or go to** and find your project. If you've [turned on the new navigation](../../user/interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
 1. Select **Settings** > **Monitor**.
 1. Expand **Status page**.
 1. Select the **Active** checkbox.
@@ -104,7 +104,7 @@ the incident can potentially [publish comments to your GitLab Status Page](#publ
 After creating the CI/CD variables, configure the Project you want to use for
 Incidents:
 
-1. On the left sidebar, select **Search or go to** and find your project.
+1. On the left sidebar, select **Search or go to** and find your project. If you've [turned on the new navigation](../../user/interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
 1. Select **Settings** > **Monitor**.
 1. Expand **Status page**.
 1. Fill in your cloud provider's credentials and make sure to select the **Active** checkbox.

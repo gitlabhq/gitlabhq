@@ -18,7 +18,7 @@ module Users
       @user = user
       @initiator_user = initiator_user
       @execution_tracker = execution_tracker
-      @ghost_user = Users::Internal.ghost
+      @ghost_user = Users::Internal.for_organization(@user.organization_id).ghost
     end
 
     def execute(hard_delete: false)

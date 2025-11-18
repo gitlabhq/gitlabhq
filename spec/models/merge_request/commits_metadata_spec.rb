@@ -253,4 +253,135 @@ RSpec.describe MergeRequest::CommitsMetadata, feature_category: :code_review_wor
       expect(commits_metadata_mapping['abc123']).to eq(existing_commit_metadata.id)
     end
   end
+
+  describe '.oldest_merge_request_id_per_commit' do
+    let_it_be(:project) { create(:project) }
+    let_it_be(:other_project) { create(:project) }
+
+    let_it_be(:commit_sha_1) { OpenSSL::Digest::SHA256.hexdigest('abc') }
+    let_it_be(:commit_sha_2) { OpenSSL::Digest::SHA256.hexdigest('def') }
+    let_it_be(:commit_sha_3) { OpenSSL::Digest::SHA256.hexdigest('ghi') }
+    let_it_be(:commit_sha_4) { OpenSSL::Digest::SHA256.hexdigest('jkl') }
+
+    let_it_be(:commits_metadata_1) { create(:merge_request_commits_metadata, project: project, sha: commit_sha_1) }
+    let_it_be(:commits_metadata_2) { create(:merge_request_commits_metadata, project: project, sha: commit_sha_2) }
+    let_it_be(:commits_metadata_3) { create(:merge_request_commits_metadata, project: project, sha: commit_sha_3) }
+    let_it_be(:commits_metadata_4) { create(:merge_request_commits_metadata, project: project, sha: commit_sha_4) }
+
+    subject(:result) { described_class.oldest_merge_request_id_per_commit(project.id, shas) }
+
+    context 'when there are merged merge requests' do
+      let_it_be(:mr_1) { create(:merge_request, :merged, target_project: project, id: 100) }
+      let_it_be(:mr_2) { create(:merge_request, :merged, target_project: project, id: 200) }
+      let_it_be(:mr_3) { create(:merge_request, :merged, target_project: project, id: 150) }
+      let_it_be(:mr_4) { create(:merge_request, :merged, target_project: project, id: 300) }
+
+      let_it_be(:mr_diff_1) { create(:merge_request_diff, merge_request: mr_1) }
+      let_it_be(:mr_diff_2) { create(:merge_request_diff, merge_request: mr_2) }
+      let_it_be(:mr_diff_3) { create(:merge_request_diff, merge_request: mr_3) }
+      let_it_be(:mr_diff_4) { create(:merge_request_diff, merge_request: mr_4) }
+
+      before_all do
+        mr_1.update!(latest_merge_request_diff_id: mr_diff_1.id)
+        mr_2.update!(latest_merge_request_diff_id: mr_diff_2.id)
+        mr_3.update!(latest_merge_request_diff_id: mr_diff_3.id)
+        mr_4.update!(latest_merge_request_diff_id: mr_diff_4.id)
+
+        create(:merge_request_diff_commit,
+          merge_request_diff: mr_diff_1,
+          merge_request_commits_metadata: commits_metadata_1)
+        create(:merge_request_diff_commit,
+          merge_request_diff: mr_diff_2,
+          merge_request_commits_metadata: commits_metadata_1)
+        create(:merge_request_diff_commit, merge_request_diff: mr_diff_3, sha: commit_sha_2)
+        # populate sha in both tables to test for duplication
+        create(:merge_request_diff_commit,
+          merge_request_diff: mr_diff_4,
+          sha: commit_sha_4,
+          merge_request_commits_metadata: commits_metadata_4)
+      end
+
+      context 'when querying for commits that exist in multiple merge requests' do
+        let(:shas) { [commit_sha_1, commit_sha_2, commit_sha_4] }
+
+        it 'returns the oldest merge request ID for each commit' do
+          expect(result.pluck(:sha, :merge_request_id)).to contain_exactly(
+            [commit_sha_1, 100], # oldest of 100, 200
+            [commit_sha_2, 150],
+            [commit_sha_4, 300]
+          )
+        end
+      end
+
+      context 'when querying for commits that do not exist' do
+        let(:shas) { ['nonexistent'] }
+
+        it 'returns empty results' do
+          expect(result).to be_empty
+        end
+      end
+
+      context 'when querying with empty SHA array' do
+        let(:shas) { [] }
+
+        it 'returns empty results' do
+          expect(result).to be_empty
+        end
+      end
+    end
+
+    context 'when merge requests are not merged' do
+      let_it_be(:mr_open) do
+        create(:merge_request, :opened, source_project: project, target_project: project)
+      end
+
+      let(:shas) { [commit_sha_1, commit_sha_2] }
+
+      let_it_be(:mr_closed) do
+        create(:merge_request, :closed, source_project: project, target_project: project)
+      end
+
+      let_it_be(:mr_diff_open) { create(:merge_request_diff, merge_request: mr_open) }
+      let_it_be(:mr_diff_closed) { create(:merge_request_diff, merge_request: mr_closed) }
+
+      before do
+        mr_open.update!(latest_merge_request_diff_id: mr_diff_open.id)
+        mr_closed.update!(latest_merge_request_diff_id: mr_diff_closed.id)
+
+        create(:merge_request_diff_commit,
+          merge_request_diff: mr_diff_open,
+          merge_request_commits_metadata: commits_metadata_1)
+        create(:merge_request_diff_commit, merge_request_diff: mr_diff_closed, sha: commit_sha_2)
+      end
+
+      it 'does not return non-merged merge requests' do
+        expect(result).to be_empty
+      end
+    end
+
+    context 'when merge requests belong to different projects' do
+      let_it_be(:other_commits_metadata) do
+        create(:merge_request_commits_metadata, project: other_project, sha: commit_sha_1)
+      end
+
+      let(:shas) { [commit_sha_1] }
+
+      let_it_be(:other_mr) do
+        create(:merge_request, :merged, target_project: other_project, id: 50)
+      end
+
+      let_it_be(:other_mr_diff) { create(:merge_request_diff, merge_request: other_mr) }
+
+      before_all do
+        other_mr.update!(latest_merge_request_diff_id: other_mr_diff.id)
+        create(:merge_request_diff_commit,
+          merge_request_diff: other_mr_diff,
+          merge_request_commits_metadata: other_commits_metadata)
+      end
+
+      it 'only returns results for the specified project' do
+        expect(result).to be_empty
+      end
+    end
+  end
 end

@@ -35,7 +35,9 @@ RSpec.describe Gitlab::Ci::Config::External::File::Component, feature_category: 
       path: 'templates/my_component.yml',
       project: project,
       sha: 'my_component_sha',
-      name: 'my_component'
+      name: 'my_component',
+      version: nil,
+      reference: nil
     })
   end
 
@@ -170,7 +172,9 @@ RSpec.describe Gitlab::Ci::Config::External::File::Component, feature_category: 
         component: {
           project: project,
           sha: 'my_component_sha',
-          name: 'my_component'
+          name: 'my_component',
+          version: nil,
+          reference: nil
         }
       )
     end
@@ -187,7 +191,9 @@ RSpec.describe Gitlab::Ci::Config::External::File::Component, feature_category: 
         variables: context.variables,
         component_data: {
           name: 'my_component',
-          sha: 'my_component_sha'
+          sha: 'my_component_sha',
+          version: nil,
+          reference: nil
         }
       )
     end
@@ -246,8 +252,8 @@ RSpec.describe Gitlab::Ci::Config::External::File::Component, feature_category: 
     end
 
     it 'tracks the content load time' do
-      expect(logger).to receive(:instrument).once.ordered.with(:config_component_fetch_content_hash).and_yield
       expect(logger).to receive(:instrument).once.ordered.with(:config_file_fetch_content_hash).and_yield
+      expect(logger).to receive(:instrument).once.ordered.with(:config_file_fetch_component_content).and_yield
       expect(logger).to receive(:instrument).once.ordered.with(:config_file_expand_content_includes).and_yield
 
       external_resource.load_and_validate_expanded_hash!

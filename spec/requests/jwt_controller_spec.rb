@@ -242,6 +242,33 @@ RSpec.describe JwtController, feature_category: :system_access do
           end
         end
 
+        context 'when user is enrolled in email-based OTP' do
+          let(:user) { create(:user, email_otp_required_after: 1.second.ago) }
+
+          context 'without personal token' do
+            it_behaves_like 'with invalid credentials'
+          end
+
+          context 'with personal token' do
+            let(:access_token) { create(:personal_access_token, user: user) }
+            let(:headers) { { authorization: credentials(user.username, access_token.token) } }
+
+            it 'accepts the authorization attempt' do
+              expect(response).to have_gitlab_http_status(:ok)
+            end
+          end
+
+          context 'when :email_based_mfa feature flag disabled' do
+            it 'accepts the authorization attempt' do
+              stub_feature_flags(email_based_mfa: false)
+
+              get '/jwt/auth', params: parameters, headers: headers
+
+              expect(response).to have_gitlab_http_status(:ok)
+            end
+          end
+        end
+
         it 'does not cause session based checks to be activated' do
           expect(Gitlab::Session).not_to receive(:with_session)
 

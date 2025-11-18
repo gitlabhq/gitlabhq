@@ -79,3 +79,8 @@ func (*SavedFileTracker) TransformContents(ctx context.Context, filename string,
 
 	return io.NopCloser(r), nil
 }
+
+// IsLsifProcessing returns false as SavedFileTracker does not perform LSIF processing
+func (*SavedFileTracker) IsLsifProcessing() bool {
+	return false
+}

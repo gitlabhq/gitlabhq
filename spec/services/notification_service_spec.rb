@@ -10,6 +10,8 @@ RSpec.describe NotificationService, :mailer, feature_category: :team_planning do
   let_it_be_with_refind(:project, reload: true) { create(:project, :public) }
   let_it_be_with_refind(:assignee) { create(:user) }
 
+  let_it_be(:ghost_user) { Users::Internal.for_organization(project.organization).ghost }
+
   let(:notification) { described_class.new }
 
   around(:example, :deliver_mails_inline) do |example|
@@ -314,7 +316,7 @@ RSpec.describe NotificationService, :mailer, feature_category: :team_planning do
       end
 
       describe "never emails the ghost user" do
-        let(:key_options) { { user: Users::Internal.ghost } }
+        let(:key_options) { { user: ghost_user } }
 
         it "does not send email to key owner" do
           expect { subject }.not_to have_enqueued_email(key.id, mail: "new_ssh_key_email")
@@ -335,7 +337,7 @@ RSpec.describe NotificationService, :mailer, feature_category: :team_planning do
       end
 
       describe "never emails the ghost user" do
-        let(:key_options) { { user: Users::Internal.ghost } }
+        let(:key_options) { { user: ghost_user } }
 
         it "does not send email to key owner" do
           expect { subject }.not_to have_enqueued_email(key.id, mail: "new_gpg_key_email")
@@ -990,6 +992,14 @@ RSpec.describe NotificationService, :mailer, feature_category: :team_planning do
   describe '#enabled_two_factor' do
     let_it_be(:user) { create(:user) }
 
+    describe 'Passkey' do
+      subject { notification.enabled_two_factor(user, :passkey, device_name: 'MacBook Touch ID') }
+
+      it 'sends email to the user' do
+        expect { subject }.to have_enqueued_email(user, 'MacBook Touch ID', :passkey, mail: 'enabled_two_factor_webauthn_email')
+      end
+    end
+
     describe 'Time-based OTP' do
       subject { notification.enabled_two_factor(user, :otp) }
 
@@ -999,10 +1009,10 @@ RSpec.describe NotificationService, :mailer, feature_category: :team_planning do
     end
 
     describe 'WebAuthn' do
-      subject { notification.enabled_two_factor(user, :webauthn, device_name: 'Macbook Touch ID') }
+      subject { notification.enabled_two_factor(user, :webauthn, device_name: 'MacBook Touch ID') }
 
       it 'sends email to the user' do
-        expect { subject }.to have_enqueued_email(user, 'Macbook Touch ID', mail: 'enabled_two_factor_webauthn_email')
+        expect { subject }.to have_enqueued_email(user, 'MacBook Touch ID', mail: 'enabled_two_factor_webauthn_email')
       end
     end
   end
@@ -1018,6 +1028,14 @@ RSpec.describe NotificationService, :mailer, feature_category: :team_planning do
       end
     end
 
+    describe 'Passkey' do
+      subject { notification.disabled_two_factor(user, :passkey, device_name: 'MacBook Touch ID') }
+
+      it 'sends email to the user' do
+        expect { subject }.to have_enqueued_email(user, 'MacBook Touch ID', :passkey, mail: 'disabled_two_factor_webauthn_email')
+      end
+    end
+
     describe 'Time-based OTP' do
       subject { notification.disabled_two_factor(user, :otp) }
 
@@ -1027,10 +1045,10 @@ RSpec.describe NotificationService, :mailer, feature_category: :team_planning do
     end
 
     describe 'WebAuthn' do
-      subject { notification.disabled_two_factor(user, :webauthn, device_name: 'Macbook Touch ID') }
+      subject { notification.disabled_two_factor(user, :webauthn, device_name: 'MacBook Touch ID') }
 
       it 'sends email to the user' do
-        expect { subject }.to have_enqueued_email(user, 'Macbook Touch ID', mail: 'disabled_two_factor_webauthn_email')
+        expect { subject }.to have_enqueued_email(user, 'MacBook Touch ID', mail: 'disabled_two_factor_webauthn_email')
       end
     end
   end
@@ -1798,9 +1816,9 @@ RSpec.describe NotificationService, :mailer, feature_category: :team_planning do
 
           notification.new_note(note)
 
-          expect(SentNotification.last(3).map(&:recipient).map(&:id))
+          expect(PartitionedSentNotification.last(3).map(&:recipient).map(&:id))
             .to contain_exactly(*merge_request.assignees.pluck(:id), merge_request.author.id, @u_watcher.id)
-          expect(SentNotification.last.in_reply_to_discussion_id).to eq(note.discussion_id)
+          expect(PartitionedSentNotification.last.in_reply_to_discussion_id).to eq(note.discussion_id)
         end
 
         it_behaves_like 'project emails are disabled' do
@@ -3946,27 +3964,6 @@ RSpec.describe NotificationService, :mailer, feature_category: :team_planning do
         end
       end
     end
-
-    describe '#member_about_to_expire' do
-      let_it_be(:group_member) { create(:group_member, expires_at: 7.days.from_now.to_date) }
-      let_it_be(:project_member) { create(:project_member, expires_at: 7.days.from_now.to_date) }
-
-      context "with group member" do
-        it 'emails the user that their group membership will be expired' do
-          notification.member_about_to_expire(group_member)
-
-          should_email(group_member.user)
-        end
-      end
-
-      context "with project member" do
-        it 'emails the user that their project membership will be expired' do
-          notification.member_about_to_expire(project_member)
-
-          should_email(project_member.user)
-        end
-      end
-    end
   end
 
   describe '#new_member', :deliver_mails_inline do
@@ -4016,31 +4013,6 @@ RSpec.describe NotificationService, :mailer, feature_category: :team_planning do
       it 'does not send a notification' do
         source.add_guest(added_user)
         should_not_email_anyone
-      end
-    end
-  end
-
-  describe '#updated_member_expiration' do
-    subject(:updated_member_expiration) { notification.updated_member_expiration(member) }
-
-    context 'for group member' do
-      let_it_be(:member) { create(:group_member) }
-
-      it 'triggers a notification about the expiration change' do
-        updated_member_expiration
-
-        expect_delivery_jobs_count(1)
-        expect_enqueud_email('Group', member.id, mail: 'member_expiration_date_updated_email')
-      end
-    end
-
-    context 'for project member' do
-      let_it_be(:member) { create(:project_member) }
-
-      it 'does not trigger a notification' do
-        updated_member_expiration
-
-        expect_delivery_jobs_count(0)
       end
     end
   end

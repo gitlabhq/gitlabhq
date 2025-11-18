@@ -56,4 +56,21 @@ RSpec.describe AutoDevops::DisableWorker, '#perform', feature_category: :auto_de
       subject.perform(pipeline.id)
     end
   end
+
+  context 'when pipeline is not found' do
+    let(:non_existing_pipeline_id) { non_existing_record_id }
+
+    it 'logs a warning and does not execute any side effects', :aggregate_failures do
+      expect(Sidekiq.logger).to receive(:warn).with(
+        class: described_class.name,
+        pipeline_id: non_existing_pipeline_id,
+        message: 'Pipeline not found'
+      )
+      expect(NotificationService).not_to receive(:new)
+
+      subject.perform(non_existing_pipeline_id)
+
+      expect(auto_devops.reload.enabled).to be_nil
+    end
+  end
 end

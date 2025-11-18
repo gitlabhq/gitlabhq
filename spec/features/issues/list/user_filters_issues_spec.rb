@@ -35,11 +35,4 @@ RSpec.describe 'User filters issues', :js, feature_category: :team_planning do
     expect(page).to have_content 'foobar'
     expect(page).not_to have_content 'barbaz'
   end
-
-  it 'allows filtering by a specified assignee' do
-    visit project_issues_path(project, assignee_id: user.id)
-
-    expect(page).not_to have_content 'foobar'
-    expect(page).to have_content 'barbaz'
-  end
 end

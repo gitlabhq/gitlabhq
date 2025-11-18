@@ -471,6 +471,10 @@ module GraphqlHelpers
     FIELDS
   end
 
+  DEFAULT_EXCLUSIONS = [
+    'aiCatalogItems' # FieldCallCount limit
+  ].freeze
+
   def all_graphql_fields_for(class_name, max_depth: 3, excluded: [])
     # pulling _all_ fields can generate a _huge_ query (like complexity 180,000),
     # and significantly increase spec runtime. so limit the depth by default
@@ -485,6 +489,8 @@ module GraphqlHelpers
 
     type = class_name.respond_to?(:kind) ? class_name : GitlabSchema.types[class_name.to_s]
     raise "#{class_name} is not a known type in the GitlabSchema" unless type
+
+    excluded += DEFAULT_EXCLUSIONS
 
     # We can't guess arguments, so skip fields that require them
     skip = ->(name, field) { excluded.include?(name) || required_arguments?(field) }

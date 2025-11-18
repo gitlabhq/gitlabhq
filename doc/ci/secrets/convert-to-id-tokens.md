@@ -192,7 +192,7 @@ $ vault write auth/jwt/config \
 ```
 
 Setting the `bound_issuer` directive to an empty string removes the issuer validation on the auth method level.
-However, as we have moved this validation to the role level, this configuration is still secure.
+However, because this validation is now at the role level, the configuration is still secure.
 
 ## Update your CI/CD Jobs
 
@@ -239,7 +239,7 @@ job:
 Both `VAULT_SERVER_URL` and `VAULT_AUTH_PATH` can be [defined as project or group CI/CD variables](../variables/_index.md#define-a-cicd-variable-in-the-ui),
 if preferred.
 
-We use [`secrets:file:false`](../yaml/_index.md#secretsfile) because ID tokens place secrets in a file by default, but we need it to work as a regular variable to match the old behavior.
+[`secrets:file`](../yaml/_index.md#secretsfile) is set to `false` because ID tokens place secrets in a file by default and it needs to work as a regular variable instead to match the old behavior.
 
 ### KV Secrets Engine v2
 

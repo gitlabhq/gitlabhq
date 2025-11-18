@@ -12,28 +12,20 @@ title: Jira DVCS connector
 
 {{< /details >}}
 
-{{< alert type="warning" >}}
-
-The Jira DVCS connector for Jira Cloud was [deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/362168)
-in GitLab 15.1 and [removed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/118126) in 16.0.
-Use the [GitLab for Jira Cloud app](../connect-app.md) instead.
-The Jira DVCS connector was also deprecated and removed for Jira 8.13 and earlier.
-You can only use the Jira DVCS connector with Jira Data Center or Jira Server in Jira 8.14 and later.
-Upgrade your Jira instance to Jira 8.14 or later and reconfigure the Jira issues integration on your GitLab instance.
-
-{{< /alert >}}
-
 Use the Jira DVCS (distributed version control system) connector if you self-host your Jira instance
 with Jira Data Center or Jira Server and want to use the [Jira development panel](../development_panel.md).
 The Jira DVCS connector is developed and maintained by Atlassian.
 
 To configure the Jira DVCS connector, see
 [integrating with development tools using DVCS](https://confluence.atlassian.com/adminjiraserver/integrating-with-development-tools-using-dvcs-1047552689.html).
+You can only use the Jira DVCS connector with Jira Data Center or Jira Server in Jira 8.14 and later.
+
 Jira creates a webhook in the GitLab project to provide real-time updates.
 To configure this webhook, you must have at least the Maintainer role for the project.
 For more information, see [configuring webhook security](https://confluence.atlassian.com/adminjiraserver/configuring-webhook-security-1299913153.html).
 
-If you're on Jira Cloud, migrate to the GitLab for Jira Cloud app.
+The Jira DVCS connector for Jira Cloud was [removed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/118126) in GitLab 16.0.
+Use the [GitLab for Jira Cloud app](../connect-app.md) instead.
 For more information, see [Install the GitLab for Jira Cloud app](../connect-app.md#install-the-gitlab-for-jira-cloud-app).
 
 ## Refresh data imported to Jira

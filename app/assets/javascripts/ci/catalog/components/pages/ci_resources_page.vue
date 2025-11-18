@@ -188,8 +188,6 @@ export default {
     <template v-else>
       <ci-resources-list
         :page-info="pageInfo"
-        :prev-text="__('Prev')"
-        :next-text="__('Next')"
         :resources="catalogResources"
         @onPrevPage="handlePrevPage"
         @onNextPage="handleNextPage"

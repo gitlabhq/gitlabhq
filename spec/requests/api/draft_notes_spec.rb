@@ -216,7 +216,65 @@ RSpec.describe API::DraftNotes, feature_category: :code_review_workflow do
         end
       end
 
-      context "when attempting to resolve a disscussion" do
+      context "when using line_range position parameters" do
+        let!(:draft_note) { create(:draft_note_on_text_diff, merge_request: merge_request, author: user) }
+
+        context "when old_line/new_line is an integer" do
+          it "has a successful response" do
+            position = draft_note.position.to_h.merge(
+              line_range: {
+                start: {
+                  line_code: 'abc',
+                  type: 'new',
+                  old_line: 10,
+                  new_line: 11
+                },
+                end: {
+                  line_code: 'def',
+                  type: 'new',
+                  old_line: 10,
+                  new_line: 11
+                }
+              }
+            )
+
+            post api("/projects/#{project.id}/merge_requests/#{merge_request['iid']}/draft_notes", user),
+              params: { note: 'Test note', position: position }
+
+            expect(response).to have_gitlab_http_status(:created)
+          end
+        end
+
+        context "when old_line/new_line is a string" do
+          it "has a successful response" do
+            # the "grape" gem will convert a string into an integer in this case for us
+            # see: https://www.rubydoc.info/gems/grape/1.8.0/Grape/Validations/Types#multiple%3F-class_method
+            position = draft_note.position.to_h.merge(
+              line_range: {
+                start: {
+                  line_code: 'abc',
+                  type: 'new',
+                  old_line: "10",
+                  new_line: "11"
+                },
+                end: {
+                  line_code: 'def',
+                  type: 'new',
+                  old_line: "12",
+                  new_line: "13"
+                }
+              }
+            )
+
+            post api("/projects/#{project.id}/merge_requests/#{merge_request['iid']}/draft_notes", user),
+              params: { note: 'Test note', position: position }
+
+            expect(response).to have_gitlab_http_status(:created)
+          end
+        end
+      end
+
+      context "when attempting to resolve a discussion" do
         context "when providing a non-existant ID" do
           it "returns a 400 Bad Request" do
             create_draft_note(
@@ -317,6 +375,20 @@ RSpec.describe API::DraftNotes, feature_category: :code_review_workflow do
       it "publishes the specified draft note" do
         expect { publish_draft_note }.to change { Note.count }.by(1)
         expect(DraftNote.exists?(draft_note_by_current_user.id)).to eq(false)
+      end
+
+      it "creates a resolvable discussion when draft note has no position" do
+        # Create a draft note without position (not attached to code)
+        draft_without_position = create(:draft_note, merge_request: merge_request, author: user, position: nil)
+
+        put api("#{base_url}/#{draft_without_position.id}/publish", user)
+
+        expect(response).to have_gitlab_http_status(:no_content)
+
+        # The published note should be a DiscussionNote, making it resolvable
+        published_note = merge_request.notes.last
+        expect(published_note.type).to eq('DiscussionNote')
+        expect(published_note.discussion.resolvable?).to eq(true)
       end
     end
 

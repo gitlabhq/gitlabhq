@@ -100,131 +100,79 @@ RSpec.describe Oauth::TokensController, feature_category: :system_access do
         end
       end
 
-      context 'when log_refresh_token_hash feature flag is enabled' do
-        before do
-          stub_feature_flags(log_refresh_token_hash: true)
-        end
+      context 'when grant_type is refresh_token and refresh_token param is present' do
+        it 'logs the first 10 characters of SHA256 hash of the refresh token' do
+          expected_hash = Digest::SHA256.hexdigest(refresh_token)[0..9]
+          expect_refresh_token_hash_logged(expected_hash: expected_hash)
 
-        context 'when grant_type is refresh_token and refresh_token param is present' do
-          it 'logs the first 10 characters of SHA256 hash of the refresh token' do
-            expected_hash = Digest::SHA256.hexdigest(refresh_token)[0..9]
-            expect_refresh_token_hash_logged(expected_hash: expected_hash)
+          post(
+            '/oauth/token',
+            params: {
+              grant_type: 'refresh_token',
+              refresh_token: refresh_token,
+              client_secret: oauth_application.secret,
+              client_id: oauth_application.uid
+            }
+          )
 
-            post(
-              '/oauth/token',
-              params: {
-                grant_type: 'refresh_token',
-                refresh_token: refresh_token,
-                client_secret: oauth_application.secret,
-                client_id: oauth_application.uid
-              }
-            )
-
-            expect(response).to have_gitlab_http_status(:ok)
-          end
-        end
-
-        context 'when grant_type is refresh_token but refresh_token param is missing' do
-          it 'does not log refresh_token_hash' do
-            expect_no_refresh_token_hash_logged
-
-            post(
-              '/oauth/token',
-              params: {
-                grant_type: 'refresh_token',
-                client_secret: oauth_application.secret,
-                client_id: oauth_application.uid
-              }
-            )
-
-            expect(response).to have_gitlab_http_status(:bad_request)
-          end
-        end
-
-        context 'when grant_type is refresh_token but refresh_token param is blank' do
-          it 'does not log refresh_token_hash' do
-            expect_no_refresh_token_hash_logged
-
-            post(
-              '/oauth/token',
-              params: {
-                grant_type: 'refresh_token',
-                refresh_token: '',
-                client_secret: oauth_application.secret,
-                client_id: oauth_application.uid
-              }
-            )
-
-            expect(response).to have_gitlab_http_status(:bad_request)
-          end
-        end
-
-        context 'when grant_type is not refresh_token' do
-          let_it_be(:oauth_access_grant) { create(:oauth_access_grant, application: oauth_application, redirect_uri: oauth_application.redirect_uri) }
-
-          it 'does not log refresh_token_hash even if refresh_token param is present' do
-            expect_no_refresh_token_hash_logged
-
-            post(
-              '/oauth/token',
-              params: {
-                grant_type: 'authorization_code',
-                refresh_token: refresh_token, # This shouldn't be used for authorization_code flow
-                client_secret: oauth_application.secret,
-                client_id: oauth_application.uid,
-                redirect_uri: oauth_application.redirect_uri,
-                code: oauth_access_grant.plaintext_token
-              }
-            )
-
-            expect(response).to have_gitlab_http_status(:ok)
-          end
+          expect(response).to have_gitlab_http_status(:ok)
         end
       end
 
-      context 'when log_refresh_token_hash feature flag is disabled' do
-        before do
-          stub_feature_flags(log_refresh_token_hash: false)
+      context 'when grant_type is refresh_token but refresh_token param is missing' do
+        it 'does not log refresh_token_hash' do
+          expect_no_refresh_token_hash_logged
+
+          post(
+            '/oauth/token',
+            params: {
+              grant_type: 'refresh_token',
+              client_secret: oauth_application.secret,
+              client_id: oauth_application.uid
+            }
+          )
+
+          expect(response).to have_gitlab_http_status(:bad_request)
         end
+      end
 
-        context 'when grant_type is refresh_token and refresh_token param is present' do
-          it 'does not log refresh_token_hash' do
-            expect_no_refresh_token_hash_logged
+      context 'when grant_type is refresh_token but refresh_token param is blank' do
+        it 'does not log refresh_token_hash' do
+          expect_no_refresh_token_hash_logged
 
-            post(
-              '/oauth/token',
-              params: {
-                grant_type: 'refresh_token',
-                refresh_token: refresh_token,
-                client_secret: oauth_application.secret,
-                client_id: oauth_application.uid
-              }
-            )
+          post(
+            '/oauth/token',
+            params: {
+              grant_type: 'refresh_token',
+              refresh_token: '',
+              client_secret: oauth_application.secret,
+              client_id: oauth_application.uid
+            }
+          )
 
-            expect(response).to have_gitlab_http_status(:ok)
-          end
+          expect(response).to have_gitlab_http_status(:bad_request)
         end
+      end
 
-        context 'when grant_type is not refresh_token' do
-          let_it_be(:oauth_access_grant) { create(:oauth_access_grant, application: oauth_application, redirect_uri: oauth_application.redirect_uri) }
+      context 'when grant_type is not refresh_token' do
+        let_it_be(:oauth_access_grant) { create(:oauth_access_grant, application: oauth_application, redirect_uri: oauth_application.redirect_uri) }
 
-          it 'does not log refresh_token_hash' do
-            expect_no_refresh_token_hash_logged
+        it 'does not log refresh_token_hash even if refresh_token param is present' do
+          expect_no_refresh_token_hash_logged
 
-            post(
-              '/oauth/token',
-              params: {
-                grant_type: 'authorization_code',
-                refresh_token: refresh_token,
-                client_secret: oauth_application.secret,
-                client_id: oauth_application.uid,
-                redirect_uri: oauth_application.redirect_uri,
-                code: oauth_access_grant.plaintext_token
-              }
-            )
+          post(
+            '/oauth/token',
+            params: {
+              grant_type: 'authorization_code',
+              refresh_token: refresh_token, # This shouldn't be used for authorization_code flow
+              client_secret: oauth_application.secret,
+              client_id: oauth_application.uid,
+              redirect_uri: oauth_application.redirect_uri,
+              code: oauth_access_grant.plaintext_token
+            }
+          )
 
-            expect(response).to have_gitlab_http_status(:ok)
-          end
+          expect(response).to have_gitlab_http_status(:ok)
         end
       end
     end
@@ -362,6 +310,35 @@ RSpec.describe Oauth::TokensController, feature_category: :system_access do
 
             expect(response.parsed_body['error']).not_to eq('invalid_request')
             expect(response.parsed_body['error_description']).not_to include('PKCE code_verifier is required')
+          end
+        end
+
+        context 'when refreshing access tokens with refresh_token' do
+          let_it_be(:dynamic_oauth_application) do
+            create(:oauth_application, :dynamic, confidential: false, scopes: 'mcp')
+          end
+
+          let_it_be(:oauth_token) do
+            create(
+              :oauth_access_token,
+              application: dynamic_oauth_application,
+              resource_owner_id: user.id,
+              use_refresh_token: true,
+              scopes: 'mcp'
+            )
+          end
+
+          it 'does not require PKCE code_verifier for refresh token flow' do
+            post('/oauth/token', params: {
+              grant_type: 'refresh_token',
+              refresh_token: oauth_token.plaintext_refresh_token,
+              client_id: dynamic_oauth_application.uid,
+              scopes: 'mcp'
+            })
+
+            expect(response).to have_gitlab_http_status(:ok)
+            expect(response.parsed_body).to have_key('access_token')
+            expect(response.parsed_body['error']).to be_nil
           end
         end
       end

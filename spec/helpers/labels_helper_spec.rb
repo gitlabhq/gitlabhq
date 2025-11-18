@@ -237,14 +237,14 @@ RSpec.describe LabelsHelper do
     let(:label_with_html_content) { create(:label, title: 'test', description: html) }
 
     context 'tooltip shows description' do
-      it 'removes HTML' do
+      it 'leaves HTML untouched' do
         tooltip = label_tooltip_title(label_with_html_content)
-        expect(tooltip).to eq('This is an image')
+        expect(tooltip).to eq(html)
       end
     end
 
     context 'tooltip shows title' do
-      it 'shows title' do
+      it 'returns title' do
         tooltip = label_tooltip_title(label_with_html_content, tooltip_shows_title: true)
         expect(tooltip).to eq('test')
       end

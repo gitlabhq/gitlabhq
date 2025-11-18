@@ -22,10 +22,6 @@ RSpec.describe 'Mailer previews', :with_trial_types, feature_category: :shared d
     create(:import_source_user, :awaiting_approval, :with_reassigned_by_user, namespace: group, reassign_to_user: user)
   end
 
-  Gitlab.ee do
-    let_it_be(:epic) { create(:epic, group: group) }
-  end
-
   let(:expected_kind) { [Mail::Message, ActionMailer::MessageDelivery] }
 
   let(:pending_failures) do
@@ -35,11 +31,19 @@ RSpec.describe 'Mailer previews', :with_trial_types, feature_category: :shared d
     }
   end
 
+  Gitlab.ee do
+    let_it_be(:epic) { create(:epic, group: group) }
+  end
+
   before_all do
     create(:project_member, :maintainer, source: project, created_by: user)
     create(:project_member, :invited, source: project, created_by: user)
     create(:group_member, :access_request, source: group)
     create(:group_member, :access_request, source: create(:group, :private))
+  end
+
+  before do
+    stub_application_setting(abuse_notification_email: 'admin@example.com')
   end
 
   subject { preview.call(email) }

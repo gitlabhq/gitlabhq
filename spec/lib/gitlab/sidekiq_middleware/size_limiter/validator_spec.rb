@@ -14,10 +14,6 @@ RSpec.describe Gitlab::SidekiqMiddleware::SizeLimiter::Validator, :aggregate_fai
     }
   end
 
-  def job_payload(args = {})
-    base_payload.merge('args' => args)
-  end
-
   let(:worker_class) do
     Class.new do
       def self.name
@@ -28,6 +24,10 @@ RSpec.describe Gitlab::SidekiqMiddleware::SizeLimiter::Validator, :aggregate_fai
 
       def perform(*args); end
     end
+  end
+
+  def job_payload(args = {})
+    base_payload.merge('args' => args)
   end
 
   before do

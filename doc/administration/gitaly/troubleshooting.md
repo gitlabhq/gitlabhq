@@ -1,5 +1,5 @@
 ---
-stage: Data Access
+stage: Tenant Scale
 group: Gitaly
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 title: Troubleshooting Gitaly
@@ -22,7 +22,7 @@ and our advice on [parsing the `gitaly/current` file](../logs/log_parsing.md#par
 When using standalone Gitaly servers, you must make sure they are the same version
 as GitLab to ensure full compatibility:
 
-1. On the left sidebar, at the bottom, select **Admin**.
+1. On the left sidebar, at the bottom, select **Admin**. If you've [turned on the new navigation](../../user/interface_redesign.md#turn-new-navigation-on-or-off), in the upper-right corner, select **Admin**.
 1. Select **Overview** > **Gitaly servers**.
 1. Confirm all Gitaly servers indicate that they are up to date.
 
@@ -260,9 +260,9 @@ When attempting `git push`, you can see:
 
 This combination of errors occurs when the GitLab server has been upgraded to GitLab 15.5 or later but Gitaly has not yet been upgraded.
 
-From GitLab 15.5, GitLab [authenticates with GitLab Shell using a JWT token instead of a shared secret](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/86148).
-You should follow the [recommendations on upgrading external Gitaly](../../update/upgrade.md#external-gitaly) and upgrade Gitaly before the GitLab
-server.
+GitLab 15.5 and later [authenticates with GitLab Shell using a JWT token instead of a shared secret](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/86148).
+You should [upgrade external Gitaly servers](../../update/plan_your_upgrade.md#upgrades-for-optional-features) before
+upgrading the GitLab server.
 
 ## Repository pushes fail with a `deny updating a hidden ref` error
 

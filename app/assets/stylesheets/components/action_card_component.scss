@@ -3,7 +3,8 @@
   display: block;
   padding: $gl-spacing-scale-5;
   border-radius: $gl-border-radius-base;
-  @apply gl-bg-default gl-border;
+  @apply gl-bg-default;
+  @apply gl-border;
 
   .action-card-title {
     display: flex;
@@ -32,11 +33,6 @@
     }
   }
 
-  .action-card-title:hover &-arrow {
-    opacity: 1;
-    translate: 0;
-  }
-
   .action-card-arrow {
     opacity: 0;
     translate: -$gl-spacing-scale-2;
@@ -53,6 +49,11 @@
   .action-card-controls:not(:empty) {
     margin-top: $gl-spacing-scale-4;
   }
+}
+
+.action-card-title:hover .action-card-arrow {
+  opacity: 1;
+  translate: 0;
 }
 
 @media (prefers-reduced-motion: reduce) {

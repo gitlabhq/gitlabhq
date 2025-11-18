@@ -29,7 +29,7 @@ module Import
     end
 
     def source_hostname
-      Gitlab::Utils.parse_url(bulk_import.configuration.url).host
+      bulk_import.configuration ? Gitlab::Utils.parse_url(bulk_import.configuration.url).host : ''
     end
 
     def title

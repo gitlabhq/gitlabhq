@@ -17,14 +17,14 @@ RSpec.describe ::Authz::GranularScope, feature_category: :permissions do
       let_it_be(:namespace2) { create(:namespace, organization: organization) }
       let_it_be(:scope_with_namespace1) { create(:granular_scope, namespace: namespace1, organization: organization) }
       let_it_be(:scope_with_namespace2) { create(:granular_scope, namespace: namespace2, organization: organization) }
-      let_it_be(:instance_scope) { create(:granular_scope, :standalone, organization: organization) }
+      let_it_be(:scope_without_namespace) { create(:granular_scope, :standalone, organization: organization) }
 
       it 'returns scopes for the given namespace' do
         expect(described_class.with_namespace(namespace1.id)).to contain_exactly(scope_with_namespace1)
       end
 
       it 'returns empty when namespace_id is nil' do
-        expect(described_class.with_namespace(nil)).to contain_exactly(instance_scope)
+        expect(described_class.with_namespace(nil)).to contain_exactly(scope_without_namespace)
       end
 
       it 'returns empty when namespace does not exist' do
@@ -33,7 +33,7 @@ RSpec.describe ::Authz::GranularScope, feature_category: :permissions do
 
       it 'does not return scopes for other namespaces' do
         result = described_class.with_namespace(namespace1.id)
-        expect(result).not_to include(scope_with_namespace2, instance_scope)
+        expect(result).not_to include(scope_with_namespace2, scope_without_namespace)
       end
     end
   end
@@ -60,7 +60,7 @@ RSpec.describe ::Authz::GranularScope, feature_category: :permissions do
 
       subject(:scope) { build(:granular_scope, organization: scope_organization, namespace: namespace) }
 
-      context 'when the scope is instance-level' do
+      context 'when the scope has no boundary' do
         let(:namespace) { nil }
 
         it { is_expected.to be_valid }
@@ -118,33 +118,34 @@ RSpec.describe ::Authz::GranularScope, feature_category: :permissions do
     let_it_be(:user) { create(:user, :with_namespace) }
     let_it_be(:personal_project) { create(:project, namespace: user.namespace) }
 
-    let_it_be(:instance_boundary) { Authz::Boundary.for(nil) }
+    let_it_be(:nil_boundary) { Authz::Boundary.for(nil) }
     let_it_be(:rootgroup_boundary) { Authz::Boundary.for(rootgroup) }
     let_it_be(:subgroup_boundary) { Authz::Boundary.for(subgroup) }
     let_it_be(:project_boundary) { Authz::Boundary.for(project) }
     let_it_be(:user_boundary) { Authz::Boundary.for(user) }
     let_it_be(:personal_project_boundary) { Authz::Boundary.for(personal_project) }
-    let_it_be(:nonexistent_boundary) { Authz::Boundary.for(create(:project)) }
+    let_it_be(:other_namespace_boundary) { Authz::Boundary.for(create(:project)) }
 
     before do
-      allow(::Authz::Permission).to receive(:all).and_return((:a..:h).index_with(nil))
+      allow(::Authz::Permission).to receive(:all).and_return((:a..:i).index_with(nil))
 
-      create(:granular_scope, namespace: instance_boundary.namespace, permissions: [:a])
+      create(:granular_scope, namespace: nil_boundary.namespace, permissions: [:a])
       create(:granular_scope, namespace: rootgroup_boundary.namespace, permissions: [:b, :c])
       create(:granular_scope, namespace: subgroup_boundary.namespace, permissions: [:c, :d])
       create(:granular_scope, namespace: project_boundary.namespace, permissions: [:d, :e])
       create(:granular_scope, namespace: user_boundary.namespace, permissions: [:f, :g])
       create(:granular_scope, namespace: personal_project_boundary.namespace, permissions: [:g, :h])
+      create(:granular_scope, :all_membership_namespaces, permissions: [:i])
     end
 
     where(:boundary, :expected_result) do
-      ref(:instance_boundary)         | [:a]
-      ref(:rootgroup_boundary)        | [:b, :c]
-      ref(:subgroup_boundary)         | [:b, :c, :d]
-      ref(:project_boundary)          | [:b, :c, :d, :e]
-      ref(:user_boundary)             | [:f, :g]
-      ref(:personal_project_boundary) | [:f, :g, :h]
-      ref(:nonexistent_boundary)      | []
+      ref(:nil_boundary)              | [:a, :i]
+      ref(:rootgroup_boundary)        | [:b, :c, :i]
+      ref(:subgroup_boundary)         | [:b, :c, :d, :i]
+      ref(:project_boundary)          | [:b, :c, :d, :e, :i]
+      ref(:user_boundary)             | [:f, :g, :i]
+      ref(:personal_project_boundary) | [:f, :g, :h, :i]
+      ref(:other_namespace_boundary)  | [:i]
     end
 
     subject { described_class.token_permissions(boundary) }

@@ -1,5 +1,5 @@
 ---
-stage: Create
+stage: AI-powered
 group: Editor Extensions
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 description: Use the GitLab Workflow extension for VS Code to handle common GitLab tasks directly in VS Code.
@@ -104,7 +104,7 @@ The extension shows an alert if it detects a problem with your configuration.
 Use this command to see a preview of your merged CI/CD configuration file, with all includes and references resolved.
 
 1. In VS Code, open your `.gitlab-ci.yml` file, and ensure the file's tab is in focus.
-1. On the top right, select **Show Merged GitLab CI/CD Configuration**:
+1. In the upper right, select **Show Merged GitLab CI/CD Configuration**:
 
    ![The VS Code application, showing the icon for viewing merged results.](img/show_merged_configuration_v17_6.png)
 

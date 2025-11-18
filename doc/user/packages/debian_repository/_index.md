@@ -107,7 +107,7 @@ and [package repositories](#authenticate-to-the-debian-package-repositories).
 
 To create, read, update, or delete a distribution, you need one of the following:
 
-- [Personal access token](../../../api/rest/authentication.md#personalprojectgroup-access-tokens),
+- [Personal access token](../../profile/personal_access_tokens.md),
   using `--header "PRIVATE-TOKEN: <personal_access_token>"`
 - [Deploy token](../../project/deploy_tokens/_index.md)
   using `--header "Deploy-Token: <deploy_token>"`
@@ -119,7 +119,7 @@ To create, read, update, or delete a distribution, you need one of the following
 To publish a package, or install a private package, you need to use basic authentication,
 with one of the following:
 
-- [Personal access token](../../../api/rest/authentication.md#personalprojectgroup-access-tokens),
+- [Personal access token](../../profile/personal_access_tokens.md),
   using `<username>:<personal_access_token>`
 - [Deploy token](../../project/deploy_tokens/_index.md)
   using `<deploy_token_name>:<deploy_token>`

@@ -72,16 +72,21 @@ describe('locale', () => {
     });
 
     describe('replaces duplicated % in input', () => {
-      it('removes duplicated percentage signs', () => {
-        const input = 'contains duplicated %{safeContent}%%';
-
+      it.each`
+        input                                              | expected
+        ${'contains duplicated %% sign'}                   | ${'contains duplicated % sign'}
+        ${'contains a single % sign'}                      | ${'contains a single % sign'}
+        ${'param ends with duplicated %{safeContent}%%'}   | ${'param ends with duplicated 15%'}
+        ${'param starts with duplicated %%{safeContent}%'} | ${'param starts with duplicated %{safeContent}%'}
+        ${'handles Turkish format %%%{safeContent}'}       | ${'handles Turkish format %15'}
+      `('handles "$input"', ({ input, expected }) => {
         const parameters = {
           safeContent: '15',
         };
 
         const output = sprintf(input, parameters, false);
 
-        expect(output).toBe('contains duplicated 15%');
+        expect(output).toBe(expected);
       });
     });
 

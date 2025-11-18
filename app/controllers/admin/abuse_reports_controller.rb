@@ -5,10 +5,6 @@ class Admin::AbuseReportsController < Admin::ApplicationController
 
   before_action :set_status_param, only: :index
   before_action :find_abuse_report, only: [:show, :moderate_user, :update, :destroy]
-  before_action only: :show do
-    push_frontend_feature_flag(:abuse_report_labels)
-    push_frontend_feature_flag(:abuse_report_notes)
-  end
 
   def index
     @abuse_reports = AbuseReportsFinder.new(permitted_index_params).execute
@@ -54,7 +50,7 @@ class Admin::AbuseReportsController < Admin::ApplicationController
   end
 
   def permitted_params
-    params.permit(:user_action, :close, :reason, :comment, { label_ids: [] })
+    params.permit(:user_action, :close, :reason, :comment)
   end
 
   def permitted_index_params

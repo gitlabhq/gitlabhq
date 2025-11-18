@@ -46,7 +46,7 @@ By minimizing the width of rows in a table, we improve the following:
   updated for every row update.
 
 Mitigating wide tables is one part of the database team's
-[100 GB table initiative](../../architecture/blueprints/database_scaling/size-limits.md),
+[100 GB table initiative](https://handbook.gitlab.com/handbook/engineering/architecture/design-documents/database_size_limits/),
 as wider tables can fit fewer rows in 100 GB.
 
 When adding columns to a table, consider if you intend to access the data in the

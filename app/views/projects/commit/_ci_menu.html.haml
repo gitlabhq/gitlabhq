@@ -1,9 +1,10 @@
 - any_pipelines = @commit.present(current_user: current_user).any_pipelines?
+- files_changed_count = @files_changed_count || @diffs.size
 
 = gl_tabs_nav({ class: 'commit-ci-menu gl-flex gl-grow'}) do
   = gl_tab_link_to project_commit_path(@project, @commit.id) do
     = _('Changes')
-    = gl_tab_counter_badge(@diffs.size)
+    = gl_tab_counter_badge(files_changed_count)
   - if any_pipelines
     = gl_tab_link_to pipelines_project_commit_path(@project, @commit.id) do
       = _('Pipelines')

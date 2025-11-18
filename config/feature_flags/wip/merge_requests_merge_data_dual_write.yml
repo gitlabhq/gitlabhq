@@ -1,0 +1,8 @@
+---
+name: merge_requests_merge_data_dual_write
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/208723
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/577053
+milestone: '18.6'
+group: group::code review
+type: wip
+default_enabled: false

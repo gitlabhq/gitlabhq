@@ -113,4 +113,21 @@ RSpec.describe Namespaces::UserNamespace, type: :model do
       end
     end
   end
+
+  describe '#owner_entity' do
+    let(:owner) { build(:user) }
+    let(:namespace) { build(:namespace, owner: owner) }
+
+    it 'returns itself' do
+      expect(namespace.owner_entity).to be(owner)
+    end
+  end
+
+  describe '#owner_entity_name' do
+    let(:namespace) { build(:namespace) }
+
+    it 'returns :user' do
+      expect(namespace.owner_entity_name).to be(:user)
+    end
+  end
 end

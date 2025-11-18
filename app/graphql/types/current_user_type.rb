@@ -38,21 +38,12 @@ module Types
       experiment: { milestone: '17.10' },
       description: 'User preferences for the given work item type and namespace.'
 
-    field :activity,
-      Users::ActivityStreamType,
-      description: 'Recent user activity.',
-      experiment: { milestone: '17.10' }
-
     field :runners,
       Types::Ci::RunnerType.connection_type,
       null: true,
       resolver: Resolvers::Ci::UserRunnersResolver,
       experiment: { milestone: '18.3' },
       description: 'List all runners the current user manages.'
-
-    def activity
-      object if Feature.enabled?(:activity_stream_graphql, current_user)
-    end
   end
   # rubocop:enable Graphql/AuthorizeTypes
 end

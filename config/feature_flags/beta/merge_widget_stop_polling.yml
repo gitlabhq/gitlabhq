@@ -1,0 +1,10 @@
+---
+name: merge_widget_stop_polling
+description: Stops polling widget endpoints on merge requests
+feature_issue_url:
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/210917
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/579437
+milestone: '18.6'
+group: group::code review
+type: beta
+default_enabled: false

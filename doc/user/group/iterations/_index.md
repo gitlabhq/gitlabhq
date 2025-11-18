@@ -122,7 +122,7 @@ Prerequisites:
 
 To create an iteration cadence:
 
-1. On the left sidebar, select **Search or go to** and find your group.
+1. On the left sidebar, select **Search or go to** and find your group. If you've [turned on the new navigation](../../interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
 1. Select **Plan** > **Iterations**.
 1. Select **New iteration cadence**.
 1. Enter the title and description of the iteration cadence.
@@ -145,7 +145,7 @@ To manually manage the created cadence, see [Create an iteration manually](#crea
 
 ### View the iterations list
 
-1. On the left sidebar, select **Search or go to** and find your group.
+1. On the left sidebar, select **Search or go to** and find your group. If you've [turned on the new navigation](../../interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
 1. Select **Plan** > **Iterations**.
 
 To view all the iterations in a cadence, ordered by descending date, select that iteration cadence.
@@ -169,7 +169,7 @@ Prerequisites:
 
 To edit an iteration cadence:
 
-1. On the left sidebar, select **Search or go to** and find your group.
+1. On the left sidebar, select **Search or go to** and find your group. If you've [turned on the new navigation](../../interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
 1. Select **Plan** > **Iterations**.
 1. To the right of the cadence you want to edit, select the vertical ellipsis ({{< icon name="ellipsis_v" >}}) and
    then select **Edit cadence**.
@@ -184,7 +184,7 @@ To edit an iteration cadence:
 
 #### Turn on and off automatic scheduling for an iteration cadence
 
-1. On the left sidebar, select **Search or go to** and find your group.
+1. On the left sidebar, select **Search or go to** and find your group. If you've [turned on the new navigation](../../interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
 1. Select **Plan** > **Iterations**.
 1. To the right of the cadence for which you want to turn on or off automatic scheduling, select the
    vertical ellipsis ({{< icon name="ellipsis_v" >}}) and then select **Edit cadence**.
@@ -239,7 +239,7 @@ Deleting an iteration cadence also deletes all iterations in that cadence.
 
 To delete an iteration cadence:
 
-1. On the left sidebar, select **Search or go to** and find your group.
+1. On the left sidebar, select **Search or go to** and find your group. If you've [turned on the new navigation](../../interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
 1. Select **Plan** > **Iterations**.
 1. To the right of the cadence you want to delete, select the vertical ellipsis ({{< icon name="ellipsis_v" >}}) and then select **Delete cadence**.
 1. Select **Delete cadence**.
@@ -276,7 +276,7 @@ Prerequisites:
 
 To create an iteration:
 
-1. On the left sidebar, select **Search or go to** and find your group.
+1. On the left sidebar, select **Search or go to** and find your group. If you've [turned on the new navigation](../../interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
 1. Select **Plan** > **Iterations**.
 1. To the right of the cadence in which you want create an iteration, select the vertical ellipsis
    ({{< icon name="ellipsis_v" >}}) and then select **Add iteration**.
@@ -298,7 +298,7 @@ Prerequisites:
 
 To edit an iteration:
 
-1. On the left sidebar, select **Search or go to** and find your group.
+1. On the left sidebar, select **Search or go to** and find your group. If you've [turned on the new navigation](../../interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
 1. Select **Plan** > **Iterations** and select an iteration cadence.
 1. Select the iteration you want edit. The iteration details page opens.
 1. In the upper-right corner, select the vertical ellipsis ({{< icon name="ellipsis_v" >}}) and then select **Edit**.
@@ -322,7 +322,7 @@ Prerequisites:
 
 To delete an iteration:
 
-1. On the left sidebar, select **Search or go to** and find your group.
+1. On the left sidebar, select **Search or go to** and find your group. If you've [turned on the new navigation](../../interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
 1. Select **Plan** > **Iterations** and select an iteration cadence.
 1. Select the iteration you want edit. The iteration details page opens.
 1. In the upper-right corner, select the vertical ellipsis ({{< icon name="ellipsis_v" >}}) and then select **Delete**.
@@ -341,7 +341,7 @@ Closed iteration reports show the total number of issues completed by the due da
 
 To view an iteration report:
 
-1. On the left sidebar, select **Search or go to** and find your group.
+1. On the left sidebar, select **Search or go to** and find your group. If you've [turned on the new navigation](../../interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
 1. Select **Plan** > **Iterations** and select an iteration cadence.
 1. Select an iteration.
 
@@ -385,7 +385,7 @@ understanding of scope attributable to each label.
 
 To group issues by label:
 
-1. On the left sidebar, select **Search or go to** and find your group.
+1. On the left sidebar, select **Search or go to** and find your group. If you've [turned on the new navigation](../../interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
 1. Select **Plan** > **Iterations** and select an iteration cadence.
 1. Select an iteration.
 1. From the **Group by** dropdown list, select **Label**.

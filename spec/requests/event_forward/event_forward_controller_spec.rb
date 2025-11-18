@@ -154,5 +154,67 @@ RSpec.describe EventForward::EventForwardController, feature_category: :product_
         request
       end
     end
+
+    describe 'context validation' do
+      let(:validator) { instance_double(Gitlab::Tracking::Destinations::SnowplowContextValidator) }
+      let(:context_data) { [{ 'schema' => 'iglu:com.gitlab/test/jsonschema/1-0-0', 'data' => { 'key' => 'value' } }] }
+      let(:encoded_context) { Base64.encode64({ 'data' => context_data }.to_json) }
+      let(:event_with_context) { { 'se_ac' => 'event_1', 'aid' => 'app_id_1', 'cx' => encoded_context } }
+
+      before do
+        allow(Gitlab::Tracking::Destinations::SnowplowContextValidator).to receive(:new).and_return(validator)
+        allow(validator).to receive(:validate!)
+        payload['data'] = [event_with_context]
+      end
+
+      context 'when in development environment' do
+        before do
+          allow(Rails.env).to receive(:development?).and_return(true)
+        end
+
+        it 'validates the context' do
+          expect(validator).to receive(:validate!).with(context_data)
+
+          request
+        end
+
+        context 'when validation fails' do
+          before do
+            allow(validator).to receive(:validate!).and_raise(ArgumentError)
+          end
+
+          it 'payload still sent to the emitter' do
+            expect(tracker).to receive(:emit_event_payload)
+
+            suppress(ArgumentError) { request }
+          end
+        end
+      end
+
+      context 'when not in development environment' do
+        before do
+          allow(Rails.env).to receive(:development?).and_return(false)
+        end
+
+        it 'does not validate the context' do
+          expect(validator).not_to receive(:validate!)
+
+          request
+        end
+      end
+
+      context 'when event does not have cx field' do
+        before do
+          allow(Rails.env).to receive(:development?).and_return(true)
+          payload['data'] = [event_1]
+        end
+
+        it 'does not validate the context' do
+          expect(validator).not_to receive(:validate!)
+
+          request
+        end
+      end
+    end
   end
 end

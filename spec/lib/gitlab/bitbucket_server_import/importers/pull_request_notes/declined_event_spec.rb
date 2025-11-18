@@ -8,7 +8,7 @@ RSpec.describe Gitlab::BitbucketServerImport::Importers::PullRequestNotes::Decli
   let_it_be_with_reload(:project) do
     create(
       :project, :repository, :bitbucket_server_import, :in_group,
-      :import_user_mapping_enabled, :user_mapping_to_personal_namespace_owner_enabled
+      :import_user_mapping_enabled
     )
   end
 
@@ -115,32 +115,6 @@ RSpec.describe Gitlab::BitbucketServerImport::Importers::PullRequestNotes::Decli
         expect(merge_request.resource_state_events.first.user_id).to eq(user_namespace.owner_id)
         expect(merge_request.metrics.reload.latest_closed_by_id).to eq(user_namespace.owner_id)
         expect(merge_request.events.first.author_id).to eq(user_namespace.owner_id)
-      end
-
-      context 'when user_mapping_to_personal_namespace_owner is disabled' do
-        before do
-          project.build_or_assign_import_data(
-            data: { user_mapping_to_personal_namespace_owner_enabled: false }
-          ).save!
-        end
-
-        it 'pushes placeholder references' do
-          importer.execute(declined_event)
-
-          expect(cached_references).to contain_exactly(
-            ['Event', instance_of(Integer), 'author_id', source_user.id],
-            ["ResourceStateEvent", instance_of(Integer), "user_id", source_user.id],
-            ['MergeRequest::Metrics', instance_of(Integer), 'latest_closed_by_id', source_user.id]
-          )
-        end
-
-        it 'imports the declined event mapped to the placeholder user' do
-          importer.execute(declined_event)
-
-          expect(merge_request.resource_state_events.first.user_id).to eq(source_user.mapped_user_id)
-          expect(merge_request.metrics.reload.latest_closed_by_id).to eq(source_user.mapped_user_id)
-          expect(merge_request.events.first.author_id).to eq(source_user.mapped_user_id)
-        end
       end
     end
 

@@ -12,8 +12,9 @@ title: Group milestones API
 
 {{< /details >}}
 
-Use the group [milestones](../user/project/milestones/_index.md) using the REST API.
-There's a separate [project milestones API](milestones.md) page.
+Use this API to manage [group milestones](../user/project/milestones/_index.md).
+
+For project milestones, use the [project milestones API](milestones.md).
 
 ## List group milestones
 

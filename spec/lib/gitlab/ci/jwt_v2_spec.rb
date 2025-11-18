@@ -294,25 +294,34 @@ RSpec.describe Gitlab::Ci::JwtV2, feature_category: :secrets_management do
       end
 
       describe 'claims delegated to mapper' do
-        let(:project_config) do
-          instance_double(
-            Gitlab::Ci::ProjectConfig,
-            url: 'gitlab.com/gitlab-org/gitlab//.gitlab-ci.yml',
-            source: :repository_source
-          )
+        where(:source) do
+          [
+            :repository_source,
+            :bridge_source
+          ]
         end
 
-        it 'delegates claims to Gitlab::Ci::JwtV2::ClaimMapper' do
-          expect(Gitlab::Ci::ProjectConfig).to receive(:new).with(
-            project: target_project,
-            sha: pipeline.sha,
-            pipeline_source: pipeline.source.to_sym,
-            pipeline_source_bridge: pipeline.source_bridge
-          ).and_return(project_config)
+        with_them do
+          let(:project_config) do
+            instance_double(
+              Gitlab::Ci::ProjectConfig,
+              url: 'gitlab.com/gitlab-org/gitlab//.gitlab-ci.yml',
+              source: source
+            )
+          end
 
-          expect(payload[:project_id]).to eq(forked_project.id.to_s)
-          expect(payload[:ci_config_ref_uri]).to eq("#{project_config.url}@#{pipeline.source_ref_path}")
-          expect(payload[:ci_config_sha]).to eq(pipeline.sha)
+          it 'delegates claims to Gitlab::Ci::JwtV2::ClaimMapper' do
+            expect(Gitlab::Ci::ProjectConfig).to receive(:new).with(
+              project: target_project,
+              sha: pipeline.sha,
+              pipeline_source: pipeline.source.to_sym,
+              pipeline_source_bridge: pipeline.source_bridge
+            ).and_return(project_config)
+
+            expect(payload[:project_id]).to eq(forked_project.id.to_s)
+            expect(payload[:ci_config_ref_uri]).to eq("#{project_config.url}@#{pipeline.source_ref_path}")
+            expect(payload[:ci_config_sha]).to eq(pipeline.sha)
+          end
         end
       end
     end

@@ -19,9 +19,12 @@ module WikiHelper
 
   def wiki_sidebar_toggle_button
     render Pajamas::ButtonComponent.new(
-      icon: 'chevron-double-lg-left',
-      button_options: { class: 'sidebar-toggle js-sidebar-wiki-toggle' }
-    )
+      category: :tertiary,
+      icon: 'list-bulleted',
+      button_options: {
+        class: 'wiki-sidebar-header-toggle js-sidebar-wiki-toggle-open gl-mr-2',
+        "aria-label": _('Toggle sidebar')
+      })
   end
 
   # Produces a pure text breadcrumb for a given page.

@@ -106,6 +106,14 @@ describe('expandLinesAdapter', () => {
     );
   });
 
+  it('stops propagation of focusin event when focusing inserted line', async () => {
+    getLines.mockResolvedValueOnce(createLinesResponse());
+    const focusinHandler = jest.fn();
+    getDiffElement().addEventListener('focusin', focusinHandler);
+    await click('down');
+    expect(focusinHandler).not.toHaveBeenCalled();
+  });
+
   it('prevents expansion while processing another expansion', () => {
     let res;
     getLines.mockImplementation(

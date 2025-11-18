@@ -1,0 +1,15 @@
+- content_for(:title, s_('404|Expired link'))
+.error-container
+  = image_tag('illustrations/status/status-fail-md.svg', alt: '404', lazy: false)
+  %h1
+    = s_('404|Expired link')
+  %p
+    = s_("404|This link is no longer valid.")
+    = s_('404|Use a direct link to the item to unsubscribe.')
+  .action-container
+    = form_tag search_path, method: :get, class: 'form-inline-flex' do |f|
+      .field
+        = search_field_tag :search, '', placeholder: _('Search for projects, issues, etc.'), class: 'form-control'
+      = render Pajamas::ButtonComponent.new(variant: :confirm, type: :submit) do
+        = _('Search')
+  = render 'errors/footer'

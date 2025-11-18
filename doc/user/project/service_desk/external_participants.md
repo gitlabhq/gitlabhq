@@ -47,7 +47,7 @@ Prerequisites:
 
 To enable the setting for the project:
 
-1. On the left sidebar, select **Search or go to** and find your project.
+1. On the left sidebar, select **Search or go to** and find your project. If you've [turned on the new navigation](../../interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
 1. Select **Settings** > **General**.
 1. Expand **Service Desk**.
 1. Select **Add external participants from the `Cc` header**.

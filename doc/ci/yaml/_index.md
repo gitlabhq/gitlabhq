@@ -26,6 +26,9 @@ This file is where you define the CI/CD jobs that make up your pipeline.
 When you are editing your `.gitlab-ci.yml` file, you can validate it with the
 [CI Lint](lint.md) tool.
 
+GitLab CI/CD configuration uses YAML formatting, so the order of keywords is not important
+unless otherwise specified.
+
 Use [CI/CD expressions](expressions.md) for more dynamic pipeline configuration options.
 
 <!--
@@ -39,12 +42,13 @@ A GitLab CI/CD pipeline configuration includes:
 
 - [Global keywords](#global-keywords) that configure pipeline behavior:
 
-  | Keyword                 | Description |
-  |-------------------------|:------------|
-  | [`default`](#default)   | Custom default values for job keywords. |
-  | [`include`](#include)   | Import configuration from other YAML files. |
-  | [`stages`](#stages)     | The names and order of the pipeline stages. |
-  | [`workflow`](#workflow) | Control what types of pipeline run. |
+  | Keyword                           | Description |
+  |-----------------------------------|:------------|
+  | [`default`](#default)             | Custom default values for job keywords. |
+  | [`include`](#include)             | Import configuration from other YAML files. |
+  | [`stages`](#stages)               | The names and order of the pipeline stages. |
+  | [`variables`](#default-variables) | Define default CI/CD variables for all jobs in the pipeline. |
+  | [`workflow`](#workflow)           | Control what types of pipeline run. |
 
 - [Header keywords](#header-keywords)
 
@@ -83,17 +87,12 @@ A GitLab CI/CD pipeline configuration includes:
   | [`secrets`](#secrets)                         | The CI/CD secrets the job needs. |
   | [`services`](#services)                       | Use Docker services images. |
   | [`stage`](#stage)                             | Defines a job stage. |
+  | [`start_in`](#start_in)                       | Delay job execution for a specified duration. Requires `when: delayed`. |
   | [`tags`](#tags)                               | List of tags that are used to select a runner. |
   | [`timeout`](#timeout)                         | Define a custom job-level timeout that takes precedence over the project-wide setting. |
   | [`trigger`](#trigger)                         | Defines a downstream pipeline trigger. |
+  | [`variables`](#job-variables)                 | Define CI/CD variables for individual jobs. |
   | [`when`](#when)                               | When to run job. |
-
-- [CI/CD variables](#variables)
-
-  | Keyword                                   | Description |
-  |:------------------------------------------|:------------|
-  | [Default `variables`](#default-variables) | Define default CI/CD variables for all jobs in the pipeline. |
-  | [Job `variables`](#job-variables)         | Define CI/CD variables for individual jobs. |
 
 - [Deprecated keywords](deprecated_keywords.md) that are no longer recommended for use.
 
@@ -115,15 +114,17 @@ or import additional pipeline configuration.
 {{< /history >}}
 
 You can set global defaults for some keywords. Each default keyword is copied to every job
-that doesn't already have it defined. If the job already has a keyword defined, that default
-is not used.
+that doesn't already have it defined.
+
+Default configuration does not merge with job configuration. If the job already has a keyword defined,
+the job keyword takes precedence and the default configuration for that keyword is not used.
 
 **Keyword type**: Global keyword.
 
 **Supported values**: These keywords can have custom defaults:
 
 - [`after_script`](#after_script)
-- [`artifacts`](#artifacts), though due to [issue 404563](https://gitlab.com/gitlab-org/gitlab/-/issues/404563), the nested keyword `artifacts:expire_in` has no effect.
+- [`artifacts`](#artifacts)
 - [`before_script`](#before_script)
 - [`cache`](#cache)
 - [`hooks`](#hooks)
@@ -1209,6 +1210,135 @@ title: The pipeline configuration would follow...
 
 ---
 
+##### `spec:include`
+
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/206931) in GitLab 18.6 [with a flag](../../administration/feature_flags/_index.md) named `ci_file_inputs`. Disabled by default.
+
+{{< /history >}}
+
+Use `spec:include` to include external input definitions from other files.
+You can share and reuse input definitions across multiple pipeline configurations.
+
+**Keyword type**: Header keyword. `spec` must be declared at the top of the configuration file,
+in a header section.
+
+**Supported values**: An array of include locations. Supports `local`, `remote`, and `project` includes only.
+
+**Example of `spec:include`**:
+
+```yaml
+spec:
+  include:
+    - local: /shared-inputs.yml
+  inputs:
+    environment:
+      default: production
+---
+
+deploy:
+  script: echo "Deploying to $[[ inputs.environment ]]"
+```
+
+With multiple includes from different sources:
+
+```yaml
+spec:
+  include:
+    - local: /base-inputs.yml
+    - remote: 'https://example.com/ci/common-inputs.yml'
+    - project: 'my-group/shared-configs'
+      ref: main
+      file: '/ci/team-inputs.yml'
+  inputs:
+    environment:
+      default: production
+---
+
+deploy:
+  script: echo "Deploying to $[[ inputs.environment ]]"
+```
+
+**Additional details**:
+
+- External input files must contain only the `inputs` key. Other keys cause validation errors.
+- External inputs are merged first, then inline inputs are applied.
+- Inline inputs take precedence over external inputs with the same name.
+- When you include multiple input files, they are merged in the order specified.
+- Supports [`local`](#includelocal), [`remote`](#includeremote), and [`project`](#includeproject) include types.
+  Does not support `template`, `component`, or `artifact` includes.
+
+**Related topics**:
+
+- [Use inputs from external files](../inputs/_index.md#use-inputs-from-external-files).
+
+---
+
+##### `spec:component`
+
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/438275) in GitLab 18.6 as a [beta](../../policy/development_stages_support.md#beta) [with a flag](../../administration/feature_flags/_index.md) named `ci_component_context_interpolation`. Enabled by default.
+
+{{< /history >}}
+
+Use `spec:component` to define which component context data is available for interpolation
+in a [CI/CD component](../components/_index.md).
+
+Component context provides metadata about the component itself, such as its name, version,
+and the commit SHA. This allows component templates to reference their own metadata dynamically.
+
+Use the interpolation format `$[[ component.field-name ]]` to reference component context
+values in the component template.
+
+**Keyword type**: Header keyword. `spec` must be declared at the top of the configuration file,
+in a header section.
+
+**Supported values**: An array of strings. Each string must be one of:
+
+- `name`: The component name as specified in the component path.
+- `sha`: The commit SHA of the component.
+- `version`: The resolved semantic version from the catalog resource. Returns `null` if:
+  - The component is not a catalog resource.
+  - The reference is a branch name or commit SHA (not a released version).
+- `reference`: The original reference specified after `@` in the component path.
+  For example, `1.0`, `~latest`, a branch name, or a commit SHA.
+
+**Example of `spec:component`**:
+
+```yaml
+spec:
+  component: [name, version, reference]
+  inputs:
+    image_tag:
+      default: latest
+---
+
+build-image:
+  image: registry.example.com/$[[ component.name ]]:$[[ component.version ]]
+  script:
+    - echo "Building with component version $[[ component.version ]]"
+    - echo "Component reference: $[[ component.reference ]]"
+```
+
+**Additional details**:
+
+- The `version` field resolves to the actual semantic version when using:
+  - A full version like `@1.0.0` (returns `1.0.0`)
+  - A partial version like `@1.0` (returns the latest matching version, for example `1.0.2`)
+  - `@~latest` (returns the latest version)
+- The `reference` field always returns the exact value specified after `@`:
+  - `@1.0` returns `1.0` (while `version` might return `1.0.2`)
+  - `@~latest` returns `~latest` (while `version` returns the actual version number)
+  - `@abc123` returns `abc123` (while `version` returns `null`)
+
+**Related topics**:
+
+- [Use component context in components](../components/_index.md#use-component-context-in-components).
+
+---
+
 ## Job keywords
 
 The following topics explain how to use keywords to configure CI/CD pipelines.
@@ -1228,6 +1358,10 @@ Use `after_script` to define an array of commands to run last, after a job's `be
 
 - The job is canceled while the `before_script` or `script` sections are still running.
 - The job fails with failure type of `script_failure`, but not [other failure types](#retrywhen).
+
+Job configuration and default configuration does not merge together.
+If the pipeline has [`default:after_script`](#default) defined, and the job also has `after_script`,
+the job configuration takes precedence and the default configuration is not used.
 
 **Keyword type**: Job keyword. You can use it only as part of a job or in the
 [`default` section](#default).
@@ -1273,6 +1407,7 @@ Scripts you specify in `after_script` execute in a new shell, separate from any
 - For jobs that time out:
   - `after_script` commands do not execute by default.
   - You can [configure timeout values](../runners/configure_runners.md#ensuring-after_script-execution) to ensure `after_script` runs by setting appropriate `RUNNER_SCRIPT_TIMEOUT` and `RUNNER_AFTER_SCRIPT_TIMEOUT` values that don't exceed the job's timeout.
+- Using `after_script` at the top level, but not in the `default` section, is [deprecated](deprecated_keywords.md#globally-defined-image-services-cache-before_script-after_script).
 
 **Execution timing and file inclusion**:
 
@@ -1449,6 +1584,10 @@ artifacts from the jobs defined in the `needs` configuration.
 
 Job artifacts are only collected for successful jobs by default, and
 artifacts are restored after [caches](#cache).
+
+Job configuration and default configuration does not merge together.
+If the pipeline has [`default:artifacts`](#default) defined, and the job also has `artifacts`,
+the job configuration takes precedence and the default configuration is not used.
 
 [Read more about artifacts](../jobs/job_artifacts.md).
 
@@ -1682,21 +1821,26 @@ has more options.
 
 {{< /alert >}}
 
-Use `artifacts:public` to determine whether the job artifacts should be
-publicly available.
+Use `artifacts:public` to control whether job artifacts in public pipelines are available for download
+with the GitLab UI and API by anonymous users, or Guest and Reporter roles.
 
-When `artifacts:public` is `true` (default), the artifacts in
-public pipelines are available for download by anonymous, guest, and reporter users.
+{{< alert type="warning" >}}
 
-To deny read access to artifacts in public
-pipelines for anonymous, guest, and reporter users, set `artifacts:public` to `false`:
+This option only affects GitLab UI and API access. CI/CD jobs using job tokens
+could still access artifacts with the runner API, regardless of this setting. To restrict
+job token access, configure your project's [CI/CD visibility settings](../../user/project/settings/_index.md#configure-project-features-and-permissions)
+to **Only project members**.
+
+{{< /alert >}}
 
 **Keyword type**: Job keyword. You can use it only as part of a job or in the
 [`default` section](#default).
 
 **Supported values**:
 
-- `true` (default if not defined) or `false`.
+- `true` (default): Artifacts in a job in public pipelines are available for download by anyone,
+  including anonymous users, or Guest and Reporter roles.
+- `false`: Artifacts in the job are only available for download by users with at least the Developer role.
 
 **Example of `artifacts:public`**:
 
@@ -1722,14 +1866,23 @@ or API. This option does not prevent you from forwarding artifacts to downstream
 
 You cannot use [`artifacts:public`](#artifactspublic) and `artifacts:access` in the same job.
 
+{{< alert type="warning" >}}
+
+This option only affects GitLab UI and API access. CI/CD jobs using job tokens
+could still access artifacts with the runner API, regardless of this setting. To restrict
+job token access, configure your project's [CI/CD visibility settings](../../user/project/settings/_index.md#configure-project-features-and-permissions)
+to **Only project members**.
+
+{{< /alert >}}
+
 **Keyword type**: Job keyword. You can use it only as part of a job.
 
 **Supported values**:
 
 - `all` (default): Artifacts in a job in public pipelines are available for download by anyone,
   including anonymous, guest, and reporter users.
-- `developer`: Artifacts in the job are only available for download by users with the Developer role or higher.
-- `maintainer`: Artifacts in the job are only available for download by users with the Maintainer role or higher.
+- `developer`: Artifacts in the job are only available for download by users with at least the Developer role.
+- `maintainer`: Artifacts in the job are only available for download by users with at least the Maintainer role.
 - `none`: Artifacts in the job are not available for download by anyone.
 
 **Example of `artifacts:access`**:
@@ -1879,6 +2032,9 @@ job:
 
 - [Use `before_script` with `default`](script.md#set-a-default-before_script-or-after_script-for-all-jobs)
   to define a default array of commands that should run before the `script` commands in all jobs.
+  - Job configuration and default configuration does not merge together.
+    If the pipeline has [`default:before_script`](#default) defined, and the job also has `before_script`,
+    the job configuration takes precedence and the default configuration is not used.
 - You can [ignore non-zero exit codes](script.md#ignore-non-zero-exit-codes).
 - [Use color codes with `before_script`](script.md#add-color-codes-to-script-output)
   to make job logs easier to review.
@@ -1913,7 +2069,13 @@ for example to override:
 - A default cache defined with [`default`](#default).
 - The configuration for a job added with [`include`](#include).
 
+Job configuration and default configuration does not merge together.
+If the pipeline has [`default:cache`](#default) defined, and the job also has `cache`,
+the job configuration takes precedence and the default configuration is not used.
+
 For more information about caches, see [Caching in GitLab CI/CD](../caching/_index.md).
+
+Using `cache` at the top level, but not in the `default` section, is [deprecated](deprecated_keywords.md#globally-defined-image-services-cache-before_script-after_script).
 
 ---
 
@@ -2916,6 +3078,10 @@ rubocop:
 Use `hooks` to specify lists of commands to execute on the runner
 at certain stages of job execution, like before retrieving the Git repository.
 
+Job configuration and default configuration does not merge together.
+If the pipeline has [`default:hooks`](#default) defined, and the job also has `hooks`,
+the job configuration takes precedence and the default configuration is not used.
+
 **Keyword type**: Job keyword. You can use it only as part of a job or in the
 [`default` section](#default).
 
@@ -3019,6 +3185,10 @@ job_with_workload_identity:
 Use `id_tokens` to create [ID tokens](../secrets/id_token_authentication.md) to authenticate with third party services. All
 JWTs created this way support OIDC authentication. The required `aud` sub-keyword is used to configure the `aud` claim for the JWT.
 
+Job configuration and default configuration does not merge together.
+If the pipeline has [`default:id_tokens`](#default) defined, and the job also has `id_tokens`,
+the job configuration takes precedence and the default configuration is not used.
+
 **Supported values**:
 
 - Token names with their `aud` claims. `aud` supports:
@@ -3057,6 +3227,10 @@ job_with_id_tokens:
 
 Use `image` to specify a Docker image that the job runs in.
 
+Job configuration and default configuration does not merge together.
+If the pipeline has [`default:image`](#default) defined, and the job also has `image`,
+the job configuration takes precedence and the default configuration is not used.
+
 **Keyword type**: Job keyword. You can use it only as part of a job or in the
 [`default` section](#default).
 
@@ -3085,6 +3259,10 @@ rspec 2.7:
 In this example, the `ruby:3.0` image is the default for all jobs in the pipeline.
 The `rspec 2.7` job does not use the default, because it overrides the default with
 a job-specific `image` section.
+
+**Additional details**:
+
+- Using `image` at the top level, but not in the `default` section, is [deprecated](deprecated_keywords.md#globally-defined-image-services-cache-before_script-after_script).
 
 **Related topics**:
 
@@ -4102,7 +4280,7 @@ Leading and trailing hyphens or periods are not permitted.
 create-pages:
   stage: deploy
   script:
-    - echo "Pages accessible through ${CI_PAGES_URL}/${CI_COMMIT_BRANCH}"
+    - echo "Pages accessible through ${CI_PAGES_URL}"
   pages:  # specifies that this is a Pages job and publishes the default public directory
     path_prefix: "$CI_COMMIT_BRANCH"
 ```
@@ -4906,6 +5084,11 @@ In this example:
 - Glob patterns are interpreted with Ruby's [`File.fnmatch`](https://docs.ruby-lang.org/en/master/File.html#method-c-fnmatch)
   with the [flags](https://docs.ruby-lang.org/en/master/File/Constants.html#module-File::Constants-label-Filename+Globbing+Constants+-28File-3A-3AFNM_-2A-29)
   `File::FNM_PATHNAME | File::FNM_DOTMATCH | File::FNM_EXTGLOB`.
+- For performance reasons, GitLab performs a maximum of 50,000 checks against
+  `changes` patterns or file paths. After the 50,000th check, rules with patterned
+  globs always match. In other words, the `changes` rule always assumes a match when
+  more than 50,000 files changed, or if there are fewer than 50,000 changed files but
+  the `changes` rules are checked more than 50,000 times.
 - A maximum of 50 patterns or file paths can be defined per `rules:changes` section.
 - `changes` resolves to `true` if any of the matching files are changed (an `OR` operation).
 - For additional examples, see [Specify when jobs run with `rules`](../jobs/job_rules.md).
@@ -5703,6 +5886,10 @@ job:
 Use `services` to specify any additional Docker images that your scripts require to run successfully. The [`services` image](../services/_index.md) is linked
 to the image specified in the [`image`](#image) keyword.
 
+Job configuration and default configuration does not merge together.
+If the pipeline has [`default:services`](#default) defined, and the job also has `services`,
+the job configuration takes precedence and the default configuration is not used.
+
 **Keyword type**: Job keyword. You can use it only as part of a job or in the
 [`default` section](#default).
 
@@ -5741,6 +5928,10 @@ In this example, GitLab launches two containers for the job:
 - A Ruby container that runs the `script` commands.
 - A PostgreSQL container. The `script` commands in the Ruby container can connect to
   the PostgreSQL database at the `db-postgres` hostname.
+
+**Additional details**:
+
+- Using `services` at the top level, but not in the `default` section, is [deprecated](deprecated_keywords.md#globally-defined-image-services-cache-before_script-after_script).
 
 **Related topics**:
 
@@ -6032,6 +6223,10 @@ available for the project.
 When you register a runner, you can specify the runner's tags, for
 example `ruby`, `postgres`, or `development`. To pick up and run a job, a runner must
 be assigned every tag listed in the job.
+
+Job configuration and default configuration does not merge together.
+If the pipeline has [`default:tags`](#default) defined, and the job also has `tags`,
+the job configuration takes precedence and the default configuration is not used.
 
 **Keyword type**: Job keyword. You can use it only as part of a job or in the
 [`default` section](#default).
@@ -6562,6 +6757,51 @@ stop_production:
   when: manual
   manual_confirmation: "Are you sure you want to stop the production environment?"
 ```
+
+---
+
+### `start_in`
+
+Use `start_in` to delay the execution of a job for a specified duration after the job is created.
+You must configure `when: delayed` for the job.
+
+**Keyword type**: Job keyword. You can use it only as part of a job.
+
+**Possible inputs**: A period of time in seconds, minutes, or hours. Must be less than or equal to one week.
+Examples of valid values:
+
+- `'5'` (5 seconds)
+- `'10 seconds'`
+- `'30 minutes'`
+- `'1 hour'`
+- `'1 day'`
+
+**Example of `start_in`**:
+
+```yaml
+deploy_production:
+  stage: deploy
+  script:
+    - echo "Deploying to production"
+  when: delayed
+  start_in: 30 minutes
+```
+
+In this example, the `deploy_production` job starts 30 minutes after the previous stage completes.
+
+**Additional details**:
+
+- The timer starts when the job's stage begins, not when the previous job finishes.
+- To manually start a delayed job immediately, select **Play** ({{< icon name="play" >}}) in the pipeline view.
+- The minimum delay period is one second and the maximum delay is one week.
+- `start_in` only works when [`when`](#when) is set to `delayed`. If you use any other value for `when`, the configuration is invalid.
+  If a job uses `rules`, `start_in` and `when` must be defined in the `rules`, not at the job level.
+  Otherwise, you receive a validation error: `config key may not be used with 'rules': start_in`.
+- `start_in` is not supported with `workflow:rules`, but does not cause any syntax violation.
+
+**Related topics**:
+
+- [Run a job after a delay](../jobs/job_control.md#run-a-job-after-a-delay)
 
 ---
 

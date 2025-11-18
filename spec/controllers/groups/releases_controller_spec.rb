@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Groups::ReleasesController do
+RSpec.describe Groups::ReleasesController, feature_category: :release_evidence do
   let(:group) { create(:group) }
   let!(:project)         { create(:project, :repository, :public, namespace: group) }
   let!(:private_project) { create(:project, :repository, :private, namespace: group) }

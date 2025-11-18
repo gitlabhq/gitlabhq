@@ -326,7 +326,6 @@ func (kw *KeyWatcher) WatchKey(ctx context.Context, key, value string, timeout t
 
 	select {
 	case <-kw.shutdown:
-		log.WithFields(log.Fields{"key": key}).Info("stopping watch due to shutdown")
 		return WatchKeyStatusNoChange, nil
 	case currentValue := <-notify:
 		if currentValue == "" {

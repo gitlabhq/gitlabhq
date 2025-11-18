@@ -117,7 +117,7 @@ export default {
         />
         <link-cell
           :href="jobRefPath"
-          class="gl-text-sm gl-text-subtle gl-font-monospace hover:gl-text-subtle"
+          class="gl-font-monospace gl-text-sm gl-text-subtle hover:gl-text-subtle"
           data-testid="job-ref"
         >
           {{ jobRef }}
@@ -128,7 +128,7 @@ export default {
         <gl-icon class="gl-mx-2" name="commit" :size="$options.iconSize" variant="subtle" />
         <link-cell
           :href="jobCommitPath"
-          class="gl-text-sm gl-text-subtle gl-font-monospace hover:gl-text-subtle"
+          class="gl-font-monospace gl-text-sm gl-text-subtle hover:gl-text-subtle"
           data-testid="job-sha"
         >
           {{ jobCommit }}

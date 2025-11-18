@@ -1,12 +1,12 @@
 import CliCommand from '~/ci/runner/components/registration/cli_command.vue';
-import ModalCopyButton from '~/vue_shared/components/modal_copy_button.vue';
+import SimpleCopyButton from '~/vue_shared/components/simple_copy_button.vue';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 
 describe('CliCommand', () => {
   let wrapper;
 
   const findPre = () => wrapper.find('pre');
-  const findCopyBtn = () => wrapper.findComponent(ModalCopyButton);
+  const findCopyBtn = () => wrapper.findComponent(SimpleCopyButton);
   const getPreTextContent = () => findPre().element.textContent; // use .textContent instead of .text() to capture whitespace that's visible in <pre>
 
   const createComponent = (props) => {

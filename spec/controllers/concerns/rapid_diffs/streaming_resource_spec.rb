@@ -108,7 +108,7 @@ RSpec.describe RapidDiffs::StreamingResource, type: :controller, feature_categor
 
       before do
         allow(controller_instance).to receive(:params).and_return(ActionController::Parameters.new)
-        allow(controller_instance).to receive(:render), &:call
+        allow(controller_instance).to receive(:render).with(anything, layout: false), &:call
         allow(RapidDiffs::EmptyStateComponent).to receive_message_chain(:new, :call).and_return(empty_state_html)
       end
 

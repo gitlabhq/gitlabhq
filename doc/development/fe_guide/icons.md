@@ -165,7 +165,7 @@ Using the class `svg-content` around it ensures nice rendering.
 
 It is discouraged to pass down SVG paths from Rails. Instead of `Rails => Haml => Vue` we can import SVG illustrations directly in `Vue`.
 
-To use an SVG illustration in a template import the SVG from `@gitlab/svgs`. You can find the available SVG paths via the [GitLab SVG Previewer](https://gitlab-org.gitlab.io/gitlab-svgs/illustrations).
+To use an SVG illustration in a template import the SVG from `@gitlab/svgs`. You can find the available SVG paths via the [GitLab SVG Previewer](https://design.gitlab.com/svgs/illustrations).
 
 Below is an example of how to import an SVG illustration and use with the `GlEmptyState` component.
 

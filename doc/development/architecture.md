@@ -381,6 +381,8 @@ Component statuses are linked to configuration documentation for each component.
 
 | Component                                             | Description                                                          | [Omnibus GitLab](https://docs.gitlab.com/omnibus/) | [GitLab Environment Toolkit (GET)](https://gitlab.com/gitlab-org/gitlab-environment-toolkit) | [GitLab chart](https://docs.gitlab.com/charts/) | [minikube Minimal](https://docs.gitlab.com/charts/development/minikube/#deploying-gitlab-with-minimal-settings) | [GitLab.com](https://gitlab.com) | [Source](../install/self_compiled/_index.md) | [GDK](https://gitlab.com/gitlab-org/gitlab-development-kit) |  [CE/EE](https://about.gitlab.com/install/ce-or-ee/)  |
 |-------------------------------------------------------|----------------------------------------------------------------------|:--------------:|:--------------:|:------------:|:----------------:|:----------:|:------:|:---:|:-------:|
+| [AI Gateway](#ai-gateway)                             | GitLab AI-native features                                            |       ⤓      |       ❌        |      ✅       |      ❌           |     ✅      |  ⤓      |  ✅  | EE Only |
+| [Duo Workflow Service](#duo-workflow-service)                             | GitLab AI-native features                                            |       ⤓       |       ❌        |      ✅       |      ❌           |     ✅      |   ⤓      |  ✅  | EE Only |
 | [Certificate Management](#certificate-management)     | TLS Settings, Let's Encrypt                                          |       ✅       |       ✅        |      ✅       |        ⚙         |     ✅      |   ⚙    |  ⚙  | CE & EE |
 | [Consul](#consul)                                     | Database node discovery, failover                                    |       ⚙       |       ✅         |      ❌       |        ❌         |     ✅      |   ❌    |  ❌  | EE Only |
 | [Database Migrations](#database-migrations)           | Database migrations                                                  |       ✅       |       ✅        |      ✅       |        ✅         |     ✅      |   ⚙    |  ✅  | CE & EE |
@@ -446,6 +448,36 @@ GitLab can be considered to have two layers from a process perspective:
 - GitLab.com: [Monitoring of GitLab.com](https://handbook.gitlab.com/handbook/engineering/monitoring/)
 
 [Alert manager](https://prometheus.io/docs/alerting/latest/alertmanager/) is a tool provided by Prometheus that _"handles alerts sent by client applications such as the Prometheus server. It takes care of deduplicating, grouping, and routing them to the correct receiver integration such as email, PagerDuty, or Opsgenie. It also takes care of silencing and inhibition of alerts."_ You can read more in [issue #45740](https://gitlab.com/gitlab-org/gitlab-foss/-/issues/45740) about what we alert on.
+
+#### AI Gateway
+
+- Project page:
+  - [Charts](https://gitlab.com/gitlab-org/charts/ai-gateway-helm-chart)
+- Configuration:
+  - [Source](../administration/gitlab_duo/gateway.md)
+- GitLab.com: [Monitoring of GitLab.com](https://runbooks.gitlab.com/ai-gateway/)
+
+GitLab AI Gateway is a standalone-service that will give access to AI features to all users of
+GitLab, no matter which instance they are using: self-managed, dedicated or GitLab.com.
+
+You can read more:
+
+- In [the project's README](https://gitlab.com/gitlab-org/modelops/applied-ml/code-suggestions/ai-assist).
+- In [the installation instructions](../install/install_ai_gateway.md).
+
+#### Duo Workflow Service
+
+- Project page:
+  - [Charts](https://gitlab.com/gitlab-org/charts/ai-gateway-helm-chart)
+- Configuration:
+  - [Source](../administration/gitlab_duo/gateway.md)
+- GitLab.com: [Monitoring of GitLab.com](https://runbooks.gitlab.com/ai-gateway/)
+
+Duo Workflow Service is our agentic AI Features that is deployed via our [Runway service in the](#ai-gateway)
+
+You can read more about:
+
+- In [the design document](https://handbook.gitlab.com/handbook/engineering/architecture/design-documents/duo_workflow/).
 
 #### Certificate management
 

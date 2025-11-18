@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Ci::RunnerNamespace, feature_category: :runner do
+RSpec.describe Ci::RunnerNamespace, feature_category: :runner_core do
   it_behaves_like 'includes Limitable concern' do
     let_it_be(:group) { create(:group, :nested) }
     let_it_be(:another_group) { create(:group) }

@@ -16,11 +16,6 @@
 module QA
   module Tools
     class DeleteTestSshKeys < DeleteResourceBase
-      USER_TOKENS = %w[GITLAB_QA_ADMIN_ACCESS_TOKEN
-        GITLAB_QA_ACCESS_TOKEN
-        GITLAB_QA_USER1_ACCESS_TOKEN
-        GITLAB_QA_USER2_ACCESS_TOKEN].freeze
-
       def initialize(title_portion: 'E2E test key:', dry_run: false)
         super(dry_run: dry_run)
         @title_portion = title_portion

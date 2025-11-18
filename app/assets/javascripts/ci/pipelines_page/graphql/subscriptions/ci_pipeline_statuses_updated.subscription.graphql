@@ -1,0 +1,29 @@
+#import "~/graphql_shared/fragments/ci_icon.fragment.graphql"
+
+subscription pipelineStatusesUpdated($projectId: ProjectID!) {
+  ciPipelineStatusesUpdated(projectId: $projectId) {
+    id
+    iid
+    detailedStatus {
+      ...CiIcon
+      name
+    }
+    finishedAt
+    duration
+    retryable
+    cancelable
+    stuck
+    yamlErrors
+    failureReason
+    stages {
+      nodes {
+        id
+        name
+        detailedStatus {
+          ...CiIcon
+          tooltip
+        }
+      }
+    }
+  }
+}

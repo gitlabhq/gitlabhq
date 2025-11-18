@@ -3,7 +3,7 @@
 require 'spec_helper'
 
 RSpec.describe Gitlab::BackgroundMigration::BackfillCiBuildsRunnerSessionProjectId,
-  feature_category: :runner,
+  feature_category: :runner_core,
   schema: 20240930144640,
   migration: :gitlab_ci do
   include_examples 'desired sharding key backfill job' do

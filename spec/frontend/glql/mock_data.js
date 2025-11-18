@@ -111,6 +111,22 @@ export const MOCK_ISSUES = {
   ],
 };
 
+export const MOCK_ISSUES_PAGE_2 = {
+  nodes: [
+    {
+      __typename: 'Issue',
+      id: 'gid://gitlab/Issue/3',
+      iid: '3',
+      title: 'Issue 3',
+      reference: '#3',
+      author: { __typename: 'UserCore', username: 'janedoe', webUrl: 'https://gitlab.com/janedoe' },
+      webUrl: 'https://gitlab.com/gitlab-org/gitlab-test/-/issues/3',
+      state: 'closed',
+      description: 'This is another description',
+    },
+  ],
+};
+
 export const MOCK_LABELS = {
   nodes: [
     {

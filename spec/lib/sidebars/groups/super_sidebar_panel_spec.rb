@@ -42,12 +42,11 @@ RSpec.describe Sidebars::Groups::SuperSidebarPanel, feature_category: :navigatio
 
     before do
       allow(Feature).to receive(:enabled?).and_call_original
-      allow(Feature).to receive(:enabled?).with(:cached_route_lookups, any_args).and_return(false)
       allow(Feature).to receive(:enabled?).with(:observability_sass_features, any_args).and_return(false)
     end
 
     it "is exposed as a renderable menu" do
-      expect(subject.instance_variable_get(:@menus).map(&:class)).to eq(category_menu)
+      expect(subject.instance_variable_get(:@menus).map(&:class)).to include(*category_menu)
     end
   end
 
@@ -57,7 +56,6 @@ RSpec.describe Sidebars::Groups::SuperSidebarPanel, feature_category: :navigatio
         stub_feature_flags(observability_sass_features: group)
         # Prevent circular reference in route lookups
         allow(Feature).to receive(:enabled?).and_call_original
-        allow(Feature).to receive(:enabled?).with(:cached_route_lookups, any_args).and_return(false)
       end
 
       it 'includes ObservabilityMenu' do

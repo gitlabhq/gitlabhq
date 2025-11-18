@@ -21,6 +21,7 @@ export const createPipelineHeaderApp = (elSelector, apolloProvider, graphqlResou
     mergeTrainsAvailable,
     canReadMergeTrain,
     mergeTrainsPath,
+    mergeRequestPath,
   } = el.dataset;
 
   // eslint-disable-next-line no-new
@@ -33,6 +34,7 @@ export const createPipelineHeaderApp = (elSelector, apolloProvider, graphqlResou
         fullProject: fullPath,
         graphqlResourceEtag,
         pipelinesPath,
+        mergeRequestPath: mergeRequestPath ? `${gon.gitlab_url}${mergeRequestPath}` : '',
       },
       pipelineIid,
       identityVerificationPath,

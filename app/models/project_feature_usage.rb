@@ -26,14 +26,6 @@ class ProjectFeatureUsage < ApplicationRecord
   def updated_today?(integration_field)
     self[integration_field].present? && self[integration_field].today?
   end
-
-  def persist_jira_dvcs_usage(integration_field)
-    assign_attributes(integration_field => Time.current)
-    save
-  rescue ActiveRecord::RecordNotUnique
-    reset
-    retry
-  end
 end
 
 ProjectFeatureUsage.prepend_mod_with('ProjectFeatureUsage')

@@ -13,7 +13,7 @@ import {
   GlSkeletonLoader,
   GlResizeObserverDirective,
 } from '@gitlab/ui';
-import { GlBreakpointInstance } from '@gitlab/ui/src/utils';
+import { GlBreakpointInstance } from '@gitlab/ui/src/utils'; // eslint-disable-line no-restricted-syntax -- This content is shown in a modal, we can refer to viewport breakpoints
 import { __, s__ } from '~/locale';
 import getRunnerPlatformsQuery from './graphql/get_runner_platforms.query.graphql';
 import {
@@ -148,11 +148,7 @@ export default {
     },
     onPlatformsButtonResize() {
       // Note, this component is a modal, so it should not be migrated to PanelBreakpointInstance
-      if (GlBreakpointInstance.getBreakpointSize() === 'xs') {
-        this.platformsButtonGroupVertical = true;
-      } else {
-        this.platformsButtonGroupVertical = false;
-      }
+      this.platformsButtonGroupVertical = GlBreakpointInstance.getBreakpointSize() === 'xs';
     },
   },
   i18n: {

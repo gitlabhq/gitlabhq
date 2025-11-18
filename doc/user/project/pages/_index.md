@@ -164,7 +164,7 @@ to share cookies.
 
 The project maintainer can disable this feature on:
 
-1. On the left sidebar, select **Search or go to** and find your project.
+1. On the left sidebar, select **Search or go to** and find your project. If you've [turned on the new navigation](../../interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
 1. Select **Deploy** > **Pages**.
 1. Clear the **Use unique domain** checkbox.
 1. Select **Save changes**.
@@ -188,7 +188,7 @@ Prerequisites:
 - You must have at least the Maintainer role for the project.
 - A [custom domain](custom_domains_ssl_tls_certification/_index.md#set-up-a-custom-domain) must be set up.
 
-1. On the left sidebar, select **Search or go to** and find your project.
+1. On the left sidebar, select **Search or go to** and find your project. If you've [turned on the new navigation](../../interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
 1. Select **Deploy** > **Pages**.
 1. From the **Primary domain** dropdown list, select the domain to redirect to.
 1. Select **Save changes**.
@@ -233,7 +233,7 @@ Prerequisites:
 
 To recover a stopped deployment that has not yet been deleted:
 
-1. On the left sidebar, select **Search or go to** and find your project.
+1. On the left sidebar, select **Search or go to** and find your project. If you've [turned on the new navigation](../../interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
 1. Select **Deploy** > **Pages**.
 1. Near **Deployments** turn on the **Include stopped deployments** toggle.
    If your deployment has not been deleted yet, it should be included in the
@@ -244,7 +244,7 @@ To recover a stopped deployment that has not yet been deleted:
 
 To delete a deployment:
 
-1. On the left sidebar, select **Search or go to** and find your project.
+1. On the left sidebar, select **Search or go to** and find your project. If you've [turned on the new navigation](../../interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
 1. Select **Deploy** > **Pages**.
 1. Under **Deployments**, select any area on the deployment you wish to delete.
    The deployment details expand.

@@ -72,7 +72,7 @@ Prerequisites:
 
 To view work items for a project or group:
 
-1. On the left sidebar, select **Search or go to** and find your project or group.
+1. On the left sidebar, select **Search or go to** and find your project or group. If you've [turned on the new navigation](../interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
 1. Select **Plan** > **Work items**.
 
 ### Filter work items
@@ -140,6 +140,7 @@ To access filters you've used recently, on the left side of the filter bar, sele
 {{< history >}}
 
 - Sorting by status [introduced](https://gitlab.com/groups/gitlab-org/-/epics/18638) in GitLab 18.5 [with a flag](../../administration/feature_flags/_index.md) named `work_item_status_mvc2`. Enabled by default.
+- Sorting by status [generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/576610) in GitLab 18.6. Feature flag `work_item_status_mvc2` removed.
 
 {{< /history >}}
 

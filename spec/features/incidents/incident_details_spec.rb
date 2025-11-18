@@ -171,29 +171,19 @@ RSpec.describe 'Incident details', :js, feature_category: :incident_management d
     end
   end
 
-  it 'routes the user to the incident details page when the `issue_type` is set to incident' do
+  it 'routes the user to the incident details page when the issue is converted to an incident' do
     visit project_issue_path(project, issue)
-    wait_for_requests
 
-    project_path = "/#{project.full_path}"
-    click_button 'Edit title and description'
-    wait_for_requests
-
-    within_testid('issuable-form') do
-      click_button 'Issue'
-      find_by_testid('issue-type-list-item', text: 'Incident').click
-
-      click_button 'Save changes'
-    end
-
-    wait_for_requests
+    fill_in 'Add a reply', with: '/promote_to_incident'
+    click_button 'Comment'
 
     expect(issue.reload.issue_type).to eq('incident')
-    expect(page).to have_current_path("#{project_path}/-/issues/incident/#{issue.iid}")
-    expect(page).to have_content(issue.title)
+    expect(page).to have_css('h1', text: issue.title)
+    expect(page).to have_testid('work-item-type-icon', text: 'Incident')
   end
 
-  it 'routes the user to the issue details page when the `issue_type` is set to issue' do
+  it 'routes the user to the issue details page when the `issue_type` is set to issue',
+    quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/573019' do
     visit incident_project_issues_path(project, incident)
     wait_for_requests
 
@@ -218,10 +208,18 @@ RSpec.describe 'Incident details', :js, feature_category: :incident_management d
     visit incident_project_issues_path(project, confidential_incident)
     wait_for_requests
 
-    sticky_header = find_by_scrolling('[data-testid=issue-sticky-header]')
+    sticky_header = find_in_page_or_panel_by_scrolling('[data-testid=issue-sticky-header]')
 
     page.within(sticky_header) do
       expect(page).to have_text 'Confidential'
+    end
+  end
+
+  def find_in_page_or_panel_by_scrolling(selector, **options)
+    if Users::ProjectStudio.enabled_for_user?(developer) # rubocop:disable RSpec/AvoidConditionalStatements -- temporary Project Studio rollout
+      find_in_panel_by_scrolling(selector, **options)
+    else
+      find_by_scrolling(selector, **options)
     end
   end
 end

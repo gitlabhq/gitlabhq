@@ -1,4 +1,4 @@
-import { GlBadge } from '@gitlab/ui';
+import { GlBadge, GlTruncate } from '@gitlab/ui';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import CommitListItemBadges from '~/projects/commits/components/commit_list_item_badges.vue';
 import SignatureBadge from '~/commit/components/signature_badge.vue';
@@ -56,29 +56,37 @@ describe('CommitListItemBadges', () => {
           icon: 'tag',
           variant: 'neutral',
         });
-        expect(badge.text()).toBe('V1.2.3');
       });
     });
 
-    describe('signature badge', () => {
-      it('renders signature badge in both containers', () => {
-        const signatureBadges = wrapper.findAllComponents(SignatureBadge);
-        expect(signatureBadges).toHaveLength(2);
+    it('renders truncated text with tooltip enabled', () => {
+      const truncate = wrapper.findComponent(GlTruncate);
 
-        signatureBadges.wrappers.forEach((badge) => {
-          expect(badge.props('signature')).toBe(mockCommit.signature);
-        });
+      expect(truncate.props()).toMatchObject({
+        withTooltip: true,
+        text: 'V1.2.3',
       });
     });
+  });
 
-    describe('CI status icon', () => {
-      it('renders CI icon in both containers', () => {
-        const ciIcons = wrapper.findAllComponents(CiIcon);
-        expect(ciIcons).toHaveLength(2);
+  describe('signature badge', () => {
+    it('renders signature badge in both containers', () => {
+      const signatureBadges = wrapper.findAllComponents(SignatureBadge);
+      expect(signatureBadges).toHaveLength(2);
 
-        ciIcons.wrappers.forEach((icon) => {
-          expect(icon.props('status')).toBe(mockCommit.pipelines.edges[0].node.detailedStatus);
-        });
+      signatureBadges.wrappers.forEach((badge) => {
+        expect(badge.props('signature')).toBe(mockCommit.signature);
+      });
+    });
+  });
+
+  describe('CI status icon', () => {
+    it('renders CI icon in both containers', () => {
+      const ciIcons = wrapper.findAllComponents(CiIcon);
+      expect(ciIcons).toHaveLength(2);
+
+      ciIcons.wrappers.forEach((icon) => {
+        expect(icon.props('status')).toBe(mockCommit.pipelines.edges[0].node.detailedStatus);
       });
     });
   });

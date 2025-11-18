@@ -1,4 +1,10 @@
-import { GlModal, GlSprintf, GlFormInputGroup, GlButton } from '@gitlab/ui';
+import {
+  GlModal,
+  GlSprintf,
+  GlFormInputGroup,
+  GlButton,
+  GlDisclosureDropdownItem,
+} from '@gitlab/ui';
 import { shallowMount } from '@vue/test-utils';
 import Vue from 'vue';
 import VueApollo from 'vue-apollo';
@@ -37,6 +43,7 @@ describe('WorkItemByEmail', () => {
           GlFormInputGroup,
           GlButton,
           ModalCopyButton,
+          GlDisclosureDropdownItem,
         },
         directives: {
           glModal: {
@@ -66,7 +73,7 @@ describe('WorkItemByEmail', () => {
     mutationHandler = jest.fn();
   });
 
-  const findButton = () => wrapper.findComponent(GlButton);
+  const findDisclosureDropdownItem = () => wrapper.findComponent(GlDisclosureDropdownItem);
   const findFormInputGroup = () => wrapper.findComponent(GlFormInputGroup);
   const findMailtoButton = () =>
     wrapper
@@ -84,13 +91,13 @@ describe('WorkItemByEmail', () => {
   describe('modal button', () => {
     it('renders a link with "Email a new work item to this project"', () => {
       createComponent();
-      expect(findButton().text()).toBe('Email a new work item to this project');
+      expect(findDisclosureDropdownItem().text()).toBe('Email work item to this project');
     });
 
     it('opens the modal when the user clicks the button', () => {
       createComponent();
 
-      findButton().vm.$emit('click');
+      findDisclosureDropdownItem().vm.$emit('click');
 
       expect(glModalDirective).toHaveBeenCalled();
     });

@@ -6,6 +6,10 @@ FactoryBot.define do
     category { :spam }
     source { :spamcheck }
 
+    after(:build) do |event, evaluator|
+      event.organization_id ||= evaluator.user.organization_id
+    end
+
     trait(:with_abuse_report) do
       abuse_report
     end

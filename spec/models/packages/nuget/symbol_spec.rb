@@ -9,6 +9,7 @@ RSpec.describe Packages::Nuget::Symbol, type: :model, feature_category: :package
   it { is_expected.to be_a ShaAttribute }
   it { is_expected.to be_a Packages::Destructible }
   it { is_expected.to be_a UpdateProjectStatistics }
+  it { is_expected.to be_a ObjectStorable }
 
   it_behaves_like 'having unique enum values'
   it_behaves_like 'destructible', factory: :nuget_symbol

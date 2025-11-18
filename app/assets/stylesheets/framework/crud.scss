@@ -9,7 +9,8 @@ $crud-header-min-height: px-to-rem(49px);
 }
 
 .crud-count .gl-badge {
-  @apply -gl-ml-2 -gl-my-1;
+  @apply -gl-ml-2;
+  @apply -gl-my-1;
 }
 
 .crud-body:has(.gl-table) {
@@ -111,7 +112,8 @@ $crud-header-min-height: px-to-rem(49px);
   }
 
   tr:hover td {
-    @apply gl-bg-strong dark:gl-bg-neutral-700;
+    @apply gl-bg-strong;
+    @apply dark:gl-bg-neutral-700;
   }
 }
 
@@ -119,7 +121,8 @@ $crud-header-min-height: px-to-rem(49px);
   margin: 0;
 
   .content-list > li {
-    @apply gl-mx-3 gl-px-3;
+    @apply gl-mx-3;
+    @apply gl-px-3;
   }
 }
 

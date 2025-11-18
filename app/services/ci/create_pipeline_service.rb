@@ -109,7 +109,7 @@ module Ci
 
       if pipeline.persisted?
         Gitlab::EventStore.publish(
-          Ci::PipelineCreatedEvent.new(data: { pipeline_id: pipeline.id })
+          Ci::PipelineCreatedEvent.new(data: { pipeline_id: pipeline.id, partition_id: pipeline.partition_id })
         )
 
         after_successful_creation_hook

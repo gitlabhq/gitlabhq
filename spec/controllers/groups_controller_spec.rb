@@ -529,6 +529,33 @@ RSpec.describe GroupsController, :with_current_organization, factory_default: :k
 
       expect(user.reload.user_preference.issues_sort).to eq('priority')
     end
+
+    context 'when work_item_planning_view feature flag is enabled' do
+      it 'redirects to work items path with issue type filter' do
+        get :issues, params: { id: group.to_param }
+
+        expect(response).to redirect_to(group_work_items_path(group, params: { 'not[type][]' => 'epic' }))
+      end
+
+      it 'preserves query parameters except type when redirecting' do
+        get :issues, params: { id: group.to_param, search: 'bug', sort: 'created_desc', type: 'old_type' }
+
+        expect(response).to redirect_to(group_work_items_path(group, params: { search: 'bug', sort: 'created_desc', 'not[type][]' => 'epic' }))
+      end
+    end
+
+    context 'when work_item_planning_view feature flag is disabled' do
+      before do
+        stub_feature_flags(work_item_planning_view: false)
+      end
+
+      it 'renders the issues page' do
+        get :issues, params: { id: group.to_param }
+
+        expect(response).to have_gitlab_http_status(:ok)
+        expect(response).to render_template 'groups/issues'
+      end
+    end
   end
 
   describe 'GET #merge_requests', :sidekiq_might_not_need_inline do
@@ -633,7 +660,11 @@ RSpec.describe GroupsController, :with_current_organization, factory_default: :k
         context 'when permanently_remove param is set' do
           let(:params) { { permanently_remove: true } }
 
-          describe 'forbidden by the :disallow_immediate_deletion feature flag' do
+          describe 'when the :allow_immediate_namespaces_deletion application setting is false' do
+            before do
+              stub_application_setting(allow_immediate_namespaces_deletion: false)
+            end
+
             it 'returns error' do
               Sidekiq::Testing.fake! do
                 expect { subject }.not_to change { GroupDestroyWorker.jobs.size }
@@ -656,32 +687,26 @@ RSpec.describe GroupsController, :with_current_organization, factory_default: :k
             end
           end
 
-          context 'when the :disallow_immediate_deletion feature flag is disabled' do
-            before do
-              stub_feature_flags(disallow_immediate_deletion: false)
+          context 'for a html request' do
+            it 'deletes the group immediately and redirects to root path' do
+              expect(GroupDestroyWorker).to receive(:perform_async)
+
+              subject
+
+              expect(response).to redirect_to(root_path)
+              expect(flash[:toast]).to include "Group '#{group.name}' is being deleted."
             end
+          end
 
-            context 'for a html request' do
-              it 'deletes the group immediately and redirects to root path' do
-                expect(GroupDestroyWorker).to receive(:perform_async)
+          context 'for a json request' do
+            let(:format) { :json }
 
-                subject
+            it 'deletes the group immediately and returns json with message' do
+              expect(GroupDestroyWorker).to receive(:perform_async)
 
-                expect(response).to redirect_to(root_path)
-                expect(flash[:toast]).to include "Group '#{group.name}' is being deleted."
-              end
-            end
+              subject
 
-            context 'for a json request' do
-              let(:format) { :json }
-
-              it 'deletes the group immediately and returns json with message' do
-                expect(GroupDestroyWorker).to receive(:perform_async)
-
-                subject
-
-                expect(json_response['message']).to eq("Group '#{group.name}' is being deleted.")
-              end
+              expect(json_response['message']).to eq("Group '#{group.name}' is being deleted.")
             end
           end
         end
@@ -1570,6 +1595,10 @@ RSpec.describe GroupsController, :with_current_organization, factory_default: :k
     end
 
     describe 'GET #issues' do
+      before do
+        stub_feature_flags(work_item_planning_view: false)
+      end
+
       subject { get :issues, params: { id: group.to_param } }
 
       it_behaves_like 'disabled when using an external authorization service'

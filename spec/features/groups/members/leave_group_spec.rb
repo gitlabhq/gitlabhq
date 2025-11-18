@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe 'Groups > Members > Leave group', :with_organization_url_helpers, feature_category: :groups_and_projects do
+RSpec.describe 'Groups > Members > Leave group', feature_category: :groups_and_projects do
   include Features::MembersHelpers
   include Spec::Support::Helpers::ModalHelpers
 
@@ -37,6 +37,7 @@ RSpec.describe 'Groups > Members > Leave group', :with_organization_url_helpers,
     group.add_guest(user)
     group.add_owner(other_user)
 
+    visit group_path(group)
     visit group_path(group, leave: 1)
     accept_gl_confirm(button_text: 'Leave group')
     wait_for_requests

@@ -17,6 +17,7 @@ description: "Reassign placeholder users in bulk with the REST API."
 - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/513794) in GitLab 17.10 [with a flag](../administration/feature_flags/_index.md) named `importer_user_mapping_reassignment_csv`. Enabled by default.
 - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/478022) in GitLab 18.0. Feature flag `importer_user_mapping_reassignment_csv` removed.
 - Reassigning contributions to a personal namespace owner when importing to a personal namespace [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/525342) in GitLab 18.3 [with a flag](../administration/feature_flags/_index.md) named `user_mapping_to_personal_namespace_owner`. Disabled by default.
+- Reassigning contributions to a personal namespace owner when importing to a personal namespace [generally available](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/211626) in GitLab 18.6. Feature flag `user_mapping_to_personal_namespace_owner` removed.
 
 {{< /history >}}
 
@@ -27,19 +28,15 @@ For more information, see the history.
 
 {{< /alert >}}
 
+Use this API to [reassign placeholder users in bulk](../user/project/import/_index.md#request-reassignment-by-using-a-csv-file).
+
 Prerequisites:
 
 - You must have the Owner role for the group.
-
-Use the following endpoints to [reassign placeholder users in bulk](../user/project/import/_index.md#request-reassignment-by-using-a-csv-file) without using the UI.
-
 {{< alert type="note" >}}
 
 User contribution mapping is not supported when you import projects to a [personal namespace](../user/namespace/_index.md#types-of-namespaces).
-When you import to a personal namespace and the `user_mapping_to_personal_namespace_owner` feature flag
-is enabled, all contributions are assigned to the personal namespace owner and they cannot be reassigned.
-When the `user_mapping_to_personal_namespace_owner` feature flag is disabled, all contributions are
-assigned to a single non-functional user called `Import User` and they cannot be reassigned.
+When you import to a personal namespace, all contributions are assigned to the personal namespace owner and they cannot be reassigned.
 
 {{< /alert >}}
 

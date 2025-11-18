@@ -24,11 +24,15 @@ module QA
           element 'id-of-application-field'
         end
 
-        # rubocop:disable Layout/LineLength -- Single line is more readable
+        # rubocop:disable Layout/LineLength -- Filename of component is long
         view 'app/assets/javascripts/vue_shared/components/input_copy_toggle_visibility/input_copy_toggle_visibility.vue' do
-          element 'clipboard-button'
+          element 'toggle-visibility-button'
         end
         # rubocop:enable Layout/LineLength
+
+        view 'app/assets/javascripts/oauth_application/components/oauth_secret.vue' do
+          element 'oauth-secret-field'
+        end
 
         def click_new_application_button
           click_element 'new-application-button'
@@ -55,7 +59,8 @@ module QA
         end
 
         def get_secret_id
-          find_element('clipboard-button')['data-clipboard-text']
+          click_element('toggle-visibility-button')
+          find_element('oauth-secret-field').value
         end
 
         def get_application_id

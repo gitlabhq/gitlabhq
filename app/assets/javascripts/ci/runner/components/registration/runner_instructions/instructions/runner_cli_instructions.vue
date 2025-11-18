@@ -1,7 +1,7 @@
 <script>
 import { GlButton, GlCollapsibleListbox, GlLoadingIcon } from '@gitlab/ui';
 import { s__ } from '~/locale';
-import ModalCopyButton from '~/vue_shared/components/modal_copy_button.vue';
+import SimpleCopyButton from '~/vue_shared/components/simple_copy_button.vue';
 import { REGISTRATION_TOKEN_PLACEHOLDER } from '../constants';
 import getRunnerSetupInstructionsQuery from '../graphql/get_runner_setup.query.graphql';
 
@@ -10,7 +10,7 @@ export default {
     GlButton,
     GlCollapsibleListbox,
     GlLoadingIcon,
-    ModalCopyButton,
+    SimpleCopyButton,
   },
   props: {
     platform: {
@@ -97,6 +97,7 @@ export default {
     downloadLatestBinary: s__('Runners|Download latest binary'),
     registerRunnerCommand: s__('Runners|Command to register runner'),
     copyInstructions: s__('Runners|Copy instructions'),
+    copyCommand: s__('Runners|Copy command'),
   },
 };
 </script>
@@ -128,11 +129,10 @@ export default {
         <pre class="gl-bg-gray gl-grow gl-whitespace-pre-line" data-testid="binary-instructions">{{
           instructions.installInstructions
         }}</pre>
-        <modal-copy-button
+        <simple-copy-button
           :title="$options.i18n.copyInstructions"
           :text="instructions.installInstructions"
-          :modal-id="$options.modalId"
-          css-classes="gl-self-start gl-ml-2 gl-mt-2"
+          class="gl-ml-2 gl-mt-2 gl-self-start"
           category="tertiary"
         />
       </div>
@@ -141,11 +141,10 @@ export default {
         <pre class="gl-bg-gray gl-grow gl-whitespace-pre-line" data-testid="register-command">{{
           registerInstructionsWithToken
         }}</pre>
-        <modal-copy-button
-          :title="$options.i18n.copyInstructions"
+        <simple-copy-button
+          :title="$options.i18n.copyCommand"
           :text="registerInstructionsWithToken"
-          :modal-id="$options.modalId"
-          css-classes="gl-self-start gl-ml-2 gl-mt-2"
+          class="gl-ml-2 gl-mt-2 gl-self-start"
           category="tertiary"
         />
       </div>

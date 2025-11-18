@@ -14,10 +14,12 @@ RSpec.describe Gitlab::RepositoryCacheAdapter do
       Class.new do
         include Gitlab::RepositoryCacheAdapter # can't use described_class here
 
+        attr_accessor :should_avoid_cache
+
         def letters
           %w[b a c]
         end
-        cache_method_as_redis_set(:letters)
+        cache_method_as_redis_set(:letters, avoid_cache: -> { should_avoid_cache })
 
         def redis_set_cache
           @redis_set_cache ||= Gitlab::RepositorySetCache.new(self)
@@ -41,6 +43,62 @@ RSpec.describe Gitlab::RepositoryCacheAdapter do
 
     let(:fake_repository) { klass.new }
     let(:redis_set_cache) { fake_repository.redis_set_cache }
+
+    context 'when avoid_cache returns true' do
+      before do
+        fake_repository.should_avoid_cache = true
+      end
+
+      it 'bypasses cache and calls uncached method directly' do
+        expect(fake_repository).to receive(:_uncached_letters).twice.and_call_original
+        expect(redis_set_cache).not_to receive(:fetch)
+
+        2.times do
+          expect(fake_repository.letters).to eq(%w[b a c])
+        end
+
+        expect(redis_set_cache.exist?(:letters)).to eq(false)
+        expect(fake_repository.instance_variable_get(:@letters)).to be_nil
+      end
+
+      it 'bypasses cache for include checks' do
+        expect(fake_repository).to receive(:_uncached_letters).twice.and_call_original
+        expect(redis_set_cache).not_to receive(:try_include?)
+
+        expect(fake_repository.letters_include?('a')).to eq(true)
+        expect(fake_repository.letters_include?('d')).to eq(false)
+
+        expect(redis_set_cache.exist?(:letters)).to eq(false)
+      end
+    end
+
+    context 'when avoid_cache returns false' do
+      before do
+        fake_repository.should_avoid_cache = false
+      end
+
+      it 'uses the cache normally' do
+        expect(fake_repository).to receive(:_uncached_letters).once.and_call_original
+        expect(redis_set_cache).to receive(:fetch).and_call_original
+
+        2.times do
+          expect(fake_repository.letters).to eq(%w[a b c])
+        end
+
+        expect(redis_set_cache.exist?(:letters)).to eq(true)
+        expect(fake_repository.instance_variable_get(:@letters)).to eq(%w[a b c])
+      end
+
+      it 'uses the cache for include checks' do
+        redis_set_cache.write(:letters, %w[b a c])
+
+        expect(redis_set_cache).to receive(:try_include?).with(:letters, 'a').and_call_original
+        expect(redis_set_cache).to receive(:try_include?).with(:letters, 'd').and_call_original
+
+        expect(fake_repository.letters_include?('a')).to eq(true)
+        expect(fake_repository.letters_include?('d')).to eq(false)
+      end
+    end
 
     context 'with an existing repository' do
       it 'caches the output, sorting the results' do

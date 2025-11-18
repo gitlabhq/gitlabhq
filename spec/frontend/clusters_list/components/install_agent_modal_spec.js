@@ -20,12 +20,11 @@ import {
   EVENT_ACTIONS_OPEN,
   MODAL_TYPE_EMPTY,
   MODAL_TYPE_REGISTER,
-  INSTALL_AGENT_MODAL_ID,
 } from '~/clusters_list/constants';
 import getAgentsQuery from 'ee_else_ce/clusters_list/graphql/queries/get_agents.query.graphql';
 import createAgentMutation from 'ee_else_ce/clusters_list/graphql/mutations/create_agent.mutation.graphql';
 import createAgentTokenMutation from '~/clusters_list/graphql/mutations/create_agent_token.mutation.graphql';
-import ModalCopyButton from '~/vue_shared/components/modal_copy_button.vue';
+import SimpleCopyButton from '~/vue_shared/components/simple_copy_button.vue';
 import CodeBlockHighlighted from '~/vue_shared/components/code_block_highlighted.vue';
 import createMockApollo from 'helpers/mock_apollo_helper';
 import waitForPromises from 'helpers/wait_for_promises';
@@ -76,7 +75,7 @@ describe('InstallAgentModal', () => {
   const findActionButton = () => findButtonByVariant('confirm');
   const findCancelButton = () => findButtonByVariant('default');
   const findPrimaryButton = () => wrapper.findByTestId('agent-primary-button');
-  const findModalCopyButton = () => wrapper.findComponent(ModalCopyButton);
+  const findSimpleCopyButton = () => wrapper.findComponent(SimpleCopyButton);
   const findCodeBlock = () => wrapper.findComponent(CodeBlockHighlighted);
 
   const createWrapper = (mockApolloProvider, kasDisabled) => {
@@ -139,9 +138,8 @@ describe('InstallAgentModal', () => {
       });
 
       it('renders a button to copy a bootstrap with Flux CLI command', () => {
-        expect(findModalCopyButton().props()).toMatchObject({
+        expect(findSimpleCopyButton().props()).toMatchObject({
           text: glabCommand,
-          modalId: INSTALL_AGENT_MODAL_ID,
         });
       });
 
@@ -279,7 +277,6 @@ describe('InstallAgentModal', () => {
         expect(findAgentInstructions().props()).toMatchObject({
           agentName: 'agent-name',
           agentToken: 'mock-agent-token',
-          modalId: INSTALL_AGENT_MODAL_ID,
         });
       });
 

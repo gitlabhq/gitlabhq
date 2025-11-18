@@ -166,7 +166,13 @@ module AuthHelper
   end
 
   def step_up_auth_params(provider_name, step_up_auth_scope)
-    return {} if Feature.disabled?(:omniauth_step_up_auth_for_admin_mode, current_user)
+    return {} if step_up_auth_scope.blank?
+
+    return {} if Feature.disabled?(:omniauth_step_up_auth_for_admin_mode, current_user) &&
+      step_up_auth_scope.to_s == ::Gitlab::Auth::Oidc::StepUpAuthentication::SCOPE_ADMIN_MODE.to_s
+
+    return {} if Feature.disabled?(:omniauth_step_up_auth_for_namespace, current_user) &&
+      step_up_auth_scope.to_s == ::Gitlab::Auth::Oidc::StepUpAuthentication::SCOPE_NAMESPACE.to_s
 
     # Get provider configuration for step up auth scope
     provider_config = Gitlab::Auth::OAuth::Provider
@@ -257,7 +263,7 @@ module AuthHelper
       password_required: password_required.to_s }
   end
 
-  def delete_passkey_data(password_required, path)
+  def delete_passkey_data(password_required, path, passkey_count)
     message = if password_required
                 s_('ProfilesAuthentication|Are you sure you want to delete this passkey? ' \
                   'Enter your password to continue.')
@@ -265,7 +271,16 @@ module AuthHelper
                 s_('ProfilesAuthentication|Are you sure you want to delete this passkey?')
               end
 
-    { button_text: s_('ProfilesAuthentication|Delete passkey'),
+    if passkey_count > 1
+      modal_title = s_('ProfilesAuthentication|Delete passkey')
+      button_text = s_('ProfilesAuthentication|Delete passkey')
+    else
+      modal_title = s_('ProfilesAuthentication|Delete passkey and disable passkey sign-in?')
+      button_text = s_('ProfilesAuthentication|Disable passkey sign-in')
+    end
+
+    { modal_title: modal_title,
+      button_text: button_text,
       icon: 'remove',
       message: message,
       path: path,
@@ -327,6 +342,10 @@ module AuthHelper
       # v2.x will change to RubySaml::XML::SHA256
       XMLSecurity::Document::SHA256
     end
+  end
+
+  def current_password_required?
+    !current_user.password_automatically_set? && current_user.allow_password_authentication_for_web?
   end
 
   extend self

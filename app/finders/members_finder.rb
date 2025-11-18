@@ -95,7 +95,7 @@ class MembersFinder
 
     invited_groups_ids_including_ancestors = invited_groups_including_ancestors.select(:id)
     invited_group_members = GroupMember.with_source_id(invited_groups_ids_including_ancestors).non_minimal_access
-    return invited_group_members.select(Member.column_names) if project.share_with_group_enabled?
+    return invited_group_members.select(member_columns_for_invited_members) if project.share_with_group_enabled?
 
     # Return no access for invited group members when project sharing with group is disabled
     invited_group_members.coerce_to_no_access
@@ -147,6 +147,16 @@ class MembersFinder
 
       "#{member_union_table}.#{column_name}"
     end.join(',')
+  end
+
+  # Remove me when group project sharing is enabled
+  # https://gitlab.com/gitlab-org/gitlab/-/issues/468329
+  def member_columns_for_invited_members
+    Member.column_names.map do |column_name|
+      next Member.null_member_role_id_sql if column_name == 'member_role_id'
+
+      column_name
+    end
   end
 end
 

@@ -1,5 +1,6 @@
 <script>
 import { GlForm, GlButton, GlSprintf } from '@gitlab/ui';
+import { mapActions } from 'pinia';
 import { createAlert } from '~/alert';
 import csrf from '~/lib/utils/csrf';
 import { STATUS_MERGED } from '~/issues/constants';
@@ -7,6 +8,7 @@ import { BV_SHOW_MODAL } from '~/lib/utils/constants';
 import { HTTP_STATUS_UNAUTHORIZED } from '~/lib/utils/http_status';
 import { s__, __, n__, sprintf } from '~/locale';
 import { getIdFromGraphQLId } from '~/graphql_shared/utils';
+import { useBatchComments } from '~/batch_comments/store';
 import approvalsMixin from '../../mixins/approvals';
 import StateContainer from '../state_container.vue';
 import { INVALID_RULES_DOCS_PATH } from '../../constants';
@@ -190,13 +192,15 @@ export default {
     },
   },
   methods: {
+    ...mapActions(useBatchComments, ['clearDrafts']),
     approve() {
       if (this.requirePasswordToApprove) {
         this.$root.$emit(BV_SHOW_MODAL, this.modalId);
         return;
       }
       this.updateApproval(
-        () => this.service.approveMergeRequest(),
+        () =>
+          this.service.approveMergeRequest({ publish_review: true }).then(() => this.clearDrafts()),
         () =>
           this.alerts.push(
             createAlert({
@@ -207,7 +211,7 @@ export default {
     },
     approveWithAuth(data) {
       this.updateApproval(
-        () => this.service.approveMergeRequestWithAuth(data),
+        () => this.service.approveMergeRequestWithAuth(data).then(() => this.clearDrafts()),
         (error) => {
           if (error?.response?.status === HTTP_STATUS_UNAUTHORIZED) {
             this.hasApprovalAuthError = true;

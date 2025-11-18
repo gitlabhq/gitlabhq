@@ -35,8 +35,19 @@ class WebHookLog < ApplicationRecord
         "`recent` scope can only provide up to #{MAX_RECENT_DAYS} days of log records"
     end
 
-    where(created_at: number_of_days.days.ago.beginning_of_day..Time.zone.now)
-      .order(created_at: :desc)
+    created_between(number_of_days.days.ago.beginning_of_day, Time.zone.now)
+  end
+
+  def self.created_between(start_time, end_time)
+    raise ArgumentError, '`start_time` and `end_time` must be present' if start_time.blank? || end_time.blank?
+
+    raise ArgumentError, '`start_time` must be before `end_time`' if start_time > end_time
+
+    if max_recent_days_ago > start_time
+      raise ArgumentError, "`start_time` to `end_time` range must be within the last #{MAX_RECENT_DAYS} days"
+    end
+
+    where(created_at: start_time..end_time).order(created_at: :desc)
   end
 
   # Delete a batch of log records. Returns true if there may be more remaining.
@@ -44,6 +55,10 @@ class WebHookLog < ApplicationRecord
     raise ArgumentError, 'batch_size is too small' if batch_size < 1
 
     where(web_hook: web_hook).limit(batch_size).delete_all == batch_size
+  end
+
+  def self.max_recent_days_ago
+    WebHookLog::MAX_RECENT_DAYS.days.ago.beginning_of_day
   end
 
   def success?
@@ -62,6 +77,14 @@ class WebHookLog < ApplicationRecord
     return super unless self[:request_headers]['X-Gitlab-Token']
 
     self[:request_headers].merge('X-Gitlab-Token' => _('[REDACTED]'))
+  end
+
+  def request_headers_list
+    list_headers(request_headers)
+  end
+
+  def response_headers_list
+    list_headers(response_headers)
   end
 
   def idempotency_key
@@ -90,5 +113,13 @@ class WebHookLog < ApplicationRecord
 
   def set_url_hash
     self.url_hash = Gitlab::CryptoHelper.sha256(interpolated_url)
+  end
+
+  def list_headers(headers_hash)
+    return [] unless headers_hash.present?
+
+    headers_hash.map do |header_name, header_value|
+      { name: header_name, value: header_value }
+    end
   end
 end

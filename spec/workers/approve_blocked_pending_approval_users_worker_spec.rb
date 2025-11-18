@@ -12,6 +12,23 @@ RSpec.describe ApproveBlockedPendingApprovalUsersWorker, type: :worker, feature_
       described_class.new.perform(admin.id)
     end
 
+    context 'when user is not found' do
+      let(:non_existing_user_id) { non_existing_record_id }
+
+      it 'logs a warning and does not execute any side effects', :aggregate_failures do
+        expect(Sidekiq.logger).to receive(:warn).with(
+          class: described_class.name,
+          user_id: non_existing_user_id,
+          message: 'user not found'
+        )
+
+        expect(Users::ApproveService).not_to receive(:new)
+        expect(User).not_to receive(:blocked_pending_approval)
+
+        described_class.new.perform(non_existing_user_id)
+      end
+    end
+
     it 'calls ApproveService for users in blocked_pending_approval state' do
       expect_next_instance_of(Users::ApproveService, admin) do |service|
         expect(service).to receive(:execute).with(blocked_user)

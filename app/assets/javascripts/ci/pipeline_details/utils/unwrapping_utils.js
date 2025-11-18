@@ -33,7 +33,8 @@ const unwrapNodesWithName = (jobArray, prop, field = 'name') => {
 
   return jobArray.map((job) => {
     if (job[prop]) {
-      return { ...job, [prop]: job[prop].nodes.map((item) => item[field] || '') };
+      const items = job[prop].nodes || job[prop];
+      return { ...job, [prop]: items.map((item) => item[field] || '') };
     }
     return job;
   });
@@ -83,4 +84,25 @@ const unwrapStagesWithNeedsAndLookup = (denodedStages) => {
   return { stages: nodes, lookup: lookupMap };
 };
 
-export { unwrapGroups, unwrapJobWithNeeds, unwrapNodesWithName, unwrapStagesWithNeedsAndLookup };
+/**
+ * Unwrap stages from mutation format (without .nodes wrappers)
+ * @param {Array} stages - Stages array from ciLint mutation
+ * @returns {Array} - Stages with unwrapped job needs
+ */
+const unwrapStagesFromMutation = (stages) => {
+  return stages.map((stage) => ({
+    ...stage,
+    groups: (stage.groups || []).map((group) => ({
+      ...group,
+      jobs: unwrapJobWithNeeds(group.jobs || []),
+    })),
+  }));
+};
+
+export {
+  unwrapGroups,
+  unwrapJobWithNeeds,
+  unwrapNodesWithName,
+  unwrapStagesWithNeedsAndLookup,
+  unwrapStagesFromMutation,
+};

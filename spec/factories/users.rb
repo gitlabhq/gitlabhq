@@ -180,6 +180,14 @@ FactoryBot.define do
       last_sign_in_ip { '127.0.0.1' }
     end
 
+    trait :with_passkey do
+      transient { registrations_count { 1 } }
+
+      after(:create) do |user, evaluator|
+        create_list(:webauthn_registration, evaluator.registrations_count, :passkey, user: user)
+      end
+    end
+
     trait :two_factor_via_otp do
       before(:create) do |user|
         user.otp_required_for_login = true

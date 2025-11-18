@@ -10,5 +10,5 @@ RSpec.describe Gitlab::LocalAndRemoteStorageMigration::ArtifactMigrater do
 
   let!(:item) { create(:ci_job_artifact, :archive, file_store: start_store) }
 
-  it_behaves_like 'local and remote storage migration'
+  it_behaves_like 'local and remote storage migration', expect_file_rename: true
 end

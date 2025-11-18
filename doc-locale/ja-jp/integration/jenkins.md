@@ -157,8 +157,8 @@ GitLabを設定するときに、`Connection failed. Please check your settings`
 |------------------------------------------------------------------|-------------|
 | GitLabが、アドレスにあるJenkinsインスタンスに到達できません。  | GitLab Self-Managedの場合は、GitLabインスタンスで提供されているドメインにあるJenkinsインスタンスをpingします。  |
 | Jenkinsインスタンスがローカルアドレスにあり、[GitLabインストールの許可リスト](../security/webhooks.md#allow-outbound-requests-to-certain-ip-addresses-and-domains)に含まれていません。| インスタンスをGitLabインストールの許可リストに追加します。  |
-| Jenkinsインスタンスの認証情報に十分なアクセス権がないか、無効です。| 十分なアクセス権を認証情報に付与するか、有効な認証情報を作成します。  |
-|[Jenkinsプラグイン設定](#configure-the-jenkins-server)で**Enable authentication for `/project` end-point**チェックボックスが選択されていません| チェックボックスを選択します。  |
+| Jenkinsインスタンスの認証情報に十分なアクセス権がないか、無効です。 | 十分なアクセス権を認証情報に付与するか、有効な認証情報を作成します。  |
+| [Jenkinsプラグイン設定](#configure-the-jenkins-server)で**Enable authentication for `/project` end-point**チェックボックスが選択されていません | チェックボックスを選択します。  |
 
 ### エラー: `Could not connect to the CI server` {#error-could-not-connect-to-the-ci-server}
 

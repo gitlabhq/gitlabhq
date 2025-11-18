@@ -17,6 +17,9 @@ GitLab allows users to set up accounts through integration with external [authen
 These authentication methods do not require the user to explicitly create a password for their accounts.
 However, to maintain data consistency, GitLab requires passwords for all user accounts.
 
-For such accounts, we use the [`friendly_token`](https://github.com/heartcombo/devise/blob/f26e05c20079c9acded3c0ee16da0df435a28997/lib/devise.rb#L492) method provided by the Devise gem to generate a random, unique and secure password and sets it as the account password during sign up.
+For these accounts, GitLab uses the
+[`friendly_token`](https://github.com/heartcombo/devise/blob/f26e05c20079c9acded3c0ee16da0df435a28997/lib/devise.rb#L492)
+method provided by the Devise gem to generate a random, unique, and secure password. GitLab
+sets this password as the account password during sign up.
 
 The length of the generated password is [128 characters](password_length_limits.md).

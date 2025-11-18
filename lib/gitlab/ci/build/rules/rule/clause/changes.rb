@@ -87,10 +87,8 @@ module Gitlab
 
           if compare_to_sha
             pipeline.modified_paths_since(compare_to_sha)
-          elsif Feature.enabled?(:ci_changes_changed_paths, pipeline.project)
-            pipeline.changed_paths&.map(&:path)
           else
-            pipeline.modified_paths
+            pipeline.changed_paths&.map(&:path)
           end
         end
 

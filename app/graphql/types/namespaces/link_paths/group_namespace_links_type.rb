@@ -30,11 +30,25 @@ module Types
         end
 
         def rss_path
-          url_helpers.group_work_items_path(group, format: :atom)
+          base_path = url_helpers.group_work_items_path(group)
+          url_helpers.group_work_items_path(group, url_helpers.feed_url_options(:atom, base_path))
         end
 
         def calendar_path
-          url_helpers.group_work_items_path(group, format: :ics)
+          base_path = url_helpers.group_work_items_path(group)
+          url_helpers.group_work_items_path(group, url_helpers.feed_url_options(:ics, base_path))
+        end
+
+        def namespace_full_path
+          group.full_path
+        end
+
+        def group_path
+          group.full_path
+        end
+
+        def issues_list_path
+          url_helpers.issues_group_path(group)
         end
       end
     end

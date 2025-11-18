@@ -11,7 +11,9 @@ module Ci
     let_it_be(:shared_runner) { create(:ci_runner, :instance) }
     let_it_be_with_reload(:project_runner) { create(:ci_runner, :project, projects: [project]) }
     let_it_be_with_reload(:group_runner) { create(:ci_runner, :group, groups: [group]) }
-    let!(:pending_job) { create(:ci_build, :pending, :queued, pipeline: pipeline) }
+
+    let(:pending_job_tag_list) { [] }
+    let!(:pending_job) { create(:ci_build, :pending, :queued, pipeline: pipeline, tag_list: pending_job_tag_list) }
 
     describe '#execute' do
       subject(:execute) { described_class.new(runner, runner_manager).execute }
@@ -54,15 +56,15 @@ module Ci
           let(:project_runner_manager) { nil }
 
           context 'when job has tag' do
+            let(:pending_job_tag_list) { %w[linux] }
+
             before do
-              pending_job.update!(tag_list: ["linux"])
-              pending_job.reload
-              pending_job.create_queuing_entry!
+              pending_job.reload.create_queuing_entry!
             end
 
             context 'and runner has matching tag' do
               before do
-                project_runner.update!(tag_list: ["linux"])
+                project_runner.update!(tag_list: pending_job_tag_list)
               end
 
               context 'with no runner manager specified' do
@@ -1195,7 +1197,7 @@ module Ci
       end
 
       it 'returns 409 conflict' do
-        expect(Ci::Build.pending.unstarted.count).to eq 3
+        expect(Ci::Build.pending.with_no_runner_assigned.count).to eq 3
 
         result = described_class.new(project_runner, nil).execute
 

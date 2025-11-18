@@ -18,21 +18,16 @@ FactoryBot.define do
     end
 
     trait :creating do
-      after(:build) do |provider|
-        provider.make_creating
-      end
+      status { 2 }
     end
 
     trait :created do
-      after(:build) do |provider|
-        provider.make_created
-      end
+      status { 3 }
     end
 
     trait :errored do
-      after(:build) do |provider|
-        provider.make_errored('An error occurred')
-      end
+      status { 4 }
+      status_reason { 'An error occurred' }
     end
   end
 end

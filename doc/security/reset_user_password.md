@@ -24,7 +24,7 @@ You can reset user passwords by using the UI, a Rake task, a Rails console, or t
 
 To reset a user password in the UI:
 
-1. On the left sidebar, at the bottom, select **Admin**.
+1. On the left sidebar, at the bottom, select **Admin**. If you've [turned on the new navigation](../user/interface_redesign.md#turn-new-navigation-on-or-off), in the upper-right corner, select **Admin**.
 1. Select **Overview** > **Users**.
 1. Identify a user account to update, select **Edit**.
 1. In the **Password** section, enter and confirm a new password.
@@ -184,4 +184,4 @@ requirements. Ensure the password you are attempting to set meets all
 
 ### Expired password
 
-If a user password has previously expired, you might need to update the password expiration date. For more information, see [Password expired error on Git fetch with SSH for LDAP user](../topics/git/troubleshooting_git.md#password-expired-error-on-git-fetch-with-ssh-for-ldap-user).
+If a user password has previously expired, you might need to update the password expiration date. For more information, see [Password expired error on Git fetch with SSH for LDAP user](../topics/git/troubleshooting_git.md#your-password-expired-error-on-git-fetch-with-ssh-for-ldap-user).

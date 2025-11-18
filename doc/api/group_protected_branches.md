@@ -18,9 +18,9 @@ title: Group-level protected branches API
 
 {{< /history >}}
 
-Use the protected branches API for groups to manage protected branch rules.
-It provides endpoints to list, create, update, and delete protected branch rules that apply to projects belonging to a group.
-
+Use this API to manage [protected branch settings](../user/project/repository/branches/protected.md#in-a-group).
+Use this API to manage [protected branch settings](../user/project/repository/branches/protected.md#in-a-group)
+that are inherited by all projects in a group.
 Group protected branches only support [valid access levels](#valid-access-levels). Individual users
 and groups cannot be specified.
 

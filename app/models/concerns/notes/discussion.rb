@@ -87,13 +87,13 @@ module Notes
 
     def in_reply_to?(other)
       case other
-      when Note, AntiAbuse::Reports::Note
+      when Note
         if part_of_discussion?
           in_reply_to?(other.noteable) && in_reply_to?(other.to_discussion)
         else
           in_reply_to?(other.noteable)
         end
-      when ::Discussion, AntiAbuse::Reports::Discussion
+      when ::Discussion
         discussion_id == other.id
       when Noteable
         noteable == other

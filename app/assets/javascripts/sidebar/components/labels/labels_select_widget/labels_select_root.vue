@@ -129,7 +129,6 @@ export default {
   },
   data() {
     return {
-      contentIsOnViewport: true,
       issuable: null,
       labelsSelectInProgress: false,
       oldIid: null,
@@ -152,9 +151,6 @@ export default {
     },
     issuableId() {
       return this.issuable?.id;
-    },
-    isRealtimeEnabled() {
-      return this.glFeatures.realtimeLabels;
     },
     isLabelListEnabled() {
       return this.showEmbeddedLabelsList && isDropdownVariantEmbedded(this.variant);

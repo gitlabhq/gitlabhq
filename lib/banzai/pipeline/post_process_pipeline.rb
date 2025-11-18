@@ -5,6 +5,7 @@ module Banzai
     class PostProcessPipeline < BasePipeline
       def self.filters
         @filters ||= FilterArray[
+          Filter::References::ExternalIssueReferenceFilter::LinkResolutionFilter,
           Filter::TruncateVisibleFilter,
           Filter::PlaceholdersPostFilter,
           *internal_link_filters,

@@ -43,14 +43,6 @@ RSpec.shared_examples 'namespace traversal scopes' do
     end
   end
 
-  describe '.normal_select' do
-    let(:query_result) { described_class.where(id: group_1).normal_select }
-
-    subject { query_result.column_names }
-
-    it { is_expected.to eq described_class.column_names }
-  end
-
   shared_examples '.roots' do
     context 'with only sub-groups' do
       subject { described_class.where(id: [deep_nested_group_1, nested_group_1, deep_nested_group_2]).roots }

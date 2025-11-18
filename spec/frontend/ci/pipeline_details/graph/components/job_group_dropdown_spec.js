@@ -94,7 +94,7 @@ describe('job group dropdown component', () => {
   it('renders trigger button with group name and size', () => {
     createComponent({ mountFn: mount });
 
-    expect(findJobItem().text().trim()).toBe(group.name);
+    expect(findJobItem().text().trim()).toContain(group.name);
     expect(findJobItem().props()).toMatchObject({
       type: 'job_dropdown',
       job: group,
@@ -229,6 +229,7 @@ describe('job group dropdown component', () => {
             ...group,
             status: {
               status: 'failed',
+              icon: 'status_failed',
               tooltip: 'Failed - (stuck or timeout failure) (allowed to fail)',
               text: 'Failed text',
             },

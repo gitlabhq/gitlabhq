@@ -17,9 +17,10 @@ module Ci
       end
 
       override :validate_options
-      def validate_options(value)
-        return unless options && value
-        return if options.include?(value)
+      def validate_options(value, all_params = {})
+        allowed_options = rules ? resolved_options(all_params) : options
+        return unless allowed_options && value
+        return if allowed_options.include?(value)
 
         error("`#{value}` cannot be used because it is not in the list of the allowed options")
       end

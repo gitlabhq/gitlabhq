@@ -425,7 +425,7 @@ RSpec.describe 'New project', :js, feature_category: :groups_and_projects do
 
       context 'from git repository url, "Repository by URL"' do
         before do
-          first('.js-import-git-toggle-button').click
+          click_button 'Repository by URL'
         end
 
         it 'does not autocomplete sensitive git repo URL' do
@@ -445,11 +445,7 @@ RSpec.describe 'New project', :js, feature_category: :groups_and_projects do
           allow(Gitlab::GitalyClient::RemoteService).to receive(:exists?).with('http://foo/bar').and_return(false)
 
           fill_in 'project_import_url', with: 'http://foo/bar'
-          # simulate blur event
-          find('body').click
-
-          wait_for_requests
-
+          send_keys(:tab)
           expect(page).to have_text('There is not a valid Git repository at this URL')
         end
 

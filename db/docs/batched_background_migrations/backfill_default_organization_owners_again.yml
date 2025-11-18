@@ -1,8 +1,0 @@
----
-migration_job_name: BackfillDefaultOrganizationOwnersAgain
-description: Populates organization_users with instance admins to the default organization.
-feature_category: cell
-introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/142979
-milestone: '16.9'
-queued_migration_version: 20240126210641
-finalized_by: '20240321045306'

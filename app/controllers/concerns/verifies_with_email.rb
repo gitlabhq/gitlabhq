@@ -125,6 +125,18 @@ module VerifiesWithEmail
     end
   end
 
+  def fallback_to_email_otp
+    return respond_422 unless user = find_user
+
+    if fallback_to_email_otp_permitted?(user)
+      clear_two_factor_attempt!
+      session[:verification_user_id] = user.id
+      resend_verification_code
+    else
+      render json: { success: false, message: _('Not permitted.') }, status: :bad_request
+    end
+  end
+
   private
 
   def skip_verify_with_email?
@@ -233,6 +245,10 @@ module VerifiesWithEmail
   # validating that they have mail delivery correctly configured.
   def require_email_based_otp?(user)
     return false unless Feature.enabled?(:email_based_mfa, user)
+
+    # As a final time-of-use check, ensure that
+    # `email_otp_required_after` is set to a valid state
+    user.set_email_otp_required_after_based_on_restrictions(save: true)
 
     password_based_login? &&
       # Skip on first log in (which occurs for most during account

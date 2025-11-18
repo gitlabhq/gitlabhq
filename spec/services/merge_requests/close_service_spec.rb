@@ -66,6 +66,23 @@ RSpec.describe MergeRequests::CloseService, feature_category: :code_review_workf
       end
     end
 
+    context 'when the merge request is merged concurrently in another process' do
+      it 'does not close the merge request' do
+        stale_instance = MergeRequest.find(merge_request.id)
+        fresh_instance = MergeRequest.find(merge_request.id)
+
+        fresh_instance.mark_as_merged!
+
+        result = service.execute(stale_instance)
+
+        expect(result).to eq(stale_instance)
+        expect(result).to be_merged
+        expect(result).not_to be_closed
+
+        expect(merge_request.reload).to be_merged
+      end
+    end
+
     it 'updates metrics' do
       metrics = merge_request.metrics
       metrics_service = double(MergeRequestMetricsService)

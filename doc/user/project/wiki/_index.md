@@ -35,10 +35,10 @@ Wiki pages display a [sidebar](#sidebar), which you can customize.
 
 To access a project wiki:
 
-1. On the left sidebar, select **Search or go to** and find your project.
+1. On the left sidebar, select **Search or go to** and find your project. If you've [turned on the new navigation](../../interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
 1. To display the wiki, either:
    - On the left sidebar, select **Plan** > **Wiki**.
-   - On any page in the project, use the <kbd>g</kbd> + <kbd>w</kbd>
+   - On any page in the project, use the <kbd>g</kbd>+<kbd>w</kbd>
      [wiki keyboard shortcut](../../shortcuts.md).
 
 If **Plan** > **Wiki** is not listed in the left sidebar of your project, a project administrator
@@ -63,7 +63,7 @@ When a wiki is created, it is empty. On your first visit, you can create the
 home page users see when viewing the wiki. This page requires a specific path
 to be used as your wiki's home page. To create it:
 
-1. On the left sidebar, select **Search or go to** and find your project or group.
+1. On the left sidebar, select **Search or go to** and find your project or group. If you've [turned on the new navigation](../../interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
 1. Select **Plan** > **Wiki**.
 1. Select **Create your first page**.
 1. Optional. Change the **Title** of the home page.
@@ -89,7 +89,7 @@ Prerequisites:
 
 - You must have at least the Developer role.
 
-1. On the left sidebar, select **Search or go to** and find your project or group.
+1. On the left sidebar, select **Search or go to** and find your project or group. If you've [turned on the new navigation](../../interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
 1. Select **Plan** > **Wiki**.
 1. Select **Wiki actions** ({{< icon name="ellipsis_v" >}}), then **New page** on this page, or any other wiki page.
 1. Select a content format.
@@ -103,13 +103,74 @@ Prerequisites:
    if you don't enter one yourself.
 1. Select **Create page**.
 
+### From a template
+
+{{< history >}}
+
+- Create a new wiki page directly from a template [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/474328) in GitLab 18.6.
+
+{{< /history >}}
+
+You can create a new wiki page from a [template](#create-a-template) if you have at least one
+template in your project.
+
+Prerequisites:
+
+- You must have [created](#create-a-template) at least one template already.
+
+{{< tabs >}}
+
+{{< tab title="From template list" >}}
+
+1. On the left sidebar, select **Search or go to** and find your project or group. If you've [turned on the new navigation](../../interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
+1. Select **Plan** > **Wiki**.
+1. Select **Templates** to view all available templates.
+1. Next to the template you want to use, select **Create from template**.
+1. The new page form opens with:
+   - The template content pre-filled in the content area.
+   - The template selected in the template dropdown list.
+1. Enter a title for your new page.
+1. Modify the content as needed.
+1. Select **Create page**.
+
+{{< /tab >}}
+
+{{< tab title="From template page" >}}
+
+1. On the left sidebar, select **Search or go to** and find your project or group. If you've [turned on the new navigation](../../interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
+1. Select **Plan** > **Wiki**.
+1. Select **Templates** to view all available templates.
+1. Choose and select the template you want to use.
+1. In the page header, select **Create from template**.
+1. The new page form opens with the current template pre-selected and its content loaded.
+1. Enter a title for your new page.
+1. Modify the content as needed.
+1. Select **Create page**.
+
+{{< /tab >}}
+
+{{< tab title="From new page form" >}}
+
+1. On the left sidebar, select **Search or go to** and find your project or group. If you've [turned on the new navigation](../../interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
+1. Select **Plan** > **Wiki**.
+1. Select **New page**.
+1. In the **Choose a template** dropdown list, select your desired template.
+1. The template content is automatically loaded into the content area.
+1. Enter a title for your page.
+1. Modify the content as needed.
+1. Select **Create page**.
+
+{{< /tab >}}
+
+{{< /tabs >}}
+
 ### Create or edit wiki pages locally
 
 Wikis are based on Git repositories, so you can clone them locally and edit
 them like you would do with every other Git repository. To clone a wiki repository
 locally:
 
-1. On the left sidebar, select **Search or go to** and find your project or group.
+1. On the left sidebar, select **Search or go to** and find your project or group. If you've [turned on the new navigation](../../interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
 1. Select **Plan** > **Wiki**.
 1. Select **Wiki actions** ({{< icon name="ellipsis_v" >}}), then **Clone repository**.
 1. Follow the on-screen instructions.
@@ -173,7 +234,7 @@ Prerequisites:
 
 - You must have at least the Developer role.
 
-1. On the left sidebar, select **Search or go to** and find your project or group.
+1. On the left sidebar, select **Search or go to** and find your project or group. If you've [turned on the new navigation](../../interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
 1. Select **Plan** > **Wiki**.
 1. Go to the page you want to edit, and either:
    - Use the <kbd>e</kbd> wiki [keyboard shortcut](../../shortcuts.md#wiki-pages).
@@ -204,7 +265,7 @@ Prerequisites:
 
 - You must have at least the Developer role.
 
-1. On the left sidebar, select **Search or go to** and find your project or group.
+1. On the left sidebar, select **Search or go to** and find your project or group. If you've [turned on the new navigation](../../interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
 1. Select **Plan** > **Wiki**.
 1. Go to the page you want to delete.
 1. Select **Wiki actions** ({{< icon name="ellipsis_v" >}}), then **Delete page**.
@@ -228,7 +289,7 @@ Prerequisites:
 
 - You must have at least the Developer role.
 
-1. On the left sidebar, select **Search or go to** and find your project or group.
+1. On the left sidebar, select **Search or go to** and find your project or group. If you've [turned on the new navigation](../../interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
 1. Select **Plan** > **Wiki**.
 1. Go to the page you want to move or rename.
 1. Select **Edit**.
@@ -250,10 +311,10 @@ Prerequisites:
 
 You can export a wiki page as a PDF file:
 
-1. On the left sidebar, select **Search or go to** and find your project or group.
+1. On the left sidebar, select **Search or go to** and find your project or group. If you've [turned on the new navigation](../../interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
 1. Select **Plan** > **Wiki**.
 1. Go to the page you want to export.
-1. On the top right, select **Wiki actions** ({{< icon name="ellipsis_v" >}}), then select **Print as PDF**.
+1. In the upper right, select **Wiki actions** ({{< icon name="ellipsis_v" >}}), then select **Print as PDF**.
 
 A PDF of the wiki page is created.
 
@@ -290,7 +351,7 @@ Prerequisites:
 
 - You must have at least the Developer role.
 
-1. On the left sidebar, select **Search or go to** and find your project or group.
+1. On the left sidebar, select **Search or go to** and find your project or group. If you've [turned on the new navigation](../../interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
 1. Select **Plan** > **Wiki**.
 1. Select **Wiki actions** ({{< icon name="ellipsis_v" >}}), then **Templates**.
 1. Select **New Template**.
@@ -313,6 +374,38 @@ Prerequisites:
    indicating that the existing content will be overridden.
 1. Select **Apply template**.
 
+### Restore a page template to a previous version
+
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/383833) in GitLab 18.6.
+
+{{< /history >}}
+
+You can restore a wiki page template to any previous version from its history.
+This creates a new version with the restored content while preserving the full version history.
+
+Prerequisites:
+
+- You must have at least the Developer role.
+
+To restore a wiki page template to a previous version:
+
+1. On the left sidebar, select **Search or go to** and find your project or group. If you've [turned on the new navigation](../../interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
+1. Select **Plan** > **Wiki**.
+1. Select **Wiki actions** ({{< icon name="ellipsis_v" >}}), then **Templates**.
+1. Select a template.
+1. Select **Wiki actions** ({{< icon name="ellipsis_v" >}}), then **Template history**.
+1. Select the version you want to restore.
+1. In the upper right, select **Restore this version**.
+1. In the commit dialog, add a **Commit message** to describe why you're restoring this version.
+1. Select **Restore**.
+
+The page template is restored to the selected version. All previous versions remain in the page history.
+
+You can also restore wiki pages using the same process. For more information, see
+[Restore a wiki page to a previous version](#restore-a-wiki-page-to-a-previous-version).
+
 ## Wiki page subscriptions
 
 The wiki page subscriptions feature allows you to receive notifications when changes are made to wiki pages you're interested in.
@@ -326,7 +419,7 @@ You can subscribe to specific wiki pages to receive notifications when someone:
 ### Subscribe to a wiki page
 
 1. Open the wiki page you want to follow.
-1. In the top-right corner, next to the **Edit**, select the bell icon ({{< icon name="notifications" >}}).
+1. In the upper-right corner, next to the **Edit**, select the bell icon ({{< icon name="notifications" >}}).
 1. Select the bell icon ({{< icon name="notifications-off" >}}) again to unsubscribe.
 
 When you change your subscription status, GitLab shows a confirmation message:
@@ -355,7 +448,7 @@ The history page shows:
 
 To view the changes for a wiki page:
 
-1. On the left sidebar, select **Search or go to** and find your project or group.
+1. On the left sidebar, select **Search or go to** and find your project or group. If you've [turned on the new navigation](../../interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
 1. Select **Plan** > **Wiki**.
 1. Go to the page you want to view history for.
 1. Select **Wiki actions** ({{< icon name="ellipsis_v" >}}), then **Page history**.
@@ -364,11 +457,42 @@ To view the changes for a wiki page:
 
 You can see the changes made in a version of a wiki page, similar to versioned diff file views:
 
-1. On the left sidebar, select **Search or go to** and find your project or group.
+1. On the left sidebar, select **Search or go to** and find your project or group. If you've [turned on the new navigation](../../interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
 1. Select **Plan** > **Wiki**.
 1. Go to the wiki page you're interested in.
 1. Select **Wiki actions** ({{< icon name="ellipsis_v" >}}), then **Page history** to see all page versions.
 1. Select the commit message in the **Diff** column for the version you're interested in.
+
+### Restore a wiki page to a previous version
+
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/383833) in GitLab 18.6.
+
+{{< /history >}}
+
+You can restore a wiki page to any previous version from its history.
+This creates a new version with the restored content while preserving the full version history.
+
+Prerequisites:
+
+- You must have at least the Developer role.
+
+To restore a wiki page to a previous version:
+
+1. On the left sidebar, select **Search or go to** and find your project or group. If you've [turned on the new navigation](../../interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
+1. Select **Plan** > **Wiki**.
+1. Go to the page you want to restore.
+1. Select **Wiki actions** ({{< icon name="ellipsis_v" >}}), then **Page history**.
+1. Select the version you want to restore.
+1. In the upper right, select **Restore this version**.
+1. In the commit dialog, add a **Commit message** to describe why you're restoring this version.
+1. Select **Restore**.
+
+The page is restored to the selected version. All previous versions remain in the page history.
+
+You can also restore wiki page templates using the same process. For more information, see
+[Restore a page template to a previous version](#restore-a-page-template-to-a-previous-version).
 
 ## Sidebar
 
@@ -376,6 +500,7 @@ You can see the changes made in a version of a wiki page, similar to versioned d
 
 - Searching by title in the sidebar [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/156054) in GitLab 17.1.
 - Limit of 15 items in the sidebar [removed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/158084) in GitLab 17.2.
+- Sidebar [moved](https://gitlab.com/gitlab-org/gitlab/-/issues/569910) from the upper right to the upper left of the page in GitLab 18.6.
 
 {{< /history >}}
 
@@ -399,9 +524,9 @@ Prerequisites:
 This process creates a wiki page named `_sidebar` which fully
 replaces the default sidebar navigation:
 
-1. On the left sidebar, select **Search or go to** and find your project or group.
+1. On the left sidebar, select **Search or go to** and find your project or group. If you've [turned on the new navigation](../../interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
 1. Select **Plan** > **Wiki**.
-1. In the upper-right corner of the page, select **Add custom sidebar** ({{< icon name="settings" >}}).
+1. In the upper-left corner of the page, select **Add custom sidebar** ({{< icon name="settings" >}}).
 1. When complete, select **Save changes**.
 
 A `_sidebar` example, formatted with Markdown:
@@ -433,7 +558,7 @@ You can disable group wikis from the [group settings](group.md#configure-group-w
 
 To add a link to an external wiki from a project's left sidebar:
 
-1. On the left sidebar, select **Search or go to** and find your project.
+1. On the left sidebar, select **Search or go to** and find your project. If you've [turned on the new navigation](../../interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
 1. Select **Settings** > **Integrations**.
 1. Select **External wiki**.
 1. Add the URL to your external wiki.
@@ -449,7 +574,7 @@ To hide the internal wiki from the sidebar, [disable the project's wiki](#disabl
 
 To hide the link to an external wiki:
 
-1. On the left sidebar, select **Search or go to** and find your project.
+1. On the left sidebar, select **Search or go to** and find your project. If you've [turned on the new navigation](../../interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
 1. Select **Settings** > **Integrations**.
 1. Select **External wiki**.
 1. Under **Enable integration**, clear the **Active** checkbox.
@@ -459,7 +584,7 @@ To hide the link to an external wiki:
 
 To disable a project's internal wiki:
 
-1. On the left sidebar, select **Search or go to** and find your project.
+1. On the left sidebar, select **Search or go to** and find your project. If you've [turned on the new navigation](../../interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
 1. Select **Settings** > **General**.
 1. Expand **Visibility, project features, permissions**.
 1. Scroll down to find and turn off the **Wiki** toggle (in gray).

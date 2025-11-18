@@ -15,7 +15,7 @@ module Gitlab
 
         TROUBLESHOOTING_URL = Rails.application.routes.url_helpers.help_page_url('user/project/releases/_index.md', anchor: 'gitlab-cli-version-requirement')
         GLAB_REQUIRED_VERSION = '1.58.0'
-        GLAB_WARNING_MESSAGE = "Warning: release-cli will not be supported after 19.0. Please use glab version >= #{GLAB_REQUIRED_VERSION}. Troubleshooting: #{TROUBLESHOOTING_URL}".freeze
+        GLAB_WARNING_MESSAGE = "Warning: release-cli will not be supported after 20.0. Please use glab version >= #{GLAB_REQUIRED_VERSION}. Troubleshooting: #{TROUBLESHOOTING_URL}".freeze
 
         GLAB_ENV_SET_UNIX = 'export GITLAB_HOST=$CI_SERVER_URL'
         GLAB_ENV_SET_WINDOWS = '$$env:GITLAB_HOST = $$env:CI_SERVER_URL'
@@ -28,12 +28,22 @@ module Gitlab
         GLAB_NO_CLOSE_MILESTONE_FLAG = '--no-close-milestone' # disables closing the milestone after creating the release
 
         GLAB_CA_CERT_FILENAME = 'ca_cert_for_releasing_with_glab.pem'
+
+        # This approach was inherited from
+        # https://gitlab.com/gitlab-org/release-cli/-/blob/v0.24.0/internal/app/http_client.go
+        # We check if ADDITIONAL_CA_CERT_BUNDLE contains inline certificate content or is a file path.
+        # - If it contains newlines, it's inline certificate content and we write it to a temporary file
+        # - If it doesn't contain newlines, it's a file path and we use it directly
         GLAB_CA_CERT_CONFIG_UNIX = <<~BASH.chomp.freeze
           if [ -n "$ADDITIONAL_CA_CERT_BUNDLE" ]; then
             echo "Setting CA certificate for $CI_SERVER_FQDN"
 
-            echo "$ADDITIONAL_CA_CERT_BUNDLE" > "#{GLAB_CA_CERT_FILENAME}"
-            glab config set ca_cert "#{GLAB_CA_CERT_FILENAME}" --host "$CI_SERVER_FQDN"
+            if echo "$ADDITIONAL_CA_CERT_BUNDLE" | grep -q $'\\n'; then
+              echo "$ADDITIONAL_CA_CERT_BUNDLE" > "#{GLAB_CA_CERT_FILENAME}"
+              glab config set ca_cert "#{GLAB_CA_CERT_FILENAME}" --host "$CI_SERVER_FQDN"
+            else
+              glab config set ca_cert "$ADDITIONAL_CA_CERT_BUNDLE" --host "$CI_SERVER_FQDN"
+            fi
           fi
         BASH
         GLAB_CA_CERT_CLEANUP_UNIX = <<~BASH.chomp.freeze
@@ -45,8 +55,13 @@ module Gitlab
           if ($$env:ADDITIONAL_CA_CERT_BUNDLE) {
             Write-Output "Setting CA certificate for $$env:CI_SERVER_FQDN"
 
-            "$$env:ADDITIONAL_CA_CERT_BUNDLE" > "#{GLAB_CA_CERT_FILENAME}"
-            glab config set ca_cert "#{GLAB_CA_CERT_FILENAME}" --host "$$env:CI_SERVER_FQDN"
+            if ($$env:ADDITIONAL_CA_CERT_BUNDLE -match "[`r`n]") {
+              "$$env:ADDITIONAL_CA_CERT_BUNDLE" > "#{GLAB_CA_CERT_FILENAME}"
+              glab config set ca_cert "#{GLAB_CA_CERT_FILENAME}" --host "$$env:CI_SERVER_FQDN"
+            }
+            else {
+              glab config set ca_cert "$$env:ADDITIONAL_CA_CERT_BUNDLE" --host "$$env:CI_SERVER_FQDN"
+            }
           }
         POWERSHELL
         GLAB_CA_CERT_CLEANUP_WINDOWS = <<~POWERSHELL.chomp.freeze

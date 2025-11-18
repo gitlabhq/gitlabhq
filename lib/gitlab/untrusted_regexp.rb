@@ -40,6 +40,8 @@ module Gitlab
     # There is no built-in replace with block support (like `gsub`).  We can accomplish
     # the same thing by parsing and rebuilding the string with the substitutions.
     def replace_gsub(text, limit: 0)
+      return enum_for(:replace_gsub, text, limit:) unless block_given?
+
       new_text = +''
       remainder = text
       count = 0

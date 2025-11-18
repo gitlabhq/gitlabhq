@@ -27,9 +27,7 @@ module Gitlab
         if user_mapping_enabled?(project)
           return unless object[:username]
 
-          if project.root_ancestor.user_namespace? && user_mapping_to_personal_namespace_owner_enabled?(project)
-            return project.root_ancestor.owner_id
-          end
+          return project.root_ancestor.owner_id if project.root_ancestor.user_namespace?
 
           source_user_for_author(object).mapped_user_id
         else
@@ -65,10 +63,6 @@ module Gitlab
 
       def user_mapping_enabled?(project)
         project.import_data.user_mapping_enabled?
-      end
-
-      def user_mapping_to_personal_namespace_owner_enabled?(project)
-        project.import_data.user_mapping_to_personal_namespace_owner_enabled?
       end
 
       def source_user_for_author(user_data)

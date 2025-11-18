@@ -10,3 +10,13 @@ RSpec/AnyInstanceOf:
 
 Graphql/ResolverType:
   Enabled: false
+
+Lint/EmptyBlock:
+  Enabled: true
+  Exclude:
+    - spec/fixtures/test_audit_events.rb
+
+API/Base:
+  Enabled: true
+  Exclude:
+    - spec/**/*.rb

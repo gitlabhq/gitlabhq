@@ -3,7 +3,6 @@ import VueApollo from 'vue-apollo';
 import { TYPENAME_ISSUE, TYPENAME_MERGE_REQUEST } from '~/graphql_shared/constants';
 import { convertToGraphQLId, getIdFromGraphQLId } from '~/graphql_shared/utils';
 import { TYPE_ISSUE, TYPE_MERGE_REQUEST, WORKSPACE_PROJECT } from '~/issues/constants';
-import { gqlClient } from '~/issues/list/graphql';
 import {
   isInDesignPage,
   isInIncidentPage,
@@ -24,7 +23,6 @@ import SidebarEscalationStatus from './components/incidents/sidebar_escalation_s
 import LabelsSelectWidget from './components/labels/labels_select_widget/labels_select_root.vue';
 import IssuableLockForm from './components/lock/issuable_lock_form.vue';
 import MilestoneDropdown from './components/milestone/milestone_dropdown.vue';
-import MoveIssuesButton from './components/move/move_issues_button.vue';
 import SidebarParticipantsWidget from './components/participants/sidebar_participants_widget.vue';
 import SidebarReferenceWidget from './components/copy/sidebar_reference_widget.vue';
 import SidebarReviewers from './components/reviewers/sidebar_reviewers.vue';
@@ -40,7 +38,6 @@ import { IssuableAttributeType } from './constants';
 import CrmContacts from './components/crm_contacts/crm_contacts.vue';
 import trackShowInviteMemberLink from './track_invite_members';
 import MoveIssueButton from './components/move/move_issue_button.vue';
-import ConfidentialityDropdown from './components/confidential/confidentiality_dropdown.vue';
 
 Vue.use(Translate);
 Vue.use(VueApollo);
@@ -581,31 +578,6 @@ function mountCopyEmailToClipboard() {
   });
 }
 
-export async function mountMoveIssuesButton() {
-  const el = document.querySelector('.js-move-issues');
-
-  if (!el) {
-    return null;
-  }
-
-  Vue.use(VueApollo);
-
-  return new Vue({
-    el,
-    name: 'MoveIssuesRoot',
-    apolloProvider: new VueApollo({
-      defaultClient: await gqlClient(),
-    }),
-    render: (createElement) =>
-      createElement(MoveIssuesButton, {
-        props: {
-          projectFullPath: el.dataset.projectFullPath,
-          projectsFetchPath: el.dataset.projectsFetchPath,
-        },
-      }),
-  });
-}
-
 export function mountStatusDropdown() {
   const el = document.querySelector('.js-status-dropdown');
 
@@ -631,20 +603,6 @@ export function mountSubscriptionsDropdown() {
     el,
     name: 'SubscriptionsDropdownRoot',
     render: (createElement) => createElement(SubscriptionsDropdown),
-  });
-}
-
-export function mountConfidentialityDropdown() {
-  const el = document.querySelector('.js-confidentiality-dropdown');
-
-  if (!el) {
-    return null;
-  }
-
-  return new Vue({
-    el,
-    name: 'ConfidentialityDropdownRoot',
-    render: (createElement) => createElement(ConfidentialityDropdown),
   });
 }
 

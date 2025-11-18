@@ -41,6 +41,8 @@ tags:
   description: Operations about members
 - name: personal_access_tokens
   description: Operations about personal_access_tokens
+- name: search
+  description: Operations about searches
 - name: wikis
   description: Operations about wikis
 - name: alert_management
@@ -99,8 +101,6 @@ tags:
   description: Operations about namespaces
 - name: organizations
   description: Operations about organizations
-- name: search
-  description: Operations about searches
 - name: snippets
   description: Operations about snippets
 - name: hooks
@@ -2100,6 +2100,42 @@ paths:
       tags:
       - groups
       operationId: postApiV4GroupsIdTransfer
+  "/api/v4/groups/{id}/transfer_to_organization":
+    post:
+      description: Transfer a group to an organization
+      produces:
+      - application/json
+      consumes:
+      - application/json
+      parameters:
+      - in: path
+        name: id
+        description: The ID of a group
+        type: string
+        required: true
+      - name: postApiV4GroupsIdTransferToOrganization
+        in: body
+        required: true
+        schema:
+          "$ref": "#/definitions/postApiV4GroupsIdTransferToOrganization"
+      responses:
+        '201':
+          description: Transfer a group to an organization
+          schema:
+            "$ref": "#/definitions/API_Entities_GroupDetail"
+        '400':
+          description: Bad request
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Group or Organization not found
+        '422':
+          description: Unprocessable entity
+      tags:
+      - groups
+      operationId: postApiV4GroupsIdTransferToOrganization
   "/api/v4/groups/{id}/share":
     post:
       description: Share a group with a group
@@ -8943,14 +8979,14 @@ paths:
       operationId: postApiV4GroupsIdAccessTokensSelfRotate
   "/api/v4/groups/{id}/(-/)search":
     get:
-      summary: Search on GitLab
+      summary: Search on GitLab within a group
       description: This feature was introduced in GitLab 10.5.
       produces:
       - application/json
       parameters:
       - in: path
         name: id
-        description: The ID of a group
+        description: The ID or URL-encoded path of the group
         type: string
         required: true
       - in: query
@@ -9015,8 +9051,9 @@ paths:
         example: 20
       responses:
         '200':
-          description: Search on GitLab
+          description: Search on GitLab within a group
       tags:
+      - search
       - groups
       operationId: getApiV4GroupsId(-)search
   "/api/v4/groups/{id}/wikis":
@@ -11404,6 +11441,11 @@ paths:
         type: integer
         format: int32
         required: true
+      - name: postApiV4ProjectsIdJobsJobIdRetry
+        in: body
+        required: true
+        schema:
+          "$ref": "#/definitions/postApiV4ProjectsIdJobsJobIdRetry"
       responses:
         '201':
           description: Retry a specific job of a project
@@ -11605,6 +11647,35 @@ paths:
       tags:
       - ci_resource_groups
       operationId: putApiV4ProjectsIdResourceGroupsKey
+  "/api/v4/projects/{id}/resource_groups/{key}/current_job":
+    get:
+      description: Show current job for a specific resource group
+      produces:
+      - application/json
+      parameters:
+      - in: path
+        name: id
+        description: The ID or URL-encoded path of the project owned by the authenticated
+          user
+        type: string
+        required: true
+      - in: path
+        name: key
+        description: The key of the resource group
+        type: string
+        required: true
+      responses:
+        '200':
+          description: Show current job for a specific resource group
+          schema:
+            "$ref": "#/definitions/API_Entities_Ci_JobBasic"
+        '401':
+          description: Unauthorized
+        '404':
+          description: Not found
+      tags:
+      - ci_resource_groups
+      operationId: getApiV4ProjectsIdResourceGroupsKeyCurrentJob
   "/api/v4/projects/{id}/resource_groups/{key}/upcoming_jobs":
     get:
       description: List upcoming jobs for a specific resource group
@@ -12893,6 +12964,22 @@ paths:
         type: string
         required: true
         example: 18
+      - in: query
+        name: page
+        description: Current page number
+        type: integer
+        format: int32
+        default: 1
+        required: false
+        example: 1
+      - in: query
+        name: per_page
+        description: Number of items per page
+        type: integer
+        format: int32
+        default: 20
+        required: false
+        example: 20
       - in: path
         name: pipeline_schedule_id
         description: The pipeline schedule ID
@@ -12900,6 +12987,80 @@ paths:
         format: int32
         required: true
         example: 13
+      - in: query
+        name: scope
+        description: The scope of pipelines
+        type: string
+        enum:
+        - running
+        - pending
+        - finished
+        - branches
+        - tags
+        required: false
+        example: pending
+      - in: query
+        name: status
+        description: The status of pipelines
+        type: string
+        enum:
+        - created
+        - waiting_for_resource
+        - preparing
+        - waiting_for_callback
+        - pending
+        - running
+        - success
+        - failed
+        - canceling
+        - canceled
+        - skipped
+        - manual
+        - scheduled
+        required: false
+        example: pending
+      - in: query
+        name: updated_before
+        description: 'Return pipelines updated before the specified datetime. Format:
+          ISO 8601 YYYY-MM-DDTHH:MM:SSZ'
+        type: string
+        format: date-time
+        required: false
+        example: '2015-12-24T15:51:21.880Z'
+      - in: query
+        name: updated_after
+        description: 'Return pipelines updated after the specified datetime. Format:
+          ISO 8601 YYYY-MM-DDTHH:MM:SSZ'
+        type: string
+        format: date-time
+        required: false
+        example: '2015-12-24T15:51:21.880Z'
+      - in: query
+        name: created_before
+        description: 'Return pipelines created before the specified datetime. Format:
+          ISO 8601 YYYY-MM-DDTHH:MM:SSZ'
+        type: string
+        format: date-time
+        required: false
+        example: '2015-12-24T15:51:21.880Z'
+      - in: query
+        name: created_after
+        description: 'Return pipelines created after the specified datetime. Format:
+          ISO 8601 YYYY-MM-DDTHH:MM:SSZ'
+        type: string
+        format: date-time
+        required: false
+        example: '2015-12-24T15:51:21.880Z'
+      - in: query
+        name: sort
+        description: Sort pipelines
+        type: string
+        default: asc
+        enum:
+        - asc
+        - desc
+        required: false
+        example: desc
       responses:
         '200':
           description: Get all pipelines triggered from a pipeline schedule
@@ -14448,6 +14609,8 @@ paths:
           description: Forbidden
         '404':
           description: Not found
+        '409':
+          description: Another update to this commit status is in progress
       tags:
       - projects
       operationId: postApiV4ProjectsIdStatusesSha
@@ -38043,7 +38206,7 @@ paths:
       operationId: getApiV4ProjectsIdPackagesRubygemsApiV1Dependencies
   "/api/v4/projects/{id}/(-/)search":
     get:
-      summary: Search on GitLab
+      summary: Search on GitLab within a project
       description: This feature was introduced in GitLab 10.5.
       produces:
       - application/json
@@ -38120,8 +38283,9 @@ paths:
         example: 20
       responses:
         '200':
-          description: Search on GitLab
+          description: Search on GitLab within a project
       tags:
+      - search
       - projects
       operationId: getApiV4ProjectsId(-)search
   "/api/v4/projects/{id}/repository/submodules/{submodule}":
@@ -40472,6 +40636,13 @@ paths:
         type: integer
         format: int32
         required: true
+      - in: query
+        name: include_projects
+        description: Include projects in the response. Set to false to improve performance
+          for runners with many projects.
+        type: boolean
+        default: true
+        required: false
       responses:
         '200':
           description: Get runner's details
@@ -40571,6 +40742,51 @@ paths:
       tags:
       - runners
       operationId: getApiV4RunnersIdManagers
+  "/api/v4/runners/{id}/projects":
+    get:
+      summary: List runner's projects
+      description: Get a paginated list of all projects associated with the specified
+        runner. Access is restricted based on user permissions.
+      produces:
+      - application/json
+      parameters:
+      - in: path
+        name: id
+        description: The ID of a runner
+        type: integer
+        format: int32
+        required: true
+      - in: query
+        name: page
+        description: Current page number
+        type: integer
+        format: int32
+        default: 1
+        required: false
+        example: 1
+      - in: query
+        name: per_page
+        description: Number of items per page
+        type: integer
+        format: int32
+        default: 20
+        required: false
+        example: 20
+      responses:
+        '200':
+          description: Get projects associated with a runner
+          schema:
+            "$ref": "#/definitions/API_Entities_BasicProjectDetails"
+        '401':
+          description: Unauthorized
+        '403':
+          description: No access granted
+        '404':
+          description: Runner not found
+      tags:
+      - runners
+      - projects
+      operationId: getApiV4RunnersIdProjects
   "/api/v4/runners/{id}/jobs":
     get:
       summary: List runner's jobs
@@ -43412,7 +43628,8 @@ paths:
       operationId: postApiV4GeoStatus
   "/api/v4/geo/proxy_git_ssh/info_refs_upload_pack":
     post:
-      summary: Internal endpoint that returns info refs upload pack for git clone/pull
+      summary: Internal endpoint that returns info refs upload pack for clone or pull
+        operations
       description: |-
         Responsible for making HTTP GET /repo.git/info/refs?service=git-upload-pack
                           request from secondary gitlab-shell to primary
@@ -43438,7 +43655,7 @@ paths:
       operationId: postApiV4GeoProxyGitSshInfoRefsUploadPack
   "/api/v4/geo/proxy_git_ssh/upload_pack":
     post:
-      summary: Internal endpoint that posts git-upload-pack for git clone/pull
+      summary: Internal endpoint that posts git-upload-pack for clone or pull operations
       description: |-
         Responsible for making HTTP POST /repo.git/git-upload-pack
                           request from secondary gitlab-shell to primary
@@ -44726,6 +44943,11 @@ paths:
       produces:
       - application/json
       parameters:
+      - in: query
+        name: domain
+        description: The domain of the GitLab Pages site to filter on.
+        type: string
+        required: false
       - in: query
         name: page
         description: Current page number
@@ -47675,6 +47897,9 @@ definitions:
           duo_workflow_mcp_enabled:
             type: boolean
             description: Enable MCP support for Duo Agent Platform
+          foundational_agents_default_enabled:
+            type: boolean
+            description: Whether new foundational agents are enabled by default
     required:
     - name
     - path
@@ -47875,6 +48100,9 @@ definitions:
           duo_workflow_mcp_enabled:
             type: boolean
             description: Enable MCP support for Duo Agent Platform
+          foundational_agents_default_enabled:
+            type: boolean
+            description: Whether new foundational agents are enabled by default
       prevent_sharing_groups_outside_hierarchy:
         type: boolean
         description: Prevent sharing groups within this namespace with any groups
@@ -48709,6 +48937,16 @@ definitions:
           to.If not provided, the source group will be promoted to a top-level group.
     description: Transfer a group to a new parent group or promote a subgroup to a
       top-level group
+  postApiV4GroupsIdTransferToOrganization:
+    type: object
+    properties:
+      organization_id:
+        type: integer
+        format: int32
+        description: The ID of the organization to transfer the group to
+    required:
+    - organization_id
+    description: Transfer a group to an organization
   postApiV4GroupsIdShare:
     type: object
     properties:
@@ -50662,6 +50900,10 @@ definitions:
       jira_allowed_statuses_as_string:
         type: string
         description: Comma-separated list of allowed Jira issue statuses.
+      comment_on_event_enabled:
+        type: boolean
+        description: Enable comments inside Jira issues on each GitLab event (commit
+          / merge request)
       commit_events:
         type: boolean
         description: Trigger event when a commit is created or updated.
@@ -52190,8 +52432,6 @@ definitions:
         type: boolean
       remove_project:
         type: boolean
-      admin_security_attributes:
-        type: boolean
       manage_security_policy_link:
         type: boolean
       admin_compliance_framework:
@@ -52220,6 +52460,8 @@ definitions:
         type: boolean
       admin_runners:
         type: boolean
+      admin_security_attributes:
+        type: boolean
       admin_security_testing:
         type: boolean
       admin_terraform_state:
@@ -52243,6 +52485,8 @@ definitions:
       read_code:
         type: boolean
       read_runners:
+        type: boolean
+      read_security_attribute:
         type: boolean
       read_admin_subscription:
         type: boolean
@@ -53543,6 +53787,7 @@ definitions:
         - annotations
         - repository_xray
         - jacoco
+        - scip
         example: archive
       size:
         type: integer
@@ -53607,6 +53852,15 @@ definitions:
         description: Force cancellation for a job with a state of `canceling`
         example: true
     description: Cancel a specific job of a project
+  postApiV4ProjectsIdJobsJobIdRetry:
+    type: object
+    properties:
+      inputs:
+        type: object
+        description: Input values for the job
+        example:
+          environment: production
+    description: Retry a specific job of a project
   postApiV4ProjectsIdJobsJobIdPlay:
     type: object
     properties:
@@ -55833,10 +56087,12 @@ definitions:
                     type: string
                     description: Start line type for multi-line note
                   old_line:
-                    type: string
+                    type: integer
+                    format: int32
                     description: Start old_line line number
                   new_line:
-                    type: string
+                    type: integer
+                    format: int32
                     description: Start new_line line number
               end:
                 type: object
@@ -55849,10 +56105,12 @@ definitions:
                     type: string
                     description: End line type for multi-line note
                   old_line:
-                    type: string
+                    type: integer
+                    format: int32
                     description: End old_line line number
                   new_line:
-                    type: string
+                    type: integer
+                    format: int32
                     description: End new_line line number
         required:
         - base_sha
@@ -55933,10 +56191,12 @@ definitions:
                     type: string
                     description: Start line type for multi-line note
                   old_line:
-                    type: string
+                    type: integer
+                    format: int32
                     description: Start old_line line number
                   new_line:
-                    type: string
+                    type: integer
+                    format: int32
                     description: Start new_line line number
               end:
                 type: object
@@ -55949,10 +56209,12 @@ definitions:
                     type: string
                     description: End line type for multi-line note
                   old_line:
-                    type: string
+                    type: integer
+                    format: int32
                     description: End old_line line number
                   new_line:
-                    type: string
+                    type: integer
+                    format: int32
                     description: End new_line line number
         required:
         - base_sha
@@ -56589,9 +56851,11 @@ definitions:
         - hidden
       file:
         type: file
-        description: The package file to be published (generated by Multipart middleware)
+        description: The package file to publish (generated by Multipart middleware)
       select:
         type: string
+        description: Response format selector. If set to "package_file", returns the
+          created package file object in the response
         enum:
         - package_file
     required:
@@ -57430,6 +57694,10 @@ definitions:
       jira_allowed_statuses_as_string:
         type: string
         description: Comma-separated list of allowed Jira issue statuses.
+      comment_on_event_enabled:
+        type: boolean
+        description: Enable comments inside Jira issues on each GitLab event (commit
+          / merge request)
       commit_events:
         type: boolean
         description: Trigger event when a commit is created or updated.
@@ -59290,6 +59558,10 @@ definitions:
       jira_allowed_statuses_as_string:
         type: string
         description: Comma-separated list of allowed Jira issue statuses.
+      comment_on_event_enabled:
+        type: boolean
+        description: Enable comments inside Jira issues on each GitLab event (commit
+          / merge request)
       commit_events:
         type: boolean
         description: Trigger event when a commit is created or updated.
@@ -61723,6 +61995,9 @@ definitions:
       sha:
         type: string
         description: When present, must have the HEAD SHA of the source branch
+      publish_review:
+        type: boolean
+        description: When `true` submits pending review comments
       approval_password:
         type: string
         description: Current user's password if project is set to require explicit
@@ -67758,6 +68033,7 @@ definitions:
         - annotations
         - repository_xray
         - jacoco
+        - scip
         default: archive
     description: Authorize uploading job artifact
   postApiV4JobsIdArtifacts:
@@ -67808,6 +68084,7 @@ definitions:
         - annotations
         - repository_xray
         - jacoco
+        - scip
         default: archive
       artifact_format:
         type: string
@@ -67981,6 +68258,9 @@ definitions:
     properties:
       data:
         type: object
+        description: |-
+          Object that contains status information
+                        and replication metrics for the Geo node
         properties:
           geo_node_id:
             type: integer
@@ -68033,6 +68313,9 @@ definitions:
             description: Gitlab revision
           status:
             type: object
+            description: |-
+              Object that contains information on replication and verification
+                              status metrics for GitLab resources on Geo nodes
             properties:
               projects_count:
                 type: integer
@@ -68161,6 +68444,46 @@ definitions:
                 type: integer
                 format: int32
                 description: Packages files verification failed count
+              packages_nuget_symbols_count:
+                type: integer
+                format: int32
+                description: NuGet symbols count
+              packages_nuget_symbols_checksum_total_count:
+                type: integer
+                format: int32
+                description: NuGet symbols checksum total count
+              packages_nuget_symbols_checksummed_count:
+                type: integer
+                format: int32
+                description: NuGet symbols checksummed count
+              packages_nuget_symbols_checksum_failed_count:
+                type: integer
+                format: int32
+                description: NuGet symbols checksum failed count
+              packages_nuget_symbols_synced_count:
+                type: integer
+                format: int32
+                description: NuGet symbols synced count
+              packages_nuget_symbols_failed_count:
+                type: integer
+                format: int32
+                description: NuGet symbols failed count
+              packages_nuget_symbols_registry_count:
+                type: integer
+                format: int32
+                description: NuGet symbols registry count
+              packages_nuget_symbols_verification_total_count:
+                type: integer
+                format: int32
+                description: NuGet symbols verification total count
+              packages_nuget_symbols_verified_count:
+                type: integer
+                format: int32
+                description: NuGet symbols verified count
+              packages_nuget_symbols_verification_failed_count:
+                type: integer
+                format: int32
+                description: NuGet symbols verification failed count
               terraform_state_versions_count:
                 type: integer
                 format: int32
@@ -68889,6 +69212,26 @@ definitions:
         type: string
       uploads_verification_failed_count:
         type: string
+      packages_nuget_symbols_count:
+        type: string
+      packages_nuget_symbols_checksum_total_count:
+        type: string
+      packages_nuget_symbols_checksummed_count:
+        type: string
+      packages_nuget_symbols_checksum_failed_count:
+        type: string
+      packages_nuget_symbols_synced_count:
+        type: string
+      packages_nuget_symbols_failed_count:
+        type: string
+      packages_nuget_symbols_registry_count:
+        type: string
+      packages_nuget_symbols_verification_total_count:
+        type: string
+      packages_nuget_symbols_verified_count:
+        type: string
+      packages_nuget_symbols_verification_failed_count:
+        type: string
       git_fetch_event_count_weekly:
         type: string
       git_push_event_count_weekly:
@@ -68969,6 +69312,10 @@ definitions:
         type: string
       uploads_verified_in_percentage:
         type: string
+      packages_nuget_symbols_synced_in_percentage:
+        type: string
+      packages_nuget_symbols_verified_in_percentage:
+        type: string
       repositories_count:
         type: string
       replication_slots_count:
@@ -69036,13 +69383,14 @@ definitions:
         description: Secret token to authenticate by gitlab shell
       data:
         type: object
+        description: Object that contains the payload data for the Geo operation
         properties:
           gl_id:
             type: string
-            description: GitLab identifier of user that initiated the clone/pull
+            description: ID of the user performing the operation
           primary_repo:
             type: string
-            description: Primary repository to clone/pull
+            description: Primary repository to clone or pull from
         required:
         - gl_id
         - primary_repo
@@ -69057,13 +69405,19 @@ definitions:
     properties:
       secret_token:
         type: string
+        description: |-
+          Secret token used to authenticate requests from gitlab-shell
+                          to Geo proxy endpoints
       data:
         type: object
+        description: Object that contains the payload data for the Geo operation
         properties:
           gl_id:
             type: string
+            description: ID of the user performing the operation
           primary_repo:
             type: string
+            description: Primary repository to clone or pull from
         required:
         - gl_id
         - primary_repo
@@ -69082,13 +69436,19 @@ definitions:
     properties:
       secret_token:
         type: string
+        description: |-
+          Secret token used to authenticate requests from gitlab-shell
+                          to Geo proxy endpoints
       data:
         type: object
+        description: Object that contains the payload data for the Geo operation
         properties:
           gl_id:
             type: string
+            description: ID of the user performing the operation
           primary_repo:
             type: string
+            description: Primary repository to push to
         required:
         - gl_id
         - primary_repo
@@ -69103,13 +69463,19 @@ definitions:
     properties:
       secret_token:
         type: string
+        description: |-
+          Secret token used to authenticate requests from gitlab-shell
+                          to Geo proxy endpoints
       data:
         type: object
+        description: Object that contains the payload data for the Geo operation
         properties:
           gl_id:
             type: string
+            description: ID of the user performing the operation
           primary_repo:
             type: string
+            description: Primary repository to push to
         required:
         - gl_id
         - primary_repo

@@ -13,6 +13,7 @@ subscription pipelineHeaderStatusUpdatedSubscription($pipelineId: CiPipelineID!)
     }
     detailedStatus {
       ...CiIcon
+      favicon
     }
     errorMessages {
       nodes {

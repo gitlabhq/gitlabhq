@@ -7,6 +7,12 @@ module Organizations
     include Gitlab::VisibilityLevel
     include Gitlab::Routing.url_helpers
     include FeatureGate
+    include Organizations::Isolatable
+    include Cells::Claimable
+
+    cells_claims_attribute :path, type: CLAIMS_BUCKET_TYPE::ORGANIZATION_PATH
+
+    cells_claims_metadata subject_type: CLAIMS_SUBJECT_TYPE::ORGANIZATION, subject_key: :id
 
     DEFAULT_ORGANIZATION_ID = 1
 
@@ -18,12 +24,14 @@ module Organizations
       joins(:organization_users).merge(Organizations::OrganizationUser.by_user(user))
                                 .order(:id)
     }
+    scope :by_path, ->(path) { where(path: path) }
 
     before_destroy :check_if_default_organization
 
     has_many :namespaces
     has_many :groups
     has_many :root_groups, -> { roots }, class_name: 'Group', inverse_of: :organization
+    has_many :pool_repositories
     has_many :projects
     has_many :snippets
     has_many :snippet_repositories, inverse_of: :organization
@@ -32,6 +40,9 @@ module Organizations
     has_many :system_hooks
 
     has_one :settings, class_name: "OrganizationSetting"
+    has_one :isolated_record, class_name: 'Organizations::OrganizationIsolation',
+      inverse_of: :organization, autosave: true
+
     has_one :organization_detail, inverse_of: :organization, autosave: true
 
     has_many :organization_users, inverse_of: :organization

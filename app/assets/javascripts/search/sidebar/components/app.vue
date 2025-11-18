@@ -107,11 +107,15 @@ export default {
 
 <template>
   <section>
-    <dom-element-listener selector="#js-open-mobile-filters" @click="toggleFilters" />
+    <dom-element-listener
+      selector="#js-open-mobile-filters"
+      :use-event-delegation="true"
+      @click="toggleFilters"
+    />
     <div
       v-if="projectStudioEnabled"
       ref="mobileFilters"
-      class="filters -gl-ml-4 gl-hidden gl-min-w-30 @lg/panel:gl-block"
+      class="filters -gl-ml-4 gl-hidden gl-min-w-30 @md/panel:gl-block"
       data-testid="search-filters"
     >
       <all-scopes-start-filters />

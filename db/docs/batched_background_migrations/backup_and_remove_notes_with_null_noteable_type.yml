@@ -1,8 +1,0 @@
----
-migration_job_name: BackupAndRemoveNotesWithNullNoteableType
-description: Backs up (to guard against possible data loss) and removes orphaned notes
-feature_category: team-planning
-introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/146023
-milestone: '16.10'
-queued_migration_version: 20240226143323
-finalized_by: 20240514210445

@@ -41,7 +41,7 @@ Merge requests provide more granular filtering options.
 
 ### On an epic
 
-1. On the left sidebar, select **Search or go to** and find your project.
+1. On the left sidebar, select **Search or go to** and find your project. If you've [turned on the new navigation](../interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
 1. Select **Plan** > **Epics**.
 1. Identify your desired epic, and select its title.
 1. Go to the **Activity** section.
@@ -49,14 +49,14 @@ Merge requests provide more granular filtering options.
 
 ### On an issue
 
-1. On the left sidebar, select **Search or go to** and find your project.
+1. On the left sidebar, select **Search or go to** and find your project. If you've [turned on the new navigation](../interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
 1. Select **Plan** > **Issues** and find your issue.
 1. Go to **Activity**.
 1. For **Sort or filter**, select **Show all activity**.
 
 ### On a merge request
 
-1. On the left sidebar, select **Search or go to** and find your project.
+1. On the left sidebar, select **Search or go to** and find your project. If you've [turned on the new navigation](../interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
 1. Select **Code** > **Merge requests** and find your merge request.
 1. Go to **Activity**.
 1. For **Sort or filter**, select **Show all activity** to see all system notes.

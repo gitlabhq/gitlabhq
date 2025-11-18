@@ -1,8 +1,0 @@
----
-migration_job_name: BackfillClusterAgentTokensProjectId
-description: Backfills sharding key `cluster_agent_tokens.project_id` from `cluster_agents`.
-feature_category: deployment_management
-introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/144939
-milestone: '16.10'
-queued_migration_version: 20240216020106
-finalized_by: '20240529231934'

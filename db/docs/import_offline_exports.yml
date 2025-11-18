@@ -1,0 +1,12 @@
+---
+table_name: import_offline_exports
+classes:
+- Import::Offline::Export
+feature_categories:
+- importers
+description: Used to define which exported relations belong to a single export
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/209344
+milestone: '18.6'
+gitlab_schema: gitlab_main_org
+sharding_key:
+  organization_id: organizations

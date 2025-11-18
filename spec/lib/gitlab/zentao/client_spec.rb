@@ -7,6 +7,15 @@ RSpec.describe Gitlab::Zentao::Client, :clean_gitlab_redis_cache do
 
   let(:zentao_integration) { create(:zentao_integration) }
 
+  let(:mock_headers) do
+    {
+      headers: {
+        'Content-Type' => 'application/json',
+        'Token' => zentao_integration.api_token
+      }
+    }
+  end
+
   def mock_get_products_url
     client.send(:url, "products/#{zentao_integration.zentao_product_xid}")
   end
@@ -17,15 +26,6 @@ RSpec.describe Gitlab::Zentao::Client, :clean_gitlab_redis_cache do
 
   def mock_fetch_issue_url(issue_id)
     client.send(:url, "issues/#{issue_id}")
-  end
-
-  let(:mock_headers) do
-    {
-      headers: {
-        'Content-Type' => 'application/json',
-        'Token' => zentao_integration.api_token
-      }
-    }
   end
 
   describe '#new' do

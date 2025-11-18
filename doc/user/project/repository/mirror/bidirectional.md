@@ -58,7 +58,7 @@ Prerequisites:
 To create the webhook in the downstream instance:
 
 1. Create a [personal access token](../../../profile/personal_access_tokens.md) with `API` scope.
-1. On the left sidebar, select **Search or go to** and find your project.
+1. On the left sidebar, select **Search or go to** and find your project. If you've [turned on the new navigation](../../../interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
 1. Select **Settings** > **Webhooks**.
 1. Add the webhook **URL**, which (in this case) uses the
    [Pull Mirror API](../../../../api/project_pull_mirroring.md#start-the-pull-mirroring-process-for-a-project)
@@ -68,6 +68,7 @@ To create the webhook in the downstream instance:
    https://gitlab.example.com/api/v4/projects/:id/mirror/pull?private_token=<your_access_token>
    ```
 
+1. [Mask your token](../../integrations/webhooks.md#mask-sensitive-portions-of-webhook-urls).
 1. Select **Push Events**.
 1. Select **Add Webhook**.
 

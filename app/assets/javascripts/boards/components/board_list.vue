@@ -2,7 +2,6 @@
 import { GlLoadingIcon, GlIntersectionObserver, GlIcon } from '@gitlab/ui';
 import Draggable from 'vuedraggable';
 import { STATUS_CLOSED } from '~/issues/constants';
-import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import { sprintf, __, s__ } from '~/locale';
 import { ESC_KEY_CODE } from '~/lib/utils/keycodes';
 import { defaultSortableOptions, DRAG_DELAY } from '~/sortable/constants';
@@ -54,7 +53,7 @@ export default {
     BoardCardMoveToPosition,
     GlIcon,
   },
-  mixins: [Tracking.mixin(), glFeatureFlagsMixin()],
+  mixins: [Tracking.mixin()],
   inject: [
     'isEpicBoard',
     'isIssueBoard',
@@ -331,12 +330,6 @@ export default {
     },
     shouldCloneCard() {
       return shouldCloneCard(this.list.listType, this.toList.listType);
-    },
-    issuesDrawerEnabled() {
-      if (this.glFeatures.workItemViewForIssues) return true;
-      return Boolean(
-        this.isIssueBoard ? this.glFeatures.issuesListDrawer : this.glFeatures.epicsListDrawer,
-      );
     },
     isInapplicable() {
       if (!this.draggedType || !this.list?.status?.id) {
@@ -742,10 +735,6 @@ export default {
       });
     },
     checkDrawerParams() {
-      if (!this.issuesDrawerEnabled) {
-        return;
-      }
-
       const queryParam = getParameterByName(DETAIL_VIEW_QUERY_PARAM_NAME);
 
       if (!queryParam) {

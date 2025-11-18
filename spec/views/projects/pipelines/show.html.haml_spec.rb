@@ -27,7 +27,7 @@ RSpec.describe 'projects/pipelines/show', feature_category: :pipeline_compositio
       it 'shows warning alert with correct message' do
         render
 
-        expect(rendered).to have_content('Unable to create pipeline')
+        expect(rendered).to have_content('Unable to run pipeline')
         expect(rendered).to have_content('Composite identity is forbidden')
         expect(rendered).to have_content(
           'To enable automatic pipeline execution for composite identities, visit CI/CD Settings.'
@@ -80,7 +80,7 @@ RSpec.describe 'projects/pipelines/show', feature_category: :pipeline_compositio
       it 'shows danger alert with error messages' do
         render
 
-        expect(rendered).to have_content('Unable to create pipeline')
+        expect(rendered).to have_content('Unable to run pipeline')
         expect(rendered).to have_content('some errors')
       end
 
@@ -110,10 +110,10 @@ RSpec.describe 'projects/pipelines/show', feature_category: :pipeline_compositio
           allow(pipeline).to receive_messages(user_not_verified?: true)
         end
 
-        it 'does not show the generic "Unable to create pipeline" danger alert' do
+        it 'does not show the generic "Unable to run pipeline" danger alert' do
           render
 
-          expect(rendered).not_to have_content('Unable to create pipeline')
+          expect(rendered).not_to have_content('Unable to run pipeline')
         end
       end
     end
@@ -123,7 +123,7 @@ RSpec.describe 'projects/pipelines/show', feature_category: :pipeline_compositio
     it 'does not show errors' do
       render
 
-      expect(rendered).not_to have_content('Unable to create pipeline')
+      expect(rendered).not_to have_content('Unable to run pipeline')
     end
 
     it 'renders the pipeline tabs' do

@@ -11,7 +11,6 @@ import * as Sentry from '~/sentry/sentry_browser_wrapper';
 import Tracking from '~/tracking';
 import { __, s__, sprintf } from '~/locale';
 import {
-  sprintfWorkItem,
   I18N_WORK_ITEM_ERROR_UPDATING,
   STATE_OPEN,
   STATE_EVENT_CLOSE,
@@ -180,7 +179,7 @@ export default {
           ? s__('WorkItem|Comment & close %{workItemType}')
           : s__('WorkItem|Comment & reopen %{workItemType}');
       }
-      return sprintfWorkItem(baseText, this.workItemType);
+      return sprintf(baseText, { workItemType: NAME_TO_TEXT_LOWERCASE_MAP[this.workItemType] });
     },
     toggleWorkItemStateIcon() {
       return this.isWorkItemOpen ? 'issue-close' : 'issue-open-m';
@@ -197,7 +196,7 @@ export default {
       const baseText = this.isWorkItemOpen
         ? s__('WorkItem|Closing %{workItemType}')
         : s__('WorkItem|Reopening %{workItemType}');
-      return sprintfWorkItem(baseText, this.workItemType);
+      return sprintf(baseText, { workItemType: NAME_TO_TEXT_LOWERCASE_MAP[this.workItemType] });
     },
     isBlocked() {
       return this.blockerItems.length > 0;
@@ -217,29 +216,27 @@ export default {
       return this.updateWorkItem;
     },
     blockedByModalTitle() {
-      return sprintfWorkItem(
-        s__('WorkItem|Are you sure you want to close this blocked %{workItemType}?'),
-        this.workItemType,
-      );
+      return sprintf(s__('WorkItem|Are you sure you want to close this blocked %{workItemType}?'), {
+        workItemType: NAME_TO_TEXT_LOWERCASE_MAP[this.workItemType],
+      });
     },
     blockedByModalBody() {
-      return sprintfWorkItem(
+      return sprintf(
         s__('WorkItem|This %{workItemType} is currently blocked by the following items:'),
-        this.workItemType,
+        { workItemType: NAME_TO_TEXT_LOWERCASE_MAP[this.workItemType] },
       );
     },
     openChildrenModalTitle() {
-      return sprintfWorkItem(
-        s__('WorkItem|Are you sure you want to close this %{workItemType}?'),
-        this.workItemType,
-      );
+      return sprintf(s__('WorkItem|Are you sure you want to close this %{workItemType}?'), {
+        workItemType: NAME_TO_TEXT_LOWERCASE_MAP[this.workItemType],
+      });
     },
     openChildrenModalBody() {
-      return sprintfWorkItem(
+      return sprintf(
         s__(
           'WorkItem|This %{workItemType} has open child items. If you close this %{workItemType}, they will remain open.',
         ),
-        this.workItemType,
+        { workItemType: NAME_TO_TEXT_LOWERCASE_MAP[this.workItemType] },
       );
     },
     modalActionCancel() {
@@ -249,7 +246,9 @@ export default {
     },
     modalActionPrimary() {
       return {
-        text: sprintfWorkItem(s__('WorkItem|Yes, close %{workItemType}'), this.workItemType),
+        text: sprintf(s__('WorkItem|Yes, close %{workItemType}'), {
+          workItemType: NAME_TO_TEXT_LOWERCASE_MAP[this.workItemType],
+        }),
       };
     },
   },

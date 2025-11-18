@@ -47,6 +47,17 @@ module ActiveContext
         operation.completed?
       end
 
+      def drop_collection(name)
+        operation = initialize_operation("drop_#{name}")
+
+        unless operation.completed?
+          ActiveContext.adapter.executor.drop_collection(name)
+          operation.complete!
+        end
+
+        operation.completed?
+      end
+
       def all_operations_completed?
         @operations.values.all?(&:completed?)
       end

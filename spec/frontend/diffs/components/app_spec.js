@@ -5,6 +5,7 @@ import Vue, { nextTick } from 'vue';
 import VueApollo from 'vue-apollo';
 import { createTestingPinia } from '@pinia/testing';
 import { PiniaVuePlugin } from 'pinia';
+import { getScrollingElement } from '~/lib/utils/scroll_utils';
 import getMRCodequalityAndSecurityReports from 'ee_else_ce/diffs/components/graphql/get_mr_codequality_and_security_reports.query.graphql';
 import createMockApollo from 'helpers/mock_apollo_helper';
 import setWindowLocation from 'helpers/set_window_location_helper';
@@ -40,6 +41,7 @@ import { globalAccessorPlugin } from '~/pinia/plugins';
 import { DynamicScroller } from 'vendor/vue-virtual-scroller';
 import * as mergeRequestUtils from '~/diffs/utils/merge_request';
 import {
+  ISSUABLE_COMMENT_OR_REPLY,
   keysFor,
   MR_NEXT_FILE_IN_DIFF,
   MR_PREVIOUS_FILE_IN_DIFF,
@@ -48,6 +50,7 @@ import {
 import { useNotes } from '~/notes/store/legacy_notes';
 import { useBatchComments } from '~/batch_comments/store';
 import { useFindingsDrawer } from '~/mr_notes/store/findings_drawer';
+import { querySelectionClosest } from '~/lib/utils/selection';
 import diffsMockData from '../mock_data/merge_request_diffs';
 
 const TEST_ENDPOINT = `${TEST_HOST}/diff/endpoint`;
@@ -62,6 +65,8 @@ Vue.use(PiniaVuePlugin);
 function getCollapsedFilesWarning(wrapper) {
   return wrapper.findComponent(CollapsedFilesWarning);
 }
+
+jest.mock('~/lib/utils/selection');
 
 describe('diffs/components/app', () => {
   const oldMrTabs = window.mrTabs;
@@ -982,7 +987,7 @@ describe('diffs/components/app', () => {
     const scroll = () => {
       const scrollEvent = document.createEvent('Event');
       scrollEvent.initEvent('scroll', true, true, window, 1);
-      window.dispatchEvent(scrollEvent);
+      getScrollingElement().dispatchEvent(scrollEvent);
     };
 
     it('hides tooltips on scroll', () => {
@@ -1081,5 +1086,29 @@ describe('diffs/components/app', () => {
     eventHub.$emit('setFileActive', '111');
 
     expect(useLegacyDiffs().setCurrentFileHash).toHaveBeenCalledWith('111');
+  });
+
+  describe('quote reply', () => {
+    it("sends 'quoteReply' event to the discussion", async () => {
+      const quoteReplyHandler = jest.fn();
+      const mockDiscussionElement = document.createElement('div');
+      mockDiscussionElement.addEventListener('quoteReply', quoteReplyHandler);
+      querySelectionClosest.mockReturnValue(mockDiscussionElement);
+      createComponent();
+      await nextTick();
+      Mousetrap.trigger(keysFor(ISSUABLE_COMMENT_OR_REPLY)[0]);
+      expect(quoteReplyHandler).toHaveBeenCalled();
+    });
+
+    it('does not do anything when invisible', async () => {
+      const quoteReplyHandler = jest.fn();
+      const mockDiscussionElement = document.createElement('div');
+      mockDiscussionElement.addEventListener('quoteReply', quoteReplyHandler);
+      querySelectionClosest.mockReturnValue(mockDiscussionElement);
+      createComponent({ props: { shouldShow: false } });
+      await nextTick();
+      Mousetrap.trigger(keysFor(ISSUABLE_COMMENT_OR_REPLY)[0]);
+      expect(quoteReplyHandler).not.toHaveBeenCalled();
+    });
   });
 });

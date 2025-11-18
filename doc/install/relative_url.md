@@ -9,18 +9,28 @@ title: Install GitLab under a relative URL
 
 - Tier: Free, Premium, Ultimate
 - Offering: GitLab Self-Managed
+- Status: Beta
 
 {{< /details >}}
+
+{{< alert type="warning" >}}
+
+Configuring a relative URL for GitLab has [known issues with Geo](https://gitlab.com/gitlab-org/gitlab/-/issues/456427) and
+[testing limitations](https://gitlab.com/gitlab-org/gitlab/-/issues/439943).
+
+{{< /alert >}}
 
 While you should install GitLab on its own (sub)domain, sometimes
 this is not possible due to a variety of reasons. In that case, GitLab can also
 be installed under a relative URL, for example `https://example.com/gitlab`.
 
 This document describes how to run GitLab under a relative URL for installations
-from source. If you are using an official Linux package,
-[the steps are different](https://docs.gitlab.com/omnibus/settings/configuration.html#configuring-a-relative-url-for-gitlab). Use this guide along with the
-[installation guide](self_compiled/_index.md) if you are installing GitLab for the
-first time.
+from source. Check the relative URL documentation for the [Linux package](https://docs.gitlab.com/omnibus/settings/configuration.html#configuring-a-relative-url-for-gitlab)
+or for [GitLab chart](https://docs.gitlab.com/charts/charts/globals/#configure-a-relative-url-root)
+to enable relative URLs if you are not installing from source.
+
+Use this guide along with the [installation guide](self_compiled/_index.md) if you are
+installing GitLab for the first time.
 
 There is no limit to how deeply nested the relative URL can be. For example you
 could serve GitLab under `/foo/bar/gitlab/git` without any issues.
@@ -45,8 +55,7 @@ After all the changes, you must recompile the assets and [restart GitLab](../adm
 If you configure GitLab with a relative URL, the assets (including JavaScript,
 CSS, fonts, and images) must be recompiled, which can consume a lot of CPU and
 memory resources. To avoid out-of-memory errors, you should have at least 2 GB
-of RAM available on your computer, and we recommend 4 GB RAM, and four or eight
-CPU cores.
+of RAM available on your computer. Ideally, you should have 4 GB RAM, and four or eight CPU cores.
 
 See the [requirements](requirements.md) document for more information.
 

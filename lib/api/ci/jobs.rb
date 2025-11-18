@@ -52,7 +52,7 @@ module API
         end
         # rubocop: disable CodeReuse/ActiveRecord
         route_setting :authentication, job_token_allowed: true
-        route_setting :authorization, job_token_policies: :read_jobs
+        route_setting :authorization, job_token_policies: :read_jobs, permissions: :read_job, boundary_type: :project
         get ':id/jobs', urgency: :low, feature_category: :continuous_integration do
           check_rate_limit!(:jobs_index, scope: current_user)
 
@@ -77,6 +77,7 @@ module API
         params do
           requires :job_id, type: Integer, desc: 'The ID of a job', documentation: { example: 88 }
         end
+        route_setting :authorization, permissions: :read_job, boundary_type: :project
         get ':id/jobs/:job_id', urgency: :low, feature_category: :continuous_integration do
           authorize_read_builds!
 
@@ -99,6 +100,8 @@ module API
         params do
           requires :job_id, type: Integer, desc: 'The ID of a job', documentation: { example: 88 }
         end
+
+        route_setting :authorization, permissions: :read_job, boundary_type: :project
         get ':id/jobs/:job_id/trace', urgency: :low, feature_category: :continuous_integration do
           authorize_read_builds!
 
@@ -127,6 +130,8 @@ module API
           requires :job_id, type: Integer, desc: 'The ID of a job', documentation: { example: 88 }
           optional :force, type: Boolean, desc: 'Force cancellation for a job with a state of `canceling`', documentation: { example: true }
         end
+
+        route_setting :authorization, permissions: :cancel_job, boundary_type: :project
         post ':id/jobs/:job_id/cancel', urgency: :low, feature_category: :continuous_integration do
           authorize_cancel_builds!
 
@@ -153,20 +158,30 @@ module API
         end
         params do
           requires :job_id, type: Integer, desc: 'The ID of a job', documentation: { example: 88 }
+          optional :inputs, type: Hash, desc: 'Input values for the job', documentation: { example: { 'environment' => 'production' } }
         end
         # This endpoint can be used for retrying both builds and bridges.
+        route_setting :authorization, permissions: :retry_job, boundary_type: :project
         post ':id/jobs/:job_id/retry', urgency: :low, feature_category: :continuous_integration do
           Gitlab::QueryLimiting.disable!('https://gitlab.com/gitlab-org/gitlab/-/issues/473419')
 
           job = find_job!(params[:job_id])
           authorize!(:retry_job, job)
 
-          response = ::Ci::RetryJobService.new(@project, current_user).execute(job)
+          inputs = params[:inputs] || {}
+
+          if inputs.present? && !Feature.enabled?(:ci_job_inputs, @project)
+            forbidden!('The inputs parameter is not available')
+          end
+
+          response = ::Ci::RetryJobService.new(@project, current_user).execute(job, inputs: inputs)
 
           if response.success?
             present response[:job], with: Entities::Ci::Job
-          else
+          elsif response.payload[:reason] == :not_retryable
             forbidden!('Job is not retryable')
+          else
+            bad_request!(response.message)
           end
         end
 
@@ -182,6 +197,7 @@ module API
         params do
           requires :job_id, type: Integer, desc: 'The ID of a build', documentation: { example: 88 }
         end
+        route_setting :authorization, permissions: :erase_job, boundary_type: :project
         post ':id/jobs/:job_id/erase', urgency: :low, feature_category: :continuous_integration do
           build = find_build!(params[:job_id])
           authorize!(:erase_build, build)
@@ -213,6 +229,7 @@ module API
           end
         end
 
+        route_setting :authorization, permissions: :play_job, boundary_type: :project
         post ':id/jobs/:job_id/play', urgency: :low, feature_category: :continuous_integration do
           authorize_read_builds!
 

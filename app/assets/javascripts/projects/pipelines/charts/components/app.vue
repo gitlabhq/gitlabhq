@@ -11,6 +11,7 @@ import PipelinesDashboardClickhouse from './pipelines_dashboard_clickhouse.vue';
 const URL_PARAM_KEY = 'chart';
 
 export default {
+  name: 'ProjectCiCdAnalyticsApp',
   components: {
     GlTabs,
     GlTab,
@@ -21,10 +22,6 @@ export default {
     projectPath: {
       type: String,
       default: '',
-    },
-    shouldRenderDoraCharts: {
-      type: Boolean,
-      default: false,
     },
     shouldRenderQualitySummary: {
       type: Boolean,
@@ -48,42 +45,6 @@ export default {
       },
     ];
 
-    if (this.shouldRenderDoraCharts && !this.glFeatures.doraMetricsDashboard) {
-      tabs.push(
-        {
-          key: 'deployment-frequency',
-          event: 'p_analytics_ci_cd_deployment_frequency',
-          title: __('Deployment frequency'),
-          componentIs: () =>
-            import('ee_component/analytics/dora/components/deployment_frequency_charts.vue'),
-          lazy: true,
-        },
-        {
-          key: 'lead-time',
-          event: 'p_analytics_ci_cd_lead_time',
-          title: __('Lead time'),
-          componentIs: () => import('ee_component/analytics/dora/components/lead_time_charts.vue'),
-          lazy: true,
-        },
-        {
-          key: 'time-to-restore-service',
-          event: 'visit_ci_cd_time_to_restore_service_tab',
-          title: s__('DORA4Metrics|Time to restore service'),
-          componentIs: () =>
-            import('ee_component/analytics/dora/components/time_to_restore_service_charts.vue'),
-          lazy: true,
-        },
-        {
-          key: 'change-failure-rate',
-          event: 'visit_ci_cd_failure_rate_tab',
-          title: s__('DORA4Metrics|Change failure rate'),
-          componentIs: () =>
-            import('ee_component/analytics/dora/components/change_failure_rate_charts.vue'),
-          lazy: true,
-        },
-      );
-    }
-
     if (this.shouldRenderQualitySummary) {
       tabs.push({
         key: 'project-quality',
@@ -97,11 +58,6 @@ export default {
       activeTabIndex: 0,
       tabs,
     };
-  },
-  computed: {
-    showDoraMetricsMigrationAlert() {
-      return this.shouldRenderDoraCharts && this.glFeatures.doraMetricsDashboard;
-    },
   },
   created() {
     this.syncActiveTab();
@@ -128,11 +84,7 @@ export default {
 </script>
 <template>
   <div>
-    <migration-alert
-      v-if="showDoraMetricsMigrationAlert"
-      :namespace-path="projectPath"
-      is-project
-    />
+    <migration-alert :namespace-path="projectPath" is-project />
 
     <gl-tabs v-if="tabs.length > 1" :value="activeTabIndex" @input="onTabInput">
       <gl-tab

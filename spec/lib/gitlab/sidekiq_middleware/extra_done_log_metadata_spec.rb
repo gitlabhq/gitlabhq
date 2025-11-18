@@ -12,10 +12,10 @@ RSpec.describe Gitlab::SidekiqMiddleware::ExtraDoneLogMetadata do
     end.new
   end
 
-  subject { described_class.new }
-
   let(:job) { { 'jid' => 123 } }
   let(:queue) { 'test_queue' }
+
+  subject { described_class.new }
 
   describe '#call' do
     it 'merges Application#logging_extras in to job' do

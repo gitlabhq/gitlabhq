@@ -110,7 +110,7 @@ module Users
     def assign_common_user_params
       @user_params[:created_by_id] = current_user&.id
       @user_params[:external] = user_external? if set_external_param?
-      @user_params[:email_otp_required_after] = Time.current if enrol_new_users_in_email_otp?
+      @user_params[:email_otp_required_after] = Time.current if should_enrol_in_email_otp?
 
       @user_params.delete(:user_type) unless allowed_user_type?
     end
@@ -119,8 +119,11 @@ module Users
       user_default_internal_regex_enabled? && !user_params.key?(:external)
     end
 
-    def enrol_new_users_in_email_otp?
-      Feature.enabled?(:enrol_new_users_in_email_otp, :instance)
+    def should_enrol_in_email_otp?
+      # Email OTP applies only to users who are created with an ability
+      # to sign in with a password.
+      !@user_params[:password_automatically_set] &&
+        Feature.enabled?(:enrol_new_users_in_email_otp, :instance)
     end
 
     def user_external?

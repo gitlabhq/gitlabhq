@@ -16,6 +16,10 @@ module FilterSpecHelper
   #
   # Returns a Nokogiri::XML::DocumentFragment
   def filter(html, context = {}, result = nil)
+    described_class.call(html, filter_context(context), result)
+  end
+
+  def filter_context(context)
     if defined?(project)
       context.reverse_merge!(project: project)
     end
@@ -23,9 +27,11 @@ module FilterSpecHelper
     render_context = Banzai::RenderContext
       .new(context[:project], context[:current_user])
 
-    context = context.merge(render_context: render_context)
+    context.merge(render_context: render_context)
+  end
 
-    described_class.call(html, context, result)
+  def render_context
+    Banzai::RenderContext.new(project, current_user)
   end
 
   # Get an instance of the Filter class
@@ -36,10 +42,6 @@ module FilterSpecHelper
     context = { project: project, current_user: current_user, render_context: render_context }
 
     described_class.new(input_text, context)
-  end
-
-  def render_context
-    Banzai::RenderContext.new(project, current_user)
   end
 
   # Run text through HTML::Pipeline with the current filter and return the

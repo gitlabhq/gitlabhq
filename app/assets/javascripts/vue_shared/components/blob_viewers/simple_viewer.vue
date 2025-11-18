@@ -1,5 +1,9 @@
 <script>
 import SafeHtml from '~/vue_shared/directives/safe_html';
+import { getParameterByName } from '~/lib/utils/url_utility';
+import { parseBoolean } from '~/lib/utils/common_utils';
+import { __ } from '~/locale';
+import { createAlert } from '~/alert';
 import Blame from '../source_viewer/components/blame_info.vue';
 import { calculateBlameOffset, shouldRender, toggleBlameClasses } from '../source_viewer/utils';
 import blameDataQuery from '../source_viewer/queries/blame_data.query.graphql';
@@ -16,6 +20,9 @@ export default {
   },
   mixins: [ViewerMixin],
   inject: ['blobHash'],
+  i18n: {
+    blameErrorMessage: __('Unable to load blame information. Please try again.'),
+  },
   props: {
     blobPath: {
       type: String,
@@ -129,25 +136,36 @@ export default {
     async requestBlameInfo(fromLine, toLine) {
       if (!this.showBlame && !this.shouldPreloadBlame) return;
 
-      const { data } = await this.$apollo.query({
-        query: blameDataQuery,
-        variables: {
-          ref: this.currentRef,
-          fullPath: this.projectPath,
-          filePath: this.blobPath,
-          fromLine,
-          toLine,
-        },
-      });
+      try {
+        const { data } = await this.$apollo.query({
+          query: blameDataQuery,
+          variables: {
+            ref: this.currentRef,
+            fullPath: this.projectPath,
+            filePath: this.blobPath,
+            fromLine,
+            toLine,
+            ignoreRevs: parseBoolean(getParameterByName('ignore_revs')),
+          },
+        });
 
-      const blob = data?.project?.repository?.blobs?.nodes[0];
-      const blameGroups = blob?.blame?.groups;
-      const isDuplicate = this.blameData.includes(blameGroups[0]);
-      if (blameGroups && !isDuplicate) this.blameData.push(...blameGroups);
-      if (this.toLine < this.lineNumbers) {
-        this.fromLine += MAX_BLAME_LINES;
-        this.toLine += MAX_BLAME_LINES;
-        this.requestBlameInfo(this.fromLine, this.toLine);
+        const blob = data?.project?.repository?.blobs?.nodes[0];
+        const blameGroups = blob?.blame?.groups;
+        const isDuplicate = this.blameData.includes(blameGroups[0]);
+        if (blameGroups && !isDuplicate) this.blameData.push(...blameGroups);
+        if (this.toLine < this.lineNumbers) {
+          this.fromLine += MAX_BLAME_LINES;
+          this.toLine += MAX_BLAME_LINES;
+          this.requestBlameInfo(this.fromLine, this.toLine);
+        }
+      } catch (error) {
+        const errorMessage =
+          error.graphQLErrors?.[0]?.message || this.$options.i18n.blameErrorMessage;
+        createAlert({
+          message: errorMessage,
+          captureError: true,
+          error,
+        });
       }
     },
   },

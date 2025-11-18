@@ -11,8 +11,7 @@ module RapidDiffs
 
       def virtual_rendering_params
         {
-          paragraphs_count: paragraphs_count,
-          action_buttons_present: action_buttons_present? ? 1 : 0
+          paragraphs_count: paragraphs_count
         }
       end
 
@@ -69,16 +68,8 @@ module RapidDiffs
         @diff_file.diffable_text? && !@diff_file.too_large?
       end
 
-      def viewable_changed?
-        @diff_file.content_changed?
-      end
-
-      def viewable?
-        @diff_file.deleted_file? || @diff_file.new_file? || @diff_file.renamed_file? || @diff_file.mode_changed?
-      end
-
-      def action_buttons_present?
-        expandable_inline? || expandable? || viewable_changed? || viewable?
+      def file_changed?
+        !@diff_file.new_file? && @diff_file.content_changed?
       end
 
       def important?

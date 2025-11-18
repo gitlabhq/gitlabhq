@@ -27,7 +27,23 @@ RSpec.describe Users::DependentAssociations, feature_category: :user_management 
           class_name: 'ServiceDesk::CustomEmailVerification',
           foreign_key: :triggerer_id
         },
-        ssh_signatures: { class_name: 'CommitSignatures::SshSignature' }
+        ssh_signatures: { class_name: 'CommitSignatures::SshSignature' },
+        packages: {
+          class_name: 'Packages::Package',
+          foreign_key: :creator_id
+        },
+        composer_packages: {
+          class_name: 'Packages::Composer::Package',
+          foreign_key: :creator_id
+        },
+        debian_group_distributions: {
+          class_name: 'Packages::Debian::GroupDistribution',
+          foreign_key: :creator_id
+        },
+        debian_project_distributions: {
+          class_name: 'Packages::Debian::ProjectDistribution',
+          foreign_key: :creator_id
+        }
       }
     end
 

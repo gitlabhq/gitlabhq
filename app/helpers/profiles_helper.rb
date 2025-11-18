@@ -1,6 +1,8 @@
 # frozen_string_literal: true
 
 module ProfilesHelper
+  include UsersHelper
+
   def commit_email_select_options(user)
     private_email = user.private_commit_email
     verified_emails = user.verified_emails - [private_email]
@@ -58,6 +60,12 @@ module ProfilesHelper
     false
   end
 
+  def email_resend_confirmation_link(user)
+    return unless user.unconfirmed_email.present?
+
+    Rails.application.routes.url_helpers.user_confirmation_path(user: { email: user.unconfirmed_email })
+  end
+
   def user_profile_data(user)
     {
       profile_path: user_settings_profile_path,
@@ -89,6 +97,7 @@ module ProfilesHelper
       include_private_contributions: user.include_private_contributions?.to_s,
       achievements_enabled: user.achievements_enabled.to_s,
       private_profile: user.private_profile?.to_s,
+      **email_profile_data(user),
       **user_status_properties(user)
     }
   end
@@ -100,6 +109,57 @@ module ProfilesHelper
       username: current_user.username,
       delay_user_account_self_deletion: Gitlab::CurrentSettings.delay_user_account_self_deletion.to_s
     }
+  end
+
+  def email_profile_data(user)
+    {
+      email: user.temp_oauth_email? ? '' : (user.email || ''),
+      public_email: user.public_email,
+      commit_email: user.commit_email,
+      public_email_options: [
+        { text: s_('Profiles|Do not show on profile'), value: '' },
+        *user.public_verified_emails.map { |email| { text: email, value: email } }
+      ].to_json,
+      commit_email_options: commit_email_select_options(user).map do |option|
+        if option.is_a?(Array)
+          { text: option[0], value: option[1] }
+        else
+          { text: option, value: option }
+        end
+      end.to_json,
+      email_help_text: sanitized_email_help_text(user),
+      email_resend_confirmation_link: email_resend_confirmation_link(user),
+      is_email_readonly: user.read_only_attribute?(:email),
+      email_change_disabled: user.respond_to?(:managing_group) && user.managing_group.present?,
+      managing_group_name: user.respond_to?(:managing_group) ? user.managing_group&.name : nil,
+      needs_password_confirmation: needs_password_confirmation?(user).to_s,
+      password_automatically_set: user.password_automatically_set?.to_s,
+      allow_password_authentication_for_web: user.allow_password_authentication_for_web?.to_s,
+      provider_label: attribute_provider_label(:email)
+    }
+  end
+
+  def sanitized_email_help_text(user)
+    help_text = user_email_help_text(user)
+    return help_text unless help_text&.include?('<a')
+
+    doc = Nokogiri::HTML::DocumentFragment.parse(help_text)
+
+    doc.css('p').each do |p|
+      should_remove = p.css('a[href*="user_confirmation"]').any? ||
+        p.css('a[href*="confirmation"]').any? ||
+        p.css('a').any? { |link| !link.text.strip.empty? && link['href']&.include?('confirmation') }
+
+      p.remove if should_remove
+    end
+
+    sanitize(doc.to_html, tags: %w[strong p], attributes: [])
+  end
+
+  private
+
+  def needs_password_confirmation?(user)
+    !user.password_automatically_set? && user.allow_password_authentication_for_web?
   end
 end
 

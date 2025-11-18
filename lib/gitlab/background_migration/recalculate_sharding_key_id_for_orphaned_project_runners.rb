@@ -5,7 +5,7 @@ module Gitlab
     class RecalculateShardingKeyIdForOrphanedProjectRunners < BatchedMigrationJob
       operation_name :recalculate_sharding_key_id_on_project_runners
       scope_to ->(relation) { relation.where(runner_type: 3).where.not(sharding_key_id: nil) }
-      feature_category :runner
+      feature_category :runner_core
 
       class CiRunner < ::Ci::ApplicationRecord
         self.table_name = :ci_runners

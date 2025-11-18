@@ -14,6 +14,7 @@ class Namespace < ApplicationRecord
   include Namespaces::Traversal::Cached
   include Namespaces::Traversal::Traversable
   include Namespaces::AdjournedDeletable
+  include Organizations::Isolatable
   include EachBatch
   include BlocksUnsafeSerialization
   include Ci::NamespaceSettings
@@ -67,6 +68,8 @@ class Namespace < ApplicationRecord
   has_one :namespace_statistics
   has_one :namespace_route, foreign_key: :namespace_id, autosave: false, inverse_of: :namespace, class_name: 'Route'
   has_one :catalog_verified_namespace, class_name: 'Namespaces::VerifiedNamespace', inverse_of: :namespace
+  has_one :isolated_record, class_name: 'Namespaces::NamespaceIsolation', foreign_key: :namespace_id,
+    inverse_of: :namespace, autosave: true
 
   has_many :namespace_members, foreign_key: :member_namespace_id, inverse_of: :member_namespace, class_name: 'Member'
 
@@ -119,9 +122,6 @@ class Namespace < ApplicationRecord
   has_many :bot_user_details, class_name: 'UserDetail', foreign_key: 'bot_namespace_id', inverse_of: :bot_namespace
   has_many :bot_users, through: :bot_user_details, source: :user
   has_one :placeholder_user_detail, class_name: 'Import::PlaceholderUserDetail'
-
-  has_one :deletion_schedule, class_name: 'Namespaces::DeletionSchedule'
-  delegate :deleting_user, :marked_for_deletion_at, to: :deletion_schedule, allow_nil: true
 
   validates :owner, presence: true, if: ->(n) { n.owner_required? }
   validates :organization, presence: true
@@ -214,11 +214,6 @@ class Namespace < ApplicationRecord
 
   after_sync_traversal_ids :schedule_sync_event_worker # custom callback defined in Namespaces::Traversal::Linear
 
-  after_commit :expire_child_caches, on: :update, if: -> {
-    (Feature.enabled?(:cached_route_lookups, self, type: :ops) &&
-      saved_change_to_name?) || saved_change_to_path? || saved_change_to_parent_id?
-  }
-
   scope :without_deleted, -> { joins(:namespace_details).where(namespace_details: { deleted_at: nil }) }
   scope :user_namespaces, -> { where(type: Namespaces::UserNamespace.sti_name) }
   scope :group_namespaces, -> { where(type: Group.sti_name) }
@@ -274,6 +269,7 @@ class Namespace < ApplicationRecord
   end
 
   scope :with_shared_runners_enabled, -> { where(shared_runners_enabled: true) }
+  scope :for_owner, ->(owners) { where(owner: owners) }
 
   # Make sure that the name is same as strong_memoize name in root_ancestor
   # method
@@ -428,6 +424,8 @@ class Namespace < ApplicationRecord
     !!namespace_settings&.archived?
   end
 
+  alias_method :self_archived?, :archived?
+
   def archived_ancestor
     ancestors(hierarchy_order: :asc, skope: Namespace).archived.first
   end
@@ -437,6 +435,8 @@ class Namespace < ApplicationRecord
         namespace_settings_with_ancestors_inherited_settings
       return namespace_settings_with_ancestors_inherited_settings.archived
     end
+
+    return namespace_settings&.archived.present? if parent_id.nil? # It's a top level, no need to check ancestors. Fixes N+1
 
     self_and_ancestors(skope: Namespace).archived.exists?
   end
@@ -664,6 +664,20 @@ class Namespace < ApplicationRecord
     aggregation_schedule.present?
   end
 
+  # To help with polymorphism between Namespaces and Project
+  # both models answers to `owner_entity`, where
+  # -`Namespaces::ProjectNamespace` returns the `#project`
+  # -`Namespaces::UserNamespace` returns the `#owner`
+  def owner_entity
+    self
+  end
+
+  # To help with polymorphism between Namespaces and Project
+  # both models answers to `owner_entity_name`
+  def owner_entity_name
+    self.class.sti_name.underscore.to_sym
+  end
+
   def container_repositories_size_cache_key
     "namespaces:#{id}:container_repositories_size"
   end
@@ -854,7 +868,7 @@ class Namespace < ApplicationRecord
     return unless user && !user_namespace?
 
     user_access = max_member_access_for_user(user)
-    Gitlab::Access.human_access(user_access)&.downcase
+    Gitlab::Access.human_access(user_access)
   end
 
   private
@@ -907,16 +921,6 @@ class Namespace < ApplicationRecord
 
   def certificate_based_clusters_enabled_ff?
     Feature.enabled?(:certificate_based_clusters, type: :ops)
-  end
-
-  def expire_child_caches
-    Namespace.where(id: descendants).each_batch do |namespaces|
-      namespaces.touch_all
-    end
-
-    all_projects.each_batch do |projects|
-      projects.touch_all
-    end
   end
 
   def parent_changed?

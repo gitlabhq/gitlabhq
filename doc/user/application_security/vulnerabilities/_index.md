@@ -52,7 +52,7 @@ the top of the vulnerability's page.
 
 - LLM: Anthropic [Claude 3.7 Sonnet](https://console.cloud.google.com/vertex-ai/publishers/anthropic/model-garden/claude-3-7-sonnet)
 - LLM for Amazon Q: Amazon Q Developer
-- Available on [GitLab Duo with self-hosted models](../../../administration/gitlab_duo_self_hosted/_index.md): Yes
+- Available on [GitLab Duo with self-hosted models](../../../administration/gitlab_duo_self_hosted/_index.md)
 
 {{< /collapsible >}}
 
@@ -75,15 +75,13 @@ GitLab Duo Vulnerability Explanation can help you with a vulnerability by using 
 
 Prerequisites:
 
-- You must have the GitLab Ultimate subscription tier.
-- Have a paid GitLab Duo Enterprise seat.
 - [GitLab Duo](../../gitlab_duo/turn_on_off.md) must be enabled for the group or instance.
 - You must be a member of the project.
 - The vulnerability must be from a SAST scanner.
 
 To explain the vulnerability:
 
-1. On the left sidebar, select **Search or go to** and find your project.
+1. On the left sidebar, select **Search or go to** and find your project. If you've [turned on the new navigation](../../interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
 1. Select **Secure** > **Vulnerability report**.
 1. Optional. To remove the default filters, select **Clear** ({{< icon name="clear" >}}).
 1. Above the list of vulnerabilities, select the filter bar.
@@ -99,7 +97,7 @@ To explain the vulnerability:
 The response is shown on the right side of the page.
 
 On GitLab.com this feature is available. By default, it is powered by the Anthropic [`claude-3-haiku`](https://docs.anthropic.com/en/docs/about-claude/models#claude-3-a-new-generation-of-ai)
-model. We cannot guarantee that the large language model produces results that are correct. Use the
+model. GitLab cannot guarantee that the large language model produces results that are correct. Use the
 explanation with caution.
 
 ### Data shared with third-party AI APIs for Vulnerability Explanation
@@ -125,7 +123,7 @@ The following data is shared with third-party AI APIs:
 - LLM for GitLab Self-Managed, GitLab Dedicated: Anthropic [Claude 3.5 Sonnet](https://console.cloud.google.com/vertex-ai/publishers/anthropic/model-garden/claude-3-5-sonnet)
 - LLM for GitLab.com: Anthropic [Claude 3.7 Sonnet](https://console.cloud.google.com/vertex-ai/publishers/anthropic/model-garden/claude-3-7-sonnet)
 - LLM for Amazon Q: Amazon Q Developer
-- Available on [GitLab Duo with self-hosted models](../../../administration/gitlab_duo_self_hosted/_index.md): Yes
+- Available on [GitLab Duo with self-hosted models](../../../administration/gitlab_duo_self_hosted/_index.md)
 
 {{< /collapsible >}}
 
@@ -140,7 +138,7 @@ The following data is shared with third-party AI APIs:
 Use GitLab Duo Vulnerability resolution to automatically create a merge request that
 resolves the vulnerability. By default, it is powered by the Anthropic [`claude-3.5-sonnet`](https://console.cloud.google.com/vertex-ai/publishers/anthropic/model-garden/claude-3-5-sonnet) model.
 
-We can't guarantee that the large language model produces correct results.
+GitLab cannot guarantee that the large language model produces correct results.
 You should always review the proposed change before merging it. When reviewing, check that:
 
 - Your application's existing functionality is preserved.
@@ -161,7 +159,7 @@ Learn more about [how to enable all GitLab Duo features](../../gitlab_duo/turn_o
 
 To resolve the vulnerability:
 
-1. On the left sidebar, select **Search or go to** and find your project.
+1. On the left sidebar, select **Search or go to** and find your project. If you've [turned on the new navigation](../../interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
 1. Select **Secure** > **Vulnerability report**.
 1. Optional. To remove the default filters, select **Clear** ({{< icon name="clear" >}}).
 1. Above the list of vulnerabilities, select the filter bar.
@@ -184,8 +182,8 @@ Provide feedback on this feature in [issue 476553](https://gitlab.com/gitlab-org
 To ensure that suggested resolutions are high-quality, Vulnerability Resolution is available for a specific set of vulnerabilities.
 The system decides whether to offer Vulnerability Resolution based on the vulnerability's Common Weakness Enumeration (CWE) identifier.
 
-We selected the current set of vulnerabilities based on testing by automated systems and security experts.
-We are actively working to expand coverage to more types of vulnerabilities.
+The current set of vulnerabilities are selected based on testing by automated systems and security experts.
+GitLab is actively working to expand coverage to more types of vulnerabilities.
 
 <details><summary style="color:#5943b6; margin-top: 1em;"><a>View the complete list of supported CWEs for Vulnerability Resolution</a></summary>
 
@@ -242,11 +240,13 @@ We are actively working to expand coverage to more types of vulnerabilities.
 
 Vulnerability Resolution sometimes cannot generate a suggested fix. Common causes include:
 
-- **False positive detected**: Before proposing a fix, the AI model assesses whether the vulnerability is valid. It may judge that the vulnerability is not a true vulnerability, or isn't worth fixing.
+- False positive detected:
+  - Before proposing a fix, the AI model assesses whether the vulnerability is valid. It may judge that the vulnerability is not a true vulnerability, or isn't worth fixing.
   - This can happen if the vulnerability occurs in test code. Your organization might still choose to fix vulnerabilities even if they happen in test code, but models sometimes assess these to be false positives.
   - If you agree that the vulnerability is a false-positive or is not worth fixing, you should [dismiss the vulnerability](#vulnerability-status-values) and [select a matching reason](#vulnerability-dismissal-reasons).
     - To customize your SAST configuration or report a problem with a GitLab SAST rule, see [SAST rules](../sast/rules.md).
-- **Temporary or unexpected error**: The error message may state that "an unexpected error has occurred", "the upstream AI provider request timed out", "something went wrong", or a similar cause.
+- Temporary or unexpected error:
+  - The error message may state that `an unexpected error has occurred`, `the upstream AI provider request timed out`, `something went wrong`, or a similar cause.
   - These errors may be caused by temporary problems with the AI provider or with GitLab Duo.
   - A new request may succeed, so you can try to resolve the vulnerability again.
   - If you continue to see these errors, contact GitLab for assistance.
@@ -284,7 +284,7 @@ resolves the vulnerability finding. By default, it is powered by the Anthropic [
 
 To resolve the vulnerability finding:
 
-1. On the left sidebar, select **Search or go to** and find your project.
+1. On the left sidebar, select **Search or go to** and find your project. If you've [turned on the new navigation](../../interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
 1. Select **Merge requests**.
 1. Select a merge request.
    - Vulnerability findings supported by Vulnerability Resolution are indicated by the tanuki AI icon ({{< icon name="tanuki-ai" >}}).
@@ -299,15 +299,17 @@ Provide feedback on this feature in [issue 476553](https://gitlab.com/gitlab-org
 
 Vulnerability Resolution in a merge request sometimes cannot generate a suggested fix. Common causes include:
 
-- **False positive detected**: Before proposing a fix, the AI model assesses whether the vulnerability is valid. It may judge that the vulnerability is not a true vulnerability, or isn't worth fixing.
+- False positive detected:
+  - Before proposing a fix, the AI model assesses whether the vulnerability is valid. It may judge that the vulnerability is not a true vulnerability, or isn't worth fixing.
   - This can happen if the vulnerability occurs in test code. Your organization might still choose to fix vulnerabilities even if they happen in test code, but models sometimes assess these to be false positives.
   - If you agree that the vulnerability is a false-positive or is not worth fixing, you should [dismiss the vulnerability](#vulnerability-status-values) and [select a matching reason](#vulnerability-dismissal-reasons).
     - To customize your SAST configuration or report a problem with a GitLab SAST rule, see [SAST rules](../sast/rules.md).
-- **Temporary or unexpected error**: The error message may state that "an unexpected error has occurred", "the upstream AI provider request timed out", "something went wrong", or a similar cause.
+- Temporary or unexpected error:
+  - The error message may state that `an unexpected error has occurred`, `the upstream AI provider request timed out`, `something went wrong`, or a similar cause.
   - These errors may be caused by temporary problems with the AI provider or with GitLab Duo.
   - A new request may succeed, so you can try to resolve the vulnerability again.
   - If you continue to see these errors, contact GitLab for assistance.
-- **Resolution target could not be found in the merge request, unable to create suggestion:**
+- `Resolution target could not be found in the merge request, unable to create suggestion` error:
   - This error may occur when the target branch has not run a full security scan pipeline. See the [merge request documentation](../detect/security_scanning_results.md).
 
 ## Vulnerability code flow
@@ -319,11 +321,11 @@ Vulnerability Resolution in a merge request sometimes cannot generate a suggeste
 
 {{< /details >}}
 
-For specific types of vulnerabilities, GitLab Advanced SAST provides [code flow](../sast/gitlab_advanced_sast.md#vulnerability-code-flow) information.
+For specific types of vulnerabilities, GitLab Advanced SAST provides [code flow](../sast/gitlab_advanced_sast.md#code-flow) information.
 A vulnerability's code flow is the path the data takes from the user input (source) to the vulnerable line of code (sink), through all assignments, manipulation, and sanitization.
 
 For details on how to view a vulnerability's code flow, see
-[Vulnerability code flow](../sast/gitlab_advanced_sast.md#vulnerability-code-flow).
+[Vulnerability code flow](../sast/gitlab_advanced_sast.md#code-flow).
 
 ![A code flow of a Python application across two files](img/code_flow_view_v17_7.png)
 
@@ -418,7 +420,7 @@ Prerequisites:
 
 To change a vulnerability's status from its Vulnerability Page:
 
-1. On the left sidebar, select **Search or go to** and find your project.
+1. On the left sidebar, select **Search or go to** and find your project. If you've [turned on the new navigation](../../interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
 1. Select **Secure** > **Vulnerability report**.
 1. Select the vulnerability's description.
 1. Select **Change status**.
@@ -434,7 +436,7 @@ vulnerability's action log.
 You can create a GitLab issue to track any action taken to resolve or mitigate a vulnerability.
 To create a GitLab issue for a vulnerability:
 
-1. On the left sidebar, select **Search or go to** and find your project.
+1. On the left sidebar, select **Search or go to** and find your project. If you've [turned on the new navigation](../../interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
 1. Select **Secure** > **Vulnerability report**.
 1. Select the vulnerability's description.
 1. Select **Create issue**.
@@ -457,7 +459,7 @@ Prerequisites:
 
 To link a vulnerability to existing GitLab issues:
 
-1. On the left sidebar, select **Search or go to** and find your project.
+1. On the left sidebar, select **Search or go to** and find your project. If you've [turned on the new navigation](../../interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
 1. Select **Secure** > **Vulnerability report**.
 1. Select the vulnerability's description.
 1. In the **Linked issues** section, select the plus icon ({{< icon name="plus" >}}).
@@ -520,7 +522,7 @@ The following scanners are supported by this feature:
   Automatic patch creation is only available for Node.js projects managed with
   `yarn`. Automatic patch creation is only supported when [FIPS mode](../../../development/fips_gitlab.md#enable-fips-mode) is disabled.
 
-- [Container Scanning](../container_scanning/_index.md).
+- [Container scanning](../container_scanning/_index.md).
 
 To resolve a vulnerability, you can either:
 
@@ -531,7 +533,7 @@ To resolve a vulnerability, you can either:
 
 To resolve the vulnerability with a merge request:
 
-1. On the left sidebar, select **Search or go to** and find your project.
+1. On the left sidebar, select **Search or go to** and find your project. If you've [turned on the new navigation](../../interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
 1. Select **Secure** > **Vulnerability report**.
 1. Select the vulnerability's description.
 1. From the **Resolve with merge request** dropdown list, select **Resolve with merge request**.
@@ -543,7 +545,7 @@ Process the merge request according to your standard workflow.
 
 To manually apply the patch that GitLab generated for a vulnerability:
 
-1. On the left sidebar, select **Search or go to** and find your project.
+1. On the left sidebar, select **Search or go to** and find your project. If you've [turned on the new navigation](../../interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
 1. Select **Secure** > **Vulnerability report**.
 1. Select the vulnerability's description.
 1. From the **Resolve with merge request** dropdown list, select **Download patch to resolve**.
@@ -559,7 +561,7 @@ To manually apply the patch that GitLab generated for a vulnerability:
 
 Security training is not accessible in an environment that is offline, meaning computers that are isolated from the public internet as a security measure. Specifically, the GitLab server needs the ability to query the API endpoints for any training provider you choose to enable. Some third-party training vendors may require you to sign up for a free account. Sign up for an account by going to
 any of [Secure Code Warrior](https://www.securecodewarrior.com/), [Kontra](https://application.security/), or [SecureFlag](https://www.secureflag.com/index.html).
-GitLab does not send any user information to these third-party vendors; we do send the CWE or OWASP identifier and the language name of the file extension.
+GitLab does not send any user information to these third-party vendors; GitLab does send the CWE or OWASP identifier and the language name of the file extension.
 
 {{< /alert >}}
 
@@ -567,7 +569,7 @@ Security training helps your developers learn how to fix vulnerabilities. Develo
 
 To enable security training for vulnerabilities in your project:
 
-1. On the left sidebar, select **Search or go to** and find your project.
+1. On the left sidebar, select **Search or go to** and find your project. If you've [turned on the new navigation](../../interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
 1. Select **Secure** > **Security configuration**.
 1. On the tab bar, select **Vulnerability Management**.
 1. To enable a security training provider, turn on the toggle.
@@ -585,7 +587,7 @@ Vulnerabilities with a CWE are most likely to return a training result.
 
 To view the security training for a vulnerability:
 
-1. On the left sidebar, select **Search or go to** and find your project.
+1. On the left sidebar, select **Search or go to** and find your project. If you've [turned on the new navigation](../../interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
 1. Select **Secure** > **Vulnerability report**.
 1. Select the vulnerability for which you want to view security training.
 1. Select **View training**.

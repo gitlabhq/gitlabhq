@@ -75,12 +75,15 @@ module QA
         end
 
         def go_to_workspaces
-          # skip_finished_loading_check in case there are workspaces currently being terminated
-          click_element('nav-item-link', submenu_item: 'Workspaces', skip_finished_loading_check: true)
+          click_element('nav-item-link', submenu_item: 'Workspaces')
         end
 
         def go_to_menu_dropdown_option(option_name)
           click_element(option_name)
+        end
+
+        def go_to_merge_request_dashboard
+          click_element('merge-requests-shortcut-button')
         end
 
         def go_to_todos
@@ -107,12 +110,24 @@ module QA
           click_element 'user-avatar-content' if has_element?('user-profile-link', wait: 0)
         end
 
+        def dismiss_welcome_modal_if_present
+          return unless has_element?('#dap_welcome_modal___BV_modal_footer_', wait: 1)
+
+          click_button 'Get started'
+          within(find('#dap_welcome_modal___BV_modal_content_')) { click_element('close-icon') }
+          wait_until(reload: false) do
+            !has_css?('#dap_welcome_modal___BV_modal_footer_')
+          end
+        end
+
         def enable_project_studio
+          dismiss_welcome_modal_if_present
           click_element 'user-avatar-content'
 
           if find_element('toggle-project-studio-link').find('button[role="switch"]')['aria-checked'] == 'false'
             QA::Runtime::Logger.info("Enabling Project Studio UI")
             click_element 'toggle-project-studio-link'
+            dismiss_welcome_modal_if_present
             expand_sidebar_if_collapsed
           else
             QA::Runtime::Logger.info("Project Studio UI already enabled!")
@@ -137,6 +152,7 @@ module QA
 
             break true unless signed_in?
 
+            dismiss_welcome_modal_if_present
             within_user_menu do
               click_element 'sign-out-link'
             end

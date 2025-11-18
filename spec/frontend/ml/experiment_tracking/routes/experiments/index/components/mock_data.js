@@ -28,13 +28,23 @@ export const secondExperiment = {
   },
 };
 
+export const thirdExperiment = {
+  id: 'gid://gitlab/Ml::Experiment/3',
+  name: 'experiment-3',
+  updatedAt: '2025-10-14T09:33:54Z',
+  candidateCount: 12,
+  path: 'experiment/path/3',
+  modelId: 'gid://gitlab/Ml::Experiment/11',
+  creator: null,
+};
+
 export const MockExperimentsQueryResult = {
   data: {
     project: {
       id: 111,
       mlExperiments: {
-        count: 2,
-        nodes: [firstExperiment, secondExperiment],
+        count: 3,
+        nodes: [firstExperiment, secondExperiment, thirdExperiment],
         pageInfo: {
           hasNextPage: false,
           hasPreviousPage: false,

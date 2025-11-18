@@ -231,7 +231,7 @@ The dependency proxy must be configured with:
 
 To set those parameters:
 
-1. On the left sidebar, select **Search or go to** and find your project.
+1. On the left sidebar, select **Search or go to** and find your project. If you've [turned on the new navigation](../../../interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
 1. Select **Settings** > **Packages and registries**.
 1. Expand **Package registry**.
 1. Under **Dependency Proxy**, complete the form for your package format:

@@ -33,6 +33,7 @@ docker buildx build \
   --build-arg "RAILS_ENV=${RAILS_ENV}" \
   --build-arg "NODE_ENV=${NODE_ENV}" \
   --build-arg="NODE_OPTIONS=${NODE_OPTIONS}" \
+  --build-arg="BABEL_ENV=${BABEL_ENV}" \
   --tag="${IMAGE}:${SHA_TAG}" \
   --tag="${IMAGE}:${BRANCH_TAG}" \
   --provenance=false \

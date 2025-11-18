@@ -9,11 +9,16 @@
 #   current_user - currently logged in user, if any
 #   params:
 #     work_item_parent_ids: integer[] (list of work item ids)
+#     ids: integer[] (list of work item ids)
 #
 module WorkItems
   class WorkItemsFinder < IssuesFinder
     include Gitlab::Utils::StrongMemoize
     include TimeFrameFilter
+
+    ROOT_TRAVERSAL_IDS_SORTING_OPTIONS = %w[
+      updated_asc updated_desc created_asc created_desc
+    ].freeze
 
     def klass
       WorkItem
@@ -28,12 +33,31 @@ module WorkItems
     def filter_items(items)
       items = super(items)
 
+      items = by_ids(items)
       items = by_widgets(items)
       items = by_timeframe(items, with_namespace_cte: with_namespace_cte)
       items = by_work_item_parent_ids(items)
       items = by_negated_work_item_parent_ids(items)
 
       by_parent_wildcard_id(items)
+    end
+
+    def by_parent(items)
+      return super unless use_namespace_traversal_ids_filtering?
+
+      items_within_hierarchy = items.within_namespace_hierarchy(ancestor_group)
+                                    .with_group_level_and_project_issues_enabled(
+                                      include_group_level_items: include_group_work_items?
+                                    )
+
+      # If the state filter is not present in the params we manually add it to filter all available states
+      # This is needed because state_id is required for index utilization
+      # See: https://gitlab.com/gitlab-org/gitlab/-/issues/562319
+      unless state_filter_passed?
+        items_within_hierarchy = items_within_hierarchy.with_state(*klass.available_state_names)
+      end
+
+      items_within_hierarchy
     end
 
     def by_widgets(items)
@@ -46,6 +70,12 @@ module WorkItems
       end
 
       items
+    end
+
+    def by_ids(items)
+      return items unless params[:ids].present?
+
+      items.id_in(params[:ids])
     end
 
     def widget_filter_for(widget_class)
@@ -110,6 +140,36 @@ module WorkItems
       false
     end
 
+    def user_can_access_subgroup_work_items?
+      Ability.allowed?(current_user, :read_all_resources) || ancestor_group.member?(current_user)
+    end
+
+    def use_namespace_traversal_ids_filtering?
+      return false unless params.group?
+      return false unless ::Feature.enabled?(:use_namespace_traversal_ids_for_work_items_finder, current_user)
+      return false unless include_descendants?
+      return false unless user_can_access_subgroup_work_items?
+
+      # For sub-groups it's performant enough to use the traversal_ids and sort in memory.
+      return true unless params.group.root?
+
+      # For root groups, we don't have an index on all columns that we support sorting for.
+      # For all columns we don't have an index for, we need to fallback to the old query.
+      sorting_covered_by_index?
+    end
+
+    def include_group_work_items?
+      false
+    end
+
+    def state_filter_passed?
+      params[:state].present? && params[:state].to_s != 'all'
+    end
+
+    def ancestor_group
+      include_ancestors? ? params.group.root_ancestor : params.group
+    end
+
     def include_descendants?
       params.fetch(:include_descendants, false)
     end
@@ -124,6 +184,13 @@ module WorkItems
       params.fetch(:exclude_projects, false)
     end
     strong_memoize_attr :exclude_projects?
+
+    def sorting_covered_by_index?
+      return true if params[:sort].blank?
+
+      sort_param = params[:sort].to_s
+      sort_param.in?(ROOT_TRAVERSAL_IDS_SORTING_OPTIONS)
+    end
   end
 end
 

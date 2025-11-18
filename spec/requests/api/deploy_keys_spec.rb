@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe API::DeployKeys, :aggregate_failures, feature_category: :continuous_delivery do
+RSpec.describe API::DeployKeys, :with_current_organization, :aggregate_failures, feature_category: :continuous_delivery do
   let_it_be(:user)        { create(:user) }
   let_it_be(:maintainer)  { create(:user) }
   let_it_be(:admin)       { create(:admin) }
@@ -129,12 +129,17 @@ RSpec.describe API::DeployKeys, :aggregate_failures, feature_category: :continuo
     context 'when authenticated as admin' do
       let_it_be(:pat) { create(:personal_access_token, :admin_mode, user: admin) }
 
+      let(:params) { attributes_for(:another_key) }
+
       it 'creates a new deploy key' do
         expect do
-          post api(path, personal_access_token: pat), params: attributes_for(:another_key)
+          post api(path, personal_access_token: pat), params: params
         end.to change { DeployKey.count }.by(1)
 
         expect(response).to have_gitlab_http_status(:created)
+
+        key = DeployKey.find_by(title: params[:title])
+        expect(key.organization).to eq(current_organization)
       end
 
       it 'does not create an invalid ssh key' do
@@ -160,7 +165,7 @@ RSpec.describe API::DeployKeys, :aggregate_failures, feature_category: :continuo
 
       it 'accepts optional expires_at parameter' do
         expires_at = 2.days.since
-        attrs = attributes_for(:another_key).merge(expires_at: expires_at.iso8601)
+        attrs = params.merge(expires_at: expires_at.iso8601)
         post api(path, personal_access_token: pat), params: attrs
 
         expect(response).to have_gitlab_http_status(:created)
@@ -272,6 +277,7 @@ RSpec.describe API::DeployKeys, :aggregate_failures, feature_category: :continuo
       new_key = project.deploy_keys.last
       expect(new_key.key).to eq(key_attrs[:key])
       expect(new_key.user).to eq(admin)
+      expect(new_key.organization).to eq(current_organization)
     end
 
     it 'returns an existing ssh key when attempting to add a duplicate' do

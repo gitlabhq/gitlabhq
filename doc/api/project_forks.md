@@ -1,5 +1,5 @@
 ---
-stage: Runtime
+stage: Tenant Scale
 group: Organizations
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 title: Project forks API
@@ -43,6 +43,14 @@ POST /projects/:id/fork
 | `path`                   | string            | No       | The path assigned to the resultant project after forking. |
 | `visibility`             | string            | No       | The [visibility level](projects.md#project-visibility-level) assigned to the resultant project after forking. |
 
+{{< alert type="note" >}}
+
+When using a service account to fork a project, you must provide either `namespace_id` or `namespace_path`.
+Service accounts cannot fork projects to their personal namespace. For more information, see
+[service account access to groups and projects](../user/profile/service_accounts.md#service-account-access-to-groups-and-projects).
+
+{{< /alert >}}
+
 ## List forks of a project
 
 List the projects accessible to you that have an established forked relationship with the specified project.
@@ -58,7 +66,7 @@ Supported attributes:
 | `id`                          | integer or string | Yes      | The ID or [URL-encoded path of the project](rest/_index.md#namespaced-paths). |
 | `archived`                    | boolean           | No       | Limit by archived status. |
 | `membership`                  | boolean           | No       | Limit by projects that the current user is a member of. |
-| `min_access_level`            | integer           | No       | Limit by current user minimal [role (`access_level`)](members.md#roles). |
+| `min_access_level`            | integer           | No       | Limit by current user minimal [role (`access_level`)](group_members.md#roles). |
 | `order_by`                    | string            | No       | Return projects ordered by `id`, `name`, `path`, `created_at`, `updated_at`, `star_count`, or `last_activity_at` fields. Default is `created_at`. |
 | `owned`                       | boolean           | No       | Limit by projects explicitly owned by the current user. |
 | `search`                      | string            | No       | Return list of projects matching the search criteria. |

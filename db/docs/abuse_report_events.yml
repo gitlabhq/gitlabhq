@@ -8,15 +8,6 @@ description: Stores actions taken on abuse reports.
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/119199
 milestone: '16.0'
 gitlab_schema: gitlab_main_org
-desired_sharding_key:
-  organization_id:
-    references: organizations
-    backfill_via:
-      parent:
-        foreign_key: abuse_report_id
-        table: abuse_reports
-        table_primary_key: id
-        sharding_key: organization_id
-        belongs_to: abuse_report
-    awaiting_backfill_on_parent: true
+sharding_key:
+  organization_id: organizations
 table_size: small

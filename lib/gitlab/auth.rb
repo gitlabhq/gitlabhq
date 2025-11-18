@@ -269,7 +269,7 @@ module Gitlab
           )
         end
 
-        verifier = TwoFactorAuthVerifier.new(user)
+        verifier = TwoFactorAuthVerifier.new(user, treat_email_otp_as_2fa: true)
 
         if user.two_factor_enabled? || verifier.two_factor_authentication_enforced?
           raise Gitlab::Auth::MissingPersonalAccessTokenError
@@ -481,7 +481,8 @@ module Gitlab
 
       # Other available scopes
       def optional_scopes
-        all_available_scopes + OPENID_SCOPES + PROFILE_SCOPES + AI_WORKFLOW_SCOPES + DYNAMIC_SCOPES - DEFAULT_SCOPES
+        all_available_scopes + OPENID_SCOPES + PROFILE_SCOPES + AI_WORKFLOW_SCOPES + DYNAMIC_SCOPES - DEFAULT_SCOPES -
+          [GRANULAR_SCOPE]
       end
 
       def registry_scopes
@@ -526,7 +527,8 @@ module Gitlab
       def unavailable_scopes_for_resource(resource)
         unavailable_ai_features_scopes +
           unavailable_observability_scopes_for_resource(resource) +
-          unavailable_virtual_registry_scopes_for_resource(resource)
+          unavailable_virtual_registry_scopes_for_resource(resource) +
+          [GRANULAR_SCOPE]
       end
 
       def unavailable_ai_features_scopes

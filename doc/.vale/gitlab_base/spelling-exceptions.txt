@@ -1082,6 +1082,7 @@ toolkits
 toolset
 tooltip
 tooltips
+Traefik
 transactionally
 transpile
 transpiled

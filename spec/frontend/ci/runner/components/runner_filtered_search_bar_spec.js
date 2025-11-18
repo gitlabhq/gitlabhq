@@ -114,12 +114,25 @@ describe('RunnerList', () => {
   });
 
   it('fails validation for v-model with the wrong shape', () => {
-    expect(() => {
-      assertProps(RunnerFilteredSearchBar, {
-        ...defaultProps,
+    const consoleErrorSpy = jest.spyOn(console, 'error').mockImplementation(() => {});
+    const consoleWarnSpy = jest.spyOn(console, 'warn').mockImplementation(() => {});
+
+    createComponent({
+      props: {
+        tokens: [statusTokenConfig, null, undefined],
         value: { filters: 'wrong_filters', sort: 'sort' },
-      });
-    }).toThrow('Invalid prop: custom validator check failed');
+      },
+    });
+
+    const includesValidatorError = (spy) =>
+      spy.mock.calls[0]?.[0].includes(
+        '[Vue warn]: Invalid prop: custom validator check failed for prop "value".',
+      );
+
+    const failsInVue2 = includesValidatorError(consoleErrorSpy);
+    const failsInVue3 = includesValidatorError(consoleWarnSpy);
+
+    expect(failsInVue2 || failsInVue3).toBe(true);
 
     expect(() => {
       assertProps(RunnerFilteredSearchBar, { ...defaultProps, value: { sort: 'sort' } });

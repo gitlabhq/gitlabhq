@@ -76,10 +76,9 @@ dast:
 
 ### Site profile validation
 
-Site profile validation reduces the risk of running an active scan against the wrong website. A site
-must be validated before an active scan can run against it. Site profile validation is not a security feature.
-If necessary, you can run an active DAST scan without validation by using a
-[pipeline scan](browser/configuration/enabling_the_analyzer.md).
+Site profile validation reduces the risk of running an active scan against the wrong website. You must validate a site to run an on-demand scan against it.
+
+Site profile validation is not a security feature. If necessary, you can run DAST against an unvalidated site with a [pipeline scan](browser/configuration/enabling_the_analyzer.md).
 
 Each of the site validation methods are equivalent in functionality, so use whichever is most suitable:
 
@@ -97,7 +96,7 @@ Each of the site validation methods are equivalent in functionality, so use whic
 
 To create a site profile:
 
-1. On the left sidebar, select **Search or go to** and find your project.
+1. On the left sidebar, select **Search or go to** and find your project. If you've [turned on the new navigation](../../interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
 1. Select **Secure** > **Security configuration**.
 1. In the **Dynamic Application Security Testing (DAST)** section, select **Manage profiles**.
 1. Select **New** > **Site profile**.
@@ -120,7 +119,7 @@ Prerequisites:
 
 To edit a site profile:
 
-1. On the left sidebar, select **Search or go to** and find your project.
+1. On the left sidebar, select **Search or go to** and find your project. If you've [turned on the new navigation](../../interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
 1. Select **Secure** > **Security configuration**.
 1. In the **Dynamic Application Security Testing (DAST)** section, select **Manage profiles**.
 1. Select the **Site Profiles** tab.
@@ -144,7 +143,7 @@ See [Scan execution policies](../policies/scan_execution_policies.md) for more i
 
 To delete a site profile:
 
-1. On the left sidebar, select **Search or go to** and find your project.
+1. On the left sidebar, select **Search or go to** and find your project. If you've [turned on the new navigation](../../interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
 1. Select **Secure** > **Security configuration**.
 1. In the **Dynamic Application Security Testing (DAST)** section, select **Manage profiles**.
 1. Select the **Site Profiles** tab.
@@ -161,7 +160,7 @@ Prerequisites:
 
 To validate a site profile:
 
-1. On the left sidebar, select **Search or go to** and find your project.
+1. On the left sidebar, select **Search or go to** and find your project. If you've [turned on the new navigation](../../interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
 1. Select **Secure** > **Security configuration**.
 1. In the **Dynamic Application Security Testing (DAST)** section, select **Manage profiles**.
 1. Select the **Site Profiles** tab.
@@ -194,7 +193,7 @@ page.
 
 To retry a site profile's failed validation:
 
-1. On the left sidebar, select **Search or go to** and find your project.
+1. On the left sidebar, select **Search or go to** and find your project. If you've [turned on the new navigation](../../interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
 1. Select **Secure** > **Security configuration**.
 1. In the **Dynamic Application Security Testing (DAST)** section, select **Manage profiles**.
 1. Select the **Site Profiles** tab.
@@ -211,7 +210,7 @@ have their validation status revoked.
 
 To revoke a site profile's validation status:
 
-1. On the left sidebar, select **Search or go to** and find your project.
+1. On the left sidebar, select **Search or go to** and find your project. If you've [turned on the new navigation](../../interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
 1. Select **Secure** > **Security configuration**.
 1. In the **Dynamic Application Security Testing (DAST)** section, select **Manage profiles**.
 1. Beside the validated profile, select **Revoke validation**.
@@ -303,7 +302,7 @@ dast:
 
 To create a scanner profile:
 
-1. On the left sidebar, select **Search or go to** and find your project.
+1. On the left sidebar, select **Search or go to** and find your project. If you've [turned on the new navigation](../../interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
 1. Select **Secure** > **Security configuration**.
 1. In the **Dynamic Application Security Testing (DAST)** section, select **Manage profiles**.
 1. Select **New** > **Scanner profile**.
@@ -325,7 +324,7 @@ For more information, see [Scan execution policies](../policies/scan_execution_p
 
 To edit a scanner profile:
 
-1. On the left sidebar, select **Search or go to** and find your project.
+1. On the left sidebar, select **Search or go to** and find your project. If you've [turned on the new navigation](../../interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
 1. Select **Secure** > **Security configuration**.
 1. In the **Dynamic Application Security Testing (DAST)** section, select **Manage profiles**.
 1. Select the **Scanner profiles** tab.
@@ -348,7 +347,7 @@ page. For more information, see [Scan execution policies](../policies/scan_execu
 
 To delete a scanner profile:
 
-1. On the left sidebar, select **Search or go to** and find your project.
+1. On the left sidebar, select **Search or go to** and find your project. If you've [turned on the new navigation](../../interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
 1. Select **Secure** > **Security configuration**.
 1. In the **Dynamic Application Security Testing (DAST)** section, select **Manage profiles**.
 1. Select the **Scanner profiles** tab.

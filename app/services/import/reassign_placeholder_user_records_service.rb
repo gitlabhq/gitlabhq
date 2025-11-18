@@ -6,23 +6,17 @@ module Import
 
     MEMBER_SELECT_BATCH_SIZE = 100
     MEMBER_DELETE_BATCH_SIZE = 1_000
+    REFERENCE_DELETE_BATCH_SIZE = 1_000
     GROUP_FINDER_MEMBER_RELATIONS = %i[direct inherited shared_from_groups].freeze
     PROJECT_FINDER_MEMBER_RELATIONS = %i[direct inherited invited_groups shared_into_ancestors].freeze
     RELATION_BATCH_SLEEP = 5
-    DATABASE_TABLE_HEALTH_INDICATORS = [Gitlab::Database::HealthStatus::Indicators::AutovacuumActiveOnTable].freeze
-    GLOBAL_DATABASE_HEALTH_INDICATORS = [
-      Gitlab::Database::HealthStatus::Indicators::WriteAheadLog,
-      Gitlab::Database::HealthStatus::Indicators::PatroniApdex
-    ].freeze
-
-    DatabaseHealthStatusChecker = Struct.new(:id, :job_class_name)
-    DatabaseHealthError = Class.new(StandardError)
 
     def initialize(import_source_user)
       @import_source_user = import_source_user
       @reassigned_by_user = import_source_user.reassigned_by_user
       @unavailable_tables = []
       @refresh_project_access = false
+      @reassignment_throttling = ReassignPlaceholderThrottling.new(import_source_user)
     end
 
     def execute
@@ -33,17 +27,21 @@ module Import
       log_warn('Reassigned by user was not found, this may affect membership checks') unless reassigned_by_user
 
       begin
+        DirectReassignService.new(import_source_user, reassignment_throttling: reassignment_throttling).execute
+
         reassign_placeholder_references
+
+        delete_remaining_references
 
         if placeholder_memberships.any?
           create_memberships
           delete_placeholder_memberships
         end
 
-      rescue DatabaseHealthError => error
-        log_warn("#{error.message}. Rescheduling reassignment")
-
-        return reschedule_reassignment_response
+      rescue ReassignPlaceholderThrottling::DatabaseHealthError => error
+        return handle_reschedule_error(error, :db_health_check_failed)
+      rescue Gitlab::Utils::ExecutionTracker::ExecutionTimeOutError => error
+        return handle_reschedule_error(error, :execution_timeout)
       end
 
       UserProjectAccessChangedService.new(import_source_user.reassign_to_user_id).execute if refresh_project_access?
@@ -60,7 +58,7 @@ module Import
 
     private
 
-    attr_accessor :import_source_user, :reassigned_by_user, :unavailable_tables
+    attr_accessor :import_source_user, :reassigned_by_user, :reassignment_throttling
 
     def warn_about_any_risky_reassignments
       warn_about_reassign_to_admin if import_source_user.reassign_to_user.admin? # rubocop:disable Cop/UserAdmin -- Not authentication related
@@ -101,27 +99,9 @@ module Import
           user_reference_column: reference_group.user_reference_column,
           alias_version: reference_group.alias_version
         ) do |model_relation, placeholder_references|
-          if Feature.enabled?(:reassignment_throttling, reassigned_by_user)
-            # The `#db_table_unavailable?` check is behind a feature flag that we intend not to roll out.
-            # The flag is a conservative measure to allow us to enable it IF it's determined that we should
-            # be delaying reassignments when tables are being autovacuumed.
-            # See https://gitlab.com/gitlab-org/gitlab/-/issues/525566#note_2418809939.
-            #
-            # TODO Remove the following block of code, and all related code (`unavailable_tables`,
-            # `#db_table_unavailable?`, and `DATABASE_TABLE_HEALTH_INDICATORS`) as part of
-            # https://gitlab.com/gitlab-org/gitlab/-/issues/534613
-            #
-            # If table health check fails, skip processing this relation
-            # and move on to the next one. We later raise a `DatabaseHealthError` to
-            # reschedule the reassignment where the skipped relations can be tried again.
-            if Feature.enabled?(:reassignment_throttling_table_check, reassigned_by_user) &&
-                db_table_unavailable?(model_relation)
-              unavailable_tables << model_relation.table_name
-              next
-            end
+          next if reassignment_throttling.db_table_unavailable?(model_relation)
 
-            db_health_check!
-          end
+          reassignment_throttling.db_health_check!
 
           reassign_placeholder_records_batch(model_relation, placeholder_references)
 
@@ -137,13 +117,23 @@ module Import
         )
       end
 
-      raise DatabaseHealthError if unavailable_tables.any?
+      return unless reassignment_throttling.unavailable_tables?
+
+      raise ReassignPlaceholderThrottling::DatabaseHealthError, 'Database unhealthy'
     end
 
     def reassign_placeholder_records_batch(model_relation, placeholder_references)
       aliased_user_reference_column = placeholder_references.first.aliased_user_reference_column
       model_relation.klass.transaction do
-        model_relation.update_all({ aliased_user_reference_column => import_source_user.reassign_to_user_id })
+        update_count = model_relation.update_all(
+          { aliased_user_reference_column => import_source_user.reassign_to_user_id }
+        )
+
+        # Temporary log to track for each models/attributes placeholder references are still used
+        if log_placeholder_reference_used?(update_count)
+          log_info('Placeholder references used', model: model_relation.klass.name,
+            user_reference_column: aliased_user_reference_column)
+        end
       end
       placeholder_references.delete_all
     rescue ActiveRecord::RecordNotUnique
@@ -157,6 +147,20 @@ module Import
       placeholder_reference.destroy!
     rescue ActiveRecord::RecordNotUnique, ActiveRecord::RecordInvalid
       log_warn('Unable to reassign record, reassigned user is invalid or not unique')
+    end
+
+    def delete_remaining_references
+      source_user_references = ::Import::SourceUserPlaceholderReference.for_source_user(import_source_user)
+
+      source_user_references.each_batch(of: REFERENCE_DELETE_BATCH_SIZE) do |batch|
+        batch.delete_all
+      end
+    end
+
+    def log_placeholder_reference_used?(update_count)
+      Feature.enabled?(:user_mapping_direct_reassignment, reassigned_by_user) &&
+        update_count > 0 &&
+        import_source_user.placeholder_user.placeholder?
     end
 
     def create_memberships
@@ -262,39 +266,16 @@ module Import
       !!@refresh_project_access
     end
 
-    def db_table_unavailable?(model)
-      health_context = Gitlab::Database::HealthStatus::Context.new(
-        DatabaseHealthStatusChecker.new(import_source_user.id, self.class.name),
-        nil,
-        [model.table_name]
-      )
-
-      Gitlab::Database::HealthStatus.evaluate(health_context, DATABASE_TABLE_HEALTH_INDICATORS).any?(&:stop?)
+    def handle_reschedule_error(error, reason)
+      log_warn("#{error.message}. Rescheduling reassignment")
+      reschedule_reassignment_response(error.message, reason)
     end
 
-    def db_health_check!
-      stop_signal = Rails.cache.fetch("reassign_placeholder_user_records_service_db_check", expires_in: 30.seconds) do
-        gitlab_schema = :gitlab_main
-
-        health_context = Gitlab::Database::HealthStatus::Context.new(
-          DatabaseHealthStatusChecker.new(import_source_user.id, self.class.name),
-          Gitlab::Database.schemas_to_base_models[gitlab_schema].first,
-          nil
-        )
-
-        Gitlab::Database::HealthStatus
-          .evaluate(health_context, GLOBAL_DATABASE_HEALTH_INDICATORS).any?(&:stop?)
-      end
-
-      raise DatabaseHealthError, "Database unhealthy" if stop_signal
-    end
-
-    def reschedule_reassignment_response
-      ServiceResponse.new(
-        status: :ok,
-        message: s_('Import|Rescheduling placeholder user records reassignment: database health'),
+    def reschedule_reassignment_response(message, reason)
+      ServiceResponse.error(
+        message: message,
         payload: import_source_user,
-        reason: :db_health_check_failed
+        reason: reason
       )
     end
 

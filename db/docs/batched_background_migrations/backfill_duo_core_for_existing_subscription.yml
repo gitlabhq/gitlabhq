@@ -1,9 +1,0 @@
----
-migration_job_name: BackfillDuoCoreForExistingSubscription
-description: Create Duo Core add-on purchase record for existing subscriptions with
-  a paid or trial plans.
-feature_category: subscription_management
-introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/188884
-milestone: '18.0'
-queued_migration_version: 20250423131257
-finalized_by: '20250831232009'

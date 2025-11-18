@@ -166,7 +166,7 @@ describe('RegistrationDropdown', () => {
         positioningstrategy: 'absolute',
         size: 'small',
         textsronly: 'true',
-        toggleid: 'dropdown-toggle-btn-30',
+        toggleid: 'dropdown-toggle-btn-29',
         toggletext: 'Register an instance runner',
         variant: 'default',
       });
@@ -326,7 +326,7 @@ describe('RegistrationDropdown', () => {
           positioningstrategy: 'absolute',
           size: 'small',
           textsronly: 'true',
-          toggleid: 'dropdown-toggle-btn-84',
+          toggleid: 'dropdown-toggle-btn-83',
           toggletext: 'Register an instance runner',
           variant: 'default',
         });

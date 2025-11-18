@@ -38,7 +38,8 @@ RSpec.describe Sidebars::Groups::Menus::ObservabilityMenu, feature_category: :ob
             :alerts,
             :exceptions,
             :service_map,
-            :settings
+            :notification_channels,
+            :setup
           ]
 
           expect(observability_menu.renderable_items.map(&:item_id)).to match_array(expected_menu_items)
@@ -54,7 +55,7 @@ RSpec.describe Sidebars::Groups::Menus::ObservabilityMenu, feature_category: :ob
         end
 
         it 'does not add observability menu items' do
-          expected_menu_items = [:request_access]
+          expected_menu_items = [:setup]
 
           expect(observability_menu.renderable_items.map(&:item_id)).to match_array(expected_menu_items)
         end
@@ -67,7 +68,7 @@ RSpec.describe Sidebars::Groups::Menus::ObservabilityMenu, feature_category: :ob
       end
 
       it 'adds the o11y settings menu item' do
-        expected_menu_items = [:o11y_settings, :request_access]
+        expected_menu_items = [:o11y_settings, :setup]
 
         expect(observability_menu.renderable_items.map(&:item_id)).to match_array(expected_menu_items)
       end
@@ -93,8 +94,9 @@ RSpec.describe Sidebars::Groups::Menus::ObservabilityMenu, feature_category: :ob
           :alerts,
           :exceptions,
           :service_map,
-          :settings,
-          :o11y_settings
+          :notification_channels,
+          :o11y_settings,
+          :setup
         ]
 
         expect(observability_menu.renderable_items.map(&:item_id)).to match_array(expected_menu_items)
@@ -230,7 +232,9 @@ RSpec.describe Sidebars::Groups::Menus::ObservabilityMenu, feature_category: :ob
       expect(menu_items.find { |i| i.item_id == :alerts }.link).to include('alerts')
       expect(menu_items.find { |i| i.item_id == :exceptions }.link).to include('exceptions')
       expect(menu_items.find { |i| i.item_id == :service_map }.link).to include('service-map')
-      expect(menu_items.find { |i| i.item_id == :settings }.link).to include('settings')
+      expect(menu_items.find do |i|
+        i.item_id == :notification_channels
+      end.link).to include(ERB::Util.url_encode('settings/channels'))
     end
   end
 

@@ -298,7 +298,9 @@ However, this error does not occur due to disk shortage, so memory shortage is t
 
 If you get this error:
 
-- When you export a file, GitLab retries the export until the maximum number of retries is reached and marks the export as failed.
+- When you export a file, GitLab retries the export until the
+  maximum number of retries is reached and then marks the export as failed.
+  For GitLab.com, try the export during the weekend when less load exists on the instance.
 - When you import a file, you must retry the import yourself. GitLab does not retry the import automatically.
 
 ## Troubleshooting performance issues

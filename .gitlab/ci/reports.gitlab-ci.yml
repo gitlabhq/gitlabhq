@@ -1,7 +1,11 @@
 include:
   - template: Jobs/SAST.gitlab-ci.yml
   - template: Jobs/Secret-Detection.gitlab-ci.yml
-  - template: Jobs/Dependency-Scanning.latest.gitlab-ci.yml
+  - template: Jobs/Dependency-Scanning.v2.gitlab-ci.yml
+    inputs:
+      stage: "lint"
+      enable_static_reachability: true
+      excluded_paths: "qa/qa/ee/fixtures/secure_premade_reports, spec, ee/spec, tmp, storybook"
 
 .sast-analyzer:
   # We need to re-`extends` from `sast` as the `extends` here overrides the one from the template.
@@ -36,32 +40,18 @@ semgrep-sast:
 secret_detection:
   rules: !reference [".reports:rules:secret_detection", rules]
 
-.ds-analyzer:
-  # We need to re-`extends` from `dependency_scanning` as the `extends` here overrides the one from the template.
-  extends:
-    - .default-retry
-    - dependency_scanning
-  stage: lint
-  needs: []
-  variables:
-    DS_EXCLUDED_PATHS: "qa/qa/ee/fixtures/secure_premade_reports, spec, ee/spec, tmp, storybook"  # GitLab-specific
-    DS_ENFORCE_NEW_ANALYZER: "true"
-    DS_STATIC_REACHABILITY_ENABLED: "false"
-  artifacts:
-    paths:
-      - gl-dependency-scanning-report.json  # GitLab-specific
-    access: 'developer'
-    expire_in: 1 week  # GitLab-specific
-  after_script:
-    # Remove sboms in test fixtures so that they are not ingested and scanned.
-    - find spec ee/spec qa -path '**/fixtures/**/gl-sbom*.cdx.json' -delete
-
 dependency-scanning:
   extends:
-    - .ds-analyzer
+    - .default-retry
+  artifacts:
+    expire_in: 1 week
+  needs: []
   rules:
     # Use !reference to prevent rule merging issues with template's dependency-scanning job
     - !reference [.reports:rules:dependency_scanning, rules]
+  before_script:
+    # Remove sboms in test fixtures so that they are not ingested and scanned.
+    - find spec ee/spec qa -path '**/fixtures/**/gl-sbom*.cdx.json' -delete
 
 # Analyze dependencies for malicious behavior
 # See https://gitlab.com/gitlab-com/gl-security/security-research/package-hunter

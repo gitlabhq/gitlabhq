@@ -112,13 +112,7 @@ To resolve this issue, configure the `[runners.docker]` section in the runner's 
 
 ```toml
 [runners.docker]
-  privileged = true
   security_opt = ["seccomp:unconfined", "apparmor:unconfined"]
 ```
 
-{{< alert type="note" >}}
-
-Set `privileged = true` only in trusted environments because this setting grants extensive permissions to containers.
-Learn more about the [BuildKit rootless Docker builds and security requirements](https://github.com/moby/buildkit/blob/master/docs/rootless.md#docker).
-
-{{< /alert >}}
+For more information, see [BuildKit rootless Docker builds and security requirements](https://github.com/moby/buildkit/blob/master/docs/rootless.md#docker).

@@ -15,6 +15,8 @@ module API
         tags %w[group_avatar]
         success code: 200
       end
+
+      route_setting :authorization, permissions: :read_avatar, boundary_type: :group
       get ':id/avatar' do
         avatar = user_group.avatar
 

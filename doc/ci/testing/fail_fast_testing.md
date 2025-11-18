@@ -2,6 +2,7 @@
 stage: Verify
 group: Pipeline Execution
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+description: Run only relevant RSpec tests using the fail-fast template to get faster feedback on code changes.
 title: Fail Fast Testing
 ---
 
@@ -12,7 +13,7 @@ title: Fail Fast Testing
 
 {{< /details >}}
 
-For applications that use RSpec for running tests, we've introduced the `Verify/Failfast`
+For applications that use RSpec for running tests, you can use the `Verify/Failfast`
 [template to run subsets of your test suite](https://gitlab.com/gitlab-org/gitlab/-/tree/master/lib/gitlab/ci/templates/Verify/FailFast.gitlab-ci.yml),
 based on the changes in your merge request.
 
@@ -52,7 +53,7 @@ This template requires:
 
 ## Configuring Fast RSpec Failure
 
-We use the following plain RSpec configuration as a starting point. It installs all the
+You can use the following plain RSpec configuration as a starting point. It installs all the
 project gems and executes `rspec`, on merge request pipelines only.
 
 ```yaml

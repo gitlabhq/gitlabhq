@@ -112,6 +112,7 @@ class Projects::DeployKeysController < Projects::ApplicationController
     create_params = params.require(:deploy_key)
                           .permit(:key, :title, :expires_at, deploy_keys_projects_attributes: [:can_push])
     create_params.dig(:deploy_keys_projects_attributes, '0')&.merge!(project_id: @project.id)
+    create_params[:organization] = Current.organization
     create_params
   end
 

@@ -33,3 +33,34 @@ To enable the Redis exporter:
 
 Prometheus begins collecting performance data from
 the Redis exporter exposed at `localhost:9121`.
+
+## Configure the Redis exporter flags
+
+You can use the `redis_exporter['flags']` setting to pass
+[command-line flags](https://github.com/oliver006/redis_exporter/blob/master/README.md#command-line-flags)
+and customize the Redis exporter's behavior according to your monitoring requirements.
+
+{{< alert type="note" >}}
+
+`redis.addr` is not usable as that value is configured by `gitlab_rails[redis_*]` values such as `gitlab_rails[redis_host]`.
+
+{{< /alert >}}
+
+To configure the Redis exporter flags:
+
+1. Edit `/etc/gitlab/gitlab.rb`, and add some flags, for example:
+
+   ```ruby
+   redis_exporter['flags'] = {
+     'redis.password' => 'your-redis-password',
+     'namespace' => 'redis',
+     'web.listen-address' => ':9121',
+     'web.telemetry-path' => '/metrics'
+   }
+   ```
+
+1. Reconfigure GitLab:
+
+   ```shell
+   sudo gitlab-ctl reconfigure
+   ```

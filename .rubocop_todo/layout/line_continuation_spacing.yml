@@ -31,7 +31,7 @@ Layout/LineContinuationSpacing:
     - 'ee/lib/ee/gitlab/auth/ldap/access.rb'
     - 'ee/lib/ee/gitlab/git_access.rb'
     - 'ee/lib/tasks/gitlab/geo.rake'
-    - 'ee/spec/controllers/groups/group_members_controller_spec.rb'
+    - 'ee/spec/controllers/ee/groups/group_members_controller_spec.rb'
     - 'ee/spec/features/admin/admin_emails_spec.rb'
     - 'ee/spec/features/admin/licenses/admin_adds_license_spec.rb'
     - 'ee/spec/features/groups/group_overview_spec.rb'

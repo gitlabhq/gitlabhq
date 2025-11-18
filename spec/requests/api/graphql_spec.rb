@@ -28,7 +28,6 @@ RSpec.describe 'GraphQL', feature_category: :shared do
           # query_fingerprint starts with operation name
           query_fingerprint: %r{^anonymous/},
           duration_s: kind_of(Numeric),
-          trace_type: 'execute_query',
           operation_name: nil,
           # operation_fingerprint starts with operation name
           operation_fingerprint: %r{^anonymous/},

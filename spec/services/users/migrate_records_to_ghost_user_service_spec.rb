@@ -8,6 +8,7 @@ RSpec.describe Users::MigrateRecordsToGhostUserService, feature_category: :user_
   let!(:user) { create(:user) }
   let(:service) { described_class.new(user, admin, execution_tracker) }
   let(:execution_tracker) { instance_double(::Gitlab::Utils::ExecutionTracker, over_limit?: false) }
+  let(:ghost_user) { Users::Internal.for_organization(user.organization_id).ghost }
 
   let_it_be(:admin) { create(:admin) }
   let_it_be(:project) { create(:project, :repository) }
@@ -110,7 +111,7 @@ RSpec.describe Users::MigrateRecordsToGhostUserService, feature_category: :user_
           let(:awardable) { create(:issue) }
 
           let!(:existing_award_emoji) do
-            create(:award_emoji, user: Users::Internal.ghost, name: AwardEmoji::THUMBS_UP, awardable: awardable)
+            create(:award_emoji, user: ghost_user, name: AwardEmoji::THUMBS_UP, awardable: awardable)
           end
 
           let!(:award_emoji) { create(:award_emoji, user: user, name: AwardEmoji::THUMBS_UP, awardable: awardable) }
@@ -120,7 +121,7 @@ RSpec.describe Users::MigrateRecordsToGhostUserService, feature_category: :user_
 
             migrated_record = AwardEmoji.find_by_id(award_emoji.id)
 
-            expect(migrated_record.user).to eq(Users::Internal.ghost)
+            expect(migrated_record.user).to eq(ghost_user)
           end
 
           it "does not leave the migrated award emoji in an invalid state" do
@@ -391,7 +392,7 @@ RSpec.describe Users::MigrateRecordsToGhostUserService, feature_category: :user_
         service.execute
 
         expect(gitlab_shell.repository_exists?(repo.shard_name, "#{repo.disk_path}.git")).to be(true)
-        expect(Users::Internal.ghost.snippets).to include(repo.snippet)
+        expect(ghost_user.snippets).to include(repo.snippet)
       end
 
       context 'when an error is raised deleting snippets' do
@@ -430,8 +431,8 @@ RSpec.describe Users::MigrateRecordsToGhostUserService, feature_category: :user_
         service.execute(hard_delete: true)
         user_achievement.reload
 
-        expect(user_achievement.revoked_by_user).to eq(Users::Internal.ghost)
-        expect(user_achievement.awarded_by_user).to eq(Users::Internal.ghost)
+        expect(user_achievement.revoked_by_user).to eq(ghost_user)
+        expect(user_achievement.awarded_by_user).to eq(ghost_user)
       end
     end
   end

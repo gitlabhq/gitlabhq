@@ -88,7 +88,7 @@ Because our processing logic relies on generating a delta of two different vulne
 
 ![Screenshot of primary identifier mismatch in MR widget](img/primary_identifier_changed_v15_6.png)
 
-After being [merged](../integrations/secure.md#tracking-and-merging-vulnerabilities), the previous vulnerability is listed as "remediated" and the introduced as ["detected"](../../user/application_security/vulnerabilities/_index.md#vulnerability-status-values).
+After being [merged](../integrations/secure.md#vulnerability-tracking), the previous vulnerability record's status is changed to **Resolved** and the new vulnerability record's status is set to [**Needs triage**](../../user/application_security/vulnerabilities/_index.md#vulnerability-status-values).
 
 ### Guiding principles for ensuring primary identifier stability
 
@@ -154,7 +154,7 @@ The corresponding Semgrep report must contain the `eslint_rule_id`:
 }
 ```
 
-[Tracking of vulnerabilities](../integrations/secure.md#tracking-and-merging-vulnerabilities) relies on a combination of the two identifiers
+[Tracking of vulnerabilities](../integrations/secure.md#vulnerability-tracking) relies on a combination of the two identifiers
 to remap DB records previously generated with the legacy analyzers to those generated with the new `semgrep` ones.
 
 ## Development Setup: Package Metadata Database synchronization

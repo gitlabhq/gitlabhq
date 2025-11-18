@@ -21,6 +21,7 @@ RSpec.describe Projects::CommitsController, feature_category: :source_code_manag
         it 'is successful' do
           get :show, params: { namespace_id: project.namespace, project_id: project, id: id }
 
+          expect(assigns(:commits)).to be_present
           expect(response).to have_gitlab_http_status(:ok)
         end
       end
@@ -31,6 +32,7 @@ RSpec.describe Projects::CommitsController, feature_category: :source_code_manag
         it "requires authentication" do
           get :show, params: { namespace_id: project.namespace, project_id: project, id: id }
 
+          expect(assigns(:commits)).to be_nil
           expect(response).to redirect_to(new_user_session_path)
         end
 
@@ -42,6 +44,7 @@ RSpec.describe Projects::CommitsController, feature_category: :source_code_manag
           it 'is successful' do
             get :show, params: { namespace_id: project.namespace, project_id: project, id: id }
 
+            expect(assigns(:commits)).to be_present
             expect(response).to have_gitlab_http_status(:ok)
           end
         end
@@ -55,6 +58,7 @@ RSpec.describe Projects::CommitsController, feature_category: :source_code_manag
         it 'is successful' do
           get :signatures, params: { namespace_id: project.namespace, project_id: project, id: id, format: :json }
 
+          expect(assigns(:commits)).to be_present
           expect(response).to have_gitlab_http_status(:ok)
         end
       end
@@ -65,6 +69,7 @@ RSpec.describe Projects::CommitsController, feature_category: :source_code_manag
         it "requires authentication" do
           get :signatures, params: { namespace_id: project.namespace, project_id: project, id: id, format: :json }
 
+          expect(assigns(:commits)).to be_nil
           expect(response).to have_gitlab_http_status(:unauthorized)
         end
 
@@ -76,6 +81,7 @@ RSpec.describe Projects::CommitsController, feature_category: :source_code_manag
           it 'is successful' do
             get :signatures, params: { namespace_id: project.namespace, project_id: project, id: id, format: :json }
 
+            expect(assigns(:commits)).to be_present
             expect(response).to have_gitlab_http_status(:ok)
           end
         end
@@ -243,7 +249,9 @@ RSpec.describe Projects::CommitsController, feature_category: :source_code_manag
             let(:request_params) { base_request_params.merge(committed_before: '2020-01-01') }
             let(:repository_params) { base_repository_params.merge(before: 1577836800) }
 
-            it_behaves_like 'repository commits call'
+            Time.use_zone('America/Los_Angeles') do
+              it_behaves_like 'repository commits call'
+            end
           end
 
           context 'is invalid' do
@@ -266,7 +274,9 @@ RSpec.describe Projects::CommitsController, feature_category: :source_code_manag
             let(:request_params) { base_request_params.merge(committed_after: '2020-01-01') }
             let(:repository_params) { base_repository_params.merge(after: 1577836800) }
 
-            it_behaves_like 'repository commits call'
+            Time.use_zone('America/Los_Angeles') do
+              it_behaves_like 'repository commits call'
+            end
           end
 
           context 'is invalid' do

@@ -12,7 +12,8 @@ title: Project issue boards API
 
 {{< /details >}}
 
-Every API call to [issue boards](../user/project/issue_board.md) must be authenticated.
+Use this API to manage [issue boards](../user/project/issue_board.md).
+Every call to this API requires authentication.
 
 If a user is not a member of a private project,
 a `GET` request on that project results in a `404` status code.

@@ -18,6 +18,8 @@ import (
 	"gitlab.com/gitlab-org/gitlab/workhorse/internal/api"
 )
 
+const testRemoteAddr = "192.0.2.1:1234"
+
 // errorReader is a mock reader that always returns an error
 type errorReader struct{}
 
@@ -73,7 +75,7 @@ func TestRunHttpActionHandler_Execute(t *testing.T) {
 		}
 
 		originalReq := httptest.NewRequest("GET", "/ws", nil)
-		originalReq.RemoteAddr = "192.0.2.1:1234"
+		originalReq.RemoteAddr = testRemoteAddr
 
 		handler := &runHTTPActionHandler{
 			rails: &api.API{
@@ -119,7 +121,7 @@ func TestRunHttpActionHandler_Execute(t *testing.T) {
 		}
 
 		originalReq := httptest.NewRequest("GET", "/ws", nil)
-		originalReq.RemoteAddr = "192.0.2.1:1234"
+		originalReq.RemoteAddr = testRemoteAddr
 		originalReq.Header.Set("X-Forwarded-For", "127.0.0.1:3000")
 
 		handler := &runHTTPActionHandler{

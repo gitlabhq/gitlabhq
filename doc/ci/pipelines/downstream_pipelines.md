@@ -469,6 +469,45 @@ to the right of the [pipeline graph](_index.md#view-pipelines).
 In [pipeline mini graphs](_index.md#pipeline-mini-graphs), the downstream pipeline
 displays to the right of the mini graph.
 
+## View child pipeline reports in merge requests
+
+{{< history >}}
+
+- [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/18311) in GitLab 18.6.
+
+{{< /history >}}
+
+You can view reports from child pipelines in merge request widgets. This provides a
+unified view of test results and quality checks across your pipeline hierarchy
+without manually navigating through multiple pipelines to identify failures.
+
+The following report types from child pipelines are supported:
+
+- Unit test reports (Junit)
+- Code quality reports
+- Terraform reports
+- Metric reports
+
+Test results from child pipelines also appear in the parent pipeline's **Tests** tab.
+
+To ensure complete report information in merge request widgets,
+child pipelines that generate [artifacts reports](../yaml/artifacts_reports.md) should use
+[`strategy: depend`](../yaml/_index.md#triggerstrategy) or [`strategy: mirror`](../yaml/_index.md#triggerstrategy).
+
+For example:
+
+```yaml
+test-backend:
+  trigger:
+    include: backend-tests.yml
+    strategy: depend
+
+test-frontend:
+  trigger:
+    include: frontend-tests.yml
+    strategy: depend
+```
+
 ## Fetch artifacts from an upstream pipeline
 
 {{< details >}}

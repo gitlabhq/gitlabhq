@@ -10,12 +10,18 @@ Git is a version control system you use to track changes to your code and collab
 GitLab is a web-based Git repository manager that provides CI/CD and other features to help you
 manage your software development lifecycle.
 
-You can use GitLab without knowing Git.
-However, it is advantageous to understand Git when you use GitLab for source control.
+You can use the GitLab web interface for many Git operations,
+but understanding Git commands provides you with additional flexibility and control.
 
 Learning Git is part of a larger workflow:
 
 ![Use Git in the Create stage of the GitLab DevOps lifecycle.](img/get_started_git_v16_11.png)
+
+Choose your learning path:
+
+- Install Git: [Install Git](how_to_install_git/_index.md)
+- Learn by doing: [Tutorial: Make your first Git commit](../../tutorials/make_first_git_commit/_index.md)
+- Understand Git concepts: Continue reading
 
 ## Repositories
 
@@ -147,14 +153,6 @@ To learn how to generate and add SSH keys to your GitLab account,
 see [Generate an SSH key pair](../user/ssh.md).
 -->
 
-## Practice with Git
+## Related topics
 
-The best way to learn Git is to practice.
-You can create a test project, experiment with different Git commands,
-and explore different workflows.
-
-GitLab provides a web-based interface for many Git operations, but you can also use
-Git from the command line to interact with GitLab. This provides you with additional
-flexibility and control.
-
-For a hands-on approach to learning Git commands, see [Tutorial: Make your first Git commit](../../tutorials/make_first_git_commit/_index.md). For other helpful resources, see [Tutorials: Learn Git](../../tutorials/learn_git.md).
+- [Tutorials: Learn Git](../../tutorials/learn_git.md)

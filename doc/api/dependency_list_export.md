@@ -12,7 +12,8 @@ title: Dependency list export API
 
 {{< /details >}}
 
-Every call to this endpoint requires authentication.
+Use this API to export [dependency lists](../user/application_security/dependency_list/_index.md).
+Every call to this API requires authentication.
 
 ## Create a dependency list export
 

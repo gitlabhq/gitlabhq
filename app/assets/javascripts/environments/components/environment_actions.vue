@@ -17,12 +17,6 @@ export default {
       required: false,
       default: () => [],
     },
-    size: {
-      type: String,
-      required: false,
-      default: 'medium',
-      validator: (value) => ['small', 'medium'].includes(value),
-    },
   },
   data() {
     return {
@@ -88,7 +82,6 @@ export default {
     :aria-label="title"
     :items="actionItems"
     icon="play"
-    :size="size"
     text-sr-only
     right
     data-container="body"

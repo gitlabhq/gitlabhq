@@ -2,7 +2,6 @@
 RSpec/AvoidConditionalStatements:
   Exclude:
     - 'ee/spec/features/analytics/code_analytics_spec.rb'
-    - 'ee/spec/features/billings/billing_plans_spec.rb'
     - 'ee/spec/features/boards/scoped_issue_board_spec.rb'
     - 'ee/spec/features/boards/user_visits_board_spec.rb'
     - 'ee/spec/features/epic_boards/epic_boards_spec.rb'
@@ -29,7 +28,6 @@ RSpec/AvoidConditionalStatements:
     - 'spec/features/issuables/markdown_references/jira_spec.rb'
     - 'spec/features/issues/create_issue_for_discussions_in_merge_request_spec.rb'
     - 'spec/features/issues/labels_hierarchy_spec.rb'
-    - 'spec/features/issues/list/user_bulk_edits_issues_labels_spec.rb'
     - 'spec/features/markdown/keyboard_shortcuts_spec.rb'
     - 'spec/features/merge_request/batch_comments_spec.rb'
     - 'spec/features/merge_request/user_posts_diff_notes_spec.rb'

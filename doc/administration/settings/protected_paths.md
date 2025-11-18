@@ -1,6 +1,6 @@
 ---
-stage: none
-group: unassigned
+stage: Production Engineering
+group: Networking and Incident Management
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 gitlab_dedicated: yes
 title: Protected paths
@@ -38,7 +38,7 @@ See also:
 Throttling of protected paths is enabled by default and can be disabled or
 customized.
 
-1. On the left sidebar, at the bottom, select **Admin**.
+1. On the left sidebar, at the bottom, select **Admin**. If you've [turned on the new navigation](../../user/interface_redesign.md#turn-new-navigation-on-or-off), in the upper-right corner, select **Admin**.
 1. Select **Settings** > **Network**.
 1. Expand **Protected paths**.
 

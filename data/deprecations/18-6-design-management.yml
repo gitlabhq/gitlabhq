@@ -1,0 +1,15 @@
+- title: "Design Management deprecated"
+  removal_milestone: "19.0"
+  announcement_milestone: "18.6"
+  breaking_change: true
+  reporter: mmacfarlane
+  stage: plan
+  issue_url: https://gitlab.com/gitlab-com/Product/-/issues/14413
+  check_impact: https://docs.gitlab.com/user/project/issues/design_management/
+  impact: [low]
+  impact_details: https://gitlab-com.gitlab.io/gl-infra/breaking-change-impact-calculator/?usage=edge_case&migration_complexity=minor_manual&scope=project&identification_complexity=manual&additional_complexity=no&base_impact=minor&pipeline_impact=none&compliance_impact=none&availability_impact=none&authorization_impact=none&API_impact=none
+  impact_offering: [GitLab.com, Dedicated, self-managed]
+  scope: [project]
+  manual_task: false
+  body: |  # (required) Don't change this line.
+    In GitLab 19.0, GitLab will begin deprecation of Design Management. Design Management allows users to upload design assets such as wireframes and mockups to GitLab issues for collaboration. We've made this decision after careful consideration of existing usage and estimated customer impact. The ongoing maintenance required for Design Management outweighed the current usage, and we're focusing our efforts on solutions that better align with modern designer workflows. In GitLab 19.0 and later, users will no longer be able to upload new designs. Existing designs will remain available in read-only mode until GitLab 20.0, giving users time to save their designs as needed. GitLab is exploring alternatives that better integrate with the tools designers already use.

@@ -161,8 +161,8 @@ The following flags are available, but are untested and should be left at their 
 | `BEHAVE_EXCLUDE_LANG`  | `-exclude-lang`  | `""`          | Exclude a language, one of: `csharp`, `go`, `java`, `js`, `php`, `python`, or `ruby`, separated by ',', includes all others not specified. |
 | `BEHAVE_EXCLUDE_FILES` | `-exclude-`      | `""`          | Exclude files or paths by regular expressions, individual regular expressions are separated by ','. |
 
-As we have not tested all variables you may find some will work and others will not.
-If one does not work and you need it, we suggest
+Because all variables have not been tested, you may find some that work and others that do not.
+If you need one that does not work,
 [submitting a feature request](https://gitlab.com/gitlab-org/gitlab/-/issues/new?issuable_template=Feature%20proposal%20-%20detailed&issue[title]=Docs%20feedback%20-%20feature%20proposal:%20Write%20your%20title)
 or contributing to the code to enable it to be used.
 
@@ -298,7 +298,7 @@ This is usually due to the `BEHAVE_TOKEN` not being set. Ensure the access token
 access and the **Protect variable** option is unchecked in the **Settings** > **CI/CD** variables
 settings.
 
-#### I'm getting error "{401 Permission Denied}"
+#### Error: `{401 Permission Denied}`
 
 This is usually due to the `BEHAVE_TOKEN` not containing the correct value. Ensure the access token
 has Guest level access.

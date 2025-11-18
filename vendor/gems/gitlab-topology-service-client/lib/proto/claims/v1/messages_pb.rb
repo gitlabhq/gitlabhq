@@ -16,6 +16,7 @@ Google::Protobuf::DescriptorPool.generated_pool.build do
     add_enum "gitlab.cells.topology_service.claims.v1.Bucket.Type" do
       value :UNSPECIFIED, 0
       value :ROUTES, 1
+      value :ORGANIZATION_PATH, 2
     end
     add_message "gitlab.cells.topology_service.claims.v1.Subject" do
       optional :type, :enum, 1, "gitlab.cells.topology_service.claims.v1.Subject.Type", json_name: "type"

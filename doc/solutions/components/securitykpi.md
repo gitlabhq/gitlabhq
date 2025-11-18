@@ -2,6 +2,7 @@
 stage: Solutions Architecture
 group: Solutions Architecture
 info: This page is owned by the Solutions Architecture team.
+description: Guide for deploying GitLab Security Metrics and KPIs Solution, including vulnerability data export to Splunk, CI/CD pipeline setup, dashboard configuration, and best practices.
 title: Security Metrics and KPIs
 ---
 

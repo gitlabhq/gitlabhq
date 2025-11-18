@@ -133,4 +133,8 @@ RSpec.describe Banzai::Filter::References::ProjectReferenceFilter, feature_categ
     let(:text) { "#{reference} #{reference} #{reference}" }
     let(:ends_with) { "</a> #{CGI.escapeHTML(reference)}" }
   end
+
+  it_behaves_like 'ReferenceFilter#references_in' do
+    let(:filter_instance) { described_class.new(nil, { project: nil }) }
+  end
 end

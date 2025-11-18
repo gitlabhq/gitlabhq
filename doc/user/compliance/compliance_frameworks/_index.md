@@ -76,7 +76,7 @@ has the correct permissions. The GitLab UI presents a read-only view to discoura
 
 To apply a compliance framework to a project through a compliance framework:
 
-1. On the left sidebar, select **Search or go to** and find your group.
+1. On the left sidebar, select **Search or go to** and find your group. If you've [turned on the new navigation](../../interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
 1. Select **Secure** > **Compliance center**.
 1. On the page, select the **Projects** tab.
 1. Hover over a compliance framework, select the **Edit Framework** tab.
@@ -102,7 +102,7 @@ A compliance framework that is set to default has a `default` label.
 
 To set as default (or remove the default) from [compliance projects report](../compliance_center/compliance_projects_report.md):
 
-1. On the left sidebar, select **Search or go to** and find your group.
+1. On the left sidebar, select **Search or go to** and find your group. If you've [turned on the new navigation](../../interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
 1. Select **Secure** > **Compliance center**.
 1. On the page, select the **Projects** tab.
 1. Hover over a compliance framework, select the **Edit Framework** tab.
@@ -111,7 +111,7 @@ To set as default (or remove the default) from [compliance projects report](../c
 
 To set as default (or remove the default) from [compliance framework report](../compliance_center/compliance_frameworks_report.md):
 
-1. On the left sidebar, select **Search or go to** and find your group.
+1. On the left sidebar, select **Search or go to** and find your group. If you've [turned on the new navigation](../../interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
 1. Select **Secure** > **Compliance center**.
 1. On the page, select the **Frameworks** tab.
 1. Hover over a compliance framework, select the **Edit Framework** tab.
@@ -143,7 +143,7 @@ With this feature, you can share and back up compliance frameworks.
 
 To export a compliance framework from the compliance center:
 
-1. On the left sidebar, select **Search or go to** and find your group.
+1. On the left sidebar, select **Search or go to** and find your group. If you've [turned on the new navigation](../../interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
 1. Select **Secure** > **Compliance center**.
 1. On the page, select the **Frameworks** tab.
 1. Locate the compliance framework you wish to export.
@@ -158,7 +158,7 @@ With this feature, you can use shared or backed up compliance frameworks. The JS
 
 To import a compliance framework by using a JSON template:
 
-1. On the left sidebar, select **Search or go to** and find your group.
+1. On the left sidebar, select **Search or go to** and find your group. If you've [turned on the new navigation](../../interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
 1. Select **Secure** > **Compliance center**.
 1. On the page, select the **Frameworks** tab.
 1. Select **New framework**.
@@ -303,7 +303,7 @@ Combine GitLab compliance controls to help you meet
 | Default branch protected from direct push                | `default_branch_protected_from_direct_push`                | [Prevents direct pushes to the default branch](../../project/repository/branches/protected.md). |
 | Default branch users can merge                           | `default_branch_users_can_merge`                           | Controls [whether users can merge changes to the default branch](../../project/repository/branches/protected.md). |
 | Default branch users can push                            | `default_branch_users_can_push`                            | Controls [whether users can push directly to the default branch](../../project/repository/branches/protected.md). |
-| Dependency scanning running                              | `scanner_dep_scanning_running`                             | Ensures that [dependency scanning](../../application_security/dependency_scanning/_index.md) is configured and running in the project's default branch pipeline. Requires a successful pipeline run. |
+| Dependency scanning running                              | `scanner_dep_scanning_running`                             | Ensures that [dependency scanning](../../application_security/dependency_scanning/_index.md) is configured and running in the project's default branch pipeline. Requires a successful pipeline run. **Note**: On GitLab Self-Managed instances (from 18.4), this control may fail when using [SBOM-based dependency scanning](../../application_security/dependency_scanning/dependency_scanning_sbom/_index.md) due to artifact differences. See [compatibility considerations](../../application_security/dependency_scanning/dependency_scanning_sbom/_index.md#compliance-framework-compatibility). |
 | Ensure two administrators per repository                 | `ensure_2_admins_per_repo`                                 | Ensures that [at least two Owners](../../project/members/_index.md) are assigned to each project. |
 | Error tracking enabled                                   | `error_tracking_enabled`                                   | Ensures that [error tracking](../../../operations/error_tracking.md) is enabled for the project. |
 | Force push disabled                                      | `force_push_disabled`                                      | Prevents [force pushing](../../project/repository/branches/protected.md) to repositories. |
@@ -373,7 +373,7 @@ Status checks fail if an external control stays in the pending state for more th
 
 To add an external control when creating or editing a framework:
 
-1. On the left sidebar, select **Search or go to** and find your group.
+1. On the left sidebar, select **Search or go to** and find your group. If you've [turned on the new navigation](../../interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
 1. Select **Secure** > **Compliance center**.
 1. On the page, select the **Frameworks** tab.
 1. Select **New framework** or edit an existing one.
@@ -429,7 +429,7 @@ If something changes outside of GitLab, you can set the [status of an external c
 
 To add a requirement when creating or editing a framework:
 
-1. On the left sidebar, select **Search or go to** and find your group.
+1. On the left sidebar, select **Search or go to** and find your group. If you've [turned on the new navigation](../../interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
 1. Select **Secure** > **Compliance center**.
 1. On the page, select the **Frameworks** tab.
 1. Select **New framework** or edit an existing one.
@@ -443,7 +443,7 @@ To add a requirement when creating or editing a framework:
 
 To edit a requirement when creating or editing a framework:
 
-1. On the left sidebar, select **Search or go to** and find your group.
+1. On the left sidebar, select **Search or go to** and find your group. If you've [turned on the new navigation](../../interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
 1. Select **Secure** > **Compliance center**.
 1. On the page, select the **Frameworks** tab.
 1. Select **New framework** or edit an existing one.

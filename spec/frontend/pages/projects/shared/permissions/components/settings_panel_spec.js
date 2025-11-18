@@ -142,10 +142,6 @@ describe('Settings Panel', () => {
     wrapper.find(
       'input[name="project[project_setting_attributes][warn_about_potentially_unwanted_characters]"]',
     );
-  const findExtendedPratExpiryWebhooksExecute = () =>
-    wrapper.find(
-      'input[name="project[project_setting_attributes][extended_prat_expiry_webhooks_execute]"]',
-    );
   const findConfirmDangerButton = () => wrapper.findComponent(ConfirmDanger);
   const findEnvironmentsSettings = () => wrapper.findComponent({ ref: 'environments-settings' });
   const findFeatureFlagsSettings = () => wrapper.findComponent({ ref: 'feature-flags-settings' });
@@ -809,24 +805,6 @@ describe('Settings Panel', () => {
       wrapper = mountComponent();
 
       expect(findWarnAboutPuc().exists()).toBe(true);
-    });
-  });
-
-  describe('Setting to allow webhook execution for extended intervals', () => {
-    it('should have a "Extended Project Access Tokens Expiry Webhook execution" input when feature is enabled', () => {
-      wrapper = mountComponent({
-        glFeatures: { extendedExpiryWebhookExecutionSetting: true },
-      });
-
-      expect(findExtendedPratExpiryWebhooksExecute().exists()).toBe(true);
-    });
-
-    it('should not have a "Extended Project Access Tokens Expiry Webhook execution" input when feature is disabled', () => {
-      wrapper = mountComponent({
-        glFeatures: { extendedExpiryWebhookExecutionSetting: false },
-      });
-
-      expect(findExtendedPratExpiryWebhooksExecute().exists()).toBe(false);
     });
   });
 

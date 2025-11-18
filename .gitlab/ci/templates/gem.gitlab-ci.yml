@@ -35,7 +35,8 @@ spec:
 
 gems $[[inputs.gem_name]]:
   extends: ".gems:rules:$[[inputs.gem_name]]"
-  needs: []
+  needs:
+    - clone-gitlab-repo
   trigger:
     include: "$[[inputs.gem_path_prefix]]$[[inputs.gem_name]]/.gitlab-ci.yml"
     strategy: depend
@@ -43,3 +44,5 @@ gems $[[inputs.gem_name]]:
     variables: false
   variables:
     FF_NETWORK_PER_BUILD: "true"
+    PARENT_PIPELINE_ID: $CI_PIPELINE_ID
+    CI_FETCH_REPO_GIT_STRATEGY: none

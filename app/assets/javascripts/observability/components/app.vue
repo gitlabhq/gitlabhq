@@ -3,9 +3,13 @@ import { createMessageValidator } from '../utils/message_validator';
 import { MESSAGE_TYPES, TIMEOUTS } from '../constants';
 import { buildIframeUrl, extractTargetPath } from '../utils/url_helpers';
 import { AuthManager } from '../utils/auth_manager';
+import ObservabilityLoading from './observability_loading.vue';
 
 export default {
   name: 'ObservabilityApp',
+  components: {
+    ObservabilityLoading,
+  },
   props: {
     o11yUrl: {
       type: String,
@@ -126,9 +130,7 @@ export default {
   <div
     class="gl-h-full gl-grow gl-overflow-hidden gl-rounded-base gl-border-1 gl-border-solid gl-border-default"
   >
-    <div v-if="isLoading" class="o11y-status" data-testid="o11y-loading-status">
-      {{ s__('Observability|Loading metrics...') }}
-    </div>
+    <observability-loading v-if="isLoading" data-testid="o11y-loading-status" />
     <div v-else-if="!isAuthenticated" class="o11y-status" data-testid="o11y-error-status">
       {{ s__('Observability|Authentication failed. Please refresh the page.') }}
     </div>

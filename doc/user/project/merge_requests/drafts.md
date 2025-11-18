@@ -25,9 +25,9 @@ You can flag a merge request as a draft in several ways:
 
 - Viewing a merge request: In the upper-right corner of the merge request,
   select **Merge request actions** ({{< icon name="ellipsis_v" >}}), then **Mark as draft**.
-- Creating or editing a merge request: Add `[Draft]`, `Draft:` or `(Draft)` to
-  the beginning of the merge request's title, or select **Mark as draft**
-  below the **Title** field.
+- Creating or editing a merge request: You can do either of the following:
+  - Add `[Draft]`, `Draft:` or `(Draft)` to the beginning of the merge request's title.
+  - Select **Mark as draft** below the **Title** field
 - Commenting in an existing merge request: Add the `/draft`
   [quick action](../quick_actions.md#issues-merge-requests-and-epics)
   in a comment. To mark a merge request as ready, use `/ready`.
@@ -41,24 +41,23 @@ You can flag a merge request as a draft in several ways:
 When a merge request is ready to merge, you can remove the `Draft` flag in several ways:
 
 - Viewing a merge request: In the upper-right corner of the merge request, select **Mark as ready**.
-  Users with at least the Developer role
-  can also scroll to the bottom of the merge request description and select **Mark as ready**.
+  Users with at least the Developer role can also scroll to the bottom of the merge request
+  description and select **Mark as ready**.
 - Editing an existing merge request: Remove `[Draft]`, `Draft:` or `(Draft)`
-  from the beginning of the title, or clear **Mark as draft**
-  below the **Title** field.
+  from the beginning of the title, or clear **Mark as draft** below the **Title** field.
 - Commenting in an existing merge request: Add the `/ready`
   [quick action](../quick_actions.md#issues-merge-requests-and-epics)
   in a comment in the merge request.
 
 When you mark a merge request as ready, GitLab notifies
-[merge request participants and watchers](../../profile/notifications.md#notifications-on-issues-merge-requests-and-epics).
+[merge request participants and watchers](../../profile/notifications.md#issue-merge-request-and-epic-events).
 
 ## Include or exclude drafts when searching
 
 When you view or search in your project's merge requests list, to include or exclude
 draft merge requests:
 
-1. On the left sidebar, select **Search or go to** and find your project.
+1. On the left sidebar, select **Search or go to** and find your project. If you've [turned on the new navigation](../../interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
 1. Select **Code** > **Merge requests**.
 1. To filter by merge request status, select **Open**, **Merged**, **Closed**,
    or **All** in the navigation bar.

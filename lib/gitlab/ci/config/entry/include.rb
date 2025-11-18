@@ -13,7 +13,7 @@ module Gitlab
           include ::Gitlab::Ci::Config::Entry::Concerns::BaseInclude
 
           # Additional keys beyond the common ones
-          ADDITIONAL_ALLOWED_KEYS = %i[template artifact inputs job ref rules].freeze
+          ADDITIONAL_ALLOWED_KEYS = %i[template artifact inputs job rules component].freeze
           ALLOWED_KEYS = (COMMON_ALLOWED_KEYS + ADDITIONAL_ALLOWED_KEYS).freeze
 
           validations do

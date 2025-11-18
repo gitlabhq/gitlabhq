@@ -115,7 +115,7 @@
               %strong.gl-text-danger
                 = _('does not exist')
 
-          - if @project.archived?
+          - if @project.self_or_ancestors_archived?
             %li{ class: '!gl-px-5' }
               %span.light
                 = _('archived:')

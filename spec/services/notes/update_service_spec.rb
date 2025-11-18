@@ -267,6 +267,8 @@ RSpec.describe Notes::UpdateService, feature_category: :team_planning do
 
         expect(note.suggestions.order(:relative_order).map(&:to_content))
           .to eq(["  foo\n", "  bar\n"])
+
+        expect(note.suggestions.pluck(:namespace_id).uniq).to contain_exactly(note.project.project_namespace_id)
       end
     end
 

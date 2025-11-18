@@ -10,11 +10,13 @@ import {
   MR_COMMITS_NEXT_COMMIT,
   MR_COMMITS_PREVIOUS_COMMIT,
   MR_TOGGLE_REVIEW,
+  ISSUABLE_COMMENT_OR_REPLY,
 } from '~/behaviors/shortcuts/keybindings';
 import { PanelBreakpointInstance } from '~/panel_breakpoint_instance';
 import { createAlert } from '~/alert';
 import { InternalEvents } from '~/tracking';
 import { helpPagePath } from '~/helpers/help_page_helper';
+import { getScrollingElement } from '~/lib/utils/scroll_utils';
 import { parseBoolean, handleLocationHash, getCookie } from '~/lib/utils/common_utils';
 import { BV_HIDE_TOOLTIP, DEFAULT_DEBOUNCE_AND_THROTTLE_MS } from '~/lib/utils/constants';
 import { Mousetrap } from '~/lib/mousetrap';
@@ -28,6 +30,7 @@ import { useLegacyDiffs } from '~/diffs/stores/legacy_diffs';
 import { useNotes } from '~/notes/store/legacy_notes';
 import { useFindingsDrawer } from '~/mr_notes/store/findings_drawer';
 import { useBatchComments } from '~/batch_comments/store';
+import { querySelectionClosest } from '~/lib/utils/selection';
 import { sortFindingsByFile } from '../utils/sort_findings_by_file';
 import {
   ALERT_OVERFLOW_HIDDEN,
@@ -159,6 +162,7 @@ export default {
       keydownTime: undefined,
       listenersAttached: false,
       toggledFile: false,
+      scrollingElement: null,
     };
   },
   apollo: {
@@ -397,7 +401,8 @@ export default {
 
     this.subscribeToVirtualScrollingEvents();
     window.addEventListener('hashchange', this.handleHashChange);
-    window.addEventListener('scroll', this.hideTooltips);
+    this.scrollingElement = getScrollingElement(this.$el);
+    this.scrollingElement.addEventListener('scroll', this.hideTooltips);
 
     if (document.querySelector('.js-static-panel-inner')) {
       PanelBreakpointInstance.addResizeListener(() => {
@@ -435,7 +440,7 @@ export default {
     this.removeEventListeners();
 
     window.removeEventListener('hashchange', this.handleHashChange);
-    window.removeEventListener('scroll', this.hideTooltips);
+    this.scrollingElement.removeEventListener('scroll', this.hideTooltips);
 
     diffsEventHub.$off('scrollToFileHash', this.scrollVirtualScrollerToFileHash);
     diffsEventHub.$off('scrollToIndex', this.scrollVirtualScrollerToIndex);
@@ -663,6 +668,7 @@ export default {
       Mousetrap.bind(['mod+f', 'mod+g'], () => {
         this.keydownTime = new Date().getTime();
       });
+      Mousetrap.bind(keysFor(ISSUABLE_COMMENT_OR_REPLY), this.quoteReply);
 
       window.addEventListener('blur', this.handleBrowserFindActivation);
 
@@ -674,6 +680,7 @@ export default {
       Mousetrap.unbind(keysFor(MR_COMMITS_NEXT_COMMIT));
       Mousetrap.unbind(keysFor(MR_COMMITS_PREVIOUS_COMMIT));
       Mousetrap.unbind(keysFor(MR_TOGGLE_REVIEW));
+      Mousetrap.unbind(keysFor(ISSUABLE_COMMENT_OR_REPLY));
       Mousetrap.unbind(['ctrl+f', 'command+f', 'mod+f', 'mod+g']);
       window.removeEventListener('blur', this.handleBrowserFindActivation);
       this.listenersAttached = false;
@@ -780,6 +787,14 @@ export default {
       this.setCurrentFileHash(hash);
       this.toggledFile = true;
     },
+    quoteReply() {
+      if (!this.shouldShow) return;
+
+      const el = querySelectionClosest('.js-discussion-container');
+      if (!el) return;
+
+      el.dispatchEvent(new CustomEvent('quoteReply'));
+    },
   },
   howToMergeDocsPath: helpPagePath('user/project/merge_requests/merge_request_troubleshooting.md', {
     anchor: 'check-out-merge-requests-locally-through-the-head-ref',
@@ -826,7 +841,7 @@ export default {
           @clickFile="goToFile({ path: $event.path })"
           @toggleFolder="toggleTreeOpen"
         />
-        <div class="gl-col-12 gl-col-md-auto diff-files-holder">
+        <div class="gl-col-md-auto diff-files-holder gl-px-5">
           <commit-widget v-if="commit" :commit="commit" :collapsible="false" />
           <gl-alert
             v-if="isBatchLoadingError"

@@ -38,7 +38,7 @@ export default {
       required: true,
     },
     currentUserId: {
-      type: Number,
+      type: [Number, String],
       required: false,
       default: NO_USER_ID,
     },

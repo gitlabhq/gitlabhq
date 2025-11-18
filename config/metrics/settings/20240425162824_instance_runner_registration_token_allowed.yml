@@ -3,7 +3,7 @@ key_path: settings.allow_runner_registration_token
 description: Whether runner registration tokens are allowed on the instance
 product_group: runner
 product_categories:
-  - runner
+  - runner_core
 value_type: boolean
 status: active
 milestone: "17.0"

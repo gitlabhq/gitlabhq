@@ -45,10 +45,12 @@ title: Title (starts with "Tutorial:" followed by an active verb, like "Tutorial
 
 A paragraph that explains what the tutorial does, and the expected outcome.
 
+Optionally, list the steps in the tutorial. Omit this for short tutorials. Do not link to the steps.
+
 To create a website:
 
-1. [Do the first task](#do-the-first-task)
-1. [Do the second task](#do-the-second-task)
+1. Do the first task
+1. Do the second task
 
 ## Before you begin
 

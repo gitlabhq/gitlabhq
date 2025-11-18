@@ -2,6 +2,7 @@
 stage: Analytics
 group: Platform Insights
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+description: Learn how to create, edit, and delete escalation policies in GitLab to ensure critical alerts are properly handled and routed to on-call responders.
 title: Escalation policies
 ---
 
@@ -26,7 +27,7 @@ Prerequisites:
 
 To create an escalation policy:
 
-1. On the left sidebar, select **Search or go to** and find your project.
+1. On the left sidebar, select **Search or go to** and find your project. If you've [turned on the new navigation](../../user/interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
 1. Select **Monitor** > **Escalation Policies**.
 1. Select **Add an escalation policy**.
 1. Enter the policy's name and description, and
@@ -52,7 +53,7 @@ The time specified for an escalation rule must be between 0 and 1440 minutes.
 
 To update an escalation policy:
 
-1. On the left sidebar, select **Search or go to** and find your project.
+1. On the left sidebar, select **Search or go to** and find your project. If you've [turned on the new navigation](../../user/interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
 1. Select **Monitor** > **Escalation Policies**.
 1. Select **Edit escalation policy** ({{< icon name="pencil" >}}).
 1. Edit the information.
@@ -62,7 +63,7 @@ To update an escalation policy:
 
 To delete an escalation policy:
 
-1. On the left sidebar, select **Search or go to** and find your project.
+1. On the left sidebar, select **Search or go to** and find your project. If you've [turned on the new navigation](../../user/interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
 1. Select **Monitor** > **Escalation Policies**.
 1. Select **Delete escalation policy** ({{< icon name="remove" >}}).
 1. On the confirmation dialog, select **Delete escalation policy**.

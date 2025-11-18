@@ -20,7 +20,7 @@ You can configure YouTrack as an
 
 To enable the YouTrack integration in a project:
 
-1. On the left sidebar, select **Search or go to** and find your project.
+1. On the left sidebar, select **Search or go to** and find your project. If you've [turned on the new navigation](../../interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
 1. Select **Settings** > **Integrations**.
 1. Select **YouTrack**.
 1. Under **Enable integration**, select the **Active** checkbox.

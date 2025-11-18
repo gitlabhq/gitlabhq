@@ -172,15 +172,52 @@ RSpec.describe MergeRequestDiff, feature_category: :code_review_workflow do
   end
 
   describe '.by_commit_sha' do
-    subject(:by_commit_sha) { described_class.by_commit_sha(sha) }
+    let_it_be(:project) { create(:project) }
+    let_it_be(:merge_request) { create(:merge_request, source_project: project, target_project: project) }
+    let_it_be(:merge_request_diff) { create(:merge_request_diff, merge_request: merge_request) }
 
-    let!(:merge_request) { create(:merge_request) }
+    let_it_be(:commits_metadata) do
+      create(
+        :merge_request_commits_metadata,
+        project: project,
+        sha: 'abc123'
+      )
+    end
 
-    context 'with sha contained in' do
-      let(:sha) { 'b83d6e391c22777fca1ed3012fce84f633d7fed0' }
+    let_it_be(:diff_commit_with_metadata) do
+      create(
+        :merge_request_diff_commit,
+        merge_request_diff: merge_request_diff,
+        merge_request_commits_metadata_id: commits_metadata.id,
+        relative_order: 0,
+        sha: nil
+      )
+    end
+
+    let_it_be(:diff_commit_without_metadata) do
+      create(
+        :merge_request_diff_commit,
+        merge_request_diff: merge_request_diff,
+        relative_order: 1,
+        sha: 'def456'
+      )
+    end
+
+    subject(:by_commit_sha) { described_class.by_commit_sha(project, sha) }
+
+    context 'with sha contained in commits metadata' do
+      let(:sha) { 'abc123' }
 
       it 'returns merge request diffs' do
-        expect(by_commit_sha).to eq([merge_request.merge_request_diff])
+        expect(by_commit_sha).to eq([merge_request_diff])
+      end
+    end
+
+    context 'with sha contained in diff commits' do
+      let(:sha) { 'def456' }
+
+      it 'returns merge request diffs' do
+        expect(by_commit_sha).to eq([merge_request_diff])
       end
     end
 
@@ -189,6 +226,17 @@ RSpec.describe MergeRequestDiff, feature_category: :code_review_workflow do
 
       it 'returns empty result' do
         expect(by_commit_sha).to be_empty
+      end
+    end
+
+    context 'when merge_request_diff_commits_dedup is disabled' do
+      before do
+        stub_feature_flags(merge_request_diff_commits_dedup: false)
+      end
+
+      it 'returns merge request diffs matching SHA in diff commits' do
+        expect(described_class.by_commit_sha(project, 'abc123')).to be_empty
+        expect(described_class.by_commit_sha(project, 'def456')).to eq([merge_request_diff])
       end
     end
 
@@ -1330,12 +1378,22 @@ RSpec.describe MergeRequestDiff, feature_category: :code_review_workflow do
   end
 
   describe '#commit_shas' do
-    it 'returns all commit SHAs using commits from the DB' do
-      expect(diff_with_commits.commit_shas).not_to be_empty
-      expect(diff_with_commits.commit_shas).to all(match(/\h{40}/))
+    let_it_be(:project) { create(:project, :repository) }
+    let_it_be_with_refind(:diff_with_commits) do
+      create(:merge_request, source_project: project, target_project: project).merge_request_diff
     end
 
-    shared_examples 'limited number of shas' do
+    let_it_be(:shas_from_commits) do
+      diff_with_commits.merge_request.commits.map(&:sha)
+    end
+
+    shared_examples 'result with commit SHAs' do
+      it 'returns all commit SHAs using commits from the DB' do
+        expect(diff_with_commits.commit_shas).not_to be_empty
+        expect(diff_with_commits.commit_shas).to all(match(/\h{40}/))
+        expect(diff_with_commits.commit_shas).to eq(shas_from_commits)
+      end
+
       it 'returns limited number of shas' do
         expect(diff_with_commits.commit_shas(limit: 2).size).to eq(2)
         expect(diff_with_commits.commit_shas(limit: 100).size).to eq(29)
@@ -1343,8 +1401,20 @@ RSpec.describe MergeRequestDiff, feature_category: :code_review_workflow do
       end
     end
 
-    context 'with limit attribute' do
-      it_behaves_like 'limited number of shas'
+    shared_examples 'query count verification' do |expected_count: 1|
+      it 'executes limited number of queries' do
+        recorder = ActiveRecord::QueryRecorder.new do
+          diff_with_commits.commit_shas(limit: 10, **query_options)
+        end
+
+        # executes 2 extra queries for the feature flag check
+        # can be removed when cleaning-up `merge_request_diff_commits_dedup`
+        queries = recorder.log.reject do |q|
+          q.include?("SELECT \"merge_requests\"") || q.include?("SELECT \"projects\"")
+        end
+
+        expect(queries.count).to eq(expected_count)
+      end
     end
 
     context 'with preloaded diff commits' do
@@ -1353,134 +1423,61 @@ RSpec.describe MergeRequestDiff, feature_category: :code_review_workflow do
         diff_with_commits.merge_request_diff_commits.to_a
       end
 
-      it_behaves_like 'limited number of shas'
+      it_behaves_like 'result with commit SHAs'
 
-      it 'does not trigger any query' do
-        count = ActiveRecord::QueryRecorder.new { diff_with_commits.commit_shas(limit: 2) }.count
+      context 'without preload_metadata' do
+        let(:query_options) { {} }
 
-        expect(count).to eq(0)
+        it_behaves_like 'query count verification', expected_count: 10
+      end
+
+      context 'with preload_metadata enabled' do
+        let(:query_options) { { preload_metadata: true } }
+
+        it_behaves_like 'query count verification'
       end
     end
 
-    context 'with merge_request_diff_commits_dedup feature flag' do
-      let_it_be(:project) { create(:project, :repository) }
-      let(:merge_request) { create(:merge_request, source_project: project, target_project: project) }
-      let(:mr_diff) { merge_request.merge_request_diff }
+    context 'when diff commits are not preloaded' do
+      let(:query_options) { {} }
 
-      context 'when feature flag is enabled' do
-        before do
-          stub_feature_flags(merge_request_diff_commits_dedup: true)
-        end
-
-        it 'returns commit SHAs from merge_request_diff_commits' do
-          shas = mr_diff.commit_shas
-
-          expect(shas).not_to be_empty
-          expect(shas).to all(match(/\h{40}/))
-          expect(shas.size).to eq(mr_diff.commits_count)
-        end
-
-        it 'respects limit parameter' do
-          expect(mr_diff.commit_shas(limit: 3).size).to eq(3)
-        end
-
-        it 'works with preloaded associations' do
-          # preload association
-          mr_diff.merge_request_diff_commits.to_a
-
-          count = ActiveRecord::QueryRecorder.new { mr_diff.commit_shas(limit: 5) }.count
-          expect(count).to eq(0)
-        end
+      before do
+        allow(diff_with_commits.association(:merge_request_diff_commits)).to receive(:loaded?).and_return(false)
       end
 
-      context 'when feature flag is disabled' do
+      context 'when SHAs are available only in `merge_request_diff_commits` table' do
         before do
-          stub_feature_flags(merge_request_diff_commits_dedup: false)
+          diff_with_commits.merge_request_diff_commits.each do |commit|
+            commit.update!(merge_request_commits_metadata_id: nil)
+          end
         end
 
-        it 'returns commit SHAs from merge_request_diff_commits' do
-          shas = mr_diff.commit_shas
-
-          expect(shas).not_to be_empty
-          expect(shas).to all(match(/\h{40}/))
-          expect(shas.size).to eq(mr_diff.commits_count)
-        end
-
-        it 'behaves consistently regardless of feature flag state' do
-          shas_with_flag_disabled = mr_diff.commit_shas
-
-          stub_feature_flags(merge_request_diff_commits_dedup: true)
-          mr_diff.reload
-          shas_with_flag_enabled = mr_diff.commit_shas
-
-          expect(shas_with_flag_disabled).to eq(shas_with_flag_enabled)
-        end
+        it_behaves_like 'result with commit SHAs'
+        it_behaves_like 'query count verification'
       end
-    end
 
-    context 'with preload_metadata option' do
-      let_it_be(:project) { create(:project, :repository) }
-      let(:merge_request) { create(:merge_request, source_project: project, target_project: project) }
-      let(:mr_diff) { merge_request.merge_request_diff }
-
-      context 'when feature flag is enabled' do
-        it 'preloads merge_request_commits_metadata association' do
-          shas = mr_diff.commit_shas(preload_metadata: true)
-
-          expect(shas).not_to be_empty
-          expect(shas).to all(match(/\h{40}/))
-        end
-
-        it 'does not generate N+1 queries when accessing metadata' do
-          control_count = ActiveRecord::QueryRecorder.new do
-            commits = mr_diff.merge_request_diff_commits.limit(1)
-            mr_diff.send(:preload_metadata_for_commits, commits)
-            commits.first.merge_request_commits_metadata
+      context 'when SHAs are available across both tables' do
+        before do
+          diff_with_commits.merge_request_diff_commits.sample(10).each do |commit|
+            commit.update!(merge_request_commits_metadata_id: nil)
           end
 
-          expect do
-            commits = mr_diff.merge_request_diff_commits.limit(5)
-            mr_diff.send(:preload_metadata_for_commits, commits)
-            commits.each do |commit|
-              commit.merge_request_commits_metadata
-            end
-          end.not_to exceed_query_limit(control_count)
+          diff_with_commits.merge_request_diff_commits
+                           .where.not(merge_request_commits_metadata_id: nil)
+                           .update_all(sha: nil)
         end
 
-        it 'works with limit parameter' do
-          shas = mr_diff.commit_shas(limit: 5, preload_metadata: true)
-
-          expect(shas.size).to eq(5)
-        end
-
-        it 'works when association is preloaded' do
-          # preload association
-          mr_diff.merge_request_diff_commits.to_a
-
-          shas = mr_diff.commit_shas(preload_metadata: true)
-
-          expect(shas).not_to be_empty
-          expect(shas).to all(match(/\h{40}/))
-        end
+        it_behaves_like 'result with commit SHAs'
+        it_behaves_like 'query count verification'
       end
 
-      context 'when feature flag is disabled' do
+      context 'when merge_request_diff_commits_dedup feature flag is disabled' do
         before do
           stub_feature_flags(merge_request_diff_commits_dedup: false)
         end
 
-        it 'returns commit SHAs without preloading metadata' do
-          shas = mr_diff.commit_shas(preload_metadata: true)
-
-          expect(shas).not_to be_empty
-          expect(shas).to all(match(/\h{40}/))
-        end
-
-        it 'does not preload metadata' do
-          expect(mr_diff).not_to receive(:preload_metadata_for_commits)
-
-          mr_diff.commit_shas(preload_metadata: true)
-        end
+        it_behaves_like 'result with commit SHAs'
+        it_behaves_like 'query count verification'
       end
     end
   end
@@ -1541,37 +1538,100 @@ RSpec.describe MergeRequestDiff, feature_category: :code_review_workflow do
   end
 
   describe '#includes_any_commits?' do
+    let_it_be(:project) { create(:project, :repository) }
+    let_it_be_with_refind(:merge_request_diff) do
+      create(:merge_request, source_project: project, target_project: project).merge_request_diff
+    end
+
+    let_it_be(:commits_metadata) { create(:merge_request_commits_metadata, project: project, sha: 'abc123') }
+
+    let_it_be(:diff_commit_with_metadata) do
+      create(:merge_request_diff_commit,
+        merge_request_diff: merge_request_diff,
+        merge_request_commits_metadata_id: commits_metadata.id,
+        relative_order: merge_request_diff.merge_request_diff_commits.count + 1,
+        sha: nil
+      )
+    end
+
+    let_it_be(:diff_commit_without_metadata) do
+      create(:merge_request_diff_commit,
+        merge_request_diff: merge_request_diff,
+        relative_order: merge_request_diff.merge_request_diff_commits.count + 1,
+        sha: 'def456'
+      )
+    end
+
     let(:non_existent_shas) do
       Array.new(30) { Digest::SHA1.hexdigest(SecureRandom.hex) }
     end
 
-    subject { diff_with_commits }
+    shared_examples 'merge request diff with commit shas' do
+      let(:args_with_existing_commits) { non_existent_shas + existing_shas }
 
-    context 'processes the passed shas in batches' do
-      context 'number of existing commits is greater than batch size' do
-        it 'performs a separate request for each batch' do
-          stub_const('MergeRequestDiff::BATCH_SIZE', 5)
+      it 'performs a separate request for each batch' do
+        stub_const('MergeRequestDiff::BATCH_SIZE', 5)
 
-          commit_shas = subject.commit_shas
-
-          query_count = ActiveRecord::QueryRecorder.new do
-            subject.includes_any_commits?(non_existent_shas + commit_shas)
-          end.count
-
-          expect(query_count).to eq(7)
+        recorder = ActiveRecord::QueryRecorder.new do
+          merge_request_diff.includes_any_commits?(args_with_existing_commits)
         end
+
+        metadata_queries = recorder.log.select do |q|
+          q.include?("SELECT 1 AS one FROM \"merge_request_commits_metadata\"")
+        end
+
+        commit_queries = recorder.log.select do |q|
+          q.include?("SELECT 1 AS one FROM \"merge_request_diff_commits\"")
+        end
+
+        expect(metadata_queries.count).to eq(expected_metadata_queries)
+        expect(commit_queries.count).to eq(expected_commit_queries)
+      end
+
+      it 'returns false if passed commits do not exist' do
+        expect(merge_request_diff.includes_any_commits?([])).to eq(false)
+        expect(merge_request_diff.includes_any_commits?([Gitlab::Git::SHA1_BLANK_SHA])).to eq(false)
+      end
+
+      it 'returns true if passed commits exists' do
+        expect(merge_request_diff.includes_any_commits?(args_with_existing_commits)).to eq(true)
       end
     end
 
-    it 'returns false if passed commits do not exist' do
-      expect(subject.includes_any_commits?([])).to eq(false)
-      expect(subject.includes_any_commits?([Gitlab::Git::SHA1_BLANK_SHA])).to eq(false)
+    context 'when SHA is present in `merge_request_diff_commits` table' do
+      let(:expected_metadata_queries) { 7 }
+      let(:expected_commit_queries) { 7 }
+      let(:existing_shas) { ['def456'] }
+
+      it_behaves_like 'merge request diff with commit shas'
     end
 
-    it 'returns true if passed commits exists' do
-      args_with_existing_commits = non_existent_shas << subject.head_commit_sha
+    context 'when SHA is present in `merge_request_commits_metadata` table' do
+      let(:expected_metadata_queries) { 7 }
+      let(:expected_commit_queries) { 6 }
+      let(:existing_shas) { ['abc123'] }
 
-      expect(subject.includes_any_commits?(args_with_existing_commits)).to eq(true)
+      it_behaves_like 'merge request diff with commit shas'
+    end
+
+    context 'when `sha` data is present across both tables' do
+      let(:expected_metadata_queries) { 7 }
+      let(:expected_commit_queries) { 6 }
+      let(:existing_shas) { %w[abc123 def456] }
+
+      it_behaves_like 'merge request diff with commit shas'
+    end
+
+    context 'when merge_request_diff_commits_dedup feature flag is disabled' do
+      let(:existing_shas) { ['def456'] }
+      let(:expected_commit_queries) { 7 }
+      let(:expected_metadata_queries) { 0 }
+
+      before do
+        stub_feature_flags(merge_request_diff_commits_dedup: false)
+      end
+
+      it_behaves_like 'merge request diff with commit shas'
     end
   end
 
@@ -1709,26 +1769,124 @@ RSpec.describe MergeRequestDiff, feature_category: :code_review_workflow do
 
     let_it_be(:target) { create(:project, :test_repo) }
     let_it_be(:forked) { fork_project(target, nil, repository: true) }
-    let_it_be(:mr) { create(:merge_request, source_project: forked, target_project: target) }
+    let(:merge_request) { create(:merge_request, source_project: forked, target_project: target) }
+    let(:diff) { merge_request.merge_request_diff }
 
     it 'returns a CommitCollection whose container points to the target project' do
-      expect(mr.merge_request_diff.commits.container).to eq(target)
-    end
-
-    it 'returns a non-empty CommitCollection' do
-      expect(mr.merge_request_diff.commits.commits.size).to be > 0
+      expect(diff.commits.container).to eq(target)
     end
 
     context 'with a page' do
       it 'returns a limited number of commits for page' do
-        expect(mr.merge_request_diff.commits(limit: 1, page: 1).map(&:sha)).to eq(
+        expect(diff.commits(limit: 1, page: 1).map(&:sha)).to eq(
           %w[
             b83d6e391c22777fca1ed3012fce84f633d7fed0
           ])
-        expect(mr.merge_request_diff.commits(limit: 1, page: 2).map(&:sha)).to eq(
+        expect(diff.commits(limit: 1, page: 2).map(&:sha)).to eq(
           %w[
             498214de67004b1da3d820901307bed2a68a8ef6
           ])
+      end
+    end
+
+    context 'when load_from_gitaly is true' do
+      context 'when diff_commits_dedup is enabled' do
+        it 'queries the metadata table directly using commit_shas_from_metadata' do
+          expect(diff.merge_request_diff_commits).to receive(:commit_shas_from_metadata).and_call_original
+
+          commits = diff.commits(load_from_gitaly: true)
+
+          expect(commits).to be_a(CommitCollection)
+          expect(commits.commits.size).to be > 0
+        end
+
+        it 'returns the expected commit collections' do
+          without_limit = diff.commits(load_from_gitaly: true)
+          with_limit = diff.commits(limit: 1, load_from_gitaly: true)
+
+          expect(with_limit).to be_a(CommitCollection)
+          expect(with_limit.commits.size).to be 1
+
+          expect(without_limit).to be_a(CommitCollection)
+          expect(without_limit.commits.size).to be > 1
+        end
+
+        it 'does not load ActiveRecord objects' do
+          expect_any_instance_of(MergeRequestDiffCommit).not_to receive(:sha)
+
+          diff.commits(load_from_gitaly: true)
+        end
+      end
+
+      context 'when diff_commits_dedup is disabled' do
+        before do
+          stub_feature_flags(merge_request_diff_commits_dedup: false)
+        end
+
+        it 'does not load the SHAs from commits_metadata' do
+          diff_commits = diff.merge_request_diff_commits
+
+          expect(diff_commits).not_to receive(:commit_shas_from_metadata)
+
+          diff.commits(load_from_gitaly: true)
+        end
+
+        it 'returns the expected commit collections' do
+          without_limit = diff.commits(load_from_gitaly: true)
+          with_limit = diff.commits(limit: 1, load_from_gitaly: true)
+
+          expect(with_limit).to be_a(CommitCollection)
+          expect(with_limit.commits.size).to be 1
+
+          expect(without_limit).to be_a(CommitCollection)
+          expect(without_limit.commits.size).to be > 1
+        end
+      end
+    end
+
+    context 'when load_from_gitaly is false' do
+      it 'returns the expected commit collections' do
+        without_limit = diff.commits(load_from_gitaly: false)
+        with_limit = diff.commits(limit: 1, load_from_gitaly: false)
+
+        expect(with_limit).to be_a(CommitCollection)
+        expect(with_limit.commits.size).to be 1
+
+        expect(without_limit).to be_a(CommitCollection)
+        expect(without_limit.commits.size).to be > 1
+      end
+
+      it 'loads the include_metadata' do
+        diff_commits = diff.merge_request_diff_commits
+
+        expect(diff_commits).to receive(:with_users).with(include_metadata: true).and_call_original
+
+        diff.commits(load_from_gitaly: false)
+      end
+
+      context 'when diff_commits_dedup is disabled' do
+        before do
+          stub_feature_flags(merge_request_diff_commits_dedup: false)
+        end
+
+        it 'returns the expected commit collections' do
+          without_limit = diff.commits(load_from_gitaly: false)
+          with_limit = diff.commits(limit: 1, load_from_gitaly: false)
+
+          expect(with_limit).to be_a(CommitCollection)
+          expect(with_limit.commits.size).to be 1
+
+          expect(without_limit).to be_a(CommitCollection)
+          expect(without_limit.commits.size).to be > 1
+        end
+
+        it 'does not load the include_metadata' do
+          diff_commits = diff.merge_request_diff_commits
+
+          expect(diff_commits).to receive(:with_users).with(include_metadata: false).and_call_original
+
+          diff.commits(load_from_gitaly: false)
+        end
       end
     end
   end

@@ -1,5 +1,5 @@
 ---
-stage: Runtime
+stage: Tenant Scale
 group: Organizations
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 title: Badges
@@ -22,10 +22,9 @@ You can use badges at the [project](#project-badges) and [group](#group-badges) 
 
 GitLab provides the following pipeline badges:
 
-- [Pipeline status badge](#pipeline-status-badges)
-- [Test coverage report badge](#test-coverage-report-badges)
-- [Latest release badge](#latest-release-badges)
-- [Custom badge](#custom-badges)
+- [Pipeline status badges](#pipeline-status-badges)
+- [Test coverage report badges](#test-coverage-report-badges)
+- [Latest release badges](#latest-release-badges)
 
 GitLab also supports [adjusting badge style](#customize-badges).
 
@@ -152,7 +151,7 @@ A common project badge presents the GitLab CI pipeline status.
 
 To add this badge to a project:
 
-1. On the left sidebar, select **Search or go to** and find your project.
+1. On the left sidebar, select **Search or go to** and find your project. If you've [turned on the new navigation](../interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
 1. Select **Settings** > **General**.
 1. Expand **Badges**.
 1. Under **Name**, enter _Pipeline Status_.
@@ -185,7 +184,7 @@ If you need individual badges for each project, either:
 
 To view badges available in a project or group:
 
-1. On the left sidebar, select **Search or go to** and find your project or group.
+1. On the left sidebar, select **Search or go to** and find your project or group. If you've [turned on the new navigation](../interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
 1. Select **Settings** > **General**.
 1. Expand **Badges**.
 
@@ -193,7 +192,7 @@ To view badges available in a project or group:
 
 To add a new badge to a project or group:
 
-1. On the left sidebar, select **Search or go to** and find your project or group.
+1. On the left sidebar, select **Search or go to** and find your project or group. If you've [turned on the new navigation](../interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
 1. Select **Settings** > **General**.
 1. Expand **Badges**.
 1. Select **Add badge**.
@@ -207,7 +206,7 @@ To add a new badge to a project or group:
 You can view the exact link for your badges.
 Then you can use the link to embed the badge in your HTML or Markdown pages.
 
-1. On the left sidebar, select **Search or go to** and find your project.
+1. On the left sidebar, select **Search or go to** and find your project. If you've [turned on the new navigation](../interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
 1. Select **Settings** > **CI/CD**.
 1. Expand **General pipelines**.
 1. In the **Pipeline status**, **Coverage report**, or **Latest release** sections, view the URLs for the images.
@@ -218,37 +217,25 @@ The pipeline status badge is based on specific Git revisions (branches). Ensure 
 
 {{< /alert >}}
 
-## Custom badges
-
-Custom badges allows changing the following attributes:
-
-- `key_text`
-- `key_color`
-- `key_width`
-- `value_text`
-- `value_color`
-- `value_width`
-
-Colors can be passed as [a named color](https://developer.mozilla.org/en-US/docs/Web/CSS/named-color), for example `blue` or hexadecimal representation like `fff` or `7bc043` (without leading `#`).
-
-You can access a latest release badge image by using the following link:
-
-```plaintext
-https://gitlab.example.com/<namespace>/<project>/-/badges/custom.svg
-```
-
-For example, you can use [placeholders](#placeholders) to create a badge for the latest tag:
-
-```plaintext
-https://%{gitlab_server}/%{project_path}/badges/custom.svg?key_text=Latest_tag&key_value=%{latest_tag}&key_color=white&value_color=7bc043
-```
-
 ## Customize badges
+
+{{< details >}}
+
+- Status: Beta
+
+{{< /details >}}
+
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/180832) in GitLab 18.5 [with a flag](../../administration/feature_flags/_index.md) named `custom_project_badges`. Disabled by default.
+- [Enabled on GitLab.com, GitLab Self-Managed, and GitLab Dedicated](https://gitlab.com/gitlab-org/gitlab/-/issues/574344) in GitLab 18.6.
+
+{{< /history >}}
 
 You can customize how badges appear in your project:
 
-- [Basic customization](#basic-customization) works for all badge types
-- [Advanced customization](#custom-badges) is available only for custom badges
+- [Basic customization](#basic-customization) works for all badge types.
+- [Advanced customization](#custom-badges) is available only for custom badges.
 
 ### Basic customization
 
@@ -383,7 +370,7 @@ Prerequisites:
 
 To add a custom badge with an image:
 
-1. On the left sidebar, select **Search or go to** and find your project or group.
+1. On the left sidebar, select **Search or go to** and find your project or group. If you've [turned on the new navigation](../interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
 1. Select **Settings > General**.
 1. Expand **Badges**.
 1. Under **Name**, enter the name for the badge.
@@ -402,7 +389,7 @@ To use custom images generated through a pipeline, see [accessing the latest job
 
 To edit a badge in a project or group:
 
-1. On the left sidebar, select **Search or go to** and find your project or group.
+1. On the left sidebar, select **Search or go to** and find your project or group. If you've [turned on the new navigation](../interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
 1. Select **Settings** > **General**.
 1. Expand **Badges**.
 1. Next to the badge you want to edit, select **Edit** ({{< icon name="pencil" >}}).
@@ -413,7 +400,7 @@ To edit a badge in a project or group:
 
 To delete a badge in a project or group:
 
-1. On the left sidebar, select **Search or go to** and find your project or group.
+1. On the left sidebar, select **Search or go to** and find your project or group. If you've [turned on the new navigation](../interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
 1. Select **Settings** > **General**.
 1. Expand **Badges**.
 1. Next to the badge you want to delete, select **Delete** ({{< icon name="remove" >}}).

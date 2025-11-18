@@ -13,7 +13,7 @@ title: Branches API
 
 {{< /details >}}
 
-Use the branches API to manage a project's Git branches programmatically.
+Use this API to manage [Git branches](../user/project/repository/branches/_index.md).
 
 To change the branch protections configured for a project, use the [protected branches API](protected_branches.md).
 

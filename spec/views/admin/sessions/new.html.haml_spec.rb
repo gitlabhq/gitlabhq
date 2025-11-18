@@ -23,8 +23,7 @@ RSpec.describe 'admin/sessions/new.html.haml', feature_category: :system_access 
     it 'shows enter password form' do
       render
 
-      expect(rendered).to have_selector('[data-testid="sign-in-form"]')
-      expect(rendered).to have_selector('[data-testid="password-field"]')
+      expect(rendered).to have_selector('[data-testid="admin-password-field"]')
     end
 
     it 'warns authentication not possible if password not set' do
@@ -32,7 +31,7 @@ RSpec.describe 'admin/sessions/new.html.haml', feature_category: :system_access 
 
       render
 
-      expect(rendered).to have_no_selector('[data-testid="sign-in-form"]')
+      expect(rendered).to have_no_selector('[data-testid="admin-password-field"]')
       expect(rendered).to have_content _('No authentication methods configured.')
     end
   end

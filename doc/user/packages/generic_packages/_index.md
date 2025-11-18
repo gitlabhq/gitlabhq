@@ -97,7 +97,7 @@ curl --location --user "<username>:<personal_access_token>" \
 With HTTP headers:
 
 ```shell
-curl --location --header  "PRIVATE-TOKEN: <project_access_token>" \
+curl --location --header "PRIVATE-TOKEN: <project_access_token>" \
      --upload-file path/to/file.txt \
      "https://gitlab.example.com/api/v4/projects/24/packages/generic/my_package/1.0.0/file.txt"
 ```
@@ -117,7 +117,7 @@ curl --location --user "<project_access_token_username>:project_access_token" \
 With HTTP headers:
 
 ```shell
-curl --location --header  "DEPLOY-TOKEN: <deploy_token>" \
+curl --location --header "DEPLOY-TOKEN: <deploy_token>" \
      --upload-file path/to/file.txt \
      "https://gitlab.example.com/api/v4/projects/24/packages/generic/my_package/1.0.0/file.txt"
 ```
@@ -180,7 +180,7 @@ You should follow these best practices when you publish multiple files to the re
 - Error handling: Implement error checking in your scripts. For example, check the HTTP response code from cURL to ensure each file was uploaded successfully.
 - Logging: Maintain logs of what files were uploaded, when, and by whom. This can be crucial for troubleshooting and auditing.
 - Compression: For large directories, consider compressing the contents into a single file before uploading. This can simplify the upload process and reduce the number of API calls.
-- Checksums: Generate and store checksums (MD5, SHA256) for your files. This allows users to verify the integrity of downloaded files.
+- Checksums: SHA256 checksums are automatically calculated and stored for uploaded files. Use checksums to verify the integrity of downloaded files.
 
 For example:
 
@@ -202,7 +202,7 @@ DIRECTORY_PATH="./files_to_upload"
 for file in "$DIRECTORY_PATH"/*; do
     if [ -f "$file" ]; then
         filename=$(basename "$file")
-        curl --location --header  "PRIVATE-TOKEN: $TOKEN" \
+        curl --location --header "PRIVATE-TOKEN: $TOKEN" \
              --upload-file "$file" \
              "https://gitlab.example.com/api/v4/projects/$PROJECT_ID/packages/generic/$PACKAGE_NAME/$PACKAGE_VERSION/$filename"
         echo "Uploaded: $filename"
@@ -251,7 +251,7 @@ DIRECTORY_PATH="./files_to_upload"
 
 find "$DIRECTORY_PATH" -type f | while read -r file; do
     relative_path=${file#"$DIRECTORY_PATH/"}
-    curl --location --header  "PRIVATE-TOKEN: $TOKEN" \
+    curl --location --header "PRIVATE-TOKEN: $TOKEN" \
          --upload-file "$file" \
          "https://gitlab.example.com/api/v4/projects/$PROJECT_ID/packages/generic/$PACKAGE_NAME/$PACKAGE_VERSION/$relative_path"
     echo "Uploaded: $relative_path"
@@ -395,7 +395,7 @@ You should follow these best practices when you download multiple files from the
 - Error handling: Implement checks to ensure all files are downloaded successfully. You can verify the HTTP status code or check file existence after download.
 - Caching: For frequently used packages, consider implementing a caching mechanism to reduce network usage and improve build times.
 - Parallel downloads: For large packages with many files, you might want to implement parallel downloads to speed up the process.
-- Checksums: If available, verify the integrity of downloaded files using checksums provided by the package publisher.
+- Checksums: Verify the integrity of downloaded files using SHA256 checksums. Checksums are provided in response headers and API responses for verification.
 - Incremental downloads: For large packages that change frequently, consider implementing a mechanism to download only the files that have changed since the last download.
 
 For example:
@@ -422,7 +422,7 @@ mkdir -p "$OUTPUT_DIR"
 files=("file1.txt" "file2.txt" "subdirectory/file3.txt")
 
 for file in "${files[@]}"; do
-    curl --location --header  "PRIVATE-TOKEN: $TOKEN" \
+    curl --location --header "PRIVATE-TOKEN: $TOKEN" \
          --output "$OUTPUT_DIR/$file" \
          --create-dirs \
          "https://gitlab.example.com/api/v4/projects/$PROJECT_ID/packages/generic/$PACKAGE_NAME/$PACKAGE_VERSION/$file"
@@ -443,7 +443,7 @@ download_package:
     - |
       FILES=("file1.txt" "file2.txt" "subdirectory/file3.txt")
       for file in "${FILES[@]}"; do
-        curl --location --header  "JOB-TOKEN: $CI_JOB_TOKEN" \
+        curl --location --header "JOB-TOKEN: $CI_JOB_TOKEN" \
              --output "$file" \
              --create-dirs \
              "${CI_API_V4_URL}/projects/${CI_PROJECT_ID}/packages/generic/my_package/${CI_COMMIT_TAG}/$file"
@@ -516,6 +516,110 @@ done
 echo "Package download complete"
 ```
 
+## Verify file integrity with checksums
+
+SHA256 checksums are automatically calculated and stored for all uploaded files. You can use these checksums to verify the integrity of downloaded files.
+
+To verify checksums, you can either:
+
+- Get checksums from HTTP response headers.
+- Get checksums from API responses.
+- Integrate checksum verification in CI/CD pipelines.
+
+### Get checksums from response headers
+
+When you download files, you can get the SHA256 checksum in the `X-Checksum-SHA256` response header.
+
+Prerequisites:
+
+To get checksums in response headers, you must either:
+
+- Disable object storage so files are stored locally.
+- Enable object storage, but disable direct download
+(files are served through GitLab Workhorse). When object
+storage direct download is enabled, files are redirected
+to the object storage provider, and custom headers like
+`X-Checksum-SHA256` cannot be included in the redirect response.
+
+```shell
+# Download a file and get the checksum from the response header
+curl --header "PRIVATE-TOKEN: <access_token>" \
+     --location \
+     --output file.txt \
+     --dump-header headers.txt \
+     --url "https://gitlab.example.com/api/v4/projects/1/packages/generic/my_package/0.0.1/file.txt"
+
+# Extract the checksum from the response header
+CHECKSUM=$(grep "X-Checksum-SHA256:" headers.txt | cut -d' ' -f2 | tr -d '\r')
+echo "Expected checksum: $CHECKSUM"
+
+# Verify the downloaded file
+ACTUAL_CHECKSUM=$(sha256sum file.txt | cut -d' ' -f1)
+if [ "$CHECKSUM" = "$ACTUAL_CHECKSUM" ]; then
+    echo "✓ File integrity verified"
+else
+    echo "✗ File integrity check failed"
+fi
+```
+
+### Get checksums from API responses
+
+Get checksums by listing package files in API calls:
+
+```shell
+# Get the package ID
+PACKAGE_ID=$(curl --header "PRIVATE-TOKEN: <access_token>" \
+     --url "https://gitlab.example.com/api/v4/projects/1/packages?package_type=generic&package_name=my_package&package_version=0.0.1" \
+     | jq -r ".[] | select(.name==\"my_package\" and .version==\"0.0.1\") | .id")
+
+# Get file information, including checksums
+curl --header "PRIVATE-TOKEN: <access_token>" \
+     --url "https://gitlab.example.com/api/v4/projects/1/packages/$PACKAGE_ID/package_files" \
+     | jq '.[] | {file_name: .file_name, file_sha256: .file_sha256}'
+```
+
+### Verify file integrity in CI/CD pipelines
+
+You can integrate checksum verification into your CI/CD pipelines.
+
+Prerequisites:
+
+To verify checksums in CI/CD pipelines, you must either:
+
+- Disable object storage so files are stored locally.
+- Enable object storage, but disable direct download
+(files are served through GitLab Workhorse). When object
+storage direct download is enabled, files are redirected
+to the object storage provider, and custom headers like
+`X-Checksum-SHA256` cannot be included in the redirect response.
+
+```yaml
+verify_download:
+  stage: test
+  script:
+    - |
+      # Download file and get checksum from header
+      curl --header "JOB-TOKEN: ${CI_JOB_TOKEN}" \
+           --location \
+           --output file.txt \
+           --dump-header headers.txt \
+           "${CI_API_V4_URL}/projects/${CI_PROJECT_ID}/packages/generic/my_package/${CI_COMMIT_TAG}/file.txt"
+
+      # Extract checksum from response header
+      EXPECTED_CHECKSUM=$(grep "X-Checksum-SHA256:" headers.txt | cut -d' ' -f2 | tr -d '\r')
+
+      # Calculate actual checksum
+      ACTUAL_CHECKSUM=$(sha256sum file.txt | cut -d' ' -f1)
+
+      # Verify integrity
+      if [ "$EXPECTED_CHECKSUM" = "$ACTUAL_CHECKSUM" ]; then
+        echo "✓ File integrity verified"
+      else
+        echo "✗ File integrity check failed"
+        exit 1
+      fi
+```
+
 ## Disable publishing duplicate package names
 
 {{< history >}}
@@ -533,7 +637,7 @@ Prerequisites:
 
 To disable publishing duplicate file names:
 
-1. On the left sidebar, select **Search or go to** and find your group.
+1. On the left sidebar, select **Search or go to** and find your group. If you've [turned on the new navigation](../../interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
 1. Select **Settings** > **Packages and registries**.
 1. In the **Generic** row of the **Duplicate packages** table, turn off the **Allow duplicates** toggle.
 1. Optional. In the **Exceptions** text box, enter a regular expression that matches the names and versions of packages to allow.

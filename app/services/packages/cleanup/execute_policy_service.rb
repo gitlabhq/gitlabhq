@@ -65,19 +65,13 @@ module Packages
                  .installable
                  .with_file_name(file_name)
 
-        ids_to_keep = if conan_duplicates_cleanup_policy_enabled? && package_type == 'conan'
+        ids_to_keep = if package_type == 'conan'
                         conan_keep_n_duplicate_ids(base)
                       else
                         base.recent
                           .limit(@policy.keep_n_duplicated_package_files)
                           .pluck_primary_key
                       end
-
-        # TODO: Remove with the rollout `packages_conan_duplicates_cleanup_policy`
-        # https://gitlab.com/gitlab-org/gitlab/-/issues/568066
-        if file_name == ::Packages::Conan::FileMetadatum::CONAN_MANIFEST && !conan_duplicates_cleanup_policy_enabled?
-          keep_conan_manifest_file(base, ids_to_keep)
-        end
 
         duplicated_package_files = base.id_not_in(ids_to_keep)
         ::Packages::MarkPackageFilesForDestructionService.new(duplicated_package_files)
@@ -111,11 +105,6 @@ module Packages
         # rubocop: enable CodeReuse/ActiveRecord
       end
 
-      def keep_conan_manifest_file(base, ids)
-        recipe_manifest_id = base.with_conan_file_type(:recipe_file).recent.limit(1).pluck_primary_key
-        ids.concat(recipe_manifest_id)
-      end
-
       def batch_deadline
         MAX_EXECUTION_TIME.from_now
       end
@@ -130,11 +119,6 @@ module Packages
           }
         )
       end
-
-      def conan_duplicates_cleanup_policy_enabled?
-        Feature.enabled?(:packages_conan_duplicates_cleanup_policy, project)
-      end
-      strong_memoize_attr :conan_duplicates_cleanup_policy_enabled?
     end
   end
 end

@@ -56,9 +56,10 @@ class JwksController < Doorkeeper::OpenidConnect::DiscoveryController
 
   def provider_response
     response = super
-    if Feature.enabled?(:additional_oidc_discovery_claims, :instance)
-      response[:claims_supported] += %w[project_path ci_config_ref_uri ref_path sha environment jti]
-    end
+    response[:claims_supported] += %w[project_path ci_config_ref_uri ref_path sha environment jti]
+
+    # Filter scopes for MCP-specific discovery endpoints
+    response[:scopes_supported] = [Gitlab::Auth::MCP_SCOPE.to_s] if request.path.end_with?('/api/v4/mcp')
 
     response
   end

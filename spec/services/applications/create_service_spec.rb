@@ -30,4 +30,10 @@ RSpec.describe ::Applications::CreateService, feature_category: :system_access d
       expect(application.errors.full_messages).to include "Scopes can't be blank"
     end
   end
+
+  describe '.disable_ropc_for_all_applications?' do
+    it 'returns false by default' do
+      expect(described_class).not_to be_disable_ropc_for_all_applications
+    end
+  end
 end

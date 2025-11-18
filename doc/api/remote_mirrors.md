@@ -12,8 +12,7 @@ title: Project remote mirrors API
 
 {{< /details >}}
 
-[Push mirrors](../user/project/repository/mirror/push.md)
-defined on a project's repository settings are called remote mirrors. You
+Use this API to manage [remote mirrors](../user/project/repository/mirror/push.md). You
 can query and modify the state of these mirrors with the remote mirror API.
 
 For security reasons, the `url` attribute in the API response is always scrubbed of username

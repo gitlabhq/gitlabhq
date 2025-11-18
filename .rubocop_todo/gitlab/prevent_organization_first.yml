@@ -1,0 +1,15 @@
+---
+Gitlab/PreventOrganizationFirst:
+  Details: grace period
+  Exclude:
+    - 'app/helpers/admin/users_helper.rb'
+    - 'app/workers/gitlab_service_ping_worker.rb'
+    - 'ee/app/services/gitlab_subscriptions/add_on_purchases/create_service.rb'
+    - 'ee/app/workers/sync_seat_link_request_worker.rb'
+    - 'ee/lib/api/scim/instance_scim.rb'
+    - 'ee/spec/lib/ee/gitlab/background_migration/mark_admin_bot_runners_as_hosted_spec.rb'
+    - 'lib/banzai/filter/references/user_reference_filter.rb'
+    - 'lib/gitlab/background_migration/backfill_organization_id_on_fork_networks.rb'
+    - 'lib/tasks/ci/allowlist_migration.rake'
+    - 'lib/users/internal.rb'
+    - 'spec/lib/gitlab/background_migration/backfill_organization_id_on_fork_networks_spec.rb'

@@ -31,7 +31,7 @@ projects.
 
 To authenticate to the Terraform Module Registry, you need either:
 
-- A [personal access token](../../../api/rest/authentication.md#personalprojectgroup-access-tokens) with at least the `read_api` scope.
+- A [personal access token](../../profile/personal_access_tokens.md) with at least the `read_api` scope.
 - A [CI/CD job token](../../../ci/jobs/ci_job_token.md).
 - A [deploy token](../../project/deploy_tokens/_index.md) with the `read_package_registry` or `write_package_registry` scope, or both.
 
@@ -230,7 +230,7 @@ By default, the Terraform Module Registry enforces uniqueness for module names i
 
 To allow publishing duplicate module names:
 
-1. On the left sidebar, select **Search or go to** and find your group.
+1. On the left sidebar, select **Search or go to** and find your group. If you've [turned on the new navigation](../../interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
 1. Select **Settings** > **Packages and registries**.
 1. In the **Terraform module** row of the **Duplicate packages** table, turn off the **Allow duplicates** toggle.
 1. Optional. In the **Exceptions** text box, enter a regular expression that matches the names of modules to allow.
@@ -266,7 +266,7 @@ For more information on module resolution, see [module resolution workflow](#mod
 
 To view Terraform modules in your project or group:
 
-1. On the left sidebar, select **Search or go to** and find your project or group.
+1. On the left sidebar, select **Search or go to** and find your project or group. If you've [turned on the new navigation](../../interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
 1. Select **Operate** > **Terraform modules**.
 
 You can search, sort, and filter modules on this page.

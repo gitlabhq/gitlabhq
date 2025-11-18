@@ -3,7 +3,8 @@ import {
   initPipelinesIndexGraphql,
 } from '~/ci/pipeline_details/pipelines_index';
 
-const shouldUseGraphql = gon?.features?.pipelinesPageGraphql;
+const shouldUseGraphql =
+  gon?.features?.pipelinesPageGraphql && gon?.features?.ciPipelineStatusesUpdatedSubscription;
 
 if (shouldUseGraphql) {
   initPipelinesIndexGraphql();

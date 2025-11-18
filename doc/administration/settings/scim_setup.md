@@ -37,7 +37,7 @@ Prerequisites:
 
 To configure GitLab SCIM:
 
-1. On the left sidebar, at the bottom, select **Admin**.
+1. On the left sidebar, at the bottom, select **Admin**. If you've [turned on the new navigation](../../user/interface_redesign.md#turn-new-navigation-on-or-off), in the upper-right corner, select **Admin**.
 1. Select **Settings** > **General**.
 1. Expand the **SCIM Token** section and select **Generate a SCIM token**.
 1. For configuration of your identity provider, save the:
@@ -73,7 +73,7 @@ Prerequisites:
 To configure Okta for SCIM:
 
 1. Sign in to Okta.
-1. In the upper-right corner, select **Admin**. The button is not visible from the **Admin** area.
+1. In the upper-right corner, select **Admin**. If you've [turned on the new navigation](../../user/interface_redesign.md#turn-new-navigation-on-or-off), in the upper-right corner, select **Admin**. The button is not visible from the **Admin** area.
 1. In the **Application** tab, select **Browse App Catalog**.
 1. Find and select the **GitLab** application.
 1. On the GitLab application overview page, select **Add Integration**.
@@ -178,7 +178,7 @@ Next, provision the users:
 1. Select the **Edit attribute list for customappsso** link.
 1. Ensure the `id` is the primary and required field, and `externalId` is also required.
 1. Select **Save**, which returns you to the Attribute Mapping configuration page.
-1. Close the **Attribute Mapping** configuration page by clicking the `X` in the top right corner.
+1. To close the **Attribute Mapping** configuration page, select `X` in the upper-right corner.
 
 ##### Configure attribute mappings
 
@@ -274,15 +274,9 @@ the user's SCIM identity is reactivated and their GitLab instance access is rest
 
 - [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/15990) in GitLab 18.0 [with a flag](../../administration/feature_flags/_index.md) named `self_managed_scim_group_sync`. Disabled by default.
 - [Enabled on GitLab Self-Managed](https://gitlab.com/gitlab-org/gitlab/-/issues/553662) by default in GitLab 18.2.
+- [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/554271) in GitLab 18.6. Feature flag `self_managed_scim_group_sync` removed.
 
 {{< /history >}}
-
-{{< alert type="flag" >}}
-
-The availability of this feature is controlled by a feature flag.
-For more information, see the history.
-
-{{< /alert >}}
 
 In addition to user provisioning, you can use SCIM to synchronize group memberships between your identity provider and GitLab.
 With this method you can automatically add and remove users from GitLab groups based on their group memberships in your identity provider.

@@ -7,7 +7,6 @@ module Oauth
     skip_before_action :authenticate_user!, only: [:create]
     skip_before_action :verify_authenticity_token, only: [:create]
     before_action :check_rate_limit, only: [:create]
-    before_action :check_feature_flag!
 
     # POST /oauth/register
     def create
@@ -72,12 +71,8 @@ module Oauth
       }
     end
 
-    def check_feature_flag!
-      render_404 unless Feature.enabled?(:oauth_dynamic_client_registration, :instance)
-    end
-
     def check_rate_limit
-      return if Rails.env.test?
+      return if Rails.env.test? || Rails.env.development?
 
       check_rate_limit!(:oauth_dynamic_registration, scope: request.ip)
     end

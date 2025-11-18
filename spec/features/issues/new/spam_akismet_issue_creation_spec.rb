@@ -12,7 +12,6 @@ RSpec.describe 'Spam detection on issue creation', :js, feature_category: :team_
   include_context 'includes Spam constants'
 
   before do
-    stub_feature_flags(work_item_view_for_issues: true)
     stub_env('IN_MEMORY_APPLICATION_SETTINGS', 'false')
 
     Gitlab::CurrentSettings.update!(

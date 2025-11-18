@@ -40,6 +40,6 @@ export default class EmailFormatValidator extends InputValidator {
 
   static setMessageVisibility(inputDomElement, messageSelector, isVisible = false) {
     const messageElement = inputDomElement.parentElement.querySelector(messageSelector);
-    messageElement.classList.toggle('hide', !isVisible);
+    messageElement?.classList.toggle('hide', !isVisible);
   }
 }

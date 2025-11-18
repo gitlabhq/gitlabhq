@@ -75,7 +75,7 @@ If you receive this error after creating a new project using
 
 Check if the repository owner is specified in the URL of your mirrored repository:
 
-1. On the left sidebar, select **Search or go to** and find your project.
+1. On the left sidebar, select **Search or go to** and find your project. If you've [turned on the new navigation](../../../interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
 1. Select **Settings** > **Repository**.
 1. Expand **Mirroring repositories**.
 1. If no repository owner is specified, delete and add the URL again in this format,
@@ -202,7 +202,7 @@ token = 'githubAccessToken'
 Project.where(mirror: true).each do |project|
   import_url = project.unsafe_import_url
 
-  # The url we want is https://token@project/path.git
+  # The expected url output is https://token@project/path.git
   repo_url = if import_url.include?('@')
                # Case 1: The url is something like https://23423432@project/path.git
                import_url.split('@').last

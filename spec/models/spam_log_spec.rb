@@ -2,11 +2,20 @@
 
 require 'spec_helper'
 
-RSpec.describe SpamLog do
+RSpec.describe SpamLog, feature_category: :instance_resiliency do
   let_it_be(:admin) { create(:admin) }
 
   describe 'associations' do
     it { is_expected.to belong_to(:user) }
+    it { is_expected.to belong_to(:organization) }
+  end
+
+  describe '#organization_id' do
+    let(:user) { create(:user) }
+
+    subject { build(:spam_log, user: user) }
+
+    it { is_expected.to populate_sharding_key(:organization_id).with(user.organization.id) }
   end
 
   describe 'validations' do

@@ -1,6 +1,7 @@
 <script>
 import { throttle } from 'lodash';
 import { observeElementOnce } from '~/lib/utils/dom_utils';
+import { getScrollingElement } from '~/lib/utils/scroll_utils';
 
 /*
  * This is a universal performant component to fill in all the available height in viewport for sticky elements.
@@ -40,10 +41,12 @@ export default {
   },
   data() {
     return {
+      viewport: null,
+      viewportHeight: 0,
+      viewportTopOffset: 0,
       visible: false,
       currentTop: 0,
       parentRect: { bottom: 0, height: 0 },
-      viewportHeight: 0,
       rootObserver: null,
       parentObserver: null,
     };
@@ -58,12 +61,15 @@ export default {
     endReached() {
       return this.viewportHeight > this.parentRect.bottom;
     },
+    topOffset() {
+      return this.currentTop - this.viewportTopOffset;
+    },
     availableHeight() {
       // parent is fully scrolled, the sticky element is pushed from both top and bottom
       if (this.endReached) {
-        return this.parentRect.bottom - Math.max(this.currentTop, this.stickyTopOffset);
+        return this.parentRect.bottom - Math.max(this.topOffset, this.stickyTopOffset);
       }
-      return this.viewportHeight - this.currentTop - this.stickyBottomOffset;
+      return this.viewportHeight - this.topOffset - this.stickyBottomOffset;
     },
     height() {
       const maxHeight = this.viewportHeight - this.stickyTopOffset - this.stickyBottomOffset;
@@ -83,6 +89,7 @@ export default {
     },
   },
   mounted() {
+    this.setViewport();
     this.observeRootVisibility();
     this.cacheViewportHeight();
   },
@@ -92,8 +99,17 @@ export default {
     this.disconnectViewport();
   },
   methods: {
+    setViewport() {
+      const initialViewport = getScrollingElement(this.$refs.root);
+      if (initialViewport === document.scrollingElement) {
+        this.viewport = window;
+      } else {
+        this.viewport = initialViewport;
+        this.viewportTopOffset = this.viewport.getBoundingClientRect().top;
+      }
+    },
     cacheViewportHeight() {
-      this.viewportHeight = window.innerHeight;
+      this.viewportHeight = this.viewport.offsetHeight || this.viewport.innerHeight;
     },
     sampleRects() {
       observeElementOnce(this.$refs.root, ([root]) => {
@@ -116,7 +132,9 @@ export default {
       this.parentObserver.observe(this.parent);
     },
     observeViewportChanges() {
-      window.addEventListener('scroll', this.throttledSampleRects, { passive: true });
+      this.viewport.addEventListener('scroll', this.throttledSampleRects, {
+        passive: true,
+      });
       window.addEventListener('resize', this.cacheViewportHeight, { passive: true });
     },
     disconnectRoot() {
@@ -131,7 +149,7 @@ export default {
     },
     disconnectViewport() {
       this.throttledSampleRects.cancel();
-      window.removeEventListener('scroll', this.throttledSampleRects);
+      this.viewport.removeEventListener('scroll', this.throttledSampleRects);
       window.removeEventListener('resize', this.cacheViewportHeight);
     },
   },

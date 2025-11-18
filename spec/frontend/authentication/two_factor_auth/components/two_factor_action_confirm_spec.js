@@ -117,6 +117,12 @@ describe('TwoFactorActionConfirm', () => {
       expect(findModal().props('actionCancel').text).toBe('Cancel');
     });
 
+    it('renders the title override', () => {
+      const titleOverride = 'title override';
+      createComponent({ modalTitle: titleOverride });
+      expect(findModal().props('title')).toBe(titleOverride);
+    });
+
     it('renders a primary action button with default variant', () => {
       expect(findModal().props('actionPrimary').text).toBe(defaultProps.buttonText);
       expect(findModal().props('actionPrimary').attributes.variant).toBe('danger');

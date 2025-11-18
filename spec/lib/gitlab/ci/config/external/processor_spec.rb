@@ -38,41 +38,58 @@ RSpec.describe Gitlab::Ci::Config::External::Processor, feature_category: :pipel
   describe "#perform" do
     subject(:perform) { processor.perform }
 
-    context 'when no external files defined' do
-      let(:values) { { image: 'image:1.0' } }
+    # Shared examples setup
+    let(:base_values) { { image: 'image:1.0' } }
+    let(:invalid_local_file_include) { '/lib/gitlab/ci/templates/non-existent-file.yml' }
+    let(:invalid_remote_file) { 'http://doesntexist.com/.gitlab-ci-1.yml' }
+    let(:valid_local_file_include) { '/lib/gitlab/ci/templates/template.yml' }
+    let(:valid_remote_file) { 'https://gitlab.com/gitlab-org/gitlab-foss/blob/1234/.gitlab-ci-1.yml' }
 
-      it 'returns the same values' do
-        expect(processor.perform).to eq(values)
-      end
+    let(:valid_remote_file_content) do
+      <<~YAML
+        before_script:
+          - apt-get update -qq && apt-get install -y -qq sqlite3 libsqlite3-dev nodejs
+      YAML
     end
 
-    context 'when an invalid local file is defined' do
-      let(:values) { { include: '/lib/gitlab/ci/templates/non-existent-file.yml', image: 'image:1.0' } }
-
-      it 'raises an error' do
-        expect { processor.perform }.to raise_error(
-          described_class::IncludeError,
-          "Local file `lib/gitlab/ci/templates/non-existent-file.yml` does not exist!"
-        )
-      end
+    let(:local_file_content) do
+      <<~YAML
+        before_script:
+          - apt-get update -qq && apt-get install -y -qq sqlite3 libsqlite3-dev nodejs
+          - ruby -v
+          - which ruby
+          - bundle install --jobs $(nproc)  "${FLAGS[@]}"
+      YAML
     end
 
-    context 'when an invalid remote file is defined' do
-      let(:remote_file) { 'http://doesntexist.com/.gitlab-ci-1.yml' }
-      let(:values) { { include: remote_file, image: 'image:1.0' } }
-
-      before do
-        stub_full_request(remote_file).and_raise(SocketError.new('Some HTTP error'))
-      end
-
-      it 'raises an error' do
-        expect { processor.perform }.to raise_error(
-          described_class::IncludeError,
-          "Remote file `#{remote_file}` could not be fetched because of a socket error!"
-        )
-      end
+    let(:multiple_local_file_content) do
+      File.read(Rails.root.join('spec/fixtures/gitlab/ci/external_files/.gitlab-ci-template-1.yml'))
     end
 
+    let(:multiple_includes) do
+      [
+        { local: '/spec/fixtures/gitlab/ci/external_files/.gitlab-ci-template-1.yml' },
+        { remote: valid_remote_file }
+      ]
+    end
+
+    # Use shared examples
+    context 'with common external processor behavior' do
+      let(:project_files) do
+        {
+          valid_local_file_include => local_file_content,
+          '/spec/fixtures/gitlab/ci/external_files/.gitlab-ci-template-1.yml' => multiple_local_file_content
+        }
+      end
+
+      it_behaves_like 'returns values when no includes defined'
+      it_behaves_like 'handles invalid local files'
+      it_behaves_like 'handles invalid remote files'
+      it_behaves_like 'processes valid external files'
+      it_behaves_like 'processes multiple external files'
+    end
+
+    # External::Processor specific tests
     context 'with a valid remote external file is defined' do
       let(:remote_file) { 'https://gitlab.com/gitlab-org/gitlab-foss/blob/1234/.gitlab-ci-1.yml' }
       let(:values) { { include: remote_file, image: 'image:1.0' } }
@@ -131,79 +148,6 @@ RSpec.describe Gitlab::Ci::Config::External::Processor, feature_category: :pipel
       it 'evaluates the rule as false' do
         output = processor.perform
         expect(output.keys).to match_array([:image, :rspec])
-      end
-
-      it "removes the 'include' keyword" do
-        expect(processor.perform[:include]).to be_nil
-      end
-    end
-
-    context 'with a valid local external file is defined' do
-      let(:values) { { include: '/lib/gitlab/ci/templates/template.yml', image: 'image:1.0' } }
-      let(:local_file_content) do
-        <<-YAML
-        before_script:
-          - apt-get update -qq && apt-get install -y -qq sqlite3 libsqlite3-dev nodejs
-          - ruby -v
-          - which ruby
-          - bundle install --jobs $(nproc)  "${FLAGS[@]}"
-        YAML
-      end
-
-      let(:project_files) { { '/lib/gitlab/ci/templates/template.yml' => local_file_content } }
-
-      it 'appends the file to the values' do
-        output = processor.perform
-        expect(output.keys).to match_array([:image, :before_script])
-      end
-
-      it "removes the 'include' keyword" do
-        expect(processor.perform[:include]).to be_nil
-      end
-    end
-
-    context 'with multiple external files are defined' do
-      let(:remote_file) { 'https://gitlab.com/gitlab-org/gitlab-foss/blob/1234/.gitlab-ci-1.yml' }
-
-      let(:local_file_content) do
-        File.read(Rails.root.join('spec/fixtures/gitlab/ci/external_files/.gitlab-ci-template-1.yml'))
-      end
-
-      let(:external_files) do
-        [
-          '/spec/fixtures/gitlab/ci/external_files/.gitlab-ci-template-1.yml',
-          remote_file
-        ]
-      end
-
-      let(:values) do
-        {
-          include: external_files,
-          image: 'image:1.0'
-        }
-      end
-
-      let(:remote_file_content) do
-        <<-YAML
-        stages:
-          - build
-          - review
-          - cleanup
-        YAML
-      end
-
-      let(:project_files) do
-        {
-          '/spec/fixtures/gitlab/ci/external_files/.gitlab-ci-template-1.yml' => local_file_content
-        }
-      end
-
-      before do
-        stub_full_request(remote_file).to_return(body: remote_file_content)
-      end
-
-      it 'appends the files to the values' do
-        expect(processor.perform.keys).to match_array([:image, :stages, :before_script, :rspec])
       end
 
       it "removes the 'include' keyword" do
@@ -425,6 +369,17 @@ RSpec.describe Gitlab::Ci::Config::External::Processor, feature_category: :pipel
         output = processor.perform
         expect(output.keys).to match_array([:image, :component_x_job])
       end
+
+      it 'propagates the pipeline logger' do
+        processor.perform
+
+        process_obs_count = processor
+          .logger
+          .observations_hash
+          .dig('config_file_fetch_component_content_duration_s', 'count')
+
+        expect(process_obs_count).to eq(1)
+      end
     end
 
     context 'when a valid project file is defined' do
@@ -551,6 +506,146 @@ RSpec.describe Gitlab::Ci::Config::External::Processor, feature_category: :pipel
             context_project: project.full_path,
             context_sha: sha }
         )
+      end
+
+      context 'with additional keys like inputs' do
+        let(:values) do
+          {
+            include: [{ local: 'myfolder/*.yml', inputs: { environment: 'production' } }],
+            image: 'image:1.0'
+          }
+        end
+
+        let(:project_files) do
+          {
+            'myfolder/file1.yml' => <<~YAML,
+            spec:
+              inputs:
+                environment:
+            ---
+            my_build:
+              script: echo Hello from $[[ inputs.environment ]]
+            YAML
+            'myfolder/file2.yml' => <<~YAML
+            spec:
+              inputs:
+                environment:
+            ---
+            my_test:
+              script: echo Testing in $[[ inputs.environment ]]
+            YAML
+          }
+        end
+
+        it 'fetches the matched files' do
+          output = processor.perform
+          expect(output.keys).to match_array([:image, :my_build, :my_test])
+        end
+
+        it 'stores includes with preserved additional keys' do
+          perform
+
+          expect(context.includes).to contain_exactly(
+            { type: :local,
+              location: 'myfolder/file1.yml',
+              blob: "http://localhost/#{project.full_path}/-/blob/#{sha}/myfolder/file1.yml",
+              raw: "http://localhost/#{project.full_path}/-/raw/#{sha}/myfolder/file1.yml",
+              extra: { inputs: { environment: 'production' } },
+              context_project: project.full_path,
+              context_sha: sha },
+            { type: :local,
+              location: 'myfolder/file2.yml',
+              blob: "http://localhost/#{project.full_path}/-/blob/#{sha}/myfolder/file2.yml",
+              raw: "http://localhost/#{project.full_path}/-/raw/#{sha}/myfolder/file2.yml",
+              extra: { inputs: { environment: 'production' } },
+              context_project: project.full_path,
+              context_sha: sha }
+          )
+        end
+      end
+
+      context 'with additional keys like inputs and rules' do
+        let(:values) do
+          {
+            include: [{ local: 'myfolder/*.yml', inputs: { environment: 'production' }, rules: [{ when: 'always' }] }],
+            image: 'image:1.0'
+          }
+        end
+
+        let(:project_files) do
+          {
+            'myfolder/file1.yml' => <<~YAML,
+            spec:
+              inputs:
+                environment:
+            ---
+            my_build:
+              script: echo Hello from $[[ inputs.environment ]]
+            YAML
+            'myfolder/file2.yml' => <<~YAML
+            spec:
+              inputs:
+                environment:
+            ---
+            my_test:
+              script: echo Testing in $[[ inputs.environment ]]
+            YAML
+          }
+        end
+
+        it 'fetches the matched files' do
+          output = processor.perform
+          expect(output.keys).to match_array([:image, :my_build, :my_test])
+        end
+
+        it 'stores includes with both inputs and rules preserved' do
+          perform
+
+          expect(context.includes).to contain_exactly(
+            { type: :local,
+              location: 'myfolder/file1.yml',
+              blob: "http://localhost/#{project.full_path}/-/blob/#{sha}/myfolder/file1.yml",
+              raw: "http://localhost/#{project.full_path}/-/raw/#{sha}/myfolder/file1.yml",
+              extra: { inputs: { environment: 'production' }, rules: [{ when: 'always' }] },
+              context_project: project.full_path,
+              context_sha: sha },
+            { type: :local,
+              location: 'myfolder/file2.yml',
+              blob: "http://localhost/#{project.full_path}/-/blob/#{sha}/myfolder/file2.yml",
+              raw: "http://localhost/#{project.full_path}/-/raw/#{sha}/myfolder/file2.yml",
+              extra: { inputs: { environment: 'production' }, rules: [{ when: 'always' }] },
+              context_project: project.full_path,
+              context_sha: sha }
+          )
+        end
+      end
+    end
+
+    context 'when wildcard pattern matches a file that includes itself' do
+      let(:values) do
+        { include: 'includes/all.yml', image: 'image:1.0' }
+      end
+
+      let(:project_files) do
+        {
+          'includes/all.yml' => <<~YAML,
+          include:
+            - local: 'includes/**/*.yml'
+          YAML
+          'includes/d1/job1.yml' => <<~YAML,
+          job_1:
+            script: env
+          YAML
+          'includes/d2/job2.yml' => <<~YAML
+          job_2:
+            script: env
+          YAML
+        }
+      end
+
+      it 'does not cause infinite recursion' do
+        output = processor.perform
+        expect(output.keys).to match_array([:image, :job_1, :job_2])
       end
     end
 

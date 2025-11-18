@@ -21,6 +21,8 @@ describe('DeleteButton', () => {
     forksCount: 3,
     starsCount: 4,
     nameWithNamespace: 'Foo / Bar',
+    markedForDeletion: false,
+    permanentDeletionDate: '2025-11-28',
   };
 
   const createComponent = (propsData) => {
@@ -28,9 +30,6 @@ describe('DeleteButton', () => {
       propsData: {
         ...defaultPropsData,
         ...propsData,
-      },
-      scopedSlots: {
-        'modal-footer': '<div data-testid="modal-footer-slot"></div>',
       },
     });
   };
@@ -85,12 +84,6 @@ describe('DeleteButton', () => {
 
       expect(submitMock).toHaveBeenCalled();
     });
-  });
-
-  it('renders `modal-footer` slot', () => {
-    createComponent();
-
-    expect(wrapper.findByTestId('modal-footer-slot').exists()).toBe(true);
   });
 
   it('renders default text', () => {

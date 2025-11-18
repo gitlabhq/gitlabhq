@@ -19,19 +19,37 @@ module MergeRequests
         project.id, current_user.id, merge_request.id,
         params.merge(pipeline_creation_request: pipeline_creation_request).deep_stringify_keys
       )
+
+      GraphqlTriggers.ci_pipeline_creation_requests_updated(merge_request)
     end
 
     def create_merge_request_pipeline(merge_request)
       project, ref = pipeline_project_and_ref(merge_request)
 
-      Ci::CreatePipelineService.new(project,
+      pipeline = Ci::CreatePipelineService.new(project,
         current_user,
         ref: ref,
         push_options: params[:push_options],
         pipeline_creation_request: params[:pipeline_creation_request],
         gitaly_context: params[:gitaly_context]
       ).execute(:merge_request_event, merge_request: merge_request)
+
+      if params[:pipeline_creation_request].present?
+        GraphqlTriggers.ci_pipeline_creation_requests_updated(merge_request)
+      end
+
+      pipeline
     end
+
+    def allowed?(merge_request)
+      can_create_pipeline_for?(merge_request) && user_can_run_pipeline?(merge_request)
+    end
+
+    def allow_duplicate
+      params[:allow_duplicate]
+    end
+
+    private
 
     def can_create_pipeline_for?(merge_request)
       ##
@@ -43,11 +61,13 @@ module MergeRequests
       true
     end
 
-    def allow_duplicate
-      params[:allow_duplicate]
+    def user_can_run_pipeline?(merge_request)
+      current_user.can?(:create_pipeline, pipeline_project(merge_request))
     end
 
-    private
+    def pipeline_project(merge_request)
+      pipeline_project_and_ref(merge_request).first
+    end
 
     def pipeline_project_and_ref(merge_request)
       if can_create_pipeline_in_target_project?(merge_request)

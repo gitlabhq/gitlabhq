@@ -35,7 +35,7 @@ export const defaultVariableState = {
   masked: true,
   hidden: false,
   protected: false,
-  raw: false,
+  raw: true,
   value: '',
   variableType: variableTypes.envType,
 };

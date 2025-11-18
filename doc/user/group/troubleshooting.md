@@ -1,5 +1,5 @@
 ---
-stage: Runtime
+stage: Tenant Scale
 group: Organizations
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 title: Troubleshooting groups
@@ -13,7 +13,7 @@ Performs the following checks when creating or updating namespaces or groups:
 - Group parents must be groups and not namespaces.
 
 In the unlikely event that you see these errors in your GitLab installation,
-[contact Support](https://about.gitlab.com/support/) so that we can improve this validation.
+[contact Support](https://about.gitlab.com/support/) so that GitLab can improve this validation.
 
 ## Find groups using an SQL query
 

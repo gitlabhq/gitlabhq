@@ -3,7 +3,7 @@
 require 'spec_helper'
 
 RSpec.describe VerifiesWithEmail, :clean_gitlab_redis_sessions, :clean_gitlab_redis_rate_limiting,
-  feature_category: :instance_resiliency do
+  :with_current_organization, feature_category: :instance_resiliency do
   include SessionHelpers
   include EmailHelpers
 
@@ -515,6 +515,41 @@ RSpec.describe VerifiesWithEmail, :clean_gitlab_redis_sessions, :clean_gitlab_re
             it_behaves_like 'locks the user and sends verification instructions'
             it_behaves_like 'prompt for email verification'
           end
+
+          it 'calls Authn::EmailOtpEnrollment updater' do
+            expect_next_found_instance_of(User) do |instance|
+              expect(instance).to receive(:set_email_otp_required_after_based_on_restrictions)
+                .with(save: true)
+                .at_least(:once)
+            end
+            sign_in
+          end
+
+          # Test an example behaviour of EmailOtpEnrollment for testing
+          # in depth - full behavior is tested in
+          # email_otp_enrollment_spec.rb
+          context 'when email_otp_required_after is unset despite instance requirement', :freeze_time do
+            let(:user) do
+              create(:user,
+                last_sign_in_at: last_sign_in,
+                email_otp_required_after: nil
+              )
+            end
+
+            let(:log_reason) { 'email_otp' }
+
+            before do
+              stub_application_setting(require_minimum_email_based_otp_for_users_with_passwords: true)
+              perform_enqueued_jobs { sign_in }
+            end
+
+            it 'corrects the state during sign-in' do
+              expect(user.reload.email_otp_required_after).to eq(Time.current)
+            end
+
+            it_behaves_like 'sends verification instructions for email OTP'
+            it_behaves_like 'prompt for email verification'
+          end
         end
       end
     end
@@ -1010,6 +1045,80 @@ RSpec.describe VerifiesWithEmail, :clean_gitlab_redis_sessions, :clean_gitlab_re
 
         expect(response).not_to render_template('skip_verification_confirmation')
         expect(json_response).to eq('status' => 'failure')
+      end
+    end
+  end
+
+  describe '#fallback_to_email_otp' do
+    context 'when user has email_otp_required_after set to nil' do
+      let(:user) { create(:user, email_otp_required_after: nil) }
+
+      it 'is not permitted to fallback to email otp' do
+        post(users_fallback_to_email_otp_path(user: { login: user.username }))
+
+        expect(json_response).to match({
+          'success' => false,
+          'message' => 'Not permitted.'
+        })
+      end
+    end
+
+    context 'when user has email_otp_required_after set to the future' do
+      let(:user) { create(:user, email_otp_required_after: Time.zone.now + 1.day) }
+
+      it 'is not permitted to fallback to email otp' do
+        post(users_fallback_to_email_otp_path(user: { login: user.username }))
+
+        expect(json_response).to match({
+          'success' => false,
+          'message' => 'Not permitted.'
+        })
+      end
+    end
+
+    context 'when user has email_otp_required_after set to the past' do
+      let(:user) { create(:user, email: 'user1@example.org', email_otp_required_after: Time.zone.now - 1.day) }
+
+      context 'when email_based_mfa ff is disabled for the user' do
+        before do
+          Feature.disable(:email_based_mfa, user)
+        end
+
+        it 'is not permitted to fallback to email otp' do
+          post(users_fallback_to_email_otp_path(user: { login: user.username }))
+          expect(json_response).to match({
+            'success' => false,
+            'message' => 'Not permitted.'
+          })
+        end
+      end
+
+      context 'when user is locked' do
+        before do
+          user.lock_access!
+        end
+
+        it 'returns error' do
+          post(users_fallback_to_email_otp_path(user: { login: user.username }))
+
+          expect(json_response).to match({
+            'success' => false,
+            'message' => 'Not permitted.'
+          })
+        end
+      end
+
+      context 'when user is not treated as locked' do
+        it 'is permitted to fallback to email otp' do
+          post(users_fallback_to_email_otp_path(user: { login: user.username }))
+
+          expect(session[:verification_user_id]).to eq(user.id)
+          expect(response).to have_gitlab_http_status(:ok)
+
+          expect(json_response).to match({
+            "status" => "success"
+          })
+        end
       end
     end
   end

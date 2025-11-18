@@ -84,6 +84,7 @@ describe('WorkItemRelationships', () => {
   };
 
   const findCrudComponent = () => wrapper.findComponent(CrudComponent);
+  const findCrudCollapseToggle = () => wrapper.findByTestId('crud-collapse-toggle');
   const findErrorMessage = () => wrapper.findComponent(GlAlert);
   const findEmptyRelatedMessageContainer = () => wrapper.findByTestId('crud-empty');
   const findLinkedItemsCountBadge = () => wrapper.findByTestId('linked-items-count-bage');
@@ -336,5 +337,20 @@ describe('WorkItemRelationships', () => {
     await nextTick();
 
     expect(blockedByList.props('linkedItems')).toHaveLength(2);
+  });
+
+  describe('tracks collapse/expand events', () => {
+    it.each`
+      type          | eventLabel           | collapsed
+      ${'collapse'} | ${'click-collapsed'} | ${true}
+      ${'expand'}   | ${'click-expanded'}  | ${false}
+    `('tracks user $type events', ({ eventLabel, collapsed }) => {
+      utils.saveToggleToLocalStorage(WORKITEM_RELATIONSHIPS_SHOWCLOSED_LOCALSTORAGEKEY, collapsed);
+      createComponent();
+
+      findCrudCollapseToggle().vm.$emit('click');
+
+      expect(findCrudComponent().emitted(eventLabel)).toEqual([[]]);
+    });
   });
 });

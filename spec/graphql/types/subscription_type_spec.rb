@@ -8,7 +8,9 @@ RSpec.describe GitlabSchema.types['Subscription'], feature_category: :subscripti
       ci_job_processed
       ci_pipeline_schedule_status_updated
       ci_job_status_updated
+      ci_pipeline_creation_requests_updated
       ci_pipeline_status_updated
+      ci_pipeline_statuses_updated
       issuable_assignees_updated
       issue_crm_contacts_updated
       issuable_title_updated

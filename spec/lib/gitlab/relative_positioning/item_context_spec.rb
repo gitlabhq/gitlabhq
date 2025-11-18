@@ -3,15 +3,15 @@
 require 'spec_helper'
 
 RSpec.describe Gitlab::RelativePositioning::ItemContext do
-  let_it_be(:default_user) { create_default(:user) }
-  let_it_be(:project, reload: true) { create(:project) }
-
   def create_issue(pos)
     create(:issue, project: project, relative_position: pos)
   end
 
   range = (101..107) # A deliberately small range, so we can test everything
   indices = (0..).take(range.size)
+
+  let_it_be(:default_user) { create_default(:user) }
+  let_it_be(:project, reload: true) { create(:project) }
 
   let(:start) { ((range.first + range.last) / 2.0).floor }
   let(:subjects) { issues.map { |i| described_class.new(i.reset, range) } }

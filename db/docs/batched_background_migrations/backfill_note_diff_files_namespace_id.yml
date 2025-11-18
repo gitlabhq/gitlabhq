@@ -1,0 +1,8 @@
+---
+migration_job_name: BackfillNoteDiffFilesNamespaceId
+description: Backfills namespace_id for every record in note_diff_files table
+feature_category: code_review_workflow
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/210110
+milestone: '18.6'
+queued_migration_version: 20251104155804
+finalized_by: # version of the migration that finalized this BBM

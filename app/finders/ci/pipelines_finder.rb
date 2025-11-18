@@ -30,6 +30,7 @@ module Ci
       items = prefiltered_pipelines
       items = by_ids(items)
       items = by_iids(items)
+      items = by_pipeline_schedules(items)
       items = by_scope(items)
       items = by_status(items)
       items = by_ref(items)
@@ -110,6 +111,12 @@ module Ci
       end
     end
 
+    def by_pipeline_schedules(items)
+      return items if params[:pipeline_schedules].blank?
+
+      items.for_pipeline_schedule(params[:pipeline_schedules])
+    end
+
     def by_scope(items)
       case params[:scope]
       when ALLOWED_SCOPES[:RUNNING]
@@ -119,9 +126,9 @@ module Ci
       when ALLOWED_SCOPES[:FINISHED]
         items.finished
       when ALLOWED_SCOPES[:BRANCHES]
-        pipelines_for_refs(items, branches)
+        pipelines_for_refs(items.no_tag, branches)
       when ALLOWED_SCOPES[:TAGS]
-        pipelines_for_refs(items, tags)
+        pipelines_for_refs(items.tag, tags)
       else
         items
       end

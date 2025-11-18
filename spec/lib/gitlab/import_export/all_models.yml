@@ -86,10 +86,17 @@ issues:
 - dates_source
 - current_status
 - work_item_description
+- work_item_transition
 work_item_description:
 - namespace
 - work_item
 - last_editing_user
+work_item_transition:
+- namespace
+- work_item
+- promoted_to_epic
+- duplicated_to
+- moved_to
 work_item_type:
 - issues
 - namespace
@@ -406,6 +413,7 @@ ci_pipelines: &pipeline_definition
 - build_execution_configs
 - project_mirror
 - workload
+- sbom_occurrence_refs
 pipeline_metadata:
 - project
 - pipeline
@@ -474,6 +482,7 @@ builds:
 - job_artifacts_metrics_referee
 - job_artifacts_network_referee
 - job_artifacts_lsif
+- job_artifacts_scip
 - job_artifacts_dotenv
 - job_artifacts_cobertura
 - job_artifacts_jacoco
@@ -928,6 +937,7 @@ project:
 - disable_download_button
 - dependency_list_exports
 - sbom_occurrences
+- sbom_occurrence_refs
 - analytics_dashboards_configuration_project
 - analytics_dashboards_pointer
 - targeting_dashboards_pointers
@@ -969,6 +979,7 @@ project:
 - approval_policies
 - project_requirement_compliance_statuses
 - analyzer_statuses
+- security_inventory_filters
 - configured_ai_catalog_items
 - security_project_tracked_contexts
 - security_attributes
@@ -977,6 +988,8 @@ project:
 award_emoji:
 - awardable
 - user
+- namespace
+- organization
 priorities:
 - label
 timelogs:
@@ -1296,6 +1309,8 @@ vulnerability_finding:
   - finding_risk_score
   - cve_identifiers
   - cve_enrichments
+  - triggered_workflows
+  - flip_guard
 scanner:
   - findings
   - security_findings
@@ -1311,3 +1326,4 @@ vulnerability_read:
   - vulnerability
   - scanner
   - vulnerability_occurrence
+

@@ -24,5 +24,9 @@ FactoryBot.define do
     trait :batched do
       batched { true }
     end
+
+    trait :offline do
+      offline_export
+    end
   end
 end

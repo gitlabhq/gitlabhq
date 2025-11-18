@@ -288,7 +288,7 @@ git checkout origin/merge-requests/1
 
 These commands can be also be done with the [`git-mr`](https://gitlab.com/glensc/git-mr) script.
 
-## Error: "source branch `<branch_name>` does not exist." when the branch exists
+## Error: `source branch <branch_name> does not exist.` when the branch exists
 
 This error can happen if the GitLab cache does not reflect the actual state of the
 Git repository. This can happen if the Git data folder is mounted with `noexec` flag.

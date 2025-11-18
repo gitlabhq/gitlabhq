@@ -77,7 +77,6 @@ describe('MoveIssueButton', () => {
     expect(findProjectSelect().props()).toMatchObject({
       projectsFetchPath: projectsAutocompleteEndpoint,
       dropdownButtonTitle: MoveIssueButton.i18n.title,
-      dropdownHeaderTitle: MoveIssueButton.i18n.title,
       moveInProgress: false,
     });
   });

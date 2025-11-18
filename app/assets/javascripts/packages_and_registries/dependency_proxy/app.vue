@@ -79,6 +79,9 @@ export default {
     },
   },
   computed: {
+    loading() {
+      return this.$apollo.queries.group.loading;
+    },
     queryVariables() {
       return { fullPath: this.groupPath, first: GRAPHQL_PAGE_SIZE, ...this.pageParams };
     },
@@ -213,12 +216,12 @@ export default {
         </span>
       </template>
     </gl-form-group>
-    <gl-skeleton-loader v-else-if="$apollo.queries.group.loading" />
+    <gl-skeleton-loader v-else-if="loading" />
 
     <manifests-list
       :dependency-proxy-image-prefix="dependencyProxyImagePrefix"
-      :loading="$apollo.queries.group.loading"
       :manifests="manifests"
+      :loading="loading"
       :pagination="pageInfo"
       @prev-page="fetchPreviousPage"
       @next-page="fetchNextPage"

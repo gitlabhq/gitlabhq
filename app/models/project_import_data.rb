@@ -45,15 +45,7 @@ class ProjectImportData < ApplicationRecord
     self.credentials = credentials.to_h.merge(hash) unless hash.empty?
   end
 
-  def clear_credentials
-    self.credentials = {}
-  end
-
   def user_mapping_enabled?
     self.data&.dig('user_contribution_mapping_enabled') || false
-  end
-
-  def user_mapping_to_personal_namespace_owner_enabled?
-    self.data&.dig('user_mapping_to_personal_namespace_owner_enabled') || false
   end
 end

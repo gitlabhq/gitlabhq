@@ -91,16 +91,51 @@ module Gitlab
             end
           end
 
-          context 'when ci_matrix_expressions feature flag is disabled' do
-            before do
-              stub_feature_flags(ci_matrix_expressions: false)
+          context 'when config includes spec header' do
+            let(:config) do
+              <<~YAML
+              spec:
+                inputs:
+                  environment:
+                    default: production
+              ---
+
+              linux:build:
+                script: echo "Building $[[ inputs.environment ]] on linux..."
+                parallel:
+                  matrix:
+                    - PROVIDER: [aws]
+
+              linux:test:
+                script: echo "Testing $[[ inputs.environment ]] on linux..."
+                parallel:
+                  matrix:
+                    - PROVIDER: [aws]
+                needs:
+                  - job: linux:build
+                    parallel:
+                      matrix:
+                        - PROVIDER: ['$[[ matrix.PROVIDER ]]']
+              YAML
             end
 
-            it 'returns an error for invalid job reference' do
+            it 'processes both inputs and matrix expressions correctly', :aggregate_failures do
               result = processor.execute
 
-              expect(result.errors).to contain_exactly(
-                a_string_including('undefined need: build: [$[[ matrix.OS ]], $[[ matrix.ARCH ]]]')
+              expect(result).to be_valid
+              expect(result.errors).to be_empty
+
+              builds = result.builds
+              expect(builds.size).to be(2)
+
+              build_job = builds.find { |b| b[:name] == 'linux:build: [aws]' }
+              test_job = builds.find { |b| b[:name] == 'linux:test: [aws]' }
+
+              expect(build_job[:options][:script]).to eq(['echo "Building production on linux..."'])
+              expect(test_job[:options][:script]).to eq(['echo "Testing production on linux..."'])
+
+              expect(test_job[:needs_attributes]).to contain_exactly(
+                { name: 'linux:build: [aws]', artifacts: true, optional: false }
               )
             end
           end

@@ -256,6 +256,7 @@ export default {
       }
     },
     copyMlflowId() {
+      // eslint-disable-next-line no-restricted-properties
       navigator.clipboard.writeText(this.candidate.info.eid);
     },
   },

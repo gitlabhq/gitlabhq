@@ -141,7 +141,7 @@ You can't install Ruby gems from the GitLab package registry. However, you can d
 
 To do this:
 
-1. On the left sidebar, select **Search or go to** and find your project.
+1. On the left sidebar, select **Search or go to** and find your project. If you've [turned on the new navigation](../../interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
 1. Select **Deploy** > **Package registry**.
 1. Select the package name and version.
 1. Under **Assets**, select the Ruby gem you want to download.

@@ -1,13 +1,11 @@
 = render Pajamas::AlertComponent.new(variant: :danger,
   dismissible: false,
-  show_icon: false,
   alert_options: { class: 'hidden js-cluster-error gl-mt-5 gl-mb-5' }) do |c|
   - c.with_body do
     = s_('ClusterIntegration|Something went wrong while creating your Kubernetes cluster')
     .js-error-reason
 
 = render Pajamas::AlertComponent.new(dismissible: false,
-  show_icon: false,
   alert_options: { class: 'hidden js-cluster-creating gl-mt-5 gl-mb-5' }) do |c|
   - c.with_body do
     = render Pajamas::SpinnerComponent.new(inline: true)
@@ -25,7 +23,6 @@
 
 = render Pajamas::AlertComponent.new(variant: :success,
   dismissible: false,
-  show_icon: false,
   alert_options: { class: 'hidden js-cluster-success gl-mt-5 gl-mb-5' }) do |c|
   - c.with_body do
     = s_("ClusterIntegration|Kubernetes cluster was successfully created.")

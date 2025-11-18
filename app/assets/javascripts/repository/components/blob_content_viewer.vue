@@ -122,7 +122,11 @@ export default {
     },
   },
   provide() {
-    return { blobHash: uniqueId(), currentRef: computed(() => this.currentRef) };
+    return {
+      blobHash: uniqueId(),
+      currentRef: computed(() => this.currentRef),
+      fileType: computed(() => this.viewer.fileType),
+    };
   },
   props: {
     path: {
@@ -375,6 +379,7 @@ export default {
       this.forkTarget = target;
     },
     onCopy() {
+      // eslint-disable-next-line no-restricted-properties
       navigator.clipboard.writeText(this.blobInfo.rawTextBlob);
     },
     handleToggleBlame() {

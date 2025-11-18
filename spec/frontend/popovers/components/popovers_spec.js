@@ -127,14 +127,21 @@ describe('popovers/components/popovers.vue', () => {
   });
 
   it('disconnects mutation observer on beforeDestroy', async () => {
-    await buildWrapper(createPopoverTarget());
-    const { observer } = wrapper.vm;
-    jest.spyOn(observer, 'disconnect');
+    const disconnectSpy = jest.fn();
 
-    expect(observer.disconnect).toHaveBeenCalledTimes(0);
+    jest.spyOn(global, 'MutationObserver').mockImplementation(() => ({
+      observe: jest.fn(),
+      disconnect: disconnectSpy,
+    }));
+
+    await buildWrapper(createPopoverTarget());
+
+    expect(disconnectSpy).toHaveBeenCalledTimes(0);
 
     wrapper.destroy();
 
-    expect(observer.disconnect).toHaveBeenCalledTimes(1);
+    expect(disconnectSpy).toHaveBeenCalledTimes(1);
+
+    jest.restoreAllMocks();
   });
 });

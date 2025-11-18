@@ -43,6 +43,26 @@ RSpec.describe 'Subscriptions Content Security Policy', feature_category: :integ
       expect(csp['script-src']).to include(*script_src)
       expect(csp['style-src']).to include(*style_src)
     end
+
+    context 'when installation has different display_url' do
+      let(:installation) { create(:jira_connect_installation, display_url: 'https://custom.example.com') }
+
+      it 'includes display_url in frame-ancestors' do
+        visit jira_connect_subscriptions_path(jwt: jwt)
+
+        expect(csp['frame-ancestors']).to include(installation.display_url)
+      end
+    end
+
+    context 'when installation has same display_url as base_url' do
+      let(:installation) { create(:jira_connect_installation, base_url: 'https://same.jira.com', display_url: 'https://same.jira.com') }
+
+      it 'does not include display_url in frame-ancestors' do
+        visit jira_connect_subscriptions_path(jwt: jwt)
+
+        expect(csp['frame-ancestors']).not_to include(installation.display_url)
+      end
+    end
   end
 
   def parse_csp(csp)

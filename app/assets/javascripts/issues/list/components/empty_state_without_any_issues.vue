@@ -1,9 +1,8 @@
 <script>
 import emptyStateSvg from '@gitlab/svgs/dist/illustrations/empty-state/empty-issues-add-md.svg';
 import jiraCloudAppLogo from '@gitlab/svgs/dist/illustrations/third-party-logos/integrations-logos/jira_cloud_app.svg?raw';
-import { GlButton, GlDisclosureDropdown, GlEmptyState, GlLink } from '@gitlab/ui';
+import { GlButton, GlEmptyState, GlLink } from '@gitlab/ui';
 import { helpPagePath } from '~/helpers/help_page_helper';
-import CsvImportExportButtons from '~/issuable/components/csv_import_export_buttons.vue';
 import NewResourceDropdown from '~/vue_shared/components/new_resource_dropdown/new_resource_dropdown.vue';
 import SafeHtml from '~/vue_shared/directives/safe_html';
 import { hasNewIssueDropdown } from '../has_new_issue_dropdown_mixin';
@@ -13,9 +12,7 @@ export default {
   issuesHelpPagePath: helpPagePath('user/project/issues/_index'),
   jiraIntegrationPath: helpPagePath('integration/jira/_index'),
   components: {
-    CsvImportExportButtons,
     GlButton,
-    GlDisclosureDropdown,
     GlEmptyState,
     GlLink,
     NewResourceDropdown,
@@ -35,22 +32,12 @@ export default {
     'isProject',
   ],
   props: {
-    currentTabCount: {
-      type: Number,
-      required: false,
-      default: undefined,
-    },
-    exportCsvPathWithQuery: {
-      type: String,
-      required: false,
-      default: '',
-    },
-    showCsvButtons: {
+    showNewIssueDropdown: {
       type: Boolean,
       required: false,
       default: false,
     },
-    showNewIssueDropdown: {
+    hasProjects: {
       type: Boolean,
       required: false,
       default: false,
@@ -58,7 +45,7 @@ export default {
   },
   computed: {
     showNewProjectButton() {
-      return this.canCreateProjects && !this.isProject;
+      return this.canCreateProjects && !this.isProject && !this.hasProjects;
     },
   },
   jiraCloudAppLogo,
@@ -94,7 +81,14 @@ export default {
               :extract-projects="extractProjects"
               :group-id="groupId"
             />
-            <slot name="new-issue-button">
+            <gl-button
+              v-else-if="showNewProjectButton"
+              :href="newProjectPath"
+              :variant="showNewIssueDropdown ? 'default' : 'confirm'"
+            >
+              {{ __('New project') }}
+            </gl-button>
+            <slot v-else name="new-issue-button">
               <gl-button
                 v-if="showNewIssueLink"
                 :href="newIssuePath"
@@ -104,26 +98,6 @@ export default {
               >
                 {{ __('Create issue') }}
               </gl-button>
-            </slot>
-            <gl-button
-              v-if="showNewProjectButton"
-              :href="newProjectPath"
-              :variant="showNewIssueDropdown ? 'default' : 'confirm'"
-            >
-              {{ __('New project') }}
-            </gl-button>
-
-            <slot name="import-export-buttons">
-              <gl-disclosure-dropdown
-                v-if="showCsvButtons"
-                :toggle-text="__('Import issues')"
-                data-testid="import-issues-dropdown"
-              >
-                <csv-import-export-buttons
-                  :export-csv-path="exportCsvPathWithQuery"
-                  :issuable-count="currentTabCount"
-                />
-              </gl-disclosure-dropdown>
             </slot>
           </div>
         </template>

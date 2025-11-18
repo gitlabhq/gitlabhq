@@ -1,7 +1,7 @@
 ---
-stage: none
-group: unassigned
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+stage: Solutions Architecture
+group: Solutions Architecture
+info: This page is owned by the Solutions Architecture team.
 title: AWS CodePipeline
 ---
 

@@ -199,7 +199,7 @@ module Emails
       @fingerprints = fingerprints
       @target_url = user_settings_ssh_keys_url
 
-      mail_with_locale(to: @user.notification_email_or_default, subject: subject(_("Your SSH key is expiring soon.")))
+      mail_with_locale(to: @user.notification_email_or_default, subject: subject(_("Your SSH key expires soon")))
     end
 
     def unknown_sign_in_email(user, ip, time, request_info = {})
@@ -237,19 +237,21 @@ module Emails
 
       email_with_layout(
         to: @user.notification_email_or_default,
-        subject: subject(_("Two-factor authentication enabled - OTP"))
+        subject: subject(_("One-time password authenticator registered"))
       )
     end
 
-    def enabled_two_factor_webauthn_email(user, device_name)
+    def enabled_two_factor_webauthn_email(user, device_name, type = :webauthn)
       return unless user
 
       @user = user
       @device_name = device_name
+      @type = type
 
       email_with_layout(
         to: @user.notification_email_or_default,
-        subject: subject(_("Two-factor authentication enabled - WebAuthn"))
+        subject: subject(
+          type == :webauthn ? _("WebAuthn device registered") : _("Passkey registered"))
       )
     end
 
@@ -275,15 +277,16 @@ module Emails
       )
     end
 
-    def disabled_two_factor_webauthn_email(user, device_name)
+    def disabled_two_factor_webauthn_email(user, device_name, type = :webauthn)
       return unless user
 
       @user = user
       @device_name = device_name
+      @type = type
 
       email_with_layout(
         to: @user.notification_email_or_default,
-        subject: subject(_("WebAuthn device deleted"))
+        subject: subject(type == :webauthn ? _("WebAuthn device deleted") : _("Passkey deleted"))
       )
     end
 

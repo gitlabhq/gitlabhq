@@ -23,7 +23,7 @@ title: Migrate epic APIs to work items
 
 {{< /history >}}
 
-In GitLab 17.2, we introduced [epics as work items](../../user/group/epics/_index.md#epics-as-work-items).
+GitLab 17.2 introduced [epics as work items](../../user/group/epics/_index.md#epics-as-work-items).
 
 To ensure that your integrations continue working:
 

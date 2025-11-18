@@ -189,19 +189,18 @@ RSpec.describe API::Terraform::Modules::V1::ProjectPackages, feature_category: :
       with_them do
         let(:user_headers) { user_role == :anonymous ? {} : { token_header => token } }
         let(:snowplow_gitlab_standard_context) do
-          { project: project, namespace: project.namespace, user: snowplow_user,
-            property: 'i_package_terraform_module_user' }
-        end
+          context = { project: project, namespace: project.namespace, property: 'i_package_terraform_module_user' }
 
-        let(:snowplow_user) do
           case token_type
           when :deploy_token
-            deploy_token
+            # Deploy tokens should not be tracked as users
           when :job_token
-            job.user
+            context[:user] = job.user
           else
-            user
+            context[:user] = user
           end
+
+          context
         end
 
         before do

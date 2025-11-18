@@ -8,6 +8,7 @@ import (
 	"net/http"
 	"net/http/httptest"
 	"net/url"
+	"sync"
 	"testing"
 	"time"
 
@@ -69,6 +70,7 @@ func (m *mockWebSocketConn) SetReadDeadline(_ time.Time) error {
 
 type mockWorkflowStream struct {
 	sendEvents  []*pb.ClientEvent
+	sendMu      sync.Mutex
 	recvActions []*pb.Action
 	recvIndex   int
 	sendError   error
@@ -76,7 +78,17 @@ type mockWorkflowStream struct {
 	blockCh     chan bool
 }
 
+func (m *mockWorkflowStream) getSendEvents() []*pb.ClientEvent {
+	m.sendMu.Lock()
+	defer m.sendMu.Unlock()
+
+	return m.sendEvents
+}
+
 func (m *mockWorkflowStream) Send(event *pb.ClientEvent) error {
+	m.sendMu.Lock()
+	defer m.sendMu.Unlock()
+
 	if m.sendError != nil {
 		return m.sendError
 	}
@@ -102,6 +114,56 @@ func (m *mockWorkflowStream) Recv() (*pb.Action, error) {
 
 func (m *mockWorkflowStream) CloseSend() error {
 	return nil
+}
+
+type mockMcpManager struct {
+	tools               []*pb.McpTool
+	hasToolResult       bool
+	callToolResult      *pb.ClientEvent
+	callToolError       error
+	closeError          error
+	callToolInvocations []struct {
+		name string
+		args string
+	}
+}
+
+func (m *mockMcpManager) HasTool(_ string) bool {
+	if m == nil {
+		return false
+	}
+
+	return m.hasToolResult
+}
+
+func (m *mockMcpManager) Tools() []*pb.McpTool {
+	if m == nil {
+		return nil
+	}
+
+	return m.tools
+}
+
+func (m *mockMcpManager) CallTool(_ context.Context, action *pb.Action) (*pb.ClientEvent, error) {
+	mcpTool := action.GetRunMCPTool()
+
+	m.callToolInvocations = append(m.callToolInvocations, struct {
+		name string
+		args string
+	}{name: mcpTool.Name, args: mcpTool.Args})
+
+	if m.callToolError != nil {
+		return nil, m.callToolError
+	}
+	return m.callToolResult, nil
+}
+
+func (m *mockMcpManager) Close() error {
+	if m == nil {
+		return nil
+	}
+
+	return m.closeError
 }
 
 func Test_newRunner(t *testing.T) {
@@ -159,7 +221,7 @@ func TestRunner_Execute(t *testing.T) {
 			wsMessages:      [][]byte{[]byte(`{"type": "test"}`), []byte(`{"type": "test2"}`)},
 			wfBlockCh:       make(chan bool),
 			sendEventsCount: 2,
-			expectedErrMsg:  "handleWebSocketMessage: failed to read a WS message: EOF",
+			expectedErrMsg:  "handleWebSocketMessages: failed to read a WS message: EOF",
 		},
 		{
 			name: "wf actions",
@@ -214,7 +276,7 @@ func TestRunner_Execute(t *testing.T) {
 				require.NoError(t, err)
 			}
 
-			require.Len(t, mockWf.sendEvents, tt.sendEventsCount)
+			require.Len(t, mockWf.getSendEvents(), tt.sendEventsCount)
 			require.Len(t, mockConn.writeMessages, tt.writeMsgCount)
 		})
 	}
@@ -233,13 +295,13 @@ func TestRunner_Execute_with_errors(t *testing.T) {
 			name:           "websocket read error",
 			wsReadError:    errors.New("read error"),
 			wfBlockCh:      make(chan bool),
-			expectedErrMsg: "handleWebSocketMessage: failed to read a WS message: read error",
+			expectedErrMsg: "handleWebSocketMessages: failed to read a WS message: read error",
 		},
 		{
 			name:           "workflow recv error",
 			wfRecvError:    errors.New("recv error"),
 			wsBlockCh:      make(chan bool),
-			expectedErrMsg: "duoworkflow: failed to read a gRPC message: recv error",
+			expectedErrMsg: "handleAgentMessages: failed to read a gRPC message: recv error",
 		},
 		{
 			name:           "workflow EOF error",
@@ -260,20 +322,8 @@ func TestRunner_Execute_with_errors(t *testing.T) {
 				blockCh:   tt.wfBlockCh,
 			}
 
-			testURL, _ := url.Parse("http://example.com")
-			r := &runner{
-				rails: &api.API{
-					Client: &http.Client{},
-					URL:    testURL,
-				},
-				token:       "test-token",
-				originalReq: &http.Request{},
-				conn:        mockConn,
-				wf:          mockWf,
-			}
-
-			ctx := context.Background()
-			err := r.Execute(ctx)
+			r := &runner{conn: mockConn, wf: mockWf}
+			err := r.Execute(context.Background())
 
 			if tt.expectedErrMsg != "" {
 				require.EqualError(t, err, tt.expectedErrMsg)
@@ -284,19 +334,68 @@ func TestRunner_Execute_with_errors(t *testing.T) {
 	}
 }
 
+func TestRunner_Execute_with_close_errors(t *testing.T) {
+	tests := []struct {
+		name           string
+		wsReadError    error
+		expectedReason string
+	}{
+		{
+			name:           "websocket normal closure",
+			wsReadError:    &websocket.CloseError{Code: websocket.CloseNormalClosure},
+			expectedReason: "WORKHORSE_WEBSOCKET_CLOSE_1000",
+		},
+		{
+			name:           "websocket going away",
+			wsReadError:    &websocket.CloseError{Code: websocket.CloseGoingAway},
+			expectedReason: "WORKHORSE_WEBSOCKET_CLOSE_1001",
+		},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			blockCh := make(chan bool)
+			mockConn := &mockWebSocketConn{
+				readError: tt.wsReadError,
+			}
+			mockWf := &mockWorkflowStream{
+				recvError: io.EOF,
+				blockCh:   blockCh,
+			}
+
+			req := httptest.NewRequest("GET", "/duo", nil)
+			r := &runner{
+				conn:        mockConn,
+				wf:          mockWf,
+				originalReq: req,
+			}
+
+			errCh := make(chan error, 1)
+			go func() { errCh <- r.Execute(context.Background()) }()
+
+			require.Eventually(t, func() bool {
+				return len(mockWf.getSendEvents()) == 1
+			}, 2*time.Second, 50*time.Millisecond)
+
+			blockCh <- true // Unblock WF stream
+			require.NoError(t, <-errCh)
+
+			stopEvent := mockWf.getSendEvents()[0].GetStopWorkflow()
+			require.NotNil(t, stopEvent)
+			require.Equal(t, tt.expectedReason, stopEvent.Reason)
+		})
+	}
+}
+
 func TestRunner_handleWebSocketMessage(t *testing.T) {
 	tests := []struct {
 		name           string
 		message        []byte
-		readError      error
 		sendError      error
+		mcpManager     *mockMcpManager
 		expectedErrMsg string
+		expectMcpTools bool
 	}{
-		{
-			name:           "read error",
-			readError:      errors.New("read error"),
-			expectedErrMsg: "handleWebSocketMessage: failed to read a WS message: read error",
-		},
 		{
 			name:           "invalid json",
 			message:        []byte("invalid json"),
@@ -319,14 +418,28 @@ func TestRunner_handleWebSocketMessage(t *testing.T) {
 			message:        []byte(`{"type": "test"}`),
 			expectedErrMsg: "",
 		},
+		{
+			name:    "start request with mcp tools",
+			message: []byte(`{"startRequest": {"goal": "test goal", "mcpTools": [{"name": "get_issue"}]}}`),
+			mcpManager: &mockMcpManager{
+				tools: []*pb.McpTool{
+					{Name: "test_tool", Description: "A test tool"},
+				},
+			},
+			expectMcpTools: true,
+			expectedErrMsg: "",
+		},
+		{
+			name:           "start request without mcp manager",
+			message:        []byte(`{"startRequest": {"goal": "test goal"}}`),
+			mcpManager:     nil,
+			expectMcpTools: false,
+			expectedErrMsg: "",
+		},
 	}
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			mockConn := &mockWebSocketConn{
-				readMessages: [][]byte{tt.message},
-				readError:    tt.readError,
-			}
 			mockWf := &mockWorkflowStream{
 				sendError: tt.sendError,
 			}
@@ -339,17 +452,28 @@ func TestRunner_handleWebSocketMessage(t *testing.T) {
 				},
 				token:       "test-token",
 				originalReq: &http.Request{},
-				conn:        mockConn,
+				conn:        &mockWebSocketConn{},
 				wf:          mockWf,
+				mcpManager:  tt.mcpManager,
 			}
 
-			err := r.handleWebSocketMessage()
+			err := r.handleWebSocketMessage(tt.message)
 
 			if tt.expectedErrMsg != "" {
 				require.Error(t, err)
 				require.Contains(t, err.Error(), tt.expectedErrMsg)
 			} else {
 				require.NoError(t, err)
+
+				if tt.expectMcpTools {
+					require.Len(t, mockWf.sendEvents, 1)
+					startReq := mockWf.sendEvents[0].GetStartRequest()
+					require.NotNil(t, startReq)
+					require.Len(t, startReq.McpTools, 2)
+					assert.Equal(t, "get_issue", startReq.McpTools[0].Name)
+					assert.Equal(t, "test_tool", startReq.McpTools[1].Name)
+					assert.Equal(t, "A test tool", startReq.McpTools[1].Description)
+				}
 			}
 		})
 	}
@@ -361,9 +485,11 @@ func TestRunner_handleAgentAction(t *testing.T) {
 		action         *pb.Action
 		wsWriteError   error
 		wfSendError    error
+		mcpManager     *mockMcpManager
 		expectedErrMsg string
 		shouldCallWS   bool
 		shouldCallWF   bool
+		shouldCallMcp  bool
 	}{
 		{
 			name: "successful HTTP request action",
@@ -415,7 +541,19 @@ func TestRunner_handleAgentAction(t *testing.T) {
 				},
 			},
 			wsWriteError:   errors.New("websocket write failed"),
-			expectedErrMsg: "handleAgentAction: failed to send WS message: websocket write failed",
+			expectedErrMsg: "sendActionToWs: failed to send WS message: websocket write failed",
+		},
+		{
+			name: "non-HTTP action with websocket write close sent error",
+			action: &pb.Action{
+				RequestID: "req-error",
+				Action: &pb.Action_RunCommand{
+					RunCommand: &pb.RunCommandAction{
+						Program: "ls",
+					},
+				},
+			},
+			wsWriteError: websocket.ErrCloseSent,
 		},
 		{
 			name: "action with nil action type",
@@ -424,6 +562,82 @@ func TestRunner_handleAgentAction(t *testing.T) {
 				Action:    nil,
 			},
 			shouldCallWS: true,
+		},
+		{
+			name: "MCP tool action with mcp manager",
+			action: &pb.Action{
+				RequestID: "req-mcp-123",
+				Action: &pb.Action_RunMCPTool{
+					RunMCPTool: &pb.RunMCPTool{
+						Name: "gitlab_get_issue",
+						Args: `{"issue_id": "123"}`,
+					},
+				},
+			},
+			mcpManager: &mockMcpManager{
+				hasToolResult: true,
+				callToolResult: &pb.ClientEvent{
+					Response: &pb.ClientEvent_ActionResponse{
+						ActionResponse: &pb.ActionResponse{
+							ResponseType: &pb.ActionResponse_PlainTextResponse{
+								PlainTextResponse: &pb.PlainTextResponse{
+									Response: `{"id": 123, "title": "Test Issue"}`,
+								},
+							},
+						},
+					},
+				},
+			},
+			shouldCallMcp: true,
+			shouldCallWF:  true,
+		},
+		{
+			name: "MCP tool action without mcp manager",
+			action: &pb.Action{
+				RequestID: "req-mcp-no-manager",
+				Action: &pb.Action_RunMCPTool{
+					RunMCPTool: &pb.RunMCPTool{
+						Name: "gitlab_get_issue",
+						Args: `{"issue_id": "123"}`,
+					},
+				},
+			},
+			mcpManager:   nil,
+			shouldCallWS: true,
+		},
+		{
+			name: "MCP tool action with tool not recognized",
+			action: &pb.Action{
+				RequestID: "req-mcp-unknown",
+				Action: &pb.Action_RunMCPTool{
+					RunMCPTool: &pb.RunMCPTool{
+						Name: "unknown_tool",
+						Args: `{"param": "value"}`,
+					},
+				},
+			},
+			mcpManager: &mockMcpManager{
+				hasToolResult: false,
+			},
+			shouldCallWS: true,
+		},
+		{
+			name: "MCP tool action with call error",
+			action: &pb.Action{
+				RequestID: "req-mcp-error",
+				Action: &pb.Action_RunMCPTool{
+					RunMCPTool: &pb.RunMCPTool{
+						Name: "gitlab_get_issue",
+						Args: `{"issue_id": "123"}`,
+					},
+				},
+			},
+			mcpManager: &mockMcpManager{
+				hasToolResult: true,
+				callToolError: errors.New("mcp call failed"),
+			},
+			shouldCallMcp:  true,
+			expectedErrMsg: "handleAgentAction: failed to call MCP tool: mcp call failed",
 		},
 	}
 
@@ -457,6 +671,7 @@ func TestRunner_handleAgentAction(t *testing.T) {
 				originalReq: &http.Request{},
 				conn:        mockConn,
 				wf:          mockWf,
+				mcpManager:  tt.mcpManager,
 			}
 
 			ctx := context.Background()
@@ -474,14 +689,24 @@ func TestRunner_handleAgentAction(t *testing.T) {
 				require.Empty(t, mockConn.writeMessages)
 			}
 
+			sendEvents := mockWf.getSendEvents()
 			if tt.shouldCallWF {
-				require.Len(t, mockWf.sendEvents, 1, "Expected one workflow event to be sent")
+				require.Len(t, sendEvents, 1, "Expected one workflow event to be sent")
 
-				response := mockWf.sendEvents[0].Response.(*pb.ClientEvent_ActionResponse).ActionResponse
-				responseBody := response.ResponseType.(*pb.ActionResponse_HttpResponse).HttpResponse.Body
-				require.JSONEq(t, `[{"id": 123, "name": "test-project"}]`, responseBody)
+				if tt.action.GetRunHTTPRequest() != nil {
+					response := mockWf.sendEvents[0].Response.(*pb.ClientEvent_ActionResponse).ActionResponse
+					responseBody := response.ResponseType.(*pb.ActionResponse_HttpResponse).HttpResponse.Body
+					require.JSONEq(t, `[{"id": 123, "name": "test-project"}]`, responseBody)
+				}
 			} else {
-				require.Empty(t, mockWf.sendEvents)
+				require.Empty(t, sendEvents)
+			}
+
+			if tt.shouldCallMcp {
+				require.Len(t, tt.mcpManager.callToolInvocations, 1, "Expected MCP tool to be called")
+				mcpAction := tt.action.GetRunMCPTool()
+				require.Equal(t, mcpAction.Name, tt.mcpManager.callToolInvocations[0].name)
+				require.Equal(t, mcpAction.Args, tt.mcpManager.callToolInvocations[0].args)
 			}
 		})
 	}
@@ -549,4 +774,123 @@ func TestRunner_closeWebSocketConnection(t *testing.T) {
 			}
 		})
 	}
+}
+
+func TestRunner_sendActionToWs(t *testing.T) {
+	tests := []struct {
+		name           string
+		action         *pb.Action
+		writeError     error
+		expectedErrMsg string
+	}{
+		{
+			name: "successful send",
+			action: &pb.Action{
+				RequestID: "req-123",
+				Action: &pb.Action_RunCommand{
+					RunCommand: &pb.RunCommandAction{
+						Program: "ls",
+					},
+				},
+			},
+			expectedErrMsg: "",
+		},
+		{
+			name: "write error",
+			action: &pb.Action{
+				RequestID: "req-456",
+				Action: &pb.Action_RunCommand{
+					RunCommand: &pb.RunCommandAction{
+						Program: "ls",
+					},
+				},
+			},
+			writeError:     errors.New("write failed"),
+			expectedErrMsg: "sendActionToWs: failed to send WS message: write failed",
+		},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			mockConn := &mockWebSocketConn{
+				writeError: tt.writeError,
+			}
+
+			testURL, _ := url.Parse("http://example.com")
+			r := &runner{
+				rails: &api.API{
+					Client: &http.Client{},
+					URL:    testURL,
+				},
+				conn: mockConn,
+			}
+
+			err := r.sendActionToWs(tt.action)
+
+			if tt.expectedErrMsg != "" {
+				require.EqualError(t, err, tt.expectedErrMsg)
+			} else {
+				require.NoError(t, err)
+				require.Len(t, mockConn.writeMessages, 1)
+			}
+		})
+	}
+}
+
+func TestRunner_Shutdown(t *testing.T) {
+	t.Run("shutdown with canceled request context", func(t *testing.T) {
+		ctx, cancel := context.WithCancel(context.Background())
+		cancel()
+
+		req := httptest.NewRequest("GET", "/duo", nil)
+		req = req.WithContext(ctx)
+
+		r := &runner{
+			originalReq: req,
+		}
+
+		shutdownCtx, shutdownCancel := context.WithTimeout(context.Background(), 1*time.Second)
+		defer shutdownCancel()
+
+		err := r.Shutdown(shutdownCtx)
+		require.NoError(t, err)
+	})
+
+	t.Run("shutdown sends stop workflow", func(t *testing.T) {
+		mockWf := &mockWorkflowStream{}
+		ctx, cancel := context.WithCancel(context.Background())
+		defer cancel()
+		req := httptest.NewRequest("GET", "/duo", nil)
+		req = req.WithContext(ctx)
+
+		r := &runner{
+			originalReq: req,
+			wf:          mockWf,
+		}
+
+		shutdownCtx, shutdownCancel := context.WithCancel(context.Background())
+		defer shutdownCancel()
+
+		shutdownDone := make(chan error, 1)
+		go func() {
+			shutdownDone <- r.Shutdown(shutdownCtx)
+		}()
+
+		shutdownCancel()
+
+		require.Eventually(t, func() bool {
+			return len(mockWf.getSendEvents()) > 0
+		}, 100*time.Millisecond, 10*time.Millisecond)
+
+		cancel()
+
+		err := <-shutdownDone
+		require.NoError(t, err)
+
+		sendEvents := mockWf.getSendEvents()
+		require.Len(t, sendEvents, 1)
+		stopEvent := sendEvents[0].GetStopWorkflow()
+		require.NotNil(t, stopEvent)
+		require.Equal(t, "WORKHORSE_SERVER_SHUTDOWN", stopEvent.Reason)
+	})
 }

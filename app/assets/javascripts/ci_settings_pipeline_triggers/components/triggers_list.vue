@@ -216,14 +216,14 @@ export default {
         </tooltip-on-truncate>
       </template>
       <template #cell(owner)="{ item }">
-        <span class="trigger-owner gl-sr-only">{{ item.owner.name }}</span>
         <gl-avatar-link
           v-if="item.owner"
           v-gl-tooltip
           :href="item.owner.path"
           :title="item.owner.name"
+          class="trigger-owner"
         >
-          <gl-avatar :size="24" :src="item.owner.avatarUrl" />
+          <gl-avatar :size="24" :src="item.owner.avatarUrl" :alt="item.owner.name" />
         </gl-avatar-link>
       </template>
       <template #cell(lastUsed)="{ item }">

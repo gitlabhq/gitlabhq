@@ -3,6 +3,7 @@ stage: Package
 group: Package Registry
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 title: パッケージとレジストリ
+description: パッケージ管理、コンテナレジストリ、アーティファクトストレージ、依存関係管理。
 ---
 
 {{< details >}}
@@ -12,16 +13,20 @@ title: パッケージとレジストリ
 
 {{< /details >}}
 
-GitLabの[パッケージレジストリ](package_registry/_index.md)は、さまざまな一般的なパッケージマネージャーのプライベートレジストリまたはパブリックレジストリとして機能します。パッケージを公開して共有し、ダウンストリームプロジェクトで依存関係として簡単に使用できます。
+GitLab[パッケージレジストリ](package_registry/_index.md)は、さまざまな一般的なパッケージマネージャーのプライベートレジストリまたはパブリックレジストリとして機能します。パッケージを公開して共有すると、ダウンストリームプロジェクトで依存関係として簡単に利用できます。
 
-## コンテナレジストリ
+## コンテナレジストリ {#container-registry}
 
-GitLabの[コンテナレジストリ](container_registry/_index.md)は、コンテナイメージ用の安全なプライベートレジストリです。これはオープンソースソフトウェア上に構築されており、GitLabに完全に統合されています。GitLab CI/CDを使用してイメージを作成および公開します。GitLab [API](../../api/container_registry.md)を使用して、グループおよびプロジェクト全体のレジストリを管理します。
+GitLab[コンテナレジストリ](container_registry/_index.md)は、コンテナイメージ用の安全なプライベートレジストリです。これはオープンソースソフトウェア上に構築されており、GitLabに完全に統合されています。GitLab CI/CDを使用してイメージを作成および公開します。GitLab [API](../../api/container_registry.md)を使用して、グループおよびプロジェクト全体のレジストリを管理します。
 
-## Terraform モジュールレジストリ
+## Terraformモジュールレジストリ {#terraform-module-registry}
 
-GitLabの[Terraform モジュールレジストリ](terraform_module_registry/_index.md)は、Terraform モジュール用の安全なプライベートレジストリです。GitLab CI/CDを使用してモジュールを作成および公開できます。
+GitLab [Terraformモジュールレジストリ](terraform_module_registry/_index.md)は、Terraformモジュール用の安全なプライベートレジストリです。GitLab CI/CDを使用してモジュールを作成および公開できます。
 
-## 依存プロキシ
+## 仮想レジストリ {#virtual-registry}
+
+GitLab[仮想レジストリ](virtual_registry/_index.md)は、高度なキャッシュ、プロキシ、およびディストリビューション機能を提供するので、GitLabで外部レジストリからパッケージを管理しやすくなります。
+
+## 依存プロキシ {#dependency-proxy}
 
 [依存プロキシ](dependency_proxy/_index.md)は、頻繁に使用されるアップストリームイメージとパッケージのローカルプロキシです。

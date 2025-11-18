@@ -1,16 +1,6 @@
 ---
 RSpec/SpecFilePathSuffix:
   Exclude:
-    - 'ee/spec/frontend/fixtures/analytics/charts.rb'
-    - 'ee/spec/frontend/fixtures/analytics/devops_reports/devops_adoption/enabled_namespaces.rb'
-    - 'ee/spec/frontend/fixtures/analytics/value_streams.rb'
-    - 'ee/spec/frontend/fixtures/analytics/value_streams_code_stage.rb'
-    - 'ee/spec/frontend/fixtures/analytics/value_streams_issue_stage.rb'
-    - 'ee/spec/frontend/fixtures/analytics/value_streams_plan_stage.rb'
-    - 'ee/spec/frontend/fixtures/analytics/value_streams_review_stage.rb'
-    - 'ee/spec/frontend/fixtures/analytics/value_streams_staging_stage.rb'
-    - 'ee/spec/frontend/fixtures/analytics/value_streams_test_stage.rb'
-    - 'ee/spec/frontend/fixtures/dora/metrics.rb'
     - 'spec/benchmarks/banzai_benchmark.rb'
     - 'spec/docs_screenshots/container_registry_docs.rb'
     - 'spec/docs_screenshots/wiki_docs.rb'

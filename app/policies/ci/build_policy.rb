@@ -95,10 +95,7 @@ module Ci
 
     rule { debug_mode & ~project_update_build }.prevent :read_build_trace
 
-    # Authorizing the user to access to protected entities.
-    # There is a "jailbreak" mode to exceptionally bypass the authorization,
-    # however, you should NEVER allow it, rather suspect it's a wrong feature/product design.
-    rule { ~can?(:jailbreak) & protected_ref }.policy do
+    rule { ~reporter_has_access_to_protected_environment & protected_ref }.policy do
       prevent(*all_job_write_abilities)
     end
 

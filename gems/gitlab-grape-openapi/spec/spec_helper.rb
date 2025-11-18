@@ -1,9 +1,13 @@
 # frozen_string_literal: true
 
 require "gitlab-grape-openapi"
+require "grape"
 require "grape-entity"
-require "fixtures/user_entity"
-require "fixtures/user/person_entity"
+require "fixtures/test_audit_events"
+require "fixtures/entities/user_entity"
+require "fixtures/entities/user/person_entity"
+require "fixtures/apis/users_api"
+require "fixtures/apis/nested_api"
 
 RSpec.configure do |config|
   # Enable flags like --only-failures and --next-failure

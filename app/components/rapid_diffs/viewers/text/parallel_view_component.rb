@@ -9,7 +9,7 @@ module RapidDiffs
         end
 
         def virtual_rendering_params
-          { total_rows: total_rows }
+          { total_rows: total_rows, rows_visibility: rows_visibility }
         end
 
         private
@@ -25,6 +25,10 @@ module RapidDiffs
 
         def total_rows
           @diff_file.viewer_hunks.sum { |hunk| (hunk.header ? 1 : 0) + hunk.parallel_lines.count }
+        end
+
+        def rows_visibility
+          total_rows >= Gitlab::Diff::File::ROWS_CONTENT_VISIBILITY_THRESHOLD ? 'auto' : nil
         end
       end
     end

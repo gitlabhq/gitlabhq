@@ -14,6 +14,23 @@ RSpec.describe NoteDiffFile, feature_category: :code_review_workflow do
     it { is_expected.to validate_presence_of(:diff_note) }
   end
 
+  it_behaves_like 'model with associated note' do
+    let(:note) { create(:diff_note_on_commit).tap { |diff_note| diff_note.note_diff_file.destroy! } }
+    let(:record_attrs) do
+      {
+        diff: "@@ -6,12 +6,18 @@ module Popen",
+        new_path: "files/ruby/popen.rb",
+        old_path: "files/ruby/popen.rb",
+        a_mode: "100644",
+        b_mode: "100644",
+        new_file: false,
+        renamed_file: false,
+        deleted_file: false,
+        diff_note_id: note.id
+      }
+    end
+  end
+
   describe '.referencing_sha' do
     let(:project) { diff_note.project }
 

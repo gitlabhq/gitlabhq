@@ -105,7 +105,7 @@ To generate a new secret in Fortanix DSM and use it with GitLab:
      }
      ```
 
-1. In GitLab, on the left sidebar, select **Search or go to** and find your project.
+1. In GitLab, on the left sidebar, select **Search or go to** and find your project. If you've [turned on the new navigation](../../user/interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
 1. Select **Settings** > **CI/CD**.
 1. Expand **Variables** and add these variables:
    - `FORTANIX_API_ENDPOINT`
@@ -149,7 +149,7 @@ To use a secret that already exists in Fortanix DSM with GitLab:
 
    ![dsm_secret_import_1](img/dsm_secret_import_1_v16_9.png)
 
-1. In GitLab, on the left sidebar, select **Search or go to** and find your project.
+1. In GitLab, on the left sidebar, select **Search or go to** and find your project. If you've [turned on the new navigation](../../user/interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
 1. Select **Settings** > **CI/CD**.
 1. Expand **Variables** and add these variables:
    - `FORTANIX_API_ENDPOINT`
@@ -189,7 +189,7 @@ To set up code signing securely in your GitLab environment:
 
    ![dsm_secret_import_2](img/dsm_secret_import_2_v16_9.png)
 
-1. In GitLab, on the left sidebar, select **Search or go to** and find your project.
+1. In GitLab, on the left sidebar, select **Search or go to** and find your project. If you've [turned on the new navigation](../../user/interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
 1. Select **Settings** > **CI/CD**.
 1. Expand **Variables** and add these variables:
    - `FORTANIX_API_ENDPOINT`

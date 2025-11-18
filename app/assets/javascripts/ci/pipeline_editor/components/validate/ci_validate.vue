@@ -33,7 +33,6 @@ export const i18n = {
   lint: s__('PipelineEditor|Lint CI/CD sample'),
   ctaDisabledTooltip: s__('PipelineEditor|Waiting for CI content to load…'),
   errorAlertTitle: s__('PipelineEditor|Pipeline simulation completed with errors'),
-  help: __('Help'),
   loading: s__('PipelineEditor|Validating pipeline… It can take up to a minute.'),
   pipelineSource: s__('PipelineEditor|Pipeline run source'),
   pipelineSourceHeader: s__('PipelineEditor|Select branch'),
@@ -206,11 +205,17 @@ export default {
     }}</gl-alert>
 
     <div class="gl-mt-3 gl-flex gl-flex-wrap gl-items-center gl-gap-3">
-      <div>
-        <label id="pipeline-source-dropdown-label" class="gl-mb-0">{{
-          $options.i18n.pipelineSource
-        }}</label>
-        <help-icon id="validate-pipeline-help" class="gl-ml-1" :aria-label="$options.i18n.help" />
+      <div id="pipeline-source-selector">
+        <span class="gl-mb-0 gl-font-bold">
+          {{ $options.i18n.pipelineSource }}
+        </span>
+        <button
+          id="validate-pipeline-help"
+          class="gl-ml-1 gl-inline-block gl-rounded-full gl-border-0 gl-bg-transparent gl-p-0 gl-leading-0 focus-visible:gl-focus-inset"
+        >
+          <help-icon />
+        </button>
+        <validate-pipeline-popover container-id="pipeline-source-selector" />
       </div>
       <div>
         <branch-selector
@@ -218,7 +223,6 @@ export default {
           :current-branch-name="currentBranch"
           @select-branch="selectBranch"
         />
-        <validate-pipeline-popover />
       </div>
       <div ref="simulatePipelineButton">
         <gl-button

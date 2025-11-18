@@ -11,19 +11,7 @@ module Gitlab
         PER_PAGE = 100
 
         def execute
-          # The new approach (import_notes_individually) is now the default behavior.
-          # The old approach (import_notes_in_batch) will be removed in a future release to prevent
-          # issues on inflight migrations using the old approach.
-          #
-          # TODO: Remove on https://gitlab.com/gitlab-org/gitlab/-/issues/570048
-          bitbucket_server_notes_separate_worker_enabled =
-            project.import_data&.data&.dig('bitbucket_server_notes_separate_worker') != false
-
-          if bitbucket_server_notes_separate_worker_enabled
-            import_notes_individually
-          else
-            import_notes_in_batch
-          end
+          import_notes_individually
 
           job_waiter
         end
@@ -31,24 +19,6 @@ module Gitlab
         private
 
         attr_reader :project
-
-        def import_notes_in_batch
-          project.merge_requests.find_each do |merge_request|
-            # Needs to come before `already_processed?` as `jobs_remaining` resets to zero when the job restarts and
-            # jobs_remaining needs to be the total amount of enqueued jobs
-            job_waiter.jobs_remaining += 1
-
-            next if already_processed?(merge_request)
-
-            job_delay = calculate_job_delay(job_waiter.jobs_remaining)
-
-            sidekiq_worker_class_batch.perform_in(job_delay, project.id, { iid: merge_request.iid }, job_waiter.key)
-
-            mark_as_processed(merge_request)
-          end
-
-          job_waiter
-        end
 
         def import_notes_individually
           merge_request_collection.find_each do |merge_request|
@@ -123,21 +93,13 @@ module Gitlab
             comment_id: comment.id,
             comment: comment.to_hash.deep_stringify_keys
           }
-          sidekiq_worker_class_individual.perform_in(job_delay, project.id, object_hash, job_waiter.key)
+          ImportPullRequestNoteWorker.perform_in(job_delay, project.id, object_hash, job_waiter.key)
 
           self.enqueued_job_counter += 1
 
           job_waiter.jobs_remaining = Gitlab::Cache::Import::Caching.increment(job_waiter_remaining_cache_key)
 
           mark_as_processed(comment)
-        end
-
-        def sidekiq_worker_class_batch
-          ImportPullRequestNotesWorker
-        end
-
-        def sidekiq_worker_class_individual
-          ImportPullRequestNoteWorker
         end
 
         def id_for_already_processed_cache(object)

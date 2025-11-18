@@ -2,13 +2,16 @@ import { shallowMount } from '@vue/test-utils';
 import { nextTick } from 'vue';
 import { observeElementOnce } from '~/lib/utils/dom_utils';
 import StickyViewportFillerHeight from '~/diffs/components/sticky_viewport_filler_height.vue';
+import { getScrollingElement } from '~/lib/utils/scroll_utils';
 
 jest.mock('~/lib/utils/dom_utils');
+jest.mock('~/lib/utils/scroll_utils');
 
 describe('StickyViewportFillerHeight', () => {
   const initialViewportHeight = 800;
   const initialMinHeight = 300;
 
+  let viewport;
   let wrapper;
   let intersectionCallback;
   let rootObserverCallback;
@@ -27,11 +30,19 @@ describe('StickyViewportFillerHeight', () => {
   const getSlotContent = () => wrapper.find('#slotContent');
   const getHeight = () => parseInt(wrapper.element.style.height, 10);
 
-  const scroll = () => {
-    window.dispatchEvent(new Event('scroll'));
+  const scroll = (container = null) => {
+    const target = container || window;
+    target.dispatchEvent(new Event('scroll'));
   };
   const setViewportHeight = (height) => {
-    window.innerHeight = height;
+    Object.defineProperty(viewport, 'offsetHeight', {
+      configurable: true,
+      value: height,
+    });
+    Object.defineProperty(window, 'innerHeight', {
+      configurable: true,
+      value: height,
+    });
     window.dispatchEvent(new Event('resize'));
   };
   const resolveRootTop = (top) => {
@@ -66,8 +77,17 @@ describe('StickyViewportFillerHeight', () => {
       };
     });
   };
+  const setViewport = (newViewport, top = 0) => {
+    viewport = newViewport;
+    getScrollingElement.mockReturnValue(viewport);
+    Object.defineProperty(viewport, 'getBoundingClientRect', {
+      configurable: true,
+      value: () => new DOMRect(0, top, 0, 0),
+    });
+  };
 
   beforeEach(() => {
+    setViewport(document.scrollingElement);
     setViewportHeight(initialViewportHeight);
     mockIntersectionObserver();
     mockObserveElementOnce();
@@ -134,6 +154,21 @@ describe('StickyViewportFillerHeight', () => {
       );
       await nextTick();
       expect(getHeight()).toBe(initialViewportHeight - topOffset);
+    });
+
+    it('handles sticky position with top offset on the scrolling element', async () => {
+      const rootOffset = 200;
+      const padding = 20;
+      const containerHeight = 700;
+      const viewportTop = 50;
+      setViewport(document.createElement('div'), viewportTop);
+      setViewportHeight(containerHeight);
+      createComponent({ stickyTopOffset: padding });
+      await show();
+      resolveRootTop(rootOffset);
+      resolveParentDimensions(containerHeight + containerHeight / 2, containerHeight);
+      await nextTick();
+      expect(getHeight()).toBe(containerHeight - (rootOffset - viewportTop));
     });
 
     it('handles sticky position with bottom offset', async () => {

@@ -136,6 +136,10 @@ module Gitlab
 
         # Returns true if the host is online.
         def online?
+          # Avoid using a discarded connection pool because attempting
+          # to use it will fail. After the main process forks, all of
+          # its connection pools are discarded from Rails' ForkTracker.
+          return false if discarded?
           return @online unless check_replica_status?
 
           was_online = @online

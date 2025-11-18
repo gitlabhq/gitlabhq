@@ -155,7 +155,7 @@ When retrieving child nodes use:
 - The `edges { node { } }` syntax.
 - The short form `nodes { }` syntax.
 
-Underneath it all is a graph we are traversing, hence the name GraphQL.
+Underneath it all is a graph you are traversing, hence the name GraphQL.
 
 Example: Get the name of a project, and the titles of all its issues.
 
@@ -218,7 +218,7 @@ mutation {
 }
 ```
 
-Example: Add a comment to the issue. In this example, we use the ID of the
+Example: Add a comment to the issue. This example uses the ID of the
 `GitLab.com` issue. If you're using a local instance, you must get the ID of an
 issue you can write to.
 
@@ -287,7 +287,7 @@ You should get something like the following output:
 }
 ```
 
-We've asked for the note details, but it doesn't exist anymore, so we get `null`.
+The requested note doesn't exist anymore, so the returned value for that field is `null`.
 
 More about mutations:
 [GraphQL Documentation](https://graphql.org/learn/queries/#mutations).
@@ -397,7 +397,7 @@ query {
 ## Pagination
 
 Pagination is a way of only asking for a subset of the records, such as the
-first ten. If we want more of them, we can make another request for the next
+first ten. If you want more of them, you can make another request for the next
 ten from the server in the form of something like `give me the next ten records`.
 
 By default, the GitLab GraphQL API returns 100 records per page. To change this
@@ -407,7 +407,7 @@ There is a limit on how many records are returned per page, which is generally
 `100`.
 
 Example: Retrieve only the first two issues (slicing). The `cursor` field gives
-us a position from which we can retrieve further records relative to that one.
+you a position from which you can retrieve further records relative to that one.
 
 ```graphql
 query {

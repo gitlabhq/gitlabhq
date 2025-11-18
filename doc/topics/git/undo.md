@@ -417,7 +417,7 @@ it's no longer accessible in your repository's history. This process replaces a 
 Alternatively, to completely delete specific files from a repository, see
 [Remove blobs](../../user/project/repository/repository_size.md#remove-blobs).
 
-To redact text from your repository, see [Redact text from repository](../../user/project/merge_requests/revert_changes.md#redact-text-from-repository).
+To redact text from your repository, see [Redact text from repository](../../user/project/repository/repository_size.md#redact-text-from-repository).
 
 ### Remove information from commits
 
@@ -572,7 +572,7 @@ To completely remove all traces of the file, past and present, from your reposit
 git commit -am "bug introduced"
 git revert HEAD
 # New commit created reverting changes
-# Now we want to re apply the reverted commit
+# Next, reapply the reverted commit
 git log # take hash from the revert commit
 git revert <rev commit hash>
 # reverted commit is back (new commit created again)

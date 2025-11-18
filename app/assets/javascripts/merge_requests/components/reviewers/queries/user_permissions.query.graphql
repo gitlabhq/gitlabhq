@@ -5,6 +5,7 @@ query addReviewerPermissions($fullPath: ID!, $iid: String!) {
       id
       userPermissions {
         adminMergeRequest
+        canMerge
       }
     }
   }

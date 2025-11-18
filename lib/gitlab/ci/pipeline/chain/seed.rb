@@ -42,7 +42,9 @@ module Gitlab
 
           def pipeline_seed
             logger.instrument(:pipeline_seed_initialization, once: true) do
-              stages_attributes = @command.yaml_processor_result.stages_attributes
+              stages_attributes = logger.instrument(:pipeline_seed_initialization_stages_attributes, once: true) do
+                @command.yaml_processor_result.stages_attributes
+              end
 
               Gitlab::Ci::Pipeline::Seed::Pipeline.new(context, stages_attributes)
             end

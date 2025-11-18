@@ -13,13 +13,11 @@ description: "Import and export projects with the REST API."
 
 {{< /details >}}
 
-Use the project import and export API to import and export projects using file transfers.
+Use this API to [migrate a project](../user/project/settings/import_export.md).
+If you first migrate the parent group structure with the [group import and export API](group_import_export.md),
+you can preserve group-level relationships, such as connections between project issues and group epics.
 
-Before using the project import and export API, you might want to use the
-[group import and export API](group_import_export.md).
-
-After using the project import and export API, you might want to use the
-[Project-level CI/CD variables API](project_level_variables.md).
+After using this API, you might want to use the [project-level CI/CD variables API](project_level_variables.md) to preserve the CI/CD variables for the project.
 
 You must still migrate your [Container Registry](../user/packages/container_registry/_index.md)
 over a series of Docker pulls and pushes. Re-run any CI/CD pipelines to retrieve any build artifacts.

@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Mutations::Ci::Runner::AssignToProject, feature_category: :runner do
+RSpec.describe Mutations::Ci::Runner::AssignToProject, feature_category: :runner_core do
   include GraphqlHelpers
 
   let_it_be(:group_owner) { create(:user) }

@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe ObjectStorage::DeleteStaleDirectUploadsWorker, :direct_uploads, :clean_gitlab_redis_shared_state, feature_category: :shared do
+RSpec.describe ObjectStorage::DeleteStaleDirectUploadsWorker, :direct_uploads, :clean_gitlab_redis_shared_state, feature_category: :job_artifacts do
   let(:worker) { described_class.new }
 
   describe '#perform' do

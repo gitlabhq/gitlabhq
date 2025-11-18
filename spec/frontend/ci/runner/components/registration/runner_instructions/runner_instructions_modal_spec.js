@@ -20,20 +20,22 @@ const mockPlatformList = mockRunnerPlatforms.data.runnerPlatforms.nodes;
 Vue.use(VueApollo);
 
 let resizeCallback;
+
 const MockResizeObserver = {
-  bind(el, { value }) {
+  bind: (...args) => MockResizeObserver.mounted(...args),
+  unbind: (...args) => MockResizeObserver.unmounted(...args),
+
+  mounted(el, { value }) {
     resizeCallback = value;
+  },
+  unmounted() {
+    resizeCallback = null;
   },
   mockResize(size) {
     GlBreakpointInstance.getBreakpointSize.mockReturnValue(size);
-    resizeCallback();
-  },
-  unbind() {
-    resizeCallback = null;
+    resizeCallback?.();
   },
 };
-
-Vue.directive('gl-resize-observer', MockResizeObserver);
 
 jest.mock('@gitlab/ui/src/utils');
 
@@ -65,6 +67,7 @@ describe('RunnerInstructionsModal component', () => {
         registrationToken: 'MY_TOKEN',
         ...props,
       },
+      directives: { GlResizeObserver: MockResizeObserver },
       apolloProvider: fakeApollo,
       ...options,
     });
@@ -109,6 +112,7 @@ describe('RunnerInstructionsModal component', () => {
 
     describe('when the modal resizes', () => {
       it('to an xs viewport', async () => {
+        await waitForPromises();
         MockResizeObserver.mockResize('xs');
         await nextTick();
 

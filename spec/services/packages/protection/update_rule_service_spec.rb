@@ -9,10 +9,11 @@ RSpec.describe Packages::Protection::UpdateRuleService, '#execute', feature_cate
 
   let(:service) { described_class.new(package_protection_rule, current_user: current_user, params: params) }
 
+  let(:package_name_pattern) { "#{package_protection_rule.package_name_pattern}-updated" }
   let(:params) do
     attributes_for(
       :package_protection_rule,
-      package_name_pattern: "#{package_protection_rule.package_name_pattern}-updated",
+      package_name_pattern: package_name_pattern,
       package_type: 'npm',
       minimum_access_level_for_delete: 'admin',
       minimum_access_level_for_push: 'owner'
@@ -24,6 +25,7 @@ RSpec.describe Packages::Protection::UpdateRuleService, '#execute', feature_cate
   shared_examples 'a successful service response with side effect' do
     let(:expected_attributes) do
       params.merge(
+        pattern: package_name_pattern,
         pattern_type: 'wildcard',
         target_field: 'package_name'
       )
@@ -65,6 +67,7 @@ RSpec.describe Packages::Protection::UpdateRuleService, '#execute', feature_cate
     it_behaves_like 'a successful service response with side effect' do
       let(:expected_attributes) do
         params.except(:project_id, :unsupported_param).merge(
+          pattern: package_name_pattern,
           pattern_type: 'wildcard',
           target_field: 'package_name'
         )

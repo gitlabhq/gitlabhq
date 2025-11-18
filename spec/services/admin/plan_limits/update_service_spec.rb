@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Admin::PlanLimits::UpdateService, feature_category: :shared do
+RSpec.describe Admin::PlanLimits::UpdateService, feature_category: :consumables_cost_management do
   let_it_be(:user) { create(:admin) }
   let_it_be(:plan) { create(:plan, name: 'free') }
   let_it_be(:limits) { plan.actual_limits }

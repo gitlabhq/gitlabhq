@@ -3,6 +3,7 @@
 require 'active_support'
 require 'active_support/testing/time_helpers'
 require 'factory_bot'
+require 'gitlab_quality/test_tooling'
 
 require_relative '../../qa'
 
@@ -52,9 +53,14 @@ RSpec.configure do |config|
   config.add_formatter QA::Support::Formatters::QuarantineFormatter
   config.add_formatter QA::Support::Formatters::FeatureFlagFormatter
 
-  unless QA::Runtime::Env.dry_run
+  unless QA::Runtime::Env.dry_run || config.dry_run?
     config.add_formatter QA::Support::Formatters::TestMetricsFormatter if QA::Runtime::Env.running_in_ci?
     config.add_formatter QA::Support::Formatters::CoverbandFormatter if QA::Runtime::Env.coverband_enabled?
+
+    TestMetricsHelper.configure_exporter!(config, QA::Runtime::Env.run_type) do |exporter_config|
+      exporter_config.test_retried_proc = ->(_example) { QA::Runtime::Env.rspec_retried? }
+      exporter_config.logger = QA::Runtime::Logger.logger
+    end
   end
 
   config.example_status_persistence_file_path = ENV.fetch('RSPEC_LAST_RUN_RESULTS_FILE', 'tmp/examples.txt')

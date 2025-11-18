@@ -13,7 +13,13 @@
 
     a,
     button {
-      @apply gl-py-5 gl-px-4 gl-text-default gl-text-base gl-leading-normal gl-border-0 gl-whitespace-nowrap;
+      @apply gl-py-5;
+      @apply gl-px-4;
+      @apply gl-text-default;
+      @apply gl-text-base;
+      @apply gl-leading-normal;
+      @apply gl-border-0;
+      @apply gl-whitespace-nowrap;
 
       &:hover,
        &:active {
@@ -39,7 +45,8 @@
     &.active a,
     &.active button,
     a.active {
-      @apply gl-text-default gl-font-bold;
+      @apply gl-text-default;
+      @apply gl-font-bold;
       box-shadow: inset 0 -2px 0 0 var(--gl-tab-selected-indicator-color-default);
 
       .badge.badge-pill {
@@ -52,7 +59,8 @@
 }
 
 .top-area {
-  @apply gl-flex gl-border-b;
+  @apply gl-flex;
+  @apply gl-border-b;
 
   @include gl-container-width-down(lg, panel) {
     flex-flow: column-reverse wrap;

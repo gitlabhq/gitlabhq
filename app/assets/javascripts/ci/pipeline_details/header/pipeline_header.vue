@@ -1,5 +1,6 @@
 <script>
 import { GlAlert, GlIcon, GlLink, GlLoadingIcon, GlSprintf, GlTooltipDirective } from '@gitlab/ui';
+import DuoWorkflowAction from 'ee_component/ai/components/duo_workflow_action.vue';
 import { timeIntervalInWords } from '~/lib/utils/datetime_utility';
 import { setUrlFragment, visitUrl } from '~/lib/utils/url_utility';
 import { __, n__, sprintf, formatNumber } from '~/locale';
@@ -10,6 +11,8 @@ import ClipboardButton from '~/vue_shared/components/clipboard_button.vue';
 import CiIcon from '~/vue_shared/components/ci_icon/ci_icon.vue';
 import TimeAgoTooltip from '~/vue_shared/components/time_ago_tooltip.vue';
 import SafeHtml from '~/vue_shared/directives/safe_html';
+import { FIX_PIPELINE_AGENT_PRIVILEGES } from '~/duo_agent_platform/constants';
+import { setFaviconOverlay, resetFavicon } from '~/lib/utils/favicon';
 import { LOAD_FAILURE, POST_FAILURE, DELETE_FAILURE, DEFAULT } from '../constants';
 import cancelPipelineMutation from '../graphql/mutations/cancel_pipeline.mutation.graphql';
 import deletePipelineMutation from '../graphql/mutations/delete_pipeline.mutation.graphql';
@@ -45,6 +48,7 @@ export default {
     HeaderActions,
     HeaderBadges,
     TimeAgoTooltip,
+    DuoWorkflowAction,
     PipelineAccountVerificationAlert: () =>
       import('ee_component/vue_shared/components/pipeline_account_verification_alert.vue'),
     HeaderMergeTrainsLink: () =>
@@ -78,6 +82,9 @@ export default {
         };
       },
       update(data) {
+        const newFavicon = data?.project?.pipeline?.detailedStatus?.favicon;
+        this.setFavicon(newFavicon);
+
         return data.project.pipeline;
       },
       result({ data }) {
@@ -139,6 +146,7 @@ export default {
       isRetrying: false,
       isDeleting: false,
       isSubscribed: false,
+      favicon: null,
     };
   },
   computed: {
@@ -252,8 +260,47 @@ export default {
     isMergeTrainPipeline() {
       return this.pipeline.mergeRequestEventType === MERGE_TRAIN_EVENT_TYPE;
     },
+    isFailed() {
+      return this.status === 'FAILED';
+    },
+    pipelinePath() {
+      return this.pipeline?.detailedStatus?.detailsPath
+        ? `${gon.gitlab_url}${this.pipeline.detailedStatus.detailsPath}`
+        : null;
+    },
+    sourceBranch() {
+      return this.pipeline.mergeRequest?.sourceBranch || this.pipeline.ref || null;
+    },
+    showFixPipelineButton() {
+      return this.isFailed && this.pipelinePath && this.sourceBranch;
+    },
+    getAdditionalContext() {
+      return [
+        {
+          Category: 'pipeline',
+          Content: JSON.stringify({
+            source_branch: this.sourceBranch,
+          }),
+        },
+        {
+          Category: 'merge_request',
+          Content: JSON.stringify({
+            url: this.paths.mergeRequestPath,
+          }),
+        },
+      ];
+    },
+  },
+  beforeDestroy() {
+    resetFavicon();
   },
   methods: {
+    setFavicon(newFavicon) {
+      if (newFavicon && this.favicon !== newFavicon) {
+        setFaviconOverlay(newFavicon);
+        this.favicon = newFavicon;
+      }
+    },
     reportFailure(errorType, errorMessages = []) {
       this.failureType = errorType;
       this.failureMessages = errorMessages;
@@ -320,6 +367,7 @@ export default {
       }
     },
   },
+  FIX_PIPELINE_AGENT_PRIVILEGES,
 };
 </script>
 
@@ -444,6 +492,19 @@ export default {
       </template>
 
       <template #actions>
+        <duo-workflow-action
+          v-if="showFixPipelineButton"
+          class="gl-self-start"
+          :project-path="paths.fullProject"
+          workflow-definition="fix_pipeline/v1"
+          :goal="pipelinePath"
+          size="medium"
+          :source-branch="sourceBranch"
+          :agent-privileges="$options.FIX_PIPELINE_AGENT_PRIVILEGES"
+          :additional-context="getAdditionalContext"
+        >
+          {{ __('Fix pipeline with Duo') }}
+        </duo-workflow-action>
         <header-actions
           class="gl-self-start"
           :pipeline="pipeline"

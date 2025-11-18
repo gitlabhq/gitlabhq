@@ -15,7 +15,7 @@ module LooseForeignKeys
       connection_name, base_model = current_connection_name_and_base_model
       modification_tracker, turbo_mode = initialize_modification_tracker_for(connection_name)
 
-      # Add small buffer on MAX_RUNTIME to account for single long running
+      # Add small buffer on MAX_RUNTIME to account for single long-running
       # query or extra worker time after the cleanup.
       lock_ttl = modification_tracker.max_runtime + 10.seconds
 
@@ -47,13 +47,13 @@ module LooseForeignKeys
 
     def initialize_modification_tracker_for(connection_name)
       turbo_mode = turbo_mode?(connection_name)
-      modification_tracker ||= turbo_mode ? TurboModificationTracker.new : ModificationTracker.new
+      modification_tracker = turbo_mode ? TurboModificationTracker.new : ModificationTracker.new
       [modification_tracker, turbo_mode]
     end
 
     def turbo_mode?(connection_name)
       %w[main ci sec].include?(connection_name) &&
-        Feature.enabled?(:"loose_foreign_keys_turbo_mode_#{connection_name}", type: :ops)
+        Feature.enabled?(:"loose_foreign_keys_turbo_mode_#{connection_name}", :instance, type: :ops)
     end
   end
 end

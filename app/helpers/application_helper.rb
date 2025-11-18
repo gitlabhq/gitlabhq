@@ -480,8 +480,6 @@ module ApplicationHelper
       {
         members: members_group_autocomplete_sources_path(object, type: noteable_type, type_id: params[:id]),
         issues: issues_group_autocomplete_sources_path(object),
-        issuesAlternative: issues_group_autocomplete_sources_path(object),
-        workItems: issues_group_autocomplete_sources_path(object),
         mergeRequests: merge_requests_group_autocomplete_sources_path(object),
         labels: labels_group_autocomplete_sources_path(object, type: noteable_type, type_id: params[:id]),
         milestones: milestones_group_autocomplete_sources_path(object),
@@ -491,8 +489,6 @@ module ApplicationHelper
       {
         members: members_project_autocomplete_sources_path(object, type: noteable_type, type_id: params[:id]),
         issues: issues_project_autocomplete_sources_path(object),
-        issuesAlternative: issues_project_autocomplete_sources_path(object),
-        workItems: issues_project_autocomplete_sources_path(object),
         mergeRequests: merge_requests_project_autocomplete_sources_path(object),
         labels: labels_project_autocomplete_sources_path(object, type: noteable_type, type_id: params[:id]),
         milestones: milestones_project_autocomplete_sources_path(object),

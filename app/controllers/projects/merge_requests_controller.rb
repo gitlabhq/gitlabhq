@@ -44,6 +44,10 @@ class Projects::MergeRequestsController < Projects::MergeRequests::ApplicationCo
     push_frontend_feature_flag(:mr_review_batch_submit, current_user)
   end
 
+  before_action do
+    push_frontend_feature_flag(:merge_widget_stop_polling, current_user)
+  end
+
   around_action :allow_gitaly_ref_name_caching, only: [:index, :show, :diffs, :rapid_diffs, :discussions]
 
   after_action :log_merge_request_show, only: [:show, :diffs, :rapid_diffs]
@@ -419,9 +423,6 @@ class Projects::MergeRequestsController < Projects::MergeRequests::ApplicationCo
 
     respond_to do |format|
       format.html do
-        # use next to appease Rubocop
-        next render('invalid') if target_branch_missing?
-
         render_html_page
       end
 
@@ -468,7 +469,13 @@ class Projects::MergeRequestsController < Projects::MergeRequests::ApplicationCo
     @note = @project.notes.new(noteable: @merge_request)
 
     @noteable = @merge_request
-    @commits_count = @merge_request.commits_count + @merge_request.context_commits_count
+
+    @commits_count = if @merge_request.preparing?
+                       0
+                     else
+                       @merge_request.commits_count.to_i + @merge_request.context_commits_count.to_i
+                     end
+
     @diffs_count = get_diffs_count
     @issuable_sidebar = serializer.represent(@merge_request, serializer: 'sidebar')
     @current_user_data = Gitlab::Json
@@ -713,7 +720,7 @@ class Projects::MergeRequestsController < Projects::MergeRequests::ApplicationCo
 
   def skipped_checks
     if auto_merge_requested?
-      @merge_request.skipped_mergeable_checks(
+      @merge_request.skipped_auto_merge_checks(
         auto_merge_strategy: auto_merge_strategy
       )
     else

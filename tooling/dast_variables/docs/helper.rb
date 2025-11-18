@@ -30,9 +30,16 @@ module Tooling
           render_row(
             "`#{key}`",
             render_type(variable[:type]),
-            "`#{variable[:example]}`",
+            render_example(variable[:example]),
             render_description(variable[:description])
           )
+        end
+
+        def render_example(example)
+          case example
+          when nil then ''
+          else "`#{example}`"
+          end
         end
 
         def render_type(type)

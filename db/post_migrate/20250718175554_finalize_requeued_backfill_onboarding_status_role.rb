@@ -3,18 +3,8 @@
 class FinalizeRequeuedBackfillOnboardingStatusRole < Gitlab::Database::Migration[2.3]
   milestone '18.3'
 
-  disable_ddl_transaction!
-
-  restrict_gitlab_migration gitlab_schema: :gitlab_main
-
   def up
-    ensure_batched_background_migration_is_finished(
-      job_class_name: 'BackfillOnboardingStatusRole',
-      table_name: :users,
-      column_name: :id,
-      job_arguments: [],
-      finalize: true
-    )
+    # no-op because migration code removed in https://gitlab.com/gitlab-org/gitlab/-/merge_requests/201015
   end
 
   def down; end

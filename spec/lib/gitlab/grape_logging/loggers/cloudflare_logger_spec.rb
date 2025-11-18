@@ -17,14 +17,13 @@ RSpec.describe Gitlab::GrapeLogging::Loggers::CloudflareLogger do
 
     describe 'with Cloudflare headers' do
       before do
-        mock_request.headers['Cf-Ray'] = SecureRandom.hex
         mock_request.headers['Cf-Request-Id'] = SecureRandom.hex
       end
 
       it 'returns the correct duration in seconds' do
         data = subject.parameters(mock_request, nil)
 
-        expect(data.keys).to contain_exactly(:cf_ray, :cf_request_id)
+        expect(data.keys).to contain_exactly(:cf_request_id)
       end
     end
   end

@@ -49,10 +49,10 @@ Supported attributes:
 |--------------------------|-----------------|----------|-------------------------------------------------------------------------|
 | `content`                | string          | Yes      | Question sent to Chat.                                                  |
 | `resource_type`          | string          | No       | Type of resource that is sent with Chat question.                       |
-| `resource_id`            | string, integer | No       | ID of the resource. Can be a resource ID (integer) or a commit hash (string).                                                 |
+| `resource_id`            | string, integer | No       | ID of the resource. Can be a resource ID (integer) or a commit hash (string). |
 | `referer_url`            | string          | No       | Referer URL.                                                            |
 | `client_subscription_id` | string          | No       | Client Subscription ID.                                                 |
-| `with_clean_history`     | boolean         | No       | Indicates if we need to reset the history before and after the request. |
+| `with_clean_history`     | boolean         | No       | Indicates if history should be reset before and after the request. |
 | `project_id`             | integer         | No       | Project ID. Required if `resource_type` is a commit.                    |
 | `additional_context`     | array           | No       | An array of additional context items for this chat request. See [Context attributes](#context-attributes) for a list of parameters this attribute accepts. |
 

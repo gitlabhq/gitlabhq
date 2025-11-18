@@ -129,6 +129,8 @@ class Issue < ApplicationRecord
     inverse_of: :work_item,
     autosave: true
 
+  has_one :work_item_transition, class_name: 'WorkItems::Transition', inverse_of: :work_item
+
   alias_method :escalation_status, :incident_management_issuable_escalation_status
 
   accepts_nested_attributes_for :issuable_severity, update_only: true
@@ -404,7 +406,11 @@ class Issue < ApplicationRecord
   end
 
   def relative_positioning_parent_projects
-    project.group&.root_ancestor&.all_projects&.select(:id) || Project.id_in(project).select(:id)
+    if namespace.parent&.user_namespace?
+      Project.id_in(namespace.project).select(:id)
+    else
+      namespace.root_ancestor&.all_projects&.select(:id)
+    end
   end
 
   def self.relative_positioning_query_base(issue)
@@ -569,14 +575,14 @@ class Issue < ApplicationRecord
   end
 
   def blocked_for_repositioning?
-    resource_parent.root_namespace&.issue_repositioning_disabled?
+    namespace.root_ancestor&.issue_repositioning_disabled?
   end
 
   # `from` argument can be a Namespace or Project.
-  def to_reference(from = nil, full: false)
+  def to_reference(from = nil, full: false, absolute_path: false)
     reference = "#{self.class.reference_prefix}#{iid}"
 
-    "#{namespace.to_reference_base(from, full: full)}#{reference}"
+    "#{namespace.to_reference_base(from, full: full, absolute_path: absolute_path)}#{reference}"
   end
 
   def suggested_branch_name
@@ -815,7 +821,36 @@ class Issue < ApplicationRecord
 
   override :gfm_reference
   def gfm_reference(from = nil)
-    "#{work_item_type_with_default.name.underscore} #{to_reference(from)}"
+    # References can be ambiguous when two namespaces have the same path names. This is why we need to use absolute
+    # paths when cross-referencing between projects and groups.
+    #
+    # Example setup:
+    #  - `gitlab` group
+    #  - `gitlab` project within the `gitlab` group
+    #  - In a project issue, we reference an epic with `epic gitlab#123` for a system note
+    #
+    # When resolving this system note, we would look for a namespace within the `gitlab` project's parent.
+    # This would be incorrect, as it would resolve to an ISSUE on the `gitlab` PROJECT, not the `gitlab` GROUP.
+    #
+    # This problem only occurs when there is a project with the same name as the group. Otherwise, our reference
+    # code attempts to resolve it on the group.
+    #
+    # Since the reference parser has no information about where each reference originated, we need to fix this in
+    # the reference itself by providing an absolute path.
+    #
+    # In the example above, the `from` argument is the Issue on the Project, and `self` is the item on the Group.
+    # Every time we reference from a project to a group, we need to use an absolute path.
+    # So we need to reference it as `epic /gitlab#123`.
+    #
+    # We could always use absolute paths to remove the ambiguity, but this would lead to longer references everywhere
+    # that are harder to read.
+    params = {}
+
+    params[:full] = true if (from.is_a?(Project) || from.is_a?(Namespaces::ProjectNamespace)) && group_level?
+    # When we reference a root group, we also need to use an absolute path because it could be that a namespace
+    params[:absolute_path] = true unless namespace.has_parent?
+
+    "#{work_item_type_with_default.name.underscore} #{to_reference(from, **params)}"
   end
 
   def skip_metrics?
@@ -844,6 +879,14 @@ class Issue < ApplicationRecord
 
   def group_epic_work_item?
     epic_work_item? && group_level?
+  end
+
+  def show_as_work_item?
+    # Service Desk issues and incidents should not use the work item view, since these have not been migrated over to
+    # using the work items framework. These should continue to use the .../issues/... path and render as issues.
+    !from_service_desk? &&
+      !work_item_type&.incident? &&
+      Feature.enabled?(:work_item_view_for_issues, project&.group)
   end
 
   def ensure_work_item_description

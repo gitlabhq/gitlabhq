@@ -394,6 +394,62 @@ RSpec.describe SnippetsFinder do
         expect(snippets.ids).to eq(Snippet.order_updated_desc.ids)
       end
     end
+
+    context 'organization isolation' do
+      let_it_be(:org1) { create(:organization) }
+      let_it_be(:org2) { create(:organization) }
+      let_it_be(:user_org1) { create(:user, organization: org1) }
+      let_it_be(:user_org2) { create(:user, organization: org2) }
+      let_it_be(:snippet_org1_private) { create(:personal_snippet, :private, author: user_org1, organization: org1) }
+      let_it_be(:snippet_org1_public) { create(:personal_snippet, :public, author: user_org1, organization: org1) }
+      let_it_be(:snippet_org2_private) { create(:personal_snippet, :private, author: user_org2, organization: org2) }
+      let_it_be(:snippet_org2_public) { create(:personal_snippet, :public, author: user_org2, organization: org2) }
+
+      # Add these project snippets to test that project snippets bypass org isolation
+      let_it_be(:project_org1) { create(:project, :public, organization: org1) }
+      let_it_be(:project_org2) { create(:project, :public, organization: org2) }
+      let_it_be(:project_snippet_org1) { create(:project_snippet, :public, project: project_org1) }
+      let_it_be(:project_snippet_org2) { create(:project_snippet, :public, project: project_org2) }
+
+      it 'returns only snippets from user organization' do
+        snippets = described_class.new(user_org1, only_personal: true, organization_id: org1.id).execute
+
+        expect(snippets).to contain_exactly(snippet_org1_private, snippet_org1_public)
+      end
+
+      it 'does not return snippets from other organizations' do
+        snippets = described_class.new(user_org1, only_personal: true, organization_id: org1.id).execute
+
+        expect(snippets).not_to include(snippet_org2_private, snippet_org2_public)
+      end
+
+      context 'when exploring snippets' do
+        it 'returns only public snippets from user organization' do
+          snippets = described_class.new(user_org1, explore: true, organization_id: org1.id).execute
+
+          expect(snippets).to contain_exactly(snippet_org1_public)
+        end
+      end
+
+      context 'when including project snippets' do
+        it 'returns project snippets regardless of organization' do
+          snippets = described_class.new(user_org1, scope: :all, organization_id: org1.id).execute
+
+          # Should include both org1 personal snippets AND all visible project snippets
+          expect(snippets).to include(snippet_org1_private, snippet_org1_public, project_snippet_org1, project_snippet_org2)
+          # Should NOT include personal snippets from other orgs
+          expect(snippets).not_to include(snippet_org2_private, snippet_org2_public)
+        end
+      end
+
+      context 'when user is admin in admin mode', :enable_admin_mode do
+        it 'returns all snippets with all_available flag' do
+          snippets = described_class.new(admin, all_available: true).execute
+
+          expect(snippets).to include(snippet_org1_private, snippet_org1_public, snippet_org2_private, snippet_org2_public)
+        end
+      end
+    end
   end
 
   it_behaves_like 'snippet visibility'

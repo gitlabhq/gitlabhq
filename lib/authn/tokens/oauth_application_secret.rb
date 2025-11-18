@@ -10,7 +10,7 @@ module Authn
         prefixes = [
           ::Gitlab::DoorkeeperSecretStoring::Token::UniqueApplicationToken.prefix_for_oauth_application_secret,
           ::Gitlab::DoorkeeperSecretStoring::Token::UniqueApplicationToken::OAUTH_APPLICATION_SECRET_PREFIX_FORMAT
-        ].uniq.map { |prefix_format| prefix_format.split('-').first }
+        ].uniq.map { |prefix_format| prefix_format.delete_suffix('-%{token}') }
 
         plaintext.start_with?(*prefixes)
       end

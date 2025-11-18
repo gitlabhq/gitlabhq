@@ -1,5 +1,6 @@
 import { mapActions, mapState } from 'pinia';
-import { scrollToElement, contentTop } from '~/lib/utils/common_utils';
+import { contentTop } from '~/lib/utils/common_utils';
+import { scrollToElement } from '~/lib/utils/scroll_utils';
 import { useLegacyDiffs } from '~/diffs/stores/legacy_diffs';
 import { useNotes } from '~/notes/store/legacy_notes';
 

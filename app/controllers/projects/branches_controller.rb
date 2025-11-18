@@ -33,9 +33,9 @@ class Projects::BranchesController < Projects::ApplicationController
           Gitlab::Git::RefPreloader.collect_ref(@project.id, Gitlab::Git::BRANCH_REF_PREFIX + branch.name)
         end
 
-        @refs_pipelines = @project.ci_pipelines.latest_successful_for_refs(@branches.map(&:name))
         @merged_branch_names = repository.merged_branch_names(@branches.map(&:name), include_identical: true)
-        @branch_pipeline_statuses = Ci::CommitStatusesFinder.new(@project, repository, current_user, @branches).execute
+        @branch_pipeline_statuses =
+          Ci::CommitStatusesFinder.new(@project, repository, current_user, @branches, ref_type: :heads).execute
 
         # https://gitlab.com/gitlab-org/gitlab/-/issues/22851
         Gitlab::GitalyClient.allow_n_plus_1_calls do
@@ -57,7 +57,13 @@ class Projects::BranchesController < Projects::ApplicationController
     respond_to do |format|
       format.json do
         service = ::Branches::DivergingCommitCountsService.new(repository)
-        branches = BranchesFinder.new(repository, params.permit(names: [])).execute
+        ref_names = params.permit(names: [])[:names].presence
+
+        branches = Gitlab::Git::Finders::RefsFinder.new(
+          repository,
+          ref_type: :branches,
+          ref_names: ref_names
+        ).execute
 
         Gitlab::GitalyClient.allow_n_plus_1_calls do
           render json: branches.to_h { |branch| [branch.name, service.call(branch)] }

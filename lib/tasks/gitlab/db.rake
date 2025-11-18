@@ -765,10 +765,6 @@ namespace :gitlab do
         path = Gitlab::Database.all_database_connections.fetch(database).db_docs_dir
         File.join(path, sub_directory, "#{source_name}.yml")
       end
-
-      Rake::Task['db:migrate'].enhance do
-        Rake::Task['gitlab:db:dictionary:generate'].invoke if Rails.env.development?
-      end
     end
   end
 end

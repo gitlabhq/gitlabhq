@@ -34,6 +34,26 @@ module Gitlab
           rescue Expression::ExpressionError
             false
           end
+
+          def input_names
+            collect_input_names(parse_tree).uniq
+          rescue Expression::ExpressionError
+            []
+          end
+
+          private
+
+          def collect_input_names(node)
+            return [] unless node
+
+            if node.is_a?(Lexeme::Input)
+              [node.value]
+            elsif node.is_a?(Lexeme::LogicalOperator)
+              collect_input_names(node.left) + collect_input_names(node.right)
+            else
+              []
+            end
+          end
         end
       end
     end

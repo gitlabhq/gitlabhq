@@ -15,12 +15,13 @@ RSpec.describe 'Query.project(fullPath).ciConfigVariables(ref)', feature_categor
 
   let(:service) { Ci::ListConfigVariablesService.new(project, user) }
   let(:ref) { project.default_branch }
+  let(:fail_on_cache_miss) { false }
 
   let(:query) do
     %(
       query {
         project(fullPath: "#{project.full_path}") {
-          ciConfigVariables(ref: "#{ref}") {
+          ciConfigVariables(ref: "#{ref}", failOnCacheMiss: #{fail_on_cache_miss}) {
             key
             value
             valueOptions
@@ -40,19 +41,8 @@ RSpec.describe 'Query.project(fullPath).ciConfigVariables(ref)', feature_categor
     end
 
     context 'when the cache is not empty' do
-      before do
-        synchronous_reactive_cache(service)
-      end
-
-      it 'returns the CI variables for the config' do
-        expect(service)
-          .to receive(:execute)
-          .with(ref)
-          .and_call_original
-
-        post_graphql(query, current_user: user)
-
-        expect(graphql_data.dig('project', 'ciConfigVariables')).to contain_exactly(
+      let(:expected_ci_variables) do
+        [
           {
             'key' => 'KEY_VALUE_VAR',
             'value' => 'value x',
@@ -71,7 +61,32 @@ RSpec.describe 'Query.project(fullPath).ciConfigVariables(ref)', feature_categor
             'valueOptions' => ['env var value', 'env var value2'],
             'description' => 'env var description'
           }
-        )
+        ]
+      end
+
+      shared_examples 'returns CI variables' do
+        it 'returns the CI variables for the config' do
+          expect(service)
+            .to receive(:execute)
+            .with(ref)
+            .and_call_original
+
+          post_graphql(query, current_user: user)
+
+          expect(graphql_data.dig('project', 'ciConfigVariables')).to match_array(expected_ci_variables)
+        end
+      end
+
+      before do
+        synchronous_reactive_cache(service)
+      end
+
+      it_behaves_like 'returns CI variables'
+
+      context 'when failOnCacheMiss is true' do
+        let(:fail_on_cache_miss) { true }
+
+        it_behaves_like 'returns CI variables'
       end
     end
 
@@ -80,6 +95,20 @@ RSpec.describe 'Query.project(fullPath).ciConfigVariables(ref)', feature_categor
         post_graphql(query, current_user: user)
 
         expect(graphql_data.dig('project', 'ciConfigVariables')).to be_nil
+      end
+
+      context 'when failOnCacheMiss is true' do
+        let(:fail_on_cache_miss) { true }
+
+        it 'returns an error' do
+          post_graphql(query, current_user: user)
+
+          expect(graphql_errors).to include(
+            a_hash_including(
+              'message' => 'Failed to retrieve CI/CD variables from cache.'
+            )
+          )
+        end
       end
     end
   end

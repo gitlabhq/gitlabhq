@@ -85,8 +85,8 @@ func newRSFactory(flags int) RSFactory {
 			return nil
 		}
 
-		for i := 0; i < SZ; i++ {
-			tmp.WriteString(fmt.Sprintf("%04d", i))
+		for i := range SZ {
+			fmt.Fprintf(tmp, "%04d", i)
 		}
 
 		req, err := http.NewRequest("GET", "http://www.example.com", nil)

@@ -21,6 +21,13 @@ module Types
         resolver_method: :custom_fields_enabled?,
         experiment: { milestone: '18.3' }
 
+      field :has_design_management_feature,
+        GraphQL::Types::Boolean,
+        null: false,
+        description: 'Whether design management is enabled for the namespace.',
+        resolver_method: :design_management_enabled?,
+        experiment: { milestone: '18.6' }
+
       field :has_epics_feature,
         GraphQL::Types::Boolean,
         null: false,
@@ -111,6 +118,12 @@ module Types
 
       def custom_fields_enabled?
         object.licensed_feature_available?(:custom_fields)
+      end
+
+      def design_management_enabled?
+        return false unless object.project_namespace?
+
+        object.project.design_management_enabled?
       end
 
       def epics_enabled?

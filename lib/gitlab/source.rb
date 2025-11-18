@@ -22,7 +22,7 @@ module Gitlab
       private
 
       def host_url
-        Gitlab::Saas.com_url
+        Gitlab.com_url
       end
 
       def group

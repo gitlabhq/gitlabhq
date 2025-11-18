@@ -260,7 +260,7 @@ class MergeRequest < ApplicationRecord
 
   state_machine :merge_status, initial: :unchecked do
     event :mark_as_preparing do
-      transition unchecked: :preparing
+      transition [:unchecked, :can_be_merged] => :preparing
     end
 
     event :mark_as_unchecked do
@@ -366,7 +366,7 @@ class MergeRequest < ApplicationRecord
   scope :including_target_project, -> do
     includes(:target_project)
   end
-  scope :by_commit_sha, ->(sha) do
+  scope :by_commit_sha, ->(project, sha) do
     if Feature.enabled?(:commit_sha_scope_logger, type: :ops)
       Gitlab::AppLogger.info(
         event: 'merge_request_by_commit_sha_call',
@@ -374,7 +374,7 @@ class MergeRequest < ApplicationRecord
       )
     end
 
-    where('EXISTS (?)', MergeRequestDiff.select(1).where('merge_requests.latest_merge_request_diff_id = merge_request_diffs.id').by_commit_sha(sha)).reorder(nil)
+    where('EXISTS (?)', MergeRequestDiff.select(1).where('merge_requests.latest_merge_request_diff_id = merge_request_diffs.id').by_commit_sha(project, sha)).reorder(nil)
   end
   scope :by_merge_commit_sha, ->(sha) do
     where(merge_commit_sha: sha)
@@ -391,7 +391,7 @@ class MergeRequest < ApplicationRecord
   scope :by_generated_ref_commit_sha, ->(sha) do
     joins(:generated_ref_commits).where(p_generated_ref_commits: { commit_sha: sha })
   end
-  scope :by_related_commit_sha, ->(sha) do
+  scope :by_related_commit_sha, ->(project, sha) do
     if Feature.enabled?(:commit_sha_scope_logger, type: :ops)
       Gitlab::AppLogger.info(
         event: 'merge_request_by_related_commit_sha_call',
@@ -401,7 +401,7 @@ class MergeRequest < ApplicationRecord
 
     from_union(
       [
-        by_commit_sha(sha),
+        by_commit_sha(project, sha),
         by_squash_commit_sha(sha),
         by_merge_commit_sha(sha),
         by_merged_commit_sha(sha),
@@ -476,8 +476,8 @@ class MergeRequest < ApplicationRecord
   scope :preload_metrics, ->(relation) { preload(metrics: relation) }
   scope :preload_project_and_latest_diff, -> { preload(:source_project, :latest_merge_request_diff) }
 
-  scope :preload_latest_diff_commit, -> do
-    if Feature.enabled?(:merge_request_diff_commits_dedup)
+  scope :preload_latest_diff_commit, ->(project) do
+    if Feature.enabled?(:merge_request_diff_commits_dedup, project)
       preload(latest_merge_request_diff: {
         merge_request_diff_commits: [{
           merge_request_commits_metadata: [:commit_author, :committer]
@@ -643,6 +643,19 @@ class MergeRequest < ApplicationRecord
   scope :by_blob_path, ->(path) do
     joins(latest_merge_request_diff: :merge_request_diff_files)
       .where(merge_request_diff_files: { old_path: path })
+  end
+
+  scope :with_closed_between, ->(closed_after = nil, closed_before = nil) do
+    return all unless closed_after || closed_before
+
+    metrics_scope = MergeRequest::Metrics
+      .where(MergeRequest::Metrics.arel_table[:merge_request_id].eq(arel_table[:id]))
+      .where(MergeRequest::Metrics.arel_table[:target_project_id].eq(arel_table[:target_project_id]))
+
+    metrics_scope = metrics_scope.closed_after(closed_after) if closed_after
+    metrics_scope = metrics_scope.closed_before(closed_before) if closed_before
+
+    where(metrics_scope.select(1).arel.exists)
   end
 
   def self.total_time_to_merge
@@ -952,7 +965,7 @@ class MergeRequest < ApplicationRecord
   end
 
   def commit_shas(limit: nil)
-    return merge_request_diff.commit_shas(limit: limit) if merge_request_diff.persisted?
+    return merge_request_diff.commit_shas(limit: limit, preload_metadata: true) if merge_request_diff.persisted?
 
     shas =
       if compare_commits
@@ -1467,7 +1480,7 @@ class MergeRequest < ApplicationRecord
   end
   alias_method :wip_title, :draft_title
 
-  def skipped_mergeable_checks(options = {})
+  def skipped_auto_merge_checks(options = {})
     merge_when_checks_pass_strat = options[:auto_merge_strategy] == ::AutoMergeService::STRATEGY_MERGE_WHEN_CHECKS_PASS || options[:auto_merge_strategy] == ::AutoMergeService::STRATEGY_ADD_TO_MERGE_TRAIN_WHEN_CHECKS_PASS
 
     {
@@ -1895,11 +1908,6 @@ class MergeRequest < ApplicationRecord
     access.can_update_branch?(target_branch)
   end
 
-  def can_be_merged_via_command_line_by?(user)
-    access = ::Gitlab::UserAccess.new(user, container: project)
-    access.can_push_to_branch?(target_branch)
-  end
-
   def only_allow_merge_if_pipeline_succeeds?
     project.only_allow_merge_if_pipeline_succeeds?(inherit_group_setting: true)
   end
@@ -2060,11 +2068,7 @@ class MergeRequest < ApplicationRecord
   end
 
   def has_test_reports?
-    if Feature.enabled?(:show_child_reports_in_mr_page, project)
-      !!diff_head_pipeline&.has_test_reports?
-    else
-      diff_head_pipeline&.has_reports?(Ci::JobArtifact.of_report_type(:test))
-    end
+    !!diff_head_pipeline&.has_test_reports?
   end
 
   # rubocop: disable Metrics/AbcSize -- Despite being long, this method is quite straightforward. Splitting it in smaller chunks would likely reduce readability.
@@ -2110,11 +2114,7 @@ class MergeRequest < ApplicationRecord
   end
 
   def has_terraform_reports?
-    if Feature.enabled?(:show_child_reports_in_mr_page, project)
-      !!diff_head_pipeline&.complete_and_has_self_or_descendant_reports?(Ci::JobArtifact.of_report_type(:terraform))
-    else
-      diff_head_pipeline&.has_reports?(Ci::JobArtifact.of_report_type(:terraform))
-    end
+    !!diff_head_pipeline&.complete_and_has_self_or_descendant_reports?(Ci::JobArtifact.of_report_type(:terraform))
   end
 
   def compare_accessibility_reports
@@ -2154,11 +2154,7 @@ class MergeRequest < ApplicationRecord
   end
 
   def has_codequality_reports?
-    if Feature.enabled?(:show_child_reports_in_mr_page, project)
-      !!diff_head_pipeline&.complete_and_has_self_or_descendant_reports?(Ci::JobArtifact.of_report_type(:codequality))
-    else
-      diff_head_pipeline&.complete_and_has_reports?(Ci::JobArtifact.of_report_type(:codequality))
-    end
+    !!diff_head_pipeline&.complete_and_has_self_or_descendant_reports?(Ci::JobArtifact.of_report_type(:codequality))
   end
 
   def compare_codequality_reports
@@ -2268,7 +2264,11 @@ class MergeRequest < ApplicationRecord
   def all_commit_shas
     return commit_shas unless persisted?
 
-    all_commits.pluck(:sha).uniq
+    if Feature.enabled?(:merge_request_diff_commits_dedup, project)
+      all_commit_shas_from_metadata
+    else
+      all_commits.pluck(:sha).uniq
+    end
   end
   strong_memoize_attr :all_commit_shas
 
@@ -2278,10 +2278,6 @@ class MergeRequest < ApplicationRecord
 
   def squash_commit
     @squash_commit ||= project.commit(squash_commit_sha) if squash_commit_sha
-  end
-
-  def short_merge_commit_sha
-    Commit.truncate_sha(merge_commit_sha) if merge_commit_sha
   end
 
   def merged_commit_sha
@@ -2518,10 +2514,6 @@ class MergeRequest < ApplicationRecord
     merge_request_assignees.find_by(user_id: user.id)
   end
 
-  def merge_request_assignees_with(user_ids)
-    merge_request_assignees.where(user_id: user_ids)
-  end
-
   def find_reviewer(user)
     merge_request_reviewers.find_by(user_id: user.id)
   end
@@ -2722,7 +2714,74 @@ class MergeRequest < ApplicationRecord
     all_commits.exists?(sha: sha)
   end
 
+  # Override state machine methods to sync to merge_data
+  %w[preparing unchecked checking mergeable unmergeable].each do |state|
+    define_method(:"mark_as_#{state}") do
+      if should_sync_merge_data?
+        ensure_merge_data
+
+        result = super()
+
+        if result
+          begin
+            # rubocop:disable GitlabSecurity/PublicSend -- temporary manual delegation
+            merge_data_result = merge_data.send(:"mark_as_#{state}")
+            # rubocop:enable GitlabSecurity/PublicSend
+
+            unless merge_data_result
+              Gitlab::AppLogger.warn(
+                message: "Failed to set merge_status to #{state} on MergeData",
+                merge_request_id: id,
+                value_on_merge_request: merge_status,
+                value_on_merge_data: merge_data.merge_status_name.to_s
+              )
+            end
+          rescue StandardError => e
+            Gitlab::ErrorTracking.track_exception(e,
+              message: "Failed to set merge_status to #{state} on MergeData",
+              merge_request_id: id,
+              value_on_merge_request: merge_status,
+              value_on_merge_data: merge_data.merge_status_name.to_s
+            )
+          end
+        end
+
+        result
+      else
+        super()
+      end
+    end
+  end
+
+  def ensure_merge_data
+    # Eventually we probably need to set up a callback for this, but we need to
+    #   conditionally initialize this for now.
+    merge_data || build_merge_data(merge_data_attributes)
+  end
+
   private
+
+  def merge_data_attributes
+    {
+      project: project,
+      merge_status: MergeRequests::MergeData::MERGE_STATUSES[merge_status.to_sym],
+      merge_params: read_attribute(:merge_params),
+      merge_error: read_attribute(:merge_error),
+      merge_user_id: read_attribute(:merge_user_id),
+      merge_jid: read_attribute(:merge_jid),
+      merge_commit_sha: read_attribute(:merge_commit_sha),
+      merged_commit_sha: read_attribute(:merged_commit_sha),
+      merge_ref_sha: read_attribute(:merge_ref_sha),
+      squash_commit_sha: read_attribute(:squash_commit_sha),
+      in_progress_merge_commit_sha: read_attribute(:in_progress_merge_commit_sha),
+      auto_merge_enabled: read_attribute(:merge_when_pipeline_succeeds),
+      squash: read_attribute(:squash)
+    }
+  end
+
+  def should_sync_merge_data?
+    Feature.enabled?(:merge_requests_merge_data_dual_write, project)
+  end
 
   def viewable_diffs(order_by: :id_asc)
     strong_memoize_with(:viewable_diffs, order_by) do
@@ -2810,6 +2869,23 @@ class MergeRequest < ApplicationRecord
     !!diff_head_pipeline
       &.latest_report_builds_in_self_and_project_descendants(::Ci::JobArtifact.of_report_type(report_type))
       &.exists?
+  end
+
+  def all_commit_shas_from_metadata
+    commits_subquery = all_commits.select(:merge_request_commits_metadata_id)
+    migrated_shas = MergeRequest::CommitsMetadata
+                      .joins(
+                        "INNER JOIN (#{commits_subquery.to_sql}) AS diff_commits " \
+                          "ON diff_commits.merge_request_commits_metadata_id = merge_request_commits_metadata.id"
+                      )
+                      .where(project_id: project_id)
+                      .pluck(:sha)
+
+    # We need to query SHAs from `merge_request_diff_commits` table to account
+    # for records that don't have `merge_request_commits_metadata_id` populated yet
+    unmigrated_shas = all_commits.where(merge_request_commits_metadata_id: nil).pluck(:sha)
+
+    (migrated_shas + unmigrated_shas).uniq
   end
 end
 

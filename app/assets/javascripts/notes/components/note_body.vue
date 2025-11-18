@@ -270,7 +270,7 @@ export default {
     <div
       v-if="isDuoFirstReviewComment && isDiffNote"
       v-safe-html:[$options.safeHtmlConfig]="duoFeedbackText"
-      class="gl-text-md gl-mt-4 gl-text-gray-500"
+      class="gl-mt-4 gl-text-md gl-text-gray-500"
     ></div>
     <note-awards-list
       v-if="defaultAwardsList.length || (note.award_emoji && note.award_emoji.length)"

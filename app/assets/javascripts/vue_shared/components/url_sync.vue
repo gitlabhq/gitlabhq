@@ -58,7 +58,12 @@ export default {
     updateQuery(newQuery) {
       const url =
         this.urlParamsUpdateStrategy === URL_SET_PARAMS_STRATEGY
-          ? setUrlParams(this.query, window.location.href, true, true, true)
+          ? setUrlParams(this.query, {
+              url: window.location.href,
+              clearParams: true,
+              railsArraySyntax: true,
+              decodeParams: true,
+            })
           : mergeUrlParams(newQuery, window.location.href, { spreadArrays: true });
 
       if (this.historyUpdateMethod === HISTORY_PUSH_UPDATE_METHOD) {

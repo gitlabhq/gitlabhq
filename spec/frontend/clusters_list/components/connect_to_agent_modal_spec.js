@@ -2,9 +2,8 @@ import { GlLink, GlModal, GlSprintf, GlButton } from '@gitlab/ui';
 import { nextTick } from 'vue';
 import { shallowMount } from '@vue/test-utils';
 import ConnectToAgentModal from '~/clusters_list/components/connect_to_agent_modal.vue';
-import ModalCopyButton from '~/vue_shared/components/modal_copy_button.vue';
+import SimpleCopyButton from '~/vue_shared/components/simple_copy_button.vue';
 import CodeBlockHighlighted from '~/vue_shared/components/code_block_highlighted.vue';
-import { CONNECT_MODAL_ID } from '~/clusters_list/constants';
 import { stubComponent } from 'helpers/stub_component';
 
 const agentId = '123';
@@ -29,7 +28,7 @@ describe('ConnectToAgentModal', () => {
   let wrapper;
 
   const findModal = () => wrapper.findComponent(GlModal);
-  const findModalCopyButton = () => wrapper.findComponent(ModalCopyButton);
+  const findSimpleCopyButton = () => wrapper.findComponent(SimpleCopyButton);
   const findCodeBlock = () => wrapper.findComponent(CodeBlockHighlighted);
   const findDocsLink = () => wrapper.findComponent(GlLink);
   const findCloseButton = () => wrapper.findComponent(GlButton);
@@ -100,9 +99,8 @@ describe('ConnectToAgentModal', () => {
     });
 
     it('renders copy button with the correct props', () => {
-      expect(findModalCopyButton().props()).toMatchObject({
+      expect(findSimpleCopyButton().props()).toMatchObject({
         text: glabCommand,
-        modalId: CONNECT_MODAL_ID,
       });
     });
   });
@@ -126,9 +124,8 @@ describe('ConnectToAgentModal', () => {
     });
 
     it('renders copy button with the correct props', () => {
-      expect(findModalCopyButton().props()).toMatchObject({
+      expect(findSimpleCopyButton().props()).toMatchObject({
         text: glabCommandSelfManaged,
-        modalId: CONNECT_MODAL_ID,
       });
     });
   });
@@ -162,9 +159,8 @@ describe('ConnectToAgentModal', () => {
     });
 
     it('renders copy button with the correct props', () => {
-      expect(findModalCopyButton().props()).toMatchObject({
+      expect(findSimpleCopyButton().props()).toMatchObject({
         text: yamlCommand,
-        modalId: CONNECT_MODAL_ID,
       });
     });
   });

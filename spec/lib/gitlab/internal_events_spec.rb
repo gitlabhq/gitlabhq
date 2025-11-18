@@ -474,6 +474,79 @@ RSpec.describe Gitlab::InternalEvents, :snowplow, feature_category: :product_ana
 
       expect { described_class.track_event(event_name, **params) }.not_to raise_error
     end
+
+    context 'when error occurs in track_event' do
+      let(:error) { StandardError.new("tracking failed") }
+
+      before do
+        allow_next_instance_of(Gitlab::Tracking::EventValidator) do |instance|
+          allow(instance).to receive(:validate!).and_raise(error)
+        end
+      end
+
+      context 'on GitLab.com' do
+        before do
+          allow(Gitlab).to receive_messages(com?: true, dev_or_test_env?: false)
+        end
+
+        it 'raises exception via ErrorTracking' do
+          expect(Gitlab::ErrorTracking).to receive(:track_and_raise_for_dev_exception)
+            .with(
+              error,
+              hash_including(
+                server_version: Gitlab::VERSION,
+                event_name: event_name,
+                additional_properties: {},
+                kwargs: hash_including(user: user.id, project: project.id)
+              )
+            )
+
+          described_class.track_event(event_name, **params)
+        end
+      end
+
+      context 'in dev/test environment' do
+        before do
+          allow(Gitlab).to receive_messages(com?: false, dev_or_test_env?: true)
+        end
+
+        it 'raises exception via ErrorTracking' do
+          expect(Gitlab::ErrorTracking).to receive(:track_and_raise_for_dev_exception)
+            .with(
+              error,
+              hash_including(
+                server_version: Gitlab::VERSION,
+                event_name: event_name
+              )
+            )
+
+          described_class.track_event(event_name, **params)
+        end
+      end
+
+      context 'on self-managed instance' do
+        before do
+          allow(Gitlab).to receive_messages(com?: false, dev_or_test_env?: false)
+        end
+
+        it 'logs warning without raising exception' do
+          expect(Gitlab::AppLogger).to receive(:warn)
+            .with(
+              error,
+              hash_including(
+                server_version: Gitlab::VERSION,
+                event_name: event_name,
+                additional_properties: {},
+                kwargs: hash_including(user: user.id, project: project.id)
+              )
+            )
+
+          expect(Gitlab::ErrorTracking).not_to receive(:track_and_raise_for_dev_exception)
+
+          described_class.track_event(event_name, **params)
+        end
+      end
+    end
   end
 
   it 'logs warning on missing property', :aggregate_failures do

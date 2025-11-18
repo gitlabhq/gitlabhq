@@ -49,19 +49,11 @@ class Projects::IssuesController < Projects::ApplicationController
   before_action do
     push_frontend_feature_flag(:preserve_markdown, project)
     push_frontend_feature_flag(:service_desk_ticket)
-    push_frontend_feature_flag(:issues_list_create_modal, project)
-    push_frontend_feature_flag(:issues_list_drawer, project)
     push_frontend_feature_flag(:notifications_todos_buttons, current_user)
-    push_frontend_feature_flag(:work_item_planning_view, project&.group)
+    push_force_frontend_feature_flag(:work_item_planning_view, !!project&.work_items_consolidated_list_enabled?(current_user))
     push_force_frontend_feature_flag(:glql_load_on_click, !!project&.glql_load_on_click_feature_flag_enabled?)
-    push_force_frontend_feature_flag(:work_items_beta, !!project&.work_items_beta_feature_flag_enabled?)
-    push_force_frontend_feature_flag(:work_items_alpha, !!project&.work_items_alpha_feature_flag_enabled?)
     push_frontend_feature_flag(:work_item_view_for_issues, project&.group)
     push_frontend_feature_flag(:hide_incident_management_features, project)
-  end
-
-  before_action only: [:index, :show] do
-    push_force_frontend_feature_flag(:work_items, project&.work_items_feature_flag_enabled?)
   end
 
   before_action only: :show do
@@ -141,12 +133,22 @@ class Projects::IssuesController < Projects::ApplicationController
   end
 
   def show
-    return super unless show_work_item? && request.format.html?
+    return super unless issue.show_as_work_item? && request.format.html?
 
-    @right_sidebar = false
-    @work_item = issue.becomes(::WorkItem) # rubocop:disable Cop/AvoidBecomes -- We need the instance to be a work item
+    if project&.work_items_consolidated_list_enabled?(current_user)
+      if params[:vueroute].present? && request.path.include?('/designs/')
+        # Only redirect to designs path if both vueroute param exists and path contains /designs/
+        # Needed since designs are aliased to show in this controller
+        redirect_to designs_project_work_item_path(project, issue.iid, vueroute: params[:vueroute], params: request.query_parameters)
+      else
+        redirect_to project_work_item_path(project, issue.iid, params: request.query_parameters)
+      end
+    else
+      @right_sidebar = false
+      @work_item = issue.becomes(::WorkItem) # rubocop:disable Cop/AvoidBecomes -- We need the instance to be a work item
 
-    render 'projects/work_items/show'
+      render 'projects/work_items/show'
+    end
   end
 
   alias_method :designs, :show
@@ -248,7 +250,7 @@ class Projects::IssuesController < Projects::ApplicationController
   end
 
   def create_merge_request
-    Gitlab::CoveredExperience.start_covered_experience_create_merge_request(project)
+    Labkit::UserExperienceSli.start(:create_merge_request)
 
     create_params = params.slice(:branch_name, :ref).merge(issue_iid: issue.iid)
     create_params[:target_project_id] = params[:target_project_id]
@@ -419,13 +421,6 @@ class Projects::IssuesController < Projects::ApplicationController
     Gitlab::QueryLimiting.disable!('https://gitlab.com/gitlab-org/gitlab/-/issues/546668', new_threshold: 150)
   end
 
-  def show_work_item?
-    # Service Desk issues and incidents should not use the work item view
-    !issue.from_service_desk? &&
-      !issue.work_item_type&.incident? &&
-      Feature.enabled?(:work_item_view_for_issues, project&.group)
-  end
-
   def work_item_redirect_except_actions
     ISSUES_EXCEPT_ACTIONS
   end
@@ -447,7 +442,7 @@ class Projects::IssuesController < Projects::ApplicationController
 
   def clean_params(all_params)
     issue_type = all_params[:issue_type].to_s
-    all_params.delete(:issue_type) unless WorkItems::Type.allowed_types_for_issues.include?(issue_type)
+    all_params.delete(:issue_type) unless ::WorkItems::TypesFilter.allowed_types_for_issues.include?(issue_type)
 
     all_params
   end
@@ -485,10 +480,14 @@ class Projects::IssuesController < Projects::ApplicationController
   end
 
   def redirect_index_to_work_items
-    return unless index_html_request? && ::Feature.enabled?(:work_item_planning_view, project.group)
+    return unless index_html_request? && project&.work_items_consolidated_list_enabled?(current_user)
 
-    params = request.query_parameters.except("type").merge('type[]' => 'issue')
-    redirect_to project_work_items_path(project, params: params)
+    redirect_to project_work_items_path(project, params: work_items_redirect_params(request.query_parameters))
+  end
+
+  # Overridden in EE
+  def work_items_redirect_params(params)
+    params.except("type", "type[]")
   end
 
   def require_incident_for_incident_routes

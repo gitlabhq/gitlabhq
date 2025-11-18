@@ -170,7 +170,7 @@ export default {
       this.$apollo.queries.jobsCount.refetch(filterParams);
 
       updateHistory({
-        url: setUrlParams(filterParams, window.location.href, true),
+        url: setUrlParams(filterParams, { url: window.location.href, clearParams: true }),
       });
     },
     fetchJobsByStatus(scope) {

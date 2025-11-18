@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe 'projects/tags/index.html.haml' do
+RSpec.describe 'projects/tags/index.html.haml', feature_category: :source_code_management do
   include RenderedHtml
 
   let_it_be(:project)  { create(:project, :repository) }
@@ -18,7 +18,6 @@ RSpec.describe 'projects/tags/index.html.haml' do
     assign(:repository, project.repository)
     assign(:releases, project.releases)
     assign(:tags, Kaminari.paginate_array(tags).page(0))
-    assign(:tags_pipelines, { git_tag.name => pipeline })
 
     allow(view).to receive(:current_ref).and_return('master')
     allow(view).to receive(:current_user).and_return(project.namespace.owner)

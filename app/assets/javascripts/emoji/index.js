@@ -4,6 +4,7 @@ import emojiRegexFactory from 'emoji-regex';
 import emojiAliases from 'emojis/aliases.json';
 import createApolloClient from '~/lib/graphql';
 import { setAttributes } from '~/lib/utils/dom_utils';
+import { htmlEncode } from '~/lib/utils/html';
 import { getEmojiScoreWithIntent } from '~/emoji/utils';
 import AccessorUtilities from '../lib/utils/accessor';
 import axios from '../lib/utils/axios_utils';
@@ -337,3 +338,35 @@ export const getEmojisForCategory = async (category) => {
 
   return Object.values(emojiMap).filter((e) => e.c === category);
 };
+
+/**
+ * Regex pattern to match emoji shortcodes that are properly delimited.
+ *
+ * Matches :emoji_name: only when:
+ * - Preceded by start of string (^), whitespace (\s), parenthesis (()), or bracket ([])
+ * - Followed by whitespace (\s), end of string ($), parenthesis (()), or bracket ([])
+ *
+ * This prevents rendering emojis embedded in code/class names like:
+ * - service::heart::utils (no match)
+ * - namespace::rocket::method (no match)
+ *
+ * But allows:
+ * - "Fix :bug: in code" (matches)
+ * - ":rocket: Deploy" (matches)
+ * - "Done (:tada:)" (matches)
+ *
+ * @type {RegExp}
+ */
+const EMOJI_SHORTCODE_PATTERN = /(^|\s|[[(]):([a-zA-Z0-9_+-]+):(?=\s|$|[\])])/g;
+
+/**
+ * Processes title string and converts emoji shortcodes to HTML
+ * @param {string} title - The title containing emoji shortcodes like :rocket:
+ * @returns {string} - HTML string with emoji images
+ */
+export function processEmojiInTitle(title) {
+  if (!title) return '';
+  return htmlEncode(title).replace(EMOJI_SHORTCODE_PATTERN, (match, prefix, emojiName) => {
+    return prefix + glEmojiTag(emojiName);
+  });
+}

@@ -352,6 +352,7 @@ module Gitlab
       metadata['gitaly-session-id'] = session_id
       metadata['username'] = context_data['meta.user'] if context_data&.fetch('meta.user', nil)
       metadata['user_id'] = context_data['meta.user_id'].to_s if context_data&.fetch('meta.user_id', nil)
+      metadata[Labkit::Fields::GL_USER_ID] = context_data['meta.gl_user_id'].to_s if context_data&.fetch('meta.gl_user_id', nil)
       metadata['remote_ip'] = context_data['meta.remote_ip'] if context_data&.fetch('meta.remote_ip', nil)
       metadata['relative-path-bin'] = relative_path if relative_path
       metadata['gitaly-client-context-bin'] = gitaly_context.to_json if gitaly_context.present?

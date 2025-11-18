@@ -12,6 +12,7 @@ import {
 } from '@gitlab/ui';
 // eslint-disable-next-line no-restricted-imports
 import { mapState, mapGetters, mapActions } from 'vuex';
+import SimpleCopyButton from '~/vue_shared/components/simple_copy_button.vue';
 import { __, s__ } from '~/locale';
 import { helpPagePath } from '~/helpers/help_page_helper';
 import TestCaseDetails from './test_case_details.vue';
@@ -33,6 +34,7 @@ export default {
     GlPagination,
     GlEmptyState,
     GlSprintf,
+    SimpleCopyButton,
     TestCaseDetails,
   },
   directives: {
@@ -131,16 +133,7 @@ export default {
             <gl-link v-if="testCase.file" :href="testCase.filePath" target="_blank">
               <gl-friendly-wrap :symbols="$options.wrapSymbols" :text="testCase.file" />
             </gl-link>
-            <gl-button
-              v-if="testCase.file"
-              v-gl-tooltip
-              size="small"
-              category="tertiary"
-              icon="copy-to-clipboard"
-              :title="__('Copy to clipboard')"
-              :data-clipboard-text="testCase.file"
-              :aria-label="__('Copy to clipboard')"
-            />
+            <simple-copy-button size="small" category="tertiary" :text="testCase.file" />
           </div>
         </div>
 

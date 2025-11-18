@@ -212,24 +212,16 @@ RSpec.describe PersonalAccessTokensFinder, :enable_admin_mode, feature_category:
         it 'returns tokens by owner type' do
           is_expected.to match_array(tokens.values_at(*expected_tokens))
         end
-
-        context 'when optimize_credentials_inventory FF is disabled' do
-          before do
-            stub_feature_flags(optimize_credentials_inventory: false)
-          end
-
-          it 'returns tokens by owner type' do
-            is_expected.to match_array(tokens.values_at(*expected_tokens))
-          end
-        end
       end
     end
 
     describe 'by revoked state' do
       where(:by_revoked_state, :expected_tokens) do
-        nil   | [:active, :active_other, :expired, :active_impersonation, :expired_impersonation, :bot, :with_group, :with_another_group]
-        true  | [:revoked, :revoked_impersonation]
-        false | [:active, :active_other, :expired, :active_impersonation, :expired_impersonation, :bot, :with_group, :with_another_group]
+        nil     | [:active, :active_other, :expired, :active_impersonation, :expired_impersonation, :bot, :with_group, :with_another_group]
+        true    | [:revoked, :revoked_impersonation]
+        'true'  | [:revoked, :revoked_impersonation]
+        false   | [:active, :active_other, :expired, :active_impersonation, :expired_impersonation, :bot, :with_group, :with_another_group]
+        'false' | [:active, :active_other, :expired, :active_impersonation, :expired_impersonation, :bot, :with_group, :with_another_group]
       end
 
       with_them do

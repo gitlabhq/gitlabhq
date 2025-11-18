@@ -22,7 +22,7 @@ const itCorrectlyFormatsWithActions = (formattedGroup, mockGroup) => {
     accessLevel: {
       integerValue: 50,
     },
-    availableActions: ['edit', 'restore', 'leave', 'delete-immediately'],
+    availableActions: ['copy-id', 'edit', 'restore', 'leave', 'delete-immediately'],
     children: [],
     childrenLoading: false,
     hasChildren: false,
@@ -40,7 +40,7 @@ const itCorrectlyFormatsWithoutActions = (formattedGroup, mockGroup) => {
     accessLevel: {
       integerValue: 0,
     },
-    availableActions: [],
+    availableActions: ['copy-id'],
   });
 };
 

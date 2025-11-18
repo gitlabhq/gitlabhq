@@ -26,7 +26,7 @@ RSpec.describe 'Job confirmation integration', :freeze_time, :clean_gitlab_redis
         # Verify job transitioned directly to running (feature flag disabled)
         job = Ci::Build.find(job_id)
         expect(job).to be_running
-        expect(job).not_to be_waiting_for_runner_ack
+        expect(job.runner_ack_wait_status).to eq(:not_waiting)
         expect(job.runner_id).to eq(runner.id)
         expect(job.runner_manager).to eq(runner_manager)
         expect(job.started_at).to be_present
@@ -105,7 +105,7 @@ RSpec.describe 'Job confirmation integration', :freeze_time, :clean_gitlab_redis
         # Verify job is assigned to runner but still pending
         job = Ci::Build.find(job_id)
         expect(job).to be_pending
-        expect(job).to be_waiting_for_runner_ack
+        expect(job.runner_ack_wait_status).to eq(:waiting)
         expect(job.runner_id).to eq(runner.id)
         expect(job.runner_manager).to be_nil
         expect(job.runner_manager_id_waiting_for_ack).to eq(runner_manager.id)
@@ -144,7 +144,7 @@ RSpec.describe 'Job confirmation integration', :freeze_time, :clean_gitlab_redis
         # Verify job transitioned to running
         job.reload
         expect(job).to be_running
-        expect(job).not_to be_waiting_for_runner_ack
+        expect(job.runner_ack_wait_status).to eq(:not_waiting)
         expect(job.started_at).to be_present
         expect(job.started_at - job.queued_at).to eq 6.seconds
         expect(job.runner_manager_id_waiting_for_ack).to be_nil
@@ -170,29 +170,65 @@ RSpec.describe 'Job confirmation integration', :freeze_time, :clean_gitlab_redis
         expect(job.duration).to eq 5.minutes
       end
 
-      it 'prevents other runners from picking up assigned job' do
-        # Step 1: First runner requests a job
-        post '/api/v4/jobs/request', params: runner_params
+      context 'when another runner requests job just before Redis call' do
+        let_it_be(:other_runner) { create(:ci_runner, :project, :with_runner_manager, projects: [project]) }
+        let(:other_runner_manager) { other_runner.runner_managers.sole }
 
-        expect(response).to have_gitlab_http_status(:created)
-        job_response = Gitlab::Json.parse(response.body)
-        job_id = job_response['id']
+        it 'prevents runner from picking up assigned job' do
+          setup_build_queue_service_hook(runner) do
+            # Simulate state of a job that is already waiting for another runner manager
+            build.all_queuing_entries.delete_all
+            build.update!(runner_id: other_runner.id)
+            build.set_waiting_for_runner_ack(other_runner_manager.id)
 
-        # Verify job is assigned and removed from queue
-        job = Ci::Build.find(job_id)
-        expect(job).to be_pending
-        expect(job.runner_id).to eq(runner.id)
-        expect(Ci::PendingBuild.where(build: job)).to be_empty
+            expect(build.runner_ack_wait_status).to eq(:waiting)
+          end
 
-        # Step 2: Second runner tries to request a job
-        other_runner = create(:ci_runner, :project, projects: [project])
-        post '/api/v4/jobs/request', params: {
-          token: other_runner.token,
-          info: { features: { two_phase_job_commit: true } }
-        }
+          post '/api/v4/jobs/request', params: runner_params
 
-        # Should not get the already assigned job
-        expect(response).to have_gitlab_http_status(:no_content)
+          expect(response).to have_gitlab_http_status(:no_content)
+
+          expect(build.reload).to be_pending
+          expect(build.runner_ack_wait_status).to eq(:waiting) # POST call did not have an effect on the job
+          expect(build.runner_id).to eq(other_runner.id)       # and runner_id stays the same
+          expect(Ci::PendingBuild.where(build: build)).to be_empty
+        end
+
+        context 'and wait has expired' do
+          it 'allows other runner to pick up job with expired wait' do
+            setup_build_queue_service_hook(other_runner) do
+              # Simulate state of a job that is already waiting for another runner manager, but wait has expired
+              build.all_queuing_entries.delete_all
+              build.update!(runner_id: runner.id)
+
+              expect(build.runner_ack_wait_status).to eq(:wait_expired)
+            end
+
+            post '/api/v4/jobs/request', params: runner_params.merge(
+              token: other_runner.token, system_id: other_runner_manager.system_xid
+            )
+
+            expect(response).to have_gitlab_http_status(:created)
+
+            expect(build.reload).to be_pending
+            expect(build.runner_ack_wait_status).to eq(:waiting) # Sets the job to waiting status again
+            expect(build.runner_id).to eq(other_runner.id)       # with other runner
+            expect(Ci::PendingBuild.where(build: build)).to be_empty
+          end
+        end
+
+        private
+
+        def setup_build_queue_service_hook(runner, &_block)
+          # Execute logic after call to BuildQueueService, which is called from Ci::RegisterJobService
+          allow_next_instance_of(Ci::Queue::BuildQueueService, runner) do |service|
+            allow(service).to receive(:execute).and_wrap_original do |m, *args|
+              m.call(*args).tap do
+                yield
+              end
+            end
+          end
+        end
       end
 
       context 'when allow_runner_job_acknowledgement feature flag is disabled' do
@@ -219,7 +255,7 @@ RSpec.describe 'Job confirmation integration', :freeze_time, :clean_gitlab_redis
           # Verify job is in waiting state
           build.reload
           expect(build).to be_pending
-          expect(build).to be_waiting_for_runner_ack
+          expect(build.runner_ack_wait_status).to eq(:waiting)
 
           # Step 2: Disable feature flag mid-flight
           stub_feature_flags(allow_runner_job_acknowledgement: false)

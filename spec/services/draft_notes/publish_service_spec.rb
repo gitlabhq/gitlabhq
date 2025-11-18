@@ -195,6 +195,8 @@ RSpec.describe DraftNotes::PublishService, feature_category: :code_review_workfl
         notes = merge_request.notes.order(id: :asc)
         expect(notes.first.diff_note_positions).to be_any
         expect(notes.last.diff_note_positions).to be_any
+        expect(notes.flat_map(&:diff_note_positions).pluck(:namespace_id).uniq)
+          .to contain_exactly(project.project_namespace_id)
       end
 
       it 'keeps around the commits of each published note' do

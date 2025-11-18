@@ -2,6 +2,7 @@
 
 FactoryBot.define do
   factory :x509_certificate do
+    project
     subject_key_identifier { 'BC:BC:BC:BC:BC:BC:BC:BC:BC:BC:BC:BC:BC:BC:BC:BC:BC:BC:BC:BC' }
     subject { 'CN=gitlab@example.org,OU=Example,O=World' }
 

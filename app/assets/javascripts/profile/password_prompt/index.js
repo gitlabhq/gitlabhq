@@ -49,7 +49,11 @@ export default () => {
       },
       render(createElement) {
         return createElement(PasswordPromptModal, {
-          props: { handleConfirmPassword },
+          on: {
+            submit: (password) => {
+              handleConfirmPassword(password);
+            },
+          },
         });
       },
     });

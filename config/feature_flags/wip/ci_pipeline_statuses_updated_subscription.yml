@@ -1,0 +1,10 @@
+---
+name: ci_pipeline_statuses_updated_subscription
+description:
+feature_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/578883
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/210777
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/578884
+milestone: '18.6'
+group: group::pipeline execution
+type: wip
+default_enabled: false

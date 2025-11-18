@@ -1,6 +1,6 @@
 ---
-stage: none
-group: unassigned
+stage: Analytics
+group: Platform Insights
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 gitlab_dedicated: yes
 title: ClickHouse integration guidelines
@@ -22,7 +22,7 @@ For more information on plans for ClickHouse support for GitLab Self-Managed, se
 
 {{< alert type="note" >}}
 
-For more information about ClickHouse support for GitLab Dedicated, see [ClickHouse for GitLab Dedicated](../subscriptions/gitlab_dedicated/_index.md#clickhouse).
+For more information about ClickHouse support for GitLab Dedicated, see [ClickHouse for GitLab Dedicated](../subscriptions/gitlab_dedicated/_index.md#clickhouse-cloud).
 
 {{< /alert >}}
 

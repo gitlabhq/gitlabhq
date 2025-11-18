@@ -1,6 +1,6 @@
 /* eslint-disable func-names, no-underscore-dangle, no-param-reassign, consistent-return */
 
-import { scrollToElement } from '~/lib/utils/common_utils';
+import { scrollToElement } from '~/lib/utils/scroll_utils';
 import { updateHash } from '~/blob/state';
 
 // LineHighlighter

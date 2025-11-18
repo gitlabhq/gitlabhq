@@ -12,9 +12,9 @@ title: Pages API
 
 {{< /details >}}
 
-Endpoints for managing [GitLab Pages](../user/project/pages/_index.md).
+Use this API to [administer](../administration/pages/_index.md) and [use](../user/project/pages/_index.md) GitLab Pages.
 
-The GitLab Pages feature must be enabled to use these endpoints. Find out more about [administering](../administration/pages/_index.md) and [using](../user/project/pages/_index.md) the feature.
+The GitLab Pages feature must be enabled to use these endpoints.
 
 ## Unpublish Pages
 

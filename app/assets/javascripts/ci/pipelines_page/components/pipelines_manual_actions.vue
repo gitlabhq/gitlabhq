@@ -12,7 +12,7 @@ import { s__, __, sprintf } from '~/locale';
 import Tracking from '~/tracking';
 import GlCountdown from '~/vue_shared/components/gl_countdown.vue';
 import { confirmJobConfirmationMessage } from '~/ci/pipeline_details/graph/utils';
-import { TRACKING_CATEGORIES } from '../../constants';
+import { TRACKING_CATEGORIES, DEFAULT_MANUAL_ACTIONS_LIMIT } from '../../constants';
 import getPipelineActionsQuery from '../graphql/queries/get_pipeline_actions.query.graphql';
 import jobPlayMutation from '../../jobs_page/graphql/mutations/job_play.mutation.graphql';
 
@@ -47,7 +47,7 @@ export default {
         return {
           fullPath: this.fullPath,
           iid: this.iid,
-          limit: this.manualActionsLimit,
+          limit: this.manualActionsLimit || DEFAULT_MANUAL_ACTIONS_LIMIT,
         };
       },
       skip() {

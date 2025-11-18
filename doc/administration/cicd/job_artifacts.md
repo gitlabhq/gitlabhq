@@ -272,7 +272,7 @@ processing is done in a background worker and requires **no downtime**.
       SQL query. The number of `objectstg` should be the same as `total`:
 
       ```shell
-      gitlabhq_production=# SELECT count(*) AS total, sum(case when file_store = '1' then 1 else 0 end) AS filesystem, sum(case when file_store = '2' then 1 else 0 end) AS objectstg FROM ci_job_artifacts;
+      gitlabhq_production=# SELECT count(*) AS total, sum(case when file_store = '1' then 1 else 0 end) AS filesystem, sum(case when file_store = '2' then 1 else 0 end) AS objectstg FROM p_ci_job_artifacts;
 
       total | filesystem | objectstg
       ------+------------+-----------
@@ -323,6 +323,8 @@ To migrate artifacts back to local storage:
 1. Run `gitlab-rake gitlab:artifacts:migrate_to_local`.
 1. [Selectively disable the artifacts' storage](../object_storage.md#disable-object-storage-for-specific-features) in `gitlab.rb`.
 1. [Reconfigure GitLab](../restart_gitlab.md#reconfigure-a-linux-package-installation).
+
+Before GitLab 18.6, a migration from remote to local storage could result in [artifacts being copied with incorrect filenames](job_artifacts_troubleshooting.md#job-artifacts-can-have-wrong-filenames).
 
 ## Expiring artifacts
 

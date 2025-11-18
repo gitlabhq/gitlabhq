@@ -52,8 +52,8 @@ RSpec.describe Gitlab::Database::Migrations::Squasher, feature_category: :databa
 
   describe "#files_to_delete" do
     before do
-      allow(Dir).to receive(:glob).with(Rails.root.join('spec/migrations/*.rb')).and_return(spec_files)
-      allow(Dir).to receive(:glob).with(Rails.root.join('ee/spec/migrations/*.rb')).and_return(ee_spec_files)
+      allow(Dir).to receive(:glob).with(Rails.root.join('spec/migrations/**/*.rb')).and_return(spec_files)
+      allow(Dir).to receive(:glob).with(Rails.root.join('ee/spec/migrations/**/*.rb')).and_return(ee_spec_files)
     end
 
     let(:squasher) { described_class.new(git_output) }

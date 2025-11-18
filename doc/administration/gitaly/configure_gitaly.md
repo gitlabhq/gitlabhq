@@ -1,5 +1,5 @@
 ---
-stage: Data Access
+stage: Tenant Scale
 group: Gitaly
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 title: Configure Gitaly
@@ -264,6 +264,15 @@ Updates to example must be made at:
 -->
 
 Configure Gitaly server.
+
+Gitaly has some RPCs in which it makes a network call to itself using the address provided by the client (such as Rails or Sidekiq).
+
+If Gitaly can't reach itself this way because of your network configuration (for example, Gitaly is behind a load balancer that doesn't support hairpinning
+connections):
+
+1. Edit the `/etc/hosts` file of the Gitaly server.
+1. Add an entry for redirecting the Gitaly address used by clients to the Gitaly server's own IP address. For example, `127.0.0.1 gitaly.example.com`
+   or `<local-ip> gitaly.example.com`.
 
 {{< tabs >}}
 
@@ -1108,7 +1117,7 @@ Prometheus query to see the hit rate:
 sum(rate(gitaly_catfile_cache_total{type="hit"}[5m])) / sum(rate(gitaly_catfile_cache_total{type=~"(hit)|(miss)"}[5m]))
 ```
 
-Configure the `cat-file` cache in the [Gitaly configuration file](reference.md).
+Configure the `cat-file` cache in the Gitaly configuration file.
 
 ## Configure commit signing for GitLab UI commits
 

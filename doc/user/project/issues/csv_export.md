@@ -47,7 +47,7 @@ Prerequisites:
 
 - You must have at least the Guest role.
 
-1. On the left sidebar, select **Search or go to** and find your project.
+1. On the left sidebar, select **Search or go to** and find your project. If you've [turned on the new navigation](../../interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
 1. Select **Plan** > **Issues**.
 1. Above the list of issues, select **Search or filter results**.
 1. In the dropdown list that appears, select the attributes to filter by.

@@ -20,20 +20,6 @@ RSpec.describe Admin::LabelsController, :enable_admin_mode, :with_current_organi
       expect(response.body).to include(label1.title)
       expect(response.body).not_to include(label2.title)
     end
-
-    context 'when template_labels_scoped_by_org feature flag is disabled' do
-      before do
-        stub_feature_flags(template_labels_scoped_by_org: false)
-      end
-
-      it 'returns all label templates from all organizations', :aggregate_failures do
-        get admin_labels_path
-
-        expect(response).to have_gitlab_http_status(:ok)
-        expect(response.body).to include(label1.title)
-        expect(response.body).to include(label2.title)
-      end
-    end
   end
 
   describe 'POST #create' do
@@ -56,6 +42,14 @@ RSpec.describe Admin::LabelsController, :enable_admin_mode, :with_current_organi
   end
 
   describe 'PUT #update' do
+    it 'updates the label' do
+      expect do
+        put admin_label_path(label1), params: { label: { title: 'Foo' } }
+      end.to change { label1.reload.title }.to('Foo')
+
+      expect(response).to have_gitlab_http_status(:found)
+    end
+
     context 'when label does not belong to current organization' do
       it 'does not find the label' do
         expect do
@@ -63,51 +57,6 @@ RSpec.describe Admin::LabelsController, :enable_admin_mode, :with_current_organi
         end.to not_change { label2.reload.title }
 
         expect(response).to have_gitlab_http_status(:not_found)
-      end
-
-      context 'when template_labels_scoped_by_org feature flag is disabled' do
-        before do
-          stub_feature_flags(template_labels_scoped_by_org: false)
-        end
-
-        it 'updates the label' do
-          expect do
-            put admin_label_path(label2), params: { label: { title: 'Foo' } }
-          end.to change { label2.reload.title }.to('Foo')
-
-          expect(response).to have_gitlab_http_status(:found)
-        end
-      end
-    end
-
-    context 'when the label is missing an organization_id' do
-      let(:label) do
-        # We can no longer create invalid test data due to the contraint, but we know it exists in production
-        Label.connection.execute(<<~SQL)
-          ALTER TABLE labels DROP CONSTRAINT check_2d9a8c1bca;
-        SQL
-
-        admin_label = build(:admin_label, organization_id: nil)
-        admin_label.save!(validate: false)
-
-        Label.connection.execute(<<~SQL)
-          ALTER TABLE labels
-            ADD CONSTRAINT check_2d9a8c1bca CHECK ((num_nonnulls(group_id, organization_id, project_id) = 1)) NOT VALID;
-        SQL
-
-        admin_label
-      end
-
-      before do
-        stub_feature_flags(template_labels_scoped_by_org: false)
-      end
-
-      it 'sets the organization_id' do
-        expect do
-          put admin_label_path(label), params: { label: { title: 'Foo' } }
-        end.to change { label.reload.organization }.from(nil).to(current_organization).and(
-          change { label.reload.title }.from(label.title).to('Foo')
-        )
       end
     end
   end

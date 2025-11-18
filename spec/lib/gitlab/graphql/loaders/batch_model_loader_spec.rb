@@ -39,7 +39,7 @@ RSpec.describe Gitlab::Graphql::Loaders::BatchModelLoader, feature_category: :ap
     end
 
     it 'returns default_value when record not found' do
-      ghost_user = Users::Internal.ghost
+      ghost_user = Users::Internal.for_organization(user.organization_id).ghost
 
       user_result = described_class.new(User, non_existing_record_id, default_value: ghost_user).find
 

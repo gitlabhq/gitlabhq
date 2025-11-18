@@ -42,19 +42,16 @@ The output includes the request types available, route parameters and the releva
 bundle exec rails routes | grep "issues"
 ```
 
-### 2. `modal_copy_button` vs `clipboard_button`
+### 2. `clipboard_button` vs `simple_copy_button` (vs `modal_copy_button`)
 
 The `clipboard_button` uses the `copy_to_clipboard.js` behavior, which is
 initialized on page load. Vue clipboard buttons that
 don't exist at page load (such as ones in a `GlModal`) do not have
 click handlers associated with the clipboard package.
 
-`modal_copy_button` manages an instance of the
-[`clipboard` plugin](https://www.npmjs.com/package/clipboard) specific to
-the instance of that component. This means that clipboard events are
-bound on mounting and destroyed when the button is, mitigating the above
-issue. It also has bindings to a particular container or modal ID
-available, to work with the focus trap created by our GlModal.
+`simple_copy_button.vue` does not use the behavior so it is safe to use in modals (and elsewhere).
+Previously, we used `modal_copy_button.vue` but now we suggest using `simple_copy_button.vue`
+as it has wide browser support and works in non-secure environments (like default GDK installations).
 
 ### 3. A `gitlab-ui` component not conforming to Pajamas Design System
 

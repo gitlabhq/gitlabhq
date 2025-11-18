@@ -21,10 +21,6 @@ RSpec.describe 'GFM autocomplete', :js, feature_category: :text_editors do
   let_it_be(:label_xss_title) { 'alert label &lt;img src=x onerror="alert(\'Hello xss\');" a' }
   let_it_be(:label_xss) { create(:label, project: project, title: label_xss_title) }
 
-  before do
-    stub_feature_flags(work_item_view_for_issues: true)
-  end
-
   describe 'new issue page' do
     before do
       sign_in(user)
@@ -219,7 +215,7 @@ RSpec.describe 'GFM autocomplete', :js, feature_category: :text_editors do
       let_it_be(:wiki_page1) { create(:wiki_page, project: project, title: 'Home') }
       let_it_be(:wiki_page2) { create(:wiki_page, project: project, title: 'How to use GitLab') }
 
-      it 'shows wiki pages in the autocomplete menu' do
+      it 'shows wiki pages in the autocomplete menu', quarantine: 'https://gitlab.com/gitlab-org/quality/test-failure-issues/-/issues/3859' do
         fill_in 'Add a reply', with: '[[ho'
 
         expect(find_autocomplete_menu).to have_text('Home')
@@ -232,7 +228,7 @@ RSpec.describe 'GFM autocomplete', :js, feature_category: :text_editors do
     end
 
     context 'if a selected value has special characters' do
-      it 'wraps the result in double quotes' do
+      it 'wraps the result in double quotes', quarantine: 'https://gitlab.com/gitlab-org/quality/test-failure-issues/-/issues/4070' do
         fill_in 'Add a reply', with: "~#{label.title[0..2]}"
 
         find_highlighted_autocomplete_item.click

@@ -7,7 +7,6 @@ import { setHTMLFixture } from 'helpers/fixtures';
 import { useLocalStorageSpy } from 'helpers/local_storage_helper';
 import createMockApollo from 'helpers/mock_apollo_helper';
 import waitForPromises from 'helpers/wait_for_promises';
-import { createAlert } from '~/alert';
 import { clearDraft, updateDraft } from '~/lib/utils/autosave';
 import CreateWorkItem from '~/work_items/components/create_work_item.vue';
 import WorkItemTitle from '~/work_items/components/work_item_title.vue';
@@ -48,7 +47,6 @@ import {
   namespaceWorkItemTypesQueryResponse,
 } from 'ee_else_ce_jest/work_items/mock_data';
 
-jest.mock('~/alert');
 jest.mock('~/work_items/graphql/cache_utils', () => ({
   setNewWorkItemCache: jest.fn(),
 }));
@@ -77,7 +75,6 @@ describe('Create work item component', () => {
 
   const createWorkItemSuccessHandler = jest.fn().mockResolvedValue(createWorkItemMutationResponse);
   const mutationErrorHandler = jest.fn().mockResolvedValue(createWorkItemMutationErrorResponse);
-  const errorHandler = jest.fn().mockRejectedValue('Houston, we have a problem');
   const workItemQuerySuccessHandler = jest.fn().mockResolvedValue(createWorkItemQueryResponse());
   const namespaceWorkItemTypes =
     namespaceWorkItemTypesQueryResponse.data.workspace.workItemTypes.nodes;
@@ -248,6 +245,25 @@ describe('Create work item component', () => {
 
       expect(wrapper.emitted('discardDraft')).toEqual([[]]);
     });
+
+    it.each`
+      scenario                               | fullPath                               | expectedGroupPath
+      ${'group-path'}                        | ${'group-path'}                        | ${'group-path'}
+      ${'group-path/sub-group-path'}         | ${'group-path/sub-group-path'}         | ${'group-path'}
+      ${'group-path/project'}                | ${'group-path/project'}                | ${'group-path'}
+      ${'group-path/sub-group-path/project'} | ${'group-path/sub-group-path/project'} | ${'group-path/sub-group-path'}
+    `(
+      'passes correct group path "$expectedGroupPath" for fullpath $scenario',
+      async ({ fullPath, expectedGroupPath }) => {
+        createComponent({
+          fullPath,
+        });
+
+        await waitForPromises();
+
+        expect(findParentWidget().props().groupPath).toBe(expectedGroupPath);
+      },
+    );
   });
 
   describe('Cache clearing', () => {
@@ -347,41 +363,32 @@ describe('Create work item component', () => {
 
   describe('Group/project selector', () => {
     it('renders with the current namespace selected by default', async () => {
-      createComponent({ provide: { workItemPlanningViewEnabled: true } });
+      createComponent({
+        props: { isGroup: true },
+        provide: { workItemPlanningViewEnabled: true },
+      });
       await waitForPromises();
 
       expect(findGroupProjectSelector().exists()).toBe(true);
       expect(findGroupProjectSelector().props('fullPath')).toBe('full-path');
     });
 
-    describe.each`
-      workItemPlanningViewEnabled
-      ${true}
-      ${false}
+    it.each`
+      scenario                   | isGroup  | fromGlobalMenu | isEpicsList | workItemPlanningViewEnabled | expected
+      ${'group list page'}       | ${true}  | ${false}       | ${false}    | ${true}                     | ${true}
+      ${'project global menu'}   | ${false} | ${true}        | ${false}    | ${true}                     | ${true}
+      ${'legacy epics list'}     | ${true}  | ${false}       | ${true}     | ${false}                    | ${false}
+      ${'disabled feature flag'} | ${true}  | ${false}       | ${false}    | ${false}                    | ${false}
     `(
-      'parent widget group path when workItemPlanningViewEnabled is $workItemPlanningViewEnabled',
-      ({ workItemPlanningViewEnabled }) => {
-        it.each`
-          scenario                               | fullPath                               | expectedGroupPath
-          ${'group-path'}                        | ${'group-path'}                        | ${'group-path'}
-          ${'group-path/sub-group-path'}         | ${'group-path/sub-group-path'}         | ${'group-path'}
-          ${'group-path/project'}                | ${'group-path/project'}                | ${'group-path'}
-          ${'group-path/sub-group-path/project'} | ${'group-path/sub-group-path/project'} | ${'group-path/sub-group-path'}
-        `(
-          'passes correct group path "$expectedGroupPath" for fullpath $scenario',
-          async ({ fullPath, expectedGroupPath }) => {
-            createComponent({
-              fullPath,
-              provide: {
-                workItemPlanningViewEnabled,
-              },
-            });
+      '$scenario shows selector: $expected',
+      async ({ isGroup, fromGlobalMenu, isEpicsList, workItemPlanningViewEnabled, expected }) => {
+        createComponent({
+          props: { isGroup, fromGlobalMenu, isEpicsList },
+          provide: { workItemPlanningViewEnabled },
+        });
 
-            await waitForPromises();
-
-            expect(findParentWidget().props().groupPath).toBe(expectedGroupPath);
-          },
-        );
+        await waitForPromises();
+        expect(findGroupProjectSelector().exists()).toBe(expected);
       },
     );
   });
@@ -679,8 +686,8 @@ describe('Create work item component', () => {
       expect(wrapper.emitted('workItemCreated')).toBeUndefined();
     });
 
-    it('shows an alert on mutation error', async () => {
-      createComponent({ mutationHandler: errorHandler });
+    it('shows an alert on mutation top-level error', async () => {
+      createComponent({ mutationHandler: jest.fn().mockRejectedValue() });
       await waitForPromises();
 
       await updateWorkItemTitle();
@@ -689,18 +696,14 @@ describe('Create work item component', () => {
       expect(findAlert().text()).toBe('Something went wrong when creating epic. Please try again.');
     });
 
-    it('shows a page alert on user-facing mutation error', async () => {
+    it('shows an alert on mutation error', async () => {
       createComponent({ mutationHandler: mutationErrorHandler });
       await waitForPromises();
 
       await updateWorkItemTitle();
       await submitCreateForm();
 
-      expect(createAlert).toHaveBeenCalledWith({
-        captureError: true,
-        error: ['an error'],
-        message: 'an error',
-      });
+      expect(findAlert().text()).toBe('an error');
     });
   });
 
@@ -830,6 +833,22 @@ describe('Create work item component', () => {
 
     it('is not checked when parameter issue[confidential]!=true', async () => {
       setWindowLocation('?issue[confidential]=tru');
+      createComponent();
+      await waitForPromises();
+
+      expect(findConfidentialCheckbox().attributes('checked')).toBeUndefined();
+    });
+
+    it('is checked when parameter vulnerability_id exists', async () => {
+      setWindowLocation('?vulnerability_id=123');
+      createComponent();
+      await waitForPromises();
+
+      expect(findConfidentialCheckbox().attributes('checked')).toBe('true');
+    });
+
+    it('is not checked when parameter vulnerability_id does not exist', async () => {
+      setWindowLocation('?vulnerability_id_is_not_here=123');
       createComponent();
       await waitForPromises();
 

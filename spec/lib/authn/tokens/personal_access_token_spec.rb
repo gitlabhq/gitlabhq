@@ -9,6 +9,12 @@ RSpec.describe Authn::Tokens::PersonalAccessToken, feature_category: :system_acc
 
   subject(:token) { described_class.new(plaintext, :group_token_revocation_service) }
 
+  RSpec.shared_examples 'validates prefix' do
+    it 'returns true if token starts with valid prefix' do
+      expect(described_class.prefix?(token_lookalike)).to eq(is_valid)
+    end
+  end
+
   describe '.prefix?' do
     let_it_be(:token_lookalike) { 'glpat-1234abcd' }
 
@@ -27,6 +33,66 @@ RSpec.describe Authn::Tokens::PersonalAccessToken, feature_category: :system_acc
       stub_application_setting(personal_access_token_prefix: '')
 
       expect(described_class.prefix?('non-token')).to be_falsey
+    end
+
+    context 'with custom personal access token prefix configured' do
+      let_it_be(:personal_access_token_prefix) { 'custom-pat-prefix-' }
+
+      before do
+        stub_application_setting(personal_access_token_prefix: personal_access_token_prefix)
+      end
+
+      using RSpec::Parameterized::TableSyntax
+
+      where(:token_lookalike, :is_valid) do
+        'glpat-1234abcd' | true
+        'custom-pat-prefix-1234abcd' | true
+        'instancetokenprefix-glpat-1234abcd' | false
+      end
+
+      with_them do
+        it_behaves_like 'validates prefix'
+      end
+
+      context 'with instance wide token prefix configured' do
+        let_it_be(:instance_token_prefix) { 'instancetokenprefix' }
+
+        before do
+          stub_application_setting(instance_token_prefix: instance_token_prefix)
+        end
+
+        using RSpec::Parameterized::TableSyntax
+
+        where(:token_lookalike, :is_valid) do
+          'glpat-1234abcd' | true
+          'custom-pat-prefix-1234abcd' | true
+          'instancetokenprefix-glpat-1234abcd' | true
+        end
+
+        with_them do
+          it_behaves_like 'validates prefix'
+        end
+      end
+    end
+
+    context 'with instance wide token prefix configured' do
+      let_it_be(:instance_token_prefix) { 'instancetokenprefix' }
+
+      before do
+        stub_application_setting(instance_token_prefix: instance_token_prefix)
+      end
+
+      using RSpec::Parameterized::TableSyntax
+
+      where(:token_lookalike, :is_valid) do
+        'glpat-1234abcd' | true
+        'custom-pat-prefix-1234abcd' | false
+        'instancetokenprefix-glpat-1234abcd' | true
+      end
+
+      with_them do
+        it_behaves_like 'validates prefix'
+      end
     end
   end
 

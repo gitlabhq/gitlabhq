@@ -31,9 +31,11 @@ module Organizations
       if group.self_deletion_scheduled? &&
           ::Gitlab::Utils.to_boolean(params.permit(:permanently_remove)[:permanently_remove])
 
-        return access_denied! if Feature.enabled?(:disallow_immediate_deletion, current_user)
+        if Gitlab::CurrentSettings.allow_immediate_namespaces_deletion_for_user?(current_user)
+          return destroy_immediately
+        end
 
-        return destroy_immediately
+        return access_denied!
       end
 
       result = ::Groups::MarkForDeletionService.new(group, current_user).execute

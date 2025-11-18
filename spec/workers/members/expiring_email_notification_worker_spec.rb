@@ -26,42 +26,54 @@ RSpec.describe Members::ExpiringEmailNotificationWorker, type: :worker, feature_
     create(:project_member, :guest, user: project_bot, expires_at: 7.days.from_now)
   end
 
+  before do
+    allow(Members::AboutToExpireMailer).to receive(:with).and_call_original
+  end
+
   describe '#perform' do
     context "with not notified member" do
       it "notify member" do
-        expect_next_instance_of(NotificationService) do |notification_service|
-          expect(notification_service).to receive(:member_about_to_expire).with(member)
-        end
+        expect do
+          expect(Members::AboutToExpireMailer).to receive(:with).with(member: member)
 
-        worker.perform(member.id)
+          worker.perform(member.id)
 
-        expect(member.reload.expiry_notified_at).to be_present
+          expect(member.reload.expiry_notified_at).to be_present
+        end.to have_enqueued_mail(Members::AboutToExpireMailer, :email).exactly(:once)
       end
 
       it 'does not notify blocked member' do
-        expect(NotificationService).not_to receive(:new)
+        expect do
+          expect(Members::AboutToExpireMailer).not_to receive(:with)
 
-        worker.perform(blocked_member.id)
+          worker.perform(blocked_member.id)
+        end.not_to have_enqueued_mail(Members::AboutToExpireMailer, :email)
       end
 
       it 'does not notify invited member' do
-        expect(NotificationService).not_to receive(:new)
+        expect do
+          expect(Members::AboutToExpireMailer).not_to receive(:with)
 
-        worker.perform(invited_member.id)
+          worker.perform(invited_member.id)
+        end.not_to have_enqueued_mail(Members::AboutToExpireMailer, :email)
       end
 
       it 'does not notify non-human members' do
-        expect(NotificationService).not_to receive(:new)
+        expect do
+          expect(Members::AboutToExpireMailer).not_to receive(:with)
 
-        worker.perform(bot_member.id)
+          worker.perform(bot_member.id)
+        end.not_to have_enqueued_mail(Members::AboutToExpireMailer, :email)
       end
     end
 
     context "with notified member" do
       it "not notify member" do
-        expect(NotificationService).not_to receive(:new)
+        expect do
+          expect(Members::AboutToExpireMailer).not_to receive(:with)
 
-        worker.perform(notified_member.id)
+          worker.perform(notified_member.id)
+        end.not_to have_enqueued_mail(Members::AboutToExpireMailer, :email)
       end
     end
   end

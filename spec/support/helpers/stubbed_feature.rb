@@ -42,5 +42,14 @@ module StubbedFeature
 
       feature_flag
     end
+
+    private
+
+    def database_exists?
+      # We use an in-memory store when stubbed so we can skip the DB existence checks
+      return true if stub?
+
+      super
+    end
   end
 end

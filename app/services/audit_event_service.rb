@@ -103,7 +103,10 @@ class AuditEventService
       user_name: @author.name,
       ip_address: ip_address,
       result: AuthenticationEvent.results[:success],
-      provider: @details[:with]
+      provider: @details[:with],
+      organization: author_if_user.organization # We have zero reference to this code from the application as this
+      # service is deperacted.
+      # But we still have some specs to cleanup. So we are keeping this line to avoid test failures.
     }
   end
 

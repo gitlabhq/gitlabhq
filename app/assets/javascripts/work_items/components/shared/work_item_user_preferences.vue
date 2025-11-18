@@ -13,7 +13,7 @@ import { InternalEvents } from '~/tracking';
 import HelpPopover from '~/vue_shared/components/help_popover.vue';
 import updateWorkItemsDisplaySettings from '~/work_items/graphql/update_user_preferences.mutation.graphql';
 import updateWorkItemListUserPreference from '~/work_items/graphql/update_work_item_list_user_preferences.mutation.graphql';
-import getUserWorkItemsDisplaySettingsPreferences from '~/work_items/graphql/get_user_preferences.query.graphql';
+import getUserWorkItemsPreferences from '~/work_items/graphql/get_user_preferences.query.graphql';
 import { WORK_ITEM_LIST_PREFERENCES_METADATA_FIELDS, METADATA_KEYS } from '~/work_items/constants';
 
 export default {
@@ -55,6 +55,14 @@ export default {
       type: Boolean,
       required: false,
       default: false,
+    },
+    workItemTypeId: {
+      type: String,
+      required: true,
+    },
+    sortKey: {
+      type: String,
+      required: true,
     },
   },
   data() {
@@ -114,6 +122,7 @@ export default {
                 displaySettings: {
                   hiddenMetadataKeys: newHiddenKeys,
                 },
+                sort: this.sortKey,
                 __typename: 'WorkItemTypesUserPreference',
               },
               __typename: 'WorkItemUserPreferenceUpdatePayload',
@@ -129,8 +138,8 @@ export default {
           ) => {
             cache.updateQuery(
               {
-                query: getUserWorkItemsDisplaySettingsPreferences,
-                variables: { namespace: this.fullPath },
+                query: getUserWorkItemsPreferences,
+                variables: { namespace: this.fullPath, workItemTypeId: this.workItemTypeId },
               },
               (existingData) =>
                 produce(existingData, (draftData) => {
@@ -182,8 +191,8 @@ export default {
           ) => {
             cache.updateQuery(
               {
-                query: getUserWorkItemsDisplaySettingsPreferences,
-                variables: { namespace: this.fullPath },
+                query: getUserWorkItemsPreferences,
+                variables: { namespace: this.fullPath, workItemTypeId: this.workItemTypeId },
               },
               (existingData) =>
                 produce(existingData, (draftData) => {

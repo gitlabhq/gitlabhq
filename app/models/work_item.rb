@@ -21,7 +21,6 @@ class WorkItem < Issue
   has_one :parent_link, class_name: '::WorkItems::ParentLink', foreign_key: :work_item_id
   has_one :work_item_parent, through: :parent_link, class_name: 'WorkItem'
   has_one :weights_source, class_name: 'WorkItems::WeightsSource'
-  has_one :work_item_transition, class_name: 'WorkItems::Transition', inverse_of: :work_item
 
   has_many :child_links, class_name: '::WorkItems::ParentLink', foreign_key: :work_item_parent_id
   has_many :work_item_children, through: :child_links, class_name: 'WorkItem',
@@ -35,6 +34,20 @@ class WorkItem < Issue
       :author, :work_item_type, { project: [:project_feature, { namespace: :route }, :group] }, { namespace: [:route] }
     )
   }
+
+  scope :within_namespace_hierarchy, ->(namespace) do
+    return none if namespace.nil? || namespace.traversal_ids.blank?
+
+    if namespace.traversal_ids.length == 1
+      # For root groups
+      where("namespace_traversal_ids[1] = ?", namespace.id)
+    else
+      # For subgroups
+      ids = namespace.traversal_ids
+      next_ids = ids[0..-2] + [ids[-1] + 1]
+      where(namespace_traversal_ids: ids...next_ids)
+    end
+  end
 
   scope :within_timeframe, ->(start_date, due_date, with_namespace_cte: false) do
     date_filtered_issue_ids = ::WorkItems::DatesSource
@@ -55,6 +68,14 @@ class WorkItem < Issue
   scope :with_enabled_widget_definition, ->(type) do
     joins(work_item_type: :enabled_widget_definitions)
       .merge(::WorkItems::WidgetDefinition.by_enabled_widget_type(type))
+  end
+
+  scope :with_group_level_and_project_issues_enabled, ->(include_group_level_items: true) do
+    # All work_items belonging to groups and projects that have the :issues feature enabled
+    scope = left_joins(:project).merge(Project.with_issues_enabled)
+    # Exclude epics (project_id: nil) if include_group_level is false
+    scope = scope.project_level unless include_group_level_items
+    scope
   end
 
   scope :with_work_item_parent_ids, ->(parent_ids) {

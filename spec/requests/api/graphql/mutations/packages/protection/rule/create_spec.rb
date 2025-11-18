@@ -200,6 +200,27 @@ RSpec.describe 'Creating the packages protection rule', :aggregate_failures, fea
     end
   end
 
+  context 'with standalone wildcard pattern' do
+    let(:kwargs) do
+      {
+        project_path: project.full_path,
+        package_name_pattern: '*',
+        package_type: 'NPM',
+        minimum_access_level_for_push: 'MAINTAINER'
+      }
+    end
+
+    it_behaves_like 'a successful response' do
+      let(:expected_attributes) { kwargs.merge(minimum_access_level_for_delete: nil) }
+    end
+
+    it 'creates the package protection rule with wildcard pattern' do
+      subject
+
+      expect(mutation_response_package_protection_rule['packageNamePattern']).to eq('*')
+    end
+  end
+
   context 'when user does not have permission' do
     let_it_be(:anonymous) { create(:user) }
     let_it_be(:developer) { create(:user, developer_of: project) }

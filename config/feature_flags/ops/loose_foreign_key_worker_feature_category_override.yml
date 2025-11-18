@@ -1,0 +1,10 @@
+---
+name: loose_foreign_key_worker_feature_category_override
+description: Override the feature category to correctly identify the responsible team when the LFK worker fails during cleanup
+feature_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/573367
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/209695
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/578006
+milestone: '18.6'
+group: group::database frameworks
+type: ops
+default_enabled: false

@@ -129,7 +129,11 @@ Example response:
 ]
 ```
 
-**Note**: `assignee` column is deprecated, now we show it as a single-sized array `assignees` to conform to the GitLab EE API.
+{{< alert type="note" >}}
+
+The `assignee` column is deprecated. It is now a single-sized `assignees` array.
+
+{{< /alert >}}
 
 ## Assign an issue to the epic
 
@@ -237,7 +241,11 @@ Example response:
 }
 ```
 
-**Note**: `assignee` column is deprecated, now we show it as a single-sized array `assignees` to conform to the GitLab EE API.
+{{< alert type="note" >}}
+
+The `assignee` column is deprecated. It is now a single-sized `assignees` array.
+
+{{< /alert >}}
 
 ## Remove an issue from the epic
 
@@ -346,7 +354,11 @@ Example response:
 }
 ```
 
-**Note**: `assignee` column is deprecated, now we show it as a single-sized array `assignees` to conform to the GitLab EE API.
+{{< alert type="note" >}}
+
+The `assignee` column is deprecated. It is now a single-sized `assignees` array.
+
+{{< /alert >}}
 
 ## Update epic - issue association
 

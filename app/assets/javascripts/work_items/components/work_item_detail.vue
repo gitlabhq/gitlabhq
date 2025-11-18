@@ -3,6 +3,8 @@ import { isEmpty } from 'lodash';
 import {
   GlAlert,
   GlButton,
+  GlLink,
+  GlSprintf,
   GlTooltipDirective,
   GlEmptyState,
   GlIntersectionObserver,
@@ -11,6 +13,7 @@ import noAccessSvg from '@gitlab/svgs/dist/illustrations/empty-state/empty-searc
 import DuoWorkflowAction from 'ee_component/ai/components/duo_workflow_action.vue';
 import DesignDropzone from '~/vue_shared/components/upload_dropzone/upload_dropzone.vue';
 import * as Sentry from '~/sentry/sentry_browser_wrapper';
+import { helpPagePath } from '~/helpers/help_page_helper';
 import { s__, __ } from '~/locale';
 import { InternalEvents } from '~/tracking';
 import { getParameterByName, updateHistory, removeParams } from '~/lib/utils/url_utility';
@@ -18,7 +21,6 @@ import glFeatureFlagMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import LocalStorageSync from '~/vue_shared/components/local_storage_sync.vue';
 import toast from '~/vue_shared/plugins/global_toast';
 import { getIdFromGraphQLId } from '~/graphql_shared/utils';
-import { TYPENAME_GROUP } from '~/graphql_shared/constants';
 import { isLoggedIn } from '~/lib/utils/common_utils';
 import { WORKSPACE_PROJECT } from '~/issues/constants';
 import { addShortcutsExtension } from '~/behaviors/shortcuts';
@@ -106,6 +108,9 @@ export default {
   directives: {
     GlTooltip: GlTooltipDirective,
   },
+  designManagementDocsHref: helpPagePath('user/project/issues/design_management', {
+    anchor: 'prerequisites',
+  }),
   isLoggedIn: isLoggedIn(),
   VALID_DESIGN_FILE_MIMETYPE,
   SHOW_SIDEBAR_STORAGE_KEY: 'work_item_show_sidebar',
@@ -118,6 +123,8 @@ export default {
     GlButton,
     GlEmptyState,
     GlIntersectionObserver,
+    GlLink,
+    GlSprintf,
     LocalStorageSync,
     WorkItemActions,
     TodosToggle,
@@ -149,6 +156,9 @@ export default {
     groupPath: {
       from: 'groupPath',
     },
+    hasDesignManagementFeature: {
+      from: 'hasDesignManagementFeature',
+    },
     hasSubepicsFeature: {
       from: 'hasSubepicsFeature',
     },
@@ -159,6 +169,7 @@ export default {
       from: 'duoRemoteFlowsAvailability',
       default: false,
     },
+    isGroup: {},
   },
   props: {
     isModal: {
@@ -180,11 +191,6 @@ export default {
       type: String,
       required: false,
       default: '',
-    },
-    modalIsGroup: {
-      type: Boolean,
-      required: false,
-      default: null,
     },
     isDrawer: {
       type: Boolean,
@@ -307,7 +313,7 @@ export default {
         };
       },
       skip() {
-        return this.isGroupWorkItem || this.workItemLoading;
+        return this.isGroup || this.workItemLoading;
       },
       update(data) {
         return data.workspace?.userPermissions ?? defaultWorkspacePermissions;
@@ -365,9 +371,6 @@ export default {
     },
     isDiscussionLocked() {
       return this.workItemNotes?.discussionLocked;
-    },
-    workItemsAlphaEnabled() {
-      return this.glFeatures.workItemsAlpha;
     },
     newTodoAndNotificationsEnabled() {
       return this.glFeatures.notificationsTodosButtons;
@@ -477,7 +480,6 @@ export default {
       return {
         '@sm/panel:!gl-block': !this.shouldShowAncestors,
         'gl-hidden @sm/panel:!gl-block !gl-mt-3': this.shouldShowAncestors,
-        'editable-wi-title': this.workItemsAlphaEnabled,
       };
     },
     shouldShowEditButton() {
@@ -501,9 +503,6 @@ export default {
     },
     workItemPresent() {
       return !isEmpty(this.workItem);
-    },
-    isGroupWorkItem() {
-      return Boolean(this.modalIsGroup ?? this.workItem.namespace?.id.includes(TYPENAME_GROUP));
     },
     isSaving() {
       return this.filesToBeSaved.length > 0;
@@ -539,7 +538,7 @@ export default {
       return this.workItem?.namespace?.fullName || '';
     },
     contextualViewEnabled() {
-      return this.workItemsAlphaEnabled || this.glFeatures?.workItemViewForIssues;
+      return this.glFeatures?.workItemViewForIssues;
     },
     hasChildren() {
       return this.workItemHierarchy?.hasChildren;
@@ -573,7 +572,7 @@ export default {
         parentId: this.parentWorkItemId,
         workItemAuthorId: this.workItemAuthorId,
         canCreateRelatedItem: this.workItemLinkedItems !== undefined,
-        isGroup: this.isGroupWorkItem,
+        isGroup: this.isGroup,
         widgets: this.widgets,
         allowedChildTypes: this.allowedChildTypes,
         namespaceFullName: this.namespaceFullName,
@@ -592,6 +591,11 @@ export default {
     },
     isDuoWorkflowEnabled() {
       return this.duoRemoteFlowsAvailability && this.glFeatures.duoWorkflowInCi;
+    },
+    duoWorkflowDefinition() {
+      return this.glFeatures.duoDeveloperButton
+        ? 'developer/experimental'
+        : 'issue_to_merge_request';
     },
     agentPrivileges() {
       return [1, 2, 3, 4, 5];
@@ -947,46 +951,8 @@ export default {
       @dragleave.prevent.stop="onDragLeaveMain"
       @drop.prevent.stop="onDrop"
     >
-      <work-item-sticky-header
-        v-if="showIntersectionObserver"
-        :current-user-todos="currentUserTodos"
-        :show-work-item-current-user-todos="showWorkItemCurrentUserTodos"
-        :parent-work-item-confidentiality="parentWorkItemConfidentiality"
-        :full-path="workItemFullPath"
-        :is-modal="isModal"
-        :is-drawer="isDrawer"
-        :work-item="workItem"
-        :is-sticky-header-showing="isStickyHeaderShowing"
-        @hideStickyHeader="hideStickyHeader"
-        @showStickyHeader="showStickyHeader"
-        @deleteWorkItem="$emit('deleteWorkItem', { workItemType, workItemId: workItem.id })"
-        @toggleWorkItemConfidentiality="toggleConfidentiality"
-        @error="updateError = $event"
-        @promotedToObjective="$emit('promotedToObjective', iid)"
-        @workItemTypeChanged="workItemTypeChanged"
-        @toggleEditMode="enableEditMode"
-        @workItemStateUpdated="$emit('workItemStateUpdated')"
-        @toggleReportAbuseModal="toggleReportAbuseModal"
-        @todosUpdated="updateWorkItemCurrentTodosWidgetCache"
-      >
-        <template #actions>
-          <work-item-actions
-            v-if="workItemPresent"
-            v-bind="workItemActionProps"
-            :update-in-progress="updateInProgress"
-            @deleteWorkItem="$emit('deleteWorkItem', { workItemType, workItemId: workItem.id })"
-            @toggleWorkItemConfidentiality="toggleConfidentiality"
-            @error="updateError = $event"
-            @promotedToObjective="$emit('promotedToObjective', iid)"
-            @workItemStateUpdated="$emit('workItemStateUpdated')"
-            @workItemTypeChanged="workItemTypeChanged"
-            @toggleReportAbuseModal="toggleReportAbuseModal"
-            @workItemCreated="handleWorkItemCreated"
-            @toggleSidebar="handleToggleSidebar"
-            @toggleTruncationEnabled="handleTruncationEnabled"
-          />
-        </template>
-      </work-item-sticky-header>
+      <!-- Do not remove the element below, it allows for scrolling to top on click of sticky header -->
+      <div v-if="glFeatures.projectStudioEnabled" id="top"></div>
       <section class="work-item-view">
         <component :is="isModalOrDrawer ? 'h2' : 'h1'" v-if="editMode" class="gl-sr-only">{{
           s__('WorkItem|Edit work item')
@@ -1152,6 +1118,49 @@ export default {
                 </div>
               </div>
             </div>
+            <work-item-sticky-header
+              v-if="showIntersectionObserver"
+              :current-user-todos="currentUserTodos"
+              :show-work-item-current-user-todos="showWorkItemCurrentUserTodos"
+              :parent-work-item-confidentiality="parentWorkItemConfidentiality"
+              :full-path="workItemFullPath"
+              :is-modal="isModal"
+              :is-drawer="isDrawer"
+              :work-item="workItem"
+              :is-sticky-header-showing="isStickyHeaderShowing"
+              :archived="workItem.archived"
+              @hideStickyHeader="hideStickyHeader"
+              @showStickyHeader="showStickyHeader"
+              @deleteWorkItem="$emit('deleteWorkItem', { workItemType, workItemId: workItem.id })"
+              @toggleWorkItemConfidentiality="toggleConfidentiality"
+              @error="updateError = $event"
+              @promotedToObjective="$emit('promotedToObjective', iid)"
+              @workItemTypeChanged="workItemTypeChanged"
+              @toggleEditMode="enableEditMode"
+              @workItemStateUpdated="$emit('workItemStateUpdated')"
+              @toggleReportAbuseModal="toggleReportAbuseModal"
+              @todosUpdated="updateWorkItemCurrentTodosWidgetCache"
+            >
+              <template #actions>
+                <work-item-actions
+                  v-if="workItemPresent"
+                  v-bind="workItemActionProps"
+                  :update-in-progress="updateInProgress"
+                  @deleteWorkItem="
+                    $emit('deleteWorkItem', { workItemType, workItemId: workItem.id })
+                  "
+                  @toggleWorkItemConfidentiality="toggleConfidentiality"
+                  @error="updateError = $event"
+                  @promotedToObjective="$emit('promotedToObjective', iid)"
+                  @workItemStateUpdated="$emit('workItemStateUpdated')"
+                  @workItemTypeChanged="workItemTypeChanged"
+                  @toggleReportAbuseModal="toggleReportAbuseModal"
+                  @workItemCreated="handleWorkItemCreated"
+                  @toggleSidebar="handleToggleSidebar"
+                  @toggleTruncationEnabled="handleTruncationEnabled"
+                />
+              </template>
+            </work-item-sticky-header>
             <div
               data-testid="work-item-overview"
               class="work-item-overview"
@@ -1166,7 +1175,7 @@ export default {
                   v-if="hasDescriptionWidget"
                   :edit-mode="editMode"
                   :full-path="workItemFullPath"
-                  :is-group="isGroupWorkItem"
+                  :is-group="isGroup"
                   :work-item-id="workItem.id"
                   :work-item-iid="workItem.iid"
                   :update-in-progress="updateInProgress"
@@ -1182,6 +1191,7 @@ export default {
                   <work-item-award-emoji
                     v-if="workItemAwardEmoji"
                     :work-item-archived="workItem.archived"
+                    :work-item-discussion-locked="isDiscussionLocked"
                     :work-item-id="workItem.id"
                     :work-item-fullpath="workItemFullPath"
                     :award-emoji="workItemAwardEmoji.awardEmoji"
@@ -1217,7 +1227,7 @@ export default {
                         :project-path="workItemFullPath"
                         :hover-message="__('Generate merge request with Duo')"
                         :goal="workItem.webUrl"
-                        workflow-definition="issue_to_merge_request"
+                        :workflow-definition="duoWorkflowDefinition"
                         :agent-privileges="agentPrivileges"
                         size="medium"
                         >{{ __('Generate MR with Duo') }}</duo-workflow-action
@@ -1241,7 +1251,7 @@ export default {
                   :full-path="workItemFullPath"
                   :work-item="workItem"
                   :group-path="groupPath"
-                  :is-group="isGroupWorkItem"
+                  :is-group="isGroup"
                   @error="updateError = $event"
                   @attributesUpdated="$emit('attributesUpdated', $event)"
                 />
@@ -1258,6 +1268,25 @@ export default {
                 :linked-resources="workItemLinkedResources"
               />
 
+              <span
+                v-if="hasDesignWidget && !hasDesignManagementFeature"
+                class="gl-mt-5 gl-rounded-base gl-border-1 gl-border-solid gl-border-default gl-p-3 gl-text-center"
+                data-testid="design-management-disabled-message"
+              >
+                <gl-sprintf
+                  :message="
+                    s__(
+                      'DesignManagement|To upload designs, you\'ll need to enable LFS and have an admin enable hashed storage. %{linkStart}More information%{linkEnd}',
+                    )
+                  "
+                >
+                  <template #link="{ content }">
+                    <gl-link :href="$options.designManagementDocsHref">
+                      {{ content }}
+                    </gl-link>
+                  </template>
+                </gl-sprintf>
+              </span>
               <design-widget
                 v-if="hasDesignWidget"
                 :class="{ 'gl-mt-0': isDrawer }"
@@ -1265,7 +1294,7 @@ export default {
                 :work-item-iid="iid"
                 :work-item-full-path="workItemFullPath"
                 :work-item-web-url="workItem.webUrl"
-                :is-group="isGroupWorkItem"
+                :is-group="isGroup"
                 :upload-error="designUploadError"
                 :upload-error-variant="designUploadErrorVariant"
                 :is-saving="isSaving"
@@ -1297,7 +1326,7 @@ export default {
               <work-item-tree
                 v-if="showWorkItemTree"
                 :full-path="workItemFullPath"
-                :is-group="isGroupWorkItem"
+                :is-group="isGroup"
                 :work-item-type="workItemType"
                 :parent-work-item-type="workItem.workItemType.name"
                 :work-item-id="workItem.id"
@@ -1316,7 +1345,7 @@ export default {
               />
               <work-item-relationships
                 v-if="workItemLinkedItems"
-                :is-group="isGroupWorkItem"
+                :is-group="isGroup"
                 :work-item-id="workItem.id"
                 :work-item-iid="iid"
                 :work-item-full-path="workItemFullPath"

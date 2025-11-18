@@ -10,6 +10,7 @@ import { fetchPolicies } from '~/lib/graphql';
 import { isPositiveInteger } from '~/lib/utils/number_utils';
 import { scrollUp } from '~/lib/utils/scroll_utils';
 import { getParameterByName, mergeUrlParams } from '~/lib/utils/url_utility';
+import { HTTP_STATUS_SERVICE_UNAVAILABLE } from '~/lib/utils/http_status';
 import { TYPENAME_USER } from '~/graphql_shared/constants';
 import { convertToGraphQLId } from '~/graphql_shared/utils';
 import IssuableList from '~/vue_shared/issuable/list/components/issuable_list_root.vue';
@@ -54,6 +55,10 @@ import {
   TOKEN_TITLE_SUBSCRIBED,
   TOKEN_TYPE_SEARCH_WITHIN,
   TOKEN_TITLE_SEARCH_WITHIN,
+  TOKEN_TITLE_MERGED_BEFORE,
+  TOKEN_TYPE_MERGED_BEFORE,
+  TOKEN_TITLE_MERGED_AFTER,
+  TOKEN_TYPE_MERGED_AFTER,
 } from '~/vue_shared/components/filtered_search_bar/constants';
 import {
   convertToApiParams,
@@ -162,6 +167,7 @@ export default {
       state: STATUS_OPEN,
       pageSize: DEFAULT_PAGE_SIZE,
       showBulkEditSidebar: false,
+      searchTimeout: false,
     };
   },
   apollo: {
@@ -187,6 +193,9 @@ export default {
       error(error) {
         this.mergeRequestsError = this.$options.i18n.errorFetchingMergeRequests;
         Sentry.captureException(error);
+
+        this.mergeRequests = [];
+        this.searchTimeout = error.networkError?.statusCode === HTTP_STATUS_SERVICE_UNAVAILABLE;
       },
       skip() {
         return !this.hasAnyMergeRequests || isEmpty(this.pageParams) || !this.getMergeRequestsQuery;
@@ -436,6 +445,20 @@ export default {
           multiselect: false,
           unique: true,
           environmentsEndpoint: this.environmentNamesPath,
+        },
+        this.state === STATUS_MERGED && {
+          type: TOKEN_TYPE_MERGED_BEFORE,
+          title: TOKEN_TITLE_MERGED_BEFORE,
+          icon: 'clock',
+          token: DateToken,
+          operators: OPERATORS_IS,
+        },
+        this.state === STATUS_MERGED && {
+          type: TOKEN_TYPE_MERGED_AFTER,
+          title: TOKEN_TITLE_MERGED_AFTER,
+          icon: 'clock',
+          token: DateToken,
+          operators: OPERATORS_IS,
         },
         {
           type: TOKEN_TYPE_DEPLOYED_BEFORE,
@@ -811,6 +834,8 @@ export default {
       :has-previous-page="pageInfo.hasPreviousPage"
       issuable-item-class="merge-request"
       :show-bulk-edit-sidebar="showBulkEditSidebar"
+      :search-timeout="searchTimeout"
+      always-allow-custom-empty-state
       @click-tab="handleClickTab"
       @next-page="handleNextPage"
       @previous-page="handlePreviousPage"
@@ -947,6 +972,10 @@ export default {
 
       <template #empty-state>
         <empty-state :has-search="hasSearch" :is-open-tab="isOpenTab" />
+      </template>
+
+      <template #search-timeout>
+        <empty-state :search-timeout="searchTimeout" />
       </template>
     </issuable-list>
     <empty-state v-else :has-merge-requests="false" />

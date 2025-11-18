@@ -13,7 +13,7 @@ module Webauthn
 
       webauthn_credential = WebAuthn::Credential.from_get(parsed_device_response)
       encoded_raw_id = Base64.strict_encode64(webauthn_credential.raw_id)
-      stored_webauthn_credential = @user.webauthn_registrations.find_by_credential_xid(encoded_raw_id)
+      stored_webauthn_credential = stored_passkey_or_second_factor_webauthn_credential(encoded_raw_id)
 
       encoder = WebAuthn.configuration.encoder
 
@@ -21,7 +21,10 @@ module Webauthn
           validate_webauthn_credential(webauthn_credential) &&
           verify_webauthn_credential(webauthn_credential, stored_webauthn_credential, @challenge, encoder)
 
-        stored_webauthn_credential.update!(counter: webauthn_credential.sign_count)
+        stored_webauthn_credential.update!(
+          counter: webauthn_credential.sign_count,
+          last_used_at: Time.current
+        )
         return true
       end
 
@@ -31,6 +34,15 @@ module Webauthn
     end
 
     private
+
+    def stored_passkey_or_second_factor_webauthn_credential(encoded_raw_id)
+      if Feature.enabled?(:passkeys, @user)
+        @user.passkeys.find_by_credential_xid(encoded_raw_id) ||
+          @user.second_factor_webauthn_registrations.find_by_credential_xid(encoded_raw_id)
+      else
+        @user.second_factor_webauthn_registrations.find_by_credential_xid(encoded_raw_id)
+      end
+    end
 
     ##
     # Validates that webauthn_credential is syntactically valid
@@ -50,7 +62,7 @@ module Webauthn
     def verify_webauthn_credential(webauthn_credential, stored_credential, challenge, encoder)
       # We need to adjust the relaying party id (RP id) we verify against if the registration in question
       # is a migrated U2F registration. This is because the appid of U2F and the rp id of WebAuthn differ.
-      rp_id = webauthn_credential.client_extension_outputs['appid'] ? WebAuthn.configuration.origin : URI(WebAuthn.configuration.origin).host
+      rp_id = webauthn_credential&.client_extension_outputs&.dig('appid') ? WebAuthn.configuration.origin : URI(WebAuthn.configuration.origin).host
       webauthn_credential.response.verify(
         encoder.decode(challenge),
         public_key: encoder.decode(stored_credential.public_key),

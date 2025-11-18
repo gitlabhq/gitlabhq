@@ -4,7 +4,7 @@
 .observability-container.gl-flex.gl-flex-col
   .gl-display-flex.gl-items-center.gl-mt-3.gl-mb-5
     %h1.gl-heading-1
-      = @data.title
+      = s_(@data.title)
       - if @data.to_h[:o11y_url].present?
         = link_to @data.url_with_path.to_s, target: '_blank', rel: 'noopener noreferrer', class: 'gl-ml-3', title: _('Opens in a new window') do
           = sprite_icon('external-link', css_class: 'gl-mr-3', size: 18)

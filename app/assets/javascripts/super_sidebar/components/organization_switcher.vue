@@ -33,7 +33,7 @@ export default {
       'Organization|Switching between organizations is not currently supported.',
     ),
     learnMore: __('Learn more'),
-    projectStatus: __('Alpha'),
+    projectStatus: __('Experiment'),
   },
   switchingOrganizationsDocsPath: helpPagePath('user/organization/_index.md', {
     anchor: 'switch-organizations',
@@ -160,7 +160,7 @@ export default {
         class="user-bar-button organization-switcher-button gl-flex gl-w-full gl-items-center gl-text-left gl-font-semibold gl-leading-1"
         :class="{
           'gl-gap-4 gl-rounded-base gl-border-none gl-p-2 gl-pr-3': !projectStudioEnabled,
-          'btn gl-button btn-default gl-gap-3 !gl-rounded-lg !gl-px-2': projectStudioEnabled,
+          'btn gl-button btn-default gl-gap-3 !gl-px-2': projectStudioEnabled,
         }"
         data-testid="toggle-button"
       >
@@ -182,7 +182,7 @@ export default {
 
     <template #group-label="{ group }">
       {{ group.name }}
-      <gl-badge v-if="group.name === $options.i18n.currentOrganization" variant="info">
+      <gl-badge v-if="group.name === $options.i18n.currentOrganization">
         {{ $options.i18n.projectStatus }}
       </gl-badge>
     </template>

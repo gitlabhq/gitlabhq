@@ -311,6 +311,20 @@ RSpec.describe API::Branches, feature_category: :source_code_management do
       end
     end
 
+    context 'when authenticated with a token that has the ai_workflows scope' do
+      let(:oauth_token) { create(:oauth_access_token, user: user, scopes: [:ai_workflows]) }
+
+      it 'returns the repository branches successfully' do
+        get api("/projects/#{project_id}/repository/branches", oauth_access_token: oauth_token), params: { per_page: 100 }
+
+        expect(response).to have_gitlab_http_status(:ok)
+        expect(response).to match_response_schema('public_api/v4/branches')
+
+        branch_names = json_response.map { |branch| branch['name'] }
+        expect(branch_names).to match_array(project.repository.branch_names)
+      end
+    end
+
     context 'when unauthenticated', 'and project is private' do
       it_behaves_like '404 response' do
         let(:request) { get api(route) }

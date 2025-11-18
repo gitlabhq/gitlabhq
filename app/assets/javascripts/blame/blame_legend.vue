@@ -5,7 +5,7 @@ export default {
 };
 </script>
 <template>
-  <div class="file-blame-legend gl-mt-2">
+  <div class="file-blame-legend gl-mt-2" aria-hidden="true">
     <span class="left-label">{{ s__('Blame|Newer') }}</span>
     <span
       v-for="index in $options.legendCount"

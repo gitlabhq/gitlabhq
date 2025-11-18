@@ -1,4 +1,4 @@
-query getState($projectPath: ID!, $iid: String!, $initialRequest: Boolean = true) {
+query getState($projectPath: ID!, $iid: String!) {
   project(fullPath: $projectPath) {
     id
     archived
@@ -6,8 +6,8 @@ query getState($projectPath: ID!, $iid: String!, $initialRequest: Boolean = true
     mergeRequest(iid: $iid) {
       id
       autoMergeEnabled
-      commitCount @include(if: $initialRequest)
-      detailedMergeStatus @include(if: $initialRequest)
+      commitCount
+      detailedMergeStatus
       mergeError
       state
       userPermissions {

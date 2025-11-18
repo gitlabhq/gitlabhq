@@ -1,4 +1,4 @@
-%h5= s_('GroupSettings|Step-up authentication')
+%h5= f.label :step_up_auth_required_oauth_provider, s_('GroupSettings|Step-up authentication')
 %p
   = link_to s_('GroupSettings|What is step-up authentication?'),
       help_page_path('administration/auth/oidc.md', anchor: 'force-step-up-authentication-for-a-group'),
@@ -6,10 +6,23 @@
       rel: 'noopener noreferrer'
 
 .form-group
-  = f.select :step_up_auth_required_oauth_provider,
+  - inherited_namespace_setting = group.namespace_settings.step_up_auth_required_oauth_provider_inherited_namespace_setting
+  - inherited_namespace = inherited_namespace_setting&.namespace
+  - if inherited_namespace.present?
+    = render Pajamas::AlertComponent.new(variant: :info,  dismissible: false,  alert_options: { class: 'gl-mb-3', data: { testid: 'step-up-auth-inheritance-alert' } }) do |c|
+      - c.with_body do
+        = safe_format(s_('GroupSettings|Step-up authentication is inherited from parent group "%{parent_group_name}" and cannot be changed at this level.'), parent_group_name: inherited_namespace.name)
+
+    = f.hidden_field :step_up_auth_required_oauth_provider
+    = f.select :step_up_auth_required_oauth_provider_from_self_or_inherited,
+        step_up_auth_provider_options_for_select,
+        { include_blank: s_('GroupSettings|Disabled') },
+        { class: 'form-control gl-form-select', disabled: true, 'aria-label': s_('GroupSettings|Selected step-up authentication provider for this namespace'), id: 'group_step_up_auth_required_oauth_provider' }
+  - else
+    = f.select :step_up_auth_required_oauth_provider,
       step_up_auth_provider_options_for_select,
       { include_blank: s_('GroupSettings|Disabled') },
-      { class: 'form-control gl-form-select' }
+      { class: 'form-control gl-form-select', 'aria-label': s_('GroupSettings|Selected step-up authentication provider for this namespace') }
 
   .form-text.gl-text-subtle
     = s_('GroupSettings|Forces users to complete step-up authentication before they can access this group.')

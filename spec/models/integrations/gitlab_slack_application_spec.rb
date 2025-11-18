@@ -359,6 +359,17 @@ RSpec.describe Integrations::GitlabSlackApplication, feature_category: :integrat
       )
     end
 
+    it 'sets the correct sharding key on the newly created integration' do
+      initial_integration.after_build_from_integration(new_integration)
+
+      new_slack_integration = new_integration.slack_integration
+      expect(new_slack_integration).to have_attributes(
+        organization_id: nil,
+        project_id: project.id,
+        group_id: nil
+      )
+    end
+
     context 'when parent integration has no slack_integration' do
       let(:initial_integration) do
         create(:gitlab_slack_application_integration, slack_integration: nil, active: false)
@@ -374,6 +385,22 @@ RSpec.describe Integrations::GitlabSlackApplication, feature_category: :integrat
       end
     end
 
+    context 'when duplicating to group level' do
+      let(:group) { create(:group) }
+      let(:new_integration) { build(:gitlab_slack_application_integration, group: group) }
+
+      it 'sets the correct sharding key on the newly created integration' do
+        initial_integration.after_build_from_integration(new_integration)
+
+        new_slack_integration = new_integration.slack_integration
+        expect(new_slack_integration).to have_attributes(
+          organization_id: nil,
+          project_id: nil,
+          group_id: group.id
+        )
+      end
+    end
+
     context 'when duplicating to instance level' do
       let(:new_integration) { build(:gitlab_slack_application_integration, project: nil) }
 
@@ -381,6 +408,17 @@ RSpec.describe Integrations::GitlabSlackApplication, feature_category: :integrat
         initial_integration.after_build_from_integration(new_integration)
 
         expect(new_integration.slack_integration.alias).to eq(SlackIntegration::INSTANCE_ALIAS)
+      end
+
+      it 'sets the correct sharding key on the newly created integration' do
+        initial_integration.after_build_from_integration(new_integration)
+
+        new_slack_integration = new_integration.slack_integration
+        expect(new_slack_integration).to have_attributes(
+          organization_id: new_integration.organization_id,
+          project_id: nil,
+          group_id: nil
+        )
       end
     end
   end

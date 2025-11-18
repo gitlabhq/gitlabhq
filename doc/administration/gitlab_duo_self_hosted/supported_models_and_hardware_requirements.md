@@ -3,7 +3,7 @@ stage: AI-powered
 group: Custom Models
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 description: Supported models and hardware requirements.
-title: Supported GitLab Duo Self-Hosted models and hardware requirements
+title: Models and hardware requirements
 ---
 
 {{< details >}}
@@ -27,9 +27,11 @@ title: Supported GitLab Duo Self-Hosted models and hardware requirements
 
 GitLab Duo Self-Hosted supports integration with industry-leading models from Mistral, Meta, Anthropic, and OpenAI through your preferred serving platform.
 
-You can choose from these [supported models](#supported-models) to match your specific performance needs and use cases.
+You can use:
 
-In GitLab 18.3 and later, you can also use your own compatible model, giving you the flexibility to experiment with additional language models beyond the officially supported options.
+- Supported models to match your specific performance needs and use cases.
+- In GitLab 18.3 and later, your own compatible model to experiment with models beyond the officially supported options.
+- GitLab AI vendor models to connect to AI models without the need to host your own infrastructure. These models are managed entirely by GitLab.
 
 ## Supported models
 
@@ -45,6 +47,7 @@ Models that have limited functionality for a feature will not receive GitLab sup
 
 | Model family | Model | Supported platforms | Code completion | Code generation | GitLab Duo Chat | GitLab Duo Agent Platform |
 |-------------|-------|---------------------|-----------------|-----------------|-----------------|-----------------|
+| General | [Gemini 2.5 Flash](https://docs.cloud.google.com/vertex-ai/generative-ai/docs/models/gemini/2-5-flash) | [Vertex](https://cloud.google.com/vertex-ai) | {{< icon name="dash-circle" >}} Limited functionality | {{< icon name="dash-circle" >}} Limited functionality | {{< icon name="dash-circle" >}} Limited functionality |  {{< icon name="check-circle-dashed" >}} Partial functionality |
 | Mistral Codestral | [Codestral 22B v0.1](https://huggingface.co/mistralai/Codestral-22B-v0.1) | [vLLM](supported_llm_serving_platforms.md#for-self-hosted-model-deployments) | {{< icon name="check-circle-filled" >}} Full functionality | {{< icon name="check-circle-filled" >}} Full functionality | {{< icon name="check-circle-dashed" >}} Partial functionality |  Limited functionality |
 | Mistral | [Mistral Small 24B Instruct 2506](https://huggingface.co/mistralai/Mistral-Small-3.2-24B-Instruct-2506) | [vLLM](supported_llm_serving_platforms.md#for-self-hosted-model-deployments) | {{< icon name="check-circle-filled" >}} Full functionality | {{< icon name="check-circle-filled" >}} Full functionality | {{< icon name="check-circle-filled" >}} Full functionality | Limited functionality |
 | Claude 3 |  [Claude 3.5 Sonnet](https://www.anthropic.com/news/claude-3-5-sonnet) | [AWS Bedrock](https://aws.amazon.com/bedrock/claude/) | {{< icon name="check-circle-filled" >}} Full functionality | {{< icon name="check-circle-filled" >}} Full functionality | {{< icon name="check-circle-filled" >}} Full functionality | {{< icon name="check-circle-dashed" >}} Partial functionality |
@@ -103,7 +106,7 @@ This feature is in beta and is therefore subject to change as we gather feedback
 
 **Footnotes**:
 
-1. Support for this model was removed in GitLab 18.5. You should use Mistral Small 24B Instruct 2506 instead.
+1. This model was [deprecated](../../update/deprecations.md#early-mistral-models-deprecated-for-gitlab-duo-self-hosted) in GitLab 18.3. You should use Mistral Small 24B Instruct 2506 instead.
 
 <!-- vale gitlab_base.Spelling = YES -->
 
@@ -130,7 +133,7 @@ For more information, see the history.
 
 GitLab AI vendor models integrate with GitLab-hosted AI gateway infrastructure to provide access to AI models curated and made available by GitLab. Instead of using your own self-hosted models, you can choose to use GitLab AI vendor models for specific GitLab Duo features.
 
-To choose which features use GitLab AI vendor models, see [Configure GitLab AI vendor models](configure_duo_features.md#configure-the-feature-to-use-a-gitlab-ai-vendor-model).
+To choose which features use GitLab AI vendor models, see [Configure GitLab AI vendor models](configure_duo_features.md#configure-a-feature-to-use-a-gitlab-ai-vendor-model).
 
 When enabled for a specific feature:
 

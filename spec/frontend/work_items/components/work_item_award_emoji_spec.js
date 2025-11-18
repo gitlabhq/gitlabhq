@@ -114,6 +114,7 @@ describe('WorkItemAwardEmoji component', () => {
         workItemFullpath: 'test-project-path',
         workItemIid: '1',
         workItemArchived: false,
+        workItemDiscussionLocked: false,
         ...props,
       },
     });
@@ -355,25 +356,24 @@ describe('WorkItemAwardEmoji component', () => {
   });
 
   describe('can award emoji', () => {
-    it('can award emoji when user is logged in and work item is not archived', () => {
-      isLoggedIn.mockReturnValue(true);
-      createComponent({ props: { workItemArchived: false } });
+    it.each`
+      isLoggedInValue | workItemArchived | workItemDiscussionLocked | expected
+      ${false}        | ${false}         | ${false}                 | ${false}
+      ${false}        | ${false}         | ${true}                  | ${false}
+      ${false}        | ${true}          | ${false}                 | ${false}
+      ${false}        | ${true}          | ${true}                  | ${false}
+      ${true}         | ${false}         | ${false}                 | ${true}
+      ${true}         | ${false}         | ${true}                  | ${false}
+      ${true}         | ${true}          | ${false}                 | ${false}
+      ${true}         | ${true}          | ${true}                  | ${false}
+    `(
+      'canAwardEmoji=$expected when isLoggedIn=$isLoggedInValue, workItemArchived=$workItemArchived, workItemDiscussionLocked=$workItemDiscussionLocked',
+      ({ isLoggedInValue, workItemArchived, workItemDiscussionLocked, expected }) => {
+        isLoggedIn.mockReturnValue(isLoggedInValue);
+        createComponent({ props: { workItemArchived, workItemDiscussionLocked } });
 
-      expect(findAwardsList().props('canAwardEmoji')).toBe(true);
-    });
-
-    it('returns false when user is not logged in', () => {
-      isLoggedIn.mockReturnValue(false);
-      createComponent({ props: { workItemArchived: false } });
-
-      expect(findAwardsList().props('canAwardEmoji')).toBe(false);
-    });
-
-    it('returns false when work item is archived', () => {
-      isLoggedIn.mockReturnValue(true);
-      createComponent({ props: { workItemArchived: true } });
-
-      expect(findAwardsList().props('canAwardEmoji')).toBe(false);
-    });
+        expect(findAwardsList().props('canAwardEmoji')).toBe(expected);
+      },
+    );
   });
 });

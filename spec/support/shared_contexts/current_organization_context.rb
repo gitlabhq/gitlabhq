@@ -14,10 +14,29 @@ RSpec.shared_context 'with current_organization setting' do
   end
 end
 
+# Ensure URL helpers in specs are aligned with their use in Rails.
+# We do this by making sure the URL helpers use the same current Organization that Rails would use.
 RSpec.shared_context 'with Organization URL helpers' do
+  include_context 'with last http request'
+
   before do
-    allow(Routing::OrganizationsHelper::MappedHelpers).to receive(:current_organization)
-      .and_return(current_organization)
+    allow(Routing::OrganizationsHelper::MappedHelpers).to receive(:current_organization) do
+      next unless Gitlab::Routing::OrganizationsHelper.organization_scoped_route?(last_request_path)
+
+      current_organization ||= nil
+
+      unless current_organization
+        context = {
+          user: try(:warden)&.user,
+          params: last_request_params,
+          headers: last_request_headers || {}
+        }
+
+        current_organization = Gitlab::Current::Organization.new(**context).organization
+      end
+
+      current_organization
+    end
   end
 end
 

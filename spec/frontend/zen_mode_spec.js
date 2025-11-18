@@ -6,7 +6,7 @@ import { Mousetrap } from '~/lib/mousetrap';
 import { setHTMLFixture, resetHTMLFixture } from 'helpers/fixtures';
 import GLForm from '~/gl_form';
 import axios from '~/lib/utils/axios_utils';
-import * as utils from '~/lib/utils/common_utils';
+import * as utils from '~/lib/utils/scroll_utils';
 import { HTTP_STATUS_OK } from '~/lib/utils/http_status';
 import ZenMode from '~/zen_mode';
 

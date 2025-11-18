@@ -12,12 +12,15 @@ module Banzai
       def self.filters
         @filters ||= FilterArray[
           Filter::CodeLanguageFilter,
-          Filter::JsonTableFilter, # process before sanitization
+          Filter::JsonTableFilter,
           Filter::PlantumlFilter,
-          # Must always be before the SanitizationFilter/SanitizeLinkFilter to prevent XSS attacks
           Filter::SpacedLinkFilter,
+          # ======== Sanitization boundary ========
+          # Items above this point must not be moved below this point, as they depend
+          # on running before SanitizationFilter and SanitizeLinkFilter for safety.
           Filter::SanitizationFilter,
           Filter::SanitizeLinkFilter,
+          # =======================================
           Filter::KrokiFilter,
           Filter::GollumTagsFilter,
           Filter::WikiLinkGollumFilter,

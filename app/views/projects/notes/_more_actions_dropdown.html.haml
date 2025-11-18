@@ -2,7 +2,7 @@
 
 - if note_editable || !is_current_user
   .dropdown{ class: "more-actions !gl-ml-0" }
-    = render Pajamas::ButtonComponent.new(icon: 'ellipsis_v', category: :tertiary, button_options: { class: 'note-action-button more-actions-toggle', data: { title: 'More actions', toggle: 'dropdown', container: 'body', testid: 'more-actions-dropdown' }})
+    = render Pajamas::ButtonComponent.new(icon: 'ellipsis_v', category: :tertiary, button_options: { class: 'note-action-button more-actions-toggle', title: _('More actions'), 'aria-label': _('More actions'), data: { toggle: 'dropdown', container: 'body', testid: 'more-actions-dropdown' }})
     %ul.dropdown-menu.more-actions-dropdown.dropdown-menu-right
       - if note_editable
         %li{ class: "@sm/panel:!gl-hidden" }

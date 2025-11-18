@@ -9,6 +9,7 @@ module Keys
       @params = params
       @ip_address = @params.delete(:ip_address)
       @user = params.delete(:user) || current_user
+      @params[:organization] ||= user.organization
     end
 
     def execute

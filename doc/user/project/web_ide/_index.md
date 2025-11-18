@@ -32,24 +32,24 @@ You can access the Web IDE through several methods.
 
 ### With a keyboard shortcut
 
-1. On the left sidebar, select **Search or go to** and find your project.
+1. On the left sidebar, select **Search or go to** and find your project. If you've [turned on the new navigation](../../interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
 1. Use the <kbd>.</kbd> keyboard shortcut.
 
 ### From a directory
 
-1. On the left sidebar, select **Search or go to** and find your project.
+1. On the left sidebar, select **Search or go to** and find your project. If you've [turned on the new navigation](../../interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
 1. Go to your directory.
 1. Select **Code** > **Open in Web IDE**.
 
 ### From a file
 
-1. On the left sidebar, select **Search or go to** and find your project.
+1. On the left sidebar, select **Search or go to** and find your project. If you've [turned on the new navigation](../../interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
 1. Go to your file.
 1. Select **Edit** > **Open in Web IDE**.
 
 ### From a merge request
 
-1. On the left sidebar, select **Search or go to** and find your project.
+1. On the left sidebar, select **Search or go to** and find your project. If you've [turned on the new navigation](../../interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
 1. Go to your merge request.
 1. In the upper right, select **Code** > **Open in Web IDE**.
 
@@ -146,9 +146,9 @@ these steps to create a branch from a different base:
 
 1. On the left side of the Web IDE, select **Source Control** ({{< icon name="branch" >}}), or
    press <kbd>Control</kbd>+<kbd>Shift</kbd>+<kbd>G</kbd>.
-1. Select the ellipsis menu ({{< icon name="ellipsis_h" >}}) on the top-right side of the
+1. Select the ellipsis menu ({{< icon name="ellipsis_h" >}}) in the upper-right side of the
    Source Control panel.
-1. From the dropdown list, select **Branch** -> **Create branch from...**.
+1. From the dropdown list, select **Branch** > **Create branch from...**.
 1. From the dropdown list, select the branch that you want to use as base.
 
 If you do not have write access to the repository, **Create new branch** is not visible.
@@ -157,9 +157,9 @@ If you do not have write access to the repository, **Create new branch** is not 
 
 1. On the left side of the Web IDE, select **Source Control** ({{< icon name="branch" >}}), or
    press <kbd>Control</kbd>+<kbd>Shift</kbd>+<kbd>G</kbd>.
-1. Select the ellipsis menu ({{< icon name="ellipsis_h" >}}) on the top-right side of the
+1. Select the ellipsis menu ({{< icon name="ellipsis_h" >}}) in the upper-right side of the
    Source Control panel.
-1. From the dropdown list, select **Branch** -> **Delete branch**.
+1. From the dropdown list, select **Branch** > **Delete branch**.
 1. From the dropdown list, select the branch that you want to delete.
 
 You can't delete protected branches from the Web IDE.
@@ -403,7 +403,7 @@ To resolve this issue, you must update the OAuth callback URL to match the URL u
 
 To update the OAuth callback URL:
 
-1. On the left sidebar, at the bottom, select **Admin**.
+1. On the left sidebar, at the bottom, select **Admin**. If you've [turned on the new navigation](../../interface_redesign.md#turn-new-navigation-on-or-off), in the upper-right corner, select **Admin**.
 1. Select **Applications**.
 1. For **GitLab Web IDE**, select **Edit**.
 1. Enter the OAuth callback URL.
@@ -459,7 +459,8 @@ GitLab API endpoints (`/api/*`) must include the following HTTP response headers
 | `Access-Control-Expose-Headers` | `Link, X-Total, X-Total-Pages, X-Per-Page, X-Page, X-Next-Page, X-Prev-Page, X-Gitlab-Blob-Id, X-Gitlab-Commit-Id, X-Gitlab-Content-Sha256, X-Gitlab-Encoding, X-Gitlab-File-Name, X-Gitlab-File-Path, X-Gitlab-Last-Commit-Id X-Gitlab-Ref, X-Gitlab-Size, X-Request-Id, ETag` | Headers used by GitLab Rest and GraphQL APIs. |
 | `Vary` | `Origin` | Ensures proper caching behavior for CORS responses. |
 
-Since the subdomain portion of the Web IDE origin is dynamically generated, your CORS configuration must:
+The Web IDE dynamically generates the subdomain portion of the extension host domain. Ensure that
+the CORS headers satisfy the following rules:
 
 - **Pattern matching**: Accept origins matching the pattern `https://*.cdn.web-ide.gitlab-static.net`.
 - **Validation**: Ensure the subdomain contains only alphanumeric characters and is ≤52 characters.
@@ -468,24 +469,11 @@ Since the subdomain portion of the Web IDE origin is dynamically generated, your
 A GitLab instance default CORS configuration satisfies these requirements. You might find issues when the GitLab Self-Managed
 instance is behind an HTTP reverse proxy server or it uses a custom CORS policy configuration.
 
-{{< alert type="note" >}}
+### Offline environments
 
-If these headers are not provided, the Web IDE will still work on GitLab Self-Managed although
-features such as Extension Marketplace will be disabled for security reasons. The Web IDE uses
-the `https://*.cdn.web-ide.gitlab-static.net` origin to run third-party extensions in a sandboxed
-environment.
-
-{{< /alert >}}
-
-### Air-gapped or offline environments
-
-The Web IDE disables the Extension Marketplace and Web Views in air-gapped or offline environments where a
-user's web browser can't connect to the `https://*.cdn.web-ide.gitlab-static.net` external assets host.
-The Web IDE uses the external assets host to run third-party code coming from VSCode Extensions and Web Views
-in a sandboxed environment to secure user data.
-
-The Web IDE engineering team will provide better support for air-gapped environments in the future.
-You can keep track of the latest developments in this [epic](https://gitlab.com/groups/gitlab-org/-/epics/15146).
+The Web IDE has limited functionality when it can't connect to the default extension host domain
+(`https://*.cdn.web-ide.gitlab-static.net`). In offline environments, GitLab administrators can
+set up a [custom extension host domain](../../../administration/settings/web_ide.md) as a workaround.
 
 ### Report a problem
 

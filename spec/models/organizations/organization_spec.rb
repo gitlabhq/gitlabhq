@@ -5,6 +5,12 @@ require 'spec_helper'
 RSpec.describe Organizations::Organization, type: :model, feature_category: :organization do
   let_it_be_with_refind(:organization) { create(:organization) }
 
+  it_behaves_like 'cells claimable model',
+    subject_type: Cells::Claimable::CLAIMS_SUBJECT_TYPE::ORGANIZATION,
+    subject_key: :id,
+    source_type: Cells::Claimable::CLAIMS_SOURCE_TYPE::RAILS_TABLE_ORGANIZATIONS,
+    claiming_attributes: [:path]
+
   describe 'associations' do
     it { is_expected.to have_one(:organization_detail).inverse_of(:organization).autosave(true) }
 
@@ -24,6 +30,7 @@ RSpec.describe Organizations::Organization, type: :model, feature_category: :org
 
     it { is_expected.to have_many(:users).through(:organization_users).inverse_of(:organizations) }
     it { is_expected.to have_many(:organization_users).inverse_of(:organization) }
+    it { is_expected.to have_many :pool_repositories }
     it { is_expected.to have_many :projects }
     it { is_expected.to have_many :snippets }
     it { is_expected.to have_many :snippet_repositories }
@@ -195,6 +202,28 @@ RSpec.describe Organizations::Organization, type: :model, feature_category: :org
   end
 
   context 'when using scopes' do
+    describe '.by_path' do
+      let_it_be(:other_organization) { create(:organization, path: 'other-org') }
+
+      subject(:match) { described_class.by_path(path) }
+
+      context 'when path matches an organization' do
+        let(:path) { organization.path }
+
+        it 'returns the organization with matching path' do
+          expect(match).to contain_exactly(organization)
+        end
+      end
+
+      context 'when path does not match any organization' do
+        let(:path) { 'non-existent-path' }
+
+        it 'returns empty result' do
+          expect(match).to be_empty
+        end
+      end
+    end
+
     describe '.with_namespace_path' do
       let_it_be(:group) { create(:group, organization: organization) }
       let(:path) { group.path }
@@ -225,6 +254,8 @@ RSpec.describe Organizations::Organization, type: :model, feature_category: :org
       it { is_expected.to eq([organization, second_organization]) }
     end
   end
+
+  it_behaves_like 'an isolatable', :organization
 
   describe '#owner_user_ids' do
     let_it_be(:organization_users) { create_list(:organization_user, 3, :owner, organization: organization) }

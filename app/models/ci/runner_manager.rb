@@ -12,8 +12,6 @@ module Ci
     self.table_name = 'ci_runner_machines'
     self.primary_key = :id
 
-    ignore_column :sharding_key_id, remove_with: '18.6', remove_after: '2025-10-22'
-
     AVAILABLE_STATUSES = %w[online offline never_contacted stale].freeze
     AVAILABLE_STATUSES_INCL_DEPRECATED = AVAILABLE_STATUSES
 
@@ -182,6 +180,15 @@ module Ci
         # We save data without validation, it will always change due to `contacted_at`
         update_columns(values) if persist_cached_data?
       end
+    end
+
+    # While using update_columns may be useful from performance perspective, we still want
+    # the `updated_at` column to be updated. As most updates to the Ci::RunnerManager entity
+    # happen through the `heartbeat` method, when receiving some new/updated details from the
+    # runner side and without this change, `updated_at` may equal to `created_at` even months
+    # later, while the record did get multiple changes in that time.
+    def update_columns(attrs = {})
+      super(attrs.reverse_merge(updated_at: Time.current))
     end
 
     def supports_after_script_on_cancel?

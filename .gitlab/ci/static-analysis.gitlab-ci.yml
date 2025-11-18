@@ -30,6 +30,7 @@ static-analysis:
     SETUP_DB: "true"
   script:
     - yarn_install_script
+    - scripts/install_frontend_islands
     - fail_on_warnings scripts/static-analysis
 
 static-verification-with-database:
@@ -65,8 +66,9 @@ generate-apollo-graphql-schema:
   extends:
     - .static-analysis-base
   needs:
-    - generate-apollo-graphql-schema
-    - job: compile-fe-island
+    - job: generate-apollo-graphql-schema
+      optional: true
+    - job: compile-fe-islands
       optional: true
   variables:
     USE_BUNDLE_INSTALL: "false"
@@ -94,22 +96,25 @@ eslint:
     reports:
       codequality: gl-code-quality-report.json
 
-eslint:fe-island:
+.eslint:fe-islands:
   extends:
     - .eslint-base
-    - .frontend:rules:fe-island:test
+    - .frontend:rules:fe-islands:test
+    - .fe-islands-parallel
   needs:
-    - cache:fe-island-hash
-    - job: compile-fe-island
+    - cache:fe-islands-hash
+    - job: validate-fe-islands-ci
+      optional: true
+    - job: compile-fe-islands
       optional: true
   cache:
     - !reference [.yarn-cache, cache]
-    - !reference [.fe-island-yarn-cache, cache]
+    - !reference [.fe-islands-yarn-cache, cache]
   before_script:
     - !reference [.default-before_script, before_script]
     - yarn_install_script
   script:
-    - cd ee/frontend_islands/apps/duo_next
+    - cd ee/frontend_islands/apps/${FE_APP_DIR}
     - yarn run lint --format gitlab
   artifacts:
     reports:

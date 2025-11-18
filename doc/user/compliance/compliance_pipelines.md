@@ -6,7 +6,7 @@ title: Compliance pipelines (deprecated)
 description: Compliance pipelines (deprecated in 17.3, planned to be removed in 19.0) enables centralized CI/CD control for labeled projects. Replaced by pipeline execution policies.
 ---
 
-<!--- start_remove The following content will be removed on remove_date: '2025-08-15' -->
+<!--- start_remove The following content will be removed on remove_date: '2026-08-15' -->
 
 {{< details >}}
 
@@ -49,8 +49,7 @@ For more information, see:
 
 ## Pipeline execution policies migration
 
-To consolidate and simplify scan and pipeline enforcement, we have introduced pipeline execution policies. We deprecated
-compliance pipelines in GitLab 17.3 and will remove compliance pipelines in GitLab 19.0.
+Pipeline execution policies aim to consolidate and simplify scan and pipeline enforcement. Compliance pipelines were deprecated in GitLab 17.3 and will be removed in GitLab 19.0.
 
 Pipeline execution policies extend a project's `.gitlab-ci.yml` file with the configuration provided in separate YAML file
 (for example, `pipeline-execution.yml`) linked in the pipeline execution policy.
@@ -65,7 +64,7 @@ Existing compliance pipelines must be migrated. Customers should migrate from co
 
 To migrate an existing compliance framework to use the pipeline execution policy type:
 
-1. On the left sidebar, select **Search or go to** and find your group.
+1. On the left sidebar, select **Search or go to** and find your group. If you've [turned on the new navigation](../interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
 1. Select **Secure** > **Compliance center**.
 1. [Edit](compliance_frameworks/_index.md#create-edit-or-delete-a-compliance-framework) the existing compliance framework.
 1. In the banner than appears, select **Migrate pipeline to a policy** to create a new policy in the security policies.
@@ -108,7 +107,7 @@ To ensure that the correct compliance pipeline is included in a project:
 
 To configure a compliance pipeline:
 
-1. On the left sidebar, select **Search or go to** and find your group.
+1. On the left sidebar, select **Search or go to** and find your group. If you've [turned on the new navigation](../interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
 1. Select **Secure** > **Compliance Center**.
 1. Select **Frameworks** section.
 1. Select **New framework** section, add information of compliance framework including path to the compliance framework configuration. Use the
@@ -124,8 +123,8 @@ framework label, the compliance pipeline configuration is run instead of the lab
 The user running the pipeline in the labeled project must at least have the Reporter role on the compliance project.
 
 When used to enforce scan execution, this feature has some overlap with
-[scan execution policies](../application_security/policies/scan_execution_policies.md). We have not
-[unified the user experience for these two features](https://gitlab.com/groups/gitlab-org/-/epics/7312).
+[scan execution policies](../application_security/policies/scan_execution_policies.md).
+The user experience for these two features [have not been unified](https://gitlab.com/groups/gitlab-org/-/epics/7312).
 
 ### Example configuration
 

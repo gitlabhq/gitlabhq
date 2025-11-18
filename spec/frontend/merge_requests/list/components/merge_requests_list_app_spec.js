@@ -3,7 +3,7 @@ import Vue, { nextTick } from 'vue';
 import VueApollo from 'vue-apollo';
 import VueRouter from 'vue-router';
 import axios from '~/lib/utils/axios_utils';
-import { HTTP_STATUS_OK } from '~/lib/utils/http_status';
+import { HTTP_STATUS_OK, HTTP_STATUS_SERVICE_UNAVAILABLE } from '~/lib/utils/http_status';
 import { shallowMountExtended, mountExtended } from 'helpers/vue_test_utils_helper';
 import createMockApollo from 'helpers/mock_apollo_helper';
 import waitForPromises from 'helpers/wait_for_promises';
@@ -35,6 +35,8 @@ import {
   TOKEN_TYPE_DEPLOYED_BEFORE,
   TOKEN_TYPE_SUBSCRIBED,
   TOKEN_TYPE_SEARCH_WITHIN,
+  TOKEN_TYPE_MERGED_BEFORE,
+  TOKEN_TYPE_MERGED_AFTER,
   OPERATOR_IS,
   OPERATOR_NOT,
 } from '~/vue_shared/components/filtered_search_bar/constants';
@@ -433,6 +435,45 @@ describe('Merge requests list app', () => {
     });
   });
 
+  describe('when on merged tab', () => {
+    beforeEach(async () => {
+      setWindowLocation(`?state=merged`);
+
+      createComponent();
+
+      await waitForPromises();
+    });
+
+    afterEach(() => {
+      setWindowLocation('?');
+    });
+
+    it('renders merged before & after when on merged tab', () => {
+      expect(findIssuableList().props('searchTokens')).toMatchObject([
+        { type: TOKEN_TYPE_AUTHOR },
+        { type: TOKEN_TYPE_ASSIGNEE },
+        { type: TOKEN_TYPE_REVIEWER },
+        { type: TOKEN_TYPE_MERGE_USER },
+        { type: TOKEN_TYPE_APPROVER },
+        { type: TOKEN_TYPE_APPROVED_BY },
+        { type: TOKEN_TYPE_MILESTONE },
+        { type: TOKEN_TYPE_LABEL },
+        { type: TOKEN_TYPE_RELEASE },
+        { type: TOKEN_TYPE_MY_REACTION },
+        { type: TOKEN_TYPE_DRAFT },
+        { type: TOKEN_TYPE_TARGET_BRANCH },
+        { type: TOKEN_TYPE_SOURCE_BRANCH },
+        { type: TOKEN_TYPE_ENVIRONMENT },
+        { type: TOKEN_TYPE_MERGED_BEFORE },
+        { type: TOKEN_TYPE_MERGED_AFTER },
+        { type: TOKEN_TYPE_DEPLOYED_BEFORE },
+        { type: TOKEN_TYPE_DEPLOYED_AFTER },
+        { type: TOKEN_TYPE_SUBSCRIBED },
+        { type: TOKEN_TYPE_SEARCH_WITHIN },
+      ]);
+    });
+  });
+
   describe('events', () => {
     describe('when "filter" event is emitted by IssuableList', () => {
       it('updates IssuableList with url params', async () => {
@@ -724,6 +765,28 @@ describe('Merge requests list app', () => {
       await nextTick();
 
       expect(findIssuableList().props('error')).toBeNull();
+    });
+  });
+
+  describe('when search times out', () => {
+    it('renders search timeout empty state', async () => {
+      const error503 = {
+        statusCode: HTTP_STATUS_SERVICE_UNAVAILABLE,
+        result: {
+          errors: [{ message: 'Service temporarily unavailable' }],
+        },
+      };
+
+      createComponent({
+        mountFn: mountExtended,
+        queryResponse: jest.fn().mockRejectedValue(error503),
+      });
+
+      await waitForPromises();
+
+      expect(findIssuableList().props('searchTimeout')).toBe(true);
+      expect(wrapper.html()).toContain('Too many results to display');
+      expect(wrapper.html()).toContain('Edit your search or add a filter.');
     });
   });
 });

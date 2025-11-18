@@ -148,6 +148,15 @@ RSpec.describe API::Ci::Runners, feature_category: :fleet_visibility do
           group.reload.runners_token
         end
       end
+
+      it_behaves_like 'authorizing granular token permissions', :reset_runner_registration_token do
+        let_it_be(:user) { group.first_owner }
+        let(:boundary_object) { group }
+        let(:request) { post api("#{prefix}/runners/reset_registration_token", personal_access_token: pat) }
+        before do
+          stub_application_setting(allow_runner_registration_token: true)
+        end
+      end
     end
   end
 
@@ -166,6 +175,15 @@ RSpec.describe API::Ci::Runners, feature_category: :fleet_visibility do
 
         def get_token
           project.reload.runners_token
+        end
+      end
+
+      it_behaves_like 'authorizing granular token permissions', :reset_runner_registration_token do
+        let_it_be(:user) { project.first_owner }
+        let(:boundary_object) { project }
+        let(:request) { post api("#{prefix}/runners/reset_registration_token", personal_access_token: pat) }
+        before do
+          stub_application_setting(allow_runner_registration_token: true)
         end
       end
     end

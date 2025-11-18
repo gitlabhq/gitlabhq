@@ -8,7 +8,7 @@ import Dropzone from 'dropzone';
 import $ from 'jquery';
 import { Mousetrap } from '~/lib/mousetrap';
 import 'mousetrap/plugins/pause/mousetrap-pause';
-import { scrollToElement } from '~/lib/utils/common_utils';
+import { scrollToElement } from '~/lib/utils/scroll_utils';
 
 Dropzone.autoDiscover = false;
 
@@ -82,7 +82,7 @@ export default class ZenMode {
     if (this.active_textarea) {
       Mousetrap.unpause();
       this.active_textarea.closest('.zen-backdrop').removeClass('fullscreen');
-      scrollToElement(this.active_textarea, { duration: 0, offset: -100 });
+      scrollToElement(this.active_textarea, { behavior: 'auto', offset: -100 });
       this.active_textarea.attr('style', this.storedStyle);
 
       autosize(this.active_textarea);

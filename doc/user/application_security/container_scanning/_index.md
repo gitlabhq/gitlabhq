@@ -19,8 +19,8 @@ vulnerabilities appear in your base images or operating system's packages, conta
 identifies them and provides a remediation path for those that it can.
 
 - <i class="fa fa-youtube-play youtube" aria-hidden="true"></i>
-  For an overview, see [Container Scanning - Advanced Security Testing](https://www.youtube.com/watch?v=C0jn2eN5MAs).
-- <i class="fa fa-youtube-play youtube" aria-hidden="true"></i> For a video walkthrough, see [How to set up Container Scanning using GitLab](https://youtu.be/h__mcXpil_4?si=w_BVG68qnkL9x4l1).
+  For an overview, see [Container scanning - Advanced Security Testing](https://www.youtube.com/watch?v=C0jn2eN5MAs).
+- <i class="fa fa-youtube-play youtube" aria-hidden="true"></i> For a video walkthrough, see [How to set up container scanning using GitLab](https://youtu.be/h__mcXpil_4?si=w_BVG68qnkL9x4l1).
 - For an introductory tutorial, see [Scan a Docker container for vulnerabilities](../../../tutorials/container_scanning/_index.md).
 
 Container scanning is often considered part of Software Composition Analysis (SCA). SCA can contain
@@ -30,14 +30,14 @@ you wrote yourself.
 
 GitLab offers both container scanning and dependency scanning
 to ensure coverage for all these dependency types. To cover as much of your risk area as
-possible, we encourage you to use all the security scanners. For a comparison of these features, see
+possible, use all the security scanners. For a comparison of these features, see
 [Dependency scanning compared to container scanning](../comparison_dependency_and_container_scanning.md).
 
 GitLab integrates with the [Trivy](https://github.com/aquasecurity/trivy) security scanner to perform vulnerability static analysis in containers.
 
 {{< alert type="warning" >}}
 
-The Grype analyzer is no longer maintained, except for limited fixes as explained in our
+The Grype analyzer is no longer maintained, except for limited fixes as explained in the GitLab
 [statement of support](https://about.gitlab.com/support/statement-of-support/#version-support).
 The existing current major version for the Grype analyzer image will continue to be updated with the
 latest advisory database, and operating system packages until GitLab 19.0, at which point the analyzer
@@ -105,7 +105,7 @@ might occur. In that case, use the manual method instead.
 
 To enable container scanning:
 
-1. On the left sidebar, select **Search or go to** and find your project.
+1. On the left sidebar, select **Search or go to** and find your project. If you've [turned on the new navigation](../../interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
 1. Select **Secure** > **Security configuration**.
 1. In the **Container Scanning** row, select **Configure with a merge request**.
 1. Select **Create merge request**.
@@ -120,7 +120,7 @@ you have a complex GitLab configuration file or you need to use non-default opti
 
 To enable container scanning:
 
-1. On the left sidebar, select **Search or go to** and find your project.
+1. On the left sidebar, select **Search or go to** and find your project. If you've [turned on the new navigation](../../interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
 1. Select **Build** > **Pipeline editor**.
 1. If no `.gitlab-ci.yml` file exists, select **Configure pipeline**, then delete the example
    content.
@@ -149,7 +149,7 @@ Pipelines now include a container scanning job.
 
 You can review vulnerabilities in a pipeline:
 
-1. On the left sidebar, select **Search or go to** and find your project.
+1. On the left sidebar, select **Search or go to** and find your project. If you've [turned on the new navigation](../../interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
 1. On the left sidebar, select **Build** > **Pipelines**.
 1. Select the pipeline.
 1. Select the **Security** tab.
@@ -180,7 +180,7 @@ Additional ways to see container scanning results:
 
 After you are confident in the container scanning results for a single project, you can extend its implementation to additional projects:
 
-- Use [enforced scan execution](../detect/security_configuration.md#create-a-shared-configuration) to apply Container Scanning settings across groups.
+- Use [enforced scan execution](../detect/security_configuration.md#create-a-shared-configuration) to apply container scanning settings across groups.
 - If you have unique requirements, container scanning can be run in [offline environments](#running-container-scanning-in-an-offline-environment).
 
 ## Supported distributions
@@ -576,9 +576,9 @@ To use container scanning in an offline environment, you need:
 GitLab Runner has a [default `pull policy` of `always`](https://docs.gitlab.com/runner/executors/docker.html#using-the-always-pull-policy),
 meaning the runner tries to pull Docker images from the GitLab container registry even if a local
 copy is available. The GitLab Runner [`pull_policy` can be set to `if-not-present`](https://docs.gitlab.com/runner/executors/docker.html#using-the-if-not-present-pull-policy)
-in an offline environment if you prefer using only locally available Docker images. However, we
-recommend keeping the pull policy setting to `always` if not in an offline environment, as this
-enables the use of updated scanners in your CI/CD pipelines.
+in an offline environment if you prefer using only locally available Docker images. However,
+keep the pull policy setting to `always` if not in an offline environment to
+enable the use of updated scanners in your CI/CD pipelines.
 
 ##### Support for Custom Certificate Authorities
 
@@ -634,7 +634,7 @@ The methods described here apply to `container_scanning` jobs that are defined i
 
 #### Automating container scanning vulnerability database updates with a pipeline
 
-We recommend that you set up a [scheduled pipeline](../../../ci/pipelines/schedules.md)
+Set up a [scheduled pipeline](../../../ci/pipelines/schedules.md)
 to fetch the latest vulnerabilities database on a preset schedule.
 Automating this with a pipeline means you do not have to do it manually each time. You can use the
 following `.gitlab-ci.yml` example as a template.
@@ -644,7 +644,7 @@ variables:
   SOURCE_IMAGE: registry.gitlab.com/security-products/container-scanning:8
   TARGET_IMAGE: $CI_REGISTRY/namespace/container-scanning
 
-image: docker:latest
+image: docker:cli
 
 update-scanner-image:
   services:
@@ -929,15 +929,15 @@ Container Scanning for Registry populates the vulnerability report only when a n
 
 ### Enabling Container Scanning for Registry
 
-To enable container scanning for the GitLab Container Registry:
+To enable Container Scanning for the GitLab Container Registry:
 
-1. On the left sidebar, select **Search or go to** and find your project.
+1. On the left sidebar, select **Search or go to** and find your project. If you've [turned on the new navigation](../../interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
 1. Select **Secure** > **Security configuration**.
 1. Scroll down to the **Container Scanning For Registry** section and turn on the toggle.
 
 ### Use with offline or air-gapped environments
 
-To use Container Scanning for Registry in an offline or air-gapped environment, you must use a local copy of the container scanning analyzer image. Because this feature is managed by the GitLab Security Policy Bot, the analyzer image cannot be configured by editing the `.gitlab-ci.yml` file.
+To use container scanning for registry in an offline or air-gapped environment, you must use a local copy of the container scanning analyzer image. Because this feature is managed by the GitLab Security Policy Bot, the analyzer image cannot be configured by editing the `.gitlab-ci.yml` file.
 
 Instead, you must override the default scanner image by setting the `CS_ANALYZER_IMAGE` CI/CD
 variable in the GitLab UI. The dynamically-created scanning job inherits variables defined in the
@@ -945,7 +945,7 @@ UI. You can use a project, group, or instance CI/CD variable.
 
 To configure a custom scanner image:
 
-1. On the left sidebar, select **Search or go to** and find your project or group.
+1. On the left sidebar, select **Search or go to** and find your project or group. If you've [turned on the new navigation](../../interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
 1. Select **Settings** > **CI/CD**.
 1. Expand the **Variables** section.
 1. Select **Add variable** and fill in the details:
@@ -1027,7 +1027,7 @@ docker: Error response from daemon: failed to copy xattrs: failed to set xattr "
 This is a result of a bug in Docker which is now [fixed](https://github.com/containerd/continuity/pull/138 "fs: add WithAllowXAttrErrors CopyOpt").
 To prevent the error, ensure the Docker version that the runner is using is
 `18.09.03` or higher. For more information, see
-[issue #10241](https://gitlab.com/gitlab-org/gitlab/-/issues/10241 "Investigate why Container Scanning is not working with NFS mounts").
+[issue #10241](https://gitlab.com/gitlab-org/gitlab/-/issues/10241 "Investigate why container scanning is not working with NFS mounts").
 
 ### Getting warning message `gl-container-scanning-report.json: no matching files`
 
@@ -1057,6 +1057,12 @@ To resolve this, instead of binding the `/tmp` folder, bind specific files or fo
 ### Resolving `context deadline exceeded` error
 
 This error means a timeout occurred. To resolve it, add the `TRIVY_TIMEOUT` environment variable to the `container_scanning` job with a sufficiently long duration.
+
+### No vulnerabilities detected on images based on an old image
+
+Trivy does not scan operating system images that are no longer receiving any updates.
+
+Making this visible in the UI is proposed in [issue 433325](https://gitlab.com/gitlab-org/gitlab/-/issues/433325).
 
 ## Changes
 

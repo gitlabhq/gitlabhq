@@ -48,6 +48,9 @@
     "execution_policy_variables_override": {
       "$ref": "#/definitions/executionPolicyVariablesOverrideDefinition"
     },
+    "policy": {
+      "$ref": "#/definitions/policyDefinition"
+    },
     "hooks": {
       "$ref": "#/definitions/hooksDefinition"
     },
@@ -344,6 +347,21 @@
           }
         }
       ]
+    },
+    "policyDefinition": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "name": {
+          "type": "string"
+        },
+        "pre_succeeds": {
+          "type": "boolean"
+        },
+        "variables_override": {
+          "$ref": "#/definitions/executionPolicyVariablesOverrideDefinition"
+        }
+      }
     },
     "executionPolicyVariablesOverrideDefinition": {
       "type": "object",

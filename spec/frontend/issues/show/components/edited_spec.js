@@ -1,5 +1,6 @@
 import { GlLink } from '@gitlab/ui';
 import { mount } from '@vue/test-utils';
+import { removeWhitespace } from 'helpers/text_helper';
 import { getTimeago } from '~/lib/utils/datetime_utility';
 import Edited from '~/issues/show/components/edited.vue';
 import TimeAgoTooltip from '~/vue_shared/components/time_ago_tooltip.vue';
@@ -12,7 +13,7 @@ describe('Edited component', () => {
 
   const findAuthorLink = () => wrapper.findComponent(GlLink);
   const findTimeAgoTooltip = () => wrapper.findComponent(TimeAgoTooltip);
-  const formatText = (text) => text.trim().replace(/\s\s+/g, ' ');
+  const formatText = (text) => removeWhitespace(text.trim());
 
   const mountComponent = (propsData) => mount(Edited, { propsData });
 

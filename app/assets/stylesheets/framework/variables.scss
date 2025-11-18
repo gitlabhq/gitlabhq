@@ -7,6 +7,7 @@ $grid-size: 8px;
 $right-sidebar-collapsed-width: 62px;
 $right-sidebar-width: 290px;
 $right-sidebar-inner-width: 250px;
+$wiki-sidebar-inner-width: 220px;
 $sidebar-breakpoint: 1024px;
 $default-transition-duration: 0.15s;
 $toggle-sidebar-height: 48px;
@@ -127,13 +128,14 @@ $browser-scrollbar-size: 10px;
 /*
  * Misc
  */
-$header-height: 48px;
+$header-height: calc(3rem + 1px); //= 48px + 1px border
 $content-wrapper-padding: 56px;
 $header-zindex: 1000;
 $zindex-dropdown-menu: 300;
 $ide-statusbar-height: 25px;
 $limited-layout-width: 1006px;
 $fixed-layout-width: 1296px;
+$wiki-content-default-width: 768px;
 $container-margin: $gl-padding;
 $container-margin-xl: $gl-padding-24;
 $gl-border-radius-base: 0.25rem;
@@ -151,7 +153,7 @@ $system-header-height: 16px;
 $system-footer-height: $system-header-height;
 $mr-sticky-header-height: 4.5rem;
 $mr-review-bar-height: calc(2rem + 16px);
-$top-bar-height: 48px;
+$top-bar-height: 3rem; //= 48px
 $work-item-sticky-header-height: 52px;
 $home-panel-title-row-height: 48px;
 $home-panel-avatar-mobile-size: 24px;
@@ -406,7 +408,7 @@ $mr-tabs-height: 48px;
 /*
 Board Swimlanes
 */
-$board-swimlanes-headers-height: 64px;
+$board-swimlanes-headers-height: 48px;
 
 /*
 Source Editor theme overrides

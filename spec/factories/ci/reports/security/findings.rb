@@ -10,10 +10,15 @@ FactoryBot.define do
     name { 'Cipher with no integrity' }
     report_type { :sast }
     cvss { [{ vendor: "GitLab", vector: "CVSS:3.1/AV:N/AC:L/PR:H/UI:N/S:U/C:L/I:L/A:N" }] }
+
+    transient do
+      solution { "GCM mode introduces an HMAC into the resulting encrypted data, providing integrity of the result." }
+    end
+
     original_data do
       {
         description: "The cipher does not provide data integrity update 1",
-        solution: "GCM mode introduces an HMAC into the resulting encrypted data, providing integrity of the result.",
+        solution: solution,
         location: {
           file: "maven/src/main/java/com/gitlab/security_products/tests/App.java",
           start_line: 29,

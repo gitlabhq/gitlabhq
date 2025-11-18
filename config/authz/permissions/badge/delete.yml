@@ -2,3 +2,7 @@
 name: delete_badge
 description: Grants the ability to delete badges
 feature_category: groups_and_projects
+boundaries:
+  - project
+  - group
+available_for_tokens: true

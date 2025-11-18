@@ -10,7 +10,10 @@ module QA
       end
 
       it 'user rebases source branch of merge request', :requires_admin, feature_flag: { name: :rebase_on_merge_automatic },
-        testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/347735' do
+        testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/347735', quarantine: {
+          issue: 'https://gitlab.com/gitlab-org/quality/test-failure-issues/-/issues/1228',
+          type: :bug
+        } do
         create(:commit, project: merge_request.project, actions: [
           { action: 'create', file_path: 'other.txt', content: 'New file added!' }
         ])

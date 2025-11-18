@@ -12,20 +12,18 @@ module Ci
     # become first class. For that reason we abstract users from the underlying `Ci::Pipeline` semantics.
     class RunWorkloadService
       def initialize(
-        project:, current_user:, source:, workload_definition:, create_branch: false, source_branch: nil,
+        project:, current_user:, source:, workload_definition:, ref: nil,
         ci_variables_included: [])
         @project = project
         @current_user = current_user
         @source = source
         @workload_definition = workload_definition
-        @create_branch = create_branch
-        @source_branch = source_branch
+        @ref = ref || @project.default_branch_or_main
         @ci_variables_included = ci_variables_included
       end
 
       def execute
         validate_source!
-        @ref = @create_branch ? create_repository_branch(@source_branch) : default_branch
 
         @workload_definition.add_variable(:CI_WORKLOAD_REF, @ref)
         service = ::Ci::CreatePipelineService.new(@project, @current_user, ref: @ref)
@@ -62,18 +60,6 @@ module Ci
         @ci_variables_included.each do |var|
           workload.variable_inclusions.create!(variable_name: var, project: workload.project)
         end
-      end
-
-      def create_repository_branch(source_branch)
-        branch_name = "workloads/#{SecureRandom.hex[0..10]}"
-        raise "Branch already exists" if @project.repository.branch_exists?(branch_name)
-
-        branch = @project.repository.branch_exists?(source_branch) ? source_branch : default_branch
-
-        repo_branch = @project.repository.add_branch(@current_user, branch_name, branch, skip_ci: true)
-        raise "Error in git branch creation" unless repo_branch
-
-        branch_name
       end
 
       def ci_job_yaml

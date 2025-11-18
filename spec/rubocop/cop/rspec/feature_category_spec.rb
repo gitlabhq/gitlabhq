@@ -65,7 +65,7 @@ RSpec.describe RuboCop::Cop::RSpec::FeatureCategory, feature_category: :tooling 
   let(:invalid_category) { :invalid_category }
 
   context 'with defined in config/feature_categories.yml and custom categories' do
-    where(:valid_category) { RuboCop::FeatureCategories.available_with_custom.to_a }
+    where(:valid_category) { RuboCop::FeatureCategories.available_for_rspec.to_a }
 
     with_them do
       it_behaves_like 'feature category validation', params[:valid_category]

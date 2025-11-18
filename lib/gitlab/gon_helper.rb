@@ -36,8 +36,8 @@ module Gitlab
       gon.recaptcha_sitekey      = Gitlab::CurrentSettings.recaptcha_site_key
       gon.gitlab_url             = Gitlab.config.gitlab.url
       gon.promo_url              = Gitlab::Routing.url_helpers.promo_url
-      gon.forum_url              = Gitlab::Saas.community_forum_url
-      gon.docs_url               = Gitlab::Saas.doc_url
+      gon.forum_url              = Gitlab.community_forum_url
+      gon.docs_url               = Gitlab.doc_url
       gon.revision               = Gitlab.revision
       gon.feature_category       = Gitlab::ApplicationContext.current_context_attribute(:feature_category).presence
       gon.gitlab_logo            = ActionController::Base.helpers.asset_path('gitlab_logo.png')
@@ -100,13 +100,12 @@ module Gitlab
       push_frontend_feature_flag(:work_item_view_for_issues)
       push_frontend_feature_flag(:new_project_creation_form, current_user, type: :wip)
       push_frontend_feature_flag(:work_items_client_side_boards, current_user)
-      push_frontend_feature_flag(:glql_work_items, current_user, type: :wip)
+      push_frontend_feature_flag(:glql_work_items, current_user)
       push_frontend_feature_flag(:glql_aggregation, current_user, type: :wip)
       push_frontend_feature_flag(:glql_typescript, current_user, type: :wip)
-      push_frontend_feature_flag(:whats_new_featured_carousel)
       push_frontend_feature_flag(:paneled_view, current_user)
-      push_frontend_feature_flag(:image_lightboxes, current_user)
       push_frontend_feature_flag(:archive_group)
+      push_frontend_feature_flag(:accessible_loading_button, current_user)
 
       # Expose the Project Studio user preference as if it were a feature flag
       push_force_frontend_feature_flag(:project_studio_enabled, Users::ProjectStudio.new(current_user).enabled?)

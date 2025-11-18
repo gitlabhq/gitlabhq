@@ -436,7 +436,6 @@ RSpec.describe ApplicationHelper do
     let_it_be(:noteable_type) { Issue }
     let_it_be(:group_sources) { [:members, :issues, :mergeRequests, :labels, :milestones, :commands] }
     let_it_be(:project_sources) { [:members, :issues, :mergeRequests, :labels, :milestones, :commands, :snippets, :contacts, :wikis] }
-    let_it_be(:extensible_filter_sources) { [:issuesAlternative, :workItems] }
 
     def expect_autocomplete_data_sources_to_be(object, noteable_type, source_keys)
       sources = helper.autocomplete_data_sources(object, noteable_type)
@@ -456,13 +455,13 @@ RSpec.describe ApplicationHelper do
 
     context 'group' do
       it 'returns paths for autocomplete_sources_controller' do
-        expect_autocomplete_data_sources_to_contain(group, noteable_type, group_sources + extensible_filter_sources)
+        expect_autocomplete_data_sources_to_contain(group, noteable_type, group_sources)
       end
     end
 
     context 'project' do
       it 'returns paths for autocomplete_sources_controller' do
-        expect_autocomplete_data_sources_to_be(project, noteable_type, project_sources + extensible_filter_sources)
+        expect_autocomplete_data_sources_to_be(project, noteable_type, project_sources)
       end
     end
   end
@@ -513,11 +512,11 @@ RSpec.describe ApplicationHelper do
     end
   end
 
-  describe '#project_studio_available' do
+  describe '#project_studio_available?' do
     let(:user) { build(:user) }
 
     before do
-      allow(helper).to receive(:current_user).and_return(user)
+      allow(helper).to receive_messages(current_user: user, cookies: { studio: 'true' })
     end
 
     it 'calls ProjectStudio#available?' do
@@ -533,7 +532,7 @@ RSpec.describe ApplicationHelper do
     let(:user) { build(:user) }
 
     before do
-      allow(helper).to receive(:current_user).and_return(user)
+      allow(helper).to receive_messages(current_user: user, cookies: { studio: 'true' })
     end
 
     it 'calls ProjectStudio#enabled?' do

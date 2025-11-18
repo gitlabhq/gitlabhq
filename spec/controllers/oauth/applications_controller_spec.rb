@@ -173,6 +173,13 @@ RSpec.describe Oauth::ApplicationsController, feature_category: :system_access d
         expect(response).to render_template :show
       end
 
+      it 'sets organization_id from Current.organization', :with_current_organization do
+        subject
+
+        application = Authn::OauthApplication.last
+        expect(application.organization_id).to eq(current_organization.id)
+      end
+
       context 'the secret' do
         render_views
 

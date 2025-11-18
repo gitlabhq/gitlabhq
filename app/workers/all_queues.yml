@@ -103,6 +103,16 @@
   :idempotent: false
   :tags: []
   :queue_namespace: :auto_merge
+- :name: auto_merge:merge_requests_ship_merge_request
+  :worker_name: MergeRequests::ShipMergeRequestWorker
+  :feature_category: :code_review_workflow
+  :has_external_dependencies: false
+  :urgency: :high
+  :resource_boundary: :cpu
+  :weight: 3
+  :idempotent: true
+  :tags: []
+  :queue_namespace: :auto_merge
 - :name: batched_background_migrations:database_batched_background_migration_ci_execution
   :worker_name: Database::BatchedBackgroundMigration::CiExecutionWorker
   :feature_category: :database
@@ -306,6 +316,16 @@
   :idempotent: true
   :tags: []
   :queue_namespace: :cronjob
+- :name: cronjob:authn_data_retention_authentication_event_archive
+  :worker_name: Authn::DataRetention::AuthenticationEventArchiveWorker
+  :feature_category: :system_access
+  :has_external_dependencies: false
+  :urgency: :low
+  :resource_boundary: :unknown
+  :weight: 1
+  :idempotent: true
+  :tags: []
+  :queue_namespace: :cronjob
 - :name: cronjob:authn_data_retention_oauth_access_grant_archive
   :worker_name: Authn::DataRetention::OauthAccessGrantArchiveWorker
   :feature_category: :system_access
@@ -404,7 +424,8 @@
   :resource_boundary: :unknown
   :weight: 1
   :idempotent: true
-  :tags: []
+  :tags:
+  - :clickhouse
   :queue_namespace: :cronjob
 - :name: cronjob:ci_delete_expired_trigger_token
   :worker_name: Ci::DeleteExpiredTriggerTokenWorker
@@ -576,8 +597,78 @@
   :idempotent: true
   :tags: []
   :queue_namespace: :cronjob
+- :name: cronjob:database_background_operation_base_scheduler
+  :worker_name: Database::BackgroundOperation::BaseSchedulerWorker
+  :feature_category: :database
+  :has_external_dependencies: false
+  :urgency: :low
+  :resource_boundary: :unknown
+  :weight: 1
+  :idempotent: true
+  :tags: []
+  :queue_namespace: :cronjob
+- :name: cronjob:database_background_operation_ci_scheduler
+  :worker_name: Database::BackgroundOperation::CiSchedulerWorker
+  :feature_category: :database
+  :has_external_dependencies: false
+  :urgency: :low
+  :resource_boundary: :unknown
+  :weight: 1
+  :idempotent: true
+  :tags: []
+  :queue_namespace: :cronjob
+- :name: cronjob:database_background_operation_ci_scheduler_cell_local
+  :worker_name: Database::BackgroundOperation::CiSchedulerCellLocalWorker
+  :feature_category: :database
+  :has_external_dependencies: false
+  :urgency: :low
+  :resource_boundary: :unknown
+  :weight: 1
+  :idempotent: true
+  :tags: []
+  :queue_namespace: :cronjob
 - :name: cronjob:database_background_operation_cron_enqueue
   :worker_name: Database::BackgroundOperation::CronEnqueueWorker
+  :feature_category: :database
+  :has_external_dependencies: false
+  :urgency: :low
+  :resource_boundary: :unknown
+  :weight: 1
+  :idempotent: true
+  :tags: []
+  :queue_namespace: :cronjob
+- :name: cronjob:database_background_operation_main_scheduler
+  :worker_name: Database::BackgroundOperation::MainSchedulerWorker
+  :feature_category: :database
+  :has_external_dependencies: false
+  :urgency: :low
+  :resource_boundary: :unknown
+  :weight: 1
+  :idempotent: true
+  :tags: []
+  :queue_namespace: :cronjob
+- :name: cronjob:database_background_operation_main_scheduler_cell_local
+  :worker_name: Database::BackgroundOperation::MainSchedulerCellLocalWorker
+  :feature_category: :database
+  :has_external_dependencies: false
+  :urgency: :low
+  :resource_boundary: :unknown
+  :weight: 1
+  :idempotent: true
+  :tags: []
+  :queue_namespace: :cronjob
+- :name: cronjob:database_background_operation_sec_scheduler
+  :worker_name: Database::BackgroundOperation::SecSchedulerWorker
+  :feature_category: :database
+  :has_external_dependencies: false
+  :urgency: :low
+  :resource_boundary: :unknown
+  :weight: 1
+  :idempotent: true
+  :tags: []
+  :queue_namespace: :cronjob
+- :name: cronjob:database_background_operation_sec_scheduler_cell_local
+  :worker_name: Database::BackgroundOperation::SecSchedulerCellLocalWorker
   :feature_category: :database
   :has_external_dependencies: false
   :urgency: :low
@@ -824,6 +915,16 @@
   :resource_boundary: :cpu
   :weight: 1
   :idempotent: false
+  :tags: []
+  :queue_namespace: :cronjob
+- :name: cronjob:loose_foreign_keys_ci_pipelines_builds_cleanup_cron
+  :worker_name: LooseForeignKeys::CiPipelinesBuildsCleanupCronWorker
+  :feature_category: :database
+  :has_external_dependencies: false
+  :urgency: :low
+  :resource_boundary: :unknown
+  :weight: 1
+  :idempotent: true
   :tags: []
   :queue_namespace: :cronjob
 - :name: cronjob:loose_foreign_keys_cleanup
@@ -2189,6 +2290,16 @@
   :idempotent: false
   :tags: []
   :queue_namespace: :mail_scheduler
+- :name: namespaces:namespaces_unlink_project_forks
+  :worker_name: Namespaces::UnlinkProjectForksWorker
+  :feature_category: :source_code_management
+  :has_external_dependencies: false
+  :urgency: :low
+  :resource_boundary: :unknown
+  :weight: 1
+  :idempotent: true
+  :tags: []
+  :queue_namespace: :namespaces
 - :name: object_pool:object_pool_create
   :worker_name: ObjectPool::CreateWorker
   :feature_category: :gitaly
@@ -2996,26 +3107,6 @@
   :idempotent: true
   :tags: []
   :queue_namespace:
-- :name: anti_abuse_trust_score
-  :worker_name: AntiAbuse::TrustScoreWorker
-  :feature_category: :instance_resiliency
-  :has_external_dependencies: false
-  :urgency: :low
-  :resource_boundary: :unknown
-  :weight: 1
-  :idempotent: true
-  :tags: []
-  :queue_namespace:
-- :name: anti_abuse_trust_score_cleanup
-  :worker_name: AntiAbuse::TrustScoreCleanupWorker
-  :feature_category: :instance_resiliency
-  :has_external_dependencies: false
-  :urgency: :low
-  :resource_boundary: :unknown
-  :weight: 1
-  :idempotent: true
-  :tags: []
-  :queue_namespace:
 - :name: approve_blocked_pending_approval_users
   :worker_name: ApproveBlockedPendingApprovalUsersWorker
   :feature_category: :user_profile
@@ -3228,16 +3319,6 @@
   :queue_namespace:
 - :name: bitbucket_server_import_import_pull_request_note
   :worker_name: Gitlab::BitbucketServerImport::ImportPullRequestNoteWorker
-  :feature_category: :importers
-  :has_external_dependencies: true
-  :urgency: :low
-  :resource_boundary: :unknown
-  :weight: 1
-  :idempotent: false
-  :tags: []
-  :queue_namespace:
-- :name: bitbucket_server_import_import_pull_request_notes
-  :worker_name: Gitlab::BitbucketServerImport::ImportPullRequestNotesWorker
   :feature_category: :importers
   :has_external_dependencies: true
   :urgency: :low
@@ -3464,7 +3545,8 @@
   :resource_boundary: :unknown
   :weight: 1
   :idempotent: true
-  :tags: []
+  :tags:
+  - :clickhouse
   :queue_namespace:
 - :name: ci_delete_objects
   :worker_name: Ci::DeleteObjectsWorker
@@ -3931,7 +4013,7 @@
   :queue_namespace:
 - :name: flush_counter_increments
   :worker_name: FlushCounterIncrementsWorker
-  :feature_category: :continuous_integration
+  :feature_category: :source_code_management
   :has_external_dependencies: false
   :urgency: :low
   :resource_boundary: :unknown
@@ -4559,6 +4641,16 @@
   :urgency: :low
   :resource_boundary: :cpu
   :weight: 2
+  :idempotent: true
+  :tags: []
+  :queue_namespace:
+- :name: organizations_groups_transfer
+  :worker_name: Organizations::Groups::TransferWorker
+  :feature_category: :organization
+  :has_external_dependencies: false
+  :urgency: :low
+  :resource_boundary: :unknown
+  :weight: 1
   :idempotent: true
   :tags: []
   :queue_namespace:

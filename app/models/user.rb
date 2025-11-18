@@ -36,6 +36,7 @@ class User < ApplicationRecord
   include Gitlab::InternalEventsTracking
   include Ci::PipelineScheduleOwnershipValidator
   include Users::DependentAssociations
+  include Users::EmailOtpEnrollment
 
   ignore_column %i[role skype], remove_after: '2025-09-18', remove_with: '18.4'
 
@@ -173,6 +174,8 @@ class User < ApplicationRecord
 
   has_many :identities, dependent: :destroy, autosave: true # rubocop:disable Cop/ActiveRecordDependent
   has_many :webauthn_registrations
+  has_many :passkeys, -> { passkey }, class_name: 'WebauthnRegistration'
+  has_many :second_factor_webauthn_registrations, -> { second_factor_authenticator }, class_name: 'WebauthnRegistration'
   has_many :chat_names, dependent: :destroy # rubocop:disable Cop/ActiveRecordDependent
   has_many :saved_replies, class_name: '::Users::SavedReply'
   has_one :user_synced_attributes_metadata, autosave: true
@@ -191,7 +194,6 @@ class User < ApplicationRecord
   # Namespaces
   has_many :members
   has_many :member_namespaces, through: :members
-  has_many :namespace_deletion_schedules, class_name: '::Namespaces::DeletionSchedule', inverse_of: :deleting_user
 
   # Groups
   has_many :group_members, -> { where(requested_at: nil).where("access_level >= ?", Gitlab::Access::GUEST) }, class_name: 'GroupMember'
@@ -247,11 +249,6 @@ class User < ApplicationRecord
   has_many :resolved_abuse_reports,   foreign_key: :resolved_by_id, class_name: "AbuseReport", inverse_of: :resolved_by
   has_many :abuse_events,             foreign_key: :user_id, class_name: 'AntiAbuse::Event', inverse_of: :user
   has_many :spam_logs,                dependent: :destroy # rubocop:disable Cop/ActiveRecordDependent
-  has_many :abuse_trust_scores,
-    class_name: 'AntiAbuse::TrustScore',
-    foreign_key: :user_id,
-    dependent: :destroy # rubocop:disable Cop/ActiveRecordDependent - required by https://gitlab.com/groups/gitlab-org/-/epics/19085
-
   has_many :builds,                   class_name: 'Ci::Build'
   has_many :pipelines,                class_name: 'Ci::Pipeline'
   has_many :pipeline_schedules,       foreign_key: :owner_id, class_name: 'Ci::PipelineSchedule'
@@ -259,7 +256,7 @@ class User < ApplicationRecord
   has_many :authored_todos, class_name: 'Todo', dependent: :destroy, foreign_key: :author_id # rubocop:disable Cop/ActiveRecordDependent
   has_many :notification_settings
   has_many :award_emoji, dependent: :destroy # rubocop:disable Cop/ActiveRecordDependent
-  has_many :triggers, -> { Feature.enabled?(:trigger_token_expiration) ? not_expired : self }, class_name: 'Ci::Trigger', foreign_key: :owner_id
+  has_many :triggers, -> { not_expired }, class_name: 'Ci::Trigger', foreign_key: :owner_id
   has_many :audit_events, foreign_key: :author_id, inverse_of: :user
   has_many :uploaded_uploads, class_name: 'Upload', foreign_key: :uploaded_by_user_id
 
@@ -272,6 +269,7 @@ class User < ApplicationRecord
   has_many :created_custom_emoji, class_name: 'CustomEmoji', inverse_of: :creator
 
   has_many :bulk_imports
+  has_many :import_offline_exports, class_name: 'Import::Offline::Export', dependent: :delete_all # rubocop:disable Cop/ActiveRecordDependent -- required by https://gitlab.com/groups/gitlab-org/-/epics/19085, fk cascade delete implemented
   has_one :namespace_import_user, class_name: 'Import::NamespaceImportUser', inverse_of: :import_user
   has_one :placeholder_user_detail, class_name: 'Import::PlaceholderUserDetail', foreign_key: :placeholder_user_id, inverse_of: :placeholder_user
 
@@ -321,6 +319,7 @@ class User < ApplicationRecord
 
   has_many :broadcast_message_dismissals, class_name: 'Users::BroadcastMessageDismissal'
 
+  has_many :lfs_file_locks, dependent: :delete_all # rubocop:disable Cop/ActiveRecordDependent
   #
   # Validations
   #
@@ -420,7 +419,9 @@ class User < ApplicationRecord
     merge_requests: 7,
     operations: 8,
     followed_user_activity: 9,
-    homepage: 12
+    homepage: 12,
+    assigned_merge_requests: 13,
+    review_merge_requests: 14
   }
 
   # Override enum setter for `dashboard` to support flipped mapping for rollout
@@ -502,6 +503,7 @@ class User < ApplicationRecord
     :dpop_enabled, :dpop_enabled=,
     :use_work_items_view, :use_work_items_view=,
     :project_studio_enabled, :project_studio_enabled=,
+    :new_ui_enabled,
     :text_editor, :text_editor=,
     :default_text_editor_enabled, :default_text_editor_enabled=,
     :merge_request_dashboard_list_type, :merge_request_dashboard_list_type=,
@@ -527,7 +529,7 @@ class User < ApplicationRecord
   delegate :project_authorizations_recalculated_at, :project_authorizations_recalculated_at=, to: :user_detail, allow_nil: true
   delegate :bot_namespace, :bot_namespace=, to: :user_detail, allow_nil: true
   delegate :email_otp, :email_otp=, to: :user_detail, allow_nil: true
-  delegate :email_otp_required_after, :email_otp_required_after=, to: :user_detail, allow_nil: true
+  delegate :email_otp_required_after, :email_otp_required_after=, :email_otp_required_after_was, to: :user_detail, allow_nil: true
   delegate :email_otp_last_sent_at, :email_otp_last_sent_at=, to: :user_detail, allow_nil: true
   delegate :email_otp_last_sent_to, :email_otp_last_sent_to=, to: :user_detail, allow_nil: true
 
@@ -664,6 +666,7 @@ class User < ApplicationRecord
   scope :banned, -> { with_states(:banned) }
   scope :external, -> { where(external: true) }
   scope :non_external, -> { where(external: false) }
+  scope :in_organization, ->(organization) { where(organization: organization) }
   scope :confirmed, -> { where.not(confirmed_at: nil) }
   scope :active, -> { with_state(:active).non_internal }
   scope :without_active, -> { without_state(:active) }
@@ -843,7 +846,7 @@ class User < ApplicationRecord
 
   def self.without_two_factor
     where
-      .missing(:webauthn_registrations)
+      .missing(:second_factor_webauthn_registrations)
       .where(otp_required_for_login: false)
   end
 
@@ -1186,6 +1189,10 @@ class User < ApplicationRecord
   # Instance methods
   #
 
+  def get_all_webauthn_credential_ids
+    webauthn_registrations.pluck(:credential_xid)
+  end
+
   def full_path
     username
   end
@@ -1317,9 +1324,10 @@ class User < ApplicationRecord
 
   def disable_two_factor!
     transaction do
-      self.disable_webauthn!
+      self.disable_second_factor_webauthn!
       self.disable_two_factor_otp!
       self.reset_backup_codes!
+      self.set_email_otp_required_after_based_on_restrictions(save: true)
     end
   end
 
@@ -1334,12 +1342,12 @@ class User < ApplicationRecord
     )
   end
 
-  def disable_webauthn!
-    self.webauthn_registrations.destroy_all # rubocop:disable Cop/DestroyAll
+  def disable_second_factor_webauthn!
+    self.second_factor_webauthn_registrations.destroy_all # rubocop:disable Cop/DestroyAll
   end
 
-  def destroy_webauthn_device(device_id)
-    self.webauthn_registrations.find(device_id).destroy
+  def destroy_second_factor_webauthn_device(device_id)
+    self.second_factor_webauthn_registrations.find(device_id).destroy
   end
 
   def reset_backup_codes!
@@ -1358,7 +1366,11 @@ class User < ApplicationRecord
   end
 
   def two_factor_webauthn_enabled?
-    (webauthn_registrations.loaded? && webauthn_registrations.any?) || (!webauthn_registrations.loaded? && webauthn_registrations.exists?)
+    second_factor_webauthn_registrations.any?
+  end
+
+  def passkeys_enabled?
+    passkeys.any?
   end
 
   def needs_new_otp_secret?
@@ -1369,6 +1381,11 @@ class User < ApplicationRecord
     return true unless otp_secret_expires_at
 
     otp_secret_expires_at.past?
+  end
+
+  def email_based_otp_required?
+    Feature.enabled?(:email_based_mfa, self) &&
+      !!email_otp_required_after&.past?
   end
 
   def update_otp_secret!
@@ -1827,6 +1844,10 @@ class User < ApplicationRecord
       .where_exists(counts)
   end
 
+  def has_multiple_organizations?
+    organization_users.many?
+  end
+
   def can_leave_project?(project)
     project.namespace != namespace &&
       project.member(self)
@@ -2239,8 +2260,6 @@ class User < ApplicationRecord
   end
 
   def merge_request_dashboard_show_drafts?
-    return true if Feature.disabled?(:mr_dashboard_drafts_toggle, self)
-
     merge_request_dashboard_show_drafts
   end
 
@@ -2853,14 +2872,7 @@ class User < ApplicationRecord
   end
 
   def block_or_ban
-    return block if Feature.enabled?(:remove_trust_scores, self)
-
-    user_scores = AntiAbuse::UserTrustScore.new(self)
-    if user_scores.spammer? && account_age_in_days < 7
-      ban_and_report
-    else
-      block
-    end
+    block
   end
 
   def ban_and_report

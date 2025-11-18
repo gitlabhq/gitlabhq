@@ -9,7 +9,7 @@ RSpec.configure do |config|
       # but RSpec prevent stubbing method calls in before_all,
       # therefore we have to resort to temporarily swap url value.
       @_original_gitlab_url = Gitlab.config.gitlab['url']
-      Gitlab.config.gitlab['url'] = Gitlab::Saas.com_url
+      Gitlab.config.gitlab['url'] = Gitlab.com_url
     end
 
     config.after(:context, metadata) do

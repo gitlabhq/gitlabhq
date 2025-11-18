@@ -2,6 +2,7 @@ import Vue, { nextTick } from 'vue';
 import VueApollo from 'vue-apollo';
 import { GlLoadingIcon, GlTab, GlSearchBoxByType, GlSprintf } from '@gitlab/ui';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
+import { stubComponent } from 'helpers/stub_component';
 import waitForPromises from 'helpers/wait_for_promises';
 import createMockApollo from 'helpers/mock_apollo_helper';
 import KubernetesPods from '~/environments/environment_details/components/kubernetes/kubernetes_pods.vue';
@@ -28,6 +29,8 @@ describe('~/environments/environment_details/components/kubernetes/kubernetes_po
     },
   };
 
+  const resetPaginationSpy = jest.fn();
+
   const findLoadingIcon = () => wrapper.findComponent(GlLoadingIcon);
   const findTab = () => wrapper.findComponent(GlTab);
   const findWorkloadStats = () => wrapper.findComponent(WorkloadStats);
@@ -52,6 +55,11 @@ describe('~/environments/environment_details/components/kubernetes/kubernetes_po
       stubs: {
         GlTab,
         GlSprintf,
+        WorkloadTable: stubComponent(WorkloadTable, {
+          methods: {
+            resetPagination: resetPaginationSpy,
+          },
+        }),
       },
     });
   };
@@ -151,6 +159,17 @@ describe('~/environments/environment_details/components/kubernetes/kubernetes_po
       expect(findWorkloadTable().props('items')).toMatchObject(filteredPods);
     });
 
+    it('resets pagination when status filter changes', async () => {
+      createWrapper();
+      await waitForPromises();
+
+      const status = 'Failed';
+      findWorkloadStats().vm.$emit('select', status);
+      await nextTick();
+
+      expect(resetPaginationSpy).toHaveBeenCalled();
+    });
+
     describe('searching pods', () => {
       beforeEach(async () => {
         createWrapper();
@@ -176,6 +195,14 @@ describe('~/environments/environment_details/components/kubernetes/kubernetes_po
           },
         ];
         expect(findWorkloadTable().props('items')).toMatchObject(filteredPods);
+      });
+
+      it('resets pagination when search changes', async () => {
+        const searchTerm = 'pod-2';
+        findSearchBox().vm.$emit('input', searchTerm);
+        await nextTick();
+
+        expect(resetPaginationSpy).toHaveBeenCalled();
       });
 
       it('shows the correct pod counters in the workload stats', async () => {

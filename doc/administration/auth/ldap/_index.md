@@ -323,6 +323,14 @@ The following basic settings are available:
 
 <!-- markdownlint-enable MD056 -->
 
+{{< alert type="note" >}}
+
+GitLab is unaffected by the stricter binding requirements for Microsoft Active Directory
+Services introduced with [Microsoft advisory ADV190023](https://msrc.microsoft.com/update-guide/en-us/advisory/ADV190023).
+For more information, see [issue 201894](https://gitlab.com/gitlab-org/gitlab/-/issues/201894#note_2807513217).
+
+{{< /alert >}}
+
 ### SSL configuration settings
 
 You can configure SSL configuration settings under `tls_options` name/value
@@ -1303,7 +1311,7 @@ Users deleted from the LDAP server:
 - [No longer consume a license](../../moderate_users.md).
 
 However, these users can continue to use Git with SSH until the next time the
-[LDAP check cache runs](ldap_synchronization.md#adjust-ldap-user-sync-schedule).
+[LDAP check cache runs](ldap_synchronization.md#adjust-ldap-sync-schedule).
 
 To delete the account immediately, you can manually
 [block the user](../../moderate_users.md#block-a-user).

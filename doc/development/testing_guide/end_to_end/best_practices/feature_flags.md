@@ -60,11 +60,10 @@ RSpec.describe "with feature flag enabled", feature_flag: {
 
   let(:project) { Resource::Project.fabricate_via_api! }
 
-  around do |example|
+  before do
     Runtime::Feature.enable(:feature_flag_name, project: project)
-    example.run
-    Runtime::Feature.disable(:feature_flag_name, project: project)
   end
+
 
   it "feature flag test" do
     # Execute the test with the feature flag enabled.
@@ -73,7 +72,7 @@ RSpec.describe "with feature flag enabled", feature_flag: {
 end
 ```
 
-Note that the `enable` and `disable` methods first set the flag and then check that the updated
+Note that the `enable` method first sets the flag and then checks that the updated
 value is returned by the API.
 
 Similarly, you can enable a feature for a group, user, or feature group:
@@ -89,10 +88,10 @@ feature_group = "a_feature_group"
 Runtime::Feature.enable(:feature_flag_name, feature_group: feature_group)
 ```
 
-If no scope is provided, the feature flag is set instance-wide:
+If no scope is provided, the feature flag is set instance-wide and persist even after tests are run:
 
 ```ruby
-# This will affect all users!
+# This will affect all users! Use with care!
 Runtime::Feature.enable(:feature_flag_name)
 ```
 

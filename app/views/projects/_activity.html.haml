@@ -3,6 +3,9 @@
   .controls.gl-flex
     = link_button_to nil, project_path(@project, rss_url_options), title: s_("ProjectActivityRSS|Subscribe"), class: '!gl-hidden @sm/panel:!gl-inline-flex has-tooltip', icon: 'rss'
 
-%ul.content_list.gl-list-none.gl-pl-0.project-activity{ :"data-href" => activity_project_path(@project) }
-.loading
-  = render Pajamas::SpinnerComponent.new(size: :md)
+.js-infinite-scrolling-root
+  %ul.content_list.gl-list-none.gl-pl-0.project-activity.js-infinite-scrolling-content{ :"data-href" => activity_project_path(@project) }
+  .js-infinite-scrolling-page-end
+    .js-infinite-scrolling-loading
+      .loading
+        = render Pajamas::SpinnerComponent.new(size: :md)

@@ -390,27 +390,6 @@ RSpec.shared_examples 'create environment for job' do
             expect(environment.merge_request).to eq(merge_request)
           end
         end
-
-        context 'when job metadata exists' do
-          before do
-            job.ensure_metadata
-          end
-
-          it 'does not change metadata.expanded_environment_name' do
-            expect { subject }.to not_change { job.metadata.expanded_environment_name }
-          end
-        end
-
-        context 'when FF `stop_writing_builds_metadata` is disabled' do
-          before do
-            job.ensure_metadata
-            stub_feature_flags(stop_writing_builds_metadata: false)
-          end
-
-          it 'sets the expanded environment name in metadata' do
-            expect { subject }.to change { job.metadata.expanded_environment_name }.to('review/master')
-          end
-        end
       end
 
       context 'when an environment already exists' do
@@ -433,27 +412,6 @@ RSpec.shared_examples 'create environment for job' do
             expect { subject }.not_to change { Environment.count }
 
             expect(environment.merge_request).to be_nil
-          end
-        end
-
-        context 'when job metadata exists' do
-          before do
-            job.ensure_metadata
-          end
-
-          it 'does not change metadata.expanded_environment_name' do
-            expect { subject }.to not_change { job.metadata.expanded_environment_name }
-          end
-        end
-
-        context 'when FF `stop_writing_builds_metadata` is disabled' do
-          before do
-            job.ensure_metadata
-            stub_feature_flags(stop_writing_builds_metadata: false)
-          end
-
-          it 'sets the expanded environment name in metadata' do
-            expect { subject }.to change { job.metadata.expanded_environment_name }.to('review/master')
           end
         end
       end
@@ -486,22 +444,11 @@ RSpec.shared_examples 'create environment for job' do
 
       context 'when job metadata exists' do
         before do
-          job.ensure_metadata
+          job.metadata = build(:ci_build_metadata, project: project)
         end
 
         it 'does not change metadata.expanded_environment_name' do
           expect { subject }.to not_change { job.metadata.expanded_environment_name }
-        end
-      end
-
-      context 'when FF `stop_writing_builds_metadata` is disabled' do
-        before do
-          job.ensure_metadata
-          stub_feature_flags(stop_writing_builds_metadata: false)
-        end
-
-        it 'sets the expanded environment name in metadata' do
-          expect { subject }.to change { job.metadata.expanded_environment_name }.to('review/master')
         end
       end
     end

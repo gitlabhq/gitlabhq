@@ -1,10 +1,11 @@
-import { GlBreakpointInstance, breakpoints } from '@gitlab/ui/src/utils';
 import { debounce } from 'lodash';
+import { GlBreakpointInstance, breakpoints } from '@gitlab/ui/src/utils'; // eslint-disable-line no-restricted-syntax -- GlBreakpointInstance is used intentionally here. In this case we must obtain viewport breakpoints
 import { setCookie, getCookie } from '~/lib/utils/common_utils';
 import Tracking from '~/tracking';
 import { sidebarState } from './constants';
 
 export const SIDEBAR_COLLAPSED_CLASS = 'page-with-super-sidebar-collapsed';
+export const SIDEBAR_BLOCKED_CSS_TRANSITIONS_CLASS = 'super-sidebar-has-css-transitions-blocked';
 export const SIDEBAR_COLLAPSED_COOKIE = 'super_sidebar_collapsed';
 export const SIDEBAR_COLLAPSED_COOKIE_EXPIRATION = 365 * 10;
 export const SIDEBAR_TRANSITION_DURATION = 200;
@@ -69,7 +70,15 @@ export const initSuperSidebarCollapsedState = (forceDesktopExpandedSidebar = fal
 export const bindSuperSidebarCollapsedEvents = (forceDesktopExpandedSidebar = false) => {
   let previousWindowWidth = window.innerWidth;
 
-  const callback = debounce(() => {
+  // We defer the removal of the class to prevent some CSS transitions from kicking in right when
+  // the window gets resised.
+  const reEnableCSSTransitions = debounce(() => {
+    findPage().classList.remove(SIDEBAR_BLOCKED_CSS_TRANSITIONS_CLASS);
+  }, SIDEBAR_TRANSITION_DURATION);
+
+  const checkWindowWidthChanged = debounce(() => {
+    reEnableCSSTransitions();
+
     const newWindowWidth = window.innerWidth;
     const widthChanged = previousWindowWidth !== newWindowWidth;
 
@@ -86,6 +95,13 @@ export const bindSuperSidebarCollapsedEvents = (forceDesktopExpandedSidebar = fa
     }
     previousWindowWidth = newWindowWidth;
   }, 100);
+
+  const callback = () => {
+    // We add this class while the window is being resized so that we can disable some CSS
+    // transitions while the window is being resized.
+    findPage().classList.add(SIDEBAR_BLOCKED_CSS_TRANSITIONS_CLASS);
+    checkWindowWidthChanged();
+  };
 
   window.addEventListener('resize', callback);
 

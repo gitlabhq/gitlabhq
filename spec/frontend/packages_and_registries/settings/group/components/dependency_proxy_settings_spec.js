@@ -28,7 +28,7 @@ import {
   groupPackageSettingsMock,
   mutationErrorMock,
   dependencyProxyUpdateTllPolicyMutationMock,
-} from 'ee_else_ce_jest/packages_and_registries/settings/group/mock_data';
+} from '../mock_data';
 
 jest.mock('~/alert');
 jest.mock('~/packages_and_registries/settings/group/graphql/utils/optimistic_responses');

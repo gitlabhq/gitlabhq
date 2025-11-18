@@ -11,7 +11,7 @@
       %span.event-target-type{ class: user_profile_activity_classes }
         = event.target_type_name
       = link_to event_feed_url(event), class: 'event-target-link', title: event.target_title do
-        = event.target.name
+        = event.target.full_name
     - else
       %span.event-type.gl-inline-block{ class: event.action_name }
         = event_action_name(event)

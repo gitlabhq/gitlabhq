@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Ci::Runner, type: :model, factory_default: :keep, feature_category: :runner do
+RSpec.describe Ci::Runner, type: :model, factory_default: :keep, feature_category: :runner_core do
   include StubGitlabCalls
   include ::TokenAuthenticatableMatchers
 
@@ -493,7 +493,7 @@ RSpec.describe Ci::Runner, type: :model, factory_default: :keep, feature_categor
   end
 
   describe '.recent', :freeze_time do
-    subject { described_class.recent }
+    subject { described_class.recent.ids }
 
     let!(:runner1) { create(:ci_runner, :unregistered, :created_within_stale_deadline) }
     let!(:runner2) { create(:ci_runner, :unregistered, :stale) }
@@ -501,7 +501,7 @@ RSpec.describe Ci::Runner, type: :model, factory_default: :keep, feature_categor
     let!(:runner4) { create(:ci_runner, :stale, :contacted_within_stale_deadline) }
     let!(:runner5) { create(:ci_runner, :stale) }
 
-    it { is_expected.to contain_exactly(runner1, runner3, runner4) }
+    it { is_expected.to contain_exactly(runner1.id, runner3.id, runner4.id) }
   end
 
   describe '#stale?', :clean_gitlab_redis_cache, :freeze_time do
@@ -611,6 +611,8 @@ RSpec.describe Ci::Runner, type: :model, factory_default: :keep, feature_categor
 
     let_it_be(:pipeline) { create(:ci_pipeline) }
     let_it_be_with_refind(:build) { create(:ci_build, pipeline: pipeline) }
+    let_it_be(:build_with_aa_tag) { create(:ci_build, pipeline: pipeline, tag_list: ['aa']) }
+    let_it_be(:build_with_bb_tag) { create(:ci_build, pipeline: pipeline, tag_list: ['bb']) }
     let_it_be(:runner_project) { build.project }
     let_it_be_with_refind(:runner) { create(:ci_runner, :project, projects: [runner_project]) }
 
@@ -627,10 +629,12 @@ RSpec.describe Ci::Runner, type: :model, factory_default: :keep, feature_categor
     context 'when runner does not have tags' do
       it { is_expected.to be_truthy }
 
-      it 'cannot handle build with tags' do
-        build.tag_list = ['aa']
+      context 'and build has tags' do
+        let(:build) { build_with_aa_tag }
 
-        is_expected.to be_falsey
+        it 'cannot handle build with tags' do
+          is_expected.to be_falsey
+        end
       end
     end
 
@@ -638,16 +642,20 @@ RSpec.describe Ci::Runner, type: :model, factory_default: :keep, feature_categor
       let(:tag_list) { %w[bb cc] }
 
       shared_examples 'tagged build picker' do
-        it 'can handle build with matching tags' do
-          build.tag_list = ['bb']
+        context 'and build has tags' do
+          let(:build) { build_with_bb_tag }
 
-          is_expected.to be_truthy
+          it 'can handle build with matching tags' do
+            is_expected.to be_truthy
+          end
         end
 
-        it 'cannot handle build without matching tags' do
-          build.tag_list = ['aa']
+        context 'and build has non-matching tags' do
+          let(:build) { build_with_aa_tag }
 
-          is_expected.to be_falsey
+          it 'cannot handle build' do
+            is_expected.to be_falsey
+          end
         end
       end
 
@@ -761,10 +769,7 @@ RSpec.describe Ci::Runner, type: :model, factory_default: :keep, feature_categor
 
       with_them do
         let(:tag_list) { runner_tags }
-
-        before do
-          build.tag_list = build_tags
-        end
+        let!(:build) { create(:ci_build, pipeline: pipeline, tag_list: build_tags) }
 
         it { is_expected.to eq(result) }
       end
@@ -1205,9 +1210,7 @@ RSpec.describe Ci::Runner, type: :model, factory_default: :keep, feature_categor
     end
 
     context 'runner cannot pick the build' do
-      before do
-        build.tag_list = [:docker]
-      end
+      let(:build) { FactoryBot.build(:ci_build, tag_list: [:docker]) }
 
       it 'does not call #tick_runner_queue' do
         expect(runner).not_to receive(:tick_runner_queue)
@@ -1574,6 +1577,25 @@ RSpec.describe Ci::Runner, type: :model, factory_default: :keep, feature_categor
       it { is_expected.to match(/[0-9a-zA-Z_-]{8}/) }
       it { is_expected.not_to start_with(described_class::REGISTRATION_RUNNER_TOKEN_PREFIX) }
       it { is_expected.not_to start_with(described_class::CREATED_RUNNER_TOKEN_PREFIX) }
+    end
+
+    context 'with custom instance prefix' do
+      let_it_be(:runner) { create(:ci_runner, registration_type: :authenticated_user) }
+      let_it_be(:instance_prefix) { 'instanceprefix' }
+
+      before do
+        stub_application_setting(instance_token_prefix: instance_prefix)
+        runner.reset_token!
+      end
+
+      specify { expect(runner.token).to start_with(instance_prefix) }
+
+      it 'starts with the token itself instead of the instance prefix' do
+        token_without_prefixes = runner.token.delete_prefix("#{instance_prefix}-")
+                                             .delete_prefix(described_class::CREATED_RUNNER_TOKEN_PREFIX)
+
+        expect(subject).to start_with(token_without_prefixes[0...described_class::RUNNER_SHORT_SHA_LENGTH])
+      end
     end
 
     context 'when legacy token' do
@@ -2117,6 +2139,38 @@ RSpec.describe Ci::Runner, type: :model, factory_default: :keep, feature_categor
     it { is_expected.to eq(%w[active paused online offline never_contacted stale]) }
   end
 
+  describe '.created_runner_prefix' do
+    subject { described_class.created_runner_prefix }
+
+    context 'without custom instance wide prefix' do
+      it 'returns the default prefix' do
+        expect(subject).to eq(described_class::CREATED_RUNNER_TOKEN_PREFIX)
+      end
+    end
+
+    context 'with custom instance wide prefix' do
+      let_it_be(:instance_prefix) { 'instanceprefix' }
+
+      before do
+        stub_application_setting(instance_token_prefix: instance_prefix)
+      end
+
+      it 'returns the custom instance prefix and the default prefix' do
+        expect(subject).to eq("#{instance_prefix}-#{described_class::CREATED_RUNNER_TOKEN_PREFIX}")
+      end
+
+      context 'with feature flag custom_prefix_for_all_token_types disabled' do
+        before do
+          stub_feature_flags(custom_prefix_for_all_token_types: false)
+        end
+
+        it 'returns the default prefix' do
+          expect(subject).to eq(described_class::CREATED_RUNNER_TOKEN_PREFIX)
+        end
+      end
+    end
+  end
+
   describe '.online_contact_time_deadline', :freeze_time do
     subject { described_class.online_contact_time_deadline }
 
@@ -2637,6 +2691,25 @@ RSpec.describe Ci::Runner, type: :model, factory_default: :keep, feature_categor
 
         it { is_expected.to contain_exactly(instance_runner, group_runner, project_runner) }
       end
+    end
+  end
+
+  describe '#tagging_tag_ids' do
+    subject(:tagging_tag_ids) { runner.tagging_tag_ids }
+
+    context 'when runner has tags' do
+      let(:runner) { create(:ci_runner, :instance, tag_list: %w[ruby postgres docker]) }
+
+      it 'returns tag_ids from taggings' do
+        is_expected.to eq(runner.taggings.pluck(:tag_id))
+        expect(tagging_tag_ids.size).to eq(3)
+      end
+    end
+
+    context 'when runner has no tags' do
+      let(:runner) { create(:ci_runner, :instance) }
+
+      it { is_expected.to eq([]) }
     end
   end
 end

@@ -132,14 +132,8 @@ export default {
     },
 
     personalNamespaceWarning() {
-      if (this.glFeatures.userMappingToPersonalNamespaceOwner) {
-        return s__(
-          'ImportProjects|When you import to a personal namespace, all contributions are assigned to the personal namespace owner and they cannot be reassigned. To map contributions to real users, import to a group instead.',
-        );
-      }
-
       return s__(
-        'ImportProjects|When you import to a personal namespace, all contributions are assigned to a single non-functional user and they cannot be reassigned. To map contributions to real users, import to a group instead.',
+        'ImportProjects|When you import to a personal namespace, all contributions are assigned to the personal namespace owner and they cannot be reassigned. To map contributions to real users, import to a group instead.',
       );
     },
   },

@@ -13,7 +13,7 @@ namespace :user_settings do
       put :reset
     end
   end
-  resources :personal_access_tokens, only: [:index, :create] do
+  resources :personal_access_tokens, only: [:index, :create, :new] do
     put :toggle_dpop, on: :collection
   end
   resources :gpg_keys, only: [:index, :create, :destroy] do

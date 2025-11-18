@@ -15,14 +15,25 @@ gitlab_dedicated: no
 
 To ensure GitLab Duo is configured properly and can connect to GitLab:
 
-- You must ensure both outbound and inbound connectivity exists. Network firewalls can cause lag or delay.
+- Ensure both outbound and inbound connectivity exists. Network firewalls can cause lag or delay.
 - [Silent Mode](../../administration/silent_mode/_index.md) must not be turned on.
-- You must [activate your instance with an activation code](../../administration/license.md#activate-gitlab-ee).
+- [Activate your instance with an activation code](../../administration/license.md#activate-gitlab-ee).
   You cannot use an [offline license](https://about.gitlab.com/pricing/licensing-faq/cloud-licensing/#what-is-an-offline-cloud-license) or a legacy license.
-- You should use GitLab 17.2 and later for the best results. Earlier versions might continue to work, however the experience may be degraded.
+- Turn on composite identity, to help ensure actions are secure.
+- Use GitLab 17.2 and later for the best results. Earlier versions might continue to work, however the experience may be degraded.
 
 GitLab Duo features that are experimental or beta are turned off by default
 and [must be turned on](../../user/gitlab_duo/turn_on_off.md#turn-on-beta-and-experimental-features).
+
+## Turn on composite identity
+
+You must turn on [composite identity](../../user/duo_agent_platform/security.md),
+so that the `@duo-developer` service account can perform actions
+on behalf of users.
+
+1. On the left sidebar, at the bottom, select **Admin**. If you've [turned on the new navigation](../../user/interface_redesign.md#turn-new-navigation-on-or-off), in the upper-right corner, select **Admin**.
+1. Select **GitLab Duo**.
+1. Under **GitLab Duo Agent Platform composite identity**, select **Turn on composite identity**.
 
 ## Allow outbound connections from the GitLab instance
 
@@ -35,21 +46,30 @@ and [must be turned on](../../user/gitlab_duo/turn_on_off.md#turn-on-beta-and-ex
 - To use an HTTP/S proxy, both `gitLab_workhorse` and `gitLab_rails` must have the necessary
   [web proxy environment variables](https://docs.gitlab.com/omnibus/settings/environment-variables.html) set.
 - In multi-node GitLab installations, configure the HTTP/S proxy on all **Rails** and **Sidekiq** nodes.
-- The GitLab application nodes must be able to connect to the [GitLab Duo Workflow service](https://duo-workflow-svc.runway.gitlab.net).
+- GitLab application nodes must connect to the GitLab Duo Workflow at `https://duo-workflow-svc.runway.gitlab.net` with HTTP/2. The application and service communicate with gRPC.
 
 ## Allow inbound connections from clients to the GitLab instance
 
-- GitLab instances must allow inbound connections from Duo clients ([IDEs](../../editor_extensions/_index.md),
-  Code Editors, and GitLab Web Frontend) on port 443 with `https://` and `wss://`.
-- Both `HTTP2` and the `'upgrade'` header must be allowed, because GitLab Duo
-  uses both REST and WebSockets.
-- Check for restrictions on WebSocket (`wss://`) traffic to `wss://gitlab.example.com/-/cable` and other `.com` domains.
-  Network policy restrictions on `wss://` traffic can cause issues with some GitLab Duo Chat
-  services. Consider policy updates to allow these services.
-- If you use reverse proxies, such as Apache, you might see GitLab Duo Chat connection issues in your
+Your GitLab instance must allow inbound connections from IDE clients.
+
+1. Allow WebSocket Protocol upgrade requests with headers:
+   - `Connection: upgrade`
+   - `Upgrade: websocket`
+   - `HTTP/2` protocol support
+   - Standard WebSocket security headers: `Sec-WebSocket-*`
+1. Enable `wss://` (WebSocket Secure) protocol support.
+1. Add specific endpoints to allow:
+   - Primary endpoint: `wss://<customer-instance>/-/cable`
+   - Ensure `HTTP/2` protocol is not downgraded to `HTTP/1.1`.
+   - Port: `443` (HTTPS/WSS)
+
+If you have issues:
+
+- Check for restrictions on WebSocket traffic to `wss://gitlab.example.com/-/cable` and other `.com` domains.
+- If you use reverse proxies like Apache, you might see GitLab Duo Chat connection issues in your
   logs, like **WebSocket connection to .... failures**.
 
-To resolve this problem, try editing your Apache proxy settings:
+To resolve this issue, edit your proxy settings:
 
 ```apache
 # Enable WebSocket reverse Proxy
@@ -86,9 +106,9 @@ Prerequisites:
 
 To run a health check:
 
-1. On the left sidebar, at the bottom, select **Admin**.
+1. On the left sidebar, at the bottom, select **Admin**. If you've [turned on the new navigation](../../user/interface_redesign.md#turn-new-navigation-on-or-off), in the upper-right corner, select **Admin**.
 1. Select **GitLab Duo**.
-1. On the upper-right corner, select **Run health check**.
+1. In the upper-right corner, select **Run health check**.
 1. Optional. In GitLab 17.5 and later, after the health check is complete, you can select **Download report** to save a detailed report of the health check results.
 
 These tests are performed:
@@ -113,10 +133,10 @@ If you want to host your own language models or AI gateway:
 - Use a [hybrid configuration](../../administration/gitlab_duo_self_hosted/_index.md#hybrid-ai-gateway-and-model-configuration),
   where you host your own AI gateway and models for some features, but configure other features to use the GitLab AI gateway and vendor models.
 
-## Hide sidebar widget that shows GitLab Duo Core availability
+## Hide sidebar widget that shows GitLab Duo Core availability (removed)
 
-On the left sidebar, near the bottom, a widget shows the availability of GitLab Duo
-Core.
-To hide this widget, disable the `duo_agent_platform_widget_self_managed` feature flag.
+<!--- start_remove The following content will be removed on remove_date: '2026-02-11' -->
 
-![A widget that shows the availability of GitLab Duo Core](img/widget_v18_5.png)
+This feature was [removed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/210564) in GitLab 18.6.
+
+<!--- end_remove -->

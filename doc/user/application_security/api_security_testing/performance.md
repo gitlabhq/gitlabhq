@@ -7,7 +7,7 @@ title: Performance tuning and testing speed
 
 Security tools that perform dynamic analysis testing, such as API security testing, perform testing by sending requests to an instance of your running application. The requests are engineered to test for specific vulnerabilities that might exist in your application. The speed of a dynamic analysis test depends on the following:
 
-- How many requests per second can be sent to your application by our tooling
+- How many requests per second can be sent to your application by GitLab tooling
 - How fast your application responds to requests
 - How many requests must be sent to test the application
   - How many operations your API is comprised of
@@ -17,7 +17,7 @@ If the API security testing job still takes longer than expected reach after fol
 
 ## Diagnosing performance issues
 
-The first step to resolving performance issues is to understand what is contributing to the slower-than-expected testing time. Some common issues we see are:
+The first step to resolving performance issues is to understand what is contributing to the slower-than-expected testing time. Some commonly reported issues are:
 
 - API security testing is running on a low-vCPU runner
 - The application deployed to a slow/single-CPU instance and is not able to keep up with the testing load
@@ -27,7 +27,9 @@ The first step to resolving performance issues is to understand what is contribu
 
 ### The application contains a slow operation that impacts the overall test speed (> 1/2 second)
 
-The API security testing job output contains helpful information about how fast we are testing, how fast each operation being tested responds, and summary information. Let's take a look at some sample output to see how it can be used in tracking down performance issues:
+The API security testing job output contains helpful information about testing speed, operation
+response times, and summary information. The following sample output shows how you can use a
+summary output in tracking down performance issues:
 
 ```shell
 API SECURITY: Loaded 10 operations from: assets/har-large-response/large_responses.har
@@ -44,9 +46,9 @@ API SECURITY:  - Average call time: 2 seconds and 82.69 milliseconds (2.082693 s
 API SECURITY:  - Time to complete: 14 minutes, 8 seconds and 788.36 milliseconds (848.788358 seconds)
 ```
 
-This job console output snippet starts by telling us how many operations were found (10), followed by notifications that testing has started on a specific operation and a summary of the operation has been completed. The summary is the most interesting part of this log output. In the summary, we can see that it took API security testing 767 requests to fully test this operation and its related fields. We can also see that the average response time was 2 seconds and the time to complete was 14 minutes for this one operation.
+The job console output snippet starts with how many operations were found (10). Next, it notifies that testing started on a specific operation and a summary of the operation has been completed. The summary shows that it took API security testing 767 requests to fully test this operation and its related fields. The summary also shows that the operation had an average response time of 2 seconds, and took 14 minutes to complete.
 
-An average response time of 2 seconds is a good initial indicator that this specific operation takes a long time to test. Further, we can see that the response body size is quite large. The large body size is the culprit here, transferring that much data on each request is what takes the majority of that 2 seconds.
+An average response time of 2 seconds is a good initial indicator that this specific operation takes a long time to test. The summary also shows a large response body size, which causes the long response time. Most of the response time on each request is spent transferring the response body data.
 
 For this issue, the team might decide to:
 
@@ -75,7 +77,7 @@ One of the easiest performance boosts can be achieved using a [larger runner](..
 | `saas-linux-small-amd64` (default) | 255 |
 | `saas-linux-medium-amd64`          | 400 |
 
-As we can see from this table, increasing the size of the runner and vCPU count can have a large impact on testing speed/performance.
+This table shows how increasing the size of the runner and vCPU count can have a large impact on testing speed/performance.
 
 Here is an example job definition for API security testing that adds a `tags` section to use the medium SaaS runner on Linux. The job extends the job definition included through the API security testing template.
 
@@ -95,7 +97,7 @@ Example log entry:
 
 In the case of one or two slow operations, the team might decide to skip testing the operations. Excluding the operation is done using the `APISEC_EXCLUDE_PATHS` configuration [variable as explained in this section.](configuration/customizing_analyzer_settings.md#exclude-paths)
 
-In this example, we have an operation that returns a large amount of data. The operation is `GET http://target:7777/api/large_response_json`. To exclude it we provide the `APISEC_EXCLUDE_PATHS` configuration variable with the path portion of our operation URL `/api/large_response_json`.
+This example shows an operation that returns a large amount of data. The operation is `GET http://target:7777/api/large_response_json`. To exclude it, provide the `APISEC_EXCLUDE_PATHS` configuration variable with the path portion of the operation URL `/api/large_response_json`.
 
 To verify the operation is excluded, run the API security testing job and review the job console output. It includes a list of included and excluded operations at the end of the test.
 
@@ -113,9 +115,9 @@ Excluding operations from testing could allow some vulnerabilities to go undetec
 
 ### Splitting a test into multiple jobs
 
-Splitting a test into multiple jobs is supported by API security testing through the use of [`APISEC_EXCLUDE_PATHS`](configuration/customizing_analyzer_settings.md#exclude-paths) and [`APISEC_EXCLUDE_URLS`](configuration/customizing_analyzer_settings.md#exclude-urls). When splitting a test up, a good pattern is to disable the `dast_api` job and replace it with two jobs with identifying names. In this example we have two jobs, each job is testing a version of the API, so our names reflect that. However, this technique can be applied to any situation, not just with versions of an API.
+Splitting a test into multiple jobs is supported by API security testing through the use of [`APISEC_EXCLUDE_PATHS`](configuration/customizing_analyzer_settings.md#exclude-paths) and [`APISEC_EXCLUDE_URLS`](configuration/customizing_analyzer_settings.md#exclude-urls). When splitting a test up, a good pattern is to disable the `dast_api` job and replace it with two jobs with identifying names. This example shows two jobs. Each job tests a version of the API, as their names reflect. However, this technique can be applied to any situation, not just with versions of an API.
 
-The rules we are using in the `APISEC_v1` and `APISEC_v2` jobs are copied from the [API security testing template](https://gitlab.com/gitlab-org/gitlab/blob/master/lib/gitlab/ci/templates/Security/API-Security.gitlab-ci.yml).
+The rules used in the `APISEC_v1` and `APISEC_v2` jobs are copied from the [API security testing template](https://gitlab.com/gitlab-org/gitlab/blob/master/lib/gitlab/ci/templates/Security/API-Security.gitlab-ci.yml).
 
 ```yaml
 # Disable the main dast_api job
@@ -166,12 +168,12 @@ APISEC_v2:
 
 In the case of one or two slow operations, the team might decide to skip testing the operations, or exclude them from feature branch tests, but include them for default branch tests. Excluding the operation is done using the `APISEC_EXCLUDE_PATHS` configuration [variable as explained in this section.](configuration/customizing_analyzer_settings.md#exclude-paths)
 
-In this example, we have an operation that returns a large amount of data. The operation is `GET http://target:7777/api/large_response_json`. To exclude it we provide the `APISEC_EXCLUDE_PATHS` configuration variable with the path portion of our operation URL `/api/large_response_json`. Our configuration disables the main `dast_api` job and creates two new jobs `APISEC_main` and `APISEC_branch`. The `APISEC_branch` is set up to exclude the long operation and only run on non-default branches (for example, feature branches). The `APISEC_main` branch is set up to only execute on the default branch (`main` in this example). The `APISEC_branch` jobs run faster, allowing for quick development cycles, while the `APISEC_main` job which only runs on default branch builds, takes longer to run.
+This example shows an operation that returns a large amount of data. The operation is `GET http://target:7777/api/large_response_json`. To exclude it, provide the `APISEC_EXCLUDE_PATHS` configuration variable with the path portion of the operation URL `/api/large_response_json`. The configuration disables the main `dast_api` job and creates two new jobs `APISEC_main` and `APISEC_branch`. The `APISEC_branch` is set up to exclude the long operation and only run on non-default branches (for example, feature branches). The `APISEC_main` branch is set up to only execute on the default branch (`main` in this example). The `APISEC_branch` jobs run faster, allowing for quick development cycles, while the `APISEC_main` job which only runs on default branch builds, takes longer to run.
 
 To verify the operation is excluded, run the API security testing job and review the job console output. It includes a list of included and excluded operations at the end of the test.
 
 ```yaml
-# Disable the main job so we can create two jobs with
+# Disable the main job so you can create two jobs with
 # different names
 api_security:
   rules:
@@ -200,7 +202,7 @@ APISEC_branch:
     when: never
   - if: $CI_COMMIT_BRANCH
 
-# API security testing for default branch (main in our case)
+# API security testing for default branch (main in this case)
 # Includes the long running operations
 APISEC_main:
   extends: dast_api

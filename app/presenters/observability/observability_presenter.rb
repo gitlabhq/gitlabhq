@@ -5,18 +5,18 @@ module Observability
     include Gitlab::Utils::StrongMemoize
 
     PATHS = {
-      'services' => 'Services',
-      'traces-explorer' => 'Traces Explorer',
-      'logs/logs-explorer' => 'Logs Explorer',
-      'metrics-explorer/summary' => 'Metrics Explorer',
-      'infrastructure-monitoring/hosts' => 'Infrastructure Monitoring',
-      'dashboard' => 'Dashboard',
-      'messaging-queues' => 'Messaging Queues',
-      'api-monitoring/explorer' => 'API Monitoring',
-      'alerts' => 'Alerts',
-      'exceptions' => 'Exceptions',
-      'service-map' => 'Service Map',
-      'settings' => 'Settings'
+      'services' => 'Observability|Services',
+      'traces-explorer' => 'Observability|Traces explorer',
+      'logs/logs-explorer' => 'Observability|Logs explorer',
+      'metrics-explorer/summary' => 'Observability|Metrics explorer',
+      'infrastructure-monitoring/hosts' => 'Observability|Infrastructure monitoring',
+      'dashboard' => 'Observability|Dashboard',
+      'messaging-queues' => 'Observability|Messaging queues',
+      'api-monitoring/explorer' => 'Observability|API monitoring',
+      'alerts' => 'Observability|Alerts',
+      'exceptions' => 'Observability|Exceptions',
+      'service-map' => 'Observability|Service map',
+      'settings/channels' => 'Observability|Notification channels'
     }.freeze
 
     def initialize(group, path)

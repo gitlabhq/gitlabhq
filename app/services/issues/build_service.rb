@@ -8,10 +8,8 @@ module Issues
       filter_resolve_discussion_params
 
       container_param = case container
-                        when Project
-                          { project: project }
-                        when Namespaces::ProjectNamespace
-                          { project: container.project }
+                        when Project, Namespaces::ProjectNamespace
+                          { project: container.owner_entity }
                         else
                           { namespace: container }
                         end

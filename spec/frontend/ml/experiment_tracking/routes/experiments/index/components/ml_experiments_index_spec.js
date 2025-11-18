@@ -105,6 +105,7 @@ describe('MlExperimentsIndex', () => {
   describe('experiments table', () => {
     const firstRow = 0;
     const secondRow = 1;
+    const thirdRow = 2;
     const nameColumn = 0;
     const candidateCountColumn = 1;
     const creatorColumn = 2;
@@ -148,7 +149,7 @@ describe('MlExperimentsIndex', () => {
     });
 
     describe('experiment creator column', () => {
-      it('displays creator avatars and links', () => {
+      it('displays creator avatars and links when creator is not null', () => {
         expect(
           findColumnInRow(firstRow, creatorColumn).findComponent(GlAvatarLink).attributes(),
         ).toMatchObject({
@@ -168,6 +169,15 @@ describe('MlExperimentsIndex', () => {
         expect(
           findColumnInRow(secondRow, creatorColumn).findComponent(GlAvatar).props(),
         ).toMatchObject({ src: secondExperiment.creator.avatarUrl });
+      });
+
+      it('does not display creator avatar and links when creator is null', () => {
+        expect(findColumnInRow(thirdRow, creatorColumn).findComponent(GlAvatarLink).exists()).toBe(
+          false,
+        );
+        expect(findColumnInRow(thirdRow, creatorColumn).findComponent(GlAvatar).exists()).toBe(
+          false,
+        );
       });
     });
 

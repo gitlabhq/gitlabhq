@@ -31,7 +31,7 @@ This solution provides a GitLab issue as the prompt and the style guide as the c
 1. Understand domain-specific coding standards, and
 1. Apply consistent formatting to Java code while preserving functionality.
 
-For detailed information about GitLab Duo Workflow, review [the document here](../../../user/duo_workflow/_index.md).
+For detailed information about GitLab Duo Workflow, review [the document here](../../../user/duo_agent_platform/_index.md).
 
 ### Key Benefits
 

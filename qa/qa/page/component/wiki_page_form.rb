@@ -45,6 +45,10 @@ module QA
           fill_editor_element('markdown-editor-form-field', content)
         end
 
+        def close_sidebar
+          find('.wiki-sidebar .toggle-close').click if has_css?('.wiki-sidebar .toggle-close', wait: 1)
+        end
+
         def set_message(message)
           fill_element('wiki-message-textbox', message)
         end

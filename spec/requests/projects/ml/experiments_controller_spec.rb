@@ -160,7 +160,7 @@ RSpec.describe Projects::Ml::ExperimentsController, feature_category: :mlops do
         end
       end
 
-      it 'does not perform N+1 sql queries' do
+      it 'does not perform N+1 sql queries', quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/549747' do
         control_count = ActiveRecord::QueryRecorder.new(skip_cached: false) { show_experiment }
 
         create_list(:ml_candidates, 2, :with_metrics_and_params, experiment: experiment, project: experiment.project)

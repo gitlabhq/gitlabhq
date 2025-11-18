@@ -401,6 +401,96 @@ trigger-job:
 
 {{< /tabs >}}
 
+## Use inputs from external files
+
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/206931) in GitLab 18.6 [with a flag](../../administration/feature_flags/_index.md) named `ci_file_inputs`. Disabled by default.
+
+{{< /history >}}
+
+{{< alert type="flag" >}}
+
+The availability of this feature is controlled by a feature flag.
+For more information, see the history.
+This feature is available for testing, but not ready for production use.
+
+{{< /alert >}}
+
+You can reuse input definitions across multiple CI/CD configurations by defining them in external files
+and including them with [`spec:include`](../yaml/_index.md#specinclude).
+
+Create a file with input definitions, for example in a file named `shared-inputs.yml`:
+
+```yaml
+inputs:
+  environment:
+    description: "Deployment environment"
+    options: ['staging', 'production']
+  region:
+    default: 'us-east-1'
+```
+
+Then you can include the external inputs in your `.gitlab-ci.yml` with `local`:
+
+```yaml
+spec:
+  include:
+    - local: /shared-inputs.yml
+---
+
+deploy:
+  script: echo "Deploying to $[[ inputs.environment ]] in $[[ inputs.region ]]"
+```
+
+If the file is stored outside your project, you can use:
+
+- `project` for files in another GitLab project. Use the full project path and define the filename with `file`.
+  You can optionally also define the `ref` to fetch the file from.
+- `remote` for file on another server. Use the full URL to the file.
+
+You can also include multiple input files at the same time, for example:
+
+```yaml
+spec:
+  include:
+    - local: /shared-inputs.yml
+    - project: 'my-group/shared-configs'
+      ref: main
+      file: '/ci/common-inputs.yml'
+    - remote: 'https://example.com/ci/shared-inputs.yml'
+---
+```
+
+### Override inputs from an external file
+
+If you define an input in both an included input file, and the `inputs:` section in the `.gitlab-ci.yml` configuration,
+the inputs from the file are overridden.
+
+For example, in a `shared-inputs.yml` file:
+
+```yaml
+inputs:
+  environment:
+    options: ['staging', 'production']
+  region:
+    default: 'us-east-1'
+```
+
+Then then you include the file in your `.gitlab-ci.yml`:
+
+```yaml
+spec:
+  include:
+    - local: /shared-inputs.yml
+  inputs:
+    environment: 'canary'
+---
+```
+
+In this case, the `environment` input options in the file are overridden by the
+`inputs: environment` configuration in the `.gitlab-ci.yml` file.
+
 ## Specify functions to manipulate input values
 
 {{< history >}}
@@ -495,6 +585,69 @@ $[[ inputs.test | truncate(3,5) ]]
 ```
 
 Assuming the value of `inputs.test` is `0123456789`, then the output would be `34567`.
+
+#### `posix_escape`
+
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/568289) in GitLab 18.6.
+
+{{< /history >}}
+
+Use `posix_escape` to escape any POSIX _Bourne shell_ control or meta characters that might be included in input values.
+`posix_escape` escapes the characters by inserting ` \ ` before any problematic characters in the input.
+
+Example:
+
+```yaml
+spec:
+  inputs:
+    test:
+      default: |
+        A string with single ' and double " quotes and   blanks
+---
+
+test-job:
+  script: printf '%s\n' $[[ inputs.test | posix_escape ]]
+```
+
+In this example, `posix_escape` escapes all the characters that could be shell control or metadata characters:
+
+```console
+$ printf '%s\n' A\ string\ with\ single\ \'\ and\ double\ \"\ quotes\ and\ \ \ blanks
+A string with single ' and double " quotes and   blanks
+```
+
+The escaped input preserves all special characters and spacing exactly as provided.
+
+{{< alert type="warning" >}}
+
+Not using `posix_escape` can be a security risk if the input contains untrusted input.
+
+{{< /alert >}}
+
+Input values that do not escape shell control or metadata characters have risks:
+
+- Shell code included in the string might be executed.
+- Single or double quotes might be used to escape any surrounding quoting.
+- Variable references could be used to access protected variables.
+- Input or output redirection might be used to read or write to local files.
+- Unescaped spaces are used by shells to split a string into multiple arguments.
+
+Escaping might be unnecessary if:
+
+- The [`spec:input:type`](../yaml/_index.md#specinputstype) is `number` or `boolean`, which cannot contain problematic characters.
+- The input value is validated with [`spec:input:regex`](../yaml/_index.md#specinputsregex) to prevent problematic input.
+- The input value is from a trusted source.
+
+If you combine `posix_escape` with `expand_vars`, you must set `expand_vars` first.
+Otherwise `posix_escape` would escape the `$` in the variable, preventing expansion.
+For example:
+
+```yaml
+test-job:
+  script: echo $[[ inputs.test | expand_vars | posix_escape ]]
+```
 
 ## Troubleshooting
 

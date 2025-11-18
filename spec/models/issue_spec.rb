@@ -37,6 +37,7 @@ RSpec.describe Issue, feature_category: :team_planning do
     it { is_expected.to have_many(:customer_relations_contacts) }
     it { is_expected.to have_many(:incident_management_timeline_events) }
     it { is_expected.to have_many(:assignment_events).class_name('ResourceEvents::IssueAssignmentEvent').inverse_of(:issue) }
+    it { is_expected.to have_one(:work_item_transition).class_name('::WorkItems::Transition') }
 
     describe '#assignees_by_name_and_id' do
       it 'returns users ordered by name ASC, id DESC' do
@@ -1859,6 +1860,27 @@ RSpec.describe Issue, feature_category: :team_planning do
         issue = create(:issue, issue_type, project: reusable_project)
 
         expect(issue.gfm_reference).to eq("#{expected_name} #{issue.to_reference}")
+      end
+    end
+
+    context 'when referencing a group level issue' do
+      let_it_be(:group) { create(:group) }
+      let_it_be(:sub_group) { create(:group, parent: group) }
+      let_it_be(:sub_group_project) { create(:project, namespace: sub_group) }
+      let_it_be(:sub_group_issue) { create(:issue, :group_level, namespace: sub_group) }
+      let_it_be(:sub_project_issue) { create(:issue, project: sub_group_project) }
+
+      let_it_be(:group_issue) { create(:issue, :group_level, namespace: group) }
+      let_it_be(:group_issue2) { create(:issue, :group_level, namespace: group) }
+      let_it_be(:issue) { create(:issue) }
+
+      it 'uses uses an absolute and full path when referencing a root group' do
+        expect(group_issue.gfm_reference(issue.project)).to eq("issue /#{group.full_path}##{group_issue.iid}")
+        expect(group_issue.gfm_reference(issue.namespace)).to eq("issue /#{group.full_path}##{group_issue.iid}")
+      end
+
+      it 'does not use an absolute namespace when referencing a sub-group' do
+        expect(sub_group_issue.gfm_reference(sub_project_issue.project)).to eq("issue #{sub_group.full_path}##{sub_project_issue.iid}")
       end
     end
   end

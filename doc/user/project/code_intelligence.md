@@ -164,7 +164,7 @@ can change this value.
 
 After the job succeeds, browse your repository to see code intelligence information:
 
-1. On the left sidebar, select **Search or go to** and find your project.
+1. On the left sidebar, select **Search or go to** and find your project. If you've [turned on the new navigation](../interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
 1. Select **Code** > **Repository**.
 1. Go to the file in your repository. If you know the filename, either:
    - Enter the `/~` keyboard shortcut to open the file finder, and enter the file's name.
@@ -179,7 +179,7 @@ After the job succeeds, browse your repository to see code intelligence informat
 
 Use code intelligence to see all uses of an object:
 
-1. On the left sidebar, select **Search or go to** and find your project.
+1. On the left sidebar, select **Search or go to** and find your project. If you've [turned on the new navigation](../interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
 1. Select **Code** > **Repository**.
 1. Go to the file in your repository. If you know the filename, either:
    - Enter the `/~` keyboard shortcut to open the file finder, and enter the file's name.

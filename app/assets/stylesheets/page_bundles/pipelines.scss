@@ -9,16 +9,6 @@
   float: none;
 }
 
-// Pipelines list
-// Should affect pipelines table components rendered by:
-// - app/assets/javascripts/commit/pipelines/pipelines_bundle.js
-
-.pipelines {
-  .pipeline-tags .label-container {
-    white-space: normal;
-  }
-}
-
 // Pipeline mini graph
 .pipeline-mini-graph-stage-container {
   position: relative;
@@ -50,7 +40,13 @@
 .pipeline-mini-graph-search {
   // stylelint-disable-next-line gitlab/no-gl-class
   .gl-form-input {
-    @apply gl-w-full gl-h-auto gl-py-4 gl-border-none gl-rounded-none gl-text-base gl-leading-normal;
+    @apply gl-w-full;
+    @apply gl-h-auto;
+    @apply gl-py-4;
+    @apply gl-border-none;
+    @apply gl-rounded-none;
+    @apply gl-text-base;
+    @apply gl-leading-normal;
     padding-left: calc(#{$gl-spacing-scale-7} + #{$gl-spacing-scale-2});
     padding-right: calc(#{$gl-spacing-scale-6} + #{$gl-spacing-scale-2});
     background-color: var(--gl-dropdown-search-background-color);

@@ -194,10 +194,9 @@ integrate them with your code editor. At a minimum, install [markdownlint](markd
 and [Vale](vale.md) to match the checks run in build pipelines. Both tools can
 integrate with your code editor.
 
-## Run documentation tests locally
+## Running documentation tests locally
 
-Similar to [previewing your changes locally](../review_apps.md), you can also run
-documentation tests on your local computer. This has the advantage of:
+This has the advantage of:
 
 - Speeding up the feedback loop. You can know of any problems with the changes in your branch
   without waiting for a CI/CD pipeline to run.

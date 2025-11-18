@@ -18,9 +18,11 @@ title: Search admin API
 
 {{< /history >}}
 
-The search admin API returns information about [advanced search migrations](../integration/advanced_search/elasticsearch.md#advanced-search-migrations).
+Use this API to retrieve information about [advanced search migrations](../integration/advanced_search/elasticsearch.md#advanced-search-migrations).
 
-You must have administrator access to use this API.
+Prerequisites:
+
+- You must be an administrator.
 
 ## List all advanced search migrations
 

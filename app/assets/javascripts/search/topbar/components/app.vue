@@ -7,16 +7,16 @@ import { DEFAULT_DEBOUNCE_AND_THROTTLE_MS } from '~/lib/utils/constants';
 import { InternalEvents } from '~/tracking';
 import { s__ } from '~/locale';
 import MarkdownDrawer from '~/vue_shared/components/markdown_drawer/markdown_drawer.vue';
+import { getParameterByName } from '~/lib/utils/url_utility';
 import {
   ZOEKT_SEARCH_TYPE,
   ADVANCED_SEARCH_TYPE,
   REGEX_PARAM,
   LS_REGEX_HANDLE,
 } from '~/search/store/constants';
-import { loadDataFromLS } from '~/search/store/utils';
+import { setDataToLS } from '~/search/store/utils';
 import { SCOPE_BLOB } from '~/search/sidebar/constants';
 import { SYNTAX_OPTIONS_ADVANCED_DOCUMENT, SYNTAX_OPTIONS_ZOEKT_DOCUMENT } from '../constants';
-
 import SearchTypeIndicator from './search_type_indicator.vue';
 import GlobalSearchInput from './global_search_input.vue';
 
@@ -84,8 +84,11 @@ export default {
     },
   },
   created() {
+    const isRegexEnabledOnParams = getParameterByName('regex') === 'true';
+    this.regexEnabled = isRegexEnabledOnParams;
+    setDataToLS(LS_REGEX_HANDLE, isRegexEnabledOnParams);
+
     this.preloadStoredFrequentItems();
-    this.regexEnabled = loadDataFromLS(LS_REGEX_HANDLE);
     this.debouncedSetQuery = debounce(this.setQuery, DEFAULT_DEBOUNCE_AND_THROTTLE_MS);
   },
   methods: {

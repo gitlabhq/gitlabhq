@@ -1,5 +1,5 @@
 import { nextTick } from 'vue';
-import { GlButton, GlIcon, GlAnimatedChevronLgDownUpIcon } from '@gitlab/ui';
+import { GlButton, GlIcon, GlBadge, GlAnimatedChevronLgDownUpIcon } from '@gitlab/ui';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import CrudComponent from '~/vue_shared/components/crud_component.vue';
 import { useLocalStorageSpy } from 'helpers/local_storage_helper';
@@ -19,7 +19,7 @@ describe('CRUD Component', () => {
       scopedSlots: {
         ...slots,
       },
-      stubs: { GlButton, GlIcon },
+      stubs: { GlButton, GlIcon, GlBadge },
     });
   };
 
@@ -269,12 +269,28 @@ describe('CRUD Component', () => {
       expect(wrapper.emitted('expanded')).toStrictEqual([[]]);
     });
 
+    it('emits `click-expanded` when clicked on a collapsed toggle, allowing for click tracking', async () => {
+      createComponent({ isCollapsible: true, collapsed: true }, { default: '<p>Body slot</p>' });
+
+      await findCollapseToggle().vm.$emit('click');
+
+      expect(wrapper.emitted('click-expanded')).toStrictEqual([[]]);
+    });
+
     it('emits `collapsed` when clicked on an expanded toggle', async () => {
       createComponent({ isCollapsible: true }, { default: '<p>Body slot</p>' });
 
       await findCollapseToggle().vm.$emit('click');
 
       expect(wrapper.emitted('collapsed')).toStrictEqual([[]]);
+    });
+
+    it('emits `click-collapsed` when clicked on an expanded toggle, allowing for click tracking', async () => {
+      createComponent({ isCollapsible: true }, { default: '<p>Body slot</p>' });
+
+      await findCollapseToggle().vm.$emit('click');
+
+      expect(wrapper.emitted('click-collapsed')).toStrictEqual([[]]);
     });
   });
 
@@ -297,6 +313,32 @@ describe('CRUD Component', () => {
       expect(actionsSlot).toHaveBeenCalledWith(
         expect.objectContaining({ showForm: wrapper.vm.showForm }),
       );
+    });
+  });
+
+  describe('showZeroCount prop', () => {
+    it('displays "0" when count is falsy and showZeroCount is true', () => {
+      createComponent({ showZeroCount: true, count: null });
+
+      expect(findCount().text()).toBe('0');
+    });
+
+    it('does not display count when count is falsy and showZeroCount is false', () => {
+      createComponent({ showZeroCount: false, count: null });
+
+      expect(findCount().exists()).toBe(false);
+    });
+
+    it('displays "0" as string when count is 0 and showZeroCount is true', () => {
+      createComponent({ showZeroCount: true, count: 0 });
+
+      expect(findCount().text()).toBe('0');
+    });
+
+    it('displays regular count when count exists regardless of showZeroCount', () => {
+      createComponent({ showZeroCount: true, count: 5 });
+
+      expect(findCount().text()).toBe('5');
     });
   });
 });

@@ -8,17 +8,17 @@ RSpec.describe 'Work item detail', :js, feature_category: :team_planning do
   let_it_be_with_refind(:user) { create(:user) }
   let_it_be_with_refind(:user2) { create(:user, name: 'John') }
 
-  let_it_be(:group) { create(:group) }
-  let_it_be(:project) { create(:project, :public, :repository, group: group) }
-  let_it_be(:label) { create(:label, project: project, title: "testing-label") }
-  let_it_be(:label2) { create(:label, project: project, title: "another-label") }
-  let_it_be(:work_item) { create(:work_item, project: project, labels: [label]) }
-  let_it_be(:task) { create(:work_item, :task, project: project) }
-  let_it_be(:emoji_upvote) { create(:award_emoji, :upvote, awardable: work_item, user: user2) }
-  let_it_be(:milestone) { create(:milestone, project: project) }
-  let_it_be(:milestones) { create_list(:milestone, 10, project: project) }
-  let_it_be(:note) { create(:note, noteable: work_item, project: work_item.project) }
-  let_it_be(:contact) { create(:contact, group: group) }
+  let_it_be_with_refind(:group) { create(:group) }
+  let_it_be_with_refind(:project) { create(:project, :public, :repository, group: group) }
+  let_it_be_with_refind(:label) { create(:label, project: project, title: "testing-label") }
+  let_it_be_with_refind(:label2) { create(:label, project: project, title: "another-label") }
+  let_it_be_with_refind(:work_item) { create(:work_item, project: project, labels: [label]) }
+  let_it_be_with_refind(:task) { create(:work_item, :task, project: project) }
+  let_it_be_with_refind(:emoji_upvote) { create(:award_emoji, :upvote, awardable: work_item, user: user2) }
+  let_it_be_with_refind(:milestone) { create(:milestone, project: project) }
+  let_it_be_with_refind(:milestones) { create_list(:milestone, 10, project: project) }
+  let_it_be_with_refind(:note) { create(:note, noteable: work_item, project: work_item.project) }
+  let_it_be_with_refind(:contact) { create(:contact, group: group) }
   let(:contact_name) { "#{contact.first_name} #{contact.last_name}" }
   let(:list_path) { project_issues_path(project) }
   let(:work_items_path) { project_work_item_path(project, work_item.iid) }
@@ -28,7 +28,6 @@ RSpec.describe 'Work item detail', :js, feature_category: :team_planning do
     # we won't need the tests for the issues listing page, since we'll be using
     # the work items listing page.
     stub_feature_flags(work_item_planning_view: false)
-    stub_feature_flags(work_item_view_for_issues: true)
   end
 
   shared_examples 'change type action is not displayed' do
@@ -57,7 +56,7 @@ RSpec.describe 'Work item detail', :js, feature_category: :team_planning do
     it 'shows breadcrumb links', :aggregate_failures do
       within_testid('breadcrumb-links') do
         expect(page).to have_link(project.name, href: project_path(project))
-        expect(page).to have_link('Issues', href: project_issues_path(project))
+        expect(page).to have_link('Issues', href: project_work_items_path(project))
         expect(find('nav:last-of-type li:last-of-type')).to have_link("##{work_item.iid}", href: work_items_path)
       end
     end
@@ -65,19 +64,47 @@ RSpec.describe 'Work item detail', :js, feature_category: :team_planning do
     it_behaves_like 'work items title'
     it_behaves_like 'work items description'
     it_behaves_like 'work items award emoji'
-    it_behaves_like 'work items linked items'
-    it_behaves_like 'work items comments', :issue
+
+    context 'with quarantine', quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/554457' do
+      it_behaves_like 'work items linked items'
+    end
+
+    context 'with quarantine', quarantine: {
+      issue: [
+        'https://gitlab.com/gitlab-org/gitlab/-/issues/562627',
+        'https://gitlab.com/gitlab-org/gitlab/-/issues/562624'
+      ]
+    } do
+      it_behaves_like 'work items comments', :issue
+    end
+
     it_behaves_like 'work items toggle status button'
 
-    it_behaves_like 'work items todos'
+    context 'with quarantine', quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/556213' do
+      it_behaves_like 'work items todos'
+    end
+
     it_behaves_like 'work items lock discussion', 'issue'
     it_behaves_like 'work items confidentiality'
     it_behaves_like 'work items notifications'
 
     it_behaves_like 'work items assignees'
     it_behaves_like 'work items labels', 'project'
-    it_behaves_like 'work items milestone'
-    it_behaves_like 'work items time tracking'
+
+    context 'with quarantine', quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/562633' do
+      it_behaves_like 'work items milestone'
+    end
+
+    context 'with quarantine', quarantine: {
+      issue: [
+        'https://gitlab.com/gitlab-org/gitlab/-/issues/556967',
+        'https://gitlab.com/gitlab-org/gitlab/-/issues/554934'
+      ]
+    } do
+      it_behaves_like 'work items time tracking'
+    end
+
+    it_behaves_like 'work items due dates'
     it_behaves_like 'work items crm contacts'
   end
 
@@ -96,10 +123,10 @@ RSpec.describe 'Work item detail', :js, feature_category: :team_planning do
   end
 
   context 'for signed in admin' do
-    let_it_be(:admin) { create(:admin) }
+    let_it_be_with_refind(:admin) { create(:admin) }
 
     context 'with akismet integration' do
-      let_it_be(:user_agent_detail) { create(:user_agent_detail, subject: work_item) }
+      let_it_be_with_refind(:user_agent_detail) { create(:user_agent_detail, subject: work_item) }
 
       before_all do
         project.add_maintainer(admin)
@@ -134,8 +161,8 @@ RSpec.describe 'Work item detail', :js, feature_category: :team_planning do
     end
 
     context 'for work item authored by guest user' do
-      let_it_be(:key_result) { create(:work_item, :key_result, author: user, project: project) }
-      let_it_be(:note) { create(:note, noteable: key_result, project: key_result.project) }
+      let_it_be_with_refind(:key_result) { create(:work_item, :key_result, author: user, project: project) }
+      let_it_be_with_refind(:note) { create(:note, noteable: key_result, project: key_result.project) }
 
       before do
         sign_in(user)
@@ -180,7 +207,7 @@ RSpec.describe 'Work item detail', :js, feature_category: :team_planning do
   end
 
   context 'for development widget' do
-    let_it_be(:merge_request) do
+    let_it_be_with_refind(:merge_request) do
       create(
         :merge_request,
         source_project: project,
@@ -204,7 +231,8 @@ RSpec.describe 'Work item detail', :js, feature_category: :team_planning do
         wait_for_all_requests
       end
 
-      it 'shows development widget with merge request' do
+      it 'shows development widget with merge request',
+        quarantine: 'https://gitlab.com/gitlab-org/quality/test-failure-issues/-/issues/4174' do
         within_testid('work-item-development') do
           expect(page.find('li a')[:href]).to include(merge_request_path(merge_request))
         end

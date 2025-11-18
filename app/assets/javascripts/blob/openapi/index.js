@@ -20,7 +20,7 @@ const getSandboxFrameSrc = () => {
     params.relativeRootPath = window.gon.relative_url_root;
   }
 
-  return setUrlParams(params, absoluteUrl);
+  return setUrlParams(params, { url: absoluteUrl });
 };
 
 const createSandbox = () => {

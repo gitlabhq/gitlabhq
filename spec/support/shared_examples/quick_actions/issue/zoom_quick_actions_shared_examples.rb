@@ -6,14 +6,14 @@ RSpec.shared_examples 'zoom quick actions' do
   let(:invalid_zoom_link) { 'https://invalid-zoom' }
 
   before do
-    stub_feature_flags(work_item_view_for_issues: false)
     visit project_issue_path(project, issue)
   end
 
   describe '/zoom' do
     shared_examples 'skip silently' do
       it 'skips addition silently' do
-        add_note("/zoom #{zoom_link}")
+        fill_in 'Add a reply', with: "/zoom #{zoom_link}"
+        click_button 'Comment'
 
         expect(page).not_to have_content('Zoom meeting added')
         expect(page).not_to have_content('Failed to add a Zoom meeting')
@@ -23,7 +23,8 @@ RSpec.shared_examples 'zoom quick actions' do
 
     shared_examples 'success' do
       it 'adds a Zoom link' do
-        add_note("/zoom #{zoom_link}")
+        fill_in 'Add a reply', with: "/zoom #{zoom_link}"
+        click_button 'Comment'
 
         expect(page).to have_content('Zoom meeting added')
         expect(ZoomMeeting.canonical_meeting_url(issue.reload)).to eq(zoom_link)
@@ -34,7 +35,8 @@ RSpec.shared_examples 'zoom quick actions' do
       include_examples 'success'
 
       it 'cannot add invalid zoom link' do
-        add_note("/zoom #{invalid_zoom_link}")
+        fill_in 'Add a reply', with: "/zoom #{invalid_zoom_link}"
+        click_button 'Comment'
 
         expect(page).to have_content('Failed to add a Zoom meeting')
         expect(page).not_to have_content(zoom_link)
@@ -59,21 +61,12 @@ RSpec.shared_examples 'zoom quick actions' do
   end
 
   describe '/remove_zoom' do
-    shared_examples 'skip silently' do
-      it 'skips removal silently' do
-        add_note('/remove_zoom')
-
-        expect(page).not_to have_content('Zoom meeting removed')
-        expect(page).not_to have_content('Failed to remove a Zoom meeting')
-        expect(ZoomMeeting.canonical_meeting_url(issue.reload)).to be_nil
-      end
-    end
-
     context 'with added zoom meeting' do
       let!(:added_zoom_meeting) { create(:zoom_meeting, url: zoom_link, issue: issue, issue_status: :added) }
 
       it 'removes last Zoom link' do
-        add_note('/remove_zoom')
+        fill_in 'Add a reply', with: '/remove_zoom'
+        click_button 'Comment'
 
         expect(page).to have_content('Zoom meeting removed')
         expect(ZoomMeeting.canonical_meeting_url(issue.reload)).to be_nil

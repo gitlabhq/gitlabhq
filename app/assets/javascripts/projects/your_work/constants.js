@@ -103,7 +103,7 @@ export const INACTIVE_TAB = {
   text: __('Inactive'),
   value: 'inactive',
   query: projectsQuery,
-  variables: { archived: 'ONLY', membership: true },
+  variables: { active: false, membership: true },
   queryPath: 'projects',
   countsQueryPath: 'inactive',
   emptyStateComponentProps: {

@@ -9,7 +9,7 @@ module QA
             element 'run-pipeline-button', required: true
           end
 
-          view 'app/assets/javascripts/ci/pipeline_new/components/pipeline_variables_form.vue' do
+          view 'app/assets/javascripts/ci/common/variables_form.vue' do
             element 'ci-variable-row-container'
             element 'pipeline-form-ci-variable-key-field'
             element 'pipeline-form-ci-variable-value-field'

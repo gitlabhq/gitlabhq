@@ -73,9 +73,25 @@ Sidebar.prototype.sidebarToggleClicked = function (e, triggered) {
   if (this.isTransitioning && this.sidebar.is(':not(.right-sidebar-merge-requests)')) return;
 
   this.isTransitioning = true;
-  this.sidebar.one('transitionend', () => {
-    this.isTransitioning = false;
-  });
+
+  /**
+   * We're bypassing `transitionend` event handler only when
+   * transition-duration is 0, as in rspecs, animations are
+   * disabled which causes transitionend event to never emit;
+   * See https://developer.mozilla.org/en-US/docs/Web/API/Element/transitionend_event
+   * This causes the `isTransitioning` flag to never be updated
+   * making sidebar no longer expandable once collapsed;
+   * See https://gitlab.com/gitlab-org/gitlab/-/issues/579764
+   */
+  if (this.sidebar.css('transitionDuration') !== '0s') {
+    this.sidebar.one('transitionend', () => {
+      this.isTransitioning = false;
+    });
+  } else {
+    setTimeout(() => {
+      this.isTransitioning = false;
+    }, 0);
+  }
 
   const $toggleButtons = $('.js-sidebar-toggle');
   const $collapseIcon = $('.js-sidebar-collapse');

@@ -62,7 +62,7 @@ module Gitlab
 
         def map_github_user_info(release)
           {
-            id: release.dig(:author, :id) || Gitlab::GithubImport.ghost_user_id,
+            id: release.dig(:author, :id) || Gitlab::GithubImport.ghost_user_id(project.organization_id),
             login: release.dig(:author, :login) || 'ghost'
           }
         end

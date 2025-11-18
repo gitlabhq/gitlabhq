@@ -40,6 +40,16 @@ module Gitlab
     class << self
       delegate :values, to: :options
 
+      def level_encompasses?(current_access_level:, level_to_assign:)
+        # Roles that don't follow the inherited hierarchy can only be assigned by owners
+        # or by users with the same role
+        non_hierarchy_roles = [PLANNER]
+
+        return current_access_level.in?([OWNER, level_to_assign]) if non_hierarchy_roles.include?(level_to_assign)
+
+        level_to_assign.to_i <= current_access_level.to_i
+      end
+
       def all_values
         options_with_owner.values
       end

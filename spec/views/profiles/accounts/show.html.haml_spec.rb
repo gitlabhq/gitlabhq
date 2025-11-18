@@ -205,6 +205,25 @@ RSpec.describe 'profiles/accounts/show', feature_category: :user_profile do
 
         expect { render }.not_to exceed_query_limit(control)
       end
+
+      it 'handles orphaned schedules without errors' do
+        orphaned_description = 'orphaned'
+        non_existent_project_id = Project.maximum(:id).to_i + 1
+        build_stubbed(
+          :ci_pipeline_schedule,
+          owner: user,
+          description: orphaned_description,
+          project_id: non_existent_project_id
+        )
+
+        expect { render }.not_to raise_error
+
+        expect(rendered).to have_css("#{test_id_selector} ul li", count: 6)
+        within(test_id_selector) do
+          expect(rendered).not_to have_content(orphaned_description)
+          expect(rendered).to have_content(active_schedules[0].description)
+        end
+      end
     end
   end
 end

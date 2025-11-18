@@ -22,13 +22,13 @@ For example when [changing arguments](sidekiq/compatibility_across_updates.md#ch
 
 Is it ok if these jobs don't get executed for several hours because [Sidekiq nodes are not yet updated](sidekiq/compatibility_across_updates.md#adding-new-workers)?
 
-### When modifying JavaScript
+### When modifying JavaScript/Vue
 
-Is it ok when a browser has the new JavaScript code, but the Rails code is running the previous monthly release on:
+If the Rails code changes (Rails controller, REST API or GraphQL API) were merged and released in the previous monthly release, JavaScript can make a request to that Rails code without issues.
 
-- the REST API?
-- the GraphQL API?
-- internal APIs in controllers?
+If the Rails code changes (Rails controller, REST API or GraphQL API) have not yet been released, JavaScript can make a request to that Rails code but it needs to be behind a default disabled feature flag or able to fail gracefully. For example if you add a GraphQL query in 18.3 you need to wait until 18.4 to use that query on the frontend without a feature flag.
+
+When adding GraphQL fields to an existing query you can use the [`@gl_introduced` directive](api_graphql_styleguide.md#mitigation) to fail gracefully. When adding fields to REST APIs you can fail gracefully by falling back to the old field if the new field doesn't exist in the response.
 
 ### When adding a pre-deployment migration
 

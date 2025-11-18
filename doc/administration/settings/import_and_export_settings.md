@@ -22,7 +22,7 @@ Before you can import projects from other systems, you must enable the
 [import source](../../user/gitlab_com/_index.md#default-import-sources) for that system.
 
 1. Sign in to GitLab as a user with Administrator access level.
-1. On the left sidebar, at the bottom, select **Admin**.
+1. On the left sidebar, at the bottom, select **Admin**. If you've [turned on the new navigation](../../user/interface_redesign.md#turn-new-navigation-on-or-off), in the upper-right corner, select **Admin**.
 1. Select **Settings** > **General**.
 1. Expand the **Import and export settings** section.
 1. Select each of **Import sources** to allow.
@@ -34,7 +34,7 @@ To enable the export of
 [projects and their data](../../user/project/settings/import_export.md#export-a-project-and-its-data):
 
 1. Sign in to GitLab as a user with Administrator access level.
-1. On the left sidebar, at the bottom, select **Admin**.
+1. On the left sidebar, at the bottom, select **Admin**. If you've [turned on the new navigation](../../user/interface_redesign.md#turn-new-navigation-on-or-off), in the upper-right corner, select **Admin**.
 1. Select **Settings** > **General**.
 1. Expand the **Import and export settings** section.
 1. Scroll to **Project export**.
@@ -60,7 +60,7 @@ Migration of groups and projects by direct transfer is disabled by default.
 To enable migration of groups and projects by direct transfer:
 
 1. Sign in to GitLab as a user with Administrator access level.
-1. On the left sidebar, at the bottom, select **Admin**.
+1. On the left sidebar, at the bottom, select **Admin**. If you've [turned on the new navigation](../../user/interface_redesign.md#turn-new-navigation-on-or-off), in the upper-right corner, select **Admin**.
 1. Select **Settings** > **General**.
 1. Expand the **Import and export settings** section.
 1. Scroll to **Allow migrating GitLab groups and projects by direct transfer**.
@@ -87,7 +87,7 @@ Exports from non-administrators still generate audit events.
 
 To enable silent admin project and group file exports:
 
-1. On the left sidebar, at the bottom, select **Admin**.
+1. On the left sidebar, at the bottom, select **Admin**. If you've [turned on the new navigation](../../user/interface_redesign.md#turn-new-navigation-on-or-off), in the upper-right corner, select **Admin**.
 1. Select **Settings** > **General**, then expand **Import and export settings**.
 1. Scroll to **Silent exports by admins**.
 1. Select the **Enabled** checkbox.
@@ -102,11 +102,9 @@ To enable silent admin project and group file exports:
 
 {{< /history >}}
 
-Allow mapping of imported user contributions to administrators.
-
 To allow mapping of imported user contributions to administrators:
 
-1. On the left sidebar, at the bottom, select **Admin**.
+1. On the left sidebar, at the bottom, select **Admin**. If you've [turned on the new navigation](../../user/interface_redesign.md#turn-new-navigation-on-or-off), in the upper-right corner, select **Admin**.
 1. Select **Settings** > **General**, then expand **Import and export settings**.
 1. Scroll to **Allow contribution mapping to administrators**.
 1. Select the **Enabled** checkbox.
@@ -116,15 +114,9 @@ To allow mapping of imported user contributions to administrators:
 {{< history >}}
 
 - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/534330) in GitLab 18.1 [with a flag](../feature_flags/_index.md) named `importer_user_mapping_allow_bypass_of_confirmation`. Disabled by default.
+- [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/541373) in GitLab 18.6. Feature flag `importer_user_mapping_allow_bypass_of_confirmation` removed.
 
 {{< /history >}}
-
-{{< alert type="flag" >}}
-
-The availability of this feature is controlled by a feature flag.
-For more information, see the history.
-
-{{< /alert >}}
 
 Prerequisites:
 
@@ -132,7 +124,7 @@ Prerequisites:
 
 To skip confirmation when administrators reassign placeholder users:
 
-1. On the left sidebar, at the bottom, select **Admin**.
+1. On the left sidebar, at the bottom, select **Admin**. If you've [turned on the new navigation](../../user/interface_redesign.md#turn-new-navigation-on-or-off), in the upper-right corner, select **Admin**.
 1. Select **Settings** > **General**.
 1. Expand **Import and export settings**.
 1. Under **Skip confirmation when administrators reassign placeholder users**, select the **Enabled** checkbox.
@@ -157,7 +149,7 @@ to non-bot users with any of the following states:
 
 To modify the maximum file size for exports in GitLab:
 
-1. On the left sidebar, at the bottom, select **Admin**.
+1. On the left sidebar, at the bottom, select **Admin**. If you've [turned on the new navigation](../../user/interface_redesign.md#turn-new-navigation-on-or-off), in the upper-right corner, select **Admin**.
 1. Select **Settings** > **General**, then expand **Import and export settings**.
 1. Increase or decrease by changing the value in **Maximum export size (MiB)**.
 
@@ -165,7 +157,7 @@ To modify the maximum file size for exports in GitLab:
 
 To modify the maximum file size for imports in GitLab:
 
-1. On the left sidebar, at the bottom, select **Admin**.
+1. On the left sidebar, at the bottom, select **Admin**. If you've [turned on the new navigation](../../user/interface_redesign.md#turn-new-navigation-on-or-off), in the upper-right corner, select **Admin**.
 1. Select **Settings** > **General**.
 1. Expand **Import and export settings**.
 1. Increase or decrease by changing the value in **Maximum import size (MiB)**.
@@ -191,7 +183,7 @@ By default, the maximum remote file size for imports from external object storag
 
 To modify this setting:
 
-1. On the left sidebar, at the bottom, select **Admin**.
+1. On the left sidebar, at the bottom, select **Admin**. If you've [turned on the new navigation](../../user/interface_redesign.md#turn-new-navigation-on-or-off), in the upper-right corner, select **Admin**.
 1. Select **Settings** > **General**.
 1. Expand **Import and export settings**.
 1. In **Maximum import remote file size (MiB)**, enter a value. Set to `0` for no file size limit.
@@ -208,7 +200,7 @@ By default, the maximum download file size for imports by direct transfer is 5 G
 
 To modify this setting:
 
-1. On the left sidebar, at the bottom, select **Admin**.
+1. On the left sidebar, at the bottom, select **Admin**. If you've [turned on the new navigation](../../user/interface_redesign.md#turn-new-navigation-on-or-off), in the upper-right corner, select **Admin**.
 1. Select **Settings** > **General**.
 1. Expand **Import and export settings**.
 1. In **Maximum download file size (MiB)**, enter a value. Set to `0` for no file size limit.
@@ -235,7 +227,7 @@ Decompressed archive size validation failed.
 
 To modify this setting:
 
-1. On the left sidebar, at the bottom, select **Admin**.
+1. On the left sidebar, at the bottom, select **Admin**. If you've [turned on the new navigation](../../user/interface_redesign.md#turn-new-navigation-on-or-off), in the upper-right corner, select **Admin**.
 1. Select **Settings** > **General**.
 1. Expand **Import and export settings**.
 1. Set another value for **Maximum decompressed file size for archives from imports (MiB)**.
@@ -252,7 +244,7 @@ When you [import a project](../../user/project/settings/import_export.md), you c
 
 To modify the maximum decompressed file size for imports in GitLab:
 
-1. On the left sidebar, at the bottom, select **Admin**.
+1. On the left sidebar, at the bottom, select **Admin**. If you've [turned on the new navigation](../../user/interface_redesign.md#turn-new-navigation-on-or-off), in the upper-right corner, select **Admin**.
 1. Select **Settings** > **General**.
 1. Expand **Import and export settings**.
 1. Set another value for **Timeout for decompressing archived files (seconds)**.
@@ -283,7 +275,7 @@ The default job limit is:
 
 To modify this setting:
 
-1. On the left sidebar, at the bottom, select **Admin**.
+1. On the left sidebar, at the bottom, select **Admin**. If you've [turned on the new navigation](../../user/interface_redesign.md#turn-new-navigation-on-or-off), in the upper-right corner, select **Admin**.
 1. Select **Settings** > **General**.
 1. Expand **Import and export settings**.
 1. Set another value for **Maximum number of simultaneous import jobs** for the desired importer.

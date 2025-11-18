@@ -6,7 +6,7 @@
 
 export default (variables) => {
   return variables
-    .filter(({ key }) => key !== '')
+    .filter(({ key, destroy }) => key !== '' && !destroy)
     .map(({ key, value, variableType }) => ({
       key,
       value,

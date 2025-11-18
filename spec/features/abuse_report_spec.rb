@@ -35,7 +35,7 @@ RSpec.describe 'Abuse reports', :js, feature_category: :insider_threat do
       before do
         visit project_issue_path(project, issue)
 
-        click_button 'Issue actions'
+        click_button 'More actions', match: :first
       end
 
       it_behaves_like 'reports the user with an abuse category'
@@ -121,7 +121,8 @@ RSpec.describe 'Abuse reports', :js, feature_category: :insider_threat do
       it_behaves_like 'reports the user with an abuse category'
     end
 
-    context 'when reporting a comment' do
+    context 'when reporting a comment',
+      quarantine: 'https://gitlab.com/gitlab-org/quality/test-failure-issues/-/issues/5981' do
       let_it_be(:issue) { create(:issue, project: project, author: abusive_user) }
       let_it_be(:comment) do
         create(:discussion_note_on_issue, author: abusive_user, project: project, noteable: issue, note: 'some note')
@@ -129,7 +130,10 @@ RSpec.describe 'Abuse reports', :js, feature_category: :insider_threat do
 
       before do
         visit project_issue_path(project, issue)
-        find('.more-actions-toggle button').click
+
+        within('.note') do
+          click_button 'More actions'
+        end
       end
 
       it_behaves_like 'reports the user with an abuse category'

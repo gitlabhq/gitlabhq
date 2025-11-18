@@ -356,7 +356,7 @@ build-image:
 
 #### Variables
 
-In GitLab, we use the `variables` keyword to define different [CI/CD variables](../variables/_index.md) at runtime.
+You can use the `variables` keyword to define different [CI/CD variables](../variables/_index.md) at runtime.
 Use variables when you need to reuse configuration data in a pipeline. You can define
 variables globally or per job.
 

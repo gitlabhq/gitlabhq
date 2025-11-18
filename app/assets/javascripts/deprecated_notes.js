@@ -35,10 +35,10 @@ import {
   getCookie,
   isInViewport,
   getPagePath,
-  scrollToElement,
   isModifierKey,
   isInMRPage,
 } from './lib/utils/common_utils';
+import { scrollToElement } from './lib/utils/scroll_utils';
 import { localTimeAgo } from './lib/utils/datetime_utility';
 import { getLocationHash } from './lib/utils/url_utility';
 import { sprintf, s__, __ } from './locale';

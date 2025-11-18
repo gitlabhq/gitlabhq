@@ -103,13 +103,18 @@ RSpec.describe Milestone, feature_category: :team_planning do
     end
 
     describe 'title' do
-      it { is_expected.to validate_presence_of(:title) }
+      subject { build(:milestone, project: project, title: input_title) }
 
-      it 'is invalid if title would be empty after sanitation', :aggregate_failures do
-        milestone = build(:milestone, project: project, title: '<img src=x onerror=prompt(1)>')
+      context 'when input contains HTML entities and HTML tags' do
+        let(:input_title) { '&lt;hello&gt;<img src=x onerror=prompt(1)>' }
 
-        expect(milestone).not_to be_valid
-        expect(milestone.errors[:title]).to include("can't be blank")
+        it 'leaves the input title unchanged' do
+          # This field is not ever to be treated as HTML; it is text, never unescaped or sanitised,
+          # and is always escaped when inserted into HTML directly.
+          # If an XSS occurs in future which would lead you to wanting to "fix" this spec, please
+          # instead fix it at the point of display, not by corrupting user input!
+          expect(subject.title).to eq(input_title)
+        end
       end
     end
 

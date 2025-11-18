@@ -12,5 +12,8 @@ description: Webhooks data with the custom HTTP callbacks that a user defines.
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/commit/edab46e9fa5f568b1423c0021e81d30453d7dc1e
 milestone: "<6.0"
 gitlab_schema: gitlab_main_org
-sharding_key_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/524812
+sharding_key:
+  project_id: projects
+  group_id: namespaces
+  organization_id: organizations
 table_size: small

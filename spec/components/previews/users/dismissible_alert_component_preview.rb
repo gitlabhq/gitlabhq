@@ -8,19 +8,16 @@ module Users
     # @param title text "Alert title (optional)"
     # @param body text "Alert message goes here."
     # @param variant select {{ Pajamas::AlertComponent::VARIANT_ICONS.keys }}
-    # @param show_icon toggle true
     # @param feature_id select {{ Users::Callout.feature_names.keys }}
     def default(
       title: 'Alert title (optional)',
       body: 'Alert message goes here.',
       variant: :info,
-      show_icon: true,
       feature_id: :suggest_pipeline
     )
       render(Users::DismissibleAlertComponent.new(
         title: title,
         variant: variant.to_sym,
-        show_icon: show_icon,
         dismiss_options: { feature_id: feature_id.to_sym, user: FactoryBot.build_stubbed(:user) }
       )) do |c|
         c.with_body { body } if body.present?

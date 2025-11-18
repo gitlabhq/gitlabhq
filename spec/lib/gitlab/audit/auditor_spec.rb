@@ -6,6 +6,7 @@ RSpec.describe Gitlab::Audit::Auditor, feature_category: :audit_events do
   let(:name) { 'audit_operation' }
   let(:author) { create(:user, :with_sign_ins) }
   let(:group) { create(:group) }
+  let_it_be(:organization) { create(:organization) }
   let(:provider) { 'standard' }
   let(:context) do
     { name: name,
@@ -14,7 +15,8 @@ RSpec.describe Gitlab::Audit::Auditor, feature_category: :audit_events do
       target: group,
       authentication_event: true,
       authentication_provider: provider,
-      message: "Signed in using standard authentication" }
+      message: "Signed in using standard authentication",
+      organization: organization }
   end
 
   let(:logger) { instance_spy(Gitlab::AuditJsonLogger) }
@@ -65,7 +67,8 @@ RSpec.describe Gitlab::Audit::Auditor, feature_category: :audit_events do
             user_name: author.name,
             ip_address: author.current_sign_in_ip,
             result: AuthenticationEvent.results[:success],
-            provider: provider
+            provider: provider,
+            organization: organization
           }
         ).and_call_original
 
@@ -119,6 +122,7 @@ RSpec.describe Gitlab::Audit::Auditor, feature_category: :audit_events do
             target: group,
             created_at: 3.weeks.ago,
             authentication_event: true,
+            organization: organization,
             authentication_provider: provider,
             message: "Signed in using standard authentication" }
         end
@@ -169,6 +173,7 @@ RSpec.describe Gitlab::Audit::Auditor, feature_category: :audit_events do
             created_at: Time.zone.now,
             additional_details: additional_details,
             authentication_event: true,
+            organization: organization,
             authentication_provider: provider,
             message: "Signed in using standard authentication" }
         end
@@ -216,6 +221,7 @@ RSpec.describe Gitlab::Audit::Auditor, feature_category: :audit_events do
             created_at: Time.zone.now,
             target_details: target_details,
             authentication_event: true,
+            organization: organization,
             authentication_provider: provider,
             message: "Signed in using standard authentication"
           }

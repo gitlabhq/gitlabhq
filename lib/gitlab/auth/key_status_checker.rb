@@ -20,7 +20,7 @@ module Gitlab
           if key.expired?
             _('INFO: Your SSH key has expired. Please generate a new key.')
           elsif key.expires_soon?
-            _('INFO: Your SSH key is expiring soon. Please generate a new key.')
+            _('INFO: Your SSH key expires soon. Please generate a new key.')
           end
         end
       end

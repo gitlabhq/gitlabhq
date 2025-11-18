@@ -16,6 +16,14 @@ Flows use agents to execute tasks.
 - Flows executed from the GitLab UI use CI/CD.
 - Flows executed in an IDE run locally.
 
+You can configure the environment where flows use CI/CD to execute.
+
+{{< alert type="note" >}}
+
+You cannot use predefined CI/CD variables when executing jobs with CI/CD.
+
+{{< /alert >}}
+
 ## Configure CI/CD execution
 
 You can customize how flows are executed in CI/CD by creating an agent configuration file in your project.
@@ -51,6 +59,29 @@ Or for a Node.js project:
 
 ```yaml
 image: node:20-alpine
+```
+
+#### Custom image requirements
+
+If you use a custom Docker image, ensure that the following commands are available for the agent to function correctly:
+
+- `git`
+- `wget`
+- `tar`
+- `chmod`
+
+Most base images include these commands by default. However, minimal images (like `alpine` variants)
+might require you to install them explicitly. If needed, you can install missing commands in the
+[setup script configuration](#configure-setup-scripts).
+
+Additionally, depending on the tool calls made by agents during flow execution, other common utilities may be required.
+
+For example, if you use an Alpine-based image:
+
+```yaml
+image: python:3.11-alpine
+setup_script:
+  - apk add --no-cache git wget tar bash
 ```
 
 ### Configure setup scripts

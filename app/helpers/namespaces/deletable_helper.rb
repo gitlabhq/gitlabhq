@@ -123,7 +123,7 @@ module Namespaces
       has_security_policy_project: false)
       {
         remove_form_id: remove_form_id,
-        button_text: button_text.nil? ? _('Delete group') : button_text,
+        button_text: button_text.nil? ? _('Delete') : button_text,
         button_testid: 'remove-group-button',
         disabled: (group.linked_to_subscription? || has_security_policy_project).to_s,
         confirm_danger_message: confirm_remove_group_message(group, permanently_remove),
@@ -143,16 +143,14 @@ module Namespaces
       )
     end
 
-    def project_delete_delayed_button_data(project, button_text = nil)
-      _project_delete_button_shared_data(project, button_text).merge({
-        restore_help_path: help_page_path('user/project/working_with_projects.md', anchor: 'restore-a-project'),
-        delayed_deletion_date: permanent_deletion_date_formatted,
+    def project_delete_delayed_button_data(project)
+      _project_delete_button_shared_data(project).merge({
         form_path: project_path(project)
       })
     end
 
-    def project_delete_immediately_button_data(project, button_text = nil)
-      _project_delete_button_shared_data(project, button_text).merge({
+    def project_delete_immediately_button_data(project)
+      _project_delete_button_shared_data(project, s_('ProjectSettings|Delete immediately')).merge({
         form_path: project_path(project, permanently_delete: true)
       })
     end
@@ -177,16 +175,11 @@ module Namespaces
 
     def restore_namespace_scheduled_for_deletion_message(namespace)
       messages = {
-        group: _("This group has been scheduled for deletion on %{date}. " \
-          "To cancel the scheduled deletion, you can restore this group, including all its resources."),
-        project: _("This project has been scheduled for deletion on %{date}. " \
-          "To cancel the scheduled deletion, you can restore this project, including all its resources.")
+        group: _("This group will be restored from scheduled deletion."),
+        project: _("This project will be restored from scheduled deletion.")
       }
 
-      safe_format(
-        message_for_namespace(namespace, messages),
-        date: tag.strong(permanent_deletion_date_formatted(namespace))
-      )
+      message_for_namespace(namespace, messages)
     end
 
     def _permanently_delete_group_message(group)
@@ -244,11 +237,13 @@ module Namespaces
         confirm_phrase: delete_confirm_phrase(project),
         name_with_namespace: project.name_with_namespace,
         is_fork: project.forked? ? 'true' : 'false',
-        issues_count: number_with_delimiter(issues_count),
-        merge_requests_count: number_with_delimiter(merge_requests_count),
-        forks_count: number_with_delimiter(forks_count),
-        stars_count: number_with_delimiter(project.star_count),
-        button_text: button_text.presence || _('Delete project')
+        issues_count: issues_count,
+        merge_requests_count: merge_requests_count,
+        forks_count: forks_count,
+        stars_count: project.star_count,
+        button_text: button_text.presence || _('Delete'),
+        permanent_deletion_date: permanent_deletion_date_formatted,
+        marked_for_deletion: project.scheduled_for_deletion_in_hierarchy_chain?.to_s
       }
     end
   end

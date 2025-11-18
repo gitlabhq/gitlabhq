@@ -23,7 +23,7 @@ RSpec.describe 'Project member activity', :js, feature_category: :user_profile d
 
     it "presents the correct message" do
       expect(page.find('.event-user-info').text).to eq("#{user.name} #{user.to_reference}")
-      expect(page.find('.event-title').text).to eq("joined project")
+      expect(page.find('.event-title').text).to eq("joined project #{project.full_name}")
     end
   end
 
@@ -34,7 +34,7 @@ RSpec.describe 'Project member activity', :js, feature_category: :user_profile d
 
     it "presents the correct message" do
       expect(page.find('.event-user-info').text).to eq("#{user.name} #{user.to_reference}")
-      expect(page.find('.event-title').text).to eq("left project")
+      expect(page.find('.event-title').text).to eq("left project #{project.full_name}")
     end
   end
 
@@ -45,7 +45,8 @@ RSpec.describe 'Project member activity', :js, feature_category: :user_profile d
 
     it "presents the correct message" do
       expect(page.find('.event-user-info').text).to eq("#{user.name} #{user.to_reference}")
-      expect(page.find('.event-title').text).to eq("removed due to membership expiration from project")
+      expect(page.find('.event-title').text)
+        .to eq("removed due to membership expiration from project #{project.full_name}")
     end
   end
 end

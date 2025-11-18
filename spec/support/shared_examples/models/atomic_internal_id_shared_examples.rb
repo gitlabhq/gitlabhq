@@ -77,7 +77,13 @@ RSpec.shared_examples 'AtomicInternalId' do |validate_presence: true|
     describe 'internal id generation' do
       subject { instance.save! }
 
-      it 'calls InternalId.generate_next and sets internal id attribute' do
+      it 'calls InternalId.generate_next and sets internal id attribute',
+        quarantine: {
+          issue: [
+            'https://gitlab.com/gitlab-org/gitlab/-/issues/451015',
+            'https://gitlab.com/gitlab-org/gitlab/-/issues/448591'
+          ]
+        } do
         iid = rand(1..1000)
 
         # Need to do this before evaluating instance otherwise it gets set
@@ -101,7 +107,13 @@ RSpec.shared_examples 'AtomicInternalId' do |validate_presence: true|
       context 'when the instance has an internal ID set' do
         let(:internal_id) { 9001 }
 
-        it 'calls InternalId.update_last_value and sets the `last_value` to that of the instance' do
+        it 'calls InternalId.update_last_value and sets the `last_value` to that of the instance',
+          quarantine: {
+            issue: [
+              'https://gitlab.com/gitlab-org/gitlab/-/issues/451015',
+              'https://gitlab.com/gitlab-org/gitlab/-/issues/448591'
+            ]
+          } do
           write_internal_id(internal_id)
 
           expect(InternalId)

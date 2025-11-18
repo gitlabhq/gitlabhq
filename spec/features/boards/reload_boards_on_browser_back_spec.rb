@@ -7,10 +7,6 @@ RSpec.describe 'Ensure Boards do not show stale data on browser back', :js, feat
   let(:board)   { create(:board, project: project) }
   let(:user)    { create(:user) }
 
-  before do
-    stub_feature_flags(work_item_view_for_issues: true)
-  end
-
   context 'authorized user' do
     before do
       project.add_maintainer(user)

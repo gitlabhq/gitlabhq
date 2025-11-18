@@ -61,14 +61,14 @@
 
 .db-services:
   services:
-    - name: ${REGISTRY_HOST}/${REGISTRY_GROUP}/gitlab-build-images:postgres-${PG_VERSION}-pgvector-0.4.1
+    - name: ${REGISTRY_HOST}/${REGISTRY_GROUP}/gitlab-build-images:postgres-${PG_VERSION}
       command: ["postgres", "-c", "fsync=off", "-c", "synchronous_commit=off", "-c", "full_page_writes=off", "-c", "max_locks_per_transaction=256"]
       alias: postgres
     - !reference [.redis-services, services]
 
 .db-services-with-auto-explain:
   services:
-    - name: ${REGISTRY_HOST}/${REGISTRY_GROUP}/gitlab-build-images:postgres-${PG_VERSION}-pgvector-0.4.1
+    - name: ${REGISTRY_HOST}/${REGISTRY_GROUP}/gitlab-build-images:postgres-${PG_VERSION}
       command:
         - postgres
         - -c
@@ -385,11 +385,6 @@
     - !reference [.default-utils-before_script, before_script]
     - !reference [.buildx-setup, before_script]
 
-.use-kube-context:
-  before_script:
-    - export KUBE_CONTEXT="${CI_PROJECT_NAMESPACE}/gitlab:review-apps"
-    - kubectl config use-context ${KUBE_CONTEXT}
-
 .fast-no-clone-job:
   variables:
     GIT_STRATEGY: none  # We will download the required files for the job from the API
@@ -453,14 +448,14 @@
     - node_modules/
   policy: pull
 
-.fe-island-node-modules-cache: &fe-island-node-modules-cache
+.fe-islands-node-modules-cache: &fe-islands-node-modules-cache
   key:
     files:
-      - ee/frontend_islands/apps/duo_next/yarn.lock
-      - ee/frontend_islands/apps/duo_next/package.json
-    prefix: fe-island-node-modules-${BUILD_OS}-${OS_VERSION}-${NODE_ENV}-node-${NODE_VERSION}
+      - ee/frontend_islands/yarn.lock
+      - ee/frontend_islands/**/package.json
+    prefix: fe-islands-node-modules-${BUILD_OS}-${OS_VERSION}-${NODE_ENV}-node-${NODE_VERSION}
   paths:
-    - ee/frontend_islands/apps/duo_next/node_modules/
+    - ee/frontend_islands/node_modules/
   policy: pull
 
 .assets-cache: &assets-cache
@@ -471,10 +466,10 @@
     - ${GLCI_GITLAB_ASSETS_HASH_FILE}
   policy: pull-push
 
-.fe-island-dist-cache: &fe-island-dist-cache
-  key: fe-island-dist-${BUILD_OS}-${OS_VERSION}-node-${NODE_VERSION}-${GLCI_FE_ISLAND_HASH}
+.fe-islands-dist-cache: &fe-islands-dist-cache
+  key: fe-islands-dist-${BUILD_OS}-${OS_VERSION}-node-${NODE_VERSION}-${GLCI_FE_ISLAND_HASH}
   paths:
-    - ee/frontend_islands/apps/duo_next/dist/duo_next.js
+    - ee/frontend_islands/apps/**/dist/main.js
   policy: pull-push
 
 # unlike rubocop, webpack cache does not have built in cleanup so it's not safe to use in pull-push configuration
@@ -556,6 +551,7 @@
     - !reference [.ruby-gems-cache]
     - *node-modules-cache
     - *rubocop-cache
+    - *fe-islands-node-modules-cache
 
 .rubocop-job-cache:
   cache:
@@ -604,18 +600,18 @@
     - <<: *assets-cache
       policy: pull
 
-.fe-island-compile-cache:
+.fe-islands-compile-cache:
   cache:
-    - *fe-island-node-modules-cache
-    - *fe-island-dist-cache
+    - *fe-islands-node-modules-cache
+    - *fe-islands-dist-cache
 
-.fe-island-yarn-cache:
+.fe-islands-yarn-cache:
   cache:
-    - <<: *fe-island-node-modules-cache
+    - <<: *fe-islands-node-modules-cache
 
-.fe-island-yarn-pull-push-cache:
+.fe-islands-yarn-pull-push-cache:
   cache:
-    - <<: *fe-island-node-modules-cache
+    - <<: *fe-islands-node-modules-cache
       policy: pull-push
 
 .storybook-yarn-cache:

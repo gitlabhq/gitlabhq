@@ -50,7 +50,11 @@ module QA
           end
 
           it 'adds user to the group',
-            testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/386792' do
+            testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/386792',
+            quarantine: {
+              type: :flaky,
+              issue: 'https://gitlab.com/gitlab-org/quality/test-failure-issues/-/issues/1693'
+            } do
             found_member = group.reload!.find_member(user.username)
 
             expect(found_member).not_to be_nil

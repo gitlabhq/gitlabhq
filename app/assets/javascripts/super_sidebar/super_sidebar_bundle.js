@@ -28,7 +28,6 @@ const getTrialStatusWidgetData = (sidebarData) => {
       trialDiscoverPagePath,
       purchaseNowUrl,
       featureId,
-      dismissEndpoint,
     } = convertObjectPropsToCamelCase(sidebarData.trial_widget_data_attrs);
 
     return {
@@ -40,7 +39,6 @@ const getTrialStatusWidgetData = (sidebarData) => {
       trialDiscoverPagePath,
       purchaseNowUrl,
       featureId,
-      dismissEndpoint,
     };
   }
 

@@ -215,9 +215,9 @@ module Gitlab
         messages
       end
 
-      def get_tag_signatures(tag_ids)
+      def get_tag_signatures(tag_ids, timeout: GitalyClient.fast_timeout)
         request = Gitaly::GetTagSignaturesRequest.new(repository: @gitaly_repo, tag_revisions: tag_ids)
-        response = gitaly_client_call(@repository.storage, :ref_service, :get_tag_signatures, request, timeout: GitalyClient.fast_timeout)
+        response = gitaly_client_call(@repository.storage, :ref_service, :get_tag_signatures, request, timeout: timeout)
 
         signatures = Hash.new { |h, k| h[k] = [+''.b, +''.b] }
         current_tag_id = nil

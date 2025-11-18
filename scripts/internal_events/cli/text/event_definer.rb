@@ -141,6 +141,26 @@ module InternalEventsCli
         - value
 
       TEXT
+
+      CLASSIFICATION_INTRO = <<~TEXT.freeze
+        #{format_info('EVENT CLASSIFICATION')}
+
+        The classification field is used to categorize events based on their data handling requirements.
+        Currently, the only supported classification is "duo" for AI and Duo-related features.
+
+        #{format_info('WHEN TO USE "classification: duo":')}
+        - Events related to GitLab Duo features (Duo Agent Platform, Code Suggestions, Duo Chat, etc.)
+        - AI-powered functionality and interactions
+        - Events owned by an AI Engineering product group such as duo_chat, ai_framework or duo_agent_framework
+
+        #{format_info('WHEN NOT TO USE "classification: duo":')}
+        - GitLab features unrelated to Duo or AI
+
+        Events with "classification: duo" are treated as operational data with specific data handling requirements.
+
+        Learn more: https://docs.gitlab.com/development/internal_analytics/internal_event_instrumentation/duo_classification/
+
+      TEXT
     end
   end
 end

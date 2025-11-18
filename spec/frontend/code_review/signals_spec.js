@@ -134,15 +134,6 @@ describe('~/code_review', () => {
               });
             });
 
-            it('does nothing if the MR has not yet finished preparing', async () => {
-              await start(callArgs);
-
-              observable.next({ data: { mergeRequestMergeStatusUpdated: { preparedAt: null } } });
-
-              expect(unsubscribeSpy).not.toHaveBeenCalled();
-              expect(emitSpy).not.toHaveBeenCalled();
-            });
-
             it('emits an event and unsubscribes when the MR is prepared', async () => {
               await start(callArgs);
 

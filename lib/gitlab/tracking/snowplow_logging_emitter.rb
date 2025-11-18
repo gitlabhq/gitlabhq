@@ -17,7 +17,7 @@ module Gitlab
       private
 
       def event_logger
-        @event_logger ||= SnowplowEventLogger.build
+        @event_logger ||= ::Gitlab::Tracking::SnowplowEventLogger.build
       end
     end
   end

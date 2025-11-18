@@ -62,7 +62,7 @@ describe('formatGraphQLGroupsAndProjects', () => {
       accessLevel: {
         integerValue: 50,
       },
-      availableActions: ['edit', 'restore', 'leave', 'delete-immediately'],
+      availableActions: ['copy-id', 'edit', 'restore', 'leave', 'delete-immediately'],
       childrenLoading: false,
       hasChildren: true,
       relativeWebUrl: `/gitlab/${firstMockGroup.fullPath}`,
@@ -79,7 +79,7 @@ describe('formatGraphQLGroupsAndProjects', () => {
       accessLevel: {
         integerValue: 50,
       },
-      availableActions: ['edit', 'archive'],
+      availableActions: ['copy-id', 'edit', 'archive'],
       customProperty: mockProject.nameWithNamespace,
       isPersonal: false,
       relativeWebUrl: `/gitlab/${mockProject.fullPath}`,
@@ -93,7 +93,7 @@ describe('formatGraphQLGroupsAndProjects', () => {
       accessLevel: {
         integerValue: 0,
       },
-      availableActions: [],
+      availableActions: ['copy-id'],
       childrenLoading: false,
       hasChildren: false,
       relativeWebUrl: `/gitlab/${secondMockGroup.fullPath}`,

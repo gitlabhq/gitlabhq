@@ -9,7 +9,8 @@ class BulkImports::Configuration < ApplicationRecord
 
   belongs_to :bulk_import, inverse_of: :configuration, optional: true
 
-  validates :url, :access_token, length: { maximum: 255 }, presence: true
+  validates :url, :access_token, length: { maximum: 255 }
+  validates :url, presence: true
   validates :url, public_url: { schemes: %w[http https], enforce_sanitization: true, ascii_only: true },
     allow_nil: true
 

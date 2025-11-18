@@ -78,10 +78,10 @@ external links exposed in the UI. These links might not be accessible within an 
 
 ### Resolving vulnerabilities
 
-The [resolving vulnerabilities](../vulnerabilities/_index.md#resolve-a-vulnerability) feature is available for offline dependency scanning and container scanning, but may not work
-depending on your instance's configuration. We can only suggest solutions, which are generally more
-current versions that have been patched, when we are able to access up-to-date registry services
-hosting the latest versions of that dependency or image.
+The [resolving vulnerabilities](../vulnerabilities/_index.md#resolve-a-vulnerability) feature is available for offline dependency scanning and container scanning, but may not work depending on your instance's configuration.
+GitLab can suggest solutions (generally more current, patched versions) only when it
+can access up-to-date registry services hosting the latest versions of that dependency
+or image.
 
 ### Scanner signature and rule updates
 

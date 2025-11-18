@@ -17,7 +17,7 @@ export const mockIdeItems = [
       target: '_blank',
     },
     href: 'gitpodUrl://foo.bar',
-    text: 'GitPod',
+    text: 'Ona',
     tracking: {
       action: 'click_consolidated_edit',
       label: 'gitpod',

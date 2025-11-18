@@ -12,7 +12,7 @@ title: NuGet API
 
 {{< /details >}}
 
-This is the API documentation for [NuGet Packages](../../user/packages/nuget_repository/_index.md).
+Use this API to interact with the [NuGet package manager client](../../user/packages/nuget_repository/_index.md).
 
 {{< alert type="warning" >}}
 
@@ -20,9 +20,6 @@ This API is used by the [NuGet package manager client](https://www.nuget.org/)
 and is generally not meant for manual consumption.
 
 {{< /alert >}}
-
-For instructions on how to upload and install NuGet packages from the GitLab
-package registry, see the [NuGet package registry documentation](../../user/packages/nuget_repository/_index.md).
 
 {{< alert type="note" >}}
 

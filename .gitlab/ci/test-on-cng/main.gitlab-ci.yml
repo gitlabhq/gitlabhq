@@ -180,6 +180,7 @@ cng-relative-url:
   extends:
     - cng-instance
   variables:
+    QA_SCENARIO: Test::Instance::Smoke
     QA_RELATIVE_URL_ROOT: "/relative"
     EXTRA_DEPLOY_VALUES: "--set global.appConfig.relativeUrlRoot=${QA_RELATIVE_URL_ROOT}"
 

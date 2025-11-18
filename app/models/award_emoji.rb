@@ -13,12 +13,16 @@ class AwardEmoji < ApplicationRecord
 
   belongs_to :awardable, polymorphic: true # rubocop:disable Cop/PolymorphicAssociations
   belongs_to :user
+  belongs_to :namespace
+  belongs_to :organization, class_name: 'Organizations::Organization'
 
   validates :user, presence: true
-  validates :awardable, presence: true, unless: :importing?
+  validates :awardable, presence: true
 
   validates :name, presence: true, 'gitlab/emoji_name': true
   validates :name, uniqueness: { scope: [:user, :awardable_type, :awardable_id] }, unless: -> { ghost_user? || importing? }
+
+  validates_with ExactlyOnePresentValidator, fields: [:namespace, :organization]
 
   participant :user
 
@@ -30,6 +34,7 @@ class AwardEmoji < ApplicationRecord
   scope :awarded_by, ->(users) { where(user: users) }
   scope :by_awardable, ->(type, ids) { where(awardable_type: type, awardable_id: ids) }
 
+  before_validation :ensure_sharding_key
   after_destroy :expire_cache
   after_save :expire_cache
   after_commit :broadcast_note_update, if: -> { !importing? && awardable.is_a?(Note) }
@@ -95,6 +100,28 @@ class AwardEmoji < ApplicationRecord
 
   def hook_attrs
     Gitlab::HookData::EmojiBuilder.new(self).build
+  end
+
+  private
+
+  def ensure_sharding_key
+    return if [namespace, organization].any?(&:present?)
+
+    self.namespace_id = case awardable
+                        when Issue
+                          awardable.namespace_id
+                        when MergeRequest
+                          awardable.project.project_namespace_id
+                        when Note
+                          awardable.project&.project_namespace_id || awardable.namespace_id
+                        when ProjectSnippet
+                          awardable.project&.project_namespace_id
+                        end
+
+    self.organization_id = case awardable
+                           when PersonalSnippet, Note
+                             awardable.organization_id
+                           end
   end
 end
 

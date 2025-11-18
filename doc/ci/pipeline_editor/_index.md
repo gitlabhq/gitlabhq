@@ -48,7 +48,7 @@ use the pipeline editor validation tool. This tool simulates the creation of pip
 due to a Git push event, and can help troubleshoot logic issues, including incorrect
 `rules` and `needs` job dependencies:
 
-1. On the left sidebar, select **Search or go to** and find your project.
+1. On the left sidebar, select **Search or go to** and find your project. If you've [turned on the new navigation](../../user/interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
 1. Select **Build** > **Pipeline editor**.
 1. Select the **Validate** tab.
 1. Optional. Select a different branch to use for the simulated push event by using
@@ -198,7 +198,7 @@ including:
 | Feature                          | Shortcut on Windows or Linux      | Shortcut on macOS                                    | Details |
 |----------------------------------|-----------------------------------|------------------------------------------------------|---------|
 | Keyboard navigation command list | <kbd>F1</kbd>                     | <kbd>F1</kbd>                                        | A [list of commands](https://github.com/microsoft/monaco-editor/wiki/Monaco-Editor-Accessibility-Guide#keyboard-navigation) that make the editor easier to use without a mouse. |
-| Tab trapping                     | <kbd>Control</kbd> + <kbd>m</kbd> | <kbd>Control</kbd> + <kbd>Shift</kbd> + <kbd>m</kbd> | Enable [tab trapping](https://github.com/microsoft/monaco-editor/wiki/Monaco-Editor-Accessibility-Guide#tab-trapping) to go to the next focusable element on the page instead of inserting a tab character. |
+| Tab trapping                     | <kbd>Control</kbd>+<kbd>m</kbd> | <kbd>Control</kbd>+<kbd>Shift</kbd>+<kbd>m</kbd> | Enable [tab trapping](https://github.com/microsoft/monaco-editor/wiki/Monaco-Editor-Accessibility-Guide#tab-trapping) to go to the next focusable element on the page instead of inserting a tab character. |
 
 ## Troubleshooting
 

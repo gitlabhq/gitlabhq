@@ -113,40 +113,17 @@ RSpec.describe Gitlab::SidekiqMiddleware, feature_category: :shared do
       it_behaves_like "a middleware chain for mailer"
     end
 
-    context 'when a job is concurrency limited' do
-      let(:concurrency_limit_middleware_index) do
-        all_sidekiq_middlewares.index(::Gitlab::SidekiqMiddleware::ConcurrencyLimit::Server)
-      end
-
-      let(:disabled_sidekiq_middlewares) do
-        # all middlewares after ConcurrencyLimit::Server
-        all_sidekiq_middlewares[(concurrency_limit_middleware_index + 1)..]
-      end
-
+    context 'duplicate jobs and concurrency limit middleware order' do
       before do
         configurator.call(chain)
-        stub_feature_flags("drop_sidekiq_jobs_#{worker_class.name}": false) # not dropping the job
-        stub_feature_flags("disable_sidekiq_concurrency_limit_middleware_#{worker_class.name}": false)
-
-        # Apply concurrency limiting
-        allow(::Gitlab::SidekiqMiddleware::ConcurrencyLimit::ConcurrencyLimitService)
-          .to receive(:has_jobs_in_queue?).and_return(true)
-        allow(::Gitlab::SidekiqMiddleware::ConcurrencyLimit::ConcurrencyLimitService)
-          .to receive(:add_to_queue!)
       end
 
-      it "passes through the right middlewares and clears idempotency key", :aggregate_failures do
-        expect_next_instance_of(Gitlab::SidekiqMiddleware::DuplicateJobs::DuplicateJob) do |dj|
-          expect(dj).to receive(:delete!).and_call_original
-        end
+      it 'registers concurrency limit middleware before duplicate jobs middleware' do
+        middlewares = chain.entries.map(&:klass)
 
-        enabled_sidekiq_middlewares.each do |middleware|
-          expect_next_instances_of(middleware, 1, true) do |middleware_instance|
-            expect(middleware_instance).to receive(:call).with(*middleware_expected_args).once.and_call_original
-          end
-        end
-
-        chain.invoke(*worker_args)
+        expect(::Gitlab::SidekiqMiddleware::ConcurrencyLimit::Server)
+          .to come_before(::Gitlab::SidekiqMiddleware::DuplicateJobs::Server)
+                .in(middlewares)
       end
     end
   end
@@ -160,6 +137,20 @@ RSpec.describe Gitlab::SidekiqMiddleware, feature_category: :shared do
 
     it_behaves_like "a middleware chain"
     it_behaves_like "a middleware chain for mailer"
+
+    context 'duplicate jobs and concurrency limit middleware order' do
+      before do
+        configurator.call(chain)
+      end
+
+      it 'registers duplicate jobs middleware before concurrency limit middleware' do
+        middlewares = chain.entries.map(&:klass)
+
+        expect(::Gitlab::SidekiqMiddleware::DuplicateJobs::Client)
+          .to come_before(::Gitlab::SidekiqMiddleware::ConcurrencyLimit::Client)
+                .in(middlewares)
+      end
+    end
   end
 
   context 'in between DuplicateJobs::Client and DuplicateJobs::Server' do
@@ -172,6 +163,7 @@ RSpec.describe Gitlab::SidekiqMiddleware, feature_category: :shared do
     # allowed_middlewares below accordingly.
     let(:allowed_middlewares_after_duplicate_jobs_client) do
       [
+        ::Gitlab::SidekiqMiddleware::ConcurrencyLimit::Client,
         ::Gitlab::SidekiqStatus::ClientMiddleware,
         ::Gitlab::SidekiqMiddleware::AdminMode::Client,
         ::Gitlab::SidekiqMiddleware::SizeLimiter::Client,
@@ -199,7 +191,8 @@ RSpec.describe Gitlab::SidekiqMiddleware, feature_category: :shared do
         ::Gitlab::SidekiqVersioning::Middleware,
         ::Gitlab::SidekiqStatus::ServerMiddleware,
         ::Gitlab::SidekiqMiddleware::WorkerContext::Server,
-        ::ClickHouse::MigrationSupport::SidekiqMiddleware
+        ::ClickHouse::MigrationSupport::SidekiqMiddleware,
+        ::Gitlab::SidekiqMiddleware::ConcurrencyLimit::Server
       ]
     end
 

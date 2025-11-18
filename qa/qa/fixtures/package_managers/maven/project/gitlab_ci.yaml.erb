@@ -1,5 +1,5 @@
 deploy-and-install:
-  image: maven:3.6-jdk-11
+  image: registry.gitlab.com/gitlab-org/gitlab-qa/gitlab-qa-maven-base:3.6-jdk-11
   script:
     - 'mvn deploy -s settings.xml'
     - 'mvn install -s settings.xml'

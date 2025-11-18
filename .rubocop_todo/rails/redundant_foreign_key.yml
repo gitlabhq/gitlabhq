@@ -10,7 +10,6 @@ Rails/RedundantForeignKey:
     - 'app/models/ci/sources/pipeline.rb'
     - 'app/models/ci/unit_test_failure.rb'
     - 'app/models/clusters/concerns/application_core.rb'
-    - 'app/models/clusters/integrations/prometheus.rb'
     - 'app/models/commit_signatures/x509_commit_signature.rb'
     - 'app/models/concerns/commit_signature.rb'
     - 'app/models/concerns/integrations/base_data_fields.rb'

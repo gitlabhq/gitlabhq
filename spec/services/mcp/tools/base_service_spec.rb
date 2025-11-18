@@ -23,6 +23,10 @@ RSpec.describe Mcp::Tools::BaseService, feature_category: :mcp_server do
         }
       end
 
+      def version
+        '1.0.0'
+      end
+
       protected
 
       def perform(arguments, _query = {})
@@ -48,6 +52,12 @@ RSpec.describe Mcp::Tools::BaseService, feature_category: :mcp_server do
     end
   end
 
+  describe '#version' do
+    it 'raises NoMethodError' do
+      expect { service.version }.to raise_error(NoMethodError)
+    end
+  end
+
   describe '#perform' do
     it 'raises NoMethodError' do
       expect { service.send(:perform, {}, {}) }.to raise_error(NoMethodError)
@@ -57,6 +67,12 @@ RSpec.describe Mcp::Tools::BaseService, feature_category: :mcp_server do
   describe '#set_cred' do
     it 'raises NoMethodError' do
       expect { service.set_cred(current_user: nil, access_token: nil) }.to raise_error(NoMethodError)
+    end
+  end
+
+  describe '#available?' do
+    it 'returns true' do
+      expect(service.available?).to be true
     end
   end
 

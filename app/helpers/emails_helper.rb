@@ -228,6 +228,18 @@ module EmailsHelper
     _('Two-factor authentication has been disabled for your GitLab account.')
   end
 
+  def manage_passkeys(format: nil)
+    case format
+    when :html
+      url = generate_link('', profile_two_factor_auth_url)
+      safe_format(_('%{link_start}Visit your account settings%{link_end} to manage your passkeys and other ' \
+        'authentication methods.'), tag_pair(url, :link_start, :link_end))
+    else
+      format(_('To manage your passkeys and other authentication methods, visit %{two_factor_link}'),
+        two_factor_link: profile_two_factor_auth_url)
+    end
+  end
+
   def re_enable_two_factor_authentication_text(format: nil)
     url = profile_two_factor_auth_url
 

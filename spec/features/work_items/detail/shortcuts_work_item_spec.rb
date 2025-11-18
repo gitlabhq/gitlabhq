@@ -58,23 +58,25 @@ RSpec.describe 'Work item keyboard shortcuts', :js, feature_category: :team_plan
         expect(page).to have_selector('.js-main-target-form .js-gfm-input:focus')
       end
 
-      it 'quotes the selected text in main comment form' do
+      it 'quotes the selected text in the discussion reply form' do
         select_element('.notes .note-comment:first-child .note-text')
         find('body').native.send_key('r')
 
-        page.within('.js-main-target-form') do
+        page.within('.notes .discussion-reply-holder') do
           expect(page).to have_field('Write a comment or drag your files here…', with: "> #{note_text}\n\n")
         end
       end
 
-      it 'quotes the selected text in the discussion reply form' do
-        click_button 'Reply to comment'
+      context 'when replying to a comment' do
+        it 'quotes the selected text in the discussion reply form' do
+          click_button 'Reply to comment'
 
-        select_element('.notes .note-comment:first-child .note-text')
+          select_element('.notes .note-comment:first-child .note-text')
 
-        find('body').native.send_key('r')
-        page.within('.notes .discussion-reply-holder') do
-          expect(page).to have_field('Write a comment or drag your files here…', with: "> #{note_text}\n\n")
+          find('body').native.send_key('r')
+          page.within('.notes .discussion-reply-holder') do
+            expect(page).to have_field('Write a comment or drag your files here…', with: "> #{note_text}\n\n")
+          end
         end
       end
     end

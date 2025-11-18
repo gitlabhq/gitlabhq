@@ -18,16 +18,16 @@ RSpec.describe 'Pipeline Editor', :js, feature_category: :pipeline_composition d
 
   let(:valid_content) do
     <<~YAML
-    ---
-    stages:
-      - Build
-      - Test
-    job_a:
-      script: echo hello
-      stage: Build
-    job_b:
-      script: echo hello from job b
-      stage: Test
+      ---
+      stages:
+        - Build
+        - Test
+      job_a:
+        script: echo hello
+        stage: Build
+      job_b:
+        script: echo hello from job b
+        stage: Test
     YAML
   end
 
@@ -216,8 +216,7 @@ RSpec.describe 'Pipeline Editor', :js, feature_category: :pipeline_composition d
   describe 'Branch Switcher' do
     def switch_to_branch(branch)
       # close button for the popover
-      find_by_testid('close-button').click
-
+      find_by_testid('close-button').click if page.has_css?('[data-testid="close-button"]', wait: 0) # rubocop:disable RSpec/AvoidConditionalStatements -- temporary Project Studio rollout
       within_testid 'branch-selector' do
         toggle_listbox
         select_listbox_item(branch, exact_text: true)

@@ -30,7 +30,17 @@ export default {
     as="span"
     :class="`media-container ${node.type.name}-container`"
   >
+    <gl-link
+      :href="node.attrs.src"
+      target="_blank"
+      :draggable="true"
+      data-drag-handle=""
+      class="with-attachment-icon gl-mb-1 gl-text-sm gl-text-subtle"
+    >
+      {{ node.attrs.title || node.attrs.alt }}
+    </gl-link>
     <node-view-content
+      :class="{ 'gl-rounded-lg': node.type.name == 'video' }"
       :as="node.type.name"
       :src="node.attrs.src"
       controls="true"
@@ -39,14 +49,5 @@ export default {
       data-drag-handle=""
       :data-title="node.attrs.title || node.attrs.alt"
     />
-    <gl-link
-      :href="node.attrs.src"
-      class="with-attachment-icon"
-      target="_blank"
-      :draggable="true"
-      data-drag-handle=""
-    >
-      {{ node.attrs.title || node.attrs.alt }}
-    </gl-link>
   </node-view-wrapper>
 </template>

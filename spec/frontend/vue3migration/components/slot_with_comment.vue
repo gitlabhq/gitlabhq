@@ -2,6 +2,7 @@
 import SimpleComponent from './simple_component.vue';
 
 export default {
+  name: 'SlotWithComment',
   components: {
     SimpleComponent,
   },

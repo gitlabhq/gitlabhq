@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe PushEvent do
+RSpec.describe PushEvent, feature_category: :source_code_management do
   let(:payload) { PushEventPayload.new }
 
   let(:event) do
@@ -11,6 +11,20 @@ RSpec.describe PushEvent do
     allow(event).to receive(:push_event_payload).and_return(payload)
 
     event
+  end
+
+  describe 'validations' do
+    it { is_expected.to validate_presence_of(:project_id) }
+    it { is_expected.to validate_absence_of(:target_id) }
+    it { is_expected.to validate_absence_of(:target_type) }
+
+    context 'when target is nil' do
+      let(:push_event) { create(:push_event, target: nil) }
+
+      it 'does not raise target validation error' do
+        expect { push_event.validate! }.not_to raise_error
+      end
+    end
   end
 
   describe '.created_or_pushed' do

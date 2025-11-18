@@ -1,5 +1,5 @@
 ---
-stage: Data Access
+stage: Tenant Scale
 group: Gitaly
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 title: Improving monorepo performance
@@ -275,7 +275,7 @@ Runners periodically poll a GitLab instance for new CI/CD jobs. The polling inte
 
 - The `check_interval` setting.
 - The number of runners configured in your runner configuration file.
- 
+
 If your server handles many runners, this polling can cause performance issues on the GitLab instance such as longer
 queuing times and higher CPU usage. Long polling holds job requests from runners until a new job is ready.
 

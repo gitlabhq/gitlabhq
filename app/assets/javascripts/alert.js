@@ -62,6 +62,7 @@ export const VARIANT_TIP = 'tip';
  * @param {object} [options.messageLinks] - Object containing mapping of sprintf tokens to URLs, used to format links within the message. If needed, you can pass a full props object for GlLink instead of a URL string
  * @param {boolean} [options.captureError] - Whether to send error to Sentry
  * @param {object} [options.error] - Error to be captured in Sentry
+ * @param {boolean} [options.renderMessageHTML] - Render message as HTML if true
  */
 export const createAlert = ({
   message,
@@ -97,8 +98,8 @@ export const createAlert = ({
         h('div', {
           domProps: {
             innerHTML: sanitize(message, {
-              ALLOWED_TAGS: ['a'],
-              ALLOWED_ATTR: ['href', 'rel', 'target'],
+              ALLOWED_TAGS: ['a', 'ul', 'li'],
+              ALLOWED_ATTR: ['href', 'rel', 'target', 'class'],
             }),
           },
         }),

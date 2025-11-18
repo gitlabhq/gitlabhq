@@ -1,0 +1,69 @@
+subscription jobProcessed($projectId: ProjectID!) {
+  ciJobProcessed(projectId: $projectId) {
+    artifacts {
+      # eslint-disable-next-line @graphql-eslint/require-selections
+      nodes {
+        downloadPath
+        fileType
+      }
+    }
+    allowFailure
+    status
+    scheduledAt
+    manualJob
+    triggered
+    createdByTag
+    detailedStatus {
+      id
+      detailsPath
+      group
+      icon
+      label
+      text
+      tooltip
+      action {
+        id
+        buttonTitle
+        icon
+        method
+        path
+        title
+        confirmationMessage
+      }
+    }
+    id
+    refName
+    refPath
+    tags
+    shortSha
+    commitPath
+    pipeline {
+      id
+      path
+      user {
+        id
+        webPath
+        avatarUrl
+      }
+    }
+    stage {
+      id
+      name
+    }
+    name
+    duration
+    finishedAt
+    coverage
+    retryable
+    playable
+    cancelable
+    active
+    stuck
+    userPermissions {
+      readBuild
+      readJobArtifacts
+      updateBuild
+      cancelBuild
+    }
+  }
+}

@@ -1,4 +1,4 @@
-import { GlIcon, GlAlert } from '@gitlab/ui';
+import { GlIcon } from '@gitlab/ui';
 import { shallowMount } from '@vue/test-utils';
 import SidebarConfidentialityContent from '~/sidebar/components/confidential/sidebar_confidentiality_content.vue';
 
@@ -9,11 +9,10 @@ describe('Sidebar Confidentiality Content', () => {
   const findText = () => wrapper.find('[data-testid="confidential-text"]');
   const findCollapsedIcon = () => wrapper.find('[data-testid="sidebar-collapsed-icon"]');
 
-  const createComponent = ({ confidential = false, issuableType = 'issue' } = {}) => {
+  const createComponent = ({ confidential = false } = {}) => {
     wrapper = shallowMount(SidebarConfidentialityContent, {
       propsData: {
         confidential,
-        issuableType,
       },
     });
   };
@@ -44,36 +43,20 @@ describe('Sidebar Confidentiality Content', () => {
   });
 
   describe('when issue is confidential', () => {
-    it('renders a confidential icon', () => {
+    beforeEach(() => {
       createComponent({ confidential: true });
+    });
+
+    it('renders a confidential icon', () => {
       expect(findIcon().props('name')).toBe('eye-slash');
     });
 
     it('adds `is-active` class to the icon', () => {
-      createComponent({ confidential: true });
       expect(findIcon().classes()).toContain('is-active');
     });
 
-    it('displays a correct confidential text for issue', () => {
-      createComponent({ confidential: true });
-
-      const alertEl = findText().findComponent(GlAlert);
-
-      expect(alertEl.props()).toMatchObject({
-        showIcon: false,
-        dismissible: false,
-        variant: 'warning',
-      });
-      expect(alertEl.text()).toBe(
-        'Only project members with at least the Planner role, the author, and assignees can view or be notified about this issue.',
-      );
-    });
-
-    it('displays a correct confidential text for epic', () => {
-      createComponent({ confidential: true, issuableType: 'epic' });
-      expect(findText().findComponent(GlAlert).text()).toBe(
-        'Only group members with at least the Planner role can view or be notified about this epic.',
-      );
+    it('displays confidential text', () => {
+      expect(findText().text()).toBe('Confidential');
     });
   });
 });

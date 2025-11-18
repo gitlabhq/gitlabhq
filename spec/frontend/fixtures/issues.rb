@@ -12,6 +12,7 @@ RSpec.describe Projects::IssuesController, '(JavaScript fixtures)', :with_licens
   render_views
 
   before do
+    stub_feature_flags(work_item_view_for_issues: false)
     project.add_maintainer(user)
     sign_in(user)
   end

@@ -95,7 +95,7 @@ export default {
         return '';
       }
 
-      return setUrlParams({ status: 'error' }, window.location.href, true);
+      return setUrlParams({ status: 'error' }, { url: window.location.href, clearParams: true });
     },
   },
   methods: {

@@ -422,9 +422,18 @@ describe('Pipelines table in Commits and Merge requests', () => {
 
     describe('When cancelling a pipeline', () => {
       it('sends the cancel action', async () => {
+        const cancelablePipeline = {
+          ...pipeline,
+          cancel_path: '/root/project/-/pipelines/1/cancel',
+          flags: {
+            ...pipeline.flags,
+            cancelable: true,
+          },
+        };
+
         expect(mock.history.post).toHaveLength(0);
 
-        findPipelinesTable().vm.$emit('cancel-pipeline', pipeline);
+        findPipelinesTable().vm.$emit('cancel-pipeline', cancelablePipeline);
 
         await waitForPromises();
 

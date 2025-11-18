@@ -52,7 +52,7 @@ Although functionality has not changed, you should [reinstall the app](#reinstal
 
 To install the GitLab for Slack app from the project or group settings:
 
-1. On the left sidebar, select **Search or go to** and find your project or group.
+1. On the left sidebar, select **Search or go to** and find your project or group. If you've [turned on the new navigation](../../interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
 1. Select **Settings** > **Integrations**.
 1. Select **GitLab for Slack app**.
 1. Select **Install GitLab for Slack app**. You're redirected to the Slack confirmation page.
@@ -86,7 +86,7 @@ When GitLab releases new features for the GitLab for Slack app, you might have t
 
 To reinstall the GitLab for Slack app:
 
-1. On the left sidebar, select **Search or go to** and find your project.
+1. On the left sidebar, select **Search or go to** and find your project. If you've [turned on the new navigation](../../interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
 1. Select **Settings** > **Integrations**.
 1. Select **GitLab for Slack app**.
 1. Select **Install GitLab for Slack app**. You're redirected to the Slack confirmation page.
@@ -149,7 +149,7 @@ You can use a project alias instead.
 
 To create a project alias for slash commands in the GitLab for Slack app:
 
-1. On the left sidebar, select **Search or go to** and find your project.
+1. On the left sidebar, select **Search or go to** and find your project. If you've [turned on the new navigation](../../interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
 1. Select **Settings** > **Integrations**.
 1. Select **GitLab for Slack app**.
 1. Next to the project path or alias, select **Edit**.
@@ -169,7 +169,7 @@ You can receive notifications to Slack channels for certain GitLab [events](#not
 
 To configure Slack notifications:
 
-1. On the left sidebar, select **Search or go to** and find your project.
+1. On the left sidebar, select **Search or go to** and find your project. If you've [turned on the new navigation](../../interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
 1. Select **Settings** > **Integrations**.
 1. Select **GitLab for Slack app**.
 1. In the **Trigger** section:

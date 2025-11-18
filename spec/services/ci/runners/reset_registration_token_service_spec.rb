@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe ::Ci::Runners::ResetRegistrationTokenService, '#execute', feature_category: :runner do
+RSpec.describe ::Ci::Runners::ResetRegistrationTokenService, '#execute', feature_category: :runner_core do
   subject(:execute) { described_class.new(scope, current_user).execute }
 
   let_it_be(:user) { build(:user) }

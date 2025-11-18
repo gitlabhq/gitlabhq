@@ -7,6 +7,7 @@ import {
   renderUnarchiveSuccessToast,
 } from '~/vue_shared/components/projects_list/utils';
 import {
+  ACTION_COPY_ID,
   ACTION_ARCHIVE,
   ACTION_DELETE,
   ACTION_DELETE_IMMEDIATELY,
@@ -43,21 +44,21 @@ const MOCK_PROJECT_PENDING_DELETION = {
 describe('availableGraphQLProjectActions', () => {
   describe.each`
     userPermissions                                  | markedForDeletion | isSelfDeletionInProgress | isSelfDeletionScheduled | archived | availableActions
-    ${{ viewEditPage: false, removeProject: false }} | ${false}          | ${false}                 | ${false}                | ${false} | ${[]}
-    ${{ viewEditPage: true, removeProject: false }}  | ${false}          | ${false}                 | ${false}                | ${false} | ${[ACTION_EDIT]}
-    ${{ viewEditPage: false, removeProject: true }}  | ${false}          | ${false}                 | ${false}                | ${false} | ${[ACTION_DELETE]}
-    ${{ viewEditPage: true, removeProject: true }}   | ${false}          | ${false}                 | ${false}                | ${false} | ${[ACTION_EDIT, ACTION_DELETE]}
-    ${{ viewEditPage: true, removeProject: false }}  | ${true}           | ${false}                 | ${false}                | ${false} | ${[ACTION_EDIT]}
-    ${{ viewEditPage: true, removeProject: true }}   | ${true}           | ${false}                 | ${false}                | ${false} | ${[ACTION_EDIT]}
-    ${{ viewEditPage: true, removeProject: true }}   | ${true}           | ${false}                 | ${true}                 | ${false} | ${[ACTION_EDIT, ACTION_RESTORE, ACTION_DELETE_IMMEDIATELY]}
-    ${{ viewEditPage: true, removeProject: true }}   | ${true}           | ${false}                 | ${false}                | ${false} | ${[ACTION_EDIT]}
-    ${{ viewEditPage: true, removeProject: true }}   | ${true}           | ${false}                 | ${true}                 | ${false} | ${[ACTION_EDIT, ACTION_RESTORE, ACTION_DELETE_IMMEDIATELY]}
+    ${{ viewEditPage: false, removeProject: false }} | ${false}          | ${false}                 | ${false}                | ${false} | ${[ACTION_COPY_ID]}
+    ${{ viewEditPage: true, removeProject: false }}  | ${false}          | ${false}                 | ${false}                | ${false} | ${[ACTION_COPY_ID, ACTION_EDIT]}
+    ${{ viewEditPage: false, removeProject: true }}  | ${false}          | ${false}                 | ${false}                | ${false} | ${[ACTION_COPY_ID, ACTION_DELETE]}
+    ${{ viewEditPage: true, removeProject: true }}   | ${false}          | ${false}                 | ${false}                | ${false} | ${[ACTION_COPY_ID, ACTION_EDIT, ACTION_DELETE]}
+    ${{ viewEditPage: true, removeProject: false }}  | ${true}           | ${false}                 | ${false}                | ${false} | ${[ACTION_COPY_ID, ACTION_EDIT]}
+    ${{ viewEditPage: true, removeProject: true }}   | ${true}           | ${false}                 | ${false}                | ${false} | ${[ACTION_COPY_ID, ACTION_EDIT]}
+    ${{ viewEditPage: true, removeProject: true }}   | ${true}           | ${false}                 | ${true}                 | ${false} | ${[ACTION_COPY_ID, ACTION_EDIT, ACTION_RESTORE, ACTION_DELETE_IMMEDIATELY]}
+    ${{ viewEditPage: true, removeProject: true }}   | ${true}           | ${false}                 | ${false}                | ${false} | ${[ACTION_COPY_ID, ACTION_EDIT]}
+    ${{ viewEditPage: true, removeProject: true }}   | ${true}           | ${false}                 | ${true}                 | ${false} | ${[ACTION_COPY_ID, ACTION_EDIT, ACTION_RESTORE, ACTION_DELETE_IMMEDIATELY]}
     ${{ viewEditPage: true, removeProject: true }}   | ${true}           | ${true}                  | ${false}                | ${false} | ${[]}
     ${{ viewEditPage: true, removeProject: true }}   | ${true}           | ${true}                  | ${true}                 | ${false} | ${[]}
-    ${{ archiveProject: true }}                      | ${false}          | ${false}                 | ${false}                | ${false} | ${[ACTION_ARCHIVE]}
-    ${{ archiveProject: true }}                      | ${false}          | ${false}                 | ${false}                | ${true}  | ${[ACTION_UNARCHIVE]}
-    ${{ archiveProject: false }}                     | ${false}          | ${false}                 | ${false}                | ${false} | ${[]}
-    ${{ archiveProject: false }}                     | ${false}          | ${false}                 | ${false}                | ${true}  | ${[]}
+    ${{ archiveProject: true }}                      | ${false}          | ${false}                 | ${false}                | ${false} | ${[ACTION_COPY_ID, ACTION_ARCHIVE]}
+    ${{ archiveProject: true }}                      | ${false}          | ${false}                 | ${false}                | ${true}  | ${[ACTION_COPY_ID, ACTION_UNARCHIVE]}
+    ${{ archiveProject: false }}                     | ${false}          | ${false}                 | ${false}                | ${false} | ${[ACTION_COPY_ID]}
+    ${{ archiveProject: false }}                     | ${false}          | ${false}                 | ${false}                | ${true}  | ${[ACTION_COPY_ID]}
   `(
     'availableGraphQLProjectActions',
     ({
@@ -103,7 +104,7 @@ describe('availableGraphQLProjectActions', () => {
           isSelfDeletionInProgress: false,
           isSelfDeletionScheduled: true,
         }),
-      ).toStrictEqual([ACTION_EDIT, ACTION_RESTORE]);
+      ).toStrictEqual([ACTION_COPY_ID, ACTION_EDIT, ACTION_RESTORE]);
     });
   });
 });

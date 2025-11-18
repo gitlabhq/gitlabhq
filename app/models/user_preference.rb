@@ -2,9 +2,6 @@
 
 class UserPreference < ApplicationRecord
   include SafelyChangeColumnDefault
-  include IgnorableColumns
-
-  ignore_columns :home_organization_id, remove_with: '18.6', remove_after: '2025-10-18'
 
   # We could use enums, but Rails 4 doesn't support multiple
   # enum options with same name for multiple fields, also it creates
@@ -39,6 +36,8 @@ class UserPreference < ApplicationRecord
   validates :pass_user_identities_to_ci_jwt, allow_nil: false, inclusion: { in: [true, false] }
   validates :pinned_nav_items, json_schema: { filename: 'pinned_nav_items' }
   validates :project_studio_enabled, allow_nil: false, inclusion: { in: [true, false] }
+  validates :new_ui_enabled, allow_nil: true, inclusion: { in: [true, false] }
+  validates :early_access_studio_participant, allow_nil: false, inclusion: { in: [true, false] }
 
   validates :time_display_format, inclusion: { in: TIME_DISPLAY_FORMATS.values }, presence: true
   validates :extensions_marketplace_opt_in_url, length: { maximum: 512 }
@@ -100,10 +99,6 @@ class UserPreference < ApplicationRecord
         s_('Time Display|24-hour: 14:34') => TIME_DISPLAY_FORMATS[:iso_format]
       }
     end
-  end
-
-  def early_access_event_tracking?
-    early_access_program_participant? && early_access_program_tracking?
   end
 
   def extensions_marketplace_opt_in_url

@@ -148,7 +148,7 @@ RSpec.describe "User sorts issues", feature_category: :team_planning do
     end
 
     it 'sorts with a filter applied' do
-      visit project_issues_path(project, sort: sort_value_created_date, assignee_id: user2.id)
+      visit project_issues_path(project, sort: sort_value_created_date, 'assignee_username[]': user2.username)
 
       expect(first_issue).to include('foo')
       expect(last_issue).to include('bar')

@@ -46,12 +46,14 @@ RSpec.describe JiraConnect::EventsController, :with_current_organization, featur
     let_it_be(:client_key) { '1234' }
     let_it_be(:shared_secret) { 'secret' }
     let_it_be(:base_url) { 'https://test.atlassian.net' }
+    let_it_be(:display_url) { 'https://custom.example.com' }
 
     let(:params) do
       {
         clientKey: client_key,
         sharedSecret: shared_secret,
-        baseUrl: base_url
+        baseUrl: base_url,
+        displayUrl: display_url
       }
     end
 
@@ -77,13 +79,15 @@ RSpec.describe JiraConnect::EventsController, :with_current_organization, featur
       expect(installation.shared_secret).to eq(shared_secret)
       expect(installation.base_url).to eq('https://test.atlassian.net')
       expect(installation.organization_id).to eq(Current.organization.id)
+      expect(installation.display_url).to eq('https://custom.example.com')
     end
 
     context 'when the shared_secret param is missing' do
       let(:params) do
         {
           clientKey: client_key,
-          baseUrl: base_url
+          baseUrl: base_url,
+          displayUrl: display_url
         }
       end
 
@@ -95,7 +99,7 @@ RSpec.describe JiraConnect::EventsController, :with_current_organization, featur
     end
 
     context 'when an installation already exists' do
-      let_it_be(:installation) { create(:jira_connect_installation, base_url: base_url, client_key: client_key, shared_secret: shared_secret) }
+      let_it_be(:installation) { create(:jira_connect_installation, base_url: base_url, client_key: client_key, shared_secret: shared_secret, display_url: display_url) }
 
       it 'validates the JWT token in authorization header and returns 200 without creating a new installation', :aggregate_failures do
         expect { subject }.not_to change { JiraConnectInstallation.count }
@@ -116,16 +120,17 @@ RSpec.describe JiraConnect::EventsController, :with_current_organization, featur
           .with(
             installation,
             ActionController::Parameters
-              .new(shared_secret: shared_secret, organization_id: current_organization.id, base_url: base_url)
-              .permit(:shared_secret, :base_url, :organization_id))
+              .new(shared_secret: shared_secret, organization_id: current_organization.id, base_url: base_url, display_url: display_url)
+              .permit(:shared_secret, :base_url, :organization_id, :display_url))
           .and_call_original
 
         subject
       end
 
-      context 'when parameters include a new shared secret and base_url' do
+      context 'when parameters include a new shared secret, base_url, and display_url' do
         let(:shared_secret) { 'new_secret' }
         let(:base_url) { 'https://new_test.atlassian.net' }
+        let(:display_url) { 'https://new_custom.example.com' }
 
         it 'updates the installation', :aggregate_failures do
           subject
@@ -133,7 +138,8 @@ RSpec.describe JiraConnect::EventsController, :with_current_organization, featur
           expect(response).to have_gitlab_http_status(:ok)
           expect(installation.reload).to have_attributes(
             shared_secret: shared_secret,
-            base_url: base_url
+            base_url: base_url,
+            display_url: display_url
           )
         end
       end

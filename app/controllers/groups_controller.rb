@@ -26,20 +26,24 @@ class GroupsController < Groups::ApplicationController
   before_action :authorize_remove_group!, only: [:destroy, :restore]
   before_action :authorize_create_group!, only: [:new]
 
-  before_action :group_projects, only: [:activity, :issues, :merge_requests]
+  # Skip :index, :new, :create because the before_action :group has not been executed for these
+  # actions, so @group is not available. Enforcement requires a loaded group instance.
+  # TODO: For :new and :create actions, enforce step-up auth by checking the parent group
+  # (via params[:parent_id]) to check if parent group has step-up auth required.
+  # See: https://gitlab.com/gitlab-org/gitlab/-/issues/579212
+  before_action :enforce_step_up_auth_for_namespace, except: [:index, :new, :create]
+
+  # Skip for :edit and :update when user is a group admin/owner to enable self-service recovery
+  # from misconfiguration. Without this, owners could lock themselves out, requiring instance
+  # admin intervention for every affected group. Non-admin users still require step-up auth.
+  skip_before_action :enforce_step_up_auth_for_namespace, if: :skip_step_up_auth_for_owner_on_edit_and_update?
+
+  before_action :group_projects, only: [:activity, :merge_requests]
   before_action :event_filter, only: [:activity]
 
   before_action :user_actions, only: [:show]
 
   before_action :check_export_rate_limit!, only: [:export, :download_export]
-
-  before_action only: :issues do
-    push_force_frontend_feature_flag(:work_items, group.work_items_feature_flag_enabled?)
-    push_force_frontend_feature_flag(:work_items_beta, group.work_items_beta_feature_flag_enabled?)
-    push_force_frontend_feature_flag(:work_items_alpha, group.work_items_alpha_feature_flag_enabled?)
-    push_frontend_feature_flag(:issues_list_create_modal, group)
-    push_frontend_feature_flag(:issues_list_drawer, group)
-  end
 
   skip_cross_project_access_check :index, :new, :create, :edit, :update, :destroy
   # When loading show as an atom feed, we render events that could leak cross
@@ -176,11 +180,9 @@ class GroupsController < Groups::ApplicationController
         ::Gitlab::Utils.to_boolean(params.permit(:permanently_remove)[:permanently_remove])
 
       # Admin frontend uses this endpoint to force-delete groups
-      if Feature.enabled?(:disallow_immediate_deletion, current_user) && !current_user.can_admin_all_resources?
-        return access_denied!
-      end
+      return destroy_immediately if Gitlab::CurrentSettings.allow_immediate_namespaces_deletion_for_user?(current_user)
 
-      return destroy_immediately
+      return access_denied!
     end
 
     result = ::Groups::MarkForDeletionService.new(group, current_user).execute
@@ -283,17 +285,13 @@ class GroupsController < Groups::ApplicationController
   end
 
   def issues
-    return if redirect_if_epic_params
-
     return super unless html_request?
 
-    @has_issues = IssuesFinder.new(current_user, group_id: group.id, include_subgroups: true).execute
-                              .non_archived
-                              .exists?
-
-    @has_projects = group_projects.exists?
-
     set_sort_order
+
+    return redirect_issues_to_work_items if group&.work_items_consolidated_list_enabled?(current_user)
+
+    return if redirect_if_epic_params
 
     respond_to do |format|
       format.html
@@ -414,6 +412,20 @@ class GroupsController < Groups::ApplicationController
 
   # Overridden in EE
   def redirect_if_epic_params; end
+
+  def redirect_issues_to_work_items
+    params = work_items_redirect_params.except("type", "type[]").merge('not[type][]' => 'epic')
+
+    redirect_to group_work_items_path(group, params: params)
+  end
+
+  def work_items_redirect_params
+    request.query_parameters
+  end
+
+  def skip_step_up_auth_for_owner_on_edit_and_update?
+    [:edit, :update].include?(action_name.to_sym) && can?(current_user, :admin_group, group)
+  end
 end
 
 GroupsController.prepend_mod

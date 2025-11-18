@@ -20,6 +20,9 @@ class SlackIntegration < ApplicationRecord
   ].freeze
 
   belongs_to :integration
+  belongs_to :project, optional: true
+  belongs_to :group, optional: true
+  belongs_to :organization, class_name: 'Organizations::Organization', optional: true
 
   attr_encrypted :bot_access_token,
     mode: :per_attribute_iv,

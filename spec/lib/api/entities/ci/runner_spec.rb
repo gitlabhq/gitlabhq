@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe API::Entities::Ci::Runner, feature_category: :runner do
+RSpec.describe API::Entities::Ci::Runner, feature_category: :runner_core do
   let_it_be(:runner) { create(:ci_runner) }
 
   let(:entity) { described_class.new(runner) }

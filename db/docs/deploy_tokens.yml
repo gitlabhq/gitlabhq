@@ -8,5 +8,7 @@ description: https://docs.gitlab.com/ee/user/project/deploy_tokens/
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/commit/db18993f652425b72c4b854e18a002e0ec44b196
 milestone: '10.7'
 gitlab_schema: gitlab_main_org
+sharding_key:
+  project_id: projects
+  group_id: namespaces
 table_size: small
-sharding_key_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/553456

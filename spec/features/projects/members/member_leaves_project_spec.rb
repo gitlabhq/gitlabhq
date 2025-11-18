@@ -29,6 +29,8 @@ RSpec.describe 'Projects > Members > Member leaves project', :with_current_organ
   end
 
   it 'user leaves project by url param', :js do
+    visit project_path(project)
+
     visit project_path(project, leave: 1)
 
     accept_gl_confirm(button_text: 'Leave project')

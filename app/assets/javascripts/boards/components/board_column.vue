@@ -107,7 +107,7 @@ export default {
       'is-draggable': isListDraggable,
       '-gl-mr-3': !canAdminList && last,
     }"
-    class="gl-inline-flex gl-h-full gl-align-top"
+    class="board-column gl-inline-flex gl-h-full gl-align-top"
     :data-list-id="list.id"
     data-testid="board-list"
   >

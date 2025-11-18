@@ -37,15 +37,6 @@ RSpec.describe Gitlab::Ci::Build::Rules::Rule::Clause::Changes, feature_category
 
       with_them do
         it { is_expected.to eq(satisfied) }
-
-        context 'when ci_changes_changed_paths is disabled' do
-          before do
-            stub_feature_flags(ci_changes_changed_paths: false)
-            allow(pipeline).to receive(:modified_paths).and_return(files.keys)
-          end
-
-          it { is_expected.to eq(satisfied) }
-        end
       end
     end
 
@@ -110,24 +101,7 @@ RSpec.describe Gitlab::Ci::Build::Rules::Rule::Clause::Changes, feature_category
           .and_return({ max_files: 1 })
       end
 
-      context 'when ci_changes_changed_paths is enabled' do
-        before do
-          # FF to use changed_paths gitaly api
-          stub_feature_flags(ci_changes_changed_paths: true)
-        end
-
-        it { is_expected.to be_truthy }
-      end
-
-      context 'when ci_changes_changed_paths is disabled' do
-        before do
-          # Ensure diff limits are beneath the number of
-          # changes made
-          stub_feature_flags(ci_changes_changed_paths: false)
-        end
-
-        it { is_expected.to be_falsey }
-      end
+      it { is_expected.to be_truthy }
     end
 
     context 'when changes exceeds comparison limits' do
@@ -196,19 +170,6 @@ RSpec.describe Gitlab::Ci::Build::Rules::Rule::Clause::Changes, feature_category
 
           call_twice
         end
-
-        # verify behavior doesn't change when feature flag is disabled
-        context 'when ci_changes_changed_paths is disabled' do
-          before do
-            stub_feature_flags(ci_changes_changed_paths: false)
-          end
-
-          it 'calls the #fnmatch? each time' do
-            expect_fnmatch_call_count(2)
-
-            call_twice
-          end
-        end
       end
 
       context 'with a request store', :request_store do
@@ -229,19 +190,6 @@ RSpec.describe Gitlab::Ci::Build::Rules::Rule::Clause::Changes, feature_category
 
             call_twice
           end
-
-          # verify behavior doesn't change when feature flag is disabled
-          context 'when ci_changes_changed_paths is disabled' do
-            before do
-              stub_feature_flags(ci_changes_changed_paths: false)
-            end
-
-            it 'calls the #fnmatch? each time' do
-              expect_fnmatch_call_count(2)
-
-              call_twice
-            end
-          end
         end
 
         context 'when pipeline sha differs' do
@@ -256,18 +204,6 @@ RSpec.describe Gitlab::Ci::Build::Rules::Rule::Clause::Changes, feature_category
 
             call_twice
           end
-
-          context 'when ci_changes_changed_paths is disabled' do
-            before do
-              stub_feature_flags(ci_changes_changed_paths: false)
-            end
-
-            it 'calls the #fnmatch? each time' do
-              expect_fnmatch_call_count(2)
-
-              call_twice
-            end
-          end
         end
 
         context 'when project_id differs' do
@@ -281,18 +217,6 @@ RSpec.describe Gitlab::Ci::Build::Rules::Rule::Clause::Changes, feature_category
             expect_fnmatch_call_count(2)
 
             call_twice
-          end
-
-          context 'when ci_changes_changed_paths is disabled' do
-            before do
-              stub_feature_flags(ci_changes_changed_paths: false)
-            end
-
-            it 'calls the #fnmatch? each time' do
-              expect_fnmatch_call_count(2)
-
-              call_twice
-            end
           end
         end
       end
@@ -314,14 +238,6 @@ RSpec.describe Gitlab::Ci::Build::Rules::Rule::Clause::Changes, feature_category
         let(:context) {}
 
         it { is_expected.to be_falsey }
-
-        context 'when ci_changes_changed_paths is disabled' do
-          before do
-            stub_feature_flags(ci_changes_changed_paths: false)
-          end
-
-          it { is_expected.to be_falsey }
-        end
       end
 
       context 'when changed paths are nil' do
@@ -329,14 +245,6 @@ RSpec.describe Gitlab::Ci::Build::Rules::Rule::Clause::Changes, feature_category
         let(:modified_paths) { [] }
 
         it { is_expected.to be_falsey }
-
-        context 'when ci_changes_changed_paths is disabled' do
-          before do
-            stub_feature_flags(ci_changes_changed_paths: false)
-          end
-
-          it { is_expected.to be_falsey }
-        end
       end
 
       context 'when context has the specified variables' do
@@ -377,14 +285,6 @@ RSpec.describe Gitlab::Ci::Build::Rules::Rule::Clause::Changes, feature_category
         end
 
         it { is_expected.to be_truthy }
-
-        context 'when ci_changes_changed_paths is disabled' do
-          before do
-            stub_feature_flags(ci_changes_changed_paths: false)
-          end
-
-          it { is_expected.to be_truthy }
-        end
       end
     end
 

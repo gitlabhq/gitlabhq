@@ -3,24 +3,28 @@
 module Mcp
   module Tools
     class ApiTool
-      attr_reader :route, :settings
+      attr_reader :name, :route, :settings, :version
 
       # Grape types are represented as a string by calling `.to_s` on a type
       # The values are built based on the existing routes:
       # - [String, Integer] is usually a type of an id, which can be represented as a string
       # - Grape::API::Boolean is a boolean
-      # - [Integer] is usually an array passed a parameter
+      # - [Integer] is an array of integers
       # - [String] represents a comma-separated string
       TYPE_CONVERSIONS = {
         '[String, Integer]' => 'string',
         'Grape::API::Boolean' => 'boolean',
-        '[Integer]' => 'array',
+        '[Integer]' => { type: 'array', items: { type: 'integer' } },
         '[String]' => 'string'
       }.freeze
 
-      def initialize(route)
+      ARRAY_TYPE_PATTERN = /^Array\[(\w+)\]$/
+
+      def initialize(name:, route:)
+        @name = name
         @route = route
         @settings = route.app.route_setting(:mcp)
+        @version = @settings[:version] || "0.1.0"
       end
 
       def description
@@ -34,7 +38,12 @@ module Mcp
         end
 
         properties = params.transform_values do |value|
-          { type: parse_type(value[:type]), description: value[:desc] }
+          parsed_type = parse_type(value[:type])
+          if parsed_type.is_a?(Hash)
+            parsed_type.merge(description: value[:desc])
+          else
+            { type: parsed_type, description: value[:desc] }
+          end
         end
 
         {
@@ -58,6 +67,12 @@ module Mcp
 
       def parse_type(type)
         return TYPE_CONVERSIONS[type] if TYPE_CONVERSIONS.key?(type)
+
+        # Handle Array[Type] format (e.g., 'Array[Integer]', 'Array[String]')
+        if type.match?(ARRAY_TYPE_PATTERN)
+          inner_type = type.match(ARRAY_TYPE_PATTERN)[1].downcase
+          return { type: 'array', items: { type: inner_type } }
+        end
 
         type.downcase
       end

@@ -63,13 +63,16 @@ VS Code and JetBrains IDEs:
   1. On the left sidebar, select **Tools** > **GitLab Duo**.
   1. In the **GitLab Duo Agent Platform** > **Connection Type** section, select `WebSocket`.
 
+If you are seeing `HTTP/1.1` responses from Duo rather than `/-/cable` WebSocket endpoints in your logs, your WebSocket connections may be blocked.
+Ensure you allow [WebSocket connections](../../administration/gitlab_duo/setup.md) through your proxy.
+
 ## View debugging logs in VS Code
 
 In VS Code, you can troubleshoot some issues by viewing debugging logs.
 
 1. Open local debugging logs:
-   - On macOS: <kbd>Command</kbd> + <kbd>,</kbd>
-   - On Windows and Linux: <kbd>Control</kbd> + <kbd>,</kbd>
+   - On macOS: <kbd>Command</kbd>+<kbd>,</kbd>
+   - On Windows and Linux: <kbd>Control</kbd>+<kbd>,</kbd>
 1. Search for the setting **GitLab: Debug** and enable it.
 1. Open the language server logs:
    1. In VS Code, select **View** > **Output**.
@@ -132,6 +135,21 @@ To close projects:
 1. Ensure repositories are shown: on the **Source Control** label, right-click and select **Repositories**.
 1. Right-click the repository you want to close and select **Close Repository**.
 
+#### Git remote with SSH custom alias
+
+If your repository remote uses an SSH custom alias (for example, `git@my-work-gitlab:group/project.git` instead of `git@gitlab.com:group/project.git`), the GitLab Workflow extension might not correctly match your repository to your GitLab project.
+
+To resolve this issue, you can:
+
+- Change the remote to use SSH without a custom alias, or HTTP.
+- Configure the default namespace for the Agent Platform.
+
+To configure the default namespace:
+
+1. [Determine the namespace your project is in](../namespace/_index.md#determine-which-type-of-namespace-youre-in).
+1. In VS Code, select **File** > **Preferences** > **Settings**.
+1. Search for **GitLab > Duo Agent Platform: Default Namespace** and enter your namespace.
+
 ### Project not in a group namespace
 
 GitLab Duo Agent Platform requires that projects belong to a group namespace.
@@ -148,6 +166,20 @@ If you are trying to run a flow but it's not visible in the GitLab UI:
 1. Ensure you have at least Developer role in the project.
 1. Ensure GitLab Duo is [turned on and flows are allowed to execute](../gitlab_duo/turn_on_off.md).
 1. Ensure the required feature flags, [`duo_workflow` and `duo_workflow_in_ci`](../../administration/feature_flags/_index.md), are enabled.
+
+## Sessions stuck in created state
+
+If a session for your flow does not start:
+
+- Ensure you're not [preventing members from being added to projects]( ../group/access_and_permissions.md#prevent-members-from-being-added-to-projects-in-a-group).
+
+Flows that use a [composite identity](security.md) need to add the `@duo-developer`
+service account to your project. If your group is restricted, you cannot add users directly to projects,
+and your flows will not run.
+
+Turn off the setting prior to running a flow in your project.
+This step only needs to be done one time, for the first flow to run.
+After that, you can turn the setting back on.
 
 ## IDE commands fail or run indefinitely
 

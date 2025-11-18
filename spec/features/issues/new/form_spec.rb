@@ -21,7 +21,6 @@ RSpec.describe 'New/edit issue', :js, feature_category: :team_planning do
   before do
     stub_licensed_features(multiple_issue_assignees: false, issue_weights: false)
     stub_feature_flags(work_item_planning_view: false)
-    stub_feature_flags(work_item_view_for_issues: true)
 
     sign_in(current_user)
   end
@@ -195,31 +194,7 @@ RSpec.describe 'New/edit issue', :js, feature_category: :team_planning do
       expect(page).to have_css('.atwho-view')
     end
 
-    describe 'displays issue type options in the dropdown' do
-      shared_examples 'type option is visible' do |label:, identifier:|
-        it "shows #{identifier} option", :aggregate_failures do
-          wait_for_requests
-          expect_listbox_item(label)
-        end
-      end
-
-      shared_examples 'type option is missing' do |label:, identifier:|
-        it "does not show #{identifier} option", :aggregate_failures do
-          wait_for_requests
-          expect_no_listbox_item(label)
-        end
-      end
-
-      before do
-        # Unstub when https://gitlab.com/gitlab-org/gitlab/-/issues/543718 is completed
-        stub_feature_flags(work_item_view_for_issues: false)
-        visit new_project_issue_path(project)
-
-        page.within('.issue-form') do
-          click_button 'Issue'
-        end
-      end
-
+    describe 'displays work item type options in the dropdown' do
       context 'when user is guest' do
         let_it_be(:guest) { create(:user) }
 
@@ -229,8 +204,12 @@ RSpec.describe 'New/edit issue', :js, feature_category: :team_planning do
           project.add_guest(guest)
         end
 
-        it_behaves_like 'type option is visible', label: 'Issue', identifier: :issue
-        it_behaves_like 'type option is missing', label: 'Incident', identifier: :incident
+        it 'shows issues and tasks' do
+          visit new_project_issue_path(project)
+
+          # Update to omit Incident when https://gitlab.com/gitlab-org/gitlab/-/issues/543718 is complete
+          expect(page).to have_select 'Type', options: %w[Incident Issue Task]
+        end
       end
 
       context 'when user is reporter' do
@@ -242,8 +221,11 @@ RSpec.describe 'New/edit issue', :js, feature_category: :team_planning do
           project.add_reporter(reporter)
         end
 
-        it_behaves_like 'type option is visible', label: 'Issue', identifier: :issue
-        it_behaves_like 'type option is visible', label: 'Incident', identifier: :incident
+        it 'shows incidents, issues and tasks' do
+          visit new_project_issue_path(project)
+
+          expect(page).to have_select 'Type', options: %w[Incident Issue Task]
+        end
       end
     end
 
@@ -267,12 +249,9 @@ RSpec.describe 'New/edit issue', :js, feature_category: :team_planning do
 
     describe 'when repository contains CONTRIBUTING.md' do
       it 'has contribution guidelines prompt' do
-        # Unstub when https://gitlab.com/gitlab-org/gitlab/-/issues/545993 is complete
-        stub_feature_flags(work_item_view_for_issues: false)
         visit new_project_issue_path(project)
 
-        text = _('Please review the %{linkStart}contribution guidelines%{linkEnd} for this project.') % { linkStart: nil, linkEnd: nil }
-        expect(find('#new_issue')).to have_text(text)
+        expect(page).to have_text('Please review the contribution guidelines for this project.')
       end
     end
   end

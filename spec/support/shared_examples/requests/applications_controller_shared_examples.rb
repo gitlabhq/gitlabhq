@@ -32,7 +32,6 @@ RSpec.shared_examples 'applications controller - GET #new' do
       sudo
       write_observability
       write_repository
-      granular
     ])
   end
 end

@@ -11,7 +11,6 @@ RSpec.describe 'Issues > Real-time sidebar', :js, :with_license, feature_categor
   let_it_be(:label)  { create(:label, project: project, name: 'Development') }
 
   before do
-    stub_feature_flags(work_item_view_for_issues: true)
     sign_in(user)
   end
 

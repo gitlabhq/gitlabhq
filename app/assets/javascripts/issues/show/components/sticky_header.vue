@@ -119,7 +119,7 @@ export default {
         class="issue-sticky-header gl-border-b gl-fixed gl-z-3 gl-bg-default gl-py-3"
         data-testid="issue-sticky-header"
       >
-        <div class="issue-sticky-header-text gl-mx-auto gl-flex gl-items-center gl-gap-2">
+        <div class="issue-sticky-header-text gl-mr-auto gl-flex gl-items-center gl-gap-2">
           <gl-badge :variant="statusVariant" :icon="statusIcon" class="gl-shrink-0">
             <gl-sprintf v-if="closedStatusLink" :message="statusText">
               <template #link>

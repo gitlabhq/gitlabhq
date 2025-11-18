@@ -240,21 +240,6 @@ That's all of the required database changes.
 
     has_one :cool_widget_state, autosave: false, inverse_of: :cool_widget, class_name: 'Geo::CoolWidgetState'
 
-    # Override the `all` default if not all records can be replicated. For an
-    # example of an existing Model that needs to do this, see
-    # `EE::MergeRequestDiff`.
-    # scope :available_replicables, -> { all }
-
-    scope :available_verifiables, -> { joins(:cool_widget_state) }
-
-    scope :checksummed, -> {
-      joins(:cool_widget_state).where.not(cool_widget_states: { verification_checksum: nil })
-    }
-
-    scope :not_checksummed, -> {
-      joins(:cool_widget_state).where(cool_widget_states: { verification_checksum: nil })
-    }
-
     scope :with_verification_state, ->(state) {
       joins(:cool_widget_state)
         .where(cool_widget_states: { verification_state: verification_state_value(state) })
@@ -323,7 +308,7 @@ That's all of the required database changes.
 - [ ] Add the following shared examples to `ee/spec/models/ee/cool_widget_spec.rb`:
 
   ```ruby
-    include_examples 'a verifiable model with a separate table for verification state' do
+    include_examples 'a verifiable model for verification state' do
       let(:verifiable_model_record) { build(:cool_widget) } # add extra params if needed to make sure the record is in `Geo::ReplicableModel.verifiables` scope
       let(:unverifiable_model_record) { build(:cool_widget) } # add extra params if needed to make sure the record is NOT included in `Geo::ReplicableModel.verifiables` scope
     end
@@ -443,10 +428,15 @@ That's all of the required database changes.
       include ::Geo::ReplicableRegistry
       include ::Geo::VerifiableRegistry
 
-      MODEL_CLASS = ::CoolWidget
-      MODEL_FOREIGN_KEY = :cool_widget_id
-
       belongs_to :cool_widget, class_name: 'CoolWidget'
+
+      def self.model_class
+        ::CoolWidget
+      end
+
+      def self.model_foreign_key
+        :cool_widget_id
+      end
     end
   end
   ```

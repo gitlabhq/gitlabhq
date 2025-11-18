@@ -1,6 +1,7 @@
 <script>
 import { GlTooltipDirective, GlLink, GlButton, GlSearchBoxByClick, GlSprintf } from '@gitlab/ui';
-import { scrollToElement, backOff } from '~/lib/utils/common_utils';
+import { backOff } from '~/lib/utils/common_utils';
+import { scrollToElement } from '~/lib/utils/scroll_utils';
 import { numberToHumanSize } from '~/lib/utils/number_utils';
 import { s__, n__, sprintf } from '~/locale';
 import { compactJobLog, getLineText } from '~/ci/job_details/utils';

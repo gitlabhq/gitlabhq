@@ -21,7 +21,6 @@ import {
   FORM_TYPES,
   WORK_ITEM_TYPE_NAME_EPIC,
   WORK_ITEM_TYPE_NAME_OBJECTIVE,
-  WORK_ITEM_TYPE_NAME_TASK,
   WORKITEM_TREE_SHOWLABELS_LOCALSTORAGEKEY,
   WORKITEM_TREE_SHOWCLOSED_LOCALSTORAGEKEY,
   WORK_ITEM_TYPE_NAME_KEY_RESULT,
@@ -61,6 +60,7 @@ describe('WorkItemTree', () => {
   const findMoreActions = () => wrapper.findComponent(WorkItemMoreActions);
   const findShowClosedButton = () => wrapper.findComponent(WorkItemToggleClosedItems);
   const findCrudComponent = () => wrapper.findComponent(CrudComponent);
+  const findCrudCollapseToggle = () => wrapper.findByTestId('crud-collapse-toggle');
   const findRolledUpData = () => wrapper.findComponent(WorkItemRolledUpData);
   const findRolledUpCount = () => wrapper.findComponent(WorkItemRolledUpCount);
 
@@ -135,23 +135,6 @@ describe('WorkItemTree', () => {
     expect(findWorkItemLinkChildrenWrapper().exists()).toBe(true);
     expect(findWorkItemLinkChildrenWrapper().props().children).toHaveLength(1);
   });
-
-  it.each`
-    workItemType                     | useCachedRolledUpWeights | showTaskWeight
-    ${WORK_ITEM_TYPE_NAME_EPIC}      | ${false}                 | ${false}
-    ${WORK_ITEM_TYPE_NAME_TASK}      | ${false}                 | ${true}
-    ${WORK_ITEM_TYPE_NAME_OBJECTIVE} | ${false}                 | ${true}
-    ${WORK_ITEM_TYPE_NAME_EPIC}      | ${true}                  | ${true}
-    ${WORK_ITEM_TYPE_NAME_TASK}      | ${true}                  | ${true}
-    ${WORK_ITEM_TYPE_NAME_OBJECTIVE} | ${true}                  | ${true}
-  `(
-    'passes `showTaskWeight` as $showTaskWeight when the type is $workItemType and useCachedRolledUpWeights is $useCachedRolledUpWeights',
-    async ({ workItemType, useCachedRolledUpWeights, showTaskWeight }) => {
-      await createComponent({ workItemType, useCachedRolledUpWeights });
-
-      expect(findWorkItemLinkChildrenWrapper().props().showTaskWeight).toBe(showTaskWeight);
-    },
-  );
 
   it('does not display form by default', () => {
     createComponent();
@@ -405,7 +388,6 @@ describe('WorkItemTree', () => {
 
     expect(findRolledUpData().props()).toEqual({
       workItemIid: '2',
-      workItemType: 'Objective',
       fullPath: 'test/project',
     });
 
@@ -533,6 +515,21 @@ describe('WorkItemTree', () => {
         [{ modalWorkItem: expect.objectContaining({ id: 'gid://gitlab/WorkItem/31' }) }],
         [{ modalWorkItem: null }],
       ]);
+    });
+
+    describe('tracks collapse/expand events', () => {
+      it.each`
+        type          | eventLabel           | collapsed
+        ${'collapse'} | ${'click-collapsed'} | ${true}
+        ${'expand'}   | ${'click-expanded'}  | ${false}
+      `('tracks user $type events', async ({ eventLabel, collapsed }) => {
+        utils.saveToggleToLocalStorage(WORKITEM_TREE_SHOWCLOSED_LOCALSTORAGEKEY, collapsed);
+        await createComponent();
+
+        findCrudCollapseToggle().vm.$emit('click');
+
+        expect(findCrudComponent().emitted(eventLabel)).toEqual([[]]);
+      });
     });
   });
 });

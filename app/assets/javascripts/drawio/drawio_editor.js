@@ -156,7 +156,6 @@ async function prepareEditor(drawIOEditorState, editorFacade) {
 
     iframe.style.visibility = 'visible';
     iframe.style.cursor = '';
-    window.scrollTo(0, 0);
   } catch (e) {
     createAlert({
       message: e.message,

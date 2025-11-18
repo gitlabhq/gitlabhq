@@ -9,7 +9,7 @@ import {
   GlModalDirective,
   GlTooltipDirective,
 } from '@gitlab/ui';
-import ClipboardButton from '~/vue_shared/components/clipboard_button.vue';
+import SimpleCopyButton from '~/vue_shared/components/simple_copy_button.vue';
 import { getHTTPProtocol } from '~/lib/utils/url_utility';
 import { __, sprintf } from '~/locale';
 
@@ -19,8 +19,6 @@ export default {
       step1: __('Clone repository'),
     },
     cloneWithSsh: __('Clone with SSH'),
-    copyToClipboard: __('Copy to clipboard'),
-    copyURLTooltip: __('Copy URL'),
   },
   components: {
     GlButton,
@@ -29,7 +27,7 @@ export default {
     GlFormGroup,
     GlFormInputGroup,
     GlModal,
-    ClipboardButton,
+    SimpleCopyButton,
   },
   directives: {
     GlModal: GlModalDirective,
@@ -116,10 +114,9 @@ export default {
             select-on-click
           >
             <template #append>
-              <clipboard-button
+              <simple-copy-button
+                data-testid="wiki-copy-ssh-url-button"
                 :text="cloneSshUrlDisplay"
-                :title="$options.i18n.copyToClipboard"
-                data-clipboard-target="#clone-ssh-url"
               />
             </template>
           </gl-form-input-group>
@@ -134,10 +131,9 @@ export default {
             select-on-click
           >
             <template #append>
-              <clipboard-button
+              <simple-copy-button
+                data-testid="wiki-copy-http-url-button"
                 :text="cloneHttpUrlDisplay"
-                :title="$options.i18n.copyToClipboard"
-                data-clipboard-target="#clone-http-url"
               />
             </template>
           </gl-form-input-group>

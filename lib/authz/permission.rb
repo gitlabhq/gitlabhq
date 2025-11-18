@@ -15,6 +15,10 @@ module Authz
         all.key?(name.to_sym)
       end
 
+      def all_for_tokens
+        all.values.select(&:available_for_tokens?)
+      end
+
       private
 
       def load_permissions
@@ -55,12 +59,30 @@ module Authz
       definition[:description]
     end
 
-    def scopes
-      definition[:scopes] || []
+    def action
+      return definition[:action] if definition[:action]
+      return name.delete_suffix("_#{resource}") if definition[:resource]
+
+      name.split('_')[0]
+    end
+
+    def resource
+      return definition[:resource] if definition[:resource]
+      return name.delete_prefix("#{action}_") if definition[:action]
+
+      name.split('_', 2)[1]
+    end
+
+    def boundaries
+      definition[:boundaries] || []
     end
 
     def feature_category
       definition[:feature_category]
+    end
+
+    def available_for_tokens?
+      definition[:available_for_tokens] || false
     end
   end
 end

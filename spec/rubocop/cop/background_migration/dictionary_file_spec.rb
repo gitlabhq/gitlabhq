@@ -219,6 +219,95 @@ RSpec.describe RuboCop::Cop::BackgroundMigration::DictionaryFile, feature_catego
         end
       end
     end
+
+    context 'with ensure_batched_background_migration_is_finished' do
+      let(:rails_root) { File.expand_path('../../../..', __dir__) }
+      let(:dictionary_file_path) { File.join(rails_root, 'db/docs/batched_background_migrations/my_migration.yml') }
+
+      context 'for migrations before enforced time' do
+        before do
+          allow(cop).to receive(:version).and_return(20230918100907)
+        end
+
+        it 'does not throw any offenses' do
+          expect_no_offenses(<<~RUBY)
+            class FinalizeMyMigration < Gitlab::Database::Migration[2.1]
+              MIGRATION = 'MyMigration'
+
+              def up
+                ensure_batched_background_migration_is_finished(
+                  job_class_name: MIGRATION,
+                  table_name: :users,
+                  column_name: :id,
+                  job_arguments: []
+                )
+              end
+            end
+          RUBY
+        end
+      end
+
+      context 'for migrations after enforced time' do
+        before do
+          allow(cop).to receive(:version).and_return(20231118100907)
+        end
+
+        context 'with dictionary file' do
+          let(:introduced_by_url) { 'https://gitlab.com/gitlab-org/gitlab/-/merge_requests/132639' }
+          let(:milestone) { '16.1' }
+          let(:finalized_by) { '20231118100907' }
+
+          before do
+            dictionary_instance = instance_double(Gitlab::Utils::BatchedBackgroundMigrationsDictionary)
+            allow(dictionary_instance).to receive(:finalized_by).and_return(finalized_by)
+
+            allow(Gitlab::Utils::BatchedBackgroundMigrationsDictionary)
+              .to receive(:entry).with('MyMigration').and_return(dictionary_instance)
+          end
+
+          context 'without finalized_by' do
+            let(:finalized_by) { nil }
+
+            it 'throws offense on missing finalized_by' do
+              expect_offense(<<~RUBY)
+                class FinalizeMyMigration < Gitlab::Database::Migration[2.1]
+                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Missing `finalized_by` attribute in dictionary for migration using `ensure_batched_background_migration_is_finished`. Please add the finalized_by attribute with the migration version.
+                  MIGRATION = 'MyMigration'
+
+                  def up
+                    ensure_batched_background_migration_is_finished(
+                      job_class_name: MIGRATION,
+                      table_name: :users,
+                      column_name: :id,
+                      job_arguments: []
+                    )
+                  end
+                end
+              RUBY
+            end
+          end
+
+          context 'with finalized_by' do
+            it 'does not throw offense with appropriate dictionary file' do
+              expect_no_offenses(<<~RUBY)
+                class FinalizeMyMigration < Gitlab::Database::Migration[2.1]
+                  MIGRATION = 'MyMigration'
+
+                  def up
+                    ensure_batched_background_migration_is_finished(
+                      job_class_name: MIGRATION,
+                      table_name: :users,
+                      column_name: :id,
+                      job_arguments: []
+                    )
+                  end
+                end
+              RUBY
+            end
+          end
+        end
+      end
+    end
   end
 
   describe '#external_dependency_checksum' do

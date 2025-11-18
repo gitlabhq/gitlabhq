@@ -8,12 +8,11 @@ RSpec.describe Gitlab::Diff::FileCollection::MergeRequestDiffBatch, feature_cate
   let(:batch_size) { 10 }
   let(:diffable) { merge_request.merge_request_diff }
   let(:diff_files_relation) { diffable.merge_request_diff_files }
+  let(:diff_files) { subject.diff_files }
 
   subject do
     described_class.new(diffable, batch_page, batch_size, diff_options: nil)
   end
-
-  let(:diff_files) { subject.diff_files }
 
   describe 'initialize' do
     it 'memoizes pagination_data' do

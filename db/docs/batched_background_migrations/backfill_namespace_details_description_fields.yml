@@ -1,0 +1,8 @@
+---
+migration_job_name: BackfillNamespaceDetailsDescriptionFields
+description: backfill the namespace_details table with the description, description_html and cached_markdown_version
+feature_category: groups_and_projects
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/209801
+milestone: '18.6'
+queued_migration_version: 20251022120652
+finalized_by: # version of the migration that finalized this BBM

@@ -1,8 +1,0 @@
----
-migration_job_name: BackfillEpicIssuesIntoWorkItemParentLinks
-description: Creates records in the work_item_parent_links table for each record in the epic_issues table
-feature_category: team_planning
-introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/147509
-milestone: '17.1'
-queued_migration_version: 20240522183910
-finalized_by: 20240701182755

@@ -70,9 +70,10 @@ The **Metric trends** table displays metrics for the last six months, with month
 
 {{< history >}}
 
-- Duo RCA usage [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/513252) in GitLab 18.1 [with a flag](../../administration/feature_flags/_index.md) named `duo_rca_usage_rate`. Disabled by default.
+- Duo RCA usage [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/513252) in GitLab 18.1 [with a flag](../../administration/feature_flags/_index.md) named `duo_rca_usage_rate`. Disabled by default.
 - Duo RCA usage [enabled on GitLab.com, GitLab Self-Managed, and GitLab Dedicated](https://gitlab.com/gitlab-org/gitlab/-/issues/543987) in GitLab 18.3.
 - Duo RCA usage [generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/556726) in GitLab 18.4. Feature flag `duo_rca_usage_rate` removed.
+- Duo features usage [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/207562) in GitLab 18.6.
 
 {{< /history >}}
 
@@ -102,6 +103,8 @@ The **Metric trends** table displays metrics for the last six months, with month
 
   {{< /alert >}}
 
+- **Duo features usage**: Number of contributors who used any GitLab Duo feature.
+
 ### Development metrics
 
 - [**Lead time**](../group/value_stream_analytics/_index.md#lifecycle-metrics)
@@ -120,7 +123,7 @@ The Pipeline metrics table displays metrics for the pipelines run in the selecte
 - **Success rate**: Percentage of pipeline runs that completed successfully.
 - **Failure rate**: Percentage of pipeline runs that completed with failures.
 
-## Code suggestions acceptance rate by language
+## Code Suggestions acceptance rate by language
 
 {{< history >}}
 
@@ -128,7 +131,7 @@ The Pipeline metrics table displays metrics for the pipelines run in the selecte
 
 {{< /history >}}
 
-The **Code suggestions acceptance rate by language** chart displays the acceptance rate of Code Suggestions broken down by programming language for the last 30 days.
+The **Code Suggestions acceptance rate by language** chart displays the acceptance rate of Code Suggestions broken down by programming language for the last 30 days.
 
 The acceptance rate for each language is calculated as the number of accepted code suggestions divided by the total number of code suggestions shown.
 
@@ -152,7 +155,7 @@ Prerequisites:
 - [Code Suggestions](../project/repository/code_suggestions/_index.md) must be enabled.
 - For GitLab Self-Managed, [ClickHouse for contribution analytics](../group/contribution_analytics/_index.md#contribution-analytics-with-clickhouse) must be configured.
 
-1. On the left sidebar, select **Search or go to** and find your project or group.
+1. On the left sidebar, select **Search or go to** and find your project or group. If you've [turned on the new navigation](../interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
 1. Select **Analyze** > **Analytics Dashboards**.
 1. Select **GitLab Duo and SDLC trends**.
 

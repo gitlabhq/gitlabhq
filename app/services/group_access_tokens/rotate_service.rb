@@ -14,7 +14,7 @@ module GroupAccessTokens
       token_access_level = group.max_member_access_for_user(token.user).to_i
       current_user_access_level = group.max_member_access_for_user(current_user).to_i
 
-      Authz::Role.access_level_encompasses?(
+      Gitlab::Access.level_encompasses?(
         current_access_level: current_user_access_level,
         level_to_assign: token_access_level
       )

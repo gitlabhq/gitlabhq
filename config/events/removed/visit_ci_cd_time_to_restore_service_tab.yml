@@ -1,0 +1,18 @@
+---
+description: Tracks visits to the project level CI/CD Analytics Time to Restore Service tab
+internal_events: true
+action: visit_ci_cd_time_to_restore_service_tab
+identifiers:
+- project
+- namespace
+- user
+product_group: optimize
+milestone: '17.2'
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/156593
+tiers:
+- free
+- premium
+- ultimate
+status: removed
+removed_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/212364
+milestone_removed: '18.7'

@@ -2,7 +2,8 @@
 
 module SearchHelpers
   def fill_in_search(text)
-    find_by_testid('super-sidebar-search-button').click
+    # account for Project Studio UI if enabled
+    find('[data-testid="super-sidebar-search-button"], [data-testid="super-topbar-search-button"]').click
     fill_in 'search', with: text
 
     wait_for_all_requests
@@ -13,7 +14,8 @@ module SearchHelpers
       search_form = '.search-page-form'
 
     else
-      find_by_testid('super-sidebar-search-button').click
+      # account for Project Studio UI if enabled
+      find('[data-testid="super-sidebar-search-button"], [data-testid="super-topbar-search-button"]').click
       search_form = '#super-sidebar-search-modal'
     end
 

@@ -55,6 +55,12 @@ en:
         location: 'Location'
         organization: 'Organization'
         website_url: 'Website url'
+    errors:
+      models:
+        user_preference:
+          attributes:
+            duo_default_namespace_id:
+              invalid: "specified does not allow you to execute a workflow."
   views:
     pagination:
       previous: "Prev"

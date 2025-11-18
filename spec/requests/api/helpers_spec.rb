@@ -349,8 +349,8 @@ RSpec.describe API::Helpers, :enable_admin_mode, feature_category: :system_acces
         end
 
         let_it_be(:permission) { :create_issue }
-        let_it_be(:project_resource) { create(:project, organization: user.organization) }
-        let_it_be(:group_resource) { create(:group, organization: user.organization) }
+        let_it_be(:group_resource) { create(:group, organization: user.organization, developers: user) }
+        let_it_be(:project_resource) { create(:project, organization: user.organization, namespace: group_resource) }
         let_it_be(:standalone_resource) { nil }
         let(:boundary) { ::Authz::Boundary.for(boundary_resource) }
 
@@ -409,6 +409,18 @@ RSpec.describe API::Helpers, :enable_admin_mode, feature_category: :system_acces
         set_current_organization(user: other_user)
 
         expect(Current.organization).to eq(other_user.organization)
+      end
+    end
+
+    context 'when a header is present' do
+      let_it_be(:header_organization) { create(:organization) }
+
+      it 'sets the organization from header' do
+        request.headers['X-GitLab-Organization-ID'] = header_organization.id.to_s
+
+        set_current_organization(user: user)
+
+        expect(Current.organization).to eq(header_organization)
       end
     end
   end

@@ -23,7 +23,8 @@ RSpec.describe "Internal references", :js, feature_category: :team_planning do
           visit(project_issue_path(private_project, private_project_issue))
           wait_for_requests
 
-          add_note("##{public_project_issue.to_reference(private_project)}")
+          fill_in('Add a reply', with: "##{public_project_issue.to_reference(private_project)}")
+          click_button 'Comment'
         end
 
         context "when user doesn't have access to private project" do
@@ -68,11 +69,9 @@ RSpec.describe "Internal references", :js, feature_category: :team_planning do
           end
 
           it "shows references", :sidekiq_might_not_need_inline do
-            expect(page).to have_text 'Related merge requests 1'
-
-            page.within('.related-items-list') do
-              expect(page).to have_content(private_project_merge_request.title)
-              expect(page).to have_css(".issue-token-state-icon")
+            within_testid('work-item-development') do
+              expect(page).to have_text 'Development 1'
+              expect(page).to have_link(private_project_merge_request.title)
             end
 
             expect(page).to have_content("mentioned in merge request #{private_project_merge_request.to_reference(public_project)}")
@@ -92,7 +91,8 @@ RSpec.describe "Internal references", :js, feature_category: :team_planning do
           visit(project_issue_path(private_project, private_project_issue))
           wait_for_requests
 
-          add_note("##{public_project_merge_request.to_reference(private_project)}")
+          fill_in('Add a reply', with: "##{public_project_merge_request.to_reference(private_project)}")
+          click_button 'Comment'
         end
 
         context "when user doesn't have access to private project" do

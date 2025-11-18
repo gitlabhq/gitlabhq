@@ -1345,6 +1345,15 @@ GfmAutoComplete.typesWithBackendFiltering = ['vulnerabilities', 'members', 'issu
 GfmAutoComplete.isTypeWithBackendFiltering = (type) =>
   GfmAutoComplete.typesWithBackendFiltering.includes(GfmAutoComplete.atTypeMap[type]);
 
+GfmAutoComplete.enableGFMTypeMap = {
+  epicsAlternative: 'epics',
+  issuesAlternative: 'issues',
+  workItems: 'issues',
+};
+
+export const getEnableGFMType = (enableGFM) =>
+  GfmAutoComplete.enableGFMTypeMap[enableGFM] ?? enableGFM;
+
 // Emoji
 GfmAutoComplete.glEmojiTag = null;
 GfmAutoComplete.Emoji = {

@@ -23,7 +23,9 @@ module API
           runner.maintenance_note if options[:current_user].can?(:update_runner, runner)
         end
 
-        expose :projects, with: Entities::BasicProjectDetails do |runner, options|
+        expose :projects, with: Entities::BasicProjectDetails, if: ->(_, options) {
+          options[:include_projects]
+        } do |runner, options|
           next runner.projects if options[:current_user].can_read_all_resources?
 
           options[:current_user].authorized_projects.id_in(runner.project_ids)

@@ -1,6 +1,6 @@
 ---
-stage: none
-group: unassigned
+stage: Verify
+group: Mobile DevOps
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 title: Apple App Store Connect
 ---
@@ -40,7 +40,7 @@ Prerequisites:
 
 To enable the Apple App Store Connect integration in GitLab:
 
-1. On the left sidebar, select **Search or go to** and find your project.
+1. On the left sidebar, select **Search or go to** and find your project. If you've [turned on the new navigation](../../interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
 1. Select **Settings** > **Integrations**.
 1. Select **Apple App Store Connect**.
 1. Under **Enable integration**, select the **Active** checkbox.

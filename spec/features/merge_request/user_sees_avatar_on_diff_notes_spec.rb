@@ -91,7 +91,7 @@ RSpec.describe 'Merge request > User sees avatars on diff notes', :js, feature_c
         find_by_testid('file-tree-button').click
       end
 
-      it 'shows note avatar' do
+      it 'shows note avatar', quarantine: 'https://gitlab.com/gitlab-org/quality/test-failure-issues/-/issues/5873' do
         page.within find_line(position.line_code(project.repository)) do
           find('.diff-notes-collapse').send_keys(:return)
 
@@ -99,7 +99,8 @@ RSpec.describe 'Merge request > User sees avatars on diff notes', :js, feature_c
         end
       end
 
-      it 'shows comment on note avatar' do
+      it 'shows comment on note avatar',
+        quarantine: 'https://gitlab.com/gitlab-org/quality/test-failure-issues/-/issues/5932' do
         page.within find_line(position.line_code(project.repository)) do
           find('.diff-notes-collapse').send_keys(:return)
           first('.js-diff-comment-avatar [data-testid="user-avatar-image"]').hover
@@ -108,7 +109,8 @@ RSpec.describe 'Merge request > User sees avatars on diff notes', :js, feature_c
         expect(page).to have_content "#{note.author.name}: #{note.note.truncate(17)}"
       end
 
-      it 'toggles comments when clicking avatar' do
+      it 'toggles comments when clicking avatar',
+        quarantine: 'https://gitlab.com/gitlab-org/quality/test-failure-issues/-/issues/4213' do
         page.within find_line(position.line_code(project.repository)) do
           find('.diff-notes-collapse').send_keys(:return)
         end
@@ -122,8 +124,13 @@ RSpec.describe 'Merge request > User sees avatars on diff notes', :js, feature_c
         expect(page).to have_selector('.notes_holder')
       end
 
-      it 'removes avatar when note is deleted' do
-        open_more_actions_dropdown(note)
+      it 'removes avatar when note is deleted',
+        quarantine: 'https://gitlab.com/gitlab-org/quality/test-failure-issues/-/issues/4253' do
+        if Users::ProjectStudio.enabled_for_user?(user)
+          open_more_actions_dropdown_in_panel(note)
+        else
+          open_more_actions_dropdown(note)
+        end
 
         accept_gl_confirm(button_text: 'Delete comment') do
           find(".note-row-#{note.id} .js-note-delete").click
@@ -136,8 +143,8 @@ RSpec.describe 'Merge request > User sees avatars on diff notes', :js, feature_c
         end
       end
 
-      it 'adds avatar when commenting' do
-        find_by_scrolling('[data-discussion-id]', match: :first)
+      it 'adds avatar when commenting', quarantine: 'https://gitlab.com/gitlab-org/quality/test-failure-issues/-/issues/5899' do
+        find_in_page_or_panel_by_scrolling('[data-discussion-id]', match: :first)
         find_field('Reply…', match: :first).click
 
         page.within '.js-discussion-note-form' do
@@ -155,9 +162,10 @@ RSpec.describe 'Merge request > User sees avatars on diff notes', :js, feature_c
         end
       end
 
-      it 'adds multiple comments' do
+      it 'adds multiple comments',
+        quarantine: 'https://gitlab.com/gitlab-org/quality/test-failure-issues/-/issues/5874' do
         3.times do
-          find_by_scrolling('[data-discussion-id]', match: :first)
+          find_in_page_or_panel_by_scrolling('[data-discussion-id]', match: :first)
           find_field('Reply…', match: :first).click
 
           page.within '.js-discussion-note-form' do
@@ -176,7 +184,8 @@ RSpec.describe 'Merge request > User sees avatars on diff notes', :js, feature_c
         end
       end
 
-      context 'multiple comments' do
+      context 'multiple comments',
+        quarantine: 'https://gitlab.com/gitlab-org/quality/test-failure-issues/-/issues/4262' do
         before do
           create_list(:diff_note_on_merge_request, 3, project: project, noteable: merge_request, in_reply_to: note)
           visit diffs_project_merge_request_path(project, merge_request, view: view)
@@ -196,8 +205,16 @@ RSpec.describe 'Merge request > User sees avatars on diff notes', :js, feature_c
   end
 
   def find_line(line_code)
-    line = find_by_scrolling("[id='#{line_code}']")
+    line = find_in_page_or_panel_by_scrolling("[id='#{line_code}']")
     line = line.find(:xpath, 'preceding-sibling::*[1][self::td]/preceding-sibling::*[1][self::td]') if line.tag_name == 'td'
     line
+  end
+
+  def find_in_page_or_panel_by_scrolling(selector, **options)
+    if Users::ProjectStudio.enabled_for_user?(user)
+      find_in_panel_by_scrolling(selector, **options)
+    else
+      find_by_scrolling(selector, **options)
+    end
   end
 end

@@ -46,17 +46,13 @@ RSpec.describe 'Navigation bar counter', :use_clean_rails_memory_store_caching, 
     dashboard_count = find('.gl-tabs-nav li a.active')
     expect(dashboard_count).to have_content(count)
 
-    within_testid('super-sidebar') do
-      expect(page).to have_link('Assigned issues')
-    end
+    expect(page).to have_link('Assigned issues')
   end
 
   def expect_merge_request_count(count)
     dashboard_count = find('.top-area .gl-tabs-nav li a.active')
     expect(dashboard_count).to have_content(count)
 
-    within_testid('super-sidebar') do
-      expect(page).to have_link('Merge requests')
-    end
+    expect(page).to have_link('Merge requests')
   end
 end

@@ -1,5 +1,5 @@
 ---
-stage: Runtime
+stage: Tenant Scale
 group: Organizations
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 title: Manage projects
@@ -72,7 +72,7 @@ You might need the project ID if you want to interact with the project using the
 
 To find the project ID:
 
-1. On the left sidebar, select **Search or go to** and find your project.
+1. On the left sidebar, select **Search or go to** and find your project. If you've [turned on the new navigation](../interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
 1. On the project overview page, in the upper-right corner, select **Actions** ({{< icon name="ellipsis_v" >}}).
 1. Select **Copy project ID**.
 
@@ -88,7 +88,7 @@ Use the **Projects** list to view:
 
 To view the projects on your GitLab instance:
 
-1. On the left sidebar, select **Search or go to**.
+1. On the left sidebar, select **Search or go to**. If you've [turned on the new navigation](../interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
 1. Select **Explore**.
 1. Optional. Select a tab to filter which projects are displayed.
 
@@ -106,7 +106,7 @@ If you are not authenticated, the list shows public projects only.
 
 To view the projects you have interacted with:
 
-1. On the left sidebar, select **Search or go to**.
+1. On the left sidebar, select **Search or go to**. If you've [turned on the new navigation](../interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
 1. Select **View all my projects**.
 1. Optional. Select a tab to filter which projects are displayed:
    - **Contributed**: Projects where you have:
@@ -123,7 +123,7 @@ To view the projects you have interacted with:
 
 You can also view your starred and personal projects from your personal profile:
 
-1. On the left sidebar, select your avatar and then your username.
+1. On the left sidebar, select your avatar and then your username. If you've [turned on the new navigation](../interface_redesign.md#turn-new-navigation-on-or-off), this button is in the upper-right corner.
 1. On the left sidebar, select **Starred projects** or **Personal projects**.
 
 ### View inactive projects
@@ -137,10 +137,7 @@ You can also view your starred and personal projects from your personal profile:
 
 {{< /history >}}
 
-A project is inactive when:
-
-- It is pending deletion.
-- It has been archived.
+A project is inactive when it is either pending deletion or it has been archived.
 
 To view all inactive projects:
 
@@ -149,19 +146,21 @@ To view all inactive projects:
    - **Explore**, to filter all projects you can access.
 1. Select the **Inactive** tab.
 
-Each project in the list shows:
+Each inactive project in the list displays a badge to indicate that the project is either
+archived or pending deletion.
 
-- A badge indicating that the project is archived or marked for deletion.
-  If the project is marked for deletion, the list also shows:
-  - The time the project was marked for deletion.
-  - The time the project is scheduled for final deletion.
-  - A **Restore** action to stop the project being eventually deleted.
+If the project is pending deletion, the list also shows:
+
+- The time the project is scheduled for final deletion.
+- A **Restore** action. When you restore a project:
+  - The **Pending deletion** label is removed. The project is no longer scheduled for deletion.
+  - The project is removed from the **Inactive** tab.
 
 ### View only projects you own
 
 To view only the projects you are the owner of:
 
-1. On the left sidebar, select **Search or go to**.
+1. On the left sidebar, select **Search or go to**. If you've [turned on the new navigation](../interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
 1. Select either:
    - **View all your projects**, to filter your projects.
    - **Explore**, to filter all projects you can access.
@@ -172,7 +171,7 @@ To view only the projects you are the owner of:
 
 To view the activity of a project:
 
-1. On the left sidebar, select **Search or go to** and find your project.
+1. On the left sidebar, select **Search or go to** and find your project. If you've [turned on the new navigation](../interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
 1. Select **Manage** > **Activity**.
 1. Optional. To filter activity by contribution type, select a tab:
 
@@ -197,7 +196,7 @@ GitLab removes project activity events older than three years from the events ta
 
 You can filter projects by the programming language they use. To do this:
 
-1. On the left sidebar, select **Search or go to**.
+1. On the left sidebar, select **Search or go to**. If you've [turned on the new navigation](../interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
 1. Select either:
    - **View all your projects**, to filter your projects.
    - **Explore**, to filter all projects you can access.
@@ -212,7 +211,7 @@ You can star projects you use frequently to make them easier to find.
 
 To star a project:
 
-1. On the left sidebar, select **Search or go to** and find your project.
+1. On the left sidebar, select **Search or go to** and find your project. If you've [turned on the new navigation](../interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
 1. In the upper-right corner of the page, select **Star**.
 
 ## Leave a project
@@ -236,7 +235,7 @@ Prerequisites:
 
 To leave a project:
 
-1. On the left sidebar, select **Search or go to** and find your project.
+1. On the left sidebar, select **Search or go to** and find your project. If you've [turned on the new navigation](../interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
 1. On the project overview page, in the upper-right corner, select **Actions** ({{< icon name="ellipsis_v" >}}).
 1. Select **Leave project**, then **Leave project** again.
 
@@ -248,7 +247,7 @@ Prerequisites:
 
 - You must have at least the Maintainer role for the project.
 
-1. On the left sidebar, select **Search or go to** and find your project.
+1. On the left sidebar, select **Search or go to** and find your project. If you've [turned on the new navigation](../interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
 1. Select **Settings** > **General**.
 1. In the **Project name** text box, enter your project name. See the [limitations on project names](../reserved_names.md).
 1. Optional. In the **Project description** text box, enter your project description. The description is limited to 2,000 characters.
@@ -273,7 +272,7 @@ For more information on redirect duration and its side-effects, see
 
 To rename a repository:
 
-1. On the left sidebar, select **Search or go to** and find your project.
+1. On the left sidebar, select **Search or go to** and find your project. If you've [turned on the new navigation](../interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
 1. Select **Settings** > **General**.
 1. Expand **Advanced**.
 1. In the **Change path** text box, edit the path.
@@ -300,7 +299,7 @@ Prerequisites:
 
 To add a logo file to use as your project avatar:
 
-1. On the left sidebar, select **Search or go to** and find your project.
+1. On the left sidebar, select **Search or go to** and find your project. If you've [turned on the new navigation](../interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
 1. In the root of your project repository, upload the logo file.
 
 #### Upload an avatar in project settings
@@ -319,7 +318,7 @@ Prerequisites:
 
 To upload an avatar in your project settings:
 
-1. On the left sidebar, select **Search or go to** and find your project.
+1. On the left sidebar, select **Search or go to** and find your project. If you've [turned on the new navigation](../interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
 1. Select **Settings** > **General**.
 1. In the **Project avatar** section, select **Choose file**.
 1. Select your avatar file.
@@ -330,25 +329,12 @@ To upload an avatar in your project settings:
 {{< history >}}
 
 - Default behavior [changed](https://gitlab.com/gitlab-org/gitlab/-/issues/389557) to delayed project deletion for Premium and Ultimate tiers on [GitLab.com](https://gitlab.com/gitlab-org/gitlab/-/issues/393622) and [GitLab Self-Managed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/119606) in 16.0.
-- Option to delete projects immediately as a group setting removed [on GitLab.com](https://gitlab.com/gitlab-org/gitlab/-/issues/393622) and [on GitLab Self-Managed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/119606) in GitLab 16.0.
 - Default behavior changed to delayed project deletion for [GitLab Free](https://gitlab.com/groups/gitlab-org/-/epics/17208) and [personal projects](https://gitlab.com/gitlab-org/gitlab/-/issues/536244) in 18.0.
-- Option to delete projects immediately [moved](https://gitlab.com/groups/gitlab-org/-/epics/17208) from GitLab Premium to GitLab Free in 18.0.
-- Support for disallowing immediate deletion for groups or projects scheduled for deletion [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/201957) in GitLab 18.4 [with a flag](../../administration/feature_flags/_index.md) named `disallow_immediate_deletion`. Disabled by default.
 
 {{< /history >}}
 
-{{< alert type="flag" >}}
-
-The availability of this feature is controlled by a feature flag.
-For more information, see the history.
-
-{{< /alert >}}
-
-You can schedule a project for deletion.
 By default, when you delete a project for the first time, it enters a pending deletion state.
 Delete a project again to remove it immediately.
-
-On GitLab.com, after a project is deleted, its data is retained for 30 days.
 
 Prerequisites:
 
@@ -357,19 +343,62 @@ Prerequisites:
 
 To delete a project:
 
-1. On the left sidebar, select **Search or go to** and find your project.
+1. On the left sidebar, select **Search or go to** and find your project. If you've [turned on the new navigation](../interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
 1. Select **Settings** > **General**.
 1. Expand **Advanced**.
-1. In the **Delete project** section, select **Delete project**.
+1. In the **Delete project** section, select **Delete**.
 1. On the confirmation dialog, enter the project name and select **Yes, delete project**.
-1. Optional. To delete the project immediately, repeat these steps.
 
-You can also [delete projects using the Rails console](troubleshooting.md#delete-a-project-using-console).
+This action adds a background job to mark a project for deletion. On GitLab.com, the project is deleted after 30 days. On GitLab Self-Managed,
+you can modify the retention period through the [instance settings](../../administration/settings/visibility_and_access_controls.md#deletion-protection).
 
 If the user who scheduled the project deletion loses access to the project before the deletion occurs
 (for example, by leaving the project, having their role downgraded, or being banned from the project),
-the deletion job restores the project. However, if the user regains access before the deletion job runs,
-the job removes the project permanently.
+the deletion job instead restores the project, and the project is no longer scheduled for deletion.
+
+{{< alert type="warning" >}}
+
+If the user who scheduled the project deletion regains Owner role or administrator access before the job runs, then the job removes the project permanently.
+
+{{< /alert >}}
+
+You can also [delete projects using the Rails console](troubleshooting.md#delete-a-project-using-console).
+
+## Delete a project immediately
+
+{{< history >}}
+
+- Option to delete projects immediately as a group setting removed [on GitLab.com](https://gitlab.com/gitlab-org/gitlab/-/issues/393622) and [on GitLab Self-Managed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/119606) in GitLab 16.0.
+- Option to delete projects immediately [moved](https://gitlab.com/groups/gitlab-org/-/epics/17208) from GitLab Premium to GitLab Free in 18.0.
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/561680) in GitLab 18.4 [with a flag](../../administration/feature_flags/_index.md) named `disallow_immediate_deletion`. Disabled by default.
+- [Replaced](https://gitlab.com/gitlab-org/gitlab/-/issues/569453) in GitLab 18.5 by an instance setting to allow immediate deletion of groups and projects scheduled for deletion. [Controlled by a flag](../../administration/feature_flags/_index.md) named `allow_immediate_namespaces_deletion`. Feature flag is disabled by default.
+
+{{< /history >}}
+
+{{< alert type="warning" >}}
+
+On GitLab.com and GitLab Dedicated, after a project is deleted, its data is retained for 30 days, and immediate deletion is not available.
+If you must delete a project immediately on GitLab.com, you can open a [support ticket](https://about.gitlab.com/support/).
+
+{{< /alert >}}
+
+If you do not want to wait for the configured retention period to delete a project,
+you can delete the project immediately.
+
+Prerequisites:
+
+- You must have the Owner role for a project.
+- You have [scheduled the project for deletion](#delete-a-project).
+
+To immediately delete a project scheduled for deletion:
+
+1. On the left sidebar, select **Search or go to** and find your project. If you've [turned on the new navigation](../interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
+1. Select **Settings** > **General**.
+1. Expand **Advanced**.
+1. In the **Delete project** section, select **Delete immediately**.
+1. On the confirmation dialog, enter the project name and select **Confirm**.
+
+This action deletes the project and all related resources, including issues and merge requests.
 
 ### Restore a project
 
@@ -386,7 +415,7 @@ Prerequisites:
 
 To restore a project pending deletion:
 
-1. On the left sidebar, select **Search or go to** and find your project.
+1. On the left sidebar, select **Search or go to** and find your project. If you've [turned on the new navigation](../interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
 1. Select **Settings** > **General**.
 1. Expand **Advanced**.
 1. In the **Restore project** section, select **Restore project**.
@@ -416,14 +445,14 @@ Prerequisites:
 
 To archive a project:
 
-1. On the left sidebar, select **Search or go to** and find your project.
+1. On the left sidebar, select **Search or go to** and find your project. If you've [turned on the new navigation](../interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
 1. Select **Settings** > **General**.
 1. Expand **Advanced**.
 1. In the **Archive project** section, select **Archive**.
 
 To archive a project from the **Your work** list view directly:
 
-1. On the left sidebar, select **Search or go to**.
+1. On the left sidebar, select **Search or go to**. If you've [turned on the new navigation](../interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
 1. Select **View all my projects**.
 1. In the **Member** tab, find the project you want to archive and select ({{< icon name="ellipsis_v" >}}).
 1. Select **Archive**.
@@ -455,7 +484,7 @@ Prerequisites:
 To unarchive a project:
 
 1. Find the archived project.
-   1. On the left sidebar, select **Search or go to**.
+   1. On the left sidebar, select **Search or go to**. If you've [turned on the new navigation](../interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
    1. Select **View all my projects**.
    1. In the **Inactive** tab, select your project.
 1. On the left sidebar, select **Settings** > **General**.
@@ -464,7 +493,7 @@ To unarchive a project:
 
 To unarchive a project from the **Your work** list view directly:
 
-1. On the left sidebar, select **Search or go to**.
+1. On the left sidebar, select **Search or go to**. If you've [turned on the new navigation](../interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
 1. Select **View all my projects**.
 1. In the **Inactive** tab, find the project you want to unarchive and select ({{< icon name="ellipsis_v" >}}).
 1. Select **Unarchive**.
@@ -522,6 +551,7 @@ Prerequisites:
 - The group must allow creation of new projects.
 - For projects where the container registry is enabled:
   - On GitLab.com: You can only transfer projects within the same top-level namespace.
+    Projects with more than 1,000 container repositories cannot be transferred. For more information, see [Move or rename container registry repositories](../packages/container_registry/_index.md#move-or-rename-container-registry-repositories).
   - On GitLab Self-Managed: The project must not contain [container images](../packages/container_registry/_index.md#move-or-rename-container-registry-repositories).
 - The project must not have a security policy.
   If a security policy is assigned to the project, it is automatically unassigned during the transfer.
@@ -534,7 +564,7 @@ Prerequisites:
 
 To transfer a project:
 
-1. On the left sidebar, select **Search or go to** and find your project.
+1. On the left sidebar, select **Search or go to** and find your project. If you've [turned on the new navigation](../interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
 1. Select **Settings** > **General**.
 1. Expand **Advanced**.
 1. Under **Transfer project**, choose the namespace to transfer the project to.
@@ -553,7 +583,7 @@ Administrators can also transfer projects from the [Admin area](../../administra
 When you transfer a project from a namespace licensed for GitLab.com Premium or Ultimate to GitLab Free:
 
 - [Project access tokens](settings/project_access_tokens.md) are revoked.
-- [Pipeline subscriptions](../../ci/pipelines/_index.md#trigger-a-pipeline-when-an-upstream-project-is-rebuilt-deprecated)
+- [Pipeline subscriptions](../../ci/pipelines/_index.md#trigger-a-pipeline-when-an-upstream-project-is-rebuilt)
   and [test cases](../../ci/test_cases/_index.md) are deleted.
 
 ## Manage projects with the Actions menu
@@ -567,7 +597,7 @@ Prerequisites:
 
 To manage projects with the **Actions** menu:
 
-1. On the left sidebar, select **Search or go to** > **View all my projects**.
+1. On the left sidebar, select **Search or go to** > **View all my projects**. If you've [turned on the new navigation](../interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
 1. On the **Projects** page, find your project and select the **Actions** menu ({{< icon name="ellipsis_v" >}}).
 1. Select an action.
 
@@ -578,7 +608,7 @@ depending on the state of your project:
 |----------|-------------------------|
 | Active   | **Edit**, **Archive**, **Transfer**, **Leave project**, **Delete** |
 | Archived | **Unarchive**, **Leave project**, **Delete** |
-| Pending deletion | **Restore**, **Leave project** |
+| Pending deletion | **Restore**, **Leave project**, **Delete immediately** |
 
 ## Add a compliance framework to a project
 

@@ -7,19 +7,24 @@ module Resolvers
 
       type ::Types::WorkItems::TypeType.connection_type, null: true
 
-      argument :name, ::Types::IssueTypeEnum,
-        description: 'Filter work item types by the given name.',
+      argument :name,
+        ::Types::IssueTypeEnum,
+        description: "Filter work item types by the given name.",
         required: false
 
-      def resolve_with_lookahead(name: nil)
+      argument :only_available,
+        ::GraphQL::Types::Boolean,
+        description: "When true, returns only the available work item types for the current user.",
+        required: false,
+        experiment: { milestone: "18.6" }
+
+      def resolve_with_lookahead(name: nil, only_available: false)
         context.scoped_set!(:resource_parent, object)
 
-        # This will require a finder in the future when groups/projects get their work item types
-        # All groups/projects use all types for now
-        base_scope = ::WorkItems::Type
-        base_scope = base_scope.by_type(name) if name
-
-        apply_lookahead(base_scope.order_by_name_asc)
+        ::WorkItems::TypesFinder
+          .new(container: object)
+          .execute(name: name, only_available: only_available)
+          .then { |types| apply_lookahead(types) }
       end
 
       private

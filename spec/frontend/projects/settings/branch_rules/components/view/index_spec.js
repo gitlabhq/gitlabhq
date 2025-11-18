@@ -33,9 +33,11 @@ import squashOptionQuery from '~/projects/settings/branch_rules/queries/squash_o
 import deleteBranchRuleMutation from '~/projects/settings/branch_rules/mutations/branch_rule_delete.mutation.graphql';
 import editBranchRuleMutation from 'ee_else_ce/projects/settings/branch_rules/mutations/edit_branch_rule.mutation.graphql';
 import editBranchRuleSquashOptionMutation from '~/projects/settings/branch_rules/mutations/edit_squash_option.mutation.graphql';
+import deleteBranchRuleSquashOptionMutation from '~/projects/settings/branch_rules/mutations/delete_squash_option.mutation.graphql';
 import {
   editBranchRuleMockResponse,
   editSquashOptionMockResponse,
+  deleteSquashOptionMockResponse,
   deleteBranchRuleMockResponse,
   branchProtectionsMockResponse,
   branchProtectionsNoPushAccessMockResponse,
@@ -78,6 +80,9 @@ describe('View branch rules', () => {
   const deleteBranchRuleSuccessHandler = jest.fn().mockResolvedValue(deleteBranchRuleMockResponse);
   const editBranchRuleSuccessHandler = jest.fn().mockResolvedValue(editBranchRuleMockResponse);
   const editSquashOptionSuccessHandler = jest.fn().mockResolvedValue(editSquashOptionMockResponse);
+  const deleteSquashOptionSuccessHandler = jest
+    .fn()
+    .mockResolvedValue(deleteSquashOptionMockResponse);
   const protectableBranchesMockRequestHandler = jest
     .fn()
     .mockResolvedValue(protectableBranchesMockResponse);
@@ -94,6 +99,7 @@ describe('View branch rules', () => {
     deleteMutationHandler = deleteBranchRuleSuccessHandler,
     editMutationHandler = editBranchRuleSuccessHandler,
     editSquashOptionMutationHandler = editSquashOptionSuccessHandler,
+    deleteSquashOptionMutationHandler = deleteSquashOptionSuccessHandler,
   } = {}) => {
     fakeApollo = createMockApollo([
       [branchRulesQuery, branchRulesQueryHandler],
@@ -102,6 +108,7 @@ describe('View branch rules', () => {
       [deleteBranchRuleMutation, deleteMutationHandler],
       [editBranchRuleMutation, editMutationHandler],
       [editBranchRuleSquashOptionMutation, editSquashOptionMutationHandler],
+      [deleteBranchRuleSquashOptionMutation, deleteSquashOptionMutationHandler],
     ]);
 
     wrapper = shallowMountExtended(RuleView, {
@@ -254,7 +261,47 @@ describe('View branch rules', () => {
       await waitForPromises();
 
       expect(createAlert).toHaveBeenCalledWith({
+        captureError: true,
         message: 'Something went wrong while updating branch rule.',
+        error: expect.any(Error),
+      });
+    });
+
+    it('calls delete mutation for DEFAULT option', async () => {
+      const deleteMutationSpy = jest.fn().mockResolvedValue({
+        data: { branchRuleSquashOptionDelete: { errors: [] } },
+      });
+
+      await createComponent({
+        deleteSquashOptionMutationHandler: deleteMutationSpy,
+      });
+
+      findSquashSettingSection().vm.$emit('edit');
+      await nextTick();
+
+      findSquashSettingsDrawer().vm.$emit('submit', 'DEFAULT');
+      await waitForPromises();
+
+      expect(deleteMutationSpy).toHaveBeenCalledWith({
+        input: { branchRuleId: 'gid://gitlab/Projects/BranchRule/1' },
+      });
+    });
+
+    it('shows error alert if delete mutation fails', async () => {
+      const deleteMutationSpy = jest.fn().mockResolvedValue({
+        data: { branchRuleSquashOptionDelete: { errors: ['delete error'] } },
+      });
+
+      await createComponent({ deleteSquashOptionMutationHandler: deleteMutationSpy });
+
+      findSquashSettingSection().vm.$emit('edit');
+      await nextTick();
+
+      findSquashSettingsDrawer().vm.$emit('submit', 'DEFAULT');
+      await waitForPromises();
+
+      expect(createAlert).toHaveBeenCalledWith({
+        message: 'Something went wrong while deleting branch rule.',
       });
     });
 
@@ -302,7 +349,12 @@ describe('View branch rules', () => {
       expect(content).toContain(
         'Set the default behavior of this option in merge requests. Changes to this are also applied to existing merge requests.',
       );
-      expect(content).toContain('No default set until defined by user');
+
+      // Empty state
+      expect(content).toContain('Default');
+      expect(content).toContain(
+        'No explicit squash settings. Inherits project squash settings when available.',
+      );
     });
 
     it('does not render squash settings for wildcard branch rules', async () => {
@@ -482,7 +534,14 @@ describe('View branch rules', () => {
     });
 
     it('shows an alert if response contains an error', async () => {
-      const mockResponse = { branchRuleUpdate: { errors: ['some error'], branchRule: null } };
+      const mockResponse = {
+        branchRuleUpdate: {
+          errors: [
+            'Squash option cannot be used with wildcard branch rules. Use an exact branch name.',
+          ],
+          branchRule: null,
+        },
+      };
       const editMutationHandler = jest
         .fn()
         .mockResolvedValue({ ...editBranchRuleMockResponse, data: mockResponse });
@@ -498,7 +557,31 @@ describe('View branch rules', () => {
       await waitForPromises();
 
       expect(createAlert).toHaveBeenCalledWith({
+        message:
+          'Squash option cannot be used with wildcard branch rules. Use an exact branch name.',
+        captureError: true,
+        error: 'Squash option cannot be used with wildcard branch rules. Use an exact branch name.',
+      });
+    });
+
+    it('shows fallback error message when update mutation fails with network error', async () => {
+      const networkError = new Error('Network error');
+      const editMutationHandler = jest.fn().mockRejectedValue(networkError);
+
+      await createComponent({
+        glFeatures: { editBranchRules: true },
+        branchRulesQueryHandler: branchRulesMockRequestHandler,
+        editMutationHandler,
+      });
+
+      findBranchRuleModal().vm.$emit('primary', 'main');
+      await nextTick();
+      await waitForPromises();
+
+      expect(createAlert).toHaveBeenCalledWith({
         message: 'Something went wrong while updating branch rule.',
+        captureError: true,
+        error: networkError,
       });
     });
   });
@@ -577,6 +660,7 @@ describe('View branch rules', () => {
       expect(createAlert).toHaveBeenCalledWith({
         captureError: true,
         message: 'Something went wrong while deleting branch rule.',
+        error: expect.any(Error),
       });
     });
   });

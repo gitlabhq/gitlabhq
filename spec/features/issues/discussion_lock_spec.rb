@@ -8,7 +8,6 @@ RSpec.describe 'Discussion Lock', :js, feature_category: :team_planning do
   let(:project) { create(:project, :public) }
 
   before do
-    stub_feature_flags(work_item_view_for_issues: true)
     sign_in(user)
   end
 

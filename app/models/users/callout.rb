@@ -114,9 +114,11 @@ module Users
       vulnerability_archival: 110, # EE-only
       duo_amazon_q_alert: 111, # EE-only
       personal_homepage_preferences_banner: 112,
-      duo_agent_platform_requested: 113, # EE-only
+      # 113 removed in https://gitlab.com/gitlab-org/gitlab/-/merge_requests/210564
       email_otp_enrollment_callout: 114,
-      merge_request_dashboard_show_drafts: 115
+      merge_request_dashboard_show_drafts: 115,
+      focused_vulnerability_reporting: 116,
+      expired_trial_status_widget: 117 # EE-only
     }
 
     validates :feature_name,

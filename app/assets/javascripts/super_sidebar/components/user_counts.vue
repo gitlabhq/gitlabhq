@@ -62,7 +62,7 @@ export default {
     <counter
       v-gl-tooltip.bottom="$options.i18n.issues"
       class="dashboard-shortcuts-issues gl-basis-1/3"
-      icon="issues"
+      icon="issue-type-issue"
       :class="counterClass"
       :count="userCounts.assigned_issues"
       :href="sidebarData.issues_dashboard_path"

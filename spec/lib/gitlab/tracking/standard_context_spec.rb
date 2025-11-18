@@ -19,7 +19,7 @@ RSpec.describe Gitlab::Tracking::StandardContext, feature_category: :service_pin
 
       context 'staging' do
         before do
-          stub_config_setting(url: Gitlab::Saas.staging_com_url)
+          stub_config_setting(url: Gitlab.staging_com_url)
         end
 
         include_examples 'contains environment', 'staging'
@@ -27,7 +27,7 @@ RSpec.describe Gitlab::Tracking::StandardContext, feature_category: :service_pin
 
       context 'production' do
         before do
-          stub_config_setting(url: Gitlab::Saas.com_url)
+          stub_config_setting(url: Gitlab.com_url)
         end
 
         include_examples 'contains environment', 'production'
@@ -35,7 +35,7 @@ RSpec.describe Gitlab::Tracking::StandardContext, feature_category: :service_pin
 
       context 'org' do
         before do
-          stub_config_setting(url: Gitlab::Saas.dev_url)
+          stub_config_setting(url: Gitlab.dev_url)
         end
 
         include_examples 'contains environment', 'org'
@@ -59,7 +59,7 @@ RSpec.describe Gitlab::Tracking::StandardContext, feature_category: :service_pin
     end
 
     it 'contains standard properties' do
-      standard_properties = [:user_id, :project_id, :namespace_id, :plan, :unique_instance_id, :instance_id, :realm]
+      standard_properties = [:user_id, :project_id, :namespace_id, :plan, :unique_instance_id, :instance_id, :realm, :deployment_type]
       expect(snowplow_context.to_json[:data].keys).to include(*standard_properties)
     end
 
@@ -100,6 +100,7 @@ RSpec.describe Gitlab::Tracking::StandardContext, feature_category: :service_pin
         expect(json_data[:user_type]).to eq(user.user_type)
         expect(json_data[:instance_id]).to eq(instance_id)
         expect(json_data[:realm]).to eq(described_class::GITLAB_REALM_SELF_MANAGED)
+        expect(json_data[:deployment_type]).to eq(described_class::GITLAB_REALM_SELF_MANAGED)
       end
 
       describe 'user_id' do
@@ -113,14 +114,6 @@ RSpec.describe Gitlab::Tracking::StandardContext, feature_category: :service_pin
           subject { described_class.new(user: nil) }
 
           it 'pass it to the context' do
-            expect(json_data[:user_id]).to be_nil
-          end
-        end
-
-        context 'when user is not of User class' do
-          subject { described_class.new(user: build_stubbed(:deploy_token)) }
-
-          it 'passes nil to the context' do
             expect(json_data[:user_id]).to be_nil
           end
         end

@@ -1,9 +1,10 @@
-import { GlButton, GlFriendlyWrap, GlLink, GlPagination, GlEmptyState } from '@gitlab/ui';
+import { GlFriendlyWrap, GlLink, GlPagination, GlEmptyState } from '@gitlab/ui';
 import Vue from 'vue';
 // eslint-disable-next-line no-restricted-imports
 import Vuex from 'vuex';
 import testReports from 'test_fixtures/pipelines/test_report.json';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
+import SimpleCopyButton from '~/vue_shared/components/simple_copy_button.vue';
 import SuiteTable, { i18n } from '~/ci/pipeline_details/test_reports/test_suite_table.vue';
 import { testStatus } from '~/ci/pipeline_details/constants';
 import * as getters from '~/ci/pipeline_details/stores/test_reports/getters';
@@ -30,7 +31,6 @@ describe('Test reports suite table', () => {
   const artifactsExpiredEmptyState = () => wrapper.findComponent(GlEmptyState);
   const allCaseRows = () => wrapper.findAllByTestId('test-case-row');
   const findCaseRowAtIndex = (index) => wrapper.findAllByTestId('test-case-row').at(index);
-  const findLinkForRow = (row) => row.findComponent(GlLink);
   const findIconForRow = (row, status) => row.find(`.ci-status-icon-${status}`);
 
   const createComponent = ({ suite = testSuite, perPage = 20, errorMessage } = {}) => {
@@ -109,13 +109,12 @@ describe('Test reports suite table', () => {
       const relativeFile = formatFilePath(file);
       const filePath = `${blobPath}/${relativeFile}`;
       const row = findCaseRowAtIndex(0);
-      const fileLink = findLinkForRow(row);
-      const button = row.findComponent(GlButton);
+      const fileLink = row.findComponent(GlLink);
+      const button = row.findComponent(SimpleCopyButton);
 
       expect(fileLink.attributes('href')).toBe(filePath);
       expect(row.text()).toContain(file);
-      expect(button.exists()).toBe(true);
-      expect(button.attributes('data-clipboard-text')).toBe(file);
+      expect(button.props('text')).toBe(file);
     });
   });
 

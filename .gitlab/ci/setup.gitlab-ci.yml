@@ -108,6 +108,31 @@ verify-approvals:
     - install_gitlab_gem
     - tooling/bin/find_app_sec_approval
 
+validate-fe-islands-ci:
+  extends:
+    - .predictive-job
+    - .frontend:rules:fe-islands:predictive
+  stage: preflight
+  variables:
+    USE_BUNDLE_INSTALL: "false"
+  script:
+    - ruby scripts/validate_fe_islands_ci.rb
+
+type-check-fe-islands:
+  extends:
+    - .predictive-job
+    - .frontend:rules:fe-islands:predictive
+    - .fe-islands-parallel
+  stage: preflight
+  variables:
+    USE_BUNDLE_INSTALL: "false"
+  needs: ["cache:fe-islands-node-modules"]
+  cache:
+    - !reference [.fe-islands-yarn-cache, cache]
+  script:
+    - cd ee/frontend_islands/apps/${FE_APP_DIR}
+    - yarn run lint:types
+
 generate-frontend-fixtures-mapping:
   extends:
     - .setup:rules:generate-frontend-fixtures-mapping

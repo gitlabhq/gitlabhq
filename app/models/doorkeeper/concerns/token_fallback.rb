@@ -55,7 +55,7 @@ module Doorkeeper # rubocop:disable Gitlab/BoundedContexts -- Override from a ge
         end
 
         # Check if FIPS implementation is FIPS 140-3 or above
-        # This is a hacky solution to find fips version as FIPS 140-3 mandates longer salt length
+        # This is a hacky solution to finf fips version as FIPS 140-3 mandates longer salt length
         # Refer https://docs.gitlab.com/development/fips_gitlab/ for more details
         def fips_140_3?
           OpenSSL::KDF.pbkdf2_hmac(

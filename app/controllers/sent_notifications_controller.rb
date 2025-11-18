@@ -14,7 +14,7 @@ class SentNotificationsController < ApplicationController
   urgency :low
 
   def unsubscribe
-    return render_404 unless unsubscribe_prerequisites_met?
+    return render_expired_link unless unsubscribe_prerequisites_met?
 
     @notification_id_from_request = params[:id]
 
@@ -83,14 +83,16 @@ class SentNotificationsController < ApplicationController
 
   def noteable_path(noteable)
     case noteable
-    when Issue
-      issue_path(noteable)
-    when MergeRequest
-      merge_request_path(noteable)
+    when Issue, MergeRequest
+      Gitlab::UrlBuilder.build(noteable, only_path: true)
     else
       root_path
     end
   end
+
+  def render_expired_link
+    render template: "errors/expired_sent_notification", formats: :html, layout: "errors", status: :not_found
+  end
 end
 
-SentNotificationsController.prepend_mod_with('SentNotificationsController')
+SentNotificationsController.prepend_mod

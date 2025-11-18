@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe 'Runner Instructions (JavaScript fixtures)', feature_category: :runner do
+RSpec.describe 'Runner Instructions (JavaScript fixtures)', feature_category: :runner_core do
   include ApiHelpers
   include JavaScriptFixturesHelpers
   include GraphqlHelpers

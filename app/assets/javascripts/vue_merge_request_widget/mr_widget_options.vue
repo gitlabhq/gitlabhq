@@ -88,10 +88,7 @@ export default {
         return !this.mr;
       },
       variables() {
-        return {
-          initialRequest: this.initialRequest,
-          ...this.mergeRequestQueryVariables,
-        };
+        return this.mergeRequestQueryVariables;
       },
       pollInterval() {
         return this.pollInterval;
@@ -124,7 +121,7 @@ export default {
         },
         variables() {
           return {
-            issuableId: convertToGraphQLId(TYPENAME_MERGE_REQUEST, `${this.mr?.id}`),
+            issuableId: convertToGraphQLId(TYPENAME_MERGE_REQUEST, this.mr?.id),
           };
         },
         updateQuery(
@@ -274,8 +271,12 @@ export default {
   mounted() {
     MRWidgetService.fetchInitialData()
       .then(({ data, headers }) => {
-        this.startingPollInterval =
-          Number(headers['POLL-INTERVAL']) || STATE_QUERY_POLLING_INTERVAL_DEFAULT;
+        if (window.gon?.features?.mergeWidgetStopPolling) {
+          this.startingPollInterval = -1;
+        } else {
+          this.startingPollInterval =
+            Number(headers['POLL-INTERVAL']) || STATE_QUERY_POLLING_INTERVAL_DEFAULT;
+        }
         this.initWidget(data);
       })
       .catch(() =>
@@ -321,7 +322,7 @@ export default {
       }
 
       this.bindEventHubListeners();
-      eventHub.$on('mr.discussion.updated', this.checkStatus);
+      eventHub.$on('mr.discussion.updated', this.refetchState);
     },
     getServiceEndpoints(store) {
       return {
@@ -344,9 +345,14 @@ export default {
     createService(store) {
       return new MRWidgetService(this.getServiceEndpoints(store));
     },
+    async refetchState(cb = () => {}) {
+      await this.$apollo.queries.state.refetch();
+
+      cb();
+    },
     checkStatus: throttle(function checkStatus(cb, isRebased, refetch = true) {
       if (refetch) {
-        this.$apollo.queries.state.refetch();
+        this.refetchState();
       }
 
       return this.service
@@ -474,7 +480,7 @@ export default {
       }
     },
     bindEventHubListeners() {
-      eventHub.$on('MRWidgetUpdateRequested', this.checkStatus);
+      eventHub.$on('MRWidgetUpdateRequested', this.refetchState);
       eventHub.$on('MRWidgetRebaseSuccess', this.checkRebasedStatus);
       eventHub.$on('SetBranchRemoveFlag', this.setIsRemovingSourceBranch);
       eventHub.$on('FailedToMerge', this.setMergeError);
@@ -485,7 +491,7 @@ export default {
       eventHub.$on('FetchDeployments', this.onFetchDeployments);
     },
     unbindEventListeners() {
-      eventHub.$off('MRWidgetUpdateRequested', this.checkStatus);
+      eventHub.$off('MRWidgetUpdateRequested', this.refetchState);
       eventHub.$off('MRWidgetRebaseSuccess', this.checkRebasedStatus);
       eventHub.$off('SetBranchRemoveFlag', this.setIsRemovingSourceBranch);
       eventHub.$off('FailedToMerge', this.setMergeError);
@@ -494,7 +500,7 @@ export default {
       eventHub.$off('EnablePolling', this.resumePolling);
       eventHub.$off('DisablePolling', this.stopPolling);
       eventHub.$off('FetchDeployments', this.onFetchDeployments);
-      eventHub.$off('mr.discussion.updated', this.checkStatus);
+      eventHub.$off('mr.discussion.updated', this.refetchState);
     },
     dismissSuggestPipelines() {
       this.mr.isDismissedSuggestPipeline = true;

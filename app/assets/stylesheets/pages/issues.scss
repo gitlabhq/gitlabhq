@@ -207,6 +207,14 @@ ul.related-merge-requests > li gl-emoji {
   right: var(--application-bar-right);
   width: auto;
   top: $calc-application-header-height;
+
+  .right-sidebar-collapsed & {
+    padding-right: $right-sidebar-collapsed-width;
+  }
+
+  .right-sidebar-expanded & {
+    padding-right: $right-sidebar-width;
+  }
 }
 
 // stylelint-disable-next-line gitlab/no-gl-class
@@ -269,4 +277,9 @@ ul.related-merge-requests > li gl-emoji {
 // stylelint-disable-next-line gitlab/no-gl-class
 .gl-modal .md-header {
   top: -$gl-padding-8;
+}
+
+// Issue markdown header if no sticky header is present
+.work-item-detail:not(:has(.issue-sticky-header)) .md-header {
+  top: 0;
 }

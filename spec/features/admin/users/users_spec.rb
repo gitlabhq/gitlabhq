@@ -642,12 +642,20 @@ RSpec.describe 'Admin::Users', :with_current_organization, feature_category: :us
       it 'shows page with new data' do
         click_button 'Save changes'
 
+        # Wait for UI element and wait for requests otherwise test will proceed immediately to assertion
+        expect(page).to have_content 'successfully updated'
+        wait_for_requests
+
         expect(page).to have_content('bigbang@mail.com')
         expect(page).to have_content('Big Bang')
       end
 
       it 'changes user entry' do
         click_button 'Save changes'
+
+        # Wait for UI element and wait for requests otherwise test will proceed immediately to assertion
+        expect(page).to have_content 'successfully updated'
+        wait_for_requests
 
         user.reload
         expect(user.name).to eq('Big Bang')
@@ -667,6 +675,10 @@ RSpec.describe 'Admin::Users', :with_current_organization, feature_category: :us
             end
 
             click_button 'Save changes'
+
+            # Wait for UI element and wait for requests otherwise test will proceed immediately to assertion
+            expect(page).to have_content 'successfully updated'
+            wait_for_requests
           end.to change { organization_user.reload.access_level }.from('default').to('owner')
         end
       end

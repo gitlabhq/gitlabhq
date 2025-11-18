@@ -18,46 +18,32 @@ RSpec.describe 'Project issue boards sidebar', :js, feature_category: :portfolio
     project.add_maintainer(user)
   end
 
-  context 'when issues drawer is disabled' do
+  context 'when project studio is enabled' do
     before do
-      stub_feature_flags(issues_list_drawer: false)
-      stub_feature_flags(notifications_todos_buttons: false)
+      enable_project_studio!(user)
       sign_in(user)
 
       visit project_board_path(project, board)
+      dismiss_welcome_banner_if_present(page)
+      click_button 'Collapse sidebar' # otherwise panel opens as drawer and intercepts clicks
 
       wait_for_requests
     end
 
-    it_behaves_like 'issue boards sidebar'
+    it_behaves_like 'work item drawer on the boards'
   end
 
-  context 'when issues drawer is enabled' do
-    context 'when project studio is enabled' do
-      before do
-        enable_project_studio!(user)
-        sign_in(user)
+  context 'when project studio is disabled' do
+    before do
+      sign_in(user)
 
-        visit project_board_path(project, board)
-        click_button 'Collapse sidebar' # otherwise panel opens as drawer and intercepts clicks
+      visit project_board_path(project, board)
+      dismiss_welcome_banner_if_present(page)
 
-        wait_for_requests
-      end
-
-      it_behaves_like 'work item drawer on the boards'
+      wait_for_requests
     end
 
-    context 'when project studio is disabled' do
-      before do
-        sign_in(user)
-
-        visit project_board_path(project, board)
-
-        wait_for_requests
-      end
-
-      it_behaves_like 'work item drawer on the boards'
-    end
+    it_behaves_like 'work item drawer on the boards'
   end
 
   def first_card

@@ -468,17 +468,21 @@ class Member < ApplicationRecord
       select(member_columns_with_no_access)
     end
 
-    def with_group_group_sharing_access(group)
-      columns = member_columns_with_group_sharing_access(group)
+    def shared_members(group)
+      columns = member_columns_for_shared_members(group)
 
-      joins("LEFT OUTER JOIN group_group_links ON members.source_id = group_group_links.shared_with_group_id")
+      joins("JOIN group_group_links ON members.source_id = group_group_links.shared_with_group_id")
         .select(columns)
         .where(group_group_links: { shared_group_id: group.self_and_ancestors })
     end
 
+    def null_member_role_id_sql
+      Arel::Nodes::As.new(Arel::Nodes::SqlLiteral.new('NULL'), Arel::Nodes::SqlLiteral.new('member_role_id'))
+    end
+
     private
 
-    def member_columns_with_group_sharing_access(group)
+    def member_columns_for_shared_members(group)
       group_group_link_table = GroupGroupLink.arel_table
 
       column_names.map do |column_name|
@@ -508,7 +512,7 @@ class Member < ApplicationRecord
 
     # overriden in EE
     def member_role_id(_group)
-      Arel::Nodes::As.new(Arel::Nodes::SqlLiteral.new('NULL'), Arel::Nodes::SqlLiteral.new('member_role_id'))
+      null_member_role_id_sql
     end
   end
 
@@ -662,7 +666,7 @@ class Member < ApplicationRecord
     current_access_level = params[:current_access_level]
 
     # check if it's a valid downgrade, if the member's current access level encompasses the target level
-    return false if Authz::Role.access_level_encompasses?(
+    return false if Gitlab::Access.level_encompasses?(
       current_access_level: current_access_level,
       level_to_assign: assigning_access_level
     )
@@ -733,7 +737,7 @@ class Member < ApplicationRecord
     end
 
     if saved_change_to_expires_at?
-      run_after_commit { notification_service.updated_member_expiration(self) }
+      run_after_commit { Members::ExpirationDateUpdatedMailer.with(member: self, member_source_type: real_source_type).email.deliver_later }
     end
 
     system_hook_service.execute_hooks_for(self, :update)

@@ -15,6 +15,10 @@
     "session_expire_from_init": {
       "type": "boolean",
       "description": "When enabled, sessions will expire a specific time after creation even if the session is active. Sessions cannot be extended."
+    },
+    "require_minimum_email_based_otp_for_users_with_passwords": {
+      "type": "boolean",
+      "description": "(Experiment) When enabled, users who sign in with a password must use Email-based OTP at a minimum. When other forms of 2FA are enabled, Email-based OTP is optional for them."
     }
   }
 }

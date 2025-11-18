@@ -106,7 +106,10 @@ module QA
           with_application_settings(require_admin_approval_after_user_signup: true) { example.run }
         end
 
-        it 'allows user login after approval' do
+        it 'allows user login after approval', quarantine: {
+          issue: 'https://gitlab.com/gitlab-org/quality/test-failure-issues/-/issues/6479',
+          type: :flaky
+        } do
           user # sign up user
 
           expect(page).to have_text(signed_up_waiting_approval_text)

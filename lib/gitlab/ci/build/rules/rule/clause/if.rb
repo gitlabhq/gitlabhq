@@ -10,7 +10,7 @@ module Gitlab
 
         def satisfied_by?(_pipeline, context)
           ::Gitlab::Ci::Pipeline::Expression::Statement.new(
-            @expression, context.variables_hash_expanded).truthful?
+            @expression, context.variables_hash).truthful?
         end
       end
     end

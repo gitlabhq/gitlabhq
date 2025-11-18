@@ -75,7 +75,7 @@ Vulnerabilities can also be identified outside a pipeline by
 
 GitLab offers both dependency scanning and [container scanning](../container_scanning/_index.md) to
 ensure coverage for all of these dependency types. To cover as much of your risk area as possible,
-we encourage you to use all of our security scanners. For a comparison of these features, see
+use all available security scanners. For a comparison of these features, see
 [Dependency scanning compared to container scanning](../comparison_dependency_and_container_scanning.md).
 
 {{< alert type="warning" >}}
@@ -127,7 +127,7 @@ might occur. In that case, use the [manual](#edit-the-gitlab-ciyml-file-manually
 
 To enable dependency scanning:
 
-1. On the left sidebar, select **Search or go to** and find your project.
+1. On the left sidebar, select **Search or go to** and find your project. If you've [turned on the new navigation](../../interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
 1. Select **Secure** > **Security configuration**.
 1. In the **Dependency Scanning** row, select **Configure with a merge request**.
 1. Select **Create merge request**.
@@ -142,7 +142,7 @@ your GitLab CI/CD configuration file is complex.
 
 To enable dependency scanning:
 
-1. On the left sidebar, select **Search or go to** and find your project.
+1. On the left sidebar, select **Search or go to** and find your project. If you've [turned on the new navigation](../../interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
 1. Select **Build** > **Pipeline editor**.
 1. If no `.gitlab-ci.yml` file exists, select **Configure pipeline**, then delete the example
    content.
@@ -192,7 +192,7 @@ After completing these steps, you can:
 
 You can review vulnerabilities in a pipeline:
 
-1. On the left sidebar, select **Search or go to** and find your project.
+1. On the left sidebar, select **Search or go to** and find your project. If you've [turned on the new navigation](../../interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
 1. On the left sidebar, select **Build** > **Pipelines**.
 1. Select the pipeline.
 1. Select the **Security** tab.
@@ -599,7 +599,10 @@ The following variables configure the behavior of specific dependency scanning a
 
 #### Other variables
 
-The previous tables are not an exhaustive list of all variables that can be used. They contain all specific GitLab and analyzer variables we support and test. There are many variables, such as environment variables, that you can pass in and they do work. This is a large list, many of which we may be unaware of, and as such is not documented.
+The previous tables are not an exhaustive list of all variables that can be used. They
+contain all specific GitLab and analyzer variables that are supported and tested. Many
+other variables, such as environment variables, can be passed in and work correctly.
+This list is large and not fully documented.
 
 For example, to pass the non-GitLab environment variable `HTTPS_PROXY` to all dependency scanning jobs,
 set it as a [CI/CD variable in your `.gitlab-ci.yml`](../../../ci/variables/_index.md#define-a-cicd-variable-in-the-gitlab-ciyml-file)
@@ -616,7 +619,7 @@ Gradle projects require [an additional variable](#using-a-proxy-with-gradle-proj
 
 {{< /alert >}}
 
-Alternatively we may use it in specific jobs, like dependency scanning:
+Alternatively it may be used in specific jobs, like dependency scanning:
 
 ```yaml
 dependency_scanning:
@@ -624,10 +627,10 @@ dependency_scanning:
     HTTPS_PROXY: $HTTPS_PROXY
 ```
 
-As we have not tested all variables you may find some do work and others do not.
-If one does not work and you need it we suggest
+Because all variables have not been tested, you may find that some work and others do not.
+If you need one that does not work,
 [submitting a feature request](https://gitlab.com/gitlab-org/gitlab/-/issues/new?issuable_template=Feature%20proposal%20-%20detailed&issue[title]=Docs%20feedback%20-%20feature%20proposal:%20Write%20your%20title)
-or contributing to the code to enable it to be used.
+or contribute to the code to enable it to be used.
 
 ### Custom TLS certificate authority
 
@@ -917,8 +920,8 @@ project for an example of how this can be done.
 
 Dependency scanning automatically detects the languages used in the repository. All analyzers
 matching the detected languages are run. There is usually no need to customize the selection of
-analyzers. We recommend not specifying the analyzers so you automatically use the full selection for
-best coverage, avoiding the need to make adjustments when there are deprecations or removals.
+analyzers. Do not specify the analyzers so you automatically use the full selection for
+best coverage, and avoid the need to make adjustments when there are deprecations or removals.
 However, you can override the selection using the variable `DS_EXCLUDED_ANALYZERS`.
 
 The language detection relies on CI job [`rules`](../../../ci/yaml/_index.md#rules) to detect
@@ -1188,7 +1191,7 @@ If you've run into problems while scanning multiple files, contribute a comment 
 
 ### Python
 
-We only execute one installation in the directory where either a requirements file or a lock file has been detected. Dependencies are only analyzed by `gemnasium-python` for the first file that is detected. Files are searched for in the following order:
+GitLab only executes one installation in the directory where either a requirements file or a lock file has been detected. Dependencies are only analyzed by `gemnasium-python` for the first file that is detected. Files are searched for in the following order:
 
 1. `requirements.txt`, `requirements.pip`, or `requires.txt` for projects using Pip.
 1. `Pipfile` or `Pipfile.lock` for projects using Pipenv.
@@ -1199,7 +1202,7 @@ The search begins with the root directory and then continues with subdirectories
 
 ### Java and Scala
 
-We only execute one build in the directory where a build file has been detected. For large projects that include
+GitLab only executes one build in the directory where a build file has been detected. For large projects that include
 multiple Gradle, Maven, or sbt builds, or any combination of these, `gemnasium-maven` only analyzes dependencies for the first build file
 that is detected. Build files are searched for in the following order:
 
@@ -1247,7 +1250,7 @@ Support for additional languages, dependency managers, and dependency files are 
 
 ## Warnings
 
-We recommend that you use the most recent version of all containers, and the most recent supported version of all package managers and languages. Using previous versions carries an increased security risk because unsupported versions may no longer benefit from active security reporting and backporting of security fixes.
+Use the most recent version of all containers, and the most recent supported version of all package managers and languages. Using previous versions carries an increased security risk because unsupported versions may no longer benefit from active security reporting and backporting of security fixes.
 
 ### Gradle projects
 

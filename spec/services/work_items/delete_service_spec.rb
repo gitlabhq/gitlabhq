@@ -76,7 +76,7 @@ RSpec.describe WorkItems::DeleteService, feature_category: :team_planning do
     context 'when user is planner' do
       let(:user) { planner }
 
-      it_behaves_like 'fails to delete work item'
+      it_behaves_like 'deletes work item'
 
       context 'with incident type' do
         let(:work_item) { incident }

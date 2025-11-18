@@ -234,6 +234,7 @@ RSpec.describe Projects::MergeRequestsController, feature_category: :code_review
           go(format: :html)
 
           expect(response).to be_successful
+          expect(response).not_to render_template('projects/merge_requests/invalid')
         end
       end
 
@@ -285,6 +286,36 @@ RSpec.describe Projects::MergeRequestsController, feature_category: :code_review
               file_hash: file_hash,
               diff_head: true
             ))
+        end
+      end
+
+      context 'with `commits_count`' do
+        subject { assigns['commits_count'] }
+
+        context 'when merge request is preparing' do
+          before do
+            merge_request.mark_as_preparing!
+            go(format: :html)
+          end
+
+          it { is_expected.to eq(0) }
+        end
+
+        context 'when `merge_request.commits_count` is nil' do
+          before do
+            allow_any_instance_of(MergeRequest).to receive(:commits_count).and_return(nil)
+            go(format: :html)
+          end
+
+          it { is_expected.to eq(0) }
+        end
+
+        context 'when `merge_request.commits_count` has a value' do
+          before do
+            go(format: :html)
+          end
+
+          it { is_expected.to eq(29) }
         end
       end
     end

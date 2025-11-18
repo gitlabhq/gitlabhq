@@ -1,0 +1,5 @@
+mutation deleteBranchRuleSquashOption($input: BranchRuleSquashOptionDeleteInput!) {
+  branchRuleSquashOptionDelete(input: $input) {
+    errors
+  }
+}

@@ -15,7 +15,8 @@ module InternalEventsCli
     :product_categories,
     :milestone,
     :introduced_by_url,
-    :tiers
+    :tiers,
+    :classification
   ].freeze
 
   EVENT_DEFAULTS = {

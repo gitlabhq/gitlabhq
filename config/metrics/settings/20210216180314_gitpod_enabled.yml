@@ -1,7 +1,7 @@
 ---
 data_category: optional
 key_path: gitpod_enabled
-description: Whether Gitpod is enabled in the instance
+description: Whether Ona is enabled in the instance
 product_group: remote_development
 product_categories:
 - web_ide

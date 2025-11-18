@@ -4,7 +4,7 @@ module Mutations
   module WorkItems
     class Reorder < BaseMutation
       graphql_name 'workItemsReorder'
-      description 'Reorders a project level work item.'
+      description 'Reorders a work item.'
 
       argument :id,
         ::Types::GlobalIDType[::WorkItem],
@@ -14,13 +14,13 @@ module Mutations
       argument :move_before_id,
         ::Types::GlobalIDType[::WorkItem],
         required: false,
-        description: 'Global ID of a project’s work item that should be placed before the work item.',
+        description: 'Global ID of a work item that should be placed before the work item.',
         prepare: ->(id, _ctx) { GitlabSchema.parse_gid(id)&.model_id }
 
       argument :move_after_id,
         ::Types::GlobalIDType[::WorkItem],
         required: false,
-        description: 'Global ID of a project’s work item that should be placed after the work item.',
+        description: 'Global ID of a work item that should be placed after the work item.',
         prepare: ->(id, _ctx) { GitlabSchema.parse_gid(id)&.model_id }
 
       field :work_item,

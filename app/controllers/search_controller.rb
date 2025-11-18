@@ -283,7 +283,7 @@ class SearchController < ApplicationController
     {}.tap do |metadata|
       metadata['meta.search.group_id'] = params[:group_id]
       metadata['meta.search.project_id'] = params[:project_id]
-      metadata['meta.search.scope'] = params[:scope] || @scope
+      metadata['meta.search.scope'] = search_service.scope
       metadata['meta.search.page'] = params[:page] || '1'
       metadata['meta.search.filters.confidential'] = filter_params[:confidential]
       metadata['meta.search.filters.state'] = filter_params[:state]

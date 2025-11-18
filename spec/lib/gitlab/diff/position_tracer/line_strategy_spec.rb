@@ -77,11 +77,11 @@ RSpec.describe Gitlab::Diff::PositionTracer::LineStrategy, :clean_gitlab_redis_c
 
   let(:strategy) { described_class.new(tracer) }
 
-  subject { strategy.trace(old_position) }
-
   let(:initial_commit) do
     project.commit(create_branch(branch_name, 'master')[:branch].name)
   end
+
+  subject { strategy.trace(old_position) }
 
   describe "#trace" do
     describe "diff scenarios" do
@@ -1342,26 +1342,6 @@ RSpec.describe Gitlab::Diff::PositionTracer::LineStrategy, :clean_gitlab_redis_c
     describe "typical use scenarios" do
       let(:second_branch_name) { "#{branch_name}-2" }
 
-      def expect_new_positions(old_attrs, new_attrs)
-        old_positions = old_attrs.map do |old_attrs|
-          position(old_attrs)
-        end
-
-        new_positions = old_positions.map do |old_position|
-          strategy.trace(old_position)
-        end
-
-        aggregate_failures do
-          new_positions.zip(new_attrs).each do |new_position, new_attrs|
-            if new_attrs&.delete(:change)
-              expect_change_position(new_attrs, new_position)
-            else
-              expect_new_position(new_attrs, new_position)
-            end
-          end
-        end
-      end
-
       let(:create_file_commit) do
         initial_commit
 
@@ -1434,6 +1414,26 @@ RSpec.describe Gitlab::Diff::PositionTracer::LineStrategy, :clean_gitlab_redis_c
             G
           CONTENT
         )
+      end
+
+      def expect_new_positions(old_attrs, new_attrs)
+        old_positions = old_attrs.map do |old_attrs|
+          position(old_attrs)
+        end
+
+        new_positions = old_positions.map do |old_position|
+          strategy.trace(old_position)
+        end
+
+        aggregate_failures do
+          new_positions.zip(new_attrs).each do |new_position, new_attrs|
+            if new_attrs&.delete(:change)
+              expect_change_position(new_attrs, new_position)
+            else
+              expect_new_position(new_attrs, new_position)
+            end
+          end
+        end
       end
 
       describe "simple push of new commit" do

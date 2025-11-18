@@ -55,40 +55,33 @@ To add the analyzer to your CI/CD pipeline, see [enabling the analyzer](configur
 
 ## Getting started
 
-If you're new to DAST, get started by enabling it for a project.
+If you're new to DAST, follow this guide to set up your first scan.
 
 Prerequisites:
 
-- You have a [GitLab Runner](../../../../ci/runners/_index.md) with the
-  [`docker` executor](https://docs.gitlab.com/runner/executors/docker.html) on Linux/amd64.
-- You have a deployed target application. For more details, see the [deployment options](application_deployment_options.md).
-- The `dast` stage is added to the CI/CD pipeline definition, after the `deploy` stage. For example:
+- A [GitLab Runner](../../../../ci/runners/_index.md) with the [`docker` executor](https://docs.gitlab.com/runner/executors/docker.html) on Linux/amd64.
+- A deployed target application. See [deployment options](application_deployment_options.md).
+- Network connectivity between your GitLab Runner and the target application.
 
-  ```yaml
-  stages:
-    - build
-    - test
-    - deploy
-    - dast
-  ```
+To get started with DAST:
 
-- You have a network connection between the runner and your target application.
+1. Enable the analyzer. [Create a DAST CI/CD job](configuration/enabling_the_analyzer.md) in your pipeline to run the scanner.
+1. Configure authentication. If your application requires login, [set up authentication](configuration/authentication.md) so DAST can scan authenticated pages.
+1. Troubleshoot configuration issues. If you encounter problems during setup, see the [troubleshooting documentation](troubleshooting.md#setting-up-dast).
 
-  How you connect depends on your DAST configuration:
-  - If `DAST_TARGET_URL` and `DAST_AUTH_URL` specify port numbers, use those ports.
-  - If ports are not specified, use the standard port numbers for HTTP and HTTPS.
+### Next steps
 
-  You might need to open both an HTTP and HTTPS port. For example, if the target URL uses HTTP, but the application links to resources using HTTPS. Always test your connection when you configure a scan.
+After completing your first scan:
 
-To enable DAST in a project:
-
-- [Add a DAST job to you CI/CD configuration](configuration/enabling_the_analyzer.md#create-a-dast-cicd-job).
+- Review [understanding the results](#understanding-the-results) to learn how to interpret scan findings.
+- Explore [configuration options](configuration/_index.md) to customize your scans.
+- Learn more about [how DAST scans an application](#how-dast-scans-an-application).
 
 ## Understanding the results
 
 You can review vulnerabilities in a pipeline:
 
-1. On the left sidebar, select **Search or go to** and find your project.
+1. On the left sidebar, select **Search or go to** and find your project. If you've [turned on the new navigation](../../../interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
 1. On the left sidebar, select **Build** > **Pipelines**.
 1. Select the pipeline.
 1. Select the **Security** tab.

@@ -15,7 +15,11 @@ module Authz
         token.permitted_for_boundary?(boundary, permission)
       end
 
-      rule { granular_pat & try(permission) }.policy do
+      condition(:member) do
+        boundary.member?(token.user)
+      end
+
+      rule { granular_pat & try(permission) & member }.policy do
         enable permission
       end
     end

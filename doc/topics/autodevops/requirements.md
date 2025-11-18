@@ -12,7 +12,7 @@ title: Requirements for Auto DevOps
 
 {{< /details >}}
 
-Before enabling [Auto DevOps](_index.md), we recommend you to prepare it for
+Before enabling [Auto DevOps](_index.md), you should prepare it for
 deployment. If you don't, you can use it to build and test your apps, and
 then configure the deployment later.
 
@@ -45,7 +45,7 @@ that works best for your needs:
 
 You can choose the deployment method when enabling Auto DevOps or later:
 
-1. On the left sidebar, select **Search or go to** and find your project.
+1. On the left sidebar, select **Search or go to** and find your project. If you've [turned on the new navigation](../../user/interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
 1. Select **Settings** > **CI/CD**.
 1. Expand **Auto DevOps**.
 1. Choose the deployment strategy.
@@ -67,7 +67,7 @@ To define the base domain, either:
 
 - In the project, group, or instance level: go to your cluster settings and add it there.
 - In the project or group level: add it as an environment variable: `KUBE_INGRESS_BASE_DOMAIN`.
-- In the instance level: go to the **Admin** area, then **Settings > CI/CD > Continuous Integration and Delivery** and add it there.
+- In the instance level: go to the **Admin** area, then **Settings** > **CI/CD** > **Continuous Integration and Delivery** and add it there.
 
 The base domain variable `KUBE_INGRESS_BASE_DOMAIN` follows the same order of
 [precedence as other environment variables](../../ci/variables/_index.md#cicd-variable-precedence).

@@ -21,12 +21,14 @@ module Projects
           gitlab_ci_history_path: gitlab_ci_history_path,
           security_training_enabled: project.security_training_available?,
           container_scanning_for_registry_enabled: container_scanning_for_registry_enabled,
-          secret_push_protection_available:
-            Gitlab::CurrentSettings.current_application_settings.secret_push_protection_available,
+          secret_push_protection_available: secret_push_protection_available?,
           secret_push_protection_enabled: secret_push_protection_enabled,
+          secret_push_protection_licensed: secret_push_protection_licensed?,
           validity_checks_available: validity_checks_available,
           validity_checks_enabled: validity_checks_enabled,
           user_is_project_admin: user_is_project_admin?,
+          can_enable_spp: can_enable_spp?,
+          is_gitlab_com: gitlab_com?,
           secret_detection_configuration_path: secret_detection_configuration_path,
           license_configuration_source: license_configuration_source
         }
@@ -41,6 +43,14 @@ module Projects
 
       private
 
+      def secret_push_protection_available?
+        Gitlab::CurrentSettings.current_application_settings.secret_push_protection_available
+      end
+
+      def secret_push_protection_licensed?
+        project.licensed_feature_available?(:secret_push_protection)
+      end
+
       def can_enable_auto_devops?
         feature_available?(:builds, current_user) &&
           user_is_project_admin? &&
@@ -49,6 +59,10 @@ module Projects
 
       def user_is_project_admin?
         can?(current_user, :admin_security_testing, self)
+      end
+
+      def can_enable_spp?
+        can?(current_user, :enable_secret_push_protection, self)
       end
 
       def gitlab_ci_history_path
@@ -68,11 +82,9 @@ module Projects
         scans << scan(:dast_profiles, configured: true)
         scans << scan(:license_information_source, configured: true)
 
-        # Add pre-receive before secret detection
-        if project.licensed_feature_available?(:secret_push_protection)
-          secret_detection_index = scans.index { |scan| scan[:type] == :secret_detection } || -1
-          scans.insert(secret_detection_index, scan(:secret_push_protection, configured: true))
-        end
+        # Add SPP before secret detection
+        secret_detection_index = scans.index { |scan| scan[:type] == :secret_detection } || -1
+        scans.insert(secret_detection_index, scan(:secret_push_protection, configured: true))
 
         scans
       end
@@ -106,6 +118,7 @@ module Projects
         project.security_setting
       end
 
+      def gitlab_com?; end
       def validity_checks_available; end
       def validity_checks_enabled; end
       def container_scanning_for_registry_enabled; end

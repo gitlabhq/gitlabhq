@@ -1,12 +1,11 @@
 import { setHTMLFixture, resetHTMLFixture } from 'helpers/fixtures';
-import { contentTop, findParentPanelScrollingEl } from '~/lib/utils/common_utils';
+import { contentTop } from '~/lib/utils/common_utils';
 import { scrollToTargetOnResize } from '~/lib/utils/resize_observer';
 
-jest.mock('~/lib/utils/common_utils');
-
-findParentPanelScrollingEl.mockImplementation((args) =>
-  jest.requireActual('~/lib/utils/common_utils').findParentPanelScrollingEl(args),
-);
+jest.mock('~/lib/utils/common_utils', () => ({
+  ...jest.requireActual('~/lib/utils/common_utils'),
+  contentTop: jest.fn(),
+}));
 
 function mockStickyHeaderSize(val) {
   contentTop.mockReturnValue(val);
@@ -33,20 +32,18 @@ describe('scrollToTargetOnResize', () => {
 
     mockStickyHeaderSize(mockHeaderSize);
 
-    Object.defineProperty(document, 'scrollingElement', {
-      value: {
-        scrollTo: jest.fn(),
-        scrollTop: 0,
-        scrollHeight: 1000,
-      },
-      writable: true,
-    });
+    jest.spyOn(document.documentElement, 'scrollTop', 'get').mockReturnValue(0);
+    jest.spyOn(document.documentElement, 'scrollHeight', 'get').mockReturnValue(1000);
 
     setHTMLFixture(
-      `<div id="content-body">
-        <div id="target-element">Target content</div>
-        <div id="other-content">Other content</div>
-      </div>`,
+      `<div>
+        <header class="js-super-topbar"></header>
+        <div id="content-body">
+          <div id="target-element">Target content</div>
+          <div id="other-content">Other content</div>
+        </div>
+      </div>
+      `,
     );
   });
 
@@ -150,6 +147,23 @@ describe('scrollToTargetOnResize', () => {
       expect(document.scrollingElement.scrollTo).not.toHaveBeenCalled();
     });
 
+    it('does scroll when the super topbar is focused', () => {
+      const otherElement = document.querySelector('.js-super-topbar');
+      jest.spyOn(document, 'activeElement', 'get').mockReturnValue(otherElement);
+
+      cleanup = scrollToTargetOnResize({
+        targetId: 'target-element',
+        container: '#content-body',
+      });
+
+      resizeObserverCallback([{ target: document.querySelector('#content-body') }]);
+
+      expect(document.scrollingElement.scrollTo).toHaveBeenCalledWith({
+        top: 200 - 0 - mockHeaderSize,
+        behavior: 'instant',
+      });
+    });
+
     it('does nothing if target element does not exist', () => {
       cleanup = scrollToTargetOnResize({
         targetId: 'non-existent-id',
@@ -174,13 +188,13 @@ describe('scrollToTargetOnResize', () => {
         behavior: 'instant',
       });
 
-      document.scrollingElement.scrollTop = 100;
+      jest.spyOn(document.documentElement, 'scrollTop', 'get').mockReturnValue(100);
 
       jest
         .spyOn(document.getElementById('target-element'), 'getBoundingClientRect')
         .mockReturnValue({ top: 100 });
 
-      window.dispatchEvent(new Event('scroll'));
+      document.scrollingElement.dispatchEvent(new Event('scroll'));
 
       jest
         .spyOn(document.getElementById('target-element'), 'getBoundingClientRect')
@@ -229,7 +243,9 @@ describe('scrollToTargetOnResize', () => {
         setHTMLFixture(
           `<div class="js-dynamic-panel">
             <div class="js-dynamic-panel-inner">
-              <div id="target-element">Target content</div>
+              <div id="content-other-body">
+                <div id="target-element">Target content</div>
+              </div>
               <div id="other-content">Other content</div>
             </div>
           </div>`,
@@ -239,7 +255,7 @@ describe('scrollToTargetOnResize', () => {
 
         cleanup = scrollToTargetOnResize({
           targetId: 'target-element',
-          container: '#content-body',
+          container: '#content-other-body',
         });
 
         resizeObserverCallback([{ target: panelScroller }]);
@@ -327,7 +343,7 @@ describe('scrollToTargetOnResize', () => {
 
     document.scrollingElement.scrollTo.mockClear();
 
-    document.scrollingElement.scrollHeight = 1200;
+    jest.spyOn(document.documentElement, 'scrollHeight', 'get').mockReturnValue(1200);
 
     window.dispatchEvent(new Event('scroll'));
 

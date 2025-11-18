@@ -13,7 +13,7 @@ class MembersPreloader
       associations: [
         :source,
         :created_by,
-        { user: [:status, :webauthn_registrations] }
+        { user: [:status, :second_factor_webauthn_registrations] }
       ]
     ).call
   end

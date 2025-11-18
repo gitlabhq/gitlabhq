@@ -20,11 +20,16 @@ title: Group SSH certificates API
 
 {{< /history >}}
 
-Use this API to create, read and delete SSH certificates for a group.
+Use this API to manage [SSH certificates for groups](../user/group/ssh_certificates.md).
 Only top-level groups can store SSH certificates.
-To use this API, you must [authenticate yourself](rest/authentication.md) as user assigned the Owner role.
 
-## Get all SSH certificates for a particular group
+Prerequisites:
+
+- You must be an Owner for a top-level group.
+
+## List all group SSH certificates
+
+Lists all SSH certificates in a specified group.
 
 ```plaintext
 GET /groups/:id/ssh_certificates
@@ -65,9 +70,9 @@ Example response:
 ]
 ```
 
-## Create SSH Certificate
+## Add a group SSH certificate
 
-Create a new SSH certificate in the group.
+Add an SSH certificate in a specified group.
 
 ```plaintext
 POST /groups/:id/ssh_certificates
@@ -100,9 +105,9 @@ Example response:
 }
 ```
 
-## Delete group SSH certificate
+## Delete a group SSH certificate
 
-Delete a SSH certificate from a group.
+Delete an SSH certificate from a specified group.
 
 ```plaintext
 DELETE /groups/:id/ssh_certificate/:id

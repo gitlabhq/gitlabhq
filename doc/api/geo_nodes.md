@@ -1,5 +1,5 @@
 ---
-stage: Runtime
+stage: Tenant Scale
 group: Geo
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 title: Geo Nodes API (deprecated)
@@ -20,8 +20,11 @@ This change is a breaking change.
 
 {{< /alert >}}
 
-To interact with Geo node endpoints, you must authenticate yourself as an
-administrator.
+Use this API to manage [Geo nodes](../administration/geo/_index.md).
+
+Prerequisites:
+
+- You must be an administrator.
 
 ## Create a new Geo node
 
@@ -623,6 +626,18 @@ Example response:
     "package_files_verification_failed_count": 0,
     "package_files_synced_in_percentage": "100.00%",
     "package_files_verified_in_percentage": "100.00%",
+    "packages_nuget_symbols_count": 5,
+    "packages_nuget_symbols_checksum_total_count": 5,
+    "packages_nuget_symbols_checksummed_count": 5,
+    "packages_nuget_symbols_checksum_failed_count": 0,
+    "packages_nuget_symbols_synced_count": 5,
+    "packages_nuget_symbols_failed_count": 0,
+    "packages_nuget_symbols_registry_count": 5,
+    "packages_nuget_symbols_verification_total_count": 5,
+    "packages_nuget_symbols_verified_count": 5,
+    "packages_nuget_symbols_verification_failed_count": 0,
+    "packages_nuget_symbols_synced_in_percentage": "100.00%",
+    "packages_nuget_symbols_verified_in_percentage": "100.00%",
     "terraform_state_versions_count": 5,
     "terraform_state_versions_checksum_total_count": 5,
     "terraform_state_versions_checksummed_count": 5,

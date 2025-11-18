@@ -8,7 +8,6 @@ import {
   TYPENAME_DISCUSSION,
   TYPENAME_DISCUSSION_NOTE,
   TYPENAME_NOTE,
-  TYPENAME_GROUP,
   TYPENAME_USER,
 } from '~/graphql_shared/constants';
 import { Mousetrap } from '~/lib/mousetrap';
@@ -58,6 +57,7 @@ export default {
     WorkItemHistoryOnlyFilterNote,
     WorkItemNotesLoading,
   },
+  inject: ['isGroup'],
   props: {
     fullPath: {
       type: String,
@@ -187,9 +187,6 @@ export default {
     },
     uploadsPath() {
       return this.markdownPaths.uploadsPath;
-    },
-    isGroupWorkItem() {
-      return this.workItemNamespace?.id?.includes?.(TYPENAME_GROUP);
     },
     autocompleteDataSources() {
       return autocompleteDataSources(this.markdownPaths.autocompleteSourcesPath);
@@ -615,7 +612,7 @@ export default {
             ref="addNoteTop"
             v-bind="workItemCommentFormProps"
             :hide-fullscreen-markdown-button="hideFullscreenMarkdownButton"
-            :is-group-work-item="isGroupWorkItem"
+            :is-group-work-item="isGroup"
             :uploads-path="uploadsPath"
             :discussions-sort-order="initialSortOrder"
             @startEditing="$emit('startEditing')"
@@ -670,7 +667,7 @@ export default {
             ref="addNoteBottom"
             v-bind="workItemCommentFormProps"
             :hide-fullscreen-markdown-button="hideFullscreenMarkdownButton"
-            :is-group-work-item="isGroupWorkItem"
+            :is-group-work-item="isGroup"
             :uploads-path="uploadsPath"
             @startEditing="$emit('startEditing')"
             @stopEditing="$emit('stopEditing')"

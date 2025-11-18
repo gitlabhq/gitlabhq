@@ -48,6 +48,7 @@ for a good example):
 
 - `desc` for the method summary.
 - `detail` for each `desc` block. This must be a string.
+- `success` for each `desc` block. This defines the success response.
 - `tags` for each `desc` block. This should be a string, or array of strings.
 - `params` for the method parameters. This acts as description,
   [validation, and coercion of the parameters](https://github.com/ruby-grape/grape#parameter-validation-and-coercion)
@@ -79,6 +80,19 @@ The `detail` should describe any additional details not covered by the `desc` su
 - The GitLab version when the endpoint was added.
 - If it is behind a feature flag, mention that instead: `This feature is gated by the :feature\_flag\_symbol feature flag.`
 - If the endpoint is deprecated, and if so, its planned removal date
+
+### Defining endpoint success
+
+Every endpoint must have a `success` value for each `desc` block.
+The value should accurately describe a success response for the endpoint.
+
+Do not use the `http_codes` option to document the success response.
+Instead, format the response based on the endpoint response:
+
+- If the endpoint responds with an object, include the `Grape::Entity` class.
+  For example, `success Entities::System::BroadcastMessage`
+- If the endpoint does not respond with an object, include a status code and message.
+  For example, `success code: 204, message: 'Record was deleted'`
 
 ### Choosing a tag
 

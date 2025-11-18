@@ -168,23 +168,6 @@ describe('SidebarDropdown component', () => {
             expect(findAttributeItems().exists()).toBe(false);
           });
         });
-
-        describe('when clicking on dropdown item', () => {
-          describe('when currentAttribute is equal to attribute id', () => {
-            it('does not call setIssueAttribute mutation', async () => {
-              createComponent({
-                props: { currentAttribute: { id: 'id', title: 'title' } },
-                data: { attributesList: [{ id: 'id', title: 'title' }] },
-              });
-
-              await toggleDropdown();
-
-              findDropdownItemWithText('title').vm.$emit('click');
-
-              expect(wrapper.vm.$apollo.mutate).toHaveBeenCalledTimes(0);
-            });
-          });
-        });
       });
 
       describe('when a user is searching', () => {
@@ -234,7 +217,7 @@ describe('SidebarDropdown component', () => {
             await toggleDropdown();
 
             expect(createAlert).toHaveBeenCalledWith({
-              message: wrapper.vm.i18n.listFetchError,
+              message: 'Failed to fetch the milestone for this issue. Please try again.',
               captureError: true,
               error: expect.any(Error),
             });

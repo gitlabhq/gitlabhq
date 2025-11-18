@@ -43,20 +43,10 @@ class ProjectMember < Member
     def permissible_access_level_roles(current_user, project)
       return {} if current_user.nil?
 
-      if Ability.allowed?(current_user, :manage_owners, project)
-        Gitlab::Access.options_with_owner
-      else
-        max_access_level = project.team.max_member_access(current_user.id)
-        return {} unless max_access_level.present?
+      max_access_level = project.max_member_access_for_user(current_user)
+      return {} unless max_access_level.present?
 
-        Authz::Role.roles_user_can_assign(max_access_level)
-      end
-    end
-
-    # TODO: Remove this method and call permissible_access_level_roles directly
-    # See: https://gitlab.com/gitlab-org/gitlab/-/issues/550264
-    def permissible_access_level_roles_for_project_access_token(current_user, project)
-      permissible_access_level_roles(current_user, project)
+      Authz::Role.roles_user_can_assign(max_access_level)
     end
 
     def access_level_roles

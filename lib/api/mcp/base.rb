@@ -5,6 +5,7 @@ module API
     class Base < ::API::Base
       include ::API::Helpers::HeadersHelpers
       include APIGuard
+      include ::Mcp::Tools::VersionHelper
 
       # JSON-RPC Specification
       # See: https://www.jsonrpc.org/specification
@@ -24,6 +25,10 @@ module API
         invalid_params: {
           code: -32602,
           message: 'Invalid params'
+        },
+        version_mismatch: {
+          code: -32001,
+          message: 'Version not supported'
         }
         # NOTE: Parse error	code -32700	is unsupported due to 400 Bad Request returned by Workhorse
       }.freeze
@@ -41,11 +46,16 @@ module API
 
       before do
         authenticate!
-        not_found! unless Feature.enabled?(:mcp_server, current_user)
+        not_found! unless feature_available?
         forbidden! unless AccessTokenValidationService.new(access_token).include_any_scope?([Gitlab::Auth::MCP_SCOPE])
       end
 
       helpers do
+        def feature_available?
+          # This method will be redefined in EE.
+          true
+        end
+
         def invoke_basic_handler
           method_name = params[:method]
           handler_class = JSONRPC_METHOD_HANDLERS[method_name] || method_not_found!(method_name)
@@ -93,10 +103,14 @@ module API
         params do
           # JSON-RPC Request Object
           # See: https://www.jsonrpc.org/specification#request_object
-          requires :jsonrpc, type: String, allow_blank: false, values: [JSONRPC_VERSION]
-          requires :method, type: String, allow_blank: false
-          optional :id, allow_blank: false # NOTE: JSON-RPC server must reply with same value and type for "id" member
-          optional :params, types: [Hash, Array]
+          requires :jsonrpc, type: String, desc: 'JSON-RPC protocol version identifier. Must be `2.0`.',
+            allow_blank: false, values: [JSONRPC_VERSION]
+          requires :method, type: String, desc: 'Name of the JSON-RPC method invoked on the MCP server.',
+            allow_blank: false
+          optional :id, desc: 'ID of the JSON-RPC request returned in the response.',
+            allow_blank: false # NOTE: JSON-RPC server must reply with same value and type for "id" member
+          optional :params, desc: 'Object or array that contains parameters passed to the specified JSON-RPC method',
+            types: [Hash, Array]
         end
 
         rescue_from Grape::Exceptions::ValidationErrors do |e|
@@ -140,3 +154,5 @@ module API
     end
   end
 end
+
+API::Mcp::Base.prepend_mod

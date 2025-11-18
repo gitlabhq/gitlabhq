@@ -527,4 +527,17 @@ RSpec.describe Gitlab::Import::SourceUserMapper, :request_store, feature_categor
       end
     end
   end
+
+  # needed for use by SourceUsersMapper
+  describe '#ghost_user' do
+    subject do
+      described_class.new(
+        namespace: namespace,
+        import_type: import_type,
+        source_hostname: source_hostname
+      ).ghost_user
+    end
+
+    it { is_expected.to eq(Users::Internal.for_organization(namespace.organization).ghost) }
+  end
 end

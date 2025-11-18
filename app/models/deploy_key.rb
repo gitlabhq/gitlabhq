@@ -56,7 +56,7 @@ class DeployKey < Key
   end
 
   def user
-    super || Users::Internal.ghost
+    super || ghost_user
   end
 
   def audit_details
@@ -108,5 +108,19 @@ class DeployKey < Key
     else
       search_by_title(term).or(search_by_key(term))
     end
+  end
+
+  def ghost_user
+    @ghost_user ||= if ghost_user_project.present?
+                      Users::Internal.for_organization(ghost_user_project.organization_id).ghost
+                    else
+                      Gitlab::AppLogger.warn("Fallback ghost user used for DeployKey=#{id}")
+                      Users::Internal.for_organization(Organizations::Organization.first).ghost # rubocop:disable Gitlab/PreventOrganizationFirst -- final fallback after all other methods fail
+                    end
+  end
+
+  # finds first available project so a Ghost user can be identified for this deploy key
+  def ghost_user_project
+    @ghost_user_project ||= projects.select(:id, :organization_id).first
   end
 end

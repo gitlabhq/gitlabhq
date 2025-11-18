@@ -12,8 +12,8 @@ title: Project Aliases API
 
 {{< /details >}}
 
-Add, change, or remove project aliases with this API. After you
-create an alias for a project, users can clone the repository with the alias,
+Use this API to manage [project aliases](../user/project/working_with_projects.md#project-aliases).
+After you create an alias for a project, users can clone the repository with the alias,
 which can be helpful when migrating repositories.
 
 All methods require administrator authorization.

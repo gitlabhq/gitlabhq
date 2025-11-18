@@ -20,7 +20,9 @@ module Webauthn
           public_key: webauthn_credential.public_key,
           counter: webauthn_credential.sign_count,
           name: @params[:name],
-          user: @user
+          user: @user,
+          passkey_eligible: passkey?(webauthn_credential),
+          last_used_at: Time.current
         )
       rescue JSON::ParserError
         registration.errors.add(:base, _('Your WebAuthn device did not send a valid JSON response.'))
@@ -29,6 +31,12 @@ module Webauthn
       end
 
       registration
+    end
+
+    private
+
+    def passkey?(passkey_credential)
+      !!passkey_credential&.client_extension_outputs&.dig("credProps", "rk")
     end
   end
 end

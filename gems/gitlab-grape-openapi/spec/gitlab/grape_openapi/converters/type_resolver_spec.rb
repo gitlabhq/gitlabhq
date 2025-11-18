@@ -133,6 +133,7 @@ RSpec.describe Gitlab::GrapeOpenapi::Converters::TypeResolver do
         expected_mappings = {
           'dateTime' => 'string',
           'date' => 'string',
+          'Date' => 'string',
           'symbol' => 'string',
           'String' => 'string',
           String => 'string',
@@ -143,7 +144,8 @@ RSpec.describe Gitlab::GrapeOpenapi::Converters::TypeResolver do
           'Hash' => 'object',
           'hash' => 'object',
           'JSON' => 'object',
-          :hash => 'object'
+          :hash => 'object',
+          "Grape::API::Boolean" => 'boolean'
         }
 
         expect(described_class::TYPE_MAPPINGS).to eq(expected_mappings)

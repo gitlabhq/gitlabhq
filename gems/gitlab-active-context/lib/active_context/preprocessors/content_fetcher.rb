@@ -19,7 +19,7 @@ module ActiveContext
             hash[match['id']] = match[content_field]
           end
 
-          with_per_ref_handling(refs, retry_error_types: [], skip_error_types: [ContentNotFoundError]) do |ref|
+          with_per_ref_handling(refs, retry_error_types: [ContentNotFoundError], skip_error_types: []) do |ref|
             unless content_by_id.key?(ref.identifier)
               raise ContentNotFoundError, "content not found for chunk with id: #{ref.identifier}"
             end

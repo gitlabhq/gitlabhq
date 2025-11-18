@@ -14,10 +14,10 @@ title: Logs on GitLab.com
 
 Information about logs on GitLab.com.
 
-## How we log on GitLab.com
+## How GitLab.com creates logs
 
 [Fluentd](https://gitlab.com/gitlab-com/runbooks/tree/master/logging/doc#fluentd)
-parses our logs, then sends them to:
+parses GitLab logs, then sends them to:
 
 - [Stackdriver Logging](https://gitlab.com/gitlab-com/runbooks/tree/master/logging/doc#stackdriver),
   which stores logs long-term in Google Cold Storage (GCS).
@@ -25,11 +25,11 @@ parses our logs, then sends them to:
   which forwards logs to an [Elastic cluster](https://gitlab.com/gitlab-com/runbooks/tree/master/logging/doc#elastic)
   using [`pubsubbeat`](https://gitlab.com/gitlab-com/runbooks/tree/master/logging/doc#pubsubbeat-vms).
 
-For more information, see our runbooks for:
+For more information, see GitLab runbooks for:
 
-- A [detailed list of what we're logging](https://gitlab.com/gitlab-com/runbooks/-/tree/master/docs/logging#what-are-we-logging).
-- Our [current log retention policies](https://gitlab.com/gitlab-com/runbooks/-/tree/master/docs/logging#retention).
-- A [diagram of our logging infrastructure](https://gitlab.com/gitlab-com/runbooks/-/tree/master/docs/logging#logging-infrastructure-overview).
+- A [detailed list of what gets logged](https://gitlab.com/gitlab-com/runbooks/-/tree/master/docs/logging#what-are-we-logging).
+- Current [log retention policies](https://gitlab.com/gitlab-com/runbooks/-/tree/master/docs/logging#retention).
+- A [diagram of GitLab logging infrastructure](https://gitlab.com/gitlab-com/runbooks/-/tree/master/docs/logging#logging-infrastructure-overview).
 
 ## Erase CI/CD job logs
 

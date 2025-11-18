@@ -35,10 +35,12 @@ Service accounts:
 
 - Do not use a seat.
 - Cannot sign in to GitLab through the UI.
+- Cannot be managed through services such as LDAP.
 - Are identified in the group and project membership as service accounts.
 - Do not receive notification emails without [adding a custom email address](../../api/service_accounts.md#create-an-instance-service-account).
 - Are not [billable users](../../subscriptions/manage_users_and_seats.md#billable-users) or [internal users](../../administration/internal_users.md).
-- Cannot be used with [trial versions](https://gitlab.com/-/trial_registrations/new?glm_source=docs.gitlab.com&glm_content=free-user-limit-faq/ee/user/free_user_limit.html) of GitLab.com.
+- Are available for [trial versions](https://gitlab.com/-/trial_registrations/new?glm_source=docs.gitlab.com&glm_content=free-user-limit-faq/ee/user/free_user_limit.html)
+of GitLab.com after the Owner of the top-level group verifies their identity.
 - Can be used with trial versions of GitLab Self-Managed and GitLab Dedicated.
 
 You can also manage service accounts through the [service accounts API](../../api/service_accounts.md).
@@ -71,7 +73,7 @@ The service accounts page displays information about service accounts in your to
 
 To view service accounts for the entire instance:
 
-1. On the left sidebar, at the bottom, select **Admin**.
+1. On the left sidebar, at the bottom, select **Admin**. If you've [turned on the new navigation](../interface_redesign.md#turn-new-navigation-on-or-off), in the upper-right corner, select **Admin**.
 1. Select **Settings** > **Service accounts**.
 
 {{< /tab >}}
@@ -80,7 +82,7 @@ To view service accounts for the entire instance:
 
 To view service accounts for a top-level group:
 
-1. On the left sidebar, select **Search or go to** and find your group.
+1. On the left sidebar, select **Search or go to** and find your group. If you've [turned on the new navigation](../interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
 1. Select **Settings** > **Service accounts**.
 
 {{< /tab >}}
@@ -138,11 +140,42 @@ There is no limit to the number of service accounts you can add to a group or pr
 can have different roles in each group, subgroup, or project they are a member of.
 On GitLab.com, service accounts for groups can only belong to a single top-level group.
 
-You can manage service account access to groups and projects the same way you manage access for
-human users. For more information, see
+Service account access to groups and projects is managed the same way as
+human users in the UI. For more information, see
 [groups](../group/_index.md#add-users-to-a-group) and [members of a project](../project/members/_index.md#add-users-to-a-project).
 
-You can also manage group and project assignments with the [members API](../../api/members.md). You must use this API if the [global SAML group memberships lock](../group/saml_sso/group_sync.md#global-saml-group-memberships-lock) or the [global LDAP group memberships lock](../../administration/auth/ldap/ldap_synchronization.md#global-ldap-group-memberships-lock) are enabled.
+You can assign service accounts to groups and projects using the UI or the [members API](../../api/members.md).
+For more information about using the UI, see [add users to a group](../group/_index.md#add-users-to-a-group)
+and [add users to a project](../project/members/_index.md#add-users-to-a-project).
+
+You must use the API when the
+[global SAML group memberships lock](../group/saml_sso/group_sync.md#global-saml-group-memberships-lock)
+or the
+[global LDAP group memberships lock](../../administration/auth/ldap/ldap_synchronization.md#global-ldap-group-memberships-lock)
+is enabled.
+
+## Fork projects with a service account
+
+Service accounts can fork projects through the [Project forks API](../../api/project_forks.md), but
+cannot fork to their personal namespace. When forking with a service account, you must specify
+a target group namespace.
+
+Prerequisites:
+
+- The service account must be added as a member to the target group with at least the Developer role.
+- The service account must have the `api` scope enabled on its personal access token.
+
+To fork a project using a service account:
+
+1. Identify the target group where the fork is created.
+1. Ensure the service account is a member of that group with appropriate permissions.
+1. Use the [fork project API](../../api/project_forks.md) with either `namespace_id` or `namespace_path`:
+
+   ```shell
+    curl --request POST --header "PRIVATE-TOKEN: <service_account_token>" \
+      --data "namespace_path=target-group" \
+      "https://gitlab.example.com/api/v4/projects/<project_id>/fork"
+   ```
 
 ### Delete a service account
 

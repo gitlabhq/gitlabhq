@@ -22,14 +22,6 @@ RSpec.describe Gitlab::Ci::Build::Context::Global, feature_category: :pipeline_c
     end
 
     it_behaves_like 'with passed yaml variables'
-
-    context 'when FF `stop_writing_builds_metadata` is disabled' do
-      before do
-        stub_feature_flags(stop_writing_builds_metadata: false)
-      end
-
-      it_behaves_like 'with passed yaml variables'
-    end
   end
 
   describe '#variables' do

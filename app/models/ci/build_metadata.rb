@@ -55,12 +55,7 @@ module Ci
       self.project_id ||= build.project_id
     end
 
-    def ci_validate_config_options_enabled?
-      Feature.enabled?(:ci_validate_config_options, project)
-    end
-
     def validate_config_options_schema
-      return unless ci_validate_config_options_enabled?
       return if config_options.nil?
 
       validator = JsonSchemaValidator.new({

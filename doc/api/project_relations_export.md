@@ -13,14 +13,11 @@ description: "Export project relations with the REST API."
 
 {{< /details >}}
 
-The project relations export API partially exports a project's structure as separate files for each
-top-level
-relation (for example, milestones, issues, and labels).
+Use this API to migrate a project structure. Each top-level
+relation (for example, milestones, boards, and labels) is stored as a separate file.
 
-The project relations export API is primarily used in
-[group migration](../user/group/import/_index.md) can't
-be used with the
-[project import and export API](project_import_export.md).
+This API is primarily used during [group migration by direct transfer](../user/group/import/_index.md).
+You cannot use this API with the [project import and export API](project_import_export.md).
 
 ## Schedule new export
 

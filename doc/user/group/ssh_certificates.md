@@ -92,7 +92,7 @@ To add a CA certificate to a group:
    ssh-keygen -f CA
    ```
 
-1. Add the public key to the top-level group using [Group SSH certificates API](../../api/group_ssh_certificates.md#create-ssh-certificate)
+1. Add the public key to the top-level group using [Group SSH certificates API](../../api/group_ssh_certificates.md#add-a-group-ssh-certificate)
    to grant access to the projects of the group and its subgroups.
 
 ## Issue CA certificates for users
@@ -149,7 +149,7 @@ Prerequisites:
 
 To enforce using SSH certificates:
 
-1. On the left sidebar, select **Search or go to** and find your group.
+1. On the left sidebar, select **Search or go to** and find your group. If you've [turned on the new navigation](../interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
 1. Select **Settings** > **General**.
 1. Expand the **Permissions and group features** section.
 1. Select the **Enforce SSH Certificates** checkbox.

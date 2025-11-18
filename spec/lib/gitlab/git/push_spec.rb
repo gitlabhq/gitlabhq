@@ -157,7 +157,8 @@ RSpec.describe Gitlab::Git::Push do
           old_mode: "0",
           old_path: "bar/branch-test.txt",
           path: "bar/branch-test.txt",
-          status: :ADDED
+          status: :ADDED,
+          commit_id: ""
         ),
         Gitlab::Git::ChangedPath.new(
           new_blob_id: "85bc2f9753afd5f4fc5d7c75f74f8d526f26b4f3",
@@ -166,7 +167,8 @@ RSpec.describe Gitlab::Git::Push do
           old_mode: "0",
           old_path: "files/js/commit.coffee",
           path: "files/js/commit.coffee",
-          status: :ADDED
+          status: :ADDED,
+          commit_id: ""
         ),
         Gitlab::Git::ChangedPath.new(
           new_blob_id: "0000000000000000000000000000000000000000",
@@ -175,7 +177,8 @@ RSpec.describe Gitlab::Git::Push do
           old_mode: "100644",
           old_path: "files/js/commit.js.coffee",
           path: "files/js/commit.js.coffee",
-          status: :DELETED
+          status: :DELETED,
+          commit_id: ""
         ),
         Gitlab::Git::ChangedPath.new(
           new_blob_id: "8c3014aceae45386c3c026a7ea4a1f68660d51d6",
@@ -184,7 +187,8 @@ RSpec.describe Gitlab::Git::Push do
           old_mode: "0",
           old_path: "with space/README.md",
           path: "with space/README.md",
-          status: :ADDED
+          status: :ADDED,
+          commit_id: ""
         )].as_json
       end
     end

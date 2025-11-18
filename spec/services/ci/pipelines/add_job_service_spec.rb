@@ -26,22 +26,6 @@ RSpec.describe Ci::Pipelines::AddJobService, feature_category: :continuous_integ
       end
     end
 
-    context 'when the metadata exists' do
-      before do
-        stub_feature_flags(stop_writing_builds_metadata: false)
-      end
-
-      it 'assigns project to metadata' do
-        expect { execute }.to change { job.metadata.project }.to(pipeline.project)
-      end
-
-      it 'assigns partition_id to job and metadata' do
-        expect { execute }
-          .to change(job, :partition_id).to(pipeline.partition_id)
-          .and change { job.metadata.partition_id }.to(pipeline.partition_id)
-      end
-    end
-
     it 'assigns pipeline attributes to the job' do
       expect { execute }
         .to change { job.slice(:pipeline, :project, :ref) }

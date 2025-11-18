@@ -11,6 +11,7 @@
     - "\n" # Accept analytics:monitor:analytics_instrumentation
     - " \n" # Select product category
     - "1\n" # Select: [free, premium, ultimate]
+    - "2\n" # No - this event is not related to AI/Duo features
     - "y\n" # Create file
     - "\n" # Select: Create Metric --- define a new metric
     - "\e[A" # Arrow up to: Total count of events
@@ -41,6 +42,7 @@
     - "\n" # Accept analytics:monitor:analytics_instrumentation
     - " \n" # Select product category
     - "1\n" # Select [free, premium, ultimate]
+    - "2\n" # No - this event is not related to AI/Duo features
     - "y\n" # Create file
     - "4\n" # Exit
   outputs:
@@ -65,6 +67,7 @@
     - "\n" # Accept analytics:monitor:analytics_instrumentation
     - "\e[A \n" # Skip product category
     - "1\n" # Select [free, premium, ultimate]
+    - "2\n" # No - this event is not related to AI/Duo features
     - "y\n" # Create file
     - "4\n" # Exit
   outputs:
@@ -85,6 +88,7 @@
     - "\n" # Accept analytics:monitor:analytics_instrumentation
     - " \n" # Select product category
     - "2\n" # Select [premium, ultimate]
+    - "2\n" # No - this event is not related to AI/Duo features
     - "y\n" # Create file
     - "4\n" # Exit
   outputs:
@@ -104,6 +108,7 @@
     - "\n" # Select core_platform:manage:import
     - " \n" # Select product category
     - "\n" # Select [free, premium, ultimate]
+    - "\n" # Yes - this event is related to AI/Duo features
     - "\n" # Create file
     - "\n" # Select: Create Metric --- define a new metric
     - "\n" # Select: Weekly/Monthly count of unique users
@@ -141,6 +146,7 @@
     - "\n" # Accept analytics:monitor:analytics_instrumentation
     - " \n" # Select product category
     - "2\n" # Select [premium, ultimate]
+    - "2\n" # No - this event is not related to AI/Duo features
     - "y\n" # Create file
     - "4\n" # Exit
   outputs:
@@ -161,6 +167,7 @@
     - "\n" # Accept analytics:monitor:analytics_instrumentation
     - " \n" # Select product category
     - "1\n" # Select: [free, premium, ultimate]
+    - "2\n" # No - this event is not related to AI/Duo features
     - "y\n" # Create file
     - "3\n" # Select: View Usage
     - "Exit" # Filters to this item
@@ -183,6 +190,7 @@
     - "\n" # Accept analytics:monitor:analytics_instrumentation
     - " \n" # Select product category
     - "1\n" # Select: [free, premium, ultimate]
+    - "2\n" # No - this event is not related to AI/Duo features
     - "n\n" # Create file
     - "\n" # Select: Save event & create Metric --- define a new metric
     - "\e[A" # Arrow up to: Total count of events
@@ -212,6 +220,7 @@
     - "service_ " # Select product category: service_ping
     - "d \n" # Select additional product category: service_desk
     - "1\n" # Select: [free, premium, ultimate]
+    - "2\n" # No - this event is not related to AI/Duo features
     - "y\n" # Create file
     - "4\n" # Exit
   outputs:
@@ -239,6 +248,7 @@
     - "\n" # Accept analytics:monitor:analytics_instrumentation
     - " \n" # Select product category
     - "1\n" # Select: [free, premium, ultimate]
+    - "2\n" # No - this event is not related to AI/Duo features
     - "y\n" # Create file
     - "4\n" # Exit
   outputs:
@@ -260,6 +270,7 @@
     - "service_ " # Select product category: service_ping
     - "d \n" # Select additional product category: service_desk
     - "1\n" # Select: [free, premium, ultimate]
+    - "2\n" # No - this event is not related to AI/Duo features
     - "y\n" # Create file
     - "1\n" # Create another event
     - "Internal Event CLI is opened\n" # Submit description
@@ -271,6 +282,7 @@
     - "\n" # Accept analytics:monitor:analytics_instrumentation
     - " \n" # Select default product category: service_ping
     - "2\n" # Select [premium, ultimate]
+    - "2\n" # No - this event is not related to AI/Duo features
     - "y\n" # Create file
     - "4\n" # Exit
   outputs:
@@ -302,6 +314,7 @@
     - "\n" # Accept analytics:monitor:analytics_instrumentation
     - " \n" # Select product category
     - "1\n" # Select: [free, premium, ultimate]
+    - "2\n" # No - this event is not related to AI/Duo features
     - "y\n" # Create file
     - "4\n" # Exit
   outputs:

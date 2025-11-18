@@ -133,7 +133,7 @@ This JSON schema document describes the body of the revocation request:
         "type": "object",
         "properties": {
             "type": {
-                "description": "The type of token. This is vendor-specific and can be customised to suit your revocation service",
+                "description": "The type of token. This is vendor-specific and can be customized to suit your revocation service",
                 "type": "string",
                 "examples": [
                     "my_api_token"

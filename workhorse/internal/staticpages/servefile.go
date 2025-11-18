@@ -7,6 +7,7 @@ import (
 	"net/http"
 	"os"
 	"path/filepath"
+	"slices"
 	"strings"
 	"time"
 
@@ -75,6 +76,7 @@ func (s *Static) ServeExisting(prefix urlprefix.Prefix, cache CacheMode, notFoun
 			}
 		}()
 
+		s.resolveCorsHeaders(r, w)
 		s.setCacheHeaders(w, cache)
 		s.logFileServed(r.Context(), file, w.Header().Get("Content-Encoding"), r.Method, r.RequestURI)
 
@@ -83,6 +85,42 @@ func (s *Static) ServeExisting(prefix urlprefix.Prefix, cache CacheMode, notFoun
 }
 
 var errPathTraversal = errors.New("path traversal")
+
+func (s *Static) resolveCorsHeaders(r *http.Request, w http.ResponseWriter) {
+	allowedMethods := []string{"OPTIONS", "GET", "HEAD"}
+	allowedHeaders := map[string]bool{
+		"access-control-allow-origin":      true,
+		"access-control-allow-methods":     true,
+		"access-control-allow-headers":     true,
+		"access-control-allow-credentials": true,
+		"vary":                             true,
+	}
+	hasOriginHeader := len(r.Header.Get("Origin")) > 0
+	isAssetsPath := strings.HasPrefix(r.URL.Path, "/assets/")
+
+	if isAssetsPath && hasOriginHeader && slices.Contains(allowedMethods, r.Method) {
+		optionsRequest := &http.Request{Method: "OPTIONS", URL: r.URL, Header: r.Header.Clone()}
+		httpResponse, _, err := s.API.PreAuthorize(r.RequestURI, optionsRequest)
+
+		if err != nil {
+			log.WithContextFields(r.Context(), log.Fields{
+				"uri": mask.URL(r.RequestURI),
+			}).Error("Could not resolve CORS headers for static asset")
+		}
+
+		if httpResponse == nil {
+			return
+		} else {
+			httpResponse.Body.Close()
+		}
+
+		for k, v := range httpResponse.Header {
+			if allowedHeaders[strings.ToLower(k)] {
+				w.Header()[k] = v
+			}
+		}
+	}
+}
 
 func (s *Static) getFile(prefix urlprefix.Prefix, path string) (string, error) {
 	relativePath, err := s.validatePath(prefix.Strip(path))

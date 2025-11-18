@@ -217,6 +217,12 @@ $command-palette-spacing: px-to-rem(14px);
   --theme-notification-color: var(--gl-color-blue-500);
 }
 
+html:not(.application-chrome) .super-sidebar {
+  @media (forced-colors: active) {
+    border-right: 1px solid;
+  }
+}
+
 .super-sidebar {
   display: flex;
   flex-direction: column;
@@ -230,10 +236,6 @@ $command-palette-spacing: px-to-rem(14px);
 
   &:not(.super-sidebar-is-icon-only) {
     width: $super-sidebar-width;
-  }
-
-  @media (forced-colors: active) {
-    border-right: 1px solid;
   }
 
   &.super-sidebar-loading {
@@ -448,7 +450,7 @@ $command-palette-spacing: px-to-rem(14px);
     @apply gl-transition-padding;
   }
 
-  &:not(.page-with-super-sidebar-collapsed) {
+  &:not(.page-with-super-sidebar-collapsed,.super-sidebar-has-css-transitions-blocked) {
     .super-sidebar-overlay {
       display: block;
       position: fixed;
@@ -571,7 +573,8 @@ $command-palette-spacing: px-to-rem(14px);
   }
 
   &.gl-modal .modal-footer {
-    @apply gl-bg-strong gl-border-t;
+    @apply gl-bg-strong;
+    @apply gl-border-t;
     padding: $command-palette-spacing;
   }
 }
@@ -681,6 +684,10 @@ $scroll-scrim-height: 2.25rem;
 
     .top-scrim {
       background: linear-gradient(180deg, var(--gl-color-alpha-dark-8) 0%, $transparent-rgba 100%);
+
+      .gl-dark & {
+        background: linear-gradient(180deg, var(--gl-color-alpha-dark-24) 0%, $transparent-rgba 100%);
+      }
     }
   }
 
@@ -689,7 +696,11 @@ $scroll-scrim-height: 2.25rem;
     margin-top: -$scroll-scrim-height;
 
     .bottom-scrim {
-      background: linear-gradient(180deg, $transparent-rgba 0%, var(--gl-background-color-default));
+      background: linear-gradient(180deg, $transparent-rgba 0%, var(--gl-color-alpha-dark-8));
+
+      .gl-dark & {
+        background: linear-gradient(180deg, $transparent-rgba 0%, var(--gl-color-alpha-dark-24));
+      }
     }
   }
 
@@ -715,7 +726,8 @@ $scroll-scrim-height: 2.25rem;
 .super-sidebar-new-menu-dropdown .gl-new-dropdown-panel,
 .super-sidebar-user-dropdown .gl-new-dropdown-panel,
 .super-sidebar-help-center-dropdown .gl-new-dropdown-panel {
-  @apply gl-min-w-28 gl-w-28 #{!important};
+  @apply gl-min-w-28 #{!important};
+  @apply gl-w-28 #{!important};
 }
 
 // Tweaks to the styles for the ScrollScrim component above (line 418)

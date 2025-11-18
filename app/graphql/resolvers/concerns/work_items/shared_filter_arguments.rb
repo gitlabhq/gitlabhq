@@ -8,6 +8,12 @@ module WorkItems
     MAX_FIELD_LIMIT = 100
 
     included do
+      argument :ids,
+        [::Types::GlobalIDType[::WorkItem]],
+        required: false,
+        validates: { length: { maximum: MAX_FIELD_LIMIT } },
+        description: "Filter by global IDs of work items (maximum is #{MAX_FIELD_LIMIT} IDs).",
+        prepare: ->(global_ids, _ctx) { GitlabSchema.parse_gids(global_ids, expected_type: ::WorkItem).map(&:model_id) }
       argument :author_username,
         GraphQL::Types::String,
         required: false,

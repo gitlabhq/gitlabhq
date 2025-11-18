@@ -32,6 +32,7 @@ import {
 } from 'ee_else_ce/projects/settings/branch_rules/tracking/constants';
 import deleteBranchRuleMutation from '../../mutations/branch_rule_delete.mutation.graphql';
 import editSquashOptionMutation from '../../mutations/edit_squash_option.mutation.graphql';
+import deleteSquashOptionMutation from '../../mutations/delete_squash_option.mutation.graphql';
 import BranchRuleModal from '../../../components/branch_rule_modal.vue';
 import Protection from './protection.vue';
 import AccessLevelsDrawer from './access_levels_drawer.vue';
@@ -301,15 +302,17 @@ export default {
               return createAlert({
                 message: error.message,
                 captureError: true,
+                error,
               });
             }
             visitUrl(this.branchRulesPath);
           },
         )
-        .catch(() => {
+        .catch((error) => {
           return createAlert({
-            message: s__('BranchRules|Something went wrong while deleting branch rule.'),
+            message: this.$options.i18n.deleteBranchRuleError,
             captureError: true,
+            error,
           });
         });
     },
@@ -379,21 +382,46 @@ export default {
     onEditSquashSettings(selectedOption) {
       this.isRuleUpdating = true;
       const branchRuleId = this.branchRule.id;
+      const isDelete = selectedOption === 'DEFAULT';
 
       this.$apollo
         .mutate({
-          mutation: editSquashOptionMutation,
-          variables: { input: { branchRuleId, squashOption: selectedOption } },
+          mutation: isDelete ? deleteSquashOptionMutation : editSquashOptionMutation,
+          variables: {
+            input: isDelete ? { branchRuleId } : { branchRuleId, squashOption: selectedOption },
+          },
         })
-        .then(({ data: { branchRuleSquashOptionUpdate } }) => {
-          if (branchRuleSquashOptionUpdate?.errors.length) {
-            createAlert({ message: this.$options.i18n.updateBranchRuleError });
+        .then(({ data }) => {
+          const result = isDelete
+            ? data.branchRuleSquashOptionDelete
+            : data.branchRuleSquashOptionUpdate;
+          if (result?.errors.length) {
+            const errorMessage = isDelete
+              ? this.$options.i18n.deleteBranchRuleError
+              : this.$options.i18n.updateBranchRuleError;
+            createAlert({ message: errorMessage });
+            return;
+          }
+
+          if (result?.errors.length) {
+            const [error] = result.errors;
+            createAlert({
+              message: error,
+              captureError: true,
+              error,
+            });
             return;
           }
 
           this.$apollo.queries.squashOption.refetch();
         })
-        .catch(() => createAlert({ message: this.$options.i18n.updateBranchRuleError }))
+        .catch((error) =>
+          createAlert({
+            message: this.$options.i18n.updateBranchRuleError,
+            captureError: true,
+            error,
+          }),
+        )
         .finally(() => {
           this.isSquashSettingsDrawerOpen = false;
           this.isRuleUpdating = false;
@@ -428,7 +456,8 @@ export default {
         })
         .then(({ data: { branchRuleUpdate } }) => {
           if (branchRuleUpdate.errors.length) {
-            createAlert({ message: this.$options.i18n.updateBranchRuleError });
+            const [error] = branchRuleUpdate.errors;
+            createAlert({ message: error, captureError: true, error });
             return;
           }
 
@@ -446,8 +475,12 @@ export default {
             this.$toast.show(toastMessage);
           }
         })
-        .catch(() => {
-          createAlert({ message: this.$options.i18n.updateBranchRuleError });
+        .catch((error) => {
+          createAlert({
+            message: this.$options.i18n.updateBranchRuleError,
+            captureError: true,
+            error,
+          });
         })
         .finally(() => {
           this.isRuleUpdating = false;
@@ -631,7 +664,6 @@ export default {
         <protection
           v-if="showSquashSetting"
           :header="$options.i18n.squashSettingHeader"
-          :empty-state-copy="$options.i18n.squashSettingEmptyState"
           :is-edit-available="showEditSquashSetting"
           :icon="null"
           class="gl-mt-5"
@@ -653,6 +685,12 @@ export default {
               <p class="gl-text-subtle">{{ squashOption.helpText }}</p>
             </div>
           </template>
+          <template v-else #content>
+            <div>
+              <span>{{ $options.i18n.squashDefaultLabel }}</span>
+              <p class="gl-text-subtle">{{ $options.i18n.squashDefaultDescription }}</p>
+            </div>
+          </template>
         </protection>
       </settings-section>
 
@@ -660,6 +698,7 @@ export default {
         :is-open="isSquashSettingsDrawerOpen"
         :is-loading="isRuleUpdating"
         :selected-option="squashOption.option"
+        :is-all-branches-rule="isAllBranchesRule"
         @submit="onEditSquashSettings"
         @close="isSquashSettingsDrawerOpen = false"
       />

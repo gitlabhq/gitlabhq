@@ -3,7 +3,7 @@
 require 'spec_helper'
 
 RSpec.describe Gitlab::BackgroundMigration::FixBadShardingKeyIdOnProjectCiRunners, migration: :gitlab_ci,
-  feature_category: :runner do
+  feature_category: :runner_core do
   include Database::TableSchemaHelpers
 
   let(:connection) { Ci::ApplicationRecord.connection }

@@ -257,6 +257,7 @@
     - "\n" # Accept analytics:monitor:analytics_instrumentation
     - " \n" # Select product category
     - "2\n" # Select [premium, ultimate]
+    - "2\n" # No - this event is not related to AI/Duo features
     - "y\n" # Create file
     - "4\n" # Exit
   outputs:

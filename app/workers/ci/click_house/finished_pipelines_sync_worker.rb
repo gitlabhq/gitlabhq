@@ -10,6 +10,7 @@ module Ci
       data_consistency :delayed
       urgency :throttled
       feature_category :fleet_visibility
+      tags :clickhouse
       loggable_arguments 1, 2
 
       def perform(worker_index = 0, total_workers = 1)

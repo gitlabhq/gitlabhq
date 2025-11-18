@@ -1,0 +1,9 @@
+- add_page_specific_style 'page_bundles/wiki'
+- @noteable_type = 'Wiki'
+- @gfm_form = true
+
+.wiki-overview{ class: fluid_layout ? 'layout-fluid' : 'layout-limited-width' }
+  = render 'shared/wikis/sidebar'
+  .wiki-page-details
+    %div
+      = yield

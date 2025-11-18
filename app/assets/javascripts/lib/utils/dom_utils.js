@@ -18,8 +18,14 @@ export const addClassIfElementExists = (element, className) => {
 
 export const isInVueNoteablePage = () => isInIssuePage() || isInEpicPage() || isInMRPage();
 
+/**
+ * @deprecated Use `isScrolledToBottom` from `~/lib/utils/scroll_utils.js`
+ */
 export const canScrollUp = ({ scrollTop }, margin = 0) => scrollTop > margin;
 
+/**
+ * @deprecated Use `isScrolledToTop` from `~/lib/utils/scroll_utils.js`
+ */
 export const canScrollDown = ({ scrollTop, offsetHeight, scrollHeight }, margin = 0) =>
   scrollTop + offsetHeight < scrollHeight - margin;
 
@@ -67,18 +73,6 @@ export const parseBooleanDataAttributes = ({ dataset }, names) =>
  */
 export const isElementVisible = (element) =>
   Boolean(element.offsetWidth || element.offsetHeight || element.getClientRects().length);
-
-export const getParents = (element) => {
-  const parents = [];
-  let parent = element.parentNode;
-
-  do {
-    parents.push(parent);
-    parent = parent.parentNode;
-  } while (parent);
-
-  return parents;
-};
 
 export const getParentByTagName = (element, tagName) => {
   let parent = element.parentNode;

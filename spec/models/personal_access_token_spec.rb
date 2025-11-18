@@ -145,17 +145,6 @@ RSpec.describe PersonalAccessToken, feature_category: :system_access do
       it { is_expected.to contain_exactly(project_access_token) }
     end
 
-    describe '.owner_is_human' do
-      let_it_be(:user) { create(:user, :project_bot) }
-      let_it_be(:project_member) { create(:project_member, user: user) }
-      let_it_be(:personal_access_token) { create(:personal_access_token) }
-      let_it_be(:project_access_token) { create(:personal_access_token, user: user) }
-
-      subject { described_class.owner_is_human }
-
-      it { is_expected.to contain_exactly(personal_access_token) }
-    end
-
     describe '.for_user' do
       it 'returns personal access tokens of specified user only' do
         user_1 = create(:user)
@@ -360,9 +349,10 @@ RSpec.describe PersonalAccessToken, feature_category: :system_access do
   end
 
   describe 'PolicyActor methods' do
-    let_it_be(:project) { create(:project) }
+    let_it_be(:user) { create(:user) }
+    let_it_be(:project) { create(:project, developers: user) }
     let_it_be(:boundary) { Authz::Boundary.for(project) }
-    let_it_be(:pat) { create(:granular_pat, namespace: boundary.namespace, permissions: :create_issue) }
+    let_it_be(:pat) { create(:granular_pat, user: user, namespace: boundary.namespace, permissions: :create_issue) }
 
     let(:methods) { PolicyActor.instance_methods }
 
@@ -992,6 +982,52 @@ RSpec.describe PersonalAccessToken, feature_category: :system_access do
       it 'does not change the token' do
         expect(token).to be_nil
         expect(token_owner_record.token_digest).to eq(token_digest)
+      end
+    end
+  end
+
+  describe '#token_prefix' do
+    subject(:token_prefix) { described_class.token_prefix }
+
+    context 'without any custom configuration' do
+      it 'starts with default value' do
+        expect(token_prefix).to start_with('glpat-')
+      end
+    end
+
+    context 'with custom personal access token prefix' do
+      let_it_be(:personal_access_token_prefix) { 'custom-pat-prefix-' }
+
+      before do
+        stub_application_setting(personal_access_token_prefix: personal_access_token_prefix)
+      end
+
+      it 'starts with custom personal access token prefix' do
+        expect(token_prefix).to start_with(personal_access_token_prefix)
+      end
+
+      context 'with instance wide token prefix' do
+        let(:instance_prefix) { 'instanceprefix' }
+
+        before do
+          stub_application_setting(instance_token_prefix: instance_prefix)
+        end
+
+        it 'starts with instance prefix and ignore custom prefix' do
+          expect(token_prefix).to start_with("#{instance_prefix}-glpat-")
+        end
+      end
+    end
+
+    context 'with instance wide token prefix' do
+      let(:instance_prefix) { 'instanceprefix' }
+
+      before do
+        stub_application_setting(instance_token_prefix: instance_prefix)
+      end
+
+      it 'starts with instance prefix' do
+        expect(token_prefix).to start_with("#{instance_prefix}-glpat-")
       end
     end
   end

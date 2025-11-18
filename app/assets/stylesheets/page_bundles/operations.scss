@@ -2,53 +2,51 @@
 
 .dashboard-card {
   cursor: grab;
+}
 
-  &-header {
-    &-warning {
-      background-color: var(--orange-100, $orange-100);
-    }
-  }
+.dashboard-card-header-warning {
+  background-color: var(--orange-100, $orange-100);
+}
 
-  &-body {
-    min-height: 120px;
+.dashboard-card-body {
+  min-height: 120px;
+}
 
-    &-warning {
-      background-color: var(--orange-50, $orange-50);
-    }
+.dashboard-card-body-warning {
+  background-color: var(--orange-50, $orange-50);
+}
 
-    &-failed {
-      background-color: var(--red-50, $red-50);
-    }
-  }
+.dashboard-card-body-failed {
+  background-color: var(--red-50, $red-50);
+}
 
-  &-footer-extra {
-    border-radius: $gl-padding;
-    height: $gl-padding-32;
-    background-color: var(--gray-200, $gray-200);
-    font-size: 10px;
-    line-height: $gl-line-height;
-    width: $gl-padding;
-  }
+.dashboard-card-footer-extra {
+  border-radius: $gl-padding;
+  height: $gl-padding-32;
+  background-color: var(--gray-200, $gray-200);
+  font-size: 10px;
+  line-height: $gl-line-height;
+  width: $gl-padding;
+}
 
-  &-skeleton-info {
+.dashboard-card-skeleton-info {
+  border-radius: $gl-padding;
+  height: $gl-padding;
+  overflow: hidden;
+
+  &::after {
+    content: ' ';
+    display: block;
+    animation: blockTextShine 1s linear infinite forwards;
+    background-repeat: no-repeat;
+    background-size: cover;
+    background-image: linear-gradient(to right,
+    var(--gray-50, $gray-50) 0%,
+    var(--gray-10, $gray-10) 20%,
+    var(--gray-50, $gray-50) 40%,
+    var(--gray-50, $gray-50) 100%);
     border-radius: $gl-padding;
     height: $gl-padding;
-    overflow: hidden;
-
-    &::after {
-      content: ' ';
-      display: block;
-      animation: blockTextShine 1s linear infinite forwards;
-      background-repeat: no-repeat;
-      background-size: cover;
-      background-image: linear-gradient(to right,
-      var(--gray-50, $gray-50) 0%,
-      var(--gray-10, $gray-10) 20%,
-      var(--gray-50, $gray-50) 40%,
-      var(--gray-50, $gray-50) 100%);
-      border-radius: $gl-padding;
-      height: $gl-padding;
-      margin-top: -$gl-padding-8;
-    }
+    margin-top: -$gl-padding-8;
   }
 }

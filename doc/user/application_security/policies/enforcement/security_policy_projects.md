@@ -155,7 +155,7 @@ Prerequisites:
 
 To link a group, subgroup, or project to a security policy project:
 
-1. On the left sidebar, select **Search or go to** and find your project, subgroup, or group.
+1. On the left sidebar, select **Search or go to** and find your project, subgroup, or group. If you've [turned on the new navigation](../../../interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
 1. Select **Secure** > **Policies**.
 1. Select **Edit Policy Project**, then search for and select the project you would like to link
    from the dropdown list.
@@ -212,7 +212,8 @@ Administrator can also change the limits for a specific top-level group.
 
 To change the maximum number of policies your organization can store in a security policy project:
 
-1. Go to **Admin Area** > **Settings** > **Security and compliance**.
+1. On the left sidebar, at the bottom, select **Admin**. If you've [turned on the new navigation](../../../interface_redesign.md#turn-new-navigation-on-or-off), in the upper-right corner, select **Admin**.
+1. Select **Settings** > **Security and compliance**.
 1. Expand the **Security policies** section.
 1. For each type of policy you want to change, set a new value for **Maximum number of {policy type} allowed per security policy configuration**.
 1. Select **Save changes**.
@@ -229,7 +230,8 @@ Increasing these limits can affect system performance, especially if you apply a
 
 To adjust the limit for a top-level group:
 
-1. Go to **Admin Area** > **Overview** > **Groups**.
+1. On the left sidebar, at the bottom, select **Admin**. If you've [turned on the new navigation](../../../interface_redesign.md#turn-new-navigation-on-or-off), in the upper-right corner, select **Admin**.
+1. Select **Overview** > **Groups**.
 1. In the row of the top-level group you want to modify, select **Edit**.
 1. For each type of policy you want to change, set a new value for **Maximum number of {policy type} allowed per security policy configuration**.
 1. Select **Save changes**.

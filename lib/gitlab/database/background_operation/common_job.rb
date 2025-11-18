@@ -10,12 +10,21 @@ module Gitlab
 
         MINIMUM_PAUSE_MS = 100
         PARTITION_DURATION = 14.days
+        MAX_ATTEMPTS = 3
 
         REQUIRED_COLUMNS = %i[
           batch_size
           sub_batch_size
           worker_id
           worker_partition
+        ].freeze
+
+        TIMEOUT_EXCEPTIONS = [
+          ActiveRecord::AdapterTimeout,
+          ActiveRecord::ConnectionTimeoutError,
+          ActiveRecord::QueryCanceled,
+          ActiveRecord::StatementTimeout,
+          ActiveRecord::LockWaitTimeout
         ].freeze
 
         included do |job_class|
@@ -30,6 +39,16 @@ module Gitlab
 
           scope :for_partition, ->(partition) { where(partition: partition) }
           scope :executable, -> { with_statuses(:pending, :running) }
+          scope :failed, -> { with_status(:failed) }
+          scope :running, -> { with_status(:running) }
+          scope :succeeded, -> { with_status(:succeeded) }
+          scope :finished, -> { where.not(finished_at: nil) }
+          scope :created_since, ->(date) { where(arel_table[:created_at].gteq(date)) }
+          scope :below_max_attempts, -> { where(arel_table[:attempts].lt(MAX_ATTEMPTS)) }
+          scope :retriable, -> { failed.below_max_attempts }
+          scope :successful_in_execution_order, -> { finished.succeeded.order_by_finished_at }
+          scope :with_preloads, -> { preload(:jobs) }
+          scope :order_by_finished_at, -> { order(:finished_at) }
 
           # Partition should not be changed once the record is created
           attr_readonly :partition
@@ -57,6 +76,49 @@ module Gitlab
             state :running, value: 1
             state :failed, value: 2
             state :succeeded, value: 3
+
+            event :run do
+              transition any => :running
+            end
+
+            event :succeed do
+              transition any => :succeeded
+            end
+
+            event :failure do
+              transition any => :failed
+            end
+
+            before_transition any => [:failed, :succeeded] do |job|
+              job.finished_at = Time.current
+            end
+
+            before_transition any => :running do |job|
+              job.attempts += 1
+              job.started_at = Time.current
+              job.finished_at = nil
+              job.metrics = {}
+            end
+          end
+
+          def first
+            order(created_at: :asc).first
+          end
+
+          def last
+            order(created_at: :desc).first
+          end
+
+          def worker_attributes
+            {
+              batch_table: worker_table_name,
+              batch_column: worker_column_name,
+              sub_batch_size: sub_batch_size,
+              pause_ms: pause_ms,
+              job_arguments: worker_job_arguments,
+              min_cursor: min_cursor,
+              max_cursor: max_cursor
+            }
           end
         end
       end

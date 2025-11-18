@@ -204,7 +204,7 @@ describe('UserMenuProjectStudioSection', () => {
     it('provides correct feedback URL', () => {
       const feedbackItem = findFeedbackItem();
       expect(feedbackItem.props('href')).toBe(
-        'https://gitlab.com/gitlab-org/gitlab/-/issues/564999',
+        'https://gitlab.com/gitlab-org/gitlab/-/issues/577554',
       );
     });
   });

@@ -3,7 +3,7 @@ table_name: group_type_ci_runner_machines
 classes:
 - Ci::RunnerManager
 feature_categories:
-- runner
+- runner_core
 - fleet_visibility
 description: Information about runner managers associated to group Ci::Runner models
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/168131

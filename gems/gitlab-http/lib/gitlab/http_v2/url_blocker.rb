@@ -1,6 +1,5 @@
 # frozen_string_literal: true
 
-require 'rails'
 require 'resolv'
 require 'ipaddress'
 require_relative 'url_allowlist'

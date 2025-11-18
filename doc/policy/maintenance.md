@@ -3,7 +3,7 @@ stage: GitLab Delivery
 group: Operate
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 title: GitLab release and maintenance policy
-description: Version support, release cadence, and backporting polices.
+description: Version support, release cadence, and backporting policies.
 ---
 
 The Delivery Group are the owners of the maintenance policy and must approve any requested updates. This follows our DRI model and is in place to ensure predictability for customers.
@@ -57,11 +57,11 @@ The following GitLab release versions are currently maintained:
 
 {{< alert type="note" >}}
 
-For **GitLab team members** looking for maintained versions for the upcoming patch release, refer to the [**"Release Versions"**](https://dashboards.gitlab.net/goto/h228fPEHR?orgId=1)
-under the "Patch Release Information" section in the internal Grafana dashboard ["delivery: Release Information"](https://dashboards.gitlab.net/goto/6zeLfPENR?orgId=1).
-They will be different from the above list of maintained versions when the active monthly release date is prior to the active patch release date.
+For GitLab team members looking for maintained versions for the upcoming patch release, refer to the [`Release Versions` panel](https://dashboards.gitlab.net/goto/h228fPEHR?orgId=1)
+under the `Patch Release Information` section in the internal `delivery: Release Information` Grafana dashboard.
+When the active monthly release date is prior to the active patch release date, the versions are different from the maintained versions list above.
 
-**Bug fix backports are maintained for the current (first) version, and security fix backports are maintained for all versions**.
+Bug fix backports are maintained for the current (first) version, and security fix backports are maintained for all versions.
 
 {{< /alert >}}
 
@@ -83,7 +83,7 @@ Version-specific change documentation for Linux packages is available for:
 - [GitLab 16](../update/versions/gitlab_16_changes.md)
 - [GitLab 15](../update/versions/gitlab_15_changes.md)
 
-Instructions are available for downloading the Linux package locally and [manually installing](../update/package/_index.md#upgrade-by-using-a-downloaded-package) it.
+Instructions are available for downloading the Linux package locally and [manually installing](../update/package/_index.md#upgrade-with-a-downloaded-package) it.
 
 A step-by-step guide to [upgrading the Linux package-bundled PostgreSQL is documented separately](https://docs.gitlab.com/omnibus/settings/database.html#upgrade-packaged-postgresql-server).
 
@@ -150,8 +150,7 @@ the current stable release, and two previous monthly releases. In rare cases a r
 For instance, if we release `13.2.1` with a fix for a severe bug introduced in
 `13.0.0`, we could backport the fix to a new `13.0.x`, and `13.1.x` patch release.
 
-Severity 3 and lower
-requests are automatically turned down.
+Severity 3 and lower requests are automatically turned down.
 
 To request backporting to more than one stable release for consideration, raise an issue in the
 [release/tasks](https://gitlab.com/gitlab-org/release/tasks/-/issues/new?issuable_template=Backporting-request) issue tracker.

@@ -38,6 +38,7 @@ module Users
 
       assign_identity
       reset_unconfirmed_email
+      @user.set_email_otp_required_after_based_on_restrictions
 
       if @user.save(validate: validate) && update_status
         after_update(user_exists)

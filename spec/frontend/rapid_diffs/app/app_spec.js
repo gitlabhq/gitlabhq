@@ -1,9 +1,10 @@
 import { createTestingPinia } from '@pinia/testing';
+import { nextTick } from 'vue';
 import { setHTMLFixture } from 'helpers/fixtures';
 import { RapidDiffsFacade } from '~/rapid_diffs/app';
 import { initViewSettings } from '~/rapid_diffs/app/view_settings';
 import { DiffFile } from '~/rapid_diffs/web_components/diff_file';
-import { useDiffsList } from '~/rapid_diffs/stores/diffs_list';
+import { statuses, useDiffsList } from '~/rapid_diffs/stores/diffs_list';
 import { pinia } from '~/pinia/instance';
 import { initHiddenFilesWarning } from '~/rapid_diffs/app/init_hidden_files_warning';
 import { initFileBrowser } from '~/rapid_diffs/app/file_browser';
@@ -16,7 +17,6 @@ import { disableBrokenContentVisibility } from '~/rapid_diffs/app/quirks/content
 import { useApp } from '~/rapid_diffs/stores/app';
 
 jest.mock('~/lib/graphql');
-jest.mock('~/awards_handler');
 jest.mock('~/rapid_diffs/app/view_settings');
 jest.mock('~/rapid_diffs/app/init_hidden_files_warning');
 jest.mock('~/rapid_diffs/app/file_browser');
@@ -38,6 +38,7 @@ describe('Rapid Diffs App Facade', () => {
   };
   const getHiddenFilesWarningTarget = () => document.querySelector('[data-hidden-files-warning]');
   const getDiffFile = () => document.querySelector('diff-file');
+  const getLoadingIndicator = () => document.querySelector('[data-list-loading]');
 
   const createApp = (data = {}) => {
     setHTMLFixture(
@@ -54,6 +55,7 @@ describe('Rapid Diffs App Facade', () => {
           <div data-file-browser-toggle></div>
           <div data-hidden-files-warning></div>
           <div data-stream-remaining-diffs></div>
+          <div data-list-loading></div>
         </div>
       `,
     );
@@ -148,6 +150,22 @@ describe('Rapid Diffs App Facade', () => {
     app.hide();
     app.show();
     expect(useApp().appVisible).toBe(true);
+  });
+
+  it('shows loading indicator when streaming', async () => {
+    createApp();
+    app.init();
+    useDiffsList(pinia).status = statuses.streaming;
+    await nextTick();
+    expect(getLoadingIndicator().hidden).toBe(false);
+  });
+
+  it('hides loading indicator when not streaming', async () => {
+    createApp();
+    app.init();
+    useDiffsList(pinia).status = statuses.idle;
+    await nextTick();
+    expect(getLoadingIndicator().hidden).toBe(true);
   });
 
   it('delegates clicks', () => {

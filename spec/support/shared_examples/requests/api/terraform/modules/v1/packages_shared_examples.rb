@@ -361,7 +361,6 @@ RSpec.shared_examples 'handling project level terraform module download requests
           property: 'i_package_terraform_module_user'
         }.tap do |context|
           context[:user] = user if token_type && token_type != :deploy_token
-          context[:user] = deploy_token if token_type == :deploy_token
         end
       end
 

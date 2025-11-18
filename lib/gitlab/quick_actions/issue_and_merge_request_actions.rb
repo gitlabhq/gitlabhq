@@ -334,18 +334,9 @@ module Gitlab
           case item
           # WorkItem check should be before Issue, as WorkItem is a subclass of Issue
           when WorkItem
-            handle_namespace_type(item.namespace)
+            item.namespace.owner_entity
           when MergeRequest, Issue
             item.project
-          end
-        end
-
-        def handle_namespace_type(namespace)
-          case namespace
-          when Project, Group
-            namespace
-          when Namespaces::ProjectNamespace
-            namespace.project
           end
         end
 

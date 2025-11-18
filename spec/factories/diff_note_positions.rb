@@ -6,5 +6,6 @@ FactoryBot.define do
     line_code { note.line_code }
     position { note.position }
     diff_type { :head }
+    namespace_id { note.namespace_id }
   end
 end

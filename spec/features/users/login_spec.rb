@@ -7,6 +7,7 @@ RSpec.describe 'Login', :with_current_organization, :clean_gitlab_redis_sessions
   include UserLoginHelper
   include SessionHelpers
   include Features::TwoFactorHelpers
+  include EmailHelpers
 
   before do
     stub_authentication_activity_metrics(debug: true)
@@ -174,12 +175,14 @@ RSpec.describe 'Login', :with_current_organization, :clean_gitlab_redis_sessions
   end
 
   describe 'with the ghost user' do
+    let_it_be_with_reload(:ghost_user) { Users::Internal.for_organization(current_organization).ghost }
+
     it 'disallows login' do
       expect(authentication_metrics)
         .to increment(:user_unauthenticated_counter)
         .and increment(:user_password_invalid_counter)
 
-      gitlab_sign_in(Users::Internal.ghost)
+      gitlab_sign_in(ghost_user)
 
       expect(page).to have_content('Invalid login or password.')
     end
@@ -189,8 +192,8 @@ RSpec.describe 'Login', :with_current_organization, :clean_gitlab_redis_sessions
         .to increment(:user_unauthenticated_counter)
         .and increment(:user_password_invalid_counter)
 
-      expect { gitlab_sign_in(Users::Internal.ghost) }
-        .not_to change { Users::Internal.ghost.reload.sign_in_count }
+      expect { gitlab_sign_in(ghost_user) }
+        .not_to change { ghost_user.reload.sign_in_count }
     end
   end
 
@@ -237,6 +240,8 @@ RSpec.describe 'Login', :with_current_organization, :clean_gitlab_redis_sessions
 
             enter_code(codes.sample, only_two_factor_webauthn_enabled: only_two_factor_webauthn_enabled)
 
+            expect(page).to have_content('Welcome to GitLab')
+            wait_for_requests
             expect(page).to have_current_path root_path, ignore_query: true
           end
 
@@ -245,7 +250,11 @@ RSpec.describe 'Login', :with_current_organization, :clean_gitlab_redis_sessions
               .to increment(:user_authenticated_counter)
               .and increment(:user_two_factor_authenticated_counter)
 
-            expect { enter_code(codes.sample, only_two_factor_webauthn_enabled: only_two_factor_webauthn_enabled) }
+            expect do
+              enter_code(codes.sample, only_two_factor_webauthn_enabled: only_two_factor_webauthn_enabled)
+              expect(page).to have_content('Welcome to GitLab')
+              wait_for_requests
+            end
               .to change { user.reload.otp_backup_codes.size }.by(-1)
           end
 
@@ -256,13 +265,21 @@ RSpec.describe 'Login', :with_current_organization, :clean_gitlab_redis_sessions
               .and increment(:user_session_destroyed_counter)
 
             random_code = codes.delete(codes.sample)
-            expect { enter_code(random_code, only_two_factor_webauthn_enabled: only_two_factor_webauthn_enabled) }
+            expect do
+              enter_code(random_code, only_two_factor_webauthn_enabled: only_two_factor_webauthn_enabled)
+              expect(page).to have_content('Welcome to GitLab')
+              wait_for_requests
+            end
               .to change { user.reload.otp_backup_codes.size }.by(-1)
 
             gitlab_sign_out
             gitlab_sign_in(user)
 
-            expect { enter_code(codes.sample, only_two_factor_webauthn_enabled: only_two_factor_webauthn_enabled) }
+            expect do
+              enter_code(codes.sample, only_two_factor_webauthn_enabled: only_two_factor_webauthn_enabled)
+              expect(page).to have_content('Welcome to GitLab')
+              wait_for_requests
+            end
               .to change { user.reload.otp_backup_codes.size }.by(-1)
           end
 
@@ -289,6 +306,7 @@ RSpec.describe 'Login', :with_current_organization, :clean_gitlab_redis_sessions
 
             enter_code(code, only_two_factor_webauthn_enabled: only_two_factor_webauthn_enabled)
             expect(page).to have_content('Invalid two-factor code.')
+            wait_for_requests
             expect(user.reload.failed_attempts).to eq(1)
           end
         end
@@ -310,14 +328,17 @@ RSpec.describe 'Login', :with_current_organization, :clean_gitlab_redis_sessions
           .and increment(:user_two_factor_authenticated_counter)
 
         enter_code(user.current_otp)
-
+        expect(page).to have_content('Welcome to GitLab')
+        wait_for_requests
         expect(page).not_to have_content(I18n.t('devise.failure.already_authenticated'))
         expect_single_session_with_authenticated_ttl
       end
 
       it 'does not allow sign-in if the user password is updated before entering a one-time code' do
-        user.update!(password: User.random_password)
+        expect(page).to have_content('Enter verification code')
+        wait_for_requests
 
+        user.update!(password: User.random_password)
         enter_code(user.current_otp)
 
         expect(page).to have_content('An error occurred. Please sign in again.')
@@ -330,15 +351,14 @@ RSpec.describe 'Login', :with_current_organization, :clean_gitlab_redis_sessions
             .and increment(:user_two_factor_authenticated_counter)
 
           enter_code(user.current_otp)
-
+          expect(page).to have_content('Welcome to GitLab')
+          wait_for_requests
           expect_single_session_with_authenticated_ttl
           expect(page).to have_current_path root_path, ignore_query: true
         end
 
         it 'persists remember_me value via hidden field' do
-          field = first('input#user_remember_me', visible: false)
-
-          expect(field.value).to eq '1'
+          expect(page).to have_field('user_remember_me', type: :hidden, with: '1')
         end
 
         it 'blocks login with invalid code' do
@@ -359,7 +379,8 @@ RSpec.describe 'Login', :with_current_organization, :clean_gitlab_redis_sessions
           expect(page).to have_content('Invalid two-factor code')
 
           enter_code(user.current_otp)
-
+          expect(page).to have_content('Welcome to GitLab')
+          wait_for_requests
           expect_single_session_with_authenticated_ttl
           expect(page).to have_current_path root_path, ignore_query: true
         end
@@ -384,6 +405,57 @@ RSpec.describe 'Login', :with_current_organization, :clean_gitlab_redis_sessions
         let(:user) { create(:user, :two_factor_via_webauthn, registrations_count: 1) }
 
         include_examples 'can login with recovery codes', only_two_factor_webauthn_enabled: true
+      end
+    end
+
+    context 'when signing in with WebAuthn' do
+      let(:user) { create(:user, :two_factor_via_webauthn) }
+      let(:current_organization) { user.organization }
+
+      before do
+        visit new_user_session_path
+        fill_in 'user_login', with: user.username
+        fill_in 'user_password', with: user.password
+        click_button 'Sign in'
+      end
+
+      context 'Fallback to email OTP' do
+        context 'when email_based_mfa feature flag is disabled' do
+          before do
+            stub_feature_flags(email_based_mfa: false)
+          end
+
+          it 'does not show the email OTP fallback footer' do
+            expect(page).not_to have_content('Having trouble signing in?')
+            expect(page).not_to have_link('send code to email address')
+          end
+        end
+
+        context 'when email_based_mfa feature flag is enabled' do
+          # we will not be testing different email_otp_required_after values
+          # since this is covered in the unit test level
+          context 'when user has email_otp_required_after set to past date' do
+            let(:user) { create(:user, :two_factor_via_webauthn, email_otp_required_after: 1.day.ago) }
+
+            context 'when WebAuthn authentication fails' do
+              before do
+                ActionMailer::Base.deliveries.clear
+              end
+
+              it 'shows the email OTP fallback footer with helpful links' do
+                expect(page).to have_content('Having trouble signing in?')
+                expect(page).to have_link('Enter recovery code')
+                expect(page).to have_button('send code to email address')
+
+                expect(authentication_metrics)
+                  .to increment(:user_authenticated_counter)
+                  .and increment(:user_session_override_counter)
+
+                verify_email_otp_fallback_workflow(user)
+              end
+            end
+          end
+        end
       end
     end
 
@@ -438,7 +510,8 @@ RSpec.describe 'Login', :with_current_organization, :clean_gitlab_redis_sessions
           expect(ActiveSession).to receive(:cleanup).with(user).once.and_call_original
 
           sign_in_using_saml!
-
+          expect(page).to have_content('Welcome to GitLab')
+          wait_for_requests
           expect_single_session_with_authenticated_ttl
           expect(page).not_to have_content(_('Enter verification code'))
           expect(page).to have_current_path root_path, ignore_query: true
@@ -457,9 +530,11 @@ RSpec.describe 'Login', :with_current_organization, :clean_gitlab_redis_sessions
           sign_in_using_saml!
 
           expect(page).to have_content('Enter verification code')
+          wait_for_requests
 
           enter_code(user.current_otp)
-
+          expect(page).to have_content('Welcome to GitLab')
+          wait_for_requests
           expect_single_session_with_authenticated_ttl
           expect(page).to have_current_path root_path, ignore_query: true
         end
@@ -797,6 +872,84 @@ RSpec.describe 'Login', :with_current_organization, :clean_gitlab_redis_sessions
         end
       end
     end
+
+    context 'Fallback to email OTP from TOTP', :js do
+      let(:user) { create(:user, :two_factor, email_otp_required_after: 1.day.ago) }
+
+      before do
+        ActionMailer::Base.deliveries.clear
+        gitlab_sign_in(user)
+        expect(page).to have_content('Enter verification code')
+      end
+
+      it 'sends email OTP and shows verification form when button clicked' do
+        expect(page).to have_link('Enter recovery code')
+        expect(page).to have_button('send code to email address')
+
+        expect(authentication_metrics)
+          .to increment(:user_authenticated_counter)
+          .and increment(:user_session_override_counter)
+
+        verify_email_otp_fallback_workflow(user)
+      end
+
+      context 'when email_based_mfa ff is disabled' do
+        before do
+          stub_feature_flags(email_based_mfa: false)
+        end
+
+        it 'does not show email OTP fallback when feature is disabled' do
+          visit new_user_session_path
+          gitlab_sign_in(user)
+          expect(page).not_to have_button('send code to email address')
+        end
+      end
+    end
+
+    context 'user with both WebAuthn and TOTP enabled', :js do
+      let(:user) do
+        create(:user,
+          :two_factor,
+          :two_factor_via_webauthn,
+          email_otp_required_after: 1.day.ago
+        )
+      end
+
+      before do
+        ActionMailer::Base.deliveries.clear
+        visit new_user_session_path
+        gitlab_sign_in(user)
+        click_button 'Sign in via 2FA code'
+      end
+
+      it 'allows switching to TOTP and using email OTP fallback' do
+        expect(page).to have_content('Enter verification code')
+
+        # Email OTP fallback should be available
+        expect(page).to have_link('Enter recovery code')
+        expect(page).to have_button('send code to email address')
+
+        expect(authentication_metrics)
+          .to increment(:user_authenticated_counter)
+          .and increment(:user_session_override_counter)
+
+        verify_email_otp_fallback_workflow(user)
+      end
+
+      it 'can still use TOTP code after switching from WebAuthn' do
+        expect(authentication_metrics)
+          .to increment(:user_authenticated_counter)
+          .and increment(:user_two_factor_authenticated_counter)
+
+        # Enter TOTP code
+        fill_in 'user_otp_attempt', with: user.current_otp
+        click_button 'Verify code'
+
+        expect(page).to have_content('Welcome to GitLab')
+        wait_for_requests
+        expect(page).to have_current_path root_path, ignore_query: true
+      end
+    end
   end
 
   describe 'UI tabs and panes' do
@@ -1007,6 +1160,7 @@ RSpec.describe 'Login', :with_current_organization, :clean_gitlab_redis_sessions
           # page is shown.
           wait_for_requests
 
+          dismiss_welcome_banner_if_present(page)
           click_button _('Register authenticator')
           otp_secret = page.find('.two-factor-secret').text.gsub('Key:', '').delete(' ')
           current_otp = ROTP::TOTP.new(otp_secret).now
@@ -1092,6 +1246,8 @@ RSpec.describe 'Login', :with_current_organization, :clean_gitlab_redis_sessions
 
         # Wait until the form has been initialized
         has_testid?('form-ready')
+
+        dismiss_welcome_banner_if_present(page)
 
         fill_in 'Email', with: 'hello@world.com'
 
@@ -1199,6 +1355,32 @@ RSpec.describe 'Login', :with_current_organization, :clean_gitlab_redis_sessions
           expect(user.identities).to be_empty
         end
       end
+    end
+  end
+
+  def verify_email_otp_fallback_workflow(user)
+    perform_enqueued_jobs do
+      click_button 'send code to email address'
+
+      expect(page).to have_content('Verification code')
+
+      # WebAuthn UI should be hidden
+      expect(page).not_to have_content('Trying to communicate with your device')
+
+      # TOTP form should be hidden
+      expect(page).not_to have_content('Enter verification code')
+
+      mail = wait_for('mail found for user') { find_email_for(user) }
+      expect(mail.to).to match_array([user.email])
+      expect(mail.subject).to eq(s_('IdentityVerification|Verify your identity'))
+
+      code = mail.body.parts.first.to_s[/\d{#{Users::EmailVerification::GenerateTokenService::TOKEN_LENGTH}}/o]
+      fill_in s_('IdentityVerification|Verification code'), with: code
+
+      expect { click_button s_('IdentityVerification|Verify code') }
+        .to change { user.reload.sign_in_count }
+
+      expect(page).to have_content('Welcome to GitLab')
     end
   end
 end

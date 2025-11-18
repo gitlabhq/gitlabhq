@@ -34,8 +34,6 @@ module Projects
             hidden: false,
             name: updated_value(resource.name),
             path: updated_value(resource.path),
-            remove_deletion_schedule: true,
-            # These deletion parameters must be removed as part of https://gitlab.com/gitlab-org/gitlab/-/issues/492405
             marked_for_deletion_at: nil,
             deleting_user: nil
           }

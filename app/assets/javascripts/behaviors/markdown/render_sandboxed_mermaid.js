@@ -74,10 +74,13 @@ export function getSandboxFrameSrc() {
   const path = joinPaths(gon.relative_url_root || '', SANDBOX_FRAME_PATH);
   let absoluteUrl = relativePathToAbsolute(path, getBaseURL());
   if (darkModeEnabled()) {
-    absoluteUrl = setUrlParams({ darkMode: darkModeEnabled() }, absoluteUrl);
+    absoluteUrl = setUrlParams({ darkMode: darkModeEnabled() }, { url: absoluteUrl });
   }
   if (window.gon?.relative_url_root) {
-    absoluteUrl = setUrlParams({ relativeRootPath: window.gon.relative_url_root }, absoluteUrl);
+    absoluteUrl = setUrlParams(
+      { relativeRootPath: window.gon.relative_url_root },
+      { url: absoluteUrl },
+    );
   }
   return absoluteUrl;
 }

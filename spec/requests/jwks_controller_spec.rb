@@ -54,28 +54,13 @@ RSpec.describe JwksController, feature_category: :system_access do
       let(:protocol) { 'https' }
       let(:additional_claims) { %w[project_path ci_config_ref_uri ref_path sha environment jti] }
 
-      context 'when additional_oidc_discovery_claims feature flag is enabled' do
-        before do
-          get "/.well-known/openid-configuration"
-        end
-
-        it 'includes additional claims in claims_supported' do
-          additional_claims.each do |claim|
-            expect(parsed_response['claims_supported']).to include(claim)
-          end
-        end
+      before do
+        get "/.well-known/openid-configuration"
       end
 
-      context 'when additional_oidc_discovery_claims feature flag is disabled' do
-        before do
-          stub_feature_flags(additional_oidc_discovery_claims: false)
-          get "/.well-known/openid-configuration"
-        end
-
-        it 'does not include additional claims in claims_supported' do
-          additional_claims.each do |claim|
-            expect(parsed_response['claims_supported']).not_to include(claim)
-          end
+      it 'includes additional claims in claims_supported' do
+        additional_claims.each do |claim|
+          expect(parsed_response['claims_supported']).to include(claim)
         end
       end
     end
@@ -102,6 +87,41 @@ RSpec.describe JwksController, feature_category: :system_access do
       expect(jwks).to match_array([
         satisfy { |jwk| key_match?(jwk, rsa_key_1) }
       ])
+    end
+  end
+
+  describe 'MCP-specific OAuth discovery endpoint' do
+    let(:parsed_response) { Gitlab::Json.parse(response.body) }
+
+    context 'when accessing MCP-specific discovery endpoint' do
+      before do
+        get '/.well-known/oauth-authorization-server/api/v4/mcp'
+      end
+
+      it 'returns only mcp scope in scopes_supported' do
+        expect(response).to have_gitlab_http_status(:ok)
+        expect(parsed_response['scopes_supported']).to eq(['mcp'])
+      end
+
+      it 'includes registration_endpoint' do
+        expect(parsed_response['registration_endpoint']).to end_with('/oauth/register')
+      end
+    end
+
+    context 'when accessing general OAuth discovery endpoint' do
+      before do
+        get '/.well-known/oauth-authorization-server'
+      end
+
+      it 'returns all available scopes in scopes_supported', :aggregate_failures do
+        expect(response).to have_gitlab_http_status(:ok)
+        expect(parsed_response['scopes_supported']).to include('api', 'read_api', 'mcp')
+        expect(parsed_response['scopes_supported'].size).to be > 1
+      end
+
+      it 'includes registration_endpoint' do
+        expect(parsed_response['registration_endpoint']).to end_with('/oauth/register')
+      end
     end
   end
 end

@@ -2,8 +2,8 @@
 stage: Package
 group: Container Registry
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+description: Configure and manage the GitLab container registry, including storage backends, garbage collection, and authentication.
 title: GitLab container registry administration
-description: Manage your GitLab container registry, which enables each project to store its own Docker images in your preferred backend storage.
 ---
 
 {{< details >}}
@@ -388,7 +388,7 @@ the container registry by themselves, follow the steps below.
 In GitLab, tokens for the container registry expire every five minutes.
 To increase the token duration:
 
-1. On the left sidebar, at the bottom, select **Admin**.
+1. On the left sidebar, at the bottom, select **Admin**. If you've [turned on the new navigation](../../user/interface_redesign.md#turn-new-navigation-on-or-off), in the upper-right corner, select **Admin**.
 1. Select **Settings** > **CI/CD**.
 1. Expand **Container Registry**.
 1. For the **Authorization token duration (minutes)**, update the value.
@@ -1107,8 +1107,7 @@ Read more about the container registry notifications configuration options in th
 
 {{< alert type="warning" >}}
 
-Support for the `threshold` parameter was [deprecated](https://gitlab.com/gitlab-org/container-registry/-/issues/1243)
-in GitLab 17.0, and is planned for removal in 18.0. Use `maxretries` instead.
+The threshold parameter was [deprecated](https://gitlab.com/gitlab-org/container-registry/-/issues/1243) in GitLab 17.0, and is planned for removal in 23.0. Use `maxretries` instead. The registry automatically translates existing threshold configurations to equivalent `maxretries` values based on your configured `backoff` duration, and emits a deprecation warning in logs showing the translated value. While your existing configuration continues to work, you should set `maxretries` to avoid automatic translation.
 
 {{< /alert >}}
 
@@ -1583,11 +1582,11 @@ The following configuration options should be set in `/etc/gitlab/gitlab.rb` on 
 | `gitlab_rails['registry_key_path']`        | File path where the `internal_key` is stored. Default: [set programmatically](https://gitlab.com/gitlab-org/omnibus-gitlab/blob/10-3-stable/files/gitlab-cookbooks/gitlab/recipes/gitlab-rails.rb#L35). |
 | `gitlab_rails['registry_issuer']`          | Token issuer name. Must match between registry and GitLab configurations. Default: [set programmatically](https://gitlab.com/gitlab-org/omnibus-gitlab/blob/10-3-stable/files/gitlab-cookbooks/gitlab/attributes/default.rb#L153). |
 
-<!--- start_remove The following content will be removed on remove_date: '2025/08/15' -->
+<!--- start_remove The following content will be removed on remove_date: '2026-08-15' -->
 
 {{< alert type="warning" >}}
 
-Support for authenticating requests using Amazon S3 Signature Version 2 in the container registry is deprecated in GitLab 17.8 and is planned for removal in 18.0. Use Signature Version 4 instead. This is a breaking change. For more information, see [issue 1449](https://gitlab.com/gitlab-org/container-registry/-/issues/1449).
+Support for authenticating requests using Amazon S3 Signature Version 2 in the container registry is deprecated in GitLab 17.8 and is planned for removal in 19.0. Use Signature Version 4 instead. This is a breaking change. For more information, see [issue 1449](https://gitlab.com/gitlab-org/container-registry/-/issues/1449).
 
 {{< /alert >}}
 

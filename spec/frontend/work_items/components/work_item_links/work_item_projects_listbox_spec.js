@@ -164,7 +164,7 @@ describe('WorkItemProjectsListbox', () => {
       expect(dropdownItem.text()).toContain(namespaceProjectsData[0].namespace.name);
     });
 
-    it('auto-selects the current project', async () => {
+    it('auto-selects the current project when the selected project is in the list of projects', async () => {
       await nextTick();
 
       expect(findDropdownToggle().text()).toBe(namespaceProjectsData[0].name);
@@ -188,12 +188,12 @@ describe('WorkItemProjectsListbox', () => {
       expect(findDropdownToggle().text()).toBe(namespaceProjectsData[0].name);
     });
 
-    it('auto-selects the frequently used project', async () => {
+    it('auto-selects the frequently used project if the selected project is not in the list of projects', async () => {
       setLocalstorageFrequentItems();
 
       await createComponent({
         isGroup: false,
-        selectedProjectFullPath: '/group-a/example-project-a',
+        selectedProjectFullPath: '/group-a/unavailable-project',
       });
 
       expect(findDropdownToggle().text()).toBe('Example project B');
@@ -201,10 +201,10 @@ describe('WorkItemProjectsListbox', () => {
       removeLocalstorageFrequentItems();
     });
 
-    it('auto-selects the selected project when frequently used projects are not available', async () => {
+    it('auto-selects the first project when frequently used projects are not available and the selected project is not in the list of projects', async () => {
       await createComponent({
         isGroup: false,
-        selectedProjectFullPath: '/group-a/example-project-a',
+        selectedProjectFullPath: '/group-a/unavailable-project',
       });
 
       expect(findDropdownToggle().text()).toBe('Example project A');

@@ -68,6 +68,10 @@ export default {
       required: false,
       default: null,
     },
+    showFeedbackWidget: {
+      type: Boolean,
+      required: true,
+    },
   },
   data() {
     return {
@@ -202,7 +206,8 @@ export default {
             data-testid="review-requested-widget"
             :has-error="mergeRequestsHaveError"
             :error-text="$options.i18n.mergeRequestsErrorText"
-            :link-text="s__('HomePageMergeRequestsWidget|Merge requests waiting for your review')"
+            :card-text="s__('HomePageMergeRequestsWidget|Merge requests')"
+            :link-text="s__('HomePageMergeRequestsWidget|Waiting for your review')"
             :path="reviewRequestedPath"
             :user-items="reviewRequestedData"
             :icon-name="'merge-request'"
@@ -212,7 +217,8 @@ export default {
             data-testid="assigned-merge-requests-widget"
             :has-error="mergeRequestsHaveError"
             :error-text="$options.i18n.mergeRequestsErrorText"
-            :link-text="s__('HomePageMergeRequestsWidget|Merge requests assigned to you')"
+            :card-text="s__('HomePageMergeRequestsWidget|Merge requests')"
+            :link-text="s__('HomePageMergeRequestsWidget|Assigned to you')"
             :path="assignedMergeRequestsPath"
             :user-items="assignedMergeRequestsData"
             :icon-name="'merge-request'"
@@ -222,7 +228,8 @@ export default {
             data-testid="assigned-work-items-widget"
             :has-error="workItemsHaveError"
             :error-text="$options.i18n.workItemsErrorText"
-            :link-text="s__('HomePageWorkItemsWidget|Issues assigned to you')"
+            :card-text="s__('HomePageWorkItemsWidget|Issues')"
+            :link-text="s__('HomePageWorkItemsWidget|Assigned to you')"
             :path="assignedWorkItemsPath"
             :user-items="assignedWorkItemsData"
             :icon-name="'work-item-issue'"
@@ -232,7 +239,8 @@ export default {
             data-testid="authored-work-items-widget"
             :has-error="workItemsHaveError"
             :error-text="$options.i18n.workItemsErrorText"
-            :link-text="s__('HomePageWorkItemsWidget|Issues authored by you')"
+            :card-text="s__('HomePageWorkItemsWidget|Issues')"
+            :link-text="s__('HomePageWorkItemsWidget|Authored by you')"
             :path="authoredWorkItemsPath"
             :user-items="authoredWorkItemsData"
             :icon-name="'work-item-issue'"
@@ -245,7 +253,7 @@ export default {
       </section>
       <aside class="gl-flex gl-flex-col gl-gap-6">
         <recently-viewed-widget />
-        <feedback-widget />
+        <feedback-widget v-if="showFeedbackWidget" />
       </aside>
     </div>
   </div>

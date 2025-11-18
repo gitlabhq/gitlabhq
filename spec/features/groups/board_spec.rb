@@ -61,7 +61,6 @@ RSpec.describe 'Group Boards', feature_category: :portfolio_management do
     before do
       project1.add_guest(user)
       project2.add_reporter(user)
-      stub_feature_flags(issues_list_drawer: false)
       sign_in(user)
 
       inspect_requests(inject_headers: { 'X-GITLAB-DISABLE-SQL-QUERY-LIMIT' => 'https://gitlab.com/gitlab-org/gitlab/-/issues/323426' }) do
@@ -101,6 +100,7 @@ RSpec.describe 'Group Boards', feature_category: :portfolio_management do
       it 'allows user to traverse cards forward and backward across board columns' do
         # Focus issue2 in Open list then move to issue1 in list2 and back
         find('a.board-card-button[data-col-index="0"]').click
+        send_keys :escape # Close drawer
 
         expect(page).to have_selector('.board-card-button[data-col-index="0"]', focused: true)
 

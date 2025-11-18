@@ -60,7 +60,7 @@ For information about project and group milestones API, see:
 
 To view the milestone list:
 
-1. On the left sidebar, select **Search or go to** and find your project or group.
+1. On the left sidebar, select **Search or go to** and find your project or group. If you've [turned on the new navigation](../../interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
 1. Select **Plan** > **Milestones**.
 
 In a project, GitLab displays milestones that belong to the project.
@@ -89,7 +89,7 @@ You might not see some milestones because they're in projects or groups you're n
 
 To do so:
 
-1. On the left sidebar, select **Search or go to**.
+1. On the left sidebar, select **Search or go to**. If you've [turned on the new navigation](../../interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
 1. Select **Your work**.
 1. On the left sidebar, select **Milestones**.
 
@@ -152,7 +152,7 @@ Prerequisites:
 
 To create a milestone:
 
-1. On the left sidebar, select **Search or go to** and find your project or group.
+1. On the left sidebar, select **Search or go to** and find your project or group. If you've [turned on the new navigation](../../interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
 1. Select **Plan** > **Milestones**.
 1. Select **New milestone**.
 1. Enter the title.
@@ -176,7 +176,7 @@ Prerequisites:
 
 To edit a milestone:
 
-1. On the left sidebar, select **Search or go to** and find your project or group.
+1. On the left sidebar, select **Search or go to** and find your project or group. If you've [turned on the new navigation](../../interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
 1. Select **Plan** > **Milestones**.
 1. Select a milestone's title.
 1. In the upper-right corner, select **Milestone actions** ({{< icon name="ellipsis_v" >}}) and then select **Edit**.
@@ -202,7 +202,7 @@ Prerequisites:
 
 To close a milestone:
 
-1. On the left sidebar, select **Search or go to** and find your project or group.
+1. On the left sidebar, select **Search or go to** and find your project or group. If you've [turned on the new navigation](../../interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
 1. Select **Plan** > **Milestones**.
 1. Either:
    - Next to the milestone you want to close, select **Milestone actions** ({{< icon name="ellipsis_v" >}}) > **Close**.
@@ -223,7 +223,7 @@ Prerequisites:
 
 To delete a milestone:
 
-1. On the left sidebar, select **Search or go to** and find your project or group.
+1. On the left sidebar, select **Search or go to** and find your project or group. If you've [turned on the new navigation](../../interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
 1. Select **Plan** > **Milestones**.
 1. Either:
    - Next to the milestone you want to delete, select **Milestone actions** ({{< icon name="ellipsis_v" >}}) > **Delete**.
@@ -260,7 +260,7 @@ Prerequisites:
 
 To promote a project milestone:
 
-1. On the left sidebar, select **Search or go to** and find your project.
+1. On the left sidebar, select **Search or go to** and find your project. If you've [turned on the new navigation](../../interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
 1. Select **Plan** > **Milestones**.
 1. Either:
    - Next to the milestone you want to promote, select **Milestone actions** ({{< icon name="ellipsis_v" >}}) > **Promote**.

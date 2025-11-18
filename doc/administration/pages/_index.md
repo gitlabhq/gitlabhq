@@ -459,7 +459,7 @@ control over how the Pages daemon runs and serves content in your environment.
 | `external_https`                        | N/A                                                   | Configure Pages to bind to one or more secondary IP addresses, serving HTTPS requests. Multiple addresses can be given as an array, along with exact ports, for example `['1.2.3.4', '1.2.3.5:8063']`. Sets value for `listen_https`. |
 | `custom_domain_mode`                    | N/A                                                   | Configure Pages to enable custom domain: `http` or `https`. When running a separate Pages server, configure this setting on the GitLab server as well. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/285089) in GitLab 18.1. |
 | `server_shutdown_timeout`               | `30s`                                                 | GitLab Pages server shutdown timeout in seconds. |
-| `gitlab_client_http_timeout`            | `10s`                                                 | GitLab API HTTP client connection timeout in seconds. |
+| `gitlab_client_http_timeout`            | `60s`                                                 | GitLab API HTTP client connection timeout in seconds. |
 | `gitlab_client_jwt_expiry`              | `30s`                                                 | JWT Token expiry time in seconds. |
 | `gitlab_cache_expiry`                   | `600s`                                                | The maximum time a domain's configuration is stored in the [cache](#gitlab-api-cache-configuration) |
 | `gitlab_cache_refresh`                  | `60s`                                                 | The interval at which a domain's configuration is set to be due to refresh. |
@@ -599,8 +599,6 @@ Prerequisites:
 
 1. Save the file and [reconfigure GitLab](../restart_gitlab.md#reconfigure-a-linux-package-installation) for the changes to take effect.
 1. If you're using Pages Access Control, edit the redirect URI in the GitLab Pages
-   [System OAuth application](../../integration/oauth_provider.md#create-an-instance-wide-application)System OAuth application to use the HTTPS protocol.
-1. If you're using Pages Access Control, edit the redirect URI in the GitLab Pages
    [System OAuth application](../../integration/oauth_provider.md#create-an-instance-wide-application) to use the HTTPS protocol.
 
 ### Custom domain verification
@@ -622,7 +620,7 @@ domain as a custom domain to their project.
 If your user base is private or otherwise trusted, you can disable the
 verification requirement:
 
-1. On the left sidebar, at the bottom, select **Admin**.
+1. On the left sidebar, at the bottom, select **Admin**. If you've [turned on the new navigation](../../user/interface_redesign.md#turn-new-navigation-on-or-off), in the upper-right corner, select **Admin**.
 1. Select **Settings** > **Preferences**.
 1. Expand **Pages**.
 1. Clear the **Require users to prove ownership of custom domains** checkbox.
@@ -637,7 +635,7 @@ sites served under a custom domain.
 To enable it:
 
 1. Choose an email address on which you want to receive notifications about expiring domains.
-1. On the left sidebar, at the bottom, select **Admin**.
+1. On the left sidebar, at the bottom, select **Admin**. If you've [turned on the new navigation](../../user/interface_redesign.md#turn-new-navigation-on-or-off), in the upper-right corner, select **Admin**.
 1. Select **Settings** > **Preferences**.
 1. Expand **Pages**.
 1. Enter the email address for receiving notifications and accept the Terms of Service for Let's Encrypt.
@@ -697,7 +695,7 @@ Prerequisites:
 
 To change the scope Pages uses:
 
-1. On the left sidebar, at the bottom, select **Admin**.
+1. On the left sidebar, at the bottom, select **Admin**. If you've [turned on the new navigation](../../user/interface_redesign.md#turn-new-navigation-on-or-off), in the upper-right corner, select **Admin**.
 1. Select **Applications**.
 1. Expand **GitLab Pages**.
 1. Clear the `api` scope's checkbox and select the desired scope's checkbox (for example,
@@ -720,7 +718,7 @@ Prerequisites:
 
 To disable public access to all Pages sites:
 
-1. On the left sidebar, at the bottom, select **Admin**.
+1. On the left sidebar, at the bottom, select **Admin**. If you've [turned on the new navigation](../../user/interface_redesign.md#turn-new-navigation-on-or-off), in the upper-right corner, select **Admin**.
 1. Select **Settings** > **Preferences**.
 1. Expand **Pages**.
 1. Select the **Disable public access to Pages sites** checkbox.
@@ -751,7 +749,7 @@ Prerequisites:
 
 To disable unique domains by default:
 
-1. On the left sidebar, at the bottom, select **Admin**.
+1. On the left sidebar, at the bottom, select **Admin**. If you've [turned on the new navigation](../../user/interface_redesign.md#turn-new-navigation-on-or-off), in the upper-right corner, select **Admin**.
 1. Select **Settings** > **Preferences**.
 1. Expand **Pages**.
 1. Clear the **Enable unique domains by default** checkbox.
@@ -1007,7 +1005,7 @@ Prerequisites:
 
 To set the global maximum pages size for a project:
 
-1. On the left sidebar, at the bottom, select **Admin**.
+1. On the left sidebar, at the bottom, select **Admin**. If you've [turned on the new navigation](../../user/interface_redesign.md#turn-new-navigation-on-or-off), in the upper-right corner, select **Admin**.
 1. Select **Settings** > **Preferences**.
 1. Expand **Pages**.
 1. In **Maximum size of pages**, enter a value. The default is `100`.
@@ -1028,7 +1026,7 @@ Prerequisites:
 
 To set the maximum size of each GitLab Pages site in a group, overriding the inherited setting:
 
-1. On the left sidebar, select **Search or go to** and find your group.
+1. On the left sidebar, select **Search or go to** and find your group. If you've [turned on the new navigation](../../user/interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
 1. Select **Settings** > **General**.
 1. Expand **Pages**.
 1. Enter a value under **Maximum size** in MB.
@@ -1049,7 +1047,7 @@ Prerequisites:
 
 To set the maximum size of GitLab Pages site in a project, overriding the inherited setting:
 
-1. On the left sidebar, select **Search or go to** and find your project.
+1. On the left sidebar, select **Search or go to** and find your project. If you've [turned on the new navigation](../../user/interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
 1. Select **Deploy** > **Pages**.
 1. In **Maximum size of pages**, enter the size in MB.
 1. Select **Save changes**.
@@ -1062,7 +1060,7 @@ Prerequisites:
 
 To set the maximum number of GitLab Pages custom domains for a project:
 
-1. On the left sidebar, at the bottom, select **Admin**.
+1. On the left sidebar, at the bottom, select **Admin**. If you've [turned on the new navigation](../../user/interface_redesign.md#turn-new-navigation-on-or-off), in the upper-right corner, select **Admin**.
 1. Select **Settings** > **Preferences**.
 1. Expand **Pages**.
 1. Enter a value for **Maximum number of custom domains per project**. Use `0` for unlimited domains.
@@ -1084,7 +1082,7 @@ To configure the default duration for the instance after which
 [parallel deployments](../../user/project/pages/_index.md#parallel-deployments)
 are deleted:
 
-1. On the left sidebar, at the bottom, select **Admin**.
+1. On the left sidebar, at the bottom, select **Admin**. If you've [turned on the new navigation](../../user/interface_redesign.md#turn-new-navigation-on-or-off), in the upper-right corner, select **Admin**.
 1. Select **Settings** > **Preferences**.
 1. Expand **Pages**.
 1. Enter a value for **Default expiration for parallel deployments in seconds**.

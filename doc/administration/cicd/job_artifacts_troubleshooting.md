@@ -14,6 +14,23 @@ title: Job artifact troubleshooting for administrators
 
 When administering job artifacts, you might encounter the following issues.
 
+## Job artifacts can have wrong filenames
+
+Before GitLab 18.6, migrating from remote to local storage could lead to artifacts being copied with incorrect filenames.
+
+For example:
+
+- Artifacts should look similar to: `path/to/artifacts/2025_10_15/922/485/artifacts.zip`.
+- Artifacts with incorrect file names look similar to: `path/to/artifacts/2025_10_15/922/485/4f8681af93715b90c913e507f24b05cc6ca6e` (with no `.zip` extension).
+
+If this happened to your GitLab instance, run:
+
+```shell
+gitlab-rake gitlab:artifacts:fix_artifact_filepath
+```
+
+This task checks for artifacts in local storage that have an incorrect filename and renames them to the expected file name.
+
 ## Job artifacts using too much disk space
 
 Job artifacts can fill up your disk space quicker than expected. Some possible

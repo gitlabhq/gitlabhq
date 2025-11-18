@@ -2,7 +2,7 @@
 stage: Create
 group: Import
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
-title: Import your project from Bitbucket Server
+title: Migrate from Bitbucket Server
 description: "Import projects from Bitbucket Server to GitLab."
 ---
 
@@ -54,7 +54,7 @@ However, to help estimate the duration of your import, a project comprised of th
 To import your Bitbucket repositories:
 
 1. Sign in to GitLab.
-1. On the left sidebar, at the top, select **Create new** ({{< icon name="plus" >}}) and **New project/repository**.
+1. On the left sidebar, at the top, select **Create new** ({{< icon name="plus" >}}) and **New project/repository**. If you've [turned on the new navigation](../../interface_redesign.md#turn-new-navigation-on-or-off), this button is in the upper-right corner.
 1. Select **Import project**.
 1. Select **Bitbucket Server**.
 1. Sign in to Bitbucket and grant GitLab access to your Bitbucket account.

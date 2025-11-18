@@ -104,12 +104,9 @@ module Ci
     # Explicitly set the value here before each save operation instead.
     override :schedule_next_run!
     def schedule_next_run!
-      if Feature.enabled?(:resolve_pipeline_schedule_race_conditions, project)
-        return if cron_values_changed?
+      return if cron_values_changed?
 
-        set_next_run_at
-      end
-
+      set_next_run_at
       super
     end
 
@@ -174,8 +171,6 @@ module Ci
     # call schedule_next_run!
     override :allow_next_run_at_update?
     def allow_next_run_at_update?
-      return true unless Feature.enabled?(:resolve_pipeline_schedule_race_conditions, project)
-
       cron_values_changed?
     end
   end

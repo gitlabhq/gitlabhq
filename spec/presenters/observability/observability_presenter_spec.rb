@@ -23,7 +23,7 @@ RSpec.describe Observability::ObservabilityPresenter, feature_category: :observa
   describe '#title' do
     context 'with a valid path' do
       it 'returns the correct title' do
-        expect(presenter.title).to eq('Services')
+        expect(presenter.title).to eq('Observability|Services')
       end
     end
 
@@ -207,7 +207,7 @@ RSpec.describe Observability::ObservabilityPresenter, feature_category: :observa
         o11y_url: 'https://observability.example.com',
         path: 'services',
         auth_tokens: { 'test_token' => 'value' },
-        title: 'Services'
+        title: 'Observability|Services'
       )
     end
 
@@ -226,7 +226,7 @@ RSpec.describe Observability::ObservabilityPresenter, feature_category: :observa
           o11y_url: nil,
           path: 'services',
           auth_tokens: {},
-          title: 'Services'
+          title: 'Observability|Services'
         )
       end
     end

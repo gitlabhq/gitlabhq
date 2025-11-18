@@ -1,6 +1,4 @@
-import Vue from 'vue';
 import { setHTMLFixture, resetHTMLFixture } from 'helpers/fixtures';
-import SourceEditorToolbar from '~/editor/components/source_editor_toolbar.vue';
 import { ToolbarExtension } from '~/editor/extensions/source_editor_toolbar_ext';
 import EditorInstance from '~/editor/source_editor_instance';
 import { apolloProvider } from '~/editor/components/source_editor_toolbar_graphql';
@@ -37,7 +35,6 @@ describe('Source Editor Toolbar Extension', () => {
       ${'custom-toolbar'} | ${'custom'}  | ${'Sets up'}         | ${getCustomEl}
       ${'non-existing'}   | ${'default'} | ${'Does not set up'} | ${getDefaultEl}
     `('Sets up the Vue application on $type node when node is $id', ({ id, expectedElFn }) => {
-      jest.spyOn(Vue, 'extend');
       jest.spyOn(ToolbarExtension, 'setupVue');
 
       const el = document.getElementById(id);
@@ -47,7 +44,6 @@ describe('Source Editor Toolbar Extension', () => {
 
       if (expectedEl) {
         expect(ToolbarExtension.setupVue).toHaveBeenCalledWith(expectedEl);
-        expect(Vue.extend).toHaveBeenCalledWith(SourceEditorToolbar);
       } else {
         expect(ToolbarExtension.setupVue).not.toHaveBeenCalled();
       }

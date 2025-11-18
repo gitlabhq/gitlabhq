@@ -14,7 +14,13 @@ RSpec.shared_context 'with policy sync state', :clean_gitlab_redis_shared_state 
 
     stub_csp_group(policy_configuration.namespace)
 
-    allow(Gitlab::ApplicationContext).to receive(:current_context_attribute)
-                                           .and_return(policy_configuration_id.to_s)
+    allow(Gitlab::ApplicationContext)
+      .to receive(:current_context_attribute)
+      .and_call_original
+
+    allow(Gitlab::ApplicationContext)
+      .to receive(:current_context_attribute)
+      .with(Security::SecurityOrchestrationPolicies::PolicySyncState::POLICY_SYNC_CONTEXT_KEY)
+      .and_return(policy_configuration_id.to_s)
   end
 end

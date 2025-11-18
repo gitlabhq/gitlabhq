@@ -7,6 +7,7 @@ feature_categories:
 description: Aggregates per-user scores related to potential product abuse.
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/117301
 milestone: '15.11'
-gitlab_schema: gitlab_main_org
+gitlab_schema: gitlab_main_user
 table_size: small
-sharding_key_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/553436
+sharding_key:
+  user_id: users

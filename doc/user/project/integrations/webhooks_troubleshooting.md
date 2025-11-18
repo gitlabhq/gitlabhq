@@ -135,3 +135,15 @@ If a webhook is not triggered, verify that:
 - The GitLab instance is not in [Silent Mode](../../../administration/silent_mode/_index.md).
 - The **Push event activities limit** and **Push event hooks limit** settings in the
   [**Admin** area](../../../administration/settings/push_event_activities_limit.md) are set to a value greater than `0`.
+
+## Error: `Webhook rate limit exceeded`
+
+A webhook might fail due to rate limiting.
+GitLab.com has [specific limits](../../gitlab_com/_index.md#webhooks)
+on the number of times a webhook can be called in a minute.
+
+To confirm if rate limiting is the issue:
+
+1. Check your GitLab logs for the message `Webhook rate limit exceeded`.
+1. Reduce the number of events that trigger webhooks or
+   contact GitLab Support to discuss your rate limit requirements.

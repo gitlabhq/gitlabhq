@@ -1,5 +1,5 @@
 import { DiffFile } from '~/rapid_diffs/web_components/diff_file';
-import { VIEWER_ADAPTERS } from '~/rapid_diffs/app/adapters';
+import { VIEWER_ADAPTERS } from '~/rapid_diffs/app/adapter_configs/base';
 
 customElements.define('diff-file', DiffFile);
 customElements.define(

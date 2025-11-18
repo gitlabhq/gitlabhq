@@ -8,13 +8,13 @@ title: プロジェクトアクセストークンAPI
 {{< details >}}
 
 - プラン: Free、Premium、Ultimate
-- 製品: GitLab.com、GitLab Self-Managed、GitLab Dedicated
+- 提供形態: GitLab.com、GitLab Self-Managed、GitLab Dedicated
 
 {{< /details >}}
 
 このAPIを使用して、プロジェクトアクセストークンを操作します。詳細については、[プロジェクトアクセストークン](../user/project/settings/project_access_tokens.md)を参照してください。
 
-## すべてのプロジェクトアクセストークンをリストする
+## すべてのプロジェクトアクセストークンのリストを取得する {#list-all-project-access-tokens}
 
 {{< history >}}
 
@@ -22,7 +22,7 @@ title: プロジェクトアクセストークンAPI
 
 {{< /history >}}
 
-指定されたプロジェクトのすべてのプロジェクトアクセストークンをリストします。
+指定されたプロジェクトのすべてのプロジェクトアクセストークンのリストを取得します。
 
 ```plaintext
 GET projects/:id/access_tokens
@@ -84,9 +84,9 @@ curl --request GET \
 ]
 ```
 
-## プロジェクトアクセストークンの詳細を取得する
+## プロジェクトアクセストークンの詳細を取得する {#get-details-on-a-project-access-token}
 
-プロジェクトアクセストークンの詳細を取得します。特定のプロジェクトアクセストークンを参照するか、キーワード`self`を使用して、認証するプロジェクトアクセストークンの詳細を返すことができます。
+プロジェクトアクセストークンの詳細を取得します。
 
 ```plaintext
 GET projects/:id/access_tokens/:token_id
@@ -95,7 +95,7 @@ GET projects/:id/access_tokens/:token_id
 | 属性  | 型              | 必須 | 説明 |
 | ---------- | ----------------- | -------- | ----------- |
 | `id`       | 整数または文字列 | はい      | プロジェクトのIDまたは[URLエンコードされたパス](rest/_index.md#namespaced-paths)。 |
-| `token_id` | 整数または文字列 | はい      | プロジェクトアクセストークンのIDまたはキーワード`self`。 |
+| `token_id` | 整数または文字列 | はい      | ID |
 
 ```shell
 curl --request GET \
@@ -121,7 +121,7 @@ curl --request GET \
 }
 ```
 
-## プロジェクトアクセストークンを作成する
+## プロジェクトアクセストークンを作成する {#create-a-project-access-token}
 
 {{< history >}}
 
@@ -129,9 +129,9 @@ curl --request GET \
 
 {{< /history >}}
 
-指定されたプロジェクトのプロジェクトアクセストークンを作成します。自分のアカウントよりもレベルが高いアクセスレベルでトークンを作成することはできません。たとえば、メンテナーロールのユーザーは、オーナーロールを持つプロジェクトアクセストークンを作成できません。 
+指定されたプロジェクトのプロジェクトアクセストークンを作成します。自分のアカウントよりもレベルが高いアクセスレベルでトークンを作成することはできません。たとえば、メンテナーロールのユーザーは、オーナーロールでプロジェクトアクセストークンを作成できません。
 
-このエンドポイントでは、パーソナルアクセストークンを使用する必要があります。プロジェクトアクセストークンで認証することはできません。この機能を追加するための[オープン機能リクエスト](https://gitlab.com/gitlab-org/gitlab/-/issues/359953)があります。
+このエンドポイントでパーソナルアクセストークンを使用する必要があります。プロジェクトアクセストークンで認証することはできません。この機能を追加するための[オープン機能リクエスト](https://gitlab.com/gitlab-org/gitlab/-/issues/359953)があります。
 
 ```plaintext
 POST projects/:id/access_tokens
@@ -143,8 +143,8 @@ POST projects/:id/access_tokens
 | `name`         | 文字列            | はい      | トークンの名前。 |
 | `description`  | 文字列            | いいえ       | プロジェクトアクセストークンの説明。 |
 | `scopes`       | `Array[String]`   | はい      | トークンで使用可能な[スコープ](../user/project/settings/project_access_tokens.md#scopes-for-a-project-access-token)のリスト。 |
-| `access_level` | 整数           | いいえ       | トークンの[アクセスレベル](../development/permissions/predefined_roles.md#members)。使用可能な値:`10`（ゲスト）、`15`（プランナー）、`20`（レポーター）、`30`（デベロッパー）、`40`（メンテナー）、および `50`（オーナー）。デフォルト値: `40`。 |
-| `expires_at`   | 日付              | はい      | ISO形式（`YYYY-MM-DD`）のトークンの有効期限。未定義の場合、日付は[許可される最大ライフタイム制限](../user/profile/personal_access_tokens.md#access-token-expiration)に設定されます。 |
+| `access_level` | 整数           | いいえ       | トークンのロール。使用可能な値: `10`（ゲスト）、`15`（プランナー）、`20`（レポーター）、`30`（デベロッパー）、`40`（メンテナー）、および`50`（オーナー）。デフォルト値: `40`。 |
+| `expires_at`   | 日付              | はい      | ISO形式（`YYYY-MM-DD`）のトークンの有効期限。未定義の場合、日付は[最大許容ライフタイム制限](../user/profile/personal_access_tokens.md#access-token-expiration)に設定されます。 |
 
 ```shell
 curl --request POST \
@@ -173,7 +173,7 @@ curl --request POST \
 }
 ```
 
-## プロジェクトアクセストークンをローテーションする
+## プロジェクトアクセストークンをローテーションする {#rotate-a-project-access-token}
 
 {{< history >}}
 
@@ -184,11 +184,12 @@ curl --request POST \
 
 プロジェクトアクセストークンをローテーションします。これにより、以前のトークンが直ちに失効し、新しいトークンが作成されます。通常、このエンドポイントは、パーソナルアクセストークンで認証することで、特定のプロジェクトアクセストークンをローテーションします。プロジェクトアクセストークンを使用して、そのトークン自体をローテーションすることもできます。詳細については、[自己ローテーション](#self-rotate)を参照してください。
 
-このエンドポイントを使用して、以前に失効したトークンをローテーションしようとすると、同じトークンファミリーのアクティブなトークンはすべて失効します。詳細については、[自動再利用検出](personal_access_tokens.md#automatic-reuse-detection)を参照してください。
+このエンドポイントを使用して、以前に失効したトークンをローテーションしようとすると、同じトークンファミリーのアクティブなトークンはすべて失効します。詳細については、[自動再利用の検出](personal_access_tokens.md#automatic-reuse-detection)を参照してください。
 
 前提要件:
 
-- [`api`スコープ](../user/profile/personal_access_tokens.md#personal-access-token-scopes)を持つパーソナルアクセストークン、あるいは[`api`スコープまたは `self_rotate`スコープ](../user/profile/personal_access_tokens.md#personal-access-token-scopes)を持つプロジェクトアクセストークン。[自己ローテーション](#self-rotate)を参照してください。
+- 別のプロジェクトアクセストークンをローテーションするには、[`api`スコープ](../user/profile/personal_access_tokens.md#personal-access-token-scopes)を持つパーソナルアクセストークンが必要です。
+- プロジェクトアクセストークンを[自己ローテーション](#self-rotate)するには、トークンが[`api`スコープまたは`self_rotate`スコープ](../user/profile/personal_access_tokens.md#personal-access-token-scopes)を持っている必要があります。
 
 ```plaintext
 POST /projects/:id/access_tokens/:token_id/rotate
@@ -198,7 +199,7 @@ POST /projects/:id/access_tokens/:token_id/rotate
 | ------------ | ----------------- | -------- | ----------- |
 | `id`         | 整数または文字列 | はい      | プロジェクトのIDまたは[URLエンコードされたパス](rest/_index.md#namespaced-paths)。 |
 | `token_id`   | 整数または文字列 | はい      | プロジェクトアクセストークンのIDまたはキーワード`self`。 |
-| `expires_at` | 日付              | いいえ       | ISO形式（`YYYY-MM-DD`）のアクセストークンの有効期限。日付はローテーション日から1年以内である必要があります。未定義の場合、トークンは1週間後に期限切れになります。 |
+| `expires_at` | 日付              | いいえ       | ISO形式（`YYYY-MM-DD`）のアクセストークンの有効期限。トークンに有効期限が必要な場合、デフォルトは1週間です。不要な場合、デフォルトは[最大許容ライフタイム制限](../user/profile/personal_access_tokens.md#access-token-expiration)になります。 |
 
 ```shell
 curl --request POST \
@@ -206,7 +207,7 @@ curl --request POST \
   --url "https://gitlab.example.com/api/v4/projects/<project_id>/access_tokens/<token_id>/rotate"
 ```
 
-応答の例:
+応答例:
 
 ```json
 {
@@ -227,7 +228,7 @@ curl --request POST \
 
 成功すると、`200: OK`を返します。
 
-可能性のある他の応答:
+その他の発生しうる応答:
 
 - ローテーションが正常に完了しなかった場合は`400: Bad Request`。
 - 次のいずれかの条件に該当する場合は`401: Unauthorized`。
@@ -240,14 +241,14 @@ curl --request POST \
 - ユーザーが管理者であるが、トークンが存在しない場合は`404: Not Found`。
 - トークンがプロジェクトアクセストークンでない場合は`405: Method Not Allowed`。
 
-### 自己ローテーション
+### 自己ローテーション {#self-rotate}
 
 特定のプロジェクトアクセストークンをローテーションする代わりに、リクエストの認証に使用したものと同じプロジェクトアクセストークンをローテーションすることができます。プロジェクトアクセストークンを自己ローテーションするには、次のことを行う必要があります。
 
 - [`api`スコープまたは`self_rotate`スコープ](../user/profile/personal_access_tokens.md#personal-access-token-scopes)を使用して、プロジェクトアクセストークンをローテーションします。
 - リクエストURLで`self`キーワードを使用します。
 
-リクエストの例:
+リクエスト例:
 
 ```shell
 curl --request POST \
@@ -255,7 +256,7 @@ curl --request POST \
   --url "https://gitlab.example.com/api/v4/projects/<project_id>/access_tokens/self/rotate"
 ```
 
-## プロジェクトアクセストークンを失効させる
+## プロジェクトアクセストークンを失効させる {#revoke-a-project-access-token}
 
 指定されたプロジェクトアクセストークンを失効させます。
 
@@ -276,7 +277,7 @@ curl --request DELETE \
 
 成功すると、`204 No content`を返します。
 
-可能性のある他の応答:
+その他の発生しうる応答:
 
-- `400 Bad Request`:トークンは失効しませんでした。
-- `404 Not Found`:トークンが見つかりません。
+- 正常に失効しなかった場合は`400: Bad Request`。
+- アクセストークンが存在しない場合は`404: Not Found`。

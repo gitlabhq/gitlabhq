@@ -718,6 +718,17 @@ RSpec.describe API::Commits, feature_category: :source_code_management do
         end
       end
 
+      context 'when using OAuth token with nil application' do
+        let(:oauth_token) { create(:oauth_access_token, user: user, application: nil, scopes: 'api') }
+
+        it 'successfully creates the commit without raising NoMethodError' do
+          post api(url, user, oauth_access_token: oauth_token), params: valid_c_params
+
+          expect(response).to have_gitlab_http_status(:created)
+          expect(json_response['title']).to eq(message)
+        end
+      end
+
       context 'when using personal access token', :snowplow, :clean_gitlab_redis_sessions do
         let(:personal_access_token) { create(:personal_access_token, scopes: ['api'], user: user) }
         let(:web_ide_oauth_app) { create(:oauth_application, name: 'GitLab Web IDE', trusted: true, confidential: false, scopes: "api") }

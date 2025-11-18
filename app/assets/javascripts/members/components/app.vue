@@ -2,7 +2,7 @@
 import { GlAlert } from '@gitlab/ui';
 // eslint-disable-next-line no-restricted-imports
 import { mapState, mapMutations } from 'vuex';
-import { scrollToElement } from '~/lib/utils/common_utils';
+import { scrollToElement } from '~/lib/utils/scroll_utils';
 import { HIDE_ERROR } from '../store/mutation_types';
 import FilterSortContainer from './filter_sort/filter_sort_container.vue';
 import MembersTable from './table/members_table.vue';

@@ -233,7 +233,7 @@ RSpec.describe Namespaces::DeletableHelper, feature_category: :groups_and_projec
           button_text: button_text, has_security_policy_project: has_security_policy_project,
           permanently_remove: permanently_remove)
         expect(expected).to eq({
-          button_text: button_text.nil? ? "Delete group" : button_text,
+          button_text: button_text.nil? ? "Delete" : button_text,
           confirm_danger_message: confirm_remove_group_message(group, permanently_remove),
           remove_form_id: form_value_id,
           phrase: group.full_path,
@@ -333,75 +333,57 @@ RSpec.describe Namespaces::DeletableHelper, feature_category: :groups_and_projec
     let(:project) { build(:project) }
     let(:base_button_data) do
       {
-        button_text: 'Delete project',
-        restore_help_path: help_page_path('user/project/working_with_projects.md', anchor: 'restore-a-project'),
-        delayed_deletion_date: '2025-02-09',
+        button_text: 'Delete',
         form_path: project_path(project),
         confirm_phrase: project.path_with_namespace,
         name_with_namespace: project.name_with_namespace,
         is_fork: 'false',
-        issues_count: '0',
-        merge_requests_count: '0',
-        forks_count: '0',
-        stars_count: '0'
+        issues_count: 0,
+        merge_requests_count: 0,
+        forks_count: 0,
+        stars_count: 0,
+        permanent_deletion_date: '2025-02-09',
+        marked_for_deletion: 'false'
       }
     end
 
-    let(:button_text) { nil }
-
-    subject(:data) { helper.project_delete_delayed_button_data(project, button_text) }
+    subject(:data) { helper.project_delete_delayed_button_data(project) }
 
     before do
       stub_application_setting(deletion_adjourned_period: 7)
     end
 
-    describe 'with default button text' do
-      it 'returns expected hash' do
-        expect(data).to match(base_button_data)
-      end
-    end
-
-    describe 'with custom button text' do
-      let(:button_text) { 'Delete project immediately' }
-
-      it 'returns expected hash' do
-        expect(data).to match(base_button_data.merge(button_text: 'Delete project immediately'))
-      end
+    it 'returns expected hash' do
+      expect(data).to match(base_button_data)
     end
   end
 
-  describe '#project_delete_immediately_button_data' do
+  describe '#project_delete_immediately_button_data', time_travel_to: '2025-02-02' do
     let(:project) { build(:project) }
     let(:base_button_data) do
       {
-        button_text: 'Delete project',
+        button_text: 'Delete immediately',
         form_path: project_path(project, permanently_delete: true),
         confirm_phrase: project.path_with_namespace,
         name_with_namespace: project.name_with_namespace,
         is_fork: 'false',
-        issues_count: '0',
-        merge_requests_count: '0',
-        forks_count: '0',
-        stars_count: '0'
+        issues_count: 0,
+        merge_requests_count: 0,
+        forks_count: 0,
+        stars_count: 0,
+        permanent_deletion_date: '2025-02-09',
+        marked_for_deletion: 'false'
       }
     end
 
-    let(:button_text) { nil }
+    subject(:data) { helper.project_delete_immediately_button_data(project) }
 
-    subject(:data) { helper.project_delete_immediately_button_data(project, button_text) }
-
-    describe 'with default button text' do
-      it 'returns expected hash' do
-        expect(data).to match(base_button_data)
-      end
+    before do
+      stub_application_setting(deletion_adjourned_period: 7)
     end
 
-    describe 'with custom button text' do
-      let(:button_text) { 'Delete project immediately' }
-
-      it 'returns expected hash' do
-        expect(data).to match(base_button_data.merge(button_text: 'Delete project immediately'))
-      end
+    it 'returns expected hash' do
+      expect(data).to match(base_button_data)
     end
   end
 
@@ -465,8 +447,7 @@ RSpec.describe Namespaces::DeletableHelper, feature_category: :groups_and_projec
       let(:namespace) { build_stubbed(:group) }
 
       specify do
-        expect(message).to eq "This group has been scheduled for deletion on <strong>2025-02-09</strong>. " \
-          "To cancel the scheduled deletion, you can restore this group, including all its resources."
+        expect(message).to eq "This group will be restored from scheduled deletion."
       end
     end
 
@@ -475,8 +456,7 @@ RSpec.describe Namespaces::DeletableHelper, feature_category: :groups_and_projec
         let(:namespace) { build_stubbed(entity) }
 
         specify do
-          expect(message).to eq "This project has been scheduled for deletion on <strong>2025-02-09</strong>. " \
-            "To cancel the scheduled deletion, you can restore this project, including all its resources."
+          expect(message).to eq "This project will be restored from scheduled deletion."
         end
       end
     end

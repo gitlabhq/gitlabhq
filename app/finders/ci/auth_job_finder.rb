@@ -37,7 +37,7 @@ module Ci
         jwt.job
       else
         # TODO: Remove fallback finder when feature flag `ci_job_token_jwt` is removed
-        ::Ci::Build.find_by_token(token)
+        find_from_database_token
       end
     end
 
@@ -47,6 +47,14 @@ module Ci
       # We prefer not to use `link_from_job` when we have the JWT because
       # the JWT is the source of truth.
       ::Gitlab::Auth::Identity.fabricate(jwt.job.user)&.link!(jwt.scoped_user)
+    end
+
+    def find_from_database_token
+      partition_id = ::Ci::Builds::TokenPrefix.decode_partition(token)
+      job = ::Ci::Build.in_partition(partition_id).find_by_token(token) if partition_id.present?
+      return job if job
+
+      ::Ci::Build.find_by_token(token)
     end
 
     def validate_job!(job)
@@ -60,7 +68,7 @@ module Ci
     end
 
     def validate_executing_job!(job)
-      return if job.waiting_for_runner_ack?
+      return if job.runner_ack_wait_status == :waiting
 
       raise NotRunningJobError, 'Job is not running' unless Ci::HasStatus::EXECUTING_STATUSES.include?(job.status)
     end

@@ -16,7 +16,7 @@ Export all the data collected from a project's merge requests into a comma-separ
 
 To export merge requests to a CSV file:
 
-1. On the left sidebar, select **Search or go to** and find your project.
+1. On the left sidebar, select **Search or go to** and find your project. If you've [turned on the new navigation](../../interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
 1. Select **Code** > **Merge requests**.
 1. Add any searches or filters. This can help you keep the size of the CSV file under the 15 MB limit. The limit ensures
    the file can be emailed to a variety of email providers.

@@ -273,9 +273,7 @@ RSpec.describe Timelog, feature_category: :team_planning do
       let(:timelog) { described_class.new(issue: issue) }
 
       it 'sets the namespace id from the issue namespace id' do
-        # zero until we remove the default when table is backfilled
-        # TODO: Remove with https://gitlab.com/gitlab-org/gitlab/-/issues/514588
-        expect(timelog.namespace_id).to be_zero
+        expect(timelog.namespace_id).to be_nil
 
         timelog.valid?
 
@@ -288,9 +286,7 @@ RSpec.describe Timelog, feature_category: :team_planning do
       let(:timelog) { described_class.new(merge_request: merge_request) }
 
       it 'sets the namespace id from the merge request project namespace id' do
-        # zero until we remove the default when table is backfilled
-        # TODO: Remove with https://gitlab.com/gitlab-org/gitlab/-/issues/514588
-        expect(timelog.namespace_id).to be_zero
+        expect(timelog.namespace_id).to be_nil
 
         timelog.valid?
 

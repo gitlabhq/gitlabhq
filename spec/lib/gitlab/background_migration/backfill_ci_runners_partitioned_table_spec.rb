@@ -3,7 +3,7 @@
 require 'spec_helper'
 
 RSpec.describe Gitlab::BackgroundMigration::BackfillCiRunnersPartitionedTable, schema: 20250113151324,
-  feature_category: :runner, migration: :gitlab_ci do
+  feature_category: :runner_core, migration: :gitlab_ci do
   let(:connection) { Ci::ApplicationRecord.connection }
 
   describe '#perform' do

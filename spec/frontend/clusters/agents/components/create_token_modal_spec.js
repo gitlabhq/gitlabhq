@@ -11,7 +11,6 @@ import {
   EVENT_ACTIONS_OPEN,
   TOKEN_NAME_LIMIT,
   MAX_LIST_COUNT,
-  CREATE_TOKEN_MODAL,
 } from '~/clusters/agents/constants';
 import createNewAgentToken from '~/clusters/agents/graphql/mutations/create_new_agent_token.mutation.graphql';
 import getClusterAgentQuery from '~/clusters/agents/graphql/queries/get_cluster_agent.query.graphql';
@@ -204,7 +203,6 @@ describe('CreateTokenModal', () => {
       expect(findAgentInstructions().props()).toMatchObject({
         agentName,
         agentToken: 'token-secret',
-        modalId: CREATE_TOKEN_MODAL,
       });
     });
 

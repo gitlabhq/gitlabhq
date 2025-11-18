@@ -10,6 +10,7 @@ RSpec.describe 'Projects > Snippets > User updates a snippet', :js, feature_cate
   let_it_be(:snippet, reload: true) { create(:project_snippet, :repository, project: project, author: user) }
 
   before do
+    skip 'Test skipped when Project Studio enabled as page load can timeout - https://gitlab.com/gitlab-org/gitlab/-/issues/580358' if Users::ProjectStudio.enabled_for_user?(user) # rubocop:disable RSpec/AvoidConditionalStatements -- temporary Project Studio rollout
     project.add_maintainer(user)
     sign_in(user)
 

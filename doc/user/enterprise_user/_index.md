@@ -57,7 +57,7 @@ Prerequisites:
 
 To add a custom domain for a group:
 
-1. On the left sidebar, select **Search or go to** and find your group.
+1. On the left sidebar, select **Search or go to** and find your group. If you've [turned on the new navigation](../interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
 1. Select **Settings** > **Domain Verification**.
 1. In the upper-right corner, select **Add Domain**.
 1. Configure the domain settings:
@@ -69,48 +69,48 @@ To add a custom domain for a group:
      - If you want to provide your own SSL/TLS certificate, select
        **Manually enter certificate information**. You can also add a certificate and key later.
 
-        {{< alert type="note" >}}
+       {{< alert type="note" >}}
 
-        A valid certificate is not required for domain verification. You can ignore self-signed certificate warnings
-        if you are not using GitLab Pages.
+       A valid certificate is not required for domain verification. You can ignore self-signed certificate warnings
+       if you are not using GitLab Pages.
 
-        {{< /alert >}}
+       {{< /alert >}}
 
 1. Select **Add Domain**.
    GitLab saves the domain information.
 1. Verify ownership of the domain:
    1. In **TXT**, copy the verification code.
    1. In your domain provider DNS settings, add the verification code as a `TXT` record.
-   1. In GitLab, on the left sidebar, select **Search or go to** and find your group.
+   1. In GitLab, on the left sidebar, select **Search or go to** and find your group. If you've [turned on the new navigation](../interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
    1. Select **Settings** > **Domain Verification**.
    1. Next to the domain name, select **Retry verification** ({{< icon name="retry" >}}).
 
 After successful verification, the domain status changes to **Verified** and can be used for enterprise user management.
 
-   {{< alert type="note" >}}
+{{< alert type="note" >}}
 
-   Generally, DNS propagation completes in a few minutes, but can take up to 24 hours.
-   Until it completes, the domain remains unverified in GitLab.
+Generally, DNS propagation completes in a few minutes, but can take up to 24 hours.
+Until it completes, the domain remains unverified in GitLab.
 
-   If the domain is still unverified after seven days, GitLab automatically removes the domain.
+If the domain is still unverified after seven days, GitLab automatically removes the domain.
 
-   After verification, GitLab periodically reverifies the domain. To avoid potential issues,
-   maintain the `TXT` record on your domain provider.
+After verification, GitLab periodically reverifies the domain. To avoid potential issues,
+maintain the `TXT` record on your domain provider.
 
-   {{< /alert >}}
+{{< /alert >}}
 
 ### View group domains
 
 To view all custom domains for a group:
 
-1. On the left sidebar, select **Search or go to** and find your group.
+1. On the left sidebar, select **Search or go to** and find your group. If you've [turned on the new navigation](../interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
 1. Select **Settings** > **Domain Verification**.
 
 ### Edit group domains
 
 To edit a custom domain for a group:
 
-1. On the left sidebar, select **Search or go to** and find your group.
+1. On the left sidebar, select **Search or go to** and find your group. If you've [turned on the new navigation](../interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
 1. Select **Settings** > **Domain Verification**.
 1. Next to the domain name, select **Edit** ({{< icon name="pencil" >}}).
 
@@ -132,7 +132,7 @@ Deleting a group domain can impact enterprise users in your group. After you del
 
 To delete a custom domain for a group:
 
-1. On the left sidebar, select **Search or go to** and find your group.
+1. On the left sidebar, select **Search or go to** and find your group. If you've [turned on the new navigation](../interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
 1. Select **Settings** > **Domain Verification**.
 1. Next to the domain name, select **Remove domain** ({{< icon name="remove" >}}).
 1. When prompted, select **Delete domain**.
@@ -190,6 +190,7 @@ reduce the security footprint of your users.
 
 - [Disable password authentication](../group/saml_sso/_index.md#disable-password-authentication-for-enterprise-users).
 - [Disable personal access tokens](../../user/profile/personal_access_tokens.md#disable-personal-access-tokens-for-enterprise-users).
+- [Disable SSH Keys](../../user/ssh.md#disable-ssh-keys-for-enterprise-users).
 - [Disable two-factor authentication](../../security/two_factor_authentication.md#enterprise-users).
 
 ### Restrict group and project creation
@@ -218,7 +219,7 @@ Prerequisites:
 
 To view an enterprise user's email address:
 
-1. On the left sidebar, select **Search or go to** and find your project or group.
+1. On the left sidebar, select **Search or go to** and find your project or group. If you've [turned on the new navigation](../interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
 1. Select **Manage** > **Members**.
 1. Hover over the enterprise user's name.
 
@@ -231,6 +232,15 @@ includes users' email addresses.
 Enterprise users can follow the same process as other GitLab users to
 [change their primary email address](../../user/profile/_index.md#change-your-primary-email).
 The new email address must be from a verified domain. If your organization has no verified
+domains, your enterprise users cannot change their primary email address.
+
+Enterprise users can follow the same process as other GitLab users to
+[change their primary email address](../../user/profile/_index.md#change-your-primary-email).
+
+Group Owners can modify the email address for enterprise users in their group with the
+[group enterprise users API](../../api/group_enterprise_users.md#modify-an-enterprise-user).
+
+The new email address must be from a verified domain. If your group has no verified
 domains, your enterprise users cannot change their primary email address.
 
 Only GitLab support can change the primary email address to an email address from a
@@ -253,11 +263,14 @@ the user, you can choose to either:
 
 ### Release an enterprise user
 
-You can remove enterprise management features from a user account. Removing an enterprise user might be required if, for
-example, a user wants to keep their GitLab account after leaving their company. Releasing a user
-does not alter their account roles or permissions, but removes the management options
-for the group Owner. If you need to permanently remove the account, you should
-[delete the user](#delete-an-enterprise-user) instead.
+You can remove enterprise management features from a user account. You might need to
+do this if, for example, a user wants to keep their GitLab account after leaving their
+company. When you release a user, their account roles and permissions remain the same,
+but the group Owner loses management options for that user. For example, the released
+user can access authentication methods that the group Owner previously disabled.
+
+If you need to permanently remove the account, [delete the user](#delete-an-enterprise-user)
+instead.
 
 To release the user, GitLab support must update the user's primary email address to an
 email address from a non-verified domain. This action automatically releases the account.
@@ -289,7 +302,7 @@ Prerequisites:
 
 To enable the Extension Marketplace for enterprise users:
 
-1. On the left sidebar, select **Search or go to** and find your group.
+1. On the left sidebar, select **Search or go to** and find your group. If you've [turned on the new navigation](../interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
 1. Select **Settings** > **General**.
 1. Expand **Permissions and group features**.
 1. Under **Web IDE and workspaces**, select the **Enable extension marketplace** checkbox.

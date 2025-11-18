@@ -47,7 +47,9 @@ RSpec.describe 'Adding an image DiffNote', feature_category: :team_planning do
 
     it_behaves_like 'a Note mutation when there are active record validation errors', model: DiffNote
 
-    it_behaves_like 'a Note mutation when there are rate limit validation errors'
+    context 'with quarantine', quarantine: 'https://gitlab.com/gitlab-org/quality/test-failure-issues/-/issues/2131' do
+      it_behaves_like 'a Note mutation when there are rate limit validation errors'
+    end
 
     context do
       let(:diff_refs) { build(:commit).diff_refs } # Allow fake diff refs so arguments are valid

@@ -100,7 +100,7 @@ func removeGitalyRepository(_ *testing.T, apiResponse *api.Response) error {
 		},
 	}); removeRepoErr != nil {
 		status, ok := status.FromError(removeRepoErr)
-		if !ok || !(status.Code() == codes.NotFound && (status.Message() == "repository does not exist" || status.Message() == "repository not found")) {
+		if !ok || status.Code() != codes.NotFound || (status.Message() != "repository does not exist" && status.Message() != "repository not found") {
 			return fmt.Errorf("remove repository: %w", removeRepoErr)
 		}
 
@@ -124,7 +124,7 @@ func ensureGitalyRepository(_ *testing.T, apiResponse *api.Response) error {
 		},
 	}); removeRepoErr != nil {
 		status, ok := status.FromError(removeRepoErr)
-		if !ok || !(status.Code() == codes.NotFound && (status.Message() == "repository does not exist" || status.Message() == "repository not found")) {
+		if !ok || status.Code() != codes.NotFound || (status.Message() != "repository does not exist" && status.Message() != "repository not found") {
 			return fmt.Errorf("remove repository: %w", removeRepoErr)
 		}
 

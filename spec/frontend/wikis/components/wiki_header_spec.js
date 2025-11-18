@@ -14,6 +14,8 @@ Vue.use(VueApollo);
 describe('wikis/components/wiki_header', () => {
   let wrapper;
   let fakeApollo;
+  const glModalDirective = jest.fn();
+  const restoreVersionModalId = 'wiki-restore-version-modal';
 
   const mockToastShow = jest.fn();
 
@@ -31,6 +33,13 @@ describe('wikis/components/wiki_header', () => {
     ]);
 
     wrapper = shallowMountExtended(WikiHeader, {
+      directives: {
+        glModal: {
+          bind(_, { value }) {
+            glModalDirective(value);
+          },
+        },
+      },
       apolloProvider: fakeApollo,
       provide: {
         pageHeading: 'Wiki page heading',
@@ -38,6 +47,7 @@ describe('wikis/components/wiki_header', () => {
         isPageTemplate: false,
         isEditingPath: false,
         showEditButton: true,
+        showRestoreVersionButton: false,
         wikiUrl: 'http://wiki.url',
         editButtonUrl: 'http://edit.url',
         lastVersion: '2024-06-03T01:53:28.000Z',
@@ -58,6 +68,11 @@ describe('wikis/components/wiki_header', () => {
         $toast: {
           show: mockToastShow,
         },
+        $options: {
+          modal: {
+            restoreVersionModalId,
+          },
+        },
       },
     });
   }
@@ -66,6 +81,56 @@ describe('wikis/components/wiki_header', () => {
   const findEditButton = () => wrapper.findByTestId('wiki-edit-button');
   const findSubscribeButton = () => wrapper.findByTestId('wiki-subscribe-button');
   const findLastVersion = () => wrapper.findByTestId('wiki-page-last-version');
+  const findSidebarToggle = () => wrapper.findByTestId('wiki-sidebar-toggle');
+  const findRestoreVersionButton = () => wrapper.findByTestId('wiki-restore-version-button');
+  const findCreateFromTemplateButton = () =>
+    wrapper.findByTestId('wiki-create-from-template-button');
+
+  describe('create from template functionality', () => {
+    it('renders create from template button if it is a template page', () => {
+      const createFromTemplateUrl =
+        'http://gdk.local/gitlab-org/gitlab/wiki/template/new?template_id=3';
+      buildWrapper({ isPageTemplate: true, createFromTemplateUrl });
+
+      expect(findCreateFromTemplateButton().exists()).toBe(true);
+      expect(findCreateFromTemplateButton().attributes('href')).toBe(createFromTemplateUrl);
+    });
+
+    it('does not render create from template button if it is not a template page', () => {
+      buildWrapper({ isPageTemplate: false, createFromTemplateUrl: 'http://some-url.com' });
+
+      expect(findCreateFromTemplateButton().exists()).toBe(false);
+    });
+
+    it('does not render create from template button if user has no permission', () => {
+      buildWrapper({ showEditButton: false });
+
+      expect(findCreateFromTemplateButton().exists()).toBe(false);
+    });
+  });
+
+  describe('restore version functionality', () => {
+    it('renders restore version button if user has permission', () => {
+      buildWrapper({ showRestoreVersionButton: true });
+
+      expect(findRestoreVersionButton().exists()).toBe(true);
+    });
+
+    it('does not render restore version button if user does not have permission', () => {
+      buildWrapper({ showRestoreVersionButton: false });
+
+      expect(findRestoreVersionButton().exists()).toBe(false);
+    });
+
+    it('renders the restoreVersionModal with valid modalId and calls glModalDirective correctly', () => {
+      buildWrapper({ showRestoreVersionButton: true });
+
+      const restoreVersionModal = wrapper.findComponent({ name: 'RestoreVersionModal' });
+
+      expect(restoreVersionModal.props('modalId')).toBe(restoreVersionModalId);
+      expect(glModalDirective).toHaveBeenCalledWith(restoreVersionModalId);
+    });
+  });
 
   describe('renders', () => {
     beforeEach(() => {
@@ -90,6 +155,11 @@ describe('wikis/components/wiki_header', () => {
       buildWrapper({ lastVersion: false });
 
       expect(findLastVersion().exists()).toBe(false);
+    });
+
+    it('renders sidebar toggle', () => {
+      expect(findSidebarToggle().exists()).toBe(true);
+      expect(findSidebarToggle().attributes('aria-label')).toBe('Toggle sidebar');
     });
   });
 

@@ -31,13 +31,19 @@ RSpec.shared_examples 'handles archived labels in view' do
   end
 end
 
-RSpec.shared_examples 'archiving label' do
-  it 'archives label' do
-    expect(label.archived).to be_falsey
+RSpec.shared_examples 'unarchiving label' do
+  it 'shows unarchive alert for archived label' do
+    expect(page).to have_content('This label is archived and not available for use. Unarchive to use it again.')
+    expect(page).to have_button('Unarchive label')
+  end
 
-    check 'label_archived'
-    click_button 'Save changes'
+  it 'unarchives label when clicking unarchive button' do
+    expect(label.archived).to be_truthy
 
-    expect(label.reload.archived).to be_truthy
+    click_button 'Unarchive label'
+
+    expect(label.reload.archived).to be_falsey
+    expect(page).not_to have_content('This label is archived and not available for use. Unarchive to use it again.')
+    expect(page).not_to have_button('Unarchive label')
   end
 end

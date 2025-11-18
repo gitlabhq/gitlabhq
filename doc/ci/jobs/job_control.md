@@ -81,8 +81,8 @@ To run a manual job and specify additional variables:
 Any project member with permissions to run a manual job can retry the job and view the variables
 that were provided when the job was initially run. This includes:
 
-- In public projects: Users with the Developer role or higher.
-- In private or internal projects: Users with the Guest role or higher.
+- In public projects: Users with at least the Developer role.
+- In private or internal projects: Users with at least the Guest role.
 
 Consider this visibility when entering sensitive information as manual job variables.
 
@@ -90,7 +90,7 @@ Consider this visibility when entering sensitive information as manual job varia
 
 If you add a variable that is already defined in the CI/CD settings or `.gitlab-ci.yml` file,
 the [variable is overridden](../variables/_index.md#use-pipeline-variables) with the new value.
-Any variables overridden by using this process are [expanded](../variables/_index.md#prevent-cicd-variable-expansion)
+Any variables overridden by using this process are [expanded](../variables/_index.md#allow-cicd-variable-expansion)
 and not [masked](../variables/_index.md#mask-a-cicd-variable).
 
 #### Retry a manual job with updated variables

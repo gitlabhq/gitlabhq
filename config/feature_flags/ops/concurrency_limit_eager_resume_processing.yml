@@ -4,7 +4,7 @@ description:
 feature_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/579350
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/212233
 rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/580062
-milestone: '18.5'
+milestone: '18.6'
 group: group::tenant services
 type: ops
 default_enabled: false

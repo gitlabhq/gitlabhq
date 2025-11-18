@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Groups::VariablesController do
+RSpec.describe Groups::VariablesController, feature_category: :pipeline_composition do
   include ExternalAuthorizationServiceHelpers
 
   let_it_be(:group) { create(:group) }

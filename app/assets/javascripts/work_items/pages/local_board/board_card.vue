@@ -11,8 +11,7 @@ export default {
     WorkItemTypeIcon,
     IssueMilestone,
     IssueWeight: () => import('ee_component/issues/components/issue_weight.vue'),
-    IssueHealthStatus: () =>
-      import('ee_component/related_items_tree/components/issue_health_status.vue'),
+    IssueHealthStatus: () => import('ee_component/issues/components/issue_health_status.vue'),
   },
   props: {
     item: {

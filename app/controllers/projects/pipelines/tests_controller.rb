@@ -42,12 +42,7 @@ module Projects
       end
 
       def builds
-        @builds ||=
-          if Feature.enabled?(:show_child_reports_in_mr_page, project)
-            pipeline.latest_test_report_builds_in_self_and_project_descendants.id_in(build_ids)
-          else
-            pipeline.latest_test_report_builds.id_in(build_ids)
-          end
+        @builds ||= pipeline.latest_test_report_builds_in_self_and_project_descendants.id_in(build_ids)
       end
 
       def build_ids

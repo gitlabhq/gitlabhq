@@ -10,7 +10,6 @@ import NoteActions from '~/notes/components/note_actions.vue';
 import NoteBody from '~/notes/components/note_body.vue';
 import NoteHeader from '~/notes/components/note_header.vue';
 import issueNote from '~/notes/components/noteable_note.vue';
-import { NOTEABLE_TYPE_MAPPING } from '~/notes/constants';
 import { createAlert } from '~/alert';
 import { UPDATE_COMMENT_FORM } from '~/notes/i18n';
 import { sprintf } from '~/locale';
@@ -302,7 +301,6 @@ describe('issue_note', () => {
       expect(noteHeaderProps.author).toBe(note.author);
       expect(noteHeaderProps.createdAt).toBe(note.created_at);
       expect(noteHeaderProps.noteId).toBe(note.id);
-      expect(noteHeaderProps.noteableType).toBe(NOTEABLE_TYPE_MAPPING[note.noteable_type]);
       expect(noteHeaderProps.isImported).toBe(note.imported);
     });
 

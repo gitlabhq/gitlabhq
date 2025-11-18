@@ -12,6 +12,8 @@ title: External Status Checks API
 
 {{< /details >}}
 
+Use this API to manage [external status checks](../user/project/merge_requests/status_checks.md).
+
 ## Get project external status check services
 
 You can request information about a project's external status check services using the following endpoint:

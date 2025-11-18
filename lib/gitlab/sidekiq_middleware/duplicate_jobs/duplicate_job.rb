@@ -165,6 +165,10 @@ module Gitlab
           job['deferred']
         end
 
+        def concurrency_limit_resumed?
+          !!job['concurrency_limit_resume']
+        end
+
         def strategy
           return DEFAULT_STRATEGY unless worker_klass
           return DEFAULT_STRATEGY unless worker_klass.respond_to?(:idempotent?)

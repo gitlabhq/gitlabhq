@@ -11,7 +11,8 @@ your changes, you can use
 
 {{< alert type="warning" >}}
 
-Virtual Machine (VM) images for GDK-in-a-box are also available. These VM images are from an earlier iteration of GDK-in-a-box. Information related to these has been retained below. Note, they are deprecated and not actively updated.
+GDK-in-a-box Virtual Machine (VM) images are no longer supported and
+were deprecated in favor of the container-based images.
 
 {{< /alert >}}
 
@@ -20,9 +21,7 @@ sample projects, and administrator access with which you can test functionality.
 
 It requires 30 GB of disk space.
 
-![Home page of GitLab running in local development environment on port 3000](img/gdk_home_v15_11.png)
-
-If you prefer to use GDK locally without a VM, use the steps in [Install the GDK development environment](configure-dev-env-gdk.md)
+If you prefer to use GDK locally without a container, use the steps in [Install the GDK development environment](configure-dev-env-gdk.md)
 
 ## Download GDK-in-a-box
 
@@ -74,7 +73,7 @@ You might need to modify the system configuration of your container runtime (CPU
 1. In VS Code, install the **Remote - SSH** extension:
    - [VS Code](https://marketplace.visualstudio.com/items?itemName=ms-vscode-remote.remote-ssh)
    - [VSCodium](https://open-vsx.org/extension/jeanp413/open-remote-ssh)
-1. Connect VS Code to the VM:
+1. Connect VS Code to the container:
    - Select **Remote-SSH: Connect to host** from the command palette.
    - Select `gdk.local` to connect.
 1. A new VS Code window opens.
@@ -141,73 +140,3 @@ gdk update
 ## Change the code
 
 After the GDK is ready, continue to [Contribute code with the GDK](contribute-gdk.md).
-
-## Download GDK-in-a-box VM Images (Deprecated)
-
-1. Download and install virtualization software to run the virtual machine:
-   - Mac computers with [Apple silicon](https://support.apple.com/en-us/116943): [UTM](https://docs.getutm.app/installation/macos/).
-     Select **Download from GitHub**.
-   - Linux / Windows / Mac computers with Intel silicon: [VirtualBox](https://www.virtualbox.org/wiki/Downloads)
-1. Download and unzip GDK-in-a-box. The file is up to 15 GB and might take some time to download:
-   - Mac computers with Apple silicon: [UTM image](https://go.gitlab.com/cCHpCP)
-   - Linux / Windows / Mac: [VirtualBox image](https://go.gitlab.com/5iydBP)
-1. Double-click the virtual machine image to open it:
-   - UTM: `gdk.utm`
-   - VirtualBox: `gdk.vbox`
-1. Continue to **Use VS Code to connect to GDK (VM)**.
-
-## Use VS Code to connect to GDK (VM)
-
-{{< alert type="note" >}}
-
-You might need to modify the system configuration (CPU cores and RAM) before starting the virtual machine.
-
-{{< /alert >}}
-
-1. Start the VM (you can minimize UTM or VirtualBox).
-1. In VS Code, select **Terminal** > **New terminal**, then run a `curl` command to add an SSH key to your local `~/.ssh/config`:
-
-   ```shell
-   curl "https://gitlab.com/gitlab-org/gitlab-development-kit/-/raw/main/support/gdk-in-a-box/setup-ssh-key" | bash
-   ```
-
-   To learn more about the script, you can examine the
-   [`setup-ssh-key` code](https://gitlab.com/gitlab-org/gitlab-development-kit/-/blob/main/support/gdk-in-a-box/setup-ssh-key).
-
-1. In the script, type `2` to select the VM installation.
-1. In VS Code, install the **Remote - SSH** extension:
-   - [VS Code](https://marketplace.visualstudio.com/items?itemName=ms-vscode-remote.remote-ssh)
-   - [VSCodium](https://open-vsx.org/extension/jeanp413/open-remote-ssh)
-1. Make sure that VS Code has access to the local network (**Privacy & Security > Local Network**).
-1. Connect VS Code to the VM:
-   - Select **Remote-SSH: Connect to host** from the command palette.
-   - Enter the SSH host: `gdk.local`
-1. A new VS Code window opens.
-   You can close the old window to avoid confusion.
-   Complete the remaining steps in the new window.
-1. In the VS Code terminal, run a `curl` command to configure Git in the GDK:
-
-   ```shell
-   curl "https://gitlab.com/gitlab-org/gitlab-development-kit/-/raw/main/support/gdk-in-a-box/first_time_setup" | bash
-   ```
-
-   - Enter your name and email address when prompted.
-   - Add the displayed [SSH key to your profile](https://gitlab.com/-/user_settings/ssh_keys).
-
-   To learn more about the script, you can examine the
-   [`first_time_setup` code](https://gitlab.com/gitlab-org/gitlab-development-kit/-/blob/main/support/gdk-in-a-box/first_time_setup).
-
-1. In VS Code, select **File** > **Open folder**, and go to: `/home/debian/gitlab-development-kit/gitlab/`.
-1. Open GitLab in your browser: `http://gdk.local:3000`.
-1. Sign in with the username `root` and password `5iveL!fe`.
-1. Continue to [change the code with the GDK](contribute-gdk.md).
-
-## Shut down GDK VM
-
-You can select the power icon ({{< icon name="power" >}}) to shut down
-the virtual machine, or enter the `shutdown` command in the terminal.
-Use the password `debian`:
-
-```shell
-sudo shutdown now
-```

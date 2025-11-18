@@ -40,7 +40,7 @@ module MergeRequests
 
     state_machine :merge_status, initial: :unchecked do
       event :mark_as_preparing do
-        transition unchecked: :preparing
+        transition [:unchecked, :can_be_merged] => :preparing
       end
 
       event :mark_as_unchecked do

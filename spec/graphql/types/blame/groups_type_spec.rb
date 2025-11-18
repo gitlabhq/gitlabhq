@@ -13,6 +13,7 @@ RSpec.describe Types::Blame::GroupsType, feature_category: :source_code_manageme
       :commit_data,
       :lineno,
       :lines,
+      :previous_path,
       :span
     ).at_least
   end

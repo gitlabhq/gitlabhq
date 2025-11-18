@@ -195,7 +195,11 @@ export default {
       handler(params) {
         if (Object.keys(params).length) {
           updateHistory({
-            url: setUrlParams(params, window.location.href, true, false, true),
+            url: setUrlParams(params, {
+              url: window.location.href,
+              clearParams: true,
+              decodeParams: true,
+            }),
             title: document.title,
             replace: true,
           });

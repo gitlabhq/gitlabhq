@@ -89,7 +89,7 @@ Prerequisites:
 To allow the use of secret push protection in your GitLab instance:
 
 1. Sign in to your GitLab instance as an administrator.
-1. On the left sidebar, at the bottom, select **Admin**.
+1. On the left sidebar, at the bottom, select **Admin**. If you've [turned on the new navigation](../../../interface_redesign.md#turn-new-navigation-on-or-off), in the upper-right corner, select **Admin**.
 1. Select **Settings** > **Security and compliance**.
 1. Under **Secret detection**, select or clear **Allow secret push protection**.
 
@@ -104,7 +104,7 @@ Prerequisites:
 
 To enable secret push protection in a project:
 
-1. On the left sidebar, select **Search or go to** and find your project.
+1. On the left sidebar, select **Search or go to** and find your project. If you've [turned on the new navigation](../../../interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
 1. On the left sidebar, select **Secure** > **Security configuration**.
 1. Turn on the **Secret push protection** toggle.
 

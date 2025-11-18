@@ -58,10 +58,6 @@ class GpgKey < ApplicationRecord
     super(value&.strip)
   end
 
-  def keyids
-    [keyid].concat(subkeys.map(&:keyid))
-  end
-
   def user_infos
     @user_infos ||= Gitlab::Gpg.user_infos_from_key(key)
   end

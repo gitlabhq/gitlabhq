@@ -3,7 +3,6 @@
 module Groups
   class SharedProjectsController < Groups::ApplicationController
     respond_to :json
-    before_action :group
     skip_cross_project_access_check :index
 
     feature_category :groups_and_projects

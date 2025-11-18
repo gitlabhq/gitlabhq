@@ -3,7 +3,12 @@ import { GlSkeletonLoader } from '@gitlab/ui';
 import { numberToHumanSize } from '~/lib/utils/number_utils';
 import PageHeading from '~/vue_shared/components/page_heading.vue';
 import getBuildArtifactsSizeQuery from '../graphql/queries/get_build_artifacts_size.query.graphql';
-import { PAGE_TITLE, TOTAL_ARTIFACTS_SIZE, SIZE_UNKNOWN } from '../constants';
+import {
+  PAGE_TITLE,
+  TOTAL_ARTIFACTS_SIZE,
+  TOTAL_ARTIFACTS_COUNT,
+  SIZE_UNKNOWN,
+} from '../constants';
 import JobArtifactsTable from './job_artifacts_table.vue';
 
 export default {
@@ -28,6 +33,7 @@ export default {
   data() {
     return {
       buildArtifactsSize: null,
+      totalArtifactCount: 0,
     };
   },
   computed: {
@@ -38,9 +44,15 @@ export default {
       return numberToHumanSize(this.buildArtifactsSize);
     },
   },
+  methods: {
+    handleArtifactCountUpdate(count) {
+      this.totalArtifactCount = count;
+    },
+  },
   i18n: {
     PAGE_TITLE,
     TOTAL_ARTIFACTS_SIZE,
+    TOTAL_ARTIFACTS_COUNT,
     SIZE_UNKNOWN,
   },
 };
@@ -55,10 +67,12 @@ export default {
             <strong>{{ $options.i18n.TOTAL_ARTIFACTS_SIZE }}</strong>
             <span v-if="buildArtifactsSize !== null">{{ humanReadableArtifactsSize }}</span>
             <span v-else>{{ $options.i18n.SIZE_UNKNOWN }}</span>
+            <strong> {{ $options.i18n.TOTAL_ARTIFACTS_COUNT }}</strong>
+            <span>{{ totalArtifactCount }}</span>
           </template>
         </span>
       </template>
     </page-heading>
-    <job-artifacts-table />
+    <job-artifacts-table @artifact-count-update="handleArtifactCountUpdate" />
   </div>
 </template>

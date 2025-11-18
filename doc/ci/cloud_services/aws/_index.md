@@ -19,7 +19,7 @@ and is scheduled to be removed in GitLab 17.0. Use [ID tokens](../../secrets/id_
 
 {{< /alert >}}
 
-In this tutorial, we'll show you how to use a GitLab CI/CD job with a JSON web token (JWT) to retrieve temporary credentials from AWS without needing to store secrets.
+This tutorial shows you how to use a GitLab CI/CD job with a JSON web token (JWT) to retrieve temporary credentials from AWS without storing secrets.
 To do this, you must configure OpenID Connect (OIDC) for ID federation between GitLab and AWS. For background and requirements for integrating GitLab using OIDC, see [Connect to cloud services](../_index.md).
 
 To complete this tutorial:

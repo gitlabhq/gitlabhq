@@ -1,5 +1,9 @@
 .info-well {
-  @apply gl-bg-subtle gl-text-default gl-border gl-border-section gl-rounded-base;
+  @apply gl-bg-subtle;
+  @apply gl-text-default;
+  @apply gl-border;
+  @apply gl-border-section;
+  @apply gl-rounded-base;
 
   .icon-container {
     display: inline-block;

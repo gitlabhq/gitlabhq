@@ -35,7 +35,7 @@ On the top of each list, you can see the number of epics in the list ({{< icon n
 
 To view an epic board:
 
-1. On the left sidebar, select **Search or go to** and find your group.
+1. On the left sidebar, select **Search or go to** and find your group. If you've [turned on the new navigation](../../interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
 1. Select **Plan** > **Epic boards**.
 
 ![GitLab epic board - Premium](img/epic_board_v15_10.png)
@@ -48,7 +48,7 @@ Prerequisites:
 
 To create a new epic board:
 
-1. On the left sidebar, select **Search or go to** and find your group.
+1. On the left sidebar, select **Search or go to** and find your group. If you've [turned on the new navigation](../../interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
 1. Select **Plan** > **Epic boards**.
 1. In the upper-left corner, select the dropdown list with the current board name.
 1. Select **Create new board**.
@@ -101,7 +101,7 @@ Prerequisites:
 
 To create a new list:
 
-1. On the left sidebar, select **Search or go to** and find your group.
+1. On the left sidebar, select **Search or go to** and find your group. If you've [turned on the new navigation](../../interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
 1. Select **Plan** > **Epic boards**.
 1. In the upper-right corner, select **New list**.
 1. Hover or move keyboard focus between two lists.
@@ -153,10 +153,7 @@ To create an epic from a list in epic board:
 
 ### Edit an epic
 
-<!-- When epics_list_drawer feature flag is removed, change the info below into a proper task topic -->
-
-If your administrator enabled the [epic drawer](manage_epics.md#open-epics-in-a-drawer),
-when you select an epic card from the epic board, the epic opens in a drawer.
+When you select an epic card from the epic board, the [epic opens in a drawer](manage_epics.md#open-epics-in-a-drawer).
 There, you can edit all the fields, including the description, comments, or related items.
 
 ### Filter epics

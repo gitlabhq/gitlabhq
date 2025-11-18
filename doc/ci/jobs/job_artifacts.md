@@ -13,6 +13,19 @@ title: Job artifacts
 {{< /details >}}
 
 Jobs can output an archive of files and directories. This output is known as a job artifact.
+Artifacts can include build output or report files. By default, later jobs fetch a copy of
+all artifacts from jobs in earlier stages.
+
+For example, an early job can build a project and save the output as an artifact.
+Then a later job fetches the artifact and runs tests on the saved build output.
+
+For a full list of supported configuration for the `artifacts` keyword,
+see the [GitLab CI/CD YAML syntax reference](../yaml/_index.md#artifacts).
+
+Related topics:
+
+- [Job artifacts API](../../api/job_artifacts.md)
+- [Job artifacts administration](../../administration/cicd/job_artifacts.md)
 
 ## Create job artifacts
 
@@ -341,9 +354,9 @@ You can also delete individual artifacts from the **Artifacts** page.
 
 You can delete multiple artifacts at the same time:
 
-1. On the left sidebar, select **Search or go to** and find your project.
+1. On the left sidebar, select **Search or go to** and find your project. If you've [turned on the new navigation](../../user/interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
 1. Select **Build** > **Artifacts**.
-1. Select the checkboxes next to the artifacts you want to delete. You can select up to 50 artifacts.
+1. Select the checkboxes next to the artifacts you want to delete. You can select up to 100 artifacts.
 1. Select **Delete selected**.
 
 ## Link to job artifacts in the merge request UI
@@ -389,7 +402,7 @@ Keeping the latest artifacts can use a large amount of storage space in projects
 with a lot of jobs or large artifacts. If the latest artifacts are not needed in
 a project, you can disable this behavior to save space:
 
-1. On the left sidebar, select **Search or go to** and find your project.
+1. On the left sidebar, select **Search or go to** and find your project. If you've [turned on the new navigation](../../user/interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
 1. Select **Settings** > **CI/CD**.
 1. Expand **Artifacts**.
 1. Clear the **Keep artifacts from most recent successful jobs** checkbox.
@@ -403,9 +416,3 @@ You can disable this behavior for all projects on GitLab Self-Managed with the
 
 You can disable this behavior for all projects on GitLab Self-Managed in the
 [instance's CI/CD settings](../../administration/settings/continuous_integration.md#keep-artifacts-from-latest-successful-pipelines).
-
-## Related topics
-
-- [GitLab CI/CD YAML syntax reference](../yaml/_index.md)
-- [Job artifacts API](../../api/job_artifacts.md)
-- [Job artifacts administration](../../administration/cicd/job_artifacts.md)

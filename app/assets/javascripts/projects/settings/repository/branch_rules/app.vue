@@ -6,7 +6,7 @@ import { InternalEvents } from '~/tracking';
 import branchRulesQuery from 'ee_else_ce/projects/settings/repository/branch_rules/graphql/queries/branch_rules.query.graphql';
 import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import { expandSection } from '~/settings_panels';
-import { scrollToElement } from '~/lib/utils/common_utils';
+import { scrollToElement } from '~/lib/utils/scroll_utils';
 import { visitUrl } from '~/lib/utils/url_utility';
 import {
   BRANCH_RULE_DETAILS_LABEL,

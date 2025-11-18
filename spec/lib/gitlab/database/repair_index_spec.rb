@@ -429,6 +429,234 @@ RSpec.describe Gitlab::Database::RepairIndex, feature_category: :database do
         end
       end
     end
+
+    context 'with action update' do
+      let(:test_update_table) { '_test_update_table' }
+      let(:test_update_index) { '_test_update_index' }
+
+      let(:indexes_to_repair) do
+        {
+          test_update_table => {
+            test_update_index => {
+              'columns' => %w[group_id name],
+              'unique' => true,
+              'action' => 'update',
+              'max_length' => 72,
+              'column_to_update' => 'name'
+            }
+          }
+        }
+      end
+
+      before do
+        connection.execute(<<~SQL)
+          CREATE TABLE #{test_update_table} (
+            id serial PRIMARY KEY,
+            group_id integer NOT NULL,
+            name varchar(72) NOT NULL,
+            url varchar(255) NOT NULL,
+            CONSTRAINT check_name_length CHECK (char_length(name) <= 72)
+          );
+        SQL
+
+        connection.execute(<<~SQL)
+          INSERT INTO #{test_update_table} (id, group_id, name, url) VALUES
+          (1, 1, 'destination', 'https://example.com/webhook-0'),
+          (2, 1, 'destination', 'https://example.com/webhook-1'),
+          (3, 1, 'destination', 'https://example.com/webhook-2');
+        SQL
+
+        connection.execute(<<~SQL)
+          SELECT setval(pg_get_serial_sequence('#{test_update_table}', 'id'), 3, true);
+        SQL
+      end
+
+      after do
+        connection.execute("DROP TABLE IF EXISTS #{test_update_table} CASCADE")
+      end
+
+      it 'updates duplicates instead of merging them' do
+        records_before = connection.select_value("SELECT COUNT(*) FROM #{test_update_table}")
+        expect(records_before).to eq(3)
+
+        repairer.run
+
+        # All records should be preserved
+        records_after = connection.select_value("SELECT COUNT(*) FROM #{test_update_table}")
+        expect(records_after).to eq(3)
+
+        # Check the names were updated with -dup- suffix
+        names = connection.select_values("SELECT name FROM #{test_update_table} ORDER BY id")
+        expect(names[0]).to eq('destination')
+        expect(names[1]).to eq('destination-dup-2')
+        expect(names[2]).to eq('destination-dup-3')
+
+        # All names should be unique now
+        expect(names.uniq.size).to eq(3)
+
+        # Index should be created successfully
+        index_exists = connection.select_value(<<~SQL).present?
+          SELECT 1
+          FROM pg_indexes
+          WHERE tablename = '#{test_update_table}'
+          AND indexname = '#{test_update_index}'
+        SQL
+        expect(index_exists).to be true
+      end
+
+      context 'with long names that need truncation' do
+        before do
+          connection.execute("DELETE FROM #{test_update_table}")
+
+          long_name = 'Very_Long_Destination_Name_That_Will_Need_Truncation_Sixtyseven_Ch'
+
+          connection.execute(<<~SQL)
+            INSERT INTO #{test_update_table} (id, group_id, name, url) VALUES
+            (10, 1, '#{long_name}', 'https://example.com/webhook-0'),
+            (11, 1, '#{long_name}', 'https://example.com/webhook-1'),
+            (12, 1, '#{long_name}', 'https://example.com/webhook-2');
+          SQL
+
+          connection.execute(<<~SQL)
+            SELECT setval(pg_get_serial_sequence('#{test_update_table}', 'id'), 12, true);
+          SQL
+        end
+
+        it 'truncates names to fit within 72 character limit' do
+          repairer.run
+
+          records_after = connection.select_value("SELECT COUNT(*) FROM #{test_update_table}")
+          expect(records_after).to eq(3)
+
+          names = connection.select_values("SELECT name FROM #{test_update_table} ORDER BY id")
+
+          # First record keeps original name
+          expect(names[0]).to eq('Very_Long_Destination_Name_That_Will_Need_Truncation_Sixtyseven_Ch')
+
+          # Other records should be truncated to fit max_length (72)
+          # LEFT(name, 72 - LENGTH('-dup-11')) || '-dup-11' = 64 + 8 = 72 chars
+          expect(names[1]).to eq('Very_Long_Destination_Name_That_Will_Need_Truncation_Sixtyseven_C-dup-11')
+          expect(names[1].length).to eq(72)
+
+          expect(names[2]).to eq('Very_Long_Destination_Name_That_Will_Need_Truncation_Sixtyseven_C-dup-12')
+          expect(names[2].length).to eq(72)
+
+          names[1..2].each do |name|
+            expect(name.length).to eq(72)
+            expect(name).to end_with('-dup-11').or end_with('-dup-12')
+          end
+
+          # All names should be unique
+          expect(names.uniq.size).to eq(3)
+
+          # Index should be created successfully despite truncation
+          index_exists = connection.select_value(<<~SQL).present?
+            SELECT 1
+            FROM pg_indexes
+            WHERE tablename = '#{test_update_table}'
+            AND indexname = '#{test_update_index}'
+          SQL
+          expect(index_exists).to be true
+        end
+      end
+
+      context 'with name exactly at 72 character limit' do
+        before do
+          connection.execute("DELETE FROM #{test_update_table}")
+
+          max_length_name = 'A' * 72
+          connection.execute(<<~SQL)
+            INSERT INTO #{test_update_table} (id, group_id, name, url) VALUES
+            (20, 1, '#{max_length_name}', 'https://example.com/webhook-0'),
+            (21, 1, '#{max_length_name}', 'https://example.com/webhook-1');
+          SQL
+
+          connection.execute(<<~SQL)
+            SELECT setval(pg_get_serial_sequence('#{test_update_table}', 'id'), 21, true);
+          SQL
+        end
+
+        it 'truncates the base name to make room for suffix' do
+          repairer.run
+
+          records_after = connection.select_value("SELECT COUNT(*) FROM #{test_update_table}")
+          expect(records_after).to eq(2)
+
+          names = connection.select_values("SELECT name FROM #{test_update_table} ORDER BY id")
+
+          # First record keeps original 72-char name
+          expect(names[0].length).to eq(72)
+          expect(names[0]).to eq('A' * 72)
+
+          # Second record truncated to fit max_length (72)
+          # LEFT(name, 72 - LENGTH('-dup-21')) || '-dup-21' = 65 + 7 = 72 chars
+          expect(names[1]).to eq("#{'A' * 65}-dup-21")
+          expect(names[1].length).to eq(72)
+        end
+      end
+
+      context 'with multiple duplicate groups' do
+        before do
+          connection.execute("DELETE FROM #{test_update_table}")
+          connection.execute(<<~SQL)
+            INSERT INTO #{test_update_table} (id, group_id, name, url) VALUES
+            (30, 1, 'destination-a', 'https://example.com/a-0'),
+            (31, 1, 'destination-a', 'https://example.com/a-1'),
+            (40, 2, 'destination-b', 'https://example.com/b-0'),
+            (41, 2, 'destination-b', 'https://example.com/b-1'),
+            (42, 2, 'destination-b', 'https://example.com/b-2');
+          SQL
+
+          connection.execute(<<~SQL)
+            SELECT setval(pg_get_serial_sequence('#{test_update_table}', 'id'), 42, true);
+          SQL
+        end
+
+        it 'handles multiple duplicate groups correctly' do
+          repairer.run
+
+          records_after = connection.select_value("SELECT COUNT(*) FROM #{test_update_table}")
+          expect(records_after).to eq(5)
+
+          group1_names = connection.select_values(
+            "SELECT name FROM #{test_update_table} WHERE group_id = 1 ORDER BY id"
+          )
+          expect(group1_names[0]).to eq('destination-a')
+          expect(group1_names[1]).to eq('destination-a-dup-31')
+
+          group2_names = connection.select_values(
+            "SELECT name FROM #{test_update_table} WHERE group_id = 2 ORDER BY id"
+          )
+          expect(group2_names[0]).to eq('destination-b')
+          expect(group2_names[1]).to eq('destination-b-dup-41')
+          expect(group2_names[2]).to eq('destination-b-dup-42')
+
+          expect(group1_names.uniq.size).to eq(2)
+          expect(group2_names.uniq.size).to eq(3)
+        end
+      end
+
+      context 'with dry run' do
+        let(:dry_run) { true }
+
+        it 'does not update duplicates' do
+          names_before = connection.select_values("SELECT name FROM #{test_update_table} ORDER BY id")
+
+          repairer.run
+
+          names_after = connection.select_values("SELECT name FROM #{test_update_table} ORDER BY id")
+          expect(names_after).to eq(names_before)
+
+          index_exists = connection.select_value(<<~SQL).present?
+            SELECT 1
+            FROM pg_indexes
+            WHERE tablename = '#{test_update_table}'
+            AND indexname = '#{test_update_index}'
+          SQL
+          expect(index_exists).to be false
+        end
+      end
+    end
   end
 
   describe 'index repair list integrity validation' do

@@ -9,25 +9,17 @@ title: Centralized compliance frameworks
 {{< details >}}
 
 - Tier: Ultimate
-- Offering: GitLab Self-Managed
-- Status: Beta
+- Offering: GitLab Self-Managed, GitLab Dedicated
 
 {{< /details >}}
 
 {{< history >}}
 
 - [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/15864) in GitLab 18.3 [with feature flags](../../../administration/feature_flags/_index.md) named `security_policies_csp` and `include_csp_frameworks`. Enabled by default.
-- [Generally available](https://gitlab.com/groups/gitlab-org/-/epics/17392) in GitLab 18.5. Feature flag `security_policies_csp` removed.
+- Feature flag `security_policies_csp` [removed](https://gitlab.com/groups/gitlab-org/-/epics/17392) in GitLab 18.5.
+- [Generally available](https://gitlab.com/groups/gitlab-org/-/epics/15864) in GitLab 18.6. Feature flag `include_csp_frameworks` removed.
 
 {{< /history >}}
-
-{{< alert type="flag" >}}
-
-The availability of this feature is controlled by a feature flag.
-For more information, see the history.
-This feature is subject to change and may not be ready for production use.
-
-{{< /alert >}}
 
 Centralized security compliance frameworks management allows GitLab administrators to centrally manage and enforce
 compliance requirements across all groups and projects in a GitLab instance.
@@ -112,7 +104,7 @@ cannot edit or delete them from your group.
 
 To apply a compliance and security policy framework to projects in your group:
 
-1. On the left sidebar, select **Search or go to** and find your group.
+1. On the left sidebar, select **Search or go to** and find your group. If you've [turned on the new navigation](../../interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
 1. Select **Secure** > **Compliance center**.
 1. On the page, select the **Projects** tab.
 1. Compliance and security policy frameworks appear in the list with a special indicator.
@@ -122,7 +114,7 @@ To apply a compliance and security policy framework to projects in your group:
 
 To see which compliance frameworks apply to your projects:
 
-1. On the left sidebar, select **Search or go to** and find your project:
+1. On the left sidebar, select **Search or go to** and find your project. If you've [turned on the new navigation](../../interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
 1. Select **Settings** > **General**.
 1. Expand the **Compliance frameworks** section.
 1. View all applied frameworks, including those from the compliance and security policy group.
@@ -189,8 +181,8 @@ Compliance and security policy frameworks can only be modified from the complian
 
 ## Feedback and support
 
-Because this feature is in [beta](../../../policy/development_stages_support.md#beta), we actively seek feedback from users.
-Share your experience, suggestions, and any issues through:
+Because this feature is in [beta](../../../policy/development_stages_support.md#beta), user feedback is actively
+encouraged. Share your experience, suggestions, and any issues through:
 
 - [GitLab issues](https://gitlab.com/gitlab-org/gitlab/-/issues).
 - Your regular GitLab support channels.

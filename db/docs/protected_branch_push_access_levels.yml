@@ -8,23 +8,7 @@ description: Stores push access settings for protected branches
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/5081
 milestone: '8.11'
 gitlab_schema: gitlab_main_org
-desired_sharding_key:
-  protected_branch_project_id:
-    references: projects
-    backfill_via:
-      parent:
-        foreign_key: protected_branch_id
-        table: protected_branches
-        sharding_key: project_id
-        belongs_to: protected_branch
-  protected_branch_namespace_id:
-    references: namespaces
-    backfill_via:
-      parent:
-        foreign_key: protected_branch_id
-        table: protected_branches
-        sharding_key: namespace_id
-        belongs_to: protected_branch
+sharding_key:
+  protected_branch_project_id: projects
+  protected_branch_namespace_id: namespaces
 table_size: small
-desired_sharding_key_migration_job_name:
-- BackfillProtectedBranchPushAccessLevelsFields

@@ -57,7 +57,7 @@ module Gitlab
               end
             end
 
-            def validate_content!
+            def validate_content_presence!
               if content.nil?
                 errors.push("Project `#{masked_project_name}` file `#{masked_location}` does not exist!")
               elsif content.blank?
@@ -97,7 +97,9 @@ module Gitlab
             end
 
             def project_access_allowed?(user, project)
-              Ability.allowed?(user, :download_code, project)
+              context.logger.instrument(:config_file_project_validate_access_download_code) do
+                Ability.allowed?(user, :download_code, project)
+              end
             end
 
             def sha

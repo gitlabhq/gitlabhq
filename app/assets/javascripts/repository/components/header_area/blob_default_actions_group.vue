@@ -104,7 +104,7 @@ export default {
     downloadUrl() {
       return setUrlParams(
         { inline: false },
-        relativePathToAbsolute(this.blobInfo.rawPath, getBaseURL()),
+        { url: relativePathToAbsolute(this.blobInfo.rawPath, getBaseURL()) },
       );
     },
     showEnvironmentItem() {

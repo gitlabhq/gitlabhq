@@ -5,8 +5,8 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 title: Use Auto DevOps to deploy an application to Amazon Elastic Kubernetes Service (EKS)
 ---
 
-In this tutorial, we'll help you to get started with [Auto DevOps](../_index.md)
-through an example of how to deploy an application to Amazon Elastic Kubernetes Service (EKS).
+This tutorial gets you started with [Auto DevOps](../_index.md)
+using an example of how to deploy an application to Amazon Elastic Kubernetes Service (EKS).
 
 The tutorial uses the GitLab native Kubernetes integration, so you don't need
 to create a Kubernetes cluster manually using the AWS console.
@@ -50,7 +50,7 @@ Create the application project in the group hierarchy at the same level or below
 
 {{< /alert >}}
 
-1. On the left sidebar, at the top, select **Create new** ({{< icon name="plus" >}}) and **New project/repository**.
+1. On the left sidebar, at the top, select **Create new** ({{< icon name="plus" >}}) and **New project/repository**. If you've [turned on the new navigation](../../../user/interface_redesign.md#turn-new-navigation-on-or-off), this button is in the upper-right corner.
 1. Select **Create from template**.
 1. Select the **Ruby on Rails** template.
 1. Give your project a name, optionally a description, and make it public so that
@@ -58,13 +58,13 @@ Create the application project in the group hierarchy at the same level or below
    [GitLab Ultimate plan](https://about.gitlab.com/pricing/).
 1. Select **Create project**.
 
-Now you have an application project you are going to deploy to the EKS cluster.
+Now you have an application project to deploy to the EKS cluster.
 
 ## Configure the agent
 
-Next, we'll configure the GitLab agent for Kubernetes so we can use it to deploy the application project.
+Next, configure the GitLab agent for Kubernetes so you can use it to deploy the application project.
 
-1. Go to the project [we created to manage the cluster](#create-a-kubernetes-cluster).
+1. Go to the project [you created to manage the cluster](#create-a-kubernetes-cluster).
 1. Go to the [agent configuration file](../../../user/clusters/agent/install/_index.md#create-an-agent-configuration-file) (`.gitlab/agents/eks-agent/config.yaml`) and edit it.
 1. Configure `ci_access:projects` attribute. Use the application project path as `id`:
 
@@ -80,7 +80,7 @@ After your cluster is running, you must install NGINX Ingress Controller as a
 load balancer to route traffic from the internet to your application.
 Install the NGINX Ingress Controller
 through the GitLab [Cluster management project template](../../../user/clusters/management_project_template.md),
-or manually via the command line:
+or manually using the command line:
 
 1. Ensure you have `kubectl` and Helm installed on your machine.
 1. Create an IAM role to access the cluster.
@@ -134,7 +134,7 @@ While Auto DevOps is enabled by default, Auto DevOps can be disabled for
 the entire instance (for GitLab Self-Managed instances) and for individual groups. Complete
 these steps to enable Auto DevOps if it's disabled:
 
-1. On the left sidebar, select **Search or go to** and find the application project.
+1. On the left sidebar, select **Search or go to** and find the application project. If you've [turned on the new navigation](../../../user/interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
 1. Select **Settings** > **CI/CD**.
 1. Expand **Auto DevOps**.
 1. Select **Default to Auto DevOps pipeline** to display more options.
@@ -148,7 +148,7 @@ these steps to enable Auto DevOps if it's disabled:
    - template: Auto-DevOps.gitlab-ci.yml
    ```
 
-The commit should trigger a pipeline. In the next section, we explain what each job does in the pipeline.
+The commit should trigger a pipeline. The next section explains what each job does in the pipeline.
 
 ## Deploy the application
 
@@ -173,7 +173,7 @@ The jobs are separated into stages:
   - The `code_quality` job checks the code quality and is allowed to fail
     ([Auto Code Quality](../stages.md#auto-code-quality))
   - The `container_scanning` job checks the Docker container if it has any
-    vulnerabilities and is allowed to fail ([Auto Container Scanning](../stages.md#auto-container-scanning))
+    vulnerabilities and is allowed to fail ([auto container scanning](../stages.md#auto-container-scanning))
   - The `dependency_scanning` job checks if the application has any dependencies
     susceptible to vulnerabilities and is allowed to fail
     ([Auto Dependency Scanning](../stages.md#auto-dependency-scanning))
@@ -266,7 +266,7 @@ bin/rails test test/controllers/welcome_controller_test.rb:4
 To fix the broken test:
 
 1. Return to your merge request.
-1. In the upper right corner, select **Code**, then select **Open in Web IDE**.
+1. In the upper-right corner, select **Code**, then select **Open in Web IDE**.
 1. In the left-hand directory of files, find the `test/controllers/welcome_controller_test.rb`
    file, and select it to open it.
 1. Change line 7 to say `You're on Rails! Powered by GitLab Auto DevOps.`

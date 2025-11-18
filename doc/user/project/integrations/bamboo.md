@@ -42,7 +42,7 @@ integration in GitLab.
 
 ## Configure GitLab
 
-1. On the left sidebar, select **Search or go to** and find your project.
+1. On the left sidebar, select **Search or go to** and find your project. If you've [turned on the new navigation](../../interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
 1. Select **Settings** > **Integrations**.
 1. Select **Atlassian Bamboo**.
 1. Ensure the **Active** checkbox is selected.
@@ -76,7 +76,7 @@ and Bamboo build variables to:
 
 For example:
 
-1. Create an [access token](../../../api/rest/authentication.md#personalprojectgroup-access-tokens) in GitLab with `:api` permissions.
+1. Create a [personal access token](../../profile/personal_access_tokens.md) with the scope set to `api`.
 1. Save the token as a `$GITLAB_TOKEN` variable in Bamboo.
 1. Add the following script as a final task to the Bamboo plan's jobs:
 
@@ -103,7 +103,7 @@ For example:
 
    repo_url="${bamboo_planRepository_repositoryUrl}"
 
-   # Check if we use SSH or HTTPS
+   # Check if SSH or HTTPS is in use
    protocol=${repo_url::4}
    if [ "$protocol" == "git@" ]; then
      repo=${repo_url:${#protocol}};

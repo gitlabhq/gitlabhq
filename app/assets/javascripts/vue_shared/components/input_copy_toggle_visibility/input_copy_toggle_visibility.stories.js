@@ -7,7 +7,7 @@ export default {
 
 const defaultProps = {
   value: 'hR8x1fuJbzwu5uFKLf9e',
-  formInputGroupProps: { class: 'gl-form-input-xl' },
+  formInputGroupProps: { class: 'gl-form-input-xl', id: 'password-input-id' },
   readonly: false,
 };
 
@@ -19,6 +19,8 @@ const Template = (args, { argTypes }) => ({
   props: Object.keys(argTypes),
   template: `<input-copy-toggle-visibility
       v-model="value"
+      label="Password"
+      label-for="password-input-id"
       :initial-visibility="initialVisibility"
       :show-toggle-visibility-button="showToggleVisibilityButton"
       :show-copy-button="showCopyButton"
@@ -31,11 +33,19 @@ const Template = (args, { argTypes }) => ({
 
 export const Default = Template.bind({});
 Default.args = defaultProps;
+Default.parameters = {
+  docs: {
+    description: {
+      story:
+        'You can use any props of `GlFormGroup` on this component, for example `label` and `label-for` to make sure the input is accessible.',
+    },
+  },
+};
 
 export const WithValidationError = Template.bind({});
 WithValidationError.args = {
   ...defaultProps,
-  formInputGroupProps: { state: false },
+  formInputGroupProps: { state: false, id: 'password-input-id' },
 };
 WithValidationError.parameters = {
   docs: {

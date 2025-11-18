@@ -2,6 +2,7 @@
 stage: Solutions Architecture
 group: Solutions Architecture
 info: This page is owned by the Solutions Architecture team.
+description: Learn about the GitLab DevSecOps workflow for hybrid React Native mobile apps, including CI/CD setup, Snyk security scanning, Sauce Labs functional testing, and ServiceNow integration.
 title: DevSecOps Workflow - Mobile Apps
 ---
 

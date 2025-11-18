@@ -140,8 +140,8 @@ RSpec.describe QA::Support::Page::Logging do
     ).to_stdout_from_any_process
   end
 
-  it 'logs finished_loading?' do
-    expect { subject.finished_loading? }
+  it 'logs spinner_cleared?' do
+    expect { subject.spinner_cleared? }
       .to output(/waiting for loading to complete\.\.\./).to_stdout_from_any_process
   end
 

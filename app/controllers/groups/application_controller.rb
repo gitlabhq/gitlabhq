@@ -2,6 +2,7 @@
 
 class Groups::ApplicationController < ApplicationController
   include RoutableActions
+  include EnforcesStepUpAuthenticationForNamespace
   include ControllerWithCrossProjectAccessCheck
   include SortingHelper
   include SortingPreference
@@ -10,6 +11,7 @@ class Groups::ApplicationController < ApplicationController
 
   skip_before_action :authenticate_user!
   before_action :group
+  before_action :enforce_step_up_auth_for_namespace
   before_action :set_sorting
   requires_cross_project_access
 
@@ -101,6 +103,12 @@ class Groups::ApplicationController < ApplicationController
     else
       super
     end
+  end
+
+  def enforce_step_up_auth_for_namespace
+    # Use @group instance variable instead of calling group method
+    # to avoid triggering find_routable! when the :group before_action was skipped
+    enforce_step_up_auth_for(@group)
   end
 end
 

@@ -142,11 +142,19 @@ type RemoteObject struct {
 	ObjectStorage *ObjectStorageParams
 }
 
+// McpServerConfig holds configuration for MCP servers configured in GitLab Rails
+type McpServerConfig struct {
+	URL     string
+	Headers map[string]string
+	Tools   *[]string
+}
+
 // DuoWorkflow holds configuration for the Duo Workflow service.
 type DuoWorkflow struct {
 	Headers    map[string]string
 	ServiceURI string
 	Secure     bool
+	McpServers map[string]McpServerConfig
 }
 
 // Response represents a structure containing various GitLab-related environment variables.

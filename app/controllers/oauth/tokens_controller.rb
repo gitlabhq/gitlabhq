@@ -37,9 +37,7 @@ class Oauth::TokensController < Doorkeeper::TokensController
     end
 
     # rubocop:disable Rails/StrongParams -- following existing param access pattern
-    if Feature.enabled?(:log_refresh_token_hash, :instance) &&
-        params[:grant_type] == 'refresh_token' &&
-        params[:refresh_token].present?
+    if params[:grant_type] == 'refresh_token' && params[:refresh_token].present?
       payload[:metadata] ||= {}
       payload[:metadata][:refresh_token_hash] = Digest::SHA256.hexdigest(params[:refresh_token])[0..9]
     end
@@ -50,6 +48,8 @@ class Oauth::TokensController < Doorkeeper::TokensController
 
   def validate_pkce_for_dynamic_applications
     return unless server.client&.application&.dynamic?
+    # PKCE validation only applies to authorization_code grants per RFC 7636 Section 4.5.
+    return unless params[:grant_type] == 'authorization_code' # rubocop:disable Rails/StrongParams -- Only accessing a single named param
     return unless params[:code_verifier].blank? # rubocop:disable Rails/StrongParams -- Only accessing a single named param
 
     render json: {

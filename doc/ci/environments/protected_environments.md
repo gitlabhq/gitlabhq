@@ -42,7 +42,7 @@ Prerequisites:
 
 To protect an environment:
 
-1. On the left sidebar, select **Search or go to** and find your project.
+1. On the left sidebar, select **Search or go to** and find your project. If you've [turned on the new navigation](../../user/interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
 1. Select **Settings** > **CI/CD**.
 1. Expand **Protected environments**.
 1. Select **Protect an environment**.
@@ -104,7 +104,7 @@ Alternatively, you can use the API to protect an environment:
    For example, this group is called `protected-access-group` and has the group ID `9899826`. Note
    that the rest of the examples in these steps use this group.
 
-   ![Protected access group interface showing the New project button](img/protected_access_group_v13_6.png)
+   ![Protected access group interface with the New project button highlighted.](img/protected_access_group_v13_6.png)
 
 1. Use the API to add a user to the group as a reporter:
 
@@ -276,7 +276,7 @@ To protect a group-level environment, make sure your environments have the corre
 
 {{< /history >}}
 
-1. On the left sidebar, select **Search or go to** and find your group.
+1. On the left sidebar, select **Search or go to** and find your group. If you've [turned on the new navigation](../../user/interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
 1. Select **Settings** > **CI/CD**.
 1. Expand **Protected environments**.
 1. From the **Environment** list, select the [deployment tier of environments](_index.md#deployment-tier-of-environments) you want to protect.

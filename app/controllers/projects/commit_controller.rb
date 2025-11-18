@@ -16,10 +16,9 @@ class Projects::CommitController < Projects::ApplicationController
   before_action :authorize_read_code!
   before_action :authorize_read_pipeline!, only: [:pipelines]
   before_action :commit
-  before_action :define_commit_vars,
-    only: [:show, :diff_for_path, :diff_files, :pipelines, :merge_requests, :rapid_diffs]
+  before_action :define_commit_vars, only: [:show, :diff_for_path, :diff_files, :pipelines, :merge_requests]
   before_action :define_commit_box_vars, only: [:show, :pipelines, :rapid_diffs]
-  before_action :define_note_vars, only: [:show, :diff_for_path, :diff_files]
+  before_action :define_note_vars, only: [:show, :diff_for_path, :diff_files, :discussions]
   before_action :authorize_edit_tree!, only: [:revert, :cherry_pick]
   before_action :rate_limit_for_expanded_diff_files, only: :diff_files
 
@@ -44,6 +43,24 @@ class Projects::CommitController < Projects::ApplicationController
         send_git_patch(@project.repository, @commit.diff_refs)
       end
     end
+  end
+
+  def discussions
+    return render_404 unless ::Feature.enabled?(:rapid_diffs_on_commit_show, current_user, type: :wip)
+
+    all_discussions = (@grouped_diff_discussions.values.flatten + @discussions)
+
+    all_notes = all_discussions.flat_map(&:notes)
+    prepare_notes_for_rendering(all_notes)
+
+    serialized_discussions = RapidDiffs::DiscussionSerializer.new(
+      project: @project,
+      noteable: @commit,
+      current_user: current_user,
+      note_entity: RapidDiffs::NoteEntity
+    ).represent(all_discussions)
+
+    render json: { discussions: serialized_discussions }
   end
 
   def diff_for_path
@@ -149,10 +166,13 @@ class Projects::CommitController < Projects::ApplicationController
   def rapid_diffs
     return render_404 unless ::Feature.enabled?(:rapid_diffs_on_commit_show, current_user, type: :wip)
 
+    @files_changed_count = @commit.stats.files
     @rapid_diffs_presenter = RapidDiffs::CommitPresenter.new(
       @commit,
       diff_view,
-      commit_diff_options
+      commit_diff_options,
+      nil,
+      current_user
     )
 
     show

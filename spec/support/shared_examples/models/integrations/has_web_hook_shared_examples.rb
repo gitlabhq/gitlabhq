@@ -75,7 +75,7 @@ RSpec.shared_examples Integrations::HasWebHook do
 
     it 'raises an error if the service hook could not be saved' do
       call
-      integration.service_hook.integration = nil
+      integration.service_hook.name = 'A' * 300
 
       expect { call }.to raise_error(ActiveRecord::RecordInvalid)
     end
@@ -108,7 +108,7 @@ RSpec.shared_examples Integrations::HasWebHook do
       expect_next(ServiceHook).to receive(:execute).with(*args)
 
       call
-      integration.service_hook.integration = nil
+      integration.service_hook.name = 'A' * 300
 
       expect(integration.service_hook).not_to receive(:execute)
       expect { call }.to raise_error(ActiveRecord::RecordInvalid)

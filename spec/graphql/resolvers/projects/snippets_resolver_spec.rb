@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Resolvers::Projects::SnippetsResolver do
+RSpec.describe Resolvers::Projects::SnippetsResolver, feature_category: :source_code_management do
   include GraphqlHelpers
 
   describe '#resolve' do

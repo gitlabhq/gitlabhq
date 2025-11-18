@@ -3,7 +3,7 @@
 RSpec.shared_examples 'provider status' do |factory|
   describe 'state_machine' do
     context 'when any => [:created]' do
-      let(:provider) { build(factory, :creating) }
+      let(:provider) { create(factory, :creating) }
 
       it 'nullifies API credentials' do
         expect(provider).to receive(:nullify_credentials).and_call_original
@@ -14,7 +14,7 @@ RSpec.shared_examples 'provider status' do |factory|
     end
 
     context 'when any => [:creating]' do
-      let(:provider) { build(factory) }
+      let(:provider) { create(factory) } # rubocop:disable Rails/SaveBang -- Not ActiveRecord create
       let(:operation_id) { 'operation-xxx' }
 
       it 'calls #assign_operation_id on the provider' do
@@ -25,7 +25,7 @@ RSpec.shared_examples 'provider status' do |factory|
     end
 
     context 'when any => [:errored]' do
-      let(:provider) { build(factory, :creating) }
+      let(:provider) { create(factory, :creating) }
       let(:status_reason) { 'err msg' }
 
       it 'calls #nullify_credentials on the provider' do
@@ -41,7 +41,7 @@ RSpec.shared_examples 'provider status' do |factory|
       end
 
       context 'when status_reason is nil' do
-        let(:provider) { build(factory, :errored) }
+        let(:provider) { create(factory, :errored) }
 
         it 'does not set status_reason' do
           provider.make_errored(nil)

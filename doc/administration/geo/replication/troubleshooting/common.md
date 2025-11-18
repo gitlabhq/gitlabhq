@@ -1,8 +1,9 @@
 ---
-stage: Runtime
+stage: Tenant Scale
 group: Geo
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 title: Troubleshooting common Geo errors
+description: Diagnose and resolve common Geo issues, covering health checks, database replication problems, site connectivity, and error resolution procedures.
 ---
 
 {{< details >}}
@@ -23,7 +24,7 @@ Before attempting more advanced troubleshooting:
 
 On the **primary** site:
 
-1. On the left sidebar, at the bottom, select **Admin**.
+1. On the left sidebar, at the bottom, select **Admin**. If you've [turned on the new navigation](../../../../user/interface_redesign.md#turn-new-navigation-on-or-off), in the upper-right corner, select **Admin**.
 1. Select **Geo** > **Sites**.
 
 We perform the following health checks on each **secondary** site
@@ -607,9 +608,9 @@ sudo gitlab-rake gitlab:uploads:check
 
 For detailed information about individual errors, use the `VERBOSE=1` variable.
 
-### Secondary site shows "Unhealthy" in UI
+### Secondary site shows **Unhealthy** in UI
 
-If you have updated the value of `external_url` in `/etc/gitlab/gitlab.rb` for the primary site or changed the protocol from `http` to `https`, you may see that secondary sites are shown as `Unhealthy`. You may also find the following error in `geo.log`:
+If you have updated the value of `external_url` in `/etc/gitlab/gitlab.rb` for the primary site or changed the protocol from `http` to `https`, you may see that secondary sites are shown as **Unhealthy**. You may also find the following error in `geo.log`:
 
 ```plaintext
 "class": "Geo::NodeStatusRequestService",
@@ -620,7 +621,7 @@ If you have updated the value of `external_url` in `/etc/gitlab/gitlab.rb` for t
 
 In this case, make sure to update the changed URL on all your sites:
 
-1. On the left sidebar, at the bottom, select **Admin**.
+1. On the left sidebar, at the bottom, select **Admin**. If you've [turned on the new navigation](../../../../user/interface_redesign.md#turn-new-navigation-on-or-off), in the upper-right corner, select **Admin**.
 1. Select **Geo** > **Sites**.
 1. Change the URL and save the change.
 

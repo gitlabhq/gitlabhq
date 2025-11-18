@@ -15,6 +15,7 @@ import { detectAndConfirmSensitiveTokens } from '~/lib/utils/secret_detection';
 import { FILE_DIFF_POSITION_TYPE, IMAGE_DIFF_POSITION_TYPE } from '~/diffs/constants';
 import { useNotes } from '~/notes/store/legacy_notes';
 import { useLegacyDiffs } from '~/diffs/stores/legacy_diffs';
+import { CopyAsGFM } from '~/behaviors/markdown/copy_as_gfm';
 import eventHub from '../event_hub';
 import noteable from '../mixins/noteable';
 import resolvable from '../mixins/resolvable';
@@ -83,6 +84,7 @@ export default {
     return {
       isReplying: false,
       isResolving: false,
+      // eslint-disable-next-line vue/no-unused-properties -- `resolveAsThread` is used by the `resolvable` mixin
       resolveAsThread: true,
     };
   },
@@ -92,7 +94,6 @@ export default {
       'getNoteableData',
       'userCanReply',
       'showJumpToNextDiscussion',
-      'getUserData',
     ]),
     diffFile() {
       const diffFile = this.discussion.diff_file;
@@ -105,9 +106,6 @@ export default {
           `/-/blob/${diffFile.content_sha}/${diffFile.new_path}`,
         ),
       };
-    },
-    currentUser() {
-      return this.getUserData;
     },
     isLoggedIn() {
       return isLoggedIn();
@@ -174,7 +172,7 @@ export default {
          * https://gitlab.com/gitlab-com/gl-infra/production/-/issues/19118
          *
          * For most diff discussions we should have a `diff_file`.
-         * However in some cases we might we might not have this object.
+         * However in some cases we might not have this object.
          * In these we need to check if the `original_position.position_type`
          * is either a file or an image, doing this allows us to still
          * render the reply actions.
@@ -217,6 +215,7 @@ export default {
     ...mapActions(useNotes, [
       'saveNote',
       'removePlaceholderNotes',
+      // eslint-disable-next-line vue/no-unused-properties -- toggleResolveNote() used by the `Resolvable` mixin
       'toggleResolveNote',
       'removeConvertedDiscussion',
       'expandDiscussion',
@@ -320,6 +319,13 @@ export default {
         this.showReplyForm();
       }
     },
+    async onQuoteReply() {
+      const text = await CopyAsGFM.selectionToGfm();
+      // prevent hotkey input from going into the form
+      requestAnimationFrame(() => {
+        this.showReplyForm(text);
+      });
+    },
   },
 };
 </script>
@@ -333,6 +339,7 @@ export default {
         :data-discussion-resolved="discussion.resolved"
         class="discussion js-discussion-container"
         data-testid="discussion-content"
+        @quoteReply="onQuoteReply"
       >
         <diff-discussion-header v-if="shouldRenderDiffs" :discussion="discussion" />
         <div v-if="!shouldHideDiscussionBody" class="discussion-body">

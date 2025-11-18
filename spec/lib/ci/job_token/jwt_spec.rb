@@ -24,6 +24,42 @@ RSpec.describe Ci::JobToken::Jwt, feature_category: :secrets_management do
       end
     end
 
+    context 'with instance prefix support' do
+      let(:plaintext) { encoded_token }
+
+      context 'with default instance prefix' do
+        it 'starts with glcbt-' do
+          expect(plaintext).to start_with(Ci::Build::TOKEN_PREFIX)
+        end
+      end
+
+      context 'with custom instance prefix' do
+        let_it_be(:instance_prefix) { 'instanceprefix' }
+
+        before do
+          stub_application_setting(instance_token_prefix: instance_prefix)
+        end
+
+        it 'starts with the instance prefix' do
+          expect(plaintext).to start_with(instance_prefix)
+        end
+
+        it 'keeps glcbt- as part of the prefix' do
+          expect(plaintext).to start_with("#{instance_prefix}-#{Ci::Build::TOKEN_PREFIX}")
+        end
+
+        context 'with feature flag custom_prefix_for_all_token_types disabled' do
+          before do
+            stub_feature_flags(custom_prefix_for_all_token_types: false)
+          end
+
+          it 'starts with the default prefix' do
+            expect(plaintext).to start_with(Ci::Build::TOKEN_PREFIX)
+          end
+        end
+      end
+    end
+
     context 'when job is not a Ci::Build' do
       let(:job) { Object.new }
 
@@ -92,6 +128,36 @@ RSpec.describe Ci::JobToken::Jwt, feature_category: :secrets_management do
         it 'includes group id in routable payload' do
           expect(decoded_payload)
             .to match(a_hash_including(expected_payload.merge("g" => job.project.group.id.to_s(36))))
+        end
+      end
+
+      context 'with custom instance prefix' do
+        let_it_be(:instance_prefix) { 'instanceprefix' }
+
+        context 'with token starting with instance prefix' do
+          before do
+            # set instance_prefix before creating the token, so we get a token with instance prefix:
+            stub_application_setting(instance_token_prefix: instance_prefix)
+          end
+
+          it 'successfully decodes the token with subject' do
+            expect(encoded_token).to start_with(instance_prefix)
+            expect(decoded_token).to be_present
+            expect(decoded_token.job).to eq(job)
+          end
+        end
+
+        context 'with token starting with default prefix glcbt-' do
+          it 'successfully decodes the token with subject' do
+            expect(encoded_token).to start_with(Ci::Build::TOKEN_PREFIX)
+
+            # To check backwards compatibility, we set the instance prefix after creating the token, so we have a token
+            # with a default prefix while the system is configured to use an instance prefix
+            stub_application_setting(instance_token_prefix: instance_prefix)
+
+            expect(decoded_token).to be_present
+            expect(decoded_token.job).to eq(job)
+          end
         end
       end
     end

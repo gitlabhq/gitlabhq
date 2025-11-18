@@ -3,19 +3,35 @@
 
 query getPipelines(
   $fullPath: ID!
+  $scope: PipelineScopeEnum
   $first: Int
   $last: Int
-  $prevPageCursor: String = ""
-  $nextPageCursor: String = ""
+  $after: String = ""
+  $before: String = ""
+  $source: String
+  $ref: String
+  $username: String
+  $status: PipelineStatusEnum
 ) {
   project(fullPath: $fullPath) {
     id
-    pipelines(first: $first, last: $last, after: $nextPageCursor, before: $prevPageCursor) {
+    pipelines(
+      scope: $scope
+      first: $first
+      last: $last
+      after: $after
+      before: $before
+      source: $source
+      ref: $ref
+      username: $username
+      status: $status
+    ) {
       nodes {
         id
         iid
         detailedStatus {
           ...CiIcon
+          name
         }
         createdAt
         finishedAt
@@ -52,11 +68,16 @@ query getPipelines(
         stuck
         type
         path
+        retryable
+        cancelable
         stages {
           nodes {
             id
             name
-            status
+            detailedStatus {
+              ...CiIcon
+              tooltip
+            }
           }
         }
         mergeRequest {
@@ -66,8 +87,13 @@ query getPipelines(
           title
         }
         mergeRequestEventType
+        project {
+          id
+          fullPath
+        }
+        hasManualActions
+        hasScheduledActions
       }
-
       pageInfo {
         ...PageInfo
       }

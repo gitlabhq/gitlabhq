@@ -3,7 +3,6 @@ import { GlButton, GlTooltipDirective } from '@gitlab/ui';
 import WorkItemLinkChildContents from 'ee_else_ce/work_items/components/shared/work_item_link_child_contents.vue';
 import { __, s__ } from '~/locale';
 import { createAlert } from '~/alert';
-import { WORK_ITEM_TYPE_NAME_TASK } from '../../constants';
 import { findHierarchyWidget, getDefaultHierarchyChildrenCount, getItems } from '../../utils';
 import toggleHierarchyTreeChildMutation from '../../graphql/client/toggle_hierarchy_tree_child.mutation.graphql';
 import isExpandedHierarchyTreeChildQuery from '../../graphql/client/is_expanded_hierarchy_tree_child.query.graphql';
@@ -73,11 +72,6 @@ export default {
       type: String,
       required: false,
       default: null,
-    },
-    showTaskWeight: {
-      type: Boolean,
-      required: false,
-      default: true,
     },
     allowedChildrenByType: {
       type: Object,
@@ -204,9 +198,6 @@ export default {
         'gl-bg-blue-50 hover:gl-bg-blue-50 gl-border-default': this.isActive,
       };
     },
-    shouldShowWeight() {
-      return this.childItemType === WORK_ITEM_TYPE_NAME_TASK ? this.showTaskWeight : true;
-    },
     allowedChildTypes() {
       return this.allowedChildrenByType?.[this.childItemType] || [];
     },
@@ -296,7 +287,6 @@ export default {
           :class="childItemClass"
           :show-labels="showLabels"
           :work-item-full-path="workItemFullPath"
-          :show-weight="shouldShowWeight"
           :contextual-view-enabled="contextualViewEnabled"
           @click="$emit('toggleDrawer', $event)"
           @removeChild="$emit('removeChild', childItem)"
@@ -316,7 +306,6 @@ export default {
         :show-closed="showClosed"
         :full-path="workItemFullPath"
         :is-top-level="false"
-        :show-task-weight="showTaskWeight"
         :has-indirect-children="hasIndirectChildren"
         :dragged-item-type="draggedItemType"
         :allowed-children-by-type="allowedChildrenByType"

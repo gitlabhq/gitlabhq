@@ -1,8 +1,0 @@
----
-migration_job_name: BackfillEpicDatesToWorkItemDatesSources
-description: Creates a record on work_item_dates_sources table for every epic record
-feature_category: team_planning
-introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/153115
-milestone: '17.1'
-queued_migration_version: 20240531113402
-finalized_by: 20240702092809

@@ -14,7 +14,15 @@ class JiraConnect::SubscriptionsController < JiraConnect::ApplicationController
 
     # *.jira.com is needed for some legacy Jira Cloud instances, new ones will use *.atlassian.net
     # https://support.atlassian.com/organization-administration/docs/ip-addresses-and-domains-for-atlassian-cloud-products/
-    p.frame_ancestors(*(ALLOWED_IFRAME_ANCESTORS + Gitlab.config.jira_connect.additional_iframe_ancestors))
+    frame_ancestors = ALLOWED_IFRAME_ANCESTORS + Gitlab.config.jira_connect.additional_iframe_ancestors
+
+    # Add the specific Jira installation's domain (handles custom Jira domains)
+    if current_jira_installation&.display_url.present? &&
+        current_jira_installation.display_url != current_jira_installation.base_url
+      frame_ancestors << current_jira_installation.display_url
+    end
+
+    p.frame_ancestors(*frame_ancestors)
     p.script_src(*script_src_values)
     p.style_src(*style_src_values)
   end

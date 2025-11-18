@@ -3,7 +3,7 @@ table_name: ci_runner_projects
 classes:
 - Ci::RunnerProject
 feature_categories:
-- runner
+- runner_core
 description: Relationships between runners and projects for project runners
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/commit/046b28312704f3131e72dcd2dbdacc5264d4aa62
 milestone: '8.0'

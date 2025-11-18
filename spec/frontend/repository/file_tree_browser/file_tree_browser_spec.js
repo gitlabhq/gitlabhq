@@ -1,4 +1,4 @@
-import Vue from 'vue';
+import Vue, { nextTick } from 'vue';
 import { createTestingPinia } from '@pinia/testing';
 import { PiniaVuePlugin } from 'pinia';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
@@ -23,6 +23,7 @@ describe('FileTreeBrowser', () => {
   const findFileBrowserHeight = () => wrapper.findComponent(FileBrowserHeight);
   const findPanelResizer = () => wrapper.findComponent(PanelResizer);
   const findOverlay = () => wrapper.findByTestId('overlay');
+  const findCloseButton = () => wrapper.findByTestId('close-file-tree-browser');
 
   afterEach(() => {
     localStorage.clear();
@@ -41,6 +42,9 @@ describe('FileTreeBrowser', () => {
         },
       },
       pinia,
+      stubs: {
+        GlButton: false,
+      },
     });
   };
 
@@ -130,6 +134,29 @@ describe('FileTreeBrowser', () => {
         createComponent();
 
         expect(findFileBrowserHeight().attributes('style')).toBe(`--tree-width: ${TREE_WIDTH}px;`);
+      });
+    });
+
+    describe('Close button behavior', () => {
+      it('clicking close button toggles visibility state', async () => {
+        const closeButton = findCloseButton();
+        expect(closeButton.exists()).toBe(true);
+
+        await closeButton.vm.$emit('click');
+        await nextTick();
+
+        expect(fileTreeBrowserStore.handleFileTreeBrowserToggleClick).toHaveBeenCalledTimes(1);
+      });
+
+      it('close button works in peek mode', async () => {
+        fileTreeBrowserStore.setFileTreeBrowserIsPeekOn(true);
+        await nextTick();
+
+        const closeButton = findCloseButton();
+        await closeButton.vm.$emit('click');
+        await nextTick();
+
+        expect(fileTreeBrowserStore.handleFileTreeBrowserToggleClick).toHaveBeenCalled();
       });
     });
   });

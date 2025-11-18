@@ -4,8 +4,10 @@ require 'spec_helper'
 
 RSpec.describe WorkItemPresenter, feature_category: :portfolio_management do
   let(:user) { build_stubbed(:user) }
-  let(:project) { build_stubbed(:project) }
-  let(:original_work_item) { build_stubbed(:work_item, project: project) }
+  # rubocop:disable RSpec/FactoryBot/AvoidCreate -- spec needs work_item's namespace persisted to the database
+  let_it_be(:project) { create(:project) }
+  let_it_be(:original_work_item) { create(:work_item, project: project) }
+  # rubocop:enable RSpec/FactoryBot/AvoidCreate
   let(:target_work_item) { build_stubbed(:work_item, project: project) }
   let(:target_work_item_url) { Gitlab::UrlBuilder.build(target_work_item) }
 

@@ -22,18 +22,15 @@ class Projects::TagsController < Projects::ApplicationController
       @sort = tags_params[:sort]
       @search = tags_params[:search]
 
-      @tags = TagsFinder.new(@repository, tags_params).execute
+      @tags = TagsFinder.new(@repository, tags_params).execute(batch_load_signatures: true)
 
       @tags = Kaminari.paginate_array(@tags).page(tags_params[:page])
 
-      # Instantiate signed tags so signatures can be batch loaded
-      @tags.each(&:signed_tag)
-
       tag_names = @tags.map(&:name)
-      @tags_pipelines = @project.ci_pipelines.latest_successful_for_refs(tag_names)
 
       @releases = ReleasesFinder.new(project, current_user, tag: tag_names).execute
-      @tag_pipeline_statuses = Ci::CommitStatusesFinder.new(@project, @repository, current_user, @tags).execute
+      @tag_pipeline_statuses =
+        Ci::CommitStatusesFinder.new(@project, @repository, current_user, @tags, ref_type: :tags).execute
     rescue Gitlab::Git::CommandError => e
       @tags = []
       @releases = []

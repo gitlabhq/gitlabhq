@@ -8,8 +8,6 @@ module CommitSignatures
     belongs_to :key, optional: true
     belongs_to :user, optional: true
 
-    ignore_column :author_email, remove_with: '18.5', remove_after: '2025-09-13'
-
     def type
       :ssh
     end

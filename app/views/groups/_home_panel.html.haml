@@ -25,11 +25,11 @@
           .js-vue-notification-dropdown{ data: { disabled: emails_disabled.to_s, dropdown_items: notification_dropdown_items(@notification_setting).to_json, notification_level: @notification_setting.level, help_page_path: help_page_path('user/profile/notifications.md'), group_id: @group.id, container_class: 'gl-align-top' } }
         - if can_create_subgroups
           = render Pajamas::ButtonComponent.new(href: new_group_path(parent_id: @group.id, anchor: 'create-group-pane'), button_options: { data: { testid: 'new-subgroup-button' } }) do
-            = _("New subgroup")
+            = _("Create subgroup")
 
         - if can_create_projects
           = render Pajamas::ButtonComponent.new(href: new_project_path(namespace_id: @group.id), variant: :confirm, button_options: { data: { testid: 'new-project-button' } }) do
-            = _('New project')
+            = _('Create project')
 
         = render 'groups/more_actions_dropdown', source: @group
 

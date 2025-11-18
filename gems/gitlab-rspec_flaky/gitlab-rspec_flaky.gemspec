@@ -11,7 +11,7 @@ Gem::Specification.new do |spec|
   spec.summary = "GitLab's RSpec Flaky test detector"
   spec.description =
     "This gem provide an RSpec listener that allows to detect flaky examples. See " \
-    "https://docs.gitlab.com/ee/development/testing_guide/flaky_tests.html#automatic-retries-and-flaky-tests-detection."
+    "https://docs.gitlab.com/ee/development/testing_guide/unhealthy_tests.html#automatic-retries-and-flaky-tests-detection."
   spec.homepage = "https://gitlab.com/gitlab-org/gitlab/-/tree/master/gems/gitlab-rspec_flaky"
   spec.license = "MIT"
   spec.required_ruby_version = ">= 3.0"

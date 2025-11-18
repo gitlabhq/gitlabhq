@@ -253,6 +253,7 @@ export default {
       data-track-action="click_button"
       data-track-label="whats_new"
       data-track-property="nav_whats_new"
+      :aria-label="$options.i18n.whatsnew"
       :button-text-classes="{
         'gl-w-full gl-flex gl-items-center gl-justify-between gl-font-semibold !gl-text-default':
           !isIconOnly,
@@ -288,6 +289,7 @@ export default {
           icon="question-o"
           class="super-sidebar-help-center-toggle super-sidebar-nav-item gl-w-full !gl-justify-start gl-gap-3 !gl-px-[0.375rem] !gl-py-2 gl-font-semibold"
           :button-text-classes="{ '!gl-text-default': !isIconOnly, 'gl-hidden': isIconOnly }"
+          :aria-label="$options.i18n.help"
           data-testid="sidebar-help-button"
         >
           {{ $options.i18n.help }}

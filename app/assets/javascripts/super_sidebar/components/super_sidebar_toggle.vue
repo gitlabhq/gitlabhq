@@ -115,6 +115,7 @@ export default {
     :aria-expanded="ariaExpanded"
     :aria-label="computedAriaLabel"
     :icon="icon"
+    data-testid="super-sidebar-toggle-button"
     category="tertiary"
     @click="toggle"
   />

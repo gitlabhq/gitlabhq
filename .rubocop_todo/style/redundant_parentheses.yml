@@ -23,7 +23,6 @@ Style/RedundantParentheses:
     - 'qa/qa/page/base.rb'
     - 'spec/lib/gitlab/usage/service_ping_report_spec.rb'
     - 'spec/requests/lfs_locks_api_spec.rb'
-    - 'spec/spec_helper.rb'
     - 'spec/support/helpers/database/duplicate_indexes.rb'
     - 'spec/support/helpers/login_helpers.rb'
     - 'tooling/lib/tooling/helm3_client.rb'

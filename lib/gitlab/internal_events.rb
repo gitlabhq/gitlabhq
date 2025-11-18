@@ -35,12 +35,19 @@ module Gitlab
           extra[k] = kwargs[k].is_a?(::ApplicationRecord) ? kwargs[k].try(:id) : kwargs[k]
         end
 
-        Gitlab::ErrorTracking.track_and_raise_for_dev_exception(
-          e,
+        error_payload = {
+          server_version: Gitlab::VERSION,
           event_name: event_name,
           additional_properties: additional_properties,
           kwargs: extra
-        )
+        }
+
+        if Gitlab.com? || Gitlab.dev_or_test_env? # rubocop:disable Gitlab/AvoidGitlabInstanceChecks -- not a feature, need to process errors on SM instances differently
+          Gitlab::ErrorTracking.track_and_raise_for_dev_exception(e, **error_payload)
+        else
+          Gitlab::AppLogger.warn(e, **error_payload)
+        end
+
         nil
       end
 

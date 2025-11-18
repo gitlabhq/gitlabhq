@@ -14,6 +14,7 @@ RSpec.describe Projects::IssuesController, :request_store, feature_category: :te
   let(:spam_action_response_fields) { { 'stub_spam_action_response_fields' => true } }
 
   before do
+    stub_feature_flags(work_item_view_for_issues: false)
     # We need the spam_params object to be present in the request context
     Gitlab::RequestContext.start_request_context(request: request)
   end
@@ -41,7 +42,7 @@ RSpec.describe Projects::IssuesController, :request_store, feature_category: :te
         it 'redirects to work items index page' do
           get :index, params: { namespace_id: project.namespace, project_id: project }
 
-          expect(response).to redirect_to(project_work_items_path(project, 'type[]' => 'issue'))
+          expect(response).to redirect_to(project_work_items_path(project))
         end
 
         context 'when work_item_planning_view: false' do
@@ -93,7 +94,7 @@ RSpec.describe Projects::IssuesController, :request_store, feature_category: :te
       it 'redirects to work items index page' do
         get :index, params: { namespace_id: project.namespace, project_id: project }
 
-        expect(response).to redirect_to(project_work_items_path(project, 'type[]' => 'issue'))
+        expect(response).to redirect_to(project_work_items_path(project))
       end
 
       context 'when work_item_planning_view: false' do
@@ -200,10 +201,32 @@ RSpec.describe Projects::IssuesController, :request_store, feature_category: :te
     end
 
     context 'when issue is not a task and work items feature flag is enabled' do
-      it 'does not redirect to work items route' do
-        get :show, params: { namespace_id: project.namespace, project_id: project, id: issue.iid }
+      before do
+        stub_feature_flags(work_item_view_for_issues: true)
+      end
 
-        expect(response).to render_template(:show)
+      context 'when work_item_planning_view is enabled' do
+        before do
+          stub_feature_flags(work_item_planning_view: true)
+        end
+
+        it 'redirects to work items route' do
+          get :show, params: { namespace_id: project.namespace, project_id: project, id: issue.iid }
+
+          expect(response).to redirect_to project_work_item_path(project, issue.iid)
+        end
+      end
+
+      context 'when work_item_planning_view is disabled' do
+        before do
+          stub_feature_flags(work_item_planning_view: false)
+        end
+
+        it 'does not redirect to work items route' do
+          get :show, params: { namespace_id: project.namespace, project_id: project, id: issue.iid }
+
+          expect(response).to render_template(:show)
+        end
       end
     end
 
@@ -1634,17 +1657,7 @@ RSpec.describe Projects::IssuesController, :request_store, feature_category: :te
     end
 
     it 'starts covered experience for create_merge_request' do
-      expect { create_merge_request }.to start_covered_experience(:create_merge_request)
-    end
-
-    context 'when covered_experience_create_merge_request feature flag is disabled' do
-      before do
-        stub_feature_flags(covered_experience_create_merge_request: false)
-      end
-
-      it 'does not start covered experience' do
-        expect { create_merge_request }.not_to start_covered_experience(:create_merge_request)
-      end
+      expect { create_merge_request }.to start_user_experience(:create_merge_request)
     end
 
     def create_merge_request

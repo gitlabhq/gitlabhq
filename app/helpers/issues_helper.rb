@@ -198,19 +198,6 @@ module IssuesHelper
     )
   end
 
-  def group_issues_list_data(group, current_user)
-    common_issues_list_data(group, current_user).merge(
-      can_create_projects: can?(current_user, :create_projects, group).to_s,
-      can_read_crm_contact: can?(current_user, :read_crm_contact, group.crm_group).to_s,
-      can_read_crm_organization: can?(current_user, :read_crm_organization, group.crm_group).to_s,
-      group_id: group.id,
-      has_any_issues: @has_issues.to_s,
-      has_any_projects: @has_projects.to_s,
-      new_project_path: new_project_path(namespace_id: group.id),
-      time_tracking_limit_to_hours: Gitlab::CurrentSettings.time_tracking_limit_to_hours.to_s
-    )
-  end
-
   def dashboard_issues_list_data(current_user)
     {
       autocomplete_award_emojis_path: autocomplete_award_emojis_path,

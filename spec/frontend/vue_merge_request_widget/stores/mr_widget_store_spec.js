@@ -10,7 +10,7 @@ describe('MergeRequestStore', () => {
     store = new MergeRequestStore(mockData);
   });
 
-  it('should initialize gitpod attributes', () => {
+  it('should initialize ona attributes', () => {
     expect(store).toMatchObject({
       gitpodEnabled: mockData.gitpod_enabled,
       showGitpodButton: mockData.show_gitpod_button,

@@ -913,7 +913,7 @@ export const mockTokens = (fetchLabels, isSignedIn) => [
     isProject: false,
   },
   {
-    icon: 'issues',
+    icon: 'issue-type-issue',
     title: TOKEN_TITLE_TYPE,
     type: TOKEN_TYPE_TYPE,
     token: GlFilteredSearchToken,
@@ -1030,28 +1030,6 @@ export const epicBoardListQueryResponse = (totalWeight = 5) => ({
     },
   },
 });
-
-export const updateIssueTitleResponse = {
-  data: {
-    updateIssuableTitle: {
-      issue: {
-        id: 'gid://gitlab/Issue/436',
-        title: 'Issue 1 edit',
-      },
-    },
-  },
-};
-
-export const updateEpicTitleResponse = {
-  data: {
-    updateIssuableTitle: {
-      epic: {
-        id: 'gid://gitlab/Epic/426',
-        title: 'Epic 1 edit',
-      },
-    },
-  },
-};
 
 export const createBoardListResponse = {
   data: {

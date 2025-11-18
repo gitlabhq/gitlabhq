@@ -15,7 +15,6 @@
         %template{ :shadowrootmode => "open" }
           = render 'peek/bar'
           = universal_stylesheet_link_tag 'application', crossorigin: 'anonymous'
-          = universal_stylesheet_link_tag 'application_utilities', crossorigin: 'anonymous'
           = universal_stylesheet_link_tag 'tailwind', crossorigin: 'anonymous'
           = universal_stylesheet_link_tag 'performance_bar', crossorigin: 'anonymous'
           = webpack_bundle_tag 'performance_bar'

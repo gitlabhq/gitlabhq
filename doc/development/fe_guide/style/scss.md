@@ -255,50 +255,10 @@ For CSS properties that are unit-less (e.g `display: flex`) it is okay to use CS
 
 // Good
 .my-class {
-  @apply gl-mt-5 gl-flex;
+  @apply gl-mt-5;
+  @apply gl-flex;
 }
 ```
-
-The preferred way to use `@apply` is to combine multiple CSS classes in a single line or at most two,
-like in the example above. This approach keeps the CSS concise and easy to read:
-
-```css
-// Good
-.my-class {
-  @apply gl-mt-5 gl-flex gl-items-center;
-}
-```
-
-Avoid splitting classes across multiple lines, as shown below.
-
-```css
-// Avoid
-@apply gl-mt-5;
-@apply gl-flex;
-@apply gl-items-center;
-```
-
-The reason for this is that IDE extensions might only be able to detect conflicts when
-the CSS Classes are in one line:
-
-```css
-// ✅ Conflict detected: 'gl-bg-subtle' applies the same CSS properties as 'gl-bg-default'.(cssConflict)
-@apply gl-bg-default gl-bg-subtle;
-
-// ❌ No conflict detected
-@apply gl-bg-default;
-@apply gl-bg-subtle;
-```
-
-The exception to this rule is when working with `!important`. Since `!important` applies to
-the entire line, each class that requires it should be applied on its own line. For instance:
-
-```css
-@apply gl-flex gl-items-center;
-@apply gl-mt-5 #{!important};
-```
-
-This ensures that `!important` applies only where intended without affecting other classes in the same line.
 
 ## Responsive design
 
@@ -574,6 +534,29 @@ makes things harder to override.
 Do not use any selector prefixed with `js-` for styling purposes. These
 selectors are intended for use only with JavaScript to allow for removal or
 renaming without breaking styling.
+
+## Concatenating classes
+
+Do not concatenate strings to create classes. Instead, write out the full class name for better readability and maintenance.
+
+```scss
+// Bad
+.foo {
+  /* ... */
+  &-bar {
+    /* ... */
+  }
+}
+
+// Good
+.foo {
+  /* ... */
+}
+
+.foo-bar {
+  /* ... */
+}
+```
 
 ## Selectors with Util CSS Classes
 

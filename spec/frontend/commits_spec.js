@@ -1,14 +1,14 @@
 import MockAdapter from 'axios-mock-adapter';
 import $ from 'jquery';
-import 'vendor/jquery.endless-scroll';
 import waitForPromises from 'helpers/wait_for_promises';
 import { setHTMLFixture, resetHTMLFixture } from 'helpers/fixtures';
 import CommitsList from '~/commits';
 import axios from '~/lib/utils/axios_utils';
 import { HTTP_STATUS_OK } from '~/lib/utils/http_status';
 import { sanitize } from '~/lib/dompurify';
-import Pager from '~/pager';
+import { InfiniteScroller } from '~/infinite_scroller';
 
+jest.mock('~/infinite_scroller');
 jest.mock('~/lib/dompurify', () => ({
   sanitize: jest.fn().mockImplementation((html) => html),
 }));
@@ -27,16 +27,24 @@ describe('Commits List', () => {
   let commitsList;
 
   beforeEach(() => {
+    jest.spyOn(InfiniteScroller.prototype, 'initialize');
     setHTMLFixture(`
-      <form class="commits-search-form" action="/h5bp/html5-boilerplate/commits/main">
-        <input id="commits-search">
+      <form class="commits-search-form" action="/h5bp/html5-boilerplate/commits/main?ref_type=heads">
+        <input name="search" id="commits-search">
       </form>
-      <ol id="commits-list">
-        <button class="js-toggle-button" data-commit-id="123">Toggle</button>
-        <div class="js-toggle-content" data-commit-id="123"></div>
-      </ol>
+      <div id="commits-list" class="js-infinite-scrolling-root">
+        <ol class="content_list">
+          <li>
+            Commit
+            <button class="js-toggle-button" data-commit-id="123">Toggle</button>
+            <div class="js-toggle-content" data-commit-id="123"></div>
+          </li>
+        </ol>
+        <div class="js-infinite-scrolling-page-end">
+          <div class="js-infinite-scrolling-loading"></div>
+        </div>
+      </div>
     `);
-    jest.spyOn(Pager, 'init').mockImplementation(() => {});
     commitsList = new CommitsList(25);
   });
 
@@ -46,6 +54,10 @@ describe('Commits List', () => {
 
   it('should be defined', () => {
     expect(CommitsList).toBeDefined();
+  });
+
+  it('should initialize infinite scroller', () => {
+    expect(InfiniteScroller.prototype.initialize).toHaveBeenCalled();
   });
 
   describe('processCommits', () => {
@@ -60,7 +72,7 @@ describe('Commits List', () => {
         </div>
       `);
 
-      const data = `
+      const html = `
         <li class="commit-header" data-day="2016-09-20">
           <span class="day">20 Sep, 2016</span>
           <span class="commits-count">1 commit</span>
@@ -70,7 +82,9 @@ describe('Commits List', () => {
 
       // The last commit header should be removed
       // since the previous one has the same data-day value.
-      expect(commitsList.processCommits(data).find('li.commit-header')).toHaveLength(0);
+      expect(
+        $(commitsList.processCommits({ html, count: 1 })).find('li.commit-header'),
+      ).toHaveLength(0);
     });
   });
 
@@ -84,7 +98,7 @@ describe('Commits List', () => {
       jest.spyOn(window.history, 'replaceState').mockImplementation(() => {});
       mock = new MockAdapter(axios);
 
-      mock.onGet('/h5bp/html5-boilerplate/commits/main').reply(HTTP_STATUS_OK, {
+      mock.onGet('/h5bp/html5-boilerplate/commits/main?ref_type=heads').reply(HTTP_STATUS_OK, {
         html: '<li>Result</li>',
       });
 
@@ -96,6 +110,16 @@ describe('Commits List', () => {
     });
 
     it('should save the last search string', async () => {
+      mock
+        .onGet(
+          new URL(
+            '/h5bp/html5-boilerplate/commits/main?ref_type=heads&search=GitLab',
+            window.location.origin,
+          ).toString(),
+        )
+        .reply(HTTP_STATUS_OK, {
+          html: '<li>Result</li>',
+        });
       commitsList.searchField.val('GitLab');
       await commitsList.filterResults();
       expect(ajaxSpy).toHaveBeenCalled();
@@ -158,6 +182,39 @@ describe('Commits List', () => {
         expect(contentElement.dataset.contentLoaded).toBe('true');
         expect(findLoadingSpinner()).toBe(null);
       });
+    });
+  });
+
+  describe('filterResults', () => {
+    let mockAdapter;
+
+    beforeEach(() => {
+      mockAdapter = new MockAdapter(axios);
+    });
+
+    it('makes request with form action and serialized form data', async () => {
+      const searchTerm = 'feature';
+      const requestPath = new URL(
+        `/h5bp/html5-boilerplate/commits/main?ref_type=heads&search=${searchTerm}`,
+        window.location.origin,
+      ).toString();
+      mockAdapter.onGet(requestPath).reply(HTTP_STATUS_OK, {
+        html: '<li id="result">Search results</li>',
+      });
+      commitsList.searchField.val(searchTerm);
+      commitsList.lastSearch = '';
+
+      commitsList.searchField.trigger('keyup');
+      jest.runAllTimers();
+
+      expect(commitsList.$contentList.hasClass('gl-opacity-5')).toBe(true);
+
+      await axios.waitForAll();
+
+      expect(document.getElementById('result')).not.toBe(null);
+      expect(window.location.href).toBe(requestPath);
+      expect(commitsList.$contentList.hasClass('gl-opacity-5')).toBe(false);
+      expect(InfiniteScroller.prototype.initialize).toHaveBeenCalledTimes(2);
     });
   });
 });

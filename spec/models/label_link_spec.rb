@@ -14,8 +14,13 @@ RSpec.describe LabelLink do
   it { is_expected.to belong_to(:target) }
 
   it_behaves_like 'a BulkInsertSafe model', described_class do
-    let(:valid_items_for_bulk_insertion) { build_list(:label_link, 10, target: issue) }
-    let(:invalid_items_for_bulk_insertion) { [build(:label_link, label: nil)] }
+    let(:valid_items_for_bulk_insertion) do
+      build_list(:label_link, 10, target: issue, namespace_id: issue.namespace_id)
+    end
+
+    let(:invalid_items_for_bulk_insertion) do
+      [build(:label_link, target: issue, label: nil, namespace_id: issue.namespace_id)]
+    end
   end
 
   describe 'validations' do

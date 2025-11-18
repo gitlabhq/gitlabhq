@@ -1,0 +1,10 @@
+---
+name: accessible_loading_button
+description: Make GlButton accessible while loading
+feature_issue_url: https://gitlab.com/gitlab-org/gitlab-services/design.gitlab.com/-/issues/2981
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/208901
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/577222
+milestone: '18.6'
+group: group::design system
+type: gitlab_com_derisk
+default_enabled: false

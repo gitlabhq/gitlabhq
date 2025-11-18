@@ -3,10 +3,12 @@ import VueRouter from 'vue-router';
 import { pinia } from '~/pinia/instance';
 
 import { convertObjectPropsToCamelCase, parseBoolean } from '~/lib/utils/common_utils';
+import { setUTCTime } from '~/lib/utils/datetime_utility';
 import { parseRailsFormFields } from '~/lib/utils/forms';
 import { __, sprintf } from '~/locale';
 import Translate from '~/vue_shared/translate';
 import AccessTokens from '~/vue_shared/access_tokens/components/access_tokens.vue';
+import GenerateFineGrainedTokenApp from '~/vue_shared/access_tokens/components/fine_grained_tokens/generate_token_app.vue';
 import AccessTokenTableApp from './components/access_token_table_app.vue';
 import InactiveAccessTokenTableApp from './components/inactive_access_token_table_app.vue';
 import ExpiresAtField from './components/expires_at_field.vue';
@@ -99,8 +101,8 @@ export const initExpiresAtField = () => {
       return h(ExpiresAtField, {
         props: {
           inputAttrs,
-          minDate: minDate ? new Date(minDate) : undefined,
-          maxDate: maxDate ? new Date(maxDate) : undefined,
+          minDate: setUTCTime(minDate),
+          maxDate: maxDate && setUTCTime(maxDate),
           defaultDateOffset: defaultDateOffset ? Number(defaultDateOffset) : undefined,
           description,
         },
@@ -145,6 +147,7 @@ export const initSharedAccessTokenApp = () => {
     accessTokenDescription,
     accessTokenScopes,
     accessTokenCreate,
+    accessTokenNew,
     accessTokenRevoke,
     accessTokenRotate,
     accessTokenShow,
@@ -162,6 +165,7 @@ export const initSharedAccessTokenApp = () => {
       accessTokenMaxDate,
       accessTokenMinDate,
       accessTokenCreate,
+      accessTokenNew,
       accessTokenRevoke,
       accessTokenRotate,
       accessTokenShow,
@@ -173,6 +177,7 @@ export const initSharedAccessTokenApp = () => {
           tokenName: accessTokenName,
           tokenDescription: accessTokenDescription,
           tokenScopes: accessTokenScopes && JSON.parse(accessTokenScopes),
+          useFineGrainedTokens: gon.features.fineGrainedPersonalAccessTokens,
         },
       });
     },
@@ -201,6 +206,19 @@ export const initTokensApp = () => {
     },
     render(createElement) {
       return createElement(TokensApp);
+    },
+  });
+};
+
+export const initGenerateFineGrainedTokenApp = () => {
+  const el = document.getElementById('js-generate-fine-grained-token-app');
+
+  if (!el) return null;
+
+  return new Vue({
+    el,
+    render(createElement) {
+      return createElement(GenerateFineGrainedTokenApp);
     },
   });
 };

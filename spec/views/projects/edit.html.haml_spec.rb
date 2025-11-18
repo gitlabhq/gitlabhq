@@ -142,7 +142,8 @@ RSpec.describe 'projects/edit' do
         render
 
         expect(rendered).to render_template('shared/groups_projects/settings/_restore')
-        expect(rendered).to have_link('Restore project')
+        expect(rendered).to have_content('Restore project')
+        expect(rendered).to have_link('Restore')
       end
     end
 
@@ -151,7 +152,8 @@ RSpec.describe 'projects/edit' do
         render
 
         expect(rendered).to render_template('shared/groups_projects/settings/_restore')
-        expect(rendered).not_to have_link('Restore project')
+        expect(rendered).not_to have_content('Restore project')
+        expect(rendered).not_to have_link('Restore')
       end
     end
   end

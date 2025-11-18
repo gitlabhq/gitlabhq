@@ -13,6 +13,138 @@ RSpec.describe WorkItems::WorkItemsFinder, feature_category: :team_planning do
     it_behaves_like 'work items finder group parameter', expect_group_items: false
   end
 
+  shared_examples 'generates query with namespace_traversal_id filtering' do
+    it 'generates query with namespace_traversal_id filtering' do
+      result_sql = items.to_sql
+
+      expect(result_sql).to include("namespace_traversal_ids[1] = #{group.id}")
+                            .or(
+                              include('"issues"."namespace_traversal_ids" >=')
+                              .and(include('"issues"."namespace_traversal_ids" <'))
+                            )
+    end
+  end
+
+  shared_examples 'generates query without namespace_traversal_id filtering' do
+    it 'generates query without namespace_traversal_id filtering' do
+      result_sql = items.to_sql
+
+      expect(result_sql).not_to include("namespace_traversal_ids[1]")
+      expect(result_sql).not_to include('"issues"."namespace_traversal_ids" >=')
+    end
+  end
+
+  context 'with namespace_traversal_ids_filtering' do
+    include_context '{Issues|WorkItems}Finder#execute context', :work_item
+
+    let_it_be(:group_work_item) { create(:work_item, :group_level, namespace: group, author: user) }
+    let_it_be(:group_project_work_item) { create(:work_item, project: project1, author: user) }
+
+    let_it_be(:subgroup_work_item) { create(:work_item, :group_level, namespace: subgroup, author: user) }
+
+    let(:params) { { group_id: group, include_descendants: true } }
+    let(:scope) { 'all' }
+
+    before do
+      group.add_developer(user)
+    end
+
+    it 'only returns project level work_items' do
+      expect(items).to contain_exactly(item1, item4, item5, group_project_work_item)
+    end
+
+    it 'generates query with condition to filter out work_items without project_id' do
+      result_sql = items.to_sql
+      expect(result_sql).to include('"issues"."project_id" IS NOT NULL')
+    end
+
+    it_behaves_like 'generates query with namespace_traversal_id filtering'
+
+    context 'with conditional traversal_ids filtering' do
+      context 'when no group is specified' do
+        let(:params) { { project_id: project1.id } }
+        let(:scope) { 'all' }
+
+        it_behaves_like 'generates query without namespace_traversal_id filtering'
+      end
+
+      context 'when feature flag is disabled' do
+        let(:params) { { group_id: group, include_descendants: true } }
+        let(:scope) { 'all' }
+
+        before do
+          stub_feature_flags(use_namespace_traversal_ids_for_work_items_finder: false)
+        end
+
+        it_behaves_like 'generates query without namespace_traversal_id filtering'
+      end
+
+      context 'when include_descendants is false' do
+        let(:params) { { group_id: group, include_descendants: false } }
+        let(:scope) { 'all' }
+
+        it_behaves_like 'generates query without namespace_traversal_id filtering'
+      end
+
+      context 'when all basic conditions are met' do
+        let(:scope) { 'all' }
+
+        context 'for a sub-group' do
+          let(:group) { subgroup }
+          let(:params) { { group_id: subgroup, include_descendants: true } }
+
+          it_behaves_like 'generates query with namespace_traversal_id filtering'
+
+          context 'with name sorting' do
+            let(:params) { { group_id: subgroup, include_descendants: true, sort: 'title_asc' } }
+
+            it_behaves_like 'generates query with namespace_traversal_id filtering'
+          end
+
+          context 'with updated sorting' do
+            let(:params) { { group_id: subgroup, include_descendants: true, sort: 'updated_desc' } }
+
+            it_behaves_like 'generates query with namespace_traversal_id filtering'
+          end
+        end
+
+        context 'for a root group' do
+          context 'with updated/created sorting' do
+            %w[updated_asc updated_desc created_asc created_desc].each do |sort_value|
+              context "with sort: #{sort_value}" do
+                let(:params) { { group_id: group, include_descendants: true, sort: sort_value } }
+
+                it_behaves_like 'generates query with namespace_traversal_id filtering'
+              end
+            end
+          end
+
+          context 'with other sorting' do
+            %w[name_asc name_desc priority_asc priority_desc].each do |sort_value|
+              context "with sort: #{sort_value}" do
+                let(:params) { { group_id: group, include_descendants: true, sort: sort_value } }
+
+                it_behaves_like 'generates query without namespace_traversal_id filtering'
+              end
+            end
+          end
+
+          context 'with no sort specified' do
+            let(:params) { { group_id: group, include_descendants: true } }
+
+            it_behaves_like 'generates query with namespace_traversal_id filtering'
+          end
+
+          context 'with blank sort' do
+            let(:params) { { group_id: group, include_descendants: true, sort: '' } }
+
+            it_behaves_like 'generates query with namespace_traversal_id filtering'
+          end
+        end
+      end
+    end
+  end
+
   context 'with start and end date filtering' do
     include_context '{Issues|WorkItems}Finder#execute context', :work_item
 
@@ -218,6 +350,33 @@ RSpec.describe WorkItems::WorkItemsFinder, feature_category: :team_planning do
 
         expect(filtered_items).to include(work_item_without_parent)
         expect(filtered_items).not_to include(work_item_with_parent)
+      end
+    end
+  end
+
+  context 'when filtering by ids' do
+    include_context '{Issues|WorkItems}Finder#execute context', :work_item
+
+    let(:params) { { ids: [item1.id, item3.id] } }
+    let(:scope) { 'all' }
+
+    it 'returns only issues with the specified ids' do
+      expect(items).to contain_exactly(item1, item3)
+    end
+
+    context 'when ids list is empty' do
+      let(:params) { { ids: [] } }
+
+      it 'does not apply the ID filter' do
+        expect(items).to contain_exactly(item1, item2, item3, item4, item5)
+      end
+    end
+
+    context 'when ids contain a non-existing id' do
+      let(:params) { { ids: [non_existing_record_id] } }
+
+      it 'returns no issues' do
+        expect(items).to be_empty
       end
     end
   end

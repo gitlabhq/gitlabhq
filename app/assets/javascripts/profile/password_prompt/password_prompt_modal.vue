@@ -15,12 +15,6 @@ export default {
     GlFormGroup,
     GlFormInput,
   },
-  props: {
-    handleConfirmPassword: {
-      type: Function,
-      required: true,
-    },
-  },
   data() {
     return {
       passwordCheck: '',
@@ -39,7 +33,16 @@ export default {
   },
   methods: {
     onConfirmPassword() {
-      this.handleConfirmPassword(this.passwordCheck);
+      this.$emit('submit', this.passwordCheck);
+    },
+    onHide() {
+      this.$emit('hide');
+      this.passwordCheck = '';
+    },
+    // show() can be invoked by parent components to show the modal
+    // eslint-disable-next-line vue/no-unused-properties
+    show() {
+      this.$refs.modal.show();
     },
   },
   cancelProps: {
@@ -55,12 +58,14 @@ export default {
 
 <template>
   <gl-modal
+    ref="modal"
     data-testid="password-prompt-modal"
     modal-id="password-prompt-modal"
     :title="$options.i18n.title"
     :action-primary="primaryProps"
     :action-cancel="$options.cancelProps"
     @primary="onConfirmPassword"
+    @hide="onHide"
   >
     <gl-form @submit.prevent="onConfirmPassword">
       <gl-form-group
@@ -74,6 +79,7 @@ export default {
           v-model="passwordCheck"
           name="password-confirmation"
           type="password"
+          autocomplete="current-password"
           data-testid="password-prompt-field"
         />
       </gl-form-group>

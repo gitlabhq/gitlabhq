@@ -169,6 +169,12 @@ RSpec.describe API::Members, feature_category: :groups_and_projects do
           expect(json_response.map { |u| u['id'] }).to match_array [maintainer.id, developer.id]
         end
       end
+
+      it_behaves_like 'authorizing granular token permissions', :read_member do
+        let(:user) { maintainer }
+        let(:boundary_object) { source }
+        let(:request) { get api(members_url, personal_access_token: pat) }
+      end
     end
 
     it_behaves_like 'GET /:source_type/:id/members/(all)', 'project', false do
@@ -185,6 +191,20 @@ RSpec.describe API::Members, feature_category: :groups_and_projects do
 
     it_behaves_like 'GET /:source_type/:id/members/(all)', 'group', true do
       let(:source) { group }
+    end
+
+    it_behaves_like 'rate limited endpoint', rate_limit_key: :project_members_api do
+      let_it_be(:user2) { create(:user) }
+
+      let(:current_user) { developer }
+
+      def request
+        get api("/projects/#{nested_project.id}/members/all", current_user)
+      end
+
+      def request_with_second_scope
+        get api("/projects/#{nested_project.id}/members/all", user2)
+      end
     end
 
     context 'when invited groups have public visibility' do
@@ -383,6 +403,12 @@ RSpec.describe API::Members, feature_category: :groups_and_projects do
             include_examples 'response with correct access levels'
           end
         end
+
+        it_behaves_like 'authorizing granular token permissions', :read_member do
+          let(:user) { maintainer }
+          let(:boundary_object) { source }
+          let(:request) { get api(members_url, personal_access_token: pat) }
+        end
       end
     end
 
@@ -576,6 +602,14 @@ RSpec.describe API::Members, feature_category: :groups_and_projects do
           it_behaves_like '412 response' do
             let(:request) { api("/#{source_type.pluralize}/#{source.id}/members/#{developer.id}", maintainer) }
           end
+
+          it_behaves_like 'authorizing granular token permissions', :delete_member do
+            let(:user) { maintainer }
+            let(:boundary_object) { source }
+            let(:request) do
+              delete api("/#{source_type.pluralize}/#{source.id}/members/#{developer.id}", personal_access_token: pat)
+            end
+          end
         end
 
         it 'returns 404 if member does not exist' do
@@ -626,6 +660,15 @@ RSpec.describe API::Members, feature_category: :groups_and_projects do
           let(:route) do
             post api("/#{source_type.pluralize}/#{source.id}/members", stranger),
               params: { user_id: access_requester.id, access_level: Member::MAINTAINER }
+          end
+        end
+
+        it_behaves_like 'authorizing granular token permissions', :create_member do
+          let(:user) { maintainer }
+          let(:boundary_object) { source }
+          let(:request) do
+            post api("/#{source_type.pluralize}/#{source.id}/members", personal_access_token: pat),
+              params: { user_id: stranger.id, access_level: Member::DEVELOPER }
           end
         end
 
@@ -1113,6 +1156,15 @@ RSpec.describe API::Members, feature_category: :groups_and_projects do
             params: { access_level: 25 }
 
           expect(response).to have_gitlab_http_status(:bad_request)
+        end
+
+        it_behaves_like 'authorizing granular token permissions', :update_member do
+          let(:user) { maintainer }
+          let(:boundary_object) { source }
+          let(:request) do
+            put api("/#{source_type.pluralize}/#{source.id}/members/#{developer.id}", personal_access_token: pat),
+              params: { access_level: Member::MAINTAINER }
+          end
         end
       end
     end

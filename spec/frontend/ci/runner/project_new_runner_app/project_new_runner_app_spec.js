@@ -3,7 +3,7 @@ import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import { createAlert, VARIANT_SUCCESS } from '~/alert';
 
 import ProjectRunnerRunnerApp from '~/ci/runner/project_new_runner/project_new_runner_app.vue';
-import { saveAlertToLocalStorage } from '~/ci/runner/local_storage_alert/save_alert_to_local_storage';
+import { saveAlertToLocalStorage } from '~/lib/utils/local_storage_alert';
 import { PROJECT_TYPE } from '~/ci/runner/constants';
 import RunnerCreateForm from '~/ci/runner/components/runner_create_form.vue';
 import { visitUrl } from '~/lib/utils/url_utility';
@@ -11,7 +11,7 @@ import { runnerCreateResult, mockRegistrationToken } from '../mock_data';
 
 const mockProjectId = 'gid://gitlab/Project/72';
 
-jest.mock('~/ci/runner/local_storage_alert/save_alert_to_local_storage');
+jest.mock('~/lib/utils/local_storage_alert');
 jest.mock('~/alert');
 jest.mock('~/lib/utils/url_utility', () => ({
   ...jest.requireActual('~/lib/utils/url_utility'),

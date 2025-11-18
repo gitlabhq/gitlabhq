@@ -9,24 +9,32 @@ title: Exact code search
 
 - Tier: Premium, Ultimate
 - Offering: GitLab.com, GitLab Self-Managed
-- Status: Beta
+- Status: Limited availability
 
 {{< /details >}}
 
 {{< history >}}
 
 - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/105049) as a [beta](../../policy/development_stages_support.md#beta) in GitLab 15.9 [with flags](../../administration/feature_flags/_index.md) named `index_code_with_zoekt` and `search_code_with_zoekt`. Disabled by default.
-- [Enabled on GitLab.com](https://gitlab.com/gitlab-org/gitlab/-/issues/388519) in GitLab 16.6.
+- [Enabled on GitLab.com and GitLab Self-Managed](https://gitlab.com/gitlab-org/gitlab/-/issues/388519) in GitLab 16.6.
+- Global code search [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/147077) in GitLab 16.11 [with a flag](../../administration/feature_flags/_index.md) named `zoekt_cross_namespace_search`. Disabled by default.
 - Feature flags `index_code_with_zoekt` and `search_code_with_zoekt` [removed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/148378) in GitLab 17.1.
+- [Changed](https://gitlab.com/groups/gitlab-org/-/epics/17918) from beta to limited availability in GitLab 18.6.
 
 {{< /history >}}
 
+{{< alert type="flag" >}}
+
+The availability of this feature is controlled by a feature flag.
+For more information, see the history.
+
+{{< /alert >}}
+
 {{< alert type="warning" >}}
 
-This feature is in [beta](../../policy/development_stages_support.md#beta) and subject to change without notice.
+This feature is in [limited availability](../../policy/development_stages_support.md#limited-availability).
 For more information, see [epic 9404](https://gitlab.com/groups/gitlab-org/-/epics/9404).
-To provide feedback on this feature, leave a comment on
-[issue 420920](https://gitlab.com/gitlab-org/gitlab/-/issues/420920).
+Provide feedback in [issue 420920](https://gitlab.com/gitlab-org/gitlab/-/issues/420920).
 
 {{< /alert >}}
 
@@ -48,7 +56,7 @@ Prerequisites:
 
 To use exact code search:
 
-1. On the left sidebar, select **Search or go to**.
+1. On the left sidebar, select **Search or go to**. If you've [turned on the new navigation](../interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
 1. In the search box, enter your search term.
 1. On the left sidebar, select **Code**.
 
@@ -81,27 +89,6 @@ The following scopes are available for exact code search:
 
 With the Zoekt search API, you can use the search API for exact code search.
 To use advanced search or basic search instead, [specify a search type](_index.md#specify-a-search-type).
-
-## Global code search
-
-{{< history >}}
-
-- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/147077) in GitLab 16.11 [with a flag](../../administration/feature_flags/_index.md) named `zoekt_cross_namespace_search`. Disabled by default.
-
-{{< /history >}}
-
-{{< alert type="flag" >}}
-
-The availability of this feature is controlled by a feature flag.
-For more information, see the history.
-This feature is available for testing, but not ready for production use.
-
-{{< /alert >}}
-
-Use this feature to search code across the entire GitLab instance.
-
-Global code search does not perform well on large GitLab instances.
-When this feature is enabled for instances with more than 20,000 projects, your search might time out.
 
 ## Search modes
 

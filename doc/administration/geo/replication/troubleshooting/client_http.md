@@ -1,5 +1,5 @@
 ---
-stage: Runtime
+stage: Tenant Scale
 group: Geo
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 title: Troubleshooting Geo client and HTTP response code errors
@@ -98,7 +98,7 @@ On a Geo primary site this error can be ignored.
 
 This happens because GitLab is attempting to display registries from the [Geo tracking database](../../_index.md#geo-tracking-database) which doesn't exist on the primary site (only the original projects exist on the primary; no replicated projects are present, therefore no tracking database exists).
 
-### Secondary site returns 400 error "Request header or cookie too large"
+### Secondary site returns 400 error `Request header or cookie too large`
 
 This error can happen when the internal URL of the primary site is incorrect.
 

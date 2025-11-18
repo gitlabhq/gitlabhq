@@ -305,6 +305,16 @@ describe('NavItem component', () => {
     });
   });
 
+  describe('when `item.is_active` is true but item is inside a flyout menu', () => {
+    it('scrolls not into view', () => {
+      createWrapper({
+        item: { is_active: true },
+        props: { isFlyout: true },
+      });
+      expect(wrapper.element.scrollIntoView).not.toHaveBeenCalled();
+    });
+  });
+
   describe('when `item.is_active` is false', () => {
     it('scrolls not into view', () => {
       createWrapper({

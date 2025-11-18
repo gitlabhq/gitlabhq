@@ -28,6 +28,25 @@ RSpec.describe RegistrationsController, :with_current_organization, feature_cate
 
       expect(response.body).to include("action=\"#{user_registration_path}\"")
     end
+
+    context 'when signup_enabled? is false' do
+      before do
+        stub_application_setting(signup_enabled: false)
+      end
+
+      it 'redirects to sign in page' do
+        expect(new).to redirect_to(new_user_session_path)
+      end
+
+      it 'shows an alert message' do
+        new
+        expect(flash[:alert]).to eq('Sign-ups are currently disabled. Please contact a GitLab administrator if you need an account.')
+      end
+
+      it 'does not render the signup form' do
+        expect(new).not_to render_template(:new)
+      end
+    end
   end
 
   describe '#create' do
@@ -321,6 +340,7 @@ RSpec.describe RegistrationsController, :with_current_organization, feature_cate
 
           expect { subject }.not_to change(User, :count)
           expect(response).to redirect_to(new_user_session_path)
+          expect(flash[:alert]).to eq(_('Sign-ups are currently disabled. Please contact a GitLab administrator if you need an account.'))
         end
       end
     end

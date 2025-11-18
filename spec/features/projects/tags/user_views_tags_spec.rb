@@ -6,6 +6,51 @@ RSpec.describe 'User views tags', :feature, feature_category: :source_code_manag
     let(:tag_page) { project_tags_path(project) }
   end
 
+  describe 'tag pipeline statuses' do
+    let_it_be(:project) { create(:project, :repository) }
+    let_it_be(:user) { project.owner }
+
+    before do
+      ref = 'tag'
+      sha = project.repository.create_file(
+        user, 'path', 'content', message: 'message', branch_name: project.default_branch
+      )
+      project.repository.add_tag(user, ref, sha)
+      # Older pipeline
+      create(
+        :ci_pipeline, :tag, :failed,
+        project: project, user: user,
+        ref: ref, sha: sha,
+        created_at: 6.months.ago
+      )
+      # Latest pipeline (Success)
+      create(
+        :ci_pipeline, :tag, :success,
+        project: project, user: user,
+        ref: ref, sha: sha,
+        created_at: 5.months.ago
+      )
+      # Pipeline for branch with matching ref and sha
+      create(
+        :ci_pipeline, :failed,
+        project: project, user: user,
+        ref: ref, sha: sha,
+        created_at: 4.months.ago
+      )
+      sign_in(user)
+      visit project_tags_path(project)
+    end
+
+    it 'shows the latest pipeline status or a placeholder for each tag', :aggregate_failures do
+      page.within first('[data-testid="tag-row"]') do
+        expect(page).to have_css '[data-testid="status_success_borderless-icon"]'
+      end
+      page.all('[data-testid="tag-row"]') do |li|
+        expect(li).to have_css '.gl-inline-flex svg.s24'
+      end
+    end
+  end
+
   context 'rss' do
     shared_examples 'has access to the tags RSS feed' do
       it do
@@ -70,6 +115,25 @@ RSpec.describe 'User views tags', :feature, feature_category: :source_code_manag
 
       context 'when user signed out' do
         it_behaves_like 'does not have access to the tags RSS feed'
+      end
+    end
+  end
+
+  context 'when a tag does not reference a commit' do
+    let_it_be(:project) { create(:project, :repository) }
+    let_it_be(:user) { project.owner }
+    let_it_be(:tag_name) { 'v123.45.678' }
+
+    before do
+      project.repository.add_tag(user, tag_name, project.repository.readme.id)
+      sign_in(user)
+      visit project_tags_path(project)
+    end
+
+    it 'does not link to a commit' do
+      within('[data-testid="tag-row"]:last-child') do
+        expect(page).to have_text(tag_name)
+        expect(page).to have_text("Can't find HEAD commit for this tag")
       end
     end
   end

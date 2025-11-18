@@ -14,7 +14,7 @@ RSpec.describe 'admin/application_settings/ci_cd.html.haml' do
     allow(view).to receive(:current_user).and_return(user)
   end
 
-  describe 'CI CD Runners', feature_category: :runner do
+  describe 'CI CD Runners', feature_category: :runner_core do
     it 'has the setting section' do
       render
 

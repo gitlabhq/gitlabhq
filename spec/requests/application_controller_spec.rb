@@ -62,6 +62,39 @@ RSpec.describe ApplicationController, type: :request, feature_category: :shared 
     end
   end
 
+  describe 'studio cookie for anonymous users' do
+    before do
+      allow(Gitlab).to receive(:com?).and_return(dot_com)
+    end
+
+    context 'when not on dot_com' do
+      let(:dot_com) { false }
+
+      it 'does not set the studio cookie' do
+        get root_path
+
+        expect(response.cookies['studio']).not_to be_present
+      end
+    end
+
+    context 'when on dot_com' do
+      let(:dot_com) { true }
+      let(:default_value_for_anonymous_users) { 'false' }
+
+      context 'when user is logged in' do
+        before do
+          sign_in(user)
+
+          get root_path
+        end
+
+        it 'does not set the studio cookie' do
+          expect(response.cookies['studio']).not_to be_present
+        end
+      end
+    end
+  end
+
   describe 'User-Agent header' do
     before do
       sign_in(user)

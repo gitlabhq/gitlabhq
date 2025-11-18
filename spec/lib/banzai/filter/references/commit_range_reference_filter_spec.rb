@@ -68,7 +68,7 @@ RSpec.describe Banzai::Filter::References::CommitRangeReferenceFilter, feature_c
 
     it 'includes no title attribute' do
       doc = reference_filter("See #{reference}")
-      expect(doc.css('a').first.attr('title')).to eq ""
+      expect(doc.css('a').first.attr('title')).to be_nil
     end
 
     it 'includes default classes' do
@@ -256,5 +256,10 @@ RSpec.describe Banzai::Filter::References::CommitRangeReferenceFilter, feature_c
   it_behaves_like 'limits the number of filtered items' do
     let(:text) { "#{range.to_reference} #{range.to_reference} #{range.to_reference}" }
     let(:ends_with) { "</a> #{range.to_reference}" }
+  end
+
+  it_behaves_like 'ReferenceFilter#references_in' do
+    let(:reference) { range.to_reference }
+    let(:filter_instance) { described_class.new(nil, { project: nil }) }
   end
 end

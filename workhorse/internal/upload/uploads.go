@@ -45,6 +45,38 @@ type MultipartFormProcessor interface {
 	Name() string
 	Count() int
 	TransformContents(ctx context.Context, filename string, r io.Reader) (io.ReadCloser, error)
+	IsLsifProcessing() bool
+}
+
+// handleMultipartError handles errors from multipart file rewriting
+func handleMultipartError(w http.ResponseWriter, r *http.Request, err error, h http.Handler) {
+	switch {
+	case errors.Is(err, http.ErrNotMultipart):
+		h.ServeHTTP(w, r)
+	case errors.Is(err, ErrInjectedClientParam) || errors.Is(err, ErrUnexpectedMultipartEOF) || errors.Is(err, http.ErrMissingBoundary):
+		fail.Request(w, r, err, fail.WithStatus(http.StatusBadRequest))
+	case errors.Is(err, ErrTooManyFilesUploaded):
+		fail.Request(w, r, err, fail.WithStatus(http.StatusBadRequest), fail.WithBody(err.Error()))
+	case errors.Is(err, destination.ErrEntityTooLarge):
+		// For entity too large errors, include the detailed error message that may contain LSIF size info
+		fail.Request(w, r, err, fail.WithStatus(http.StatusRequestEntityTooLarge), fail.WithBody(err.Error()))
+	case errors.Is(err, zipartifacts.ErrBadMetadata):
+		fail.Request(w, r, err, fail.WithStatus(http.StatusRequestEntityTooLarge))
+	case errors.Is(err, exif.ErrRemovingExif):
+		fail.Request(w, r, err, fail.WithStatus(http.StatusUnprocessableEntity),
+			fail.WithBody("Failed to process image"))
+	case errors.Is(err, context.DeadlineExceeded):
+		fail.Request(w, r, err, fail.WithStatus(http.StatusGatewayTimeout), fail.WithBody("deadline exceeded"))
+	default:
+		switch t := err.(type) {
+		case textproto.ProtocolError:
+			fail.Request(w, r, err, fail.WithStatus(http.StatusBadRequest))
+		case *api.PreAuthorizeFixedPathError:
+			fail.Request(w, r, err, fail.WithStatus(t.StatusCode), fail.WithBody(t.Status))
+		default:
+			fail.Request(w, r, fmt.Errorf("handleFileUploads: extract files from multipart: %v", err))
+		}
+	}
 }
 
 // interceptMultipartFiles is the core of the implementation of
@@ -61,33 +93,7 @@ func interceptMultipartFiles(w http.ResponseWriter, r *http.Request, h http.Hand
 	// Rewrite multipart form data
 	err := rewriteFormFilesFromMultipart(r, writer, filter, fa, p, cfg)
 	if err != nil {
-		switch err {
-		case http.ErrNotMultipart:
-			h.ServeHTTP(w, r)
-		case ErrInjectedClientParam, ErrUnexpectedMultipartEOF, http.ErrMissingBoundary:
-			fail.Request(w, r, err, fail.WithStatus(http.StatusBadRequest))
-		case ErrTooManyFilesUploaded:
-			fail.Request(w, r, err, fail.WithStatus(http.StatusBadRequest), fail.WithBody(err.Error()))
-		case destination.ErrEntityTooLarge, zipartifacts.ErrBadMetadata:
-			fail.Request(w, r, err, fail.WithStatus(http.StatusRequestEntityTooLarge))
-		case exif.ErrRemovingExif:
-			fail.Request(w, r, err, fail.WithStatus(http.StatusUnprocessableEntity),
-				fail.WithBody("Failed to process image"))
-		default:
-			if errors.Is(err, context.DeadlineExceeded) {
-				fail.Request(w, r, err, fail.WithStatus(http.StatusGatewayTimeout), fail.WithBody("deadline exceeded"))
-				return
-			}
-
-			switch t := err.(type) {
-			case textproto.ProtocolError:
-				fail.Request(w, r, err, fail.WithStatus(http.StatusBadRequest))
-			case *api.PreAuthorizeFixedPathError:
-				fail.Request(w, r, err, fail.WithStatus(t.StatusCode), fail.WithBody(t.Status))
-			default:
-				fail.Request(w, r, fmt.Errorf("handleFileUploads: extract files from multipart: %v", err))
-			}
-		}
+		handleMultipartError(w, r, err, h)
 		return
 	}
 

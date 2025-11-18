@@ -33,7 +33,7 @@ This issue can occur when the service's image name
 
 ```yaml
 default:
-  image: docker:24.0.5
+  image: docker:24.0.5-cli
   services:
     - registry.hub.docker.com/library/docker:24.0.5-dind
 ```
@@ -44,7 +44,7 @@ To allow service resolution and access, add an explicit alias for the service na
 
 ```yaml
 default:
-  image: docker:24.0.5
+  image: docker:24.0.5-cli
   services:
     - name: registry.hub.docker.com/library/docker:24.0.5-dind
       alias: docker

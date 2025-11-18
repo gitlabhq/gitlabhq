@@ -12,9 +12,7 @@ title: Resource iteration events API
 
 {{< /details >}}
 
-Resource iteration events keep track of what happens to GitLab [issues](../user/project/issues/_index.md).
-
-Use them to track which iteration was set, who did it, and when it happened.
+Use this API to access [iteration events](../user/group/iterations/_index.md) for issues.
 
 ## Issues
 

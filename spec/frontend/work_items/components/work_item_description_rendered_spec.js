@@ -294,6 +294,8 @@ and even more`,
             'item 2 with a really really really really really really really really really really really really really really really really really really really really really really really really really really really really really really really really really really rea',
           visible: true,
           preselectedWorkItemType: WORK_ITEM_TYPE_NAME_TASK,
+          isEpicsList: false,
+          fromGlobalMenu: false,
         });
 
         findCreateWorkItemModal().vm.$emit('workItemCreated');

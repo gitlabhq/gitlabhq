@@ -27,6 +27,9 @@ module RuboCop
       #   RSpec.describe 'foo', feature_category: :not_owned do
       #   end
       #
+      #   RSpec.describe 'foo', feature_category: :shared do
+      #   end
+      #
       #   # good
       #
       #   RSpec.describe 'foo', feature_category: :wiki do
@@ -105,7 +108,7 @@ module RuboCop
 
         def feature_categories
           @feature_categories ||=
-            FeatureCategories.new(FeatureCategories.available_with_custom)
+            FeatureCategories.new(FeatureCategories.available_for_rspec)
         end
       end
     end

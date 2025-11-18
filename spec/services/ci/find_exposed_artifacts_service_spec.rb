@@ -140,21 +140,20 @@ RSpec.describe Ci::FindExposedArtifactsService, feature_category: :job_artifacts
       subject { described_class.new(project, user).for_pipeline(pipeline, limit: 2) }
 
       it 'returns first 2 results' do
-        expect(subject).to eq(
-          [
-            {
-              text: 'artifact 1',
-              url: file_project_job_artifacts_path(project, job1, 'ci_artifacts.txt'),
-              job_name: job1.name,
-              job_path: project_job_path(project, job1)
-            },
-            {
-              text: 'artifact 2',
-              url: browse_project_job_artifacts_path(project, job2),
-              job_name: job2.name,
-              job_path: project_job_path(project, job2)
-            }
-          ])
+        expect(subject).to match_array([
+          {
+            text: 'artifact 1',
+            url: file_project_job_artifacts_path(project, job1, 'ci_artifacts.txt'),
+            job_name: job1.name,
+            job_path: project_job_path(project, job1)
+          },
+          {
+            text: 'artifact 2',
+            url: browse_project_job_artifacts_path(project, job2),
+            job_name: job2.name,
+            job_path: project_job_path(project, job2)
+          }
+        ])
       end
     end
 
@@ -210,7 +209,13 @@ RSpec.describe Ci::FindExposedArtifactsService, feature_category: :job_artifacts
     end
   end
 
-  context 'when job_artifacts_metadata.exposed_as is not populated' do
+  context 'when job_artifacts_metadata.exposed_as is not populated',
+    quarantine: {
+      issue: [
+        'https://gitlab.com/gitlab-org/quality/test-failure-issues/-/issues/6762',
+        'https://gitlab.com/gitlab-org/quality/test-failure-issues/-/issues/6802'
+      ]
+    } do
     it_behaves_like '#for_pipeline' do
       def create_job_with_artifacts(options)
         create(:ci_build, pipeline: pipeline, options: options).tap do |job|

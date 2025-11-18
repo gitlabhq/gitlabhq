@@ -12,6 +12,6 @@
  * an opening or closing square bracket
  *  [[\]]
  */
-export const linkRegex = /(https?:\/\/[^"<>()\\^`{|}\s]+[^"<>()\\^`{|}\s.,:;!?])(?<![[\]])/g;
+export const linkRegex = /(https?:\/\/[^"'<>()\\^`{|}\s]+[^"'<>()\\^`{|}\s.,:;!?])(?<![[\]])/g;
 
 export default { linkRegex };

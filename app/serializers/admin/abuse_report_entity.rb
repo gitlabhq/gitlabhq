@@ -8,7 +8,6 @@ module Admin
     expose :created_at
     expose :updated_at
     expose :count
-    expose :labels, using: AntiAbuse::Reports::LabelEntity, if: ->(*) { Feature.enabled?(:abuse_report_labels) }
 
     expose :reported_user do |report|
       UserEntity.represent(report.user, only: [:name])

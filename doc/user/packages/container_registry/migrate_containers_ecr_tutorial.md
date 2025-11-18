@@ -21,7 +21,7 @@ When you put it all together, your `.gitlab-ci.yml` should look similar to the [
 
 You must have:
 
-- Maintainer role or higher in your GitLab project
+- At least the Maintainer role in your GitLab project
 - Access to your AWS account with permissions to create IAM users
 - Your AWS account ID
 - Your AWS region where ECR repositories are located
@@ -62,7 +62,7 @@ In AWS IAM, create a new policy and user with read-only access to ECR:
 
 Configure the required AWS credentials as variables in your GitLab project:
 
-1. On the left sidebar, select **Search or go to** and find your project.
+1. On the left sidebar, select **Search or go to** and find your project. If you've [turned on the new navigation](../../interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
 1. Select **Settings** > **CI/CD**.
 1. Expand **Variables**.
 1. Select **Add variable** and add:

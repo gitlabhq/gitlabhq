@@ -1,6 +1,7 @@
 import { shallowMount } from '@vue/test-utils';
 import IssuableAssignees from '~/sidebar/components/assignees/issuable_assignees.vue';
 import UncollapsedAssigneeList from '~/sidebar/components/assignees/uncollapsed_assignee_list.vue';
+import { removeWhitespace } from 'helpers/text_helper';
 
 describe('IssuableAssignees', () => {
   let wrapper;
@@ -31,7 +32,7 @@ describe('IssuableAssignees', () => {
       'renders "$message" when signedIn is $signedIn and editable is $editable',
       ({ signedIn, editable, message }) => {
         createComponent({ signedIn, editable });
-        expect(findEmptyAssignee().text().replace(/\s\s+/g, ' ')).toBe(message);
+        expect(removeWhitespace(findEmptyAssignee().text())).toBe(message);
       },
     );
   });

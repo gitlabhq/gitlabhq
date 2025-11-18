@@ -8,7 +8,7 @@ RSpec.describe Gitlab::GithubImport::Importer::PullRequests::ReviewRequestImport
   let_it_be_with_reload(:project) do
     create(
       :project, :in_group, :github_import,
-      :import_user_mapping_enabled, :user_mapping_to_personal_namespace_owner_enabled
+      :import_user_mapping_enabled
     )
   end
 
@@ -77,32 +77,6 @@ RSpec.describe Gitlab::GithubImport::Importer::PullRequests::ReviewRequestImport
 
       expect(merge_request.reviewers.size).to eq(1)
       expect(merge_request.reviewers.last.id).to eq(user_namespace.owner_id)
-    end
-
-    context 'when user_mapping_to_personal_namespace_owner is disabled' do
-      before_all do
-        project.build_or_assign_import_data(
-          data: { user_mapping_to_personal_namespace_owner_enabled: false }
-        ).save!
-      end
-
-      it 'pushes placeholder references' do
-        expect { 2.times { importer.execute } }.not_to raise_error
-
-        created_reviewers = merge_request.merge_request_reviewers.sort_by(&:user_id)
-
-        expect(user_references).to match_array([
-          ['MergeRequestReviewer', created_reviewers.first.id, 'user_id', instance_of(Integer)]
-        ])
-      end
-
-      it 'imports reviewers mapped to the import user' do
-        expect { 2.times { importer.execute } }.not_to raise_error
-
-        reviewers = merge_request.reviewers
-        expect(reviewers.size).to eq(1)
-        expect(reviewers).to all(be_import_user)
-      end
     end
   end
 

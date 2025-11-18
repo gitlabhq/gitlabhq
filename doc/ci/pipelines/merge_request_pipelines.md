@@ -73,15 +73,10 @@ job2:
     - echo "This job also runs in merge request pipelines"
 ```
 
-A common `workflow` configuration is to have pipelines run for merge requests, tags, and the default branch. For example:
+For common `workflow` examples, see:
 
-```yaml
-workflow:
-  rules:
-    - if: $CI_PIPELINE_SOURCE == 'merge_request_event'
-    - if: $CI_COMMIT_TAG
-    - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
-```
+- [Switch between branch pipelines and merge request pipelines](../yaml/workflow.md#switch-between-branch-pipelines-and-merge-request-pipelines)
+- [Git Flow with merge request pipelines](../yaml/workflow.md#git-flow-with-merge-request-pipelines)
 
 To [use security scanning tools with merge request pipelines](../../user/application_security/detect/security_configuration.md#use-security-scanning-tools-with-merge-request-pipelines),
 use the CI/CD variable `AST_ENABLE_MR_PIPELINES` or the `latest` template edition.

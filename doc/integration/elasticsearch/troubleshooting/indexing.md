@@ -168,6 +168,35 @@ This error occurs when a query has more clauses than defined in the `indices.que
 
 To resolve this issue, increase the value or upgrade Elasticsearch 8.1 or later. Increasing the value may lead to performance degradation.
 
+## Error: `disk usage exceeded flood-stage watermark, index has read-only-allow-delete block`
+
+This error occurs when your Elasticsearch cluster has
+at least one node that is critically low on disk space.
+A cluster that exceeds the default watermark threshold of 95%
+enforces a read-only block that prevents all further write operations.
+This block might cause new index operations to fail and result in outdated search results.
+
+You can check if the cluster is in read-only mode with the following Rake task:
+
+```shell
+sudo gitlab-rake gitlab:elastic:info
+```
+
+Look for output that indicates that `blocks.write` or `blocks.read_only_allow_delete` is `true`.
+
+To check disk usage on your Elasticsearch cluster, run the following command:
+
+```shell
+curl --request GET '<your_ES_cluster>:9200/_cat/allocation?v&pretty'
+```
+
+To resolve this issue, increase your disk volume on full nodes.
+You can estimate cluster size with the following Rake task:
+
+```shell
+sudo gitlab-rake gitlab:elastic:estimate_cluster_size
+```
+
 ## Last resort to recreate an index
 
 There may be cases where somehow data never got indexed and it's not in the
@@ -280,7 +309,7 @@ These settings limit indexing to 2000 documents per minute.
 
 To adjust worker settings:
 
-1. On the left sidebar, at the bottom, select **Admin**.
+1. On the left sidebar, at the bottom, select **Admin**. If you've [turned on the new navigation](../../../user/interface_redesign.md#turn-new-navigation-on-or-off), in the upper-right corner, select **Admin**.
 1. Select **Settings** > **Search**.
 1. Expand **Advanced search**.
 1. Select the **Requeue indexing workers** checkbox.

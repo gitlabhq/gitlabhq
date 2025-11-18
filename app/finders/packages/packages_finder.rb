@@ -18,7 +18,7 @@ module Packages
       packages = packages.preload_pipelines if preload_pipelines
 
       packages = filter_with_version(packages)
-      packages = filter_by_package_name(packages)
+      packages = filter_by_name(packages)
       packages = filter_by_status(packages)
       packages = filter_by_package_version(packages)
       order_packages(packages)
@@ -27,6 +27,12 @@ module Packages
     private
 
     attr_reader :params, :project
+
+    def filter_by_name(packages)
+      return filter_by_exact_package_name(packages) if params[:exact_name]
+
+      filter_by_package_name(packages)
+    end
 
     def order_packages(packages)
       packages.sort_by_attribute("#{params[:order_by]}_#{params[:sort]}")

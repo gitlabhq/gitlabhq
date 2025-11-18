@@ -11,12 +11,12 @@ require 'spec_helper'
 
 RSpec.describe Gitlab::ImportExport::Group::RelationTreeRestorer, feature_category: :importers do
   describe '#restore', :clean_gitlab_redis_shared_state do
-    let(:group) { create(:group, owners: user) }
-    let(:importable) { create(:group, parent: group) }
-
     include_context 'relation tree restorer shared context' do
       let(:importable_name) { 'groups/4353' }
     end
+
+    let(:group) { create(:group, owners: user) }
+    let(:importable) { create(:group, parent: group) }
 
     let(:path) { Rails.root.join('spec/fixtures/lib/gitlab/import_export/group_exports/no_children/tree') }
     let(:relation_reader) do

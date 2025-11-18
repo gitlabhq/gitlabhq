@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Types::Ci::RunnerArchitectureType, feature_category: :runner do
+RSpec.describe Types::Ci::RunnerArchitectureType, feature_category: :runner_core do
   specify { expect(described_class.graphql_name).to eq('RunnerArchitecture') }
 
   it 'exposes the expected fields' do

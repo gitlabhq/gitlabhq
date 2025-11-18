@@ -28,6 +28,7 @@ class SystemHook < WebHook
   belongs_to :organization, class_name: 'Organizations::Organization'
 
   validates :url, system_hook_url: true, unless: ->(hook) { hook.url_variables? }
+  validates :organization_id, presence: true
 
   # Allow urls pointing localhost and the local network
   def allow_local_requests?

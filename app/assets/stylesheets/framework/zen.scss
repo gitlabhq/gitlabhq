@@ -52,6 +52,9 @@ body:has(.zen-backdrop.fullscreen) {
 .zen-control-leave {
   display: none;
   position: absolute;
-  @apply sm:gl-p-3 sm:gl-text-base gl-leading-0 #{!important};
-  @apply gl-right-3 gl-top-3;
+  @apply sm:gl-p-3 #{!important};
+  @apply sm:gl-text-base #{!important};
+  @apply gl-leading-0 #{!important};
+  @apply gl-right-3;
+  @apply gl-top-3;
 }

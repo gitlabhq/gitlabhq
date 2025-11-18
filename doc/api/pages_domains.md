@@ -12,7 +12,7 @@ title: Pages domains API
 
 {{< /details >}}
 
-Endpoints for connecting custom domains and TLS certificates in [GitLab Pages](../user/project/pages/_index.md).
+Use this API to manage [GitLab Pages domains](../user/project/pages/custom_domains_ssl_tls_certification/_index.md).
 
 The GitLab Pages feature must be enabled to use these endpoints. Find out more about [administering](../administration/pages/_index.md) and [using](../user/project/pages/_index.md) the feature.
 
@@ -27,6 +27,12 @@ Get a list of all Pages domains.
 ```plaintext
 GET /pages/domains
 ```
+
+Supported attributes:
+
+| Attribute | Type           | Required | Description                                       |
+| --------- | -------------- | -------- | ------------------------------------------------- |
+| `domain`  | string         | no       | The domain of the GitLab Pages site to filter on. |
 
 If successful, returns [`200`](rest/troubleshooting.md#status-codes) and the following
 response attributes:

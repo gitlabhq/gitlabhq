@@ -24,9 +24,9 @@
 
 = render ::Layouts::PageHeadingComponent.new(title) do |c|
   - c.with_actions do
+    #js-merge-request-dashboard-config
     - if current_user
       = render 'shared/new_project_item_vue_select'
-    #js-merge-request-dashboard-config
 
 - if !current_page?(merge_requests_search_dashboard_path)
   #js-merge-request-dashboard{ data: {

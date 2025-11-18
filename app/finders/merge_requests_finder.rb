@@ -129,8 +129,9 @@ class MergeRequestsFinder < IssuableFinder
 
   def by_commit(items)
     return items unless params[:commit_sha].presence
+    return items unless params.project
 
-    items.by_related_commit_sha(params[:commit_sha])
+    items.by_related_commit_sha(params.project, params[:commit_sha])
   end
 
   def source_branch
@@ -336,6 +337,15 @@ class MergeRequestsFinder < IssuableFinder
     return items.none unless params.project
 
     items.by_blob_path(blob_path)
+  end
+
+  def by_closed_at(items)
+    closed_after = params[:closed_after]
+    closed_before = params[:closed_before]
+
+    return items unless closed_after || closed_before
+
+    items.with_closed_between(closed_after, closed_before)
   end
 
   def parse_datetime(input)

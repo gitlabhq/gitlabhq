@@ -16,6 +16,12 @@ Information can be available:
 
 ## GitLab Duo Chat
 
+{{< history >}}
+
+- Current page title and URL [added](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/209186) in GitLab 18.6.
+
+{{< /history >}}
+
 The following context is available to GitLab Duo Chat.
 
 ### Always available
@@ -23,6 +29,7 @@ The following context is available to GitLab Duo Chat.
 - GitLab documentation.
 - General programming knowledge, best practices, and language specifics.
 - Content in the file you're viewing or editing, including code before and after your cursor.
+- When using Chat in the GitLab UI, the current page title and URL.
 - The `/refactor`, `/fix`, and `/tests` slash commands have access to the latest
   [Repository X-Ray report](../project/repository/code_suggestions/repository_xray.md).
 
@@ -120,17 +127,10 @@ You can change whether or not Code Suggestions uses other files as context.
 - [Introduced](https://gitlab.com/gitlab-org/editor-extensions/gitlab-lsp/-/issues/276) in GitLab Workflow for VS Code 4.20.0.
 - [Introduced](https://gitlab.com/gitlab-org/editor-extensions/gitlab-jetbrains-plugin/-/issues/462) in GitLab Duo for JetBrains 2.7.0.
 - [Added](https://gitlab.com/gitlab-org/editor-extensions/gitlab.vim/-/merge_requests/152) to the GitLab Neovim plugin on July 16, 2024.
-- Feature flags `advanced_context_resolver` and `code_suggestions_context` enabled on GitLab.com in GitLab 17.2.
-- Feature flags `advanced_context_resolver` and `code_suggestions_context` [enabled on GitLab Self-Managed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/161538) in GitLab 17.4.
+- Feature flags `advanced_context_resolver` and `code_suggestions_context` enabled on GitLab.com in GitLab 17.2 and on GitLab Self-Managed in GitLab 17.4.
+- [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/462750) in GitLab 18.6. Feature flag `code_suggestions_context` removed.
 
 {{< /history >}}
-
-{{< alert type="flag" >}}
-
-The availability of this feature is controlled by a feature flag.
-For more information, see the history.
-
-{{< /alert >}}
 
 By default, Code Suggestions uses the open files in your IDE for context when making suggestions.
 However, you can turn this setting off.
@@ -211,7 +211,7 @@ For Duo Chat, excluded context is enforced within [GitLab Duo Chat (Agentic)](..
 
 ### Manage GitLab Duo context exclusions
 
-1. On the left sidebar, select **Search or go to** and find your project.
+1. On the left sidebar, select **Search or go to** and find your project. If you've [turned on the new navigation](../interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
 1. Select **Settings** > **General**.
 1. Under **GitLab Duo**, in the **GitLab Duo context exclusions** section, select **Manage exclusions**.
 1. Specify which project files and directories are excluded from GitLab Duo context, and select **Save exclusions**.

@@ -133,7 +133,6 @@ module Gitlab
       end
 
       def normalized_jobs
-        # Remove with_actor wrapper when ci_matrix_expressions FF is removed
         @normalized_jobs ||= Gitlab::Ci::Config::FeatureFlags.with_actor(@project) do
           normalizer.normalize_jobs
         end
@@ -177,8 +176,10 @@ module Gitlab
 
       def build_config(config, inputs)
         initial_config = logger.instrument(:config_yaml_load, once: true) do
-          yaml_context = Config::Yaml::Context.new(variables: @context.variables)
-          Config::Yaml.load!(config, yaml_context, inputs)
+          yaml_context = Config::Yaml::Context.new(
+            variables: @context.variables
+          )
+          Config::Yaml.load!(config, yaml_context, inputs, @context)
         end
 
         initial_config = logger.instrument(:config_external_process, once: true) do

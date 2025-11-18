@@ -39,6 +39,14 @@ RSpec.describe Subscriptions::User::MergeRequestUpdated, feature_category: :code
           expect { subscription }.to raise_error(GraphQL::ExecutionError)
         end
       end
+
+      context 'when current user is not set' do
+        let(:current_user) { nil }
+
+        it 'raises an exception' do
+          expect { subscription }.to raise_error(GraphQL::ExecutionError)
+        end
+      end
     end
 
     context 'with subscription updates' do
@@ -65,6 +73,15 @@ RSpec.describe Subscriptions::User::MergeRequestUpdated, feature_category: :code
 
       context 'when user is unauthorized' do
         let(:current_user) { unauthorized_user }
+
+        it 'unsubscribes the user' do
+          # GraphQL::Execution::Skip is returned when unsubscribed
+          expect(subscription).to be_an(GraphQL::Execution::Skip)
+        end
+      end
+
+      context 'when current user is not set' do
+        let(:current_user) { nil }
 
         it 'unsubscribes the user' do
           # GraphQL::Execution::Skip is returned when unsubscribed

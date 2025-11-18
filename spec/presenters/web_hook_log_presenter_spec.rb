@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe WebHookLogPresenter do
+RSpec.describe WebHookLogPresenter, feature_category: :webhooks do
   include Gitlab::Routing.url_helpers
 
   describe '#details_path' do
@@ -18,7 +18,7 @@ RSpec.describe WebHookLogPresenter do
     end
 
     context 'service hook' do
-      let(:web_hook) { create(:service_hook, integration: integration) }
+      let(:web_hook) { create(:service_hook, integration: integration, project_id: project.id) }
       let(:integration) { create(:drone_ci_integration, project: project) }
 
       it { is_expected.to eq(project_settings_integration_hook_log_path(project, integration, web_hook_log)) }
@@ -38,7 +38,7 @@ RSpec.describe WebHookLogPresenter do
     end
 
     context 'service hook' do
-      let(:web_hook) { create(:service_hook, integration: integration) }
+      let(:web_hook) { create(:service_hook, integration: integration, project_id: project.id) }
       let(:integration) { create(:drone_ci_integration, project: project) }
 
       it { is_expected.to eq(retry_project_settings_integration_hook_log_path(project, integration, web_hook_log)) }

@@ -1,0 +1,11 @@
+- page_title _('Step-up authentication required')
+- add_page_specific_style 'page_bundles/login'
+
+.row.gl-mt-5.justify-content-center
+  .gl-col-md-5
+    .login-page
+      %h3.gl-mb-4= _('Step-up authentication required')
+      %p.gl-text-secondary= _('This group requires additional authentication. Please sign in with your OAuth provider to continue.')
+
+      - if omniauth_enabled? && button_based_providers_enabled?
+        = render 'devise/shared/omniauth_box', render_remember_me: false, step_up_auth_scope: Gitlab::Auth::Oidc::StepUpAuthentication::SCOPE_NAMESPACE

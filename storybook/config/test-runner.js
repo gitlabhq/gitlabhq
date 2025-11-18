@@ -1,7 +1,7 @@
 const { injectAxe, checkA11y, configureAxe } = require('axe-playwright');
 const { getStoryContext } = require('@storybook/test-runner');
 
-/*
+/**
  * See https://storybook.js.org/docs/7/writing-tests/test-runner#test-hook-api
  * to learn more about the test-runner hooks API.
  */
@@ -13,9 +13,20 @@ module.exports = {
     const storyContext = await getStoryContext(page, context);
 
     if (!storyContext.parameters?.a11y?.disable) {
+      // Merge story-specific rules with global rules
+      const storyRules = storyContext.parameters?.a11y?.config?.rules || [];
+      const globalRules = [
+        {
+          id: 'link-in-text-block',
+          enabled: false,
+        },
+      ];
+      const mergedRules = [...globalRules, ...storyRules];
+
       await configureAxe(page, {
-        rules: storyContext.parameters?.a11y?.config?.rules,
+        rules: mergedRules,
       });
+
       await checkA11y(
         page,
         '#storybook-root',

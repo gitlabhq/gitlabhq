@@ -8,10 +8,6 @@ RSpec.describe "User toggles subscription", :js, feature_category: :team_plannin
   let(:user2) { create(:user) }
   let(:issue) { create(:issue, project: project, author: user) }
 
-  before do
-    stub_feature_flags(work_item_view_for_issues: true)
-  end
-
   context 'user is not logged in' do
     before do
       stub_feature_flags(notifications_todos_buttons: false)

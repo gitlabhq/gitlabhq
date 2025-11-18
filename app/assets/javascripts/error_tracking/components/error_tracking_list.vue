@@ -24,6 +24,7 @@ import AccessorUtils from '~/lib/utils/accessor';
 import { __ } from '~/locale';
 import TimeAgo from '~/vue_shared/components/time_ago_tooltip.vue';
 import { joinPaths } from '~/lib/utils/url_utility';
+import { scrollTo } from '~/lib/utils/scroll_utils';
 import {
   trackErrorListViewsOptions,
   trackErrorStatusUpdateOptions,
@@ -230,7 +231,7 @@ export default {
       this.fetchPaginatedResults(this.pagination.previous.cursor);
     },
     goToPage(page) {
-      window.scrollTo(0, 0);
+      scrollTo({ top: 0, left: 0 }, this.$el);
       return page === this.$options.PREV_PAGE ? this.goToPrevPage() : this.goToNextPage();
     },
     isCurrentSortField(field) {

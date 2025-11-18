@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe 'RunnersRegistrationTokenReset', feature_category: :runner do
+RSpec.describe 'RunnersRegistrationTokenReset', feature_category: :runner_core do
   include GraphqlHelpers
 
   let(:mutation) { graphql_mutation(:runners_registration_token_reset, input) }

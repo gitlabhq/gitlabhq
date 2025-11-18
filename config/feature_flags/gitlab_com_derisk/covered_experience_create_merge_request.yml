@@ -1,9 +1,0 @@
----
-name: covered_experience_create_merge_request
-introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/201344
-rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/566185
-feature_issue_url: https://gitlab.com/gitlab-com/gl-infra/observability/team/-/issues/4261
-milestone: '18.5'
-type: gitlab_com_derisk
-group: group::code review
-default_enabled: false

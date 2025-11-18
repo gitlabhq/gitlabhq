@@ -736,7 +736,7 @@ RSpec.describe Ci::JobArtifact, feature_category: :job_artifacts do
 
   describe '.file_types' do
     context 'all file types have corresponding limit' do
-      let_it_be(:plan_limits) { create(:plan_limits) }
+      let_it_be(:plan_limits) { create(:plan_limits, :default_plan) }
 
       where(:file_type) do
         described_class.file_types.keys

@@ -49,7 +49,8 @@ RSpec.describe 'Removing an AwardEmoji', feature_category: :shared do
     let!(:award_emoji) { create_award_emoji(current_user) }
 
     context 'when the given awardable is not an Awardable' do
-      let(:awardable) { create(:label) }
+      let(:label) { create(:label) }
+      let(:input) { { awardable_id: label.to_gid.to_s, name: emoji_name } }
 
       it_behaves_like 'a mutation that does not destroy an AwardEmoji'
 

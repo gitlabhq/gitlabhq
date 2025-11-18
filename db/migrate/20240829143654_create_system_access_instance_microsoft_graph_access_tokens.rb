@@ -4,7 +4,7 @@ class CreateSystemAccessInstanceMicrosoftGraphAccessTokens < Gitlab::Database::M
   milestone '17.5'
 
   def change
-    create_table :system_access_instance_microsoft_graph_access_tokens do |t|
+    create_table :system_access_instance_microsoft_graph_access_tokens do |t| # rubocop:disable  Migration/EnsureFactoryForTable -- This table is being deleted
       t.timestamps_with_timezone null: false
       t.references :system_access_instance_microsoft_application,
         index: { name: 'unique_index_instance_ms_access_tokens_on_ms_app_id', unique: true },

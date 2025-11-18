@@ -48,7 +48,7 @@ module Gitlab
           # with the step-up auth scope 'admin_mode'
           #
           # @param session [Hash] the session hash containing authentication state
-          # @return [Boolean] true if step-up authentication is authenticated
+          # @return [Boolean] true if step-up authentication is authenticated and not expired
           def succeeded?(session, scope: SCOPE_ADMIN_MODE)
             step_up_auth_flows(session)
               .select do |step_up_auth_flow|
@@ -94,7 +94,7 @@ module Gitlab
               *get_id_token_claims_required_conditions(provider, scope)&.keys,
               *get_id_token_claims_included_conditions(provider, scope)&.keys
             ]
-            oauth_raw_info.slice(*relevant_id_token_claims)
+            oauth_raw_info.slice(*relevant_id_token_claims, 'exp')
           end
 
           def omniauth_step_up_auth_session_data(session)
@@ -118,6 +118,14 @@ module Gitlab
             (step_up_auth_flows(session) || []).select do |flow|
               flow.enabled_by_config? &&
                 flow.failed? &&
+                flow.scope.to_s == scope.to_s
+            end
+          end
+
+          def step_up_session_expired?(session, scope: SCOPE_ADMIN_MODE)
+            (step_up_auth_flows(session) || []).any? do |flow|
+              flow.enabled_by_config? &&
+                flow.expired? &&
                 flow.scope.to_s == scope.to_s
             end
           end

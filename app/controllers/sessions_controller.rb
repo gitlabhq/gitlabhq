@@ -66,6 +66,12 @@ class SessionsController < Devise::SessionsController
     super
   end
 
+  def new_passkey
+    return unless Feature.enabled?(:passkeys, Feature.current_request)
+
+    handle_passwordless_flow
+  end
+
   def create
     super do |resource|
       # User has successfully signed in, so clear any unused reset token
@@ -212,6 +218,11 @@ class SessionsController < Devise::SessionsController
     params.require(:user).permit(:login, :password, :remember_me, :otp_attempt, :device_response)
   end
 
+  def passwordless_passkey_params
+    permitted_list = [:device_response, :remember_me]
+    params.permit(permitted_list)
+  end
+
   def find_user
     strong_memoize(:find_user) do
       if session[:otp_user_id] && user_params[:login]
@@ -305,6 +316,7 @@ class SessionsController < Devise::SessionsController
       target: user,
       message: "Signed in with #{options[:with]} authentication",
       authentication_event: true,
+      organization: user.organization, # rubocop:disable Gitlab/AvoidUserOrganization -- Current.organization is not available on this context
       authentication_provider: options[:with],
       additional_details: {
         with: options[:with]

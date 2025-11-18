@@ -89,7 +89,7 @@ Prerequisites:
 
 To enable SAST:
 
-1. On the left sidebar, select **Search or go to** and find your project.
+1. On the left sidebar, select **Search or go to** and find your project. If you've [turned on the new navigation](../../interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
 1. If your project does not already have one, create a `.gitlab-ci.yml` file in the root directory.
 1. At the top of the `.gitlab-ci.yml` file, add one of the following lines:
 
@@ -130,7 +130,7 @@ For details on other configuration methods, see [Configuration](#configuration).
 
 You can review vulnerabilities in a pipeline:
 
-1. On the left sidebar, select **Search or go to** and find your project.
+1. On the left sidebar, select **Search or go to** and find your project. If you've [turned on the new navigation](../../interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
 1. On the left sidebar, select **Build** > **Pipelines**.
 1. Select the pipeline.
 1. Select the **Security** tab.
@@ -221,7 +221,7 @@ To optimize SAST according to your requirements you can:
 
 To disable a rule, for example because it generates too many false positives:
 
-1. On the left sidebar, select **Search or go to** and find your project.
+1. On the left sidebar, select **Search or go to** and find your project. If you've [turned on the new navigation](../../interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
 1. Create a `.gitlab/sast-ruleset.toml` file at the root of your project if one does not already exist.
 1. In the vulnerability's details, locate the ID of the rule that triggered the finding.
 1. Use the rule ID to disable the rule. For example, to disable `gosec.G107-1`, add the following in `.gitlab/sast-ruleset.toml`:
@@ -266,14 +266,22 @@ The available scanning options depend on the GitLab tier:
 - In Ultimate, GitLab Advanced SAST provides more accurate results. You should use it for the languages it supports.
 - In all tiers, you can use GitLab-provided analyzers, based on open-source scanners, to scan your code.
 
-For more information about our plans for language support in SAST, see the [category direction page](https://about.gitlab.com/direction/application_security_testing/static-analysis/sast/#language-support).
+For more information about language support plans in SAST, see the [category direction page](https://about.gitlab.com/direction/application_security_testing/static-analysis/sast/#language-support).
 
 ### Languages with full support
+
+{{< history >}}
+
+- Support for C/C++ [introduced](https://gitlab.com/groups/gitlab-org/-/epics/14271) in GitLab 18.6.
+
+{{< /history >}}
 
 These languages are supported by both GitLab Advanced SAST (Ultimate) and standard analyzers (all tiers):
 
 | Language               | GitLab Advanced SAST<sup>1</sup>            | Standard analyzer<sup>2</sup> |
 |------------------------|---------------------------------------------|-------------------------------|
+| C                      | {{< icon name="check-circle-filled" >}} Yes | {{< icon name="check-circle-filled" >}} Yes |
+| C++                    | {{< icon name="check-circle-filled" >}} Yes | {{< icon name="check-circle-filled" >}} Yes |
 | C#                     | {{< icon name="check-circle-filled" >}} Yes | {{< icon name="check-circle-filled" >}} Yes |
 | Go                     | {{< icon name="check-circle-filled" >}} Yes | {{< icon name="check-circle-filled" >}} Yes |
 | Java<sup>3</sup>       | {{< icon name="check-circle-filled" >}} Yes | {{< icon name="check-circle-filled" >}} Yes |
@@ -310,8 +318,6 @@ These languages are supported by standard analyzers (all tiers) but not by GitLa
 | Language           | Standard analyzer<sup>1</sup>                                                                                                           | Proposed support<sup>2</sup> |
 |--------------------|-----------------------------------------------------------------------------------------------------------------------------------------|------------------------------|
 | Apex (Salesforce)  | {{< icon name="check-circle-filled" >}} Yes: [PMD-Apex](https://gitlab.com/gitlab-org/security-products/analyzers/pmd-apex)             | None                         |
-| C                  | {{< icon name="check-circle-filled" >}} Yes                                                                                             | [Epic 14271](https://gitlab.com/groups/gitlab-org/-/epics/14271) |
-| C++                | {{< icon name="check-circle-filled" >}} Yes                                                                                             | [Epic 14271](https://gitlab.com/groups/gitlab-org/-/epics/14271) |
 | Elixir (Phoenix)   | {{< icon name="check-circle-filled" >}} Yes: [Sobelow](https://gitlab.com/gitlab-org/security-products/analyzers/sobelow)               | None                         |
 | Groovy             | {{< icon name="check-circle-filled" >}} Yes: [SpotBugs](https://gitlab.com/gitlab-org/security-products/analyzers/spotbugs)<sup>3</sup> | None                         |
 | Kotlin<sup>4</sup> | {{< icon name="check-circle-filled" >}} Yes                                                                                             | [Epic 15173](https://gitlab.com/groups/gitlab-org/-/epics/15173) |
@@ -358,8 +364,8 @@ Support for advanced vulnerability tracking is dependent on the language and ana
 
 | Language   | GitLab Advanced SAST analyzer               | Semgrep-based analyzers |
 |------------|---------------------------------------------|-------------------------|
-| C          | {{< icon name="dash-circle" >}} No          | {{< icon name="check-circle-filled" >}} Yes |
-| C++        | {{< icon name="dash-circle" >}} No          | {{< icon name="check-circle-filled" >}} Yes |
+| C          | {{< icon name="check-circle-filled" >}} Yes | {{< icon name="check-circle-filled" >}} Yes |
+| C++        | {{< icon name="check-circle-filled" >}} Yes | {{< icon name="check-circle-filled" >}} Yes |
 | C#         | {{< icon name="check-circle-filled" >}} Yes | {{< icon name="check-circle-filled" >}} Yes |
 | Go         | {{< icon name="check-circle-filled" >}} Yes | {{< icon name="check-circle-filled" >}} Yes |
 | Java       | {{< icon name="check-circle-filled" >}} Yes | {{< icon name="check-circle-filled" >}} Yes |
@@ -385,7 +391,7 @@ For more information, see the confidential project `https://gitlab.com/gitlab-or
 To help you focus on the vulnerabilities that are still relevant, GitLab SAST automatically [resolves](../vulnerabilities/_index.md#vulnerability-status-values) vulnerabilities when:
 
 - You [disable a predefined rule](customize_rulesets.md#disable-predefined-rules).
-- We remove a rule from the default ruleset.
+- A rule is removed from the default ruleset.
 
 Automatic resolution is available only for findings from the [Semgrep-based analyzer](https://gitlab.com/gitlab-org/security-products/analyzers/semgrep).
 The Vulnerability Management system leaves a comment on automatically-resolved vulnerabilities so you still have a historical record of the vulnerability.
@@ -515,7 +521,7 @@ successfully, and an error might occur.
 
 To enable and configure SAST with customizations:
 
-1. On the left sidebar, select **Search or go to** and find your project.
+1. On the left sidebar, select **Search or go to** and find your project. If you've [turned on the new navigation](../../interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
 1. Select **Secure** > **Security configuration**.
 1. If the latest pipeline for the default branch of the project has completed
    and produced valid `SAST` artifacts, select **Configure SAST**, otherwise
@@ -541,7 +547,7 @@ successfully, and an error might occur.
 
 To enable and configure SAST with default settings:
 
-1. On the left sidebar, select **Search or go to** and find your project.
+1. On the left sidebar, select **Search or go to** and find your project. If you've [turned on the new navigation](../../interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
 1. Select **Secure** > **Security configuration**.
 1. In the SAST section, select **Configure with a merge request**.
 1. Review and merge the merge request to enable SAST.
@@ -628,9 +634,12 @@ variables:
 
 ### Scan other languages with the Semgrep-based analyzer
 
-You can customize the Semgrep-based SAST analyzer to scan languages that are not supported by a GitLab-managed ruleset.
-However, because GitLab does not provide rulesets for these other languages, you must provide a [custom ruleset](customize_rulesets.md#build-a-custom-configuration) to cover them.
-You must also modify the `rules` of the `semgrep-sast` CI/CD job so that the job runs when the relevant files are modified.
+You can customize the Semgrep-based SAST analyzer to scan languages that are not supported by a
+GitLab-managed ruleset. However, because GitLab does not provide rulesets for these other languages,
+you must
+[replace or add to the predefined rules](customize_rulesets.md#replace-or-add-to-the-predefined-rules)
+to cover them. You must also modify the `rules` of the `semgrep-sast` CI/CD job so that the job runs
+when the relevant files are modified.
 
 #### Scan a Rust application
 
@@ -650,7 +659,7 @@ For example, to scan a Rust application, you must:
        target = "rust.yml"
    ```
 
-   Read more on [customizing rulesets](customize_rulesets.md#build-a-custom-configuration).
+   For more details, see [Replace or add to the predefined rules](customize_rulesets.md#replace-or-add-to-the-predefined-rules).
 
 1. Override the `semgrep-sast` job to add a rule that detects Rust (`.rs`) files. Define the following in the `.gitlab-ci.yml` file:
 
@@ -1007,7 +1016,7 @@ Some analyzers can be customized with CI/CD variables.
 
 #### Security scanner configuration
 
-SAST analyzers internally use OSS security scanners to perform the analysis. We set the recommended
+SAST analyzers internally use OSS security scanners to perform the analysis. GitLab sets the recommended
 configuration for the security scanner so that you need not to worry about tuning them. However,
 there can be some rare cases where our default scanner configuration does not suit your
 requirements.
@@ -1164,8 +1173,8 @@ To use SAST in an offline environment, you need:
 GitLab Runner has a [default `pull_policy` of `always`](https://docs.gitlab.com/runner/executors/docker.html#using-the-always-pull-policy),
 meaning the runner tries to pull Docker images from the GitLab container registry even if a local
 copy is available. The GitLab Runner [`pull_policy` can be set to `if-not-present`](https://docs.gitlab.com/runner/executors/docker.html#using-the-if-not-present-pull-policy)
-in an offline environment if you prefer using only locally available Docker images. However, we
-recommend keeping the pull policy setting to `always` if not in an offline environment, as this
+in an offline environment if you prefer using only locally available Docker images. However,
+keep the pull policy setting to `always` if not in an offline environment. This setting
 enables the use of updated scanners in your CI/CD pipelines.
 
 ### Make GitLab SAST analyzer images available inside your Docker registry
@@ -1175,11 +1184,11 @@ images from `registry.gitlab.com` into your
 [local Docker container registry](../../packages/container_registry/_index.md):
 
 ```plaintext
-registry.gitlab.com/security-products/gitlab-advanced-sast:1
-registry.gitlab.com/security-products/kubesec:5
-registry.gitlab.com/security-products/pmd-apex:5
-registry.gitlab.com/security-products/semgrep:5
-registry.gitlab.com/security-products/sobelow:5
+registry.gitlab.com/security-products/gitlab-advanced-sast:2
+registry.gitlab.com/security-products/kubesec:6
+registry.gitlab.com/security-products/pmd-apex:6
+registry.gitlab.com/security-products/semgrep:6
+registry.gitlab.com/security-products/sobelow:6
 registry.gitlab.com/security-products/spotbugs:5
 ```
 

@@ -222,6 +222,31 @@ RSpec.describe GitlabSchema do
       end
     end
 
+    context 'with an ActiveRecord::FixedItemsModel' do
+      before do
+        stub_const('TestStaticModel', Class.new do
+          include ActiveRecord::FixedItemsModel::Model
+          include GlobalID::Identification
+        end)
+
+        stub_const('TestStaticModel::ITEMS', [{ id: 1 }].freeze)
+      end
+
+      it 'falls back to a regular find' do
+        result = TestStaticModel.find(1)
+
+        expect(TestStaticModel).to receive(:find).with("1").and_return(result)
+        expect(described_class.object_from_id(result.to_global_id)).to eq(result)
+      end
+
+      context 'when item does not exist and class raises ActiveRecord::FixedItemsModel::RecordNotFound' do
+        it 'returns nil' do
+          expect(TestStaticModel).to receive(:find).with("123").and_raise(ActiveRecord::FixedItemsModel::RecordNotFound)
+          expect(described_class.object_from_id('gid://gitlab/TestStaticModel/123')).to be_nil
+        end
+      end
+    end
+
     it 'raises the correct error on invalid input' do
       expect { described_class.object_from_id("bogus id") }.to raise_error(Gitlab::Graphql::Errors::ArgumentError)
     end

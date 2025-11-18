@@ -57,7 +57,7 @@ export default {
       };
 
       const baseUrl = new URL(this.networkPath, window.location.origin);
-      const url = setUrlParams(params, baseUrl);
+      const url = setUrlParams(params, { url: baseUrl });
       visitUrl(url);
     },
   },

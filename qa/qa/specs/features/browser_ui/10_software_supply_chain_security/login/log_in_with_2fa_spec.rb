@@ -45,8 +45,7 @@ module QA
         testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/347931',
         quarantine: {
           issue: 'https://gitlab.com/gitlab-org/gitlab/-/issues/567702',
-          type: :bug,
-          only: { job: "gdk-instance-project-studio" }
+          type: :bug
         }
       ) do
         enforce_two_factor_authentication_on_group(group)

@@ -120,16 +120,6 @@ module Routable
     full_attribute(:path)
   end
 
-  # Overriden in the Project model
-  # parent_id condition prevents issues with parent reassignment
-  def parent_loaded?
-    association(:parent).loaded?
-  end
-
-  def route_loaded?
-    association(:route).loaded?
-  end
-
   def full_path_components
     full_path.split('/')
   end
@@ -155,22 +145,7 @@ module Routable
       route&.public_send(attribute) || send("build_full_#{attribute}")
     end
 
-    unless persisted? && Feature.enabled?(:cached_route_lookups, self)
-      return attribute_from_route_or_self.call(attribute)
-    end
-
-    # Return the attribute as-is if the parent is missing
-    return public_send(attribute) if route.nil? && parent.nil? && public_send(attribute).present?
-
-    # If the route is already preloaded, return directly, preventing an extra load
-    return route.public_send(attribute) if route_loaded? && route.present? && route.public_send(attribute)
-
-    # Similarly, we can allow the build if the parent is loaded
-    return send("build_full_#{attribute}") if parent_loaded?
-
-    Gitlab::Cache.fetch_once([cache_key, :"full_#{attribute}"]) do
-      attribute_from_route_or_self.call(attribute)
-    end
+    attribute_from_route_or_self.call(attribute)
   end
   # rubocop: enable GitlabSecurity/PublicSend
 

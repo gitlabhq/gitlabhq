@@ -102,7 +102,9 @@ class DraftNote < ApplicationRecord
     return 'DiffNote' if on_diff?
     return 'DiscussionNote' if discussion_id.present?
 
-    'Note'
+    # Default to DiscussionNote to make all draft notes resolvable when published,
+    # matching the UI behavior where all review comments are resolvable threads.
+    'DiscussionNote'
   end
 
   def references

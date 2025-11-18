@@ -25,7 +25,7 @@ describe('access tokens', () => {
   describe('initAccessTokenTableApp', () => {
     const accessTokenType = 'personal access token';
     const accessTokenTypePlural = 'personal access tokens';
-    const initialActiveAccessTokens = [{ revoked_path: '1' }];
+    const initialActiveAccessTokens = [{ createdAt: '2023-09-08', revoked_path: '1' }];
 
     it('mounts the component and provides required values', () => {
       setHTMLFixture(
@@ -95,7 +95,7 @@ describe('access tokens', () => {
 
       beforeEach(() => {
         setHTMLFixture(
-          `<div class="js-access-tokens-expires-at">
+          `<div class="js-access-tokens-expires-at" data-min-date="2023-09-09">
             <input
               name="access_tokens[expires_at]"
               data-js-name="expiresAt"

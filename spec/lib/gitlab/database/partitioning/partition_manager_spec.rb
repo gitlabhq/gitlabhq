@@ -235,6 +235,13 @@ RSpec.describe Gitlab::Database::Partitioning::PartitionManager, feature_categor
       double(extra_partitions: extra_partitions, missing_partitions: [], after_adding_partitions: nil, analyze_interval: nil)
     end
 
+    let(:extra_partitions) do
+      [
+        instance_double(Gitlab::Database::Partitioning::TimePartition, table: table, partition_name: 'foo1', to_detach_sql: 'SELECT 1'),
+        instance_double(Gitlab::Database::Partitioning::TimePartition, table: table, partition_name: 'foo2', to_detach_sql: 'SELECT 2')
+      ]
+    end
+
     before do
       create_partitioned_table(connection, table)
 
@@ -243,13 +250,6 @@ RSpec.describe Gitlab::Database::Partitioning::PartitionManager, feature_categor
       expect(partitioning_strategy).to receive(:validate_and_fix)
 
       stub_exclusive_lease(described_class::MANAGEMENT_LEASE_KEY % table, timeout: described_class::LEASE_TIMEOUT)
-    end
-
-    let(:extra_partitions) do
-      [
-        instance_double(Gitlab::Database::Partitioning::TimePartition, table: table, partition_name: 'foo1', to_detach_sql: 'SELECT 1'),
-        instance_double(Gitlab::Database::Partitioning::TimePartition, table: table, partition_name: 'foo2', to_detach_sql: 'SELECT 2')
-      ]
     end
 
     it 'detaches each extra partition' do

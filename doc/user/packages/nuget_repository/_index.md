@@ -571,7 +571,7 @@ You can publish multiple packages with the same name and version.
 
 To prevent group members and users from publishing duplicate NuGet packages, turn off the **Allow duplicates** setting:
 
-1. On the left sidebar, select **Search or go to** and find your group.
+1. On the left sidebar, select **Search or go to** and find your group. If you've [turned on the new navigation](../../interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
 1. Select **Settings** > **Packages and registries**.
 1. In the **NuGet** row of the **Duplicate packages** table, turn off the **Allow duplicates** toggle.
 1. Optional. In the **Exceptions** text box, enter a regular expression that matches the names and versions of packages to allow.
@@ -714,7 +714,7 @@ Deleting a package is a permanent action that cannot be undone.
 
 Prerequisites:
 
-- You must have the [Maintainer](../../permissions.md#project-members-permissions) role or higher in the project.
+- You must have at least the [Maintainer](../../permissions.md#project-members-permissions) role in the project.
 - You must have both the package name and version.
 
 To delete a package with the NuGet CLI:

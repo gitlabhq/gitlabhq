@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe 'Email Verification On Login', :clean_gitlab_redis_rate_limiting, :js, :with_organization_url_helpers, feature_category: :instance_resiliency do
+RSpec.describe 'Email Verification On Login', :clean_gitlab_redis_rate_limiting, :js, feature_category: :instance_resiliency do
   include EmailHelpers
 
   let(:user) { create(:user) }

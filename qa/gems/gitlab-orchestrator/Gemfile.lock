@@ -67,7 +67,7 @@ GEM
     rainbow (3.1.1)
     regexp_parser (2.10.0)
     require_all (3.0.0)
-    rspec (3.13.1)
+    rspec (3.13.2)
       rspec-core (~> 3.13.0)
       rspec-expectations (~> 3.13.0)
       rspec-mocks (~> 3.13.0)
@@ -150,8 +150,8 @@ DEPENDENCIES
   gitlab-orchestrator!
   gitlab-styles (~> 13.1.0)
   pry (~> 0.15.2)
-  rspec (~> 3.13, >= 3.13.1)
+  rspec (~> 3.13, >= 3.13.2)
   simplecov (~> 0.22.0)
 
 BUNDLED WITH
-   2.6.5
+   2.7.1

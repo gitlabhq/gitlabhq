@@ -67,6 +67,10 @@ module Gitlab
         source_user
       end
 
+      def ghost_user
+        Users::Internal.for_organization(namespace.organization_id).ghost
+      end
+
       private
 
       attr_reader :namespace, :import_type, :source_hostname

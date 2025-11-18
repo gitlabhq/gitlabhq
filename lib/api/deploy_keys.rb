@@ -6,7 +6,10 @@ module API
 
     deploy_keys_tags = %w[deploy_keys]
 
-    before { authenticate! }
+    before do
+      authenticate!
+      set_current_organization
+    end
 
     feature_category :continuous_delivery
     urgency :low
@@ -65,7 +68,7 @@ module API
     post "deploy_keys" do
       authenticated_as_admin!
 
-      deploy_key = ::DeployKeys::CreateService.new(current_user, declared_params.merge(public: true)).execute
+      deploy_key = ::DeployKeys::CreateService.new(current_user, declared_params.merge(public: true, organization: Current.organization)).execute
 
       if deploy_key.persisted?
         present deploy_key, with: Entities::DeployKey
@@ -159,7 +162,7 @@ module API
         end
 
         # Create a new deploy key
-        deploy_key_attributes = declared_params.except(:can_push).merge(user: current_user)
+        deploy_key_attributes = declared_params.except(:can_push).merge(user: current_user, organization: Current.organization)
         deploy_key_project = add_deploy_keys_project(user_project, deploy_key_attributes: deploy_key_attributes, can_push: !!params[:can_push])
 
         if deploy_key_project.valid?

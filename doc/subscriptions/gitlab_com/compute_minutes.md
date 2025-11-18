@@ -2,6 +2,7 @@
 stage: Verify
 group: Pipeline Execution
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+description: Purchase additional compute minutes for group and personal namespaces on GitLab.com, including monthly rollover and troubleshooting.
 title: Purchase additional compute minutes
 ---
 
@@ -45,7 +46,7 @@ To purchase compute minutes for a group:
 {{< tab title="Group owner" >}}
 
 1. Sign in to GitLab.com.
-1. On the left sidebar, select **Search or go to** and find your group.
+1. On the left sidebar, select **Search or go to** and find your group. If you've [turned on the new navigation](../../user/interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
 1. Select **Settings** > **Usage quotas**.
 1. Select **Pipelines**.
 1. Select **Buy additional compute minutes**. You are taken to the Customers Portal.
@@ -73,13 +74,14 @@ To purchase compute minutes for a group:
 
 After your payment is processed, the additional compute minutes are added to your group
 namespace.
+The additional compute minutes are displayed as **Additional units** on the [**Usage quotas** page](../../ci/pipelines/instance_runner_compute_minutes.md#view-usage-for-a-group).
 
 ## Purchase compute minutes for a personal namespace
 
 To purchase additional compute minutes for your personal namespace:
 
 1. Sign in to GitLab.com.
-1. On the left sidebar, select your avatar.
+1. On the left sidebar, select your avatar. If you've [turned on the new navigation](../../user/interface_redesign.md#turn-new-navigation-on-or-off), this button is in the upper-right corner.
 1. Select **Edit profile**.
 1. On the left sidebar, select **Usage quotas**.
 1. Select **Buy additional compute minutes**. You are taken to the Customers Portal.
@@ -92,6 +94,7 @@ To purchase additional compute minutes for your personal namespace:
 
 After your payment is processed, the additional compute minutes are added to your personal
 namespace.
+The additional compute minutes are displayed as **Additional units** on the [**Usage quotas** page](../../ci/pipelines/instance_runner_compute_minutes.md#view-usage-for-a-personal-namespace).
 
 ## Monthly rollover of purchased compute minutes
 
@@ -119,7 +122,7 @@ To resolve the issue:
 
 - Ensure that your user profile has a last name filled in:
 
-  1. On the left sidebar, select your avatar.
+  1. On the left sidebar, select your avatar. If you've [turned on the new navigation](../../user/interface_redesign.md#turn-new-navigation-on-or-off), this button is in the upper-right corner.
   1. Select **Edit profile**.
   1. Update the **Full name** field to have both first name and last name, then save the changes.
 

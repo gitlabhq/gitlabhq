@@ -21,6 +21,11 @@ module Integrations
         project.full_path
       end
 
+      # Returns a fallback alias for the project when the default alias (full_path) is already taken.
+      def fallback_alias
+        "#{project.full_path}/p-#{project.id}"
+      end
+
       def authorized?
         current_user.can?(:admin_project, project)
       end

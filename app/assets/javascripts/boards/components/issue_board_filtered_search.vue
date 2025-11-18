@@ -77,7 +77,7 @@ export default {
         { icon: 'issue-type-incident', value: types.INCIDENT, title: incident },
       ];
 
-      if (this.glFeatures.workItemsBeta) {
+      if (this.glFeatures.workItemTasksOnBoards) {
         typeOptions.push({ icon: 'issue-type-task', value: types.TASK, title: task });
       }
 
@@ -168,7 +168,7 @@ export default {
           fullPath: this.fullPath,
         },
         {
-          icon: 'issues',
+          icon: 'issue-type-issue',
           title: TOKEN_TITLE_TYPE,
           type: TOKEN_TYPE_TYPE,
           token: GlFilteredSearchToken,

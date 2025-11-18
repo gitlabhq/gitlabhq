@@ -32,7 +32,7 @@ short-lived (results from hyperparameter tuning triggered by a merge request),
 but usually hold model runs that have a similar set of parameters measured
 by the same metrics.
 
-![List of experiments](img/experiments_v17_9.png)
+![Model experiment table showing models and their number of runs, creator and last activity.](img/experiments_v17_9.png)
 
 ## Model run
 
@@ -63,7 +63,7 @@ on how to use GitLab as a backend for the MLflow Client.
 
 To list the current active experiments, either go to `https/-/ml/experiments` or:
 
-1. On the left sidebar, select **Search or go to** and find your project.
+1. On the left sidebar, select **Search or go to** and find your project. If you've [turned on the new navigation](../../../interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
 1. Select **Analyze** > **Model experiments**.
 1. To display all runs that have been logged, along with their metrics, parameters, and metadata, select an experiment.
 1. To display details for a run, select **Details**.
@@ -76,7 +76,7 @@ Trial artifacts are saved as packages. After an artifact is logged for a run, al
 
 You can associate runs to the CI job that created them, allowing quick links to the merge request, pipeline, and user that triggered the pipeline:
 
-![CI information in run detail](img/run_detail_ci_v17_9.png)
+![Run detail page displaying associated CI job, pipeline, and user information.](img/run_detail_ci_v17_9.png)
 
 ## View logged metrics
 
@@ -84,7 +84,7 @@ When you run an experiment, GitLab logs certain related data, including its metr
 
 To view logged metrics:
 
-1. On the left sidebar, select **Search or go to** and find your project.
+1. On the left sidebar, select **Search or go to** and find your project. If you've [turned on the new navigation](../../../interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
 1. Select **Analyze** > **Model experiments**.
 1. Select the experiment you want to view.
 1. Select the **Performance** tab.

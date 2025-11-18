@@ -13,6 +13,8 @@ RSpec.shared_examples 'associations with defined deletion strategies', :aggregat
       emails
       expiring_soon_and_unnotified_personal_access_tokens
       webauthn_registrations
+      second_factor_webauthn_registrations
+      passkeys
       saved_replies
       user_synced_attributes_metadata
       aws_role
@@ -20,7 +22,6 @@ RSpec.shared_examples 'associations with defined deletion strategies', :aggregat
       followed_users
       following_users
       members
-      namespace_deletion_schedules
       group_members
       project_members
       created_namespace_details
@@ -106,11 +107,11 @@ RSpec.shared_examples 'associations with defined deletion strategies', :aggregat
     %w[
       abuse_report_notes
       abuse_report_uploads
+      abuse_trust_scores
       achievement_uploads
       ai_vectorizable_file_uploads
       alert_management_alert_metric_image_uploads
       appearance_uploads
-      approval_policy_merge_request_bypass_events
       bulk_import_export_upload_uploads
       import_export_uploads
       issuable_metric_image_uploads
@@ -122,16 +123,11 @@ RSpec.shared_examples 'associations with defined deletion strategies', :aggregat
       deploy_tokens
       design_management_action_uploads
       import_export_upload_uploads
-      lists
       ml_experiments
       merge_requests_compliance_violations
       merge_requests_merge_data
       namespace_uploads
       organization_detail_uploads
-      packages_composer_packages
-      packages_debian_group_distributions
-      packages_debian_project_distributions
-      packages_packages
       project_import_export_relation_export_upload_uploads
       project_topic_uploads
       project_uploads
@@ -150,15 +146,11 @@ RSpec.shared_examples 'associations with defined deletion strategies', :aggregat
       catalog_resource_versions
       cluster_agent_tokens
       cluster_agent_url_configurations
-      custom_fields
       design_management_versions
-      duo_workflows_workflows
       incident_management_timeline_events
-      lfs_file_locks
       merge_trains
       ml_candidates
       ml_models
-      protected_tag_create_access_levels
       resource_iteration_events
       resource_link_events
       resource_milestone_events
@@ -167,8 +159,9 @@ RSpec.shared_examples 'associations with defined deletion strategies', :aggregat
       terraform_states
       user_namespace_callouts
       uploads_9ba88c4165
-      work_item_custom_lifecycles
-      work_item_custom_statuses
+      custom_dashboards
+      custom_dashboard_search_data
+      custom_dashboard_versions
     ]
   end
 

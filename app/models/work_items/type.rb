@@ -48,7 +48,7 @@ module WorkItems
     # where it's possible to switch between issue and incident.
     CHANGEABLE_BASE_TYPES = %w[issue incident test_case].freeze
 
-    EE_BASE_TYPES = %w[objective epic key_result requirement].freeze
+    EE_BASE_TYPES = %w[epic key_result objective requirement].freeze
 
     ignore_column :correct_id, remove_with: '18.1', remove_after: '2025-05-15'
 
@@ -96,19 +96,6 @@ module WorkItems
       default_by_type(:issue)
     end
 
-    def self.allowed_types_for_issues
-      base_types.keys.excluding('objective', 'key_result', 'epic')
-    end
-
-    # method overridden in EE to perform the corresponding checks for the Epic type
-    def self.allowed_group_level_types(resource_parent)
-      if Feature.enabled?(:create_group_level_work_items, resource_parent, type: :wip)
-        base_types.keys.excluding('epic')
-      else
-        []
-      end
-    end
-
     # resource_parent is used in EE
     def widgets(_resource_parent)
       enabled_widget_definitions.filter(&:widget_class)
@@ -124,10 +111,6 @@ module WorkItems
 
     def supports_time_tracking?(resource_parent)
       widget_classes(resource_parent).include?(::WorkItems::Widgets::TimeTracking)
-    end
-
-    def default_issue?
-      name == WorkItems::Type::TYPE_NAMES[:issue]
     end
 
     def allowed_child_types_by_name

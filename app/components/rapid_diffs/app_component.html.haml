@@ -1,6 +1,7 @@
+- helpers.add_page_specific_style 'page_bundles/rapid_diffs'
 - if !lazy?
-  - helpers.add_page_startup_api_call diffs_stats_endpoint
-  - helpers.add_page_startup_api_call diff_files_endpoint
+  - prefetch_endpoints.each do |endpoint|
+    - helpers.add_page_startup_api_call endpoint
   - if diffs_stream_url
     - helpers.content_for :startup_js do
       - javascript_tag nonce: content_security_policy_nonce do
@@ -28,13 +29,11 @@
         = render RapidDiffs::EmptyStateComponent.new
       .rd-app-code-theme.code.code-syntax-highlight-theme
         .rd-app-diffs-list
+          = before_diffs_list
           -# performance optimization: using a sibling element to cover diffs list is faster than changing opacity on the parent
           .rd-app-diffs-list-loading-overlay{ data: { diffs_overlay: true } }
           %div{ data: { diffs_list: true } }
-            - if lazy?
-              .rd-app-diffs-loading{ data: { testid: 'rd-diffs-list-loading' } }
-                = helpers.gl_loading_icon(size: 'lg')
-            - else
+            - unless lazy?
               = javascript_tag nonce: content_security_policy_nonce do
                 :plain
                   requestAnimationFrame(() => { window.performance.mark('rapid-diffs-first-diff-file-shown') })
@@ -52,3 +51,5 @@
                       window.performance.mark('rapid-diffs-list-loaded');
                       window.performance.measure('rapid-diffs-list-loading', 'rapid-diffs-first-diff-file-shown', 'rapid-diffs-list-loaded');
                     })
+          .rd-app-diffs-loading{ data: { list_loading: true }, hidden: !diffs_stream_url }
+            = render Pajamas::SpinnerComponent.new(size: :lg)

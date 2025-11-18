@@ -20,6 +20,7 @@ RSpec.describe 'user reads pipeline status', :js, feature_category: :continuous_
 
   shared_examples 'visiting project tree' do
     it 'sees the correct pipeline status' do
+      visit project_tree_path(project)
       visit project_tree_path(project, expected_pipeline.ref)
       wait_for_requests
 

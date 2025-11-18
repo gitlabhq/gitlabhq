@@ -18,4 +18,4 @@ sharding_key:
 notes: |
   Temporary table for archiving oauth access tokens during retention implementation.
   Will be dropped after verification period.
-table_size: medium
+table_size: large

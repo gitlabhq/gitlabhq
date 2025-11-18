@@ -1,0 +1,38 @@
+extend type Project {
+  securityTrackedRefs(after: String, before: String): LocalTrackedRefConnection
+}
+
+type LocalTrackedRefConnection {
+  nodes: [LocalTrackedRef!]!
+  pageInfo: LocalPageInfo!
+  count: Int!
+}
+
+type LocalTrackedCommit {
+  sha: String
+  shortId: String
+  title: String
+  authoredDate: String
+  webPath: String
+}
+
+type LocalTrackedRef {
+  id: ID!
+  name: String!
+  refType: String!
+  isDefault: Boolean!
+  isProtected: Boolean!
+  commit: LocalTrackedCommit
+  vulnerabilitiesCount: Int!
+}
+
+input SecurityTrackedRefsUntrackInput {
+  projectPath: ID!
+  refIds: [ID!]!
+  archiveVulnerabilities: Boolean!
+}
+
+type SecurityTrackedRefsUntrackPayload {
+  untrackedRefIds: [ID!]!
+  errors: [String]!
+}

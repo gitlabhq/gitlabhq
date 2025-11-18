@@ -16,6 +16,7 @@ import CiIcon from '~/vue_shared/components/ci_icon/ci_icon.vue';
 import ListItem from '~/vue_shared/components/resource_lists/list_item.vue';
 import ListItemStat from '~/vue_shared/components/resource_lists/list_item_stat.vue';
 import ListItemDescription from '~/vue_shared/components/resource_lists/list_item_description.vue';
+import CiCatalogBadge from '~/vue_shared/components/projects_list/ci_catalog_badge.vue';
 import TopicBadges from '~/vue_shared/components/topic_badges.vue';
 
 export default {
@@ -28,7 +29,6 @@ export default {
     topicsPopoverTargetText: __('+ %{count} more'),
     moreTopics: __('More topics'),
     project: __('Project'),
-    ciCatalogBadge: s__('CiCatalog|CI/CD Catalog project'),
   },
   components: {
     GlIcon,
@@ -41,6 +41,7 @@ export default {
     ListItemInactiveBadge,
     CiIcon,
     TopicBadges,
+    CiCatalogBadge,
   },
   props: {
     project: {
@@ -148,24 +149,24 @@ export default {
     hasStarData() {
       return Number.isInteger(this.project.starCount);
     },
-    starCount() {
+    starCountWithMetricPrefix() {
       return this.hasStarData ? numberToMetricPrefix(this.project.starCount) : undefined;
     },
-    openMergeRequestsCount() {
+    openMergeRequestsCountWithMetricPrefix() {
       if (!this.isMergeRequestsEnabled) {
         return null;
       }
 
       return numberToMetricPrefix(this.project.openMergeRequestsCount);
     },
-    forksCount() {
+    forksCountWithMetricPrefix() {
       if (!this.isForkingEnabled) {
         return null;
       }
 
       return numberToMetricPrefix(this.project.forksCount);
     },
-    openIssuesCount() {
+    openIssuesCountWithMetricPrefix() {
       if (!this.isIssuesEnabled) {
         return null;
       }
@@ -182,43 +183,51 @@ export default {
       return `projects-list-item-${this.project.id}`;
     },
     starA11yText() {
+      if (!this.hasStarData) return '';
+
       return sprintf(
         n__(
           '%{project} has %{number} star',
           '%{project} has %{number} stars',
           this.project.starCount,
         ),
-        { project: this.project.avatarLabel, number: this.starCount },
+        { project: this.project.avatarLabel, number: this.starCountWithMetricPrefix },
       );
     },
     forkA11yText() {
+      if (!this.isForkingEnabled) return '';
+
       return sprintf(
         n__(
           '%{project} has %{number} fork',
           '%{project} has %{number} forks',
           this.project.forksCount,
         ),
-        { project: this.project.avatarLabel, number: this.forksCount },
+        { project: this.project.avatarLabel, number: this.forksCountWithMetricPrefix },
       );
     },
     mrA11yText() {
+      if (!this.isMergeRequestsEnabled) return '';
+
       return sprintf(
         n__(
           '%{project} has %{number} open merge request',
           '%{project} has %{number} open merge requests',
           this.project.openMergeRequestsCount,
         ),
-        { project: this.project.avatarLabel, number: this.openMergeRequestsCount },
+        { project: this.project.avatarLabel, number: this.openMergeRequestsCountWithMetricPrefix },
       );
     },
     openIssueA11yText() {
+      if (!this.isIssuesEnabled) return '';
+
       return sprintf(
         n__(
           '%{project} has %{number} open issue',
           '%{project} has %{number} open issues',
           this.project.openIssuesCount,
         ),
-        { project: this.project.avatarLabel, number: this.openIssuesCount },
+        { project: this.project.avatarLabel, number: this.openIssuesCountWithMetricPrefix },
       );
     },
   },
@@ -252,14 +261,11 @@ export default {
           visibilityTooltip
         }}</gl-tooltip>
       </template>
-      <gl-badge
+      <ci-catalog-badge
         v-if="project.isCatalogResource"
-        icon="catalog-checkmark"
-        variant="info"
-        data-testid="ci-catalog-badge"
-        :href="project.exploreCatalogPath"
-        >{{ $options.i18n.ciCatalogBadge }}</gl-badge
-      >
+        :is-published="project.isPublished"
+        :explore-catalog-path="project.exploreCatalogPath"
+      />
       <gl-badge v-if="shouldShowAccessLevel" class="gl-block" data-testid="user-access-role">{{
         accessLevelLabel
       }}</gl-badge>
@@ -286,7 +292,7 @@ export default {
         :tooltip-text="$options.i18n.stars"
         :a11y-text="starA11yText"
         icon-name="star-o"
-        :stat="starCount"
+        :stat="starCountWithMetricPrefix"
         data-testid="stars-btn"
         @hover="$emit('hover-stat', 'stars-count')"
         @click="$emit('click-stat', 'stars-count')"
@@ -297,7 +303,7 @@ export default {
         :tooltip-text="$options.i18n.forks"
         :a11y-text="forkA11yText"
         icon-name="fork"
-        :stat="forksCount"
+        :stat="forksCountWithMetricPrefix"
         data-testid="forks-btn"
         @hover="$emit('hover-stat', 'forks-count')"
         @click="$emit('click-stat', 'forks-count')"
@@ -308,7 +314,7 @@ export default {
         :tooltip-text="$options.i18n.mergeRequests"
         :a11y-text="mrA11yText"
         icon-name="merge-request"
-        :stat="openMergeRequestsCount"
+        :stat="openMergeRequestsCountWithMetricPrefix"
         data-testid="mrs-btn"
         @hover="$emit('hover-stat', 'mrs-count')"
         @click="$emit('click-stat', 'mrs-count')"
@@ -319,7 +325,7 @@ export default {
         :tooltip-text="$options.i18n.issues"
         :a11y-text="openIssueA11yText"
         icon-name="issues"
-        :stat="openIssuesCount"
+        :stat="openIssuesCountWithMetricPrefix"
         data-testid="issues-btn"
         @hover="$emit('hover-stat', 'issues-count')"
         @click="$emit('click-stat', 'issues-count')"
@@ -327,14 +333,7 @@ export default {
     </template>
 
     <template v-if="hasActions" #actions>
-      <project-list-item-actions
-        :project="project"
-        :open-merge-requests-count="openMergeRequestsCount"
-        :open-issues-count="openIssuesCount"
-        :forks-count="forksCount"
-        :star-count="starCount"
-        @refetch="$emit('refetch')"
-      />
+      <project-list-item-actions :project="project" @refetch="$emit('refetch')" />
     </template>
   </list-item>
 </template>

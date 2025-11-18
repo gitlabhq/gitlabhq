@@ -39,14 +39,6 @@ type testCasePost struct {
 	body        io.Reader
 }
 
-type testCaseRequest struct {
-	desc            string
-	method          string
-	path            string
-	headers         map[string]string
-	expectedHeaders map[string]string
-}
-
 func TestMain(m *testing.M) {
 	// Secret should be configured before any Geo API poll happens to prevent
 	// race conditions where the first API call happens without a secret path
@@ -70,13 +62,14 @@ func TestRouting(t *testing.T) {
 		main   = ""
 	)
 
+	shutdownChan := make(chan struct{})
 	u := newUpstream(config.Config{}, logrus.StandardLogger(), func(u *upstream) {
 		u.Routes = []routeEntry{
 			handle(u, foobar),
 			handle(u, quxbaz),
 			handle(u, main),
 		}
-	}, nil, nil)
+	}, nil, nil, nil, shutdownChan, nil)
 	ts := httptest.NewServer(u)
 	defer ts.Close()
 
@@ -378,29 +371,6 @@ func runTestCasesPost(t *testing.T, ws *httptest.Server, testCases []testCasePos
 	}
 }
 
-func runTestCasesRequest(t *testing.T, ws *httptest.Server, testCases []testCaseRequest) {
-	t.Helper()
-	for _, tc := range testCases {
-		t.Run(tc.desc, func(t *testing.T) {
-			client := http.Client{}
-			request, err := http.NewRequest(tc.method, ws.URL+tc.path, nil)
-			require.NoError(t, err)
-			for key, value := range tc.headers {
-				request.Header.Set(key, value)
-			}
-
-			resp, err := client.Do(request)
-			require.NoError(t, err)
-			defer resp.Body.Close()
-
-			require.Equal(t, 200, resp.StatusCode, "response code")
-			for key, value := range tc.expectedHeaders {
-				require.Equal(t, resp.Header.Get(key), value, fmt.Sprint("response header ", key))
-			}
-		})
-	}
-}
-
 func runTestCasesWithGeoProxyEnabled(t *testing.T, testCases []testCase) {
 	remoteServer := startRemoteServer(t)
 
@@ -421,17 +391,6 @@ func runTestCasesWithGeoProxyEnabledPost(t *testing.T, testCases []testCasePost)
 	ws, _ := startWorkhorseServer(t, railsServer.URL, true)
 
 	runTestCasesPost(t, ws, testCases)
-}
-
-func runTestCasesWithGeoProxyEnabledRequest(t *testing.T, testCases []testCaseRequest) {
-	remoteServer := startRemoteServer(t)
-
-	geoProxyEndpointResponseBody := fmt.Sprintf(`{"geo_enabled":true,"geo_proxy_url":"%v"}`, remoteServer.URL)
-	railsServer := startRailsServer(t, &geoProxyEndpointResponseBody)
-
-	ws, _ := startWorkhorseServer(t, railsServer.URL, true)
-
-	runTestCasesRequest(t, ws, testCases)
 }
 
 func newUpstreamConfig(authBackend string) *config.Config {
@@ -498,7 +457,8 @@ func startWorkhorseServer(t *testing.T, railsServerURL string, enableGeoProxyFea
 		configureRoutes(u)
 	}
 	cfg := newUpstreamConfig(railsServerURL)
-	upstreamHandler := newUpstream(*cfg, logrus.StandardLogger(), myConfigureRoutes, nil, nil)
+	shutdownChan := make(chan struct{})
+	upstreamHandler := newUpstream(*cfg, logrus.StandardLogger(), myConfigureRoutes, nil, nil, nil, shutdownChan, nil)
 	ws := httptest.NewServer(upstreamHandler)
 
 	t.Cleanup(func() {
@@ -581,11 +541,12 @@ func TestAdoptCfRayHeaderCorrelation(t *testing.T) {
 				w.WriteHeader(http.StatusOK)
 			})
 
+			shutdownChan := make(chan struct{})
 			upstreamHandler := newUpstream(*cfg, logrus.StandardLogger(), func(u *upstream) {
 				u.Routes = []routeEntry{
 					u.route("", routeMetadata{}, handler),
 				}
-			}, nil, nil)
+			}, nil, nil, nil, shutdownChan, nil)
 
 			// Create a test request
 			req := httptest.NewRequest("GET", "/", nil)

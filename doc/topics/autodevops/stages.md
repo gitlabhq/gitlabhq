@@ -228,17 +228,17 @@ check out. The merge request widget displays any security warnings detected,
 For more information, see
 [Dependency Scanning](../../user/application_security/dependency_scanning/_index.md).
 
-## Auto Container Scanning
+## Auto container scanning
 
 Vulnerability static analysis for containers uses [Trivy](https://aquasecurity.github.io/trivy/latest/)
-to check for potential security issues in Docker images. The Auto Container Scanning stage is
+to check for potential security issues in Docker images. The auto container scanning stage is
 skipped on licenses other than [Ultimate](https://about.gitlab.com/pricing/).
 
 After creating the report, it's uploaded as an artifact which you can later download and
 check out. The merge request displays any detected security issues.
 
 For more information, see
-[Container Scanning](../../user/application_security/container_scanning/_index.md).
+[container scanning](../../user/application_security/container_scanning/_index.md).
 
 ## Auto Review Apps
 

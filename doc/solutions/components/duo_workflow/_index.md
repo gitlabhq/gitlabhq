@@ -15,7 +15,7 @@ The use of any Solution component is subject to the [GitLab Subscription Agreeme
 
 GitLab Duo Workflow helps you complete development tasks. The GitLab codebase, issues, merge requests and pipelines can be the context where the agentic workflow can be carried out from the prompt using the VS Code integrated development environment (IDE).
 
-For detailed information about GitLab Duo Workflow, review [the document here](../../../user/duo_workflow/_index.md).
+For detailed information about GitLab Duo Workflow, review [the document here](../../../user/duo_agent_platform/_index.md).
 
 ## Duo Workflow Solution
 

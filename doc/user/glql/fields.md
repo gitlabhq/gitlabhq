@@ -59,7 +59,6 @@ The table below provides an overview of all available query fields and their spe
 | [Confidential](#confidential)           | `confidential`                               | `=`, `!=`                 | Issues, epics |
 | [Created at](#created-at)               | `created`, `createdAt`, `opened`, `openedAt` | `=`, `>`, `<`, `>=`, `<=` | Issues, epics, merge requests |
 | [Custom field](#custom-field)           | `customField("Field name")`                  | `=`                       | Issues, epics |
-| [Deployed at](#deployed-at)             | `deployed`, `deployedAt`                     | `=`, `>`, `<`, `>=`, `<=` | Merge requests |
 | [Draft](#draft)                         | `draft`                                      | `=`, `!=`                 | Merge requests |
 | [Due date](#due-date)                   | `due`, `dueDate`                             | `=`, `>`, `<`, `>=`, `<=` | Issues, epics |
 | [Environment](#environment)             | `environment`                                | `=`                       | Merge requests |
@@ -415,43 +414,6 @@ The table below provides an overview of all available query fields and their spe
 
   ```plaintext
   customField("Category") = "Markdown" and customField("Category") = "Text Editors"
-  ```
-
-### Deployed at
-
-{{< history >}}
-
-- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/491246) in GitLab 17.8.
-- Alias `deployedAt` [introduced](https://gitlab.com/gitlab-org/gitlab-query-language/glql-rust/-/merge_requests/137) in GitLab 18.0.
-- Operators `>=` and `<=` [introduced](https://gitlab.com/gitlab-org/gitlab-query-language/glql-rust/-/work_items/58) in GitLab 18.0.
-
-{{< /history >}}
-
-**Description**: Query merge requests by the date when they were deployed.
-
-**Allowed value types**:
-
-- `AbsoluteDate` (in the format `YYYY-MM-DD`)
-- `RelativeDate` (in the format `<sign><digit><unit>`, where sign is `+`, `-`, or omitted,
-  digit is an integer, and `unit` is one of `d` (days), `w` (weeks), `m` (months) or `y` (years))
-
-**Additional details**:
-
-- For the `=` operator, the time range is considered from 00:00 to 23:59 in the user's time zone.
-- `>=` and `<=` operators are inclusive of the dates being queried, whereas `>` and `<` are not.
-
-**Examples**:
-
-- List all merge requests that have been deployed in the past week:
-
-  ```plaintext
-  type = MergeRequest and deployed > -1w
-  ```
-
-- List all merge requests that have been deployed in the month of January 2025:
-
-  ```plaintext
-  type = MergeRequest and deployed > 2025-01-01 and deployed < 2025-01-31
   ```
 
 ### Draft
@@ -1375,7 +1337,6 @@ for example, `fields: title, state, health, epic, milestone, weight, updated`.
 | Closed at        | `closed`, `closedAt`                  | Issues, epics, merge requests | Display time since the object was closed |
 | Confidential     | `confidential`                        | Issues, epics                 | Display `Yes` or `No` indicating whether the object is confidential |
 | Created at       | `created`, `createdAt`                | Issues, epics, merge requests | Display time since the object was created |
-| Deployed at      | `deployed`, `deployedAt`              | Merge requests                | Display time since the merge request was deployed |
 | Description      | `description`                         | Issues, epics, merge requests | Display the description of the object |
 | Draft            | `draft`                               | Merge requests                | Display `Yes` or `No` indicating whether the merge request is in draft state |
 | Due date         | `due`, `dueDate`                      | Issues, epics                 | Display time until the object is due |

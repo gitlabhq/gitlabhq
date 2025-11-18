@@ -19,8 +19,9 @@ ClickHouse::Client.configure do |config|
 
   config.logger = ::ClickHouse::Logger.build
   config.log_proc = ->(query) do
+    redacted_sql = query.to_redacted_sql # call it to capture issues with redacted sql in non-production environments
     query_output =
-      Rails.env.production? ? query.to_redacted_sql : query.to_sql
+      Rails.env.production? ? redacted_sql : query.to_sql
     structured_log(query_output)
   end
 

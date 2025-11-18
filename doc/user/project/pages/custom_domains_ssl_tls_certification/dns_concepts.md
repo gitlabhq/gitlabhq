@@ -29,8 +29,7 @@ not an administrator of your domain, and don't have access to your registrar,
 you must ask the technical support of your hosting service
 to do it for you.
 
-To help you out, we've gathered some instructions on how to do that
-for the most popular hosting services:
+For the most popular hosting services, see the following instructions:
 
 <!-- vale gitlab_base.Spelling = NO -->
 

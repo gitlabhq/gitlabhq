@@ -8,7 +8,7 @@ RSpec.describe Gitlab::LegacyGithubImport::CommentFormatter, :clean_gitlab_redis
   let_it_be_with_reload(:project) do
     create(
       :project, :in_group, :with_import_url,
-      :import_user_mapping_enabled, :user_mapping_to_personal_namespace_owner_enabled,
+      :import_user_mapping_enabled,
       import_type: ::Import::SOURCE_GITEA
     )
   end
@@ -73,7 +73,9 @@ RSpec.describe Gitlab::LegacyGithubImport::CommentFormatter, :clean_gitlab_redis
       let(:raw) { base.merge(user: ghost_user) }
 
       it 'sets the note author as the gitlab ghost user' do
-        expect(comment.attributes.fetch(:author_id)).to eq(Users::Internal.ghost.id)
+        expect(comment.attributes.fetch(:author_id)).to eq(
+          Users::Internal.for_organization(project.organization).ghost.id
+        )
       end
     end
 
@@ -138,7 +140,8 @@ RSpec.describe Gitlab::LegacyGithubImport::CommentFormatter, :clean_gitlab_redis
 
     context 'when importing a GitHub project' do
       let_it_be(:project) do
-        create(:project, :with_import_url, :import_user_mapping_enabled, import_type: ::Import::SOURCE_GITHUB)
+        create(:project, :in_group, :with_import_url, :import_user_mapping_enabled,
+          import_type: ::Import::SOURCE_GITHUB)
       end
 
       let_it_be(:source_user_mapper) do
@@ -199,20 +202,6 @@ RSpec.describe Gitlab::LegacyGithubImport::CommentFormatter, :clean_gitlab_redis
 
       it 'maps the author to the personal namespace owner' do
         expect(comment.attributes.fetch(:author_id)).to eq(user_namespace.owner_id)
-      end
-
-      context 'when user_mapping_to_personal_namespace_owner is disabled' do
-        before_all do
-          project.build_or_assign_import_data(
-            data: { user_mapping_to_personal_namespace_owner_enabled: false }
-          ).save!
-        end
-
-        it 'maps the author to the import user' do
-          expect(comment.attributes.fetch(:author_id)).to eq(
-            user_namespace.namespace_import_user.user_id
-          )
-        end
       end
     end
 
@@ -311,29 +300,6 @@ RSpec.describe Gitlab::LegacyGithubImport::CommentFormatter, :clean_gitlab_redis
       it 'does not push any placeholder references' do
         comment.create!
         expect(cached_references).to be_empty
-      end
-
-      context 'when user_mapping_to_personal_namespace_owner is disabled' do
-        before_all do
-          project.build_or_assign_import_data(
-            data: { user_mapping_to_personal_namespace_owner_enabled: false }
-          ).save!
-        end
-
-        it 'pushes placeholder references for the pull request and assignees' do
-          comment.create!
-
-          import_source_user = Import::SourceUser.find_source_user(
-            source_user_identifier: octocat[:id],
-            namespace: project.root_ancestor,
-            source_hostname: 'https://gitea.com',
-            import_type: ::Import::SOURCE_GITEA
-          )
-
-          expect(cached_references).to match_array([
-            ['Note', an_instance_of(Integer), 'author_id', import_source_user.id]
-          ])
-        end
       end
     end
 

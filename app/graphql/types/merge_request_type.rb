@@ -171,6 +171,9 @@ module Types
 
     field :head_pipeline, Types::Ci::PipelineType, null: true, method: :diff_head_pipeline,
       description: 'Pipeline running on the branch HEAD of the merge request.'
+    field :pipeline_creation_requests, [Types::Ci::PipelineCreation::RequestType],
+      null: false,
+      description: 'Pipeline creation requests for the merge request.'
     field :pipelines,
       null: true,
       description: 'Pipelines for the merge request. Note: for performance reasons, ' \
@@ -412,6 +415,10 @@ module Types
           loader.call(id, counts[id]&.count || 0)
         end
       end
+    end
+
+    def pipeline_creation_requests
+      ::Ci::PipelineCreation::Requests.for_merge_request(object)
     end
   end
 end

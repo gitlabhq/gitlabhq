@@ -141,21 +141,6 @@ export function updateEpicsCount({
   );
 }
 
-export function updateListWeightCache({ weight, listId, cache }) {
-  cache.updateQuery(
-    {
-      query: listQuery,
-      variables: { id: listId },
-    },
-    ({ boardList }) => ({
-      boardList: {
-        ...boardList,
-        totalIssueWeight: toNumber(boardList.totalIssueWeight) + weight,
-      },
-    }),
-  );
-}
-
 export function setError({ message, error, captureError = true }) {
   defaultClient.mutate({
     mutation: setErrorMutation,

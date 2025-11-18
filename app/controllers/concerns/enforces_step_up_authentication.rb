@@ -25,6 +25,8 @@ module EnforcesStepUpAuthentication
     return if step_up_auth_disabled_for_admin_mode?
     return if step_up_auth_flow_state_success?
 
+    return handle_expired_step_up_authentication if step_up_authentication_expired?
+
     handle_failed_authentication
   end
 
@@ -34,6 +36,21 @@ module EnforcesStepUpAuthentication
 
   def step_up_auth_flow_state_success?
     ::Gitlab::Auth::Oidc::StepUpAuthentication.succeeded?(session)
+  end
+
+  def step_up_authentication_expired?
+    ::Gitlab::Auth::Oidc::StepUpAuthentication.step_up_session_expired?(session)
+  end
+
+  def handle_expired_step_up_authentication
+    # Disable admin mode and clean up expired step-up session
+    disable_admin_mode
+    ::Gitlab::Auth::Oidc::StepUpAuthentication.disable_step_up_authentication!(session: session)
+
+    redirect_to(
+      new_admin_session_path,
+      notice: _('Step-up authentication session has expired. Please authenticate again.')
+    )
   end
 
   def handle_failed_authentication

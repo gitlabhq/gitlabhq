@@ -1,4 +1,5 @@
 import {
+  ACTION_COPY_ID,
   ACTION_EDIT,
   ACTION_DELETE,
   ACTION_DELETE_IMMEDIATELY,
@@ -37,6 +38,7 @@ export const availableGraphQLProjectActions = ({
 
   // Actions mapped to rules
   const actions = {
+    [ACTION_COPY_ID]: true,
     [ACTION_EDIT]: canEdit,
     [ACTION_ARCHIVE]: canArchive,
     [ACTION_UNARCHIVE]: canUnarchive,

@@ -4,13 +4,28 @@ require_relative "gitlab/grape_openapi/version"
 require_relative "gitlab/grape_openapi/configuration"
 require_relative "gitlab/grape_openapi/generator"
 require_relative "gitlab/grape_openapi/schema_registry"
+require_relative "gitlab/grape_openapi/tag_registry"
 
 # Converters
 require_relative "gitlab/grape_openapi/converters/entity_converter"
 require_relative "gitlab/grape_openapi/converters/type_resolver"
+require_relative "gitlab/grape_openapi/converters/tag_converter"
+require_relative "gitlab/grape_openapi/converters/operation_converter"
+require_relative "gitlab/grape_openapi/converters/path_converter"
+require_relative "gitlab/grape_openapi/converters/parameter_converter"
+require_relative "gitlab/grape_openapi/converters/response_converter"
+require_relative "gitlab/grape_openapi/converters/request_body_converter"
 
 # Models
 require_relative "gitlab/grape_openapi/models/schema"
+require_relative "gitlab/grape_openapi/models/tag"
+require_relative "gitlab/grape_openapi/models/server"
+require_relative "gitlab/grape_openapi/models/operation"
+require_relative "gitlab/grape_openapi/models/path_item"
+require_relative "gitlab/grape_openapi/models/response"
+require_relative "gitlab/grape_openapi/models/security_scheme"
+require_relative "gitlab/grape_openapi/models/info"
+require_relative "gitlab/grape_openapi/models/parameter"
 
 module Gitlab
   module GrapeOpenapi

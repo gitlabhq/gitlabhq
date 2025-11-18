@@ -354,7 +354,7 @@ RSpec.describe ResourceAccessTokens::CreateService, feature_category: :system_ac
           let_it_be(:params) { { access_level: Gitlab::Access::OWNER } }
 
           context 'when the executor is a MAINTAINER' do
-            let(:error_message) { 'Could not provision owner access to project access token' }
+            let(:error_message) { 'Access level of the token contains permissions not held by the creating user' }
 
             context 'with OWNER access_level, in integer format' do
               it_behaves_like 'token creation fails'
@@ -362,7 +362,6 @@ RSpec.describe ResourceAccessTokens::CreateService, feature_category: :system_ac
             end
 
             context 'with OWNER access_level, in string format' do
-              let(:error_message) { 'Could not provision owner access to project access token' }
               let_it_be(:params) { { access_level: Gitlab::Access::OWNER.to_s } }
 
               it_behaves_like 'token creation fails'

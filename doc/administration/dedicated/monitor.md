@@ -54,7 +54,8 @@ To find your S3 bucket name:
 
 1. Sign in to [Switchboard](https://console.gitlab-dedicated.com/).
 1. At the top of the page, select **Configuration**.
-1. In the **Tenant details** section, locate the **AWS S3 bucket for tenant logs** field.
+1. Expand **Resource access**.
+1. Under **Application logs**, locate the **Logs S3 bucket name** field.
 
 For information about how to access S3 buckets after you have the name, see the [AWS documentation about accessing S3 buckets](https://docs.aws.amazon.com/AmazonS3/latest/userguide/access-bucket-intro.html).
 

@@ -37,6 +37,22 @@ RSpec.describe JiraConnect::SubscriptionsController, feature_category: :integrat
       it {
         is_expected.to include('frame-ancestors \'self\' https://*.atlassian.net https://*.jira.com http://localhost:* http://dev.gitlab.com')
       }
+
+      context 'and display_url is different from base_url' do
+        let_it_be(:installation) {
+          create(:jira_connect_installation,
+            base_url: 'https://jira.atlassian.net',
+            display_url: 'https://custom.jira.com',
+            instance_url: 'http://self-managed-gitlab.com')
+        }
+
+        it {
+          is_expected.to include(
+            'frame-ancestors \'self\' https://*.atlassian.net https://*.jira.com ' \
+              'http://localhost:* http://dev.gitlab.com https://custom.jira.com'
+          )
+        }
+      end
     end
 
     context 'with no self-managed instance configured' do

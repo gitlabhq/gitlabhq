@@ -46,7 +46,8 @@ RSpec.describe 'Projects > Files > User creates a directory', :js, feature_categ
     end
   end
 
-  context 'inside sub-folder' do
+  context 'inside sub-folder',
+    quarantine: 'https://gitlab.com/gitlab-org/quality/test-failure-issues/-/issues/3862' do
     it 'creates new directory' do
       click_link 'files'
 

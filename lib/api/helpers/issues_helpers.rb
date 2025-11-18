@@ -71,7 +71,7 @@ module API
         args[:not][:label_name] ||= args[:not].delete(:labels)
         args[:scope] = args[:scope].underscore if args[:scope]
         args[:sort] = "#{args[:order_by]}_#{args[:sort]}"
-        args[:issue_types] ||= args.delete(:issue_type) || WorkItems::Type.allowed_types_for_issues
+        args[:issue_types] ||= args.delete(:issue_type) || ::WorkItems::TypesFilter.allowed_types_for_issues
 
         IssuesFinder.new(current_user, args)
       end

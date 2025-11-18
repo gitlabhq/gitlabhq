@@ -18,7 +18,6 @@ RSpec.describe 'Issue Sidebar', :js, feature_category: :team_planning do
   let_it_be(:mock_date) { Date.today.at_beginning_of_month + 2.days }
 
   before do
-    stub_feature_flags(work_item_view_for_issues: true)
     stub_incoming_email_setting(enabled: true, address: "p+%{key}@gl.ab")
   end
 
@@ -147,7 +146,7 @@ RSpec.describe 'Issue Sidebar', :js, feature_category: :team_planning do
         let_it_be(:development) { create(:group_label, group: group, name: 'Development') }
         let_it_be(:stretch) { create(:label, project: project, name: 'Stretch') }
         let_it_be(:xss_label) do
-          create(:label, project: project, title: '&lt;script&gt;alert("xss");&lt;&#x2F;script&gt;')
+          create(:label, project: project, title: '<script>alert("xss");</script>')
         end
 
         it 'shows labels list in the dropdown' do

@@ -66,6 +66,8 @@ type UploadOpts struct {
 	PresignedAbortMultipart string
 	// UploadHashFunctions contains a list of allowed hash functions (md5, sha1, etc.)
 	UploadHashFunctions []string
+	// LsifProcessing indicates whether LSIF transformation is being applied
+	LsifProcessing bool
 }
 
 // UseWorkhorseClientEnabled checks if the options require direct access to object storage

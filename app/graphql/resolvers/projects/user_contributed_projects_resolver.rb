@@ -29,6 +29,10 @@ module Resolvers
         required: false,
         description: 'Filter projects by programming language name (case insensitive). For example: `css` or `ruby`.'
 
+      argument :active, GraphQL::Types::Boolean,
+        required: false,
+        description: 'Filters by projects that are not archived and not marked for deletion.'
+
       before_connection_authorization do |projects, current_user|
         ::Preloaders::UserMaxAccessLevelInProjectsPreloader.new(projects, current_user).execute
       end
@@ -55,7 +59,8 @@ module Resolvers
           search: args[:search],
           sort: args[:sort],
           min_access_level: args[:min_access_level],
-          programming_language_name: args[:programming_language_name]
+          programming_language_name: args[:programming_language_name],
+          active: args[:active]
         }
       end
     end

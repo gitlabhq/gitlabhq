@@ -9,8 +9,10 @@ import {
   GlModalDirective,
   GlTooltipDirective,
 } from '@gitlab/ui';
+import UserMenuUpgradeSubscription from 'ee_component/super_sidebar/components/user_menu_upgrade_subscription.vue';
 import SafeHtml from '~/vue_shared/directives/safe_html';
 import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
+import DapWelcomeModal from '~/dap_welcome_modal/dap_welcome_modal.vue';
 import { s__, __, sprintf } from '~/locale';
 import Tracking from '~/tracking';
 import { SET_STATUS_MODAL_ID } from '~/set_status_modal/constants';
@@ -36,7 +38,7 @@ export default {
     buyPipelineMinutes: s__('CurrentUser|Buy compute minutes'),
     oneOfGroupsRunningOutOfPipelineMinutes: s__('CurrentUser|One of your groups is running out'),
     gitlabNext: s__('CurrentUser|Switch to GitLab Next'),
-    startTrial: s__('CurrentUser|Start an Ultimate trial'),
+
     adminArea: s__('Navigation|Admin'),
     enterAdminMode: s__('CurrentUser|Enter Admin Mode'),
     leaveAdminMode: s__('CurrentUser|Leave Admin Mode'),
@@ -53,6 +55,8 @@ export default {
     UserCounts,
     UserMenuProfileItem,
     UserMenuProjectStudioSection,
+    UserMenuUpgradeSubscription,
+    DapWelcomeModal,
     SetStatusModal: () =>
       import(
         /* webpackChunkName: 'statusModalBundle' */ '~/set_status_modal/set_status_modal_wrapper.vue'
@@ -74,6 +78,7 @@ export default {
   data() {
     return {
       setStatusModalReady: false,
+      showDapWelcomeModal: false,
       updatedAvatarUrl: null,
     };
   },
@@ -106,19 +111,7 @@ export default {
         },
       };
     },
-    trialItem() {
-      return {
-        text: this.$options.i18n.startTrial,
-        href: this.data.trial.url,
-        extraAttrs: {
-          ...USER_MENU_TRACKING_DEFAULTS,
-          'data-track-label': 'start_trial',
-        },
-      };
-    },
-    showTrialItem() {
-      return this.data.trial?.has_start_trial;
-    },
+
     editProfileItem() {
       return {
         text: this.$options.i18n.editProfile,
@@ -250,6 +243,7 @@ export default {
   },
   mounted() {
     document.addEventListener('userAvatar:update', this.updateAvatar);
+    this.showDapWelcomeModal = localStorage.getItem('showDapWelcomeModal') === 'true';
   },
   unmounted() {
     document.removeEventListener('userAvatar:update', this.updateAvatar);
@@ -264,6 +258,9 @@ export default {
     openStatusModal() {
       this.setStatusModalReady = true;
       this.$refs.userDropdown.close();
+    },
+    closeDapWelcomeModal() {
+      localStorage.setItem('showDapWelcomeModal', 'false');
     },
     initBuyCIMinsCallout() {
       const el = this.$refs?.buyPipelineMinutesNotificationCallout?.$el;
@@ -342,10 +339,12 @@ export default {
           category="tertiary"
           class="user-bar-dropdown-toggle btn-with-notification"
           :class="{ '!gl-rounded-full !gl-border-none !gl-px-0': projectStudioEnabled }"
+          :href="data.link_to_profile"
           data-testid="user-menu-toggle"
           data-track-action="click_dropdown"
           data-track-label="user_profile_menu"
           data-track-property="nav_core_menu"
+          @click.exact.prevent
         >
           <span class="gl-sr-only">{{ toggleText }}</span>
           <gl-avatar
@@ -371,7 +370,7 @@ export default {
         >
           <gl-emoji
             :data-name="data.status.emoji"
-            class="super-sidebar-status-emoji gl-pointer-events-none !gl-text-[1em]"
+            class="super-topbar-status-emoji gl-pointer-events-none gl-text-[9px]"
           />
         </div>
       </template>
@@ -454,20 +453,9 @@ export default {
         </gl-disclosure-dropdown-item>
       </gl-disclosure-dropdown-group>
 
-      <gl-disclosure-dropdown-group v-if="showTrialItem || addBuyPipelineMinutesMenuItem" bordered>
-        <gl-disclosure-dropdown-item
-          v-if="showTrialItem"
-          :item="trialItem"
-          data-testid="start-trial-item"
-        >
-          <template #list-item>
-            <span class="hotspot-pulse gl-flex gl-items-center gl-gap-2">
-              <gl-icon name="license" variant="subtle" class="gl-mr-2" />
-              {{ trialItem.text }}
-            </span>
-          </template>
-        </gl-disclosure-dropdown-item>
+      <user-menu-upgrade-subscription v-if="data.upgrade_link" :upgrade-link="data.upgrade_link" />
 
+      <gl-disclosure-dropdown-group v-if="addBuyPipelineMinutesMenuItem" bordered>
         <gl-disclosure-dropdown-item
           v-if="addBuyPipelineMinutesMenuItem"
           ref="buyPipelineMinutesNotificationCallout"
@@ -516,5 +504,6 @@ export default {
       default-emoji="speech_balloon"
       v-bind="statusModalData"
     />
+    <dap-welcome-modal v-if="showDapWelcomeModal" @close="closeDapWelcomeModal" />
   </div>
 </template>

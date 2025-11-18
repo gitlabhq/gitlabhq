@@ -1,0 +1,10 @@
+---
+name: avoid_tag_names_cache
+description: Stop caching repository tag_names in Redis
+feature_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/577418
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/210203
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/578116
+milestone: '18.6'
+group: group::source code
+type: beta
+default_enabled: false

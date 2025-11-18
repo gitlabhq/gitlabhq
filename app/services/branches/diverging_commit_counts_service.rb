@@ -23,7 +23,7 @@ module Branches
         number_commits_behind, number_commits_ahead =
           raw_repository.diverging_commit_count(
             @root_ref_hash,
-            branch.dereferenced_target.sha)
+            branch.target)
 
         { behind: number_commits_behind, ahead: number_commits_ahead }
       end

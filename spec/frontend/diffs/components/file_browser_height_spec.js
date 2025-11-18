@@ -17,7 +17,7 @@ Vue.use(PiniaVuePlugin);
 describe('FileBrowserHeight', () => {
   let wrapper;
   let pinia;
-  let screenChangeCallback;
+  let breakpointChangeCallback;
   let mockBreakpointSize;
 
   const minHeight = 300;
@@ -42,14 +42,25 @@ describe('FileBrowserHeight', () => {
       return '';
     });
   };
-  const mockMatchMedia = (matches = false) => {
-    mockBreakpointSize = matches ? 'sm' : 'lg';
-    jest
-      .spyOn(PanelBreakpointInstance, 'getBreakpointSize')
-      .mockImplementation(() => mockBreakpointSize);
-    jest.spyOn(PanelBreakpointInstance, 'addResizeListener').mockImplementation((callback) => {
-      screenChangeCallback = callback;
+
+  const mockBreakpointInstance = (breakpointSize = 'lg') => {
+    mockBreakpointSize = breakpointSize;
+
+    jest.spyOn(PanelBreakpointInstance, 'isBreakpointDown').mockImplementation((bp) => {
+      const breakpoints = ['xl', 'lg', 'md', 'sm', 'xs'];
+      const currentIndex = breakpoints.indexOf(mockBreakpointSize);
+      const targetIndex = breakpoints.indexOf(bp);
+      return currentIndex >= targetIndex;
     });
+
+    jest.spyOn(PanelBreakpointInstance, 'addBreakpointListener').mockImplementation((callback) => {
+      breakpointChangeCallback = callback;
+    });
+  };
+
+  const triggerBreakpointChange = (newBreakpoint, oldBreakpoint) => {
+    mockBreakpointSize = newBreakpoint;
+    breakpointChangeCallback(newBreakpoint, oldBreakpoint);
   };
 
   beforeEach(() => {
@@ -62,7 +73,7 @@ describe('FileBrowserHeight', () => {
 
   describe('when screen is wide enough', () => {
     beforeEach(() => {
-      mockMatchMedia();
+      mockBreakpointInstance('lg');
     });
 
     it('wraps contents with a sticky viewport filler height', () => {
@@ -71,12 +82,13 @@ describe('FileBrowserHeight', () => {
       expect(findSlotContent().exists()).toBe(true);
     });
 
-    it('swaps to narrow view', async () => {
+    it('swaps to narrow view when breakpoint changes', async () => {
       createComponent();
       await nextTick();
-      mockBreakpointSize = 'sm';
-      screenChangeCallback();
+
+      triggerBreakpointChange('sm', 'lg');
       await nextTick();
+
       expect(wrapper.findComponent(StickyViewportFillerHeight).exists()).toBe(false);
       expect(findSlotContent().exists()).toBe(true);
     });
@@ -93,7 +105,7 @@ describe('FileBrowserHeight', () => {
 
   describe('when screen is narrow', () => {
     beforeEach(() => {
-      mockMatchMedia(true);
+      mockBreakpointInstance('sm');
     });
 
     it('renders just slot content', async () => {
@@ -103,14 +115,25 @@ describe('FileBrowserHeight', () => {
       expect(findSlotContent().exists()).toBe(true);
     });
 
-    it('swaps to widescreen view', async () => {
+    it('swaps to widescreen view when breakpoint changes', async () => {
       createComponent();
       await nextTick();
-      mockBreakpointSize = 'lg';
-      screenChangeCallback();
+
+      triggerBreakpointChange('lg', 'sm');
       await nextTick();
+
       expect(wrapper.findComponent(StickyViewportFillerHeight).exists()).toBe(true);
       expect(findSlotContent().exists()).toBe(true);
     });
+  });
+
+  it('unsubscribes from breakpoint changes on destroy', () => {
+    const unsub = jest.spyOn(PanelBreakpointInstance, 'removeBreakpointListener');
+    mockBreakpointInstance('lg');
+    createComponent();
+
+    wrapper.destroy();
+
+    expect(unsub).toHaveBeenCalled();
   });
 });

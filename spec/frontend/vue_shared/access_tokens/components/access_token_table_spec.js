@@ -19,6 +19,7 @@ describe('AccessTokenTable', () => {
     active: true,
     id: 1,
     name: 'My name <super token>',
+    createdAt: '2020-01-01',
   };
 
   const createComponent = (props = {}) => {

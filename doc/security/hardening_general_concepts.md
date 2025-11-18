@@ -8,7 +8,7 @@ title: Hardening - General Concepts
 General hardening guidelines are outlined in the [main hardening documentation](hardening.md).
 
 The following documentation summarises some of the underlying philosophies for GitLab instance hardening.
-While we reference GitLab, in many cases they can actually apply to all computer systems.
+In many cases they can actually apply to all computer systems.
 
 ## Layered security
 

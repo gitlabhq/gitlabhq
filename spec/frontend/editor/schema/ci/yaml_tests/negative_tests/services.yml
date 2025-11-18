@@ -19,12 +19,6 @@ empty_entrypoint:
       alias: db-postgres
       entrypoint: []
 
-invalid_command:
-  services:
-    - name: my-postgres:11.7
-      alias: db-postgres
-      command: "start" # must be array
-
 empty_command:
   services:
     - name: my-postgres:11.7

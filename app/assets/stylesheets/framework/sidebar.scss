@@ -106,18 +106,11 @@
       border-left: 0;
     }
   }
-
-  &:not(.right-sidebar-merge-requests) {
-    .sidebar-container,
-    .issuable-sidebar {
-      // Add 100px so that potentially visible vertical scroll bar is hidden
-      width: calc(100% + 100px);
-    }
-  }
 }
 
 @mixin maintain-sidebar-dimensions {
-  display: block;
+  display: flex;
+  flex-direction: column;
   width: $right-sidebar-width;
 }
 
@@ -193,50 +186,6 @@
 
 .sidebar-collapsed-icon {
   font-size: 12px;
-}
-
-.ancestor-tree {
-  .vertical-timeline {
-    position: relative;
-    list-style: none;
-    margin: 0;
-    padding: 0;
-
-    &::before {
-      content: '';
-      border-left: 1px solid $gray-300;
-      position: absolute;
-      top: $gl-padding;
-      bottom: $gl-padding;
-      left: map.get($spacers, 2) - px-to-rem(1px);
-    }
-
-    &-row {
-      margin-top: map.get($spacers, 3);
-
-      &:nth-child(1) {
-        margin-top: 0;
-      }
-    }
-
-    $line-height: map.get($spacers, 4);
-
-    &-icon {
-      height: $line-height;
-      z-index: 1;
-      position: relative;
-      padding: $gl-padding-4 0;
-
-      svg {
-        vertical-align: baseline;
-      }
-    }
-
-    &-content {
-      line-height: $line-height;
-      margin-left: $gl-padding-8;
-    }
-  }
 }
 
 .toggle-right-sidebar-button {
@@ -821,7 +770,11 @@
 }
 
 .duo-agent-platform-sidebar-widget {
-  @apply gl-mt-3 gl-mx-3 gl-p-4 gl-bg-default gl-rounded-base;
+  @apply gl-mt-3;
+  @apply gl-mx-3;
+  @apply gl-p-4;
+  @apply gl-bg-default;
+  @apply gl-rounded-base;
 }
 
 :where(.application-chrome) {

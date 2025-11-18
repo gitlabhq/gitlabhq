@@ -4,7 +4,7 @@ require 'spec_helper'
 
 RSpec.describe Mcp::Tools::ApiTool, feature_category: :ai_agents do
   let(:app) { instance_double(Grape::Endpoint) }
-  let(:mcp_settings) { { params: [:param1, :param2] } }
+  let(:mcp_settings) { { params: [:param1, :param2], tool_name: 'test_tool' } }
   let(:route_params) do
     {
       'param1' => { required: true, type: 'String', desc: 'First parameter' },
@@ -26,12 +26,22 @@ RSpec.describe Mcp::Tools::ApiTool, feature_category: :ai_agents do
     allow(app).to receive(:route_setting).with(:mcp).and_return(mcp_settings)
   end
 
-  subject(:api_tool) { described_class.new(route) }
+  subject(:api_tool) { described_class.new(name: 'test_tool', route: route) }
 
   describe '#initialize' do
-    it 'sets the route and settings' do
+    it 'sets the name, route and settings' do
+      expect(api_tool.name).to eq('test_tool')
       expect(api_tool.route).to eq(route)
       expect(api_tool.settings).to eq(mcp_settings)
+      expect(api_tool.version).to eq('0.1.0')
+    end
+
+    context 'when version is specified in settings' do
+      let(:mcp_settings) { { params: [:param1, :param2], version: '2.0.0' } }
+
+      it 'uses the specified version' do
+        expect(api_tool.version).to eq('2.0.0')
+      end
     end
   end
 
@@ -267,8 +277,40 @@ RSpec.describe Mcp::Tools::ApiTool, feature_category: :ai_agents do
         expect(schema[:properties]['integer_param'][:type]).to eq('integer')
         expect(schema[:properties]['boolean_param'][:type]).to eq('boolean')
         expect(schema[:properties]['array_int_param'][:type]).to eq('array')
+        expect(schema[:properties]['array_int_param'][:items]).to eq({ type: 'integer' })
         expect(schema[:properties]['array_string_param'][:type]).to eq('string')
         expect(schema[:properties]['complex_array_param'][:type]).to eq('string')
+      end
+    end
+
+    describe 'Array[Type] format parsing' do
+      let(:route_params) do
+        {
+          'assignee_ids' => { required: false, type: 'Array[Integer]', desc: 'Array of user IDs' },
+          'labels' => { required: false, type: 'Array[String]', desc: 'Array of label names' }
+        }
+      end
+
+      let(:mcp_settings) { { params: [:assignee_ids, :labels] } }
+
+      it 'converts Array[Integer] to proper JSON Schema array with integer items' do
+        schema = api_tool.input_schema
+
+        expect(schema[:properties]['assignee_ids']).to eq({
+          type: 'array',
+          items: { type: 'integer' },
+          description: 'Array of user IDs'
+        })
+      end
+
+      it 'converts Array[String] to proper JSON Schema array with string items' do
+        schema = api_tool.input_schema
+
+        expect(schema[:properties]['labels']).to eq({
+          type: 'array',
+          items: { type: 'string' },
+          description: 'Array of label names'
+        })
       end
     end
   end

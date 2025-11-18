@@ -323,25 +323,53 @@ RSpec.describe Ci::Pipeline, :mailer, factory_default: :keep, feature_category: 
     let(:pipeline) { build(:ci_pipeline, user: user) }
 
     %w[run! succeed! drop! skip! cancel! block! delay!].each do |action|
-      context "when pipeline receives #{action} event" do
-        context 'without a schedule' do
-          it 'triggers only GraphQL subscription ciPipelineStatusUpdated' do
-            expect(GraphqlTriggers).to receive(:ci_pipeline_status_updated).with(pipeline)
-            expect(GraphqlTriggers).not_to receive(:ci_pipeline_schedule_status_updated)
+      context 'with rate limiting enabled' do
+        before do
+          allow(Gitlab::ApplicationRateLimiter).to receive(:throttled?)
+                                                    .with(:ci_pipeline_statuses_subscription, scope: pipeline.project)
+                                                    .and_return(true)
+        end
+
+        it 'does not trigger GraphQL subscription ciPipelineStatusUpdated' do
+          expect(GraphqlTriggers).not_to receive(:ci_pipeline_statuses_updated).with(pipeline)
+
+          pipeline.public_send(action)
+        end
+      end
+
+      context 'with rate limiting disabled' do
+        before do
+          allow(Gitlab::ApplicationRateLimiter).to receive(:throttled?)
+                                                    .with(:ci_pipeline_statuses_subscription, scope: pipeline.project)
+                                                    .and_return(false)
+        end
+
+        context "when pipeline receives #{action} event" do
+          it 'triggers GraphQL subscription ciPipelineStatusesUpdated' do
+            expect(GraphqlTriggers).to receive(:ci_pipeline_statuses_updated).with(pipeline)
 
             pipeline.public_send(action)
           end
-        end
 
-        context 'with a schedule' do
-          let(:schedule) { create(:ci_pipeline_schedule, :nightly, project: project) }
-          let(:pipeline) { build(:ci_pipeline, pipeline_schedule: schedule, project: project, user: user) }
+          context 'without a schedule' do
+            it 'triggers only GraphQL subscription ciPipelineStatusUpdated' do
+              expect(GraphqlTriggers).to receive(:ci_pipeline_status_updated).with(pipeline)
+              expect(GraphqlTriggers).not_to receive(:ci_pipeline_schedule_status_updated)
 
-          it 'triggers both GraphQL subscriptions' do
-            expect(GraphqlTriggers).to receive(:ci_pipeline_status_updated).with(pipeline)
-            expect(GraphqlTriggers).to receive(:ci_pipeline_schedule_status_updated).with(schedule)
+              pipeline.public_send(action)
+            end
+          end
 
-            pipeline.public_send(action)
+          context 'with a schedule' do
+            let(:schedule) { create(:ci_pipeline_schedule, :nightly, project: project) }
+            let(:pipeline) { build(:ci_pipeline, pipeline_schedule: schedule, project: project, user: user) }
+
+            it 'triggers both GraphQL subscriptions' do
+              expect(GraphqlTriggers).to receive(:ci_pipeline_status_updated).with(pipeline)
+              expect(GraphqlTriggers).to receive(:ci_pipeline_schedule_status_updated).with(schedule)
+
+              pipeline.public_send(action)
+            end
           end
         end
       end
@@ -508,9 +536,18 @@ RSpec.describe Ci::Pipeline, :mailer, factory_default: :keep, feature_category: 
     end
   end
 
+  describe '.tag' do
+    let_it_be(:pipeline) { create(:ci_pipeline) }
+    let_it_be(:tag_pipeline) { create(:ci_pipeline, :tag) }
+
+    subject { described_class.tag }
+
+    it { is_expected.to contain_exactly(tag_pipeline) }
+  end
+
   describe '.no_tag' do
     let_it_be(:pipeline) { create(:ci_pipeline) }
-    let_it_be(:tag_pipeline) { create(:ci_pipeline, tag: true) }
+    let_it_be(:tag_pipeline) { create(:ci_pipeline, :tag) }
 
     subject { described_class.no_tag }
 
@@ -547,6 +584,18 @@ RSpec.describe Ci::Pipeline, :mailer, factory_default: :keep, feature_category: 
 
     let(:iid) { '1234' }
     let!(:pipeline) { create(:ci_pipeline, iid: '1234') }
+
+    it 'returns the pipeline' do
+      is_expected.to contain_exactly(pipeline)
+    end
+  end
+
+  describe '.for_pipeline_schedule' do
+    subject { described_class.for_pipeline_schedule(pipeline_schedule) }
+
+    let(:pipeline_schedule) { create(:ci_pipeline_schedule) }
+    let!(:pipeline) { create(:ci_pipeline, pipeline_schedule: pipeline_schedule) }
+    let!(:_) { create(:ci_pipeline) }
 
     it 'returns the pipeline' do
       is_expected.to contain_exactly(pipeline)
@@ -751,7 +800,7 @@ RSpec.describe Ci::Pipeline, :mailer, factory_default: :keep, feature_category: 
 
     context 'with tag pipeline' do
       let(:branch) { 'v1.0' }
-      let!(:pipeline) { create(:ci_pipeline, ref: 'v1.0', tag: true) }
+      let!(:pipeline) { create(:ci_pipeline, :tag, ref: 'v1.0') }
 
       it 'returns nothing' do
         is_expected.to be_empty
@@ -1115,13 +1164,13 @@ RSpec.describe Ci::Pipeline, :mailer, factory_default: :keep, feature_category: 
     subject { pipeline.tag_pipeline? }
 
     context 'when pipeline is for a tag' do
-      let(:pipeline) { create(:ci_pipeline, tag: true) }
+      let(:pipeline) { create(:ci_pipeline, :tag) }
 
       it { is_expected.to be_truthy }
     end
 
     context 'when pipeline is not for a tag' do
-      let(:pipeline) { create(:ci_pipeline, tag: false) }
+      let(:pipeline) { create(:ci_pipeline) }
 
       it { is_expected.to be_falsy }
     end
@@ -1131,13 +1180,13 @@ RSpec.describe Ci::Pipeline, :mailer, factory_default: :keep, feature_category: 
     subject { pipeline.type }
 
     context 'when pipeline is for a branch' do
-      let(:pipeline) { create(:ci_pipeline, tag: false) }
+      let(:pipeline) { create(:ci_pipeline) }
 
       it { is_expected.to eq('branch') }
     end
 
     context 'when pipeline is for a tag' do
-      let(:pipeline) { create(:ci_pipeline, tag: true) }
+      let(:pipeline) { create(:ci_pipeline, :tag) }
 
       it { is_expected.to eq('tag') }
     end
@@ -1656,7 +1705,7 @@ RSpec.describe Ci::Pipeline, :mailer, factory_default: :keep, feature_category: 
     subject { pipeline.protected_ref? }
 
     context 'when pipeline is for a branch' do
-      let(:pipeline) { create(:ci_pipeline, tag: false, project: project) }
+      let(:pipeline) { create(:ci_pipeline, project: project) }
 
       it 'checks if the branch ref is protected' do
         expect(project).to receive(:protected_for?).with("refs/heads/#{pipeline.ref}").and_return(true)
@@ -1666,7 +1715,7 @@ RSpec.describe Ci::Pipeline, :mailer, factory_default: :keep, feature_category: 
     end
 
     context 'when pipeline is for a tag' do
-      let(:pipeline) { create(:ci_pipeline, tag: true, project: project) }
+      let(:pipeline) { create(:ci_pipeline, :tag, project: project) }
 
       it 'checks if the tag ref is protected' do
         expect(project).to receive(:protected_for?).with("refs/tags/#{pipeline.ref}").and_return(true)
@@ -2609,7 +2658,7 @@ RSpec.describe Ci::Pipeline, :mailer, factory_default: :keep, feature_category: 
     subject { pipeline.send(:git_ref) }
 
     context 'when ref is branch' do
-      let(:pipeline) { create(:ci_pipeline, tag: false) }
+      let(:pipeline) { create(:ci_pipeline) }
 
       it 'returns branch ref' do
         is_expected.to eq(Gitlab::Git::BRANCH_REF_PREFIX + pipeline.ref.to_s)
@@ -2617,7 +2666,7 @@ RSpec.describe Ci::Pipeline, :mailer, factory_default: :keep, feature_category: 
     end
 
     context 'when ref is tag' do
-      let(:pipeline) { create(:ci_pipeline, tag: true) }
+      let(:pipeline) { create(:ci_pipeline, :tag) }
 
       it 'returns branch ref' do
         is_expected.to eq(Gitlab::Git::TAG_REF_PREFIX + pipeline.ref.to_s)
@@ -3086,8 +3135,7 @@ RSpec.describe Ci::Pipeline, :mailer, factory_default: :keep, feature_category: 
 
     context 'when kubernetes is active' do
       context 'when user configured kubernetes from CI/CD > Clusters' do
-        let!(:cluster) { create(:cluster, :project, :provided_by_gcp) }
-        let(:project) { cluster.project }
+        let!(:cluster) { create(:cluster, :instance, :provided_by_user) }
 
         it 'returns true' do
           expect(pipeline).to have_kubernetes_active
@@ -3527,6 +3575,56 @@ RSpec.describe Ci::Pipeline, :mailer, factory_default: :keep, feature_category: 
     end
   end
 
+  describe '.latest_pipeline_per_ref' do
+    let(:refs_with_shas) { [%w[master 234], %w[develop 123]] }
+
+    let_it_be(:develop_123) do
+      create(
+        :ci_empty_pipeline, status: :success,
+        ref: 'develop', sha: '123'
+      )
+    end
+
+    let_it_be(:develop_123_2) do
+      create(
+        :ci_empty_pipeline, status: :success,
+        ref: 'develop', sha: '123'
+      )
+    end
+
+    let_it_be(:master_123) do
+      create(
+        :ci_empty_pipeline, status: :success,
+        ref: 'master', sha: '123'
+      )
+    end
+
+    let_it_be(:develop_234) do
+      create(
+        :ci_empty_pipeline, status: :success,
+        ref: 'develop', sha: '234'
+      )
+    end
+
+    let_it_be(:master_234) do
+      create(
+        :ci_empty_pipeline, status: :success,
+        ref: 'master', sha: '234'
+      )
+    end
+
+    let_it_be(:master_234_2) do
+      create(
+        :ci_empty_pipeline, status: :success,
+        ref: 'master', sha: '234'
+      )
+    end
+
+    subject { described_class.latest_pipeline_per_ref(refs_with_shas) }
+
+    it { is_expected.to contain_exactly(master_234_2, develop_123_2) }
+  end
+
   describe '.latest_successful_ids_per_project' do
     let(:projects) { create_list(:project, 2) }
     let!(:pipeline1) { create(:ci_pipeline, :success, project: projects[0]) }
@@ -3830,6 +3928,7 @@ RSpec.describe Ci::Pipeline, :mailer, factory_default: :keep, feature_category: 
       context "when there is a build #{status}" do
         before do
           create(:ci_build, status, pipeline: pipeline)
+          pipeline.update!(status: status)
         end
 
         it 'is not cancelable' do
@@ -3845,6 +3944,18 @@ RSpec.describe Ci::Pipeline, :mailer, factory_default: :keep, feature_category: 
         it 'is not cancelable' do
           expect(pipeline.cancelable?).to be_falsey
         end
+      end
+    end
+
+    context "when pipeline is finished with a manual job" do
+      before do
+        create(:ci_build, :success, pipeline: pipeline)
+        create(:ci_build, :manual, pipeline: pipeline)
+        pipeline.update!(status: 'success')
+      end
+
+      it 'is not cancelable' do
+        expect(pipeline.cancelable?).to be_falsey
       end
     end
   end
@@ -4292,7 +4403,7 @@ RSpec.describe Ci::Pipeline, :mailer, factory_default: :keep, feature_category: 
 
           before do
             job.job_environment.destroy!
-            job.ensure_metadata.update!(expanded_environment_name: job.expanded_environment_name)
+            create(:ci_build_metadata, build: job, expanded_environment_name: job.expanded_environment_name)
           end
 
           it 'includes environments from both sources' do
@@ -4765,16 +4876,6 @@ RSpec.describe Ci::Pipeline, :mailer, factory_default: :keep, feature_category: 
 
         it 'does not return builds from previous child pipelines' do
           expect(builds).to contain_exactly(build, new_child_build)
-        end
-
-        context 'when feature flag show_child_reports_in_mr_page is disabled' do
-          before do
-            stub_feature_flags(show_child_reports_in_mr_page: false)
-          end
-
-          it 'returns all child pipeline builds' do
-            expect(builds).to contain_exactly(build, child_build, new_child_build)
-          end
         end
       end
     end
@@ -5285,14 +5386,6 @@ RSpec.describe Ci::Pipeline, :mailer, factory_default: :keep, feature_category: 
         let_it_be(:child_pipeline) { create(:ci_pipeline, :with_codequality_report, child_of: pipeline) }
 
         it { expect(subject).to be_truthy }
-
-        context 'with FF show_child_reports_in_mr_page disabled' do
-          before do
-            stub_feature_flags(show_child_reports_in_mr_page: false)
-          end
-
-          it { expect(subject).to be_falsey }
-        end
       end
     end
   end
@@ -5322,16 +5415,6 @@ RSpec.describe Ci::Pipeline, :mailer, factory_default: :keep, feature_category: 
         it 'aggregates reports from all pipelines' do
           expect(subject.total).to include(time: 1.26, count: 6, success: 0, failed: 0, skipped: 0, error: 6)
         end
-
-        context 'when FF show_child_reports_in_mr_page is disabled' do
-          before do
-            stub_feature_flags(show_child_reports_in_mr_page: false)
-          end
-
-          it 'only shows parent summary' do
-            expect(subject.total).to include(time: 0.84, count: 4, success: 0, failed: 0, skipped: 0, error: 4)
-          end
-        end
       end
     end
 
@@ -5349,16 +5432,6 @@ RSpec.describe Ci::Pipeline, :mailer, factory_default: :keep, feature_category: 
 
         it 'aggregates reports from all pipelines' do
           expect(subject.total).to include(time: 0.42, count: 2, success: 0, failed: 0, skipped: 0, error: 2)
-        end
-
-        context 'when FF show_child_reports_in_mr_page is disabled' do
-          before do
-            stub_feature_flags(show_child_reports_in_mr_page: false)
-          end
-
-          it 'only shows parent summary' do
-            expect(subject.total).to include(time: 0, count: 0, success: 0, failed: 0, skipped: 0, error: 0)
-          end
         end
       end
     end
@@ -5412,18 +5485,6 @@ RSpec.describe Ci::Pipeline, :mailer, factory_default: :keep, feature_category: 
           expect(subject.success_count).to be(5)
           expect(subject.failed_count).to be(5)
         end
-
-        context 'when FF show_child_reports_in_mr_page is disabled' do
-          before do
-            stub_feature_flags(show_child_reports_in_mr_page: false)
-          end
-
-          it 'only shows parent summary' do
-            expect(subject.total_count).to be(7)
-            expect(subject.success_count).to be(5)
-            expect(subject.failed_count).to be(2)
-          end
-        end
       end
     end
 
@@ -5472,16 +5533,6 @@ RSpec.describe Ci::Pipeline, :mailer, factory_default: :keep, feature_category: 
           expect(subject.total_count).to be(3)
           expect(subject.success_count).to be(0)
           expect(subject.failed_count).to be(3)
-        end
-
-        context 'when FF show_child_reports_in_mr_page is disabled' do
-          before do
-            stub_feature_flags(show_child_reports_in_mr_page: false)
-          end
-
-          it 'only shows parent summary' do
-            expect(subject.total_count).to be(0)
-          end
         end
       end
     end
@@ -5565,16 +5616,6 @@ RSpec.describe Ci::Pipeline, :mailer, factory_default: :keep, feature_category: 
         it 'returns codequality report with collected data' do
           expect(codequality_reports.degradations_count).to eq(3)
         end
-
-        context 'with FF show_child_reports_in_mr_page disabled' do
-          before do
-            stub_feature_flags(show_child_reports_in_mr_page: false)
-          end
-
-          it 'returns codequality reports without degradations' do
-            expect(codequality_reports.degradations).to be_empty
-          end
-        end
       end
     end
   end
@@ -5598,16 +5639,6 @@ RSpec.describe Ci::Pipeline, :mailer, factory_default: :keep, feature_category: 
 
         it 'returns a terraform plan with child data' do
           expect(terraform_reports.plans.count).to eq(3)
-        end
-
-        context 'with FF show_child_reports_in_mr_page disabled' do
-          before do
-            stub_feature_flags(show_child_reports_in_mr_page: false)
-          end
-
-          it 'does not show child pipeline reports' do
-            expect(terraform_reports.plans.count).to eq(2)
-          end
         end
       end
     end
@@ -5970,7 +6001,7 @@ RSpec.describe Ci::Pipeline, :mailer, factory_default: :keep, feature_category: 
     end
 
     context 'when pipeline is for a tag' do
-      let(:pipeline) { create(:ci_pipeline, tag: true) }
+      let(:pipeline) { create(:ci_pipeline, :tag) }
 
       it { is_expected.to eq(Gitlab::Git::TAG_REF_PREFIX + pipeline.source_ref.to_s) }
     end
@@ -6518,6 +6549,7 @@ RSpec.describe Ci::Pipeline, :mailer, factory_default: :keep, feature_category: 
   end
 
   it_behaves_like 'it has loose foreign keys' do
+    let(:worker_class) { LooseForeignKeys::CiPipelinesBuildsCleanupCronWorker }
     let(:factory_name) { :ci_pipeline }
   end
 
@@ -6566,7 +6598,7 @@ RSpec.describe Ci::Pipeline, :mailer, factory_default: :keep, feature_category: 
     subject { pipeline.jobs_git_ref }
 
     context 'when tag is true' do
-      let(:pipeline) { build(:ci_pipeline, tag: true) }
+      let(:pipeline) { build(:ci_pipeline, :tag) }
 
       it 'returns a tag ref' do
         is_expected.to start_with(Gitlab::Git::TAG_REF_PREFIX)
@@ -6574,7 +6606,7 @@ RSpec.describe Ci::Pipeline, :mailer, factory_default: :keep, feature_category: 
     end
 
     context 'when tag is false' do
-      let(:pipeline) { build(:ci_pipeline, tag: false) }
+      let(:pipeline) { build(:ci_pipeline) }
 
       it 'returns a branch ref' do
         is_expected.to start_with(Gitlab::Git::BRANCH_REF_PREFIX)

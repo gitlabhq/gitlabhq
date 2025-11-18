@@ -561,7 +561,13 @@ RSpec.describe 'InternalEventsCli::Flows::MetricDefiner', :aggregate_failures, f
         queue_cli_inputs([
           - "2\n", # Enum-select: New Metric   -- calculate how often one or more existing events occur over time
           - "3\n", # Enum-select: Database Metric
+          - "CountIssuesMetric\n", # Input instrumentation class
+          - " ", # Multi-select: 7d
+          - "\e[B", # Arrow down to: 28d
+          - " ", # Multi-select28 7d
+          - "\n", # Multi-select: submit
           - "Count of issues\n", # Input description
+          - "issues_count\n", # Input metric name
           - "instrumentation", # Filters to the analytics instrumentation group
           - "\n", # Accept analytics:monitor:analytics_instrumentation
           - " \n", # Select product category
@@ -587,7 +593,12 @@ RSpec.describe 'InternalEventsCli::Flows::MetricDefiner', :aggregate_failures, f
         queue_cli_inputs([
           - "2\n", # Enum-select: New Metric   -- calculate how often one or more existing events occur over time
           - "3\n", # Enum-select: Database Metric
+          - "CountIssuesMetric\n", # Input instrumentation class
+          - " ", # Multi-select: 7d
+          - "\e[B", # Arrow down to: 28d
+          - " \n", # Multi-select: 28d & submit
           - "Count of issues\n", # Input description
+          - "issues_count\n", # Input metric name
           - "instrumentation", # Filters to the analytics instrumentation group
           - "\n", # Accept analytics:monitor:analytics_instrumentation
           - " \n", # Select product category

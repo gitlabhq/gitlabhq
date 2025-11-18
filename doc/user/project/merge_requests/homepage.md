@@ -66,22 +66,22 @@ For more information, see the history.
 
 {{< /alert >}}
 
-GitLab shows your total **Active** merge requests on the left sidebar on all pages:
+GitLab shows the total number of **Active** merge requests in the left sidebar on all pages. If you've [turned on the new navigation](../../interface_redesign.md#turn-new-navigation-on-or-off), this information is in the upper-right corner. For example, this user has:
 
-![The top left area of the GitLab interface showing totals](img/homepage_totals_v18_3.png)
+![Upper-right corner displaying user activity summary.](img/homepage_totals_v18_6.png)
 
 This user has:
 
-- 9 open issues ({{< icon name="issue-type-issue" >}})
-- 1 active merge request ({{< icon name="merge-request-open" >}})
-- 1 to-do item ({{< icon name="todo-done" >}})
+- 15 open issues ({{< icon name="issue-type-issue" >}})
+- 5 active merge requests ({{< icon name="merge-request-open" >}})
+- 3 to-do items ({{< icon name="todo-done" >}})
 
 Your merge request homepage shows more information about these merge requests. To see it,
 use any of these methods:
 
-- Use the <kbd>Shift</kbd> + <kbd>m</kbd> [keyboard shortcut](../../shortcuts.md).
+- Use the <kbd>Shift</kbd>+<kbd>m</kbd> [keyboard shortcut](../../shortcuts.md).
 - On the left sidebar, select **Merge requests** ({{< icon name="merge-request-open">}}).
-- On the left sidebar, select **Search or go to**, then from the dropdown list, select **Merge requests**.
+- On the left sidebar, select **Search or go to**, then from the dropdown list, select **Merge requests**. If you've [turned on the new navigation](../../interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
 
 To help you focus on what needs your attention right now, GitLab organizes your merge request homepage
 into three tabs:
@@ -111,13 +111,20 @@ into three tabs:
 
 ### Set your display preferences
 
-On the top right of your merge request homepage, select **Display preferences** ({{< icon name="preferences">}}):
+{{< history >}}
+
+- **Show your drafts** preference [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/551475) in GitLab 18.6.
+
+{{< /history >}}
+
+In the upper right of your merge request homepage, select **Display preferences** ({{< icon name="preferences">}}):
 
 - Toggle **Show labels** to show or hide labels for each merge request.
 - Sorting preferences: **Workflow** or **Role**.
   - **Workflow** groups merge requests by their status. GitLab shows the merge requests
     needing your attention first, regardless of whether you are the author or the reviewer.
   - **Role** groups merge requests by whether you are the reviewer or the author.
+- Toggle **Show your drafts** to show or hide draft merge requests from the **Your merge requests** list.
 
 Active merge requests count toward the total shown on the left sidebar. GitLab excludes **Inactive**
 merge requests from your review count.

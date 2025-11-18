@@ -91,7 +91,7 @@ Prerequisites:
 
 To see the status of your GitLab.com subscription:
 
-1. On the left sidebar, select **Search or go to** and find your group.
+1. On the left sidebar, select **Search or go to** and find your group. If you've [turned on the new navigation](../user/interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
 1. Select **Settings** > **Billing**.
 
 The following information is displayed:
@@ -101,7 +101,7 @@ The following information is displayed:
 | **Seats in subscription**   | If this is a paid plan, represents the number of seats you've bought for this group. |
 | **Seats currently in use**  | Number of seats in use. Select **See usage** to see a list of the users using these seats. |
 | **Maximum seats used**      | Highest number of seats you've used. |
-| **Seats owed**              | **Max seats used** minus **Seats in subscription**. |
+| **Seats owed**              | **Max seats used** - **Seats in subscription**. |
 | **Subscription start date** | Date your subscription started. |
 | **Subscription end date**   | Date your current subscription ends. |
 
@@ -120,7 +120,7 @@ Prerequisites:
 
 You can view the status of your subscription:
 
-1. On the left sidebar, at the bottom, select **Admin**.
+1. On the left sidebar, at the bottom, select **Admin**. If you've [turned on the new navigation](../user/interface_redesign.md#turn-new-navigation-on-or-off), in the upper-right corner, select **Admin**.
 1. Select **Subscription**.
 
 The **Subscription** page includes the following information:
@@ -282,7 +282,7 @@ To manually renew your subscription:
    [overage](quarterly_reconciliation.md) is due when you renew.
 
    In the **Users over license** text box, enter the number of
-   [users over subscription](manage_users_and_seats.md#users-over-subscription) for the user overage incurred.
+   [users over subscription](manage_users_and_seats.md#users-over-subscription-limit) for the user overage incurred.
 1. Optional. If renewing add-on products, review and update the desired quantity. You can also remove products.
 1. Optional. If upgrading the subscription tier, select the desired option.
 1. Review your renewal details and select **Renew subscription** to complete the
@@ -332,7 +332,7 @@ go to the [Customers Portal invoices page](https://customers.gitlab.com/invoices
 If your account has a [saved credit card](billing_account.md#change-your-payment-method),
 the card is charged for the invoice amount.
 
-If we are unable to process a payment or the auto-renewal fails for any other reason,
+If a payment cannot be processed or the auto-renewal fails for any other reason,
 you have 14 days to renew your subscription, after which your GitLab tier is downgraded.
 
 ## Expired subscription
@@ -416,7 +416,7 @@ also automated.
 
 You can also manually synchronize subscription data at any time.
 
-1. On the left sidebar, at the bottom, select **Admin**.
+1. On the left sidebar, at the bottom, select **Admin**. If you've [turned on the new navigation](../user/interface_redesign.md#turn-new-navigation-on-or-off), in the upper-right corner, select **Admin**.
 1. Select **Subscription**.
 1. In the **Subscription details** section, select **Sync** ({{< icon name="retry" >}}).
 
@@ -447,7 +447,7 @@ Customers Portal:
 - Instance ID
 - Unique instance ID
 
-Additionally, we also send add-on metrics such as:
+Additionally, you get add-on metrics such as:
 
 - Add-on type
 - Purchased seats

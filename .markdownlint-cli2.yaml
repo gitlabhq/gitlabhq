@@ -2,8 +2,6 @@
 # Base Markdownlint configuration
 # Extended Markdownlint configuration in doc/.markdownlint/
 # See https://github.com/DavidAnson/markdownlint/blob/main/doc/Rules.md for explanations of each rule
-ignores:
-  - "doc/architecture"
 customRules:
   - "./doc/.markdownlint/rules/unnecessary_traversal.js"
 config:
@@ -73,6 +71,7 @@ config:
       "Gitaly",
       "GitHub",
       "gitlab.vim",
+      "GitLab chart",
       "GitLab Geo",
       "GitLab Monitor",
       "GitLab Operator",

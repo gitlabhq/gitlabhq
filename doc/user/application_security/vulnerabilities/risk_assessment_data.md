@@ -10,7 +10,7 @@ Use vulnerability risk data to help assess the potential impact to your environm
 - Severity: Each vulnerability is assigned a standardized GitLab severity value.
 
 - For vulnerabilities in the [Common Vulnerabilities and Exposures (CVE)](https://www.cve.org/) catalog,
-the following data can be retrieved through the [vulnerability details](_index.md) page or by using a GraphQL query:
+  the following data can be retrieved through the [vulnerability details](_index.md) page or by using a GraphQL query:
   - Likelihood of exploitation: [Exploit Prediction Scoring System (EPSS)](https://www.first.org/epss) score.
   - Existence of known exploits: [Known Exploited Vulnerabilities (KEV)](https://www.cisa.gov/known-exploited-vulnerabilities-catalog) status.
 
@@ -52,9 +52,12 @@ these vulnerabilities have occurred and the exploitation method is likely known 
 
 {{< /history >}}
 
-Reachability shows whether a vulnerable package is actively used in your application.
-Vulnerabilities in packages that your code directly interacts with pose a higher risk than those in unused dependencies.
-Prioritize fixing reachable vulnerabilities, as they represent real exposure points that attackers could exploit.
+Reachability shows if a vulnerable package is imported by your application. Vulnerabilities in
+packages that your code directly interacts with pose a higher risk than those in unused
+dependencies. Prioritize fixing reachable vulnerabilities, as they represent real exposure points
+that attackers could exploit.
+
+For more details, see [Static reachability](../dependency_scanning/static_reachability.md).
 
 ## Query risk assessment data
 

@@ -19,6 +19,10 @@ module Gitlab
         :gpg
       end
 
+      def user_infos
+        gpg_key&.verified_user_infos&.first || gpg_key&.user_infos&.first || {}
+      end
+
       def verification_status
         using_keychain do
           break :verified_system if verified_by_gitlab?

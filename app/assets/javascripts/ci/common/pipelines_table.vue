@@ -8,7 +8,7 @@ import { PIPELINE_ID_KEY, PIPELINE_IID_KEY, TRACKING_CATEGORIES } from '~/ci/con
 import { keepLatestDownstreamPipelines } from '~/ci/pipeline_details/utils/parsing_utils';
 import PipelineFailedJobsWidget from '~/ci/pipelines_page/components/failure_widget/pipeline_failed_jobs_widget.vue';
 import PipelineMiniGraph from '~/ci/pipeline_mini_graph/pipeline_mini_graph.vue';
-import glFeatureFlagMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
+import { FIX_PIPELINE_AGENT_PRIVILEGES } from '~/duo_agent_platform/constants';
 import PipelineOperations from '../pipelines_page/components/pipeline_operations.vue';
 import PipelineTriggerer from '../pipelines_page/components/pipeline_triggerer.vue';
 import PipelineUrl from '../pipelines_page/components/pipeline_url.vue';
@@ -49,7 +49,7 @@ export default {
   directives: {
     GlTooltip: GlTooltipDirective,
   },
-  mixins: [glFeatureFlagMixin(), Tracking.mixin()],
+  mixins: [Tracking.mixin()],
   inject: {
     useFailedJobsWidget: {
       default: false,
@@ -105,13 +105,13 @@ export default {
           key: 'stages',
           label: s__('Pipeline|Stages'),
           tdClass: this.tdClasses,
-          columnClass: this.glFeatures.aiDuoAgentFixPipelineButton ? 'gl-w-4/20' : 'gl-w-5/20',
+          columnClass: this.mergeRequestPath ? 'gl-w-4/20' : 'gl-w-5/20',
           thAttr: { 'data-testid': 'stages-th' },
         },
         {
           key: 'actions',
           tdClass: this.tdClasses,
-          columnClass: this.glFeatures.aiDuoAgentFixPipelineButton ? 'gl-w-5/20' : 'gl-w-4/20',
+          columnClass: this.mergeRequestPath ? 'gl-w-5/20' : 'gl-w-4/20',
           thAttr: { 'data-testid': 'actions-th' },
         },
       ];
@@ -134,9 +134,6 @@ export default {
 
       return pipelines;
     },
-    agentPrivileges() {
-      return [1, 2, 3, 5];
-    },
   },
   methods: {
     displayFailedJobsWidget(item) {
@@ -153,7 +150,7 @@ export default {
       return cleanLeadingSeparator(item.project.full_path);
     },
     getStages(item) {
-      return item?.details?.stages || [];
+      return item?.details?.stages || item?.stages?.nodes || [];
     },
     onCancelPipeline(pipeline) {
       this.$emit('cancel-pipeline', pipeline);
@@ -173,7 +170,7 @@ export default {
       this.track('click_minigraph', { label: TRACKING_CATEGORIES.table });
     },
     isFailed(item) {
-      return item.details.status.group === 'failed';
+      return item?.details?.status?.group === 'failed' || item?.detailedStatus?.name === 'FAILED';
     },
     getPipelinePath(item) {
       if (item.path) {
@@ -185,12 +182,7 @@ export default {
       return item.merge_request?.source_branch || item.ref?.name || null;
     },
     showDuoWorkflowAction(item) {
-      return (
-        this.isFailed(item) &&
-        this.mergeRequestPath &&
-        this.currentBranch(item) &&
-        this.glFeatures.aiDuoAgentFixPipelineButton
-      );
+      return this.isFailed(item) && this.mergeRequestPath && this.currentBranch(item);
     },
     getAdditionalContext(item) {
       return [
@@ -212,6 +204,7 @@ export default {
   TBODY_TR_ATTR: {
     'data-testid': 'pipeline-table-row',
   },
+  FIX_PIPELINE_AGENT_PRIVILEGES,
 };
 </script>
 <template>
@@ -288,7 +281,7 @@ export default {
               :project-path="getProjectPath(item)"
               :goal="getPipelinePath(item)"
               :hover-message="__('Fix pipeline with Duo')"
-              :agent-privileges="agentPrivileges"
+              :agent-privileges="$options.FIX_PIPELINE_AGENT_PRIVILEGES"
               :source-branch="currentBranch(item)"
               :additional-context="getAdditionalContext(item)"
               workflow-definition="fix_pipeline/v1"

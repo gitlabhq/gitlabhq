@@ -19,7 +19,7 @@ export default {
     ),
     btnText: __('Configure pipeline'),
   },
-  inject: ['emptyStateIllustrationPath', 'usesExternalConfig'],
+  inject: ['emptyStateIllustrationPath', 'usesExternalConfig', 'newPipelinePath'],
   methods: {
     createEmptyConfigFile() {
       this.$emit('createEmptyConfigFile');
@@ -30,7 +30,7 @@ export default {
 <template>
   <div>
     <pipeline-editor-file-nav v-on="$listeners" />
-    <external-config-empty-state v-if="usesExternalConfig" />
+    <external-config-empty-state v-if="usesExternalConfig" :new-pipeline-path="newPipelinePath" />
 
     <gl-empty-state v-else :title="$options.i18n.title" :svg-path="emptyStateIllustrationPath">
       <template #description>

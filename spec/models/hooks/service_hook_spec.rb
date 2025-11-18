@@ -3,9 +3,11 @@
 require 'spec_helper'
 
 RSpec.describe ServiceHook, feature_category: :webhooks do
+  let_it_be(:project) { create(:project) }
+  let(:integration) { create(:integration, project: project) }
+  let(:hook) { build(:service_hook, integration: integration, project_id: project.id) }
+
   it_behaves_like 'a hook that does not get automatically disabled on failure' do
-    let(:integration) { build(:integration) }
-    let(:hook) { build(:service_hook) }
     let(:hook_factory) { :service_hook }
     let(:default_factory_arguments) { { integration: integration } }
 
@@ -20,8 +22,9 @@ RSpec.describe ServiceHook, feature_category: :webhooks do
   end
 
   describe '#destroy' do
+    let(:web_hook) { create(:service_hook, integration: integration, project_id: project.id) }
+
     it 'does not cascade to web_hook_logs' do
-      web_hook = create(:service_hook)
       create_list(:web_hook_log, 3, web_hook: web_hook)
 
       expect { web_hook.destroy! }.not_to change { web_hook.web_hook_logs.count }
@@ -33,7 +36,6 @@ RSpec.describe ServiceHook, feature_category: :webhooks do
   end
 
   describe 'execute' do
-    let(:hook) { build(:service_hook) }
     let(:data) { { key: 'value' } }
 
     it '#execute' do
@@ -46,12 +48,7 @@ RSpec.describe ServiceHook, feature_category: :webhooks do
   end
 
   describe '#parent' do
-    let(:hook) { build(:service_hook, integration: integration) }
-
     context 'with a project-level integration' do
-      let(:project) { build(:project) }
-      let(:integration) { build(:integration, project: project) }
-
       it 'returns the associated project' do
         expect(hook.parent).to eq(project)
       end
@@ -60,6 +57,7 @@ RSpec.describe ServiceHook, feature_category: :webhooks do
     context 'with a group-level integration' do
       let(:group) { build(:group) }
       let(:integration) { build(:integration, :group, group: group) }
+      let(:hook) { build(:service_hook, integration: integration) }
 
       it 'returns the associated group' do
         expect(hook.parent).to eq(group)

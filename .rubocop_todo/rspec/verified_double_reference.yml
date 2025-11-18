@@ -3,7 +3,6 @@
 RSpec/VerifiedDoubleReference:
   Exclude:
     - 'ee/spec/controllers/groups/analytics/productivity_analytics_controller_spec.rb'
-    - 'ee/spec/features/merge_request/user_sees_security_policy_rules_licence_compliance_spec.rb'
     - 'ee/spec/features/projects/google_cloud/artifact_registry_spec.rb'
     - 'ee/spec/features/projects/integrations/google_cloud_platform/user_activates_artifact_management_spec.rb'
     - 'ee/spec/helpers/groups/sso_helper_spec.rb'
@@ -81,10 +80,8 @@ RSpec/VerifiedDoubleReference:
     - 'qa/spec/service/shellout_spec.rb'
     - 'qa/spec/specs/allure_report_spec.rb'
     - 'qa/spec/specs/runner_spec.rb'
-    - 'qa/spec/support/formatters/test_metrics_formatter_spec.rb'
     - 'qa/spec/support/helpers/masker_spec.rb'
     - 'qa/spec/tools/ci/code_paths_mapping_spec.rb'
-    - 'qa/spec/tools/ci/test_metrics_spec.rb'
     - 'spec/benchmarks/banzai_benchmark.rb'
     - 'spec/commands/sidekiq_cluster/cli_spec.rb'
     - 'spec/components/pajamas/concerns/checkbox_radio_label_with_help_text_spec.rb'
@@ -177,7 +174,6 @@ RSpec/VerifiedDoubleReference:
     - 'spec/models/project_authorizations/changes_spec.rb'
     - 'spec/requests/api/graphql/mutations/ci/pipeline_schedule/play_spec.rb'
     - 'spec/requests/api/project_job_token_scope_spec.rb'
-    - 'spec/requests/api/search_spec.rb'
     - 'spec/scripts/cells/ci_ensure_application_settings_have_definition_file_spec.rb'
     - 'spec/scripts/pipeline_test_report_builder_spec.rb'
     - 'spec/serializers/pipeline_serializer_spec.rb'

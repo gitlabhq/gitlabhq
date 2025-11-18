@@ -39,16 +39,10 @@ require 'axe-rspec'
 
 require 'gitlab/rspec_flaky'
 
-rspec_profiling_is_configured =
-  ENV['RSPEC_PROFILING_POSTGRES_URL'].present? ||
-  ENV['RSPEC_PROFILING']
-branch_can_be_profiled =
-  (ENV['CI_COMMIT_REF_NAME'] == 'master' ||
-    ENV['CI_COMMIT_REF_NAME']&.include?('rspec-profile'))
+rspec_profiling_is_configured = ENV['RSPEC_PROFILING_POSTGRES_URL'].present? || ENV['RSPEC_PROFILING']
+branch_can_be_profiled = ENV['CI_COMMIT_REF_NAME'] == 'master' || ENV['CI_COMMIT_REF_NAME']&.include?('rspec-profile')
 
-if rspec_profiling_is_configured && (!ENV.key?('CI') || branch_can_be_profiled)
-  require 'rspec_profiling/rspec'
-end
+require 'rspec_profiling/rspec' if rspec_profiling_is_configured && (!ENV.key?('CI') || branch_can_be_profiled)
 
 Rainbow.enabled = false
 
@@ -156,6 +150,13 @@ RSpec.configure do |config|
 
   config.define_derived_metadata(file_path: %r{spec/dot_gitlab_ci/ci_configuration_validation/}) do |metadata|
     metadata[:ci_config_validation] = true
+  end
+
+  # Auto-include organization URL helpers for spec types that need organization-scoped paths
+  [:feature, :request, :controller].each do |spec_type|
+    config.define_derived_metadata(type: spec_type) do |metadata|
+      metadata[:with_organization_url_helpers] = true
+    end
   end
 
   config.include LicenseHelpers
@@ -283,6 +284,26 @@ RSpec.configure do |config|
     ::Ci::ApplicationRecord.reset_open_transactions_baseline
   end
 
+  # Cell is disabled on CI but enabled by default with GDK. This is also
+  # fully dependent on the local `config/gitlab.yml` which is not
+  # version controlled and can be changed by developers manually or
+  # via GDK configuration.
+  #
+  # Tests are mostly written with Cell disabled in mind, so here we're
+  # making sure it's disabled consistently for all tests. For tests that
+  # requiring Cell being enabled, we can do so in each individual tests.
+  config.before(:all) do
+    # We're not using `stub_config_cell` here because in before(:all),
+    # we cannot use stubs. We have to use `before(:all)` because
+    # `let_it_be` family uses `before(:all)` underneath, which runs
+    # before `before`, therefore to ensure `let_it_be` see our values,
+    # we have to do it in `before(:all)`.
+    # This is a partial implementation to freeze `gitlab.yml` for tests:
+    # https://gitlab.com/gitlab-com/gl-infra/tenant-scale/cells-infrastructure/team/-/issues/543#note_2866696304
+    # Tests should not rely on developers' own `gitlab.yml`
+    Gitlab.config.cell.enabled = false
+  end
+
   config.before do |example|
     if example.metadata.fetch(:stub_feature_flags, true)
       # The following can be removed when we remove the staged rollout strategy
@@ -343,10 +364,6 @@ RSpec.configure do |config|
       # Please see https://gitlab.com/groups/gitlab-org/-/epics/17482 for tracking the progress.
       stub_feature_flags(project_commits_refactor: false)
 
-      # New issue page can cause tests to fail if they link to issue or issue list page
-      # Default false while we make it compatible
-      stub_feature_flags(work_item_view_for_issues: false)
-
       # New approval rules cause tests to fail
       # Default false while we make them compatible
       stub_feature_flags(v2_approval_rules: false)
@@ -363,22 +380,6 @@ RSpec.configure do |config|
       # Opting out of Organizations is the exception.
       stub_feature_flags(opt_out_organizations: false)
 
-      # The `use_user_group_member_roles` feature flag controls whether member role preloaders
-      # fetch data from the `user_group_member_roles` table instead of using the
-      # existing query to fetch a user's custom permissions in groups/projects.
-      #
-      # When enabled:
-      #   - Preloaders::UserMemberRolesIn*Preloader modules use the `user_group_member_roles` table
-      #   - This table is populated by Authz::UserGroupMemberRoles::UpdateFor*GroupService when
-      #     users are assigned member roles
-      #
-      # When disabled:
-      #   - The preloaders fall back to their original query implementation
-      #
-      # For testing consistency, we default to the original query implementation in specs
-      # until the new implementation is fully validated and the feature flag is removed.
-      stub_feature_flags(use_user_group_member_roles: false)
-
       # Enabled only when debugging
       stub_feature_flags(track_struct_event_logger: false)
 
@@ -388,6 +389,20 @@ RSpec.configure do |config|
       # Using the new indexes causes many specs to fail on the group issues list when joining on project in the finder
       # Default to false, since switching the finders over is still a WIP
       stub_feature_flags(use_namespace_id_for_issue_and_work_item_finders: false)
+
+      # AutoFlow is disabled by default to prevent timing-dependent test failures.
+      # Enable explicitly in tests that need it.
+      stub_feature_flags(autoflow_enabled: false)
+
+      # Short lived feature flag to enable user-based rollout to internal users before main feature flag
+      # `work_item_planning_view` is rolled out. `work_item_planning_view` is disabled for specific specs, so stubbing
+      # out `work_items_consolidated_list_user` is an easy work around.
+      stub_feature_flags(work_items_consolidated_list_user: false)
+
+      stub_feature_flags(merge_widget_stop_polling: false)
+
+      # This feature has global impact and most tests aren't ready for it yet
+      stub_feature_flags(cells_unique_claims: false)
     else
       unstub_all_feature_flags
     end
@@ -492,6 +507,7 @@ RSpec.configure do |config|
       ).call(chain)
 
       chain.insert_after ::Gitlab::SidekiqMiddleware::RequestStoreMiddleware, IsolatedRequestStore
+      chain.insert_after ::Gitlab::SidekiqMiddleware::RequestStoreMiddleware, IsolatedCurrent
 
       example.run
     end
@@ -600,18 +616,20 @@ RSpec.configure do |config|
     allow_any_instance_of(UserPreference).to receive(:text_editor_type).and_return(0) # not_set
   end
 
-  # Labkit::CoveredExperience hooks
+  # Labkit::UserExperienceSli hooks
   config.around do |example|
-    Labkit::CoveredExperience.configure do |config|
+    Labkit::UserExperienceSli.configure do |config|
       # Ignore logs by default in tests
       config.logger = Labkit::Logging::JsonLogger.new("/dev/null")
     end
 
     example.run
 
-    Labkit::CoveredExperience::Current.reset
-    Labkit::CoveredExperience.reset_configuration
+    Labkit::UserExperienceSli::Current.reset
+    Labkit::UserExperienceSli.reset_configuration
   end
+
+  config.backtrace_exclusion_patterns << %r{lib/gitlab/database}
 end
 
 # Disabled because it's causing N+1 queries.

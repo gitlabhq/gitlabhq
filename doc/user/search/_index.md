@@ -94,7 +94,7 @@ To restrict `/search` to authenticated users only, do one of the following:
   for the project or group.
 - Restrict access in the **Admin** area:
 
-  1. On the left sidebar, at the bottom, select **Admin**.
+  1. On the left sidebar, at the bottom, select **Admin**. If you've [turned on the new navigation](../interface_redesign.md#turn-new-navigation-on-or-off), in the upper-right corner, select **Admin**.
   1. Select **Settings** > **Search**.
   1. Expand **Advanced search**.
   1. Clear the **Allow unauthenticated users to use search** checkbox.
@@ -102,7 +102,7 @@ To restrict `/search` to authenticated users only, do one of the following:
 
 To restrict global search to authenticated users only:
 
-1. On the left sidebar, at the bottom, select **Admin**.
+1. On the left sidebar, at the bottom, select **Admin**. If you've [turned on the new navigation](../interface_redesign.md#turn-new-navigation-on-or-off), in the upper-right corner, select **Admin**.
 1. Select **Settings** > **Search**.
 1. Expand **Visibility and access controls**
 1. Select the **Restrict global search to authenticated users only** checkbox.
@@ -133,7 +133,7 @@ All global search scopes are enabled by default on GitLab Self-Managed instances
 
 To disable one or more global search scopes:
 
-1. On the left sidebar, at the bottom, select **Admin**.
+1. On the left sidebar, at the bottom, select **Admin**. If you've [turned on the new navigation](../interface_redesign.md#turn-new-navigation-on-or-off), in the upper-right corner, select **Admin**.
 1. Select **Settings** > **Search**.
 1. Expand **Visibility and access controls**.
 1. Clear the checkboxes for the scopes you want to disable.
@@ -197,7 +197,7 @@ As you type in the search box, autocomplete suggestions are displayed for:
 
 To search in all GitLab:
 
-1. On the left sidebar, select **Search or go to**.
+1. On the left sidebar, select **Search or go to**. If you've [turned on the new navigation](../interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
 1. Type your search query. You must type at least two characters.
 1. Press <kbd>Enter</kbd> to search, or select from the list.
 
@@ -207,7 +207,7 @@ The results are displayed. To filter the results, on the left sidebar, select a 
 
 To search in a project:
 
-1. On the left sidebar, select **Search or go to** and find your project.
+1. On the left sidebar, select **Search or go to** and find your project. If you've [turned on the new navigation](../interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
 1. Select **Search or go to** again and type the string you want to search for.
 1. Press <kbd>Enter</kbd> to search, or select from the list.
 
@@ -249,7 +249,7 @@ To include archived projects in search results:
 
 To search for code in a project:
 
-1. On the left sidebar, select **Search or go to** and find your project.
+1. On the left sidebar, select **Search or go to** and find your project. If you've [turned on the new navigation](../interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
 1. Select **Search or go to** again and type the code you want to search for.
 1. Press <kbd>Enter</kbd> to search, or select from the list.
 
@@ -287,7 +287,7 @@ To filter code search results by one or more languages:
 
 To search for a commit SHA:
 
-1. On the left sidebar, select **Search or go to** and find your project.
+1. On the left sidebar, select **Search or go to** and find your project. If you've [turned on the new navigation](../interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
 1. Select **Search or go to** again and type the commit SHA you want to search for.
 1. Press <kbd>Enter</kbd> to search, or select from the list.
 

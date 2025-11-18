@@ -151,7 +151,7 @@ In GitLab 17.4 and later, follow these instructions to turn GitLab Duo on or off
 
 Prerequisites:
 
-- You must have the Owner role for the project.
+- You must have the Owner or Maintainer role for the project.
 
 To turn GitLab Duo on or off for a project:
 
@@ -198,7 +198,7 @@ Prerequisites:
 
 To turn GitLab Duo on or off for an instance:
 
-1. On the left sidebar, at the bottom, select **Admin area**.
+1. On the left sidebar, at the bottom, select **Admin**.
 1. Select **GitLab Duo**.
 1. Select **Change configuration**.
 1. Choose an option.
@@ -216,7 +216,7 @@ Prerequisites:
 
 To turn GitLab Duo on or off for an instance:
 
-1. On the left sidebar, at the bottom, select **Admin area**.
+1. On the left sidebar, at the bottom, select **Admin**.
 1. Select **Settings** > **General**.
 1. Expand **GitLab Duo features**.
 1. Choose an option.
@@ -234,7 +234,7 @@ Prerequisites:
 
 To turn GitLab Duo on or off for an instance:
 
-1. On the left sidebar, at the bottom, select **Admin**.
+1. On the left sidebar, at the bottom, select **Admin area**.
 1. Select **Settings** > **General**.
 1. Expand **AI-powered features**.
 1. Select or clear the **Use Duo features** checkbox.

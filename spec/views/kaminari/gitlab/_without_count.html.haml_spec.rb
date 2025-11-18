@@ -20,7 +20,7 @@ RSpec.describe 'kaminari/gitlab/_without_count', feature_category: :groups_and_p
     it 'renders prev link' do
       expect(rendered).to have_selector(
         'a[href="/prev"][data-event-tracking="foo_bar"][data-event-label="prev"]',
-        text: 'Prev'
+        text: 'Previous'
       )
     end
   end
@@ -31,7 +31,7 @@ RSpec.describe 'kaminari/gitlab/_without_count', feature_category: :groups_and_p
     it 'renders prev as disabled' do
       expect(rendered).to have_selector(
         'li[aria-disabled="true"]',
-        text: 'Prev'
+        text: 'Previous'
       )
     end
   end

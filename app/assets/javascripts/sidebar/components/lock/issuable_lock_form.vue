@@ -75,9 +75,6 @@ export default {
     isLocked() {
       return this.getNoteableData.discussion_locked;
     },
-    lockStatus() {
-      return this.isLocked ? this.$options.locked : this.$options.unlocked;
-    },
     lockToggleInProgressText() {
       return this.isLocked ? this.unlockingMergeRequestText : this.lockingMergeRequestText;
     },
@@ -155,9 +152,6 @@ export default {
         .finally(() => {
           this.isLoading = false;
         });
-    },
-    closeForm() {
-      this.isLockDialogOpen = false;
     },
   },
 };

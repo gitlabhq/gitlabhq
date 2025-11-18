@@ -44,7 +44,7 @@ Prerequisites:
 
 To view the runner fleet dashboard for groups:
 
-1. On the left sidebar, select **Search or go to** and find your group.
+1. On the left sidebar, select **Search or go to** and find your group. If you've [turned on the new navigation](../../user/interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
 1. Select **Build** > **Runners**.
 1. Select **Fleet dashboard**.
 

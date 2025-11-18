@@ -7,7 +7,7 @@ module BulkImports
 
       attr_reader :url
 
-      def initialize(url: Gitlab::Saas.com_url, token: nil)
+      def initialize(url: Gitlab.com_url, token: nil)
         @url = Gitlab::Utils.append_path(url, '/api/graphql')
         @token = token
       end

@@ -25,6 +25,15 @@ module ActiveContext
           create_collection_record(full_name, number_of_partitions, options)
         end
 
+        def drop_collection(name)
+          full_name = adapter.full_collection_name(name)
+          collection = adapter.connection.collections.find_by(name: full_name)
+          return unless collection
+
+          do_drop_collection(collection)
+          drop_collection_record(collection)
+        end
+
         private
 
         def create_collection_record(name, number_of_partitions, options)
@@ -36,7 +45,15 @@ module ActiveContext
           collection.save!
         end
 
+        def drop_collection_record(collection)
+          collection.destroy!
+        end
+
         def do_create_collection(...)
+          raise NotImplementedError
+        end
+
+        def do_drop_collection(...)
           raise NotImplementedError
         end
       end

@@ -176,5 +176,5 @@ export function findClosestMatchLine(lines, target) {
 }
 
 export function lineExists(lines, oldLineNumber, newLineNumber) {
-  return lines.some((line) => line.old_line === oldLineNumber && line.new_line === newLineNumber);
+  return lines.some((line) => line.new_line === newLineNumber || line.old_line === oldLineNumber);
 }

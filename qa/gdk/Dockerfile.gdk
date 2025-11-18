@@ -6,7 +6,7 @@ ARG RAILS_ENV=test
 ARG NODE_ENV=test
 ARG NODE_OPTIONS=--max-old-space-size=10240
 
-ARG GDK_SHA=bb37e0c30ef61da1d5f2d601f193050a1a7cdbcb
+ARG GDK_SHA=8ce54714a02bb568683fc2593d7ed130cab00bf3
 # Use tag prefix when running on 'stable' branch to make sure 'protected' image is used which is not deleted by registry cleanup
 ARG GDK_BASE_TAG_PREFIX
 
@@ -104,20 +104,34 @@ RUN make gitlab-topology-service-setup
 FROM base AS gitlab-http-router
 RUN make gitlab-http-router-setup
 
-# Build duo-next frontend island
+# Build frontend islands
 #
-FROM base AS frontend-duo-next
+FROM base AS frontend-islands
 
-WORKDIR ${GDK_DIR}/gitlab/ee/frontend_islands/apps/duo_next
+WORKDIR ${GDK_DIR}/gitlab/ee/frontend_islands
 
-COPY --chown=gdk:gdk ee/frontend_islands/apps/duo_next/package.json ./
-COPY --chown=gdk:gdk ee/frontend_islands/apps/duo_next/yarn.lock ./
+# Copy workspace root files
+COPY --chown=gdk:gdk ee/frontend_islands/package.json ./
+COPY --chown=gdk:gdk ee/frontend_islands/yarn.lock ./
 
+# Copy all apps and packages.
+COPY --chown=gdk:gdk ee/frontend_islands/apps/ ./apps/
+COPY --chown=gdk:gdk ee/frontend_islands/packages/ ./packages/
+
+# Install dependencies for entire workspace
 RUN yarn install --frozen-lockfile
 
-COPY --chown=gdk:gdk ee/frontend_islands/apps/duo_next/ ./
-
+# Build all apps
 RUN yarn build:prod
+
+# Collect dists using reliable shell commands (using absolute paths)
+# Preserve the dist directory structure that webpack expects
+RUN mkdir -p ${GDK_DIR}/gitlab/ee/frontend_islands/islands_dist && \
+    find apps -name "dist" -type d | while read dist_path; do \
+        app_name=$(echo "$dist_path" | cut -d'/' -f2); \
+        mkdir -p "${GDK_DIR}/gitlab/ee/frontend_islands/islands_dist/$app_name/dist" && \
+        cp -r "$dist_path/"* "${GDK_DIR}/gitlab/ee/frontend_islands/islands_dist/$app_name/dist/"; \
+    done
 
 # Compile frontend assets
 #
@@ -126,6 +140,7 @@ FROM gitlab-gems AS frontend-assets
 ARG RAILS_ENV
 ARG NODE_ENV
 ARG NODE_OPTIONS
+ARG BABEL_ENV
 # Assets hash file is always packaged together with assets in the cache archive and if it is present, it indicates cached assets are present as well
 ARG GLCI_GITLAB_ASSETS_HASH_FILE
 
@@ -134,12 +149,13 @@ ENV SKIP_FRONTEND_ISLANDS_BUILD=true
 WORKDIR ${GDK_DIR}/gitlab
 
 COPY --chown=gdk:gdk ./ ./
-COPY --from=frontend-duo-next --chown=gdk:gdk ${GDK_DIR}/gitlab/ee/frontend_islands/apps/duo_next/dist ./ee/frontend_islands/apps/duo_next/dist
+COPY --from=frontend-islands --chown=gdk:gdk ${GDK_DIR}/gitlab/ee/frontend_islands/islands_dist/ ./ee/frontend_islands/apps
 
 RUN --mount=type=bind,target=node_modules,source=${GDK_DIR}/gitlab/node_modules,from=gitlab-node-modules \
     cp config/gitlab.yml.example config/gitlab.yml; \
     cp config/database.yml.decomposed-postgresql config/database.yml; \
-    [ -s "${GLCI_GITLAB_ASSETS_HASH_FILE}" ] && echo "Cached assets found, skipping asset compilation!" || (echo "Compiling assets!" && bin/rake gitlab:assets:compile)
+    echo "BABEL_ENV value: '${BABEL_ENV}'"; \
+    [ "$BABEL_ENV" != "istanbul" ] && [ -s "${GLCI_GITLAB_ASSETS_HASH_FILE}" ] && echo "Cached assets found, skipping asset compilation!" || (echo "Compiling assets!" && bin/rake gitlab:assets:compile)
 
 # Build final image
 #
@@ -161,7 +177,7 @@ COPY --from=workhorse --chown=gdk:gdk ${GDK_DIR}/gitlab/workhorse ./gitlab/workh
 # https://gitlab.com/gitlab-org/gitlab-development-kit/-/issues/2802
 COPY --from=gitlab-topology-service --chown=gdk:gdk ${GDK_DIR}/gitlab-topology-service ./gitlab-topology-service
 # Copy compiled frontend assets and island apps
-COPY --from=frontend-assets --chown=gdk:gdk ${GDK_DIR}/gitlab/ee/frontend_islands/apps/duo_next/dist ./gitlab/ee/frontend_islands/apps/duo_next/dist
+COPY --from=frontend-islands --chown=gdk:gdk ${GDK_DIR}/gitlab/ee/frontend_islands/islands_dist/ ./gitlab/ee/frontend_islands/apps
 COPY --from=frontend-assets --chown=gdk:gdk ${GDK_DIR}/gitlab/public/assets ./gitlab/public/assets
 # Copy all mise tools, gems and node_modules for main rails app
 COPY --from=gitlab-node-modules --chown=gdk:gdk ${GDK_DIR}/gitlab/node_modules ./gitlab/node_modules/

@@ -194,7 +194,6 @@ RSpec.describe 'GitlabSchema configurations', feature_category: :integrations do
 
       expect(Gitlab::GraphqlLogger).to receive(:info).with(
         hash_including(
-          trace_type: 'execute_query',
           "query_analysis.duration_s" => 7,
           "query_analysis.complexity" => an_instance_of(Integer),
           "query_analysis.depth" => an_instance_of(Integer),

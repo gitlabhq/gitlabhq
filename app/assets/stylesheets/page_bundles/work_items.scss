@@ -234,7 +234,8 @@ $disclosure-hierarchy-chevron-dimension: 1.2rem;
     color: var(--gl-action-neutral-foreground-color-hover);
 
     &::after {
-      @apply gl-border-l-0 gl-border-r-0;
+      @apply gl-border-l-0;
+      @apply gl-border-r-0;
     }
   }
 
@@ -324,7 +325,8 @@ $disclosure-hierarchy-chevron-dimension: 1.2rem;
   container-name: work-item-design-widget;
 
   .work-item-design-grid {
-    @apply gl-grid gl-grid-cols-2;
+    @apply gl-grid;
+    @apply gl-grid-cols-2;
   }
 
   .design-list-item {
@@ -368,19 +370,24 @@ $disclosure-hierarchy-chevron-dimension: 1.2rem;
 
   @container work-item-sidebar (max-width: #{calc($work-item-overview-right-sidebar-width - 3rem)}) {
     .time-tracking-body {
-      @apply gl-flex-col gl-items-start;
+      @apply gl-flex-col;
+      @apply gl-items-start;
 
       .time-tracking-spent-and-progress {
-        @apply gl-flex-col-reverse gl-w-full gl-items-stretch;
+        @apply gl-flex-col-reverse;
+        @apply gl-w-full;
+        @apply gl-items-stretch;
 
         .time-tracking-progress {
-          @apply gl-mx-0 gl-my-2;
+          @apply gl-mx-0;
+          @apply gl-my-2;
         }
       }
     }
 
     .work-item-date-input {
-      @apply gl-flex-col gl-items-stretch;
+      @apply gl-flex-col;
+      @apply gl-items-stretch;
 
       .work-item-datepicker {
         @apply gl-max-w-full;
@@ -389,7 +396,8 @@ $disclosure-hierarchy-chevron-dimension: 1.2rem;
 
     // stylelint-disable-next-line gitlab/no-gl-class
     .work-item-sidebar-dropdown .gl-new-dropdown-panel {
-      @apply gl-min-w-0 gl-max-w-[calc(100%-1rem)] #{!important};
+      @apply gl-min-w-0 #{!important};
+      @apply gl-max-w-[calc(100%-1rem)] #{!important};
     }
   }
 }
@@ -462,7 +470,8 @@ $disclosure-hierarchy-chevron-dimension: 1.2rem;
 ul.content-list {
   .issue-clickable {
     a, span {
-      @apply gl-relative gl-z-2;
+      @apply gl-relative;
+      @apply gl-z-2;
     }
   }
 }
@@ -477,9 +486,4 @@ ul.content-list {
 
 .work-item-drawer [data-testid="work-item-detail"]:has(.issue-sticky-header) .flash-container.sticky {
   top: calc(var(--work-item-sticky-header-height, 3rem) + $gl-spacing-scale-3);
-}
-
-.work-item-bulk-edit-sidebar-wrapper {
-  /* 57px – bulk actions header height */
-  height: calc(var(--panel-content-inner-height, 100%) - 57px);
 }

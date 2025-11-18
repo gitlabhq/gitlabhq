@@ -145,6 +145,7 @@ export default {
       :class="computedLinkClasses"
       data-testid="menu-section-button"
       :data-qa-section-name="item.title"
+      :aria-label="item.title"
       v-bind="buttonProps"
       @click="handleClick"
       @pointerover="handlePointerover"
@@ -183,10 +184,10 @@ export default {
     />
 
     <gl-collapse
-      v-if="!isIconOnly"
       :id="itemId"
       v-model="isExpanded"
-      class="gl-m-0 gl-list-none gl-p-0 gl-duration-medium gl-ease-ease"
+      :class="{ 'gl-invisible gl-absolute': isIconOnly }"
+      class="gl-m-0 gl-list-none gl-p-0 gl-transition-[height] gl-duration-medium gl-ease-ease"
       data-testid="menu-section"
       :data-qa-section-name="item.title"
     >

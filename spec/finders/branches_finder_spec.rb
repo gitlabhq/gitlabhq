@@ -86,17 +86,6 @@ RSpec.describe BranchesFinder, feature_category: :source_code_management do
         end
       end
 
-      context 'by provided names' do
-        let(:params) { { names: %w[fix csv lfs does-not-exist] } }
-
-        it 'filters branches' do
-          result = subject
-
-          expect(result.count).to eq(3)
-          expect(result.map(&:name)).to eq(%w[csv fix lfs])
-        end
-      end
-
       context 'by name that begins with' do
         let(:params) { { search: '^feature_' } }
 
@@ -349,17 +338,6 @@ RSpec.describe BranchesFinder, feature_category: :source_code_management do
 
             expect(result.map(&:name)).to eq(%w[merge-test markdown])
           end
-        end
-      end
-
-      context 'pagination and names' do
-        let(:params) { { page_token: 'fix', per_page: 2, names: %w[fix csv lfs does-not-exist] } }
-
-        it 'falls back to default execute and ignore paginations' do
-          result = subject
-
-          expect(result.count).to eq(3)
-          expect(result.map(&:name)).to eq(%w[csv fix lfs])
         end
       end
 

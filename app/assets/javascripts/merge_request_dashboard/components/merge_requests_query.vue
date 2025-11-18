@@ -38,6 +38,15 @@ export default {
         }
       },
       result({ data, error }) {
+        if (
+          (this.retryCount === RETRY_COUNT &&
+            error?.networkError?.statusCode === HTTP_STATUS_SERVICE_UNAVAILABLE) ||
+          !error
+        ) {
+          this.loadedCount += 1;
+          this.loading = false;
+        }
+
         if (this.fromSubscription) {
           this.newMergeRequestIds = data?.currentUser?.mergeRequests?.nodes.reduce(
             (acc, mergeRequest) => {
@@ -53,46 +62,51 @@ export default {
         } else {
           this.updateCurrentMergeRequestIds();
 
-          if (!data?.currentUser?.mergeRequests?.pageInfo?.hasNextPage && window.gon.dot_com) {
-            const countWatcher = this.$watch(
-              'count',
-              () => {
-                if (this.count !== null) {
-                  if (this.count > this.mergeRequests?.nodes?.length) {
-                    // eslint-disable-next-line @gitlab/require-i18n-strings
-                    Sentry.captureException(new Error('Count mismatch - possible SAML issue'), {
-                      level: 'debug',
-                      tags: {
-                        samlBannerVisible: Boolean(
-                          document.querySelector('.js-saml-reauth-notice'),
-                        ).toString(),
-                        gitlabTeamMember: [...document.querySelectorAll('.js-saml-reauth-notice a')]
-                          .some((el) => el.innerText === 'gitlab-com')
-                          .toString(),
-                      },
-                      extra: {
-                        error,
-                        count: this.count,
-                        mergeRequestsCount: this.mergeRequests?.nodes?.length,
-                      },
-                    });
+          if (
+            !data?.currentUser?.mergeRequests?.pageInfo?.hasNextPage &&
+            this.loadedCount === 1 &&
+            window.gon.dot_com
+          ) {
+            const initialMergeRequestsLength = data?.currentUser?.mergeRequests?.nodes?.length;
+
+            this.$nextTick(() => {
+              const countWatcher = this.$watch(
+                'count',
+                () => {
+                  if (this.count !== null) {
+                    if (
+                      initialMergeRequestsLength !== null &&
+                      this.count > initialMergeRequestsLength &&
+                      this.loadedCount === 1
+                    ) {
+                      // eslint-disable-next-line @gitlab/require-i18n-strings
+                      Sentry.captureException(new Error('Count mismatch - possible SAML issue'), {
+                        level: 'debug',
+                        tags: {
+                          samlBannerVisible: Boolean(
+                            document.querySelector('.js-saml-reauth-notice'),
+                          ).toString(),
+                          gitlabTeamMember: [
+                            ...document.querySelectorAll('.js-saml-reauth-notice a'),
+                          ]
+                            .some((el) => el.innerText === 'gitlab-com')
+                            .toString(),
+                        },
+                        extra: {
+                          error,
+                          count: this.count,
+                          mergeRequestsCount: initialMergeRequestsLength,
+                        },
+                      });
+                    }
+
+                    this.$nextTick(() => countWatcher());
                   }
-
-                  this.$nextTick(() => countWatcher());
-                }
-              },
-              { immediate: true },
-            );
+                },
+                { immediate: true },
+              );
+            });
           }
-        }
-
-        if (
-          (this.retryCount === RETRY_COUNT &&
-            error?.networkError?.statusCode === HTTP_STATUS_SERVICE_UNAVAILABLE) ||
-          !error
-        ) {
-          this.loadedCount += 1;
-          this.loading = false;
         }
       },
     },
@@ -101,7 +115,7 @@ export default {
         return QUERIES[this.query].countQuery;
       },
       update(d) {
-        return d.currentUser?.mergeRequests?.count ?? 0;
+        return d.currentUser?.mergeRequests?.count ?? null;
       },
       variables() {
         return this.mergeRequestQueryVariables;

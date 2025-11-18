@@ -37,12 +37,18 @@ module Types
 
           def user
             Gitlab::Graphql::Loaders::BatchModelLoader.new(
-              User, object.user_id, default_value: ::Users::Internal.ghost
+              User, object.user_id, default_value: default_ghost
             ).find
           end
 
           def spent_at
             object.spent_at || object.created_at
+          end
+
+          private
+
+          def default_ghost
+            ::Users::Internal.for_organization(object.project&.organization_id).ghost
           end
         end
         # rubocop:enable Graphql/AuthorizeTypes

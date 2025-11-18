@@ -38,6 +38,14 @@ module API
             job.project.ci_outbound_job_token_scope_enabled?
           end
         end
+
+        def presented
+          # Prevents gitaly N+1 by triggering the Commit.lazy batch loader for
+          # each job before any of them is serialized.
+          object&.commit
+
+          super
+        end
       end
     end
   end

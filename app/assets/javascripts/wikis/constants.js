@@ -15,3 +15,9 @@ export const WIKI_NOTES_SORT_ORDER = {
 export const WIKI_NOTES_DEFAULT_SORT_ORDER = WIKI_NOTES_SORT_ORDER.CREATED_ASC;
 
 export const WIKI_SORT_ORDER_STORAGE_KEY = 'sort_direction_wiki';
+
+export const WIKI_RESTORE_VERSION_TRACKING_LABEL = 'wiki_restore_version';
+
+export const WIKI_RESTORE_VERSION_ACTION = 'wiki_restore_version_initiated';
+
+export const WIKI_RESTORE_VERSION_LABEL = 'wiki_restore_version_label';

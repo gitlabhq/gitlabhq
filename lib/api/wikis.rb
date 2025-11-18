@@ -2,9 +2,15 @@
 
 module API
   class Wikis < ::API::Base
+    include APIGuard
+
     helpers ::API::Helpers::WikisHelpers
 
     feature_category :wiki
+
+    allow_access_with_scope :ai_workflows, if: ->(request) do
+      request.get? || request.head? || request.post? || request.put?
+    end
 
     helpers do
       attr_reader :container
@@ -21,6 +27,10 @@ module API
     WIKI_ENDPOINT_REQUIREMENTS = API::NAMESPACE_OR_PROJECT_REQUIREMENTS.merge(slug: API::NO_SLASH_URL_PART_REGEX)
 
     ::API::Helpers::WikisHelpers.wiki_resource_kinds.each do |container_resource|
+      boundary_type = case container_resource
+                      when :groups then :group
+                      when :projects then :project
+                      end
       resource container_resource, requirements: WIKI_ENDPOINT_REQUIREMENTS do
         after_validation do
           @container = Gitlab::Lazy.new { find_container(container_resource) }
@@ -37,6 +47,7 @@ module API
         params do
           optional :with_content, type: Boolean, default: false, desc: "Include pages' content"
         end
+        route_setting :authorization, permissions: :read_wiki, boundary_type: boundary_type
         get ':id/wikis', urgency: :low do
           authorize! :read_wiki, container
 
@@ -62,6 +73,8 @@ module API
           optional :version, type: String, desc: 'The version hash of a wiki page'
           optional :render_html, type: Boolean, default: false, desc: 'Render content to HTML'
         end
+
+        route_setting :authorization, permissions: :read_wiki, boundary_type: boundary_type
         get ':id/wikis/:slug', requirements: { slug: /.+/ }, urgency: :low do
           authorize! :read_wiki, container
 
@@ -91,6 +104,8 @@ module API
           requires :content, type: String, desc: 'Content of a wiki page'
           use :common_wiki_page_params
         end
+
+        route_setting :authorization, permissions: :create_wiki, boundary_type: boundary_type
         post ':id/wikis' do
           authorize! :create_wiki, container
 
@@ -122,6 +137,8 @@ module API
           use :common_wiki_page_params
           at_least_one_of :content, :title, :format
         end
+
+        route_setting :authorization, permissions: :update_wiki, boundary_type: boundary_type
         put ':id/wikis/:slug', requirements: { slug: /.+/ } do
           authorize! :create_wiki, container
 
@@ -148,6 +165,8 @@ module API
         params do
           requires :slug, type: String, desc: 'The slug of a wiki page'
         end
+
+        route_setting :authorization, permissions: :delete_wiki, boundary_type: boundary_type
         delete ':id/wikis/:slug', requirements: { slug: /.+/ } do
           authorize! :admin_wiki, container
 
@@ -174,6 +193,8 @@ module API
           requires :file, types: [Rack::Multipart::UploadedFile, ::API::Validations::Types::WorkhorseFile], desc: 'The attachment file to be uploaded', documentation: { type: 'file' }
           optional :branch, type: String, desc: 'The name of the branch'
         end
+
+        route_setting :authorization, permissions: :upload_wiki_attachment, boundary_type: boundary_type
         post ":id/wikis/attachments" do
           authorize! :create_wiki, container
 

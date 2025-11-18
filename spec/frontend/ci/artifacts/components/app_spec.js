@@ -1,6 +1,6 @@
 import { GlSkeletonLoader } from '@gitlab/ui';
 import VueApollo from 'vue-apollo';
-import Vue from 'vue';
+import Vue, { nextTick } from 'vue';
 import { numberToHumanSize } from '~/lib/utils/number_utils';
 import ArtifactsApp from '~/ci/artifacts/components/app.vue';
 import JobArtifactsTable from '~/ci/artifacts/components/job_artifacts_table.vue';
@@ -9,7 +9,12 @@ import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import createMockApollo from 'helpers/mock_apollo_helper';
 import waitForPromises from 'helpers/wait_for_promises';
 import PageHeading from '~/vue_shared/components/page_heading.vue';
-import { PAGE_TITLE, TOTAL_ARTIFACTS_SIZE, SIZE_UNKNOWN } from '~/ci/artifacts/constants';
+import {
+  PAGE_TITLE,
+  TOTAL_ARTIFACTS_SIZE,
+  TOTAL_ARTIFACTS_COUNT,
+  SIZE_UNKNOWN,
+} from '~/ci/artifacts/constants';
 
 const TEST_BUILD_ARTIFACTS_SIZE = 1024;
 const TEST_PROJECT_PATH = 'project/path';
@@ -114,9 +119,32 @@ describe('ArtifactsApp component', () => {
 
       it('shows the size', () => {
         expect(findBuildArtifactsSize().text()).toMatchInterpolatedText(
-          `${TOTAL_ARTIFACTS_SIZE} ${expectedText}`,
+          `${TOTAL_ARTIFACTS_SIZE} ${expectedText} ${TOTAL_ARTIFACTS_COUNT} 0`,
         );
       });
     },
   );
+
+  describe('handleArtifactCountUpdate', () => {
+    beforeEach(async () => {
+      getBuildArtifactsSizeSpy.mockResolvedValue(
+        createBuildArtifactsSizeResponse({ buildArtifactsSize: TEST_BUILD_ARTIFACTS_SIZE }),
+      );
+
+      apolloProvider = createMockApollo([[getBuildArtifactsSizeQuery, getBuildArtifactsSizeSpy]]);
+
+      createComponent();
+
+      await waitForPromises(); // wait for Apollo query to resolve
+    });
+
+    it('updates totalArtifactCount with the given count', async () => {
+      const count = 42;
+
+      findJobArtifactsTable().vm.$emit('artifact-count-update', count);
+      await nextTick();
+
+      expect(findBuildArtifactsSize().text()).toContain(String(count));
+    });
+  });
 });

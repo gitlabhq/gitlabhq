@@ -1,1 +1,10 @@
-= render Pajamas::BadgeComponent.new(s_('CiCatalog|CI/CD Catalog project'), variant: 'info', icon: 'catalog-checkmark', class: css_class, href: href)
+- is_published = local_assigns.fetch(:is_published, false)
+
+- if is_published
+  = render Pajamas::BadgeComponent.new(s_('CiCatalog|CI/CD Catalog'), variant: 'info', icon: 'catalog-checkmark', class: css_class, href: href)
+- else
+  - popover_title = s_('CiCatalog|Catalog project (unpublished)')
+  - tag_pair_docs = tag_pair(link_to('', help_page_path('ci/components/_index.md', anchor: 'publish-a-new-release'), target: '_blank', rel: 'noopener noreferrer', class: 'gl-block gl-mt-3'), :linkStart, :linkEnd)
+  - popover_content = safe_format(s_('CiCatalog|This project is set as a Catalog project, but has not yet been published. Publish this project to the Catalog to make it available. %{linkStart}Learn how to publish a new release%{linkEnd}'), tag_pair_docs)
+  - popover_data = { container: 'body', toggle: 'popover', html: 'true', triggers: 'hover', title: popover_title, content: popover_content }
+  = render Pajamas::BadgeComponent.new(s_('CiCatalog|CI/CD Catalog (unpublished)'), variant: 'warning', icon: 'catalog-checkmark', class: css_class, data: popover_data )

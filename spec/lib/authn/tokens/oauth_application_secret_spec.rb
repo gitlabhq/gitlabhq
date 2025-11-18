@@ -22,6 +22,22 @@ RSpec.describe Authn::Tokens::OauthApplicationSecret, feature_category: :system_
 
     it_behaves_like 'contains instance prefix when enabled'
 
+    context 'with default instance prefix' do
+      let_it_be(:instance_prefix) { 'instanceprefix' }
+
+      before do
+        stub_application_setting(instance_token_prefix: instance_prefix)
+      end
+
+      it 'does match on instance wide prefix with OAuthApplicationSecret prefix' do
+        expect(described_class.prefix?("#{instance_prefix}-gloas")).to be_truthy
+      end
+
+      it 'does not return true if only the instance wide prefix matches' do
+        expect(described_class.prefix?("#{instance_prefix}-glother")).to be_falsey
+      end
+    end
+
     describe '#revoke!', :enable_admin_mode do
       subject(:revoke) { described_class.new(plaintext, :api_admin_token).revoke!(current_user) }
 

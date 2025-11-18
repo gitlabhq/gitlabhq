@@ -2,7 +2,7 @@
 Style/OpenStructUse:
   Exclude:
     - 'ee/spec/features/projects/new_project_spec.rb'
-    - 'ee/spec/finders/template_finder_spec.rb'
+    - 'ee/spec/finders/ee/template_finder_spec.rb'
     - 'ee/spec/helpers/ee/blob_helper_spec.rb'
     - 'ee/spec/lib/gitlab/auth/group_saml/failure_handler_spec.rb'
     - 'spec/helpers/profiles_helper_spec.rb'

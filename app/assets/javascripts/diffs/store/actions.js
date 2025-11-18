@@ -1,10 +1,6 @@
 import Vue from 'vue';
-import {
-  setCookie,
-  handleLocationHash,
-  historyPushState,
-  scrollToElement,
-} from '~/lib/utils/common_utils';
+import { setCookie, handleLocationHash, historyPushState } from '~/lib/utils/common_utils';
+import { scrollToElement } from '~/lib/utils/scroll_utils';
 import { createAlert, VARIANT_WARNING } from '~/alert';
 import axios from '~/lib/utils/axios_utils';
 
@@ -689,7 +685,7 @@ export const goToFile = ({ state, commit, dispatch, getters }, { path }) => {
     const newUrl = new URL(window.location);
     newUrl.hash = fileHash;
     historyPushState(newUrl, { skipScrolling: true });
-    scrollToElement('.diff-files-holder', { duration: 0 });
+    scrollToElement('.diff-files-holder', { behavior: 'auto' });
 
     if (!getters.isTreePathLoaded(path)) {
       dispatch('fetchFileByFile');

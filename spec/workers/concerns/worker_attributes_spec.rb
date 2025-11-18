@@ -490,16 +490,6 @@ RSpec.describe WorkerAttributes, feature_category: :shared do
           expect(get_concurrency_limit).to eq(0)
         end
       end
-
-      context 'when use_max_concurrency_limit_percentage_as_default_limit FF is disabled' do
-        before do
-          stub_feature_flags(use_max_concurrency_limit_percentage_as_default_limit: false)
-        end
-
-        it 'returns 0' do
-          expect(get_concurrency_limit).to eq(0)
-        end
-      end
     end
   end
 end

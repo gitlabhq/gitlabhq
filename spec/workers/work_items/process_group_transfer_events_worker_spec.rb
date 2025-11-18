@@ -22,7 +22,7 @@ RSpec.describe WorkItems::ProcessGroupTransferEventsWorker, feature_category: :p
   end
 
   it 'has a concurrency limit' do
-    expect(::Gitlab::SidekiqMiddleware::ConcurrencyLimit::WorkersMap.limit_for(worker: described_class)).to eq(200)
+    expect(described_class.get_concurrency_limit).to eq(200)
   end
 
   describe ".handles_event?" do

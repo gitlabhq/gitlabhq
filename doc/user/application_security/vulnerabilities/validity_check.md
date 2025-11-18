@@ -7,10 +7,9 @@ title: Validity checks
 
 {{< details >}}
 
-Status: Beta
-
 - Tier: Ultimate
-- Offering: GitLab.com
+- Offering: GitLab.com, GitLab Self-Managed
+- Status: Beta
 
 {{< /details >}}
 
@@ -18,6 +17,7 @@ Status: Beta
 
 - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/520923) in GitLab 18.0 [with a flag](../../../api/feature_flags.md) named `validity_checks`. Disabled by default.
 - Additional access [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/556765) in GitLab 18.2 with a flag named `validity_checks_security_finding_status`. Disabled by default.
+- [Enabled on GitLab.com](https://gitlab.com/gitlab-org/gitlab/-/issues/531222) in GitLab 18.5.
 - [Changed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/206929) from experiment to beta in GitLab 18.5.
 
 {{< /history >}}
@@ -26,7 +26,6 @@ Status: Beta
 
 The availability of this feature is controlled by a feature flag.
 For more information, see the history.
-This feature is available for testing, but not ready for production use.
 
 {{< /alert >}}
 
@@ -50,7 +49,7 @@ Prerequisites:
 
 To enable validity checks for a project:
 
-1. On the left sidebar, select **Search or go to** and find your project.
+1. On the left sidebar, select **Search or go to** and find your project. If you've [turned on the new navigation](../../interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
 1. Select **Secure** > **Security configuration**.
 1. Under **Pipeline Secret Detection**, turn on the **Validity checks** toggle.
 
@@ -111,7 +110,6 @@ flowchart TD
 
 The availability of this feature is controlled by a feature flag.
 For more information, see the history.
-This feature is available for testing, but not ready for production use.
 
 {{< /alert >}}
 

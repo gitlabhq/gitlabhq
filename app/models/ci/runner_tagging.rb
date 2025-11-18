@@ -9,7 +9,6 @@ module Ci
     self.table_name = :ci_runner_taggings
     self.primary_key = :id
 
-    ignore_column :sharding_key_id, remove_with: '18.6', remove_after: '2025-10-22'
     ignore_column :name, remove_with: '18.7', remove_after: '2025-11-20'
 
     query_constraints :runner_id, :runner_type
@@ -25,7 +24,7 @@ module Ci
     belongs_to :tag, class_name: 'Ci::Tag', optional: false
 
     validates :runner_type, presence: true
-    validates :tag_name, presence: true, length: { maximum: MAX_NAME_LENGTH }, on: [:create, :update]
+    validates :tag_name, presence: true, length: { maximum: MAX_NAME_LENGTH }
     validates :organization_id, presence: true, on: [:create, :update], unless: :instance_type?
 
     validate :no_organization_id, if: :instance_type?

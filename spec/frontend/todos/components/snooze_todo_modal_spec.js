@@ -56,7 +56,7 @@ describe('SnoozeTodoModal', () => {
   };
 
   it('renders the time and date inputs', () => {
-    createComponent();
+    createComponent({ mountFn: mountExtended });
 
     expect(findTimeInput().exists()).toBe(true);
     expect(findDateInput().exists()).toBe(true);
@@ -69,7 +69,7 @@ describe('SnoozeTodoModal', () => {
   });
 
   it('shows an error message if the selected date and time are in the past', async () => {
-    createComponent();
+    createComponent({ mountFn: mountExtended });
     await setTime('13:24');
     await setDate('2024-12-18');
 
@@ -117,7 +117,7 @@ describe('SnoozeTodoModal', () => {
   });
 
   it('triggers the snooze mutation and tracks an event when submitting the form', async () => {
-    createComponent();
+    createComponent({ mountFn: mountExtended });
     const trackingSpy = mockTracking(undefined, wrapper.element, jest.spyOn);
     const time = '15:00';
     const date = '2025-01-01';

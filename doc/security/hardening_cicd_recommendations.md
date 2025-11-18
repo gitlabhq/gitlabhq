@@ -17,8 +17,8 @@ images or external code repositories. If you are using it for Infrastructure
 as Code (IaC), you often need to store credentials for external systems to
 automate deployment. For these and many other scenarios, you need to store
 potentially sensitive information to be used during CI/CD operations. As the
-individual scenarios themselves are numerous, we have summarized some basic
-information to help harden the CI/CD process.
+individual scenarios themselves are numerous, some basic information is
+summarized to help harden the CI/CD process.
 
 The general guidance is to:
 

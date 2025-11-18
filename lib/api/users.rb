@@ -66,7 +66,7 @@ module API
           optional :discord, type: String, desc: 'The Discord user ID'
           optional :website_url, type: String, desc: 'The website of the user'
           optional :github, type: String, desc: 'The GitHub username'
-          optional :organization, type: String, desc: 'The organization of the user'
+          optional :organization, type: String, desc: 'The organization of the user. Empty string or nil clears the field.'
           optional :projects_limit, type: Integer, desc: 'The number of projects a user can create'
           optional :extern_uid, type: String, desc: 'The external authentication provider UID'
           optional :provider, type: String, desc: 'The external provider'
@@ -229,7 +229,7 @@ module API
         entity = current_user&.can_read_all_resources? ? Entities::UserWithAdmin : Entities::UserBasic
 
         if entity == Entities::UserWithAdmin
-          users = users.preload(:identities, :webauthn_registrations, :namespace, :followers, :followees, :user_preference, :user_detail)
+          users = users.preload(:identities, :second_factor_webauthn_registrations, :namespace, :followers, :followees, :user_preference, :user_detail)
         end
 
         users, options = with_custom_attributes(users, { with: entity, current_user: current_user })
@@ -445,7 +445,7 @@ module API
           user_params[:password_expires_at] = Time.current if admin_making_changes_for_another_user
         end
 
-        user_params[:user_detail_organization] = user_params.delete(:organization) if user_params[:organization]
+        user_params[:user_detail_organization] = user_params.delete(:organization) if user_params.key?(:organization)
 
         result = ::Users::UpdateService.new(current_user, user_params.merge(user: user)).execute do |user|
           user.send_only_admin_changed_your_password_notification! if admin_making_changes_for_another_user
@@ -547,7 +547,7 @@ module API
         user = User.find_by(id: params.delete(:user_id))
         not_found!('User') unless user
 
-        key = ::Keys::CreateService.new(current_user, declared_params(include_missing: false).merge(user: user)).execute
+        key = ::Keys::CreateService.new(current_user, declared_params(include_missing: false).merge(user: user, organization: Current.organization)).execute
 
         if key.persisted?
           present key, with: Entities::SSHKey

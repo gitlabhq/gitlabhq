@@ -1,9 +1,0 @@
----
-name: activity_stream_graphql
-feature_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/514804
-introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/183872
-rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/524717
-milestone: '17.10'
-group: group::personal productivity
-type: beta
-default_enabled: false

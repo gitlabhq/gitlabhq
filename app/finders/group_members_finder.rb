@@ -96,6 +96,12 @@ class GroupMembersFinder < UnionFinder
     members_of_groups(groups).non_minimal_access
   end
 
+  def shared_members(shared_from_groups)
+    [
+      GroupMember.non_request.of_groups(shared_from_groups).shared_members(group)
+    ]
+  end
+
   def members_of_groups(groups)
     groups_except_from_sharing = groups.except(:shared_from_groups).values
     groups_as_union = find_union(groups_except_from_sharing, Group)
@@ -107,10 +113,8 @@ class GroupMembersFinder < UnionFinder
     # We limit the `access_level` of the shared members to the access levels of the `group_group_links` created
     # with the group or its ancestors because the shared members cannot have access greater than the `group_group_links`
     # with itself or its ancestors.
-    shared_members = GroupMember.non_request.of_groups(shared_from_groups)
-                                .with_group_group_sharing_access(group)
-    # `members` and `shared_members` should have even select values
-    find_union([members.select(Member.column_names), shared_members], GroupMember)
+
+    find_union([members.select(Member.column_names), *shared_members(shared_from_groups)], GroupMember)
   end
 
   def check_relation_arguments!(include_relations)

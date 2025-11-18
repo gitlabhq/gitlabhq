@@ -146,7 +146,7 @@ inconsistent. Instead, use a remote storage resource.
    [initialized for CI/CD](#initialize-an-opentofu-state-as-a-backend-by-using-gitlab-cicd).
 1. Copy a pre-populated OpenTofu `init` command:
 
-   1. On the left sidebar, select **Search or go to** and find your project.
+   1. On the left sidebar, select **Search or go to** and find your project. If you've [turned on the new navigation](../../interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
    1. Select **Operate** > **Terraform states**.
    1. Next to the environment you want to use, select **Actions**
       ({{< icon name="ellipsis_v" >}}) and select **Copy Terraform init command**.
@@ -364,7 +364,7 @@ To read the OpenTofu state in the target project, you need at least the Develope
 
 To view OpenTofu state files:
 
-1. On the left sidebar, select **Search or go to** and find your project.
+1. On the left sidebar, select **Search or go to** and find your project. If you've [turned on the new navigation](../../interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
 1. Select **Operate** > **Terraform states**.
 
 [An epic exists](https://gitlab.com/groups/gitlab-org/-/epics/4563) to track improvements to this UI.
@@ -393,7 +393,7 @@ glab opentofu state download <your_state_name> <version_serial_number>
 {{< tab title="Manually with curl" >}}
 
 ```shell
-curl --header "Private-Token: <your_access_token>" \
+curl --header "PRIVATE-TOKEN: <your_access_token>" \
      --url "https://gitlab.example.com/api/v4/projects/<your_project_id>/terraform/state/<your_state_name>/versions/<version_serial_number>"
 ```
 
@@ -416,7 +416,7 @@ glab opentofu state delete <your_state_name> <version_serial_number>
 {{< tab title="Manually with curl" >}}
 
 ```shell
-curl --request DELETE --header "Private-Token: <your_access_token>" \
+curl --request DELETE --header "PRIVATE-TOKEN: <your_access_token>" \
      --url "https://gitlab.example.com/api/v4/projects/<your_project_id>/terraform/state/<your_state_name>/versions/<version_serial_number>"
 ```
 
@@ -443,7 +443,7 @@ glab opentofu state delete <your_state_name>
 {{< tab title="Manually with curl" >}}
 
 ```shell
-curl --request DELETE --header "Private-Token: <your_access_token>" \
+curl --request DELETE --header "PRIVATE-TOKEN: <your_access_token>" \
      --url "https://gitlab.example.com/api/v4/projects/<your_project_id>/terraform/state/<your_state_name>"
 ```
 
@@ -463,7 +463,7 @@ You can also use [the GraphQL API](../../../api/graphql/reference/_index.md#muta
 To remove a state file using the UI:
 
 1. On the left sidebar, select **Operate** > **Terraform states**.
-1. In the **Actions** column, select **Actions ({{< icon name="ellipsis_v" >}}) > Remove state file and versions**.
+1. In the **Actions** column, select **Actions** ({{< icon name="ellipsis_v" >}}) > **Remove state file and versions**.
 
 {{< /tab >}}
 
@@ -493,11 +493,11 @@ glab opentofu state unlock <your_state_name>
 
 ```shell
 # Lock a state file
-curl --request POST --header "Private-Token: <your_access_token>" \
+curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" \
      --url "https://gitlab.example.com/api/v4/projects/<your_project_id>/terraform/state/<your_state_name>/lock"
 
 # Unlock a state file
-curl --request DELETE --header "Private-Token: <your_access_token>" \
+curl --request DELETE --header "PRIVATE-TOKEN: <your_access_token>" \
      --url "https://gitlab.example.com/api/v4/projects/<your_project_id>/terraform/state/<your_state_name>/lock"
 ```
 
@@ -508,7 +508,7 @@ curl --request DELETE --header "Private-Token: <your_access_token>" \
 To lock or unlock a state file using the UI:
 
 1. On the left sidebar, select **Operate** > **Terraform states**.
-1. In the **Actions** column, select **Actions ({{< icon name="ellipsis_v" >}}) > Lock** to lock or **Actions ({{< icon name="ellipsis_v" >}}) > Unlock**.
+1. In the **Actions** column, select **Actions** ({{< icon name="ellipsis_v" >}}) > **Lock** to lock or **Actions** ({{< icon name="ellipsis_v" >}}) > **Unlock**.
 
 {{< /tab >}}
 
@@ -538,11 +538,11 @@ glab opentofu state download <your_state_name> <your_serial>
 
 ```shell
 # Download the latest state
-curl --header "Private-Token: <your_access_token>" \
+curl --header "PRIVATE-TOKEN: <your_access_token>" \
      --url "https://gitlab.example.com/api/v4/projects/<your_project_id>/terraform/state/<your_state_name>"
 
 # Download a specific version (serial) of a state
-curl --header "Private-Token: <your_access_token>" \
+curl --header "PRIVATE-TOKEN: <your_access_token>" \
      --url "https://gitlab.example.com/api/v4/projects/<your_project_id>/terraform/state/<your_state_name>/versions/<version_serial_number>"
 ```
 
@@ -553,7 +553,7 @@ curl --header "Private-Token: <your_access_token>" \
 To download the latest state file using the UI:
 
 1. On the left sidebar, select **Operate** > **Terraform states**.
-1. In the **Actions** column, select **Actions ({{< icon name="ellipsis_v" >}}) > Download JSON**.
+1. In the **Actions** column, select **Actions** ({{< icon name="ellipsis_v" >}}) > **Download JSON**.
 
 There is no way to download a specific version of the state using the UI.
 

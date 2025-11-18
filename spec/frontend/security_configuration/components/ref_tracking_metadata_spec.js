@@ -1,0 +1,141 @@
+import { GlBadge, GlIcon, GlLink } from '@gitlab/ui';
+import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
+import RefTrackingMetadata from '~/security_configuration/components/ref_tracking_metadata.vue';
+import ProtectedBadge from '~/vue_shared/components/badges/protected_badge.vue';
+import TimeAgoTooltip from '~/vue_shared/components/time_ago_tooltip.vue';
+import { createTrackedRef } from '../mock_data';
+
+describe('RefTrackingMetadata component', () => {
+  let wrapper;
+
+  const createComponent = ({ trackedRef = createTrackedRef(), disableCommitLink = false } = {}) => {
+    wrapper = shallowMountExtended(RefTrackingMetadata, {
+      propsData: {
+        trackedRef,
+        disableCommitLink,
+      },
+    });
+  };
+
+  const findRefName = () => wrapper.findByTestId('ref-name');
+  const findDefaultBadge = () => wrapper.findComponent(GlBadge);
+  const findProtectedBadge = () => wrapper.findComponent(ProtectedBadge);
+  const findRefTypeIcon = () => wrapper.findByTestId('ref-type').findComponent(GlIcon);
+  const findRefTypeText = () => wrapper.findByTestId('ref-type').find('span');
+  const findCommitShortId = () => wrapper.findByTestId('commit-short-id');
+  const findCommitIcon = () => findCommitShortId().findComponent(GlIcon);
+  const findCommitLink = () => findCommitShortId().findComponent(GlLink);
+  const findCommitText = () => findCommitShortId().find('span');
+  const findCommitTitle = () => wrapper.findByTestId('commit-title');
+  const findTimeAgoTooltip = () => wrapper.findComponent(TimeAgoTooltip);
+
+  describe('rendering ref name and badges', () => {
+    it('renders the ref name correctly', () => {
+      createComponent();
+
+      expect(findRefName().text()).toBe(createTrackedRef().name);
+    });
+
+    it('shows default badge when isDefault is true', () => {
+      createComponent({ trackedRef: createTrackedRef({ isDefault: true }) });
+
+      expect(findDefaultBadge().props()).toMatchObject({
+        variant: 'info',
+      });
+    });
+
+    it('hides default badge when isDefault is false', () => {
+      createComponent({ trackedRef: createTrackedRef({ isDefault: false }) });
+
+      expect(findDefaultBadge().exists()).toBe(false);
+    });
+
+    it('shows protected badge when isProtected is true', () => {
+      createComponent({ trackedRef: createTrackedRef({ isProtected: true }) });
+
+      expect(findProtectedBadge().exists()).toBe(true);
+    });
+
+    it('hides protected badge when isProtected is false', () => {
+      createComponent({ trackedRef: createTrackedRef({ isProtected: false }) });
+
+      expect(findProtectedBadge().exists()).toBe(false);
+    });
+  });
+
+  describe('rendering ref type information', () => {
+    it('displays branch icon and text for branches', () => {
+      createComponent({ trackedRef: createTrackedRef({ refType: 'HEAD' }) });
+
+      expect(findRefTypeIcon().props('name')).toBe('branch');
+      expect(findRefTypeText().text()).toBe('branch');
+    });
+
+    it('displays tag icon and text for tags', () => {
+      createComponent({ trackedRef: createTrackedRef({ refType: 'TAG' }) });
+
+      expect(findRefTypeIcon().props('name')).toBe('tag');
+      expect(findRefTypeText().text()).toBe('tag');
+    });
+
+    it('sets correct icon size', () => {
+      createComponent({ trackedRef: createTrackedRef({ refType: 'HEAD' }) });
+
+      expect(findRefTypeIcon().props('size')).toBe(12);
+    });
+  });
+
+  describe('rendering commit information', () => {
+    beforeEach(() => {
+      createComponent({ trackedRef: createTrackedRef({ refType: 'HEAD' }) });
+    });
+
+    it('displays commit icon with correct size', () => {
+      expect(findCommitIcon().props('name')).toBe('commit');
+      expect(findCommitIcon().props('size')).toBe(12);
+    });
+
+    it('renders commit link with correct href and text', () => {
+      expect(findCommitLink().attributes('href')).toBe(createTrackedRef().commit.webPath);
+      expect(findCommitLink().text()).toBe(createTrackedRef().commit.shortId);
+    });
+
+    it('displays commit title', () => {
+      expect(findCommitTitle().text()).toBe(createTrackedRef().commit.title);
+    });
+  });
+
+  describe('rendering timestamp', () => {
+    it('displays TimeAgoTooltip with correct time', () => {
+      createComponent();
+
+      expect(findTimeAgoTooltip().props('time')).toBe(createTrackedRef().commit.authoredDate);
+    });
+
+    it('does not display TimeAgoTooltip when authoredDate is invalid', () => {
+      createComponent({
+        trackedRef: createTrackedRef({
+          commit: { ...createTrackedRef().commit, authoredDate: 'invalid' },
+        }),
+      });
+
+      expect(findTimeAgoTooltip().exists()).toBe(false);
+    });
+  });
+
+  describe('commit link behavior', () => {
+    it('renders commit as a link by default', () => {
+      createComponent();
+
+      expect(findCommitLink().attributes('href')).toBe(createTrackedRef().commit.webPath);
+      expect(findCommitLink().text()).toBe(createTrackedRef().commit.shortId);
+    });
+
+    it('renders commit as plain text when disableCommitLink is true', () => {
+      createComponent({ disableCommitLink: true });
+
+      expect(findCommitText().text()).toBe(createTrackedRef().commit.shortId);
+      expect(findCommitLink().exists()).toBe(false);
+    });
+  });
+});

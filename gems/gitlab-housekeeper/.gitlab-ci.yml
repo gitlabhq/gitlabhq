@@ -4,6 +4,8 @@ include:
       gem_name: "gitlab-housekeeper"
 
 gitlab-housekeeper-integration-test:
+  extends:
+    - .repo-from-artifacts
   script:
     - mkdir -p keeps
     - cp spec/fixtures/pretty_useless_keep.rb keeps/

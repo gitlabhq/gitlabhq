@@ -10,7 +10,7 @@ RSpec.describe Gitlab::GithubImport::Importer::Events::Reopened, :clean_gitlab_r
   let_it_be(:project) do
     create(
       :project, :in_group, :github_import,
-      :import_user_mapping_enabled, :user_mapping_to_personal_namespace_owner_enabled
+      :import_user_mapping_enabled
     )
   end
 

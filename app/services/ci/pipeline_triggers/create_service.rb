@@ -42,7 +42,7 @@ module Ci
 
       def create_params
         data = { description: description, owner: current_user }
-        data[:expires_at] = expires_at if Feature.enabled?(:trigger_token_expiration, project)
+        data[:expires_at] = expires_at
         data
       end
     end

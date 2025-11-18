@@ -30,7 +30,7 @@ rate limits and speed up your pipelines.
 
 You can view the container registry for a project or group.
 
-1. On the left sidebar, select **Search or go to** and find your project or group.
+1. On the left sidebar, select **Search or go to** and find your project or group. If you've [turned on the new navigation](../../interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
 1. Select **Deploy** > **Container Registry**.
 
 You can search, sort, filter, and [delete](delete_container_registry_images.md#use-the-gitlab-ui)
@@ -40,7 +40,7 @@ your container images. You can share a filtered view by copying the URL from you
 
 You can use the container registry **Tag Details** page to view a list of tags associated with a given container image:
 
-1. On the left sidebar, select **Search or go to** and find your project or group.
+1. On the left sidebar, select **Search or go to** and find your project or group. If you've [turned on the new navigation](../../interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
 1. Select **Deploy** > **Container Registry**.
 1. Select your container image.
 
@@ -60,7 +60,7 @@ For more information, see [View container registry usage](reduce_container_regis
 
 To download and run a container image hosted in the container registry:
 
-1. On the left sidebar, select **Search or go to** and find your project or group.
+1. On the left sidebar, select **Search or go to** and find your project or group. If you've [turned on the new navigation](../../interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
 1. Select **Deploy** > **Container Registry**.
 1. Find the container image you want to work with and select **Copy image path** （{{< icon name="copy-to-clipboard" >}}）.
 
@@ -107,13 +107,18 @@ registry.example.com/mynamespace/myproject/my/image:rc1
 
 ## Move or rename container registry repositories
 
+{{< history >}}
+
+- [Enabled on GitLab.com](https://gitlab.com/gitlab-org/gitlab/-/issues/429734) in GitLab 16.7.
+
+{{< /history >}}
 The path of a container repository always matches the related project's repository path,
 so renaming or moving only the container registry is not possible. Instead, you can either:
 
 - [Rename the project's repository](../../project/working_with_projects.md#rename-a-repository).
 - [Transfer the project](../../project/working_with_projects.md#transfer-a-project).
 
-Renaming projects with populated container repositories is only supported on GitLab.com.
+For performance reasons, renaming projects with populated container repositories is limited to projects with up to 1,000 container repositories.
 
 On a GitLab Self-Managed instance, you can delete all container images before moving or renaming
 a group or project. Alternatively, [issue 18383](https://gitlab.com/gitlab-org/gitlab/-/issues/18383#possible-workaround)
@@ -127,7 +132,7 @@ The container registry is enabled by default.
 
 You can, however, remove the container registry for a project:
 
-1. On the left sidebar, select **Search or go to** and find your project.
+1. On the left sidebar, select **Search or go to** and find your project. If you've [turned on the new navigation](../../interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
 1. Select **Settings** > **General**.
 1. Expand the **Visibility, project features, permissions** section
    and disable **Container registry**.
@@ -143,7 +148,7 @@ You can, however, change the visibility of the container registry for a project.
 For more information about the permissions that this setting grants to users,
 see [Container registry visibility permissions](#container-registry-visibility-permissions).
 
-1. On the left sidebar, select **Search or go to** and find your project.
+1. On the left sidebar, select **Search or go to** and find your project. If you've [turned on the new navigation](../../interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
 1. Select **Settings** > **General**.
 1. Expand the section **Visibility, project features, permissions**.
 1. Under **Container registry**, select an option from the dropdown list:

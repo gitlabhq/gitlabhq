@@ -46,10 +46,17 @@ module API
         success Entities::PagesDomainBasic
       end
       params do
+        optional :domain, type: String, desc: 'The domain of the GitLab Pages site to filter on.'
         use :pagination
       end
-      get "domains" do
-        present paginate(PagesDomain.all), with: Entities::PagesDomainBasic
+      get "domains", requirements: PAGES_DOMAINS_ENDPOINT_REQUIREMENTS do
+        if params[:domain].present?
+          domain = PagesDomain.find_by_domain_case_insensitive(params[:domain])
+          not_found!('PagesDomain') unless domain
+          present [domain], with: Entities::PagesDomainBasic
+        else
+          present paginate(PagesDomain.all), with: Entities::PagesDomainBasic
+        end
       end
     end
 

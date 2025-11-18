@@ -27,7 +27,7 @@ RSpec.describe Gitlab::SidekiqMiddleware::ConcurrencyLimit::LimitManager, :clean
     end
 
     context 'when no value has been set before' do
-      it 'returns the max limit value set in WorkersMap' do
+      it 'returns the max limit value from worker attribute' do
         expect(service.current_limit).to eq(10)
       end
     end

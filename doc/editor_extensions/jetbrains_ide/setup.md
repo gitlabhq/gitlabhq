@@ -1,5 +1,5 @@
 ---
-stage: Create
+stage: AI-powered
 group: Editor Extensions
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 description: Connect and use GitLab Duo in JetBrains IDEs.
@@ -38,7 +38,7 @@ After you install the extension, connect it to your GitLab account.
 
 If you are on GitLab Self-Managed, create a personal access token.
 
-1. In GitLab, on the left sidebar, select your avatar.
+1. In GitLab, on the left sidebar, select your avatar. If you've [turned on the new navigation](../../user/interface_redesign.md#turn-new-navigation-on-or-off), this button is in the upper-right corner.
 1. Select **Edit profile**.
 1. On the left sidebar, select **Personal access tokens**.
 1. Select **Add new token**.

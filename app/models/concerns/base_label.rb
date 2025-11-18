@@ -57,28 +57,11 @@ module BaseLabel # rubocop:disable Gitlab/BoundedContexts -- existing Label modu
       color.contrast
     end
 
-    def title=(value)
-      if value.blank?
-        super
-      else
-        write_attribute(:title, sanitize_value(value))
-      end
-    end
-    alias_method :name=, :title=
-
-    def description=(value)
-      if value.blank?
-        super
-      else
-        write_attribute(:description, sanitize_value(value))
-      end
+    def name=(value)
+      self.title = value
     end
 
     private
-
-    def sanitize_value(value)
-      CGI.unescapeHTML(Sanitize.clean(value.to_s))
-    end
 
     def strip_whitespace_from_title
       self[:title] = title&.strip

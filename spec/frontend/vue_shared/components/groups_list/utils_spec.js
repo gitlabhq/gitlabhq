@@ -8,6 +8,7 @@ import {
   renderUnarchiveSuccessToast,
 } from '~/vue_shared/components/groups_list/utils';
 import {
+  ACTION_COPY_ID,
   ACTION_EDIT,
   ACTION_ARCHIVE,
   ACTION_UNARCHIVE,
@@ -46,25 +47,25 @@ afterEach(() => {
 describe('availableGraphQLGroupActions', () => {
   describe.each`
     userPermissions                                              | markedForDeletion | isSelfDeletionInProgress | isSelfDeletionScheduled | archived | features                   | availableActions
-    ${{ viewEditPage: false, removeGroup: false }}               | ${false}          | ${false}                 | ${false}                | ${false} | ${{}}                      | ${[]}
-    ${{ viewEditPage: true, removeGroup: false }}                | ${false}          | ${false}                 | ${false}                | ${false} | ${{}}                      | ${[ACTION_EDIT]}
-    ${{ viewEditPage: false, removeGroup: true }}                | ${false}          | ${false}                 | ${false}                | ${false} | ${{}}                      | ${[ACTION_DELETE]}
-    ${{ viewEditPage: true, removeGroup: true }}                 | ${false}          | ${false}                 | ${false}                | ${false} | ${{}}                      | ${[ACTION_EDIT, ACTION_DELETE]}
-    ${{ viewEditPage: true, removeGroup: false }}                | ${true}           | ${false}                 | ${false}                | ${false} | ${{}}                      | ${[ACTION_EDIT]}
-    ${{ viewEditPage: true, removeGroup: true }}                 | ${true}           | ${false}                 | ${false}                | ${false} | ${{}}                      | ${[ACTION_EDIT]}
-    ${{ viewEditPage: true, removeGroup: true }}                 | ${true}           | ${false}                 | ${true}                 | ${false} | ${{}}                      | ${[ACTION_EDIT, ACTION_RESTORE, ACTION_DELETE_IMMEDIATELY]}
-    ${{ viewEditPage: true, removeGroup: true, canLeave: true }} | ${true}           | ${false}                 | ${false}                | ${false} | ${{}}                      | ${[ACTION_EDIT, ACTION_LEAVE]}
-    ${{ viewEditPage: true, removeGroup: true, canLeave: true }} | ${true}           | ${false}                 | ${true}                 | ${false} | ${{}}                      | ${[ACTION_EDIT, ACTION_RESTORE, ACTION_LEAVE, ACTION_DELETE_IMMEDIATELY]}
+    ${{ viewEditPage: false, removeGroup: false }}               | ${false}          | ${false}                 | ${false}                | ${false} | ${{}}                      | ${[ACTION_COPY_ID]}
+    ${{ viewEditPage: true, removeGroup: false }}                | ${false}          | ${false}                 | ${false}                | ${false} | ${{}}                      | ${[ACTION_COPY_ID, ACTION_EDIT]}
+    ${{ viewEditPage: false, removeGroup: true }}                | ${false}          | ${false}                 | ${false}                | ${false} | ${{}}                      | ${[ACTION_COPY_ID, ACTION_DELETE]}
+    ${{ viewEditPage: true, removeGroup: true }}                 | ${false}          | ${false}                 | ${false}                | ${false} | ${{}}                      | ${[ACTION_COPY_ID, ACTION_EDIT, ACTION_DELETE]}
+    ${{ viewEditPage: true, removeGroup: false }}                | ${true}           | ${false}                 | ${false}                | ${false} | ${{}}                      | ${[ACTION_COPY_ID, ACTION_EDIT]}
+    ${{ viewEditPage: true, removeGroup: true }}                 | ${true}           | ${false}                 | ${false}                | ${false} | ${{}}                      | ${[ACTION_COPY_ID, ACTION_EDIT]}
+    ${{ viewEditPage: true, removeGroup: true }}                 | ${true}           | ${false}                 | ${true}                 | ${false} | ${{}}                      | ${[ACTION_COPY_ID, ACTION_EDIT, ACTION_RESTORE, ACTION_DELETE_IMMEDIATELY]}
+    ${{ viewEditPage: true, removeGroup: true, canLeave: true }} | ${true}           | ${false}                 | ${false}                | ${false} | ${{}}                      | ${[ACTION_COPY_ID, ACTION_EDIT, ACTION_LEAVE]}
+    ${{ viewEditPage: true, removeGroup: true, canLeave: true }} | ${true}           | ${false}                 | ${true}                 | ${false} | ${{}}                      | ${[ACTION_COPY_ID, ACTION_EDIT, ACTION_RESTORE, ACTION_LEAVE, ACTION_DELETE_IMMEDIATELY]}
     ${{ viewEditPage: true, removeGroup: true }}                 | ${true}           | ${true}                  | ${false}                | ${false} | ${{}}                      | ${[]}
     ${{ viewEditPage: true, removeGroup: true }}                 | ${true}           | ${true}                  | ${true}                 | ${false} | ${{}}                      | ${[]}
-    ${{ archiveGroup: true }}                                    | ${false}          | ${false}                 | ${false}                | ${false} | ${{ archiveGroup: true }}  | ${[ACTION_ARCHIVE]}
-    ${{ archiveGroup: true }}                                    | ${false}          | ${false}                 | ${false}                | ${true}  | ${{ archiveGroup: true }}  | ${[ACTION_UNARCHIVE]}
-    ${{ archiveGroup: false }}                                   | ${false}          | ${false}                 | ${false}                | ${false} | ${{ archiveGroup: true }}  | ${[]}
-    ${{ archiveGroup: false }}                                   | ${false}          | ${false}                 | ${false}                | ${true}  | ${{ archiveGroup: true }}  | ${[]}
-    ${{ archiveGroup: true }}                                    | ${false}          | ${false}                 | ${false}                | ${false} | ${{ archiveGroup: false }} | ${[]}
-    ${{ archiveGroup: true }}                                    | ${false}          | ${false}                 | ${false}                | ${true}  | ${{ archiveGroup: false }} | ${[ACTION_UNARCHIVE]}
-    ${{ archiveGroup: false }}                                   | ${false}          | ${false}                 | ${false}                | ${false} | ${{ archiveGroup: false }} | ${[]}
-    ${{ archiveGroup: false }}                                   | ${false}          | ${false}                 | ${false}                | ${true}  | ${{ archiveGroup: false }} | ${[]}
+    ${{ archiveGroup: true }}                                    | ${false}          | ${false}                 | ${false}                | ${false} | ${{ archiveGroup: true }}  | ${[ACTION_COPY_ID, ACTION_ARCHIVE]}
+    ${{ archiveGroup: true }}                                    | ${false}          | ${false}                 | ${false}                | ${true}  | ${{ archiveGroup: true }}  | ${[ACTION_COPY_ID, ACTION_UNARCHIVE]}
+    ${{ archiveGroup: false }}                                   | ${false}          | ${false}                 | ${false}                | ${false} | ${{ archiveGroup: true }}  | ${[ACTION_COPY_ID]}
+    ${{ archiveGroup: false }}                                   | ${false}          | ${false}                 | ${false}                | ${true}  | ${{ archiveGroup: true }}  | ${[ACTION_COPY_ID]}
+    ${{ archiveGroup: true }}                                    | ${false}          | ${false}                 | ${false}                | ${false} | ${{ archiveGroup: false }} | ${[ACTION_COPY_ID]}
+    ${{ archiveGroup: true }}                                    | ${false}          | ${false}                 | ${false}                | ${true}  | ${{ archiveGroup: false }} | ${[ACTION_COPY_ID, ACTION_UNARCHIVE]}
+    ${{ archiveGroup: false }}                                   | ${false}          | ${false}                 | ${false}                | ${false} | ${{ archiveGroup: false }} | ${[ACTION_COPY_ID]}
+    ${{ archiveGroup: false }}                                   | ${false}          | ${false}                 | ${false}                | ${true}  | ${{ archiveGroup: false }} | ${[ACTION_COPY_ID]}
   `(
     'availableGraphQLGroupActions',
     ({
@@ -112,7 +113,7 @@ describe('availableGraphQLGroupActions', () => {
           isSelfDeletionInProgress: false,
           isSelfDeletionScheduled: true,
         }),
-      ).toStrictEqual([ACTION_EDIT, ACTION_RESTORE]);
+      ).toStrictEqual([ACTION_COPY_ID, ACTION_EDIT, ACTION_RESTORE]);
     });
   });
 });

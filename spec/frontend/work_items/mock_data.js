@@ -5786,7 +5786,8 @@ export const workItemsWithSubChildQueryResponse = {
             state: 'OPEN',
             title: 'a group level work item 103',
             updatedAt: '',
-            webUrl: 'web/url',
+            webPath: '/toolbox/gitlab-smoke-tests/-/issues/33',
+            webUrl: 'http://127.0.0.1:3000/toolbox/gitlab-smoke-tests/-/issues/33',
             userDiscussionsCount: 0,
             widgets: [
               {
@@ -5832,7 +5833,8 @@ export const workItemsWithSubChildQueryResponse = {
             state: 'OPEN',
             title: 'a group level work item 102',
             updatedAt: '',
-            webUrl: 'web/url',
+            webPath: '/toolbox/gitlab-smoke-tests/-/issues/34',
+            webUrl: 'http://127.0.0.1:3000/toolbox/gitlab-smoke-tests/-/issues/34',
             userDiscussionsCount: 0,
             widgets: [
               {
@@ -5899,7 +5901,8 @@ export const workItemsQueryResponseNoLabels = {
             state: 'OPEN',
             title: 'a group level work item',
             updatedAt: '',
-            webUrl: 'web/url',
+            webPath: '/toolbox/gitlab-smoke-tests/-/issues/32',
+            webUrl: 'http://127.0.0.1:3000/toolbox/gitlab-smoke-tests/-/issues/32',
             userDiscussionsCount: 0,
             widgets: [
               {
@@ -5939,7 +5942,8 @@ export const workItemsQueryResponseNoLabels = {
             state: 'OPEN',
             title: 'a group level work item',
             updatedAt: '',
-            webUrl: 'web/url',
+            webPath: '/toolbox/gitlab-smoke-tests/-/issues/33',
+            webUrl: 'http://127.0.0.1:3000/toolbox/gitlab-smoke-tests/-/issues/33',
             userDiscussionsCount: 0,
             widgets: [
               {
@@ -6000,7 +6004,8 @@ export const workItemsQueryResponseNoAssignees = {
             state: 'OPEN',
             title: 'a group level work item',
             updatedAt: '',
-            webUrl: 'web/url',
+            webPath: '/toolbox/gitlab-smoke-tests/-/issues/2',
+            webUrl: 'http://127.0.0.1:3000/toolbox/gitlab-smoke-tests/-/issues/2',
             userDiscussionsCount: 0,
             widgets: [
               {
@@ -6050,7 +6055,8 @@ export const workItemsQueryResponseNoAssignees = {
             state: 'OPEN',
             title: 'a group level work item',
             updatedAt: '',
-            webUrl: 'web/url',
+            webPath: '/toolbox/gitlab-smoke-tests/-/issues/3',
+            webUrl: 'http://127.0.0.1:3000/toolbox/gitlab-smoke-tests/-/issues/3',
             userDiscussionsCount: 0,
             widgets: [
               {
@@ -6107,7 +6113,8 @@ export const combinedQueryResultExample = [
     state: 'OPEN',
     title: 'a group level work item',
     updatedAt: '',
-    webUrl: 'web/url',
+    webPath: '/toolbox/gitlab-smoke-tests/-/issues/32',
+    webUrl: 'http://127.0.0.1:3000/toolbox/gitlab-smoke-tests/-/issues/32',
     userDiscussionsCount: 0,
     widgets: [
       {
@@ -6164,7 +6171,8 @@ export const combinedQueryResultExample = [
     state: 'OPEN',
     title: 'a group level work item',
     updatedAt: '',
-    webUrl: 'web/url',
+    webPath: '/toolbox/gitlab-smoke-tests/-/issues/33',
+    webUrl: 'http://127.0.0.1:3000/toolbox/gitlab-smoke-tests/-/issues/33',
     userDiscussionsCount: 0,
     widgets: [
       {
@@ -9319,8 +9327,6 @@ export const namespacePathsQueryResponse = {
             '/flightjs/Flight/-/autocomplete_sources/contacts?type=WorkItem&work_item_type_id=1',
           wikis: '/flightjs/Flight/-/autocomplete_sources/wikis?type=WorkItem&work_item_type_id=1',
           epics: '/flightjs/Flight/-/autocomplete_sources/epics?type=WorkItem&work_item_type_id=1',
-          epicsAlternative:
-            '/flightjs/Flight/-/autocomplete_sources/epics?type=WorkItem&work_item_type_id=1',
           iterations:
             '/flightjs/Flight/-/autocomplete_sources/iterations?type=WorkItem&work_item_type_id=1',
           vulnerabilities:
@@ -9355,4 +9361,103 @@ export const workItemsCsvExportFailureResponse = {
       path: ['workItemsCsvExport'],
     },
   ],
+};
+
+export const workItemMetadataProviderResponse = {
+  data: {
+    namespace: {
+      id: 'gid://gitlab/Namespaces::ProjectNamespace/34',
+      availableFeatures: {
+        hasDesignManagementFeature: true,
+        hasIssueWeightsFeature: true,
+        hasIterationsFeature: true,
+        hasOkrsFeature: true,
+        hasSubepicsFeature: true,
+        hasIssuableHealthStatusFeature: true,
+        hasEpicsFeature: true,
+        hasScopedLabelsFeature: true,
+        hasQualityManagementFeature: true,
+        hasLinkedItemsEpicsFeature: true,
+        hasIssueDateFilterFeature: false,
+        hasWorkItemStatusFeature: true,
+        __typename: 'NamespaceAvailableFeatures',
+      },
+      linkPaths: {
+        issuesList: '/flightjs/Flight/-/issues',
+        contributionGuidePath: '/flightjs/Flight/-/blob/master/CONTRIBUTING.md',
+        epicsList: '/groups/flightjs/-/epics',
+        groupIssues: '/groups/flightjs/-/issues',
+        labelsFetch:
+          '/flightjs/Flight/-/labels.json?include_ancestor_groups=true\u0026only_group_labels=true',
+        labelsManage: '/flightjs/Flight/-/labels',
+        newProject: '/projects/new?namespace_id=33',
+        register: '/users/sign_up?redirect_to_referer=yes',
+        reportAbuse: '/-/abuse_reports/add_category',
+        signIn: '/users/sign_in?redirect_to_referer=yes',
+        issuesSettings: '/groups/flightjs/-/settings/issues',
+        userExportEmail: 'admin@example.com',
+        emailsHelpPagePath: '/help/development/emails.md#email-namespace',
+        markdownHelpPath: '/help/user/markdown.md',
+        quickActionsHelpPath: '/help/user/project/quick_actions.md',
+        newWorkItemEmailAddress: null,
+        __typename: 'ProjectNamespaceLinks',
+      },
+      userPermissions: {
+        createWorkItem: true,
+        adminLabel: true,
+        __typename: 'NamespacePermissions',
+      },
+      __typename: 'Namespace',
+    },
+  },
+};
+
+export const userPreferenceQueryResponse = {
+  data: {
+    currentUser: {
+      id: 'gid://gitlab/User/1',
+      workItemPreferencesWithType: {
+        sort: 'RELATIVE_POSITION_ASC',
+        __typename: 'WorkItemTypesUserPreference',
+      },
+      __typename: 'CurrentUser',
+    },
+  },
+};
+
+export const workItemUserPreferenceUpdateMutationResponse = {
+  workItemUserPreferenceUpdate: {
+    errors: [],
+    userPreferences: {
+      displaySettings: {
+        hiddenMetadataKeys: ['assignee', 'labels'],
+      },
+      sort: 'MILESTONE_DUE_ASC',
+      __typename: 'WorkItemTypesUserPreference',
+    },
+    __typename: 'WorkItemUserPreferenceUpdatePayload',
+  },
+};
+
+export const workItemUserPreferenceUpdateMutationResponseWithErrors = {
+  data: {
+    workItemUserPreferenceUpdate: {
+      errors: ['oh no!'],
+      userPreferences: null,
+      __typename: 'WorkItemUserPreferenceUpdatePayload',
+    },
+  },
+};
+
+export const workItemCountsOnlyResponse = {
+  data: {
+    namespace: {
+      id: 'gid://gitlab/Group/3',
+      __typename: 'Group',
+      name: 'Test',
+      workItems: {
+        count: 3,
+      },
+    },
+  },
 };

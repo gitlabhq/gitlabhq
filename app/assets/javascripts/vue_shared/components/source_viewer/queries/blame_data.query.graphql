@@ -5,6 +5,7 @@ query getBlameData(
   $filePath: String!
   $fromLine: Int
   $toLine: Int
+  $ignoreRevs: Boolean
   $ref: String!
 ) {
   project(fullPath: $fullPath) {
@@ -13,7 +14,7 @@ query getBlameData(
       blobs(ref: $ref, paths: [$filePath]) {
         nodes {
           id
-          blame(fromLine: $fromLine, toLine: $toLine) {
+          blame(fromLine: $fromLine, toLine: $toLine, ignoreRevs: $ignoreRevs) {
             firstLine
             groups {
               lineno

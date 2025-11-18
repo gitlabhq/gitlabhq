@@ -1,3 +1,24 @@
+CREATE TABLE agent_platform_sessions
+(
+    `user_id` UInt64,
+    `namespace_path` String,
+    `project_id` UInt64,
+    `session_id` UInt64,
+    `flow_type` String,
+    `environment` String,
+    `session_year` UInt16,
+    `created_event_at` AggregateFunction(anyIf, Nullable(DateTime64(6, 'UTC')), UInt8),
+    `started_event_at` AggregateFunction(anyIf, Nullable(DateTime64(6, 'UTC')), UInt8),
+    `finished_event_at` AggregateFunction(anyIf, Nullable(DateTime64(6, 'UTC')), UInt8),
+    `dropped_event_at` AggregateFunction(anyIf, Nullable(DateTime64(6, 'UTC')), UInt8),
+    `stopped_event_at` AggregateFunction(anyIf, Nullable(DateTime64(6, 'UTC')), UInt8),
+    `resumed_event_at` AggregateFunction(anyIf, Nullable(DateTime64(6, 'UTC')), UInt8)
+)
+ENGINE = AggregatingMergeTree
+PARTITION BY session_year
+ORDER BY (namespace_path, user_id, session_id, flow_type)
+SETTINGS index_granularity = 8192;
+
 CREATE TABLE ai_usage_events
 (
     `user_id` UInt64,
@@ -9,6 +30,19 @@ CREATE TABLE ai_usage_events
 ENGINE = ReplacingMergeTree
 PARTITION BY toYYYYMM(timestamp)
 ORDER BY (namespace_path, event, timestamp, user_id)
+SETTINGS index_granularity = 8192;
+
+CREATE TABLE ai_usage_events_daily
+(
+    `namespace_path` String DEFAULT '0/',
+    `date` Date32 DEFAULT toDate(now64()),
+    `event` UInt16 DEFAULT 0,
+    `user_id` UInt64 DEFAULT 0,
+    `occurrences` UInt64 DEFAULT 0
+)
+ENGINE = SummingMergeTree
+PARTITION BY toYear(date)
+ORDER BY (namespace_path, date, event, user_id)
 SETTINGS index_granularity = 8192;
 
 CREATE TABLE ci_finished_builds
@@ -204,6 +238,22 @@ CREATE TABLE code_suggestion_events_daily
 ENGINE = SummingMergeTree
 PARTITION BY toYear(date)
 ORDER BY (namespace_path, date, user_id, event, language)
+SETTINGS index_granularity = 64;
+
+CREATE TABLE code_suggestion_events_daily_new
+(
+    `namespace_path` String DEFAULT '0/',
+    `user_id` UInt64 DEFAULT 0,
+    `date` Date32 DEFAULT toDate(now64()),
+    `event` UInt8 DEFAULT 0,
+    `ide_name` LowCardinality(String) DEFAULT '',
+    `language` LowCardinality(String) DEFAULT '',
+    `suggestions_size_sum` UInt32 DEFAULT 0,
+    `occurrences` UInt64 DEFAULT 0
+)
+ENGINE = SummingMergeTree
+PARTITION BY toYear(date)
+ORDER BY (namespace_path, date, user_id, event, ide_name, language)
 SETTINGS index_granularity = 64;
 
 CREATE TABLE contributions
@@ -557,7 +607,9 @@ CREATE TABLE siphon_award_emoji
     `created_at` DateTime64(6, 'UTC'),
     `updated_at` DateTime64(6, 'UTC'),
     `_siphon_replicated_at` DateTime64(6, 'UTC') DEFAULT now(),
-    `_siphon_deleted` Bool DEFAULT false
+    `_siphon_deleted` Bool DEFAULT false,
+    `namespace_id` Nullable(Int64),
+    `organization_id` Nullable(Int64)
 )
 ENGINE = ReplacingMergeTree(_siphon_replicated_at, _siphon_deleted)
 PRIMARY KEY id
@@ -1211,6 +1263,62 @@ PRIMARY KEY (work_item_id, label_id, id)
 ORDER BY (work_item_id, label_id, id)
 SETTINGS index_granularity = 8192;
 
+CREATE MATERIALIZED VIEW agent_platform_sessions_mv TO agent_platform_sessions
+(
+    `user_id` UInt64,
+    `namespace_path` String,
+    `project_id` String,
+    `session_id` String,
+    `flow_type` String,
+    `environment` String,
+    `created_event_at` AggregateFunction(anyIf, Nullable(DateTime64(6, 'UTC')), UInt8),
+    `started_event_at` AggregateFunction(anyIf, Nullable(DateTime64(6, 'UTC')), UInt8),
+    `finished_event_at` AggregateFunction(anyIf, Nullable(DateTime64(6, 'UTC')), UInt8),
+    `dropped_event_at` AggregateFunction(anyIf, Nullable(DateTime64(6, 'UTC')), UInt8),
+    `stopped_event_at` AggregateFunction(anyIf, Nullable(DateTime64(6, 'UTC')), UInt8),
+    `resumed_event_at` AggregateFunction(anyIf, Nullable(DateTime64(6, 'UTC')), UInt8)
+)
+AS SELECT
+    user_id,
+    namespace_path,
+    JSONExtractUInt(extras, 'project_id') AS project_id,
+    JSONExtractUInt(extras, 'session_id') AS session_id,
+    JSONExtractString(extras, 'flow_type') AS flow_type,
+    JSONExtractString(extras, 'environment') AS environment,
+    toYear(timestamp) AS session_year,
+    anyIfState(toNullable(timestamp), event = 8) AS created_event_at,
+    anyIfState(toNullable(timestamp), event = 9) AS started_event_at,
+    anyIfState(toNullable(timestamp), event = 19) AS finished_event_at,
+    anyIfState(toNullable(timestamp), event = 20) AS dropped_event_at,
+    anyIfState(toNullable(timestamp), event = 21) AS stopped_event_at,
+    anyIfState(toNullable(timestamp), event = 22) AS resumed_event_at
+FROM ai_usage_events
+WHERE (event IN (8, 9, 19, 20, 21, 22)) AND (JSONExtractString(extras, 'session_id') != '')
+GROUP BY
+    namespace_path,
+    user_id,
+    session_id,
+    flow_type,
+    project_id,
+    environment,
+    toYear(timestamp);
+
+CREATE MATERIALIZED VIEW ai_usage_events_daily_mv TO ai_usage_events_daily
+(
+    `namespace_path` String,
+    `date` Date,
+    `event` UInt16,
+    `user_id` UInt64,
+    `occurrences` UInt8
+)
+AS SELECT
+    namespace_path AS namespace_path,
+    toDate(timestamp) AS date,
+    event AS event,
+    user_id AS user_id,
+    1 AS occurrences
+FROM ai_usage_events;
+
 CREATE MATERIALIZED VIEW ci_finished_builds_aggregated_queueing_delay_percentiles_by_owner_mv TO ci_finished_builds_aggregated_queueing_delay_percentiles_by_owner
 (
     `started_at_bucket` DateTime('UTC'),
@@ -1376,6 +1484,29 @@ AS SELECT
     user_id,
     toDate(timestamp) AS date,
     event,
+    toLowCardinality(JSONExtractString(extras, 'language')) AS language,
+    JSONExtractUInt(extras, 'suggestion_size') AS suggestions_size_sum,
+    1 AS occurrences
+FROM ai_usage_events
+WHERE event IN (1, 2, 3, 4, 5);
+
+CREATE MATERIALIZED VIEW code_suggestion_events_daily_new_mv TO code_suggestion_events_daily_new
+(
+    `namespace_path` String,
+    `user_id` UInt64,
+    `date` Date,
+    `event` UInt16,
+    `ide_name` LowCardinality(String),
+    `language` LowCardinality(String),
+    `suggestions_size_sum` UInt64,
+    `occurrences` UInt8
+)
+AS SELECT
+    namespace_path AS namespace_path,
+    user_id AS user_id,
+    toDate(timestamp) AS date,
+    event AS event,
+    toLowCardinality(JSONExtractString(extras, 'ide_name')) AS ide_name,
     toLowCardinality(JSONExtractString(extras, 'language')) AS language,
     JSONExtractUInt(extras, 'suggestion_size') AS suggestions_size_sum,
     1 AS occurrences

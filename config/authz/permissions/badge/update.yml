@@ -2,3 +2,7 @@
 name: update_badge
 description: Grants the ability to update badges
 feature_category: groups_and_projects
+boundaries:
+  - project
+  - group
+available_for_tokens: true

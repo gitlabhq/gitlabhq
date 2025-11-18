@@ -3,7 +3,10 @@
 module API
   # External applications API
   class Applications < ::API::Base
-    before { authenticated_as_admin! }
+    before do
+      set_current_organization
+      authenticated_as_admin!
+    end
 
     feature_category :system_access
 
@@ -28,6 +31,7 @@ module API
       end
       post do
         application = Authn::OauthApplication.new(declared_params)
+        application.organization = Current.organization
 
         if application.save
           present application, with: Entities::ApplicationWithSecret

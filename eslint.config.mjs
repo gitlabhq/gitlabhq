@@ -295,6 +295,11 @@ export default [
           message: 'Use directive at ~/vue_shared/directives/safe_html.js instead.',
         },
         {
+          selector: "ImportSpecifier[imported.name='GlBreakpointInstance']",
+          message:
+            'GlBreakpointInstance only checks viewport breakpoints. You may want the breakpoints of a panel. Use PanelBreakpointInstance at ~/panel_breakpoint_instance instead (or add eslint-ignore here).',
+        },
+        {
           selector: 'Literal[value=/docs.gitlab.+\\u002Fee/]',
           message:
             'No hard coded url, use `DOCS_URL_IN_EE_DIR` in `jh_else_ce/lib/utils/url_utility`',
@@ -341,6 +346,24 @@ export default [
           property: 'open',
           message:
             'Use `visitUrl` in `jh_else_ce/lib/utils/url_utility` to avoid cross-site leaks.',
+        },
+        {
+          object: 'window',
+          property: 'scrollTo',
+          message:
+            'Use `scrollTo` in `~/lib/utils/scroll_utils.js` to ensure scrolling inside your scrolling containers or panels.',
+        },
+        {
+          object: 'window',
+          property: 'scroll',
+          message:
+            'Use `scrollTo` in `~/lib/utils/scroll_utils.js` to ensure scrolling inside your scrolling containers or panels.',
+        },
+        {
+          object: 'navigator',
+          property: 'clipboard',
+          message:
+            'Use `copyToClipboard` in `~/lib/utils/copy_to_clipboard.js` to support copying in secure and non-secure environments.',
         },
         {
           object: 'vm',
@@ -431,6 +454,7 @@ export default [
           groups: ['props', 'data', 'computed', 'methods'],
         },
       ],
+      'vue/require-name-property': 'error',
     },
   },
   {

@@ -19,4 +19,14 @@ RSpec.describe Integrations::SlackInstallation::ProjectService, feature_category
       project.create_gitlab_slack_application_integration!
     end
   end
+
+  it_behaves_like "handle alias conflicts" do
+    let(:installation_alias) { project.full_path }
+    let(:integration) { project.gitlab_slack_application_integration }
+    let(:redirect_url) { Gitlab::Routing.url_helpers.slack_auth_project_settings_slack_url(project) }
+
+    def create_gitlab_slack_application_integration!
+      project.create_gitlab_slack_application_integration!
+    end
+  end
 end

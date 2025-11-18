@@ -97,7 +97,8 @@ class GenerateRspecPipeline
       rspec_files_per_test_level: rspec_files_per_test_level,
       test_suite_prefix: test_suite_prefix,
       repo_from_artifacts: ENV['CI_FETCH_REPO_GIT_STRATEGY'] == 'none',
-      job_tags: job_tags
+      job_tags: job_tags,
+      medium_runner_tag: ENV['GLCI_MEDIUM_RUNNER_REQUIRED'] || 'gitlab-org-medium'
     }
   end
 

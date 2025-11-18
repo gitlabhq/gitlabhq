@@ -22,5 +22,8 @@ description: The object at the core of comments, discussions and system notes sh
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/commit/9ba1224867665844b117fa037e1465bb706b3685
 milestone: "<6.0"
 gitlab_schema: gitlab_main_org
-sharding_key_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/444222
+sharding_key:
+  namespace_id: namespaces
+  project_id: projects
+  organization_id: organizations
 table_size: over_limit

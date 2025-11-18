@@ -31,26 +31,10 @@ RSpec.describe ::Packages::Composer::PackageFinder, feature_category: :package_r
         let(:params) { { package_name: package.name, target_sha: target_sha } }
 
         it { is_expected.to contain_exactly(package3) }
-
-        context 'when packages_composer_read_from_detached_table is disabled' do
-          before do
-            stub_feature_flags(packages_composer_read_from_detached_table: false)
-          end
-
-          it { is_expected.to contain_exactly(package3_sti) }
-        end
       end
     end
 
     it { is_expected.to contain_exactly(package, package3) }
-
-    context 'when packages_composer_read_from_detached_table is disabled' do
-      before do
-        stub_feature_flags(packages_composer_read_from_detached_table: false)
-      end
-
-      it { is_expected.to contain_exactly(package_sti, package3_sti) }
-    end
 
     it_behaves_like 'filtering by parameters'
 
@@ -65,14 +49,6 @@ RSpec.describe ::Packages::Composer::PackageFinder, feature_category: :package_r
         end
 
         it { is_expected.to contain_exactly(package, package3) }
-
-        context 'when packages_composer_read_from_detached_table is disabled' do
-          before do
-            stub_feature_flags(packages_composer_read_from_detached_table: false)
-          end
-
-          it { is_expected.to contain_exactly(package_sti, package3_sti) }
-        end
 
         it_behaves_like 'filtering by parameters'
       end

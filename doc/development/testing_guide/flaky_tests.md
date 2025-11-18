@@ -1,12 +1,14 @@
 ---
-stage: none
-group: unassigned
-info: Any user with at least the Maintainer role can merge updates to this content. For details, see https://docs.gitlab.com/development/development_processes/#development-guidelines-review.
-title: Flaky tests
+redirect_to: 'unhealthy_tests.md#flaky-tests'
+remove_date: '2026-01-27'
 ---
 
-[Consult the Unhealthy tests page for more information](unhealthy_tests.md#flaky-tests).
+<!-- markdownlint-disable -->
 
----
+This document was moved to [another location](unhealthy_tests.md#flaky-tests).
 
-[Return to Testing documentation](_index.md)
+<!-- This redirect file can be deleted after <2026-01-27>. -->
+<!-- Redirects that point to other docs in the same project expire in three months. -->
+<!-- Redirects that point to docs in a different project or site (for example, link is not relative and starts with `https:`) expire in one year. -->
+<!-- Before deletion, see: https://docs.gitlab.com/development/documentation/redirects -->
+

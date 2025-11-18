@@ -3,6 +3,7 @@ import { GlButton, GlForm } from '@gitlab/ui';
 import RunnerFormFields from '~/ci/runner/components/runner_form_fields.vue';
 import { createAlert, VARIANT_SUCCESS } from '~/alert';
 import { visitUrl } from '~/lib/utils/url_utility';
+import { saveAlertToLocalStorage } from '~/lib/utils/local_storage_alert';
 import { __ } from '~/locale';
 import { captureException } from '~/ci/runner/sentry_utils';
 
@@ -12,7 +13,6 @@ import {
 } from 'ee_else_ce/ci/runner/runner_update_form_utils';
 import { ACCESS_LEVEL_NOT_PROTECTED, ACCESS_LEVEL_REF_PROTECTED } from '../constants';
 import runnerUpdateMutation from '../graphql/edit/runner_update.mutation.graphql';
-import { saveAlertToLocalStorage } from '../local_storage_alert/save_alert_to_local_storage';
 
 export default {
   name: 'RunnerUpdateForm',

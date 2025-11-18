@@ -154,6 +154,7 @@ Issues with lowest weight are first, and issues without a weight are last.
 {{< history >}}
 
 - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/550262) in GitLab 18.5 [with a flag](../../../administration/feature_flags/_index.md) named `work_item_status_mvc2`. Enabled by default.
+- [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/576610) in GitLab 18.6. Feature flag `work_item_status_mvc2` removed.
 
 {{< /history >}}
 

@@ -1,5 +1,5 @@
 ---
-stage: Create
+stage: AI-powered
 group: Code Creation
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 description: Code Suggestions helps you write code in GitLab more efficiently by using AI to suggest code as you type.
@@ -18,7 +18,7 @@ title: Code Suggestions
 
 - LLM for code completion: [Fireworks Codestral](https://console.cloud.google.com/vertex-ai/publishers/mistralai/model-garden/codestral-2501) (default), [Vertex AI-hosted Codestral](https://console.cloud.google.com/vertex-ai/publishers/mistralai/model-garden/codestral-2501) For code generation: [Claude Sonnet 4](https://console.cloud.google.com/vertex-ai/publishers/anthropic/model-garden/claude-sonnet-4)
 - LLM for Amazon Q: Amazon Q Developer
-- Available on [GitLab Duo with self-hosted models](../../../../administration/gitlab_duo_self_hosted/_index.md): Yes
+- Available on [GitLab Duo with self-hosted models](../../../../administration/gitlab_duo_self_hosted/_index.md)
 
 {{< /collapsible >}}
 
@@ -37,6 +37,7 @@ title: Code Suggestions
 - Enabled Fireworks hosted `Codestral` as the default model in GitLab 18.1.
 - To opt out of Fireworks for a group, the feature flag `code_completion_opt_out_fireworks` is available.
 - [Changed](https://gitlab.com/gitlab-org/gitlab/-/issues/545489) the default model for Code Generation to Claude Sonnet 4 in GitLab 18.2.
+- [Removed](https://gitlab.com/gitlab-org/gitlab/-/issues/462750) feature flag `code_suggestions_context` in GitLab 18.6.
 
 {{< /history >}}
 
@@ -49,12 +50,10 @@ Use GitLab Duo Code Suggestions to write code more efficiently by using generati
 
 ## Prerequisites
 
-To use Code Suggestions, you need:
+To use Code Suggestions:
 
-- A GitLab Duo Core, Pro, or Enterprise add-on.
-- A Premium or Ultimate subscription.
-- If you have GitLab Duo Pro or Enterprise, an assigned seat.
-- If you have GitLab Duo Core, [IDE features turned on](../../../gitlab_duo/turn_on_off.md#turn-gitlab-duo-core-on-or-off).
+- If you have the GitLab Duo Core add-on, [turn on IDE features](../../../gitlab_duo/turn_on_off.md#turn-gitlab-duo-core-on-or-off).
+- [Set up Code Suggestions](set_up.md).
 
 {{< alert type="note" >}}
 
@@ -64,10 +63,6 @@ GitLab Duo requires GitLab 17.2 or later. For GitLab Duo Core access, and for th
 {{< /alert >}}
 
 ## Use Code Suggestions
-
-Prerequisites:
-
-- You must have [set up Code Suggestions](set_up.md).
 
 To use Code Suggestions:
 
@@ -102,10 +97,10 @@ might be available. To view all available suggestions:
 1. Hover over the code completion suggestion.
 1. Scroll through the alternatives. Either:
    - Use keyboard shortcuts:
-     - On a Mac, press <kbd>Option</kbd> + <kbd>\[</kbd> to view the previous suggestion,
-       and press <kbd>Option</kbd> + <kbd>]</kbd> to view the next suggestion.
-     - On Linux and Windows, press <kbd>Alt</kbd> + <kbd>\[</kbd> to view the previous suggestion,
-       and press <kbd>Alt</kbd> + <kbd>]</kbd> to view the next suggestion.
+     - On a Mac, press <kbd>Option</kbd>+<kbd>\[</kbd> to view the previous suggestion,
+       and press <kbd>Option</kbd>+<kbd>]</kbd> to view the next suggestion.
+     - On Linux and Windows, press <kbd>Alt</kbd>+<kbd>\[</kbd> to view the previous suggestion,
+       and press <kbd>Alt</kbd>+<kbd>]</kbd> to view the next suggestion.
    - On the dialog that's displayed, select the right or left arrow to see next or previous options.
 1. Press <kbd>Tab</kbd> to apply the suggestion you prefer.
 
@@ -142,6 +137,7 @@ To get the best results from code generation:
 - In GitLab 17.2 and later, when the `advanced_context_resolver` and `code_suggestions_context`
   feature flags are enabled, open related files in other tabs to expand the
   [context that Code Suggestions is aware of](../../../gitlab_duo/context.md#code-suggestions).
+- [Removed](https://gitlab.com/gitlab-org/gitlab/-/issues/462750) feature flag `code_suggestions_context` in GitLab 18.6.
 
 For example, to create a Python web service with some specific requirements,
 you might write something like:
@@ -229,7 +225,7 @@ You can disable prompt caching for top-level groups in the GitLab Duo settings.
 
 On GitLab.com:
 
-1. On the left sidebar, select **Search or go to** and find your group.
+1. On the left sidebar, select **Search or go to** and find your group. If you've [turned on the new navigation](../../../interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
 1. Select **Settings** > **GitLab Duo**.
 1. Select **Change configuration**.
 1. Disable the **Prompt caching** toggle.
@@ -237,10 +233,10 @@ On GitLab.com:
 
 On GitLab Self-Managed:
 
-1. On the left sidebar, select **Search or go to** and find your group.
-1. Select **Settings** > **General**.
-1. Expand **GitLab Duo features**.
-1. Disable the **Prompt caching** toggle.
+1. On the left sidebar, at the bottom, select **Admin**. If you've [turned on the new navigation](../../../interface_redesign.md#turn-new-navigation-on-or-off), in the upper-right corner, select **Admin**.
+1. Select **GitLab Duo**.
+1. Select **Change Configuration**.
+1. Under **Prompt Cache**, clear the **Turn on prompt caching** checkbox.
 1. Select **Save changes**.
 
 ## Response time
@@ -285,7 +281,7 @@ Prerequisites:
 
 {{< tab title="In 17.4 and later" >}}
 
-1. On the left sidebar, at the bottom, select **Admin**.
+1. On the left sidebar, at the bottom, select **Admin**. If you've [turned on the new navigation](../../../interface_redesign.md#turn-new-navigation-on-or-off), in the upper-right corner, select **Admin**.
 1. Select **Settings** > **General**.
 1. Expand **GitLab Duo features**.
 1. Under **Connection method**, choose an option:
@@ -297,7 +293,7 @@ Prerequisites:
 
 {{< tab title="In 17.3 and earlier" >}}
 
-1. On the left sidebar, at the bottom, select **Admin**.
+1. On the left sidebar, at the bottom, select **Admin**. If you've [turned on the new navigation](../../../interface_redesign.md#turn-new-navigation-on-or-off), in the upper-right corner, select **Admin**.
 1. Select **Settings** > **General**.
 1. Expand **AI-native features**.
 1. Choose an option:

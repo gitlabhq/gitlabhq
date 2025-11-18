@@ -15,7 +15,7 @@ import {
 import { nextTick } from 'vue';
 import * as Sentry from '~/sentry/sentry_browser_wrapper';
 
-import { __, s__ } from '~/locale';
+import { __, s__, sprintf } from '~/locale';
 import { getModifierKey } from '~/constants';
 import Tracking from '~/tracking';
 import { shouldDisableShortcuts } from '~/behaviors/shortcuts/shortcuts_toggle';
@@ -25,9 +25,9 @@ import { isLoggedIn } from '~/lib/utils/common_utils';
 
 import WorkItemChangeTypeModal from 'ee_else_ce/work_items/components/work_item_change_type_modal.vue';
 import {
-  sprintfWorkItem,
   BASE_ALLOWED_CREATE_TYPES,
   CREATION_CONTEXT_RELATED_ITEM,
+  NAME_TO_TEXT_LOWERCASE_MAP,
   STATE_CLOSED,
   WORK_ITEM_TYPE_NAME_KEY_RESULT,
   WORK_ITEM_TYPE_NAME_OBJECTIVE,
@@ -288,35 +288,31 @@ export default {
   computed: {
     i18n() {
       return {
-        deleteWorkItem: sprintfWorkItem(s__('WorkItem|Delete %{workItemType}'), this.workItemType),
-        convertError: sprintfWorkItem(
+        deleteWorkItem: sprintf(s__('WorkItem|Delete %{workItemType}'), {
+          workItemType: NAME_TO_TEXT_LOWERCASE_MAP[this.workItemType],
+        }),
+        convertError: sprintf(
           s__(
             'WorkItem|Something went wrong while promoting the %{workItemType}. Please try again.',
           ),
-          this.workItemType,
+          { workItemType: NAME_TO_TEXT_LOWERCASE_MAP[this.workItemType] },
         ),
-        copyCreateNoteEmail: sprintfWorkItem(
-          s__('WorkItem|Copy %{workItemType} email address'),
-          this.workItemType,
-        ),
-        copyReferenceError: sprintfWorkItem(
+        copyCreateNoteEmail: sprintf(s__('WorkItem|Copy %{workItemType} email address'), {
+          workItemType: NAME_TO_TEXT_LOWERCASE_MAP[this.workItemType],
+        }),
+        copyReferenceError: sprintf(
           s__(
             'WorkItem|Something went wrong while copying the %{workItemType} reference. Please try again.',
           ),
-          this.workItemType,
+          { workItemType: NAME_TO_TEXT_LOWERCASE_MAP[this.workItemType] },
         ),
-        copyCreateNoteEmailError: sprintfWorkItem(
+        copyCreateNoteEmailError: sprintf(
           s__(
             'WorkItem|Something went wrong while copying the %{workItemType} email address. Please try again.',
           ),
-          this.workItemType,
+          { workItemType: NAME_TO_TEXT_LOWERCASE_MAP[this.workItemType] },
         ),
       };
-    },
-    newRelatedItemLabel() {
-      return this.workItemType === WORK_ITEM_TYPE_NAME_EPIC
-        ? sprintfWorkItem(s__('WorkItem|New related %{workItemType}'), this.workItemType)
-        : s__('WorkItem|New related item');
     },
     areYouSureDeleteMessage() {
       const message = this.hasChildren
@@ -326,7 +322,9 @@ export default {
         : s__(
             'WorkItem|Are you sure you want to delete the %{workItemType}? This action cannot be reversed.',
           );
-      return sprintfWorkItem(message, this.workItemType);
+      return sprintf(message, {
+        workItemType: NAME_TO_TEXT_LOWERCASE_MAP[this.workItemType],
+      });
     },
     canPromoteToObjective() {
       return this.canUpdateMetadata && this.workItemType === WORK_ITEM_TYPE_NAME_KEY_RESULT;
@@ -423,6 +421,7 @@ export default {
   methods: {
     copyToClipboard(text, message) {
       if (this.isModal) {
+        // eslint-disable-next-line no-restricted-properties
         navigator.clipboard.writeText(text);
       }
       toast(message);
@@ -597,7 +596,7 @@ export default {
       category="tertiary"
       :auto-close="false"
       no-caret
-      right
+      placement="bottom-end"
       @shown="showDropdown"
       @hidden="hideDropdown"
     >
@@ -649,7 +648,7 @@ export default {
       >
         <template #list-item>
           <gl-icon name="plus" class="gl-mr-2" variant="subtle" />
-          {{ newRelatedItemLabel }}
+          {{ s__('WorkItem|New related item') }}
         </template>
       </gl-disclosure-dropdown-item>
 

@@ -21,6 +21,10 @@ module QA
         gitlab-e2e-sandbox-group-6
         gitlab-e2e-sandbox-group-7
         gitlab-e2e-sandbox-group-8].freeze
+      USER_TOKENS = %w[GITLAB_QA_ADMIN_ACCESS_TOKEN
+        GITLAB_QA_ACCESS_TOKEN
+        GITLAB_QA_USER1_ACCESS_TOKEN
+        GITLAB_QA_USER2_ACCESS_TOKEN].freeze
 
       def initialize(dry_run: false)
         raise ArgumentError, "Please provide GITLAB_ADDRESS environment variable" unless ENV['GITLAB_ADDRESS']

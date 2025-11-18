@@ -35,11 +35,6 @@ RSpec.describe WorkItem, feature_category: :portfolio_management do
         .class_name('::WorkItems::ParentLink')
         .with_foreign_key('work_item_parent_id')
     end
-
-    it 'has one `work_item_transition`' do
-      is_expected.to have_one(:work_item_transition)
-        .class_name('::WorkItems::Transition')
-    end
   end
 
   describe '.work_item_children_by_relative_position' do
@@ -127,6 +122,67 @@ RSpec.describe WorkItem, feature_category: :portfolio_management do
 
       it 'does not return the work item' do
         expect(described_class.with_work_item_parent_ids([parent_item.id])).to be_empty
+      end
+    end
+  end
+
+  describe '.within_namespace_hierarchy' do
+    let_it_be(:root_group) { reusable_group }
+    let_it_be(:subgroup) { create(:group, parent: root_group) }
+    let_it_be(:other_group) { create(:group) }
+
+    let_it_be(:root_group_work_item) { create(:work_item, :epic, namespace: root_group) }
+    let_it_be(:subgroup_work_item) { create(:work_item, :issue, project: reusable_project, namespace: subgroup) }
+    let_it_be(:other_group_work_item) { create(:work_item, :epic, namespace: other_group) }
+
+    context 'when filtering by root group' do
+      it 'returns work items within the hierarchy' do
+        result = described_class.within_namespace_hierarchy(root_group)
+
+        expect(result).to contain_exactly(root_group_work_item, subgroup_work_item)
+        expect(result).not_to include(other_group_work_item)
+      end
+    end
+
+    context 'when filtering by subgroup' do
+      it 'returns work items within the subgroup hierarchy only' do
+        result = described_class.within_namespace_hierarchy(subgroup)
+
+        expect(result).to contain_exactly(subgroup_work_item)
+        expect(result).not_to include(root_group_work_item, other_group_work_item)
+      end
+    end
+  end
+
+  describe '.with_group_level_and_project_issues_enabled' do
+    let_it_be(:group) { create(:group) }
+    let_it_be(:project_with_issues) { create(:project, group: group) }
+    let_it_be(:project_without_issues) { create(:project, group: group) }
+
+    let_it_be(:group_work_item) { create(:work_item, :epic, namespace: group) }
+    let_it_be(:project_with_issues_work_item) { create(:work_item, :issue, project: project_with_issues) }
+    let_it_be(:project_without_issues_work_item) { create(:work_item, :issue, project: project_without_issues) }
+
+    before_all do
+      project_with_issues.project_feature.update!(issues_access_level: ProjectFeature::ENABLED)
+      project_without_issues.project_feature.update!(issues_access_level: ProjectFeature::DISABLED)
+    end
+
+    context 'when include_group_level is true (default)' do
+      it 'returns group-level and work items from projects with issues enabled' do
+        result = described_class.with_group_level_and_project_issues_enabled
+
+        expect(result).to contain_exactly(group_work_item, project_with_issues_work_item)
+        expect(result).not_to include(project_without_issues_work_item)
+      end
+    end
+
+    context 'when include_group_level is false' do
+      it 'returns only work items from projects with issues enabled' do
+        result = described_class.with_group_level_and_project_issues_enabled(include_group_level_items: false)
+
+        expect(result).to contain_exactly(project_with_issues_work_item)
+        expect(result).not_to include(group_work_item, project_without_issues_work_item)
       end
     end
   end

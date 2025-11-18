@@ -35,7 +35,7 @@ RSpec.describe API::Helpers, feature_category: :shared do
       allow_any_instance_of(described_class).to receive(:initial_current_user).and_return(user)
 
       expect(ApplicationRecord.sticking)
-        .to receive(:find_caught_up_replica).with(:user, 42)
+        .to receive(:find_caught_up_replica).with(:user, 42, hash_id: false)
 
       get 'user'
 
@@ -1452,6 +1452,18 @@ RSpec.describe API::Helpers, feature_category: :shared do
             subject
           end
         end
+
+        context 'with checksum headers' do
+          let(:extra_response_headers) { { 'X-Checksum-SHA256' => 'abc123def456' } }
+
+          it 'sends a redirect without checksum in URL parameters (not supported by object storage)' do
+            expect(helper).to receive(:redirect) do |url|
+              expect(url).not_to include('X-Checksum-SHA256')
+            end
+
+            subject
+          end
+        end
       end
 
       context 'with direct upload not available' do
@@ -1498,6 +1510,25 @@ RSpec.describe API::Helpers, feature_category: :shared do
 
               expect(command).to eq('send-url')
               expect(params.dig('ResponseHeaders', 'x-custom-header')).to eq(['test'])
+            end
+
+            subject
+          end
+        end
+
+        context 'with checksum headers' do
+          let(:extra_response_headers) { { 'X-Checksum-SHA256' => 'abc123def456' } }
+
+          it 'sends a workhorse header with checksum headers' do
+            expect(helper).to receive(:status).with(:ok)
+            expect(helper).to receive(:body).with('')
+            expect(helper).to receive(:header) do |name, value|
+              expect(name).to eq(Gitlab::Workhorse::SEND_DATA_HEADER)
+              command, encoded_params = value.split(':')
+              params = Gitlab::Json.parse(Base64.urlsafe_decode64(encoded_params))
+
+              expect(command).to eq('send-url')
+              expect(params.dig('ResponseHeaders', 'X-Checksum-SHA256')).to eq(['abc123def456'])
             end
 
             subject

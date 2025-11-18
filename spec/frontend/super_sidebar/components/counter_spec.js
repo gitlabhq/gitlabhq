@@ -38,7 +38,7 @@ describe('Counter component', () => {
     });
 
     it('renders button', () => {
-      expect(findButton().attributes('aria-label')).toBe('Issues 3');
+      expect(findButton().attributes('aria-label')).toBe('3 Issues');
       expect(findLink().exists()).toBe(false);
     });
   });
@@ -46,7 +46,7 @@ describe('Counter component', () => {
   describe('link', () => {
     it('renders link', () => {
       createWrapper({ href: '/dashboard/todos' });
-      expect(findLink().attributes('aria-label')).toBe('Issues 3');
+      expect(findLink().attributes('aria-label')).toBe('3 Issues');
       expect(findLink().attributes('href')).toBe('/dashboard/todos');
       expect(findButton().exists()).toBe(false);
     });
@@ -57,7 +57,7 @@ describe('Counter component', () => {
     ['110%', '110%'],
     [100, '99+'],
     [10, '10'],
-    [0, ''],
+    [0, '0'],
   ])('formats count %p as %p', (count, result) => {
     createWrapper({ count });
     expect(findButton().text()).toBe(result);

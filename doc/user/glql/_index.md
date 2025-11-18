@@ -30,6 +30,39 @@ An embedded view is the rendered output of a GLQL source code block.
 
 Share your feedback in the [embedded views, powered by GLQL, feedback issue](https://gitlab.com/gitlab-org/gitlab/-/issues/509792).
 
+## Advanced Search integration
+
+{{< details >}}
+
+- Tier: Premium, Ultimate
+- Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
+
+{{< /details >}}
+
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/210854) in GitLab 18.6 as a [beta](../../policy/development_stages_support.md#beta) with [feature flags](../../administration/feature_flags/_index.md) named `glql_work_items` and `glql_es_integration`. Enabled by default.
+
+{{< /history >}}
+
+{{< alert type="flag" >}}
+
+The availability of this feature is controlled by a feature flag.
+For more information, see the history.
+
+{{< /alert >}}
+
+GLQL uses Advanced Search when available to speed up queries. Advanced Search
+provides faster response times for complex queries across large datasets.
+
+Advanced Search is:
+
+- Enabled by default for GitLab.com and GitLab Dedicated paid subscriptions.
+- Available for GitLab Self-Managed when an administrator
+  [enables Advanced Search](../../integration/advanced_search/elasticsearch.md#enable-advanced-search).
+
+If Advanced Search isn't available, GLQL uses PostgreSQL instead.
+
 ## Query syntax
 
 The query syntax consists primarily of logical expressions. These expressions follow the

@@ -169,7 +169,10 @@ export default {
     <div
       class="gl-rounded-lg gl-border-1 gl-border-solid gl-border-default gl-bg-subtle gl-p-2 gl-pb-1 gl-shadow-md dark:gl-bg-strong"
     >
-      <header v-if="isIconOnly && title" class="gl-px-5 gl-py-2 gl-text-sm gl-font-bold">
+      <header
+        v-if="isIconOnly && title"
+        class="gl-px-5 gl-py-2 gl-text-sm gl-font-bold gl-text-heading"
+      >
         {{ title }}
       </header>
       <hr v-if="isIconOnly && title" class="-gl-mx-2 gl-my-2" />

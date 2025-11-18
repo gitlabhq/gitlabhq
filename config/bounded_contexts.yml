@@ -30,7 +30,7 @@ domains:
       - duo_chat
       - ai_abstraction_layer
       - code_suggestions # Also in CodeSuggestions
-      - agent_foundations
+      - duo_agent_platform
       - workflow_catalog
       - knowledge_graph
 

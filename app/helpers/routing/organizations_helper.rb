@@ -85,6 +85,10 @@ module Routing
               define_method(method_name) do |*args, **kwargs|
                 current_organization = Routing::OrganizationsHelper::MappedHelpers.current_organization
 
+                # Handle Ruby 2.4+ keyword argument compatibility
+                # If kwargs is empty but last arg is a hash, treat it as kwargs
+                kwargs = args.pop if kwargs.empty? && args.last.is_a?(Hash) && !args.last.frozen?
+
                 if current_organization && current_organization.scoped_paths?
                   kwargs[:organization_path] ||= current_organization.path
                 end

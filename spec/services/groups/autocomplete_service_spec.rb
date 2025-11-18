@@ -5,6 +5,7 @@ require 'spec_helper'
 RSpec.describe Groups::AutocompleteService, feature_category: :groups_and_projects do
   let_it_be(:group, refind: true) { create(:group, :nested, :private, avatar: fixture_file_upload('spec/fixtures/dk.png')) }
   let_it_be(:sub_group) { create(:group, :private, parent: group) }
+  let_it_be(:project) { create(:project, group: group) }
 
   let(:user) { create(:user) }
 
@@ -61,7 +62,6 @@ RSpec.describe Groups::AutocompleteService, feature_category: :groups_and_projec
   end
 
   describe '#issues' do
-    let_it_be(:project) { create(:project, group: group) }
     let_it_be(:sub_group_project) { create(:project, group: sub_group) }
 
     let_it_be(:project_issue) { create(:issue, project: project) }
@@ -162,6 +162,33 @@ RSpec.describe Groups::AutocompleteService, feature_category: :groups_and_projec
 
       expect(milestones.map(&:iid)).to contain_exactly(subgroup_milestone.iid)
       expect(milestones.map(&:title)).to contain_exactly(subgroup_milestone.title)
+    end
+  end
+
+  describe '#commands' do
+    let_it_be(:work_item) { create(:work_item, project: project) }
+    let(:noteable) { work_item }
+
+    subject(:commands) { described_class.new(group, user).commands(noteable) }
+
+    it 'returns available commands' do
+      expect(commands).to include(a_hash_including(name: :close))
+    end
+
+    context 'when noteable is nil' do
+      let(:noteable) { nil }
+
+      it 'returns empty array' do
+        expect(commands).to be_empty
+      end
+    end
+
+    context 'when current_user is nil' do
+      let(:user) { nil }
+
+      it 'returns empty array' do
+        expect(commands).to be_empty
+      end
     end
   end
 end

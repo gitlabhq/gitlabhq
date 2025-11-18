@@ -7,6 +7,10 @@ module Gitlab
     class Tag < Gitlab::SignedTag
       include Gitlab::Utils::StrongMemoize
 
+      def self.context_from_tag(tag)
+        super.merge(date: tag.date)
+      end
+
       def signature
         strong_memoize(:signature) do
           super
@@ -14,8 +18,8 @@ module Gitlab
           signature = X509::Signature.new(
             signature_text,
             signed_text,
-            @tag.user_email,
-            @tag.date,
+            context[:user_email],
+            context[:date],
             @repository.container
           )
 

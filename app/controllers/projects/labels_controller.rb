@@ -133,12 +133,13 @@ class Projects::LabelsController < Projects::ApplicationController
       return render_404 unless promote_service.execute(@label)
 
       flash[:notice] = flash_notice_for(@label, @project.group)
+      page = params[:page]
       respond_to do |format|
         format.html do
-          redirect_to(project_labels_path(@project), status: :see_other)
+          redirect_to(project_labels_path(@project, page: page), status: :see_other)
         end
         format.json do
-          render json: { url: project_labels_path(@project) }
+          render json: { url: project_labels_path(@project, page: page) }
         end
       end
     rescue ActiveRecord::RecordInvalid => e

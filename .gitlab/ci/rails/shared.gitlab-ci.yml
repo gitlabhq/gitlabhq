@@ -120,7 +120,7 @@ include:
     - bundle exec gem list gitlab_quality-test_tooling
     - |
       section_start "failed-test-issues" "Report test failures"
-      if [[ -n "$TEST_FAILURES_PROJECT_TOKEN" ]]; then
+      if [[ -n "$GITLAB_QA_TEST_FAILURE_ISSUE_ACCESS_TOKEN" ]]; then
         input_file="rspec/rspec-${CI_JOB_ID}.json"
 
         # The actual failures will always be part of the retry report
@@ -129,8 +129,8 @@ include:
         fi
 
         cmd_args=()
-        cmd_args+=(--token "${TEST_FAILURES_PROJECT_TOKEN}")
-        cmd_args+=(--project "gitlab-org/gitlab")
+        cmd_args+=(--token "${GITLAB_QA_TEST_FAILURE_ISSUE_ACCESS_TOKEN}")
+        cmd_args+=(--project "gitlab-org/quality/test-failure-issues")
         cmd_args+=(--input-files "${input_file}")
         cmd_args+=(--exclude-labels-for-search "QA,knapsack_report")
         cmd_args+=(--related-issues-file "rspec/${CI_JOB_ID}-failed-test-issues.json")
@@ -156,34 +156,34 @@ include:
         # Execute command with all arguments
         bundle exec failed-test-issues "${cmd_args[@]}"
       else
-        echoinfo "Not reporting test failures because TEST_FAILURES_PROJECT_TOKEN is not set"
+        echoinfo "Not reporting test failures because GITLAB_QA_TEST_FAILURE_ISSUE_ACCESS_TOKEN is not set"
       fi
       section_end "failed-test-issues"
     - |
       section_start "flaky-test-issues" "Report test flakiness"
-      if [[ "$CREATE_RAILS_FLAKY_TEST_ISSUES" == "true" ]] && [[ -n "$TEST_FAILURES_PROJECT_TOKEN" ]]; then
+      if [[ "$CREATE_RAILS_FLAKY_TEST_ISSUES" == "true" ]] && [[ -n "$GITLAB_QA_TEST_FAILURE_ISSUE_ACCESS_TOKEN" ]]; then
         if [ -f "rspec/rspec-retry-${CI_JOB_ID}.json" ]; then
           bundle exec flaky-test-issues \
-            --token "${TEST_FAILURES_PROJECT_TOKEN}" \
-            --project "gitlab-org/gitlab" \
+            --token "${GITLAB_QA_TEST_FAILURE_ISSUE_ACCESS_TOKEN}" \
+            --project "gitlab-org/quality/test-failure-issues" \
             --input-files "rspec/rspec-retry-${CI_JOB_ID}.json";
         else
           echoerr "Not reporting test flakiness because 'rspec/rspec-retry-${CI_JOB_ID}.json' is missing!"
         fi
       else
-        echoinfo "Not reporting test flakiness because \$CREATE_RAILS_FLAKY_TEST_ISSUES != 'true' or TEST_FAILURES_PROJECT_TOKEN is not set"
+        echoinfo "Not reporting test flakiness because \$CREATE_RAILS_FLAKY_TEST_ISSUES != 'true' or GITLAB_QA_TEST_FAILURE_ISSUE_ACCESS_TOKEN is not set"
       fi
       section_end "flaky-test-issues"
     - |
       section_start "slow-test-issues" "Report test slowness"
-      if [[ "$CREATE_RAILS_SLOW_TEST_ISSUES" == "true" ]] && [[ -n "$TEST_FAILURES_PROJECT_TOKEN" ]]; then
+      if [[ "$CREATE_RAILS_SLOW_TEST_ISSUES" == "true" ]] && [[ -n "$GITLAB_QA_TEST_FAILURE_ISSUE_ACCESS_TOKEN" ]]; then
         bundle exec slow-test-issues \
-          --token "${TEST_FAILURES_PROJECT_TOKEN}" \
-          --project "gitlab-org/gitlab" \
+          --token "${GITLAB_QA_TEST_FAILURE_ISSUE_ACCESS_TOKEN}" \
+          --project "gitlab-org/quality/test-failure-issues" \
           --input-files "rspec/rspec-*.json" \
           --related-issues-file "rspec/${CI_JOB_ID}-slow-test-issues.json";
       else
-        echoinfo "Not reporting test slowness because \$CREATE_RAILS_SLOW_TEST_ISSUES != 'true' or TEST_FAILURES_PROJECT_TOKEN is not set"
+        echoinfo "Not reporting test slowness because \$CREATE_RAILS_SLOW_TEST_ISSUES != 'true' or GITLAB_QA_TEST_FAILURE_ISSUE_ACCESS_TOKEN is not set"
       fi
       section_end "slow-test-issues"
     - |

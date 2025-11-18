@@ -67,8 +67,7 @@ RSpec.describe Gitlab::Ci::JobDefinitions::FindOrCreate, feature_category: :pipe
           checksum: job_def1.checksum,
           config: config1,
           interruptible: false,
-          created_at: Time.current,
-          updated_at: Time.current
+          created_at: Time.current
         )
 
         expect(definition2).to have_attributes(
@@ -77,8 +76,7 @@ RSpec.describe Gitlab::Ci::JobDefinitions::FindOrCreate, feature_category: :pipe
           checksum: job_def2.checksum,
           config: config2,
           interruptible: false,
-          created_at: Time.current,
-          updated_at: Time.current
+          created_at: Time.current
         )
       end
 
@@ -135,13 +133,8 @@ RSpec.describe Gitlab::Ci::JobDefinitions::FindOrCreate, feature_category: :pipe
         expect(result.map(&:checksum)).to contain_exactly(existing_job_def.checksum, new_job_def.checksum)
       end
 
-      it 'does not update existing records', :freeze_time do
-        original_updated_at = existing_definition.updated_at
-
-        execute
-        existing_definition.reload
-
-        expect(existing_definition.updated_at).to eq(original_updated_at)
+      it 'does not update existing records' do
+        expect { execute }.not_to change { existing_definition.reload.attributes }
       end
     end
 

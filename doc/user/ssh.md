@@ -238,7 +238,7 @@ To use SSH with GitLab, copy your public key to your GitLab account:
    {{< /tabs >}}
 
 1. Sign in to GitLab.
-1. On the left sidebar, select your avatar.
+1. On the left sidebar, select your avatar. If you've [turned on the new navigation](interface_redesign.md#turn-new-navigation-on-or-off), this button is in the upper-right corner.
 1. Select **Edit profile**.
 1. On the left sidebar, select **SSH Keys**.
 1. Select **Add new key**.
@@ -249,11 +249,8 @@ To use SSH with GitLab, copy your public key to your GitLab account:
 1. In the **Title** box, type a description, like `Work Laptop` or
    `Home Workstation`.
 1. Optional. Select the **Usage type** of the key. It can be used either for `Authentication` or `Signing` or both. `Authentication & Signing` is the default value.
-1. Optional. Update **Expiration date** to modify the default expiration date.
-   - Administrators can view expiration dates and use them for
-     guidance when [deleting keys](../administration/credentials_inventory.md#delete-ssh-keys).
-   - GitLab checks all SSH keys at 01:00 AM UTC every day. It emails an expiration notice for all SSH keys that are scheduled to expire seven days from now.
-   - GitLab checks all SSH keys at 02:00 AM UTC every day. It emails an expiration notice for all SSH keys that expire on the current date.
+1. Optional. Update **Expiration date** to modify the default expiration date. For more information, see
+[SSH key expiration](#ssh-key-expiration).
 1. Select **Add key**.
 
 ## Verify that you can connect
@@ -282,7 +279,13 @@ Verify that your SSH key was added correctly.
    Are you sure you want to continue connecting (yes/no)?
    ```
 
-   You should receive a welcome message. If the message doesn't appear, you might need to
+   You should receive a welcome message.
+
+   ```plaintext
+   Welcome to GitLab, <username>!
+   ```
+
+   If the message doesn't appear, you might need to
    [troubleshoot your SSH connection](ssh_troubleshooting.md#general-ssh-troubleshooting).
 
 ## Update your SSH key passphrase
@@ -383,7 +386,7 @@ You can use [1Password](https://1password.com/) and the [1Password browser exten
 - Use an existing SSH key in your 1Password vault to authenticate with GitLab.
 
 1. Sign in to GitLab.
-1. On the left sidebar, select your avatar.
+1. On the left sidebar, select your avatar. If you've [turned on the new navigation](interface_redesign.md#turn-new-navigation-on-or-off), this button is in the upper-right corner.
 1. Select **Edit profile**.
 1. On the left sidebar, select **SSH Keys**.
 1. Select **Add new key**.
@@ -415,7 +418,7 @@ on `ssh` command options, see the `man` pages for both `ssh` and `ssh_config`.
 
 To view the SSH keys for your account:
 
-1. On the left sidebar, select your avatar.
+1. On the left sidebar, select your avatar. If you've [turned on the new navigation](interface_redesign.md#turn-new-navigation-on-or-off), this button is in the upper-right corner.
 1. Select **Edit profile**.
 1. On the left sidebar, select **SSH Keys**.
 
@@ -450,7 +453,7 @@ Prerequisites:
 
 To revoke an SSH key:
 
-1. On the left sidebar, select your avatar.
+1. On the left sidebar, select your avatar. If you've [turned on the new navigation](interface_redesign.md#turn-new-navigation-on-or-off), this button is in the upper-right corner.
 1. Select **Edit profile**.
 1. On the left sidebar, select **SSH Keys**.
 1. Next to the SSH key you want to revoke, select **Revoke**.
@@ -460,11 +463,28 @@ To revoke an SSH key:
 
 To delete an SSH key:
 
-1. On the left sidebar, select your avatar.
+1. On the left sidebar, select your avatar. If you've [turned on the new navigation](interface_redesign.md#turn-new-navigation-on-or-off), this button is in the upper-right corner.
 1. Select **Edit profile**.
 1. On the left sidebar, select **SSH Keys**.
 1. Next to the key you want to delete, select **Remove** ({{< icon name="remove" >}}).
 1. Select **Delete**.
+
+## SSH key expiration
+
+You can set an expiration date when you add an SSH key to your account. This optional setting
+helps limit the risk of a security breach.
+
+After your SSH key expires, you can no longer use it to authenticate or sign commits. You must
+[generate a new SSH key](#generate-an-ssh-key-pair) and
+[add it to your account](#add-an-ssh-key-to-your-gitlab-account).
+
+On GitLab Self-Managed and GitLab Dedicated, administrators can view expiration dates and use them
+for guidance when [deleting keys](../administration/credentials_inventory.md#delete-ssh-keys).
+
+GitLab checks daily for expiring SSH keys and sends notifications:
+
+- At 01:00 AM UTC, seven days before expiration.
+- At 02:00 AM UTC on the expiration date.
 
 ## Use different accounts on a single GitLab instance
 
@@ -546,6 +566,47 @@ Alternative tools include:
 
 - [Cygwin](https://www.cygwin.com)
 - [PuTTYgen](https://www.chiark.greenend.org.uk/~sgtatham/putty/latest.html) 0.81 and later (earlier versions are [vulnerable to disclosure attacks](https://www.openwall.com/lists/oss-security/2024/04/15/6))
+
+## Disable SSH Keys for enterprise users
+
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/30343) in GitLab 18.6 [with a flag](../administration/feature_flags/_index.md) named `enterprise_disable_ssh_keys`. Disabled by default.
+
+{{< /history >}}
+
+{{< alert type="flag" >}}
+
+The availability of this feature is controlled by a feature flag.
+For more information, see the history.
+
+{{< /alert >}}
+
+Prerequisites:
+
+- You must have the Owner role for the group that the enterprise user belongs to.
+
+Disabling the SSH Keys of a group's [enterprise users](enterprise_user/_index.md):
+
+- Stops the enterprise users from adding new SSH Keys. This behavior applies
+  even if an enterprise user is also an administrator of the group.
+- Disables the existing SSH Keys of the enterprise users.
+
+{{< alert type="warning" >}}
+
+Disabling SSH Keys for enterprise users does not disable deployment keys for [service accounts](profile/service_accounts.md).
+
+{{< /alert >}}
+
+To disable the enterprise users' SSH Keys:
+
+1. On the left sidebar, select **Search or go to** and find your group. If you've [turned on the new navigation](interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
+1. Select **Settings > General**.
+1. Expand **Permissions and group features**.
+1. Under **Enterprise users**, select **Disable SSH Keys**.
+1. Select **Save changes**.
+
+When you delete or block an enterprise user account, their personal SSH Keys are automatically revoked.
 
 ## Overriding SSH settings on the GitLab server
 

@@ -13,4 +13,9 @@ describe('BlameLegend', () => {
     const legendBoxes = wrapper.findAll('.legend-box');
     expect(legendBoxes).toHaveLength(10);
   });
+
+  it('hides blame indicators from screen readers', () => {
+    createComponent();
+    expect(wrapper.attributes('aria-hidden')).toBe('true');
+  });
 });

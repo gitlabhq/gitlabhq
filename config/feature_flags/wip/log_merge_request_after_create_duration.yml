@@ -1,0 +1,10 @@
+---
+name: log_merge_request_after_create_duration
+description: Log the duration of methods in the MergeRequests::AfterCreateService
+feature_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/417973
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/210832
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/579080
+milestone: '18.6'
+group: group::code review
+type: wip
+default_enabled: false

@@ -35,7 +35,7 @@ vulnerability can compromise GitLab accounts.
 To mitigate this vulnerability, append `/users/auth` to the authorization
 callback URL.
 
-However, as far as we know, GitHub does not validate the subdomain part of the `redirect_uri`.
+However, GitHub does not validate the subdomain part of the `redirect_uri`.
 Therefore, a subdomain takeover, an XSS, or an open redirect on any subdomain of
 your website could enable the covert redirect attack.
 
@@ -239,7 +239,7 @@ and then connect it to your GitHub account
 
 To fix this issue, you must activate GitHub sign-in in GitLab:
 
-1. On the left sidebar, select your avatar.
+1. On the left sidebar, select your avatar. If you've [turned on the new navigation](../user/interface_redesign.md#turn-new-navigation-on-or-off), this button is in the upper-right corner.
 1. Select **Edit profile**.
 1. On the left sidebar, select **Account**.
 1. In the **Service sign-in** section, select **Connect to GitHub**.

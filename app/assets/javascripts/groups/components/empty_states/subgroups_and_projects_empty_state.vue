@@ -1,35 +1,25 @@
 <script>
-import ActionCard from '~/vue_shared/components/action_card.vue';
+import groupsEmptyStateIllustration from '@gitlab/svgs/dist/illustrations/empty-state/empty-groups-md.svg?url';
+import { GlButton } from '@gitlab/ui';
 import ResourceListsEmptyState from '~/vue_shared/components/resource_lists/empty_state.vue';
 import { s__ } from '~/locale';
 import { SEARCH_MINIMUM_LENGTH } from '../../constants';
 
 export default {
-  components: { ResourceListsEmptyState, ActionCard },
+  components: { ResourceListsEmptyState, GlButton },
   SEARCH_MINIMUM_LENGTH,
+  groupsEmptyStateIllustration,
   i18n: {
-    title: s__('GroupsEmptyState|There are no subgroups or projects in this group'),
+    title: s__('GroupsEmptyState|Organize your work with projects and subgroups'),
+    noPermissionsTitle: s__('GroupsEmptyState|There are no subgroups or projects in this group'),
     description: s__(
+      'GroupsEmptyState|Use projects to store Git repositories and collaborate on issues. Use subgroups as folders to organize related projects and manage team access.',
+    ),
+    noPermissionsDescription: s__(
       'GroupsEmptyState|You do not have necessary permissions to create a subgroup or project in this group. Please contact an owner of this group to create a new subgroup or project.',
     ),
-    subgroup: {
-      title: s__('GroupsEmptyState|Create subgroup'),
-      description: s__('GroupsEmptyState|Use groups to manage multiple projects and members.'),
-    },
-    project: {
-      title: s__('GroupsEmptyState|Create project'),
-      description: s__(
-        'GroupsEmptyState|Use projects to store and access issues, wiki pages, and other GitLab features.',
-      ),
-    },
   },
-  inject: [
-    'newSubgroupPath',
-    'newProjectPath',
-    'emptyProjectsIllustration',
-    'canCreateSubgroups',
-    'canCreateProjects',
-  ],
+  inject: ['newSubgroupPath', 'newProjectPath', 'canCreateSubgroups', 'canCreateProjects'],
   props: {
     search: {
       type: String,
@@ -42,7 +32,12 @@ export default {
       return this.canCreateSubgroups || this.canCreateProjects;
     },
     description() {
-      return this.hasActions ? null : this.$options.i18n.description;
+      return this.hasActions
+        ? this.$options.i18n.description
+        : this.$options.i18n.noPermissionsDescription;
+    },
+    title() {
+      return this.hasActions ? this.$options.i18n.title : this.$options.i18n.noPermissionsTitle;
     },
   },
 };
@@ -50,35 +45,35 @@ export default {
 
 <template>
   <resource-lists-empty-state
-    :title="$options.i18n.title"
-    :svg-path="emptyProjectsIllustration"
+    :title="title"
+    :svg-path="$options.groupsEmptyStateIllustration"
     :description="description"
     :search="search"
     :search-minimum-length="$options.SEARCH_MINIMUM_LENGTH"
   >
     <template v-if="hasActions" #actions>
       <div
-        class="gl-mt-5 gl-flex gl-flex-col gl-justify-center gl-gap-4 gl-text-left @md/panel:gl-flex-row"
+        class="gl-flex gl-flex-col gl-justify-center gl-gap-3 gl-text-left @md/panel:gl-flex-row"
         data-testid="empty-subgroup-and-projects-actions"
       >
-        <action-card
-          v-if="canCreateSubgroups"
-          :title="$options.i18n.subgroup.title"
-          :description="$options.i18n.subgroup.description"
-          icon="subgroup"
-          :href="newSubgroupPath"
-          data-testid="create-subgroup"
-          class="gl-basis-1/2"
-        />
-        <action-card
+        <gl-button
           v-if="canCreateProjects"
-          :title="$options.i18n.project.title"
-          :description="$options.i18n.project.description"
-          icon="project"
           :href="newProjectPath"
           data-testid="create-project"
-          class="gl-basis-1/2"
-        />
+          variant="confirm"
+          category="primary"
+        >
+          {{ __('Create project') }}
+        </gl-button>
+        <gl-button
+          v-if="canCreateSubgroups"
+          :href="newSubgroupPath"
+          data-testid="create-subgroup"
+          :variant="canCreateProjects ? 'default' : 'confirm'"
+          :category="canCreateProjects ? 'secondary' : 'primary'"
+        >
+          {{ __('Create subgroup') }}
+        </gl-button>
       </div>
     </template>
   </resource-lists-empty-state>

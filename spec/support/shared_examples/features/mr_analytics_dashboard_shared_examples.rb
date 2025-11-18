@@ -42,6 +42,7 @@ RSpec.shared_examples 'renders merge requests in table in `Merge Requests` panel
 
       expected_mrs.each_with_index do |merge_request, i|
         expect(table_rows[i]).to have_content merge_request.title
+        expect(table_rows[i]).to have_content merge_request.milestone.title if merge_request.milestone.present?
       end
     end
   end

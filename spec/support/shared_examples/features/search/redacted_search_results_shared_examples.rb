@@ -51,7 +51,6 @@ RSpec.shared_examples 'a redacted search results' do
         .with(
           hash_including(
             message: "redacted_search_results",
-            current_user_id: user.id,
             query: search,
             "meta.search.type": search_service.search_type,
             "meta.search.level": search_service.level,
@@ -126,7 +125,6 @@ RSpec.shared_examples 'a redacted search results' do
         .with(
           hash_including(
             message: "redacted_search_results",
-            current_user_id: user.id,
             query: search,
             filtered: array_including(
               [
@@ -161,7 +159,6 @@ RSpec.shared_examples 'a redacted search results' do
         .with(
           hash_including(
             message: "redacted_search_results",
-            current_user_id: user.id,
             query: search,
             filtered: array_including(
               [
@@ -193,7 +190,6 @@ RSpec.shared_examples 'a redacted search results' do
         .with(
           hash_including(
             message: "redacted_search_results",
-            current_user_id: user.id,
             query: search,
             filtered: array_including(
               [
@@ -219,7 +215,6 @@ RSpec.shared_examples 'a redacted search results' do
         .with(
           hash_including(
             message: "redacted_search_results",
-            current_user_id: user.id,
             query: search,
             filtered: array_including(
               [
@@ -245,7 +240,6 @@ RSpec.shared_examples 'a redacted search results' do
         .with(
           hash_including(
             message: "redacted_search_results",
-            current_user_id: user.id,
             query: search,
             filtered: array_including(
               [
@@ -275,7 +269,6 @@ RSpec.shared_examples 'a redacted search results' do
         .with(
           hash_including(
             message: "redacted_search_results",
-            current_user_id: user.id,
             query: search,
             filtered: array_including(
               [
@@ -305,7 +298,6 @@ RSpec.shared_examples 'a redacted search results' do
         .with(
           hash_including(
             message: "redacted_search_results",
-            current_user_id: user.id,
             query: search,
             filtered: array_including(
               [

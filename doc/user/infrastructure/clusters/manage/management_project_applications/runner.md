@@ -46,7 +46,12 @@ The methods of specifying these values are mutually exclusive. You can either:
 - Specify the variables `GITLAB_RUNNER_TOKEN` and `CI_SERVER_URL` as CI variables (recommended).
 - Provide values for `runnerToken:` and `gitlabUrl:` in `applications/gitlab-runner/values.yaml.gotmpl`.
 
-The runner registration token allows connection to a project by a runner and therefore should be treated as a secret to prevent malicious use and code exfiltration through a runner. For this reason, we recommend that you specify the runner registration token as a [protected variable](../../../../../ci/variables/_index.md#protect-a-cicd-variable) and [masked variable](../../../../../ci/variables/_index.md#mask-a-cicd-variable) and do not commit them to the Git repository in the `values.yaml.gotmpl` file.
+The runner registration token allows connection to a project by a runner. Treat it as a
+secret to prevent malicious use and code exfiltration through a runner. Specify the
+runner registration token as a
+[protected variable](../../../../../ci/variables/_index.md#protect-a-cicd-variable) and
+[masked variable](../../../../../ci/variables/_index.md#mask-a-cicd-variable). Do not
+commit tokens to the Git repository in the `values.yaml.gotmpl` file.
 
 You can customize the installation of GitLab Runner by defining
 `applications/gitlab-runner/values.yaml.gotmpl` file in your cluster

@@ -150,11 +150,79 @@ RSpec.describe MergeRequests::UpdateReviewersService, feature_category: :code_re
             merge_request,
             'update',
             old_associations: {
-              reviewers: [user3]
+              reviewers_hook_attrs: [
+                hash_including(user3.hook_attrs.merge(state: 'unreviewed', re_requested: false))
+              ]
             }
           )
 
         set_reviewers
+      end
+
+      it 'includes reviewer state information in webhook payload' do
+        # Set up a reviewer with reviewed state
+        merge_request.merge_request_reviewers.find_by(user_id: user3.id).update!(state: 'reviewed')
+
+        expect(service).to receive(:execute_hooks) do |_, _, options|
+          old_associations = options[:old_associations]
+          expect(old_associations).to include(:reviewers_hook_attrs)
+
+          old_reviewer_data = old_associations[:reviewers_hook_attrs].first
+          expect(old_reviewer_data).to include(
+            id: user3.id,
+            state: 'reviewed'
+          )
+        end
+
+        set_reviewers
+      end
+
+      context 'when adding reviewers to MR with no reviewers' do
+        let_it_be(:merge_request_without_reviewers) do
+          create(
+            :merge_request,
+            :simple,
+            :unique_branches,
+            source_project: project,
+            target_project: project,
+            author: create(:user)
+          )
+        end
+
+        let(:service) do
+          described_class.new(project: project, current_user: user, params: { reviewer_ids: [user2.id] })
+        end
+
+        it 'includes reviewer changes in webhook payload' do
+          webhook_payload = nil
+
+          allow(service).to receive(:execute_hooks) do |mr, action, options|
+            webhook_payload = Gitlab::DataBuilder::Issuable.new(mr).build(
+              user: user,
+              changes: mr.hook_reviewer_changes(options[:old_associations]),
+              action: action
+            )
+          end
+
+          service.execute(merge_request_without_reviewers)
+
+          expect(webhook_payload).to be_present
+          expect(webhook_payload[:changes]).to include(:reviewers)
+
+          old_reviewers = webhook_payload[:changes][:reviewers][:previous]
+          current_reviewers = webhook_payload[:changes][:reviewers][:current]
+
+          # Old state should be empty
+          expect(old_reviewers).to eq([])
+
+          # Current state should have the new reviewer
+          expect(current_reviewers.length).to eq(1)
+          expect(current_reviewers.first).to include(
+            id: user2.id,
+            state: 'unreviewed',
+            re_requested: false
+          )
+        end
       end
 
       context 'when reviewers did not change' do

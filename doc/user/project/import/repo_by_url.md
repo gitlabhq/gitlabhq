@@ -2,7 +2,7 @@
 stage: Create
 group: Import
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
-title: Import project from repository by URL
+title: Migrate through a Git URL
 description: "Import repositories to GitLab by URL."
 ---
 
@@ -40,7 +40,7 @@ You can import your Git repository by:
 
 ## Import a project by using the UI
 
-1. On the left sidebar, at the top, select **Create new** ({{< icon name="plus" >}}) and **New project/repository**.
+1. On the left sidebar, at the top, select **Create new** ({{< icon name="plus" >}}) and **New project/repository**. If you've [turned on the new navigation](../../interface_redesign.md#turn-new-navigation-on-or-off), this button is in the upper-right corner.
 1. Select **Import project**.
 1. Select **Repository by URL**.
 1. Enter a **Git repository URL**.

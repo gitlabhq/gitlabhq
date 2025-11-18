@@ -2,6 +2,7 @@
 
 require 'spec_helper'
 
+# rubocop:disable RSpec/MultipleMemoizedHelpers -- legacy spec file
 RSpec.describe Gitlab::LegacyGithubImport::PullRequestFormatter, :clean_gitlab_redis_shared_state, feature_category: :importers do
   include Import::UserMappingHelper
 
@@ -12,7 +13,6 @@ RSpec.describe Gitlab::LegacyGithubImport::PullRequestFormatter, :clean_gitlab_r
       :with_import_url,
       :in_group,
       :import_user_mapping_enabled,
-      :user_mapping_to_personal_namespace_owner_enabled,
       import_type: ::Import::SOURCE_GITEA
     )
   end
@@ -38,6 +38,7 @@ RSpec.describe Gitlab::LegacyGithubImport::PullRequestFormatter, :clean_gitlab_r
 
   let(:client) { instance_double(Gitlab::LegacyGithubImport::Client) }
   let(:ghost_user) { { id: -1, login: 'Ghost' } }
+  let(:internal_ghost_user) { Users::Internal.for_organization(project.organization).ghost }
   let(:source_sha) { create(:commit, project: project).id }
   let(:target_commit) { create(:commit, project: project, git_commit: RepoHelpers.another_sample_commit) }
   let(:target_sha) { target_commit.id }
@@ -188,7 +189,7 @@ RSpec.describe Gitlab::LegacyGithubImport::PullRequestFormatter, :clean_gitlab_r
         let(:raw_data) { base_data.merge(assignee: ghost_user) }
 
         it 'returns gitlab ghost user id for assignee_id' do
-          expect(pull_request.attributes.fetch(:assignee_id)).to eq(Users::Internal.ghost.id)
+          expect(pull_request.attributes.fetch(:assignee_id)).to eq(internal_ghost_user.id)
         end
       end
 
@@ -202,20 +203,6 @@ RSpec.describe Gitlab::LegacyGithubImport::PullRequestFormatter, :clean_gitlab_r
 
         it 'maps the assignee to the personal namespace owner' do
           expect(pull_request.attributes.fetch(:assignee_id)).to eq(user_namespace.owner_id)
-        end
-
-        context 'when user_mapping_to_personal_namespace_owner is disabled' do
-          before_all do
-            project.build_or_assign_import_data(
-              data: { user_mapping_to_personal_namespace_owner_enabled: false }
-            ).save!
-          end
-
-          it 'maps the assignee to the import user' do
-            expect(pull_request.attributes.fetch(:assignee_id)).to eq(
-              user_namespace.namespace_import_user.user_id
-            )
-          end
         end
       end
 
@@ -262,7 +249,7 @@ RSpec.describe Gitlab::LegacyGithubImport::PullRequestFormatter, :clean_gitlab_r
         let(:raw_data) { base_data.merge(user: ghost_user) }
 
         it 'returns the gitlab ghost user id' do
-          expect(pull_request.attributes.fetch(:author_id)).to eq(Users::Internal.ghost.id)
+          expect(pull_request.attributes.fetch(:author_id)).to eq(internal_ghost_user.id)
         end
       end
 
@@ -276,20 +263,6 @@ RSpec.describe Gitlab::LegacyGithubImport::PullRequestFormatter, :clean_gitlab_r
 
         it 'maps the author to the personal namespace owner' do
           expect(pull_request.attributes.fetch(:author_id)).to eq(user_namespace.owner_id)
-        end
-
-        context 'when user_mapping_to_personal_namespace_owner is disabled' do
-          before_all do
-            project.build_or_assign_import_data(
-              data: { user_mapping_to_personal_namespace_owner_enabled: false }
-            ).save!
-          end
-
-          it 'maps the assignee to the import user' do
-            expect(pull_request.attributes.fetch(:author_id)).to eq(
-              user_namespace.namespace_import_user.user_id
-            )
-          end
         end
       end
 
@@ -409,7 +382,6 @@ RSpec.describe Gitlab::LegacyGithubImport::PullRequestFormatter, :clean_gitlab_r
         :with_import_url,
         :in_group,
         :import_user_mapping_enabled,
-        :user_mapping_to_personal_namespace_owner_enabled,
         import_type: ::Import::SOURCE_GITHUB
       )
     end
@@ -589,30 +561,6 @@ RSpec.describe Gitlab::LegacyGithubImport::PullRequestFormatter, :clean_gitlab_r
         pull_request.create!
         expect(cached_references).to be_empty
       end
-
-      context 'when user_mapping_to_personal_namespace_owner is disabled' do
-        before_all do
-          project.build_or_assign_import_data(
-            data: { user_mapping_to_personal_namespace_owner_enabled: false }
-          ).save!
-        end
-
-        it 'pushes placeholder references for the pull request and assignees' do
-          pull_request.create!
-
-          import_source_user = Import::SourceUser.find_source_user(
-            source_user_identifier: octocat[:id],
-            namespace: project.root_ancestor,
-            source_hostname: 'https://gitea.com',
-            import_type: ::Import::SOURCE_GITEA
-          )
-
-          expect(cached_references).to match_array([
-            ['MergeRequest', an_instance_of(Integer), 'author_id', import_source_user.id],
-            ['MergeRequestAssignee', an_instance_of(Integer), 'user_id', import_source_user.id]
-          ])
-        end
-      end
     end
 
     context 'when the pull_request references deleted users in Gitea' do
@@ -636,3 +584,4 @@ RSpec.describe Gitlab::LegacyGithubImport::PullRequestFormatter, :clean_gitlab_r
     end
   end
 end
+# rubocop:enable RSpec/MultipleMemoizedHelpers

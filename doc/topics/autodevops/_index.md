@@ -35,15 +35,15 @@ For an introduction to Auto DevOps, watch [Auto DevOps](https://youtu.be/0Tc0YYB
 
 Auto DevOps supports development during each of the [DevOps stages](stages.md).
 
-| Stage | Auto DevOps feature |
-|---------|-------------|
-| Build | [Auto Build](stages.md#auto-build) |
-| Build | [Auto Dependency Scanning](stages.md#auto-dependency-scanning) |
-| Test | [Auto Test](stages.md#auto-test) |
-| Test | [Auto Browser Performance Testing](stages.md#auto-browser-performance-testing) |
-| Test | [Auto Code Intelligence](stages.md#auto-code-intelligence) |
-| Test | [Auto Code Quality](stages.md#auto-code-quality) |
-| Test | [Auto Container Scanning](stages.md#auto-container-scanning) |
+| Stage  | Auto DevOps feature |
+|--------|---------------------|
+| Build  | [Auto Build](stages.md#auto-build) |
+| Build  | [Auto Dependency Scanning](stages.md#auto-dependency-scanning) |
+| Test   | [Auto Test](stages.md#auto-test) |
+| Test   | [Auto Browser Performance Testing](stages.md#auto-browser-performance-testing) |
+| Test   | [Auto Code Intelligence](stages.md#auto-code-intelligence) |
+| Test   | [Auto Code Quality](stages.md#auto-code-quality) |
+| Test   | [Auto container scanning](stages.md#auto-container-scanning) |
 | Deploy | [Auto Review Apps](stages.md#auto-review-apps) |
 | Deploy | [Auto Deploy](stages.md#auto-deploy) |
 | Secure | [Auto Dynamic Application Security Testing (DAST)](stages.md#auto-dast) |
@@ -102,7 +102,7 @@ Prerequisites:
 
 To enable Auto DevOps for a project:
 
-1. On the left sidebar, select **Search or go to** and find your project.
+1. On the left sidebar, select **Search or go to** and find your project. If you've [turned on the new navigation](../../user/interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
 1. Select **Settings** > **CI/CD**.
 1. Expand **Auto DevOps**.
 1. Select the **Default to Auto DevOps pipeline** checkbox.
@@ -131,7 +131,7 @@ Prerequisites:
 
 To enable Auto DevOps for a group:
 
-1. On the left sidebar, select **Search or go to** and find your group.
+1. On the left sidebar, select **Search or go to** and find your group. If you've [turned on the new navigation](../../user/interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
 1. Select **Settings** > **CI/CD**.
 1. Expand **Auto DevOps**.
 1. Select the **Default to Auto DevOps pipeline** checkbox.
@@ -143,7 +143,7 @@ clear the **Default to Auto DevOps pipeline** checkbox.
 After enabling Auto DevOps for a group, you can trigger the
 Auto DevOps pipeline for any project that belongs to that group:
 
-1. On the left sidebar, select **Search or go to** and find your project.
+1. On the left sidebar, select **Search or go to** and find your project. If you've [turned on the new navigation](../../user/interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
 1. Make sure the project doesn't contain a `.gitlab-ci.yml` file.
 1. Select **Build** > **Pipelines**.
 1. To trigger the Auto DevOps pipeline, select **New pipeline**.

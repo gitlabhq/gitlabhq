@@ -13,12 +13,14 @@ import (
 
 // PumaReadinessChecker checks Puma's readiness endpoint and optionally control server
 type PumaReadinessChecker struct {
-	name       string
-	url        string
-	controlURL string
-	timeout    time.Duration
-	client     *http.Client
-	logger     *logrus.Logger
+	name           string
+	url            string // URL to validate readiness (e.g. /-/readiness)
+	controlURL     string // Puma control app URL (https://github.com/puma/puma?tab=readme-ov-file#controlstatus-server)
+	timeout        time.Duration
+	client         *http.Client
+	logger         *logrus.Logger
+	successChecker OptimizedReadinessChecker // Interface for both recording and checking success
+	skipInterval   time.Duration             // Duration to skip checks if recent success
 }
 
 // PumaReadinessResponse represents the JSON response from Puma's readiness endpoint
@@ -56,9 +58,26 @@ type PumaWorkerStatus struct {
 	RequestsCount int `json:"requests_count"`
 }
 
-// NewPumaReadinessChecker creates a new Puma readiness checker
-func NewPumaReadinessChecker(readinessURL, controlURL string, timeout time.Duration, logger *logrus.Logger) *PumaReadinessChecker {
-	return &PumaReadinessChecker{
+// PumaReadinessCheckerOption defines a function type for configuring PumaReadinessChecker
+type PumaReadinessCheckerOption func(*PumaReadinessChecker)
+
+// WithSuccessChecker configures the checker to use success tracking for optimization
+func WithSuccessChecker(successChecker OptimizedReadinessChecker) PumaReadinessCheckerOption {
+	return func(p *PumaReadinessChecker) {
+		p.successChecker = successChecker
+	}
+}
+
+// WithSkipInterval configures the interval to skip checks after successful requests
+func WithSkipInterval(interval time.Duration) PumaReadinessCheckerOption {
+	return func(p *PumaReadinessChecker) {
+		p.skipInterval = interval
+	}
+}
+
+// NewPumaReadinessChecker creates a new Puma readiness checker with optional configuration
+func NewPumaReadinessChecker(readinessURL, controlURL string, timeout time.Duration, logger *logrus.Logger, opts ...PumaReadinessCheckerOption) *PumaReadinessChecker {
+	checker := &PumaReadinessChecker{
 		name:       "puma_readiness",
 		url:        readinessURL,
 		controlURL: controlURL,
@@ -68,6 +87,13 @@ func NewPumaReadinessChecker(readinessURL, controlURL string, timeout time.Durat
 		},
 		logger: logger,
 	}
+
+	// Apply all options
+	for _, opt := range opts {
+		opt(checker)
+	}
+
+	return checker
 }
 
 // Name returns the name of check
@@ -103,8 +129,28 @@ func (p *PumaReadinessChecker) Check(ctx context.Context) CheckResult {
 	if !result.Healthy {
 		result.Details["readiness_endpoint"] = false
 		result.Details["readiness_duration_s"] = 0
+		result.Details["skipped_due_to_recent_success"] = false
 		return result
 	}
+
+	// Check if we should skip the Puma readiness endpoint due to recent successful requests
+	if p.successChecker != nil && p.skipInterval > 0 {
+		if p.successChecker.HasRecentSuccess(p.skipInterval) {
+			result.Details["skipped_due_to_recent_success"] = true
+			result.Details["skip_interval_s"] = p.skipInterval.Seconds()
+			result.Details["readiness_endpoint"] = true
+			result.Details["readiness_duration_s"] = 0
+
+			p.logger.WithFields(logrus.Fields{
+				"skip_interval_s": p.skipInterval.Seconds(),
+			}).Debug("Skipping Puma readiness check due to recent successful request")
+
+			return result
+		}
+	}
+
+	// Initialize skipped_due_to_recent_success to false if we reach here
+	result.Details["skipped_due_to_recent_success"] = false
 
 	// Check Puma readiness endpoint
 	readinessHealthy, readinessDuration, readinessErr := p.checkReadinessEndpoint(ctx)

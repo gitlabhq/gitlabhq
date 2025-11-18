@@ -18,7 +18,10 @@ module Projects
       def perform(project_export_job_id, user_id, after_export_strategy = {})
         @export_job = ProjectExportJob.find(project_export_job_id)
 
-        return unless @export_job.started?
+        unless @export_job.started?
+          log_error(message: "Project export job has invalid status: #{@export_job.status_name}")
+          return
+        end
 
         @export_job.update_attribute(:jid, jid)
         @relation_exports = @export_job.relation_exports
@@ -61,6 +64,7 @@ module Projects
           next if Gitlab::SidekiqStatus.running?(relation_export.jid)
           next if relation_export.reset.finished?
 
+          log_error(message: 'Relation export job no longer running', relation: relation_export.relation)
           relation_export.mark_as_failed("Exhausted number of retries to export: #{relation_export.relation}")
         end
       end
@@ -75,6 +79,15 @@ module Projects
         errors = failed_relation_exports.map(&:export_error)
 
         NotificationService.new.project_not_exported(@export_job.project, @user, errors)
+      end
+
+      def log_error(payload)
+        Gitlab::Export::Logger.error({
+          project_export_job_id: @export_job.id,
+          project_name: @export_job.project.name,
+          project_id: @export_job.project.id,
+          **payload
+        })
       end
     end
   end

@@ -37,7 +37,7 @@ module API
       def web_ide_request?
         return false unless access_token.respond_to?(:application)
 
-        access_token.application.id == WebIde::DefaultOauthApplication.oauth_application_id
+        access_token.application&.id == WebIde::DefaultOauthApplication.oauth_application_id
       end
 
       def track_web_ide_commit_events

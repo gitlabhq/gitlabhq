@@ -99,6 +99,33 @@ This allows us to track if an environment variable is intended for CI
 That helps us better evaluate the impact of environment variable changes
 in our pipeline configuration.
 
+### Required CI variables
+
+Some CI/CD jobs require specific variables to run. Unlike optional variables,
+if these variables are not defined, those jobs are skipped entirely.
+
+#### `GLCI_MEDIUM_RUNNER_REQUIRED`
+
+This variable enables system (feature) test jobs that require runners with at least 4 cores and 16 GB of RAM.
+Chrome version 133+ requires additional compute resources to run reliably. Otherwise, system test
+jobs become unpredictably unstable due to insufficient resources for the PostgreSQL database and
+Rails application.
+
+Define this variable in the CI/CD settings and set it to a runner tag that has at least 4 cores and 16 GB of RAM.
+For complete configuration details, see the [testing section](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/207000#testing) of the MR that introduced this variable.
+
+When not defined (default is empty string), system test jobs are not run.
+This prevents resource-intensive tests from running in environments without sufficient runner capacity, such as contributors' personal forks.
+
+Required for environments where system tests need to run, including:
+
+- The canonical `gitlab-org/gitlab` project
+- The GitLab Community fork
+- The security fork
+- The `dev.gitlab.org` fork
+
+For environment-specific details, see the [test environments section](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/207000#test-environments) of the same MR.
+
 ## Stages
 
 The current stages are:
@@ -114,8 +141,6 @@ The current stages are:
 - `test`: This stage includes most of the tests, and DB/migration jobs.
 - `post-test`: This stage includes jobs that build reports or gather data from
   the `test` stage's jobs (for example, coverage, Knapsack metadata, and so on).
-- `review`: This stage includes jobs that build the CNG images, deploy them, and
-  run end-to-end tests against review apps (see [review apps](../testing_guide/review_apps.md) for details).
   It also includes Docs Review App jobs.
 - `qa`: This stage includes jobs that perform QA tasks against the Review App
   that is deployed in stage `review`.
@@ -442,20 +467,6 @@ For this scenario, you have to:
 #### Where is this pattern used?
 
 - For now, we use this pattern for the following jobs, and those do not block private repositories:
-  - `review-build-cng-env` for:
-    - `GITALY_SERVER_VERSION`
-    - `GITLAB_ELASTICSEARCH_INDEXER_VERSION`
-    - `GITLAB_KAS_VERSION`
-    - `GITLAB_PAGES_VERSION`
-    - `GITLAB_SHELL_VERSION`
-    - `scripts/trigger-build.rb`
-    - `VERSION`
-  - `review-deploy` for:
-    - `GITALY_SERVER_VERSION`
-    - `GITLAB_SHELL_VERSION`
-    - `scripts/review_apps/review-apps.sh`
-    - `scripts/review_apps/seed-dast-test-data.sh`
-    - `VERSION`
   - `rspec:coverage` for:
     - `config/bundler_setup.rb`
     - `Gemfile`

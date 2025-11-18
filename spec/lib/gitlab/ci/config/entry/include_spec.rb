@@ -20,6 +20,12 @@ RSpec.describe ::Gitlab::Ci::Config::Entry::Include, feature_category: :pipeline
       it { is_expected.to be_valid }
     end
 
+    context 'when using "component"' do
+      let(:config) { { component: 'path/to/component@1.0' } }
+
+      it { is_expected.to be_valid }
+    end
+
     context 'when using "project" with "ref"' do
       let(:config) { { project: 'my-group/my-pipeline-library', ref: 'master', file: 'test.yml' } }
 

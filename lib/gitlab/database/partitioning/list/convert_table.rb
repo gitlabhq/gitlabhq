@@ -247,8 +247,9 @@ module Gitlab
           end
 
           def alter_sequence_statements(old_table:, new_table:)
-            sequences_owned_by(old_table).map do |seq_info|
-              seq_name, column_name = seq_info.values_at(:name, :column_name)
+            Gitlab::Database::PostgresSequence.by_table_name(old_table).map do |seq_info|
+              seq_name = seq_info.seq_name
+              column_name = seq_info.col_name
 
               statement_parts = []
 
@@ -272,29 +273,6 @@ module Gitlab
               ALTER TABLE #{quote_table_name(parent_table_name)}
               DROP CONSTRAINT #{quote_table_name(partitioning_constraint.name)}
             SQL
-          end
-
-          # TODO: https://gitlab.com/gitlab-org/gitlab/-/issues/373887
-          def sequences_owned_by(table_name)
-            sequence_data = connection.exec_query(<<~SQL, nil, [table_name])
-              SELECT seq_pg_class.relname AS seq_name,
-                     dep_pg_class.relname AS table_name,
-                     pg_attribute.attname AS col_name
-              FROM pg_class seq_pg_class
-                   INNER JOIN pg_depend ON seq_pg_class.oid = pg_depend.objid
-                   INNER JOIN pg_class dep_pg_class ON pg_depend.refobjid = dep_pg_class.oid
-                   INNER JOIN pg_attribute ON dep_pg_class.oid = pg_attribute.attrelid
-                                           AND pg_depend.refobjsubid = pg_attribute.attnum
-              WHERE pg_depend.classid = 'pg_class'::regclass
-                AND pg_depend.refclassid = 'pg_class'::regclass
-                AND seq_pg_class.relkind = 'S'
-                AND dep_pg_class.relname = $1
-            SQL
-
-            sequence_data.map do |seq_info|
-              name, column_name = seq_info.values_at('seq_name', 'col_name')
-              { name: name, column_name: column_name }
-            end
           end
 
           def table_owner(table_name)

@@ -12,7 +12,8 @@ title: GitLab CI/CD `workflow` keyword
 
 {{< /details >}}
 
-Use the [`workflow`](_index.md#workflow) keyword to control when pipelines are created.
+Use the [`workflow`](_index.md#workflow) keyword in your `.gitlab-ci.yml` file to control
+when pipelines are created.
 
 The `workflow` keyword is evaluated before jobs. For example, if a job is configured to run
 for tags, but the workflow prevents tag pipelines, the job never runs.
@@ -69,7 +70,7 @@ request pipelines.
 
 ### Switch between branch pipelines and merge request pipelines
 
-To make the pipeline switch from branch pipelines to merge request pipelines after
+To make the pipeline switch from branch pipelines to [merge request pipelines](../pipelines/merge_request_pipelines.md) after
 a merge request is created, add a `workflow: rules` section to your `.gitlab-ci.yml` file.
 
 If you use both pipeline types at the same time, [duplicate pipelines](../jobs/job_rules.md#avoid-duplicate-pipelines)
@@ -133,10 +134,11 @@ workflow:
   rules:
     - if: $CI_PIPELINE_SOURCE == "merge_request_event"
     - if: $CI_COMMIT_TAG
+    - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
     - if: $CI_COMMIT_REF_PROTECTED == "true"
 ```
 
-This example assumes that your long-lived branches are [protected](../../user/project/repository/branches/protected.md).
+This example assumes that your default branch or other long-lived branches are [protected](../../user/project/repository/branches/protected.md).
 
 ### Skip pipelines for draft merge requests
 

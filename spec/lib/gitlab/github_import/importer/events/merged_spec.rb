@@ -10,7 +10,7 @@ RSpec.describe Gitlab::GithubImport::Importer::Events::Merged, :clean_gitlab_red
   let_it_be_with_reload(:project) do
     create(
       :project, :in_group, :github_import,
-      :import_user_mapping_enabled, :user_mapping_to_personal_namespace_owner_enabled
+      :import_user_mapping_enabled
     )
   end
 
@@ -147,28 +147,6 @@ RSpec.describe Gitlab::GithubImport::Importer::Events::Merged, :clean_gitlab_red
       end
 
       it_behaves_like 'do not push placeholder reference'
-
-      context 'when user_mapping_to_personal_namespace_owner is disabled' do
-        let_it_be(:source_user) { generate_source_user(project, 1000) }
-
-        before_all do
-          project.build_or_assign_import_data(
-            data: { user_mapping_to_personal_namespace_owner_enabled: false }
-          ).save!
-        end
-
-        it 'creates expected event and state event' do
-          importer.execute(issue_event)
-
-          expect(merge_request.events.count).to eq 1
-          expect(merge_request.events.first.author_id).to eq(source_user.mapped_user_id)
-
-          expect(merge_request.resource_state_events.count).to eq 1
-          expect(merge_request.resource_state_events.first.user_id).to eq(source_user.mapped_user_id)
-        end
-
-        it_behaves_like 'push placeholder references'
-      end
     end
 
     context 'when user mapping is disabled' do

@@ -9,6 +9,13 @@ RSpec.describe Gitlab::Ci::Tags::BulkInsert, feature_category: :continuous_integ
   let_it_be(:pipeline) { create(:ci_pipeline, project: project) }
   let_it_be_with_refind(:job) { create(:ci_build, :unique_name, pipeline: pipeline) }
   let_it_be_with_refind(:other_job) { create(:ci_build, :unique_name, pipeline: pipeline) }
+  let_it_be_with_refind(:job_without_definition) do
+    create(:ci_build, :unique_name, :without_job_definition, pipeline: pipeline)
+  end
+
+  let_it_be_with_refind(:other_job_without_definition) do
+    create(:ci_build, :unique_name, :without_job_definition, pipeline: pipeline)
+  end
 
   let_it_be_with_refind(:runner) { create(:ci_runner) }
   let_it_be_with_refind(:other_runner) { create(:ci_runner, :project_type, projects: [project]) }
@@ -19,10 +26,12 @@ RSpec.describe Gitlab::Ci::Tags::BulkInsert, feature_category: :continuous_integ
   subject(:service) { described_class.new(statuses, config: config) }
 
   where(:taggable_class, :taggable, :other_taggable, :tagging_class, :taggable_id_column, :partition_column,
-    :expected_configuration) do
-    Ci::Build  | ref(:job)    | ref(:other_job)    | Ci::BuildTag      | :build_id  | :partition_id |
+    :use_job_definition, :expected_configuration) do
+    Ci::Build  | ref(:job_without_definition) | ref(:other_job_without_definition) | Ci::BuildTag | :build_id |
+      :partition_id | false | described_class::BuildsTagsConfiguration
+    Ci::Build  | ref(:job)    | ref(:other_job)    | Ci::BuildTag      | :build_id  | :partition_id | true |
       described_class::BuildsTagsConfiguration
-    Ci::Runner | ref(:runner) | ref(:other_runner) | Ci::RunnerTagging | :runner_id | :runner_type  |
+    Ci::Runner | ref(:runner) | ref(:other_runner) | Ci::RunnerTagging | :runner_id | :runner_type  | false |
       described_class::RunnerTaggingsConfiguration
   end
 
@@ -53,8 +62,8 @@ RSpec.describe Gitlab::Ci::Tags::BulkInsert, feature_category: :continuous_integ
 
       context 'with tags' do
         before do
-          taggable.tag_list = %w[tag1 tag2]
-          other_taggable.tag_list = %w[tag2 tag3 tag4]
+          set_tag_list(taggable, %w[tag1 tag2])
+          set_tag_list(other_taggable, %w[tag2 tag3 tag4])
         end
 
         it 'persists tags' do
@@ -92,7 +101,7 @@ RSpec.describe Gitlab::Ci::Tags::BulkInsert, feature_category: :continuous_integ
         end
 
         it 'strips tags' do
-          taggable.tag_list = ['       taga', 'tagb      ', '   tagc    ']
+          set_tag_list(taggable, ['       taga', 'tagb      ', '   tagc    '])
 
           service.insert!
           expect(taggable.tags.map(&:name)).to match_array(%w[taga tagb tagc])
@@ -127,7 +136,7 @@ RSpec.describe Gitlab::Ci::Tags::BulkInsert, feature_category: :continuous_integ
 
       context 'with tags for only one taggable' do
         before do
-          taggable.tag_list = %w[tag1 tag2]
+          set_tag_list(taggable, %w[tag1 tag2])
         end
 
         it 'persists tags' do
@@ -146,6 +155,14 @@ RSpec.describe Gitlab::Ci::Tags::BulkInsert, feature_category: :continuous_integ
           expect(taggable_class.tagged_with('tag2')).to include(taggable)
         end
       end
+    end
+
+    private
+
+    def set_tag_list(taggable, tags)
+      return stub_ci_job_definition(taggable, tag_list: tags) if use_job_definition
+
+      taggable.tag_list = tags
     end
   end
 end

@@ -12,7 +12,7 @@ title: PyPI API
 
 {{< /details >}}
 
-This is the API documentation for [PyPI Packages](../../user/packages/pypi_repository/_index.md).
+Use this API to interact with the [PyPI package manager client](../../user/packages/pypi_repository/_index.md).
 
 {{< alert type="warning" >}}
 
@@ -20,9 +20,6 @@ This API is used by the [PyPI package manager client](https://pypi.org/)
 and is generally not meant for manual consumption.
 
 {{< /alert >}}
-
-For instructions on how to upload and install PyPI packages from the GitLab
-package registry, see the [PyPI package registry documentation](../../user/packages/pypi_repository/_index.md).
 
 {{< alert type="note" >}}
 

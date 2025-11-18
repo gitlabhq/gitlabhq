@@ -167,7 +167,7 @@ RSpec.describe Packages::Cleanup::ExecutePolicyService, feature_category: :packa
 
       context 'for conan packages' do
         let_it_be(:conan_package) { create(:conan_package, project: project) }
-        let(:manifest_filename) { ::Packages::Conan::FileMetadatum::CONAN_MANIFEST }
+        let(:manifest_filename) { 'conanmanifest.txt' }
 
         before do
           policy.update!(keep_n_duplicated_package_files: '1')
@@ -178,18 +178,6 @@ RSpec.describe Packages::Cleanup::ExecutePolicyService, feature_category: :packa
             expect { execute }.not_to change {
               conan_package.package_files.installable.with_file_name(manifest_filename).count
             }
-          end
-
-          context 'when packages_conan_duplicates_cleanup_policy is disabled' do
-            before do
-              stub_feature_flags(packages_conan_duplicates_cleanup_policy: false)
-            end
-
-            it 'keeps the two manifest files' do
-              expect { execute }.not_to change {
-                conan_package.package_files.installable.with_file_name(manifest_filename).count
-              }
-            end
           end
         end
 
@@ -207,19 +195,6 @@ RSpec.describe Packages::Cleanup::ExecutePolicyService, feature_category: :packa
             expect(conan_package.package_files.installable.with_file_name(manifest_filename)).to contain_exactly(
               conan_recipe_manifest, conan_package_manifest
             )
-          end
-
-          context 'when packages_conan_duplicates_cleanup_policy is disabled' do
-            before do
-              stub_feature_flags(packages_conan_duplicates_cleanup_policy: false)
-            end
-
-            it 'keeps the most recent recipe files' do
-              expect { execute }.to change { conan_package.package_files.installable.count }.by(-2)
-              expect(conan_package.package_files.installable.with_file_name(manifest_filename)).to contain_exactly(
-                conan_recipe_manifest, conan_package_manifest
-              )
-            end
           end
         end
       end

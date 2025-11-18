@@ -30,7 +30,7 @@ Customize CI/CD settings, including Auto DevOps, instance runners, and job artif
 
 To access these settings:
 
-1. On the left sidebar, at the bottom, select **Admin**.
+1. On the left sidebar, at the bottom, select **Admin**. If you've [turned on the new navigation](../../user/interface_redesign.md#turn-new-navigation-on-or-off), in the upper-right corner, select **Admin**.
 1. Select **Settings** > **CI/CD**.
 1. Expand **Continuous Integration and Deployment**.
 
@@ -70,7 +70,7 @@ To add instance runner details:
 
 To view the rendered details:
 
-1. On the left sidebar, select **Search or go to** and find your project or group.
+1. On the left sidebar, select **Search or go to** and find your project or group. If you've [turned on the new navigation](../../user/interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
 1. Select **Settings** > **CI/CD**.
 1. Expand **Runners**.
 
@@ -86,7 +86,7 @@ Prerequisites:
 
 To share a project runner with multiple projects:
 
-1. On the left sidebar, at the bottom, select **Admin**.
+1. On the left sidebar, at the bottom, select **Admin**. If you've [turned on the new navigation](../../user/interface_redesign.md#turn-new-navigation-on-or-off), in the upper-right corner, select **Admin**.
 1. From the left sidebar, select **CI/CD** > **Runners**.
 1. Select the runner you want to edit.
 1. In the upper-right corner, select **Edit** ({{< icon name="pencil" >}}).
@@ -127,7 +127,7 @@ To change the maximum artifact size for an instance:
 
 To change the maximum artifact size for a group or project:
 
-1. On the left sidebar, select **Search or go to** and find your project or group.
+1. On the left sidebar, select **Search or go to** and find your project or group. If you've [turned on the new navigation](../../user/interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
 1. Select **Settings** > **CI/CD**.
 1. Expand **General pipelines**.
 1. Change the value of **Maximum artifacts size** (in MB).
@@ -292,7 +292,7 @@ The default value is `0`, which means there is no restriction.
 Set the maximum number of tag or branch pipelines that can be triggered by a single Git push.
 For more information about this limit, see [number of pipelines per Git push](../instance_limits.md#number-of-pipelines-per-git-push).
 
-1. On the left sidebar, at the bottom, select **Admin**.
+1. On the left sidebar, at the bottom, select **Admin**. If you've [turned on the new navigation](../../user/interface_redesign.md#turn-new-navigation-on-or-off), in the upper-right corner, select **Admin**.
 1. Select **Settings** > **CI/CD**.
 1. Expand **Continuous Integration and Deployment**.
 1. Change the value of **Pipeline limit per Git push**.
@@ -388,7 +388,7 @@ Configure NuGet package validation, Helm package limits, package file size limit
 
 To access these settings:
 
-1. On the left sidebar, at the bottom, select **Admin**.
+1. On the left sidebar, at the bottom, select **Admin**. If you've [turned on the new navigation](../../user/interface_redesign.md#turn-new-navigation-on-or-off), in the upper-right corner, select **Admin**.
 1. Select **Settings** > **CI/CD**.
 1. Expand **Package registry**.
 
@@ -464,7 +464,7 @@ Configure runner version management and registration settings.
 
 To access these settings:
 
-1. On the left sidebar, at the bottom, select **Admin**.
+1. On the left sidebar, at the bottom, select **Admin**. If you've [turned on the new navigation](../../user/interface_redesign.md#turn-new-navigation-on-or-off), in the upper-right corner, select **Admin**.
 1. Select **Settings** > **CI/CD**.
 1. Expand **Runners**.
 
@@ -490,8 +490,8 @@ Control who can register runners and whether to allow registration tokens.
 
 {{< alert type="warning" >}}
 
-The option to pass runner registration tokens and support for certain configuration arguments are
-[deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/380872) in GitLab 15.6 and is planned for removal in GitLab 20.0.
+The option to pass runner registration tokens and support for certain configuration arguments is considered legacy
+and is not recommended.
 Use the [runner creation workflow](https://docs.gitlab.com/runner/register/#register-with-a-runner-authentication-token)
 to generate an authentication token to register runners. This process provides full
 traceability of runner ownership and enhances your runner fleet's security.
@@ -529,7 +529,7 @@ Prerequisites:
 
 To restrict runner registration for a specific group:
 
-1. On the left sidebar, at the bottom, select **Admin**.
+1. On the left sidebar, at the bottom, select **Admin**. If you've [turned on the new navigation](../../user/interface_redesign.md#turn-new-navigation-on-or-off), in the upper-right corner, select **Admin**.
 1. Select **Overview** > **Groups** and find your group.
 1. Select **Edit**.
 1. Under **Runner Registration**, clear the **New group runners can be registered** checkbox.
@@ -541,7 +541,7 @@ Control how CI/CD job tokens can access your projects.
 
 To access these settings:
 
-1. On the left sidebar, at the bottom, select **Admin**.
+1. On the left sidebar, at the bottom, select **Admin**. If you've [turned on the new navigation](../../user/interface_redesign.md#turn-new-navigation-on-or-off), in the upper-right corner, select **Admin**.
 1. Select **Settings** > **CI/CD**.
 1. Expand **Job token permissions**.
 
@@ -569,7 +569,7 @@ Control how CI/CD job logs are stored and processed.
 
 To access these settings:
 
-1. On the left sidebar, at the bottom, select **Admin**.
+1. On the left sidebar, at the bottom, select **Admin**. If you've [turned on the new navigation](../../user/interface_redesign.md#turn-new-navigation-on-or-off), in the upper-right corner, select **Admin**.
 1. Select **Settings** > **CI/CD**.
 1. Expand **Job logs**.
 
@@ -594,7 +594,7 @@ Prerequisites:
 
 To turn on incremental logging for all projects:
 
-1. On the left sidebar, at the bottom, select **Admin**.
+1. On the left sidebar, at the bottom, select **Admin**. If you've [turned on the new navigation](../../user/interface_redesign.md#turn-new-navigation-on-or-off), in the upper-right corner, select **Admin**.
 1. Select **Settings** > **CI/CD**.
 1. Expand the **Job logs** section.
 1. Under **Incremental logging configuration**, select the **Turn on incremental logging** checkbox.

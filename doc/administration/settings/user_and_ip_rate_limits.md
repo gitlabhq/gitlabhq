@@ -40,7 +40,7 @@ counted as web traffic.
 
 To enable the unauthenticated API request rate limit:
 
-1. On the left sidebar, at the bottom, select **Admin**.
+1. On the left sidebar, at the bottom, select **Admin**. If you've [turned on the new navigation](../../user/interface_redesign.md#turn-new-navigation-on-or-off), in the upper-right corner, select **Admin**.
 1. Select **Settings** > **Network**.
 1. Expand **User and IP rate limits**.
 1. Select **Enable unauthenticated API request rate limit**.
@@ -54,7 +54,7 @@ To enable the unauthenticated API request rate limit:
 
 To enable the unauthenticated request rate limit:
 
-1. On the left sidebar, at the bottom, select **Admin**.
+1. On the left sidebar, at the bottom, select **Admin**. If you've [turned on the new navigation](../../user/interface_redesign.md#turn-new-navigation-on-or-off), in the upper-right corner, select **Admin**.
 1. Select **Settings** > **Network**.
 1. Expand **User and IP rate limits**.
 1. Select **Enable unauthenticated web request rate limit**.
@@ -68,7 +68,7 @@ To enable the unauthenticated request rate limit:
 
 To enable the authenticated API request rate limit:
 
-1. On the left sidebar, at the bottom, select **Admin**.
+1. On the left sidebar, at the bottom, select **Admin**. If you've [turned on the new navigation](../../user/interface_redesign.md#turn-new-navigation-on-or-off), in the upper-right corner, select **Admin**.
 1. Select **Settings** > **Network**.
 1. Expand **User and IP rate limits**.
 1. Select **Enable authenticated API request rate limit**.
@@ -82,7 +82,7 @@ To enable the authenticated API request rate limit:
 
 To enable the authenticated request rate limit:
 
-1. On the left sidebar, at the bottom, select **Admin**.
+1. On the left sidebar, at the bottom, select **Admin**. If you've [turned on the new navigation](../../user/interface_redesign.md#turn-new-navigation-on-or-off), in the upper-right corner, select **Admin**.
 1. Select **Settings** > **Network**.
 1. Expand **User and IP rate limits**.
 1. Select **Enable authenticated web request rate limit**.
@@ -99,7 +99,7 @@ plain-text body, which by default is `Retry later`.
 
 To use a custom response:
 
-1. On the left sidebar, at the bottom, select **Admin**.
+1. On the left sidebar, at the bottom, select **Admin**. If you've [turned on the new navigation](../../user/interface_redesign.md#turn-new-navigation-on-or-off), in the upper-right corner, select **Admin**.
 1. Select **Settings** > **Network**.
 1. Expand **User and IP rate limits**.
 1. In the **Plain-text response to send to clients that hit a rate limit** text box,
@@ -117,27 +117,61 @@ To reduce timeouts, the `project/:id/jobs` endpoint has a default [rate limit](.
 
 To modify the maximum number of requests:
 
-1. On the left sidebar, at the bottom, select **Admin**.
+1. On the left sidebar, at the bottom, select **Admin**. If you've [turned on the new navigation](../../user/interface_redesign.md#turn-new-navigation-on-or-off), in the upper-right corner, select **Admin**.
 1. Select **Settings** > **Network**.
 1. Expand **User and IP rate limits**.
 1. Update the **Maximum authenticated requests to `project/:id/jobs` per minute** value.
 
 ## Response headers
 
-When a client exceeds the associated rate limit, the following requests are
-blocked. The server may respond with rate-limiting information allowing the
-requester to retry after a specific period of time. These information are
-attached into the response headers.
+Response headers include rate limit information for all requests.
+Use these headers to proactively monitor usage and adjust request patterns to avoid throttling.
 
-| Header                | Example                         | Description                                                                                                                                                                                                      |
-|:----------------------|:--------------------------------|:------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| `RateLimit-Limit`     | `60`                            | The request quota for the client each minute. If the rate limit period set in the **Admin** area is different from 1 minute, the value of this header is adjusted to approximately the nearest 60-minute period. |
-| `RateLimit-Name`      | `throttle_authenticated_web`    | Name of the throttle blocking the requests.                                                                                                                                                                      |
-| `RateLimit-Observed`  | `67`                            | Number of requests associated to the client in the time window.                                                                                                                                                  |
-| `RateLimit-Remaining` | `0`                             | Remaining quota in the time window. The result of `RateLimit-Limit` - `RateLimit-Observed`.                                                                                                                     |
-| `RateLimit-Reset`     | `1609844400`                    | [Unix time](https://en.wikipedia.org/wiki/Unix_time)-formatted time when the request quota is reset.                                                                                                             |
-| `RateLimit-ResetTime` | `Tue, 05 Jan 2021 11:00:00 GMT` | [RFC2616](https://www.rfc-editor.org/rfc/rfc2616#section-3.3.1)-formatted date and time when the request quota is reset.                                                                                            |
-| `Retry-After`         | `30`                            | Remaining duration in seconds until the quota is reset. This is a [standard HTTP header](https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Retry-After).                                             |
+### Multiple rate limiting systems
+
+Rate limits are enforced through two independent systems:
+
+- `Rack::Attack` middleware rate limits: Applied at the HTTP layer. Examples include authenticated API requests per user, or unauthenticated web requests per IP. These limits are reflected in response headers.
+- Application rate limits: Applied at the application level. Examples include issue creation per user, or project export per user. These limits are not included in response headers.
+
+A single request can count toward both types of rate limits simultaneously.
+Response headers only show the most restrictive `Rack::Attack` rate limit status.
+
+{{< alert type="note" >}}
+
+Application rate limits are not included in response headers.
+
+{{< /alert >}}
+
+#### Example
+
+A request to create an issue through the API counts toward:
+
+- The authenticated API request rate limit (`Rack::Attack`). Included in response headers.
+- The issue creation rate limit (application-level). Not included in response headers.
+
+Exceeding the issue creation limit results in a `429` response, even when previous response headers indicated enough remaining authenticated API requests.
+
+### Headers returned for all requests
+
+The following headers are included in all responses to help clients track their rate limit status:
+
+| Header                | Example                      | Description                                                                                                                                                                                                      |
+|:----------------------|:-----------------------------|:------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| `RateLimit-Limit`     | `60`                         | The request quota for the client each minute. If the rate limit period set in the **Admin** area is different from 1 minute, the value of this header is adjusted to approximately the nearest 60-minute period. |
+| `RateLimit-Name`      | `throttle_authenticated_api` | Name of the throttle applied to the request.                                                                                                                                                                     |
+| `RateLimit-Observed`  | `67`                         | Number of requests associated to the client in the time window.                                                                                                                                                  |
+| `RateLimit-Remaining` | `33`                         | Remaining quota in the time window. The result of `RateLimit-Limit` - `RateLimit-Observed`.                                                                                                                     |
+| `RateLimit-Reset`     | `1609844400`                 | [Unix time](https://en.wikipedia.org/wiki/Unix_time)-formatted time when the request quota is reset.                                                                                                             |
+
+### Additional headers for throttled requests
+
+When a client exceeds the rate limit (HTTP status `429`), the following additional headers are included:
+
+| Header                | Example                         | Description                                                                                                                                                   |
+|:----------------------|:--------------------------------|:--------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| `RateLimit-ResetTime` | `Tue, 05 Jan 2021 11:00:00 GMT` | [RFC2616](https://www.rfc-editor.org/rfc/rfc2616#section-3.3.1)-formatted date and time when the request quota is reset.                                     |
+| `Retry-After`         | `30`                            | Remaining duration in seconds until the quota is reset. This is a [standard HTTP header](https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Retry-After). |
 
 ## Use an HTTP header to bypass rate limiting
 

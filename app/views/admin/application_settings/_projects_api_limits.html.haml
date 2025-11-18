@@ -47,4 +47,9 @@
           = f.label :project_invited_groups_api_limit, format(_('Maximum requests to the %{api_name} API per %{timeframe} per user or IP address'), api_name: 'GET /projects/:id/invited_groups', timeframe: 'minute'), class: 'label-bold'
           = f.number_field :project_invited_groups_api_limit, min: 0, class: 'form-control gl-form-input'
 
+      %fieldset
+        .form-group
+          = f.label :project_members_api_limit, format(_('Maximum requests to the %{api_name} API per %{timeframe} per user or IP address'), api_name: 'GET /projects/:id/members/all', timeframe: 'minute'), class: 'label-bold'
+          = f.number_field :project_members_api_limit, min: 0, class: 'form-control gl-form-input'
+
       = f.submit _('Save changes'), pajamas_button: true

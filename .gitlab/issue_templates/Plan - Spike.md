@@ -10,12 +10,12 @@ This template is not a set-in-stone prerequisite for spikes as some of the spike
 
 ### Scope/MVC
 
-- _What features are considered GA and non-GA and how do they look like/function?  What are the absolute must have fetures we want from this PSike and what would be an add-on? A checklist might be beneficial to include._
-- _Any known blockers/dependancies (not necessarily from a technical perspective). Are there other moving parts or spikes related to this one? In which capacity are they related?_
+- _What features are considered GA and non-GA and how do they look like/function? What are the absolute must have features we want from this PSike and what would be an add-on? A checklist might be beneficial to include._
+- _Any known blockers/dependencies (not necessarily from a technical perspective). Are there other moving parts or spikes related to this one? In which capacity are they related?_
 
 ### Designs :frame_photo:
 
-_Links to designs, they can be WIP. Please note that this refernce should be the absoulte source of truth for designs. Any other information can be put here related to the designs._
+_Links to designs, they can be WIP. Please note that this reference should be the absolute source of truth for designs. Any other information can be put here related to the designs._
 
 ## Roadmap / Time estimates
 
@@ -24,6 +24,5 @@ _This section is for product to include any relevant links to roadmaps and gener
 ## Open questions
 
 _Any other related unknowns or information deemed useful for the spike. This can include assumptions that need validation or any other questions that need general verification._
-
 
 <!--The template is stored at `.gitlab/issue_templates/Plan - Spike.md` directory if you need to update it -->

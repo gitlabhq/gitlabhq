@@ -83,36 +83,81 @@ RSpec.describe 'gitlab:password rake tasks', :silence_stdout do
     end
   end
 
-  describe ":fips_check_salts" do
-    subject(:run_rake) { run_rake_task('gitlab:password:fips_check_salts') }
+  describe ":check_hashes" do
+    subject(:run_rake) { run_rake_task('gitlab:password:check_hashes') }
 
-    context 'without fips mode' do
-      it 'aborts' do
-        expect { run_rake }.to abort_execution
-      end
+    def pbkdf2_hash(salt_len)
+      Devise::Pbkdf2Encryptable::Encryptors::Pbkdf2Sha512.digest(
+        User.random_password, 20_000, Devise.friendly_token(salt_len))
     end
 
-    context 'in fips mode', :fips_mode do
-      def hash(salt_len)
-        Devise::Pbkdf2Encryptable::Encryptors::Pbkdf2Sha512.digest(
-          User.random_password, 20_000, Devise.friendly_token(salt_len))
-      end
+    def bcrypt_hash(stretches)
+      ::BCrypt::Password.create(User.random_password, cost: stretches).to_s
+    end
 
+    context 'in non fips mode' do
       let!(:unmigrated_users) do
-        create(:user, username: 'user1', encrypted_password: hash(16))
-        create(:user, username: 'user2', encrypted_password: hash(16))
+        create(:user, username: 'unmigrated1', encrypted_password: pbkdf2_hash(64))
+        create(:user, username: 'unmigrated2', encrypted_password: bcrypt_hash(3))
       end
 
       let!(:migrated_users) do
-        create(:user, username: 'user3', encrypted_password: hash(64))
-        create(:user, username: 'user4', encrypted_password: hash(64))
+        create(:user, username: 'migrated1', encrypted_password: bcrypt_hash(5))
       end
 
       context 'with no extra argument' do
         it 'only prints the user count' do
           expect { run_rake }
-            .to output("Active users with unmigrated salts: 2 out of 4 total users\n")
+            .to output("Active users with unmigrated hashes: 2 out of 3 total users\n")
             .to_stdout
+        end
+      end
+
+      context 'with user printing enabled' do
+        subject(:run_rake) { run_rake_task('gitlab:password:check_hashes', 'true') }
+
+        it 'prints the user names and user count' do
+          expect { run_rake }
+            .to output(
+              <<~MSG
+            Active users with unmigrated hashes:
+            unmigrated1
+            unmigrated2
+            Active users with unmigrated hashes: 2 out of 3 total users
+              MSG
+            ).to_stdout
+        end
+      end
+    end
+
+    context 'in fips mode', :fips_mode do
+      let!(:unmigrated_users) do
+        create(:user, username: 'unmigrated1', encrypted_password: pbkdf2_hash(16))
+        create(:user, username: 'unmigrated2', encrypted_password: pbkdf2_hash(16))
+        create(:user, username: 'unmigrated3', encrypted_password: bcrypt_hash(13))
+      end
+
+      let!(:migrated_users) do
+        create(:user, username: 'migrated1', encrypted_password: pbkdf2_hash(64))
+        create(:user, username: 'migrated2', encrypted_password: pbkdf2_hash(64))
+      end
+
+      context 'with no extra argument' do
+        it 'only prints the user count' do
+          expect { run_rake }
+            .to output("Active users with unmigrated hashes: 3 out of 5 total users\n")
+            .to_stdout
+        end
+      end
+
+      context 'when called via alias' do
+        subject(:run_rake) { run_rake_task('gitlab:password:fips_check_salts', 'true') }
+
+        it 'invokes the hash check' do
+          expect(Rake::Task['gitlab:password:check_hashes'])
+            .to receive(:invoke).with('true')
+
+          run_rake
         end
       end
 
@@ -125,22 +170,23 @@ RSpec.describe 'gitlab:password rake tasks', :silence_stdout do
 
         it 'prints an error message' do
           expect { run_rake }
-            .to output(/Error getting salt for user user1: test error/)
+            .to output(/Error getting hash for user unmigrated1: test error/)
             .to_stdout
         end
       end
 
       context 'with user printing enabled' do
-        subject(:run_rake) { run_rake_task('gitlab:password:fips_check_salts', "true") }
+        subject(:run_rake) { run_rake_task('gitlab:password:check_hashes', 'true') }
 
         it 'prints the user names and user count' do
           expect { run_rake }
             .to output(
               <<~MSG
-            Active users with unmigrated salts:
-            user1
-            user2
-            Active users with unmigrated salts: 2 out of 4 total users
+            Active users with unmigrated hashes:
+            unmigrated1
+            unmigrated2
+            unmigrated3
+            Active users with unmigrated hashes: 3 out of 5 total users
               MSG
             ).to_stdout
         end

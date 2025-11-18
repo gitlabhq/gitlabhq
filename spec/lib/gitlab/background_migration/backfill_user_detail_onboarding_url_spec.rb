@@ -9,7 +9,7 @@ RSpec.describe Gitlab::BackgroundMigration::BackfillUserDetailOnboardingUrl, fea
 
   let(:organization) { organizations.create!(name: 'organization', path: 'organization') }
   let(:first_user) do
-    users.create!(projects_limit: 0, email: 'user1@example.com', role: 0, organization_id: organization.id)
+    users.create!(projects_limit: 0, email: 'user1@example.com', organization_id: organization.id)
   end
 
   let!(:user_detail) do

@@ -1,7 +1,15 @@
-import { GlDisclosureDropdown } from '@gitlab/ui';
+import {
+  GlDisclosureDropdown,
+  GlDisclosureDropdownItem,
+  GlDisclosureDropdownGroup,
+} from '@gitlab/ui';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import ListActions from '~/vue_shared/components/list_actions/list_actions.vue';
-import { ACTION_EDIT, ACTION_DELETE } from '~/vue_shared/components/list_actions/constants';
+import {
+  ACTION_COPY_ID,
+  ACTION_EDIT,
+  ACTION_DELETE,
+} from '~/vue_shared/components/list_actions/constants';
 
 describe('ListActions', () => {
   let wrapper;
@@ -15,7 +23,7 @@ describe('ListActions', () => {
         action: () => {},
       },
     },
-    availableActions: [ACTION_EDIT, ACTION_DELETE],
+    availableActions: [ACTION_COPY_ID, ACTION_EDIT, ACTION_DELETE],
   };
 
   const createComponent = ({ propsData = {} } = {}) => {
@@ -28,12 +36,18 @@ describe('ListActions', () => {
   };
 
   const findDropdown = () => wrapper.findComponent(GlDisclosureDropdown);
-  const getDropdownItemsProp = () => findDropdown().props('items');
+  const getDropdownItems = () =>
+    findDropdown()
+      .findAllComponents(GlDisclosureDropdownItem)
+      .wrappers.map((dropdownItem) => dropdownItem.props('item'));
 
   it('allows extending of base actions', () => {
     createComponent();
 
-    expect(getDropdownItemsProp()).toEqual([
+    expect(getDropdownItems()).toEqual([
+      {
+        text: 'Copy ID',
+      },
       {
         text: 'Edit',
         href: '/-/edit',
@@ -62,7 +76,7 @@ describe('ListActions', () => {
       },
     });
 
-    expect(getDropdownItemsProp()).toEqual([
+    expect(getDropdownItems()).toEqual([
       {
         text: 'Edit',
         href: '/-/edit',
@@ -86,7 +100,7 @@ describe('ListActions', () => {
       },
     });
 
-    expect(getDropdownItemsProp()).toEqual([
+    expect(getDropdownItems()).toEqual([
       {
         text: 'Edit',
         href: '/-/edit',
@@ -94,24 +108,16 @@ describe('ListActions', () => {
     ]);
   });
 
-  it('displays actions in the order set in `availableActions` prop', () => {
-    createComponent({
-      propsData: {
-        availableActions: [ACTION_DELETE, ACTION_EDIT],
-      },
-    });
+  describe('when there are no danger actions', () => {
+    it('does not show dropdown group', () => {
+      createComponent({
+        propsData: {
+          availableActions: [ACTION_EDIT],
+        },
+      });
 
-    expect(getDropdownItemsProp()).toEqual([
-      {
-        text: 'Delete',
-        variant: 'danger',
-        action: expect.any(Function),
-      },
-      {
-        text: 'Edit',
-        href: '/-/edit',
-      },
-    ]);
+      expect(wrapper.findComponent(GlDisclosureDropdownGroup).exists()).toBe(false);
+    });
   });
 
   it('renders `GlDisclosureDropdown` with expected appearance related props', () => {

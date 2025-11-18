@@ -2,6 +2,8 @@ import {
   defaultDate,
   serializeParams,
   update15DaysFromNow,
+  resetCreatedTime,
+  isWithin2Weeks,
 } from '~/vue_shared/access_tokens/utils';
 
 // Current date, `new Date()`, for these tests is 2020-07-06
@@ -88,5 +90,26 @@ describe('update2WeekFromNow', () => {
     const result = update15DaysFromNow(param);
     expect(result).not.toBe(param);
     expect(result[0].filters).not.toBe(param[0].filters);
+  });
+});
+
+describe('resetCreatedTime', () => {
+  it('returns a transformed datetime', () => {
+    expect(resetCreatedTime('2025-10-13T19:56:59.460Z')).toBe('2025-10-13T00:00:00.000Z');
+  });
+});
+
+describe('isWithin2Weeks', () => {
+  beforeEach(() => {
+    jest.useFakeTimers({ legacyFakeTimers: false });
+    jest.setSystemTime(new Date('2020-02-10T12:34:56Z'));
+  });
+
+  it('returns true when timestamp is within 2 weeks', () => {
+    expect(isWithin2Weeks('2020-02-24')).toBe(true);
+  });
+
+  it('returns false when timestamp is not within 2 weeks', () => {
+    expect(isWithin2Weeks('2020-02-25')).toBe(false);
   });
 });

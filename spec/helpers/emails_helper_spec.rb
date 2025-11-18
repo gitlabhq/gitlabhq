@@ -151,6 +151,25 @@ RSpec.describe EmailsHelper, feature_category: :shared do
     end
   end
 
+  describe '#manage_passkeys' do
+    context 'format is html' do
+      it 'returns HTML' do
+        url = generate_link('', profile_two_factor_auth_url)
+        expect(manage_passkeys(format: :html)).to eq(
+          safe_format(_('%{link_start}Visit your account settings%{link_end} to manage your passkeys and other authentication methods.'), tag_pair(url, :link_start, :link_end))
+        )
+      end
+    end
+
+    context 'format is not specified' do
+      it 'returns text' do
+        expect(manage_passkeys).to eq(
+          format(_('To manage your passkeys and other authentication methods, visit %{two_factor_link}'), two_factor_link: profile_two_factor_auth_url)
+        )
+      end
+    end
+  end
+
   describe '#re_enable_two_factor_authentication_text' do
     context 'format is html' do
       it 'returns HTML' do

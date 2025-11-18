@@ -108,4 +108,45 @@ RSpec.describe Current, feature_category: :organization do
       end
     end
   end
+
+  describe '.cells_claims_leases?' do
+    subject(:cells_claims_leases?) { described_class.cells_claims_leases? }
+
+    context 'when value is already set' do
+      before do
+        described_class.cells_claims_leases = true
+      end
+
+      it 'returns the cached value without re-evaluating flags' do
+        expect(Gitlab.config.cell).not_to receive(:enabled)
+        expect(Feature).not_to receive(:enabled)
+        expect(cells_claims_leases?).to be(true)
+      end
+    end
+
+    context 'when value is not yet set' do
+      before do
+        allow(Gitlab.config.cell).to receive(:enabled).and_return(cell_enabled)
+        stub_feature_flags(cells_unique_claims: feature_enabled)
+      end
+
+      where(:cell_enabled, :feature_enabled, :expected_result) do
+        [
+          [true,  true,  true],
+          [true,  false, false],
+          [false, true,  false],
+          [false, false, false]
+        ]
+      end
+
+      with_them do
+        it 'returns expected result and memoizes the value' do
+          expect(cells_claims_leases?).to eq(expected_result)
+          expect(Gitlab.config.cell).not_to receive(:enabled)
+          expect(Feature).not_to receive(:enabled?)
+          expect(described_class.cells_claims_leases?).to eq(expected_result)
+        end
+      end
+    end
+  end
 end

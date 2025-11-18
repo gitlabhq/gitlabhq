@@ -103,7 +103,7 @@ It will contain your boards, features (epics), story (issue) roll up, and labels
 
 To create a group:
 
-1. On the left sidebar, at the top, select **Create new** ({{< icon name="plus" >}}) and **New group**.
+1. On the left sidebar, at the top, select **Create new** ({{< icon name="plus" >}}) and **New group**. If you've [turned on the new navigation](../../user/interface_redesign.md#turn-new-navigation-on-or-off), this button is in the upper-right corner.
 1. Select **Create group**.
 1. In the **Group name** text box, enter the name of the group. For a list of words that cannot be used as group names, see
    [reserved names](../../user/reserved_names.md).
@@ -123,7 +123,7 @@ Your project will contain the stories that roll up to your parent group.
 
 To create a blank project:
 
-1. On the left sidebar, at the top, select **Create new** ({{< icon name="plus" >}}) and **New project/repository**.
+1. On the left sidebar, at the top, select **Create new** ({{< icon name="plus" >}}) and **New project/repository**. If you've [turned on the new navigation](../../user/interface_redesign.md#turn-new-navigation-on-or-off), this button is in the upper-right corner.
 1. Select **Create blank project**.
 1. Enter the project details:
    - In the **Project name** field, enter the name of your project. See the
@@ -151,7 +151,7 @@ the previous one is removed.
 
 To create each label:
 
-1. On the left sidebar, select **Search or go to** and find your group.
+1. On the left sidebar, select **Search or go to** and find your group. If you've [turned on the new navigation](../../user/interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
 1. Select **Manage** > **Labels**.
 1. Select **New label**.
 1. In the **Title** field, enter the name of the label. Start with `priority::now`.
@@ -193,7 +193,7 @@ Prerequisites:
 
 To create an iteration cadence:
 
-1. On the left sidebar, select **Search or go to** and find your group.
+1. On the left sidebar, select **Search or go to** and find your group. If you've [turned on the new navigation](../../user/interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
 1. Select **Plan** > **Iterations**.
 1. Select **New iteration cadence**.
 1. Enter the title and description of the iteration cadence.
@@ -306,7 +306,7 @@ The next step is to create an epic board that you will use to develop and mainta
 
 To create a new epic board:
 
-1. On the left sidebar, select **Search or go to** and find your group.
+1. On the left sidebar, select **Search or go to** and find your group. If you've [turned on the new navigation](../../user/interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
 1. Select **Plan** > **Epic boards**.
 1. In the upper-left corner, select the dropdown list with the current board name.
 1. Select **Create new board**.
@@ -372,7 +372,7 @@ Let's break that down into stories.
 
 To create your first stories:
 
-1. On the left sidebar, select **Search or go to** and find your group.
+1. On the left sidebar, select **Search or go to** and find your group. If you've [turned on the new navigation](../../user/interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
 1. Select **Plan** > **Epic boards**.
 1. In the upper-left corner, make sure the dropdown list with the current board name shows **Release Planning**.
    If not, from the dropdown list, select that board.
@@ -404,7 +404,7 @@ Next, set up an issue board to serve as your canonical location for managing and
 In your group, create a new issue board titled **Backlog**.
 You will use this board to sequence and schedule your stories into upcoming sprints (iterations):
 
-1. On the left sidebar, select **Search or go to** and find your group.
+1. On the left sidebar, select **Search or go to** and find your group. If you've [turned on the new navigation](../../user/interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
 1. Select **Plan** > **Issue boards**.
 1. In the upper-left corner, select the dropdown list with the current board name.
 1. Select **Create new board**.
@@ -427,8 +427,8 @@ Mark them for refinement:
 
 1. [Select each issue's card](../../user/project/issue_board.md#edit-an-issue) in the board and apply the `status::refine` label:
    1. In the **Labels** section of the sidebar, select **Edit**.
-   1. From the **Assign labels** list, select the `status::refine` label.
-   1. Select **X** next to **Assign labels** or select any area outside the label section.
+   1. From the **Select labels** list, select the `status::refine` label.
+   1. Select any area outside the label section.
 1. Drag the three stories into the desired upcoming sprint to assign the stories to the corresponding sprint timebox.
 
 By this point in the tutorial, your **Backlog** board should look like this:
@@ -461,8 +461,8 @@ While discussing each issue:
   apply the `status::ready` label to the issue:
 
   1. In the **Labels** section of the sidebar, select **Edit**.
-  1. From the **Assign labels** list, select the `status::ready` label.
-  1. Select **X** next to **Assign labels** or select any area outside the label section.
+  1. From the **Select labels** list, select the `status::ready` label.
+  1. Select any area outside the label section.
 
 After you've cycled through all the issues in the upcoming iteration, you're done with sprint planning!
 
@@ -479,11 +479,11 @@ the current sprint.
 Provide all team members the appropriate time to contribute and collaborate.
 
 1. Open the **Backlog** issue board:
-   1. On the left sidebar, select **Search or go to** and find your group.
+   1. On the left sidebar, select **Search or go to** and find your group. If you've [turned on the new navigation](../../user/interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
    1. Select **Plan** > **Issue boards**.
    1. In the upper-left corner, select the dropdown list with the current board name.
    1. Select **Backlog**.
-1. In the list for the upcoming sprint, select **Create new issue** ({{< icon name="plus-square" >}}).
+1. In the list for the upcoming sprint, select **Create new issue** ({{< icon name="plus" >}}).
 1. Enter the issue's title: `Release Planning`.
 1. Select **Create issue**.
 1. Open the issue and create a discussion thread for each story assigned to the upcoming sprint.
@@ -531,7 +531,7 @@ Teams can also use iteration analytics for additional visibility through burndow
 
 In your group, create a new issue board titled **Current Sprint**:
 
-1. On the left sidebar, select **Search or go to** and find your group.
+1. On the left sidebar, select **Search or go to** and find your group. If you've [turned on the new navigation](../../user/interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
 1. Select **Plan** > **Issue boards**.
 1. In the upper-left corner, select the dropdown list with the current board name.
 1. Select **Create new board**.
@@ -569,6 +569,6 @@ Iteration reports provide progress metrics and burndown and burnup charts.
 
 To view your iteration report:
 
-1. On the left sidebar, select **Search or go to** and find your group.
+1. On the left sidebar, select **Search or go to** and find your group. If you've [turned on the new navigation](../../user/interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
 1. Select **Plan** > **Iterations** and select an iteration cadence.
 1. Select an iteration.

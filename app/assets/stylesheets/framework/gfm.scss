@@ -49,7 +49,9 @@
     height: 100%;
     margin-bottom: 2px;
     border-radius: 3px;
-    @apply gl-border-1 gl-border-solid gl-border-alpha-dark-24;
+    @apply gl-border-1;
+    @apply gl-border-solid;
+    @apply gl-border-alpha-dark-24;
   }
 }
 
@@ -60,10 +62,17 @@
  * > Highlights information that users should take into account, even when skimming.
  */
 .md .markdown-alert {
-  @apply gl-border-0 gl-border-l-4 gl-border-l-solid gl-pl-4 gl-py-2 gl-my-5 gl-mx-0;
+  @apply gl-border-0;
+  @apply gl-border-l-4;
+  @apply gl-border-l-solid;
+  @apply gl-pl-4;
+  @apply gl-py-2;
+  @apply gl-my-5;
+  @apply gl-mx-0;
 
   .markdown-alert-title {
-    @apply gl-heading-4 gl-mb-2;
+    @apply gl-heading-4;
+    @apply gl-mb-2;
   }
 
   > *:last-child {

@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe 'gitlab:db:deduplicate_tags', :silence_stdout, feature_category: :runner do
+RSpec.describe 'gitlab:db:deduplicate_tags', :silence_stdout, feature_category: :runner_core do
   before(:all) do
     Rake.application.rake_require 'tasks/gitlab/db/deduplicate_tags'
   end

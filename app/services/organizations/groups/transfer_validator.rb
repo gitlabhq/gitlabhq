@@ -4,6 +4,7 @@ module Organizations
   module Groups
     class TransferValidator
       include ActiveModel::Validations
+      include Concerns::ValidateUserTransfer
 
       def initialize(group:, new_organization:, current_user:)
         @group = group
@@ -19,6 +20,7 @@ module Organizations
         return localized_error_messages[:group_not_root] unless group_is_root?
         return localized_error_messages[:same_organization] if same_organization?
         return localized_error_messages[:permission] unless has_permission?
+        return cannot_transfer_users_error unless can_transfer_users?
 
         nil
       end
@@ -26,6 +28,10 @@ module Organizations
       private
 
       attr_reader :group, :new_organization, :current_user
+
+      def users
+        group.users_with_descendants
+      end
 
       def group_is_root?
         !group.has_parent?

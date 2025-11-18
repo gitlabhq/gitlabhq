@@ -3,6 +3,8 @@
 module Packages
   module Protection
     class Rule < ApplicationRecord
+      before_save :ensure_pattern_type_and_target_field
+
       NPM_PACKAGE_NAME_FORMAT = {
         with: Gitlab::Regex::Packages::Protection::Rules.protection_rules_npm_package_name_pattern_regex,
         message: ->(_object, _data) { _('should be a valid NPM package name with optional wildcard characters.') }
@@ -140,6 +142,11 @@ module Packages
         return unless minimum_access_level_for_delete.blank? && minimum_access_level_for_push.blank?
 
         errors.add(:base, _('A rule must have at least a minimum access role for push or delete.'))
+      end
+
+      def ensure_pattern_type_and_target_field
+        self.pattern_type ||= Packages::Protection::Rule.pattern_types[:wildcard]
+        self.target_field ||= Packages::Protection::Rule.target_fields[:package_name]
       end
     end
   end

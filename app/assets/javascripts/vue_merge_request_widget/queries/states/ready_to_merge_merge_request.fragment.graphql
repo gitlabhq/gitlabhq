@@ -7,7 +7,6 @@ fragment ReadyToMergeMergeRequest on MergeRequest {
   defaultSquashCommitMessage
   squash
   squashOnMerge
-  commitCount
   diffHeadSha
   userPermissions {
     removeSourceBranch
@@ -29,5 +28,6 @@ fragment ReadyToMergeMergeRequest on MergeRequest {
     status
     path
     active
+    ref
   }
 }

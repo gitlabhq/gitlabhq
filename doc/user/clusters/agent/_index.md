@@ -41,30 +41,6 @@ After an agent is registered and installed, the agent connection to the cluster 
 This approach means you can manage and configure your agent instances from GitLab itself,
 and you can scale a single installation to multiple tenants.
 
-## Receptive agents
-
-{{< details >}}
-
-- Tier: Ultimate
-- Offering: GitLab Self-Managed
-
-{{< /details >}}
-
-{{< history >}}
-
-- [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/12180) in GitLab 17.4.
-
-{{< /history >}}
-
-Receptive agents allow GitLab to integrate with Kubernetes clusters that cannot establish a network connection
-to the GitLab instance, but can be connected to by GitLab. For example, this can occur when:
-
-1. GitLab runs in a private network or behind a firewall, and is only accessible only through VPN.
-1. The Kubernetes cluster is hosted by a cloud provider, but is exposed to the internet or is reachable from the private network.
-
-When this feature is enabled, GitLab connects to the agent with the provided URL.
-You can use agents and receptive agents simultaneously.
-
 ## Supported Kubernetes versions for GitLab features
 
 GitLab supports the following Kubernetes versions. If you want to run
@@ -83,16 +59,17 @@ Kubernetes version to a supported version at any time:
 GitLab aims to support a new minor Kubernetes version three months after its initial release. GitLab supports at least three production-ready Kubernetes minor
 versions at any given time.
 
-When a new version of Kubernetes is released, we will:
+When a new version of Kubernetes is released:
 
-- Update this page with the results of our early smoke tests within approximately
+- This page updates with the results of early smoke tests within approximately
   four weeks.
-- If we expect a delay in releasing new version support, we will update this page
+- If the release of a new version support is delayed, this page updates
   with the expected GitLab support version within approximately eight weeks.
 
 When installing the agent, use a Helm version compatible with your Kubernetes version. Other versions of Helm might not work. For a list of compatible versions, see the [Helm version support policy](https://helm.sh/docs/topics/version_skew/).
 
-Support for deprecated APIs can be removed from the GitLab codebase when we drop support for the Kubernetes version that only supports the deprecated API.
+Support for deprecated APIs can be removed from the GitLab codebase when GitLab no
+longer supports the Kubernetes version that only supports the deprecated API.
 
 Some GitLab features might work on versions not listed here. [This epic](https://gitlab.com/groups/gitlab-org/-/epics/4827) tracks support for Kubernetes versions.
 
@@ -129,6 +106,30 @@ This channel is used for all communication between the agent and KAS:
   - A proxy in front of KAS might influence the maximum lifetime of connections. On GitLab.com, this is [two hours](https://gitlab.com/gitlab-cookbooks/gitlab-haproxy/-/blob/68df3484087f0af368d074215e17056d8ab69f1c/attributes/default.rb#L217). The grace period is 50% of the maximum lifetime.
 
 For detailed information about channel routing, see [Routing KAS requests in the agent](https://gitlab.com/gitlab-org/cluster-integration/gitlab-agent/-/blob/master/doc/kas_request_routing.md).
+
+## Receptive agents
+
+{{< details >}}
+
+- Tier: Ultimate
+- Offering: GitLab Self-Managed
+
+{{< /details >}}
+
+{{< history >}}
+
+- [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/12180) in GitLab 17.4.
+
+{{< /history >}}
+
+Receptive agents allow GitLab to integrate with Kubernetes clusters that cannot establish a network connection
+to the GitLab instance, but can be connected to by GitLab. For example, this can occur when:
+
+1. GitLab runs in a private network or behind a firewall, and is only accessible through VPN.
+1. The Kubernetes cluster is hosted by a cloud provider, but is exposed to the internet or is reachable from the private network.
+
+When this feature is enabled, GitLab connects to the agent with the provided URL.
+You can use agents and receptive agents simultaneously.
 
 ## Kubernetes integration glossary
 

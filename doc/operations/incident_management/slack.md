@@ -2,6 +2,7 @@
 stage: Analytics
 group: Platform Insights
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+description: Manage GitLab incidents directly from Slack using the GitLab for Slack app, including declaring incidents, using quick actions, and receiving notifications.
 title: Incident management for Slack
 ---
 

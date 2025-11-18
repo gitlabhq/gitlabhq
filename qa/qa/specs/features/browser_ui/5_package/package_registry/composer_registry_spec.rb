@@ -39,7 +39,7 @@ module QA
 
       it(
         'publishes a composer package and deletes it',
-        testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/348016'
+        testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/565065'
       ) do
         project.visit_job('publish')
         Page::Project::Job::Show.perform do |job|

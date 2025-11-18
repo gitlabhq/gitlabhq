@@ -30,12 +30,12 @@ import {
 } from '~/projects/settings/repository/branch_rules/constants';
 import { stubComponent, RENDER_ALL_SLOTS_TEMPLATE } from 'helpers/stub_component';
 import { expandSection } from '~/settings_panels';
-import { scrollToElement } from '~/lib/utils/common_utils';
+import { scrollToElement } from '~/lib/utils/scroll_utils';
 import { createMockDirective, getBinding } from 'helpers/vue_mock_directive';
 
 jest.mock('~/alert');
 jest.mock('~/settings_panels');
-jest.mock('~/lib/utils/common_utils');
+jest.mock('~/lib/utils/scroll_utils');
 
 Vue.use(VueApollo);
 

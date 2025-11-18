@@ -2,6 +2,7 @@
 stage: Analytics
 group: Platform Insights
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+description: Understand and manage alerts in GitLab, including viewing alert lists, changing statuses, assigning alerts, triggering actions, and responding to on-call notifications.
 title: Alerts
 ---
 
@@ -165,7 +166,7 @@ To assign an alert:
 
 1. Display the list of current alerts:
 
-   1. On the left sidebar, select **Search or go to** and find your project.
+   1. On the left sidebar, select **Search or go to** and find your project. If you've [turned on the new navigation](../../user/interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
    1. Select **Monitor** > **Alerts**.
 
 1. Select your desired alert to display its details.
@@ -204,7 +205,7 @@ Prerequisites:
 
 To configure the actions:
 
-1. On the left sidebar, select **Search or go to** and find your project.
+1. On the left sidebar, select **Search or go to** and find your project. If you've [turned on the new navigation](../../user/interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
 1. Select **Settings** > **Monitor**.
 1. Expand the **Alerts** section, then select the **Alert settings** tab.
 1. Select the **Create an incident** checkbox.

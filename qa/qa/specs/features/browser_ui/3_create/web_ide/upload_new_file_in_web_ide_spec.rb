@@ -13,6 +13,8 @@ module QA
 
       shared_examples 'upload a file' do
         it "verifies it successfully uploads and commits to a MR" do
+          original_windows_count = page.driver.browser.window_handles.length
+
           Page::Project::WebIDE::VSCode.perform do |ide|
             ide.upload_file(file_path)
             Support::Waiter.wait_until { ide.has_pending_changes? }
@@ -22,6 +24,12 @@ module QA
 
             ide.create_merge_request
           end
+
+          # Wait for new tab to open
+          Support::Waiter.wait_until(max_duration: 20) do
+            page.driver.browser.window_handles.length > original_windows_count
+          end
+
           # Opens the MR in new tab and verify the file is in the MR
           page.driver.browser.switch_to.window(page.driver.browser.window_handles.last)
 
@@ -31,11 +39,7 @@ module QA
         end
       end
 
-      context 'with a new file', quarantine: {
-        only: { pipeline: %i[staging staging-canary] },
-        issue: 'https://gitlab.com/gitlab-org/gitlab/-/issues/527274',
-        type: :flaky
-      } do
+      context 'with a new file' do
         context 'when the file is an image',
           testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/390007' do
           let(:file_name) { 'dk.png' }

@@ -25,6 +25,7 @@ import (
 	"gitlab.com/gitlab-org/gitlab/workhorse/internal/git"
 	"gitlab.com/gitlab-org/gitlab/workhorse/internal/gitaly"
 	gobpkg "gitlab.com/gitlab-org/gitlab/workhorse/internal/gob"
+	"gitlab.com/gitlab-org/gitlab/workhorse/internal/healthcheck"
 	"gitlab.com/gitlab-org/gitlab/workhorse/internal/helper"
 	"gitlab.com/gitlab-org/gitlab/workhorse/internal/imageresizer"
 	"gitlab.com/gitlab-org/gitlab/workhorse/internal/metrics"
@@ -59,7 +60,6 @@ type routeOptions struct {
 	tracing         bool
 	isGeoProxyRoute bool
 	matchers        []matcherFunc
-	allowOrigins    *regexp.Regexp
 	bodyLimit       int64
 	bodyLimitMode   bodylimit.Mode
 }
@@ -118,12 +118,6 @@ func withoutTracing() func(*routeOptions) {
 func withGeoProxy() func(*routeOptions) {
 	return func(options *routeOptions) {
 		options.isGeoProxyRoute = true
-	}
-}
-
-func withAllowOrigins(pattern string) func(*routeOptions) {
-	return func(options *routeOptions) {
-		options.allowOrigins = compileRegexp(pattern)
 	}
 }
 
@@ -203,9 +197,6 @@ func (u *upstream) route(method string, metadata routeMetadata, handler http.Han
 		// Add distributed tracing
 		handler = tracing.Handler(handler, tracing.WithRouteIdentifier(metadata.regexpStr))
 	}
-	if options.allowOrigins != nil {
-		handler = corsMiddleware(handler, options.allowOrigins)
-	}
 
 	if options.bodyLimit > 0 {
 		handler = withBodyLimitContext(options.bodyLimit, options.bodyLimitMode, handler)
@@ -258,11 +249,30 @@ func (ro *routeEntry) isMatch(cleanedPath string, req *http.Request) bool {
 	return ok
 }
 
-func buildProxy(backend *url.URL, version string, rt http.RoundTripper, cfg config.Config, dependencyProxyInjector *dependencyproxy.Injector) http.Handler {
+// ProxyOption defines a function type for configuring proxy middleware
+type ProxyOption func(http.Handler) http.Handler
+
+// WithSuccessTracking adds success tracking middleware to the proxy
+func WithSuccessTracking(tracker *healthcheck.SuccessTracker) ProxyOption {
+	return func(handler http.Handler) http.Handler {
+		if tracker == nil {
+			return handler
+		}
+		return healthcheck.BackendSuccessTrackingMiddleware(tracker)(handler)
+	}
+}
+
+func buildProxy(backend *url.URL, version string, rt http.RoundTripper, cfg config.Config, dependencyProxyInjector *dependencyproxy.Injector, opts ...ProxyOption) http.Handler {
 	proxier := proxypkg.NewProxy(backend, version, rt)
 
+	// Apply optional middleware
+	var handler http.Handler = proxier
+	for _, opt := range opts {
+		handler = opt(handler)
+	}
+
 	return senddata.SendData(
-		sendfile.SendFile(apipkg.Block(proxier)),
+		sendfile.SendFile(apipkg.Block(handler)),
 		git.SendArchive,
 		git.SendBlob,
 		git.SendDiff,
@@ -281,9 +291,21 @@ func buildProxy(backend *url.URL, version string, rt http.RoundTripper, cfg conf
 
 func configureRoutes(u *upstream) {
 	api := u.APIClient
-	static := &staticpages.Static{DocumentRoot: u.DocumentRoot, Exclude: staticExclude}
+	static := &staticpages.Static{DocumentRoot: u.DocumentRoot, Exclude: staticExclude, API: u.APIClient}
 	dependencyProxyInjector := dependencyproxy.NewInjector()
-	proxy := buildProxy(u.Backend, u.Version, u.RoundTripper, u.Config, dependencyProxyInjector)
+	dwHandler := duoworkflow.NewHandler(api)
+
+	if u.upgradedConnsManager != nil {
+		u.upgradedConnsManager.Register(dwHandler)
+	}
+
+	// Build proxy with optional success tracking
+	var proxyOpts []ProxyOption
+	if u.healthCheckServer != nil {
+		proxyOpts = append(proxyOpts, WithSuccessTracking(u.healthCheckServer.GetSuccessTracker()))
+	}
+
+	proxy := buildProxy(u.Backend, u.Version, u.RoundTripper, u.Config, dependencyProxyInjector, proxyOpts...)
 	cableProxy := proxypkg.NewProxy(u.CableBackend, u.Version, u.CableRoundTripper)
 
 	assetsNotFoundHandler := NotFoundUnless(u.DevelopmentMode, proxy)
@@ -305,7 +327,7 @@ func configureRoutes(u *upstream) {
 
 	tempfileMultipartProxy := upload.FixedPreAuthMultipart(api, proxy, preparer, &u.Config)
 	ciAPIProxyQueue := queueing.QueueRequests("ci_api_job_requests", tempfileMultipartProxy, u.APILimit, u.APIQueueLimit, u.APIQueueTimeout, prometheus.DefaultRegisterer)
-	ciAPILongPolling := builds.RegisterHandler(ciAPIProxyQueue, u.watchKeyHandler, u.APICILongPollingDuration)
+	ciAPILongPolling := builds.RegisterHandler(ciAPIProxyQueue, u.watchKeyHandler, u.APICILongPollingDuration, u.shutdownChan)
 
 	dependencyProxyInjector.SetUploadHandler(requestBodyUploader)
 
@@ -365,7 +387,7 @@ func configureRoutes(u *upstream) {
 		// Duo Workflow websocket
 		u.wsRoute(
 			newRoute(apiPattern+`v4/ai/duo_workflows/ws\z`, "duo_workflow_ws", railsBackend),
-			duoworkflow.Handler(api)),
+			dwHandler.Build()),
 
 		// Long poll and limit capacity given to jobs/request and builds/register.json
 		u.route("",
@@ -553,7 +575,6 @@ func configureRoutes(u *upstream) {
 				assetsNotFoundHandler,
 			),
 			withoutTracing(), // Tracing on assets is very noisy
-			withAllowOrigins("^https://.*\\.web-ide\\.gitlab-static\\.net$"),
 		),
 
 		// Uploads
@@ -644,7 +665,6 @@ func configureRoutes(u *upstream) {
 				assetsNotFoundHandler,
 			),
 			withoutTracing(), // Tracing on assets is very noisy
-			withAllowOrigins("^https://.*\\.web-ide\\.gitlab-static\\.net$"),
 		),
 
 		// Don't define a catch-all route. If a route does not match, then we know
@@ -657,23 +677,6 @@ func denyWebsocket(next http.Handler) http.Handler {
 		if websocket.IsWebSocketUpgrade(r) {
 			httpError(w, r, "websocket upgrade not allowed", http.StatusBadRequest)
 			return
-		}
-
-		next.ServeHTTP(w, r)
-	})
-}
-
-func corsMiddleware(next http.Handler, allowOriginRegex *regexp.Regexp) http.Handler {
-	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		requestOrigin := r.Header.Get("Origin")
-		hasOriginMatch := allowOriginRegex.MatchString(requestOrigin)
-		hasMethodMatch := r.Method == "GET" || r.Method == "HEAD" || r.Method == "OPTIONS"
-
-		if hasOriginMatch && hasMethodMatch {
-			w.Header().Set("Access-Control-Allow-Origin", requestOrigin)
-			// why: `Vary: Origin` is needed because allowable origin is variable
-			//      https://developer.mozilla.org/en-US/docs/Web/HTTP/CORS#the_http_response_headers
-			w.Header().Set("Vary", "Origin")
 		}
 
 		next.ServeHTTP(w, r)

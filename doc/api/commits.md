@@ -13,9 +13,7 @@ title: Commits API
 
 {{< /details >}}
 
-Use the commits API to manage
-[Git commits](https://git-scm.com/book/en/v2/Git-Basics-Recording-Changes-to-the-Repository)
-in GitLab repositories.
+Use this API to manage [Git commits](../user/project/repository/commits/_index.md).
 
 ## Responses
 
@@ -1012,13 +1010,30 @@ Example response:
 
 ### Set commit pipeline status
 
-Add or update the pipeline status of a commit. If the commit is associated with a merge request,
-the API call must target the commit in the merge request's source branch.
+Add or update the status of a commit represented by a job in an `external` stage.
+If the commit is associated with a merge request, target the commit in the merge request's source branch.
+
+When you set a commit status:
+
+- Existing pipelines are searched first to append the job to.
+- If no suitable pipeline exists, a new pipeline is created with `CI_PIPELINE_SOURCE: external`.
+
+For more information, see [external commit statuses](../ci/ci_cd_for_external_repos/external_commit_statuses.md).
+
+{{< alert type="note" >}}
+
+When duplicate pipelines exist for the same commit, it can be ambiguous which pipeline receives the external status.
+Configure your pipeline to [avoid duplicates](../ci/jobs/job_rules.md#avoid-duplicate-pipelines).
+
+{{< /alert >}}
 
 If a pipeline already exists and it exceeds the [maximum number of jobs in a single pipeline limit](../administration/instance_limits.md#maximum-number-of-jobs-in-a-pipeline):
 
 - If `pipeline_id` is specified, a `422` error is returned: `The number of jobs has exceeded the limit`.
 - Otherwise, a new pipeline is created.
+
+If an update is already in progress for a SHA/ref combination, a `409` error is returned.
+To handle this error, retry the request.
 
 ```plaintext
 POST /projects/:id/statuses/:sha

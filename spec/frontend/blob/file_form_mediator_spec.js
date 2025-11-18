@@ -63,12 +63,7 @@ describe('Template Selector Mediator', () => {
 
   describe('toggleValidationError', () => {
     const getErrorElement = () => document.querySelector('.js-filepath-error');
-    const inputErrorClasses = [
-      'gl-border',
-      '!gl-shadow-none',
-      'gl-border-red-500',
-      '!gl-shadow-none',
-    ];
+    const inputErrorClasses = ['is-invalid'];
 
     it('shows error state when showError is true', () => {
       mediator.toggleValidationError(true);

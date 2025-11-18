@@ -108,6 +108,20 @@ RSpec.describe Gitlab::Ci::Pipeline::Seed::Build::Cache, feature_category: :pipe
         end
       end
 
+      context 'with only ./ relative paths' do
+        let(:config) do
+          {
+            key: { files: ['./VERSION'], prefix: 'relative' },
+            paths: ['vendor/ruby']
+          }
+        end
+
+        it 'falls back to default key as relative paths are not supported' do
+          expect(subject[:key]).to eq('relative-default')
+          expect(subject[:paths]).to eq(['vendor/ruby'])
+        end
+      end
+
       context 'with invalid file patterns' do
         where(:files, :expected_prefix) do
           [
@@ -142,6 +156,76 @@ RSpec.describe Gitlab::Ci::Pipeline::Seed::Build::Cache, feature_category: :pipe
           it 'builds cache key from directory commit hash' do
             expect(subject[:key]).to match(/^1-(?:default|[a-f0-9]+)$/)
           end
+        end
+      end
+
+      context 'with wildcard patterns' do
+        let(:config) do
+          {
+            key: { files: ['**/*.rb'], prefix: 'wildcard' },
+            paths: ['vendor/ruby']
+          }
+        end
+
+        it 'expands wildcard patterns and builds cache key from matched files' do
+          expect(subject[:key]).to match(/^wildcard-[a-f0-9]+$/)
+          expect(subject[:paths]).to eq(['vendor/ruby'])
+        end
+      end
+
+      context 'with mixed wildcard and non-wildcard patterns' do
+        let(:config) do
+          {
+            key: { files: ['VERSION', '*.gemspec'], prefix: 'mixed' },
+            paths: ['vendor/ruby']
+          }
+        end
+
+        it 'expands wildcards and includes non-wildcard files' do
+          expect(subject[:key]).to match(/^mixed-[a-f0-9]+$/)
+          expect(subject[:paths]).to eq(['vendor/ruby'])
+        end
+      end
+
+      context 'with double-wildcard pattern **/*.md' do
+        let(:config) do
+          {
+            key: { files: ['**/*.md'], prefix: 'md' },
+            paths: ['vendor/ruby']
+          }
+        end
+
+        it 'expands **/ pattern and builds cache key from matched Markdown files' do
+          expect(subject[:key]).to match(/^md-[a-f0-9]+$/)
+          expect(subject[:paths]).to eq(['vendor/ruby'])
+        end
+      end
+
+      context 'with wildcard pattern matching no files' do
+        let(:config) do
+          {
+            key: { files: ['**/nonexistent/*.txt'], prefix: 'empty' },
+            paths: ['vendor/ruby']
+          }
+        end
+
+        it 'falls back to default key when no files match' do
+          expect(subject[:key]).to eq('empty-default')
+          expect(subject[:paths]).to eq(['vendor/ruby'])
+        end
+      end
+
+      context 'with wildcard pattern matching many files' do
+        let(:config) do
+          {
+            key: { files: ['**/*.rb'], prefix: 'many' },
+            paths: ['vendor/ruby']
+          }
+        end
+
+        it 'includes all matched files without artificial limits' do
+          expect(subject[:key]).to match(/^many-[a-f0-9]+$/)
+          expect(subject[:paths]).to eq(['vendor/ruby'])
         end
       end
     end

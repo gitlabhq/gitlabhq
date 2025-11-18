@@ -243,16 +243,15 @@ module InternalEventsCli
 
         outcome ||= '  No files saved.'
 
-        # TODO: change this message for database metrics https://gitlab.com/gitlab-org/gitlab/-/issues/464066
+        event_metric_message = "\n  Have you instrumented the application code to trigger the event yet? " \
+          "View usage examples to easily copy/paste implementation!\n"
         cli.say <<~TEXT
           #{divider}
           #{format_info('Done with metric definitions!')}
 
           #{outcome}
           #{divider}
-
-            Have you instrumented the application code to trigger the event yet? View usage examples to easily copy/paste implementation!
-
+            #{event_metric_message if metric.event_metric?}
             Want to verify the metrics? Check out the group::#{metric[:product_group]} Metrics Exploration Dashboard in Tableau
               Note: The Metrics Exploration Dashboard data would be available ~1 week after deploy for Gitlab.com, ~1 week after next release for self-managed
               Link: #{format_info(metric_exploration_group_path(metric[:product_group], find_stage(metric.product_group)))}
@@ -298,28 +297,38 @@ module InternalEventsCli
       def prompt_for_description
         new_page!(on_step: 'Description', steps: STEPS)
 
-        cli.say DESCRIPTION_INTRO
-        cli.say selected_event_descriptions.join if metric.event_metric?
-
-        description_start = format_info("#{metric.description_prefix}...")
+        if metric.event_metric?
+          cli.say EVENT_METRIC_DESCRIPTION_INTRO
+          cli.say selected_event_descriptions.join
+        else
+          cli.say DATABASE_METRIC_DESCRIPTION_INTRO
+        end
 
         cli.say <<~TEXT
 
           #{input_opts[:prefix]} How would you describe this metric to a non-technical person? #{input_required_text}
 
-          #{format_info('Technical description:')} #{metric.technical_description}
-
         TEXT
 
-        # TODO: make the prompt more user friendly for db metrics https://gitlab.com/gitlab-org/gitlab/-/issues/464066
+        if metric.technical_description
+          cli.say <<~TEXT
+            #{format_info('Technical description:')} #{metric.technical_description}
 
-        description = prompt_for_text("  Finish the description: #{description_start}", multiline: true) do |q|
+          TEXT
+        end
+
+        has_prefix = !!metric.description_prefix
+
+        description_start = format_info("#{metric.description_prefix}...") if has_prefix
+        command = has_prefix ? 'Finish' : 'Write'
+
+        description = prompt_for_text("  #{command} the description: #{description_start}", multiline: true) do |q|
           q.required true
           q.modify :trim
           q.messages[:required?] = DESCRIPTION_HELP
         end
 
-        metric.description = "#{metric.description_prefix} #{description}"
+        metric.description = has_prefix ? "#{metric.description_prefix} #{description}" : description
       end
 
       def prompt_for_metric_name
@@ -362,6 +371,8 @@ module InternalEventsCli
           NAME_REQUIREMENT_REASONS[:length]
         elsif conflicting_key_path?(metric.key_path)
           NAME_REQUIREMENT_REASONS[:conflict]
+        elsif !metric.event_metric?
+          NAME_REQUIREMENT_REASONS[:database_metric]
         end
       end
 

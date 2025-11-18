@@ -10,15 +10,14 @@ RSpec.describe Environments::AutoStopWorker, feature_category: :continuous_deliv
   let_it_be(:project) { create(:project, :repository) }
   let_it_be(:developer) { create(:user, developer_of: project) }
   let_it_be(:reporter) { create(:user, reporter_of: project) }
-
-  before_all do
-    project.repository.add_branch(developer, 'review/feature', 'master')
-  end
-
   let!(:environment) { create_review_app(user, project, 'review/feature').environment }
   let(:environment_id) { environment.id }
   let(:worker) { described_class.new }
   let(:user) { developer }
+
+  before_all do
+    project.repository.add_branch(developer, 'review/feature', 'master')
+  end
 
   it 'stops the environment' do
     expect { subject }

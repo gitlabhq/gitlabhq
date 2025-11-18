@@ -12,6 +12,7 @@ class Key < ApplicationRecord
   sha256_attribute :fingerprint_sha256
 
   belongs_to :user
+  belongs_to :organization, class_name: 'Organizations::Organization'
 
   has_many :ssh_signatures, class_name: 'CommitSignatures::SshSignature'
 

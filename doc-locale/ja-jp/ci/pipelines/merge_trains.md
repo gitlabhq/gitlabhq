@@ -2,21 +2,22 @@
 stage: Verify
 group: Pipeline Execution
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+description: マージトレインを使用して、マージリクエストをキューに入れ、GitLab CI/CDでブランチの競合を防ぎます。
 title: マージトレイン
 ---
 
 {{< details >}}
 
-- プラン:Premium、Ultimate
-- 提供:GitLab.com、GitLab Self-Managed、GitLab Dedicated
+- プラン: Premium、Ultimate
+- 提供形態: GitLab.com、GitLab Self-Managed、GitLab Dedicated
 
 {{< /details >}}
 
 {{< history >}}
 
-- [GitLab 16.0 以降](https://gitlab.com/gitlab-org/gitlab/-/issues/359057)では、**マージトレインを開始**ボタンと**パイプラインが成功したらマージトレインを開始**ボタンは、**自動マージに設定**になりました。**マージトレインから削除**は、**自動マージをキャンセル**になりました。
-- [早送り](../../user/project/merge_requests/methods/_index.md#fast-forward-merge)および[半線型](../../user/project/merge_requests/methods/_index.md#merge-commit-with-semi-linear-history)マージメソッドのサポートが、`fast_forward_merge_trains_support`という[フラグ](../../administration/feature_flags.md)を使用して、GitLab 16.5 で[導入](https://gitlab.com/gitlab-org/gitlab/-/issues/282442)されました。デフォルトで有効。
-- GitLab 16.11 で[機能フラグ`fast_forward_merge_trains_support`が削除](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/148964#note_1855981445)されました。
+- [GitLab 16.0以降](https://gitlab.com/gitlab-org/gitlab/-/issues/359057)では、**マージトレインを開始**ボタンと**Start merge train when pipeline succeeds**（パイプラインが成功したらマージトレインを開始）ボタンは、**自動マージに設定**になりました。**マージトレインから消去**は、**自動マージのキャンセル**になりました。
+- [早送り](../../user/project/merge_requests/methods/_index.md#fast-forward-merge)および[半線形](../../user/project/merge_requests/methods/_index.md#merge-commit-with-semi-linear-history)マージメソッドのサポートは、GitLab 16.5で`fast_forward_merge_trains_support`[フラグ](../../administration/feature_flags/_index.md)とともに[導入](https://gitlab.com/gitlab-org/gitlab/-/issues/282442)されました。デフォルトでは有効になっています。
+- GitLab 16.11で[機能フラグ`fast_forward_merge_trains_support`が削除](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/148964#note_1855981445)されました。
 
 {{< /history >}}
 
@@ -25,24 +26,24 @@ title: マージトレイン
 詳細については、以下をご覧ください:
 
 - マージトレインの仕組みについては、[マージトレインのワークフロー](#merge-train-workflow)を確認してください。
-- マージトレインを使用する理由については、[マージトレインの開始が DevOps の効率性をどのように改善するか](https://about.gitlab.com/blog/2020/01/30/all-aboard-merge-trains/)をお読みください。
+- マージトレインを使用する理由については、[マージトレインの開始がDevOpsの効率性をどのように改善するか](https://about.gitlab.com/blog/2020/01/30/all-aboard-merge-trains/)をお読みください。
 
-## マージトレインのワークフロー
+## マージトレインのワークフロー {#merge-train-workflow}
 
-マージを待機しているマージリクエストがなく、[**マージ**または**自動マージに設定**](#start-a-merge-train)を選択すると、マージトレインが開始されます。GitLab は、変更がデフォルトブランチにマージできることを確認するマージトレインパイプラインを開始します。この最初のパイプラインは[マージ結果パイプライン](merged_results_pipelines.md)と同じで、ソースブランチとターゲットブランチを組み合わせた変更に対して実行されます。内部マージ結果コミットの作成者は、マージを開始したユーザーです。
+マージを待機しているマージリクエストがなく、[**マージ**または**自動マージに設定**](#start-a-merge-train)を選択すると、マージトレインが開始されます。GitLabは、変更がデフォルトブランチにマージできることを確認するマージトレインパイプラインを開始します。この最初のパイプラインは[マージ結果パイプライン](merged_results_pipelines.md)と同じで、ソースブランチとターゲットブランチを組み合わせた変更に対して実行されます。内部マージ結果コミットの作成者は、マージを開始したユーザーです。
 
 最初のパイプラインが完了した直後にマージする2番目のマージリクエストをキューに入れるには、[**マージ**または**自動マージに設定**](#add-a-merge-request-to-a-merge-train)を選択して、トレインに追加します。この2番目のマージトレインパイプラインは、ターゲットブランチと組み合わせた_両方_のマージリクエストの変更に対して実行されます。同様に、3番目のマージリクエストを追加すると、そのパイプラインは、ターゲットブランチとマージされた3つのマージリクエストすべての変更に対して実行されます。パイプラインはすべて並行して実行されます。
 
-各マージリクエストは、以下の場合にのみターゲットブランチにマージされます。
+各マージリクエストは、以下の場合にのみターゲットブランチにマージされます:
 
 - マージリクエストのパイプラインが正常に完了した場合。
 - その前にキューに入れられた他のすべてのマージリクエストがマージされた場合。
 
-マージトレインパイプラインが失敗した場合、マージリクエストはマージされません。GitLab はそのマージリクエストをマージトレインから削除し、その後にキューに入れられたすべてのマージリクエストに対して新しいパイプラインを開始します。
+マージトレインパイプラインが失敗した場合、マージリクエストはマージされません。GitLabはそのマージリクエストをマージトレインから削除し、その後にキューに入れられたすべてのマージリクエストに対して新しいパイプラインを開始します。
 
 次に例を示します:
 
-3つのマージリクエスト（`A`、`B`、および`C`）が順番にマージトレインに追加され、並行して実行される3つのマージ結果パイプラインが作成されます。
+3つのマージリクエスト（`A`、`B`、および`C`）が順番にマージトレインに追加され、並行して実行される3つのマージ結果パイプラインが作成されます:
 
 1. 最初のパイプラインは、`A`からの変更とターゲットブランチを組み合わせて実行されます。
 1. 2番目のパイプラインは、`A`と`B`からの変更とターゲットブランチを組み合わせて実行されます。
@@ -58,44 +59,44 @@ title: マージトレイン
 
 <i class="fa fa-youtube-play youtube" aria-hidden="true"></i>[マージトレインの並列実行によってコミットがデフォルトブランチを破損するのを防ぐ方法](https://www.youtube.com/watch?v=D4qCqXgZkHQ)のデモについては、このビデオをご覧ください。
 
-### パイプラインの自動キャンセル
+### パイプラインの自動キャンセル {#automatic-pipeline-cancellation}
 
 GitLab CI/CDは、冗長なパイプラインを検出し、リソースを節約するためにそれらをキャンセルします。
 
-冗長なマージトレインパイプラインは、以下の場合に発生します。
+冗長なマージトレインパイプラインは、以下の場合に発生します:
 
 - マージトレイン内のいずれかのマージリクエストでパイプラインが失敗した場合。
 - [マージトレインをスキップしてすぐにマージ](#skip-the-merge-train-and-merge-immediately)する場合。
 - [マージトレインからマージリクエストを削除](#remove-a-merge-request-from-a-merge-train)する場合。
 
-これらの場合、GitLab はトレイン上の一部のまたはすべてのマージリクエストに対して新しいマージトレインパイプラインを作成する必要があります。古いパイプラインは、マージトレイン内の以前の結合された変更と比較していましたが、これはもはや有効ではないため、これらの古いパイプラインはキャンセルされます。
+これらの場合、GitLabはトレイン上の一部のまたはすべてのマージリクエストに対して新しいマージトレインパイプラインを作成する必要があります。古いパイプラインは、マージトレイン内の以前の結合された変更と比較していましたが、これはもはや有効ではないため、これらの古いパイプラインはキャンセルされます。
 
-## マージトレインを有効にする
+## マージトレインを有効にする {#enable-merge-trains}
 
 {{< history >}}
 
-- `disable_merge_trains`機能フラグがGitLab 16.5 で[削除](https://gitlab.com/gitlab-org/gitlab/-/issues/282477)されました。
+- `disable_merge_trains`機能フラグは、GitLab 16.5で[削除](https://gitlab.com/gitlab-org/gitlab/-/issues/282477)されました。
 
 {{< /history >}}
 
 前提要件:
 
 - メンテナーのロールを持っている必要があります。
-- リポジトリは、[外部リポジトリ](../ci_cd_for_external_repos/_index.md)ではなく、GitLab リポジトリである必要があります。
-- パイプラインが[マージリクエストパイプラインを使用するように Configure されている](merge_request_pipelines.md#prerequisites)必要があります。そうでない場合、マージリクエストが未解決の状態でスタックしたり、パイプラインがドロップされたりする可能性があります。
+- リポジトリは、[外部リポジトリ](../ci_cd_for_external_repos/_index.md)ではなく、GitLabリポジトリである必要があります。
+- パイプラインが[マージリクエストパイプラインを使用するように設定されている](merge_request_pipelines.md#prerequisites)必要があります。そうでない場合、マージリクエストが未解決の状態でスタックしたり、パイプラインがドロップされたりする可能性があります。
 - [マージ結果パイプラインが有効になっている](merged_results_pipelines.md#enable-merged-results-pipelines)必要があります。
 
 マージトレインを有効にするには:
 
-1. 左側のサイドバーで、**検索または移動**を選択して、プロジェクトを見つけます。
-1. **設定 > マージリクエスト**を選択します。
-1. GitLab 16.4 以前では、**マージ方法**セクションで、**マージコミット**が選択されていることを確認します。GitLab 16.5 以降では、任意のマージ方法を使用できます。
-1. **マージオプション**セクションで、**マージ結果パイプラインを有効にする**が有効になっていることを確認し、**マージトレインを有効にする**を選択します。
+1. 左側のサイドバーで、**検索または移動先**を選択して、プロジェクトを見つけます。
+1. **設定** > **マージリクエスト**を選択します。
+1. GitLab 16.4以前では、**マージ方法**セクションで、**マージコミット**が選択されていることを確認します。GitLab 16.5以降では、任意のマージ方法を使用できます。
+1. **マージオプション**セクションで、**マージされた結果のパイプラインを有効にする**が有効になっていることを確認し、**マージトレインを有効にする。**を選択します。
 1. **変更を保存**を選択します。
 
-## マージトレインを開始する
+## マージトレインを開始する {#start-a-merge-train}
 
-前提要件:
+前提要件: 
 
 - ターゲットブランチにマージまたはプッシュする[権限](../../user/permissions.md)が必要です。
 
@@ -110,11 +111,11 @@ GitLab CI/CDは、冗長なパイプラインを検出し、リソースを節�
 
 他のマージリクエストをトレインに追加できるようになりました。
 
-## マージトレインを表示する
+## マージトレインを表示する {#view-a-merge-train}
 
 {{< history >}}
 
-- GitLab 17.3 でマージトレインの可視化[が導入](https://gitlab.com/groups/gitlab-org/-/epics/13705)されました。
+- GitLab 17.3でマージトレインの可視化[が導入](https://gitlab.com/groups/gitlab-org/-/epics/13705)されました。
 
 {{< /history >}}
 
@@ -122,30 +123,30 @@ GitLab CI/CDは、冗長なパイプラインを検出し、リソースを節�
 
 マージリクエストのリストからマージトレインの詳細にアクセスするには:
 
-1. 左側のサイドバーで、**検索または移動**を選択して、プロジェクトを見つけます。
-1. **コード > マージリクエスト**を選択します。
+1. 左側のサイドバーで、**検索または移動先**を選択して、プロジェクトを見つけます。
+1. **コード** > **マージリクエスト**を選択します。
 1. マージリクエストのリストの上にある**マージトレイン**を選択します。
-1. 任意。ターゲットブランチでマージトレインをフィルタリングします。
+1. オプション。ターゲットブランチでマージトレインをフィルタリングします。
 
-次の場所から**マージトレインの詳細を表示**を選択して、このビューにアクセスすることもできます。
+次の場所から**マージトレインの詳細を表示します。**を選択して、このビューにアクセスすることもできます:
 
 - マージトレインに追加されたマージリクエストのパイプラインウィジェットとシステムノート。
 - マージトレインパイプラインのパイプライン詳細ページ。
 
 マージトレインの詳細ビューからマージリクエストを削除（{{< icon name="close" >}}）することもできます。
 
-## マージリクエストをマージトレインに追加する
+## マージリクエストをマージトレインに追加する {#add-a-merge-request-to-a-merge-train}
 
 {{< history >}}
 
-- マージトレインの自動マージが、`merge_when_checks_pass_merge_train`という名前の[フラグ](../../administration/feature_flags.md)を使用して、GitLab 17.2 で[導入](https://gitlab.com/groups/gitlab-org/-/epics/10874)されました。デフォルトでは無効になっています。
-- GitLab.com でのマージトレインの自動マージが、GitLab 17.2 で[有効](https://gitlab.com/gitlab-org/gitlab/-/issues/470667)になりました。
-- GitLab 17.4 では、マージトレインの自動マージがデフォルトで[有効](https://gitlab.com/gitlab-org/gitlab/-/issues/470667)になっています。
-- GitLab 17.7 では、マージトレインの自動マージが[一般提供](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/174357)されています。機能フラグ`merge_when_checks_pass_merge_train`が削除されました。
+- マージトレインの自動マージは、GitLab 17.2で`merge_when_checks_pass_merge_train`[フラグ](../../administration/feature_flags/_index.md)とともに[導入](https://gitlab.com/groups/gitlab-org/-/epics/10874)されました。デフォルトでは無効になっています。
+- GitLab.comでのマージトレインの自動マージが、GitLab 17.2で[有効](https://gitlab.com/gitlab-org/gitlab/-/issues/470667)になりました。
+- GitLab 17.4では、マージトレインの自動マージがデフォルトで[有効](https://gitlab.com/gitlab-org/gitlab/-/issues/470667)になっています。
+- GitLab 17.7では、マージトレインの自動マージが[一般提供](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/174357)されています。機能フラグ`merge_when_checks_pass_merge_train`は削除されました。
 
 {{< /history >}}
 
-前提要件:
+前提要件: 
 
 - ターゲットブランチにマージまたはプッシュする[権限](../../user/permissions.md)が必要です。
 
@@ -160,7 +161,7 @@ GitLab CI/CDは、冗長なパイプラインを検出し、リソースを節�
 
 各マージトレインは、最大20個のパイプラインを並行して実行できます。マージトレインに20を超えるマージリクエストを追加すると、追加のマージリクエストはキューに入れられ、パイプラインが完了するのを待ちます。マージトレインへの参加を待機している、キューに入れられたマージリクエストの数に制限はありません。
 
-## マージリクエストをマージトレインから削除する
+## マージリクエストをマージトレインから削除する {#remove-a-merge-request-from-a-merge-train}
 
 マージリクエストをマージトレインから削除すると:
 
@@ -171,12 +172,12 @@ GitLab CI/CDは、冗長なパイプラインを検出し、リソースを節�
 
 マージリクエストをマージトレインから削除するには:
 
-- マージリクエストから**自動マージをキャンセル**を選択します。
+- マージリクエストから**自動マージのキャンセル**を選択します。
 - [マージトレインの詳細](#view-a-merge-train)から、マージリクエストの横にある{{< icon name="close" >}}を選択します。
 
-## マージトレインをスキップしてすぐにマージする
+## マージトレインをスキップしてすぐにマージする {#skip-the-merge-train-and-merge-immediately}
 
-緊急にマージする必要がある重要なパッチのような優先度の高いマージリクエストがある場合は、**すぐにマージ**を選択できます。
+緊急にマージする必要がある重要なパッチのような優先度の高いマージリクエストがある場合は、**今すぐマージする**を選択できます。
 
 マージリクエストをすぐにマージすると:
 
@@ -192,34 +193,34 @@ GitLab CI/CDは、冗長なパイプラインを検出し、リソースを節�
 
 {{< alert type="note" >}}
 
-プロジェクトで[早送り](../../user/project/merge_requests/methods/_index.md#fast-forward-merge)マージメソッドを使用し、ソースブランチがターゲットブランチより遅れている場合、**すぐにマージ**オプションは使用できない場合があります。詳細については、[イシュー 434070](https://gitlab.com/gitlab-org/gitlab/-/issues/434070)を参照してください。
+プロジェクトで[早送り](../../user/project/merge_requests/methods/_index.md#fast-forward-merge)マージメソッドを使用し、ソースブランチがターゲットブランチより遅れている場合、**merge immediately**（すぐにマージ）オプションは使用できない場合があります。詳細については、[イシュー434070](https://gitlab.com/gitlab-org/gitlab/-/issues/434070)を参照してください。
 
 {{< /alert >}}
 
-### マージトレインパイプラインが再起動することなく、マージトレインをスキップしてすぐにマージできるようにする
+### マージトレインパイプラインを再起動することなく、マージトレインをスキップしてすぐにマージできるようにする {#allow-merge-trains-to-be-skipped-to-merge-immediately-without-restarting-merge-train-pipelines}
 
 {{< details >}}
 
-- 状態:実験
+- ステータス: 実験的機能
 
 {{< /details >}}
 
 {{< history >}}
 
-- `merge_trains_skip_train`という名前の[フラグ](../../administration/feature_flags.md)を使用して、GitLab 16.5 で[導入](https://gitlab.com/gitlab-org/gitlab/-/issues/414505)されました。デフォルトでは無効になっています。
-- GitLab 16.10 では、[実験機能](../../policy/development_stages_support.md)として[有効](https://gitlab.com/gitlab-org/gitlab/-/issues/422111)になっています。
+- GitLab 16.5で`merge_trains_skip_train`[フラグ](../../administration/feature_flags/_index.md)とともに[導入](https://gitlab.com/gitlab-org/gitlab/-/issues/414505)されました。デフォルトでは無効になっています。
+- GitLab 16.10では、[実験機能](../../policy/development_stages_support.md)として[有効](https://gitlab.com/gitlab-org/gitlab/-/issues/422111)になっています。
 
 {{< /history >}}
 
 {{< alert type="flag" >}}
 
-GitLab Self-Managedでは、デフォルトでこの機能を利用できます。機能を非表示にするには、管理者は`merge_trains_skip_train`という名前の[機能フラグを無効に](../../administration/feature_flags.md)できます。GitLab.com および GitLab Dedicated では、この機能を利用できます。
+GitLab Self-Managedでは、デフォルトでこの機能を利用できます。機能を非表示にするには、管理者は`merge_trains_skip_train`という名前の[機能フラグを無効に](../../administration/feature_flags/_index.md)できます。GitLab.comおよびGitLab Dedicatedでは、この機能を使用できます。
 
 {{< /alert >}}
 
 実行中のマージトレインを完全に再起動せずに、マージリクエストをマージできます。この機能を使用すると、パイプラインを安全にスキップできる変更（たとえば、マイナーなドキュメントの更新）をすばやくマージできます。
 
-早送りまたは半線型のマージ方法では、マージトレインをスキップできません。詳細については、[イシュー 429009](https://gitlab.com/gitlab-org/gitlab/-/issues/429009)を参照してください。
+早送りまたは半線形のマージ方法では、マージトレインをスキップできません。詳細については、[イシュー429009](https://gitlab.com/gitlab-org/gitlab/-/issues/429009)を参照してください。
 
 マージトレインのスキップは実験的な機能です。今後のリリースで変更または完全に削除される可能性があります。
 
@@ -229,16 +230,16 @@ GitLab Self-Managedでは、デフォルトでこの機能を利用できます�
 
 {{< /alert >}}
 
-前提要件:
+前提要件: 
 
 - メンテナーのロールを持っている必要があります。
 - [マージトレインが有効](#enable-merge-trains)になっている必要があります。
 
 パイプラインを再起動せずにトレインのスキップを有効にするには:
 
-1. 左側のサイドバーで、**検索または移動**を選択して、プロジェクトを見つけます。
-1. **設定 > マージリクエスト**を選択します。
-1. **マージオプション**セクションで、**マージ結果パイプラインを有効にする**オプションと**マージトレインを有効にする**オプションが有効になっていることを確認します。
+1. 左側のサイドバーで、**検索または移動先**を選択して、プロジェクトを見つけます。
+1. **設定** > **マージリクエスト**を選択します。
+1. **マージオプション**セクションで、**マージされた結果のパイプラインを有効にする**オプションと**マージトレインを有効にする。**オプションが有効になっていることを確認します。
 1. **マージトレインのスキップを許可**を選択します。
 1. **変更を保存**を選択します。
 
@@ -246,9 +247,9 @@ GitLab Self-Managedでは、デフォルトでこの機能を利用できます�
 
 マージリクエストがマージされ、既存のマージトレインパイプラインはキャンセルまたは再起動されません。
 
-## トラブルシューティング
+## トラブルシューティング {#troubleshooting}
 
-### マージリクエストがマージトレインから削除されました
+### マージリクエストがマージトレインから削除されました {#merge-request-dropped-from-the-merge-train}
 
 マージトレインパイプラインの実行中にマージリクエストがマージできなくなった場合、マージトレインはマージリクエストを自動的にドロップします。たとえば、これは次の原因で発生する可能性があります:
 
@@ -256,13 +257,13 @@ GitLab Self-Managedでは、デフォルトでこの機能を利用できます�
 - マージの競合。
 - [すべてのスレッドを解決する必要がある](../../user/project/merge_requests/_index.md#prevent-merge-unless-all-threads-are-resolved)が有効になっている場合の、未解決の新しい会話スレッド。
 
-システムノートでマージリクエストがマージトレインから削除された理由を確認できます。**概要**タブの**アクティビティ**セクションで、`User removed this merge request from the merge train because ...`のようなメッセージを確認してください
+システムノートでマージリクエストがマージトレインから削除された理由を確認できます。**概要**タブの**アクティビティー**セクションで、`User removed this merge request from the merge train because ...`のようなメッセージを確認してください
 
-### 自動マージを使用できません
+### 自動マージを使用できません {#cannot-use-auto-merge}
 
-マージトレインが有効になっている場合、マージトレインをスキップするために[自動マージ](../../user/project/merge_requests/auto_merge.md)（以前の**パイプラインが成功したらマージ**）を使用できません。詳細については、[イシュー 12267](https://gitlab.com/gitlab-org/gitlab/-/issues/12267)を参照してください。
+マージトレインが有効になっている場合、マージトレインをスキップするために[自動マージ](../../user/project/merge_requests/auto_merge.md)（以前の**パイプラインが成功したときにマージ**）を使用できません。詳細については、[イシュー12267](https://gitlab.com/gitlab-org/gitlab/-/issues/12267)を参照してください。
 
-### マージトレインパイプラインを再試行できません
+### マージトレインパイプラインを再試行できません {#cannot-retry-merge-train-pipeline}
 
 マージトレインパイプラインが失敗すると、マージリクエストがトレインから削除され、パイプラインが失敗した後に再試行できなくなります。マージトレインパイプラインは、マージリクエストの変更と、すでにトレイン上にある他のマージリクエストからの変更のマージされた結果に対して実行されます。マージリクエストがトレインから削除されると、マージされた結果が古くなり、パイプラインを再試行できなくなります。
 
@@ -271,9 +272,9 @@ GitLab Self-Managedでは、デフォルトでこの機能を利用できます�
 - [マージリクエストをトレインに再度追加](#add-a-merge-request-to-a-merge-train)します。これにより、新しいパイプラインがトリガーされます。
 - ジョブが断続的に失敗する場合は、ジョブに[`retry`](../yaml/_index.md#retry)キーワードを追加します。再試行後に成功した場合、マージリクエストはマージトレインから削除されません。
 
-### マージリクエストをマージトレインに追加できません
+### マージリクエストをマージトレインに追加できません {#cannot-add-a-merge-request-to-the-merge-train}
 
-[**パイプラインが成功する必要がある**](../../user/project/merge_requests/auto_merge.md#require-a-successful-pipeline-for-merge)が有効になっているが、最新のパイプラインが失敗した場合:
+[**パイプラインが完了している**](../../user/project/merge_requests/auto_merge.md#require-a-successful-pipeline-for-merge)が有効になっているが、最新のパイプラインが失敗した場合:
 
 - **自動マージに設定**または**マージ**オプションは使用できません。
 - マージリクエストには`The pipeline for this merge request failed. Please retry the job or push a new commit to fix the failure.`が表示されます

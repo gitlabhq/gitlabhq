@@ -52,8 +52,8 @@ RSpec.shared_examples 'checks abilities for project level work items' do
     )
 
     # disallowed
-    expect(permissions(planner, project_work_item)).to be_disallowed(:delete_work_item)
-    expect(permissions(planner, project_confidential_work_item)).to be_disallowed(:delete_work_item)
+    expect(permissions(planner, project_work_item)).to be_allowed(:delete_work_item)
+    expect(permissions(planner, project_confidential_work_item)).to be_allowed(:delete_work_item)
     expect(permissions(planner, incident_work_item)).to be_disallowed(
       :admin_work_item, :update_work_item, :set_work_item_metadata, :delete_work_item
     )
@@ -71,8 +71,8 @@ RSpec.shared_examples 'checks abilities for project level work items' do
     )
 
     # disallowed
-    expect(permissions(group_planner, project_work_item)).to be_disallowed(:delete_work_item)
-    expect(permissions(group_planner, project_confidential_work_item)).to be_disallowed(:delete_work_item)
+    expect(permissions(group_planner, project_work_item)).to be_allowed(:delete_work_item)
+    expect(permissions(group_planner, project_confidential_work_item)).to be_allowed(:delete_work_item)
   end
 
   it 'checks reporter abilities' do

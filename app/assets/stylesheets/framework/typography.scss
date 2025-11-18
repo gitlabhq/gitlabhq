@@ -21,11 +21,14 @@
   }
 
   p {
-    @apply gl-text-default gl-m-0 gl-mb-5;
+    @apply gl-text-default;
+    @apply gl-m-0;
+    @apply gl-mb-5;
 
     > code {
       font-weight: inherit;
-      @apply gl-break-words gl-whitespace-break-spaces;
+      @apply gl-break-words;
+      @apply gl-whitespace-break-spaces;
     }
   }
 
@@ -36,6 +39,7 @@
 
     video {
       max-width: 100%;
+      height: auto;
     }
   }
 
@@ -92,11 +96,12 @@
   }
 
   summary > * {
-    @apply gl-inline-block gl-mb-0;
+    @apply gl-inline-block;
+    @apply gl-mb-0;
   }
 
   // make default paragraph of summary text behave nicely with the summary marker
-  summary > p {
+  summary > p, summary > .markdown-code-block {
     max-width: calc(100% - 1rem);
   }
 
@@ -122,41 +127,56 @@
 
   // Fixed headings are default for markdown
   h1 {
-    @apply gl-heading-1-fixed gl-mt-7;
+    @apply gl-heading-1-fixed;
+    @apply gl-mt-7;
   }
 
   h2:not(:where(.crud-header) h2) {
-    @apply gl-heading-2-fixed gl-mt-6;
+    @apply gl-heading-2-fixed;
+    @apply gl-mt-6;
   }
 
   h3 {
-    @apply gl-heading-3-fixed gl-mt-6;
+    @apply gl-heading-3-fixed;
+    @apply gl-mt-6;
   }
 
   h4 {
-    @apply gl-heading-4-fixed gl-mt-5;
+    @apply gl-heading-4-fixed;
+    @apply gl-mt-5;
   }
 
   h5 {
-    @apply gl-heading-5-fixed gl-mt-5;
+    @apply gl-heading-5-fixed;
+    @apply gl-mt-5;
   }
 
   h6 {
-    @apply gl-heading-6-fixed gl-mt-5;
+    @apply gl-heading-6-fixed;
+    @apply gl-mt-5;
   }
 
   blockquote,
   .blockquote {
-    @apply gl-text-size-reset gl-text-subtle;
-    @apply gl-py-3 gl-pl-5 gl-my-3 gl-mx-0;
-    @apply gl-border-l gl-border-l-4 gl-border-strong;
+    @apply gl-text-size-reset;
+    @apply gl-text-subtle;
+    @apply gl-py-3;
+    @apply gl-pl-5;
+    @apply gl-my-3;
+    @apply gl-mx-0;
+    @apply gl-border-l;
+    @apply gl-border-l-4;
+    @apply gl-border-strong;
 
     &:dir(rtl) {
-      @apply gl-border-l-0 gl-border-r gl-border-r-4;
+      @apply gl-border-l-0;
+      @apply gl-border-r;
+      @apply gl-border-r-4;
     }
 
     p {
-      @apply gl-text-inherit gl-leading-[1.5];
+      @apply gl-text-inherit;
+      @apply gl-leading-[1.5];
 
       &:last-child {
         margin: 0;
@@ -428,7 +448,8 @@
   ul,
   ol {
     padding: 0;
-    @apply gl-m-0 gl-mb-5;
+    @apply gl-m-0;
+    @apply gl-mb-5;
 
     // Lists embedded in other lists can be "loose" or "tight"
     // Remove bottom margin for all lists (default for tight lists)
@@ -509,7 +530,12 @@
   ul[data-type=taskList] input[type=checkbox],
   ul.task-list .task-list-item-checkbox {
     all: unset;
-    @apply gl-w-5 gl-h-5 gl-cursor-pointer gl-box-border gl-rounded-base focus-visible:gl-focus;
+    @apply gl-w-5;
+    @apply gl-h-5;
+    @apply gl-cursor-pointer;
+    @apply gl-box-border;
+    @apply gl-rounded-base;
+    @apply focus-visible:gl-focus;
     background-color: var(--gl-control-background-color-default);
     border: 1px solid var(--gl-control-border-color-default);
 
@@ -518,7 +544,11 @@
       content: '';
       margin-top: calc(-#{$gl-spacing-scale-2} - 1px);
       margin-left: calc(-#{$gl-spacing-scale-2} - 1px);
-      @apply gl-absolute gl-z-1 gl-w-6 gl-h-6 gl-bg-transparent;
+      @apply gl-absolute;
+      @apply gl-z-1;
+      @apply gl-w-6;
+      @apply gl-h-6;
+      @apply gl-bg-transparent;
     }
 
     &:not(:disabled):hover {
@@ -536,7 +566,13 @@
 
       &::after {
         content: '';
-        @apply gl-absolute gl-z-2 gl-w-5 gl-h-5 gl-mt-[-1px] gl-ml-[-1px] gl-rounded-base;
+        @apply gl-absolute;
+        @apply gl-z-2;
+        @apply gl-w-5;
+        @apply gl-h-5;
+        @apply gl-mt-[-1px];
+        @apply gl-ml-[-1px];
+        @apply gl-rounded-base;
         mask: url("#{$gl-icon-check}") center center no-repeat;
         background-color: var(--gl-control-indicator-color-selected);
       }
@@ -560,7 +596,8 @@
     &:disabled {
       background-color: var(--gl-control-background-color-disabled);
       border-color: var(--gl-control-border-color-disabled);
-      @apply gl-cursor-not-allowed gl-text-disabled;
+      @apply gl-cursor-not-allowed;
+      @apply gl-text-disabled;
     }
 
     &:disabled:checked {
@@ -649,7 +686,7 @@
   h4,
   h5,
   h6 {
-    $anchor-offset: 20px;
+    $anchor-offset: 16px;
 
     a.anchor {
       margin-left: calc(-1 * $anchor-offset);
@@ -868,7 +905,9 @@ pre {
   font-size: $gl-font-size;
   word-break: break-all;
   word-wrap: break-word;
-  @apply gl-text-default gl-bg-subtle gl-border;
+  @apply gl-text-default;
+  @apply gl-bg-subtle;
+  @apply gl-border;
   border-radius: $border-radius-small;
 
   // Select only code elements that will have the copy code button
@@ -990,5 +1029,7 @@ wbr {
 }
 
 .math-content-inline {
-  @apply gl-max-w-full gl-overflow-x-auto gl-inline-block;
+  @apply gl-max-w-full;
+  @apply gl-overflow-x-auto;
+  @apply gl-inline-block;
 }

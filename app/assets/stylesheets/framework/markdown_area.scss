@@ -83,12 +83,16 @@
   box-shadow: none;
   width: 100%;
   resize: none !important;
-  @apply gl-bg-transparent gl-border gl-border-subtle gl-transition-box-shadow;
+  @apply gl-bg-transparent;
+  @apply gl-border;
+  @apply gl-border-subtle;
+  @apply gl-transition-box-shadow;
 }
 
 .md-suggestion-diff {
   display: table !important;
-  @apply gl-border gl-border-section #{!important};
+  @apply gl-border #{!important};
+  @apply gl-border-section #{!important};
 
   td {
     border: 0 !important;

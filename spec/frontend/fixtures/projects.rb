@@ -275,7 +275,7 @@ RSpec.describe GraphQL::Query, type: :request, feature_category: :groups_and_pro
     it "#{base_output_path}#{output_query_name}.json" do
       query = get_graphql_query_as_string("#{base_input_path}#{input_query_name}")
 
-      post_graphql(query, current_user: user, variables: { archived: 'ONLY', membership: true })
+      post_graphql(query, current_user: user, variables: { active: false, membership: true })
 
       expect_graphql_errors_to_be_empty
     end

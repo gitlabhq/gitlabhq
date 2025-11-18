@@ -1,4 +1,4 @@
-query getUserWorkItemsDisplaySettingsPreferences($namespace: ID!) {
+query getUserWorkItemsPreferences($namespace: ID!, $workItemTypeId: WorkItemsTypeID!) {
   currentUser {
     id
     userPreferences {
@@ -6,6 +6,12 @@ query getUserWorkItemsDisplaySettingsPreferences($namespace: ID!) {
     }
     workItemPreferences(namespacePath: $namespace) {
       displaySettings
+    }
+    workItemPreferencesWithType: workItemPreferences(
+      namespacePath: $namespace
+      workItemTypeId: $workItemTypeId
+    ) {
+      sort
     }
   }
 }

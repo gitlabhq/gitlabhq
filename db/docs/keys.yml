@@ -13,4 +13,5 @@ introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/commit/9ba122486766584
 milestone: "<6.0"
 gitlab_schema: gitlab_main_org
 table_size: medium
-sharding_key_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/553463
+sharding_key:
+  organization_id: organizations

@@ -5,10 +5,12 @@
  * Application chrome
  */
 
-:where(.application-chrome) {
+.application-chrome {
   // Scroll bars styles
-  * {
-    scrollbar-color: var(--gl-color-neutral-400) transparent;
+  scrollbar-color: var(--gl-color-neutral-400) transparent;
+
+  @media (forced-colors: active) {
+    scrollbar-color: var(--gl-color-neutral-950) transparent;
   }
 
   // Variable overrides
@@ -39,85 +41,50 @@
   // When using panels, remove top padding
   &.page-with-panels .layout-page {
     @apply gl-pt-0 #{!important};
+
+    // If AI panels are disabled.
+    &:has(.paneled-view.ai-panels:not(.ai-panel)) {
+      @apply gl-pb-3;
+    }
+  }
+
+  // Free trial button
+  .topbar-signup-button {
+    @apply gl-bg-neutral-800 gl-border-neutral-800 dark:gl-bg-neutral-100 dark:gl-border-neutral-100 #{!important};
   }
 
   // Super topbar
   .super-topbar {
-    @apply gl-fixed gl-w-full gl-left-0 gl-shrink-0 gl-py-0 gl-pl-4 gl-pr-5 sm:gl-pr-3;
-    top: $calc-system-headers-height;
-    height: var(--header-height);
+    @apply gl-pl-4 gl-pr-5 sm:gl-pr-3;
+    height: var(--top-bar-height);
 
     // Placeholder styles
     .topbar-search-button-placeholder {
       font-weight: 320;
       line-height: 1.25;
     }
-  }
 
-  // Super sidebar
-  .super-sidebar-wrapper {
-    @apply gl-w-0 gl-h-0 lg:gl-h-auto;
-  }
+    // Search button
+    .topbar-search-button {
+      @apply gl-text-subtle gl-border-alpha-dark-24 #{!important};
 
-  @media (max-width: $breakpoint-xl - 1) {
-    #super-sidebar {
-      width: min(80%, 320px);
-    }
-  }
-
-  @media (min-width: $breakpoint-xl) {
-    .super-sidebar-wrapper {
-      width: auto;
-    }
-
-    .super-sidebar.super-sidebar-loading {
-      position: relative;
-      left: 0;
-      top: 0;
-
-      &:not(.super-sidebar-is-icon-only) {
-        width: calc(#{$super-sidebar-width} - var(--ai-panels-gap));
+      kbd {
+        @apply gl-border-strong gl-font-semibold gl-text-subtle gl-shadow-none dark:gl-border-transparent;
       }
 
-      &.super-sidebar-is-icon-only {
-        width: var(--ai-navigation-rail-size-with-gap);
+      @media (forced-colors: active) {
+        border: 1px solid !important;
       }
     }
 
-    .ai-panels {
-      min-width: var(--ai-navigation-rail-size-with-gap);
+    .topbar-search-button:not(:hover):not(:focus):not(:active) {
+      @apply dark:gl-bg-alpha-light-8 dark:gl-border-alpha-light-16 #{!important};
     }
   }
 
-  .page-with-super-sidebar-collapsed {
-    .super-sidebar {
-      @apply gl-m-0;
-    }
-  }
-
-  @media (max-width: $breakpoint-xl - 1) {
-    .super-sidebar.super-sidebar-loading {
-      position: static;
-      width: 0 !important;
-    }
-  }
-
-  // Super sidebar active item
-  .super-sidebar-nav-item {
-    @apply gl-rounded-lg #{!important};
-  }
-
-  // Search button
-  .super-topbar .topbar-search-button {
-    @apply gl-text-subtle gl-border-alpha-dark-24 #{!important};
-
-    kbd {
-      @apply gl-border-strong gl-font-semibold gl-text-subtle gl-shadow-none dark:gl-border-transparent;
-    }
-  }
-
-  .super-topbar .topbar-search-button:not(:hover):not(:focus):not(:active) {
-    @apply dark:gl-bg-alpha-light-8 dark:gl-border-alpha-light-16 #{!important};
+  .header-message,
+  .footer-message {
+    position: static !important;
   }
 
   // Quick search overlay
@@ -166,6 +133,70 @@
     }
   }
 
+  // Super sidebar
+  .super-sidebar-wrapper {
+    @apply gl-w-0 gl-h-0 lg:gl-h-auto;
+  }
+
+  @media (max-width: $breakpoint-xl - 1) {
+    #super-sidebar {
+      width: min(80%, 320px);
+    }
+  }
+
+  @media (min-width: $breakpoint-xl) {
+    .super-sidebar-wrapper {
+      width: auto;
+    }
+
+    .super-sidebar.super-sidebar-loading {
+      position: relative;
+      left: 0;
+      top: 0;
+
+      &:not(.super-sidebar-is-icon-only) {
+        width: calc(#{$super-sidebar-width} - var(--gl-spacing-scale-3));
+      }
+
+      &.super-sidebar-is-icon-only {
+        width: calc(#{$gl-button-medium-size} + var(--gl-spacing-scale-3));
+      }
+    }
+
+    .ai-panels {
+      min-width: var(--ai-navigation-rail-size-with-gap);
+    }
+  }
+
+  .page-with-super-sidebar-collapsed {
+    .super-sidebar {
+      @apply gl-m-0;
+    }
+  }
+
+  @media (max-width: $breakpoint-xl - 1) {
+    .super-sidebar.super-sidebar-loading {
+      position: static;
+      width: 0 !important;
+    }
+  }
+
+  // Super sidebar item
+  .super-sidebar-nav-item {
+    @apply gl-rounded-lg #{!important};
+  }
+
+  // Application background item hover/focus states
+  .super-sidebar .super-sidebar-nav-item,
+  .dashboard-shortcuts-button,
+  .ai-nav-icon,
+  #create-menu-toggle {
+    &:hover,
+    &:focus,
+    &.with-mouse-over-flyout {
+      @apply gl-bg-alpha-dark-6 dark:gl-bg-alpha-light-8 #{!important};
+    }
+  }
 
   // Position for search overlay when Performance bar is visible
   &.with-performance-bar #super-sidebar-search-modal {
@@ -181,18 +212,9 @@
     }
   }
 
-  // Organization switcher adjustment (light mode only)
-  &:not(.gl-dark) .super-topbar .organization-switcher-button.gl-button:not(:hover):not(:focus):not(:active) {
-    @apply gl-bg-alpha-dark-6 gl-border-default;
-  }
-
   .panel-content-inner:has(.issue-boards-content, .group-epics-roadmap) {
-    @apply gl-mx-2 gl-px-0;
-    @apply gl-rounded-[0.75rem];
-  }
-
-  .panel-content:has(.issue-boards-content, .group-epics-roadmap) {
-    height: calc(100% - #{$header-height} - #{$gl-spacing-scale-2} - 1px);
+    @apply gl-px-0;
+    overflow: auto;
   }
 
   // work item drawer correct background colors
@@ -216,7 +238,7 @@
  * Panels
  */
 
-:where(.page-with-panels) {
+.page-with-panels {
   --ai-panel-height: 3rem; //= 48px
 
   @include media-breakpoint-up(lg) {
@@ -225,11 +247,9 @@
 
   // Layout
   &.page-with-panels .layout-page {
-    @apply gl-flex gl-gap-0 lg:gl-gap-3 gl-items-stretch gl-justify-start lg:gl-justify-center gl-flex-col lg:gl-flex-row lg:gl-pl-0 gl-pt-3 lg:gl-pb-3 gl-pr-3 gl-h-full;
-
-    @include media-breakpoint-up(lg) {
-      height: calc(100% - var(--system-header-height) - var(--performance-bar-height) - var(--header-height) - var(--ai-panel-height));
-    }
+    @apply gl-flex gl-gap-0 lg:gl-gap-3 gl-items-stretch gl-justify-start lg:gl-justify-center gl-flex-col lg:gl-flex-row lg:gl-pl-0 gl-pt-3 lg:gl-pb-3 gl-pr-3;
+    min-height: 0;
+    flex: 1;
 
     // Temporarily solution to hide empty AI Chat divs
     // empty:gl-hidden and :empty doesn't work because these empty divs have comment blocks
@@ -240,21 +260,22 @@
 
   // Unset fixed positions
   #js-peek,
-  .super-topbar,
   #super-sidebar,
   .header-logged-out {
     @apply gl-relative #{!important};
     @apply gl-top-0;
   }
 
-  // Super sidebar height
-  #super-sidebar {
-    @apply gl-h-full lg:-gl-mr-3;
-
-    @include media-breakpoint-down(lg) {
+  @include media-breakpoint-down(lg) {
+    .page-with-super-sidebar:not(.super-sidebar-has-css-transitions-blocked) #super-sidebar {
       @apply gl-fixed #{!important};
       @apply gl-rounded-r-[1rem];
     }
+  }
+
+  // Super sidebar height
+  #super-sidebar {
+    @apply gl-h-full lg:-gl-mr-3;
 
     .contextual-nav {
       @apply gl-pt-2;
@@ -264,6 +285,7 @@
   // Panels container
   .panels-container {
     @apply gl-relative gl-grow gl-flex gl-pr-0 gl-pb-0;
+    min-height: 0;
 
     // Inside the panels container, everything that calculates an offset from
     // the top needs to ignore application header height, system header height,
@@ -276,14 +298,8 @@
     --header-height: 0px; // stylelint-disable-line length-zero-no-unit
     --top-bar-height: 0px; // stylelint-disable-line length-zero-no-unit
 
-    .panel-content-inner {
-      @apply gl-h-full;
-    }
-
     .panel-content-inner,
     .vue-portal-target .work-item-drawer-content {
-      @apply gl-overflow-y-auto gl-overflow-x-hidden;
-
       // This prevents the scrollbar transparency rule above from breaking scrollbars in dropdown menus
       .dropdown-menu {
         background: var(--gl-background-color-overlap);
@@ -314,22 +330,22 @@
     }
   }
 
-  // Panels
+  // All panels
   .paneled-view.static-panel,
   .paneled-view.contextual-panel,
-  .paneled-view.ai-panels .ai-panel {
-    @apply gl-shadow-sm;
-  }
-
-  // Static panel
-  .paneled-view.static-panel {
-    // Specifics here
+  .paneled-view.ai-panels .ai-panel
+  {
+    @media (forced-colors: active) {
+      border: 1px solid;
+    }
   }
 
   // Contextual panel
   .paneled-view.contextual-panel {
     @apply gl-overflow-y-auto gl-flex-1 gl-rounded-lg gl-bg-default empty:gl-hidden gl-h-full;
-    @apply gl-z-[252] gl-w-full md:gl-w-8/10 gl-right-0;
+    @apply gl-z-[252] gl-w-full sm:gl-w-8/10 gl-right-0;
+    display: flex;
+    flex-direction: column;
   }
 
   // AI panel
@@ -348,8 +364,7 @@
     }
 
     .ai-nav-icon-active,
-    .ai-nav-icon-active:hover,
-    .ai-nav-icon:hover {
+    .ai-nav-icon-active:hover {
       background-color: var(--super-sidebar-nav-item-current-bg);
       color: var(--super-sidebar-accent-color-fg);
     }
@@ -360,11 +375,11 @@
   }
 
   .ai-panel-body {
-    max-height: calc(100vh - #{$header-height} - #{$gl-spacing-scale-3} - #{$performance-bar-height} - #{$top-bar-height} - #{-$gl-spacing-scale-7});
+    max-height: calc(100vh - #{$header-height} - #{$performance-bar-height} - #{$top-bar-height} - #{-$gl-spacing-scale-7});
   }
 
   &.with-performance-bar .ai-panel-body {
-    max-height: calc(100vh - #{$header-height} - #{$gl-spacing-scale-3} - #{$top-bar-height} - #{$gl-spacing-scale-9});
+    max-height: calc(100vh - #{$header-height} - #{$top-bar-height} - #{$gl-spacing-scale-9});
   }
 
   .ai-panel-header-actions {
@@ -400,44 +415,67 @@
     border-bottom: 1px solid var(--super-sidebar-bg);
   }
 
-  .super-sidebar-status-emoji {
-    line-height: 1cap;
-    margin-top: 0.1cap;
-  }
-
-  // Scrollbar offset
-  .panel-content-inner,
-  .vue-portal-target .work-item-drawer {
-    @apply gl-px-3 gl-mx-0;
+  .content-wrapper {
+    display: flex;
+    flex-direction: column;
   }
 
   // Panel content
-  .panel-content {
-    height: calc(100% - #{$header-height} - #{$gl-spacing-scale-3});
-    @apply gl-overflow-clip;
-    contain: strict;
+  .panel-content,
+  .work-item-drawer {
+    // a slight padding is added to the panel itself so that scrollbar does not get covered by the rounded edge of the panel
+    // we're using padding instead of margin so that fixed elements connect with the bottom edge of the panel
+    @apply gl-pb-3;
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+    min-height: 0;
+    contain: layout;
+    // a margin is required for the panel element so that it works exactly like the native viewport,
+    // which compensates for the scrollbar size when using fixed position
+    margin-right: var(--scrollbar-width, 0);
+
+    &:has(.boards-list) {
+      @apply gl-pb-0;
+    }
+  }
+
+  .panel-content-inner,
+  .work-item-drawer-content {
+    overflow-x: hidden;
+    overflow-y: scroll;
+  }
+
+  .panel-content-inner,
+  .work-item-drawer-content,
+  .work-item-drawer-header {
+    margin-right: calc(var(--scrollbar-width, 0) * -1);
+  }
+
+  .panel-content-inner {
+    @apply gl-px-3;
+    flex: 1;
+  }
+
+  .work-item-drawer-content {
+    @apply gl-px-5;
+    flex: 1;
+  }
+
+  // duplicate class to override Tailwind
+  .work-item-drawer-header.work-item-drawer-header {
+    @apply gl-py-4;
+    width: auto;
+  }
+
+  .contextual-panel > .vue-portal-target {
+    flex: 1;
+    min-height: 0;
   }
 
   // Fix design management fullscreen display in panels
   .panel-content:has(.design-detail) {
-    @apply gl-fixed gl-inset-0 gl-overflow-visible gl-rounded-none gl-max-w-none gl-z-1 #{!important};
-  }
-
-  // Vue portal height
-  .paneled-view > .vue-portal-target {
-    @apply gl-h-full;
-  }
-
-  // Work item drawer adjustments
-  .work-item-drawer-header {
-    @apply -gl-mx-3 gl-py-4;
-    width: calc(100% + 1rem) !important;
-  }
-
-  // Work item spacing adjustment
-  .vue-portal-target .work-item-drawer-content {
-    @apply gl-px-5 #{!important};
-    height: calc(100% - #{$header-height} - #{$gl-spacing-scale-3});
+    @apply gl-fixed gl-inset-0 gl-overflow-visible gl-rounded-none gl-max-w-none gl-z-1 gl-h-screen #{!important};
   }
 
   // Content adjustments within panels
@@ -455,31 +493,28 @@
       @apply gl-w-full gl-border-b-subtle;
 
       .work-item-sticky-header-text {
-        @apply @xl/panel:gl-px-4 gl-py-2;
+        @apply gl-px-3 @lg/panel:gl-px-4 gl-py-2;
       }
     }
 
     .work-item-drawer .issue-sticky-header:not(.merge-request-sticky-header) {
-      top: calc(#{$header-height} + 1px) !important;
+      top: $header-height !important;
 
       .work-item-sticky-header-text {
-        @apply gl-px-6;
+        @apply gl-px-5;
       }
     }
 
     // Legacy merge request sticky header (Firefox)
     .issue-sticky-header.merge-request-sticky-header .issue-sticky-header-text {
-      @apply gl-px-6 @xl/panel:gl-px-4;
+      @apply gl-px-3;
     }
 
     // Issue boards height
-    .boards-app {
-      height: var(--panel-content-inner-height);
-      @apply gl-overflow-y-hidden;
-    }
-
-    .boards-list {
-      @apply gl-overflow-y-hidden gl-min-h-0 gl-pb-0 gl-border-l-0;
+    .boards-app,
+    .issue-boards-content,
+    .issue-boards-content > .content {
+      @apply gl-h-full;
     }
 
     // MR sidebar
@@ -490,7 +525,6 @@
         @apply gl-pr-4 #{!important};
       }
     }
-
 
     // Project sidebar
     @include media-breakpoint-up(lg) {
@@ -511,19 +545,8 @@
       top: auto !important;
     }
 
-    // Fix drawer height
-    .gl-drawer {
-      height: calc(100% - #{$header-height});
-    }
-
-    // Compare revision: File tree sidebar alignment
-    .rd-app .rd-app-sidebar {
-      top: calc(1rem + -1px) !important;
-    }
-
     // Commits diff file tree header
     .diff-file .file-title-flex-parent {
-
       @include media-breakpoint-up(md) {
         &.is-commit,
         &.is-compare,
@@ -532,6 +555,48 @@
         }
       }
     }
+  }
+
+  // Override Tailwind
+  .boards-app.boards-app {
+    height: var(--panel-content-inner-height);
+    overflow-y: hidden;
+
+    .issues-details-filters {
+      @apply gl-px-3;
+    }
+  }
+
+  .board-content {
+    @apply gl-pt-5;
+    @apply gl-px-3;
+    min-height: 0;
+    overflow-y: hidden;
+  }
+
+  // Override Tailwind
+  .boards-list.boards-list {
+    display: flex;
+    padding: 0;
+    margin: 0;
+    border: 0;
+    overflow-y: hidden;
+    min-height: 0;
+    @apply gl-mb-3;
+    @apply gl-rounded-b-lg;
+  }
+
+  .boards-list,
+  .board-column {
+    @apply gl-gap-3;
+  }
+
+  .boards-list .board.board {
+    padding: 0;
+  }
+
+  .board-swimlanes .board:first-of-type {
+    padding-left: 0;
   }
 
   // Sidebar adjustments
@@ -556,19 +621,6 @@
       &.is-merge-request {
         max-width: $fixed-layout-width - ($gl-padding-12 * 2) !important;
       }
-    }
-  }
-
-  // Position fixed sidebar fix
-  .right-sidebar:not(.right-sidebar-merge-requests):not(.wiki-sidebar):not(.build-sidebar):not(.issuable-bulk-update-sidebar) {
-    @apply gl-hidden #{!important};
-
-    &.right-sidebar-expanded {
-      @apply gl-block #{!important};
-    }
-
-    @container content-panels (width >= #{map.get($breakpoints, 'sm')}) {
-      @apply gl-block #{!important};
     }
   }
 
@@ -619,6 +671,40 @@
     @apply gl-grow;
   }
 
+  .gl-drawer {
+    width: min(calc(100% - #{$gl-spacing-scale-6}), 400px);
+  }
+
+}
+
+/*
+ * Duo chat
+ */
+
+ .application-chrome {
+
+  // Your messages
+  .duo-chat-message-container:has(.duo-chat-message .gl-avatar) {
+    @apply gl-justify-end;
+
+    .duo-chat-message {
+      background-color: rgb(from var(--theme-accent-color) r g b / 15%);
+      @apply gl-rounded-bl-[1rem] gl-rounded-br-none;
+    }
+  }
+
+  &.gl-dark .duo-chat-message-container:has(.duo-chat-message.gl-text-feedback-info) {
+    .duo-chat-message:not(:has(.error-icon)) {
+      background-color: rgb(from var(--theme-accent-color) r g b / 30%);
+    }
+  }
+
+  .duo-chat-message-container {
+    .duo-chat-message:has(.error-icon) {
+      @apply gl-bg-subtle;
+    }
+  }
+
 }
 
 /*
@@ -629,13 +715,13 @@
   // Light mode
   &:not(.gl-dark) {
     // default color to mute the gradient
-    --_shade-1: hsla(from var(--theme-color) h 25 95 / 90%);
+    --_shade-1: hsla(from var(--theme-color) h 25 93 / 95%);
     // alternative color
-    --_shade-2: hsl(from var(--theme-color) calc(h + 60) calc(s + 20) l);
+    --_shade-2: hsl(from var(--theme-color) calc(h + 10) calc(s + 20) l);
     // original color
-    --_shade-3: hsl(from var(--theme-color) h calc(s + 20) l);
+    --_shade-3: hsl(from var(--theme-color) h calc(s + 10) l);
     // bottom color
-    --_shade-4: hsla(from var(--theme-color) calc(h + 30) calc(s + 20) l / 40%);
+    --_shade-4: hsla(from var(--theme-color) calc(h + 20) calc(s + 20) l / 40%);
 
     // Temporarily unship this change as it introduced some regressions, see https://gitlab.com/gitlab-org/gitlab/-/merge_requests/204009
     // --theme-background-color: color-mix(in srgb, var(--gl-background-color-default), var(--theme-color) 2%);
@@ -644,17 +730,19 @@
 
     body {
       background:
+        radial-gradient(circle at top, rgba(255, 255, 255, 0.6), transparent 40vw),
         linear-gradient(var(--_shade-1), var(--_shade-1)),
         radial-gradient(farthest-side at 50% 0%, var(--_shade-3), transparent 50vw),
         radial-gradient(farthest-side at 50% 0%, var(--_shade-2), transparent 70vw),
         linear-gradient(-10deg, var(--_shade-4), transparent 70%),
         var(--gl-background-color-default);
+      background-color: var(--super-sidebar-bg);
     }
 
     .ai-panels,
     .super-sidebar,
     .super-topbar {
-      --theme-accent-badge-color: hsl(from var(--theme-accent-color) h calc(s + 60) calc(l - 12));
+      --theme-accent-badge-color: var(--theme-accent-color);
       --super-sidebar-bg: var(--theme-background-color);
       --super-sidebar-accent-color-fg: hsl(from var(--theme-accent-color) h calc(s - 20) 20);
       --super-sidebar-nav-item-current-bg: hsla(from var(--theme-accent-color) h s l / 16%);
@@ -662,6 +750,10 @@
       --super-sidebar-accent-color-badge: hsl(from var(--theme-accent-color) h s 90);
       --super-sidebar-user-bar-notification-dot: hsl(from var(--theme-notification-color) calc(h - 2) s calc(l + 2));
       --super-sidebar-accent-color-bg: hsla(from var(--theme-accent-color) h s l / 16%);
+    }
+
+    .super-topbar .organization-switcher-button.gl-button:not(:hover):not(:focus):not(:active) {
+      @apply gl-bg-alpha-dark-6 gl-border-default;
     }
 
     .super-sidebar hr {
@@ -682,8 +774,7 @@
     }
 
     .ai-panel .ai-nav-icon-active,
-    .ai-panel .ai-nav-icon-active:hover,
-    .ai-panel .ai-nav-icon:hover {
+    .ai-panel .ai-nav-icon-active:hover {
       background-color: var(--super-sidebar-nav-item-current-bg);
     }
 
@@ -717,6 +808,7 @@
         radial-gradient(farthest-side at 50% 0%, var(--_shade-3), transparent 65vw),
         linear-gradient(-10deg, var(--_shade-5), transparent),
         var(--_shade-2);
+      background-color: var(--super-sidebar-bg);
     }
 
     .ai-panels,
@@ -752,18 +844,14 @@
     }
 
     .ai-panel .ai-nav-icon-active,
-    .ai-panel .ai-nav-icon-active:hover,
-    .ai-panel .ai-nav-icon:hover {
+    .ai-panel .ai-nav-icon-active:hover {
       color: var(--super-sidebar-accent-color-fg);
       background-color: var(--super-sidebar-nav-item-current-bg);
     }
 
   }
 
-  .super-topbar,
-  .super-sidebar:not(.super-sidebar-is-mobile),
-  .super-sidebar .bottom-scrim,
-  .super-sidebar .top-scrim {
+  .super-sidebar:not(.super-sidebar-is-mobile) {
     background: transparent !important;
   }
 
@@ -796,7 +884,7 @@
 :where(.application-chrome) {
   .nav-flyout-menu {
     @include gl-prefers-reduced-motion-transition;
-    transition: opacity .2s .1s $gl-easing-out-cubic;
+    transition: opacity .2s $gl-easing-out-cubic;
 
     @starting-style {
       opacity: 0;
@@ -847,22 +935,49 @@
   }
 
   @supports (width: calc-size(auto, size)) {
-    .super-sidebar,
+    .super-sidebar.super-sidebar-toggled-manually,
     .panels-container {
       width: calc-size(auto, size);
       /* stylelint-disable-next-line property-no-unknown */
       interpolate-size: allow-keywords;
-      transition: width .25s $gl-easing-out-cubic !important;
+      transition: width .25s $gl-easing-out-cubic,
+                  transform .25s $gl-easing-out-cubic !important;
     }
   }
 }
 
 // Issue sidebar
 @include gl-container-width-up(md) {
-  &:where(.application-chrome) {
+  &.application-chrome {
     .work-item-attributes-wrapper {
       top: calc(#{$work-item-sticky-header-height} + #{$gl-spacing-scale-3}) !important;
       height: calc(var(--panel-content-inner-height) - var(--work-item-sticky-header-height) - 1.5rem + 1px) !important; // 1.5rem is to account for padding, the +1px is to account for a border
+    }
+  }
+
+  .work-item-drawer .work-item-overview-right-sidebar {
+    @apply gl-pb-10;
+  }
+}
+
+@include gl-container-width-up(xl) {
+  &.application-chrome {
+    .boards-app.boards-app .issues-details-filters {
+      @apply gl-px-5;
+    }
+  }
+}
+
+@include gl-container-width-down(xl) {
+  &.application-chrome {
+    .board-content {
+      @apply gl-pt-3;
+      @apply gl-px-3;
+    }
+
+    // Override Tailwind
+    .boards-list.boards-list {
+      @apply gl-mb-3;
     }
   }
 }

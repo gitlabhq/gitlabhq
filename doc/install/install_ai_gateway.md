@@ -82,7 +82,7 @@ Using the nightly version is **not recommended** because it can cause incompatib
    From the container host, accessing `http://localhost:5052` should return `{"error":"No authorization header presented"}`.
 
 1. Ensure that ports `5052` and `50052` are forwarded to the container from the host.
-1. Configure the [AI gateway URL](../administration/gitlab_duo_self_hosted/configure_duo_features.md#configure-your-gitlab-instance-to-access-the-ai-gateway) and the [GitLab Duo Agent Platform service URL](../administration/gitlab_duo_self_hosted/configure_duo_features.md#configure-access-to-the-gitlab-duo-agent-platform).
+1. Configure the [AI gateway URL](../administration/gitlab_duo_self_hosted/configure_duo_features.md#configure-access-to-the-local-ai-gateway) and the [GitLab Duo Agent Platform service URL](../administration/gitlab_duo_self_hosted/configure_duo_features.md#configure-access-to-the-gitlab-duo-agent-platform).
 
 1. If you are going to use your own self-hosted model for GitLab Duo Agent Platform, and the URL is not set up with TLS, you must set the `DUO_AGENT_PLATFORM_SERVICE_SECURE` environment variable in your GitLab instance:
    - For Linux package installations, in `gitlab_rails['env']`, set `'DUO_AGENT_PLATFORM_SERVICE_SECURE' => false`
@@ -201,6 +201,45 @@ Start by creating the following files in your working directory.
    }
    ```
 
+1. `grpc-nginx.conf`:
+
+```nginx
+# Configuration for Duo Agent Platform with TLS
+events {
+    worker_connections 1024;
+}
+
+http {
+    log_format main '$remote_addr - $remote_user [$time_local] "$request" '
+                    '$status $body_bytes_sent "$http_referer" '
+                    '"$http_user_agent" "$http_x_forwarded_for"';
+
+    access_log /var/log/nginx/access.log main;
+    error_log /var/log/nginx/error.log debug;
+
+    upstream grpcservers {
+        server gitlab-ai-gateway:50052;
+    }
+
+    server {
+        listen 8443 ssl;
+        http2 on;
+
+        ssl_certificate /etc/nginx/ssl/fullchain.pem;
+        ssl_certificate_key /etc/nginx/ssl/privkey.pem;
+
+        ssl_protocols TLSv1.2 TLSv1.3;
+        ssl_ciphers HIGH:!aNULL:!MD5;
+        ssl_prefer_server_ciphers on;
+
+        location / {
+            grpc_pass grpc://grpcservers;
+            grpc_set_header Host $host;
+        }
+    }
+}
+```
+
 ### Set up SSL certificate by using Let's Encrypt
 
 Now set up an SSL certificate:
@@ -240,6 +279,21 @@ services:
     depends_on:
       - gitlab-ai-gateway
 
+grpc-proxy:
+    image: nginx:alpine
+    ports:
+      - "8443:8443"
+    volumes:
+      # SSL certificates for GitLab Duo Agent Platform endpoint (distinct from AI Gateway endpoint)
+      - /path/to/grpc-nginx.conf:/etc/nginx/nginx.conf:ro
+      - /path/to/fullchain.pem:/etc/nginx/ssl/fullchain.pem:ro
+      - /path/to/privkey.pem:/etc/nginx/ssl/privkey.pem:ro
+    networks:
+      - proxy-network
+    depends_on:
+      - gitlab-ai-gateway
+    restart: always
+
   gitlab-ai-gateway:
     image: registry.gitlab.com/gitlab-org/modelops/applied-ml/code-suggestions/ai-assist/model-gateway:<ai-gateway-tag>
     expose:
@@ -269,7 +323,7 @@ To deploy and validate the solution:
    docker ps
    ```
 
-1. Configure your [GitLab instance to access the AI gateway](../administration/gitlab_duo_self_hosted/configure_duo_features.md#configure-your-gitlab-instance-to-access-the-ai-gateway).
+1. Configure your [GitLab instance to access the AI gateway](../administration/gitlab_duo_self_hosted/configure_duo_features.md#configure-access-to-the-local-ai-gateway).
 
 1. Configure your GitLab instance to access the URL for the [GitLab Duo Agent Platform service](../administration/gitlab_duo_self_hosted/configure_duo_features.md#configure-access-to-the-gitlab-duo-agent-platform).
 

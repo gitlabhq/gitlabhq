@@ -29,6 +29,8 @@
   - 1
 - - admin_emails
   - 1
+- - ai_active_context_code_ad_hoc_indexing
+  - 1
 - - ai_active_context_code_mark_repository_as_ready_event
   - 1
 - - ai_active_context_code_process_pending_enabled_namespace_event
@@ -49,11 +51,7 @@
   - 1
 - - analytics_code_review_metrics
   - 1
-- - analytics_code_suggestions_events_backfill
-  - 1
 - - analytics_devops_adoption_create_snapshot
-  - 1
-- - analytics_duo_chat_events_backfill
   - 1
 - - analytics_usage_trends_counter_job
   - 1
@@ -63,11 +61,9 @@
   - 1
 - - anti_abuse_spam_abuse_events
   - 1
-- - anti_abuse_trust_score
-  - 1
-- - anti_abuse_trust_score_cleanup
-  - 1
 - - app_config_cascade_duo_features_enabled
+  - 1
+- - app_config_cascade_duo_settings
   - 1
 - - app_sec_container_scanning_scan_image
   - 1
@@ -127,6 +123,8 @@
   - 1
 - - authz_user_project_member_roles_destroy_for_shared_project
   - 1
+- - authz_user_project_member_roles_update_for_shared_project
+  - 1
 - - auto_devops
   - 2
 - - auto_merge
@@ -170,8 +168,6 @@
 - - bitbucket_server_import_import_pull_request
   - 1
 - - bitbucket_server_import_import_pull_request_note
-  - 1
-- - bitbucket_server_import_import_pull_request_notes
   - 1
 - - bitbucket_server_import_stage_finish_import
   - 1
@@ -459,6 +455,8 @@
   - 1
 - - geo
   - 1
+- - geo_bulk_primary_verification
+  - 1
 - - github_gists_importer
   - 1
 - - github_import_advance_stage
@@ -478,6 +476,8 @@
 - - gitlab_subscriptions_add_on_purchases_ldap_add_on_seat_sync
   - 1
 - - gitlab_subscriptions_add_on_purchases_refresh_user_assignments
+  - 1
+- - gitlab_subscriptions_cart_abandonment
   - 1
 - - gitlab_subscriptions_gitlab_com_duo_core_todo_notification
   - 1
@@ -691,7 +691,11 @@
   - 1
 - - ml_experiment_tracking_associate_ml_candidate_to_package
   - 1
+- - namespaces
+  - 1
 - - namespaces_cascade_duo_features_enabled
+  - 1
+- - namespaces_cascade_duo_settings
   - 1
 - - namespaces_cascade_web_based_commit_signing_enabled
   - 1
@@ -724,6 +728,8 @@
 - - onboarding_create_iterable_trigger
   - 1
 - - onboarding_progress_tracking
+  - 1
+- - organizations_groups_transfer
   - 1
 - - package_cleanup
   - 1
@@ -881,6 +887,8 @@
   - 1
 - - search_elastic_delete
   - 1
+- - search_elastic_group_archived_event
+  - 1
 - - search_elastic_group_association_deletion
   - 1
 - - search_elastic_trigger_indexing
@@ -896,6 +904,8 @@
 - - search_zoekt_delete_project_event
   - 1
 - - search_zoekt_force_update_overprovisioned_index_event
+  - 1
+- - search_zoekt_group_archived_event
   - 1
 - - search_zoekt_index_mark_as_pending_eviction_event
   - 1
@@ -935,9 +945,15 @@
   - 1
 - - search_zoekt_task_failed_event
   - 1
+- - search_zoekt_too_many_replicas_event
+  - 1
 - - search_zoekt_update_index_used_storage_bytes_event
   - 1
+- - secrets_management_deprovision_group_secrets_manager
+  - 1
 - - secrets_management_deprovision_project_secrets_manager
+  - 1
+- - secrets_management_provision_group_secrets_manager
   - 1
 - - secrets_management_provision_project_secrets_manager
   - 1
@@ -945,9 +961,13 @@
   - 1
 - - security_analyzer_namespace_statuses_process_group_deleted_events
   - 1
+- - security_analyzer_namespace_statuses_recalculate
+  - 1
 - - security_analyzers_status_process_archived_events
   - 1
 - - security_analyzers_status_process_deleted_events
+  - 1
+- - security_analyzers_status_process_group_archived_events
   - 1
 - - security_analyzers_status_process_group_transfer_events
   - 1
@@ -956,6 +976,12 @@
 - - security_analyzers_status_schedule_setting_changed_update
   - 1
 - - security_analyzers_status_setting_changed_update
+  - 1
+- - security_analyzers_status_update_archived_analyzer_status
+  - 1
+- - security_attributes_bulk_update
+  - 1
+- - security_attributes_bulk_update_scheduler
   - 1
 - - security_attributes_cleanup_batch
   - 1
@@ -1025,11 +1051,19 @@
   - 1
 - - security_scan_result_policies_cleanup_merge_request_violations
   - 1
+- - security_scan_result_policies_create_project_warn_mode_audit_events
+  - 1
+- - security_scan_result_policies_create_warn_mode_approval_audit_events
+  - 1
+- - security_scan_result_policies_create_warn_mode_audit_events
+  - 1
 - - security_scan_result_policies_delete_scan_result_policy_reads
   - 1
 - - security_scan_result_policies_fallback_behavior_tracking
   - 1
 - - security_scan_result_policies_process_pipeline_completion
+  - 1
+- - security_scan_result_policies_recreate_project_warn_mode_audit_events
   - 1
 - - security_scan_result_policies_sync_any_merge_request_approval_rules
   - 1
@@ -1119,6 +1153,10 @@
   - 1
 - - users_track_namespace_visits
   - 1
+- - virtual_registries_cleanup_execute_policy
+  - 1
+- - virtual_registries_destroy_local_upstreams
+  - 1
 - - vulnerabilities_archival_archive
   - 1
 - - vulnerabilities_archival_export_export
@@ -1141,11 +1179,15 @@
   - 1
 - - vulnerabilities_namespace_statistics_process_project_transfer_events
   - 1
+- - vulnerabilities_namespace_statistics_recalculate_namespace_statistics
+  - 1
 - - vulnerabilities_process_archived_events
   - 1
 - - vulnerabilities_process_bulk_dismissed_events
   - 1
 - - vulnerabilities_process_bulk_redetected_events
+  - 1
+- - vulnerabilities_process_group_archived_events
   - 1
 - - vulnerabilities_process_transfer_events
   - 1
@@ -1156,6 +1198,8 @@
 - - vulnerabilities_trigger_false_positive_detection_workflow
   - 1
 - - vulnerabilities_update_archived_attribute_of_vulnerability_reads
+  - 1
+- - vulnerabilities_update_archived_attribute_of_vulnerability_statistics
   - 1
 - - vulnerabilities_update_namespace_ids_of_vulnerability_reads
   - 1

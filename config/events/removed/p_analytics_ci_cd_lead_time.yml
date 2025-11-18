@@ -1,0 +1,19 @@
+---
+description: Project level CI CD Analytics lead time tab has been visited
+internal_events: true
+action: p_analytics_ci_cd_lead_time
+extra_properties:
+identifiers:
+- project
+- user
+- namespace
+product_group: optimize
+milestone: "16.4"
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/130854
+tiers:
+- free
+- premium
+- ultimate
+status: removed
+removed_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/212364
+milestone_removed: '18.7'

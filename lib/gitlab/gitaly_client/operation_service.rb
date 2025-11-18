@@ -611,6 +611,9 @@ module Gitlab
             fallback_message: CUSTOM_HOOK_FALLBACK_MESSAGE)
         when :index_update
           raise Gitlab::Git::Index::IndexError, index_error_message(detailed_error.index_update)
+        when :reference_update
+          reference_update_error = detailed_error.reference_update
+          raise Gitlab::Git::CommitError, "Could not update #{reference_update_error.reference_name}. Please refresh and try again."
         else
           handle_undetailed_bad_status_errors(e)
 

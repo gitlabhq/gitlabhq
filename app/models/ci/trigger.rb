@@ -102,8 +102,6 @@ module Ci
     protected
 
     def expires_at_before_instance_max_expiry_date
-      return if Feature.disabled?(:trigger_token_expiration, project)
-
       return unless expires_at
 
       max_expiry_date = Date.current.advance(days: PersonalAccessToken::MAX_PERSONAL_ACCESS_TOKEN_LIFETIME_IN_DAYS)

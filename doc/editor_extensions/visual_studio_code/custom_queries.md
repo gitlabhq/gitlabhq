@@ -1,5 +1,5 @@
 ---
-stage: Create
+stage: AI-powered
 group: Editor Extensions
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 title: Custom queries in the VS Code extension
@@ -45,7 +45,7 @@ under **Issues and Merge requests**.
 To override the extension's default queries and replace them with your own:
 
 1. In VS Code, on the top bar, go to **Code** > **Preferences** > **Settings**.
-1. On the top right corner, select **Open Settings (JSON)** to edit your `settings.json` file.
+1. In the upper-right corner, select **Open Settings (JSON)** to edit your `settings.json` file.
 1. In the file, define `gitlab.customQueries`, like in this example. Each query should be an entry
    in the `gitlab.customQueries` JSON array:
 

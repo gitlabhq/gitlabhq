@@ -388,8 +388,8 @@ describe('Flash', () => {
 
           expect(sanitize).toHaveBeenCalledTimes(1);
           expect(sanitize).toHaveBeenCalledWith(message, {
-            ALLOWED_TAGS: ['a'],
-            ALLOWED_ATTR: ['href', 'rel', 'target'],
+            ALLOWED_TAGS: ['a', 'ul', 'li'],
+            ALLOWED_ATTR: ['href', 'rel', 'target', 'class'],
           });
         });
       });

@@ -292,6 +292,17 @@ describe('GlqlFacade', () => {
       alert = wrapper.findComponent(GlAlert);
       expect(alert.exists()).toBe(false);
     });
+
+    it('shows the code block after dismissing the alert', async () => {
+      const alert = wrapper.findComponent(GlAlert);
+
+      alert.vm.$emit('dismiss');
+      await nextTick();
+
+      const codeBlock = wrapper.find('.markdown-code-block code');
+      expect(codeBlock.exists()).toBe(true);
+      expect(codeBlock.text()).toBe('assignee = "foo"');
+    });
   });
 
   describe('when number of GLQL blocks on page exceeds the limit', () => {

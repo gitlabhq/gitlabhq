@@ -349,6 +349,15 @@ export const editSquashOptionMockResponse = {
   },
 };
 
+export const deleteSquashOptionMockResponse = {
+  data: {
+    branchRuleSquashOptionDelete: {
+      errors: [],
+      __typename: 'BranchRuleSquashOptionDeletePayload',
+    },
+  },
+};
+
 export const editRuleData = [{ accessLevel: 60 }, { accessLevel: 40 }, { accessLevel: 30 }];
 
 export const editRuleDataNoAccessLevels = [];

@@ -1,0 +1,10 @@
+---
+name: insert_into_p_sent_notifications
+description:
+feature_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/514591
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/203928
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/568170
+milestone: '18.6'
+group: group::project management
+type: beta
+default_enabled: false

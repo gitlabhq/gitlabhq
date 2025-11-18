@@ -36,8 +36,13 @@ If any of the following cases are true, use [pipeline execution policies](pipeli
 - You want to enforce custom CI/CD jobs or scripts.
 - You want to enable third-party security scans through an enforced CI/CD job.
 
+## Create a scan execution policy
+
+To create a scan execution policy, you can use any of the following resources:
+
 - <i class="fa fa-youtube-play youtube" aria-hidden="true"></i> For a video walkthrough, see [How to set up Security Scan Policies in GitLab](https://youtu.be/ZBcqGmEwORA?si=aeT4EXtmHjosgjBY).
 - <i class="fa fa-youtube-play youtube" aria-hidden="true"></i> Learn more about [enforcing scan execution policies on projects with no GitLab CI/CD configuration](https://www.youtube.com/watch?v=sUfwQQ4-qHs).
+- For instructions on how to create scan execution policies, see [tutorial: set up a scan execution policy](../../../tutorials/scan_execution_policy/_index.md)
 
 ## Restrictions
 
@@ -75,7 +80,7 @@ Prerequisites:
 - By default, only group, subgroup, or project Owners have the [permissions](../../permissions.md#application-security)
   required to create or assign a security policy project. Alternatively, you can create a custom role with the permission to [manage security policy links](../../custom_roles/abilities.md#security-policy-management).
 
-When you create your first scan execution policies, we provide you with templates to get started quickly with some of the most common use cases:
+When you create your first scan execution policies, templates help you to get started with some of the most common use cases:
 
 - Merge Request Security Template
 
@@ -322,7 +327,7 @@ Use this schema to define `agents` objects in the [`schedule` rule type](#schedu
 #### `agent` example
 
 ```yaml
-- name: Enforce Container Scanning in cluster connected through my-gitlab-agent for default and kube-system namespaces
+- name: Enforce container scanning in cluster connected through my-gitlab-agent for default and kube-system namespaces
   enabled: true
   rules:
   - type: schedule
@@ -355,7 +360,7 @@ Define how scheduled scans are distributed over time with the `time_window` obje
 #### `time_window` example
 
 ```yaml
-- name: Enforce Container Scanning with a time window of 1 hour
+- name: Enforce container scanning with a time window of 1 hour
   enabled: true
   rules:
   - type: schedule
@@ -547,8 +552,8 @@ scan_execution_policy:
   - scan: secret_detection
     scan_settings:
       ignore_default_before_after_script: true
-- name: Enforce Secret Detection and Container Scanning in every default branch pipeline
-  description: This policy enforces pipeline configuration to have a job with Secret Detection and Container Scanning scans for the default branch
+- name: Enforce Secret Detection and container scanning in every default branch pipeline
+  description: This policy enforces pipeline configuration to have a job with Secret Detection and container scanning scans for the default branch
   enabled: true
   rules:
   - type: pipeline
@@ -578,8 +583,8 @@ You can use this example in the YAML mode of the [scan execution policy editor](
 It corresponds to a single object from the previous example.
 
 ```yaml
-name: Enforce Secret Detection and Container Scanning in every default branch pipeline
-description: This policy enforces pipeline configuration to have a job with Secret Detection and Container Scanning scans for the default branch
+name: Enforce Secret Detection and container scanning in every default branch pipeline
+description: This policy enforces pipeline configuration to have a job with Secret Detection and container scanning scans for the default branch
 enabled: true
 rules:
   - type: pipeline

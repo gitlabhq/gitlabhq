@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe 'Admin Mode Logout', :js, :with_organization_url_helpers, feature_category: :system_access do
+RSpec.describe 'Admin Mode Logout', :js, feature_category: :system_access do
   include TermsHelper
   include UserLoginHelper
 

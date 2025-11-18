@@ -5,4 +5,4 @@ feature_category: security_asset_inventories
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/195569
 milestone: '18.2'
 queued_migration_version: 20250624155101
-finalized_by:
+finalized_by: '20251003232625'

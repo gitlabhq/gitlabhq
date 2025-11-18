@@ -9,8 +9,6 @@ identifiers:
 additional_properties:
   property:
     description: Scan UUID
-  label:
-    description: Input file path
   value:
     description: Coverage percentage
 product_group: composition_analysis

@@ -25,13 +25,19 @@ export default {
       if (!this.pageInfo || !this.pageInfo.hasPreviousPage) {
         return '';
       }
-      return setUrlParams({ before: this.pageInfo.startCursor }, window.location.href, true);
+      return setUrlParams(
+        { before: this.pageInfo.startCursor },
+        { url: window.location.href, clearParams: true },
+      );
     },
     nextLink() {
       if (!this.pageInfo || !this.pageInfo.hasNextPage) {
         return '';
       }
-      return setUrlParams({ after: this.pageInfo.endCursor }, window.location.href, true);
+      return setUrlParams(
+        { after: this.pageInfo.endCursor },
+        { url: window.location.href, clearParams: true },
+      );
     },
     isPaginationVisible() {
       if (!this.pageInfo) {

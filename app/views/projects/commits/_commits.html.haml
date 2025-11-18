@@ -39,4 +39,5 @@
   .add-review-item-modal-trigger{ data: { context_commits_empty: 'true' } }
 
 - if commits.size == 0 && context_commits.nil?
-  = render ::Layouts::EmptyResultComponent.new(type: :search)
+  %li{ data: { empty_list: true } }
+    = render ::Layouts::EmptyResultComponent.new(type: :search)

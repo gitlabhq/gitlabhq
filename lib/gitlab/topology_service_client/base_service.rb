@@ -11,23 +11,27 @@ module Gitlab
         @timeout = timeout
       end
 
+      def cell_id
+        @cell_id ||= Gitlab.config.cell.id
+      end
+
       private
 
       def client
         @client ||= service_class.new(
           topology_service_address,
           service_credentials,
-          interceptors: [MetadataInterceptor.new],
+          interceptors: [
+            Labkit::Correlation::GRPC::ClientInterceptor.instance,
+            Gitlab::Cells::TopologyService::MetadataClient.new(
+              Gitlab.config.cell.topology_service_client.metadata)
+          ],
           **options
         )
       end
 
       def options
         { timeout: @timeout || DEFAULT_TIMEOUT_IN_SECONDS }
-      end
-
-      def cell_id
-        @cell_id ||= Gitlab.config.cell.id
       end
 
       def service_credentials

@@ -52,7 +52,7 @@ module SidebarsHelper
   def super_sidebar_logged_out_context(panel:, panel_type:)
     sidebar_context = super_sidebar_shared_context(panel: panel, panel_type: panel_type)
 
-    return sidebar_context unless Users::ProjectStudio.new(current_user).enabled?
+    return sidebar_context unless project_studio_enabled?
 
     sidebar_context.merge({
       sign_in_visible: header_link?(:sign_in).to_s,
@@ -104,15 +104,16 @@ module SidebarsHelper
       groups_path: dashboard_groups_path,
       gitlab_com_but_not_canary: Gitlab.com_but_not_canary?,
       gitlab_com_and_canary: Gitlab.com_and_canary?,
-      canary_toggle_com_url: Gitlab::Saas.canary_toggle_com_url,
+      canary_toggle_com_url: Gitlab.canary_toggle_com_url,
       current_context: super_sidebar_current_context(project: project, group: group),
-      pinned_items: user.pinned_nav_items[panel_type] || super_sidebar_default_pins(panel_type, user),
+      pinned_items: pinned_items(user, panel_type, group: group),
       update_pins_url: pins_path,
       is_impersonating: impersonating?,
       stop_impersonation_path: admin_impersonation_path,
       shortcut_links: shortcut_links(user: user, project: project),
       track_visits_path: track_namespace_visits_path,
-      work_items: work_items_modal_data(group, project)
+      work_items: work_items_modal_data(group, project),
+      has_multiple_organizations: user.has_multiple_organizations?
     })
   end
 
@@ -146,7 +147,7 @@ module SidebarsHelper
         can_admin_label: can?(current_user, :admin_label, project).to_s,
         has_issue_weights_feature: project.licensed_feature_available?(:issue_weights).to_s,
         has_iterations_feature: project.licensed_feature_available?(:iterations).to_s,
-        work_item_planning_view_enabled: ::Feature.enabled?(:work_item_planning_view, project.group).to_s
+        work_item_planning_view_enabled: project.work_items_consolidated_list_enabled?(current_user).to_s
       }
     end
 
@@ -159,7 +160,7 @@ module SidebarsHelper
       labels_manage_path: group_labels_path(group),
       can_admin_label: can?(current_user, :admin_label, group).to_s,
       has_issue_weights_feature: group.licensed_feature_available?(:issue_weights).to_s,
-      work_item_planning_view_enabled: ::Feature.enabled?(:work_item_planning_view, group).to_s
+      work_item_planning_view_enabled: group.work_items_consolidated_list_enabled?(current_user).to_s
     }
   end
 
@@ -433,6 +434,14 @@ module SidebarsHelper
     shortcut_links
   end
 
+  # overridden on EE
+  # rubocop:disable Lint/UnusedMethodArgument -- group is used on EE
+  def pinned_items(user, panel_type, group: nil)
+    user.pinned_nav_items[panel_type]&.map(&:to_s) ||
+      super_sidebar_default_pins(panel_type, user)
+  end
+  # rubocop:enable Lint/UnusedMethodArgument
+
   def super_sidebar_default_pins(panel_type, user)
     case panel_type
     when 'project'
@@ -445,15 +454,15 @@ module SidebarsHelper
   end
 
   def project_default_pins(_user)
-    [:project_issue_list, :project_merge_request_list]
+    %w[project_issue_list project_merge_request_list]
   end
 
   def group_default_pins(_user)
-    [:group_issue_list, :group_merge_request_list]
+    %w[group_issue_list group_merge_request_list]
   end
 
   def terms_link
-    Gitlab::CurrentSettings.terms ? '/-/users/terms' : nil
+    Gitlab::CurrentSettings.terms ? terms_path : nil
   end
 
   def admin_area_link

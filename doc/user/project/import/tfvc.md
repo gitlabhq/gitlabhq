@@ -2,7 +2,7 @@
 stage: Create
 group: Import
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
-title: Migrate from TFVC to Git
+title: Migrate from TFVC
 description: "Migrate from Team Foundation Version Control (TFVC) to Git."
 ---
 
@@ -18,7 +18,7 @@ in 2019, is a set of tools developed by Microsoft which also includes
 [Team Foundation Version Control](https://learn.microsoft.com/en-us/azure/devops/repos/tfvc/what-is-tfvc?view=azure-devops)
 (TFVC), a centralized version control system similar to Git.
 
-In this document, we focus on the TFVC to Git migration.
+This document focuses on the TFVC to Git migration.
 
 ## TFVC vs Git
 

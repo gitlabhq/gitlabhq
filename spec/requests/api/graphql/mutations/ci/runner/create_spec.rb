@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe 'RunnerCreate', feature_category: :runner do
+RSpec.describe 'RunnerCreate', feature_category: :runner_core do
   include GraphqlHelpers
 
   let_it_be(:user) { create(:user) }

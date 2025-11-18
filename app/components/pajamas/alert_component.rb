@@ -14,16 +14,14 @@ module Pajamas
     # @param [String] title
     # @param [Symbol] variant
     # @param [Boolean] dismissible
-    # @param [Boolean] show_icon
     # @param [Hash] alert_options
     # @param [Hash] close_button_options
     def initialize(
-      title: nil, variant: :info, dismissible: true, show_icon: true,
+      title: nil, variant: :info, dismissible: true,
       alert_options: {}, close_button_options: {})
       @title = title.presence
       @variant = filter_attribute(variant&.to_sym, VARIANT_ICONS.keys, default: :info)
       @dismissible = dismissible
-      @show_icon = show_icon
       @alert_options = alert_options
       @close_button_options = close_button_options
     end
@@ -31,7 +29,6 @@ module Pajamas
     def base_class
       classes = ["gl-alert-#{@variant}"] # rubocop:disable Tailwind/StringInterpolation -- Not a CSS utility class
       classes.push('gl-alert-not-dismissible') unless @dismissible
-      classes.push('gl-alert-no-icon') unless @show_icon
       classes.push('gl-alert-has-title') if @title
       classes.join(' ')
     end

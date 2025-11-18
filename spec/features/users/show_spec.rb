@@ -337,28 +337,24 @@ RSpec.describe 'User page', feature_category: :user_profile do
   end
 
   context 'signup disabled' do
-    it 'shows the sign in link' do
+    it 'shows the sign in link', :js do
       stub_application_setting(signup_enabled: false)
 
       subject
 
-      within_testid('navbar') do
-        expect(page).to have_link('Sign in')
-        expect(page).not_to have_link('Register')
-      end
+      expect(page).to have_link('Sign in')
+      expect(page).not_to have_link('Register')
     end
   end
 
   context 'signup enabled' do
-    it 'shows the sign in and register link' do
+    it 'shows the sign in and register link', :js do
       stub_application_setting(signup_enabled: true)
 
       subject
 
-      within_testid('navbar') do
-        expect(page).to have_link(_('Sign in'), exact: true)
-        expect(page).to have_link(_('Register'), exact: true)
-      end
+      expect(page).to have_link(_('Sign in'), exact: true)
+      expect(page).to have_link(_('Register'), exact: true)
     end
   end
 

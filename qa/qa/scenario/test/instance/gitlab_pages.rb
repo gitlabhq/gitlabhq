@@ -6,8 +6,6 @@ module QA
       module Instance
         class GitlabPages < All
           tags :gitlab_pages
-
-          pipeline_mappings test_on_omnibus_nightly: %w[gitlab-pages]
         end
       end
     end

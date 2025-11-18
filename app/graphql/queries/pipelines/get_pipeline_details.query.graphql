@@ -1,32 +1,22 @@
 fragment LinkedPipelineData on Pipeline {
-  __typename
   id
   iid
   path
   cancelable
   retryable
-  userPermissions {
-    updatePipeline
-  }
-  # @graphql-eslint/eslint-plugin@4.0.0 reports missing IDs in `FragmentDefinition`. For now, we are
-  # ignoring the newly uncovered error on this fragment. Please consider addressing the violation
-  # if you are modifying this file and it turns out selecting the ID makes sense here.
-  # eslint-disable-next-line @graphql-eslint/require-selections
   status: detailedStatus {
-    __typename
+    id
     group
     label
     icon
     text
   }
   sourceJob {
-    __typename
     id
     name
     retried
   }
   project {
-    __typename
     id
     name
     fullPath
@@ -35,39 +25,27 @@ fragment LinkedPipelineData on Pipeline {
 
 query getPipelineDetails($projectPath: ID!, $iid: ID!) {
   project(fullPath: $projectPath) {
-    __typename
     id
     pipeline(iid: $iid) {
-      __typename
       id
       iid
       usesNeeds
-      userPermissions {
-        updatePipeline
-      }
       downstream {
-        __typename
         nodes {
-          # eslint-disable-next-line @graphql-eslint/require-selections -- for detailedStatus.id
           ...LinkedPipelineData
           name
         }
       }
       upstream {
-        # eslint-disable-next-line @graphql-eslint/require-selections -- for detailedStatus.id
         ...LinkedPipelineData
       }
       stages {
-        __typename
         nodes {
-          __typename
           id
           name
-          # eslint-disable-next-line @graphql-eslint/require-selections
           status: detailedStatus {
-            __typename
+            id
             action {
-              __typename
               id
               icon
               path
@@ -76,13 +54,10 @@ query getPipelineDetails($projectPath: ID!, $iid: ID!) {
             }
           }
           groups {
-            __typename
             nodes {
-              __typename
               id
-              # eslint-disable-next-line @graphql-eslint/require-selections
               status: detailedStatus {
-                __typename
+                id
                 label
                 group
                 icon
@@ -91,31 +66,26 @@ query getPipelineDetails($projectPath: ID!, $iid: ID!) {
               name
               size
               jobs {
-                __typename
                 nodes {
-                  __typename
                   id
                   name
                   kind
                   needs {
-                    __typename
                     nodes {
-                      __typename
                       id
                       name
                     }
                   }
                   previousStageJobs {
-                    __typename
                     nodes {
-                      __typename
                       id
                       name
                     }
                   }
-                  # eslint-disable-next-line @graphql-eslint/require-selections
+                  scheduled
+                  scheduledAt
                   status: detailedStatus {
-                    __typename
+                    id
                     icon
                     tooltip
                     hasDetails
@@ -125,7 +95,6 @@ query getPipelineDetails($projectPath: ID!, $iid: ID!) {
                     label
                     text
                     action {
-                      __typename
                       id
                       buttonTitle
                       confirmationMessage

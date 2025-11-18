@@ -23,7 +23,7 @@ description: Control who can push or delete container tags with role-based prote
 
 Control who can push and delete container tags in your project.
 
-By default, users with the Developer role or higher can push and delete image tags in all project container repositories.
+By default, users with at least the Developer role can push and delete image tags in all project container repositories.
 With tag protection rules, you can:
 
 - Restrict pushing and deleting tags to specific user roles.
@@ -50,7 +50,7 @@ Prerequisites:
 
 To create a protection rule:
 
-1. On the left sidebar, select **Search or go to** and find your project.
+1. On the left sidebar, select **Search or go to** and find your project. If you've [turned on the new navigation](../../interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
 1. Select **Settings** > **Packages and registries**.
 1. Expand **Container registry**.
 1. Under **Protected container tags**, select **Add protection rule**.
@@ -83,7 +83,7 @@ Prerequisites:
 
 To delete a protection rule:
 
-1. On the left sidebar, select **Search or go to** and find your project.
+1. On the left sidebar, select **Search or go to** and find your project. If you've [turned on the new navigation](../../interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
 1. Select **Settings** > **Packages and registries**.
 1. Expand **Container registry**.
 1. Under **Protected container tags**, next to the protection rule you want to delete, select **Delete** ({{< icon name="remove" >}}).

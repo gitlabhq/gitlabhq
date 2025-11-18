@@ -2,12 +2,9 @@ import VueApollo from 'vue-apollo';
 import { GlIcon, GlLink, GlSprintf } from '@gitlab/ui';
 import Vue from 'vue';
 import { escape } from 'lodash';
-import { sprintf } from '~/locale';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import createMockApollo from 'helpers/mock_apollo_helper';
-import ValidationSegment, {
-  i18n,
-} from '~/ci/pipeline_editor/components/header/validation_segment.vue';
+import ValidationSegment from '~/ci/pipeline_editor/components/header/validation_segment.vue';
 import getAppStatus from '~/ci/pipeline_editor/graphql/queries/client/app_status.query.graphql';
 import {
   CI_CONFIG_STATUS_INVALID,
@@ -67,7 +64,7 @@ describe('Validation segment component', () => {
   it('shows the loading state', () => {
     createComponent({ appStatus: EDITOR_APP_STATUS_LOADING });
 
-    expect(wrapper.text()).toBe(i18n.loading);
+    expect(wrapper.text()).toBe('Validating GitLab CI configuration…');
   });
 
   describe('when config is empty', () => {
@@ -84,7 +81,9 @@ describe('Validation segment component', () => {
     });
 
     it('shows a message for empty state', () => {
-      expect(findValidationSegment().text()).toBe(i18n.empty);
+      expect(findValidationMsg().text()).toBe(
+        "We'll continuously validate your pipeline configuration. The validation results will appear here.",
+      );
     });
   });
 
@@ -98,14 +97,13 @@ describe('Validation segment component', () => {
     });
 
     it('shows a message for valid state', () => {
-      expect(findValidationSegment().text()).toBe(
-        sprintf(i18n.valid, { linkStart: '', linkEnd: '' }),
+      expect(findValidationMsg().text()).toMatchInterpolatedText(
+        'Pipeline syntax is correct. Learn more',
       );
     });
 
     it('shows the learn more link', () => {
-      expect(findValidationMsg().exists()).toBe(true);
-      expect(findValidationMsg().text()).toContain('Learn more');
+      expect(findHelpLink().text()).toBe('Learn more');
       expect(findHelpLink().attributes('href')).toBe(mockYmlHelpPagePath);
     });
   });
@@ -122,14 +120,13 @@ describe('Validation segment component', () => {
     });
 
     it('shows a message for invalid state', () => {
-      expect(findValidationSegment().text()).toBe(
-        sprintf(i18n.invalid, { linkStart: '', linkEnd: '' }),
+      expect(findValidationMsg().text()).toMatchInterpolatedText(
+        'This GitLab CI configuration is invalid. Learn more',
       );
     });
 
     it('shows the learn more link', () => {
-      expect(findValidationMsg().exists()).toBe(true);
-      expect(findValidationMsg().text()).toContain('Learn more');
+      expect(findHelpLink().text()).toBe('Learn more');
       expect(findHelpLink().attributes('href')).toBe(mockYmlHelpPagePath);
     });
 
@@ -149,15 +146,18 @@ describe('Validation segment component', () => {
       });
 
       it('shows the learn more link', () => {
-        expect(findValidationMsg().exists()).toBe(true);
-        expect(findValidationMsg().text()).toContain('Learn more');
+        expect(findHelpLink().text()).toBe('Learn more');
         expect(findHelpLink().attributes('href')).toBe(mockYmlHelpPagePath);
       });
 
-      it('shows an invalid state with an error', () => {
-        expect(findValidationSegment().text()).toBe(
-          sprintf(i18n.invalidWithReason, { reason: firstError, linkStart: '', linkEnd: '' }),
+      it('shows an invalid state with the first error', () => {
+        expect(findValidationMsg().text()).toMatchInterpolatedText(
+          `This GitLab CI configuration is invalid: ${firstError}. Learn more`,
         );
+      });
+
+      it("doesn't show the second error", () => {
+        expect(findValidationMsg().text()).not.toContain(secondError);
       });
     });
 
@@ -192,8 +192,8 @@ describe('Validation segment component', () => {
     });
 
     it('show a message that the service is unavailable', () => {
-      expect(findValidationSegment().text()).toBe(
-        sprintf(i18n.unavailableValidation, { linkStart: '', linkEnd: '' }),
+      expect(findValidationMsg().text()).toMatchInterpolatedText(
+        'Unable to validate CI/CD configuration. See the GitLab CI/CD troubleshooting guide for more details.',
       );
     });
 
@@ -202,7 +202,7 @@ describe('Validation segment component', () => {
     });
 
     it('shows the link to ci troubleshooting', () => {
-      expect(findValidationMsg().exists()).toBe(true);
+      expect(findHelpLink().text()).toBe('GitLab CI/CD troubleshooting guide');
       expect(findHelpLink().attributes('href')).toBe(mockCiTroubleshootingPath);
     });
   });

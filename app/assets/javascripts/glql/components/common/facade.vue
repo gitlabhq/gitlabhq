@@ -122,6 +122,7 @@ export default {
     },
 
     copySource() {
+      // eslint-disable-next-line no-restricted-properties
       navigator.clipboard.writeText(this.wrappedQuery);
     },
 
@@ -326,6 +327,7 @@ export default {
           :count="itemsCount"
           is-collapsible
           :collapsed="isCollapsed"
+          :show-zero-count="!loading"
           persist-collapsed-state
           class="!gl-mt-5"
           :body-class="{
@@ -346,6 +348,7 @@ export default {
             />
           </template>
 
+          <!-- TODO: Replace with resolver.vue (https://gitlab.com/gitlab-org/gitlab/-/issues/577530) -->
           <data-presenter
             ref="presenter"
             :data="data"
@@ -374,7 +377,7 @@ export default {
         </crud-component>
         <glql-footnote v-if="!isCollapsed" />
       </template>
-      <div v-else-if="hasError" class="markdown-code-block gl-relative">
+      <div v-else class="markdown-code-block gl-relative">
         <pre :class="preClasses"><code>{{ queryYaml }}</code></pre>
       </div>
     </gl-intersection-observer>

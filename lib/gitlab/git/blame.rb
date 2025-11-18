@@ -21,6 +21,8 @@ module Gitlab
       end
 
       def each
+        return enum_for(:each) unless block_given?
+
         @blames.each do |blame|
           yield(blame.commit, blame.line, blame.previous_path, blame.span)
         end

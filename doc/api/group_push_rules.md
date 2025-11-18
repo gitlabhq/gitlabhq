@@ -13,9 +13,12 @@ title: Group push rules API
 
 {{< /details >}}
 
-Use [push rules](../user/group/access_and_permissions.md#group-push-rules) to control the
-content and format of Git commits your repository accepts. The push rules endpoints are only
-available to group Owners and administrators.
+Use this API to manage [group push rules](../user/group/access_and_permissions.md#group-push-rules)
+for newly created projects in a group.
+
+Prerequisites:
+
+- You must have the Owner role for the group or be an administrator for the instance.
 
 ## Get the push rules of a group
 

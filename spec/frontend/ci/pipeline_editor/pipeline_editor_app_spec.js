@@ -2,11 +2,14 @@ import Vue from 'vue';
 import { GlAlert, GlButton, GlLoadingIcon, GlSprintf, GlToast } from '@gitlab/ui';
 import { shallowMount } from '@vue/test-utils';
 import VueApollo from 'vue-apollo';
+
+import mockCiLintMutationResponse from 'test_fixtures/graphql/ci/pipeline_editor/graphql/mutations/ci_lint.mutation.graphql.json';
 import createMockApollo from 'helpers/mock_apollo_helper';
 import setWindowLocation from 'helpers/set_window_location_helper';
 import waitForPromises from 'helpers/wait_for_promises';
 
 import { HTTP_STATUS_INTERNAL_SERVER_ERROR } from '~/lib/utils/http_status';
+import { scrollTo } from '~/lib/utils/scroll_utils';
 import { objectToQuery, visitUrl } from '~/lib/utils/url_utility';
 import { resolvers } from '~/ci/pipeline_editor/graphql/resolvers';
 import PipelineEditorTabs from '~/ci/pipeline_editor/components/pipeline_editor_tabs.vue';
@@ -34,7 +37,6 @@ import PipelineEditorHome from '~/ci/pipeline_editor/pipeline_editor_home.vue';
 
 import {
   mockCiConfigPath,
-  mockCiLintMutationResponse,
   mockBlobContentQueryResponse,
   mockBlobContentQueryResponseNoCiFile,
   mockCiYml,
@@ -52,6 +54,8 @@ jest.mock('~/lib/utils/url_utility', () => ({
   visitUrl: jest.fn(),
 }));
 
+jest.mock('~/lib/utils/scroll_utils');
+
 const defaultProvide = {
   ciConfigPath: mockCiConfigPath,
   defaultBranch: mockDefaultBranch,
@@ -59,9 +63,11 @@ const defaultProvide = {
   newMergeRequestPath: mockNewMergeRequestPath,
   projectFullPath: mockProjectFullPath,
   usesExternalConfig: false,
+  newPipelinePath: '',
 };
 
 Vue.use(GlToast);
+Vue.use(VueApollo);
 
 describe('Pipeline editor app component', () => {
   let wrapper;
@@ -73,9 +79,12 @@ describe('Pipeline editor app component', () => {
   let mockLatestCommitShaQuery;
   const showToastMock = jest.fn();
 
-  const createComponent = ({ options = {}, provide = {}, stubs = {} } = {}) => {
+  const createComponent = ({ options = {}, provide = {}, stubs = {}, data = {} } = {}) => {
     wrapper = shallowMount(PipelineEditorApp, {
       provide: { ...defaultProvide, ...provide },
+      data() {
+        return data;
+      },
       stubs,
       ...options,
     });
@@ -85,9 +94,8 @@ describe('Pipeline editor app component', () => {
     provide = {},
     stubs = {},
     withUndefinedBranch = false,
+    data = {},
   } = {}) => {
-    Vue.use(VueApollo);
-
     const handlers = [
       [getBlobContent, mockBlobContentData],
       [ciLintMutation, mockCiLintData],
@@ -131,7 +139,7 @@ describe('Pipeline editor app component', () => {
       apolloProvider: mockApollo,
     };
 
-    createComponent({ provide, stubs, options });
+    createComponent({ provide, stubs, options, data });
 
     return waitForPromises();
   };
@@ -233,7 +241,7 @@ describe('Pipeline editor app component', () => {
 
     describe('when file exists', () => {
       beforeEach(async () => {
-        await createComponentWithApollo();
+        await createComponentWithApollo({ data: { currentBranch: mockDefaultBranch } });
       });
 
       it('shows pipeline editor home component', () => {
@@ -255,6 +263,25 @@ describe('Pipeline editor app component', () => {
       it('calls once and does not start poll for the commit sha', () => {
         expect(mockLatestCommitShaQuery).toHaveBeenCalledTimes(1);
       });
+
+      describe('when ciLint mutation succeeds', () => {
+        it('transforms mutation response data before storing in ciConfigData', () => {
+          const ciConfigData = findEditorHome().props('ciConfigData');
+
+          expect(ciConfigData.stages).toBeDefined();
+
+          const jobsWithNeeds = ciConfigData.stages
+            .flatMap((stage) => stage.groups)
+            .flatMap((group) => group.jobs)
+            .filter((job) => job.needs && job.needs.length > 0);
+
+          jobsWithNeeds.forEach((job) => {
+            job.needs.forEach((need) => {
+              expect(typeof need).toBe('string');
+            });
+          });
+        });
+      });
     });
 
     describe('when no CI config file exists', () => {
@@ -264,6 +291,7 @@ describe('Pipeline editor app component', () => {
           stubs: {
             PipelineEditorEmptyState,
           },
+          data: { currentBranch: mockDefaultBranch },
         });
       });
 
@@ -336,7 +364,7 @@ describe('Pipeline editor app component', () => {
 
       it('does not report an error or scroll to the top', () => {
         expect(findAlert().exists()).toBe(false);
-        expect(window.scrollTo).not.toHaveBeenCalled();
+        expect(scrollTo).not.toHaveBeenCalled();
       });
     });
 
@@ -346,8 +374,10 @@ describe('Pipeline editor app component', () => {
 
       describe('and the commit mutation succeeds', () => {
         beforeEach(async () => {
-          window.scrollTo = jest.fn();
-          await createComponentWithApollo({ stubs: { PipelineEditorMessages } });
+          await createComponentWithApollo({
+            stubs: { PipelineEditorMessages },
+            data: { currentBranch: mockDefaultBranch },
+          });
 
           findEditorHome().vm.$emit('commit', { type: COMMIT_SUCCESS });
         });
@@ -357,7 +387,7 @@ describe('Pipeline editor app component', () => {
         });
 
         it('scrolls to the top of the page to bring attention to the confirmation message', () => {
-          expect(window.scrollTo).toHaveBeenCalledWith({ top: 0, behavior: 'smooth' });
+          expect(scrollTo).toHaveBeenCalledWith({ top: 0, behavior: 'smooth' }, wrapper.element);
         });
 
         it('polls for commit sha while pipeline data is not yet available for current branch', async () => {
@@ -431,7 +461,6 @@ describe('Pipeline editor app component', () => {
         const commitFailedReasons = ['Commit failed'];
 
         beforeEach(async () => {
-          window.scrollTo = jest.fn();
           await createComponentWithApollo({ stubs: { PipelineEditorMessages } });
 
           findEditorHome().vm.$emit('showError', {
@@ -447,7 +476,7 @@ describe('Pipeline editor app component', () => {
         });
 
         it('scrolls to the top of the page to bring attention to the error message', () => {
-          expect(window.scrollTo).toHaveBeenCalledWith({ top: 0, behavior: 'smooth' });
+          expect(scrollTo).toHaveBeenCalledWith({ top: 0, behavior: 'smooth' }, wrapper.element);
         });
       });
 
@@ -455,7 +484,6 @@ describe('Pipeline editor app component', () => {
         const unknownReasons = ['Commit failed'];
 
         beforeEach(async () => {
-          window.scrollTo = jest.fn();
           await createComponentWithApollo({ stubs: { PipelineEditorMessages } });
 
           findEditorHome().vm.$emit('showError', {
@@ -471,7 +499,7 @@ describe('Pipeline editor app component', () => {
         });
 
         it('scrolls to the top of the page to bring attention to the error message', () => {
-          expect(window.scrollTo).toHaveBeenCalledWith({ top: 0, behavior: 'smooth' });
+          expect(scrollTo).toHaveBeenCalledWith({ top: 0, behavior: 'smooth' }, wrapper.element);
         });
       });
     });

@@ -21,17 +21,19 @@ documentation for GitLab Runner Operator.
 
 To complete this tutorial, you will:
 
-1. [Configure the Buildah image](#configure-the-buildah-image)
-1. [Configure the service account](#configure-the-service-account)
-1. [Configure the job](#configure-the-job)
+1. Configure the Buildah image.
+1. Configure the service account.
+1. Configure the job.
 
-## Prerequisites
+## Before you begin
+
+Make sure you have the following before you complete this tutorial:
 
 - A runner already deployed to a `gitlab-runner` namespace.
 
 ## Configure the Buildah image
 
-We start by preparing a custom image based on the `quay.io/buildah/stable:v1.23.1` image.
+Start by preparing a custom image based on the `quay.io/buildah/stable:v1.23.1` image.
 
 1. Create the `Containerfile-buildah` file:
 
@@ -88,7 +90,7 @@ For these steps, you need to run the commands in a terminal connected to the Ope
    ```
 
 1. Use a [runner configuration template](https://docs.gitlab.com/runner/configuration/configuring_runner_operator.html#customize-configtoml-with-a-configuration-template)
-   to configure Operator to use the service account we just created. Create a `custom-config.toml` file that contains:
+   to configure Operator to use the new service account. Create a `custom-config.toml` file that contains:
 
    ```toml
    [[runners]]
@@ -108,7 +110,7 @@ For these steps, you need to run the commands in a terminal connected to the Ope
    apiVersion: apps.gitlab.com/v1beta2
    kind: Runner
    metadata:
-     name: builah-runner
+     name: buildah-runner
    spec:
      gitlabUrl: https://gitlab.example.com
      token: gitlab-runner-secret
@@ -117,8 +119,8 @@ For these steps, you need to run the commands in a terminal connected to the Ope
 
 ## Configure the job
 
-The final step is to set up a GitLab CI/CD configuration file in you project to use
-the image we built and the configured service account:
+The final step is to set up a GitLab CI/CD configuration file in your project to use
+the new Buildah image and the configured service account:
 
 ```yaml
 build:
@@ -140,10 +142,10 @@ build:
     - buildah push $FQ_IMAGE_NAME
 ```
 
-The job should use the image that we built as the value of `image` keyword.
+The job should use the image that you built as the value of the `image` keyword.
 
 The `KUBERNETES_SERVICE_ACCOUNT_OVERWRITE` variable should have the value of the
-service account name that we created.
+service account name that you created.
 
 Congratulations, you've successfully built an image with Buildah in a rootless container!
 

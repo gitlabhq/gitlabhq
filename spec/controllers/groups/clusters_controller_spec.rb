@@ -22,11 +22,11 @@ RSpec.describe Groups::ClustersController, feature_category: :deployment_managem
     describe 'functionality' do
       context 'when group has one or more clusters' do
         let_it_be(:enabled_cluster) do
-          create(:cluster, :provided_by_gcp, cluster_type: :group_type, groups: [group])
+          create(:cluster, :group, groups: [group])
         end
 
         let_it_be(:disabled_cluster) do
-          create(:cluster, :disabled, :provided_by_gcp, :production_environment, cluster_type: :group_type, groups: [group])
+          create(:cluster, :disabled, :production_environment, :group, groups: [group])
         end
 
         include_examples ':certificate_based_clusters feature flag index responses' do
@@ -61,7 +61,7 @@ RSpec.describe Groups::ClustersController, feature_category: :deployment_managem
 
           before do
             allow(Clusters::Cluster).to receive(:default_per_page).and_return(1)
-            create_list(:cluster, 2, :provided_by_gcp, :production_environment, cluster_type: :group_type, groups: [group])
+            create_list(:cluster, 2, :production_environment, :group, groups: [group])
           end
 
           it 'redirects to the page' do
@@ -97,7 +97,7 @@ RSpec.describe Groups::ClustersController, feature_category: :deployment_managem
     end
 
     describe 'security' do
-      let_it_be(:cluster) { create(:cluster, :provided_by_gcp, cluster_type: :group_type, groups: [group]) }
+      let_it_be(:cluster) { create(:cluster, :group, groups: [group]) }
 
       it('is allowed for admin when admin mode is enabled', :enable_admin_mode) { expect { go }.to be_allowed_for(:admin) }
       it('is denied for admin when admin mode is disabled') { expect { go }.to be_denied_for(:admin) }
@@ -340,7 +340,7 @@ RSpec.describe Groups::ClustersController, feature_category: :deployment_managem
   end
 
   describe 'GET cluster_status' do
-    let(:cluster) { create(:cluster, :providing_by_gcp, cluster_type: :group_type, groups: [group]) }
+    let(:cluster) { create(:cluster, :group, groups: [group]) }
 
     def go
       get :cluster_status,
@@ -378,7 +378,7 @@ RSpec.describe Groups::ClustersController, feature_category: :deployment_managem
   end
 
   describe 'GET show' do
-    let(:cluster) { create(:cluster, :provided_by_gcp, cluster_type: :group_type, groups: [group]) }
+    let(:cluster) { create(:cluster, :group, groups: [group]) }
 
     def go(tab: nil)
       get :show,
@@ -415,7 +415,7 @@ RSpec.describe Groups::ClustersController, feature_category: :deployment_managem
       )
     end
 
-    let(:cluster) { create(:cluster, :provided_by_user, cluster_type: :group_type, groups: [group]) }
+    let(:cluster) { create(:cluster, :provided_by_user, :group, groups: [group]) }
     let(:domain) { 'test-domain.com' }
 
     let(:params) do
@@ -505,7 +505,7 @@ RSpec.describe Groups::ClustersController, feature_category: :deployment_managem
     end
 
     describe 'security' do
-      let_it_be(:cluster) { create(:cluster, :provided_by_gcp, cluster_type: :group_type, groups: [group]) }
+      let_it_be(:cluster) { create(:cluster, :group, groups: [group]) }
 
       it('is allowed for admin when admin mode is enabled', :enable_admin_mode) { expect { go }.to be_allowed_for(:admin) }
       it('is denied for admin when admin mode is disabled') { expect { go }.to be_denied_for(:admin) }
@@ -520,7 +520,7 @@ RSpec.describe Groups::ClustersController, feature_category: :deployment_managem
   end
 
   describe 'DELETE destroy' do
-    let_it_be(:cluster) { create(:cluster, :provided_by_gcp, :production_environment, cluster_type: :group_type, groups: [group]) }
+    let_it_be(:cluster) { create(:cluster, :provided_by_gcp, :production_environment, :group, groups: [group]) }
 
     def go
       delete :destroy,
@@ -549,7 +549,7 @@ RSpec.describe Groups::ClustersController, feature_category: :deployment_managem
         end
 
         context 'when cluster is being created' do
-          let_it_be(:cluster) { create(:cluster, :providing_by_gcp, :production_environment, cluster_type: :group_type, groups: [group]) }
+          let_it_be(:cluster) { create(:cluster, :providing_by_gcp, :production_environment, :group, groups: [group]) }
 
           it 'destroys and redirects back to clusters list' do
             expect { go }
@@ -563,7 +563,7 @@ RSpec.describe Groups::ClustersController, feature_category: :deployment_managem
       end
 
       context 'when cluster is provided by user' do
-        let_it_be(:cluster) { create(:cluster, :provided_by_user, :production_environment, cluster_type: :group_type, groups: [group]) }
+        let_it_be(:cluster) { create(:cluster, :provided_by_user, :production_environment, :group, groups: [group]) }
 
         it 'destroys and redirects back to clusters list' do
           expect { go }
@@ -578,7 +578,7 @@ RSpec.describe Groups::ClustersController, feature_category: :deployment_managem
     end
 
     describe 'security' do
-      let_it_be(:cluster) { create(:cluster, :provided_by_gcp, :production_environment, cluster_type: :group_type, groups: [group]) }
+      let_it_be(:cluster) { create(:cluster, :production_environment, :group, groups: [group]) }
 
       it('is allowed for admin when admin mode is enabled', :enable_admin_mode) { expect { go }.to be_allowed_for(:admin) }
       it('is denied for admin when admin mode is disabled') { expect { go }.to be_denied_for(:admin) }

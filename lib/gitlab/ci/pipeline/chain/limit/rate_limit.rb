@@ -44,7 +44,6 @@ module Gitlab
                 namespace_id: project.namespace_id,
                 project_id: project.id,
                 commit_sha: command.sha,
-                current_user_id: current_user.id,
                 subscription_plan: project.actual_plan_name,
                 message: 'Activated pipeline creation rate limit',
                 throttled: enforce_throttle?,

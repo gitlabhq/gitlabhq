@@ -9,6 +9,7 @@ title: GitLab MCP clients
 {{< details >}}
 
 - Tier: Premium, Ultimate
+- Add-on: GitLab Duo Core, Pro, or Enterprise
 - Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
 - Status: Beta
 
@@ -16,7 +17,7 @@ title: GitLab MCP clients
 
 {{< collapsible title="Model information" >}}
 
-- Available on GitLab Duo with self-hosted models: Not supported
+- Not available on GitLab Duo with self-hosted models
 
 {{< /collapsible >}}
 
@@ -30,6 +31,13 @@ title: GitLab MCP clients
 
 The Model Context Protocol (MCP) provides a standardized way for GitLab Duo features
 to securely connect to different external data sources and tools.
+
+MCP is supported in:
+
+- Visual Studio Code (VS Code) and VSCodium
+- JetBrains IDEs
+
+The same MCP configuration file works across all supported IDEs.
 
 The following features can act as MCP clients and connect to external tools from MCP servers:
 
@@ -50,18 +58,26 @@ For a click-through demo, see [Duo Agent Platform - MCP integration](https://git
 
 Before using a GitLab Duo feature with MCP, you must:
 
+- Meet [the prerequisites for the GitLab Duo Agent Platform](../../duo_agent_platform/_index.md#prerequisites).
+
+In addition, for VS Code:
+
 - Install [VSCodium](https://vscodium.com/) or [Visual Studio Code](https://code.visualstudio.com/download) (VS Code).
 - Set up the GitLab Workflow extension from the [Open VSX Registry](https://open-vsx.org/extension/GitLab/gitlab-workflow)
   or the [Visual Studio Marketplace](https://marketplace.visualstudio.com/items?itemName=GitLab.gitlab-workflow).
   - MCP support requires version 6.28.2 and later.
   - Workspace and user configuration features require version 6.35.6 and later.
-- Meet [the prerequisites for the GitLab Duo Agent Platform](../../duo_agent_platform/_index.md#prerequisites).
+
+For JetBrains IDEs:
+
+- Install a JetBrains IDE.
+- Install and set up the [GitLab Duo plugin for JetBrains IDEs](../../../editor_extensions/jetbrains_ide/setup.md).
 
 ## Turn on MCP for your group
 
 To turn MCP on or off for your group:
 
-1. On the left sidebar, select **Search or go to** and find your group.
+1. On the left sidebar, select **Search or go to** and find your group. If you've [turned on the new navigation](../../interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
 1. Select **Settings** > **GitLab Duo**.
 1. Select **Change configuration**.
 1. Under **Model Context Protocol**, select or clear the
@@ -109,7 +125,7 @@ To set up user configuration:
 1. Save the file.
 1. Restart your IDE.
 
-Alternatively, manually create the file in this location:
+For JetBrains IDEs, or to manually create the file in VS Code, use this location:
 
 - Windows: `C:\Users\<username>\AppData\Roaming\GitLab\duo\mcp.json`
 - All other operating systems: `~/.gitlab/duo/mcp.json`
@@ -127,11 +143,13 @@ Both configuration files use the same JSON format:
       "args": ["--arg1", "value1"],
       "env": {
         "ENV_VAR": "value"
-      }
+      },
+      "approvedTools": true
     },
     "http-server": {
       "type": "http",
-      "url": "http://localhost:3000/mcp"
+      "url": "http://localhost:3000/mcp",
+      "approvedTools": ["read_file", "search"]
     },
     "sse-server": {
       "type": "sse",
@@ -140,6 +158,60 @@ Both configuration files use the same JSON format:
   }
 }
 ```
+
+### Configure tool approval
+
+By default, in each session you must manually approve every MCP tool from your server.
+
+Instead, you can pre-approve MCP tools in your configuration file to skip manual approval prompts.
+
+To do so, add the `approvedTools` field to any server configuration:
+
+- `"approvedTools": true` - Automatically approve all current and future tools from this server.
+- `"approvedTools": ["tool1", "tool2"]` - Approve only the tools you have specified.
+
+If you do not include this field, you must manually approve every tool in the session (this is the default behavior).
+
+{{< alert type="warning" >}}
+
+Only use `"approvedTools": true` for servers you completely trust.
+
+{{< /alert >}}
+
+For example:
+
+```json
+{
+  "mcpServers": {
+    "trusted-server": {
+      "type": "stdio",
+      "command": "npx",
+      "args": ["my-trusted-mcp-server"],
+      "approvedTools": true
+    },
+    "selective-server": {
+      "type": "http",
+      "url": "http://localhost:3000/mcp",
+      "approvedTools": ["read_file", "search"]
+    },
+    "untrusted-server": {
+      "type": "sse",
+      "url": "http://example.com/mcp/sse"
+    }
+  }
+}
+```
+
+#### How tool approval works
+
+GitLab uses a two-tier approval system for MCP tools:
+
+- Configuration-based approval (permanent): Tools approved in `mcp.json` using the `approvedTools` field.
+  These approvals persist across all sessions.
+- Session-based approval (temporary): Tools approved during runtime for the current workflow session.
+  These approvals are cleared when you close your IDE or end the workflow.
+
+A tool is approved if either condition is met.
 
 ### Example MCP server configurations
 
@@ -157,28 +229,46 @@ Other example servers are [Smithery.ai](https://smithery.ai/) and [Awesome MCP S
       "type": "stdio",
       "command": "node",
       "args": ["src/server.js"],
-      "cwd": "</path/to/your-mcp-server>"
+      "cwd": "</path/to/your-mcp-server>",
+      "approvedTools": ["query_database", "fetch_metrics"]
     }
   }
 }
 ```
 
-#### Remote server with `mcp-remote`
+#### GitLab Knowledge Graph server
+
+The [GitLab Knowledge Graph](https://gitlab-org.gitlab.io/rust/knowledge-graph) provides code intelligence
+through MCP. You can approve all tools or specific ones:
 
 ```json
 {
   "mcpServers": {
-    "aws-knowledge": {
-      "type": "stdio",
-      "command": "npx",
-      "args": [
-        "mcp-remote",
-        "https://knowledge-mcp.global.api.aws"
-      ]
+    "knowledge-graph": {
+      "type": "sse",
+      "url": "http://localhost:27495/mcp/sse",
+      "approvedTools": true
     }
   }
 }
 ```
+
+Or approve only specific tools:
+
+```json
+{
+  "mcpServers": {
+    "knowledge-graph": {
+      "type": "sse",
+      "url": "http://localhost:27495/mcp/sse",
+      "approvedTools": ["list_projects", "search_codebase_definitions", "get_references", "get_definition"]
+    }
+  }
+}
+```
+
+For more information about available tools, see the
+[Knowledge Graph MCP tools documentation](https://gitlab-org.gitlab.io/rust/knowledge-graph/mcp/tools/).
 
 #### HTTP server
 
@@ -187,20 +277,8 @@ Other example servers are [Smithery.ai](https://smithery.ai/) and [Awesome MCP S
   "mcpServers": {
     "local-http-server": {
       "type": "http",
-      "url": "http://localhost:3000/mcp"
-    }
-  }
-}
-```
-
-#### SSE server
-
-```json
-{
-  "mcpServers": {
-    "remote-sse-server": {
-      "type": "sse",
-      "url": "http://public.domain:3000/mcp/sse"
+      "url": "http://localhost:3000/mcp",
+      "approvedTools": ["read_file", "write_file"]
     }
   }
 }
@@ -238,6 +316,9 @@ you must review that tool unless you've approved it for the entire session:
 
    - For Chat, if you deny the tool, the **Provide Rejection Reason** dialog appears.
      Enter a rejection reason, then select **Submit Rejection**.
+
+     Chat might take action based on the reason you provide, such as
+     suggesting a new approach, or creating an issue.
 
 ## Related topics
 

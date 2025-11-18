@@ -1,6 +1,0 @@
----
-migration_job_name: PopulateDenormalizedColumnsForSbomOccurrences
-description: Populates the denormalized columns for `sbom_occurrences` table.
-feature_category: dependency_management
-introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/129486
-milestone: '16.4'

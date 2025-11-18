@@ -12,6 +12,8 @@ rspec:
       - RUBY_VERSION: ["${RUBY_VERSION_DEFAULT}"] # 3.2 isn't supported yet
 
 .with_redis:
+  extends:
+    - .repo-from-artifacts
   services:
     - redis:alpine
   variables:

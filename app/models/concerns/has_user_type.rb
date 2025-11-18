@@ -73,14 +73,19 @@ module HasUserType
   def redacted_name(viewing_user)
     return self.name unless self.project_bot?
 
-    return self.name if self.groups.any? && viewing_user&.can?(:read_group, self.groups.first)
+    cache_key = "redacted_name:#{self.class}:#{self.id}:#{viewing_user&.id}"
 
-    return self.name if viewing_user&.can?(:read_project, self.projects.first)
-
-    # If the requester does not have permission to read the project bot name,
-    # the API returns an arbitrary string. UI changes will be addressed in a follow up issue:
-    # https://gitlab.com/gitlab-org/gitlab/-/issues/346058
-    '****'
+    Gitlab::SafeRequestStore.fetch(cache_key) do
+      if (self.groups.any? && viewing_user&.can?(:read_group, self.groups.first)) ||
+          viewing_user&.can?(:read_project, self.projects.first)
+        self.name
+      else
+        # If the requester does not have permission to read the project bot name,
+        # the API returns an arbitrary string. UI changes will be addressed in a follow up issue:
+        # https://gitlab.com/gitlab-org/gitlab/-/issues/346058
+        '****'
+      end
+    end
   end
 
   def resource_bot_resource

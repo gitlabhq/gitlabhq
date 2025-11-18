@@ -187,7 +187,7 @@ RSpec.describe Ci::Build, feature_category: :continuous_integration, factory_def
     describe 'with_secure_reports_from_metadata_config_options' do
       let_it_be(:pipeline) { create(:ci_empty_pipeline) }
       let_it_be(:build) { create(:ci_build, pipeline: pipeline) }
-      let_it_be_with_refind(:build_metadata) { build.ensure_metadata.tap(&:save!) }
+      let_it_be_with_refind(:build_metadata) { create(:ci_build_metadata, build: build) }
       let(:job_types) { %w[sast secret_detection] }
 
       subject(:query) { described_class.with_secure_reports_from_metadata_config_options(job_types) }
@@ -201,6 +201,23 @@ RSpec.describe Ci::Build, feature_category: :continuous_integration, factory_def
 
         it { expect(query).to contain_exactly(build) }
       end
+    end
+
+    describe 'with_runner_assigned' do
+      let_it_be(:build_with_runner) { create(:ci_build, runner: create(:ci_runner)) }
+      let_it_be(:build_without_runner) { create(:ci_build) }
+
+      subject { described_class.with_runner_assigned }
+
+      it { is_expected.to contain_exactly(build_with_runner) }
+    end
+
+    describe 'with_no_runner_assigned' do
+      let(:builds_without_runner) { [build, old_build, new_build] }
+
+      subject { described_class.with_no_runner_assigned }
+
+      it { is_expected.to match_array(builds_without_runner) }
     end
   end
 
@@ -241,14 +258,6 @@ RSpec.describe Ci::Build, feature_category: :continuous_integration, factory_def
         end
 
         it_behaves_like "when build receives #{action} event"
-
-        context 'when FF `stop_writing_builds_metadata` is disabled' do
-          before do
-            stub_feature_flags(stop_writing_builds_metadata: false)
-          end
-
-          it_behaves_like "when build receives #{action} event"
-        end
       end
     end
 
@@ -289,14 +298,6 @@ RSpec.describe Ci::Build, feature_category: :continuous_integration, factory_def
             end
 
             it_behaves_like "when build receives #{action} event"
-
-            context 'when FF `stop_writing_builds_metadata` is disabled' do
-              before do
-                stub_feature_flags(stop_writing_builds_metadata: false)
-              end
-
-              it_behaves_like "when build receives #{action} event"
-            end
           end
         end
 
@@ -2011,9 +2012,12 @@ RSpec.describe Ci::Build, feature_category: :continuous_integration, factory_def
   describe '#tag_list' do
     let_it_be(:build) { create(:ci_build, tag_list: ['tag'], pipeline: pipeline) }
 
+    subject(:tag_list) { build.reload.tag_list }
+
     context 'when tags are preloaded' do
       it 'does not trigger queries' do
         build_with_tags = described_class.eager_load_tags.id_in([build]).to_a.first
+        build_with_tags.project # Preload project being used in ci_build_uses_job_definition_tag_list FF check
 
         expect { build_with_tags.tag_list }.not_to exceed_all_query_limit(0)
         expect(build_with_tags.tag_list).to eq(['tag'])
@@ -2023,10 +2027,77 @@ RSpec.describe Ci::Build, feature_category: :continuous_integration, factory_def
     context 'when tags are not preloaded' do
       it { expect(described_class.find(build.id).tag_list).to eq(['tag']) }
     end
+
+    context 'when build has job_definition with tag_list' do
+      let(:job_definition_tags) { %w[job_definition_tag] }
+
+      before do
+        stub_ci_job_definition(build, tag_list: job_definition_tags)
+      end
+
+      it 'returns tag_list from job_definition config' do
+        is_expected.to eq(job_definition_tags)
+      end
+
+      context 'when ci_build_uses_job_definition_tag_list FF is disabled' do
+        before do
+          stub_feature_flags(ci_build_uses_job_definition_tag_list: false)
+        end
+
+        it 'returns tag_list from tags relation' do
+          is_expected.to contain_exactly('tag')
+        end
+      end
+    end
+
+    context 'when build has no job_definition' do
+      let_it_be(:build_without_job_definition) do
+        create(:ci_build, :without_job_definition, tag_list: ['tag_from_tags'], pipeline: pipeline)
+      end
+
+      specify do
+        expect(Ci::BuildTag.where(build_id: build_without_job_definition, tag_id: Ci::Tag.find_by_name('tag_from_tags')))
+          .not_to be_empty
+      end
+
+      specify do
+        expect(build_without_job_definition.job_definition).to be_nil
+      end
+
+      it 'falls back to tags table' do
+        expect(build_without_job_definition.tag_list).to contain_exactly('tag_from_tags')
+      end
+    end
+
+    context 'when build has tags and job_definition without tag_list' do
+      let_it_be(:build) { create(:ci_build, options: { script: ['echo hello'] }, pipeline: pipeline) }
+
+      before_all do
+        create(:ci_build_tag, tag: create(:ci_tag, name: 'tag1'), build: build, project_id: build.project.id)
+      end
+
+      it 'does not fall back to super' do
+        expect(build.job_definition).not_to be_nil
+        expect(build.job_definition.config).not_to be_nil
+        expect(build.job_definition.config[:tag_list]).to eq([])
+
+        is_expected.to eq([])
+      end
+    end
+
+    context 'when build has empty tag_list in job_definition config' do
+      before do
+        stub_ci_job_definition(build, tag_list: [])
+      end
+
+      it 'returns empty array from job_definition config instead of falling back to super' do
+        is_expected.to eq([])
+      end
+    end
   end
 
   describe '#save_tags' do
-    let(:build) { create(:ci_build, tag_list: ['tag'], pipeline: pipeline) }
+    let(:build) { create(:ci_build, :without_job_definition, tag_list: ['tag'], pipeline: pipeline) }
 
     it 'saves tags' do
       build.save!
@@ -2311,18 +2382,6 @@ RSpec.describe Ci::Build, feature_category: :continuous_integration, factory_def
 
     it 'rejects access with string keys' do
       expect(build.options['image']).to be_nil
-    end
-
-    context 'when allowed to write metadata' do
-      before do
-        stub_feature_flags(stop_writing_builds_metadata: false)
-      end
-
-      let(:build) { create(:ci_build, pipeline: pipeline, yaml_variables: []) }
-
-      it 'persist data in build metadata' do
-        expect(build.metadata.read_attribute(:config_options)).to eq(options.symbolize_keys)
-      end
     end
 
     it 'does not persist data in build' do
@@ -2709,6 +2768,7 @@ RSpec.describe Ci::Build, feature_category: :continuous_integration, factory_def
           { key: 'CI_COMMIT_REF_SLUG', value: build.ref_slug, public: true, masked: false },
           { key: 'CI_COMMIT_BRANCH', value: build.ref, public: true, masked: false },
           { key: 'CI_COMMIT_MESSAGE', value: pipeline.git_commit_message, public: true, masked: false },
+          { key: "CI_COMMIT_MESSAGE_IS_TRUNCATED", masked: false, public: true, value: "false" },
           { key: 'CI_COMMIT_TITLE', value: pipeline.git_commit_title, public: true, masked: false },
           { key: 'CI_COMMIT_DESCRIPTION', value: pipeline.git_commit_description, public: true, masked: false },
           { key: 'CI_COMMIT_REF_PROTECTED', value: (!!pipeline.protected_ref?).to_s, public: true, masked: false },
@@ -4036,16 +4096,6 @@ RSpec.describe Ci::Build, feature_category: :continuous_integration, factory_def
 
     it_behaves_like 'having consistent representation'
 
-    context 'when allowed to write to metadata' do
-      before do
-        stub_feature_flags(stop_writing_builds_metadata: false)
-      end
-
-      it 'persist data in build metadata' do
-        expect(build.metadata.read_attribute(:config_variables)).not_to be_nil
-      end
-    end
-
     it 'does not persist data in build' do
       expect(build.read_attribute(:yaml_variables)).to be_nil
     end
@@ -4258,14 +4308,6 @@ RSpec.describe Ci::Build, feature_category: :continuous_integration, factory_def
       end
 
       it_behaves_like 'saves data on transition'
-
-      context 'when FF `stop_writing_builds_metadata` is disabled' do
-        before do
-          stub_feature_flags(stop_writing_builds_metadata: false)
-        end
-
-        it_behaves_like 'saves data on transition'
-      end
     end
 
     context "when runner timeout doesn't override project timeout" do
@@ -4277,14 +4319,6 @@ RSpec.describe Ci::Build, feature_category: :continuous_integration, factory_def
       end
 
       it_behaves_like 'saves data on transition'
-
-      context 'when FF `stop_writing_builds_metadata` is disabled' do
-        before do
-          stub_feature_flags(stop_writing_builds_metadata: false)
-        end
-
-        it_behaves_like 'saves data on transition'
-      end
     end
   end
 
@@ -5086,14 +5120,6 @@ RSpec.describe Ci::Build, feature_category: :continuous_integration, factory_def
     end
   end
 
-  it_behaves_like 'a degenerable job' do
-    before do
-      stub_feature_flags(stop_writing_builds_metadata: false)
-    end
-
-    subject(:job) { create(:ci_build, pipeline: pipeline) }
-  end
-
   describe '#invalid_dependencies' do
     it 'returns invalid dependencies' do
       dependencies_double = instance_double(Ci::BuildDependencies)
@@ -5544,14 +5570,15 @@ RSpec.describe Ci::Build, feature_category: :continuous_integration, factory_def
         create(:ci_build, pipeline: pipeline, tag_list: %w[tag2 tag1])
       end
 
+      specify { expect(build_with_tags.job_definition.config[:tag_list]).to contain_exactly('tag1', 'tag2') }
+
       it { expect(matchers.size).to eq(2) }
 
       it 'groups build ids' do
-        expect(matchers.map(&:build_ids)).to match_array(
-          [
-            [build_without_tags.id],
-            match_array([build_with_tags.id, other_build_with_tags.id])
-          ])
+        expect(matchers.map(&:build_ids)).to contain_exactly(
+          [build_without_tags.id],
+          match_array([build_with_tags.id, other_build_with_tags.id])
+        )
       end
 
       it { expect(matchers.map(&:tag_list)).to match_array([[], %w[tag1 tag2]]) }
@@ -5564,6 +5591,43 @@ RSpec.describe Ci::Build, feature_category: :continuous_integration, factory_def
         end
 
         it { expect(matchers).to all be_protected }
+      end
+
+      context 'when job_definition has no tag_list but tags exist (hypothetical scenario)' do
+        let!(:build_without_tags_in_job_def) do
+          create(:ci_build, pipeline: pipeline).tap do |build|
+            # Manually add tags to the build via the legacy tables
+            create(:ci_build_tag, tag: create(:ci_tag, name: 'legacy_tag'), build: build, project_id: build.project.id)
+          end
+        end
+
+        it 'uses tags from tags relation' do
+          expect(matchers.map(&:build_ids)).to contain_exactly(
+            [build_without_tags.id, build_without_tags_in_job_def.id],
+            match_array([build_with_tags.id, other_build_with_tags.id])
+          )
+        end
+      end
+
+      context 'when ci_build_uses_job_definition_tag_list feature flag is disabled' do
+        before do
+          stub_feature_flags(ci_build_uses_job_definition_tag_list: false)
+        end
+
+        context 'when builds have job_definition with tag_list' do
+          let!(:build_with_job_def_tags) do
+            create(:ci_build, tag_list: %w[tag1 tag2], pipeline: pipeline).tap do |build|
+              stub_ci_job_definition(build, tag_list: %w[docker ruby])
+            end
+          end
+
+          it 'ignores job_definition and uses tags table' do
+            expect(matchers.map(&:build_ids)).to contain_exactly(
+              [build_without_tags.id],
+              match_array([build_with_tags.id, other_build_with_tags.id, build_with_job_def_tags.id])
+            )
+          end
+        end
       end
     end
   end
@@ -5762,6 +5826,7 @@ RSpec.describe Ci::Build, feature_category: :continuous_integration, factory_def
 
   describe 'loose foreign keys' do
     it_behaves_like 'it has loose foreign keys' do
+      let(:worker_class) { LooseForeignKeys::CiPipelinesBuildsCleanupCronWorker }
       let(:factory_name) { :ci_build }
     end
 
@@ -5893,30 +5958,6 @@ RSpec.describe Ci::Build, feature_category: :continuous_integration, factory_def
 
       expect(build.token).to be_nil
       expect(build.changes).to be_empty
-    end
-  end
-
-  describe 'metadata partitioning' do
-    let(:pipeline) { create(:ci_pipeline, project: project, partition_id: ci_testing_partition_id) }
-
-    let(:ci_stage) { create(:ci_stage, pipeline: pipeline) }
-    let(:build) { FactoryBot.build(:ci_build, pipeline: pipeline, ci_stage: ci_stage) }
-
-    before do
-      stub_feature_flags(stop_writing_builds_metadata: false)
-    end
-
-    it 'creates the metadata record and assigns its partition' do
-      # The record is initialized by the factory calling metadatable setters
-      build.metadata = nil
-
-      expect(build.metadata).to be_nil
-
-      expect(build.save!).to be_truthy
-
-      expect(build.metadata).to be_present
-      expect(build.metadata).to be_valid
-      expect(build.metadata.partition_id).to eq(ci_testing_partition_id)
     end
   end
 
@@ -6100,6 +6141,33 @@ RSpec.describe Ci::Build, feature_category: :continuous_integration, factory_def
 
     with_them do
       it { is_expected.to eq(expected_token) }
+    end
+  end
+
+  describe '.fabricate' do
+    let(:tag_list) { %w[ruby docker postgres] }
+    let(:build_attributes) do
+      {
+        options: { script: ['echo'] },
+        tag_list: tag_list,
+        project_id: 1,
+        partition_id: 99
+      }
+    end
+
+    subject(:fabricate) { described_class.fabricate(build_attributes) }
+
+    it 'initializes with temp_job_definition' do
+      expect(fabricate).to have_attributes(
+        temp_job_definition: instance_of(Ci::JobDefinition),
+        job_definition: nil,
+        tag_list: tag_list
+      )
+      definition = fabricate.temp_job_definition
+
+      expect(definition.config).to eq({ options: build_attributes[:options], tag_list: tag_list })
+      expect(definition.project_id).to eq(build_attributes[:project_id])
+      expect(definition.partition_id).to eq(build_attributes[:partition_id])
     end
   end
 end

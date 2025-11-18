@@ -37,8 +37,6 @@ module Clusters
 
     has_one :platform_kubernetes, class_name: 'Clusters::Platforms::Kubernetes', inverse_of: :cluster, autosave: true
 
-    has_one :integration_prometheus, class_name: 'Clusters::Integrations::Prometheus', inverse_of: :cluster
-
     has_one :agent_migration, class_name: 'Clusters::AgentMigration', inverse_of: :cluster
 
     def self.has_one_cluster_application(name) # rubocop:disable Naming/PredicateName
@@ -110,7 +108,6 @@ module Clusters
     scope :for_project_namespace, ->(namespace_id) { joins(:projects).where(projects: { namespace_id: namespace_id }) }
     scope :with_name, ->(name) { where(name: name) }
 
-    scope :with_integration_prometheus, -> { includes(:integration_prometheus).joins(:integration_prometheus) }
     scope :with_project_http_integrations, ->(project_ids) do
       conditions = { projects: :alert_management_http_integrations }
       includes(conditions).joins(conditions).where(projects: { id: project_ids })
@@ -212,10 +209,6 @@ module Clusters
       connection_data.merge(Gitlab::Kubernetes::Node.new(self).all)
     end
 
-    def find_or_build_integration_prometheus
-      integration_prometheus || build_integration_prometheus
-    end
-
     def on_creation?
       !!provider&.on_creation?
     end
@@ -230,10 +223,6 @@ module Clusters
 
     def platform_kubernetes_rbac?
       !!platform_kubernetes&.rbac?
-    end
-
-    def integration_prometheus_available?
-      !!integration_prometheus&.available?
     end
 
     def provider
@@ -313,10 +302,6 @@ module Clusters
       else
         raise NotImplementedError
       end
-    end
-
-    def prometheus_adapter
-      integration_prometheus
     end
 
     private

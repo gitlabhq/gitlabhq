@@ -80,6 +80,10 @@ describe('YourWorkProjectsApp', () => {
     });
   };
 
+  const openActions = async () => {
+    await wrapper.findByRole('button', { name: 'Actions' }).trigger('click');
+  };
+
   afterEach(() => {
     window.gon = {};
   });
@@ -136,7 +140,7 @@ describe('YourWorkProjectsApp', () => {
     });
     await waitForPromises();
 
-    await wrapper.findByRole('button', { name: 'Actions' }).trigger('click');
+    await openActions();
 
     expect(wrapper.findByRole('link', { name: 'Edit' }).attributes('href')).toBe(
       mockProject.editPath,
@@ -173,8 +177,10 @@ describe('YourWorkProjectsApp', () => {
       await waitForPromises();
     });
 
-    it('does not render `Edit` action', () => {
-      expect(wrapper.findByRole('button', { name: 'Actions' }).exists()).toBe(false);
+    it('does not render `Edit` action', async () => {
+      await openActions();
+
+      expect(wrapper.findByRole('link', { name: 'Edit' }).exists()).toBe(false);
     });
   });
 

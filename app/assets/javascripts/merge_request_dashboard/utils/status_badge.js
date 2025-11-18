@@ -41,7 +41,11 @@ export function assignedToYouBadge({ mergeRequest }) {
     return { icon: 'merge-request', text: __('Draft') };
   }
 
-  if (mergeRequest.reviewers?.nodes.length <= 1) {
+  const reviewers = mergeRequest.reviewers?.nodes.filter(
+    (r) => r.username.toLowerCase() !== 'gitlabduo',
+  );
+
+  if (reviewers.length === 0) {
     return { icon: 'user', text: __('Reviewers needed') };
   }
 

@@ -9,6 +9,7 @@ RSpec.shared_examples "expose all available feature fields for the namespace" do
     expected_fields = %i[
       has_blocked_issues_feature
       has_custom_fields_feature
+      has_design_management_feature
       has_epics_feature
       has_group_bulk_edit_feature
       has_issuable_health_status_feature

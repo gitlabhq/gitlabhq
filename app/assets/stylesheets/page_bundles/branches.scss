@@ -19,7 +19,8 @@
 
     .bar {
       height: 4px;
-      @apply gl-bg-neutral-400 dark:gl-bg-neutral-500;
+      @apply gl-bg-neutral-400;
+      @apply dark:gl-bg-neutral-500;
     }
 
     .count {
@@ -30,7 +31,8 @@
   .graph-separator {
     width: $graph-separator-width;
     height: 18px;
-    @apply gl-bg-neutral-400 dark:gl-bg-neutral-500;
+    @apply gl-bg-neutral-400;
+    @apply dark:gl-bg-neutral-500;
   }
 }
 

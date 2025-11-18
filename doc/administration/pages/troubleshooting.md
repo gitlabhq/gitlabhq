@@ -175,7 +175,7 @@ sequenceDiagram
    deactivate PagesService
 ```
 
-## `unsupported protocol scheme \"\""`
+## Error: `unsupported protocol scheme \"\""`
 
 If you see the following error:
 
@@ -326,7 +326,7 @@ Upgrading to an [officially supported operating system](../../install/package/_i
 
 This problem comes from the permissions of the GitLab Pages OAuth application. To fix it:
 
-1. On the left sidebar, at the bottom, select **Admin**.
+1. On the left sidebar, at the bottom, select **Admin**. If you've [turned on the new navigation](../../user/interface_redesign.md#turn-new-navigation-on-or-off), in the upper-right corner, select **Admin**.
 1. Select **Applications > GitLab Pages**.
 1. Edit the application.
 1. Under **Scopes**, ensure that the `api` scope is selected.
@@ -369,7 +369,7 @@ You may see this error if `pages_external_url` was updated at some point of time
 
 1. Check the [System OAuth application](../../integration/oauth_provider.md#create-an-instance-wide-application):
 
-   1. On the left sidebar, at the bottom, select **Admin**.
+   1. On the left sidebar, at the bottom, select **Admin**. If you've [turned on the new navigation](../../user/interface_redesign.md#turn-new-navigation-on-or-off), in the upper-right corner, select **Admin**.
    1. Select **Applications** and then **Add new application**.
    1. Ensure the **Callback URL/Redirect URI** is using the protocol (HTTP or HTTPS) that
       `pages_external_url` is configured to use.
@@ -414,7 +414,7 @@ In that case, it's highly recommended you to configure
 Alternatively, you can mount the GitLab Pages shared directory to the same path on
 both servers.
 
-## GitLab Pages deploy job fails with error "is not a recognized provider"
+## GitLab Pages deploy job fails with error `is not a recognized provider`
 
 If the **pages** job succeeds but the **deploy** job gives the error "is not a recognized provider":
 
@@ -439,6 +439,40 @@ If you get a `404 Page Not Found` response from GitLab Pages:
 1. Check the current project's pipeline to confirm the job `pages:deploy` is being run.
 
 Without the `pages:deploy` job, the updates to your GitLab Pages site are never published.
+
+If you're using a separate Pages server with `namespace_in_path` enabled, see
+[404 error when UI shows incorrect URL](#404-error-page-not-found-when-pages-ui-shows-incorrect-url).
+
+## 404 error: Page not found when Pages UI shows incorrect URL
+
+If you configured and enabled `namespace_in_path` on a [separate GitLab Pages server](_index.md#running-gitlab-pages-on-a-separate-server)
+you might get a `404 Page not found` error.
+
+This error occurs when the `namespace_in_path` setting is misconfigured or missing on the GitLab Pages
+server or main GitLab server.
+
+The [global setting](_index.md#global-settings) `namespace_in_path` determines the URL structure for
+GitLab Pages sites. Both the GitLab server and the GitLab Pages server must have identical values for this setting.
+
+To resolve this error:
+
+1. Open the `/etc/gitlab/gitlab.rb` file:
+
+   1. Verify your GitLab server configuration is:
+
+      ```ruby
+      gitlab_pages['namespace_in_path'] = true
+      ```
+
+   1. Ensure your GitLab Pages server configuration is the same:
+
+      ```ruby
+         gitlab_pages['namespace_in_path'] = true
+      ```
+
+1. Save the file.
+1. [Reconfigure GitLab](../restart_gitlab.md) on both servers for the
+   changes to take effect.
 
 ## 503 error `Client authentication failed due to unknown client`
 

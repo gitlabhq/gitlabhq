@@ -31,7 +31,7 @@
 %h5= _('Configure the Git repository')
 %pre.code.js-syntax-highlight
   :preserve
-    git init --initial-branch=#{h escaped_default_branch_name}
+    git init --initial-branch=#{h escaped_default_branch_name} --object-format=#{h @project.repository_object_format}
     git remote add origin #{git_push_target}
     git add .
     git commit -m "Initial commit"

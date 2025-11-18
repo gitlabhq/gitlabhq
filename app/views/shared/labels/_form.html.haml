@@ -1,5 +1,15 @@
 - add_page_specific_style 'page_bundles/labels'
 - show_lock_on_merge = local_assigns.fetch(:show_lock_on_merge, false)
+- group = @label.group || @label.project&.group
+
+- if @label.persisted? && Feature.enabled?(:labels_archive, group) && @label.archived?
+  = render Pajamas::AlertComponent.new(variant: :warning, dismissible: false, alert_options: { class: 'gl-mb-5' }) do |c|
+    - c.with_body do
+      = _('This label is archived and not available for use. Unarchive to use it again.')
+    - c.with_actions do
+      = gitlab_ui_form_for @label, as: :label, url: url, html: { class: 'gl-inline-block' } do |unarchive_form|
+        = unarchive_form.hidden_field :archived, value: false
+        = unarchive_form.submit _('Unarchive label'), pajamas_button: true
 
 = gitlab_ui_form_for @label, as: :label, url: url, html: { class: 'label-form js-quick-submit' } do |f|
   = form_errors(@label)
@@ -24,11 +34,6 @@
       .form-text.gl-text-subtle
         = _('Select a color from the color picker or from the presets below.')
       = render_suggested_colors
-  - if Feature.enabled?(:labels_archive, :instance)
-    .gl-form-group.gl-row
-      .gl-col-12
-        = f.label :archived, _("Archived")
-        = f.gitlab_ui_checkbox_component :archived
   - if show_lock_on_merge
     .gl-form-group.gl-row
       .gl-col-12

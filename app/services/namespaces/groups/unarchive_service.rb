@@ -3,6 +3,8 @@
 module Namespaces
   module Groups
     class UnarchiveService < ::Groups::BaseService
+      include ::Namespaces::Groups::ArchiveEvents
+
       NotAuthorizedError = ServiceResponse.error(
         message: "You don't have permissions to unarchive this group!"
       )
@@ -33,6 +35,7 @@ module Namespaces
 
       def after_unarchive
         system_hook_service.execute_hooks_for(group, :update)
+        publish_events
       end
 
       def error_response(message)

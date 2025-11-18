@@ -11,7 +11,12 @@ module Experimental
     urgency :low
 
     def index
-      @o11y_service_settings = Observability::GroupO11ySetting.with_group.page(pagination_params[:page])
+      @o11y_service_settings = Observability::GroupO11ySetting.with_group
+      if search_params[:group_id].present?
+        @o11y_service_settings = @o11y_service_settings.search_by_group_id(search_params[:group_id])
+      end
+
+      @o11y_service_settings = @o11y_service_settings.page(pagination_params[:page])
     end
 
     def new
@@ -110,6 +115,10 @@ module Experimental
     def o11y_service_settings_update_params
       params.require(:observability_group_o11y_setting).permit(:o11y_service_name, :o11y_service_user_email,
         :o11y_service_password, :o11y_service_post_message_encryption_key)
+    end
+
+    def search_params
+      params.permit(:group_id)
     end
   end
 end

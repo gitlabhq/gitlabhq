@@ -116,7 +116,7 @@ func TestExecuteWorkflow(t *testing.T) {
 }
 
 func createTestClient(t *testing.T, server *testServer) *Client {
-	client, err := NewClient(server.Addr, map[string]string{"test": "header"}, false)
+	client, err := NewClient(server.Addr, map[string]string{"test": "header"}, false, "visual-studio-code/0.0.1")
 	require.NoError(t, err)
 	t.Cleanup(func() { _ = client.Close() })
 	return client

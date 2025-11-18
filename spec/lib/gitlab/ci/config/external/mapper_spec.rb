@@ -48,6 +48,16 @@ RSpec.describe Gitlab::Ci::Config::External::Mapper, feature_category: :pipeline
       end
     end
 
+    # Use shared examples
+    it_behaves_like 'processes local file includes'
+    it_behaves_like 'processes remote file includes'
+    it_behaves_like 'processes project file includes'
+    it_behaves_like 'handles empty includes'
+    it_behaves_like 'handles invalid include types'
+    it_behaves_like 'handles ambiguous specifications'
+    it_behaves_like 'processes array of includes'
+
+    # External::Mapper specific tests
     context "when single 'include' keyword is defined" do
       context 'when the string is a local file' do
         let(:values) do
@@ -55,47 +65,7 @@ RSpec.describe Gitlab::Ci::Config::External::Mapper, feature_category: :pipeline
             image: 'image:1.0' }
         end
 
-        it 'returns File instances' do
-          expect(subject).to contain_exactly(
-            an_instance_of(Gitlab::Ci::Config::External::File::Local))
-        end
-
         it_behaves_like 'logging config file fetch', 'config_file_fetch_local_content_duration_s', 1
-      end
-
-      context 'when the key is a local file hash' do
-        let(:values) do
-          { include: { 'local' => local_file },
-            image: 'image:1.0' }
-        end
-
-        it 'returns File instances' do
-          expect(subject).to contain_exactly(
-            an_instance_of(Gitlab::Ci::Config::External::File::Local))
-        end
-      end
-
-      context 'when the string is a remote file' do
-        let(:values) do
-          { include: remote_url, image: 'image:1.0' }
-        end
-
-        it 'returns File instances' do
-          expect(subject).to contain_exactly(
-            an_instance_of(Gitlab::Ci::Config::External::File::Remote))
-        end
-      end
-
-      context 'when the key is a remote file hash' do
-        let(:values) do
-          { include: { 'remote' => remote_url },
-            image: 'image:1.0' }
-        end
-
-        it 'returns File instances' do
-          expect(subject).to contain_exactly(
-            an_instance_of(Gitlab::Ci::Config::External::File::Remote))
-        end
       end
 
       context 'when the key is a template file hash' do
@@ -112,41 +82,10 @@ RSpec.describe Gitlab::Ci::Config::External::Mapper, feature_category: :pipeline
         it_behaves_like 'logging config file fetch', 'config_file_fetch_template_content_duration_s', 1
       end
 
-      context 'when the key is not valid' do
-        let(:local_file) { 'secret-file.yml' }
-        let(:values) do
-          { include: { invalid: local_file },
-            image: 'image:1.0' }
-        end
-
-        it 'returns ambigious specification error' do
-          expect { subject }.to raise_error(described_class::AmbigiousSpecificationError, /`{"invalid":"secret-file.yml"}` does not have a valid subkey for include. Valid subkeys are:/)
-        end
-      end
-
-      context 'when the key is a hash of local and remote' do
-        let(:variables) { Gitlab::Ci::Variables::Collection.new([{ 'key' => 'GITLAB_TOKEN', 'value' => 'secret-file', 'masked' => true }]) }
-        let(:local_file) { 'secret-file.yml' }
-        let(:remote_url) { 'https://gitlab.com/secret-file.yml' }
-        let(:values) do
-          { include: { 'local' => local_file, 'remote' => remote_url },
-            image: 'image:1.0' }
-        end
-
-        it 'returns ambigious specification error' do
-          expect { subject }.to raise_error(described_class::AmbigiousSpecificationError, /Each include must use only one of/)
-        end
-      end
-
       context "when the key is a project's file" do
         let(:values) do
           { include: { project: project.full_path, file: local_file },
             image: 'image:1.0' }
-        end
-
-        it 'returns File instances' do
-          expect(subject).to contain_exactly(
-            an_instance_of(Gitlab::Ci::Config::External::File::Project))
         end
 
         it_behaves_like 'logging config file fetch', 'config_file_fetch_project_content_duration_s', 1
@@ -165,71 +104,6 @@ RSpec.describe Gitlab::Ci::Config::External::Mapper, feature_category: :pipeline
         end
 
         it_behaves_like 'logging config file fetch', 'config_file_fetch_project_content_duration_s', 1
-      end
-
-      context 'when the include value is a Boolean' do
-        let(:values) { { include: true } }
-
-        it 'raises an error' do
-          expect { process }.to raise_error(
-            Gitlab::Ci::Config::External::Mapper::InvalidTypeError, /Each include must be a hash or a string/)
-        end
-      end
-    end
-
-    context "when 'include' is defined as an array" do
-      let(:values) do
-        { include: [remote_url, local_file],
-          image: 'image:1.0' }
-      end
-
-      it 'returns Files instances' do
-        expect(subject).to all(respond_to(:valid?))
-        expect(subject).to all(respond_to(:content))
-      end
-
-      context 'when an include value is an Array' do
-        let(:values) { { include: [remote_url, [local_file]] } }
-
-        it 'raises an error' do
-          expect { process }.to raise_error(
-            Gitlab::Ci::Config::External::Mapper::InvalidTypeError, /Each include must be a hash or a string/)
-        end
-      end
-    end
-
-    context "when 'include' is defined as an array of hashes" do
-      let(:values) do
-        { include: [{ remote: remote_url }, { local: local_file }],
-          image: 'image:1.0' }
-      end
-
-      it 'returns Files instances' do
-        expect(subject).to all(respond_to(:valid?))
-        expect(subject).to all(respond_to(:content))
-      end
-
-      context 'when it has ambigious match' do
-        let(:values) do
-          { include: [{ remote: remote_url, local: local_file }],
-            image: 'image:1.0' }
-        end
-
-        it 'returns ambigious specification error' do
-          expect { subject }.to raise_error(described_class::AmbigiousSpecificationError)
-        end
-      end
-    end
-
-    context "when 'include' is not defined" do
-      let(:values) do
-        {
-          image: 'image:1.0'
-        }
-      end
-
-      it 'returns an empty array' do
-        expect(subject).to be_empty
       end
     end
 

@@ -5,7 +5,7 @@ info: For assistance with this tutorial, see https://handbook.gitlab.com/handboo
 title: 'Tutorial: Create a compliance pipeline (deprecated)'
 ---
 
-<!--- start_remove The following content will be removed on remove_date: '2025-08-15' -->
+<!--- start_remove The following content will be removed on remove_date: '2026-08-15' -->
 
 {{< details >}}
 
@@ -17,7 +17,7 @@ title: 'Tutorial: Create a compliance pipeline (deprecated)'
 {{< alert type="warning" >}}
 
 This feature was [deprecated](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/159841) in GitLab 17.3
-and is planned for removal in 18.0. Use [pipeline execution policy type](../../user/application_security/policies/pipeline_execution_policies.md) instead.
+and is planned for removal in 19.0. Use [pipeline execution policy type](../../user/application_security/policies/pipeline_execution_policies.md) instead.
 This change is a breaking change. For more information, see the [migration guide](../../user/compliance/compliance_pipelines.md#pipeline-execution-policies-migration).
 
 {{< /alert >}}
@@ -51,7 +51,7 @@ Compliance frameworks are configured in top-level groups. In this tutorial, you 
 
 To create the new group:
 
-1. On the left sidebar, at the top, select **Create new** ({{< icon name="plus" >}}) and **New group**.
+1. On the left sidebar, at the top, select **Create new** ({{< icon name="plus" >}}) and **New group**. If you've [turned on the new navigation](../../user/interface_redesign.md#turn-new-navigation-on-or-off), this button is in the upper-right corner.
 1. Select **Create group**.
 1. In the **Group name** field, enter `Tutorial group`.
 1. Select **Create group**.
@@ -64,7 +64,7 @@ projects with the compliance framework applied.
 
 To create the compliance pipeline project:
 
-1. On the left sidebar, select **Search or go to** and find the `Tutorial group` group.
+1. On the left sidebar, select **Search or go to** and find the `Tutorial group` group. If you've [turned on the new navigation](../../user/interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
 1. Select **New project**.
 1. Select **Create blank project**.
 1. In the **Project name** field, enter `Tutorial compliance project`.
@@ -72,7 +72,7 @@ To create the compliance pipeline project:
 
 To add compliance pipeline configuration to `Tutorial compliance project`:
 
-1. On the left sidebar, select **Search or go to** and find the `Tutorial compliance project` project.
+1. On the left sidebar, select **Search or go to** and find the `Tutorial compliance project` project. If you've [turned on the new navigation](../../user/interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
 1. Select **Build** > **Pipeline editor**.
 1. Select **Configure pipeline**.
 1. In the pipeline editor, replace the default configuration with:
@@ -92,7 +92,7 @@ The compliance framework is configured in the [new group](#create-a-new-group).
 
 To configure the compliance framework:
 
-1. On the left sidebar, select **Search or go to** and find the `Tutorial group` group.
+1. On the left sidebar, select **Search or go to** and find the `Tutorial group` group. If you've [turned on the new navigation](../../user/interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
 1. Select **Secure** > **Compliance center**.
 1. On the page, select the **Frameworks** tab.
 1. Select **New framework**.
@@ -105,7 +105,7 @@ To configure the compliance framework:
 
 For convenience, make the new compliance framework the default for all new projects in the group:
 
-1. On the left sidebar, select **Search or go to** and find the `Tutorial group` group.
+1. On the left sidebar, select **Search or go to** and find the `Tutorial group` group. If you've [turned on the new navigation](../../user/interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
 1. Select **Secure** > **Compliance center**.
 1. On the page, select the **Frameworks** tab.
 1. Select `Tutorial compliance framework` then, select **Edit framework**.
@@ -119,8 +119,8 @@ compliance pipeline configuration in their pipelines.
 
 To create a new project for running the compliance pipeline configuration:
 
-1. On the left sidebar, select **Search or go to** and find the `Tutorial group` group.
-1. Select **Create new** ({{< icon name="plus" >}}) and **New project/repository**.
+1. On the left sidebar, select **Search or go to** and find the `Tutorial group` group. If you've [turned on the new navigation](../../user/interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
+1. Select **Create new** ({{< icon name="plus" >}}) and **New project/repository**. If you've [turned on the new navigation](../../user/interface_redesign.md#turn-new-navigation-on-or-off), this button is in the upper-right corner.
 1. Select **Create blank project**.
 1. In the **Project name** field, enter `Tutorial project`.
 1. Select **Create project**.
@@ -133,7 +133,7 @@ pipeline configuration in `Tutorial compliance project`.
 
 To run the compliance pipeline configuration in `Tutorial project`:
 
-1. On the left sidebar, select **Search or go to** and find the `Tutorial project` project.
+1. On the left sidebar, select **Search or go to** and find the `Tutorial project` project. If you've [turned on the new navigation](../../user/interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
 1. Select **Build** > **Pipelines**.
 1. Select **New pipeline**.
 1. On the **New pipeline** page, select **Run pipeline**.
@@ -151,7 +151,7 @@ compliance pipeline configuration to refer to it.
 
 To create the regular pipeline configuration:
 
-1. On the left sidebar, select **Search or go to** and find the `Tutorial project` project.
+1. On the left sidebar, select **Search or go to** and find the `Tutorial project` project. If you've [turned on the new navigation](../../user/interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
 1. Select **Build** > **Pipeline editor**.
 1. Select **Configure pipeline**.
 1. In the pipeline editor, replace the default configuration with:
@@ -167,7 +167,7 @@ To create the regular pipeline configuration:
 
 To combine the new project pipeline configuration with the compliance pipeline configuration:
 
-1. On the left sidebar, select **Search or go to** and find the `Tutorial compliance project` project.
+1. On the left sidebar, select **Search or go to** and find the `Tutorial compliance project` project. If you've [turned on the new navigation](../../user/interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
 1. Select **Build** > **Pipeline editor**.
 1. In the existing configuration, add:
 
@@ -181,7 +181,7 @@ To combine the new project pipeline configuration with the compliance pipeline c
 
 To confirm the regular pipeline configuration is combined with the compliance pipeline configuration:
 
-1. On the left sidebar, select **Search or go to** and find the `Tutorial project` project.
+1. On the left sidebar, select **Search or go to** and find the `Tutorial project` project. If you've [turned on the new navigation](../../user/interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
 1. Select **Build** > **Pipelines**.
 1. Select **New pipeline**.
 1. On the **New pipeline** page, select **Run pipeline**.

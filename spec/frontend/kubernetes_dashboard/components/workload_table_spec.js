@@ -215,6 +215,89 @@ describe('Workload table component', () => {
 
       expect(findTable().props('currentPage')).toBe(2);
     });
+
+    describe('pagination behavior on items change', () => {
+      const largeDataset = Array.from({ length: 25 }, (_, i) => ({
+        ...mockPodsTableItems[0],
+        name: `pod-${i}`,
+      }));
+
+      beforeEach(() => {
+        createWrapper({ items: largeDataset, pageSize: 10 }, true);
+      });
+
+      it('preserves current page when items are updated but page is still valid', async () => {
+        findPagination().vm.$emit('input', 2);
+        await nextTick();
+
+        expect(findTable().props('currentPage')).toBe(2);
+
+        const updatedItems = largeDataset.map((item) => ({ ...item, status: 'Running' }));
+        await wrapper.setProps({ items: updatedItems });
+
+        expect(findTable().props('currentPage')).toBe(2);
+      });
+
+      it('navigates to last page when current page becomes invalid due to fewer items', async () => {
+        findPagination().vm.$emit('input', 3);
+        await nextTick();
+        expect(findTable().props('currentPage')).toBe(3);
+
+        const reducedItems = largeDataset.slice(0, 15);
+        await wrapper.setProps({ items: reducedItems });
+
+        expect(findTable().props('currentPage')).toBe(2);
+      });
+
+      it('navigates to page 1 when all items are significantly reduced', async () => {
+        findPagination().vm.$emit('input', 3);
+        await nextTick();
+        expect(findTable().props('currentPage')).toBe(3);
+
+        const reducedItems = largeDataset.slice(0, 5);
+        await wrapper.setProps({ items: reducedItems });
+
+        expect(findTable().props('currentPage')).toBe(1);
+      });
+
+      it('preserves current page when items are added', async () => {
+        findPagination().vm.$emit('input', 2);
+        await nextTick();
+        expect(findTable().props('currentPage')).toBe(2);
+
+        const expandedItems = [
+          ...largeDataset,
+          ...Array.from({ length: 10 }, (_, i) => ({
+            ...mockPodsTableItems[0],
+            name: `new-pod-${i}`,
+          })),
+        ];
+        await wrapper.setProps({ items: expandedItems });
+
+        expect(findTable().props('currentPage')).toBe(2);
+      });
+    });
+
+    describe('resetPagination method', () => {
+      it('resets current page to 1 when called', async () => {
+        const largeDataset = Array.from({ length: 25 }, (_, i) => ({
+          ...mockPodsTableItems[0],
+          name: `pod-${i}`,
+        }));
+
+        createWrapper({ items: largeDataset, pageSize: 10 }, true);
+
+        findPagination().vm.$emit('input', 2);
+        await nextTick();
+        expect(findTable().props('currentPage')).toBe(2);
+
+        // Note: This method can only be triggered from outside of the component
+        wrapper.vm.resetPagination();
+        await nextTick();
+
+        expect(findTable().props('currentPage')).toBe(1);
+      });
+    });
   });
 
   describe('item selection', () => {

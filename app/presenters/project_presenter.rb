@@ -394,7 +394,15 @@ class ProjectPresenter < Gitlab::View::Presenter::Delegated
   def gitlab_ci_anchor_data
     return unless can_view_pipeline_editor?(project)
 
-    if cicd_missing?
+    if !cicd_enabled?
+      AnchorData.new(false,
+        content_tag(:span, statistic_icon('plus', 'subtle') + _('Set up CI/CD')),
+        nil,
+        'btn-link !gl-px-0',
+        nil, nil,
+        { title: _('CI/CD is disabled for this project') }
+      )
+    elsif cicd_missing?
       AnchorData.new(false, content_tag(:span, statistic_icon('plus', 'info') + _('Set up CI/CD')), project_ci_pipeline_editor_path(project))
     elsif project.has_ci_config_file?
       AnchorData.new(false, statistic_icon('rocket', 'subtle') + _('CI/CD configuration'), project_ci_pipeline_editor_path(project), 'btn-default')
@@ -464,8 +472,12 @@ class ProjectPresenter < Gitlab::View::Presenter::Delegated
     AnchorData.new(false, content_tag(:span, statistic_icon('plus', 'info') + _('Configure Integrations')), project_settings_integrations_path(project), nil, nil, nil)
   end
 
+  def cicd_enabled?
+    project.builds_access_level != ProjectFeature::DISABLED
+  end
+
   def cicd_missing?
-    current_user && can_current_user_push_code? && !project.has_ci?
+    current_user && can_current_user_push_code? && !project.has_ci? && cicd_enabled?
   end
 
   def can_instantiate_cluster?

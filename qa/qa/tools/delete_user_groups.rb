@@ -36,11 +36,6 @@ module QA
         saml-sso-group
         test-custom-roles].freeze
 
-      USER_TOKENS = %w[GITLAB_QA_ADMIN_ACCESS_TOKEN
-        GITLAB_QA_ACCESS_TOKEN
-        GITLAB_QA_USER1_ACCESS_TOKEN
-        GITLAB_QA_USER2_ACCESS_TOKEN].freeze
-
       # @example - delete user groups older than 24 hours
       #   GITLAB_ADDRESS=<address> \
       #   GITLAB_QA_ACCESS_TOKEN=<token> \

@@ -248,6 +248,9 @@ variables:
   GLCI_PREDICTIVE_RSPEC_TESTS_MAPPING_ALT_PATH: crystalball/mapping-alt.json
   GLCI_PREDICTIVE_RSPEC_PIPELINE_TEMPLATE_YML: .gitlab/ci/rails/rspec-predictive.gitlab-ci.yml.erb
 
+  # Test execution result export to ClickHouse
+  GLCI_EXPORT_TEST_METRICS: "true"
+
   FLAKY_RSPEC_SUITE_REPORT_PATH: rspec/flaky/report-suite.json
   JEST_MATCHING_TEST_FILES_PATH: jest/matching_test_files.txt
   GITLAB_WORKHORSE_FOLDER: "gitlab-workhorse"
@@ -274,11 +277,6 @@ variables:
   SEC_DECOMPOSED_DB: "true"
 
   DOCS_GITLAB_REPO_SUFFIX: "ee"
-
-  REVIEW_APPS_IMAGE: "${REGISTRY_HOST}/${REGISTRY_GROUP}/gitlab-build-images/${BUILD_OS}-${OS_VERSION}-ruby-${RUBY_VERSION}:gcloud-${GCLOUD_VERSION}-kubectl-1.30-helm-${HELM_VERSION}"
-  REVIEW_APPS_DOMAIN: "gitlab-review.app"
-  REVIEW_APPS_GCP_PROJECT: "gitlab-review-apps"
-  REVIEW_APPS_GCP_REGION: "us-central1"
 
   REGISTRY_HOST: "registry.gitlab.com"
   REGISTRY_GROUP: "gitlab-org"

@@ -1,4 +1,13 @@
-query getMergeRequestPipelines($mergeRequestIid: String!, $fullPath: ID!) {
+#import "~/graphql_shared/fragments/page_info.fragment.graphql"
+
+query getMergeRequestPipelines(
+  $mergeRequestIid: String!
+  $fullPath: ID!
+  $first: Int
+  $last: Int
+  $after: String
+  $before: String
+) {
   project(fullPath: $fullPath) {
     id
     fullPath
@@ -7,7 +16,7 @@ query getMergeRequestPipelines($mergeRequestIid: String!, $fullPath: ID!) {
       iid
       title
       webPath
-      pipelines {
+      pipelines(first: $first, last: $last, after: $after, before: $before) {
         count
         nodes {
           id
@@ -50,6 +59,9 @@ query getMergeRequestPipelines($mergeRequestIid: String!, $fullPath: ID!) {
             name
             path: webPath
           }
+        }
+        pageInfo {
+          ...PageInfo
         }
       }
     }

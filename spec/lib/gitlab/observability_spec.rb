@@ -35,7 +35,7 @@ RSpec.describe Gitlab::Observability, feature_category: :observability do
     end
 
     context 'when on staging.gitlab.com' do
-      let(:gitlab_url) { Gitlab::Saas.staging_com_url }
+      let(:gitlab_url) { Gitlab.staging_com_url }
 
       it { is_expected.to eq('https://observe.staging.gitlab.com') }
     end
@@ -80,7 +80,7 @@ RSpec.describe Gitlab::Observability, feature_category: :observability do
     end
 
     context 'when on staging.gitlab.com' do
-      let(:gitlab_url) { Gitlab::Saas.staging_com_url }
+      let(:gitlab_url) { Gitlab.staging_com_url }
 
       it { is_expected.to eq('https://observe.staging.gitlab.com') }
     end

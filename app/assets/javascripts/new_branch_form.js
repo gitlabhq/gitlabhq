@@ -1,6 +1,6 @@
 /* eslint-disable func-names, no-return-assign, @gitlab/require-i18n-strings */
 
-const NAME_ERROR_CLASS = 'gl-border-red-500';
+const NAME_ERROR_CLASS = 'is-invalid';
 
 export default class NewBranchForm {
   constructor(form) {

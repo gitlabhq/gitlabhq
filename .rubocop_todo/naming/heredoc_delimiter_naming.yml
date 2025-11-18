@@ -91,7 +91,6 @@ Naming/HeredocDelimiterNaming:
     - 'spec/services/ci/create_pipeline_service/parameter_content_spec.rb'
     - 'spec/services/ci/create_pipeline_service/rules_spec.rb'
     - 'spec/services/ci/create_pipeline_service_spec.rb'
-    - 'spec/services/ci/create_web_ide_terminal_service_spec.rb'
     - 'spec/services/ci/parse_dotenv_artifact_service_spec.rb'
     - 'spec/services/ci/pipeline_processing/atomic_processing_service_spec.rb'
     - 'spec/services/cloud_seed/google_cloud/generate_pipeline_service_spec.rb'

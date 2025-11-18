@@ -3,7 +3,7 @@
 require 'spec_helper'
 require_migration!
 
-RSpec.describe QueueBackfillCiBuildsRunnerSessionProjectId, migration: :gitlab_ci, feature_category: :runner do
+RSpec.describe QueueBackfillCiBuildsRunnerSessionProjectId, migration: :gitlab_ci, feature_category: :runner_core do
   let!(:batched_migration) { described_class::MIGRATION }
 
   it 'schedules a new batched migration' do

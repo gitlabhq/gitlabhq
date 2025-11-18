@@ -48,9 +48,9 @@ module QA
           # to skip the loading check otherwise it will time out.
           #
           # [1]: https://gitlab.com/gitlab-org/gitlab/-/blob/4a99af809b86047ce3c8985e6582748bbd23fc84/qa/qa/page/component/members/members_table.rb#L54
-          return unless has_element?('confirmation-modal', skip_finished_loading_check: true)
+          return unless has_element?('confirmation-modal')
 
-          click_element('confirm-ok-button', skip_finished_loading_check: true)
+          click_element('confirm-ok-button')
         end
       end
     end

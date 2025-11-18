@@ -6,7 +6,10 @@ export function transformRootToHostRules(shadowDomRoot) {
 
   for (const sheet of shadowDomRoot.styleSheets) {
     for (const rule of sheet.cssRules) {
-      if (rule instanceof CSSStyleRule && [':root', 'body'].includes(rule.selectorText)) {
+      if (
+        rule instanceof CSSStyleRule &&
+        [':root', ':root, .gl-light-scope', 'body'].includes(rule.selectorText)
+      ) {
         cssText += `:host {${rule.style.cssText}}\n`;
       }
     }

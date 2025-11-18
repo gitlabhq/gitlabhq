@@ -10,7 +10,7 @@ title: Observability
 {{< details >}}
 
 - Tier: Free
-- Offering: GitLab Self-Managed
+- Offering: GitLab.com, GitLab Self-Managed
 - Status: Experimental
 
 {{< /details >}}
@@ -62,14 +62,14 @@ Join the conversation about interesting ways to use GitLab O11y in the GitLab O1
 
 ## Prerequisites
 
-- You must have Developer role or higher to the group
+- You must have at least the Developer role for the group
 - Your group must have GitLab Observability enabled
 
 ## Request access to GitLab Observability
 
 If GitLab Observability is not yet enabled for your group:
 
-1. On the left sidebar, select **Search or go to** and find your group.
+1. On the left sidebar, select **Search or go to** and find your group. If you've [turned on the new navigation](../user/interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
 1. On the left sidebar, select **Observability**.
 1. Select **Request Access**.
 1. Select **Enable Observability**.
@@ -77,13 +77,11 @@ If GitLab Observability is not yet enabled for your group:
 
 The email includes your OpenTelemetry (`OTEL`) endpoint URL for instrumenting your applications.
 
-![Enable Observability Button](img/gitLab_o11y_enable_button_v18_1.png "Enable Observability Button")
-
 ## Access GitLab Observability
 
 Once access is granted:
 
-1. On the left sidebar, select **Search or go to** and find your group.
+1. On the left sidebar, select **Search or go to** and find your group. If you've [turned on the new navigation](../user/interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
 1. On the left sidebar, select **Observability**.
 
 If **Observability** isn't displayed on the left sidebar, go directly to `https://gitlab.com/groups/<group_path>/-/observability/services`.
@@ -313,7 +311,7 @@ Configure the GitLab O11y URL for your group and enable the feature flag using t
 
 After you have configured GitLab O11y, to access the dashboard embedded in GitLab:
 
-1. On the left sidebar, select **Search or go to** and find your group where the feature flag is enabled.
+1. On the left sidebar, select **Search or go to** and find your group where the feature flag is enabled. If you've [turned on the new navigation](../user/interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
 1. On the left sidebar, select **Observability**.
 
 If **Observability** isn't displayed on the left sidebar,

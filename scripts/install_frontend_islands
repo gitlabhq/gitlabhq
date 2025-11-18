@@ -1,0 +1,31 @@
+#!/usr/bin/env bash
+
+set -euo pipefail
+
+source "$(dirname "$0")/utils.sh"
+
+function install_frontend_islands() {
+  local original_dir=$(pwd)
+  local fe_islands_dir="ee/frontend_islands"
+
+  if [[ ! -d "ee/" ]]; then
+    echo "Not installing the frontend islands in FOSS only mode. Exiting early"
+    return 0
+  fi
+
+  # Check if frontend islands's dependencies are installed
+  # Checking for the integrity file instead of just the folder that can be empty
+  if [ ! -f "${fe_islands_dir}/node_modules/.yarn-integrity" ]; then
+    echoinfo "Frontend islands dependencies not found, installing..."
+    cd "$fe_islands_dir"
+    retry yarn install --production=false --frozen-lockfile
+    cd "$original_dir"
+  fi
+
+  # Return to project root
+  cd "$original_dir"
+}
+
+section_start "install-frontend-islands" "Installing Frontend Islands"
+install_frontend_islands
+section_end "install-frontend-islands"

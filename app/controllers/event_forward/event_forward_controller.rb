@@ -26,6 +26,11 @@ module EventForward
       events_to_forward.each do |event|
         update_app_id(event)
         tracker.emit_event_payload(event)
+
+        if Rails.env.development? && event['cx']
+          context = Gitlab::Json.parse(Base64.decode64(event['cx']))
+          Gitlab::Tracking::Destinations::SnowplowContextValidator.new.validate!(context['data'])
+        end
       end
 
       logger.info("Enqueued events for forwarding. Count: #{events_to_forward.size}")

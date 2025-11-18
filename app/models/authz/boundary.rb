@@ -34,6 +34,10 @@ module Authz
         namespace&.full_path
       end
 
+      def member?(user)
+        boundary.member?(user)
+      end
+
       private
 
       attr_reader :boundary
@@ -52,6 +56,10 @@ module Authz
       def namespace
         boundary.namespace
       end
+
+      def member?(user)
+        namespace.member?(user)
+      end
     end
 
     class NilBoundary < Base
@@ -61,6 +69,10 @@ module Authz
 
       def path
         nil
+      end
+
+      def member?(_)
+        true
       end
     end
   end

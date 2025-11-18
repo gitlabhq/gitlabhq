@@ -2,7 +2,7 @@
 #import "~/graphql_shared/fragments/project.fragment.graphql"
 
 query getYourWorkProjects(
-  $archived: ProjectArchived = EXCLUDE
+  $active: Boolean = true
   $membership: Boolean = false
   $personal: Boolean = false
   $first: Int
@@ -15,7 +15,7 @@ query getYourWorkProjects(
   $programmingLanguageName: String
 ) {
   projects(
-    archived: $archived
+    active: $active
     membership: $membership
     personal: $personal
     first: $first

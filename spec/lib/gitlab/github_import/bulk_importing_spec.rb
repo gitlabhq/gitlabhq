@@ -149,7 +149,7 @@ RSpec.describe Gitlab::GithubImport::BulkImporting, feature_category: :importers
               project_id: project.id,
               importer: 'MyImporter',
               message: containing_exactly(
-                'Title is invalid', 'Parent exactly one of group, project, organization is required'
+                'Title is invalid', 'Parent Exactly one of group, project, organization must be present'
               ),
               external_identifiers: { id: 12345, title: 'bug,bug', object_type: :object_type }
             )
@@ -171,7 +171,7 @@ RSpec.describe Gitlab::GithubImport::BulkImporting, feature_category: :importers
           expect(errors).not_to be_empty
 
           expect(errors[0][:validation_errors].full_messages).to contain_exactly(
-            'Title is invalid', 'Parent exactly one of group, project, organization is required'
+            'Title is invalid', 'Parent Exactly one of group, project, organization must be present'
           )
           expect(errors[0][:external_identifiers]).to eq({ id: 12345, title: 'bug,bug', object_type: :object_type })
         end

@@ -7,7 +7,7 @@ module Gitlab
         include Gitlab::Utils::StrongMemoize
         include ::Gitlab::LoopHelpers
 
-        attr_reader :component_name
+        attr_reader :component_name, :reference
 
         SHORTHAND_SEMVER_PATTERN = /^\d+(\.\d+)?$/
         LATEST = '~latest'
@@ -21,7 +21,7 @@ module Gitlab
         end
 
         def initialize(address:)
-          @full_path, @version = address.to_s.split('@', 2)
+          @full_path, @reference = address.to_s.split('@', 2)
         end
 
         def fetch_content!(current_user:)
@@ -42,48 +42,73 @@ module Gitlab
         def sha
           return unless project
 
-          find_version_sha(version)
+          find_version_sha
         end
         strong_memoize_attr :sha
 
+        def matched_version
+          find_catalog_version&.semver&.to_s
+        end
+        strong_memoize_attr :matched_version
+
         def invalid_usage_for_latest?
-          @version == LATEST && project && project.catalog_resource.nil?
+          reference == LATEST && project && project.catalog_resource.nil?
         end
 
         def invalid_usage_for_partial_semver?
-          @version.match?(SHORTHAND_SEMVER_PATTERN) && project && project.catalog_resource.nil?
+          reference.match?(SHORTHAND_SEMVER_PATTERN) && project && project.catalog_resource.nil?
         end
 
         private
 
-        attr_reader :version
+        def find_version_sha
+          return find_latest_sha if reference == LATEST
 
-        def find_version_sha(version)
-          return find_latest_sha if version == LATEST
+          sha_by_shorthand_semver || sha_by_released_tag || sha_by_ref
+        end
 
-          sha_by_shorthand_semver(version) || sha_by_released_tag(version) || sha_by_ref(version)
+        def find_catalog_version
+          return unless project.catalog_resource
+
+          if reference == LATEST
+            catalog_resource_version_latest
+          elsif reference.match?(SHORTHAND_SEMVER_PATTERN)
+            catalog_resource_version_by_short_semver
+          else
+            project.catalog_resource.versions.by_name(reference).first
+          end
         end
 
         def find_latest_sha
           return unless project.catalog_resource
 
-          project.catalog_resource.versions.latest&.sha
+          catalog_resource_version_latest&.sha
         end
 
-        def sha_by_shorthand_semver(version)
-          return unless version.match?(SHORTHAND_SEMVER_PATTERN)
+        def sha_by_shorthand_semver
+          return unless reference.match?(SHORTHAND_SEMVER_PATTERN)
           return unless project.catalog_resource
 
-          major, minor = version.split(".")
-          project.catalog_resource.versions.latest(major, minor)&.sha
+          catalog_resource_version_by_short_semver&.sha
         end
 
-        def sha_by_released_tag(version)
-          project.releases.find_by_tag(version)&.sha
+        def catalog_resource_version_latest
+          project.catalog_resource.versions.latest
+        end
+        strong_memoize_attr :catalog_resource_version_latest
+
+        def catalog_resource_version_by_short_semver
+          major, minor = reference.split(".")
+          project.catalog_resource.versions.latest(major, minor)
+        end
+        strong_memoize_attr :catalog_resource_version_by_short_semver
+
+        def sha_by_released_tag
+          project.releases.find_by_tag(reference)&.sha
         end
 
-        def sha_by_ref(version)
-          project.commit(version)&.id
+        def sha_by_ref
+          project.commit(reference)&.id
         end
 
         def find_project_by_component_path(path)

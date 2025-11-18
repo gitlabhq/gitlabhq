@@ -38,7 +38,7 @@ RSpec.describe 'admin/application_settings/_extension_marketplace', feature_cate
 
     expected_json = {
       presets: expected_presets,
-      initialSettings: { enabled: false }
+      initialSettings: { enabled: false, extension_host_domain: "cdn.web-ide.gitlab-static.net" }
     }.to_json
 
     expect(vue_app).not_to be_nil

@@ -22,7 +22,7 @@ RSpec.describe GitlabSchema.types['Project'], feature_category: :groups_and_proj
       user_permissions id full_path path name_with_namespace
       name description description_html tag_list topics ssh_url_to_repo
       http_url_to_repo web_url web_path edit_path star_count forks_count
-      created_at updated_at last_activity_at archived visibility
+      created_at updated_at last_activity_at archived is_self_archived visibility
       container_registry_enabled shared_runners_enabled
       lfs_enabled merge_requests_ff_only_enabled avatar_url
       issues_enabled merge_requests_enabled wiki_enabled
@@ -30,7 +30,7 @@ RSpec.describe GitlabSchema.types['Project'], feature_category: :groups_and_proj
       snippets_enabled jobs_enabled public_jobs open_issues_count open_merge_requests_count import_status
       only_allow_merge_if_pipeline_succeeds request_access_enabled
       only_allow_merge_if_all_discussions_are_resolved printing_merge_request_link_enabled
-      namespace group statistics statistics_details_paths repository merge_requests merge_request issues
+      namespace group root_group statistics statistics_details_paths repository merge_requests merge_request issues
       issue milestones pipelines removeSourceBranchAfterMerge pipeline_counts sentryDetailedError snippets
       grafanaIntegration autocloseReferencedIssues suggestion_commit_message environments
       environment boards jira_import_status jira_imports services releases release
@@ -47,10 +47,11 @@ RSpec.describe GitlabSchema.types['Project'], feature_category: :groups_and_proj
       incident_management_timeline_event_tags visible_forks inherited_ci_variables autocomplete_users
       ci_cd_settings detailed_import_status value_streams ml_models
       allows_multiple_merge_request_assignees allows_multiple_merge_request_reviewers is_forked
-      protectable_branches available_deploy_keys explore_catalog_path
+      protectable_branches available_deploy_keys explore_catalog_path is_published
       container_protection_tag_rules pages_force_https pages_use_unique_domain ci_pipeline_creation_request
       ci_pipeline_creation_inputs marked_for_deletion_on permanent_deletion_date
       merge_request_title_regex merge_request_title_regex_description
+      webhook
     ]
 
     expect(described_class).to include_graphql_fields(*expected_fields)
@@ -1493,6 +1494,44 @@ RSpec.describe GitlabSchema.types['Project'], feature_category: :groups_and_proj
     end
   end
 
+  describe 'is_published' do
+    let_it_be(:user) { create(:user) }
+
+    let(:query) do
+      %(
+        query {
+          project(fullPath: "#{project.full_path}") {
+            isPublished
+          }
+        }
+      )
+    end
+
+    let(:response) { GitlabSchema.execute(query, context: { current_user: user }).as_json }
+
+    subject(:is_published) { response.dig('data', 'project', 'isPublished') }
+
+    context 'when project is not a catalog resource' do
+      let_it_be(:project) { create(:project, :public) }
+
+      it { is_expected.to be_nil }
+    end
+
+    context 'when project is a catalog resource and is not published' do
+      let_it_be(:project) { create(:project, :public) }
+      let_it_be(:catalog_resource) { create(:ci_catalog_resource, project: project) }
+
+      it { is_expected.to eq(false) }
+    end
+
+    context 'when project is a catalog resource and is published' do
+      let_it_be(:project) { create(:project, :public, :catalog_resource_with_components, create_tag: '1.0.0') }
+      let_it_be(:catalog_resource) { create(:ci_catalog_resource, project: project, state: :published) }
+
+      it { is_expected.to eq(true) }
+    end
+  end
+
   describe 'pages_force_https' do
     let_it_be(:current_user) { create(:user) }
     let_it_be(:project) { create(:project, :repository) }
@@ -1743,6 +1782,110 @@ RSpec.describe GitlabSchema.types['Project'], feature_category: :groups_and_proj
       it "includes :ai_workflows scope for the #{field_name} field" do
         field = described_class.fields[field_name]
         expect(field.instance_variable_get(:@scopes)).to include(:ai_workflows)
+      end
+    end
+  end
+
+  describe 'ci_config_variables field' do
+    let_it_be(:project) { create(:project, :repository) }
+    let_it_be(:user) { create(:user, developer_of: project) }
+    let(:ref) { project.default_branch }
+    let(:fail_on_cache_miss) { nil }
+
+    let(:query) do
+      fail_on_cache_miss_arg = fail_on_cache_miss.nil? ? '' : ", failOnCacheMiss: #{fail_on_cache_miss}"
+      %(
+        query {
+          project(fullPath: "#{project.full_path}") {
+            ciConfigVariables(ref: "#{ref}"#{fail_on_cache_miss_arg}) {
+              key
+              value
+              description
+            }
+          }
+        }
+      )
+    end
+
+    subject { GitlabSchema.execute(query, context: { current_user: user }).as_json }
+
+    def mock_config_variables_service(return_value)
+      allow_next_instance_of(::Ci::ListConfigVariablesService) do |service|
+        allow(service).to receive(:execute).and_return(return_value)
+      end
+    end
+
+    context 'when service returns nil and fail_on_cache_miss is enabled' do
+      let(:fail_on_cache_miss) { true }
+
+      before do
+        mock_config_variables_service(nil)
+      end
+
+      it 'returns GraphQL error with expected message' do
+        expect(subject['errors']).to be_present
+        expect(subject['errors'].first['message']).to eq('Failed to retrieve CI/CD variables from cache.')
+        expect(subject['data']['project']['ciConfigVariables']).to be_nil
+      end
+
+      it 'includes error path information' do
+        expect(subject['errors'].first['path']).to eq(%w[project ciConfigVariables])
+      end
+    end
+
+    context 'when variables are successfully fetched' do
+      let_it_be(:ci_config_variables) do
+        {
+          KEY1: { value: 'val 1', description: 'description 1' },
+          KEY2: { value: 'val 2', description: '' },
+          KEY3: { value: 'val 3' }
+        }
+      end
+
+      before do
+        mock_config_variables_service(ci_config_variables)
+      end
+
+      it 'returns variables list' do
+        variables = subject.dig('data', 'project', 'ciConfigVariables')
+
+        expect(variables).to contain_exactly(
+          { 'key' => 'KEY1', 'value' => 'val 1', 'description' => 'description 1' },
+          { 'key' => 'KEY2', 'value' => 'val 2', 'description' => '' },
+          { 'key' => 'KEY3', 'value' => 'val 3', 'description' => nil }
+        )
+      end
+
+      it 'does not return any errors' do
+        expect(subject['errors']).to be_nil
+      end
+    end
+
+    context 'with fail_on_cache_miss argument' do
+      context 'when service is called with fail_on_cache_miss parameter' do
+        before do
+          mock_config_variables_service({})
+        end
+
+        shared_examples 'calls service with expected fail_on_cache_miss value' do |expected_value|
+          it "calls service with fail_on_cache_miss: #{expected_value}" do
+            expect_next_instance_of(::Ci::ListConfigVariablesService) do |service|
+              expect(service).to receive(:execute).with(ref)
+            end
+
+            subject
+          end
+        end
+
+        context 'with default value (not specified)' do
+          it_behaves_like 'calls service with expected fail_on_cache_miss value', false
+        end
+
+        context 'with fail_on_cache_miss: true' do
+          let(:fail_on_cache_miss) { true }
+
+          it_behaves_like 'calls service with expected fail_on_cache_miss value', true
+        end
       end
     end
   end

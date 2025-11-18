@@ -9,5 +9,10 @@ FactoryBot.define do
     trait :standalone do
       namespace { nil }
     end
+
+    trait :all_membership_namespaces do
+      namespace { nil }
+      all_membership_namespaces { true }
+    end
   end
 end

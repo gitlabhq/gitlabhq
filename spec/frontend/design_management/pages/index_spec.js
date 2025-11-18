@@ -5,6 +5,7 @@ import VueApollo, { ApolloMutation } from 'vue-apollo';
 import VueRouter from 'vue-router';
 import VueDraggable from 'vuedraggable';
 import createMockApollo from 'helpers/mock_apollo_helper';
+import { describeSkipVue3, SkipReason } from 'helpers/vue3_conditional';
 import waitForPromises from 'helpers/wait_for_promises';
 import { mockTracking, unmockTracking } from 'helpers/tracking_helper';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
@@ -94,7 +95,13 @@ const designToMove = {
   imageV432x230: 'image-2',
 };
 
-describe('Design management index page', () => {
+const skipReason = new SkipReason({
+  name: 'Design management index page',
+  reason: 'Feature is deprecated',
+  issue: 'https://gitlab.com/groups/gitlab-org/-/epics/18652',
+});
+
+describeSkipVue3(skipReason, () => {
   const registerPath = '/users/sign_up?redirect_to_referer=yes';
   const signInPath = '/users/sign_in?redirect_to_referer=yes';
   let mutate;

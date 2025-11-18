@@ -69,7 +69,7 @@ class ProjectPolicy < BasePolicy
   condition(:external_user) { user.external? }
 
   desc "Project is archived"
-  condition(:archived, scope: :subject, score: 0) { project_archived_or_ancestors_archived? }
+  condition(:archived, scope: :subject, score: 0) { project.self_or_ancestors_archived? }
 
   desc "Project user pipeline variables minimum override role"
   condition(:project_pipeline_override_role_owner) { project.ci_pipeline_variables_minimum_override_role == 'owner' }
@@ -317,8 +317,6 @@ class ProjectPolicy < BasePolicy
     !Gitlab.config.terraform_state.enabled
   end
 
-  condition(:namespace_catalog_available) { namespace_catalog_available? }
-
   desc "User has either planner or reporter access"
   condition(:planner_or_reporter_access) do
     can?(:reporter_access) || can?(:planner_access)
@@ -423,6 +421,7 @@ class ProjectPolicy < BasePolicy
     enable :admin_issue_board
     enable :admin_issue_board_list
     enable :update_issue
+    enable :destroy_issue
     enable :reopen_issue
     enable :admin_issue
     enable :admin_work_item
@@ -876,6 +875,7 @@ class ProjectPolicy < BasePolicy
     prevent :create_build
     prevent :admin_build
     prevent :destroy_build
+    prevent :admin_cicd_variables
 
     prevent :read_pipeline_schedule
     prevent :create_pipeline_schedule
@@ -1239,10 +1239,6 @@ class ProjectPolicy < BasePolicy
     enable :read_project_metadata
   end
 
-  rule { can?(:developer_access) & namespace_catalog_available }.policy do
-    enable :read_namespace_catalog
-  end
-
   rule { public_project & model_registry_enabled }.policy do
     enable :read_model_registry
   end
@@ -1286,10 +1282,6 @@ class ProjectPolicy < BasePolicy
   rule { can?(:read_project) }.enable :read_attestation
 
   private
-
-  def project_archived_or_ancestors_archived?
-    project.archived? || (Feature.enabled?(:archive_group, project.root_ancestor) && project.self_or_ancestors_archived?)
-  end
 
   def team_member?
     return false if @user.nil?
@@ -1396,10 +1388,6 @@ class ProjectPolicy < BasePolicy
 
   def project
     @subject
-  end
-
-  def namespace_catalog_available?
-    false
   end
 end
 

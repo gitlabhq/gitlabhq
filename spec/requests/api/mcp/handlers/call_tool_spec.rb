@@ -19,14 +19,20 @@ RSpec.describe API::Mcp, 'Call tool request', feature_category: :mcp_server do
     }
   end
 
+  before do
+    stub_application_setting(instance_level_ai_beta_features_enabled: true)
+  end
+
   describe 'POST /mcp with tools/call method' do
     let(:tool_params) do
       { name: 'get_issue', arguments: { id: project.full_path, issue_iid: issue.iid } }
     end
 
     context 'with valid tool name' do
+      subject(:tool_call) { post api('/mcp', user, oauth_access_token: access_token), params: params }
+
       it 'returns success response' do
-        post api('/mcp', user, oauth_access_token: access_token), params: params
+        tool_call
 
         expect(response).to have_gitlab_http_status(:ok)
         expect(json_response['jsonrpc']).to eq(params[:jsonrpc])
@@ -79,8 +85,12 @@ RSpec.describe API::Mcp, 'Call tool request', feature_category: :mcp_server do
         }
       end
 
-      before do
+      subject(:call_tool) do
         post api('/mcp', user, oauth_access_token: access_token), params: invalid_params
+      end
+
+      before do
+        call_tool
       end
 
       it 'returns success HTTP status with error result' do
@@ -100,14 +110,14 @@ RSpec.describe API::Mcp, 'Call tool request', feature_category: :mcp_server do
         }
       end
 
-      before do
-        post api('/mcp', user, oauth_access_token: access_token), params: params
-      end
+      subject(:tool_call) { post api('/mcp', user, oauth_access_token: access_token), params: params }
 
       it 'returns invalid params error' do
+        tool_call
+
         expect(response).to have_gitlab_http_status(:bad_request)
         expect(json_response['error']['code']).to eq(-32602)
-        expect(json_response['error']['data']['params']).to eq('name is unsupported')
+        expect(json_response['error']['data']['params']).to include("Tool 'unknown_tool' not found")
       end
     end
   end

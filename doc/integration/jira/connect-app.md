@@ -133,6 +133,13 @@ To configure the GitLab for Jira Cloud app:
    must first sign in to GitLab with their group's single sign-on URL.
 
    {{< /alert >}}
+   {{< alert type="note" >}}
+
+   GitLab requires you to sign in to link groups, but does not tie the configuration to a
+   specific user. The GitLab instance receives a token from Jira that is used to update information in Jira.
+   For more information, see [GitLab access to Jira](#gitlab-access-to-jira).
+
+   {{< /alert >}}
 
 1. Select **Authorize**. A list of groups is now visible.
 1. Select **Link groups**.
@@ -182,7 +189,7 @@ In Jira Service Management:
 
 In GitLab:
 
-1. On the left sidebar, select **Search or go to** and find your project.
+1. On the left sidebar, select **Search or go to** and find your project. If you've [turned on the new navigation](../../user/interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
 1. Select **Settings** > **Integrations**.
 1. Select **GitLab for Jira Cloud app**. If the integration is disabled, first [link a GitLab group](#configure-the-gitlab-for-jira-cloud-app)
    which enables the GitLab for Jira Cloud app integration for the group, its subgroups, and projects.
@@ -226,7 +233,7 @@ This token authenticates the service account token used to manage GitLab deploym
 To create the service account token:
 
 1. [Create a service account user](../../api/service_accounts.md#create-an-instance-service-account).
-1. [Add the service account to a group or project](../../api/members.md#add-a-member-to-a-group-or-project)
+1. [Add the service account to a group or project](../../api/group_members.md#add-a-member-to-a-group)
    by using your personal access token.
 1. [Add the service account to protected environments](../../ci/environments/protected_environments.md#protecting-environments).
 1. [Generate a service account token](../../api/service_accounts.md#create-a-personal-access-token-for-a-group-service-account)
@@ -239,7 +246,7 @@ To enable deployment gating:
 
 - In GitLab:
 
-  1. On the left sidebar, select **Search or go to** and find your project.
+  1. On the left sidebar, select **Search or go to** and find your project. If you've [turned on the new navigation](../../user/interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
   1. Select **Settings** > **Integrations**.
   1. Select **GitLab for Jira Cloud app**.
   1. Under **Deployment gating**, select the **Enable deployment gating** checkbox.
@@ -257,7 +264,7 @@ To enable deployment gating:
 
 To add the service account to your protected environments in GitLab:
 
-1. On the left sidebar, select **Search or go to** and find your project.
+1. On the left sidebar, select **Search or go to** and find your project. If you've [turned on the new navigation](../../user/interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
 1. Select **Settings** > **CI/CD**.
 1. Expand **Protected environments** and select **Protect an environment**.
 1. From the **Select environment** dropdown list, select an environment to protect (for example, **staging**).

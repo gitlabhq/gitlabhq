@@ -51,7 +51,7 @@ describe('content/components/wrappers/playable_spec', () => {
 
     it(`renders a gl-link with the link to the ${type}`, () => {
       expect(wrapper.findComponent(GlLink).attributes()).toMatchObject({
-        class: 'with-attachment-icon',
+        class: 'with-attachment-icon gl-mb-1 gl-text-sm gl-text-subtle',
         href: src,
         target: '_blank',
       });

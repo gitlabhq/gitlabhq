@@ -18,15 +18,16 @@ title: Static reachability analysis
 - [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/14177) as an [experiment](../../../policy/development_stages_support.md) in GitLab 17.5.
 - [Changed](https://gitlab.com/groups/gitlab-org/-/epics/15781) from experiment to beta in GitLab 17.11.
 - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/502334) support for JavaScript and TypeScript in GitLab 18.2 and Dependency Scanning Analyzer v0.32.0.
-- [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/17607) support for Java in GitLab 18.5 and Dependency Scanning Analyzer v0.35.0.
+- [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/17607) support for Java in GitLab 18.5 and Dependency Scanning Analyzer v0.39.0.
 - [Changed](https://gitlab.com/groups/gitlab-org/-/epics/15780) from beta to Limited Availability (LA) in GitLab 18.5.
 
 {{< /history >}}
 
-Static reachability analysis (SRA) helps you prioritize remediation of vulnerabilities in
-dependencies. SRA identifies which dependencies your application actually uses. While dependency
-scanning finds all vulnerable dependencies, SRA focuses on those that are reachable and pose higher
-security risks, helping you prioritize remediation based on actual threat exposure.
+Dependency scanning identifies all vulnerable dependencies in your project. However, not all
+vulnerabilities pose equal risk. Static reachability analysis (SRA) helps you prioritize remediation
+by determining which vulnerable packages are reachable, meaning they are imported by your
+application. By focusing on reachable vulnerabilities, SRA enables you to prioritize remediation
+based on actual threat exposure rather than theoretical risk.
 
 Static reachability analysis is production-ready but marked as Limited Availability because it is bundled with [Dependency Scanning](dependency_scanning_sbom/_index.md), which is in Limited Availability maturity level.
 
@@ -41,7 +42,7 @@ Prerequisites:
 
 - Ensure the project uses [supported languages and package managers](#supported-languages-and-package-managers).
 - [Dependency scanning analyzer](https://gitlab.com/gitlab-org/security-products/analyzers/dependency-scanning)
-  version 0.32.0 and later.
+  version 0.39.0 or later (earlier versions may support specific languages - see `History` above)
 - Enable [Dependency scanning by using SBOM](dependency_scanning_sbom/_index.md#getting-started).
   [Gemnasium](https://gitlab.com/gitlab-org/security-products/analyzers/gemnasium) analyzers are not
   supported.
@@ -59,38 +60,21 @@ Prerequisites:
     [Gradle](dependency_scanning_sbom/_index.md#gradle) related instructions for dependency scanning using SBOM
     to generate the required dependency graph files.
 
-Exclusions:
-
-- SRA cannot be used together with either a scan execution policy or pipeline execution policy.
-
 Performance impact:
 
 - When you enable static reachability analysis, keep in mind that it increases dependency scanning job duration.
 
 To enable SRA:
 
-- On the left sidebar, select **Search or go to** and find your project.
-- Edit the `.gitlab-ci.yml` file, and add one of the following.
+- On the left sidebar, select **Search or go to** and find your project. If you've [turned on the new navigation](../../interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
+- Edit the `.gitlab-ci.yml` file, and add the following.
 
-  If you're using the CI/CD template, add the following (ensure there is only one `variables:`
-  line):
-
-  ```yaml
+```yaml
+include:
+- template: Jobs/Dependency-Scanning.v2.gitlab-ci.yml
   variables:
-    DS_STATIC_REACHABILITY_ENABLED: true
-  ```
-
-  If you're using the [dependency scanning component](https://gitlab.com/components/dependency-scanning),
-  add the following (ensuring there is only one `include:` line.):
-
-  ```yaml
-  include:
-    - component: ${CI_SERVER_FQDN}/components/dependency-scanning/main@0
-      inputs:
-        enable_static_reachability: true
-      rules:
-        - if: $CI_SERVER_HOST == "gitlab.com"
-  ```
+  DS_STATIC_REACHABILITY_ENABLED: true
+```
 
 At this point, SRA is enabled in your pipeline. When dependency scanning runs and outputs an SBOM,
 the results are supplemented by static reachability analysis.
@@ -108,16 +92,24 @@ A dependency can have one of the following reachability values:
 Yes
 : The package linked to this vulnerability is confirmed reachable in code.
 
+  When a direct dependency is marked as reachable its transitive dependencies are also
+  marked as reachable.
+
 Not Found
-: SRA ran successfully but did not detect usage of the vulnerable package. If a vulnerable
-dependency's reachability value is shown as **Not Found**, exercise caution rather than completely
-dismissing it, as SRA cannot always definitively determine package usage.
+: SRA ran successfully but did not detect usage of the vulnerable package.
 
 Not Available
 : SRA was not executed, so no reachability data exists.
 
-When a direct dependency is marked as in use, all its transitive dependencies are also marked as
-in use.
+### Not Found reachability value
+
+If a vulnerable dependency's reachability value is shown as **Not Found**, exercise caution rather than completely
+dismissing it, as SRA cannot always definitively determine package usage.
+
+Dependencies in excluded directories might appear in the SBOM but be marked as **Not Found**. This occurs when lock files
+are in scope of dependency scanning but the source code that uses those dependencies is excluded. For example, you configure the
+CI/CD variable `DS_EXCLUDED_PATHS` to exclude the directory `tests/` from dependency scanning. All dependencies identified from
+the lock file are listed in the SBOM, but SRA does not scan source code in excluded paths.
 
 ## Supported languages and package managers
 
@@ -130,7 +122,7 @@ While the end-to-end static reachability feature is at Limited Availability leve
 
 | Maturity | Languages | Additional Information |
 |----------|-----------|-------------|
-| Beta | Python | Not appplicable |
+| Beta | Python | Not applicable |
 | Beta | JavaScript, TypeScript | No support for frontend frameworks. |
 | Experimental | Java | Java support is in early stages with [known limitations](#java-static-reachability-limitations) and may have higher false negative rates. |
 
@@ -142,7 +134,7 @@ dependencies are marked as [not found](#understanding-the-results).
 |-----------------------|---------------------------------------------|-----------------------|
 | Python<sup>1</sup>    | `pip`, `pipenv`<sup>2</sup>, `poetry`, `uv` | `.py`                 |
 | JavaScript/TypeScript | `npm`, `pnpm`, `yarn`                       | `.js`, `.ts`          |
-| Java                  | `maven`, `gradle`                           | `.java`               |
+| Java<sup>3</sup>      | `maven`, `gradle`                           | `.java`               |
 
 **Footnotes**:
 
@@ -179,7 +171,7 @@ Dependency scanning generates an SBOM report that identifies all components and 
 dependencies. Static reachability analysis checks each dependency in the SBOM report and adds a
 reachability value to the SBOM report. The enriched SBOM is then ingested by the GitLab instance.
 
-Static reachability analysis relies on [metadata](https://gitlab.com/gitlab-org/security-products/static-reachability-metadata) that maps package names from SBOMs to their corresponding code import paths for Python and Java packages. This metadata is maintained with weekly updates.
+Static reachability analysis relies on [metadata](https://gitlab.com/gitlab-org/security-products/static-reachability-metadata/-/tree/v1?ref_type=heads) that maps package names from SBOMs to their corresponding code import paths for Python and Java packages. This metadata is maintained with weekly updates.
 
 The following are marked as not found:
 

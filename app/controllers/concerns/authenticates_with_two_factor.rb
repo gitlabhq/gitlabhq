@@ -29,6 +29,13 @@ module AuthenticatesWithTwoFactor
     render 'devise/sessions/two_factor'
   end
 
+  def prompt_for_passwordless_authentication_via_passkey
+    add_gon_variables
+    setup_passkey_authentication
+
+    render 'devise/sessions/passkeys'
+  end
+
   def handle_locked_user(user)
     clear_two_factor_attempt!
 
@@ -37,6 +44,14 @@ module AuthenticatesWithTwoFactor
 
   def locked_user_redirect(user)
     redirect_to new_user_session_path, alert: locked_user_redirect_alert(user)
+  end
+
+  def handle_passwordless_flow
+    if passwordless_passkey_params[:device_response].present?
+      authenticate_with_passwordless_authentication_via_passkey
+    else
+      prompt_for_passwordless_authentication_via_passkey
+    end
   end
 
   def authenticate_with_two_factor
@@ -101,11 +116,28 @@ module AuthenticatesWithTwoFactor
     end
   end
 
+  def authenticate_with_passwordless_authentication_via_passkey
+    result = Authn::Passkey::AuthenticateService.new(
+      passwordless_passkey_params[:device_response],
+      session[:challenge]
+    ).execute
+
+    if result.success?
+      handle_passwordless_auth_with_passkey_success(result.payload)
+    else
+      handle_passwordless_auth_with_passkey_failure('WebAuthn', result.message)
+    end
+  end
+
   # rubocop: disable CodeReuse/ActiveRecord
   def setup_webauthn_authentication(user)
-    if user.webauthn_registrations.present?
+    if user.second_factor_webauthn_registrations.present?
 
-      webauthn_registration_ids = user.webauthn_registrations.pluck(:credential_xid)
+      webauthn_registration_ids = if passkey_via_2fa_enabled?(user)
+                                    user.get_all_webauthn_credential_ids
+                                  else
+                                    user.second_factor_webauthn_registrations.pluck(:credential_xid)
+                                  end
 
       get_options = WebAuthn::Credential.options_for_get(
         allow: webauthn_registration_ids,
@@ -117,6 +149,16 @@ module AuthenticatesWithTwoFactor
     end
   end
   # rubocop: enable CodeReuse/ActiveRecord
+
+  def setup_passkey_authentication
+    get_options = WebAuthn::Credential.options_for_get(
+      allow: [],
+      user_verification: 'required'
+    )
+
+    session[:challenge] = get_options.challenge
+    gon.push(webauthn: { options: Gitlab::Json.dump(get_options) })
+  end
 
   def handle_two_factor_success(user)
     # Remove any lingering user data from login
@@ -133,6 +175,26 @@ module AuthenticatesWithTwoFactor
     Gitlab::AppLogger.info("Failed Login: user=#{user.username} ip=#{request.remote_ip} method=#{method}")
     flash.now[:alert] = message
     prompt_for_two_factor(user)
+  end
+
+  def handle_passwordless_auth_with_passkey_success(user)
+    clear_two_factor_attempt!
+
+    remember_me(user) if passwordless_passkey_params[:remember_me] == '1'
+    sign_in(user)
+
+    redirect_to root_path || stored_redirect_uri
+  end
+
+  def handle_passwordless_auth_with_passkey_failure(method, message)
+    Gitlab::AppLogger.info(
+      message: "Failed Login",
+      login_method: method,
+      remote_ip: request.remote_ip
+    )
+
+    flash.now[:alert] = message
+    prompt_for_passwordless_authentication_via_passkey
   end
 
   def send_two_factor_otp_attempt_failed_email(user)
@@ -155,6 +217,10 @@ module AuthenticatesWithTwoFactor
     return false unless session[:user_password_hash]
 
     Digest::SHA256.hexdigest(user.encrypted_password) != session[:user_password_hash]
+  end
+
+  def passkey_via_2fa_enabled?(user)
+    Feature.enabled?(:passkeys, user) && user.two_factor_enabled? && user.passkeys_enabled?
   end
 end
 

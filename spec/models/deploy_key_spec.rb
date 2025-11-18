@@ -66,8 +66,24 @@ RSpec.describe DeployKey, :mailer, feature_category: :continuous_delivery do
     end
 
     context 'when user is not set' do
-      it 'returns the ghost user' do
-        expect(deploy_key.user).to eq(Users::Internal.ghost)
+      let(:common_organization) { create(:common_organization) }
+
+      before do
+        allow(Organizations::Organization).to receive(:first).and_return(common_organization)
+      end
+
+      it 'returns the ghost user for the first organization' do
+        expect(Gitlab::AppLogger).to receive(:warn).with(/Fallback ghost user/)
+        expect(deploy_key.user).to eq(Users::Internal.for_organization(common_organization).ghost)
+      end
+
+      context 'and a project is set' do
+        let(:project) { create(:project) }
+        let(:deploy_key) { create(:deploy_key, readonly_access_to: project) }
+
+        it 'returns the ghost user for the project organization' do
+          expect(deploy_key.user).to eq(Users::Internal.for_organization(project.organization_id).ghost)
+        end
       end
     end
   end

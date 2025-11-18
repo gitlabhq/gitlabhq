@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe User, feature_category: :user_profile do
+RSpec.describe User, :with_current_organization, feature_category: :user_profile do
   using RSpec::Parameterized::TableSyntax
 
   include ProjectForksHelper
@@ -159,6 +159,8 @@ RSpec.describe User, feature_category: :user_profile do
     it { is_expected.to delegate_method(:merge_request_dashboard_show_drafts).to(:user_preference) }
     it { is_expected.to delegate_method(:merge_request_dashboard_show_drafts=).to(:user_preference).with_arguments(:args) }
 
+    it { is_expected.to delegate_method(:new_ui_enabled).to(:user_preference) }
+
     it { is_expected.to delegate_method(:text_editor).to(:user_preference) }
     it { is_expected.to delegate_method(:text_editor=).to(:user_preference).with_arguments(:args) }
 
@@ -231,7 +233,6 @@ RSpec.describe User, feature_category: :user_profile do
     it { is_expected.to have_many(:snippets).dependent(:destroy) }
     it { is_expected.to have_many(:members) }
     it { is_expected.to have_many(:member_namespaces) }
-    it { is_expected.to have_many(:namespace_deletion_schedules).class_name('::Namespaces::DeletionSchedule').inverse_of(:deleting_user) }
     it { is_expected.to have_many(:project_members) }
     it { is_expected.to have_many(:group_members) }
     it { is_expected.to have_many(:groups) }
@@ -244,6 +245,9 @@ RSpec.describe User, feature_category: :user_profile do
     it { is_expected.to have_many(:notes).dependent(:destroy) }
     it { is_expected.to have_many(:merge_requests).dependent(:destroy) }
     it { is_expected.to have_many(:identities).dependent(:destroy) }
+    it { is_expected.to have_many(:webauthn_registrations) }
+    it { is_expected.to have_many(:passkeys) }
+    it { is_expected.to have_many(:second_factor_webauthn_registrations) }
     it { is_expected.to have_many(:spam_logs).dependent(:destroy) }
     it { is_expected.to have_many(:todos) }
     it { is_expected.to have_many(:award_emoji).dependent(:destroy) }
@@ -277,10 +281,11 @@ RSpec.describe User, feature_category: :user_profile do
     it { is_expected.to have_many(:achievements).through(:user_achievements).class_name('Achievements::Achievement').inverse_of(:users) }
     it { is_expected.to have_many(:namespace_commit_emails).class_name('Users::NamespaceCommitEmail') }
     it { is_expected.to have_many(:audit_events).with_foreign_key(:author_id).inverse_of(:user) }
-    it { is_expected.to have_many(:abuse_trust_scores).class_name('AntiAbuse::TrustScore').dependent(:destroy) }
     it { is_expected.to have_many(:issue_assignment_events).class_name('ResourceEvents::IssueAssignmentEvent') }
     it { is_expected.to have_many(:merge_request_assignment_events).class_name('ResourceEvents::MergeRequestAssignmentEvent') }
     it { is_expected.to have_many(:early_access_program_tracking_events).class_name('EarlyAccessProgram::TrackingEvent') }
+    it { is_expected.to have_many(:protected_tag_create_access_levels).class_name('ProtectedTag::CreateAccessLevel').dependent(:delete_all) }
+    it { is_expected.to have_many(:lfs_file_locks).dependent(:delete_all) }
 
     describe '#triggers' do
       let_it_be_with_refind(:user) { create(:user) }
@@ -291,16 +296,6 @@ RSpec.describe User, feature_category: :user_profile do
 
       it 'returns non-expired triggers by default' do
         expect(user.triggers).to contain_exactly(valid_trigger)
-      end
-
-      context 'with FF trigger_token_expiration disabled' do
-        before do
-          stub_feature_flags(trigger_token_expiration: false)
-        end
-
-        it 'returns all triggers by default' do
-          expect(user.triggers).to contain_exactly(expired_trigger, valid_trigger)
-        end
       end
     end
 
@@ -1904,6 +1899,20 @@ RSpec.describe User, feature_category: :user_profile do
       end
     end
 
+    describe '.in_organization' do
+      let_it_be(:org1) { create(:organization) }
+      let_it_be(:org2) { create(:organization) }
+      let_it_be(:users) { create_pair(:user, organization: org1) }
+
+      before do
+        create(:user, organization: org2)
+      end
+
+      subject { described_class.in_organization(org1) }
+
+      it { is_expected.to match_array(users) }
+    end
+
     describe '.for_todos' do
       let_it_be(:user1) { create(:user) }
       let_it_be(:user2) { create(:user) }
@@ -2991,6 +3000,18 @@ RSpec.describe User, feature_category: :user_profile do
     end
   end
 
+  describe '#get_all_webauthn_credential_ids' do
+    let_it_be(:user) { create(:user) }
+    let_it_be(:second_factor_authenticator) { create(:webauthn_registration, user: user) }
+    let_it_be(:passkey) { create(:webauthn_registration, :passkey, user: user) }
+
+    it 'returns all webauthn credentials ids' do
+      expect(user.get_all_webauthn_credential_ids).to match_array(
+        [second_factor_authenticator.credential_xid, passkey.credential_xid]
+      )
+    end
+  end
+
   describe '#recently_sent_password_reset?' do
     it 'is false when reset_password_sent_at is nil' do
       user = build_stubbed(:user, reset_password_sent_at: nil)
@@ -3086,6 +3107,7 @@ RSpec.describe User, feature_category: :user_profile do
       expect(user.encrypted_otp_secret).not_to be_nil
       expect(user.otp_backup_codes).not_to be_nil
       expect(user.otp_grace_period_started_at).not_to be_nil
+      expect(user.email_otp_required_after).to be_nil
 
       user.disable_two_factor!
 
@@ -3096,6 +3118,18 @@ RSpec.describe User, feature_category: :user_profile do
       expect(user.otp_backup_codes).to be_nil
       expect(user.otp_grace_period_started_at).to be_nil
       expect(user.otp_secret_expires_at).to be_nil
+      expect(user.email_otp_required_after).to be_nil
+    end
+
+    # Full behavior tests for `set_email_otp_required_after_based_on_restrictions`
+    # are in email_otp_enrollment_spec.rb
+    it 'enrolls the user in email OTP when email OTP is required at minimum', :freeze_time do
+      stub_application_setting(require_minimum_email_based_otp_for_users_with_passwords: true)
+
+      user = create(:user, :two_factor, email_otp_required_after: nil)
+      user.disable_two_factor!
+      expect(user).not_to be_two_factor_enabled
+      expect(user.email_otp_required_after).to eq(Time.current)
     end
   end
 
@@ -3246,6 +3280,40 @@ RSpec.describe User, feature_category: :user_profile do
       user.otp_secret_expires_at = 20.minutes.from_now
 
       is_expected.to eq(false)
+    end
+  end
+
+  describe 'email_based_otp_required?', :freeze_time do
+    subject { user.email_based_otp_required? }
+
+    let_it_be_with_reload(:user) { create(:user) }
+
+    it 'returns false when email_otp_required_after is missing' do
+      user.email_otp_required_after = nil
+
+      is_expected.to eq(false)
+    end
+
+    it 'returns false when email_otp_required_after is in the future' do
+      user.email_otp_required_after = 1.second.since
+
+      is_expected.to eq(false)
+    end
+
+    it 'returns true when email_otp_required_after is in the past' do
+      user.email_otp_required_after = 1.second.ago
+
+      is_expected.to eq(true)
+    end
+
+    context 'when :email_based_mfa feature flag is disabled' do
+      it 'returns false' do
+        stub_feature_flags(email_based_mfa: false)
+
+        user.email_otp_required_after = 1.second.ago
+
+        is_expected.to eq(false)
+      end
     end
   end
 
@@ -5605,6 +5673,27 @@ RSpec.describe User, feature_category: :user_profile do
     it_behaves_like 'resolves user solo-owned organizations'
   end
 
+  describe '#has_multiple_organizations?' do
+    let_it_be(:organization) { create(:organization) }
+
+    context 'when user has multiple organizations' do
+      let_it_be(:organization_2) { create(:organization) }
+      let_it_be(:user) { create(:user, organizations: [organization, organization_2]) }
+
+      it 'returns true' do
+        expect(user.has_multiple_organizations?).to eq(true)
+      end
+    end
+
+    context 'when user has one organization' do
+      let_it_be(:user) { create(:user, organizations: [organization]) }
+
+      it 'returns false' do
+        expect(user.has_multiple_organizations?).to eq(false)
+      end
+    end
+  end
+
   describe '#can_remove_self?' do
     let(:user) { create(:user) }
 
@@ -5988,7 +6077,7 @@ RSpec.describe User, feature_category: :user_profile do
     end
   end
 
-  describe '#ci_available_runners', feature_category: :runner do
+  describe '#ci_available_runners', feature_category: :runner_core do
     let_it_be_with_refind(:user) { create(:user) }
 
     subject(:ci_available_runners) { user.ci_available_runners }
@@ -6223,7 +6312,7 @@ RSpec.describe User, feature_category: :user_profile do
     end
   end
 
-  describe '#ci_available_project_runners', feature_category: :runner do
+  describe '#ci_available_project_runners', feature_category: :runner_core do
     let_it_be_with_refind(:user) { create(:user) }
 
     let_it_be(:project1) { create(:project) }
@@ -7568,79 +7657,6 @@ RSpec.describe User, feature_category: :user_profile do
         end
 
         it_behaves_like 'schedules user for deletion without delay'
-      end
-
-      context 'when the user is a spammer' do
-        before do
-          stub_feature_flags(remove_trust_scores: false)
-
-          user_scores = AntiAbuse::UserTrustScore.new(user)
-          allow(AntiAbuse::UserTrustScore).to receive(:new).and_return(user_scores)
-          allow(user_scores).to receive(:spammer?).and_return(true)
-        end
-
-        context 'when the user account is less than 7 days old' do
-          it_behaves_like 'schedules the record for deletion with the correct delay'
-
-          it 'creates an abuse report with the correct data' do
-            expect { delete_async }.to change { AbuseReport.count }.from(0).to(1)
-            expect(AbuseReport.last.attributes).to include({
-              reporter_id: Users::Internal.for_organization(user.organization).security_bot.id,
-              organization_id: Users::Internal.security_bot.organization_id,
-              user_id: user.id,
-              category: "spam",
-              message: 'Potential spammer account deletion'
-            }.stringify_keys)
-          end
-
-          it 'adds custom attribute to the user with the correct values' do
-            delete_async
-
-            custom_attribute = user.custom_attributes.by_key(UserCustomAttribute::AUTO_BANNED_BY_ABUSE_REPORT_ID).first
-            expect(custom_attribute.value).to eq(AbuseReport.last.id.to_s)
-          end
-
-          it 'bans the user' do
-            delete_async
-
-            expect(user).to be_banned
-          end
-
-          context 'when there is an existing abuse report' do
-            let!(:abuse_report) do
-              create(:abuse_report, user: user, reporter: Users::Internal.for_organization(user.organization).security_bot, message: 'Existing')
-            end
-
-            it 'updates the abuse report' do
-              delete_async
-              abuse_report.reload
-
-              expect(abuse_report.message).to eq("Existing\n\nPotential spammer account deletion")
-            end
-
-            it 'adds custom attribute to the user with the correct values' do
-              delete_async
-
-              custom_attribute = user.custom_attributes.by_key(UserCustomAttribute::AUTO_BANNED_BY_ABUSE_REPORT_ID).first
-              expect(custom_attribute.value).to eq(abuse_report.id.to_s)
-            end
-          end
-        end
-
-        context 'when the user acount is greater than 7 days old' do
-          before do
-            allow(user).to receive(:account_age_in_days).and_return(8)
-          end
-
-          it_behaves_like 'schedules the record for deletion with the correct delay'
-
-          it 'blocks the user' do
-            delete_async
-
-            expect(user).to be_blocked
-            expect(user).not_to be_banned
-          end
-        end
       end
 
       it 'updates note to indicate the action (account was deleted by the user) and timestamp' do
@@ -9994,16 +10010,13 @@ RSpec.describe User, feature_category: :user_profile do
 
     subject { user.merge_request_dashboard_show_drafts? }
 
-    where(:flag_enabled, :show_drafts, :result) do
-      false | false | true
-      false | true  | true
-      true  | true  | true
-      true  | false | false
+    where(:show_drafts, :result) do
+      true  | true
+      false | false
     end
 
     with_them do
       before do
-        stub_feature_flags(mr_dashboard_drafts_toggle: flag_enabled)
         user.user_preference.update!(merge_request_dashboard_show_drafts: show_drafts)
       end
 
@@ -10036,6 +10049,46 @@ RSpec.describe User, feature_category: :user_profile do
       it do
         is_expected.to be(result)
       end
+    end
+  end
+
+  describe '#allow_user_to_create_group_and_project?', :sidekiq_inline do
+    subject(:user) { create(:user) }
+
+    let(:group) { create(:group) }
+
+    before do
+      group.add_guest(user)
+      stub_application_setting(allow_project_creation_for_guest_and_below: false)
+    end
+
+    it { is_expected.not_to be_allow_user_to_create_group_and_project }
+
+    context 'with admin', :enable_admin_mode do
+      subject(:user) { create(:admin) }
+
+      it { is_expected.to be_allow_user_to_create_group_and_project }
+    end
+
+    context 'with enabled configuration' do
+      before do
+        stub_application_setting(allow_project_creation_for_guest_and_below: true)
+      end
+
+      it { is_expected.to be_allow_user_to_create_group_and_project }
+    end
+
+    context 'with role higher than guest' do
+      subject(:user) { create(:user) }
+
+      before do
+        # Allow update of highest role immediately
+        allow_any_instance_of(Gitlab::ExclusiveLease).to receive(:try_obtain).and_return('random-lease-key')
+
+        create(:group_member, user: user, access_level: Gitlab::Access::DEVELOPER)
+      end
+
+      it { is_expected.to be_allow_user_to_create_group_and_project }
     end
   end
 end

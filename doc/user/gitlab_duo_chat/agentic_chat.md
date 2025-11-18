@@ -16,8 +16,8 @@ title: GitLab Duo Chat (Agentic)
 
 {{< collapsible title="Model information" >}}
 
-- LLM: Anthropic [Claude Sonnet 4](https://console.cloud.google.com/vertex-ai/publishers/anthropic/model-garden/claude-sonnet-4)
-- Available on [GitLab Duo with self-hosted models](../../administration/gitlab_duo_self_hosted/_index.md): Yes
+- Default LLM: Anthropic [Claude Sonnet 4.5](https://console.cloud.google.com/vertex-ai/publishers/anthropic/model-garden/claude-sonnet-4-5)
+- Available on [GitLab Duo with self-hosted models](../../administration/gitlab_duo_self_hosted/_index.md)
 
 {{< /collapsible >}}
 
@@ -32,7 +32,9 @@ title: GitLab Duo Chat (Agentic)
 - Visual Studio for Windows [introduced](https://gitlab.com/gitlab-org/editor-extensions/gitlab-visual-studio-extension/-/issues/245) in GitLab 18.3.
 - [Added](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/201721) to GitLab Duo Core in GitLab 18.3.
 - Feature flags `duo_workflow_workhorse` and `duo_workflow_web_chat_mutation_tools` [removed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/198487) in GitLab 18.4.
-- For GitLab Duo Agent Platform on self-managed instances (both with [self-hosted models](../../administration/gitlab_duo_self_hosted/_index.md) and cloud-connected GitLab models), [introduced](https://gitlab.com/groups/gitlab-org/-/epics/19213) in GitLab 18.4, as an [experiment](../../policy/development_stages_support.md#experiment) with a [feature flag](../../administration/feature_flags/_index.md) named `self_hosted_agent_platform`. Disabled by default.
+- [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/19213) GitLab Duo Agent Platform on GitLab Self-Managed (both with [self-hosted models](../../administration/gitlab_duo_self_hosted/_index.md) and cloud-connected GitLab models) in GitLab 18.4 as an [experiment](../../policy/development_stages_support.md#experiment) with a [feature flag](../../administration/feature_flags/_index.md) named `self_hosted_agent_platform`. Disabled by default.
+- GitLab Duo Agent Platform on GitLab Self-Managed changed from experiment to [beta](https://gitlab.com/groups/gitlab-org/-/epics/19402) in GitLab 18.5.
+- [Updated default LLM](https://gitlab.com/gitlab-org/modelops/applied-ml/code-suggestions/ai-assist/-/issues/1541) to Claude Sonnet 4.5 in GitLab 18.6.
 
 {{< /history >}}
 
@@ -61,6 +63,8 @@ files for you.
 For larger problems, like understanding a codebase or generating an implementation
 plan, use the [software development flow of the GitLab Duo Agent Platform](../duo_agent_platform/_index.md).
 
+For examples of how you can use Chat, see [Ask GitLab Duo Chat](examples.md).
+
 <i class="fa fa-youtube-play youtube" aria-hidden="true"></i>
 For an overview, see [GitLab Duo Chat (Agentic)](https://youtu.be/uG9-QLAJrrg?si=c25SR7DoRAep7jvQ).
 <!-- Video published on 2025-06-02 -->
@@ -79,21 +83,57 @@ You can use GitLab Duo Chat in:
 {{< history >}}
 
 - Ability for Chat to remember your most recent conversation [added](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/203653) in GitLab 18.4.
+- New navigation and GitLab Duo sidebar introduced on GitLab.com in GitLab 18.6 with a [flag](../../administration/feature_flags/_index.md) named `paneled_view`. Enabled by default.
 
 {{< /history >}}
+
+{{< alert type="flag" >}}
+
+The availability of the new navigation and GitLab Duo sidebar is controlled by a feature flag.
+For more information, see the history.
+
+{{< /alert >}}
 
 Prerequisites:
 
 - Ensure you meet [the prerequisites](../duo_agent_platform/_index.md#prerequisites).
 
-To use Chat in the GitLab UI:
+Instructions are provided for the new navigation and classic navigation.
+Select the tab for your navigation type, or [learn how to switch](../interface_redesign.md#turn-new-navigation-on-or-off).
 
-1. On the left sidebar, select **Search or go to** and find your project.
-1. In the upper-right corner, select **Open GitLab Duo Chat** ({{< icon name="duo-chat" >}}). A drawer opens on the right side of your screen.
+{{< tabs >}}
+
+{{< tab title="New navigation" >}}
+
+1. On the top bar, select **Search or go to** and find your project.
+1. On the GitLab Duo sidebar, select either **Current GitLab Duo Chat** ({{< icon name="comment" >}}) or **New GitLab Duo Chat** ({{< icon name="plus" >}}).
+   A Chat conversation opens in the GitLab Duo sidebar on the right side of your screen.
 1. Under the chat text box, turn on the **Agentic mode (Beta)** toggle.
 1. Enter your question in the chat text box and press <kbd>Enter</kbd> or select **Send**.
-   It may take a few seconds to produce an answer.
-1. Optional. Ask a follow-up question.
+   - You can provide additional [context](../gitlab_duo/context.md#gitlab-duo-chat) for your chat.
+   - It might take a few seconds for the interactive AI chat to produce an answer.
+1. Optional. You can:
+   - Ask a follow-up question.
+   - Start [another conversation](#have-multiple-conversations).
+
+{{< /tab >}}
+
+{{< tab title="Classic navigation" >}}
+
+1. On the left sidebar, select **Search or go to** and find your project.
+1. In the upper-right corner, select **Open GitLab Duo Chat** ({{< icon name="duo-chat" >}}).
+   A drawer opens on the right side of your screen.
+1. Under the chat text box, turn on the **Agentic mode (Beta)** toggle.
+1. Enter your question in the chat text box and press <kbd>Enter</kbd> or select **Send**.
+   - You can provide additional [context](../gitlab_duo/context.md#gitlab-duo-chat) for your chat.
+   - It might take a few seconds for the interactive AI chat to produce an answer.
+1. Optional. You can:
+   - Ask a follow-up question.
+   - Start [another conversation](#have-multiple-conversations).
+
+{{< /tab >}}
+
+{{< /tabs >}}
 
 If you reload the webpage you are on, or go to another webpage, Chat remembers your
 most recent conversation, and that conversation is still active in the Chat drawer.
@@ -168,9 +208,25 @@ Then, to use GitLab Duo Chat:
 
 To view your chat history:
 
-- In the GitLab UI: In the upper-right corner of the Chat drawer, select
-  **Chat history** ({{< icon name="history" >}}).
-- In your IDE: In the upper-right corner of the message box, select
+- In the GitLab UI:
+
+  {{< tabs >}}
+
+  {{< tab title="New navigation" >}}
+
+  On the GitLab Duo sidebar, select **GitLab Duo Chat history** ({{< icon name="history" >}}).
+
+  {{< /tab >}}
+
+  {{< tab title="Classic navigation" >}}
+
+  In the upper-right corner of the Chat, select **Chat history** ({{< icon name="history" >}}).
+
+  {{< /tab >}}
+
+  {{< /tabs >}}
+
+- In your IDE, in the upper-right corner of the message box, select
   **Chat history** ({{< icon name="history" >}}).
 
 In the GitLab UI, all of the conversations in your chat history are visible.
@@ -191,10 +247,33 @@ Your conversations synchronize across GitLab Duo Chat in the GitLab UI and your 
 
 1. Open GitLab Duo Chat in the GitLab UI or your IDE.
 1. Enter your question and press <kbd>Enter</kbd> or select **Send**.
-1. Create a new conversation:
+1. Create a new Chat conversation:
 
-   - In the GitLab UI: In the upper-right corner of the drawer, select **New chat**
-     ({{< icon name="duo-chat-new" >}}).
+   - In the GitLab UI:
+
+     {{< tabs >}}
+
+     {{< tab title="New navigation" >}}
+
+     You can do either of the following:
+     - On the GitLab Duo sidebar, select **New GitLab Duo Chat** ({{< icon name="plus" >}}).
+     - In the message box, type `/new` and press <kbd>Enter</kbd> or select **Send**.
+        A new Chat conversation replaces the previous one.
+
+     {{< /tab >}}
+
+     {{< tab title="Classic navigation" >}}
+
+     1. In the upper-right corner, select **Open GitLab Duo Chat** ({{< icon name="duo-chat" >}}). A drawer opens on the right side of your screen.
+     1. Create a new Chat conversation by doing either of the following:
+        - In the upper-right corner of an existing conversation, select **New chat** ({{< icon name="duo-chat-new" >}}).
+        - In the message box, type `/new` and press <kbd>Enter</kbd> or select **Send**.
+        A new Chat conversation replaces the previous one.
+
+     {{< /tab >}}
+
+     {{< /tabs >}}
+
    - In your IDE: In the upper-right corner of the message box, select **New chat**
      ({{< icon name="plus" >}}).
 
@@ -260,11 +339,19 @@ Conversations that existed before you created any custom rules do not follow tho
 
 For more information, see the [Custom rules in GitLab Duo Agentic Chat blog](https://about.gitlab.com/blog/custom-rules-duo-agentic-chat-deep-dive/).
 
+#### Update custom rules
+
+To update your custom rules, edit and save the custom rules file.
+
+You cannot use Chat to edit your custom rules file directly.
+
+To manage who must approve any changes to custom rules, use [Code Owners](../project/codeowners/_index.md).
+
 ### Select a model
 
 {{< details >}}
 
-- Offering: GitLab.com
+- Offering: GitLab.com, GitLab Self-Managed
 - Status: Beta
 
 {{< /details >}}
@@ -272,6 +359,8 @@ For more information, see the [Custom rules in GitLab Duo Agentic Chat blog](htt
 {{< history >}}
 
 - [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/19251) in GitLab 18.4 as a [beta](../../policy/development_stages_support.md#beta) feature with a [flag](../../administration/feature_flags/_index.md) called `ai_user_model_switching`. Disabled by default.
+- [Enabled](https://gitlab.com/gitlab-org/gitlab/-/issues/560319) in GitLab 18.4.
+- [Available on GitLab Self-Managed](https://gitlab.com/groups/gitlab-org/-/epics/19344) in GitLab 18.6.
 
 {{< /history >}}
 
@@ -289,8 +378,10 @@ Model selection in the IDE is not supported.
 
 Prerequisites:
 
-- No model has been selected for the GitLab Duo Agent Platform feature by the Owner of the top-level group.
-If a model has been selected for the group, you cannot change the model for Chat.
+- The Owner of the top-level group has not selected a model for the GitLab Duo Agent Platform.
+If a [model has been selected for the group](../gitlab_duo/model_selection.md), you cannot change the model for Chat.
+- You must be using Chat in the top-level group. You cannot change the model if you access Chat in the organization.
+- On GitLab Self-Managed, your instance must be connected to the GitLab AI gateway.
 
 To select a model:
 
@@ -299,38 +390,37 @@ To select a model:
 
 ### Select an agent
 
-{{< details >}}
-
-- Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
-- Status: Experiment
-
-{{< /details >}}
-
 {{< history >}}
 
-- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/562708) in GitLab 18.4 for the GitLab UI as an [experiment](../../policy/development_stages_support.md#experiment).
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/562708) in GitLab 18.4.
+- [Added](https://gitlab.com/gitlab-org/editor-extensions/gitlab-lsp/-/merge_requests/2196) to VS Code and JetBrains IDEs in GitLab 18.5.
 
 {{< /history >}}
 
-When you use Chat in a project in the GitLab UI, you can select a specific agent for Chat to use.
+When you use Chat in a project in the GitLab UI, VS Code, or a JetBrains IDE,
+you can select a specific agent for Chat to use.
 
 Prerequisites:
 
-- You must [add an agent to your project](../duo_agent_platform/agents/_index.md#add-an-agent-to-a-project)
-  from the AI catalog.
+- You must [enable an agent in your project](../duo_agent_platform/agents/custom.md#enable-an-agent)
+  from the AI Catalog.
+- For VS Code, [install and configure the GitLab Workflow extension for VS Code](../../editor_extensions/visual_studio_code/setup.md) version 6.49.12 or later.
+- For a JetBrains IDE, [install and configure the GitLab plugin for JetBrains](../../editor_extensions/jetbrains_ide/setup.md) version 3.22.0 or later.
 
 To select an agent:
 
-1. In the GitLab UI, open GitLab Duo Chat.
-1. In the upper-right corner of the drawer, select **New chat**.
-1. In the dropdown list, select a custom agent. If you have not set up any custom
+1. In the GitLab UI or your IDE, open a new conversation in GitLab Duo Chat.
+1. In the dropdown list, select an agent. If you have not set up any
    agents, there is no dropdown list, and Chat uses the default GitLab Duo agent.
 1. Enter your question and press <kbd>Enter</kbd> or select **Send**.
 
-After you create a conversation with a custom agent:
+After you create a conversation with an agent:
 
-- The conversation remembers the custom agent you selected.
+- The conversation remembers the agent you selected. You cannot select a different
+  agent for that conversation.
 - If you use the chat history to go back to the same conversation, it uses the same agent.
+- If you go back to a conversation and the associated agent is no longer available,
+  you cannot continue that conversation.
 
 ## GitLab Duo Chat capabilities
 
@@ -348,7 +438,7 @@ GitLab Duo Chat (Agentic) extends GitLab Duo Chat (Classic) capabilities with th
 - **Multi-source analysis**: Can combine information from multiple sources to
   provide more complete answers to complex questions. You can use [Model Context Protocol](../gitlab_duo/model_context_protocol/_index.md) to connect GitLab Duo Chat (Agentic) to
   external data sources and tools.
-- **Custom rules**: Conversations can follow any customised rules that you specify.
+- **Custom rules**: Conversations can follow any customized rules that you specify.
 - GitLab Duo Chat (Agentic) in the GitLab UI only - **Commit creation**: Can create and push commits.
 
 ### Chat feature comparison
@@ -439,29 +529,9 @@ For more information about these security capabilities, see [epic 19639](https:/
 
 ## Troubleshooting
 
-When working with GitLab Duo Chat, you might encounter the following issues.
+When working with GitLab Duo Chat, you might encounter issues.
 
-### Trouble connecting or viewing
-
-To ensure you are connected properly and can view Chat, see [Troubleshooting](../duo_agent_platform/troubleshooting.md).
-
-### Slow response times
-
-Chat has significant latency when processing requests.
-
-This issue occurs because Chat makes multiple API calls to gather information,
-so responses often take much longer compared to Chat.
-
-### Limited permissions
-
-Chat can access the same resources that your GitLab user has permission to
-access.
-
-### Search limitations
-
-Chat uses keyword-based search instead of semantic search. This means that
-Chat might miss relevant content that does not contain the exact keywords
-used in the search.
+For information on resolving these issues, see [Troubleshooting](troubleshooting.md).
 
 ## Feedback
 

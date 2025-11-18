@@ -59,6 +59,7 @@ COPY ./config/feature_flags /home/gitlab/config/feature_flags
 COPY ./config/bundler_setup.rb /home/gitlab/config/
 COPY ./lib/gitlab_edition.rb /home/gitlab/lib/
 COPY ./spec/support/fast_quarantine.rb /home/gitlab/spec/support/
+COPY ./spec/support/helpers/test_metrics_helper.rb /home/gitlab/spec/support/helpers/
 COPY ./tooling/lib/tooling/fast_quarantine.rb /home/gitlab/tooling/lib/tooling/
 COPY ./INSTALLATION_TYPE ./VERSION /home/gitlab/
 

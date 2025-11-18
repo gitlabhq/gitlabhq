@@ -5,8 +5,8 @@ import { s__ } from '~/locale';
 import { InternalEvents } from '~/tracking';
 import PageHeading from '~/vue_shared/components/page_heading.vue';
 import RunnerCreateForm from '~/ci/runner/components/runner_create_form.vue';
+import { saveAlertToLocalStorage } from '~/lib/utils/local_storage_alert';
 import { GROUP_TYPE } from '../constants';
-import { saveAlertToLocalStorage } from '../local_storage_alert/save_alert_to_local_storage';
 
 export default {
   name: 'GroupNewRunnerApp',

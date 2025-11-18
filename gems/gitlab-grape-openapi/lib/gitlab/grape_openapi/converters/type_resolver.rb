@@ -7,6 +7,7 @@ module Gitlab
         TYPE_MAPPINGS = {
           'dateTime' => 'string',
           'date' => 'string',
+          'Date' => 'string',
           'symbol' => 'string',
           'String' => 'string',
           String => 'string',
@@ -17,7 +18,8 @@ module Gitlab
           'Hash' => 'object',
           'hash' => 'object',
           'JSON' => 'object',
-          :hash => 'object'
+          :hash => 'object',
+          'Grape::API::Boolean' => 'boolean'
         }.freeze
 
         FORMAT_MAPPINGS = {

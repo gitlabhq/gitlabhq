@@ -12,9 +12,7 @@ title: Markdown API
 
 {{< /details >}}
 
-Convert Markdown content to HTML.
-
-Available only in APIv4.
+Use this API to render [Markdown](../user/markdown.md) content as HTML.
 
 ## Required authentication
 

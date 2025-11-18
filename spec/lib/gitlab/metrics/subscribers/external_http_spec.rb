@@ -6,10 +6,6 @@ RSpec.describe Gitlab::Metrics::Subscribers::ExternalHttp, :request_store, featu
   let(:transaction) { Gitlab::Metrics::WebTransaction.new({}) }
   let(:subscriber) { described_class.new }
 
-  around do |example|
-    freeze_time { example.run }
-  end
-
   let(:event_1) do
     double(
       :event,
@@ -45,6 +41,10 @@ RSpec.describe Gitlab::Metrics::Subscribers::ExternalHttp, :request_store, featu
       },
       time: Time.current
     )
+  end
+
+  around do |example|
+    freeze_time { example.run }
   end
 
   describe '.detail_store' do

@@ -26,7 +26,7 @@ module Gitlab
 
       def gitlab_id
         return find_by_email unless user_mapping_enabled?
-        return GithubImport.ghost_user_id if ghost_user?
+        return GithubImport.ghost_user_id(project.organization_id) if ghost_user?
         return project.root_ancestor.owner_id if map_to_personal_namespace_owner?
 
         gitlab_user&.id
@@ -89,8 +89,7 @@ module Gitlab
       strong_memoize_attr :user_mapping_enabled?
 
       def map_to_personal_namespace_owner?
-        project.root_ancestor.user_namespace? &&
-          project.import_data.user_mapping_to_personal_namespace_owner_enabled?
+        project.root_ancestor.user_namespace?
       end
       strong_memoize_attr :map_to_personal_namespace_owner?
     end

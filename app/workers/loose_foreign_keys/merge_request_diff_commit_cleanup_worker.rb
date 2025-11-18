@@ -12,8 +12,6 @@ module LooseForeignKeys # rubocop: disable Gitlab/BoundedContexts -- This module
     idempotent!
 
     def perform
-      return unless Feature.enabled?(:use_merge_request_diff_commit_cleanup_worker, :instance, type: :ops)
-
       if vacuum_running_on_merge_request_diff_commits?
         log_extra_metadata_on_done(:vacuum_running, true)
         return

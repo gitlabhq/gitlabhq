@@ -157,6 +157,12 @@ export default {
     k8sPods() {
       this.$emit('update-cluster-state', this.podsHealthStatus);
     },
+    podsSearch() {
+      this.$refs.workloadTable?.resetPagination();
+    },
+    statusFilter() {
+      this.$refs.workloadTable?.resetPagination();
+    },
   },
   methods: {
     search(searchTerm, podName) {
@@ -222,6 +228,7 @@ export default {
 
       <workload-table
         v-if="k8sPods"
+        ref="workloadTable"
         :items="filteredPods"
         :page-size="$options.PAGE_SIZE"
         :fields="$options.PODS_TABLE_FIELDS"

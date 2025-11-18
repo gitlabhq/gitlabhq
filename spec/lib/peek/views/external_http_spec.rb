@@ -7,14 +7,6 @@ RSpec.describe Peek::Views::ExternalHttp, :request_store do
 
   let(:subscriber) { Gitlab::Metrics::Subscribers::ExternalHttp.new }
 
-  before do
-    allow(Gitlab::PerformanceBar).to receive(:enabled_for_request?).and_return(true)
-  end
-
-  around do |example|
-    freeze_time { example.run }
-  end
-
   let(:event_1) do
     {
       method: 'POST', code: "200", duration: 0.03,
@@ -39,6 +31,14 @@ RSpec.describe Peek::Views::ExternalHttp, :request_store do
       query: 'current=true',
       proxy_host: 'proxy.gitlab.com', proxy_port: 8080
     }
+  end
+
+  before do
+    allow(Gitlab::PerformanceBar).to receive(:enabled_for_request?).and_return(true)
+  end
+
+  around do |example|
+    freeze_time { example.run }
   end
 
   it 'returns no results' do

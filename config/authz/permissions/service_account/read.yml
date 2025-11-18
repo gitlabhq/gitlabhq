@@ -1,0 +1,4 @@
+---
+name: read_service_account
+description: Ability to read service accounts
+feature_category: user_management

@@ -1,14 +1,15 @@
 ---
-stage: Foundations
-group: Import and Integrate
+stage: Developer Experience
+group: API
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 title: REST APIのリソース
+description: "GitLab REST APIリソースをコンテキスト（プロジェクト、グループ、スタンドアロン、およびテンプレート）別に整理し、エンドポイントパスを示します。"
 ---
 
 {{< details >}}
 
-- プラン:Free、Premium、Ultimate
-- 提供形態:GitLab.com、GitLab Self-Managed、GitLab Dedicated
+- プラン: Free、Premium、Ultimate
+- 提供形態: GitLab.com、GitLab Self-Managed、GitLab Dedicated
 
 {{< /details >}}
 
@@ -19,7 +20,7 @@ REST APIを使用して以下の操作を行います。
 - プロジェクトの作成とユーザー管理を自動化する。
 - 外部システムからCI/CDパイプラインをトリガーする。
 - カスタムダッシュボード用にイシューとマージリクエストのデータを抽出する。
-- GitLabをサードパーティーアプリケーションと連携する。
+- GitLabをサードパーティアプリケーションと連携させる。
 - 複数のリポジトリにわたるカスタムワークフローを実装する。
 
 REST APIリソースは次のように編成されています。
@@ -29,7 +30,7 @@ REST APIリソースは次のように編成されています。
 - [スタンドアロンリソース](#standalone-resources)
 - [テンプレートリソース](#template-resources)
 
-## プロジェクトリソース
+## プロジェクトリソース {#project-resources}
 
 以下のAPIリソースは、プロジェクトのコンテキストで使用できます。
 
@@ -43,7 +44,7 @@ REST APIリソースは次のように編成されています。
 | [コンテナレジストリ](container_registry.md)                                    | `/projects/:id/registry/repositories` |
 | [コンテナリポジトリ保護ルール](container_repository_protection_rules.md)  | `/projects/:id/registry/protection/repository/rules` |
 | [カスタム属性](custom_attributes.md)                                      | `/projects/:id/custom_attributes`（グループおよびユーザーでも利用可能） |
-| [Composerディストリビューション](packages/composer.md)                                 | `/projects/:id/packages/composer`（グループでも利用可能） |
+| [[Composer](packages/composer.md)ディストリビューション](packages/composer.md)                                 | `/projects/:id/packages/composer`（グループでも利用可能） |
 | [Conan v1ディストリビューション](packages/conan_v1.md)                                       | `/projects/:id/packages/conan`（スタンドアロンでも利用可能） |
 | [Conan v2ディストリビューション](packages/conan_v2.md)                                       | `/projects/:id/packages/conan`（スタンドアロンでも利用可能） |
 | [Debianディストリビューション](packages/debian_project_distributions.md)               | `/projects/:id/debian_distributions`（グループでも利用可能） |
@@ -53,7 +54,7 @@ REST APIリソースは次のように編成されています。
 | [デプロイトークン](deploy_tokens.md)                                              | `/projects/:id/deploy_tokens`（グループおよびスタンドアロンでも利用可能） |
 | [デプロイ](deployments.md)                                                  | `/projects/:id/deployments` |
 | [ディスカッション](discussions.md)（スレッド形式のコメント）                              | `/projects/:id/issues/.../discussions`、`/projects/:id/snippets/.../discussions`、`/projects/:id/merge_requests/.../discussions`、`/projects/:id/commits/.../discussions`（グループでも利用可能） |
-| [下書きノート](draft_notes.md)（コメント）                                       | `/projects/:id/merge_requests/.../draft_notes` |
+| [ドラフトノート](draft_notes.md)（コメント）                                       | `/projects/:id/merge_requests/.../draft_notes` |
 | [絵文字リアクション](emoji_reactions.md)                                          | `/projects/:id/issues/.../award_emoji`、`/projects/:id/merge_requests/.../award_emoji`、`/projects/:id/snippets/.../award_emoji` |
 | [環境](environments.md)                                                | `/projects/:id/environments` |
 | [エラートラッキング](error_tracking.md)                                            | `/projects/:id/error_tracking/settings` |
@@ -64,7 +65,7 @@ REST APIリソースは次のように編成されています。
 | [フリーズ期間](freeze_periods.md)                                            | `/projects/:id/freeze_periods` |
 | [Go Proxy](packages/go_proxy.md)                                               | `/projects/:id/packages/go` |
 | [Helmリポジトリ](packages/helm.md)                                            | `/projects/:id/packages/helm_repository` |
-| [インテグレーション](integrations.md)（旧称「サービス」）                          | `/projects/:id/integrations` |
+| [インテグレーション](project_integrations.md)（旧称「サービス」）                          | `/projects/:id/integrations` |
 | [招待](invitations.md)                                                  | `/projects/:id/invitations`（グループでも利用可能） |
 | [イシューボード](boards.md)                                                      | `/projects/:id/boards` |
 | [イシューリンク](issue_links.md)                                                  | `/projects/:id/issues/.../links` |
@@ -98,14 +99,14 @@ REST APIリソースは次のように編成されています。
 | [プロジェクトマイルストーン](milestones.md)                                            | `/projects/:id/milestones` |
 | [プロジェクトスニペット](project_snippets.md)                                        | `/projects/:id/snippets` |
 | [プロジェクトテンプレート](project_templates.md)                                      | `/projects/:id/templates` |
-| [プロジェクトの脆弱性](project_vulnerabilities.md)。                         | `/projects/:id/vulnerabilities` |
+| [プロジェクトの脆弱性](project_vulnerabilities.md)                         | `/projects/:id/vulnerabilities` |
 | [プロジェクトWiki](wikis.md)                                                      | `/projects/:id/wikis` |
 | [プロジェクトレベルの変数](project_level_variables.md)                          | `/projects/:id/variables` |
 | [プロジェクト](projects.md)（Webhookの設定を含む）                             | `/projects`、`/projects/:id/hooks`（ユーザーでも利用可能） |
 | [保護ブランチ](protected_branches.md)                                    | `/projects/:id/protected_branches` |
-| [保護されたコンテナレジストリ](project_container_registry_protection_rules.md) | `/projects/:id/registry/protection/rules` |
+| [保護されたコンテナレジストリ](container_repository_protection_rules.md)       | `/projects/:id/registry/protection/rules` |
 | [保護環境](protected_environments.md)                            | `/projects/:id/protected_environments` |
-| [保護されたパッケージ](project_packages_protection_rules.md)                     | `/projects/:id/packages/protection/rules` |
+| [保護パッケージ](project_packages_protection_rules.md)                     | `/projects/:id/packages/protection/rules` |
 | [保護タグ](protected_tags.md)                                            | `/projects/:id/protected_tags` |
 | [PyPIパッケージ](packages/pypi.md)                                              | `/projects/:id/packages/pypi`（グループでも利用可能） |
 | [リリースリンク](releases/links.md)                                             | `/projects/:id/releases/.../assets/links` |
@@ -125,7 +126,7 @@ REST APIリソースは次のように編成されています。
 | [脆弱性エクスポート](vulnerability_exports.md)                              | `/projects/:id/vulnerability_exports` |
 | [脆弱性検出結果](vulnerability_findings.md)                            | `/projects/:id/vulnerability_findings` |
 
-## グループリソース
+## グループリソース {#group-resources}
 
 以下のAPIリソースは、グループのコンテキストで使用できます。
 
@@ -162,7 +163,7 @@ REST APIリソースは次のように編成されています。
 | [リソースラベルイベント](resource_label_events.md)              | `/groups/:id/epics/.../resource_label_events`（プロジェクトでも利用可能） |
 | [検索](search.md)                                            | `/groups/:id/search`（プロジェクトおよびスタンドアロンでも利用可能） |
 
-## スタンドアロンリソース
+## スタンドアロンリソース {#standalone-resources}
 
 以下のAPIリソースは、プロジェクトおよびグループのコンテキストの外部で使用できます（`/users`を含む）。
 
@@ -181,8 +182,8 @@ REST APIリソースは次のように編成されています。
 | [デプロイトークン](deploy_tokens.md)                                                            | `/deploy_tokens`（プロジェクトおよびグループでも利用可能） |
 | [イベント](events.md)                                                                          | `/events`、`/users/:id/events`（プロジェクトでも利用可能） |
 | [機能フラグ](features.md)                                                                 | `/features` |
-| [ジオノード](geo_nodes.md)                                                                    | `/geo_nodes` |
-| [グループアクティビティ分析](group_activity_analytics.md)                                      | `/analytics/group_activity/{issues_count}` |
+| [Geoノード](geo_nodes.md)                                                                    | `/geo_nodes` |
+| [グループアクティビティー分析](group_activity_analytics.md)                                      | `/analytics/group_activity/{issues_count}` |
 | [ストレージ間グループリポジトリ移動](group_repository_storage_moves.md)                          | `/group_repository_storage_moves` |
 | [GitHubからリポジトリをインポート](import.md#import-repository-from-github)                     | `/import/github` |
 | [Bitbucket Serverからリポジトリをインポート](import.md#import-repository-from-bitbucket-server) | `/import/bitbucket_server` |
@@ -197,18 +198,19 @@ REST APIリソースは次のように編成されています。
 | [マージリクエスト](merge_requests.md)                                                          | `/merge_requests`（グループおよびプロジェクトでも利用可能） |
 | [ネームスペース](namespaces.md)                                                                  | `/namespaces` |
 | [通知設定](notification_settings.md)                                            | `/notification_settings`（グループおよびプロジェクトでも利用可能） |
+| [コンプライアンスとポリシー](compliance_policy_settings.md)         | `/admin/security/compliance_policy_settings` |
 | [Pagesドメイン](pages_domains.md)                                                            | `/pages/domains`（プロジェクトでも利用可能） |
 | [パーソナルアクセストークン](personal_access_tokens.md)                                          | `/personal_access_tokens` |
-| [プラン制限](plan_limits.md)                                                                | `/application/plan_limits` |
-| [ストレージ間プロジェクトリポジトリ移動](project_repository_storage_moves.md)                      | `/project_repository_storage_moves` |
+| [プランの制限](plan_limits.md)                                                                | `/application/plan_limits` |
+| [プロジェクトリポジトリのストレージ移動](project_repository_storage_moves.md)                      | `/project_repository_storage_moves` |
 | [プロジェクト](projects.md)                                                                      | `/users/:id/projects`（プロジェクトでも利用可能） |
 | [Runner](runners.md)                                                                        | `/runners`（プロジェクトでも利用可能） |
 | [検索](search.md)                                                                          | `/search`（グループおよびプロジェクトでも利用可能） |
-| [サービスデータ](usage_data.md)                                                                | `/usage_data`（GitLabインスタンス[管理者](../user/permissions.md)ユーザーのみ） |
+| [サービスデータ](usage_data.md)                                                                | `/usage_data`（GitLabインスタンスの[管理者](../user/permissions.md)ユーザーのみ） |
 | [設定](settings.md)                                                                      | `/application/settings` |
-| [Sidekiqメトリクス](sidekiq_metrics.md)                                                        | `/sidekiq` |
+| [Sidekiqのメトリクス](sidekiq_metrics.md)                                                        | `/sidekiq` |
 | [Sidekiqキューの管理](admin_sidekiq_queues.md)                                     | `/admin/sidekiq/queues/:queue_name` |
-| [ストレージ間スニペットリポジトリ移動](snippet_repository_storage_moves.md)                      | `/snippet_repository_storage_moves` |
+| [スニペットリポジトリのストレージ移動](snippet_repository_storage_moves.md)                      | `/snippet_repository_storage_moves` |
 | [統計](statistics.md)                                                                  | `/application/statistics` |
 | [提案](suggestions.md)                                                                | `/suggestions` |
 | [システムフック](system_hooks.md)                                                              | `/hooks` |
@@ -219,7 +221,7 @@ REST APIリソースは次のように編成されています。
 | [Webコミット](web_commits.md)                                                                | `/web_commits/public_key` |
 | [バージョン](version.md)                                                                        | `/version` |
 
-## テンプレートリソース
+## テンプレートリソース {#template-resources}
 
 エンドポイントは以下で利用できます。
 

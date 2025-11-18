@@ -76,7 +76,7 @@ export default {
 
         <expand-button class="gl-ml-4 gl-flex gl-items-center gl-gap-2">
           <template #short>
-            <span class="js-short gl-text-subtle gl-font-monospace">{{ shortSha(index) }}</span>
+            <span class="js-short gl-font-monospace gl-text-subtle">{{ shortSha(index) }}</span>
           </template>
           <template #expanded>
             <span class="js-expanded gl-pl-2 gl-font-monospace">{{ sha(index) }}</span>

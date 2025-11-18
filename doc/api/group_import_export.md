@@ -13,8 +13,8 @@ description: "Import and export groups with the REST API."
 
 {{< /details >}}
 
-Use the group import and export API to export a group structure and import it to a new location.
-When you use the group import and export API with the [project import and export API](project_import_export.md), you can preserve connections with
+Use this API to [migrate a group structure](../user/group/import/_index.md).
+When you use this API with the [project import and export API](project_import_export.md), you can preserve
 group-level relationships, such as connections between project issues and group epics.
 
 Group exports include the following:

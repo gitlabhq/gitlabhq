@@ -1,5 +1,5 @@
 ---
-stage: Runtime
+stage: Tenant Scale
 group: Organizations
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 title: Topics API
@@ -9,6 +9,7 @@ title: Topics API
 
 - Tier: Free, Premium, Ultimate
 - Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
+- Status: Beta
 
 {{< /details >}}
 
@@ -248,12 +249,6 @@ curl --request DELETE \
 ```
 
 ## Merge topics
-
-{{< history >}}
-
-- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/95501) in GitLab 15.4.
-
-{{< /history >}}
 
 You must be an administrator to merge a source topic into a target topic.
 When you merge topics, you delete the source topic and move all assigned projects to the target topic.

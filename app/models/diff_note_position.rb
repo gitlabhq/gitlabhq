@@ -1,6 +1,8 @@
 # frozen_string_literal: true
 
 class DiffNotePosition < ApplicationRecord
+  include WithAssociatedNote
+
   belongs_to :note
   attr_accessor :line_range
 
@@ -44,5 +46,9 @@ class DiffNotePosition < ApplicationRecord
     position_attrs = position.to_h
     position_attrs[:diff_content_type] = position_attrs.delete(:position_type)
     position_attrs.except(:line_range, :ignore_whitespace_change)
+  end
+
+  def note_namespace_id
+    note&.namespace_id || note&.project&.project_namespace_id
   end
 end

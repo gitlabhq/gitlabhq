@@ -11,5 +11,6 @@ description: |
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/201150
 milestone: '18.4'
 gitlab_schema: gitlab_sec
-sharding_key: 
+sharding_key:
   project_id: projects
+table_size: small

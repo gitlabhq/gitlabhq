@@ -43,6 +43,7 @@ Gitlab::Application.config.to_prepare do
       Gitlab::Database::BackgroundMigration::BatchedJobTransitionLog,
       LooseForeignKeys::DeletedRecord,
       PartitionedSentNotification,
+      ProjectDailyStatistic,
       Users::GroupVisit,
       Users::ProjectVisit,
       MergeRequest::CommitsMetadata,

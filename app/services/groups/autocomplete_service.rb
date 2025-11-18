@@ -46,7 +46,7 @@ module Groups
     end
 
     def commands(noteable)
-      return [] unless noteable
+      return [] unless noteable && current_user
 
       QuickActions::InterpretService.new(container: group, current_user: current_user).available_commands(noteable)
     end

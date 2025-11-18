@@ -2,6 +2,7 @@
 stage: Data Access
 group: Database Operations
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+description: Set up PostgreSQL replication and automated failover for Linux package installations using Patroni, PgBouncer, and Consul.
 title: PostgreSQL replication and failover for Linux package installations
 ---
 

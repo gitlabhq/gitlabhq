@@ -135,4 +135,39 @@ class MergeRequest::CommitsMetadata < ApplicationRecord # rubocop:disable Style/
 
     mapping
   end
+
+  def self.oldest_merge_request_id_per_commit(project_id, shas)
+    # This method is defined here and not on MergeRequest, otherwise the SHA
+    # values used in the WHERE below won't be encoded correctly.
+    return [] if shas.empty?
+
+    metadata_results = oldest_merge_requests_commits_from_metadata(project_id, shas).to_a
+    found_shas = metadata_results.map(&:sha)
+    missing_shas = shas - found_shas
+
+    # We query the SHA from `merge_request_commits_metadata` table first and
+    # fallback to querying them from `merge_request_diff_commits` if there are no matches
+    # This is needed temporarily while `merge_request_commits_metadata_id` is not fully populated
+    if missing_shas.any?
+      diff_commits_results = MergeRequestDiffCommit.oldest_merge_request_id_per_commit(project_id, missing_shas)
+      metadata_results + diff_commits_results.to_a
+    else
+      metadata_results
+    end
+  end
+
+  def self.oldest_merge_requests_commits_from_metadata(project_id, shas)
+    select('sha', 'MIN(merge_requests.id) AS merge_request_id')
+      .where(project_id: project_id, sha: shas)
+      .joins(:merge_request_diff_commits)
+      .joins(
+        'INNER JOIN merge_request_diffs ON merge_request_diffs.id = merge_request_diff_commits.merge_request_diff_id'
+      )
+      .joins('INNER JOIN merge_requests ON merge_requests.latest_merge_request_diff_id = merge_request_diffs.id')
+      .where(merge_requests: {
+        target_project_id: project_id,
+        state_id: MergeRequest.available_states[:merged]
+      })
+      .group(:sha)
+  end
 end

@@ -36,16 +36,13 @@ import { NEXT, PREV } from '~/vue_shared/components/pagination/constants';
 import PackageFiles from '~/packages_and_registries/package_registry/components/details/package_files.vue';
 import FileIcon from '~/vue_shared/components/file_icon.vue';
 import TimeAgoTooltip from '~/vue_shared/components/time_ago_tooltip.vue';
-import { scrollToElement } from '~/lib/utils/common_utils';
+import { scrollToElement } from '~/lib/utils/scroll_utils';
 import getPackageFiles from '~/packages_and_registries/package_registry/graphql/queries/get_package_files.query.graphql';
 import destroyPackageFilesMutation from '~/packages_and_registries/package_registry/graphql/mutations/destroy_package_files.mutation.graphql';
 
 Vue.use(VueApollo);
 jest.mock('~/alert');
-jest.mock('~/lib/utils/common_utils', () => ({
-  ...jest.requireActual('~/lib/utils/common_utils'),
-  scrollToElement: jest.fn(),
-}));
+jest.mock('~/lib/utils/scroll_utils');
 
 describe('Package Files', () => {
   let wrapper;

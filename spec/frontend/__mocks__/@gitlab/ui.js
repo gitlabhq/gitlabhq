@@ -47,6 +47,7 @@ jest.mock('@gitlab/ui/src/components/base/popover/popover.vue', () => ({
       [
         'title',
         'target',
+        'content',
         'triggers',
         'placement',
         'boundary',

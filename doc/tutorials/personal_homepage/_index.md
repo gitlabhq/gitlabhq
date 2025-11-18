@@ -38,7 +38,7 @@ as the default homepage in your preferences.
 You can access your personal homepage from anywhere in GitLab:
 
 - On the left sidebar, at the top, select **Homepage**.
-- On the left sidebar, select **Search or go to**, select **Your work**, then select **Home**.
+- On the left sidebar, select **Search or go to**, select **Your work**, then select **Home**. If you've [turned on the new navigation](../../user/interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
 
 ## Layout of the homepage
 
@@ -76,7 +76,7 @@ Then, use the homepage to get an overview of what's happening in that project.
 
 To add a star to a project and view its activity on the homepage:
 
-1. On the left sidebar, select **Search or go to** and find your project.
+1. On the left sidebar, select **Search or go to** and find your project. If you've [turned on the new navigation](../../user/interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
 1. In the upper-right corner of the page, select **Star** ({{< icon name="star" >}}).
 1. On the left sidebar, at the top, select **Homepage**.
 1. In the **Follow the latest updates** section, select **Starred projects** from the dropdown list.

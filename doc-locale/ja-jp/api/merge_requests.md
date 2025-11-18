@@ -2,26 +2,29 @@
 stage: Create
 group: Code Review
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
-description: Documentation for the REST API for merge requests in GitLab.
+description: GitLabのマージリクエストのREST APIのドキュメント。
 title: マージリクエストAPI
 ---
 
 {{< details >}}
 
-- プラン:Free、Premium、Ultimate
-- 提供形態:GitLab.com、GitLab Self-Managed、GitLab Dedicated
+- プラン: Free、Premium、Ultimate
+- 提供形態: GitLab.com、GitLab Self-Managed、GitLab Dedicated
 
 {{< /details >}}
+
+<!-- Do not remove these outdated lines until the changes are actually implemented in the API -->
 
 {{< history >}}
 
 - `reference`はGitLab 12.7で[非推奨](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/20354)になりました。
 - `merged_by`はGitLab 14.7で[非推奨](https://gitlab.com/gitlab-org/gitlab/-/issues/350534)になりました。
-- `merge_status`は GitLab 15.6で[非推奨](https://gitlab.com/gitlab-org/gitlab/-/issues/3169#note_1162532204)になり、`detailed_merge_status`が推奨されます。
-- `with_merge_status_recheck`はGitLab 15.11で[変更](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/115948)され、`restrict_merge_status_recheck`[フラグ](../administration/feature_flags.md)が付きました。これにより、権限が不十分なユーザーからのリクエストではこの属性は無視されます。デフォルトでは無効になっています。
+- `merge_status`はGitLab 15.6で[非推奨](https://gitlab.com/gitlab-org/gitlab/-/issues/3169#note_1162532204)になり、代わりに`detailed_merge_status`が推奨されます。
+- `with_merge_status_recheck`は、GitLab 15.11で`restrict_merge_status_recheck`[フラグ](../administration/feature_flags/_index.md)とともに[変更](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/115948)されました。これにより、必要な権限を持たないユーザーからのリクエストではこの属性は無視されます。デフォルトでは無効になっています。
 - `approvals_before_merge`はGitLab 16.0で[非推奨](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/119503)になりました。
 - `prepared_at`はGitLab 16.1で[導入](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/122001)されました。
 - `merge_after`はGitLab 17.5で[導入](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/165092)されました。
+- `security_policy_violations`の[一般提供](https://gitlab.com/gitlab-org/gitlab/-/issues/473704)は、GitLab 18.4で[一般提供](https://gitlab.com/gitlab-org/gitlab/-/issues/473704)となりました。機能フラグ`policy_mergability_check`は削除されました。
 
 {{< /history >}}
 
@@ -29,15 +32,15 @@ title: マージリクエストAPI
 
 非公開情報に対するすべてのAPIコールには、認証が必要です。
 
-## API v5での削除
+## API v5での削除 {#removals-in-api-v5}
 
-`approvals_before_merge`属性は非推奨であり、API v5で[削除される予定](rest/deprecations.md)です。代わりに[マージリクエスト承認API](merge_request_approvals.md)が推奨されます。
+`approvals_before_merge`属性は非推奨であり、[削除される予定](rest/deprecations.md)です。代わりに[マージリクエスト承認API](merge_request_approvals.md)が推奨されます。
 
-## マージリクエストをリストする
+## マージリクエストのリストを取得する {#list-merge-requests}
 
-認証済みユーザーがアクセスできるすべてのマージリクエストを取得します。デフォルトでは、現在のユーザーが作成したマージリクエストのみが返されます。すべてのマージリクエストを取得するには、`scope=all`パラメーターを使用します。
+認証済みユーザーがアクセスできるすべてのマージリクエストを取得します。デフォルトでは、現在のユーザーが作成したマージリクエストのみが返されます。すべてのマージリクエストを取得するには、`scope=all`パラメータを使用します。
 
-`state`パラメーターを使用して、指定された状態（`opened`、`closed`、`locked`、`merged`）のマージリクエストのみを取得するか、すべての状態（`all`）のマージリクエストを取得します。`locked`は短期間であり一時的なため、通常、この状態で検索すると結果は返されません。マージリクエストのリストを制限するには、ページネーションパラメーター`page`と`per_page`を使用します。
+`state`パラメータを使用して、指定された状態（`opened`、`closed`、`locked`、`merged`）のマージリクエストのみを取得するか、すべての状態（`all`）のマージリクエストを取得します。`locked`は短期間であり一時的なため、通常、この状態で検索すると結果は返されません。マージリクエストのリストを制限するには、ページネーションパラメータ`page`と`per_page`を使用します。
 
 ```plaintext
 GET /merge_requests
@@ -49,6 +52,7 @@ GET /merge_requests?author_id=5
 GET /merge_requests?author_username=gitlab-bot
 GET /merge_requests?my_reaction_emoji=star
 GET /merge_requests?scope=assigned_to_me
+GET /merge_requests?scope=reviews_for_me
 GET /merge_requests?search=foo&in=title
 ```
 
@@ -56,41 +60,40 @@ GET /merge_requests?search=foo&in=title
 
 | 属性                   | 型          | 必須 | 説明 |
 |-----------------------------|---------------|----------|-------------|
-| `approved_by_ids`               | 整数配列  | いいえ       | 指定された`id`を持つすべてのユーザー（最大5人のユーザー）が承認したマージリクエストを返します。`None`は承認のないマージリクエストを返します。`Any`は承認のあるマージリクエストを返します。PremiumおよびUltimateのみ。                                                                                                                                        |
-| `approver_ids`                  | 整数配列  | いいえ       | 指定された`id`を持つすべてのユーザーを個別の承認者として指定したマージリクエストを返します。`None`は承認のないマージリクエストを返します。`Any`は承認のあるマージリクエストを返します。PremiumおよびUltimateのみ。                                                                                                                          |
-| `approved`                      | 文字列         | いいえ       | `approved`ステータスでマージリクエストをフィルタリングします。`yes`は承認済みのマージリクエストのみを返します。`no`は未承認のマージリクエストのみを返します。GitLab 15.11で`mr_approved_filter`フラグとともに[導入](https://gitlab.com/gitlab-org/gitlab/-/issues/3159)されました。デフォルトでは無効になっています。                                                                    |
+| `approved_by_ids`               | 整数の配列  | いいえ       | 指定された`id`を持つすべてのユーザー（最大5人のユーザー）が承認したマージリクエストを返します。`None`は承認のないマージリクエストを返します。`Any`は承認のあるマージリクエストを返します。PremiumおよびUltimateのみです。                                                                                                                                        |
+| `approver_ids`                  | 整数の配列  | いいえ       | 指定された`id`を持つすべてのユーザーを個別の承認者として指定したマージリクエストを返します。`None`は承認者のないマージリクエストを返します。`Any`は承認者のあるマージリクエストを返します。PremiumおよびUltimateのみです。                                                                                                                          |
 | `assignee_id`                   | 整数        | いいえ       | 指定されたユーザー`id`に割り当てられたマージリクエストを返します。`None`は未割り当てのマージリクエストを返します。`Any`は担当者に割り当てられているマージリクエストを返します。                                                                                                                                                                                                           |
 | `author_id`                     | 整数        | いいえ       | 指定されたユーザー`id`が作成したマージリクエストを返します。`author_username`と相互に排他的です。`scope=all`または`scope=assigned_to_me`と組み合わせて指定します。                                                                                                                                                                                                      |
 | `author_username`               | 文字列         | いいえ       | 指定された`username`が作成したマージリクエストを返します。`author_id`と相互に排他的です。                                                                                                                                                                                                                                                               |
-| `created_after`                 | 日時       | いいえ       | 指定された時刻以降に作成されたマージリクエストを返します。ISO 8601形式で指定します（`2019-03-15T08:00:00Z`）。                                                                                                                                                                                                                                           |
-| `created_before`                | 日時       | いいえ       | 指定された時刻以前に作成されたマージリクエストを返します。ISO 8601形式で指定します（`2019-03-15T08:00:00Z`）。                                                                                                                                                                                                                                          |
-| `deployed_after`                | 日時       | いいえ       | 指定された日時以降にデプロイされたマージリクエストを返します。ISO 8601形式で指定します（`2019-03-15T08:00:00Z`）。                                                                                                                                                                                                                                           |
-| `deployed_before`               | 日時       | いいえ       | 指定された日時より前にデプロイされたマージリクエストを返します。ISO 8601形式で指定します（`2019-03-15T08:00:00Z`）。                                                                                                                                                                                                                                          |
+| `created_after`                 | 日時       | いいえ       | 指定された時刻以降に作成されたマージリクエストを返します。ISO 8601形式（`2019-03-15T08:00:00Z`）で指定します。                                                                                                                                                                                                                                           |
+| `created_before`                | 日時       | いいえ       | 指定された時刻以前に作成されたマージリクエストを返します。ISO 8601形式（`2019-03-15T08:00:00Z`）で指定します。                                                                                                                                                                                                                                          |
+| `deployed_after`                | 日時       | いいえ       | 指定された日時より後にデプロイされたマージリクエストを返します。ISO 8601形式（`2019-03-15T08:00:00Z`）で指定します。                                                                                                                                                                                                                                           |
+| `deployed_before`               | 日時       | いいえ       | 指定された日時より前にデプロイされたマージリクエストを返します。ISO 8601形式（`2019-03-15T08:00:00Z`）で指定します。                                                                                                                                                                                                                                          |
 | `environment`                   | 文字列         | いいえ       | 指定された環境にデプロイされたマージリクエストを返します。                                                                                                                                                                                                                                                                                                  |
-| `in`                            | 文字列         | いいえ       | `search`属性のスコープを変更します（`title`、`description`、またはこれらをカンマで結合した文字列）。デフォルトは`title,description`です。                                                                                                                                                                                                                   |
-| `labels`                        | 文字列         | いいえ       | カンマ区切りのラベルのリストに一致するマージリクエストを返します。`None`は、ラベルのないすべてのマージリクエストをリストします。`Any`は、1つ以上のラベルを持つすべてのマージリクエストをリストします。定義済みの名前では大文字と小文字が区別されません。                                                                                                                                           |
+| `in`                            | 文字列         | いいえ       | `search`属性のスコーピングを変更します（`title`、`description`、またはこれらをカンマで結合した文字列）。デフォルトは`title,description`です。                                                                                                                                                                                                                   |
+| `labels`                        | 文字列         | いいえ       | カンマ区切りのラベルのリストに一致するマージリクエストを返します。`None`は、ラベルのないすべてのマージリクエストをリストします。`Any`は、少なくとも1つのラベルを持つすべてのマージリクエストをリストします。定義済みの名前では大文字と小文字が区別されません。                                                                                                                                           |
 | `merge_user_id`                 | 整数        | いいえ       | 指定されたユーザー`id`によってマージされたマージリクエストを返します。`merge_user_username`と相互に排他的です。GitLab 17.0で[導入](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/140002)されました。                                                                                                                                          |
 | `merge_user_username`           | 文字列         | いいえ       | 指定された`username`を持つユーザーによってマージされたマージリクエストを返します。`merge_user_id`と相互に排他的です。GitLab 17.0で[導入](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/140002)されました。                                                                                                                                               |
-| `milestone`                     | 文字列         | いいえ       | 特定のマイルストーンのマージリクエストを返します。`None`は、マイルストーンのないマージリクエストを返します。`Any`は、割り当てられたマイルストーンを持つマージリクエストを返します。                                                                                                                                                                                            |
-| `my_reaction_emoji`             | 文字列         | いいえ       | 認証済みユーザーが、指定された`emoji`でリアクションしたマージリクエストを返します。`None`は、リアクションがないマージリクエストを返します。`Any`は、1つ以上のリアクションがあるマージリクエストを返します。                                                                                                                                                                               |
-| `not`                           | ハッシュ           | いいえ       | 指定されたパラメーターに一致しないマージリクエストを返します。`labels`、`milestone`、`author_id`、`author_username`、`assignee_id`、`assignee_username`、`reviewer_id`、`reviewer_username`、`my_reaction_emoji`を指定できます。                                                                                                                             |
+| `milestone`                     | 文字列         | いいえ       | 特定のマイルストーンに対するマージリクエストを返します。`None`は、マイルストーンのないマージリクエストをリストします。`Any`は、割り当てられたマイルストーンを持つマージリクエストをリストします。                                                                                                                                                                                            |
+| `my_reaction_emoji`             | 文字列         | いいえ       | 認証されたユーザーが、指定された`emoji`でリアクションしたマージリクエストを返します。`None`は、リアクションがないマージリクエストを返します。`Any`は、1つ以上のリアクションがあるマージリクエストを返します。                                                                                                                                                                               |
+| `not`                           | ハッシュ           | いいえ       | 指定されたパラメータに一致しないマージリクエストを返します。`labels`、`milestone`、`author_id`、`author_username`、`assignee_id`、`assignee_username`、`reviewer_id`、`reviewer_username`、`my_reaction_emoji`を指定できます。                                                                                                                             |
 | `order_by`                  | 文字列        | いいえ       | `created_at`、`title`、`merged_at`（GitLab 17.2で[導入](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/147052)）、または`updated_at`フィールドで並べ替えられたリクエストを返します。デフォルトは`created_at`です。 |
-| `reviewer_id`                   | 整数        | いいえ       | 指定されたユーザー`id`のユーザーが[レビュアーである](../user/project/merge_requests/reviews/_index.md)マージリクエストを返します。`None`はレビュアーのいないマージリクエストを返します。`Any`はレビュアーのいるマージリクエストを返します。`reviewer_username`と相互に排他的です。                                                                        |
-| `reviewer_username`             | 文字列         | いいえ       | 指定された`username`のユーザーが[レビュアー](../user/project/merge_requests/reviews/_index.md)であるマージリクエストを返します。`None`はレビュアーのいないマージリクエストを返します。`Any`はレビュアーのいるマージリクエストを返します。`reviewer_id`と相互に排他的です。                                                                             |
-| `scope`                         | 文字列         | いいえ       | 指定されたスコープ（`created_by_me`、`assigned_to_me`、または`all`）のマージリクエストを返します。デフォルトは`created_by_me`です。                                                                                                                                                                                                                                       |
+| `reviewer_id`                   | 整数        | いいえ       | 指定されたユーザー`id`のユーザーが[レビュアー](../user/project/merge_requests/reviews/_index.md)であるマージリクエストを返します。`None`はレビュアーのいないマージリクエストを、`Any`はレビュアーのいるマージリクエストを返します。`reviewer_username`と相互に排他的です。                                                                        |
+| `reviewer_username`             | 文字列         | いいえ       | 指定された`username`のユーザーが[レビュアー](../user/project/merge_requests/reviews/_index.md)であるマージリクエストを返します。`None`はレビュアーのいないマージリクエストを、`Any`はレビュアーのいるマージリクエストを返します。`reviewer_id`と相互に排他的です。                                                                             |
+| `scope`                         | 文字列         | いいえ       | 指定されたスコープ(`created_by_me`、`assigned_to_me`、`reviews_for_me`、または`all`)のマージリクエストを返します。デフォルトは`created_by_me`です。`reviews_for_me`は、現在のユーザーがレビュアーとして割り当てられているマージリクエストを返します。                                                                                                                                                                                                                                       |
 | `search`                        | 文字列         | いいえ       | `title`と`description`でマージリクエストを検索します。                                                                                                                                                                                                                                                                                             |
 | `sort`                          | 文字列         | いいえ       | `asc`または`desc`の順にソートされたリクエストを返します。デフォルトは`desc`です。                                                                                                                                                                                                                                                                                       |
 | `source_branch`                 | 文字列         | いいえ       | 指定されたソースブランチを持つマージリクエストを返します。                                                                                                                                                                                                                                                                                                       |
-| `state`                         | 文字列         | いいえ       | すべてのマージリクエスト（`opened`）、または`closed`、`locked`、`merged`のマージリクエストのみを返します。                                                                                                                                                                                                                                                               |
+| `state`                         | 文字列         | いいえ       | すべてのマージリクエスト（`opened`）、または`closed`、`locked`、`merged`、 のマージリクエストのみを返します。                                                                                                                                                                                                                                                               |
 | `target_branch`                 | 文字列         | いいえ       | 指定されたターゲットブランチを持つマージリクエストを返します。                                                                                                                                                                                                                                                                                                       |
-| `updated_after`                 | 日時       | いいえ       | 指定された時刻以降に更新されたマージリクエストを返します。ISO 8601形式で指定します（`2019-03-15T08:00:00Z`）。                                                                                                                                                                                                                                           |
-| `updated_before`                | 日時       | いいえ       | 指定された時刻以前に更新されたマージリクエストを返します。ISO 8601形式で指定します（`2019-03-15T08:00:00Z`）。                                                                                                                                                                                                                                          |
+| `updated_after`                 | 日時       | いいえ       | 指定された時刻以降に更新されたマージリクエストを返します。ISO 8601形式（`2019-03-15T08:00:00Z`）で指定します。                                                                                                                                                                                                                                           |
+| `updated_before`                | 日時       | いいえ       | 指定された時刻以前に更新されたマージリクエストを返します。ISO 8601形式（`2019-03-15T08:00:00Z`）で指定します。                                                                                                                                                                                                                                          |
 | `view`                          | 文字列         | いいえ       | `simple`の場合、`iid`、URL、タイトル、説明、およびマージリクエストの基本的な状態を返します。                                                                                                                                                                                                                                                                 |
-| `with_labels_details`           | ブール値        | いいえ       | `true`の場合、応答ではラベルフィールドの各ラベルに関する詳細（`:name`、`:color`、`:description`、`:description_html`、`:text_color`）が返されます。デフォルトは`false`です。                                                                                                                                                                                        |
-| `with_merge_status_recheck`     | ブール値        | いいえ       | `true`の場合、このプロジェクションは`merge_status`フィールドの非同期再計算をリクエストします（ただし保証はしません）。デフォルトは`false`です。GitLab 15.11以降では、`restrict_merge_status_recheck`機能[フラグ](../administration/feature_flags.md)を有効にして、デベロッパー以上のロールを持たないユーザーがリクエストした場合にこの属性を無視します。 |
-| `wip`                           | 文字列         | いいえ       | `wip`ステータスでマージリクエストをフィルタリングします。下書きマージリクエスト*のみ*を返す場合は`yes`を使用し、*下書き以外の*マージリクエストを返す場合は`no`を使用します。                                                                                                                                                                                                              |
+| `with_labels_details`           | ブール値        | いいえ       | `true`の場合、レスポンスではラベルフィールドの各ラベルに関する詳細（`:name`、`:color`、`:description`、`:description_html`、`:text_color`）が返されます。デフォルトは`false`です。                                                                                                                                                                                        |
+| `with_merge_status_recheck`     | ブール値        | いいえ       | `true`の場合、このプロジェクションは`merge_status`フィールドの非同期再計算をリクエストします（ただし保証はしません）。`restrict_merge_status_recheck` [機能フラグ](../administration/feature_flags/_index.md)を有効にして、デベロッパー以上のロールを持たないユーザーがリクエストした場合にこの属性を無視します。 |
+| `wip`                           | 文字列         | いいえ       | `wip`ステータスでマージリクエストをフィルタリングします。ドラフトマージリクエストのみを返す場合は`yes`を使用し、ドラフト以外のマージリクエストを返す場合は`no`を使用します。                                                                                                                                                                                                              |
 
-応答の例:
+レスポンス例:
 
 ```json
 [
@@ -216,14 +219,14 @@ GET /merge_requests?search=foo&in=title
 ]
 ```
 
-### マージリクエストリストの応答に関する注意事項
+### マージリクエストリストのレスポンスに関する注記 {#merge-requests-list-response-notes}
 
-- マージリクエストをリストする操作では、`merge_status`がプロアクティブに更新されない場合があります（`has_conflicts`にも影響します）。これは、コストのかかる操作になる可能性があるためです。このエンドポイントからこれらのフィールドの値が必要な場合は、クエリの`with_merge_status_recheck`パラメーターを`true`に設定します。
-- マージリクエストオブジェクトフィールドに関する注意事項については、[単一マージリクエスト応答に関する注意事項](#single-merge-request-response-notes)を参照してください。
+- マージリクエストのリスト取得では、`merge_status`がプロアクティブに更新されない場合があります（`has_conflicts`にも影響します）。これは、コストのかかる操作になる可能性があるためです。このエンドポイントからこれらのフィールドの値が必要な場合は、クエリの`with_merge_status_recheck`パラメータを`true`に設定します。
+- マージリクエストオブジェクトフィールドに関する注意事項については、[単一マージリクエストのレスポンスに関する注意事項](#single-merge-request-response-notes)を参照してください。
 
-## プロジェクトマージリクエストをリストする
+## プロジェクトマージリクエストのリストを取得する {#list-project-merge-requests}
 
-このプロジェクトのすべてのマージリクエストを取得するには、次のようにします。
+このプロジェクトのすべてのマージリクエストを取得するには、次を実行します。
 
 ```plaintext
 GET /projects/:id/merge_requests
@@ -239,93 +242,90 @@ GET /projects/:id/merge_requests?my_reaction_emoji=star
 
 | 属性                       | 型           | 必須 | 説明 |
 | ------------------------------- | -------------- | -------- | ----------- |
-| `id`                            | 整数または文字列 | はい      | プロジェクトのIDまたは[URLエンコードされたパス](rest/_index.md#namespaced-paths)。 |
-| `approved_by_ids`               | 整数配列  | いいえ       | 指定された`id`を持つすべてのユーザー（最大5人のユーザー）が承認したマージリクエストを返します。`None`は承認のないマージリクエストを返します。`Any`は承認のあるマージリクエストを返します。PremiumおよびUltimateのみ。 |
-| `approver_ids`                  | 整数配列  | いいえ       | 指定された`id`を持つすべてのユーザーを個別の承認者として指定したマージリクエストを返します。`None`は承認のないマージリクエストを返します。`Any`は承認のあるマージリクエストを返します。PremiumおよびUltimateのみ。 |
-| `approved`                      | 文字列         | いいえ       | `approved`ステータスでマージリクエストをフィルタリングします。`yes`は承認済みのマージリクエストのみを返します。`no`は未承認のマージリクエストのみを返します。GitLab 15.11で[導入](https://gitlab.com/gitlab-org/gitlab/-/issues/3159)されました。機能フラグ`mr_approved_filter`が有効になっている場合にのみ使用できます。 |
+| `id`                            | 整数または文字列 | はい      | プロジェクトの[IDまたはURLエンコードされたパス](rest/_index.md#namespaced-paths)。 |
+| `approved_by_ids`               | 整数の配列  | いいえ       | 指定された`id`を持つすべてのユーザー（最大5人のユーザー）が承認したマージリクエストを返します。`None`は承認のないマージリクエストを返します。`Any`は承認のあるマージリクエストを返します。PremiumおよびUltimateのみです。 |
+| `approver_ids`                  | 整数の配列  | いいえ       | 指定された`id`を持つすべてのユーザーを個別の承認者として指定したマージリクエストを返します。`None`は承認者のないマージリクエストを返します。`Any`は承認者のあるマージリクエストを返します。PremiumおよびUltimateのみです。 |
 | `assignee_id`                   | 整数        | いいえ       | 指定されたユーザー`id`に割り当てられたマージリクエストを返します。`None`は未割り当てのマージリクエストを返します。`Any`は担当者に割り当てられているマージリクエストを返します。 |
 | `author_id`                     | 整数        | いいえ       | 指定されたユーザー`id`が作成したマージリクエストを返します。`author_username`と相互に排他的です。 |
 | `author_username`               | 文字列         | いいえ       | 指定された`username`が作成したマージリクエストを返します。`author_id`と相互に排他的です。 |
-| `created_after`                 | 日時       | いいえ       | 指定された時刻以降に作成されたマージリクエストを返します。ISO 8601形式で指定します（`2019-03-15T08:00:00Z`）。 |
-| `created_before`                | 日時       | いいえ       | 指定された時刻以前に作成されたマージリクエストを返します。ISO 8601形式で指定します（`2019-03-15T08:00:00Z`）。 |
+| `created_after`                 | 日時       | いいえ       | 指定された時刻以降に作成されたマージリクエストを返します。ISO 8601形式（`2019-03-15T08:00:00Z`）で指定します。 |
+| `created_before`                | 日時       | いいえ       | 指定された時刻以前に作成されたマージリクエストを返します。ISO 8601形式（`2019-03-15T08:00:00Z`）で指定します。 |
 | `environment`                   | 文字列         | いいえ       | 指定された環境にデプロイされたマージリクエストを返します。 |
-| `iids[]`                        | 整数配列  | いいえ       | 指定された`iid`を持つリクエストを返します。 |
-| `labels`                        | 文字列         | いいえ       | カンマ区切りのラベルのリストに一致するマージリクエストを返します。`None`は、ラベルのないすべてのマージリクエストをリストします。`Any`は、1つ以上のラベルを持つすべてのマージリクエストをリストします。定義済みの名前では大文字と小文字が区別されません。 |
-| `merge_user_id`                 | 整数        | いいえ       | 指定されたユーザー`id`を持つユーザーによってマージされたマージリクエストを返します。`merge_user_username`と相互に排他的です。GitLab 17.0で[導入](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/140002)されました。 |
+| `iids[]`                        | 整数の配列  | いいえ       | 指定された`iid`を持つリクエストを返します。 |
+| `labels`                        | 文字列         | いいえ       | カンマ区切りのラベルのリストに一致するマージリクエストを返します。`None`は、ラベルのないすべてのマージリクエストをリストします。`Any`は、少なくとも1つのラベルを持つすべてのマージリクエストをリストします。定義済みの名前では大文字と小文字が区別されません。 |
+| `merge_user_id`                 | 整数        | いいえ       | 指定されたユーザー`id`によってマージされたマージリクエストを返します。`merge_user_username`と相互に排他的です。GitLab 17.0で[導入](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/140002)されました。 |
 | `merge_user_username`           | 文字列         | いいえ       | 指定された`username`を持つユーザーによってマージされたマージリクエストを返します。`merge_user_id`と相互に排他的です。GitLab 17.0で[導入](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/140002)されました。 |
-| `milestone`                     | 文字列         | いいえ       | 特定のマイルストーンのマージリクエストを返します。`None`は、マイルストーンのないマージリクエストを返します。`Any`は、割り当てられたマイルストーンを持つマージリクエストを返します。 |
-| `my_reaction_emoji`             | 文字列         | いいえ       | 認証済みユーザーが、指定された`emoji`でリアクションしたマージリクエストを返します。`None`は、リアクションがないマージリクエストを返します。`Any`は、1つ以上のリアクションがあるマージリクエストを返します。 |
-| `not`                           | ハッシュ           | いいえ       | 指定されたパラメーターに一致しないマージリクエストを返します。`labels`、`milestone`、`author_id`、`author_username`、`assignee_id`、`assignee_username`、`reviewer_id`、`reviewer_username`、`my_reaction_emoji`を指定できます。 |
+| `milestone`                     | 文字列         | いいえ       | 特定のマイルストーンに対するマージリクエストを返します。`None`は、マイルストーンのないマージリクエストをリストします。`Any`は、割り当てられたマイルストーンを持つマージリクエストをリストします。 |
+| `my_reaction_emoji`             | 文字列         | いいえ       | 認証されたユーザーが、指定された`emoji`でリアクションしたマージリクエストを返します。`None`は、リアクションがないマージリクエストを返します。`Any`は、1つ以上のリアクションがあるマージリクエストを返します。 |
+| `not`                           | ハッシュ           | いいえ       | 指定されたパラメータに一致しないマージリクエストを返します。`labels`、`milestone`、`author_id`、`author_username`、`assignee_id`、`assignee_username`、`reviewer_id`、`reviewer_username`、`my_reaction_emoji`を指定できます。 |
 | `order_by`                      | 文字列         | いいえ       | `created_at`、`title`、または`updated_at`フィールドで並べ替えられたリクエストを返します。デフォルトは`created_at`です。 |
-| `page`                          | 整数        | いいえ       | 返される結果のページ。デフォルトは1です。 |
-| `per_page`                      | 整数        | いいえ       | ページあたりの結果の数。デフォルトは20です。 |
-| `reviewer_id`                   | 整数        | いいえ       | 指定されたユーザー`id`のユーザーが[レビュアーである](../user/project/merge_requests/reviews/_index.md)マージリクエストを返します。`None`はレビュアーのいないマージリクエストを返します。`Any`はレビュアーのいるマージリクエストを返します。`reviewer_username`と相互に排他的です。  |
-| `reviewer_username`             | 文字列         | いいえ       | 指定された`username`のユーザーが[レビュアー](../user/project/merge_requests/reviews/_index.md)であるマージリクエストを返します。`None`はレビュアーのいないマージリクエストを返します。`Any`はレビュアーのいるマージリクエストを返します。`reviewer_id`と相互に排他的です。 |
-| `scope`                         | 文字列         | いいえ       | 指定されたスコープ（`created_by_me`、`assigned_to_me`、または`all`）のマージリクエストを返します。 |
+| `reviewer_id`                   | 整数        | いいえ       | 指定されたユーザー`id`のユーザーが[レビュアー](../user/project/merge_requests/reviews/_index.md)であるマージリクエストを返します。`None`はレビュアーのいないマージリクエストを、`Any`はレビュアーのいるマージリクエストを返します。`reviewer_username`と相互に排他的です。  |
+| `reviewer_username`             | 文字列         | いいえ       | 指定された`username`のユーザーが[レビュアー](../user/project/merge_requests/reviews/_index.md)であるマージリクエストを返します。`None`はレビュアーのいないマージリクエストを、`Any`はレビュアーのいるマージリクエストを返します。`reviewer_id`と相互に排他的です。 |
+| `scope`                         | 文字列         | いいえ       | 指定されたスコープ(`created_by_me`、`assigned_to_me`、または`all`)のマージリクエストを返します。 |
 | `search`                        | 文字列         | いいえ       | `title`と`description`でマージリクエストを検索します。 |
 | `sort`                          | 文字列         | いいえ       | `asc`または`desc`の順にソートされたリクエストを返します。デフォルトは`desc`です。 |
 | `source_branch`                 | 文字列         | いいえ       | 指定されたソースブランチを持つマージリクエストを返します。 |
-| `state`                         | 文字列         | いいえ       | すべてのマージリクエスト（`all`）、または`opened`、`closed`、`locked`、`merged`のマージリクエストのみを返します。  |
+| `state`                         | 文字列         | いいえ       | すべてのマージリクエスト（`all`）または、`opened`、`closed`、`locked`、あるいは`merged`のみを返します。  |
 | `target_branch`                 | 文字列         | いいえ       | 指定されたターゲットブランチを持つマージリクエストを返します。 |
-| `updated_after`                 | 日時       | いいえ       | 指定された時刻以降に更新されたマージリクエストを返します。ISO 8601形式で指定します（`2019-03-15T08:00:00Z`）。 |
-| `updated_before`                | 日時       | いいえ       | 指定された時刻以前に更新されたマージリクエストを返します。ISO 8601形式で指定します（`2019-03-15T08:00:00Z`）。 |
+| `updated_after`                 | 日時       | いいえ       | 指定された時刻以降に更新されたマージリクエストを返します。ISO 8601形式（`2019-03-15T08:00:00Z`）で指定します。 |
+| `updated_before`                | 日時       | いいえ       | 指定された時刻以前に更新されたマージリクエストを返します。ISO 8601形式（`2019-03-15T08:00:00Z`）で指定します。 |
 | `view`                          | 文字列         | いいえ       | `simple`の場合、`iid`、URL、タイトル、説明、およびマージリクエストの基本的な状態を返します。 |
-| `wip`                           | 文字列         | いいえ       | `wip`ステータスに基づいてマージリクエストをフィルタリングします。下書きマージリクエスト*のみ*を返す場合は`yes`を使用し、*下書き以外の*マージリクエストを返す場合は`no`を使用します。 |
-| `with_labels_details`           | ブール値        | いいえ       | `true`の場合、応答ではラベルフィールドの各ラベルに関する詳細（`:name`、`:color`、`:description`、`:description_html`、`:text_color`）が返されます。デフォルトは`false`です。 |
-| `with_merge_status_recheck`     | ブール値        | いいえ       | `true`の場合、このプロジェクションは`merge_status`フィールドの非同期再計算をリクエストします（ただし保証はしません）。デフォルトは`false`です。GitLab 15.11以降では、`restrict_merge_status_recheck`機能[フラグ](../administration/feature_flags.md)を有効にして、デベロッパー以上のロールを持たないユーザーがリクエストした場合にこの属性を無視します。 |
+| `wip`                           | 文字列         | いいえ       | `wip`のステータスでマージリクエストをフィルタリングします。`yes`はドラフトのマージリクエストのみを返し、`no`はドラフト以外のマージリクエストを返します。 |
+| `with_labels_details`           | ブール値        | いいえ       | `true`の場合、レスポンスではラベルフィールドの各ラベルに関する詳細（`:name`、`:color`、`:description`、`:description_html`、`:text_color`）が返されます。デフォルトは`false`です。 |
+| `with_merge_status_recheck`     | ブール値        | いいえ       | `true`の場合、このプロジェクションは`merge_status`フィールドの非同期再計算をリクエストします（ただし保証はしません）。`restrict_merge_status_recheck` [機能フラグ](../administration/feature_flags/_index.md)を有効にして、デベロッパー以上のロールを持たないユーザーがリクエストした場合にこの属性を無視します。 |
 
-成功した場合、[`200 OK`](rest/troubleshooting.md#status-codes)と次の応答属性を返します。
+成功した場合は、[`200 OK`](rest/troubleshooting.md#status-codes)と以下のレスポンス属性が返されます。
 
 | 属性                          | 型     | 説明 |
 | ---------------------------------- | -------- | ----------- |
 | `[].id`                            | 整数  | マージリクエストのID。 |
 | `[].iid`                           | 整数  | マージリクエストの内部ID。 |
-| `[].approvals_before_merge`        | 整数  | このマージリクエストをマージする前に必要な承認の数。承認ルールを設定するには、[マージリクエスト承認API](merge_request_approvals.md)を参照してください。GitLab 16.0で[非推奨](https://gitlab.com/gitlab-org/gitlab/-/issues/353097)になりました。PremiumおよびUltimateのみ。 |
+| `[].approvals_before_merge`        | 整数  | このマージリクエストがマージされる前に必要な承認の数。承認ルールを設定するには、[マージリクエスト承認API](merge_request_approvals.md)を参照してください。GitLab 16.0で[非推奨](https://gitlab.com/gitlab-org/gitlab/-/issues/353097)になりました。PremiumおよびUltimateのみです。 |
 | `[].assignee`                      | オブジェクト   | マージリクエストの最初の担当者。 |
 | `[].assignees`                     | 配列    | マージリクエストの担当者。 |
 | `[].author`                        | オブジェクト   | このマージリクエストを作成したユーザー。 |
-| `[].blocking_discussions_resolved` | ブール値  | マージリクエストをマージする前にすべてのディスカッションが必須の場合にのみ、すべてのディスカッションが解決されるかどうかを示します。 |
+| `[].blocking_discussions_resolved` | ブール値  | マージリクエストをマージする前に、すべてのディスカッションが必須な場合にのみ、すべてのディスカッションが解決されるかどうかを示します。 |
 | `[].closed_at`                     | 日時 | マージリクエストがクローズされた時点のタイムスタンプ。 |
 | `[].closed_by`                     | オブジェクト   | このマージリクエストをクローズしたユーザー。 |
 | `[].created_at`                    | 日時 | マージリクエストが作成された時点のタイムスタンプ。 |
 | `[].description`                   | 文字列   | マージリクエストの説明。 |
-| `[].detailed_merge_status`         | 文字列   | マージリクエストの詳細なマージステータス。使用可能な値のリストについては、[マージステータス](#merge-status)を参照してください。 |
+| `[].detailed_merge_status`         | 文字列   | マージリクエストの詳細なマージ状態。使用可能な値のリストについては、[マージ状態](#merge-status)を参照してください。 |
 | `[].discussion_locked`             | ブール値  | マージリクエストのコメントがメンバーのみにロックされているかどうかを示します。 |
-| `[].downvotes`                     | 整数  | マージリクエストの不同意の数。 |
-| `[].draft`                         | ブール値  | マージリクエストが下書きかどうかを示します。 |
-| `[].force_remove_source_branch`    | ブール値  | プロジェクト設定によってマージ後にソースブランチが削除されるかどうかを示します。 |
-| `[].has_conflicts`                 | ブール値  | マージリクエストに競合があるためにマージできないかどうかを示します。`merge_status`プロパティに依存します。`merge_status`が`cannot_be_merged`ではない場合には、`false`を返します。 |
+| `[].downvotes`                     | 整数  | マージリクエストの同意しない数。 |
+| `[].draft`                         | ブール値  | マージリクエストがドラフトかどうかを示します。 |
+| `[].force_remove_source_branch`    | ブール値  | プロジェクトの設定で、マージ後にソースブランチを削除するかどうかを示します。 |
+| `[].has_conflicts`                 | ブール値  | マージリクエストに競合があり、マージできないかどうかを示します。`merge_status`プロパティに依存します。`merge_status`が`cannot_be_merged`でない限り、`false`を返します。 |
 | `[].labels`                        | 配列    | マージリクエストのラベル。 |
-| `[].merge_commit_sha`              | 文字列   | マージリクエストコミットのSHA。マージされるまで`null`を返します。 |
-| `[].merge_status`                  | 文字列   | マージリクエストのステータス。`unchecked`、`checking`、`can_be_merged`、`cannot_be_merged`、または`cannot_be_merged_recheck`のいずれかです。`has_conflicts`プロパティに影響します。応答データに関する重要な注意事項については、[単一マージリクエスト応答に関する注意事項](#single-merge-request-response-notes)を参照してください。GitLab 15.6で[非推奨](https://gitlab.com/gitlab-org/gitlab/-/issues/3169#note_1162532204)になりました。代わりに`detailed_merge_status`を使用してください。 |
+| `[].merge_commit_sha`              | 文字列   | マージリクエストのコミットのSHA。マージされるまで`null`を返します。 |
+| `[].merge_status`                  | 文字列   | マージリクエストの状態。`unchecked`、`checking`、`can_be_merged`、`cannot_be_merged`、または`cannot_be_merged_recheck`のいずれかです。`has_conflicts`プロパティに影響します。レスポンスデータに関する重要な注意点については、[単一マージリクエストのレスポンスに関する注意点](#single-merge-request-response-notes)を参照してください。GitLab 15.6で[非推奨](https://gitlab.com/gitlab-org/gitlab/-/issues/3169#note_1162532204)になりました。代わりに`detailed_merge_status`を使用してください。 |
 | `[].merge_user`                    | オブジェクト   | このマージリクエストをマージしたユーザー、自動マージに設定したユーザー、または`null`。 |
-| `[].merge_when_pipeline_succeeds`  | ブール値  | マージリクエストがそのパイプラインの成功時にマージされように設定されているかどうかを示します。 |
-| `[].merged_at`                     | 日時 | マージリクエストがマージされた時点のタイムスタンプ。 |
-| `[].merged_by`                     | オブジェクト   | このマージリクエストをマージしたユーザー、または自動マージに設定したユーザーです。GitLab 14.7で[非推奨](https://gitlab.com/gitlab-org/gitlab/-/issues/350534)になり、[APIバージョン5](https://gitlab.com/groups/gitlab-org/-/epics/8115)で削除される予定です。代わりに`merge_user`を使用してください。 |
+| `[].merge_when_pipeline_succeeds`  | ブール値  | マージリクエストが自動マージに設定されているかどうかを示します。 |
+| `[].merged_at`                     | 日時 | マージリクエストがマージされたときのタイムスタンプ。 |
+| `[].merged_by`                     | オブジェクト   | このマージリクエストをマージしたユーザー、または自動マージに設定したユーザー。GitLab 14.7で[非推奨](https://gitlab.com/gitlab-org/gitlab/-/issues/350534)となり、[APIバージョン5](https://gitlab.com/groups/gitlab-org/-/epics/8115)で削除される予定です。代わりに`merge_user`を使用してください。 |
 | `[].milestone`                     | オブジェクト   | マージリクエストのマイルストーン。 |
-| `[].prepared_at`                   | 日時 | マージリクエストが準備された時点のタイムスタンプ。このフィールドは、すべての[準備手順](#preparation-steps)が完了した後に1回だけ入力され、それ以上の変更が加えられても更新されません。 |
+| `[].prepared_at`                   | 日時 | マージリクエストが準備されたときのタイムスタンプ。このフィールドは、すべての[準備ステップ](#preparation-steps)が完了した後に1回だけ入力され、変更が追加されても更新されません。 |
 | `[].project_id`                    | 整数  | マージリクエストが存在するプロジェクトのID。常に`target_project_id`と等しくなります。 |
-| `[].reference`                     | 文字列   | マージリクエストの内部参照。デフォルトでは短縮形式で返されます。GitLab 12.7で[非推奨](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/20354)になり、[APIバージョン5](https://gitlab.com/groups/gitlab-org/-/epics/8115)で削除される予定です。代わりに`references`を使用してください。 |
-| `[].references`                    | オブジェクト   | マージリクエストの内部参照。`short`、`relative`、および`full`参照が含まれます。`references.relative`はマージリクエストのグループまたはプロジェクトに対して相対的です。マージリクエストのプロジェクトからフェッチした場合、`relative`形式と`short`形式は同一です。グループまたはプロジェクト全体でリクエストされた場合、`relative`形式と`full`形式は同一です。|
+| `[].reference`                     | 文字列   | マージリクエストの内部参照。デフォルトでは短縮形式で返されます。GitLab 12.7で[非推奨](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/20354)となり、[APIバージョン5](https://gitlab.com/groups/gitlab-org/-/epics/8115)で削除される予定です。代わりに`references`を使用してください。 |
+| `[].references`                    | オブジェクト   | マージリクエストの内部参照。`short`、`relative`、および`full`参照が含まれます。`references.relative`はマージリクエストのグループまたはプロジェクトに対して相対的です。マージリクエストのプロジェクトからフェッチされた場合、`relative`形式と`short`形式は同一です。グループまたはプロジェクト全体でリクエストされた場合、`relative`形式と`full`形式は同一です。|
 | `[].reviewers`                     | 配列    | マージリクエストのレビュアー。 |
 | `[].sha`                           | 文字列   | マージリクエストの差分ヘッドSHA。 |
-| `[].should_remove_source_branch`   | ブール値  | マージリクエストのソースブランチをマージ後に削除するかどうかを示します。 |
+| `[].should_remove_source_branch`   | ブール値  | マージ後にソースブランチを削除するかどうかを示します。 |
 | `[].source_branch`                 | 文字列   | マージリクエストのソースブランチ。 |
-| `[].source_project_id`             | 整数  | マージリクエストのソースプロジェクトのID。マージリクエストの実行元がフォークである場合を除き、`target_project_id`と等しくなります。 |
-| `[].squash`                        | ブール値  | `true`の場合、マージ時にすべてのコミットを1つのコミットにスカッシュします。[プロジェクト設定](../user/project/merge_requests/squash_and_merge.md#configure-squash-options-for-a-project)がこの値をオーバーライドする可能性があります。代わりに`squash_on_merge`を使用して、プロジェクトのスカッシュオプションを検討してください。 |
+| `[].source_project_id`             | 整数  | マージリクエストのソースプロジェクトのID。マージリクエストの起点にフォークがない限り、`target_project_id`と同じです。 |
+| `[].squash`                        | ブール値  | `true`の場合、マージ時にすべてのコミットを単一のコミットにスカッシュします。[プロジェクト設定](../user/project/merge_requests/squash_and_merge.md#configure-squash-options-for-a-project)によって、この値がオーバーライドされる可能性があります。プロジェクトのスカッシュ設定を反映させたい場合は、代わりに`squash_on_merge`を使用してください。 |
 | `[].squash_commit_sha`             | 文字列   | スカッシュコミットのSHA。マージされるまで空です。 |
 | `[].squash_on_merge`               | ブール値  | マージ時にマージリクエストをスカッシュするかどうかを示します。 |
-| `[].state`                         | 文字列   | マージリクエストの状態。`opened`、`closed`、`merged`、`locked`のいずれかです。 |
+| `[].state`                         | 文字列   | マージリクエストの状態。`opened`、`closed`、`merged`、`locked`のいずれか。 |
 | `[].target_branch`                 | 文字列   | マージリクエストのターゲットブランチ。 |
-| `[].target_project_id`             | 整数  | マージリクエストターゲットプロジェクトのID。 |
-| `[].task_completion_status`        | オブジェクト   | タスクの完了ステータス。`count`と`completed_count`が含まれます。 |
+| `[].target_project_id`             | 整数  | マージリクエストのターゲットプロジェクトのID。 |
+| `[].task_completion_status`        | オブジェクト   | タスクの完了状態。`count`と`completed_count`が含まれます。 |
 | `[].time_stats`                    | オブジェクト   | マージリクエストのタイムトラッキング統計。`time_estimate`、`total_time_spent`、`human_time_estimate`、および`human_total_time_spent`が含まれます。 |
 | `[].title`                         | 文字列   | マージリクエストのタイトル。 |
-| `[].updated_at`                    | 日時 | マージリクエストが更新された時点のタイムスタンプ。 |
-| `[].upvotes`                       | 整数  | マージリクエストの同意の数。 |
-| `[].user_notes_count`              | 整数  | マージリクエストのユーザーノートの数。 |
+| `[].updated_at`                    | 日時 | マージリクエストが更新された時のタイムスタンプ。 |
+| `[].upvotes`                       | 整数  | マージリクエストへの同意数。 |
+| `[].user_notes_count`              | 整数  | マージリクエストのユーザーノート数。 |
 | `[].web_url`                       | 文字列   | マージリクエストのWeb URL。 |
-| `[].work_in_progress`              | ブール値  | 非推奨:代わりに`draft`を使用してください。マージリクエストが下書きかどうかを示します。 |
+| `[].work_in_progress`              | ブール値  | 非推奨: 代わりに`draft`を使用してください。マージリクエストがドラフトかどうかを示します。 |
 
 リクエストの例:
 
@@ -334,7 +334,7 @@ curl --header "PRIVATE-TOKEN: <your_access_token>" \
   --url "https://gitlab.example.com/api/v4/projects/1/merge_requests"
 ```
 
-応答の例:
+レスポンス例:
 
 ```json
 [
@@ -468,9 +468,9 @@ curl --header "PRIVATE-TOKEN: <your_access_token>" \
 ]
 ```
 
-応答データの重要な注意事項については、[マージリクエストリストの応答に関する注意事項](#merge-requests-list-response-notes)を参照してください。
+レスポンスデータに関する重要な注意事項については、[マージリクエストのリストのレスポンスに関する注意事項](#merge-requests-list-response-notes)を参照してください。
 
-## グループマージリクエストをリストする
+## グループマージリクエストのリストを取得する {#list-group-merge-requests}
 
 このグループとそのサブグループのすべてのマージリクエストを取得します。
 
@@ -488,42 +488,41 @@ GET /groups/:id/merge_requests?my_reaction_emoji=star
 | 属性                       | 型           | 必須 | 説明 |
 | ------------------------------- | -------------- | -------- | ----------- |
 | `id`                            | 整数または文字列 | はい      | グループのIDまたは[URLエンコードされたパス](rest/_index.md#namespaced-paths)。 |
-| `approved_by_ids`               | 整数配列  | いいえ       | 指定された`id`を持つすべてのユーザー（最大5人のユーザー）が承認したマージリクエストを返します。`None`は承認のないマージリクエストを返します。`Any`は承認のあるマージリクエストを返します。PremiumおよびUltimateのみ。 |
-| `approved_by_usernames`         | 文字列配列  | いいえ       | 指定された`username`を持つすべてのユーザー（最大5人のユーザー）が承認したマージリクエストを返します。`None`は承認のないマージリクエストを返します。`Any`は承認のあるマージリクエストを返します。PremiumおよびUltimateのみ。 |
-| `approver_ids`                  | 整数配列  | いいえ       | 指定された`id`を持つすべてのユーザーを個別の承認者として指定したマージリクエストを返します。`None`は承認のないマージリクエストを返します。`Any`は承認のあるマージリクエストを返します。PremiumおよびUltimateのみ。 |
-| `approved`                      | 文字列         | いいえ       | `approved`ステータスでマージリクエストをフィルタリングします。`yes`は承認済みのマージリクエストのみを返します。`no`は未承認のマージリクエストのみを返します。GitLab 15.11で[導入](https://gitlab.com/gitlab-org/gitlab/-/issues/3159)されました。機能フラグ`mr_approved_filter`が有効になっている場合にのみ使用できます。 |
+| `approved_by_ids`               | 整数の配列  | いいえ       | 指定された`id`を持つすべてのユーザー（最大5人のユーザー）が承認したマージリクエストを返します。`None`は承認のないマージリクエストを返します。`Any`は承認のあるマージリクエストを返します。PremiumおよびUltimateのみです。 |
+| `approved_by_usernames`         | 文字列配列  | いいえ       | 指定された`username`を持つすべてのユーザー（最大5人のユーザー）が承認したマージリクエストを返します。`None`は承認のないマージリクエストを返します。`Any`は承認のあるマージリクエストを返します。PremiumおよびUltimateのみです。 |
+| `approver_ids`                  | 整数の配列  | いいえ       | 指定された`id`を持つすべてのユーザーを個別の承認者として指定したマージリクエストを返します。`None`は承認者のないマージリクエストを返します。`Any`は承認者のあるマージリクエストを返します。PremiumおよびUltimateのみです。 |
 | `assignee_id`                   | 整数        | いいえ       | 指定されたユーザー`id`に割り当てられたマージリクエストを返します。`None`は未割り当てのマージリクエストを返します。`Any`は担当者に割り当てられているマージリクエストを返します。 |
 | `author_id`                     | 整数        | いいえ       | 指定されたユーザー`id`が作成したマージリクエストを返します。`author_username`と相互に排他的です。 |
 | `author_username`               | 文字列         | いいえ       | 指定された`username`が作成したマージリクエストを返します。`author_id`と相互に排他的です。 |
-| `created_after`                 | 日時       | いいえ       | 指定された時刻以降に作成されたマージリクエストを返します。ISO 8601形式で指定します（`2019-03-15T08:00:00Z`）。 |
-| `created_before`                | 日時       | いいえ       | 指定された時刻以前に作成されたマージリクエストを返します。ISO 8601形式で指定します（`2019-03-15T08:00:00Z`）。 |
-| `labels`                        | 文字列         | いいえ       | カンマ区切りのラベルのリストに一致するマージリクエストを返します。`None`は、ラベルのないすべてのマージリクエストをリストします。`Any`は、1つ以上のラベルを持つすべてのマージリクエストをリストします。定義済みの名前では大文字と小文字が区別されません。 |
-| `merge_user_id`                 | 整数        | いいえ       | 指定されたユーザー`id`を持つユーザーによってマージされたマージリクエストを返します。`merge_user_username`と相互に排他的です。GitLab 17.0で[導入](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/140002)されました。 |
+| `created_after`                 | 日時       | いいえ       | 指定された時刻以降に作成されたマージリクエストを返します。ISO 8601形式（`2019-03-15T08:00:00Z`）で指定します。 |
+| `created_before`                | 日時       | いいえ       | 指定された時刻以前に作成されたマージリクエストを返します。ISO 8601形式（`2019-03-15T08:00:00Z`）で指定します。 |
+| `labels`                        | 文字列         | いいえ       | カンマ区切りのラベルのリストに一致するマージリクエストを返します。`None`は、ラベルのないすべてのマージリクエストをリストします。`Any`は、少なくとも1つのラベルを持つすべてのマージリクエストをリストします。定義済みの名前では大文字と小文字が区別されません。 |
+| `merge_user_id`                 | 整数        | いいえ       | 指定されたユーザー`id`によってマージされたマージリクエストを返します。`merge_user_username`と相互に排他的です。GitLab 17.0で[導入](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/140002)されました。 |
 | `merge_user_username`           | 文字列         | いいえ       | 指定された`username`を持つユーザーによってマージされたマージリクエストを返します。`merge_user_id`と相互に排他的です。GitLab 17.0で[導入](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/140002)されました。 |
-| `milestone`                     | 文字列         | いいえ       | 特定のマイルストーンのマージリクエストを返します。`None`は、マイルストーンのないマージリクエストを返します。`Any`は、割り当てられたマイルストーンを持つマージリクエストを返します。 |
-| `my_reaction_emoji`             | 文字列         | いいえ       | 認証済みユーザーが、指定された`emoji`でリアクションしたマージリクエストを返します。`None`は、リアクションがないマージリクエストを返します。`Any`は、1つ以上のリアクションがあるマージリクエストを返します。 |
+| `milestone`                     | 文字列         | いいえ       | 特定のマイルストーンに対するマージリクエストを返します。`None`は、マイルストーンのないマージリクエストをリストします。`Any`は、割り当てられたマイルストーンを持つマージリクエストをリストします。 |
+| `my_reaction_emoji`             | 文字列         | いいえ       | 認証されたユーザーが、指定された`emoji`でリアクションしたマージリクエストを返します。`None`は、リアクションがないマージリクエストを返します。`Any`は、1つ以上のリアクションがあるマージリクエストを返します。 |
 | `non_archived`                  | ブール値        | いいえ       | アーカイブされていないプロジェクトのマージリクエストのみを返します。デフォルトは`true`です。 |
-| `not`                           | ハッシュ           | いいえ       | 指定されたパラメーターに一致しないマージリクエストを返します。`labels`、`milestone`、`author_id`、`author_username`、`assignee_id`、`assignee_username`、`reviewer_id`、`reviewer_username`、`my_reaction_emoji`を指定できます。 |
+| `not`                           | ハッシュ           | いいえ       | 指定されたパラメータに一致しないマージリクエストを返します。`labels`、`milestone`、`author_id`、`author_username`、`assignee_id`、`assignee_username`、`reviewer_id`、`reviewer_username`、`my_reaction_emoji`を指定できます。 |
 | `order_by`                      | 文字列         | いいえ       | `created_at`、`title`、`updated_at`フィールドで並べ替えられたマージリクエストを返します。デフォルトは`created_at`です。 |
-| `reviewer_id`                   | 整数        | いいえ       | 指定されたユーザー`id`のユーザーが[レビュアーである](../user/project/merge_requests/reviews/_index.md)マージリクエストを返します。`None`はレビュアーのいないマージリクエストを返します。`Any`はレビュアーのいるマージリクエストを返します。`reviewer_username`と相互に排他的です。 |
-| `reviewer_username`             | 文字列         | いいえ       | 指定された`username`のユーザーが[レビュアー](../user/project/merge_requests/reviews/_index.md)であるマージリクエストを返します。`None`はレビュアーのいないマージリクエストを返します。`Any`はレビュアーのいるマージリクエストを返します。`reviewer_id`と相互に排他的です。 |
-| `scope`                         | 文字列         | いいえ       | 指定されたスコープ（`created_by_me`、`assigned_to_me`、または`all`）のマージリクエストを返します。 |
+| `reviewer_id`                   | 整数        | いいえ       | 指定されたユーザー`id`のユーザーが[レビュアー](../user/project/merge_requests/reviews/_index.md)であるマージリクエストを返します。`None`はレビュアーのいないマージリクエストを、`Any`はレビュアーのいるマージリクエストを返します。`reviewer_username`と相互に排他的です。 |
+| `reviewer_username`             | 文字列         | いいえ       | 指定された`username`のユーザーが[レビュアー](../user/project/merge_requests/reviews/_index.md)であるマージリクエストを返します。`None`はレビュアーのいないマージリクエストを、`Any`はレビュアーのいるマージリクエストを返します。`reviewer_id`と相互に排他的です。 |
+| `scope`                         | 文字列         | いいえ       | 指定されたスコープ (`created_by_me`、`assigned_to_me`、または`all`) のマージリクエストを返します。 |
 | `search`                        | 文字列         | いいえ       | `title`と`description`でマージリクエストを検索します。 |
 | `source_branch`                 | 文字列         | いいえ       | 指定されたソースブランチを持つマージリクエストを返します。 |
 | `sort`                          | 文字列         | いいえ       | `asc`または`desc`の順にソートされたマージリクエストを返します。デフォルトは`desc`です。 |
-| `state`                         | 文字列         | いいえ       | すべてのマージリクエスト（`all`）、または`opened`、`closed`、`locked`、`merged`のマージリクエストのみを返します。 |
+| `state`                         | 文字列         | いいえ       | すべてのマージリクエスト（`all`）または、`opened`、`closed`、`locked`、あるいは`merged`のみを返します。 |
 | `target_branch`                 | 文字列         | いいえ       | 指定されたターゲットブランチを持つマージリクエストを返します。 |
-| `updated_after`                 | 日時       | いいえ       | 指定された時刻以降に更新されたマージリクエストを返します。ISO 8601形式で指定します（`2019-03-15T08:00:00Z`）。 |
-| `updated_before`                | 日時       | いいえ       | 指定された時刻以前に更新されたマージリクエストを返します。ISO 8601形式で指定します（`2019-03-15T08:00:00Z`）。 |
+| `updated_after`                 | 日時       | いいえ       | 指定された時刻以降に更新されたマージリクエストを返します。ISO 8601形式（`2019-03-15T08:00:00Z`）で指定します。 |
+| `updated_before`                | 日時       | いいえ       | 指定された時刻以前に更新されたマージリクエストを返します。ISO 8601形式（`2019-03-15T08:00:00Z`）で指定します。 |
 | `view`                          | 文字列         | いいえ       | `simple`の場合、`iid`、URL、タイトル、説明、およびマージリクエストの基本的な状態を返します。 |
-| `with_labels_details`           | ブール値        | いいえ       | `true`の場合、応答ではラベルフィールドの各ラベルに関する詳細（`:name`、`:color`、`:description`、`:description_html`、`:text_color`）が返されます。デフォルトは`false`です。 |
-| `with_merge_status_recheck`     | ブール値        | いいえ       | `true`の場合、このプロジェクションは`merge_status`フィールドの非同期再計算をリクエストします（ただし保証はしません）。デフォルトは`false`です。GitLab 15.11以降では、`restrict_merge_status_recheck`機能[フラグ](../administration/feature_flags.md)を有効にして、デベロッパー以上のロールを持たないユーザーがリクエストした場合にこの属性を無視します。 |
+| `with_labels_details`           | ブール値        | いいえ       | `true`の場合、レスポンスではラベルフィールドの各ラベルに関する詳細（`:name`、`:color`、`:description`、`:description_html`、`:text_color`）が返されます。デフォルトは`false`です。 |
+| `with_merge_status_recheck`     | ブール値        | いいえ       | `true`の場合、このプロジェクションは`merge_status`フィールドの非同期再計算をリクエストします（ただし保証はしません）。`restrict_merge_status_recheck` [機能フラグ](../administration/feature_flags/_index.md)を有効にして、デベロッパー以上のロールを持たないユーザーがリクエストした場合にこの属性を無視します。 |
 
-マージリクエストのリストを制限するには、ページネーションパラメーター`page`と`per_page`を使用します。
+マージリクエストのリストを制限するには、ページネーションパラメータ`page`と`per_page`を使用します。
 
-応答の`group_id`は、マージリクエストが存在するプロジェクトを含むグループのIDを表します。
+応答では、`group_id`はマージリクエストが存在するプロジェクトを含むグループのIDを表します。
 
-応答の例:
+レスポンス例:
 
 ```json
 [
@@ -649,9 +648,9 @@ GET /groups/:id/merge_requests?my_reaction_emoji=star
 ]
 ```
 
-応答データの重要な注意事項については、[マージリクエストリストの応答に関する注意事項](#merge-requests-list-response-notes)を参照してください。
+レスポンスデータに関する重要な注意事項については、[マージリクエストのリストのレスポンスに関する注意事項](#merge-requests-list-response-notes)を参照してください。
 
-## 1つのMRを取得する
+## 単一のMRを取得する {#get-single-mr}
 
 1つのマージリクエストに関する情報を表示します。
 
@@ -663,57 +662,57 @@ GET /projects/:id/merge_requests/:merge_request_iid
 
 | 属性                        | 型           | 必須 | 説明 |
 |----------------------------------|----------------|----------|-------------|
-| `id`                             | 整数または文字列 | はい      | プロジェクトのIDまたは[URLエンコードされたパス](rest/_index.md#namespaced-paths)。 |
+| `id`                             | 整数または文字列 | はい      | プロジェクトの[IDまたはURLエンコードされたパス](rest/_index.md#namespaced-paths)。 |
 | `merge_request_iid`              | 整数        | はい      | マージリクエストの内部ID。 |
-| `include_diverged_commits_count` | ブール値        | いいえ       | `true`の場合、応答にはターゲットブランチより後のコミットが含まれます。 |
-| `include_rebase_in_progress`     | ブール値        | いいえ       | `true`の場合、応答にはリベース操作が進行中かどうかが含まれます。 |
-| `render_html`                    | ブール値        | いいえ       | `true`の場合、応答には、タイトルと説明用にレンダリングされたHTMLが含まれます。 |
+| `include_diverged_commits_count` | ブール値        | いいえ       | `true`の場合、レスポンスにターゲットブランチより遅れているコミットが含まれます。 |
+| `include_rebase_in_progress`     | ブール値        | いいえ       | `true`の場合、レスポンスにリベース操作が進行中かどうかが含まれます。 |
+| `render_html`                    | ブール値        | いいえ       | `true`の場合、レスポンスにタイトルと説明用にレンダリングされたHTMLが含まれます。 |
 
-### 応答
+### レスポンス {#response}
 
 | 属性                        | 型 | 説明 |
 |----------------------------------|------|-------------|
-| `approvals_before_merge`| 整数 | このマージリクエストをマージする前に必要な承認の数。承認ルールを設定するには、[マージリクエスト承認API](merge_request_approvals.md)を参照してください。GitLab 16.0で[非推奨](https://gitlab.com/gitlab-org/gitlab/-/issues/353097)になりました。PremiumおよびUltimateのみ。 |
+| `approvals_before_merge`| 整数 | このマージリクエストがマージされる前に必要な承認の数。承認ルールを設定するには、[マージリクエスト承認API](merge_request_approvals.md)を参照してください。GitLab 16.0で[非推奨](https://gitlab.com/gitlab-org/gitlab/-/issues/353097)になりました。PremiumおよびUltimateのみです。 |
 | `assignee` | オブジェクト | マージリクエストの最初の担当者。 |
 | `assignees` | 配列 | マージリクエストの担当者。 |
 | `author` | オブジェクト | このマージリクエストを作成したユーザー。 |
-| `blocking_discussions_resolved` | ブール値 | マージリクエストをマージする前にすべてのディスカッションが必須の場合にのみ、すべてのディスカッションが解決されるかどうかを示します。 |
+| `blocking_discussions_resolved` | ブール値 | マージリクエストをマージする前に、すべてのディスカッションが必須な場合にのみ、すべてのディスカッションが解決されるかどうかを示します。 |
 | `changes_count` | 文字列 | マージリクエストに対して行われた変更の数。マージリクエストの作成時は空であり、非同期的に入力されます。整数ではなく、文字列です。表示および保存する変更が多すぎるマージリクエストの場合、値の上限は1000であり、文字列`"1000+"`を返します。[新しいマージリクエストの空のAPIフィールド](#empty-api-fields-for-new-merge-requests)を参照してください。|
 | `closed_at` | 日時 | マージリクエストがクローズされた時点のタイムスタンプ。 |
 | `closed_by` | オブジェクト | このマージリクエストをクローズしたユーザー。 |
 | `created_at` | 日時 | マージリクエストが作成された時点のタイムスタンプ。 |
 | `description` | 文字列 | マージリクエストの説明。キャッシュ用にHTMLとしてレンダリングされたMarkdownが含まれます。 |
-| `detailed_merge_status` | 文字列 | マージリクエストの詳細なマージステータス。使用可能な値のリストについては、[マージステータス](#merge-status)を参照してください。 |
+| `detailed_merge_status` | 文字列 | マージリクエストの詳細なマージ状態。使用可能な値のリストについては、[マージ状態](#merge-status)を参照してください。 |
 | `diff_refs` | オブジェクト | このマージリクエストのベースSHA、ヘッドSHA、および開始SHAの参照。マージリクエストの最新の差分バージョンに対応します。マージリクエストの作成時は空であり、非同期的に入力されます。[新しいマージリクエストの空のAPIフィールド](#empty-api-fields-for-new-merge-requests)を参照してください。 |
 | `discussion_locked` | ブール値 | マージリクエストのコメントがメンバーのみにロックされているかどうかを示します。 |
-| `downvotes` | 整数 | マージリクエストの不同意の数。 |
-| `draft` | ブール値 | マージリクエストが下書きかどうかを示します。 |
+| `downvotes` | 整数 | マージリクエストの同意しない数。 |
+| `draft` | ブール値 | マージリクエストがドラフトかどうかを示します。 |
 | `first_contribution` | ブール値 | マージリクエストが作成者の最初のコントリビュートであるかどうかを示します。 |
 | `first_deployed_to_production_at` | 日時 | 最初のデプロイメントが完了した時点のタイムスタンプ。 |
-| `force_remove_source_branch` | ブール値 | プロジェクト設定によってマージ後にソースブランチが削除されるかどうかを示します。 |
-| `has_conflicts` | ブール値 | マージリクエストに競合があるためにマージできないかどうかを示します。`merge_status`プロパティに依存します。`merge_status`が`cannot_be_merged`ではない場合には、`false`を返します。 |
+| `force_remove_source_branch` | ブール値 | プロジェクトの設定で、マージ後にソースブランチを削除するかどうかを示します。 |
+| `has_conflicts` | ブール値 | マージリクエストに競合があり、マージできないかどうかを示します。`merge_status`プロパティに依存します。`merge_status`が`cannot_be_merged`でない限り、`false`を返します。 |
 | `head_pipeline` | オブジェクト | マージリクエストのブランチHEADで実行されているパイプライン。より完全な情報が含まれているため、`pipeline`の代わりに使用します。 |
 | `id` | 整数 | マージリクエストのID。 |
 | `iid` | 整数 | マージリクエストの内部ID。 |
 | `labels` | 配列 | マージリクエストのラベル。 |
 | `latest_build_finished_at` | 日時 | マージリクエストの最新ビルドが完了した時点のタイムスタンプ。 |
 | `latest_build_started_at` | 日時 | マージリクエストの最新ビルドが開始された時点のタイムスタンプ。 |
-| `merge_commit_sha` | 文字列 | マージリクエストコミットのSHA。マージされるまで`null`を返します。 |
-| `merge_error` | 文字列 | マージが失敗した場合に表示されるエラーメッセージ。マージ可能性を確認するには、代わりに`detailed_merge_status`を使用します  |
+| `merge_commit_sha` | 文字列 | マージリクエストのコミットのSHA。マージされるまで`null`を返します。 |
+| `merge_error` | 文字列 | マージが失敗した場合に表示されるエラーメッセージ。マージ可能性を確認するには、代わりに`detailed_merge_status`を使用します。  |
 | `merge_user` | オブジェクト | このマージリクエストをマージしたユーザー、自動マージに設定したユーザー、または`null`。  |
-| `merge_status` | 文字列 | マージリクエストのステータス。`unchecked`、`checking`、`can_be_merged`、`cannot_be_merged`、または`cannot_be_merged_recheck`のいずれかです。`has_conflicts`プロパティに影響します。応答データに関する重要な注意事項については、[単一マージリクエスト応答に関する注意事項](#single-merge-request-response-notes)を参照してください。GitLab 15.6で[非推奨](https://gitlab.com/gitlab-org/gitlab/-/issues/3169#note_1162532204)になりました。代わりに`detailed_merge_status`を使用してください。 |
+| `merge_status` | 文字列 | マージリクエストの状態。`unchecked`、`checking`、`can_be_merged`、`cannot_be_merged`、または`cannot_be_merged_recheck`のいずれかです。`has_conflicts`プロパティに影響します。レスポンスデータに関する重要な注意点については、[単一マージリクエストのレスポンスに関する注意点](#single-merge-request-response-notes)を参照してください。GitLab 15.6で[非推奨](https://gitlab.com/gitlab-org/gitlab/-/issues/3169#note_1162532204)になりました。代わりに`detailed_merge_status`を使用してください。 |
 | `merge_when_pipeline_succeeds` | ブール値 | マージがパイプラインの成功時にマージするように設定されているかどうかを示します。 |
 | `merged_at` | 日時 | マージリクエストがマージされた時点のタイムスタンプ。 |
-| `merged_by` | オブジェクト | このマージリクエストをマージしたユーザー、または自動マージに設定したユーザーです。GitLab 14.7で[非推奨](https://gitlab.com/gitlab-org/gitlab/-/issues/350534)になり、[APIバージョン5](https://gitlab.com/groups/gitlab-org/-/epics/8115)で削除される予定です。代わりに`merge_user`を使用してください。 |
+| `merged_by` | オブジェクト | このマージリクエストをマージしたユーザー、または自動マージに設定したユーザー。GitLab 14.7で[非推奨](https://gitlab.com/gitlab-org/gitlab/-/issues/350534)となり、[APIバージョン5](https://gitlab.com/groups/gitlab-org/-/epics/8115)で削除される予定です。代わりに`merge_user`を使用してください。 |
 | `milestone` | オブジェクト | マージリクエストのマイルストーン。 |
-| `pipeline` | オブジェクト | マージリクエストのブランチHEADで実行されているパイプライン。`head_pipeline`にはより多くの情報が含まれているため、代わりに`head_pipeline`を使用することを検討してください。 |
-| `prepared_at` | 日時 | マージリクエストが準備された時点のタイムスタンプ。このフィールドは、すべての[準備手順](#preparation-steps)が完了した後に1回だけ入力され、それ以上の変更が加えられても更新されません。 |
+| `pipeline` | オブジェクト | マージリクエストのブランチHEADで実行されているパイプライン。`head_pipeline`にはより多くの情報が含まれているため、代わりとして使用することを検討してください。 |
+| `prepared_at` | 日時 | マージリクエストが準備されたときのタイムスタンプ。このフィールドは、すべての[準備手順](#preparation-steps)が完了した後に1回だけ入力され、それ以上の変更が加えられても更新されません。 |
 | `project_id` | 整数 | マージリクエストプロジェクトのID。 |
-| `reference` | 文字列 | マージリクエストの内部参照。デフォルトでは短縮形式で返されます。GitLab 12.7で[非推奨](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/20354)になり、[APIバージョン5](https://gitlab.com/groups/gitlab-org/-/epics/8115)で削除される予定です。代わりに`references`を使用してください。 |
-| `references` | オブジェクト | マージリクエストの内部参照。`short`、`relative`、および`full`参照が含まれます。`references.relative`はマージリクエストのグループまたはプロジェクトに対して相対的です。マージリクエストのプロジェクトからフェッチした場合、`relative`形式と`short`形式は同一です。グループまたはプロジェクト全体でリクエストされた場合、`relative`形式と`full`形式は同一です。|
+| `reference` | 文字列 | マージリクエストの内部参照。デフォルトでは短縮形式で返されます。GitLab 12.7で[非推奨](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/20354)となり、[APIバージョン5](https://gitlab.com/groups/gitlab-org/-/epics/8115)で削除される予定です。代わりに`references`を使用してください。 |
+| `references` | オブジェクト | マージリクエストの内部参照。`short`、`relative`、および`full`参照が含まれます。`references.relative`はマージリクエストのグループまたはプロジェクトに対して相対的です。マージリクエストのプロジェクトからフェッチされた場合、`relative`形式と`short`形式は同一です。グループまたはプロジェクト全体でリクエストされた場合、`relative`形式と`full`形式は同一です。|
 | `reviewers` | 配列 | マージリクエストのレビュアー。 |
 | `sha` | 文字列 | マージリクエストの差分ヘッドSHA。 |
-| `should_remove_source_branch` | ブール値 | マージリクエストのソースブランチをマージ後に削除するかどうかを示します。 |
+| `should_remove_source_branch` | ブール値 | マージ後にソースブランチを削除するかどうかを示します。 |
 | `source_branch` | 文字列 | マージリクエストのソースブランチ。 |
 | `source_project_id` | 整数 | マージリクエストのソースプロジェクトのID。 |
 | `squash` | ブール値 | マージ時のスカッシュが有効かどうかを示します。 |
@@ -721,17 +720,17 @@ GET /projects/:id/merge_requests/:merge_request_iid
 | `state` | 文字列 | マージリクエストの状態。`opened`、`closed`、`merged`、または`locked`のいずれかです。 |
 | `subscribed` | ブール値 | 現在の認証済みユーザーがこのマージリクエストにサブスクライブしているかどうかを示します。 |
 | `target_branch` | 文字列 | マージリクエストのターゲットブランチ。 |
-| `target_project_id` | 整数 | マージリクエストターゲットプロジェクトのID。 |
-| `task_completion_status` | オブジェクト | タスクの完了ステータス。 |
+| `target_project_id` | 整数 | マージリクエストのターゲットプロジェクトのID。 |
+| `task_completion_status` | オブジェクト | タスクの完了状態。 |
 | `title` | 文字列 | マージリクエストのタイトル。 |
-| `updated_at` | 日時 | マージリクエストが更新された時点のタイムスタンプ。 |
-| `upvotes` | 整数 | マージリクエストの同意の数。 |
+| `updated_at` | 日時 | マージリクエストが更新された時のタイムスタンプ。 |
+| `upvotes` | 整数 | マージリクエストへの同意数。 |
 | `user` | オブジェクト | マージリクエストに対してリクエストされたユーザーの権限。 |
-| `user_notes_count` | 整数 | マージリクエストのユーザーノートの数。 |
+| `user_notes_count` | 整数 | マージリクエストのユーザーノート数。 |
 | `web_url` | 文字列 | マージリクエストのWeb URL。 |
-| `work_in_progress` | ブール値 | 非推奨:代わりに`draft`を使用してください。マージリクエストが下書きかどうかを示します。 |
+| `work_in_progress` | ブール値 | 非推奨: 代わりに`draft`を使用してください。マージリクエストがドラフトかどうかを示します。 |
 
-応答の例:
+レスポンス例:
 
 ```json
 {
@@ -879,48 +878,42 @@ GET /projects/:id/merge_requests/:merge_request_iid
 }
 ```
 
-### 単一マージリクエスト応答に関する注意事項
+### 単一のマージリクエストのレスポンスに関する注記 {#single-merge-request-response-notes}
 
 各マージリクエストのマージ可能性（`merge_status`）は、このエンドポイントに対してリクエストが行われるときに非同期的にチェックされます。更新されたステータスを取得するには、このAPIエンドポイントをポーリングします。これは`merge_status`に依存するため、`has_conflicts`プロパティに影響します。`merge_status`が`cannot_be_merged`ではない場合には、`false`を返します。
 
-### マージステータス
-
-{{< history >}}
-
-- `merge_status`はGitLab 15.6で[非推奨](https://gitlab.com/gitlab-org/gitlab/-/issues/3169#note_1162532204)になりました。
-- `detailed_merge_status`がGitLab 15.6で[導入](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/101724)されました。
-
-{{< /history >}}
+### マージの状態 {#merge-status}
 
 表示される可能性があるすべてのステータスを考慮するために、`merge_status`の代わりに`detailed_merge_status`を使用してください。
 
 - `detailed_merge_status`フィールドには、マージリクエストに関連する次のいずれかの値を指定できます。
-  - `approvals_syncing`:マージリクエストの承認を同期しています。
-  - `checking`:Gitは有効なマージが可能かどうかをテストしています。
-  - `ci_must_pass`:マージする前にCI/CDパイプラインが成功する必要があります。
-  - `ci_still_running`:CI/CDパイプラインがまだ実行中です。
-  - `commits_status`:ソースブランチが存在し、コミットが含まれている必要があります。
-  - `conflict`:ソースブランチとターゲットブランチの間に競合があります。
-  - `discussions_not_resolved`:マージする前に、すべてのディスカッションを解決する必要があります。
-  - `draft_status`:マージリクエストが下書きであるためにマージできません。
-  - `jira_association_missing`:タイトルまたは説明でJiraのイシューを参照する必要があります。設定するには、[マージリクエストをマージするには関連付けられたJiraイシューが必要](../integration/jira/issues.md#require-associated-jira-issue-for-merge-requests-to-be-merged)を参照してください。
-  - `mergeable`:ブランチは、ターゲットブランチに問題なくマージできます。
-  - `merge_request_blocked`:別のマージリクエストによってブロックされています。
-  - `merge_time`:指定された時刻を経過するまでマージできません。
-  - `need_rebase`:マージリクエストをリベースする必要があります。
-  - `not_approved`:マージする前に承認が必要です。
-  - `not_open`:マージする前に、マージリクエストを開く必要があります。
-  - `preparing`:マージリクエストの差分を作成しています。
-  - `requested_changes`:マージリクエストには、変更をリクエストしたレビュアーがいます。
-  - `security_policy_violations`:すべてのセキュリティポリシーを満たす必要があります。`policy_mergability_check`機能フラグを有効にする必要があります。
-  - `status_checks_must_pass`:マージする前に、すべてのステータスチェックに合格する必要があります。
-  - `unchecked`:Gitは、有効なマージが可能かどうかをまだテストしていません。
-  - `locked_paths`:デフォルトブランチにマージする前に、他のユーザーによってロックされているパスをロック解除する必要があります。
-  - `locked_lfs_files`:マージする前に、他のユーザーによってロックされているLFSファイルをロック解除する必要があります。
+  - `approvals_syncing`: マージリクエストの承認を同期しています。
+  - `checking`: Gitは有効なマージが可能かどうかをテストしています。
+  - `ci_must_pass`: マージする前にCI/CDパイプラインが成功する必要があります。
+  - `ci_still_running`: CI/CDパイプラインがまだ実行中です。
+  - `commits_status`: ソースブランチが存在し、コミットが含まれている必要があります。
+  - `conflict`: ソースブランチとターゲットブランチの間に競合があります。
+  - `discussions_not_resolved`: マージリクエストをマージする前に、すべてのディスカッションを解決する必要があります。
+  - `draft_status`: マージリクエストがドラフトであるため、マージできません。
+  - `jira_association_missing`: タイトルまたは説明でJiraのイシューを参照する必要があります。設定については、[マージリクエストをマージするために、関連付けられたJiraのイシューを要求する](../integration/jira/issues.md#require-associated-jira-issue-for-merge-requests-to-be-merged)を参照してください。
+  - `mergeable`: ブランチは、ターゲットブランチに問題なくマージできます。
+  - `merge_request_blocked`: 別のマージリクエストによってブロックされています。
+  - `merge_time`: 指定された時刻を経過するまでマージできません。
+  - `need_rebase`: マージリクエストをリベースする必要があります。
+  - `not_approved`: マージする前に承認が必要です。
+  - `not_open`: マージする前に、マージリクエストを開く必要があります。
+  - `preparing`: マージリクエストの差分を作成しています。
+  - `requested_changes`: マージリクエストには、変更をリクエストしたレビュアーがいます。
+  - `security_policy_violations`: すべてのセキュリティポリシーを満たす必要があります。
+  - `status_checks_must_pass`: マージする前に、すべての状態チェックに合格する必要があります。
+  - `unchecked`: Gitは、有効なマージが可能かどうかをまだテストしていません。
+  - `locked_paths`: デフォルトブランチにマージする前に、他のユーザーによってロックされているパスをロック解除する必要があります。
+  - `locked_lfs_files`: マージする前に、他のユーザーによってロックされているLFSファイルをロック解除する必要があります。
+  - `title_regex`: プロジェクト設定で設定されている場合、タイトルが予期される正規表現に一致するかどうかを確認します。
 
-### 準備手順
+### 準備手順 {#preparation-steps}
 
-`prepared_at`フィールドは、以下の手順が完了した後に1回だけ入力されます。
+`prepared_at`フィールドは、以下の手順が完了した後に1回だけ入力された状態になります。
 
 - 差分を作成する。
 - パイプラインを作成する。
@@ -930,7 +923,7 @@ GET /projects/:id/merge_requests/:merge_request_iid
 
 マージリクエストにさらに変更が加えられた場合、`prepared_at`フィールドは更新されません。
 
-## 1つのマージリクエストの参加者を取得する
+## 単一のマージリクエストの参加者を取得する {#get-single-merge-request-participants}
 
 マージリクエスト参加者のリストを取得します。
 
@@ -942,10 +935,10 @@ GET /projects/:id/merge_requests/:merge_request_iid/participants
 
 | 属性           | 型              | 必須 | 説明 |
 |---------------------|-------------------|----------|-------------|
-| `id`                | 整数または文字列 | はい      | プロジェクトのIDまたは[URLエンコードされたパス](rest/_index.md#namespaced-paths)。 |
+| `id`                | 整数または文字列 | はい      | プロジェクトの[IDまたはURLエンコードされたパス](rest/_index.md#namespaced-paths)。 |
 | `merge_request_iid` | 整数           | はい      | マージリクエストの内部ID。 |
 
-応答の例:
+レスポンス例:
 
 ```json
 [
@@ -968,7 +961,7 @@ GET /projects/:id/merge_requests/:merge_request_iid/participants
 ]
 ```
 
-## 1つのマージリクエストレビュアーを取得する
+## 単一のマージリクエストのレビュアーを取得する {#get-single-merge-request-reviewers}
 
 マージリクエストのレビュアーのリストを取得します。
 
@@ -980,10 +973,10 @@ GET /projects/:id/merge_requests/:merge_request_iid/reviewers
 
 | 属性           | 型              | 必須 | 説明 |
 |---------------------|-------------------|----------|-------------|
-| `id`                | 整数または文字列 | はい      | プロジェクトのIDまたは[URLエンコードされたパス](rest/_index.md#namespaced-paths)。 |
+| `id`                | 整数または文字列 | はい      | プロジェクトの[IDまたはURLエンコードされたパス](rest/_index.md#namespaced-paths)。 |
 | `merge_request_iid` | 整数           | はい      | マージリクエストの内部ID。 |
 
-応答の例:
+レスポンス例:
 
 ```json
 [
@@ -1014,7 +1007,7 @@ GET /projects/:id/merge_requests/:merge_request_iid/reviewers
 ]
 ```
 
-## 単一のマージリクエストコミットを取得する
+## 単一のマージリクエストのコミットを取得する {#get-single-merge-request-commits}
 
 マージリクエストコミットのリストを取得します。
 
@@ -1026,17 +1019,17 @@ GET /projects/:id/merge_requests/:merge_request_iid/commits
 
 | 属性           | 型              | 必須 | 説明 |
 |---------------------|-------------------|----------|-------------|
-| `id`                | 整数または文字列 | はい      | プロジェクトのIDまたは[URLエンコードされたパス](rest/_index.md#namespaced-paths)。 |
+| `id`                | 整数または文字列 | はい      | プロジェクトのID、または[URLエンコードされたパス](rest/_index.md#namespaced-paths)。 |
 | `merge_request_iid` | 整数           | はい      | マージリクエストの内部ID。 |
 
-成功した場合、[`200 OK`](rest/troubleshooting.md#status-codes)と次の応答属性を返します。
+成功した場合は、[`200 OK`](rest/troubleshooting.md#status-codes)と以下のレスポンス属性が返されます。
 
 | 属性                     | 型         | 説明 |
 |-------------------------------|--------------|-------------|
 | `commits`                     | オブジェクト配列 | マージリクエスト内のコミット。 |
 | `commits[].id`                | 文字列       | コミットのID。 |
 | `commits[].short_id`          | 文字列       | コミットの短いID。 |
-| `commits[].created_at`        | 日時     | `committed_date`フィールドと同じです。 |
+| `commits[].created_at`        | 日時     | `committed_date`フィールドと同一です。 |
 | `commits[].parent_ids`        | 配列        | 親コミットのID。 |
 | `commits[].title`             | 文字列       | コミットタイトル。 |
 | `commits[].message`           | 文字列       | コミットメッセージ。 |
@@ -1057,7 +1050,7 @@ curl --header "PRIVATE-TOKEN: <your_access_token>" \
   --url "https://gitlab.example.com/api/v4/projects/1/merge_requests/1/commits"
 ```
 
-応答の例:
+レスポンス例:
 
 ```json
 [
@@ -1096,13 +1089,13 @@ curl --header "PRIVATE-TOKEN: <your_access_token>" \
 ]
 ```
 
-## マージリクエストの依存関係を取得する
+## マージリクエストの依存関係を取得する {#get-merge-request-dependencies}
 
 マージする前に解決する必要があるマージリクエストの依存関係に関する情報を示します。
 
 {{< alert type="note" >}}
 
-ブロックしているマージリクエストにユーザーがアクセスできない場合、`blocking_merge_request`属性は返されません。
+ユーザーがブロックしているマージリクエストにアクセスできない場合、`blocking_merge_request`属性は返されません。
 
 {{< /alert >}}
 
@@ -1114,7 +1107,7 @@ GET /projects/:id/merge_requests/:merge_request_iid/blocks
 
 | 属性           | 型           | 必須 | 説明 |
 |---------------------|----------------|----------|-------------|
-| `id`                | 整数または文字列 | はい      | プロジェクトのIDまたは[URLエンコードされたパス](rest/_index.md#namespaced-paths)。 |
+| `id`                | 整数または文字列 | はい      | プロジェクトの[IDまたはURLエンコードされたパス](rest/_index.md#namespaced-paths)。 |
 
 リクエストの例:
 
@@ -1123,7 +1116,7 @@ curl --header "PRIVATE-TOKEN: <your_access_token>" \
   --url "https://gitlab.example.com/api/v4/projects/1/merge_requests/1/blocks"
 ```
 
-応答の例:
+レスポンス例:
 
 ```json
 [
@@ -1358,7 +1351,7 @@ curl --header "PRIVATE-TOKEN: <your_access_token>" \
 ]
 ```
 
-## マージリクエストの依存関係を削除する
+## マージリクエストの依存関係を削除する {#delete-a-merge-request-dependency}
 
 マージリクエストの依存関係を削除します。
 
@@ -1370,9 +1363,9 @@ DELETE /projects/:id/merge_requests/:merge_request_iid/blocks/:block_id
 
 | 属性           | 型           | 必須 | 説明 |
 |---------------------|----------------|----------|-------------|
-| `id`                | 整数または文字列 | はい      | 認証済みユーザーが所有しているプロジェクトのIDまたは[URLエンコードされたパス](rest/_index.md#namespaced-paths)。 |
+| `id`                | 整数または文字列 | はい      | 認証されたユーザーが所有しているプロジェクトのIDまたは[エンコードされたパス](rest/_index.md#namespaced-paths)。 |
 | `merge_request_iid` | 整数        | はい      | マージリクエストの内部ID。 |
-| `block_id`          | 整数        | はい      | ブロックの内部ID。 |
+| `block_id`          | 整数        | はい      | ブロックのID。 |
 
 リクエストの例:
 
@@ -1387,7 +1380,7 @@ curl --request DELETE --header "PRIVATE-TOKEN: <your_access_token>" \
 - マージリクエストを更新するための権限がユーザーにない場合は、`403 Forbidden`。
 - ブロックしているマージリクエストを読むための権限がユーザーにない場合は、`403 Forbidden`。
 
-## マージリクエストの依存関係を作成する
+## マージリクエストの依存関係を作成する {#create-a-merge-request-dependency}
 
 マージリクエストの依存関係を作成します。
 
@@ -1399,7 +1392,7 @@ POST /projects/:id/merge_requests/:merge_request_iid/blocks
 
 | 属性           | 型           | 必須 | 説明 |
 |---------------------|----------------|----------|-------------|
-| `id`                | 整数または文字列 | はい      | 認証済みユーザーが所有しているプロジェクトのIDまたは[URLエンコードされたパス](rest/_index.md#namespaced-paths)。 |
+| `id`                | 整数または文字列 | はい      | 認証されたユーザーが所有しているプロジェクトのIDまたは[エンコードされたパス](rest/_index.md#namespaced-paths)。 |
 | `merge_request_iid` | 整数        | はい      | マージリクエストの内部ID。 |
 | `blocking_merge_request_id`          | 整数        | はい      | ブロックしているマージリクエストの内部ID。 |
 
@@ -1418,7 +1411,7 @@ curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" \
 - ブロックしているマージリクエストが見つからない場合は、`404 Not found`。
 - ブロックがすでに存在する場合は、`409 Conflict`。
 
-応答の例:
+レスポンス例:
 
 ```json
 {
@@ -1537,7 +1530,7 @@ curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" \
 }
 ```
 
-## マージリクエストがブロックしているMRを取得する
+## マージリクエストでブロックされたMRを取得する {#get-merge-request-blocked-mrs}
 
 現在のマージリクエストがブロックしているマージリクエストに関する情報を示します。
 
@@ -1549,7 +1542,7 @@ GET /projects/:id/merge_requests/:merge_request_iid/blockees
 
 | 属性           | 型           | 必須 | 説明 |
 |---------------------|----------------|----------|-------------|
-| `id`                | 整数または文字列 | はい      | プロジェクトのIDまたは[URLエンコードされたパス](rest/_index.md#namespaced-paths)。 |
+| `id`                | 整数または文字列 | はい      | プロジェクトの[IDまたはURLエンコードされたパス](rest/_index.md#namespaced-paths)。 |
 
 リクエストの例:
 
@@ -1558,7 +1551,7 @@ curl --header "PRIVATE-TOKEN: <your_access_token>" \
   --url "https://gitlab.example.com/api/v4/projects/1/merge_requests/1/blockees"
 ```
 
-応答の例:
+レスポンス例:
 
 ```json
 [
@@ -1731,11 +1724,12 @@ curl --header "PRIVATE-TOKEN: <your_access_token>" \
 ]
 ```
 
-## 1つのマージリクエストの変更を取得する
+## 単一のマージリクエストの変更を取得する {#get-single-merge-request-changes}
 
 {{< alert type="warning" >}}
 
-このエンドポイントはGitLab 15.7で[非推奨](https://gitlab.com/gitlab-org/gitlab/-/issues/322117)になり、API v5で[削除される予定です](rest/deprecations.md)。代わりに[マージリクエスト差分をリストする](#list-merge-request-diffs)エンドポイントを使用してください。
+このエンドポイントはGitLab 15.7で[非推奨](https://gitlab.com/gitlab-org/gitlab/-/issues/322117)になり、API v5で[削除される予定](rest/deprecations.md)です。代わりに[マージリクエストの差分のリストを取得する](#list-merge-request-diffs)エンドポイントを使用してください。
+<!-- Do not remove line until endpoint is actually removed -->
 
 {{< /alert >}}
 
@@ -1749,14 +1743,14 @@ GET /projects/:id/merge_requests/:merge_request_iid/changes
 
 | 属性           | 型           | 必須 | 説明 |
 |---------------------|----------------|----------|-------------|
-| `id`                | 整数または文字列 | はい      | プロジェクトのIDまたは[URLエンコードされたパス](rest/_index.md#namespaced-paths)。 |
+| `id`                | 整数または文字列 | はい      | プロジェクトの[IDまたはURLエンコードされたパス](rest/_index.md#namespaced-paths)。 |
 | `merge_request_iid` | 整数        | はい      | マージリクエストの内部ID。 |
-| `access_raw_diffs`  | ブール値        | いいえ       | Gitalyを使用して変更の差分を取得します。 |
-| `unidiff`           | ブール値        | いいえ       | [unified diff](https://www.gnu.org/software/diffutils/manual/html_node/Detailed-Unified.html)形式で変更の差分を表示します。デフォルトはfalseです。GitLab 16.5で[導入](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/130610)されました。 |
+| `access_raw_diffs`  | ブール値        | いいえ       | Gitaly経由で変更差分を取得します。 |
+| `unidiff`           | ブール値        | いいえ       | [unified diff](https://www.gnu.org/software/diffutils/manual/html_node/Detailed-Unified.html)形式で変更差分を表示します。デフォルトはfalseです。GitLab 16.5で[導入](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/130610)されました。 |
 
-一連の変更に関連付けられた差分には、APIによって返される他の差分、またはUIで表示される他の差分と同じサイズの制限が適用されます。これらの制限が結果に影響する場合、`overflow`フィールドには値`true`が含まれます。このような制限なしで差分データを取得するには、`access_raw_diffs`パラメーターを追加します。これにより、データベースからではなく、Gitalyから差分に直接アクセスします。このアプローチは一般に時間がかかり、リソースを大量に消費しますが、データベースに基づく差分に適用されたサイズ制限の対象とはなりません。[Gitalyに固有の制限](../development/merge_request_concepts/diffs/_index.md#diff-limits)は引き続き適用されます。
+一連の変更に関連付けられた差分には、APIによって返される他の差分、またはUIで表示される他の差分と同じサイズの制限が適用されます。これらの制限が結果に影響する場合、`overflow`フィールドには値`true`が含まれます。このような制限なしで差分データを取得するには、`access_raw_diffs`パラメータを追加します。これにより、データベースからではなく、Gitalyから直接差分にアクセスします。このアプローチは一般に時間がかかり、リソースを大量に消費しますが、データベースを基盤とする差分に適用されるサイズ制限の対象にはなりません。Gitalyに固有の制限は引き続き適用されます。
 
-応答の例:
+レスポンス例:
 
 ```json
 {
@@ -1865,17 +1859,18 @@ GET /projects/:id/merge_requests/:merge_request_iid/changes
 }
 ```
 
-## マージリクエストの差分をリストする
+## マージリクエストの差分のリストを取得する {#list-merge-request-diffs}
 
 {{< history >}}
 
-- GitLab 16.9で、`generated_file`が`collapse_generated_diff_files`という名前の[フラグ](../administration/feature_flags.md)とともに[導入](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/141576)されました。デフォルトでは無効になっています。
-- GitLab 16.10の[GitLab.comおよびGitLab Self-Managedで有効化](https://gitlab.com/gitlab-org/gitlab/-/issues/432670)されました。
-- GitLab 16.11で、`generated_file`が[一般提供](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/148478)になりました。機能フラグ`collapse_generated_diff_files`が削除されました。
+- `generated_file`は、GitLab 16.9で`collapse_generated_diff_files`[フラグ](../administration/feature_flags/_index.md)とともに[導入](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/141576)されました。デフォルトでは無効になっています。
+- GitLab 16.10で、[GitLab.comとGitLab Self-Managed](https://gitlab.com/gitlab-org/gitlab/-/issues/432670)で有効化されました。
+- GitLab 16.11で、`generated_file`が[一般提供](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/148478)になりました。機能フラグ`collapse_generated_diff_files`は削除されました。
+- `collapsed`および`too_large`のレスポンス属性が、GitLab 18.4で[導入されました](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/199633)。
 
 {{< /history >}}
 
-マージリクエストで変更されたファイルの差分をリストします。
+マージリクエストで変更されたファイルの差分をリスト表示します。
 
 ```plaintext
 GET /projects/:id/merge_requests/:merge_request_iid/diffs
@@ -1885,25 +1880,27 @@ GET /projects/:id/merge_requests/:merge_request_iid/diffs
 
 | 属性           | 型              | 必須 | 説明 |
 |---------------------|-------------------|----------|-------------|
-| `id`                | 整数または文字列 | はい      | プロジェクトのIDまたは[URLエンコードされたパス](rest/_index.md#namespaced-paths)。 |
+| `id`                | 整数または文字列 | はい      | プロジェクトの[IDまたはURLエンコードされたパス](rest/_index.md#namespaced-paths)。 |
 | `merge_request_iid` | 整数           | はい      | マージリクエストの内部ID。 |
 | `page`              | 整数           | いいえ       | 返される結果のページ。デフォルトは1です。 |
-| `per_page`          | 整数           | いいえ       | ページあたりの結果の数。デフォルトは20です。 |
+| `per_page`          | 整数           | いいえ       | ページあたりの結果数。デフォルトは20です。 |
 | `unidiff`           | ブール値           | いいえ       | [unified diff](https://www.gnu.org/software/diffutils/manual/html_node/Detailed-Unified.html)形式で差分を表示します。デフォルトはfalseです。GitLab 16.5で[導入](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/130610)されました。 |
 
-成功した場合、[`200 OK`](rest/troubleshooting.md#status-codes)と次の応答属性を返します。
+成功した場合は、[`200 OK`](rest/troubleshooting.md#status-codes)と以下のレスポンス属性が返されます。
 
-| 属性      | 型    | 説明 |
-|----------------|---------|-------------|
-| `old_path`     | 文字列  | ファイルの古いパス。 |
-| `new_path`     | 文字列  | ファイルの新しいパス。 |
-| `a_mode`       | 文字列  | ファイルの古いファイルモード。 |
-| `b_mode`       | 文字列  | ファイルの新しいファイルモード。 |
-| `diff`         | 文字列  | ファイルに加えられた変更の差分の表現。 |
-| `new_file`     | ブール値 | ファイルが追加されたばかりかどうかを示します。 |
-| `renamed_file` | ブール値 | ファイル名が変更されたかどうかを示します。 |
-| `deleted_file` | ブール値 | ファイルが削除されたかどうかを示します。 |
-| `generated_file` | ブール値 | ファイルが[生成済みとしてマークされている](../user/project/merge_requests/changes.md#collapse-generated-files)かどうかを示します。GitLab 16.9で[導入](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/141576)されました。 |
+| 属性        | 型    | 説明 |
+|------------------|---------|-------------|
+| `a_mode`         | 文字列  | ファイルの古いファイルモード。 |
+| `b_mode`         | 文字列  | ファイルの新しいファイルモード。 |
+| `collapsed`      | ブール値 | ファイル差分は除外されていますが、リクエストに応じてフェッチできます。 |
+| `deleted_file`   | ブール値 | ファイルは削除されました。 |
+| `diff`           | 文字列  | ファイルに加えられた変更の差分の表現。 |
+| `generated_file` | ブール値 | ファイルは[生成されたものとしてマーク](../user/project/merge_requests/changes.md#collapse-generated-files)されています。 |
+| `new_file`       | ブール値 | ファイルが追加されました。 |
+| `new_path`       | 文字列  | ファイルの新しいパス。 |
+| `old_path`       | 文字列  | ファイルの古いパス。 |
+| `renamed_file`   | ブール値 | ファイルの名前が変更されました。 |
+| `too_large`      | ブール値 | ファイルの差分は除外されており、取得できません。 |
 
 リクエストの例:
 
@@ -1912,7 +1909,7 @@ curl --header "PRIVATE-TOKEN: <your_access_token>" \
   --url "https://gitlab.example.com/api/v4/projects/1/merge_requests/1/diffs?page=1&per_page=2"
 ```
 
-応答の例:
+レスポンス例:
 
 ```json
 [
@@ -1922,6 +1919,8 @@ curl --header "PRIVATE-TOKEN: <your_access_token>" \
     "a_mode": "100644",
     "b_mode": "100644",
     "diff": "@@ -1 +1 @@\ -Title\ +README",
+    "collapsed": false,
+    "too_large": false,
     "new_file": false,
     "renamed_file": false,
     "deleted_file": false,
@@ -1933,6 +1932,8 @@ curl --header "PRIVATE-TOKEN: <your_access_token>" \
     "a_mode": "100644",
     "b_mode": "100644",
     "diff": "@@\ -1.9.7\ +1.9.8",
+    "collapsed": false,
+    "too_large": false,
     "new_file": false,
     "renamed_file": false,
     "deleted_file": false,
@@ -1947,7 +1948,7 @@ curl --header "PRIVATE-TOKEN: <your_access_token>" \
 
 {{< /alert >}}
 
-## マージリクエストのraw diffを表示する
+## マージリクエストのraw diffを表示する {#show-merge-request-raw-diffs}
 
 マージリクエストで変更されたファイルのraw diffを表示します。
 
@@ -1959,10 +1960,10 @@ GET /projects/:id/merge_requests/:merge_request_iid/raw_diffs
 
 | 属性           | 型              | 必須 | 説明 |
 |---------------------|-------------------|----------|-------------|
-| `id`                | 整数または文字列 | はい      | プロジェクトのIDまたは[URLエンコードされたパス](rest/_index.md#namespaced-paths)。 |
+| `id`                | 整数または文字列 | はい      | プロジェクトの[IDまたはURLエンコードされたパス](rest/_index.md#namespaced-paths)。 |
 | `merge_request_iid` | 整数           | はい      | マージリクエストの内部ID。 |
 
-成功した場合、[`200 OK`](rest/troubleshooting.md#status-codes)と、プログラムで使用するraw diff応答を返します。
+成功した場合、[`200 OK`](rest/troubleshooting.md#status-codes)と、プログラムで使用するraw difレスポンスを返します。
 
 リクエストの例:
 
@@ -1971,7 +1972,7 @@ curl --header "PRIVATE-TOKEN: <your_access_token>" \
   --url "https://gitlab.example.com/api/v4/projects/1/merge_requests/1/raw_diffs"
 ```
 
-応答の例:
+レスポンス例:
 
 ```diff
         diff --git a/lib/api/helpers.rb b/lib/api/helpers.rb
@@ -2010,7 +2011,7 @@ index e02d9eea1852f19fe5311acda6aa17465eeb422e..f32b38585398a18fea75c11d7b8ebb73
 
 {{< /alert >}}
 
-## マージリクエストパイプラインをリストする
+## マージリクエストパイプラインのリストを取得する {#list-merge-request-pipelines}
 
 マージリクエストパイプラインのリストを取得します。
 
@@ -2022,12 +2023,12 @@ GET /projects/:id/merge_requests/:merge_request_iid/pipelines
 
 | 属性           | 型              | 必須 | 説明 |
 |---------------------|-------------------|----------|-------------|
-| `id`                | 整数または文字列 | はい      | プロジェクトのIDまたは[URLエンコードされたパス](rest/_index.md#namespaced-paths)。 |
+| `id`                | 整数または文字列 | はい      | プロジェクトの[IDまたはURLエンコードされたパス](rest/_index.md#namespaced-paths)。 |
 | `merge_request_iid` | 整数           | はい      | マージリクエストの内部ID。 |
 
-マージリクエストパイプラインのリストを制限するには、ページネーションパラメーター`page`と`per_page`を使用します。
+マージリクエストパイプラインのリストを制限するには、ページネーションパラメータ`page`と`per_page`を使用します。
 
-応答の例:
+レスポンス例:
 
 ```json
 [
@@ -2040,7 +2041,7 @@ GET /projects/:id/merge_requests/:merge_request_iid/pipelines
 ]
 ```
 
-## マージリクエストパイプラインを作成する
+## マージリクエストパイプラインを作成する {#create-merge-request-pipeline}
 
 [マージリクエストの新しいパイプライン](../ci/pipelines/merge_request_pipelines.md)を作成します。このエンドポイントから作成されたパイプラインは、標準のブランチ/タグパイプラインを実行しません。ジョブを作成するには、`only: [merge_requests]`を使用して`.gitlab-ci.yml`を設定します。
 
@@ -2057,10 +2058,10 @@ POST /projects/:id/merge_requests/:merge_request_iid/pipelines
 
 | 属性           | 型              | 必須 | 説明 |
 |---------------------|-------------------|----------|-------------|
-| `id`                | 整数または文字列 | はい      | プロジェクトのIDまたは[URLエンコードされたパス](rest/_index.md#namespaced-paths)。 |
+| `id`                | 整数または文字列 | はい      | プロジェクトの[IDまたはURLエンコードされたパス](rest/_index.md#namespaced-paths)。 |
 | `merge_request_iid` | 整数           | はい      | マージリクエストの内部ID。 |
 
-応答の例:
+レスポンス例:
 
 ```json
 {
@@ -2101,7 +2102,7 @@ POST /projects/:id/merge_requests/:merge_request_iid/pipelines
 }
 ```
 
-## MRを作成する
+## MRを作成する {#create-mr}
 
 新しいマージリクエストを作成します。
 
@@ -2111,25 +2112,25 @@ POST /projects/:id/merge_requests
 
 | 属性                  | 型    | 必須 | 説明 |
 | ---------                  | ----    | -------- | ----------- |
-| `id`                       | 整数または文字列 | はい | プロジェクトのIDまたは[URLエンコードされたパス](rest/_index.md#namespaced-paths) |
+| `id`                       | 整数または文字列 | はい | プロジェクトのID、または[URLエンコードされたパス](rest/_index.md#namespaced-paths)。 |
 | `source_branch`            | 文字列  | はい      | ソースブランチ。 |
 | `target_branch`            | 文字列  | はい      | ターゲットブランチ。 |
 | `title`                    | 文字列  | はい      | MRのタイトル。 |
 | `allow_collaboration`      | ブール値 | いいえ       | ターゲットブランチにマージできるメンバーからのコミットを許可します。 |
-| `approvals_before_merge`   | 整数 | いいえ | このマージリクエストをマージする前に必要な承認の数（下記参照）。承認ルールを設定するには、[マージリクエスト承認API](merge_request_approvals.md)を参照してください。GitLab 16.0で[非推奨](https://gitlab.com/gitlab-org/gitlab/-/issues/353097)になりました。PremiumおよびUltimateのみ。 |
+| `approvals_before_merge`   | 整数 | いいえ | このマージリクエストをマージする前に必要な承認の数（下記参照）。承認ルールを設定するには、[マージリクエスト承認API](merge_request_approvals.md)を参照してください。GitLab 16.0で[非推奨](https://gitlab.com/gitlab-org/gitlab/-/issues/353097)になりました。PremiumおよびUltimateのみです。 |
 | `allow_maintainer_to_push` | ブール値 | いいえ       | `allow_collaboration`のエイリアス。 |
 | `assignee_id`              | 整数 | いいえ       | 担当者のユーザーID。 |
-| `assignee_ids`             | 整数配列 | いいえ | マージリクエストを割り当てるユーザーのID。すべての担当者の割り当てを解除するには、`0`に設定するか、空の値を指定します。 |
+| `assignee_ids`             | 整数の配列 | いいえ | マージリクエストを割り当てるユーザーのID。すべての担当者の割り当てを解除するには、`0`に設定するか、空の値を指定します。 |
 | `description`              | 文字列  | いいえ       | マージリクエストの説明。1,048,576文字に制限されています。 |
 | `labels`                   | 文字列  | いいえ       | マージリクエストのラベル（カンマ区切りのリスト）。ラベルがまだ存在しない場合は、新しいプロジェクトラベルが作成され、マージリクエストに割り当てられます。 |
-| `merge_after`              | 文字列  | いいえ       | マージリクエストをマージできようになる日付。GitLab 17.8で[導入](https://gitlab.com/gitlab-org/gitlab/-/issues/510992)されました。 |
+| `merge_after`              | 文字列  | いいえ       | マージリクエストをマージできるようになる日付。GitLab 17.8で[導入](https://gitlab.com/gitlab-org/gitlab/-/issues/510992)されました。 |
 | `milestone_id`             | 整数 | いいえ       | マイルストーンのグローバルID。 |
 | `remove_source_branch`     | ブール値 | いいえ       | マージ時にマージリクエストがソースブランチを削除するかどうかを示すフラグ。 |
-| `reviewer_ids`             | 整数配列 | いいえ | マージリクエストにレビュアーとして追加されたユーザーのID。`0`に設定するか、空のままにすると、レビュアーは追加されません。 |
-| `squash`                   | ブール値 | いいえ       | `true`の場合、マージ時にすべてのコミットを1つのコミットにスカッシュします。[プロジェクト設定](../user/project/merge_requests/squash_and_merge.md#configure-squash-options-for-a-project)がこの値をオーバーライドする可能性があります。 |
+| `reviewer_ids`             | 整数の配列 | いいえ | マージリクエストにレビュアーとして追加されたユーザーのID。すべてのレビュアーの設定を解除するには、値を`0`に設定するか、空のままにすると、レビュアーは追加されません。 |
+| `squash`                   | ブール値 | いいえ       | `true`の場合、マージ時にすべてのコミットを単一のコミットにスカッシュします。[プロジェクト設定](../user/project/merge_requests/squash_and_merge.md#configure-squash-options-for-a-project)によって、この値がオーバーライドされる可能性があります。 |
 | `target_project_id`        | 整数 | いいえ       | ターゲットプロジェクトのID（数値）。 |
 
-応答の例:
+レスポンス例:
 
 ```json
 {
@@ -2256,9 +2257,9 @@ POST /projects/:id/merge_requests
 }
 ```
 
-応答データに関する重要な注意事項については、[単一マージリクエスト応答に関する注意事項](#single-merge-request-response-notes)を参照してください。
+レスポンスデータに関する重要な注意点については、[単一マージリクエストのレスポンスに関する注意点](#single-merge-request-response-notes)を参照してください。
 
-## MRを更新する
+## MRを更新する {#update-mr}
 
 既存のマージリクエストを更新します。ターゲットブランチやタイトルの変更、MRのクローズもできます。
 
@@ -2268,29 +2269,29 @@ PUT /projects/:id/merge_requests/:merge_request_iid
 
 | 属性                  | 型    | 必須 | 説明 |
 | ---------                  | ----    | -------- | ----------- |
-| `id`                       | 整数または文字列 | はい  | プロジェクトのIDまたは[URLエンコードされたパス](rest/_index.md#namespaced-paths)。 |
+| `id`                       | 整数または文字列 | はい  | プロジェクトの[IDまたはURLエンコードされたパス](rest/_index.md#namespaced-paths)。 |
 | `merge_request_iid`        | 整数 | はい      | マージリクエストのID。 |
 | `add_labels`               | 文字列  | いいえ       | マージリクエストに追加するラベル名のカンマ区切りリスト。ラベルがまだ存在しない場合は、新しいプロジェクトラベルが作成され、マージリクエストに割り当てられます。 |
 | `allow_collaboration`      | ブール値 | いいえ       | ターゲットブランチにマージできるメンバーからのコミットを許可します。 |
 | `allow_maintainer_to_push` | ブール値 | いいえ       | `allow_collaboration`のエイリアス。 |
 | `assignee_id`              | 整数 | いいえ       | マージリクエストを割り当てるユーザーのID。すべての担当者の割り当てを解除するには、`0`に設定するか、空の値を指定します。 |
-| `assignee_ids`             | 整数配列 | いいえ | マージリクエストを割り当てるユーザーのID。すべての担当者の割り当てを解除するには、`0`に設定するか、空の値を指定します。 |
+| `assignee_ids`             | 整数の配列 | いいえ | マージリクエストを割り当てるユーザーのID。すべての担当者の割り当てを解除するには、`0`に設定するか、空の値を指定します。 |
 | `description`              | 文字列  | いいえ       | マージリクエストの説明。1,048,576文字に制限されています。 |
 | `discussion_locked`        | ブール値 | いいえ       | マージリクエストのディスカッションがロックされているかどうかを示すフラグ。ロックされているディスカッションでは、プロジェクトメンバーのみがコメントを追加、編集、または解決できます。 |
 | `labels`                   | 文字列  | いいえ       | マージリクエストのラベル名のカンマ区切りリスト。すべてのラベルの割り当てを解除するには、空の文字列に設定します。ラベルがまだ存在しない場合は、新しいプロジェクトラベルが作成され、マージリクエストに割り当てられます。 |
-| `merge_after`              | 文字列  | いいえ       | マージリクエストをマージできようになる日付。GitLab 17.8で[導入](https://gitlab.com/gitlab-org/gitlab/-/issues/510992)されました。 |
+| `merge_after`              | 文字列  | いいえ       | マージリクエストをマージできるようになる日付。GitLab 17.8で[導入](https://gitlab.com/gitlab-org/gitlab/-/issues/510992)されました。 |
 | `milestone_id`             | 整数 | いいえ       | マージリクエストを割り当てるマイルストーンのグローバルID。マイルストーンの割り当てを解除するには、`0`に設定するか、空の値を指定します。|
 | `remove_labels`            | 文字列  | いいえ       | マージリクエストから削除するラベル名のカンマ区切りリスト。 |
 | `remove_source_branch`     | ブール値 | いいえ       | マージ時にマージリクエストがソースブランチを削除するかどうかを示すフラグ。 |
-| `reviewer_ids`             | 整数配列 | いいえ | マージリクエストにレビュアーとして設定されたユーザーのID。すべてのレビュアーの設定を解除するには、値を`0`に設定するか、空の値を指定します。 |
-| `squash`                   | ブール値 | いいえ       | `true`の場合、マージ時にすべてのコミットを1つのコミットにスカッシュします。[プロジェクト設定](../user/project/merge_requests/squash_and_merge.md#configure-squash-options-for-a-project)がこの値をオーバーライドする可能性があります。 |
+| `reviewer_ids`             | 整数の配列 | いいえ | マージリクエストにレビュアーとして設定されたユーザーのID。すべてのレビュアーの設定を解除するには、値を`0`に設定するか、空の値を指定します。 |
+| `squash`                   | ブール値 | いいえ       | `true`の場合、マージ時にすべてのコミットを単一のコミットにスカッシュします。[プロジェクト設定](../user/project/merge_requests/squash_and_merge.md#configure-squash-options-for-a-project)によって、この値がオーバーライドされる可能性があります。 |
 | `state_event`              | 文字列  | いいえ       | 新しい状態（close/reopen）。 |
 | `target_branch`            | 文字列  | いいえ       | ターゲットブランチ。 |
 | `title`                    | 文字列  | いいえ       | MRのタイトル。 |
 
 上記の属性のうち、必須ではない属性を1つ以上含める必要があります。
 
-応答の例:
+レスポンス例:
 
 ```json
 {
@@ -2431,9 +2432,9 @@ PUT /projects/:id/merge_requests/:merge_request_iid
 }
 ```
 
-応答データに関する重要な注意事項については、[単一マージリクエスト応答に関する注意事項](#single-merge-request-response-notes)を参照してください。
+レスポンスデータに関する重要な注意点については、[単一マージリクエストのレスポンスに関する注意点](#single-merge-request-response-notes)を参照してください。
 
-## マージリクエストを削除する
+## マージリクエストを削除する {#delete-a-merge-request}
 
 管理者とプロジェクトオーナーのみを対象としています。対象のマージリクエストを削除します。
 
@@ -2443,7 +2444,7 @@ DELETE /projects/:id/merge_requests/:merge_request_iid
 
 | 属性           | 型              | 必須 | 説明 |
 |---------------------|-------------------|----------|-------------|
-| `id`                | 整数または文字列 | はい      | プロジェクトのIDまたは[URLエンコードされたパス](rest/_index.md#namespaced-paths)。 |
+| `id`                | 整数または文字列 | はい      | プロジェクトの[IDまたはURLエンコードされたパス](rest/_index.md#namespaced-paths)。 |
 | `merge_request_iid` | 整数           | はい      | マージリクエストの内部ID。 |
 
 ```shell
@@ -2452,7 +2453,7 @@ curl --request DELETE \
   --url "https://gitlab.example.com/api/v4/projects/4/merge_requests/85"
 ```
 
-## マージリクエストをマージする
+## マージリクエストをマージする {#merge-a-merge-request}
 
 このAPIを使用して、マージリクエストで送信された変更を受け入れてマージします。
 
@@ -2464,7 +2465,7 @@ PUT /projects/:id/merge_requests/:merge_request_iid/merge
 
 | 属性                      | 型           | 必須 | 説明 |
 |--------------------------------|----------------|----------|-------------|
-| `id`                           | 整数または文字列 | はい      | プロジェクトのIDまたは[URLエンコードされたパス](rest/_index.md#namespaced-paths)。 |
+| `id`                           | 整数または文字列 | はい      | プロジェクトの[IDまたはURLエンコードされたパス](rest/_index.md#namespaced-paths)。 |
 | `merge_request_iid`            | 整数        | はい      | マージリクエストの内部ID。 |
 | `auto_merge`                   | ブール値        | いいえ       | `true`の場合、パイプラインが成功すると、マージリクエストがマージされます。 |
 | `merge_commit_message`         | 文字列         | いいえ       | カスタムGitLab Duoマージコミットメッセージ。 |
@@ -2472,7 +2473,7 @@ PUT /projects/:id/merge_requests/:merge_request_iid/merge
 | `sha`                          | 文字列         | いいえ       | 存在する場合、このSHAはソースブランチのHEADと一致している必要があります。一致しない場合、マージは失敗します。 |
 | `should_remove_source_branch`  | ブール値        | いいえ       | `true`の場合、ソースブランチを削除します。 |
 | `squash_commit_message`        | 文字列         | いいえ       | カスタムスカッシュコミットメッセージ。 |
-| `squash`                       | ブール値        | いいえ       | `true`の場合、マージ時にすべてのコミットを1つのコミットにスカッシュします。 |
+| `squash`                       | ブール値        | いいえ       | `true`の場合、マージ時にすべてのコミットを単一のコミットにスカッシュします。 |
 
 このAPIは、失敗時に特定のHTTPステータスコードを返します。
 
@@ -2480,12 +2481,12 @@ PUT /projects/:id/merge_requests/:merge_request_iid/merge
 |-------------|--------------------------------------------|--------|
 | `401`       | `401 Unauthorized`                             | このユーザーには、このマージリクエストを受け入れる権限がありません。 |
 | `405`       | `405 Method Not Allowed`                       | マージリクエストをマージできません。 |
-| `409`       | `SHA does not match HEAD of source branch` | 指定された`sha`パラメーターがソースのHEADと一致しません。 |
+| `409`       | `SHA does not match HEAD of source branch` | 指定された`sha`パラメータがソースのHEADと一致しません。 |
 | `422`       | `Branch cannot be merged`                  | マージリクエストのマージに失敗しました。 |
 
-応答データに関する重要な注意事項については、[単一マージリクエスト応答に関する注意事項](#single-merge-request-response-notes)を参照してください。
+レスポンスデータに関する重要な注意点については、[単一マージリクエストのレスポンスに関する注意点](#single-merge-request-response-notes)を参照してください。
 
-応答の例:
+レスポンス例:
 
 ```json
 {
@@ -2626,7 +2627,7 @@ PUT /projects/:id/merge_requests/:merge_request_iid/merge
 }
 ```
 
-## デフォルトのマージrefパスへのマージ
+## デフォルトのマージrefパスへマージする {#merge-to-default-merge-ref-path}
 
 可能であれば、マージリクエストのソースブランチとターゲットブランチ間の変更を、ターゲットプロジェクトリポジトリの`refs/merge-requests/:iid/merge` refにマージします。このrefには、標準マージアクションが実行された場合のターゲットブランチの状態が含まれています。
 
@@ -2642,10 +2643,10 @@ GET /projects/:id/merge_requests/:merge_request_iid/merge_ref
 
 | 属性           | 型              | 必須 | 説明 |
 |---------------------|-------------------|----------|-------------|
-| `id`                | 整数または文字列 | はい      | プロジェクトのIDまたは[URLエンコードされたパス](rest/_index.md#namespaced-paths)。 |
+| `id`                | 整数または文字列 | はい      | プロジェクトの[IDまたはURLエンコードされたパス](rest/_index.md#namespaced-paths)。 |
 | `merge_request_iid` | 整数           | はい      | マージリクエストの内部ID。 |
 
-このAPIは特定のHTTPステータスコードを返します。
+このAPIは特定のHTTPステータスコードを返します:
 
 | HTTPステータス | メッセージ                          | 理由 |
 |-------------|----------------------------------|--------|
@@ -2654,7 +2655,7 @@ GET /projects/:id/merge_requests/:merge_request_iid/merge_ref
 | `400`       | `Merge ref cannot be updated`    |        |
 | `400`       | `Unsupported operation`          | GitLabデータベースは読み取り専用モードです。 |
 
-応答の例:
+レスポンス例:
 
 ```json
 {
@@ -2662,7 +2663,7 @@ GET /projects/:id/merge_requests/:merge_request_iid/merge_ref
 }
 ```
 
-## パイプラインが成功した場合にマージをキャンセルする
+## パイプライン成功時にマージをキャンセルする {#cancel-merge-when-pipeline-succeeds}
 
 ```plaintext
 POST /projects/:id/merge_requests/:merge_request_iid/cancel_merge_when_pipeline_succeeds
@@ -2672,19 +2673,19 @@ POST /projects/:id/merge_requests/:merge_request_iid/cancel_merge_when_pipeline_
 
 | 属性           | 型              | 必須 | 説明 |
 |---------------------|-------------------|----------|-------------|
-| `id`                | 整数または文字列 | はい      | プロジェクトのIDまたは[URLエンコードされたパス](rest/_index.md#namespaced-paths)。 |
+| `id`                | 整数または文字列 | はい      | プロジェクトの[IDまたはURLエンコードされたパス](rest/_index.md#namespaced-paths)。 |
 | `merge_request_iid` | 整数           | はい      | マージリクエストの内部ID。 |
 
-このAPIは特定のHTTPステータスコードを返します。
+このAPIは特定のHTTPステータスコードを返します:
 
 | HTTPステータス | メッセージ  | 理由 |
 |-------------|----------|--------|
 | `201`       | _（なし）_ | 成功、またはマージリクエストがすでにマージされています。 |
-| `406`       | `Can't cancel the automatic merge` | マージリクエストはクローズされています。 |
+| `406`       | `Can't cancel the automatic merge` | マージリクエストは完了されています。 |
 
-応答データに関する重要な注意事項については、[単一マージリクエスト応答に関する注意事項](#single-merge-request-response-notes)を参照してください。
+レスポンスデータに関する重要な注意点については、[単一マージリクエストのレスポンスに関する注意点](#single-merge-request-response-notes)を参照してください。
 
-応答の例:
+レスポンス例:
 
 ```json
 {
@@ -2825,7 +2826,7 @@ POST /projects/:id/merge_requests/:merge_request_iid/cancel_merge_when_pipeline_
 }
 ```
 
-## マージリクエストをリベースする
+## マージリクエストをリベースする {#rebase-a-merge-request}
 
 マージリクエストの`source_branch`を`target_branch`に対して自動的にリベースします。
 
@@ -2835,7 +2836,7 @@ PUT /projects/:id/merge_requests/:merge_request_iid/rebase
 
 | 属性           | 型           | 必須 | 説明 |
 |---------------------|----------------|----------|-------------|
-| `id`                | 整数または文字列 | はい      | プロジェクトのIDまたは[URLエンコードされたパス](rest/_index.md#namespaced-paths)。 |
+| `id`                | 整数または文字列 | はい      | プロジェクトの[IDまたはURLエンコードされたパス](rest/_index.md#namespaced-paths)。 |
 | `merge_request_iid` | 整数        | はい      | マージリクエストの内部ID。 |
 | `skip_ci`           | ブール値        | いいえ       | CIパイプラインの作成をスキップするには、`true`に設定します。 |
 
@@ -2845,17 +2846,17 @@ curl --request PUT \
   --url "https://gitlab.example.com/api/v4/projects/76/merge_requests/1/rebase"
 ```
 
-このAPIは特定のHTTPステータスコードを返します。
+このAPIは特定のHTTPステータスコードを返します:
 
 | HTTPステータス | メッセージ                                    | 理由 |
 |-------------|--------------------------------------------|--------|
-| `202`       | *（メッセージなし）* | 正常にキューに入れられました。 |
+| `202`       | *（メッセージなし）* | 正常にキューに追加されました。 |
 | `403`       | `Cannot push to source branch` | マージリクエストのソースブランチにプッシュする権限がありません。 |
 | `403`       | `Source branch does not exist` | マージリクエストのソースブランチにプッシュする権限がありません。 |
 | `403`       | `Source branch is protected from force push` | マージリクエストのソースブランチにプッシュする権限がありません。 |
 | `409`       | `Failed to enqueue the rebase operation` | 長時間実行されるトランザクションによってリクエストがブロックされた可能性があります。 |
 
-リクエストがキューに正常に追加された場合、応答には以下の内容が含まれます。
+リクエストがキューに正常に追加された場合、レスポンスには以下の内容が含まれます:
 
 ```json
 {
@@ -2863,9 +2864,9 @@ curl --request PUT \
 }
 ```
 
-非同期リクエストのステータスを確認するには、`include_rebase_in_progress`パラメーターを指定して[1つのMRを取得](#get-single-mr)エンドポイントをポーリングします。
+非同期リクエストの状態を確認するには、`include_rebase_in_progress`パラメータを指定して[単一MRを取得](#get-single-mr)エンドポイントをポーリングします。
 
-リベース操作が進行中の場合、応答には以下の内容が含まれます。
+リベース操作が進行中の場合、レスポンスには以下の内容が含まれます。
 
 ```json
 {
@@ -2874,7 +2875,7 @@ curl --request PUT \
 }
 ```
 
-リベース操作が正常に完了すると、応答には以下の内容が含まれます。
+リベース操作が正常に完了すると、レスポンスには以下の内容が含まれます。
 
 ```json
 {
@@ -2883,7 +2884,7 @@ curl --request PUT \
 }
 ```
 
-リベース操作が失敗した場合、応答には以下の内容が含まれます。
+リベース操作が失敗した場合、レスポンスには以下の内容が含まれます。
 
 ```json
 {
@@ -2892,11 +2893,11 @@ curl --request PUT \
 }
 ```
 
-## マージリクエストに関するコメント
+## マージリクエストに関するノート {#comments-on-merge-requests}
 
 [ノート](notes.md)リソースはコメントを作成します。
 
-## マージ時にクローズするイシューをリストする
+## マージ時に完了するイシューのリストを取得する {#list-issues-that-close-on-merge}
 
 指定されたマージリクエストをマージするとクローズされるすべてのイシューを取得します。
 
@@ -2908,10 +2909,10 @@ GET /projects/:id/merge_requests/:merge_request_iid/closes_issues
 
 | 属性           | 型           | 必須 | 説明 |
 |---------------------|----------------|----------|-------------|
-| `id`                | 整数または文字列 | はい   | プロジェクトのIDまたは[URLエンコードされたパス](rest/_index.md#namespaced-paths)。 |
+| `id`                | 整数または文字列 | はい   | プロジェクトのID、または[URLエンコードされたパス](rest/_index.md#namespaced-paths)。 |
 | `merge_request_iid` | 整数        | はい      | マージリクエストの内部ID。 |
 
-成功した場合、GitLabイシュートラッカーを使用すると、[`200 OK`](rest/troubleshooting.md#status-codes)と次の応答属性が返されます。
+成功した場合、[`200 OK`](rest/troubleshooting.md#status-codes)を返します。GitLabイシュートラッカーを使用すると、次のレスポンス属性が返されます。
 
 | 属性                   | 型     | 説明                                                                                                                       |
 |-----------------------------|----------|-----------------------------------------------------------------------------------------------------------------------------------|
@@ -2925,27 +2926,27 @@ GET /projects/:id/merge_requests/:merge_request_iid/closes_issues
 | `[].created_at`             | 日時 | イシューが作成された時点のタイムスタンプ。                                                                                          |
 | `[].description`            | 文字列   | イシューの説明。                                                                                                         |
 | `[].discussion_locked`      | ブール値  | イシューのコメントがメンバーのみにロックされているかどうかを示します。                                                                    |
-| `[].downvotes`              | 整数  | イシューが受け取った不同意の数。                                                                                       |
+| `[].downvotes`              | 整数  | イシューが受け取った「同意しない」の数。                                                                                       |
 | `[].due_date`               | 日時 | イシューの期限。                                                                                                            |
 | `[].id`                     | 整数  | イシューのID。                                                                                                                  |
 | `[].iid`                    | 整数  | イシューの内部ID。                                                                                                         |
 | `[].issue_type`             | 文字列   | イシューのタイプ。`issue`、`incident`、`test_case`、`requirement`、`task`のいずれかです。                                                |
 | `[].labels`                 | 配列    | イシューのラベル。                                                                                                              |
-| `[].merge_requests_count`   | 整数  | マージ時にイシューをクローズするマージリクエストの数                                                                           |
+| `[].merge_requests_count`   | 整数  | マージ時にイシューをクローズするマージリクエストの数。                                                                           |
 | `[].milestone`              | オブジェクト   | イシューのマイルストーン。                                                                                                           |
 | `[].project_id`             | 整数  | イシュープロジェクトのID。                                                                                                          |
-| `[].state`                  | 文字列   | イシューの状態。`closed`またはを指定できます。                                                                                  |
+| `[].state`                  | 文字列   | イシューの状態。`opened`または`closed`を指定できます。                                                                                  |
 | `[].task_completion_status` | オブジェクト   | `count`と`completed_count`が含まれます。                                                                                           |
 | `[].time_stats`             | オブジェクト   | イシューの時間統計。`time_estimate`、`total_time_spent`、`human_time_estimate`、および`human_total_time_spent`が含まれます。 |
 | `[].title`                  | 文字列   | イシューのタイトル。                                                                                                               |
 | `[].type`                   | 文字列   | イシューのタイプ。`issue_type`と同じですが、大文字です。                                                                           |
 | `[].updated_at`             | 日時 | イシューが更新された時点のタイムスタンプ。                                                                                          |
-| `[].upvotes`                | 整数  | イシューが受け取った同意の数。                                                                                         |
+| `[].upvotes`                | 整数  | イシューが受け取った同意するの数。                                                                                         |
 | `[].user_notes_count`       | 整数  | イシューのユーザーノート数。                                                                                                    |
 | `[].web_url`                | 文字列   | イシューのWeb URL。                                                                                                             |
 | `[].weight`                 | 整数  | イシューのウェイト。                                                                                                              |
 
-成功した場合、Jiraなどの外部イシュートラッカーを使用すると、[`200 OK`](rest/troubleshooting.md#status-codes)と次の応答属性が返されます。
+成功した場合、[`200 OK`](rest/troubleshooting.md#status-codes)と、Jiraなどの外部イシュートラッカーを使用する場合の次のレスポンス属性を返します。
 
 | 属性                   | 型     | 説明                                                                                                                       |
 |-----------------------------|----------|-----------------------------------------------------------------------------------------------------------------------------------|
@@ -2959,7 +2960,7 @@ curl --header "PRIVATE-TOKEN: <your_access_token>" \
   --url "https://gitlab.example.com/api/v4/projects/76/merge_requests/1/closes_issues"
 ```
 
-GitLabイシュートラッカーを使用する場合の応答の例:
+GitLabイシュートラッカーを使用する場合のレスポンス例:
 
 ```json
 [
@@ -3043,7 +3044,7 @@ GitLabイシュートラッカーを使用する場合の応答の例:
 ]
 ```
 
-Jiraなどの外部イシュートラッカーを使用する場合の応答の例:
+Jiraなどの外部イシュートラッカーを使用する場合のレスポンス例:
 
 ```json
 [
@@ -3054,7 +3055,7 @@ Jiraなどの外部イシュートラッカーを使用する場合の応答の�
 ]
 ```
 
-## マージリクエストに関連するイシューをリストする
+## マージリクエストに関連するイシューのリストを取得する {#list-issues-related-to-the-merge-request}
 
 マージリクエストのタイトル、説明、コミットメッセージ、コメント、ディスカッションから、関連するすべてのイシューを取得します。
 
@@ -3064,7 +3065,7 @@ GET /projects/:id/merge_requests/:merge_request_iid/related_issues
 
 | 属性           | 型           | 必須 | 説明 |
 |---------------------|----------------|----------|-------------|
-| `id`                | 整数または文字列 | はい      | プロジェクトのIDまたは[URLエンコードされたパス](rest/_index.md#namespaced-paths)。 |
+| `id`                | 整数または文字列 | はい      | プロジェクトの[IDまたはURLエンコードされたパス](rest/_index.md#namespaced-paths)。 |
 | `merge_request_iid` | 整数        | はい      | マージリクエストの内部ID。 |
 
 ```shell
@@ -3072,7 +3073,7 @@ curl --header "PRIVATE-TOKEN: <your_access_token>" \
   --url "https://gitlab.example.com/api/v4/projects/76/merge_requests/1/related_issues"
 ```
 
-GitLabイシュートラッカーを使用する場合の応答の例:
+GitLabイシュートラッカーを使用する場合のレスポンス例:
 
 ```json
 [
@@ -3119,7 +3120,7 @@ GitLabイシュートラッカーを使用する場合の応答の例:
 ]
 ```
 
-Jiraなどの外部イシュートラッカーを使用する場合の応答の例:
+Jiraなどの外部イシュートラッカーを使用する場合のレスポンス例:
 
 ```json
 [
@@ -3130,7 +3131,7 @@ Jiraなどの外部イシュートラッカーを使用する場合の応答の�
 ]
 ```
 
-## マージリクエストにサブスクライブする
+## マージリクエストにサブスクライブする {#subscribe-to-a-merge-request}
 
 認証済みユーザーが通知を受信できるように、マージリクエストにサブスクライブさせます。
 
@@ -3140,10 +3141,10 @@ POST /projects/:id/merge_requests/:merge_request_iid/subscribe
 
 | 属性           | 型              | 必須 | 説明 |
 |---------------------|-------------------|----------|-------------|
-| `id`                | 整数または文字列 | はい      | プロジェクトのIDまたは[URLエンコードされたパス](rest/_index.md#namespaced-paths)。 |
+| `id`                | 整数または文字列 | はい      | プロジェクトの[IDまたはURLエンコードされたパス](rest/_index.md#namespaced-paths)。 |
 | `merge_request_iid` | 整数           | はい      | マージリクエストの内部ID。 |
 
-ユーザーがすでにマージリクエストにサブスクライブしている場合、エンドポイントはステータスコード`HTTP 304 Not Modified`を返します。
+ユーザーがすでにマージリクエストをサブスクライブしている場合、エンドポイントはステータスコード`HTTP 304 Not Modified`を返します。
 
 ```shell
 curl --request POST \
@@ -3151,7 +3152,7 @@ curl --request POST \
   --url "https://gitlab.example.com/api/v4/projects/5/merge_requests/17/subscribe"
 ```
 
-応答の例:
+レスポンス例:
 
 ```json
 {
@@ -3291,11 +3292,11 @@ curl --request POST \
 }
 ```
 
-応答データに関する重要な注意事項については、[単一マージリクエスト応答に関する注意事項](#single-merge-request-response-notes)を参照してください。
+レスポンスデータに関する重要な注意点については、[単一マージリクエストのレスポンスに関する注意点](#single-merge-request-response-notes)を参照してください。
 
-## マージリクエストのサブスクライブを解除する
+## マージリクエストのサブスクライブを解除する {#unsubscribe-from-a-merge-request}
 
-認証済みユーザーをイシューからサブスクライブ解除し、マージリクエストからの通知を受信しないようにします。
+認証済みのユーザーをマージリクエストからサブスクライブ解除し、そのマージリクエストからのマージリクエスト通知の配信を止めます。
 
 ```plaintext
 POST /projects/:id/merge_requests/:merge_request_iid/unsubscribe
@@ -3303,7 +3304,7 @@ POST /projects/:id/merge_requests/:merge_request_iid/unsubscribe
 
 | 属性           | 型           | 必須 | 説明 |
 |---------------------|----------------|----------|-------------|
-| `id`                | 整数または文字列 | はい      | プロジェクトのIDまたは[URLエンコードされたパス](rest/_index.md#namespaced-paths)。 |
+| `id`                | 整数または文字列 | はい      | プロジェクトの[IDまたはURLエンコードされたパス](rest/_index.md#namespaced-paths)。 |
 | `merge_request_iid` | 整数        | はい      | マージリクエストの内部ID。 |
 
 ```shell
@@ -3312,9 +3313,9 @@ curl --request POST \
   --url "https://gitlab.example.com/api/v4/projects/5/merge_requests/17/unsubscribe"
 ```
 
-ユーザーがマージリクエストにサブスクライブしていない場合、エンドポイントはステータスコード`HTTP 304 Not Modified`を返します。
+ユーザーがマージリクエストをサブスクライブしていない場合、エンドポイントはステータスコード`HTTP 304 Not Modified`を返します。
 
-応答の例:
+レスポンス例:
 
 ```json
 {
@@ -3454,9 +3455,9 @@ curl --request POST \
 }
 ```
 
-応答データに関する重要な注意事項については、[単一マージリクエスト応答に関する注意事項](#single-merge-request-response-notes)を参照してください。
+レスポンスデータに関する重要な注意点については、[単一マージリクエストのレスポンスに関する注意点](#single-merge-request-response-notes)を参照してください。
 
-## To Doアイテムを作成する
+## To Doアイテムを作成する {#create-a-to-do-item}
 
 マージリクエストに関する現在のユーザーのTo Doアイテムを手動で作成します。そのマージリクエストに関するユーザーのTo Doアイテムがすでに存在している場合、このエンドポイントはステータスコード`HTTP 304 Not Modified`を返します。
 
@@ -3466,7 +3467,7 @@ POST /projects/:id/merge_requests/:merge_request_iid/todo
 
 | 属性           | 型              | 必須 | 説明 |
 |---------------------|-------------------|----------|-------------|
-| `id`                | 整数または文字列 | はい      | プロジェクトのIDまたは[URLエンコードされたパス](rest/_index.md#namespaced-paths)。 |
+| `id`                | 整数または文字列 | はい      | プロジェクトの[IDまたはURLエンコードされたパス](rest/_index.md#namespaced-paths)。 |
 | `merge_request_iid` | 整数           | はい      | マージリクエストの内部ID。 |
 
 ```shell
@@ -3475,7 +3476,7 @@ curl --request POST \
   --url "https://gitlab.example.com/api/v4/projects/5/merge_requests/27/todo"
 ```
 
-応答の例:
+レスポンス例:
 
 ```json
 {
@@ -3585,9 +3586,9 @@ curl --request POST \
 }
 ```
 
-## マージリクエスト差分バージョンを取得する
+## マージリクエストの差分バージョンを取得する {#get-merge-request-diff-versions}
 
-マージリクエスト差分バージョンのリストを取得します。
+マージリクエストの差分バージョンのリストを取得します。
 
 ```plaintext
 GET /projects/:id/merge_requests/:merge_request_iid/versions
@@ -3598,14 +3599,14 @@ GET /projects/:id/merge_requests/:merge_request_iid/versions
 | `id`                | 文字列  | はい      | プロジェクトのID。                |
 | `merge_request_iid` | 整数 | はい      | マージリクエストの内部ID。 |
 
-応答内のSHAの説明については、[API応答内のSHA](#shas-in-the-api-response)を参照してください。
+レスポンス内のSHAの説明については、[API応答内のSHA](#shas-in-the-api-response)を参照してください。
 
 ```shell
 curl --header "PRIVATE-TOKEN: <your_access_token>" \
   --url "https://gitlab.example.com/api/v4/projects/1/merge_requests/1/versions"
 ```
 
-応答の例:
+レスポンス例:
 
 ```json
 [{
@@ -3631,7 +3632,7 @@ curl --header "PRIVATE-TOKEN: <your_access_token>" \
 }]
 ```
 
-### API応答内のSHA
+### APIレスポンスのSHA {#shas-in-the-api-response}
 
 | SHAフィールド          | 目的                                                                             |
 |--------------------|-------------------------------------------------------------------------------------|
@@ -3639,9 +3640,15 @@ curl --header "PRIVATE-TOKEN: <your_access_token>" \
 | `head_commit_sha`  | ソースブランチのHEADコミット。                                               |
 | `start_commit_sha` | この差分バージョンが作成された時点でのターゲットブランチのHEADコミットSHA。 |
 
-## 1つのマージリクエスト差分バージョンを取得する
+## 単一のマージリクエスト差分バージョンを取得する {#get-a-single-merge-request-diff-version}
 
-1つのマージリクエスト差分バージョンを取得します。
+{{< history >}}
+
+- `collapsed`および`too_large`のレスポンス属性が、GitLab 18.4で[導入されました](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/199633)。
+
+{{< /history >}}
+
+単一のマージリクエストの差分バージョンを取得します。
 
 ```plaintext
 GET /projects/:id/merge_requests/:merge_request_iid/versions/:version_id
@@ -3653,19 +3660,19 @@ GET /projects/:id/merge_requests/:merge_request_iid/versions/:version_id
 |---------------------|---------|----------|-------------------------------------------|
 | `id`                | 文字列  | はい      | プロジェクトのID。                    |
 | `merge_request_iid` | 整数 | はい      | マージリクエストの内部ID。     |
-| `version_id`        | 整数 | はい      | マージリクエスト差分バージョンのID。 |
+| `version_id`        | 整数 | はい      | マージリクエストの差分バージョンのID。 |
 | `unidiff`           | ブール値 | いいえ       | [unified diff](https://www.gnu.org/software/diffutils/manual/html_node/Detailed-Unified.html)形式で差分を表示します。デフォルトはfalseです。GitLab 16.5で[導入](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/130610)されました。      |
 
-成功した場合、[`200 OK`](rest/troubleshooting.md#status-codes)と次の応答属性を返します。
+成功した場合は、[`200 OK`](rest/troubleshooting.md#status-codes)と以下のレスポンス属性が返されます。
 
 | 属性                     | 型         | 説明 |
 |-------------------------------|--------------|-------------|
-| `id`                          | 整数      | マージリクエスト差分バージョンのID。 |
+| `id`                          | 整数      | マージリクエストの差分バージョンのID。 |
 | `base_commit_sha`             | 文字列       | ソースブランチとターゲットブランチ間のマージベースコミットSHA。 |
 | `commits`                     | オブジェクト配列 | マージリクエスト差分のコミット。 |
 | `commits[].id`                | 文字列       | コミットのID。 |
 | `commits[].short_id`          | 文字列       | コミットの短いID。 |
-| `commits[].created_at`        | 日時     | `committed_date`フィールドと同じです。 |
+| `commits[].created_at`        | 日時     | `committed_date`フィールドと同一です。 |
 | `commits[].parent_ids`        | 配列        | 親コミットのID。 |
 | `commits[].title`             | 文字列       | コミットタイトル。 |
 | `commits[].message`           | 文字列       | コミットメッセージ。 |
@@ -3680,15 +3687,17 @@ GET /projects/:id/merge_requests/:merge_request_iid/versions/:version_id
 | `commits[].web_url`           | 文字列       | マージリクエストのWeb URL。 |
 | `created_at`                  | 日時     | マージリクエストの作成日時。 |
 | `diffs`                       | オブジェクト配列 | マージリクエスト差分バージョンでの差分。 |
-| `diffs[].diff`                | 文字列       | 差分の内容。 |
-| `diffs[].new_path`            | 文字列       | ファイルの新しいパス。 |
-| `diffs[].old_path`            | 文字列       | ファイルの古いパス。 |
 | `diffs[].a_mode`              | 文字列       | ファイルの古いファイルモード。 |
 | `diffs[].b_mode`              | 文字列       | ファイルの新しいファイルモード。 |
-| `diffs[].new_file`            | ブール値      | 追加されたファイルを示します。 |
-| `diffs[].renamed_file`        | ブール値      | 名前が変更されたファイルを示します。 |
-| `diffs[].deleted_file`        | ブール値      | 削除されたファイルを示します。 |
-| `diffs[].generated_file`      | ブール値      | ファイルが[生成済みとしてマークされている](../user/project/merge_requests/changes.md#collapse-generated-files)かどうかを示します。GitLab 16.9で[導入](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/141576)されました。 |
+| `diffs[].collapsed`           | ブール値      | ファイル差分は除外されていますが、リクエストに応じてフェッチできます。 |
+| `diffs[].deleted_file`        | ブール値      | ファイルは削除されました。 |
+| `diffs[].diff`                | 文字列       | 差分の内容。 |
+| `diffs[].generated_file`      | ブール値      | ファイルは[生成されたものとしてマーク](../user/project/merge_requests/changes.md#collapse-generated-files)されています。 |
+| `diffs[].new_file`            | ブール値      | ファイルが追加されました。 |
+| `diffs[].new_path`            | 文字列       | ファイルの新しいパス。 |
+| `diffs[].old_path`            | 文字列       | ファイルの古いパス。 |
+| `diffs[].renamed_file`        | ブール値      | ファイルの名前が変更されました。 |
+| `diffs[].too_large`           | ブール値      | ファイルの差分は除外されており、取得できません。 |
 | `head_commit_sha`             | 文字列       | ソースブランチのHEADコミット。 |
 | `merge_request_id`            | 整数      | マージリクエストのID。 |
 | `patch_id_sha`                | 文字列       | マージリクエスト差分の[パッチID](https://git-scm.com/docs/git-patch-id)。 |
@@ -3703,7 +3712,7 @@ curl --header "PRIVATE-TOKEN: <your_access_token>" \
   --url "https://gitlab.example.com/api/v4/projects/1/merge_requests/1/versions/1"
 ```
 
-応答の例:
+レスポンス例:
 
 ```json
 {
@@ -3771,6 +3780,8 @@ curl --header "PRIVATE-TOKEN: <your_access_token>" \
     "a_mode": "0",
     "b_mode": "100644",
     "diff": "@@ -0,0 +1,21 @@\n+The MIT License (MIT)\n+\n+Copyright (c) 2018 Administrator\n+\n+Permission is hereby granted, free of charge, to any person obtaining a copy\n+of this software and associated documentation files (the \"Software\"), to deal\n+in the Software without restriction, including without limitation the rights\n+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell\n+copies of the Software, and to permit persons to whom the Software is\n+furnished to do so, subject to the following conditions:\n+\n+The above copyright notice and this permission notice shall be included in all\n+copies or substantial portions of the Software.\n+\n+THE SOFTWARE IS PROVIDED \"AS IS\", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR\n+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,\n+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE\n+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER\n+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,\n+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE\n+SOFTWARE.\n",
+    "collapsed": false,
+    "too_large": false,
     "new_file": true,
     "renamed_file": false,
     "deleted_file": false,
@@ -3779,7 +3790,7 @@ curl --header "PRIVATE-TOKEN: <your_access_token>" \
 }
 ```
 
-## マージリクエストの推定時間を設定する
+## マージリクエストのタイムトラッキングを設定する {#set-a-time-estimate-for-a-merge-request}
 
 このマージリクエストの推定作業時間を設定します。
 
@@ -3789,7 +3800,7 @@ POST /projects/:id/merge_requests/:merge_request_iid/time_estimate
 
 | 属性           | 型              | 必須 | 説明 |
 |---------------------|-------------------|----------|-------------|
-| `id`                | 整数または文字列 | はい      | プロジェクトのIDまたは[URLエンコードされたパス](rest/_index.md#namespaced-paths)。 |
+| `id`                | 整数または文字列 | はい      | プロジェクトの[IDまたはURLエンコードされたパス](rest/_index.md#namespaced-paths)。 |
 | `merge_request_iid` | 整数           | はい      | マージリクエストの内部ID。 |
 | `duration`          | 文字列            | はい      | `3h30m`などの、人間が読める形式での期間。 |
 
@@ -3799,7 +3810,7 @@ curl --request POST \
   --url "https://gitlab.example.com/api/v4/projects/5/merge_requests/93/time_estimate?duration=3h30m"
 ```
 
-応答の例:
+レスポンス例:
 
 ```json
 {
@@ -3810,7 +3821,7 @@ curl --request POST \
 }
 ```
 
-## マージリクエストの推定時間をリセットする
+## マージリクエストのタイムトラッキングをリセットする {#reset-the-time-estimate-for-a-merge-request}
 
 このマージリクエストの推定時間を0秒にリセットします。
 
@@ -3820,7 +3831,7 @@ POST /projects/:id/merge_requests/:merge_request_iid/reset_time_estimate
 
 | 属性           | 型              | 必須 | 説明 |
 |---------------------|-------------------|----------|-------------|
-| `id`                | 整数または文字列 | はい      | プロジェクトのIDまたは[URLエンコードされたパス](rest/_index.md#namespaced-paths)。 |
+| `id`                | 整数または文字列 | はい      | プロジェクトの[IDまたはURLエンコードされたパス](rest/_index.md#namespaced-paths)。 |
 | `merge_request_iid` | 整数           | はい      | プロジェクトのマージリクエストの内部ID。 |
 
 ```shell
@@ -3829,7 +3840,7 @@ curl --request POST \
   --url "https://gitlab.example.com/api/v4/projects/5/merge_requests/93/reset_time_estimate"
 ```
 
-応答の例:
+レスポンス例:
 
 ```json
 {
@@ -3840,7 +3851,7 @@ curl --request POST \
 }
 ```
 
-## マージリクエストにかかった時間を追加する
+## マージリクエストの使用時間を追加する {#add-spent-time-for-a-merge-request}
 
 このマージリクエストにかかった時間を追加します。
 
@@ -3850,9 +3861,9 @@ POST /projects/:id/merge_requests/:merge_request_iid/add_spent_time
 
 | 属性           | 型           | 必須 | 説明 |
 |---------------------|----------------|----------|-------------|
-| `id`                | 整数または文字列 | はい      | プロジェクトのIDまたは[URLエンコードされたパス](rest/_index.md#namespaced-paths)。 |
+| `id`                | 整数または文字列 | はい      | プロジェクトの[IDまたはURLエンコードされたパス](rest/_index.md#namespaced-paths)。 |
 | `merge_request_iid` | 整数        | はい      | マージリクエストの内部ID。 |
-| `duration`          | 文字列         | はい      | `3h30m`などの、人間が読める形式での期間 |
+| `duration`          | 文字列         | はい      | `3h30m`などの、人間が読める形式での期間。 |
 | `summary`           | 文字列         | いいえ       | かかった時間の概要。 |
 
 ```shell
@@ -3861,7 +3872,7 @@ curl --request POST \
   --url "https://gitlab.example.com/api/v4/projects/5/merge_requests/93/add_spent_time?duration=1h"
 ```
 
-応答の例:
+レスポンス例:
 
 ```json
 {
@@ -3872,7 +3883,7 @@ curl --request POST \
 }
 ```
 
-## マージリクエストにかかった時間をリセットする
+## マージリクエストの使用時間をリセットする {#reset-spent-time-for-a-merge-request}
 
 このマージリクエストにかかった合計時間を0秒にリセットします。
 
@@ -3882,7 +3893,7 @@ POST /projects/:id/merge_requests/:merge_request_iid/reset_spent_time
 
 | 属性           | 型           | 必須 | 説明 |
 |---------------------|----------------|----------|-------------|
-| `id`                | 整数または文字列 | はい      | プロジェクトのIDまたは[URLエンコードされたパス](rest/_index.md#namespaced-paths)。 |
+| `id`                | 整数または文字列 | はい      | プロジェクトの[IDまたはURLエンコードされたパス](rest/_index.md#namespaced-paths)。 |
 | `merge_request_iid` | 整数        | はい      | プロジェクトのマージリクエストの内部ID。 |
 
 ```shell
@@ -3891,7 +3902,7 @@ curl --request POST \
   --url "https://gitlab.example.com/api/v4/projects/5/merge_requests/93/reset_spent_time"
 ```
 
-応答の例:
+レスポンス例:
 
 ```json
 {
@@ -3902,7 +3913,7 @@ curl --request POST \
 }
 ```
 
-## タイムトラッキング統計を取得する
+## タイムトラッキング統計を取得する {#get-time-tracking-stats}
 
 ```plaintext
 GET /projects/:id/merge_requests/:merge_request_iid/time_stats
@@ -3910,7 +3921,7 @@ GET /projects/:id/merge_requests/:merge_request_iid/time_stats
 
 | 属性           | 型              | 必須 | 説明 |
 |---------------------|-------------------|----------|-------------|
-| `id`                | 整数または文字列 | はい      | プロジェクトのIDまたは[URLエンコードされたパス](rest/_index.md#namespaced-paths)。 |
+| `id`                | 整数または文字列 | はい      | プロジェクトの[IDまたはURLエンコードされたパス](rest/_index.md#namespaced-paths)。 |
 | `merge_request_iid` | 整数           | はい      | マージリクエストの内部ID。 |
 
 ```shell
@@ -3918,7 +3929,7 @@ curl --header "PRIVATE-TOKEN: <your_access_token>" \
   --url "https://gitlab.example.com/api/v4/projects/5/merge_requests/93/time_stats"
 ```
 
-応答の例:
+レスポンス例:
 
 ```json
 {
@@ -3929,16 +3940,16 @@ curl --header "PRIVATE-TOKEN: <your_access_token>" \
 }
 ```
 
-## 承認
+## 承認 {#approvals}
 
 承認については、[マージリクエストの承認](merge_request_approvals.md)を参照してください。
 
-## マージリクエストの状態イベントをリストする
+## マージリクエストのステータスイベントのリストを取得する {#list-merge-request-state-events}
 
 どの状態が設定されたか、誰がその操作を行ったか、それがいつ発生したかを追跡するには、[リソース状態イベントAPI](resource_state_events.md#merge-requests)を確認してください。
 
-## トラブルシューティング
+## トラブルシューティング {#troubleshooting}
 
-### 新しいマージリクエストの空のAPIフィールド
+### 新しいマージリクエストの空のAPIフィールド {#empty-api-fields-for-new-merge-requests}
 
 マージリクエストを作成すると、`diff_refs`フィールドと`changes_count`フィールドは最初は空になります。これらのフィールドは、マージリクエストの作成後に非同期的に入力されます。詳細については、[イシュー386562](https://gitlab.com/gitlab-org/gitlab/-/issues/386562)とGitLabフォーラムの[関連するディスカッション](https://forum.gitlab.com/t/diff-refs-empty-after-mr-is-created/78975)を参照してください。

@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    gitlab-duo-workflow-service-client (0.5)
+    gitlab-duo-workflow-service-client (0.6)
       grpc
 
 GEM
@@ -184,7 +184,7 @@ CHECKSUMS
   debug_inspector (1.2.0) sha256=9bdfa02eebc3da163833e6a89b154084232f5766087e59573b70521c77ea68a2
   diff-lcs (1.5.1) sha256=273223dfb40685548436d32b4733aa67351769c7dea621da7d9dd4813e63ddfe
   drb (2.2.1) sha256=e9d472bf785f558b96b25358bae115646da0dbfd45107ad858b0bc0d935cb340
-  gitlab-duo-workflow-service-client (0.5)
+  gitlab-duo-workflow-service-client (0.6)
   gitlab-styles (10.1.0) sha256=f42745f5397d042fe24cf2d0eb56c995b37f9f43d8fb79b834d197a1cafdc84a
   google-protobuf (4.27.2) sha256=9f69eb20acde6e3cf3cd197c09f38911cd7eed5fdf1bf4d4bce4c55e9dc9966f
   google-protobuf (4.27.2-aarch64-linux) sha256=7c9d9ef84e50941ed63515c51233069f70a3f07c8c7e6ef2acd0c4443cb62d5b

@@ -170,6 +170,7 @@ export const sidebarData = {
   username: 'root',
   avatar_url: 'path/to/img_administrator',
   logo_url: 'path/to/logo',
+  compare_plans_url: 'path/to/compare_plans',
   user_counts: {
     last_update: Date.now(),
     todos: 3,
@@ -215,6 +216,7 @@ export const sidebarData = {
   sign_in_path: '/sign_in',
   allow_signup: true,
   new_user_registration_path: '/sign_up',
+  has_multiple_organizations: false,
 };
 
 export const loggedOutSidebarData = {

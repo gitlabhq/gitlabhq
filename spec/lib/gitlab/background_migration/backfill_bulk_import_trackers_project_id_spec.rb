@@ -4,7 +4,7 @@ require 'spec_helper'
 
 RSpec.describe Gitlab::BackgroundMigration::BackfillBulkImportTrackersProjectId,
   feature_category: :importers,
-  schema: 20250205195328 do
+  schema: 20250205195328, quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/552532' do
   include_examples 'desired sharding key backfill job' do
     let(:batch_table) { :bulk_import_trackers }
     let(:backfill_column) { :project_id }

@@ -18,7 +18,7 @@ title: Packages API
 
 {{< /history >}}
 
-The API documentation of [GitLab Packages](../administration/packages/_index.md).
+Use this API to interact with [GitLab Packages](../administration/packages/_index.md).
 
 ## List packages
 

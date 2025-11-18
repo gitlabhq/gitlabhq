@@ -435,6 +435,16 @@ User.connection.execute(Gitlab::SQL::Union.new([scope1, scope2]).to_sql)
 
 ## Ordering by Creation Date (`created_at`)
 
+{{< alert type="warning" >}}
+
+With the [Cells architecture](https://handbook.gitlab.com/handbook/engineering/architecture/design-documents/cells/),
+ordering by `id` no longer reliably reflects creation order. Each Cell has a [provisioned database sequence range](cells/_index.md#database-sequences).
+When data moves between Cells, records retain their original IDs from the source Cell.
+
+For accurate sorting by creation date, use `ORDER BY created_at, id` with appropriate indexing.
+
+{{< /alert >}}
+
 In short, you should prefer `ORDER BY id` over `ORDER BY created_at` unless you
 are sure it is going to cause problems for your feature.
 

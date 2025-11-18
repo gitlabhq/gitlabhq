@@ -1,5 +1,6 @@
 <script>
 import { computed } from 'vue';
+import { TYPENAME_GROUP } from '~/graphql_shared/constants';
 import workItemMetadataQuery from 'ee_else_ce/work_items/graphql/work_item_metadata.query.graphql';
 
 export default {
@@ -7,6 +8,7 @@ export default {
     // We provide the metadata values as computed properties
     // so that they can be reactive and update when the Apollo query updates.
     return {
+      hasDesignManagementFeature: computed(() => this.metadata.hasDesignManagementFeature),
       hasIssueWeightsFeature: computed(() => this.metadata.hasIssueWeightsFeature),
       hasIterationsFeature: computed(() => this.metadata.hasIterationsFeature),
       hasOkrsFeature: computed(() => this.metadata.hasOkrsFeature),
@@ -36,7 +38,11 @@ export default {
       emailsHelpPagePath: computed(() => this.metadata.emailsHelpPagePath),
       markdownHelpPath: computed(() => this.metadata.markdownHelpPath),
       quickActionsHelpPath: computed(() => this.metadata.quickActionsHelpPath),
+      canAdminLabel: computed(() => Boolean(this.metadata?.adminLabel)),
+      canCreateProjects: computed(() => Boolean(this.metadata?.createProjects)),
+      canBulkEditEpics: computed(() => Boolean(this.metadata?.bulkAdminEpic)),
       // newCommentTemplatePaths not included as it is already available on the `WorkItem` type.
+      isGroup: computed(() => this.metadata.id?.includes(TYPENAME_GROUP) || false),
     };
   },
   props: {
@@ -61,9 +67,10 @@ export default {
       update(data) {
         const namespace = data?.namespace || {};
         return {
-          ...(namespace.licensedFeatures || {}),
+          ...(namespace.availableFeatures || {}),
           ...(namespace.linkPaths || {}),
           ...(namespace.userPermissions || {}),
+          id: namespace.id,
         };
       },
     },

@@ -27,7 +27,7 @@ RSpec.shared_examples 'user applies wiki templates' do
     expect(find_by_testid('manage-templates-link')[:href]).to end_with(wiki_page_path(wiki, Wiki::TEMPLATES_DIR))
   end
 
-  it 'applies the template on select', quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/572733' do
+  it 'applies the template on select' do
     click_on "Choose a template"
     page.find("li", text: "Template title 1").click
 

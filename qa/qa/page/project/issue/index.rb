@@ -5,36 +5,28 @@ module QA
     module Project
       module Issue
         class Index < Page::Base
-          view 'app/assets/javascripts/vue_shared/issuable/list/components/issuable_list_root.vue' do
-            element 'issuable-container'
-            element 'issuable-search-container'
-          end
-
           view 'app/assets/javascripts/issuable/components/issue_assignees.vue' do
             element 'assignee-link'
             element 'avatar-counter-content'
           end
 
-          view 'app/assets/javascripts/issuable/components/csv_export_modal.vue' do
-            element 'export-issuable-modal'
-            element 'export-issues-button'
-          end
-
-          view 'app/assets/javascripts/issuable/components/csv_import_export_buttons.vue' do
-            element 'export-as-csv-button'
-            element 'import-from-jira-link'
-          end
-
-          view 'app/assets/javascripts/issues/list/components/issues_list_app.vue' do
-            element 'issues-list-more-actions-dropdown'
-          end
-
-          view 'app/assets/javascripts/issues/list/components/empty_state_without_any_issues.vue' do
-            element 'import-issues-dropdown'
+          view 'app/assets/javascripts/vue_shared/issuable/list/components/issuable_list_root.vue' do
+            element 'issuable-container'
           end
 
           view 'app/assets/javascripts/vue_shared/issuable/list/components/issuable_tabs.vue' do
             element 'closed-issuables-tab', ':data-testid="`${tab.name}-issuables-tab`"' # rubocop:disable QA/ElementWithPattern
+          end
+
+          view 'app/assets/javascripts/work_items/components/work_item_list_actions.vue' do
+            element 'export-as-csv-button'
+            element 'import-from-jira-link'
+            element 'work-items-list-more-actions-dropdown'
+          end
+
+          view 'app/assets/javascripts/work_items/components/work_items_csv_export_modal.vue' do
+            element 'export-work-items-button'
+            element 'export-work-items-modal'
           end
 
           def avatar_counter
@@ -52,8 +44,17 @@ module QA
               # When we no longer use tabs for open/closed/all lists
               click_element('clear-icon')
               click_element('filtered-search-token-segment')
-              click_link('State')
-              click_link('Closed')
+
+              if has_button?('State')
+                click_button('State')
+                within('.gl-filtered-search-suggestion-list') do
+                  click_button('Closed')
+                end
+              else
+                click_link('State')
+                click_link('Closed')
+              end
+
               click_element('search-button')
             end
           end
@@ -63,29 +64,28 @@ module QA
           end
 
           def click_export_issues_button
-            click_element('export-issues-button')
+            click_element('export-work-items-button')
           end
 
           def click_import_from_jira_link
             click_element('import-from-jira-link')
           end
 
-          def click_import_issues_dropdown
-            # When there are no issues, the image that loads causes the buttons to jump
-            has_loaded_all_images?
-            click_element('import-issues-dropdown')
-          end
-
-          def click_issues_list_more_actions_dropdown
-            click_element('issues-list-more-actions-dropdown')
+          def click_work_items_list_more_actions_dropdown
+            click_element('work-items-list-more-actions-dropdown')
           end
 
           def export_issues_modal
-            find_element('export-issuable-modal')
+            find_element('export-work-items-modal')
           end
 
           def go_to_jira_import_form
-            click_import_issues_dropdown
+            unless has_element?('import-from-jira-link', wait: 0)
+              within_element('work-item-router-view') do
+                click_element('work-items-list-more-actions-dropdown')
+              end
+            end
+
             click_import_from_jira_link
           end
 

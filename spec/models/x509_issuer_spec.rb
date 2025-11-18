@@ -2,12 +2,18 @@
 
 require 'spec_helper'
 
-RSpec.describe X509Issuer do
+RSpec.describe X509Issuer, feature_category: :source_code_management do
   describe 'validation' do
     it { is_expected.to validate_presence_of(:subject_key_identifier) }
   end
 
+  describe 'associations' do
+    it { is_expected.to belong_to(:project) }
+  end
+
   describe '.safe_create!' do
+    let_it_be(:project) { create(:project) }
+
     let(:issuer_subject_key_identifier) { 'AB:AB:AB:AB:AB:AB:AB:AB:AB:AB:AB:AB:AB:AB:AB:AB:AB:AB:AB:AB' }
     let(:issuer_subject) { 'CN=PKI,OU=Example,O=World' }
     let(:issuer_crl_url) { 'http://example.com/pki.crl' }
@@ -16,7 +22,8 @@ RSpec.describe X509Issuer do
       {
         subject_key_identifier: issuer_subject_key_identifier,
         subject: issuer_subject,
-        crl_url: issuer_crl_url
+        crl_url: issuer_crl_url,
+        project_id: project.id
       }
     end
 

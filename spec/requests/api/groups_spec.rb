@@ -3843,6 +3843,80 @@ RSpec.describe API::Groups, :with_current_organization, feature_category: :group
     end
   end
 
+  describe 'POST /groups/:id/transfer_to_organization' do
+    let_it_be(:organization) { create(:organization) }
+    let_it_be(:group_to_transfer) { create(:group, :private) }
+    let_it_be(:subgroup) { create(:group, :private, parent: group_to_transfer) }
+
+    before do
+      group_to_transfer.add_owner(user1)
+    end
+
+    context 'when authenticated as group owner' do
+      it 'initiates the transfer' do
+        expect_next_instance_of(Organizations::Groups::TransferService) do |service|
+          expect(service).to receive(:async_execute).and_return(
+            ServiceResponse.success(message: 'Group transfer to organization initiated')
+          )
+        end
+
+        post api("/groups/#{group_to_transfer.id}/transfer_to_organization", user1),
+          params: { organization_id: organization.id }
+
+        expect(response).to have_gitlab_http_status(:accepted)
+        expect(json_response['id']).to eq(group_to_transfer.id)
+      end
+
+      context 'when service returns error' do
+        it 'returns bad request' do
+          expect_next_instance_of(Organizations::Groups::TransferService) do |service|
+            expect(service).to receive(:async_execute).and_return(
+              ServiceResponse.error(message: 'Group must be a top-level group')
+            )
+          end
+
+          post api("/groups/#{subgroup.id}/transfer_to_organization", user1),
+            params: { organization_id: organization.id }
+
+          expect(response).to have_gitlab_http_status(:bad_request)
+          expect(json_response['message']).to include('Group must be a top-level group')
+        end
+      end
+    end
+
+    context 'when organization does not exist' do
+      it 'returns not found' do
+        post api("/groups/#{group_to_transfer.id}/transfer_to_organization", user1),
+          params: { organization_id: non_existing_record_id }
+
+        expect(response).to have_gitlab_http_status(:not_found)
+        expect(json_response['message']).to eq('404 Organization Not Found')
+      end
+    end
+
+    context 'when user is not group owner' do
+      before do
+        group_to_transfer.add_developer(user2) # Add this line
+      end
+
+      it 'returns forbidden' do
+        post api("/groups/#{group_to_transfer.id}/transfer_to_organization", user2),
+          params: { organization_id: organization.id }
+
+        expect(response).to have_gitlab_http_status(:forbidden)
+      end
+    end
+
+    context 'when not authenticated' do
+      it 'returns unauthorized' do
+        post api("/groups/#{group_to_transfer.id}/transfer_to_organization"),
+          params: { organization_id: organization.id }
+
+        expect(response).to have_gitlab_http_status(:unauthorized)
+      end
+    end
+  end
+
   it_behaves_like 'custom attributes endpoints', 'groups' do
     let(:attributable) { group1 }
     let(:other_attributable) { group2 }

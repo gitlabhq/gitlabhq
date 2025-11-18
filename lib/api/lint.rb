@@ -33,10 +33,13 @@ module API
         mutually_exclusive :ref, :dry_run_ref
       end
 
+      route_setting :authorization, permissions: :read_ci_config, boundary_type: :project
       get ':id/ci/lint', urgency: :low do
         authorize_read_code!
 
         not_found! 'Repository' if user_project.empty_repo?
+
+        unauthorized!("This endpoint requires an API authentication") if current_user && !::Current.token_info
 
         content_ref = params[:content_ref] || params[:sha] || user_project.repository.root_ref_sha
         dry_run_ref = params[:dry_run_ref] || params[:ref] || user_project.default_branch
@@ -67,6 +70,7 @@ module API
         optional :ref, type: String, desc: 'When dry_run is true, sets the branch or tag to use. Defaults to the project’s default branch when not set'
       end
 
+      route_setting :authorization, permissions: :validate_ci_config, boundary_type: :project
       post ':id/ci/lint', urgency: :low do
         authorize! :create_pipeline, user_project
 

@@ -5,6 +5,7 @@
 - Ai::Conversation::Message#error_details
 - Ai::DuoWorkflows::Checkpoint#checkpoint
 - Ai::DuoWorkflows::Checkpoint#metadata
+- Ai::DuoWorkflows::Checkpoint#ui_chat_log
 - AlertManagement::Alert#payload
 - AlertManagement::HttpIntegration#payload_example
 - ApplicationSetting#ci_cd_settings

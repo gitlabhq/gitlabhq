@@ -18,10 +18,6 @@ import createMockApollo from 'helpers/mock_apollo_helper';
 import { describeSkipVue3, SkipReason } from 'helpers/vue3_conditional';
 import waitForPromises from 'helpers/wait_for_promises';
 import { createAlert, VARIANT_INFO } from '~/alert';
-import {
-  setSortPreferenceMutationResponse,
-  setSortPreferenceMutationResponseWithErrors,
-} from 'jest/issues/list/mock_data';
 import setWindowLocation from 'helpers/set_window_location_helper';
 import { getIdFromGraphQLId } from '~/graphql_shared/utils';
 import { STATUS_CLOSED, STATUS_OPEN } from '~/issues/constants';
@@ -30,10 +26,10 @@ import {
   UPDATED_DESC,
   urlSortParams,
   RELATIVE_POSITION_ASC,
-  RELATIVE_POSITION,
 } from '~/issues/list/constants';
-import setSortPreferenceMutation from '~/issues/list/queries/set_sort_preference.mutation.graphql';
-import getUserWorkItemsDisplaySettingsPreferences from '~/work_items/graphql/get_user_preferences.query.graphql';
+import getUserWorkItemsPreferences from '~/work_items/graphql/get_user_preferences.query.graphql';
+import namespaceWorkItemTypesQuery from '~/work_items/graphql/namespace_work_item_types.query.graphql';
+import updateWorkItemListUserPreference from '~/work_items/graphql/update_work_item_list_user_preferences.mutation.graphql';
 import { scrollUp } from '~/lib/utils/scroll_utils';
 import { getParameterByName, removeParams, updateHistory } from '~/lib/utils/url_utility';
 import { HTTP_STATUS_OK } from '~/lib/utils/http_status';
@@ -64,11 +60,13 @@ import IssuableList from '~/vue_shared/issuable/list/components/issuable_list_ro
 import IssuableItem from '~/vue_shared/issuable/list/components/issuable_item.vue';
 import CreateWorkItemModal from '~/work_items/components/create_work_item_modal.vue';
 import WorkItemUserPreferences from '~/work_items/components/shared/work_item_user_preferences.vue';
-import WorkItemByEmail from '~/work_items/components/work_item_by_email.vue';
 import WorkItemsListApp from '~/work_items/pages/work_items_list_app.vue';
+import WorkItemListActions from '~/work_items/components/work_item_list_actions.vue';
 import getWorkItemStateCountsQuery from 'ee_else_ce/work_items/graphql/list/get_work_item_state_counts.query.graphql';
 import getWorkItemsFullQuery from 'ee_else_ce/work_items/graphql/list/get_work_items_full.query.graphql';
 import getWorkItemsSlimQuery from 'ee_else_ce/work_items/graphql/list/get_work_items_slim.query.graphql';
+import hasWorkItemsQuery from '~/work_items/graphql/list/has_work_items.query.graphql';
+import getWorkItemsCountOnlyQuery from 'ee_else_ce/work_items/graphql/list/get_work_items_count_only.query.graphql';
 import WorkItemDrawer from '~/work_items/components/work_item_drawer.vue';
 import NewResourceDropdown from '~/vue_shared/components/new_resource_dropdown/new_resource_dropdown.vue';
 import {
@@ -92,6 +90,11 @@ import {
   groupWorkItemStateCountsQueryResponse,
   combinedQueryResultExample,
   workItemsWithSubChildQueryResponse,
+  namespaceWorkItemTypesQueryResponse,
+  userPreferenceQueryResponse,
+  workItemUserPreferenceUpdateMutationResponse,
+  workItemUserPreferenceUpdateMutationResponseWithErrors,
+  workItemCountsOnlyResponse,
 } from '../../mock_data';
 
 jest.mock('~/lib/utils/scroll_utils', () => ({ scrollUp: jest.fn() }));
@@ -109,6 +112,17 @@ const skipReason = new SkipReason({
 
 const RELEASES_ENDPOINT = '/test/project/-/releases.json';
 
+const hasWorkItemsData = {
+  data: {
+    namespace: {
+      id: 'namespace',
+      workItems: {
+        nodes: [{ id: 'thing' }],
+      },
+    },
+  },
+};
+
 describeSkipVue3(skipReason, () => {
   /** @type {import('helpers/vue_test_utils_helper').ExtendedWrapper} */
   let wrapper;
@@ -124,12 +138,17 @@ describeSkipVue3(skipReason, () => {
   const defaultCountsQueryHandler = jest
     .fn()
     .mockResolvedValue(groupWorkItemStateCountsQueryResponse);
-  const mutationHandler = jest.fn().mockResolvedValue(setSortPreferenceMutationResponse);
+  const userPreferenceMutationHandler = jest
+    .fn()
+    .mockResolvedValue(workItemUserPreferenceUpdateMutationResponse);
   const mockPreferencesQueryHandler = jest.fn().mockResolvedValue({
     data: {
       currentUser: null,
     },
   });
+  const namespaceQueryHandler = jest.fn().mockResolvedValue(namespaceWorkItemTypesQueryResponse);
+  const defaultHasWorkItemsHandler = jest.fn().mockResolvedValue(hasWorkItemsData);
+  const defaultCountsOnlyHandler = jest.fn().mockResolvedValue(workItemCountsOnlyResponse);
 
   const findIssuableList = () => wrapper.findComponent(IssuableList);
   const findIssueCardStatistics = () => wrapper.findComponent(IssueCardStatistics);
@@ -143,23 +162,22 @@ describeSkipVue3(skipReason, () => {
   const findBulkEditSidebar = () => wrapper.findComponent(WorkItemBulkEditSidebar);
   const findWorkItemListHeading = () => wrapper.findComponent(WorkItemListHeading);
   const findWorkItemUserPreferences = () => wrapper.findComponent(WorkItemUserPreferences);
-  const findWorkItemByEmail = () => wrapper.findComponent(WorkItemByEmail);
   const findChildItem1 = () => wrapper.findAllComponents(IssuableItem).at(0);
   const findChildItem2 = () => wrapper.findAllComponents(IssuableItem).at(1);
   const findSubChildIndicator = (item) =>
     item.find('[data-testid="sub-child-work-item-indicator"]');
-  const findImportIssuesButton = () => wrapper.findByTestId('import-issues-dropdown');
-  const findImportCSVButton = () => wrapper.findByTestId('import-csv-button');
-  const findImportJiraIssueButton = () => wrapper.findByTestId('import-from-jira-link');
   const findNewResourceDropdown = () => wrapper.findComponent(NewResourceDropdown);
+  const findWorkItemListActions = () => wrapper.findComponent(WorkItemListActions);
 
   const mountComponent = ({
     provide = {},
     queryHandler = defaultQueryHandler,
     slimQueryHandler = defaultSlimQueryHandler,
     countsQueryHandler = defaultCountsQueryHandler,
-    sortPreferenceMutationResponse = mutationHandler,
+    hasWorkItemsHandler = defaultHasWorkItemsHandler,
+    countsOnlyHandler = defaultCountsOnlyHandler,
     mockPreferencesHandler = mockPreferencesQueryHandler,
+    userPreferenceMutationResponse = userPreferenceMutationHandler,
     workItemsToggleEnabled = true,
     workItemPlanningView = false,
     props = {},
@@ -183,8 +201,11 @@ describeSkipVue3(skipReason, () => {
         [getWorkItemsFullQuery, queryHandler],
         [getWorkItemsSlimQuery, slimQueryHandler],
         [getWorkItemStateCountsQuery, countsQueryHandler],
-        [setSortPreferenceMutation, sortPreferenceMutationResponse],
-        [getUserWorkItemsDisplaySettingsPreferences, mockPreferencesHandler],
+        [getUserWorkItemsPreferences, mockPreferencesHandler],
+        [namespaceWorkItemTypesQuery, namespaceQueryHandler],
+        [updateWorkItemListUserPreference, userPreferenceMutationResponse],
+        [hasWorkItemsQuery, hasWorkItemsHandler],
+        [getWorkItemsCountOnlyQuery, countsOnlyHandler],
         ...additionalHandlers,
       ]),
       provide: {
@@ -197,6 +218,7 @@ describeSkipVue3(skipReason, () => {
         autocompleteAwardEmojisPath: 'autocomplete/award/emojis/path',
         canBulkUpdate: true,
         canBulkEditEpics: true,
+        canCreateProjects: true,
         hasBlockedIssuesFeature: false,
         hasEpicsFeature: false,
         hasGroupBulkEditFeature: true,
@@ -207,7 +229,6 @@ describeSkipVue3(skipReason, () => {
         hasQualityManagementFeature: false,
         hasCustomFieldsFeature: false,
         hasStatusFeature: false,
-        initialSort: CREATED_DESC,
         isGroup: true,
         isSignedIn: true,
         showNewWorkItem: true,
@@ -262,9 +283,6 @@ describeSkipVue3(skipReason, () => {
     mountComponent({
       provide: {
         workItemType: WORK_ITEM_TYPE_NAME_ISSUE,
-        glFeatures: {
-          issuesListDrawer: true,
-        },
       },
     });
     await waitForPromises();
@@ -491,7 +509,11 @@ describeSkipVue3(skipReason, () => {
     describe('when sort is manual and issue repositioning is disabled', () => {
       beforeEach(async () => {
         mountComponent({
-          provide: { initialSort: RELATIVE_POSITION, isIssueRepositioningDisabled: true },
+          mockPreferencesHandler: jest.fn().mockResolvedValue(userPreferenceQueryResponse),
+          provide: { isIssueRepositioningDisabled: true },
+        });
+        wrapper.vm.$options.apollo.displaySettings.result.call(wrapper.vm, {
+          data: userPreferenceQueryResponse.data,
         });
         await waitForPromises();
       });
@@ -1045,7 +1067,9 @@ describeSkipVue3(skipReason, () => {
         async (sortKey) => {
           // Ensure initial sort key is different so we trigger an update when emitting a sort key
           if (sortKey === CREATED_DESC) {
-            mountComponent({ provide: { initialSort: UPDATED_DESC } });
+            mountComponent({
+              mockPreferencesHandler: jest.fn().mockResolvedValue(userPreferenceQueryResponse),
+            });
           } else {
             mountComponent();
           }
@@ -1067,14 +1091,18 @@ describeSkipVue3(skipReason, () => {
 
           findIssuableList().vm.$emit('sort', UPDATED_DESC);
 
-          expect(mutationHandler).toHaveBeenCalledWith({ input: { issuesSort: UPDATED_DESC } });
+          expect(userPreferenceMutationHandler).toHaveBeenCalledWith({
+            sort: UPDATED_DESC,
+            namespace: 'full/path',
+            workItemTypeId: 'gid://gitlab/WorkItems::Type/1',
+          });
         });
 
         it('captures error when mutation response has errors', async () => {
           const mutationMock = jest
             .fn()
-            .mockResolvedValue(setSortPreferenceMutationResponseWithErrors);
-          mountComponent({ sortPreferenceMutationResponse: mutationMock });
+            .mockResolvedValue(workItemUserPreferenceUpdateMutationResponseWithErrors);
+          mountComponent({ userPreferenceMutationResponse: mutationMock });
           await waitForPromises();
 
           findIssuableList().vm.$emit('sort', UPDATED_DESC);
@@ -1091,7 +1119,7 @@ describeSkipVue3(skipReason, () => {
 
           findIssuableList().vm.$emit('sort', CREATED_DESC);
 
-          expect(mutationHandler).not.toHaveBeenCalled();
+          expect(userPreferenceMutationHandler).not.toHaveBeenCalled();
         });
       });
     });
@@ -1099,49 +1127,134 @@ describeSkipVue3(skipReason, () => {
 
   describe('work item drawer', () => {
     describe('when rendering issues list', () => {
-      describe('when issues_list_drawer feature is disabled', () => {
-        it('is not rendered when feature is disabled', async () => {
-          mountComponent({
-            workItemsToggleEnabled: false,
-            provide: {
-              glFeatures: {
-                issuesListDrawer: false,
-                epicsListDrawer: true,
-              },
-            },
-          });
-          await waitForPromises();
-
-          expect(findDrawer().exists()).toBe(false);
-        });
+      beforeEach(async () => {
+        mountComponent();
+        await waitForPromises();
       });
 
-      describe('when issues_list_drawer feature is enabled', () => {
-        beforeEach(async () => {
-          mountComponent({
-            provide: {
-              glFeatures: {
-                issuesListDrawer: true,
-                epicsListDrawer: false,
+      it.each`
+        message              | shouldOpenItemsInSidePanel | drawerExists
+        ${'is rendered'}     | ${true}                    | ${true}
+        ${'is not rendered'} | ${false}                   | ${false}
+      `(
+        '$message when shouldOpenItemsInSidePanel is $shouldOpenItemsInSidePanel',
+        async ({ shouldOpenItemsInSidePanel, drawerExists }) => {
+          const mockHandler = jest.fn().mockResolvedValue({
+            data: {
+              currentUser: {
+                id: 'gid://gitlab/User/1',
+                userPreferences: {
+                  workItemsDisplaySettings: { shouldOpenItemsInSidePanel },
+                },
+                workItemPreferences: {
+                  displaySettings: { hiddenMetadataKeys: [] },
+                },
+                workItemPreferencesWithType: {
+                  sort: CREATED_DESC,
+                },
               },
             },
           });
+
+          mountComponent({
+            mockPreferencesHandler: mockHandler,
+            provide: {
+              glFeatures: {
+                workItemViewForIssues: false,
+              },
+              isSignedIn: true,
+            },
+          });
+
           await waitForPromises();
+
+          expect(findDrawer().exists()).toBe(drawerExists);
+        },
+      );
+      describe('display settings', () => {
+        it('passes hiddenMetadataKeys to IssuableList', async () => {
+          const mockHandler = jest.fn().mockResolvedValue({
+            data: {
+              currentUser: {
+                id: 'gid://gitlab/User/1',
+                userPreferences: {
+                  workItemsDisplaySettings: { shouldOpenItemsInSidePanel: true },
+                },
+                workItemPreferences: {
+                  displaySettings: { hiddenMetadataKeys: ['labels', 'milestone'] },
+                },
+                workItemPreferencesWithType: {
+                  sort: CREATED_DESC,
+                },
+              },
+            },
+          });
+
+          mountComponent({ mockPreferencesHandler: mockHandler });
+          await waitForPromises();
+
+          expect(findIssuableList().props('hiddenMetadataKeys')).toEqual(['labels', 'milestone']);
         });
 
-        it.each`
-          message              | shouldOpenItemsInSidePanel | drawerExists
-          ${'is rendered'}     | ${true}                    | ${true}
-          ${'is not rendered'} | ${false}                   | ${false}
-        `(
-          '$message when shouldOpenItemsInSidePanel is $shouldOpenItemsInSidePanel',
-          async ({ shouldOpenItemsInSidePanel, drawerExists }) => {
+        it('passes hiddenMetadataKeys to IssueCardTimeInfo', async () => {
+          const mockHandler = jest.fn().mockResolvedValue({
+            data: {
+              currentUser: {
+                id: 'gid://gitlab/User/1',
+                userPreferences: {
+                  workItemsDisplaySettings: { shouldOpenItemsInSidePanel: true },
+                },
+                workItemPreferences: {
+                  displaySettings: { hiddenMetadataKeys: ['dates', 'milestone'] },
+                },
+                workItemPreferencesWithType: {
+                  sort: CREATED_DESC,
+                },
+              },
+            },
+          });
+
+          mountComponent({ mockPreferencesHandler: mockHandler });
+          await waitForPromises();
+
+          expect(findIssueCardTimeInfo().props('hiddenMetadataKeys')).toEqual([
+            'dates',
+            'milestone',
+          ]);
+        });
+
+        describe('workItemDrawerEnabled', () => {
+          it('does not render drawer when shouldOpenItemsInSidePanel is false', async () => {
             const mockHandler = jest.fn().mockResolvedValue({
               data: {
                 currentUser: {
                   id: 'gid://gitlab/User/1',
                   userPreferences: {
-                    workItemsDisplaySettings: { shouldOpenItemsInSidePanel },
+                    workItemsDisplaySettings: { shouldOpenItemsInSidePanel: false },
+                  },
+                  workItemPreferences: {
+                    displaySettings: { hiddenMetadataKeys: [] },
+                  },
+                  workItemPreferencesWithType: {
+                    sort: CREATED_DESC,
+                  },
+                },
+              },
+            });
+
+            mountComponent({ mockPreferencesHandler: mockHandler });
+            await waitForPromises();
+
+            expect(findDrawer().exists()).toBe(false);
+          });
+
+          it('renders drawer when shouldOpenItemsInSidePanel is true and feature is enabled', async () => {
+            const mockHandler = jest.fn().mockResolvedValue({
+              data: {
+                currentUser: {
+                  id: 'gid://gitlab/User/1',
+                  userPreferences: {
+                    workItemsDisplaySettings: { shouldOpenItemsInSidePanel: true },
                   },
                   workItemPreferences: {
                     displaySettings: { hiddenMetadataKeys: [] },
@@ -1155,222 +1268,95 @@ describeSkipVue3(skipReason, () => {
               provide: {
                 glFeatures: {
                   workItemViewForIssues: false,
-                  epicsListDrawer: false,
-                  issuesListDrawer: true,
-                },
-                isSignedIn: true,
-              },
-            });
-
-            await waitForPromises();
-
-            expect(findDrawer().exists()).toBe(drawerExists);
-          },
-        );
-        describe('display settings', () => {
-          it('passes hiddenMetadataKeys to IssuableList', async () => {
-            const mockHandler = jest.fn().mockResolvedValue({
-              data: {
-                currentUser: {
-                  id: 'gid://gitlab/User/1',
-                  userPreferences: {
-                    workItemsDisplaySettings: { shouldOpenItemsInSidePanel: true },
-                  },
-                  workItemPreferences: {
-                    displaySettings: { hiddenMetadataKeys: ['labels', 'milestone'] },
-                  },
                 },
               },
             });
-
-            mountComponent({ mockPreferencesHandler: mockHandler });
             await waitForPromises();
 
-            expect(findIssuableList().props('hiddenMetadataKeys')).toEqual(['labels', 'milestone']);
-          });
-
-          it('passes hiddenMetadataKeys to IssueCardTimeInfo', async () => {
-            const mockHandler = jest.fn().mockResolvedValue({
-              data: {
-                currentUser: {
-                  id: 'gid://gitlab/User/1',
-                  userPreferences: {
-                    workItemsDisplaySettings: { shouldOpenItemsInSidePanel: true },
-                  },
-                  workItemPreferences: {
-                    displaySettings: { hiddenMetadataKeys: ['dates', 'milestone'] },
-                  },
-                },
-              },
-            });
-
-            mountComponent({ mockPreferencesHandler: mockHandler });
-            await waitForPromises();
-
-            expect(findIssueCardTimeInfo().props('hiddenMetadataKeys')).toEqual([
-              'dates',
-              'milestone',
-            ]);
-          });
-
-          describe('workItemDrawerEnabled', () => {
-            it('does not render drawer when shouldOpenItemsInSidePanel is false', async () => {
-              const mockHandler = jest.fn().mockResolvedValue({
-                data: {
-                  currentUser: {
-                    id: 'gid://gitlab/User/1',
-                    userPreferences: {
-                      workItemsDisplaySettings: { shouldOpenItemsInSidePanel: false },
-                    },
-                    workItemPreferences: {
-                      displaySettings: { hiddenMetadataKeys: [] },
-                    },
-                  },
-                },
-              });
-
-              mountComponent({ mockPreferencesHandler: mockHandler });
-              await waitForPromises();
-
-              expect(findDrawer().exists()).toBe(false);
-            });
-
-            it('renders drawer when shouldOpenItemsInSidePanel is true and feature is enabled', async () => {
-              const mockHandler = jest.fn().mockResolvedValue({
-                data: {
-                  currentUser: {
-                    id: 'gid://gitlab/User/1',
-                    userPreferences: {
-                      workItemsDisplaySettings: { shouldOpenItemsInSidePanel: true },
-                    },
-                    workItemPreferences: {
-                      displaySettings: { hiddenMetadataKeys: [] },
-                    },
-                  },
-                },
-              });
-
-              mountComponent({
-                mockPreferencesHandler: mockHandler,
-                provide: {
-                  glFeatures: {
-                    workItemViewForIssues: false,
-                    epicsListDrawer: false,
-                    issuesListDrawer: true,
-                  },
-                },
-              });
-              await waitForPromises();
-
-              expect(findDrawer().exists()).toBe(true);
-            });
+            expect(findDrawer().exists()).toBe(true);
           });
         });
+      });
 
-        describe('selecting issues', () => {
-          const issue = workItemsQueryResponseCombined.data.namespace.workItems.nodes[0];
-          const payload = {
-            iid: issue.iid,
-            webUrl: issue.webUrl,
-            fullPath: issue.namespace.fullPath,
-          };
+      describe('selecting issues', () => {
+        const issue = workItemsQueryResponseCombined.data.namespace.workItems.nodes[0];
+        const payload = {
+          iid: issue.iid,
+          webUrl: issue.webUrl,
+          fullPath: issue.namespace.fullPath,
+        };
 
-          beforeEach(async () => {
-            findIssuableList().vm.$emit('select-issuable', payload);
+        beforeEach(async () => {
+          findIssuableList().vm.$emit('select-issuable', payload);
 
-            await nextTick();
+          await nextTick();
+        });
+
+        it('opens drawer when work item is selected', () => {
+          expect(findDrawer().props('open')).toBe(true);
+          expect(findDrawer().props('activeItem')).toEqual(payload);
+        });
+
+        it('closes drawer when work item is clicked again', async () => {
+          findIssuableList().vm.$emit('select-issuable', payload);
+          await nextTick();
+
+          expect(findDrawer().props('open')).toBe(false);
+          expect(findDrawer().props('activeItem')).toBeNull();
+        });
+
+        const checkThatDrawerPropsAreEmpty = () => {
+          expect(findDrawer().props('activeItem')).toBeNull();
+          expect(findDrawer().props('open')).toBe(false);
+        };
+
+        it('resets the selected item when the drawer is closed', async () => {
+          findDrawer().vm.$emit('close');
+
+          await nextTick();
+
+          checkThatDrawerPropsAreEmpty();
+        });
+
+        it('refetches counts and resets when work item is deleted', async () => {
+          expect(defaultCountsQueryHandler).toHaveBeenCalledTimes(1);
+
+          findDrawer().vm.$emit('workItemDeleted');
+
+          await nextTick();
+
+          checkThatDrawerPropsAreEmpty();
+
+          expect(defaultCountsQueryHandler).toHaveBeenCalledTimes(2);
+        });
+
+        it('refetches counts when the selected work item is closed', async () => {
+          expect(defaultCountsQueryHandler).toHaveBeenCalledTimes(1);
+
+          // component displays open work items by default
+          findDrawer().vm.$emit('work-item-updated', {
+            state: STATE_CLOSED,
           });
 
-          it('opens drawer when work item is selected', () => {
-            expect(findDrawer().props('open')).toBe(true);
-            expect(findDrawer().props('activeItem')).toEqual(payload);
-          });
+          await nextTick();
 
-          it('closes drawer when work item is clicked again', async () => {
-            findIssuableList().vm.$emit('select-issuable', payload);
-            await nextTick();
-
-            expect(findDrawer().props('open')).toBe(false);
-            expect(findDrawer().props('activeItem')).toBeNull();
-          });
-
-          const checkThatDrawerPropsAreEmpty = () => {
-            expect(findDrawer().props('activeItem')).toBeNull();
-            expect(findDrawer().props('open')).toBe(false);
-          };
-
-          it('resets the selected item when the drawer is closed', async () => {
-            findDrawer().vm.$emit('close');
-
-            await nextTick();
-
-            checkThatDrawerPropsAreEmpty();
-          });
-
-          it('refetches counts and resets when work item is deleted', async () => {
-            expect(defaultCountsQueryHandler).toHaveBeenCalledTimes(1);
-
-            findDrawer().vm.$emit('workItemDeleted');
-
-            await nextTick();
-
-            checkThatDrawerPropsAreEmpty();
-
-            expect(defaultCountsQueryHandler).toHaveBeenCalledTimes(2);
-          });
-
-          it('refetches counts when the selected work item is closed', async () => {
-            expect(defaultCountsQueryHandler).toHaveBeenCalledTimes(1);
-
-            // component displays open work items by default
-            findDrawer().vm.$emit('work-item-updated', {
-              state: STATE_CLOSED,
-            });
-
-            await nextTick();
-
-            expect(defaultCountsQueryHandler).toHaveBeenCalledTimes(2);
-          });
+          expect(defaultCountsQueryHandler).toHaveBeenCalledTimes(2);
         });
       });
     });
 
     describe('when rendering epics list', () => {
-      describe('when epics_list_drawer feature is disabled', () => {
-        it('is not rendered when feature is disabled', async () => {
-          mountComponent({
-            workItemsToggleEnabled: false,
-            provide: {
-              glFeatures: {
-                issuesListDrawer: true,
-                epicsListDrawer: false,
-              },
-              workItemType: WORK_ITEM_TYPE_NAME_EPIC,
-            },
-          });
-          await waitForPromises();
-
-          expect(findDrawer().exists()).toBe(false);
+      beforeEach(async () => {
+        mountComponent({
+          provide: {
+            workItemType: WORK_ITEM_TYPE_NAME_EPIC,
+          },
         });
+        await waitForPromises();
       });
 
-      describe('when issues_list_drawer feature is enabled', () => {
-        beforeEach(async () => {
-          mountComponent({
-            provide: {
-              glFeatures: {
-                issuesListDrawer: false,
-                epicsListDrawer: true,
-              },
-              workItemType: WORK_ITEM_TYPE_NAME_EPIC,
-            },
-          });
-          await waitForPromises();
-        });
-
-        it('is rendered when feature is enabled', () => {
-          expect(findDrawer().exists()).toBe(true);
-        });
+      it('uses work item drawer', () => {
+        expect(findDrawer().exists()).toBe(true);
       });
     });
 
@@ -1393,9 +1379,6 @@ describeSkipVue3(skipReason, () => {
         mountComponent({
           provide: {
             workItemType: WORK_ITEM_TYPE_NAME_ISSUE,
-            glFeatures: {
-              issuesListDrawer: true,
-            },
           },
         });
         await waitForPromises();
@@ -1477,15 +1460,28 @@ describeSkipVue3(skipReason, () => {
       closed: 0,
       opened: 0,
     };
+
+    const emptyHasWorkItemsResponse = {
+      data: {
+        namespace: {
+          id: 'namespace',
+          workItems: {
+            nodes: [],
+          },
+        },
+      },
+    };
     const getEmptyQueryHandler = ({
       emptyWorkItems = emptyWorkItemsResponse,
       emptyWorkItemsSlim = emptyWorkItemsSlimResponse,
       emptyCounts = emptyCountsResponse,
+      emptyHasWorkItems = emptyHasWorkItemsResponse,
     } = {}) => {
       return {
         queryHandler: jest.fn().mockResolvedValue(emptyWorkItems),
         slimQueryHandler: jest.fn().mockResolvedValue(emptyWorkItemsSlim),
         countsQueryHandler: jest.fn().mockResolvedValue(emptyCounts),
+        hasWorkItemsHandler: jest.fn().mockResolvedValue(emptyHasWorkItems),
       };
     };
 
@@ -1522,13 +1518,8 @@ describeSkipVue3(skipReason, () => {
 
       it('passes correct props to empty state component for groups', () => {
         expect(findEmptyStateWithoutAnyIssues().props()).toMatchObject({
-          exportCsvPathWithQuery: null,
-          showNewIssueDropdown: false,
+          showNewIssueDropdown: true,
         });
-      });
-
-      it('does not render the import issues dropdown', () => {
-        expect(findImportIssuesButton().exists()).toBe(false);
       });
 
       it('renders the new resource dropdown when group has projects', () => {
@@ -1580,81 +1571,15 @@ describeSkipVue3(skipReason, () => {
       it('passes correct props to empty state component for projects', async () => {
         mountComponent({
           ...emptyStateConfig,
-          provide: { ...emptyStateConfig.provide, exportCsvPath: '/export/csv' },
+          provide: { ...emptyStateConfig.provide },
           stubs: {},
         });
 
         await waitForPromises();
 
         expect(findEmptyStateWithoutAnyIssues().props()).toMatchObject({
-          exportCsvPathWithQuery: '/export/csv',
           showNewIssueDropdown: false,
         });
-      });
-
-      it('renders the import issues buttons in the dropdown', async () => {
-        mountComponent({
-          ...emptyStateConfig,
-        });
-        await waitForPromises();
-
-        expect(findImportJiraIssueButton().props()).toEqual({
-          item: { text: 'Import from Jira', href: '/project/import/jira' },
-          variant: null,
-        });
-        expect(findImportCSVButton().props()).toEqual({
-          item: { text: 'Import CSV' },
-          variant: null,
-        });
-      });
-
-      it('does not render the import CSV option when user permission is false', async () => {
-        mountComponent({
-          ...emptyStateConfig,
-          provide: { ...emptyStateConfig.provide, canImportWorkItems: false },
-        });
-        await waitForPromises();
-
-        expect(findImportCSVButton().exists()).toBe(false);
-      });
-
-      it('does not render the jira import option when user permission is false', async () => {
-        mountComponent({
-          ...emptyStateConfig,
-          provide: { ...emptyStateConfig.provide, canEdit: false },
-        });
-        await waitForPromises();
-
-        expect(findImportJiraIssueButton().exists()).toBe(false);
-      });
-
-      it('does not render the jira import option when jira path is missing', async () => {
-        mountComponent({
-          ...emptyStateConfig,
-          provide: { ...emptyStateConfig.provide, projectImportJiraPath: null },
-        });
-        await waitForPromises();
-
-        expect(findImportJiraIssueButton().exists()).toBe(false);
-      });
-
-      it('does not render the import issues dropdown when user not signed in', async () => {
-        mountComponent({
-          ...getEmptyQueryHandler({ emptyCounts: projectEmptyCountsResponse }),
-          provide: {
-            isGroup: false,
-            isProject: true,
-            isSignedIn: false,
-          },
-          stubs: {
-            EmptyStateWithoutAnyIssues: {
-              template: `<div><slot name="import-export-buttons"></slot></div>`,
-            },
-          },
-        });
-        await waitForPromises();
-
-        expect(findImportIssuesButton().exists()).toBe(false);
       });
     });
 
@@ -1667,7 +1592,10 @@ describeSkipVue3(skipReason, () => {
           opened: 0,
         };
         const emptyStateConfig = {
-          ...getEmptyQueryHandler({ emptyCounts: emptyCountsWithIssueResponse }),
+          ...getEmptyQueryHandler({
+            emptyCounts: emptyCountsWithIssueResponse,
+            emptyHasWorkItems: hasWorkItemsData,
+          }),
         };
 
         it('renders the with issues empty state and the new resource dropdown', async () => {
@@ -1697,7 +1625,10 @@ describeSkipVue3(skipReason, () => {
           },
         };
         const emptyStateConfig = {
-          ...getEmptyQueryHandler({ emptyCounts: emptyCountsWithIssueResponse }),
+          ...getEmptyQueryHandler({
+            emptyCounts: emptyCountsWithIssueResponse,
+            emptyHasWorkItems: hasWorkItemsData,
+          }),
         };
 
         it('renders the with issues empty state and the CreateWorkItemModal', async () => {
@@ -1956,23 +1887,12 @@ describeSkipVue3(skipReason, () => {
 
       expect(wrapper.text()).toContain('3 items');
     });
-
-    it('includes closed/opened in tab counts', async () => {
-      mountComponent({ workItemPlanningView: true });
-      await waitForPromises();
-
-      const tabCounts = findIssuableList().props('tabCounts');
-
-      expect(tabCounts.all).toBe(3);
-      expect(tabCounts.closed).toBeDefined();
-      expect(tabCounts.opened).toBeDefined();
-    });
   });
 
   describe('when "reorder" event is emitted by IssuableList', () => {
     beforeEach(async () => {
       mountComponent({
-        provide: { initialSort: RELATIVE_POSITION_ASC },
+        mockPreferencesHandler: jest.fn().mockResolvedValue(userPreferenceQueryResponse),
       });
       await waitForPromises();
     });
@@ -1996,7 +1916,7 @@ describeSkipVue3(skipReason, () => {
             });
 
             mountComponent({
-              provide: { initialSort: RELATIVE_POSITION_ASC },
+              mockPreferencesHandler: jest.fn().mockResolvedValue(userPreferenceQueryResponse),
               additionalHandlers: [[workItemsReorderMutation, reorderMutationSpy]],
             });
             await waitForPromises();
@@ -2020,9 +1940,9 @@ describeSkipVue3(skipReason, () => {
     });
   });
 
-  describe('WorkItemByEmail component', () => {
+  describe('showWorkItemByEmail computed property', () => {
     describe.each`
-      canCreateWorkItem | isGroup  | newWorkItemEmailAddress | exists
+      canCreateWorkItem | isGroup  | newWorkItemEmailAddress | expected
       ${false}          | ${true}  | ${null}                 | ${false}
       ${false}          | ${true}  | ${'test@example.com'}   | ${false}
       ${true}           | ${true}  | ${null}                 | ${false}
@@ -2033,8 +1953,8 @@ describeSkipVue3(skipReason, () => {
       ${true}           | ${false} | ${'test@example.com'}   | ${true}
     `(
       'when canCreateWorkItem=$canCreateWorkItem, isGroup=$isGroup, newWorkItemEmailAddress=$newWorkItemEmailAddress',
-      ({ canCreateWorkItem, isGroup, newWorkItemEmailAddress, exists }) => {
-        it(`${exists ? 'renders' : 'does not render'}`, async () => {
+      ({ canCreateWorkItem, isGroup, newWorkItemEmailAddress, expected }) => {
+        it(`${expected ? 'returns true' : 'returns false'}`, async () => {
           mountComponent({
             provide: {
               canCreateWorkItem,
@@ -2044,26 +1964,10 @@ describeSkipVue3(skipReason, () => {
           });
           await waitForPromises();
 
-          expect(findWorkItemByEmail().exists()).toBe(exists);
+          expect(findWorkItemListActions().props('showWorkItemByEmailButton')).toBe(expected);
         });
       },
     );
-
-    it('passes correct tracking attributes when rendered', async () => {
-      mountComponent({
-        provide: {
-          canCreateWorkItem: true,
-          isGroup: false,
-          newWorkItemEmailAddress: 'test@example.com',
-        },
-      });
-      await waitForPromises();
-
-      expect(findWorkItemByEmail().attributes()).toMatchObject({
-        'data-track-action': 'click_email_work_item_project_work_items_empty_list_page',
-        'data-track-label': 'email_work_item_project_work_items_empty_list',
-      });
-    });
   });
 
   describe('iid filter search', () => {

@@ -97,7 +97,7 @@ exports[`packages_list_row renders 1`] = `
         positioningstrategy="absolute"
         size="medium"
         textsronly="true"
-        toggleid="dropdown-toggle-btn-2"
+        toggleid="dropdown-toggle-btn-1"
         toggletext="More actions"
         variant="default"
       >

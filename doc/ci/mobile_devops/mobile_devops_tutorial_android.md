@@ -120,7 +120,10 @@ The following are sample `fastlane/Fastfile` and `.gitlab-ci.yml` files with thi
     stage: build
     script:
       - apt update -y && apt install -y curl
-      - curl --silent "https://gitlab.com/gitlab-org/incubation-engineering/mobile-devops/download-secure-files/-/raw/main/installer" | bash
+      - wget https://gitlab.com/gitlab-org/cli/-/releases/v1.74.0/downloads/glab_1.74.0_linux_amd64.deb
+      - apt install ./glab_1.74.0_linux_amd64.deb
+      - glab auth login --hostname $CI_SERVER_FQDN --job-token $CI_JOB_TOKEN
+      - glab securefile download --all --output-dir .secure_files/
       - fastlane build
   ```
 
@@ -130,7 +133,7 @@ Signed builds can be uploaded to the Google Play Store by using the Mobile DevOp
 
 1. [Create a Google service account](https://docs.fastlane.tools/actions/supply/#setup) in Google Cloud Platform and grant that account access to the project in Google Play.
 1. Enable the Google Play integration:
-   1. On the left sidebar, select **Search or go to** and find your project.
+   1. On the left sidebar, select **Search or go to** and find your project. If you've [turned on the new navigation](../../user/interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
    1. Select **Settings** > **Integrations**.
    1. Select **Google Play**.
    1. Under **Enable integration**, select the **Active** checkbox.

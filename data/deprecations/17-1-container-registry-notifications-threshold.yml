@@ -1,7 +1,7 @@
 - title: "Replace `threshold` with `maxretries` for container registry notifications"
+  removal_milestone: "23.0"
   announcement_milestone: "17.1"
-  removal_milestone: "19.0"
-  breaking_change: true
+  breaking_change: false
   reporter: trizzi
   stage: Package
   issue_url: https://gitlab.com/gitlab-org/container-registry/-/issues/1243
@@ -16,3 +16,5 @@
     The problem is that the event will be held in memory forever until it is successful or the registry is shut down. This is not ideal as it can cause high memory and CPU usage on the registry side if the events are not sent properly. It will also delay any new events added to the queue of events.
 
     A new `maxretries` parameter has been added to control how many times an event will be retried before dropping the event. As such, we have deprecated the `threshold` parameter in favor of `maxretries` so that events are not held in memory forever.
+
+    **Backward compatibility:** The registry automatically translates existing `threshold` configurations to equivalent `maxretries` values based on your configured `backoff` duration. You will see a deprecation warning in logs showing the translated value. While your existing configuration continues to work, we recommend explicitly setting `maxretries` to avoid automatic translation.

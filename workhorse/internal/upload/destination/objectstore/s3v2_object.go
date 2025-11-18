@@ -80,7 +80,9 @@ func (s *S3v2Object) Upload(ctx context.Context, r io.Reader) error {
 		return err
 	}
 
-	uploader := manager.NewUploader(client)
+	uploader := manager.NewUploader(client, func(u *manager.Uploader) {
+		u.RequestChecksumCalculation = getRequestChecksumCalculation()
+	})
 
 	input := &s3.PutObjectInput{
 		Bucket: aws.String(s.config.Bucket),

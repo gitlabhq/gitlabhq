@@ -1,5 +1,5 @@
 ---
-stage: Runtime
+stage: Tenant Scale
 group: Geo
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 gitlab_dedicated: no
@@ -42,6 +42,20 @@ To have:
 
 [Read more about using object storage with GitLab](../../object_storage.md).
 
+## Object storage verification
+
+Geo verifies files stored in object storage to ensure data integrity between primary and secondary sites.
+
+{{< alert type="warning" >}}
+Disabling object storage verification is not recommended.
+When you disable the `geo_object_storage_verification` feature flag, GitLab asynchronously deletes all existing verification state records.
+{{< /alert >}}
+
+When the `geo_object_storage_verification` feature flag is disabled:
+
+- Geo verification workers (`Geo::VerificationBatchWorker`) can still appear in Sidekiq logs, but verification does not take place.
+- During cleanup of verification records, workers may be enqueued to process remaining records.
+
 ## Enabling GitLab-managed object storage replication
 
 {{< history >}}
@@ -61,7 +75,7 @@ whether they are stored on the local file system or in object storage.
 
 To enable GitLab replication:
 
-1. On the left sidebar, at the bottom, select **Admin**.
+1. On the left sidebar, at the bottom, select **Admin**. If you've [turned on the new navigation](../../../user/interface_redesign.md#turn-new-navigation-on-or-off), in the upper-right corner, select **Admin**.
 1. Select **Geo** > **Sites**.
 1. Select **Edit** on the **secondary** site.
 1. In the **Synchronization Settings** section, find the **Allow this secondary site to replicate content on Object Storage**

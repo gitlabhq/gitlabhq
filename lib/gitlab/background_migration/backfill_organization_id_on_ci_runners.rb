@@ -4,7 +4,7 @@ module Gitlab
   module BackgroundMigration
     class BackfillOrganizationIdOnCiRunners < BatchedMigrationJob
       operation_name :backfill_organization_id_on_ci_runners
-      feature_category :runner
+      feature_category :runner_core
 
       DEFAULT_ORG_ID = 1
 

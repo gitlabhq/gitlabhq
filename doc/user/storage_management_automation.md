@@ -48,7 +48,7 @@ You can use command-line tools or a programming language to interact with the RE
 To send API requests, install either:
 
 - curl with your preferred package manager.
-- [GitLab CLI](../editor_extensions/gitlab_cli/_index.md) and use the `glab api` subcommand.
+- [GitLab CLI](https://docs.gitlab.com/cli/) and use the `glab api` subcommand.
 
 To format JSON responses, install `jq`. For more information, see [Tips for productive DevOps workflows: JSON formatting with jq and CI/CD linting automation](https://about.gitlab.com/blog/2021/04/21/devops-workflows-json-format-jq-ci-cd-lint/).
 
@@ -84,7 +84,7 @@ Some API endpoints require [pagination](../api/rest/_index.md#pagination) and su
 
 Requests that require a POST body formatted as JSON data can be written as `key=value` pairs passed to the `--raw-field` parameter.
 
-For more information, see the [GitLab CLI endpoint documentation](../editor_extensions/gitlab_cli/_index.md#core-commands).
+For more information, see the [GitLab CLI endpoint documentation](https://docs.gitlab.com/cli/#commands).
 
 ### API client libraries
 

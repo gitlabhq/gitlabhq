@@ -291,6 +291,10 @@ module FilteredSearchHelpers
     expect(page).to have_css '.gl-filtered-search-token', text: /Epic (=|is) #{value}/
   end
 
+  def expect_parent_token(value)
+    expect(page).to have_css '.gl-filtered-search-token', text: /Parent (=|is) #{value}/
+  end
+
   def expect_search_term(value)
     value.split(' ').each do |term|
       expect(page).to have_css '.gl-filtered-search-term', text: term

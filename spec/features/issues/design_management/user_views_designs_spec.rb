@@ -23,16 +23,6 @@ RSpec.describe 'User views issue designs', :js, feature_category: :design_manage
     end
   end
 
-  context 'navigates directly to the design collection view' do
-    before do
-      visit designs_project_issue_path(project, issue)
-    end
-
-    it 'expands the sidebar' do
-      expect(page).to have_selector('.layout-page.right-sidebar-expanded')
-    end
-  end
-
   context 'navigates directly to the individual design view' do
     before do
       visit designs_project_issue_path(project, issue, vueroute: design.filename)

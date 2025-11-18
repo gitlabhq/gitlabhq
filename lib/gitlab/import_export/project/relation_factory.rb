@@ -220,7 +220,7 @@ module Gitlab
           # When author is not present for source release set the author as ghost user.
 
           if @relation_hash['author_id'].blank?
-            @relation_hash['author_id'] = Users::Internal.ghost.id
+            @relation_hash['author_id'] = Users::Internal.for_organization(@importable.organization_id).ghost.id
           end
         end
 

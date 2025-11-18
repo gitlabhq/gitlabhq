@@ -180,5 +180,32 @@ RSpec.describe Gitlab::Import::MergeRequestHelpers, type: :helper, feature_categ
     it 'updates the existing record if one already exists' do
       expect { metric }.not_to change { MergeRequest::Metrics.count }
     end
+
+    context 'when metric already exists for the merge request and ActiveRecord::RecordNotUnique is raised' do
+      before do
+        allow(helper).to receive(:sleep)
+      end
+
+      it 'retries the operation' do
+        metrics_double = instance_double(MergeRequest::Metrics)
+        allow(MergeRequest::Metrics).to receive(:find_or_initialize_by).and_return(metrics_double)
+        allow(metrics_double).to receive(:update).and_invoke(
+          ->(_) { raise ActiveRecord::RecordNotUnique },
+          ->(_) { true }
+        )
+
+        expect(metrics_double).to receive(:update).twice
+        expect(helper.create_merge_request_metrics(attributes)).to eq(metrics_double)
+      end
+
+      it 'raises the exception after 5 failed retries' do
+        metrics_double = instance_double(MergeRequest::Metrics)
+        allow(MergeRequest::Metrics).to receive(:find_or_initialize_by).and_return(metrics_double)
+        allow(metrics_double).to receive(:update).and_raise(ActiveRecord::RecordNotUnique)
+
+        expect(metrics_double).to receive(:update).exactly(5).times
+        expect { helper.create_merge_request_metrics(attributes) }.to raise_error(ActiveRecord::RecordNotUnique)
+      end
+    end
   end
 end

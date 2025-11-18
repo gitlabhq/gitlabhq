@@ -92,7 +92,7 @@ export default {
         <gl-link
           v-if="commitPath"
           :href="commitPath"
-          class="gl-mr-0 gl-text-subtle gl-font-monospace"
+          class="gl-mr-0 gl-font-monospace gl-text-subtle"
         >
           {{ commit.shortId }}
         </gl-link>
@@ -103,7 +103,7 @@ export default {
     <div v-if="tagName" class="js-tag-info gl-flex gl-items-center gl-gap-2">
       <gl-icon name="tag" variant="subtle" />
       <div v-gl-tooltip.bottom :title="__('Tag')">
-        <gl-link v-if="tagPath" :href="tagPath" class="gl-mr-0 gl-text-subtle gl-font-monospace">
+        <gl-link v-if="tagPath" :href="tagPath" class="gl-mr-0 gl-font-monospace gl-text-subtle">
           {{ tagName }}
         </gl-link>
         <span v-else>{{ tagName }}</span>

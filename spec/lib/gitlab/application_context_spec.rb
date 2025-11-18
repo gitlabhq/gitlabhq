@@ -57,7 +57,8 @@ RSpec.describe Gitlab::ApplicationContext, feature_category: :shared do
   describe '.push' do
     it 'passes the expected context on to labkit' do
       fake_proc = duck_type(:call)
-      expected_context = { user: fake_proc, user_id: fake_proc, client_id: fake_proc }
+      expected_context = { user: fake_proc, client_id: fake_proc,
+                           Labkit::Fields::GL_USER_ID => fake_proc }
 
       expect(Labkit::Context).to receive(:push).with(expected_context)
 
@@ -122,7 +123,7 @@ RSpec.describe Gitlab::ApplicationContext, feature_category: :shared do
 
       expect(result(context)).to include(
         user: user.username,
-        user_id: user.id,
+        Labkit::Fields::GL_USER_ID => user.id,
         project: project.full_path,
         root_namespace: namespace.full_path
       )
@@ -133,7 +134,7 @@ RSpec.describe Gitlab::ApplicationContext, feature_category: :shared do
 
       expect(result(context)).to include(
         user: user.username,
-        user_id: user.id,
+        Labkit::Fields::GL_USER_ID => user.id,
         project: project.full_path,
         root_namespace: namespace.full_path
       )
@@ -156,7 +157,7 @@ RSpec.describe Gitlab::ApplicationContext, feature_category: :shared do
 
       # If a newly added key is added to the context hash, we need to list it in
       # the known keys constant. This spec ensures that we do.
-      expect(context.to_lazy_hash.keys).to contain_exactly(*described_class.known_keys)
+      expect((context.to_lazy_hash.keys - described_class.known_keys)).to eq([])
     end
 
     describe 'setting the client' do

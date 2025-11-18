@@ -3,11 +3,6 @@
 require 'spec_helper'
 
 RSpec.describe Gitlab::PathRegex do
-  let(:starting_with_namespace) { %r{^/\*namespace_id/:(project_)?id} }
-  let(:non_param_parts) { %r{[^:*][a-z\-_/]*} }
-  let(:any_other_path_part) { %r{[a-z\-_/:]*} }
-  let(:wildcard_segment) { /\*/ }
-
   # Pass in a full path to remove the format segment:
   # `/ci/lint(.:format)` -> `/ci/lint`
   def without_format(path)
@@ -68,6 +63,11 @@ RSpec.describe Gitlab::PathRegex do
 
     message
   end
+
+  let(:starting_with_namespace) { %r{^/\*namespace_id/:(project_)?id} }
+  let(:non_param_parts) { %r{[^:*][a-z\-_/]*} }
+  let(:any_other_path_part) { %r{[a-z\-_/:]*} }
+  let(:wildcard_segment) { /\*/ }
 
   let(:all_non_legacy_routes) do
     route_set = Rails.application.routes

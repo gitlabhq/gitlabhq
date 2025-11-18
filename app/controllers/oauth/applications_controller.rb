@@ -5,6 +5,7 @@ class Oauth::ApplicationsController < Doorkeeper::ApplicationsController
   include PageLayoutHelper
   include OauthApplications
   include InitializesCurrentUserMode
+  include CurrentOrganization
 
   # Defined by the `Doorkeeper::ApplicationsController` and is redundant as we call `authenticate_user!` below. Not
   # defining or skipping this will result in a `403` response to all requests.
@@ -14,6 +15,7 @@ class Oauth::ApplicationsController < Doorkeeper::ApplicationsController
   prepend_before_action :authenticate_user!
   before_action :add_gon_variables
   before_action :load_scopes, only: [:index, :create, :edit, :update]
+  before_action :set_current_organization
 
   around_action :set_locale
 
@@ -82,10 +84,17 @@ class Oauth::ApplicationsController < Doorkeeper::ApplicationsController
   def application_params
     super.tap do |params|
       params[:owner] = current_user
+      params[:organization] = Current.organization
     end
   end
 
   def set_locale(&block)
     Gitlab::I18n.with_user_locale(current_user, &block)
+  end
+
+  def organization_params
+    params.permit(
+      :controller, :namespace_id, :group_id, :id, :organization_path
+    )
   end
 end

@@ -15,10 +15,6 @@ RSpec.describe "Issues > User edits issue", :js, feature_category: :team_plannin
   let_it_be(:milestone) { create(:milestone, project: project) }
   let_it_be(:milestones) { create_list(:milestone, 25, project: project_with_milestones) }
 
-  before do
-    stub_feature_flags(work_item_view_for_issues: true)
-  end
-
   context 'with authorized user' do
     before do
       project.add_developer(user)

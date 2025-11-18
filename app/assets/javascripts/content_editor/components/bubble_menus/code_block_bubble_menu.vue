@@ -106,6 +106,7 @@ export default {
     },
 
     copyCodeBlockText() {
+      // eslint-disable-next-line no-restricted-properties
       navigator.clipboard.writeText(this.getCodeBlockText());
     },
 

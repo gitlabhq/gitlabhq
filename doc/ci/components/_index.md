@@ -261,6 +261,43 @@ When referencing the component:
 Pre-release versions are never fetched when using partial version selection. To fetch
 a pre-release version, specify the full version, for example `1.0.1-rc`.
 
+### Use component context in components
+
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/438275) in GitLab 18.6 as a [beta](../../policy/development_stages_support.md#beta) [with a flag](../../administration/feature_flags/_index.md) named `ci_component_context_interpolation`. Enabled by default.
+
+{{< /history >}}
+
+Components can access metadata about themselves with a component context [CI/CD expression](../yaml/expressions.md).
+Use this expression in component templates to reference the version, commit SHA, and other
+metadata dynamically.
+
+To use component context in a component, you must:
+
+1. Declare which component context fields the component needs in the [`spec:component`](../yaml/_index.md#speccomponent) header.
+   `spec:component` supports `name`, `sha`, `version`, and `reference` fields.
+1. Reference the context fields using the CI/CD expression `$[[ component.field-name ]]` in the component template.
+
+For example, a component that references a Docker image built with the same version:
+
+```yaml
+spec:
+  component: [name, version, reference]
+  inputs:
+    image_tag:
+      default: latest
+---
+
+build-image:
+  image: registry.example.com/$[[ component.name ]]:$[[ component.version ]]
+  script:
+    - echo "Building with component version $[[ component.version ]]"
+    - echo "Component reference: $[[ component.reference ]]"
+```
+
+You can also use component context to [reference versioned resources](examples.md#use-component-context-to-reference-versioned-resources).
+
 ## Write a component
 
 This section describes some best practices for creating high quality component projects.
@@ -345,7 +382,7 @@ ensure-job-added:
   script:
     - |
       route="${CI_API_V4_URL}/projects/${CI_PROJECT_ID}/pipelines/${CI_PIPELINE_ID}/jobs"
-      count=`curl --silent "$route" | jq 'map(select(.name | contains("component job of my-component"))) | length'`
+      count=`curl --silent --header "JOB-TOKEN: ${CI_JOB_TOKEN}" "$route" | jq 'map(select(.name | contains("component job of my-component"))) | length'`
       if [ "$count" != "1" ]; then
         exit 1; else
         echo "Component Job present"
@@ -609,7 +646,7 @@ For a click-through demo, see [the CI/CD Catalog beta Product Tour](https://gitl
 
 To access the CI/CD Catalog and view the published components that are available to you:
 
-1. On the left sidebar, select **Search or go to**.
+1. On the left sidebar, select **Search or go to**. If you've [turned on the new navigation](../../user/interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
 1. Select **Explore**.
 1. Select **CI/CD Catalog**.
 
@@ -641,7 +678,7 @@ Prerequisites:
 
 To set the project as a catalog project:
 
-1. On the left sidebar, select **Search or go to** and find your project.
+1. On the left sidebar, select **Search or go to** and find your project. If you've [turned on the new navigation](../../user/interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
 1. Select **Settings** > **General**.
 1. Expand **Visibility, project features, permissions**.
 1. Turn on the **CI/CD Catalog project** toggle.

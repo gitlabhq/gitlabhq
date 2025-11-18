@@ -57,6 +57,16 @@ export const DATE_WITHOUT_YEAR_FORMAT = 'asDateWithoutYear';
  */
 export const TIME_ONLY_FORMAT = 'asTime';
 
+/**
+ * Format a Date with the help of {@link DateTimeFormat.asMonthYear}
+ *
+ * Note: In case you can use localeDateFormat.asMonthYear directly, please do that.
+ *
+ * @example
+ * localeDateFormat[MONTH_YEAR_FORMAT].format(date) // returns 'Jan 2025'
+ */
+export const MONTH_YEAR_FORMAT = 'asMonthYear';
+
 export const DEFAULT_DATE_TIME_FORMAT = DATE_WITH_TIME_FORMAT;
 
 export const DATE_TIME_FORMATS = [
@@ -65,6 +75,7 @@ export const DATE_TIME_FORMATS = [
   DATE_ONLY_FORMAT,
   DATE_WITHOUT_YEAR_FORMAT,
   TIME_ONLY_FORMAT,
+  MONTH_YEAR_FORMAT,
 ];
 
 /**
@@ -227,6 +238,28 @@ class DateTimeFormat {
   }
 
   /**
+   * Locale aware formatter to display only the month and year.
+   *
+   * Use this when you need to display dates in "Month Year" format (e.g., "Jan 2025").
+   *
+   * @example
+   * // en-US: returns something like Jan 2025
+   * // en-GB: returns something like Jan 2025
+   * localeDateFormat.asMonthYear.format(date)
+   *
+   * @returns {DateTimeFormatter}
+   */
+  get asMonthYear() {
+    return (
+      this.#formatters[MONTH_YEAR_FORMAT] ||
+      this.#createFormatter(MONTH_YEAR_FORMAT, {
+        month: 'short',
+        year: 'numeric',
+      })
+    );
+  }
+
+  /**
    * Resets the memoized formatters
    *
    * While this method only seems to be useful for testing right now,
@@ -321,6 +354,7 @@ class DateTimeFormat {
  *
  * Date (showing date only):
  * - {@link DateTimeFormat.asDate localeDateFormat.asDate} - the default format for a date
+ * - {@link DateTimeFormat.asMonthYear localeDateFormat.asMonthYear} - month and year only format (e.g., "Jan 2025")
  *
  * Time (showing time only):
  * - {@link DateTimeFormat.asTime localeDateFormat.asTime} - the default format for a time

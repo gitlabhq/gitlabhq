@@ -92,12 +92,6 @@ RSpec.describe SystemNoteMetadata, feature_category: :team_planning do
 
     subject { create(:system_note_metadata, note: note).reload.values_at(:namespace_id, :organization_id) }
 
-    context 'when associated note belongs to an organization' do
-      let(:note) { create(:note_on_personal_snippet, noteable: personal_snippet) }
-
-      it { is_expected.to eq([nil, personal_snippet.organization_id]) }
-    end
-
     context 'when associated note belongs to a project and namespace' do
       let(:note) { create(:note, noteable: create(:issue, project: project), project: project) }
 

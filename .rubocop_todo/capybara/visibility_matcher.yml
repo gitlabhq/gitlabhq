@@ -5,7 +5,6 @@ Capybara/VisibilityMatcher:
     - 'ee/spec/features/groups/issues_spec.rb'
     - 'ee/spec/features/issues/related_issues_spec.rb'
     - 'ee/spec/features/projects/settings/ee/repository_mirrors_settings_spec.rb'
-    - 'ee/spec/features/promotion_spec.rb'
     - 'ee/spec/support/helpers/features/billing_plans_helpers.rb'
     - 'ee/spec/support/shared_examples/views/issuable_bulk_dropdown_shared_examples.rb'
     - 'ee/spec/views/registrations/welcome/show.html.haml_spec.rb'

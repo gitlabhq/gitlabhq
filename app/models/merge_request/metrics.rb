@@ -11,6 +11,8 @@ class MergeRequest::Metrics < ApplicationRecord
 
   scope :merged_after, ->(date) { where(arel_table[:merged_at].gteq(date)) }
   scope :merged_before, ->(date) { where(arel_table[:merged_at].lteq(date.is_a?(Time) ? date.end_of_day : date)) }
+  scope :closed_after, ->(date) { where(arel_table[:latest_closed_at].gteq(date)) }
+  scope :closed_before, ->(date) { where(arel_table[:latest_closed_at].lteq(date)) }
   scope :merged_by, ->(user) { where(merged_by_id: user) }
   scope :with_valid_time_to_merge, -> { where(arel_table[:merged_at].gt(arel_table[:created_at])) }
   scope :by_target_project, ->(project) { where(target_project_id: project) }

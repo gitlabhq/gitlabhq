@@ -87,10 +87,20 @@ Critical patches follow an accelerated timeline to ensure security vulnerabiliti
 
 ### Patch release schedule
 
-Patches are released twice monthly on the Wednesdays before and after the monthly release week.
-The monthly release week is the week containing the third Thursday of the month.
+Monthly releases occur during the week that follows the third Thursday of each month.
 
-Non-critical patches are included in the next scheduled maintenance window.
+Critical patches are released twice monthly on:
+
+- Wednesday before the monthly release week
+- Wednesday after the monthly release week
+
+For example, if the third Thursday is January 16, 2025:
+
+- Monthly release week: January 20-24, 2025
+- First patch release: January 15, 2025 (Wednesday before)
+- Second patch release: January 29, 2025 (Wednesday after)
+
+Non-critical patches are deployed to your instance in the next scheduled maintenance window.
 
 ## Internal releases
 

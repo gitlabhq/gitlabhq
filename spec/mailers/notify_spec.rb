@@ -1493,12 +1493,11 @@ RSpec.describe Notify, feature_category: :code_review_workflow do
           let_it_be(:first_note) { create(:discussion_note, noteable: issue, project: issue.project) }
           let_it_be(:second_note) { create(:discussion_note, noteable: issue, project: issue.project, in_reply_to: first_note) }
           let_it_be(:third_note) { create(:discussion_note, noteable: issue, project: issue.project, in_reply_to: second_note) }
+          let(:note_subject) { third_note }
 
           before_all do
             first_note.noteable.reload.update_attribute(:confidential, "true")
           end
-
-          let(:note_subject) { third_note }
 
           it_behaves_like 'an email sent to a user'
           it_behaves_like 'appearance header and footer enabled'
@@ -1577,14 +1576,13 @@ RSpec.describe Notify, feature_category: :code_review_workflow do
             context 'with private references accessible to the recipient' do
               let_it_be(:private_project) { create(:project, :private) }
               let_it_be(:private_issue) { create(:issue, :closed, project: private_project) }
+              let(:html_part) { subject.body.parts.last.to_s }
 
               before_all do
                 private_project.add_guest(recipient)
 
                 note.update!(note: private_issue.to_reference(full: true).to_s)
               end
-
-              let(:html_part) { subject.body.parts.last.to_s }
 
               it 'does not redact the reference' do
                 expect(html_part).to include("data-reference-type=\"issue\"")
@@ -1668,150 +1666,6 @@ RSpec.describe Notify, feature_category: :code_review_workflow do
         user: user,
         created_by: inviter
       )
-    end
-
-    describe 'group expiration date updated' do
-      let_it_be(:group_member) { create(:group_member, group: group, expires_at: 1.day.from_now) }
-
-      context 'when expiration date is changed' do
-        subject { described_class.member_expiration_date_updated_email('group', group_member.id) }
-
-        it_behaves_like 'an email sent from GitLab'
-        it_behaves_like 'it should not have Gmail Actions links'
-        it_behaves_like 'a user cannot unsubscribe through footer link'
-        it_behaves_like 'appearance header and footer enabled'
-        it_behaves_like 'appearance header and footer not enabled'
-
-        context 'when expiration date is one day away' do
-          it 'contains all the useful information' do
-            is_expected.to have_subject 'Group membership expiration date changed'
-            is_expected.to have_body_text group_member.user.name
-            is_expected.to have_body_text group.name
-            is_expected.to have_body_text group.web_url
-            is_expected.to have_body_text group_group_members_url(group, search: group_member.user.username)
-            is_expected.to have_body_text 'day.'
-            is_expected.not_to have_body_text 'days.'
-          end
-        end
-
-        context 'when expiration date is more than one day away' do
-          before do
-            group_member.update!(expires_at: 20.days.from_now)
-          end
-
-          it 'contains all the useful information' do
-            is_expected.to have_subject 'Group membership expiration date changed'
-            is_expected.to have_body_text group_member.user.name
-            is_expected.to have_body_text group.name
-            is_expected.to have_body_text group.web_url
-            is_expected.to have_body_text group_group_members_url(group, search: group_member.user.username)
-            is_expected.to have_body_text 'days.'
-            is_expected.not_to have_body_text 'day.'
-          end
-        end
-
-        context 'when a group member is newly given an expiration date' do
-          let_it_be(:group_member) { create(:group_member, group: group) }
-
-          before do
-            group_member.update!(expires_at: 5.days.from_now)
-          end
-
-          subject { described_class.member_expiration_date_updated_email('group', group_member.id) }
-
-          it 'contains all the useful information' do
-            is_expected.to have_subject 'Group membership expiration date changed'
-            is_expected.to have_body_text group_member.user.name
-            is_expected.to have_body_text group.name
-            is_expected.to have_body_text group.web_url
-            is_expected.to have_body_text group_group_members_url(group, search: group_member.user.username)
-            is_expected.to have_body_text 'days.'
-            is_expected.not_to have_body_text 'day.'
-          end
-        end
-      end
-
-      context 'when expiration date is removed' do
-        before do
-          group_member.update!(expires_at: nil)
-        end
-
-        subject { described_class.member_expiration_date_updated_email('group', group_member.id) }
-
-        it_behaves_like 'an email sent from GitLab'
-        it_behaves_like 'it should not have Gmail Actions links'
-        it_behaves_like 'a user cannot unsubscribe through footer link'
-        it_behaves_like 'appearance header and footer enabled'
-        it_behaves_like 'appearance header and footer not enabled'
-
-        it 'contains all the useful information' do
-          is_expected.to have_subject 'Group membership expiration date removed'
-          is_expected.to have_body_text group_member.user.name
-          is_expected.to have_body_text group.name
-        end
-      end
-    end
-
-    describe 'membership about to expire' do
-      context "with group membership" do
-        let_it_be(:group_member) { create(:group_member, source: group, expires_at: 7.days.from_now) }
-
-        subject { described_class.member_about_to_expire_email("Namespace", group_member.id) }
-
-        it_behaves_like 'an email sent from GitLab'
-        it_behaves_like 'it should not have Gmail Actions links'
-        it_behaves_like 'a user cannot unsubscribe through footer link'
-        it_behaves_like 'appearance header and footer enabled'
-        it_behaves_like 'appearance header and footer not enabled'
-
-        it 'contains all the useful information' do
-          is_expected.to deliver_to group_member.user.email
-          is_expected.to have_subject "Your membership will expire in 7 days"
-          is_expected.to have_body_text "group will expire in 7 days."
-          is_expected.to have_body_text group_url(group)
-          is_expected.to have_body_text group_group_members_url(group)
-        end
-      end
-
-      context "with project membership" do
-        let_it_be(:project_member) { create(:project_member, source: project, expires_at: 7.days.from_now) }
-
-        subject { described_class.member_about_to_expire_email('Project', project_member.id) }
-
-        it_behaves_like 'an email sent from GitLab'
-        it_behaves_like 'it should not have Gmail Actions links'
-        it_behaves_like 'a user cannot unsubscribe through footer link'
-        it_behaves_like 'appearance header and footer enabled'
-        it_behaves_like 'appearance header and footer not enabled'
-
-        it 'contains all the useful information' do
-          is_expected.to deliver_to project_member.user.email
-          is_expected.to have_subject "Your membership will expire in 7 days"
-          is_expected.to have_body_text "project will expire in 7 days."
-          is_expected.to have_body_text project_url(project)
-          is_expected.to have_body_text project_project_members_url(project)
-        end
-      end
-
-      context "with expired membership" do
-        let_it_be(:project_member) { create(:project_member, source: project, expires_at: Date.today) }
-
-        subject { described_class.member_about_to_expire_email('Project', project_member.id) }
-
-        it 'not deliver expiry email' do
-          should_not_email_anyone
-        end
-      end
-
-      context "with expiry notified membership" do
-        let_it_be(:project_member) { create(:project_member, source: project, expires_at: 7.days.from_now, expiry_notified_at: Date.today) }
-
-        subject { described_class.member_about_to_expire_email('Project', project_member.id) }
-
-        it 'not deliver expiry email' do
-          should_not_email_anyone
-        end
-      end
     end
 
     describe 'admin notification' do

@@ -130,7 +130,7 @@ pre-push:
     custom_roles_docs:
       tags: documentation
       files: git diff --name-only --diff-filter=d $(git merge-base origin/master HEAD)..HEAD
-      glob: '{ee/config/custom_abilities/*yml,doc/user/custom_roles/abilities.md,tooling/custom_roles/docs/templates/custom_abilities.md.erb}'
+      glob: '{ee/config/feature_flags/**/custom_ability_*.yml,ee/config/custom_abilities/*.yml,doc/user/custom_roles/abilities.md,tooling/custom_roles/docs/templates/custom_abilities.md.erb,ee/{lib/,spec/}tasks/gitlab/custom_roles/*}'
       run: bundle exec rake gitlab:custom_roles:check_docs
     verify_job_token_policies:
       tags: backend
@@ -156,6 +156,9 @@ pre-push:
       files: git diff --name-only --diff-filter=d $(git merge-base origin/master HEAD)..HEAD
       glob: '{config/authz/permissions/*.yml,app/policies/*,rb.ee/app/policies/*.rb}'
       run: bundle exec rake gitlab:permissions:validate
+    check-deprecated-files:
+      tags: backend frontend view haml
+      run: scripts/lint/check_deprecated_files.rb
 
   scripts:
     'merge_conflicts':
@@ -209,6 +212,18 @@ pre-commit:
       exclude: 'doc/api/graphql/reference/_index.md'
       glob: 'doc/*.md'
       run: 'if [ $VALE_WARNINGS ]; then minWarnings=warning; else minWarnings=error; fi; if command -v vale > /dev/null 2>&1; then if ! vale --config .vale.ini --minAlertLevel $minWarnings {files}; then echo "ERROR: Fix any linting errors and make sure you are using the latest version of Vale."; exit 1; fi; else echo "ERROR: Vale not found. For more information, see https://vale.sh/docs/vale-cli/installation/."; exit 1; fi'
+    validate-fe-islands-ci:
+      tags: frontend
+      files: git diff --name-only --diff-filter=d --staged
+      glob: '{ee/frontend_islands/apps/**,.gitlab/ci/static-analysis.gitlab-ci.yml,.gitlab/ci/frontend.gitlab-ci.yml}'
+      run: ruby scripts/validate_fe_islands_ci.rb
+      fail_text: Frontend Islands CI configuration is out of sync. Run 'ruby scripts/update_fe_islands_ci.rb' to update it.
+    type-check-fe-islands:
+      tags: frontend
+      root: ee/frontend_islands
+      files: git diff --name-only --diff-filter=d --staged
+      glob: 'ee/frontend_islands/apps/**/*.{ts,vue}'
+      run: 'yarn run lint:types'
 
 auto-fix:
   parallel: true
@@ -243,3 +258,9 @@ auto-fix:
       files: git diff --name-only --diff-filter=d $(git merge-base origin/master HEAD) --cached
       glob: '{,ee/}app/graphql/*.rb'
       run: bundle exec rake gitlab:graphql:compile_docs
+    markdownlint:
+      tags: documentation style
+      files: git diff --name-only --diff-filter=d $(git merge-base origin/master HEAD) --cached
+      exclude: 'doc/api/graphql/reference/_index.md'
+      glob: 'doc/*.md'
+      run: markdownlint-cli2 --fix {files}

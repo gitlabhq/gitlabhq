@@ -13,6 +13,8 @@ module Integrations
         SlackIntegration::INSTANCE_ALIAS
       end
 
+      def fallback_alias; end
+
       def authorized?
         current_user.can_admin_all_resources?
       end

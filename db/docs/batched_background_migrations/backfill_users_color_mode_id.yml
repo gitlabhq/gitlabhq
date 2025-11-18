@@ -1,9 +1,0 @@
----
-migration_job_name: BackfillUsersColorModeId
-description: Backfills the users table color_mode_id column with dark mode value when
-  user has dark mode theme selected
-feature_category: user_profile
-introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/142772
-milestone: '16.10'
-queued_migration_version: 20240222075046
-finalized_by: '20240621054244'

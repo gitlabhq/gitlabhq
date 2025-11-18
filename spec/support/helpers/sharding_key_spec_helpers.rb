@@ -48,6 +48,7 @@ module ShardingKeySpecHelpers
     # sorts the list of columns.
     #
     # The constraint for some tables does not follow this convention hence the custom search below.
+    convalidated = true
     regex = case ([table_name] + column_names.sort)
             when %w[events group_id personal_namespace_id project_id]
               '\\ACHECK \\(\\(\\(group_id IS NOT NULL\\) OR \\(project_id IS NOT NULL\\) ' \
@@ -61,6 +62,7 @@ module ShardingKeySpecHelpers
             # TODO: Remove when we validate constraint
             # https://gitlab.com/gitlab-org/gitlab/-/issues/558353
             when %w[labels group_id organization_id project_id]
+              convalidated = false
               "\\ACHECK \\(\\(num_nonnulls\\(#{column_names.sort.join(', ')}\\) = 1\\)\\) NOT VALID\\Z"
             end
 
@@ -73,7 +75,7 @@ module ShardingKeySpecHelpers
     INNER JOIN pg_class ON pg_constraint.conrelid = pg_class.oid
     WHERE pg_class.relname = '#{table_name}'
     AND contype = 'c'
-    AND convalidated = true
+    AND convalidated = #{convalidated}
     AND pg_get_constraintdef(pg_constraint.oid) ~ '#{regex}'
     SQL
 

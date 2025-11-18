@@ -146,7 +146,7 @@ export default {
     window.removeEventListener('hashchange', this.truncateOrScrollToAnchor);
     this.removeAllPointerEventListeners();
 
-    if (this.$refs['gfm-content'] && this.glFeatures.imageLightboxes) {
+    if (this.$refs['gfm-content']) {
       destroyImageLightbox(this.$refs['gfm-content']);
     }
   },

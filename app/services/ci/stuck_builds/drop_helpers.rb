@@ -3,6 +3,8 @@
 module Ci
   module StuckBuilds
     module DropHelpers
+      BATCH_SIZE = 100
+
       def drop(builds, failure_reason:)
         fetch(builds) do |build|
           drop_build :outdated, build, failure_reason
@@ -17,11 +19,23 @@ module Ci
         end
       end
 
+      def drop_waiting_for_ack(builds, failure_reason:)
+        builds.each_batch(of: BATCH_SIZE) do |batch|
+          batch.each do |build|
+            next if build.runner_manager_id_waiting_for_ack.present?
+
+            Gitlab::ApplicationContext.with_context(project: build.project) do
+              drop_build :waiting_for_ack, build, failure_reason
+            end
+          end
+        end
+      end
+
       # rubocop: disable CodeReuse/ActiveRecord
       def fetch(builds)
         loop do
           jobs = builds.includes(:tags, :runner, project: [:namespace, :route])
-            .limit(100)
+            .limit(BATCH_SIZE)
             .to_a
 
           break if jobs.empty?

@@ -15,6 +15,7 @@ class JiraConnectInstallation < ApplicationRecord
   validates :client_key, presence: true, uniqueness: true
   validates :shared_secret, presence: true
   validates :base_url, presence: true, public_url: true
+  validates :display_url, public_url: true, allow_blank: true
   validates :instance_url, public_url: true, allow_blank: true
 
   scope :for_project, ->(project) {

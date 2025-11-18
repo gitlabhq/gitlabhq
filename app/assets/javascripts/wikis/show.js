@@ -34,9 +34,11 @@ const mountWikiApp = () => {
     pageHeading,
     contentApi,
     showEditButton,
+    showRestoreVersionButton,
     pageInfo,
     isPageTemplate,
     isPageHistorical,
+    createFromTemplateUrl,
     editButtonUrl,
     lastVersion,
     pageVersion,
@@ -91,10 +93,12 @@ const mountWikiApp = () => {
       pageHeading,
       contentApi,
       showEditButton: parseBoolean(showEditButton),
+      showRestoreVersionButton: parseBoolean(showRestoreVersionButton),
       pageInfo: pageInfoData,
       queryVariables,
       isPageTemplate: parseBoolean(isPageTemplate),
       isPageHistorical: parseBoolean(isPageHistorical),
+      createFromTemplateUrl,
       editButtonUrl,
       lastVersion,
       pageVersion: JSON.parse(pageVersion),
@@ -136,7 +140,7 @@ export const mountWikiSidebarEntries = () => {
   const el = document.querySelector('#js-wiki-sidebar-entries');
   if (!el) return false;
 
-  const { hasCustomSidebar, canCreate, viewAllPagesPath } = el.dataset;
+  const { hasCustomSidebar, canCreate, viewAllPagesPath, editing } = el.dataset;
 
   return new Vue({
     el,
@@ -145,6 +149,7 @@ export const mountWikiSidebarEntries = () => {
       canCreate: parseBoolean(canCreate),
       sidebarPagesApi: gl.GfmAutoComplete.dataSources.wikis,
       viewAllPagesPath,
+      editing,
     },
     render(createElement) {
       return createElement(WikiSidebarEntries);

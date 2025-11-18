@@ -6,6 +6,10 @@ RSpec.describe API::Mcp::Base, feature_category: :mcp_server do
   let_it_be(:user) { create(:user) }
   let_it_be(:access_token) { create(:oauth_access_token, user: user, scopes: [:mcp]) }
 
+  before do
+    stub_application_setting(instance_level_ai_beta_features_enabled: true)
+  end
+
   describe 'POST /mcp' do
     context 'when unauthenticated' do
       it 'returns authentication error' do
@@ -37,18 +41,6 @@ RSpec.describe API::Mcp::Base, feature_category: :mcp_server do
             }
           }
         })
-      end
-
-      context 'when feature flag is disabled' do
-        before do
-          stub_feature_flags(mcp_server: false)
-        end
-
-        it 'returns not found' do
-          post api('/mcp', user)
-
-          expect(response).to have_gitlab_http_status(:not_found)
-        end
       end
 
       context 'when access token is PAT' do
@@ -168,18 +160,6 @@ RSpec.describe API::Mcp::Base, feature_category: :mcp_server do
     end
 
     context 'when authenticated' do
-      context 'when feature flag is disabled' do
-        before do
-          stub_feature_flags(mcp_server: false)
-        end
-
-        it 'returns not found' do
-          get api('/mcp', user, oauth_access_token: access_token)
-
-          expect(response).to have_gitlab_http_status(:not_found)
-        end
-      end
-
       it 'returns method not allowed' do
         get api('/mcp', user, oauth_access_token: access_token)
 

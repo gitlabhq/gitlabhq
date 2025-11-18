@@ -4,11 +4,18 @@ import { PiniaVuePlugin } from 'pinia';
 import { createTestingPinia } from '@pinia/testing';
 import { setHTMLFixture, resetHTMLFixture } from 'helpers/fixtures';
 import createEventHub from '~/helpers/event_hub_factory';
-import * as utils from '~/lib/utils/common_utils';
+import { contentTop } from '~/lib/utils/common_utils';
+import { scrollToElement } from '~/lib/utils/scroll_utils';
 import discussionNavigation from '~/notes/mixins/discussion_navigation';
 import { globalAccessorPlugin } from '~/pinia/plugins';
 import { useLegacyDiffs } from '~/diffs/stores/legacy_diffs';
 import { useNotes } from '~/notes/store/legacy_notes';
+
+jest.mock('~/lib/utils/common_utils', () => ({
+  ...jest.requireActual('~/lib/utils/common_utils'),
+  contentTop: jest.fn(),
+}));
+jest.mock('~/lib/utils/scroll_utils');
 
 const discussion = (id, index) => ({
   id,
@@ -101,8 +108,6 @@ describe('Discussion navigation mixin', () => {
           .spyOn(findDiscussionEl(id), 'getBoundingClientRect')
           .mockReturnValue({ y: (index + 1) * 100 });
       });
-
-      jest.spyOn(utils, 'scrollToElement');
     });
 
     describe.each`
@@ -126,7 +131,7 @@ describe('Discussion navigation mixin', () => {
             // to prevent `hasReachedPageEnd` from always returning true
             jest.spyOn(document.body, 'scrollHeight', 'get').mockReturnValue(1000);
             // Mock current scroll position
-            jest.spyOn(utils, 'contentTop').mockReturnValue(currentScrollPosition);
+            contentTop.mockReturnValue(currentScrollPosition);
 
             wrapper.vm[fn]();
 
@@ -140,7 +145,7 @@ describe('Discussion navigation mixin', () => {
           });
 
           it(`scrolls to discussion element with id "${expectedId}"`, () => {
-            expect(utils.scrollToElement).toHaveBeenLastCalledWith(
+            expect(scrollToElement).toHaveBeenLastCalledWith(
               findDiscussionEl(expectedId),
               undefined,
             );

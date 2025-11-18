@@ -531,7 +531,7 @@ We need a preconfigured, custom GitLab AMI to use in our launch configuration la
 
 From the EC2 dashboard:
 
-1. Use the following section titled "[Find official GitLab-created AMI IDs on AWS](#find-official-gitlab-created-ami-ids-on-aws)" to find the correct AMI and select **Launch**.
+1. Use the following section titled [Find official GitLab-created AMI IDs on AWS](#find-official-gitlab-created-ami-ids-on-aws) to find the correct AMI and select **Launch**.
 1. In the **Name and tags** section, set the **Name** to `GitLab`.
 1. In the **Instance type** dropdown list, select an instance type based on your workload. Consult the [hardware requirements](../requirements.md) to choose one that fits your needs (at least `c5.2xlarge`, which is sufficient to accommodate 100 users).
 1. In the **Key pair** section, select **Create new key pair**.
@@ -990,7 +990,7 @@ If your instances are failing the load balancer's health checks, verify that the
 
 You may have to set a password on the `root` user to prevent automatic redirects on the sign-in endpoint before health checks pass.
 
-### "The change you requested was rejected (422)"
+### Message: `The change you requested was rejected (422)`
 
 If you see this page when trying to set a password via the web interface, make sure `external_url` in `gitlab.rb` matches the domain you are making a request from, and run `sudo gitlab-ctl reconfigure` after making any changes to it.
 

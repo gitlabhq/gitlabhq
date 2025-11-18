@@ -8,7 +8,7 @@ title: Documentation and UI link tests
 
 For testing:
 
-- Relative links between documentation files, we use [Lychee](https://lychee.cli.rs/installation/).
+- Relative links between documentation files, we use [Lychee](https://lychee.cli.rs/overview/).
 - Links to documentation from the GitLab UI, we use [`haml-lint`, `eslint`, and `rubocop`](#run-ui-link-tests-locally).
 
 ## Run the relative link test locally
@@ -22,9 +22,9 @@ To run the relative link test locally, you can either:
 
 To check the links on a single project:
 
-1. Install [Lychee](https://lychee.cli.rs/installation/).
+1. Install [Lychee](https://lychee.cli.rs/guides/getting-started/).
 1. Change into the root directory of the project.
-1. Run `lychee --offline --include-fragments <doc_directory>` where `<doc_directory>` it the directory that contains
+1. Run `lychee --offline --include-fragments <doc_directory>`, where `<doc_directory>` is the directory that contains
    documentation to check. For example: `lychee --offline --include-fragments doc`.
 
 ### Check all GitLab Docs site projects
@@ -39,7 +39,7 @@ To check links on the entire [GitLab documentation site](https://docs.gitlab.com
 
 ## Run UI link tests locally
 
-To test documentation links from GitLab code files locally, you can run
+To test documentation links from GitLab code files locally, you can run:
 
 - `eslint`: For frontend (`.js` and `.vue`) files.
 - `rubocop`: For `.rb` and `.haml` files.

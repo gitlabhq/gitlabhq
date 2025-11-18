@@ -352,13 +352,29 @@ The `permission denied` error on `gradlew` typically indicates that `gradlew` wa
 
 Make the file executable by running `chmod +ux gradlew` locally and pushing it to your Git repository.
 
+## Dependency scanning nebula lock creation fails due to unsupported Gradle version
+
+When attempting to create [dependency.lock files](dependency_scanning_sbom/_index.md#dependency-lock-plugin) with an unsupported Gradle version (9.0 or above) the following error occurs:
+
+```plaintext
+FAILURE: Build failed with an exception.
+* Where:
+Initialization script '/builds/gitlab-org/app/app/nebula.gradle' line: 11
+* What went wrong:
+Failed to notify build listener.
+> org/gradle/util/NameMatcher
+```
+
+Try downgrading your gradle build to Gradle 8.10.2.
+
 ## Dependency scanning scanner is no longer `Gemnasium`
 
 Historically, the scanner used by dependency scanning is `Gemnasium` and this is what user can see on the [vulnerability page](../vulnerabilities/_index.md).
 
-With the roll out of [Dependency scanning by using SBOM](dependency_scanning_sbom/_index.md), we are replacing the `Gemnasium` scanner with the built-in `GitLab SBoM Vulnerability Scanner`. This new scanner is no longer executed in a CI/CD job but rather within the GitLab platform. While the two scanners are expected to provide the same results, because the SBOM scan happens after the existing dependency scanning CI/CD job, existing vulnerabilities have their scanner value updated with the new `GitLab SBoM Vulnerability Scanner`.
+With the roll out of [Dependency scanning by using SBOM](dependency_scanning_sbom/_index.md), the `Gemnasium` scanner is replaced by the built-in `GitLab SBoM Vulnerability Scanner`. This new scanner is no longer executed in a CI/CD job but rather within the GitLab platform. While the two scanners are expected to provide the same results, because the SBOM scan happens after the existing dependency scanning CI/CD job, existing vulnerabilities have their scanner value updated with the new `GitLab SBoM Vulnerability Scanner`.
 
-As we move forward with the roll out and ultimately replace the existing Gemnasium analyzer, the `GitLab SBoM Vulnerability Scanner` will be the only expected value for GitLab built-in dependency scanning feature.
+The `GitLab SBoM Vulnerability Scanner` is the only expected value for the GitLab
+built-in dependency scanning feature.
 
 ## Dependency list for project not being updated based on latest SBOM
 

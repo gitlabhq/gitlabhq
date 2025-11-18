@@ -1,5 +1,5 @@
 ---
-stage: Runtime
+stage: Tenant Scale
 group: Organizations
 info: 'See the Technical Writers assigned to Development Guidelines: https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments-to-development-guidelines'
 description: 'Development Guidelines: learn about organization when developing GitLab.'
@@ -75,6 +75,41 @@ When working on settings, we need to make sure that:
 - They are not used in `join` queries or modify those queries.
 - Updating settings is taken into consideration.
 - If we want to move from project to project namespace, we follow a similar database process to the one described in Phase 1.
+
+## Organization routing
+
+Organization-scoped routes use the `/o/:organization_path/*path` pattern. These routes are created by redrawing all existing routes within an organization scope in `config/routes.rb`.
+
+### How it works
+
+In `config/routes.rb`, all routes are defined within a scope block:
+
+```ruby
+scope(
+  path: '/o/:organization_path',
+  constraints: { organization_path: Gitlab::PathRegex.organization_route_regex },
+  as: :organization
+) do
+  draw_all_routes
+end
+```
+
+This approach:
+
+1. Redraws all existing routes under the `/o/:organization_path` prefix
+1. Validates the organization path using a regex constraint
+1. Preserves organization context throughout the request lifecycle
+
+For example, `GET /o/my-org/projects` routes to `ProjectsController#index` (same as `/projects`) with the organization context available via `Current.organization`.
+
+This creates organization-scoped versions of all routes without requiring separate controller or route definitions.
+
+### Routes not yet organization-scoped
+
+Some routes are not currently available under the organization scope:
+
+- **Devise OmniAuth callbacks** - Devise does not support scoping OmniAuth callbacks under a dynamic segment, so these remain at the global level
+- **API routes** - API endpoints are not yet organization-scoped
 
 ## Organizations & cells
 

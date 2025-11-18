@@ -38,7 +38,6 @@ import EmptyStateWithAnyIssues from '~/issues/list/components/empty_state_with_a
 import EmptyStateWithoutAnyIssues from '~/issues/list/components/empty_state_without_any_issues.vue';
 import IssuesListApp from '~/issues/list/components/issues_list_app.vue';
 import NewResourceDropdown from '~/vue_shared/components/new_resource_dropdown/new_resource_dropdown.vue';
-import CreateWorkItemModal from '~/work_items/components/create_work_item_modal.vue';
 import WorkItemDrawer from '~/work_items/components/work_item_drawer.vue';
 import {
   CREATED_DESC,
@@ -60,7 +59,6 @@ import {
   removeParams,
 } from '~/lib/utils/url_utility';
 import {
-  CREATION_CONTEXT_LIST_ROUTE,
   WORK_ITEM_TYPE_ENUM_INCIDENT,
   WORK_ITEM_TYPE_ENUM_ISSUE,
   WORK_ITEM_TYPE_ENUM_TASK,
@@ -173,7 +171,6 @@ describe('CE IssuesListApp component', () => {
   const mockIssuesQueryResponse = jest.fn().mockResolvedValue(defaultQueryResponse);
   const mockIssuesCountsQueryResponse = jest.fn().mockResolvedValue(getIssuesCountsQueryResponse);
 
-  const findCreateWorkItemModal = () => wrapper.findComponent(CreateWorkItemModal);
   const findCsvImportExportButtons = () => wrapper.findComponent(CsvImportExportButtons);
   const findDropdown = () => wrapper.findComponent(GlDisclosureDropdown);
   const findIssuableByEmail = () => wrapper.findComponent(IssuableByEmail);
@@ -236,7 +233,10 @@ describe('CE IssuesListApp component', () => {
       data() {
         return data;
       },
-      stubs,
+      stubs: {
+        WorkItemDrawer: true,
+        ...stubs,
+      },
     });
   };
 
@@ -349,6 +349,34 @@ describe('CE IssuesListApp component', () => {
 
         expect(findCalendarButton().attributes('href')).toBe(defaultProvide.calendarPath);
       });
+
+      describe('IssuableByEmail component', () => {
+        describe.each`
+          initialEmail | canCreateIssue | exists
+          ${false}     | ${false}       | ${false}
+          ${false}     | ${true}        | ${false}
+          ${true}      | ${false}       | ${false}
+          ${true}      | ${true}        | ${true}
+        `(
+          `when issue creation by email is enabled=$initialEmail`,
+          ({ initialEmail, canCreateIssue, exists }) => {
+            it(`${initialEmail ? 'renders' : 'does not render'}`, () => {
+              wrapper = mountComponent({ provide: { initialEmail, canCreateIssue } });
+
+              expect(findIssuableByEmail().exists()).toBe(exists);
+            });
+          },
+        );
+
+        it('tracks IssuableByEmail', () => {
+          wrapper = mountComponent({ provide: { initialEmail: true, canCreateIssue: true } });
+
+          expect(findIssuableByEmail().attributes()).toMatchObject({
+            'data-track-action': 'click_email_issue_project_issues_empty_list_page',
+            'data-track-label': 'email_issue_project_issues_empty_list',
+          });
+        });
+      });
     });
 
     describe('bulk edit button', () => {
@@ -375,37 +403,6 @@ describe('CE IssuesListApp component', () => {
       });
     });
 
-    describe('create modal', () => {
-      it.each([true, false])(
-        'renders depending on whether issuesListCreateModal=%s',
-        (issuesListCreateModal) => {
-          wrapper = mountComponent({ provide: { glFeatures: { issuesListCreateModal } } });
-
-          expect(findCreateWorkItemModal().exists()).toBe(issuesListCreateModal);
-        },
-      );
-
-      it('renders in "list route" creation context', () => {
-        wrapper = mountComponent({ provide: { glFeatures: { issuesListCreateModal: true } } });
-
-        expect(findCreateWorkItemModal().props('creationContext')).toBe(
-          CREATION_CONTEXT_LIST_ROUTE,
-        );
-      });
-
-      it('renders in empty state with issues when issuesListCreateModal is on', async () => {
-        wrapper = mountComponent({
-          provide: { glFeatures: { issuesListCreateModal: true } },
-          issuesQueryResponse: jest.fn().mockResolvedValue(getIssuesQueryEmptyResponse),
-        });
-
-        await waitForPromises();
-
-        const emptyStateComponent = wrapper.findComponent(EmptyStateWithAnyIssues);
-        expect(emptyStateComponent.findComponent(CreateWorkItemModal).exists()).toBe(true);
-      });
-    });
-
     describe('new issue button', () => {
       it('renders when user has permissions', () => {
         wrapper = mountComponent({ provide: { showNewIssueLink: true }, mountFn: mount });
@@ -416,14 +413,6 @@ describe('CE IssuesListApp component', () => {
 
       it('does not render when user does not have permissions', () => {
         wrapper = mountComponent({ provide: { showNewIssueLink: false }, mountFn: mount });
-
-        expect(findGlButtons().filter((button) => button.text() === 'Create issue')).toHaveLength(
-          0,
-        );
-      });
-
-      it('does not render when `issuesListCreateModal` is enabled', () => {
-        wrapper = mountComponent({ provide: { glFeatures: { issuesListCreateModal: true } } });
 
         expect(findGlButtons().filter((button) => button.text() === 'Create issue')).toHaveLength(
           0,
@@ -444,14 +433,6 @@ describe('CE IssuesListApp component', () => {
         expect(findNewResourceDropdown().exists()).toBe(true);
       });
 
-      it('does not render when `issuesListCreateModal` is enabled', () => {
-        wrapper = mountComponent({
-          provide: { isProject: false, glFeatures: { issuesListCreateModal: true } },
-        });
-
-        expect(findNewResourceDropdown().exists()).toBe(false);
-      });
-
       it('renders in empty state with issues in group context', () => {
         wrapper = mountComponent({
           provide: { hasAnyIssues: true, isProject: false },
@@ -466,20 +447,22 @@ describe('CE IssuesListApp component', () => {
 
   describe('initial url params', () => {
     describe('page', () => {
-      it('page_after is set from the url params', () => {
+      it('page_after is set from the url params', async () => {
         setWindowLocation('?page_after=randomCursorString&first_page_size=20');
         wrapper = mountComponent();
 
+        await waitForPromises();
         expect(wrapper.vm.$route.query).toMatchObject({
           page_after: 'randomCursorString',
           first_page_size: '20',
         });
       });
 
-      it('page_before is set from the url params', () => {
+      it('page_before is set from the url params', async () => {
         setWindowLocation('?page_before=anotherRandomCursorString&last_page_size=20');
         wrapper = mountComponent();
 
+        await waitForPromises();
         expect(wrapper.vm.$route.query).toMatchObject({
           page_before: 'anotherRandomCursorString',
           last_page_size: '20',
@@ -488,10 +471,11 @@ describe('CE IssuesListApp component', () => {
     });
 
     describe('search', () => {
-      it('is set from the url params', () => {
+      it('is set from the url params', async () => {
         setWindowLocation(locationSearch);
         wrapper = mountComponent();
 
+        await waitForPromises();
         expect(wrapper.vm.$route.query).toMatchObject({ search: 'find issues' });
       });
     });
@@ -600,34 +584,6 @@ describe('CE IssuesListApp component', () => {
     );
   });
 
-  describe('IssuableByEmail component', () => {
-    describe.each`
-      initialEmail | canCreateIssue | exists
-      ${false}     | ${false}       | ${false}
-      ${false}     | ${true}        | ${false}
-      ${true}      | ${false}       | ${false}
-      ${true}      | ${true}        | ${true}
-    `(
-      `when issue creation by email is enabled=$initialEmail`,
-      ({ initialEmail, canCreateIssue, exists }) => {
-        it(`${initialEmail ? 'renders' : 'does not render'}`, () => {
-          wrapper = mountComponent({ provide: { initialEmail, canCreateIssue } });
-
-          expect(findIssuableByEmail().exists()).toBe(exists);
-        });
-      },
-    );
-
-    it('tracks IssuableByEmail', () => {
-      wrapper = mountComponent({ provide: { initialEmail: true, canCreateIssue: true } });
-
-      expect(findIssuableByEmail().attributes()).toMatchObject({
-        'data-track-action': 'click_email_issue_project_issues_empty_list_page',
-        'data-track-label': 'email_issue_project_issues_empty_list',
-      });
-    });
-  });
-
   describe('slots', () => {
     describe('empty states', () => {
       describe('when there are issues', () => {
@@ -656,10 +612,8 @@ describe('CE IssuesListApp component', () => {
 
         it('shows EmptyStateWithoutAnyIssues empty state', () => {
           expect(wrapper.findComponent(EmptyStateWithoutAnyIssues).props()).toEqual({
-            currentTabCount: 0,
-            exportCsvPathWithQuery: defaultProvide.exportCsvPath,
-            showCsvButtons: true,
             showNewIssueDropdown: false,
+            hasProjects: true,
           });
         });
       });
@@ -1144,18 +1098,8 @@ describe('CE IssuesListApp component', () => {
 
   describe('when issue drawer is enabled', () => {
     beforeEach(async () => {
-      wrapper = mountComponent({
-        provide: {
-          glFeatures: {
-            issuesListDrawer: true,
-          },
-        },
-      });
+      wrapper = mountComponent();
       await waitForPromises();
-    });
-
-    it('renders issuable drawer component', () => {
-      expect(findWorkItemDrawer().exists()).toBe(true);
     });
 
     it('renders issuable drawer closed by default', () => {
@@ -1308,7 +1252,7 @@ describe('CE IssuesListApp component', () => {
           await waitForPromises();
           // required for cache updates
           jest.runOnlyPendingTimers();
-          await nextTick();
+          await waitForPromises();
 
           expect(findIssuableList().props('issuables')[0].type).toBe('OBJECTIVE');
         });
@@ -1332,13 +1276,7 @@ describe('CE IssuesListApp component', () => {
   });
 
   it('shows an error when deleting from the drawer fails', async () => {
-    wrapper = mountComponent({
-      provide: {
-        glFeatures: {
-          issuesListDrawer: true,
-        },
-      },
-    });
+    wrapper = mountComponent();
 
     findIssuableList().vm.$emit(
       'select-issuable',
@@ -1360,13 +1298,7 @@ describe('CE IssuesListApp component', () => {
       const show = btoa(JSON.stringify(showParams));
       setWindowLocation(`?${DETAIL_VIEW_QUERY_PARAM_NAME}=${show}`);
       getParameterByName.mockReturnValue(show);
-      wrapper = mountComponent({
-        provide: {
-          glFeatures: {
-            issuesListDrawer: true,
-          },
-        },
-      });
+      wrapper = mountComponent();
       await waitForPromises();
     };
     it('calls `getParameterByName` to get the `show` param', async () => {
@@ -1403,13 +1335,7 @@ describe('CE IssuesListApp component', () => {
     const show = btoa(JSON.stringify({ id: getIdFromGraphQLId(id), iid, full_path: fullPath }));
     beforeEach(async () => {
       getParameterByName.mockReturnValue(show);
-      wrapper = mountComponent({
-        provide: {
-          glFeatures: {
-            issuesListDrawer: true,
-          },
-        },
-      });
+      wrapper = mountComponent();
       await waitForPromises();
     });
     describe('and the query contains a `show` parameter', () => {
@@ -1420,10 +1346,12 @@ describe('CE IssuesListApp component', () => {
     });
     describe('and the query does not contain a `show` parameter', () => {
       it('sets the `activeIssuable` to null, closing the drawer', async () => {
-        findIssuableList().vm.$emit(
-          'select-issuable',
-          getIssuesQueryResponse.data.project.issues.nodes[0],
-        );
+        findIssuableList().vm.$emit('select-issuable', {
+          ...getIssuesQueryResponse.data.project.issues.nodes[0],
+          iid: '1',
+        });
+        await nextTick();
+
         expect(findWorkItemDrawer().props('open')).toBe(true);
         await router.push({ query: { otherThing: true } });
         expect(findWorkItemDrawer().props('open')).toBe(false);
@@ -1431,15 +1359,16 @@ describe('CE IssuesListApp component', () => {
     });
     describe('on window `popstate` event', () => {
       it('sets the `activeIssuable` to null, closing the drawer if show parameter is not present', async () => {
-        findIssuableList().vm.$emit(
-          'select-issuable',
-          getIssuesQueryResponse.data.project.issues.nodes[0],
-        );
+        findIssuableList().vm.$emit('select-issuable', {
+          ...getIssuesQueryResponse.data.project.issues.nodes[0],
+          iid: '1',
+        });
+        await waitForPromises();
         expect(findWorkItemDrawer().props('open')).toBe(true);
 
         setWindowLocation('?otherThing=true');
         window.dispatchEvent(new Event('popstate'));
-        await nextTick();
+        await waitForPromises();
         expect(findWorkItemDrawer().props('open')).toBe(false);
       });
     });

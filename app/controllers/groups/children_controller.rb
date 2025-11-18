@@ -5,7 +5,6 @@ module Groups
     include Gitlab::Utils::StrongMemoize
     extend ::Gitlab::Utils::Override
 
-    before_action :group
     before_action :validate_per_page
 
     skip_cross_project_access_check :index

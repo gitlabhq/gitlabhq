@@ -21,7 +21,15 @@ module Gitlab
         # With use_primary_on_empty_location: true we will assume you need the primary if we can't find a matching
         # location for the namespace, id pair. You should only use use_primary_on_empty_location in rare cases because
         # we unstick once we find all replicas are caught up one time so it can be wasteful on the primary.
-        def find_caught_up_replica(namespace, id, use_primary_on_failure: true, use_primary_on_empty_location: false)
+        # If hash_id is true then we only store a hash of id in Redis. This is useful for sensitive data like API
+        # tokens.
+        def find_caught_up_replica(
+          namespace, id,
+          use_primary_on_failure: true,
+          use_primary_on_empty_location: false,
+          hash_id: false)
+          id = id_as_hash(id) if hash_id
+
           location = last_write_location_for(namespace, id)
 
           result = if location
@@ -44,16 +52,22 @@ module Gitlab
 
         # Starts sticking to the primary for the given namespace and id, using
         # the latest WAL pointer from the primary.
-        def stick(namespace, id)
+        # If hash_id is true then we only store a hash of id in Redis. This is useful for sensitive data like API
+        # tokens.
+        def stick(namespace, id, hash_id: false)
+          id = id_as_hash(id) if hash_id
+
           with_primary_write_location do |location|
             set_write_location_for(namespace, id, location)
           end
           use_primary!
         end
 
-        def bulk_stick(namespace, ids)
+        def bulk_stick(namespace, ids, hash_id: false)
           with_primary_write_location do |location|
             ids.each do |id|
+              id = id_as_hash(id) if hash_id
+
               set_write_location_for(namespace, id, location)
             end
           end
@@ -61,6 +75,12 @@ module Gitlab
         end
 
         private
+
+        # Sometimes we use sensitive data like API tokens as sticking keys. We do not want or need to store those in
+        # Redis so we just use a hash instead.
+        def id_as_hash(id)
+          Digest::SHA256.hexdigest(id.to_s)
+        end
 
         def with_primary_write_location
           # When only using the primary, there's no point in getting write

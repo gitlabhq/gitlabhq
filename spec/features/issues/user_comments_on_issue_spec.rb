@@ -11,7 +11,6 @@ RSpec.describe "User comments on issue", :js, feature_category: :team_planning d
   let_it_be(:user) { create(:user) }
 
   before do
-    stub_feature_flags(work_item_view_for_issues: true)
     project.add_guest(user)
     sign_in(user)
 

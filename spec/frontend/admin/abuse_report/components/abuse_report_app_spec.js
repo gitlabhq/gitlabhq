@@ -3,18 +3,15 @@ import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import AbuseReportApp from '~/admin/abuse_report/components/abuse_report_app.vue';
 import ReportHeader from '~/admin/abuse_report/components/report_header.vue';
 import UserDetails from '~/admin/abuse_report/components/user_details.vue';
-import ReportDetails from '~/admin/abuse_report/components/report_details.vue';
 import ReportedContent from '~/admin/abuse_report/components/reported_content.vue';
 import ActivityEventsList from '~/admin/abuse_report/components/activity_events_list.vue';
 import ActivityHistoryItem from '~/admin/abuse_report/components/activity_history_item.vue';
-import AbuseReportNotes from '~/admin/abuse_report/components/abuse_report_notes.vue';
 
 import { SUCCESS_ALERT } from '~/admin/abuse_report/constants';
 import { mockAbuseReport } from '../mock_data';
 
 describe('AbuseReportApp', () => {
   let wrapper;
-  const mockAbuseReportId = mockAbuseReport.report.globalId;
   const { similarOpenReports } = mockAbuseReport.user;
 
   const findAlert = () => wrapper.findComponent(GlAlert);
@@ -34,10 +31,6 @@ describe('AbuseReportApp', () => {
     wrapper.findAllByTestId('activity-similar-open-reports');
   const firstActivityForSimilarReports = () =>
     findActivityForSimilarReports().at(0).findComponent(ActivityHistoryItem);
-
-  const findReportDetails = () => wrapper.findComponent(ReportDetails);
-
-  const findAbuseReportNotes = () => wrapper.findComponent(AbuseReportNotes);
 
   const createComponent = (props = {}, provide = {}) => {
     wrapper = shallowMountExtended(AbuseReportApp, {
@@ -135,24 +128,6 @@ describe('AbuseReportApp', () => {
     });
   });
 
-  describe('ReportDetails', () => {
-    describe('when abuseReportLabels feature flag is enabled', () => {
-      it('renders ReportDetails', () => {
-        createComponent({}, { glFeatures: { abuseReportLabels: true } });
-
-        expect(findReportDetails().props('reportId')).toBe(mockAbuseReportId);
-      });
-    });
-
-    describe('when abuseReportLabels feature flag is disabled', () => {
-      it('does not render ReportDetails', () => {
-        createComponent({}, { glFeatures: { abuseReportLabels: false } });
-
-        expect(findReportDetails().exists()).toBe(false);
-      });
-    });
-  });
-
   describe('Activity', () => {
     it('renders the activity events list', () => {
       expect(findActivityList().exists()).toBe(true);
@@ -165,27 +140,6 @@ describe('AbuseReportApp', () => {
     it('renders activity items for similar abuse reports', () => {
       expect(findActivityForSimilarReports()).toHaveLength(similarOpenReports.length);
       expect(firstActivityForSimilarReports().props('report')).toBe(similarOpenReports[0]);
-    });
-  });
-
-  describe('Notes', () => {
-    describe('when abuseReportNotes feature flag is enabled', () => {
-      it('renders abuse report notes', () => {
-        createComponent({}, { glFeatures: { abuseReportNotes: true } });
-
-        expect(findAbuseReportNotes().exists()).toBe(true);
-        expect(findAbuseReportNotes().props()).toMatchObject({
-          abuseReportId: mockAbuseReportId,
-        });
-      });
-    });
-
-    describe('when abuseReportNotes feature flag is disabled', () => {
-      it('does not render ReportDetails', () => {
-        createComponent({}, { glFeatures: { abuseReportNotes: false } });
-
-        expect(findAbuseReportNotes().exists()).toBe(false);
-      });
     });
   });
 });

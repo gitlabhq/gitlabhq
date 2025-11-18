@@ -256,7 +256,12 @@
   font-size: 0.875rem;
   font-weight: $gl-font-weight-normal;
   padding: 8px 0;
-  @apply gl-bg-dropdown gl-border gl-border-dropdown gl-rounded-base gl-shadow-md gl-text-default;
+  @apply gl-bg-dropdown;
+  @apply gl-border;
+  @apply gl-border-dropdown;
+  @apply gl-rounded-base;
+  @apply gl-shadow-md;
+  @apply gl-text-default;
 
   &.dropdown-open-top {
     margin-bottom: $dropdown-vertical-offset;
@@ -311,7 +316,8 @@
     height: 1px;
     margin: #{$grid-size * 0.5} 0;
     padding: 0;
-    @apply gl-border-t gl-border-t-dropdown;
+    @apply gl-border-t;
+    @apply gl-border-t-dropdown;
   }
 
   .separator {
@@ -330,7 +336,8 @@
   }
 
   .dropdown-header {
-    @apply gl-text-strong gl-font-bold;
+    @apply gl-text-strong;
+    @apply gl-font-bold;
     font-size: 13px;
     line-height: $gl-line-height;
     padding: $dropdown-item-padding-y $dropdown-item-padding-x;
@@ -562,7 +569,9 @@
   text-align: center;
   text-overflow: ellipsis;
   white-space: nowrap;
-  @apply gl-text-strong gl-border-b gl-border-b-dropdown;
+  @apply gl-text-strong;
+  @apply gl-border-b;
+  @apply gl-border-b-dropdown;
   overflow: hidden;
 }
 
@@ -662,7 +671,8 @@
   padding-top: 10px;
   margin-top: 10px;
   font-size: 13px;
-  @apply gl-border-t gl-border-t-dropdown;
+  @apply gl-border-t;
+  @apply gl-border-t-dropdown;
 }
 
 .dropdown-footer-content {
@@ -808,7 +818,10 @@
     min-height: $dropdown-min-height;
     max-height: 330px;
     z-index: 2;
-    @apply gl-border gl-border-dropdown gl-bg-dropdown gl-shadow-md;
+    @apply gl-border;
+    @apply gl-border-dropdown;
+    @apply gl-bg-dropdown;
+    @apply gl-shadow-md;
 
     .dropdown-content {
       height: 135px;

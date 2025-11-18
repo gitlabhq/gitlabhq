@@ -13,11 +13,12 @@
 - merge_request     = local_assigns.fetch(:merge_request, nil)
 - project           = local_assigns.fetch(:project) { merge_request&.project }
 - ref               = local_assigns.fetch(:ref) { merge_request&.source_branch }
+- is_commits_page = local_assigns.fetch(:is_commits_page, false)
+- pipeline_ref      = ref unless is_commits_page && !@ref_type && Commit.valid_hash?(ref)
 - commit            = commit.present(current_user: current_user)
-- commit_status     = commit.detailed_status_for(ref)
+- commit_status     = commit.detailed_status_for(pipeline_ref)
 - show_legacy_ci_icon = local_assigns.fetch(:show_legacy_ci_icon, true)
 - is_blob_page = local_assigns.fetch(:is_blob_page, false)
-- is_commits_page = local_assigns.fetch(:is_commits_page, false)
 - tags              = commit.tags_for_display
 - collapsible       = local_assigns.fetch(:collapsible, true)
 - link_data_attrs   = local_assigns.fetch(:link_data_attrs, {})
@@ -79,8 +80,8 @@
         - else
           = render partial: 'projects/commit/ajax_signature', locals: { commit: commit }
         - if show_legacy_ci_icon && commit_status
-          = render_commit_status(commit, commit_status, ref: ref)
-        .js-commit-pipeline-status{ data: { endpoint: pipelines_project_commit_path(project, commit.id, ref: ref) } }
+          = render_commit_status(commit, commit_status, ref: pipeline_ref)
+        .js-commit-pipeline-status{ data: { endpoint: pipelines_project_commit_path(project, commit.id, ref: pipeline_ref) } }
         .btn-group.gl-hidden{ class: '@sm/panel:gl-flex' }
           = render Pajamas::ButtonComponent.new(label: true, button_text_classes: 'gl-font-monospace', button_options: { class: 'dark:!gl-bg-neutral-800' }) do
             = commit.short_id

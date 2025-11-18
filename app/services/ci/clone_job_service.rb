@@ -7,11 +7,11 @@ module Ci
       @current_user = current_user
     end
 
-    def execute(new_job_variables: [])
+    def execute(new_job_variables: [], new_job_inputs: {})
       new_attributes = build_base_attributes
 
-      add_environment_attributes!(new_attributes) if persisted_environment.present?
       add_job_variables_attributes!(new_attributes, new_job_variables)
+      add_job_inputs_attributes!(new_attributes, new_job_inputs)
       add_job_definition_attributes!(new_attributes)
 
       new_attributes[:user] = current_user
@@ -36,18 +36,20 @@ module Ci
       clone_accessors.index_with { |attribute| job.method(attribute).call }
     end
 
-    def add_environment_attributes!(attributes)
-      return if Feature.enabled?(:stop_writing_builds_metadata, job.project)
-
-      attributes[:metadata_attributes] ||= {}
-      attributes[:metadata_attributes][:expanded_environment_name] = expanded_environment_name
-    end
-
     def add_job_variables_attributes!(attributes, new_job_variables)
       return unless clone_accessors.include?(:job_variables_attributes)
       return unless job.action? && new_job_variables.any?
 
       attributes[:job_variables_attributes] = new_job_variables
+    end
+
+    def add_job_inputs_attributes!(attributes, new_job_inputs)
+      return unless clone_accessors.include?(:inputs_attributes)
+      return if new_job_inputs.empty?
+
+      attributes[:inputs_attributes] = new_job_inputs.map do |name, value|
+        { name: name, value: value, project: project }
+      end
     end
 
     def add_job_definition_attributes!(attributes)

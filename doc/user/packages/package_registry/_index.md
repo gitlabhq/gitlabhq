@@ -143,7 +143,7 @@ to **Only Project Members**, the package registry is then public. Turning off th
 
 To allow anyone to pull from the package registry, regardless of project visibility:
 
-1. On the left sidebar, select **Search or go to** and find your private or internal project.
+1. On the left sidebar, select **Search or go to** and find your private or internal project. If you've [turned on the new navigation](../../interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
 1. Select **Settings** > **General**.
 1. Expand **Visibility, project features, permissions**.
 1. Turn on the **Allow anyone to pull from package registry** toggle.
@@ -205,16 +205,9 @@ Consider contributing to GitLab to add support for these formats.
 
 | Format    | Status                                                        |
 | --------- | ------------------------------------------------------------- |
-| Chef      | [#36889](https://gitlab.com/gitlab-org/gitlab/-/issues/36889) |
-| CocoaPods | [#36890](https://gitlab.com/gitlab-org/gitlab/-/issues/36890) |
 | Conda     | [#36891](https://gitlab.com/gitlab-org/gitlab/-/issues/36891) |
 | CRAN      | [#36892](https://gitlab.com/gitlab-org/gitlab/-/issues/36892) |
-| Opkg      | [#36894](https://gitlab.com/gitlab-org/gitlab/-/issues/36894) |
-| P2        | [#36895](https://gitlab.com/gitlab-org/gitlab/-/issues/36895) |
-| Puppet    | [#36897](https://gitlab.com/gitlab-org/gitlab/-/issues/36897) |
 | RPM       | [#5932](https://gitlab.com/groups/gitlab-org/-/epics/5128)    |
-| SBT       | [#36898](https://gitlab.com/gitlab-org/gitlab/-/issues/36898) |
 | Swift     | [#12233](https://gitlab.com/gitlab-org/gitlab/-/issues/12233) |
-| Vagrant   | [#36899](https://gitlab.com/gitlab-org/gitlab/-/issues/36899) |
 
 <!-- vale gitlab_base.Spelling = YES -->

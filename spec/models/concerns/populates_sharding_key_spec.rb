@@ -18,42 +18,42 @@ RSpec.describe PopulatesShardingKey, feature_category: :database do
   describe '.populate_sharding_key' do
     context 'when only source is defined' do
       before do
-        described_class.populate_sharding_key :role, source: :sharding_source
+        described_class.populate_sharding_key :user_type, source: :sharding_source
       end
 
-      subject { described_class.new(sharding_source: double(role: sharding_key_value)) } # rubocop:disable RSpec/VerifiedDoubles -- the source can be anything so can't set verified double.
+      subject { described_class.new(sharding_source: double(user_type: sharding_key_value)) } # rubocop:disable RSpec/VerifiedDoubles -- the source can be anything so can't set verified double.
 
-      it { is_expected.to populate_sharding_key(:role).from(:sharding_source) }
+      it { is_expected.to populate_sharding_key(:user_type).from(:sharding_source) }
     end
 
     context 'with source and field defined' do
       before do
-        described_class.populate_sharding_key :role, source: :sharding_source, field: :sharding_field
+        described_class.populate_sharding_key :user_type, source: :sharding_source, field: :sharding_field
       end
 
       subject { described_class.new(sharding_source: double(sharding_field: sharding_key_value)) } # rubocop:disable RSpec/VerifiedDoubles -- the source can be anything so can't set verified double.
 
-      it { is_expected.to populate_sharding_key(:role).from(:sharding_source, :sharding_field) }
+      it { is_expected.to populate_sharding_key(:user_type).from(:sharding_source, :sharding_field) }
     end
 
     context 'with block passed' do
       before do
-        described_class.populate_sharding_key(:role) { sharding_source }
+        described_class.populate_sharding_key(:user_type) { sharding_source }
       end
 
       subject { described_class.new(sharding_source: sharding_key_value) }
 
-      it { is_expected.to populate_sharding_key(:role).with(sharding_key_value) }
+      it { is_expected.to populate_sharding_key(:user_type).with(sharding_key_value) }
     end
 
     context 'with block passed as symbol' do
       before do
-        described_class.populate_sharding_key :role, &:sharding_source
+        described_class.populate_sharding_key :user_type, &:sharding_source
       end
 
       subject { described_class.new(sharding_source: sharding_key_value) }
 
-      it { is_expected.to populate_sharding_key(:role).with(sharding_key_value) }
+      it { is_expected.to populate_sharding_key(:user_type).with(sharding_key_value) }
     end
   end
 end

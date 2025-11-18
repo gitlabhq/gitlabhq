@@ -1,16 +1,12 @@
 import boardListsQuery from 'ee_else_ce/boards/graphql/board_lists.query.graphql';
-import { TYPE_EPIC, TYPE_ISSUE, WORKSPACE_GROUP, WORKSPACE_PROJECT } from '~/issues/constants';
+import { TYPE_ISSUE, WORKSPACE_GROUP, WORKSPACE_PROJECT } from '~/issues/constants';
 import { s__, __ } from '~/locale';
 import { TYPENAME_ISSUE } from '~/graphql_shared/constants';
-import updateEpicSubscriptionMutation from '~/sidebar/queries/update_epic_subscription.mutation.graphql';
-import updateEpicTitleMutation from '~/sidebar/queries/update_epic_title.mutation.graphql';
 import createBoardListMutation from './graphql/board_list_create.mutation.graphql';
 import destroyBoardListMutation from './graphql/board_list_destroy.mutation.graphql';
 import updateBoardListMutation from './graphql/board_list_update.mutation.graphql';
 
 import toggleListCollapsedMutation from './graphql/client/board_toggle_collapsed.mutation.graphql';
-import issueSetSubscriptionMutation from './graphql/issue_set_subscription.mutation.graphql';
-import issueSetTitleMutation from './graphql/issue_set_title.mutation.graphql';
 import issueMoveListMutation from './graphql/issue_move_list.mutation.graphql';
 import issueCreateMutation from './graphql/issue_create.mutation.graphql';
 import groupBoardQuery from './graphql/group_board.query.graphql';
@@ -96,24 +92,6 @@ export const toggleCollapsedMutations = {
 export const deleteListQueries = {
   [TYPE_ISSUE]: {
     mutation: destroyBoardListMutation,
-  },
-};
-
-export const titleQueries = {
-  [TYPE_ISSUE]: {
-    mutation: issueSetTitleMutation,
-  },
-  [TYPE_EPIC]: {
-    mutation: updateEpicTitleMutation,
-  },
-};
-
-export const subscriptionQueries = {
-  [TYPE_ISSUE]: {
-    mutation: issueSetSubscriptionMutation,
-  },
-  [TYPE_EPIC]: {
-    mutation: updateEpicSubscriptionMutation,
   },
 };
 

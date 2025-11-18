@@ -162,7 +162,7 @@ and cascade to all projects by default.
 
 To enable product analytics on your instance:
 
-1. On the left sidebar, at the bottom, select **Admin**.
+1. On the left sidebar, at the bottom, select **Admin**. If you've [turned on the new navigation](../../user/interface_redesign.md#turn-new-navigation-on-or-off), in the upper-right corner, select **Admin**.
 1. Select **Settings** > **Analytics**.
 1. Enter the configuration values.
 1. Select **Save changes**.
@@ -177,7 +177,7 @@ Prerequisites:
 - You must have at least the Maintainer role for the project or group the project belongs to.
 - The project must be in a group namespace.
 
-1. On the left sidebar, select **Search or go to** and find your project.
+1. On the left sidebar, select **Search or go to** and find your project. If you've [turned on the new navigation](../../user/interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
 1. Select **Settings** > **Analytics**.
 1. Expand **Data sources** and enter the configuration values.
 1. Select **Save changes**.
@@ -198,7 +198,7 @@ Onboarding a GitLab project means preparing it to receive events that are used f
 
 To onboard a project:
 
-1. On the left sidebar, select **Search or go to** and find your project.
+1. On the left sidebar, select **Search or go to** and find your project. If you've [turned on the new navigation](../../user/interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
 1. Select **Analyze** > **Analytics dashboards**.
 1. Under **Product analytics**, select **Set up**.
 
@@ -355,7 +355,7 @@ Product analytics usage quota is calculated from the number of events received f
 
 To view product analytics usage quota:
 
-1. On the left sidebar, select **Search or go to** and find your group.
+1. On the left sidebar, select **Search or go to** and find your group. If you've [turned on the new navigation](../../user/interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
 1. Select **Settings** > **Usage quota**.
 1. Select the **Product analytics** tab.
 

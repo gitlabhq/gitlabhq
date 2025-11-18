@@ -10,7 +10,6 @@ import { generateCacheConfig, resolvers } from './graphql/settings';
 
 const mountCiVariableListApp = (containerEl) => {
   const {
-    containsVariableReferenceLink,
     endpoint,
     groupId,
     groupPath,
@@ -52,7 +51,6 @@ const mountCiVariableListApp = (containerEl) => {
     el: containerEl,
     apolloProvider,
     provide: {
-      containsVariableReferenceLink,
       endpoint,
       groupId,
       groupPath,

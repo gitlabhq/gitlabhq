@@ -117,8 +117,6 @@ module Types
       reason: 'Underlying feature was removed in 16.0',
       milestone: '16.0'
     }
-    mount_mutation Mutations::Notes::AbuseReport::Create
-    mount_mutation Mutations::Notes::AbuseReport::Update, experiment: { milestone: '17.5' }
     mount_mutation Mutations::Notes::Create::Note, calls_gitaly: true, scopes: [:api, :ai_workflows]
     mount_mutation Mutations::Notes::Create::DiffNote, calls_gitaly: true
     mount_mutation Mutations::Notes::Create::ImageDiffNote, calls_gitaly: true
@@ -265,7 +263,6 @@ module Types
     mount_mutation Mutations::Uploads::Delete
     mount_mutation Mutations::Users::SetNamespaceCommitEmail
     mount_mutation Mutations::WorkItems::Subscribe, experiment: { milestone: '16.3' }
-    mount_mutation Mutations::Admin::AbuseReportLabels::Create, experiment: { milestone: '16.4' }
     mount_mutation Mutations::Ml::Models::Create, experiment: { milestone: '16.8' }
     mount_mutation Mutations::Ml::Models::Edit, experiment: { milestone: '17.3' }
     mount_mutation Mutations::Ml::Models::Destroy, experiment: { milestone: '16.10' }

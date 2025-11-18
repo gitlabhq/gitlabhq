@@ -1,14 +1,10 @@
 # The methods listed here have been identified as "unused" by the linter
-#   scripts/lint/unused_helper_methods.rb, and are potential targets for future
+#   scripts/lint/unused_methods.rb, and are potential targets for future
 #   removal.
 #
 # If it turns out that a method you are attempting to remove is in fact in use,
 #   remove it from this file and add it to `excluded_methods.yml`.
 #
-compliance_frameworks_list_data:
-  file: ee/app/helpers/compliance_management/compliance_framework/group_settings_helper.rb
-project_vulnerability_path:
-  file: ee/app/helpers/ee/gitlab_routing_helper.rb
 user_group_saml_omniauth_metadata_path:
   file: ee/app/helpers/ee/gitlab_routing_helper.rb
 saas_user_caps_i18n_string:
@@ -25,8 +21,6 @@ code_suggestions_self_hosted?:
   file: ee/app/models/ai/feature_setting.rb
 compatible_self_hosted_models:
   file: ee/app/models/ai/feature_setting.rb
-has_ability?:
-  file: ee/app/models/auth/member_role_ability_loader.rb
 gcp_secret_manager?:
   file: ee/app/models/ci/secrets/integration.rb
 azure_key_vault?:
@@ -41,12 +35,8 @@ trim!:
   file: ee/app/models/cloud_connector/keys.rb
 truncated_pem:
   file: ee/app/models/cloud_connector/keys.rb
-delete_compliance_requirements_controls:
-  file: ee/app/models/compliance_management/compliance_framework/compliance_requirement.rb
 notification_sent!:
   file: ee/app/models/compliance_management/pipl_user.rb
-blocked_issuable_ids:
-  file: ee/app/models/concerns/ee/issuable_link.rb
 blocked_issuables_for_collection:
   file: ee/app/models/concerns/ee/issuable_link.rb
 vulnerability_flags_for:
@@ -107,8 +97,6 @@ count_within_namespaces:
   file: ee/app/models/ee/group.rb
 provisioned_by_this_group?:
   file: ee/app/models/ee/group_member.rb
-rebase_commit_is_different?:
-  file: ee/app/models/ee/merge_request.rb
 old_path_with_namespace_for:
   file: ee/app/models/ee/namespace.rb
 default_plan?:
@@ -165,8 +153,6 @@ from_dependency_scanning?:
   file: ee/app/models/package_metadata/advisory.rb
 set_validity_checks!:
   file: ee/app/models/project_security_setting.rb
-requirement_issue_sync_error!:
-  file: ee/app/models/requirements_management/requirement.rb
 last_linked_owner?:
   file: ee/app/models/saml_provider.rb
 index_in:
@@ -231,8 +217,6 @@ telesign_score:
   file: app/models/anti_abuse/user_trust_score.rb
 deleted_from_database?:
   file: app/models/application_record.rb
-kroki_url_absolute?:
-  file: app/models/application_setting.rb
 max_login_attempts_column_exists?:
   file: app/models/application_setting.rb
 failed_login_attempts_unlock_period_in_minutes_column_exists?:
@@ -351,8 +335,6 @@ mentioned_groups:
   file: app/models/concerns/user_mention_behaviour.rb
 mentioned_projects:
   file: app/models/concerns/user_mention_behaviour.rb
-root_repository?:
-  file: app/models/container_repository.rb
 knative_services_finder:
   file: app/models/environment.rb
 find_sti_class:
@@ -363,8 +345,6 @@ note_target_id:
   file: app/models/event.rb
 recent_repository_update?:
   file: app/models/event.rb
-keyids:
-  file: app/models/gpg_key.rb
 get_ids_by_ids_or_paths:
   file: app/models/group.rb
 blocked_owners:
@@ -387,8 +367,6 @@ owner_class_attribute_default:
   file: app/models/jira_import_state.rb
 non_initial?:
   file: app/models/jira_import_state.rb
-priority?:
-  file: app/models/label.rb
 diff_base_commit:
   file: app/models/merge_request.rb
 diff_start_commit:
@@ -397,13 +375,7 @@ reopenable?:
   file: app/models/merge_request.rb
 can_be_closed?:
   file: app/models/merge_request.rb
-can_be_merged_via_command_line_by?:
-  file: app/models/merge_request.rb
-short_merge_commit_sha:
-  file: app/models/merge_request.rb
 find_assignee:
-  file: app/models/merge_request.rb
-merge_request_assignees_with:
   file: app/models/merge_request.rb
 migrate_files_to_database!:
   file: app/models/merge_request_diff.rb
@@ -423,8 +395,6 @@ saved_change_to_parent?:
   file: app/models/namespace.rb
 saved_change_to_path_or_parent?:
   file: app/models/namespace.rb
-normal_select:
-  file: app/models/namespaces/traversal/linear_scopes.rb
 user_admin?:
   file: app/models/personal_access_token.rb
 import_scheduled?:
@@ -451,10 +421,6 @@ enabled_group_deploy_keys:
   file: app/models/project.rb
 updated_today?:
   file: app/models/project_feature_usage.rb
-persist_jira_dvcs_usage:
-  file: app/models/project_feature_usage.rb
-clear_credentials:
-  file: app/models/project_import_data.rb
 update_wiki_size:
   file: app/models/project_statistics.rb
 update_snippets_size:
@@ -471,18 +437,10 @@ members_with_access_levels:
   file: app/models/project_team.rb
 mark_for_retry!:
   file: app/models/remote_mirror.rb
-mirror_url_changed?:
-  file: app/models/remote_mirror.rb
-expire_avatar_cache:
-  file: app/models/repository.rb
-blobs_metadata:
-  file: app/models/repository.rb
 owner_class_attribute_default:
   file: app/models/service_desk/custom_email_verification.rb
 valid_secret_token?:
   file: app/models/snippet.rb
-belongs_to_touch_method:
-  file: app/models/timelog.rb
 unmergeable?:
   file: app/models/todo.rb
 merge_train_removed?:
@@ -509,7 +467,3 @@ will_save_change_to_login?:
   file: app/models/user.rb
 can_leave_project?:
   file: app/models/user.rb
-early_access_event_tracking?:
-  file: app/models/user_preference.rb
-default_issue?:
-  file: app/models/work_items/type.rb

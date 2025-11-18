@@ -37,6 +37,14 @@ module Integrations
       hook.url_variables = url_variables if hook.url_variables != url_variables
 
       hook.enable_ssl_verification = hook_ssl_verification
+
+      # Set hook sharding key
+      integration = hook.integration
+
+      hook.project_id = integration.project_id if integration.project_id
+      hook.group_id = integration.group_id if integration.group_id
+      hook.organization_id = integration.organization_id if integration.organization_id
+
       hook.save! if hook.changed?
       hook
     end

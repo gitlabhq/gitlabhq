@@ -1,4 +1,4 @@
-#import "./work_item_hierarchy.fragment.graphql"
+#import "ee_else_ce/work_items/graphql/work_item_hierarchy.fragment.graphql"
 
 mutation workItemMove(
   $input: workItemsHierarchyReorderInput!

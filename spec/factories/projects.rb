@@ -246,10 +246,6 @@ FactoryBot.define do
     trait :aimed_for_deletion do
       marked_for_deletion_at { Date.yesterday }
       deleting_user { creator }
-
-      after(:create) do |project|
-        create(:namespace_deletion_schedule, namespace: project.project_namespace)
-      end
     end
 
     trait :not_aimed_for_deletion do
@@ -705,13 +701,6 @@ FactoryBot.define do
     after(:build) do |project|
       project.import_data ||= project.build_import_data
       project.import_data.merge_data({ user_contribution_mapping_enabled: true })
-    end
-  end
-
-  trait :user_mapping_to_personal_namespace_owner_enabled do
-    after(:build) do |project|
-      project.import_data ||= project.build_import_data
-      project.import_data.merge_data({ user_mapping_to_personal_namespace_owner_enabled: true })
     end
   end
 end

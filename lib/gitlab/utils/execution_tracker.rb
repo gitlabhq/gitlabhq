@@ -9,17 +9,18 @@ module Gitlab
 
       delegate :monotonic_time, to: :'Gitlab::Metrics::System'
 
-      def initialize
+      def initialize(max_runtime = MAX_RUNTIME)
         @start_time = monotonic_time
+        @max_runtime = max_runtime
       end
 
       def over_limit?
-        monotonic_time - start_time >= MAX_RUNTIME
+        monotonic_time - start_time >= max_runtime
       end
 
       private
 
-      attr_reader :start_time
+      attr_reader :start_time, :max_runtime
     end
   end
 end

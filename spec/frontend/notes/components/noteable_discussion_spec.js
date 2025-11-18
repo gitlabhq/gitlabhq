@@ -22,6 +22,7 @@ import { globalAccessorPlugin } from '~/pinia/plugins';
 import { useLegacyDiffs } from '~/diffs/stores/legacy_diffs';
 import { useNotes } from '~/notes/store/legacy_notes';
 import { useBatchComments } from '~/batch_comments/store';
+import { CopyAsGFM } from '~/behaviors/markdown/copy_as_gfm';
 import {
   discussionMock,
   notesDataMock,
@@ -34,6 +35,7 @@ import { useLocalStorageSpy } from '../../__helpers__/local_storage_helper';
 Vue.use(PiniaVuePlugin);
 
 jest.mock('~/behaviors/markdown/render_gfm');
+jest.mock('~/behaviors/markdown/copy_as_gfm');
 jest.mock('~/alert');
 
 function createPinia({ stubActions = true } = {}) {
@@ -64,6 +66,7 @@ describe('noteable_discussion component', () => {
   const findReplyWrapper = () => wrapper.findByTestId('reply-wrapper');
 
   beforeEach(() => {
+    localStorage.clear();
     ({ pinia, diffsStore } = createPinia());
     axiosMock = new MockAdapter(axios);
     createComponent();
@@ -112,12 +115,29 @@ describe('noteable_discussion component', () => {
     });
 
     describe('when user can reply', () => {
-      it('renders reply wrapper', () => {
+      beforeEach(() => {
         useNotes().noteableData = { ...noteableDataMock, current_user: { can_create_note: true } };
+      });
 
+      it('renders reply wrapper', () => {
         createComponent();
 
         expect(findReplyWrapper().exists()).toBe(true);
+      });
+
+      it('quotes reply', async () => {
+        jest.spyOn(window, 'requestAnimationFrame').mockImplementation((cb) => cb());
+        CopyAsGFM.selectionToGfm.mockResolvedValue('foo');
+        createComponent();
+        wrapper.element
+          .querySelector('.js-discussion-container')
+          .dispatchEvent(new CustomEvent('quoteReply'));
+        // wait for selectionToGfm
+        await waitForPromises();
+        // requestAnimationFrame executed immediately
+        // wait for markdown_editor.vue to update
+        await nextTick();
+        expect(wrapper.element.querySelector('[data-testid="reply-field"]').value).toBe('foo\n\n');
       });
     });
 
@@ -404,17 +424,5 @@ describe('noteable_discussion component', () => {
         expect.objectContaining({ line_code: endCode }),
       ]);
     });
-  });
-
-  it('supports direct call on showReplyForm', async () => {
-    const mock = jest.fn();
-    wrapper = mount(NoteableDiscussion, {
-      pinia,
-      propsData: { discussion: discussionMock },
-      stubs: { NoteForm: { methods: { append: mock }, render() {} } },
-    });
-    wrapper.vm.showReplyForm('foo');
-    await nextTick();
-    expect(mock).toHaveBeenCalledWith('foo');
   });
 });

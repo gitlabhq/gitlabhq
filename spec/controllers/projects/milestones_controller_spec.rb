@@ -233,9 +233,7 @@ RSpec.describe Projects::MilestonesController, feature_category: :team_planning 
       end
 
       it 'responds unprocessable_entity (422) with error data' do
-        # Note: This assignment ensures and triggers a validation error when updating the milestone.
-        # Same approach used in spec/models/milestone_spec.rb .
-        milestone_params[:title] = '<img src=x onerror=prompt(1)>'
+        milestone_params[:title] = ''
 
         subject
 
@@ -346,11 +344,12 @@ RSpec.describe Projects::MilestonesController, feature_category: :team_planning 
       end
 
       it 'renders milestone name without parsing it as HTML' do
-        milestone.update!(name: 'CCC&lt;img src=x onerror=alert(document.domain)&gt;')
+        name = 'CCC<img src=x onerror=alert(document.domain)>'
+        milestone.update!(name: name)
 
         post :promote, params: { namespace_id: project.namespace.id, project_id: project.id, id: milestone.iid }
 
-        expect(flash[:notice]).to eq("CCC promoted to <a href=\"#{group_milestone_path(project.group, milestone.iid)}\"><u>group milestone</u></a>.")
+        expect(flash[:notice]).to eq("#{CGI.escapeHTML(name)} promoted to <a href=\"#{group_milestone_path(project.group, milestone.iid)}\"><u>group milestone</u></a>.")
       end
     end
 

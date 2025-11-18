@@ -45,6 +45,11 @@ export default {
         },
       };
     },
+    formInputGroupProps() {
+      return {
+        dataTestId: 'oauth-secret-field',
+      };
+    },
   },
   created() {
     if (!this.secret) {
@@ -79,6 +84,7 @@ export default {
   <div class="gl-flex gl-flex-wrap gl-gap-5">
     <input-copy-toggle-visibility
       v-if="secret"
+      :form-input-group-props="formInputGroupProps"
       :copy-button-title="$options.COPY_SECRET"
       :value="secret"
       readonly

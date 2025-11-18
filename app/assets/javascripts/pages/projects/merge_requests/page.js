@@ -109,10 +109,11 @@ export function initMrPage(createRapidDiffsApp) {
   startCodeReviewMessaging({ signalBus: diffsEventHub });
 
   const changesCountBadge = document.querySelector('.js-changes-tab-count');
+  const commitsCountBadge = document.querySelector('.js-commits-count .gl-badge-content');
   diffsEventHub.$on(EVT_MR_DIFF_GENERATED, (mergeRequestDiffGenerated) => {
-    const { fileCount } = mergeRequestDiffGenerated.diffStatsSummary;
+    const { diffStatsSummary: { fileCount = null } = {}, commitCount } = mergeRequestDiffGenerated;
 
-    if (changesCountBadge.textContent === '-') {
+    if (changesCountBadge.textContent === '-' && fileCount !== null) {
       changesCountBadge.textContent = fileCount;
 
       const DIFF_TAB_INDEX = 3;
@@ -122,6 +123,10 @@ export function initMrPage(createRapidDiffsApp) {
       if (hasDiffTab) {
         diffTab[DIFF_TAB_INDEX] = fileCount;
       }
+    }
+
+    if (commitsCountBadge?.textContent === '-' && commitCount !== null) {
+      commitsCountBadge.textContent = commitCount;
     }
   });
 

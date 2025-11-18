@@ -130,7 +130,12 @@ An example of adding a cascading setting to a project is in [MR 149931](https://
 
 ## Cascading setting values on write
 
-The only cascading setting that actually cascades values at the database level in the new recommended way is `duo_features_enabled`. That setting cascades from groups to projects. [Issue 505335](https://gitlab.com/gitlab-org/gitlab/-/issues/505335) describes adding this cascading from the application level to groups as well.
+The cascading settings that implement database-level value propagation using the current recommended approach are `duo_features_enabled` and `duo_remote_flows_enabled`. These settings follow a hierarchical cascade pattern:
+
+- **Group to Project cascading**: Implemented via `Namespaces::CascadeDuoSettingsWorker`
+- **Application to Group and Project cascading**: Implemented via `AppConfig::CascadeDuoSettingsWorker`
+
+This architecture ensures consistent setting inheritance throughout the organizational hierarchy while maintaining optimal performance through asynchronous processing.
 
 ### Legacy cascading settings writes
 
@@ -158,7 +163,33 @@ In addition to the confusing logic, this also creates a performance problem when
 
 ### Recommendation for cascading settings writes going forward
 
-To provide a clearer logic chain and improve performance, you should be adding default values to newly-added cascading settings and doing a write on all child objects in the hierarchy when the setting value is updated. This requires kicking off a job so that the update happens asynchronously. An example of how to do this is in [MR 145876](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/145876).
+To provide a clearer logic chain and improve performance, you should be adding default values to newly-added cascading settings and doing a write on all child objects in the hierarchy when the setting value is updated. This requires kicking off a job so that the update happens asynchronously.
+The system currently employs two dedicated Sidekiq workers for this purpose:
+
+- `AppConfig::CascadeDuoSettingsWorker` - handles application-level setting propagation
+- `Namespaces::CascadeDuoSettingsWorker` - manages namespace-level updates to child groups and projects
+
+This asynchronous approach ensures that setting modifications are efficiently distributed throughout the organizational hierarchy without impacting system performance.
+
+### Adding New Cascading AI Settings
+
+To implement a new cascading AI setting that propagates values through database writes, follow the procedures outlined below based on the setting scope:
+
+#### Namespace Setting Configuration
+
+When implementing namespace-level cascading settings:
+
+1. Integrate the setting into the `update_cascading_settings` method located in `ee/app/services/ee/groups/update_service.rb`
+1. Register the setting within the allowed settings configuration in `ee/app/services/ai/cascade_duo_settings_service.rb`
+
+#### Application Setting Configuration
+
+When implementing application-level cascading settings:
+
+1. Incorporate the setting into the `cascade_duo_features_settings` method found in `ee/app/services/ee/application_settings/update_service.rb`
+1. Register the setting within the allowed settings configuration in `ee/app/services/ai/cascade_duo_settings_service.rb`
+
+These configurations ensure proper validation and cascading behavior throughout the system hierarchy.
 
 Cascading settings that were added previously still have default `nil` values and read the ancestor hierarchy to find inherited settings values. But to minimize confusion we should update those to cascade on write. [Issue 483143](https://gitlab.com/gitlab-org/gitlab/-/issues/483143) describes this maintenance task.
 

@@ -18,6 +18,8 @@ class PersonalAccessToken < ApplicationRecord
     sixty_days: 31..60
   }.freeze
 
+  PERSONAL_TOKEN_PREFIX = 'glpat-'
+
   add_authentication_token_field :token,
     digest: true,
     format_with_prefix: :prefix_from_application_current_settings,
@@ -83,7 +85,6 @@ class PersonalAccessToken < ApplicationRecord
   scope :order_last_used_at_asc_id_asc, -> { reorder(last_used_at: :asc, id: :asc) }
   scope :order_last_used_at_desc_id_desc, -> { reorder(last_used_at: :desc, id: :desc) }
   scope :project_access_token, -> { includes(:user).references(:user).merge(User.project_bot) }
-  scope :owner_is_human, -> { includes(:user).references(:user).merge(User.human) }
   scope :last_used_before, ->(date) { where("last_used_at <= ?", date) }
   scope :last_used_after, ->(date) { where("last_used_at >= ?", date) }
   scope :expiring_and_not_notified_without_impersonation, -> {
@@ -130,7 +131,13 @@ class PersonalAccessToken < ApplicationRecord
   end
 
   def self.token_prefix
-    Gitlab::CurrentSettings.current_application_settings.personal_access_token_prefix
+    # Instance wide token prefixes take precedence over the personal_access_token_prefix
+    # See https://gitlab.com/gitlab-org/gitlab/-/issues/388379#note_2477892999
+    if ::Authn::TokenField::PrefixHelper.instance_prefix.blank?
+      Gitlab::CurrentSettings.current_application_settings.personal_access_token_prefix
+    else
+      ::Authn::TokenField::PrefixHelper.prepend_instance_prefix(PERSONAL_TOKEN_PREFIX)
+    end
   end
 
   def self.search(query)

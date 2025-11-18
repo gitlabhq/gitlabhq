@@ -24,7 +24,7 @@ module Gitlab
         FROM (
           SELECT
             state,
-            regexp_matches(query, '^\\s*(?:\\/\\*(?:application:(\\w+),?)?(?:correlation_id:\\w+,?)?(?:jid:\\w+,?)?(?:endpoint_id:([\\w/\\-\\.:\\\#\\s]+),?)?(?:db_config_database:(\\w+),?)?.*?\\*\\/)?\\s*(\\w+)') AS matches
+            regexp_matches(query, '^\\s*(?:\\/\\*(?:application:(\\w+),?)?(?:correlation_id:[\\w\\-]+,?)?(?:jid:\\w+,?)?(?:endpoint_id:([\\w/\\-\\.:\\\#\\s]+),?)?(?:db_config_database:(\\w+),?)?.*?\\*\\/)?\\s*(\\w+)') AS matches
           FROM
             pg_stat_get_activity(-1)
           ) a

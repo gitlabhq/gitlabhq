@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Projects::TagsController do
+RSpec.describe Projects::TagsController, feature_category: :source_code_management do
   let(:project) { create(:project, :public, :repository) }
   let!(:release) { create(:release, project: project, tag: "v1.1.0") }
   let!(:invalid_release) { create(:release, project: project, tag: 'does-not-exist') }
@@ -75,16 +75,14 @@ RSpec.describe Projects::TagsController do
 
       context 'when multiple tags exist' do
         before do
-          create(:ci_pipeline,
-            project: project,
-            ref: 'v1.1.0',
-            sha: project.commit('v1.1.0').sha,
-            status: :running)
-          create(:ci_pipeline,
-            project: project,
-            ref: 'v1.0.0',
-            sha: project.commit('v1.0.0').sha,
-            status: :success)
+          create(
+            :ci_pipeline, :running, :tag,
+            project: project, ref: 'v1.1.0', sha: project.commit('v1.1.0').sha
+          )
+          create(
+            :ci_pipeline, :success, :tag,
+            project: project, ref: 'v1.0.0', sha: project.commit('v1.0.0').sha
+          )
         end
 
         it 'all relevant commit statuses are received' do
@@ -97,18 +95,21 @@ RSpec.describe Projects::TagsController do
 
       context 'when a tag has multiple pipelines' do
         before do
-          create(:ci_pipeline,
-            project: project,
-            ref: 'v1.0.0',
-            sha: project.commit('v1.0.0').sha,
-            status: :running,
-            created_at: 6.months.ago)
-          create(:ci_pipeline,
-            project: project,
-            ref: 'v1.0.0',
-            sha: project.commit('v1.0.0').sha,
-            status: :success,
-            created_at: 2.months.ago)
+          create(
+            :ci_pipeline, :running, :tag,
+            project: project, ref: 'v1.0.0', sha: project.commit('v1.0.0').sha,
+            created_at: 6.months.ago
+          )
+          create(
+            :ci_pipeline, :success, :tag,
+            project: project, ref: 'v1.0.0', sha: project.commit('v1.0.0').sha,
+            created_at: 2.months.ago
+          )
+          create(
+            :ci_pipeline, :failed,
+            project: project, ref: 'v1.0.0', sha: project.commit('v1.0.0').sha,
+            created_at: 1.month.ago
+          )
         end
 
         it 'chooses the latest to determine status' do

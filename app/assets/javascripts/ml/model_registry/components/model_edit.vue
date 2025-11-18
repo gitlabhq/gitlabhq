@@ -47,7 +47,6 @@ export default {
   data() {
     return {
       errorMessage: null,
-      modelData: null,
       markdownDocPath: helpPagePath('user/markdown'),
       markdownEditorRestrictedToolBarItems: ['full-screen'],
       description: this.model.description,

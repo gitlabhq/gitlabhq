@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Groups::BoardsController do
+RSpec.describe Groups::BoardsController, feature_category: :team_planning do
   let_it_be(:group) { create(:group) }
   let_it_be(:user)  { create(:user, maintainer_of: group) }
 

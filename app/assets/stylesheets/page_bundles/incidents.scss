@@ -35,7 +35,9 @@
   &::before,
   &::after {
     content: '';
-    @apply gl-border-l-subtle gl-border-l-2 gl-border-l-solid;
+    @apply gl-border-l-subtle;
+    @apply gl-border-l-2;
+    @apply gl-border-l-solid;
     position: absolute;
     left: 20px;
     height: calc(100% + #{$gl-spacing-scale-5});

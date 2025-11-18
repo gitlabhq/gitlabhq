@@ -1,12 +1,11 @@
 import { setHTMLFixture, resetHTMLFixture } from 'helpers/fixtures';
 import {
   addClassIfElementExists,
-  canScrollUp,
-  canScrollDown,
+  canScrollUp, // eslint-disable-line import/no-deprecated
+  canScrollDown, // eslint-disable-line import/no-deprecated
   getContentWrapperHeight,
   parseBooleanDataAttributes,
   isElementVisible,
-  getParents,
   getParentByTagName,
   setAttributes,
   replaceCommentsWith,
@@ -58,6 +57,7 @@ describe('DOM Utils', () => {
     [1, 100].forEach((scrollTop) => {
       it(`is true if scrollTop is > 0 (${scrollTop})`, () => {
         expect(
+          // eslint-disable-next-line import/no-deprecated
           canScrollUp({
             scrollTop,
           }),
@@ -68,6 +68,7 @@ describe('DOM Utils', () => {
     [0, -10].forEach((scrollTop) => {
       it(`is false if scrollTop is <= 0 (${scrollTop})`, () => {
         expect(
+          // eslint-disable-next-line import/no-deprecated
           canScrollUp({
             scrollTop,
           }),
@@ -77,6 +78,7 @@ describe('DOM Utils', () => {
 
     it('is true if scrollTop is > margin', () => {
       expect(
+        // eslint-disable-next-line import/no-deprecated
         canScrollUp(
           {
             scrollTop: TEST_MARGIN + 1,
@@ -88,6 +90,7 @@ describe('DOM Utils', () => {
 
     it('is false if scrollTop is <= margin', () => {
       expect(
+        // eslint-disable-next-line import/no-deprecated
         canScrollUp(
           {
             scrollTop: TEST_MARGIN,
@@ -110,23 +113,23 @@ describe('DOM Utils', () => {
     });
 
     it('is true if element can be scrolled down', () => {
-      expect(canScrollDown(element)).toBe(true);
+      expect(canScrollDown(element)).toBe(true); // eslint-disable-line import/no-deprecated
     });
 
     it('is false if element cannot be scrolled down', () => {
       element.scrollHeight -= 1;
 
-      expect(canScrollDown(element)).toBe(false);
+      expect(canScrollDown(element)).toBe(false); // eslint-disable-line import/no-deprecated
     });
 
     it('is true if element can be scrolled down, with margin given', () => {
       element.scrollHeight += TEST_MARGIN;
 
-      expect(canScrollDown(element, TEST_MARGIN)).toBe(true);
+      expect(canScrollDown(element, TEST_MARGIN)).toBe(true); // eslint-disable-line import/no-deprecated
     });
 
     it('is false if element cannot be scrolled down, with margin given', () => {
-      expect(canScrollDown(element, TEST_MARGIN)).toBe(false);
+      expect(canScrollDown(element, TEST_MARGIN)).toBe(false); // eslint-disable-line import/no-deprecated
     });
   });
 
@@ -196,20 +199,6 @@ describe('DOM Utils', () => {
       it(`returns ${visible} when ${paramDescription}`, () => {
         expect(isElementVisible(element)).toBe(visible);
       });
-    });
-  });
-
-  describe('getParents', () => {
-    it('gets all parents of an element', () => {
-      const el = document.createElement('div');
-      el.innerHTML = '<p><span><strong><mark>hello world';
-
-      expect(getParents(el.querySelector('mark'))).toEqual([
-        el.querySelector('strong'),
-        el.querySelector('span'),
-        el.querySelector('p'),
-        el,
-      ]);
     });
   });
 

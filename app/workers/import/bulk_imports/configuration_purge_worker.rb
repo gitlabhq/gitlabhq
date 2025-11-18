@@ -16,16 +16,7 @@ module Import
 
         return unless configuration
 
-        begin
-          configuration.destroy!
-        rescue ActiveRecord::RecordNotDestroyed => e
-          Gitlab::ErrorTracking.track_and_raise_for_dev_exception(
-            e,
-            {
-              message: "Failed to purge bulk import configuration due to errors"
-            }.merge(logger.default_attributes)
-          )
-        end
+        configuration.update!(access_token: nil)
       end
     end
   end

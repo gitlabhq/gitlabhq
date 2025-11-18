@@ -19,10 +19,84 @@ title: Guidelines for implementing Enterprise Edition features
 
 ## Runtime modes in development
 
-1. **EE Unlicensed**: this is what you have from a plain GDK installation, if you've installed from the [main repository](https://gitlab.com/gitlab-org/gitlab)
-1. **EE licensed**: when you [add a valid license to your GDK](https://gitlab.com/gitlab-org/customers-gitlab-com/-/blob/main/doc/setup/gitlab.md#adding-a-license-from-staging-customers-portal-to-your-gdk)
+1. **EE Unlicensed**: this is what you have from a plain GDK installation, if you've installed from
+   the [main repository](https://gitlab.com/gitlab-org/gitlab)
+1. **EE licensed**: when
+   you [add a valid license to your GDK](https://gitlab.com/gitlab-org/customers-gitlab-com/-/blob/main/doc/setup/gitlab.md#adding-a-license-from-staging-customers-portal-to-your-gdk)
 1. **GitLab.com SaaS**: when you [simulate SaaS](#simulate-a-saas-instance)
 1. **CE**: in any of the states above, when you [simulate CE](#simulate-a-ce-instance-with-a-licensed-gdk)
+
+## Feature implementation decision flow
+
+The following diagram illustrates how to decide where and how to implement features across the CE/EE/SaaS layers:
+
+```mermaid
+flowchart TD
+    A[Developer wants to implement a feature] --> B{What type of feature?}
+
+    B -->|CE Feature| C[Implement in main codebase]
+    B -->|EE Licensed Feature| D[EE Feature Path]
+    B -->|SaaS-only Feature| E[SaaS Feature Path]
+
+    C --> C1[Place code in app/, lib/, etc.]
+    C --> C2[Write tests in spec/]
+    C --> C3[No license checks needed]
+
+    D --> D1{New or extending existing?}
+    D1 -->|New EE Feature| D2[Place in ee/ directory]
+    D1 -->|Extending CE| D3[Create EE module with prepend_mod]
+
+    D2 --> D4[Add to ee/app/models/gitlab_subscriptions/features.rb]
+    D3 --> D4
+    D4 --> D5{Which plan?}
+    D5 -->|Premium| D6[Add to PREMIUM_FEATURES]
+    D5 -->|Ultimate| D7[Add to ULTIMATE_FEATURES]
+    D5 -->|Global/Instance| D8[Add to GLOBAL_FEATURES]
+
+    D6 --> D9[Guard with project.licensed_feature_available?]
+    D7 --> D9
+    D8 --> D10[Guard with License.feature_available?]
+    D9 --> D11[Write tests in ee/spec/]
+    D10 --> D11
+    D11 --> D12[Use stub_licensed_features in tests]
+
+    E --> E1[Add feature to FEATURES in ee/lib/ee/gitlab/saas.rb]
+    E1 --> E2[Create YAML definition in ee/config/saas_features/]
+    E2 --> E3[Use bin/saas-feature.rb tool]
+    E3 --> E4[Guard with Gitlab::Saas.feature_available?]
+    E4 --> E5{Extending CE feature?}
+    E5 -->|Yes| E6[Create EE module that extends CE]
+    E5 -->|No| E7[Create new EE-only code]
+    E6 --> E8[Use prepend_mod pattern]
+    E7 --> E9[Place directly in ee/ directory]
+    E8 --> E10[Write tests in ee/spec/]
+    E9 --> E10
+    E10 --> E11[Use stub_saas_features helper]
+
+    classDef ceStyle fill:#e8f5e8,stroke:#2e7d32,stroke-width:2px,color:#000000
+    classDef eeStyle fill:#fff8e1,stroke:#f57c00,stroke-width:2px,color:#000000
+    classDef saasStyle fill:#fce4ec,stroke:#c2185b,stroke-width:2px,color:#000000
+    classDef startStyle fill:#e3f2fd,stroke:#1976d2,stroke-width:2px,color:#000000
+
+    class A startStyle
+    class C,C1,C2,C3 ceStyle
+    class D,D1,D2,D3,D4,D5,D6,D7,D8,D9,D10,D11,D12 eeStyle
+    class E,E1,E2,E3,E4,E5,E6,E7,E8,E9,E10,E11 saasStyle
+```
+
+This diagram shows the three main implementation layers:
+
+- **CE (Green)**: Community Edition features with no licensing requirements.
+  If your target audience is **free users on GitLab.com**, follow the **SaaS** decision path
+- **EE (Orange)**: Enterprise Edition features requiring Premium/Ultimate licenses
+- **SaaS (Pink)**: Features exclusive to GitLab.com SaaS instances
+
+Key decision points:
+
+- **File placement**: CE code goes in main directories, EE code in `ee/` subdirectories
+- **Feature guards**: Different methods for each layer (`licensed_feature_available?`, `License.feature_available?`,
+  `Gitlab::Saas.feature_available?`)
+- **Testing approaches**: Each layer has specific helpers and metadata for testing
 
 ## SaaS-only feature
 
@@ -41,7 +115,7 @@ context rich definitions around the reason the feature is SaaS-only.
 
 1. See the [namespacing concepts guide](software_design.md#use-namespaces-to-define-bounded-contexts)
    for help in naming a new SaaS-only feature.
-1. Add the new feature to `FEATURE` in `ee/lib/ee/gitlab/saas.rb`.
+1. Add the new feature to `FEATURE` in `ee/lib/gitlab/saas.rb`.
 
    ```ruby
    FEATURES = %i[purchases_additional_minutes some_domain_new_feature_name].freeze
@@ -94,7 +168,7 @@ group: group::acquisition
 
 ### Opting out of a SaaS-only feature on another SaaS instance (JiHu)
 
-Prepend the `ee/lib/ee/gitlab/saas.rb` module and override the `Gitlab::Saas.feature_available?` method.
+Prepend the `ee/lib/gitlab/saas.rb` class and override the `Gitlab::Saas.feature_available?` method.
 
 ```ruby
 JH_DISABLED_FEATURES = %i[some_domain_new_feature_name].freeze
@@ -190,14 +264,14 @@ version of the product:
 1. Enable **Allow use of licensed EE features** to make licensed EE features available to projects
    only if the project namespace's plan includes the feature.
 
-   1. On the left sidebar, at the bottom, select **Admin**.
+   1. On the left sidebar, at the bottom, select **Admin**. If you've [turned on the new navigation](../user/interface_redesign.md#turn-new-navigation-on-or-off), in the upper-right corner, select **Admin**.
    1. On the left sidebar, select **Settings** > **General**.
    1. Expand **Account and limit**.
    1. Select the **Allow use of licensed EE features** checkbox.
    1. Select **Save changes**.
 
 1. Ensure the group you want to test the EE feature for is actually using an EE plan:
-   1. On the left sidebar, at the bottom, select **Admin**.
+   1. On the left sidebar, at the bottom, select **Admin**. If you've [turned on the new navigation](../user/interface_redesign.md#turn-new-navigation-on-or-off), in the upper-right corner, select **Admin**.
    1. On the left sidebar, select **Overview** > **Groups**.
    1. Identify the group you want to modify, and select **Edit**.
    1. Scroll to **Permissions and group features**. For **Plan**, select `Ultimate`.
@@ -610,7 +684,8 @@ end
 When it's not possible/logical to modify the implementation of a method, then
 wrap it in a self-descriptive method and use that method.
 
-For example, in GitLab-FOSS, the only user created by the system is `Users::Internal.ghost`
+For example, in GitLab-FOSS, the only user created by the system is
+`Users::Internal.for_organization(Organizations::Organization.first).ghost`
 but in EE there are several types of bot-users that aren't really users. It would
 be incorrect to override the implementation of `User#ghost?`, so instead we add
 a method `#internal?` to `app/models/user.rb`. The implementation:
@@ -647,6 +722,70 @@ SomeGem.configure do |config|
   config.encryption = true if Gitlab.ee?
 end
 ```
+
+#### Extending initializers with class methods
+
+For more complex scenarios where you need to override class methods used in initializers,
+you can use the `prepend_mod_with` pattern similar to models. This approach mirrors how
+`app/models` can be extended and allows for clean separation of CE and EE logic.
+
+This pattern is particularly useful for SaaS-only features that need to be configured
+in initializers, where using `Gitlab.ee?` alone is insufficient because the feature
+should only be enabled on SaaS instances, not all EE instances.
+
+For example, in `config/initializers/doorkeeper.rb`:
+
+```ruby
+# The initializer calls a class method that can be overridden in EE
+allow_grant_flow_for_client do |grant_flow, client|
+  next false if Applications::CreateService.disable_ropc_for_all_applications?
+  # ... other logic
+end
+```
+
+In the CE service (`app/services/applications/create_service.rb`):
+
+```ruby
+module Applications
+  class CreateService
+    # Define class methods that return false by default but can be overridden in EE
+    def self.disable_ropc_for_all_applications?
+      false
+    end
+
+    # ... other methods
+  end
+end
+
+# Allow EE to extend this service
+Applications::CreateService.prepend_mod_with('Applications::CreateService')
+```
+
+In the EE extension (`ee/app/services/ee/applications/create_service.rb`):
+
+```ruby
+module EE
+  module Applications
+    module CreateService
+      def self.prepended(base)
+        base.singleton_class.prepend(ClassMethods)
+      end
+
+      module ClassMethods
+        extend ::Gitlab::Utils::Override
+
+        override :disable_ropc_for_all_applications?
+        def disable_ropc_for_all_applications?
+          ::Gitlab::Saas.feature_available?(:disable_ropc_for_all_applications)
+        end
+      end
+    end
+  end
+end
+```
+
+This pattern allows initializers to call methods that have different behavior in CE vs EE,
+while keeping the initializer code itself unchanged between editions.
 
 ### Code in `config/routes`
 
@@ -702,8 +841,8 @@ end
 def project_params_attributes_ee
   %i[
     approvals_before_merge
-    approver_group_ids
-    approver_ids
+    issues_template
+    merge_requests_template
     ...
   ]
 end

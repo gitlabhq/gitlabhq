@@ -83,7 +83,9 @@ module Gitlab
     require_dependency Rails.root.join('lib/gitlab/middleware/json_validation')
     require_dependency Rails.root.join('lib/gitlab/middleware/path_traversal_check')
     require_dependency Rails.root.join('lib/gitlab/middleware/rack_multipart_tempfile_factory')
+    require_dependency Rails.root.join('lib/gitlab/middleware/rack_attack_headers')
     require_dependency Rails.root.join('lib/gitlab/middleware/secure_headers')
+    require_dependency Rails.root.join('lib/gitlab/middleware/cors_static_assets')
     require_dependency Rails.root.join('lib/gitlab/runtime')
     require_dependency Rails.root.join('lib/gitlab/patch/database_config')
     require_dependency Rails.root.join('lib/gitlab/patch/redis_cache_store')
@@ -273,8 +275,6 @@ module Gitlab
     config.assets.paths << TanukiEmoji.images_path
     config.assets.paths << "#{config.root}/vendor/assets/fonts"
 
-    config.assets.precompile << "application_utilities.css"
-    config.assets.precompile << "application_utilities_dark.css"
     config.assets.precompile << "application_dark.css"
     config.assets.precompile << "tailwind.css"
     config.assets.precompile << "tailwind_cqs.css"
@@ -352,6 +352,8 @@ module Gitlab
     config.assets.precompile << "page_bundles/projects.css"
     config.assets.precompile << "page_bundles/projects_edit.css"
     config.assets.precompile << "page_bundles/promotions.css"
+    config.assets.precompile << "page_bundles/rapid_diffs.css"
+    config.assets.precompile << "page_bundles/registrations.css"
     config.assets.precompile << "page_bundles/releases.css"
     config.assets.precompile << "page_bundles/remote_development.css"
     config.assets.precompile << "page_bundles/reports.css"
@@ -372,6 +374,7 @@ module Gitlab
     config.assets.precompile << "page_bundles/work_items.css"
     config.assets.precompile << "page_bundles/work_item_settings.css"
     config.assets.precompile << "page_bundles/xterm.css"
+    config.assets.precompile << "page_bundles/zuora.css"
     config.assets.precompile << "lazy_bundles/cropper.css"
     config.assets.precompile << "lazy_bundles/gridstack.css"
     config.assets.precompile << "performance_bar.css"
@@ -432,6 +435,9 @@ module Gitlab
 
     config.middleware.insert_after Warden::Manager, Rack::Attack
 
+    # Add rate limit headers to all responses from Rack::Attack
+    config.middleware.insert_after Rack::Attack, ::Gitlab::Middleware::RackAttackHeaders
+
     config.middleware.insert_before ActionDispatch::Cookies, ::Gitlab::Middleware::SameSiteCookies
 
     config.middleware.insert_before ActionDispatch::RemoteIp, ::Gitlab::Middleware::HandleIpSpoofAttackError
@@ -447,6 +453,9 @@ module Gitlab
     config.middleware.insert_after ActionDispatch::Cookies, ::Gitlab::Middleware::SecureHeaders
 
     config.middleware.insert_after ActionDispatch::ShowExceptions, ::Gitlab::Middleware::JsonValidation
+
+    # Insert this early in the middleware stack to bypass ActionDispatch::HostAuthorization
+    config.middleware.unshift ::Gitlab::Middleware::CorsStaticAssets
 
     # Allow access to GitLab API from other domains
     config.middleware.insert_before Warden::Manager, Rack::Cors do
@@ -525,24 +534,6 @@ module Gitlab
             credentials: false,
             methods: %i[get head]
         end
-      end
-
-      # Allow assets to be loaded to web-ide
-      # https://gitlab.com/gitlab-org/gitlab/-/issues/421177
-      allow do
-        origins 'https://*.web-ide.gitlab-static.net'
-        resource '/assets/webpack/*',
-          credentials: false,
-          methods: %i[get head]
-      end
-
-      # Allow assets to be loaded to web-ide
-      # https://gitlab.com/gitlab-org/gitlab/-/issues/421177
-      allow do
-        origins 'https://*.web-ide.gitlab-static.net'
-        resource '/assets/vite/*',
-          credentials: false,
-          methods: %i[get head]
       end
     end
 

@@ -51,6 +51,10 @@ RSpec.describe 'Group milestones', feature_category: :team_planning do
 
       click_button 'Create milestone'
 
+      if page.has_css?('.milestone-sidebar .js-sidebar-expand', wait: 0) # rubocop:disable RSpec/AvoidConditionalStatements -- temporary Project Studio rollout
+        find('.milestone-sidebar .js-sidebar-expand').click
+      end
+
       expect(find('.start_date')).to have_content(Date.today.at_beginning_of_month.strftime('%b %-d, %Y'))
     end
 

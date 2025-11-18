@@ -8,20 +8,89 @@ RSpec.describe Import::ReassignPlaceholderUserRecordsService, feature_category: 
   let_it_be(:real_user) { source_user.reassign_to_user }
   let_it_be(:real_user_id) { real_user.id }
 
+  before do
+    allow(Kernel).to receive(:sleep)
+  end
+
   describe '#execute', :aggregate_failures do
     before do
       allow(service).to receive_messages(db_health_check!: nil, db_table_unavailable?: false)
     end
 
     context 'when a user can be reassigned without error' do
-      it_behaves_like 'a successful reassignment'
+      context 'when contributions is assigned to the import user type' do
+        before do
+          import_user.update!(user_type: :import_user)
+        end
 
-      it_behaves_like 'reassigns placeholder user records' do
-        let(:reassign_user_id) { real_user_id }
+        it_behaves_like 'a successful reassignment'
+
+        it_behaves_like 'reassigns placeholder user records' do
+          let(:reassign_user_id) { real_user_id }
+        end
+
+        it_behaves_like 'handles membership creation for reassigned users' do
+          let(:reassign_user) { real_user }
+        end
+
+        it 'does not log when placeholder references are used' do
+          expect(Import::Framework::Logger).not_to receive(:info).with(
+            hash_including(message: 'Placeholder references used')
+          )
+
+          service.execute
+        end
       end
 
-      it_behaves_like 'handles membership creation for reassigned users' do
-        let(:reassign_user) { real_user }
+      context 'when contributions is assigned to the placeholder user type' do
+        before do
+          import_user.update!(user_type: :placeholder)
+        end
+
+        it_behaves_like 'a successful reassignment'
+
+        it_behaves_like 'reassigns placeholder user records' do
+          let(:reassign_user_id) { real_user_id }
+        end
+
+        it_behaves_like 'handles membership creation for reassigned users' do
+          let(:reassign_user) { real_user }
+        end
+
+        it 'logs when placeholder references are used' do
+          allow(Import::Framework::Logger).to receive(:info)
+          expect(Import::Framework::Logger).to receive(:info).with(
+            hash_including(
+              message: 'Placeholder references used',
+              model: "Note",
+              user_reference_column: 'updated_by_id'
+            )
+          )
+
+          expect(Import::Framework::Logger).not_to receive(:info).with(
+            hash_including(
+              message: 'Placeholder references used',
+              model: "Note",
+              user_reference_column: 'author_id'
+            )
+          )
+
+          service.execute
+        end
+
+        context 'when user_mapping_direct_reassignment feature flag is disabled' do
+          before do
+            stub_feature_flags(user_mapping_direct_reassignment: false)
+          end
+
+          it 'does not log when placeholder references are used' do
+            expect(Import::Framework::Logger).not_to receive(:info).with(
+              hash_including(message: 'Placeholder references used')
+            )
+
+            service.execute
+          end
+        end
       end
 
       it 'sleeps between processing each model relation batch' do
@@ -512,10 +581,6 @@ RSpec.describe Import::ReassignPlaceholderUserRecordsService, feature_category: 
         service.execute
       end
 
-      it 'does not delete the invalid placeholder reference' do
-        expect { service.execute }.not_to change { invalid_placeholder_reference.reload.present? }.from(true)
-      end
-
       it 'completes the reassignment' do
         service.execute
 
@@ -553,14 +618,10 @@ RSpec.describe Import::ReassignPlaceholderUserRecordsService, feature_category: 
         service.execute
       end
 
-      it 'does not delete placeholder references for unassigned records' do
+      it 'deletes placeholder references for unassigned records' do
         expect { service.execute }.to change {
           Import::SourceUserPlaceholderReference.where(source_user: source_user).count
-        }.to(1)
-
-        expect(
-          Import::SourceUserPlaceholderReference.where(source_user: source_user).pluck(:numeric_key)
-        ).to eq([merge_request_approval.id])
+        }.to(0)
       end
 
       it_behaves_like 'a successful reassignment'
@@ -568,61 +629,34 @@ RSpec.describe Import::ReassignPlaceholderUserRecordsService, feature_category: 
   end
 
   context 'when database is healthy' do
-    before do
-      allow(service).to receive_messages(db_health_check!: nil, db_table_unhealthy: false)
-    end
-
     it 'checks all tables and individual tables' do
-      expect(service).to receive(:db_health_check!).at_least(:once)
-      expect(service).to receive(:db_table_unavailable?).at_least(:once)
+      expect_next_instance_of(Import::ReassignPlaceholderThrottling) do |throttling|
+        expect(throttling).to receive(:db_health_check!).at_least(:once).and_call_original
+        expect(throttling).to receive(:db_table_unavailable?).at_least(:once).and_call_original
+      end
 
       service.execute
-    end
-
-    context 'when :reassignment_throttling is disabled' do
-      before do
-        stub_feature_flags(reassignment_throttling: false)
-      end
-
-      it 'does not check database or table health' do
-        expect(service).not_to receive(:db_health_check!)
-        expect(service).not_to receive(:db_table_unavailable?)
-
-        service.execute
-      end
-    end
-
-    context 'when reassignment throttling table check is disabled' do
-      before do
-        stub_feature_flags(reassignment_throttling_table_check: false)
-      end
-
-      it 'checks the database health, but not the table health' do
-        expect(service).to receive(:db_health_check!)
-        expect(service).not_to receive(:db_table_unavailable?)
-
-        service.execute
-      end
     end
   end
 
   context 'when database is unhealthy' do
-    let(:db_table_health_failure) { described_class::DatabaseHealthError.new("#{User.table_name} table unavailable") }
-    let(:db_health_failure) { described_class::DatabaseHealthError.new("Database unhealthy") }
+    before do
+      allow_next_instance_of(Import::ReassignPlaceholderThrottling) do |throttling|
+        allow(throttling).to receive(:db_health_check!)
+          .and_raise(Import::ReassignPlaceholderThrottling::DatabaseHealthError, 'Database unhealthy')
+        allow(throttling).to receive(:db_table_unavailable?).and_return(false)
+      end
+    end
 
     it 'returns a reschedule response when checking global tables' do
-      allow(service).to receive(:db_health_check!).and_raise(db_health_failure)
-
       result = service.execute
 
-      expect(result.status).to eq(:ok)
+      expect(result.status).to eq(:error)
       expect(result.reason).to eq(:db_health_check_failed)
-      expect(result.message).to eq('Rescheduling placeholder user records reassignment: database health')
+      expect(result.message).to eq('Database unhealthy')
     end
 
     it 'logs a warning' do
-      allow(service).to receive(:db_health_check!).and_raise(db_health_failure)
-
       expect(::Import::Framework::Logger).to receive(:warn).with(
         hash_including(
           message: "Database unhealthy. Rescheduling reassignment",
@@ -633,124 +667,49 @@ RSpec.describe Import::ReassignPlaceholderUserRecordsService, feature_category: 
       service.execute
     end
 
-    it 'returns a reschedule response when checking a single table' do
-      allow(service).to receive(:db_table_unavailable?).and_return true
+    context 'when tables were unavailable' do
+      before do
+        allow_next_instance_of(Import::ReassignPlaceholderThrottling) do |throttling|
+          allow(throttling).to receive(:db_health_check!)
+          allow(throttling).to receive(:db_table_unavailable?)
+          allow(throttling).to receive(:unavailable_tables?).and_return(true)
+        end
+      end
 
-      result = service.execute
+      it 'returns a reschedule response' do
+        result = service.execute
 
-      expect(result.status).to eq(:ok)
-      expect(result.reason).to eq(:db_health_check_failed)
-      expect(result.message).to eq('Rescheduling placeholder user records reassignment: database health')
+        expect(result.status).to eq(:error)
+        expect(result.reason).to eq(:db_health_check_failed)
+        expect(result.message).to eq('Database unhealthy')
+      end
+    end
+  end
+
+  context 'when execution time exceeds the limit' do
+    before do
+      allow_next_instance_of(Import::DirectReassignService) do |service|
+        allow(service).to receive(:execute)
+          .and_raise(Gitlab::Utils::ExecutionTracker::ExecutionTimeOutError, 'Execution timeout')
+      end
     end
 
-    it 'logs a warning when checking a single table' do
-      allow(service).to receive(:reassign_placeholder_references).and_raise(db_table_health_failure)
-
+    it 'logs a warn' do
       expect(::Import::Framework::Logger).to receive(:warn).with(
         hash_including(
-          message: "users table unavailable. Rescheduling reassignment",
+          message: "Execution timeout. Rescheduling reassignment",
           source_user_id: source_user.id
         )
       )
 
       service.execute
     end
-  end
 
-  describe '#db_table_unavailable?' do
-    let(:health_status) { Gitlab::Database::HealthStatus }
-    let(:table_health_indicator_class) { health_status::Indicators::AutovacuumActiveOnTable }
-    let(:table_health_indicator) { instance_double(table_health_indicator_class) }
-    let(:stop) { true }
-    let(:stop_signal) do
-      instance_double(
-        "#{health_status}::Signals::Stop",
-        log_info?: true,
-        stop?: stop,
-        indicator_class: table_health_indicator_class,
-        short_name: 'Stop',
-        reason: 'Test Exception'
-      )
-    end
+    it 'returns a execution timeout error' do
+      result = service.execute
 
-    before do
-      allow(table_health_indicator_class).to receive(:new).with(anything).and_return(table_health_indicator)
-      allow(table_health_indicator).to receive(:evaluate).and_return(stop_signal)
-    end
-
-    context 'when a table is unavailable' do
-      it 'returns true' do
-        expect(service.send(:db_table_unavailable?, User)).to be true
-      end
-    end
-
-    context 'when the table is available' do
-      let(:stop) { false }
-
-      it 'returns false' do
-        expect(service.send(:db_table_unavailable?, User)).to be false
-      end
-    end
-  end
-
-  describe '#db_health_check!' do
-    let(:health_status) { Gitlab::Database::HealthStatus }
-    let(:health_status_indicator_class) { health_status::Indicators::WriteAheadLog }
-    let(:health_status_indicator) { instance_double(health_status_indicator_class) }
-    let(:stop) { false }
-    let(:stop_signal) do
-      instance_double(
-        "#{health_status}::Signals::Stop",
-        log_info?: true,
-        stop?: stop,
-        indicator_class: health_status_indicator_class,
-        short_name: 'Stop',
-        reason: 'Test Exception'
-      )
-    end
-
-    before do
-      allow(service).to receive(:check_db_health?).and_return(true)
-      allow(health_status_indicator_class).to receive(:new).with(anything).and_return(health_status_indicator)
-      allow(health_status_indicator).to receive(:evaluate).and_return(stop_signal)
-      allow(Rails.cache).to receive(:fetch).and_yield
-    end
-
-    context 'when caching health status' do
-      after do
-        travel_back
-      end
-
-      it 'caches the result for 30 seconds' do
-        expect(Rails.cache).to receive(:fetch).with(
-          "reassign_placeholder_user_records_service_db_check",
-          { expires_in: 30.seconds }
-        ).thrice.and_yield
-
-        service.send(:db_health_check!)
-
-        travel 25.seconds
-        service.send(:db_health_check!)
-
-        travel 6.seconds
-        service.send(:db_health_check!)
-      end
-    end
-
-    context 'when the database is unhealthy' do
-      let(:stop) { true }
-
-      it 'raises an error' do
-        expect { service.send(:db_health_check!) }.to raise_error(described_class::DatabaseHealthError)
-      end
-    end
-
-    context 'when the database is healthy' do
-      let(:stop) { false }
-
-      it 'returns nil' do
-        expect(service.send(:db_health_check!)).to be_nil
-      end
+      expect(result).to be_error
+      expect(result.reason).to eq(:execution_timeout)
     end
   end
 end

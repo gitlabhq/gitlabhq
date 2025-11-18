@@ -211,7 +211,7 @@ is recommended.
 After your merge request is merged by a maintainer, it is time to release it to
 users and the wider community. We usually do this with feature flags.
 While not every merge request needs a feature flag, most merge
-requests in Verify should have [feature flags](https://handbook.gitlab.com/handbook/product-development-flow/feature-flag-lifecycle/#when-to-use-feature-flags).
+requests in Verify should have [feature flags](https://handbook.gitlab.com/handbook/product-development/how-we-work/product-development-flow/feature-flag-lifecycle/#when-to-use-feature-flags).
 
 If you already follow the advice on this page, you probably already have a
 few metrics and perhaps a few loggers added that make your new code observable

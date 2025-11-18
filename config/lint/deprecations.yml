@@ -1,0 +1,9 @@
+files:
+  - reason: "Ongoing migration of Admin Area > Groups to Vue"
+    feature_issue: https://gitlab.com/groups/gitlab-org/-/epics/17782
+    removal_issue: https://gitlab.com/gitlab-org/gitlab/-/issues/549452
+    feature_category: groups_and_projects
+    paths:
+      - app/views/admin/groups/_group.html.haml
+      - app/assets/javascripts/admin/groups/index.js
+      - app/assets/javascripts/admin/groups/components/filtered_search_and_sort.vue

@@ -1,0 +1,25 @@
+- group = local_assigns.fetch(:group)
+- type = local_assigns.fetch(:type)
+
+%aside.issues-bulk-update.js-right-sidebar.right-sidebar{ 'aria-live' => 'polite', data: { 'signed-in': current_user.present? }, 'aria-label': _('Bulk update') }
+  .issuable-sidebar.hidden
+    = form_tag [:bulk_update, group, type], method: :post, class: "bulk-update" do
+      .block.issuable-sidebar-header
+        .filter-item.gl-inline-block.update-issues-btn{ class: '!gl-float-left' }
+          = render Pajamas::ButtonComponent.new(variant: :confirm, disabled: true, button_options: { type: 'submit', class: 'js-update-selected-issues' }) do
+            = _('Update selected')
+        = render Pajamas::ButtonComponent.new(button_options: { class: 'js-bulk-update-menu-hide gl-float-right' }) do
+          = _('Cancel')
+      .block
+        .title
+          = _('Milestone')
+        .filter-item
+          .js-milestone-dropdown-root{ data: { full_path: group.full_path, workspace_type: Group.sti_name.downcase } }
+      .block
+        .title
+          = _('Labels')
+        .filter-item.labels-filter
+          = render "shared/issuable/label_dropdown", classes: ["js-filter-bulk-update", "js-multiselect"], dropdown_title: _('Apply a label'), show_footer: false, extra_options: false, filter_submit: false, data_options: { persist_when_hide: "true", field_name: "update[label_ids][]", show_no: false, show_any: false, use_id: true, default_label: "Labels" }, label_name: _('Select labels'), no_default_styles: true, edit_context: group
+
+      = hidden_field_tag 'update[issuable_ids]', []
+      = hidden_field_tag :state_event, params[:state_event]

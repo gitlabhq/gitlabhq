@@ -13,20 +13,6 @@ FactoryBot.define do
     scheduling_type { 'stage' }
     partition_id { pipeline.partition_id }
 
-    # TODO: Remove metadata association when FF `stop_writing_builds_metadata` is removed.
-    # https://gitlab.com/gitlab-org/gitlab/-/issues/552065
-    metadata do
-      if Feature.disabled?(:stop_writing_builds_metadata, project)
-        association(
-          :ci_build_metadata,
-          build: instance,
-          config_options: options,
-          config_variables: yaml_variables,
-          strategy: :build
-        )
-      end
-    end
-
     # This factory was updated to help with the efforts of the removal of `ci_builds.stage`:
     # https://gitlab.com/gitlab-org/gitlab/-/issues/364377
     # These blocks can be updated once all instances of `stage` are removed from the spec files:
@@ -124,10 +110,6 @@ FactoryBot.define do
 
     trait :interruptible do
       after(:build) do |processable|
-        if Feature.disabled?(:stop_writing_builds_metadata, processable.project)
-          processable.metadata.interruptible = true
-        end
-
         Ci::JobFactoryHelpers.mutate_temp_job_definition(processable, interruptible: true)
       end
     end

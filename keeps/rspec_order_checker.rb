@@ -11,10 +11,11 @@ module Keeps
   # moves passing specs to random order while tracking failing specs separately
   # in rspec_order_failures.yml file.
   class RspecOrderChecker < ::Gitlab::Housekeeper::Keep
-    LIMIT_SPECS = 1
+    LIMIT_SPECS = 20
     TODO_YAML_PATH = 'spec/support/rspec_order_todo.yml'
     FAILURE_YAML_PATH = 'spec/support/rspec_order_failures.yml'
     CHECK_SCRIPT = 'scripts/rspec_check_order_dependence'
+    RELATED_ISSUE_URL = 'https://gitlab.com/gitlab-org/gitlab/-/issues/576789'
 
     def initialize(
       logger: nil,
@@ -161,11 +162,11 @@ module Keeps
 
       title +=
         if passing_count > 0 && failing_count > 0
-          "Processed #{total_count} specs: #{passing_count} passed :white_check_mark:, #{failing_count} failed :x:"
+          "Processed #{total_count} specs: #{passing_count} passed, #{failing_count} failed"
         elsif passing_count > 0
-          "Processed #{passing_count} specs: all passed :white_check_mark:"
+          "Processed #{passing_count} specs: all passed"
         else
-          "Processed #{failing_count} specs: all failed :x:"
+          "Processed #{failing_count} specs: all failed"
         end
 
       title
@@ -178,10 +179,11 @@ module Keeps
         ## RSpec Order Dependency Check Results
 
         Processed #{all_processed} spec files from `spec/support/rspec_order_todo.yml`:
-        - **#{passing_specs.count} specs passed** and can now run in random order :white_check_mark:
-        - **#{failing_specs.count} specs failed** and were moved to `spec/support/rspec_order_failures.yml` :x:
 
-        ### :white_check_mark: Passed specs (#{passing_specs.count}):
+        - **#{passing_specs.count} specs passed** and can now run in random order
+        - **#{failing_specs.count} specs failed** and were moved to `spec/support/rspec_order_failures.yml`
+
+        ###  Passed specs (#{passing_specs.count}):
       MARKDOWN
 
       description += if passing_specs.any?
@@ -190,7 +192,7 @@ module Keeps
                        "_None in this batch_"
                      end
 
-      description += "\n\n### :x: Failed specs (#{failing_specs.count}):\n"
+      description += "\n\n### Failed specs (#{failing_specs.count}):\n"
 
       description += if failing_specs.any?
                        failing_specs.map { |spec| "- `#{spec}`" }.join("\n")
@@ -200,15 +202,18 @@ module Keeps
 
       description += <<~MARKDOWN
 
-        ### 📊 Progress Summary:
+        ### Progress Summary:
+
         - **Processed this batch**: #{all_processed} specs
         - **Passed (can run randomly)**: #{passing_specs.count} specs
         - **Failed (moved to failure list)**: #{failing_specs.count} specs
-        - **Remaining in TODO**: #{total_entries - all_processed} specs
+        - **Remaining in TODO**: #{total_entries - all_processed} specs (excluding ee specs)
         - **TODO list cleanup**: Removed #{all_processed} processed entries
 
-        ### :bug: Debugging Failed Specs:
+        ### Debugging Failed Specs:
+
         For specs that failed the order dependency check:
+
         1. **Use the existing script**: `scripts/rspec_check_order_dependence <spec_file>`
         2. **The script automatically runs**: defined order → reverse order → random order → bisect on failure
         3. **Fix the root cause**: Remove shared state or add proper cleanup
@@ -216,9 +221,7 @@ module Keeps
 
         ---
 
-        Relates to #407877
-
-        Relates to &19585
+        Relates to #{RELATED_ISSUE_URL}
 
         > The order dependency checks were performed using `scripts/rspec_check_order_dependence` which includes comprehensive testing (defined/reverse/random order) and automatic bisect analysis on failures.
       MARKDOWN

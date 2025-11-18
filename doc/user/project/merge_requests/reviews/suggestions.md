@@ -20,7 +20,7 @@ merge request, authored by the user who suggested the changes.
 
 ## Create suggestions
 
-1. On the left sidebar, select **Search or go to** and find your project.
+1. On the left sidebar, select **Search or go to** and find your project. If you've [turned on the new navigation](../../../interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
 1. Select **Code** > **Merge requests** and find your merge request.
 1. On the secondary menu, select **Changes**.
 1. Find the lines of code you want to change.
@@ -28,7 +28,9 @@ merge request, authored by the user who suggested the changes.
      select **Add a comment to this line** ({{< icon name="comment" >}}).
    - To select more lines:
      1. Hover over the line number, and select **Add a comment to this line** ({{< icon name="comment" >}}):
+
         ![Comment on any diff file line](img/comment_on_any_diff_line_v16_6.png)
+
      1. Select and drag your selection to include all desired lines. To
         learn more, see [Multi-line suggestions](#multi-line-suggestions).
    - To comment on an entire file instead of specific lines, in the header for the file,
@@ -44,12 +46,12 @@ merge request, authored by the user who suggested the changes.
 
 1. Edit the pre-populated code block to add your suggestion.
 1. To add your comment immediately, select **Add comment now**, or use the keyboard shortcut:
-   - macOS: <kbd>Shift</kbd> + <kbd>Command</kbd> + <kbd>Enter</kbd>
-   - All other OSes: <kbd>Shift</kbd> + <kbd>Control</kbd> + <kbd>Enter</kbd>
+   - macOS: <kbd>Shift</kbd>+<kbd>Command</kbd>+<kbd>Enter</kbd>
+   - All other OSes: <kbd>Shift</kbd>+<kbd>Control</kbd>+<kbd>Enter</kbd>
 1. To leave your comment unpublished until you finish a [review](_index.md), select
    **Start a review**, or use the keyboard shortcut:
-   - macOS: <kbd>Command</kbd> + <kbd>Enter</kbd>
-   - All other OSes: <kbd>Control</kbd> + <kbd>Enter</kbd>
+   - macOS: <kbd>Command</kbd>+<kbd>Enter</kbd>
+   - All other OSes: <kbd>Control</kbd>+<kbd>Enter</kbd>
 
 ### Multi-line suggestions
 
@@ -116,7 +118,7 @@ Prerequisites:
 
 To apply suggested changes directly from the merge request:
 
-1. On the left sidebar, select **Search or go to** and find your project.
+1. On the left sidebar, select **Search or go to** and find your project. If you've [turned on the new navigation](../../../interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
 1. Select **Code** > **Merge requests** and find your merge request.
 1. Find the comment containing the suggestion you want to apply.
    - To apply suggestions individually, select **Apply suggestion**.
@@ -132,6 +134,20 @@ After you apply a suggestion, GitLab:
 - Creates a new commit with the changes.
 - (If the user has the Developer role) Pushes the suggested change directly into
   the codebase in the merge request's branch.
+
+## Reject suggestions
+
+Prerequisites:
+
+- You must be the author of the merge request, or have at least the Developer role for the project.
+
+To reject a suggested change directly from the merge request:
+
+1. On the left sidebar, select **Search or go to** and find your project. If you've [turned on the new navigation](../../../interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
+1. Select **Code** > **Merge requests** and find your merge request.
+1. Find the comment containing the suggestion you want to reject.
+1. Optional. Add a reply stating the reason for rejecting the suggestion.
+1. Select **Resolve thread**.
 
 ## Configure the commit message for applied suggestions
 
@@ -154,7 +170,7 @@ Prerequisites:
 
 To do this:
 
-1. On the left sidebar, select **Search or go to** and find your project.
+1. On the left sidebar, select **Search or go to** and find your project. If you've [turned on the new navigation](../../../interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
 1. Select **Settings** > **Merge requests**.
 1. Scroll to **Merge suggestions**, and alter the text to meet your needs.
    See [Supported variables](#supported-variables) for a list of placeholders
@@ -189,7 +205,7 @@ Prerequisites:
 To reduce the number of commits added to your branch, apply multiple
 suggestions in a single commit.
 
-1. On the left sidebar, select **Search or go to** and find your project.
+1. On the left sidebar, select **Search or go to** and find your project. If you've [turned on the new navigation](../../../interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
 1. Select **Code** > **Merge requests** and find your merge request.
 1. For each suggestion you want to apply, select **Add suggestion to batch**.
 1. Optional. To remove a suggestion, select **Remove from batch**.

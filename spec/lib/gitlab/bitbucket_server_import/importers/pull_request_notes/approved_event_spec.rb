@@ -8,7 +8,7 @@ RSpec.describe Gitlab::BitbucketServerImport::Importers::PullRequestNotes::Appro
   let_it_be_with_reload(:project) do
     create(
       :project, :repository, :bitbucket_server_import, :in_group,
-      :import_user_mapping_enabled, :user_mapping_to_personal_namespace_owner_enabled
+      :import_user_mapping_enabled
     )
   end
 
@@ -132,32 +132,6 @@ RSpec.describe Gitlab::BitbucketServerImport::Importers::PullRequestNotes::Appro
         expect(merge_request.approvals.first.user_id).to eq(user_namespace.owner_id)
         expect(merge_request.notes.first.author_id).to eq(user_namespace.owner_id)
         expect(merge_request.reviewers.first.id).to eq(user_namespace.owner_id)
-      end
-
-      context 'when user_mapping_to_personal_namespace_owner is disabled' do
-        before do
-          project.build_or_assign_import_data(
-            data: { user_mapping_to_personal_namespace_owner_enabled: false }
-          ).save!
-        end
-
-        it 'pushes placeholder references' do
-          importer.execute(approved_event)
-
-          expect(cached_references).to contain_exactly(
-            ['Approval', instance_of(Integer), 'user_id', source_user.id],
-            ['MergeRequestReviewer', instance_of(Integer), 'user_id', source_user.id],
-            ['Note', instance_of(Integer), 'author_id', source_user.id]
-          )
-        end
-
-        it 'creates the approval, reviewer and approval note mapped to the placeholder user' do
-          importer.execute(approved_event)
-
-          expect(merge_request.approvals.first.user_id).to eq(source_user.mapped_user_id)
-          expect(merge_request.notes.first.author_id).to eq(source_user.mapped_user_id)
-          expect(merge_request.reviewers.first.id).to eq(source_user.mapped_user_id)
-        end
       end
     end
 

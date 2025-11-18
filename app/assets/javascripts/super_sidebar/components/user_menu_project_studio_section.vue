@@ -35,7 +35,7 @@ export default {
     },
     provideProjectStudioFeedbackItem() {
       return {
-        href: 'https://gitlab.com/gitlab-org/gitlab/-/issues/564999',
+        href: 'https://gitlab.com/gitlab-org/gitlab/-/issues/577554',
         text: s__('Navigation|Provide feedback'),
         extraAttrs: {
           'data-testid': 'project-studio-feedback-link',
@@ -58,6 +58,10 @@ export default {
             projectStudioEnabled: val,
           },
           update: () => {
+            // If user is enabling the New UI (val=true and currently disabled), flag for onboarding
+            if (val === true && this.projectStudioEnabled === false) {
+              localStorage.setItem('showDapWelcomeModal', 'true');
+            }
             window.location.reload();
           },
         })
@@ -75,7 +79,6 @@ export default {
 
 <template>
   <gl-disclosure-dropdown-group bordered>
-    <template #group-label>{{ s__('Navigation|Preview') }}</template>
     <gl-disclosure-dropdown-item :item="toggleProjectStudioItem">
       <template #list-item>
         <div class="gl-flex gl-items-center gl-gap-3">

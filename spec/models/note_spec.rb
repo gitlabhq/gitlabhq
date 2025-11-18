@@ -109,14 +109,6 @@ RSpec.describe Note, feature_category: :team_planning do
       end
     end
 
-    context 'when noteable is an abuse report' do
-      subject { build(:note, noteable: build_stubbed(:abuse_report), project: nil, namespace: nil) }
-
-      it 'is not valid without project or namespace' do
-        is_expected.to be_invalid
-      end
-    end
-
     context 'when noteable is a wiki page' do
       subject { build(:note, noteable: build_stubbed(:wiki_page_meta), project: nil, namespace: nil) }
 
@@ -594,36 +586,6 @@ RSpec.describe Note, feature_category: :team_planning do
     let(:set_mentionable_text) { ->(txt) { subject.note = txt } }
   end
 
-  describe '#refresh_markdown_cache!' do
-    let(:note) do
-      note = create(:note_on_personal_snippet)
-      note.update_columns(project_id: nil, namespace_id: nil, organization_id: nil)
-
-      note
-    end
-
-    before do
-      described_class.connection.execute(<<~SQL)
-        ALTER TABLE notes DROP CONSTRAINT IF EXISTS check_82f260979e
-      SQL
-
-      note
-
-      described_class.connection.execute(<<~SQL)
-        ALTER TABLE notes ADD CONSTRAINT check_82f260979e
-          CHECK ((num_nonnulls(namespace_id, organization_id, project_id) >= 1)) NOT VALID
-      SQL
-    end
-
-    it 'updates sharding key if at least one column is not present' do
-      expect do
-        note.refresh_markdown_cache!
-      end.to change { [note.project_id, note.namespace_id, note.organization_id] }
-        .from([nil] * 3)
-        .to([nil, nil, note.noteable.organization_id])
-    end
-  end
-
   describe '#note_html' do
     shared_examples 'note that parses work item references' do
       it 'parses the work item reference' do
@@ -843,7 +805,7 @@ RSpec.describe Note, feature_category: :team_planning do
       end
 
       it 'returns the ghost user' do
-        expect(note.last_edited_by).to eq(Users::Internal.ghost)
+        expect(note.last_edited_by).to eq(Users::Internal.for_organization(note.organization_id).ghost)
       end
     end
 

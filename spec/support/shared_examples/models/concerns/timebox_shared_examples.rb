@@ -57,15 +57,23 @@ RSpec.shared_examples 'a timebox' do |timebox_type|
     let(:timebox) { create(timebox_type, *timebox_args, title: "<b>foo & bar -> 2.2</b>") }
 
     it 'normalizes the title for use as a slug' do
-      expect(timebox.safe_title).to eq('foo-bar-22')
+      expect(timebox.safe_title).to eq('bfoo-bar-22b')
     end
   end
 
-  describe "#title" do
-    let(:timebox) { create(timebox_type, *timebox_args, title: "<b>foo & bar -> 2.2</b>") }
+  describe '#title' do
+    subject { create(timebox_type, *timebox_args, title: input_title) }
 
-    it "sanitizes title" do
-      expect(timebox.title).to eq("foo & bar -> 2.2")
+    context 'when input contains HTML entities and HTML tags' do
+      let(:input_title) { '&lt;hello&gt;<img src=x onerror=prompt(1)>' }
+
+      it 'leaves the input unchanged' do
+        # This field is not ever to be treated as HTML; it is text, never unescaped or sanitised,
+        # and is always escaped when inserted into HTML directly.
+        # If an XSS occurs in future which would lead you to wanting to "fix" this spec, please
+        # instead fix it at the point of display, not by corrupting user input!
+        expect(subject.title).to eq(input_title)
+      end
     end
   end
 

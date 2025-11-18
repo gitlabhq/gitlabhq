@@ -11,7 +11,7 @@ export const simpleViewerMock = {
   webPath: 'some_file.js',
   blamePath: 'blame/file.js',
   editBlobPath: 'some_file.js/edit',
-  gitpodBlobUrl: 'https://gitpod.io#path/to/blob.js',
+  gitpodBlobUrl: 'https://app.ona.com#path/to/blob.js',
   ideEditPath: 'some_file.js/ide/edit',
   forkAndEditPath: 'some_file.js/fork/edit',
   ideForkAndEditPath: 'some_file.js/fork/ide',
@@ -253,7 +253,7 @@ export const headerAppInjected = {
   webIdeUrl: 'https://gitlab.com/project/-/ide/',
   editUrl: 'https://gitlab.com/project/-/edit/main/',
   pipelineEditorUrl: 'https://gitlab.com/project/-/ci/editor',
-  gitpodUrl: 'https://gitpod.io/#https://gitlab.com/project',
+  gitpodUrl: 'https://app.ona.com/#https://gitlab.com/project',
   userPreferencesGitpodPath: '/profile/preferences#gitpod',
   userProfileEnableGitpodPath: '/profile/preferences?enable_gitpod=true',
   httpUrl: 'https://gitlab.com/example-group/example-project.git',
@@ -261,10 +261,22 @@ export const headerAppInjected = {
   sshUrl: 'git@gitlab.com:example-group/example-project.git',
   kerberosUrl: '',
   downloadLinks: [
-    'https://gitlab.com/example-group/example-project/-/archive/main/example-project-main.zip',
-    'https://gitlab.com/example-group/example-project/-/archive/main/example-project-main.tar.gz',
-    'https://gitlab.com/example-group/example-project/-/archive/main/example-project-main.tar.bz2',
-    'https://gitlab.com/example-group/example-project/-/releases',
+    {
+      text: 'zip',
+      path: 'https://gitlab.com/example-group/example-project/-/archive/main/example-project-main.zip',
+    },
+    {
+      text: 'tar.gz',
+      path: 'https://gitlab.com/example-group/example-project/-/archive/main/example-project-main.tar.gz',
+    },
+    {
+      text: 'tar.bz2',
+      path: 'https://gitlab.com/example-group/example-project/-/archive/main/example-project-main.tar.bz2',
+    },
+    {
+      text: 'tar',
+      path: 'https://gitlab.com/example-group/example-project/-/releases',
+    },
   ],
   downloadArtifacts: [
     'https://gitlab.com/example-group/example-project/-/jobs/artifacts/main/download?job=build',

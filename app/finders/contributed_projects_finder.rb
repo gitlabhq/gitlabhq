@@ -63,7 +63,8 @@ class ContributedProjectsFinder
   def filter_projects(collection)
     collection = by_organization(collection)
     collection = by_search(collection)
-    by_programming_language(collection)
+    collection = by_programming_language(collection)
+    by_active(collection)
   end
 
   def by_organization(collection)
@@ -78,6 +79,12 @@ class ContributedProjectsFinder
     end
 
     collection
+  end
+
+  def by_active(collection)
+    return collection if params[:active].nil?
+
+    params[:active] ? collection.self_and_ancestors_active : collection.self_or_ancestors_inactive
   end
 end
 

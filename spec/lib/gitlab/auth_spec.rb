@@ -61,7 +61,6 @@ RSpec.describe Gitlab::Auth, :use_clean_rails_memory_store_caching, feature_cate
       expect(subject.available_scopes_for(user)).to match_array %i[
         api read_user read_api read_repository write_repository read_registry write_registry
         create_runner manage_runner k8s_proxy ai_features self_rotate read_virtual_registry write_virtual_registry mcp
-        granular
       ]
     end
 
@@ -71,7 +70,6 @@ RSpec.describe Gitlab::Auth, :use_clean_rails_memory_store_caching, feature_cate
       expect(subject.available_scopes_for(user)).to match_array %i[
         api read_user read_api read_repository read_service_ping write_repository read_registry write_registry
         sudo admin_mode create_runner manage_runner k8s_proxy ai_features self_rotate read_virtual_registry write_virtual_registry mcp
-        granular
       ]
     end
 
@@ -79,7 +77,7 @@ RSpec.describe Gitlab::Auth, :use_clean_rails_memory_store_caching, feature_cate
       expect(subject.available_scopes_for(project)).to match_array %i[
         api read_api read_repository write_repository read_registry write_registry
         read_observability write_observability create_runner manage_runner k8s_proxy ai_features
-        self_rotate mcp granular
+        self_rotate mcp
       ]
     end
 
@@ -89,7 +87,7 @@ RSpec.describe Gitlab::Auth, :use_clean_rails_memory_store_caching, feature_cate
       expect(subject.available_scopes_for(group)).to match_array %i[
         api read_api read_repository write_repository read_registry write_registry
         read_observability write_observability create_runner manage_runner k8s_proxy ai_features
-        self_rotate read_virtual_registry write_virtual_registry mcp granular
+        self_rotate read_virtual_registry write_virtual_registry mcp
       ]
     end
 
@@ -123,7 +121,6 @@ RSpec.describe Gitlab::Auth, :use_clean_rails_memory_store_caching, feature_cate
         write_repository
         read_virtual_registry
         write_virtual_registry
-        granular
       ]
     end
 
@@ -140,7 +137,7 @@ RSpec.describe Gitlab::Auth, :use_clean_rails_memory_store_caching, feature_cate
 
           expect(subject.available_scopes_for(group)).to match_array %i[
             api read_api read_repository write_repository read_registry write_registry create_runner manage_runner
-            k8s_proxy ai_features self_rotate read_virtual_registry write_virtual_registry mcp granular
+            k8s_proxy ai_features self_rotate read_virtual_registry write_virtual_registry mcp
           ]
         end
 
@@ -152,7 +149,7 @@ RSpec.describe Gitlab::Auth, :use_clean_rails_memory_store_caching, feature_cate
 
           expect(subject.available_scopes_for(project)).to match_array %i[
             api read_api read_repository write_repository read_registry write_registry create_runner manage_runner
-            k8s_proxy ai_features self_rotate mcp granular
+            k8s_proxy ai_features self_rotate mcp
           ]
         end
       end
@@ -173,7 +170,7 @@ RSpec.describe Gitlab::Auth, :use_clean_rails_memory_store_caching, feature_cate
           expect(subject.available_scopes_for(group)).to match_array %i[
             api read_api read_repository write_repository read_registry write_registry
             read_observability write_observability create_runner manage_runner k8s_proxy ai_features
-            self_rotate read_virtual_registry write_virtual_registry mcp granular
+            self_rotate read_virtual_registry write_virtual_registry mcp
           ]
         end
 
@@ -183,7 +180,6 @@ RSpec.describe Gitlab::Auth, :use_clean_rails_memory_store_caching, feature_cate
           expect(subject.available_scopes_for(user)).to match_array %i[
             api read_user read_api read_repository write_repository read_registry write_registry read_service_ping
             sudo admin_mode create_runner manage_runner k8s_proxy ai_features self_rotate read_virtual_registry write_virtual_registry mcp
-            granular
           ]
         end
 
@@ -191,7 +187,7 @@ RSpec.describe Gitlab::Auth, :use_clean_rails_memory_store_caching, feature_cate
           expect(subject.available_scopes_for(project)).to match_array %i[
             api read_api read_repository write_repository read_registry write_registry
             read_observability write_observability create_runner manage_runner k8s_proxy ai_features
-            self_rotate mcp granular
+            self_rotate mcp
           ]
         end
 
@@ -204,7 +200,7 @@ RSpec.describe Gitlab::Auth, :use_clean_rails_memory_store_caching, feature_cate
           expect(subject.available_scopes_for(other_group)).to match_array %i[
             api read_api read_repository write_repository read_registry write_registry
             create_runner manage_runner k8s_proxy ai_features
-            self_rotate read_virtual_registry write_virtual_registry mcp granular
+            self_rotate read_virtual_registry write_virtual_registry mcp
           ]
         end
 
@@ -217,7 +213,7 @@ RSpec.describe Gitlab::Auth, :use_clean_rails_memory_store_caching, feature_cate
 
           expect(subject.available_scopes_for(other_project)).to match_array %i[
             api read_api read_repository write_repository read_registry write_registry
-            create_runner manage_runner k8s_proxy ai_features self_rotate mcp granular
+            create_runner manage_runner k8s_proxy ai_features self_rotate mcp
           ]
         end
       end
@@ -872,6 +868,28 @@ RSpec.describe Gitlab::Auth, :use_clean_rails_memory_store_caching, feature_cate
         it 'fails' do
           expect { gl_auth.find_for_git_client(user.username, user.password, project: nil, request: request) }
             .to raise_error(Gitlab::Auth::MissingPersonalAccessTokenError)
+        end
+      end
+
+      context 'when email-based OTP is enabled personally' do
+        let(:user) do
+          create(:user, email_otp_required_after: 1.second.ago)
+        end
+
+        it 'fails' do
+          expect { gl_auth.find_for_git_client(user.username, user.password, project: nil, request: request) }
+            .to raise_error(Gitlab::Auth::MissingPersonalAccessTokenError)
+        end
+
+        context 'when :email_based_mfa feature flag disabled' do
+          before do
+            stub_feature_flags(email_based_mfa: false)
+          end
+
+          it 'goes through' do
+            expect(gl_auth.find_for_git_client(user.username, user.password, project: nil, request: request))
+              .to have_attributes(actor: user, project: nil, type: :gitlab_or_ldap, authentication_abilities: described_class.full_authentication_abilities)
+          end
         end
       end
 

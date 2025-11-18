@@ -983,6 +983,12 @@ Output example:
 
 `Progress` represents the percentage of the background migration that has been completed.
 
+{{< alert type="note" >}}
+
+Progress percentage may not be reported correctly if the migration employs a cursor.
+
+{{< /alert >}}
+
 Definitions of the batched background migration states:
 
 - **Active**: Either:
@@ -1057,12 +1063,12 @@ In extremely limited circumstances, a GitLab administrator can disable the [feat
 
 - `execute_batched_migrations_on_schedule`
 
-This flags is enabled by default. Disable it only as a last resort
+This flag is enabled by default. Disable it only as a last resort
 to limit database operations in special circumstances, like database host maintenance.
 
 {{< alert type="warning" >}}
 
-Do not disable this flags unless you fully understand the ramifications. If you disable
+Do not disable this flag unless you fully understand the ramifications. If you disable
 the `execute_batched_migrations_on_schedule` feature flag,
 GitLab upgrades might fail and data loss might occur.
 

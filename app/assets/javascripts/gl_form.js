@@ -1,5 +1,8 @@
 import autosize from 'autosize';
-import GfmAutoComplete, { defaultAutocompleteConfig } from 'ee_else_ce/gfm_auto_complete';
+import GfmAutoComplete, {
+  defaultAutocompleteConfig,
+  getEnableGFMType,
+} from 'ee_else_ce/gfm_auto_complete';
 import { disableButtonIfEmptyField } from '~/lib/utils/common_utils';
 import dropzoneInput from './dropzone_input';
 import { addMarkdownListeners, removeMarkdownListeners } from './lib/utils/text_markdown';
@@ -58,7 +61,7 @@ export default class GLForm {
 
   filterEnabledGFM(dataSources) {
     for (const [item, enabled] of Object.entries(this.enableGFM)) {
-      if (enabled && item !== 'emojis' && !dataSources[item]) {
+      if (enabled && item !== 'emojis' && !dataSources[getEnableGFMType(item)]) {
         this.enableGFM[item] = false;
       }
     }

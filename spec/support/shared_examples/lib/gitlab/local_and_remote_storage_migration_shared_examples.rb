@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-RSpec.shared_examples 'local and remote storage migration' do
+RSpec.shared_examples 'local and remote storage migration' do |expect_file_rename: false|
   let(:logger) { Logger.new("/dev/null") }
   let(:migrater) { described_class.new(logger) }
 
@@ -25,9 +25,17 @@ RSpec.shared_examples 'local and remote storage migration' do
 
       expect(item.file_store).to eq(start_store)
 
+      if expect_file_rename && start_store == ObjectStorage::Store::REMOTE && end_store == ObjectStorage::Store::LOCAL
+        expect(Gitlab::LocalAndRemoteStorageMigration::FilePathFixer).to receive(:fix_file_path!)
+      end
+
       migrater.send(method)
 
       expect(item.reload.file_store).to eq(end_store)
+
+      if item.respond_to?(:file_final_path) && (item.reload.file_store == ObjectStorage::Store::LOCAL)
+        expect(item.reload.file_final_path).to be_nil
+      end
     end
   end
 
@@ -36,7 +44,7 @@ RSpec.shared_examples 'local and remote storage migration' do
 
     it 'prints error' do
       expect_next_instance_of(item.file.class) do |file|
-        expect(file).to receive(:migrate!).and_raise("error message")
+        expect(file).to receive(:migrate!).and_raise(IOError, "error message")
       end
 
       expect(logger).to receive(:info).with("Starting transfer to object storage")

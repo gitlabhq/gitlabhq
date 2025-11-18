@@ -61,7 +61,7 @@ A running workspace remains accessible to the user even if user permissions are 
 
 To manage workspaces from a project:
 
-1. On the left sidebar, select **Search or go to** and find your project.
+1. On the left sidebar, select **Search or go to** and find your project. If you've [turned on the new navigation](../interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
 1. In the upper right, select **Code**.
 1. From the dropdown list, under **Your workspaces**, you can:
    - Restart, stop, or terminate an existing workspace.
@@ -96,7 +96,7 @@ To clean up orphaned resources, an administrator must manually delete the worksp
 
 To manage all workspaces associated with `agentk`:
 
-1. On the left sidebar, select **Search or go to** and find your project.
+1. On the left sidebar, select **Search or go to** and find your project. If you've [turned on the new navigation](../interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
 1. Select **Operate** > **Kubernetes clusters**.
 1. Select the agent configured for remote development.
 1. Select the **Workspaces** tab.
@@ -224,7 +224,8 @@ The `container` component type supports the following schema properties only:
 | `env`                | Environment variables to use in the container. Names must not start with `gl-`. |
 | `endpoints`          | Port mappings to expose from the container. Names must not start with `gl-`. |
 | `volumeMounts`       | Storage volume to mount in the container. |
-| `overrideCommand`    | Override the container entrypoint with a keep-alive command. Defaults vary by component type. |
+| `command`            | The command to override the container entrypoint. See [`overrideCommand` attribute](#overridecommand-attribute). |
+| `args`               | The arguments for the command of the container. See [`overrideCommand` attribute](#overridecommand-attribute). |
 
 **Footnotes**:
 
@@ -356,8 +357,12 @@ components:
         - name: http-3000
           targetPort: 3000
   - name: database-container
+    attributes:
+      overrideCommand: false
     container:
       image: mysql
+      command: ["echo"]
+      args: ["-n", "user-defined entrypoint command"]
       env:
         - name: MYSQL_ROOT_PASSWORD
           value: "my-secret-pw"

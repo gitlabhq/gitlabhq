@@ -117,7 +117,8 @@ RSpec.describe API::CommitStatuses, :clean_gitlab_redis_cache, feature_category:
           it_behaves_like 'get commit statuses'
         end
 
-        context 'return commit statuses sort by desc pipeline_id' do
+        context 'return commit statuses sort by desc pipeline_id',
+          quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/525204' do
           let(:params) { { all: 1, order_by: "pipeline_id", sort: "desc" } }
           let(:expected_statuses) { develop.statuses.order(id: :asc).ids + master.statuses.order(id: :asc).ids }
 

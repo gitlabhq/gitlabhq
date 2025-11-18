@@ -44,6 +44,13 @@ module Enums # rubocop:disable Gitlab/BoundedContexts -- Existing module
       non_essential: 4
     }.freeze
 
+    SCAN_PROFILES_TYPES = {
+      sast: 0,
+      secret_detection: 1,
+      container_scanning: 3,
+      dependency_scanning: 4
+    }.freeze
+
     DEFAULT_CONFIGURATION_SOURCE = :sbom
 
     CONFIGURATION_SOURCE_TYPES = {
@@ -82,6 +89,10 @@ module Enums # rubocop:disable Gitlab/BoundedContexts -- Existing module
 
     def self.configuration_source_types
       CONFIGURATION_SOURCE_TYPES
+    end
+
+    def self.scan_profile_types
+      SCAN_PROFILES_TYPES
     end
   end
 end

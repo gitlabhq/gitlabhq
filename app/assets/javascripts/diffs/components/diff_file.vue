@@ -10,7 +10,8 @@ import { hasDiff } from '~/helpers/diffs_helper';
 import { helpPagePath } from '~/helpers/help_page_helper';
 import { diffViewerErrors } from '~/ide/constants';
 import { clearDraft } from '~/lib/utils/autosave';
-import { scrollToElement, isElementStuck } from '~/lib/utils/common_utils';
+import { isElementStuck } from '~/lib/utils/common_utils';
+import { scrollToElement } from '~/lib/utils/scroll_utils';
 import { capitalizeFirstCharacter } from '~/lib/utils/text_utility';
 import { sprintf } from '~/locale';
 import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
@@ -320,6 +321,7 @@ export default {
       'saveDiffDiscussion',
       'toggleFileCommentForm',
       'toggleFileDiscussion',
+      'setFileViewEffectsProcessed',
     ]),
     handleFileCommentCancel() {
       this.toggleFileCommentForm(this.file.file_path);
@@ -328,13 +330,13 @@ export default {
     },
     manageViewedEffects() {
       if (
-        !this.idState.hasToggled &&
+        !this.file.viewEffectsProcessed &&
         this.reviewed &&
         !this.isCollapsed &&
         this.showLocalFileReviews
       ) {
         this.handleToggle();
-        this.idState.hasToggled = true;
+        this.setFileViewEffectsProcessed(this.file, true);
       }
     },
     expandAllListener() {
@@ -374,7 +376,7 @@ export default {
         contentElement &&
         isElementStuck(this.$refs.header.$el)
       ) {
-        scrollToElement(contentElement, { duration: 0 });
+        scrollToElement(contentElement, { behavior: 'auto' });
       }
 
       if (!this.hasDiff && !collapsingNow && this.file?.viewer?.expandable) {

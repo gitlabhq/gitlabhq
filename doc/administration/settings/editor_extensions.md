@@ -1,5 +1,5 @@
 ---
-stage: Create
+stage: AI-powered
 group: Editor Extensions
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 description: Configure GitLab Editor Extensions including Visual Studio Code, JetBrains IDEs, Visual Studio, Eclipse and Neovim.
@@ -70,7 +70,7 @@ Prerequisites:
 
 To enforce a minimum GitLab Language Server version:
 
-1. On the left sidebar, at the bottom, select **Admin**.
+1. On the left sidebar, at the bottom, select **Admin**. If you've [turned on the new navigation](../../user/interface_redesign.md#turn-new-navigation-on-or-off), in the upper-right corner, select **Admin**.
 1. On the left sidebar, select **Settings** > **General**.
 1. Expand **Editor Extensions**.
 1. Check **Language Server restrictions enabled**.
@@ -78,7 +78,7 @@ To enforce a minimum GitLab Language Server version:
 
 To allow any GitLab Language Server clients:
 
-1. On the left sidebar, at the bottom, select **Admin**.
+1. On the left sidebar, at the bottom, select **Admin**. If you've [turned on the new navigation](../../user/interface_redesign.md#turn-new-navigation-on-or-off), in the upper-right corner, select **Admin**.
 1. On the left sidebar, select **Settings** > **General**.
 1. Expand **Editor Extensions**.
 1. Uncheck **Language Server restrictions enabled**.

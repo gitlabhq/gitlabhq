@@ -153,6 +153,42 @@ RSpec.describe Gitlab::Git::Finders::RefsFinder, feature_category: :source_code_
           expect(refs.map(&:name)).to eq(['v1.1.1', 'v1.1.0', 'v1.0.0'])
         end
       end
+
+      context 'when sort_by is invalid' do
+        context 'with invalid sort option' do
+          let(:params) do
+            { ref_type: :tags, sort_by: 'invalid_option' }
+          end
+
+          it 'raises ArgumentError with clear message' do
+            expect { subject }.to raise_error(ArgumentError, /Invalid sort_by option.*Allowed values/)
+          end
+        end
+
+        context 'with nil sort_by' do
+          let(:params) do
+            { ref_type: :tags, sort_by: nil }
+          end
+
+          it 'does not raise error' do
+            expect { subject }.not_to raise_error
+          end
+        end
+
+        context 'with valid sort options' do
+          %w[name_asc name_desc updated_asc updated_desc].each do |sort_option|
+            context "with #{sort_option}" do
+              let(:params) do
+                { ref_type: :tags, sort_by: sort_option }
+              end
+
+              it 'does not raise error' do
+                expect { subject }.not_to raise_error
+              end
+            end
+          end
+        end
+      end
     end
 
     describe 'Pagination' do
@@ -223,6 +259,117 @@ RSpec.describe Gitlab::Git::Finders::RefsFinder, feature_category: :source_code_
           refs = subject
 
           expect(refs.length).to eq(3)
+        end
+      end
+    end
+
+    describe 'Exact match by ref names' do
+      context 'when ref_names is provided for branches' do
+        let(:params) do
+          { ref_type: :branches, ref_names: ['master', 'improve/awesome'] }
+        end
+
+        it 'returns only the specified branches' do
+          refs = subject
+
+          expect(refs.map(&:name)).to match_array(['master', 'improve/awesome'])
+        end
+      end
+
+      context 'when ref_names is provided for tags' do
+        let(:params) do
+          { ref_type: :tags, ref_names: ['v1.0.0', 'v1.1.1'] }
+        end
+
+        it 'returns only the specified tags' do
+          refs = subject
+
+          expect(refs.map(&:name)).to match_array(['v1.0.0', 'v1.1.1'])
+        end
+      end
+
+      context 'when ref_names contains non-existent refs' do
+        let(:params) do
+          { ref_type: :branches, ref_names: %w[master non-existent-branch] }
+        end
+
+        it 'returns only existing refs' do
+          refs = subject
+
+          expect(refs.map(&:name)).to match_array(['master'])
+        end
+      end
+
+      context 'when ref_names is empty' do
+        let(:params) do
+          { ref_type: :branches, ref_names: [] }
+        end
+
+        it 'falls back to normal search behavior' do
+          refs = subject
+
+          expect(refs.length).to be > 0
+          expect(refs.map(&:name)).to include('master')
+        end
+      end
+
+      context 'when ref_names includes empty elements' do
+        let(:params) do
+          { ref_type: :branches, ref_names: ['', 'master'] }
+        end
+
+        it 'ignores empty elements' do
+          refs = subject
+
+          expect(refs.map(&:name)).to match_array(['master'])
+        end
+      end
+
+      context 'when ref_names is not array' do
+        let(:params) do
+          { ref_type: :branches, ref_names: 'master' }
+        end
+
+        it 'converts input to array' do
+          refs = subject
+
+          expect(refs.map(&:name)).to match_array(['master'])
+        end
+      end
+
+      context 'when both search and ref_names are provided' do
+        let(:params) do
+          { ref_type: :branches, search: 'master', ref_names: ['improve/awesome'] }
+        end
+
+        it 'prioritizes ref_names over search' do
+          refs = subject
+
+          expect(refs.map(&:name)).to match_array(['improve/awesome'])
+        end
+      end
+
+      context 'when ref_names is provided with pagination' do
+        let(:params) do
+          { ref_type: :tags, ref_names: ['v1.0.0', 'v1.1.0', 'v1.1.1'], per_page: 2 }
+        end
+
+        it 'respects pagination limits' do
+          refs = subject
+
+          expect(refs.map(&:name)).to match_array(['v1.0.0', 'v1.1.0'])
+        end
+      end
+
+      context 'when ref_names is provided with sorting' do
+        let(:params) do
+          { ref_type: :tags, ref_names: ['v1.1.1', 'v1.0.0', 'v1.1.0'], sort_by: 'name_desc' }
+        end
+
+        it 'respects sort order' do
+          refs = subject
+
+          expect(refs.map(&:name)).to eq(['v1.1.1', 'v1.1.0', 'v1.0.0'])
         end
       end
     end

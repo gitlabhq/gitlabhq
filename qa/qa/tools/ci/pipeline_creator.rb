@@ -20,7 +20,7 @@ module QA
         # These are only values permitted in scenario class pipeline mappings
         #
         # @return [Array]
-        FUNCTIONAL_E2E_PIPELINE_TYPES = %i[test_on_cng test_on_gdk test_on_omnibus test_on_omnibus_nightly].freeze
+        FUNCTIONAL_E2E_PIPELINE_TYPES = %i[test_on_cng test_on_gdk test_on_omnibus].freeze
 
         # Additional pipeline types that will be created by simply copying pipeline definition without applying
         #   dynamic scaling logic
@@ -38,11 +38,13 @@ module QA
         #  * environment build is faster, so it's feasible to run less jobs that take slightly longer
         #  * pipeline does not run in merge requests, so less CI load with fewer slower jobs is acceptable
         # @return [Hash]
+        #  RUNTIME_COEFFICIENT can be overridden with env variables
         RUNTIME_COEFFICIENT = {
-          test_on_cng: 0.7, # cng supports parallel_tests, so less jobs are needed to retain target runtime
-          test_on_gdk: 0.8, # gdk supports parallel_tests but is in general slower than other environments
-          test_on_omnibus: 1.0,
-          test_on_omnibus_nightly: 1.0
+          test_on_cng: ENV.fetch('E2E_RUNTIME_COEFFICIENT_CNG', 0.7).to_f, # cng supports parallel_tests,
+          # so less jobs are needed to retain target runtime
+          test_on_gdk: ENV.fetch('E2E_RUNTIME_COEFFICIENT_GDK', 0.8).to_f, # gdk supports parallel_tests
+          # but is in general slower than other environments
+          test_on_omnibus: ENV.fetch('E2E_RUNTIME_COEFFICIENT_OMNIBUS', 1.0).to_f
         }.freeze
 
         RULE_NEVER = "rules:\n  - when: never\n"

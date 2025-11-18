@@ -102,9 +102,6 @@ describe('autocompleteDataSources', () => {
   const pathsWithSnakeCase = {
     members: '/flightjs/Flight/-/autocomplete_sources/members?type=WorkItem&work_item_type_id=1',
     issues: '/flightjs/Flight/-/autocomplete_sources/issues?type=WorkItem&work_item_type_id=1',
-    issuesAlternative:
-      '/flightjs/Flight/-/autocomplete_sources/issues?type=WorkItem&work_item_type_id=1',
-    workItems: '/flightjs/Flight/-/autocomplete_sources/issues?type=WorkItem&work_item_type_id=1',
     mergeRequests:
       '/flightjs/Flight/-/autocomplete_sources/merge_requests?type=WorkItem&work_item_type_id=1',
     labels: '/flightjs/Flight/-/autocomplete_sources/labels?type=WorkItem&work_item_type_id=1',
@@ -115,8 +112,6 @@ describe('autocompleteDataSources', () => {
     contacts: '/flightjs/Flight/-/autocomplete_sources/contacts?type=WorkItem&work_item_type_id=1',
     wikis: '/flightjs/Flight/-/autocomplete_sources/wikis?type=WorkItem&work_item_type_id=1',
     epics: '/flightjs/Flight/-/autocomplete_sources/epics?type=WorkItem&work_item_type_id=1',
-    epicsAlternative:
-      '/flightjs/Flight/-/autocomplete_sources/epics?type=WorkItem&work_item_type_id=1',
     iterations:
       '/flightjs/Flight/-/autocomplete_sources/iterations?type=WorkItem&work_item_type_id=1',
     vulnerabilities:
@@ -126,9 +121,6 @@ describe('autocompleteDataSources', () => {
   const pathsWithCamelCase = {
     members: '/flightjs/Flight/-/autocomplete_sources/members?type=WorkItem&work_item_type_id=1',
     issues: '/flightjs/Flight/-/autocomplete_sources/issues?type=WorkItem&work_item_type_id=1',
-    issuesAlternative:
-      '/flightjs/Flight/-/autocomplete_sources/issues?type=WorkItem&work_item_type_id=1',
-    workItems: '/flightjs/Flight/-/autocomplete_sources/issues?type=WorkItem&work_item_type_id=1',
     mergeRequests:
       '/flightjs/Flight/-/autocomplete_sources/merge_requests?type=WorkItem&work_item_type_id=1',
     labels: '/flightjs/Flight/-/autocomplete_sources/labels?type=WorkItem&work_item_type_id=1',
@@ -139,8 +131,6 @@ describe('autocompleteDataSources', () => {
     contacts: '/flightjs/Flight/-/autocomplete_sources/contacts?type=WorkItem&work_item_type_id=1',
     wikis: '/flightjs/Flight/-/autocomplete_sources/wikis?type=WorkItem&work_item_type_id=1',
     epics: '/flightjs/Flight/-/autocomplete_sources/epics?type=WorkItem&work_item_type_id=1',
-    epicsAlternative:
-      '/flightjs/Flight/-/autocomplete_sources/epics?type=WorkItem&work_item_type_id=1',
     iterations:
       '/flightjs/Flight/-/autocomplete_sources/iterations?type=WorkItem&work_item_type_id=1',
     vulnerabilities:
@@ -162,18 +152,6 @@ describe('autocompleteDataSources', () => {
         ...pathsWithCamelCase,
         statuses: true,
       });
-    });
-  });
-
-  it('returns autocomplete paths with issuesAlternative and workItems included', () => {
-    expect(autocompleteDataSources(pathsWithCamelCase)).toEqual({
-      ...pathsWithCamelCase,
-      statuses: true,
-      epicsAlternative:
-        '/flightjs/Flight/-/autocomplete_sources/epics?type=WorkItem&work_item_type_id=1',
-      issuesAlternative:
-        '/flightjs/Flight/-/autocomplete_sources/issues?type=WorkItem&work_item_type_id=1',
-      workItems: '/flightjs/Flight/-/autocomplete_sources/issues?type=WorkItem&work_item_type_id=1',
     });
   });
 });

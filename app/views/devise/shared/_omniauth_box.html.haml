@@ -2,7 +2,8 @@
 - step_up_auth_scope = local_assigns[:step_up_auth_scope]
 
 - if any_form_based_providers_enabled? || password_authentication_enabled_for_web?
-  = render 'shared/divider', text: _("or sign in with")
+  - if step_up_auth_scope.blank? || step_up_auth_scope == 'admin_mode'
+    = render 'shared/divider', text: _("or sign in with")
 
 .gl-mt-5.gl-text-center.gl-flex.gl-flex-col.gl-gap-3.js-oauth-login
   - enabled_button_based_providers.each do |provider|

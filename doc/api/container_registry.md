@@ -13,7 +13,7 @@ description: Manage your GitLab container registry with the REST API.
 
 {{< /details >}}
 
-Use these API endpoints to work with the [GitLab container registry](../user/packages/container_registry/_index.md).
+Use this API to manage the [GitLab container registry](../user/packages/container_registry/_index.md).
 
 To authenticate with these endpoints from a CI/CD job, pass the [`$CI_JOB_TOKEN`](../ci/jobs/ci_job_token.md)
 variable as the `JOB-TOKEN` header. The job token only has access to the container registry

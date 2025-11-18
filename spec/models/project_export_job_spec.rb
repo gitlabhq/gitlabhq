@@ -32,9 +32,10 @@ RSpec.describe ProjectExportJob, feature_category: :importers, type: :model do
       travel_to(current_time) { example.run }
     end
 
-    describe '.prunable' do
-      it 'only includes records with updated_at older than 7 days ago' do
-        expect(described_class.prunable).to match_array([prunable_export_job_1, prunable_export_job_2])
+    describe '.updated_at_before' do
+      it 'only includes records with updated_at older than the given timestamp' do
+        expect(described_class.updated_at_before(described_class::EXPIRES_IN.ago))
+          .to match_array([prunable_export_job_1, prunable_export_job_2])
       end
     end
 

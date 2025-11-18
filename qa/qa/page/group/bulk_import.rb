@@ -21,7 +21,7 @@ module QA
         def filter_group(source_group_name)
           find('input[data-testid="filter-groups"]').set(source_group_name).send_keys(:return)
 
-          finished_loading?
+          spinner_cleared?
         end
 
         # Import source group in to target group
@@ -30,7 +30,7 @@ module QA
         # @param [String] target_group_name
         # @return [void]
         def import_group(source_group_name, target_group_name)
-          finished_loading?
+          spinner_cleared?
 
           filter_group(source_group_name)
 

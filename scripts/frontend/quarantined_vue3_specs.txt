@@ -1,25 +1,5 @@
 # Lines beginning with a hash are ignored, like this one.
 # Do not add new specs to this file.
-ee/spec/frontend/approvals/project_settings/project_rules_spec.js
-ee/spec/frontend/boards/components/board_new_issue_spec.js
-ee/spec/frontend/geo_sites/index_spec.js
-ee/spec/frontend/iterations/components/iteration_form_spec.js
-ee/spec/frontend/status_checks/mount_spec.js
-spec/frontend/__helpers__/vue_test_utils_helper_spec.js
 spec/frontend/ci/ci_variable_list/components/ci_variable_shared_spec.js
-spec/frontend/ci/pipeline_editor/pipeline_editor_app_spec.js
-spec/frontend/ci/runner/components/registration/runner_instructions/runner_instructions_modal_spec.js
-spec/frontend/ci/runner/components/runner_filtered_search_bar_spec.js
-spec/frontend/content_editor/components/wrappers/paragraph_spec.js
-spec/frontend/design_management/pages/design/index_spec.js
-spec/frontend/design_management/pages/index_spec.js
-spec/frontend/editor/extensions/source_editor_toolbar_ext_spec.js
-spec/frontend/helpers/init_simple_app_helper_spec.js
-spec/frontend/issues/list/components/issues_list_app_spec.js
-spec/frontend/issues/show/components/app_spec.js
-spec/frontend/lib/utils/breadcrumbs_spec.js
 spec/frontend/lib/utils/confirm_via_gl_modal/confirm_action_spec.js
-spec/frontend/packages_and_registries/dependency_proxy/app_spec.js
 spec/frontend/performance_bar/index_spec.js
-spec/frontend/pipeline_wizard/components/step_spec.js
-spec/frontend/vue_popovers_spec.js

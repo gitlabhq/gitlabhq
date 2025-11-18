@@ -7,6 +7,7 @@ RSpec.describe Key, :mailer, feature_category: :system_access do
 
   describe "Associations" do
     it { is_expected.to belong_to(:user) }
+    it { is_expected.to belong_to(:organization) }
     it { is_expected.to have_many(:todos).dependent(:destroy) }
   end
 
@@ -16,6 +17,7 @@ RSpec.describe Key, :mailer, feature_category: :system_access do
 
     it { is_expected.to validate_presence_of(:key) }
     it { is_expected.to validate_length_of(:key).is_at_most(5000) }
+
     it { is_expected.to allow_value(attributes_for(:rsa_key_2048)[:key]).for(:key) }
     it { is_expected.to allow_value(attributes_for(:rsa_key_4096)[:key]).for(:key) }
     it { is_expected.to allow_value(attributes_for(:rsa_key_5120)[:key]).for(:key) }
@@ -427,6 +429,23 @@ RSpec.describe Key, :mailer, feature_category: :system_access do
     subject { build(:key) }
 
     it_behaves_like 'meets ssh key restrictions'
+
+    context 'when OpenSSL::OpenSSLError is raised' do
+      let(:key) { build(:key) }
+      let(:error_message) { 'OpenSSL error occurred' }
+
+      before do
+        allow_next_instance_of(Gitlab::SSHPublicKey) do |instance|
+          allow(instance).to receive(:bits).and_raise(OpenSSL::OpenSSLError, error_message)
+        end
+      end
+
+      it 'adds the error to the key attribute' do
+        key.valid?
+
+        expect(key.errors[:key]).to eq(['is not a valid SSH key'])
+      end
+    end
   end
 
   context 'callbacks' do

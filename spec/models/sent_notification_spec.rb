@@ -106,7 +106,7 @@ RSpec.describe SentNotification, :request_store, feature_category: :shared do
 
   shared_examples 'a successful sent notification' do
     it 'creates a new SentNotification' do
-      expect { subject }.to change { described_class.count }.by(1)
+      expect { subject }.to change { PartitionedSentNotification.count }.by(1)
     end
   end
 
@@ -121,9 +121,9 @@ RSpec.describe SentNotification, :request_store, feature_category: :shared do
   end
 
   describe '.for' do
-    let_it_be(:sent_notification) { create(:sent_notification, project: project) }
+    let_it_be_with_reload(:sent_notification) { create(:sent_notification, project: project) }
 
-    subject { described_class.for(reply_key) }
+    subject(:found_sent_notification) { described_class.for(reply_key) }
 
     context 'when reply_key is not a string' do
       let(:reply_key) { nil }
@@ -136,6 +136,38 @@ RSpec.describe SentNotification, :request_store, feature_category: :shared do
       let(:reply_key) { sent_notification.reply_key }
 
       it { is_expected.to eq(sent_notification) }
+
+      it 'finds in the partitioned p_sent_notifications table' do
+        expect(PartitionedSentNotification).to receive(:find_by)
+
+        found_sent_notification
+      end
+
+      context 'when sent_notification is only found in the legacy table' do
+        before do
+          PartitionedSentNotification.where(id: sent_notification.id).delete_all
+        end
+
+        it { is_expected.to be_nil }
+
+        context 'when sent_notifications_without_fallback feature flag is disabled' do
+          before do
+            stub_feature_flags(sent_notifications_without_fallback: false)
+          end
+
+          it { is_expected.to eq(sent_notification) }
+
+          it 'logs that a record was only found in the legacy table' do
+            expect(Gitlab::AppLogger).to receive(:info).with(
+              class: described_class.name,
+              message: 'SentNotification found but not backfilled',
+              sent_notification_id: sent_notification.id
+            )
+
+            found_sent_notification
+          end
+        end
+      end
     end
 
     context 'when reply key uses partitioned table format' do
@@ -151,10 +183,32 @@ RSpec.describe SentNotification, :request_store, feature_category: :shared do
   describe '.record' do
     let_it_be(:issue) { create(:issue) }
 
-    subject { described_class.record(issue, user.id) }
+    subject(:sent_notification) { described_class.record(issue, user.id) }
 
     it_behaves_like 'a successful sent notification'
     it_behaves_like 'a non-sticky write'
+
+    it 'creates a record only on the partitioned table' do
+      expect do
+        sent_notification
+      end.to not_change { SentNotification.count }.and(
+        change { PartitionedSentNotification.count }.by(1)
+      )
+    end
+
+    context 'when insert_into_p_sent_notifications feature flag is disabled' do
+      before do
+        stub_feature_flags(insert_into_p_sent_notifications: false)
+      end
+
+      it 'creates a record in both tables' do
+        expect do
+          sent_notification
+        end.to change { SentNotification.count }.by(1).and(
+          change { PartitionedSentNotification.count }.by(1)
+        )
+      end
+    end
 
     context 'with issue email participant' do
       let!(:issue_email_participant) { create(:issue_email_participant, issue: issue) }

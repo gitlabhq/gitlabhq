@@ -154,7 +154,7 @@ Our CI setup uses the [`knapsack`](https://github.com/KnapsackPro/knapsack) gem 
 
 ### Test metrics
 
-To enhance test health visibility, a custom setup exports the pipeline's test execution results to an [InfluxDB](https://influxdb.quality.gitlab.net/) instance, with results visualized on [Grafana](https://dashboards.quality.gitlab.net/) dashboards.
+To enhance test health visibility, a custom setup exports the pipeline's test execution results to a GCS bucket, with results visualized in [Snowflake](https://app.snowflake.com/ys68254/gitlab/#/dx-failed-rspec-tests-dRzSe2G3K) dashboard.
 
 ### Test reports
 
@@ -187,11 +187,8 @@ Use these environment variables to configure metrics export:
 
 | Variable                 | Required | Information                                                                                                                                                            |
 | ------------------------ | -------- |------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| `QA_INFLUXDB_URL`        | `true`   | Should be set to `https://influxdb.quality.gitlab.net`. No default value.                                                                                              |
-| `QA_INFLUXDB_TOKEN`      | `true`   | InfluxDB write token that can be found under `Influxdb auth tokens` document in `Gitlab-QA` `1Password` vault. No default value.                                       |
 | `QA_RUN_TYPE`            | `false`  | Arbitrary name for test execution, like `e2e:test-on-omnibus-ee`. Automatically inferred from the project name for live environment test executions. No default value. |
-| `QA_EXPORT_TEST_METRICS` | `false`  | Flag to enable or disable metrics export to InfluxDB. Defaults to `false`.                                                                                             |
-| `QA_SAVE_TEST_METRICS`   | `false`  | Flag to enable or disable saving metrics as JSON file. Defaults to `false`.                                                                                            |
+| `QA_EXPORT_TEST_METRICS` | `false`  | Flag to enable or disable metrics export to GCS. Defaults to `false`.                                                                                             |
 
 ## How do you run the tests?
 

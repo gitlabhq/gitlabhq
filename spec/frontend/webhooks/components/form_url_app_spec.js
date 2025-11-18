@@ -1,6 +1,6 @@
 import { nextTick } from 'vue';
 import { GlAlert, GlFormGroup } from '@gitlab/ui';
-import { scrollToElement } from '~/lib/utils/common_utils';
+import { scrollToElement } from '~/lib/utils/scroll_utils';
 
 import FormUrlApp from '~/webhooks/components/form_url_app.vue';
 import FormUrlMaskItem from '~/webhooks/components/form_url_mask_item.vue';
@@ -8,7 +8,7 @@ import FormUrlMaskItem from '~/webhooks/components/form_url_mask_item.vue';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import { setHTMLFixture, resetHTMLFixture } from 'helpers/fixtures';
 
-jest.mock('~/lib/utils/common_utils');
+jest.mock('~/lib/utils/scroll_utils');
 
 describe('FormUrlApp', () => {
   let wrapper;

@@ -56,9 +56,9 @@ module Gitlab
       def needs_rewrite?
         strong_memoize(:needs_rewrite) do
           reference_type_attribute =
-            Banzai::Filter::References::ReferenceFilter::REFERENCE_TYPE_DATA_ATTRIBUTE
+            Banzai::Filter::References::ReferenceFilter::REFERENCE_TYPE_DATA_ATTRIBUTE_NAME
 
-          @text_html.include?(reference_type_attribute)
+          @text_html.include?("#{reference_type_attribute}=")
         end
       end
 
@@ -117,12 +117,10 @@ module Gitlab
 
       def source_parent_param
         case @source_parent
-        when Project
-          { project: @source_parent }
+        when Project, Namespaces::ProjectNamespace
+          { project: @source_parent.owner_entity }
         when Group
           { group: @source_parent, project: nil }
-        when Namespaces::ProjectNamespace
-          { project: @source_parent.project }
         end
       end
       strong_memoize_attr :source_parent_param

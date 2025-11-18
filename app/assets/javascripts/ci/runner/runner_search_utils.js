@@ -90,7 +90,7 @@ const PARAM_KEY_PAGE = 'page';
  * @returns Updated URL
  */
 const updateUrlParams = (url, params = {}) => {
-  return setUrlParams(params, url, false, true, true);
+  return setUrlParams(params, { url, railsArraySyntax: true, decodeParams: true });
 };
 
 const outdatedStatusParams = (status) => {
@@ -214,7 +214,10 @@ export const fromSearchToUrl = (
     [PARAM_KEY_AFTER]: pagination?.after || null,
   };
 
-  return setUrlParams({ ...filterParams, ...otherParams }, url, false, true, true);
+  return setUrlParams(
+    { ...filterParams, ...otherParams },
+    { url, railsArraySyntax: true, decodeParams: true },
+  );
 };
 
 /**

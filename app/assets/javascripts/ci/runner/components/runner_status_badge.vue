@@ -120,6 +120,8 @@ export default {
     v-gl-tooltip="badge.tooltip"
     :variant="badge.variant"
     :icon="badge.icon"
+    :data-qa-status="status"
+    data-testid="runner-status-badge"
     icon-optically-aligned
     v-bind="$attrs"
   >

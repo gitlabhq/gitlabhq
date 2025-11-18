@@ -7,10 +7,9 @@ import {
   GlTooltipDirective,
   GlIcon,
   GlSkeletonLoader,
-  GlDisclosureDropdown,
-  GlDisclosureDropdownItem,
   GlModalDirective,
 } from '@gitlab/ui';
+import produce from 'immer';
 import { isEmpty, unionBy } from 'lodash';
 import fuzzaldrinPlus from 'fuzzaldrin-plus';
 import { createAlert, VARIANT_INFO } from '~/alert';
@@ -57,7 +56,8 @@ import {
   RELATIVE_POSITION_ASC,
 } from '~/issues/list/constants';
 import searchLabelsQuery from '~/issues/list/queries/search_labels.query.graphql';
-import setSortPreferenceMutation from '~/issues/list/queries/set_sort_preference.mutation.graphql';
+import namespaceWorkItemTypesQuery from '~/work_items/graphql/namespace_work_item_types.query.graphql';
+import updateWorkItemListUserPreference from '~/work_items/graphql/update_work_item_list_user_preferences.mutation.graphql';
 import { fetchPolicies } from '~/lib/graphql';
 import { isPositiveInteger } from '~/lib/utils/number_utils';
 import { scrollUp } from '~/lib/utils/scroll_utils';
@@ -115,15 +115,15 @@ import glFeatureFlagMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import getWorkItemStateCountsQuery from 'ee_else_ce/work_items/graphql/list/get_work_item_state_counts.query.graphql';
 import getWorkItemsQuery from 'ee_else_ce/work_items/graphql/list/get_work_items_full.query.graphql';
 import getWorkItemsSlimQuery from 'ee_else_ce/work_items/graphql/list/get_work_items_slim.query.graphql';
+import getWorkItemsCountOnlyQuery from 'ee_else_ce/work_items/graphql/list/get_work_items_count_only.query.graphql';
 import searchProjectsQuery from '~/issues/list/queries/search_projects.query.graphql';
+import hasWorkItemsQuery from '~/work_items/graphql/list/has_work_items.query.graphql';
 import CreateWorkItemModal from '../components/create_work_item_modal.vue';
 import WorkItemHealthStatus from '../components/work_item_health_status.vue';
 import WorkItemDrawer from '../components/work_item_drawer.vue';
 import WorkItemListHeading from '../components/work_item_list_heading.vue';
 import WorkItemUserPreferences from '../components/shared/work_item_user_preferences.vue';
 import WorkItemListActions from '../components/work_item_list_actions.vue';
-import WorkItemByEmail from '../components/work_item_by_email.vue';
-import WorkItemsCsvImportModal from '../components/work_items_csv_import_modal.vue';
 import {
   BASE_ALLOWED_CREATE_TYPES,
   CREATION_CONTEXT_LIST_ROUTE,
@@ -137,9 +137,9 @@ import {
   WORK_ITEM_TYPE_NAME_OBJECTIVE,
   METADATA_KEYS,
 } from '../constants';
-import getUserWorkItemsDisplaySettingsPreferences from '../graphql/get_user_preferences.query.graphql';
 import workItemsReorderMutation from '../graphql/work_items_reorder.mutation.graphql';
 import { findHierarchyWidget } from '../utils';
+import getUserWorkItemsPreferences from '../graphql/get_user_preferences.query.graphql';
 
 const EmojiToken = () =>
   import('~/vue_shared/components/filtered_search_bar/tokens/emoji_token.vue');
@@ -187,13 +187,9 @@ export default {
     WorkItemListHeading,
     WorkItemUserPreferences,
     WorkItemListActions,
-    WorkItemByEmail,
     GlIcon,
     GlSkeletonLoader,
     NewResourceDropdown,
-    GlDisclosureDropdown,
-    GlDisclosureDropdownItem,
-    WorkItemsCsvImportModal,
   },
   directives: {
     GlTooltip: GlTooltipDirective,
@@ -210,6 +206,7 @@ export default {
     'autocompleteAwardEmojisPath',
     'canBulkUpdate',
     'canBulkEditEpics',
+    'canCreateProjects',
     'canCreateWorkItem',
     'hasBlockedIssuesFeature',
     'hasEpicsFeature',
@@ -220,7 +217,6 @@ export default {
     'hasOkrsFeature',
     'hasQualityManagementFeature',
     'hasCustomFieldsFeature',
-    'initialSort',
     'isGroup',
     'isProject',
     'isSignedIn',
@@ -230,14 +226,12 @@ export default {
     'hasStatusFeature',
     'canReadCrmContact',
     'releasesPath',
-    'exportCsvPath',
     'metadataLoading',
     'projectImportJiraPath',
     'newWorkItemEmailAddress',
     'isGroupIssuesList',
     'groupId',
     'canImportWorkItems',
-    'canEdit',
     'isIssueRepositioningDisabled',
     'hasProjects',
     'newIssuePath',
@@ -285,14 +279,22 @@ export default {
       showLocalBoard: false,
       namespaceId: null,
       displaySettings: {},
+      workItemTypes: [],
+      isSortKeyInitialized: !this.isSignedIn,
+      hasWorkItems: null,
+      workItemsCount: null,
     };
   },
   apollo: {
     displaySettings: {
-      query: getUserWorkItemsDisplaySettingsPreferences,
+      context: {
+        featureCategory: 'portfolio_management',
+      },
+      query: getUserWorkItemsPreferences,
       variables() {
         return {
           namespace: this.rootPageFullPath,
+          workItemTypeId: this.workItemTypeId,
         };
       },
       update(data) {
@@ -305,15 +307,31 @@ export default {
           namespacePreferences,
         };
       },
+      result({ data }) {
+        const { sort } = data?.currentUser?.workItemPreferencesWithType ?? {};
+        let sortKey = deriveSortKey({
+          sort: getParameterByName(PARAM_SORT) || sort,
+        });
+        if (this.isIssueRepositioningDisabled && sortKey === RELATIVE_POSITION_ASC) {
+          this.showIssueRepositioningMessage();
+          sortKey = this.state === STATUS_CLOSED ? UPDATED_DESC : CREATED_DESC;
+        }
+        this.sortKey = sortKey;
+        this.isSortKeyInitialized = true;
+      },
       skip() {
-        return !this.isSignedIn;
+        return !this.workItemTypeId || !this.isSignedIn;
       },
       error(error) {
+        this.isSortKeyInitialized = true;
         this.error = __('An error occurred while getting work item user preference.');
         Sentry.captureException(error);
       },
     },
     workItemsFull: {
+      context: {
+        featureCategory: 'portfolio_management',
+      },
       query() {
         return getWorkItemsQuery;
       },
@@ -338,6 +356,9 @@ export default {
       },
     },
     workItemsSlim: {
+      context: {
+        featureCategory: 'portfolio_management',
+      },
       query() {
         return getWorkItemsSlimQuery;
       },
@@ -360,6 +381,24 @@ export default {
         Sentry.captureException(error);
       },
     },
+    workItemsCount: {
+      query() {
+        return getWorkItemsCountOnlyQuery;
+      },
+      variables() {
+        return this.queryVariables;
+      },
+      update(data) {
+        return data?.namespace.workItems.count || 0;
+      },
+      skip() {
+        return isEmpty(this.pageParams) || this.metadataLoading || !this.isPlanningViewsEnabled;
+      },
+      error(error) {
+        Sentry.captureException(error);
+      },
+    },
+    // TODO: remove entirely once consolidated list is GA
     workItemStateCounts: {
       query: getWorkItemStateCountsQuery,
       variables() {
@@ -369,19 +408,48 @@ export default {
         return data?.[this.namespace].workItemStateCounts ?? {};
       },
       skip() {
-        return isEmpty(this.pageParams);
+        return this.isPlanningViewsEnabled || isEmpty(this.pageParams) || this.metadataLoading;
+      },
+      error(error) {
+        Sentry.captureException(error);
+      },
+    },
+    hasWorkItems: {
+      query: hasWorkItemsQuery,
+      variables() {
+        const singleWorkItemType = this.workItemType ? NAME_TO_ENUM_MAP[this.workItemType] : null;
+        return {
+          fullPath: this.rootPageFullPath,
+          types: singleWorkItemType || this.defaultWorkItemTypes,
+        };
+      },
+      update(data) {
+        return data?.namespace.workItems.nodes.length > 0 || false;
+      },
+      error(error) {
+        this.error = s__('WorkItem|An error occurred while getting work item counts.');
+        Sentry.captureException(error);
       },
       result({ data }) {
-        const { all } = data?.[this.namespace].workItemStateCounts ?? {};
-
+        const count = data?.namespace.workItems.nodes.length || 0;
         if (!this.isInitialLoadComplete) {
-          this.hasAnyIssues = Boolean(all);
+          this.hasAnyIssues = Boolean(count);
           this.isInitialLoadComplete = true;
           this.initialLoadWasFiltered = this.filterTokens.length > 0;
         }
       },
+    },
+    workItemTypes: {
+      query: namespaceWorkItemTypesQuery,
+      variables() {
+        return {
+          fullPath: this.rootPageFullPath,
+        };
+      },
+      update(data) {
+        return data?.workspace?.workItemTypes?.nodes;
+      },
       error(error) {
-        this.error = s__('WorkItem|An error occurred while getting work item counts.');
         Sentry.captureException(error);
       },
     },
@@ -396,7 +464,12 @@ export default {
     },
     shouldShowList() {
       return (
-        this.hasAnyIssues || this.error || this.initialLoadWasFiltered || this.workItems.length > 0
+        this.hasWorkItems === true ||
+        this.hasAnyIssues ||
+        this.error ||
+        this.initialLoadWasFiltered ||
+        this.workItems.length > 0 ||
+        !this.isEpicsList
       );
     },
     detailLoading() {
@@ -444,19 +517,7 @@ export default {
       });
     },
     workItemDrawerEnabled() {
-      const shouldOpenItemsInSidePanel =
-        this.displaySettings.commonPreferences?.shouldOpenItemsInSidePanel ?? true;
-      if (!shouldOpenItemsInSidePanel) return false;
-
-      if (this.glFeatures.workItemViewForIssues) {
-        return shouldOpenItemsInSidePanel;
-      }
-
-      if (this.isEpicsList) {
-        return this.glFeatures?.epicsListDrawer && shouldOpenItemsInSidePanel;
-      }
-
-      return this.glFeatures?.issuesListDrawer && shouldOpenItemsInSidePanel;
+      return this.displaySettings.commonPreferences?.shouldOpenItemsInSidePanel ?? true;
     },
     isEpicsList() {
       return this.workItemType === WORK_ITEM_TYPE_NAME_EPIC;
@@ -608,7 +669,7 @@ export default {
         tokens.push({
           type: TOKEN_TYPE_TYPE,
           title: TOKEN_TITLE_TYPE,
-          icon: 'issues',
+          icon: 'issue-type-issue',
           unique: true,
           token: GlFilteredSearchToken,
           operators: OPERATORS_IS_NOT,
@@ -772,7 +833,7 @@ export default {
       return this.workItems.length > 0;
     },
     showWorkItemByEmail() {
-      return this.canCreateWorkItem && !this.isGroup && this.newWorkItemEmailAddress;
+      return Boolean(this.canCreateWorkItem && !this.isGroup && this.newWorkItemEmailAddress);
     },
     sortOptions() {
       return getSortOptions({
@@ -862,29 +923,6 @@ export default {
         fullPath: this.rootPageFullPath,
       };
     },
-    exportCsvPathWithQuery() {
-      if (!this.isGroup) {
-        return `${this.exportCsvPath}${window.location.search}`;
-      }
-      return null;
-    },
-    showCsvButtons() {
-      return this.isProject && this.isSignedIn;
-    },
-    isJiraImportVisible() {
-      return Boolean(this.projectImportJiraPath) && this.canEdit;
-    },
-    importFromJira() {
-      return {
-        text: s__('WorkItem|Import from Jira'),
-        href: this.projectImportJiraPath,
-      };
-    },
-    importCsv() {
-      return {
-        text: s__('WorkItem|Import CSV'),
-      };
-    },
     showProjectNewWorkItem() {
       return this.showNewWorkItem && !this.isGroupIssuesList;
     },
@@ -892,18 +930,17 @@ export default {
       return this.isGroupIssuesList && this.hasProjects;
     },
     workItemTotalStateCount() {
-      const stateToken = this.filterTokens?.find((token) => token.type === TOKEN_TYPE_STATE);
-      const stateValue = stateToken?.value?.data;
-
-      let count = this.workItemStateCounts?.all || 0;
-
-      if (stateValue === STATUS_OPEN) {
-        count = this.workItemStateCounts?.opened || 0;
-      } else if (stateValue === STATUS_CLOSED) {
-        count = this.workItemStateCounts?.closed || 0;
+      if (this.workItemsCount === null) {
+        return '';
       }
-
-      return n__('WorkItem|%d item', 'WorkItem|%d items', count);
+      return n__('WorkItem|%d item', 'WorkItem|%d items', this.workItemsCount);
+    },
+    workItemTypeId() {
+      const workItemTypeName = this.workItemType || WORK_ITEM_TYPE_NAME_ISSUE;
+      return this.workItemTypes?.find((workItemType) => workItemType.name === workItemTypeName)?.id;
+    },
+    shouldLoad() {
+      return !this.isInitialLoadComplete || (!this.isSortKeyInitialized && !this.error);
     },
   },
   watch: {
@@ -915,6 +952,8 @@ export default {
       this.$apollo.queries.workItemStateCounts.refetch();
       this.$apollo.queries.workItemsFull.refetch();
       this.$apollo.queries.workItemsSlim.refetch();
+      this.$apollo.queries.hasWorkItems.refetch();
+      this.$apollo.queries.workItemsCount.refetch();
     },
     $route(newValue, oldValue) {
       if (newValue.fullPath !== oldValue.fullPath) {
@@ -928,7 +967,7 @@ export default {
     },
   },
   created() {
-    this.updateData(this.initialSort);
+    this.updateData(getParameterByName(PARAM_SORT));
     this.addStateToken();
     this.autocompleteCache = new AutocompleteCache();
     window.addEventListener('popstate', this.checkDrawerParams);
@@ -966,7 +1005,6 @@ export default {
         document.title = this.calculateDocumentTitle(listData);
       }
       if (!this.withTabs) {
-        this.hasAnyIssues = Boolean(listData?.namespace.workItems.nodes);
         this.isInitialLoadComplete = true;
       }
       this.checkDrawerParams();
@@ -1109,20 +1147,47 @@ export default {
 
       this.$router.push({ query: this.urlParams });
     },
-    saveSortPreference(sortKey) {
-      this.$apollo
-        .mutate({
-          mutation: setSortPreferenceMutation,
-          variables: { input: { issuesSort: sortKey } },
-        })
-        .then(({ data }) => {
-          if (data.userPreferencesUpdate.errors.length) {
-            throw new Error(data.userPreferencesUpdate.errors);
-          }
-        })
-        .catch((error) => {
-          Sentry.captureException(error);
+    async saveSortPreference(sortKey) {
+      try {
+        const { data } = await this.$apollo.mutate({
+          mutation: updateWorkItemListUserPreference,
+          variables: {
+            namespace: this.rootPageFullPath,
+            workItemTypeId: this.workItemTypeId,
+            sort: sortKey,
+          },
+          update: (
+            cache,
+            {
+              data: {
+                workItemUserPreferenceUpdate: { userPreferences },
+              },
+            },
+          ) => {
+            if (!userPreferences) {
+              return;
+            }
+            cache.updateQuery(
+              {
+                query: getUserWorkItemsPreferences,
+                variables: {
+                  namespace: this.rootPageFullPath,
+                  workItemTypeId: this.workItemTypeId,
+                },
+              },
+              (existingData) =>
+                produce(existingData, (draftData) => {
+                  draftData.currentUser.workItemPreferencesWithType.sort = userPreferences.sort;
+                }),
+            );
+          },
         });
+        if (data?.workItemUserPreferenceUpdate?.errors?.length) {
+          throw new Error(data.workItemUserPreferenceUpdate.errors);
+        }
+      } catch (error) {
+        Sentry.captureException(error);
+      }
     },
     deleteItem() {
       this.activeItem = null;
@@ -1355,7 +1420,7 @@ export default {
 </script>
 
 <template>
-  <gl-loading-icon v-if="!isInitialLoadComplete && !error" class="gl-mt-5" size="lg" />
+  <gl-loading-icon v-if="shouldLoad" class="gl-mt-5" size="lg" />
 
   <div v-else-if="shouldShowList">
     <div v-if="showLocalBoard">
@@ -1403,6 +1468,7 @@ export default {
         :prevent-redirect="workItemDrawerEnabled"
         :detail-loading="detailLoading"
         :hidden-metadata-keys="hiddenMetadataKeys"
+        :always-allow-custom-empty-state="isPlanningViewsEnabled"
         @click-tab="handleClickTab"
         @dismiss-alert="error = undefined"
         @filter="handleFilter"
@@ -1419,6 +1485,8 @@ export default {
             :full-path="rootPageFullPath"
             :is-epics-list="isEpicsList"
             :is-group="isGroup"
+            :work-item-type-id="workItemTypeId"
+            :sort-key="sortKey"
           />
         </template>
         <template v-if="!isPlanningViewsEnabled" #nav-actions>
@@ -1446,6 +1514,7 @@ export default {
               :full-path="rootPageFullPath"
               :is-group="isGroup"
               :preselected-work-item-type="preselectedWorkItemType"
+              :is-epics-list="isEpicsList"
               @workItemCreated="handleWorkItemCreated"
             />
             <new-resource-dropdown
@@ -1457,9 +1526,13 @@ export default {
             />
             <work-item-list-actions
               :show-import-export-buttons="showImportExportButtons"
+              :show-work-item-by-email-button="showWorkItemByEmail"
               :work-item-count="currentTabCount"
               :query-variables="csvExportQueryVariables"
               :full-path="rootPageFullPath"
+              :url-params="urlParams"
+              :is-epics-list="isEpicsList"
+              :is-group-issues-list="isGroupIssuesList"
             />
           </div>
         </template>
@@ -1490,6 +1563,7 @@ export default {
                 :full-path="rootPageFullPath"
                 :is-group="isGroup"
                 :preselected-work-item-type="preselectedWorkItemType"
+                :is-epics-list="isEpicsList"
                 @workItemCreated="handleWorkItemCreated"
               />
               <new-resource-dropdown
@@ -1501,15 +1575,19 @@ export default {
               />
               <work-item-list-actions
                 :show-import-export-buttons="showImportExportButtons"
+                :show-work-item-by-email-button="showWorkItemByEmail"
                 :work-item-count="currentTabCount"
                 :query-variables="csvExportQueryVariables"
                 :full-path="rootPageFullPath"
+                :url-params="urlParams"
+                :is-epics-list="isEpicsList"
+                :is-group-issues-list="isGroupIssuesList"
               />
             </div>
           </work-item-list-heading>
         </template>
 
-        <template v-if="isPlanningViewsEnabled && workItems.length" #before-list-items>
+        <template v-if="isPlanningViewsEnabled" #before-list-items>
           <!-- state-count -->
           <div class="gl-border-b gl-py-3">
             {{ workItemTotalStateCount }}
@@ -1536,6 +1614,7 @@ export default {
         <template #empty-state>
           <slot name="list-empty-state" :has-search="hasSearch" :is-open-tab="isOpenTab">
             <empty-state-with-any-issues
+              v-if="hasAnyIssues"
               :has-search="hasSearch"
               :is-open-tab="isOpenTab"
               :is-epic="isEpicsList"
@@ -1549,6 +1628,7 @@ export default {
                   :full-path="rootPageFullPath"
                   :is-group="isGroup"
                   :preselected-work-item-type="preselectedWorkItemType"
+                  :is-epics-list="isEpicsList"
                   @workItemCreated="handleWorkItemCreated"
                 />
                 <new-resource-dropdown
@@ -1560,6 +1640,24 @@ export default {
                 />
               </template>
             </empty-state-with-any-issues>
+            <empty-state-without-any-issues
+              v-else
+              :show-new-issue-dropdown="showGroupNewWorkItem"
+              :has-projects="hasProjects"
+            >
+              <template #new-issue-button>
+                <create-work-item-modal
+                  v-if="showProjectNewWorkItem"
+                  :allowed-work-item-types="allowedWorkItemTypes"
+                  :always-show-work-item-type-select="!isEpicsList"
+                  :creation-context="$options.CREATION_CONTEXT_LIST_ROUTE"
+                  :full-path="rootPageFullPath"
+                  :is-group="isGroup"
+                  :preselected-work-item-type="preselectedWorkItemType"
+                  @workItemCreated="handleWorkItemCreated"
+                />
+              </template>
+            </empty-state-without-any-issues>
           </slot>
         </template>
 
@@ -1630,69 +1728,9 @@ export default {
         </template>
       </issuable-list>
     </template>
-    <work-item-by-email
-      v-if="showWorkItemByEmail"
-      class="gl-pb-7 gl-pt-5 gl-text-center"
-      data-track-action="click_email_work_item_project_work_items_empty_list_page"
-      data-track-label="email_work_item_project_work_items_empty_list"
-    />
   </div>
 
   <div v-else>
-    <slot name="page-empty-state">
-      <empty-state-without-any-issues :export-csv-path-with-query="exportCsvPathWithQuery">
-        <template #new-issue-button>
-          <create-work-item-modal
-            v-if="showProjectNewWorkItem"
-            :allowed-work-item-types="allowedWorkItemTypes"
-            :always-show-work-item-type-select="!isEpicsList"
-            :creation-context="$options.CREATION_CONTEXT_LIST_ROUTE"
-            :full-path="rootPageFullPath"
-            :is-group="isGroup"
-            :preselected-work-item-type="preselectedWorkItemType"
-            @workItemCreated="handleWorkItemCreated"
-          />
-          <new-resource-dropdown
-            v-if="showGroupNewWorkItem"
-            :query="$options.searchProjectsQuery"
-            :query-variables="newIssueDropdownQueryVariables"
-            :extract-projects="extractProjects"
-            :group-id="groupId"
-          />
-        </template>
-        <template #import-export-buttons
-          ><gl-disclosure-dropdown
-            v-if="showCsvButtons"
-            class="gl-mx-2 gl-mb-3"
-            :toggle-text="__('Import issues')"
-            data-testid="import-issues-dropdown"
-          >
-            <gl-disclosure-dropdown-item
-              v-if="isJiraImportVisible"
-              data-testid="import-from-jira-link"
-              :item="importFromJira"
-            />
-            <gl-disclosure-dropdown-item
-              v-if="canImportWorkItems"
-              v-gl-modal="$options.importModalId"
-              data-testid="import-csv-button"
-              :item="importCsv"
-            />
-
-            <work-items-csv-import-modal
-              v-if="canImportWorkItems"
-              :modal-id="$options.importModalId"
-              :full-path="rootPageFullPath"
-            />
-          </gl-disclosure-dropdown>
-        </template>
-      </empty-state-without-any-issues>
-    </slot>
-    <work-item-by-email
-      v-if="showWorkItemByEmail"
-      class="gl-pb-7 gl-pt-5 gl-text-center"
-      data-track-action="click_email_work_item_project_work_items_empty_list_page"
-      data-track-label="email_work_item_project_work_items_empty_list"
-    />
+    <slot name="page-empty-state"></slot>
   </div>
 </template>

@@ -2,15 +2,14 @@
 
 class BranchesFinder < GitRefsFinder
   def execute(gitaly_pagination: false)
-    if gitaly_pagination && names.blank? && search.blank? && regex.blank?
+    if gitaly_pagination && search.blank? && regex.blank?
       repository.branches_sorted_by(sort, pagination_params).tap do |branches|
         set_next_cursor(branches)
       end
     else
       branches = repository.branches_sorted_by(sort)
       branches = by_search(branches)
-      branches = by_regex(branches)
-      by_names(branches)
+      by_regex(branches)
     end
   end
 
@@ -20,10 +19,6 @@ class BranchesFinder < GitRefsFinder
 
   private
 
-  def names
-    @params[:names].presence
-  end
-
   def regex
     @params[:regex].to_s.presence
   end
@@ -31,15 +26,6 @@ class BranchesFinder < GitRefsFinder
 
   def page_token
     "#{Gitlab::Git::BRANCH_REF_PREFIX}#{@params[:page_token]}" if @params[:page_token]
-  end
-
-  def by_names(branches)
-    return branches unless names
-
-    branch_names = names.to_set
-    branches.select do |branch|
-      branch_names.include?(branch.name)
-    end
   end
 
   def by_regex(branches)

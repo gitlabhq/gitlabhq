@@ -171,7 +171,7 @@ Prerequisites:
 
 To configure the timer:
 
-1. On the left sidebar, select **Search or go to** and find your project.
+1. On the left sidebar, select **Search or go to** and find your project. If you've [turned on the new navigation](../../user/interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
 1. Select **Settings** > **Monitor**.
 1. Expand the **Incidents** section, then select the **Incident settings** tab.
 1. Select **Activate "time to SLA" countdown timer**.
@@ -200,7 +200,7 @@ label to the incident.
 - [Assign a milestone](../../user/project/milestones/_index.md)
 - [Make an incident confidential](../../user/project/issues/confidential_issues.md)
 - [Set a due date](../../user/project/issues/due_dates.md)
-- [Toggle notifications](../../user/profile/notifications.md#edit-notification-settings-for-issues-merge-requests-and-epics)
+- [Toggle notifications](../../user/profile/notifications.md#subscribe-to-notifications-for-a-specific-issue-merge-request-or-epic)
 - [Track spent time](../../user/project/time_tracking.md)
 - [Add a Zoom meeting to an incident](../../user/project/issues/associate_zoom_meeting.md) the same
   way you add it to an issue

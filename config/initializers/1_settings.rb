@@ -503,6 +503,9 @@ end
 Settings.cron_jobs['adjourned_group_deletion_worker'] ||= {}
 Settings.cron_jobs['adjourned_group_deletion_worker']['cron'] ||= '0 2 * * *'
 Settings.cron_jobs['adjourned_group_deletion_worker']['job_class'] = 'AdjournedGroupDeletionWorker'
+Settings.cron_jobs['authn_data_retention_authentication_event_archive_worker'] ||= {}
+Settings.cron_jobs['authn_data_retention_authentication_event_archive_worker']['cron'] ||= '10 6 * * *'
+Settings.cron_jobs['authn_data_retention_authentication_event_archive_worker']['job_class'] = 'Authn::DataRetention::AuthenticationEventArchiveWorker'
 Settings.cron_jobs['delete_expired_trigger_token_worker'] ||= {}
 Settings.cron_jobs['delete_expired_trigger_token_worker']['cron'] ||= '0 0 * * *'
 Settings.cron_jobs['delete_expired_trigger_token_worker']['job_class'] = 'Ci::DeleteExpiredTriggerTokenWorker'
@@ -711,6 +714,9 @@ Settings.cron_jobs['inactive_projects_deletion_cron_worker']['job_class'] = 'Pro
 Settings.cron_jobs['loose_foreign_keys_cleanup_worker'] ||= {}
 Settings.cron_jobs['loose_foreign_keys_cleanup_worker']['cron'] ||= '*/1 * * * *'
 Settings.cron_jobs['loose_foreign_keys_cleanup_worker']['job_class'] = 'LooseForeignKeys::CleanupWorker'
+Settings.cron_jobs['loose_foreign_keys_ci_pipelines_builds_cleanup_worker'] ||= {}
+Settings.cron_jobs['loose_foreign_keys_ci_pipelines_builds_cleanup_worker']['cron'] ||= '*/1 * * * *'
+Settings.cron_jobs['loose_foreign_keys_ci_pipelines_builds_cleanup_worker']['job_class'] = 'LooseForeignKeys::CiPipelinesBuildsCleanupCronWorker'
 Settings.cron_jobs['loose_foreign_keys_merge_request_diff_commit_cleanup_worker'] ||= {}
 Settings.cron_jobs['loose_foreign_keys_merge_request_diff_commit_cleanup_worker']['cron'] ||= '*/1 * * * *'
 Settings.cron_jobs['loose_foreign_keys_merge_request_diff_commit_cleanup_worker']['job_class'] = 'LooseForeignKeys::MergeRequestDiffCommitCleanupWorker'
@@ -1077,6 +1083,9 @@ Gitlab.ee do
   Settings.cron_jobs['secret_rotation_reminder_batch_worker'] ||= {}
   Settings.cron_jobs['secret_rotation_reminder_batch_worker']['cron'] ||= '* * * * *'
   Settings.cron_jobs['secret_rotation_reminder_batch_worker']['job_class'] = 'SecretsManagement::SecretRotationReminderBatchWorker'
+  Settings.cron_jobs['virtual_registries_cleanup_enqueue_policy_worker'] ||= {}
+  Settings.cron_jobs['virtual_registries_cleanup_enqueue_policy_worker']['cron'] ||= '40 * * * *'
+  Settings.cron_jobs['virtual_registries_cleanup_enqueue_policy_worker']['job_class'] = 'VirtualRegistries::Cleanup::EnqueuePolicyWorker'
 
   Gitlab.com do
     Settings.cron_jobs['disable_legacy_open_source_license_for_inactive_projects'] ||= {}
@@ -1188,6 +1197,12 @@ Settings.gitlab_kas['external_url'] ||= 'wss://kas.example.com'
 Settings.gitlab_kas['internal_url'] ||= 'grpc://localhost:8153'
 Settings.gitlab_kas['client_timeout_seconds'] ||= 5
 # Settings.gitlab_kas['external_k8s_proxy_url'] ||= 'grpc://localhost:8154' # NOTE: Do not set a default until all distributions have been updated with a correct value
+
+#
+# Gitlab Secrets Manager Openbao Integration
+#
+Settings['openbao'] ||= {}
+Settings.openbao['authentication_token_secret_file_path'] ||= Rails.root.join('.gitlab_openbao_authentication_token_secret')
 
 #
 # Workspaces

@@ -19,16 +19,13 @@ describe('Pipeline Url Component', () => {
   const findTableCell = () => wrapper.findByTestId('pipeline-url-table-cell');
   const findPipelineUrlLink = () => wrapper.findByTestId('pipeline-url-link');
   const findPipelineIdentifierLink = () => wrapper.findByTestId('pipeline-identifier-link');
+  const findPipelineIdentifierMissingMessage = () =>
+    wrapper.findByTestId('pipeline-identifier-missing-message');
   const findRefName = () => wrapper.findByTestId('merge-request-ref');
   const findCommitShortSha = () => wrapper.findByTestId('commit-short-sha');
   const findCommitIcon = () => wrapper.findByTestId('commit-icon');
   const findCommitIconType = () => wrapper.findByTestId('commit-icon-type');
   const findCommitRefName = () => wrapper.findByTestId('commit-ref-name');
-
-  const findCommitTitleContainer = () => wrapper.findByTestId('commit-title-container');
-  const findPipelineIdentifierContainer = () =>
-    wrapper.findByTestId('pipeline-identifier-container');
-  const findCommitTitle = (commitWrapper) => commitWrapper.find('[data-testid="commit-title"]');
 
   const defaultProps = { ...mockPipeline(projectPath) };
 
@@ -61,12 +58,11 @@ describe('Pipeline Url Component', () => {
       }),
     );
 
-    expect(findCommitTitleContainer().exists()).toBe(false);
-    expect(findPipelineIdentifierContainer().exists()).toBe(true);
     expect(findRefName().exists()).toBe(true);
     expect(findCommitShortSha().exists()).toBe(true);
     expect(findPipelineIdentifierLink().text()).toBe('Build pipeline');
     expect(findPipelineIdentifierLink().attributes('href')).toBe('foo');
+    expect(findPipelineIdentifierMissingMessage().exists()).toBe(false);
   });
 
   it('should render the pipeline schedule identifier when pipeline has no name but schedule', () => {
@@ -78,8 +74,6 @@ describe('Pipeline Url Component', () => {
       }),
     );
 
-    expect(findCommitTitleContainer().exists()).toBe(false);
-    expect(findPipelineIdentifierContainer().exists()).toBe(true);
     expect(findRefName().exists()).toBe(true);
     expect(findCommitShortSha().exists()).toBe(true);
     expect(findPipelineIdentifierLink().text()).toBe('Schedule');
@@ -93,8 +87,6 @@ describe('Pipeline Url Component', () => {
       }),
     );
 
-    expect(findCommitTitleContainer().exists()).toBe(false);
-    expect(findPipelineIdentifierContainer().exists()).toBe(true);
     expect(findRefName().exists()).toBe(true);
     expect(findCommitShortSha().exists()).toBe(true);
     expect(findPipelineIdentifierLink().text()).toBe('Build pipeline');
@@ -104,13 +96,26 @@ describe('Pipeline Url Component', () => {
   it('should render the commit title when pipeline has no identifier', () => {
     createComponent();
 
-    const commitWrapper = findCommitTitleContainer();
-
-    expect(findCommitTitle(commitWrapper).exists()).toBe(true);
     expect(findRefName().exists()).toBe(true);
     expect(findCommitShortSha().exists()).toBe(true);
-    expect(findPipelineIdentifierContainer().exists()).toBe(false);
+    expect(findPipelineIdentifierLink().text()).toBe('Commit');
+    expect(findPipelineIdentifierLink().attributes('href')).toBe('/test/test/commit/aabbccdd');
+  });
+
+  it('should render a missing ref when pipeline has no identifier or commit', () => {
+    createComponent(
+      merge(mockPipeline(projectPath), {
+        pipeline: { commit: null },
+      }),
+    );
+
+    expect(findRefName().exists()).toBe(true);
+    expect(findCommitShortSha().exists()).toBe(true);
     expect(findPipelineIdentifierLink().exists()).toBe(false);
+    expect(findPipelineIdentifierMissingMessage().classes('gl-text-subtle')).toBe(true);
+    expect(findPipelineIdentifierMissingMessage().text()).toBe(
+      "Can't find HEAD commit for this branch",
+    );
   });
 
   describe('commit user avatar', () => {
@@ -196,7 +201,7 @@ describe('Pipeline Url Component', () => {
     it('tracks commit title click', () => {
       createComponent(merge(mockPipelineBranch(), { pipeline: { name: null } }));
 
-      findCommitTitle(findCommitTitleContainer()).vm.$emit('click');
+      findPipelineIdentifierLink().vm.$emit('click');
 
       expect(trackingSpy).toHaveBeenCalledWith(undefined, 'click_commit_title', {
         label: TRACKING_CATEGORIES.table,

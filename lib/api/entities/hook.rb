@@ -31,11 +31,11 @@ module API
         documentation: { type: 'Hash', example: { "X-Custom-Header" => "value" }, is_array: true }
 
       def url_variables
-        object.url_variables.keys.map { { key: _1 } }
+        object.masked_url_variables
       end
 
       def custom_headers
-        object.custom_headers.keys.map { { key: _1 } }
+        object.masked_custom_headers
       end
     end
   end

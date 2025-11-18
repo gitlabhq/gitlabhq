@@ -2,6 +2,8 @@ import Vue, { nextTick } from 'vue';
 import VueApollo from 'vue-apollo';
 import { GlAlert } from '@gitlab/ui';
 import VueDraggable from 'vuedraggable';
+import { stubComponent } from 'helpers/stub_component';
+import { hasTouchCapability } from '~/lib/utils/touch_detection';
 import { createAlert } from '~/alert';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import createMockApollo from 'helpers/mock_apollo_helper';
@@ -35,6 +37,7 @@ import {
 
 jest.mock('~/lib/utils/common_utils');
 jest.mock('~/alert');
+jest.mock('~/lib/utils/touch_detection');
 Vue.use(VueApollo);
 
 const PREVIOUS_VERSION_ID = 2;
@@ -78,6 +81,7 @@ describe('DesignWidget', () => {
   const findDesignCheckboxes = () => wrapper.findAllByTestId('design-checkbox');
   const findVueDraggable = () => wrapper.findComponent(VueDraggable);
   const findAlert = () => wrapper.findComponent(GlAlert);
+  const findCrudCollapseToggle = () => wrapper.findByTestId('crud-collapse-toggle');
 
   async function moveDesigns() {
     await waitForPromises();
@@ -102,6 +106,7 @@ describe('DesignWidget', () => {
     canAddDesign = true,
     canUpdateDesign = true,
     canPasteDesign = false,
+    stubs = {},
   } = {}) {
     wrapper = shallowMountExtended(DesignWidget, {
       isLoggedIn: isLoggedIn(),
@@ -133,7 +138,8 @@ describe('DesignWidget', () => {
       },
       stubs: {
         RouterView: true,
-        VueDraggable,
+        VueDraggable: stubComponent(VueDraggable),
+        ...stubs,
       },
     });
   }
@@ -181,14 +187,22 @@ describe('DesignWidget', () => {
 
     it('renders VueDraggable component', () => {
       expect(findVueDraggable().exists()).toBe(true);
-      expect(findVueDraggable().vm.$attrs.disabled).toBe(false);
+      expect(findVueDraggable().attributes('disabled')).toBeUndefined();
     });
 
     it('renders VueDraggable component with dragging disabled when canReorderDesign prop is false', async () => {
-      await createComponent({ canReorderDesign: false });
+      createComponent({ canReorderDesign: false });
       await waitForPromises();
 
-      expect(findVueDraggable().vm.$attrs.disabled).toBe(true);
+      expect(findVueDraggable().attributes('disabled')).toBe('disabled');
+    });
+
+    it('disables drag and drop on mobile devices', async () => {
+      hasTouchCapability.mockImplementation(() => true);
+      createComponent();
+      await waitForPromises();
+
+      expect(findVueDraggable().attributes('disabled')).toBe('disabled');
     });
 
     it('calls moveDesignMutation with correct parameters and reorders designs', async () => {
@@ -563,6 +577,23 @@ describe('DesignWidget', () => {
 
         expect(wrapper.emitted('upload')).toBeUndefined();
       });
+    });
+  });
+
+  describe('tracks collapse/expand events', () => {
+    beforeEach(() => {
+      createComponent({ stubs: { CrudComponent } });
+      return waitForPromises();
+    });
+
+    it.each`
+      type          | eventLabel           | collapsed
+      ${'collapse'} | ${'click-collapsed'} | ${true}
+      ${'expand'}   | ${'click-expanded'}  | ${false}
+    `('tracks user $type events', ({ eventLabel }) => {
+      findCrudCollapseToggle().vm.$emit('click');
+
+      expect(findWidgetWrapper().emitted(eventLabel)).toEqual([[]]);
     });
   });
 });

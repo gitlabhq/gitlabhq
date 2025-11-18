@@ -30,7 +30,8 @@ RSpec.describe Gitlab::Auth::UserAccessDeniedReason do
     end
 
     context 'when the user is internal' do
-      let(:user) { Users::Internal.ghost }
+      let(:organization) { create(:common_organization) }
+      let(:user) { Users::Internal.for_organization(organization).ghost }
 
       it { is_expected.to match(/This action cannot be performed by internal users/) }
     end

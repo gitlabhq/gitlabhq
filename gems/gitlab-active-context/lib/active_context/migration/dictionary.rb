@@ -24,19 +24,16 @@ module ActiveContext
         load_migrations
       end
 
-      # Returns all migrations sorted by version
       def migrations(versions_only: false)
         migrations = @migrations.sort_by { |version, _| version }
 
         migrations.map { |m| versions_only ? m.first : m.last }
       end
 
-      # Find a specific migration by version
       def find_by_version(version)
         @migrations[version.to_s]
       end
 
-      # Find a version by class name (e.g., 'CreateCode')
       def find_version_by_class_name(class_name)
         @migrations.find do |_version, klass|
           klass.name&.demodulize == class_name
@@ -50,21 +47,18 @@ module ActiveContext
           version, name = parse_migration_file(file)
           version_constant = :"V#{version}"
 
-          # Only define the module if it doesn't exist
           if ActiveContext::Migration.const_defined?(version_constant)
             migration_module = ActiveContext::Migration.const_get(version_constant, false)
           else
             migration_module = Module.new
             ActiveContext::Migration.const_set(version_constant, migration_module)
 
-            # Evaluate the migration file content within the namespace
             migration_content = File.read(file)
             migration_module.module_eval(migration_content)
           end
 
           klass_name = name.camelize
           begin
-            # Look up the class within our namespace
             klass = migration_module.const_get(klass_name, false)
           rescue NameError
             raise InvalidMigrationNameError, "Could not find migration class '#{klass_name}' in #{file}"

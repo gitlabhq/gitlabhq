@@ -28,7 +28,7 @@ You can change the color mode of the interface to be light, dark, or automatical
 
 To change the appearance:
 
-1. On the left sidebar, select your avatar.
+1. On the left sidebar, select your avatar. If you've [turned on the new navigation](../interface_redesign.md#turn-new-navigation-on-or-off), this button is in the upper-right corner.
 1. Select **Preferences**.
 1. In the **Mode** section, select an option.
 1. Select **Save changes**.
@@ -50,7 +50,7 @@ GitLab instances.
 
 To change the navigation theme:
 
-1. On the left sidebar, select your avatar.
+1. On the left sidebar, select your avatar. If you've [turned on the new navigation](../interface_redesign.md#turn-new-navigation-on-or-off), this button is in the upper-right corner.
 1. Select **Preferences**.
 1. In the **Navigation** section, select a theme.
 
@@ -66,7 +66,7 @@ Syntax highlighting is a feature in code editors and IDEs. The highlighter assig
 
 To change the syntax highlighting theme:
 
-1. On the left sidebar, select your avatar.
+1. On the left sidebar, select your avatar. If you've [turned on the new navigation](../interface_redesign.md#turn-new-navigation-on-or-off), this button is in the upper-right corner.
 1. Select **Preferences**.
 1. In the **Syntax highlighting** section, select a theme.
 1. Select **Save changes**.
@@ -85,7 +85,7 @@ Diffs use two different background colors to show changes between versions of co
 
 To change the diff colors:
 
-1. On the left sidebar, select your avatar.
+1. On the left sidebar, select your avatar. If you've [turned on the new navigation](../interface_redesign.md#turn-new-navigation-on-or-off), this button is in the upper-right corner.
 1. Select **Preferences**.
 1. Go to the **Diffs** section.
 1. Select a color or enter a color code.
@@ -103,7 +103,7 @@ You can stretch content on the GitLab UI to fill the entire page. By default, pa
 
 To change the layout width of your UI:
 
-1. On the left sidebar, select your avatar.
+1. On the left sidebar, select your avatar. If you've [turned on the new navigation](../interface_redesign.md#turn-new-navigation-on-or-off), this button is in the upper-right corner.
 1. Select **Preferences**.
 1. Scroll to the **Behavior** section.
 1. Under **Layout width**, choose **Fixed** or **Fluid**.
@@ -121,7 +121,7 @@ To change the layout width of your UI:
 By default, all new users see the **Rich text editor** when editing content.
 You can change the default editor for editing content in GitLab.
 
-1. On the left sidebar, select your avatar.
+1. On the left sidebar, select your avatar. If you've [turned on the new navigation](../interface_redesign.md#turn-new-navigation-on-or-off), this button is in the upper-right corner.
 1. Select **Preferences**.
 1. Scroll to the **Behavior** section.
 1. Under **Default text editor**, ensure the **Enable default text editor** checkbox is selected.
@@ -144,7 +144,7 @@ Control what page you view when you select the GitLab logo ({{< icon name="tanuk
 
 To choose your homepage view:
 
-1. On the left sidebar, select your avatar.
+1. On the left sidebar, select your avatar. If you've [turned on the new navigation](../interface_redesign.md#turn-new-navigation-on-or-off), this button is in the upper-right corner.
 1. Select **Preferences**.
 1. Scroll to the **Behavior** section.
 1. From the **Homepage** dropdown list, select an option.
@@ -161,7 +161,7 @@ For more information, view [Groups](../group/_index.md).
 
 To change the default content on your group overview page:
 
-1. On the left sidebar, select your avatar.
+1. On the left sidebar, select your avatar. If you've [turned on the new navigation](../interface_redesign.md#turn-new-navigation-on-or-off), this button is in the upper-right corner.
 1. Select **Preferences**.
 1. Scroll to the **Behavior** section.
 1. From the **Group overview content** dropdown list, select an option.
@@ -171,7 +171,7 @@ To change the default content on your group overview page:
 
 Your project overview page is the page you view when you select **Project overview** on the left sidebar. You can set your main project overview page to the Activity page, the README file, and other content.
 
-1. On the left sidebar, select your avatar.
+1. On the left sidebar, select your avatar. If you've [turned on the new navigation](../interface_redesign.md#turn-new-navigation-on-or-off), this button is in the upper-right corner.
 1. Select **Preferences**.
 1. Scroll to the **Behavior** section.
 1. From the **Project overview content** dropdown list, select an option.
@@ -183,7 +183,7 @@ Shortcut buttons precede the list of files on a project's overview page. These b
 
 To hide shortcut buttons on the project overview page:
 
-1. On the left sidebar, select your avatar.
+1. On the left sidebar, select your avatar. If you've [turned on the new navigation](../interface_redesign.md#turn-new-navigation-on-or-off), this button is in the upper-right corner.
 1. Select **Preferences**.
 1. Scroll to the **Behavior** section.
 1. Clear the **Show shortcut buttons above files on project overview** checkbox.
@@ -195,7 +195,7 @@ Whitespace characters are any blank characters in a text, such as spaces and ind
 
 To render whitespace in the Web IDE:
 
-1. On the left sidebar, select your avatar.
+1. On the left sidebar, select your avatar. If you've [turned on the new navigation](../interface_redesign.md#turn-new-navigation-on-or-off), this button is in the upper-right corner.
 1. Select **Preferences**.
 1. Scroll to the **Behavior** section.
 1. Select the **Render whitespace characters in the Web IDE** checkbox.
@@ -214,7 +214,7 @@ View changes to whitespace in diff files. For more information on whitespaces, v
 
 To view changes to whitespace in diffs:
 
-1. On the left sidebar, select your avatar.
+1. On the left sidebar, select your avatar. If you've [turned on the new navigation](../interface_redesign.md#turn-new-navigation-on-or-off), this button is in the upper-right corner.
 1. Select **Preferences**.
 1. Scroll to the **Behavior** section.
 1. Select the **Show whitespace changes in diffs** checkbox.
@@ -229,7 +229,7 @@ Instead, you can choose to view one file at a time.
 
 To show one file per page on the **Changes** tab:
 
-1. On the left sidebar, select your avatar.
+1. On the left sidebar, select your avatar. If you've [turned on the new navigation](../interface_redesign.md#turn-new-navigation-on-or-off), this button is in the upper-right corner.
 1. Select **Preferences**.
 1. Scroll to the **Behavior** section.
 1. Select the **Show one file at a time on merge request's Changes tab** checkbox.
@@ -243,7 +243,7 @@ Automatically add the corresponding closing character to text when you type the 
 
 To auto-enclose characters in description and comment boxes:
 
-1. On the left sidebar, select your avatar.
+1. On the left sidebar, select your avatar. If you've [turned on the new navigation](../interface_redesign.md#turn-new-navigation-on-or-off), this button is in the upper-right corner.
 1. Select **Preferences**.
 1. Scroll to the **Behavior** section.
 1. Select the **Surround text selection when typing quotes or brackets** checkbox.
@@ -258,7 +258,7 @@ Create a new list item when you press <kbd>Enter</kbd> in a list in description 
 
 To add a new list item when you press the <kbd>Enter</kbd> key:
 
-1. On the left sidebar, select your avatar.
+1. On the left sidebar, select your avatar. If you've [turned on the new navigation](../interface_redesign.md#turn-new-navigation-on-or-off), this button is in the upper-right corner.
 1. Select **Preferences**.
 1. Scroll to the **Behavior** section.
 1. Select the **Automatically add new list items** checkbox.
@@ -270,7 +270,7 @@ Maintain the indentation when you press <kbd>Enter</kbd>. The cursor on the new 
 
 To add a new list item when you press the <kbd>Enter</kbd> key:
 
-1. On the left sidebar, select your avatar.
+1. On the left sidebar, select your avatar. If you've [turned on the new navigation](../interface_redesign.md#turn-new-navigation-on-or-off), this button is in the upper-right corner.
 1. Select **Preferences**.
 1. Scroll to the **Behavior** section.
 1. Select the **Maintain cursor indentation** checkbox.
@@ -282,7 +282,7 @@ Change the default size of tabs in diffs, blobs, and snippets. The Web IDE, file
 
 To adjust the default tab width:
 
-1. On the left sidebar, select your avatar.
+1. On the left sidebar, select your avatar. If you've [turned on the new navigation](../interface_redesign.md#turn-new-navigation-on-or-off), this button is in the upper-right corner.
 1. Select **Preferences**.
 1. Scroll to the **Behavior** section.
 1. For **Tab width**, enter a value.
@@ -298,7 +298,7 @@ GitLab supports multiple languages on the UI.
 
 To choose a language for the GitLab UI:
 
-1. On the left sidebar, select your avatar.
+1. On the left sidebar, select your avatar. If you've [turned on the new navigation](../interface_redesign.md#turn-new-navigation-on-or-off), this button is in the upper-right corner.
 1. Select **Preferences**.
 1. Go to the **Localization** section.
 1. Under **Language**, select an option.
@@ -310,11 +310,11 @@ You might need to refresh your page to view the updated language.
 
 Choose which day of the week the contribution calendar starts with. The contribution calendar shows project contributions over the past year. You can view this calendar on each user profile. To access your user profile:
 
-- On the left sidebar, select your avatar > select your name or username.
+- On the left sidebar, select your avatar > select your name or username. If you've [turned on the new navigation](../interface_redesign.md#turn-new-navigation-on-or-off), this button is in the upper-right corner.
 
 To change your contribution calendar start day:
 
-1. On the left sidebar, select your avatar.
+1. On the left sidebar, select your avatar. If you've [turned on the new navigation](../interface_redesign.md#turn-new-navigation-on-or-off), this button is in the upper-right corner.
 1. Select **Preferences**.
 1. Go to the **Localization** section.
 1. Under **First day of the week**, select an option.
@@ -331,7 +331,7 @@ Customize the format used to display times of activities on your group and proje
 
 To use exact times on the GitLab UI:
 
-1. On the left sidebar, select your avatar.
+1. On the left sidebar, select your avatar. If you've [turned on the new navigation](../interface_redesign.md#turn-new-navigation-on-or-off), this button is in the upper-right corner.
 1. Select **Preferences**.
 1. Go to the **Time preferences** section.
 1. Clear the **Use relative times** checkbox.
@@ -355,58 +355,18 @@ You can also follow your system's setting.
 
 To customize the time format:
 
-1. On the left sidebar, select your avatar.
+1. On the left sidebar, select your avatar. If you've [turned on the new navigation](../interface_redesign.md#turn-new-navigation-on-or-off), this button is in the upper-right corner.
 1. Select **Preferences**.
 1. Go to the **Time preferences** section.
 1. Under **Time format**, select either the **System**, **12-hour**, or **24-hour** option.
 1. Select **Save changes**.
 
-<!--- start_remove The following content will be removed on remove_date: '2026-02-20' -->
+<!--- start_remove The following content will be removed on remove_date: '2026-02-19' -->
 
-## Disable exact code search (deprecated)
-
-{{< details >}}
-
-- Tier: Premium, Ultimate
-- Offering: GitLab.com, GitLab Self-Managed
-- Status: Beta
-
-{{< /details >}}
-
-{{< alert type="warning" >}}
+## Disable exact code search (removed)
 
 This feature was [deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/554933) in GitLab 18.3
-and is planned for removal in 18.6.
-
-{{< /alert >}}
-
-{{< history >}}
-
-- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/105049) as a [beta](../../policy/development_stages_support.md#beta) in GitLab 15.9 [with flags](../../administration/feature_flags/_index.md) named `index_code_with_zoekt` and `search_code_with_zoekt`. Disabled by default.
-- [Enabled on GitLab.com](https://gitlab.com/gitlab-org/gitlab/-/issues/388519) in GitLab 16.6.
-- Feature flags `index_code_with_zoekt` and `search_code_with_zoekt` [removed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/148378) in GitLab 17.1.
-
-{{< /history >}}
-
-{{< alert type="warning" >}}
-
-This feature is in [beta](../../policy/development_stages_support.md#beta) and subject to change without notice.
-For more information, see [epic 9404](https://gitlab.com/groups/gitlab-org/-/epics/9404).
-
-{{< /alert >}}
-
-Prerequisites:
-
-- For [GitLab Self-Managed](../../subscriptions/self_managed/_index.md), an administrator must
-  [enable exact code search](../../integration/zoekt/_index.md#enable-exact-code-search).
-
-To disable [exact code search](../search/exact_code_search.md) in user preferences:
-
-1. On the left sidebar, select your avatar.
-1. Select **Preferences**.
-1. Go to the **Exact code search** section.
-1. Clear the **Enable exact code search** checkbox.
-1. Select **Save changes**.
+and [removed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/210974) in 18.6.
 
 <!--- end_remove -->
 
@@ -439,30 +399,30 @@ Turn off the ability to follow or be followed by other GitLab users. By default,
 
 To remove the ability to be followed by and follow other users:
 
-1. On the left sidebar, select your avatar.
+1. On the left sidebar, select your avatar. If you've [turned on the new navigation](../interface_redesign.md#turn-new-navigation-on-or-off), this button is in the upper-right corner.
 1. Select **Preferences**.
 1. Clear the **Enable follow users** checkbox.
 1. Select **Save changes**.
 
 To access your **Followers** and **Following** tabs:
 
-- On the left sidebar, select your avatar > select your name or username.
+- On the left sidebar, select your avatar > select your name or username. If you've [turned on the new navigation](../interface_redesign.md#turn-new-navigation-on-or-off), this button is in the upper-right corner.
 - Select **Followers** or **Following**.
 
 ## Integrate your GitLab instance with third-party services
 
 Give third-party services access to enhance the GitLab experience.
 
-### Integrate your GitLab instance with Gitpod
+### Integrate your GitLab instance with Ona
 
-Configure your GitLab instance with Gitpod when you want to launch and manage code directly from your GitLab browser. Gitpod automatically prepares and builds development environments for your projects.
+Configure your GitLab instance with Ona when you want to launch and manage code directly from your GitLab browser. Ona automatically prepares and builds development environments for your projects.
 
-To integrate with Gitpod:
+To integrate with Ona:
 
-1. On the left sidebar, select your avatar.
+1. On the left sidebar, select your avatar. If you've [turned on the new navigation](../interface_redesign.md#turn-new-navigation-on-or-off), this button is in the upper-right corner.
 1. Select **Preferences**.
 1. Find the **Integrations** section.
-1. Select the **Enable Gitpod integration** checkbox.
+1. Select the **Enable Ona integration** checkbox.
 1. Select **Save changes**.
 
 ### Integrate your GitLab instance with Sourcegraph
@@ -471,7 +431,7 @@ GitLab supports Sourcegraph integration for all public projects on GitLab.
 
 To integrate with Sourcegraph:
 
-1. On the left sidebar, select your avatar.
+1. On the left sidebar, select your avatar. If you've [turned on the new navigation](../interface_redesign.md#turn-new-navigation-on-or-off), this button is in the upper-right corner.
 1. Select **Preferences**.
 1. Find the **Integrations** section.
 1. Select the **Enable integrated code intelligence on code views** checkbox.
@@ -511,7 +471,7 @@ for the associated group.
 
 To integrate with the Extension Marketplace:
 
-1. On the left sidebar, select your avatar.
+1. On the left sidebar, select your avatar. If you've [turned on the new navigation](../interface_redesign.md#turn-new-navigation-on-or-off), this button is in the upper-right corner.
 1. Select **Preferences**.
 1. Go to the **Integrations** section.
 1. Select the **Enable extension marketplace** checkbox.

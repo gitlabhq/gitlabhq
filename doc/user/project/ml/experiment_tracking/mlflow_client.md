@@ -32,7 +32,7 @@ Prerequisites:
   - Another option is the MLflow client version. The MLflow client is [compatible with GitLab](https://gitlab.com/gitlab-org/modelops/mlops/mlflow-compatibility-qa).
 - A [personal](../../../profile/personal_access_tokens.md), [project](../../settings/project_access_tokens.md), or [group](../../../group/settings/group_access_tokens.md) access token with at least the Developer role and the `api` scope.
 - The project ID. To find the project ID:
-  1. On the left sidebar, select **Search or go to** and find your project.
+  1. On the left sidebar, select **Search or go to** and find your project. If you've [turned on the new navigation](../../../interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
   1. Select **Settings** > **General**.
 
 To use MLflow client compatibility from a local environment:
@@ -47,7 +47,7 @@ To use MLflow client compatibility from a local environment:
 
 1. If the training code contains the call to `mlflow.set_tracking_uri()`, remove it.
 
-In the model registry, you can copy the tracking URI from the overflow menu in the top right
+In the model registry, you can copy the tracking URI from the overflow menu in the upper right
 by selecting the vertical ellipsis ({{< icon name="ellipsis_v" >}}).
 
 ## Model experiments

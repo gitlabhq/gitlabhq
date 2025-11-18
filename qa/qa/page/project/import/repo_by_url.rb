@@ -45,7 +45,7 @@ module QA
           end
 
           def wait_for_success
-            wait_until(max_duration: 60, sleep_interval: 5.0, reload: true, skip_finished_loading_check_on_refresh: true) do
+            wait_until(max_duration: 60, sleep_interval: 5.0, reload: true) do
               page.has_no_content?('Import in progress', wait: 3.0)
             end
           end

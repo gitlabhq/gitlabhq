@@ -2,7 +2,7 @@
 import { isEmpty } from 'lodash';
 import { GlButton } from '@gitlab/ui';
 import { __, s__ } from '~/locale';
-import { scrollToElement } from '~/lib/utils/common_utils';
+import { scrollToElement } from '~/lib/utils/scroll_utils';
 import CrudComponent from '~/vue_shared/components/crud_component.vue';
 import { CUSTOM_HEADER_KEY_PATTERN } from '../constants';
 import FormCustomHeaderItem from './form_custom_header_item.vue';

@@ -12,6 +12,8 @@ module QA
       attr_writer :gitlab_url
 
       ENV_VARIABLES = Gitlab::QA::Runtime::Env::ENV_VARIABLES
+      # @return [Array] live environment names
+      LIVE_ENVS = %w[staging staging-canary staging-ref canary preprod production].freeze
 
       # The environment variables used to indicate if the environment under test
       # supports the given feature
@@ -499,11 +501,7 @@ module QA
       end
 
       def export_metrics?
-        enabled?(ENV['QA_EXPORT_TEST_METRICS'], default: false)
-      end
-
-      def save_metrics_json?
-        enabled?(ENV['QA_SAVE_TEST_METRICS'], default: false)
+        enabled?(ENV['GLCI_EXPORT_TEST_METRICS'], default: false)
       end
 
       def ee_license
@@ -679,9 +677,15 @@ module QA
 
       # Test run type
       #
-      # @return [String]
+      # @return [String, nil]
       def run_type
-        ENV["QA_RUN_TYPE"].presence
+        if env('QA_RUN_TYPE')
+          env('QA_RUN_TYPE')
+        elsif LIVE_ENVS.include?(ci_project_name)
+          test_subset = enabled?('SMOKE_ONLY', default: false) ? 'smoke' : 'full'
+
+          "e2e-#{test_subset}"
+        end
       end
 
       # Execution performed with --dry-run flag
@@ -709,10 +713,20 @@ module QA
       #
       # @return [Boolean]
       def project_studio_enabled?
-        enabled?(ENV["QA_PROJECT_STUDIO"], default: false)
+        enabled?(ENV["QA_PROJECT_STUDIO"], default: true)
       end
 
       private
+
+      # Return non empty environment variable value
+      #
+      # @param [String] name
+      # @return [String, nil]
+      def env(name)
+        return unless ENV[name] && !ENV[name].empty?
+
+        ENV[name]
+      end
 
       # Gitlab host tests are running against
       #

@@ -24,6 +24,13 @@ module Types
           null: true,
           description: 'JIRA import path.'
 
+        field :export_csv_path,
+          GraphQL::Types::String,
+          null: true,
+          description: 'CSV export endpoint for work items.',
+          fallback_value: nil,
+          experiment: { milestone: '18.6' }
+
         def issues_list
           url_helpers.project_issues_path(project)
         end
@@ -51,7 +58,7 @@ module Types
         end
 
         def releases_path
-          url_helpers.project_releases_path(project)
+          url_helpers.project_releases_path(project, format: :json)
         end
 
         def project_import_jira_path
@@ -59,11 +66,33 @@ module Types
         end
 
         def rss_path
-          url_helpers.project_work_items_path(project, format: :atom)
+          base_path = url_helpers.project_work_items_path(project)
+          url_helpers.project_work_items_path(project, url_helpers.feed_url_options(:atom, base_path))
         end
 
         def calendar_path
-          url_helpers.project_work_items_path(project, format: :ics)
+          base_path = url_helpers.project_work_items_path(project)
+          url_helpers.project_work_items_path(project, url_helpers.feed_url_options(:ics, base_path))
+        end
+
+        def namespace_full_path
+          project.namespace.full_path
+        end
+
+        def export_csv_path
+          url_helpers.export_csv_project_issues_path(project)
+        end
+
+        def new_issue_path
+          url_helpers.new_project_issue_path(project)
+        end
+
+        def group_path
+          group&.full_path
+        end
+
+        def issues_list_path
+          url_helpers.project_issues_path(project)
         end
 
         private

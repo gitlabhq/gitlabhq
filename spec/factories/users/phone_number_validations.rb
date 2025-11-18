@@ -6,7 +6,7 @@ FactoryBot.define do
     country { 'US' }
     international_dial_code { 1 }
     phone_number { '555' }
-    telesign_reference_xid { FFaker::Guid.guid }
+    telesign_reference_xid { FFaker::UUID.uuidv4 }
 
     trait(:validated) do
       validated_at { Time.zone.now }

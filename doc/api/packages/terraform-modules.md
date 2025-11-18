@@ -12,7 +12,7 @@ title: Terraform Module Registry API
 
 {{< /details >}}
 
-This is the API documentation for the [Terraform Module Registry](../../user/packages/terraform_module_registry/_index.md).
+Use this API to interact with the [Terraform CLI](../../user/packages/terraform_module_registry/_index.md).
 
 {{< alert type="warning" >}}
 
@@ -20,9 +20,6 @@ This API is used by the [Terraform CLI](https://www.terraform.io/)
 and is generally not meant for manual consumption. Undocumented authentication methods might be removed in the future.
 
 {{< /alert >}}
-
-For instructions on how to upload and install Terraform modules from the GitLab
-Terraform Module Registry, see the [Terraform Module Registry documentation](../../user/packages/terraform_module_registry/_index.md).
 
 ## List available versions for a specific module
 

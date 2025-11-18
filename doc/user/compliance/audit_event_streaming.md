@@ -65,7 +65,7 @@ Prerequisites:
 
 To add streaming destinations to a top-level group:
 
-1. On the left sidebar, select **Search or go to** and find your group.
+1. On the left sidebar, select **Search or go to** and find your group. If you've [turned on the new navigation](../interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
 1. Select **Secure** > **Audit events**.
 1. On the main area, select the **Streams** tab.
 1. Select **Add streaming destination** and select **HTTP endpoint** to show the section for adding destinations.
@@ -84,7 +84,7 @@ Prerequisites:
 
 To update a streaming destination's name:
 
-1. On the left sidebar, select **Search or go to** and find your group.
+1. On the left sidebar, select **Search or go to** and find your group. If you've [turned on the new navigation](../interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
 1. Select **Secure** > **Audit events**.
 1. On the main area, select the **Streams** tab.
 1. Select the stream to expand.
@@ -93,7 +93,7 @@ To update a streaming destination's name:
 
 To update a streaming destination's custom HTTP headers:
 
-1. On the left sidebar, select **Search or go to** and find your group.
+1. On the left sidebar, select **Search or go to** and find your group. If you've [turned on the new navigation](../interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
 1. Select **Secure** > **Audit events**.
 1. On the main area, select the **Streams** tab.
 1. Select the stream to expand.
@@ -126,7 +126,7 @@ Prerequisites:
 
 To list streaming destinations and see the verification tokens:
 
-1. On the left sidebar, select **Search or go to** and find your group.
+1. On the left sidebar, select **Search or go to** and find your group. If you've [turned on the new navigation](../interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
 1. Select **Secure** > **Audit events**.
 1. On the main area, select the **Streams** tab.
 1. Select the stream to expand.
@@ -147,7 +147,7 @@ A streaming destination that has an event type filter set has a **filtered** ({{
 
 To update a streaming destination's event filters:
 
-1. On the left sidebar, select **Search or go to** and find your group.
+1. On the left sidebar, select **Search or go to** and find your group. If you've [turned on the new navigation](../interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
 1. Select **Secure** > **Audit events**.
 1. On the main area, select the **Streams** tab.
 1. Select the stream to expand.
@@ -170,7 +170,7 @@ A streaming destination that has a namespace filter set has a **filtered** ({{< 
 
 To update a streaming destination's namespace filters:
 
-1. On the left sidebar, select **Search or go to** and find your group.
+1. On the left sidebar, select **Search or go to** and find your group. If you've [turned on the new navigation](../interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
 1. Select **Secure** > **Audit events**.
 1. On the main area, select the **Streams** tab.
 1. Select the stream to expand.
@@ -216,7 +216,7 @@ Prerequisites:
 
 To add Google Cloud Logging streaming destinations to a top-level group:
 
-1. On the left sidebar, select **Search or go to** and find your group.
+1. On the left sidebar, select **Search or go to** and find your group. If you've [turned on the new navigation](../interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
 1. Select **Secure** > **Audit events**.
 1. On the main area, select the **Streams** tab.
 1. Select **Add streaming destination** and select **Google Cloud Logging** to show the section for adding destinations.
@@ -239,7 +239,7 @@ Prerequisites:
 
 To update Google Cloud Logging streaming destinations to a top-level group:
 
-1. On the left sidebar, select **Search or go to** and find your group.
+1. On the left sidebar, select **Search or go to** and find your group. If you've [turned on the new navigation](../interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
 1. Select **Secure** > **Audit events**.
 1. On the main area, select the **Streams** tab.
 1. Select the Google Cloud Logging stream to expand.
@@ -276,7 +276,7 @@ Prerequisites:
 
 To add AWS S3 streaming destinations to a top-level group:
 
-1. On the left sidebar, select **Search or go to** and find your group.
+1. On the left sidebar, select **Search or go to** and find your group. If you've [turned on the new navigation](../interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
 1. Select **Secure** > **Audit events**.
 1. On the main area, select the **Streams** tab.
 1. Select **Add streaming destination** and select **AWS S3** to show the section for adding destinations.
@@ -293,7 +293,7 @@ Prerequisites:
 
 To update an AWS S3 streaming destination to a top-level group:
 
-1. On the left sidebar, select **Search or go to** and find your group.
+1. On the left sidebar, select **Search or go to** and find your group. If you've [turned on the new navigation](../interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
 1. Select **Secure** > **Audit events**.
 1. On the main area, select the **Streams** tab.
 1. Select the AWS S3 stream to expand.
@@ -311,7 +311,7 @@ Prerequisites:
 
 To list streaming destinations for a top-level group:
 
-1. On the left sidebar, select **Search or go to** and find your group.
+1. On the left sidebar, select **Search or go to** and find your group. If you've [turned on the new navigation](../interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
 1. Select **Secure** > **Audit events**.
 1. On the main area, select the **Streams** tab.
 1. Select the stream to expand.
@@ -339,7 +339,7 @@ Prerequisites:
 
 To deactivate a streaming destination:
 
-1. On the left sidebar, select **Search or go to** and find your group.
+1. On the left sidebar, select **Search or go to** and find your group. If you've [turned on the new navigation](../interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
 1. Select **Secure** > **Audit events**.
 1. On the main area, select the **Streams** tab.
 1. Select the stream to expand.
@@ -352,7 +352,7 @@ The destination stops receiving audit events.
 
 To reactivate a previously deactivated streaming destination:
 
-1. On the left sidebar, select **Search or go to** and find your group.
+1. On the left sidebar, select **Search or go to** and find your group. If you've [turned on the new navigation](../interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
 1. Select **Secure** > **Audit events**.
 1. On the main area, select the **Streams** tab.
 1. Select the stream to expand.
@@ -372,7 +372,7 @@ Prerequisites:
 
 To delete streaming destinations to a top-level group:
 
-1. On the left sidebar, select **Search or go to** and find your group.
+1. On the left sidebar, select **Search or go to** and find your group. If you've [turned on the new navigation](../interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
 1. Select **Secure** > **Audit events**.
 1. On the main area, select the **Streams** tab.
 1. Select the stream to expand.
@@ -387,7 +387,7 @@ Prerequisites:
 
 To delete only the custom HTTP headers for a streaming destination:
 
-1. On the left sidebar, select **Search or go to** and find your group.
+1. On the left sidebar, select **Search or go to** and find your group. If you've [turned on the new navigation](../interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
 1. Select **Secure** > **Audit events**.
 1. On the main area, select the **Streams** tab.
 1. Select the stream to expand.

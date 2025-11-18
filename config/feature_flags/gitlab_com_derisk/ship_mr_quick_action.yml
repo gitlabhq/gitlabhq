@@ -1,0 +1,9 @@
+---
+name: ship_mr_quick_action
+feature_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/210538
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/78998/diffs
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/513948
+milestone: '18.6'
+group: group::pipeline execution
+type: gitlab_com_derisk
+default_enabled: false

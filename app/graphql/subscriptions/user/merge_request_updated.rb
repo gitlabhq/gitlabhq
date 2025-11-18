@@ -14,7 +14,7 @@ module Subscriptions
       def authorized?(user_id:)
         user = force(GitlabSchema.find_by_gid(user_id))
 
-        unauthorized! unless user && current_user.id == user.id
+        unauthorized! unless user && current_user&.id == user.id
 
         true
       end

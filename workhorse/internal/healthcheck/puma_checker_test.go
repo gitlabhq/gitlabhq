@@ -648,3 +648,380 @@ func TestPumaReadinessChecker_ReadinessFailsButControlSucceeds(t *testing.T) {
 	}
 	assertCheckResult(t, result, expected)
 }
+
+// TestPumaReadinessChecker_SuccessOptimization_ControlAlwaysScraped tests that
+// the control server is always checked, but readiness endpoint can be skipped
+func TestPumaReadinessChecker_SuccessOptimization_ControlAlwaysScraped(t *testing.T) {
+	logger := logrus.New()
+	logger.SetLevel(logrus.DebugLevel)
+
+	// Track calls to each endpoint
+	readinessCallCount := 0
+	controlCallCount := 0
+
+	// Create mock servers that count calls
+	readinessServer := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, _ *http.Request) {
+		readinessCallCount++
+		w.Header().Set("Content-Type", "application/json")
+		w.WriteHeader(http.StatusOK)
+		w.Write([]byte(`{"status": "ok"}`))
+	}))
+	defer readinessServer.Close()
+
+	controlServer := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, _ *http.Request) {
+		controlCallCount++
+		w.Header().Set("Content-Type", "application/json")
+		w.WriteHeader(http.StatusOK)
+		w.Write([]byte(`{
+			"workers": 2,
+			"booted_workers": 2,
+			"worker_status": [
+				{"booted": true, "index": 0},
+				{"booted": true, "index": 1}
+			]
+		}`))
+	}))
+	defer controlServer.Close()
+
+	successTracker := NewSuccessTracker()
+	skipInterval := 100 * time.Millisecond
+
+	checker := NewPumaReadinessChecker(
+		readinessServer.URL+"/-/readiness",
+		controlServer.URL,
+		5*time.Second,
+		logger,
+		WithSuccessChecker(successTracker),
+		WithSkipInterval(skipInterval),
+	)
+
+	ctx := context.Background()
+
+	// Test 1: Initial check - both endpoints should be called
+	initialReadinessCalls := readinessCallCount
+	initialControlCalls := controlCallCount
+
+	result := checker.Check(ctx)
+	assert.True(t, result.Healthy, "Expected healthy result for initial check")
+	assert.False(t, result.Details["skipped_due_to_recent_success"].(bool), "Should not skip initial check")
+	assert.True(t, result.Details["readiness_endpoint"].(bool), "Should have checked readiness endpoint")
+	assert.True(t, result.Details["control_server"].(bool), "Should have checked control server")
+	assert.Greater(t, readinessCallCount, initialReadinessCalls, "Should have made readiness endpoint call")
+	assert.Greater(t, controlCallCount, initialControlCalls, "Should have made control endpoint call")
+
+	// Test 2: Record recent success - readiness should be skipped, control should still be checked
+	successTracker.RecordSuccess()
+
+	readinessCallsBeforeSkip := readinessCallCount
+	controlCallsBeforeSkip := controlCallCount
+
+	result = checker.Check(ctx)
+	assert.True(t, result.Healthy, "Expected healthy result when skipping readiness")
+	assert.True(t, result.Details["skipped_due_to_recent_success"].(bool), "Should skip readiness check due to recent success")
+	assert.True(t, result.Details["readiness_endpoint"].(bool), "Should report readiness endpoint as healthy when skipping")
+	assert.True(t, result.Details["control_server"].(bool), "Should report control server as healthy")
+
+	// Critical assertions: readiness should be skipped, control should still be called
+	assert.Equal(t, readinessCallsBeforeSkip, readinessCallCount, "Should NOT have made additional readiness calls when skipping")
+	assert.Greater(t, controlCallCount, controlCallsBeforeSkip, "Should STILL have made control server call even when skipping readiness")
+
+	// Test 3: Multiple checks with recent success - control should be called each time, readiness should not
+	controlCallsAfterFirstSkip := controlCallCount
+
+	// Make another check while success is still recent
+	result = checker.Check(ctx)
+	assert.True(t, result.Healthy, "Expected healthy result for second skip")
+	assert.True(t, result.Details["skipped_due_to_recent_success"].(bool), "Should still skip readiness check")
+	assert.Equal(t, readinessCallsBeforeSkip, readinessCallCount, "Should still NOT have made readiness calls")
+	assert.Greater(t, controlCallCount, controlCallsAfterFirstSkip, "Should have made another control server call")
+
+	t.Logf("Final counts - Readiness calls: %d, Control calls: %d", readinessCallCount, controlCallCount)
+	t.Logf("Control server was called %d times while readiness was skipped", controlCallCount-controlCallsBeforeSkip)
+}
+
+// TestPumaReadinessChecker_SuccessOptimization_ControlFailurePreventsReadinessSkip tests that
+// if the control server fails, readiness endpoint is not skipped regardless of recent success
+func TestPumaReadinessChecker_SuccessOptimization_ControlFailurePreventsReadinessSkip(t *testing.T) {
+	logger := logrus.New()
+	logger.SetLevel(logrus.DebugLevel)
+
+	readinessCallCount := 0
+	controlCallCount := 0
+
+	// Create a readiness server that works
+	readinessServer := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, _ *http.Request) {
+		readinessCallCount++
+		w.Header().Set("Content-Type", "application/json")
+		w.WriteHeader(http.StatusOK)
+		w.Write([]byte(`{"status": "ok"}`))
+	}))
+	defer readinessServer.Close()
+
+	// Create a control server that fails
+	controlServer := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, _ *http.Request) {
+		controlCallCount++
+		w.WriteHeader(http.StatusInternalServerError)
+		w.Write([]byte("Internal Server Error"))
+	}))
+	defer controlServer.Close()
+
+	successTracker := NewSuccessTracker()
+	skipInterval := 100 * time.Millisecond
+
+	checker := NewPumaReadinessChecker(
+		readinessServer.URL+"/-/readiness",
+		controlServer.URL,
+		5*time.Second,
+		logger,
+		WithSuccessChecker(successTracker),
+		WithSkipInterval(skipInterval),
+	)
+
+	ctx := context.Background()
+
+	// Record recent success
+	successTracker.RecordSuccess()
+
+	// Even with recent success, if control server fails, readiness should not be skipped
+	result := checker.Check(ctx)
+
+	assert.False(t, result.Healthy, "Expected unhealthy result when control server fails")
+	assert.False(t, result.Details["skipped_due_to_recent_success"].(bool), "Should not skip when control server fails")
+	assert.False(t, result.Details["readiness_endpoint"].(bool), "Should not check readiness when control fails")
+	assert.False(t, result.Details["control_server"].(bool), "Should report control server as unhealthy")
+	assert.Positive(t, controlCallCount, "Should have attempted control server call")
+	assert.Equal(t, 0, readinessCallCount, "Should not have called readiness when control fails")
+}
+
+// TestPumaReadinessChecker_SuccessOptimization_NoControlServer tests that
+// when no control server is configured, readiness optimization still works
+func TestPumaReadinessChecker_SuccessOptimization_NoControlServer(t *testing.T) {
+	logger := logrus.New()
+	logger.SetLevel(logrus.DebugLevel)
+
+	readinessCallCount := 0
+
+	readinessServer := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, _ *http.Request) {
+		readinessCallCount++
+		w.Header().Set("Content-Type", "application/json")
+		w.WriteHeader(http.StatusOK)
+		w.Write([]byte(`{"status": "ok"}`))
+	}))
+	defer readinessServer.Close()
+
+	successTracker := NewSuccessTracker()
+	skipInterval := 100 * time.Millisecond
+
+	// No control server configured
+	checker := NewPumaReadinessChecker(
+		readinessServer.URL+"/-/readiness",
+		"", // No control URL
+		5*time.Second,
+		logger,
+		WithSuccessChecker(successTracker),
+		WithSkipInterval(skipInterval),
+	)
+
+	ctx := context.Background()
+
+	// Test 1: Initial check should call readiness endpoint
+	result := checker.Check(ctx)
+	assert.True(t, result.Healthy, "Expected healthy result for initial check")
+	assert.False(t, result.Details["skipped_due_to_recent_success"].(bool), "Should not skip initial check")
+	assert.True(t, result.Details["readiness_endpoint"].(bool), "Should have checked readiness endpoint")
+	assert.Equal(t, 1, readinessCallCount, "Should have made one readiness call")
+
+	// Test 2: Record success and verify readiness is skipped
+	successTracker.RecordSuccess()
+
+	result = checker.Check(ctx)
+	assert.True(t, result.Healthy, "Expected healthy result when skipping")
+	assert.True(t, result.Details["skipped_due_to_recent_success"].(bool), "Should skip readiness check")
+	assert.True(t, result.Details["readiness_endpoint"].(bool), "Should report readiness as healthy when skipping")
+	assert.Equal(t, 1, readinessCallCount, "Should not have made additional readiness calls")
+
+	// Test 3: Wait for skip interval to expire
+	time.Sleep(skipInterval + 10*time.Millisecond)
+
+	result = checker.Check(ctx)
+	assert.True(t, result.Healthy, "Expected healthy result after skip expires")
+	assert.False(t, result.Details["skipped_due_to_recent_success"].(bool), "Should not skip after interval expires")
+	assert.True(t, result.Details["readiness_endpoint"].(bool), "Should have checked readiness endpoint")
+	assert.Equal(t, 2, readinessCallCount, "Should have made another readiness call")
+}
+
+func TestPumaReadinessChecker_WithSuccessTracking(t *testing.T) {
+	logger := logrus.New()
+	logger.SetLevel(logrus.DebugLevel)
+
+	// Create a mock server for readiness endpoint
+	readinessServer := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, _ *http.Request) {
+		w.Header().Set("Content-Type", "application/json")
+		w.WriteHeader(http.StatusOK)
+		w.Write([]byte(`{"status": "ok"}`))
+	}))
+	defer readinessServer.Close()
+
+	// Create a mock server for control endpoint
+	controlServer := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, _ *http.Request) {
+		w.Header().Set("Content-Type", "application/json")
+		w.WriteHeader(http.StatusOK)
+		w.Write([]byte(`{
+			"workers": 2,
+			"booted_workers": 2,
+			"worker_status": [
+				{"booted": true, "index": 0},
+				{"booted": true, "index": 1}
+			]
+		}`))
+	}))
+	defer controlServer.Close()
+
+	successTracker := NewSuccessTracker()
+	skipInterval := 100 * time.Millisecond
+
+	checker := NewPumaReadinessChecker(
+		readinessServer.URL,
+		controlServer.URL,
+		5*time.Second,
+		logger,
+		WithSuccessChecker(successTracker),
+		WithSkipInterval(skipInterval),
+	)
+
+	ctx := context.Background()
+
+	// Test 1: No recent success - should perform actual checks
+	result := checker.Check(ctx)
+	if !result.Healthy {
+		t.Error("Expected healthy result when no recent success")
+	}
+	if result.Details["skipped_due_to_recent_success"] == true {
+		t.Error("Should not skip checks when no recent success")
+	}
+	if result.Details["readiness_endpoint"] != true {
+		t.Error("Should have checked readiness endpoint")
+	}
+	if result.Details["control_server"] != true {
+		t.Error("Should have checked control server")
+	}
+
+	// Test 2: Record a recent success - should skip checks
+	successTracker.RecordSuccess()
+	result = checker.Check(ctx)
+	if !result.Healthy {
+		t.Error("Expected healthy result when skipping due to recent success")
+	}
+	if result.Details["skipped_due_to_recent_success"] != true {
+		t.Error("Should skip checks when there's recent success")
+	}
+	if result.Details["control_server"] != true {
+		t.Error("Should report control server as healthy when skipping")
+	}
+
+	// Test 3: Wait for skip interval to expire - should perform checks again
+	time.Sleep(skipInterval + 10*time.Millisecond)
+	result = checker.Check(ctx)
+	if !result.Healthy {
+		t.Error("Expected healthy result after skip interval expires")
+	}
+	if result.Details["skipped_due_to_recent_success"] == true {
+		t.Error("Should not skip checks after skip interval expires")
+	}
+	if result.Details["readiness_endpoint"] != true {
+		t.Error("Should have checked readiness endpoint after skip interval expires")
+	}
+}
+
+func TestPumaReadinessChecker_WithoutSuccessTracking(t *testing.T) {
+	logger := logrus.New()
+
+	// Create a mock server for readiness endpoint
+	readinessServer := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, _ *http.Request) {
+		w.Header().Set("Content-Type", "application/json")
+		w.WriteHeader(http.StatusOK)
+		w.Write([]byte(`{"status": "ok"}`))
+	}))
+	defer readinessServer.Close()
+
+	// Create checker without success tracking (no options)
+	checker := NewPumaReadinessChecker(
+		readinessServer.URL,
+		"",
+		5*time.Second,
+		logger,
+	)
+
+	ctx := context.Background()
+
+	// Should always perform checks when no success tracking is configured
+	result := checker.Check(ctx)
+	if !result.Healthy {
+		t.Error("Expected healthy result")
+	}
+	if result.Details["skipped_due_to_recent_success"] == true {
+		t.Error("Should never skip checks when success tracking is not configured")
+	}
+	if result.Details["readiness_endpoint"] != true {
+		t.Error("Should have checked readiness endpoint")
+	}
+}
+
+func TestPumaReadinessChecker_FunctionalOptions(t *testing.T) {
+	logger := logrus.New()
+	successTracker := NewSuccessTracker()
+
+	// Test different option combinations
+	testCases := []struct {
+		name       string
+		opts       []PumaReadinessCheckerOption
+		hasChecker bool
+		interval   time.Duration
+	}{
+		{
+			name:       "no options",
+			opts:       nil,
+			hasChecker: false,
+		},
+		{
+			name:       "with success checker only",
+			opts:       []PumaReadinessCheckerOption{WithSuccessChecker(successTracker)},
+			hasChecker: true,
+		},
+		{
+			name:       "with custom skip interval only",
+			opts:       []PumaReadinessCheckerOption{WithSkipInterval(60 * time.Second)},
+			hasChecker: false,
+			interval:   60 * time.Second,
+		},
+		{
+			name: "with both options",
+			opts: []PumaReadinessCheckerOption{
+				WithSuccessChecker(successTracker),
+				WithSkipInterval(45 * time.Second),
+			},
+			hasChecker: true,
+			interval:   45 * time.Second,
+		},
+	}
+
+	for _, tc := range testCases {
+		t.Run(tc.name, func(t *testing.T) {
+			checker := NewPumaReadinessChecker(
+				"http://localhost:8080",
+				"",
+				5*time.Second,
+				logger,
+				tc.opts...,
+			)
+
+			if (checker.successChecker != nil) != tc.hasChecker {
+				t.Errorf("Expected hasChecker=%v, got %v", tc.hasChecker, checker.successChecker != nil)
+			}
+
+			if checker.skipInterval != tc.interval {
+				t.Errorf("Expected interval=%v, got %v", tc.interval, checker.skipInterval)
+			}
+		})
+	}
+}

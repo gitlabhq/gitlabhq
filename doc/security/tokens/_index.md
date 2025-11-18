@@ -22,23 +22,28 @@ To keep your tokens secure:
 
 - Treat tokens like passwords and keep them secure.
 - When creating a scoped token, use the most limited scope possible to reduce the impact of an accidentally leaked token.
-  - If separate processes require different scopes (for example, `read` and `write`), consider using separate tokens, one for each scope. If one token leaks, it gives reduced access than a single token with a wide scope like full API access.
+  - If separate processes require different scopes (for example, `read` and `write`), consider using separate tokens for each scope.
+    If one token leaks, it provides less access than a single token with a wide scope like full API access.
 - When creating a token:
-  - Choose a name that describes the token, e.g. `GITLAB_API_TOKEN-application1` or `GITLAB_READ_API_TOKEN-application2`. Avoid generic names like `GITLAB_API_TOKEN`, `API_TOKEN` or `default`.
-  - Consider setting a token that expires when your task is complete. For example, if you need to perform a one-time import, set the token to expire after a few hours.
+  - Choose a name that describes the token. For example, `GITLAB_API_TOKEN-application1` or `GITLAB_READ_API_TOKEN-application2`.
+  - Avoid generic names like `GITLAB_API_TOKEN`, `API_TOKEN` or `default`.
+  - Consider setting a token that expires when your task is complete.
+    For example, if you need to perform a one-time import, set the token to expire after a few hours.
   - Add a description that provides further context including any relevant URLs.
-- If you set up a demo environment to showcase a project you have been working on, and you record a video or write a blog post describing that project, make sure you don't accidentally leak a secret.
-  After the demo is finished, revoke all the secrets created during the demo.
-- Adding tokens to URLs can be a security risk. Instead, pass the token with a header like [`Private-Token`](../../api/rest/authentication.md#personalprojectgroup-access-tokens).
-  - When cloning or adding a remote with a token in the URL, Git writes the URL to its `.git/config` file in plaintext.
-  - URLs are often logged by proxies and application servers, which could leak those credentials to system administrators.
+- Pass tokens with headers instead of URLs:
+  - Use `PRIVATE-TOKEN` for personal, project, and group access tokens.
+  - Use `JOB-TOKEN` for job tokens.
+- If you have a demo environment, revoke all tokens after recording videos or publishing blog posts about your projects.
 - You can store tokens using [Git credential storage](https://git-scm.com/book/en/v2/Git-Tools-Credential-Storage).
 - Review all active access tokens of all types on a regular basis and revoke any you don't need.
 
 Do not:
 
-- Store tokens in plaintext in your projects. If the token is an external secret for GitLab CI/CD,
-  review how to [use external secrets in CI/CD](../../ci/secrets/_index.md) recommendations.
+- Add tokens to URLs:
+  - When cloning or adding a remote with a token in the URL, Git writes the URL to its `.git/config` file in plaintext.
+  - URLs are often logged by proxies and application servers, which could leak those credentials to system administrators.
+- Store tokens in plaintext in your projects.
+  - If the token is an external secret for GitLab CI/CD, review how to [use external secrets in CI/CD](../../ci/secrets/_index.md).
 - Include tokens when pasting code, console commands, or log outputs into an issue, MR description, comment, or any other free text inputs.
 - Log credentials in the console logs or artifacts. Consider [protecting](../../ci/variables/_index.md#protect-a-cicd-variable) and
   [masking](../../ci/variables/_index.md#mask-a-cicd-variable) your credentials.
@@ -197,17 +202,16 @@ could use the runner authentication token to
 
 You can use the runners API to [rotate or revoke a runner authentication token](../../api/runners.md#reset-runners-authentication-token-by-using-the-current-token).
 
-## Runner registration tokens (deprecated)
+## Runner registration tokens (legacy)
 
 {{< alert type="warning" >}}
 
-The option to pass runner registration tokens and support for certain configuration arguments are
-[deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/380872) in GitLab 15.6 and is planned for removal in GitLab 20.0.
+The option to pass runner registration tokens and support for certain configuration arguments is considered legacy
+and is not recommended.
 Use the [runner creation workflow](https://docs.gitlab.com/runner/register/#register-with-a-runner-authentication-token)
 to generate an authentication token to register runners. This process provides full
 traceability of runner ownership and enhances your runner fleet's security.
-This change is a breaking change. GitLab has implemented a new
-[GitLab Runner token architecture](../../ci/runners/new_creation_workflow.md), which introduces
+GitLab has implemented a new [GitLab Runner token architecture](../../ci/runners/new_creation_workflow.md), which introduces
 a new method for registering runners and eliminates the
 runner registration token.
 
@@ -231,7 +235,9 @@ the duration of a job. It gives a CI/CD job access to a limited number of API en
 API authentication uses the job token by using the authorization of the user triggering the job.
 
 The job token is secured by its short lifetime and limited scope. This token could be leaked if
-multiple jobs run on the same machine (for example, with the [shell runner](https://docs.gitlab.com/runner/security/#usage-of-shell-executor)). You can use the [project allow list](../../ci/jobs/ci_job_token.md#add-a-group-or-project-to-the-job-token-allowlist) to further limit what the job token can access.
+multiple jobs run on the same machine (for example, with the [shell runner](https://docs.gitlab.com/runner/security/#usage-of-shell-executor)).
+You can use the [project allowlist](../../ci/jobs/ci_job_token.md#add-a-group-or-project-to-the-job-token-allowlist) to further limit what the job token can access.
+
 On Docker Machine runners, you should configure
 [`MaxBuilds=1`](https://docs.gitlab.com/runner/configuration/advanced-configuration.html#the-runnersmachine-section)
 to ensure runner machines run only one build
@@ -300,7 +306,7 @@ Prerequisites:
 
 - You must be an administrator.
 
-1. On the left sidebar, at the bottom, select **Admin**.
+1. On the left sidebar, at the bottom, select **Admin**. If you've [turned on the new navigation](../../user/interface_redesign.md#turn-new-navigation-on-or-off), in the upper-right corner, select **Admin**.
 1. Select **Settings** > **General**.
 1. Expand **Visibility and access controls**.
 1. Under **Feed token**, select the **Disable feed token** checkbox, then select **Save changes**.

@@ -54,7 +54,7 @@ module Gitlab
               end
             end
 
-            def validate_content!
+            def validate_content_presence!
               errors.push("File `#{masked_location}` is empty!") unless content.present?
             end
 

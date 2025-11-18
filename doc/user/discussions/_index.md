@@ -92,7 +92,7 @@ Notifications and mentions can be disabled in
 When you mention a group in a comment, every member of the group gets a to-do item
 added to their to-do list.
 
-1. On the left sidebar, select **Search or go to** and find your project.
+1. On the left sidebar, select **Search or go to** and find your project. If you've [turned on the new navigation](../interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
 1. For merge requests, select **Code** > **Merge requests**, and find your merge request.
 1. For issues, select **Plan** > **Issues**, and find your issue.
 1. In a comment, type `@` followed by the user, group, or subgroup namespace.
@@ -112,7 +112,7 @@ When you add comments to a merge request diff, these comments persist, even when
 
 To add a commit diff comment:
 
-1. On the left sidebar, select **Search or go to** and find your project.
+1. On the left sidebar, select **Search or go to** and find your project. If you've [turned on the new navigation](../interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
 1. Select **Code** > **Merge requests**, and find your merge request.
 1. Select the **Commits** tab, then select the commit message.
 1. Start a comment:
@@ -124,11 +124,11 @@ To add a commit diff comment:
 1. Enter your comment.
 1. Submit your comment:
    - To add your comment immediately, select **Add comment now**, or use the keyboard shortcut:
-     - macOS: <kbd>Shift</kbd> + <kbd>Command</kbd> + <kbd>Enter</kbd>
-     - All other OSes: <kbd>Shift</kbd> + <kbd>Control</kbd> + <kbd>Enter</kbd>
+     - macOS: <kbd>Shift</kbd>+<kbd>Command</kbd>+<kbd>Enter</kbd>
+     - All other OSes: <kbd>Shift</kbd>+<kbd>Control</kbd>+<kbd>Enter</kbd>
    - To leave your comment unpublished until you finish a review, select **Start a review**, or use the keyboard shortcut:
-     - macOS: <kbd>Command</kbd> + <kbd>Enter</kbd>
-     - All other OSes: <kbd>Control</kbd> + <kbd>Enter</kbd>
+     - macOS: <kbd>Command</kbd>+<kbd>Enter</kbd>
+     - All other OSes: <kbd>Control</kbd>+<kbd>Enter</kbd>
 
 The comment displays on the merge request's **Overview** tab.
 
@@ -188,7 +188,7 @@ Prerequisites:
 
 To lock an issue or merge request:
 
-1. On the left sidebar, select **Search or go to** and find your project.
+1. On the left sidebar, select **Search or go to** and find your project. If you've [turned on the new navigation](../interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
 1. For merge requests, select **Code** > **Merge requests**, and find your merge request.
 1. For issues, select **Plan** > **Issues**, and find your issue.
 1. In the upper-right corner, select **Merge request actions** or **Issue actions**
@@ -340,7 +340,9 @@ To create a thread:
 
 {{< /history >}}
 
-You can resolve a thread when you want to finish a conversation.
+When a conversation is complete, you can resolve the thread. Resolved threads are collapsed, but users can still add comments.
+
+Resolved threads can be reopened later by any user who has permission to resolve threads. To reopen a resolved thread, expand the thread and select **Reopen thread**.
 
 Prerequisites:
 
@@ -354,6 +356,8 @@ To resolve a thread:
    - In the upper-right corner of the original comment, select **Resolve thread** ({{< icon name="check-circle" >}}).
    - Below the last reply, in the **Reply** field, select **Resolve thread**.
    - Below the last reply, in the **Reply** field, enter text, select the **Resolve thread** checkbox, and select **Add comment now**.
+
+The same actions can be performed to reopen a thread.
 
 Merge requests provide more flexible [thread management options](../project/merge_requests/_index.md#manage-comment-threads),
 such as:
@@ -376,7 +380,7 @@ such as:
 - LLM for GitLab Self-Managed, GitLab Dedicated: Anthropic [Claude 3.5 Sonnet](https://console.cloud.google.com/vertex-ai/publishers/anthropic/model-garden/claude-3-5-sonnet)
 - LLM for GitLab.com: Anthropic [Claude 3.7 Sonnet](https://console.cloud.google.com/vertex-ai/publishers/anthropic/model-garden/claude-3-7-sonnet)
 - LLM for Amazon Q: Amazon Q Developer
-- Available on [GitLab Duo with self-hosted models](../../administration/gitlab_duo_self_hosted/_index.md): Yes
+- Available on [GitLab Duo with self-hosted models](../../administration/gitlab_duo_self_hosted/_index.md)
 
 {{< /collapsible >}}
 

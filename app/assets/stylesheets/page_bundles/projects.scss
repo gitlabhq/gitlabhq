@@ -286,7 +286,8 @@
     vertical-align: top;
     padding-top: $gl-spacing-scale-4;
     padding-bottom: $gl-spacing-scale-4;
-    @apply gl-border-b gl-border-b-subtle;
+    @apply gl-border-b;
+    @apply gl-border-b-subtle;
   }
 
   .project-row:last-of-type {
@@ -554,7 +555,8 @@
 }
 
 .projects-list .description p {
-  @apply gl-line-clamp-2 gl-whitespace-normal;
+  @apply gl-line-clamp-2;
+  @apply gl-whitespace-normal;
   margin-bottom: 0;
 }
 

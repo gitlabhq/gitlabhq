@@ -1,9 +1,0 @@
----
-name: disable_ci_partition_pruning
-feature_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/435737
-introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/140355
-rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/548427
-milestone: '16.8'
-group: group::ci platform
-type: gitlab_com_derisk
-default_enabled: false

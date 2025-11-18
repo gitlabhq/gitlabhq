@@ -28,7 +28,7 @@ configuration:
 
 ## Before you begin
 
-Before you can create, register, and run a runner,  [GitLab Runner](https://docs.gitlab.com/runner/install/) must be installed on a local computer.
+Before you can create, register, and run a runner, you must [install GitLab Runner](https://docs.gitlab.com/runner/install/) on a local computer.
 
 ## Create a blank project
 
@@ -36,7 +36,7 @@ First, create a blank project where you can create your CI/CD pipeline and runne
 
 To create a blank project:
 
-1. On the left sidebar, at the top, select **Create new** ({{< icon name="plus" >}}) and **New project/repository**.
+1. On the left sidebar, at the top, select **Create new** ({{< icon name="plus" >}}) and **New project/repository**. If you've [turned on the new navigation](../../user/interface_redesign.md#turn-new-navigation-on-or-off), this button is in the upper-right corner.
 1. Select **Create blank project**.
 1. Enter the project details:
    - In the **Project name** field, enter the name of your project. The name must start with a lowercase or uppercase letter (`a-zA-Z`), digit (`0-9`), emoji, or underscore (`_`). It can also contain dots (`.`), pluses (`+`), dashes (`-`), or spaces.
@@ -54,7 +54,7 @@ In this file, you define:
 - The structure and order of jobs that the runner should execute.
 - The decisions the runner should make when specific conditions are encountered.
 
-1. On the left sidebar, select **Search or go to** and find your project or group.
+1. On the left sidebar, select **Search or go to** and find your project or group. If you've [turned on the new navigation](../../user/interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
 1. Select **Project overview**.
 1. Select the plus icon ({{< icon name="plus" >}}), then select **New file**.
 1. In the **Filename** field, enter `.gitlab-ci.yml`.
@@ -86,7 +86,7 @@ to GitLab so that it can pick up jobs from the project pipeline.
 
 To create a project runner:
 
-1. On the left sidebar, select **Search or go to** and find your project.
+1. On the left sidebar, select **Search or go to** and find your project. If you've [turned on the new navigation](../../user/interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
 1. Select **Settings** > **CI/CD**.
 1. Expand the **Runners** section.
 1. Select **New project runner**.
@@ -108,8 +108,8 @@ To create a project runner:
 
 ### Check the runner configuration file
 
-After you register the runner, the configuration and runner authentication token is saved to your `config.toml`. The runner uses the
-token to authenticate with GitLab when picking up jobs from the job queue.
+After you register the runner, the configuration and runner authentication token is saved to your `config.toml`.
+The runner uses the token to authenticate with GitLab when picking up jobs from the job queue.
 
 You can use the `config.toml` to
 define more [advanced runner configurations](https://docs.gitlab.com/runner/configuration/advanced-configuration.html).
@@ -131,7 +131,7 @@ Here's what your `config.toml` should look like after you register and start the
 
 Next, trigger a pipeline in your project so you can view your runner execute a job.
 
-1. On the left sidebar, select **Search or go to** and find your project.
+1. On the left sidebar, select **Search or go to** and find your project. If you've [turned on the new navigation](../../user/interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
 1. Select **Build** > **Pipelines**.
 1. Select **New pipeline**.
 1. Select a job to view the job log. The output should look similar to this example, which shows

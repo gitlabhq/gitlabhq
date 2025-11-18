@@ -269,7 +269,7 @@ was upgraded to GitLab 16.0.
 expires_at_date = "2024-05-22"
 
 # Check for expiring personal access tokens
-PersonalAccessToken.owner_is_human.where(expires_at: expires_at_date).find_each do |token|
+PersonalAccessToken.for_user_types(:human).where(expires_at: expires_at_date).find_each do |token|
   if token.user.blocked?
     next
     # Hide unusable, blocked PATs from output
@@ -342,7 +342,7 @@ For more information, see the [Rails Runner troubleshooting section](../../admin
 date_range = 1.month
 
 # Check for personal access tokens
-PersonalAccessToken.owner_is_human.where(expires_at: Date.today .. Date.today + date_range).find_each do |token|
+PersonalAccessToken.for_user_types(:human).where(expires_at: Date.today .. Date.today + date_range).find_each do |token|
   puts "Expired personal access token ID: #{token.id}, User Email: #{token.user.email}, Name: #{token.name}, Scopes: #{token.scopes}, Last used: #{token.last_used_at}"
 end
 
@@ -460,7 +460,7 @@ This script finds tokens without a value set for `expires_at`.
    # This script finds tokens which do not have an expires_at value set.
 
    # Check for expiring personal access tokens
-   PersonalAccessToken.owner_is_human.where(expires_at: nil).find_each do |token|
+   PersonalAccessToken.for_user_types(:human).where(expires_at: nil).find_each do |token|
      puts "Expires_at is nil for personal access token ID: #{token.id}, User Email: #{token.user.email}, Name: #{token.name}, Scopes: #{token.scopes}, Last used: #{token.last_used_at}"
    end
 

@@ -603,11 +603,12 @@ func TestIntegration(t *testing.T) {
 			defer closeResponseBody(resp)
 
 			// Verify response body for successful requests
-			if tt.expectedCode == http.StatusOK {
+			switch tt.expectedCode {
+			case http.StatusOK:
 				respBody, err := io.ReadAll(resp.Body)
 				require.NoError(t, err)
 				require.Equal(t, "success", string(respBody), "response body mismatch")
-			} else if tt.expectedCode == http.StatusRequestEntityTooLarge {
+			case http.StatusRequestEntityTooLarge:
 				respBody, err := io.ReadAll(resp.Body)
 				require.NoError(t, err)
 				require.Equal(t, "Request Entity Too Large", string(respBody), "error response body mismatch")

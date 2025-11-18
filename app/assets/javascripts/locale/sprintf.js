@@ -10,21 +10,15 @@ import { escape } from 'lodash';
  * @see https://gitlab.com/gitlab-org/gitlab-foss/issues/37992
  */
 export default function sprintf(input, parameters, escapeParameters = true) {
-  let output = input;
+  return input.replace(/%%|%\{(\w+)\}/g, (match, key) => {
+    // Escape %% to literal %
+    if (match === '%%') return '%';
 
-  output = output.replace(/%+/g, '%');
+    if (parameters && key in parameters) {
+      const value = parameters[key];
+      return escapeParameters ? escape(value) : value;
+    }
 
-  if (parameters) {
-    const mappedParameters = new Map(Object.entries(parameters));
-
-    mappedParameters.forEach((key, parameterName) => {
-      const parameterValue = mappedParameters.get(parameterName);
-      const escapedParameterValue = escapeParameters ? escape(parameterValue) : parameterValue;
-      // Pass the param value as a function to ignore special replacement patterns like $` and $'.
-      // https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String/replace#syntax
-      output = output.replace(new RegExp(`%{${parameterName}}`, 'g'), () => escapedParameterValue);
-    });
-  }
-
-  return output;
+    return match;
+  });
 }

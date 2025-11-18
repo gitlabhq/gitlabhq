@@ -10,7 +10,7 @@ RSpec.describe Gitlab::GithubImport::Importer::Events::ChangedMilestone, :clean_
   let_it_be_with_reload(:project) do
     create(
       :project, :in_group, :github_import,
-      :import_user_mapping_enabled, :user_mapping_to_personal_namespace_owner_enabled
+      :import_user_mapping_enabled
     )
   end
 
@@ -180,55 +180,6 @@ RSpec.describe Gitlab::GithubImport::Importer::Events::ChangedMilestone, :clean_
 
             it_behaves_like 'new event'
             it_behaves_like 'do not push placeholder reference'
-          end
-        end
-
-        context 'when user_mapping_to_personal_namespace_owner is disabled' do
-          let_it_be(:source_user) { generate_source_user(project, 1000) }
-          let(:mapped_user_id) { source_user.mapped_user_id }
-
-          before_all do
-            project.build_or_assign_import_data(
-              data: { user_mapping_to_personal_namespace_owner_enabled: false }
-            ).save!
-          end
-
-          context 'with Issue' do
-            context 'when importing a milestoned event' do
-              let(:event_type) { 'milestoned' }
-              let(:expected_event_attrs) { event_attrs.merge(issue_id: issuable.id, action: 'add') }
-
-              it_behaves_like 'new event'
-              it_behaves_like 'push placeholder reference'
-            end
-
-            context 'when importing demilestoned event' do
-              let(:event_type) { 'demilestoned' }
-              let(:expected_event_attrs) { event_attrs.merge(issue_id: issuable.id, action: 'remove') }
-
-              it_behaves_like 'new event'
-              it_behaves_like 'push placeholder reference'
-            end
-          end
-
-          context 'with MergeRequest' do
-            let(:issuable) { create(:merge_request, source_project: project, target_project: project) }
-
-            context 'when importing a milestoned event' do
-              let(:event_type) { 'milestoned' }
-              let(:expected_event_attrs) { event_attrs.merge(merge_request_id: issuable.id, action: 'add') }
-
-              it_behaves_like 'new event'
-              it_behaves_like 'push placeholder reference'
-            end
-
-            context 'when importing demilestoned event' do
-              let(:event_type) { 'demilestoned' }
-              let(:expected_event_attrs) { event_attrs.merge(merge_request_id: issuable.id, action: 'remove') }
-
-              it_behaves_like 'new event'
-              it_behaves_like 'push placeholder reference'
-            end
           end
         end
       end

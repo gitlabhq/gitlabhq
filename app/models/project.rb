@@ -464,7 +464,7 @@ class Project < ApplicationRecord
   has_many :runner_projects, class_name: 'Ci::RunnerProject', inverse_of: :project
   has_many :runners, through: :runner_projects, source: :runner, class_name: 'Ci::Runner'
   has_many :variables, class_name: 'Ci::Variable'
-  has_many :triggers, ->(project) { Feature.enabled?(:trigger_token_expiration, project) ? not_expired : self }, class_name: 'Ci::Trigger'
+  has_many :triggers, -> { not_expired }, class_name: 'Ci::Trigger'
   has_many :secure_files, class_name: 'Ci::SecureFile', dependent: :restrict_with_error
   has_many :environments
   has_many :environments_for_dashboard, -> { from(with_rank.unfoldered.available, :environments).where('rank <= 3') }, class_name: 'Environment'
@@ -992,6 +992,15 @@ class Project < ApplicationRecord
     left_outer_joins(:fork_network_member).where(fork_network_member: { forked_from_project_id: nil })
   }
 
+  scope :in_fork_network, -> {
+    joins(:fork_network_member)
+  }
+
+  # This prevents N+1 queries since the UnlinkForkService service accesses these associations for each project.
+  scope :with_fork_network_associations, -> {
+    includes(:fork_network, :forked_from_project, :fork_network_member)
+  }
+
   scope :last_repository_check_failed, -> { where(last_repository_check_failed: true) }
   scope :last_repository_check_not_failed, -> { where(last_repository_check_failed: [false, nil]) }
 
@@ -1015,7 +1024,7 @@ class Project < ApplicationRecord
   end
 
   def self.with_web_entity_associations
-    preload(:project_feature, :route, :creator, group: :parent, namespace: [:route, :owner])
+    preload(:project_feature, :route, :creator, group: :parent, namespace: [:route, :owner, :namespace_settings, :namespace_settings_with_ancestors_inherited_settings])
   end
 
   def self.with_slack_application_disabled
@@ -1306,6 +1315,14 @@ class Project < ApplicationRecord
     def project_namespace_for(id:)
       find_by(id: id)&.project_namespace
     end
+
+    def group_by_namespace_traversal_ids(project_batch)
+      by_ids(project_batch)
+        .with_namespace
+        .pluck(:id, 'namespaces.traversal_ids')
+        .group_by(&:last)
+        .transform_values { |projects| projects.map(&:first) }
+    end
   end
 
   def initialize(attributes = nil)
@@ -1321,6 +1338,14 @@ class Project < ApplicationRecord
     super
   end
 
+  def owner_entity
+    self
+  end
+
+  def owner_entity_name
+    :project
+  end
+
   # Remove along with ProjectFeaturesCompatibility module
   def set_project_feature_defaults
     self.class.project_features_defaults.each do |attr, value|
@@ -1333,10 +1358,6 @@ class Project < ApplicationRecord
 
   def resource_parent
     self
-  end
-
-  def parent_loaded?
-    association(:namespace).loaded?
   end
 
   def certificate_based_clusters_enabled?
@@ -2074,12 +2095,7 @@ class Project < ApplicationRecord
 
   # rubocop: disable CodeReuse/ServiceClass
   def create_labels
-    label_scope = Label.templates
-    if Feature.enabled?(:template_labels_scoped_by_org, :instance)
-      label_scope = label_scope.for_organization(organization)
-    end
-
-    label_scope.each do |label|
+    Label.templates.for_organization(organization).each do |label|
       # slice on column_names to ensure an added DB column will not break a mixed deployment
       params = label.attributes
                     .slice(*Label.column_names)
@@ -2567,8 +2583,6 @@ class Project < ApplicationRecord
     return true unless group || namespace
     return level <= group.visibility_level if group
 
-    return true unless Feature.enabled?(:user_namespace_allowed_visibility, namespace)
-
     level <= namespace.visibility_level
   end
 
@@ -3015,8 +3029,10 @@ class Project < ApplicationRecord
     super && !self_deletion_scheduled?
   end
 
+  alias_method :self_archived?, :archived
+
   def self_or_ancestors_archived?
-    archived? || namespace.self_or_ancestors_archived?
+    self_archived? || namespace.self_or_ancestors_archived?
   end
 
   def ancestors_archived?
@@ -3303,6 +3319,12 @@ class Project < ApplicationRecord
     end
   end
 
+  def root_group
+    return if personal?
+
+    root_namespace
+  end
+
   # for projects that are part of user namespace, return project.
   def self_or_root_group_ids
     if group
@@ -3489,16 +3511,8 @@ class Project < ApplicationRecord
     self_deletion_in_progress? || hidden?
   end
 
-  def work_items_feature_flag_enabled?
-    group&.work_items_feature_flag_enabled? || Feature.enabled?(:work_items, self)
-  end
-
-  def work_items_beta_feature_flag_enabled?
-    group&.work_items_beta_feature_flag_enabled? || Feature.enabled?(:work_items_beta, type: :beta)
-  end
-
-  def work_items_alpha_feature_flag_enabled?
-    group&.work_items_alpha_feature_flag_enabled? || Feature.enabled?(:work_items_alpha)
+  def work_item_tasks_on_boards_feature_flag_enabled?
+    group&.work_item_tasks_on_boards_feature_flag_enabled? || Feature.enabled?(:work_item_tasks_on_boards, type: :wip)
   end
 
   def glql_load_on_click_feature_flag_enabled?
@@ -3511,6 +3525,14 @@ class Project < ApplicationRecord
 
   def allow_iframes_in_markdown_feature_flag_enabled?
     group&.allow_iframes_in_markdown_feature_flag_enabled? || Feature.enabled?(:allow_iframes_in_markdown, self, type: :wip)
+  end
+
+  def work_items_consolidated_list_enabled?(user = nil)
+    # work_item_planning_view is the feature flag used to determine whether the consolidated list is enabled or not
+    # The global check is required for projects which do not have an associated group (i.e. from a user namespace)
+    return true if group&.work_items_consolidated_list_enabled?(user) || Feature.enabled?(:work_item_planning_view, type: :wip)
+
+    user.present? && Feature.enabled?(:work_items_consolidated_list_user, user)
   end
 
   def enqueue_record_project_target_platforms
@@ -3682,7 +3704,7 @@ class Project < ApplicationRecord
 
     max_access_level = max_member_access_for_user(current_user)
 
-    !Authz::Role.access_level_encompasses?(current_access_level: max_access_level, level_to_assign: access_level)
+    !Gitlab::Access.level_encompasses?(current_access_level: max_access_level, level_to_assign: access_level)
   end
 
   private
@@ -3779,7 +3801,12 @@ class Project < ApplicationRecord
   end
 
   def create_new_pool_repository
-    pool = PoolRepository.safe_find_or_create_by!(shard: Shard.by_name(repository_storage), source_project: self)
+    pool = PoolRepository.safe_find_or_create_by!(
+      shard: Shard.by_name(repository_storage),
+      source_project: self,
+      organization: organization
+    )
+
     update!(pool_repository: pool)
 
     pool.schedule unless pool.scheduled?

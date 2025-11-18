@@ -11,6 +11,14 @@ module Mcp
         raise NoMethodError
       end
 
+      def description
+        raise NoMethodError
+      end
+
+      def input_schema
+        raise NoMethodError
+      end
+
       def execute(request: nil, params: nil) # rubocop: disable Lint/UnusedMethodArgument -- request param to match Mcp::Tools::ApiTool
         args = params[:arguments]
         validate_arguments!(args)
@@ -27,6 +35,12 @@ module Mcp
           description: description,
           inputSchema: input_schema
         }
+      end
+
+      # Tool availability check, returns `true` by default.
+      # Tools should override this method if they need to check for specific conditions.
+      def available?
+        true
       end
 
       protected
@@ -73,11 +87,7 @@ module Mcp
         }
       end
 
-      def description
-        raise NoMethodError
-      end
-
-      def input_schema
+      def version
         raise NoMethodError
       end
     end

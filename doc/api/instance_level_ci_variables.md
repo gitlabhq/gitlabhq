@@ -30,7 +30,9 @@ GET /admin/ci/variables
 ```
 
 ```shell
-curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/admin/ci/variables"
+curl \
+  --header "PRIVATE-TOKEN: <your_access_token>" \
+  --url "https://gitlab.example.com/api/v4/admin/ci/variables"
 ```
 
 ```json
@@ -75,7 +77,9 @@ GET /admin/ci/variables/:key
 | `key`     | string  | Yes      | The `key` of a variable |
 
 ```shell
-curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/admin/ci/variables/TEST_VARIABLE_1"
+curl \
+  --header "PRIVATE-TOKEN: <your_access_token>" \
+  --url "https://gitlab.example.com/api/v4/admin/ci/variables/TEST_VARIABLE_1"
 ```
 
 ```json
@@ -117,8 +121,11 @@ POST /admin/ci/variables
 | `variable_type` | string  | No       | The type of the variable. Available types are: `env_var` (default) and `file`. |
 
 ```shell
-curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" \
-     "https://gitlab.example.com/api/v4/admin/ci/variables" --form "key=NEW_VARIABLE" --form "value=new value"
+curl --request POST \
+  --header "PRIVATE-TOKEN: <your_access_token>" \
+  --url "https://gitlab.example.com/api/v4/admin/ci/variables" \
+  --form "key=NEW_VARIABLE" \
+  --form "value=new value"
 ```
 
 ```json
@@ -158,8 +165,10 @@ PUT /admin/ci/variables/:key
 | `variable_type` | string  | No       | The type of the variable. Available types are: `env_var` (default) and `file`. |
 
 ```shell
-curl --request PUT --header "PRIVATE-TOKEN: <your_access_token>" \
-     "https://gitlab.example.com/api/v4/admin/ci/variables/NEW_VARIABLE" --form "value=updated value"
+curl --request PUT \
+  --header "PRIVATE-TOKEN: <your_access_token>" \
+  --url "https://gitlab.example.com/api/v4/admin/ci/variables/NEW_VARIABLE" \
+  --form "value=updated value"
 ```
 
 ```json
@@ -187,5 +196,7 @@ DELETE /admin/ci/variables/:key
 | `key`     | string | Yes      | The `key` of a variable |
 
 ```shell
-curl --request DELETE --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/admin/ci/variables/VARIABLE_1"
+curl --request DELETE \
+  --header "PRIVATE-TOKEN: <your_access_token>" \
+  --url "https://gitlab.example.com/api/v4/admin/ci/variables/VARIABLE_1"
 ```

@@ -26,7 +26,7 @@ RSpec.describe Gitlab::Database::Migrations::PreparedAsyncDmlOperationsTesting::
     shared_examples 'handling an error' do
       it 'logs the error and destroys the record' do
         allow(connection).to receive(:transaction).and_yield
-        allow(connection).to receive(:execute).with("SET statement_timeout TO '180s'")
+        allow(connection).to receive(:execute).with("SET statement_timeout TO '30s'")
         allow(connection).to receive(:execute).with(async_index.definition).and_raise(error)
         allow(connection).to receive(:execute).with('RESET statement_timeout')
 
@@ -41,7 +41,7 @@ RSpec.describe Gitlab::Database::Migrations::PreparedAsyncDmlOperationsTesting::
     context 'when index creation succeeds' do
       it 'executes the index definition within a transaction' do
         allow(connection).to receive(:execute)
-        expect(connection).to receive(:execute).with("SET statement_timeout TO '180s'").ordered.and_call_original
+        expect(connection).to receive(:execute).with("SET statement_timeout TO '30s'").ordered.and_call_original
         expect(connection).to receive(:execute).with(async_index.definition).ordered.and_call_original
         expect(connection).to receive(:execute).with('RESET statement_timeout').ordered.and_call_original
 
@@ -78,7 +78,7 @@ RSpec.describe Gitlab::Database::Migrations::PreparedAsyncDmlOperationsTesting::
 
       it 'logs the error and destroys the record' do
         allow(connection).to receive(:transaction).and_yield
-        allow(connection).to receive(:execute).with("SET statement_timeout TO '180s'")
+        allow(connection).to receive(:execute).with("SET statement_timeout TO '30s'")
         allow(connection).to receive(:execute).with(async_index.definition).and_call_original
         allow(connection).to receive(:execute).with('RESET statement_timeout')
 

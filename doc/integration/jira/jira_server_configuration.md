@@ -8,7 +8,7 @@ title: 'Tutorial: Create Jira credentials'
 This tutorial shows you how to create Jira credentials. You can use your new Jira credentials to
 configure the [Jira issues integration](configure.md) in GitLab for Jira Data Center or Jira Server.
 
-To create Jira credentials, here's what we're going to do:
+To create Jira credentials, follow these steps:
 
 1. [Create a Jira user](#create-a-jira-user).
 1. [Create a Jira group for the user](#create-a-jira-group-for-the-user).

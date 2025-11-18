@@ -67,6 +67,11 @@ module Types
       experiment: { milestone: '18.4' },
       null: false
 
+    field :new_ui_enabled, GraphQL::Types::Boolean,
+      description: 'Whether the new UI is enabled for the user.',
+      experiment: { milestone: '18.6' },
+      null: true
+
     def issues_sort
       user_preference.issues_sort&.to_sym
     end

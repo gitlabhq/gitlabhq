@@ -1,8 +1,8 @@
 # frozen_string_literal: true
 
-require 'rails'
 require 'net/http'
-require 'webmock' if Rails.env.test?
+
+require 'webmock' if ENV['RAILS_ENV'] == 'test'
 require_relative 'buffered_io'
 
 module Gitlab
@@ -11,7 +11,7 @@ module Gitlab
     # https://github.com/bblimke/webmock/blob/867f4b290fd133658aa9530cba4ba8b8c52c0d35/lib/webmock/http_lib_adapters/net_http.rb#L74
     # Net::HTTP#request usually calls Net::HTTP#connect but the Webmock overwrite doesn't.
     # This makes sure that, in a test environment, the superclass is the Webmock overwrite.
-    parent_class = if defined?(WebMock) && Rails.env.test?
+    parent_class = if defined?(WebMock) && ENV['RAILS_ENV'] == 'test'
                      WebMock::HttpLibAdapters::NetHttpAdapter.instance_variable_get(:@webMockNetHTTP)
                    else
                      Net::HTTP

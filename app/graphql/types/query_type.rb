@@ -82,7 +82,7 @@ module Types
       description: "A user's frecently visited projects"
     field :gitpod_enabled, GraphQL::Types::Boolean,
       null: true,
-      description: "Whether Gitpod is enabled in application settings."
+      description: "Whether Ona is enabled in application settings."
     field :group, Types::GroupType,
       null: true,
       resolver: Resolvers::GroupResolver,
@@ -243,12 +243,6 @@ module Types
       description: 'Find an abuse report.',
       resolver: Resolvers::AbuseReportResolver
 
-    field :abuse_report_labels, ::Types::AntiAbuse::AbuseReportLabelType.connection_type,
-      null: true,
-      experiment: { milestone: '16.3' },
-      description: 'Abuse report labels.',
-      resolver: Resolvers::AbuseReportLabelsResolver
-
     field :ml_model, ::Types::Ml::ModelType,
       null: true,
       experiment: { milestone: '16.7' },
@@ -277,6 +271,13 @@ module Types
       deprecated: { reason: 'Replaced with metadata.featureFlags', milestone: '17.4' },
       description: 'Check if a feature flag is enabled',
       resolver: Resolvers::FeatureFlagResolver
+
+    field :access_token_permissions,
+      [Types::Authz::AccessTokens::PermissionType],
+      null: false,
+      experiment: { milestone: '18.6' },
+      description: 'List of permissions for fine-grained access tokens',
+      resolver: Resolvers::Authz::AccessTokens::PermissionsResolver
 
     def design_management
       DesignManagementObject.new(nil)

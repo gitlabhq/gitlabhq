@@ -274,9 +274,58 @@ curl --request POST \
   --url "https://gitlab.example.com/api/v4/projects/597/merge_trains/merge_requests/1"
 ```
 
-Returns:
+If successful, returns:
 
-- `403: Forbidden` if Merge Trains are not available for the project
+- `201 Created` if the merge request is immediately added to the merge train
+- `202 Accepted` if the merge request is scheduled to be added to the merge train
+
+Other possible responses:
+
+- `400 Bad Request` if the merge failed
+- `401 Unauthorized` if authentication is required
+- `403 Forbidden` if merge trains are not available for the project
+- `404 Not Found` if the project or merge request is not found
+- `409 Conflict` if there's a conflicting resource
+
+On success, the response contains the following attributes:
+
+| Attribute                              | Type    | Description |
+|----------------------------------------|---------|-------------|
+| `created_at`                           | datetime | Timestamp of when the merge train was created. |
+| `duration`                             | integer  | Duration in seconds, or `null` if not completed. |
+| `id`                                   | integer  | ID of the merge train. |
+| `merge_request`                        | object   | Merge request details. |
+| `merge_request.created_at`             | datetime | Timestamp of when the merge request was created. |
+| `merge_request.description`            | string   | Description of the merge request. |
+| `merge_request.id`                     | integer  | ID of the merge request. |
+| `merge_request.iid`                    | integer  | Internal ID of the merge request. |
+| `merge_request.project_id`             | integer  | ID of the project containing the merge request. |
+| `merge_request.state`                  | string   | State of the merge request. |
+| `merge_request.title`                  | string   | Title of the merge request. |
+| `merge_request.updated_at`             | datetime | Timestamp of when the merge request was last updated. |
+| `merge_request.web_url`                | string   | Web URL of the merge request. |
+| `merged_at`                            | datetime | Timestamp of when the merge request merged, or `null` if not merged. |
+| `pipeline`                             | object   | Pipeline details. |
+| `pipeline.created_at`                  | datetime | Timestamp of when the pipeline was created. |
+| `pipeline.id`                          | integer  | ID of the pipeline. |
+| `pipeline.iid`                         | integer  | Internal ID of the pipeline. |
+| `pipeline.project_id`                  | integer  | ID of the project containing the pipeline. |
+| `pipeline.ref`                         | string   | Git reference of the pipeline. |
+| `pipeline.sha`                         | string   | SHA of the commit that triggered the pipeline. |
+| `pipeline.source`                      | string   | Source of the pipeline trigger. |
+| `pipeline.status`                      | string   | Status of the pipeline. |
+| `pipeline.updated_at`                  | datetime | Timestamp of when the pipeline was last updated. |
+| `pipeline.web_url`                     | string   | Web URL of the pipeline. |
+| `status`                               | string   | Status of the merge train. Possible values: `idle`, `merged`, `stale`, `fresh`, `merging`, `skip_merged`. |
+| `target_branch`                        | string   | Name of the target branch. |
+| `updated_at`                           | datetime | Timestamp of when the merge train was last updated. |
+| `user`                                 | object   | User who added the merge request to the merge train. |
+| `user.avatar_url`                      | string   | Avatar URL of the user. |
+| `user.id`                              | integer  | ID of the user. |
+| `user.name`                            | string   | Name of the user. |
+| `user.state`                           | string   | State of the user account. |
+| `user.username`                        | string   | Username of the user. |
+| `user.web_url`                         | string   | Web URL of the user profile. |
 
 Example response:
 

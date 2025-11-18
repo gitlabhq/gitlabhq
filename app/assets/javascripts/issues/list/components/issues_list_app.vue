@@ -91,16 +91,12 @@ import { DEFAULT_PAGE_SIZE, issuableListTabs } from '~/vue_shared/issuable/list/
 import glFeatureFlagMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import NewResourceDropdown from '~/vue_shared/components/new_resource_dropdown/new_resource_dropdown.vue';
 import {
-  BASE_ALLOWED_CREATE_TYPES,
   CREATION_CONTEXT_LIST_ROUTE,
   DETAIL_VIEW_QUERY_PARAM_NAME,
   INJECTION_LINK_CHILD_PREVENT_ROUTER_NAVIGATION,
   WORK_ITEM_TYPE_ENUM_OBJECTIVE,
   WORK_ITEM_TYPE_NAME_ISSUE,
-  WORK_ITEM_TYPE_NAME_KEY_RESULT,
-  WORK_ITEM_TYPE_NAME_OBJECTIVE,
 } from '~/work_items/constants';
-import CreateWorkItemModal from '~/work_items/components/create_work_item_modal.vue';
 import WorkItemDrawer from '~/work_items/components/work_item_drawer.vue';
 import { makeDrawerUrlParam } from '~/work_items/utils';
 import {
@@ -149,7 +145,6 @@ export default {
   issuableType: TYPE_ISSUE.toUpperCase(),
   WORK_ITEM_TYPE_NAME_ISSUE,
   components: {
-    CreateWorkItemModal,
     CsvImportExportButtons,
     GlDisclosureDropdown,
     GlDisclosureDropdownGroup,
@@ -293,16 +288,6 @@ export default {
     },
   },
   computed: {
-    allowedWorkItemTypes() {
-      if (this.glFeatures.okrsMvc && this.hasOkrsFeature) {
-        return BASE_ALLOWED_CREATE_TYPES.concat(
-          WORK_ITEM_TYPE_NAME_KEY_RESULT,
-          WORK_ITEM_TYPE_NAME_OBJECTIVE,
-        );
-      }
-
-      return BASE_ALLOWED_CREATE_TYPES;
-    },
     dropdownTooltip() {
       return !this.showTooltip ? this.$options.i18n.actionsLabel : '';
     },
@@ -453,7 +438,7 @@ export default {
         {
           type: TOKEN_TYPE_TYPE,
           title: TOKEN_TITLE_TYPE,
-          icon: 'issues',
+          icon: 'issue-type-issue',
           token: GlFilteredSearchToken,
           options: this.typeTokenOptions,
         },
@@ -631,9 +616,6 @@ export default {
     },
     isIssuableSelected() {
       return !isEmpty(this.activeIssuable);
-    },
-    issuesDrawerEnabled() {
-      return this.glFeatures?.issuesListDrawer || this.glFeatures?.workItemViewForIssues;
     },
   },
   watch: {
@@ -895,11 +877,7 @@ export default {
       this.state = state || STATUS_OPEN;
     },
     handleSelectIssuable(issuable) {
-      if (
-        this.issuesDrawerEnabled &&
-        this.activeIssuable &&
-        this.activeIssuable.iid === issuable.iid
-      ) {
+      if (this.activeIssuable && this.activeIssuable.iid === issuable.iid) {
         this.activeIssuable = null;
 
         const queryParam = getParameterByName(DETAIL_VIEW_QUERY_PARAM_NAME);
@@ -1009,7 +987,6 @@ export default {
 <template>
   <div>
     <work-item-drawer
-      v-if="issuesDrawerEnabled"
       :open="isIssuableSelected"
       :active-item="activeIssuable"
       :issuable-type="$options.issuableType"
@@ -1024,7 +1001,6 @@ export default {
       @workItemTypeChanged="updateIssuablesCache($event)"
     />
     <issuable-list
-      v-if="hasAnyIssues"
       :namespace="fullPath"
       :full-path="fullPath"
       recent-searches-storage-key="issues"
@@ -1053,7 +1029,7 @@ export default {
       :has-previous-page="pageInfo.hasPreviousPage"
       :active-issuable="activeIssuable"
       show-work-item-type-icon
-      :prevent-redirect="issuesDrawerEnabled"
+      prevent-redirect
       @click-tab="handleClickTab"
       @dismiss-alert="handleDismissAlert"
       @filter="handleFilter"
@@ -1075,36 +1051,23 @@ export default {
           >
             {{ __('Bulk edit') }}
           </gl-button>
-          <create-work-item-modal
-            v-if="glFeatures.issuesListCreateModal"
-            :allowed-work-item-types="allowedWorkItemTypes"
-            always-show-work-item-type-select
-            :creation-context="$options.CREATION_CONTEXT_LIST_ROUTE"
-            :full-path="fullPath"
-            :is-group="!isProject"
-            :preselected-work-item-type="$options.WORK_ITEM_TYPE_NAME_ISSUE"
-            :show-project-selector="!isProject"
-            @workItemCreated="refetchIssuables"
+          <slot name="new-issuable-button">
+            <gl-button
+              v-if="showNewIssueLink"
+              :href="newIssuePath"
+              variant="confirm"
+              class="gl-grow"
+            >
+              {{ __('Create issue') }}
+            </gl-button>
+          </slot>
+          <new-resource-dropdown
+            v-if="showNewIssueDropdown"
+            :query="$options.searchProjectsQuery"
+            :query-variables="newIssueDropdownQueryVariables"
+            :extract-projects="extractProjects"
+            :group-id="groupId"
           />
-          <template v-else>
-            <slot name="new-issuable-button">
-              <gl-button
-                v-if="showNewIssueLink"
-                :href="newIssuePath"
-                variant="confirm"
-                class="gl-grow"
-              >
-                {{ __('Create issue') }}
-              </gl-button>
-            </slot>
-            <new-resource-dropdown
-              v-if="showNewIssueDropdown"
-              :query="$options.searchProjectsQuery"
-              :query-variables="newIssueDropdownQueryVariables"
-              :extract-projects="extractProjects"
-              :group-id="groupId"
-            />
-          </template>
           <gl-disclosure-dropdown
             v-gl-tooltip
             category="tertiary"
@@ -1123,6 +1086,11 @@ export default {
               v-if="showCsvButtons"
               :export-csv-path="exportCsvPathWithQuery"
               :issuable-count="currentTabCount"
+            />
+            <issuable-by-email
+              v-if="showIssuableByEmail"
+              data-track-action="click_email_issue_project_issues_empty_list_page"
+              data-track-label="email_issue_project_issues_empty_list"
             />
             <gl-disclosure-dropdown-group
               :bordered="showCsvButtons"
@@ -1145,21 +1113,14 @@ export default {
       </template>
 
       <template #empty-state>
-        <empty-state-with-any-issues :has-search="hasSearch" :is-open-tab="isOpenTab">
+        <empty-state-with-any-issues
+          v-if="hasAnyIssues"
+          :has-search="hasSearch"
+          :is-open-tab="isOpenTab"
+        >
           <template #new-issue-button>
-            <create-work-item-modal
-              v-if="glFeatures.issuesListCreateModal"
-              :allowed-work-item-types="allowedWorkItemTypes"
-              always-show-work-item-type-select
-              :creation-context="$options.CREATION_CONTEXT_LIST_ROUTE"
-              :full-path="fullPath"
-              :is-group="!isProject"
-              :preselected-work-item-type="$options.WORK_ITEM_TYPE_NAME_ISSUE"
-              :show-project-selector="!isProject"
-              @workItemCreated="refetchIssuables"
-            />
             <new-resource-dropdown
-              v-else-if="showNewIssueDropdown"
+              v-if="showNewIssueDropdown"
               :query="$options.searchProjectsQuery"
               :query-variables="newIssueDropdownQueryVariables"
               :extract-projects="extractProjects"
@@ -1167,6 +1128,11 @@ export default {
             />
           </template>
         </empty-state-with-any-issues>
+        <empty-state-without-any-issues
+          v-else
+          :show-new-issue-dropdown="showNewIssueDropdown"
+          :has-projects="hasAnyProjects"
+        />
       </template>
 
       <template #custom-status="{ issuable = {} }">
@@ -1177,20 +1143,5 @@ export default {
         <slot name="title-icons" v-bind="{ issuable, apiFilterParams }"></slot>
       </template>
     </issuable-list>
-
-    <empty-state-without-any-issues
-      v-else
-      :current-tab-count="currentTabCount"
-      :export-csv-path-with-query="exportCsvPathWithQuery"
-      :show-csv-buttons="showCsvButtons"
-      :show-new-issue-dropdown="showNewIssueDropdown"
-    />
-
-    <issuable-by-email
-      v-if="showIssuableByEmail"
-      class="gl-pb-7 gl-pt-5 gl-text-center"
-      data-track-action="click_email_issue_project_issues_empty_list_page"
-      data-track-label="email_issue_project_issues_empty_list"
-    />
   </div>
 </template>

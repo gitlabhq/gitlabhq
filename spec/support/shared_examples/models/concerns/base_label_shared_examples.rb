@@ -1,6 +1,22 @@
 # frozen_string_literal: true
 
 RSpec.shared_examples 'BaseLabel' do |factory_name: :label|
+  shared_examples_for 'text input field' do |field_name|
+    subject { described_class.new(field_name => input) }
+
+    context 'when input contains HTML entities and HTML tags' do
+      let(:input) { '&lt;hello&gt;<img src=x onerror=prompt(1)>' }
+
+      it 'leaves the input unchanged' do
+        # This field is not ever to be treated as HTML; it is text, never unescaped or sanitised,
+        # and is always escaped when inserted into HTML directly.
+        # If an XSS occurs in future which would lead you to wanting to "fix" this spec, please
+        # instead fix it at the point of display, not by corrupting user input!
+        expect(subject.public_send(field_name)).to eq(input)
+      end
+    end
+  end
+
   describe 'validation' do
     it 'validates color code' do
       is_expected.not_to allow_value('G-ITLAB').for(:color)
@@ -52,31 +68,25 @@ RSpec.shared_examples 'BaseLabel' do |factory_name: :label|
   end
 
   describe '#title' do
-    it 'sanitizes title' do
-      label = described_class.new(title: '<b>foo & bar?</b>')
-      expect(label.title).to eq('foo & bar?')
-    end
-
     it 'strips title' do
       label = described_class.new(title: '   label   ')
       label.valid?
 
       expect(label.title).to eq('label')
     end
+
+    it_behaves_like 'text input field', :title
   end
 
   describe '#description' do
-    it 'sanitizes description' do
-      label = described_class.new(description: '<b>foo & bar?</b>')
-      expect(label.description).to eq('foo & bar?')
-    end
-
     it 'accepts an empty string' do
       label = described_class.new(title: 'foo', description: '')
       label.valid?
 
       expect(label.errors[:description]).to be_empty
     end
+
+    it_behaves_like 'text input field', :description
   end
 
   describe '.search' do

@@ -6,11 +6,16 @@ import {
   GlModalDirective,
   GlTooltipDirective,
 } from '@gitlab/ui';
+import { isEmpty } from 'lodash';
+import { mergeUrlParams } from '~/lib/utils/url_utility';
 import { s__, __ } from '~/locale';
+import { RSS_FILTER_EXCLUDE_EPIC, RSS_FILTER_EPIC_ONLY } from '~/work_items/constants';
+import WorkItemByEmail from './work_item_by_email.vue';
 import WorkItemCsvExportModal from './work_items_csv_export_modal.vue';
 import WorkItemsCsvImportModal from './work_items_csv_import_modal.vue';
 
 export default {
+  name: 'WorkItemListActions',
   exportModalId: 'work-item-export-modal',
   importModalId: 'work-item-import-modal',
   components: {
@@ -19,11 +24,15 @@ export default {
     GlDisclosureDropdownGroup,
     WorkItemCsvExportModal,
     WorkItemsCsvImportModal,
+    WorkItemByEmail,
   },
   i18n: {
     exportAsCSV: s__('WorkItem|Export as CSV'),
     importFromJira: s__('WorkItem|Import from Jira'),
     importCsv: s__('WorkItem|Import CSV'),
+    rssLinkUpdateError: s__(
+      'WorkItem|An error occurred updating the RSS link. Please refresh the page to try again.',
+    ),
   },
   directives: {
     GlModal: GlModalDirective,
@@ -70,6 +79,26 @@ export default {
       required: false,
       default: '',
     },
+    showWorkItemByEmailButton: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
+    urlParams: {
+      type: Object,
+      required: false,
+      default: () => ({}),
+    },
+    isEpicsList: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
+    isGroupIssuesList: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
   },
   data() {
     return {
@@ -96,12 +125,29 @@ export default {
     dropdownTooltip() {
       return !this.showTooltip ? __('Actions') : '';
     },
+    filteredRssPath() {
+      if (!this.rssPath) return null;
+
+      const defaultTypeParams = this.getDefaultTypeParams();
+      const combinedParams = { ...defaultTypeParams, ...this.urlParams };
+
+      if (isEmpty(combinedParams)) return this.rssPath;
+
+      try {
+        return mergeUrlParams(combinedParams, this.rssPath);
+      } catch (error) {
+        this.$emit('error', this.$options.i18n.rssLinkUpdateError);
+
+        // Fall back to the original path if URL construction fails
+        return this.rssPath;
+      }
+    },
     subscribeDropdownOptions() {
       return {
         items: [
           {
             text: __('Subscribe to RSS feed'),
-            href: this.rssPath,
+            href: this.filteredRssPath,
             extraAttrs: { 'data-testid': 'subscribe-rss' },
           },
           {
@@ -113,7 +159,7 @@ export default {
       };
     },
     hasSubscriptionOptions() {
-      return this.rssPath || this.calendarPath;
+      return this.filteredRssPath || this.calendarPath;
     },
     isJiraImportVisible() {
       return Boolean(this.projectImportJiraPath) && this.canEdit;
@@ -125,7 +171,9 @@ export default {
       );
     },
     shouldShowDropdown() {
-      return this.hasImportExportOptions || this.hasSubscriptionOptions;
+      return (
+        this.hasImportExportOptions || this.hasSubscriptionOptions || this.showWorkItemByEmailButton
+      );
     },
   },
   methods: {
@@ -134,6 +182,19 @@ export default {
     },
     hideDropdown() {
       this.showTooltip = false;
+    },
+    getDefaultTypeParams() {
+      // For group issues page, exclude epics by using negative filter
+      if (this.isGroupIssuesList) {
+        return RSS_FILTER_EXCLUDE_EPIC;
+      }
+
+      // For group epics page, add 'epic' as default type filter
+      if (this.isEpicsList) {
+        return RSS_FILTER_EPIC_ONLY;
+      }
+
+      return {};
     },
   },
 };
@@ -189,6 +250,11 @@ export default {
         :full-path="fullPath"
       />
     </template>
+    <work-item-by-email
+      v-if="showWorkItemByEmailButton"
+      data-track-action="click_email_work_item_project_work_items_empty_list_page"
+      data-track-label="email_work_item_project_work_items_empty_list"
+    />
     <gl-disclosure-dropdown-group
       v-if="hasSubscriptionOptions"
       :bordered="hasImportExportOptions"

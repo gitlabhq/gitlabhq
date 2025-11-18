@@ -17,6 +17,7 @@ query getPipelineHeaderData($fullPath: ID!, $iid: ID!) {
         detailsPath
         icon
         text
+        favicon
       }
       errorMessages {
         nodes {
@@ -56,12 +57,17 @@ query getPipelineHeaderData($fullPath: ID!, $iid: ID!) {
       stuck
       child
       complete
+      ref
       latest
       mergeRequestEventType
       configSource
       failureReason
       source
       trigger
+      mergeRequest {
+        id
+        sourceBranch
+      }
       ...PipelineHeaderData
     }
   }

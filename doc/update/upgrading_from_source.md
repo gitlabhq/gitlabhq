@@ -3,7 +3,7 @@ stage: GitLab Delivery
 group: Operate
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 title: Upgrade self-compiled instances
-description: Upgrade a self-compiled instance.
+description: Upgrade a single-node self-compiled instance.
 ---
 
 {{< details >}}
@@ -13,35 +13,32 @@ description: Upgrade a self-compiled instance.
 
 {{< /details >}}
 
-Upgrade a self-compiled installation to a later version of GitLab.
-
-To upgrade a self-compiled GitLab instance:
-
-1. [Create a backup](#create-a-backup).
-1. [Stop GitLab](#stop-gitlab).
-1. [Update Ruby](#update-ruby).
-1. [Update Node.js](#update-nodejs).
-1. [Update Go](#update-go).
-1. [Update Git](#update-git).
-1. [Update PostgreSQL](#update-postgresql).
-1. [Update the GitLab codebase](#update-the-gitlab-codebase).
-1. [Update configuration files](#update-configuration-files).
-1. [Install libraries and run migrations](#install-libraries-and-run-migrations).
-1. [Update GitLab Shell](#update-gitlab-shell).
-1. [Update GitLab Workhorse](#update-gitlab-workhorse).
-1. [Update Gitaly](#update-gitaly).
-1. [Update GitLab Pages](#update-gitlab-pages).
-1. [Perform post-upgrade steps](#post-upgrade-steps).
+Upgrade a self-compiled instance to a later version of GitLab.
 
 ## Prerequisites
 
 Before you upgrade:
 
-- Consult [information you need before you upgrade](plan_your_upgrade.md).
-- Review the [software requirements](../install/self_compiled/_index.md#software-requirements) for Ruby, Node.js, Go,
-  and PostgreSQL.
+1. You must [read required information and perform required steps](plan_your_upgrade.md).
+1. Review the [software requirements](../install/self_compiled/_index.md#software-requirements) for Ruby, Node.js, Go,
+   and PostgreSQL.
 
-## Create a backup
+## Upgrade a self-compiled instance
+
+To upgrade a self-compiled instance:
+
+1. Consider [turning on maintenance mode](../administration/maintenance_mode/_index.md) during the upgrade.
+1. Pause [running CI/CD pipelines and jobs](plan_your_upgrade.md#pause-cicd-pipelines-and-jobs).
+1. [Upgrade GitLab Runner](https://docs.gitlab.com/runner/install/) to the same version as your target GitLab version.
+1. Upgrade GitLab by following the instructions on this page.
+
+After you upgrade:
+
+1. Unpause [running CI/CD pipelines and jobs](plan_your_upgrade.md#pause-cicd-pipelines-and-jobs).
+1. If enabled, [turn off maintenance mode](../administration/maintenance_mode/_index.md#disable-maintenance-mode).
+1. Run [upgrade health checks](plan_your_upgrade.md#run-upgrade-health-checks).
+
+### Create a backup
 
 Prerequisites:
 
@@ -55,7 +52,7 @@ cd /home/git/gitlab
 sudo -u git -H bundle exec rake gitlab:backup:create RAILS_ENV=production
 ```
 
-## Stop GitLab
+### Stop GitLab
 
 To stop GitLab:
 
@@ -67,7 +64,7 @@ sudo systemctl stop gitlab.target
 sudo service gitlab stop
 ```
 
-## Update Ruby
+### Update Ruby
 
 If a newer version of Ruby is required, you must update Ruby:
 
@@ -80,7 +77,7 @@ If a newer version of Ruby is required, you must update Ruby:
 1. For instructions on updating to newer versions of Ruby, see
    [Ruby installation instructions](https://www.ruby-lang.org/en/documentation/installation/).
 
-## Update Node.js
+### Update Node.js
 
 If a newer version of Node.js is required, you must update Node.js:
 
@@ -96,7 +93,7 @@ If a newer version of Node.js is required, you must update Node.js:
 GitLab also requires Yarn `>= v1.10.0` to manage JavaScript dependencies. For more information, see the
 [Yarn website](https://classic.yarnpkg.com/en/docs/install).
 
-## Update Go
+### Update Go
 
 If a newer version of Go is required, you must update Go:
 
@@ -109,12 +106,12 @@ If a newer version of Go is required, you must update Go:
 1. For instructions on updating to newer versions of Go, see
    [Go installation instructions](https://go.dev/doc/install).
 
-## Update Git
+### Update Git
 
 You should use the Git version provided by Gitaly. For more information, see
 [GitLab installation instructions for Git](../install/self_compiled/_index.md#git).
 
-## Update PostgreSQL
+### Update PostgreSQL
 
 If a newer version of PostgreSQL is required, you must update PostgreSQL:
 
@@ -128,7 +125,7 @@ If a newer version of PostgreSQL is required, you must update PostgreSQL:
    [PostgreSQL upgrading documentation](https://www.postgresql.org/docs/16/upgrading.html).
 1. Make sure you have the required [PostgreSQL extensions](../install/requirements.md#postgresql).
 
-## Update the GitLab codebase
+### Update the GitLab codebase
 
 To update your clone of the GitLab codebase:
 
@@ -167,7 +164,7 @@ To update your clone of the GitLab codebase:
 
    {{< /tabs >}}
 
-## Update configuration files
+### Update configuration files
 
 GitLab upgrades might require updates to the following configuration:
 
@@ -180,7 +177,7 @@ GitLab upgrades might require updates to the following configuration:
 
 The following sections document how to determine if configuration updates are required.
 
-### New configuration for `gitlab.yml`
+#### New configuration for `gitlab.yml`
 
 There might be new configuration options available for
 [`gitlab.yml`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/config/gitlab.yml.example).
@@ -194,7 +191,7 @@ There might be new configuration options available for
 
 1. Apply new configuration manually to your current `gitlab.yml`.
 
-### New configuration for `database.yml`
+#### New configuration for `database.yml`
 
 {{< history >}}
 
@@ -214,7 +211,7 @@ There might be new configuration options available for
 
 1. Apply new configuration manually to your current `database.yml`.
 
-### New configuration for NGINX or Apache
+#### New configuration for NGINX or Apache
 
 Ensure you're still up-to-date with the latest NGINX configuration changes:
 
@@ -235,7 +232,7 @@ If you are using Apache instead of NGINX, see the updated [Apache templates](htt
 Because Apache does not support upstreams behind Unix sockets, you must let GitLab Workhorse listen on a TCP port by
 using [`/etc/default/gitlab`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/support/init.d/gitlab.default.example#L38).
 
-### SMTP configuration
+#### SMTP configuration
 
 If you use SMTP to deliver mail, you must add the following line to `config/initializers/smtp_settings.rb`:
 
@@ -246,7 +243,7 @@ ActionMailer::Base.delivery_method = :smtp
 See [`smtp_settings.rb.sample`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/config/initializers/smtp_settings.rb.sample#L13)
 for an example.
 
-### Configure systemd units
+#### Configure systemd units
 
 1. Check if the systemd units have been updated:
 
@@ -264,7 +261,7 @@ for an example.
    sudo systemctl daemon-reload
    ```
 
-### Configure SysV init script
+#### Configure SysV init script
 
 There might be new configuration options available for
 [`gitlab.default.example`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/support/init.d/gitlab.default.example).
@@ -293,7 +290,7 @@ If you are using the init script on a system running systemd as init, because yo
 sudo systemctl daemon-reload
 ```
 
-## Install libraries and run migrations
+### Install libraries and run migrations
 
 To install libraries and run migrations:
 
@@ -326,7 +323,7 @@ To install libraries and run migrations:
    sudo -u git -H bundle exec rake cache:clear RAILS_ENV=production
    ```
 
-## Update GitLab Shell
+### Update GitLab Shell
 
 To update GitLab Shell, run these commands:
 
@@ -338,7 +335,7 @@ sudo -u git -H git checkout v$(</home/git/gitlab/GITLAB_SHELL_VERSION)
 sudo -u git -H make build
 ```
 
-## Update GitLab Workhorse
+### Update GitLab Workhorse
 
 To install and compile GitLab Workhorse, run these commands:
 
@@ -348,7 +345,7 @@ cd /home/git/gitlab
 sudo -u git -H bundle exec rake "gitlab:workhorse:install[/home/git/gitlab-workhorse]" RAILS_ENV=production
 ```
 
-## Update Gitaly
+### Update Gitaly
 
 Upgrade Gitaly servers to the newer version before upgrading the application server. This prevents the gRPC client
 on the application server from sending RPCs that the old Gitaly version does not support.
@@ -367,7 +364,7 @@ cd /home/git/gitlab
 sudo -u git -H bundle exec rake "gitlab:gitaly:install[/home/git/gitaly,/home/git/repositories]" RAILS_ENV=production
 ```
 
-## Update GitLab Pages
+### Update GitLab Pages
 
 To install and compile GitLab Pages:
 
@@ -379,14 +376,14 @@ sudo -u git -H git checkout v$(</home/git/gitlab/GITLAB_PAGES_VERSION)
 sudo -u git -H make
 ```
 
-## Post-upgrade steps
+### Post-upgrade steps
 
 After you've upgraded:
 
 1. [Start GitLab and NGINX](#start-gitlab-and-nginx).
 1. [Check GitLab status](#check-gitlab-status).
 
-### Start GitLab and NGINX
+#### Start GitLab and NGINX
 
 To start GitLab and NGINX:
 
@@ -400,7 +397,7 @@ sudo service gitlab start
 sudo service nginx restart
 ```
 
-### Check GitLab status
+#### Check GitLab status
 
 To check the status of GitLab:
 

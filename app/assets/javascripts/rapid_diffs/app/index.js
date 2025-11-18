@@ -1,7 +1,7 @@
 import { pinia } from '~/pinia/instance';
 import { initViewSettings } from '~/rapid_diffs/app/view_settings';
 import { DiffFile } from '~/rapid_diffs/web_components/diff_file';
-import { useDiffsList } from '~/rapid_diffs/stores/diffs_list';
+import { statuses, useDiffsList } from '~/rapid_diffs/stores/diffs_list';
 import { initFileBrowser } from '~/rapid_diffs/app/file_browser';
 import { StreamingError } from '~/rapid_diffs/web_components/streaming_error';
 import { useDiffsView } from '~/rapid_diffs/stores/diffs_view';
@@ -10,7 +10,7 @@ import { createAlert } from '~/alert';
 import { __ } from '~/locale';
 import { fixWebComponentsStreamingOnSafari } from '~/rapid_diffs/app/quirks/safari_fix';
 import { DIFF_FILE_MOUNTED } from '~/rapid_diffs/dom_events';
-import { VIEWER_ADAPTERS } from '~/rapid_diffs/app/adapters';
+import { VIEWER_ADAPTERS } from '~/rapid_diffs/app/adapter_configs/base';
 import { camelizeKeys } from '~/lib/utils/object_utils';
 import { disableBrokenContentVisibility } from '~/rapid_diffs/app/quirks/content_visibility_fix';
 import { useApp } from '~/rapid_diffs/stores/app';
@@ -142,6 +142,13 @@ export class RapidDiffsFacade {
     disableBrokenContentVisibility(this.root);
     initHiddenFilesWarning(this.root.querySelector('[data-hidden-files-warning]'));
     this.root.addEventListener(DIFF_FILE_MOUNTED, useDiffsList(pinia).addLoadedFile);
+    const loadingIndicator = this.root.querySelector('[data-list-loading]');
+    useDiffsList(pinia).$subscribe(
+      () => {
+        loadingIndicator.hidden = useDiffsList(pinia).status !== statuses.streaming;
+      },
+      { immediate: true },
+    );
   }
 
   get #lazy() {

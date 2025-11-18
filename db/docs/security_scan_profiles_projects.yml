@@ -1,0 +1,12 @@
+---
+table_name: security_scan_profiles_projects
+classes:
+- Security::ScanProfileProject
+feature_categories:
+  - security_asset_inventories
+description: Stores security scan profiles to projects relations
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/211336
+milestone: '18.6'
+gitlab_schema: gitlab_sec
+sharding_key:
+  project_id: projects

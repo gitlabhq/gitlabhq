@@ -78,7 +78,7 @@ describe('ml/experiment_tracking/routes/candidates/show/candidate_detail.vue', (
     });
 
     it('formats metrics data correctly', () => {
-      expect(findParametersTable().vm.$attrs.items).toEqual([
+      expect(findParametersTable().props('items')).toEqual([
         { name: 'Algorithm', value: 'Decision Tree' },
         { name: 'MaxDepth', value: '3' },
       ]);
@@ -134,7 +134,7 @@ describe('ml/experiment_tracking/routes/candidates/show/candidate_detail.vue', (
     });
 
     it('formats metrics data correctly', () => {
-      expect(findMetricsTable().vm.$attrs.items).toContainEqual({
+      expect(findMetricsTable().props('items')).toContainEqual({
         name: 'Accuracy',
         1: '.99',
         2: '.98',

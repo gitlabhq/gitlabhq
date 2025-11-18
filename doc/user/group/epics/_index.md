@@ -87,7 +87,7 @@ To do it, paste the issue URL when
 
 {{< /details >}}
 
-On the **Child items** section header, select **More actions** ({{< icon name="ellipsis_v" >}}) **> View on a roadmap**.
+On the **Child items** section header, select **More actions** ({{< icon name="ellipsis_v" >}}) > **View on a roadmap**.
 
 A roadmap filtered for the parent epic opens.
 

@@ -14,24 +14,6 @@ $item-remove-button-space: 42px;
   }
 }
 
-.related-items-tree {
-  .card-header {
-    // stylelint-disable-next-line gitlab/no-gl-class
-    .gl-label {
-      line-height: $gl-line-height;
-    }
-  }
-
-  .sortable-link {
-    white-space: normal;
-  }
-
-  .item-assignees .avatar {
-    height: $gl-padding;
-    width: $gl-padding;
-  }
-}
-
 .item-body {
   position: relative;
   line-height: $gl-line-height;
@@ -170,7 +152,6 @@ $item-remove-button-space: 42px;
 
 /* Small devices (landscape phones, 768px and up) */
 @include gl-container-width-up(md, panel) {
-  .related-items-tree .item-contents,
   .item-body .item-title {
     max-width: 100%;
   }

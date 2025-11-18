@@ -1,6 +1,6 @@
 ---
-stage: none
-group: unassigned
+stage: Create
+group: Import
 info: Any user with at least the Maintainer role can merge updates to this content. For details, see https://docs.gitlab.com/development/development_processes/#development-guidelines-review.
 title: Bitbucket Server importer developer documentation
 ---
@@ -60,7 +60,7 @@ for 24 hours so that it doesn't have to be searched for again.
 
 This worker imports notes (comments) for all merge requests.
 
-For every merge request, a job for the `Gitlab::BitbucketServerImport::ImportPullRequestNotesWorker`
+For every merge request, a job for the `Gitlab::BitbucketServerImport::ImportPullRequestNoteWorker`
 worker is scheduled which imports all standalone comments, inline comments, merge events, and
 approved events for the merge request.
 

@@ -2,7 +2,7 @@
 import { GlSprintf, GlModal } from '@gitlab/ui';
 import { createAlert } from '~/alert';
 import axios from '~/lib/utils/axios_utils';
-import { visitUrl } from '~/lib/utils/url_utility';
+import { visitUrl, getParameterByName } from '~/lib/utils/url_utility';
 import { stripQuotes } from '~/lib/utils/text_utility';
 import { s__, __, sprintf } from '~/locale';
 import eventHub from '../event_hub';
@@ -64,7 +64,7 @@ export default {
     onSubmit() {
       eventHub.$emit('promoteLabelModal.requestStarted', this.url);
       return axios
-        .post(this.url, { params: { format: 'json' } })
+        .post(this.url, { params: { format: 'json' }, page: getParameterByName('page') })
         .then((response) => {
           eventHub.$emit('promoteLabelModal.requestFinished', {
             labelUrl: this.url,

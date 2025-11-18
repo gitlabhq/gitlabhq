@@ -38,7 +38,7 @@ Read more in the Helm documentation about these topics:
 
 To authenticate to the Helm repository, you need either:
 
-- A [personal access token](../../../api/rest/authentication.md#personalprojectgroup-access-tokens) with the scope set to `api`.
+- A [personal access token](../../profile/personal_access_tokens.md) with the scope set to `api`.
 - A [deploy token](../../project/deploy_tokens/_index.md) with the scope set to `read_package_registry`, `write_package_registry`, or both.
 - A [CI/CD job token](../../../ci/jobs/ci_job_token.md).
 

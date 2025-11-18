@@ -104,41 +104,59 @@ RSpec.describe User, feature_category: :system_access do
     describe '#redacted_name(viewing_user)' do
       let_it_be(:viewing_user) { human }
 
-      subject { observed_user.redacted_name(viewing_user) }
+      subject(:redacted_name) { observed_user.redacted_name(viewing_user) }
 
-      context 'when user is not a project bot' do
-        let(:observed_user) { support_bot }
+      shared_examples '#redacted_name' do
+        context 'when user is not a project bot' do
+          let(:observed_user) { support_bot }
 
-        it { is_expected.to eq(support_bot.name) }
+          it { is_expected.to eq(support_bot.name) }
+        end
+
+        context 'when user is a project_bot' do
+          let(:observed_user) { project_bot }
+
+          context 'when groups are present and user can :read_group' do
+            let_it_be(:group) { create(:group) }
+
+            before do
+              group.add_developer(observed_user)
+              group.add_developer(viewing_user)
+            end
+
+            it { is_expected.to eq(observed_user.name) }
+          end
+
+          context 'when user can :read_project' do
+            let_it_be(:project) { create(:project) }
+
+            before do
+              project.add_developer(observed_user)
+              project.add_developer(viewing_user)
+            end
+
+            it { is_expected.to eq(observed_user.name) }
+          end
+
+          context 'when requester does not have permissions to read project_bot name' do
+            it { is_expected.to eq('****') }
+          end
+        end
       end
 
-      context 'when user is a project_bot' do
-        let(:observed_user) { project_bot }
+      context 'with RequestStore enabled', :request_store do
+        it_behaves_like '#redacted_name'
 
-        context 'when groups are present and user can :read_group' do
-          let_it_be(:group) { create(:group) }
+        context 'when user is a project_bot and user does not have permissions' do
+          let(:observed_user) { project_bot }
 
-          before do
-            group.add_developer(observed_user)
-            group.add_developer(viewing_user)
+          it 'only queries the database once' do
+            expect(observed_user).to receive(:groups).once.and_call_original
+
+            2.times do
+              expect(redacted_name).to eq('****')
+            end
           end
-
-          it { is_expected.to eq(observed_user.name) }
-        end
-
-        context 'when user can :read_project' do
-          let_it_be(:project) { create(:project) }
-
-          before do
-            project.add_developer(observed_user)
-            project.add_developer(viewing_user)
-          end
-
-          it { is_expected.to eq(observed_user.name) }
-        end
-
-        context 'when requester does not have permissions to read project_bot name' do
-          it { is_expected.to eq('****') }
         end
       end
     end

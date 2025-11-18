@@ -5,7 +5,7 @@ class Projects::RunnerProjectsController < Projects::ApplicationController
 
   layout 'project_settings'
 
-  feature_category :runner
+  feature_category :runner_core
   urgency :low
 
   def create

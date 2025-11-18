@@ -93,7 +93,7 @@ module API
           desc: 'Return issues sorted in `asc` or `desc` order.'
         optional :due_date, type: String, values: %w[0 any today tomorrow overdue week month next_month_and_previous_two_weeks] << '',
           desc: 'Return issues that have no due date (`0`), or whose due date is this week, this month, between two weeks ago and next month, or which are overdue. Accepts: `overdue`, `week`, `month`, `next_month_and_previous_two_weeks`, `0`'
-        optional :issue_type, type: String, values: WorkItems::Type.allowed_types_for_issues, desc: "The type of the issue. Accepts: #{WorkItems::Type.allowed_types_for_issues.join(', ')}"
+        optional :issue_type, type: String, values: ::WorkItems::TypesFilter.allowed_types_for_issues, desc: "The type of the issue. Accepts: #{::WorkItems::TypesFilter.allowed_types_for_issues.join(', ')}"
         use :issues_stats_params
         use :pagination
       end
@@ -109,7 +109,7 @@ module API
         optional :due_date, type: String, desc: 'Date string in the format YEAR-MONTH-DAY'
         optional :confidential, type: Boolean, desc: 'Boolean parameter if the issue should be confidential', allow_blank: false
         optional :discussion_locked, type: Boolean, desc: " Boolean parameter indicating if the issue's discussion is locked"
-        optional :issue_type, type: String, values: WorkItems::Type.allowed_types_for_issues, desc: "The type of the issue. Accepts: #{WorkItems::Type.allowed_types_for_issues.join(', ')}"
+        optional :issue_type, type: String, values: ::WorkItems::TypesFilter.allowed_types_for_issues, desc: "The type of the issue. Accepts: #{::WorkItems::TypesFilter.allowed_types_for_issues.join(', ')}"
 
         use :optional_issue_params_ee
       end

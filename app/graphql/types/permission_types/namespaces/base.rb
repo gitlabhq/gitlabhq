@@ -7,7 +7,8 @@ module Types
         graphql_name 'NamespacePermissions'
 
         abilities :admin_label, :admin_issue, :create_work_item,
-          :import_issues, :read_crm_contact, :read_crm_organization, :create_projects
+          :import_issues, :read_crm_contact, :read_crm_organization, :create_projects,
+          :import_work_items, :admin_project
 
         ability_field :read_namespace
 

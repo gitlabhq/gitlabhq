@@ -51,7 +51,7 @@ RSpec.describe Projects::IssuesController, feature_category: :team_planning do
     it 'redirects to work item listing page with correct type filter' do
       get_index
 
-      expect(response).to redirect_to(project_work_items_path(project, 'type[]' => 'issue'))
+      expect(response).to redirect_to(project_work_items_path(project))
 
       follow_redirect!
 
@@ -65,9 +65,7 @@ RSpec.describe Projects::IssuesController, feature_category: :team_planning do
       it 'persists the params when redirecting' do
         get_index
 
-        expect(response).to redirect_to(project_work_items_path(project, 'type[]' => 'issue',
-          label_name: 'test', sort: 'updated_at'
-        ))
+        expect(response).to redirect_to(project_work_items_path(project, label_name: 'test', sort: 'updated_at'))
       end
     end
 
@@ -77,7 +75,7 @@ RSpec.describe Projects::IssuesController, feature_category: :team_planning do
       it 'overrides the existing param to issues' do
         get_index
 
-        expect(response).to redirect_to(project_work_items_path(project, 'type[]' => 'issue'))
+        expect(response).to redirect_to(project_work_items_path(project))
       end
     end
 
@@ -108,7 +106,7 @@ RSpec.describe Projects::IssuesController, feature_category: :team_planning do
     it 'redirects to work items page' do
       get_index
 
-      expect(response).to redirect_to(project_work_items_path(project, 'type[]' => 'issue'))
+      expect(response).to redirect_to(project_work_items_path(project))
     end
   end
 

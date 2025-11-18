@@ -1,8 +1,8 @@
 # frozen_string_literal: true
 
-require 'rails'
 require 'net/http'
-require 'webmock' if Rails.env.test?
+
+require 'webmock' if ENV['RAILS_ENV'] == 'test'
 
 # The Ruby 3.2 does change Net protocol. Please see;
 # https://github.com/ruby/ruby/blob/ruby_3_2/lib/net/protocol.rb#L194-L206
@@ -15,7 +15,7 @@ module Gitlab
     # it needs to inherit from the original BufferedIO.
     # https://github.com/bblimke/webmock/blob/867f4b290fd133658aa9530cba4ba8b8c52c0d35/lib/webmock/http_lib_adapters/net_http.rb#L266
     parent_class = if const_defined?('WebMock::HttpLibAdapters::NetHttpAdapter::OriginalNetBufferedIO') &&
-        Rails.env.test?
+        ENV['RAILS_ENV'] == 'test'
                      WebMock::HttpLibAdapters::NetHttpAdapter::OriginalNetBufferedIO
                    else
                      Net::BufferedIO

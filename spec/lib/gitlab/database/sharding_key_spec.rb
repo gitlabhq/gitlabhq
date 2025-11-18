@@ -9,12 +9,14 @@ RSpec.describe 'new tables missing sharding_key', feature_category: :organizatio
   # the table name to remove this once a decision has been made.
   let(:allowed_to_be_missing_sharding_key) do
     [
+      'abuse_report_uploads', # https://gitlab.com/gitlab-org/gitlab/-/issues/398199
       'web_hook_logs_daily', # temporary copy of web_hook_logs
-      'ci_gitlab_hosted_runner_monthly_usages', # https://gitlab.com/gitlab-org/gitlab/-/issues/553104
       'uploads_9ba88c4165', # https://gitlab.com/gitlab-org/gitlab/-/issues/398199
       'merge_request_diff_files_99208b8fac', # has a desired sharding key instead
       'notes_archived', # temp table: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/191155
-      'label_links_archived' # temp table: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/206448
+      'label_links_archived', # temp table: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/206448
+      'authentication_event_archived_records', # temp table: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/202447
+      'user_permission_export_upload_uploads' # https://gitlab.com/gitlab-org/gitlab/-/issues/398199
     ]
   end
 
@@ -22,23 +24,13 @@ RSpec.describe 'new tables missing sharding_key', feature_category: :organizatio
   # the table name to remove this once a decision has been made.
   let(:allowed_to_be_missing_not_null) do
     [
-      *['badges.project_id', 'badges.group_id'], # https://gitlab.com/gitlab-org/gitlab/-/issues/562439
       'member_roles.namespace_id', # https://gitlab.com/gitlab-org/gitlab/-/issues/444161
-      *['todos.project_id', 'todos.group_id'], # https://gitlab.com/gitlab-org/gitlab/-/issues/562437
-      *[
-        'bulk_import_trackers.organization_id',
-        'bulk_import_trackers.project_id',
-        'bulk_import_trackers.namespace_id'
-      ], # https://gitlab.com/gitlab-org/gitlab/-/issues/560846
+      'abuse_trust_scores.user_id', # https://gitlab.com/gitlab-org/gitlab/-/issues/553436
       *uploads_and_partitions,
-      'ci_runner_taggings_group_type.organization_id', # NOT NULL constraint NOT VALID
-      'ci_runner_taggings_project_type.organization_id', # NOT NULL constraint NOT VALID
-      'group_type_ci_runner_machines.organization_id', # NOT NULL constraint NOT VALID
-      'group_type_ci_runners.organization_id', # NOT NULL constraint NOT VALID
-      'project_type_ci_runner_machines.organization_id', # NOT NULL constraint NOT VALID
-      'project_type_ci_runners.organization_id', # NOT NULL constraint NOT VALID
       'security_scans.project_id', # NOT NULL constraint NOT VALID
-      *['labels.group_id', 'labels.project_id', 'labels.organization_id'] # NOT NULL constraint NOT VALID
+      'keys.organization_id', # https://gitlab.com/gitlab-org/gitlab/-/issues/577246
+      'oauth_applications.organization_id', # https://gitlab.com/gitlab-org/gitlab/-/issues/579291
+      *['x509_issuers.project_id', 'x509_certificates.project_id'] # NOT NULL constraint NOT VALID
     ]
   end
 
@@ -151,7 +143,9 @@ RSpec.describe 'new tables missing sharding_key', feature_category: :organizatio
       sharding_key.each do |column_name, referenced_table_name|
         expect(column_exists?(table_name, column_name)).to eq(true),
           "Could not find sharding key column #{table_name}.#{column_name}"
-        expect(referenced_table_name).to be_in(allowed_sharding_key_referenced_tables)
+        expect(referenced_table_name).to be_in(allowed_sharding_key_referenced_tables),
+          "#{table_name} uses an incorrect sharding_key (#{referenced_table_name}). " \
+            "Allowed values: #{allowed_sharding_key_referenced_tables.to_sentence}"
 
         if allowed_to_be_missing_foreign_key.include?("#{table_name}.#{column_name}")
           expect(has_foreign_key?(table_name, column_name)).to eq(false),
@@ -256,7 +250,7 @@ RSpec.describe 'new tables missing sharding_key', feature_category: :organizatio
 
     # Step 3: Check foreign keys using Rails schema introspection
     work_in_progress = {
-      "web_hooks" => "https://gitlab.com/gitlab-org/gitlab/-/issues/524812",
+      "authentication_events" => "https://gitlab.com/gitlab-org/gitlab/-/issues/561359",
       "snippet_user_mentions" => "https://gitlab.com/gitlab-org/gitlab/-/issues/517825",
       "bulk_import_trackers" => "https://gitlab.com/gitlab-org/gitlab/-/issues/560846",
       "organization_users" => 'https://gitlab.com/gitlab-org/gitlab/-/issues/476210',
@@ -270,7 +264,6 @@ RSpec.describe 'new tables missing sharding_key', feature_category: :organizatio
       "fork_networks" => "https://gitlab.com/gitlab-org/gitlab/-/issues/522958",
       "bulk_import_configurations" => "https://gitlab.com/gitlab-org/gitlab/-/issues/536521",
       "pool_repositories" => "https://gitlab.com/gitlab-org/gitlab/-/issues/490484",
-      'todos' => 'https://gitlab.com/gitlab-org/gitlab/-/issues/562437',
       # All the tables below related to uploads are part of the same work to
       # add sharding key to the table
       "admin_roles" => "https://gitlab.com/gitlab-org/gitlab/-/issues/553437",
@@ -301,35 +294,32 @@ RSpec.describe 'new tables missing sharding_key', feature_category: :organizatio
       "vulnerability_remediation_uploads" => "https://gitlab.com/gitlab-org/gitlab/-/issues/398199",
       # End of uploads related tables
       "ci_runner_machines" => "https://gitlab.com/gitlab-org/gitlab/-/issues/525293",
+      "instance_type_ci_runner_machines" => "https://gitlab.com/gitlab-org/gitlab/-/issues/525293",
       "clusters" => "https://gitlab.com/gitlab-org/gitlab/-/issues/553452",
+      "ci_runners" => "https://gitlab.com/gitlab-org/gitlab/-/issues/525293",
       "instance_type_ci_runners" => "https://gitlab.com/gitlab-org/gitlab/-/issues/525293",
-      "group_type_ci_runner_machines" => "https://gitlab.com/gitlab-org/gitlab/-/issues/525293",
-      "project_type_ci_runner_machines" => "https://gitlab.com/gitlab-org/gitlab/-/issues/525293",
       "ci_runner_taggings" => "https://gitlab.com/gitlab-org/gitlab/-/issues/525293",
       "ci_runner_taggings_instance_type" => "https://gitlab.com/gitlab-org/gitlab/-/issues/525293",
-      "ci_runners" => "https://gitlab.com/gitlab-org/gitlab/-/issues/525293",
-      "group_type_ci_runners" => "https://gitlab.com/gitlab-org/gitlab/-/issues/525293",
-      "instance_type_ci_runner_machines" => "https://gitlab.com/gitlab-org/gitlab/-/issues/525293",
-      "project_type_ci_runners" => "https://gitlab.com/gitlab-org/gitlab/-/issues/525293",
-      "ci_runner_taggings_group_type" => "https://gitlab.com/gitlab-org/gitlab/-/issues/549027",
-      "ci_runner_taggings_project_type" => "https://gitlab.com/gitlab-org/gitlab/-/issues/549028",
       "customer_relations_contacts" => "https://gitlab.com/gitlab-org/gitlab/-/issues/549029",
-      "jira_tracker_data" => "https://gitlab.com/gitlab-org/gitlab/-/issues/549032",
-      "abuse_reports" => "https://gitlab.com/gitlab-org/gitlab/-/issues/553435",
       "abuse_report_labels" => "https://gitlab.com/gitlab-org/gitlab/-/issues/553427",
-      "abuse_report_events" => "https://gitlab.com/gitlab-org/gitlab/-/issues/553429",
       "abuse_events" => "https://gitlab.com/gitlab-org/gitlab/-/issues/553427",
       "spam_logs" => "https://gitlab.com/gitlab-org/gitlab/-/issues/553470",
+      "user_agent_details" => "https://gitlab.com/gitlab-org/gitlab/-/work_items/574387",
       "abuse_report_assignees" => "https://gitlab.com/gitlab-org/gitlab/-/issues/553428",
       "labels" => "https://gitlab.com/gitlab-org/gitlab/-/issues/563889",
       "member_roles" => "https://gitlab.com/gitlab-org/gitlab/-/issues/567738",
-      "notes" => "https://gitlab.com/gitlab-org/gitlab/-/issues/569521",
       "notes_archived" => "https://gitlab.com/gitlab-org/gitlab/-/issues/569521",
       "system_note_metadata" => "https://gitlab.com/gitlab-org/gitlab/-/issues/571215",
-      "note_diff_files" => "https://gitlab.com/gitlab-org/gitlab/-/issues/550694"
+      "note_diff_files" => "https://gitlab.com/gitlab-org/gitlab/-/issues/550694",
+      "keys" => "https://gitlab.com/gitlab-org/gitlab/-/issues/553463",
+      "suggestions" => "https://gitlab.com/gitlab-org/gitlab/-/issues/550696",
+      "commit_user_mentions" => "https://gitlab.com/gitlab-org/gitlab/-/issues/550692",
+      "note_metadata" => "https://gitlab.com/gitlab-org/gitlab/-/issues/550695",
+      "slack_integrations" => "https://gitlab.com/gitlab-org/gitlab/-/issues/524680",
+      "diff_note_positions" => "https://gitlab.com/gitlab-org/gitlab/-/issues/550693",
+      'award_emoji' => 'https://gitlab.com/gitlab-org/gitlab/-/issues/514604',
+      "oauth_applications" => "https://gitlab.com/gitlab-org/gitlab/-/issues/579291"
     }
-
-    has_lfk = ->(lfks) { lfks.any? { |k| k.options[:column] == 'organization_id' && k.to_table == 'organizations' } }
 
     columns_to_check = organization_id_columns.reject { |column| work_in_progress[column[0]] }
     messages = columns_to_check.filter_map do |column|
@@ -341,7 +331,9 @@ RSpec.describe 'new tables missing sharding_key', feature_category: :organizatio
         foreign_keys = ApplicationRecord.connection.foreign_keys(table_name)
         org_fk = foreign_keys.find { |fk| fk.column == 'organization_id' && fk.to_table == 'organizations' }
 
-        violations << 'no foreign key' unless org_fk || has_lfk.call(loose_foreign_keys.fetch(table_name, {}))
+        unless org_fk || table_or_routing_table_has_org_id_lfk(table_name, loose_foreign_keys)
+          violations << 'no foreign key'
+        end
       rescue ActiveRecord::StatementInvalid
         # Table might not exist or be accessible
         violations << 'no foreign key'
@@ -349,7 +341,7 @@ RSpec.describe 'new tables missing sharding_key', feature_category: :organizatio
 
       violations.delete_if do |v|
         (v == 'nullable / not null constraint missing' && has_null_check_constraint?(table_name, 'organization_id')) ||
-          (v == 'no foreign key' && has_lfk.call(loose_foreign_keys.fetch(table_name, {})))
+          (v == 'no foreign key' && table_or_routing_table_has_org_id_lfk(table_name, loose_foreign_keys))
       end
 
       "  #{table_name} - #{violations.join(', ')}" if violations.any?
@@ -472,5 +464,28 @@ RSpec.describe 'new tables missing sharding_key', feature_category: :organizatio
       entry.table_name if entry.sharding_key.present? &&
         !::Gitlab::Database::GitlabSchema.require_sharding_key?(entry.gitlab_schema)
     end
+  end
+
+  def has_organization_id_lfk(lfks)
+    lfks.any? { |k| k.options[:column] == 'organization_id' && k.to_table == 'organizations' }
+  end
+
+  def table_or_routing_table_has_org_id_lfk(table_name, loose_foreign_keys)
+    table_lfks = loose_foreign_keys.fetch(table_name, {})
+
+    # Check if the table itself has a loose foreign key
+    return true if has_organization_id_lfk(table_lfks)
+
+    # For partitioned tables, also check if the parent/routing table has a loose foreign key
+    return false unless Gitlab::Database::PostgresPartition.partition_exists?(table_name)
+
+    partition = Gitlab::Database::PostgresPartition.find_by(
+      "identifier = concat(current_schema(), '.', ?)", table_name
+    )
+    return false unless partition&.parent_identifier
+
+    parent_table_name = partition.parent_identifier.split('.').last
+    parent_table_lfks = loose_foreign_keys.fetch(parent_table_name, {})
+    has_organization_id_lfk(parent_table_lfks)
   end
 end

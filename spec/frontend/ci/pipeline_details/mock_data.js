@@ -561,8 +561,8 @@ export const mockPipeline = (projectPath) => {
           path: '/root',
         },
         author_gravatar_url: '',
-        commit_url: `/${projectPath}/fd6df5b3229e213c97d308844a6f3e7fd71e8f8c`,
-        commit_path: `/${projectPath}/commit/fd6df5b3229e213c97d308844a6f3e7fd71e8f8c`,
+        commit_url: `/${projectPath}/aabbccdd`,
+        commit_path: `/${projectPath}/commit/aabbccdd`,
       },
       project: {
         full_path: `/${projectPath}`,
@@ -1220,6 +1220,7 @@ export const mockPipelineStatusUpdatedResponse = {
         id: 'success-1255-1255',
         label: 'passed',
         text: 'Passed',
+        favicon: '/assets/ci_favicons/favicon_status_success.png',
         __typename: 'DetailedStatus',
       },
       status: 'SUCCESS',

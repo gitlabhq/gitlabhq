@@ -122,7 +122,7 @@ module Ci
         new_pipeline.save!
 
         Gitlab::EventStore.publish(
-          Ci::PipelineCreatedEvent.new(data: { pipeline_id: new_pipeline.id })
+          Ci::PipelineCreatedEvent.new(data: { pipeline_id: new_pipeline.id, partition_id: new_pipeline.partition_id })
         )
       end
     end
@@ -147,37 +147,7 @@ module Ci
       end
     end
 
-    # rubocop:disable CodeReuse/ActiveRecord -- Quick Logging Check
-    def check_and_log_external_commit_status_user_collision(pipeline)
-      duplicate_commit_status = ::GenericCommitStatus
-        .running_or_pending
-        .for_project(project.id)
-        .in_pipelines(pipeline)
-        .in_partition(pipeline.partition_id)
-        .for_ref(ref)
-        .by_name(name)
-        .where.not(user: current_user)
-
-      return unless duplicate_commit_status.exists?
-
-      Gitlab::AppJsonLogger.info(
-        class: self.class.name,
-        event: 'external_commit_status_user_collision',
-        project_id: project.id,
-        pipeline_id: pipeline.id,
-        commit_sha: sha,
-        ref: ref,
-        status_name: name,
-        current_user_id: current_user.id,
-        existing_user_ids: duplicate_commit_status.map(&:user_id),
-        existing_status_count: duplicate_commit_status.length
-      )
-    end
-    # rubocop:enable CodeReuse/ActiveRecord
-
     def external_commit_status_scope(pipeline)
-      check_and_log_external_commit_status_user_collision(pipeline)
-
       scope = ::GenericCommitStatus
         .running_or_pending
         .for_project(project.id)
@@ -222,8 +192,11 @@ module Ci
 
     def pipeline_lock_params
       {
-        ttl: (Feature.enabled?(:long_pipeline_lock_ttl, project) ? 1.minute : 5.seconds),
-        sleep_sec: 0.1.seconds,
+        ttl: 1.minute,
+        # Retry over 10 seconds since the lock is long but the p99 is ~2 seconds
+        # We need to balance not keeping requests open with avoiding returning 409 which
+        # can result in a job stuck in running or pending
+        sleep_sec: 0.5.seconds,
         retries: 20
       }
     end
@@ -234,7 +207,6 @@ module Ci
         namespace_id: project.namespace_id,
         project_id: project.id,
         pipeline_id: params[:pipeline_id],
-        current_user_id: current_user.id,
         subscription_plan: project.actual_plan_name,
         message: 'Project tried to create more jobs than the quota allowed'
       )

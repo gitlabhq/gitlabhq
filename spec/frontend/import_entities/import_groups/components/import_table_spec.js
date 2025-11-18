@@ -56,7 +56,8 @@ describe('import table', () => {
 
   const findSomethingWentWrongEmptyState = () =>
     wrapper.findByTestId('something-went-wrong-empty-state');
-  const findImportSelectedDropdown = () => wrapper.findByTestId('import-selected-groups-dropdown');
+  const findImportAllSelectedDropdown = () =>
+    wrapper.findByTestId('import-selected-groups-dropdown');
   const findRowImportDropdownAtIndex = (idx) =>
     wrapper.findAll('tbody td button').wrappers.filter((w) => w.text() === 'Import with projects')[
       idx
@@ -320,6 +321,50 @@ describe('import table', () => {
       await waitForPromises();
 
       expect(findFirstImportTargetNamespaceText()).toBe(targetNamespace.fullPath);
+    });
+
+    describe('when some target namespaces are missing', () => {
+      it('displays `select parent group` error for the correct rows', async () => {
+        createComponent({
+          bulkImportSourceGroups: () => ({
+            nodes: [
+              {
+                ...generateFakeEntry({ id: 1, status: STATUSES.NONE }),
+                lastImportTarget: null,
+              },
+              {
+                ...generateFakeEntry({ id: 2, status: STATUSES.NONE }),
+                lastImportTarget: null,
+              },
+              {
+                ...generateFakeEntry({ id: 3, status: STATUSES.NONE }),
+                lastImportTarget: {
+                  id: 3,
+                  targetNamespace: AVAILABLE_NAMESPACES[0].fullPath,
+                  newName: 'valid-group',
+                },
+              },
+            ],
+            pageInfo: FAKE_PAGE_INFO,
+            versionValidation: FAKE_VERSION_VALIDATION,
+          }),
+        });
+
+        await waitForPromises();
+        await selectRow(0);
+        await selectRow(1);
+        await selectRow(2);
+
+        await findImportAllSelectedDropdown().find('button').trigger('click');
+        await nextTick();
+
+        const allRows = wrapper.findAll('tbody tr');
+
+        expect(allRows.at(0).text()).toContain('Select a parent group.');
+        expect(allRows.at(1).text()).toContain('Select a parent group.');
+
+        expect(allRows.at(2).text()).not.toContain('Select a parent group.');
+      });
     });
   });
 
@@ -656,7 +701,7 @@ describe('import table', () => {
       });
       await waitForPromises();
 
-      expect(findImportSelectedDropdown().props().disabled).toBe(true);
+      expect(findImportAllSelectedDropdown().props().disabled).toBe(true);
     });
 
     it('import selected button is enabled when groups were selected for import', async () => {
@@ -671,7 +716,7 @@ describe('import table', () => {
 
       await selectRow(0);
 
-      expect(findImportSelectedDropdown().props().disabled).toBe(false);
+      expect(findImportAllSelectedDropdown().props().disabled).toBe(false);
     });
 
     it('does not render import projects warning when target with isProjectCreationAllowed = true is selected', async () => {
@@ -733,7 +778,7 @@ describe('import table', () => {
       await selectRow(0);
       await nextTick();
 
-      expect(findImportSelectedDropdown().props().disabled).toBe(true);
+      expect(findImportAllSelectedDropdown().props().disabled).toBe(true);
     });
 
     it('does not allow selecting groups with validation errors', async () => {
@@ -758,7 +803,7 @@ describe('import table', () => {
       await selectRow(0);
       await nextTick();
 
-      expect(findImportSelectedDropdown().props().disabled).toBe(true);
+      expect(findImportAllSelectedDropdown().props().disabled).toBe(true);
     });
 
     it('invokes importGroups mutation when import selected dropdown is clicked', async () => {
@@ -782,7 +827,7 @@ describe('import table', () => {
       await selectRow(1);
       await nextTick();
 
-      await findImportSelectedDropdown().find('button').trigger('click');
+      await findImportAllSelectedDropdown().find('button').trigger('click');
 
       expect(apolloProvider.defaultClient.mutate).toHaveBeenCalledWith({
         mutation: importGroupsMutation,
@@ -905,14 +950,14 @@ describe('import table', () => {
     });
 
     it('renders import all dropdown', () => {
-      expect(findImportSelectedDropdown().exists()).toBe(true);
+      expect(findImportAllSelectedDropdown().exists()).toBe(true);
     });
 
     it('includes migrateProjects: true when dropdown is clicked', async () => {
       await selectRow(0);
       await selectRow(1);
       await nextTick();
-      await findImportSelectedDropdown().find('button').trigger('click');
+      await findImportAllSelectedDropdown().find('button').trigger('click');
       expect(apolloProvider.defaultClient.mutate).toHaveBeenCalledWith({
         mutation: importGroupsMutation,
         variables: {
@@ -940,7 +985,7 @@ describe('import table', () => {
       await selectRow(0);
       await selectRow(1);
       await nextTick();
-      await findImportSelectedDropdown().find('.gl-dropdown-item button').trigger('click');
+      await findImportAllSelectedDropdown().find('.gl-dropdown-item button').trigger('click');
       expect(apolloProvider.defaultClient.mutate).toHaveBeenCalledWith({
         mutation: importGroupsMutation,
         variables: {

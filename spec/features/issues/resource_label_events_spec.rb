@@ -11,10 +11,6 @@ RSpec.describe 'List issue resource label events', :js, feature_category: :team_
   let!(:label) { create(:label, project: project, title: 'foo') }
   let!(:user_status) { create(:user_status, user: user) }
 
-  before do
-    stub_feature_flags(work_item_view_for_issues: true)
-  end
-
   context 'when user displays the issue' do
     let!(:note)     { create(:note_on_issue, author: user, project: project, noteable: issue, note: 'some note') }
     let!(:event)    { create(:resource_label_event, user: user, issue: issue, label: label) }
@@ -45,8 +41,6 @@ RSpec.describe 'List issue resource label events', :js, feature_category: :team_
         select_listbox_item('bar')
         send_keys(:escape)
       end
-
-      visit project_issue_path(project, issue)
 
       expect(page).to have_css('.system-note', text: 'added bar foo labels')
     end

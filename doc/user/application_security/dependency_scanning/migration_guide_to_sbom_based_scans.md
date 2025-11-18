@@ -95,7 +95,9 @@ Users can view dependency scanning results as a job artifact (`gl-dependency-sca
 
 #### Beta behavior
 
-Based on customer feedback after releasing the Beta of this feature, we have decided to reinstate the generation of the dependency scanning report artifact for the Generally Available release. The Beta behavior is documented here for transparency and historical reasons but is no longer officially supported for the Generally Available feature and might be removed from the product.
+The dependency scanning report artifact is included in the Generally Available release.
+The Beta behavior is documented below for historical reference, but is no longer
+officially supported and might be removed from the product.
 
 <details>
   <summary>Expand this section for details of changes to how you access vulnerability scanning results.</summary>
@@ -106,6 +108,16 @@ Based on customer feedback after releasing the Beta of this feature, we have dec
   To help you transition smoothly, GitLab maintains some backward compatibility. While using the Gemnasium analyzer, you'll still get a standard artifact (using `artifacts:paths`) that contains the scan results. This means if you have succeeding CI/CD jobs that need these results, they can still access them. However, keep in mind that as the GitLab SBOM Vulnerability Scanner evolves and improves, these artifact-based results won't reflect the latest enhancements.
   When you're ready to fully migrate to the new dependency scanning analyzer, you'll need to adjust how you programmatically access scan results. Instead of reading job artifacts, you'll use GitLab GraphQL API, specifically the ([`Pipeline.securityReportFindings` resource](../../../api/graphql/reference/_index.md#pipelinesecurityreportfindings)).
 </details>
+
+### Compliance framework considerations
+
+When migrating to SBOM-based dependency scanning, be aware of potential impacts on compliance frameworks:
+
+- The "Dependency scanning running" compliance control may fail on GitLab Self-Managed instances (from 18.4) when using SBOM-based scanning because it expects the traditional `gl-dependency-scanning-report.json` artifact.
+- This issue does not affect GitLab.com (SaaS) instances.
+- If your organization uses compliance frameworks with dependency scanning controls, test the migration in a non-production environment first.
+
+For more information, see [compliance framework compatibility](dependency_scanning_sbom/_index.md#compliance-framework-compatibility).
 
 ## Identify affected projects
 
@@ -146,7 +158,7 @@ If you decide to migrate from the CI/CD template to the CI/CD component, review 
 
 As you migrate to the new dependency scanning analyzer, you'll need to make specific adjustments based on your project's programming languages and package managers. These instructions apply whenever you use the new dependency scanning analyzer,
 regardless of how you've configured it to run - whether through CI/CD templates, Scan Execution Policies, or the dependency scanning CI/CD component.
-In the following sections, you'll find detailed instructions for each supported language and package manager. For each one, we'll explain:
+In the following sections, you'll find detailed instructions for each supported language and package manager. Each instruction has explanations for:
 
 - How dependency detection is changing
 - What specific files you need to provide
@@ -426,7 +438,7 @@ See the [enablement instructions for sbt](dependency_scanning_sbom/_index.md#sbt
 
 **Previous behavior**: dependency scanning based on the Gemnasium analyzer supports setuptools projects using the `gemnasium-python-dependency_scanning` CI/CD job to extract the project dependencies by building the application from the `setup.py` file. The combinations of supported versions for Python and setuptools are detailed in the [dependency scanning (Gemnasium-based) documentation](_index.md#obtaining-dependency-information-by-running-a-package-manager-to-generate-a-parsable-file).
 
-**New behavior**: The new dependency scanning analyzer does not support building a setuptool project to extract the dependencies. We recommend to configure the [pip-compile command line tool](https://pip-tools.readthedocs.io/en/latest/cli/pip-compile/) to generate a compatible `requirements.txt` lockfile. Alternatively you can provide your own CycloneDX SBOM document.
+**New behavior**: The new dependency scanning analyzer does not support building a setuptool project to extract the dependencies. Configure the [pip-compile command line tool](https://pip-tools.readthedocs.io/en/latest/cli/pip-compile/) to generate a compatible `requirements.txt` lockfile. Alternatively you can provide your own CycloneDX SBOM document.
 
 #### Migrate a setuptools project
 

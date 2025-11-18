@@ -103,6 +103,11 @@ export default {
       required: false,
       default: false,
     },
+    showZeroCount: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
   },
   data() {
     return {
@@ -130,7 +135,15 @@ export default {
         return null;
       }
 
-      return this.icon && !this.count ? '0' : this.count;
+      if (this.count) {
+        return this.count;
+      }
+
+      if (this.icon || this.showZeroCount) {
+        return '0';
+      }
+
+      return null;
     },
     isFormUsedAndVisible() {
       return this.$scopedSlots.form && this.isFormVisible && !this.isCollapsed;
@@ -165,8 +178,24 @@ export default {
 
       if (this.isCollapsed) {
         this.$emit('collapsed');
+        /**
+         * note that these separate `click-*` emits are necessary for tracking
+         * this because the expanded and collapsed emits are programmatically
+         * called on mount as part of persisted collapse state management. If
+         * we just used the existing emits we would get tons of false positives
+         * on page loads.
+         */
+        this.$emit('click-collapsed');
       } else {
         this.$emit('expanded');
+        /**
+         * note that these separate `click-*` emits are necessary for tracking
+         * this because the expanded and collapsed emits are programmatically
+         * called on mount as part of persisted collapse state management. If
+         * we just used the existing emits we would get tons of false positives
+         * on page loads.
+         */
+        this.$emit('click-expanded');
       }
 
       if (this.persistCollapsedState) {

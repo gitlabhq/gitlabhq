@@ -30,6 +30,14 @@ RSpec.describe BackfillPartitionedProjectDailyStatistics, migration: :gitlab_mai
 
   describe '#up' do
     before do
+      # Create partition for August 2025 to match the test data dates
+      # This is needed because structure.sql doesn't include dynamic partition tables
+      connection.execute(<<~SQL)
+        CREATE TABLE IF NOT EXISTS gitlab_partitions_dynamic.project_daily_statistics_b8088ecbd2_202508
+        PARTITION OF project_daily_statistics_b8088ecbd2
+        FOR VALUES FROM ('2025-08-01') TO ('2025-09-01');
+      SQL
+
       connection.execute(<<~SQL)
         INSERT INTO project_daily_statistics (id, project_id, fetch_count, date)
         VALUES

@@ -307,7 +307,7 @@ mutation {
 
 If you don't want to display achievements on your profile, you can opt out. To do this:
 
-1. On the left sidebar, select your avatar.
+1. On the left sidebar, select your avatar. If you've [turned on the new navigation](../interface_redesign.md#turn-new-navigation-on-or-off), this button is in the upper-right corner.
 1. Select **Edit profile**.
 1. In the **Main settings** section, clear the **Display achievements on your profile** checkbox.
 1. Select **Update profile settings**.

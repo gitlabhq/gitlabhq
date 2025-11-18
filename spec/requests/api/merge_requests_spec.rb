@@ -2287,6 +2287,32 @@ RSpec.describe API::MergeRequests, :aggregate_failures, feature_category: :sourc
         expect(merge_request.pipelines_for_merge_request.last).to be_config_error
       end
     end
+
+    context 'when pipeline creation fails' do
+      it 'returns error response when pipeline is nil' do
+        allow_next_instance_of(::MergeRequests::CreatePipelineService) do |service|
+          allow(service).to receive(:execute).and_return(ServiceResponse.success(payload: nil))
+        end
+
+        post api("/projects/#{project.id}/merge_requests/#{merge_request.iid}/pipelines", user)
+
+        expect(response).to have_gitlab_http_status(:method_not_allowed)
+      end
+
+      it 'returns validation error when pipeline is not persisted' do
+        invalid_pipeline = build(:ci_pipeline, project: project)
+        invalid_pipeline.errors.add(:base, 'Pipeline could not be created')
+
+        allow_next_instance_of(::MergeRequests::CreatePipelineService) do |service|
+          allow(service).to receive(:execute).and_return(ServiceResponse.success(payload: invalid_pipeline))
+        end
+
+        post api("/projects/#{project.id}/merge_requests/#{merge_request.iid}/pipelines", user)
+
+        expect(response).to have_gitlab_http_status(:bad_request)
+        expect(json_response['message']['base']).to include('Pipeline could not be created')
+      end
+    end
   end
 
   describe 'POST /projects/:id/merge_requests' do
@@ -2312,6 +2338,18 @@ RSpec.describe API::MergeRequests, :aggregate_failures, feature_category: :sourc
           expect(json_response['assignee']['name']).to eq(user2.name)
           expect(json_response['assignees'].first['name']).to eq(user2.name)
         end
+
+        it "creates a new merge request for a project passed as a full path" do
+          post api(
+            "/projects/#{CGI.escape(project.full_path)}/merge_requests",
+            oauth_access_token: token
+          ), params: params
+
+          expect(response).to have_gitlab_http_status(:created)
+          expect(json_response['title']).to eq('Test merge request')
+          expect(json_response['assignee']['name']).to eq(user2.name)
+          expect(json_response['assignees'].first['name']).to eq(user2.name)
+        end
       end
 
       it 'creates a new merge request' do
@@ -2326,23 +2364,7 @@ RSpec.describe API::MergeRequests, :aggregate_failures, feature_category: :sourc
       it 'starts covered experience' do
         expect do
           post api("/projects/#{project.id}/merge_requests", user), params: params
-        end.to start_covered_experience(:create_merge_request)
-      end
-
-      context 'when covered_experience_create_merge_request feature flag is disabled' do
-        before do
-          stub_feature_flags(covered_experience_create_merge_request: false)
-        end
-
-        it 'creates merge request without starting covered experience' do
-          mr_count = MergeRequest.count
-
-          expect do
-            post api("/projects/#{project.id}/merge_requests", user), params: params
-          end.not_to start_covered_experience(:create_merge_request)
-
-          expect(MergeRequest.count).to eq(mr_count + 1)
-        end
+        end.to start_user_experience(:create_merge_request)
       end
 
       it 'creates a new merge request when assignee_id is empty' do
@@ -3029,6 +3051,15 @@ RSpec.describe API::MergeRequests, :aggregate_failures, feature_category: :sourc
       it "allows access" do
         put api(
           "/projects/#{project.id}/merge_requests/#{merge_request.iid}?title=new_title",
+          oauth_access_token: token
+        )
+
+        expect(response).to have_gitlab_http_status(:ok)
+      end
+
+      it "allows access to the project passed as a full path" do
+        put api(
+          "/projects/#{CGI.escape(project.full_path)}/merge_requests/#{merge_request.iid}?title=new_title",
           oauth_access_token: token
         )
 

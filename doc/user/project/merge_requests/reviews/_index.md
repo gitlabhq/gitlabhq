@@ -55,15 +55,15 @@ Your [merge request homepage](../homepage.md) shows your merge requests in progr
 awaiting review from you. The merge requests you need to review are in the **Review requested** category.
 To see all merge requests that need your attention, use one of these methods:
 
-- Press the <kbd>Shift</kbd> + <kbd>m</kbd> [keyboard shortcut](../../../shortcuts.md).
+- Press the <kbd>Shift</kbd>+<kbd>m</kbd> [keyboard shortcut](../../../shortcuts.md).
 - On the left sidebar, select **Merge requests** ({{< icon name="merge-request">}}).
-- On the left sidebar, select **Search or go to** then, from the dropdown list, select **Merge requests I'm working on**.
+- On the left sidebar, select **Search or go to** then, from the dropdown list, select **Merge requests I'm working on**. If you've [turned on the new navigation](../../../interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
 
 ## View the review status of a merge request
 
 To do this:
 
-1. On the left sidebar, select **Search or go to** and find your project.
+1. On the left sidebar, select **Search or go to** and find your project. If you've [turned on the new navigation](../../../interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
 1. Select **Code** > **Merge requests** and find your merge request.
 1. Select the title of the merge request to view it.
 1. Scroll to the [merge request widget](../widgets.md) to see the mergeability and
@@ -85,7 +85,7 @@ When you've finished preparing your changes, it's time to request a review. To a
 your merge request, either use the `/assign_reviewer @user`
 [quick action](../../quick_actions.md#issues-merge-requests-and-epics) in any text field, or:
 
-1. On the left sidebar, select **Search or go to** and find your project.
+1. On the left sidebar, select **Search or go to** and find your project. If you've [turned on the new navigation](../../../interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
 1. Select **Code** > **Merge requests** and find your merge request.
 1. Select the title of the merge request to view it.
 1. To find a reviewer by name: on the right sidebar, in the **Reviewers** section, select **Edit**.
@@ -121,7 +121,7 @@ To assign eligible approvers in a merge request:
    - **Approval rules** shows only users who fulfill that approval rule.
 1. Select your desired reviewer. (GitLab Premium and Ultimate enable you to select more than one reviewer.)
 1. Repeat for each required **Code Owner** and **Approval rule** item.
-1. When you've selected your reviewers, on the top right, select **Close** ({{< icon name="close" >}})
+1. When you've selected your reviewers, in the upper right, select **Close** ({{< icon name="close" >}})
    to hide the **Assign reviewers** drawer.
 
 ### Re-request a review
@@ -130,7 +130,7 @@ After a reviewer completes their [merge request reviews](../../../discussions/_i
 the author of the merge request can request a new review from the reviewer.
 To do this, either use the `/request_review @user` quick action in any text field on the merge request, or:
 
-1. On the left sidebar, select **Search or go to** and find your project.
+1. On the left sidebar, select **Search or go to** and find your project. If you've [turned on the new navigation](../../../interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
 1. Select **Code** > **Merge requests** and find your merge request.
 1. Select the title of the merge request to view it.
 1. If you have collapsed the right sidebar in the merge request, select the
@@ -158,7 +158,7 @@ your status from **Awaiting review** ({{< icon name="dash-circle">}}) to
 To start your review of a merge request:
 
 1. Either:
-   - Press <kbd>Shift</kbd> + <kbd>r</kbd> to go to your **Review requests** page.
+   - Press <kbd>Shift</kbd>+<kbd>r</kbd> to go to your **Review requests** page.
    - On the left sidebar, select **Merge requests** ({{< icon name="merge-request" >}}) > **Review requests**.
 <!-- When the feature flag paneled_view is removed, refer only to the button icon -->
 
@@ -185,28 +185,38 @@ Next, submit your review.
 
 ### Resolve or reopen thread with a comment
 
-Review comments can also resolve or reopen comment threads.
+Comments can also resolve or reopen comment threads.
 To resolve or reopen a thread when replying to a comment:
 
 1. In the comment text area, write your comment.
 1. Select or clear **Resolve thread** or **Reopen thread**.
 1. Select **Add comment now** or **Add to review**.
 
-Pending comments display information about delayed actions. GitLab does not perform these actions
-until you publish the comment:
-
-- {{< icon name="check-circle-filled" >}} Resolves thread.
-- {{< icon name="check-circle" >}} Thread stays open.
+Pending comments display information about delayed actions.
+These actions will execute when you submit a review.
 
 ## Submit a review
 
-When you submit a review, GitLab does the following:
+{{< history >}}
+
+- Using **Approve** to submit pending review comments [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/562579) in GitLab 18.6.
+
+{{< /history >}}
+
+When you submit a review, GitLab:
 
 - Publishes the comments in your review.
 - Sends a single email to every notifiable user of the merge request, with your
   review comments attached. Replying to this email creates a new comment on the merge request.
 - Performs any quick actions you added to your review comments.
 - Shows the outcome of your review.
+
+To submit your review of a merge request quickly:
+
+- Go to the merge request widget and select **Approve**. The merge request is also approved by you.
+- Use the `/submit_review` [quick action](../../quick_actions.md) in the text of a non-review comment.
+
+To read through and edit your review comments when you submit your review:
 
 1. On the top right, select **Your review** to show details about your review:
 
@@ -224,14 +234,12 @@ When you submit a review, GitLab does the following:
    **Add summary** ({{< icon name="tanuki-ai">}}) to create a summary for you. Include any
    quick actions you want performed.
 
-You can also use the `/submit_review` [quick action](../../quick_actions.md) in the text of a non-review comment.
-
 ### Discard your pending review
 
 When you discard a review, your unpublished comments are deleted and you cannot restore them.
 To do this:
 
-1. On the top right, select **Your review** to show details about your review:
+1. In the upper right, select **Your review** to show details about your review:
 
    ![The review drawer, showing a review in progress. It contains a single-line review comment, and a comment spanning two lines of code.](img/review_drawer_v18_3.png)
 
@@ -275,7 +283,7 @@ if both of the following are true:
 
 To remove your change request without submitting a new review:
 
-1. On the left sidebar, select **Search or go to** and find your project.
+1. On the left sidebar, select **Search or go to** and find your project. If you've [turned on the new navigation](../../../interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
 1. Select **Code** > **Merge requests** and find your merge request.
 1. Select the title of the merge request to view it.
 1. On the merge request **Overview**, scroll to the merge request reports area.
@@ -288,7 +296,7 @@ To remove your change request without submitting a new review:
 If the user who requested changes is unavailable to re-review or approve,
 another user with permission to merge the merge request can override this check:
 
-1. On the left sidebar, select **Search or go to** and find your project.
+1. On the left sidebar, select **Search or go to** and find your project. If you've [turned on the new navigation](../../../interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
 1. Select **Code** > **Merge requests** and find your merge request.
 1. Select the title of the merge request to view it.
 1. On the merge request **Overview**, scroll to the merge request reports area.

@@ -748,6 +748,62 @@ entry.
 - [Quarantine a flaky test](https://gitlab.com/gitlab-org/gitlab/-/commit/9b431513405bf1d72c77a0c544d3f7f5e6041568) ([merge request](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/202165))
 - [Remove all references to the skip_committer_email_check](https://gitlab.com/gitlab-org/gitlab/-/commit/ed8314ccb8527799595effa96bdbf2c66ba10548) ([merge request](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/203920))
 
+## 18.4.4 (2025-11-11)
+
+### Fixed (8 changes)
+
+- [Fix redirect loop in Gitea rate limit](https://gitlab.com/gitlab-org/security/gitlab/-/commit/5f35b80394c0087045e107b1f869e2233bd79c58)
+- [Call CommitIndexerWorker when an empty project is created](https://gitlab.com/gitlab-org/security/gitlab/-/commit/0820ebf2dd78fbf7c8a1ee6b8823420efa7fc513) ([merge request](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/210754)) **GitLab Enterprise Edition**
+- [Fix the zoekt filters caching](https://gitlab.com/gitlab-org/security/gitlab/-/commit/937c58de0a4f255b7c24718554d767ee9995ada9) ([merge request](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/210729)) **GitLab Enterprise Edition**
+- [Add deleted Geo migration back](https://gitlab.com/gitlab-org/security/gitlab/-/commit/cc4e0ba0cfff0b77cdf9299ddf22cab4826e3d60) **GitLab Enterprise Edition**
+- [Fix password validation exception for FIPS](https://gitlab.com/gitlab-org/security/gitlab/-/commit/cbf2e95b1bacbe065468056005eb57dc344e90e9)
+- [Fix admin_project_member policy SAML projects user namespace](https://gitlab.com/gitlab-org/security/gitlab/-/commit/9941d04d25f7e84c803eb8536f2917380255ec86) **GitLab Enterprise Edition**
+- [Update dependency openssl to v3.3.2](https://gitlab.com/gitlab-org/security/gitlab/-/commit/32f12a05c36c7ff3da988c09b788dc5d2db0d4cf)
+- [Update rexml to v3.4.4](https://gitlab.com/gitlab-org/security/gitlab/-/commit/6cb67ca08413958b919e33b8f75e45cbb9869f66)
+
+### Changed (1 change)
+
+- [Remove OAuth SHA512 feature flag](https://gitlab.com/gitlab-org/security/gitlab/-/commit/7ee2fa60ce2450f0197d58b66ea4dbacb82d48b3)
+
+### Security (8 changes)
+
+- [Security fix package api pipeline details](https://gitlab.com/gitlab-org/security/gitlab/-/commit/5006e3cfe6e484106b37d2446a545dd80d8a1491) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/5425))
+- [Group enforced pages access control should restrict non-members](https://gitlab.com/gitlab-org/security/gitlab/-/commit/46dc5208a53e3436e6ccd74658951e02121c3de2) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/5441))
+- [Update to gitlab-glfm-markdown 0.0.38](https://gitlab.com/gitlab-org/security/gitlab/-/commit/445a597d1c4bc0b7a4b59e07892f8988a690101e) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/5462))
+- [Encode protected branch names in API requests](https://gitlab.com/gitlab-org/security/gitlab/-/commit/559a768974e47805a90222f8ca2aaa17b13276a7) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/5457))
+- [Prevent GraphQL subscriptions from blocked users](https://gitlab.com/gitlab-org/security/gitlab/-/commit/159f8ee5fd2f5d49debee461b39e3c93dbcbb3b1) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/5431))
+- [Prevent Duo Chat from reading confidential resources](https://gitlab.com/gitlab-org/security/gitlab/-/commit/be737dee7e06fcca930e4eb34cabcbca903b316c) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/5379))
+- [Hide related branches when repository is private](https://gitlab.com/gitlab-org/security/gitlab/-/commit/ba92c18d0200a5f7423a61f151b604d2a46497bb) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/5435))
+- [Fix unauth workflow deletion by service accounts](https://gitlab.com/gitlab-org/security/gitlab/-/commit/31a7406caa596bf1f13271372f683f21b70c3293) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/5421))
+
+### Performance (1 change)
+
+- [Reduce cached SQL queries in `/api/v4/internal/pages` endpoint](https://gitlab.com/gitlab-org/security/gitlab/-/commit/54969f5503e0ebdf4cbe275e9f884cd44bbd44e3)
+
+### Other (1 change)
+
+- [Fix instance bbm for mishandled nil verification token](https://gitlab.com/gitlab-org/security/gitlab/-/commit/8059aa66884fabdb4d37657361dc7f6c9ee38023) **GitLab Enterprise Edition**
+
+## 18.4.3 (2025-10-21)
+
+### Fixed (5 changes)
+
+- [Fix connection pool errors when health check is running](https://gitlab.com/gitlab-org/security/gitlab/-/commit/53f5d29c93ea36cd6f1f6f8c4ccb4a144a53a239)
+- [Downgrade redis-rb gem to v5.4.0](https://gitlab.com/gitlab-org/security/gitlab/-/commit/3fb24f782beb8708fc8e156e3cd8d5ec38f2613b)
+- [Fix zoekt search for API when elasticsearch is disable](https://gitlab.com/gitlab-org/security/gitlab/-/commit/5945f19d1b94d2882faf8c889917f64490db28e5) ([merge request](https://gitilab.com/gitlab-org/gitlab/-/merge_requests/208124))
+- [Fix the undefined method id for nil:NilClass in WorkItem](https://gitlab.com/gitlab-org/security/gitlab/-/commit/400938e318bc34ce3bc90f1ff9c3bd21c8ddb868) ([merge request](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/208091))
+- [Revert discarded database pool check in load balancer](https://gitlab.com/gitlab-org/security/gitlab/-/commit/2c146b05834027cd1fb1dd97f010d108149d33a9)
+
+### Security (7 changes)
+
+- [Non-group members can be added to projects even though the "Users cannot be...](https://gitlab.com/gitlab-org/security/gitlab/-/commit/446dfa32a5d7e8eb4d110caa50db12aefe58dfc0) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/5418))
+- [Ensure NPM upload cannot exceed plan limit](https://gitlab.com/gitlab-org/security/gitlab/-/commit/cfff507e924eaab1b0210dd9e3627a0d8dcba8d6) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/5428))
+- [Limit JSON request payload for /-/collect_events](https://gitlab.com/gitlab-org/security/gitlab/-/commit/4622a9f0386af48b95613eb2740a15293c5df16a) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/5404))
+- [Track pull mirror updates using gitaly_context](https://gitlab.com/gitlab-org/security/gitlab/-/commit/9eb4714f71edb96a9d7d30a05634d5e6bceeca96) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/5411))
+- [Reject quick actions for ai_workflows scope](https://gitlab.com/gitlab-org/security/gitlab/-/commit/7ef35ff4d114144ccd635413e89a5b694d6aa17e) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/5372))
+- [Use CE policy for runner ability check](https://gitlab.com/gitlab-org/security/gitlab/-/commit/602a6154b75570c966fe752df0d92eca78954121) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/5414))
+- [Limit depth, size and total elements when parsing JSON string](https://gitlab.com/gitlab-org/security/gitlab/-/commit/f9d6ed837944160e227aae9a227e7ad3373b8006) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/5407))
+
 ## 18.4.2 (2025-10-08)
 
 ### Added (1 change)
@@ -1488,6 +1544,47 @@ entry.
 - [Remove the code related to FF zoekt_syntax_transpile](https://gitlab.com/gitlab-org/gitlab/-/commit/8b96dbfa9888c41c0a48b46a221c201cfb4fed7b) ([merge request](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/201465)) **GitLab Enterprise Edition**
 - [Migration to remove sidekiq jobs for confidential epic worker](https://gitlab.com/gitlab-org/gitlab/-/commit/3eed5264bd2a24db76fba79a4b767d5fbc889d7c) ([merge request](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/200894))
 - [Quarantine a flaky test](https://gitlab.com/gitlab-org/gitlab/-/commit/5c73da9d08e0c5732bead4407bfdeeffba00ca80) ([merge request](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/197074))
+
+## 18.3.6 (2025-11-11)
+
+### Fixed (3 changes)
+
+- [Fix redirect loop in Gitea rate limit](https://gitlab.com/gitlab-org/security/gitlab/-/commit/bd7b910e82630cf34e076d259898300063ca20b3)
+- [Update dependency openssl to v3.3.2](https://gitlab.com/gitlab-org/security/gitlab/-/commit/600ca97b8bcb50f826f7e5412535f31c2f6d2496)
+- [Update rexml to v3.4.4](https://gitlab.com/gitlab-org/security/gitlab/-/commit/50b5a85fa48b062f5162f46ef30a351982cb73bb)
+
+### Security (8 changes)
+
+- [Security fix package api pipeline details](https://gitlab.com/gitlab-org/security/gitlab/-/commit/64c2516e6106fc3d9b5a4adc8888891b56a05476) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/5426))
+- [Group enforced pages access control should restrict non-members](https://gitlab.com/gitlab-org/security/gitlab/-/commit/af0f99c9f71f16648a4cdcbb2fac78697efc20a8) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/5442))
+- [Update to gitlab-glfm-markdown 0.0.38](https://gitlab.com/gitlab-org/security/gitlab/-/commit/71f73bd9e5df05fbcbdcd14dc29f7dea0b923902) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/5463))
+- [Encode protected branch names in API requests](https://gitlab.com/gitlab-org/security/gitlab/-/commit/3cec6a99eceb5ae142612de4fc91c0df7d9b5691) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/5458))
+- [Prevent GraphQL subscriptions from blocked users](https://gitlab.com/gitlab-org/security/gitlab/-/commit/b70790900eada6b2fd02c84691d0fc9de78b808c) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/5432))
+- [Prevent Duo Chat from reading confidential resources](https://gitlab.com/gitlab-org/security/gitlab/-/commit/7a5abb5be4705ebabdc87074bf7193d839cd02bd) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/5380))
+- [Hide related branches when repository is private](https://gitlab.com/gitlab-org/security/gitlab/-/commit/472346b8db8ebc75c6ae3e26063ec0565e4bbe2a) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/5436))
+- [Fix unauth workflow deletion by service accounts](https://gitlab.com/gitlab-org/security/gitlab/-/commit/8d86f81230f96b8a031793ebbd0a5e12e3c0766f) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/5423))
+
+### Performance (1 change)
+
+- [Reduce cached SQL queries in `/api/v4/internal/pages` endpoint](https://gitlab.com/gitlab-org/security/gitlab/-/commit/e6a23475339be5edb58e8886f23bc10f2de56e1e)
+
+## 18.3.5 (2025-10-21)
+
+### Fixed (3 changes)
+
+- [Downgrade redis-rb gem to v5.4.0](https://gitlab.com/gitlab-org/security/gitlab/-/commit/0c70390c57627b25f78a942083ba3b74533fcf38)
+- [Fix the undefined method id for nil:NilClass in WorkItem](https://gitlab.com/gitlab-org/security/gitlab/-/commit/4bd440fa6f27f70c634bc9645a9026104a08c8f1) ([merge request](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/208109))
+- [Prevent session creation for sessionless users](https://gitlab.com/gitlab-org/security/gitlab/-/commit/133098a99deaa183b3a48956287b66fa26f110d4)
+
+### Security (7 changes)
+
+- [Non-group members can be added to projects even though the "Users cannot be...](https://gitlab.com/gitlab-org/security/gitlab/-/commit/df730b1ca1d1ae481bca03824c2f10cfb5baaecc) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/5279))
+- [Ensure NPM upload cannot exceed plan limit](https://gitlab.com/gitlab-org/security/gitlab/-/commit/b7bec383074374690f2a5b5f9e1b1791b5582036) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/5429))
+- [Limit JSON request payload for /-/collect_events](https://gitlab.com/gitlab-org/security/gitlab/-/commit/eabab1c4adb4919b4bcd0211b8bb0b7263cb0a76) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/5405))
+- [Track pull mirror updates using gitaly_context](https://gitlab.com/gitlab-org/security/gitlab/-/commit/86dee006dcb389a2cce881ace18f27800637ba9b) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/5412))
+- [Reject quick actions for ai_workflows scope](https://gitlab.com/gitlab-org/security/gitlab/-/commit/d1577ee72eacf3c0b3f9aa8f531c8b4a1604f990) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/5374))
+- [Use CE policy for runner ability check](https://gitlab.com/gitlab-org/security/gitlab/-/commit/ca704d588d90378f4f80e46808274d6edb1072ae) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/5415))
+- [Limit depth, size and total elements when parsing JSON string](https://gitlab.com/gitlab-org/security/gitlab/-/commit/ad3192d19fdeaad97211e6cdbd0ea52f7e4fb5a7) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/5408))
 
 ## 18.3.4 (2025-10-08)
 

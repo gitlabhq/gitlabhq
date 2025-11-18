@@ -49,6 +49,11 @@ module Namespaces
       proj_namespace
     end
 
+    override :owner_entity
+    def owner_entity
+      project
+    end
+
     def sync_attributes_from_project(project)
       attributes_to_sync = project
                              .changes

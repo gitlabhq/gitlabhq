@@ -47,7 +47,7 @@ Prerequisites:
 
 To view storage usage for a project:
 
-1. On the left sidebar, select **Search or go to** and find your project.
+1. On the left sidebar, select **Search or go to** and find your project. If you've [turned on the new navigation](../../interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
 1. Do one of the following:
    - To view total storage usage, select **Settings** > **Usage quotas**.
     Under **Namespace entities**, select **Container Registry** to view individual repositories.
@@ -67,7 +67,7 @@ Prerequisites:
 
 To view storage usage for a group:
 
-1. On the left sidebar, select **Search or go to** and find your group.
+1. On the left sidebar, select **Search or go to** and find your group. If you've [turned on the new navigation](../../interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
 1. Select **Settings** > **Usage quotas**.
 1. Select the **Storage** tab.
 
@@ -206,7 +206,7 @@ workaround to delete tags when interacting with third-party container registries
 issue [15737](https://gitlab.com/gitlab-org/gitlab/-/issues/15737)
 for more information. Due to possible implementation variations, this workaround is not guaranteed
 to work with all third-party registries in the same predictable way. If you use the GitLab Container
-Registry, this workaround is not required because we implemented a special tag delete operation. In
+Registry, this workaround is not required because GitLab implemented a special tag delete operation. In
 this case, you can expect cleanup policies to be consistent and predictable.
 {{< /alert >}}
 
@@ -253,7 +253,7 @@ You can create a cleanup policy in [the API](#use-the-cleanup-policy-api) or the
 
 To create a cleanup policy in the UI:
 
-1. On the left sidebar, select **Search or go to** and find your project.
+1. On the left sidebar, select **Search or go to** and find your project. If you've [turned on the new navigation](../../interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
 1. Select **Settings** > **Packages and registries**.
 1. Expand **Container registry**.
 1. Under **Container registry cleanup policies**, select **Set cleanup rules**.
@@ -359,7 +359,7 @@ ApplicationSetting.last.update(container_registry_expiration_policies_worker_cap
 
 They are also available in the [**Admin** area](../../../administration/admin_area.md):
 
-1. On the left sidebar, at the bottom, select **Admin**.
+1. On the left sidebar, at the bottom, select **Admin**. If you've [turned on the new navigation](../../interface_redesign.md#turn-new-navigation-on-or-off), in the upper-right corner, select **Admin**.
 1. Select **Settings** > **CI/CD**
 1. Expand **Container Registry**.
 

@@ -32,11 +32,9 @@ with any type of [executor](https://docs.gitlab.com/runner/executors/)
 
 To create and use an SSH key in GitLab CI/CD:
 
-1. [Create a new SSH key pair](../../user/ssh.md#generate-an-ssh-key-pair) locally with `ssh-keygen`.
-1. Add the private key as a [file type CI/CD variable](../variables/_index.md#for-a-project) to
-   your project. The variable value must end in a newline (`LF` character). To add a newline, press <kbd>Enter</kbd> or <kbd>Return</kbd>
-   at the end of the last line of the SSH key before saving it in the CI/CD settings.
-1. Run the [`ssh-agent`](https://linux.die.net/man/1/ssh-agent) in the job, which loads
+1. [Generate a new SSH key pair](../../user/ssh.md#generate-an-ssh-key-pair).
+1. Add the private key as a [file type CI/CD variable](#add-an-ssh-key-as-a-file-type-variable) named `SSH_PRIVATE_KEY`.
+1. Run [`ssh-agent`](https://linux.die.net/man/1/ssh-agent) in the job, which loads
    the private key.
 1. Copy the public key to the servers you want to have access to (usually in `~/.ssh/authorized_keys`).
    If you are accessing a private GitLab repository, you also need to add the public key as
@@ -47,23 +45,30 @@ In the following example, the `ssh-add -` command does not display the value of
 [debug logging](../variables/variables_troubleshooting.md#enable-debug-logging). You might also want to
 check the [visibility of your pipelines](../pipelines/settings.md#change-which-users-can-view-your-pipelines).
 
+### Add an SSH key as a file type variable
+
+To add an SSH key to your project, add the key as a [file type CI/CD variable](../variables/_index.md#for-a-project):
+
+- Set **Visibility** to **Visible**. Any other setting prevents the variable from having multiple lines.
+- In the **Key** field, enter the name of the variable. For example, `SSH_PRIVATE_KEY`.
+- In the **Value** field, paste the content of the private key. The variable value must end in a newline (`LF` character).
+  To add a newline, press <kbd>Enter</kbd> or <kbd>Return</kbd> at the end of the last line of the SSH key
+  before saving it in the CI/CD settings.
+
+### Add an SSH key as a regular variable
+
+If you do not want to use a file type CI/CD variable, see the [example SSH Project](https://gitlab.com/gitlab-examples/ssh-private-key/).
+This method uses a regular CI/CD variable instead of the recommended file type variable.
+
 ## SSH keys when using the Docker executor
 
 When your CI/CD jobs run inside Docker containers (meaning the environment is
 contained) and you want to deploy your code in a private server, you need a way
 to access it. In this case, you can use an SSH key pair.
 
-1. You first must create an SSH key pair. For more information, follow
-   the instructions to [generate an SSH key](../../user/ssh.md#generate-an-ssh-key-pair).
-   **Do not** add a passphrase to the SSH key, or the `before_script` will
-   prompt for it.
-
-1. Create a new [file type CI/CD variable](../variables/_index.md#for-a-project).
-   - In the **Key** field, enter `SSH_PRIVATE_KEY`.
-   - In the **Value** field, paste the content of your private key from the key pair that you created earlier.
-     Make sure the file ends with a newline. To add a newline, press
-     <kbd>Enter</kbd> or <kbd>Return</kbd> at the end of the last line of the SSH key before saving your changes.
-
+1. [Generate a new SSH key pair](../../user/ssh.md#generate-an-ssh-key-pair).
+   Do not add a passphrase to the SSH key, or the `before_script` will prompt for it.
+1. Add the private key as a [file type CI/CD variable](#add-an-ssh-key-as-a-file-type-variable) named `SSH_PRIVATE_KEY`.
 1. Modify your `.gitlab-ci.yml` with a `before_script` action. In the following
    example, a Debian based image is assumed. Edit to your needs:
 
@@ -130,9 +135,8 @@ on, and use that key for all projects that are run on this machine.
    sudo su - gitlab-runner
    ```
 
-1. Generate the SSH key pair as described in the instructions to
-   [generate an SSH key](../../user/ssh.md#generate-an-ssh-key-pair).
-   **Do not** add a passphrase to the SSH key, or the `before_script` will
+1. [Generate a new SSH key pair](../../user/ssh.md#generate-an-ssh-key-pair).
+   Do not add a passphrase to the SSH key, or the `before_script` will
    prompt for it.
 
 1. As a final step, add the public key from the one you created earlier to the
@@ -167,10 +171,10 @@ ssh-keyscan example.com
 ssh-keyscan 10.0.2.2
 ```
 
-Create a new [file type CI/CD variable](../variables/_index.md#use-file-type-cicd-variables)
-with `SSH_KNOWN_HOSTS` as "Key", and as a "Value" add the output of `ssh-keyscan`.
-Make sure the file ends with a newline. To add a newline, press <kbd>Enter</kbd> or <kbd>Return</kbd>
-at the end of the last line of the SSH key before saving your changes.
+Add the hosts to your project as a [file type CI/CD variable](#add-an-ssh-key-as-a-file-type-variable), except:
+
+- Use `SSH_KNOWN_HOSTS` as the **Key**.
+- Use the output of `ssh-keyscan` as the **Value**.
 
 If you must connect to multiple servers, all the server host keys
 must be collected in the **Value** of the variable, one key per line.
@@ -183,6 +187,9 @@ if the host domain name changes for some reason. Also, the values are predefined
 by you, meaning that if the host keys suddenly change, the CI/CD job doesn't fail,
 so there's something wrong with the server or the network.
 
+Do not run `ssh-keyscan` directly in a CI/CD job, as it is a security risk vulnerable
+to machine-in-the-middle attacks.
+
 {{< /alert >}}
 
 Now that the `SSH_KNOWN_HOSTS` variable is created, in addition to the
@@ -191,35 +198,11 @@ Now that the `SSH_KNOWN_HOSTS` variable is created, in addition to the
 ```yaml
 before_script:
   ##
-  ## Assuming you created the SSH_KNOWN_HOSTS file type CI/CD variable, uncomment the
-  ## following two lines.
+  ## Assuming you created the SSH_KNOWN_HOSTS file type CI/CD variable:
   ##
   - cp "$SSH_KNOWN_HOSTS" ~/.ssh/known_hosts
   - chmod 644 ~/.ssh/known_hosts
-
-  ##
-  ## Alternatively, use ssh-keyscan to scan the keys of your private server.
-  ## Replace example.com with your private server's domain name. Repeat that
-  ## command if you have more than one server to connect to. Include the -t
-  ## flag to specify the key type.
-  ##
-  # - ssh-keyscan -t rsa,ed25519 example.com >> ~/.ssh/known_hosts
-  # - chmod 644 ~/.ssh/known_hosts
-
-  ##
-  ## You can optionally disable host key checking. Be aware that by adding that
-  ## you are susceptible to man-in-the-middle attacks.
-  ## WARNING: Use this only with the Docker executor, if you use it with shell
-  ## you will overwrite your user's SSH config.
-  ##
-  # - '[[ -f /.dockerenv ]] && echo -e "Host *\n\tStrictHostKeyChecking no\n\n" >> ~/.ssh/config'
 ```
-
-## Use SSH key without a file type CI/CD variable
-
-If you do not want to use a file type CI/CD variable, the [example SSH Project](https://gitlab.com/gitlab-examples/ssh-private-key/)
-shows an alternative method. This method uses a regular CI/CD variable instead of
-the file type variable previously recommended.
 
 ## Troubleshooting
 

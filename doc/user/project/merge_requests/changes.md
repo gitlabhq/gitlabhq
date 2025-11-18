@@ -30,7 +30,7 @@ The header for each file in the diff contains:
 - **Hide file contents** ({{< icon name="chevron-down" >}}) to hide all changes to this file.
 - **Path**: The full path to this file. To copy this path, select
   **Copy file path** ({{< icon name="copy-to-clipboard" >}}).
-- **Lines changed**: The number of lines added and deleted in this file, in the format `+2 -2`.
+- **Lines changed**: The number of lines added and removed in this file, in the format `+2 -2`.
 - **Viewed**: Select this checkbox to [mark the file as viewed](#mark-files-as-viewed)
   until it changes again.
 - **Comment on this file** ({{< icon name="comment" >}}) to leave a general comment on the file, without
@@ -53,7 +53,7 @@ The diff also includes navigation and comment aids to the left of the file, in t
 
 Use the file browser to view a list of files changed in a merge request:
 
-1. On the left sidebar, select **Search or go to** and find your project.
+1. On the left sidebar, select **Search or go to** and find your project. If you've [turned on the new navigation](../../interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
 1. Select **Code** > **Merge requests** and find your merge request.
 1. Below the merge request title, select **Changes**.
 1. Select **Show file browser** ({{< icon name="file-tree" >}}) or press <kbd>F</kbd> to show
@@ -65,7 +65,7 @@ Use the file browser to view a list of files changed in a merge request:
 
 To view the diff of changes included in a merge request:
 
-1. On the left sidebar, select **Search or go to** and find your project.
+1. On the left sidebar, select **Search or go to** and find your project. If you've [turned on the new navigation](../../interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
 1. Select **Code** > **Merge requests** and find your merge request.
 1. Below the merge request title, select **Changes**.
 1. If the merge request changes many files, you can jump directly to a specific file:
@@ -95,7 +95,7 @@ GitLab collapses files with many changes to improve performance, and displays th
 When you share a merge request link with a team member, you might want to show a specific file
 first in the list of changed files. To copy a merge request link that shows your desired file first:
 
-1. On the left sidebar, select **Search or go to** and find your project.
+1. On the left sidebar, select **Search or go to** and find your project. If you've [turned on the new navigation](../../interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
 1. Select **Code** > **Merge requests** and find your merge request.
 1. Below the merge request title, select **Changes**.
 1. Find the file you want to show first. Right-click the name of the file to copy the link to it.
@@ -137,7 +137,7 @@ in your [`.gitattributes` file](../repository/files/git_attributes.md).
 
 ### View a collapsed file
 
-1. On the left sidebar, select **Search or go to** and find your project.
+1. On the left sidebar, select **Search or go to** and find your project. If you've [turned on the new navigation](../../interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
 1. Select **Code** > **Merge requests** and find your merge request.
 1. Below the merge request title, select **Changes**.
 1. Find the file you want to view, and select **Expand file**.
@@ -180,7 +180,7 @@ setting in a merge request, it updates your user settings as well.
 
 {{< tab title="In a merge request" >}}
 
-1. On the left sidebar, select **Search or go to** and find your project.
+1. On the left sidebar, select **Search or go to** and find your project. If you've [turned on the new navigation](../../interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
 1. Select **Code** > **Merge requests** and find your merge request.
 1. Below the merge request title, select **Changes**.
 
@@ -192,7 +192,7 @@ setting in a merge request, it updates your user settings as well.
 
 {{< tab title="In your user preferences" >}}
 
-1. On the left sidebar, select your avatar.
+1. On the left sidebar, select your avatar. If you've [turned on the new navigation](../../interface_redesign.md#turn-new-navigation-on-or-off), this button is in the upper-right corner.
 1. Select **Preferences**.
 1. Scroll to the **Behavior** section and select the **Show one file at a time on merge request's Changes tab** checkbox.
 1. Select **Save changes**.
@@ -220,7 +220,7 @@ You can view the changes in a merge request either:
 
 To change how a merge request shows changed lines:
 
-1. On the left sidebar, select **Search or go to** and find your project.
+1. On the left sidebar, select **Search or go to** and find your project. If you've [turned on the new navigation](../../interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
 1. Select **Code** > **Merge requests** and find your merge request.
 1. Below the title, select **Changes**.
 1. Select **Preferences** ({{< icon name="preferences" >}}). Select either **Side-by-side** or **Inline**.
@@ -254,8 +254,7 @@ To change how a merge request shows changed lines:
 
 {{< collapsible title="Model information" >}}
 
-- LLM for GitLab Self-Managed, GitLab Dedicated: Anthropic [Claude 3.5 Sonnet](https://console.cloud.google.com/vertex-ai/publishers/anthropic/model-garden/claude-3-5-sonnet)
-- LLM for GitLab.com: Anthropic [Claude 3.7 Sonnet](https://console.cloud.google.com/vertex-ai/publishers/anthropic/model-garden/claude-3-7-sonnet)
+- Default LLM: Anthropic [Claude Sonnet 4.5](https://console.cloud.google.com/vertex-ai/publishers/anthropic/model-garden/claude-sonnet-4-5)
 - LLM for Amazon Q: Amazon Q Developer
 
 {{< /collapsible >}}
@@ -264,6 +263,7 @@ To change how a merge request shows changed lines:
 
 - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/429915) in GitLab 16.8.
 - Changed to require GitLab Duo add-on in GitLab 17.6 and later.
+- [Updated default LLM](https://gitlab.com/gitlab-org/modelops/applied-ml/code-suggestions/ai-assist/-/issues/1541) to Claude Sonnet 4.5 in GitLab 18.6.
 
 {{< /history >}}
 
@@ -282,7 +282,7 @@ Prerequisites:
 
 To explain the code in a merge request:
 
-1. On the left sidebar, select **Search or go to** and find your project.
+1. On the left sidebar, select **Search or go to** and find your project. If you've [turned on the new navigation](../../interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
 1. Select **Code** > **Merge requests**, then select your merge request.
 1. Select **Changes**.
 1. On the file you would like explained, select the three dots ({{< icon name="ellipsis_v" >}}) and select **View File @ $SHA**.
@@ -298,7 +298,7 @@ Duo Chat explains the code. It might take a moment for the explanation to be gen
 
 If you'd like, you can provide feedback about the quality of the explanation.
 
-We cannot guarantee that the large language model produces results that are correct. Use the explanation with caution.
+GitLab cannot guarantee that the large language model produces results that are correct. Use the explanation with caution.
 
 You can also explain code in:
 
@@ -309,7 +309,7 @@ You can also explain code in:
 
 When reviewing code changes, you can hide inline comments:
 
-1. On the left sidebar, select **Search or go to** and find your project.
+1. On the left sidebar, select **Search or go to** and find your project. If you've [turned on the new navigation](../../interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
 1. Select **Code** > **Merge requests** and find your merge request.
 1. Below the title, select **Changes**.
 1. Scroll to the file that contains the comments you want to hide.
@@ -318,7 +318,7 @@ When reviewing code changes, you can hide inline comments:
 
 To expand inline comments and show them again:
 
-1. On the left sidebar, select **Search or go to** and find your project.
+1. On the left sidebar, select **Search or go to** and find your project. If you've [turned on the new navigation](../../interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
 1. Select **Code** > **Merge requests** and find your merge request.
 1. Below the title, select **Changes**.
 1. Scroll to the file that contains the collapsed comments you want to show.
@@ -330,7 +330,7 @@ To expand inline comments and show them again:
 Whitespace changes can make it more difficult to see the substantive changes in
 a merge request. You can choose to hide or show whitespace changes:
 
-1. On the left sidebar, select **Search or go to** and find your project.
+1. On the left sidebar, select **Search or go to** and find your project. If you've [turned on the new navigation](../../interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
 1. Select **Code** > **Merge requests** and find your merge request.
 1. Below the title, select **Changes**.
 1. Before the list of changed files, select **Preferences** ({{< icon name="preferences" >}}).
@@ -343,7 +343,7 @@ a merge request. You can choose to hide or show whitespace changes:
 When reviewing a merge request with many files multiple times, you can ignore files
 you've already reviewed. To hide files that haven't changed after your last review:
 
-1. On the left sidebar, select **Search or go to** and find your project.
+1. On the left sidebar, select **Search or go to** and find your project. If you've [turned on the new navigation](../../interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
 1. Select **Code** > **Merge requests** and find your merge request.
 1. Below the title, select **Changes**.
 1. In the file's header, select the **Viewed** checkbox.
@@ -355,10 +355,10 @@ Files marked as viewed are not shown to you again unless either:
 
 ## Show merge request conflicts in diff
 
-To avoid displaying changes already on target branch, we compare the merge request's
+To avoid displaying changes already on target branch, GitLab compares the merge request's
 source branch with the `HEAD` of the target branch.
 
-When the source and target branch conflict, we show an alert
+When the source and target branch conflict, GitLab show an alert
 per conflicted file on the merge request diff:
 
 ![A conflict alert in a merge request diff.](img/conflict_ui_v15_6.png)
@@ -385,7 +385,7 @@ You can download the changes included in a merge request for use outside of GitL
 
 To download the changes as a diff:
 
-1. On the left sidebar, select **Search or go to** and find your project.
+1. On the left sidebar, select **Search or go to** and find your project. If you've [turned on the new navigation](../../interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
 1. Select **Code** > **Merge requests** and find your merge request.
 1. Select the merge request.
 1. In the upper-right corner, select **Code** > **Plain diff**.
@@ -408,7 +408,7 @@ curl "https://gitlab.com/gitlab-org/gitlab/-/merge_requests/000000.diff" | git a
 
 To download the changes as a patch file:
 
-1. On the left sidebar, select **Search or go to** and find your project.
+1. On the left sidebar, select **Search or go to** and find your project. If you've [turned on the new navigation](../../interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
 1. Select **Code** > **Merge requests** and find your merge request.
 1. Select the merge request.
 1. In the upper-right corner, select **Code** > **Patches**.
@@ -454,7 +454,7 @@ rebases and file changes.
 
 To add a comment to a merge request file:
 
-1. On the left sidebar, select **Search or go to** and find your project.
+1. On the left sidebar, select **Search or go to** and find your project. If you've [turned on the new navigation](../../interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
 1. Select **Code** > **Merge requests** and find your merge request.
 1. Select **Changes**.
 1. In the header for the file you want to comment on, select **Comment on this file** ({{< icon name="comment" >}}).

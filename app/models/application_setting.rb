@@ -41,6 +41,8 @@ class ApplicationSetting < ApplicationRecord
   DEFAULT_AUTHENTICATED_GIT_HTTP_LIMIT = 3600
   DEFAULT_AUTHENTICATED_GIT_HTTP_PERIOD = 3600
 
+  SEARCH_SCOPE_SYSTEM_DEFAULT = 'system default'
+
   enum :whats_new_variant, { all_tiers: 0, current_tier: 1, disabled: 2 }, prefix: true
   enum :email_confirmation_setting, { off: 0, soft: 1, hard: 2 }, prefix: true
 
@@ -648,6 +650,7 @@ class ApplicationSetting < ApplicationRecord
       :group_projects_api_limit,
       :group_shared_groups_api_limit,
       :groups_api_limit,
+      :project_members_api_limit,
       :inactive_projects_min_size_mb,
       :issues_create_limit,
       :jobs_per_stage_page_size,
@@ -739,7 +742,8 @@ class ApplicationSetting < ApplicationRecord
   jsonb_accessor :sign_in_restrictions,
     disable_password_authentication_for_users_with_sso_identities: [:boolean, { default: false }],
     root_moved_permanently_redirection: [:boolean, { default: false }],
-    session_expire_from_init: [:boolean, { default: false }]
+    session_expire_from_init: [:boolean, { default: false }],
+    require_minimum_email_based_otp_for_users_with_passwords: [:boolean, { default: false }]
 
   validates :sign_in_restrictions, json_schema: { filename: 'application_setting_sign_in_restrictions' }
 
@@ -749,9 +753,16 @@ class ApplicationSetting < ApplicationRecord
     global_search_snippet_titles_enabled: [:boolean, { default: true }],
     global_search_users_enabled: [:boolean, { default: true }],
     global_search_block_anonymous_searches_enabled: [:boolean, { default: false }],
-    anonymous_searches_allowed: [:boolean, { default: true }]
+    anonymous_searches_allowed: [:boolean, { default: true }],
+    default_search_scope: [:string, { default: SEARCH_SCOPE_SYSTEM_DEFAULT }]
 
   validates :search, json_schema: { filename: 'application_setting_search' }
+  validates :default_search_scope,
+    inclusion: {
+      in: Gitlab::Search::AbuseDetection::ALLOWED_SCOPES + [SEARCH_SCOPE_SYSTEM_DEFAULT],
+      message: 'invalid scope selected'
+    },
+    allow_blank: true
 
   jsonb_accessor :transactional_emails,
     resource_access_token_notify_inherited: [:boolean, { default: false }],
@@ -1025,7 +1036,11 @@ class ApplicationSetting < ApplicationRecord
     json_schema: { filename: "application_setting_vscode_extension_marketplace", detail_errors: true }
 
   jsonb_accessor :vscode_extension_marketplace,
-    vscode_extension_marketplace_enabled: [:boolean, { default: false, store_key: :enabled }]
+    vscode_extension_marketplace_enabled: [:boolean, { default: false, store_key: :enabled }],
+    vscode_extension_marketplace_extension_host_domain: [
+      :string,
+      { default: ::WebIde::ExtensionMarketplace::DEFAULT_EXTENSION_HOST_DOMAIN, store_key: :extension_host_domain }
+    ]
 
   jsonb_accessor :editor_extensions,
     enable_language_server_restrictions: [:boolean, { default: false }],
@@ -1073,10 +1088,6 @@ class ApplicationSetting < ApplicationRecord
 
   def validate_kroki_url
     validate_url(parsed_kroki_url, :kroki_url, KROKI_URL_ERROR_MESSAGE)
-  end
-
-  def kroki_url_absolute?
-    parsed_kroki_url&.absolute?
   end
 
   def sourcegraph_url_is_com?
@@ -1175,6 +1186,7 @@ class ApplicationSetting < ApplicationRecord
       group_archive_unarchive_api_limit: [:integer, { default: 60 }],
       project_invited_groups_api_limit: [:integer, { default: 60 }],
       projects_api_limit: [:integer, { default: 2000 }],
+      project_members_api_limit: [:integer, { default: 60 }],
       runner_jobs_request_api_limit: [:integer, { default: 2000 }],
       runner_jobs_patch_trace_api_limit: [:integer, { default: 200 }],
       runner_jobs_endpoints_api_limit: [:integer, { default: 200 }],
@@ -1243,6 +1255,18 @@ class ApplicationSetting < ApplicationRecord
     return false if session_expire_from_init?
 
     remember_me_enabled?
+  end
+
+  def push_rule
+    if Feature.enabled?(:update_organization_push_rules, Feature.current_request)
+      nil
+    else
+      super
+    end
+  end
+
+  def custom_default_search_scope_set?
+    ::Gitlab::Search::AbuseDetection::ALLOWED_SCOPES.include?(default_search_scope)
   end
 
   private

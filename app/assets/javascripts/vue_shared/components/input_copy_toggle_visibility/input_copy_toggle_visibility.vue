@@ -9,8 +9,10 @@ import {
 } from '@gitlab/ui';
 
 import { __ } from '~/locale';
+import * as Sentry from '~/sentry/sentry_browser_wrapper';
+import { copyToClipboard } from '~/lib/utils/copy_to_clipboard';
 import { Mousetrap, MOUSETRAP_COPY_KEYBOARD_SHORTCUT } from '~/lib/mousetrap';
-import ClipboardButton from '~/vue_shared/components/clipboard_button.vue';
+import SimpleCopyButton from '~/vue_shared/components/simple_copy_button.vue';
 
 export default {
   name: 'InputCopyToggleVisibility',
@@ -24,7 +26,7 @@ export default {
     GlFormGroup,
     GlButtonGroup,
     GlButton,
-    ClipboardButton,
+    SimpleCopyButton,
   },
   directives: {
     GlTooltip: GlTooltipDirective,
@@ -54,6 +56,11 @@ export default {
       type: String,
       required: false,
       default: __('Copy'),
+    },
+    copyButtonToastMessage: {
+      type: [String, Boolean],
+      required: false,
+      default: __('Copied to clipboard.'),
     },
     readonly: {
       type: Boolean,
@@ -111,7 +118,7 @@ export default {
   },
   mounted() {
     this.mousetrap = new Mousetrap(this.$refs.input.$el);
-    this.mousetrap.bind(MOUSETRAP_COPY_KEYBOARD_SHORTCUT, this.handleFormInputCopy);
+    this.mousetrap.bind(MOUSETRAP_COPY_KEYBOARD_SHORTCUT, this.handleKeyboardCopy);
   },
   beforeDestroy() {
     this.mousetrap?.unbind(MOUSETRAP_COPY_KEYBOARD_SHORTCUT);
@@ -137,21 +144,20 @@ export default {
         }, 0);
       }
     },
-    handleCopyButtonClick() {
-      this.$emit('copy');
-    },
-    async handleFormInputCopy() {
-      // Value will be copied by native browser behavior
+    async handleKeyboardCopy(e) {
       if (this.computedValueIsVisible) {
+        // Value will be copied by native browser behavior
         return;
       }
 
+      // Prevent copying masked version
+      e.preventDefault?.();
       try {
-        // user is trying to copy from the password input, set their clipboard for them
-        await navigator.clipboard?.writeText(this.value);
-        this.handleCopyButtonClick();
-      } catch (e) {
-        // Nothing we can do here, best effort to set clipboard value
+        // User is trying to copy from the password input, set their clipboard for them.
+        // No toast?: We don't show a toast notification, as that is not an usual keyboard behavior
+        await copyToClipboard(this.value);
+      } catch (error) {
+        Sentry.captureException(error);
       }
     },
     handleInput(newValue) {
@@ -192,12 +198,11 @@ export default {
             data-testid="toggle-visibility-button"
             @click.stop="handleToggleVisibilityButtonClick"
           />
-          <clipboard-button
+          <simple-copy-button
             v-if="showCopyButton"
             :text="value"
             :title="copyButtonTitle"
-            data-testid="clipboard-button"
-            @click="handleCopyButtonClick"
+            :toast-message="copyButtonToastMessage"
           />
         </gl-button-group>
       </template>

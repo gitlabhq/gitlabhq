@@ -1249,8 +1249,7 @@ describe('GfmAutoComplete', () => {
 
   describe('[issue: and [work_item:', () => {
     const dataSources = {
-      issuesAlternative: `${TEST_HOST}/autocomplete_sources/issues`,
-      workItems: `${TEST_HOST}/autocomplete_sources/issues`,
+      issues: `${TEST_HOST}/autocomplete_sources/issues`,
     };
 
     let autocomplete;

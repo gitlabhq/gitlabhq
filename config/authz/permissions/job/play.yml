@@ -1,0 +1,4 @@
+---
+name: play_job
+description: Grants the ability to play jobs
+feature_category: continuous_integration

@@ -57,8 +57,8 @@ To learn more, see [GitLab Dedicated architecture](architecture.md).
 | Feature | Description | Set up with |
 |------------|-------------|-----------------|
 | [Custom hostname (BYOD)](configure_instance/network_security.md#bring-your-own-domain-byod) | You provide a domain name and configure DNS records. GitLab manages SSL certificates through Let's Encrypt. | Support ticket |
-| [Inbound Private Link](configure_instance/network_security.md#inbound-private-link) | You request secure AWS VPC connections. GitLab configures PrivateLink endpoints in your VPC. | Support ticket |
-| [Outbound Private Link](configure_instance/network_security.md#outbound-private-link) | You create the endpoint service in your AWS account. GitLab establishes connections using your service endpoints. | Switchboard |
+| [Inbound private link](configure_instance/network_security.md#inbound-private-link) | GitLab creates an endpoint service. You create VPC endpoints in your AWS account to connect to your GitLab instance. | Switchboard |
+| [Outbound private link](configure_instance/network_security.md#outbound-private-link) | You create an endpoint service in your AWS account. GitLab creates VPC endpoints to connect to your services. | Switchboard |
 | [Private hosted zones](configure_instance/network_security.md#private-hosted-zones) | You define internal DNS requirements. GitLab configures DNS resolution in your instance network. | Switchboard |
 
 ## Use platform tools
@@ -68,7 +68,7 @@ To learn more, see [GitLab Dedicated architecture](architecture.md).
 | [GitLab Pages](../../subscriptions/gitlab_dedicated/_index.md#gitlab-pages) | GitLab hosts your static websites on a dedicated domain. You can publish sites from your repositories. | Available by <br>default |
 | [Advanced search](../../integration/advanced_search/elasticsearch.md) | GitLab maintains the search infrastructure. You can search across your code, issues, and merge requests. | Available by <br>default |
 | [Hosted runners (beta)](hosted_runners.md) | You purchase a subscription and configure your hosted runners. GitLab manages the auto-scaling CI/CD infrastructure. | Switchboard |
-| [ClickHouse](../../integration/clickhouse.md) | GitLab maintains the ClickHouse infrastructure and integration. You can access all advanced analytical features such as [GitLab Duo and SDLC trends](../../user/analytics/duo_and_sdlc_trends.md) and [CI analytics](../../ci/runners/runner_fleet_dashboard.md#enable-more-ci-analytics-features-with-clickhouse). | Available by <br>default for [eligible customers](../../subscriptions/gitlab_dedicated/_index.md#clickhouse) |
+| [ClickHouse](../../integration/clickhouse.md) | GitLab maintains the ClickHouse infrastructure and integration. You can access all advanced analytical features such as [GitLab Duo and SDLC trends](../../user/analytics/duo_and_sdlc_trends.md) and [CI analytics](../../ci/runners/runner_fleet_dashboard.md#enable-more-ci-analytics-features-with-clickhouse). | Available by <br>default for [eligible customers](../../subscriptions/gitlab_dedicated/_index.md#clickhouse-cloud) |
 
 ## Manage daily operations
 

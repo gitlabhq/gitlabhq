@@ -9,7 +9,6 @@ export default {
   },
   data() {
     return {
-      status: null,
       selectedValue: undefined,
     };
   },

@@ -298,6 +298,19 @@ RSpec.describe 'Projects > Show > User sees setup shortcut buttons', feature_cat
             end
           end
 
+          it 'shows disabled "Set up CI/CD" button with tooltip when builds feature is disabled' do
+            project.project_feature.update_attribute(:builds_access_level, ProjectFeature::DISABLED)
+
+            visit project_path(project)
+
+            within_testid('project-buttons') do
+              expect(page).to have_button('Set up CI/CD', disabled: true)
+
+              tooltip_wrapper = find('span.has-tooltip', text: 'Set up CI/CD')
+              expect(tooltip_wrapper['title']).to eq('CI/CD is disabled for this project')
+            end
+          end
+
           it 'no "Enable Auto DevOps" button when .gitlab-ci.yml already exists' do
             Files::CreateService.new(
               project,

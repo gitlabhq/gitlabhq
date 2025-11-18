@@ -42,7 +42,7 @@ To use merged results pipelines:
 To enable merged results pipelines in a project, you must have at least the
 Maintainer role:
 
-1. On the left sidebar, select **Search or go to** and find your project.
+1. On the left sidebar, select **Search or go to** and find your project. If you've [turned on the new navigation](../../user/interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
 1. Select **Settings** > **Merge requests**.
 1. In the **Merge options** section, select **Enable merged results pipelines**.
 1. Select **Save changes**.

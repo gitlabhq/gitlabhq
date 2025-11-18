@@ -1,7 +1,7 @@
-query ciConfigVariables($fullPath: ID!, $ref: String!) {
+query ciConfigVariables($fullPath: ID!, $ref: String!, $failOnCacheMiss: Boolean = false) {
   project(fullPath: $fullPath) {
     id
-    ciConfigVariables(ref: $ref) {
+    ciConfigVariables(ref: $ref, failOnCacheMiss: $failOnCacheMiss) {
       description
       key
       value

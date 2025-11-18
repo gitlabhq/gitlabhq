@@ -48,7 +48,7 @@ module Feature
       def user_actor(user = nil)
         return ::Feature::Gitaly::ActorWrapper.new(::User, user.id) if user.is_a?(::User)
 
-        user_id = Gitlab::ApplicationContext.current_context_attribute(:user_id)
+        user_id = Gitlab::ApplicationContext.current_context_attribute(Labkit::Fields::GL_USER_ID)
         ::Feature::Gitaly::ActorWrapper.new(::User, user_id) if user_id
       end
 

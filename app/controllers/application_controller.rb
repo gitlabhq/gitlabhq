@@ -29,6 +29,7 @@ class ApplicationController < BaseActionController
   include StrongPaginationParams
   include Gitlab::HttpRouter::RuleContext
   include Gitlab::HttpRouter::RuleMetrics
+  include CookiesHelper
 
   around_action :set_current_ip_address
 
@@ -45,9 +46,6 @@ class ApplicationController < BaseActionController
   before_action :set_usage_stats_consent_flag
   before_action :check_impersonation_availability
   before_action :increment_http_router_metrics
-  before_action only: :show do
-    push_frontend_feature_flag(:duo_side_rail, current_user)
-  end
 
   # Make sure the `auth_user` is memoized so it can be logged, we do this after
   # all other before filters that could have set the user.
@@ -186,6 +184,7 @@ class ApplicationController < BaseActionController
       try(:authenticated_user)
     end
   end
+
   strong_memoize_attr :auth_user
 
   def log_exception(exception)

@@ -5,6 +5,7 @@ import { produce } from 'immer';
 import * as Sentry from '~/sentry/sentry_browser_wrapper';
 
 import { isLoggedIn } from '~/lib/utils/common_utils';
+import { scrollToElement } from '~/lib/utils/scroll_utils';
 import { DEFAULT_DEBOUNCE_AND_THROTTLE_MS } from '~/lib/utils/constants';
 import { ESC_KEY } from '~/lib/utils/keys';
 import { s__ } from '~/locale';
@@ -81,11 +82,6 @@ export default {
       type: Object,
       required: true,
     },
-    showTaskWeight: {
-      type: Boolean,
-      required: false,
-      default: true,
-    },
     hasIndirectChildren: {
       type: Boolean,
       required: false,
@@ -125,6 +121,7 @@ export default {
       childrenWorkItems: [],
       toParent: {},
       dragCancelled: false,
+      lastActiveElement: null,
     };
   },
   computed: {
@@ -161,6 +158,14 @@ export default {
     displayableChildren() {
       const filterClosed = getItems(this.showClosed);
       return filterClosed(this.children);
+    },
+  },
+  watch: {
+    activeChildItemId(newVal) {
+      if (!newVal && this.lastActiveElement) {
+        scrollToElement(this.lastActiveElement, { offset: -80, behavior: 'auto' });
+        this.lastActiveElement = null;
+      }
     },
   },
   mounted() {
@@ -535,6 +540,10 @@ export default {
         }
         this.$emit('click', event);
       }
+      this.$nextTick(() => {
+        this.lastActiveElement = event.target;
+        scrollToElement(this.lastActiveElement, { offset: -80, behavior: 'auto' });
+      });
     },
     openChild(id) {
       this.$apollo.mutate({
@@ -586,7 +595,6 @@ export default {
       :show-labels="showLabels"
       :show-closed="showClosed"
       :work-item-full-path="fullPath"
-      :show-task-weight="showTaskWeight"
       :dragged-item-type="draggedItemType"
       :allowed-children-by-type="allowedChildrenByType"
       :is-top-level="isTopLevel"

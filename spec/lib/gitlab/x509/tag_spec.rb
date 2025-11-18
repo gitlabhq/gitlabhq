@@ -7,14 +7,15 @@ RSpec.describe Gitlab::X509::Tag, feature_category: :source_code_management do
     let(:tag) { instance_double('Gitlab::Git::Tag') }
     let_it_be(:user) { create(:user, email: X509Helpers::User1.tag_email) }
     let_it_be(:project) { create(:project, path: X509Helpers::User1.path, creator: user) }
-    let(:signature) { described_class.new(project.repository, tag).signature }
+    let(:signature) { described_class.new(project.repository, described_class.context_from_tag(tag)).signature }
 
     before do
       allow(tag).to receive(:id).and_return(tag_id)
       allow(tag).to receive(:has_signature?).and_return(true)
       allow(tag).to receive(:user_email).and_return(user.email)
       allow(tag).to receive(:date).and_return(X509Helpers::User1.signed_tag_time)
-      allow(Gitlab::Git::Tag).to receive(:extract_signature_lazily).with(project.repository, tag_id)
+      allow(Gitlab::Git::Tag).to receive(:extract_signature_lazily).with(project.repository, tag_id,
+        timeout: Gitlab::GitalyClient.fast_timeout)
         .and_return([X509Helpers::User1.signed_tag_signature, X509Helpers::User1.signed_tag_base_data])
     end
 

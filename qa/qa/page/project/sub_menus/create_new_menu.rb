@@ -21,7 +21,8 @@ module QA
 
           def go_to_new_issue
             within_new_item_menu do
-              click_element(:create_menu_item, create_menu_item: 'new_issue')
+              link = has_element?(:create_menu_item, create_menu_item: 'new_work_item') ? 'new_work_item' : 'new_issue'
+              click_element(:create_menu_item, create_menu_item: link)
             end
 
             # Click the "Open in full page" link if modal appears

@@ -184,6 +184,7 @@ namespace :admin do
     put :reset_health_check_token
     put :reset_error_tracking_access_token
     put :clear_repository_check_states
+    put :reset_vscode_extension_marketplace_extension_host_domain
     match :general, :integrations, :repository, :ci_cd, :reporting, :metrics_and_profiling, :network, :preferences, :search, :usage_quotas, via: [:get, :patch]
     get :lets_encrypt_terms_of_service
     get :slack_app_manifest_download, format: :json

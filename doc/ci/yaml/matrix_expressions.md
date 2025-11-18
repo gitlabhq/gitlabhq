@@ -7,7 +7,7 @@ title: Matrix expressions in GitLab CI/CD
 
 {{< history >}}
 
-- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/423553) in GitLab 18.5.
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/423553) in GitLab 18.6. This feature is in [beta](../../policy/development_stages_support.md#beta).
 
 {{< /history >}}
 

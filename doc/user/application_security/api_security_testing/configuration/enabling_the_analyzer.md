@@ -51,7 +51,7 @@ To configure API security testing scanning with an OpenAPI Specification:
 1. [Include](../../../../ci/yaml/_index.md#includetemplate)
    the [`API-Security.gitlab-ci.yml` template](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/ci/templates/Security/API-Security.gitlab-ci.yml) in your `.gitlab-ci.yml` file.
 
-1. The [configuration file](variables.md#configuration-files) has several testing profiles defined with different checks enabled. We recommend that you start with the `Quick` profile.
+1. The [configuration file](variables.md#configuration-files) has several testing profiles defined with different checks enabled. Start with the `Quick` profile.
    Testing with this profile completes faster, allowing for easier configuration validation.
    Provide the profile by adding the `APISEC_PROFILE` CI/CD variable to your `.gitlab-ci.yml` file.
 
@@ -64,8 +64,8 @@ To configure API security testing scanning with an OpenAPI Specification:
    Adding the URL in an `environment_url.txt` file at your project's root is great for testing in
    dynamic environments. To run API security testing against an app dynamically created during a GitLab CI/CD
    pipeline, have the app persist its URL in an `environment_url.txt` file. API security testing
-   automatically parses that file to find its scan target. You can see an
-   [example of this in our Auto DevOps CI YAML](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/ci/templates/Jobs/Deploy.gitlab-ci.yml).
+   automatically parses that file to find its scan target. You can see an example of this in the GitLab
+   [Auto DevOps CI YAML](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/ci/templates/Jobs/Deploy.gitlab-ci.yml).
 
 Complete example configuration of using an OpenAPI Specification:
 
@@ -106,7 +106,7 @@ You can use various tools to generate HAR files:
 {{< alert type="warning" >}}
 
 HAR files may contain sensitive information such as authentication tokens, API keys, and session
-cookies. We recommend that you review the HAR file contents before adding them to a repository.
+cookies. Review the HAR file contents before adding them to a repository.
 
 {{< /alert >}}
 
@@ -117,7 +117,7 @@ To configure API security testing to use a HAR file that provides information ab
 1. [Include](../../../../ci/yaml/_index.md#includetemplate)
    the [`API-Security.gitlab-ci.yml` template](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/ci/templates/Security/API-Security.gitlab-ci.yml) in your `.gitlab-ci.yml` file.
 
-1. The [configuration file](variables.md#configuration-files) has several testing profiles defined with different checks enabled. We recommend that you start with the `Quick` profile.
+1. The [configuration file](variables.md#configuration-files) has several testing profiles defined with different checks enabled. Start with the `Quick` profile.
    Testing with this profile completes faster, allowing for easier configuration validation.
 
    Provide the profile by adding the `APISEC_PROFILE` CI/CD variable to your `.gitlab-ci.yml` file.
@@ -131,8 +131,8 @@ To configure API security testing to use a HAR file that provides information ab
    Adding the URL in an `environment_url.txt` file at your project's root is great for testing in
    dynamic environments. To run API security testing against an app dynamically created during a GitLab CI/CD
    pipeline, have the app persist its URL in an `environment_url.txt` file. API security testing
-   automatically parses that file to find its scan target. You can see an
-   [example of this in our Auto DevOps CI YAML](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/ci/templates/Jobs/Deploy.gitlab-ci.yml).
+   automatically parses that file to find its scan target. You can see an example of this in the GitLab
+   [Auto DevOps CI YAML](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/ci/templates/Jobs/Deploy.gitlab-ci.yml).
 
 Complete example configuration of using an HAR file:
 
@@ -196,7 +196,7 @@ To configure API security testing to use a GraphQL endpoint URL that provides in
    variable or an `environment_url.txt` file.
 
    Adding the URL in an `environment_url.txt` file at your project's root is great for testing in
-   dynamic environments. See the [dynamic environment solutions](../troubleshooting.md#dynamic-environment-solutions) section of our documentation for more information.
+   dynamic environments. For more information, see [dynamic environment solutions](../troubleshooting.md#dynamic-environment-solutions).
 
 Complete example configuration of using a GraphQL endpoint path:
 
@@ -237,7 +237,7 @@ To configure API security testing to use a GraphQL schema file that provides inf
    variable or an `environment_url.txt` file.
 
    Adding the URL in an `environment_url.txt` file at your project's root is great for testing in
-   dynamic environments. See the [dynamic environment solutions](../troubleshooting.md#dynamic-environment-solutions) section of our documentation for more information.
+   dynamic environments. For more information, see [dynamic environment solutions](../troubleshooting.md#dynamic-environment-solutions).
 
 Complete example configuration of using an GraphQL schema file:
 
@@ -292,8 +292,7 @@ testing.
 {{< alert type="warning" >}}
 
 Postman Collection files may contain sensitive information such as authentication tokens, API keys,
-and session cookies. We recommend that you review the Postman Collection file contents before adding
-them to a repository.
+and session cookies. Review the Postman Collection file contents before adding them to a repository.
 
 {{< /alert >}}
 
@@ -305,7 +304,7 @@ API to test:
 1. [Include](../../../../ci/yaml/_index.md#includetemplate)
    the [`API-Security.gitlab-ci.yml` template](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/ci/templates/Security/API-Security.gitlab-ci.yml).
 
-1. The [configuration file](variables.md#configuration-files) has several testing profiles defined with different checks enabled. We recommend that you start with the `Quick` profile.
+1. The [configuration file](variables.md#configuration-files) has several testing profiles defined with different checks enabled. Start with the `Quick` profile.
    Testing with this profile completes faster, allowing for easier configuration validation.
 
    Provide the profile by adding the `APISEC_PROFILE` CI/CD variable to your `.gitlab-ci.yml` file.
@@ -318,8 +317,8 @@ API to test:
    Adding the URL in an `environment_url.txt` file at your project's root is great for testing in
    dynamic environments. To run API security testing against an app dynamically created during a GitLab CI/CD
    pipeline, have the app persist its URL in an `environment_url.txt` file. API security testing
-   automatically parses that file to find its scan target. You can see an
-   [example of this in our Auto DevOps CI YAML](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/ci/templates/Jobs/Deploy.gitlab-ci.yml).
+   automatically parses that file to find its scan target. You can see an example of this in the GitLab
+   [Auto DevOps CI YAML](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/ci/templates/Jobs/Deploy.gitlab-ci.yml).
 
 Complete example configuration of using a Postman collection:
 
@@ -373,7 +372,7 @@ Postman has grown from a basic client tool with a nice UX experience to a more c
 
 Postman allows creating variables in different scopes. Each scope has a different level of visibility in the Postman tools. For example, you can create a variable in a _global environment_ scope that is seen by every operation definition and workspace. You can also create a variable in a specific _environment_ scope that is only visible and used when that specific environment is selected for use. Some scopes are not always available, for example in the Postman ecosystem you can create requests in the Postman Client, these requests do not have a _local_ scope, but test scripts do.
 
-Variable scopes in Postman can be a daunting topic and not everyone is familiar with it. We strongly recommend that you read [Variable Scopes](https://learning.postman.com/docs/sending-requests/variables/variables/#variable-scopes) from Postman documentation before moving forward.
+Variable scopes in Postman can be a daunting topic and not everyone is familiar with it. Read [Variable Scopes](https://learning.postman.com/docs/sending-requests/variables/variables/#variable-scopes) from Postman documentation before moving forward.
 
 As mentioned previously, there are different variable scopes, and each of them has a purpose and can be used to provide more flexibility to your Postman document. There is an important note on how values for variables are computed, as per Postman documentation:
 
@@ -387,7 +386,7 @@ a local variable named `username`, the local value is used when the request runs
 
 The following is a summary of the variable scopes supported by the Postman Client and API security testing:
 
-- **Global Environment (Global) scope** is a special pre-defined environment that is available throughout a workspace. We can also refer to the _global environment_ scope as the _global_ scope. The Postman Client allows exporting the global environment into a JSON file, which can be used with API security testing.
+- **Global Environment (Global) scope** is a special pre-defined environment that is available throughout a workspace. You can also refer to the _global environment_ scope as the _global_ scope. The Postman Client allows exporting the global environment into a JSON file, which can be used with API security testing.
 - **Environment scope** is a named group of variables created by a user in the Postman Client.
   The Postman Client supports a single active environment along with the global environment. The variables defined in an active user-created environment take precedence over variables defined in the global environment. The Postman Client allows exporting your environment into a JSON file, which can be used with API security testing.
 - **Collection scope** is a group of variables declared in a given collection. The collection variables are available to the collection where they have been declared and the nested requests or collections. Variables defined in the collection scope take precedence over the _global environment_ scope and also the _environment_ scope.
@@ -398,7 +397,7 @@ The following is a summary of the variable scopes supported by the Postman Clien
   - Define a single row of data from the unsupported _data scope_
 - **Data scope** is a group of variables in which their name and values come from JSON or CSV files. A Postman collection runner like [Newman](https://learning.postman.com/docs/collections/using-newman-cli/command-line-integration-with-newman/) or [Postman Collection Runner](https://learning.postman.com/docs/collections/running-collections/intro-to-collection-runs/) executes the requests in a collection as many times as entries have the JSON or CSV file. A good use case for these variables is to automate tests using scripts in Postman.
   API security testing does **not** support reading data from a CSV or JSON file.
-- **Local scope** are variables that are defined in Postman scripts. API security testing does **not** support Postman scripts and by extension, variables defined in scripts. You can still provide values for the script-defined variables by defining them in one of the supported scopes, or our custom JSON format.
+- **Local scope** are variables that are defined in Postman scripts. API security testing does **not** support Postman scripts and by extension, variables defined in scripts. You can still provide values for the script-defined variables by defining them in one of the supported scopes, or the custom JSON format.
 
 Not all scopes are supported by API security testing and variables defined in scripts are not supported. The following table is sorted by broadest scope to narrowest scope.
 
@@ -432,7 +431,7 @@ For more details on exporting variables in different supported scopes, see:
 
 #### API security testing scope, custom JSON file format
 
-Our custom JSON file format is a JSON object where each object property represents a variable name and the property value represents the variable value. This file can be created using your favorite text editor, or it can be produced by an earlier job in your pipeline.
+The custom JSON file format is a JSON object where each object property represents a variable name and the property value represents the variable value. This file can be created using your favorite text editor, or it can be produced by an earlier job in your pipeline.
 
 This example defines two variables `base_url` and `token` in the API security testing scope:
 
@@ -688,7 +687,7 @@ variables:
   APISEC_TARGET_URL: http://test-deployment/
 ```
 
-The file `dast-api-scope.json` uses our [custom JSON file format](#api-security-testing-scope-custom-json-file-format). This JSON is an object with key-value pairs for properties. The keys are the variables' names, and the values are the variables'
+The file `dast-api-scope.json` uses the [custom JSON file format](#api-security-testing-scope-custom-json-file-format). This JSON is an object with key-value pairs for properties. The keys are the variables' names, and the values are the variables'
 values. For example:
 
 ```json
@@ -700,7 +699,7 @@ values. For example:
 
 #### Example: Multiple Scopes
 
-In this example, a _global_ scope, _environment_ scope, and _collection_ scope are configured. The first step is to export our various scopes.
+In this example, a _global_ scope, _environment_ scope, and _collection_ scope are configured. The first step is to export the various scopes.
 
 - [Export the _global_ scope](https://learning.postman.com/docs/sending-requests/variables/variables/#downloading-global-environments) as `global-scope.json`
 - [Export the _environment_ scope](https://learning.postman.com/docs/getting-started/importing-and-exporting/exporting-data/#export-environments) as `environment-scope.json`
@@ -728,8 +727,8 @@ When using exported scopes, it's often the case that the value of a variable mus
 
 The _collection_ scope variables are included in the exported Postman Collection file and provided through the `APISEC_POSTMAN_COLLECTION` configuration variable.
 
-The API security testing scope is provided through the `APISEC_POSTMAN_COLLECTION_VARIABLES` configuration variable, but first, we must create the file.
-The file `dast-api-scope.json` uses our [custom JSON file format](#api-security-testing-scope-custom-json-file-format). This JSON is an object with key-value pairs for properties. The keys are the variables' names, and the values are the variables'
+The API security testing scope is provided through the `APISEC_POSTMAN_COLLECTION_VARIABLES` configuration variable. but first, create the file.
+The file `dast-api-scope.json` uses the [custom JSON file format](#api-security-testing-scope-custom-json-file-format). This JSON is an object with key-value pairs for properties. The keys are the variables' names, and the values are the variables'
 values. For example:
 
 ```json
@@ -738,7 +737,7 @@ values. For example:
 }
 ```
 
-Our CI definition:
+The CI definition:
 
 ```yaml
 stages:
@@ -758,13 +757,13 @@ variables:
 
 When using exported scopes, it's often the case that the value of a variable must be changed for use with API security testing. For example, an _environment_ scope might contain a variable named `api_version` with a value of `v2`, while your test needs a value of `v1`. Instead of modifying the exported file to change the value, the API security testing scope can be used. This works because the _API security testing_ scope takes precedence over all other scopes.
 
-In this example, a _global_ scope, _environment_ scope, _collection_ scope, and _API security testing_ scope are configured. The first step is to export and create our various scopes.
+In this example, a _global_ scope, _environment_ scope, _collection_ scope, and _API security testing_ scope are configured. The first step is to export and create the various scopes.
 
 - [Export the _global_ scope](https://learning.postman.com/docs/sending-requests/variables/variables/#downloading-global-environments) as `global-scope.json`
 - [Export the _environment_ scope](https://learning.postman.com/docs/getting-started/importing-and-exporting/exporting-data/#export-environments) as `environment-scope.json`
 - Export the Postman Collection which includes the _collection_ scope as `postman-collection.json`
 
-The API security testing scope is used by creating a file `dast-api-scope.json` using our [custom JSON file format](#api-security-testing-scope-custom-json-file-format). This JSON is an object with key-value pairs for properties. The keys are the variables' names, and the values are the variables'
+The API security testing scope is used by creating a file `dast-api-scope.json` using the [custom JSON file format](#api-security-testing-scope-custom-json-file-format). This JSON is an object with key-value pairs for properties. The keys are the variables' names, and the values are the variables'
 values. For example:
 
 ```json
@@ -826,9 +825,9 @@ Follow these steps to view details of a vulnerability:
    | Method              | HTTP method used to detect the vulnerability.                                           |
    | URL                 | URL at which the vulnerability was detected.                                            |
    | Request             | The HTTP request that caused the vulnerability.                                         |
-   | Unmodified Response | Response from an unmodified request. This is what a typical working response looks like. |
+   | Unmodified Response | Response from an unmodified request. A typical working response looks like an Unmodified Response.|
    | Actual Response     | Response received from test request.                                                    |
-   | Evidence            | How we determined a vulnerability occurred.                                             |
+   | Evidence            | How GitLab determined a vulnerability occurred.                                         |
    | Identifiers         | The API security testing check used to find this vulnerability.                         |
    | Severity            | Severity of the vulnerability.                                                          |
    | Scanner Type        | Scanner used to perform testing.                                                        |

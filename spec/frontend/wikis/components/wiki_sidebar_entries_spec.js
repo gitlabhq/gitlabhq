@@ -50,6 +50,7 @@ describe('wikis/components/wiki_sidebar_entry', () => {
         sidebarPagesApi: MOCK_SIDEBAR_PAGES_API,
         viewAllPagesPath: MOCK_VIEW_ALL_PAGES_PATH,
         canCreate: false,
+        editing: false,
         ...provide,
       },
       stubs: {

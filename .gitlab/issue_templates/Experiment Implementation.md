@@ -29,3 +29,5 @@
 | sequence | activity | category | action | label |
 | -------- | -------- | ------ | ----- | ------- |
 |  |  |  |  |  |
+
+/label ~"growth experiment"

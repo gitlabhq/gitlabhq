@@ -23,9 +23,8 @@ class SetPipelineName
   E2E_GDK = ['e2e:test-on-gdk'].freeze
   E2E_CNG = ['e2e:test-on-cng'].freeze
   E2E_OMNIBUS = ['e2e:test-on-omnibus-ee', 'e2e:test-on-omnibus-ce'].freeze
-  REVIEW_APP = ['start-review-app-pipeline'].freeze
   # Ordered by expected duration, DESC
-  PIPELINE_TYPES_ORDERED = %w[e2e-omnibus review-app e2e-gdk e2e-cng code rspec-predictive docs].freeze
+  PIPELINE_TYPES_ORDERED = %w[e2e-omnibus e2e-gdk e2e-cng code rspec-predictive docs].freeze
 
   # We need an access token that isn't CI_JOB_TOKEN because we are querying
   # the pipelines API to fetch jobs and bridge jobs.
@@ -141,7 +140,6 @@ class SetPipelineName
     types << 'e2e-cng'          if E2E_CNG.include?(job.name)
     # omnibus e2e tests are manual in mr pipelines and are only executed on demand
     types << 'e2e-omnibus'      if E2E_OMNIBUS.include?(job.name) && job.status != 'manual'
-    types << 'review-app'       if REVIEW_APP.include?(job.name)
     types << 'docs'             if DOCS.include?(job.name)
     types << 'code'             if CODE.include?(job.name)
     types

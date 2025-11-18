@@ -86,32 +86,6 @@ if any of these conditions are true:
   [malformed in the `CODEOWNERS` file](advanced.md#malformed-owners).
 - Current user is an external user who does not have permission to the internal Code Owner group.
 
-## User or group not visible when viewing directory Code Owners
-
-Code Owners might not show the intended user or group based on your configured rules when viewing
-a directory, but correctly show the Code Owners for files beneath the directory.
-
-For example:
-
-```plaintext
-* @dev-team
-docs/ @tech-writer-team
-```
-
-All files beneath the `docs/` directory show `@tech-writer-team` as Code Owners, but the directory
-itself shows `@dev-team`.
-
-This behavior occurs when viewing a directory because the [syntax rule](reference.md#directory-paths)
-applies to all files beneath the directory, which does not include the directory itself.
-To resolve this, update the `CODEOWNERS` file to include the directory specifically along with all
-files beneath the directory. For example:
-
-```plaintext
-* @dev-team
-docs @tech-writer-team
-docs/ @tech-writer-team
-```
-
 ## Approval rule is invalid
 
 You might get an error that states:

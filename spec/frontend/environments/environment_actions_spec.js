@@ -54,18 +54,6 @@ describe('EnvironmentActions Component', () => {
     expect(wrapper.findComponent(GlDisclosureDropdown).attributes('aria-label')).toBe('Deploy to…');
   });
 
-  describe('size prop', () => {
-    it('should default to "medium" size', () => {
-      createComponent();
-      expect(wrapper.findComponent(GlDisclosureDropdown).props('size')).toBe('medium');
-    });
-
-    it('should use "small" size when passed as a prop', () => {
-      createComponent({ size: 'small' });
-      expect(wrapper.findComponent(GlDisclosureDropdown).props('size')).toBe('small');
-    });
-  });
-
   describe('manual actions', () => {
     const actions = [
       {

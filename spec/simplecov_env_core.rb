@@ -15,6 +15,8 @@ module SimpleCovEnvCore
 
   def configure_profile
     SimpleCov.configure do
+      enable_coverage :branch
+
       # See https://gitlab.com/gitlab-org/gitlab/-/merge_requests/194688#note_2595596467
       add_filter %r{^/(ee/|jh/)?spec/}
 

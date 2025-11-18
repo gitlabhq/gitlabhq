@@ -1,10 +1,6 @@
 import Vue from 'vue';
-import {
-  setCookie,
-  handleLocationHash,
-  historyPushState,
-  scrollToElement,
-} from '~/lib/utils/common_utils';
+import { setCookie, handleLocationHash, historyPushState } from '~/lib/utils/common_utils';
+import { scrollToElement } from '~/lib/utils/scroll_utils';
 import { createAlert, VARIANT_WARNING } from '~/alert';
 import axios from '~/lib/utils/axios_utils';
 
@@ -734,7 +730,7 @@ export function goToFile({ path }) {
     const newUrl = new URL(window.location);
     newUrl.hash = fileHash;
     historyPushState(newUrl, { skipScrolling: true });
-    scrollToElement('.diff-files-holder', { duration: 0 });
+    scrollToElement('.diff-files-holder', { behavior: 'auto' });
 
     if (!this.isTreePathLoaded(path)) {
       this.fetchFileByFile();
@@ -1273,4 +1269,8 @@ export function expandAllFiles() {
 
 export function collapseAllFiles() {
   this[types.SET_COLLAPSED_STATE_FOR_ALL_FILES]({ collapsed: true });
+}
+
+export function setFileViewEffectsProcessed(file, viewEffectsProcessed) {
+  Object.assign(file, { viewEffectsProcessed });
 }

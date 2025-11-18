@@ -1,10 +1,11 @@
 <script>
 import { GlLabel, GlTooltipDirective, GlIcon, GlLoadingIcon } from '@gitlab/ui';
 import { sortBy, uniqueId } from 'lodash';
+import SafeHtml from '~/vue_shared/directives/safe_html';
 import boardCardInner from 'ee_else_ce/boards/mixins/board_card_inner';
 import { isScopedLabel, convertObjectPropsToCamelCase } from '~/lib/utils/common_utils';
-import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import { updateHistory, queryToObject } from '~/lib/utils/url_utility';
+import { processEmojiInTitle } from '~/emoji';
 import { sprintf, __ } from '~/locale';
 import isShowingLabelsQuery from '~/graphql_shared/client/is_showing_labels.query.graphql';
 import UserAvatarLink from '~/vue_shared/components/user_avatar/user_avatar_link.vue';
@@ -29,8 +30,7 @@ export default {
     IssueIteration: () => import('ee_component/boards/components/issue_iteration.vue'),
     WorkItemTypeIcon,
     IssueMilestone,
-    IssueHealthStatus: () =>
-      import('ee_component/related_items_tree/components/issue_health_status.vue'),
+    IssueHealthStatus: () => import('ee_component/issues/components/issue_health_status.vue'),
     EpicCountables: () =>
       import('ee_else_ce/vue_shared/components/epic_countables/epic_countables.vue'),
     WorkItemStatusBadge: () =>
@@ -38,8 +38,9 @@ export default {
   },
   directives: {
     GlTooltip: GlTooltipDirective,
+    SafeHtml,
   },
-  mixins: [boardCardInner, glFeatureFlagsMixin()],
+  mixins: [boardCardInner],
   inject: [
     'allowSubEpics',
     'rootPath',
@@ -175,12 +176,6 @@ export default {
     workItemType() {
       return this.isEpicBoard ? WORK_ITEM_TYPE_NAME_EPIC : this.item.type;
     },
-    workItemDrawerEnabled() {
-      if (this.glFeatures.workItemViewForIssues) {
-        return true;
-      }
-      return this.isEpicBoard ? this.glFeatures.epicsListDrawer : this.glFeatures.issuesListDrawer;
-    },
     workItemFullPath() {
       return this.item.namespace?.fullPath || this.item.referencePath?.split(this.itemPrefix)[0];
     },
@@ -205,6 +200,10 @@ export default {
     hasStatus() {
       return Boolean(this.item.status);
     },
+  },
+  processEmojiInTitle,
+  safeHtmlConfig: {
+    ADD_TAGS: ['use', 'gl-emoji'],
   },
   methods: {
     assigneeUrl(assignee) {
@@ -286,18 +285,15 @@ export default {
         <a
           :href="item.path || item.webUrl || ''"
           :title="item.title"
-          :class="{
-            '!gl-text-disabled': isLoading,
-            'js-no-trigger': !workItemDrawerEnabled,
-            'js-no-trigger-title': workItemDrawerEnabled,
-          }"
-          class="gl-text-default hover:gl-text-default"
+          :class="{ '!gl-text-disabled': isLoading }"
+          class="js-no-trigger-title gl-text-default hover:gl-text-default"
           data-testid="board-card-title-link"
           aria-hidden="true"
           @mousemove.stop
           @click.exact.prevent
-          >{{ item.title }}</a
         >
+          <span v-safe-html="$options.processEmojiInTitle(item.title)"></span>
+        </a>
       </h3>
       <slot></slot>
     </div>

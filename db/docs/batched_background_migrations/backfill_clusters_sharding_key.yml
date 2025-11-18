@@ -1,8 +1,9 @@
 ---
 migration_job_name: BackfillClustersShardingKey
-description: Backfills sharding keys `clusters.project_id`, `clusters.group_id` and `clusters.organization_id`
+description: Backfills sharding keys `clusters.project_id`, `clusters.group_id` and
+  `clusters.organization_id`
 feature_category: deployment_management
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/198431
 milestone: '18.3'
 queued_migration_version: 20250720210423
-finalized_by: # version of the migration that finalized this BBM
+finalized_by: '20251016232103'

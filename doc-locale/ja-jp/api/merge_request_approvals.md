@@ -2,14 +2,14 @@
 stage: Create
 group: Code Review
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
-description: Documentation for the REST API for merge request approvals in GitLab.
+description: GitLabのマージリクエストの承認に関するREST APIのドキュメント。
 title: マージリクエスト承認API
 ---
 
 {{< details >}}
 
 - プラン: Premium、Ultimate
-- 製品: GitLab.com、GitLab Self-Managed、GitLab Dedicated
+- 提供形態: GitLab.com、GitLab Self-Managed、GitLab Dedicated
 
 {{< /details >}}
 
@@ -19,11 +19,19 @@ title: マージリクエスト承認API
 
 {{< /history >}}
 
-プロジェクト内の[すべてのマージリクエストの承認](../user/project/merge_requests/approvals/_index.md)の設定。すべてのエンドポイントで認証が必要です。
+このAPIは、プロジェクトまたはグループ内のマージリクエストに対する承認の設定を管理します。
 
-## マージリクエストを承認する
+- ユーザーとしてマージリクエストを承認および承認解除します。
+- マージリクエストに対する自分自身だけでなく、すべての承認をリセットします。
+- プロジェクトの承認ルールを表示および管理します。
 
-適切なロールを持つユーザーは、このエンドポイントを使用してマージリクエストを承認できます。
+すべてのエンドポイントで認証が必要です。
+
+## マージリクエストを承認する {#approve-merge-request}
+
+指定されたマージリクエストを承認します。現在認証済みユーザーは、[承認が可能な承認者](../user/project/merge_requests/approvals/rules.md#eligible-approvers)である必要があります。
+
+`sha`パラメータは、マージリクエストの現在のバージョンを承認していることを保証します。定義されている場合、値はマージリクエストのHEADコミットSHAと一致する必要があります。不一致があると、`409 Conflict`応答が返されます。これは、[マージリクエストの承認](merge_requests.md#merge-a-merge-request)の動作と一致します。
 
 ```plaintext
 POST /projects/:id/merge_requests/:merge_request_iid/approve
@@ -33,12 +41,10 @@ POST /projects/:id/merge_requests/:merge_request_iid/approve
 
 | 属性           | 型              | 必須 | 説明 |
 |---------------------|-------------------|----------|-------------|
-| `id`                | 整数または文字列 | はい      | プロジェクトのIDまたは[URLエンコードされたパス](rest/_index.md#namespaced-paths)。 |
-| `approval_password` | 文字列            | いいえ       | 現在のユーザーのパスワード。プロジェクト設定で[**承認するにはユーザーの再認証が必要です**](../user/project/merge_requests/approvals/settings.md#require-user-re-authentication-to-approve)が有効になっている場合は必須。グループまたはGitLab Self-ManagedインスタンスがSAML認証を強制するように設定されている場合、常に失敗します。 |
+| `id`                | 整数または文字列 | はい      | プロジェクトのID、または[URLエンコードされたパス](rest/_index.md#namespaced-paths)。 |
+| `approval_password` | 文字列            | いいえ       | 現在のユーザーのパスワード。プロジェクトの設定で、[**承認するにはユーザーの再認証を要求する**](../user/project/merge_requests/approvals/settings.md#require-user-re-authentication-to-approve)が有効になっている場合は、必須です。グループまたはGitLab Self-ManagedインスタンスがSAML認証を強制するように設定されている場合、常に失敗します。 |
 | `merge_request_iid` | 整数           | はい      | マージリクエストのIID。 |
 | `sha`               | 文字列            | いいえ       | マージリクエストの`HEAD`。 |
-
-`sha`パラメーターは、[マージリクエストを承認する](merge_requests.md#merge-a-merge-request)場合と同じように機能します。このパラメーターが渡された場合、承認を追加するには、マージリクエストの現在のHEADと一致する必要があります。一致しない場合、応答コードは`409`になります。
 
 ```json
 {
@@ -62,7 +68,8 @@ POST /projects/:id/merge_requests/:merge_request_iid/approve
         "state": "active",
         "avatar_url": "http://www.gravatar.com/avatar/e64c7d89f26bd1972efa854d13d7dd61?s=80\u0026d=identicon",
         "web_url": "http://localhost:3000/root"
-      }
+      },
+      "approved_at": "2016-06-10T04:21:41.050Z"
     },
     {
       "user": {
@@ -72,15 +79,29 @@ POST /projects/:id/merge_requests/:merge_request_iid/approve
         "state": "active",
         "avatar_url": "http://www.gravatar.com/avatar/cf7ad14b34162a76d593e3affca2adca?s=80\u0026d=identicon",
         "web_url": "http://localhost:3000/ryley"
-      }
+      },
+      "approved_at": "2016-06-10T09:17:13.520Z"
     }
   ]
 }
 ```
 
-## マージリクエストの承認を取り消す
+### 自動化されたマージリクエストの承認 {#approvals-for-automated-merge-requests}
 
-マージリクエストを承認した場合、次のエンドポイントを使用して承認を取り消すことができます。
+APIを使用してマージリクエストを作成し、すぐに承認すると、自動化によってコミットが完全に処理される前に、マージリクエストが承認される可能性があります。デフォルトでは、新しい[コミット](../user/project/merge_requests/approvals/settings.md#remove-all-approvals-when-commits-are-added-to-the-source-branch)をマージリクエストに追加すると、既存のすべての承認がリセットされます。この場合、**アクティビティー**領域には、次のような一連のメッセージがマージリクエストに表示されます。
+
+- `(botname)`が5分前にこのマージリクエストを承認しました
+- `(botname)`が5分前に1件のコミットを追加しました
+- `(botname)`が5分前にブランチにプッシュすることにより、`(botname)`から承認をリセットしました
+
+コミットの処理が完了する前に自動承認が適用されないようにするには、自動化で次のようになるまで待機（または`sleep`）関数を追加する必要があります。
+
+- `detailed_merge_status`属性が、`checking`または`approvals_syncing`のいずれの状態にもありません。
+- マージリクエストの差分にNULLではない`patch_id_sha`が含まれています。
+
+## マージリクエストを却下する {#unapprove-a-merge-request}
+
+指定されたマージリクエストから、現在認証済みユーザーの承認を削除します。
 
 ```plaintext
 POST /projects/:id/merge_requests/:merge_request_iid/unapprove
@@ -90,14 +111,14 @@ POST /projects/:id/merge_requests/:merge_request_iid/unapprove
 
 | 属性           | 型              | 必須 | 説明 |
 |---------------------|-------------------|----------|-------------|
-| `id`                | 整数または文字列 | はい      | プロジェクトのIDまたは[URLエンコードされたパス](rest/_index.md#namespaced-paths)。 |
+| `id`                | 整数または文字列 | はい      | プロジェクトのID、または[URLエンコードされたパス](rest/_index.md#namespaced-paths)。 |
 | `merge_request_iid` | 整数           | はい      | マージリクエストのIID。 |
 
-## マージリクエストの承認をリセットする
+## マージリクエストの承認をリセットする {#reset-approvals-for-a-merge-request}
 
-マージリクエストのすべての承認をクリアします。
+指定されたマージリクエストのすべての承認をリセットします。
 
-プロジェクトまたはグループのトークンに基づいて、[ボットユーザー](../user/project/settings/project_access_tokens.md#bot-users-for-projects)のみが利用できます。ボット権限を持たないユーザーは、`401 Unauthorized`応答を受信します。
+有効なプロジェクトまたはグループトークンを持つ[ボットユーザー](../user/project/settings/project_access_tokens.md#bot-users-for-projects)のみが利用できます。一般ユーザーには、`401 Unauthorized`応答が返されます。
 
 ```plaintext
 PUT /projects/:id/merge_requests/:merge_request_iid/reset_approvals
@@ -114,11 +135,13 @@ curl --request PUT \
   --url "https://gitlab.example.com/api/v4/projects/76/merge_requests/1/reset_approvals"
 ```
 
-## プロジェクト承認ルール
+## グループの承認ルール {#approval-rules-for-projects}
 
-[プロジェクト承認ルール](#get-all-approval-rules-for-project)を使用して、この情報にアクセスします。
+これらのエンドポイントは、プロジェクトとその承認ルールに適用されます。すべてのエンドポイントで認証が必要です。
 
-次のエンドポイントを使用して、プロジェクトの承認設定に関する情報をリクエストできます。
+### プロジェクトの承認設定を取得します {#retrieve-approval-configuration-for-a-project}
+
+プロジェクトの承認設定を取得します。
 
 ```plaintext
 GET /projects/:id/approvals
@@ -128,7 +151,7 @@ GET /projects/:id/approvals
 
 | 属性 | 型              | 必須 | 説明 |
 |-----------|-------------------|----------|-------------|
-| `id`      | 整数または文字列 | はい      | プロジェクトのIDまたは[URLエンコードされたパス](rest/_index.md#namespaced-paths)。 |
+| `id`      | 整数または文字列 | はい      | プロジェクトのID、または[URLエンコードされたパス](rest/_index.md#namespaced-paths)。 |
 
 ```json
 {
@@ -145,9 +168,9 @@ GET /projects/:id/approvals
 }
 ```
 
-### 設定の変更
+### プロジェクトの承認設定を更新する {#update-approval-configuration-for-a-project}
 
-適切なロールを持つユーザーは、このエンドポイントを使用して承認設定を変更できます。
+プロジェクトの承認設定を更新します。現在認証済みユーザーは、[承認が可能な承認者](../user/project/merge_requests/approvals/rules.md#eligible-approvers)である必要があります。
 
 ```plaintext
 POST /projects/:id/approvals
@@ -157,15 +180,15 @@ POST /projects/:id/approvals
 
 | 属性                                        | 型              | 必須 | 説明 |
 |--------------------------------------------------|-------------------|----------|-------------|
-| `id`                                             | 整数または文字列 | はい      | プロジェクトのIDまたは[URLエンコードされたパス](rest/_index.md#namespaced-paths)。 |
-| `approvals_before_merge`（非推奨）            | 整数           | いいえ       | マージリクエストをマージするために必要な承認の数。GitLab 12.3で[非推奨](https://gitlab.com/gitlab-org/gitlab/-/issues/11132)になりました。代わりに、[承認ルール](#create-project-approval-rule)を使用してください。 |
-| `disable_overriding_approvers_per_merge_request` | ブール値           | いいえ       | マージリクエストごとに承認者をオーバーライドすることを許可または禁止します。 |
-| `merge_requests_author_approval`                 | ブール値           | いいえ       | 作成者がマージリクエストを自己承認することを許可または禁止します。`true`は、作成者が自己承認できることを意味します。 |
-| `merge_requests_disable_committers_approval`     | ブール値           | いいえ       | コミッターがマージリクエストを自己承認することを許可または禁止します。 |
-| `require_password_to_approve`（非推奨）       | ブール値           | いいえ       | 承認を追加する前に、承認者がパスワードを入力して認証する必要があります。GitLab 16.9で[非推奨](https://gitlab.com/gitlab-org/gitlab/-/issues/431346)になりました。代わりに、`require_reauthentication_to_approve`を使用してください。 |
-| `require_reauthentication_to_approve`            | ブール値           | いいえ       | 承認を追加する前に、承認者がパスワードを入力して認証する必要があります。GitLab 17.1で[導入](https://gitlab.com/gitlab-org/gitlab/-/issues/431346)されました。 |
-| `reset_approvals_on_push`                        | ブール値           | いいえ       | 新しいプッシュ時に承認をリセットします。 |
-| `selective_code_owner_removals`                  | ブール値           | いいえ       | GitLabコードオーナーのファイルが変更された場合、GitLabコードオーナーからの承認をリセットします。このフィールドを使用するには、`reset_approvals_on_push`フィールドを無効にする必要があります。 |
+| `id`                                             | 整数または文字列 | はい      | プロジェクトのID、または[URLエンコードされたパス](rest/_index.md#namespaced-paths)。 |
+| `approvals_before_merge`（非推奨）            | 整数           | いいえ       | マージリクエストをマージするために必要な承認の数。GitLab 12.3で[非推奨](https://gitlab.com/gitlab-org/gitlab/-/issues/11132)になりました。代わりに、[承認ルールを作成](#create-an-approval-rule-for-a-project)します。 |
+| `disable_overriding_approvers_per_merge_request` | ブール値           | いいえ       | `true`の場合、マージリクエスト内の承認者のオーバーライドを防ぎます。 |
+| `merge_requests_author_approval`                 | ブール値           | いいえ       | `true`の場合、作成者は自分のマージリクエストを自己承認できます。 |
+| `merge_requests_disable_committers_approval`     | ブール値           | いいえ       | `true`の場合、マージリクエストでコミットするユーザーは、それを承認できません。 |
+| `require_password_to_approve`（非推奨）       | ブール値           | いいえ       | `true`の場合、承認者は、承認を追加する前にパスワードで認証する必要があります。GitLab 16.9で[非推奨](https://gitlab.com/gitlab-org/gitlab/-/issues/431346)になりました。代わりに`require_reauthentication_to_approve`を使用してください。 |
+| `require_reauthentication_to_approve`            | ブール値           | いいえ       | `true`の場合、承認を追加する前に承認者の認証が必須になります。GitLab 17.1で[導入](https://gitlab.com/gitlab-org/gitlab/-/issues/431346)されました。 |
+| `reset_approvals_on_push`                        | ブール値           | いいえ       | `true`の場合、プッシュ時に承認がリセットされます。 |
+| `selective_code_owner_removals`                  | ブール値           | いいえ       | `true`の場合、コードの所有者のファイルが変更されると、コードの所有者からの承認がリセットされます。このフィールドを使用するには、`reset_approvals_on_push`が`false`である必要があります。 |
 
 ```json
 {
@@ -180,30 +203,21 @@ POST /projects/:id/approvals
 }
 ```
 
-### プロジェクトのすべての承認ルールを取得する
+### プロジェクトのすべての承認ルールをリストする {#list-all-approval-rules-for-a-project}
 
-{{< history >}}
-
-- ページネーションのサポートは、GitLab 15.3で`approval_rules_pagination`という名前の[フラグ](../administration/feature_flags.md)とともに導入されました。デフォルトで有効になっています。GitLabチームのメンバーは、この機密情報イシュー（`https://gitlab.com/gitlab-org/gitlab/-/issues/31011`）で詳細情報を確認できます。
-- `applies_to_all_protected_branches`プロパティは、GitLab 15.3で[導入](https://gitlab.com/gitlab-org/gitlab/-/issues/335316)されました。
-- ページネーションのサポートは、GitLab 15.7で[一般提供](https://gitlab.com/gitlab-org/gitlab/-/issues/366823)になりました。機能フラグ`approval_rules_pagination`は削除されました。
-- `usernames`プロパティは、GitLab 15.8で[導入](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/102446)されました。
-
-{{< /history >}}
-
-次のエンドポイントを使用して、プロジェクトの承認ルールに関する情報をリクエストできます。
+指定されたプロジェクトのすべての承認ルールと、関連する詳細をリストします。
 
 ```plaintext
 GET /projects/:id/approval_rules
 ```
 
-`page`および`per_page`[ページネーション](rest/_index.md#offset-based-pagination)パラメーターを使用して、承認ルールのリストを制限します。
+承認ルールのリストを[制限](rest/_index.md#offset-based-pagination)するには、`page`および`per_page`ページネーションパラメータを使用します。
 
 サポートされている属性:
 
 | 属性 | 型              | 必須 | 説明 |
 |-----------|-------------------|----------|-------------|
-| `id`      | 整数または文字列 | はい      | プロジェクトのIDまたは[URLエンコードされたパス](rest/_index.md#namespaced-paths)。 |
+| `id`      | 整数または文字列 | はい      | プロジェクトのID、または[URLエンコードされたパス](rest/_index.md#namespaced-paths)。 |
 
 ```json
 [
@@ -370,16 +384,9 @@ GET /projects/:id/approval_rules
 ]
 ```
 
-### プロジェクトの単一の承認ルールを取得する
+### プロジェクトの承認ルールを取得する {#retrieve-an-approval-rule-for-a-project}
 
-{{< history >}}
-
-- `applies_to_all_protected_branches`プロパティは、GitLab 15.3で[導入](https://gitlab.com/gitlab-org/gitlab/-/issues/335316)されました。
-- `usernames`プロパティは、GitLab 15.8で[導入](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/102446)されました。
-
-{{< /history >}}
-
-次のエンドポイントを使用して、プロジェクトの単一の承認ルールに関する情報をリクエストできます。
+プロジェクトの指定された承認ルールに関する情報を取得します。
 
 ```plaintext
 GET /projects/:id/approval_rules/:approval_rule_id
@@ -389,7 +396,7 @@ GET /projects/:id/approval_rules/:approval_rule_id
 
 | 属性          | 型              | 必須 | 説明 |
 |--------------------|-------------------|----------|-------------|
-| `id`               | 整数または文字列 | はい      | プロジェクトのIDまたは[URLエンコードされたパス](rest/_index.md#namespaced-paths)。 |
+| `id`               | 整数または文字列 | はい      | プロジェクトのID、または[URLエンコードされたパス](rest/_index.md#namespaced-paths)。 |
 | `approval_rule_id` | 整数           | はい      | 承認ルールのID。 |
 
 ```json
@@ -475,17 +482,15 @@ GET /projects/:id/approval_rules/:approval_rule_id
 }
 ```
 
-### プロジェクト承認ルールを作成する
+### プロジェクトの承認ルールを作成する {#create-an-approval-rule-for-a-project}
 
-{{< history >}}
+プロジェクトの承認ルールを作成します。
 
-- 脆弱性チェック機能は、GitLab 15.0で[削除](https://gitlab.com/gitlab-org/gitlab/-/issues/357300)されました。
-- `applies_to_all_protected_branches`プロパティは、GitLab 15.3で[導入](https://gitlab.com/gitlab-org/gitlab/-/issues/335316)されました。
-- `usernames`プロパティは、GitLab 15.8で[導入](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/102446)されました。
+`rule_type`フィールドは、次のルールタイプをサポートします。
 
-{{< /history >}}
-
-次のエンドポイントを使用して、プロジェクト承認ルールを作成できます。
+- `any_approver`: `approvals_required`が`0`に設定された、事前設定済みのデフォルトルール。
+- `regular`: 通常の[マージリクエストの承認ルール](../user/project/merge_requests/approvals/rules.md)に使用されます。
+- `report_approver`: フィールドは、設定され有効になっている[マージリクエスト承認ポリシー](../user/application_security/policies/merge_request_approval_policies.md)からGitLabが承認ルールを作成する際に使用されます。このAPIで承認ルールを作成するときは、この値を使用しないでください。
 
 ```plaintext
 POST /projects/:id/approval_rules
@@ -495,16 +500,16 @@ POST /projects/:id/approval_rules
 
 | 属性                           | 型              | 必須 | 説明 |
 |-------------------------------------|-------------------|----------|-------------|
-| `id`                                | 整数または文字列 | はい      | プロジェクトのIDまたは[URLエンコードされたパス](rest/_index.md#namespaced-paths)。 |
+| `id`                                | 整数または文字列 | はい      | プロジェクトのID、または[URLエンコードされたパス](rest/_index.md#namespaced-paths)。 |
 | `approvals_required`                | 整数           | はい      | このルールに必要な承認の数。 |
 | `name`                              | 文字列            | はい      | 承認ルールの名前。1024文字に制限されています。 |
-| `applies_to_all_protected_branches` | ブール値           | いいえ       | ルールをすべての保護ブランチに適用するかどうかを指定します。`true`に設定すると、`protected_branch_ids`の値は無視されます。デフォルトは`false`です。GitLab 15.3で[導入](https://gitlab.com/gitlab-org/gitlab/-/issues/335316)されました。 |
+| `applies_to_all_protected_branches` | ブール値           | いいえ       | `true`の場合、ルールはすべての保護ブランチに適用され、`protected_branch_ids`属性は無視されます。 |
 | `group_ids`                         | 配列             | いいえ       | 承認者としてのグループのID。 |
-| `protected_branch_ids`              | 配列             | いいえ       | ルールをスコープする保護ブランチのID。IDを識別するには、[APIを使用](protected_branches.md#list-protected-branches)します。 |
-| `report_type`                       | 文字列            | いいえ       | ルールタイプが`report_approver`の場合に必要なレポートタイプ。サポートされているレポートタイプは、`license_scanning`[（GitLab 15.9で非推奨にりました）](../update/deprecations.md#license-check-and-the-policies-tab-on-the-license-compliance-page)と`code_coverage`です。 |
-| `rule_type`                         | 文字列            | いいえ       | ルールタイプ。`any_approver`は、`approvals_required`が`0`の事前設定されたデフォルトルールです。その他のルールは、`regular`（通常の[マージリクエスト承認ルール](../user/project/merge_requests/approvals/rules.md)に使用されます）と`report_approver`です。このフィールドを使用して、APIから承認ルールを作成しないでください。`report_approver`フィールドは、GitLabが、設定および有効化された[マージリクエスト承認ポリシー](../user/application_security/policies/merge_request_approval_policies.md)から承認ルールを作成するときに使用されます。 |
-| `user_ids`                          | 配列             | いいえ       | 承認者としてのユーザーのID。`user_ids`と`usernames`の両方を指定すると、ユーザーに関する両方のリストが追加されます。 |
-| `usernames`                         | 文字列配列      | いいえ       | このルールの承認者のユーザー名（`user_ids`と同じですが、ユーザー名のリストが必要です）。`user_ids`と`usernames`の両方を指定すると、ユーザーに関する両方のリストが追加されます。 |
+| `protected_branch_ids`              | 配列             | いいえ       | ルールの範囲を指定する保護ブランチのID。IDを識別するには、[保護されたブランチをリスト](protected_branches.md#list-protected-branches) APIを使用します。 |
+| `report_type`                       | 文字列            | いいえ       | レポートタイプ。ルールタイプが`report_approver`の場合に必須。サポートされているレポートタイプは、`license_scanning`（GitLab 15.9で[非推奨](../update/deprecations.md#license-check-and-the-policies-tab-on-the-license-compliance-page)になりました）と`code_coverage`です。  |
+| `rule_type`                         | 文字列            | いいえ       | ルールタイプ。`any_approver`、`regular`、および`report_approver`を含む、サポートされている値。 |
+| `user_ids`                          | 配列             | いいえ       | 承認者としてのユーザーのID。`usernames`と併用すると、ユーザーのリストが両方とも追加されます。 |
+| `usernames`                         | 文字列配列      | いいえ       | 承認者のユーザー名。`user_ids`と併用すると、ユーザーのリストが両方とも追加されます。 |
 
 ```json
 {
@@ -588,7 +593,7 @@ POST /projects/:id/approval_rules
 }
 ```
 
-必要な承認者のデフォルト数である0を増やすには、次のようにします。
+必要な承認者のデフォルト数を0から増やすには、次のようにします。
 
 ```shell
 curl --request POST \
@@ -598,7 +603,7 @@ curl --request POST \
   --url "https://gitlab.example.com/api/v4/projects/<project_id>/approval_rules"
 ```
 
-もう1つの例では、ユーザー固有のルールを作成すします。
+別の例として、ユーザー固有のルールを作成する方法を次に示します。
 
 ```shell
 curl --request POST \
@@ -608,42 +613,30 @@ curl --request POST \
   --url "https://gitlab.example.com/api/v4/projects/<project_id>/approval_rules"
 ```
 
-### プロジェクト承認ルールを更新する
+### プロジェクトの承認ルールを更新する {#update-an-approval-rule-for-a-project}
 
-{{< history >}}
+プロジェクトの指定された承認ルールを更新します。このエンドポイントは、`group_ids`、`user_ids`、または`usernames`属性で定義されていない承認者とグループを削除します。
 
-- 脆弱性チェック機能は、GitLab 15.0で[削除](https://gitlab.com/gitlab-org/gitlab/-/issues/357300)されました。
-- `applies_to_all_protected_branches`プロパティは、GitLab 15.3で[導入](https://gitlab.com/gitlab-org/gitlab/-/issues/335316)されました。
-- `usernames`プロパティは、GitLab 15.8で[導入](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/102446)されました。
-
-{{< /history >}}
-
-次のエンドポイントを使用して、プロジェクト承認ルールを更新できます。
+`users`または`groups`パラメータに含まれていない隠しグループ（ユーザーに表示する権限がないプライベートグループ）は、デフォルトで保持されます。それらを削除するには、`remove_hidden_groups`を`true`に設定します。これにより、ユーザーが承認ルールを更新するときに、非表示のグループが誤って削除されなくなります。
 
 ```plaintext
 PUT /projects/:id/approval_rules/:approval_rule_id
 ```
 
-{{< alert type="note" >}}
-
-承認者とグループ（`users`パラメーターまたは`groups`パラメーターにない非表示のグループを除く）は**削除**されます。非表示のグループとは、ユーザーが表示する権限を持っていないプライベートグループのことです。`remove_hidden_groups`パラメーターが`true`でない限り、非表示のグループはデフォルトで削除されません。これにより、ユーザーが承認ルールを更新するときに、非表示のグループが誤って削除されないようになります。
-
-{{< /alert >}}
-
 サポートされている属性:
 
 | 属性                           | 型              | 必須 | 説明 |
 |-------------------------------------|-------------------|----------|-------------|
-| `id`                                | 整数または文字列 | はい      | プロジェクトのIDまたは[URLエンコードされたパス](rest/_index.md#namespaced-paths)。 |
-| `approvals_required`                | 整数           | はい      | このルールに必要な承認の数。 |
 | `approval_rule_id`                  | 整数           | はい      | 承認ルールのID。 |
-| `name`                              | 文字列            | はい      | 承認ルールの名前。1024文字に制限されています。 |
-| `applies_to_all_protected_branches` | ブール値           | いいえ       | ルールをすべての保護ブランチに適用するかどうかを指定します。`true`に設定すると、`protected_branch_ids`の値は無視されます。GitLab 15.3で[導入](https://gitlab.com/gitlab-org/gitlab/-/issues/335316)されました。 |
+| `id`                                | 整数または文字列 | はい      | プロジェクトのID、または[URLエンコードされたパス](rest/_index.md#namespaced-paths)。 |
+| `applies_to_all_protected_branches` | ブール値           | いいえ       | `true`の場合、ルールはすべての保護ブランチに適用され、`protected_branch_ids`属性は無視されます。 |
+| `approvals_required`                | 整数           | いいえ       | このルールに必要な承認の数。 |
 | `group_ids`                         | 配列             | いいえ       | 承認者としてのグループのID。 |
-| `protected_branch_ids`              | 配列             | いいえ       | ルールをスコープする保護ブランチのID。IDを識別するには、[APIを使用](protected_branches.md#list-protected-branches)します。 |
-| `remove_hidden_groups`              | ブール値           | いいえ       | 非表示のグループを承認ルールから削除するかどうかを指定します。 |
-| `user_ids`                          | 配列             | いいえ       | 承認者としてのユーザーのID。`user_ids`と`usernames`の両方を指定すると、ユーザーに関する両方のリストが追加されます。 |
-| `usernames`                         | 文字列配列      | いいえ       | このルールの承認者のユーザー名（`user_ids`と同じですが、ユーザー名のリストが必要です）。`user_ids`と`usernames`の両方を指定すると、ユーザーに関する両方のリストが追加されます。 |
+| `name`                              | 文字列            | いいえ       | 承認ルールの名前。1024文字に制限されています。 |
+| `protected_branch_ids`              | 配列             | いいえ       | ルールの範囲を指定する保護ブランチのID。IDを識別するには、[保護されたブランチをリスト](protected_branches.md#list-protected-branches) APIを使用します。 |
+| `remove_hidden_groups`              | ブール値           | いいえ       | `true`の場合、承認ルールから隠しグループが削除されます。 |
+| `user_ids`                          | 配列             | いいえ       | 承認者としてのユーザーのID。`usernames`と併用すると、ユーザーのリストが両方とも追加されます。 |
+| `usernames`                         | 文字列配列      | いいえ       | 承認者のユーザー名。`user_ids`と併用すると、ユーザーのリストが両方とも追加されます。 |
 
 ```json
 {
@@ -727,9 +720,9 @@ PUT /projects/:id/approval_rules/:approval_rule_id
 }
 ```
 
-### プロジェクト承認ルールを削除する
+### プロジェクトの承認ルールを削除する {#delete-an-approval-rule-for-a-project}
 
-次のエンドポイントを使用して、プロジェクト承認ルールを削除できます。
+指定されたプロジェクトの承認ルールを削除します。
 
 ```plaintext
 DELETE /projects/:id/approval_rules/:approval_rule_id
@@ -739,14 +732,18 @@ DELETE /projects/:id/approval_rules/:approval_rule_id
 
 | 属性          | 型              | 必須 | 説明 |
 |--------------------|-------------------|----------|-------------|
-| `id`               | 整数または文字列 | はい      | プロジェクトのIDまたは[URLエンコードされたパス](rest/_index.md#namespaced-paths)。 |
+| `id`               | 整数または文字列 | はい      | プロジェクトのID、または[URLエンコードされたパス](rest/_index.md#namespaced-paths)。 |
 | `approval_rule_id` | 整数           | はい      | 承認ルールのID。 |
 
-## 単一のマージリクエストの承認
+## マージリクエストの承認ルール {#approval-rules-for-a-merge-request}
 
-特定のマージリクエストに関する承認の設定。すべてのエンドポイントで認証が必要です。
+これらのエンドポイントは、個々のマージリクエストに適用されます。すべてのエンドポイントで認証が必要です。
 
-次のエンドポイントを使用して、マージリクエストの承認ステータスに関する情報をリクエストできます。
+### マージリクエストの承認状態を取得する {#retrieve-approval-state-for-a-merge-request}
+
+指定されたマージリクエストの承認状態を取得します。
+
+応答では、`approved_by`には、承認が承認ルールを満たしているかどうかに関係なく、マージリクエストのすべての承認者に関する情報が含まれています。マージリクエストの承認ルールに関する詳細情報、および受信した承認がそれらのルールを満たしているかどうかについては、[`/approval_state`エンドポイント](#retrieve-approval-details-for-a-merge-request)を参照してください。
 
 ```plaintext
 GET /projects/:id/merge_requests/:merge_request_iid/approvals
@@ -756,7 +753,7 @@ GET /projects/:id/merge_requests/:merge_request_iid/approvals
 
 | 属性           | 型              | 必須 | 説明 |
 |---------------------|-------------------|----------|-------------|
-| `id`                | 整数または文字列 | はい      | プロジェクトのIDまたは[URLエンコードされたパス](rest/_index.md#namespaced-paths)。 |
+| `id`                | 整数または文字列 | はい      | プロジェクトのID、または[URLエンコードされたパス](rest/_index.md#namespaced-paths)。 |
 | `merge_request_iid` | 整数           | はい      | マージリクエストのIID。 |
 
 ```json
@@ -781,29 +778,32 @@ GET /projects/:id/merge_requests/:merge_request_iid/approvals
         "state": "active",
         "avatar_url": "http://www.gravatar.com/avatar/e64c7d89f26bd1972efa854d13d7dd61?s=80\u0026d=identicon",
         "web_url": "http://localhost:3000/root"
-      }
+      },
+      "approved_by": "2016-06-09T01:45:21.720Z"
     }
   ]
 }
 ```
 
-### マージリクエストの承認ステータスを取得する
+### マージリクエストの承認の詳細を取得する {#retrieve-approval-details-for-a-merge-request}
 
-次のエンドポイントを使用して、マージリクエストの承認ステータスに関する情報をリクエストできます。
+指定されたマージリクエストの承認の詳細を取得します。
+
+ユーザーがマージリクエストの承認ルールを変更した場合、応答には以下が含まれます。
+
+- `approval_rules_overwritten`: `true`の場合、デフォルトの承認ルールが変更されたことを示します。
+- `approved`: `true`の場合、関連付けられた承認ルールが承認されたことを示します。
+- `approved_by`: 定義されている場合は、関連付けられた承認ルールを承認したユーザーの詳細を示します。承認ルールに一致しないユーザーは返されません。すべての承認ユーザーを返すには、[`/approvals`エンドポイント](#retrieve-approval-state-for-a-merge-request)を参照してください。
 
 ```plaintext
 GET /projects/:id/merge_requests/:merge_request_iid/approval_state
 ```
 
-マージリクエストに対して、マージリクエストレベルのルールが作成されている場合、`approval_rules_overwritten`は`true`です。ルールがない場合は、`false`です。
-
-これには、すでに承認したユーザー（`approved_by`）と、ルールがすでに承認されているかどうか（`approved`）に関する詳細情報が含まれます。
-
 サポートされている属性:
 
 | 属性           | 型              | 必須 | 説明 |
 |---------------------|-------------------|----------|-------------|
-| `id`                | 整数または文字列 | はい      | プロジェクトのIDまたは[URLエンコードされたパス](rest/_index.md#namespaced-paths)。 |
+| `id`                | 整数または文字列 | はい      | プロジェクトのID、または[URLエンコードされたパス](rest/_index.md#namespaced-paths)。 |
 | `merge_request_iid` | 整数           | はい      | マージリクエストのIID。 |
 
 ```json
@@ -855,28 +855,21 @@ GET /projects/:id/merge_requests/:merge_request_iid/approval_state
 }
 ```
 
-### マージリクエスト承認ルールを取得する
+### マージリクエストのすべての承認ルールをリストする {#list-all-approval-rules-for-a-merge-request}
 
-{{< history >}}
+指定されたマージリクエストのすべての承認ルールと、関連する詳細をリストします。
 
-- ページネーションのサポートは、GitLab 15.3で`approval_rules_pagination`という名前の[フラグ](../administration/feature_flags.md)とともに導入されました。デフォルトで有効になっています。GitLabチームのメンバーは、この機密情報イシュー（`https://gitlab.com/gitlab-org/gitlab/-/issues/31011`）で詳細情報を確認できます。
-- ページネーションのサポートは、GitLab 15.7で[一般提供](https://gitlab.com/gitlab-org/gitlab/-/issues/366823)になりました。機能フラグ`approval_rules_pagination`は削除されました。
-
-{{< /history >}}
-
-次のエンドポイントを使用して、マージリクエストの承認ルールに関する情報をリクエストできます。
+`page`および`per_page`[ページネーション](rest/_index.md#offset-based-pagination)パラメータを使用して、承認ルールのリストを制限します。
 
 ```plaintext
 GET /projects/:id/merge_requests/:merge_request_iid/approval_rules
 ```
 
-`page`および`per_page`[ページネーション](rest/_index.md#offset-based-pagination)パラメーターを使用して、承認ルールのリストを制限します。
-
 サポートされている属性:
 
 | 属性           | 型              | 必須 | 説明 |
 |---------------------|-------------------|----------|-------------|
-| `id`                | 整数または文字列 | はい      | プロジェクトのIDまたは[URLエンコードされたパス](rest/_index.md#namespaced-paths)。 |
+| `id`                | 整数または文字列 | はい      | プロジェクトのID、または[URLエンコードされたパス](rest/_index.md#namespaced-paths)。 |
 | `merge_request_iid` | 整数           | はい      | マージリクエストのIID。 |
 
 ```json
@@ -996,9 +989,9 @@ GET /projects/:id/merge_requests/:merge_request_iid/approval_rules
 ]
 ```
 
-### 単一のマージリクエストルールを取得する
+### 特定のマージリクエストの承認ルールを取得する {#retrieve-an-approval-rule-for-a-specific-merge-request}
 
-次のエンドポイントを使用して、単一のマージリクエスト承認ルールに関する情報をリクエストできます。
+特定のマージリクエストの承認ルールに関する情報を取得します。
 
 ```plaintext
 GET /projects/:id/merge_requests/:merge_request_iid/approval_rules/:approval_rule_id
@@ -1008,7 +1001,7 @@ GET /projects/:id/merge_requests/:merge_request_iid/approval_rules/:approval_rul
 
 | 属性           | 型              | 必須 | 説明 |
 |---------------------|-------------------|----------|-------------|
-| `id`                | 整数または文字列 | はい      | プロジェクトのIDまたは[URLエンコードされたパス](rest/_index.md#namespaced-paths)。 |
+| `id`                | 整数または文字列 | はい      | プロジェクトのID、または[URLエンコードされたパス](rest/_index.md#namespaced-paths)。 |
 | `approval_rule_id`  | 整数           | はい      | 承認ルールのID。 |
 | `merge_request_iid` | 整数           | はい      | マージリクエストのIID。 |
 
@@ -1071,9 +1064,12 @@ GET /projects/:id/merge_requests/:merge_request_iid/approval_rules/:approval_rul
 }
 ```
 
-### マージリクエストルールを作成する
+### マージリクエストの承認ルールを作成する {#create-an-approval-rule-for-a-merge-request}
 
-次のエンドポイントを使用して、マージリクエスト承認ルールを作成できます。
+特定のマージリクエストの承認ルールを作成します。`approval_project_rule_id`がプロジェクトからの既存の承認ルールのIDで設定されている場合、このエンドポイントは次のようになります。
+
+- プロジェクトのルールから、`name`、`users`、および`groups`の値をコピーします。
+- 指定した`approvals_required`値を使用します。
 
 ```plaintext
 POST /projects/:id/merge_requests/:merge_request_iid/approval_rules
@@ -1083,20 +1079,14 @@ POST /projects/:id/merge_requests/:merge_request_iid/approval_rules
 
 | 属性                  | 型              | 必須               | 説明                                                                  |
 |----------------------------|-------------------|------------------------|------------------------------------------------------------------------------|
-| `id`                       | 整数または文字列 | はい | プロジェクトのIDまたは[URLエンコードされたパス](rest/_index.md#namespaced-paths) |
+| `id`                       | 整数または文字列 | はい | プロジェクトのID、または[URLエンコードされたパス](rest/_index.md#namespaced-paths)。 |
 | `approvals_required`       | 整数           | はい | このルールに必要な承認の数。                              |
 | `merge_request_iid`        | 整数           | はい | マージリクエストのIID。                                                |
 | `name`                     | 文字列            | はい | 承認ルールの名前。1024文字に制限されています。                                               |
 | `approval_project_rule_id` | 整数           | いいえ | プロジェクトの承認ルールのID。                                     |
 | `group_ids`                | 配列             | いいえ | 承認者としてのグループのID。                                              |
-| `user_ids`                 | 配列             | いいえ | 承認者としてのユーザーのID。`user_ids`と`usernames`の両方を指定すると、ユーザーに関する両方のリストが追加されます。 |
-| `usernames`                | 文字列配列      | いいえ | このルールの承認者のユーザー名（`user_ids`と同じですが、ユーザー名のリストが必要です）。`user_ids`と`usernames`の両方を指定すると、ユーザーに関する両方のリストが追加されます。 |
-
-{{< alert type="note" >}}
-
-`approval_project_rule_id`を設定すると、プロジェクトのルールの`name`、`users`、`groups`がコピーされます。指定した`approvals_required`を使用します。
-
-{{< /alert >}}
+| `user_ids`                 | 配列             | いいえ | 承認者としてのユーザーのID。`usernames`と併用すると、ユーザーのリストが両方とも追加されます。 |
+| `usernames`                | 文字列配列      | いいえ | 承認者のユーザー名。`user_ids`と併用すると、ユーザーのリストが両方とも追加されます。 |
 
 ```json
 {
@@ -1156,31 +1146,29 @@ POST /projects/:id/merge_requests/:merge_request_iid/approval_rules
 }
 ```
 
-### マージリクエストルールを更新する
+### マージリクエストの承認ルールを更新する {#update-an-approval-rule-for-a-merge-request}
 
-マージリクエスト承認ルールを更新するには、次のエンドポイントを使用します。
+マージリクエストの指定された承認ルールを更新します。このエンドポイントは、`group_ids`、`user_ids`、または`usernames`属性に含まれていない承認者とグループを削除します。
+
+`report_approver`または`code_owner`のルールはシステムによって生成されるため、編集できません。
 
 ```plaintext
 PUT /projects/:id/merge_requests/:merge_request_iid/approval_rules/:approval_rule_id
 ```
 
-このエンドポイントは、`users`パラメーターまたは`groups`パラメーターにない承認者とグループを**削除**します。
-
-これらのルールはシステムによって生成されるため、`report_approver`ルールまたは`code_owner`ルールを更新することはできません。
-
 サポートされている属性:
 
 | 属性              | 型              | 必須 | 説明 |
 |------------------------|-------------------|----------|-------------|
-| `id`                   | 整数または文字列 | はい      | プロジェクトのIDまたは[URLエンコードされたパス](rest/_index.md#namespaced-paths)。 |
+| `id`                   | 整数または文字列 | はい      | プロジェクトのID、または[URLエンコードされたパス](rest/_index.md#namespaced-paths)。 |
 | `approval_rule_id`     | 整数           | はい      | 承認ルールのID。 |
 | `merge_request_iid`    | 整数           | はい      | マージリクエストのIID。 |
 | `approvals_required`   | 整数           | いいえ       | このルールに必要な承認の数。 |
 | `group_ids`            | 配列             | いいえ       | 承認者としてのグループのID。 |
 | `name`                 | 文字列            | いいえ       | 承認ルールの名前。1024文字に制限されています。 |
-| `remove_hidden_groups` | ブール値           | いいえ       | 非表示のグループを削除するかどうかを指定します。 |
-| `user_ids`             | 配列             | いいえ       | 承認者としてのユーザーのID。`user_ids`と`usernames`の両方を指定すると、ユーザーに関する両方のリストが追加されます。 |
-| `usernames`            | 文字列配列      | いいえ       | このルールの承認者のユーザー名（`user_ids`と同じですが、ユーザー名のリストが必要です）。`user_ids`と`usernames`の両方を指定すると、ユーザーに関する両方のリストが追加されます。 |
+| `remove_hidden_groups` | ブール値           | いいえ       | `true`の場合、隠しグループを削除します。 |
+| `user_ids`             | 配列             | いいえ       | 承認者としてのユーザーのID。`usernames`と併用すると、ユーザーのリストが両方とも追加されます。 |
+| `usernames`            | 文字列配列      | いいえ       | 承認者のユーザー名。`user_ids`と併用すると、ユーザーのリストが両方とも追加されます。 |
 
 ```json
 {
@@ -1240,47 +1228,47 @@ PUT /projects/:id/merge_requests/:merge_request_iid/approval_rules/:approval_rul
 }
 ```
 
-### マージリクエストルールを削除する
+### マージリクエストの承認ルールを削除する {#delete-an-approval-rule-for-a-merge-request}
 
-次のエンドポイントを使用して、マージリクエスト承認ルールを削除できます。
+指定されたマージリクエストの承認ルールを削除します。
 
 ```plaintext
 DELETE /projects/:id/merge_requests/:merge_request_iid/approval_rules/:approval_rule_id
 ```
 
-これらのルールはシステムによって生成されるため、`report_approver`ルールまたは`code_owner`ルールを更新することはできません。
+`report_approver`または`code_owner`のルールはシステムによって生成されるため、編集できません。
 
 サポートされている属性:
 
 | 属性           | 型              | 必須 | 説明 |
 |---------------------|-------------------|----------|-------------|
-| `id`                | 整数または文字列 | はい      | プロジェクトのIDまたは[URLエンコードされたパス](rest/_index.md#namespaced-paths)。 |
+| `id`                | 整数または文字列 | はい      | プロジェクトのID、または[URLエンコードされたパス](rest/_index.md#namespaced-paths)。 |
 | `approval_rule_id`  | 整数           | はい      | 承認ルールのID。 |
 | `merge_request_iid` | 整数           | はい      | マージリクエストのIID。 |
 
-## グループ承認ルール
+## グループの承認ルール {#approval-rules-for-groups}
 
 {{< details >}}
 
-- 状態: Experiment版
+- ステータス: 実験的機能
 
 {{< /details >}}
 
 {{< history >}}
 
-- GitLab 16.7で`approval_group_rules`という名前の[フラグ](../administration/feature_flags.md)とともに[導入](https://gitlab.com/gitlab-org/gitlab/-/issues/428051)されました。デフォルトでは無効になっています。この機能は[Experiment版](../policy/development_stages_support.md)です。
+- GitLab 16.7で`approval_group_rules`[フラグ](../administration/feature_flags/_index.md)とともに[導入](https://gitlab.com/gitlab-org/gitlab/-/issues/428051)されました。デフォルトでは無効になっています。これは[実験的機能](../policy/development_stages_support.md)です。
 
 {{< /history >}}
 
 {{< alert type="flag" >}}
 
-GitLab Self-Managedでは、この機能はデフォルトで使用できません。管理者が`approval_group_rules`という名前の[機能フラグを有効](../administration/feature_flags.md)にすると、利用できるようになります。GitLab.comとGitLab Dedicatedでは、この機能は使用できません。この機能は本番環境での使用には対応していません。
+GitLab Self-Managedでは、デフォルトでこの機能は使用できません。管理者が`approval_group_rules`という名前の[機能フラグを有効にする](../administration/feature_flags/_index.md)と、この機能を使用できるようになります。GitLab.comとGitLab Dedicatedでは、この機能は使用できません。この機能は本番環境での使用には対応していません。
 
 {{< /alert >}}
 
-グループ承認ルールは、グループに属するプロジェクトのすべての保護ブランチに適用されます。この機能は[Experiment版](../policy/development_stages_support.md)です。
+グループ承認ルールは、グループに属するプロジェクトのすべての保護ブランチに適用されます。
 
-### グループ承認ルールを取得する
+### グループのすべての承認ルールをリストする {#list-all-approval-rules-for-a-group}
 
 {{< history >}}
 
@@ -1288,21 +1276,21 @@ GitLab Self-Managedでは、この機能はデフォルトで使用できませ�
 
 {{< /history >}}
 
-グループ管理者は、次のエンドポイントを使用して、グループの承認ルールに関する情報をリクエストできます。
+指定されたグループのすべての承認ルールと、関連する詳細をリストします。グループ管理者に制限されています。
+
+`page`および`per_page`[ページネーション](rest/_index.md#offset-based-pagination)パラメータを使用して、承認ルールのリストを制限します。
 
 ```plaintext
 GET /groups/:id/approval_rules
 ```
 
-`page`および`per_page`[ページネーション](rest/_index.md#offset-based-pagination)パラメーターを使用して、承認ルールのリストを制限します。
-
 サポートされている属性:
 
 | 属性 | 型              | 必須 | 説明 |
 |-----------|-------------------|----------|-------------|
-| `id`      | 整数または文字列 | はい      | プロジェクトのIDまたは[URLエンコードされたパス](rest/_index.md#namespaced-paths)。 |
+| `id`      | 整数または文字列 | はい      | プロジェクトのID、または[URLエンコードされたパス](rest/_index.md#namespaced-paths)。 |
 
-リクエストの例:
+リクエスト例:
 
 ```shell
 curl --request GET \
@@ -1310,7 +1298,7 @@ curl --request GET \
   --url "https://gitlab.example.com/api/v4/groups/29/approval_rules"
 ```
 
-応答の例:
+レスポンス例:
 
 ```json
 [
@@ -1357,9 +1345,15 @@ curl --request GET \
 
 ```
 
-### グループ承認ルールを作成する
+### グループの承認ルールを作成する {#create-an-approval-rule-for-a-group}
 
-グループ管理者は、次のエンドポイントを使用して、グループの承認ルールを作成できます。
+グループの承認ルールを作成します。グループ管理者に制限されています。
+
+APIから承認ルールをビルドするときは、`rule_type`フィールドを使用しないでください。フィールドは、次のルールタイプをサポートします。
+
+- `any_approver`: `approvals_required`が`0`に設定された、事前設定済みのデフォルトルール。
+- `regular`: 通常の[マージリクエストの承認ルール](../user/project/merge_requests/approvals/rules.md)に使用されます。
+- `report_approver`: フィールドは、設定され有効になっている[マージリクエスト承認ポリシー](../user/application_security/policies/merge_request_approval_policies.md)からGitLabが承認ルールを作成する際に使用されます。
 
 ```plaintext
 POST /groups/:id/approval_rules
@@ -1369,14 +1363,14 @@ POST /groups/:id/approval_rules
 
 | 属性            | 型              | 必須 | 説明 |
 |----------------------|-------------------|----------|-------------|
-| `id`                 | 整数または文字列 | はい      | グループのIDまたは[URLエンコードされたパス](rest/_index.md#namespaced-paths)。 |
+| `id`                 | 整数または文字列 | はい      | グループのID、または[URLエンコードされたパス](rest/_index.md#namespaced-paths)。 |
 | `approvals_required` | 整数           | はい      | このルールに必要な承認の数。 |
 | `name`               | 文字列            | はい      | 承認ルールの名前。1024文字に制限されています。 |
 | `group_ids`          | 配列             | いいえ       | 承認者としてのグループのID。 |
-| `rule_type`          | 文字列            | いいえ       | ルールタイプ。`any_approver`は、`approvals_required`が`0`の事前設定されたデフォルトルールです。その他のルールは、`regular`（通常の[マージリクエスト承認ルール](../user/project/merge_requests/approvals/rules.md)に使用されます）と`report_approver`です。このフィールドを使用して、APIから承認ルールを作成しないでください。`report_approver`フィールドは、GitLabが、設定および有効化された[マージリクエスト承認ポリシー](../user/application_security/policies/merge_request_approval_policies.md)から承認ルールを作成するときに使用されます。 |
+| `rule_type`          | 文字列            | いいえ       | ルールタイプ。`any_approver`、`regular`、および`report_approver`を含む、サポートされている値。 |
 | `user_ids`           | 配列             | いいえ       | 承認者としてのユーザーのID。 |
 
-リクエストの例:
+リクエスト例:
 
 ```shell
 curl --request POST \
@@ -1384,7 +1378,7 @@ curl --request POST \
   --url "https://gitlab.example.com/api/v4/groups/29/approval_rules?name=security&approvals_required=2"
 ```
 
-応答の例:
+レスポンス例:
 
 ```json
 {
@@ -1429,7 +1423,7 @@ curl --request POST \
 }
 ```
 
-### グループ承認ルールを更新する
+### グループの承認ルールを更新する {#update-an-approval-rule-for-a-group}
 
 {{< history >}}
 
@@ -1437,7 +1431,13 @@ curl --request POST \
 
 {{< /history >}}
 
-グループ管理者は、次のエンドポイントを使用して、グループ承認ルールを更新できます。
+グループの承認ルールを更新します。グループ管理者に制限されています。
+
+APIから承認ルールをビルドするときは、`rule_type`フィールドを使用しないでください。フィールドは、次のルールタイプをサポートします。
+
+- `any_approver`: `approvals_required`が`0`に設定された、事前設定済みのデフォルトルール。
+- `regular`: 通常の[マージリクエストの承認ルール](../user/project/merge_requests/approvals/rules.md)に使用されます。
+- `report_approver`: フィールドは、設定され有効になっている[マージリクエスト承認ポリシー](../user/application_security/policies/merge_request_approval_policies.md)からGitLabが承認ルールを作成する際に使用されます。
 
 ```shell
 PUT /groups/:id/approval_rules/:approval_rule_id
@@ -1447,15 +1447,15 @@ PUT /groups/:id/approval_rules/:approval_rule_id
 
 | 属性            | 型              | 必須 | 説明 |
 |----------------------|-------------------|----------|-------------|
-| `approval_rule_id`  | 整数           | はい      | 承認ルールのID。 |
-| `id`                 | 整数または文字列 | はい      | グループのIDまたは[URLエンコードされたパス](rest/_index.md#namespaced-paths)。 |
+| `approval_rule_id`。  | 整数           | はい      | 承認ルールのID。 |
+| `id`                 | 整数または文字列 | はい      | グループのID、または[URLエンコードされたパス](rest/_index.md#namespaced-paths)。 |
 | `approvals_required` | 文字列            | いいえ       | このルールに必要な承認の数。 |
 | `group_ids`          | 整数           | いいえ       | 承認者としてのユーザーのID。 |
 | `name`               | 文字列            | いいえ       | 承認ルールの名前。1024文字に制限されています。 |
-| `rule_type`          | 配列             | いいえ       | ルールタイプ。`any_approver`は、`approvals_required`が`0`の事前設定されたデフォルトルールです。その他のルールは、`regular`（通常の[マージリクエスト承認ルール](../user/project/merge_requests/approvals/rules.md)に使用されます）と`report_approver`です。このフィールドを使用して、APIから承認ルールを作成しないでください。`report_approver`フィールドは、GitLabが、設定および有効化された[マージリクエスト承認ポリシー](../user/application_security/policies/merge_request_approval_policies.md)から承認ルールを作成するときに使用されます。 |
+| `rule_type`          | 配列             | いいえ       | ルールタイプ。`any_approver`、`regular`、および`report_approver`を含む、サポートされている値。 |
 | `user_ids`           | 配列             | いいえ       | 承認者としてのグループのID。 |
 
-リクエストの例:
+リクエスト例:
 
 ```shell
 curl --request PUT \
@@ -1463,7 +1463,7 @@ curl --request PUT \
   --url "https://gitlab.example.com/api/v4/groups/29/approval_rules/5?name=security2&approvals_required=1"
 ```
 
-応答の例:
+レスポンス例:
 
 ```json
 {

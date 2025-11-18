@@ -1,10 +1,10 @@
 /* eslint-disable class-methods-use-this, @gitlab/require-i18n-strings */
 
-import { GlBreakpointInstance as bp } from '@gitlab/ui/src/utils';
 import $ from 'jquery';
 import { uniq, escape } from 'lodash';
+import { PanelBreakpointInstance } from '~/panel_breakpoint_instance';
 import { getEmojiScoreWithIntent } from '~/emoji/utils';
-import { scrollToElement } from '~/lib/utils/common_utils';
+import { scrollToElement } from '~/lib/utils/scroll_utils';
 import * as Emoji from '~/emoji';
 import { dispose, fixTitle } from '~/tooltips';
 import { createAlert } from '~/alert';
@@ -266,8 +266,9 @@ export class AwardsHandler {
     const css = {
       top: `${$addBtn.offset().top + $addBtn.outerHeight()}px`,
     };
-    // for xs screen we position the element on center
-    if (bp.getBreakpointSize() === 'xs' || bp.getBreakpointSize() === 'sm') {
+    // for smaller breakpoints, we position the element on center
+    const breakpoint = PanelBreakpointInstance.getBreakpointSize();
+    if (['xs', 'sm'].includes(breakpoint)) {
       css.left = '5%';
     } else if (position === 'right') {
       css.left = `${$addBtn.offset().left - $menu.outerWidth() + 20}px`;

@@ -27,16 +27,6 @@ RSpec.describe Ci::RetryPipelineService, '#execute', feature_category: :continuo
       it 'does not write to ci_builds_metadata' do
         expect { service.execute(pipeline) }.to not_change { Ci::BuildMetadata.count }
       end
-
-      context 'when FF `stop_writing_builds_metadata` is disabled' do
-        before do
-          stub_feature_flags(stop_writing_builds_metadata: false)
-        end
-
-        it 'writes to ci_build_metadata' do
-          expect { service.execute(pipeline) }.to change { Ci::BuildMetadata.count }.by_at_least(1)
-        end
-      end
     end
 
     context 'when there are already retried jobs present' do

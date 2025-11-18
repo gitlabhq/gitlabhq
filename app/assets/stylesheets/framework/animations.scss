@@ -249,7 +249,9 @@ $skeleton-line-widths: (
   // Static dot that appears after flex content
   &::after {
     content: '';
-    @apply gl-h-3 gl-w-3 gl-rounded-full;
+    @apply gl-h-3;
+    @apply gl-w-3;
+    @apply gl-rounded-full;
     background-color: var(--gl-status-info-icon-color);
     position: absolute;
     right: 0;
@@ -262,7 +264,11 @@ $skeleton-line-widths: (
   &::before {
     @include gl-prefers-reduced-motion-animation;
     content: '';
-    @apply gl-absolute gl-h-3 gl-w-3 gl-rounded-full gl-pointer-events-none;
+    @apply gl-absolute;
+    @apply gl-h-3;
+    @apply gl-w-3;
+    @apply gl-rounded-full;
+    @apply gl-pointer-events-none;
     
     /* Position exactly where the ::after dot will be */
     right: 0;

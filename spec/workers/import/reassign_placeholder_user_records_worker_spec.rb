@@ -9,6 +9,23 @@ RSpec.describe Import::ReassignPlaceholderUserRecordsWorker, feature_category: :
 
   let(:job_args) { import_source_user.id }
 
+  shared_examples 'a job that re-enqueues on service error' do |error_reason|
+    let(:service_response) { ServiceResponse.new(status: :error, reason: error_reason) }
+    let(:backoff_period) { described_class::BACKOFF_PERIOD }
+
+    before do
+      allow_next_instance_of(Import::ReassignPlaceholderUserRecordsService) do |service|
+        allow(service).to receive(:execute).and_return(service_response)
+      end
+    end
+
+    it 're-enqueues the job' do
+      expect(described_class).to receive(:perform_in).with(backoff_period, import_source_user.id, {})
+
+      described_class.new.perform(import_source_user.id)
+    end
+  end
+
   describe '#perform' do
     before do
       allow(Import::ReassignPlaceholderUserRecordsService).to receive(:new).and_call_original
@@ -84,20 +101,11 @@ RSpec.describe Import::ReassignPlaceholderUserRecordsWorker, feature_category: :
   end
 
   context 'when database is unhealthy' do
-    let(:service_response) { ServiceResponse.new(status: :success, reason: :db_health_check_failed) }
-    let(:backoff_period) { described_class::BACKOFF_PERIOD }
+    it_behaves_like 'a job that re-enqueues on service error', :db_health_check_failed
+  end
 
-    before do
-      allow_next_instance_of(Import::ReassignPlaceholderUserRecordsService) do |service|
-        allow(service).to receive(:execute).and_return(service_response)
-      end
-    end
-
-    it 're-enqueues the job' do
-      expect(described_class).to receive(:perform_in).with(backoff_period, import_source_user.id, {})
-
-      described_class.new.perform(import_source_user.id)
-    end
+  context 'when service execution timeout is over the limit' do
+    it_behaves_like 'a job that re-enqueues on service error', :execution_timeout
   end
 
   describe '#sidekiq_retries_exhausted' do

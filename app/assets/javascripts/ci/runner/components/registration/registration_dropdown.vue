@@ -27,6 +27,7 @@ const REGISTRATION_TOKEN_DISABLED = 'REGISTRATION_TOKEN_DISABLED';
 const REGISTRATION_TOKEN_HIDDEN = 'REGISTRATION_TOKEN_HIDDEN';
 
 export default {
+  name: 'RegistrationDropdown',
   components: {
     GlDisclosureDropdown,
     GlDisclosureDropdownItem,
@@ -100,9 +101,6 @@ export default {
 
       this.$refs.runnerRegistrationDropdown.close();
     },
-    onCopy() {
-      this.$refs.runnerRegistrationDropdown.close();
-    },
   },
   REGISTRATION_TOKEN_ENABLED,
   REGISTRATION_TOKEN_DISABLED,
@@ -144,7 +142,7 @@ export default {
     </div>
     <template v-if="state == $options.REGISTRATION_TOKEN_ENABLED">
       <gl-dropdown-form class="!gl-p-4">
-        <registration-token input-id="token-value" :value="currentRegistrationToken" @copy="onCopy">
+        <registration-token input-id="token-value" :value="currentRegistrationToken">
           <template #label-description>
             <gl-icon name="warning" variant="warning" />
             <span class="gl-text-subtle">

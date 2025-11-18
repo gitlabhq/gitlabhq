@@ -3,6 +3,7 @@ import { GlBadge, GlButton, GlIcon, GlModalDirective } from '@gitlab/ui';
 import { __, s__ } from '~/locale';
 import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import BrandLogo from 'jh_else_ce/super_sidebar/components/brand_logo.vue';
+import { parseBoolean } from '~/lib/utils/common_utils';
 import SuperSidebarToggle from './super_sidebar_toggle.vue';
 import CreateMenu from './create_menu.vue';
 import UserMenu from './user_menu.vue';
@@ -51,14 +52,23 @@ export default {
   },
   computed: {
     isAdmin() {
-      return this.sidebarData?.admin_mode?.user_is_admin;
+      return parseBoolean(this.sidebarData?.admin_mode?.user_is_admin);
     },
     isLoggedIn() {
-      return this.sidebarData.is_logged_in;
+      return parseBoolean(this.sidebarData.is_logged_in);
+    },
+    allowSignUp() {
+      return parseBoolean(this.sidebarData?.allow_signup);
+    },
+    signInVisible() {
+      return parseBoolean(this.sidebarData?.sign_in_visible);
     },
     shouldShowOrganizationSwitcher() {
       return (
-        this.glFeatures.uiForOrganizations && this.isLoggedIn && window.gon.current_organization
+        this.glFeatures.uiForOrganizations &&
+        this.isLoggedIn &&
+        window.gon.current_organization &&
+        this.sidebarData.has_multiple_organizations
       );
     },
     showAdminButton() {
@@ -74,11 +84,13 @@ export default {
 
 <template>
   <header
-    class="super-topbar gl-grid gl-w-full gl-grid-cols-[1fr_auto_1fr] gl-items-center gl-gap-4"
+    class="super-topbar js-super-topbar gl-grid gl-grid-cols-[1fr_auto_1fr] gl-items-center gl-outline-none forced-colors:gl-outline-0"
+    tabindex="0"
+    autofocus
   >
     <gl-button
       class="gl-t-0 gl-sr-only !gl-fixed gl-left-0 gl-z-9999 !gl-m-3 !gl-px-4 focus:gl-not-sr-only"
-      data-testid="super-sidebar-skip-to"
+      data-testid="super-topbar-skip-to"
       href="#content-body"
       variant="confirm"
     >
@@ -104,7 +116,11 @@ export default {
         :aria-label="$options.i18n.menuLabel"
       />
 
-      <promo-menu v-if="!isLoggedIn" :pricing-url="sidebarData.compare_plans_url" />
+      <promo-menu
+        v-if="!isLoggedIn"
+        :pricing-url="sidebarData.compare_plans_url"
+        class="gl-hidden lg:gl-flex"
+      />
 
       <organization-switcher v-if="shouldShowOrganizationSwitcher" class="gl-hidden md:gl-block" />
     </div>
@@ -112,13 +128,13 @@ export default {
     <gl-button
       id="super-sidebar-search"
       v-gl-modal="$options.SEARCH_MODAL_ID"
-      button-text-classes="gl-flex gl-w-full gl-items-center"
+      button-text-classes="gl-flex gl-items-center"
       category="tertiary"
       class="topbar-search-button gl-max-w-88 !gl-rounded-[.75rem] !gl-bg-default !gl-pl-3 !gl-pr-2 hover:!gl-border-alpha-dark-40 dark:!gl-bg-alpha-light-8 dark:hover:!gl-border-alpha-light-36"
       data-testid="super-topbar-search-button"
     >
       <gl-icon name="search" class="gl-shrink-0" />
-      <span class="topbar-search-button-placeholder gl-min-w-[24vw] gl-text-left gl-font-normal">{{
+      <span class="topbar-search-button-placeholder gl-min-w-[24vw] gl-text-left">{{
         $options.i18n.searchBtnText
       }}</span>
       <kbd class="gl-mr-1 gl-hidden gl-shrink-0 gl-shadow-none md:gl-block">/</kbd>
@@ -131,14 +147,14 @@ export default {
           :groups="sidebarData.create_new_menu_groups"
         />
         <div
-          class="gl-border-r gl-my-3 gl-hidden gl-h-5 gl-w-1 gl-border-r-strong lg:gl-block"
+          class="gl-border-r gl-mx-2 gl-my-3 gl-hidden gl-h-5 gl-w-1 gl-border-r-strong lg:gl-block"
         ></div>
 
         <user-counts
           v-if="isLoggedIn"
           :sidebar-data="sidebarData"
           class="gl-hidden md:gl-flex"
-          counter-class="gl-button btn btn-default btn-default-tertiary !gl-px-3 !gl-rounded-lg"
+          counter-class="gl-button btn btn-default btn-default-tertiary !gl-px-3"
         />
 
         <gl-button
@@ -155,22 +171,28 @@ export default {
       </template>
       <template v-else>
         <gl-button
-          v-if="sidebarData.sign_in_visible"
-          :href="sidebarData.sign_in_path"
-          class="!gl-rounded-lg"
-          data-testid="topbar-signin-button"
-        >
-          {{ __('Sign in') }}
-        </gl-button>
-        <gl-button
-          v-if="sidebarData.allow_signup"
+          v-if="allowSignUp"
           :href="sidebarData.new_user_registration_path"
           variant="confirm"
-          class="topbar-signup-button !gl-rounded-lg"
+          class="topbar-signup-button gl-hidden lg:gl-flex"
           data-testid="topbar-signup-button"
         >
           {{ isSaas ? __('Get free trial') : __('Register') }}
         </gl-button>
+        <gl-button
+          v-if="signInVisible"
+          :href="sidebarData.sign_in_path"
+          class="gl-hidden lg:gl-flex"
+          data-testid="topbar-signin-button"
+        >
+          {{ __('Sign in') }}
+        </gl-button>
+        <promo-menu
+          v-if="!isLoggedIn"
+          :sidebar-data="sidebarData"
+          :pricing-url="sidebarData.compare_plans_url"
+          class="gl-flex lg:gl-hidden"
+        />
       </template>
     </div>
 

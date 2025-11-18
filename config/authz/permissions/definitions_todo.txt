@@ -237,7 +237,6 @@ create_package
 create_pages
 create_path_lock
 create_pipeline
-create_pipeline_schedule
 create_project
 create_project_secrets
 create_projects
@@ -268,7 +267,6 @@ create_vulnerability_export
 create_vulnerability_feedback
 create_vulnerability_state_transition
 create_web_ide_terminal
-create_wiki
 create_work_item
 create_workspace
 daily_statistics
@@ -283,7 +281,6 @@ delete_o11y_settings
 delete_pipl_user
 delete_project_secrets
 delete_project_subscription
-delete_runner
 delete_service_account
 delete_tag
 delete_user
@@ -311,7 +308,6 @@ destroy_issue_board_list
 destroy_issue_link
 destroy_iteration
 destroy_label
-destroy_licenses
 destroy_merge_request
 destroy_milestone
 destroy_note
@@ -378,7 +374,6 @@ import_work_items
 invite_group_members
 invite_member
 invite_project_members
-jailbreak
 keep_job_artifacts
 link
 link_forked_project
@@ -420,8 +415,6 @@ override_group_member
 owner_access
 pages_multiple_versions
 planner_access
-play_job
-play_pipeline_schedule
 project_bot_access
 promote_to_epic
 provide_status_check_response
@@ -605,7 +598,6 @@ read_milestone
 read_model_experiments
 read_model_registry
 read_namespace
-read_namespace_catalog
 read_namespace_cluster_agent_mapping
 read_namespace_via_membership
 read_nested_project_resources
@@ -624,9 +616,7 @@ read_pages_content
 read_pages_deployments
 read_parent
 read_path_locks
-read_pipeline
 read_pipeline_metadata
-read_pipeline_schedule
 read_pipeline_schedule_variables
 read_pipeline_variable
 read_pod_logs
@@ -660,7 +650,6 @@ read_resource_label_event
 read_resource_milestone_event
 read_resource_state_event
 read_resource_weight_event
-read_runner
 read_runner_cloud_provisioning_info
 read_runner_gke_provisioning_info
 read_runner_manager
@@ -675,7 +664,6 @@ read_scan
 read_secret_push_protection_info
 read_secure_files
 read_security_attribute
-read_security_category
 read_security_configuration
 read_security_inventory
 read_security_orchestration_policies
@@ -721,7 +709,6 @@ read_vulnerability_scanner
 read_vulnerability_statistics
 read_web_hook
 read_web_ide_terminal
-read_wiki
 read_wiki_page
 read_work_item
 read_work_item_lifecycle
@@ -751,7 +738,6 @@ reset_merge_request_approvals
 resolve_note
 resolve_vulnerability_with_ai
 retry_failed_status_checks
-retry_job
 revoke_token
 rollover_issues
 rotate_token
@@ -837,7 +823,6 @@ update_package
 update_pages
 update_pages_deployments
 update_pipeline
-update_pipeline_schedule
 update_project_member
 update_project_secrets
 update_protected_branch
@@ -866,7 +851,6 @@ update_virtual_registry
 update_vulnerability
 update_vulnerability_feedback
 update_web_ide_terminal
-update_wiki
 update_work_item
 update_workspace
 upload_alert_management_metric_image

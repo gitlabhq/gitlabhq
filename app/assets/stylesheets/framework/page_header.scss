@@ -44,6 +44,7 @@
 .page-heading-actions {
   > .gl-button,
   > .gl-disclosure-dropdown {
-    @apply gl-w-full sm:gl-w-auto;
+    @apply gl-w-full;
+    @apply sm:gl-w-auto;
   }
 }

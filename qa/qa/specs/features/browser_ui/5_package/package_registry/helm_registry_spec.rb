@@ -32,7 +32,7 @@ module QA
         end
 
         it "pushes and pulls a helm chart",
-          testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/347587' do
+          testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/565066' do
           helm_upload_yaml = ERB.new(read_fixture('package_managers/helm',
             'helm_upload_package.yaml.erb')).result(binding)
           helm_chart_yaml = ERB.new(read_fixture('package_managers/helm', 'Chart.yaml.erb')).result(binding)
@@ -130,14 +130,14 @@ module QA
           let(:username) { Runtime::User::Store.test_user.username }
           let(:token) { Runtime::User::Store.default_api_client.personal_access_token }
 
-          it_behaves_like 'using a docker container', 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/347586'
+          it_behaves_like 'using a docker container', 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/565067'
         end
 
         context 'with a project deploy token' do
           let(:username) { project_deploy_token.username }
           let(:token) { project_deploy_token.token }
 
-          it_behaves_like 'using a docker container', 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/347588'
+          it_behaves_like 'using a docker container', 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/565068'
         end
       end
     end

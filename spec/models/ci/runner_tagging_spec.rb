@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Ci::RunnerTagging, feature_category: :runner do
+RSpec.describe Ci::RunnerTagging, feature_category: :runner_core do
   let_it_be(:group) { create(:group) }
 
   it { is_expected.to belong_to(:runner).optional(false) }
@@ -10,7 +10,7 @@ RSpec.describe Ci::RunnerTagging, feature_category: :runner do
 
   describe 'validations' do
     it { is_expected.to validate_presence_of(:runner_type) }
-    it { is_expected.to validate_presence_of(:tag_name).on([:create, :update]) }
+    it { is_expected.to validate_presence_of(:tag_name) }
     it { is_expected.to validate_length_of(:tag_name).is_at_most(described_class::MAX_NAME_LENGTH) }
     it { is_expected.to validate_presence_of(:organization_id).on([:create, :update]) }
 

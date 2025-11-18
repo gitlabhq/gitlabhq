@@ -47,6 +47,23 @@ RSpec.describe BulkImports::FinishBatchedPipelineWorker, feature_category: :impo
       end
     end
 
+    context 'when tracker is not found' do
+      let(:non_existing_tracker_id) { non_existing_record_id }
+
+      it 'logs a warning and does not execute any side effects', :aggregate_failures do
+        expect(Sidekiq.logger).to receive(:warn).with(
+          class: described_class.name,
+          pipeline_tracker_id: non_existing_tracker_id,
+          message: 'Tracker not found'
+        )
+
+        expect(pipeline_class).not_to receive(:new)
+        expect(described_class).not_to receive(:perform_in)
+
+        worker.perform(non_existing_tracker_id)
+      end
+    end
+
     it 'marks the tracker as finished' do
       expect_next_instance_of(BulkImports::Logger) do |logger|
         expect(logger).to receive(:with_tracker).with(pipeline_tracker).and_call_original

@@ -15,10 +15,6 @@ $focus-mode-z-index: 9000;
   @include gl-container-width-up(sm, panel) {
     @apply gl-transition-width;
     width: 100%;
-
-    &.is-compact {
-      width: calc(100% - #{$right-sidebar-width});
-    }
   }
 }
 
@@ -29,13 +25,16 @@ $focus-mode-z-index: 9000;
 .boards-list,
 .board-swimlanes {
   flex-grow: 1;
-  border-left: 8px solid var(--gl-background-color-default);
 
   min-height: calc(#{$calc-application-viewport-height} - var(--header-height));
 
   @include gl-container-width-up(sm, panel) {
     min-height: 0;
   }
+}
+
+.boards-list {
+  border-left: 8px solid var(--gl-background-color-default);
 }
 
 .board {

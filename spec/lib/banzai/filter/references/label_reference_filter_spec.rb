@@ -277,7 +277,7 @@ RSpec.describe Banzai::Filter::References::LabelReferenceFilter, feature_categor
   end
 
   context 'References with html entities' do
-    let!(:label) { create(:label, title: '&lt;html&gt;', project: project) }
+    let!(:label) { create(:label, title: '<html>', project: project) }
 
     it 'links to a valid reference' do
       doc = reference_filter('See ~"&lt;html&gt;"')
@@ -439,11 +439,21 @@ RSpec.describe Banzai::Filter::References::LabelReferenceFilter, feature_categor
     end
 
     it 'has valid color' do
-      expect(result.css('a span').first.attr('style')).to match(/background-color: #00ff00/)
+      expect(result.css('a span').first.attr('style')).to match('background-color: #00ff00')
     end
 
     it 'has valid link text' do
       expect(result.css('a').first.text).to eq "#{label.name} in #{project2.full_name}"
+    end
+
+    it 'has correct HTML content' do
+      frag = Nokogiri::HTML.fragment("<span>")
+      span = frag.children.first
+      span.content = "#{label.name} "
+      span << i = frag.document.create_element("i")
+      i.content = "in #{project2.full_name}"
+
+      expect(result.css('a').first.to_html).to include_html(span.inner_html)
     end
 
     it 'has valid text' do
@@ -922,5 +932,21 @@ RSpec.describe Banzai::Filter::References::LabelReferenceFilter, feature_categor
         reference_filter(markdown)
       end.not_to exceed_all_query_limit(max_count)
     end
+  end
+
+  it_behaves_like 'a reference which does not unescape its content in data-original' do
+    let(:context)             { { project: project } }
+    let(:label_title)         { "x<script>alert('xss');</script>" }
+    let(:label_title_escaped) { "x&lt;script&gt;alert('xss');&lt;/script&gt;" }
+    let(:resource)            { create(:label, title: label_title, project: project) }
+    let(:reference)           { %(#{resource.class.reference_prefix}"#{label_title_escaped}") }
+
+    let(:expected_resource_title)   { label_title }
+    let(:expected_href)             { urls.project_issues_url(project, label_name: label_title) }
+    let(:expected_replacement_text) { label_title }
+  end
+
+  it_behaves_like 'ReferenceFilter#references_in' do
+    let(:filter_instance) { described_class.new(nil, { project: }) }
   end
 end

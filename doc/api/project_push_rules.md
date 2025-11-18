@@ -3,6 +3,7 @@ stage: Create
 group: Source Code
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 title: Project push rules API
+description: Manage project push rules to enforce commit standards, validate messages, prevent secrets, and control repository operations.
 ---
 
 {{< details >}}
@@ -12,7 +13,7 @@ title: Project push rules API
 
 {{< /details >}}
 
-Use the project push rules API to manage [push rules for projects](../user/project/repository/push_rules.md).
+Use this API to manage project [push rules](../user/project/repository/push_rules.md).
 
 {{< alert type="note" >}}
 

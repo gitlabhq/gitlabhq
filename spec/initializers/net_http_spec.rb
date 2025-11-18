@@ -6,9 +6,11 @@ require 'webrick'
 RSpec.describe 'Net::Http patch', :request_store, feature_category: :integrations do
   let(:two_mega_bytes_body) { "A" * 2 * 1024 * 1024 }
 
+  let_it_be(:server_port) { 4567 }
+
   let_it_be(:server_thread) do
     Thread.new do
-      server = WEBrick::HTTPServer.new(Port: 4567, Logger: WEBrick::Log.new("/dev/null"), AccessLog: [])
+      server = WEBrick::HTTPServer.new(Port: server_port, Logger: WEBrick::Log.new("/dev/null"), AccessLog: [])
 
       server.mount_proc '/no-encoding' do |_req, res|
         res.status = 200
@@ -63,8 +65,22 @@ RSpec.describe 'Net::Http patch', :request_store, feature_category: :integration
     buffer.string
   end
 
+  def wait_for_server(port, timeout: 5)
+    Timeout.timeout(timeout) do
+      loop do
+        TCPSocket.new('localhost', port).close
+        break
+      rescue Errno::ECONNREFUSED, Errno::EADDRNOTAVAIL
+        sleep 0.5
+      end
+    end
+  rescue Timeout::Error
+    raise "Server on port #{port} failed to start within #{timeout} seconds"
+  end
+
   before_all do
     WebMock.disable!
+    wait_for_server(server_port)
   end
 
   after(:all) do
@@ -79,7 +95,7 @@ RSpec.describe 'Net::Http patch', :request_store, feature_category: :integration
         .with(message: 'Net::HTTP - Response size too large', size: an_instance_of(Integer), caller: anything)
 
       expect do
-        Net::HTTP.get_response(URI("http://localhost:4567/#{path}"))
+        Net::HTTP.get_response(URI("http://localhost:#{server_port}/#{path}"))
       end.to raise_error Gitlab::HTTP::MaxDecompressionSizeError
     end
   end
@@ -88,7 +104,7 @@ RSpec.describe 'Net::Http patch', :request_store, feature_category: :integration
     it 'does not raise error' do
       expect(Gitlab::AppJsonLogger).not_to receive(:error)
 
-      body = Net::HTTP.get_response(URI("http://localhost:4567/#{path}")).body
+      body = Net::HTTP.get_response(URI("http://localhost:#{server_port}/#{path}")).body
 
       expect(body).to eq(two_mega_bytes_body)
     end

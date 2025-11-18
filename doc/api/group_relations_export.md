@@ -13,12 +13,11 @@ description: "Export group relations with the REST API."
 
 {{< /details >}}
 
-The group relations export API partially exports a group's structure as separate files for each
-top-level
-relation (for example, milestones, boards, and labels).
+Use this API to migrate a group structure. Each top-level
+relation (for example, milestones, boards, and labels) is stored as a separate file.
 
-The group relations export API is primarily used in [group migration by direct transfer](../user/group/import/_index.md)
-and your GitLab instance must meet [certain prerequisites](../user/group/import/direct_transfer_migrations.md#prerequisites).
+This API is primarily used during [group migration by direct transfer](../user/group/import/_index.md).
+To use this API, your GitLab instance must meet certain [prerequisites](../user/group/import/direct_transfer_migrations.md#prerequisites).
 
 This API can't be used with the [group import and export API](group_import_export.md).
 

@@ -293,43 +293,6 @@ RSpec.describe IssuesHelper, feature_category: :team_planning do
     end
   end
 
-  describe '#group_issues_list_data' do
-    let(:current_user) { build(:user) }
-
-    it 'returns expected result' do
-      allow(helper).to receive(:current_user).and_return(current_user)
-      allow(helper).to receive(:can?).and_return(true)
-      allow(helper).to receive(:can?).with(current_user, :read_crm_contact, group.crm_group).and_return(true)
-      allow(helper).to receive(:can?).with(current_user, :read_crm_organization, group.crm_group).and_return(false)
-      allow(helper).to receive(:image_path).and_return('#')
-      allow(helper).to receive(:url_for).and_return('#')
-      allow(helper).to receive(:licensed_feature_available?).with(:subepics).and_return(false)
-
-      assign(:has_issues, false)
-      assign(:has_projects, true)
-
-      expected = {
-        autocomplete_award_emojis_path: autocomplete_award_emojis_path,
-        calendar_path: '#',
-        can_create_projects: 'true',
-        can_read_crm_contact: 'true',
-        can_read_crm_organization: 'false',
-        full_path: group.full_path,
-        has_any_issues: false.to_s,
-        has_any_projects: true.to_s,
-        is_signed_in: current_user.present?.to_s,
-        new_project_path: new_project_path(namespace_id: group.id),
-        rss_path: '#',
-        sign_in_path: new_user_session_path,
-        group_id: group.id,
-        time_tracking_limit_to_hours: "false",
-        has_subepics_feature: "false"
-      }
-
-      expect(helper.group_issues_list_data(group, current_user)).to include(expected)
-    end
-  end
-
   describe '#dashboard_issues_list_data' do
     let(:current_user) { double.as_null_object }
 

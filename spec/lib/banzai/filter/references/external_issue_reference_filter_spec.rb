@@ -5,6 +5,14 @@ require 'spec_helper'
 RSpec.describe Banzai::Filter::References::ExternalIssueReferenceFilter, feature_category: :markdown do
   include FilterSpecHelper
 
+  # The ExternalIssueReferenceFilter takes place in two parts; the filter itself, and
+  # ExternalIssueReferenceFilter::LinkResolutionFilter, which is run in the PostProcessPipeline and adds the href.
+  # Here we additionally run the LinkResolutionFilter to assert the final results.
+  def filter(markdown, context = {})
+    doc = super
+    described_class::LinkResolutionFilter.call(doc, filter_context(context))
+  end
+
   let_it_be_with_refind(:project) { create(:project) }
 
   shared_examples_for "external issue tracker" do
@@ -23,7 +31,7 @@ RSpec.describe Banzai::Filter::References::ExternalIssueReferenceFilter, feature
     end
 
     it 'ignores valid references when using default tracker' do
-      expect(project).to receive(:default_issues_tracker?).and_return(true)
+      expect(project).to receive(:default_issues_tracker?).twice.and_return(true)
 
       exp = act = "Issue #{reference}"
       expect(filter(act).to_html).to eq exp
@@ -363,6 +371,35 @@ RSpec.describe Banzai::Filter::References::ExternalIssueReferenceFilter, feature
       control = ActiveRecord::QueryRecorder.new { reference_filter(single_reference).to_html }
 
       expect { reference_filter(multiple_references).to_html }.not_to exceed_query_limit(control)
+    end
+  end
+
+  context 'ReferenceFilter#references_in' do
+    let(:issue) { ExternalIssue.new("T-123", project) }
+    let(:reference) { issue.to_reference }
+
+    let(:filter_instance) { described_class.new(nil, { project: }) }
+
+    context "pattern is Regexp" do
+      it_behaves_like 'ReferenceFilter#references_in' do
+        let_it_be(:integration) { create(:redmine_integration, project: project) }
+      end
+    end
+
+    context "pattern is Gitlab::UntrustedRegexp" do
+      it_behaves_like 'ReferenceFilter#references_in' do
+        let_it_be(:integration) { create(:redmine_integration, project: project) }
+
+        before do
+          allow_any_instance_of(described_class).to receive(:object_reference_pattern).and_return(Gitlab::UntrustedRegexp.new("\\b[A-Z][A-Z0-9_]*-(?<issue>\\d{1,20})"))
+        end
+      end
+    end
+
+    context "pattern is unknown type" do
+      it 'raises ArgumentError' do
+        expect { filter_instance.references_in("some text", Object.new) }.to raise_error(ArgumentError)
+      end
     end
   end
 end

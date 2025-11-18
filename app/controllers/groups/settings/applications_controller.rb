@@ -75,6 +75,7 @@ module Groups
       def application_params
         super.tap do |params|
           params[:owner] = @group
+          params[:organization] = Current.organization
         end
       end
     end

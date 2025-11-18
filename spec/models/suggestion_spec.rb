@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Suggestion do
+RSpec.describe Suggestion, feature_category: :code_review_workflow do
   let(:suggestion) { create(:suggestion) }
 
   describe 'associations' do
@@ -16,6 +16,7 @@ RSpec.describe Suggestion do
       subject { create(:suggestion, importing: true) }
 
       it { is_expected.not_to validate_presence_of(:note) }
+      it { is_expected.not_to validate_presence_of(:namespace_id) }
     end
 
     context 'when suggestion is applied' do
@@ -24,6 +25,13 @@ RSpec.describe Suggestion do
       end
 
       it { is_expected.to validate_presence_of(:commit_id) }
+    end
+  end
+
+  it_behaves_like 'model with associated note' do
+    let_it_be(:note) { create(:diff_note_on_merge_request) }
+    let_it_be(:record_attrs) do
+      { relative_order: 0, from_content: "    vars = {\n", to_content: "    vars = [\n", note_id: note.id }
     end
   end
 
@@ -180,6 +188,21 @@ RSpec.describe Suggestion do
       let(:suggestion) { build(:suggestion, lines_above: 2, lines_below: 0) }
 
       it { is_expected.to eq(false) }
+    end
+  end
+
+  describe 'ensure sharding key trigger' do
+    let_it_be(:diff_note) { create(:diff_note_on_merge_request) }
+
+    it 'syncs `namespace_id` with note on create' do
+      expect(create(:suggestion, note: diff_note).reload.namespace_id).to eq(diff_note.project.project_namespace_id)
+    end
+
+    it 'syncs `namespace_id` with note on update' do
+      existing_suggestion = create(:suggestion, note: diff_note)
+      existing_suggestion.update_column(:namespace_id, nil)
+
+      expect(existing_suggestion.reload.namespace_id).to eq(diff_note.project.project_namespace_id)
     end
   end
 end

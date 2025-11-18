@@ -3,6 +3,8 @@
 require 'spec_helper'
 
 RSpec.describe 'Infrastructure Registry', feature_category: :package_registry do
+  include Spec::Support::Helpers::ModalHelpers
+
   let_it_be(:user) { create(:user) }
   let_it_be(:group) { create(:group) }
   let_it_be(:project) { create(:project, :public, group: group) }
@@ -109,7 +111,10 @@ RSpec.describe 'Infrastructure Registry', feature_category: :package_registry do
             it 'allows you to delete a module', :aggregate_failures do
               # this is still using the package copy in the UI too
               click_button('Remove package')
-              click_button('Permanently delete')
+              within_modal do
+                expect(page).to have_content('Delete package')
+                click_button('Permanently delete')
+              end
 
               expect(page).to have_content 'Package deleted successfully'
               expect(page).not_to have_content(terraform_module.name)

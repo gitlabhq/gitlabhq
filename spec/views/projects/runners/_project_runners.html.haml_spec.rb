@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe 'projects/runners/_project_runners.html.haml', feature_category: :runner do
+RSpec.describe 'projects/runners/_project_runners.html.haml', feature_category: :runner_core do
   describe 'render' do
     let_it_be(:user) { build(:user) }
     let_it_be(:project) { build(:project) }

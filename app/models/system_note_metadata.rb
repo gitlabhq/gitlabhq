@@ -2,6 +2,7 @@
 
 class SystemNoteMetadata < ApplicationRecord
   include Importable
+  include IgnorableColumns
 
   # These notes's action text might contain a reference that is external.
   # We should always force a deep validation upon references that are found
@@ -42,8 +43,12 @@ class SystemNoteMetadata < ApplicationRecord
     tag due_date start_date_or_due_date pinned_embed cherry_pick health_status approved unapproved
     status alert_issue_added relate unrelate new_alert_added severity contact timeline_event
     issue_type relate_to_child unrelate_from_child relate_to_parent unrelate_from_parent override
-    issue_email_participants requested_changes reviewed custom_field
+    issue_email_participants requested_changes reviewed custom_field duo_agent_started
+    duo_agent_completed
+    duo_agent_failed
   ].freeze
+
+  ignore_column :organization_id, remove_after: '2025-12-18', remove_with: '18.8'
 
   validates :note, presence: true, unless: :importing?
   validates :action, inclusion: { in: :icon_types }, allow_nil: true

@@ -45,7 +45,7 @@ Prerequisites:
 
 To create a test case in a GitLab project:
 
-1. On the left sidebar, select **Search or go to** and find your project.
+1. On the left sidebar, select **Search or go to** and find your project. If you've [turned on the new navigation](../../user/interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
 1. Select **Build** > **Test cases**.
 1. Select **New test case**. You are taken to the new test case form. Here you can enter
    the new case's title, [description](../../user/markdown.md), attach a file, and assign [labels](../../user/project/labels.md).
@@ -64,7 +64,7 @@ Prerequisites:
 
 To view a test case:
 
-1. On the left sidebar, select **Search or go to** and find your project.
+1. On the left sidebar, select **Search or go to** and find your project. If you've [turned on the new navigation](../../user/interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
 1. Select **Build** > **Test cases**.
 1. Select the title of the test case you want to view. You are taken to the test case page.
 
@@ -134,7 +134,7 @@ To archive a test case, on the test case's page, select **Archive test case**.
 
 To view archived test cases:
 
-1. On the left sidebar, select **Search or go to** and find your project.
+1. On the left sidebar, select **Search or go to** and find your project. If you've [turned on the new navigation](../../user/interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
 1. Select **Build** > **Test cases**.
 1. Select **Archived**.
 

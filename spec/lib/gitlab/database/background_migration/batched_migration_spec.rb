@@ -279,7 +279,7 @@ RSpec.describe Gitlab::Database::BackgroundMigration::BatchedMigration, type: :m
       create(:batched_background_migration, :finished)
       # migration put on hold
       create(:batched_background_migration, :active, on_hold_until: 10.minutes.from_now)
-      # migration not availab for the current connection
+      # migration not available for the current connection
       create(:batched_background_migration, :active, gitlab_schema: :gitlab_not_existing)
       # active migration that is no longer on hold
       migration_1 = create(:batched_background_migration, :active, table_name: :users, on_hold_until: 10.minutes.ago)
@@ -295,7 +295,7 @@ RSpec.describe Gitlab::Database::BackgroundMigration::BatchedMigration, type: :m
       expect(actual).to eq([migration_1, migration_2])
     end
 
-    it 'returns epmty collection when there are no pending executable migrations' do
+    it 'returns an empty collection when there are no pending executable migrations' do
       actual = described_class.active_migrations_distinct_on_table(connection: connection, limit: 2)
 
       expect(actual).to be_empty
@@ -674,17 +674,17 @@ RSpec.describe Gitlab::Database::BackgroundMigration::BatchedMigration, type: :m
     let_it_be(:migration) { create(:batched_background_migration, interval: 120.seconds) }
     let_it_be(:end_time) { Time.zone.now }
 
-    around do |example|
-      freeze_time do
-        example.run
-      end
-    end
-
     let_it_be(:common_attrs) do
       {
         batched_migration: migration,
         finished_at: end_time
       }
+    end
+
+    around do |example|
+      freeze_time do
+        example.run
+      end
     end
 
     context 'when there are not enough jobs' do
@@ -700,14 +700,13 @@ RSpec.describe Gitlab::Database::BackgroundMigration::BatchedMigration, type: :m
     context 'when there are enough jobs' do
       let_it_be(:number_of_jobs) { 10 }
       let_it_be(:jobs) { create_list(:batched_background_migration_job, number_of_jobs, **common_attrs.merge(batched_migration: migration)) }
+      let!(:jobs) { create_list(:batched_background_migration_job, number_of_jobs, :succeeded, **common_attrs.merge(batched_migration: migration)) }
 
       subject { migration.smoothed_time_efficiency(number_of_jobs: number_of_jobs) }
 
-      let!(:jobs) { create_list(:batched_background_migration_job, number_of_jobs, :succeeded, **common_attrs.merge(batched_migration: migration)) }
-
       before do
         expect(migration).to receive_message_chain(:batched_jobs, :successful_in_execution_order, :reverse_order, :limit, :with_preloads)
-                               .and_return(jobs)
+          .and_return(jobs)
       end
 
       def mock_efficiencies(*effs)

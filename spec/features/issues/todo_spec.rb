@@ -9,7 +9,6 @@ RSpec.describe 'Manually create a todo item from issue', :js, feature_category: 
 
   before do
     stub_feature_flags(notifications_todos_buttons: false)
-    stub_feature_flags(work_item_view_for_issues: true)
     project.add_maintainer(user)
     sign_in(user)
     visit project_issue_path(project, issue)

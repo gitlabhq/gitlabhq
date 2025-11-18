@@ -649,7 +649,7 @@ RSpec.describe SessionsController, feature_category: :system_access do
     end
 
     context 'when using two-factor authentication via WebAuthn device' do
-      let(:user) { create(:user, :two_factor_via_webauthn) }
+      let(:user) { create(:user, :two_factor_via_webauthn, :with_passkey) }
 
       def authenticate_2fa(user_params)
         post(:create, params: { user: user_params }, session: { otp_user_id: user.id })
@@ -698,6 +698,27 @@ RSpec.describe SessionsController, feature_category: :system_access do
         expect { authenticate_2fa(login: user.username, device_response: "{}") }.to(
           change { AuthenticationEvent.count }.by(1))
         expect(AuthenticationEvent.last.provider).to eq("two-factor-via-webauthn-device")
+      end
+
+      context 'when the :passkeys Feature Flag is enabled' do
+        it 'allows both passkeys & second_factor_authenticators to be used for 2FA' do
+          expect(user).to receive(:get_all_webauthn_credential_ids)
+
+          controller.send(:setup_webauthn_authentication, user)
+        end
+      end
+
+      context 'when the :passkeys Feature Flag is disabled' do
+        before do
+          stub_feature_flags(passkeys: false)
+        end
+
+        it 'allows for only second_factor_authenticators to be used for 2FA' do
+          expect(user).not_to receive(:get_all_webauthn_credential_ids)
+          expect(user).to receive(:second_factor_webauthn_registrations)
+
+          controller.send(:setup_webauthn_authentication, user)
+        end
       end
     end
 

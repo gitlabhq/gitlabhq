@@ -14,10 +14,6 @@ RSpec.describe Gitlab::ImportExport::Project::RelationTreeRestorer, :clean_gitla
     create(:project, :builds_enabled, :issues_disabled, name: 'project', path: 'project')
   end
 
-  include_context 'relation tree restorer shared context' do
-    let(:importable_name) { 'project' }
-  end
-
   let(:reader) { Gitlab::ImportExport::Reader.new(shared: shared) }
   let(:relation_tree_restorer) do
     described_class.new(
@@ -35,6 +31,10 @@ RSpec.describe Gitlab::ImportExport::Project::RelationTreeRestorer, :clean_gitla
   end
 
   subject { relation_tree_restorer.restore }
+
+  include_context 'relation tree restorer shared context' do
+    let(:importable_name) { 'project' }
+  end
 
   shared_examples 'import project successfully' do
     describe 'imported project' do

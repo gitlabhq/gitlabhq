@@ -6,6 +6,7 @@ module Ci
       include Gitlab::Utils::UsageData
 
       LSIF_ARTIFACT_TYPE = 'lsif'
+      SCIP_ARTIFACT_TYPE = 'scip'
 
       OBJECT_STORAGE_ERRORS = [
         Errno::EIO,
@@ -30,7 +31,7 @@ module Ci
           final_store_path_config: { root_hash: project.id }
         )
 
-        if lsif?(artifact_type)
+        if lsif?(artifact_type) || scip?(artifact_type)
           headers[:ProcessLsif] = true
           track_usage_event('i_source_code_code_intelligence', project.id)
         end
@@ -64,6 +65,7 @@ module Ci
 
       def validate_requirements(artifact_type:, filesize:)
         return too_large_error if too_large?(artifact_type, filesize)
+        return scip_not_enabled_error if scip_not_enabled?(artifact_type)
 
         success
       end
@@ -76,12 +78,24 @@ module Ci
         type == LSIF_ARTIFACT_TYPE
       end
 
+      def scip?(type)
+        type == SCIP_ARTIFACT_TYPE
+      end
+
       def max_size(type)
         Ci::JobArtifact.max_artifact_size(type: type, project: project)
       end
 
+      def scip_not_enabled?(type)
+        type == SCIP_ARTIFACT_TYPE && !Feature.enabled?(:scip_code_intelligence, project)
+      end
+
       def too_large_error
         error('file size has reached maximum size limit', :payload_too_large)
+      end
+
+      def scip_not_enabled_error
+        error('SCIP artifact type is not enabled', :bad_request)
       end
 
       def build_artifact(artifacts_file, params, metadata_file)

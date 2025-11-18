@@ -12,7 +12,6 @@ import EpicsSwimlanes from 'ee_component/boards/components/epics_swimlanes.vue';
 import * as cacheUpdates from '~/boards/graphql/cache_updates';
 import BoardColumn from '~/boards/components/board_column.vue';
 import BoardContent from '~/boards/components/board_content.vue';
-import BoardContentSidebar from '~/boards/components/board_content_sidebar.vue';
 import updateBoardListMutation from '~/boards/graphql/board_list_update.mutation.graphql';
 import BoardAddNewColumn from 'ee_else_ce/boards/components/board_add_new_column.vue';
 import BoardAddNewColumnTrigger from '~/boards/components/board_add_new_column_trigger.vue';
@@ -49,7 +48,6 @@ describe('BoardContent', () => {
     isIssueBoard = true,
     isEpicBoard = false,
     handler = updateListHandler,
-    workItemDrawerEnabled = false,
   } = {}) => {
     mockApollo = createMockApollo([[updateBoardListMutation, handler]]);
     mockApollo.clients.defaultClient.cache.updateQuery = mockUpdateCache;
@@ -70,7 +68,6 @@ describe('BoardContent', () => {
         boardLists: mockListsById,
         listQueryVariables,
         addColumnFormVisible: false,
-        useWorkItemDrawer: workItemDrawerEnabled,
         ...props,
       },
       provide: {
@@ -84,7 +81,6 @@ describe('BoardContent', () => {
         fullPath: 'project-path',
       },
       stubs: {
-        BoardContentSidebar,
         BoardDrawerWrapper: stubComponent(BoardDrawerWrapper, {
           template: `
             <div>
@@ -133,12 +129,8 @@ describe('BoardContent', () => {
       expect(wrapper.findAllComponents(BoardColumn)).toHaveLength(mockLists.length);
     });
 
-    it('renders BoardContentSidebar', () => {
-      expect(wrapper.findComponent(BoardContentSidebar).exists()).toBe(true);
-    });
-
-    it('does not render board drawer wrapper', () => {
-      expect(findDrawerWrapper().exists()).toBe(false);
+    it('renders board drawer wrapper', () => {
+      expect(findDrawerWrapper().exists()).toBe(true);
     });
 
     it('does not display EpicsSwimlanes component', () => {
@@ -192,20 +184,6 @@ describe('BoardContent', () => {
     });
   });
 
-  describe('when issuableType is not issue', () => {
-    beforeEach(() => {
-      createComponent({ issuableType: 'foo', isIssueBoard: false });
-    });
-
-    it('does not render BoardContentSidebar', () => {
-      expect(wrapper.findComponent(BoardContentSidebar).exists()).toBe(false);
-    });
-
-    it('does not render board drawer wrapper', () => {
-      expect(findDrawerWrapper().exists()).toBe(false);
-    });
-  });
-
   describe('can admin list', () => {
     beforeEach(() => {
       createComponent({ canAdminList: true });
@@ -249,16 +227,12 @@ describe('BoardContent', () => {
     });
   });
 
-  describe('when work item drawer is enabled', () => {
+  describe('work item drawer', () => {
     beforeEach(() => {
-      createComponent({ workItemDrawerEnabled: true });
+      createComponent();
     });
 
-    it('does not render board sidebar', () => {
-      expect(wrapper.findComponent(BoardContentSidebar).exists()).toBe(false);
-    });
-
-    it('renders board drawer wrapper', () => {
+    it('renders', () => {
       expect(findDrawerWrapper().exists()).toBe(true);
     });
 
@@ -271,7 +245,7 @@ describe('BoardContent', () => {
 
   describe('when all columns cannot find active item', () => {
     beforeEach(() => {
-      createComponent({ workItemDrawerEnabled: true });
+      createComponent();
 
       findBoardColumns().wrappers.forEach((column) => {
         column.vm.$emit('cannot-find-active-item');

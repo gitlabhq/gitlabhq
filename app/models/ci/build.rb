@@ -172,7 +172,8 @@ module Ci
     validates :coverage, numericality: true, allow_blank: true
     validates :ref, presence: true
 
-    scope :unstarted, -> { where(runner_id: nil) }
+    scope :with_no_runner_assigned, -> { where(runner_id: nil) }
+    scope :with_runner_assigned, -> { where.not(runner_id: nil) }
     scope :with_any_artifacts, -> { where_exists(Ci::JobArtifact.scoped_build) }
     scope :with_downloadable_artifacts, -> { where_exists(Ci::JobArtifact.scoped_build.downloadable) }
     scope :with_erasable_artifacts, -> { where_exists(Ci::JobArtifact.scoped_build.erasable) }
@@ -181,7 +182,7 @@ module Ci
     scope :with_artifacts, ->(artifact_scope) { with_existing_job_artifacts(artifact_scope).eager_load_job_artifacts }
 
     scope :eager_load_job_artifacts, -> { includes(:job_artifacts) }
-    scope :eager_load_tags, -> { includes(:tags) }
+    scope :eager_load_tags, -> { includes(:job_definition, :tags) }
     scope :eager_load_for_archiving_trace, -> { preload(:project, :pending_state) }
     scope :eager_load_for_api, -> do
       preload(
@@ -274,13 +275,11 @@ module Ci
       end
 
       def clone_accessors
-        %i[pipeline project ref tag options name
-          allow_failure stage_idx
-          yaml_variables when environment coverage_regex
-          description tag_list protected needs_attributes
-          job_variables_attributes resource_group scheduling_type
-          timeout timeout_source debug_trace_enabled
-          ci_stage partition_id id_tokens interruptible execution_config_id inputs_attributes].freeze
+        %i[pipeline project ref tag name allow_failure stage_idx when
+          environment coverage_regex description tag_list protected
+          needs_attributes job_variables_attributes resource_group
+          scheduling_type timeout timeout_source debug_trace_enabled
+          ci_stage partition_id execution_config_id inputs_attributes].freeze
       end
 
       def supported_keyset_orderings
@@ -426,19 +425,57 @@ module Ci
     end
 
     def self.build_matchers(project)
+      return legacy_build_matchers(project) if Feature.disabled?(:ci_build_uses_job_definition_tag_list, project)
+
+      new_build_matchers(project)
+    end
+
+    def self.new_build_matchers(project)
+      unique_params = [
+        :protected,
+        Arel.sql(tag_names_array_query)
+      ]
+
+      pluck_params = [
+        "array_agg(#{quoted_table_name}.id) as ids",
+        *unique_params
+      ]
+
+      joins(:job_definition).group(*unique_params).pluck(*pluck_params).map do |values|
+        Gitlab::Ci::Matching::BuildMatcher.new(
+          build_ids: values[0],
+          protected: values[1],
+          tag_list: values[2],
+          project: project
+        )
+      end
+    end
+
+    def self.legacy_build_matchers(project)
       unique_params = [
         :protected,
         Arel.sql("(#{arel_tag_names_array.to_sql})")
       ]
 
       group(*unique_params).pluck('array_agg(id)', *unique_params).map do |values|
-        Gitlab::Ci::Matching::BuildMatcher.new({
+        Gitlab::Ci::Matching::BuildMatcher.new(
           build_ids: values[0],
           protected: values[1],
           tag_list: values[2],
           project: project
-        })
+        )
       end
+    end
+
+    def self.tag_names_array_query
+      <<~SQL.squish
+        (
+          SELECT COALESCE(array_agg(tag_name ORDER BY tag_name), '{}')
+            FROM jsonb_array_elements_text(
+              #{Ci::JobDefinition.quoted_table_name}.config->'tag_list'
+            ) AS tag_name
+        )
+      SQL
     end
 
     def self.ids_in_merge_request(merge_request_id)
@@ -818,6 +855,16 @@ module Ci
     def has_tags?
       tag_list.any?
     end
+
+    override :tag_list
+    def tag_list
+      # Check job_definition first to avoid loading project if not needed
+      return super if job_definition.nil?
+      return super if Feature.disabled?(:ci_build_uses_job_definition_tag_list, project)
+
+      Gitlab::Ci::Tags::TagList.new(job_definition.config.fetch(:tag_list, []))
+    end
+    strong_memoize_attr :tag_list
 
     def any_runners_online?
       cache_for_online_runners do
@@ -1245,11 +1292,21 @@ module Ci
       super
     end
 
+    # Returns the current status of the runner acknowledgement wait process for two-phase job acceptance.
     #
-    # Support for two-phase runner job acceptance acknowledgement
-    #
-    def waiting_for_runner_ack?
-      pending? && runner_id.present? && runner_manager_id_waiting_for_ack.present?
+    # @return [Symbol] One of:
+    #   - `:waiting` - Pending job has been assigned to a runner and is actively waiting for the runner to acknowledge
+    #                  that it has picked up the job. The runner manager ID is present in Redis.
+    #   - `:not_waiting` - Job is not in a waiting state. This occurs when either the job is not in pending
+    #                      status, or the job has not been assigned to a runner yet (no `runner_id``).
+    #   - `:wait_expired` - Job was previously assigned to a runner and was waiting for acknowledgement,
+    #                       but the wait period has expired. The runner manager ID is no longer present in Redis,
+    #                       indicating the runner failed to acknowledge within the expected timeframe.
+    def runner_ack_wait_status
+      return :not_waiting unless pending? && runner_id.present?
+      return :waiting if runner_manager_id_waiting_for_ack.present?
+
+      :wait_expired
     end
 
     protected
@@ -1401,12 +1458,8 @@ module Ci
       )
     end
 
-    def partition_id_prefix_in_16_bit_encode
-      "#{partition_id.to_s(16)}_"
-    end
-
     def prefix_and_partition_for_token
-      TOKEN_PREFIX + partition_id_prefix_in_16_bit_encode
+      ::Ci::Builds::TokenPrefix.encode(self)
     end
 
     def runner_ack_queue

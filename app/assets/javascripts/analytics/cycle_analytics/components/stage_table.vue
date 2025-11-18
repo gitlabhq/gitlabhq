@@ -11,7 +11,7 @@ import {
 import FormattedStageCount from '~/analytics/cycle_analytics/components/formatted_stage_count.vue';
 import { __ } from '~/locale';
 import Tracking from '~/tracking';
-import { scrollToElement } from '~/lib/utils/common_utils';
+import { scrollToElement } from '~/lib/utils/scroll_utils';
 import {
   NOT_ENOUGH_DATA_ERROR,
   FIELD_KEY_TITLE,

@@ -292,8 +292,6 @@ func run(boot bootConfig, cfg config.Config) error {
 		defer healthCancel()
 	}
 
-	up := wrapRaven(upstream.NewUpstream(cfg, accessLogger, watchKeyFn, rdb))
-
 	done := make(chan os.Signal, 1)
 	signal.Notify(done, syscall.SIGINT, syscall.SIGTERM)
 
@@ -312,7 +310,18 @@ func run(boot bootConfig, cfg config.Config) error {
 	}
 	syscall.Umask(oldUmask)
 
-	srv := &http.Server{Handler: up}
+	shutdownCh := make(chan struct{})
+	upgradedConnsManager := &upstream.UpgradedConnsManager{}
+	up := upstream.NewUpstream(
+		cfg,
+		accessLogger,
+		watchKeyFn,
+		rdb,
+		healthCheckServer,
+		shutdownCh,
+		upgradedConnsManager,
+	)
+	srv := &http.Server{Handler: wrapRaven(up)}
 
 	for _, l := range listeners {
 		go func(l net.Listener) { finalErrors <- srv.Serve(l) }(l)
@@ -324,23 +333,29 @@ func run(boot bootConfig, cfg config.Config) error {
 	case sig := <-done:
 		log.WithFields(log.Fields{"shutdown_timeout_s": cfg.ShutdownTimeout.Duration.Seconds(), "signal": sig.String()}).Infof("shutdown initiated")
 
-		// Initiate graceful shutdown for health check server
-		var gracefulShutdownDelay time.Duration
 		if healthCheckServer != nil {
 			healthCheckServer.InitiateShutdown()
-			gracefulShutdownDelay = healthCheckServer.GetGracefulShutdownDelay()
-		}
+			// Signal upstream to stop accepting long polling requests because
+			// requests can arrive during the graceful shutdown time.
+			close(shutdownCh)
+			// Kick out any long poll requests
+			redisKeyWatcher.Shutdown()
 
-		// Wait for the graceful shutdown delay to complete before shutting down the server
-		if gracefulShutdownDelay > 0 {
-			log.WithField("shutdown_delay_s", gracefulShutdownDelay.Seconds()).Info("Waiting for graceful shutdown delay")
-			time.Sleep(gracefulShutdownDelay)
+			// Wait for the graceful shutdown delay to complete before shutting down the server
+			gracefulShutdownDelay := healthCheckServer.GetGracefulShutdownDelay()
+			if gracefulShutdownDelay > 0 {
+				log.WithField("shutdown_delay_s", gracefulShutdownDelay.Seconds()).Info("Waiting for graceful shutdown delay")
+
+				go upgradedConnsManager.Shutdown(gracefulShutdownDelay)
+
+				time.Sleep(gracefulShutdownDelay)
+			}
+		} else {
+			redisKeyWatcher.Shutdown()
 		}
 
 		ctx, cancel := context.WithTimeout(context.Background(), cfg.ShutdownTimeout.Duration) // lint:allow context.Background
 		defer cancel()
-
-		redisKeyWatcher.Shutdown()
 
 		return srv.Shutdown(ctx)
 	}

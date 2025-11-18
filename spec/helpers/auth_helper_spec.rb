@@ -611,28 +611,61 @@ RSpec.describe AuthHelper, feature_category: :system_access do
   describe '#delete_passkey_data' do
     let(:path) { 'test/path' }
 
-    context 'when password is required' do
-      it 'returns data to delete a passkey' do
-        expect(helper.delete_passkey_data(true, path)).to match(a_hash_including({
-          button_text: s_('ProfilesAuthentication|Delete passkey'),
-          icon: 'remove',
-          message: s_('ProfilesAuthentication|Are you sure you want to delete this passkey? ' \
-            'Enter your password to continue.'),
-          path: path,
-          password_required: 'true'
-        }))
+    context 'when there is 1 passkey remaining' do
+      context 'when password is required' do
+        it 'returns data to delete a passkey' do
+          expect(helper.delete_passkey_data(true, path, 1)).to match(a_hash_including({
+            button_text: s_('ProfilesAuthentication|Disable passkey sign-in'),
+            icon: 'remove',
+            message: s_('ProfilesAuthentication|Are you sure you want to delete this passkey? ' \
+              'Enter your password to continue.'),
+            modal_title: s_('ProfilesAuthentication|Delete passkey and disable passkey sign-in?'),
+            path: path,
+            password_required: 'true'
+          }))
+        end
+      end
+
+      context 'when password is not required' do
+        it 'returns data to delete a passkey' do
+          expect(helper.delete_passkey_data(false, path, 1)).to match(a_hash_including({
+            button_text: s_('ProfilesAuthentication|Disable passkey sign-in'),
+            icon: 'remove',
+            message: s_('ProfilesAuthentication|Are you sure you want to delete this passkey?'),
+            modal_title: s_('ProfilesAuthentication|Delete passkey and disable passkey sign-in?'),
+            path: path,
+            password_required: 'false'
+          }))
+        end
       end
     end
 
-    context 'when password is not required' do
-      it 'returns data to delete a passkey' do
-        expect(helper.delete_passkey_data(false, path)).to match(a_hash_including({
-          button_text: s_('ProfilesAuthentication|Delete passkey'),
-          icon: 'remove',
-          message: s_('ProfilesAuthentication|Are you sure you want to delete this passkey?'),
-          path: path,
-          password_required: 'false'
-        }))
+    context 'when there are many passkeys remaining' do
+      context 'when password is required' do
+        it 'returns data to delete a passkey' do
+          expect(helper.delete_passkey_data(true, path, 2)).to match(a_hash_including({
+            button_text: s_('ProfilesAuthentication|Delete passkey'),
+            icon: 'remove',
+            message: s_('ProfilesAuthentication|Are you sure you want to delete this passkey? ' \
+              'Enter your password to continue.'),
+            modal_title: s_('ProfilesAuthentication|Delete passkey'),
+            path: path,
+            password_required: 'true'
+          }))
+        end
+      end
+
+      context 'when password is not required' do
+        it 'returns data to delete a passkey' do
+          expect(helper.delete_passkey_data(false, path, 2)).to match(a_hash_including({
+            button_text: s_('ProfilesAuthentication|Delete passkey'),
+            icon: 'remove',
+            message: s_('ProfilesAuthentication|Are you sure you want to delete this passkey?'),
+            modal_title: s_('ProfilesAuthentication|Delete passkey'),
+            path: path,
+            password_required: 'false'
+          }))
+        end
       end
     end
   end
@@ -758,7 +791,7 @@ RSpec.describe AuthHelper, feature_category: :system_access do
 
     let(:current_user) { instance_double('User', flipper_id: '1') }
 
-    let(:oidc_setting_with_step_up_auth) do
+    let(:oidc_setting_with_admin_mode_step_up) do
       GitlabSettings::Options.new(
         name: "openid_connect",
         step_up_auth: {
@@ -772,12 +805,34 @@ RSpec.describe AuthHelper, feature_category: :system_access do
       )
     end
 
-    let(:oidc_setting_without_step_up_auth_params) do
-      GitlabSettings::Options.new(name: "openid_connect",
-        step_up_auth: { admin_mode: { id_token: { required: { acr: 'gold' } } } })
+    let(:oidc_setting_with_namespace_step_up) do
+      GitlabSettings::Options.new(
+        name: "openid_connect",
+        step_up_auth: {
+          namespace: {
+            params: {
+              claims: { acr_values: 'silver' },
+              prompt: 'login'
+            }
+          }
+        }
+      )
     end
 
-    let(:oidc_setting_without_step_up_auth) do
+    let(:oidc_setting_without_step_up_params) do
+      GitlabSettings::Options.new(
+        name: "openid_connect",
+        step_up_auth: {
+          admin_mode: {
+            id_token: {
+              required: { acr: 'gold' }
+            }
+          }
+        }
+      )
+    end
+
+    let(:oidc_setting_without_step_up) do
       GitlabSettings::Options.new(name: "openid_connect")
     end
 
@@ -785,32 +840,101 @@ RSpec.describe AuthHelper, feature_category: :system_access do
 
     before do
       allow(helper).to receive(:current_user).and_return(current_user)
+
       stub_omniauth_setting(enabled: true, providers: omniauth_setting_providers)
     end
 
     # rubocop:disable Layout/LineLength -- Ensure one-line table syntax for better readability
-    where(:omniauth_setting_providers, :provider_name, :scope, :expected_result) do
-      [ref(:oidc_setting_with_step_up_auth)]           | 'openid_connect'        | :admin_mode  | { step_up_auth_scope: :admin_mode, 'claims' => '{"acr_values":"gold"}', 'prompt' => 'login' }
-      [ref(:oidc_setting_with_step_up_auth)]           | 'openid_connect'        | 'admin_mode' | { step_up_auth_scope: 'admin_mode', 'claims' => '{"acr_values":"gold"}', 'prompt' => 'login' }
-      [ref(:oidc_setting_with_step_up_auth)]           | 'openid_connect'        | nil          | {}
-      [ref(:oidc_setting_with_step_up_auth)]           | 'missing_provider_name' | :admin_mode  | {}
-      [ref(:oidc_setting_with_step_up_auth)]           | nil                     | nil          | {}
+    where(:omniauth_setting_providers, :provider_name, :scope, :expected_params) do
+      [ref(:oidc_setting_with_admin_mode_step_up)] | 'openid_connect'        | :admin_mode  | { step_up_auth_scope: :admin_mode, 'claims' => '{"acr_values":"gold"}', 'prompt' => 'login' }
+      [ref(:oidc_setting_with_admin_mode_step_up)] | 'openid_connect'        | 'admin_mode' | { step_up_auth_scope: 'admin_mode', 'claims' => '{"acr_values":"gold"}', 'prompt' => 'login' }
+      [ref(:oidc_setting_with_admin_mode_step_up)] | 'openid_connect'        | nil          | {}
+      [ref(:oidc_setting_with_admin_mode_step_up)] | 'missing_provider_name' | :admin_mode  | {}
+      [ref(:oidc_setting_with_admin_mode_step_up)] | nil                     | nil          | {}
 
-      []                                               | 'openid_connect'        | :admin_mode  | {}
-      [ref(:oidc_setting_without_step_up_auth)]        | 'openid_connect'        | :admin_mode  | {}
-      [ref(:oidc_setting_without_step_up_auth_params)] | 'openid_connect'        | :admin_mode  | { step_up_auth_scope: :admin_mode }
+      []                                           | 'openid_connect'        | :admin_mode  | {}
+      [ref(:oidc_setting_without_step_up)]         | 'openid_connect'        | :admin_mode  | {}
+      [ref(:oidc_setting_without_step_up_params)]  | 'openid_connect'        | :admin_mode  | { step_up_auth_scope: :admin_mode }
+
+      [ref(:oidc_setting_with_namespace_step_up)]  | 'openid_connect'        | :namespace   | { step_up_auth_scope: :namespace, 'claims' => '{"acr_values":"silver"}', 'prompt' => 'login' }
+      [ref(:oidc_setting_with_namespace_step_up)]  | 'openid_connect'        | 'namespace'  | { step_up_auth_scope: 'namespace', 'claims' => '{"acr_values":"silver"}', 'prompt' => 'login' }
+      [ref(:oidc_setting_without_step_up)]         | 'openid_connect'        | :namespace   | {}
     end
     # rubocop:enable Layout/LineLength
 
     with_them do
-      it { is_expected.to eq expected_result }
+      it { is_expected.to eq expected_params }
+    end
 
-      context 'when feature flag :omniauth_step_up_auth_for_admin_mode is disabled' do
-        before do
-          stub_feature_flags(omniauth_step_up_auth_for_admin_mode: false)
+    context 'when feature flag :omniauth_step_up_auth_for_admin_mode is disabled' do
+      before do
+        stub_feature_flags(omniauth_step_up_auth_for_admin_mode: false)
+      end
+
+      let(:omniauth_setting_providers) { [oidc_setting_with_admin_mode_step_up] }
+      let(:provider_name) { 'openid_connect' }
+      let(:scope) { :admin_mode }
+
+      it { is_expected.to eq({}) }
+
+      context 'when scope :namespace is given' do
+        let(:omniauth_setting_providers) { [oidc_setting_with_namespace_step_up] }
+        let(:scope) { :namespace }
+
+        it 'works as expected because feature flag for scope :admin_mode is disabled' do
+          is_expected
+            .to eq({ step_up_auth_scope: :namespace, 'claims' => '{"acr_values":"silver"}', 'prompt' => 'login' })
         end
+      end
+    end
 
-        it { is_expected.to eq({}) }
+    context 'when feature flag :omniauth_step_up_auth_for_namespace is disabled' do
+      before do
+        stub_feature_flags(omniauth_step_up_auth_for_namespace: false)
+      end
+
+      let(:omniauth_setting_providers) { [oidc_setting_with_namespace_step_up] }
+      let(:provider_name) { 'openid_connect' }
+      let(:scope) { :namespace }
+
+      it { is_expected.to eq({}) }
+
+      context 'when scope :admin_mode is given' do
+        let(:omniauth_setting_providers) { [oidc_setting_with_admin_mode_step_up] }
+        let(:scope) { :admin_mode }
+
+        it 'works as expected because feature flag for scope :namespace' do
+          is_expected
+            .to eq({ step_up_auth_scope: :admin_mode, 'claims' => '{"acr_values":"gold"}', 'prompt' => 'login' })
+        end
+      end
+    end
+  end
+
+  describe '#current_password_required?' do
+    let(:user) { create(:user) }
+
+    subject(:current_password_required) { helper.current_password_required? }
+
+    before do
+      allow(helper).to receive(:current_user).and_return(user)
+    end
+
+    where(:password_automatically_set, :allow_password_authentication_for_web, :expectation) do
+      [
+        [true, false, false],
+        [true, true, false],
+        [false, false, false],
+        [false, true, true]
+      ]
+    end
+
+    with_them do
+      it "returns the correct expectation" do
+        user.update_attribute(:password_automatically_set, password_automatically_set)
+        stub_application_setting(password_authentication_enabled_for_web: allow_password_authentication_for_web)
+
+        expect(current_password_required).to eq(expectation)
       end
     end
   end

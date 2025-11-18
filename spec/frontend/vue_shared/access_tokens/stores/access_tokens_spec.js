@@ -3,7 +3,7 @@ import { setActivePinia, createPinia } from 'pinia';
 import { useAccessTokens } from '~/vue_shared/access_tokens/stores/access_tokens';
 import { update15DaysFromNow } from '~/vue_shared/access_tokens/utils';
 import { createAlert } from '~/alert';
-import { smoothScrollTop } from '~/behaviors/smooth_scroll';
+import { smoothScrollTop } from '~/lib/utils/scroll_utils';
 import axios from '~/lib/utils/axios_utils';
 import {
   HTTP_STATUS_NO_CONTENT,
@@ -24,7 +24,7 @@ jest.mock('~/vue_shared/access_tokens/utils', () => ({
   update15DaysFromNow: jest.fn(),
 }));
 
-jest.mock('~/behaviors/smooth_scroll');
+jest.mock('~/lib/utils/scroll_utils');
 
 describe('useAccessTokens store', () => {
   let store;
@@ -146,6 +146,7 @@ describe('useAccessTokens store', () => {
         expect(createAlert).toHaveBeenCalledTimes(1);
         expect(createAlert).toHaveBeenCalledWith({
           message: 'An error occurred while creating the token.',
+          renderMessageHTML: true,
         });
         expect(store.busy).toBe(false);
       });
@@ -299,6 +300,40 @@ describe('useAccessTokens store', () => {
       });
     });
 
+    describe('formateErrors', () => {
+      it('returns the error message from the response if present', () => {
+        const response = { error: 'An error message' };
+        expect(store.formatErrors(response, 'Default message')).toBe('An error message');
+      });
+
+      it('returns the first error from the errors array if present', () => {
+        const response = { errors: ['First error'] };
+        expect(store.formatErrors(response, 'Default message')).toBe('First error');
+      });
+
+      it('returns an unordered list of errors from the errors array if multiple errors are present', () => {
+        const response = { errors: ['First error', 'Second error'] };
+        expect(store.formatErrors(response, 'Default message')).toBe(
+          '<ul class="gl-m-0"><li>First error</li><li>Second error</li></ul>',
+        );
+      });
+
+      it('returns the message from the response if present', () => {
+        const response = { message: 'A message' };
+        expect(store.formatErrors(response, 'Default message')).toBe('A message');
+      });
+
+      it('returns the default message if no specific error is found in the response', () => {
+        const response = {};
+        expect(store.formatErrors(response, 'Default message')).toBe('Default message');
+      });
+
+      it('returns the default message if response is null', () => {
+        const response = null;
+        expect(store.formatErrors(response, 'Default message')).toBe('Default message');
+      });
+    });
+
     describe('revokeToken', () => {
       beforeEach(() => {
         store.setup({ filters, id, page, sorting, urlRevoke, urlShow });
@@ -370,6 +405,7 @@ describe('useAccessTokens store', () => {
         expect(createAlert).toHaveBeenCalledTimes(1);
         expect(createAlert).toHaveBeenCalledWith({
           message: 'An error occurred while revoking the token.',
+          renderMessageHTML: true,
         });
         expect(store.busy).toBe(false);
       });
@@ -479,6 +515,7 @@ describe('useAccessTokens store', () => {
         expect(createAlert).toHaveBeenCalledTimes(1);
         expect(createAlert).toHaveBeenCalledWith({
           message: 'An error occurred while rotating the token.',
+          renderMessageHTML: true,
         });
         expect(store.busy).toBe(false);
       });

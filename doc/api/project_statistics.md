@@ -12,12 +12,12 @@ title: Project statistics API
 
 {{< /details >}}
 
-Every API call to [project](../user/project/_index.md) statistics must be authenticated.
-Retrieving these statistics requires read access to the repository.
+Use this API to retrieve statistics about a [project](../user/project/_index.md).
+All endpoints require authentication.
 
-For use with a [personal access token](../user/profile/personal_access_tokens.md),
-use a token with `read_api` scope. For a [group access token](../user/group/settings/group_access_tokens.md),
-you can use Reporter role and `read_api` scope.
+You must have read access to the repository. [Personal access tokens](../user/profile/personal_access_tokens.md)
+must have the `read_api` scope. [Group access tokens](../user/group/settings/group_access_tokens.md)
+can use the Reporter role and the `read_api` scope.
 
 This API retrieves the number of times the project is either cloned or pulled
 with the HTTP method. SSH fetches are not included.

@@ -1,10 +1,10 @@
 - expanded = integration_expanded?('gitpod_')
 
-= render ::Layouts::SettingsBlockComponent.new(_('Gitpod'),
+= render ::Layouts::SettingsBlockComponent.new(_('Ona'),
   id: 'js-gitpod-settings',
   expanded: expanded) do |c|
   - c.with_description do
-    %span#js-gitpod-settings-help-text{ data: {"message" => gitpod_enable_description, "message-url" => "https://gitpod.io/" } }
+    %span#js-gitpod-settings-help-text{ data: {"message" => gitpod_enable_description, "message-url" => "https://app.ona.com/" } }
     = link_to sprite_icon('question-o'), help_page_path('integration/gitpod.md'), target: '_blank', class: 'has-tooltip', title: _('More information')
   - c.with_body do
     = gitlab_ui_form_for @application_setting, url: general_admin_application_settings_path(anchor: 'js-gitpod-settings'), html: { class: 'fieldset-form', id: 'gitpod-settings' } do |f|
@@ -13,12 +13,12 @@
       %fieldset
         .form-group
           = f.gitlab_ui_checkbox_component :gitpod_enabled,
-          s_('Gitpod|Enable Gitpod integration')
+          s_('Gitpod|Enable Ona integration')
         .form-group
-          = f.label :gitpod_url, s_('Gitpod|Gitpod URL'), class: 'label-bold'
-          = f.text_field :gitpod_url, class: 'form-control gl-form-input', placeholder: s_('Gitpod|https://gitpod.example.com')
+          = f.label :gitpod_url, s_('Gitpod|Ona URL'), class: 'label-bold'
+          = f.text_field :gitpod_url, class: 'form-control gl-form-input', placeholder: s_('Gitpod|https://ona.example.com')
           .form-text.gl-text-subtle
-            - help_link = link_to('', help_page_path('integration/gitpod.md', anchor: 'enable-gitpod-in-your-user-preferences', target: '_blank', rel: 'noopener noreferrer'))
-            = s_('Gitpod|The URL to your Gitpod instance configured to read your GitLab projects, such as https://gitpod.example.com.')
-            = safe_format(s_('Gitpod|To use the integration, each user must also enable Gitpod on their GitLab account. %{help_link_start}How do I enable it?%{help_link_end}'), tag_pair(help_link, :help_link_start, :help_link_end))
+            - help_link = link_to('', help_page_path('integration/gitpod.md', anchor: 'enable-ona-in-your-user-preferences', target: '_blank', rel: 'noopener noreferrer'))
+            = s_('Gitpod|The URL to your Ona instance configured to read your GitLab projects, such as https://ona.example.com.')
+            = safe_format(s_('Gitpod|To use the integration, each user must also enable Ona on their GitLab account. %{help_link_start}How do I enable it?%{help_link_end}'), tag_pair(help_link, :help_link_start, :help_link_end))
       = f.submit _('Save changes'), pajamas_button: true

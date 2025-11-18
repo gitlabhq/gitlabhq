@@ -2,7 +2,7 @@ import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import { trimText } from 'helpers/text_helper';
 import PipelineLabelsComponent from '~/ci/pipelines_page/components/pipeline_labels.vue';
 import { mockPipeline } from 'jest/ci/pipeline_details/mock_data';
-import { SCHEDULE_ORIGIN, API_ORIGIN } from '~/ci/pipelines_page/constants';
+import { SCHEDULE_ORIGIN, API_ORIGIN, AGENT_SESSION_ORIGIN } from '~/ci/pipelines_page/constants';
 
 const projectPath = 'test/test';
 
@@ -24,6 +24,7 @@ describe('Pipeline label component', () => {
   const findForkTag = () => wrapper.findByTestId('pipeline-url-fork');
   const findTrainTag = () => wrapper.findByTestId('pipeline-url-train');
   const findApiTag = () => wrapper.findByTestId('pipeline-api-badge');
+  const findAgentSessionTag = () => wrapper.findByTestId('pipeline-agent-session-badge');
 
   const defaultProps = mockPipeline(projectPath);
 
@@ -303,4 +304,16 @@ describe('Pipeline label component', () => {
       }
     },
   );
+
+  it('should render the agent session badge when the pipeline is run from agent', () => {
+    const agentSessionPipeline = defaultProps.pipeline;
+
+    agentSessionPipeline.source = AGENT_SESSION_ORIGIN;
+
+    createComponent({
+      ...agentSessionPipeline,
+    });
+
+    expect(findAgentSessionTag().text()).toBe('agent session');
+  });
 });

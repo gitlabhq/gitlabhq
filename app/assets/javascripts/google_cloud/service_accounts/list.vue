@@ -46,7 +46,7 @@ export default {
   },
   methods: {
     gcpProjectUrl(id) {
-      return setUrlParams({ project: id }, GOOGLE_CONSOLE_URL);
+      return setUrlParams({ project: id }, { url: GOOGLE_CONSOLE_URL });
     },
   },
   GOOGLE_CONSOLE_URL,

@@ -1,0 +1,23 @@
+fragment PipelinePermissions on Pipeline {
+  id
+  userPermissions {
+    updatePipeline
+  }
+}
+
+query getPipelinePermissions($projectPath: ID!, $iid: ID!) {
+  project(fullPath: $projectPath) {
+    id
+    pipeline(iid: $iid) {
+      ...PipelinePermissions
+      downstream {
+        nodes {
+          ...PipelinePermissions
+        }
+      }
+      upstream {
+        ...PipelinePermissions
+      }
+    }
+  }
+}

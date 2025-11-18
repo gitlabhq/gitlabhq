@@ -45,15 +45,11 @@ FactoryBot.define do
         create(:ci_runner_machine_build, build: build, runner_manager: evaluator.runner_manager)
       end
 
-      if evaluator.id_tokens
-        # TODO: Remove this when FF `stop_writing_builds_metadata` is removed.
-        # https://gitlab.com/gitlab-org/gitlab/-/issues/552065
-        if Feature.disabled?(:stop_writing_builds_metadata, build.project)
-          build.metadata.write_attribute(:id_tokens, evaluator.id_tokens)
-        end
-
-        Ci::JobFactoryHelpers.mutate_temp_job_definition(build, id_tokens: evaluator.id_tokens)
-      end
+      job_definition_values = {
+        id_tokens: evaluator.id_tokens,
+        tag_list: evaluator.tag_list
+      }.compact
+      Ci::JobFactoryHelpers.mutate_temp_job_definition(build, **job_definition_values) if job_definition_values.any?
     end
 
     trait :with_token do

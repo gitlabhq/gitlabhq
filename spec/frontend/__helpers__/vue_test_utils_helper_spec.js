@@ -6,7 +6,7 @@ import {
   WrapperArray as VTUWrapperArray,
   ErrorWrapper as VTUErrorWrapper,
 } from '@vue/test-utils';
-import Vue from 'vue';
+import Vue, { defineComponent } from 'vue';
 import { extendedWrapper, shallowMountExtended, mountExtended } from './vue_test_utils_helper';
 
 jest.mock('@testing-library/dom', () => ({
@@ -172,7 +172,6 @@ describe('Vue test utils helpers', () => {
         it('returns a VTU wrapper', () => {
           const result = wrapper[findMethod](text, options);
 
-          expect(vtu.createWrapper).toHaveBeenCalledWith(mockDiv, wrapper.options);
           expect(result).toBeInstanceOf(VTUWrapper);
           expect(result.vm).toBeUndefined();
         });
@@ -187,7 +186,6 @@ describe('Vue test utils helpers', () => {
         it('returns the first element as a VTU wrapper', () => {
           const result = wrapper[findMethod](text, options);
 
-          expect(vtu.createWrapper).toHaveBeenCalledWith(mockDiv, wrapper.options);
           expect(result).toBeInstanceOf(VTUWrapper);
           expect(result.vm).toBeUndefined();
         });
@@ -254,10 +252,10 @@ describe('Vue test utils helpers', () => {
       });
 
       describe.each`
-        case                       | mockResult      | isVueInstance
-        ${'HTMLElements'}          | ${mockElements} | ${false}
-        ${'Vue instance elements'} | ${mockVms}      | ${true}
-      `('when $case are found', ({ mockResult, isVueInstance }) => {
+        case                       | mockResult
+        ${'HTMLElements'}          | ${mockElements}
+        ${'Vue instance elements'} | ${mockVms}
+      `('when $case are found', ({ mockResult }) => {
         beforeEach(() => {
           jest.spyOn(testingLibrary, expectedQuery).mockImplementation(() => mockResult);
         });
@@ -266,12 +264,11 @@ describe('Vue test utils helpers', () => {
           const result = wrapper[findMethod](text, options);
 
           expect(result).toBeInstanceOf(VTUWrapperArray);
+
           expect(
             result.wrappers.every(
               (resultWrapper) =>
-                resultWrapper instanceof VTUWrapper &&
-                resultWrapper.vm instanceof Vue === isVueInstance &&
-                resultWrapper.options === wrapper.options,
+                resultWrapper instanceof VTUWrapper && resultWrapper.options === wrapper.options,
             ),
           ).toBe(true);
           expect(result).toHaveLength(3);
@@ -295,12 +292,14 @@ describe('Vue test utils helpers', () => {
 
   describe('mount extended functions', () => {
     // eslint-disable-next-line vue/one-component-per-file
-    const FakeChildComponent = Vue.component('FakeChildComponent', {
+    const FakeChildComponent = defineComponent({
+      name: 'FakeChildComponent',
       template: '<div>Bar <div data-testid="fake-id"/></div>',
     });
 
     // eslint-disable-next-line vue/one-component-per-file
-    const FakeComponent = Vue.component('FakeComponent', {
+    const FakeComponent = defineComponent({
+      name: 'FakeComponent',
       components: {
         FakeChildComponent,
       },

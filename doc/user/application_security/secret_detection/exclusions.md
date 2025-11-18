@@ -54,7 +54,7 @@ Prerequisites:
 
 To define an exclusion:
 
-1. In the left sidebar, select **Search or go to** and go to your project or group.
+1. In the left sidebar, select **Search or go to** and go to your project or group. If you've [turned on the new navigation](../../interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
 1. Select **Secure** > **Security configuration**.
 1. Scroll down to **Secret push protection**.
 1. Turn on the **Secret push protection** toggle.

@@ -8,11 +8,14 @@ import {
 } from '~/vue_shared/components/blob_viewers/constants';
 import SimpleViewer from '~/vue_shared/components/blob_viewers/simple_viewer.vue';
 import waitForPromises from 'helpers/wait_for_promises';
-
+import * as urlUtility from '~/lib/utils/url_utility';
+import { createAlert } from '~/alert';
 import blameDataQuery from '~/vue_shared/components/source_viewer/queries/blame_data.query.graphql';
 import Blame from '~/vue_shared/components/source_viewer/components/blame_info.vue';
 
 import { BLAME_DATA_QUERY_RESPONSE_MOCK } from './mock_data';
+
+jest.mock('~/alert');
 
 Vue.use(VueApollo);
 
@@ -23,6 +26,7 @@ describe('Blob Simple Viewer component', () => {
   const blobHash = 'foo-bar';
 
   const blameDataQueryHandlerSuccess = jest.fn().mockResolvedValue(BLAME_DATA_QUERY_RESPONSE_MOCK);
+  const blameDataQueryHandlerError = jest.fn().mockRejectedValue(new Error('GraphQL error'));
 
   function createComponent({
     content = contentMock,
@@ -31,8 +35,9 @@ describe('Blob Simple Viewer component', () => {
     isBlameLinkHidden = false,
     isRawContent = false,
     propsData = {},
+    blameQueryHandler = blameDataQueryHandlerSuccess,
   } = {}) {
-    fakeApollo = createMockApollo([[blameDataQuery, blameDataQueryHandlerSuccess]]);
+    fakeApollo = createMockApollo([[blameDataQuery, blameQueryHandler]]);
 
     wrapper = shallowMount(SimpleViewer, {
       apolloProvider: fakeApollo,
@@ -98,6 +103,7 @@ describe('Blob Simple Viewer component', () => {
 
     describe('Blame component', () => {
       beforeEach(() => {
+        jest.spyOn(urlUtility, 'getParameterByName').mockReturnValue('true');
         createComponent({ propsData: { showBlame: true } });
       });
       it('renders a Blame component with correct props', async () => {
@@ -119,6 +125,7 @@ describe('Blob Simple Viewer component', () => {
             fullPath: 'test',
             ref: 'test',
             toLine: MAX_BLAME_LINES,
+            ignoreRevs: true,
           }),
         );
       });
@@ -144,6 +151,42 @@ describe('Blob Simple Viewer component', () => {
         await waitForPromises();
         await waitForPromises();
         expect(blameDataQueryHandlerSuccess).toHaveBeenCalledTimes(4);
+      });
+
+      it('shows error alert when blame query fails', async () => {
+        createAlert.mockClear();
+        createComponent({
+          propsData: { showBlame: true },
+          blameQueryHandler: blameDataQueryHandlerError,
+        });
+        await waitForPromises();
+
+        expect(createAlert).toHaveBeenCalledWith({
+          message: 'Unable to load blame information. Please try again.',
+          captureError: true,
+          error: expect.any(Error),
+        });
+      });
+
+      it('shows backend error message when GraphQL error has message', async () => {
+        const backendErrorMessage = 'Error message from backend.';
+        const graphQLError = {
+          graphQLErrors: [{ message: backendErrorMessage }],
+        };
+        const blameDataQueryHandlerWithGraphQLError = jest.fn().mockRejectedValue(graphQLError);
+
+        createAlert.mockClear();
+        createComponent({
+          propsData: { showBlame: true },
+          blameQueryHandler: blameDataQueryHandlerWithGraphQLError,
+        });
+        await waitForPromises();
+
+        expect(createAlert).toHaveBeenCalledWith({
+          message: backendErrorMessage,
+          captureError: true,
+          error: graphQLError,
+        });
       });
     });
   });

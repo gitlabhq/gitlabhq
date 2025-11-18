@@ -70,14 +70,14 @@ You can view merge requests for your project, group, or yourself.
 
 {{< tab title="You're participating in" >}}
 
-To view all merge requests on the homepage, use the <kbd>Shift</kbd> + <kbd>m</kbd>
+To view all merge requests on the homepage, use the <kbd>Shift</kbd>+<kbd>m</kbd>
 keyboard shortcut, or:
 
 1. On the left sidebar, select the **Merge requests** icon.
 
 or:
 
-1. On the left sidebar, select **Search or go to**.
+1. On the left sidebar, select **Search or go to**. If you've [turned on the new navigation](../../interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
 1. From the dropdown list, select **Merge requests**.
 
 {{< /tab >}}
@@ -86,10 +86,10 @@ or:
 
 To view all merge requests for a project:
 
-1. On the left sidebar, select **Search or go to** and find your project.
+1. On the left sidebar, select **Search or go to** and find your project. If you've [turned on the new navigation](../../interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
 1. Select **Code** > **Merge requests**.
 
-Or, to use a keyboard shortcut, press <kbd>g</kbd> + <kbd>m</kbd>.
+Or, to use a keyboard shortcut, press <kbd>g</kbd>+<kbd>m</kbd>.
 
 {{< /tab >}}
 
@@ -97,7 +97,7 @@ Or, to use a keyboard shortcut, press <kbd>g</kbd> + <kbd>m</kbd>.
 
 To view merge requests for all projects in a group:
 
-1. On the left sidebar, select **Search or go to** and find your group.
+1. On the left sidebar, select **Search or go to** and find your group. If you've [turned on the new navigation](../../interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
 1. Select **Code** > **Merge requests**.
 
 If your group contains subgroups, this view also displays merge requests from the subgroup projects.
@@ -114,9 +114,9 @@ For more information, see [View open merge requests for a file](../repository/fi
 
 To view the open merge requests for a file:
 
-1. On the left sidebar, select **Search or go to** and find your project.
+1. On the left sidebar, select **Search or go to** and find your project. If you've [turned on the new navigation](../../interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
 1. Go to the file you want to view.
-1. At the top right of the screen, next to the filename, look for the green badge with the number
+1. In the upper right of the screen, next to the filename, look for the green badge with the number
    of {{< icon name="merge-request-open" >}} **Open** merge requests.
 1. Select the badge to see a list of open merge requests created in the past 30 days.
 1. Select any merge request in the list to go to that merge request.
@@ -132,12 +132,13 @@ To view the open merge requests for a file:
 - Filtering by `source branch` [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/134555) in GitLab 16.6.
 - Filtering by `merged by` [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/140002) in GitLab 16.9. Available only when the feature flag `mr_merge_user_filter` is enabled.
 - Filtering by `merged by` [generally available](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/142666) in GitLab 17.0. Feature flag `mr_merge_user_filter` removed.
+- Filtering by `merged before` and `merged after` [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/209458) in GitLab 18.6.
 
 {{< /history >}}
 
 To filter the list of merge requests:
 
-1. On the left sidebar, select **Search or go to** and find your project.
+1. On the left sidebar, select **Search or go to** and find your project. If you've [turned on the new navigation](../../interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
 1. Select **Code** > **Merge requests**.
 1. Above the list of merge requests, select **Search or filter results**.
 1. From the dropdown list, select the attribute you wish to filter by. Some examples:
@@ -197,10 +198,10 @@ change, and whether you need access to a development environment:
   <kbd>.</kbd> keyboard shortcut. Use this
   browser-based method to edit multiple files, or if you are not comfortable with Git commands.
   You cannot run tests from the Web IDE.
-- [Edit changes in Gitpod](../../../integration/gitpod.md#launch-gitpod-in-gitlab), if you
-  need a fully-featured environment to both edit files, and run tests afterward. Gitpod
+- [Edit changes in Ona](../../../integration/gitpod.md#launch-ona-in-gitlab), if you
+  need a fully-featured environment to both edit files, and run tests afterward. Ona
   supports running the GitLab Development Kit (GDK).
-  To use Gitpod, you must enable Gitpod in your user account.
+  To use Ona, you must enable Ona in your user account.
 - [Push changes from the command line](../../../topics/git/commands.md), if you are
   familiar with Git and the command line.
 
@@ -209,7 +210,7 @@ change, and whether you need access to a development environment:
 To assign the merge request to a user, use the `/assign @user` quick action in a text area in
 a merge request, or:
 
-1. On the left sidebar, select **Search or go to** and find your project.
+1. On the left sidebar, select **Search or go to** and find your project. If you've [turned on the new navigation](../../interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
 1. Select **Code** > **Merge requests** and find your merge request.
 1. On the right sidebar, expand the right sidebar and locate the **Assignees** section.
 1. Select **Edit**.
@@ -250,7 +251,7 @@ Prerequisites:
 
 To close merge requests in the project:
 
-1. On the left sidebar, select **Search or go to** and find your project.
+1. On the left sidebar, select **Search or go to** and find your project. If you've [turned on the new navigation](../../interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
 1. Select **Code** > **Merge requests** and find your merge request.
 1. Scroll to the comment box at the bottom of the page.
 1. Following the comment box, select **Close merge request**.
@@ -347,7 +348,7 @@ For a web developer writing a webpage for your company's website:
 To understand the history of a merge request, filter its activity feed to show you
 only the items that are relevant to you.
 
-1. On the left sidebar, select **Search or go to** and find your project.
+1. On the left sidebar, select **Search or go to** and find your project. If you've [turned on the new navigation](../../interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
 1. Select **Code** > **Merge requests**.
 1. Select a merge request.
 1. Scroll to **Activity**.
@@ -383,16 +384,16 @@ continue the discussion.
 
 ### Expand all threads
 
-GitLab shows the number of open threads in the top right corner of a
+GitLab shows the number of open threads in the upper-right corner of a
 merge request. This merge request has three open threads:
 
 ![A merge request with three open threads, and the thread management options.](img/open_threads_v18_5.png)
 
 To see all comments in the collapsed threads, expand the threads:
 
-1. On the left sidebar, select **Search or go to** and find your project.
+1. On the left sidebar, select **Search or go to** and find your project. If you've [turned on the new navigation](../../interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
 1. Select **Code** > **Merge requests** and find your merge request.
-1. In the merge request, in the top right, find the **Open threads**
+1. In the merge request, in the upper right, find the **Open threads**
    dropdown list, and select **Thread options** ({{< icon name="ellipsis_v" >}}).
 1. Select **Show all comments**.
 
@@ -407,7 +408,7 @@ To move open threads to a new issue, and unblock a merge request:
 If you have one specific open thread in a merge request, you can
 create an issue to resolve it separately:
 
-1. On the left sidebar, select **Search or go to** and find your project.
+1. On the left sidebar, select **Search or go to** and find your project. If you've [turned on the new navigation](../../interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
 1. Select **Code** > **Merge requests** and find your merge request.
 1. In the merge request, find the thread you want to move.
 1. Below the last reply to the thread, next to **Resolve thread**, select
@@ -424,9 +425,9 @@ the newly created issue.
 If you have multiple open threads in a merge request, you can
 create an issue to resolve them separately:
 
-1. On the left sidebar, select **Search or go to** and find your project.
+1. On the left sidebar, select **Search or go to** and find your project. If you've [turned on the new navigation](../../interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
 1. Select **Code** > **Merge requests** and find your merge request.
-1. In the merge request, in the top right, find the **Open threads**
+1. In the merge request, in the upper right, find the **Open threads**
    dropdown list, and select **Thread options** ({{< icon name="ellipsis_v" >}}).
 1. Select **Resolve all with new issue**.
 1. Fill out the fields in the new issue, and select **Create issue**.
@@ -444,7 +445,7 @@ You can prevent merge requests from merging while threads remain open.
 When you enable this setting, the **Open threads** counter in a merge request
 is shown in orange while at least one thread remains open.
 
-1. On the left sidebar, select **Search or go to** and find your project.
+1. On the left sidebar, select **Search or go to** and find your project. If you've [turned on the new navigation](../../interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
 1. Select **Settings** > **Merge requests**.
 1. In the **Merge checks** section, select the **All threads must be resolved** checkbox.
 1. Select **Save changes**.
@@ -454,7 +455,7 @@ is shown in orange while at least one thread remains open.
 You can set merge requests to automatically resolve threads when a new push
 changes the lines they describe.
 
-1. On the left sidebar, select **Search or go to** and find your project.
+1. On the left sidebar, select **Search or go to** and find your project. If you've [turned on the new navigation](../../interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
 1. Select **Settings** > **Merge requests**.
 1. In the **Merge options** section, select
    **Automatically resolve merge request diff threads when they become outdated**.
@@ -486,7 +487,7 @@ For more information, see the history.
 
 {{< /alert >}}
 
-Enabling this feature flag moves the notifications and to-do item buttons to the upper right corner of the page.
+Enabling this feature flag moves the notifications and to-do item buttons to the upper-right corner of the page.
 
 - On merge requests, these buttons are shown to the far right of the tabs.
 - On issues, incidents, and epics, these buttons are shown at the top of the right sidebar.

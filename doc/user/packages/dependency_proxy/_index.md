@@ -46,7 +46,7 @@ For a list of planned additions, view the
 
 To enable or turn off the dependency proxy for a group:
 
-1. On the left sidebar, select **Search or go to** and find your group.
+1. On the left sidebar, select **Search or go to** and find your group. If you've [turned on the new navigation](../../interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
 1. Select **Settings** > **Packages and registries**.
 1. Expand the **Dependency Proxy** section.
 1. To enable the proxy, turn on **Enable Proxy**. To turn it off, turn the toggle off.
@@ -59,7 +59,7 @@ for the entire GitLab instance.
 
 To view the dependency proxy for container images:
 
-1. On the left sidebar, select **Search or go to** and find your group.
+1. On the left sidebar, select **Search or go to** and find your group. If you've [turned on the new navigation](../../interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
 1. Select **Operate** > **Dependency Proxy**.
 
 The dependency proxy is not available for projects.
@@ -104,7 +104,7 @@ echo "$CONTAINER_REGISTRY_PASSWORD" | docker login gitlab.example.com --username
 You can authenticate using:
 
 - Your GitLab username and password.
-- The [GitLab CLI](../../../editor_extensions/gitlab_cli/_index.md#use-the-cli-as-a-docker-credential-helper).
+- The [GitLab CLI](https://docs.gitlab.com/cli/).
 - A [personal access token](../../profile/personal_access_tokens.md).
 - A [group deploy token](../../project/deploy_tokens/_index.md).
 - A [group access token](../../group/settings/group_access_tokens.md) for the group.
@@ -196,7 +196,7 @@ services:
   - docker:20.10.16-dind
 
 build:
-  image: docker:20.10.16
+  image: docker:20.10.16-cli
   before_script:
     - echo "$CI_DEPENDENCY_PROXY_PASSWORD" | docker login $CI_DEPENDENCY_PROXY_SERVER -u $CI_DEPENDENCY_PROXY_USER --password-stdin
   script:
@@ -228,7 +228,7 @@ To authenticate with Docker Hub, you can use:
 
 To set Docker Hub credentials for the dependency proxy for a group:
 
-1. On the left sidebar, select **Search or go to** and find your group.
+1. On the left sidebar, select **Search or go to** and find your group. If you've [turned on the new navigation](../../interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
 1. Select **Settings** > **Packages and registries**.
 1. Expand the **Dependency Proxy** section.
 1. Turn on **Enable Proxy**.
@@ -286,7 +286,7 @@ If authentication is successful, you'll see activity in your [Docker Hub Usage d
 
 To store a Docker image in dependency proxy storage:
 
-1. On the left sidebar, select **Search or go to** and find your group.
+1. On the left sidebar, select **Search or go to** and find your group. If you've [turned on the new navigation](../../interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
 1. Select **Operate** > **Dependency Proxy**.
 1. Copy the **Dependency Proxy image prefix**.
 1. Use one of these commands. In these examples, the image is `alpine:latest`.
@@ -407,7 +407,7 @@ hub_docker_quota_check:
 
 ## Troubleshooting
 
-### Authentication error: "HTTP Basic: Access Denied"
+### Authentication error: `HTTP Basic: Access Denied`
 
 If you receive an `HTTP Basic: Access denied` error when authenticating against the dependency proxy, refer to the [two-factor authentication troubleshooting guide](../../profile/account/two_factor_authentication_troubleshooting.md).
 

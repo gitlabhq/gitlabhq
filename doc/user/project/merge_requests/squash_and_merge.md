@@ -52,7 +52,7 @@ Prerequisites:
 
 To do this:
 
-1. On the left sidebar, select **Search or go to** and find your project.
+1. On the left sidebar, select **Search or go to** and find your project. If you've [turned on the new navigation](../../interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
 1. Select **Code** > **Merge requests** and find your merge request.
 1. Select **Edit**.
 1. Select or clear the **Squash commits when merge request is accepted** checkbox.
@@ -63,7 +63,7 @@ To do this:
 If your project allows you to select squashing options for merge requests, to
 squash the commits as part of the merge process:
 
-1. On the left sidebar, select **Search or go to** and find your project.
+1. On the left sidebar, select **Search or go to** and find your project. If you've [turned on the new navigation](../../interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
 1. Select **Code** > **Merge requests** and find your merge request.
 1. In the merge request widget, ensure the **Squash commits** checkbox is selected. This checkbox doesn't display
    if the project's squashing option is set to either **Do not allow** or **Require**.
@@ -79,7 +79,7 @@ Prerequisites:
 
 To configure the default squashing behavior for all merge requests in your project:
 
-1. On the left sidebar, select **Search or go to** and find your project.
+1. On the left sidebar, select **Search or go to** and find your project. If you've [turned on the new navigation](../../interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
 1. Select **Settings** > **Merge requests**.
 1. In the **Squash commits when merging** section, select your desired behavior:
    - **Do not allow**: Squashing is never performed, and the option is not displayed.

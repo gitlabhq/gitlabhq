@@ -32,11 +32,11 @@ RSpec.describe FileSizeValidator do
     end
 
     before do
-      expect(note).to receive(:max_attachment_size) { 10 }
+      expect(note).to receive(:max_attachment_size) { 100 }
     end
 
     it 'attachment exceeds maximum limit' do
-      allow(attachment).to receive(:size) { 100 }
+      allow(attachment).to receive(:size) { 101 }
       validator.validate_each(note, :attachment, attachment)
       expect(note.errors).to have_key(:attachment)
     end

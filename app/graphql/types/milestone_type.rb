@@ -11,26 +11,33 @@ module Types
 
     alias_method :milestone, :object
 
-    field :id, GraphQL::Types::ID, null: false,
+    def self.authorization_scopes
+      super + [:ai_workflows]
+    end
+
+    field :id, GraphQL::Types::ID, null: false, scopes: [:api, :read_api, :ai_workflows],
       description: 'ID of the milestone.'
 
     field :iid, GraphQL::Types::ID, null: false, # rubocop:disable Graphql/IDType -- Legacy argument using ID type kept for backwards compatibility
       description: "Internal ID of the milestone."
 
-    field :title, GraphQL::Types::String, null: false,
+    field :title, GraphQL::Types::String, null: false, scopes: [:api, :read_api, :ai_workflows],
       description: 'Title of the milestone.'
 
     field :description, GraphQL::Types::String, null: true,
       description: 'Description of the milestone.'
 
     field :state, Types::MilestoneStateEnum, null: false,
+      scopes: [:api, :read_api, :ai_workflows],
       description: 'State of the milestone.'
 
     field :expired, GraphQL::Types::Boolean, null: false,
+      scopes: [:api, :read_api, :ai_workflows],
       description: 'Expired state of the milestone (a milestone is expired when the due date is past the current ' \
         'date). Defaults to `false` when due date has not been set.'
 
     field :upcoming, GraphQL::Types::Boolean, null: false,
+      scopes: [:api, :read_api, :ai_workflows],
       description: 'Upcoming state of the milestone (a milestone is upcoming when the start date is in the future). ' \
         'Defaults to `false` when start date has not been set.'
 
@@ -38,9 +45,11 @@ module Types
       description: 'Web path of the milestone.'
 
     field :due_date, Types::TimeType, null: true,
+      scopes: [:api, :read_api, :ai_workflows],
       description: 'Timestamp of the milestone due date.'
 
     field :start_date, Types::TimeType, null: true,
+      scopes: [:api, :read_api, :ai_workflows],
       description: 'Timestamp of the milestone start date.'
 
     field :created_at, Types::TimeType, null: false,

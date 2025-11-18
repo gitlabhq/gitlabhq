@@ -28,10 +28,10 @@ module Gitlab
           repository.gitaly_ref_client.get_tag_messages(tag_ids)
         end
 
-        def extract_signature_lazily(repository, tag_id)
+        def extract_signature_lazily(repository, tag_id, timeout: GitalyClient.fast_timeout)
           # Return the default empty signature data in case of timeouts
           BatchLoader.for(tag_id).batch(key: repository, default_value: [+''.b, +''.b]) do |tag_ids, loader, args|
-            batch_signature_extraction(args[:key], tag_ids).each do |tag_id, signature_data|
+            batch_signature_extraction(args[:key], tag_ids, timeout: timeout).each do |tag_id, signature_data|
               loader.call(tag_id, signature_data)
             end
           rescue GRPC::DeadlineExceeded => e
@@ -39,8 +39,8 @@ module Gitlab
           end
         end
 
-        def batch_signature_extraction(repository, tag_ids)
-          repository.gitaly_ref_client.get_tag_signatures(tag_ids)
+        def batch_signature_extraction(repository, tag_ids, timeout: nil)
+          repository.gitaly_ref_client.get_tag_signatures(tag_ids, timeout: timeout)
         end
       end
 
@@ -104,23 +104,22 @@ module Gitlab
         signed_tag&.signature
       end
 
+      def lazy_cached_signature
+        signed_tag&.lazy_cached_signature
+      end
+
       def signed_tag
         return unless has_signature?
+        return unless signature_type == :X509 || can_use_lazy_cached_signature?
 
-        case signature_type
-        when :PGP
-          return unless Feature.enabled?(:render_gpg_signed_tags_verification_status, @repository.container)
-
-          Gpg::Tag.new(@repository, self)
-        when :X509
-          X509::Tag.new(@repository, self)
-        when :SSH
-          return unless Feature.enabled?(:render_ssh_signed_tags_verification_status, @repository.container)
-
-          Ssh::Tag.new(@repository, self)
-        end
+        SignedTag.from_repository_tag(repository, self)
       end
       strong_memoize_attr :signed_tag
+
+      def can_use_lazy_cached_signature?
+        (signature_type == :SSH && render_ssh?) ||
+          (signature_type == :PGP && render_gpg?)
+      end
 
       def cache_key
         "tag:" + Digest::SHA1.hexdigest([name, message, target, target_commit&.sha].join)
@@ -130,6 +129,14 @@ module Gitlab
 
       def tagger
         @raw_tag.tagger
+      end
+
+      def render_gpg?
+        Feature.enabled?(:render_gpg_signed_tags_verification_status, @repository.container)
+      end
+
+      def render_ssh?
+        Feature.enabled?(:render_ssh_signed_tags_verification_status, @repository.container)
       end
 
       def message_from_gitaly_tag

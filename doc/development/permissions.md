@@ -14,3 +14,4 @@ anything that deals with permissions, all of them should be considered. For more
 - [Authorizations](permissions/authorizations.md): guidance on where to check permissions.
 - [Custom roles](permissions/custom_roles.md): guidance on how to work on custom role, how to introduce a new ability for custom roles, how to refactor permissions.
 - [Job token guidelines](permissions/job_tokens.md): Guidance on requirements and contribution guidelines for new job token permissions.
+- [Granular Personal Access Tokens](permissions/granular_personal_access_tokens.md): Guidance on enabling granular PAT permissions for API endpoints, including requirements and contribution guidelines.

@@ -1,7 +1,7 @@
-- title: "Amazon S3 Signature Version 2"
+- title: "Container Registry AWS S3 Signature Version 2 support"
   announcement_milestone: "17.8"
   removal_milestone: "19.0"
-  breaking_change: true
+  breaking_change: false
   reporter: trizzi
   stage: Package
   issue_url: https://gitlab.com/gitlab-org/container-registry/-/issues/1449
@@ -11,9 +11,13 @@
   manual_task: true
   window: "3"
   body: |
-    Using Signature Version 2 to authenticate requests to Amazon S3 buckets in the container registry is deprecated.
+    Support for authenticating requests using Amazon S3 Signature Version 2 in the container registry is deprecated in GitLab 17.8 and is planned for removal in GitLab 19.0.
 
-    To ensure continued compatibility and security, migrate to Signature Version 4. This change requires updating your S3 bucket configuration settings and ensuring that your GitLab container registry settings are compatible with Signature Version 4.
+    The new S3v2 storage driver based on AWS SDK v2 (available starting GitLab 17.10 in Beta, becoming the default in 19.0) only supports Signature Version 4.
+    Once the S3v2 driver becomes the default, any Signature Version 2 configuration settings (such as `v4auth: false`) will be transparently ignored.
+
+    You may migrate to Signature Version 4 before upgrading to the GitLab version where S3v2 becomes the default driver.
+    This change requires updating your S3 bucket configuration settings and ensuring that your GitLab container registry settings are compatible with Signature Version 4.
 
     To migrate:
 

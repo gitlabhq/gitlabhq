@@ -15,7 +15,7 @@ title: GitLab Prometheus metrics
 To enable the GitLab Prometheus metrics:
 
 1. Sign in to GitLab as a user with administrator access.
-1. On the left sidebar, at the bottom, select **Admin**.
+1. On the left sidebar, at the bottom, select **Admin**. If you've [turned on the new navigation](../../../user/interface_redesign.md#turn-new-navigation-on-or-off), in the upper-right corner, select **Admin**.
 1. Select **Settings** > **Metrics and profiling**.
 1. Find the **Metrics - Prometheus** section, and select **Enable GitLab Prometheus metrics endpoint**.
 1. [Restart GitLab](../../restart_gitlab.md#reconfigure-a-linux-package-installation) for the changes to take effect.
@@ -58,6 +58,7 @@ The following metrics are available:
 | `action_cable_subscription_confirmations_total`                                | Counter   | 13.10 | `server_mode`                                                           | The number of ActionCable subscriptions from clients confirmed |
 | `action_cable_subscription_rejections_total`                                   | Counter   | 13.10 | `server_mode`                                                           | The number of ActionCable subscriptions from clients rejected |
 | `action_cable_transmitted_bytes_total`                                         | Counter   |  16.0 | `operation`, `channel`                                                  | Total number of bytes transmitted over ActionCable |
+| `active_context_queue_size`                                                    | Gauge     | 18.7  | `queue_name`, `shard`                                                   | Number of items in each ActiveContext queue |
 | `artifact_report_<report_type>_builds_completed_total`                         | Counter   |  15.3 |                                                                         | Counter of completed CI Builds with report-type artifacts, grouped by report type and labeled by status |
 | `auto_devops_pipelines_completed_total`                                        | Counter   |  12.7 |                                                                         | Counter of completed Auto DevOps pipelines, labeled by status |
 | `cached_object_operations_total`                                               | Counter   |  15.3 | `controller`, `action`, `endpoint_id`                                   | Total number of objects cached for specific web requests |
@@ -206,6 +207,10 @@ The following metrics are available:
 | `successful_login_captcha_total`                                               | Gauge     |  11.0 |                                                                         | Counter of successful CAPTCHA attempts during login |
 | `upload_file_does_not_exist`                                                   | Counter   |  10.7 |                                                                         | Number of times an upload record could not find its file. |
 | `user_session_logins_total`                                                    | Counter   |   9.4 |                                                                         | Counter of how many users have logged in since GitLab was started or restarted |
+| `validity_check_network_errors_total`                                          | Counter   |  18.6 | `partner`, `error_class`                                                | Total network errors during partner token verification API calls. Ultimate only. |
+| `validity_check_partner_api_duration_seconds`                                  | Histogram |  18.6 | `partner`                                                               | Partner API response time in seconds for token verification requests. Ultimate only. |
+| `validity_check_partner_api_requests_total`                                    | Counter   |  18.6 | `partner`, `status`, `error_type`                                       | Total partner API verification requests with success/failure status. Ultimate only. |
+| `validity_check_rate_limit_hits_total`                                         | Counter   |  18.6 | `limit_type`                                              | Total rate limit hits during partner token verification. Ultimate only. |
 
 ## Metrics controlled by a feature flag
 
@@ -340,6 +345,16 @@ configuration option in `gitlab.yml`. These metrics are served from the
 | `geo_package_files_registry`                             | Gauge     | 13.3  | `url`                                                                                     | Number of package files in the registry |
 | `geo_package_files_synced`                               | Gauge     | 13.3  | `url`                                                                                     | Number of syncable package files synced on secondary |
 | `geo_package_files`                                      | Gauge     | 13.0  | `url`                                                                                     | Number of package files on primary |
+| `geo_packages_nuget_symbols`                             | Gauge     | 18.6  | `url`                                                                                     | Number of Nuget symbol files on primary |
+| `geo_packages_nuget_symbols_checksum_total`              | Gauge     | 18.6  | `url`                                                                                     | Number of Nuget symbol files to checksum on primary |
+| `geo_packages_nuget_symbols_checksummed`                 | Gauge     | 18.6  | `url`                                                                                     | Number of Nuget symbol files that successfully calculated the checksum on primary |
+| `geo_packages_nuget_symbols_checksum_failed`             | Gauge     | 18.6  | `url`                                                                                     | Number of Nuget symbol files that failed to calculate the checksum on primary |
+| `geo_packages_nuget_symbols_synced`                      | Gauge     | 18.6  | `url`                                                                                     | Number of syncable Nuget symbol files synced on secondary |
+| `geo_packages_nuget_symbols_failed`                      | Gauge     | 18.6  | `url`                                                                                     | Number of syncable Nuget symbol files failed to sync on secondary |
+| `geo_packages_nuget_symbols_registry`                    | Gauge     | 18.6  | `url`                                                                                     | Number of Nuget symbol files in the registry |
+| `geo_packages_nuget_symbols_verification_total`          | Gauge     | 18.6  | `url`                                                                                     | Number of Nuget symbol files to attempt to verify on secondary |
+| `geo_packages_nuget_symbols_verified`                    | Gauge     | 18.6  | `url`                                                                                     | Number of Nuget symbol files successfully verified on secondary |
+| `geo_packages_nuget_symbols_verification_failed`         | Gauge     | 18.6  | `url`                                                                                     | Number of Nuget symbol files that failed verification on secondary |
 | `geo_pages_deployments_checksum_failed`                  | Gauge     | 14.6  | `url`                                                                                     | Number of pages deployments failed to calculate the checksum on primary |
 | `geo_pages_deployments_checksum_total`                   | Gauge     | 14.6  | `url`                                                                                     | Number of pages deployments to checksum on primary |
 | `geo_pages_deployments_checksummed`                      | Gauge     | 14.6  | `url`                                                                                     | Number of pages deployments that successfully calculated the checksum on primary |
@@ -412,9 +427,9 @@ configuration option in `gitlab.yml`. These metrics are served from the
 | `gitlab_transaction_event_remote_mirrors_failed_total`   | Counter   | 10.8  |                                                                                           | Counter for failed remote mirrors |
 | `gitlab_transaction_event_remote_mirrors_finished_total` | Counter   | 10.8  |                                                                                           | Counter for finished remote mirrors |
 | `gitlab_transaction_event_remote_mirrors_running_total`  | Counter   | 10.8  |                                                                                           | Counter for running remote mirrors |
-| `global_search_awaiting_indexing_queue_size`             | Gauge     | 13.2  |                                                                                           | Deprecated and planned for removal in 18.0. Replaced by `search_advanced_awaiting_indexing_queue_size`. Number of database updates waiting to be synchronized to Elasticsearch while indexing is paused |
-| `global_search_bulk_cron_initial_queue_size`             | Gauge     | 13.1  |                                                                                           | Deprecated and planned for removal in 18.0. Replaced by `search_advanced_bulk_cron_initial_queue_size`. Number of initial database updates waiting to be synchronized to Elasticsearch |
-| `global_search_bulk_cron_queue_size`                     | Gauge     | 12.10 |                                                                                           | Deprecated and planned for removal in 18.0. Replaced by `search_advanced_bulk_cron_queue_size`. Number of incremental database updates waiting to be synchronized to Elasticsearch |
+| `global_search_awaiting_indexing_queue_size`             | Gauge     | 13.2  |                                                                                           | Deprecated and removed in 18.7. Replaced by `search_advanced_awaiting_indexing_queue_size`. Number of database updates waiting to be synchronized to Elasticsearch while indexing is paused |
+| `global_search_bulk_cron_initial_queue_size`             | Gauge     | 13.1  |                                                                                           | Deprecated and removed in 18.7. Replaced by `search_advanced_bulk_cron_initial_queue_size`. Number of initial database updates waiting to be synchronized to Elasticsearch |
+| `global_search_bulk_cron_queue_size`                     | Gauge     | 12.10 |                                                                                           | Deprecated and removed in 18.7. Replaced by `search_advanced_bulk_cron_queue_size`. Number of incremental database updates waiting to be synchronized to Elasticsearch |
 | `limited_capacity_worker_max_running_jobs`               | Gauge     | 13.5  | `worker`                                                                                  | Maximum number of running jobs |
 | `limited_capacity_worker_remaining_work_count`           | Gauge     | 13.5  | `worker`                                                                                  | Number of jobs waiting to be enqueued |
 | `limited_capacity_worker_running_jobs`                   | Gauge     | 13.5  | `worker`                                                                                  | Number of running jobs |
@@ -564,6 +579,38 @@ Metrics to track various [Git LFS](https://git-lfs.com/) functionality.
 | `gitlab_sli_lfs_check_objects_error_total`         | Counter | 16.10 | Number of check LFS object errors in total |
 | `gitlab_sli_lfs_validate_link_objects_total`       | Counter | 16.10 | Number of validated LFS linked objects in total |
 | `gitlab_sli_lfs_validate_link_objects_error_total` | Counter | 16.10 | Number of validated LFS linked object errors in total |
+
+## Secret Detection Partner Token verification metrics
+
+{{< details >}}
+
+- Tier: Ultimate
+- Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
+
+{{< /details >}}
+
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/208292) in GitLab 18.6.
+
+{{< /history >}}
+
+Metrics to track Secret Detection partner token verification with external partner APIs (AWS, GCP, Postman, etc.).
+
+| Metric                                            | Type      | Since | Labels                                        | Description |
+|:--------------------------------------------------|:----------|:------|:----------------------------------------------|:------------|
+| `validity_check_partner_api_duration_seconds`     | Histogram | 18.6  | `partner`                                     | Tracks API response time for partner token verification requests. Histogram buckets: [0.1, 0.25, 0.5, 1, 2, 5, 10] seconds. |
+| `validity_check_partner_api_requests_total`       | Counter   | 18.6  | `partner`, `status`, `error_type`             | Total number of partner API verification requests. `status` can be `success` or `failure`. `error_type` is included only for failures (e.g., `network_error`, `rate_limit`, `response_error`). |
+| `validity_check_network_errors_total`             | Counter   | 18.6  | `partner`, `error_class`                      | Total network errors during partner API calls. `error_class` indicates the type of error (e.g., `Timeout`, `ConnectionRefused`, `HTTPError`). |
+| `validity_check_rate_limit_hits_total`            | Counter   | 18.6  | `limit_type`                    | Total rate limit hits during token verification. `limit_type` corresponds to the partner rate limit key (e.g., `partner_aws_api`, `partner_gcp_api`, `partner_postman_api`). |
+
+### Partner labels
+
+The `partner` label can have the following values:
+
+- `aws` - Amazon Web Services tokens
+- `gcp` - Google Cloud Platform tokens
+- `postman` - Postman API tokens
 
 ## Metrics shared directory
 

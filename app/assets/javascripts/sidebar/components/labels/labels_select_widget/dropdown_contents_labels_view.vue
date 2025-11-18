@@ -88,27 +88,15 @@ export default {
     },
   },
   methods: {
+    // Public method, don't remove!
+    // eslint-disable-next-line vue/no-unused-properties
+    selectFirstItem() {
+      if (this.shouldHighlightFirstItem) {
+        this.handleLabelClick(this.visibleLabels[0]);
+      }
+    },
     isLabelSelected(label) {
       return this.localSelectedLabelsIds.includes(getIdFromGraphQLId(label.id));
-    },
-    /**
-     * This method scrolls item from dropdown into
-     * the view if it is off the viewable area of the
-     * container.
-     */
-    scrollIntoViewIfNeeded() {
-      const highlightedLabel = this.$refs.labelsListContainer.querySelector('.is-focused');
-
-      if (highlightedLabel) {
-        const container = this.$refs.labelsListContainer.getBoundingClientRect();
-        const label = highlightedLabel.getBoundingClientRect();
-
-        if (label.bottom > container.bottom) {
-          this.$refs.labelsListContainer.scrollTop += label.bottom - container.bottom;
-        } else if (label.top < container.top) {
-          this.$refs.labelsListContainer.scrollTop -= container.top - label.top;
-        }
-      }
     },
     updateSelectedLabels(label) {
       let labels;
@@ -129,11 +117,6 @@ export default {
     },
     onDropdownAppear() {
       this.isVisible = true;
-    },
-    selectFirstItem() {
-      if (this.shouldHighlightFirstItem) {
-        this.handleLabelClick(this.visibleLabels[0]);
-      }
     },
     handleFocus(event, index) {
       if (index === 0 && event.target.classList.contains('is-focused')) {

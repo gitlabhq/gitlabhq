@@ -1,9 +1,9 @@
 <script>
 import { GlIcon, GlTooltip, GlPopover } from '@gitlab/ui';
-import { s__, __ } from '~/locale';
+import { s__ } from '~/locale';
 import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import workItemByIidQuery from '~/work_items/graphql/work_item_by_iid.query.graphql';
-import { i18n, WORK_ITEM_TYPE_NAME_EPIC } from '../../constants';
+import { i18n } from '../../constants';
 import { findHealthStatusWidget, findWeightWidget } from '../../utils';
 
 export default {
@@ -22,10 +22,6 @@ export default {
   },
   props: {
     fullPath: {
-      type: String,
-      required: true,
-    },
-    workItemType: {
       type: String,
       required: true,
     },
@@ -84,19 +80,6 @@ export default {
     completedWeightPercentage() {
       return Math.round((this.rolledUpCompletedWeight / this.rolledUpWeight) * 100);
     },
-    includeTaskWeights() {
-      return (
-        this.glFeatures.useCachedRolledUpWeights || this.workItemType !== WORK_ITEM_TYPE_NAME_EPIC
-      );
-    },
-    weightTooltip() {
-      return this.includeTaskWeights ? __('Weight') : __('Issue weight');
-    },
-    weightCompletedLabel() {
-      return this.includeTaskWeights
-        ? s__('WorkItem|weight completed')
-        : s__('WorkItem|issue weight completed');
-    },
     rolledUpHealthStatus() {
       return this.workItemHealthStatus?.rolledUpHealthStatus;
     },
@@ -118,7 +101,7 @@ export default {
       <span data-testid="work-item-weight-value" class="gl-text-sm">{{ rolledUpWeight }}</span>
       <gl-tooltip :target="() => $refs.weightData">
         <span class="gl-font-bold">
-          {{ weightTooltip }}
+          {{ __('Weight') }}
         </span>
       </gl-tooltip>
     </span>
@@ -140,7 +123,7 @@ export default {
       <gl-popover triggers="hover focus" :target="() => $refs.progressBadge">
         <template #title>{{ $options.i18n.progressLabel }}</template>
         <span class="gl-font-bold">{{ rolledUpCompletedWeight }}/{{ rolledUpWeight }}</span>
-        <span data-testid="weight-completed-label">{{ weightCompletedLabel }}</span>
+        <span data-testid="weight-completed-label">{{ s__('WorkItem|weight completed') }}</span>
       </gl-popover>
     </span>
     <!-- END Rolled up Progress -->

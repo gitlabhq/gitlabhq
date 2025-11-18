@@ -44,9 +44,12 @@
     = render_if_exists 'projects/commits/mirror_status'
 
     %div{ id: dom_id(@project) }
-      %ol#commits-list.list-unstyled.content_list
-        = render 'commits', project: @project, ref: @ref, is_commits_page: true
-    = gl_loading_icon(size: 'lg', css_class: 'loading hide')
+      #commits-list.js-infinite-scrolling-root
+        %ol.list-unstyled.content_list.js-infinite-scrolling-content
+          = render 'commits', project: @project, ref: @ref, is_commits_page: true
+        .js-infinite-scrolling-page-end
+          .js-infinite-scrolling-loading
+            = gl_loading_icon(size: 'lg', css_class: 'loading')
 
 -# https://gitlab.com/gitlab-org/gitlab/-/issues/408388#note_1578533983
 #js-ambiguous-ref-modal{ data: { ambiguous: @is_ambiguous_ref.to_s, ref: current_ref } }

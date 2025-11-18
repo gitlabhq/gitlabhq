@@ -74,7 +74,8 @@ module API
           { code: 400, message: 'Bad request' },
           { code: 401, message: 'Unauthorized' },
           { code: 403, message: 'Forbidden' },
-          { code: 404, message: 'Not found' }
+          { code: 404, message: 'Not found' },
+          { code: 409, message: 'Another update to this commit status is in progress' }
         ]
       end
       params do

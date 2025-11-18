@@ -15,9 +15,9 @@ For many teams, the simplest approach is sensible and effective:
 However, if your team has complex needs (like testing and compliance requirements),
 you might want to consider a different branching strategy.
 
-We want to demystify some of the more common strategies available.
-Not everyone has a Git (or version control) specialist on staff. If you know
-your team is working at the far edges of its Git skill set, this information is for you.
+The following sections describe some of the more common strategies available. Not
+everyone has a Git (or version control) specialist on staff. If your team is working at
+the edges of its Git skill set, this information can help.
 
 When you use GitLab to replace multiple, disparate tools, the decisions you
 make about your Git branching strategy matter. With careful planning, you can establish clear
@@ -76,7 +76,7 @@ custom branching solution that meets your needs.
 ## Major types of branching strategies
 
 Branching and code management strategies depend on your product's needs.
-No pre-existing strategy can cover them all, but we've identified some major categories:
+No pre-existing strategy can cover them all, but some major categories are:
 
 - [Web services](#web-services)
 - [Long-lived release branches](#long-lived-release-branches)

@@ -6,6 +6,11 @@ module RapidDiffs
 
     presents ::Commit, as: :resource
 
+    def initialize(subject, diff_view, diff_options, request_params = nil, current_user = nil)
+      super(subject, diff_view, diff_options, request_params)
+      @current_user = current_user
+    end
+
     def diffs_stats_endpoint
       diffs_stats_project_commit_path(resource.project, resource.id)
     end
@@ -18,6 +23,10 @@ module RapidDiffs
       diff_file_project_commit_path(resource.project, resource.id)
     end
 
+    def discussions_endpoint
+      discussions_namespace_project_commit_path(project.namespace, resource.project, resource.id)
+    end
+
     override(:reload_stream_url)
     def reload_stream_url(offset: nil, diff_view: nil)
       diffs_stream_project_commit_path(
@@ -26,6 +35,24 @@ module RapidDiffs
         offset: offset,
         view: diff_view
       )
+    end
+
+    def user_permissions
+      {
+        can_create_note: can?(@current_user, :create_note, resource.project)
+      }
+    end
+
+    def noteable_type
+      resource.base_class_name
+    end
+
+    def preview_markdown_endpoint
+      project_preview_markdown_path(resource.project)
+    end
+
+    def markdown_docs_path
+      help_page_path('user/markdown.md')
     end
   end
 end

@@ -43,7 +43,7 @@ module NavHelper
       %w[page-gutter build-sidebar right-sidebar-expanded]
     elsif current_controller?('wikis') &&
         current_action?('show', 'create', 'edit', 'update', 'history', 'git_access', 'destroy', 'diff')
-      %w[page-gutter wiki-sidebar right-sidebar-expanded]
+      %w[page-gutter has-wiki-sidebar]
     else
       []
     end

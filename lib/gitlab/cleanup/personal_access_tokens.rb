@@ -51,14 +51,14 @@ module Gitlab
         if revoke_active_tokens
           PersonalAccessToken
             .active
-            .owner_is_human
+            .for_user_types(:human)
             .created_before(cut_off_date)
             .for_users(group.group_members.select(:user_id))
             .allow_cross_joins_across_databases(url: "https://gitlab.com/gitlab-org/gitlab/-/issues/436661")
         else
           PersonalAccessToken
             .active
-            .owner_is_human
+            .for_user_types(:human)
             .last_used_before_or_unused(cut_off_date)
             .for_users(group.group_members.select(:user_id))
             .allow_cross_joins_across_databases(url: "https://gitlab.com/gitlab-org/gitlab/-/issues/436661")

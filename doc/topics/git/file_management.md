@@ -206,13 +206,23 @@ To stop tracking all files of a particular type in Git LFS:
 1. Create a merge request and request a review.
 1. Merge the request into the target branch.
 
-## File locks
+## Exclusive file locks
 
-File locks help prevent conflicts and ensure that only one person can edit a file at a time.
+{{< details >}}
+
+- Tier: Free, Premium, Ultimate
+- Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
+
+{{< /details >}}
+
+Exclusive file locks help prevent conflicts and ensure that only one person can edit a file at a time.
 It's a good option for:
 
 - Binary files that can't be merged. For example, design files and videos.
 - Files that require exclusive access during editing.
+
+Exclusive file locks apply to all branches in a repository. If you need to lock files only on the
+default branch, use [default branch file and directory locks](../../user/project/file_lock.md#default-branch-file-and-directory-locks) instead.
 
 Prerequisites:
 
@@ -315,9 +325,6 @@ In the GitLab UI:
 
 - The repository file tree displays an LFS badge for files tracked by Git LFS.
 - Exclusively-locked files show a padlock icon.
-LFS-Locked files
-
-You can also [view and remove existing locks](../../user/project/file_lock.md) from the GitLab UI.
 
 {{< alert type="note" >}}
 

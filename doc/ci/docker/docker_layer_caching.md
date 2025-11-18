@@ -42,7 +42,7 @@ the `inline` cache backend with the default `docker build` command.
 
 ```yaml
 default:
-  image: docker:27.4.1
+  image: docker:27.4.1-cli
   services:
     - docker:27.4.1-dind
   before_script:
@@ -88,7 +88,7 @@ For more advanced caching options, see [Cache storage backends](https://docs.doc
 
 ```yaml
 default:
-  image: docker:27.4.1
+  image: docker:27.4.1-cli
   services:
     - docker:27.4.1-dind
   before_script:

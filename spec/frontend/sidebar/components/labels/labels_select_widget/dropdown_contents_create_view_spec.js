@@ -9,10 +9,6 @@ import { workspaceLabelsQueries, workspaceCreateLabelMutation } from '~/sidebar/
 import DropdownContentsCreateView from '~/sidebar/components/labels/labels_select_widget/dropdown_contents_create_view.vue';
 import SidebarColorPicker from '~/sidebar/components/sidebar_color_picker.vue';
 import { DEFAULT_LABEL_COLOR } from '~/sidebar/components/labels/labels_select_widget/constants';
-import {
-  mockCreateLabelResponse as createAbuseReportLabelSuccessfulResponse,
-  mockLabelsQueryResponse as abuseReportLabelsQueryResponse,
-} from '../../../../admin/abuse_report/mock_data';
 import { mockSuggestedColors } from '../../mock_data';
 import {
   mockRegularLabel,
@@ -40,9 +36,6 @@ const titleTakenError = {
 };
 
 const createLabelSuccessHandler = jest.fn().mockResolvedValue(createLabelSuccessfulResponse);
-const createAbuseReportLabelSuccessHandler = jest
-  .fn()
-  .mockResolvedValue(createAbuseReportLabelSuccessfulResponse);
 const createLabelUserRecoverableErrorHandler = jest.fn().mockResolvedValue(userRecoverableError);
 const createLabelDuplicateErrorHandler = jest.fn().mockResolvedValue(titleTakenError);
 const createLabelErrorHandler = jest.fn().mockRejectedValue('Houston, we have a problem');
@@ -178,22 +171,6 @@ describe('DropdownContentsCreateView', () => {
     expect(createLabelSuccessHandler).toHaveBeenCalledWith({
       color: '#009966',
       groupPath: '',
-      title: 'Test title',
-    });
-  });
-
-  it('calls the correct mutation when workspaceType is `abuseReport`', () => {
-    createComponent({
-      mutationHandler: createAbuseReportLabelSuccessHandler,
-      labelCreateType: '',
-      workspaceType: 'abuseReport',
-      labelsResponse: abuseReportLabelsQueryResponse,
-    });
-    fillLabelAttributes();
-    findCreateButton().vm.$emit('click');
-
-    expect(createAbuseReportLabelSuccessHandler).toHaveBeenCalledWith({
-      color: '#009966',
       title: 'Test title',
     });
   });

@@ -7,7 +7,7 @@
     resource: @project,
     token: @resource_access_token,
     scopes: @scopes,
-    access_levels: ProjectMember.permissible_access_level_roles_for_project_access_token(current_user, @project),
+    access_levels: ProjectMember.permissible_access_level_roles(current_user, @project),
     default_access_level: Gitlab::Access::GUEST,
     prefix: :resource_access_token,
     description_prefix: :project_access_token,

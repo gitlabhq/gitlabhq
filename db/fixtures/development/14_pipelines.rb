@@ -56,7 +56,7 @@ class Gitlab::Seeder::Pipelines # rubocop:disable Style/ClassAndModuleChildren
       position: 2,
       builds: [
         { name: 'staging', environment: 'staging', status_event: :success,
-          options: { environment: { action: 'start', on_stop: 'stop staging' } },
+          options: { environment: { action: 'start' } },
           queued_at: 7.hours.ago, started_at: 6.hours.ago, finished_at: 4.hours.ago },
         { name: 'stop staging', environment: 'staging', when: 'manual', status: :skipped },
         { name: 'production', environment: 'production', when: 'manual', status: :skipped }
@@ -195,24 +195,41 @@ class Gitlab::Seeder::Pipelines # rubocop:disable Style/ClassAndModuleChildren
 
   def build_create!(pipeline, stage, opts = {})
     attributes = job_attributes(pipeline, stage, opts)
-
     attributes[:options] ||= {}
     attributes[:options][:script] = 'build command'
+    environment_attrs = attributes[:options].extract!(:environment)
+    definition_attrs  = attributes.extract!(*Ci::JobDefinition::CONFIG_ATTRIBUTES)
+    definition = find_or_create_job_definition(definition_attrs, pipeline)
 
     Ci::Build.create!(attributes).tap do |build|
       # We need to set build trace and artifacts after saving a build
       # (id required), that is why we need `#tap` method instead of passing
       # block directly to `Ci::Build#create!`.
-
+      build.create_job_definition_instance!(job_definition: definition, project: pipeline.project)
       setup_artifacts(build)
       setup_test_reports(build)
       setup_build_log(build)
-
-      build.project.environments
-        .find_or_create_by(name: build.expanded_environment_name)
+      setup_environment(build, environment_attrs)
 
       build.save!
     end
+  end
+
+  def find_or_create_job_definition(attributes, pipeline)
+    new_definition = Ci::JobDefinition.fabricate(
+      config: attributes,
+      project_id: pipeline.project_id,
+      partition_id: pipeline.partition_id)
+
+    existing_defintion = Ci::JobDefinition.find_by(
+      checksum: new_definition.checksum,
+      project_id: new_definition.project_id,
+      partition_id: new_definition.partition_id)
+
+    return existing_defintion if existing_defintion
+
+    new_definition.save!
+    new_definition
   end
 
   def setup_artifacts(build)
@@ -247,6 +264,19 @@ class Gitlab::Seeder::Pipelines # rubocop:disable Style/ClassAndModuleChildren
     Gitlab::ExclusiveLease.skipping_transaction_check do
       build.trace.set(FFaker::Lorem.paragraphs(6).join("\n\n"))
     end
+  end
+
+  def setup_environment(build, attrs)
+    return unless build.has_environment_keyword?
+
+    environment = build.project.environments.find_or_create_by!(name: build.environment)
+    build.create_job_environment!(
+      environment: environment,
+      expanded_environment_name: environment.name,
+      project: build.project,
+      pipeline: build.pipeline,
+      options: attrs.fetch(:environment, {})
+    )
   end
 
   def generic_commit_status_create!(pipeline, stage, opts = {})

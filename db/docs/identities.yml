@@ -9,4 +9,5 @@ introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/commit/1a80d13a3990937
 milestone: '7.6'
 gitlab_schema: gitlab_main_user
 table_size: small
-sharding_key_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/553460
+sharding_key:
+  user_id: users

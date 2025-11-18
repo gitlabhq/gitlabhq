@@ -9,6 +9,17 @@
       "default": false,
       "description": "Should the VSCode Extension Marketplace be enabled for Web IDE and Workspaces"
     },
+    "extension_host_domain": {
+      "type": "string",
+      "pattern": "^(?=.{1,253}$)(?!-)(?:[a-zA-Z0-9-]{1,63}(?<!-)\\.)+[a-zA-Z]{2,63}(?::[1-9][0-9]{0,4})?$",
+      "examples": [
+        "example.com",
+        "cdn.example.com",
+        "cdn.example.com:3443"
+      ],
+      "default": "cdn.web-ide.gitlab-static.net",
+      "description": "Valid wildcard domain pointing to the HTTP server hosting the Web IDE VSCode workbench assets."
+    },
     "preset": {
       "enum": [
         "custom",

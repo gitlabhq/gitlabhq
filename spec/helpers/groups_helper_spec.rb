@@ -507,41 +507,6 @@ RSpec.describe GroupsHelper, feature_category: :groups_and_projects do
     end
   end
 
-  describe '#group_overview_tabs_app_data' do
-    let_it_be(:group) { create(:group) }
-    let_it_be(:user) { create(:user) }
-    let_it_be(:initial_sort) { 'created_asc' }
-
-    before do
-      allow(helper).to receive(:current_user).and_return(user)
-
-      allow(helper).to receive(:can?).with(user, :create_subgroup, group) { true }
-      allow(helper).to receive(:can?).with(user, :create_projects, group) { true }
-      allow(helper).to receive(:project_list_sort_by).and_return(initial_sort)
-    end
-
-    it 'returns expected hash' do
-      expect(helper.group_overview_tabs_app_data(group)).to match(
-        {
-          group_id: group.id,
-          subgroups_and_projects_endpoint:
-            including("/groups/#{group.path}/-/children.json?active=true"),
-          shared_projects_endpoint: including("/groups/#{group.path}/-/shared_projects.json"),
-          inactive_subgroups_and_projects_endpoint: including("/groups/#{group.path}/-/children.json?active=false"),
-          current_group_visibility: group.visibility,
-          initial_sort: initial_sort,
-          show_schema_markup: 'true',
-          new_subgroup_path: including("groups/new?parent_id=#{group.id}#create-group-pane"),
-          new_project_path: including("/projects/new?namespace_id=#{group.id}"),
-          empty_projects_illustration: including('illustrations/empty-state/empty-projects-md'),
-          render_empty_state: 'true',
-          can_create_subgroups: 'true',
-          can_create_projects: 'true'
-        }
-      )
-    end
-  end
-
   describe '#groups_show_app_data' do
     let_it_be(:group) { create(:group) }
     let_it_be(:user) { create(:user) }
@@ -732,7 +697,6 @@ RSpec.describe GroupsHelper, feature_category: :groups_and_projects do
           expect(subject).to eq(
             {
               'Guest' => 10,
-              'Planner' => 15,
               'Reporter' => 20,
               'Developer' => 30
             }
@@ -781,11 +745,15 @@ RSpec.describe GroupsHelper, feature_category: :groups_and_projects do
           expect(helper.access_level_roles_user_can_assign(grand_parent, group.access_level_roles)).to be_empty
           expect(helper.access_level_roles_user_can_assign(parent, group.access_level_roles)).to eq({
             'Guest' => ::Gitlab::Access::GUEST,
-            'Planner' => ::Gitlab::Access::PLANNER,
             'Reporter' => ::Gitlab::Access::REPORTER,
             'Developer' => ::Gitlab::Access::DEVELOPER
           })
-          expect(helper.access_level_roles_user_can_assign(child, group.access_level_roles)).to eq(::Gitlab::Access.options)
+          expect(helper.access_level_roles_user_can_assign(child, group.access_level_roles)).to eq({
+            'Guest' => ::Gitlab::Access::GUEST,
+            'Reporter' => ::Gitlab::Access::REPORTER,
+            'Developer' => ::Gitlab::Access::DEVELOPER,
+            'Maintainer' => ::Gitlab::Access::MAINTAINER
+          })
           expect(helper.access_level_roles_user_can_assign(grand_child, group.access_level_roles)).to eq(::Gitlab::Access.options_with_owner)
         end
       end
@@ -798,7 +766,7 @@ RSpec.describe GroupsHelper, feature_category: :groups_and_projects do
           other_group.add_owner(user)
         end
 
-        it { is_expected.to eq(::Gitlab::Access.options) }
+        it { is_expected.to eq({ "Developer" => 30, "Guest" => 10, "Maintainer" => 40, "Reporter" => 20 }) }
       end
 
       context 'when user is not provided' do

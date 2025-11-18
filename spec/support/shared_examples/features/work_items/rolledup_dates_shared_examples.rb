@@ -58,6 +58,8 @@ RSpec.shared_examples 'work items rolled up dates' do
           fill_in 'Start', with: ""
           fill_in 'Start', with: start_date
           fill_in 'Due', with: "" # ensure to reset the input first to avoid wrong date values
+          # In Chrome 138, we need to briefly wait otherwise due date gets overwritten
+          sleep 0.1
           fill_in 'Due', with: due_date
 
           find_by_testid('close-icon').click

@@ -84,6 +84,11 @@
       "minimum": 0,
       "description": "Number of requests allowed to the GET /api/v4/projects endpoint."
     },
+    "project_members_api_limit": {
+      "type": "integer",
+      "minimum": 0,
+      "description": "Number of requests allowed to the GET /api/v4/projects/:id/members/all endpoint."
+    },
     "runner_jobs_request_api_limit": {
       "type": "integer",
       "minimum": 0,

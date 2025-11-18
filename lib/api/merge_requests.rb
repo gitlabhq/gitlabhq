@@ -53,11 +53,11 @@ module API
     end
 
     def self.mr_update?(request)
-      request.put? && request.path.match?(%r{/api/v\d+/projects/\d+/merge_requests/\d+$})
+      request.put? && request.path.match?(%r{/api/v\d+/projects/[^/]+/merge_requests/\d+$})
     end
 
     def self.mr_create?(request)
-      request.post? && request.path.match?(%r{/api/v\d+/projects/\d+/merge_requests$})
+      request.post? && request.path.match?(%r{/api/v\d+/projects/[^/]+/merge_requests$})
     end
 
     def self.update_params_at_least_one_of
@@ -355,7 +355,7 @@ module API
 
         authorize! :create_merge_request_from, user_project
 
-        Gitlab::CoveredExperience.start_covered_experience_create_merge_request(user_project)
+        Labkit::UserExperienceSli.start(:create_merge_request)
 
         mr_params = declared_params(include_missing: false)
         mr_params[:force_remove_source_branch] = mr_params.delete(:remove_source_branch)
@@ -677,19 +677,18 @@ module API
 
         if params[:async]
           service.execute_async(merge_request)
+
+          status :accepted
         else
           pipeline = service.execute(merge_request).payload
-        end
-
-        if params[:async]
-          status :accepted
-        elsif pipeline.nil?
-          not_allowed!
-        elsif pipeline.persisted?
-          status :ok
-          present pipeline, with: ::API::Entities::Ci::Pipeline
-        else
-          render_validation_error!(pipeline)
+          if pipeline.nil?
+            not_allowed!
+          elsif pipeline.persisted?
+            status :ok
+            present pipeline, with: ::API::Entities::Ci::Pipeline
+          else
+            render_validation_error!(pipeline)
+          end
         end
       end
 

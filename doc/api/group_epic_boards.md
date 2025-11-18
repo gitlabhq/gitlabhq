@@ -18,7 +18,7 @@ title: Group epic boards API
 
 {{< /history >}}
 
-Every API call to [group epic boards](../user/group/epics/epic_boards.md) must be authenticated.
+Use this API to manage [group epic boards](../user/group/epics/epic_boards.md). Every request to this API must be authenticated.
 
 If a user is not a member of a group and the group is private, a `GET`
 request results in `404` status code.

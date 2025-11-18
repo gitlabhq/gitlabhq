@@ -1,6 +1,8 @@
 import {
   updateSecurityTrainingCache,
   updateSecurityTrainingOptimisticResponse,
+  untrackRefsOptimisticResponse,
+  updateUntrackedRefsCache,
 } from '~/security_configuration/graphql/cache_utils';
 
 describe('EE - Security configuration graphQL cache utils', () => {
@@ -103,6 +105,88 @@ describe('EE - Security configuration graphQL cache utils', () => {
           },
         }),
       );
+    });
+  });
+
+  describe('untrackRefsOptimisticResponse', () => {
+    it('returns an optimistic response in the correct shape with provided refIds', () => {
+      const refIds = ['gid://gitlab/TrackedRef/1', 'gid://gitlab/TrackedRef/2'];
+      const mutationResponse = untrackRefsOptimisticResponse(refIds);
+
+      expect(mutationResponse).toEqual({
+        __typename: 'Mutation',
+        securityTrackedRefsUntrack: {
+          __typename: 'SecurityTrackedRefsUntrackPayload',
+          errors: [],
+          untrackedRefIds: refIds,
+        },
+      });
+    });
+  });
+
+  describe('updateUntrackedRefsCache', () => {
+    const initialCacheData = {
+      project: {
+        id: 'gid://gitlab/Project/1',
+        __typename: 'Project',
+        securityTrackedRefs: {
+          nodes: [
+            { id: 'gid://gitlab/TrackedRef/1', name: 'main' },
+            { id: 'gid://gitlab/TrackedRef/2', name: 'develop' },
+            { id: 'gid://gitlab/TrackedRef/3', name: 'feature' },
+          ],
+          count: 3,
+        },
+      },
+    };
+
+    const createMockCache = () => ({
+      updateQuery: jest.fn((options, updateFn) => updateFn(initialCacheData)),
+    });
+
+    const getUpdateQueryResults = (mockCache) => mockCache.updateQuery.mock.results[0].value;
+
+    it('removes untracked refs from the cache', () => {
+      const refsToUntrack = ['gid://gitlab/TrackedRef/1', 'gid://gitlab/TrackedRef/2'];
+      const mockCache = createMockCache();
+
+      updateUntrackedRefsCache({
+        query: 'GraphQL query',
+        variables: { fullPath: 'gitlab/project' },
+      })(mockCache, {
+        data: {
+          securityTrackedRefsUntrack: {
+            untrackedRefIds: refsToUntrack,
+          },
+        },
+      });
+      const result = getUpdateQueryResults(mockCache);
+
+      refsToUntrack.forEach((refId) => {
+        expect(result.project.securityTrackedRefs.nodes.some((ref) => ref.id === refId)).toBe(
+          false,
+        );
+      });
+    });
+
+    it('decrements the count by the number of untracked refs', () => {
+      const refsToUntrack = ['gid://gitlab/TrackedRef/1', 'gid://gitlab/TrackedRef/2'];
+      const initialCount = initialCacheData.project.securityTrackedRefs.count;
+      const mockCache = createMockCache();
+
+      updateUntrackedRefsCache({
+        query: 'GraphQL query',
+        variables: { fullPath: 'gitlab/project' },
+      })(mockCache, {
+        data: {
+          securityTrackedRefsUntrack: {
+            untrackedRefIds: refsToUntrack,
+          },
+        },
+      });
+      const result = getUpdateQueryResults(mockCache);
+
+      expect(result.project.securityTrackedRefs.count).toBe(initialCount - refsToUntrack.length);
     });
   });
 });

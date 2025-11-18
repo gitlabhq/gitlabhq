@@ -81,7 +81,7 @@ First, we need to create a GitLab project access token with the necessary permis
 To automatically create GitLab issues when Jira issues are created, we'll use [Jira automation](https://community.atlassian.com/t5/Jira-articles/Automation-for-Jira-Send-web-request-using-Jira-REST-API/ba-p/1443828).
 
 1. Navigate to your Jira project. From the sidebar, head to **Project settings** > **Automation**.
-1. Click **Create rule** at the top-right.
+1. Click **Create rule** in the upper right.
 1. For your trigger, search for and select **Issue created**. Click **Save**.
 1. *Optional*: Add conditions to filter which issues should be replicated. For example, you might want to add an **Issue fields condition** to only replicate issues of certain types or with specific labels.
 1. Select **THEN: Add an action**. Search for and select **Send web request**.

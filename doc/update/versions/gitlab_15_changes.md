@@ -205,7 +205,7 @@ if you can't upgrade to 15.11.12 and later.
     `location`, and `organization`. For more information, see
     [issue 393216](https://gitlab.com/gitlab-org/gitlab/-/issues/393216).
   - The second [bug fix](https://gitlab.com/gitlab-org/gitlab/-/issues/394760) ensures it is possible to upgrade directly from 15.4.x.
-- As part of the [CI Partitioning effort](../../architecture/blueprints/ci_data_decay/pipeline_partitioning.md), a [new Foreign Key](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/107547) was added to `ci_builds_needs`. On GitLab instances with large CI tables, adding this constraint can take longer than usual.
+- As part of the [CI Partitioning effort](https://handbook.gitlab.com/handbook/engineering/architecture/design-documents/ci_data_decay/pipeline_partitioning/), a [new Foreign Key](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/107547) was added to `ci_builds_needs`. On GitLab instances with large CI tables, adding this constraint can take longer than usual.
 - Praefect's metadata verifier [invalid metadata deletion behavior](../../administration/gitaly/praefect/configure.md#enable-deletions) is now enabled by default.
 
   The metadata verifier processes replica records in the Praefect database and verifies the replicas actually exist on the Gitaly nodes. If the replica doesn't exist, its
@@ -424,7 +424,7 @@ if you can't upgrade to 15.11.12 and later.
     Mixlib::ShellOut::CommandTimeout: Command timed out after 3600s:
     ```
 
-    A workaround exists to [complete the data change and the upgrade manually](../package/package_troubleshooting.md#mixlibshelloutcommandtimeout-rails_migrationgitlab-rails--command-timed-out-after-3600s).
+    A workaround exists to [complete the data change and the upgrade manually](../package/package_troubleshooting.md#error-command-timed-out-after-3600s).
 - The default Sidekiq `max_concurrency` has been changed to 20. This is now
   consistent in our documentation and product defaults.
 
@@ -992,7 +992,7 @@ A [license caching issue](https://gitlab.com/gitlab-org/gitlab/-/issues/376706) 
 
 ## 15.0.0
 
-- Elasticsearch 6.8 [is no longer supported](../../integration/advanced_search/elasticsearch.md#version-requirements). Before you upgrade to GitLab 15.0, [update Elasticsearch to any 7.x version](../../integration/advanced_search/elasticsearch.md#upgrade-to-a-new-elasticsearch-major-version).
+- Elasticsearch 6.8 [is no longer supported](../../integration/advanced_search/elasticsearch.md#version-requirements). Before you upgrade to GitLab 15.0, [update Elasticsearch to any 7.x version](../../integration/advanced_search/elasticsearch.md#upgrade-to-a-new-elasticsearch-version).
 - If you run GitLab with external PostgreSQL, particularly AWS RDS, ensure you
   upgrade PostgreSQL to patch levels to a minimum of 12.7 or 13.3 before
   upgrading to GitLab 14.8 or later.

@@ -13,20 +13,31 @@ RSpec.describe Gitlab::Auth::TwoFactorAuthVerifier, feature_category: :system_ac
   subject(:verifier) { described_class.new(user, request) }
 
   describe '#two_factor_authentication_enforced?' do
-    subject { verifier.two_factor_authentication_enforced? }
+    subject do
+      described_class.new(user, request,
+        treat_email_otp_as_2fa: treat_email_otp_as_2fa).two_factor_authentication_enforced?
+    end
 
-    where(:instance_level_enabled, :group_level_enabled, :grace_period_expired, :should_be_enforced) do
-      false | false | true  | false
-      true  | false | false | false
-      true  | false | true  | true
-      false | true  | false | false
-      false | true  | true  | true
+    where(:instance_level_enabled, :group_level_enabled, :grace_period_expired, :treat_email_otp_as_2fa,
+      :email_based_otp_required, :should_be_enforced) do
+      # first condition
+      false | false | false | false | false | false
+      false | false | true  | false | false | false
+      true  | false | false | false | false | false
+      true  | false | true  | false | false | true
+      false | true  | false | false | false | false
+      false | true  | true  | false | false | true
+      # second condition
+      false | false | false | true  | false | false
+      false | false | false | false | true  | false
+      false | false | false | true  | true  | true
     end
 
     with_them do
       before do
         stub_application_setting(require_two_factor_authentication: instance_level_enabled)
         allow(user).to receive(:require_two_factor_authentication_from_group?).and_return(group_level_enabled)
+        allow(user).to receive(:email_based_otp_required?).and_return(email_based_otp_required)
         stub_application_setting(two_factor_grace_period: grace_period_expired ? 0 : 1.month.in_hours)
       end
 

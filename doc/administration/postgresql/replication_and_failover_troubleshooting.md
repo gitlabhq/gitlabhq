@@ -198,6 +198,34 @@ To fix the problem, ensure the loopback interface is included in the CIDR addres
 1. [Reconfigure GitLab](../restart_gitlab.md#reconfigure-a-linux-package-installation) for the changes to take effect.
 1. Check that [all the replicas are synchronized](replication_and_failover.md#check-replication-status)
 
+## Patroni members showing as pending restart
+
+The output of `gitlab-ctl patroni members` might show Patroni members on a secondary site with a status of pending restart:
+
+```shell
+secondary-site:postgresql-1> gitlab-ctl patroni members
++ Cluster: postgresql-ha ------------------------------------------------------------------+
+| Member         | Host      | Role           | State   | TL | Lag in MB | Pending restart |
++----------------+-----------+----------------+---------+----+-----------+-----------------+
+| patroni-1 | 10.20.0.1 | Replica        | running | 27 |         0 | *               |
+| patroni-2 | 10.20.0.2 | Replica        | running | 27 |         5 | *               |
+| patroni-3 | 10.20.0.3 | Standby Leader | running | 27 |           | *               |
++----------------+-----------+----------------+---------+----+-----------+----------
+```
+
+The pending restart status means that those nodes are waiting for a restart to apply some configuration changes.
+
+To know what those pending restart settings are, execute the following in the instance you need to verify:
+
+```shell
+sudo gitlab-psql -c "select name, setting,  short_desc, sourcefile, sourceline  from pg_settings where pending_restart"
+```
+
+To apply the pending configuration changes, restart the affected nodes:
+
+1. For replica nodes, run `sudo gitlab-ctl restart patroni`.
+1. For the leader node, consider performing a failover first or run `sudo gitlab-ctl reload patroni` to avoid downtime.
+
 ## Error: requested start point is ahead of the Write Ahead Log (WAL) flush position
 
 This error in Patroni logs indicates that the database is not replicating:

@@ -266,7 +266,8 @@ module Gitlab
               old_mode: path.old_mode.to_s(8),
               new_mode: path.new_mode.to_s(8),
               old_blob_id: path.old_blob_id,
-              new_blob_id: path.new_blob_id
+              new_blob_id: path.new_blob_id,
+              commit_id: path.commit_id
             )
           end
         end
@@ -563,7 +564,7 @@ module Gitlab
 
           signatures[current_commit_id][:author_email] << message.author.email if message.author&.email.present?
 
-          if Feature.enabled?(:committer_email, repository_container) && message.committer&.email.present?
+          if message.committer&.email.present?
             signatures[current_commit_id][:committer_email] << message.committer.email
           end
 

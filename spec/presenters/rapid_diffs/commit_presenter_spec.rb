@@ -6,12 +6,13 @@ RSpec.describe ::RapidDiffs::CommitPresenter, feature_category: :source_code_man
   let_it_be(:commit) { build_stubbed(:commit) }
   let_it_be(:project) { commit.project }
   let_it_be(:namespace) { project.namespace }
+  let_it_be(:current_user) { build_stubbed(:user) }
   let(:diff_view) { :inline }
   let(:diff_options) { { ignore_whitespace_changes: true } }
   let(:diffs_count) { 20 }
   let(:base_path) { "/#{namespace.to_param}/#{project.to_param}/-/commit/#{commit.sha}" }
 
-  subject(:presenter) { described_class.new(commit, diff_view, diff_options) }
+  subject(:presenter) { described_class.new(commit, diff_view, diff_options, nil, current_user) }
 
   before do
     allow(commit).to receive_message_chain(:diffs_for_streaming, :diff_files, :count).and_return(diffs_count)
@@ -65,6 +66,12 @@ RSpec.describe ::RapidDiffs::CommitPresenter, feature_category: :source_code_man
     end
   end
 
+  describe '#discussions_endpoint' do
+    subject(:url) { presenter.discussions_endpoint }
+
+    it { is_expected.to eq("#{base_path}/discussions") }
+  end
+
   describe '#lazy?' do
     subject(:method) { presenter.lazy? }
 
@@ -75,5 +82,41 @@ RSpec.describe ::RapidDiffs::CommitPresenter, feature_category: :source_code_man
     subject(:method) { presenter.should_sort_metadata_files? }
 
     it { is_expected.to be(false) }
+  end
+
+  describe '#user_permissions?' do
+    let(:can_create_note) { false }
+
+    subject(:method) { presenter.user_permissions }
+
+    before do
+      allow(presenter).to receive(:can?).with(current_user, :create_note, project).and_return(can_create_note)
+    end
+
+    it { is_expected.to eq({ can_create_note: false }) }
+
+    context 'when user has note permissions' do
+      let(:can_create_note) { true }
+
+      it { is_expected.to include({ can_create_note: true }) }
+    end
+  end
+
+  describe '#noteable_type' do
+    subject(:method) { presenter.noteable_type }
+
+    it { is_expected.to eq('Commit') }
+  end
+
+  describe '#preview_markdown_endpoint' do
+    subject(:method) { presenter.preview_markdown_endpoint }
+
+    it { is_expected.to eq("/#{namespace.to_param}/#{project.to_param}/-/preview_markdown") }
+  end
+
+  describe '#markdown_docs_path' do
+    subject(:method) { presenter.markdown_docs_path }
+
+    it { is_expected.to eq('/help/user/markdown.md') }
   end
 end

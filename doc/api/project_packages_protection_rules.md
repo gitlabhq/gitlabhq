@@ -22,7 +22,7 @@ title: Protected packages API
 
 {{< /history >}}
 
-This API manages the protection rules for packages.
+Use this API to manage [protection rules for packages](../user/packages/package_registry/package_protection_rules.md).
 
 ## List package protection rules
 

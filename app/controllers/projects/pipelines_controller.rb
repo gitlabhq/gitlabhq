@@ -24,6 +24,7 @@ class Projects::PipelinesController < Projects::ApplicationController
   before_action :ensure_pipeline, only: [:show, :downloadable_artifacts]
   before_action :reject_if_build_artifacts_size_refreshing!, only: [:destroy]
   before_action :push_pipelines_graphql_ff, only: [:index]
+  before_action :push_pipeline_statuses_updated_ff, only: [:index]
 
   # Will be removed with https://gitlab.com/gitlab-org/gitlab/-/issues/225596
   before_action :redirect_for_legacy_scope_filter, only: [:index], if: -> { request.format.html? }
@@ -37,10 +38,6 @@ class Projects::PipelinesController < Projects::ApplicationController
     destinations: %i[redis_hll snowplow]
 
   track_internal_event :charts, name: 'p_analytics_ci_cd_pipelines', conditions: -> { should_track_ci_cd_pipelines? }
-  track_internal_event :charts, name: 'p_analytics_ci_cd_deployment_frequency', conditions: -> { should_track_ci_cd_deployment_frequency? }
-  track_internal_event :charts, name: 'p_analytics_ci_cd_lead_time', conditions: -> { should_track_ci_cd_lead_time? }
-  track_internal_event :charts, name: 'visit_ci_cd_time_to_restore_service_tab', conditions: -> { should_track_visit_ci_cd_time_to_restore_service_tab? }
-  track_internal_event :charts, name: 'visit_ci_cd_failure_rate_tab', conditions: -> { should_track_visit_ci_cd_change_failure_tab? }
 
   wrap_parameters Ci::Pipeline
 
@@ -338,22 +335,6 @@ class Projects::PipelinesController < Projects::ApplicationController
     params[:chart].blank? || params[:chart] == 'pipelines'
   end
 
-  def should_track_ci_cd_deployment_frequency?
-    params[:chart] == 'deployment-frequency'
-  end
-
-  def should_track_ci_cd_lead_time?
-    params[:chart] == 'lead-time'
-  end
-
-  def should_track_visit_ci_cd_time_to_restore_service_tab?
-    params[:chart] == 'time-to-restore-service'
-  end
-
-  def should_track_visit_ci_cd_change_failure_tab?
-    params[:chart] == 'change-failure-rate'
-  end
-
   def tracking_namespace_source
     project.namespace
   end
@@ -364,6 +345,10 @@ class Projects::PipelinesController < Projects::ApplicationController
 
   def push_pipelines_graphql_ff
     push_frontend_feature_flag(:pipelines_page_graphql, @project)
+  end
+
+  def push_pipeline_statuses_updated_ff
+    push_frontend_feature_flag(:ci_pipeline_statuses_updated_subscription, @project)
   end
 end
 

@@ -2,6 +2,7 @@
 stage: Verify
 group: Pipeline Execution
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+description: View and debug unit test results without searching through job logs.
 title: Unit test reports
 ---
 
@@ -187,7 +188,7 @@ The test name is copied to your clipboard.
 
 ## View test results in pipelines
 
-View all test suites and cases in pipeline details.
+View all test suites and cases in pipeline details, including results from child pipelines.
 
 To view pipeline test results:
 

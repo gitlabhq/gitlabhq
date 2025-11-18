@@ -14,6 +14,9 @@ module Types
       field :id, type: GraphQL::Types::ID, null: false,
         description: 'ID (global ID) of the commit.'
 
+      field :parent_sha, GraphQL::Types::String, null: true, method: :parent_id,
+        description: 'SHA ID of the first parent.'
+
       field :sha, type: GraphQL::Types::String, null: false,
         description: 'SHA1 ID of the commit.'
 

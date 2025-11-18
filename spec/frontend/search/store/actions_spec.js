@@ -300,9 +300,7 @@ describe('Global Search Store Actions', () => {
 
           expect(setUrlParams).toHaveBeenCalledWith(
             { ...state.query },
-            window.location.href,
-            true,
-            true,
+            { url: window.location.href, clearParams: true, railsArraySyntax: true },
           );
 
           expect(updateHistory).toHaveBeenCalledWith({
@@ -446,8 +444,7 @@ describe('Global Search Store Actions', () => {
           page: null,
           ...resetParams,
         },
-        undefined,
-        true,
+        { clearParams: true },
       );
       expect(urlUtils.visitUrl).toHaveBeenCalled();
     });
@@ -589,10 +586,9 @@ describe('Global Search Store Actions', () => {
 
       await actions.fetchSidebarCount({ commit, state });
 
-      expect(urlUtils.setUrlParams).toHaveBeenCalledWith(
-        expect.objectContaining({ search: '*' }),
-        expect.anything(),
-      );
+      expect(urlUtils.setUrlParams).toHaveBeenCalledWith(expect.objectContaining({ search: '*' }), {
+        url: expect.anything(),
+      });
     });
   });
 

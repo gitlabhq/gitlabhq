@@ -31,11 +31,17 @@ required upgrade stops occur at versions:
 - `18.8`
 - `18.11`
 
-## Issues to be aware of when upgrading from 16.11
+## Issues to be aware of when upgrading from 17.11
 
 - [PostgreSQL 14 is not supported starting from GitLab 18](../deprecations.md#postgresql-14-and-15-no-longer-supported). Upgrade PostgreSQL to at least version 16.8 before upgrading to GitLab 18.0 or later.
 
-## Issues to be aware of when upgrading from 17.11
+  {{< alert type="warning" >}}
+
+  Automatic database version upgrades only apply to single node instances when using the Linux package.
+  In all other cases, like Geo instances, PostgreSQL with high availability using the
+  Linux package, or using an external PostgreSQL database (like Amazon RDS), you must upgrade PostgreSQL manually. See [upgrading a Geo instance](https://docs.gitlab.com/omnibus/settings/database.html#upgrading-a-geo-instance) for detailed steps.
+
+  {{< /alert >}}
 
 - From September 29th, 2025 Bitnami will stop providing tagged PostgreSQL and Redis images. If you deploy GitLab 17.11 or earlier using the
   GitLab chart with bundled Redis or Postgres, you must manually update your values to use the legacy repository to prevent unexpected
@@ -57,6 +63,10 @@ required upgrade stops occur at versions:
   Rails.cache.delete_matched("pipeline:*:create_persistent_ref_service")
   ```
 
+## Geo installations 18.5.2
+
+- The missing Geo [migration](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/210512) that prevents Geo log cursor on the secondary site to start is fixed.
+
 ## 18.5.0
 
 - A [post deployment migration](../../development/database/post_deployment_migrations.md)
@@ -69,9 +79,35 @@ required upgrade stops occur at versions:
   it could take up to 10 minutes.
   Please be patient and don't interrupt the migration process.
 
+- NGINX routing changes introduced in GitLab 18.5.0 can cause services to become inaccessible when using non-matching hostnames such as `localhost` or alternative domain names.
+  This issue causes:
+
+  - Health check endpoints such as `/-/health` to return `404` errors instead of proper responses.
+  - GitLab web interface showing `404` error pages when accessed with hostnames other than the configured FQDN.
+  - GitLab Pages potentially receiving traffic intended for other services.
+  - Problems with any requests using alternative hostnames that previously worked.
+
+  This issue is resolved in the Linux package by [merge request 8805](https://gitlab.com/gitlab-org/omnibus-gitlab/-/merge_requests/8805), and the fix will be
+  available in GitLab 18.5.2 and 18.6.0.
+
+  Git operations such clone, push, and pull are unaffected by this issue.
+
+## Geo installations 18.4.4
+
+- The missing Geo [migration](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/210512) that prevents Geo log cursor on the secondary site to start is fixed.
+
 ## 18.4.2
 
-The Geo [bug](https://gitlab.com/gitlab-org/gitlab/-/issues/571455) that causes replication events to fail with the error message `no implicit conversion of String into Array (TypeError)` is fixed.
+- Upgrades to `18.4.2` or `18.4.3` might fail with a `no implicit conversion of nil into String` error for these batched background migrations:
+  - `FixIncompleteInstanceExternalAuditDestinations`
+  - `FinalizeAuditEventDestinationMigrations`
+
+  To resolve this issue, upgrade to the latest patch release or use the [workaround in issue 578938](https://gitlab.com/gitlab-org/gitlab/-/issues/578938#workaround).
+
+### Geo installations 18.4.2
+
+- The Geo [bug](https://gitlab.com/gitlab-org/gitlab/-/issues/571455) that causes replication events to fail with the error message `no implicit conversion of String into
+  Array (TypeError)` is fixed.
 
 ## 18.4.1
 
@@ -112,6 +148,8 @@ GitLab Duo seats nightly when LDAP is enabled. This was fixed in GitLab 18.4.0 a
 ## 18.1.0
 
 - Elasticsearch indexing might fail with `strict_dynamic_mapping_exception` errors for Elasticsearch version 7. To resolve, see the "Possible fixes" section in [issue 566413](https://gitlab.com/gitlab-org/gitlab/-/issues/566413).
+- GitLab versions 18.1.0 and 18.1.1 show errors in PostgreSQL logs such as `ERROR:  relation "ci_job_artifacts" does not exist at ...`.
+  These errors in the logs can be safely ignored but could trigger monitoring alerts, including on Geo sites. To resolve this issue, update to GitLab 18.1.2 or later.
 
 ### Geo installations 18.1.0
 

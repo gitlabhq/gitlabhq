@@ -170,15 +170,39 @@ RSpec.describe RootController, feature_category: :shared do
         end
       end
 
-      context 'who has customized their dashboard setting for assigned merge requests' do
+      context 'who has customized their dashboard setting for merge requests dashboard' do
         before do
           user.dashboard = 'merge_requests'
+        end
+
+        it 'redirects to merge requests dashboard' do
+          get :index
+
+          expect(response).to redirect_to merge_requests_dashboard_path
+        end
+      end
+
+      context 'who has customized their dashboard setting for assigned merge requests' do
+        before do
+          user.dashboard = 'assigned_merge_requests'
         end
 
         it 'redirects to their assigned merge requests' do
           get :index
 
-          expect(response).to redirect_to merge_requests_dashboard_path(assignee_username: user.username)
+          expect(response).to redirect_to merge_requests_search_dashboard_path(assignee_username: user.username)
+        end
+      end
+
+      context 'who has customized their dashboard setting for merge request reviews' do
+        before do
+          user.dashboard = 'review_merge_requests'
+        end
+
+        it 'redirects to their merge request reviews' do
+          get :index
+
+          expect(response).to redirect_to merge_requests_search_dashboard_path(reviewer_username: user.username)
         end
       end
 
@@ -216,7 +240,8 @@ RSpec.describe RootController, feature_category: :shared do
               duo_code_review_bot_username: duo_code_review_bot.username,
               merge_requests_review_requested_title: "Review requested",
               merge_requests_your_merge_requests_title: "Your merge requests",
-              last_push_event: nil
+              last_push_event: nil,
+              show_feedback_widget: "true"
             })
           end
         end

@@ -2,7 +2,7 @@
 stage: Create
 group: Import
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
-title: Import and migrate groups and projects
+title: Migrate to GitLab
 description: Repository migration, third-party repositories, and user contribution mapping.
 ---
 
@@ -68,7 +68,7 @@ with a malicious `.gitlab-ci.yml` file could allow an attacker to exfiltrate gro
 
 GitLab Self-Managed administrators can reduce their attack surface by disabling import sources they don't need:
 
-1. On the left sidebar, at the bottom, select **Admin**.
+1. On the left sidebar, at the bottom, select **Admin**. If you've [turned on the new navigation](../../interface_redesign.md#turn-new-navigation-on-or-off), in the upper-right corner, select **Admin**.
 1. Select **Settings** > **General**.
 1. Expand **Import and export settings**.
 1. Scroll to **Import sources**.
@@ -111,6 +111,8 @@ difficult, but several tools exist including:
 - Reassigning contributions to a personal namespace owner when importing to a personal namespace [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/525342) in GitLab 18.3 [with a flag](../../../administration/feature_flags/_index.md) named `user_mapping_to_personal_namespace_owner`. Disabled by default.
 - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/508945) in GitLab 18.4 for direct transfer. Feature flag `bulk_import_importer_user_mapping` removed.
 - Reassigning contributions to service accounts, project bots, and group bots [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/573124) in GitLab 18.5 [with a flag](../../../administration/feature_flags/_index.md) named `user_mapping_service_account_and_bots`. Enabled by default.
+- [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/512211) in GitLab 18.6 for Gitea. Feature flag `gitea_user_mapping` removed.
+- Reassigning contributions to a personal namespace owner when importing to a personal namespace [generally available](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/211626) in GitLab 18.6. Feature flag `user_mapping_to_personal_namespace_owner` removed.
 
 {{< /history >}}
 
@@ -173,10 +175,8 @@ This feature is meant to prevent accidental reassignment to users outside your o
 When you use a supported method to import projects to a
 [personal namespace](../../namespace/_index.md#types-of-namespaces),
 user contribution mapping is not supported.
-When you import to a personal namespace and the `user_mapping_to_personal_namespace_owner` feature flag
-is enabled, all contributions are assigned to the personal namespace owner and they cannot be reassigned.
-When the `user_mapping_to_personal_namespace_owner` feature flag is disabled, all contributions are
-assigned to a single non-functional user called `Import User` and they cannot be reassigned.
+When you import to a personal namespace, all contributions are assigned to the
+personal namespace owner and they cannot be reassigned.
 
 {{< /alert >}}
 
@@ -213,10 +213,7 @@ A placeholder user is created for each user on the source instance, except in th
 - You have exceeded your [placeholder user limit](#placeholder-user-limits). Contributions from any new users after exceeding your limit are
   mapped to a single non-functional user called `Import User`.
 - You're importing to a [personal namespace](../../namespace/_index.md#types-of-namespaces)
-  and the `user_mapping_to_personal_namespace_owner` feature flag is enabled.
   Contributions are assigned to the personal namespace owner.
-  When the `user_mapping_to_personal_namespace_owner` is disabled,
-  contributions are assigned to a single non-functional user called `Import User`.
 
 #### Placeholder user attributes
 
@@ -251,7 +248,7 @@ Prerequisites:
 Placeholder users are created on the destination instance while a group or project is imported.
 To view placeholder users created during imports to a top-level group and its subgroups:
 
-1. On the left sidebar, select **Search or go to** and find your group.
+1. On the left sidebar, select **Search or go to** and find your group. If you've [turned on the new navigation](../../interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
    This group must be at the top level.
 1. Select **Manage** > **Members**.
 1. Select the **Placeholders** tab.
@@ -277,7 +274,7 @@ Prerequisites:
 Placeholder users are created on the destination instance while a group or project is imported.
 To filter for placeholder users created during imports for an entire instance:
 
-1. On the left sidebar, at the bottom, select **Admin**.
+1. On the left sidebar, at the bottom, select **Admin**. If you've [turned on the new navigation](../../interface_redesign.md#turn-new-navigation-on-or-off), in the upper-right corner, select **Admin**.
 1. Select **Overview** > **Users**.
 1. In the search box, filter users by **type**.
 
@@ -349,8 +346,7 @@ A GitLab administrator can [set a placeholder limit](../../../administration/ins
 
 To view your current placeholder user usage and limits:
 
-1. On the left sidebar, select **Search or go to** and
-   find your group. This group must be at the top level.
+1. On the left sidebar, select **Search or go to** and find your group. If you've [turned on the new navigation](../../interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar. This group must be at the top level.
 1. Select **Settings** > **Usage quotas**.
 1. Select the **Import** tab.
 
@@ -390,6 +386,8 @@ On the destination instance, users with the Owner role for a top-level group can
 On GitLab Self-Managed and GitLab Dedicated, administrators can reassign
 contributions and memberships to active and inactive non-bot users immediately without their confirmation.
 For more information, see [skip confirmation when administrators reassign placeholder users](../../../administration/settings/import_and_export_settings.md#skip-confirmation-when-administrators-reassign-placeholder-users).
+To reassign contributions and memberships to administrators, see
+[allow contribution mapping to administrators](../../../administration/settings/import_and_export_settings.md#allow-contribution-mapping-to-administrators).
 
 ### Bypass confirmation when reassigning placeholder users
 
@@ -421,7 +419,7 @@ Prerequisites:
 To bypass confirmation for [enterprise users](../../enterprise_user/_index.md)
 when you reassign placeholders:
 
-1. On the left sidebar, select **Search or go to** and find your group.
+1. On the left sidebar, select **Search or go to** and find your group. If you've [turned on the new navigation](../../interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
    This group must be at the top level.
 1. Select **Settings** > **General**.
 1. Expand **Permissions and group features**.
@@ -463,13 +461,15 @@ are mapped automatically to the user who previously accepted reassignments for t
 On GitLab Self-Managed and GitLab Dedicated, administrators can reassign
 contributions and memberships to active and inactive non-bot users immediately without their confirmation.
 For more information, see [skip confirmation when administrators reassign placeholder users](../../../administration/settings/import_and_export_settings.md#skip-confirmation-when-administrators-reassign-placeholder-users).
+To reassign contributions and memberships to administrators, see
+[allow contribution mapping to administrators](../../../administration/settings/import_and_export_settings.md#allow-contribution-mapping-to-administrators).
 
 #### Completing the reassignment
 
 The reassignment process must be fully completed before you:
 
 - [Move an imported group in the same GitLab instance](../../group/manage.md#transfer-a-group).
-- [Move an imported project to a different group](../settings/migrate_projects.md).
+- [Move an imported project to a different group](../working_with_projects.md#transfer-a-project).
 - Duplicate an imported issue.
 - Promote an imported issue to an epic.
 
@@ -510,7 +510,7 @@ Prerequisites:
 You can reassign contributions and memberships in the top-level group.
 To request reassignment of contributions and memberships:
 
-1. On the left sidebar, select **Search or go to** and find your group.
+1. On the left sidebar, select **Search or go to** and find your group. If you've [turned on the new navigation](../../interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
    This group must be at the top level.
 1. Select **Manage** > **Members**.
 1. Select the **Placeholders** tab.
@@ -526,6 +526,8 @@ Before a user accepts the reassignment, you can [cancel the request](#cancel-rea
 On GitLab Self-Managed and GitLab Dedicated, administrators can reassign
 contributions and memberships to active and inactive non-bot users immediately without their confirmation.
 For more information, see [skip confirmation when administrators reassign placeholder users](../../../administration/settings/import_and_export_settings.md#skip-confirmation-when-administrators-reassign-placeholder-users).
+To reassign contributions and memberships to administrators, see
+[allow contribution mapping to administrators](../../../administration/settings/import_and_export_settings.md#allow-contribution-mapping-to-administrators).
 
 #### Request reassignment by using a CSV file
 
@@ -561,7 +563,7 @@ All other rows are skipped.
 
 To request reassignment of contributions and memberships by using a CSV file:
 
-1. On the left sidebar, select **Search or go to** and find your group.
+1. On the left sidebar, select **Search or go to** and find your group. If you've [turned on the new navigation](../../interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
 1. Select **Manage** > **Members**.
 1. Select the **Placeholders** tab.
 1. Select **Reassign with CSV**.
@@ -580,6 +582,8 @@ You can [cancel the reassignment request](#cancel-reassignment-request) before t
 On GitLab Self-Managed and GitLab Dedicated, administrators can reassign
 contributions and memberships to active and inactive non-bot users immediately without their confirmation.
 For more information, see [skip confirmation when administrators reassign placeholder users](../../../administration/settings/import_and_export_settings.md#skip-confirmation-when-administrators-reassign-placeholder-users).
+To reassign contributions and memberships to administrators, see
+[allow contribution mapping to administrators](../../../administration/settings/import_and_export_settings.md#allow-contribution-mapping-to-administrators).
 
 After you reassign contributions, GitLab sends you an email with the number of:
 
@@ -619,7 +623,7 @@ When you reassign contributions in bulk, the entire namespace and users with the
 
 To keep placeholder users one at a time:
 
-1. On the left sidebar, select **Search or go to** and find your group.
+1. On the left sidebar, select **Search or go to** and find your group. If you've [turned on the new navigation](../../interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
    This group must be at the top level.
 1. Select **Manage** > **Members**.
 1. Select the **Placeholders** tab.
@@ -630,7 +634,7 @@ To keep placeholder users one at a time:
 
 To keep placeholder users in bulk:
 
-1. On the left sidebar, select **Search or go to** and find your group.
+1. On the left sidebar, select **Search or go to** and find your group. If you've [turned on the new navigation](../../interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
    This group must be at the top level.
 1. Select **Manage** > **Members**.
 1. Select the **Placeholders** tab.
@@ -639,7 +643,7 @@ To keep placeholder users in bulk:
 
 To undo the operation:
 
-1. On the left sidebar, select **Search or go to** and find your group.
+1. On the left sidebar, select **Search or go to** and find your group. If you've [turned on the new navigation](../../interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
    This group must be at the top level.
 1. Select **Manage** > **Members**.
 1. Select the **Placeholders** tab.
@@ -650,7 +654,7 @@ To undo the operation:
 
 Before a user accepts a reassignment request, you can cancel the request:
 
-1. On the left sidebar, select **Search or go to** and find your group.
+1. On the left sidebar, select **Search or go to** and find your group. If you've [turned on the new navigation](../../interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
    This group must be at the top level.
 1. Select **Manage** > **Members**.
 1. Select the **Placeholders** tab.
@@ -661,7 +665,7 @@ Before a user accepts a reassignment request, you can cancel the request:
 
 If a user is not acting on a reassignment request, you can prompt them again by sending another email:
 
-1. On the left sidebar, select **Search or go to** and find your group.
+1. On the left sidebar, select **Search or go to** and find your group. If you've [turned on the new navigation](../../interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
    This group must be at the top level.
 1. Select **Manage** > **Members**.
 1. Select the **Placeholders** tab.
@@ -672,7 +676,7 @@ If a user is not acting on a reassignment request, you can prompt them again by 
 
 To view the reassignment status of all placeholder users:
 
-1. On the left sidebar, select **Search or go to** and find your group.
+1. On the left sidebar, select **Search or go to** and find your group. If you've [turned on the new navigation](../../interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
    This group must be at the top level.
 1. Select **Manage** > **Members**.
 1. Select the **Placeholders** tab.
@@ -759,7 +763,7 @@ You can view all project imports created by you. This list includes the followin
 To view project import history:
 
 1. Sign in to GitLab.
-1. On the left sidebar, at the top, select **Create new** ({{< icon name="plus" >}}) and **New project/repository**.
+1. On the left sidebar, at the top, select **Create new** ({{< icon name="plus" >}}) and **New project/repository**. If you've [turned on the new navigation](../../interface_redesign.md#turn-new-navigation-on-or-off), this button is in the upper-right corner.
 1. Select **Import project**.
 1. In the upper-right corner, select the **History** link.
 1. If there are any errors for a particular import, select **Details** to see them.

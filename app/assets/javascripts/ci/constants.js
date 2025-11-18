@@ -48,3 +48,5 @@ export const PIPELINE_POLL_INTERVAL_BACKOFF = 1.2;
 export const FOUR_MINUTES_IN_MS = 1000 * 60 * 4;
 
 export const NETWORK_STATUS_READY = 7;
+
+export const DEFAULT_MANUAL_ACTIONS_LIMIT = 50;

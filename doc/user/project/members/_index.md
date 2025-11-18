@@ -1,5 +1,5 @@
 ---
-stage: Runtime
+stage: Tenant Scale
 group: Organizations
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 title: Members of a project
@@ -88,7 +88,7 @@ In the previous example:
 Git is a distributed version control system (DVCS).
 Everyone who works with the source code has a local copy of the complete repository.
 
-In GitLab, every project member with the Reporter role or higher can clone the repository to create
+In GitLab, every project member with at least the Reporter role can clone the repository to create
 a local copy.
 Users can upload the full repository anywhere after they obtain a local copy, including:
 
@@ -131,7 +131,7 @@ Prerequisites:
 
 To add a user to a project:
 
-1. On the left sidebar, select **Search or go to** and find your project.
+1. On the left sidebar, select **Search or go to** and find your project. If you've [turned on the new navigation](../../interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
 1. Select **Manage** > **Members**.
 1. Select **Invite members**.
 1. If the user:
@@ -171,13 +171,33 @@ role for the group. For example, the maximum role you can set is:
 
 The Owner [role](../../permissions.md#project-members-permissions) can be added for the group only.
 
+## View project members
+
+To view members of a project:
+
+1. On the left sidebar, select **Search or go to** and find your project. If you've [turned on the new navigation](../../interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
+1. Select **Manage** > **Members**.
+
+A table displays the member's:
+
+- **Account** name and username.
+- **Source** of their [membership](#membership-types).
+  For transparency, GitLab displays all membership sources of project members.
+  Members who have multiple membership sources are displayed and counted as separate members.
+  For example, if a member has been added to the project both directly and through inheritance,
+  the member is displayed twice in the **Members** table, with different sources,
+  and is counted as two individual members of the project.
+- [**Role**](#which-roles-you-can-assign) in the project.
+- **Expiration** date of their project membership.
+- **Activity** related to their account.
+
 ### View users pending promotion
 
 If [administrator approval for role promotions](../../../administration/settings/sign_up_restrictions.md#turn-on-administrator-approval-for-role-promotions) is turned on, membership requests that promote existing users into a billable role require administrator approval.
 
 To view users pending promotion:
 
-1. On the left sidebar, select **Search or go to** and find your project.
+1. On the left sidebar, select **Search or go to** and find your project. If you've [turned on the new navigation](../../interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
 1. Select **Manage** > **Members**.
 1. Select **Role promotions** tab.
 
@@ -216,7 +236,7 @@ If the importing member's role for the target project is:
 
 To import a project's members:
 
-1. On the left sidebar, select **Search or go to** and find your project.
+1. On the left sidebar, select **Search or go to** and find your project. If you've [turned on the new navigation](../../interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
 1. Select **Manage** > **Members**.
 1. Select **Import from a project**.
 1. Select the project. You can view only the projects for which you're a maintainer.
@@ -242,7 +262,7 @@ Prerequisites:
 
 To remove a member from a project:
 
-1. On the left sidebar, select **Search or go to** and find your project.
+1. On the left sidebar, select **Search or go to** and find your project. If you've [turned on the new navigation](../../interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
 1. Select **Manage** > **Members**.
 1. Next to the project member you want to remove, select **Remove member**.
 1. Optional. On the confirmation dialog, select the
@@ -275,14 +295,14 @@ You can filter and sort members in a project.
 
 ### Display direct members
 
-1. On the left sidebar, select **Search or go to** and find your project.
+1. On the left sidebar, select **Search or go to** and find your project. If you've [turned on the new navigation](../../interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
 1. Select **Manage** > **Members**.
 1. In the **Filter members** box, select `Membership` `=` `Direct`.
 1. Press <kbd>Enter</kbd>.
 
 ### Display indirect members
 
-1. On the left sidebar, select **Search or go to** and find your project.
+1. On the left sidebar, select **Search or go to** and find your project. If you've [turned on the new navigation](../../interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
 1. Select **Manage** > **Members**.
 1. In the **Filter members** box, select `Membership` `=` `Indirect`.
 1. Press <kbd>Enter</kbd>.
@@ -291,7 +311,7 @@ You can filter and sort members in a project.
 
 To search for a project member:
 
-1. On the left sidebar, select **Search or go to** and find your project.
+1. On the left sidebar, select **Search or go to** and find your project. If you've [turned on the new navigation](../../interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
 1. Select **Manage** > **Members**.
 1. In the search box, enter the member's name, username, or email.
 1. Press <kbd>Enter</kbd>.
@@ -309,7 +329,7 @@ You can sort members in ascending or descending order by:
 
 To sort members:
 
-1. On the left sidebar, select **Search or go to** and find your project.
+1. On the left sidebar, select **Search or go to** and find your project. If you've [turned on the new navigation](../../interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
 1. Select **Manage** > **Members**.
 1. At the top of the member list, from the dropdown list, select the item you want to sort by.
 
@@ -317,8 +337,8 @@ To sort members:
 
 GitLab users can request to become a member of a project.
 
-1. On the left sidebar, select **Search or go to** and find the project you want to be a member of.
-1. In the top right, select the vertical ellipsis ({{< icon name="ellipsis_v" >}}) and select **Request Access**.
+1. On the left sidebar, select **Search or go to** and find the project you want to be a member of. If you've [turned on the new navigation](../../interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
+1. In the upper right, select the vertical ellipsis ({{< icon name="ellipsis_v" >}}) and select **Request Access**.
 
 An email is sent to the most recently active project Maintainers or Owners.
 Up to ten project Maintainers or Owners are notified.
@@ -332,7 +352,7 @@ If a project does not have any direct Owners or Maintainers, the most recently a
 You can withdraw an access request to a project before the request is approved.
 To withdraw the access request:
 
-1. On the left sidebar, select **Search or go to** and find the project you requested access to.
+1. On the left sidebar, select **Search or go to** and find the project you requested access to. If you've [turned on the new navigation](../../interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
 1. Next to the project name, select **Withdraw Access Request**.
 
 ## Prevent users from requesting access to a project
@@ -344,11 +364,18 @@ Prerequisites:
 - You must have the Owner role for the project.
 - The project must be public.
 
-1. On the left sidebar, select **Search or go to** and find your project.
+1. On the left sidebar, select **Search or go to** and find your project. If you've [turned on the new navigation](../../interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
 1. Select **Settings** > **General**.
 1. Expand **Visibility, project features, permissions**.
 1. Under **Project visibility**, ensure the **Users can request access** checkbox is not selected.
 1. Select **Save changes**.
+
+{{< alert type="note" >}}
+
+Disabling the **Allow users to request access** setting prevents new access requests.
+Existing pending requests are not removed and can still be approved or denied.
+
+{{< /alert >}}
 
 ## Membership and visibility rights
 

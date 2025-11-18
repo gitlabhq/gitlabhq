@@ -12,34 +12,6 @@ RSpec.describe Gitlab::GitalyClient::WithFeatureFlagActors, feature_category: :g
 
   let_it_be(:group) { create(:group) }
 
-  describe '#user_actor' do
-    context 'when user is not available in ApplicationContext' do
-      it 'returns nil' do
-        expect(service.user_actor).to be_nil
-      end
-    end
-
-    context 'when user is available in ApplicationContext' do
-      around do |example|
-        ::Gitlab::ApplicationContext.with_context(user: user) { example.run }
-      end
-
-      it 'returns corresponding user record' do
-        expect(service.user_actor.flipper_id).to eql(user.flipper_id)
-      end
-    end
-
-    context 'when user does not exist' do
-      around do |example|
-        ::Gitlab::ApplicationContext.with_context(user: SecureRandom.uuid) { example.run }
-      end
-
-      it 'returns corresponding user record' do
-        expect(service.user_actor).to be_nil
-      end
-    end
-  end
-
   describe '#repository, #project_actor, #group_actor' do
     context 'when normal project repository' do
       let_it_be(:project) { create(:project, group: group) }

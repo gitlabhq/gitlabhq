@@ -64,6 +64,40 @@ A user is not counted as a billable user if:
     - [Bot users for groups](../user/group/settings/group_access_tokens.md#bot-users-for-groups).
     - Other [internal users](../administration/internal_users.md).
 
+## Users over subscription limit
+
+When the number of billable users in your instance or top-level group exceeds the number of seats you've purchased,
+you have users over subscription (or seats owed).
+
+This can happen, for example, when new users are added to your instance or group,
+or existing users are promoted to billable roles.
+
+The number of users over subscription is calculated as:
+maximum users during billing period - purchased seats in your subscription.
+
+For example, you purchase a subscription for 10 seats, and during the billing period the number of users varies as follows:
+
+| Event                                             | Billable users | Maximum users |
+|:--------------------------------------------------|:----------------|:--------------|
+| Ten users occupy all 10 seats.                    | 10              | 10            |
+| Two new users join.                               | 12              | 12            |
+| Three users leave and their accounts are blocked. | 9               | 12            |
+| Four new users join.                              | 13              | 13            |
+
+In this case, you have 3 users over subscription (13 maximum users - 10 purchased seats).
+
+When you exceed your subscription limit, you must pay for the additional users
+[before or at the time of renewal](quarterly_reconciliation.md).
+The cost is based on the maximum number of users during the billing period, not the current number of users.
+
+On GitLab Self-Managed, for trial licenses the users over subscription value is always zero.
+
+To avoid unexpected overage charges, you can:
+
+- [Turn on restricted access](../user/group/manage.md#turn-on-restricted-access) to prevent adding users when no seats remain.
+- [Require administrator approval for new sign-ups](../administration/settings/sign_up_restrictions.md#require-administrator-approval-for-new-sign-ups).
+- Buy more seats proactively when approaching your limit.
+
 ## Free Guest users
 
 {{< details >}}
@@ -157,38 +191,11 @@ The number of maximum users reflects the highest number of billable users on you
 
 You can view and export your [license usage](../administration/license_usage.md).
 
-### Users over subscription
-
-A GitLab subscription is valid for a specific number of seats.
-The number of users over subscription shows how many users are in excess of the
-number allowed by the subscription, in the current subscription period.
-
-Calculated as `Maximum users` - `Users in subscription` for the current license
-term. For example, you purchase a subscription for 10 users.
-
-| Event                                              | Billable users   | Maximum users |
-|:---------------------------------------------------|:-----------------|:--------------|
-| Ten users occupy all 10 seats.                     | 10               | 10            |
-| Two new users join.                                | 12               | 12            |
-| Three users leave and their accounts are blocked.  | 9                | 12            |
-| Four new users join.                               | 13               | 13            |
-
-Users over subscription = 13 - 10 (Maximum users - users in license)
-
-The users over subscription value is always zero for trial license.
-
-If users over subscription value is above zero, then you have more users in your
-GitLab instance than you are licensed for. You must pay for the additional users
-[before or at the time of renewal](quarterly_reconciliation.md). This is
-called the "true up" process. If you do not do this, your license key does not work.
-
-To view the number of users over subscription, go to the **Admin** area.
-
 ### View users
 
 View the lists of users in your instance:
 
-1. On the left sidebar, at the bottom, select **Admin**.
+1. On the left sidebar, at the bottom, select **Admin**. If you've [turned on the new navigation](../user/interface_redesign.md#turn-new-navigation-on-or-off), in the upper-right corner, select **Admin**.
 1. Select **Users**.
 
 Select a user to view their account information.
@@ -280,34 +287,15 @@ to your instance.
 
 {{< /details >}}
 
-A GitLab.com subscription uses a concurrent (_seat_) model.
-You pay for a subscription according to the maximum number of users assigned to the top-level group,
+A GitLab.com subscription uses a concurrent (seat) model.
+You choose a number of seats for users who can use the subscription at the same time,
+and pay for a subscription according to the maximum number of users assigned to the top-level group,
 its subgroups and projects during the billing period.
+
 You can add and remove users during the subscription period without incurring additional charges,
-as long as the total users at any given time doesn't exceed the subscription count.
-If the total users exceeds your subscription count, you will incur an overage,
-which must be paid at your next [reconciliation](quarterly_reconciliation.md).
-
-A top-level group can be [changed](../user/group/manage.md#change-a-groups-path) like any other group.
-
-### Seats owed
-
-If the number of billable users exceeds the number of **seats in subscription**, known
-as the number of **seats owed**, you must pay for the excess number of users.
-
-For example, if you purchase a subscription for 10 users:
-
-| Event                                              | Billable members | Maximum users |
-|:---------------------------------------------------|:-----------------|:--------------|
-| Ten users occupy all 10 seats.                     | 10               | 10            |
-| Two new users join.                                | 12               | 12            |
-| Three users leave and their accounts are removed.  | 9                | 12            |
-
-Seats owed = 12 - 10 (Maximum users - users in subscription)
-
-To prevent charges from seats owed, you can
-[turn on restricted access](../user/group/manage.md#turn-on-restricted-access).
-This setting restricts groups from adding new billable users when there are no seats left in the subscription.
+as long as the total number of users at any given time doesn't exceed the number of seats in the subscription.
+If you add more users and exceed the number of purchased seats, you incur an overage,
+which will be included in your next [invoice](quarterly_reconciliation.md).
 
 ### Seat usage alerts
 
@@ -339,7 +327,7 @@ The alert displays at the following intervals:
 
 To view a list of seats being used:
 
-1. On the left sidebar, select **Search or go to** and find your group.
+1. On the left sidebar, select **Search or go to** and find your group. If you've [turned on the new navigation](../user/interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
 1. Select **Settings** > **Usage quotas**.
 1. Select the **Seats** tab.
 
@@ -355,7 +343,7 @@ The counts for **Max seats used** and **Seats owed** are updated once per day.
 
 To view your subscription information and a summary of seat counts:
 
-1. On the left sidebar, select **Search or go to** and find your group.
+1. On the left sidebar, select **Search or go to** and find your group. If you've [turned on the new navigation](../user/interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
 1. Select **Settings** > **Billing**.
 
 - The usage statistics are updated once per day, which may cause a difference between the information
@@ -368,7 +356,7 @@ To view your subscription information and a summary of seat counts:
 You can view the users that use seats on your subscription.
 To search for a user's seat usage:
 
-1. On the left sidebar, select **Search or go to** and find your group.
+1. On the left sidebar, select **Search or go to** and find your group. If you've [turned on the new navigation](../user/interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
 1. Select **Settings** > **Usage quotas**.
 1. On the **Seats** tab, in the search field, enter the user's name or username.
    The search string must have minimum three characters.
@@ -382,7 +370,7 @@ the search string `ami` results in a match, but `amr` does not.
 
 To export seat usage data as a CSV file:
 
-1. On the left sidebar, select **Search or go to** and find your group.
+1. On the left sidebar, select **Search or go to** and find your group. If you've [turned on the new navigation](../user/interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
 1. Select **Settings** > **Usage quotas**.
 1. In the **Seats** tab, select **Export list**.
 
@@ -394,7 +382,7 @@ Prerequisites:
 
 To export seat usage history as a CSV file:
 
-1. On the left sidebar, select **Search or go to** and find your group.
+1. On the left sidebar, select **Search or go to** and find your group. If you've [turned on the new navigation](../user/interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
 1. Select **Settings** > **Usage quotas**.
 1. In the **Seats** tab, select **Export seat usage history**.
 
@@ -405,7 +393,7 @@ and is not affected by the current search.
 
 To remove a billable user from your GitLab.com subscription:
 
-1. On the left sidebar, select **Search or go to** and find your group.
+1. On the left sidebar, select **Search or go to** and find your group. If you've [turned on the new navigation](../user/interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
 1. Select **Settings** > **Billing**.
 1. In the **Seats currently in use** section, select **See usage**.
 1. In the row for the user you want to remove, on the right side, select **Remove user**.

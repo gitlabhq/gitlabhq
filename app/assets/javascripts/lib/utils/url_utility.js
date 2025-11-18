@@ -600,19 +600,22 @@ export function objectToQuery(params = {}) {
  * Sets query params for a given URL
  * It adds new query params, updates existing params with a new value and removes params with value null/undefined
  *
- * @param {Object} params The query params to be set/updated
- * @param {String} url The url to be operated on
- * @param {Boolean} clearParams Indicates whether existing query params should be removed or not
- * @param {Boolean} railsArraySyntax When enabled, changes the array syntax from `keys=` to `keys[]=` according to Rails conventions
- * @returns {String} A copy of the original with the updated query params
+ * @param {Object} params - The query params to be set/updated
+ * @param {Object} [options] - Configuration options
+ * @param {string} [options.url=window.location.href] - The url to be operated on
+ * @param {boolean} [options.clearParams=false] - Indicates whether existing query params should be removed or not
+ * @param {boolean} [options.railsArraySyntax=false] - When enabled, changes the array syntax from `keys=` to `keys[]=` according to Rails conventions
+ * @param {boolean} [options.decodeParams=false] - Whether to decode the parameters
+ * @returns {string} A copy of the original with the updated query params
  */
 export const setUrlParams = (
-  params,
-  url = window.location.href,
-  clearParams = false,
-  railsArraySyntax = false,
-  decodeParams = false,
-  // eslint-disable-next-line max-params
+  params = {},
+  {
+    url = window.location.href,
+    clearParams = false,
+    railsArraySyntax = false,
+    decodeParams = false,
+  } = {},
 ) => {
   const urlObj = new URL(url);
   const queryString = urlObj.search;
@@ -867,4 +870,31 @@ export function appendLineRangeHashToUrl(url, hash = window.location.hash) {
     return url + hash;
   }
   return url;
+}
+
+/**
+ * Performs basic sanity checks on a URL before attempting connection:
+ * - is not empty
+ * - has no spaces
+ * - has http, git or https protocol
+ * - has a domain with at least one dot
+ *
+ * Does not guarantee the URL is fully valid or reachable.
+ *
+ * @param {String} url that will be checked
+ * @returns {Boolean}
+ */
+
+export function isReasonableGitUrl(url) {
+  if (!url || typeof url !== 'string') {
+    return false;
+  }
+
+  if (/\s/.test(url)) {
+    return false;
+  }
+
+  const pattern = /^(https?|git):\/\/[a-zA-Z0-9.-]+\.[a-zA-Z0-9.-]+/;
+
+  return pattern.test(url);
 }

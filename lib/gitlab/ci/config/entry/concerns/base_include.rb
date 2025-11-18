@@ -17,13 +17,13 @@ module Gitlab
           module BaseInclude
             extend ActiveSupport::Concern
 
-            COMMON_ALLOWED_KEYS = %i[local file remote project component integrity].freeze
+            COMMON_ALLOWED_KEYS = %i[local file remote project ref integrity].freeze
 
             included do
               include ::Gitlab::Config::Entry::Validatable
               include ::Gitlab::Config::Entry::Attributable
 
-              attributes :local, :file, :remote, :project, :component, :integrity
+              attributes :local, :file, :remote, :project, :ref, :component, :integrity
 
               validations do
                 validates :config, hash_or_string: true

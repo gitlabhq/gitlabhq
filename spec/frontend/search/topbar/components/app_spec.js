@@ -9,16 +9,19 @@ import GlobalSearchTopbar from '~/search/topbar/components/app.vue';
 import MarkdownDrawer from '~/vue_shared/components/markdown_drawer/markdown_drawer.vue';
 import SearchTypeIndicator from '~/search/topbar/components/search_type_indicator.vue';
 import GlobalSearchInput from '~/search/topbar/components/global_search_input.vue';
+import * as urlUtils from '~/lib/utils/url_utility';
+import * as storeUtils from '~/search/store/utils';
 import {
   SYNTAX_OPTIONS_ADVANCED_DOCUMENT,
   SYNTAX_OPTIONS_ZOEKT_DOCUMENT,
 } from '~/search/topbar/constants';
+import { LS_REGEX_HANDLE } from '~/search/store/constants';
 
 Vue.use(Vuex);
 
 jest.mock('~/search/store/utils', () => ({
-  loadDataFromLS: jest.fn(() => true),
   LS_REGEX_HANDLE: jest.fn(() => 'test'),
+  setDataToLS: jest.fn(),
 }));
 
 describe('GlobalSearchTopbar', () => {
@@ -57,7 +60,7 @@ describe('GlobalSearchTopbar', () => {
   const findSyntaxOptionButton = () => wrapper.findComponent(GlButton);
   const findSyntaxOptionDrawer = () => wrapper.findComponent(MarkdownDrawer);
   const findSearchTypeIndicator = () => wrapper.findComponent(SearchTypeIndicator);
-  const findRegulareExpressionToggle = () =>
+  const findRegularExpressionToggle = () =>
     wrapper.findComponent('[data-testid="reqular-expression-toggle"]');
 
   describe('template', () => {
@@ -188,19 +191,43 @@ describe('GlobalSearchTopbar', () => {
       });
 
       it(`calls setQuery and ${!reload ? 'NOT ' : ''}applyQuery if there is a search term`, () => {
-        findRegulareExpressionToggle().vm.$emit('click');
+        findRegularExpressionToggle().vm.$emit('click');
         expect(actionSpies.setQuery).toHaveBeenCalled();
         expect(actionSpies.applyQuery).toHaveBeenCalledTimes(reload);
       });
     });
 
     describe('onCreate', () => {
-      beforeEach(() => {
+      it('calls preloadStoredFrequentItems', () => {
         createComponent();
+
+        expect(actionSpies.preloadStoredFrequentItems).toHaveBeenCalled();
       });
 
-      it('calls preloadStoredFrequentItems', () => {
-        expect(actionSpies.preloadStoredFrequentItems).toHaveBeenCalled();
+      it('sets regexEnabled state to true if `regex=true` is present in query params', () => {
+        jest.spyOn(urlUtils, 'getParameterByName').mockReturnValue('true');
+
+        createComponent({
+          initialState: { query: { search: 'test' }, searchType: 'zoekt' },
+          stubs: { GlobalSearchInput },
+        });
+
+        expect(urlUtils.getParameterByName).toHaveBeenCalledWith('regex');
+        expect(storeUtils.setDataToLS).toHaveBeenCalledWith(LS_REGEX_HANDLE, true);
+        expect(findRegularExpressionToggle().props('selected')).toBe(true);
+      });
+
+      it('regexEnabled state stays false if `regex=true` is not present in query params', () => {
+        jest.spyOn(urlUtils, 'getParameterByName').mockReturnValue(undefined);
+
+        createComponent({
+          initialState: { query: { search: 'test' }, searchType: 'zoekt' },
+          stubs: { GlobalSearchInput },
+        });
+
+        expect(urlUtils.getParameterByName).toHaveBeenCalledWith('regex');
+        expect(storeUtils.setDataToLS).toHaveBeenCalledWith(LS_REGEX_HANDLE, false);
+        expect(findRegularExpressionToggle().props('selected')).toBe(false);
       });
     });
   });

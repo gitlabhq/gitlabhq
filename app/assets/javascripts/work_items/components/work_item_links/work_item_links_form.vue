@@ -231,9 +231,6 @@ export default {
     parentMilestoneId() {
       return this.parentMilestone?.id;
     },
-    canCreateGroupLevelWorkItems() {
-      return this.glFeatures.createGroupLevelWorkItems;
-    },
     hasSuppliedNewItemName() {
       return this.search.length > 0;
     },
@@ -247,10 +244,8 @@ export default {
             // must supply name, project will be ignored in request
             return this.hasSuppliedNewItemName;
           }
-          if (!this.canCreateGroupLevelWorkItems) {
-            // must supply name and project
-            return this.hasSuppliedNewItemName && this.hasSelectedProject;
-          }
+          // must supply name and project
+          return this.hasSuppliedNewItemName && this.hasSelectedProject;
         }
         return this.hasSuppliedNewItemName;
       }

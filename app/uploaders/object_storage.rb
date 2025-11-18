@@ -278,19 +278,17 @@ module ObjectStorage
       # Even though :size is not in IO_METHODS, we do need it.
       def_delegators :@file, :size
 
-      def initialize(file)
+      def initialize(file, original_filename: nil)
         @file = file
+        @original_filename = original_filename
       end
 
       def file_path
         @file.path
       end
 
-      # CarrierWave#cache! calls filename, which calls original_filename
       def original_filename
-        return File.basename(file_path) if file_path.present?
-
-        nil
+        @original_filename || File.basename(file_path) if file_path.present?
       end
     end
 
@@ -353,7 +351,7 @@ module ObjectStorage
     end
 
     def use_open_file(unlink_early: true)
-      Tempfile.open(path) do |file|
+      Tempfile.open(filename) do |file|
         file.unlink if unlink_early
         file.binmode
 
@@ -367,7 +365,7 @@ module ObjectStorage
 
         file.seek(0, IO::SEEK_SET)
 
-        yield OpenFile.new(file)
+        yield OpenFile.new(file, original_filename: filename)
       ensure
         file.unlink unless unlink_early
       end

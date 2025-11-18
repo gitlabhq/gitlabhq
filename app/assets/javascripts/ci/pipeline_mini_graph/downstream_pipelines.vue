@@ -63,14 +63,14 @@ export default {
 </script>
 
 <template>
-  <span v-if="pipelines" class="gl-inline-flex gl-gap-2 gl-align-middle">
+  <span v-if="pipelines" class="gl-contents gl-align-middle">
     <downstream-pipeline-dropdown
       v-for="pipeline in pipelinesTrimmed"
       :key="pipeline.id"
       :pipeline="pipeline"
+      class="gl-mr-2 last-of-type:gl-mr-0"
       @jobActionExecuted="$emit('jobActionExecuted')"
     />
-
     <a
       v-if="shouldRenderCounter"
       v-gl-tooltip="{ title: counterTooltipText }"

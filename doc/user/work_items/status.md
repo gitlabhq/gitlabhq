@@ -72,15 +72,9 @@ Statuses in the **Done** and **Canceled** categories automatically set work item
 {{< history >}}
 
 - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/556113) in GitLab 18.5 [with a flag](../../administration/feature_flags/_index.md) named `work_item_status_mvc2`. Enabled by default.
+- [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/576610) in GitLab 18.6. Feature flag `work_item_status_mvc2` removed.
 
 {{< /history >}}
-
-{{< alert type="flag" >}}
-
-The availability of this feature is controlled by a feature flag.
-For more information, see the history.
-
-{{< /alert >}}
 
 A lifecycle is a collection of statuses that can be applied to a work item type. Lifecycles group statuses into meaningful workflows that can be reused consistently across work item types and namespaces.
 
@@ -99,7 +93,7 @@ Prerequisites:
 
 To create a lifecycle:
 
-1. On the left sidebar, select **Search or go to** and find your group.
+1. On the left sidebar, select **Search or go to** and find your group. If you've [turned on the new navigation](../interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
 1. Select **Settings** > **Issues**.
 1. In the **Statuses** section, select **Create lifecycle**.
 1. Add the lifecycle name and choose either the default lifecycle configuration or one of the existing lifecycles to start from. This pre-populates the new lifecycle with statuses which you can customize afterwards.
@@ -114,7 +108,7 @@ Prerequisites:
 
 To rename a lifecycle:
 
-1. On the left sidebar, select **Search or go to** and find your group.
+1. On the left sidebar, select **Search or go to** and find your group. If you've [turned on the new navigation](../interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
 1. Select **Settings** > **Issues**.
 1. In the **Statuses** section, hover over the lifecycle detail view.
 1. Select **Rename**.
@@ -130,7 +124,7 @@ Prerequisites:
 
 To remove a lifecycle:
 
-1. On the left sidebar, select **Search or go to** and find your group.
+1. On the left sidebar, select **Search or go to** and find your group. If you've [turned on the new navigation](../interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
 1. Select **Settings** > **Issues**.
 1. In the **Statuses** section, select **Remove lifecycle** for the lifecycle you want to remove.
 1. On the confirmation dialog, select **Remove**.
@@ -144,7 +138,7 @@ Prerequisites:
 
 To change the lifecycle for a work item type:
 
-1. On the left sidebar, select **Search or go to** and find your group.
+1. On the left sidebar, select **Search or go to** and find your group. If you've [turned on the new navigation](../interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
 1. Select **Settings** > **Issues**.
 1. In the **Statuses** section, either:
    - Select **Change lifecycle**.
@@ -178,7 +172,7 @@ Prerequisites:
 
 To configure custom statuses:
 
-1. On the left sidebar, select **Search or go to** and find your group.
+1. On the left sidebar, select **Search or go to** and find your group. If you've [turned on the new navigation](../interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
 1. Select **Settings** > **Issues**.
 1. In the **Statuses** section, select **Edit statuses** for the lifecycle being used by the work item type.
 1. Add, edit, or reorder statuses for the namespace.

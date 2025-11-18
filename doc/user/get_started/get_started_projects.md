@@ -1,5 +1,5 @@
 ---
-stage: Runtime
+stage: Tenant Scale
 group: Organizations
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 description: Configure projects to suit your organization.
@@ -129,4 +129,4 @@ For more information, see:
 
 - [Migrate projects by using file exports](../project/import/_index.md)
 - [Project aliases](../project/working_with_projects.md#project-aliases)
-- [Transfer a project to another namespace](../project/settings/migrate_projects.md)
+- [Transfer a project to another namespace](../project/working_with_projects.md#transfer-a-project)

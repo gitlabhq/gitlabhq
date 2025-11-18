@@ -11,7 +11,7 @@ additional_properties:
     description: The runner type, which can be `project_type`, `group_type`, or `instance_type`
 product_group: runner
 product_categories:
-- runner
+- runner_core
 milestone: '17.6'
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/170483
 tiers:

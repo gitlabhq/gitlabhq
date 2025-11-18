@@ -4,6 +4,8 @@ import { mountExtended } from 'helpers/vue_test_utils_helper';
 import WorkItemListActions from '~/work_items/components/work_item_list_actions.vue';
 import WorkItemCsvExportModal from '~/work_items/components/work_items_csv_export_modal.vue';
 import WorkItemsCsvImportModal from '~/work_items/components/work_items_csv_import_modal.vue';
+import WorkItemByEmail from '~/work_items/components/work_item_by_email.vue';
+import * as urlUtility from '~/lib/utils/url_utility';
 
 describe('WorkItemsListActions component', () => {
   let wrapper;
@@ -34,6 +36,8 @@ describe('WorkItemsListActions component', () => {
         calendarPath: null,
         canImportWorkItems: false,
         canEdit: false,
+        isGroupIssuesList: false,
+        isEpicsList: false,
         ...injectedProperties,
       },
       propsData: {
@@ -53,6 +57,7 @@ describe('WorkItemsListActions component', () => {
   const findImportFromJiraLink = () => wrapper.findByTestId('import-from-jira-link');
   const findRssLink = () => wrapper.findByTestId('subscribe-rss');
   const findCalendarLink = () => wrapper.findByTestId('subscribe-calendar');
+  const findWorkItemByEmail = () => wrapper.findComponent(WorkItemByEmail);
 
   describe('import/export options', () => {
     describe('when projectImportJiraPath is provided and canEdit is true', () => {
@@ -171,6 +176,115 @@ describe('WorkItemsListActions component', () => {
     });
   });
 
+  describe('RSS dynamic update', () => {
+    const baseRssPath = '/gitlab-org/gitlab/-/work_items.atom?feed_token=abc123';
+
+    it('uses filtered RSS path in subscription dropdown', () => {
+      const urlParams = {
+        assignee_username: 'john-doe',
+        state: 'opened',
+      };
+
+      wrapper = createComponent({ rssPath: baseRssPath }, { urlParams });
+
+      const rssLink = findRssLink();
+      expect(rssLink.attributes('href')).toContain('assignee_username=john-doe');
+      expect(rssLink.attributes('href')).toContain('state=opened');
+      expect(rssLink.attributes('href')).toContain(
+        '/gitlab-org/gitlab/-/work_items.atom?feed_token=abc123',
+      );
+    });
+
+    it('returns the original RSS path when urlParams is empty', () => {
+      wrapper = createComponent({ rssPath: baseRssPath }, { urlParams: {} });
+
+      const rssLink = findRssLink();
+      expect(rssLink.attributes('href')).toBe(baseRssPath);
+    });
+
+    it('returns null when rssPath is not provided', () => {
+      wrapper = createComponent({ rssPath: null }, { urlParams: { state: 'opened' } });
+
+      expect(findRssLink().exists()).toBe(false);
+    });
+
+    describe('default type parameters', () => {
+      it('excludes epics for group issues page using negative filter', () => {
+        wrapper = createComponent(
+          { rssPath: baseRssPath },
+          { urlParams: {}, isGroupIssuesList: true, isEpicsList: false },
+        );
+
+        const rssLink = findRssLink();
+        const href = rssLink.attributes('href');
+
+        // Check that epic is excluded using negative filter
+        expect(href).toContain('not%5Btype%5D%5B%5D=epic');
+      });
+
+      it('adds type=epic for group epics page', () => {
+        wrapper = createComponent(
+          { rssPath: baseRssPath },
+          { urlParams: {}, isGroupIssuesList: false, isEpicsList: true },
+        );
+
+        const rssLink = findRssLink();
+        expect(rssLink.attributes('href')).toContain('type%5B%5D=epic');
+      });
+
+      it('does not add default type for project work items page', () => {
+        wrapper = createComponent(
+          { rssPath: baseRssPath },
+          { urlParams: {}, isGroupIssuesList: false, isEpicsList: false },
+        );
+
+        const rssLink = findRssLink();
+        expect(rssLink.attributes('href')).toBe(baseRssPath);
+      });
+
+      it('merges default type exclusion with user-provided urlParams', () => {
+        const urlParams = {
+          assignee_username: 'john-doe',
+        };
+
+        wrapper = createComponent(
+          { rssPath: baseRssPath },
+          { urlParams, isGroupIssuesList: true, isEpicsList: false },
+        );
+
+        const rssLink = findRssLink();
+        const href = rssLink.attributes('href');
+
+        // Check that both default type exclusion and user params are present
+        expect(href).toContain('assignee_username=john-doe');
+        expect(href).toContain('not%5Btype%5D%5B%5D=epic');
+      });
+    });
+
+    describe('error handling', () => {
+      it('emits error event and falls back to original path when URL construction fails', () => {
+        jest.spyOn(urlUtility, 'mergeUrlParams').mockImplementation(() => {
+          throw new Error('Invalid URL');
+        });
+
+        const urlParams = {
+          assignee_username: 'john-doe',
+        };
+
+        wrapper = createComponent({ rssPath: baseRssPath }, { urlParams });
+
+        const rssLink = findRssLink();
+        expect(rssLink.exists()).toBe(true);
+        expect(rssLink.attributes('href')).toBe(baseRssPath);
+
+        expect(wrapper.emitted('error')).toBeDefined();
+        expect(wrapper.emitted('error')[0]).toEqual([
+          'An error occurred updating the RSS link. Please refresh the page to try again.',
+        ]);
+      });
+    });
+  });
+
   describe('when no options are provided', () => {
     beforeEach(() => {
       wrapper = createComponent();
@@ -178,6 +292,24 @@ describe('WorkItemsListActions component', () => {
 
     it('does not render the dropdown', () => {
       expect(findDropdown().exists()).toBe(false);
+    });
+  });
+
+  describe('WorkItemByEmail component', () => {
+    it('does not render when showWorkItemByEmailButton is false', () => {
+      wrapper = createComponent();
+
+      expect(findWorkItemByEmail().exists()).toBe(false);
+    });
+
+    it('renders when showWorkItemByEmailButton is true, and has correct tracking attributes', () => {
+      wrapper = createComponent({}, { showWorkItemByEmailButton: true });
+
+      expect(findWorkItemByEmail().exists()).toBe(true);
+      expect(findWorkItemByEmail().attributes()).toMatchObject({
+        'data-track-action': 'click_email_work_item_project_work_items_empty_list_page',
+        'data-track-label': 'email_work_item_project_work_items_empty_list',
+      });
     });
   });
 });

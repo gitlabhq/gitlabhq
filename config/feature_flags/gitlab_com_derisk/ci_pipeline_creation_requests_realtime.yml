@@ -1,0 +1,10 @@
+---
+name: ci_pipeline_creation_requests_realtime
+description: Enable real-time pipeline creation request updates for merge requests using GraphQL subscriptions
+feature_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/568346
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/208581
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/576639
+milestone: '18.6'
+group: group::pipeline authoring
+type: gitlab_com_derisk
+default_enabled: false

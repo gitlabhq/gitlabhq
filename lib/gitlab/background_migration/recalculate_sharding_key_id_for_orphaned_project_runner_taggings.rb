@@ -4,7 +4,7 @@ module Gitlab
   module BackgroundMigration
     class RecalculateShardingKeyIdForOrphanedProjectRunnerTaggings < BatchedMigrationJob
       operation_name :recalculate_sharding_key_id_on_project_runner_taggings
-      feature_category :runner
+      feature_category :runner_core
 
       class CiRunnerTagging < ::Ci::ApplicationRecord
         self.table_name = :ci_runner_taggings

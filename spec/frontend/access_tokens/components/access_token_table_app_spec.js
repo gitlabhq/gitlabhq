@@ -2,6 +2,7 @@ import { GlButton, GlModal, GlPagination, GlTable } from '@gitlab/ui';
 import MockAdapter from 'axios-mock-adapter';
 import { nextTick } from 'vue';
 import { mountExtended } from 'helpers/vue_test_utils_helper';
+import { scrollTo } from '~/lib/utils/scroll_utils';
 import AccessTokenTableApp from '~/access_tokens/components/access_token_table_app.vue';
 import { EVENT_SUCCESS, PAGE_SIZE } from '~/access_tokens/components/constants';
 import { createAlert, VARIANT_DANGER } from '~/alert';
@@ -11,6 +12,7 @@ import { sprintf } from '~/locale';
 import DomElementListener from '~/vue_shared/components/dom_element_listener.vue';
 
 jest.mock('~/alert');
+jest.mock('~/lib/utils/scroll_utils');
 
 describe('~/access_tokens/components/access_token_table_app', () => {
   let wrapper;
@@ -93,16 +95,7 @@ describe('~/access_tokens/components/access_token_table_app', () => {
       'X-Total': defaultActiveAccessTokens.length,
     };
     mockAxios = new MockAdapter(axios);
-    mockAxios.onGet().reply(
-      HTTP_STATUS_OK,
-      [
-        {
-          active_access_tokens: defaultActiveAccessTokens,
-          total: defaultActiveAccessTokens.length,
-        },
-      ],
-      headers,
-    );
+    mockAxios.onGet().reply(HTTP_STATUS_OK, defaultActiveAccessTokens, headers);
   });
 
   afterEach(() => {
@@ -437,11 +430,10 @@ describe('~/access_tokens/components/access_token_table_app', () => {
           });
 
           it('scrolls to the top', async () => {
-            const scrollToSpy = jest.spyOn(window, 'scrollTo');
             await findPagination().vm.$emit('input', 2);
             await nextTick();
 
-            expect(scrollToSpy).toHaveBeenCalledWith({ top: 0 });
+            expect(scrollTo).toHaveBeenCalledWith({ top: 0 }, wrapper.vm.$refs.rootElement);
           });
         });
       });
@@ -502,16 +494,7 @@ describe('~/access_tokens/components/access_token_table_app', () => {
             'X-Per-Page': 20,
             'X-Total': accessTokens.length,
           };
-          mockAxios.onGet().reply(
-            HTTP_STATUS_OK,
-            [
-              {
-                active_access_tokens: accessTokens,
-                total: accessTokens.length,
-              },
-            ],
-            headers,
-          );
+          mockAxios.onGet().reply(HTTP_STATUS_OK, accessTokens, headers);
           createComponent({ initialActiveAccessTokens: accessTokens, backendPagination: true });
         });
 
@@ -535,11 +518,10 @@ describe('~/access_tokens/components/access_token_table_app', () => {
           it('scrolls to the top', async () => {
             await axios.waitForAll();
 
-            const scrollToSpy = jest.spyOn(window, 'scrollTo');
             await findPagination().vm.$emit('input', 2);
             await axios.waitForAll();
 
-            expect(scrollToSpy).toHaveBeenCalledWith({ top: 0 });
+            expect(scrollTo).toHaveBeenCalledWith({ top: 0 }, wrapper.vm.$refs.rootElement);
           });
         });
       });

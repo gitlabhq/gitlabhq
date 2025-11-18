@@ -27,6 +27,10 @@
     "anonymous_searches_allowed": {
       "type": "boolean",
       "description": "Allow anonymous searches"
+    },
+    "default_search_scope": {
+      "type": "string",
+      "description": "Default scope for search"
     }
   }
 }

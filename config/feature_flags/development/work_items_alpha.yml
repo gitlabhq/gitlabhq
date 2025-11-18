@@ -1,9 +1,0 @@
----
-name: work_items_alpha
-feature_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/377912
-introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/155990
-rollout_issue_url: https://gitlab.com/gitlab-com/gl-infra/production/-/issues/18942
-milestone: '17.2'
-type: development
-group: group::project management
-default_enabled: false

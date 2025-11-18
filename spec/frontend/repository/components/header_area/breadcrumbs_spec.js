@@ -238,9 +238,10 @@ describe('Repository breadcrumbs component', () => {
               directoryCodeDropdownUpdates: true,
             },
           });
-          expect(findClipboardButton().exists()).toBe(expected);
+          expect(findGLBreadcrumb().props('showClipboardButton')).toBe(expected);
           if (expected) {
-            expect(findClipboardButton().vm.text).toBe(currentPath);
+            expect(findGLBreadcrumb().props('pathToCopy')).toBe(currentPath);
+            expect(findGLBreadcrumb().props('clipboardTooltipText')).toBe('Copy file path');
           }
         },
       );
@@ -365,29 +366,6 @@ describe('Repository breadcrumbs component', () => {
       await nextTick();
 
       expect(findDropdown().exists()).toBe(true);
-    });
-
-    describe('copy-to-clipboard icon button', () => {
-      it.each`
-        description                                  | flagValue | currentPath        | expected
-        ${'does not render button '}                 | ${false}  | ${'/path/to/file'} | ${false}
-        ${'does not render button '}                 | ${true}   | ${''}              | ${false}
-        ${'renders button that copies current path'} | ${true}   | ${'/path/to/file'} | ${true}
-      `(
-        'when flag is $flagValue and currentPath is "$currentPath", $description',
-        ({ flagValue, currentPath, expected }) => {
-          factory({
-            currentPath,
-            glFeatures: {
-              directoryCodeDropdownUpdates: flagValue,
-            },
-          });
-          expect(findClipboardButton().exists()).toBe(expected);
-          if (expected) {
-            expect(findClipboardButton().vm.text).toBe(currentPath);
-          }
-        },
-      );
     });
 
     describe('renders the upload blob modal', () => {

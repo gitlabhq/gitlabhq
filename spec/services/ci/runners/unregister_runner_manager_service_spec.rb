@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe ::Ci::Runners::UnregisterRunnerManagerService, '#execute', :freeze_time, feature_category: :runner do
+RSpec.describe ::Ci::Runners::UnregisterRunnerManagerService, '#execute', :freeze_time, feature_category: :runner_core do
   subject(:execute) { described_class.new(runner, 'some_token', system_id: system_id).execute }
 
   context 'with runner registered with registration token' do

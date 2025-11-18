@@ -10,7 +10,7 @@ module Git
 
     def execute
       create_events
-      create_pipelines
+      create_pipeline
       execute_project_hooks
 
       # Not a hook, but it needs access to the list of changed commits
@@ -55,23 +55,18 @@ module Git
       Gitlab::Git.blank_ref?(newrev)
     end
 
-    def create_pipelines
-      return unless params.fetch(:create_pipelines, true)
-      return if removing_ref?
+    def create_pipeline
+      return unless create_pipeline?
 
-      if Feature.enabled?(:async_pipeline_creation_on_push, project)
-        sidekiq_safe_pipeline_params = pipeline_params.merge(push_options: push_options&.deep_stringify_keys)
+      sidekiq_safe_pipeline_params = pipeline_params.merge(push_options: push_options&.deep_stringify_keys)
 
-        Ci::CreatePipelineService
-          .new(project, current_user, sidekiq_safe_pipeline_params)
-          .execute_async(:push, pipeline_options)
-      else
-        response = Ci::CreatePipelineService
-                     .new(project, current_user, pipeline_params)
-                     .execute(:push, **pipeline_options)
+      Ci::CreatePipelineService
+        .new(project, current_user, sidekiq_safe_pipeline_params)
+        .execute_async(:push, pipeline_options)
+    end
 
-        log_pipeline_errors(response.message) unless response.payload.persisted?
-      end
+    def create_pipeline?
+      params.fetch(:create_pipelines, true) && !removing_ref?
     end
 
     def execute_project_hooks

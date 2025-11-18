@@ -43,9 +43,9 @@ including a large number of false positives.
 
 To search for other types of secrets in your repositories, you can [customize analyzer rulesets](#customize-analyzer-rulesets).
 
-To propose a new detection rule for all users of pipeline secret detection, [see our single source of truth for our rules](https://gitlab.com/gitlab-org/security-products/secret-detection/secret-detection-rules/-/blob/main/README.md) and follow the guidance to create a merge request.
+To propose a new detection rule for all users of pipeline secret detection, see the GitLab rules [single source of truth](https://gitlab.com/gitlab-org/security-products/secret-detection/secret-detection-rules/-/blob/main/README.md) and follow the guidance to create a merge request.
 
-If you operate a cloud or SaaS product and you're interested in partnering with GitLab to better protect your users, learn more about our [partner program for leaked credential notifications](../automatic_response.md#partner-program-for-leaked-credential-notifications).
+If you operate a cloud or SaaS product and you're interested in partnering with GitLab to better protect your users, learn more about the GitLab [partner program for leaked credential notifications](../automatic_response.md#partner-program-for-leaked-credential-notifications).
 
 ### Pin to specific analyzer version
 
@@ -433,8 +433,8 @@ Add the following to the `.gitlab/secret-detection-ruleset.toml` configuration f
 The extended configuration stored in `extended-gitleaks-config.toml` is included in the configuration used by the analyzer
 in the CI/CD pipeline.
 
-In the example below, we add new `[[rules]]` sections that define regular expressions to be
-detected:
+The example below adds new `[[rules]]` sections with regular expressions to be
+matched:
 
 ```toml
 # extended-gitleaks-config.toml
@@ -544,7 +544,7 @@ To ignore a pattern, add the following to the `.gitlab/secret-detection-ruleset.
 
 The extended configuration stored in `extended-gitleaks-config.toml` is included in the configuration used by the analyzer.
 
-In the example below, we add an `[allowlist]` directive that defines a regex that matches the secret to be ignored ("allowed"):
+The example below adds an `[allowlist]` directive that defines a regex that matches the secret to be ignored ("allowed"):
 
 ```toml
 # extended-gitleaks-config.toml
@@ -562,7 +562,7 @@ path = "/gitleaks.toml"
 
 This ignores any string matching `glpat-` with a suffix of 20 characters of digits and letters.
 
-Similarly, you can exclude specific paths from being scanned. In the example below, we define an array of paths to ignore under the `[allowlist]` directive. A path could either be a regular expression, or a specific file path:
+Similarly, you can exclude specific paths from being scanned. The example below defines an array of paths to ignore under the `[allowlist]` directive. A path could either be a regular expression, or a specific file path:
 
 ```toml
 # extended-gitleaks-config.toml
@@ -766,7 +766,7 @@ Prerequisites:
    [local Docker container registry](../../../packages/container_registry/_index.md):
 
    ```plaintext
-   registry.gitlab.com/security-products/secrets:6
+   registry.gitlab.com/security-products/secrets:7
    ```
 
    The pipeline secret detection analyzer's image is [periodically updated](../../detect/vulnerability_scanner_maintenance.md)

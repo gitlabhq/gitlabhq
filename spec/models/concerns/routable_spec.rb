@@ -137,12 +137,6 @@ RSpec.shared_examples 'routable resource with parent' do
 
   describe '#full_path' do
     it { expect(record.full_path).to eq "#{record.parent.full_path}/#{record.path}" }
-
-    it 'hits the cache when not preloaded' do
-      forcibly_hit_cached_lookup(record, :full_path)
-
-      expect(record.full_path).to eq("#{record.parent.full_path}/#{record.path}")
-    end
   end
 
   describe '#full_name' do
@@ -150,19 +144,12 @@ RSpec.shared_examples 'routable resource with parent' do
 
     context 'without route name' do
       before do
-        stub_feature_flags(cached_route_lookups: true)
         record.route.update_attribute(:name, nil)
       end
 
       it 'builds full name' do
         expect(record.full_name).to eq("#{record.parent.human_name} / #{record.name}")
       end
-    end
-
-    it 'hits the cache when not preloaded' do
-      forcibly_hit_cached_lookup(record, :full_name)
-
-      expect(record.full_name).to eq("#{record.parent.human_name} / #{record.name}")
     end
   end
 end
@@ -238,37 +225,6 @@ RSpec.describe Group, 'Routable', :with_clean_rails_cache, feature_category: :gr
     expect(group.route).not_to be_nil
     expect(group.route.namespace).to eq(group)
   end
-
-  describe '#parent_loaded?' do
-    before do
-      group.parent = create(:group)
-      group.save!
-
-      group.reload
-    end
-
-    it 'is false when the parent is not loaded' do
-      expect(group.parent_loaded?).to be_falsey
-    end
-
-    it 'is true when the parent is loaded' do
-      group.parent
-
-      expect(group.parent_loaded?).to be_truthy
-    end
-  end
-
-  describe '#route_loaded?' do
-    it 'is false when the route is not loaded' do
-      expect(group.route_loaded?).to be_falsey
-    end
-
-    it 'is true when the route is loaded' do
-      group.route
-
-      expect(group.route_loaded?).to be_truthy
-    end
-  end
 end
 
 RSpec.describe Project, 'Routable', :with_clean_rails_cache, feature_category: :groups_and_projects do
@@ -317,12 +273,4 @@ RSpec.describe Namespaces::ProjectNamespace, 'Routable', :with_clean_rails_cache
       described_class.create!(project: nil, organization: group.organization, parent: group, visibility_level: Gitlab::VisibilityLevel::PUBLIC, path: 'foo', name: 'foo')
     end.not_to change { Route.count }
   end
-end
-
-def forcibly_hit_cached_lookup(record, method)
-  stub_feature_flags(cached_route_lookups: true)
-  expect(record).to receive(:persisted?).and_return(true)
-  expect(record).to receive(:route_loaded?).and_return(false)
-  expect(record).to receive(:parent_loaded?).and_return(false)
-  expect(Gitlab::Cache).to receive(:fetch_once).with([record.cache_key, method]).and_call_original
 end

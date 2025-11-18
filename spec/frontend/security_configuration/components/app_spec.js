@@ -13,6 +13,7 @@ import { AUTO_DEVOPS_ENABLED_ALERT_DISMISSED_STORAGE_KEY } from '~/security_conf
 import FeatureCard from '~/security_configuration/components/feature_card.vue';
 import PipelineSecretDetectionFeatureCard from '~/security_configuration/components/pipeline_secret_detection_feature_card.vue';
 import SecretPushProtectionFeatureCard from '~/security_configuration/components/secret_push_protection_feature_card.vue';
+import RefTrackingList from '~/security_configuration/components/ref_tracking_list.vue';
 import TrainingProviderList from '~/security_configuration/components/training_provider_list.vue';
 import {
   securityFeaturesMock,
@@ -33,7 +34,11 @@ describe('~/security_configuration/components/app', () => {
   let wrapper;
   let userCalloutDismissSpy;
 
-  const createComponent = ({ shouldShowCallout = true, ...propsData } = {}) => {
+  const createComponent = ({
+    shouldShowCallout = true,
+    vulnerabilitiesAcrossContexts = true,
+    ...propsData
+  } = {}) => {
     userCalloutDismissSpy = jest.fn();
 
     wrapper = mountExtended(SecurityConfigurationApp, {
@@ -42,7 +47,12 @@ describe('~/security_configuration/components/app', () => {
         securityTrainingEnabled: true,
         ...propsData,
       },
-      provide: provideMock,
+      provide: {
+        ...provideMock,
+        glFeatures: {
+          vulnerabilitiesAcrossContexts,
+        },
+      },
       stubs: {
         ...stubChildren(SecurityConfigurationApp),
         GlLink: false,
@@ -67,6 +77,8 @@ describe('~/security_configuration/components/app', () => {
   const findSecretPushProtection = () => wrapper.findComponent(SecretPushProtectionFeatureCard);
   const findPipelineSecretDetectionCard = () =>
     wrapper.findComponent(PipelineSecretDetectionFeatureCard);
+  const findRefsTrackingSection = () => wrapper.findByTestId('refs-tracking-section');
+  const findSecurityTrainingSection = () => wrapper.findByTestId('security-training-section');
   const findTrainingProviderList = () => wrapper.findComponent(TrainingProviderList);
   const findManageViaMRErrorAlert = () => wrapper.findByTestId('manage-via-mr-error-alert');
   const findLink = ({ href, text, container = wrapper }) => {
@@ -367,19 +379,64 @@ describe('~/security_configuration/components/app', () => {
       expect(findVulnerabilityManagementTab().exists()).toBe(true);
     });
 
-    it('renders TrainingProviderList component', () => {
-      expect(findTrainingProviderList().props()).toMatchObject(props);
+    describe('refs tracking section', () => {
+      it('renders the section with correct heading', () => {
+        expect(findRefsTrackingSection().props('heading')).toBe('Refs');
+      });
+
+      it('renders description with correct text', () => {
+        expect(findRefsTrackingSection().text()).toContain(
+          'Track vulnerabilities in up to 16 refs (branches or tags). The default branch is tracked by default on the Security Dashboard and Vulnerability report and cannot be removed.',
+        );
+      });
+
+      it('renders RefTrackingList component', () => {
+        expect(findRefsTrackingSection().findComponent(RefTrackingList).exists()).toBe(true);
+      });
+
+      it('renders link to help docs', () => {
+        const helpLink = findRefsTrackingSection().findComponent(GlLink);
+
+        expect(helpLink.text()).toBe(
+          'Learn more about vulnerability management on non-default branches and tags.',
+        );
+        expect(helpLink.attributes('href')).toBe(
+          '/help/user/application_security/vulnerability_report/_index.md',
+        );
+      });
     });
 
-    it('renders security training description', () => {
-      expect(findVulnerabilityManagementTab().text()).toContain(i18n.securityTrainingDescription);
+    describe('security training section', () => {
+      it('renders the section with correct heading', () => {
+        expect(findSecurityTrainingSection().props('heading')).toBe('Security training');
+      });
+
+      it('renders TrainingProviderList component', () => {
+        expect(findTrainingProviderList().props()).toMatchObject(props);
+      });
+
+      it('renders security training description', () => {
+        expect(findSecurityTrainingSection().text()).toContain(i18n.securityTrainingDescription);
+      });
+
+      it('renders link to help docs', () => {
+        const trainingLink = findSecurityTrainingSection().findComponent(GlLink);
+
+        expect(trainingLink.text()).toBe('Learn more about vulnerability training');
+        expect(trainingLink.attributes('href')).toBe(vulnerabilityTrainingDocsPath);
+      });
+    });
+  });
+
+  describe('when the "vulnerabilitiesAcrossContexts" feature flag is disabled', () => {
+    beforeEach(() => {
+      createComponent({
+        vulnerabilitiesAcrossContexts: false,
+      });
     });
 
-    it('renders link to help docs', () => {
-      const trainingLink = findVulnerabilityManagementTab().findComponent(GlLink);
-
-      expect(trainingLink.text()).toBe('Learn more about vulnerability training');
-      expect(trainingLink.attributes('href')).toBe(vulnerabilityTrainingDocsPath);
+    it('does not render refs tracking section', () => {
+      expect(findRefsTrackingSection().exists()).toBe(false);
     });
   });
 });

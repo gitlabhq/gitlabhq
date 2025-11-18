@@ -38,7 +38,11 @@ Prerequisites:
 ### With IAM Role authentication
 
 You can use a secret stored in AWS Secrets Manager in a job by defining it with the
-`aws_secrets_manager` keyword. This method uses the IAM role assigned to your GitLab Runner instance.
+`aws_secrets_manager` keyword.
+
+This method uses the IAM role assigned to your GitLab Runner instance. When using the
+[Kubernetes executor](https://docs.gitlab.com/runner/executors/kubernetes/) or [autoscaling](https://docs.gitlab.com/runner/runner_autoscale/),
+make sure the IAM role is applied to your runner manager.
 
 Prerequisites:
 
@@ -262,3 +266,25 @@ In these examples:
 
 Refer to [OIDC for AWS troubleshooting](../cloud_services/aws/_index.md#troubleshooting) for general
 problems when setting up OIDC with AWS.
+
+### Error: `no EC2 IMDS role found`
+
+The following error might happen if both of these conditions are true:
+
+- The CI/CD job is configured to [use IAM role authentication](#with-iam-role-authentication).
+- The job is executed by a runner with the [Kubernetes executor](https://docs.gitlab.com/runner/executors/kubernetes/) hosted on AWS EKS.
+
+```plaintext
+Resolving secrets
+Resolving secret "MY_AWS_SECRET"...
+Using "aws_secrets_manager" secret resolver...
+ERROR: Job failed (system failure): resolving secrets: operation error Secrets Manager: GetSecretValue, get identity: get credentials: failed to refresh cached credentials, no EC2 IMDS role found, operation error ec2imds: GetMetadata, canceled, context deadline exceeded
+```
+
+The `Resolving secrets` step is handled by the runner manager. This step accesses IAM credentials
+cached in [EC2 IMDS](https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/configuring-instance-metadata-service.html).
+If the IAM role has not been applied to the runner manager, the `Resolving secrets` step fails.
+
+To address this error, apply the correct IAM role to the runner manager.
+
+Applying the IAM role to the runner pods that are spawned and managed by the runner manager does not resolve this issue.

@@ -21,13 +21,21 @@ RSpec.describe AwardEmojis::CopyService, feature_category: :team_planning do
   end
 
   describe '#execute' do
-    let(:to_awardable) { create(:issue) }
+    let_it_be_with_reload(:to_awardable) { create(:issue) }
 
     subject(:execute_service) { described_class.new(from_awardable, to_awardable).execute }
 
     it 'copies AwardEmojis that exist in the destination namespace', :aggregate_failures do
       expect { execute_service }.to change { AwardEmoji.count }.by(2)
       expect(to_awardable.award_emoji.map(&:name)).to match_array([AwardEmoji::THUMBS_UP, AwardEmoji::THUMBS_DOWN])
+    end
+
+    it 'set the correct sharding key on copied award emoji' do
+      expect { execute_service }.to change { AwardEmoji.count }.by(2)
+      expect(to_awardable.award_emoji).to contain_exactly(
+        have_attributes(namespace_id: to_awardable.namespace_id, organization_id: nil),
+        have_attributes(namespace_id: to_awardable.namespace_id, organization_id: nil)
+      )
     end
 
     it 'returns success', :aggregate_failures do

@@ -697,7 +697,8 @@ RSpec.describe API::Ci::Pipelines, feature_category: :continuous_integration do
           end
         end
 
-        it 'avoids N+1 queries', :use_sql_query_cache, :request_store do
+        it 'avoids N+1 queries', :use_sql_query_cache, :request_store,
+          quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/562015' do
           control = ActiveRecord::QueryRecorder.new(skip_cached: false) do
             get api("/projects/#{project.id}/pipelines/#{pipeline.id}/bridges", api_user), params: query
           end

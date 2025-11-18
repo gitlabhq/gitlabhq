@@ -13,7 +13,7 @@ title: Repository files API
 
 {{< /details >}}
 
-You can fetch, create, update, and delete files in your repository with this API.
+Use this API to manage [repository files](../user/project/repository/_index.md).
 You can also [configure rate limits](../administration/settings/files_api_rate_limits.md)
 for this API.
 
@@ -379,7 +379,7 @@ Example response:
 }
 ```
 
-If the commit fails for any reason we return a `400 Bad Request` error with a non-specific
+If the commit fails for any reason, the API returns a `400 Bad Request` error with a non-specific
 error message. Possible causes for a failed commit include:
 
 - The `file_path` contained `/../` (attempted directory traversal).

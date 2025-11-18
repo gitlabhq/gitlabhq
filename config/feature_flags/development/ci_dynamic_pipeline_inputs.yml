@@ -1,0 +1,9 @@
+---
+name: ci_dynamic_pipeline_inputs
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/205726
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/572854
+feature_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/563375
+milestone: '18.6'
+type: development
+group: group::pipeline authoring
+default_enabled: false

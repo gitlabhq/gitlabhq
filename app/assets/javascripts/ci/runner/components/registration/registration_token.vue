@@ -3,6 +3,7 @@ import { s__ } from '~/locale';
 import InputCopyToggleVisibility from '~/vue_shared/components/input_copy_toggle_visibility/input_copy_toggle_visibility.vue';
 
 export default {
+  name: 'RegistrationToken',
   components: {
     InputCopyToggleVisibility,
   },
@@ -27,14 +28,6 @@ export default {
       };
     },
   },
-  methods: {
-    onCopy() {
-      // value already in the clipboard, simply notify the user
-      this.$toast?.show(s__('Runners|Registration token copied!'));
-      this.$emit('copy');
-    },
-  },
-  I18N_COPY_BUTTON_TITLE: s__('Runners|Copy registration token'),
 };
 </script>
 <template>
@@ -43,10 +36,10 @@ export default {
     :value="value"
     :label="$options.i18n.registrationToken"
     :label-for="inputId"
-    :copy-button-title="$options.I18N_COPY_BUTTON_TITLE"
+    :copy-button-title="s__('Runners|Copy registration token')"
+    :copy-button-toast-message="s__('Runners|Registration token copied to clipboard.')"
     :form-input-group-props="formInputGroupProps"
     readonly
-    @copy="onCopy"
   >
     <template v-for="slot in Object.keys($scopedSlots)" #[slot]>
       <slot :name="slot"></slot>

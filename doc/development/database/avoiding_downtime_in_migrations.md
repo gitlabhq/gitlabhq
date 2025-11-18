@@ -568,8 +568,10 @@ This operation is safe as there's no code using the table just yet.
 
 ## Dropping tables
 
-Dropping tables can be done safely using a post-deployment migration, but only
-if the application no longer uses the table.
+Dropping tables requires a multi-release process to avoid downtime:
+
+1. **Release M**: Remove all application code that uses the table
+1. **Release M+1**: Drop the table using a post-deployment migration
 
 Add the table to [`db/docs/deleted_tables`](https://gitlab.com/gitlab-org/gitlab/-/tree/master/db/docs/deleted_tables) using the process described in [database dictionary](database_dictionary.md#dropping-tables).
 Even though the table is deleted, it is still referenced in database migrations.

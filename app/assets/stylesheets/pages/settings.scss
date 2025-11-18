@@ -46,7 +46,8 @@
 }
 
 .settings-section:not(.settings-section-no-bottom) ~ .settings-section {
-  @apply gl-border-t gl-pt-6;
+  @apply gl-border-t;
+  @apply gl-pt-6;
 }
 
 .settings-section-no-bottom::after {
@@ -62,7 +63,8 @@
   position: sticky;
   top: $calc-application-header-height;
   min-height: $settings-sticky-header-height;
-  @apply gl-bg-default gl-py-3;
+  @apply gl-bg-default;
+  @apply gl-py-3;
 
   &::before {
     content: '';
@@ -95,7 +97,9 @@
   position: sticky;
   bottom: 0;
   min-height: $settings-sticky-footer-height;
-  @apply gl-bg-default gl-py-3 gl-border-t;
+  @apply gl-bg-default;
+  @apply gl-py-3;
+  @apply gl-border-t;
 }
 
 // Header shouldn't be sticky if only one section on page

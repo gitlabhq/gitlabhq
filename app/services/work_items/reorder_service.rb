@@ -11,7 +11,6 @@ module WorkItems
 
     def execute(work_item)
       return unauthorized_error(work_item) unless current_user.can?(:update_work_item, work_item)
-      return non_project_work_item_error(work_item) if work_item.project.blank?
       return missing_arguments_error(work_item) unless move_between_ids
 
       ::WorkItems::UpdateService.new(
@@ -34,13 +33,6 @@ module WorkItems
         work_item: work_item,
         errors: []
       })
-    end
-
-    def non_project_work_item_error(work_item)
-      error(
-        work_item,
-        message: 'Only project work items are supported at this moment'
-      )
     end
 
     def unauthorized_error(work_item)

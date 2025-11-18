@@ -1,0 +1,13 @@
+---
+table_name: project_push_rules
+classes:
+- PushRule
+feature_categories:
+- source_code_management
+description: Store push rules for projects
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/208153
+milestone: '18.6'
+gitlab_schema: gitlab_main_org
+sharding_key:
+  project_id: projects
+table_size: small

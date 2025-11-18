@@ -13,7 +13,7 @@ RSpec.describe 'Environment', feature_category: :environment_management do
   end
 
   def auto_stop_button_selector
-    %q(button[title="Prevent environment from auto-stopping"])
+    %q([data-testid="cancel-auto-stop-button"])
   end
 
   describe 'environment details page', :js do

@@ -18,10 +18,8 @@ module ActiveContext
 
           return if collection_exists?(strategy)
 
-          # Create parent table if it doesn't exist
           create_parent_table(strategy.collection_name, fields, options) unless table_exists?(strategy.collection_name)
 
-          # Create child partition tables
           strategy.each_partition do |partition_name|
             next if table_exists?(partition_name)
 
@@ -32,7 +30,6 @@ module ActiveContext
             )
           end
 
-          # Create indices on fields that need them
           create_indices(strategy, fields)
         end
 
@@ -216,6 +213,12 @@ module ActiveContext
 
         def get_partition_remainder(partition_name)
           partition_name.split('_').last.to_i
+        end
+
+        def do_drop_collection(collection)
+          adapter.client.with_connection do |connection|
+            connection.drop_table(collection.name, if_exists: true)
+          end
         end
       end
     end

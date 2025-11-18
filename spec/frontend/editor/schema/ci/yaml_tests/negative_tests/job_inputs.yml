@@ -1,0 +1,35 @@
+missing_default:
+  test-job:
+    inputs:
+      environment:
+        type: string
+    script:
+      - echo "test"
+
+type_mismatches:
+  test-job:
+    inputs:
+      string_with_number:
+        type: string
+        default: 123
+      number_with_string:
+        type: number
+        default: "not a number"
+      boolean_with_string:
+        type: boolean
+        default: "true"
+      array_with_object:
+        type: array
+        default:
+          key: "value"
+    script:
+      - echo "test"
+
+invalid_type:
+  test-job:
+    inputs:
+      data:
+        type: "object"
+        default: {}
+    script:
+      - echo "test"

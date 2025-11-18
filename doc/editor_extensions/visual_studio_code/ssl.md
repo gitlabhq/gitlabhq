@@ -1,5 +1,5 @@
 ---
-stage: Create
+stage: AI-powered
 group: Editor Extensions
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 title: Using the VS Code extension with self-signed certificates
@@ -17,6 +17,8 @@ all existing SSL issues for the GitLab Workflow extension.
 Prerequisites:
 
 - Your GitLab instance uses a certificate signed with a self-signed certificate authority (CA).
+- Your VS Code version is 1.101.2 (May 2025) or later.
+- The `gitlab.ca` VS Code setting is **not** in use.
 
 1. Ensure your CA certificate is correctly added to your system for the extension to work. VS Code reads
    the system certificate store, and changes all node `http` requests to trust the certificates:
@@ -29,6 +31,8 @@ Prerequisites:
 
       A[Self-signed CA] -- signed --> B[Your GitLab instance certificate]
    ```
+
+   The GitLab instance certificate's CA must be explicitly specified as a trusted CA. If intermediate certificates are in use, these must be available on the system. If the entire chain does not validate successfully, network connections within the extension fail to authenticate.
 
    For more information, see [Self-signed certificate error when installing Python support in WSL](https://github.com/microsoft/vscode/issues/131836#issuecomment-909983815) in the Visual Studio Code issue tracker.
 
@@ -77,4 +81,4 @@ Make sure you see the self-signed CA in your keychain:
 
 1. Go to **Finder** > **Applications** > **Utilities** > **Keychain Access**.
 1. In the left-hand column, select **System**.
-1. Your self-signed CA certificate should be on the list.
+1. Your self-signed CA certificate should be on the list, and should be `Valid` or `Trusted`.

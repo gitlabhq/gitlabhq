@@ -82,7 +82,7 @@ To convert a Linux package CE instance to EE:
    {{< /tabs >}}
 
    To use `dpkg` or `rpm` instead of using `apt-get` or `yum` follow
-   [Upgrade using a manually downloaded package](../package/_index.md#upgrade-by-using-a-downloaded-package).
+   [upgrade with a downloaded package](../package/_index.md#upgrade-with-a-downloaded-package).
 
 1. Install the `gitlab-ee` Linux package. The install automatically uninstalls the `gitlab-ce` package on your GitLab.
 

@@ -52,6 +52,7 @@ module API
         end
         params do
           optional :sha, type: String, desc: 'When present, must have the HEAD SHA of the source branch'
+          optional :publish_review, type: Boolean, desc: 'When `true` submits pending review comments'
 
           use :ee_approval_params
         end
@@ -59,6 +60,12 @@ module API
           merge_request = find_merge_request_with_access(params[:merge_request_iid], :approve_merge_request)
 
           check_sha_param!(params, merge_request)
+
+          if params[:publish_review]
+            result = ::DraftNotes::PublishService.new(merge_request, current_user).execute
+
+            render_api_error('Failed to publish review', 500) unless result[:status] == :success
+          end
 
           success =
             ::MergeRequests::ApprovalService

@@ -11,11 +11,11 @@ RSpec.describe Gitlab::CycleAnalytics::StageSummary, feature_category: :devops_r
   let(:args) { { options: options, current_user: user } }
   let(:user) { create(:user, :admin) }
 
+  let(:stage_summary) { described_class.new(project, **args).data }
+
   before do
     project.add_maintainer(user)
   end
-
-  let(:stage_summary) { described_class.new(project, **args).data }
 
   describe '#identifier' do
     it 'returns identifiers for each metric' do

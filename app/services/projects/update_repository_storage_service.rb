@@ -94,7 +94,8 @@ module Projects
         shard: Shard.by_name(shard_name),
         source_project: pool_repository.source_project,
         disk_path: pool_repository.disk_path,
-        state: 'ready'
+        state: 'ready',
+        organization: pool_repository.organization
       )
     end
   end

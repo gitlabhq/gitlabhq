@@ -12,7 +12,7 @@ title: Go Proxy API
 
 {{< /details >}}
 
-This is the API documentation for [Go Packages](../../user/packages/go_proxy/_index.md).
+Use this API to interact with the [Go package manager client](../../user/packages/go_proxy/_index.md).
 This API is behind a feature flag that is disabled by default. GitLab administrators with access to
 the GitLab Rails console can [enable](../../administration/feature_flags/_index.md)
 this API for your GitLab instance.
@@ -23,8 +23,6 @@ This API is used by the [Go client](https://maven.apache.org/)
 and is generally not meant for manual consumption.
 
 {{< /alert >}}
-
-For instructions on how to work with the Go Proxy, see the [Go Proxy package documentation](../../user/packages/go_proxy/_index.md).
 
 {{< alert type="note" >}}
 
@@ -48,7 +46,7 @@ GET projects/:id/packages/go/:module_name/@v/list
 | `module_name`  | string | yes      | The name of the Go module. |
 
 ```shell
-curl --header "Private-Token: <personal_access_token>" \
+curl --header "PRIVATE-TOKEN: <personal_access_token>" \
   --url "https://gitlab.example.com/api/v4/projects/1/packages/go/my-go-module/@v/list"
 ```
 
@@ -73,7 +71,7 @@ GET projects/:id/packages/go/:module_name/@v/:module_version.info
 | `module_version`  | string | yes      | The version of the Go module. |
 
 ```shell
-curl --header "Private-Token: <personal_access_token>" \
+curl --header "PRIVATE-TOKEN: <personal_access_token>" \
   --url "https://gitlab.example.com/api/v4/projects/1/packages/go/my-go-module/@v/1.0.0.info"
 ```
 
@@ -101,14 +99,14 @@ GET projects/:id/packages/go/:module_name/@v/:module_version.mod
 | `module_version`  | string | yes      | The version of the Go module. |
 
 ```shell
-curl --header "Private-Token: <personal_access_token>" \
+curl --header "PRIVATE-TOKEN: <personal_access_token>" \
   --url "https://gitlab.example.com/api/v4/projects/1/packages/go/my-go-module/@v/1.0.0.mod"
 ```
 
 Write to a file:
 
 ```shell
-curl --header "Private-Token: <personal_access_token>" \
+curl --header "PRIVATE-TOKEN: <personal_access_token>" \
   --url "https://gitlab.example.com/api/v4/projects/1/packages/go/my-go-module/@v/1.0.0.mod" >> foo.mod
 ```
 
@@ -129,14 +127,14 @@ GET projects/:id/packages/go/:module_name/@v/:module_version.zip
 | `module_version`  | string | yes      | The version of the Go module. |
 
 ```shell
-curl --header "Private-Token: <personal_access_token>" \
+curl --header "PRIVATE-TOKEN: <personal_access_token>" \
   --url "https://gitlab.example.com/api/v4/projects/1/packages/go/my-go-module/@v/1.0.0.zip"
 ```
 
 Write to a file:
 
 ```shell
-curl --header "Private-Token: <personal_access_token>" \
+curl --header "PRIVATE-TOKEN: <personal_access_token>" \
   --url "https://gitlab.example.com/api/v4/projects/1/packages/go/my-go-module/@v/1.0.0.zip" >> foo.zip
 ```
 

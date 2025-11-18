@@ -231,4 +231,17 @@ describe('~/lib/dompurify', () => {
       expect(el.hasAttribute('rel')).toBe(false);
     });
   });
+
+  describe('gl-emoji tags', () => {
+    it('does not remove the title, data-name, or data-unicode-version attributes', () => {
+      const html = `<gl-emoji title="thumbs up" data-name="thumbsup" data-unicode-version="6.0">👍</gl-emoji>`;
+      expect(sanitize(html)).toBe(html);
+    });
+
+    it('does not remove the data-name or data-unicode-version attributes even when ALLOW_DATA_ATTR is false', () => {
+      const input = `<gl-emoji data-evil="nope" title="thumbs up" data-name="thumbsup" data-unicode-version="6.0">👍</gl-emoji>`;
+      const expected = `<gl-emoji title="thumbs up" data-name="thumbsup" data-unicode-version="6.0">👍</gl-emoji>`;
+      expect(sanitize(input, { ...defaultConfig, ALLOW_DATA_ATTR: false })).toBe(expected);
+    });
+  });
 });

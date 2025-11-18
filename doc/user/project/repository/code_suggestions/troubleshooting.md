@@ -1,5 +1,5 @@
 ---
-stage: Create
+stage: AI-powered
 group: Code Creation
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 description: Troubleshooting tips for common problems in Code Suggestions.
@@ -110,9 +110,9 @@ Disabling streaming means that code generation requests might be perceived
 as taking longer to resolve. To disable streaming:
 
 1. In VS Code, on the top bar, go to **Code** > **Settings** > **Settings**.
-1. On the top right corner, select **Open Settings (JSON)** to edit your `settings.json` file:
+1. In the upper-right corner, select **Open Settings (JSON)** to edit your `settings.json` file:
 
-   ![The icons on the top right corner of VS Code, including 'Open Settings.'](img/open_settings_v17_5.png)
+   ![The icons in the upper-right corner of VS Code, including 'Open Settings.'](img/open_settings_v17_5.png)
 1. In your `settings.json` file, add this line, or set it to `false` it already exists:
 
    ```json

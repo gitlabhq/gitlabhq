@@ -42,7 +42,7 @@ You can also turn GitLab Duo Core (a subset of GitLab Duo features) on or off.
 
 [GitLab Duo Core](feature_summary.md) is included with Premium and Ultimate subscriptions.
 
-- If you are an existing customer from GitLab 17.11 or earlier, you must turn on Web or IDE features to start using GitLab Duo Core.
+- If you are an existing customer from GitLab 17.11 or earlier, you must turn on features for GitLab Duo Core.
 - If you are a new customer in GitLab 18.0 or later, GitLab Core is automatically turned on and no further action is needed.
 
 If you were an existing customer with a Premium or Ultimate subscription before May 15, 2025,
@@ -58,11 +58,11 @@ Prerequisites:
 
 To change GitLab Duo Core availability:
 
-1. On the left sidebar, select **Search or go to** and find your top-level group.
+1. On the left sidebar, select **Search or go to** and find your top-level group. If you've [turned on the new navigation](../interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
 1. Select **Settings** > **GitLab Duo**.
 1. Select **Change configuration**.
 1. Under **GitLab Duo availability in this namespace**, select an option.
-1. Under **GitLab Duo Core**, select or clear the **Turn on Web and IDE features** checkbox.
+1. Under **GitLab Duo Core**, select or clear the **Turn on features for GitLab Duo Core** checkbox.
    If you selected **Always off** for GitLab Duo availability, you cannot access
    this setting.
 1. Select **Save changes**.
@@ -79,11 +79,11 @@ Prerequisites:
 
 To change GitLab Duo Core availability:
 
-1. On the left sidebar, at the bottom, select **Admin**.
+1. On the left sidebar, at the bottom, select **Admin**. If you've [turned on the new navigation](../interface_redesign.md#turn-new-navigation-on-or-off), in the upper-right corner, select **Admin**.
 1. Select **GitLab Duo**.
 1. Select **Change configuration**.
 1. Under **GitLab Duo availability in this instance**, select an option.
-1. Under **GitLab Duo Core**, select or clear the **Turn on Web and IDE features** checkbox.
+1. Under **GitLab Duo Core**, select or clear the **Turn on features for GitLab Duo Core** checkbox.
    If you selected **Always off** for GitLab Duo availability, you cannot access
    this setting.
 1. Select **Save changes**.
@@ -102,15 +102,16 @@ other groups, subgroups, and projects.
 
 Prerequisites:
 
-- You must have the Owner or Maintainer role for the group.
+- You must have the Owner role for the group.
 
 To change GitLab Duo availability for the top-level group:
 
-1. On the left sidebar, select **Search or go to** and find your top-level group.
+1. On the left sidebar, select **Search or go to** and find your top-level group. If you've [turned on the new navigation](../interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
 1. Select **Settings** > **GitLab Duo**.
 1. Select **Change configuration**.
 1. Under **GitLab Duo availability in this namespace**, select an option.
-1. Select or clear the **Allow flow execution** checkbox.
+1. Use the **Allow flow execution** toggle to control whether agents can run in the GitLab UI.
+   When turned on, agents execute in CI/CD pipelines and consume compute minutes.
 1. Select **Save changes**.
 
 GitLab Duo availability changes for all subgroups and projects.
@@ -119,15 +120,16 @@ GitLab Duo availability changes for all subgroups and projects.
 
 Prerequisites:
 
-- You must have the Owner or Maintainer role for the group.
+- You must have the Owner role for the group.
 
 To change GitLab Duo availability for a group or subgroup:
 
-1. On the left sidebar, select **Search or go to** and find your group or subgroup.
+1. On the left sidebar, select **Search or go to** and find your group or subgroup. If you've [turned on the new navigation](../interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
 1. Select **Settings** > **General**.
 1. Expand **GitLab Duo features**.
 1. Under **GitLab Duo availability in this group**, select an option.
-1. Select or clear the **Allow flow execution** checkbox.
+1. Use the **Allow flow execution** toggle to control whether agents can run in the GitLab UI.
+   When turned on, agents execute in CI/CD pipelines and consume compute minutes.
 1. Select **Save changes**.
 
 GitLab Duo availability changes for all subgroups and projects.
@@ -140,11 +142,12 @@ Prerequisites:
 
 To change GitLab Duo availability for a project:
 
-1. On the left sidebar, select **Search or go to** and find your project.
+1. On the left sidebar, select **Search or go to** and find your project. If you've [turned on the new navigation](../interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
 1. Select **Settings** > **General**.
 1. Expand **GitLab Duo**.
 1. Turn the **Use AI-native features in this project** toggle on or off.
-1. Turn the **Allow flow execution** toggle on or off.
+1. Use the **Allow flow execution** toggle to control whether agents can run in the GitLab UI.
+   When turned on, agents execute in CI/CD pipelines and consume compute minutes.
 1. Select **Save changes**.
 
 ### On GitLab Self-Managed
@@ -160,11 +163,12 @@ Prerequisites:
 
 To change GitLab Duo availability for the instance:
 
-1. On the left sidebar, at the bottom, select **Admin**.
+1. On the left sidebar, at the bottom, select **Admin**. If you've [turned on the new navigation](../interface_redesign.md#turn-new-navigation-on-or-off), in the upper-right corner, select **Admin**.
 1. Select **GitLab Duo**.
 1. Select **Change configuration**.
 1. Under **GitLab Duo availability in this instance**, select an option.
-1. Select or clear the **Allow flow execution** checkbox.
+1. Use the **Allow flow execution** toggle to control whether agents can run in the GitLab UI.
+   When turned on, agents execute in CI/CD pipelines and consume compute minutes.
 1. Select **Save changes**.
 
 GitLab Duo availability changes for the entire instance.
@@ -173,15 +177,16 @@ GitLab Duo availability changes for the entire instance.
 
 Prerequisites:
 
-- You must have the Owner or Maintainer role for the group or subgroup.
+- You must have the Owner role for the group or subgroup.
 
 To change GitLab Duo availability for a group or subgroup:
 
-1. On the left sidebar, select **Search or go to** and find your group or subgroup.
+1. On the left sidebar, select **Search or go to** and find your group or subgroup. If you've [turned on the new navigation](../interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
 1. Select **Settings** > **General**.
 1. Expand **GitLab Duo features**.
 1. Under **GitLab Duo availability in this group**, select an option.
-1. Select or clear the **Allow flow execution** checkbox.
+1. Use the **Allow flow execution** toggle to control whether agents can run in the GitLab UI.
+   When turned on, agents execute in CI/CD pipelines and consume compute minutes.
 1. Select **Save changes**.
 
 GitLab Duo availability changes for all subgroups and projects.
@@ -194,11 +199,12 @@ Prerequisites:
 
 To change GitLab Duo availability for a project:
 
-1. On the left sidebar, select **Search or go to** and find your project.
+1. On the left sidebar, select **Search or go to** and find your project. If you've [turned on the new navigation](../interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
 1. Select **Settings** > **General**.
 1. Expand **GitLab Duo**.
 1. Turn the **Use AI-native features in this project** toggle on or off.
-1. Turn the **Allow flow execution** toggle on or off.
+1. Use the **Allow flow execution** toggle to control whether agents can run in the GitLab UI.
+   When turned on, agents execute in CI/CD pipelines and consume compute minutes.
 1. Select **Save changes**.
 
 GitLab Duo availability changes for the project.
@@ -215,55 +221,17 @@ These features are subject to the [Testing Agreement](https://handbook.gitlab.co
 
 ### On GitLab.com
 
-{{< details >}}
-
-- Tier: Premium, Ultimate
-- Offering: GitLab.com, GitLab Self-Managed
-
-{{< /details >}}
-
-{{< tabs >}}
-
-{{< tab title="In 17.4 and later" >}}
-
-In GitLab 17.4 and later, follow these instructions to
-turn on GitLab Duo experimental and beta features for your group on GitLab.com.
-
-{{< alert type="note" >}}
-
-In GitLab 17.4 to 17.6, you can change this setting for top-level groups only. (Subgroups do not have the required settings.)
-In GitLab 17.7 and later, the settings are available for all groups.
-
-{{< /alert >}}
-
 Prerequisites:
 
 - You must have the Owner role for the top-level group.
 
 To turn on GitLab Duo experiment and beta features for a top-level group:
 
-1. On the left sidebar, select **Search or go to** and find your group.
+1. On the left sidebar, select **Search or go to** and find your group. If you've [turned on the new navigation](../interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
 1. Select **Settings** > **GitLab Duo**.
 1. Under **GitLab Duo** section, select **Change configuration**.
 1. Under **Feature preview**, select **Turn on experiment and beta GitLab Duo features**.
 1. Select **Save changes**.
-
-{{< /tab >}}
-
-{{< tab title="In 17.3 and earlier" >}}
-
-In GitLab 17.3 and earlier, follow these instructions to
-turn on GitLab Duo experimental and beta features for your group on GitLab.com.
-
-1. On the left sidebar, select **Search or go to** and find your group.
-1. Select **Settings** > **General**.
-1. Expand **Permissions and group features**.
-1. Under **GitLab Duo experiment and beta features**, select the **Use experiment and beta GitLab Duo features** checkbox.
-1. Select **Save changes**.
-
-{{< /tab >}}
-
-{{< /tabs >}}
 
 This setting [cascades to all projects](../project/merge_requests/approvals/settings.md#cascade-settings-from-the-instance-or-top-level-group)
 that belong to the group.

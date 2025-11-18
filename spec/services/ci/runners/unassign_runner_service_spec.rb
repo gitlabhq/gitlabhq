@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe ::Ci::Runners::UnassignRunnerService, '#execute', :aggregate_failures, feature_category: :runner do
+RSpec.describe ::Ci::Runners::UnassignRunnerService, '#execute', :aggregate_failures, feature_category: :runner_core do
   let_it_be(:owner_project) { create(:project) }
   let_it_be(:other_project) { create(:project) }
   let_it_be(:runner) { create(:ci_runner, :project, projects: [owner_project, other_project]) }

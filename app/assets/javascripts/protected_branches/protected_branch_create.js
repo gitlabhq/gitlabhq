@@ -6,7 +6,7 @@ import axios from '~/lib/utils/axios_utils';
 import { __, s__ } from '~/locale';
 import { initToggle } from '~/toggles';
 import { expandSection } from '~/settings_panels';
-import { scrollToElement } from '~/lib/utils/common_utils';
+import { scrollToElement } from '~/lib/utils/scroll_utils';
 import { initAccessDropdown } from '~/projects/settings/init_access_dropdown';
 import {
   BRANCH_RULES_ANCHOR,

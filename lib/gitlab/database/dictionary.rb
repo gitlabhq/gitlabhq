@@ -29,6 +29,23 @@ module Gitlab
         @dictionary_entries.select { |entry| entry.desired_sharding_key_migration_job_name.present? }
       end
 
+      def find_all_with_partition_detach_info
+        @dictionary_entries.select { |entry| entry.partition_detach_info.present? }
+      end
+
+      def find_detach_allowed_partitions
+        find_all_with_partition_detach_info.each_with_object({}) do |entry, result|
+          entry.partition_detach_info.each do |pi_entry|
+            result[pi_entry['partition_name'].to_sym] = {
+              bounds_clause: pi_entry['bounds_clause'],
+              required_constraint: pi_entry['required_constraint'],
+              parent_table: entry.table_name,
+              parent_schema: pi_entry['parent_schema']
+            }
+          end
+        end
+      end
+
       def self.entries(scope = '')
         @entries ||= {}
         @entries[scope] ||= new(
@@ -136,6 +153,10 @@ module Gitlab
 
         def key_name
           table_name || view_name
+        end
+
+        def partition_detach_info
+          data['partition_detach_info']
         end
 
         def validate!

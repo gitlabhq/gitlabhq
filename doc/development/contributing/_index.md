@@ -20,7 +20,7 @@ For a step-by-step guide for first-time contributors, see [Tutorial: Make a GitL
 1. [Request access to the community forks](https://gitlab.com/groups/gitlab-community/community-members/-/group_members/request_access).
 1. [Choose or create an issue to work on](#choose-or-create-an-issue).
 1. [Choose a development environment](#choose-a-development-environment).
-1. Make changes and open a merge request.
+1. [Make changes and open a merge request](#make-changes-and-open-a-merge-request)
 1. Your merge request is triaged, reviewed, and can then be incorporated into the product.
 
 {{< alert type="note" >}}
@@ -50,22 +50,15 @@ go to the footer of any page and select **View page source** to open the page in
 
 ## Choose or create an issue
 
-If you know what you're going to work on, see if an issue exists.
+If you're not sure what to work on, you can use the [issue finder](https://contributors.gitlab.com/issues)
+on the [contributor platform](https://contributors.gitlab.com) to find and assign yourself.
+It is recommended to start with an issue with the label `quick win::first-time contributor`.
+
+If you know what you're going to work on, see if an issue already exists.
 If it doesn't, open a [new issue](https://gitlab.com/gitlab-org/gitlab/-/issues/new).
 Select the appropriate template and add all the necessary information about the work you plan to do.
-That way you can get more guidance and support.
-
-If you're not sure what to work on, you can
-[view issues with the `~quick win` label](https://gitlab.com/groups/gitlab-org/-/issues/?sort=created_asc&state=opened&label_name%5B%5D=quick%20win&first_page_size=100),
-and filter specifically for [documentation `~quick win`](https://gitlab.com/groups/gitlab-org/-/issues/?sort=created_asc&state=opened&label_name%5B%5D=quick%20win&label_name%5B%5D=documentation&first_page_size=100),
-[backend `~quick win`](https://gitlab.com/groups/gitlab-org/-/issues/?sort=created_asc&state=opened&label_name%5B%5D=quick%20win&label_name%5B%5D=backend&first_page_size=100),
-or [frontend `~quick win`](https://gitlab.com/groups/gitlab-org/-/issues/?sort=created_asc&state=opened&label_name%5B%5D=quick%20win&label_name%5B%5D=frontend&first_page_size=100).
-
-When you find an issue you want to work on, leave a comment on it.
-This helps the GitLab team and members of the wider GitLab community know that you are working on that issue.
-
-This is a good opportunity to [validate the issue](issue_workflow.md#clarifyingvalidating-an-issue).
-Confirm that the issue is still valid, clarify your intended approach, and ask if a feature or change is likely to be accepted.
+Tag a [merge request coach](merge_request_coaches.md)
+with `@gitlab-bot help` on the issue or through the contributors platform to help [validate the issue](issue_workflow.md#clarifyingvalidating-an-issue).
 You do not need to be assigned to the issue to get started.
 If the issue already has an assignee, ask if they are still working on the issue or if they would like to collaborate.
 
@@ -92,37 +85,21 @@ development environment that includes an installation of GitLab Self-Managed, sa
 and administrator access with which you can test functionality.
 
 - [GDK-in-a-box](first_contribution/configure-dev-env-gdk-in-a-box.md),
-packages GDK into a pre-configured virtual machine image that you can connect to with VS Code.
+packages GDK into a pre-configured container image that you can connect to with VS Code.
 Follow [Configure GDK-in-a-box](first_contribution/configure-dev-env-gdk-in-a-box.md) to set up GDK-in-a-box.
 
   To install GDK and its dependencies, follow the steps in [Install the GDK development environment](first_contribution/configure-dev-env-gdk.md).
 
-- Use [Gitpod](first_contribution/configure-dev-env-gitpod.md) for an in-browser remote development
-  environment that runs regardless of your local hardware, operating system, or software.
+## Make changes and open a merge request
 
-## Open a merge request
+- Make your code changes on a branch in [the community fork](https://gitlab.com/gitlab-community/gitlab-org/gitlab).
+- Create a merge request targeting the master branch of the canonical repository.
+- Follow the link posted by `@gitlab-bot` to add labels or request a review from the GitLab team.
 
-1. Go to [the community fork on GitLab.com](https://gitlab.com/gitlab-community/gitlab).
+For complete step-by-step instructions on opening and submitting your merge request, see the [merge request tutorial](first_contribution/mr-review.md).
 
-   If you don't see this message, on the left sidebar, select **Code > Merge requests > New merge request**.
-
-1. Take a look at the branch names. You should be merging from your branch
-   in the community fork to the `master` branch in the GitLab repository.
-
-1. Fill out the information and then select **Save changes**.
-   Don't worry if your merge request is not complete.
-
-   If you don't want anyone from GitLab to review it, you can select the **Mark as draft** checkbox.
-   If you're not happy with the merge request after you create it, you can close it, no harm done.
-
-1. If you're happy with this merge request and want to start the review process, type
-   `@gitlab-bot ready` in a comment and then select **Comment**.
-
-   Someone from GitLab will look at your request and let you know what the next steps are.
-   For details, see the [merge request workflow](merge_request_workflow.md).
-
-   Have questions?
-   Use `@gitlab-bot help` to ping a GitLab Merge Request coach. For more information on MR coaches, visit [How GitLab Merge Request Coaches Can Help You](merge_request_coaches.md).
+Have questions?
+Use `@gitlab-bot help` to ping a GitLab Merge Request coach. For more information on MR coaches, visit [How GitLab Merge Request Coaches Can Help You](merge_request_coaches.md).
 
 ### How community merge requests are triaged
 

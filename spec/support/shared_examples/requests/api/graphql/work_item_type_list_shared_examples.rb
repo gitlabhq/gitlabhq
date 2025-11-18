@@ -14,24 +14,12 @@ RSpec.shared_examples 'graphql work item type list request spec' do |context_nam
     )
   end
 
-  before do
-    post_graphql(query, current_user: current_user)
-  end
-
   context 'when user has access to the resource parent' do
-    it_behaves_like 'a working graphql query that returns data' do
-      before do
-        post_graphql(query, current_user: current_user)
-      end
-    end
-
-    it 'returns all default work item types' do
+    before do
       post_graphql(query, current_user: current_user)
-
-      expect(graphql_data_at(parent_key, :workItemTypes, :nodes)).to match_array(
-        expected_work_item_type_response(parent, current_user)
-      )
     end
+
+    it_behaves_like 'a working graphql query that returns data'
 
     it 'prevents N+1 queries' do
       # Destroy 2 existing types

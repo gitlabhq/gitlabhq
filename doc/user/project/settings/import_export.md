@@ -2,8 +2,8 @@
 stage: Create
 group: Import
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
-title: Migrate projects and groups by using file exports
-description: "Use file exports to migrate projects and groups between GitLab instances."
+title: Migrate GitLab data by using by using file exports
+description: "Use file exports to migrate GitLab data."
 ---
 
 {{< details >}}
@@ -143,7 +143,7 @@ Before you can migrate projects on GitLab Self-Managed using file exports, GitLa
 
 To enable file exports as an import source for the destination instance:
 
-1. On the left sidebar, at the bottom, select **Admin**.
+1. On the left sidebar, at the bottom, select **Admin**. If you've [turned on the new navigation](../../interface_redesign.md#turn-new-navigation-on-or-off), in the upper-right corner, select **Admin**.
 1. Select **Settings** > **General**.
 1. Expand **Import and export settings**.
 1. Scroll to **Import sources**.
@@ -156,7 +156,7 @@ and vice versa, assuming [compatibility](#compatibility) is met.
 
 If you're exporting a project from the Enterprise Edition to the Community Edition, you may lose
 data that is retained only in the Enterprise Edition. For more information, see
-[downgrading from EE to CE](../../../downgrade_ee_to_ce/_index.md).
+[reverting from EE to CE](../../../update/convert_to_ee/revert.md).
 
 ### Export a project and its data
 
@@ -171,7 +171,7 @@ Prerequisites:
 
 To export a project and its data, follow these steps:
 
-1. On the left sidebar, select **Search or go to** and find your project.
+1. On the left sidebar, select **Search or go to** and find your project. If you've [turned on the new navigation](../../interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
 1. Select **Settings** > **General**.
 1. Expand **Advanced**.
 1. Select **Export project**.
@@ -287,7 +287,7 @@ may be possible for an attacker to steal your sensitive data.
 
 To import a project:
 
-1. On the left sidebar, at the top, select **Create new** ({{< icon name="plus" >}}) and **New project/repository**.
+1. On the left sidebar, at the top, select **Create new** ({{< icon name="plus" >}}) and **New project/repository**. If you've [turned on the new navigation](../../interface_redesign.md#turn-new-navigation-on-or-off), this button is in the upper-right corner.
 1. Select **Import project**.
 1. In **Import project from**, select **GitLab export**.
 1. Enter your project name and URL. Then select the file you exported previously.
@@ -386,7 +386,7 @@ Professional Services team.
 - You can export groups from the [Community Edition to the Enterprise Edition](https://about.gitlab.com/install/ce-or-ee/)
   and vice versa. The Enterprise Edition retains some group data that isn't part of the Community Edition. If you're
   exporting a group from the Enterprise Edition to the Community Edition, you may lose this data. For more information,
-  see [downgrading from EE to CE](../../../downgrade_ee_to_ce/_index.md).
+  see [reverting from EE to CE](../../../update/convert_to_ee/revert.md).
 
 The maximum import file size depends on whether you import to GitLab Self-Managed or GitLab.com:
 
@@ -461,7 +461,7 @@ Prerequisites:
 
 To export the contents of a group:
 
-1. On the left sidebar, select **Search or go to** and find your group.
+1. On the left sidebar, select **Search or go to** and find your group. If you've [turned on the new navigation](../../interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
 1. Select **Settings** > **General**.
 1. In the **Advanced** section, select **Export group**.
 1. After the export is generated, you can:
@@ -472,7 +472,7 @@ To export the contents of a group:
 
 To import the group:
 
-1. On the left sidebar, at the top, select **Create new** ({{< icon name="plus" >}}) and **New group**.
+1. On the left sidebar, at the top, select **Create new** ({{< icon name="plus" >}}) and **New group**. If you've [turned on the new navigation](../../interface_redesign.md#turn-new-navigation-on-or-off), this button is in the upper-right corner.
 1. Select **Import group**.
 1. In the **Import group from file** section, enter a group name and accept or modify the associated group URL.
 1. Select **Choose file**.

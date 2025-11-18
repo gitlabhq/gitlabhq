@@ -1,7 +1,7 @@
 <script>
 import { computed } from 'vue';
 import { GlButton, GlTooltipDirective } from '@gitlab/ui';
-import { GlBreakpointInstance, breakpoints } from '@gitlab/ui/src/utils';
+import { GlBreakpointInstance, breakpoints } from '@gitlab/ui/src/utils'; // eslint-disable-line no-restricted-syntax -- GlBreakpointInstance is used intentionally here. In this case we must obtain viewport breakpoints
 import { Mousetrap } from '~/lib/mousetrap';
 import { TAB_KEY_CODE } from '~/lib/utils/keycodes';
 import { keysFor, TOGGLE_SUPER_SIDEBAR } from '~/behaviors/shortcuts/keybindings';
@@ -41,6 +41,7 @@ export default {
     SidebarPortalTarget,
     ScrollScrim,
     TrialWidget: () => import('jh_else_ee/contextual_sidebar/components/trial_widget.vue'),
+    TierBadge: () => import('ee_component/vue_shared/components/tier_badge/tier_badge.vue'),
     DuoAgentPlatformWidget: () =>
       import('jh_else_ee/contextual_sidebar/components/duo_agent_platform_widget.vue'),
   },
@@ -57,6 +58,7 @@ export default {
   provide() {
     return {
       isIconOnly: computed(() => this.isIconOnly),
+      primaryCtaLink: this.sidebarData.tier_badge_href,
     };
   },
   props: {
@@ -71,6 +73,7 @@ export default {
       showPeekHint: false,
       isMouseover: false,
       isAnimatable: false,
+      wasToggledManually: false,
     };
   },
   computed: {
@@ -88,6 +91,7 @@ export default {
         'super-sidebar-is-icon-only': this.isIconOnly,
         'super-sidebar-is-mobile': this.sidebarState.isMobile,
         'super-sidebar-animatable': this.isAnimatable,
+        'super-sidebar-toggled-manually': this.wasToggledManually,
       };
     },
     isAdmin() {
@@ -98,6 +102,9 @@ export default {
     },
     isIconOnly() {
       return this.canIconOnly && this.sidebarState.isIconOnly;
+    },
+    showTierBadge() {
+      return Boolean(this.sidebarData.tier_badge_href);
     },
   },
   watch: {
@@ -139,6 +146,7 @@ export default {
   methods: {
     toggleSidebar() {
       if (this.canIconOnly) {
+        this.wasToggledManually = true;
         toggleSuperSidebarIconOnly();
         return;
       }
@@ -229,6 +237,9 @@ export default {
         event.preventDefault();
       }
     },
+    handleTransitionEnd() {
+      this.wasToggledManually = false;
+    },
   },
 };
 </script>
@@ -255,6 +266,7 @@ export default {
       @mouseenter="isMouseover = true"
       @mouseleave="isMouseover = false"
       @keydown.esc="handleEscKey"
+      @transitionend="handleTransitionEnd"
     >
       <h2 id="super-sidebar-heading" class="gl-sr-only">
         {{ $options.i18n.primaryNavigation }}
@@ -269,9 +281,10 @@ export default {
         <div
           v-if="sidebarData.current_context_header && !isIconOnly"
           id="super-sidebar-context-header"
-          class="super-sidebar-context-header gl-m-0 gl-px-5 gl-py-3 gl-font-bold gl-leading-reset"
+          class="super-sidebar-context-header gl-m-0 gl-flex gl-justify-between gl-px-5 gl-py-3 gl-font-bold gl-leading-reset"
         >
           {{ sidebarData.current_context_header }}
+          <tier-badge v-if="showTierBadge" data-testid="sidebar-tier-badge" is-upgrade />
         </div>
         <scroll-scrim class="gl-grow" data-testid="nav-container">
           <sidebar-menu
@@ -287,7 +300,7 @@ export default {
         </scroll-scrim>
         <div v-if="showTrialWidget && !isIconOnly" class="gl-p-2">
           <trial-widget
-            class="gl-relative gl-mb-1 gl-flex gl-items-center gl-rounded-base gl-p-3 gl-leading-normal !gl-text-default !gl-no-underline"
+            class="gl-relative gl-mb-1 gl-flex gl-items-center gl-rounded-[.75rem] gl-p-3 gl-leading-normal !gl-text-default !gl-no-underline"
           />
         </div>
         <duo-agent-platform-widget v-if="showDuoAgentPlatformWidget && !isIconOnly" />

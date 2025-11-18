@@ -15,7 +15,7 @@ we want them to find topics nearby that are related to the content they're readi
 At the highest level, our global nav is **workflow-based**. Navigation needs to help users build a mental model of how to use GitLab.
 The levels under each of the higher workflow-based topics are the names of features. For example:
 
-**Use GitLab** (_workflow_) **> Build your application** (_workflow_) **> Get started** (_feature_)**> CI/CD** (_feature_) **> Pipelines** (_feature_)
+**Use GitLab** (_workflow_) > **Build your application** (_workflow_) > **Get started** (_feature_) > **CI/CD** (_feature_) > **Pipelines** (_feature_)
 
 While some older sections of the nav are alphabetical, the nav should primarily be workflow-based.
 
@@ -67,7 +67,13 @@ Documentation pages can be said to belong in the following groups:
 With these groups in mind, the following are general rules for where new items should be added.
 
 - User documentation belongs in **Use GitLab**.
-- Administration documentation belongs under **Administer**.
+- Administration documentation belongs under **Administer**. This documentation often includes sections that mention:
+
+  - Changing the `gitlab.rb` or `gitlab.yml` files.
+  - Accessing the rails console or running Rake tasks.
+  - Doing things in the **Admin** area.
+  - Tasks that can only be done by an instance administrator.
+
 - Other documentation belongs at the top-level, but care must be taken to not create an enormously
   long top-level navigation, which defeats the purpose of it.
 

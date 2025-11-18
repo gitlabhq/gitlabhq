@@ -123,6 +123,8 @@ module WorkItems
             notes_emoji.map do |note_emoji|
               note_emoji.attributes.except('id').tap do |attrs|
                 attrs['awardable_id'] = notes_ids_map[note_emoji.awardable_id]
+                attrs['organization_id'] = nil
+                attrs['namespace_id'] = namespace_id_for(target_noteable)
               end
             end
           end

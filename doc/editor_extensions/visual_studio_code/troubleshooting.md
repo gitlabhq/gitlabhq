@@ -1,5 +1,5 @@
 ---
-stage: Create
+stage: AI-powered
 group: Editor Extensions
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 title: Troubleshooting the GitLab Workflow extension for VS Code
@@ -21,7 +21,7 @@ see [Troubleshooting Code Suggestions for VS Code](../../user/project/repository
 Both the VS Code Extension and the GitLab Language Server provide logs that can help you troubleshoot. To enable debug logging:
 
 1. In VS Code, on the top bar, go to **Code** > **Settings** > **Settings**.
-1. On the top right corner, select **Open Settings (JSON)** to edit your `settings.json` file.
+1. In the upper-right corner, select **Open Settings (JSON)** to edit your `settings.json` file.
 1. Add this line, or edit it if it already exists:
 
    ```json
@@ -35,7 +35,7 @@ Both the VS Code Extension and the GitLab Language Server provide logs that can 
 To view debug logs from either the VS Code Extension or the GitLab Language Server:
 
 1. Use the command `GitLab: Show Extension Logs` to view the output panel.
-1. In the upper right corner of the output panel, select either **GitLab Workflow** or
+1. In the upper-right corner of the output panel, select either **GitLab Workflow** or
    **GitLab Language Server** from the dropdown list.
 
 ## Error: `407 Access Denied` failure with a proxy
@@ -62,10 +62,22 @@ Prerequisites:
 
 | Setting name | Default | Information |
 | ------------ | :-----: | ----------- |
-| `gitlab.ca`  | null    | Deprecated. See [the SSL setup guide](ssl.md) for more information on how to set up your self-signed CA. |
-| `gitlab.cert`| null    | Unsupported. See [epic 6244](https://gitlab.com/groups/gitlab-org/-/epics/6244). If GitLab Self-Managed requires a custom certificate or key pair, set this option to point to your certificate file. See `gitlab.certKey`. |
-| `gitlab.certKey`| null    | Unsupported. See [epic 6244](https://gitlab.com/groups/gitlab-org/-/epics/6244). If GitLab Self-Managed requires a custom certificate or key pair, set this option to point to your certificate key file. See `gitlab.cert`. |
+| `gitlab.ca`  | null    | Deprecated. See [the SSL setup guide](ssl.md) for more information on how to set up your self-signed CA.<br><br>For specific rules and formatting, see [the NodeJS `ca` documentation](https://nodejs.org/docs/latest-v22.x/api/tls.html#:~:text=list%20as%20trusted.-,ca,-%3Cstring%3E%20%7C). |
+| `gitlab.cert`| null    | Unsupported. See [epic 6244](https://gitlab.com/groups/gitlab-org/-/epics/6244). If GitLab Self-Managed requires a custom certificate or key pair, set this option to point to your certificate file. See `gitlab.certKey`.<br><br>For specific rules and formatting, see [the NodeJS `cert` documentation](https://nodejs.org/docs/latest-v22.x/api/tls.html#:~:text=CERTIFICATE%22%2C%20and%20%22CERTIFICATE%22.-,cert,-%3Cstring%3E%20%7C). |
+| `gitlab.certKey`| null    | Unsupported. See [epic 6244](https://gitlab.com/groups/gitlab-org/-/epics/6244). If GitLab Self-Managed requires a custom certificate or key pair, set this option to point to your certificate key file. See `gitlab.cert`.<br><br>For specific rules and formatting, see [the NodeJS `key` documentation](https://nodejs.org/docs/latest-v22.x/api/tls.html#:~:text=for%20more%20information.-,key,-%3Cstring%3E%20%7C). |
 | `gitlab.ignoreCertificateErrors` | false   | Unsupported. See [epic 6244](https://gitlab.com/groups/gitlab-org/-/epics/6244). If you use GitLab Self-Managed with no SSL certificate, or have certificate issues that prevent you from using the extension, set this option to `true` to ignore certificate errors. |
+
+## Expired SSL certificate
+
+In some cases, certificates can be falsely classified as expired. This can result in the
+error `API request failed - Error: certificate has expired`. If you encounter this issue, you can disable
+VS Code support for system certificates.
+
+To disable system certificates:
+
+1. In VS Code, on the top bar, go to **Code** > **Settings** > **Settings**.
+1. Under the **User** settings tab, select **Application** > **Proxy**.
+1. Disable the settings for **Proxy Strict SSL** and **System Certificates**.
 
 ## HTTPS project cloning works but SSH cloning fails
 
@@ -105,7 +117,7 @@ SSH connections), you might encounter initialization failures like:
 To resolve these issues:
 
 1. In VS Code, on the top bar, go to **Code** > **Settings** > **Settings**.
-1. On the top right corner, select **Open Settings (JSON)** to edit your `settings.json` file.
+1. In the upper-right corner, select **Open Settings (JSON)** to edit your `settings.json` file.
    - Alternatively, press <kbd>F1</kbd>, enter **Preferences: Open Settings (JSON)**, and select it.
 1. Add or modify this setting:
 

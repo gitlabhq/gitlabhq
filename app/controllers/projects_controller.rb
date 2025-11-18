@@ -32,6 +32,16 @@ class ProjectsController < Projects::ApplicationController
   before_action :authorize_archive_project!, only: [:archive, :unarchive]
   before_action :event_filter, only: [:show, :activity]
 
+  # Step-up authentication enforcement
+  # IMPORTANT: These before_actions are placed AFTER authorization checks to ensure that
+  # unauthorized users receive a 404/403 response immediately without being prompted for
+  # step-up authentication. This follows the same pattern as GroupsController.
+  # The enforce_step_up_auth_for_namespace method depends on @project being loaded first.
+  # For :new action, the parent's enforcement is sufficient as it checks params[:namespace_id].
+  before_action :enforce_step_up_auth_for_namespace, except: [:index, :create]
+  skip_before_action :enforce_step_up_auth_for_namespace, only: [:create]
+  before_action :enforce_step_up_auth_for_namespace_on_create, only: [:create]
+
   # Project Export Rate Limit
   before_action :check_export_rate_limit!, only: [:export, :download_export, :generate_new_export]
 
@@ -49,10 +59,6 @@ class ProjectsController < Projects::ApplicationController
     if @project.present? && @project.licensed_feature_available?(:security_orchestration_policies)
       push_licensed_feature(:security_orchestration_policies)
     end
-
-    push_force_frontend_feature_flag(:work_items, !!@project&.work_items_feature_flag_enabled?)
-    push_force_frontend_feature_flag(:work_items_beta, !!@project&.work_items_beta_feature_flag_enabled?)
-    push_force_frontend_feature_flag(:work_items_alpha, !!@project&.work_items_alpha_feature_flag_enabled?)
   end
 
   layout :determine_layout
@@ -195,9 +201,9 @@ class ProjectsController < Projects::ApplicationController
     if @project.self_deletion_scheduled? &&
         ::Gitlab::Utils.to_boolean(params.permit(:permanently_delete)[:permanently_delete])
 
-      return access_denied! if Feature.enabled?(:disallow_immediate_deletion, current_user)
+      return destroy_immediately if Gitlab::CurrentSettings.allow_immediate_namespaces_deletion_for_user?(current_user)
 
-      return destroy_immediately
+      return access_denied!
     end
 
     result = ::Projects::MarkForDeletionService.new(@project, current_user).execute
@@ -647,6 +653,11 @@ class ProjectsController < Projects::ApplicationController
 
   def render_edit
     render 'edit'
+  end
+
+  def enforce_step_up_auth_for_namespace_on_create
+    namespace_id = params.dig(:project, :namespace_id)
+    enforce_step_up_auth_for_namespace_id(namespace_id)
   end
 end
 

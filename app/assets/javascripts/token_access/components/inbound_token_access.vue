@@ -417,7 +417,6 @@ export default {
       variant="warning"
       class="gl-my-3"
       :dismissible="false"
-      :show-icon="false"
     >
       {{ $options.i18n.settingDisabledMessage }}
     </gl-alert>

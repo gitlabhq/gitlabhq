@@ -12,8 +12,8 @@ title: Markdown uploads API
 
 {{< /details >}}
 
-Markdown uploads are [files uploaded to a project](../security/user_file_uploads.md) that can be referenced in Markdown
-text in an issue, merge request, snippet, or wiki page.
+Use this API to manage [Markdown uploads](../security/user_file_uploads.md) that can be referenced
+in Markdown text in issues, merge requests, snippets, or wiki pages.
 
 ## Upload a file
 

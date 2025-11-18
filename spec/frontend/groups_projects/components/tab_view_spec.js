@@ -112,12 +112,12 @@ describe('TabView', () => {
   });
 
   describe.each`
-    tab                | handler                                                                                     | expectedVariables                                                                          | expectedProjects
-    ${CONTRIBUTED_TAB} | ${[CONTRIBUTED_TAB.query, jest.fn().mockResolvedValue(contributedProjectsGraphQlResponse)]} | ${{ contributed: true, starred: false, sort: defaultPropsData.sort.toUpperCase() }}        | ${contributedProjectsGraphQlResponse.data.currentUser.contributedProjects}
-    ${PERSONAL_TAB}    | ${[PERSONAL_TAB.query, jest.fn().mockResolvedValue(personalProjectsGraphQlResponse)]}       | ${{ personal: true, membership: false, archived: 'EXCLUDE', sort: defaultPropsData.sort }} | ${personalProjectsGraphQlResponse.data.projects}
-    ${MEMBER_TAB}      | ${[MEMBER_TAB.query, jest.fn().mockResolvedValue(membershipProjectsGraphQlResponse)]}       | ${{ personal: false, membership: true, archived: 'EXCLUDE', sort: defaultPropsData.sort }} | ${membershipProjectsGraphQlResponse.data.projects}
-    ${STARRED_TAB}     | ${[STARRED_TAB.query, jest.fn().mockResolvedValue(starredProjectsGraphQlResponse)]}         | ${{ contributed: false, starred: true, sort: defaultPropsData.sort.toUpperCase() }}        | ${starredProjectsGraphQlResponse.data.currentUser.starredProjects}
-    ${INACTIVE_TAB}    | ${[INACTIVE_TAB.query, jest.fn().mockResolvedValue(inactiveProjectsGraphQlResponse)]}       | ${{ personal: false, membership: true, archived: 'ONLY', sort: defaultPropsData.sort }}    | ${inactiveProjectsGraphQlResponse.data.projects}
+    tab                | handler                                                                                     | expectedVariables                                                                    | expectedProjects
+    ${CONTRIBUTED_TAB} | ${[CONTRIBUTED_TAB.query, jest.fn().mockResolvedValue(contributedProjectsGraphQlResponse)]} | ${{ contributed: true, starred: false, sort: defaultPropsData.sort.toUpperCase() }}  | ${contributedProjectsGraphQlResponse.data.currentUser.contributedProjects}
+    ${PERSONAL_TAB}    | ${[PERSONAL_TAB.query, jest.fn().mockResolvedValue(personalProjectsGraphQlResponse)]}       | ${{ personal: true, membership: false, active: true, sort: defaultPropsData.sort }}  | ${personalProjectsGraphQlResponse.data.projects}
+    ${MEMBER_TAB}      | ${[MEMBER_TAB.query, jest.fn().mockResolvedValue(membershipProjectsGraphQlResponse)]}       | ${{ personal: false, membership: true, active: true, sort: defaultPropsData.sort }}  | ${membershipProjectsGraphQlResponse.data.projects}
+    ${STARRED_TAB}     | ${[STARRED_TAB.query, jest.fn().mockResolvedValue(starredProjectsGraphQlResponse)]}         | ${{ contributed: false, starred: true, sort: defaultPropsData.sort.toUpperCase() }}  | ${starredProjectsGraphQlResponse.data.currentUser.starredProjects}
+    ${INACTIVE_TAB}    | ${[INACTIVE_TAB.query, jest.fn().mockResolvedValue(inactiveProjectsGraphQlResponse)]}       | ${{ personal: false, membership: true, active: false, sort: defaultPropsData.sort }} | ${inactiveProjectsGraphQlResponse.data.projects}
   `(
     'onMount when route name is $tab.value',
     ({ tab, handler, expectedVariables, expectedProjects: { nodes, count } }) => {
@@ -451,7 +451,7 @@ describe('TabView', () => {
             last: null,
             personal: true,
             membership: false,
-            archived: 'EXCLUDE',
+            active: true,
             sort: defaultPropsData.sort,
             search: defaultPropsData.filters[defaultPropsData.filteredSearchTermKey],
             programmingLanguageName: 'CoffeeScript',
@@ -489,7 +489,7 @@ describe('TabView', () => {
             last: DEFAULT_PER_PAGE,
             personal: true,
             membership: false,
-            archived: 'EXCLUDE',
+            active: true,
             sort: defaultPropsData.sort,
             search: defaultPropsData.filters[defaultPropsData.filteredSearchTermKey],
             programmingLanguageName: 'CoffeeScript',

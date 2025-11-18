@@ -77,7 +77,7 @@ Example response:
   "sign_in_restrictions": {},
   "password_authentication_enabled_for_web" : true,
   "after_sign_out_path" : null,
-  "max_attachment_size" : 10,
+  "max_attachment_size" : 100,
   "max_decompressed_archive_size": 25600,
   "max_export_size": 50,
   "max_import_size": 50,
@@ -279,7 +279,7 @@ Example response:
   },
   "restricted_visibility_levels": [],
   "sign_in_restrictions": {},
-  "max_attachment_size": 10,
+  "max_attachment_size": 100,
   "max_decompressed_archive_size": 25600,
   "max_export_size": 50,
   "max_import_size": 50,
@@ -475,7 +475,7 @@ to configure other related settings. These requirements are
 | `asset_proxy_url`                        | string           | no                                   | URL of the asset proxy server. GitLab restart is required to apply changes. |
 | `asset_proxy_whitelist`                  | string or array of strings | no                         | (Deprecated: Use `asset_proxy_allowlist` instead) Assets that match these domains are **not** proxied. Wildcards allowed. Your GitLab installation URL is automatically allowlisted. GitLab restart is required to apply changes. |
 | `asset_proxy_allowlist`                  | string or array of strings | no                         | Assets that match these domains are **not** proxied. Wildcards allowed. Your GitLab installation URL is automatically allowlisted. GitLab restart is required to apply changes. |
-| `authorized_keys_enabled`                | boolean          | no                                   | By default, we write to the `authorized_keys` file to support Git over SSH without additional configuration. GitLab can be optimized to authenticate SSH keys via the database file. Only disable this if you have configured your OpenSSH server to use the AuthorizedKeysCommand. |
+| `authorized_keys_enabled`                | boolean          | no                                   | By default, the `authorized_keys` file supports Git over SSH without additional configuration. GitLab can be optimized to authenticate SSH keys via the database file. Only disable this if you have configured your OpenSSH server to use the AuthorizedKeysCommand. |
 | `auto_devops_domain`                     | string           | no                                   | Specify a domain to use by default for every project's Auto Review Apps and Auto Deploy stages. |
 | `auto_devops_enabled`                    | boolean          | no                                   | Enable Auto DevOps for projects by default. It automatically builds, tests, and deploys applications based on a predefined CI/CD configuration. |
 | `autocomplete_users`                     | integer          | no                                   | Maximum number of authenticated requests per minute to the `GET /autocomplete/users` endpoint. |
@@ -680,8 +680,8 @@ to configure other related settings. These requirements are
 | `performance_bar_enabled`                | boolean          | no                                   | (Deprecated: Pass `performance_bar_allowed_group_path: nil` instead) Allow enabling the performance bar. |
 | `personal_access_token_prefix`           | string           | no                                   | Prefix for all generated personal access tokens. |
 | `pipeline_limit_per_project_user_sha`    | integer          | no                                   | Maximum number of pipeline creation requests per minute per user and commit. Disabled by default. |
-| `gitpod_enabled`                         | boolean          | no                                   | (**If enabled, requires**: `gitpod_url`) Enable [Gitpod integration](../integration/gitpod.md). Default is `false`. |
-| `gitpod_url`                             | string           | required by: `gitpod_enabled`        | The Gitpod instance URL for integration. |
+| `gitpod_enabled`                         | boolean          | no                                   | (**If enabled, requires**: `gitpod_url`) Enable [Ona integration](../integration/gitpod.md). Default is `false`. |
+| `gitpod_url`                             | string           | required by: `gitpod_enabled`        | The Ona instance URL for integration. |
 | `inactive_resource_access_tokens_delete_after_days`| integer | no                                   | Specifies retention period for inactive project and group access tokens. Default is `30`. |
 | `kroki_enabled`                          | boolean          | no                                   | (**If enabled, requires**: `kroki_url`) Enable [Kroki integration](../administration/integration/kroki.md). Default is `false`. |
 | `kroki_url`                              | string           | required by: `kroki_enabled`         | The Kroki instance URL for integration. |

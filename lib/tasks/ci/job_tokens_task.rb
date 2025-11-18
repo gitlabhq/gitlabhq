@@ -202,7 +202,7 @@ module Tasks
 
       def build_category_section(category, category_routes)
         section_title = "#{category} endpoints"
-        "## #{section_title}\n\n#{generate_category_table(category_routes)}"
+        "### #{section_title}\n\n#{generate_category_table(category_routes)}"
       end
 
       def generate_category_table(routes)

@@ -12,6 +12,7 @@ class X509Certificate < ApplicationRecord
   }
 
   belongs_to :x509_issuer, class_name: 'X509Issuer', foreign_key: 'x509_issuer_id', optional: false
+  belongs_to :project
 
   has_many :x509_commit_signatures, class_name: 'CommitSignatures::X509CommitSignature', inverse_of: 'x509_certificate'
 

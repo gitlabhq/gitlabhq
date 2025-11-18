@@ -82,7 +82,6 @@ describe('InstallAgentModal', () => {
           version: kasInstallVersion,
           address: kasAddress,
         }),
-        modalId,
       });
     });
 

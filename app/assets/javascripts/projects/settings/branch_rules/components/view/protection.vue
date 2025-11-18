@@ -80,7 +80,8 @@ export default {
     },
     emptyStateCopy: {
       type: String,
-      required: true,
+      required: false,
+      default: null,
     },
     helpText: {
       type: String,
@@ -145,7 +146,7 @@ export default {
       }}</gl-link>
     </template>
     <span
-      v-if="showEmptyState && !$scopedSlots.content"
+      v-if="showEmptyState && emptyStateCopy && !$scopedSlots.content"
       class="gl-text-subtle"
       data-testid="protection-empty-state"
     >

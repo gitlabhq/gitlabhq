@@ -1,7 +1,7 @@
 <script>
 import { isNumber } from 'lodash';
 import throttle from 'lodash/throttle';
-import { scrollToElement } from '~/lib/utils/common_utils';
+import { scrollToElement } from '~/lib/utils/scroll_utils';
 import LogLine from './log_line.vue';
 import LogsTopBar from './logs_top_bar.vue';
 
@@ -57,7 +57,7 @@ export default {
 
           const el = document.getElementById(lineIdToScroll);
           if (el) {
-            scrollToElement(el, { duration: 0 });
+            scrollToElement(el, { behavior: 'auto' });
             if (!this.isFollowing) {
               unwatch();
             }

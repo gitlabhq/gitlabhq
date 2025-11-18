@@ -8,14 +8,6 @@ description: Stores abuse reports from other users.
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/commit/cba7f20dc8614d12e3eeda6e14f454aeb22b9b54
 milestone: '7.13'
 gitlab_schema: gitlab_main_org
-desired_sharding_key:
-  organization_id:
-    references: organizations
-    backfill_via:
-      parent:
-        foreign_key: reporter_id
-        table: users
-        table_primary_key: id
-        sharding_key: organization_id
-        belongs_to: reporter
+sharding_key:
+  organization_id: organizations
 table_size: small

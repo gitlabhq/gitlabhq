@@ -5,3 +5,5 @@
         = link_to wiki_page.human_title, wiki_page_path(@wiki, wiki_page), data: { testid: 'wiki-page-link', qa_page_name: wiki_page.slug }
     - if can?(current_user, :create_wiki, @wiki) && wiki_page.template?
       = render Pajamas::ButtonComponent.new(category: :tertiary, icon: 'pencil', size: 'small', href: wiki_page_path(@wiki, wiki_page, action: :edit), button_options: { title: s_('Edit template'), class: 'has-tooltip' })
+      = render Pajamas::ButtonComponent.new(size: 'small', href: wiki_path(@wiki, action: :new, selected_template_slug: wiki_page.slug ), button_options: { title: s_('Create a new wiki page using this template'), class: 'gl-w-4/20 has-tooltip'}) do
+        = _('Create from template')

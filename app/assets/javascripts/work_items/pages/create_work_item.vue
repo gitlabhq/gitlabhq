@@ -51,6 +51,10 @@ export default {
       isCancelConfirmationModalVisible: false,
       shouldDiscardDraft: false,
       workItemType: convertTypeEnumToName(this.workItemTypeEnum),
+      // Update creationContext based on `initialCreationContext` params
+      // so that users can continue from same state when they switch to full page from create new work item modal
+      creationContext:
+        getParameterByName('initialCreationContext') || this.$options.CREATION_CONTEXT_NEW_ROUTE,
     };
   },
   apollo: {
@@ -166,7 +170,7 @@ export default {
 <template>
   <div>
     <create-work-item
-      :creation-context="$options.CREATION_CONTEXT_NEW_ROUTE"
+      :creation-context="creationContext"
       :full-path="rootPageFullPath"
       :preselected-work-item-type="workItemType"
       :is-group="isGroup"

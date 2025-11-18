@@ -1,6 +1,6 @@
 <script>
 import { s__ } from '~/locale';
-import { scrollToElement } from '~/lib/utils/common_utils';
+import { scrollToElement } from '~/lib/utils/scroll_utils';
 import { createAlert } from '~/alert';
 
 import LogViewer from './components/log_viewer.vue';

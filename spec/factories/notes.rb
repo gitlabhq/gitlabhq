@@ -6,7 +6,7 @@ FactoryBot.define do
   factory :note do
     project
     note { generate(:title) }
-    author { project&.creator || association(:user) }
+    author { project&.creator || association(:user, :with_namespace) }
     on_issue
     updated_by { author }
 

@@ -70,7 +70,7 @@ As a temporary workaround, you can skip the errors by setting and forwarding the
 If your pipeline fails with the following message:
 
 ```plaintext
-Unable to create pipeline
+Unable to run pipeline
 
   jobs:test config key may not be used with `rules`: only
 ```
@@ -155,7 +155,7 @@ To resolve this issue:
 - Enable the Auto DevOps setting in the project.
 - Fix errors that are breaking the pipeline so the pipeline reruns.
 
-## `Error: unable to recognize "": no matches for kind "Deployment" in version "extensions/v1beta1"`
+## Error: `unable to recognize "": no matches for kind "Deployment" in version "extensions/v1beta1"`
 
 After upgrading your Kubernetes cluster to [v1.16+](stages.md#kubernetes-116),
 you may encounter this message when deploying with Auto DevOps:
@@ -214,8 +214,8 @@ Error: error initializing: Looks like "https://kubernetes-charts.storage.googlea
 is not a valid chart repository or cannot be reached
 ```
 
-Some GitLab features had dependencies on the stable chart. To mitigate the impact, we changed them
-to use new official repositories or the [Helm Stable Archive repository maintained by GitLab](https://gitlab.com/gitlab-org/cluster-integration/helm-stable-archive).
+Some GitLab features had dependencies on the stable chart. To mitigate the impact, the dependencies
+use new official repositories or the [Helm Stable Archive repository maintained by GitLab](https://gitlab.com/gitlab-org/cluster-integration/helm-stable-archive).
 Auto Deploy contains [an example fix](https://gitlab.com/gitlab-org/cluster-integration/auto-deploy-image/-/merge_requests/127).
 
 In Auto Deploy, `v1.0.6+` of `auto-deploy-image` no longer adds the deprecated stable repository to

@@ -3,6 +3,7 @@ stage: Security Risk Management
 group: Security Insights
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 title: Project vulnerabilities API
+description: Project Vulnerabilities API for listing and creating project vulnerabilities. Requires authentication and appropriate permissions.
 ---
 
 {{< details >}}
@@ -32,11 +33,11 @@ instead.
 
 {{< /alert >}}
 
-Every API call to vulnerabilities must be [authenticated](rest/authentication.md).
+Use this API to manage [project vulnerabilities](../user/application_security/vulnerabilities/_index.md).
+Every call to this API requires authentication.
 
-Vulnerability permissions inherit permissions from their project. If a project is
-private, and a user isn't a member of the project to which the vulnerability
-belongs, requests to that project returns a `404 Not Found` status code.
+If a user isn't a member of a private project, requests to the private project return a `404 Not Found`
+status code.
 
 ## Vulnerabilities pagination
 

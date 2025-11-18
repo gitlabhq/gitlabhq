@@ -68,8 +68,7 @@ module Import
       end
 
       def map_to_personal_namespace_owner?(project)
-        project.root_ancestor.user_namespace? &&
-          project.import_data.user_mapping_to_personal_namespace_owner_enabled?
+        project.root_ancestor.user_namespace?
       end
 
       private

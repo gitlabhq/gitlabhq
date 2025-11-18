@@ -75,7 +75,7 @@
       .block.issues
         .sidebar-collapsed-icon.has-tooltip{ title: milestone_issues_tooltip_text(milestone), data: { container: 'body', html: 'true', placement: 'left', boundary: 'viewport' } }
           %strong
-            = sprite_icon('issues')
+            = sprite_icon('issue-type-issue')
           %span= milestone.issues_visible_to_user(current_user).count
         .title.hide-collapsed
           = s_('MilestoneSidebar|Work items')

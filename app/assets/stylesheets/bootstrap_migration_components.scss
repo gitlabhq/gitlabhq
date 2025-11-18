@@ -102,7 +102,11 @@ input[type='file'] {
 }
 
 .info-well {
-  @apply gl-bg-subtle gl-text-default gl-border gl-border-section gl-rounded-base;
+  @apply gl-bg-subtle;
+  @apply gl-text-default;
+  @apply gl-border;
+  @apply gl-border-section;
+  @apply gl-rounded-base;
 
   margin-bottom: 16px;
 
@@ -114,7 +118,8 @@ input[type='file'] {
     padding: 1rem;
 
     &:not(:first-of-type) {
-      @apply gl-border-t gl-border-t-section;
+      @apply gl-border-t;
+      @apply gl-border-t-section;
     }
 
     p,

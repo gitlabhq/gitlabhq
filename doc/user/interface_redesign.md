@@ -9,15 +9,15 @@ description: Learn about an upcoming redesign of GitLab user interface.
 {{< details >}}
 
 - Tier: Free, Premium, Ultimate
-- Offering: GitLab Self-Managed
-- Status: Experiment
+- Offering: GitLab.com, GitLab Self-Managed
 
 {{< /details >}}
 
 {{< history >}}
 
-- [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/18710) in GitLab 18.5 [with flags](../administration/feature_flags/_index.md) named `paneled_view`.
-  Disabled by default. This feature is an [experiment](../policy/development_stages_support.md).
+- Introduced in GitLab 18.5 [with a flag](../administration/feature_flags/_index.md) named `paneled_view`.
+  Disabled by default.
+- [Enabled on GitLab.com, GitLab Self-Managed, and GitLab Dedicated](https://gitlab.com/gitlab-org/gitlab/-/work_items/574049) in GitLab 18.6.
 
 {{< /history >}}
 
@@ -25,7 +25,6 @@ description: Learn about an upcoming redesign of GitLab user interface.
 
 The availability of this feature is controlled by a feature flag.
 For more information, see the history.
-This feature is available for testing, but not ready for production use.
 
 {{< /alert >}}
 
@@ -35,12 +34,10 @@ This modernized interface centralizes AI interactions in a persistent sidebar, i
 a panel-based layout that accommodates both traditional development tasks and AI-assisted workflows,
 and reduces navigation complexity.
 
-This feature is an [experiment](../policy/development_stages_support.md).
 To test this feature on GitLab Self-Managed: Contact your GitLab administrator.
+Provide feedback in [issue 577554](https://gitlab.com/gitlab-org/gitlab/-/issues/577554).
 
-To report a bug, create an issue under [epic 19602](https://gitlab.com/groups/gitlab-org/-/epics/19602).
-
-![Projects page with the new UI.](img/paneled_view_projects_v18_5.png)
+![Projects page with the new UI.](img/paneled_view_projects_v18_6.png)
 
 ## Turn new navigation on or off
 
@@ -56,7 +53,7 @@ To turn on the new navigation style:
 1. On the left sidebar, select your avatar.
 1. Turn on the **New UI** toggle.
 
-The page refreshes, and you can start exploring the new GitLab navigation!
+The page refreshes, and you can start exploring the new GitLab UI!
 
 To turn off the new navigation style:
 
@@ -82,14 +79,14 @@ The following buttons are in the upper-right corner:
 - **Admin** (administrators only)
 - Your avatar and its options
 
-![Top bar buttons with the new UI.](img/paneled_view_top_buttons_v18_5.png)
+![Top bar buttons with the new UI.](img/paneled_view_top_buttons_v18_6.png)
 
 ### GitLab Duo is always accessible
 
 Buttons to access GitLab Duo Chat, sessions, and suggestions are visible in all GitLab views.
 They open in a sidebar and can stay open as you move across GitLab.
 
-![GitLab Duo buttons with the new UI](img/paneled_view_duo_sidebar_v18_5.png)
+![GitLab Duo buttons with the new UI](img/paneled_view_duo_sidebar_v18_6.png)
 
 ### Improved opening work items in the details panel
 
@@ -104,16 +101,16 @@ To open the item in the full page view, either:
 If there's enough screen space, the details panel opens next to the list or board you open it from.
 On smaller screens, the detail panel covers the list or board panel.
 
-![Issue opened in a panel side by side with the Issues panel.](img/paneled_view_issue_drawer_v18_5.png)
+![Issue opened in a panel side by side with the Issues panel.](img/paneled_view_issue_drawer_v18_6.png)
 
-![Issue opened in a panel covering part of the Issues panel.](img/paneled_view_issue_drawer_overlap_v18_5.png)
+![Issue opened in a panel covering part of the Issues panel.](img/paneled_view_issue_drawer_overlap_v18_6.png)
 
 #### Set preference for opening work items in a panel
 
 By default, work items like issues or epics open in the details panel.
 If you prefer to turn it off:
 
-1. On the top sidebar, select **Search or go to** and find your project or group.
+1. On the top bar, select **Search or go to** and find your project or group.
 1. Select **Plan** > **Issues** or **Epics**.
 1. At the top of the Issues or Epics page, select **Display options** ({{< icon name="preferences" >}})
    and turn off the **Open items in side panel** toggle.

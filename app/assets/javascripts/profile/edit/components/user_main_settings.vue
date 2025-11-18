@@ -3,6 +3,7 @@ import { GlFormGroup, GlFormInput, GlFormTextarea, GlFormCheckbox, GlLink } from
 import { helpPagePath } from '~/helpers/help_page_helper';
 import { s__ } from '~/locale';
 import { sanitize } from '~/lib/dompurify';
+import UserEmailSetting from './user_email_setting.vue';
 
 export default {
   components: {
@@ -11,6 +12,7 @@ export default {
     GlFormInput,
     GlFormTextarea,
     GlFormCheckbox,
+    UserEmailSetting,
   },
   i18n: {
     fullName: s__('Profiles|Full name'),
@@ -57,6 +59,11 @@ export default {
       type: Object,
       required: true,
     },
+    emailHelpText: {
+      type: String,
+      required: false,
+      default: '',
+    },
   },
   computed: {
     form: {
@@ -74,6 +81,14 @@ export default {
       return this.nameState
         ? `${this.$options.i18n.fullNameDescription} ${this.$options.i18n.fullNameSafeDescription}`
         : '';
+    },
+  },
+  methods: {
+    handleEmailSettingsChange(emailSettings) {
+      this.$emit('change', {
+        ...this.userSettings,
+        ...emailSettings,
+      });
     },
   },
   privatePageLink: helpPagePath('/user/profile/_index.md', {
@@ -110,6 +125,11 @@ export default {
     >
       <gl-form-input v-model="form.pronunciation" width="lg" />
     </gl-form-group>
+    <user-email-setting
+      :user-email-settings="form"
+      :email-help-text="emailHelpText"
+      @change="handleEmailSettingsChange"
+    />
     <gl-form-group :label="$options.i18n.websiteUrl" data-testid="website-url-group">
       <gl-form-input
         v-model="form.websiteUrl"

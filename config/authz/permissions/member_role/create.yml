@@ -2,3 +2,7 @@
 name: create_member_role
 description: Grants the ability to create member roles
 feature_category: system_access
+boundaries:
+  - group
+  - instance
+available_for_tokens: true

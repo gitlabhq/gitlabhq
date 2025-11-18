@@ -514,7 +514,7 @@ RSpec.describe Ci::RunnerManager, feature_category: :fleet_visibility, type: :mo
   end
 
   describe '#heartbeat', :freeze_time do
-    let(:runner_manager) { create(:ci_runner_machine, version: '15.0.0') }
+    let(:runner_manager) { create(:ci_runner_machine, version: '15.0.0', updated_at: 1.day.ago) }
     let(:executor) { 'shell' }
     let(:values) do
       {
@@ -658,6 +658,7 @@ RSpec.describe Ci::RunnerManager, feature_category: :fleet_visibility, type: :mo
             expect_redis_update
             expect { heartbeat }.to change { runner_manager.reload.read_attribute(:labels) }
               .from({}).to({ 'environment' => 'production', 'team' => 'backend' })
+              .and change { runner_manager.reload.read_attribute(:updated_at) }
           end
         end
       end
@@ -665,8 +666,8 @@ RSpec.describe Ci::RunnerManager, feature_category: :fleet_visibility, type: :mo
       context 'with unchanged runner_manager version' do
         let(:version) { runner_manager.version }
 
-        it 'does not schedule ci_runner_versions update' do
-          heartbeat
+        it 'does not schedule ci_runner_versions update but updates timestamp' do
+          expect { heartbeat }.to change { runner_manager.reload.read_attribute(:updated_at) }
 
           expect(Ci::Runners::ProcessRunnerVersionUpdateWorker).not_to have_received(:perform_async)
         end
@@ -675,12 +676,12 @@ RSpec.describe Ci::RunnerManager, feature_category: :fleet_visibility, type: :mo
           context "with #{executor} executor" do
             let(:executor) { executor }
 
-            it 'updates with expected executor type' do
+            it 'updates with expected executor type and current timestamp' do
               expect_redis_update
 
-              heartbeat
-
-              expect(runner_manager.reload.read_attribute(:executor_type)).to eq(expected_executor_type)
+              expect { heartbeat }
+                .to change { runner_manager.reload.read_attribute(:executor_type) }.to(expected_executor_type)
+                .and change { runner_manager.reload.read_attribute(:updated_at) }.to(Time.current)
             end
 
             def expected_executor_type
@@ -692,10 +693,10 @@ RSpec.describe Ci::RunnerManager, feature_category: :fleet_visibility, type: :mo
         context 'with an unknown executor type' do
           let(:executor) { 'some-unknown-type' }
 
-          it 'updates with unknown executor type' do
+          it 'updates with unknown executor type and current timestamp' do
             expect_redis_update
 
-            heartbeat
+            expect { heartbeat }.to change { runner_manager.reload.read_attribute(:updated_at) }
 
             expect(runner_manager.reload.read_attribute(:executor_type)).to eq('unknown')
           end
@@ -706,10 +707,10 @@ RSpec.describe Ci::RunnerManager, feature_category: :fleet_visibility, type: :mo
             { labels: { 'environment' => 'production', 'team' => 'backend' } }
           end
 
-          it 'updates labels' do
+          it 'updates labels and current timestamp' do
             expect_redis_update
 
-            heartbeat
+            expect { heartbeat }.to change { runner_manager.reload.read_attribute(:updated_at) }
 
             expect(runner_manager.reload.read_attribute(:labels)).to eq(values[:labels])
           end
@@ -732,6 +733,7 @@ RSpec.describe Ci::RunnerManager, feature_category: :fleet_visibility, type: :mo
                           .and change { runner_manager.reload.read_attribute(:config) }
                           .and change { runner_manager.reload.read_attribute(:executor_type) }
                           .and change { runner_manager.reload.read_attribute(:runtime_features) }
+                          .and change { runner_manager.reload.read_attribute(:updated_at) }
     end
   end
 

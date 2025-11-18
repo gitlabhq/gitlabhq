@@ -183,4 +183,60 @@ export const provideMock = {
   groupFullPath: 'namespace',
   vulnerabilityTrainingDocsPath: 'user/application_security/vulnerabilities/_index',
   licenseConfigurationSource: 'SBOM',
+  canReadAttributes: false,
+  canManageAttributes: false,
 };
+
+export const createTrackedRef = (overrides = {}) => ({
+  id: 'gid://gitlab/TrackedRef/1',
+  name: 'main',
+  refType: 'HEAD',
+  isDefault: false,
+  isProtected: false,
+  vulnerabilitiesCount: 0,
+  commit: {
+    sha: 'df210850abc123',
+    shortId: 'df21085',
+    title: 'Commit message',
+    authoredDate: '2024-10-17T09:59:00Z',
+    webPath: '/project/-/commit/df21085',
+    ...overrides.commit,
+  },
+  ...overrides,
+});
+
+export const createMockTrackedRefsResponse = ({
+  nodes = [],
+  hasNextPage = false,
+  hasPreviousPage = false,
+  startCursor = null,
+  endCursor = null,
+} = {}) => ({
+  data: {
+    project: {
+      id: 'gid://gitlab/Project/1',
+      __typename: 'Project',
+      securityTrackedRefs: {
+        nodes,
+        pageInfo: {
+          startCursor,
+          endCursor,
+          hasPreviousPage,
+          hasNextPage,
+        },
+        count: nodes.length,
+      },
+    },
+  },
+});
+
+export const createMockRestApiRef = (overrides = {}) => ({
+  name: 'main',
+  protected: true,
+  commit: {
+    id: 'abc123',
+    committed_date: '2024-11-05T10:00:00Z',
+    ...overrides.commit,
+  },
+  ...overrides,
+});

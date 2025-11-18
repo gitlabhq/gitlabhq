@@ -14,6 +14,7 @@ class Profiles::TwoFactorAuthsController < Profiles::ApplicationController
 
   include SafeFormatHelper
   include BaseServiceUtility
+  include AuthHelper
 
   def show
     setup_show_page
@@ -165,10 +166,6 @@ class Profiles::TwoFactorAuthsController < Profiles::ApplicationController
     render 'show'
   end
 
-  def current_password_required?
-    !current_user.password_automatically_set? && current_user.allow_password_authentication_for_web?
-  end
-
   def build_qr_code
     uri = current_user.otp_provisioning_uri(account_string, issuer: issuer_host)
     svg = RQRCode::QRCode.new(uri, level: :m).as_svg(
@@ -198,8 +195,9 @@ class Profiles::TwoFactorAuthsController < Profiles::ApplicationController
   end
 
   def setup_webauthn_registration
-    @registrations = webauthn_registrations
+    @registrations = second_factor_webauthn_registrations
     @webauthn_registration ||= WebauthnRegistration.new
+    @passkeys = get_passkeys
 
     current_user.user_detail.update!(webauthn_xid: WebAuthn.generate_user_id) unless current_user.webauthn_xid
 
@@ -209,8 +207,8 @@ class Profiles::TwoFactorAuthsController < Profiles::ApplicationController
     gon.push(webauthn: { options: options })
   end
 
-  def webauthn_registrations
-    current_user.webauthn_registrations.map do |webauthn_registration|
+  def second_factor_webauthn_registrations
+    current_user.second_factor_webauthn_registrations.map do |webauthn_registration|
       {
         name: webauthn_registration.name,
         created_at: webauthn_registration.created_at,
@@ -219,12 +217,31 @@ class Profiles::TwoFactorAuthsController < Profiles::ApplicationController
     end
   end
 
+  def get_passkeys
+    current_user.passkeys.map do |passkey|
+      {
+        name: passkey.name,
+        created_at: passkey.created_at,
+        last_used_at: passkey.last_used_at,
+        delete_path: profile_passkey_path(passkey)
+      }
+    end
+  end
+
   def webauthn_options
     WebAuthn::Credential.options_for_create(
-      user: { id: current_user.webauthn_xid, name: current_user.username },
-      exclude: current_user.webauthn_registrations.map(&:credential_xid),
-      authenticator_selection: { user_verification: 'discouraged' },
-      rp: { name: 'GitLab' }
+      user: {
+        id: current_user.webauthn_xid,
+        name: current_user.username,
+        display_name: current_user.name
+      },
+      exclude: current_user.get_all_webauthn_credential_ids,
+      authenticator_selection: {
+        user_verification: 'discouraged',
+        resident_key: 'preferred'
+      },
+      rp: { name: 'GitLab' },
+      extensions: { credProps: true }
     )
   end
 

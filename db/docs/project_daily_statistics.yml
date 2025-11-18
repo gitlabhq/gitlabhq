@@ -4,10 +4,10 @@ classes:
 - ProjectDailyStatistic
 feature_categories:
 - source_code_management
-description: Stores repository fetch statistics per day
-introduced_by_url: https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/23596
-milestone: '11.9'
+description: Partitioned table that stores daily statistics for projects
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/202876
+milestone: '18.5'
 gitlab_schema: gitlab_main_org
 sharding_key:
   project_id: projects
-table_size: large
+table_size: small

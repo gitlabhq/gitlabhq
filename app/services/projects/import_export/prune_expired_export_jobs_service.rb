@@ -7,21 +7,23 @@ module Projects
 
       class << self
         def execute
-          delete_uploads_for_expired_jobs
-          delete_expired_jobs
+          prunable_before = ProjectExportJob::EXPIRES_IN.ago
+
+          delete_uploads_for_expired_jobs(prunable_before)
+          delete_expired_jobs(prunable_before)
         end
 
         private
 
-        def delete_expired_jobs
+        def delete_expired_jobs(prunable_before)
           loop do
-            deleted_count = ProjectExportJob.prunable.limit(BATCH_SIZE).delete_all
+            deleted_count = ProjectExportJob.updated_at_before(prunable_before).limit(BATCH_SIZE).delete_all
             break if deleted_count == 0
           end
         end
 
-        def delete_uploads_for_expired_jobs
-          prunable_scope = ProjectExportJob.prunable.select(:id, :updated_at)
+        def delete_uploads_for_expired_jobs(prunable_before)
+          prunable_scope = ProjectExportJob.updated_at_before(prunable_before).select(:id, :updated_at)
           iterator = Gitlab::Pagination::Keyset::Iterator.new(scope: prunable_scope.order_by_updated_at)
 
           iterator.each_batch(of: BATCH_SIZE) do |prunable_job_batch_scope|

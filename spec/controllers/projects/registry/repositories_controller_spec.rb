@@ -64,7 +64,7 @@ RSpec.describe Projects::Registry::RepositoriesController, feature_category: :co
 
           it 'creates a root container repository' do
             expect { go_to_index }.to change { ContainerRepository.all.count }.by(1)
-            expect(ContainerRepository.first).to be_root_repository
+            expect(ContainerRepository.first).to have_attributes(project: project, name: '')
           end
 
           it_behaves_like 'renders 200 for html and 404 for json'

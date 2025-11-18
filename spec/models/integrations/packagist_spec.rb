@@ -2,11 +2,11 @@
 
 require 'spec_helper'
 
-RSpec.describe Integrations::Packagist do
-  it_behaves_like Integrations::HasWebHook do
-    let_it_be(:project) { create(:project) }
+RSpec.describe Integrations::Packagist, feature_category: :integrations do
+  let_it_be(:project) { create(:project) }
+  let(:integration) { build(:packagist_integration, project: project) }
 
-    let(:integration) { build(:packagist_integration, project: project) }
+  it_behaves_like Integrations::HasWebHook do
     let(:hook_url) { "#{integration.server}/api/update-package?username={username}&apiToken={token}" }
   end
 
@@ -15,9 +15,6 @@ RSpec.describe Integrations::Packagist do
   end
 
   describe '#execute' do
-    let(:project) { build(:project) }
-    let(:integration) { build(:packagist_integration, project: project) }
-
     let(:packagist_hook_url) do
       "#{integration.server}/api/update-package?username=#{integration.username}&apiToken=#{integration.token}"
     end

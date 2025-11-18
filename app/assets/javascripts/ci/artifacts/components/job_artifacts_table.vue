@@ -17,7 +17,7 @@ import CiIcon from '~/vue_shared/components/ci_icon/ci_icon.vue';
 import { s__, sprintf } from '~/locale';
 import { createAlert } from '~/alert';
 import { updateHistory, getParameterByName, setUrlParams } from '~/lib/utils/url_utility';
-import { scrollToElement } from '~/lib/utils/common_utils';
+import { scrollToElement } from '~/lib/utils/scroll_utils';
 import { getIdFromGraphQLId, convertToGraphQLId } from '~/graphql_shared/utils';
 import TimeAgo from '~/vue_shared/components/time_ago_tooltip.vue';
 import { TYPENAME_PROJECT } from '~/graphql_shared/constants';
@@ -94,6 +94,9 @@ export default {
       },
       update({ project: { jobs: { nodes = [], pageInfo = {} } = {} } }) {
         this.pageInfo = pageInfo;
+
+        const totalArtifactCount = nodes.reduce((acc, job) => acc + job.artifacts.nodes.length, 0);
+        this.$emit('artifact-count-update', totalArtifactCount);
 
         const jobNodes = nodes
           .map(mapArchivesToJobNodes)
@@ -553,7 +556,7 @@ export default {
           </gl-link>
           <span class="gl-inline-block gl-rounded-base gl-bg-strong gl-px-2">
             <gl-icon name="commit" :size="12" class="gl-mr-2" />
-            <gl-link :href="item.commitPath" class="gl-text-sm gl-text-default gl-font-monospace">
+            <gl-link :href="item.commitPath" class="gl-font-monospace gl-text-sm gl-text-default">
               {{ item.shortSha }}
             </gl-link>
           </span>
@@ -561,7 +564,7 @@ export default {
         <div>
           <span class="gl-inline-block gl-rounded-base gl-bg-strong gl-px-2">
             <gl-icon name="branch" :size="12" class="gl-mr-1" />
-            <gl-link :href="item.refPath" class="gl-text-sm gl-text-default gl-font-monospace">
+            <gl-link :href="item.refPath" class="gl-font-monospace gl-text-sm gl-text-default">
               {{ item.refName }}
             </gl-link>
           </span>

@@ -7,4 +7,4 @@ rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/545313
 milestone: '18.1'
 group: group::import and integrate
 type: beta
-default_enabled: false
+default_enabled: true

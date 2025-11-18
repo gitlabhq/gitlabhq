@@ -79,11 +79,6 @@ describe('~/environments/environment_details/components/deployment_actions.vue',
         expect(actionsComponent.exists()).toBe(true);
         expect(actionsComponent.props().actions).toBe(actionsData);
       });
-
-      it('should pass the "medium" size prop to the actions component', () => {
-        const actionsComponent = wrapper.findComponent(ActionsComponent);
-        expect(actionsComponent.props().size).toBe('medium');
-      });
     });
   });
 

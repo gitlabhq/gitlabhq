@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Gitlab::BackgroundMigration::ResetDuoRemoteFlowsEnabledFalseValues, feature_category: :agent_foundations do
+RSpec.describe Gitlab::BackgroundMigration::ResetDuoRemoteFlowsEnabledFalseValues, feature_category: :duo_agent_platform do
   let(:organizations) { table(:organizations) }
   let(:namespaces) { table(:namespaces) }
   let(:projects) { table(:projects) }

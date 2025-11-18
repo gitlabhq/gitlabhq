@@ -28,6 +28,7 @@ export const PUSH_EVENT_REF_TYPE_TAG = 'tag';
 export const RESOURCE_PARENT_TYPE_PROJECT = 'project';
 
 // From app/models/event.rb#L39
+export const TARGET_TYPE_PROJECT = 'Project';
 export const TARGET_TYPE_ISSUE = 'Issue';
 export const TARGET_TYPE_MILESTONE = 'Milestone';
 export const TARGET_TYPE_MERGE_REQUEST = 'MergeRequest';
@@ -43,7 +44,7 @@ export const WORK_ITEM_ISSUE_TYPE_INCIDENT = 'incident';
 export const TYPE_FALLBACK = 'fallback';
 
 export const EVENT_CREATED_I18N = Object.freeze({
-  [RESOURCE_PARENT_TYPE_PROJECT]: s__('ContributionEvent|Created project %{resourceParentLink}.'),
+  [TARGET_TYPE_PROJECT]: s__('ContributionEvent|Created project %{resourceParentLink}.'),
   [TARGET_TYPE_MILESTONE]: s__(
     'ContributionEvent|Opened milestone %{targetLink} in %{resourceParentLink}.',
   ),

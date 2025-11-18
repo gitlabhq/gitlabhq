@@ -54,14 +54,6 @@ module Namespaces
             .order(depth: depth_order, id: :asc)
         end
 
-        # Produce a query of the form: SELECT * FROM namespaces;
-        #
-        # When we have queries that break this SELECT * format we can run in to errors.
-        # For example `SELECT DISTINCT on(...)` will fail when we chain a `.count` c
-        def normal_select
-          unscoped.from(all, :namespaces)
-        end
-
         private
 
         def self_and_ancestors_from_inner_join(include_self: true, upto: nil, hierarchy_order: nil)

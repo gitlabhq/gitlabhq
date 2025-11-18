@@ -8,7 +8,7 @@ RSpec.describe Gitlab::BitbucketServerImport::Importers::PullRequestNotes::Merge
   let_it_be_with_reload(:project) do
     create(
       :project, :repository, :bitbucket_server_import, :in_group,
-      :import_user_mapping_enabled, :user_mapping_to_personal_namespace_owner_enabled
+      :import_user_mapping_enabled
     )
   end
 
@@ -84,30 +84,6 @@ RSpec.describe Gitlab::BitbucketServerImport::Importers::PullRequestNotes::Merge
         metrics = merge_request.metrics.reload
 
         expect(metrics.merged_by_id).to eq(user_namespace.owner_id)
-      end
-
-      context 'when user_mapping_to_personal_namespace_owner is disabled' do
-        before do
-          project.build_or_assign_import_data(
-            data: { user_mapping_to_personal_namespace_owner_enabled: false }
-          ).save!
-        end
-
-        it 'pushes placeholder references' do
-          importer.execute(merge_event)
-
-          expect(cached_references).to contain_exactly(
-            ['MergeRequest::Metrics', instance_of(Integer), 'merged_by_id', source_user.id]
-          )
-        end
-
-        it 'imports the merge event mapped to the placeholder user' do
-          importer.execute(merge_event)
-
-          metrics = merge_request.metrics.reload
-
-          expect(metrics.merged_by_id).to eq(source_user.mapped_user_id)
-        end
       end
     end
 

@@ -101,33 +101,12 @@ RSpec.describe 'Group show page', :with_current_organization, feature_category: 
         it 'shows `Create subgroup` link' do
           link = new_group_path(parent_id: group.id, anchor: 'create-group-pane')
 
-          expect(page_content).to have_link(s_('GroupsEmptyState|Create subgroup'), href: link)
+          expect(page_content).to have_link(_('Create subgroup'), href: link)
         end
 
-        context 'when current Organization does not have scoped paths' do
-          before do
-            allow(current_organization).to receive(:scoped_paths?).and_return(false)
-          end
-
-          it 'shows `Create project` link' do
-            expect(page_content)
-              .to have_link(s_('GroupsEmptyState|Create project'), href: new_project_path(namespace_id: group.id))
-          end
-        end
-
-        context 'when current Organization has scoped paths' do
-          before do
-            allow(current_organization).to receive(:scoped_paths?).and_return(true)
-          end
-
-          it 'shows `Create project` link' do
-            expected_path = new_organization_project_path(
-              namespace_id: group.id,
-              organization_path: current_organization.path
-            )
-            expect(page_content)
-              .to have_link(s_('GroupsEmptyState|Create project'), href: expected_path)
-          end
+        it 'shows `Create project` link' do
+          expect(page_content)
+            .to have_link(_('Create project'), href: new_project_path(namespace_id: group.id))
         end
       end
     end
@@ -139,14 +118,12 @@ RSpec.describe 'Group show page', :with_current_organization, feature_category: 
         visit path
       end
 
-      it 'does not show `Create new subgroup` link' do
-        expect(page)
-          .not_to have_link(s_('GroupsEmptyState|Create new subgroup'), href: new_group_path(parent_id: group.id))
+      it 'does not show `Create subgroup` link' do
+        expect(page).not_to have_link _('Create subgroup')
       end
 
-      it 'does not show `Create new project` link' do
-        expect(page)
-          .not_to have_link(s_('GroupsEmptyState|Create new project'), href: new_project_path(namespace_id: group.id))
+      it 'does not show `Create project` link' do
+        expect(page).not_to have_link _('Create project')
       end
 
       it 'shows empty state' do
@@ -219,7 +196,7 @@ RSpec.describe 'Group show page', :with_current_organization, feature_category: 
         it 'allows creating subgroups' do
           visit group_path(restricted_group)
 
-          expect(page).to have_link('New subgroup')
+          expect(page).to have_link(_('Create subgroup'))
         end
       end
     end
@@ -242,7 +219,7 @@ RSpec.describe 'Group show page', :with_current_organization, feature_category: 
           it 'allows creating subgroups' do
             visit group_path(relaxed_group)
 
-            expect(page).to have_link('New subgroup')
+            expect(page).to have_link(_('Create subgroup'))
           end
         end
 
@@ -254,7 +231,7 @@ RSpec.describe 'Group show page', :with_current_organization, feature_category: 
           it 'does not allow creating subgroups' do
             visit group_path(restricted_group)
 
-            expect(page).not_to have_link('New subgroup')
+            expect(page).not_to have_link(_('Create subgroup'))
           end
         end
       end

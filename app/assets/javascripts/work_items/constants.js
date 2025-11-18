@@ -1,5 +1,4 @@
-import { __, s__, sprintf } from '~/locale';
-import { capitalizeFirstCharacter } from '~/lib/utils/text_utility';
+import { __, s__ } from '~/locale';
 
 export const BULK_EDIT_NO_VALUE = 'no-value';
 
@@ -65,6 +64,18 @@ export const WORK_ITEM_TYPE_NAME_TASK = 'Task';
 export const WORK_ITEM_TYPE_NAME_TEST_CASE = 'Test Case';
 export const WORK_ITEM_TYPE_NAME_TICKET = 'Ticket';
 
+export const RSS_FILTER_EXCLUDE_EPIC = { 'not[type][]': 'epic' };
+export const RSS_FILTER_EPIC_ONLY = { 'type[]': 'epic' };
+
+export const WORK_ITEM_TREE_COLLAPSE_TRACKING_ACTION_COLLAPSED = 'hierarchy_widget_collapsed';
+export const WORK_ITEM_TREE_COLLAPSE_TRACKING_ACTION_EXPANDED = 'hierarchy_widget_expanded';
+export const WORK_ITEM_RELATIONSHIPS_COLLAPSE_TRACKING_ACTION_COLLAPSED =
+  'linked_items_widget_collapsed';
+export const WORK_ITEM_RELATIONSHIPS_COLLAPSE_TRACKING_ACTION_EXPANDED =
+  'linked_items_widget_expanded';
+export const WORK_ITEM_DESIGN_COLLAPSE_TRACKING_ACTION_COLLAPSED = 'design_widget_collapsed';
+export const WORK_ITEM_DESIGN_COLLAPSE_TRACKING_ACTION_EXPANDED = 'design_widget_expanded';
+
 export const SEARCH_DEBOUNCE = 500;
 
 export const i18n = {
@@ -88,16 +99,6 @@ export const I18N_WORK_ITEM_SEARCH_ERROR = s__(
 );
 
 export const MAX_WORK_ITEMS = 10;
-
-export const sprintfWorkItem = (msg, workItemTypeArg, parentWorkItemType = '') => {
-  const workItemType = workItemTypeArg || s__('WorkItem|item');
-  return capitalizeFirstCharacter(
-    sprintf(msg, {
-      workItemType: workItemType.toLocaleLowerCase(),
-      parentWorkItemType: parentWorkItemType.toLocaleLowerCase(),
-    }),
-  );
-};
 
 export const FORM_TYPES = {
   create: 'create',
@@ -343,6 +344,7 @@ export const WORK_ITEM_WIDGETS_NAME_MAP = {
   [WIDGET_TYPE_DEVELOPMENT]: s__('WorkItem|Development'),
   [WIDGET_TYPE_CRM_CONTACTS]: s__('WorkItem|Contacts'),
   [WIDGET_TYPE_VULNERABILITIES]: s__('WorkItem|Related vulnerabilities'),
+  [WIDGET_TYPE_STATUS]: s__('WorkItem|Status'),
 };
 
 export const CUSTOM_FIELDS_TYPE_NUMBER = 'NUMBER';

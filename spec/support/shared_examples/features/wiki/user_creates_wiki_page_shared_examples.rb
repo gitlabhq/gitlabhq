@@ -11,7 +11,7 @@ RSpec.shared_examples 'User creates wiki page' do
     sign_in(user)
   end
 
-  context "when wiki is empty", quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/572733' do
+  context "when wiki is empty" do
     before do
       visit wiki_path(wiki)
 
@@ -90,6 +90,8 @@ RSpec.shared_examples 'User creates wiki page' do
         expect(page).to have_content("New page")
       end
 
+      click_button('Toggle sidebar') if page.has_button?('Toggle sidebar', wait: 1)
+
       click_link("Home")
 
       expect(page).to have_current_path(wiki_page_path(wiki, "home"), ignore_query: true)
@@ -105,6 +107,8 @@ RSpec.shared_examples 'User creates wiki page' do
       page.within(:css, ".wiki-page-header") do
         expect(page).to have_content("New page")
       end
+
+      click_button('Toggle sidebar') if page.has_button?('Toggle sidebar', wait: 1)
 
       click_link("Home")
 
@@ -193,7 +197,7 @@ RSpec.shared_examples 'User creates wiki page' do
     it_behaves_like 'autocompletes items'
   end
 
-  context "when wiki is not empty", :js, quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/572733' do
+  context "when wiki is not empty", :js do
     before do
       create(:wiki_page, wiki: wiki, title: 'home', content: 'Home page')
 

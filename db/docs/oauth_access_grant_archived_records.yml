@@ -1,7 +1,7 @@
 ---
 table_name: oauth_access_grant_archived_records
 feature_categories:
-  - system_access
+- system_access
 description: |
   Temporary archive table for deleted `oauth_access_grants` records.
   Used as a safety net during `oauth_access_grants` retention policy implementation.
@@ -16,4 +16,4 @@ sharding_key:
 notes: |
   Temporary table for archiving oauth access grants during retention implementation.
   Will be dropped after verification period.
-
+table_size: medium

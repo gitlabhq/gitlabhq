@@ -32,7 +32,7 @@ GitLab by using our OpenID authentication feature.
 First you must create a GitLab application to obtain an application ID and secret
 for authenticating into Vault. To do this, sign in to GitLab and follow these steps:
 
-1. On the left sidebar, select your avatar.
+1. On the left sidebar, select your avatar. If you've [turned on the new navigation](../user/interface_redesign.md#turn-new-navigation-on-or-off), this button is in the upper-right corner.
 1. Select **Edit profile**.
 1. On the left sidebar, select **Applications**.
 1. Fill out the application **Name** and [**Redirect URI**](https://developer.hashicorp.com/vault/docs/auth/jwt#redirect-uris).
@@ -112,8 +112,8 @@ Replace:
 
 The `oidc_scopes` field must include `openid`.
 
-This configuration is saved under the name of the role you are creating. In this
-example, we are creating a `demo` role.
+This configuration is saved under the name of the role you are creating. This
+example creates a `demo` role.
 
 {{< alert type="warning" >}}
 
@@ -148,7 +148,7 @@ You can also sign in to Vault using the [Vault CLI](https://developer.hashicorp.
 
    This command sets:
 
-   - `role=demo` so Vault knows which configuration we'd like to sign in with.
+   - `role=demo` so Vault knows which configuration you'd like to sign in with.
    - `-method=oidc` to set Vault to use the `OIDC` sign-in method.
    - `port=8250` to set the port that GitLab should redirect to. This port
      number must match the port given to GitLab when listing

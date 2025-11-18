@@ -150,6 +150,22 @@ RSpec.describe 'Updating the packages protection rule', :aggregate_failures, fea
     end
   end
 
+  context 'with standalone package name pattern' do
+    let(:input) { super().merge(package_name_pattern: '*') }
+
+    it_behaves_like 'a successful response' do
+      let(:expected_attributes) do
+        input
+      end
+    end
+
+    it 'updates the package protection rule to wildcard pattern' do
+      is_expected.tap do
+        expect(mutation_response['packageProtectionRule']['packageNamePattern']).to eq('*')
+      end
+    end
+  end
+
   context 'when current_user does not have permission' do
     let_it_be(:developer) { create(:user, developer_of: project) }
     let_it_be(:reporter) { create(:user, reporter_of: project) }

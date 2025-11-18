@@ -1,4 +1,10 @@
-import { GlModal, GlSprintf, GlFormInputGroup, GlButton } from '@gitlab/ui';
+import {
+  GlModal,
+  GlSprintf,
+  GlFormInputGroup,
+  GlButton,
+  GlDisclosureDropdownItem,
+} from '@gitlab/ui';
 import { shallowMount } from '@vue/test-utils';
 import MockAdapter from 'axios-mock-adapter';
 import axios from '~/lib/utils/axios_utils';
@@ -26,6 +32,7 @@ describe('IssuableByEmail', () => {
           GlSprintf,
           GlFormInputGroup,
           GlButton,
+          GlDisclosureDropdownItem,
         },
         directives: {
           glModal: {
@@ -56,11 +63,11 @@ describe('IssuableByEmail', () => {
     mockAxios.restore();
   });
 
-  const findButton = () => wrapper.findComponent(GlButton);
+  const findDisclosureDropdownItem = () => wrapper.findComponent(GlDisclosureDropdownItem);
   const findFormInputGroup = () => wrapper.findComponent(GlFormInputGroup);
 
   const clickResetEmail = async () => {
-    wrapper.findAllComponents(GlButton).at(2).trigger('click');
+    wrapper.findAllComponents(GlButton).at(1).trigger('click');
 
     await waitForPromises();
   };
@@ -68,20 +75,20 @@ describe('IssuableByEmail', () => {
   describe('modal button', () => {
     it.each`
       issuableType       | buttonText
-      ${'issue'}         | ${'Email a new issue to this project'}
-      ${'merge_request'} | ${'Email a new merge request to this project'}
+      ${'issue'}         | ${'Email issue to this project'}
+      ${'merge_request'} | ${'Email merge request to this project'}
     `(
       'renders a link with "$buttonText" when type is "$issuableType"',
       ({ issuableType, buttonText }) => {
         wrapper = createComponent({ issuableType });
-        expect(findButton().text()).toBe(buttonText);
+        expect(findDisclosureDropdownItem().text()).toBe(buttonText);
       },
     );
 
     it('opens the modal when the user clicks the button', () => {
       wrapper = createComponent();
 
-      findButton().trigger('click');
+      findDisclosureDropdownItem().trigger('click');
 
       expect(glModalDirective).toHaveBeenCalled();
     });
@@ -104,7 +111,7 @@ describe('IssuableByEmail', () => {
         initialEmail,
       });
 
-      expect(wrapper.findAllComponents(GlButton).at(1).attributes('href')).toBe(
+      expect(wrapper.findAllComponents(GlButton).at(0).attributes('href')).toBe(
         `mailto:${initialEmail}?subject=${subject}&body=${body}`,
       );
     });

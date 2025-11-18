@@ -81,7 +81,7 @@ Prerequisites:
 - You must be an administrator.
 
 1. Sign in to GitLab.
-1. On the left sidebar, at the bottom, select **Admin**.
+1. On the left sidebar, at the bottom, select **Admin**. If you've [turned on the new navigation](../interface_redesign.md#turn-new-navigation-on-or-off), in the upper-right corner, select **Admin**.
 1. Select **Settings** > **General**.
 1. Expand **GitLab Duo with Amazon Q**.
 1. Select **View configuration setup**.
@@ -227,7 +227,7 @@ Prerequisites:
 To finish setting up GitLab Duo with Amazon Q:
 
 1. Sign in to GitLab.
-1. On the left sidebar, at the bottom, select **Admin**.
+1. On the left sidebar, at the bottom, select **Admin**. If you've [turned on the new navigation](../interface_redesign.md#turn-new-navigation-on-or-off), in the upper-right corner, select **Admin**.
 1. Select **Settings** > **General**.
 1. Expand **GitLab Duo with Amazon Q**.
 1. Select **View configuration setup**.
@@ -295,6 +295,28 @@ With the condition key, you can limit who can use CMK for encrypting or decrypti
 For more information, see
 [`kms:ViaService` in the AWS KMS Developer Guide](https://docs.aws.amazon.com/kms/latest/developerguide/conditions-kms.html#conditions-kms-via-service).
 
+## Configure GitLab to use AWS hosted AI gateway
+
+You can configure GitLab to use the hosted AI gateway on AWS.
+
+1. Start a [Rails console session](../../administration/operations/rails_console.md#starting-a-rails-console-session). For example, for installations that use the Linux package, run:
+
+   ```shell
+   sudo gitlab-rails console
+   ```
+
+1.To view the currently assigned service URL, run:
+
+   ```ruby
+   Ai::Setting.instance.ai_gateway_url
+   ```
+
+1. To update the service URL, run:
+
+   ```ruby
+   Ai::Setting.instance.update!(ai_gateway_url: "https://cloud.gitlab.com/aws/ai")
+   ```
+
 ## Turn off GitLab Duo with Amazon Q
 
 You can turn off GitLab Duo with Amazon Q for the instance, group, or project.
@@ -308,7 +330,7 @@ Prerequisites:
 To turn off GitLab Duo with Amazon Q for the instance:
 
 1. Sign in to GitLab.
-1. On the left sidebar, at the bottom, select **Admin**.
+1. On the left sidebar, at the bottom, select **Admin**. If you've [turned on the new navigation](../interface_redesign.md#turn-new-navigation-on-or-off), in the upper-right corner, select **Admin**.
 1. Select **Settings** > **General**.
 1. Expand **GitLab Duo with Amazon Q**.
 1. Select **View configuration setup**.
@@ -323,7 +345,7 @@ Prerequisites:
 
 To turn off GitLab Duo with Amazon Q for a group:
 
-1. On the left sidebar, select **Search or go to** and find your group.
+1. On the left sidebar, select **Search or go to** and find your group. If you've [turned on the new navigation](../interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
 1. Select **Settings** > **General**.
 1. Expand **Amazon Q**.
 1. Choose an option:
@@ -339,7 +361,7 @@ Prerequisites:
 
 To turn off GitLab Duo with Amazon Q for a project:
 
-1. On the left sidebar, select **Search or go to** and find your group.
+1. On the left sidebar, select **Search or go to** and find your group. If you've [turned on the new navigation](../interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
 1. Select **Settings** > **General**.
 1. Expand **Visibility, project features, permissions**.
 1. Under **Amazon Q**, turn the toggle off.

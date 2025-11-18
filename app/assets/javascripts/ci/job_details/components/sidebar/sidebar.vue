@@ -86,7 +86,7 @@ export default {
 <template>
   <aside class="right-sidebar build-sidebar">
     <div class="sidebar-container">
-      <div class="blocks-container gl-p-4 gl-pt-0">
+      <div class="gl-p-4 gl-pt-0">
         <sidebar-header
           class="gl-py-4"
           :rest-job="job"

@@ -155,4 +155,15 @@ describe('WorkItemNamespaceListbox', () => {
     // only in query results
     expect(findAllDropdownItemsFor(namespaceProjectsData[2].fullPath)).toHaveLength(1);
   });
+
+  it('does not remove toggle text when searching', async () => {
+    await createComponent();
+    findDropdown().vm.$emit('shown');
+    await nextTick();
+    findDropdown().vm.$emit('search', 'Group B');
+
+    // group A is the auto-selected namespace so it will still be displayed
+    // in the toggle. Search results are displayed in the dropdown item list
+    expect(findDropdown().props('toggleText')).toBe('Group A');
+  });
 });

@@ -15,12 +15,15 @@ module Mutations
       authorize :create_work_item
 
       MUTUALLY_EXCLUSIVE_ARGUMENTS_ERROR = 'Please provide either projectPath or namespacePath argument, but not both.'
-      DISABLED_FF_ERROR = 'create_group_level_work_items feature flag is disabled. Only project paths allowed.'
 
       def self.authorization_scopes
         super + [:ai_workflows]
       end
 
+      argument :create_source,
+        GraphQL::Types::String,
+        required: false,
+        description: 'Source which triggered the creation of the work item. Used only for tracking purposes.'
       argument :created_at, Types::TimeType,
         required: false,
         description: 'Timestamp when the work item was created. Available only for admins and project owners.'
@@ -94,6 +97,14 @@ module Mutations
       end
 
       def resolve(project_path: nil, namespace_path: nil, **attributes)
+        Gitlab::QueryLimiting.disable!('https://gitlab.com/gitlab-org/gitlab/-/issues/578961')
+
+        # temporary change to make this optional param a no-op until https://gitlab.com/gitlab-org/gitlab/-/merge_requests/210502
+        # which introduces handling of this param at the service layer.
+        # adding the param in advance for multi version compatibility purposes
+        # implemented to prevent an unknown attribute error
+        attributes.delete(:create_source)
+
         container_path = project_path || namespace_path
         container = authorized_find!(container_path)
         params = params_with_work_item_type(attributes).merge(author_id: current_user.id,
@@ -122,6 +133,7 @@ module Mutations
 
       private
 
+      # Overridden on EE
       def check_feature_available!(container, type, params)
         return unless container.is_a?(::Group)
 
@@ -130,9 +142,9 @@ module Mutations
             _('Only project level work items can be created to resolve noteable discussions')
         end
 
-        return if ::WorkItems::Type.allowed_group_level_types(container).include?(type.base_type)
+        return if ::WorkItems::TypesFilter.allowed?(container: container, type: type.base_type)
 
-        raise_feature_not_available_error!(type)
+        raise_resource_not_available_error!
       end
 
       def params_with_resolve_discussion_params(attributes)
@@ -159,11 +171,6 @@ module Mutations
         attributes[:work_item_type] = work_item_type
 
         attributes
-      end
-
-      # type is used in overridden EE method
-      def raise_feature_not_available_error!(_type)
-        raise Gitlab::Graphql::Errors::ArgumentError, DISABLED_FF_ERROR
       end
     end
   end

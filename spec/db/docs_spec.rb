@@ -24,6 +24,7 @@ RSpec.shared_examples 'validate dictionary' do |objects, directory_path, require
         sharding_key_issue_url
         notes
         table_size
+        partition_detach_info
       ]
     end
 

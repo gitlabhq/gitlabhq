@@ -158,7 +158,7 @@ RSpec.describe 'Merge request > User sees pipelines', :js, feature_category: :co
       context 'when actor is a developer in parent project' do
         let(:actor) { developer_in_parent }
 
-        it 'creates a pipeline in the parent project when user proceeds with the warning' do
+        it 'creates a pipeline in the parent project when user proceeds with the warning', quarantine: 'https://gitlab.com/gitlab-org/quality/test-failure-issues/-/issues/2144' do
           visit project_merge_request_path(parent_project, merge_request)
 
           create_merge_request_pipeline
@@ -214,7 +214,7 @@ RSpec.describe 'Merge request > User sees pipelines', :js, feature_category: :co
           expect(page).to have_selector('[data-testid="pipeline-table-row"]', count: 2)
 
           page.within(first('[data-testid="pipeline-table-row"]')) do
-            page.within('.pipeline-tags') do
+            within_testid('pipeline-url-table-cell') do
               expect(find_by_testid('pipeline-url-link')[:href]).to include(expected_project.full_path)
               expect(page).to have_content('merge request')
             end

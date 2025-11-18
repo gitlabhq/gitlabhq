@@ -1,0 +1,6 @@
+- remove_form_id = local_assigns.fetch(:remove_form_id, nil)
+
+= form_tag(@group, method: :delete, id: remove_form_id) do
+  %p= delete_delayed_namespace_message(@group)
+
+  = render 'groups/settings/delete_button', remove_form_id: remove_form_id

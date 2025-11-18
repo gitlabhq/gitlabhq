@@ -274,6 +274,60 @@ RSpec.describe Resolvers::MergeRequestsResolver, feature_category: :code_review_
       end
     end
 
+    context 'with closed_before' do
+      before do
+        merge_request_1.metrics.update!(latest_closed_at: 10.days.ago)
+      end
+
+      it 'returns argument error' do
+        expect_graphql_error_to_be_created(Gitlab::Graphql::Errors::ArgumentError, 'You must provide both closedAfter and closedBefore.') do
+          resolve_mr(project, closed_before: 5.days.ago)
+        end
+      end
+    end
+
+    context 'with closed_after' do
+      before do
+        merge_request_1.metrics.update!(latest_closed_at: 10.days.ago)
+      end
+
+      it 'returns argument error' do
+        expect_graphql_error_to_be_created(Gitlab::Graphql::Errors::ArgumentError, 'You must provide both closedAfter and closedBefore.') do
+          resolve_mr(project, closed_after: 5.days.ago)
+        end
+      end
+    end
+
+    context 'with closed_before and closed_after' do
+      before do
+        merge_request_1.metrics.update!(latest_closed_at: 10.days.ago)
+      end
+
+      it 'returns argument error if time between dates is more than 2 years' do
+        expect_graphql_error_to_be_created(Gitlab::Graphql::Errors::ArgumentError, 'Time between closedAfter and closedBefore must be 2 years or less.') do
+          resolve_mr(project, closed_before: 5.days.ago, closed_after: 3.years.ago)
+        end
+      end
+
+      it 'returns argument error if closed before is after closed after' do
+        expect_graphql_error_to_be_created(Gitlab::Graphql::Errors::ArgumentError, 'closedBefore must be on or after closedAfter.') do
+          resolve_mr(project, closed_before: 5.days.ago, closed_after: 3.days.ago)
+        end
+      end
+
+      it 'returns merge requests closed between given period' do
+        result = resolve_mr(project, closed_before: 5.days.ago, closed_after: 20.days.ago)
+
+        expect(result).to contain_exactly(merge_request_1)
+      end
+
+      it 'does not return anything' do
+        result = resolve_mr(project, closed_before: 12.days.ago, closed_after: 20.days.ago)
+
+        expect(result).to be_empty
+      end
+    end
+
     context 'with merged_by argument' do
       before_all do
         merge_request_1.metrics.update!(merged_by: other_user)

@@ -1,8 +1,0 @@
----
-name: work_items
-introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/69085
-rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/339664
-milestone: '14.3'
-type: development
-group: group::project management
-default_enabled: true

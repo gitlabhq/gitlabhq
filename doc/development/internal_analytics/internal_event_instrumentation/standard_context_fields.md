@@ -33,6 +33,7 @@ Standard context, also referred to as [Cloud context](https://gitlab.com/gitlab-
 | `host_name`      | string, null  | Hostname of the GitLab instance.                        | `"gitlab-host-id"`        |
 | `instance_version` | string, null | Version of the GitLab instance.                         | `"15.8.0"`                |
 | `realm`          | string, null  | Deployment type of GitLab. Must be one of: `"self-managed"`, `"saas"`, `"dedicated"`. | `"saas"`                  |
+| `deployment_type`          | string, null  | Deployment type of GitLab. Created to replace `realm`, which never sent "dedicated" value. Must be one of: `"self-managed"`, `".com"`, `"dedicated"`. | `".com"`                  |
 
 ### Client Information
 

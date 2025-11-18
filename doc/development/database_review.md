@@ -181,7 +181,7 @@ of these methods:
    the request using the drop-down menu on the right-hand side.
 
 1. **Check `development.log`**: Test your feature then look inside `log/development.log`
-   in the GitLab directory to see all the queries executed by the application. 
+   in the GitLab directory to see all the queries executed by the application.
    This does not include queries executed in a Sidekiq worker.
 
 1. **Run specs with `ActiveRecord::Base.logger`**: You can log queries to stdout by adding
@@ -200,7 +200,7 @@ of these methods:
    Run the tests with `bundle exec rspec <test_file>` and the queries will appear
    in the test output. **This will only produce correct queries in integration tests.**
    The output of unit tests may not be correct if there is an additional component modifying
-   the ActiveRecord relation, such as pagination middleware. 
+   the ActiveRecord relation, such as pagination middleware.
 
 ##### Query Plans
 

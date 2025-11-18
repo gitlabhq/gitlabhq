@@ -122,7 +122,6 @@ RSpec.describe GroupPolicy, feature_category: :system_access do
     specify do
       expect_allowed(*public_permissions)
       expect_allowed(*guest_permissions)
-      expect_disallowed(*(planner_permissions - guest_permissions))
       expect_disallowed(*reporter_permissions)
       expect_disallowed(*developer_permissions)
       expect_disallowed(*maintainer_permissions)
@@ -144,7 +143,7 @@ RSpec.describe GroupPolicy, feature_category: :system_access do
       expect_disallowed(*(reporter_permissions - planner_permissions))
       expect_disallowed(*developer_permissions)
       expect_disallowed(*maintainer_permissions)
-      expect_disallowed(*owner_permissions)
+      expect_disallowed(*(owner_permissions - [:destroy_issue]))
     end
 
     it_behaves_like 'deploy token does not get confused with user' do
@@ -158,7 +157,6 @@ RSpec.describe GroupPolicy, feature_category: :system_access do
     specify do
       expect_allowed(*public_permissions)
       expect_allowed(*guest_permissions)
-      expect_allowed(*planner_permissions)
       expect_allowed(*reporter_permissions)
       expect_disallowed(*developer_permissions)
       expect_disallowed(*maintainer_permissions)
@@ -176,7 +174,6 @@ RSpec.describe GroupPolicy, feature_category: :system_access do
     specify do
       expect_allowed(*public_permissions)
       expect_allowed(*guest_permissions)
-      expect_allowed(*planner_permissions)
       expect_allowed(*reporter_permissions)
       expect_allowed(*developer_permissions)
       expect_disallowed(*maintainer_permissions)
@@ -199,7 +196,6 @@ RSpec.describe GroupPolicy, feature_category: :system_access do
       it 'allows permissions from lower roles' do
         expect_allowed(*public_permissions)
         expect_allowed(*guest_permissions)
-        expect_allowed(*planner_permissions)
         expect_allowed(*reporter_permissions)
         expect_allowed(*developer_permissions)
       end
@@ -214,7 +210,6 @@ RSpec.describe GroupPolicy, feature_category: :system_access do
       it 'allows every maintainer permission' do
         expect_allowed(*public_permissions)
         expect_allowed(*guest_permissions)
-        expect_allowed(*planner_permissions)
         expect_allowed(*reporter_permissions)
         expect_allowed(*developer_permissions)
         expect_allowed(*maintainer_permissions)
@@ -397,7 +392,7 @@ RSpec.describe GroupPolicy, feature_category: :system_access do
         expect_disallowed(*(reporter_permissions - planner_permissions))
         expect_disallowed(*developer_permissions)
         expect_disallowed(*maintainer_permissions)
-        expect_disallowed(*owner_permissions)
+        expect_disallowed(*(owner_permissions - [:destroy_issue]))
       end
     end
 
@@ -407,7 +402,6 @@ RSpec.describe GroupPolicy, feature_category: :system_access do
       specify do
         expect_allowed(*public_permissions)
         expect_allowed(*guest_permissions)
-        expect_allowed(*planner_permissions)
         expect_allowed(*reporter_permissions)
         expect_disallowed(*developer_permissions)
         expect_disallowed(*maintainer_permissions)
@@ -421,7 +415,6 @@ RSpec.describe GroupPolicy, feature_category: :system_access do
       specify do
         expect_allowed(*public_permissions)
         expect_allowed(*guest_permissions)
-        expect_allowed(*planner_permissions)
         expect_allowed(*reporter_permissions)
         expect_allowed(*developer_permissions)
         expect_disallowed(*maintainer_permissions)
@@ -435,7 +428,6 @@ RSpec.describe GroupPolicy, feature_category: :system_access do
       specify do
         expect_allowed(*public_permissions)
         expect_allowed(*guest_permissions)
-        expect_allowed(*planner_permissions)
         expect_allowed(*reporter_permissions)
         expect_allowed(*developer_permissions)
       end
@@ -2141,24 +2133,10 @@ RSpec.describe GroupPolicy, feature_category: :system_access do
   describe 'view_edit_page permission' do
     subject(:policy) { described_class.new(current_user, group) }
 
-    context 'when user has remove_group permission' do
+    context 'when user has owner permission' do
       let(:current_user) { owner }
 
       it { is_expected.to be_allowed(:view_edit_page) }
-    end
-
-    context 'when user has archive_group permission' do
-      let(:current_user) { owner }
-
-      it { is_expected.to be_allowed(:view_edit_page) }
-
-      context 'when archive_group feature flag is disabled' do
-        before do
-          stub_feature_flags(archive_group: false)
-        end
-
-        it { is_expected.to be_allowed(:view_edit_page) }
-      end
     end
 
     context 'when user does not have archive_group permissions' do

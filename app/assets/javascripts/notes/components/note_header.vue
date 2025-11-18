@@ -2,7 +2,6 @@
 import { GlBadge, GlLoadingIcon, GlTooltipDirective } from '@gitlab/ui';
 import { getActivePinia } from 'pinia';
 import { isGid, getIdFromGraphQLId } from '~/graphql_shared/utils';
-import { TYPE_ACTIVITY, TYPE_COMMENT } from '~/import/constants';
 import { s__ } from '~/locale';
 import ImportedBadge from '~/vue_shared/components/imported_badge.vue';
 import TimeAgoTooltip from '~/vue_shared/components/time_ago_tooltip.vue';
@@ -37,11 +36,6 @@ export default {
       type: [String, Number],
       required: false,
       default: null,
-    },
-    noteableType: {
-      type: String,
-      required: false,
-      default: '',
     },
     showSpinner: {
       type: Boolean,
@@ -122,9 +116,6 @@ export default {
     },
     internalNoteTooltip() {
       return s__('Notes|This internal note will always remain confidential');
-    },
-    importableType() {
-      return this.isSystemNote ? TYPE_ACTIVITY : TYPE_COMMENT;
     },
   },
   methods: {

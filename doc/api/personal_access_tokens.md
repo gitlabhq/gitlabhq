@@ -321,7 +321,7 @@ Supported attributes:
 
 | Attribute           | Type     | Required | Description                                                              |
 |---------------------|----------|----------|--------------------------------------------------------------------------|
-| `min_access_level`  | integer  | No       | Limit by current user minimal [role (`access_level`)](members.md#roles). |
+| `min_access_level`  | integer  | No       | Limit by current user minimal [role (`access_level`)](group_members.md#roles). |
 | `page`              | integer  | No       | Page to retrieve. Defaults to `1`.                                       |
 | `per_page`          | integer  | No       | Number of records to return per page. Defaults to `20`.                  |
 

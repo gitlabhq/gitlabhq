@@ -1,0 +1,10 @@
+mutation dismissUserGroupCallout($input: UserGroupCalloutCreateInput!) {
+  userGroupCalloutCreate(input: $input) {
+    errors
+    userGroupCallout {
+      dismissedAt
+      featureName
+      groupId
+    }
+  }
+}

@@ -8,7 +8,7 @@ import UrlSyncComponent, {
 
 jest.mock('~/lib/utils/url_utility', () => ({
   mergeUrlParams: jest.fn((query, url) => `urlParams: ${JSON.stringify(query)} ${url}`),
-  setUrlParams: jest.fn((query, url) => `urlParams: ${JSON.stringify(query)} ${url}`),
+  setUrlParams: jest.fn((query, { url }) => `urlParams: ${JSON.stringify(query)} ${url}`),
 }));
 
 jest.mock('~/lib/utils/common_utils', () => ({
@@ -51,7 +51,12 @@ describe('url sync component', () => {
 
   const expectUrlSyncWithSetUrlParams = (query, times, setUrlParamsReturnValue) => {
     expect(setUrlParams).toHaveBeenCalledTimes(times);
-    expect(setUrlParams).toHaveBeenCalledWith(query, window.location.href, true, true, true);
+    expect(setUrlParams).toHaveBeenCalledWith(query, {
+      url: window.location.href,
+      clearParams: true,
+      railsArraySyntax: true,
+      decodeParams: true,
+    });
 
     expect(historyPushState).toHaveBeenCalledTimes(times);
     expect(historyPushState).toHaveBeenCalledWith(setUrlParamsReturnValue);

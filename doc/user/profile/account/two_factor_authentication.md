@@ -386,7 +386,7 @@ If you lose the recovery codes, or want to generate new ones, you can use either
 To regenerate 2FA recovery codes, you need access to a desktop browser:
 
 1. Access your [**User settings**](../_index.md#access-your-user-settings).
-1. Select **Account > Two-Factor Authentication (2FA)**.
+1. Select **Account** > **Two-Factor Authentication (2FA)**.
 1. If you've already configured 2FA, select **Manage two-factor authentication**.
 1. In the **Disable two-factor authentication** section, select **Regenerate recovery codes**.
 1. On the dialog, enter your current password and select **Regenerate recovery codes**.

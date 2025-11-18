@@ -132,9 +132,10 @@ RSpec.describe MergeRequestsFinder, feature_category: :code_review_workflow do
       end
 
       context 'filters by commit sha' do
-        subject(:merge_requests) { described_class.new(user, commit_sha: commit_sha).execute }
+        subject(:merge_requests) { described_class.new(user, project_id: project_id, commit_sha: commit_sha).execute }
 
         context 'when commit belongs to the merge request' do
+          let(:project_id) { merge_request5.project_id }
           let(:commit_sha) { merge_request5.merge_request_diff.last_commit_sha }
 
           it 'filters by commit sha' do
@@ -147,6 +148,7 @@ RSpec.describe MergeRequestsFinder, feature_category: :code_review_workflow do
             merge_request4.update!(squash_commit_sha: commit_sha)
           end
 
+          let(:project_id) { merge_request4.project_id }
           let(:commit_sha) { '1234abcd' }
 
           it 'filters by commit sha' do
@@ -159,6 +161,7 @@ RSpec.describe MergeRequestsFinder, feature_category: :code_review_workflow do
             merge_request4.update!(merge_commit_sha: commit_sha)
           end
 
+          let(:project_id) { merge_request4.project_id }
           let(:commit_sha) { '1234dcba' }
 
           it 'filters by commit sha' do
@@ -176,10 +179,35 @@ RSpec.describe MergeRequestsFinder, feature_category: :code_review_workflow do
             create(:merge_request_generated_ref_commit, commit_sha: commit_sha, merge_request: merge_request4, project: merge_request4.target_project)
           end
 
+          let(:project_id) { merge_request4.project_id }
           let(:commit_sha) { 'generated-ref-commit-sha' }
 
           it 'filters by commit sha' do
             is_expected.to contain_exactly(merge_request4)
+          end
+        end
+
+        context 'when project_id is not set' do
+          let(:project_id) { nil }
+          let(:commit_sha) { merge_request5.merge_request_diff.last_commit_sha }
+
+          it 'does not filter' do
+            is_expected.to contain_exactly(
+              merge_request1,
+              merge_request2,
+              merge_request3,
+              merge_request4,
+              merge_request5
+            )
+          end
+        end
+
+        context 'when project_id is set but it does not exist' do
+          let(:project_id) { merge_request5.project_id + 999 }
+          let(:commit_sha) { merge_request5.merge_request_diff.last_commit_sha }
+
+          it 'raises an error' do
+            expect { merge_requests }.to raise_error(ActiveRecord::RecordNotFound)
           end
         end
       end
@@ -216,6 +244,31 @@ RSpec.describe MergeRequestsFinder, feature_category: :code_review_workflow do
           it 'queries merge_request_metrics.target_project_id table' do
             expect(query.to_sql).to include(%("merge_request_metrics"."target_project_id" = #{merge_request2.target_project_id}))
           end
+        end
+      end
+
+      context 'filters by latest_closed_at date' do
+        before do
+          merge_request1.metrics.update!(latest_closed_at: 5.days.ago)
+          merge_request2.metrics.update!(latest_closed_at: 10.days.ago)
+        end
+
+        describe 'closed_after' do
+          subject { described_class.new(user, closed_after: 6.days.ago).execute }
+
+          it { is_expected.to eq([merge_request1]) }
+        end
+
+        describe 'closed_before' do
+          subject { described_class.new(user, closed_before: 6.days.ago).execute }
+
+          it { is_expected.to eq([merge_request2]) }
+        end
+
+        describe 'when both closed_after and closed_before is given' do
+          subject { described_class.new(user, closed_after: 15.days.ago, closed_before: 6.days.ago).execute }
+
+          it { is_expected.to eq([merge_request2]) }
         end
       end
 

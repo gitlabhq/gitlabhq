@@ -18,9 +18,8 @@ For Conan v2 operations, see [Conan v2 API](conan_v2.md).
 
 {{< /alert >}}
 
-Use this API to interact with the Conan v1 package manager. These endpoints work for both
-projects and instances. For more information,
-see [Conan packages in the package registry](../../user/packages/conan_1_repository/_index.md).
+Use this API to interact with the [Conan v1 package manager](../../user/packages/conan_1_repository/_index.md). These endpoints work for both
+projects and instances.
 
 Generally, these endpoints are used by the [Conan 1 package manager client](https://docs.conan.io/en/latest/)
 and are not meant for manual consumption.

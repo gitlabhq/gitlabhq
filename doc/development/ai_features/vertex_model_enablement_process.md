@@ -29,7 +29,7 @@ title: Vertex AI Model Enablement Process
 
 ### 4. Quota Management
 
-- Monitoring for existing quota is available from the [AI-gateway dashboard](https://dashboards.gitlab.net/d/ai-gateway-main/ai-gateway3a-overview?from=now-6h%2Fm&orgId=1&timezone=utc&to=now%2Fm&var-PROMETHEUS_DS=mimir-runway&var-environment=gprd&viewPanel=panel-1217942947). Use the little arrow on the top left to drill down and see quota usage per model.
+- Monitoring for existing quota is available from the [AI-gateway dashboard](https://dashboards.gitlab.net/d/ai-gateway-main/ai-gateway3a-overview?from=now-6h%2Fm&orgId=1&timezone=utc&to=now%2Fm&var-PROMETHEUS_DS=mimir-runway&var-environment=gprd&viewPanel=panel-1217942947). Use the little arrow on the upper left to drill down and see quota usage per model.
 - Not all quota are available in our monitoring, all visible quota are available in the [GCP console for the `gitlab-ai-framework-prod` project](https://console.cloud.google.com/iam-admin/quotas?referrer=search&inv=1&invt=Abs5YQ&project=gitlab-ai-framework-prod)
 - Quota capacity forecasting is available in [tamland](https://gitlab-com.gitlab.io/gl-infra/capacity-planning-trackers/gitlab-com/service_groups/ai-gateway/)
 - Quota increases to shared resources need to be requested from Google

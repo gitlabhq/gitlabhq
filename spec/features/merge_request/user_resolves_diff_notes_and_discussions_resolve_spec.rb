@@ -334,7 +334,11 @@ RSpec.describe 'Merge request > User resolves diff notes and threads', :js, feat
           page.find('.discussion-next-btn').click
         end
 
-        expect(page.evaluate_script("window.pageYOffset")).to be > 0
+        if Users::ProjectStudio.enabled_for_user?(user) # rubocop:disable RSpec/AvoidConditionalStatements -- temporary Project Studio rollout
+          expect(page.evaluate_script("document.querySelector('.js-static-panel-inner').scrollTop")).to be > 0
+        else
+          expect(page.evaluate_script("window.pageYOffset")).to be > 0
+        end
       end
 
       it 'updates updated text after resolving note' do

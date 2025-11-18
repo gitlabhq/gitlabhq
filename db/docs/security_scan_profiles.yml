@@ -1,0 +1,12 @@
+---
+table_name: security_scan_profiles
+classes:
+- Security::ScanProfile
+feature_categories:
+  - security_asset_inventories
+description: Stores security scan profiles
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/211250
+milestone: '18.6'
+gitlab_schema: gitlab_sec
+sharding_key:
+  namespace_id: namespaces

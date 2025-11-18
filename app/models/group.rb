@@ -186,6 +186,7 @@ class Group < Namespace
     :setup_for_company,
     :step_up_auth_required_oauth_provider,
     :step_up_auth_required_oauth_provider=,
+    :step_up_auth_required_oauth_provider_from_self_or_inherited,
     to: :namespace_settings
   )
 
@@ -1145,24 +1146,8 @@ class Group < Namespace
     ].compact.min
   end
 
-  def work_items_feature_flag_enabled?
-    feature_flag_enabled_for_self_or_ancestor?(:work_items)
-  end
-
-  def work_items_beta_feature_flag_enabled?
-    feature_flag_enabled_for_self_or_ancestor?(:work_items_beta, type: :beta)
-  end
-
-  def work_items_alpha_feature_flag_enabled?
-    feature_flag_enabled_for_self_or_ancestor?(:work_items_alpha)
-  end
-
-  def work_items_group_issues_list_feature_flag_enabled?
-    feature_flag_enabled_for_self_or_ancestor?(:work_items_group_issues_list, type: :beta)
-  end
-
-  def work_item_status_mvc2_feature_flag_enabled?
-    feature_flag_enabled_for_self_or_ancestor?(:work_item_status_mvc2, type: :beta)
+  def work_item_tasks_on_boards_feature_flag_enabled?
+    feature_flag_enabled_for_self_or_ancestor?(:work_item_tasks_on_boards, type: :wip)
   end
 
   def markdown_placeholders_feature_flag_enabled?
@@ -1177,10 +1162,17 @@ class Group < Namespace
     feature_flag_enabled_for_self_or_ancestor?(:allow_iframes_in_markdown, type: :wip)
   end
 
-  # overriden in EE
-  def supports_group_work_items?
-    false
+  def work_items_consolidated_list_enabled?(user = nil)
+    # work_item_planning_view is the feature flag used to determine whether the consolidated list is enabled or not
+    return true if feature_flag_enabled_for_self_or_ancestor?(:work_item_planning_view, type: :wip)
+
+    user.present? && Feature.enabled?(:work_items_consolidated_list_user, user)
   end
+
+  def supports_group_work_items?
+    ::WorkItems::TypesFilter.new(container: self).allowed_types.present?
+  end
+  strong_memoize_attr :supports_group_work_items?
 
   # overriden in EE
   def has_active_hooks?(hooks_scope = :push_hooks)
@@ -1190,10 +1182,6 @@ class Group < Namespace
   # overriden in EE
   def enterprise_user_settings_available?(user = nil)
     false
-  end
-
-  def create_group_level_work_items_feature_flag_enabled?
-    ::Feature.enabled?(:create_group_level_work_items, self, type: :wip) && supports_group_work_items?
   end
 
   def supports_lock_on_merge?
@@ -1310,7 +1298,7 @@ class Group < Namespace
 
     max_access_level = max_member_access(current_user)
 
-    !Authz::Role.access_level_encompasses?(current_access_level: max_access_level, level_to_assign: access_level)
+    !Gitlab::Access.level_encompasses?(current_access_level: max_access_level, level_to_assign: access_level)
   end
 
   private

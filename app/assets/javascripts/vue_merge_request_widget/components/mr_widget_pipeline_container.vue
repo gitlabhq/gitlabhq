@@ -69,6 +69,7 @@ export default {
       :ci-status="ciStatus"
       :source-branch="branch"
       :source-branch-link="branchLink"
+      :merge-request-path="mr.mergeRequestPath"
       :mr-troubleshooting-docs-path="mr.mrTroubleshootingDocsPath"
       :ci-troubleshooting-docs-path="mr.ciTroubleshootingDocsPath"
       :retargeted="mr.retargeted"

@@ -129,6 +129,7 @@ including the major methods:
 - [Rebuild GitLab features using ClickHouse 1: Activity data](clickhouse/gitlab_activity_data.md)
 - [Rebuild GitLab features using ClickHouse 2: Merge Request analytics](clickhouse/merge_request_analytics.md)
 - [Tiered Storage in ClickHouse](clickhouse/tiered_storage.md)
+- [Reviewer guidelines](clickhouse/reviewer_guidelines.md)
 
 ## Miscellaneous
 

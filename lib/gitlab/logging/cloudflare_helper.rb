@@ -3,7 +3,7 @@
 module Gitlab
   module Logging
     module CloudflareHelper
-      CLOUDFLARE_CUSTOM_HEADERS = { 'Cf-Ray' => :cf_ray, 'Cf-Request-Id' => :cf_request_id,
+      CLOUDFLARE_CUSTOM_HEADERS = { 'Cf-Request-Id' => :cf_request_id,
                                     'Cf-IPCountry' => :cf_ipcountry }.freeze
 
       def store_cloudflare_headers!(payload, request)

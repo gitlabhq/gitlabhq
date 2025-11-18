@@ -834,8 +834,6 @@ Gitlab/NamespacedClass:
     - 'ee/app/models/approval_wrapped_any_approver_rule.rb'
     - 'ee/app/models/approval_wrapped_code_owner_rule.rb'
     - 'ee/app/models/approval_wrapped_rule.rb'
-    - 'ee/app/models/approver.rb'
-    - 'ee/app/models/approver_group.rb'
     - 'ee/app/models/board_assignee.rb'
     - 'ee/app/models/board_label.rb'
     - 'ee/app/models/board_user_preference.rb'

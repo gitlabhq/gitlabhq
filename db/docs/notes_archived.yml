@@ -9,3 +9,4 @@ description: Temporary archive table for orphaned notes during namespace_id back
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/201253
 milestone: '18.4'
 gitlab_schema: gitlab_main_org
+table_size: small

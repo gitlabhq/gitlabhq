@@ -17,7 +17,6 @@ FactoryBot.define do
       create(:jira_import_state, :finished, project: projects[1], label: jira_label, imported_issues_count: 3, total_issue_count: 3)
       create(:jira_import_state, :finished, project: projects[1], label: jira_label, imported_issues_count: 3)
       create(:jira_import_state, :scheduled, project: projects[1], label: jira_label)
-      create(:prometheus_integration, project: projects[1])
       create(:jenkins_integration, project: projects[1])
 
       # slack
@@ -62,20 +61,20 @@ FactoryBot.define do
       create(:cluster_agent_token, agent: create(:cluster_agent, project: projects[1]))
 
       # Enabled clusters
-      gcp_cluster = create(:cluster_provider_gcp, :created).cluster
-      create(:cluster_provider_aws, :created)
-      create(:cluster_platform_kubernetes)
-      create(:cluster, :management_project, management_project: projects[0])
+      gcp_cluster = create(:cluster, provider_type: :gcp, projects: [projects[0]])
+      aws_cluster = create(:cluster, provider_type: :aws, projects: [projects[1]])
+      kubernetes_cluster = create(:cluster, provider_type: :user, projects: [projects[2]])
+      create(:cluster_provider_gcp, :created, cluster: gcp_cluster)
+      create(:cluster_provider_aws, :created, cluster: aws_cluster)
+      create(:cluster_platform_kubernetes, cluster: kubernetes_cluster)
+      create(:cluster, :management_project, projects: [projects[3]], management_project: projects[0])
       create(:cluster, :group)
       create(:cluster, :instance, :production_environment)
 
       # Disabled clusters
-      create(:cluster, :disabled)
+      create(:cluster, :disabled, projects: [projects[0]], environment_scope: 'disabled')
       create(:cluster, :group, :disabled)
       create(:cluster, :instance, :disabled)
-
-      # Cluster Integrations
-      create(:clusters_integrations_prometheus, cluster: gcp_cluster)
 
       create(:generic_package, project: projects[0], created_at: 3.days.ago)
       create(:generic_package, project: projects[0], created_at: 3.days.ago)

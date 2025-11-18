@@ -19,6 +19,9 @@ RSpec.describe QA::Specs::ParallelRunner do
     allow(ENV).to receive(:store)
     allow(File).to receive(:write).with(runtime_log, kind_of(String))
 
+    allow(File).to receive(:exist?).and_call_original
+    allow(File).to receive(:exist?).with("../config/gitlab.yml").and_return(false)
+
     allow(QA::Support::KnapsackReport).to receive(:knapsack_report).with(example_data).and_return({ "spec.rb" => 1 })
     allow(QA::Runtime::Browser).to receive(:configure!)
     allow(QA::Runtime::Release).to receive(:perform_before_hooks)

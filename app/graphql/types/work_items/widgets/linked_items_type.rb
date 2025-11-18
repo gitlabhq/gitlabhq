@@ -10,8 +10,13 @@ module Types
 
         implements ::Types::WorkItems::WidgetInterface
 
+        def self.authorization_scopes
+          super + [:ai_workflows]
+        end
+
         field :linked_items, ::Types::WorkItems::LinkedItemType.connection_type,
           null: true, complexity: 5,
+          scopes: [:api, :read_api, :ai_workflows],
           experiment: { milestone: '16.3' },
           extras: [:lookahead],
           description: 'Linked items for the work item.',

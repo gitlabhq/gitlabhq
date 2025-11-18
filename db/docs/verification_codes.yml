@@ -9,4 +9,3 @@ milestone: '14.4'
 gitlab_schema: gitlab_main_jh
 notes: Exempted because this is a JiHu specific table
 table_size: small
-sharding_key_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/560435

@@ -18,6 +18,7 @@ RSpec.describe Types::UserPreferencesType, feature_category: :user_profile do
       merge_request_dashboard_list_type
       work_items_display_settings
       project_studio_enabled
+      new_ui_enabled
       merge_request_dashboard_show_drafts
     ]
 

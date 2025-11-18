@@ -2,6 +2,7 @@
 stage: Analytics
 group: Platform Insights
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+description: Connect Sentry to GitLab for error tracking in your projects.
 title: Sentry error tracking
 ---
 
@@ -36,7 +37,7 @@ To enable the Sentry integration:
    Give the token at least the following scopes: `project:read`, `event:read`, and
    `event:write` (for resolving events).
 1. In GitLab, enable and configure Error Tracking:
-   1. On the left sidebar, select **Search or go to** and find your project.
+   1. On the left sidebar, select **Search or go to** and find your project. If you've [turned on the new navigation](../user/interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
    1. Select **Settings** > **Monitor**, then expand **Error Tracking**.
    1. For **Enable error tracking**, select **Active**.
    1. For **Error tracking backend**, select **Sentry**.
@@ -76,7 +77,7 @@ On-premise Sentry integrations may encounter this issue when attempting to conne
 
 To fix this issue:
 
-1. On the left sidebar, at the bottom, select **Admin**.
+1. On the left sidebar, at the bottom, select **Admin**. If you've [turned on the new navigation](../user/interface_redesign.md#turn-new-navigation-on-or-off), in the upper-right corner, select **Admin**.
 1. Select **Settings** > **Network**.
 1. Expand **Outbound requests**.
 1. Select the **Allow requests to the local network from webhooks and integrations** and **Allow requests to the local network from system hooks** checkboxes.

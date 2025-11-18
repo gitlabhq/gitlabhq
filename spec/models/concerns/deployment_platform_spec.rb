@@ -59,7 +59,7 @@ RSpec.describe DeploymentPlatform do
           create(
             :cluster,
             :provided_by_user,
-            cluster_type: :group_type,
+            :group,
             groups: [group],
             environment_scope: '*'
           )
@@ -69,7 +69,7 @@ RSpec.describe DeploymentPlatform do
           create(
             :cluster,
             :provided_by_user,
-            cluster_type: :group_type,
+            :group,
             environment_scope: 'review/*',
             groups: [group]
           )
@@ -112,7 +112,7 @@ RSpec.describe DeploymentPlatform do
               create(
                 :cluster,
                 :provided_by_user,
-                cluster_type: :group_type,
+                :group,
                 environment_scope: '*',
                 groups: [parent_group]
               )
@@ -126,7 +126,7 @@ RSpec.describe DeploymentPlatform do
               create(
                 :cluster,
                 :provided_by_user,
-                cluster_type: :group_type,
+                :group,
                 environment_scope: 'review/name',
                 groups: [parent_group]
               )
@@ -183,7 +183,7 @@ RSpec.describe DeploymentPlatform do
           create(
             :cluster,
             :provided_by_user,
-            cluster_type: :group_type,
+            :group,
             groups: [group],
             environment_scope: '*'
           )

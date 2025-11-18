@@ -1,0 +1,4 @@
+---
+name: delete_license
+description: Grants the ability to delete licenses
+feature_category: subscription_management

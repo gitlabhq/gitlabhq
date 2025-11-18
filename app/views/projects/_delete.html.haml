@@ -1,17 +1,18 @@
 - return unless can?(current_user, :remove_project, @project)
-- return if Feature.enabled?(:disallow_immediate_deletion, current_user) && @project.self_deletion_scheduled?
-- return if @project.ancestor_scheduled_for_deletion?
 
-- title = @project.self_deletion_scheduled? ? _('Delete project immediately') : _('Delete project')
+- allow_immediate_namespaces_deletion = Gitlab::CurrentSettings.allow_immediate_namespaces_deletion_for_user?(current_user)
 
 = render Pajamas::CardComponent.new(body_options: { class: 'gl-bg-feedback-danger' }) do |c|
   - c.with_header do
-    .gl-flex.gl-grow
-      %h4.gl-text-base.gl-leading-24.gl-m-0.gl-text-feedback-danger= title
-
+    %h4.gl-text-base.gl-leading-24.gl-m-0
+      = s_('ProjectSettings|Delete project')
   - c.with_body do
-    - if @project.self_deletion_scheduled?
+    - if @project.self_deletion_scheduled? && allow_immediate_namespaces_deletion
       %p= delete_immediately_namespace_scheduled_for_deletion_message(@project)
-      #js-project-delete-button{ data: project_delete_immediately_button_data(@project, _('Delete project immediately')) }
+      #js-project-delete-button{ data: project_delete_immediately_button_data(@project) }
+    - elsif @project.scheduled_for_deletion_in_hierarchy_chain?
+      -# Immediate deletion not available: either because of ancestor, or instance setting
+      %p.gl-m-0
+        = self_or_ancestors_deletion_in_progress_or_scheduled_message(@project)
     - else
       = render 'delete_delayed'

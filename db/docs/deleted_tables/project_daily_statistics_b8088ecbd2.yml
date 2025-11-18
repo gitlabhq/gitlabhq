@@ -1,0 +1,15 @@
+---
+table_name: project_daily_statistics_b8088ecbd2
+classes:
+- ProjectDailyStatistic
+feature_categories:
+- source_code_management
+description: Temporary partitioned table name used during partitioning migration
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/202876
+milestone: '18.5'
+gitlab_schema: gitlab_main_org
+sharding_key:
+  project_id: projects
+table_size: small
+removed_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/211916
+removed_in_milestone: '18.6'

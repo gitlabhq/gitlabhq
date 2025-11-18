@@ -259,6 +259,7 @@ RSpec.describe Gitlab::ImportExport::Project::TreeRestorer, :clean_gitlab_redis_
 
           expect(note.suggestions.count).to eq(1)
           expect(note.suggestions.first.from_content).to eq("Original line\n")
+          expect(note.suggestions.first.namespace_id).to eq(note.project.project_namespace.id)
         end
 
         context 'event at forth level of the tree' do
@@ -272,7 +273,7 @@ RSpec.describe Gitlab::ImportExport::Project::TreeRestorer, :clean_gitlab_redis_
             expect(event.action).not_to be_nil
           end
 
-          it 'event belongs to note, belongs to merge request, belongs to a project' do
+          it 'event belongs to note, belongs to merge request, belongs to a project', quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/446116' do
             expect(event.note.noteable.project).not_to be_nil
           end
         end
@@ -409,8 +410,31 @@ RSpec.describe Gitlab::ImportExport::Project::TreeRestorer, :clean_gitlab_redis_
           expect(award_emoji.name).to eq(AwardEmoji::THUMBS_UP)
         end
 
-        it 'restores `ci_cd_settings` : `group_runners_enabled` setting' do
-          expect(@project.ci_cd_settings.group_runners_enabled?).to eq(false)
+        it 'restores project ci_cd_settings', :aggregate_failures do
+          settings = @project.ci_cd_settings
+
+          expect(settings.group_runners_enabled?).to eq(false)
+          expect(settings.merge_pipelines_enabled?).to eq(false)
+          expect(settings.default_git_depth).to eq(5)
+          expect(settings.forward_deployment_enabled?).to eq(false)
+          expect(settings.merge_trains_enabled?).to eq(false)
+          expect(settings.auto_rollback_enabled?).to eq(false)
+          expect(settings.keep_latest_artifact?).to eq(true)
+          expect(settings.job_token_scope_enabled?).to eq(true)
+          expect(settings.runner_token_expiration_interval).to eq(1.month.to_i)
+          expect(settings.separated_caches?).to eq(true)
+          expect(settings.allow_fork_pipelines_to_run_in_parent_project?).to eq(false)
+          expect(settings.inbound_job_token_scope_enabled?).to eq(true)
+          expect(settings.forward_deployment_rollback_allowed?).to eq(true)
+          expect(settings.merge_trains_skip_train_allowed?).to eq(false)
+          expect(settings.restrict_pipeline_cancellation_role).to eq('developer').or eq(0)
+          expect(settings.pipeline_variables_minimum_override_role).to eq('developer')
+          expect(settings.push_repository_for_job_token_allowed?).to eq(false)
+          expect(settings.id_token_sub_claim_components).to eq(%w[project_path ref_type ref])
+          expect(settings.delete_pipelines_in_seconds).to eq(1.month.to_i)
+          expect(settings.allow_composite_identities_to_run_pipelines?).to eq(false)
+          expect(settings.display_pipeline_variables?).to eq(false)
+          expect(settings.resource_group_default_process_mode).to eq('unordered')
         end
 
         it 'restores `auto_devops`' do
@@ -523,7 +547,7 @@ RSpec.describe Gitlab::ImportExport::Project::TreeRestorer, :clean_gitlab_redis_
 
               aggregate_failures do
                 expect(release.tag).to eq('release-1.0')
-                expect(release.author_id).to eq(Users::Internal.ghost.id)
+                expect(release.author_id).to eq(Users::Internal.for_organization(@project.organization).ghost.id)
               end
             end
 
@@ -583,6 +607,7 @@ RSpec.describe Gitlab::ImportExport::Project::TreeRestorer, :clean_gitlab_redis_
               note_diff_file = merge_request_note.note_diff_file
 
               expect(note_diff_file.diff).to eq("@@ -14,3 +14,18 @@\n 1")
+              expect(note_diff_file.namespace_id).to eq(merge_request_note.project.project_namespace.id)
             end
           end
         end

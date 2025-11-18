@@ -32,7 +32,7 @@ RSpec.describe Banzai::Filter::VideoLinkFilter, feature_category: :markdown do
       expect(container.name).to eq 'span'
       expect(container['class']).to eq 'media-container video-container'
 
-      video, link = container.children
+      link, video = container.children
 
       expect(video.name).to eq 'video'
       expect(video['src']).to eq src
@@ -134,7 +134,7 @@ RSpec.describe Banzai::Filter::VideoLinkFilter, feature_category: :markdown do
 
       expect(container['class']).to eq 'media-container video-container'
 
-      video, link = container.children
+      link, video = container.children
 
       expect(video['src']).to eq proxy_src
       expect(video['data-canonical-src']).to eq canonical_src

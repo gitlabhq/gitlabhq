@@ -4,7 +4,7 @@ description: >
   Tracks whether an expiration interval is defined for project runner authentication tokens
 product_group: runner
 product_categories:
-  - runner
+  - runner_core
 value_type: boolean
 status: active
 milestone: "17.11"

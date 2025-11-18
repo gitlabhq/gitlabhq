@@ -3,12 +3,12 @@ stage: Package
 group: Package Registry
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 title: Virtual registry
+description: Use the GitLab virtual registry to proxy, cache, and distribute packages from multiple upstream registries.
 ---
 
 {{< details >}}
 
-- Tier: Premium, Ultimate
-- Offering: GitLab.com, GitLab Self-Managed
+- Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
 - Status: Beta
 
 {{< /details >}}
@@ -26,11 +26,14 @@ title: Virtual registry
 
 The availability of this feature is controlled by a feature flag.
 For more information, see the history.
-This feature is available in [beta](../../../policy/development_stages_support.md#beta).
-Review the documentation carefully before you use this feature.
 
 {{< /alert >}}
 
+{{< alert type="note" >}}
+
+The GitLab virtual registry is available as part of the GitLab [beta](../../../policy/development_stages_support.md#beta) program. While it is currently available on Premium and Ultimate, final availability and pricing will be announced when the virtual registry is generally available.
+
+{{< /alert >}}
 Use the GitLab virtual registry to proxy, cache, and distribute packages from multiple upstream registries behind a single, well-known URL.
 
 With this approach, you can configure your applications to use one virtual registry instead of multiple upstream registries.
@@ -54,7 +57,7 @@ Prerequisites:
 
 To turn off the virtual registry:
 
-1. On the left sidebar, select **Search or go to** and find your group. This group must be at the top level.
+1. On the left sidebar, select **Search or go to** and find your group. If you've [turned on the new navigation](../../interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar. This group must be at the top level.
 1. Select **Settings** > **Packages and registries**.
 1. Under **Virtual Registry**, turn off the **Enable Virtual Registry** toggle.
 
@@ -62,7 +65,7 @@ To turn off the virtual registry:
 
 - [Maven packages](maven/_index.md)
 
-## Virtual registry workflow
+## Virtual registry workflows
 
 When you create a virtual registry:
 
@@ -75,7 +78,7 @@ When a virtual registry receives a request for a package:
 - The registry walks through the ordered list of upstreams to find one that can fulfill the request.
 - If the requested file is found in an upstream, the virtual registry returns that file and caches it for future requests. [Caching](#caching-system) increases the availability of dependencies if you've pulled them at least once through the virtual registry.
 
-### Caching system
+## Caching system
 
 All upstream registries have a caching system that:
 
@@ -97,7 +100,7 @@ If the requested path has been cached in any of the available upstreams:
 
 The virtual registry returns a `404 Not Found` error if it cannot find an upstream to fulfill the request.
 
-#### Cache validity period
+### Cache validity period
 
 The cache validity period sets the amount of time, in hours,
 that a cache entry is considered valid to fulfill a request.
@@ -118,7 +121,7 @@ As long as the virtual registry has the response related to
 a request in the cache, that request is fulfilled,
 even when outside the validity period.
 
-##### Set the cache validity period
+#### Set the cache validity period
 
 The cache validity period is important in the overall performance of the virtual registry to fulfill requests. Contacting external registries is a costly operation. Smaller validity periods increase the amount of checks, and longer periods decrease them.
 
@@ -133,6 +136,64 @@ You should set the cache validity period to `0` when the external registry targe
 Cache entries save their files in object storage in the [`dependency_proxy` bucket](../../../administration/object_storage.md#configure-the-parameters-of-each-object).
 
 Object storage usage counts towards the top-level group [object storage usage limit](../../storage_usage_quotas.md#view-storage).
+
+## Cleanup policies
+
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/572839) in GitLab 18.6 [with a flag](../../../administration/feature_flags/_index.md) named `maven_virtual_registry`. Enabled by default.
+
+{{< /history >}}
+
+Virtual registries cache packages from upstream registries to improve performance and availability. Over time, these cached entries can accumulate and consume significant storage space. Use cleanup policies to automatically manage cached content and reduce storage usage.
+
+A cleanup policy is a scheduled job that removes cached entries based on configurable rules. When a cleanup policy runs, it identifies cached entries that haven't been downloaded recently and removes them from storage.
+
+### Cleanup policies workflow
+
+In the virtual registry, cleanup policies:
+
+1. Identify cached entries that have not been downloaded within the specified retention period.
+1. Remove unused cached entries from object storage.
+1. Preserve frequently accessed cached entries to maintain performance.
+
+A cleanup policy affects only cached content from upstream registries. It does not affect:
+
+- Virtual registry configurations
+- Upstream registry settings
+- Packages stored in your project's package registry
+
+### Manage cleanup policies
+
+Prerequisites:
+
+- You must have the Owner role for the top-level group.
+- The virtual registry must be turned on for the group.
+
+Each top-level group can have only one cleanup policy.
+The cleanup policy applies to all virtual registries in that group.
+
+You can manage cleanup policies using the [Virtual registries cleanup policies API](../../../api/virtual_registries_cleanup_policies.md).
+
+### Cleanup policy settings
+
+Use the following settings to control a cleanup policy:
+
+- **Cadence**: Controls how frequently the cleanup policy runs. Available options include daily, weekly, and monthly intervals.
+- **Retention period**: Determines how long cached entries are kept after their last download. Entries that haven't been downloaded within this period are eligible for removal.
+
+### Monitor cleanup policy execution
+
+After a cleanup policy runs, you can view the following execution metrics:
+
+- When the policy last ran.
+- When the policy is scheduled to run next.
+- How many cached entries were removed.
+- Total storage space freed.
+- Any errors that occurred during execution.
+
+These metrics help you understand the effectiveness of your cleanup policy
+so you can adjust settings as needed.
 
 ## Performance considerations
 

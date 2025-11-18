@@ -60,12 +60,14 @@ module QA
 
           logger.info("Running project delete for user #{qa_username} (#{user_id}) on #{ENV['GITLAB_ADDRESS']}...")
 
-          @user_api_client = if qa_username == "gitlab-qa-user1" && ENV['GITLAB_QA_USER1_ACCESS_TOKEN']
+          @user_api_client = if ENV['GITLAB_QA_ADMIN_ACCESS_TOKEN']
+                               api_client
+                             elsif qa_username == "gitlab-qa-user1" && ENV['GITLAB_QA_USER1_ACCESS_TOKEN']
                                user_api_client(ENV['GITLAB_QA_USER1_ACCESS_TOKEN'])
                              elsif qa_username == "gitlab-qa-user2" && ENV['GITLAB_QA_USER2_ACCESS_TOKEN']
                                user_api_client(ENV['GITLAB_QA_USER2_ACCESS_TOKEN'])
                              else
-                               api_client
+                               user_api_client(ENV['GITLAB_QA_ACCESS_TOKEN'])
                              end
 
           projects = fetch_resources("/users/#{user_id}/projects")

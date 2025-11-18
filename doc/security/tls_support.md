@@ -12,17 +12,17 @@ title: TLS support
 
 {{< /details >}}
 
-GitLab prioritizes the security of data transmission between users and our
-platforms by employing Transport Layer Security (TLS) to safeguard information
+GitLab prioritizes the security of data transmission between users and the
+platform by employing Transport Layer Security (TLS) to safeguard information
 as it travels across the internet.
 
 As cybersecurity threats continue to evolve, GitLab remains committed to maintaining the
-highest standards of security. We regularly update our TLS support to ensure
-that all communications with GitLab services are protected using the most secure
-and up-to-date encryption methods available.
+highest standards of security. GitLab regularly updates TLS support to ensure that all
+communications with GitLab services use the most secure and up-to-date encryption methods
+available.
 
 This document outlines the current TLS support in GitLab, including the versions
-and cipher suites we use to keep your data safe and secure.
+and cipher suites used to keep your data safe and secure.
 
 ## Supported protocols
 
@@ -69,7 +69,7 @@ DH keys shorter than 2048 bits and ECC keys shorter than 224 bits are
 prohibited. GitLab will fail to connect to a service that uses a certificate
 signed with insufficient bits with a `certificate key too weak` error message.
 
-We strongly recommend using at least 128 bits of security. This means using RSA,
+You should use at least 128 bits of security. This means using RSA,
 DSA, and DH keys with at least 3072 bits, and ECC keys longer than 256 bits.
 
 | Key type | Key length (bits) | Status      |

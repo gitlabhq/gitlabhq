@@ -3,6 +3,6 @@ migration_job_name: BackfillGroupPushRulesFromPushRulesWithIds
 description: Backfills the `GroupPushRules` table with historical data from `push_rules`
 feature_category: source_code_management
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/199456
-milestone: "18.3"
+milestone: '18.3'
 queued_migration_version: 20250723235100
-finalized_by: # version of the migration that finalized this BBM
+finalized_by: '20251020231941'

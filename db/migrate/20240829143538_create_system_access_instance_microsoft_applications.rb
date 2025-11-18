@@ -4,7 +4,7 @@ class CreateSystemAccessInstanceMicrosoftApplications < Gitlab::Database::Migrat
   milestone '17.5'
 
   def change
-    create_table :system_access_instance_microsoft_applications do |t|
+    create_table :system_access_instance_microsoft_applications do |t| # rubocop:disable  Migration/EnsureFactoryForTable -- This table is being deleted
       t.timestamps_with_timezone null: false
       t.boolean :enabled, null: false, default: false
       t.text :tenant_xid, null: false, limit: 255

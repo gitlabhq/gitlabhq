@@ -45,21 +45,11 @@ for your local instance. Start with a GitLab Self-Managed Ultimate license. Afte
 
 Developers may also choose to connect their local GitLab instance to the staging AI Gateway instance.
 
-To connect to the staging AI Gateway, configure it through the Admin UI. This option is only available with Ultimate license and active Duo Enterprise add-on:
+To connect to the staging AI Gateway:
 
-1. Go to **Admin Area** > **Settings** > **GitLab Duo** > **Self-hosted models**
-1. Set the **AI Gateway URL** to `https://cloud.staging.gitlab.com/ai`
-1. Select **Save changes**
-
-Alternatively, you can set the AI gateway URL in a Rails console (useful when you don't have access to the Admin UI):
-
-```ruby
-Ai::Setting.instance.update!(ai_gateway_url: 'https://cloud.staging.gitlab.com/ai')
-```
-
+- Set the `DEVELOPMENT_AI_GATEWAY_URL` environment variable to `https://cloud.staging.gitlab.com`
+- `AI_GATEWAY_URL` is unset and `Ai::Setting.instance.ai_gateway_url` is `nil`
 - Restart your GDK.
-- Inside your GDK, navigate to **Admin area** > **GitLab Duo Pro**, navigate to `/admin/code_suggestions`
-- Filter users to find `root` and use the toggle to assign a GitLab Duo Pro add-on seat to the root user.
 
 ## Troubleshooting
 

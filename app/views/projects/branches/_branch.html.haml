@@ -3,6 +3,7 @@
 - related_merge_request = @related_merge_requests[branch.name]&.first
 - mr_status = merge_request_status(related_merge_request)
 - is_default_branch = branch.name == @repository.root_ref
+- pipeline = commit_status&.subject
 
 %li{ class: "branch-item !gl-flex !gl-items-center js-branch-item js-branch-#{branch.name} !gl-pr-3", data: { name: branch.name, testid: 'branch-container', qa_name: branch.name } }
   .branch-info{ class: '!gl-overflow-visible' }
@@ -46,7 +47,7 @@
         = render Pajamas::ButtonComponent.new(icon: 'merge-request', href: create_mr_path(from: branch.name, source_project: @project), button_options: { class: 'has-tooltip', title: _('New merge request') }) do
           = _('New')
 
-    = render 'projects/buttons/download', project: @project, ref: branch.name, ref_type: :heads, pipeline: @refs_pipelines[branch.name], css_class: '!gl-mr-2'
+    = render 'projects/buttons/download', project: @project, ref: branch.name, ref_type: :heads, pipeline: pipeline, css_class: '!gl-mr-2'
 
     .gl-w-7
       - if !is_default_branch

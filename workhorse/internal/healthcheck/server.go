@@ -30,10 +30,14 @@ type Server struct {
 	readinessConsecutiveSuccesses atomic.Int64
 
 	// Shared state
-	isShutdown         atomic.Bool
+	isShutdown atomic.Bool
+
 	mu                 sync.RWMutex
 	lastReadinessError error
 	lastCheckResults   map[string]CheckResult
+
+	// Success tracking for optimized readiness checks
+	successTracker *SuccessTracker
 
 	// Metrics
 	readinessStatus    prometheus.Gauge
@@ -52,6 +56,7 @@ func NewServer(cfg config.HealthCheckConfig, logger *logrus.Logger, reg promethe
 		registry:          reg,
 		readinessCheckers: make([]HealthChecker, 0),
 		individualChecks:  make(map[string]prometheus.Gauge),
+		successTracker:    NewSuccessTracker(),
 		readinessStatus: promFactory.NewGauge(prometheus.GaugeOpts{
 			Name: "workhorse_readiness_status",
 			Help: "Overall readiness status (1 = ready, 0 = not ready)",
@@ -72,6 +77,21 @@ func NewServer(cfg config.HealthCheckConfig, logger *logrus.Logger, reg promethe
 	hcs.readinessConsecutiveFailures.Store(0)
 
 	return hcs
+}
+
+// GetSuccessTracker returns the success tracker for use by routing middleware
+func (hcs *Server) GetSuccessTracker() *SuccessTracker {
+	return hcs.successTracker
+}
+
+// GetSuccessRecorder returns the success recorder interface
+func (hcs *Server) GetSuccessRecorder() SuccessRecorder {
+	return hcs.successTracker
+}
+
+// GetOptimizedReadinessChecker returns the optimized readiness checker interface
+func (hcs *Server) GetOptimizedReadinessChecker() OptimizedReadinessChecker {
+	return hcs.successTracker
 }
 
 // AddReadinessChecker adds a readiness checker

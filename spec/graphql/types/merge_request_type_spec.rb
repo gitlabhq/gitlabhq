@@ -39,7 +39,7 @@ RSpec.describe GitlabSchema.types['MergeRequest'], feature_category: :code_revie
       has_ci mergeable commits committers commits_without_merge_commits squash security_auto_fix default_squash_commit_message
       auto_merge_strategy merge_user award_emoji prepared_at codequality_reports_comparer supports_lock_on_merge
       mergeability_checks merge_after
-      allows_multiple_assignees allows_multiple_reviewers retargeted name
+      allows_multiple_assignees allows_multiple_reviewers retargeted name pipeline_creation_requests
     ]
 
     expect(described_class).to have_graphql_fields(*expected_fields).at_least
@@ -312,6 +312,27 @@ RSpec.describe GitlabSchema.types['MergeRequest'], feature_category: :code_revie
         noteable = create(:merge_request, source_project: project, source_branch: 'improve/awesome')
         create(:discussion_note_on_merge_request, :resolved, noteable: noteable, project: project)
       end
+    end
+  end
+
+  describe '#pipeline_creation_requests' do
+    let_it_be(:project) { create(:project, :repository) }
+    let_it_be(:merge_request) { create(:merge_request, source_project: project, target_project: project) }
+    let_it_be(:user) { create(:user) }
+
+    before_all do
+      project.add_developer(user)
+    end
+
+    it 'calls Ci::PipelineCreation::Requests.for_merge_request correctly' do
+      expect(::Ci::PipelineCreation::Requests).to receive(:for_merge_request) do |mr|
+        expect(mr).to be_a(MergeRequestPresenter)
+        expect(mr.id).to eq(merge_request.id)
+        expect(mr.iid).to eq(merge_request.iid)
+        []
+      end
+
+      resolve_field(:pipeline_creation_requests, merge_request, current_user: user)
     end
   end
 end

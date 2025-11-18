@@ -142,7 +142,7 @@ RSpec.describe Gitlab::Ci::Pipeline::Chain::Validate::External, feature_category
       end
 
       it 'logs the authorization' do
-        expect(Gitlab::AppLogger).to receive(:info).with(message: 'Pipeline authorized', project_id: project.id, user_id: user.id)
+        expect(Gitlab::AppLogger).to receive(:info).with(message: 'Pipeline authorized', project_id: project.id)
 
         perform!
       end
@@ -330,7 +330,7 @@ RSpec.describe Gitlab::Ci::Pipeline::Chain::Validate::External, feature_category
       it 'logs the authorization' do
         allow(Gitlab::AppLogger).to receive(:info)
 
-        expect(Gitlab::AppLogger).to receive(:info).with(message: 'Pipeline not authorized', project_id: project.id, user_id: user.id)
+        expect(Gitlab::AppLogger).to receive(:info).with(message: 'Pipeline not authorized', project_id: project.id)
 
         perform!
       end
@@ -354,7 +354,7 @@ RSpec.describe Gitlab::Ci::Pipeline::Chain::Validate::External, feature_category
         end
 
         it 'logs the authorization' do
-          expect(Gitlab::AppLogger).to receive(:info).with(message: 'Pipeline not authorized', project_id: project.id, user_id: user.id)
+          expect(Gitlab::AppLogger).to receive(:info).with(message: 'Pipeline not authorized', project_id: project.id)
 
           perform!
         end

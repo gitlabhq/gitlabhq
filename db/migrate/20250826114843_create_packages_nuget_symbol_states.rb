@@ -9,7 +9,7 @@ class CreatePackagesNugetSymbolStates < Gitlab::Database::Migration[2.3]
   NEEDS_VERIFICATION_INDEX_NAME = 'index_packages_nuget_symbol_states_needs_verification'
 
   def up
-    create_table :packages_nuget_symbol_states do |t| # rubocop:disable Migration/EnsureFactoryForTable -- Will be added with the model in a subsequent MR
+    create_table :packages_nuget_symbol_states do |t| # rubocop:disable Migration/EnsureFactoryForTable, Lint/RedundantCopDisableDirective -- Will be added with the model in a subsequent MR
       t.datetime_with_timezone :verification_started_at
       t.datetime_with_timezone :verification_retry_at
       t.datetime_with_timezone :verified_at

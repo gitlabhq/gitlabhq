@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Gitlab::Usage::Metrics::Instrumentations::ProjectRunnerTokenExpirationEnabledMetric, feature_category: :runner do
+RSpec.describe Gitlab::Usage::Metrics::Instrumentations::ProjectRunnerTokenExpirationEnabledMetric, feature_category: :runner_core do
   using RSpec::Parameterized::TableSyntax
 
   context 'for project runner authentication token expiration option' do

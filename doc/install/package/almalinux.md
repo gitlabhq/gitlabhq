@@ -25,10 +25,13 @@ supported distributions and architectures.
 - OS requirements:
   - AlmaLinux 8
   - AlmaLinux 9
+  - AlmaLinux 10
   - Red Hat Enterprise Linux 8
   - Red Hat Enterprise Linux 9
+  - Red Hat Enterprise Linux 10
   - Oracle Linux 8
   - Oracle Linux 9
+  - Oracle Linux 10
   - Any distribution compatible with a supported Red Hat Enterprise Linux version
 - See the [installation requirements](../requirements.md) to learn about the
   minimum hardware requirements.

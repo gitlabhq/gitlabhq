@@ -43,7 +43,7 @@ Prerequisites:
 
 To enable IaC scanning:
 
-1. On the left sidebar, select **Search or go to** and find your project.
+1. On the left sidebar, select **Search or go to** and find your project. If you've [turned on the new navigation](../../interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
 1. If your project does not already have one, create a `.gitlab-ci.yml` file in the root directory.
 1. At the top of the `.gitlab-ci.yml` file, add one of the following lines:
 
@@ -61,8 +61,13 @@ Or using a CI/CD component:
      - component: gitlab.com/components/sast/iac-sast@main
    ```
 
-At this point, IaC scanning is enabled in your pipeline.
-If supported IaC source code is present, the default rules automatically scan for vulnerabilities when a pipeline runs.
+At this point, IaC scanning is enabled in your pipeline:
+
+- The IaC scanning job runs on every pipeline and executes the KICS analyzer.
+- The analyzer determines whether the project contains supported IaC files.
+- If supported files are found, the analyzer scans for vulnerabilities.
+- If no supported files are found, the job completes with no findings.
+
 The corresponding job appears under the test stage in your pipeline.
 
 You can see a working example in
@@ -78,7 +83,7 @@ After completing these steps, you can:
 
 You can review vulnerabilities in a pipeline:
 
-1. On the left sidebar, select **Search or go to** and find your project.
+1. On the left sidebar, select **Search or go to** and find your project. If you've [turned on the new navigation](../../interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
 1. On the left sidebar, select **Build** > **Pipelines**.
 1. Select the pipeline.
 1. Select the **Security** tab.
@@ -287,7 +292,7 @@ Prerequisites:
    [local Docker container registry](../../packages/container_registry/_index.md):
 
    ```plaintext
-   registry.gitlab.com/security-products/kics:5
+   registry.gitlab.com/security-products/kics:6
    ```
 
    The IaC analyzer's image is [periodically updated](../detect/vulnerability_scanner_maintenance.md)
@@ -314,7 +319,7 @@ For example, you might need to avoid a regression in a later release.
 
 To use a specific analyzer version:
 
-1. On the left sidebar, select **Search or go to** and find your project.
+1. On the left sidebar, select **Search or go to** and find your project. If you've [turned on the new navigation](../../interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
 1. Select **Build** > **Pipeline editor**.
 1. Add the `SAST_ANALYZER_IMAGE_TAG` CI/CD variable, after the line that includes the
    `SAST-IaC.gitlab-ci.yml` template.

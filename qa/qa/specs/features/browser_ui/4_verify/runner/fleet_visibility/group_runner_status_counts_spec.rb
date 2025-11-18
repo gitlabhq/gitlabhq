@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module QA
-  RSpec.describe 'Verify', :fleet_visibility, feature_category: :runner do
+  RSpec.describe 'Verify', :fleet_visibility, feature_category: :runner_core do
     describe 'Runner fleet management' do
       let(:executor) { "qa-runner-#{SecureRandom.hex(6)}" }
 

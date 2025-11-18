@@ -37,7 +37,7 @@ Prerequisites:
 
 - You must have at least the Maintainer role for the project.
 
-1. On the left sidebar, select **Search or go to** and find your project.
+1. On the left sidebar, select **Search or go to** and find your project. If you've [turned on the new navigation](../interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
 1. Select **Settings** > **Repository**.
 1. Expand **Protected tags**.
 1. Select **Add new**.
@@ -183,7 +183,7 @@ Prerequisites:
 
 To allow a deploy key to create a protected tag:
 
-1. On the left sidebar, select **Search or go to** and find your project.
+1. On the left sidebar, select **Search or go to** and find your project. If you've [turned on the new navigation](../interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
 1. Select **Settings** > **Repository**.
 1. Expand **Protected tags**.
 1. From the **Tag** dropdown list, select the tag you want to protect.
@@ -211,7 +211,7 @@ Prerequisites:
 
 To do this:
 
-1. On the left sidebar, select **Search or go to** and find your project.
+1. On the left sidebar, select **Search or go to** and find your project. If you've [turned on the new navigation](../interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
 1. Select **Code** > **Tags**.
 1. Next to the tag you want to delete, select **Delete** ({{< icon name="remove" >}}).
 1. On the confirmation dialog, enter the tag name and select **Yes, delete protected tag**.

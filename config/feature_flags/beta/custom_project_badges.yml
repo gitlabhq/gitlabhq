@@ -1,0 +1,10 @@
+---
+name: custom_project_badges
+description: Precautionary approach for new publicly accessible endpoint that does not require log-in, in order to mitigate unforseen issues.
+feature_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/519816
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/180832
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/574344
+milestone: '18.5'
+group: group::organizations
+type: beta
+default_enabled: true

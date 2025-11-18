@@ -146,4 +146,53 @@ RSpec.describe ContributedProjectsFinder, feature_category: :groups_and_projects
       is_expected.to contain_exactly(public_project, private_project, internal_project)
     end
   end
+
+  describe 'with active param' do
+    let_it_be(:archived_project) { create(:project, :archived, :public, name: 'archived') }
+    let_it_be(:pending_delete_project) { create(:project, :public, name: 'pending_delete', pending_delete: true) }
+
+    before_all do
+      archived_project.add_developer(user)
+      pending_delete_project.add_developer(user)
+      travel_to(5.hours.from_now) { create(:push_event, project: archived_project, author: user) }
+      travel_to(6.hours.from_now) { create(:push_event, project: pending_delete_project, author: user) }
+    end
+
+    context 'when active is not provided' do
+      it 'returns all contributed projects including archived but not pending delete' do
+        projects = finder.execute
+
+        expect(projects).to contain_exactly(
+          private_project,
+          internal_project,
+          public_project,
+          archived_project
+        )
+      end
+    end
+
+    context 'when active is true' do
+      let(:params) { { active: true } }
+
+      it 'returns only active projects (not archived and not pending delete)' do
+        projects = finder.execute
+
+        expect(projects).to contain_exactly(
+          private_project,
+          internal_project,
+          public_project
+        )
+      end
+    end
+
+    context 'when active is false' do
+      let(:params) { { active: false } }
+
+      it 'returns only inactive projects (archived or aimed for deletion)' do
+        projects = finder.execute
+
+        expect(projects).to contain_exactly(archived_project)
+      end
+    end
+  end
 end

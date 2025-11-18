@@ -107,11 +107,11 @@ RSpec.describe Ci::CreateDownstreamPipelineService, '#execute', feature_category
   end
 
   context 'when user can create pipeline in a downstream project' do
-    let(:stub_config) { true }
+    let(:stub_ci_yaml) { true }
 
     before do
       downstream_project.add_developer(user)
-      stub_ci_pipeline_yaml_file(YAML.dump(rspec: { script: 'rspec' })) if stub_config
+      stub_ci_pipeline_yaml_file(YAML.dump(rspec: { script: 'rspec' })) if stub_ci_yaml
     end
 
     it 'creates only one new pipeline' do
@@ -166,7 +166,7 @@ RSpec.describe Ci::CreateDownstreamPipelineService, '#execute', feature_category
     end
 
     context 'when the bridge contains `inputs` within its options' do
-      let(:stub_config) { false }
+      let(:stub_ci_yaml) { false }
 
       let_it_be(:spec_inputs_config) do
         <<~YAML
@@ -346,7 +346,7 @@ RSpec.describe Ci::CreateDownstreamPipelineService, '#execute', feature_category
             echo: { script: 'echo' })
         end
 
-        let(:stub_config) { false }
+        let(:stub_ci_yaml) { false }
 
         let(:trigger) do
           {
@@ -688,7 +688,7 @@ RSpec.describe Ci::CreateDownstreamPipelineService, '#execute', feature_category
     end
 
     context 'when downstream pipeline creation errors out' do
-      let(:stub_config) { false }
+      let(:stub_ci_yaml) { false }
 
       before do
         stub_ci_pipeline_yaml_file(YAML.dump(invalid: { yaml: 'error' }))
@@ -715,7 +715,7 @@ RSpec.describe Ci::CreateDownstreamPipelineService, '#execute', feature_category
     end
 
     context 'when bridge job status update raises state machine errors' do
-      let(:stub_config) { false }
+      let(:stub_ci_yaml) { false }
 
       before do
         stub_ci_pipeline_yaml_file(YAML.dump(invalid: { yaml: 'error' }))
@@ -1025,7 +1025,7 @@ RSpec.describe Ci::CreateDownstreamPipelineService, '#execute', feature_category
     end
 
     context 'when trigger:include:artifact is used' do
-      let(:stub_config) { false }
+      let(:stub_ci_yaml) { false }
 
       let!(:build_job) { create(:ci_build, pipeline: upstream_pipeline, name: 'build') }
 

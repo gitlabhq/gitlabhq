@@ -18,7 +18,7 @@ title: Web Commits API
 
 {{< /history >}}
 
-Use this API to retrieve information about commits created with the Web UI.
+Use this API to retrieve information about [web commits](../user/project/repository/web_editor.md).
 
 ## Get public signing key
 

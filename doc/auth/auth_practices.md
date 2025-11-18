@@ -16,8 +16,7 @@ Establish fundamental security principles that form the foundation of your acces
 
 ### Principle of least privilege
 
-Grant users the minimum permissions necessary to complete their work. This principle reduces
-security risks by limiting potential damage from compromised accounts or insider threats.
+This principle reduces security risks by limiting potential damage from compromised accounts or insider threats.
 
 - Grant users the minimum permissions necessary to complete their work.
 - Assign minimum roles (Minimal Access or Guest) at the top-level group, then grant higher
@@ -57,7 +56,7 @@ Implement strong authentication methods to prevent unauthorized access to your G
 ### Password security
 
 Passwords remain a primary authentication method despite their limitations. Strong password
-policies reduce the risk of credential-based attacks. Require strong passwords that meet
+policies reduce the risk of credential-based attacks by requiring strong passwords that meet
 your organization's security standards.
 
 - Configure [password length limits](../security/password_length_limits.md) appropriate for

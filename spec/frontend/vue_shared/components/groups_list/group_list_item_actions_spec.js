@@ -7,6 +7,7 @@ import GroupListItemPreventDeleteModal from '~/vue_shared/components/groups_list
 import GroupListItemDeleteModal from '~/vue_shared/components/groups_list/group_list_item_delete_modal.vue';
 import GroupListItemLeaveModal from '~/vue_shared/components/groups_list/group_list_item_leave_modal.vue';
 import {
+  ACTION_COPY_ID,
   ACTION_ARCHIVE,
   ACTION_DELETE,
   ACTION_DELETE_IMMEDIATELY,
@@ -17,6 +18,8 @@ import {
 } from '~/vue_shared/components/list_actions/constants';
 import { groups } from 'jest/vue_shared/components/groups_list/mock_data';
 import { archiveGroup, restoreGroup, unarchiveGroup } from '~/api/groups_api';
+import { copyToClipboard } from '~/lib/utils/copy_to_clipboard';
+import * as Sentry from '~/sentry/sentry_browser_wrapper';
 import waitForPromises from 'helpers/wait_for_promises';
 import {
   renderArchiveSuccessToast,
@@ -34,6 +37,10 @@ const MOCK_DELETE_PARAMS = {
   testParam: true,
 };
 
+const mockToast = {
+  show: jest.fn(),
+};
+
 jest.mock('~/vue_shared/components/groups_list/utils', () => ({
   ...jest.requireActual('~/vue_shared/components/groups_list/utils'),
   renderRestoreSuccessToast: jest.fn(),
@@ -44,6 +51,8 @@ jest.mock('~/vue_shared/components/groups_list/utils', () => ({
 }));
 jest.mock('~/alert');
 jest.mock('~/api/groups_api');
+jest.mock('~/lib/utils/copy_to_clipboard');
+jest.mock('~/sentry/sentry_browser_wrapper');
 
 describe('GroupListItemActions', () => {
   let wrapper;
@@ -55,6 +64,9 @@ describe('GroupListItemActions', () => {
   const createComponent = ({ propsData = {} } = {}) => {
     wrapper = shallowMountExtended(GroupListItemActions, {
       propsData: { ...defaultProps, ...propsData },
+      mocks: {
+        $toast: mockToast,
+      },
     });
   };
 
@@ -91,6 +103,10 @@ describe('GroupListItemActions', () => {
     it('displays actions dropdown', () => {
       expect(findListActions().props()).toMatchObject({
         actions: {
+          [ACTION_COPY_ID]: {
+            text: `Copy group ID: ${defaultProps.group.id}`,
+            action: expect.any(Function),
+          },
           [ACTION_EDIT]: {
             href: group.editPath,
           },
@@ -110,7 +126,48 @@ describe('GroupListItemActions', () => {
             action: expect.any(Function),
           },
         },
-        availableActions: [ACTION_EDIT, ACTION_LEAVE, ACTION_DELETE],
+        availableActions: [ACTION_COPY_ID, ACTION_EDIT, ACTION_LEAVE, ACTION_DELETE],
+      });
+    });
+  });
+
+  describe('when copy ID action is fired', () => {
+    const { bindInternalEventDocument } = useMockInternalEventsTracking();
+
+    it('tracks event', async () => {
+      copyToClipboard.mockResolvedValueOnce();
+      createComponent();
+      const { trackEventSpy } = bindInternalEventDocument(wrapper.element);
+      await fireAction(ACTION_COPY_ID);
+
+      expect(trackEventSpy).toHaveBeenCalledWith(
+        'click_copy_id_in_group_quick_actions',
+        {},
+        undefined,
+      );
+    });
+
+    describe('when copy to clipboard is successful', () => {
+      it('shows toast', async () => {
+        copyToClipboard.mockResolvedValueOnce();
+        createComponent();
+        await fireAction(ACTION_COPY_ID);
+        await waitForPromises();
+
+        expect(copyToClipboard).toHaveBeenCalledWith(defaultProps.group.id);
+        expect(mockToast.show).toHaveBeenCalledWith('Group ID copied to clipboard.');
+      });
+    });
+
+    describe('when copy to clipboard is not successful', () => {
+      it('logs error in Sentry', async () => {
+        const error = new Error('Copy command failed');
+        copyToClipboard.mockRejectedValueOnce(error);
+        createComponent();
+        await fireAction(ACTION_COPY_ID);
+        await waitForPromises();
+
+        expect(Sentry.captureException).toHaveBeenCalledWith(error);
       });
     });
   });

@@ -176,12 +176,6 @@ RSpec.describe RapidDiffs::Viewers::NoPreviewComponent, type: :component, featur
         allow(diff_file).to receive(:diffable_text?).and_return(true)
       end
 
-      it 'shows preview button' do
-        render_component
-        expect(page).to have_button("Show file contents")
-        verify_virtual_rendering_params
-      end
-
       context 'when diff is collapsed' do
         before do
           allow(diff_file).to receive_messages(collapsed?: true, too_large?: false)
@@ -198,7 +192,7 @@ RSpec.describe RapidDiffs::Viewers::NoPreviewComponent, type: :component, featur
             allow(diff_file).to receive_messages(too_large?: true)
           end
 
-          it 'shows preview button' do
+          it 'shows view file links' do
             render_component
             expect(page).to have_link("View original file")
             expect(page).to have_link("View changed file")
@@ -283,10 +277,6 @@ RSpec.describe RapidDiffs::Viewers::NoPreviewComponent, type: :component, featur
   end
 
   def verify_virtual_rendering_params
-    action_buttons_present = page.has_selector?('[data-testid="rd-no-preview-action"]') ? 1 : 0
-    expect(virtual_rendering_params).to eq(
-      paragraphs_count: page.find_all('p').count,
-      action_buttons_present: action_buttons_present
-    )
+    expect(virtual_rendering_params).to eq(paragraphs_count: page.find_all('p').count)
   end
 end

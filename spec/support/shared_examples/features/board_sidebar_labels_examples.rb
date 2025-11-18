@@ -29,56 +29,6 @@ RSpec.shared_context 'labels from nested groups and projects' do
   end
 end
 
-RSpec.shared_examples "an issue from a subgroup's project is selected" do
-  context 'when editing labels' do
-    before do
-      click_card_and_edit_label
-    end
-
-    it 'displays the label from the top-level group' do
-      expect(labels_dropdown).to have_content(group_label.name)
-    end
-
-    it 'displays the label from the subgroup' do
-      expect(labels_dropdown).to have_content(subgroup_label.name)
-    end
-
-    it 'displays the label from the project' do
-      expect(labels_dropdown).to have_content(subproject_label.name)
-    end
-
-    it "does not display labels from the subgroup's siblings (project or group)" do
-      aggregate_failures do
-        expect(labels_dropdown).not_to have_content(project_label.name)
-        expect(labels_dropdown).not_to have_content(subgroup2_label.name)
-      end
-    end
-  end
-end
-
-RSpec.shared_examples 'an issue from a direct descendant project is selected' do
-  context 'when editing labels' do
-    before do
-      click_card_and_edit_label
-    end
-
-    it 'displays the label from the top-level group' do
-      expect(labels_dropdown).to have_content(group_label.name)
-    end
-
-    it 'displays the label from the project' do
-      expect(labels_dropdown).to have_content(project_label.name)
-    end
-
-    it "does not display labels from the project's siblings or their descendents" do
-      aggregate_failures do
-        expect(labels_dropdown).not_to have_content(subgroup_label.name)
-        expect(labels_dropdown).not_to have_content(subproject_label.name)
-      end
-    end
-  end
-end
-
 RSpec.shared_examples "work item from a direct descendant project is selected" do
   context 'when editing labels' do
     before do

@@ -30,7 +30,7 @@ To activate your instance with an activation code:
    - Your subscription confirmation email.
    - The [Customers Portal](https://customers.gitlab.com/customers/sign_in), on the **Manage Purchases** page.
 1. Sign in to your instance.
-1. On the left sidebar, at the bottom, select **Admin**.
+1. On the left sidebar, at the bottom, select **Admin**. If you've [turned on the new navigation](../user/interface_redesign.md#turn-new-navigation-on-or-off), in the upper-right corner, select **Admin**.
 1. Select **Subscription**.
 1. Paste the activation code in **Activation code**.
 1. Read and accept the terms of service.
@@ -82,7 +82,7 @@ To verify the edition, sign in to GitLab and select
 at the top of the page.
 
 If you are running GitLab Community Edition (CE), you can upgrade your installation to GitLab
-EE. For more information, see [upgrading between editions](../update/upgrade.md#upgrading-between-editions).
+EE. For more information, see [other upgrade paths](../update/convert_to_ee/_index.md).
 
 If you have questions or need assistance,
 [contact GitLab Support](https://about.gitlab.com/support/#contact-support).
@@ -113,7 +113,7 @@ To resolve the issue:
 
 If you are unable to determine the issue, contact [GitLab Support](https://about.gitlab.com/support/portal/) and provide the GraphQL response in your description of the issue.
 
-### Cannot activate instance due to connectivity error
+### Error: `Cannot activate instance due to a connectivity issue`
 
 When activating your instance, you may encounter connectivity issues preventing connection to GitLab servers.
 This can be caused by:
@@ -142,4 +142,4 @@ This can be caused by:
 - **An offline environment**:
   - If you are unable to configure your setup to allow connection to GitLab servers, contact your Sales Representative to request an [Offline license](https://about.gitlab.com/pricing/licensing-faq/cloud-licensing/#what-is-an-offline-cloud-license).
 
-    For assistance finding your sales representative you can contact [GitLab support](https://about.gitlab.com/support/#contact-support).
+    For assistance, you can contact [GitLab support](https://about.gitlab.com/support/#contact-support) with reference to [troubleshooting network connectivity](https://handbook.gitlab.com/handbook/support/license-and-renewals/workflows/self-managed/troubleshoot_cloud_licensing/#troubleshooting-network-connectivity).

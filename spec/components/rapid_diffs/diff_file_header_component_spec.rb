@@ -155,12 +155,12 @@ RSpec.describe RapidDiffs::DiffFileHeaderComponent, type: :component, feature_ca
       allow(diff_file).to receive(:content_sha).and_return(content_sha)
     end
 
-    it 'always renders the "View file at [SHA]" menu item' do
+    it 'always renders the "View file at [SHA]" menu item (in a code tag)' do
       render_component
 
       options_menu_items = Gitlab::Json.parse(page.find('script', visible: false).text)
 
-      expect(options_menu_items.first['text']).to eq('View file at abc123')
+      expect(options_menu_items.first['text']).to eq('View file at <code>abc123</code>')
     end
 
     it 'renders additional menu items with respective order' do

@@ -8,7 +8,7 @@ RSpec.describe ProjectsHelper, feature_category: :source_code_management do
 
   let_it_be_with_reload(:project) { create(:project, :repository) }
   let_it_be_with_refind(:project_with_repo) { create(:project, :repository) }
-  let_it_be(:user) { create(:user) }
+  let_it_be_with_reload(:user) { create(:user) }
 
   before do
     allow(helper).to receive(:current_user).and_return(user)
@@ -2090,14 +2090,6 @@ RSpec.describe ProjectsHelper, feature_category: :source_code_management do
       end
 
       it { is_expected.to be(true) }
-
-      context 'when `archive_group` flag is disabled' do
-        before do
-          stub_feature_flags(archive_group: false)
-        end
-
-        it { is_expected.to be(false) }
-      end
     end
 
     context 'when project and ancestor is not archived' do

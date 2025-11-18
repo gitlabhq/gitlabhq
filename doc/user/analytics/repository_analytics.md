@@ -37,7 +37,7 @@ Prerequisites:
 
 To view repository analytics for a project:
 
-1. On the left sidebar, select **Search or go to** and find your project.
+1. On the left sidebar, select **Search or go to** and find your project. If you've [turned on the new navigation](../interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
 1. Select **Analyze** > **Repository analytics**.
 1. To view details about a category, hover over a bar in the chart.
 1. To view statistics of code coverage and commits in a specific branch, from the dropdown list next to **Commit statistics**, select a branch.

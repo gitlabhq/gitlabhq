@@ -28,6 +28,7 @@ import { HTTP_STATUS_INTERNAL_SERVER_ERROR, HTTP_STATUS_OK } from '~/lib/utils/h
 import NavigationControls from '~/ci/pipelines_page/components/nav_controls.vue';
 import PipelinesComponent from '~/ci/pipelines_page/pipelines.vue';
 import PipelinesCiTemplates from '~/ci/pipelines_page/components/empty_state/pipelines_ci_templates.vue';
+import ExternalConfigEmptyState from '~/ci/common/empty_state/external_config_empty_state.vue';
 import PipelinesTable from '~/ci/common/pipelines_table.vue';
 import {
   PIPELINE_ID_KEY,
@@ -83,6 +84,8 @@ describeSkipVue3(skipReason, () => {
 
   const findFilteredSearch = () => wrapper.findComponent(GlFilteredSearch);
   const findEmptyState = () => wrapper.findComponent(GlEmptyState);
+  const findExternalConfigEmptyState = () => wrapper.findComponent(ExternalConfigEmptyState);
+  const findNoPipelinesCiTemplates = () => wrapper.findComponent(PipelinesCiTemplates);
   const findNavigationTabs = () => wrapper.findComponent(NavigationTabs);
   const findNavigationControls = () => wrapper.findComponent(NavigationControls);
   const findPipelinesTable = () => wrapper.findComponent(PipelinesTable);
@@ -94,7 +97,7 @@ describeSkipVue3(skipReason, () => {
   const findCleanCacheButton = () => wrapper.findByTestId('clear-cache-button');
   const findPipelineUrlLinks = () => wrapper.findAll('[data-testid="pipeline-url-link"]');
 
-  const createComponent = ({ props = {}, withPermissions = true } = {}) => {
+  const createComponent = ({ props = {}, provide = {}, withPermissions = true } = {}) => {
     mockApollo = createMockApollo([[setSortPreferenceMutation, mutationMock]]);
     const permissionsProps = withPermissions ? { ...withPermissionsProps } : {};
 
@@ -114,6 +117,7 @@ describeSkipVue3(skipReason, () => {
           identityVerificationPath: '#',
           usesExternalConfig: false,
           emptyStateIllustrationPath: 'illustrations/empty-state/empty-pipeline-md.svg',
+          ...provide,
         },
         propsData: {
           ...defaultProps,
@@ -673,6 +677,38 @@ describeSkipVue3(skipReason, () => {
       });
     });
 
+    describe('when CI is enabled and user has permissions and usesExternalConfig is true', () => {
+      beforeEach(async () => {
+        createComponent({ provide: { usesExternalConfig: true } });
+        await waitForPromises();
+      });
+
+      it('renders ExternalConfigEmptyState component', () => {
+        expect(findExternalConfigEmptyState().exists()).toBe(true);
+      });
+
+      it('provides the newPipelinePath to ExternalConfigEmptyState component', () => {
+        expect(findExternalConfigEmptyState().props('newPipelinePath')).toBe(
+          withPermissionsProps.newPipelinePath,
+        );
+      });
+
+      it('does not render filtered search', () => {
+        expect(findFilteredSearch().exists()).toBe(false);
+      });
+
+      it('does not render the pipeline key dropdown', () => {
+        expect(findPipelineKeyCollapsibleBox().exists()).toBe(false);
+      });
+
+      it('does not render tabs nor buttons', () => {
+        expect(findNavigationTabs().exists()).toBe(false);
+        expect(findTab('all').exists()).toBe(false);
+        expect(findRunPipelineButton().exists()).toBe(false);
+        expect(findCleanCacheButton().exists()).toBe(false);
+      });
+    });
+
     describe('when CI is not enabled and user has permissions', () => {
       beforeEach(async () => {
         createComponent({ props: { hasGitlabCi: false } });
@@ -680,7 +716,7 @@ describeSkipVue3(skipReason, () => {
       });
 
       it('renders the CI/CD templates', () => {
-        expect(wrapper.findComponent(PipelinesCiTemplates).exists()).toBe(true);
+        expect(findNoPipelinesCiTemplates().exists()).toBe(true);
       });
 
       it('does not render filtered search', () => {

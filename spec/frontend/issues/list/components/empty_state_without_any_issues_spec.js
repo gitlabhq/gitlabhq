@@ -1,16 +1,10 @@
-import { GlDisclosureDropdown, GlEmptyState } from '@gitlab/ui';
+import { GlEmptyState } from '@gitlab/ui';
 import { mountExtended } from 'helpers/vue_test_utils_helper';
-import CsvImportExportButtons from '~/issuable/components/csv_import_export_buttons.vue';
 import EmptyStateWithoutAnyIssues from '~/issues/list/components/empty_state_without_any_issues.vue';
 import NewResourceDropdown from '~/vue_shared/components/new_resource_dropdown/new_resource_dropdown.vue';
 
 describe('EmptyStateWithoutAnyIssues component', () => {
   let wrapper;
-
-  const defaultProps = {
-    currentTabCount: 0,
-    exportCsvPathWithQuery: 'export/csv/path',
-  };
 
   const defaultProvide = {
     canCreateProjects: false,
@@ -24,8 +18,6 @@ describe('EmptyStateWithoutAnyIssues component', () => {
     isProject: false,
   };
 
-  const findCsvImportExportButtons = () => wrapper.findComponent(CsvImportExportButtons);
-  const findCsvImportExportDropdown = () => wrapper.findComponent(GlDisclosureDropdown);
   const findGlEmptyState = () => wrapper.findComponent(GlEmptyState);
   const findJiraDocsLink = () => wrapper.findByRole('link', { name: 'See integration options' });
   const findNewResourceDropdown = () => wrapper.findComponent(NewResourceDropdown);
@@ -35,7 +27,6 @@ describe('EmptyStateWithoutAnyIssues component', () => {
   const mountComponent = ({ props = {}, provide = {}, slots = {} } = {}) => {
     wrapper = mountExtended(EmptyStateWithoutAnyIssues, {
       propsData: {
-        ...defaultProps,
         ...props,
       },
       provide: {
@@ -66,9 +57,12 @@ describe('EmptyStateWithoutAnyIssues component', () => {
 
       describe('actions', () => {
         describe('"New project" link', () => {
-          describe('when can create projects and not in project context', () => {
+          describe('when can create projects, not in project context and has no projects', () => {
             it('renders', () => {
-              mountComponent({ provide: { canCreateProjects: true, isProject: false } });
+              mountComponent({
+                props: { hasProjects: false },
+                provide: { canCreateProjects: true, isProject: false },
+              });
 
               expect(findNewProjectLink().attributes('href')).toBe(defaultProvide.newProjectPath);
             });
@@ -76,7 +70,10 @@ describe('EmptyStateWithoutAnyIssues component', () => {
 
           describe('when can create projects but in project context', () => {
             it('does not render', () => {
-              mountComponent({ provide: { canCreateProjects: true, isProject: true } });
+              mountComponent({
+                props: { hasProjects: false },
+                provide: { canCreateProjects: true, isProject: true },
+              });
 
               expect(findNewProjectLink().exists()).toBe(false);
             });
@@ -100,45 +97,23 @@ describe('EmptyStateWithoutAnyIssues component', () => {
             });
           });
 
+          describe('when can show new issue dropdown', () => {
+            it('does not render', () => {
+              mountComponent({
+                props: { showNewIssueDropdown: true },
+                provide: { showNewIssueLink: true },
+              });
+
+              expect(findCreateIssueLink().exists()).toBe(false);
+            });
+          });
+
           describe('when cannot show new issue link', () => {
             it('does not render', () => {
               mountComponent({ provide: { showNewIssueLink: false } });
 
               expect(findCreateIssueLink().exists()).toBe(false);
             });
-          });
-        });
-
-        describe('CSV import/export buttons', () => {
-          describe('when can show csv buttons', () => {
-            it('renders', () => {
-              mountComponent({ props: { showCsvButtons: true } });
-
-              expect(findCsvImportExportDropdown().props('toggleText')).toBe('Import issues');
-              expect(findCsvImportExportButtons().props()).toMatchObject({
-                exportCsvPath: defaultProps.exportCsvPathWithQuery,
-                issuableCount: 0,
-              });
-            });
-          });
-
-          describe('when cannot show csv buttons', () => {
-            it('does not render', () => {
-              mountComponent({ props: { showCsvButtons: false } });
-
-              expect(findCsvImportExportDropdown().exists()).toBe(false);
-              expect(findCsvImportExportButtons().exists()).toBe(false);
-            });
-          });
-
-          it('does not render the default buttons when overriden using slot', () => {
-            mountComponent({
-              props: { showCsvButtons: true },
-              slots: { 'import-export-buttons': '<button></button>' },
-            });
-
-            expect(findCsvImportExportDropdown().exists()).toBe(false);
-            expect(findCsvImportExportButtons().exists()).toBe(false);
           });
         });
 

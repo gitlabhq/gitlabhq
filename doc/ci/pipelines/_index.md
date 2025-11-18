@@ -95,7 +95,7 @@ operation of the pipeline.
 
 To execute a pipeline manually:
 
-1. On the left sidebar, select **Search or go to** and find your project.
+1. On the left sidebar, select **Search or go to** and find your project. If you've [turned on the new navigation](../../user/interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
 1. Select **Build** > **Pipelines**.
 1. Select **New pipeline**.
 1. In the **Run for branch name or tag** field, select the branch or tag to run the pipeline for.
@@ -140,13 +140,13 @@ When you turn on this setting, users with the Developer role can view variable v
 
 To view manual pipeline variables:
 
-1. On the left sidebar, select **Search or go to** and find your project.
+1. On the left sidebar, select **Search or go to** and find your project. If you've [turned on the new navigation](../../user/interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
 1. Select **Settings** > **CI/CD**.
 1. Select **Display pipeline variables**.
 1. Go to **Build** > **Pipelines** and select a pipeline that was run manually.
 1. Select the **Manual Variables** tab.
 
-Variable values are masked by default. If you have the Developer role or higher,
+Variable values are masked by default. If you have at least the Developer role,
 you can select the eye icon to reveal values.
 
 #### Prefill variables in manual pipelines
@@ -170,7 +170,7 @@ that have a `description` defined in the `.gitlab-ci.yml` file. The description 
 below the variable.
 
 You can change the prefilled value, which [overrides the value](../variables/_index.md#use-pipeline-variables) for that single pipeline run.
-Any variables overridden by using this process are [expanded](../variables/_index.md#prevent-cicd-variable-expansion)
+Any variables overridden by using this process are [expanded](../variables/_index.md#allow-cicd-variable-expansion)
 and not [masked](../variables/_index.md#mask-a-cicd-variable).
 If you do not define a `value` for the variable in the configuration file, the variable name is still listed,
 but the value field is blank.
@@ -286,15 +286,22 @@ capitalization, to your commit message.
 Alternatively, with Git 2.10 or later, use the `ci.skip` [Git push option](../../topics/git/commit.md#push-options-for-gitlab-cicd).
 The `ci.skip` push option does not skip merge request pipelines.
 
+{{< alert type="note" >}}
+
+Pipeline execution policies can restrict or disable the `[skip ci]` directive.
+For more information, see [`skip_ci` type](../../user/application_security/policies/pipeline_execution_policies.md#skip_ci-type).
+
+{{< /alert >}}
+
 ### Delete a pipeline
 
 Users with the Owner role for a project can delete a pipeline:
 
-1. On the left sidebar, select **Search or go to** and find your project.
+1. On the left sidebar, select **Search or go to** and find your project. If you've [turned on the new navigation](../../user/interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
 1. Select **Build** > **Pipelines**.
 1. Select either the pipeline ID (for example `#123456789`) or the pipeline status icon
    (for example **Passed**) of the pipeline to delete.
-1. In the top right of the pipeline details page, select **Delete**.
+1. In the upper right of the pipeline details page, select **Delete**.
 
 Deleting a pipeline does not automatically delete its [child pipelines](downstream_pipelines.md#parent-child-pipelines).
 See [issue 39503](https://gitlab.com/gitlab-org/gitlab/-/issues/39503) for more details.
@@ -337,9 +344,7 @@ Review how access to protected variables and runners work in the
 Review the [deployment safety](../environments/deployment_safety.md)
 page for additional security recommendations for securing your pipelines.
 
-<!--- start_remove The following content will be removed on remove_date: '2025-08-15' -->
-
-## Trigger a pipeline when an upstream project is rebuilt (deprecated)
+## Trigger a pipeline when an upstream project is rebuilt
 
 {{< details >}}
 
@@ -348,17 +353,13 @@ page for additional security recommendations for securing your pipelines.
 
 {{< /details >}}
 
-{{< alert type="warning" >}}
-
-This feature was [deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/501460) in GitLab 17.6
-and is planned for removal in 19.0. Use [CI/CD jobs with pipeline trigger tokens](../triggers/_index.md#use-a-cicd-job) instead.
-This is a breaking change.
-
-{{< /alert >}}
-
 You can set up your project to automatically trigger a pipeline based on tags in a different project.
 When a new tag pipeline in the subscribed project finishes, it triggers a pipeline on your project's default branch,
 regardless of the tag pipeline's success, failure, or cancellation.
+
+As an alternative, you can use [CI/CD jobs with pipeline trigger tokens](../triggers/_index.md#use-a-cicd-job)
+to trigger pipelines when another pipeline runs. This method is more reliable and flexible
+than pipeline subscriptions and is the recommended approach.
 
 Prerequisites:
 
@@ -367,7 +368,7 @@ Prerequisites:
 
 To trigger the pipeline when the upstream project is rebuilt:
 
-1. On the left sidebar, select **Search or go to** and find your project.
+1. On the left sidebar, select **Search or go to** and find your project. If you've [turned on the new navigation](../../user/interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
 1. Select **Settings** > **CI/CD**.
 1. Expand **Pipeline subscriptions**.
 1. Select **Add project**.
@@ -378,8 +379,6 @@ To trigger the pipeline when the upstream project is rebuilt:
 The maximum number of upstream pipeline subscriptions is 2 by default, for both the upstream and
 downstream projects. On GitLab Self-Managed, an administrator can change this
 [limit](../../administration/instance_limits.md#number-of-cicd-subscriptions-to-a-project).
-
-<!--- end_remove -->
 
 ## How pipeline duration is calculated
 
@@ -420,7 +419,7 @@ AAAAAAA
                   CCCC
 ```
 
-Because A is retried, we ignore it and count only job A'.
+Because A is retried, it is ignored, and only job A' is counted.
 The union of B, A', and C is (1, 4) and (6, 7). Therefore, the total
 running time is:
 
@@ -432,7 +431,7 @@ running time is:
 
 To view all the pipelines that ran for your project:
 
-1. On the left sidebar, select **Search or go to** and find your project.
+1. On the left sidebar, select **Search or go to** and find your project. If you've [turned on the new navigation](../../user/interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
 1. Select **Build** > **Pipelines**.
 
 You can filter the **Pipelines** page by:
@@ -443,7 +442,7 @@ You can filter the **Pipelines** page by:
 - Tag
 - Source
 
-Select **Pipeline ID** in the dropdown list in the top right to display the pipeline IDs
+Select **Pipeline ID** in the dropdown list in the upper right to display the pipeline IDs
 (unique ID across the instance).
 Select **pipeline IID** to display the pipeline IIDs (internal ID, unique across the project only).
 
@@ -573,6 +572,13 @@ deleted. It's therefore useful in some features such as [automatically stopping 
 and [merge trains](merge_trains.md) that might run pipelines after branch deletion.
 
 ## Troubleshooting
+
+### Pipeline subscriptions continue after user deletion
+
+When a user [deletes their GitLab.com account](../../user/profile/account/delete_account.md#delete-your-own-account),
+the deletion does not occur for seven days. During this period, any pipeline subscriptions created by that user
+continue to run with the user's original permissions. To prevent unauthorized pipeline executions,
+immediately update pipeline subscription settings for the deleted user.
 
 ### Pre-filled variables do not show up in **New Pipeline** page
 

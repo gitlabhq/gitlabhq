@@ -102,6 +102,75 @@ RSpec.describe API::Ci::ResourceGroups, feature_category: :continuous_delivery d
     end
   end
 
+  describe 'GET /projects/:id/resource_groups/:key/current_job' do
+    subject(:perform_request) { get api("/projects/#{project.id}/resource_groups/#{key}/current_job", user) }
+
+    let_it_be(:resource_group, freeze: true) { create(:ci_resource_group, project: project) }
+    let_it_be(:current_processable, freeze: true) { create(:ci_build, :running) }
+    let_it_be(:resource, freeze: true) do
+      create(:ci_resource,
+        resource_group: resource_group,
+        processable: current_processable,
+        partition_id: current_processable.partition_id
+      )
+    end
+
+    let(:key) { resource_group.key }
+
+    it 'returns current job of resource group', :aggregate_failures do
+      perform_request
+
+      expect(response).to have_gitlab_http_status(:ok)
+      expect(json_response['id']).to eq(current_processable.id)
+      expect(json_response['name']).to eq(current_processable.name)
+      expect(json_response['ref']).to eq(current_processable.ref)
+      expect(json_response['stage']).to eq(current_processable.stage)
+      expect(json_response['status']).to eq(current_processable.status)
+    end
+
+    context 'when resource group key contains a slash' do
+      let_it_be(:resource_group) { create(:ci_resource_group, project: project, key: 'test/test') }
+      let_it_be(:current_processable) { create(:ci_build, :running) }
+      let_it_be(:resource) do
+        create(:ci_resource,
+          resource_group: resource_group,
+          processable: current_processable,
+          partition_id: current_processable.partition_id
+        )
+      end
+
+      let(:key) { 'test%2Ftest' }
+
+      it 'returns the resource group', :aggregate_failures do
+        perform_request
+
+        expect(response).to have_gitlab_http_status(:ok)
+        expect(json_response['id']).to eq(current_processable.id)
+        expect(json_response['name']).to eq(current_processable.name)
+      end
+    end
+
+    context 'when user is reporter' do
+      let(:user) { reporter }
+
+      it 'returns forbidden' do
+        perform_request
+
+        expect(response).to have_gitlab_http_status(:forbidden)
+      end
+    end
+
+    context 'when there is no corresponding resource group' do
+      let(:key) { 'unknown' }
+
+      it 'returns not found' do
+        perform_request
+
+        expect(response).to have_gitlab_http_status(:not_found)
+      end
+    end
+  end
+
   describe 'GET /projects/:id/resource_groups/:key/upcoming_jobs' do
     subject { get api("/projects/#{project.id}/resource_groups/#{key}/upcoming_jobs", user) }
 

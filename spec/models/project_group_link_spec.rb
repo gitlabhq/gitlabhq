@@ -55,64 +55,6 @@ RSpec.describe ProjectGroupLink, feature_category: :groups_and_projects do
     end
   end
 
-  describe '#prevent_concurrent_inserts' do
-    let_it_be(:project) { create(:project) }
-    let_it_be(:group) { create(:group) }
-    let_it_be(:project_group_link) { build(:project_group_link, project: project, group: group) }
-    let(:connection) { ApplicationRecord.connection }
-
-    context 'when project_id and group_id are present' do
-      it 'acquires an advisory lock' do
-        lock_key = ['project_group_links', project.id, group.id].join('-')
-        lock_expression = "hashtext(#{connection.quote(lock_key)})"
-
-        expect(connection).to receive(:execute).with("SELECT pg_advisory_xact_lock(#{lock_expression})")
-
-        project_group_link.send(:prevent_concurrent_inserts)
-      end
-
-      it 'uses a unique lock key based on project_id and group_id' do
-        expected_lock_key = ['project_group_links', project.id, group.id].join('-')
-
-        expect(project_group_link).to receive(:connection).at_least(:once).and_return(connection)
-        expect(connection).to receive(:quote).with(expected_lock_key).and_call_original
-        expect(connection).to receive(:execute).with(/SELECT pg_advisory_xact_lock/)
-
-        project_group_link.send(:prevent_concurrent_inserts)
-      end
-    end
-
-    context 'when project_id is nil' do
-      let(:project_group_link) { build(:project_group_link, project: nil, group: group) }
-
-      it 'returns early without acquiring a lock' do
-        expect(project_group_link.connection).not_to receive(:execute)
-
-        project_group_link.send(:prevent_concurrent_inserts)
-      end
-    end
-
-    context 'when group_id is nil' do
-      let(:project_group_link) { build(:project_group_link, project: project, group: nil) }
-
-      it 'returns early without acquiring a lock' do
-        expect(project_group_link.connection).not_to receive(:execute)
-
-        project_group_link.send(:prevent_concurrent_inserts)
-      end
-    end
-
-    context 'when both project_id and group_id are nil' do
-      let(:project_group_link) { build(:project_group_link, project: nil, group: nil) }
-
-      it 'returns early without acquiring a lock' do
-        expect(project_group_link.connection).not_to receive(:execute)
-
-        project_group_link.send(:prevent_concurrent_inserts)
-      end
-    end
-  end
-
   describe 'search by group name' do
     let_it_be(:project_group_link) { create(:project_group_link) }
     let_it_be(:group) { project_group_link.group }

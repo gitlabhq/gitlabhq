@@ -27,11 +27,10 @@ RSpec.describe 'Work Items List Drawer', :js, feature_category: :team_planning d
 
       context 'when accessing work item from project work item list' do
         before do
-          stub_feature_flags(work_item_view_for_issues: true)
-
           sign_in(user)
 
           visit project_work_items_path(project)
+          dismiss_welcome_banner_if_present(page)
 
           first_card.click
 
@@ -57,11 +56,12 @@ RSpec.describe 'Work Items List Drawer', :js, feature_category: :team_planning d
 
       context 'when accessing work item from project issue list' do
         before do
-          stub_feature_flags(work_item_view_for_issues: true, work_item_planning_view: false)
+          stub_feature_flags(work_item_planning_view: false)
 
           sign_in(user)
 
           visit project_issues_path(project)
+          dismiss_welcome_banner_if_present(page)
 
           first_card.click
 
@@ -97,11 +97,10 @@ RSpec.describe 'Work Items List Drawer', :js, feature_category: :team_planning d
 
       context 'when accessing work item from project work item list' do
         before do
-          stub_feature_flags(work_item_view_for_issues: true)
-
           sign_in(user)
 
           visit project_work_items_path(project)
+          dismiss_welcome_banner_if_present(page)
 
           first_card.click
 
@@ -127,11 +126,12 @@ RSpec.describe 'Work Items List Drawer', :js, feature_category: :team_planning d
 
       context 'when accessing work item from project issue list' do
         before do
-          stub_feature_flags(work_item_view_for_issues: true, work_item_planning_view: false)
+          stub_feature_flags(work_item_planning_view: false)
 
           sign_in(user)
 
           visit project_issues_path(project)
+          dismiss_welcome_banner_if_present(page)
 
           first_card.click
 

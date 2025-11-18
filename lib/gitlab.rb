@@ -62,7 +62,7 @@ module Gitlab
 
   def self.com?
     # Check `gl_subdomain?` as well to keep parity with gitlab.com
-    simulate_com? || Gitlab.config.gitlab.url == Gitlab::Saas.com_url || gl_subdomain?
+    simulate_com? || Gitlab.config.gitlab.url == com_url || gl_subdomain?
   end
 
   def self.com_except_jh?
@@ -74,7 +74,7 @@ module Gitlab
   end
 
   def self.staging?
-    Gitlab.config.gitlab.url == Gitlab::Saas.staging_com_url
+    Gitlab.config.gitlab.url == staging_com_url
   end
 
   def self.canary?
@@ -90,11 +90,47 @@ module Gitlab
   end
 
   def self.org?
-    Gitlab.config.gitlab.url == Gitlab::Saas.dev_url
+    Gitlab.config.gitlab.url == dev_url
+  end
+
+  def self.dev_url
+    'https://dev.gitlab.org'
+  end
+
+  def self.community_forum_url
+    'https://forum.gitlab.com'
+  end
+
+  def self.doc_url
+    'https://docs.gitlab.com'
+  end
+
+  def self.promo_host
+    'about.gitlab.com'
   end
 
   def self.gl_subdomain?
-    Gitlab::Saas.subdomain_regex === Gitlab.config.gitlab.url
+    subdomain_regex === Gitlab.config.gitlab.url
+  end
+
+  def self.subdomain_regex
+    %r{\Ahttps://[a-z0-9-]+\.gitlab\.com\z}
+  end
+
+  def self.root_domain
+    'gitlab.com'
+  end
+
+  def self.canary_toggle_com_url
+    'https://next.gitlab.com'
+  end
+
+  def self.staging_com_url
+    'https://staging.gitlab.com'
+  end
+
+  def self.com_url
+    'https://gitlab.com'
   end
 
   def self.org_or_com?

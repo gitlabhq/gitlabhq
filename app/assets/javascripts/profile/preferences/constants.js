@@ -9,8 +9,8 @@ export const INTEGRATION_VIEW_CONFIGS = {
     formName: 'sourcegraph_enabled',
   },
   gitpod: {
-    title: s__('Preferences|Gitpod'),
-    label: s__('Preferences|Enable Gitpod integration'),
+    title: s__('Preferences|Ona'),
+    label: s__('Preferences|Enable Ona integration'),
     formName: 'gitpod_enabled',
   },
   [INTEGRATION_EXTENSIONS_MARKETPLACE]: {

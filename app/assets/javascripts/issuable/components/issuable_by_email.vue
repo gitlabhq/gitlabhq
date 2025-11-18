@@ -3,6 +3,7 @@ import {
   GlButton,
   GlModal,
   GlModalDirective,
+  GlDisclosureDropdownItem,
   GlTooltipDirective,
   GlSprintf,
   GlLink,
@@ -27,6 +28,7 @@ export default {
     GlFormInputGroup,
     HelpIcon,
     ModalCopyButton,
+    GlDisclosureDropdownItem,
   },
   directives: {
     GlModal: GlModalDirective,
@@ -59,6 +61,11 @@ export default {
     };
   },
   computed: {
+    dropdownItem() {
+      return {
+        text: sprintf(__('Email %{name} to this project'), { name: this.issuableName }),
+      };
+    },
     mailToLink() {
       const subject = sprintf(__('Enter the %{name} title'), {
         name: this.issuableName,
@@ -90,11 +97,8 @@ export default {
 
 <template>
   <div>
-    <gl-button v-gl-modal="$options.modalId" variant="link"
-      ><gl-sprintf :message="__('Email a new %{name} to this project')"
-        ><template #name>{{ issuableName }}</template></gl-sprintf
-      ></gl-button
-    >
+    <gl-disclosure-dropdown-item v-gl-modal="$options.modalId" :item="dropdownItem" />
+
     <gl-modal ref="modal" :modal-id="$options.modalId">
       <template #modal-title>
         <gl-sprintf :message="__('Create new %{name} by email')">

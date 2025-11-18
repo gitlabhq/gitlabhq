@@ -25,6 +25,9 @@ export default {
     canDownloadCode: {
       default: true,
     },
+    fileType: {
+      default: '',
+    },
   },
   props: {
     rawPath: {
@@ -69,7 +72,10 @@ export default {
   },
   computed: {
     downloadUrl() {
-      return setUrlParams({ inline: false }, relativePathToAbsolute(this.rawPath, getBaseURL()));
+      return setUrlParams(
+        { inline: false },
+        { url: relativePathToAbsolute(this.rawPath, getBaseURL()) },
+      );
     },
     copyDisabled() {
       return this.activeViewer === RICH_BLOB_VIEWER;
@@ -88,6 +94,15 @@ export default {
       return sprintf(s__('BlobViewer|View on %{environmentName}'), {
         environmentName: this.environmentName,
       });
+    },
+    isPdfFile() {
+      return this.fileType?.includes('pdf');
+    },
+    openInNewWindowUrl() {
+      return setUrlParams(
+        { inline: true },
+        { url: relativePathToAbsolute(this.rawPath, getBaseURL()) },
+      );
     },
   },
   methods: {
@@ -141,6 +156,19 @@ export default {
       data-testid="download-button"
       target="_blank"
       icon="download"
+      category="primary"
+      variant="default"
+    />
+    <gl-button
+      v-if="!isEmpty && isPdfFile"
+      v-gl-tooltip.hover
+      :aria-label="s__('BlobViewer|Open in a new window')"
+      :title="s__('BlobViewer|Open in a new window')"
+      :href="openInNewWindowUrl"
+      data-testid="open-new-window-button"
+      target="_blank"
+      rel="noopener noreferrer"
+      icon="external-link"
       category="primary"
       variant="default"
     />

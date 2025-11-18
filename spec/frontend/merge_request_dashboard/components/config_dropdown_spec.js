@@ -78,9 +78,6 @@ describe('Merge request dashboard config dropdown component', () => {
           shouldShowCallout,
         }),
       },
-      provide: {
-        glFeatures: { mrDashboardDraftsToggle: true },
-      },
     });
   }
 

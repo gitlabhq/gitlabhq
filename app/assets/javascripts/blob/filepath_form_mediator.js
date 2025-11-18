@@ -101,9 +101,6 @@ export default class FilepathFormMediator {
 
   toggleValidationError(showError) {
     document.querySelector('.js-filepath-error').classList.toggle('gl-hidden', !showError);
-    this.$filenameInput.toggleClass(
-      'gl-border !gl-border-solid gl-border-red-500 !gl-shadow-none',
-      showError,
-    );
+    this.$filenameInput.toggleClass('is-invalid', showError);
   }
 }

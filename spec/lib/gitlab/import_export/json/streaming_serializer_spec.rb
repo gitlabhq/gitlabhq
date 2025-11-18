@@ -129,7 +129,9 @@ RSpec.describe Gitlab::ImportExport::Json::StreamingSerializer, :clean_gitlab_re
 
         expect(logger).to have_received(:info).with(
           importer: 'Import/Export',
-          message: "Exporting issues relation. Number of records to export: 16",
+          message: "Exporting relation: issues",
+          number_of_records: 16,
+          relation: 'issues',
           project_id: exportable.id,
           project_name: exportable.name,
           project_path: exportable.full_path
@@ -232,7 +234,8 @@ RSpec.describe Gitlab::ImportExport::Json::StreamingSerializer, :clean_gitlab_re
 
         expect(logger).to have_received(:info).with(
           importer: 'Import/Export',
-          message: 'Exporting group relation',
+          message: 'Exporting relation: group',
+          relation: 'group',
           project_id: exportable.id,
           project_name: exportable.name,
           project_path: exportable.full_path
@@ -278,7 +281,9 @@ RSpec.describe Gitlab::ImportExport::Json::StreamingSerializer, :clean_gitlab_re
 
         expect(logger).to have_received(:info).with(
           importer: 'Import/Export',
-          message: 'Exporting project_members relation. Number of records to export: 1',
+          message: 'Exporting relation: project_members',
+          relation: 'project_members',
+          number_of_records: 1,
           project_id: exportable.id,
           project_name: exportable.name,
           project_path: exportable.full_path

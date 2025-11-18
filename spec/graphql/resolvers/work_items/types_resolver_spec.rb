@@ -2,42 +2,48 @@
 
 require 'spec_helper'
 
-RSpec.describe Resolvers::WorkItems::TypesResolver do
+RSpec.describe Resolvers::WorkItems::TypesResolver, feature_category: :team_planning do
   include GraphqlHelpers
 
   let_it_be(:current_user) { create(:user) }
-  let_it_be(:group)        { create(:group, developers: current_user) }
-  let_it_be(:project)      { create(:project, group: group) }
+  let_it_be(:group) { create(:group, developers: current_user) }
+  let_it_be(:project) { create(:project, group: group) }
 
-  shared_examples 'a work item type resolver' do
-    let(:args) { {} }
+  let(:args) { {} }
 
-    subject(:result) { resolve(described_class, obj: object, args: args) }
+  let(:result) { resolve(described_class, obj: object, args: args) }
 
-    it 'returns all work item types' do
-      expect(result.to_a).to match(WorkItems::Type.order_by_name_asc)
-    end
-
-    context 'when filtering by type name' do
-      let(:args) { { name: 'TASK' } }
-
-      it 'returns type with the given name' do
-        expect(result.to_a).to contain_exactly(WorkItems::Type.default_by_type(:task))
-      end
-    end
-  end
+  subject(:types_list) { result.map(&:base_type) }
 
   describe '#resolve' do
     context 'when parent is a group' do
       let(:object) { group }
 
-      it_behaves_like 'a work item type resolver'
+      it_behaves_like 'lists all work item type values'
+
+      it_behaves_like 'filtering work item types by existing name' do
+        let(:name) { 'epic' }
+        let(:args) { { name: name } }
+      end
+
+      it_behaves_like 'allowed work item types for a group' do
+        let(:args) { { only_available: true } }
+      end
     end
 
     context 'when parent is a project' do
       let(:object) { project }
 
-      it_behaves_like 'a work item type resolver'
+      it_behaves_like 'lists all work item type values'
+
+      it_behaves_like 'filtering work item types by existing name' do
+        let(:name) { 'issue' }
+        let(:args) { { name: name } }
+      end
+
+      it_behaves_like 'allowed work item types for a project' do
+        let(:args) { { only_available: true } }
+      end
     end
   end
 end

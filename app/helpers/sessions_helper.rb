@@ -33,4 +33,45 @@ module SessionsHelper
       skip_path: permitted_to_skip ? users_skip_verification_for_now_path : nil
     }
   end
+
+  # Convert verification data to camelCase for JavaScript consumption
+  # also used by app/views/devise/shared/_totp_recovery_code_or_webauthn.html.haml
+  def verification_data_for_js(user)
+    data = verification_data(user)
+    {
+      username: data[:username],
+      obfuscatedEmail: data[:obfuscated_email],
+      verifyPath: data[:verify_path],
+      resendPath: data[:resend_path],
+      skipPath: data[:skip_path]
+    }
+  end
+
+  def fallback_to_email_otp_permitted?(user)
+    Feature.enabled?(:email_based_mfa, user) &&
+      user.email_otp_required_after&.past? &&
+      !treat_as_locked?(user)
+  end
+
+  def webauthn_authentication_data(user:, params:, admin_mode: false)
+    target_path = admin_mode ? admin_session_path : user_session_path
+    render_remember_me = admin_mode ? false : remember_me_enabled?
+    user_params = params[:user].presence || params
+    remember_me_value = user_params.fetch(:remember_me, 0)
+
+    send_email_otp_path = fallback_to_email_otp_permitted?(user) ? users_fallback_to_email_otp_path : nil
+
+    data = {
+      target_path: target_path,
+      render_remember_me: render_remember_me.to_s,
+      remember_me: remember_me_value,
+      send_email_otp_path: send_email_otp_path,
+      username: user.username
+    }
+
+    # This is additional data needed to complete the email verification workflow
+    data[:email_verification_data] = verification_data_for_js(user).to_json if send_email_otp_path
+
+    data
+  end
 end

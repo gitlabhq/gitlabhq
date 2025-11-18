@@ -19,9 +19,9 @@ the Google Cloud Platform. This solution uses an
 developed by GitLab for the [custom executor](https://docs.gitlab.com/runner/executors/custom.html).
 Hosted runners on Windows are in [beta](../../../policy/development_stages_support.md#beta).
 
-We want to keep iterating to get Windows runners in a stable state and
+GitLab keeps iterating to get Windows runners in a stable state and
 [generally available](../../../policy/development_stages_support.md#generally-available).
-You can follow our work towards this goal in the
+You can follow the work towards this goal in the
 [related epic](https://gitlab.com/groups/gitlab-org/-/epics/2162).
 
 ## Machine types available for Windows

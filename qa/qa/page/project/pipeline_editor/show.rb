@@ -20,7 +20,7 @@ module QA
           end
 
           def initialize
-            wait_for_requests(skip_finished_loading_check: true)
+            wait_for_requests
             dismiss_file_tree_popover
 
             super

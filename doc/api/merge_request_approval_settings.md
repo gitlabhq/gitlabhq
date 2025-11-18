@@ -13,9 +13,8 @@ title: Merge request approval settings API
 
 {{< /details >}}
 
-Configuration for
-[approval settings on all merge requests](../user/project/merge_requests/approvals/settings.md)
-in a group or project. All endpoints require authentication.
+Use this API to manage group and project [merge request approval settings](../user/project/merge_requests/approvals/settings.md).
+All endpoints require authentication.
 
 ## Group MR approval settings
 

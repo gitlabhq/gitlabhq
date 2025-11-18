@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe ::Ci::Runners::ResetAuthenticationTokenService, :aggregate_failures, feature_category: :runner do
+RSpec.describe ::Ci::Runners::ResetAuthenticationTokenService, :aggregate_failures, feature_category: :runner_core do
   shared_examples 'is not permitted to reset token' do
     it 'does not reset authentication token and returns error response' do
       expect(execute.error?).to be_truthy

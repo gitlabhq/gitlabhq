@@ -2,7 +2,21 @@
 
 require 'spec_helper'
 
-RSpec.describe 'Protected Tags', :js, :with_license, feature_category: :source_code_management do
+RSpec.describe 'Protected Tags', :js, :with_license, feature_category: :source_code_management,
+  quarantine: {
+    issue: [
+      'https://gitlab.com/gitlab-org/gitlab/-/issues/571358',
+      'https://gitlab.com/gitlab-org/gitlab/-/issues/570306',
+      'https://gitlab.com/gitlab-org/gitlab/-/issues/570289',
+      'https://gitlab.com/gitlab-org/gitlab/-/issues/570240',
+      'https://gitlab.com/gitlab-org/gitlab/-/issues/569146',
+      'https://gitlab.com/gitlab-org/gitlab/-/issues/569145',
+      'https://gitlab.com/gitlab-org/gitlab/-/issues/569144',
+      'https://gitlab.com/gitlab-org/gitlab/-/issues/568867',
+      'https://gitlab.com/gitlab-org/gitlab/-/issues/560514',
+      'https://gitlab.com/gitlab-org/gitlab/-/issues/554624'
+    ]
+  } do
   include ProtectedTagHelpers
 
   let(:project) { create(:project, :repository) }

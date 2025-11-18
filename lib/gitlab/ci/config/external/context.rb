@@ -9,8 +9,6 @@ module Gitlab
 
           TimeoutError = Class.new(StandardError)
 
-          include ::Gitlab::Utils::StrongMemoize
-
           attr_reader :project, :sha, :user, :parent_pipeline, :variables, :pipeline_config, :parallel_requests,
             :pipeline, :expandset, :execution_deadline, :logger, :max_includes, :max_total_yaml_size_bytes,
             :pipeline_policy_context, :component_data

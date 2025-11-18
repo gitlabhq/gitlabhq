@@ -28,14 +28,18 @@ describe('renderGFM', () => {
 
     beforeEach(() => {
       element = document.createElement('div');
-      element.innerHTML =
-        '<div class="gl-relative markdown-code-block"><pre data-canonical-lang="glql"><code>labels = any</code></pre></div>';
     });
 
-    it('calls renderGlql', () => {
+    it.each`
+      description                             | innerHTML                                                                                                               | selector
+      ${'with data-canonical-lang data attr'} | ${'<div class="gl-relative markdown-code-block"><pre data-canonical-lang="glql"><code>labels = any</code></pre></div>'} | ${'[data-canonical-lang="glql"]'}
+      ${'with language class on code tag'}    | ${'<div><pre><code class="language-glql">labels = any</code></pre></div>'}                                              | ${'.language-glql'}
+    `('calls renderGlql $description', ({ innerHTML, selector }) => {
+      element.innerHTML = innerHTML;
+
       renderGFM(element);
 
-      expect(renderGlql).toHaveBeenCalledWith([element.firstElementChild]);
+      expect(renderGlql).toHaveBeenCalledWith([element.querySelector(selector)]);
     });
   });
 
@@ -69,29 +73,11 @@ describe('renderGFM', () => {
       `;
     });
 
-    describe('when imageLightboxes feature flag is enabled', () => {
-      beforeEach(() => {
-        gon.features = { imageLightboxes: true };
-      });
+    it('calls renderImageLightbox with image elements and container', () => {
+      renderGFM(element);
 
-      it('calls renderImageLightbox with image elements and container', () => {
-        renderGFM(element);
-
-        const images = Array.from(element.querySelectorAll('a>img'));
-        expect(renderImageLightbox).toHaveBeenCalledWith(images, element);
-      });
-    });
-
-    describe('when imageLightboxes feature flag is disabled', () => {
-      beforeEach(() => {
-        gon.features = { imageLightboxes: false };
-      });
-
-      it('does not call renderImageLightbox', () => {
-        renderGFM(element);
-
-        expect(renderImageLightbox).not.toHaveBeenCalled();
-      });
+      const images = Array.from(element.querySelectorAll('a>img'));
+      expect(renderImageLightbox).toHaveBeenCalledWith(images, element);
     });
   });
 });

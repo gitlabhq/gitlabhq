@@ -45,7 +45,6 @@ RSpec.describe Namespace, feature_category: :groups_and_projects do
     it { is_expected.to have_many(:value_streams) }
     it { is_expected.to have_many(:non_archived_projects).class_name('Project') }
     it { is_expected.to have_many(:bot_users).through(:bot_user_details).source(:user) }
-    it { is_expected.to have_one(:deletion_schedule).class_name('Namespaces::DeletionSchedule') }
 
     it do
       is_expected.to have_one(:namespace_settings_with_ancestors_inherited_settings)
@@ -802,6 +801,30 @@ RSpec.describe Namespace, feature_category: :groups_and_projects do
         expect(result).not_to include(private_namespace, internal_namespace, public_namespace)
       end
     end
+
+    describe '.for_owner' do
+      let_it_be(:user1) { create(:user, :with_namespace) }
+      let_it_be(:user2) { create(:user, :with_namespace) }
+      let_it_be(:user3) { create(:user, :with_namespace) }
+
+      it 'returns namespaces that match for a single user' do
+        results = described_class.for_owner(user2)
+
+        expect(results.size).to eq(1)
+        expect(results.first).to eq(user2.namespace)
+      end
+
+      it 'returns namespaces that match any of the given owner ids when passed as array' do
+        results = described_class.for_owner([user1.id, user3.id])
+
+        expect(results.size).to eq(2)
+        expect(results).to match_array([user1.namespace, user3.namespace])
+      end
+
+      it 'returns an empty array if no matches are found' do
+        expect(described_class.for_owner(non_existing_record_id)).to be_empty
+      end
+    end
   end
 
   describe 'delegate' do
@@ -833,8 +856,6 @@ RSpec.describe Namespace, feature_category: :groups_and_projects do
     it { is_expected.to delegate_method(:web_based_commit_signing_enabled?).to(:namespace_settings) }
     it { is_expected.to delegate_method(:lock_web_based_commit_signing_enabled).to(:namespace_settings) }
     it { is_expected.to delegate_method(:lock_web_based_commit_signing_enabled?).to(:namespace_settings) }
-    it { is_expected.to delegate_method(:deleting_user).to(:deletion_schedule) }
-    it { is_expected.to delegate_method(:marked_for_deletion_at).to(:deletion_schedule) }
 
     it do
       is_expected.to delegate_method(:prevent_sharing_groups_outside_hierarchy=).to(:namespace_settings)
@@ -967,6 +988,8 @@ RSpec.describe Namespace, feature_category: :groups_and_projects do
     it { is_expected.to include_module(Namespaces::Traversal::LinearScopes) }
   end
 
+  it_behaves_like 'an isolatable', :namespace
+
   describe 'archive and unarchive' do
     let_it_be(:namespace) { create(:group) }
 
@@ -1014,6 +1037,14 @@ RSpec.describe Namespace, feature_category: :groups_and_projects do
           expect(namespace.unarchive).to be false
         end
       end
+    end
+  end
+
+  describe '#self_archived?' do
+    let_it_be(:namespace) { create(:group) }
+
+    it 'is an alias of #archived?' do
+      expect(namespace.method(:self_archived?).original_name).to eq(:archived?)
     end
   end
 
@@ -1378,55 +1409,6 @@ RSpec.describe Namespace, feature_category: :groups_and_projects do
           expect(subgroup.traversal_path(with_organization: true)).to eq("1111/1/2/3/")
         end
       end
-    end
-  end
-
-  describe "after_commit :expire_child_caches" do
-    let(:namespace) { create(:group, organization: organization) }
-
-    it "expires the child caches when updated" do
-      child_1 = create(:group, parent: namespace, updated_at: 1.week.ago)
-      child_2 = create(:group, parent: namespace, updated_at: 1.day.ago)
-      grandchild = create(:group, parent: child_1, updated_at: 1.week.ago)
-      project_1 = create(:project, namespace: namespace, updated_at: 2.days.ago)
-      project_2 = create(:project, namespace: child_1, updated_at: 3.days.ago)
-      project_3 = create(:project, namespace: grandchild, updated_at: 4.years.ago)
-
-      freeze_time do
-        namespace.update!(path: "foo")
-
-        [namespace, child_1, child_2, grandchild, project_1, project_2, project_3].each do |record|
-          expect(record.reload.updated_at).to eq(Time.zone.now)
-        end
-      end
-    end
-
-    it "expires on name changes" do
-      expect(namespace).to receive(:expire_child_caches).once
-
-      namespace.update!(name: "Foo")
-    end
-
-    it "expires on path changes" do
-      expect(namespace).to receive(:expire_child_caches).once
-
-      namespace.update!(path: "bar")
-    end
-
-    it "expires on parent changes" do
-      expect(namespace).to receive(:expire_child_caches).once
-
-      new_parent = create(:group, organization: organization)
-      namespace.update!(parent: new_parent)
-    end
-
-    it "doesn't expire on other field changes" do
-      expect(namespace).not_to receive(:expire_child_caches)
-
-      namespace.update!(
-        description: "Foo bar",
-        max_artifacts_size: 10
-      )
     end
   end
 
@@ -3210,11 +3192,11 @@ RSpec.describe Namespace, feature_category: :groups_and_projects do
     using RSpec::Parameterized::TableSyntax
 
     where(:role, :expected_name) do
-      :guest      | 'guest'
-      :reporter   | 'reporter'
-      :developer  | 'developer'
-      :maintainer | 'maintainer'
-      :owner      | 'owner'
+      :guest      | 'Guest'
+      :reporter   | 'Reporter'
+      :developer  | 'Developer'
+      :maintainer | 'Maintainer'
+      :owner      | 'Owner'
     end
 
     with_them do
@@ -3258,7 +3240,35 @@ RSpec.describe Namespace, feature_category: :groups_and_projects do
       end
 
       it 'returns the role from the project' do
-        expect(project_namespace.user_role(user)).to eq('developer')
+        expect(project_namespace.user_role(user)).to eq('Developer')
+      end
+    end
+  end
+
+  context 'about owner entity methods' do
+    let_it_be(:user) { create(:user) }
+    let_it_be(:user_namespace) { user.namespace }
+    let_it_be(:group) { create(:group) }
+    let_it_be(:project) { create(:project, group: group) }
+    let_it_be(:project_namespace) { project.project_namespace }
+
+    where(:namespace, :owner_entity, :owner_entity_name) do
+      ref(:group) | ref(:group) | :group
+      ref(:project_namespace) | ref(:project) | :project
+      ref(:user_namespace) | ref(:user) | :user
+    end
+
+    with_them do
+      describe '#owner_entity' do
+        it 'returns itself' do
+          expect(namespace.owner_entity).to be(owner_entity)
+        end
+      end
+
+      describe '#owner_entity_name' do
+        it 'returns :namespace' do
+          expect(namespace.owner_entity_name).to be(owner_entity_name)
+        end
       end
     end
   end

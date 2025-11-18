@@ -350,7 +350,7 @@ variables:
   DOCKER_TLS_CERTDIR: "/certs"
 
 build-image:
-  image: docker:latest
+  image: docker:cli
   services:
     - docker:dind
   stage: build
@@ -378,7 +378,7 @@ variables:
   DOCKER_TLS_CERTDIR: "/certs"
 
 build-multiplatform:
-  image: docker:latest
+  image: docker:cli
   services:
     - docker:dind
   stage: build
@@ -410,7 +410,7 @@ variables:
   CACHE_IMAGE: $CI_REGISTRY_IMAGE:cache
 
 build-with-cache:
-  image: docker:latest
+  image: docker:cli
   services:
     - docker:dind
   stage: build

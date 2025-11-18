@@ -6,6 +6,9 @@
     - when 'activity'
       .flash-container
       - if can?(current_user, :read_cross_project)
-        %ul.content_list.gl-list-none.gl-pl-0.user-activity-content{ data: { href: user_activity_path } }
-        .loading
-          = render Pajamas::SpinnerComponent.new(size: :md)
+        .js-infinite-scrolling-root
+          %ul.content_list.gl-list-none.gl-pl-0.user-activity-content.js-infinite-scrolling-content{ data: { href: user_activity_path } }
+          .js-infinite-scrolling-page-end
+            .js-infinite-scrolling-loading
+              .loading
+                = render Pajamas::SpinnerComponent.new(size: :md)

@@ -1,7 +1,9 @@
+import { nextTick } from 'vue';
 import { GlButton, GlForm } from '@gitlab/ui';
 import MockAdapter from 'axios-mock-adapter';
 import mockTimezones from 'test_fixtures/timezones/full.json';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
+import { stubComponent } from 'helpers/stub_component';
 import waitForPromises from 'helpers/wait_for_promises';
 
 import axios from '~/lib/utils/axios_utils';
@@ -10,6 +12,7 @@ import UserAvatar from '~/profile/edit/components/user_avatar.vue';
 import SetStatusForm from '~/set_status_modal/set_status_form.vue';
 import TimezoneDropdown from '~/vue_shared/components/timezone_dropdown/timezone_dropdown.vue';
 import UserMainSetting from '~/profile/edit/components/user_main_settings.vue';
+import PasswordPromptModal from '~/profile/password_prompt/password_prompt_modal.vue';
 import { VARIANT_DANGER, VARIANT_INFO, createAlert } from '~/alert';
 import { AVAILABILITY_STATUS } from '~/set_status_modal/constants';
 import { timeRanges } from '~/vue_shared/constants';
@@ -22,7 +25,7 @@ jest.mock('~/lib/utils/file_utility', () => ({
 
 const [oneMinute, oneHour] = timeRanges;
 
-const userMainSettings = {
+const userSettings = {
   id: 'user123',
   name: 'Test User',
   pronouns: 'they/them',
@@ -35,6 +38,9 @@ const userMainSettings = {
   privateProfile: false,
   includePrivateContributions: false,
   achievementsEnabled: true,
+  email: 'original@example.com',
+  publicEmail: '',
+  commitEmail: '',
 };
 
 const defaultProvide = {
@@ -45,7 +51,21 @@ const defaultProvide = {
   currentClearStatusAfter: oneMinute.shortcut,
   timezones: mockTimezones,
   userTimezone: '',
-  userMainSettings,
+  userSettings,
+  needsPasswordConfirmation: true,
+  emailHelpText: 'Test email help text',
+  isEmailReadonly: false,
+  emailChangeDisabled: false,
+  managingGroupName: null,
+  providerLabel: null,
+  publicEmailOptions: [
+    { text: 'Do not show on profile', value: '' },
+    { text: 'test@example.com', value: 'test@example.com' },
+  ],
+  commitEmailOptions: [
+    { text: 'Use primary email', value: '' },
+    { text: 'test@example.com', value: 'test@example.com' },
+  ],
 };
 
 describe('Profile Edit App', () => {
@@ -67,13 +87,24 @@ describe('Profile Edit App', () => {
         userPath: stubbedUserPath,
       },
       provide: defaultProvide,
+      stubs: {
+        PasswordPromptModal: stubComponent(PasswordPromptModal, {
+          methods: {
+            show: jest.fn(),
+            hide: jest.fn(),
+          },
+        }),
+      },
     });
   };
 
   beforeEach(() => {
     mockAxios = new MockAdapter(axios);
-
     createComponent();
+  });
+
+  afterEach(() => {
+    mockAxios.restore();
   });
 
   const findForm = () => wrapper.findComponent(GlForm);
@@ -127,7 +158,7 @@ describe('Profile Edit App', () => {
   });
 
   it('renders `UserMainSetting` component and passes correct props', () => {
-    expect(findMainSetting().props('userSettings')).toEqual(userMainSettings);
+    expect(findMainSetting().props('userSettings')).toEqual(userSettings);
   });
 
   describe('when form submit request is successful', () => {
@@ -240,7 +271,7 @@ describe('Profile Edit App', () => {
       ${'jobTitle'}      | ${'Senior Developer'}      | ${'user[job_title]'}
       ${'organization'}  | ${'New Organization'}      | ${'user[organization]'}
     `('submits form with updated $field field', async ({ field, value, formField }) => {
-      const updatedMainSettings = { ...userMainSettings, [field]: value };
+      const updatedMainSettings = { ...userSettings, [field]: value };
       findMainSetting().vm.$emit('change', updatedMainSettings);
 
       submitForm();
@@ -256,7 +287,7 @@ describe('Profile Edit App', () => {
       ${'includePrivateContributions'} | ${true}  | ${'user[include_private_contributions]'}
       ${'achievementsEnabled'}         | ${false} | ${'user[achievements_enabled]'}
     `('submits form with $field toggled', async ({ field, value, formField }) => {
-      const updatedMainSettings = { ...userMainSettings, [field]: value };
+      const updatedMainSettings = { ...userSettings, [field]: value };
       findMainSetting().vm.$emit('change', updatedMainSettings);
 
       submitForm();
@@ -264,6 +295,54 @@ describe('Profile Edit App', () => {
 
       const axiosRequestData = mockAxios.history.put[0].data;
       expect(axiosRequestData.get(formField)).toEqual(String(value));
+    });
+  });
+
+  describe('when user changes email', () => {
+    it('requires password confirmation when user changes email', async () => {
+      const updatedEmail = 'updated@example.com';
+      const updatedMainSettings = {
+        ...userSettings,
+        email: updatedEmail,
+      };
+
+      findMainSetting().vm.$emit('change', updatedMainSettings);
+      await nextTick();
+
+      await findForm().vm.$emit('submit', { preventDefault: () => {} });
+
+      expect(mockAxios.history.put).toHaveLength(0);
+      expect(findMainSetting().props('userSettings').email).toBe(updatedEmail);
+    });
+
+    it('submits successfully after password confirmation', async () => {
+      const updatedEmail = 'updated@example.com';
+      const updatedMainSettings = {
+        ...wrapper.vm.userMainSetting,
+        email: updatedEmail,
+      };
+      const confirmationPassword = 'user-password';
+
+      mockAxios.onPut(stubbedProfilePath).reply(HTTP_STATUS_OK, {
+        message: successMessage,
+      });
+
+      findMainSetting().vm.$emit('change', updatedMainSettings);
+
+      await nextTick();
+      await submitForm();
+      await nextTick();
+
+      const passwordModal = wrapper.findComponent(PasswordPromptModal);
+      passwordModal.vm.$emit('submit', confirmationPassword);
+      await waitForPromises();
+
+      expect(mockAxios.history.put).toHaveLength(1);
+
+      const requestData = mockAxios.history.put[0].data;
+      expect(requestData).toBeInstanceOf(FormData);
+      expect(requestData.get('user[email]')).toBe(updatedEmail);
+      expect(requestData.get('user[validation_password]')).toBe(confirmationPassword);
     });
   });
 

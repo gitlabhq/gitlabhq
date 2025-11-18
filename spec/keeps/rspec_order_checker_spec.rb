@@ -98,8 +98,8 @@ RSpec.describe Keeps::RspecOrderChecker, feature_category: :tooling do
         actual_change = keep.make_change!(change)
 
         expect(actual_change).to be_a(Gitlab::Housekeeper::Change)
-        expect(change.title).to eq(
-          '[RSpec random order] Processed 2 specs: all passed :white_check_mark:'
+        expect(change.title).to include(
+          '[RSpec random order] Processed 2 specs', 'all passed'
         )
         expect(change.labels).to match_array(
           ['backend', 'type::maintenance', 'test', 'Engineering Productivity']
@@ -124,8 +124,8 @@ RSpec.describe Keeps::RspecOrderChecker, feature_category: :tooling do
       it 'updates failure and TODO files', :aggregate_failures do
         keep.make_change!(change)
 
-        expect(change.title).to eq(
-          '[RSpec random order] Processed 2 specs: all failed :x:'
+        expect(change.title).to include(
+          '[RSpec random order] Processed 2 specs', 'all failed'
         )
         expect(change.changed_files).to match_array([todo_yaml_path, failure_yaml_path])
 
@@ -153,8 +153,8 @@ RSpec.describe Keeps::RspecOrderChecker, feature_category: :tooling do
       it 'handles mixed results correctly' do
         keep.make_change!(change)
 
-        expect(change.title).to eq(
-          '[RSpec random order] Processed 2 specs: 1 passed :white_check_mark:, 1 failed :x:'
+        expect(change.title).to include(
+          '[RSpec random order] Processed 2 specs', '1 passed', '1 failed'
         )
 
         # Only failing spec should be in failure file

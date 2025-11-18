@@ -8,21 +8,21 @@ title: パーソナルアクセストークンAPI
 {{< details >}}
 
 - プラン: Free、Premium、Ultimate
-- 製品: GitLab.com、GitLab Self-Managed、GitLab Dedicated
+- 提供形態: GitLab.com、GitLab Self-Managed、GitLab Dedicated
 
 {{< /details >}}
 
-このAPIを使用して、パーソナルアクセストークンを操作します。詳細については、[パーソナルアクセストークン](../user/profile/personal_access_tokens.md)を参照してください。
+このAPIを使用して、[パーソナルアクセストークン](../user/profile/personal_access_tokens.md)を操作します。
 
-## すべてのパーソナルアクセストークンをリストする
+## すべてのパーソナルアクセストークンのリストを取得する {#list-all-personal-access-tokens}
 
 {{< history >}}
 
-- `created_after`、`created_before`、`last_used_after`、`last_used_before`、`revoked`、`search`、および`state`フィルターは、GitLab 15.5で[導入](https://gitlab.com/gitlab-org/gitlab/-/issues/362248)されました。
+- `created_after`、`created_before`、`last_used_after`、`last_used_before`、`revoked`、`search`、および`state`の各フィルターは、GitLab 15.5で[導入](https://gitlab.com/gitlab-org/gitlab/-/issues/362248)されました。
 
 {{< /history >}}
 
-認証ユーザーがアクセスできるすべてのパーソナルアクセストークンをリストします。管理者の場合は、インスタンス内のすべてのパーソナルアクセストークンのリストを返します。管理者以外の場合は、現在のユーザーのパーソナルアクセストークンのリストを返します。
+認証を受けているユーザーがアクセスできる、すべてのパーソナルアクセストークンのリストを取得します。管理者の場合は、インスタンス内のすべてのパーソナルアクセストークンのリストが返されます。管理者以外の場合は、自分のパーソナルアクセストークンのすべてのリストが返されます。
 
 ```plaintext
 GET /personal_access_tokens
@@ -47,8 +47,8 @@ GET /personal_access_tokens?user_id=1
 | `last_used_after`  | 日時（ISO 8601） | いいえ       | 定義されている場合、指定された時刻より後に最終使用されたトークンを返します。 |
 | `last_used_before` | 日時（ISO 8601） | いいえ       | 定義されている場合、指定された時刻より前に最終使用されたトークンを返します。 |
 | `revoked`          | ブール値             | いいえ       | `true`の場合、失効したトークンのみを返します。 |
-| `search`           | 文字列              | いいえ       | 定義されている場合、指定された値が名前に含まれたトークンを返します。 |
-| `sort`             | 文字列              | いいえ       | 定義されている場合、指定された値で結果を並べ替えます。使用できる値は、`created_asc`、`created_desc`、`expires_asc`、`expires_desc`、`last_used_asc`、`last_used_desc`、`name_asc`、`name_desc`です。 |
+| `search`           | 文字列              | いいえ       | 定義されている場合、指定された値が名前に含まれるトークンを返します。 |
+| `sort`             | 文字列              | いいえ       | 定義されている場合、指定された値で結果をソートします。使用できる値は、`created_asc`、`created_desc`、`expires_asc`、`expires_desc`、`last_used_asc`、`last_used_desc`、`name_asc`、`name_desc`です。 |
 | `state`            | 文字列              | いいえ       | 定義されている場合、指定された状態のトークンを返します。使用できる値は、`active`と`inactive`です。 |
 | `user_id`          | 整数または文字列   | いいえ       | 定義されている場合、指定されたユーザーが所有しているトークンを返します。管理者以外のユーザーは、自分のトークンのみをフィルターできます。 |
 
@@ -81,18 +81,18 @@ curl --request GET \
 ]
 ```
 
-成功すると、トークンのリストを返します。
+成功した場合、トークンのリストを返します。
 
-可能性のある他の応答:
+その他の発生しうる応答:
 
-- 管理者以外のユーザーが`user_id`属性を使用して他のユーザーをフィルターする場合は`401: Unauthorized`。
+- 管理者以外のユーザーが`user_id`属性を使用して他のユーザーをフィルターした場合は`401: Unauthorized`。
 
-## パーソナルアクセストークンの詳細を取得する
+## パーソナルアクセストークンの詳細を取得する {#get-details-on-a-personal-access-token}
 
 {{< history >}}
 
 - GitLab 15.1で[導入](https://gitlab.com/gitlab-org/gitlab/-/issues/362239)されました。
-- `404` HTTP状態コードは、GitLab 15.3で[導入](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/93650)されました。
+- `404` HTTPステータスコードは、GitLab 15.3で[導入](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/93650)されました。
 
 {{< /history >}}
 
@@ -104,7 +104,7 @@ GET /personal_access_tokens/:id
 
 | 属性 | 型    | 必須 | 説明         |
 |-----------|---------|----------|---------------------|
-| `id` | 整数または文字列 | はい | パーソナルアクセストークンまたはキーワード`self`のID。 |
+| `id` | 整数または文字列 | はい | パーソナルアクセストークン、またはキーワード`self`のID。 |
 
 ```shell
 curl --request GET \
@@ -112,16 +112,16 @@ curl --request GET \
   --url "https://gitlab.example.com/api/v4/personal_access_tokens/<id>"
 ```
 
-成功すると、トークンの詳細を返します。
+成功した場合、トークンの詳細を返します。
 
-可能性のある他の応答:
+その他の発生しうる応答:
 
 - 次のいずれかの場合は`401: Unauthorized`:
   - トークンが存在しない。
   - 指定されたトークンへのアクセス権がない。
-- ユーザーが管理者であるが、トークンが存在しない場合は`404: Not Found`。
+- ユーザーが管理者であるにもかかわらずトークンが存在しない場合は`404: Not Found`。
 
-### 自己通知
+### 自己通知 {#self-inform}
 
 {{< history >}}
 
@@ -129,7 +129,7 @@ curl --request GET \
 
 {{< /history >}}
 
-特定のパーソナルアクセストークンの詳細を取得する代わりに、リクエストの認証に使用したパーソナルアクセストークンの詳細を返すこともできます。これらの詳細を返すには、リクエストURLで`self`キーワーを使用する必要があります。
+特定のパーソナルアクセストークンの詳細を取得する代わりに、リクエストの認証に使用したパーソナルアクセストークンの詳細を返すこともできます。これらの詳細を返すには、リクエストURLで`self`キーワードを使用する必要があります。
 
 ```shell
 curl --request GET \
@@ -137,11 +137,11 @@ curl --request GET \
   --url "https://gitlab.example.com/api/v4/personal_access_tokens/self"
 ```
 
-## パーソナルアクセストークンを作成する
+## パーソナルアクセストークンを作成する {#create-a-personal-access-token}
 
 {{< details >}}
 
-- 製品: GitLab Self-Managed、GitLab Dedicated
+- 提供形態: GitLab Self-Managed、GitLab Dedicated
 
 {{< /details >}}
 
@@ -150,7 +150,7 @@ curl --request GET \
 - [パーソナルアクセストークンを作成する](user_tokens.md#create-a-personal-access-token)
 - [ユーザーのパーソナルアクセストークンを作成する](user_tokens.md#create-a-personal-access-token-for-a-user)
 
-## パーソナルアクセストークンをローテーションする
+## パーソナルアクセストークンをローテーションする {#rotate-a-personal-access-token}
 
 {{< history >}}
 
@@ -159,7 +159,7 @@ curl --request GET \
 
 {{< /history >}}
 
-指定されたパーソナルアクセストークンをローテーションします。これにより、以前のトークンが失効し、1週間後に有効期限が切れる新しいトークンが作成されます。管理者は、任意のユーザーのトークンを失効させることができます。管理者以外のユーザーは、自分のトークンのみを失効させることができます。
+指定されたパーソナルアクセストークンをローテーションします。これにより、以前のトークンは失効し、1週間後に有効期限が切れる新しいトークンが作成されます。管理者は、任意のユーザーのトークンを失効させることができます。管理者以外のユーザーは、自分のトークンのみを失効させることができます。
 
 ```plaintext
 POST /personal_access_tokens/:id/rotate
@@ -167,8 +167,8 @@ POST /personal_access_tokens/:id/rotate
 
 | 属性 | 型      | 必須 | 説明         |
 |-----------|-----------|----------|---------------------|
-| `id` | 整数または文字列 | はい      | パーソナルアクセストークンまたはキーワード`self`のID。 |
-| `expires_at` | 日付   | いいえ       | ISO形式（`YYYY-MM-DD`）のアクセストークンの有効期限。日付はローテーション日から1年以内である必要があります。未定義の場合、トークンは1週間後に期限切れになります。 |
+| `id` | 整数または文字列 | はい      | パーソナルアクセストークン、またはキーワード`self`のID。 |
+| `expires_at` | 日付   | いいえ       | ISO形式（`YYYY-MM-DD`）のアクセストークンの有効期限。トークンに有効期限が必要な場合、デフォルトは1週間です。不要な場合、デフォルトは[最大許容ライフタイムの制限](../user/profile/personal_access_tokens.md#access-token-expiration)です。 |
 
 ```shell
 curl --request POST \
@@ -194,9 +194,9 @@ curl --request POST \
 }
 ```
 
-成功すると、`200: OK`を返します。
+成功した場合、`200: OK`を返します。
 
-可能性のある他の応答:
+その他の発生しうる応答:
 
 - ローテーションが正常に完了しなかった場合は`400: Bad Request`。
 - 次のいずれかの条件に該当する場合は`401: Unauthorized`。
@@ -204,11 +204,11 @@ curl --request POST \
   - トークンの有効期限が切れた。
   - トークンが失効した。
   - 指定されたトークンへのアクセス権がない。
-- トークンが自己ローテーションを許可されていない場合は`403: Forbidden`。
-- ユーザーが管理者であるが、トークンが存在しない場合は`404: Not Found`。
+- トークンがローテーションを許可されていない場合は`403: Forbidden`。
+- ユーザーが管理者であるにもかかわらずトークンが存在しない場合は`404: Not Found`。
 - トークンがパーソナルアクセストークンでない場合は`405: Method Not Allowed`。
 
-### 自己ローテーション
+### 自己ローテーション {#self-rotate}
 
 {{< history >}}
 
@@ -216,9 +216,9 @@ curl --request POST \
 
 {{< /history >}}
 
-特定のパーソナルアクセストークンをローテーションする代わりに、リクエストの認証に使用したものと同じパーソナルアクセストークンをローテーションすることもできます。パーソナルアクセストークンを自己ローテーションするには、次のことをする必要があります。
+特定のパーソナルアクセストークンをローテーションする代わりに、リクエストの認証に使用したものと同じパーソナルアクセストークンをローテーションすることもできます。パーソナルアクセストークンを自己ローテーションするには、次のことを行う必要があります。
 
-- [`api`スコープまたは `self_rotate`スコープ](../user/profile/personal_access_tokens.md#personal-access-token-scopes)でパーソナルアクセストークンをローテーションします。
+- [`api`スコープまたは`self_rotate`スコープ](../user/profile/personal_access_tokens.md#personal-access-token-scopes)を使用して、パーソナルアクセストークンをローテーションします。
 - リクエストURLで`self`キーワードを使用します。
 
 ```shell
@@ -227,7 +227,7 @@ curl --request POST \
   --url "https://gitlab.example.com/api/v4/personal_access_tokens/self/rotate"
 ```
 
-### 自動再利用検出
+### 自動再利用検出 {#automatic-reuse-detection}
 
 {{< history >}}
 
@@ -235,13 +235,13 @@ curl --request POST \
 
 {{< /history >}}
 
-トークンをローテーションするか、失効させると、GitLabは古いトークンと新しいトークンの関係を自動的に追跡します。新しいトークンが生成されるたびに、前のトークンへの接続が確立されます。これらの接続されたトークンは、トークンファミリーを形成します。
+トークンをローテーションするか失効させると、GitLabは古いトークンと新しいトークンの関係を自動的に追跡します。新しいトークンが生成されるたびに、以前のトークンへの接続が確立されます。これらの接続されたトークンは、トークンファミリーを形成します。
 
 すでに失効しているアクセストークンをAPIを使用してローテーションしようとすると、同じトークンファミリーのアクティブなトークンはすべて失効します。
 
-この機能は、古いトークンが流出または盗難された場合にGitLabを保護するのに役立ちます。トークンの関係を追跡し、古いトークンが使用されたときにアクセスを自動的に失効させることで、攻撃者は不正なトークンを悪用できなくなります。
+この機能は、古いトークンが漏洩したり、盗まれたりした場合に、GitLabを保護するのに役立ちます。トークンの関係を追跡し、古いトークンが使用されたときにアクセスを自動的に失効させることで、攻撃者は不正なトークンを悪用できなくなります。
 
-## パーソナルアクセストークンを失効させる
+## パーソナルアクセストークンを失効させる {#revoke-a-personal-access-token}
 
 指定されたパーソナルアクセストークンを失効させます。管理者は、任意のユーザーのトークンを失効させることができます。管理者以外のユーザーは、自分のトークンのみを失効させることができます。
 
@@ -251,7 +251,7 @@ DELETE /personal_access_tokens/:id
 
 | 属性 | 型    | 必須 | 説明         |
 |-----------|---------|----------|---------------------|
-| `id` | 整数または文字列 | はい | パーソナルアクセストークンまたはキーワード`self`のID。 |
+| `id` | 整数または文字列 | はい | パーソナルアクセストークン、またはキーワード`self`のID。 |
 
 ```shell
 curl --request DELETE \
@@ -259,15 +259,15 @@ curl --request DELETE \
   --url "https://gitlab.example.com/api/v4/personal_access_tokens/<personal_access_token_id>"
 ```
 
-成功すると、`204: No Content`を返します。
+成功した場合、`204: No Content`を返します。
 
-可能性のある他の応答:
+その他の発生しうる応答:
 
 - 正常に失効しなかった場合は`400: Bad Request`。
-- アクセストークンが無効な場合は`401: Unauthorized`。
-- アクセストークンに必要な権限がない場合は`403: Forbidden`。
+- リクエストが承認されていない場合は`401: Unauthorized`。
+- リクエストが許可されていない場合は`403: Forbidden`。
 
-### 自己失効
+### 自己失効 {#self-revoke}
 
 {{< history >}}
 
@@ -284,7 +284,7 @@ curl --request DELETE \
   --url "https://gitlab.example.com/api/v4/personal_access_tokens/self"
 ```
 
-## すべてのトークン関連付けをリストする
+## すべてのトークン関連付けのリストを取得する {#list-all-token-associations}
 
 {{< history >}}
 
@@ -292,7 +292,7 @@ curl --request DELETE \
 
 {{< /history >}}
 
-リクエストの認証に使用したパーソナルアクセストークンからアクセスできるすべてのグループとプロジェクトをリストします。通常、リストには、ユーザーがメンバーになっているグループまたはプロジェクトが含まれます。
+リクエストの認証に使用したパーソナルアクセストークンからアクセスできる、すべてのグループとプロジェクトのリストを取得します。通常、リストには、ユーザーがメンバーになっているグループまたはプロジェクトが含まれます。
 
 ```plaintext
 GET /personal_access_tokens/self/associations
@@ -370,6 +370,6 @@ curl --request GET \
 }
 ```
 
-## 関連トピック
+## 関連トピック {#related-topics}
 
 - [トークンのトラブルシューティング](../security/tokens/token_troubleshooting.md)

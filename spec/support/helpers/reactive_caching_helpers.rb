@@ -22,6 +22,8 @@ module ReactiveCachingHelpers
     allow(subject).to receive(:with_reactive_cache) do |*args, &block|
       block.call(subject.calculate_reactive_cache(*args))
     end
+
+    allow(subject).to receive(:within_reactive_cache_lifetime?).and_return(true)
   end
 
   def read_reactive_cache(subject, *qualifiers)

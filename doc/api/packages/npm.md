@@ -12,7 +12,7 @@ title: npm API
 
 {{< /details >}}
 
-This is the API documentation for [npm Packages](../../user/packages/npm_registry/_index.md).
+Use this API to interact with the [npm package manager client](../../user/packages/npm_registry/_index.md).
 
 {{< alert type="warning" >}}
 
@@ -20,9 +20,6 @@ This API is used by the [npm package manager client](https://docs.npmjs.com/)
 and is not meant for manual consumption.
 
 {{< /alert >}}
-
-For instructions on how to upload and install npm packages from the GitLab
-package registry, see the [npm package registry documentation](../../user/packages/npm_registry/_index.md).
 
 {{< alert type="note" >}}
 

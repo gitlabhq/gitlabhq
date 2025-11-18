@@ -94,7 +94,6 @@ The following is a simplified diagram of the CI architecture. Some details are l
 the main components.
 
 ![CI software architecture](img/ci_architecture_v13_0.png)
-<!-- Editable diagram available at https://app.diagrams.net/#G1LFl-KW4fgpBPzz8VIH9rsOlAH4t0xwKj -->
 
 On the left side we have the events that can trigger a pipeline based on various events (triggered by a user or automation):
 
@@ -104,7 +103,7 @@ On the left side we have the events that can trigger a pipeline based on various
 - When a [merge request is created or updated](../../ci/pipelines/merge_request_pipelines.md).
 - When an MR is added to a [Merge Train](../../ci/pipelines/merge_trains.md).
 - A [scheduled pipeline](../../ci/pipelines/schedules.md).
-- When project is [subscribed to an upstream project](../../ci/pipelines/_index.md#trigger-a-pipeline-when-an-upstream-project-is-rebuilt-deprecated).
+- When project is [subscribed to an upstream project](../../ci/pipelines/_index.md#trigger-a-pipeline-when-an-upstream-project-is-rebuilt).
 - When [Auto DevOps](../../topics/autodevops/_index.md) is enabled.
 - When GitHub integration is used with [external pull requests](../../ci/ci_cd_for_external_repos/_index.md#pipelines-for-external-pull-requests).
 - When an upstream pipeline contains a [bridge job](../../ci/yaml/_index.md#trigger) which triggers a downstream pipeline.
@@ -126,14 +125,11 @@ until either one of the following:
 - All expected jobs have been executed.
 - Failures interrupt the pipeline execution.
 
-The component that processes a pipeline is [`ProcessPipelineService`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/app/services/ci/process_pipeline_service.rb),
-which is responsible for moving all the pipeline's jobs to a completed state. When a pipeline is created, all its
-jobs are initially in `created` state. This services looks at what jobs in `created` stage are eligible
-to be processed based on the pipeline structure. Then it moves them into the `pending` state, which means
-they can now [be picked up by a runner](#job-scheduling). After a job has been executed it can complete
-successfully or fail. Each status transition for job within a pipeline triggers this service again, which
-looks for the next jobs to be transitioned towards completion. While doing that, `ProcessPipelineService`
-updates the status of jobs, stages and the overall pipeline.
+The component that processes a pipeline is [`ProcessPipelineService`](#pipeline-processing) which handles:
+
+1. Setting jobs to their initial states of `pending` if they're ready to run or `created` if they're waiting on dependent jobs
+1. Updating jobs to `pending` based on recently completed dependent jobs
+1. Updating pipelines and stages to match the overall status of the collection of jobs
 
 On the right side of the diagram we have a list of [runners](../../ci/runners/_index.md)
 connected to the GitLab instance. These can be instance runners, group runners, or project runners.
@@ -173,6 +169,30 @@ from the `CreatePipelineService` every time a downstream pipeline is triggered.
 
 <i class="fa fa-youtube-play youtube" aria-hidden="true"></i>
 You can watch a walkthrough of the architecture in [CI Backend Architectural Walkthrough](https://www.youtube.com/watch?v=ew4BwohS5OY).
+
+### Pipeline processing
+
+When a pipeline is created, the `ProcessPipelineService` runs automatically via `Ci::InitialPipelineProcessWorker`.
+This service is also triggered via `PipelineProcessWorker` [whenever a job changes statuses.](https://gitlab.com/gitlab-org/gitlab/-/blob/12da0553647706202c2113e84d92dff0ef12d668/app/models/commit_status.rb#L230)
+
+This service is responsible for moving all the pipeline's jobs to a completed state by setting them to either:
+
+- `pending` status if their requirements are met and they're ready to run and can be picked [up by a runner](#job-scheduling)
+- `created` status if they need to wait, with `processed` marked as `true`
+
+After a job has been executed it can complete successfully or fail. Each status transition for a job within a pipeline triggers this service again, which looks for the next jobs to be transitioned towards completion. While doing that, `ProcessPipelineService` updates the status of jobs, stages and the overall pipeline. If any jobs require further processing, the service will reschedule itself.
+
+The `processed` flag acts as a "needs processing" indicator that gets [reset to `false` before each status transition](https://gitlab.com/gitlab-org/gitlab/-/blob/12da0553647706202c2113e84d92dff0ef12d668/app/models/commit_status.rb#L131). This ensures that whenever a job's status changes, those changes are propagated to the stage and pipeline levels, and later builds and next builds in the DAG can be marked as `pending`. The job won't be marked as `processed` until the state is also propagated to the pipeline and stage.
+
+### Retry behavior and self-healing
+
+The `PipelineProcessWorker` uses an exponential backoff that provides self-healing capabilities for pipelines when encountering intermittent errors.
+
+If processing fails due to temporary issues (such as database timeouts, Redis errors, or out-of-memory conditions), the worker retries with increasing delays.
+
+Since the worker is idempotent and checks that jobs and pipelines `need_processing?`, it can safely execute multiple
+times. This retry mechanism can fix pipelines where all jobs are completed but the pipeline was not marked as completed
+due to a temporary error during processing.
 
 ## Job scheduling
 
@@ -342,6 +362,79 @@ There may be also other reasons:
 All of that are problems that may be temporary and mostly are not expected to happen and are expected to be detected and fixed early.
 We definitely don't want to drop jobs immediately when one of these conditions is happening.
 Dropping a job only because a runner is at capacity or because there is a temporary unavailability/configuration mistake would be very harmful to users.
+
+## Job Trace Chunk Architecture
+
+On GitLab.com, when traces are sent from a runner the content is stored in a `redis_trace_chunks` Redis cluster with a key containing the job ID and index.
+A `Ci::BuildTraceChunk` record is also created to keep track of each chunk. This record indicates the current data store for the chunk. Admins of a GitLab
+installation can configure which data stores are used. On non-GitLab.com instances, this behavior also occurs when `ci_job_live_trace_enabled?` is enabled.
+
+### Lifecycle
+
+1. Trace Append Phase
+   - Runner → `PATCH /api/v4/jobs/1/trace` (sends trace contents)
+   - `Ci::AppendBuildTraceService` stores chunk data in the live store (Redis trace chunks cluster for .com)
+   - Creates `Ci::BuildTraceChunk` record in PostgreSQL with `data_store: redis_trace_chunks`
+   - Creates `Ci::BuildTraceMetadata` record to track trace metadata
+   - Returns 200 OK to Runner
+   - `build.trace_chunks` will contain records with `redis_trace_chunks` or another live store as the `data_store`
+1. Job Update Phase
+   - Runner → `PUT /api/v4/jobs/1` (job update)
+   - This endpoint also runs `Ci::BuildTraceChunkFlushWorker`
+   - `Ci::BuildTraceChunkFlushWorker` retrieves chunk data from Redis trace chunks cluster
+   - Copies chunk to object storage (each chunk gets its own file)
+   - Deletes live chunk from live data store (`redis_trace_chunks` cluster on .com)
+   - Updates `Ci::BuildTraceChunk` record in PostgreSQL with `data_store: fog`
+   - Returns 200 OK to runner
+   - `build.trace_chunks` will contain records with `fog` or another persisted store as the `data_store`
+1. Job Completion & Archive Phase
+   - Runner → `PUT /api/v4/jobs/1` (job completion)
+   - Triggers `Ci::BuildFinishedWorker`
+   - `Ci::ArchiveTraceWorker` retrieves all fog chunks from object storage
+   - Creates single consolidated archive file as a `JobArtifact` of `type: :trace`
+   - Deletes individual chunks from object storage
+   - Deletes `Ci::BuildTraceChunk` records from PostgreSQL
+      - `Ci::Build::Trace` changes from the `live` to `archived` state
+   - Returns 200 OK to runner
+   - `build.trace_chunks` will be an empty array
+
+```mermaid
+sequenceDiagram
+    participant Runner
+    participant API
+    participant Redis as Redis Trace Chunks
+    participant ObjectStorage as Object Storage
+    participant PostgreSQL
+    participant Archive as Archive Storage
+
+    Note over Runner, Archive: 1. Trace Append Phase
+    Runner->>API: PATCH /api/v4/jobs/1/trace<br/>(trace contents)
+    API->>Redis: Ci::AppendBuildTraceService<br/>stores chunk data
+    API->>PostgreSQL: Create Ci::BuildTraceChunk<br/>(data_store: redis_trace_chunks)
+    API->>Runner: 200 OK
+
+    Note over Runner, Archive: 2. Job Update Phase
+    Runner->>API: PUT /api/v4/jobs/1<br/>(job update)
+    API->>Redis: Ci::BuildTraceChunkFlushWorker<br/>retrieves chunk data
+    API->>ObjectStorage: Copy chunk to storage<br/>(each chunk = own file)
+    API->>Redis: Delete chunk in redis
+    API->>PostgreSQL: Update Ci::BuildTraceChunk<br/>(data_store: fog)
+    API->>Runner: 200 OK
+
+    Note over Runner, Archive: 3. Job Completion & Archive Phase
+    Runner->>API: PUT /api/v4/jobs/1<br/>(job completion)
+    API->>API: Trigger Ci::BuildFinishedWorker
+    API->>ObjectStorage: Ci::ArchiveTraceWorker<br/>retrieves all fog chunks
+    API->>Archive: Create single archive file
+    API->>ObjectStorage: Delete individual chunks
+    API->>PostgreSQL: Update Ci::Build::Trace<br/>(live → archived)
+    API->>Runner: 200 OK
+```
+
+### Monitoring Resources
+
+- **Dashboard**: [Redis TraceChunks Overview](https://dashboards.gitlab.net/d/redis-tracechunks-main/redis-tracechunks3a-overview?orgId=1&var-PROMETHEUS_DS=mimir-gitlab-gprd&var-environment=gprd)
+- **Runbook**: [Redis TraceChunks Operations](https://gitlab.com/gitlab-com/runbooks/-/tree/83dd199cd9398f4fb5935e9ba8891ee54673f1fe/docs/redis-tracechunks)
 
 ## The definition of "Job" in GitLab CI/CD
 

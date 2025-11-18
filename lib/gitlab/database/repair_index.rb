@@ -12,6 +12,17 @@ module Gitlab
       UPDATE_REFERENCES_SQL = "UPDATE %{ref_table} SET %{ref_column} = %{good_id} WHERE %{ref_column} IN (%{bad_ids})"
       DELETE_DUPLICATES_SQL = "DELETE FROM %{table_name} WHERE id IN (%{bad_ids})"
 
+      # Bulk update SQL with truncation handling
+      BULK_UPDATE_DUPLICATES_SQL = <<~SQL
+        UPDATE %{table_name}
+        SET %{column} = CASE
+          WHEN LENGTH(%{column}) + LENGTH('-dup-' || id::text) > %{max_length}
+          THEN LEFT(%{column}, %{max_length} - LENGTH('-dup-' || id::text)) || '-dup-' || id::text
+          ELSE %{column} || '-dup-' || id::text
+        END
+        WHERE id IN (%{bad_ids})
+      SQL
+
       FIND_DUPLICATE_SETS_SQL = <<~SQL
         SELECT ARRAY_AGG(id ORDER BY id ASC) as ids
         FROM %{table_name}
@@ -240,6 +251,24 @@ module Gitlab
               }
             ]
           }
+        },
+        'audit_events_group_external_streaming_destinations' => {
+          'unique_idx_group_destinations_on_name_category_group' => {
+            'columns' => %w[group_id category name],
+            'unique' => true,
+            'action' => 'update',
+            'column_to_update' => 'name',
+            'max_length' => 72
+          }
+        },
+        'audit_events_instance_external_streaming_destinations' => {
+          'unique_idx_instance_destinations_on_name_category' => {
+            'columns' => %w[category name],
+            'unique' => true,
+            'action' => 'update',
+            'column_to_update' => 'name',
+            'max_length' => 72
+          }
         }
       }.freeze
 
@@ -274,7 +303,14 @@ module Gitlab
 
             if index_config['unique']
               logger.info("Index is unique. Checking for duplicate data...")
-              deduplicate_data(table_name, index_config['columns'], index_config['references'])
+              deduplicate_data(
+                table_name,
+                index_config['columns'],
+                index_config['references'],
+                action: index_config['action'],
+                column_to_update: index_config['column_to_update'],
+                max_length: index_config['max_length']
+              )
             end
 
             if index_exists?(table_name, index_name)
@@ -322,7 +358,7 @@ module Gitlab
         end.present?
       end
 
-      def deduplicate_data(table_name, columns, references)
+      def deduplicate_data(table_name, columns, references, action: nil, column_to_update: nil, max_length: nil)
         duplicate_sets = find_duplicate_sets(table_name, columns)
 
         unless duplicate_sets&.any?
@@ -332,6 +368,14 @@ module Gitlab
 
         logger.warn("Found #{duplicate_sets.count} duplicates in '#{table_name}' for columns: #{columns.join(',')}")
 
+        if action == 'update'
+          raise ArgumentError, "column_to_update must be specified when action is 'update'" unless column_to_update
+
+          deduplicate_data_with_updates(table_name, duplicate_sets, column_to_update, max_length)
+          return
+        end
+
+        # Default action: delete duplicates
         bad_id_to_good_id_mapping = generate_id_mapping(duplicate_sets)
         process_references(references, bad_id_to_good_id_mapping)
         delete_duplicates(table_name, bad_id_to_good_id_mapping)
@@ -516,6 +560,42 @@ module Gitlab
           execute_local(sql) do
             affected_rows = connection.delete(sql)
             logger.info("Deleted #{affected_rows} duplicate records from #{table_name}")
+          end
+        end
+      end
+
+      def deduplicate_data_with_updates(table_name, duplicate_sets, column_to_update, max_length)
+        logger.info("
+          Deduplicating by updating '#{column_to_update}' column in '#{table_name}' to preserve all configurations...
+        ")
+
+        duplicate_sets.each do |set|
+          ids = parse_pg_array(set['ids'])
+          good_id = ids.first
+          bad_ids = ids[1..]
+
+          original_value = connection.select_value(
+            "SELECT #{connection.quote_column_name(column_to_update)}
+            FROM #{connection.quote_table_name(table_name)}
+            WHERE id = #{good_id}"
+          )
+
+          logger.info("Keeping ID #{good_id} with #{column_to_update}='#{original_value}'")
+
+          # Bulk update all bad_ids in a single query
+          bad_ids.each_slice(BATCH_SIZE) do |bad_ids_batch|
+            sql = format(
+              BULK_UPDATE_DUPLICATES_SQL,
+              table_name: connection.quote_table_name(table_name),
+              column: connection.quote_column_name(column_to_update),
+              max_length: max_length || 255,
+              bad_ids: bad_ids_batch.join(',')
+            )
+
+            execute_local(sql) do
+              affected_rows = connection.update(sql)
+              logger.info("Bulk updated #{affected_rows} duplicate records in '#{table_name}'")
+            end
           end
         end
       end

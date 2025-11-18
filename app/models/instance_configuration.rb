@@ -132,7 +132,8 @@ class InstanceConfiguration
         enabled: application_settings[:users_get_by_id_limit] > 0,
         requests_per_period: application_settings[:users_get_by_id_limit],
         period_in_seconds: 10.minutes
-      }
+      },
+      pipeline_creation: application_setting_limit_per_minute(:pipeline_limit_per_project_user_sha)
     }
   end
 

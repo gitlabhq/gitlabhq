@@ -3,7 +3,7 @@ stage: GitLab Delivery
 group: Operate
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 title: Upgrade Docker instances
-description: Upgrade a Docker-based instance.
+description: Upgrade a single-node Docker-based instance.
 ---
 
 {{< details >}}
@@ -15,12 +15,32 @@ description: Upgrade a Docker-based instance.
 
 Upgrade a Docker-based instance to a later version of GitLab.
 
-Before you upgrade, consult [information you need before you upgrade](../plan_your_upgrade.md).
+## Prerequisites
 
-## Upgrade GitLab by using Docker Engine
+Before you upgrade a Docker instance, you must first
+[read required information and perform required steps](../plan_your_upgrade.md).
+
+## Upgrade a Docker-based instance
+
+To upgrade a Docker-based instance:
+
+1. Consider [turning on maintenance mode](../../administration/maintenance_mode/_index.md) during the upgrade.
+1. Pause [running CI/CD pipelines and jobs](../plan_your_upgrade.md#pause-cicd-pipelines-and-jobs).
+1. [Upgrade GitLab Runner](https://docs.gitlab.com/runner/install/) to the same version as your target GitLab version.
+1. Upgrade GitLab itself by either:
+   - [Using Docker Engine](#upgrade-with-docker-engine).
+   - [Using Docker Compose](#upgrade-with-docker-compose).
+
+After you upgrade:
+
+1. Unpause [running CI/CD pipelines and jobs](../plan_your_upgrade.md#pause-cicd-pipelines-and-jobs).
+1. If enabled, [turn off maintenance mode](../../administration/maintenance_mode/_index.md#disable-maintenance-mode).
+1. Run [upgrade health checks](../plan_your_upgrade.md#run-upgrade-health-checks).
+
+### Upgrade with Docker Engine
 
 To upgrade a GitLab instance that was
-[installed by using Docker Engine](../../install/docker/installation.md#install-gitlab-by-using-docker-engine):
+[installed with Docker Engine](../../install/docker/installation.md#install-gitlab-by-using-docker-engine):
 
 1. Create a [backup](../../install/docker/backup.md). As a minimum, back up
    [the database](../../install/docker/backup.md#create-a-database-backup) and the GitLab secrets file.
@@ -83,10 +103,10 @@ To upgrade a GitLab instance that was
 
 On the first run, GitLab reconfigures and upgrades itself.
 
-## Upgrade GitLab by using Docker Compose
+### Upgrade with Docker Compose
 
 To upgrade a GitLab instance that was
-[installed by using Docker Compose](../../install/docker/installation.md#install-gitlab-by-using-docker-compose):
+[installed with Docker Compose](../../install/docker/installation.md#install-gitlab-by-using-docker-compose):
 
 1. Create a [backup](../../install/docker/backup.md). As a minimum, back up
    [the database](../../install/docker/backup.md#create-a-database-backup) and the GitLab secrets file.

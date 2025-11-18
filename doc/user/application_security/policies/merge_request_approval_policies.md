@@ -57,8 +57,8 @@ The following video gives you an overview of GitLab merge request approval polic
 - You can assign a maximum of five merge request approval policies to each security policy project.
 - Policies created for a group or subgroup can take some time to apply to all the merge requests in
   the group. The time it takes is determined by the number of projects and the number of merge requests
-  in those projects. Typically, the time taken is a matter of seconds. For groups with many thousands of projects
-  and merge requests, this could take several minutes, based on what we've previously observed.
+  in those projects. Typically, the time taken is a matter of seconds. From previous observations,
+  the process can take several minutes for groups with many thousands of projects and merge requests.
 - Merge request approval policies do not check the integrity or authenticity of the scan results
   generated in the artifact reports.
 - A merge request approval policy is evaluated according to its rules. By default, if the rules are
@@ -205,8 +205,16 @@ the following sections and tables provide an alternative.
 {{< history >}}
 
 - The `approval_settings` fields were [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/418752) in GitLab 16.4 [with flags](../../../administration/feature_flags/_index.md) named `scan_result_policies_block_unprotecting_branches`, `scan_result_any_merge_request`, or `scan_result_policies_block_force_push`. See the `approval_settings` section below for more information.
+- The `enforcement_type` field was [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/202746) in GitLab 18.4 [with flag](../../../administration/feature_flags/_index.md) named `security_policy_approval_warn_mode`.
+- The `enforcement_type` field was [enabled on GitLab.com](https://gitlab.com/gitlab-org/gitlab/-/issues/505352) in GitLab 18.6.
 
 {{< /history >}}
+
+{{< alert type="flag" >}}
+
+The availability of this feature is controlled by a feature flag. For more information, see the history.
+
+{{< /alert >}}
 
 | Field               | Type               | Required | Possible values | Description                                              |
 |---------------------|--------------------|----------|-----------------|----------------------------------------------------------|
@@ -220,6 +228,7 @@ the following sections and tables provide an alternative.
 | `policy_scope`      | `object` of [`policy_scope`](_index.md#configure-the-policy-scope) | false |  | Defines the scope of the policy based on the projects, groups, or compliance framework labels you specify. |
 | `policy_tuning`     | `object`           | false    |                 | (Experimental) Settings that affect policy comparison logic.     |
 | `bypass_settings`   | `object`           | false    |                 | Settings that affect when certain branches, tokens, or accounts can bypass a policy .     |
+| `enforcement_type`  | `string`           | false    | `enforce`, `warn` | Defines how the policy is enforced. The default value (if not specified) is `enforce`, which blocks merge requests when violations are detected. The value `warn` allows merge requests to proceed but shows warnings and bot comments. |
 
 ## `scan_finding` rule type
 
@@ -432,10 +441,69 @@ the bot message is sent as long as at least one of those policies has the `send_
 {{< history >}}
 
 - [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/15552) in GitLab 17.8 [with a flag](../../../administration/feature_flags/_index.md) named `security_policy_approval_warn_mode`. Disabled by default
+- [Enabled on GitLab.com, GitLab Self-Managed, and GitLab Dedicated](https://gitlab.com/gitlab-org/gitlab/-/issues/505352) in GitLab 18.6.
 
 {{< /history >}}
 
-When warn mode is enabled and a merge request triggers a security policy that doesn't require any additional approvers, a bot comment is added to the merge request. The comment directs users to the policy for more information.
+{{< alert type="flag" >}}
+
+The availability of this feature is controlled by a feature flag. For more information, see the history.
+
+{{< /alert >}}
+
+Warn mode allows security teams to test and validate the impact of security policies before applying full enforcement, reducing developer friction when applying new security policies. When a policy is configured with `enforcement_type: warn`, the merge request provides an option to bypass any merge request approval policy violations.
+
+When warn mode is enabled (`enforcement_type: warn`) and a merge request triggers a security policy violation, the policy enforcement is different in several ways:
+
+- Non-blocking validation: The policy generates informative bot comments listing the policy violations.
+- Optional approvals: Approvals are optional if the user bypasses the policy and provides the reasoning for the dismissal.
+- Enhanced auditing: After the merge request is merged with a bypassed security policy, audit events are created.
+- Vulnerability report integration: If a vulnerability was introduced by a merge request with a bypassed policy, the bypass details are visible in the vulnerability report.
+- Disabled approval settings: Approval setting overrides are not enforced.
+
+### Configuring warn mode
+
+To enable warn mode for a merge request approval policy, set the `enforcement_type` field to `warn`:
+
+```yaml
+approval_policy:
+  - name: Warn mode policy
+    description: ''
+    enabled: true
+    enforcement_type: warn
+    policy_scope:
+      projects:
+        excluding: []
+    rules:
+      - type: scan_finding
+        scanners:
+          - secret_detection
+        vulnerabilities_allowed: 0
+        severity_levels: []
+        vulnerability_states: []
+        branch_type: protected
+    actions:
+      - type: require_approval
+        approvals_required: 1
+        role_approvers:
+          - developer
+          - maintainer
+      - type: send_bot_message
+        enabled: true
+```
+
+### Supported rule types
+
+Warn mode supports the following rule types:
+
+- `scan_finding`: For security scan results
+- `any_merge_request`: For general merge request conditions
+
+{{< alert type="note" >}}
+
+The `license_finding` rule type is not supported with warn mode enforcement.
+
+{{< /alert >}}
 
 ## `approval_settings`
 
@@ -604,7 +672,7 @@ To recreate a pipeline execution policy:
 
 <!-- markdownlint-disable MD044 -->
 
-1. On the left sidebar, select **Search or go to** and find your group.
+1. On the left sidebar, select **Search or go to** and find your group. If you've [turned on the new navigation](../../interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
 1. Select **Secure** > **Policies**.
 1. Select the pipeline execution policy you want to recreate.
 1. On the right sidebar, select the **YAML** tab and copy the contents of the entire policy file.
@@ -677,7 +745,7 @@ With branch-based exceptions, you can configure merge request approval policies 
 
 {{< /history >}}
 
-With access token and service account exceptions, you can designate specific service accounts and access tokens that can bypass merge request approval policies when necessary. This approach enables automations that you trust to operate without manual approval while maintaining restrictions for human users. For example, trusted automations might include CI/CD pipelines, repository mirroring, and automated updates. Bypass events are fully audited to allow you to support your compliance and emergency access needs.
+With access token and service account exceptions, you can designate specific service accounts and access tokens that can bypass branch protections enforced by merge request approval policies when necessary. This approach enables automations that you trust to operate without manual approval while maintaining restrictions for human users. For example, trusted automations might include CI/CD pipelines, repository mirroring, and automated updates. Bypass events are fully audited to allow you to support your compliance and emergency access needs.
 
 | Field | Type    | Required | Description                                    |
 |-------|---------|----------|------------------------------------------------|
@@ -687,7 +755,8 @@ With access token and service account exceptions, you can designate specific ser
 
 {{< history >}}
 
-- [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/18114) in GitLab 18.5 [with a flag](../../../administration/feature_flags/_index.md) named `security_policies_bypass_options_group_roles`.
+- [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/18114) in GitLab 18.5 [with a flag](../../../administration/feature_flags/_index.md) named `security_policies_bypass_options_group_roles`. Enabled by default.
+- [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/551920) in GitLab 18.6. Feature flag `security_policies_bypass_options_group_roles` removed.
 
 {{< /history >}}
 
@@ -782,14 +851,34 @@ approval_policy:
     role_approvers:
     - owner
     - 1002816 # Example custom role identifier called "AppSec Engineer"
+- name: critical vulnerability CS approvals
+  description: high/critical severity level only for SAST scanning
+  enabled: true
+  enforcement_type: warn
+  rules:
+  - type: scan_finding
+    branch_type: default
+    scanners:
+    - sast
+    vulnerabilities_allowed: 0
+    severity_levels:
+    - critical
+    - high
+    vulnerability_states: []
+  actions:
+  - type: require_approval
+    approvals_required: 1
+    role_approvers:
+    - maintainer
 ```
 
 In this example:
 
 - Every MR that contains new `critical` vulnerabilities identified by container scanning requires
   one approval from `alberto.dare`.
-- Every MR that contains more than one preexisting `low` or `unknown` vulnerability older than 30 days identified by
+- Every merge request that contains more than one preexisting `low` or `unknown` vulnerability older than 30 days identified by
   container scanning requires one approval from either a project member with the Owner role or a user with the custom role `AppSec Engineer`.
+- Every merge request that contains new `critical` or `high` severity vulnerabilities, identified by SAST scanning, triggers the warn mode policy. Warn mode generates a bot comment and blocks the merge request. A developer can then bypass the policy violation. Optionally, a maintainer can also approve the merge request.
 
 ## Example for Merge Request Approval Policy editor
 
@@ -829,7 +918,7 @@ actions:
 
 ### Scope of merge request approval policy comparison
 
-- To determine when approval is required on a merge request, we compare completed pipelines for each supported pipeline source for the source and target branch (for example, `feature`/`main`). This ensures the most comprehensive evaluation of scan results.
+- To determine when approval is required on a merge request, GitLab compares completed pipelines for each supported pipeline source for the source and target branch (for example, `feature`/`main`). This ensures the most comprehensive evaluation of scan results.
 - For the source branch, the comparison pipelines are all completed pipelines for each supported pipeline source for the latest commit in the source branch.
 - If the merge request approval policy looks only for the newly detected states (`new_needs_triage` & `new_dismissed`), the comparison is performed against all the supported pipeline sources in the common ancestor between the source and the target branch. An exception is when using Merged Results pipelines, in which case the comparison is done against the tip of the MR's target branch.
 - If the merge request approval policy looks for pre-existing states (`detected`, `confirmed`, `resolved`, `dismissed`), the comparison is always done against the tip of the default branch (for example, `main`).
@@ -871,13 +960,13 @@ Merge request approval policies require an additional approval step in some situ
 
 Merge request approval policies evaluate the artifact reports generated by scanners in your pipelines after the pipeline has completed. Merge request approval policies focus on evaluating the results and determining approvals based on the scan result findings to identify potential risks, block merge requests, and require approval.
 
-Merge request approval policies do not extend beyond that scope to reach into artifact files or scanners. Instead, we trust the results from artifact reports. This gives teams flexibility in managing their scan execution and supply chain, and customizing scan results generated in artifact reports (for example, to filter out false positives) if needed.
+Merge request approval policies do not extend beyond that scope to reach into artifact files or scanners. Instead, GitLab trusts the results from artifact reports. This gives teams flexibility in managing their scan execution and supply chain, and customizing scan results generated in artifact reports (for example, to filter out false positives) if needed.
 
 Lock file tampering, for example, is outside of the scope of security policy management, but may be mitigated through use of [Code owners](../../project/codeowners/_index.md#codeowners-file) or [external status checks](../../project/merge_requests/status_checks.md). For more information, see [issue 433029](https://gitlab.com/gitlab-org/gitlab/-/issues/433029).
 
 ![Evaluating scan result findings](img/scan_results_evaluation_white-bg_v16_8.png)
 
-### Filter out policy violations with the attributes "Fix Available" or "False Positive"
+### Filter out policy violations with the attributes **Fix Available** or **False Positive**
 
 To avoid unnecessary approval requirements, these additional filters help ensure you only block MRs on the most actionable findings.
 
@@ -893,7 +982,7 @@ The **Resolve with Merge Request** button only appears when one of the following
 
 By using the **False Positive** attribute, similarly, you can ignore findings detected by a policy by setting `false_positive` to `false` (or set attribute to **Is not** and **False Positive** in the policy editor).
 
-The **False Positive** attribute only applies to findings detected by our Vulnerability Extraction Tool for SAST results.
+The **False Positive** attribute only applies to findings detected by the Vulnerability Extraction Tool for SAST results.
 
 ### Policy evaluation and vulnerability state changes
 
@@ -908,6 +997,36 @@ merge request is updated, but not immediately when the vulnerability state chang
 
 To reflect vulnerability state changes in the policies immediately
 manually run the pipeline or push a new commit to the merge request.
+
+## Understanding security widget and policy bot discrepancies
+
+You may notice inconsistencies between what the merge request security widget displays and what the security bot comments indicate regarding vulnerabilities. These features use different data sources and comparison methods for security findings, which can result in differences in what they display.
+
+Data sources:
+
+- **Merge request security widget**: Compares results from the latest source branch pipeline with vulnerabilities previously stored in the database for the default branch.
+- **Security Bot (and approval policy logic)**: Compares results between actual pipeline artifacts, specifically between the latest successful target branch pipeline and the latest successful source branch pipeline.
+
+### Common scenarios where inconsistencies occur
+
+The difference in data sources can lead to inconsistent behavior in several scenarios.
+
+#### Missing or failed security scans in target branch
+
+When the latest pipeline on your target branch fails to run security scans properly (for example, due to a misconfiguration or job failures), the security bot might report new findings and require approval as a precautionary measure because it cannot compare results effectively. Meanwhile, the security widget might show no new vulnerabilities because it uses previously stored vulnerability data.
+
+#### Changes in target branch between comparisons
+
+If there are multiple commits on the target branch that change the security profile between when the widget makes its comparison and when the bot makes its comparison, results can differ.
+
+### Best practices for consistent results
+
+To minimize confusion when using these security features:
+
+- Ensure complete pipeline execution: Make sure security scans complete successfully on both source and target branches.
+- Maintain consistent CI/CD configuration: Avoid removing or breaking security scan configurations in your pipeline.
+- For new projects: Run a security scan on the default branch before creating merge requests to establish baseline vulnerability data.
+- Consider using scan execution policies: When combined with merge request approval policies, they help ensure security scans always run where needed.
 
 ## Troubleshooting
 
@@ -929,16 +1048,16 @@ Project.joins(:approval_rules).where(approval_rules: { report_type: %i[scan_find
   batch.map do |project|
     # Get projects and their configuration_ids for applicable project rules
     [project, project.approval_rules.where(report_type: %i[scan_finding license_scanning]).pluck(:security_orchestration_policy_configuration_id).uniq]
-  end.uniq.map do |project, configuration_ids| # We take only unique combinations of project + configuration_ids
-    # If we find more configurations than what is available for the project, we take records with the extra configurations
+  end.uniq.map do |project, configuration_ids| # Take only unique combinations of project + configuration_ids
+    # If you find more configurations than what is available for the project, take records with the extra configurations
     [project, configuration_ids - project.all_security_orchestration_policy_configurations.pluck(:id)]
   end.select { |_project, configuration_ids| configuration_ids.any? }
 end.each do |project, configuration_ids|
-  # For each found pair project + ghost configuration, we remove these rules for a given project
+  # For each found pair project + ghost configuration, remove these rules for a given project
   Security::OrchestrationPolicyConfiguration.where(id: configuration_ids).each do |configuration|
     configuration.delete_scan_finding_rules_for_project(project.id)
   end
-  # Ensure we sync any potential rules from new group's policy
+  # Ensure you sync any potential rules from new group's policy
   Security::ScanResultPolicies::SyncProjectWorker.perform_async(project.id)
 end
 ```

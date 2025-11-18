@@ -1,10 +1,10 @@
 -# TODO: Swap out for real passkeys once backend is complete
-- @passkeys = @registrations
+- @passkeys = []
 = render ::Layouts::CrudComponent.new(s_('ProfilesAuthentication|Manage passkeys'),
   icon: 'key',
   count: @passkeys.length ) do |c|
   - c.with_actions do
-    = render Pajamas::ButtonComponent.new(href: new_profile_passkey_path, size: :small) do
+    = render Pajamas::ButtonComponent.new(href: new_profile_passkey_path, size: :small, icon: 'passkey') do
       = s_('ProfilesAuthentication|Add passkey')
   - c.with_body do
     .table-holder
@@ -21,10 +21,9 @@
               %tr
                 %td{ data: { label: _('Name') } }= passkey[:name]
                 %td{ data: { label: s_('ProfilesAuthentication|Added on') } }= l(passkey[:created_at].to_date, format: :admin)
-                -# TODO: change created_at for last_used_at once backend is complete
-                %td{ data: { label: s_('ProfilesAuthentication|Last used') } }= l(passkey[:created_at].to_date, format: :admin)
+                %td{ data: { label: s_('ProfilesAuthentication|Last used') } }= passkey[:last_used_at] ? l(passkey[:last_used_at].to_date, format: :admin) : ''
                 %td{ data: { label: _('Actions') }, class: '!gl-py-3' }
-                  .js-two-factor-action-confirm{ data: delete_passkey_data(current_password_required?, passkey[:delete_path]) }
+                  .js-two-factor-action-confirm{ data: delete_passkey_data(current_password_required?, passkey[:delete_path], @passkeys.size) }
           - else
             %tr
               %td= s_('ProfilesAuthentication|No passkeys added.')

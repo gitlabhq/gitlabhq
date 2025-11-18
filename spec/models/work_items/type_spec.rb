@@ -218,24 +218,6 @@ RSpec.describe WorkItems::Type, feature_category: :team_planning do
     end
   end
 
-  describe '#default_issue?' do
-    context 'when work item type is default Issue' do
-      let(:work_item_type) { build(:work_item_type, name: described_class::TYPE_NAMES[:issue]) }
-
-      it 'returns true' do
-        expect(work_item_type.default_issue?).to be(true)
-      end
-    end
-
-    context 'when work item type is not Issue' do
-      let(:work_item_type) { build(:work_item_type, :non_default) }
-
-      it 'returns false' do
-        expect(work_item_type.default_issue?).to be(false)
-      end
-    end
-  end
-
   describe '#allowed_child_types' do
     let_it_be(:epic_type) { described_class.find_by(base_type: :epic) }
     let_it_be(:issue_type) { described_class.find_by(base_type: :issue) }
@@ -271,23 +253,6 @@ RSpec.describe WorkItems::Type, feature_category: :team_planning do
 
     it 'handles circular dependencies correctly' do
       expect { descendant_types }.not_to raise_error
-    end
-  end
-
-  describe '.allowed_group_level_types' do
-    let_it_be(:group) { create(:group) }
-    let_it_be(:non_ee_types) { described_class.base_types.keys.excluding('epic') }
-
-    subject { described_class.allowed_group_level_types(group) }
-
-    it { is_expected.to include(*non_ee_types) }
-
-    context 'when create_group_level_work_items feature flag is disabled' do
-      before do
-        stub_feature_flags(create_group_level_work_items: false)
-      end
-
-      it { is_expected.to be_empty }
     end
   end
 

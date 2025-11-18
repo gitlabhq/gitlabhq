@@ -121,6 +121,7 @@ resources :commit, only: [:show], constraints: { id: Gitlab::Git::Commit::SHA_PA
     get :diff_files_metadata
     get :diffs_stats
     get :diff_file
+    get :discussions
   end
 end
 

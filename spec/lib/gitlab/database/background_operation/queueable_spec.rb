@@ -21,7 +21,7 @@ RSpec.describe Gitlab::Database::BackgroundOperation::Queueable, feature_categor
       it 'enqueues the worker' do
         expect { enqueue_background_operation }.to change { worker_klass.count }.by(1)
 
-        record = worker_klass.executables_with_config(job_class_name, table_name, column_name, job_arguments).first
+        record = worker_klass.unfinished_with_config(job_class_name, table_name, column_name, job_arguments).first
 
         expect(record).to have_attributes(
           job_class_name: job_class_name,

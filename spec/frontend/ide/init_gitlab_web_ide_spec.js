@@ -81,6 +81,8 @@ describe('ide/init_gitlab_web_ide', () => {
     el.dataset.userPreferencesPath = TEST_USER_PREFERENCES_PATH;
     el.dataset.mergeRequest = TEST_MR_ID;
     el.dataset.filePath = TEST_FILE_PATH;
+    el.dataset.extensionHostDomain = 'web-ide.example.net';
+    el.dataset.extensionHostDomainChanged = true;
     el.dataset.editorFont = JSON.stringify({
       fallback_font_family: 'monospace',
       font_faces: [
@@ -177,6 +179,17 @@ describe('ide/init_gitlab_web_ide', () => {
         handleTracking,
         telemetryEnabled,
         handleContextUpdate: handleUpdateUrl,
+      });
+    });
+
+    it('provides extensionHostDomain and extensionHostDomainChanged external parameters to workbench URL builder', () => {
+      const rootEl = findRootElement();
+
+      expect(rootEl.dataset.extensionHostDomain).toBe('web-ide.example.net');
+      expect(rootEl.dataset.extensionHostDomainChanged).toBe('true');
+      expect(getWebIDEWorkbenchConfig).toHaveBeenCalledWith({
+        extensionHostDomain: 'web-ide.example.net',
+        extensionHostDomainChanged: true,
       });
     });
 

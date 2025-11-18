@@ -56,6 +56,10 @@ module Types
         "#{object.id}-#{parent.id}"
       end
 
+      def favicon
+        Gitlab::Favicon.ci_status_overlay(object.favicon)
+      end
+
       def action
         return unless object.has_action?
 

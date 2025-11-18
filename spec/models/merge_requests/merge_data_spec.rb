@@ -75,7 +75,7 @@ RSpec.describe MergeRequests::MergeData, feature_category: :code_review_workflow
         context 'when the status is can_be_merged' do
           let(:merge_status) { :can_be_merged }
 
-          include_examples 'for an invalid state transition'
+          include_examples 'for a valid state transition'
         end
 
         context 'when the status is cannot_be_merged_recheck' do

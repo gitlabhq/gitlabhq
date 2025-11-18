@@ -605,9 +605,80 @@ RSpec.describe Issuable, feature_category: :team_planning do
           user: user,
           action: 'update',
           changes: hash_including(
-            'reviewers' => [[user.hook_attrs], [user.hook_attrs, user2.hook_attrs]]
+            'reviewers' => [
+              [hash_including(user.hook_attrs.merge(state: 'unreviewed', re_requested: false))],
+              [
+                hash_including(user.hook_attrs.merge(state: 'unreviewed', re_requested: false)),
+                hash_including(user2.hook_attrs.merge(state: 'unreviewed', re_requested: false))
+              ]
+            ]
           ))
-        merge_request.to_hook_data(user, old_associations: { reviewers: [user] }, action: 'update')
+        merge_request.to_hook_data(user, old_associations: { reviewers_hook_attrs: [user.hook_attrs.merge(state: 'unreviewed', re_requested: false)] }, action: 'update')
+      end
+    end
+
+    context 'merge_request re-request reviewer' do
+      let(:merge_request) { create(:merge_request) }
+      let(:reviewer) { create(:user) }
+
+      before do
+        merge_request.update!(reviewers: [reviewer])
+        expect(Gitlab::DataBuilder::Issuable)
+          .to receive(:new).with(merge_request).and_return(builder)
+      end
+
+      it 'includes re_requested: true in current state for re-requested reviewer' do
+        old_reviewers_hook_attrs = [reviewer.hook_attrs.merge(state: 'unreviewed', re_requested: false)]
+
+        expect(builder).to receive(:build).with(
+          user: user,
+          action: 'update',
+          changes: hash_including(
+            'reviewers' => [
+              [hash_including(reviewer.hook_attrs.merge(state: 'unreviewed', re_requested: false))],
+              [hash_including(reviewer.hook_attrs.merge(state: 'unreviewed', re_requested: true))]
+            ]
+          ))
+
+        merge_request.to_hook_data(
+          user,
+          old_associations: {
+            reviewers_hook_attrs: old_reviewers_hook_attrs,
+            re_requested_reviewer_id: reviewer.id
+          },
+          action: 'update'
+        )
+      end
+    end
+
+    context 'merge_request with reviewers updates title' do
+      let(:merge_request) { create(:merge_request, reviewers: [user]) }
+
+      before do
+        merge_request.reload
+        expect(Gitlab::DataBuilder::Issuable)
+          .to receive(:new).with(merge_request).and_return(builder)
+      end
+
+      it 'does not include false reviewer changes when only title changes' do
+        # Capture the current state
+        current_reviewers_hook_attrs = merge_request.reviewers_hook_attrs
+
+        expect(builder).to receive(:build).with(
+          user: user,
+          action: 'update',
+          changes: hash_excluding('reviewers')
+        )
+
+        # Simulate what IssuableBaseService#associations_before_update now does
+        merge_request.to_hook_data(
+          user,
+          old_associations: {
+            reviewers: merge_request.reviewers.to_a,
+            reviewers_hook_attrs: current_reviewers_hook_attrs
+          },
+          action: 'update'
+        )
       end
     end
 

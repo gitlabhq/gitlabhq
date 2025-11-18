@@ -313,9 +313,7 @@ RSpec.describe Groups::MilestonesController, feature_category: :team_planning do
       end
 
       it 'responds unprocessable_entity (422) with error data' do
-        # Note: This assignment ensures and triggers a validation error when updating the milestone.
-        # Same approach used in spec/models/milestone_spec.rb .
-        milestone_params[:title] = '<img src=x onerror=prompt(1)>'
+        milestone_params[:title] = ''
 
         subject
 

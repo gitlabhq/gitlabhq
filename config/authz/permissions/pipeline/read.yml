@@ -1,0 +1,4 @@
+---
+name: read_pipeline
+description: Grants the ability to read pipelines
+feature_category: continuous_integration

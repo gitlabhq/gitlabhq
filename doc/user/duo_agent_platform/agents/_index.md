@@ -9,8 +9,8 @@ title: Agents
 
 - Tier: Premium, Ultimate
 - Add-on: GitLab Duo Core, Pro, or Enterprise
-- Offering: GitLab.com
-- Status: Experiment
+- Offering: GitLab.com, GitLab Self-Managed
+- Status: Beta
 
 {{< /details >}}
 
@@ -22,9 +22,7 @@ title: Agents
 
 {{< history >}}
 
-- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/549914) in GitLab 18.5 [with a flag](../../../administration/feature_flags/_index.md) named `global_ai_catalog`. Disabled by default. This feature is an [experiment](../../../policy/development_stages_support.md).
-- Agent tools [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/569043) in GitLab 18.5 [with a flag](../../../administration/feature_flags/_index.md) named `ai_catalog_agent_tools`. Disabled by default.
-- Feature flag `ai_catalog_agent_tools` removed in GitLab 18.5.
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/549914) in GitLab 18.5 [with a flag](../../../administration/feature_flags/_index.md) named `global_ai_catalog`. Enabled on GitLab.com.
 
 {{< /history >}}
 
@@ -35,112 +33,26 @@ For more information, see the history.
 
 {{< /alert >}}
 
-Agents use AI to perform tasks and answer complex questions.
-Create custom agents to accomplish specific tasks, like creating
-merge requests or reviewing code. Or, use the AI Catalog to discover
-agents created by GitLab.
+Agents are AI-powered assistants that help you accomplish specific
+tasks and answer complex questions.
 
-When you're ready to interact with an agent, you can add it to a project or execute a test run.
+GitLab provides three types of agents:
 
-## Prerequisites
+- [Foundational agents](foundational_agents/_index.md) are pre-built,
+  production-ready agents created by GitLab for common
+  workflows. These agents come with specialized expertise and tools
+  for specific domains. Foundational agents are turned on by default,
+  so you can start using them with GitLab Duo Chat.
+- [Custom agents](custom.md) are agents you create and configure for
+  your team's specific needs. You define their behavior through system
+  prompts, and choose what tools they can access. Custom agents are
+  ideal when you need specialized workflows that aren't covered by
+  foundational agents, such as automating your team's code review
+  process or managing project-specific tasks. To interact with a
+  custom agent, enable it in a group or project to use it with Chat.
+- [External agents](external.md) integrate with AI model providers
+  outside GitLab. Use external agents to allow model providers like
+  Claude to operate directly in GitLab. You can trigger an
+  external agent directly from a discussion, issue, or merge request.
 
 To use agents, you must meet the [prerequisites](../_index.md#prerequisites).
-
-There are additional requirements depending on the agent's visibility.
-
-### Agent visibility
-
-When you create an agent, you associate it with a project and choose whether it is public or private.
-
-- A public agent can be viewed by anyone and can be added to any project that meets the prerequisites.
-- A private agent can be viewed only by members of the associated project who have at least the Developer role.
-  Private agents cannot be added to projects other than the associated project.
-
-## Create an agent
-
-Prerequisites:
-
-- You must have at least the Maintainer role for the project.
-
-To create an agent:
-
-1. On the left sidebar, select **Search or go to** > **Explore**.
-1. Select **AI Catalog**.
-1. Select **New agent**.
-1. Complete the fields:
-   1. **Project**: From the dropdown list, select a project. This is the agent's associated project.
-   1. **Name**: Enter the name of your agent.
-   1. **Description**: Enter a description of the agent.
-   1. **Tools**: Optional. Select which built-in tools the agent can use.
-      For example, select **Create issue** if you want the agent to be able to create issues automatically.
-   1. **System prompt**: Enter guidelines to define the agent's personality or shape how it behaves.
-   1. **Visibility level**: Choose whether the agent is public or private.
-1. Select **Create agent**.
-
-The agent is added to the AI Catalog.
-
-## Add an agent to a project
-
-Add an agent to a project to use it with Chat.
-
-Prerequisites:
-
-- You must have at least the Maintainer role for the project.
-
-1. On the left sidebar, select **Search or go to** > **Explore**.
-1. Select **AI Catalog** and find the agent you want to add.
-1. Next to the agent name, select **Actions** ({{< icon name="ellipsis_v" >}}) > **Add to project**.
-
-The agent appears on the project's **Agents** page.
-
-## Run an agent
-
-Execute a test run to start a session with the agent.
-
-Prerequisites:
-
-- You must be a member of the associated project and have at least the Maintainer role.
-
-To run an agent:
-
-1. On the left sidebar, select **Search or go to** > **Explore**.
-1. Select **AI Catalog**, find and click on the agent you want to run.
-1. In the top right, click on `Test` button which opens a modal.
-1. Enter instructions, then select **Run**.
-
-The session starts on the associated project's **Agent sessions** page.
-
-## Duplicate an agent
-
-Create a copy of an existing agent and associate it with a different project.
-Do this if you want to use an agent someone else created, or make changes to an agent without overwriting the original.
-
-Prerequisites:
-
-- You must have at least the Maintainer role for the project.
-
-To duplicate an agent:
-
-1. On the left sidebar, select **Search or go to** > **Explore**.
-1. Select **AI Catalog** and find the agent you want to duplicate.
-1. Next to the agent name, select **Actions** ({{< icon name="ellipsis_v" >}}) > **Duplicate**.
-1. Optional. Edit any fields you want to change.
-1. Select **Create agent**.
-
-## Manage agents
-
-Edit an agent to change its configuration, or delete it to remove it from the AI Catalog.
-
-Prerequisites:
-
-- You must be a member of the associated project and have at least the Maintainer role.
-
-1. On the left sidebar, select **Search or go to** > **Explore**.
-1. Select **AI Catalog** and find the agent you want to manage.
-1. Next to the agent name, select **Actions** ({{< icon name="ellipsis_v" >}}).
-   - To edit an agent:
-     1. Select **Edit**.
-     1. Edit any fields you want to change, then select **Save changes**.
-   - To delete an agent:
-     1. Select **Delete**.
-     1. On the confirmation dialog, select **Delete**.

@@ -111,8 +111,8 @@ For more examples of a question you can ask, see
 
 | Feature                                                                                                        | Available on GitLab Duo Self-Hosted         | GitLab version         | Status |
 | -------------------------------------------------------------------------------------------------------------- | ------------------------------------------- | ---------------------- | --- |
-| [GitLab Duo for the CLI](../../editor_extensions/gitlab_cli/_index.md#gitlab-duo-for-the-cli)                  | {{< icon name="check-circle-filled" >}} Yes | GitLab 18.1.2 and later | Beta |
-| [GitLab Duo Agent Platform](../../user/duo_agent_platform/_index.md)                                                       | {{< icon name="check-circle-filled" >}} Yes  | GitLab 18.4 and later | Experiment |
+| [GitLab Duo for the CLI](https://docs.gitlab.com/cli/)                  | {{< icon name="check-circle-filled" >}} Yes | GitLab 18.1.2 and later | Beta |
+| [GitLab Duo Agent Platform](../../user/duo_agent_platform/_index.md)                                                       | {{< icon name="check-circle-filled" >}} Yes  | GitLab 18.4 and later | Beta |
 | [Vulnerability Resolution](../../user/application_security/vulnerabilities/_index.md#vulnerability-resolution) | {{< icon name="check-circle-filled" >}} Yes | GitLab 18.1.2 and later | Beta |
 | [GitLab Duo and SDLC trends Dashboard](../../user/analytics/duo_and_sdlc_trends.md)                                             | {{< icon name="check-circle-filled" >}} Yes | GitLab 17.9 and later  | Beta |
 
@@ -137,15 +137,13 @@ In a fully self-hosted configuration, you deploy your own AI gateway and use onl
 
 {{< alert type="note" >}}
 
-This configuration only includes models configured through your self-hosted AI gateway. If you use [GitLab AI vendor models](configure_duo_features.md#configure-the-feature-to-use-a-gitlab-ai-vendor-model) for any features, those features will connect to the GitLab-hosted AI gateway instead of your self-hosted gateway, making it a hybrid configuration rather than fully self-hosted.
+This configuration only includes models configured through your self-hosted AI gateway. If you use [GitLab AI vendor models](configure_duo_features.md#configure-a-feature-to-use-a-gitlab-ai-vendor-model) for any features, those features will connect to the GitLab-hosted AI gateway instead of your self-hosted gateway, making it a hybrid configuration rather than fully self-hosted.
 
 {{< /alert >}}
 
 While you deploy your own AI gateway, you can still use cloud-based LLM services like [AWS Bedrock](https://aws.amazon.com/bedrock/) or [Azure OpenAI](https://azure.microsoft.com/en-us/products/ai-services/openai-service) as your model backend and they will continue to connect through your self-hosted AI gateway.
 
 If you have an offline environment with physical barriers or security policies that prevent or limit internet access, and comprehensive LLM controls, you should use this fully self-hosted configuration.
-
-For licensing, you must have a GitLab Premium or Ultimate subscription, and [GitLab Duo Enterprise](https://about.gitlab.com/solutions/gitlab-duo-pro/sales/?type=free-trial). Offline Enterprise licenses are available for those customers with fully isolated offline environments. To get access to your purchased subscription, request a license through the [Customers Portal](../../subscriptions/billing_account.md).
 
 For more information, see:
 
@@ -190,11 +188,9 @@ When features are configured to use GitLab AI vendor models:
 
 {{< /alert >}}
 
-For licensing, you must have a GitLab Premium or Ultimate subscription, and [GitLab Duo Enterprise](https://about.gitlab.com/solutions/gitlab-duo-pro/sales/?type=free-trial). Offline licenses are not supported to use this configuration. To get access to your purchased subscription, request a license through the [Customers Portal](../../subscriptions/billing_account.md).
-
 For more information, see:
 
-- [Configure GitLab AI vendor models](configure_duo_features.md#configure-the-feature-to-use-a-gitlab-ai-vendor-model)
+- [Configure GitLab AI vendor models](configure_duo_features.md#configure-a-feature-to-use-a-gitlab-ai-vendor-model)
 
 #### GitLab managed models
 

@@ -16,17 +16,15 @@ module QA
 
       it 'successfully exports issues list as CSV', testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/347968' do
         Page::Project::Issue::Index.perform do |index|
-          if has_element?('issues-list-more-actions-dropdown')
-            index.click_issues_list_more_actions_dropdown
+          index.click_work_items_list_more_actions_dropdown
 
-            index.click_export_as_csv_button
+          index.click_export_as_csv_button
 
-            expect(index.export_issues_modal).to have_content('2 issues selected')
+          expect(index.export_issues_modal).to have_content('2 issues selected')
 
-            index.click_export_issues_button
+          index.click_export_issues_button
 
-            expect(index).to have_content(/Your CSV export has started. It will be emailed to (\S+) when complete./)
-          end
+          expect(index).to have_content(/Your CSV export request has succeeded. The result will be emailed to (\S+)./)
         end
       end
     end

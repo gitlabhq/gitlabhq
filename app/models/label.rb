@@ -28,7 +28,7 @@ class Label < ApplicationRecord
   after_save :unprioritize_all!, if: -> { saved_change_to_attribute?(:archived) && archived }
 
   validate :ensure_lock_on_merge_allowed
-  validate :exactly_one_parent
+  validates_with ExactlyOnePresentValidator, fields: [:group, :project, :organization], error_key: :parent
   validates :title, uniqueness: { scope: [:group_id, :project_id] }
 
   # we validate the description against DESCRIPTION_LENGTH_MAX only for labels being created and on updates if
@@ -233,10 +233,6 @@ class Label < ApplicationRecord
     priority.try(:priority)
   end
 
-  def priority?
-    priorities.present?
-  end
-
   ##
   # Returns the String necessary to reference this Label in Markdown
   #
@@ -289,13 +285,25 @@ class Label < ApplicationRecord
     super(**attributes.merge(presenter_class: ::LabelPresenter))
   end
 
+  # TODO: Remove when sharding key NOT NULL constraint is validated
+  # This should not happen often, and will only happen once for any record
+  # https://gitlab.com/gitlab-org/gitlab/-/issues/558353
+  def refresh_markdown_cache
+    return super if sharding_key_columns.count { |s_column| self[s_column].present? } == 1
+
+    # Using model callbacks to get sharding key values
+    ensure_single_parent_for_given_type
+
+    sharding_key_changes = changes.select { |k, _| sharding_key_columns.include?(k.to_sym) }
+    sharding_key_updates = sharding_key_changes.transform_values(&:last)
+
+    super.merge(sharding_key_updates)
+  end
+
   private
 
-  def exactly_one_parent
-    parent_types = [:group, :project, :organization]
-    return if parent_types.count { |assoc| association(assoc).load_target } == 1
-
-    errors.add(:parent, format(_("exactly one of %{parent_types} is required"), parent_types: parent_types.join(', ')))
+  def sharding_key_columns
+    %i[project_id group_id organization_id]
   end
 
   def validate_description_length?

@@ -72,6 +72,7 @@ RSpec.shared_context 'with work item request context' do
       createdAt
       closedAt
       webUrl
+      webPath
       reference(full: true)
       widgets {
         ... on WorkItemWidgetHierarchy {

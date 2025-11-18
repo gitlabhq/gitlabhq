@@ -54,15 +54,18 @@ describe('reviewsRequestedBadge', () => {
 
 describe('assignedToYouBadge', () => {
   it.each`
-    draft    | data
-    ${true}  | ${{ icon: 'merge-request', text: 'Draft' }}
-    ${false} | ${{ icon: 'user', text: 'Reviewers needed' }}
-  `('returns $data when draft $draft', ({ draft, data }) => {
+    draft    | reviewers                      | data
+    ${true}  | ${[]}                          | ${{ icon: 'merge-request', text: 'Draft' }}
+    ${false} | ${[]}                          | ${{ icon: 'user', text: 'Reviewers needed' }}
+    ${false} | ${[{ username: 'root' }]}      | ${null}
+    ${false} | ${[{ username: 'GitLabDuo' }]} | ${{ icon: 'user', text: 'Reviewers needed' }}
+    ${false} | ${[{ username: 'gitlabduo' }]} | ${{ icon: 'user', text: 'Reviewers needed' }}
+  `('returns $data when draft $draft', ({ draft, data, reviewers }) => {
     expect(
       assignedToYouBadge({
         mergeRequest: {
           draft,
-          reviewers: { nodes: [] },
+          reviewers: { nodes: reviewers },
         },
       }),
     ).toEqual(data);

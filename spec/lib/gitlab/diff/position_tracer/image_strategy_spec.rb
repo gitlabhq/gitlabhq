@@ -23,11 +23,11 @@ RSpec.describe Gitlab::Diff::PositionTracer::ImageStrategy do
 
   let(:strategy) { described_class.new(tracer) }
 
-  subject { strategy.trace(old_position) }
-
   let(:initial_commit) do
     project.commit(create_branch(branch_name, 'master')[:branch].name)
   end
+
+  subject { strategy.trace(old_position) }
 
   describe '#trace' do
     describe 'diff scenarios' do

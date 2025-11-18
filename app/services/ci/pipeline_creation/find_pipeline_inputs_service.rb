@@ -39,7 +39,10 @@ module Ci
           yaml_result = yaml_result_of_internal_include(yaml_content)
           return error_response(s_('Pipelines|Invalid YAML syntax')) unless yaml_result&.valid?
 
-          spec_inputs = Ci::Inputs::Builder.new(yaml_result.spec[:inputs])
+          # Process header includes to merge external input definitions
+          spec = process_header_includes(yaml_result.spec)
+
+          spec_inputs = Ci::Inputs::Builder.new(spec[:inputs])
           return error_response(spec_inputs.errors.join(', ')) if spec_inputs.errors.any?
 
           success_response(spec_inputs)
@@ -48,6 +51,8 @@ module Ci
         end
       rescue ::Gitlab::Ci::Config::Yaml::LoadError => e
         error_response("YAML load error: #{e.message}")
+      rescue ::Gitlab::Ci::Config::External::Header::Processor::IncludeError => e
+        error_response(e.message)
       end
 
       private
@@ -91,6 +96,14 @@ module Ci
         project.commit(ref)&.sha
       end
       strong_memoize_attr :sha
+
+      def process_header_includes(spec)
+        return spec unless Feature.enabled?(:ci_file_inputs, project)
+        return spec unless spec[:include].present?
+
+        processor = ::Gitlab::Ci::Config::External::Header::Processor.new(spec, context)
+        processor.perform
+      end
     end
   end
 end

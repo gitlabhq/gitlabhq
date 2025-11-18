@@ -13,129 +13,187 @@ title: Cherry-pick changes with Git
 
 {{< /details >}}
 
-Use `git cherry-pick` to apply the changes from a specific commit to your current
-working branch. Use this command to:
+When you use `git cherry-pick` from the command line, you copy specific changes from an existing
+branch into your current branch. Cherry-picks help when you want to:
 
-- Backport bug fixes from the default branch to previous release branches.
+- Backport a bug fix to older release branches without bringing in new features.
+- Reuse work from branches that can never merge.
+- Backport small features to a previous release, without including experimental changes.
+- Apply an emergency production fix (hotfix) to a development branch.
 - Copy changes from a fork to the upstream repository.
-- Apply specific changes without merging entire branches.
 
-You can also use the GitLab UI to cherry-pick. For more information,
-see [Cherry-pick changes](../../user/project/merge_requests/cherry_pick_changes.md).
+To learn about cherry-picking from the GitLab UI, see
+[Cherry-pick changes](../../user/project/merge_requests/cherry_pick_changes.md).
 
-{{< alert type="warning" >}}
+When you cherry-pick a commit, Git:
 
-Use `git cherry-pick` carefully because it can create duplicate commits and potentially
-complicate your project history.
+- Creates a new commit with the same changes on your current branch.
+- Preserves the original commit message and author information.
+- Generates a new commit SHA. (The original commit remains unchanged.)
 
-{{< /alert >}}
+<!-- Diagram reused in doc/user/projects/merge_requests/cherry_pick_changes.md -->
 
-## Cherry-pick a single commit
+```mermaid
+%%{init: { "fontFamily": "GitLab Sans" }}%%
+gitGraph
+    accTitle: Example of cherry-picking a commit
+    accDescr: Commit B is copied from the develop branch to the main branch while leaving the original branch unchanged.
 
-To cherry-pick a single commit from another branch into your current working branch:
+ commit id: "A"
+ branch develop
+ commit id:"B"
+ checkout main
+ commit id:"C"
+ checkout develop
+ commit id:"D"
+ checkout main
+ commit id:"E"
+ cherry-pick id:"B"
+ commit id:"G"
+ checkout develop
+ commit id:"H"
+```
 
-1. Check out the branch you want to cherry-pick into:
+Use `git cherry-pick` carefully because it can create duplicate commits with identical changes but
+different Secure Hash Algorithms (SHAs). This can potentially complicate your project history. Consider these alternatives first:
 
-   ```shell
-   git checkout your_branch
-   ```
+- If you need most of the changes in a branch, and the branch history is clean, merge the entire
+  branch into your current branch.
+- If the original commit includes complex dependencies you don't need in your new branch,
+  create a new commit instead of cherry-picking the old commit.
 
-1. Identify the Secure Hash Algorithm (SHA) of the commit you want to cherry-pick.
+## Apply one commit to another branch
+
+To cherry-pick a single commit into your current working branch:
+
+1. Identify the SHA of the commit you want to cherry-pick.
    To find this, check the commit history or use the `git log` command. For example:
 
    ```shell
    $ git log
 
-   commit 0000011111222223333344444555556666677777
+   commit abc123f
    Merge: 88888999999 aaaaabbbbbb
    Author: user@example.com
    Date:   Tue Aug 31 21:19:41 2021 +0000
+
+       Fixes a regression we found yesterday
     ```
 
-1. Use the `git cherry-pick` command. Replace `<commit_sha>` with the SHA of
+1. Check out the branch you want to cherry-pick into:
+
+   ```shell
+   git checkout release
+   ```
+
+1. Use the `git cherry-pick` command to copy commit `abc123f` from the
+   feature branch into the `release` branch. Replace `abc123f` with the SHA of
    the commit you identified:
 
    ```shell
-   git cherry-pick <commit_sha>
+   git cherry-pick abc123f
    ```
 
-Git applies the changes from the specified commit to your current working branch.
-If there are conflicts, a notification is displayed. You can then resolve the
-conflicts and continue the cherry-pick process.
+Git copies the changes from commit `abc123f` to the `release` branch, and shows a notification
+if conflicts occur. Resolve the conflicts, and continue the cherry-pick process. Repeat for each
+branch that needs the contents of commit `abc123f`.
 
-## Cherry-pick multiple commits
+## Apply multiple commits to another branch
 
-To cherry-pick multiple commits from another branch into your current working branch:
+If the code you need was added over the course of multiple commits, cherry-pick each of those commits
+into your desired target branch:
 
-1. Check out the branch you want to cherry-pick into:
+1. Identify the SHAs of the commits you want to cherry-pick. To find this, check the commit history
+   or use the `git log` command. For example, if the code change is in one commit and improved test
+   coverage is in the next commit:
 
    ```shell
-   git checkout your_branch
+   $ git log
+
+   commit abc123f
+   Merge: 88888999999 aaaaabbbbbb
+   Author: user@example.com
+   Date:   Tue Aug 31 21:19:41 2021 +0000
+
+       Fixes a regression we found yesterday
+
+   commit ghi456j
+   Merge: 44444666666 cccccdddddd
+   Author: user@example.com
+   Date:   Tue Aug 31 21:19:41 2021 +0000
+
+       Adds tests to ensure the problem does not happen again
+    ```
+
+1. Check out the branch (`release`) you want to cherry-pick into:
+
+   ```shell
+   git checkout release
    ```
 
-1. Identify the Secure Hash Algorithm (SHA) of the commit you want to cherry-pick.
+1. Copy the commits to your `release` branch.
+
+   - To copy each commit into the `release` branch individually, use the `git cherry-pick` command for
+     each commit. Replace `abc123f` and `ghi456j` with the SHA of your desired commits:
+
+     ```shell
+     git cherry-pick abc123f
+     git cherry-pick ghi456j
+     ...
+     ```
+
+   - To cherry-pick a range of commits into your `release` branch, using the SHAs to mark the
+     beginning and end, use the `..` notation. This command applies all the commits between `abc123f`
+     and `ghi456j`:
+
+     ```shell
+     git cherry-pick abc123f..ghi456j
+     ```
+
+## Copy the contents of an entire branch
+
+When you cherry-pick the merge commit for a branch, your cherry-pick copies all changes from the branch
+to your current working branch. Cherry-picking a merge commit requires the `-m` flag. This flag tells Git
+which parent commit to use. Merge commits can have multiple parent commits depending on how they were created.
+
+In simple cases, `-m 1` uses the first parent, which is merge commit for the branch. To specify the
+second parent, which is often the last commit before the feature branch merged, use `-m 2`. These flags
+determine which changes Git applies to your current branch.
+
+To cherry-pick the merge commit from branch `feature-1` into your current working branch:
+
+1. Identify the SHA of the commit you want to cherry-pick.
    To find this, check the commit history or use the `git log` command. For example:
 
    ```shell
    $ git log
 
-   commit 0000011111222223333344444555556666677777
+   commit 987pqr6
    Merge: 88888999999 aaaaabbbbbb
    Author: user@example.com
    Date:   Tue Aug 31 21:19:41 2021 +0000
+
+       Merges feature-1 into main
     ```
-
-1. Use the `git cherry-pick` command for each commit,
-   replacing `<commit_sha>` with the SHA of the commit:
-
-   ```shell
-   git cherry-pick <commit_sha_1>
-   git cherry-pick <commit_sha_2>
-   ...
-   ```
-
-Alternatively, you can cherry-pick a range of commits using the `..` notation:
-
-   ```shell
-   git cherry-pick <start_commit_sha>..<end_commit_sha>
-   ```
-
-This applies all the commits between `<start_commit_sha>` and `<end_commit_sha>`
-to your current working branch.
-
-## Cherry-pick a merge commit
-
-Cherry-picking a merge commit applies the changes from the merge commit to your current working branch.
-
-To cherry-pick a merge commit from another branch into your current working branch:
 
 1. Check out the branch you want to cherry-pick into:
 
    ```shell
-   git checkout your_branch
+   git checkout feature-2
    ```
-
-1. Identify the Secure Hash Algorithm (SHA) of the commit you want to cherry-pick.
-   To find this, check the commit history or use the `git log` command. For example:
-
-   ```shell
-   $ git log
-
-   commit 0000011111222223333344444555556666677777
-   Merge: 88888999999 aaaaabbbbbb
-   Author: user@example.com
-   Date:   Tue Aug 31 21:19:41 2021 +0000
-    ```
 
 1. Use the `git cherry-pick` command with the `-m` option and the index of the parent commit
-   you want to use as the mainline. Replace `<commit_sha>` with the SHA of the merge commit
+   you want to use as the mainline. Replace `<merge-commit-hash>` with the SHA of the merge commit
    and `<parent_index>` with the index of the parent commit. The index starts from `1`. For example:
 
    ```shell
-   git cherry-pick -m 1 <merge-commit-hash>
+   # git cherry-pick -m <parent_index> <merge-commit-hash>
+   git cherry-pick -m 1 987pqr6
    ```
 
-This configures Git to use the first parent as the mainline. To use the second parent as the mainline, use `-m 2`.
+When you run this command, Git copies the contents of the `987pqr6` merge commit into your `feature-2`
+branch. If, instead of the merge commit `987pqr6`, you want to use the last commit from the `feature-1`
+branch, use `-m 2` instead.
 
 ## Related topics
 

@@ -126,17 +126,20 @@ RSpec.describe Integrations::Propagation::BulkCreateService, feature_category: :
   end
 
   context 'with an instance-level integration' do
+    let_it_be(:organization) { create(:common_organization) }
     let(:integration) { instance_integration }
     let(:inherit_from_id) { integration.id }
 
     let_it_be_with_reload(:instance_slack_integration) do
       create(:gitlab_slack_application_integration, :instance,
+        organization_id: organization.id,
         slack_integration: build(:slack_integration,
           team_id: 'instance_team_id',
           team_name: 'instance_team_name',
           alias: 'instance_alias',
           bot_access_token: 'instance_bot_access_token',
-          authorized_scope_names: %w[instance_scope1 instance_scope2]
+          authorized_scope_names: %w[instance_scope1 instance_scope2],
+          organization_id: organization.id
         )
       )
     end
@@ -152,6 +155,14 @@ RSpec.describe Integrations::Propagation::BulkCreateService, feature_category: :
       it_behaves_like 'creates GitLab for Slack app data successfully' do
         let(:integration) { instance_slack_integration }
         let(:expected_alias) { project.full_path }
+
+        it 'sets the project ID on the newly created slack integration' do
+          execute_service
+
+          expect(created_integration.slack_integration.project_id).to eq(project.id)
+          expect(created_integration.slack_integration.group_id).to be_nil
+          expect(created_integration.slack_integration.organization_id).to be_nil
+        end
       end
     end
 
@@ -166,6 +177,14 @@ RSpec.describe Integrations::Propagation::BulkCreateService, feature_category: :
       it_behaves_like 'creates GitLab for Slack app data successfully' do
         let(:integration) { instance_slack_integration }
         let(:expected_alias) { group.full_path }
+
+        it 'sets the group ID on the newly created slack integration' do
+          execute_service
+
+          expect(created_integration.slack_integration.project_id).to be_nil
+          expect(created_integration.slack_integration.group_id).to eq(group.id)
+          expect(created_integration.slack_integration.organization_id).to be_nil
+        end
       end
     end
   end
@@ -181,7 +200,8 @@ RSpec.describe Integrations::Propagation::BulkCreateService, feature_category: :
           team_name: 'group_team_name',
           alias: 'group_alias',
           bot_access_token: 'group_bot_access_token',
-          authorized_scope_names: %w[group_scope1 group_scope2]
+          authorized_scope_names: %w[group_scope1 group_scope2],
+          group: group
         )
       )
     end
@@ -213,6 +233,14 @@ RSpec.describe Integrations::Propagation::BulkCreateService, feature_category: :
       it_behaves_like 'creates GitLab for Slack app data successfully' do
         let(:integration) { group_slack_integration }
         let(:expected_alias) { project.full_path }
+
+        it 'sets the project ID on the newly created slack integration' do
+          execute_service
+
+          expect(created_integration.slack_integration.project_id).to eq(project.id)
+          expect(created_integration.slack_integration.group_id).to be_nil
+          expect(created_integration.slack_integration.organization_id).to be_nil
+        end
       end
     end
 
@@ -245,6 +273,14 @@ RSpec.describe Integrations::Propagation::BulkCreateService, feature_category: :
       it_behaves_like 'creates GitLab for Slack app data successfully' do
         let(:integration) { group_slack_integration }
         let(:expected_alias) { subgroup.full_path }
+
+        it 'sets the group ID on the newly created slack integration' do
+          execute_service
+
+          expect(created_integration.group_id).to eq(subgroup.id)
+          expect(created_integration.project_id).to be_nil
+          expect(created_integration.organization_id).to be_nil
+        end
       end
     end
 

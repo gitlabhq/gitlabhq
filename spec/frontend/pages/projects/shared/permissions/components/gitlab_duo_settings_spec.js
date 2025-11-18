@@ -292,11 +292,27 @@ describe('GitlabDuoSettings', () => {
 
     it('does not render ExclusionSettings when experiment features are disabled', () => {
       wrapper = createWrapper(
-        { licensedAiFeaturesAvailable: true, experimentFeaturesEnabled: false },
+        {
+          licensedAiFeaturesAvailable: true,
+          experimentFeaturesEnabled: false,
+        },
         { useDuoContextExclusion: true },
       );
 
       expect(findExclusionSettings().exists()).toBe(false);
+    });
+
+    it('renders ExclusionSettings when experiment features are enabled', () => {
+      wrapper = createWrapper(
+        {
+          licensedAiFeaturesAvailable: true,
+          experimentFeaturesEnabled: true,
+          paidDuoTier: true,
+        },
+        { useDuoContextExclusion: true },
+      );
+
+      expect(findExclusionSettings().exists()).toBe(true);
     });
 
     it('does not render ExclusionSettings when paidDuoTier is false', () => {

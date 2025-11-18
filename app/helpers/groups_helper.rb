@@ -128,25 +128,6 @@ module GroupsHelper
     }
   end
 
-  def group_overview_tabs_app_data(group)
-    {
-      group_id: group.id,
-      subgroups_and_projects_endpoint:
-        group_children_path(group, format: :json, active: true),
-      shared_projects_endpoint: group_shared_projects_path(group, format: :json),
-      inactive_subgroups_and_projects_endpoint: group_children_path(group, format: :json, active: false),
-      current_group_visibility: group.visibility,
-      initial_sort: project_list_sort_by,
-      show_schema_markup: 'true',
-      new_subgroup_path: new_group_path(parent_id: group.id, anchor: 'create-group-pane'),
-      new_project_path: new_project_path(namespace_id: group.id),
-      empty_projects_illustration: image_path('illustrations/empty-state/empty-projects-md.svg'),
-      render_empty_state: 'true',
-      can_create_subgroups: can?(current_user, :create_subgroup, group).to_s,
-      can_create_projects: can?(current_user, :create_projects, group).to_s
-    }
-  end
-
   def groups_show_app_data(group)
     {
       subgroups_and_projects_endpoint: group_children_path(group, format: :json),

@@ -1,0 +1,10 @@
+---
+name: avoid_branch_names_cache
+description: Stop caching repository branch_names in Redis
+feature_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/569853
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/207197
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/576403
+milestone: '18.6'
+group: group::source code
+type: beta
+default_enabled: false

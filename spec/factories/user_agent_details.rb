@@ -5,5 +5,6 @@ FactoryBot.define do
     ip_address { '127.0.0.1' }
     user_agent { 'AppleWebKit/537.36' }
     association :subject, factory: :issue
+    association :organization, factory: :common_organization
   end
 end

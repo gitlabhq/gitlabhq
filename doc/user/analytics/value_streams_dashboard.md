@@ -43,7 +43,7 @@ For a click-through demo, see [the Value Stream Management product tour](https:/
 
 To view the Value Streams Dashboard as an analytics dashboard for a group:
 
-1. On the left sidebar, select **Search or go to** and find your group.
+1. On the left sidebar, select **Search or go to** and find your group. If you've [turned on the new navigation](../interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
 1. Select **Analyze** > **Analytics dashboards**.
 1. From the list of available dashboards, select **Value Streams Dashboard**.
 
@@ -213,7 +213,7 @@ For further investigation, you can select a project name to drill down into that
 
 To enable or disable the overview count aggregation for the Value Streams Dashboard:
 
-1. On the left sidebar, select **Search or go to** and find your group.
+1. On the left sidebar, select **Search or go to** and find your group. If you've [turned on the new navigation](../interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
    This group must be at the top level.
 1. Select **Settings** > **Analytics**.
 1. In **Value Streams Dashboard**, select or clear the **Enable overview background aggregation for Value Streams Dashboard** checkbox.
@@ -236,12 +236,12 @@ To view the Value Streams Dashboard for a group:
 
 - From Analytics Dashboards:
 
-  1. On the group left sidebar, select **Search or go to** and find your group.
+  1. On the group left sidebar, select **Search or go to** and find your group. If you've [turned on the new navigation](../interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
   1. Select **Analyze** > **Analytics Dashboards**.
 
 - From Value Stream Analytics:
 
-  1. On the left sidebar, select **Search or go to** and find your project or group.
+  1. On the left sidebar, select **Search or go to** and find your project or group. If you've [turned on the new navigation](../interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
   1. Select **Analyze** > **Value stream analytics**.
   1. Below the **Filter results** text box, in the **Lifecycle metrics** row, select **Value Streams Dashboard / DORA**.
   1. Optional. To open the new page, append this path `/analytics/dashboards/value_streams_dashboard` to the group URL (for example, `https://gitlab.com/groups/gitlab-org/-/analytics/dashboards/value_streams_dashboard`).
@@ -257,7 +257,7 @@ To view the Value Streams Dashboard for a group:
 
 To view the Value Streams Dashboard as an analytics dashboard for a project:
 
-1. On the left sidebar, select **Search or go to** and find your project.
+1. On the left sidebar, select **Search or go to** and find your project. If you've [turned on the new navigation](../interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
 1. Select **Analyze** > **Analytics dashboards**.
 1. From the list of available dashboards, select **Value Streams Dashboard**.
 
@@ -292,14 +292,14 @@ Prerequisites:
 
 - You must have at least the Maintainer role for the group.
 
-1. On the left sidebar, select **Search or go to** and find your group.
+1. On the left sidebar, select **Search or go to** and find your group. If you've [turned on the new navigation](../interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
 1. Select **Settings** > **Analytics**.
 1. Select the project where you would like to store your YAML configuration file.
 1. Select **Save changes**.
 
 After you have set up the project, set up the configuration file:
 
-1. On the left sidebar, select **Search or go to** and find the project you selected in the previous step.
+1. On the left sidebar, select **Search or go to** and find the project you selected in the previous step. If you've [turned on the new navigation](../interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
 1. In the default branch, create the configuration file: `.gitlab/analytics/dashboards/value_streams/value_streams.yaml`.
 1. In the `value_streams.yaml` configuration file, fill in the configuration options:
 
@@ -331,7 +331,7 @@ description: 'Custom description'
 #   visualization - The type of visualization to be rendered
 #   gridAttributes - The size and positioning of the panel
 #   queryOverrides.namespace - The Group or Project path to use for the chart panel
-#   queryOverrides.filters.excludeMetrics - Hide rows by metric ID from the chart panel.
+#   queryOverrides.filters.includeMetrics - Shows rows by metric ID in the table panel.
 panels:
   - title: 'Group usage overview'
     visualization: usage_overview
@@ -351,7 +351,7 @@ panels:
     queryOverrides:
       namespace: group
       filters:
-        excludeMetrics:
+        includeMetrics:
           - deployment_frequency
           - deploys
     gridAttributes:
@@ -382,9 +382,10 @@ The `filters` subfield on the `queryOverrides` field can be used to customize th
 
 Filters for the `ai_impact_table` visualization.
 
-| Filter           | Description                                  | Supported values |
-|------------------|----------------------------------------------|------------------|
-| `excludeMetrics` | Hides rows by metric ID from the chart panel | `deployment_frequency`, `lead_time_for_changes`,`time_to_restore_service`, `change_failure_rate`, `lead_time`, `cycle_time`, `issues`, `issues_completed`, `deploys`, `merge_request_throughput`, `median_time_to_merge`, `contributor_count`, `vulnerability_critical`, `vulnerability_high`, `pipeline_count`, `pipeline_success_rate`, `pipeline_failed_rate`, `pipeline_duration_median`, `code_suggestions_usage_rate`, `code_suggestions_acceptance_rate`, `duo_chat_usage_rate`, `duo_rca_usage_rate` |
+| Filter           | Description                                                                       | Supported values                          |
+|------------------|-----------------------------------------------------------------------------------|-------------------------------------------|
+| `includeMetrics` | Shows rows by metric ID in the table panel. Takes priority over `excludeMetrics`. | Any `ID` from [available metrics](#dashboard-metrics-and-drill-down-reports). |
+| `excludeMetrics` | Hides rows by metric ID from the table panel.                                     | Any `ID` from [available metrics](#dashboard-metrics-and-drill-down-reports). |
 
 #### DORA Performers score panel filters
 
@@ -429,30 +430,31 @@ Filters for the `dora_chart` visualization.
 The following table provides an overview of the metrics available in the Value Streams Dashboard,
 along with their descriptions and the name of the drill-down report where they are displayed.
 
-| Metric | Description | Drill-down report | ID |
-| ------ | ----------- | ----------------- | -- |
-| Deployment frequency | Average number of deployments to production per day. This metric measures how often value is delivered to end users. | **Deployment frequency** tab | `deployment_frequency` |
-| Lead time for changes | The time to successfully deliver a commit into production. This metric reflects the efficiency of CI/CD pipelines. | **Lead time** tab | `lead_time_for_changes` |
-| Time to restore service | The time it takes an organization to recover from a failure in production. | **Time to restore service** tab | `time_to_restore_service` |
-| Change failure rate | Percentage of deployments that cause an incident in production. | **Change failure rate** tab | `change_failure_rate` |
-| Lead time | Median time from issue created to issue closed. | Value Stream Analytics | `lead_time` |
-| Cycle time | Median time from the earliest commit of a linked issue's merge request to when that issue is closed. | **Lifecycle metrics** section in Value Stream Analytics | `cycle_time` |
-| Issues created | Number of new issues created. | Issue analytics | `issues` |
-| Issues closed | Number of issues closed by month. | Issue analytics | `issues_completed` |
-| Number of deploys | Total number of deploys to production. | Merge request analytics | `deploys` |
-| Merge request throughput | The number of merge requests merged by month. | Productivity analytics | `merge_request_throughput` |
-| Median time to merge | Median time between merge request created and merge request merged. | Productivity analytics | `median_time_to_merge` |
-| Contributor count | Number of monthly unique users with contributions in the group. | Contribution analytics | `contributor_count` |
+| Metric                             | Description | Drill-down report | ID |
+|------------------------------------| ----------- | ----------------- | -- |
+| Deployment frequency               | Average number of deployments to production per day. This metric measures how often value is delivered to end users. | **Deployment frequency** tab | `deployment_frequency` |
+| Lead time for changes              | The time to successfully deliver a commit into production. This metric reflects the efficiency of CI/CD pipelines. | **Lead time** tab | `lead_time_for_changes` |
+| Time to restore service            | The time it takes an organization to recover from a failure in production. | **Time to restore service** tab | `time_to_restore_service` |
+| Change failure rate                | Percentage of deployments that cause an incident in production. | **Change failure rate** tab | `change_failure_rate` |
+| Lead time                          | Median time from issue created to issue closed. | Value Stream Analytics | `lead_time` |
+| Cycle time                         | Median time from the earliest commit of a linked issue's merge request to when that issue is closed. | **Lifecycle metrics** section in Value Stream Analytics | `cycle_time` |
+| Issues created                     | Number of new issues created. | Issue analytics | `issues` |
+| Issues closed                      | Number of issues closed by month. | Issue analytics | `issues_completed` |
+| Number of deploys                  | Total number of deploys to production. | Merge request analytics | `deploys` |
+| Merge request throughput           | The number of merge requests merged by month. | Productivity analytics | `merge_request_throughput` |
+| Median time to merge               | Median time between merge request created and merge request merged. | Productivity analytics | `median_time_to_merge` |
+| Contributor count                  | Number of monthly unique users with contributions in the group. | Contribution analytics | `contributor_count` |
 | Critical vulnerabilities over time | Critical vulnerabilities over time in project or group | Vulnerability report | `vulnerability_critical` |
-| High vulnerabilities over time | High vulnerabilities over time in project or group | Vulnerability report | `vulnerability_high` |
-| Total pipeline runs | The total number of pipelines that have run in the selected time period. | CI/CD analytics | `pipeline_count` |
-| Pipeline median duration | The median time it takes for pipelines to complete. | CI/CD analytics | `pipeline_duration_median` |
-| Pipeline success rate | The percentage of pipelines that completed successfully. | CI/CD analytics | `pipeline_success_rate` |
-| Pipeline failure rate | The percentage of pipelines that failed. | CI/CD analytics | `pipeline_failed_rate` |
-| Code Suggestions usage | Users with assigned Duo seats who used at least one Duo feature. |  | `code_suggestions_usage_rate` |
-| Code Suggestions acceptance rate | Code Suggestions accepted out of total Code Suggestions generated. |  | `code_suggestions_acceptance_rate` |
-| Duo Chat usage | Users with assigned Duo seats who used Duo Chat. |  | `duo_chat_usage_rate` |
-| Duo RCA usage | Users with assigned Duo seats who used Root Cause Analysis. |  | `duo_rca_usage_rate` |
+| High vulnerabilities over time     | High vulnerabilities over time in project or group | Vulnerability report | `vulnerability_high` |
+| Total pipeline runs                | The total number of pipelines that have run in the selected time period. | CI/CD analytics | `pipeline_count` |
+| Pipeline median duration           | The median time it takes for pipelines to complete. | CI/CD analytics | `pipeline_duration_median` |
+| Pipeline success rate              | The percentage of pipelines that completed successfully. | CI/CD analytics | `pipeline_success_rate` |
+| Pipeline failure rate              | The percentage of pipelines that failed. | CI/CD analytics | `pipeline_failed_rate` |
+| Duo features usage                 | Number of contributors who used any GitLab Duo feature. |  | `duo_used_count` |
+| Code Suggestions usage             | Users with assigned Duo seats who used at least one Duo feature. |  | `code_suggestions_usage_rate` |
+| Code Suggestions acceptance rate   | Code Suggestions accepted out of total Code Suggestions generated. |  | `code_suggestions_acceptance_rate` |
+| Duo Chat usage                     | Users with assigned Duo seats who used Duo Chat. |  | `duo_chat_usage_rate` |
+| Duo RCA usage                      | Users with assigned Duo seats who used Root Cause Analysis. |  | `duo_rca_usage_rate` |
 
 ## Metrics with Jira
 

@@ -101,7 +101,7 @@ The GitLab agent server for Kubernetes (KAS) is the component that communicates 
 
 To configure the `remote_development` module in the agent project:
 
-1. On the left sidebar, select **Search or go to** and find your project.
+1. On the left sidebar, select **Search or go to** and find your project. If you've [turned on the new navigation](../interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
 1. In your project, create a `.gitlab/agents/<agentName>/config.yaml` file.
    `agentName` is the name of the agent you configured when you set up workspace infrastructure.
 1. In `config.yaml`, use the following configuration for workspace settings:
@@ -137,7 +137,7 @@ Only one agent is required. You can create workspaces from all projects in a gro
 
 To allow your GitLab agent for Kubernetes in a group and make it available to all projects in that group:
 
-1. On the left sidebar, select **Search or go to** and find your group.
+1. On the left sidebar, select **Search or go to** and find your group. If you've [turned on the new navigation](../interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
 1. Select **Settings** > **Workspaces**.
 1. In the **Group agents** section, select the **All agents** tab.
 1. For the GitLab agent for Kubernetes, select **Allow**.
@@ -337,7 +337,7 @@ To install the Helm chart for the GitLab workspaces proxy:
 
    helm upgrade --install gitlab-workspaces-proxy \
      gitlab-workspaces-proxy/gitlab-workspaces-proxy \
-     --version=0.1.23 \
+     --version=0.1.25 \
      --namespace="gitlab-workspaces" \
      --set="ingress.enabled=true" \
      --set="ingress.hosts[0].host=${GITLAB_WORKSPACES_PROXY_DOMAIN}" \

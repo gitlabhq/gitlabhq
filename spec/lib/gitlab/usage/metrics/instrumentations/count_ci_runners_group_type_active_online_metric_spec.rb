@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Gitlab::Usage::Metrics::Instrumentations::CountCiRunnersGroupTypeActiveOnlineMetric, feature_category: :runner do
+RSpec.describe Gitlab::Usage::Metrics::Instrumentations::CountCiRunnersGroupTypeActiveOnlineMetric, feature_category: :runner_core do
   let_it_be(:group) { create(:group) }
   let(:expected_value) { 1 }
 

@@ -174,6 +174,9 @@ module MergeRequestsHelper
     false
   end
 
+  # Overriden in EE
+  def summarize_new_merge_request_disabled_reason(_merge_request); end
+
   def diffs_tab_pane_data(project, merge_request, params)
     {
       "is-locked": merge_request.discussion_locked?,
@@ -345,8 +348,6 @@ module MergeRequestsHelper
   end
 
   def merge_request_dashboard_show_drafts?
-    return true if Feature.disabled?(:mr_dashboard_drafts_toggle, current_user)
-
     current_user.merge_request_dashboard_show_drafts
   end
 

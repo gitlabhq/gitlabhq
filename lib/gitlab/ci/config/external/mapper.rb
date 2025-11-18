@@ -38,6 +38,10 @@ module Gitlab
             locations = LocationExpander.new(context).process(locations)
             locations = VariablesExpander.new(context).process(locations)
 
+            get_files_and_verify_locations(locations)
+          end
+
+          def get_files_and_verify_locations(locations)
             files = Matcher.new(context).process(locations)
             Verifier.new(context).process(files)
 

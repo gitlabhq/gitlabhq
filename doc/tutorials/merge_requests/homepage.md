@@ -44,7 +44,7 @@ helps you track your work. It sorts your work into clear categories to help you:
 
 To see your merge request homepage on GitLab.com, either:
 
-- Use the <kbd>Shift</kbd> + <kbd>m</kbd> [keyboard shortcut](../../user/shortcuts.md).
+- Use the <kbd>Shift</kbd>+<kbd>m</kbd> [keyboard shortcut](../../user/shortcuts.md).
 - On the left sidebar, select **Merge requests**.
 
 It's organized into three tabs, to help you focus on what needs your attention right now, while
@@ -56,13 +56,13 @@ still giving you access to other recent work:
 - **Merged**: These merge requests merged in the last 14 days, and you were an assignee or a reviewer.
 - **Search**: Search all merge requests, and filter them as needed.
 
-GitLab shows the total number of **Active** merge requests on the left sidebar on all pages. For example, this user has:
+GitLab shows the total number of **Active** merge requests in the left sidebar on all pages. If you've [turned on the new navigation](../../user/interface_redesign.md#turn-new-navigation-on-or-off), this information is in the upper-right corner. For example, this user has:
 
-![The top left area of the ](img/homepage_totals_v18_3.png)
+![The upper-right corner showing the number of active merge requests.](img/homepage_totals_v18_6.png)
 
-- 9 open issues ({{< icon name="issue-type-issue" >}})
-- 1 active merge request ({{< icon name="merge-request-open" >}})
-- 1 to-do item ({{< icon name="todo-done" >}})
+- 15 open issues ({{< icon name="issue-type-issue" >}})
+- 5 active merge requests ({{< icon name="merge-request-open" >}})
+- 3 to-do items ({{< icon name="todo-done" >}})
 
 Each table row groups related information about a merge request together into columns:
 
@@ -84,7 +84,7 @@ Each table row groups related information about a merge request together into co
 
 ## Set your display preferences
 
-On the top right, select **Display preferences** ({{< icon name="preferences">}}) to sort your merge requests by:
+In the upper right, select **Display preferences** ({{< icon name="preferences">}}) to sort your merge requests by:
 
 - **Workflow**. This view groups merge requests by their status. Merge requests needing your attention are shown first, regardless of whether
   you are the author or the reviewer.

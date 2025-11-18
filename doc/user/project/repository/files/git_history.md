@@ -40,7 +40,7 @@ of the contributor when the user creates a commit.
 
 To see a file's Git history in the UI:
 
-1. On the left sidebar, select **Search or go to** and find your project.
+1. On the left sidebar, select **Search or go to** and find your project. If you've [turned on the new navigation](../../../interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
 1. Select **Code** > **Repository**.
 1. Go to your desired file in the repository.
 1. In the last commit block, select **History**.
@@ -58,7 +58,7 @@ limit the search results by date. Limiting the dates for commits helps fix
 [commit history requests timeouts](https://gitlab.com/gitlab-org/gitaly/-/issues/5426)
 in very large repositories.
 
-In the GitLab UI, edit the URL. Include these parameters in `YYYY-MM-DD` format:
+In the GitLab UI, edit the URL. Include these parameters in `YYYY-MM-DD` format (dates are interpreted in UTC):
 
 - `committed_before`
 - `committed_after`

@@ -12,7 +12,8 @@ title: Group issue boards API
 
 {{< /details >}}
 
-Every API call to [group issue boards](../user/project/issue_board.md#group-issue-boards) must be authenticated.
+Use this API to manage [group issue boards](../user/project/issue_board.md#group-issue-boards).
+Every call to this API requires authentication.
 
 If a user is not a member of a group and the group is private, a `GET`
 request results in `404` status code.

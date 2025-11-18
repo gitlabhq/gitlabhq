@@ -7,8 +7,8 @@ module Gitlab
     #
     # - have a feature flag yaml file that declares it.
     # - be in an environment that permits it.
-    # - not have rolled out the feature flag at all (no percent of actors,
-    #   no inclusions, etc.)
+    # - have the feature flag in any state of enablement (can be fully
+    #   or partially rolled out with percentages, actors, etc.)
     def enabled?
       return false unless feature_flag_defined?
       return false unless available?
@@ -18,15 +18,19 @@ module Gitlab
     end
 
     # For assignment we first check to see if our feature flag is enabled
-    # for "self". This is done by calling `#flipper_id` (used behind the
-    # scenes by `Feature`). By default this is our `experiment.id` (or more
-    # specifically, the context key, which is an anonymous SHA generated
-    # using the details of an experiment.
+    # for this rollout instance. Feature.enabled? calls below `#flipper_id` to get a unique identifier.
+    # By default #flipper_id returns `Experiment;#{experiment.id}` where experiment.id
+    # is an anonymous SHA generated using details of the experiment.
+    # This ensures deterministic assignment - same actor always gets same result.
     #
     # If the `Feature.enabled?` check is false, we return nil implicitly,
-    # which will assign the control. Otherwise we call super, which will
-    # assign a variant based on our provided distribution rules.
-    # Otherwise we will assign a variant evenly across the behaviours without control.
+    # which will assign the control. If it returns true, we call super to
+    # assign a variant based on the experiment's distribution rules (if specified)
+    # or evenly across all non-control variants (default behavior of Gitlab::Experiment::Rollout::Percent).
+    #
+    # Since we exclude :control from #behavior_names, the feature flag's
+    # rollout percentage determines the split: e.g., 30% flag rollout means
+    # 70% get control (flag disabled) and 30% get variants (flag enabled).
     def execute_assignment
       super if ::Feature.enabled?(feature_flag_name, self, type: :experiment)
     end

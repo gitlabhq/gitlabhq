@@ -58,7 +58,13 @@ func processRequestBody(h http.Handler, p Preparer, w http.ResponseWriter, r *ht
 		if errors.Is(err, destination.ErrEntityTooLarge) {
 			status = http.StatusRequestEntityTooLarge
 		}
-		fail.Request(w, r, fmt.Errorf("RequestBody: upload failed: %w", err), fail.WithStatus(status))
+		wrappedErr := fmt.Errorf("RequestBody: upload failed: %w", err)
+		// For entity too large errors, include the detailed error message in the response body
+		if status == http.StatusRequestEntityTooLarge {
+			fail.Request(w, r, wrappedErr, fail.WithStatus(status), fail.WithBody(wrappedErr.Error()))
+		} else {
+			fail.Request(w, r, wrappedErr, fail.WithStatus(status))
+		}
 		return
 	}
 

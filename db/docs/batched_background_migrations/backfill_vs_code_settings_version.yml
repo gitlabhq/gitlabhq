@@ -1,8 +1,0 @@
----
-migration_job_name: BackfillVsCodeSettingsVersion
-description: Backfills the version column of existing vs_code_settings records
-feature_category: web_ide
-introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/140091
-milestone: '16.8'
-queued_migration_version: 20231212135235
-finalized_by: 20240402080706

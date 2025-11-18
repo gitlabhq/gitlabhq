@@ -22,3 +22,8 @@ func GetUserAgent() string {
 func GetApplicationVersion() string {
 	return fmt.Sprintf(schema, version, build)
 }
+
+// GetUserAgentShort returns short version of User-Agent
+func GetUserAgentShort() string {
+	return fmt.Sprintf("gitlab-workhorse/%s", version)
+}

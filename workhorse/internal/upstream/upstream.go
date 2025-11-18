@@ -7,23 +7,22 @@ package upstream
 
 import (
 	"fmt"
-	"os"
-	"sync"
-	"time"
-
 	"net/http"
 	"net/url"
+	"os"
 	"strings"
+	"sync"
+	"time"
 
 	redis "github.com/redis/go-redis/v9"
 	"github.com/sebest/xff"
 	"github.com/sirupsen/logrus"
-
 	"gitlab.com/gitlab-org/labkit/correlation"
 
 	apipkg "gitlab.com/gitlab-org/gitlab/workhorse/internal/api"
 	"gitlab.com/gitlab-org/gitlab/workhorse/internal/builds"
 	"gitlab.com/gitlab-org/gitlab/workhorse/internal/config"
+	"gitlab.com/gitlab-org/gitlab/workhorse/internal/healthcheck"
 	"gitlab.com/gitlab-org/gitlab/workhorse/internal/helper"
 	"gitlab.com/gitlab-org/gitlab/workhorse/internal/helper/nginx"
 	proxypkg "gitlab.com/gitlab-org/gitlab/workhorse/internal/proxy"
@@ -35,10 +34,12 @@ import (
 
 var (
 	// DefaultBackend is the default URL for the backend.
-	DefaultBackend         = helper.URLMustParse("http://localhost:8080")
+	DefaultBackend = helper.URLMustParse("http://localhost:8080")
+
 	requestHeaderBlacklist = []string{
 		upload.RewrittenFieldsHeader,
 	}
+
 	geoProxyAPIPollingInterval = 10 * time.Second
 )
 
@@ -61,14 +62,43 @@ type upstream struct {
 	mu                    sync.RWMutex
 	watchKeyHandler       builds.WatchKeyHandler
 	rdb                   *redis.Client
+	healthCheckServer     *healthcheck.Server // Can be nil
+	shutdownChan          <-chan struct{}
+	upgradedConnsManager  *UpgradedConnsManager
 }
 
 // NewUpstream creates a new HTTP handler for handling upstream requests based on the provided configuration.
-func NewUpstream(cfg config.Config, accessLogger *logrus.Logger, watchKeyHandler builds.WatchKeyHandler, rdb *redis.Client) http.Handler {
-	return newUpstream(cfg, accessLogger, configureRoutes, watchKeyHandler, rdb)
+func NewUpstream(
+	cfg config.Config,
+	accessLogger *logrus.Logger,
+	watchKeyHandler builds.WatchKeyHandler,
+	rdb *redis.Client,
+	healthCheckServer *healthcheck.Server,
+	shutdownChan <-chan struct{},
+	upgradedConnsManager *UpgradedConnsManager,
+) http.Handler {
+	return newUpstream(
+		cfg,
+		accessLogger,
+		configureRoutes,
+		watchKeyHandler,
+		rdb,
+		healthCheckServer,
+		shutdownChan,
+		upgradedConnsManager,
+	)
 }
 
-func newUpstream(cfg config.Config, accessLogger *logrus.Logger, routesCallback func(*upstream), watchKeyHandler builds.WatchKeyHandler, rdb *redis.Client) http.Handler {
+func newUpstream(
+	cfg config.Config,
+	accessLogger *logrus.Logger,
+	routesCallback func(*upstream),
+	watchKeyHandler builds.WatchKeyHandler,
+	rdb *redis.Client,
+	healthCheckServer *healthcheck.Server,
+	shutdownChan <-chan struct{},
+	upgradedConnsManager *UpgradedConnsManager,
+) http.Handler {
 	up := upstream{
 		Config:       cfg,
 		accessLogger: accessLogger,
@@ -77,6 +107,9 @@ func newUpstream(cfg config.Config, accessLogger *logrus.Logger, routesCallback 
 		geoProxyBackend:       &url.URL{},
 		watchKeyHandler:       watchKeyHandler,
 		rdb:                   rdb,
+		healthCheckServer:     healthCheckServer,
+		shutdownChan:          shutdownChan,
+		upgradedConnsManager:  upgradedConnsManager,
 	}
 	if up.geoProxyPollSleep == nil {
 		up.geoProxyPollSleep = time.Sleep
@@ -214,13 +247,9 @@ func (u *upstream) findGeoProxyRoute(cleanedPath string, r *http.Request) *route
 func (u *upstream) pollGeoProxyAPI() {
 	defer close(u.geoPollerDone)
 
-	for {
-		// Check enableGeoProxyFeature every time because `callGeoProxyApi()` can change its value.
-		// This is can also be disabled through the GEO_SECONDARY_PROXY env var.
-		if !u.enableGeoProxyFeature {
-			break
-		}
-
+	// Check enableGeoProxyFeature every time because `callGeoProxyApi()` can change its value.
+	// This is can also be disabled through the GEO_SECONDARY_PROXY env var.
+	for u.enableGeoProxyFeature {
 		u.callGeoProxyAPI()
 		u.geoProxyPollSleep(geoProxyAPIPollingInterval)
 	}
@@ -242,16 +271,8 @@ func (u *upstream) callGeoProxyAPI() {
 		return
 	}
 
-	hasProxyDataChanged := false
-	if u.geoProxyBackend.String() != geoProxyData.GeoProxyURL.String() {
-		// URL changed
-		hasProxyDataChanged = true
-	}
-
-	if u.geoProxyExtraData != geoProxyData.GeoProxyExtraData {
-		// Signed data changed
-		hasProxyDataChanged = true
-	}
+	hasProxyDataChanged := u.geoProxyBackend.String() != geoProxyData.GeoProxyURL.String() || // URL changed
+		u.geoProxyExtraData != geoProxyData.GeoProxyExtraData // Signed data changed
 
 	if hasProxyDataChanged {
 		u.updateGeoProxyFieldsFromData(geoProxyData)

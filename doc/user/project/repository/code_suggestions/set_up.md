@@ -1,10 +1,18 @@
 ---
-stage: Create
+stage: AI-powered
 group: Code Creation
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 description: Set up Code Suggestions.
 title: Set up Code Suggestions
 ---
+
+{{< details >}}
+
+- Tier: Premium, Ultimate
+- Add-on: GitLab Duo Core, Pro, or Enterprise, GitLab Duo with Amazon Q
+- Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
+
+{{< /details >}}
 
 {{< history >}}
 
@@ -19,9 +27,6 @@ To set up Code Suggestions, follow the instructions for your IDE.
 
 To use Code Suggestions, you need:
 
-- A GitLab Duo Core, Pro, or Enterprise add-on.
-- A Premium or Ultimate subscription.
-- If you have GitLab Duo Pro or Enterprise, an assigned seat.
 - If you have GitLab Duo Core, [IDE features turned on](../../../gitlab_duo/turn_on_off.md#turn-gitlab-duo-core-on-or-off).
 - To confirm that Code Suggestions [supports your preferred language](supported_extensions.md#supported-languages-by-ide).
   Different IDEs support different languages.

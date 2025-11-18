@@ -211,7 +211,7 @@ If successful, returns [`200`](rest/troubleshooting.md#status-codes) and the fol
 | Attribute           | Type    | Description |
 |:--------------------|:--------|:------------|
 | `[].name`           | string  | Name of the SAML group. |
-| `[].access_level`   | integer | [Role (`access_level`)](members.md#roles) for members of the SAML group. The attribute had a string type from GitLab 15.3.0 to GitLab 15.3.3. |
+| `[].access_level`   | integer | [Role (`access_level`)](group_members.md#roles) for members of the SAML group. The attribute had a string type from GitLab 15.3.0 to GitLab 15.3.3. |
 | `[].member_role_id` | integer | [Member Role ID (`member_role_id`)](member_roles.md) for members of the SAML group. |
 | `[].provider`       | string  | Unique [provider name](../integration/saml.md#configure-saml-support-in-gitlab) that must match for this group link to be applied. |
 
@@ -263,7 +263,7 @@ If successful, returns [`200`](rest/troubleshooting.md#status-codes) and the fol
 | Attribute        | Type    | Description |
 |:-----------------|:--------|:------------|
 | `name`           | string  | Name of the SAML group. |
-| `access_level`   | integer | [Role (`access_level`)](members.md#roles) for members of the SAML group. The attribute had a string type from GitLab 15.3.0 to GitLab 15.3.3. |
+| `access_level`   | integer | [Role (`access_level`)](group_members.md#roles) for members of the SAML group. The attribute had a string type from GitLab 15.3.0 to GitLab 15.3.3. |
 | `member_role_id` | integer | [Member Role ID (`member_role_id`)](member_roles.md) for members of the SAML group. |
 | `provider`       | string  | Unique [provider name](../integration/saml.md#configure-saml-support-in-gitlab) that must match for this group link to be applied. |
 
@@ -310,7 +310,7 @@ Supported attributes:
 |:------------------|:------------------|:---------|:------------|
 | `id`              | integer or string | yes      | ID or [URL-encoded path](rest/_index.md#namespaced-paths) of the group. |
 | `saml_group_name` | string            | yes      | Name of the SAML group. |
-| `access_level`    | integer           | yes      | [Role (`access_level`)](members.md#roles) for members of the SAML group. |
+| `access_level`    | integer           | yes      | [Role (`access_level`)](group_members.md#roles) for members of the SAML group. |
 | `member_role_id`  | integer           | no       | [Member Role ID (`member_role_id`)](member_roles.md) for members of the SAML group. |
 | `provider`        | string            | no       | Unique [provider name](../integration/saml.md#configure-saml-support-in-gitlab) that must match for this group link to be applied. |
 
@@ -319,7 +319,7 @@ If successful, returns [`201`](rest/troubleshooting.md#status-codes) and the fol
 | Attribute        | Type    | Description |
 |:-----------------|:--------|:------------|
 | `name`           | string  | Name of the SAML group. |
-| `access_level`   | integer | [Role (`access_level`)](members.md#roles) for members of the for members of the SAML group. The attribute had a string type from GitLab 15.3.0 to GitLab 15.3.3. |
+| `access_level`   | integer | [Role (`access_level`)](group_members.md#roles) for members of the for members of the SAML group. The attribute had a string type from GitLab 15.3.0 to GitLab 15.3.3. |
 | `member_role_id` | integer | [Member Role ID (`member_role_id`)](member_roles.md) for members of the SAML group. |
 | `provider`       | string  | Unique [provider name](../integration/saml.md#configure-saml-support-in-gitlab) that must match for this group link to be applied. |
 

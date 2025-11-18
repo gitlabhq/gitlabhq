@@ -7,5 +7,19 @@ FactoryBot.define do
     name { FFaker::BaconIpsum.characters(10) }
     counter { 1 }
     user
+
+    trait :passkey do
+      authentication_mode { :passwordless }
+      passkey_eligible { true }
+    end
+
+    trait :second_factor do
+      authentication_mode { :second_factor }
+    end
+
+    trait :passkey_eligible do
+      authentication_mode { :second_factor }
+      passkey_eligible { true }
+    end
   end
 end

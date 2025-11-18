@@ -51,7 +51,7 @@ RSpec.shared_examples Integrations::Base::Pivotaltracker do
       stub_full_request(url, method: :post)
     end
 
-    it 'posts correct message' do
+    it 'posts correct message', quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/523923' do
       integration.execute(push_data)
       expect(WebMock).to have_requested(:post, stubbed_hostname(url)).with(
         body: {
@@ -76,7 +76,7 @@ RSpec.shared_examples Integrations::Base::Pivotaltracker do
         end
       end
 
-      it 'posts message if branch is in the list' do
+      it 'posts message if branch is in the list', quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/523924' do
         integration.execute(push_data(branch: 'master'))
         integration.execute(push_data(branch: 'v10'))
 

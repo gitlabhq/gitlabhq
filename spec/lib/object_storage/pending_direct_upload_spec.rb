@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe ObjectStorage::PendingDirectUpload, :direct_uploads, :clean_gitlab_redis_shared_state, feature_category: :shared do
+RSpec.describe ObjectStorage::PendingDirectUpload, :direct_uploads, :clean_gitlab_redis_shared_state, feature_category: :job_artifacts do
   let(:location_identifier) { :artifacts }
   let(:path) { 'some/path/123' }
 

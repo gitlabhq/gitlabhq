@@ -1,29 +1,31 @@
-import { GlBreakpointInstance } from '@gitlab/ui/src/utils';
 import Tracking from '~/tracking';
 import { addShortcutsExtension } from '~/behaviors/shortcuts';
 import ShortcutsWiki from '~/behaviors/shortcuts/shortcuts_wiki';
+import { PanelBreakpointInstance } from '~/panel_breakpoint_instance';
 
 const TRACKING_EVENT_NAME = 'view_wiki_page';
 const TRACKING_CONTEXT_SCHEMA = 'iglu:com.gitlab/wiki_page_context/jsonschema/1-0-1';
 
 export default class Wikis {
   constructor() {
-    this.wikiPageHeaderEl = document.querySelector('.js-wiki-page-header');
     this.sidebarEl = document.querySelector('.js-wiki-sidebar');
     this.sidebarExpanded = false;
 
     document
-      .querySelector('.js-sidebar-wiki-toggle')
-      .addEventListener('click', this.handleToggleSidebar.bind(this));
+      .querySelector('.js-sidebar-wiki-toggle-close')
+      ?.addEventListener('click', this.collapseSidebar.bind(this));
+    document
+      .querySelector('.js-sidebar-wiki-toggle-open')
+      ?.addEventListener('click', this.expandSidebar.bind(this));
 
     // Store pages visbility in localStorage
     const pagesToggle = document.querySelector('.js-wiki-expand-pages-list');
     if (pagesToggle) {
       if (localStorage.getItem('wiki-sidebar-expanded') === 'expanded') {
-        pagesToggle.classList.remove('collapsed');
+        pagesToggle.closest('.wiki-list').classList.remove('collapsed');
       }
       pagesToggle.addEventListener('click', (e) => {
-        pagesToggle.classList.toggle('collapsed');
+        pagesToggle.closest('.wiki-list').classList.toggle('collapsed');
 
         if (!pagesToggle.classList.contains('collapsed')) {
           localStorage.setItem('wiki-sidebar-expanded', 'expanded');
@@ -55,49 +57,52 @@ export default class Wikis {
     Wikis.initShortcuts();
   }
 
-  handleToggleSidebar(e) {
-    e.preventDefault();
-    const isSidebarExpanded = this.sidebarEl.classList.contains('right-sidebar-expanded');
-    this.sidebarExpanded = !isSidebarExpanded;
-
-    if (isSidebarExpanded) {
-      this.collapseSidebar();
-    } else {
-      this.expandSidebar();
+  loadSidebarState() {
+    try {
+      this.sidebarExpanded =
+        JSON.parse(localStorage.getItem('wiki-sidebar-open')) ?? Wikis.sidebarExpandedByDefault();
+    } catch {
+      this.sidebarExpanded = Wikis.sidebarExpandedByDefault();
     }
   }
 
-  static sidebarCanCollapse() {
-    const bootstrapBreakpoint = GlBreakpointInstance.getBreakpointSize();
-    return bootstrapBreakpoint === 'xs' || bootstrapBreakpoint === 'sm';
+  static sidebarExpandedByDefault() {
+    return PanelBreakpointInstance.getBreakpointSize() === 'xl';
   }
 
   renderSidebar() {
     if (!this.sidebarEl) return;
     const { classList } = this.sidebarEl;
-    if (this.sidebarExpanded || !Wikis.sidebarCanCollapse()) {
-      if (!classList.contains('right-sidebar-expanded')) {
-        this.expandSidebar();
+    this.loadSidebarState();
+    if (this.sidebarExpanded) {
+      if (classList.contains('sidebar-collapsed')) {
+        this.expandSidebar(false);
       }
-    } else if (classList.contains('right-sidebar-expanded')) {
-      this.collapseSidebar();
+    } else if (!classList.contains('sidebar-collapsed')) {
+      this.collapseSidebar(false);
     }
+    // Prevent transition animations from triggering right on page load
+    setTimeout(() => {
+      classList.add('transition-enabled');
+    }, 100);
   }
 
-  collapseSidebar() {
+  collapseSidebar(persistSetting = true) {
     if (!this.sidebarEl) return;
 
     const { classList } = this.sidebarEl;
-    classList.add('right-sidebar-collapsed');
-    classList.remove('right-sidebar-expanded');
+    classList.add('sidebar-collapsed');
+    classList.remove('sidebar-expanded');
+    if (persistSetting) localStorage.setItem('wiki-sidebar-open', false);
   }
 
-  expandSidebar() {
+  expandSidebar(persistSetting = true) {
     if (!this.sidebarEl) return;
 
     const { classList } = this.sidebarEl;
-    classList.remove('right-sidebar-collapsed');
-    classList.add('right-sidebar-expanded');
+    classList.remove('sidebar-collapsed');
+    classList.add('sidebar-expanded');
+    if (persistSetting) localStorage.setItem('wiki-sidebar-open', true);
   }
 
   static trackPageView() {

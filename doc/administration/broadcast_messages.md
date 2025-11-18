@@ -43,6 +43,8 @@ remote:
 If more than one banner is active at one time, they are displayed at the top of the page in order of
 creation. In the command line, only the latest banner is shown.
 
+A banner can only be dismissed if you configure the banner to be dismissable.
+
 ## Notifications
 
 GitLab shows notifications on the bottom right of a page. They can contain placeholders,
@@ -79,7 +81,7 @@ Broadcast messages are publicly accessible through the API regardless of targeti
 
 To add a broadcast message:
 
-1. On the left sidebar, at the bottom, select **Admin**.
+1. On the left sidebar, at the bottom, select **Admin**. If you've [turned on the new navigation](../user/interface_redesign.md#turn-new-navigation-on-or-off), in the upper-right corner, select **Admin**.
 1. Select **Messages**.
 1. On the right, select **Add new message**.
 1. Add your **Message** text:
@@ -119,7 +121,7 @@ If you must make changes to a broadcast message, you can edit it.
 
 To edit a broadcast message:
 
-1. On the left sidebar, at the bottom, select **Admin**.
+1. On the left sidebar, at the bottom, select **Admin**. If you've [turned on the new navigation](../user/interface_redesign.md#turn-new-navigation-on-or-off), in the upper-right corner, select **Admin**.
 1. Select **Messages**.
 1. From the list of broadcast messages, select the edit button for the message.
 1. After making the required changes, select **Update broadcast message**.
@@ -133,7 +135,7 @@ You can delete a broadcast message while it's active.
 
 To delete a broadcast message:
 
-1. On the left sidebar, at the bottom, select **Admin**.
+1. On the left sidebar, at the bottom, select **Admin**. If you've [turned on the new navigation](../user/interface_redesign.md#turn-new-navigation-on-or-off), in the upper-right corner, select **Admin**.
 1. Select **Messages**.
 1. From the list of broadcast messages, select the delete button for the message.
 

@@ -71,6 +71,8 @@ RSpec.configure do |config|
 
   config.before(:suite) do
     ActiveSupport::Notifications.subscribe("factory_bot.run_factory") do |_name, _start, _finish, _id, payload|
+      next if Thread.current[:factory_bot_objects].nil?
+
       strategy = payload[:strategy]
       Thread.current[:factory_bot_objects] -= 1 if strategy == :create
     end

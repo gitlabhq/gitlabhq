@@ -1,4 +1,9 @@
-import { getDateInFuture, nDaysAfter, toISODateFormat } from '~/lib/utils/datetime_utility';
+import {
+  getDateInFuture,
+  nDaysAfter,
+  setUTCTime,
+  toISODateFormat,
+} from '~/lib/utils/datetime_utility';
 import { STATISTICS_CONFIG } from '~/access_tokens/constants';
 
 /**
@@ -61,3 +66,28 @@ export function update15DaysFromNow(stats = STATISTICS_CONFIG) {
 
   return clonedStats;
 }
+
+/**
+ * Transform any datetime to T00:00:00.000Z UTC time: '2025-10-13T19:56:59.460Z' -> '2025-10-13T00:00:00.000Z'
+ *
+ * @param {string} isoDateTimeString - The ISO date string: '2025-10-13T19:56:59.460Z'
+ */
+export function resetCreatedTime(isoDateTimeString) {
+  return setUTCTime(isoDateTimeString).toISOString();
+}
+
+/**
+ * Interpret the date as UTC time: 2025-10-13 -> 2025-10-13T00:00:00.000Z
+ *
+ * @param {string} isoDateString - The ISO date string: '2025-10-13'
+ */
+export function utcExpiredDate(isoDateString) {
+  return setUTCTime(isoDateString);
+}
+
+/**
+ * Whether the timestamp is within 2 weeks from the current date.
+ * @param {string} timestamp
+ */
+export const isWithin2Weeks = (timestamp) =>
+  setUTCTime(timestamp) <= setUTCTime(nDaysAfter(new Date(), 14));

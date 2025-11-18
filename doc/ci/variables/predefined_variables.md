@@ -50,6 +50,7 @@ Predefined variables become available at three different phases of pipeline exec
 | `CI_COMMIT_BRANCH`                              | Pre-pipeline | The commit branch name. Available in branch pipelines, including pipelines for the default branch. Not available in merge request pipelines or tag pipelines. |
 | `CI_COMMIT_DESCRIPTION`                         | Pre-pipeline | The description of the commit. If the title is shorter than 100 characters, the message without the first line. |
 | `CI_COMMIT_MESSAGE`                             | Pre-pipeline | The full commit message. |
+| `CI_COMMIT_MESSAGE_IS_TRUNCATED`                | Pre-pipeline | `true` if `CI_COMMIT_MESSAGE` is truncated to the size specified in the `GITLAB_CI_MAX_COMMIT_MESSAGE_SIZE_IN_BYTES` system environment variable (default 100 KB) because the commit message is too long. Otherwise `false`. Introduced in GitLab 18.6. |
 | `CI_COMMIT_REF_NAME`                            | Pre-pipeline | The branch or tag name for which project is built. |
 | `CI_COMMIT_REF_PROTECTED`                       | Pre-pipeline | `true` if the job is running for a protected reference, `false` otherwise. |
 | `CI_COMMIT_REF_SLUG`                            | Pre-pipeline | `CI_COMMIT_REF_NAME` in lowercase, shortened to 63 bytes, and with everything except `0-9` and `a-z` replaced with `-`. No leading / trailing `-`. Use in URLs, host names and domain names. |
@@ -105,7 +106,7 @@ Predefined variables become available at three different phases of pipeline exec
 | `CI_PIPELINE_ID`                                | Job-only     | The instance-level ID of the current pipeline. This ID is unique across all projects on the GitLab instance. |
 | `CI_PIPELINE_IID`                               | Pipeline     | The project-level IID (internal ID) of the current pipeline. This ID is unique only in the current project. |
 | `CI_PIPELINE_SOURCE`                            | Pre-pipeline | How the pipeline was triggered. The value can be one of the [pipeline sources](../jobs/job_rules.md#ci_pipeline_source-predefined-variable). |
-| `CI_PIPELINE_TRIGGERED`                         | Pipeline     | `true` if the job was [triggered](../triggers/_index.md). |
+| `CI_PIPELINE_TRIGGERED`                         | Pipeline     | `true` for pipelines [triggered with a trigger token](../triggers/_index.md). For pipelines triggered with the [`trigger`](../yaml/_index.md#trigger) keyword, use [`CI_PIPELINE_SOURCE`](../jobs/job_rules.md#ci_pipeline_source-predefined-variable) instead. |
 | `CI_PIPELINE_URL`                               | Job-only     | The URL for the pipeline details. |
 | `CI_PIPELINE_CREATED_AT`                        | Job-only     | The date and time when the pipeline was created, in [ISO 8601](https://www.rfc-editor.org/rfc/rfc3339#appendix-A) format. For example, `2022-01-31T16:47:55Z`. [UTC by default](../../administration/timezone.md). |
 | `CI_PIPELINE_NAME`                              | Pre-pipeline | The pipeline name defined in [`workflow:name`](../yaml/_index.md#workflowname). Introduced in GitLab 16.3. |

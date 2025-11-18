@@ -18,7 +18,7 @@ export default {
     },
   },
   computed: {
-    ...mapState(['allowLabelEdit', 'labelsFetchInProgress']),
+    ...mapState(['allowLabelEdit']),
   },
   methods: {
     ...mapActions(['toggleDropdownContents']),

@@ -76,22 +76,78 @@ module Enums
     ].freeze
 
     # Package types supported by Trivy are sourced from
-    # https://github.com/aquasecurity/trivy/blob/214546427e76da21bbc61a5b70ec00d5b95f6d0b/pkg/sbom/cyclonedx/marshal.go#L21
+    # https://github.com/aquasecurity/trivy/blob/8e6a7ff670c64106d4dea6972ac3f6228f9c6269/pkg/fanal/analyzer/const.go
     PACKAGE_MANAGERS_FROM_TRIVY_PKG_TYPE = {
       # OS
+      alma: 'dnf',
       alpine: 'apk',
       amazon: 'yum',
+      azurelinux: 'tdnf',
+      bottlerocket: 'bottlerocket',
       'cbl-mariner': 'tdnf',
-      debian: 'apt',
-      photon: 'tdnf',
       centos: 'dnf',
-      rocky: 'dnf',
-      alma: 'dnf',
+      chainguard: 'apk',
+      coreos: 'dnf',
+      debian: 'apt',
+      echo: 'apt',
       fedora: 'dnf',
+      minimos: 'apt',
+      opensuse: 'zypper',
+      'opensuse-leap': 'zypper',
+      'opensuse-tumbleweed': 'zypper',
       oracle: 'dnf',
+      photon: 'tdnf',
       redhat: 'dnf',
-      suse: 'zypper',
+      rocky: 'dnf',
+      slem: 'zypper',
+      sles: 'zypper',
       ubuntu: 'apt',
+      wolfi: 'apk',
+
+      # Application package types
+      bundler: 'bundler',
+      gemspec: 'bundler',
+      cargo: 'cargo',
+      composer: 'composer',
+      'composer-vendor': 'composer',
+      npm: 'npm',
+      bun: 'bun',
+      nuget: 'nuget',
+      'dotnet-core': 'nuget',
+      'packages-props': 'nuget',
+      pip: 'pip',
+      pipenv: 'pipenv',
+      poetry: 'poetry',
+      uv: 'uv',
+      'conda-pkg': 'conda',
+      'conda-environment': 'conda',
+      'python-pkg': 'pip',
+      'node-pkg': 'npm',
+      yarn: 'yarn',
+      pnpm: 'pnpm',
+      jar: 'maven',
+      pom: 'maven',
+      gradle: 'gradle',
+      sbt: 'sbt',
+      gobinary: 'go',
+      gomod: 'go',
+      javascript: 'npm',
+      rustbinary: 'cargo',
+      conan: 'conan',
+      cocoapods: 'cocoapods',
+      swift: 'cocoapods',
+      pub: 'pub',
+      hex: 'hex',
+      bitnami: 'bitnami',
+      julia: 'julia',
+
+      #######################################
+      # Historical Trivy mappings
+      # Keep for backward compatibility
+      #######################################
+
+      # OS
+      suse: 'zypper',
       'ubuntu-esm': 'apt',
 
       # OS package types
@@ -102,32 +158,11 @@ module Enums
       rpmqa: 'dnf',
 
       # Application package types
-      bundler: 'bundler',
-      gemspec: 'bundler',
-      rustbinary: 'cargo',
-      cargo: 'cargo',
-      composer: 'composer',
-      jar: 'maven',
-      pom: 'maven',
       'gradle-lockfile': 'gradle',
-      npm: 'npm',
-      'node-pkg': 'npm',
-      yarn: 'yarn',
-      pnpm: 'pnpm',
-      nuget: 'nuget',
-      'dotnet-core': 'nuget',
-      'conda-pkg': 'conda',
-      'conda-environment': 'conda',
-      'python-pkg': 'pip',
-      pip: 'pip',
-      pipenv: 'pipenv',
-      poetry: 'poetry',
-      gobinary: 'go',
-      gomod: 'go',
+      'sbt-lockfile': 'sbt',
+      'python-egg': 'pip',
       'conan-lock': 'conan',
       'mix-lock': 'mix',
-      swift: 'cocoapods',
-      cocoapods: 'cocoapods',
       'pubspec-lock': 'pub'
     }.with_indifferent_access.freeze
 

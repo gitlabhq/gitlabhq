@@ -16,26 +16,20 @@ When modifying the Markdown or API code, also update the corresponding
 To check if the OpenAPI definition needs to be updated, you can run `bin/rake gitlab:openapi:check_docs`.
 This is also checked by the `openapi-doc-check` CI/CD job that runs for commits that modify API code or documentation.
 
-In the Markdown doc for a resource (the API endpoint):
+The Markdown topic for an API resource must include:
 
-- Every method must have the REST API request. The request should include the HTTP method
-(like GET, PUT, DELETE) followed by the request path. The path should always start with a `/`. For example:
+- A block that includes the HTTP method (like GET, PUT, DELETE) followed by the request path. Always start the path with a `/`. For example:
 
   ```plaintext
   GET /api/v4/projects/:id/repository/branches
   ```
 
-- Every method must have a detailed [description of the attributes](#method-description).
-- Every method must have a cURL example.
-- Every method must have a detailed [description of the response body](#response-body-description).
-- Every method must have a response body example (in JSON format).
-- If an attribute is available only to higher level subscription tiers, add the appropriate tier to the **Description**. If an attribute is
-  for Premium, include that it's also available for Ultimate.
-- If an attribute is available only in certain offerings, add the offerings to the **Description**. If the attribute's
-  description also has both offering and tier, combine them. For
-  example: _GitLab Self-Managed, Premium and Ultimate only._
+- A detailed [description of the attributes](#attribute-descriptions).
+- A detailed [description of the response body](#response-body-description).
+- A cURL example.
+- A response body example (in JSON format).
 
-After a new API documentation page is added, [add an entry in the global navigation](site_architecture/global_nav.md#add-a-navigation-entry). [Examples](https://gitlab.com/gitlab-org/technical-writing/docs-gitlab-com/-/commits/main/data/en-us/navigation.yaml).
+After a new API documentation page is added, [add an entry in the global navigation](site_architecture/global_nav.md#add-a-navigation-entry).
 
 ## API topic template
 
@@ -51,9 +45,9 @@ required attributes first in the table.
 
 {{</* /history */>}}
 
-One or two sentence description of what endpoint does.
+Use this API to ...
 
-### Method title
+### Operation title
 
 {{</* history */>}}
 
@@ -61,7 +55,7 @@ One or two sentence description of what endpoint does.
 
 {{</* /history */>}}
 
-Description of the method.
+Description of the operation.
 
 ```plaintext
 METHOD /api/v4/endpoint
@@ -149,17 +143,45 @@ To deprecate an attribute:
 
 To widely announce a deprecation, [update the REST API deprecations page](../../api/rest/deprecations.md).
 
-## Method description
+## API introduction
 
-Use the following table headers to describe the methods. Attributes should
-always be in code blocks using backticks (`` ` ``).
+Each API is made of one or more operations. At the start of the topic, include information that
+applies to all operations in the API, and a short description of the related features.
 
-Sort the table by required attributes first, then alphabetically.
+For consistency, try to start the introduction with: `Use this API to {verb} + [{feature}](link/to/UI/docs).`
+This allows us to direct users to related documentation that might include more context.
+
+For example:
+
+- `Use this API to manage [Git branches](path/to/file).`
+- `Use this API to interact with the [Maven package manager client](path/to/file).`
+- `Use this API to interact with namespaces, a special resource category used to organize users and groups. For more information, see [namespaces](path/to/file).`
+
+## Operation descriptions
+
+Each operation should include a short description that explains its use, and highlights any
+important information. If possible, write the first sentence to broadly repeat the title of
+the operation. For example:
+
+- `List all project access tokens` -> `Lists all project access tokens.`
+- `Delete an SSH key` -> `Deletes an SSH key from your user account.`
+- `Get details on an enterprise user` -> `Gets details on a specified enterprise user.`
+
+## Attribute descriptions
+
+You must document the attributes in an operation. When creating the table and attribute descriptions:
+
+- Use the following column names for attribute tables.
+- List any path attributes first, then any required attributes, then sort alphabetically.
+- Place attributes name in code blocks using backticks (`` ` ``).
+- Document any tier or offering information specific to an attribute in the description.
+  - If an attribute is available for Premium, mention that it's also available for Ultimate.
+  - Combine this tier and offering information when possible. For example: `GitLab Self-Managed, Premium and Ultimate only.`
 
 ```markdown
 | Attribute                    | Type          | Required | Description                                         |
 |------------------------------|---------------|----------|-----------------------------------------------------|
-| `title`                      | string        | Yes      | Title of the issue.                                 |
+| `title`                      | string        | Yes      | Title of the issue. GitLab Self-Managed only.       |
 | `assignee_ids`               | integer array | No       | IDs of the users to assign the issue to. Ultimate only. |
 | `confidential`               | boolean       | No       | Sets the issue to confidential. Default is `false`. |
 ```
@@ -168,8 +190,8 @@ Rendered example:
 
 | Attribute                    | Type          | Required | Description                                         |
 |------------------------------|---------------|----------|-----------------------------------------------------|
-| `title`                      | string        | Yes      | Title of the issue.                                 |
-| `assignee_ids`               | integer array | No       | IDs of the users to assign the issue to. Premium and Ultimate only. |
+| `title`                      | string        | Yes      | Title of the issue. GitLab Self-Managed only.       |
+| `assignee_ids`               | integer array | No       | IDs of the users to assign the issue to. Ultimate only. |
 | `confidential`               | boolean       | No       | Sets the issue to confidential. Default is `false`. |
 
 For information about writing attribute descriptions, see the [GraphQL API description style guide](../api_graphql_styleguide.md#description-style-guide).

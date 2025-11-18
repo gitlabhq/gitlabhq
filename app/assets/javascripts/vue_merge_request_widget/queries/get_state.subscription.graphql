@@ -6,6 +6,7 @@ subscription getStateSubscription($issuableId: IssuableID!) {
       id
       detailedMergeStatus
       commitCount
+      availableAutoMergeStrategies
 
       ...MergeTrainPosition
     }

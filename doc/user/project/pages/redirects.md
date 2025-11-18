@@ -201,13 +201,6 @@ client-side routes. For these applications, rewrite all requests
 to the root `index.html` so the routing logic can be handled
 by the JavaScript application.
 
-Prerequisites:
-
-- If you use [GitLab Pages integration with Let's Encrypt](custom_domains_ssl_tls_certification/lets_encrypt_integration.md),
-  you must enable it before you add this rule. Otherwise, the redirection breaks the Let's Encrypt
-  integration. For more details, see
-  [GitLab Pages issue 649](https://gitlab.com/gitlab-org/gitlab-pages/-/issues/649).
-
 To rewrite requests to `index.html`:
 
 1. Add this `_redirects` rule:

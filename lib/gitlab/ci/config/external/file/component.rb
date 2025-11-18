@@ -54,7 +54,7 @@ module Gitlab
               errors.push('Unable to use components outside of a project context')
             end
 
-            def validate_content!
+            def validate_content_presence!
               errors.push(component_result.message) unless content.present?
             end
 
@@ -62,18 +62,13 @@ module Gitlab
 
             attr_reader :path, :version
 
-            def content_result
-              context.logger.instrument(:config_component_fetch_content_hash) do
-                super
-              end
-            end
-            strong_memoize_attr :content_result
-
             def component_result
-              ::Ci::Components::FetchService.new(
-                address: location,
-                current_user: context.user
-              ).execute
+              context.logger.instrument(:config_file_fetch_component_content) do
+                ::Ci::Components::FetchService.new(
+                  address: location,
+                  current_user: context.user
+                ).execute
+              end
             end
             strong_memoize_attr :component_result
 
@@ -117,7 +112,9 @@ module Gitlab
               {
                 project: component_payload.fetch(:project),
                 sha: component_payload.fetch(:sha),
-                name: component_payload.fetch(:name)
+                name: component_payload.fetch(:name),
+                version: component_payload.fetch(:version),
+                reference: component_payload.fetch(:reference)
               }
             end
 
@@ -126,6 +123,7 @@ module Gitlab
 
               component_attrs.slice(*Config::Header::Component::ALLOWED_VALUES)
             end
+            strong_memoize_attr :component_yaml_context
           end
         end
       end

@@ -9,6 +9,7 @@ require_relative 'helpers/stub_configuration'
 require_relative 'helpers/stub_metrics'
 require_relative 'helpers/stub_object_storage'
 require_relative 'helpers/fast_rails_root'
+require_relative 'helpers/test_metrics_helper'
 
 require 'gitlab/rspec/all'
 require 'gitlab/utils/all'
@@ -81,5 +82,9 @@ RSpec.configure do |config|
         example.location
       warn "Missing metadata feature_category: #{location} See https://docs.gitlab.com/ee/development/testing_guide/best_practices.html#feature-category-metadata"
     end
+  end
+
+  TestMetricsHelper.configure_exporter!(config, 'backend-rspec-tests') do |exporter_config|
+    exporter_config.test_retried_proc = ->(_example) { ENV["RSPEC_RETRY_PROCESS"] == "true" }
   end
 end

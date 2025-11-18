@@ -47,7 +47,7 @@ RSpec.describe 'Issues > User sees empty state', :js, feature_category: :team_pl
         visit project_issues_path(project)
 
         expect(page).to have_content('Track bugs, plan features, and organize your work with issues')
-        expect(page).to have_content('Create issue')
+        expect(page).to have_link('New item')
       end
 
       it_behaves_like 'empty state with filters'

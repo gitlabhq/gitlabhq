@@ -43,9 +43,8 @@ To override syntax highlighting for a file type:
    declaring the file extension and your desired highlighting language:
 
    ```conf
-   # This extension would typically receive Perl syntax highlighting
-   # but if we also use Prolog, we may want to override highlighting for
-   # files with this extension:
+   # This extension typically receives Perl syntax highlighting. If you
+   # also use Prolog, you can override highlighting for this file extension:
    *.pl gitlab-language=prolog
    ```
 

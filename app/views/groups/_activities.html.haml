@@ -3,6 +3,9 @@
   .controls
     = render Pajamas::ButtonComponent.new(href: group_path(@group, rss_url_options), icon: 'rss', button_options: { class: 'gl-hidden @sm/panel:gl-inline-flex has-tooltip', title: _('Subscribe') })
 
-%ul.content_list.gl-list-none.gl-pl-0
-.loading
-  = render Pajamas::SpinnerComponent.new(size: :md)
+.js-infinite-scrolling-root
+  %ul.content_list.gl-list-none.gl-pl-0.js-infinite-scrolling-content
+  .js-infinite-scrolling-page-end
+    .js-infinite-scrolling-loading
+      .loading
+        = render Pajamas::SpinnerComponent.new(size: :md)

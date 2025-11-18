@@ -6,7 +6,8 @@ module Gitlab
       module Validators
         class AllowedKeysValidator < ActiveModel::EachValidator
           def validate_each(record, attribute, value)
-            unknown_keys = value.try(:keys).to_a - options[:in]
+            allowed_keys = Array(options[:in]).map(&:to_s)
+            unknown_keys = value.try(:keys).to_a.map(&:to_s) - allowed_keys
 
             if unknown_keys.any?
               record.errors.add(attribute, "contains unknown keys: " +

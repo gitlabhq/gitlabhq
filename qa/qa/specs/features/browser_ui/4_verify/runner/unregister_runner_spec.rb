@@ -1,10 +1,15 @@
 # frozen_string_literal: true
 
 module QA
-  RSpec.describe 'Verify', feature_category: :runner do
+  RSpec.describe 'Verify', feature_category: :runner_core,
+    feature_flag: { name: 'vue_project_runners_settings', scope: :project } do
     describe 'Runner' do
       let(:executor) { "qa-runner-#{SecureRandom.hex(6)}" }
       let!(:runner) { create(:project_runner, name: executor, tags: ["e2e-test-#{SecureRandom.hex(6)}"]) }
+
+      before do
+        Runtime::Feature.enable(:vue_project_runners_settings, project: runner.project)
+      end
 
       after do
         runner.remove_via_api!

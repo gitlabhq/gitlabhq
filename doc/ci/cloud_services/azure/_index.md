@@ -201,7 +201,7 @@ The CI/CD variables are:
 
 ## Troubleshooting
 
-### "No matching federated identity record found"
+### Error: `No matching federated identity record found`
 
 If you receive the error `ERROR: AADSTS70021: No matching federated identity record found for presented assertion.`
 you should verify:

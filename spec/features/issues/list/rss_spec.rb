@@ -14,7 +14,6 @@ RSpec.describe 'Project Issues RSS', :js, feature_category: :team_planning do
     # we won't need the tests for the issues listing page, since we'll be using
     # the work items listing page.
     stub_feature_flags(work_item_planning_view: false)
-    stub_feature_flags(work_items_group_issues_list: false)
   end
 
   context 'when signed in' do

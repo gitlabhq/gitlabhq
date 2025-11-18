@@ -62,9 +62,10 @@ module Gitlab
             end
 
             def hash_of_file_contents
-              return unless files.any?
+              expanded_paths = expand_file_patterns(files)
+              return unless expanded_paths.any?
 
-              blob_references = files.map { |path| [@pipeline.sha, path] }
+              blob_references = expanded_paths.map { |path| [@pipeline.sha, path] }
               content_hashes = @pipeline.project.repository
                 .blobs_at(blob_references, blob_size_limit: 0)
                 .map(&:id)
@@ -88,6 +89,17 @@ module Gitlab
 
             def files_commits_files
               @key[:files_commits].to_a.select(&:present?).uniq
+            end
+
+            def expand_file_patterns(patterns)
+              @expanded_patterns ||= {}
+              @expanded_patterns[patterns] ||= patterns.flat_map do |pattern|
+                if pattern.include?('*')
+                  @pipeline.project.repository.search_files_by_wildcard_path(pattern, @pipeline.sha)
+                else
+                  pattern
+                end
+              end.compact.uniq
             end
 
             def last_commit_id_for_path(path)

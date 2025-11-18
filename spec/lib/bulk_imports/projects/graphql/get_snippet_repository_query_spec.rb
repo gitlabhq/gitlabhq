@@ -9,7 +9,9 @@ RSpec.describe BulkImports::Projects::Graphql::GetSnippetRepositoryQuery, featur
 
   subject(:query) { described_class.new(context: context) }
 
-  it_behaves_like 'a valid Direct Transfer GraphQL query'
+  context 'with quarantine', quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/546526' do
+    it_behaves_like 'a valid Direct Transfer GraphQL query'
+  end
 
   it 'returns snippet httpUrlToRepo' do
     expect(subject.to_s).to include('httpUrlToRepo')

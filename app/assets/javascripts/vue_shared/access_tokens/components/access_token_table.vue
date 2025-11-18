@@ -17,7 +17,7 @@ import TimeAgoTooltip from '~/vue_shared/components/time_ago_tooltip.vue';
 import UserDate from '~/vue_shared/components/user_date.vue';
 
 import { useAccessTokens } from '../stores/access_tokens';
-import { fifteenDaysFromNow } from '../utils';
+import { fifteenDaysFromNow, resetCreatedTime, utcExpiredDate } from '../utils';
 
 const REVOKE = 'revoke';
 const ROTATE = 'rotate';
@@ -170,6 +170,8 @@ export default {
       },
     },
   },
+  resetCreatedTime,
+  utcExpiredDate,
 };
 </script>
 
@@ -263,7 +265,7 @@ export default {
               :title="s__('AccessTokens|Expires')"
               name="time-out"
             />
-            <time-ago-tooltip v-if="expiresAt" :time="expiresAt" />
+            <time-ago-tooltip v-if="expiresAt" :time="$options.utcExpiredDate(expiresAt)" />
             <span v-else>{{ s__('AccessTokens|Never until revoked') }}</span>
           </div>
 
@@ -274,7 +276,7 @@ export default {
               :title="s__('AccessTokens|Created')"
               name="clock"
             />
-            <user-date :date="createdAt" />
+            <user-date :date="$options.resetCreatedTime(createdAt)" />
           </div>
         </div>
       </template>

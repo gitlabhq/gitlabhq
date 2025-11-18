@@ -93,5 +93,5 @@ This installation methods has some [limitations](https://gitlab.com/gitlab-org/g
 ## Microsoft Windows
 
 GitLab is developed for Linux-based operating systems.
-It does **not** run on Microsoft Windows, and we have no plans to support it in the near future. For the latest development status, view this [issue](https://gitlab.com/gitlab-org/gitlab/-/issues/22337).
+It does not run on Microsoft Windows, and there are no plans to support it in the near future. For the latest development status, see [issue 22337](https://gitlab.com/gitlab-org/gitlab/-/issues/22337).
 Consider using a virtual machine to run GitLab.

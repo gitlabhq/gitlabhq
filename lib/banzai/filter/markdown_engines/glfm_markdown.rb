@@ -16,6 +16,7 @@ module Banzai
         OPTIONS = {
           alerts: true,
           autolink: true,
+          cjk_friendly_emphasis: true,
           description_lists: true,
           escaped_char_spans: true,
           footnotes: true,

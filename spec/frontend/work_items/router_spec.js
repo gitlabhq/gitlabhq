@@ -72,6 +72,7 @@ describe('Work items router', () => {
         groupPath: '',
         isGroup: false,
         issuesListPath: 'full-path/-/issues',
+        hasDesignManagementFeature: false,
         hasIssueWeightsFeature: false,
         hasIterationsFeature: false,
         hasOkrsFeature: false,
@@ -81,7 +82,6 @@ describe('Work items router', () => {
         labelsManagePath: 'test-project-path/labels',
         reportAbusePath: '/report/abuse/path',
         newTrialPath: '',
-        workItemPlanningViewEnabled: false,
       },
       propsData: {
         rootPageFullPath: '/',

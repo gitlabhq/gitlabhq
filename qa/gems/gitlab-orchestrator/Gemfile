@@ -8,6 +8,6 @@ group :test do
   gem "climate_control", "~> 1.2.0"
   gem "gitlab-styles", "~> 13.1.0"
   gem "pry", "~> 0.15.2"
-  gem "rspec", "~> 3.13", ">= 3.13.1"
+  gem "rspec", "~> 3.13", ">= 3.13.2"
   gem "simplecov", "~> 0.22.0"
 end

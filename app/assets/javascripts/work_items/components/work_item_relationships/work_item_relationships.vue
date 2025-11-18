@@ -13,6 +13,7 @@ import {
   saveToggleToLocalStorage,
   getToggleFromLocalStorage,
   isItemDisplayable,
+  trackCrudCollapse,
 } from '../../utils';
 import {
   LINKED_CATEGORIES_MAP,
@@ -21,6 +22,8 @@ import {
   WORKITEM_RELATIONSHIPS_SHOWLABELS_LOCALSTORAGEKEY,
   WORKITEM_RELATIONSHIPS_SHOWCLOSED_LOCALSTORAGEKEY,
   INJECTION_LINK_CHILD_PREVENT_ROUTER_NAVIGATION,
+  WORK_ITEM_RELATIONSHIPS_COLLAPSE_TRACKING_ACTION_COLLAPSED,
+  WORK_ITEM_RELATIONSHIPS_COLLAPSE_TRACKING_ACTION_EXPANDED,
 } from '../../constants';
 
 import WorkItemMoreActions from '../shared/work_item_more_actions.vue';
@@ -323,6 +326,13 @@ export default {
     displayableLinks(items) {
       return items.filter((item) => isItemDisplayable(item.workItem, this.showClosed));
     },
+    handleCrudCollapsed(collapsed) {
+      trackCrudCollapse(
+        collapsed
+          ? WORK_ITEM_RELATIONSHIPS_COLLAPSE_TRACKING_ACTION_COLLAPSED
+          : WORK_ITEM_RELATIONSHIPS_COLLAPSE_TRACKING_ACTION_EXPANDED,
+      );
+    },
   },
   i18n: {
     title: s__('WorkItem|Linked items'),
@@ -349,6 +359,8 @@ export default {
     is-collapsible
     persist-collapsed-state
     data-testid="work-item-relationships"
+    @click-collapsed="handleCrudCollapsed(true)"
+    @click-expanded="handleCrudCollapsed(false)"
   >
     <template #count>
       <gl-badge

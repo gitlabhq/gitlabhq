@@ -55,7 +55,7 @@ If required, take your application offline to prevent the database from
 being modified after the database dump is created.
 
 1. Get the Kubernetes namespace for the environment. It typically looks like `<project-name>-<project-id>-<environment>`.
-   In our example, the namespace is called `minimal-ruby-app-4349298-production`.
+   In this example, the namespace is called `minimal-ruby-app-4349298-production`.
 
    ```shell
    $ kubectl get ns
@@ -70,7 +70,7 @@ being modified after the database dump is created.
    export APP_NAMESPACE=minimal-ruby-app-4349298-production
    ```
 
-1. Get the deployment name for your application with the following command. In our example, the deployment name is `production`.
+1. Get the deployment name for your application with the following command. In this example, the deployment name is `production`.
 
    ```shell
    $ kubectl get deployment --namespace "$APP_NAMESPACE"
@@ -91,7 +91,7 @@ being modified after the database dump is created.
 
 ## Backup
 
-1. Get the service name for PostgreSQL. The name of the service should end with `-postgres`. In our example the service name is `production-postgres`.
+1. Get the service name for PostgreSQL. The name of the service should end with `-postgres`. In this example, the service name is `production-postgres`.
 
    ```shell
    $ kubectl get svc --namespace "$APP_NAMESPACE"
@@ -100,7 +100,7 @@ being modified after the database dump is created.
    production-postgres      ClusterIP   10.30.4.57    <none>        5432/TCP   7d14h
    ```
 
-1. Get the pod name for PostgreSQL with the following command. In our example, the pod name is `production-postgres-5db86568d7-qxlxv`.
+1. Get the pod name for PostgreSQL with the following command. In this example, the pod name is `production-postgres-5db86568d7-qxlxv`.
 
    ```shell
    $ kubectl get pod --namespace "$APP_NAMESPACE" -l app=production-postgres
@@ -155,11 +155,10 @@ pvc-0da80c08-5239-11ea-9c8d-42010a8e0096   8Gi        RWO            Delete     
 pvc-9085e3d3-5239-11ea-9c8d-42010a8e0096   8Gi        RWO            Delete           Bound    minimal-ruby-app-4349298-production/production-postgres   standard                7d22h
 ```
 
-To retain the persistent volume, even when the older 0.7.1 PostgreSQL is
-deleted, we can change the retention policy to `Retain`. In this example, we find
-the persistent volume names by looking at the claims names. As we are
-interested in keeping the volumes for the staging and production of the
-`minimal-ruby-app-4349298` application, the volume names here are
+To retain the persistent volume, even when the older 0.7.1 PostgreSQL is deleted, change
+the retention policy to `Retain`. In this example, the persistent volume names are found
+by looking at the claims names. To keep the volumes for the staging and production
+environments of the `minimal-ruby-app-4349298` application, the volume names are
 `pvc-0da80c08-5239-11ea-9c8d-42010a8e0096` and `pvc-9085e3d3-5239-11ea-9c8d-42010a8e0096`:
 
 ```shell
@@ -206,7 +205,7 @@ You can also
 1. If you have set the `DB_INITIALIZE` or `DB_MIGRATE` variables, either
    remove the variables, or rename the variables temporarily to
    `XDB_INITIALIZE` or the `XDB_MIGRATE` to effectively disable them.
-1. Run a new CI pipeline for the branch. In this case, we run a new CI
+1. Run a new CI pipeline for the branch. In this case, run a new CI
    pipeline for `main`.
 1. After the pipeline is successful, your application is upgraded
    with the new PostgreSQL installed. Zero replicas exist at this time, so
@@ -215,7 +214,7 @@ You can also
 
 ## Restore
 
-1. Get the pod name for the new PostgreSQL, in our example, the pod name is
+1. Get the pod name for the new PostgreSQL, in this example, the pod name is
    `production-postgresql-0`:
 
    ```shell
@@ -261,6 +260,6 @@ steps to reinstate your application:
 1. Restore the `DB_INITIALIZE` and `DB_MIGRATE` variables, if previously
    removed or disabled.
 1. Restore the `PRODUCTION_REPLICAS` or `REPLICAS` variable to its original value.
-1. Run a new CI pipeline for the branch. In this case, we run a new CI
+1. Run a new CI pipeline for the branch. In this case, run a new CI
    pipeline for `main`. After the pipeline is successful, your
    application should be serving traffic as before.

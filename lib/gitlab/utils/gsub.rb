@@ -9,6 +9,8 @@ module Gitlab
       # allows us to break out of the replacement loop when the limit is reached.
       # This is the same algorithm used for Gitlab::UntrustedRegexp.replace_gsub
       def gsub_with_limit(text, pattern, limit:)
+        return enum_for(:gsub_with_limit, text, pattern, limit:) unless block_given?
+
         new_text = +''
         remainder = text
         count = 0

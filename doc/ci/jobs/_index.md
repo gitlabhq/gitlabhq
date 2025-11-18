@@ -223,7 +223,7 @@ Selecting an individual job shows you its [job log](job_logs.md), and allows you
 
 To view jobs that ran in a project:
 
-1. On the left sidebar, select **Search or go to** and find your project.
+1. On the left sidebar, select **Search or go to** and find your project. If you've [turned on the new navigation](../../user/interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
 1. Select **Build** > **Jobs**.
 
 You can filter the list by job status, source, name, and kind.
@@ -378,7 +378,7 @@ Prerequisites:
 
 To retry a job from a merge request:
 
-1. On the left sidebar, select **Search or go to** and find your project.
+1. On the left sidebar, select **Search or go to** and find your project. If you've [turned on the new navigation](../../user/interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
 1. From your merge request, do one of the following:
    - In the pipeline widget, next to the job you want to retry, select **Run again** ({{< icon name="retry" >}}).
    - Select the **Pipelines** tab, next to the job you want to retry, select **Run again** ({{< icon name="retry" >}}).
@@ -390,7 +390,7 @@ To retry a job from the job log:
 
 To retry a job from a pipeline:
 
-1. On the left sidebar, select **Search or go to** and find your project.
+1. On the left sidebar, select **Search or go to** and find your project. If you've [turned on the new navigation](../../user/interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
 1. Select **Build** > **Pipelines**.
 1. Find the pipeline that contains the job you want to retry.
 1. From the pipeline graph, next to the job you want to retry, select **Run again** ({{< icon name="retry" >}}).
@@ -399,7 +399,7 @@ To retry a job from a pipeline:
 
 If a pipeline has multiple failed or canceled jobs, you can retry all of them at once:
 
-1. On the left sidebar, select **Search or go to** and find your project.
+1. On the left sidebar, select **Search or go to** and find your project. If you've [turned on the new navigation](../../user/interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
 1. Do one of the following:
    - Select **Build** > **Pipelines**.
    - Go to a merge request and select the **Pipelines** tab.
@@ -413,31 +413,13 @@ When you cancel a job, what happens next depends on its state and the GitLab Run
 
 - For jobs that haven't started executing yet, the job is canceled immediately.
 - For running jobs:
-  - For GitLab Runner 16.10 and later with GitLab 17.0 and later, the job is marked as `canceling` while the runner runs the job's [`after_script`](../yaml/_index.md#after_script).
-    When `after_script` completes, the job is marked as `canceled`.
+  - For GitLab Runner 16.10 and later with GitLab 17.0 and later:
+    1. The job is marked as `canceling`.
+    1. The currently-running command is allowed to complete. The rest of the commands in the job's
+       [`before_script`](../yaml/_index.md#before_script) or [`script`](../yaml/_index.md#script) are skipped.
+    1. If the job has an `after_script` section, it always starts and runs to completion.
+    1. The job is marked as `canceled`.
   - For GitLab Runner 16.9 and earlier with GitLab 16.11 and earlier, the job is `canceled` immediately without running `after_script`.
-
-```mermaid
-%%{init: { "fontFamily": "GitLab Sans" }}%%
-stateDiagram-v2
-    accTitle: CI/CD job state transitions
-    accDescr: Shows possible state transitions for CI/CD jobs, including cancellation paths.
-
-    direction TB
-    state if_versions <>
-    [*] --> pending: Job created
-    pending --> canceled: Cancel requested
-    canceled --> [*]
-    pending --> running: Runner picks up job
-    running --> success: Job succeeds
-    success --> [*]
-    running --> failed: Job fails
-    failed --> [*]
-    running --> if_versions: Cancel requested
-    if_versions --> canceling: GitLab 17.0 and later with GitLab Runner 16.10 and later
-    if_versions --> canceled: GitLab 16.11 and earlier with GitLab Runner 16.9 and earlier
-    canceling --> canceled: after_script complete
-```
 
 If you need to cancel a job immediately without waiting for the `after_script`, use [force cancel](#force-cancel-a-job).
 
@@ -450,7 +432,7 @@ Prerequisites:
 
 To cancel a job from a merge request:
 
-1. On the left sidebar, select **Search or go to** and find your project.
+1. On the left sidebar, select **Search or go to** and find your project. If you've [turned on the new navigation](../../user/interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
 1. From your merge request, do one of the following:
    - In the pipeline widget, next to the job you want to cancel, select **Cancel** ({{< icon name="cancel" >}}).
    - Select the **Pipelines** tab, next to the job you want to cancel, select **Cancel** ({{< icon name="cancel" >}}).
@@ -462,7 +444,7 @@ To cancel a job from the job log:
 
 To cancel a job from a pipeline:
 
-1. On the left sidebar, select **Search or go to** and find your project.
+1. On the left sidebar, select **Search or go to** and find your project. If you've [turned on the new navigation](../../user/interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
 1. Select **Build** > **Pipelines**.
 1. Find the pipeline that contains the job you want to cancel.
 1. From the pipeline graph, next to the job you want to cancel, select **Cancel** ({{< icon name="cancel" >}}).
@@ -471,7 +453,7 @@ To cancel a job from a pipeline:
 
 You can cancel all jobs in a running pipeline at once.
 
-1. On the left sidebar, select **Search or go to** and find your project.
+1. On the left sidebar, select **Search or go to** and find your project. If you've [turned on the new navigation](../../user/interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
 1. Do one of the following:
    - Select **Build** > **Pipelines**.
    - Go to a merge request and select the **Pipelines** tab.

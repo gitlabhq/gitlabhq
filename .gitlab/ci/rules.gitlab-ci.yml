@@ -145,9 +145,6 @@
 .if-merge-request-labels-pipeline-single-db-sec-connection: &if-merge-request-labels-pipeline-single-db-sec-connection
   if: '($CI_PIPELINE_SOURCE == "merge_request_event" && $CI_MERGE_REQUEST_EVENT_TYPE != "merge_train") && $CI_MERGE_REQUEST_LABELS =~ /pipeline:single-db-sec-connection/'
 
-.if-merge-request-labels-run-review-app: &if-merge-request-labels-run-review-app
-  if: '($CI_PIPELINE_SOURCE == "merge_request_event" && $CI_MERGE_REQUEST_EVENT_TYPE != "merge_train") && $CI_MERGE_REQUEST_LABELS =~ /pipeline:run-review-app/'
-
 .if-merge-request-labels-skip-rspec-fail-fast: &if-merge-request-labels-skip-rspec-fail-fast
   if: '($CI_PIPELINE_SOURCE == "merge_request_event" && $CI_MERGE_REQUEST_EVENT_TYPE != "merge_train") && $CI_MERGE_REQUEST_LABELS =~ /pipeline:skip-rspec-fail-fast/'
 
@@ -275,17 +272,6 @@
   - ".gitlab-ci.yml"
   - ".gitlab/ci/build-images.gitlab-ci.yml"
 
-.ci-review-patterns: &ci-review-patterns
-  - ".gitlab-ci.yml"
-  - ".gitlab/ci/frontend.gitlab-ci.yml"
-  - ".gitlab/ci/build-images.gitlab-ci.yml"
-  - ".gitlab/ci/review.gitlab-ci.yml"
-  - ".gitlab/ci/cng/**/*"
-  - ".gitlab/ci/review-apps/**/*"
-  - "scripts/review_apps/**/*"
-  - "scripts/trigger-build.rb"
-  - "{,ee/,jh/}{bin,config}/**/*.rb"
-
 .ci-templates-patterns: &ci-templates-patterns
   - ".gitlab/ci/static-analysis.gitlab-ci.yml"
   - "lib/gitlab/ci/templates/**/*.gitlab-ci.yml"
@@ -296,8 +282,6 @@
   - ".gitlab/ci/build-images.gitlab-ci.yml"
   - ".gitlab/ci/qa.gitlab-ci.yml"
   - ".gitlab/ci/test-on-omnibus/*.yml"
-  - ".gitlab/ci/review-apps/qa.gitlab-ci.yml"
-  - ".gitlab/ci/review-apps/rules.gitlab-ci.yml"
   - ".gitlab/ci/test-on-gdk/*.yml"
   - ".gitlab/ci/version.yml"
 
@@ -394,14 +378,15 @@
   - '{go.sum,*/go.sum,*/*/go.sum}'
   - '{yarn.lock,*/yarn.lock,*/*/yarn.lock}'
   # FE island changes
-  - "ee/frontend_islands/apps/**/{package.json,yarn.lock}"
+  - "ee/frontend_islands/{package.json,yarn.lock}"
+  - "ee/frontend_islands/{apps,packages}/**/package.json"
 
 .frontend-dependency-patterns: &frontend-dependency-patterns
   - "{package.json,yarn.lock}"
   - "config/webpack.config.js"
   - "config/helpers/*.js"
   # FE island changes
-  - "ee/frontend_islands/apps/**/{package.json,yarn.lock}"
+  - "ee/frontend_islands/{apps,packages}/**/package.json"
 
 .frontend-build-patterns: &frontend-build-patterns
   - "{package.json,yarn.lock}"
@@ -415,11 +400,12 @@
   - "{,ee/,jh/}app/assets/**/*"
   - "vendor/assets/**/*"
   # FE island changes
-  - "ee/frontend_islands/apps/**/.{gitattributes,nvmrc,prettierrc,stylelintrc,yamllint}"
-  - "ee/frontend_islands/apps/**/{package.json,yarn.lock}"
-  - "ee/frontend_islands/apps/**/tsconfig*.json"
-  - "ee/frontend_islands/apps/**/components.json"
+  - "ee/frontend_islands/{package.json,yarn.lock}"
+  - "ee/frontend_islands/{apps,packages}/**/package.json"
+  - "ee/frontend_islands/{apps,packages}/**/tsconfig*.json"
   - "ee/frontend_islands/apps/**/*.config.{js,ts,cjs,mjs}"
+  - "ee/frontend_islands/apps/**/components.json"
+  - "ee/frontend_islands/packages/**/index.{js,json}"
 
 # This list should match the list in Tasks::Gitlab::Assets.assets_impacting_compilation
 .assets-compilation-patterns: &assets-compilation-patterns
@@ -583,6 +569,9 @@
   - "{,ee/,jh/}{app/assets/javascripts,spec/frontend}/**/*"
   - "ee/frontend_islands/apps/**/*"
 
+.frontend-fe-predictive-patterns: &frontend-fe-predictive-patterns
+  - "ee/frontend_islands/apps/**/*"
+
 .frontend-code-patterns: &frontend-code-patterns
   - "**/{package.json,yarn.lock}"
   - "**/*.{js,cjs,mjs,ts,tsx,vue,graphql}"
@@ -594,13 +583,13 @@
   # match the .rc config files like .browserslistrc, .stylelintrc etc.,
   - "{.,}*rc"
 
-.code-fe-island-patterns: &code-fe-island-patterns
-  - "ee/frontend_islands/apps/**/.{gitattributes,nvmrc,prettierrc,stylelintrc,yamllint}"
-  - "ee/frontend_islands/apps/**/{package.json,yarn.lock}"
+.code-fe-islands-patterns: &code-fe-islands-patterns
+  - "ee/frontend_islands/{apps,packages}/**/package.json"
+  - "ee/frontend_islands/{apps,packages}/**/tsconfig*.json"
   - "ee/frontend_islands/apps/**/*/src/**/*.{js,cjs,mjs,ts,tsx,vue,graphql,css}"
-  - "ee/frontend_islands/apps/**/tsconfig*.json"
+  - "ee/frontend_islands/apps/**/*.config.{js,ts,cjs,mjs}"
   - "ee/frontend_islands/apps/**/components.json"
-  - "ee/frontend_islands/apps/**/*.config.{js,ts,cjs}"
+  - "ee/frontend_islands/packages/**/index.{js,json}"
 
 # Code patterns + .ci-patterns
 .code-patterns: &code-patterns
@@ -633,11 +622,11 @@
   - "doc/_index.md"
   - "doc/api/settings.md"
   # FE island changes
-  - "ee/frontend_islands/apps/**/.{gitattributes,nvmrc,prettierrc,stylelintrc,yamllint}"
-  - "ee/frontend_islands/apps/**/{package.json,yarn.lock}"
-  - "ee/frontend_islands/apps/**/tsconfig*.json"
-  - "ee/frontend_islands/apps/**/components.json"
+  - "ee/frontend_islands/{apps,packages}/**/package.json"
+  - "ee/frontend_islands/{apps,packages}/**/tsconfig*.json"
   - "ee/frontend_islands/apps/**/*.config.{js,ts,cjs,mjs}"
+  - "ee/frontend_islands/apps/**/components.json"
+  - "ee/frontend_islands/packages/**/index.{js,json}"
 
 # .code-patterns + .backstage-patterns
 .code-backstage-patterns: &code-backstage-patterns
@@ -678,11 +667,11 @@
   - "scripts/**/*"
   - "{,spec/}tooling/**/*"
   # FE island changes
-  - "ee/frontend_islands/apps/**/.{gitattributes,nvmrc,prettierrc,stylelintrc,yamllint}"
-  - "ee/frontend_islands/apps/**/{package.json,yarn.lock}"
-  - "ee/frontend_islands/apps/**/tsconfig*.json"
-  - "ee/frontend_islands/apps/**/components.json"
+  - "ee/frontend_islands/{apps,packages}/**/package.json"
+  - "ee/frontend_islands/{apps,packages}/**/tsconfig*.json"
   - "ee/frontend_islands/apps/**/*.config.{js,ts,cjs,mjs}"
+  - "ee/frontend_islands/apps/**/components.json"
+  - "ee/frontend_islands/packages/**/index.{js,json}"
 
 # .code-patterns + .qa-patterns
 .code-qa-patterns: &code-qa-patterns
@@ -717,11 +706,11 @@
   - ".dockerignore"
   - "{,jh/}qa/**/*"
   # FE island changes
-  - "ee/frontend_islands/apps/**/.{gitattributes,nvmrc,prettierrc,stylelintrc,yamllint}"
-  - "ee/frontend_islands/apps/**/{package.json,yarn.lock}"
-  - "ee/frontend_islands/apps/**/tsconfig*.json"
-  - "ee/frontend_islands/apps/**/components.json"
+  - "ee/frontend_islands/{apps,packages}/**/package.json"
+  - "ee/frontend_islands/{apps,packages}/**/tsconfig*.json"
   - "ee/frontend_islands/apps/**/*.config.{js,ts,cjs,mjs}"
+  - "ee/frontend_islands/apps/**/components.json"
+  - "ee/frontend_islands/packages/**/index.{js,json}"
 
 .code-rest-api-patterns: &code-rest-api-patterns
   - "{,ee/,jh/}lib/{,ee/,jh/}api/**/*"
@@ -773,11 +762,11 @@
   - "doc/_index.md"
   - "doc/api/settings.md"
   # FE island changes
-  - "ee/frontend_islands/apps/**/.{gitattributes,nvmrc,prettierrc,stylelintrc,yamllint}"
-  - "ee/frontend_islands/apps/**/{package.json,yarn.lock}"
-  - "ee/frontend_islands/apps/**/tsconfig*.json"
-  - "ee/frontend_islands/apps/**/components.json"
+  - "ee/frontend_islands/{apps,packages}/**/package.json"
+  - "ee/frontend_islands/{apps,packages}/**/tsconfig*.json"
   - "ee/frontend_islands/apps/**/*.config.{js,ts,cjs,mjs}"
+  - "ee/frontend_islands/apps/**/components.json"
+  - "ee/frontend_islands/packages/**/index.{js,json}"
 
 # .code-backstage-qa-patterns + .workhorse-patterns
 # NOTE: `setup-test-env-patterns` intentionally does not include docs files, because this would
@@ -836,11 +825,11 @@
   - "scripts/lint_templates_bash.rb"
   - "lib/gitlab/ci/templates/**/*.gitlab-ci.yml"
   # FE island changes
-  - "ee/frontend_islands/apps/**/.{gitattributes,nvmrc,prettierrc,stylelintrc,yamllint}"
-  - "ee/frontend_islands/apps/**/{package.json,yarn.lock}"
-  - "ee/frontend_islands/apps/**/tsconfig*.json"
-  - "ee/frontend_islands/apps/**/components.json"
+  - "ee/frontend_islands/{apps,packages}/**/package.json"
+  - "ee/frontend_islands/{apps,packages}/**/tsconfig*.json"
   - "ee/frontend_islands/apps/**/*.config.{js,ts,cjs,mjs}"
+  - "ee/frontend_islands/apps/**/components.json"
+  - "ee/frontend_islands/packages/**/index.{js,json}"
 
 .static-analysis-patterns: &static-analysis-patterns
   - ".{haml-lint,haml-lint_todo}.yml"
@@ -903,6 +892,7 @@
   - "ee/lib/ee/gitlab/audit/type/definition.rb"
 
 .custom-roles-patterns: &custom-roles-patterns
+  - "ee/config/feature_flags/**/custom_ability_*.yml"
   - "ee/config/custom_abilities/*.yml"
   - "doc/user/custom_roles/abilities.md"
   - "tooling/custom_roles/docs/templates/custom_abilities.md.erb"
@@ -1175,7 +1165,6 @@
   rules:
     - if: '$ENABLE_BUILD_QA_IMAGE == "true"'
     - <<: *if-merge-request-labels-run-all-e2e
-    - <<: *if-merge-request-labels-run-review-app
     - <<: *if-merge-request
       changes: *ruby-version-patterns
     - <<: *if-merge-request
@@ -1451,7 +1440,6 @@
     - <<: *if-rails-next-branch
     - <<: *if-force-ci
     - <<: *if-merge-request-labels-run-all-e2e
-    - <<: *if-merge-request-labels-run-review-app
     - <<: *if-merge-request
       changes: *qa-patterns
     - <<: *if-merge-request
@@ -1497,6 +1485,8 @@
     - <<: *if-default-refs
       changes: *workhorse-patterns
     - <<: *if-dot-com-gitlab-org-schedule
+      variables:
+        BABEL_ENV: "istanbul"
 
 .frontend:rules:eslint-changed-files:
   rules:
@@ -1609,12 +1599,13 @@
       changes:
         - '{,ee/}app/**/*.vue'
         - '{,ee/}app/**/*.stories.js'
+        - 'storybook/'
     - <<: *if-default-refs
       changes:
         - '{,ee/}app/**/*.vue'
         - '{,ee/}app/**/*.stories.js'
 
-.frontend:rules:fe-island:test:
+.frontend:rules:fe-islands:test:
   rules:
     - <<: *if-not-ee
       when: never
@@ -1623,18 +1614,18 @@
     - <<: *if-fork-merge-request
       when: never
     - <<: *if-automated-merge-request
-      changes: *code-fe-island-patterns
+      changes: *code-fe-islands-patterns
     - <<: *if-security-merge-request
-      changes: *code-fe-island-patterns
+      changes: *code-fe-islands-patterns
     - <<: *if-merge-request-labels-run-all-jest
     - <<: *if-merge-request-labels-frontend-and-feature-flag
-      changes: *code-fe-island-patterns
+      changes: *code-fe-islands-patterns
     - <<: *if-merge-request
-      changes: *code-fe-island-patterns
+      changes: *code-fe-islands-patterns
     - <<: *if-merge-request
       changes: [".gitlab/ci/frontend.gitlab-ci.yml"]
     - <<: *if-default-refs
-      changes: *code-fe-island-patterns
+      changes: *code-fe-islands-patterns
 
 .frontend:rules:jest:
   rules:
@@ -1658,6 +1649,14 @@
       when: never
     - <<: *if-default-refs
       changes: *code-backstage-patterns
+
+.frontend:rules:fe-islands:predictive:
+  rules:
+    - if: '$ENABLE_JEST_PREDICTIVE == "true"'
+    - <<: *if-not-ee
+      when: never
+    - <<: *if-merge-request
+      changes: *frontend-fe-predictive-patterns
 
 .frontend:rules:jest:predictive:
   rules:
@@ -1773,7 +1772,7 @@
     - if: $CI_SERVER_HOST == "gitlab.com" && $CI_PROJECT_PATH == "gitlab-org/gitlab" && $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH && $CI_PIPELINE_SOURCE == "push"
       changes: *code-backstage-patterns
 
-.frontend:rules:update-fe-island:
+.frontend:rules:update-fe-islands:
   rules:
     - <<: *if-not-ee
       when: never
@@ -1887,7 +1886,11 @@
       changes: *gdk-component-patterns
     - <<: *if-merge-request
       changes: *code-backstage-qa-patterns
-    - *if-dot-com-gitlab-org-schedule
+    - <<: *if-dot-com-gitlab-org-schedule
+      variables:
+        E2E_RUNTIME_COEFFICIENT_GDK: "1.2"
+        # calculate_parallel_jobs_count method in qa/qa/tools/ci/pipeline_creator.rb
+        # uses this coefficient to determine the number of parallel job instances
     - *if-default-branch-schedule-nightly
     # Rules to support e2e test execution
     - <<: *if-merge-request
@@ -1939,7 +1942,6 @@
 .qa:e2e-test-schedule-variables: &qa-e2e-test-schedule-variables
   CREATE_TEST_FAILURE_ISSUES: "true"
   PROCESS_TEST_RESULTS: "true"
-  QA_SAVE_TEST_METRICS: "true"
 
 .qa:rules:e2e-schedule-nightly:
   rules:
@@ -2007,7 +2009,6 @@
         ARCH: amd64,arm64
         CREATE_TEST_FAILURE_ISSUES: "true"
         PROCESS_TEST_RESULTS: "true"
-        QA_SAVE_TEST_METRICS: "true"
 
 .qa:rules:test-on-omnibus-ce:follow-up:
   rules:
@@ -2025,7 +2026,6 @@
         ARCH: amd64,arm64
         CREATE_TEST_FAILURE_ISSUES: "true"
         PROCESS_TEST_RESULTS: "true"
-        QA_SAVE_TEST_METRICS: "true"
 
 .qa:rules:e2e:test-on-gdk:
   rules:
@@ -2081,26 +2081,14 @@
     # Do not run for scheduled pipeline for rails-next branch
     - <<: *if-rails-branch-schedule
       when: never
-    - !reference [".qa:rules:e2e-blocking-base-before", rules]
-    - !reference [".prevent-tier-2-and-below", rules]
-    - !reference [".qa:rules:e2e-schedule-nightly", rules]
+    - !reference [".qa:rules:e2e-test-never-run", rules]
+    - !reference [".prevent-tier-1", rules]
     - <<: *if-merge-request
       changes: *cng-dependency-patterns
       when: manual
-    - <<: *if-merge-request
+    - if: '$CI_PIPELINE_SOURCE == "merge_request_event" && $CI_MERGE_REQUEST_EVENT_TYPE != "merge_train" && ($CI_MERGE_REQUEST_LABELS =~ /group::code review/ || $CI_MERGE_REQUEST_LABELS =~ /maintenance::dependency/)'
       changes: *backend-only-patterns
     - <<: *if-dot-com-gitlab-org-schedule
-
-.qa:rules:test-on-omnibus-nightly:
-  rules:
-    - !reference [".qa:rules:e2e-test-never-run", rules]
-    - <<: *if-security-schedule
-      when: never
-    - <<: *if-default-branch-schedule-nightly
-      allow_failure: true
-      variables:
-        <<: *qa-e2e-test-schedule-variables
-        QA_RUN_IN_PARALLEL: "false"
 
 .qa:rules:fulfillment-e2e-quarantine-report:
   rules:
@@ -2443,6 +2431,16 @@
     - <<: *if-default-refs
       changes: *backend-patterns
 
+.rails:rules:clickhouse-migration-changes:
+  rules:
+    - <<: *if-fork-merge-request
+      when: never
+    - if: '$ENABLE_RSPEC_UNIT == "true"'
+    - <<: *if-default-refs
+      changes:
+        - "db/click_house/**/*"
+        - "lib/click_house/**/*"
+
 .rails:rules:ee-only-clickhouse-changes:
   rules:
     - <<: *if-not-ee
@@ -2650,6 +2648,14 @@
       changes: *code-backstage-patterns
     - <<: *if-schedule-maintenance
     - <<: *if-merge-request-labels-run-all-rspec
+
+.rails:rules:coverage-export:
+  rules:
+    - <<: *if-not-ee
+      when: never
+    - if: '$GLCI_CLICKHOUSE_METRICS_URL == null || $GLCI_CLICKHOUSE_TEST_COVERAGE_DB == null || $GLCI_CLICKHOUSE_METRICS_USERNAME == null || $GLCI_CLICKHOUSE_METRICS_PASSWORD == null'
+      when: never
+    - <<: *if-schedule-maintenance
 
 .rails:rules:rspec-undercoverage:
   rules:
@@ -2952,130 +2958,8 @@
       allow_failure: true
 
 ################
-# Review rules #
+# Danger rules #
 ################
-.review-change-pattern: &review-change-pattern
-  APP_CHANGE_TRIGGER: "true"
-
-# The following rules needs to be the same as the one for .review:rules:review-stop
-# except that:
-# - most rules re automatic here (i.e. no `when: manual`) and not allowed to fail (i.e. no `allow_failure: true`) here
-# - several rules have `variables: *review-change-pattern` here
-.review:rules:start-review-app-pipeline:
-  rules:
-    - <<: *if-not-ee
-      when: never
-    - <<: *if-merge-request-labels-pipeline-expedite
-      when: never
-    - <<: *if-merge-request-labels-run-review-app
-    - if: '$CI_REVIEW_APPS_ENABLED != "true"'
-      when: never
-    - !reference [".prevent-tier-2-and-below", rules]
-    - <<: *if-dot-com-gitlab-org-merge-request
-      changes: *ci-review-patterns
-    - <<: *if-dot-com-gitlab-org-merge-request
-      changes: *frontend-build-patterns
-      variables: *review-change-pattern
-    - <<: *if-dot-com-gitlab-org-merge-request
-      changes: *controllers-patterns
-      variables: *review-change-pattern
-      when: manual
-      allow_failure: true
-    - <<: *if-dot-com-gitlab-org-merge-request
-      changes: *models-patterns
-      variables: *review-change-pattern
-      when: manual
-      allow_failure: true
-    - <<: *if-dot-com-gitlab-org-merge-request
-      changes: *lib-gitlab-patterns
-      variables: *review-change-pattern
-      when: manual
-      allow_failure: true
-    - <<: *if-dot-com-gitlab-org-merge-request
-      changes: *qa-patterns
-    - <<: *if-dot-com-gitlab-org-merge-request
-      changes: *code-patterns
-      when: manual
-      allow_failure: true
-    - <<: *if-dot-com-gitlab-org-schedule
-      allow_failure: true
-
-.review:rules:review-cleanup:
-  rules:
-    - <<: *if-dot-com-gitlab-org-merge-request
-      changes:
-        - "scripts/review_apps/automated_cleanup.rb"
-        - "tooling/lib/tooling/helm3_client.rb"
-        - "tooling/lib/tooling/kubernetes_client.rb"
-    - <<: *if-dot-com-gitlab-org-merge-request
-      changes: *ci-review-patterns
-      when: manual
-      allow_failure: true
-    - <<: *if-dot-com-ee-schedule-default-branch-maintenance
-      allow_failure: true
-
-.review:rules:review-stop:
-  rules:
-    - <<: *if-not-ee
-      when: never
-    - <<: *if-merge-request-labels-pipeline-expedite
-      when: never
-    - <<: *if-merge-request-labels-run-review-app
-      when: manual
-      allow_failure: true
-    - if: '$CI_REVIEW_APPS_ENABLED != "true"'
-      when: never
-    - !reference [".prevent-tier-2-and-below", rules]
-    - <<: *if-dot-com-gitlab-org-merge-request
-      changes: *ci-review-patterns
-      when: manual
-      allow_failure: true
-    - <<: *if-dot-com-gitlab-org-merge-request
-      changes: *frontend-build-patterns
-      when: manual
-      allow_failure: true
-    - <<: *if-dot-com-gitlab-org-merge-request
-      changes: *controllers-patterns
-      when: manual
-      allow_failure: true
-    - <<: *if-dot-com-gitlab-org-merge-request
-      changes: *models-patterns
-      when: manual
-      allow_failure: true
-    - <<: *if-dot-com-gitlab-org-merge-request
-      changes: *lib-gitlab-patterns
-      when: manual
-      allow_failure: true
-    - <<: *if-dot-com-gitlab-org-merge-request
-      changes: *qa-patterns
-      when: manual
-      allow_failure: true
-    - <<: *if-dot-com-gitlab-org-merge-request
-      changes: *code-patterns
-      when: manual
-      allow_failure: true
-    - <<: *if-dot-com-gitlab-org-schedule
-      when: manual
-      allow_failure: true
-
-.review:rules:review-k8s-resources-count-checks:
-  rules:
-    - <<: *if-dot-com-ee-schedule-default-branch-maintenance
-      allow_failure: true
-    - <<: *if-dot-com-gitlab-org-merge-request
-      changes:
-        - "scripts/review_apps/k8s-resources-count-checks.sh"
-      allow_failure: true
-
-.review:rules:review-gcp-quotas-checks:
-  rules:
-    - <<: *if-dot-com-ee-schedule-default-branch-maintenance
-      allow_failure: true
-    - <<: *if-dot-com-gitlab-org-merge-request
-      changes:
-        - "scripts/review_apps/gcp-quotas-checks.rb"
-      allow_failure: true
-
 .review:rules:danger:
   rules:
     - <<: *if-merge-request
@@ -3334,7 +3218,6 @@
     - <<: *if-merge-request-labels-run-all-rspec
     - <<: *if-merge-request-labels-run-all-jest
     - <<: *if-merge-request-labels-run-single-db
-    - <<: *if-merge-request-labels-run-review-app
     - <<: *if-merge-request-labels-run-all-e2e
     - <<: *if-merge-request-targeting-stable-branch
       changes: *setup-test-env-patterns

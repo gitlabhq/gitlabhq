@@ -42,7 +42,7 @@ RSpec.describe Gitlab::Ci::Build::Releaser, feature_category: :continuous_integr
       glab_create_windows = 'glab release create -R $$env:CI_PROJECT_PATH'
       glab_command = "\"release-$CI_COMMIT_SHA\" #{glab_assets_links} --milestone \"m1,m2,m3\" --name \"Release $CI_COMMIT_SHA\" --experimental-notes-text-or-file \"Created using the release-cli $EXTRA_DESCRIPTION\" --ref \"$CI_COMMIT_SHA\" --tag-message \"Annotated tag message\" --released-at \"2020-07-15T08:00:00Z\" --no-update --no-close-milestone"
 
-      warning_message = "Warning: release-cli will not be supported after 19.0. Please use glab version >= #{described_class::GLAB_REQUIRED_VERSION}. Troubleshooting: http://localhost/help/user/project/releases/_index.md#gitlab-cli-version-requirement"
+      warning_message = "Warning: release-cli will not be supported after 20.0. Please use glab version >= #{described_class::GLAB_REQUIRED_VERSION}. Troubleshooting: http://localhost/help/user/project/releases/_index.md#gitlab-cli-version-requirement"
 
       unix_result_for_glab_or_release_cli_without_catalog_publish = <<~BASH
       if command -v glab &> /dev/null; then

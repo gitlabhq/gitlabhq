@@ -5,6 +5,7 @@ import { getContentWrapperHeight } from '~/lib/utils/dom_utils';
 import { DRAWER_Z_INDEX } from '~/lib/utils/constants';
 import SquashSettingsDrawer from '~/projects/settings/branch_rules/components/view/squash_settings_drawer.vue';
 import {
+  SQUASH_SETTING_DEFAULT,
   SQUASH_SETTING_DO_NOT_ALLOW,
   SQUASH_SETTING_ALLOW,
   SQUASH_SETTING_ENCOURAGE,
@@ -56,7 +57,7 @@ describe('Squash Settings Drawer', () => {
     );
 
     it.each([
-      [undefined, SQUASH_SETTING_DO_NOT_ALLOW],
+      ['Default', SQUASH_SETTING_DEFAULT],
       ['Allow', SQUASH_SETTING_ALLOW],
       ['Encourage', SQUASH_SETTING_ENCOURAGE],
       ['Require', SQUASH_SETTING_REQUIRE],
@@ -66,6 +67,13 @@ describe('Squash Settings Drawer', () => {
       await nextTick();
       findSaveButton().vm.$emit('click');
       expect(wrapper.emitted('submit')).toContainEqual([expected]);
+    });
+
+    it('sets correct selection for Default option when isAllBranchesRule is true', async () => {
+      createComponent({ selectedOption: undefined, isAllBranchesRule: true });
+      await nextTick();
+      findSaveButton().vm.$emit('click');
+      expect(wrapper.emitted('submit')).toContainEqual([SQUASH_SETTING_DO_NOT_ALLOW]);
     });
   });
 

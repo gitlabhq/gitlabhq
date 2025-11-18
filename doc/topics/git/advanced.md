@@ -2,7 +2,6 @@
 stage: Create
 group: Source Code
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
-description: Introduction to Git rebase and force push, methods to resolve merge conflicts through the command line.
 title: Advanced Git operations
 description: Rebase, cherry-pick, revert changes, repository, and file management.
 ---
@@ -31,7 +30,7 @@ For more information, see [Get started learning Git](get_started.md).
 When you use advanced Git operations, you should:
 
 - Create a backup or work on a [separate branch](branch.md).
-- Communicate with your team before when you use operations that affect shared branch history.
+- Communicate with your team before you use operations that affect shared branch history.
 - Use descriptive [commit messages](../../tutorials/update_commit_messages/_index.md)
   when you rewrite history.
 - Update your knowledge of Git to stay current with best practices and new features.
@@ -73,7 +72,7 @@ For more information, see [Revert changes](undo.md).
 
 The size of a Git repository can impact performance and storage costs.
 It can differ slightly from one instance to another due to compression, housekeeping, and other factors.
-For more information about repository size, see [Repository size](../../user/project/repository/repository_size.md)
+For more information about repository size, see [Repository size](../../user/project/repository/repository_size.md).
 
 You can use Git to purge files from your repository's history and reduce its size. For more information, see [Reduce repository size](repository.md).
 
@@ -83,7 +82,7 @@ You can use Git to manage files in your repository. It helps you track changes, 
 
 - `git log`: View changes to files in your repository.
 - `git blame`: Identify who last modified a line of code in a file.
-- `git lfs`: Manages, track, and lock files in your repository.
+- `git lfs`: Manage, track, and lock files in your repository.
 
 <!-- Include when the relevant MR is merged.
 

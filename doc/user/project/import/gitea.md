@@ -2,7 +2,7 @@
 stage: Create
 group: Import
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
-title: Import your project from Gitea to GitLab
+title: Migrate from Gitea
 description: "Import projects from Gitea to GitLab."
 ---
 
@@ -62,7 +62,7 @@ When importing:
 
 The Gitea importer page is visible when you create a new project. To begin a Gitea import:
 
-1. On the left sidebar, at the top, select **Create new** ({{< icon name="plus" >}}) and **New project/repository**.
+1. On the left sidebar, at the top, select **Create new** ({{< icon name="plus" >}}) and **New project/repository**. If you've [turned on the new navigation](../../interface_redesign.md#turn-new-navigation-on-or-off), this button is in the upper-right corner.
 1. Select **Gitea** to start the import authorization process.
 
 ### Authorize access to your repositories using a personal access token
@@ -114,8 +114,9 @@ of mapping user contributions for GitLab.com and GitLab Self-Managed.
 
 ### Old method of user contribution mapping
 
-You can use the old user contribution mapping method for imports to GitLab Self-Managed and GitLab Dedicated instances.
-To use this method, `gitea_user_mapping` must be disabled.
+In GitLab 18.5 and earlier, you can disable the `gitea_user_mapping` feature flag to use the legacy
+user contribution mapping method for imports to GitLab Self-Managed and GitLab Dedicated instances.
+
 For imports to GitLab.com, you must
 use the [improved method](_index.md#user-contribution-and-membership-mapping) instead.
 

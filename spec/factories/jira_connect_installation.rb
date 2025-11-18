@@ -6,5 +6,6 @@ FactoryBot.define do
     shared_secret { 'jrNarHaRYaumMvfV3UnYpwt8' }
     base_url { 'https://sample.atlassian.net' }
     organization { association(:organization) }
+    display_url { 'https://custom.example.com' }
   end
 end

@@ -20,6 +20,7 @@ import { Mousetrap } from '~/lib/mousetrap';
 import { ISSUABLE_COMMENT_OR_REPLY, keysFor } from '~/behaviors/shortcuts/keybindings';
 import { CopyAsGFM } from '~/behaviors/markdown/copy_as_gfm';
 import { useNotes } from '~/notes/store/legacy_notes';
+import { querySelectionClosest } from '~/lib/utils/selection';
 import * as constants from '../constants';
 import eventHub from '../event_hub';
 import noteQuery from '../graphql/note.query.graphql';
@@ -87,10 +88,8 @@ export default {
   },
   data() {
     return {
-      currentFilter: null,
       renderSkeleton: !this.shouldShow,
       aiLoading: null,
-      isInitialEventTriggered: false,
       previewNote: null,
     };
   },
@@ -148,11 +147,9 @@ export default {
     ...mapState(useNotes, [
       'isNotesFetched',
       'convertedDisscussionIds',
-      'getNotesDataByProp',
       'isLoading',
       'isFetching',
       'commentsDisabled',
-      'getNoteableData',
       'userCanReply',
       'sortDirection',
       'timelineEnabled',
@@ -252,7 +249,7 @@ export default {
     }
 
     eventHub.$on('notesApp.updateIssuableConfidentiality', this.setConfidentiality);
-    Mousetrap.bind(keysFor(ISSUABLE_COMMENT_OR_REPLY), (e) => this.quoteReply(e));
+    Mousetrap.bind(keysFor(ISSUABLE_COMMENT_OR_REPLY), this.quoteReply);
   },
   updated() {
     this.$nextTick(() => {
@@ -264,7 +261,7 @@ export default {
     eventHub.$off('notesApp.updateIssuableConfidentiality', this.setConfidentiality);
     eventHub.$off('noteFormStartReview', this.handleReviewTracking);
     eventHub.$off('noteFormAddToReview', this.handleReviewTracking);
-    Mousetrap.unbind(keysFor(ISSUABLE_COMMENT_OR_REPLY), this.quoteReply);
+    Mousetrap.unbind(keysFor(ISSUABLE_COMMENT_OR_REPLY));
     const { parentElement } = this.$el;
     if (parentElement && parentElement.classList.contains('js-vue-notes-event')) {
       parentElement.removeEventListener('toggleAward', this.handleAward);
@@ -273,9 +270,7 @@ export default {
   methods: {
     ...mapActions(useNotes, [
       'toggleAward',
-      'setLastFetchedAt',
       'setTargetNoteHash',
-      'toggleDiscussion',
       'expandDiscussion',
       'startTaskList',
       'convertToDiscussion',
@@ -286,31 +281,16 @@ export default {
       const { awardName, noteId } = event.detail;
       this.toggleAward({ awardName, noteId });
     },
-    getDiscussionInSelection() {
-      const selection = window.getSelection();
-      if (selection.rangeCount <= 0) return null;
+    async quoteReply() {
+      if (!this.shouldShow) return;
 
-      const el = selection.getRangeAt(0).startContainer;
-      const node = el.nodeType === Node.TEXT_NODE ? el.parentNode : el;
-      return node.closest('.js-noteable-discussion');
-    },
-    async quoteReply(e) {
-      const discussionEl = this.getDiscussionInSelection();
-      const text = await CopyAsGFM.selectionToGfm();
-
-      // Prevent 'r' being written.
-      if (e && typeof e.preventDefault === 'function') {
-        e.preventDefault();
-      }
+      const discussionEl = querySelectionClosest('.js-discussion-container');
 
       if (!discussionEl) {
+        const text = await CopyAsGFM.selectionToGfm();
         this.replyInMainEditor(text);
       } else {
-        const instance = this.$refs.discussions.find(({ $el }) => $el === discussionEl);
-        // prevent hotkey input from going into the form
-        requestAnimationFrame(() => {
-          instance.showReplyForm(text);
-        });
+        discussionEl.dispatchEvent(new CustomEvent('quoteReply'));
       }
     },
     replyInMainEditor(text) {
@@ -432,9 +412,7 @@ export default {
             </template>
             <noteable-discussion
               v-else
-              ref="discussions"
               :key="discussion.id"
-              class="js-noteable-discussion"
               :discussion="discussion"
               :render-diff-file="true"
               is-overview-tab

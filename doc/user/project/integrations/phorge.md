@@ -18,13 +18,14 @@ title: Phorge
 
 {{< /history >}}
 
-You can use [Phorge](https://we.phorge.it/) as an external issue tracker in GitLab.
+You can use [Phorge](https://we.phorge.it/) as an
+[external issue tracker](../../../integration/external-issue-tracker.md) in GitLab.
 
 ## Configure the integration
 
 To configure Phorge in a GitLab project:
 
-1. On the left sidebar, select **Search or go to** and find your project.
+1. On the left sidebar, select **Search or go to** and find your project. If you've [turned on the new navigation](../../interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
 1. Select **Settings** > **Integrations**.
 1. Select **Phorge**.
 1. Under **Enable integration**, select the **Active** checkbox.

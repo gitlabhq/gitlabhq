@@ -26,9 +26,9 @@ If you cannot install a browser plugin, you can [manually generate and capture a
 
 Pay specific attention to:
 
-- The `NameID`, which we use to identify which user is signing in. If the user has previously signed in, this
-  [must match the value we have stored](#verify-nameid).
-- The presence of a `X509Certificate`, which we require to verify the response signature.
+- The `NameID`, which identifies the user signing in. If the user has previously
+  signed in, this must match the value that [GitLab stored](#verify-nameid).
+- The presence of a `X509Certificate`, which is required to verify the response signature.
 - The `SubjectConfirmation` and `Conditions`, which can cause errors if misconfigured.
 
 ### Generate a SAML response
@@ -48,7 +48,7 @@ To generate a SAML Response:
    - Select **Authorize** or attempt to sign
 1. For GitLab Self-Managed instance:
    - Go to the instance home page
-   - Click on the `SAML Login` button to sign in
+   - Select the `SAML Login` button to sign in
 1. A SAML response is displayed in the tracer console that resembles this
    [example SAML response](_index.md#example-saml-response).
 1. Within the SAML tracer, select the **Export** icon to save the response in JSON format.
@@ -61,7 +61,7 @@ For an overview, see this [video on manually generating a SAML response without 
 
 Regardless of what browser you use, the process is similar to the following:
 
-1. Right-click on a new browser and click on **Inspect** to open the **DevTools** window.
+1. Right-click on a new browser and select **Inspect** to open the **DevTools** window.
 1. Select the **Network** tab. Make sure that **Preserve log** is selected.
 1. Switch to the browser page and sign in to GitLab using SAML SSO.
 1. Switch back to the **DevTools** window and filter for the `callback` event.
@@ -137,7 +137,8 @@ If you have configured SAML Group Links, the log also shows entries detailing me
     "custom_message": "Membership destroyed",
     "ip_address": "45.87.213.198",
     "entity_path": "group1"
-  },
+  }
+}
 ```
 
 You can also see details of the user that GitLab received from the SAML provider in `auth_json.log`, for example:
@@ -215,17 +216,34 @@ You can use one of the following to troubleshoot SAML:
 
 ## Verify configuration
 
-For convenience, we've included some [example resources](example_saml_config.md) used by our Support Team. While they may help you verify the SAML app configuration, they are not guaranteed to reflect the current state of third-party products.
+For convenience, some [example resources](example_saml_config.md) used by the GitLab
+Support Team are included. While they may help you verify the SAML app configuration,
+they are not guaranteed to reflect the current state of third-party products.
 
 ### Calculate the fingerprint
 
-When configuring the `idp_cert_fingerprint` you should use a SHA256 fingerprint whenever possible. SHA1 is also supported, but is not recommended. You can calculate the fingerprint by running the following command on the certificate file:
+When configuring the `idp_cert_fingerprint`, you should use a SHA256 fingerprint whenever possible. SHA1 is also supported, but is not recommended. To calculate the fingerprint, run the following command on the certificate file:
 
 ```shell
 openssl x509 -in <certificate.crt> -noout -fingerprint -sha256
 ```
 
 Replace `<certificate.crt>` with the name of the certificate file.
+
+{{< alert type="note" >}}
+
+In GitLab 17.11 and later, the fingerprint algorithm is
+[automatically detected](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/184530)
+based on fingerprint length.
+
+In GitLab 17.10 and earlier, SHA1 is the default fingerprint algorithm.
+To use a SHA256 fingerprint, you must specify the algorithm:
+
+```ruby
+idp_cert_fingerprint_algorithm: "http://www.w3.org/2001/04/xmlenc#sha256"
+```
+
+{{< /alert >}}
 
 ## SSO Certificate updates
 
@@ -278,7 +296,7 @@ you must set `attribute_statements` in the SAML configuration to
 
 ## User sign in banner error messages
 
-### Message: "SAML authentication failed: SAML NameID is missing from your SAML response."
+### Message: `SAML authentication failed: SAML NameID is missing from your SAML response.`
 
 You might get an error that states `SAML authentication failed: SAML NameID is missing from your SAML response. Please contact your administrator.`
 
@@ -289,7 +307,7 @@ To resolve this issue:
 - Contact your administrator to ensure your IdP account has an assigned `NameID`.
 - Use a [SAML debugging tool](#saml-debugging-tools) to verify that your SAML response has a valid `NameID`.
 
-### Message: "SAML authentication failed: Extern uid has already been taken."
+### Message: `SAML authentication failed: Extern uid has already been taken.`
 
 You might get an error that states `SAML authentication failed: Extern uid has already been taken. Please contact your administrator to generate a unique external_uid (NameID).`
 
@@ -299,21 +317,21 @@ To resolve this issue, tell your administrator to re-generate a unique `Extern U
 
 If you do not wish to use that GitLab user with the SAML login, you can [unlink the GitLab account from the SAML app](_index.md#unlink-accounts).
 
-### Message: "SAML authentication failed: User has already been taken"
+### Message: `SAML authentication failed: User has already been taken`
 
 The user that you're signed in with already has SAML linked to a different identity, or the `NameID` value has changed.
 Here are possible causes and solutions:
 
-| Cause                                                                                          | Solution                                                                                                                                                                   |
-| ---------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Cause                                                                                          | Solution |
+|------------------------------------------------------------------------------------------------|----------|
 | You've tried to link multiple SAML identities to the same user, for a given identity provider. | Change the identity that you sign in with. To do so, [unlink the previous SAML identity](_index.md#unlink-accounts) from this GitLab account before attempting to sign in again. |
-| The `NameID` changes every time the user requests SSO identification | [Check the `NameID`](#verify-nameid) is not set with `Transient` format, or the `NameID` is not changing on subsequent requests.|
+| The `NameID` changes every time the user requests SSO identification                           | [Check the `NameID`](#verify-nameid) is not set with `Transient` format, or the `NameID` is not changing on subsequent requests. |
 
-### Message: "SAML authentication failed: Email has already been taken"
+### Message: `SAML authentication failed: Email has already been taken`
 
-| Cause                                                                                                                                    | Solution                                                                 |
-| ---------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------ |
-| If a GitLab user account exists with the same email address, but the account is not associated with a SAML identity. | On GitLab.com, the user needs to [link their account](_index.md#user-access-and-management). On GitLab Self-Managed, administrators can configure the instance to [automatically link the SAML identity with the GitLab user account](../../../integration/saml.md#link-saml-identity-for-an-existing-user) when they first sign in.  |
+| Cause                                                                                                                | Solution |
+|----------------------------------------------------------------------------------------------------------------------|----------|
+| If a GitLab user account exists with the same email address, but the account is not associated with a SAML identity. | On GitLab.com, the user needs to [link their account](_index.md#user-access-and-management). On GitLab Self-Managed, administrators can configure the instance to [automatically link the SAML identity with the GitLab user account](../../../integration/saml.md#link-saml-identity-for-an-existing-user) when they first sign in. |
 
 User accounts are created in one of the following ways:
 
@@ -331,7 +349,7 @@ Getting both of these errors at the same time suggests the `NameID` capitalizati
 
 This can be prevented by configuring the `NameID` to return a consistent value. Fixing this for an individual user involves changing the identifier for the user. For GitLab.com, the user needs to [unlink their SAML from the GitLab account](_index.md#unlink-accounts).
 
-### Message: "Request to link SAML account must be authorized"
+### Message: `Request to link SAML account must be authorized`
 
 Ensure that the user who is trying to link their GitLab account has been added as a user within the identity provider's SAML app.
 
@@ -362,7 +380,7 @@ to [reset their password](https://gitlab.com/users/password/new) if both:
 - The account was provisioned by SCIM.
 - They are signing in with username and password for the first time.
 
-### Message: "SAML Name ID and email address do not match your user account"
+### Message: `SAML Name ID and email address do not match your user account`
 
 {{< details >}}
 
@@ -381,7 +399,7 @@ The workaround is that a GitLab group Owner uses the [SAML API](../../../api/sam
 The `extern_uid` value must match the Name ID value sent by the SAML identity provider (IdP). Depending on the IdP configuration
 this may be a generated unique ID, an email address, or other value.
 
-### Error: Certificate element missing in response (`ds:x509certificate`)
+### Error: `Certificate element missing in response (ds:x509certificate)`
 
 This error suggests that the IdP is not configured to include the X.509 certificate in the SAML response:
 
@@ -404,7 +422,9 @@ For GitLab Self-Managed, administrators can use the [users API](../../../api/use
 
 When using SAML for groups, group members of a role with the appropriate permissions can make use of the [members API](../../../api/members.md) to view group SAML identity information for members of the group.
 
-This can then be compared to the `NameID` being sent by the identity provider by decoding the message with a [SAML debugging tool](#saml-debugging-tools). We require that these match to identify users.
+This can then be compared to the `NameID` sent by the identity provider by decoding the
+message with a [SAML debugging tool](#saml-debugging-tools). These values must match to
+identify users.
 
 ### Stuck in a login "loop"
 
@@ -516,7 +536,7 @@ This message might indicate that you must add or remove a domain from your domai
 
 To implement this workaround:
 
-1. On the left sidebar, at the bottom, select **Admin**.
+1. On the left sidebar, at the bottom, select **Admin**. If you've [turned on the new navigation](../../interface_redesign.md#turn-new-navigation-on-or-off), in the upper-right corner, select **Admin**.
 1. Select **Settings** > **General**.
 1. Expand **Sign-up restrictions**.
 1. Add or remove a domain as appropriate to **Allowed domains for sign-ups** and **Denied domains for sign-ups**.
@@ -544,7 +564,7 @@ Pay particular attention to the following 403 errors:
 - `app_not_configured`
 - `app_not_configured_for_user`
 
-## Message: "The member's email address is not linked to a SAML account"
+## Message: `The member's email address is not linked to a SAML account`
 
 {{< details >}}
 

@@ -29,13 +29,13 @@ describe('CI Icon component', () => {
   });
 
   describe.each`
-    showStatusText | showTooltip | expectedText | expectedTooltip
-    ${true}        | ${true}     | ${'Success'} | ${undefined}
-    ${true}        | ${false}    | ${'Success'} | ${undefined}
-    ${false}       | ${true}     | ${''}        | ${'Pipeline status: Success'}
-    ${false}       | ${false}    | ${''}        | ${undefined}
+    showStatusText | showTooltip | expectedText         | expectedTooltip
+    ${true}        | ${true}     | ${'Success'}         | ${undefined}
+    ${true}        | ${false}    | ${'Success'}         | ${undefined}
+    ${false}       | ${true}     | ${'Status: Success'} | ${'Status: Success'}
+    ${false}       | ${false}    | ${'Status: Success'} | ${undefined}
   `(
-    'when showStatusText is %{showStatusText} and showTooltip is Pipeline Status: %{showTooltip}',
+    'when showStatusText is $showStatusText and showTooltip is Status: $showTooltip',
     ({ showStatusText, showTooltip, expectedText, expectedTooltip }) => {
       beforeEach(() => {
         createComponent({
@@ -50,8 +50,8 @@ describe('CI Icon component', () => {
         expect(wrapper.attributes('title')).toBe(expectedTooltip);
       });
 
-      it(`aria-label is set`, () => {
-        expect(wrapper.attributes('aria-label')).toBe('Status: Success');
+      it(`aria-label is not set`, () => {
+        expect(wrapper.attributes('aria-label')).toBe(undefined);
       });
 
       it(`text shown is ${expectedText}`, () => {
@@ -61,6 +61,20 @@ describe('CI Icon component', () => {
       it(`tooltip shown is ${expectedTooltip}`, () => {
         expect(wrapper.attributes('title')).toBe(expectedTooltip);
       });
+
+      if (!showStatusText) {
+        it('shows screen reader text when status text is not shown', () => {
+          const srText = wrapper.find('[data-testid="ci-icon-sr-text"]');
+          expect(srText.exists()).toBe(true);
+          expect(srText.text()).toBe('Status: Success');
+          expect(srText.classes()).toContain('gl-sr-only');
+        });
+      } else {
+        it('does not show screen reader text when status text is shown', () => {
+          const srText = wrapper.find('[data-testid="ci-icon-sr-text"]');
+          expect(srText.exists()).toBe(false);
+        });
+      }
     },
   );
 
@@ -105,6 +119,36 @@ describe('CI Icon component', () => {
       });
 
       expect(wrapper.attributes('href')).toBe(undefined);
+    });
+
+    it('sets aria-label on link element', () => {
+      createComponent({
+        props: {
+          status: {
+            ...mockStatus,
+            detailsPath: '/path',
+          },
+          useLink: true,
+        },
+      });
+
+      expect(wrapper.attributes('aria-label')).toBe('Status: Success');
+    });
+
+    it('does not show screen reader text on link element', () => {
+      createComponent({
+        props: {
+          status: {
+            ...mockStatus,
+            detailsPath: '/path',
+          },
+          useLink: true,
+          showStatusText: false,
+        },
+      });
+
+      const srText = wrapper.find('[data-testid="ci-icon-sr-text"]');
+      expect(srText.exists()).toBe(false);
     });
   });
 

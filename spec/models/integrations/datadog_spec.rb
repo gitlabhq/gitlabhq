@@ -60,6 +60,8 @@ RSpec.describe Integrations::Datadog, feature_category: :integrations do
     let(:hook_url) { "#{described_class::URL_TEMPLATE % { datadog_domain: dd_site }}?dd-api-key={api_key}&env=#{dd_env}&service=#{dd_service}" }
   end
 
+  it_behaves_like Integrations::HasAvatar
+
   describe 'validations' do
     subject { instance }
 

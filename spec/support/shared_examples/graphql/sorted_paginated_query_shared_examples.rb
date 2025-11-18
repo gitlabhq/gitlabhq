@@ -63,6 +63,7 @@ RSpec.shared_examples 'sorted paginated query' do |conditions = {}|
 
   describe do
     let(:params) { sort_argument }
+    let(:query) { pagination_query(params) }
 
     # Convenience helper for the large number of queries defined as a projection
     # from some root value indexed by full_path to a collection of objects with IID
@@ -100,8 +101,6 @@ RSpec.shared_examples 'sorted paginated query' do |conditions = {}|
       cursor = graphql_dig_at(graphql_data(fresh_response_data), *data_path, :page_info, :start_cursor)
       cursor.is_a?(Array) ? cursor.first : cursor
     end
-
-    let(:query) { pagination_query(params) }
 
     before do
       post_graphql(query, current_user: current_user)

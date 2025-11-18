@@ -24,7 +24,9 @@ const feature = secretPushProtectionMock;
 const defaultProvide = {
   secretPushProtectionAvailable: true,
   secretPushProtectionEnabled: false,
-  userIsProjectAdmin: true,
+  canEnableSpp: true,
+  secretPushProtectionLicensed: true,
+  isGitlabCom: false,
   projectFullPath: 'flightjs/flight',
   secretDetectionConfigurationPath: 'flightjs/Flight/-/security/configuration/secret_detection',
 };
@@ -87,19 +89,32 @@ describe('SecretPushProtectionFeatureCard component', () => {
     expect(link.attributes('href')).toBe(feature.helpPath);
   });
 
-  it('shows the settings button with correct icon and link', () => {
-    const { secretDetectionConfigurationPath } = defaultProvide;
-    const button = findSettingsButton();
+  describe('settings button', () => {
+    it('shows the settings button when licensed', () => {
+      const { secretDetectionConfigurationPath } = defaultProvide;
+      const button = findSettingsButton();
 
-    expect(button.exists()).toBe(true);
-    expect(button.props('icon')).toBe('settings');
-    expect(button.attributes('href')).toBe(secretDetectionConfigurationPath);
+      expect(button.exists()).toBe(true);
+      expect(button.props('icon')).toBe('settings');
+      expect(button.attributes('href')).toBe(secretDetectionConfigurationPath);
+    });
+
+    it('hides the settings button when not licensed', () => {
+      createComponent({
+        provide: {
+          secretPushProtectionLicensed: false,
+        },
+      });
+
+      expect(findSettingsButton().exists()).toBe(false);
+    });
   });
 
   describe('when feature is available', () => {
     beforeEach(() => {
       createComponent();
     });
+
     it('renders toggle in correct default state', () => {
       expect(findToggle().props('disabled')).toBe(false);
       expect(findToggle().props('value')).toBe(false);
@@ -127,7 +142,7 @@ describe('SecretPushProtectionFeatureCard component', () => {
     });
   });
 
-  describe('when feature is not availabe', () => {
+  describe('when feature is not available', () => {
     describe('when instance setting is disabled', () => {
       beforeEach(() => {
         createComponent({
@@ -150,7 +165,7 @@ describe('SecretPushProtectionFeatureCard component', () => {
         expect(findLockIcon().props('name')).toBe('lock');
       });
 
-      it('shows correct tootlip', () => {
+      it('shows correct tooltip', () => {
         expect(findPopover().exists()).toBe(true);
         expect(findPopover().text()).toBe(
           'This feature has been disabled at the instance level. Please reach out to your instance administrator to request activation.',
@@ -169,6 +184,7 @@ describe('SecretPushProtectionFeatureCard component', () => {
           },
         });
       });
+
       it('should display correct message', () => {
         expect(wrapper.text()).toContain('Available with Ultimate');
       });
@@ -179,6 +195,71 @@ describe('SecretPushProtectionFeatureCard component', () => {
 
       it('should not render lock icon', () => {
         expect(findLockIcon().exists()).toBe(false);
+      });
+    });
+  });
+
+  describe('when user cannot enable SPP', () => {
+    beforeEach(() => {
+      createComponent({
+        provide: {
+          canEnableSpp: false,
+        },
+      });
+    });
+
+    it('disables the toggle', () => {
+      expect(findToggle().props('disabled')).toBe(true);
+    });
+
+    it('shows access level tooltip', () => {
+      expect(findPopover().exists()).toBe(true);
+    });
+  });
+
+  describe('availability text', () => {
+    describe('on GitLab.com', () => {
+      beforeEach(() => {
+        createComponent({
+          provide: {
+            isGitlabCom: true,
+            secretPushProtectionLicensed: false,
+          },
+          props: {
+            feature: {
+              ...secretPushProtectionMock,
+              available: false,
+            },
+          },
+        });
+      });
+
+      it('displays GitLab.com-specific message', () => {
+        expect(wrapper.text()).toContain(
+          'Available with Ultimate. Enabled by default for all public projects.',
+        );
+      });
+    });
+
+    describe('not on GitLab.com', () => {
+      beforeEach(() => {
+        createComponent({
+          provide: {
+            isGitlabCom: false,
+            secretPushProtectionLicensed: false,
+          },
+          props: {
+            feature: {
+              ...secretPushProtectionMock,
+              available: false,
+            },
+          },
+        });
+      });
+
+      it('displays standard message', () => {
+        expect(wrapper.text()).toContain('Available with Ultimate');
+        expect(wrapper.text()).not.toContain('Enabled by default for all public projects');
       });
     });
   });

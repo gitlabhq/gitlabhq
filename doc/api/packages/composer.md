@@ -12,7 +12,7 @@ title: Composer API
 
 {{< /details >}}
 
-This is the API documentation for [Composer Packages](../../user/packages/composer_repository/_index.md).
+Use this API to interact with the [Composer package manager client](../../user/packages/composer_repository/_index.md).
 
 {{< alert type="warning" >}}
 
@@ -20,9 +20,6 @@ This API is used by the [Composer package manager client](https://getcomposer.or
 and is generally not meant for manual consumption.
 
 {{< /alert >}}
-
-For instructions on how to upload and install Composer packages from the GitLab
-package registry, see the [Composer package registry documentation](../../user/packages/composer_repository/_index.md).
 
 {{< alert type="note" >}}
 
@@ -57,7 +54,7 @@ Example response:
   "metadata-url": "/api/v4/group/1/-/packages/composer/p2/%package%.json",
   "provider-includes": {
     "p/%hash%.json": {
-      "sha256": "082df4a5035f8725a12i4a3d2da5e6aaa966d06843d0a5c6d499313810427bd6"
+      "sha256": "082df4a5035f8725a12a4a3d2da5e6aaa966d06843d0a5c6d499313810427bd6"
     }
   },
   "providers-url": "/api/v4/group/1/-/packages/composer/%package%$%hash%.json"
@@ -98,7 +95,7 @@ GET group/:id/-/packages/composer/p/:sha
 
 ```shell
 curl --user <username>:<personal_access_token> \
-  --url "https://gitlab.example.com/api/v4/group/1/-/packages/composer/p/082df4a5035f8725a12i4a3d2da5e6aaa966d06843d0a5c6d499313810427bd6"
+  --url "https://gitlab.example.com/api/v4/group/1/-/packages/composer/p/082df4a5035f8725a12a4a3d2da5e6aaa966d06843d0a5c6d499313810427bd6"
 ```
 
 Example response:
@@ -302,7 +299,7 @@ Write the output to file:
 
 ```shell
 curl --user <username>:<personal_access_token> \
-  --url "https://gitlab.example.com/api/v4/projects/1/packages/composer/archives/my-org/my-composer-package.zip?sha=673594f85a55fe3c0eb45df7bd2fa9d95a1601ab" >> package.tar.gz
+  --url "https://gitlab.example.com/api/v4/projects/1/packages/composer/archives/my-org/my-composer-package.zip?sha=673594f85a55fe3c0eb45df7bd2fa9d95a1601ab" >> package.zip
 ```
 
-This writes the downloaded file to `package.tar.gz` in the current directory.
+This writes the downloaded file to `package.zip` in the current directory.

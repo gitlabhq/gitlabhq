@@ -15,10 +15,10 @@ describe('MetricTile', () => {
 
   const namespacePath = 'foo';
   const defaultMetric = {
-    identifier: 'deploys',
+    identifier: 'issues',
     value: '10',
-    label: 'Deploys',
-    description: 'Total number of deploys to production',
+    label: 'New issues',
+    description: 'Number of new issues created',
   };
 
   const createComponent = (props = {}) => {
@@ -47,16 +47,16 @@ describe('MetricTile', () => {
     describe('links', () => {
       describe.each`
         isProjectNamespace | expectedURL
-        ${false}           | ${'/groups/foo/-/analytics/productivity_analytics'}
-        ${true}            | ${'/foo/-/analytics/merge_request_analytics'}
+        ${false}           | ${'/groups/foo/-/issues_analytics'}
+        ${true}            | ${'/foo/-/analytics/issues_analytics'}
       `(
         'metric has links and isProjectNamespace=$isProjectNamespace',
         ({ isProjectNamespace, expectedURL }) => {
           beforeEach(() => {
             const metric = {
               ...defaultMetric,
-              groupLink: '-/analytics/productivity_analytics',
-              projectLink: '-/analytics/merge_request_analytics',
+              groupLink: '-/issues_analytics',
+              projectLink: '-/analytics/issues_analytics',
             };
 
             createComponent({ metric, isProjectNamespace });

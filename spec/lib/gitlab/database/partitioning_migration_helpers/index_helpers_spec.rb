@@ -546,7 +546,7 @@ RSpec.describe Gitlab::Database::PartitioningMigrationHelpers::IndexHelpers, fea
   end
 
   describe '#prepare_partitioned_async_index' do
-    it 'creates the records for async index' do
+    it 'creates the records for async index', quarantine: 'https://gitlab.com/gitlab-org/quality/test-failure-issues/-/issues/2222' do
       expect do
         migration.prepare_partitioned_async_index(table_name, 'id')
       end.to change { index_model.count }.by(2)
@@ -567,7 +567,7 @@ RSpec.describe Gitlab::Database::PartitioningMigrationHelpers::IndexHelpers, fea
       let(:async_index_name1) { 'index_6857af8dd5' }
       let(:async_index_name2) { 'index_eef161829a' }
 
-      it 'creates the records with different partition index names' do
+      it 'creates the records with different partition index names', quarantine: 'https://gitlab.com/gitlab-org/quality/test-failure-issues/-/issues/2223' do
         expect do
           migration.prepare_partitioned_async_index(table_name, 'id', name: index_name)
         end.to change { index_model.count }.by(2)

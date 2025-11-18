@@ -37,6 +37,8 @@ class MergeRequestDiffCommit < ApplicationRecord
   attribute :trailers, ::Gitlab::Database::Type::IndifferentJsonb.new
   validates :trailers, json_schema: { filename: 'git_trailers' }
 
+  scope :for_merge_request_diff, ->(diff_id) { where(merge_request_diff_id: diff_id) }
+
   # A list of keys of which their values need to be trimmed before they can be
   # inserted into the merge_request_diff_commit_users table.
   TRIM_USER_KEYS =
@@ -145,6 +147,27 @@ class MergeRequestDiffCommit < ApplicationRecord
       .group(:sha)
   end
 
+  def self.commit_shas_from_metadata(project_id:, limit:)
+    # Until `merge_request_commits_metadata` records are backfilled, SHAs data may be in found in either table
+    metadata_join_sql = <<~SQL.squish
+      LEFT JOIN merge_request_commits_metadata
+      ON merge_request_commits_metadata.id = merge_request_diff_commits.merge_request_commits_metadata_id
+      AND merge_request_commits_metadata.project_id = ?
+    SQL
+
+    # raw SQL in pluck() bypass ActiveRecord's type casting, so encode() is needed to convert bytea to hex
+    shas_sql = Arel.sql("encode(COALESCE(merge_request_commits_metadata.sha, merge_request_diff_commits.sha), 'hex')")
+
+    relation = self.joins(self.sanitize_sql_array([metadata_join_sql, project_id]))
+      .order(:relative_order)
+
+    relation = relation.limit(limit) if limit
+
+    # rubocop:disable Database/AvoidUsingPluckWithoutLimit -- limit may be applied in the caller
+    relation.pluck(shas_sql)
+    # rubocop:enable Database/AvoidUsingPluckWithoutLimit
+  end
+
   def author_name
     commit_author&.name
   end
@@ -176,20 +199,49 @@ class MergeRequestDiffCommit < ApplicationRecord
     project.id
   end
 
+  def authored_date
+    has_commit_metadata? ? merge_request_commits_metadata.authored_date : super
+  end
+
+  def committed_date
+    has_commit_metadata? ? merge_request_commits_metadata.committed_date : super
+  end
+
+  def sha
+    has_commit_metadata? ? merge_request_commits_metadata.sha : super
+  end
+
+  def commit_author
+    has_commit_metadata? ? merge_request_commits_metadata.commit_author : super
+  end
+
+  def committer
+    has_commit_metadata? ? merge_request_commits_metadata.committer : super
+  end
+
   private
 
   def fetch_message
     if ::Feature.enabled?(:disable_message_attribute_on_mr_diff_commits, project)
       ""
     else
-      read_attribute("message")
+      has_commit_metadata? ? merge_request_commits_metadata.message : read_attribute("message")
     end
   end
 
   # As of %17.10, we still don't have `project_id` on merge_request_diff_commit
   #   records. Until we do, we have to fetch it from merge_request_diff.
-  #
+  # Also, it's possible that `merge_request_diff` is `nil` when accessing this method from an object
+  # that has not been persisted.
   def project
-    @_project ||= merge_request_diff.project
+    @_project ||= merge_request_diff&.project
+  end
+
+  def has_commit_metadata?
+    merge_request_commits_metadata_id.present? && Feature.enabled?(:merge_request_diff_commits_dedup, project)
+  rescue ActiveModel::MissingAttributeError => e
+    Gitlab::ErrorTracking.track_exception(e, self.attributes)
+
+    false
   end
 end

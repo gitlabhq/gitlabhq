@@ -42,13 +42,13 @@ RSpec.describe 'User creates work items', :js, feature_category: :team_planning 
       visit project_work_items_path(project)
     end
 
-    context 'when creating an work item' do
+    context 'when creating a work item' do
       let_it_be(:label) { create(:label, title: 'Label 1', project: project) }
       let_it_be(:milestone) { create(:milestone, project: project, title: 'Milestone') }
       let(:issuable_container) { '[data-testid="issuable-container"]' }
 
       before do
-        click_link 'New item'
+        first(:link, 'New item').click
       end
 
       it_behaves_like 'creates work item with widgets from a modal', 'issue', %w[
@@ -91,13 +91,14 @@ RSpec.describe 'User creates work items', :js, feature_category: :team_planning 
       let_it_be(:project_with_issues_disabled) { create(:project, :issues_disabled, group: group) }
 
       before do
+        stub_feature_flags(work_item_planning_view: false)
         [project, project_with_issues_disabled].each { |project| project.add_maintainer(user_in_group) }
         sign_in(user_in_group)
         visit issues_group_path(group)
       end
 
       it 'shows projects only with issues feature enabled', :js do
-        click_button 'Toggle project select'
+        click_button 'Toggle project select', match: :first
 
         expect(page).to have_button project.full_name
         expect(page).not_to have_button project_with_issues_disabled.full_name

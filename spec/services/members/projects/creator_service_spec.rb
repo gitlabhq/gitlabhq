@@ -13,8 +13,6 @@ RSpec.describe Members::Projects::CreatorService, feature_category: :groups_and_
     end
   end
 
-  it_behaves_like 'owner management'
-
   describe '.add_members' do
     it_behaves_like 'bulk member creation' do
       let_it_be(:source_type) { Project }
@@ -36,6 +34,18 @@ RSpec.describe Members::Projects::CreatorService, feature_category: :groups_and_
         1.upto(3) do
           described_class.add_member(source, user, :maintainer)
         end
+      end
+    end
+
+    context 'with immediately_sync_authorizations: true' do
+      it 'immediate creates a ProjectAuthorization' do
+        described_class.add_member(source, user, :maintainer, immediately_sync_authorizations: true)
+
+        expect(
+          ProjectAuthorization.where(
+            user: user, project: source,
+            access_level: Gitlab::Access::MAINTAINER)
+        ).to exist
       end
     end
   end

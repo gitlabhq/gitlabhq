@@ -1151,15 +1151,15 @@ describe('URL utility', () => {
     it('adds new params as query string', () => {
       const url = 'https://gitlab.com/test';
 
-      expect(urlUtils.setUrlParams({ group_id: 'gitlab-org', project_id: 'my-project' }, url)).toBe(
-        'https://gitlab.com/test?group_id=gitlab-org&project_id=my-project',
-      );
+      expect(
+        urlUtils.setUrlParams({ group_id: 'gitlab-org', project_id: 'my-project' }, { url }),
+      ).toBe('https://gitlab.com/test?group_id=gitlab-org&project_id=my-project');
     });
 
     it('updates an existing parameter', () => {
       const url = 'https://gitlab.com/test?group_id=gitlab-org&project_id=my-project';
 
-      expect(urlUtils.setUrlParams({ project_id: 'gitlab-test' }, url)).toBe(
+      expect(urlUtils.setUrlParams({ project_id: 'gitlab-test' }, { url })).toBe(
         'https://gitlab.com/test?group_id=gitlab-org&project_id=gitlab-test',
       );
     });
@@ -1167,7 +1167,7 @@ describe('URL utility', () => {
     it("removes the project_id param when it's value is null", () => {
       const url = 'https://gitlab.com/test?group_id=gitlab-org&project_id=my-project';
 
-      expect(urlUtils.setUrlParams({ project_id: null }, url)).toBe(
+      expect(urlUtils.setUrlParams({ project_id: null }, { url })).toBe(
         'https://gitlab.com/test?group_id=gitlab-org',
       );
     });
@@ -1175,7 +1175,7 @@ describe('URL utility', () => {
     it('adds parameters from arrays', () => {
       const url = 'https://gitlab.com/test';
 
-      expect(urlUtils.setUrlParams({ labels: ['foo', 'bar'] }, url)).toBe(
+      expect(urlUtils.setUrlParams({ labels: ['foo', 'bar'] }, { url })).toBe(
         'https://gitlab.com/test?labels=foo&labels=bar',
       );
     });
@@ -1183,13 +1183,13 @@ describe('URL utility', () => {
     it('removes parameters from empty arrays', () => {
       const url = 'https://gitlab.com/test?labels=foo&labels=bar';
 
-      expect(urlUtils.setUrlParams({ labels: [] }, url)).toBe('https://gitlab.com/test');
+      expect(urlUtils.setUrlParams({ labels: [] }, { url })).toBe('https://gitlab.com/test');
     });
 
     it('removes parameters from empty arrays while keeping other parameters', () => {
       const url = 'https://gitlab.com/test?labels=foo&labels=bar&unrelated=unrelated';
 
-      expect(urlUtils.setUrlParams({ labels: [] }, url)).toBe(
+      expect(urlUtils.setUrlParams({ labels: [] }, { url })).toBe(
         'https://gitlab.com/test?unrelated=unrelated',
       );
     });
@@ -1197,31 +1197,37 @@ describe('URL utility', () => {
     it('adds parameters from arrays when railsArraySyntax=true', () => {
       const url = 'https://gitlab.com/test';
 
-      expect(urlUtils.setUrlParams({ labels: ['foo', 'bar'] }, url, false, true)).toBe(
-        'https://gitlab.com/test?labels%5B%5D=foo&labels%5B%5D=bar',
-      );
+      expect(
+        urlUtils.setUrlParams(
+          { labels: ['foo', 'bar'] },
+          { url, clearParams: false, railsArraySyntax: true },
+        ),
+      ).toBe('https://gitlab.com/test?labels%5B%5D=foo&labels%5B%5D=bar');
     });
 
     it('removes parameters from empty arrays when railsArraySyntax=true', () => {
       const url = 'https://gitlab.com/test?labels%5B%5D=foo&labels%5B%5D=bar';
 
-      expect(urlUtils.setUrlParams({ labels: [] }, url, false, true)).toBe(
-        'https://gitlab.com/test',
-      );
+      expect(
+        urlUtils.setUrlParams({ labels: [] }, { url, clearParams: false, railsArraySyntax: true }),
+      ).toBe('https://gitlab.com/test');
     });
 
     it('decodes URI when decodeURI=true', () => {
       const url = 'https://gitlab.com/test';
 
-      expect(urlUtils.setUrlParams({ labels: ['foo', 'bar'] }, url, false, true, true)).toBe(
-        'https://gitlab.com/test?labels[]=foo&labels[]=bar',
-      );
+      expect(
+        urlUtils.setUrlParams(
+          { labels: ['foo', 'bar'] },
+          { url, clearParams: false, railsArraySyntax: true, decodeParams: true },
+        ),
+      ).toBe('https://gitlab.com/test?labels[]=foo&labels[]=bar');
     });
 
     it('removes all existing URL params and sets a new param when cleanParams=true', () => {
       const url = 'https://gitlab.com/test?group_id=gitlab-org&project_id=my-project';
 
-      expect(urlUtils.setUrlParams({ foo: 'bar' }, url, true)).toBe(
+      expect(urlUtils.setUrlParams({ foo: 'bar' }, { url, clearParams: true })).toBe(
         'https://gitlab.com/test?foo=bar',
       );
     });
@@ -1441,5 +1447,39 @@ describe('URL utility', () => {
         expect(urlUtils.stripRelativeUrlRootFromPath(path)).toBe(expectation);
       },
     );
+  });
+
+  describe('isReasonableGitUrl', () => {
+    describe('when URL is valid', () => {
+      it.each([
+        'https://gitlab.com/group/project.git',
+        'http://gitlab.com/group/project.git',
+        'git://gitlab.com/group/project.git',
+        'https://github.com/user/repo',
+        'http://example.com/repo.git',
+        'git://example.com/path/to/repo',
+      ])('returns true for %s', (url) => {
+        expect(urlUtils.isReasonableGitUrl(url)).toBe(true);
+      });
+    });
+
+    describe('when URL is invalid', () => {
+      it.each([
+        5,
+        'ftp://gitlab.com/repo.git',
+        'ssh://git@gitlab.com/repo.git',
+        'gitlab.com/group/project.git',
+        'www.gitlab.com/group/project.git',
+        '//gitlab.com/repo.git',
+        'https://!!.com',
+        'http:// y',
+        'git://',
+        'https://gitlab',
+        'not a url',
+        ' ',
+      ])('returns false for invalid protocol or format: %s', (url) => {
+        expect(urlUtils.isReasonableGitUrl(url)).toBe(false);
+      });
+    });
   });
 });

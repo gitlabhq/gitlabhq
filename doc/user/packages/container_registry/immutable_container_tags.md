@@ -23,7 +23,7 @@ description: To prevent container tags from change or deletion, create immutable
 
 Use immutable tags to prevent container tags from being updated or deleted in your project.
 
-By default, users with the Developer role or higher can push and delete image tags in all project container repositories.
+By default, users with at least the Developer role can push and delete image tags in all project container repositories.
 With tag immutability rules, you can:
 
 - Prevent the modification of critical image tags and mitigate the risk of malicious or accidental changes.
@@ -88,7 +88,7 @@ Prerequisites:
 
 To create an immutable rule:
 
-1. On the left sidebar, select **Search or go to** and find your project.
+1. On the left sidebar, select **Search or go to** and find your project. If you've [turned on the new navigation](../../interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
 1. Select **Settings** > **Packages and registries**.
 1. Expand **Container registry**.
 1. Under **Protected container tags**, select **Add protection rule**.
@@ -119,7 +119,7 @@ Prerequisites:
 
 To delete an immutable rule:
 
-1. On the left sidebar, select **Search or go to** and find your project.
+1. On the left sidebar, select **Search or go to** and find your project. If you've [turned on the new navigation](../../interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
 1. Select **Settings** > **Packages and registries**.
 1. Expand **Container registry**.
 1. Under **Protected container tags**, next to the immutable rule you want to delete, select **Delete** ({{< icon name="remove" >}}).

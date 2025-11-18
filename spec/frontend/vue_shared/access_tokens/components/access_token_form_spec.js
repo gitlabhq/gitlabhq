@@ -4,6 +4,7 @@ import {
   GlFormFields,
   GlFormInput,
   GlFormTextarea,
+  GlAlert,
 } from '@gitlab/ui';
 import { createTestingPinia } from '@pinia/testing';
 import Vue, { nextTick } from 'vue';
@@ -28,13 +29,14 @@ describe('AccessTokenForm', () => {
     { value: 'other', text: 'scope 3' },
   ];
 
-  const createComponent = (props = {}) => {
+  const createComponent = (props = {}, provide = {}) => {
     wrapper = mountExtended(AccessTokenForm, {
       pinia,
       provide: {
         accessTokenMaxDate,
         accessTokenMinDate,
         accessTokenAvailableScopes,
+        ...provide,
       },
       propsData: {
         ...props,
@@ -48,6 +50,8 @@ describe('AccessTokenForm', () => {
   const findFormFields = () => wrapper.findComponent(GlFormFields);
   const findInput = () => wrapper.findComponent(GlFormInput);
   const findTextArea = () => wrapper.findComponent(GlFormTextarea);
+  const findErrorsAlert = () => wrapper.findComponent(GlAlert);
+  const findCreateTokenButton = () => wrapper.findByTestId('create-token-button');
 
   it('contains a name field', () => {
     createComponent();
@@ -112,6 +116,15 @@ describe('AccessTokenForm', () => {
 
         expect(store.createToken).toHaveBeenCalledTimes(0);
       });
+
+      it('renders errors alert component', async () => {
+        createComponent();
+        findCreateTokenButton().trigger('click');
+
+        await nextTick();
+        const alert = findErrorsAlert();
+        expect(alert.exists()).toBe(true);
+      });
     });
 
     describe('when mandatory fields are filled', () => {
@@ -135,7 +148,7 @@ describe('AccessTokenForm', () => {
 
       describe('when the expiration date is not mandatory', () => {
         it('creates token if mandatory fields are present', async () => {
-          createComponent();
+          createComponent({}, { accessTokenMaxDate: null });
           findInput().setValue('my-token');
           findCheckboxes().at(0).find('input').setChecked();
           findDatepicker().vm.$emit('clear');

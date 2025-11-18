@@ -292,6 +292,70 @@ RSpec.describe API::Deployments, feature_category: :continuous_delivery do
         expect(json_response['environment']['name']).to eq('production')
       end
 
+      it 'errors when creating a deployment with an empty environment name', :aggregate_failures do
+        post(
+          api("/projects/#{project.id}/deployments", user),
+          params: {
+            environment: '',
+            sha: sha,
+            ref: 'master',
+            tag: false,
+            status: 'success'
+          }
+        )
+
+        expect(response).to have_gitlab_http_status(:bad_request)
+        expect(json_response['error']).to eq('environment is empty')
+      end
+
+      it 'errors when creating a deployment with an empty sha', :aggregate_failures do
+        post(
+          api("/projects/#{project.id}/deployments", user),
+          params: {
+            environment: 'production',
+            sha: '',
+            ref: 'master',
+            tag: false,
+            status: 'success'
+          }
+        )
+
+        expect(response).to have_gitlab_http_status(:bad_request)
+        expect(json_response['error']).to eq('sha is empty')
+      end
+
+      it 'errors when creating a deployment with an empty ref', :aggregate_failures do
+        post(
+          api("/projects/#{project.id}/deployments", user),
+          params: {
+            environment: 'production',
+            sha: sha,
+            ref: '',
+            tag: false,
+            status: 'success'
+          }
+        )
+
+        expect(response).to have_gitlab_http_status(:bad_request)
+        expect(json_response['error']).to eq('ref is empty')
+      end
+
+      it 'errors when creating a deployment with an invalid sha', :aggregate_failures do
+        post(
+          api("/projects/#{project.id}/deployments", user),
+          params: {
+            environment: 'production',
+            sha: 'does not exist',
+            ref: 'master',
+            tag: false,
+            status: 'success'
+          }
+        )
+
+        expect(response).to have_gitlab_http_status(:bad_request)
+        expect(json_response['message']).to eq({ "sha" => ["The commit does not exist"] })
+      end
+
       it 'errors when creating a deployment with an invalid ref', :aggregate_failures do
         post(
           api("/projects/#{project.id}/deployments", user),
@@ -308,7 +372,7 @@ RSpec.describe API::Deployments, feature_category: :continuous_delivery do
         expect(json_response['message']).to eq({ "ref" => ["The branch or tag does not exist"] })
       end
 
-      it 'errors when creating a deployment with an invalid name' do
+      it 'errors when creating a deployment with an invalid environment name' do
         post(
           api("/projects/#{project.id}/deployments", user),
           params: {

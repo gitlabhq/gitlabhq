@@ -26,6 +26,10 @@ module Resolvers
         GitlabSchema.parse_gids(global_ids, expected_type: ::Group).map(&:model_id)
       }
 
+    argument :archived, GraphQL::Types::Boolean,
+      required: false,
+      description: 'Filters archived groups.'
+
     argument :sort, Types::Namespaces::GroupSortEnum,
       required: false,
       description: 'Sort groups by given criteria.',

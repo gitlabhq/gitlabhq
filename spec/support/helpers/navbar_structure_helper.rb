@@ -173,7 +173,6 @@ module NavbarStructureHelper
       _('CI/CD analytics'),
       _('Repository analytics'),
       (_('Code review analytics') if Gitlab.ee?),
-      (_('Merge request analytics') if Gitlab.ee?),
       _('Model experiments'),
       (_('Data explorer') if Gitlab.ee?)
     ]

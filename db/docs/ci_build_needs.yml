@@ -8,15 +8,6 @@ description: Dependencies for a specific CI/CD job.
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/31328
 milestone: '12.2'
 gitlab_schema: gitlab_ci
-desired_sharding_key:
-  project_id:
-    references: projects
-    backfill_via:
-      parent:
-        foreign_key: build_id
-        table: p_ci_builds
-        sharding_key: project_id
-        belongs_to: build
-        foreign_key_name: fk_rails_3cf221d4ed_p
-desired_sharding_key_migration_job_name: BackfillProjectIdOnCiBuildNeeds
+sharding_key:
+  project_id: projects
 table_size: over_limit

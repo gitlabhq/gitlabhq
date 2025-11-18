@@ -37,7 +37,10 @@ RSpec.describe 'Import/Export - Group Import', :with_current_organization, :js, 
           find('.js-filepicker-button').click
         end
 
-        expect { click_on 'Import' }.to change { Group.count }.by 1
+        expect do
+          click_on 'Import'
+          expect(page).to have_text("Group 'Test Group Import' is being imported.")
+        end.to change { Group.count }.by(1)
 
         group = Group.find_by(name: group_name)
 
@@ -50,7 +53,7 @@ RSpec.describe 'Import/Export - Group Import', :with_current_organization, :js, 
       end
     end
 
-    context 'when modifying the pre-filled path' do
+    context 'when modifying the pre-filled path', :sidekiq_inline do
       it 'successfully imports the group' do
         visit new_group_path
         click_link 'Import group'
@@ -62,7 +65,10 @@ RSpec.describe 'Import/Export - Group Import', :with_current_organization, :js, 
           find('.js-filepicker-button').click
         end
 
-        expect { click_on 'Import' }.to change { Group.count }.by 1
+        expect do
+          click_on 'Import'
+          expect(page).to have_text("Group 'Test Group Import' is being imported.")
+        end.to change { Group.count }.by(1)
 
         group = Group.find_by(name: 'Test Group Import')
         expect(group.path).to eq 'custom-path'
@@ -89,7 +95,7 @@ RSpec.describe 'Import/Export - Group Import', :with_current_organization, :js, 
   context 'when the user uploads an invalid export file' do
     let(:file) { File.join(Rails.root, 'spec', %w[fixtures big-image.png]) }
 
-    it 'displays an error', quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/343995' do
+    it 'displays an error' do
       visit new_group_path
       click_link 'Import group'
 
@@ -98,11 +104,14 @@ RSpec.describe 'Import/Export - Group Import', :with_current_organization, :js, 
         find('.js-filepicker-button').click
       end
 
-      expect { click_on 'Import' }.not_to change { Group.count }
+      click_on 'Import'
 
       page.within('.flash-container') do
         expect(page).to have_content('Unable to process group import file')
       end
+
+      group = Group.find_by(name: 'Test Group Import')
+      expect(group).to be_nil
     end
   end
 end

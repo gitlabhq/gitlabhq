@@ -18,7 +18,7 @@ module Members
       return unless valid_for_notification?(member)
 
       with_context(user: member.user) do
-        notification_service.member_about_to_expire(member)
+        Members::AboutToExpireMailer.with(member: member).email.deliver_later # rubocop:disable CodeReuse/ActiveRecord -- false positive
         Gitlab::AppLogger.info(message: "Notifying user about expiring membership", member_id: member.id)
 
         member.update(expiry_notified_at: Time.current)
@@ -30,12 +30,6 @@ module Members
         member&.user.present? &&
         member.user.active? &&
         member.user.human?
-    end
-
-    private
-
-    def notification_service
-      @notification_service ||= NotificationService.new
     end
   end
 end

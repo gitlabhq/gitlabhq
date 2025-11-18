@@ -76,7 +76,7 @@ After you enable pipeline secret detection, you can [customize the analyzer sett
 
 This method requires you to manually edit an existing `.gitlab-ci.yml` file.
 
-1. On the left sidebar, select **Search or go to** and find your project.
+1. On the left sidebar, select **Search or go to** and find your project. If you've [turned on the new navigation](../../../interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
 1. Select **Build** > **Pipeline editor**.
 1. Copy and paste the following to the bottom of the `.gitlab-ci.yml` file:
 
@@ -101,7 +101,7 @@ This method automatically prepares a merge request to add a `.gitlab-ci.yml` fil
 
 To enable pipeline secret detection:
 
-1. On the left sidebar, select **Search or go to** and find your project.
+1. On the left sidebar, select **Search or go to** and find your project. If you've [turned on the new navigation](../../../interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
 1. Select **Secure** > **Security configuration**.
 1. In the **Pipeline secret detection** row, select **Configure with a merge request**.
 1. Optional. Complete the fields.
@@ -172,7 +172,7 @@ by default the first scheduled scan is a historic scan.
 
 To run a historic scan:
 
-1. On the left sidebar, select **Search or go to** and find your project.
+1. On the left sidebar, select **Search or go to** and find your project. If you've [turned on the new navigation](../../../interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
 1. Select **Build** > **Pipelines**.
 1. Select **New pipeline**.
 1. Add a CI/CD variable:
@@ -216,10 +216,11 @@ This project is available only to GitLab team members.
 Duplicate vulnerability tracking doesn't support workflows where:
 
 - The existing finding lacks a tracking signature and doesn't share the same location as the new finding.
-- Secrets are detected by searching for their prefixes instead of the entire secret value. For these secret types, all the detections of the same type and in the same file are reported as a single finding.
+- Certain secrets are detected by searching for their prefixes instead of the entire secret value. For these secret types, all the detections of the same type and in the same file are reported as a single finding.
 
   For example, an SSH private key is detected by its prefix `-----BEGIN OPENSSH PRIVATE KEY-----`. If there are multiple SSH private keys in the same file,
   pipeline secret detection creates only one finding.
+- When running a historic scan or enabling pipeline secret detection on existing commits, if a secret is introduced in one commit and then modified in a later commit during the same scan, only the most recent secret value appears in the vulnerability report.
 
 ### Detected secrets
 
@@ -239,7 +240,7 @@ When a secret is detected a vulnerability is created for it. The vulnerability r
 detected" even if the secret is removed from the scanned file and pipeline secret detection has been
 run again. This is because the leaked secret continues to be a security risk until it has been revoked.
 Removed secrets also persist in the Git history. To remove a secret from the Git repository's history, see
-[Redact text from repository](../../../project/merge_requests/revert_changes.md#redact-text-from-repository).
+[Redact text from repository](../../../project/repository/repository_size.md#redact-text-from-repository).
 
 ### Excluded items
 

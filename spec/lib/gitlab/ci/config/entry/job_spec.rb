@@ -5,7 +5,9 @@ require 'spec_helper'
 RSpec.describe Gitlab::Ci::Config::Entry::Job, feature_category: :pipeline_composition do
   using RSpec::Parameterized::TableSyntax
 
-  let(:entry) { described_class.new(config, name: :rspec) }
+  let(:entry) do
+    described_class.new(config, name: :rspec)
+  end
 
   it_behaves_like 'with inheritable CI config' do
     let(:config) { { script: 'echo' } }
@@ -108,8 +110,14 @@ RSpec.describe Gitlab::Ci::Config::Entry::Job, feature_category: :pipeline_compo
   end
 
   describe 'validations' do
+    let(:ci_job_inputs_flag_enabled) { true }
+
     before do
-      entry.compose!
+      stub_feature_flags(ci_job_inputs: ci_job_inputs_flag_enabled)
+
+      Gitlab::Ci::Config::FeatureFlags.with_actor(nil) do
+        entry.compose!
+      end
     end
 
     context 'when entry config value is correct' do
@@ -776,6 +784,109 @@ RSpec.describe Gitlab::Ci::Config::Entry::Job, feature_category: :pipeline_compo
 
         it 'is valid' do
           expect(entry).to be_valid
+        end
+      end
+    end
+
+    context 'when the job has inputs' do
+      let(:config) do
+        {
+          script: 'echo',
+          inputs: {
+            test_string: {
+              default: 'hello'
+            },
+            test_number: {
+              type: 'number',
+              default: 666
+            },
+            test_boolean: {
+              type: 'boolean',
+              default: true
+            },
+            test_array: {
+              type: 'array',
+              default: %w[item1 item2]
+            }
+          }
+        }
+      end
+
+      it 'returns the inputs in #value' do
+        expect(entry).to be_valid
+        expect(entry.value[:inputs]).to eq(
+          test_string: {
+            default: 'hello'
+          },
+          test_number: {
+            type: 'number',
+            default: 666
+          },
+          test_boolean: {
+            type: 'boolean',
+            default: true
+          },
+          test_array: {
+            type: 'array',
+            default: %w[item1 item2]
+          }
+        )
+      end
+
+      context 'when an input is missing a default value' do
+        let(:config) do
+          {
+            script: 'echo',
+            inputs: {
+              test_input: {
+                type: 'string'
+              }
+            }
+          }
+        end
+
+        it 'reports an error about the missing default value' do
+          expect(entry).not_to be_valid
+          expect(entry.errors).to contain_exactly('inputs:test_input must have a default value')
+        end
+      end
+
+      context 'when an input has an invalid default value type' do
+        let(:config) do
+          {
+            script: 'echo',
+            inputs: {
+              number_input: {
+                type: 'number',
+                default: 'not_a_number'
+              }
+            }
+          }
+        end
+
+        it 'reports an error about the invalid default value type' do
+          expect(entry).not_to be_valid
+          expect(entry.errors).to contain_exactly('job inputs `number_input`: default value is not a number')
+        end
+      end
+
+      context 'when the ci_job_inputs feature flag is disabled' do
+        let(:ci_job_inputs_flag_enabled) { false }
+
+        let(:config) do
+          {
+            script: 'echo',
+            inputs: {
+              test_string: {
+                default: 'hello'
+              }
+            }
+          }
+        end
+
+        it 'returns an error saying the inputs keyword is invalid' do
+          expect(entry).not_to be_valid
+          expect(entry.errors).to contain_exactly('job config contains unknown keys: inputs')
         end
       end
     end

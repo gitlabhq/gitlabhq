@@ -91,8 +91,8 @@ by specifying the `process_mode`:
 
 ### An example of difference between the process modes
 
-Consider the following `.gitlab-ci.yml`, where we have two jobs `build` and `deploy`
-each running in their own stage, and the `deploy` job has a resource group set to
+Consider the following `.gitlab-ci.yml`, which has a `build` job and a `deploy` job.
+Each job runs in its own stage, and the `deploy` job has a resource group set to
 `production`:
 
 ```yaml

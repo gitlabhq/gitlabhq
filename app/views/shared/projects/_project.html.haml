@@ -46,7 +46,7 @@
         = visibility_level_content(project, css_class: 'gl-mr-2', icon_css_class: 'gl-fill-icon-subtle')
 
         - if project.catalog_resource
-          = render partial: 'shared/ci_catalog_badge', locals: { href: explore_catalog_path(project.catalog_resource), css_class: 'gl-self-center gl-mr-2' }
+          = render partial: 'shared/ci_catalog_badge', locals: { href: explore_catalog_path(project.catalog_resource), css_class: 'gl-self-center gl-mr-2', is_published: project.catalog_resource.published? }
 
         - if explore_projects_tab? && project_license_name(project)
           %span.gl-inline-flex.gl-items-center.gl-mr-3
@@ -114,7 +114,7 @@
           = badge_count(project.open_merge_requests_count)
       - if show_count?(disabled: !issues, compact_mode: compact_mode)
         = link_to project_issues_path(project), class: "#{css_metadata_classes} issues", title: _('Issues'), data: { container: 'body', placement: 'top' }, aria: { label: format(n_('%{project} has %{number} open issue', '%{project} has %{number} open issues', project.open_issues_count), number: project.open_issues_count, project: project.name) } do
-          = sprite_icon('issues', size: 14, css_class: 'gl-mr-2')
+          = sprite_icon('issue-type-issue', size: 14, css_class: 'gl-mr-2')
           = badge_count(project.open_issues_count)
       = render_if_exists 'shared/projects/actions', project: project
     .updated-note.gl-text-sm.gl-whitespace-nowrap.gl-justify-end

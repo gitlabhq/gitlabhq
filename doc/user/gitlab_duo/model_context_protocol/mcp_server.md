@@ -9,24 +9,18 @@ title: GitLab MCP server
 {{< details >}}
 
 - Tier: Premium, Ultimate
-- Offering: GitLab.com, GitLab Self-Managed
-- Status: Experiment
+- Add-on: GitLab Duo Core, Pro, or Enterprise
+- Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
+- Status: Beta
 
 {{< /details >}}
 
 {{< history >}}
 
-- Introduced in GitLab 18.3 [with flags](../../../administration/feature_flags/_index.md) named `mcp_server` and `oauth_dynamic_client_registration`. Disabled by default.
+- Introduced as an [experiment](../../../policy/development_stages_support.md#experiment) in GitLab 18.3 [with flags](../../../administration/feature_flags/_index.md) named `mcp_server` and `oauth_dynamic_client_registration`. Disabled by default.
+- Changed from experiment to [beta](../../../policy/development_stages_support.md#beta) in GitLab 18.6. Feature flags [`mcp_server`](https://gitlab.com/gitlab-org/gitlab/-/issues/556448) and [`oauth_dynamic_client_registration`](https://gitlab.com/gitlab-org/gitlab/-/issues/555942) removed.
 
 {{< /history >}}
-
-{{< alert type="flag" >}}
-
-The availability of this feature is controlled by feature flags.
-For more information, see the history.
-This feature is available for testing, but not ready for production use.
-
-{{< /alert >}}
 
 {{< alert type="warning" >}}
 
@@ -36,7 +30,7 @@ To provide feedback on this feature, leave a comment on [issue 561564](https://g
 
 With the GitLab [Model Context Protocol](https://modelcontextprotocol.io/) (MCP) server,
 you can securely connect AI tools and applications to your GitLab instance.
-AI assistants like Claude Desktop, Cursor, and other MCP-compatible tools
+AI assistants like Claude Desktop, Claude Code, Cursor, and other MCP-compatible tools
 can then access your GitLab data and perform actions on your behalf.
 
 The MCP server provides a standardized way for AI tools to:
@@ -57,23 +51,79 @@ your GitLab MCP server for the first time, it:
 For a click-through demo, see [Duo Agent Platform - MCP server](https://gitlab.navattic.com/gitlab-mcp-server).
 <!-- Demo published on 2025-09-11 -->
 
+## Prerequisites
+
+To use the MCP server:
+
+- [Beta and experimental features must be turned on](../../gitlab_duo/turn_on_off.md#turn-on-beta-and-experimental-features).
+
 ## Connect Cursor to a GitLab MCP server
+
+You can configure the GitLab MCP server in Cursor by using:
+
+- **HTTP transport (recommended)**: Direct connection without additional dependencies.
+- **stdio transport with `mcp-remote`**: Connection through a proxy (requires Node.js).
+
+### HTTP transport (recommended)
+
+To configure the GitLab MCP server in Cursor by using HTTP transport:
+
+1. In Cursor, go to **Settings** > **Cursor Settings** > **Tools & MCP**.
+1. Under **Installed MCP Servers**, select **New MCP Server**.
+1. Add this definition to the `mcpServers` key in the opened `mcp.json` file:
+   - Replace `<gitlab.example.com>` with:
+     - On GitLab Self-Managed, your GitLab instance URL.
+     - On GitLab.com, `gitlab.com`.
+
+   ```json
+   {
+     "mcpServers": {
+       "GitLab": {
+         "type": "http",
+         "url": "https://<gitlab.example.com>/api/v4/mcp"
+       }
+     }
+   }
+   ```
+
+1. Save the file and restart Cursor.
+1. In Cursor, go to **Settings** > **Cursor Settings** > **Tools & MCP**.
+1. Under **Installed MCP Servers**, find your GitLab server and select **Connect**.
+1. In your browser, review and approve the authorization request.
+
+You can now start a new chat and ask a question depending on the available tools.
+
+### stdio transport with `mcp-remote`
 
 Prerequisites:
 
 - Install Node.js version 20 or later.
 
-To configure the GitLab MCP server in Cursor:
+To configure the GitLab MCP server in Cursor by using stdio transport:
 
-1. Open Cursor.
-1. In Cursor, go to **Settings** > **Cursor Settings** > **Tools & Integrations**.
-1. Under **MCP Tools**, select `New MCP Server`.
-1. Add this definition to the `mcpServers` key in the opened `mcp.json` file, editing as needed:
+1. In Cursor, go to **Settings** > **Cursor Settings** > **Tools & MCP**.
+1. Under **Installed MCP Servers**, select **New MCP Server**.
+1. Add this definition to the `mcpServers` key in the opened `mcp.json` file:
    - For the `"command":` parameter, if `npx` is installed locally instead of globally, provide the full path to `npx`.
    - Replace `<gitlab.example.com>` with:
      - On GitLab Self-Managed, your GitLab instance URL.
-     - On GitLab.com, `GitLab.com`.
-   - The `--static-oauth-client-metadata` parameter is mandatory for the `mcp-remote` module to set the OAuth scope to `mcp` as expected by the GitLab server.
+     - On GitLab.com, `gitlab.com`.
+
+   ```json
+   {
+     "mcpServers": {
+       "GitLab": {
+         "command": "npx",
+         "args": [
+           "mcp-remote",
+           "https://<gitlab.example.com>/api/v4/mcp"
+         ]
+       }
+     }
+   }
+   ```
+
+   - The `--static-oauth-client-metadata` parameter is optional for the `mcp-remote` module to explicitly set the OAuth scope to `mcp`. If omitted, GitLab defaults to the `mcp` scope for dynamic applications.
 
    ```json
    {
@@ -105,6 +155,43 @@ Exercise extreme caution or use MCP tools only on GitLab objects you trust.
 
 {{< /alert >}}
 
+## Connect Claude Code to a GitLab MCP server
+
+Claude Code uses HTTP transport for direct connection without additional dependencies.
+To configure the GitLab MCP server in Claude Code:
+
+1. In your terminal, add the MCP server with the CLI:
+   - Replace `<gitlab.example.com>` with:
+     - On GitLab Self-Managed, your GitLab instance URL.
+     - On GitLab.com, `gitlab.com`.
+
+   ```shell
+   claude mcp add --transport http GitLab https://<gitlab.example.com>/api/v4/mcp
+   ```
+
+1. Start Claude Code:
+
+   ```shell
+   claude
+   ```
+
+1. Authenticate with the MCP server:
+   - In the chat, type `/mcp`.
+   - From the list, select your GitLab server.
+   - In your browser, review and approve the authorization request.
+
+1. Optional. To verify the connection, type `/mcp` again.
+   Your GitLab server should appear as connected.
+
+You can now start a new chat and ask a question depending on the available tools.
+
+{{< alert type="warning" >}}
+
+You're responsible for guarding against prompt injection when you use these tools.
+Exercise extreme caution or use MCP tools only on GitLab objects you trust.
+
+{{< /alert >}}
+
 ## Connect Claude Desktop to a GitLab MCP server
 
 Prerequisites:
@@ -123,7 +210,23 @@ To configure the GitLab MCP server in Claude Desktop:
    - Replace `<gitlab.example.com>` with:
      - On GitLab Self-Managed, your GitLab instance URL.
      - On GitLab.com, `GitLab.com`.
-   - The `--static-oauth-client-metadata` parameter is mandatory for the `mcp-remote` module to set the OAuth scope to `mcp` as expected by the GitLab server.
+
+   ```json
+   {
+     "mcpServers": {
+       "GitLab": {
+         "command": "npx",
+         "args": [
+           "-y",
+           "mcp-remote",
+           "https://<gitlab.example.com>/api/v4/mcp"
+         ]
+       }
+     }
+   }
+   ```
+
+   - The `--static-oauth-client-metadata` parameter is optional for the `mcp-remote` module to explicitly set the OAuth scope to `mcp`. If omitted, GitLab defaults to the `mcp` scope for dynamic applications.
 
    ```json
    {
@@ -174,16 +277,16 @@ What version of the GitLab MCP server am I connected to?
 
 Creates a new issue in a GitLab project.
 
-| Parameter      | Type    | Required | Description |
-|----------------|---------|----------|-------------|
-| `id`           | string  | Yes      | ID or URL-encoded path of the project. |
-| `title`        | string  | Yes      | Title of the issue. |
-| `description`  | string  | No       | Description of the issue. |
-| `assignee_ids` | array   | No       | IDs of assigned users. |
-| `milestone_id` | integer | No       | ID of the milestone. |
-| `labels`       | string  | No       | Comma-separated list of label names. |
-| `confidential` | boolean | No       | Sets the issue to confidential. Default is `false`. |
-| `epic_id`      | integer | No       | ID of the linked epic. |
+| Parameter      | Type              | Required | Description |
+|----------------|-------------------|----------|-------------|
+| `id`           | string            | Yes      | ID or URL-encoded path of the project. |
+| `title`        | string            | Yes      | Title of the issue. |
+| `description`  | string            | No       | Description of the issue. |
+| `assignee_ids` | array of integers | No       | Array of IDs of assigned users. |
+| `milestone_id` | integer           | No       | ID of the milestone. |
+| `labels`       | array of strings  | No       | Array of label names. |
+| `confidential` | boolean           | No       | Sets the issue to confidential. Default is `false`. |
+| `epic_id`      | integer           | No       | ID of the linked epic. |
 
 Example:
 
@@ -318,21 +421,27 @@ Show me all jobs in pipeline 12345 for project gitlab-org/gitlab
 {{< history >}}
 
 - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/566143) in GitLab 18.4.
+- Searching groups and projects and ordering and sorting results [added](https://gitlab.com/gitlab-org/gitlab/-/issues/571132) in GitLab 18.6.
 
 {{< /history >}}
 
 Searches for a term across the entire GitLab instance with the search API.
-This tool is available only for global search.
+This tool is available for global, group, and project search.
+Available scopes depend on the [search type](../../search/_index.md).
 
-| Parameter      | Type    | Required | Description |
-|----------------|---------|----------|-------------|
-| `scope`        | string  | Yes      | Search scope (for example, `issues`, `merge_requests`, or `projects`). |
-| `search`       | string  | Yes      | Search term. |
-| `state`        | string  | No       | State of search results. |
-| `confidential` | boolean | No       | Filters results by confidentiality. Default is `false`. |
-| `per_page`     | integer | No       | Number of results per page. |
-| `page`         | integer | No       | Current page number. |
-| `fields`       | string  | No       | Comma-separated list of fields you want to search. |
+| Parameter      | Type             | Required | Description |
+|----------------|------------------|----------|-------------|
+| `scope`        | string           | Yes      | Search scope (for example, `issues`, `merge_requests`, or `projects`). |
+| `search`       | string           | Yes      | Search term. |
+| `group_id`     | string           | No       | ID or URL-encoded path of the group you want to search. |
+| `project_id`   | string           | No       | ID or URL-encoded path of the project you want to search. |
+| `state`        | string           | No       | State of search results (for `issues` and `merge_requests`). |
+| `confidential` | boolean          | No       | Filters results by confidentiality (for `issues`). Default is `false`. |
+| `fields`       | array of strings | No       | Array of fields you want to search (for `issues` and `merge_requests`). |
+| `order_by`     | string           | No       | Attribute to order results by. Default is `created_at` for basic search and relevance for advanced search. |
+| `sort`         | string           | No       | Sort direction for results. Default is `desc`. |
+| `per_page`     | integer          | No       | Number of results per page. Default is `20`. |
+| `page`         | integer          | No       | Current page number. Default is `1`. |
 
 Example:
 
@@ -340,11 +449,18 @@ Example:
 Search issues for "flaky test" across GitLab
 ```
 
-### `get_code_context`
+### `semantic_code_search`
+
+{{< details >}}
+
+Offering: GitLab.com
+
+{{< /details >}}
 
 {{< history >}}
 
 - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/569624) in GitLab 18.5 [with a flag](../../../administration/feature_flags/_index.md) named `code_snippet_search_graphqlapi`. Disabled by default.
+- Search by project path [added](https://gitlab.com/gitlab-org/gitlab/-/issues/575234) in GitLab 18.6.
 
 {{< /history >}}
 
@@ -358,10 +474,18 @@ This feature is available for testing, but not ready for production use.
 
 Searches for relevant code snippets in a project.
 
+This tool is available only for projects with
+[GitLab Duo turned on](../../gitlab_duo/turn_on_off.md#turn-gitlab-duo-on-or-off).
+Project files must be indexed into vector embeddings.
+
+If this tool is invoked for a project without vector embeddings,
+indexing is triggered ad-hoc and the agent uses a different tool.
+This tool then becomes available after a few minutes.
+
 | Parameter        | Type    | Required | Description |
 |------------------|---------|----------|-------------|
-| `search_term`    | string  | Yes      | Search term. |
-| `project_id`     | integer | Yes      | ID of the project. |
+| `semantic_query` | string  | Yes      | Search query for the code. |
+| `project_id`     | string  | Yes      | ID or path of the project. |
 | `directory_path` | string  | No       | Path of the directory (for example, `app/services/`). |
 | `knn`            | integer | No       | Number of nearest neighbors used to find similar code snippets. Default is `64`. |
 | `limit`          | integer | No       | Maximum number of results to return. Default is `20`. |
@@ -369,5 +493,5 @@ Searches for relevant code snippets in a project.
 Example:
 
 ```plaintext
-Search for relevant code snippets that show how authorizations are managed in GitLab
+How are authorizations managed in this project?
 ```

@@ -62,6 +62,7 @@ export default {
   <gl-alert
     v-if="hasErrors"
     ref="alertRef"
+    role="alert"
     :title="title"
     :class="alertClass"
     variant="danger"

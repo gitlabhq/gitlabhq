@@ -12,8 +12,9 @@ title: Project iterations API
 
 {{< /details >}}
 
-This page describes the project iterations API.
-There's a separate [group iterations API](group_iterations.md) page.
+Use this API to access [project iterations](../user/group/iterations/_index.md).
+
+For group iterations, use the [group iterations API](group_iterations.md).
 
 We no longer have project-level iterations, but you can use this endpoint to fetch the iterations of the project's ancestor groups.
 
