@@ -3,7 +3,10 @@
 module QA
   RSpec.describe 'Package', feature_category: :package_registry do
     describe 'npm Registry project level endpoint', :object_storage, :external_api_calls,
-      feature_category: :package_registry do
+      feature_category: :package_registry, quarantine: {
+        issue: 'https://gitlab.com/gitlab-org/quality/test-failure-issues/-/issues/14567',
+        type: :flaky
+      } do
       using RSpec::Parameterized::TableSyntax
       include Runtime::Fixtures
       include Support::Helpers::MaskToken

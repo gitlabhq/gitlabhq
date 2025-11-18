@@ -304,6 +304,36 @@ module QA
           end
         end
 
+        context "with all jobs having 0 runtime for omnibus pipeline" do
+          let(:noop_reason) { "no-op run, pipeline has no executable tests" }
+
+          let(:omnibus_scenario_class) do
+            Class.new(Scenario::Template) do
+              pipeline_mappings test_on_omnibus: ['instance']
+            end
+          end
+
+          let(:scenario_examples) { { omnibus_scenario_class => [{ id: example, status: "pending" }] } }
+          let(:omnibus_pipeline_file) { File.join(tmp_dir, "test-on-omnibus-pipeline.yml") }
+
+          it "creates noop pipeline with spec inputs for omnibus" do
+            pipeline_creator.create([:test_on_omnibus])
+
+            # Read raw file content to check multi-document YAML
+            omnibus_yaml_content = File.read(omnibus_pipeline_file)
+
+            # Verify spec.inputs section exists
+            expect(omnibus_yaml_content).to include("spec:")
+            expect(omnibus_yaml_content).to include("inputs:")
+            expect(omnibus_yaml_content).to include("pipeline-type:")
+            expect(omnibus_yaml_content).to include("type: string")
+            expect(omnibus_yaml_content).to include("default: external")
+            expect(omnibus_yaml_content).to include("---")
+            expect(omnibus_yaml_content).to include("SKIP_MESSAGE: \"#{noop_reason}\"")
+            expect(omnibus_yaml_content).to include("no-op:")
+          end
+        end
+
         context "with multiple mapped jobs" do
           let(:second_scenario_class) do
             Class.new(Scenario::Template) do
