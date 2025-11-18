@@ -38,16 +38,16 @@ With GitLab Ultimate, pipeline secret detection results are also processed so yo
 
 Different features are available in different [GitLab tiers](https://about.gitlab.com/pricing/).
 
-| Capability                                                              | In Free & Premium                    | In Ultimate |
-|:------------------------------------------------------------------------|:-------------------------------------|:------------|
-| [Customize analyzer behavior](configure.md#customize-analyzer-behavior) | {{< icon name="check-circle" >}} Yes | {{< icon name="check-circle" >}} Yes |
-| Download [output](#secret-detection-results)                            | {{< icon name="check-circle" >}} Yes | {{< icon name="check-circle" >}} Yes |
-| See new findings in the merge request widget                            | {{< icon name="dotted-circle" >}} No | {{< icon name="check-circle" >}} Yes |
-| View identified secrets in the pipelines' **Security** tab              | {{< icon name="dotted-circle" >}} No | {{< icon name="check-circle" >}} Yes |
-| [Manage vulnerabilities](../../vulnerability_report/_index.md)          | {{< icon name="dotted-circle" >}} No | {{< icon name="check-circle" >}} Yes |
-| [Access the security dashboard](../../security_dashboard/_index.md)     | {{< icon name="dotted-circle" >}} No | {{< icon name="check-circle" >}} Yes |
-| [Customize analyzer rulesets](configure.md#customize-analyzer-rulesets) | {{< icon name="dotted-circle" >}} No | {{< icon name="check-circle" >}} Yes |
-| [Enable security policies](../../policies/_index.md)                    | {{< icon name="dotted-circle" >}} No | {{< icon name="check-circle" >}} Yes |
+| Capability                                                              | In Free & Premium | In Ultimate |
+|:------------------------------------------------------------------------|:------------------|:------------|
+| [Customize analyzer behavior](configure.md#customize-analyzer-behavior) | {{< yes >}}       | {{< yes >}} |
+| Download [output](#secret-detection-results)                            | {{< yes >}}       | {{< yes >}} |
+| See new findings in the merge request widget                            | {{< no >}}        | {{< yes >}} |
+| View identified secrets in the pipelines' **Security** tab              | {{< no >}}        | {{< yes >}} |
+| [Manage vulnerabilities](../../vulnerability_report/_index.md)          | {{< no >}}        | {{< yes >}} |
+| [Access the security dashboard](../../security_dashboard/_index.md)     | {{< no >}}        | {{< yes >}} |
+| [Customize analyzer rulesets](configure.md#customize-analyzer-rulesets) | {{< no >}}        | {{< yes >}} |
+| [Enable security policies](../../policies/_index.md)                    | {{< no >}}        | {{< yes >}} |
 
 ## Getting started
 

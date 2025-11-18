@@ -16,7 +16,8 @@ RSpec.describe Gitlab::Ci::Pipeline::Chain::KeywordUsage, feature_category: :pip
     context 'when the keyword of interest is used in the pipeline config' do
       before do
         allow(command).to receive(:yaml_processor_result)
-          .and_return(instance_double(Gitlab::Ci::YamlProcessor::Result, uses_keyword?: true))
+          .and_return(instance_double(Gitlab::Ci::YamlProcessor::Result, uses_keyword?: true,
+            uses_nested_keyword?: false))
       end
 
       it 'tracks the usage of the keyword of interest' do
@@ -31,7 +32,8 @@ RSpec.describe Gitlab::Ci::Pipeline::Chain::KeywordUsage, feature_category: :pip
     context 'when the keyword of interest is not used in the pipeline config' do
       before do
         allow(command).to receive(:yaml_processor_result)
-          .and_return(instance_double(Gitlab::Ci::YamlProcessor::Result, uses_keyword?: false))
+          .and_return(instance_double(Gitlab::Ci::YamlProcessor::Result, uses_keyword?: false,
+            uses_nested_keyword?: false))
       end
 
       it 'does not track the usage of the keyword of interest' do

@@ -45,6 +45,44 @@ module Gitlab
           end
         end
 
+        describe '#uses_nested_keyword?' do
+          subject { result.uses_nested_keyword?(%i[artifacts reports junit]) }
+
+          let(:configs) do
+            {
+              present: <<~YAML,
+                job1:
+                  script: echo
+                  artifacts:
+                    reports:
+                      junit: report.xml
+                job2:
+                  script: echo
+              YAML
+              absent: <<~YAML
+                job1:
+                  script: echo
+                job2:
+                  script: echo
+              YAML
+            }
+          end
+
+          context "when checking for keyword path" do
+            context "when the keyword path is present in a job" do
+              let(:config_content) { configs[:present] }
+
+              it { is_expected.to be_truthy }
+            end
+
+            context "when the keyword path is not present in any job" do
+              let(:config_content) { configs[:absent] }
+
+              it { is_expected.to be_falsey }
+            end
+          end
+        end
+
         describe '#uses_keyword?' do
           subject { result.uses_keyword?(keyword) }
 

@@ -84,7 +84,10 @@ module Integrations
         items_to_insert = integrations_missing_slack_integration.map do |integration_record|
           db_hash.merge(
             'integration_id' => integration_record.id,
-            'alias' => integration_record.parent.full_path
+            'alias' => integration_record.parent.full_path,
+            'organization_id' => integration_record.organization_id,
+            'group_id' => integration_record.group_id,
+            'project_id' => integration_record.project_id
           )
         end
 

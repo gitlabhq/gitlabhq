@@ -69,11 +69,11 @@ For Maven packages:
 
 | Package registry                                                                                                                      | Advanced caching supported? |
 |---------------------------------------------------------------------------------------------------------------------------------------|-----------------------------|
-| [GitLab](../../maven_repository/_index.md)                                                                                            | {{< icon name="check-circle" >}} Yes |
-| [Maven Central](https://mvnrepository.com/repos/central)                                                                              | {{< icon name="check-circle" >}} Yes |
-| [Artifactory](https://jfrog.com/integration/maven-repository/)                                                                        | {{< icon name="check-circle" >}} Yes |
-| [Sonatype Nexus](https://help.sonatype.com/en/maven-repositories.html)                                                                | {{< icon name="check-circle" >}} Yes |
-| [GitHub Packages](https://docs.github.com/en/packages/working-with-a-github-packages-registry/working-with-the-apache-maven-registry) | {{< icon name="dotted-circle" >}} No |
+| [GitLab](../../maven_repository/_index.md)                                                                                            | {{< yes >}} |
+| [Maven Central](https://mvnrepository.com/repos/central)                                                                              | {{< yes >}} |
+| [Artifactory](https://jfrog.com/integration/maven-repository/)                                                                        | {{< yes >}} |
+| [Sonatype Nexus](https://help.sonatype.com/en/maven-repositories.html)                                                                | {{< yes >}} |
+| [GitHub Packages](https://docs.github.com/en/packages/working-with-a-github-packages-registry/working-with-the-apache-maven-registry) | {{< no >}} |
 
 ### Permissions
 
@@ -88,16 +88,16 @@ Whether both steps are executed depends on user permissions.
 The dependency proxy uses the [same permissions as the package registry](../_index.md#package-registry-visibility-permissions).
 
 | Project visibility | Minimum [role](../../../permissions.md#roles) | Can read package files? | Can write package files? | Behavior |
-|--------------------|-------------------------------------------------------|-------------------------|--------------------------|----------|
-| Public             | Anonymous                                             | {{< icon name="dotted-circle" >}} No  | {{< icon name="dotted-circle" >}} No   | Request rejected. |
-| Public             | Guest                                                 | {{< icon name="check-circle" >}} Yes  | {{< icon name="dotted-circle" >}} No   | Package file returned from either the cache or the remote registry. |
-| Public             | Developer                                             | {{< icon name="check-circle" >}} Yes  | {{< icon name="check-circle" >}} Yes   | Package file returned from either the cache or the remote registry. The file is published to the cache. |
-| Internal           | Anonymous                                             | {{< icon name="dotted-circle" >}} No  | {{< icon name="dotted-circle" >}} No   | Request rejected |
-| Internal           | Guest                                                 | {{< icon name="check-circle" >}} Yes  | {{< icon name="dotted-circle" >}} No   | Package file returned from either the cache or the remote registry. |
-| Internal           | Developer                                             | {{< icon name="check-circle" >}} Yes  | {{< icon name="check-circle" >}} Yes   | Package file returned from either the cache or the remote registry. The file is published to the cache. |
-| Private            | Anonymous                                             | {{< icon name="dotted-circle" >}} No  | {{< icon name="dotted-circle" >}} No   | Request rejected |
-| Private            | Reporter                                              | {{< icon name="check-circle" >}} Yes  | {{< icon name="dotted-circle" >}} No   | Package file returned from either the cache or the remote registry. |
-| Private           | Developer                                             | {{< icon name="check-circle" >}} Yes  | {{< icon name="check-circle" >}} Yes   | Package file returned from either the cache or the remote registry. The file is published to the cache. |
+|--------------------|-----------------------------------------------|-------------------------|--------------------------|----------|
+| Public             | Anonymous                                     | {{< no >}}              | {{< no >}}               | Request rejected. |
+| Public             | Guest                                         | {{< yes >}}             | {{< no >}}               | Package file returned from either the cache or the remote registry. |
+| Public             | Developer                                     | {{< yes >}}             | {{< yes >}}              | Package file returned from either the cache or the remote registry. The file is published to the cache. |
+| Internal           | Anonymous                                     | {{< no >}}              | {{< no >}}               | Request rejected |
+| Internal           | Guest                                         | {{< yes >}}             | {{< no >}}               | Package file returned from either the cache or the remote registry. |
+| Internal           | Developer                                     | {{< yes >}}             | {{< yes >}}              | Package file returned from either the cache or the remote registry. The file is published to the cache. |
+| Private            | Anonymous                                     | {{< no >}}              | {{< no >}}               | Request rejected |
+| Private            | Reporter                                      | {{< yes >}}             | {{< no >}}               | Package file returned from either the cache or the remote registry. |
+| Private            | Developer                                     | {{< yes >}}             | {{< yes >}}              | Package file returned from either the cache or the remote registry. The file is published to the cache. |
 
 At a minimum, any user who can use the dependency proxy can also use the project's package registry.
 

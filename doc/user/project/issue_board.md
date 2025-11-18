@@ -49,9 +49,9 @@ Different issue board features are available in different [GitLab tiers](https:/
 
 | Tier     | Number of project issue boards | Number of [group issue boards](#group-issue-boards) | [Configurable issue boards](#configurable-issue-boards) | [Assignee lists](#assignee-lists) |
 | -------- | ------------------------------ | --------------------------------------------------- | ------------------------------------------------------- | --------------------------------- |
-| Free     | Multiple                       | 1                                                   | {{< icon name="dotted-circle" >}} No                                  | {{< icon name="dotted-circle" >}} No            |
-| Premium  | Multiple                       | Multiple                                            | {{< icon name="check-circle" >}} Yes                                  | {{< icon name="check-circle" >}} Yes            |
-| Ultimate | Multiple                       | Multiple                                            | {{< icon name="check-circle" >}} Yes                                  | {{< icon name="check-circle" >}} Yes            |
+| Free     | Multiple                       | 1                                                   | {{< no >}}                                  | {{< no >}}            |
+| Premium  | Multiple                       | Multiple                                            | {{< yes >}}                                  | {{< yes >}}            |
+| Ultimate | Multiple                       | Multiple                                            | {{< yes >}}                                  | {{< yes >}}            |
 
 Read more about [GitLab Enterprise features for issue boards](#gitlab-enterprise-features-for-issue-boards).
 

@@ -187,8 +187,8 @@ Some settings for [GitLab Pages](../project/pages/_index.md) differ from the
 |--------------------------------------------------------|------------|
 | Domain name                                            | `gitlab.io` |
 | IP address                                             | `35.185.44.232` |
-| Support for custom domains                             | {{< icon name="check-circle" >}} Yes |
-| Support for TLS certificates                           | {{< icon name="check-circle" >}} Yes |
+| Support for custom domains                             | {{< yes >}} |
+| Support for TLS certificates                           | {{< yes >}} |
 | Maximum site size                                      | 1 GB       |
 | Number of custom domains for each GitLab Pages website | 150        |
 

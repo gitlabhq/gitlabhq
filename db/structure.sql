@@ -26386,6 +26386,24 @@ CREATE SEQUENCE security_project_tracked_contexts_id_seq
 
 ALTER SEQUENCE security_project_tracked_contexts_id_seq OWNED BY security_project_tracked_contexts.id;
 
+CREATE TABLE security_scan_profile_triggers (
+    id bigint NOT NULL,
+    created_at timestamp with time zone NOT NULL,
+    updated_at timestamp with time zone NOT NULL,
+    security_scan_profile_id bigint NOT NULL,
+    namespace_id bigint NOT NULL,
+    trigger_type smallint NOT NULL
+);
+
+CREATE SEQUENCE security_scan_profile_triggers_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+ALTER SEQUENCE security_scan_profile_triggers_id_seq OWNED BY security_scan_profile_triggers.id;
+
 CREATE TABLE security_scan_profiles (
     id bigint NOT NULL,
     namespace_id bigint NOT NULL,
@@ -32133,6 +32151,8 @@ ALTER TABLE ONLY security_policy_settings ALTER COLUMN id SET DEFAULT nextval('s
 
 ALTER TABLE ONLY security_project_tracked_contexts ALTER COLUMN id SET DEFAULT nextval('security_project_tracked_contexts_id_seq'::regclass);
 
+ALTER TABLE ONLY security_scan_profile_triggers ALTER COLUMN id SET DEFAULT nextval('security_scan_profile_triggers_id_seq'::regclass);
+
 ALTER TABLE ONLY security_scan_profiles ALTER COLUMN id SET DEFAULT nextval('security_scan_profiles_id_seq'::regclass);
 
 ALTER TABLE ONLY security_scan_profiles_projects ALTER COLUMN id SET DEFAULT nextval('security_scan_profiles_projects_id_seq'::regclass);
@@ -35716,6 +35736,9 @@ ALTER TABLE ONLY security_policy_settings
 
 ALTER TABLE ONLY security_project_tracked_contexts
     ADD CONSTRAINT security_project_tracked_contexts_pkey PRIMARY KEY (id);
+
+ALTER TABLE ONLY security_scan_profile_triggers
+    ADD CONSTRAINT security_scan_profile_triggers_pkey PRIMARY KEY (id);
 
 ALTER TABLE ONLY security_scan_profiles
     ADD CONSTRAINT security_scan_profiles_pkey PRIMARY KEY (id);
@@ -43041,6 +43064,10 @@ CREATE INDEX index_security_policy_settings_on_csp_namespace_id ON security_poli
 CREATE UNIQUE INDEX index_security_policy_settings_on_organization_id ON security_policy_settings USING btree (organization_id);
 
 CREATE UNIQUE INDEX index_security_project_tracked_contexts_on_project_context ON security_project_tracked_contexts USING btree (project_id, context_name, context_type);
+
+CREATE INDEX index_security_scan_profile_triggers_on_namespace_id ON security_scan_profile_triggers USING btree (namespace_id);
+
+CREATE UNIQUE INDEX index_security_scan_profile_triggers_on_profile_trigger_unique ON security_scan_profile_triggers USING btree (security_scan_profile_id, trigger_type);
 
 CREATE UNIQUE INDEX index_security_scan_profiles_namespace_scan_type_name ON security_scan_profiles USING btree (namespace_id, scan_type, lower(name));
 
@@ -52662,6 +52689,9 @@ ALTER TABLE ONLY observability_group_o11y_settings
 
 ALTER TABLE ONLY members_deletion_schedules
     ADD CONSTRAINT fk_rails_ce06d97eb2 FOREIGN KEY (namespace_id) REFERENCES namespaces(id) ON DELETE CASCADE;
+
+ALTER TABLE ONLY security_scan_profile_triggers
+    ADD CONSTRAINT fk_rails_cec0162e20 FOREIGN KEY (security_scan_profile_id) REFERENCES security_scan_profiles(id) ON DELETE CASCADE;
 
 ALTER TABLE ONLY resource_milestone_events
     ADD CONSTRAINT fk_rails_cedf8cce4d FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE SET NULL;

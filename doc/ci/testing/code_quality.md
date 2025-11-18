@@ -25,14 +25,14 @@ preserving your team's preferences while standardizing how results are displayed
 Different features are available in different [GitLab tiers](https://about.gitlab.com/pricing/),
 as shown in the following table:
 
-| Feature                                                                                     | In Free                              | In Premium                           | In Ultimate |
-|:--------------------------------------------------------------------------------------------|:-------------------------------------|:-------------------------------------|:------------|
-| [Import Code Quality results from CI/CD jobs](#import-code-quality-results-from-a-cicd-job) | {{< icon name="check-circle" >}} Yes | {{< icon name="check-circle" >}} Yes | {{< icon name="check-circle" >}} Yes |
-| [Use CodeClimate-based scanning](#use-the-built-in-code-quality-cicd-template-deprecated)   | {{< icon name="check-circle" >}} Yes | {{< icon name="check-circle" >}} Yes | {{< icon name="check-circle" >}} Yes |
-| [See findings in a merge request widget](#merge-request-widget)                             | {{< icon name="check-circle" >}} Yes | {{< icon name="check-circle" >}} Yes | {{< icon name="check-circle" >}} Yes |
-| [See findings in a pipeline report](#pipeline-details-view)                                 | {{< icon name="dotted-circle" >}} No | {{< icon name="check-circle" >}} Yes | {{< icon name="check-circle" >}} Yes |
-| [See findings in the merge request changes view](#merge-request-changes-view)               | {{< icon name="dotted-circle" >}} No | {{< icon name="dotted-circle" >}} No | {{< icon name="check-circle" >}} Yes |
-| [Analyze overall health in a project quality summary view](#project-quality-view)           | {{< icon name="dotted-circle" >}} No | {{< icon name="dotted-circle" >}} No | {{< icon name="check-circle" >}} Yes |
+| Feature                                                                                     | In Free     | In Premium  | In Ultimate |
+|:--------------------------------------------------------------------------------------------|:------------|:------------|:------------|
+| [Import Code Quality results from CI/CD jobs](#import-code-quality-results-from-a-cicd-job) | {{< yes >}} | {{< yes >}} | {{< yes >}} |
+| [Use CodeClimate-based scanning](#use-the-built-in-code-quality-cicd-template-deprecated)   | {{< yes >}} | {{< yes >}} | {{< yes >}} |
+| [See findings in a merge request widget](#merge-request-widget)                             | {{< yes >}} | {{< yes >}} | {{< yes >}} |
+| [See findings in a pipeline report](#pipeline-details-view)                                 | {{< no >}}  | {{< yes >}} | {{< yes >}} |
+| [See findings in the merge request changes view](#merge-request-changes-view)               | {{< no >}}  | {{< no >}}  | {{< yes >}} |
+| [Analyze overall health in a project quality summary view](#project-quality-view)           | {{< no >}}  | {{< no >}}  | {{< yes >}} |
 
 ## Scan code for quality violations
 
@@ -89,19 +89,19 @@ The CodeClimate engine uses a customizable set of [analysis plugins](code_qualit
 Some are on by default; others must be explicitly enabled.
 The following integrations are available to replace the built-in plugins:
 
-| Plugin       | On by default                                              | Replacement |
-|--------------|------------------------------------------------------------|-------------|
-| Duplication  | {{< icon name="check-circle" >}} Yes                       | [Integrate PMD Copy/Paste Detector](#pmd-copypaste-detector). |
-| ESLint       | {{< icon name="check-circle" >}} Yes                       | [Integrate ESLint](#eslint). |
-| gofmt        | {{< icon name="dotted-circle" >}} No                       | [Integrate golangci-lint](#golangci-lint) and enable the [gofmt linter](https://golangci-lint.run/usage/linters#gofmt). |
-| golint       | {{< icon name="dotted-circle" >}} No                       | [Integrate golangci-lint](#golangci-lint) and enable one of the included linters that replaces golint. golint is [deprecated and frozen](https://github.com/golang/go/issues/38968). |
-| govet        | {{< icon name="dotted-circle" >}} No                       | [Integrate golangci-lint](#golangci-lint). golangci-lint [includes govet by default](https://golangci-lint.run/usage/linters#enabled-by-default). |
-| markdownlint | {{< icon name="dotted-circle" >}} No (community-supported) | [Integrate markdownlint-cli2](#markdownlint-cli2). |
-| pep8         | {{< icon name="dotted-circle" >}} No                       | Integrate an alternative Python linter like [Flake8](#flake8), [Pylint](#pylint), or [Ruff](#ruff). |
-| RuboCop      | {{< icon name="dotted-circle" >}} Yes                      | [Integrate RuboCop](#rubocop). |
-| SonarPython  | {{< icon name="dotted-circle" >}} No                       | Integrate an alternative Python linter like [Flake8](#flake8), [Pylint](#pylint), or [Ruff](#ruff). |
-| Stylelint    | {{< icon name="dotted-circle" >}} No (community-supported) | [Integrate Stylelint](#stylelint). |
-| SwiftLint    | {{< icon name="dotted-circle" >}} No                       | [Integrate SwiftLint](#swiftlint). |
+| Plugin       | On by default                    | Replacement |
+|--------------|----------------------------------|-------------|
+| Duplication  | {{< yes >}}                      | [Integrate PMD Copy/Paste Detector](#pmd-copypaste-detector). |
+| ESLint       | {{< yes >}}                      | [Integrate ESLint](#eslint). |
+| gofmt        | {{< no >}}                       | [Integrate golangci-lint](#golangci-lint) and enable the [gofmt linter](https://golangci-lint.run/usage/linters#gofmt). |
+| golint       | {{< no >}}                       | [Integrate golangci-lint](#golangci-lint) and enable one of the included linters that replaces golint. golint is [deprecated and frozen](https://github.com/golang/go/issues/38968). |
+| govet        | {{< no >}}                       | [Integrate golangci-lint](#golangci-lint). golangci-lint [includes govet by default](https://golangci-lint.run/usage/linters#enabled-by-default). |
+| markdownlint | {{< no >}} (community-supported) | [Integrate markdownlint-cli2](#markdownlint-cli2). |
+| pep8         | {{< no >}}                       | Integrate an alternative Python linter like [Flake8](#flake8), [Pylint](#pylint), or [Ruff](#ruff). |
+| RuboCop      | {{< yes >}}                      | [Integrate RuboCop](#rubocop). |
+| SonarPython  | {{< no >}}                       | Integrate an alternative Python linter like [Flake8](#flake8), [Pylint](#pylint), or [Ruff](#ruff). |
+| Stylelint    | {{< no >}} (community-supported) | [Integrate Stylelint](#stylelint). |
+| SwiftLint    | {{< no >}}                       | [Integrate SwiftLint](#swiftlint). |
 
 ## View Code Quality results
 

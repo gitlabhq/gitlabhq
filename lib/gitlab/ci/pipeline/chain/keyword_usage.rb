@@ -21,6 +21,8 @@ module Gitlab
             track_keyword_usage_for('run', command.yaml_processor_result.uses_keyword?(:run))
             track_keyword_usage_for('only', command.yaml_processor_result.uses_keyword?(:only))
             track_keyword_usage_for('except', command.yaml_processor_result.uses_keyword?(:except))
+            track_keyword_usage_for('artifacts_reports_junit',
+              command.yaml_processor_result.uses_nested_keyword?(%i[artifacts reports junit]))
           end
 
           def track_keyword_usage_for(keyword, used)

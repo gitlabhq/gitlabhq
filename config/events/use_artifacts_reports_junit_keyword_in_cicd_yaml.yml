@@ -1,0 +1,17 @@
+---
+description: Usage of artifacts:reports:junit keyword in CICD Yaml
+internal_events: true
+action: use_artifacts_reports_junit_keyword_in_cicd_yaml
+identifiers:
+- project
+- namespace
+- user
+product_group: pipeline_authoring
+product_categories:
+- pipeline_composition
+milestone: '18.7'
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/212281
+tiers:
+- free
+- premium
+- ultimate

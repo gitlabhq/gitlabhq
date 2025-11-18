@@ -1,0 +1,12 @@
+---
+table_name: security_scan_profile_triggers
+classes:
+- Security::ScanProfileTrigger
+feature_categories:
+  - security_asset_inventories
+description: Stores security scan profile triggers
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/211521
+milestone: '18.7'
+gitlab_schema: gitlab_sec
+sharding_key:
+  namespace_id: namespaces

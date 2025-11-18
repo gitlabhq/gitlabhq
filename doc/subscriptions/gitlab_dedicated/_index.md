@@ -296,25 +296,22 @@ This section lists the features that are not available for GitLab Dedicated.
 | Feature                                | Description                                                                          | Impact                                       |
 | -------------------------------------- | ------------------------------------------------------------------------------------ | -------------------------------------------- |
 | Some GitLab Duo AI capabilities        | AI-powered features for code suggestions, vulnerability detection, and productivity. | Limited AI assistance for development tasks. |
-| Features behind disabled feature flags | Experimental or unreleased features disabled by default.                             | Cannot access features in development.       |
+| Features behind disabled feature flags | Experiment and beta features under development.                              | No access to experimental or beta features.       |
 
 For more information about AI features, see [GitLab Duo](../../user/gitlab_duo/_index.md).
 
 #### Feature flags
 
-GitLab uses [feature flags](../../administration/feature_flags/_index.md) to support the
-development and rollout of new or experimental features. In GitLab Dedicated:
+Feature flags are used to support the development and rollout of new,
+[experiment, and beta features](../../development/documentation/experiment_beta.md).
+In GitLab Dedicated:
 
-- Features behind feature flags that are enabled by default are available.
-- Features behind feature flags that are disabled by default are not available and
-  cannot be enabled by administrators.
+- You cannot modify feature flags.
+- Features enabled by default are available.
+- Features disabled by default are not available and cannot be enabled.
 
-Features behind flags that are disabled by default are not ready for production use and
-therefore unsafe for GitLab Dedicated.
-
-When a feature becomes generally available and the flag is enabled or removed, the feature
-becomes available in GitLab Dedicated in the same GitLab version. GitLab Dedicated follows
-its own [release schedule](maintenance.md) for version deployments.
+When a feature becomes generally available, it's available in the same version 
+following the [release schedule](maintenance.md) for deployments.
 
 ### GitLab Pages
 

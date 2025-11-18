@@ -384,15 +384,15 @@ and rights into the group or project.
 
 The following table lists the membership and visibility rights of project members.
 
-| Action | Direct project member | Inherited project member | Direct shared project member | Inherited shared project member |
-| --- | ------------------- | ---------------------- | -------------------------- | ----------------------------- |
-| Generate boards | {{< icon name="check-circle" >}} Yes | {{< icon name="check-circle" >}} Yes | {{< icon name="check-circle" >}} Yes | {{< icon name="check-circle" >}} Yes |
-| View issues of parent groups <sup>1</sup> | {{< icon name="check-circle" >}} Yes | {{< icon name="check-circle" >}} Yes | {{< icon name="check-circle" >}} Yes | {{< icon name="check-circle" >}} Yes |
-| View labels of parent groups | {{< icon name="check-circle" >}} Yes | {{< icon name="check-circle" >}} Yes | {{< icon name="check-circle" >}} Yes | {{< icon name="check-circle" >}} Yes |
-| View milestones of parent groups | {{< icon name="check-circle" >}} Yes | {{< icon name="check-circle" >}} Yes | {{< icon name="check-circle" >}} Yes | {{< icon name="check-circle" >}} Yes |
-| Be shared into other groups | {{< icon name="check-circle" >}} Yes | {{< icon name="dotted-circle" >}} No | {{< icon name="dotted-circle" >}} No |  {{< icon name="dotted-circle" >}} No |
-| Be imported into other projects | {{< icon name="check-circle" >}} Yes | {{< icon name="dotted-circle" >}} No | {{< icon name="dotted-circle" >}} No | {{< icon name="dotted-circle" >}} No |
-| Share the project with other members | {{< icon name="check-circle" >}} Yes | {{< icon name="check-circle" >}} Yes | {{< icon name="check-circle" >}} Yes | {{< icon name="check-circle" >}} Yes |
+| Action                                    | Direct project member | Inherited project member | Direct shared project member | Inherited shared project member |
+|-------------------------------------------|-----------------------|--------------------------|------------------------------|---------------------------------|
+| Generate boards                           | {{< yes >}}           | {{< yes >}}              | {{< yes >}}                  | {{< yes >}}                     |
+| View issues of parent groups <sup>1</sup> | {{< yes >}}           | {{< yes >}}              | {{< yes >}}                  | {{< yes >}}                     |
+| View labels of parent groups              | {{< yes >}}           | {{< yes >}}              | {{< yes >}}                  | {{< yes >}}                     |
+| View milestones of parent groups          | {{< yes >}}           | {{< yes >}}              | {{< yes >}}                  | {{< yes >}}                     |
+| Be shared into other groups               | {{< yes >}}           | {{< no >}}               | {{< no >}}                   | {{< no >}}                      |
+| Be imported into other projects           | {{< yes >}}           | {{< no >}}               | {{< no >}}                   | {{< no >}}                      |
+| Share the project with other members      | {{< yes >}}           | {{< yes >}}              | {{< yes >}}                  | {{< yes >}}                     |
 
 **Footnotes**:
 
@@ -400,12 +400,12 @@ The following table lists the membership and visibility rights of project member
 
 The following table lists the membership and visibility rights of group members.
 
-| Action | Direct group member | Inherited group member | Direct shared group member | Inherited shared group member |
-| --- | ------------------- | ---------------------- | -------------------------- | ----------------------------- |
-| Generate boards | {{< icon name="check-circle" >}} Yes | {{< icon name="check-circle" >}} Yes | {{< icon name="check-circle" >}} Yes | {{< icon name="check-circle" >}} Yes |
-| View issues of parent groups | {{< icon name="check-circle" >}} Yes | {{< icon name="check-circle" >}} Yes | {{< icon name="check-circle" >}} Yes | {{< icon name="check-circle" >}} Yes |
-| View labels of parent groups | {{< icon name="check-circle" >}} Yes | {{< icon name="check-circle" >}} Yes | {{< icon name="check-circle" >}} Yes | {{< icon name="check-circle" >}} Yes |
-| View milestones of parent groups | {{< icon name="check-circle" >}} Yes | {{< icon name="check-circle" >}} Yes | {{< icon name="check-circle" >}} Yes | {{< icon name="check-circle" >}} Yes |
+| Action                           | Direct group member | Inherited group member | Direct shared group member | Inherited shared group member |
+|----------------------------------|---------------------|------------------------|----------------------------|-------------------------------|
+| Generate boards                  | {{< yes >}}         | {{< yes >}}            | {{< yes >}}                | {{< yes >}}                   |
+| View issues of parent groups     | {{< yes >}}         | {{< yes >}}            | {{< yes >}}                | {{< yes >}}                   |
+| View labels of parent groups     | {{< yes >}}         | {{< yes >}}            | {{< yes >}}                | {{< yes >}}                   |
+| View milestones of parent groups | {{< yes >}}         | {{< yes >}}            | {{< yes >}}                | {{< yes >}}                   |
 
 In the following example, `User` is a:
 

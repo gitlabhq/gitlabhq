@@ -346,18 +346,18 @@ The token is deleted immediately.
 
 This table shows default scopes per token. For some tokens, you can limit scopes further when you create the token.
 
-| Token name                  | API access                         | Registry access                    | Repository access |
-|-----------------------------|------------------------------------|------------------------------------|-------------------|
-| Personal access token       | {{< icon name="check-circle" >}} Yes             | {{< icon name="check-circle" >}} Yes             | {{< icon name="check-circle" >}} Yes |
-| OAuth 2.0 token             | {{< icon name="check-circle" >}} Yes             | {{< icon name="dotted-circle" >}} No             | {{< icon name="check-circle" >}} Yes |
-| Impersonation token         | {{< icon name="check-circle" >}} Yes             | {{< icon name="check-circle" >}} Yes             | {{< icon name="check-circle" >}} Yes |
-| Project access token        | {{< icon name="check-circle" >}} Yes<sup>1</sup> | {{< icon name="check-circle" >}} Yes<sup>1</sup> | {{< icon name="check-circle" >}} Yes<sup>1</sup> |
-| Group access token          | {{< icon name="check-circle" >}} Yes<sup>2</sup> | {{< icon name="check-circle" >}} Yes<sup>2</sup> | {{< icon name="check-circle" >}} Yes<sup>2</sup> |
-| Deploy token                | {{< icon name="dotted-circle" >}} No             | {{< icon name="check-circle" >}} Yes             | {{< icon name="check-circle" >}} Yes |
-| Deploy key                  | {{< icon name="dotted-circle" >}} No             | {{< icon name="dotted-circle" >}} No             | {{< icon name="check-circle" >}} Yes |
-| Runner registration token   | {{< icon name="dotted-circle" >}} No             | {{< icon name="dotted-circle" >}} No             | {{< icon name="check-circle-dashed" >}} Limited<sup>3</sup> |
-| Runner authentication token | {{< icon name="dotted-circle" >}} No             | {{< icon name="dotted-circle" >}} No             | {{< icon name="check-circle-dashed" >}} Limited<sup>3</sup> |
-| Job token                   | {{< icon name="check-circle-dashed" >}} Limited<sup>4</sup> | {{< icon name="dotted-circle" >}} No  | {{< icon name="check-circle" >}} Yes |
+| Token name                  | API access              | Registry access         | Repository access |
+|-----------------------------|-------------------------|-------------------------|-------------------|
+| Personal access token       | {{< yes >}}             | {{< yes >}}             | {{< yes >}}       |
+| OAuth 2.0 token             | {{< yes >}}             | {{< no >}}              | {{< yes >}}       |
+| Impersonation token         | {{< yes >}}             | {{< yes >}}             | {{< yes >}}       |
+| Project access token        | {{< yes >}}<sup>1</sup> | {{< yes >}}<sup>1</sup> | {{< yes >}}<sup>1</sup> |
+| Group access token          | {{< yes >}}<sup>2</sup> | {{< yes >}}<sup>2</sup> | {{< yes >}}<sup>2</sup> |
+| Deploy token                | {{< no >}}              | {{< yes >}}             | {{< yes >}}       |
+| Deploy key                  | {{< no >}}              | {{< no >}}              | {{< yes >}}       |
+| Runner registration token   | {{< no >}}              | {{< no >}}              | Limited<sup>3</sup> |
+| Runner authentication token | {{< no >}}              | {{< no >}}              | Limited<sup>3</sup> |
+| Job token                   | Limited<sup>4</sup>     | {{< no >}}              | {{< yes >}}       |
 
 **Footnotes**:
 

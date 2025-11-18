@@ -48187,6 +48187,15 @@ definitions:
       web_based_commit_signing_enabled:
         type: boolean
         description: Enable web based commit signing for this group
+      only_allow_merge_if_pipeline_succeeds:
+        type: boolean
+        description: Only allow to merge if builds succeed
+      allow_merge_on_skipped_pipeline:
+        type: boolean
+        description: Allow to merge if pipeline is skipped
+      only_allow_merge_if_all_discussions_are_resolved:
+        type: boolean
+        description: Only allow to merge if all threads are resolved
     description: Update a group. Available only for users who can administrate groups.
   API_Entities_GroupDetail:
     type: object
@@ -48337,6 +48346,12 @@ definitions:
       ip_restriction_ranges:
         type: string
       allowed_email_domains_list:
+        type: string
+      only_allow_merge_if_pipeline_succeeds:
+        type: string
+      allow_merge_on_skipped_pipeline:
+        type: string
+      only_allow_merge_if_all_discussions_are_resolved:
         type: string
       unique_project_download_limit:
         type: string

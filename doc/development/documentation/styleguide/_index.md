@@ -189,6 +189,9 @@ GitLab documentation uses the following shortcodes:
 - [Maintained versions](#maintained-versions)
 - [Collapsible panels](#collapsible-panels)
 - [Guide](#guide)
+- [Feature tables](#feature-tables)
+  - Yes
+  - No
 
 ## Language
 
@@ -912,8 +915,8 @@ page), use these phrases:
 
 | Option | Markdown                                          | Displayed result |
 |--------|---------------------------------------------------|------------------|
-| No     | `{{</* icon name="dash-circle" */>}} No`          | {{< icon name="dash-circle" >}} No |
-| Yes    | `{{</* icon name="check-circle-filled" */>}} Yes` | {{< icon name="check-circle-filled" >}} Yes |
+| No     | `{{</* no */>}}`          |  Hidden `span` for accessibility: `<span class="gl-sr-only">no</span>` |
+| Yes    | `{{</* yes */>}}` | {{< yes >}} |
 
 Do not use these SVG icons in API documentation.
 Instead, follow the [API topic template](../restful_api_styleguide.md#api-topic-template).

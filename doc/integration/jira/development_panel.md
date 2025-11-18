@@ -32,20 +32,20 @@ For an overview, see [Jira development panel integration](https://www.youtube.co
 
 This table shows the features available with the Jira DVCS connector and the GitLab for Jira Cloud app:
 
-| Feature                              | Jira DVCS connector    | GitLab for Jira Cloud app |
-|:-------------------------------------|:-----------------------|:--------------------------|
-| Smart Commits                        | {{< icon name="check-circle" >}} Yes | {{< icon name="check-circle" >}} Yes    |
-| Sync merge requests                  | {{< icon name="check-circle" >}} Yes | {{< icon name="check-circle" >}} Yes    |
-| Sync branches                        | {{< icon name="check-circle" >}} Yes | {{< icon name="check-circle" >}} Yes    |
-| Sync commits                         | {{< icon name="check-circle" >}} Yes | {{< icon name="check-circle" >}} Yes    |
-| Sync existing data                   | {{< icon name="check-circle" >}} Yes | {{< icon name="check-circle" >}} Yes (see [GitLab data synced to Jira](connect-app.md#gitlab-data-synced-to-jira)) |
-| Sync builds                          | {{< icon name="dotted-circle" >}} No | {{< icon name="check-circle" >}} Yes    |
-| Sync deployments                     | {{< icon name="dotted-circle" >}} No | {{< icon name="check-circle" >}} Yes    |
-| Sync feature flags                   | {{< icon name="dotted-circle" >}} No | {{< icon name="check-circle" >}} Yes    |
-| Sync interval                        | Up to 60 minutes       | Real time                 |
-| Delete branches                      | {{< icon name="dotted-circle" >}} No | {{< icon name="check-circle" >}} Yes    |
-| Create a merge request from a branch | {{< icon name="check-circle" >}} Yes | {{< icon name="check-circle" >}} Yes    |
-| Create a branch from a Jira issue    | {{< icon name="dotted-circle" >}} No | {{< icon name="check-circle" >}} Yes    |
+| Feature                              | Jira DVCS connector | GitLab for Jira Cloud app |
+|:-------------------------------------|:--------------------|:--------------------------|
+| Smart Commits                        | {{< yes >}}         | {{< yes >}}               |
+| Sync merge requests                  | {{< yes >}}         | {{< yes >}}               |
+| Sync branches                        | {{< yes >}}         | {{< yes >}}               |
+| Sync commits                         | {{< yes >}}         | {{< yes >}}               |
+| Sync existing data                   | {{< yes >}}         | {{< yes >}} (see [GitLab data synced to Jira](connect-app.md#gitlab-data-synced-to-jira)) |
+| Sync builds                          | {{< no >}}          | {{< yes >}}               |
+| Sync deployments                     | {{< no >}}          | {{< yes >}}               |
+| Sync feature flags                   | {{< no >}}          | {{< yes >}}               |
+| Sync interval                        | Up to 60 minutes    | Real time                 |
+| Delete branches                      | {{< no >}}          | {{< yes >}}               |
+| Create a merge request from a branch | {{< yes >}}         | {{< yes >}}               |
+| Create a branch from a Jira issue    | {{< no >}}          | {{< yes >}}               |
 
 ## Connected projects in GitLab
 
