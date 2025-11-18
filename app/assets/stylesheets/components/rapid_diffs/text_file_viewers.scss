@@ -56,17 +56,15 @@
   // this query is ALLOWED to be unsupported in browsers because it's non-critical
   @container diff-file (style(--rd-content-visibility-auto: visible)) {
     --virtual-rows-visibility: auto;
-    // prevent pixel shifts on non-retina displays when hovering a line
-    will-change: transform;
   }
 }
 
 // We need to disable content-visibility when toggle is visible, otherwise it gets clipped because of containment
 // We also need to disable it on adjacent rows because toggling content-visibility causes a layout shift
 // and can create constant jumping when hovering in between rows
-.rd-hunk-lines:has([data-new-discussion-toggle]),
+.rd-hunk-lines:has(> .rd-line-number > .rd-new-discussion-toggle),
 // Focused link is clipped by content-visibility, we need to disable it as well
-.rd-hunk-lines:has(.rd-line-link:focus),
+.rd-hunk-lines:has(> .rd-line-number > .rd-line-link:focus),
 .rd-hunk-lines:has(+ .rd-hunk-lines:hover),
 .rd-hunk-lines:hover + .rd-hunk-lines,
 .rd-hunk-lines:hover {

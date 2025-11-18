@@ -614,7 +614,6 @@ lib/gitlab/checks/
 /doc/administration/credentials_inventory.md @idurham
 /doc/administration/custom_project_templates.md @brendan777
 /doc/administration/dedicated/ @lyspin
-/doc/administration/dedicated/hosted_runners.md @rsarangadharan
 /doc/administration/diff_limits.md @brendan777
 /doc/administration/docs_self_host.md @axil @eread
 /doc/administration/dormant_project_deletion.md @z_painter
@@ -781,6 +780,7 @@ lib/gitlab/checks/
 /doc/api/group_ldap_links.md @lciutacu
 /doc/api/group_level_variables.md @marcel.amirault
 /doc/api/group_markdown_uploads.md @msedlakjakubowski
+/doc/api/group_members.md @z_painter
 /doc/api/group_milestones.md @msedlakjakubowski
 /doc/api/group_placeholder_reassignments.md @eread
 /doc/api/group_protected_branches.md @brendan777
@@ -808,7 +808,6 @@ lib/gitlab/checks/
 /doc/api/markdown.md @brendan777
 /doc/api/maven_virtual_registries.md @z_painter
 /doc/api/member_roles.md @idurham
-/doc/api/members.md @z_painter
 /doc/api/merge_request_approval_settings.md @brendan777
 /doc/api/merge_request_approvals.md @brendan777
 /doc/api/merge_request_context_commits.md @brendan777
@@ -837,6 +836,7 @@ lib/gitlab/checks/
 /doc/api/project_job_token_scopes.md @marcel.amirault
 /doc/api/project_level_variables.md @marcel.amirault
 /doc/api/project_markdown_uploads.md @msedlakjakubowski
+/doc/api/project_members.md @z_painter
 /doc/api/project_packages_protection_rules.md @z_painter
 /doc/api/project_pull_mirroring.md @brendan777
 /doc/api/project_push_rules.md @brendan777
@@ -921,7 +921,6 @@ lib/gitlab/checks/
 /doc/ci/pipeline_security/ @marcel.amirault
 /doc/ci/pipelines/ @lyspin
 /doc/ci/pipelines/_index.md @marcel.amirault
-/doc/ci/pipelines/dedicated_hosted_runner_compute_minutes.md @rsarangadharan
 /doc/ci/pipelines/downstream_pipelines.md @marcel.amirault
 /doc/ci/pipelines/downstream_pipelines_troubleshooting.md @marcel.amirault
 /doc/ci/pipelines/pipeline_architectures.md @marcel.amirault
@@ -1062,6 +1061,7 @@ lib/gitlab/checks/
 /doc/user/application_security/api_fuzzing/ @rsarangadharan
 /doc/user/application_security/api_security/ @rsarangadharan
 /doc/user/application_security/api_security_testing/ @rsarangadharan
+/doc/user/application_security/attributes/ @rlehmann1
 /doc/user/application_security/coverage_fuzzing/ @rsarangadharan
 /doc/user/application_security/cve_id_request.md @rlehmann1
 /doc/user/application_security/dast/ @rsarangadharan

@@ -38,7 +38,7 @@ class User < ApplicationRecord
   include Users::DependentAssociations
   include Users::EmailOtpEnrollment
 
-  ignore_column %i[role skype], remove_after: '2025-09-18', remove_with: '18.4'
+  ignore_column :skype, remove_after: '2025-09-18', remove_with: '18.4'
 
   DEFAULT_NOTIFICATION_LEVEL = :participating
 

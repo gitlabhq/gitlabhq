@@ -71,7 +71,7 @@ module TwCodeowners
     CodeOwnerRule.new('Runner Core', '@rsarangadharan'),
     CodeOwnerRule.new('CI Functions Platform', '@rsarangadharan'),
     # CodeOwnerRule.new('CI Platform', ''),
-    CodeOwnerRule.new('Runners Platform', '@rsarangadharan'),
+    # CodeOwnerRule.new('Runners Platform', ''),
     CodeOwnerRule.new('Seat Management', '@lciutacu'),
     # CodeOwnerRule.new('Security Infrastructure', ''),
     CodeOwnerRule.new('Security Platform Management', '@rlehmann1'),

@@ -39,6 +39,11 @@ required by law. If not, you should use a respected risk assessment framework, f
 - [SANS Institute Vulnerability Management Framework](https://www.sans.org/blog/the-vulnerability-assessment-framework/)
 - [OWASP Threat and Safeguard Matrix (TaSM)](https://owasp.org/www-project-threat-and-safeguard-matrix/)
 
+If available, use the
+[Security Analyst Agent](../../duo_agent_platform/agents/foundational_agents/security_analyst_agent.md)
+to accelerate your vulnerability analysis. The agent efficiently triages, assesses, and remediates
+security findings by providing insights, risk assessments, and remediation guidance.
+
 Generally, the amount of time and effort spent on a vulnerability should be proportional to its
 risk. For example, your triage strategy might be that only vulnerabilities of critical and high risk continue
 to the analysis phase and the remainder are dismissed. You should make this decision according to your risk

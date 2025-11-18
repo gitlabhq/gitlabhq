@@ -46,6 +46,11 @@
   contain-intrinsic-size:
     auto 0 auto
     calc(var(--rd-diff-file-header-height) + #{constants.$diff-file-border-width * 3} + var(--rd-body-intrinsic-height));
+
+  @media (max-resolution: 1x) {
+    // prevent pixel shifts on non-retina displays when hovering a line
+    will-change: transform;
+  }
 }
 
 .rd-diff-file[data-collapsed] {

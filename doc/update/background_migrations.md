@@ -12,7 +12,229 @@ title: Check migrations before upgrade
 
 {{< /details >}}
 
-Before you upgrade GitLab, you must check that all existing background migrations are complete.
+## Manage background migrations with Rake tasks
+
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/191722) in GitLab 18.5.
+- [Enhanced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/211674) in GitLab 18.6.
+
+{{< /history >}}
+
+GitLab provides a set of Rake tasks to manage background migrations from the command line.
+These tasks are particularly useful for self-managed administrators who need to manage background
+migrations when the Admin UI is not available, such as during downtime upgrades or maintenance windows.
+
+All Rake tasks work across all databases (main and ci) and use a unified migration ID format: `{database}_{id}`.
+For example, `main_85` refers to migration ID 85 in the main database, and `ci_10` refers to migration ID 10
+in the ci database.
+
+### List all background migrations
+
+To view all batched background migrations across all databases:
+
+```shell
+sudo gitlab-rake gitlab:background_migrations:list
+```
+
+Example output:
+
+```plaintext
+id      | table_name                                              | job_class_name                                              | status   
+--------|---------------------------------------------------------|-------------------------------------------------------------|----------
+main_1  | namespace_settings                                      | UpdateRequireDpopForManageApiEndpointsToFalse               | finished 
+main_2  | resource_iteration_events                               | BackfillResourceIterationEventsNamespaceId                  | finalized
+main_3  | identities                                              | DeleteTwitterIdentities                                     | finalized
+main_4  | software_license_policies                               | BackfillLicensesOutsideSpdxCatalogue                        | finalized
+main_5  | security_policies                                       | BackfillPipelineExecutionPoliciesMetadata                   | finished 
+ci_1    | ci_runners                                              | MarkAdminBotRunnersAsHosted                                 | finalized
+ci_2    | p_ci_build_trace_metadata                               | BackfillUpsertedCiBuildTraceMetadataProjectId               | finalized
+ci_3    | ci_runners                                              | BackfillOrganizationIdOnCiRunners                           | finalized
+```
+
+### Show migration details
+
+To view detailed information about a specific migration:
+
+```shell
+sudo gitlab-rake gitlab:background_migrations:show[<migration_id>]
+```
+
+For example:
+
+```shell
+sudo gitlab-rake gitlab:background_migrations:show[ci_1]
+```
+
+Example output:
+
+```plaintext
+id                       | ci_1                       
+created_at               | 2025-05-06 22:40:08 UTC    
+updated_at               | 2025-08-20 22:29:07 UTC    
+min_value                | 1                          
+max_value                | 30                         
+batch_size               | 1000                       
+sub_batch_size           | 100                        
+interval                 | 120                        
+status                   | finalized                  
+job_class_name           | MarkAdminBotRunnersAsHosted
+batch_class_name         | PrimaryKeyBatchingStrategy 
+table_name               | ci_runners                 
+column_name              | id                         
+job_arguments            | []                         
+total_tuple_count        |                            
+pause_ms                 | 100                        
+max_batch_size           |                            
+started_at               | 2025-05-06 22:40:08 UTC    
+on_hold_until            |                            
+gitlab_schema            | gitlab_ci                  
+finished_at              | 2025-05-06 22:40:13 UTC    
+queued_migration_version | 20250505095336             
+min_cursor               |                            
+max_cursor               |                            
+```
+
+### Pause a migration
+
+To pause an active background migration:
+
+```shell
+sudo gitlab-rake gitlab:background_migrations:pause[<migration_id>]
+```
+
+For example:
+
+```shell
+sudo gitlab-rake gitlab:background_migrations:pause[main_85]
+```
+
+{{< alert type="note" >}}
+
+You can only pause migrations with an `active` status. Attempting to pause a migration in any other
+state results in an error.
+
+{{< /alert >}}
+
+### Resume a migration
+
+To resume a paused background migration:
+
+```shell
+sudo gitlab-rake gitlab:background_migrations:resume[<migration_id>]
+```
+
+For example:
+
+```shell
+sudo gitlab-rake gitlab:background_migrations:resume[main_85]
+```
+
+{{< alert type="note" >}}
+
+You can only resume migrations with a `paused` status. Attempting to resume a migration in any other
+state results in an error.
+
+{{< /alert >}}
+
+### Execute a migration
+
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/211674) in GitLab 18.6.
+
+{{< /history >}}
+
+To execute a specific background migration immediately:
+
+```shell
+sudo gitlab-rake gitlab:background_migrations:execute[<migration_id>]
+```
+
+For example:
+
+```shell
+sudo gitlab-rake gitlab:background_migrations:execute[ci_10]
+```
+
+Example output:
+
+```plaintext
+Are you sure you want to execute this migration? yes
+Executing background migration `ci_10`...
+Done.
+```
+
+{{< alert type="warning" >}}
+
+This task executes the migration synchronously in the foreground. The migration runs until completion
+or failure. This can take a significant amount of time for large migrations and may impact database
+performance. Use this task during maintenance windows when possible.
+
+{{< /alert >}}
+
+The task prompts for confirmation before executing. If the migration fails to complete, check the
+migration status with `gitlab:background_migrations:show[<migration_id>]` for more details.
+
+### Execute all migrations
+
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/211674) in GitLab 18.6.
+
+{{< /history >}}
+
+To execute all unfinished background migrations across all databases:
+
+```shell
+sudo gitlab-rake gitlab:background_migrations:execute_all
+```
+
+Example output:
+
+<!--
+The following codeblock uses extra spaces to avoid the Vale ReferenceLinks test.
+Do not remove the two-space nesting.
+-->
+
+  ```plaintext
+  Are you sure you want to execute all unfinished migrations? yes
+  [main] Executing 6 background migrations...
+  [main_85]: Start.
+  [main_85]: Done.
+  [main_86]: Start.
+  [main_86]: Done.
+  [main_87]: Start.
+  [main_87]: Done.
+  [main_88]: Start.
+  [main_88]: Done.
+  [main_89]: Start.
+  [main_89]: Done.
+  [main_90]: Start.
+  [main_90]: Done.
+  [ci] Executing 3 background migrations...
+  [ci_8]: Start.
+  [ci_8]: Done.
+  [ci_9]: Start.
+  [ci_9]: Done.
+  [ci_10]: Start.
+  [ci_10]: Done.
+  ```
+
+{{< alert type="warning" >}}
+
+This task executes all unfinished migrations synchronously in the foreground. This can take a very
+long time and significantly impact database performance. Only use this task during planned maintenance
+windows. The task continues even if individual migrations fail, but reports failures in the output.
+
+{{< /alert >}}
+
+The task:
+
+- Prompts for confirmation before executing.
+- Processes migrations in order by ID.
+- Reports the status of each migration as it completes.
+- Continues processing remaining migrations even if some fail.
 
 ## Check for pending database background migrations
 
