@@ -995,6 +995,7 @@ lib/gitlab/checks/
 /doc/install/install_ai_gateway.md @ashrafkhamis
 /doc/integration/ @idurham
 /doc/integration/advanced_search/ @ashrafkhamis
+/doc/integration/datadog.md @rsarangadharan
 /doc/integration/diffblue_cover.md @lyspin
 /doc/integration/elasticsearch/troubleshooting/ @ashrafkhamis
 /doc/integration/external-issue-tracker.md @msedlakjakubowski
@@ -1057,6 +1058,7 @@ lib/gitlab/checks/
 /doc/tutorials/website_project_with_analytics/ @lciutacu
 /doc/update/ @axil @eread
 /doc/user/analytics/ @lciutacu
+/doc/user/analytics/ci_cd_analytics.md @rsarangadharan
 /doc/user/application_security/ @rdickenson
 /doc/user/application_security/api_fuzzing/ @rsarangadharan
 /doc/user/application_security/api_security/ @rsarangadharan
