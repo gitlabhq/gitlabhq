@@ -86,5 +86,5 @@ export default {
 </script>
 
 <template>
-  <gl-breadcrumb :key="crumbs.length" :items="crumbs" :auto-resize="false" />
+  <gl-breadcrumb :key="crumbs.length" :items="crumbs" :auto-resize="true" />
 </template>

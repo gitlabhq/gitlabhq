@@ -51,7 +51,7 @@ This cascading behavior means:
 
 ### Where Users Can Access GitLab Duo Features
 
-Users with a paid GitLab Duo license (Duo Pro or Duo Enterprise) can access Chat and Code Suggestions in both the Web UI and IDE for:
+Users with a paid GitLab Duo license (GitLab Duo Pro or GitLab Duo Enterprise) can access Chat and Code Suggestions in both the Web UI and IDE for:
 
 1. Resources that cannot disable GitLab Duo features:
    - [Personal GitLab namespaces and projects](https://gitlab.com/gitlab-org/gitlab/-/issues/493850#note_2128888470)
@@ -100,67 +100,67 @@ This flow diagram shows how GitLab Duo feature availability works on GitLab.com:
 flowchart TD
     A[Start] --> B{Member of Premium/Ultimate group?}
     B -->|No| C[Cannot use GitLab Duo]
-    B -->|Yes| D{Has Duo Pro/Enterprise license?}
+    B -->|Yes| D{Has GitLab Duo Pro/Enterprise license?}
     D -->|No| E[Cannot use GitLab Duo]
-    D -->|Yes| F{Using Duo with specific
+    D -->|Yes| F{Using GitLab Duo with specific
                  group/project resource?}
     F -->|No| G[Can use GitLab Duo]
     F -->|Yes| H{Group/Project has
-                 Duo features enabled?}
-    H -->|No| I[Cannot use Duo with
+                 GitLab Duo features enabled?}
+    H -->|No| I[Cannot use GitLab Duo with
                 this resource]
-    H -->|Yes| J[Can use Duo with
+    H -->|Yes| J[Can use GitLab Duo with
                  this resource]
 ```
 
-#### GitLab.com with Duo Core, Duo Pro, and Duo Enterprise
+#### GitLab.com with GitLab Duo Core, GitLab Duo Pro, and GitLab Duo Enterprise
 
 GitLab offers three tiers of AI functionality:
 
-1. **Duo Core** - Basic AI capabilities
-1. **Duo Pro** - Enhanced AI capabilities with more advanced features
-1. **Duo Enterprise** - Comprehensive AI capabilities with additional controls and features
+1. **GitLab Duo Core** - Basic AI capabilities
+1. **GitLab Duo Pro** - Enhanced AI capabilities with more advanced features
+1. **GitLab Duo Enterprise** - Comprehensive AI capabilities with additional controls and features
 
-##### Duo Core Configuration
+##### GitLab Duo Core Configuration
 
-With the introduction of Duo Core, a new setting is available for top-level Premium and Ultimate groups.
+With the introduction of GitLab Duo Core, a new setting is available for top-level Premium and Ultimate groups.
 
-This setting allows group owners to control Duo Core availability:
+This setting allows group owners to control GitLab Duo Core availability:
 
-- When Duo Core is enabled ("on"): Every member of the group automatically receives a Duo Core seat
-- When Duo Core is disabled ("off"): No members of the group have Duo Core seats
+- When GitLab Duo Core is enabled ("on"): Every member of the group automatically receives a GitLab Duo Core seat
+- When GitLab Duo Core is disabled ("off"): No members of the group have GitLab Duo Core seats
 
 ##### Feature Availability by License Tier
 
-| Feature | Duo Core | Duo Pro | Duo Enterprise |
+| Feature | GitLab Duo Core | GitLab Duo Pro | GitLab Duo Enterprise |
 |---------|----------|---------|----------------|
 | Chat | Limited to IDE | Full functionality | Full functionality |
 | Code Suggestions | Available in IDE and Web IDE | Available in IDE and Web IDE | Available in IDE and Web IDE |
 | Additional AI features | Not available | Some Available | All Available |
 
 This flow diagram shows how GitLab Duo feature availability works on GitLab.com with
-Duo Core settings taken into consideration:
+GitLab Duo Core settings taken into consideration:
 
 ```mermaid
 flowchart TD
     A[Start] --> B{Member of Premium/Ultimate group?}
     B -->|No| C[Cannot use GitLab Duo]
-    B -->|Yes| D{Has Duo Pro/Enterprise license?}
+    B -->|Yes| D{Has GitLab Duo Pro/Enterprise license?}
     D -->|Yes| E[Can use GitLab Duo]
     D -->|No| F{Any Premium/Ultimate group has
-                Duo Core enabled?}
+                GitLab Duo Core enabled?}
     F -->|No| G[Cannot use GitLab Duo]
     F -->|Yes| H{Using Chat or
                  Code Suggestions in IDE?}
     H -->|No| I[Cannot use GitLab Duo]
-    H -->|Yes| J{Using Duo with specific
+    H -->|Yes| J{Using GitLab Duo with specific
                  group/project resource?}
     J -->|No| K[Can use GitLab Duo]
     J -->|Yes| L{Group/Project has
-                 Duo features enabled?}
-    L -->|Yes| M[Can use Duo with
+                 GitLab Duo features enabled?}
+    L -->|Yes| M[Can use GitLab Duo with
                  this resource]
-    L -->|No| N[Cannot use Duo with
+    L -->|No| N[Cannot use GitLab Duo with
                 this resource]
 ```
 
@@ -204,67 +204,67 @@ Instance administrators have the ability to set GitLab Duo features to "Always o
 
 ```mermaid
 flowchart TD
-    A[Start] --> B{Instance has Duo features
+    A[Start] --> B{Instance has GitLab Duo features
                    set to 'Always off'?}
     B -->|Yes| C[Cannot use GitLab Duo]
-    B -->|No| D{Has Duo Pro/Enterprise license?}
+    B -->|No| D{Has GitLab Duo Pro/Enterprise license?}
     D -->|No| E[Cannot use GitLab Duo]
-    D -->|Yes| F{Using Duo with specific
+    D -->|Yes| F{Using GitLab Duo with specific
                  group/project resource?}
     F -->|No| G[Can use GitLab Duo]
     F -->|Yes| H{Group/Project has
-                 Duo features enabled?}
-    H -->|No| I[Cannot use Duo with
+                 GitLab Duo features enabled?}
+    H -->|No| I[Cannot use GitLab Duo with
                 this resource]
-    H -->|Yes| J[Can use Duo with
+    H -->|Yes| J[Can use GitLab Duo with
                  this resource]
 ```
 
-#### GitLab Self-Managed and Dedicated with Duo Core, Duo Pro, and Duo Enterprise
+#### GitLab Self-Managed and Dedicated with GitLab Duo Core, GitLab Duo Pro, and GitLab Duo Enterprise
 
-##### Instance-Wide Duo Core Configuration
+##### Instance-Wide GitLab Duo Core Configuration
 
-For GitLab Self-Managed and Dedicated instances, Duo Core is controlled through an instance-level setting.
+For GitLab Self-Managed and Dedicated instances, GitLab Duo Core is controlled through an instance-level setting.
 This setting is available to all Premium and Ultimate instances.
 
 Instance administrators can:
 
-- Enable Duo Core ("on") - Every user in the instance automatically receives a Duo Core seat
-- Disable Duo Core ("off") - No users in the instance have Duo Core seats
+- Enable GitLab Duo Core ("on") - Every user in the instance automatically receives a GitLab Duo Core seat
+- Disable GitLab Duo Core ("off") - No users in the instance have GitLab Duo Core seats
 
 ##### License Tier Differences in Self-Managed and Dedicated Instances
 
-The same feature differentiation between Duo Core, Duo Pro, and Duo Enterprise applies to self-managed and dedicated instances:
+The same feature differentiation between GitLab Duo Core, GitLab Duo Pro, and GitLab Duo Enterprise applies to self-managed and dedicated instances:
 
-- **Duo Core**: Basic AI capabilities limited to IDE use cases and general coding assistance
-- **Duo Pro**: Enhanced AI capabilities with broader feature access
-- **Duo Enterprise**: Comprehensive AI capabilities with additional enterprise controls
+- **GitLab Duo Core**: Basic AI capabilities limited to IDE use cases and general coding assistance
+- **GitLab Duo Pro**: Enhanced AI capabilities with broader feature access
+- **GitLab Duo Enterprise**: Comprehensive AI capabilities with additional enterprise controls
 
 Self-managed instances have additional configuration options for integrating with self-hosted AI models and controlling feature behavior.
 
-This flow diagram shows how Duo feature availability works on non-GitLab.com
-instances with Duo Core settings taken into consideration:
+This flow diagram shows how GitLab Duo feature availability works on non-GitLab.com
+instances with GitLab Duo Core settings taken into consideration:
 
 ```mermaid
 flowchart TD
-    A[Start] --> B{Instance has Duo features
+    A[Start] --> B{Instance has GitLab Duo features
                    set to 'Always off'?}
     B -->|Yes| C[Cannot use GitLab Duo]
-    B -->|No| D{Has Duo Pro/Enterprise license?}
+    B -->|No| D{Has GitLab Duo Pro/Enterprise license?}
     D -->|Yes| E[Can use GitLab Duo]
-    D -->|No| F{Instance has Duo Core enabled?}
+    D -->|No| F{Instance has GitLab Duo Core enabled?}
     F -->|No| G[Cannot use GitLab Duo]
     F -->|Yes| H{Using Chat or
                  Code Suggestions in IDE?}
     H -->|No| I[Cannot use GitLab Duo]
-    H -->|Yes| J{Using Duo with specific
+    H -->|Yes| J{Using GitLab Duo with specific
                  group/project resource?}
     J -->|No| K[Can use GitLab Duo]
     J -->|Yes| L{Group/Project has
-                 Duo features enabled?}
-    L -->|Yes| M[Can use Duo with
+                 GitLab Duo features enabled?}
+    L -->|Yes| M[Can use GitLab Duo with
                  this resource]
-    L -->|No| N[Cannot use Duo with
+    L -->|No| N[Cannot use GitLab Duo with
                 this resource]
 ```
 
@@ -280,7 +280,7 @@ The following settings pages are available for configuring GitLab Duo on self-ma
 - `/admin/gitlab_duo/configuration`
   - Configure instance-wide GitLab Duo availability
   - Enable experimental and beta GitLab Duo features
-  - Configure Duo Chat conversation expiration periods
+  - Configure GitLab Duo Chat conversation expiration periods
   - Enable Code Suggestions direct connections
   - Enable beta AI models for self-hosted deployments
   - Configure AI logging settings

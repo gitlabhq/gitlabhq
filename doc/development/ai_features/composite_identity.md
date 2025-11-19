@@ -44,7 +44,7 @@ Only OAuth tokens are supported.
 
 ### Minimal, copy‑pasteable examples (Rails console and curl)
 
-- Create an OAuth application (note this step is only needed if you want a bespoke OAuth app. The Duo Workflow default OAuth application and service account are created by calling `ee/app/services/ai/duo_workflows/onboarding_service.rb`):
+- Create an OAuth application (note this step is only needed if you want a bespoke OAuth app. The GitLab Duo Workflow default OAuth application and service account are created by calling `ee/app/services/ai/duo_workflows/onboarding_service.rb`):
 
 ```ruby
 # Rails console
@@ -61,7 +61,7 @@ app.save!
 - Create an authorization grant for a service account + human user:
 
 ```ruby
-# Assuming you want to create a composite OAuth token for the Duo Workflow OAuth application and service account + root user in your GDK.
+# Assuming you want to create a composite OAuth token for the GitLab Duo Workflow OAuth application and service account + root user in your GDK.
 org = Organizations::Organization.default_organization
 user = User.first
 

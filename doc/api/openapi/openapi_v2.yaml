@@ -71,6 +71,8 @@ tags:
   description: Operations about protected_tags
 - name: remote_mirrors
   description: Operations about remote_mirrors
+- name: attestations
+  description: Operations about attestations
 - name: tags
   description: Operations about tags
 - name: batched_background_migrations
@@ -38371,7 +38373,7 @@ paths:
     get:
       summary: Fetch the list of all attestations for a specific project and artifact
         hash
-      description: This feature was introduced in GitLab 18.5
+      description: This feature was introduced in GitLab 18.7
       produces:
       - application/json
       parameters:
@@ -38389,15 +38391,38 @@ paths:
         '200':
           description: Fetch the list of all attestations for a specific project and
             artifact hash
-        '401':
-          description: Unauthorized
-        '403':
-          description: Forbidden
+          schema:
+            "$ref": "#/definitions/API_Entities_SupplyChain_Attestation"
         '404':
-          description: Artifact not found
+          description: Artifact SHA-256 not found
       tags:
-      - projects
+      - attestations
       operationId: getApiV4ProjectsIdAttestationsSubjectDigest
+  "/api/v4/projects/{id}/attestations/{attestation_iid}/download":
+    get:
+      summary: Fetch a specific bundle by iid
+      description: This feature was introduced in GitLab 18.7
+      produces:
+      - application/json
+      parameters:
+      - in: path
+        name: id
+        description: The ID or URL-encoded path of the project
+        type: string
+        required: true
+      - in: path
+        name: attestation_iid
+        description: The iid of the attestation
+        type: string
+        required: true
+      responses:
+        '200':
+          description: Fetch a specific bundle by iid
+        '404':
+          description: Artifact SHA-256 not found
+      tags:
+      - attestations
+      operationId: getApiV4ProjectsIdAttestationsAttestationIidDownload
   "/api/v4/projects/{id}/repository/tags":
     get:
       description: Get a project repository tags
@@ -66989,6 +67014,50 @@ definitions:
     - commit_sha
     - branch
     description: Update existing submodule reference in repository
+  API_Entities_SupplyChain_Attestation:
+    type: object
+    properties:
+      id:
+        type: integer
+        format: int32
+        example: 1
+      iid:
+        type: integer
+        format: int32
+        example: 14
+      created_at:
+        type: string
+        format: date-time
+        example: '2025-09-17T02:26:10.898Z'
+      updated_at:
+        type: string
+        format: date-time
+        example: '2025-09-17T02:26:10.898Z'
+      expire_at:
+        type: string
+        format: date-time
+        example: '2025-09-17T02:26:10.898Z'
+      project_id:
+        type: integer
+        format: int32
+      build_id:
+        type: integer
+        format: int32
+      status:
+        type: string
+        example: success
+      predicate_kind:
+        type: string
+        example: provenance
+      predicate_type:
+        type: string
+        example: https://slsa.dev/provenance/v1
+      subject_digest:
+        type: string
+        example: 5db1fee4b5703808c48078a76768b155b421b210c0761cd6a5d223f4d99f1eaa
+      download_url:
+        type: string
+    description: API_Entities_SupplyChain_Attestation model
   API_Entities_Tag:
     type: object
     properties:

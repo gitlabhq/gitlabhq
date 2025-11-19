@@ -69,7 +69,7 @@ Example prompt snippet: `Read instructions and example yml files in policies/one
 
 ### CI jobs for label migration
 
-For testing and executing migration policies, create CI jobs in the MR pipeline. Instruct Duo Agent Platform to create these jobs:
+For testing and executing migration policies, create CI jobs in the MR pipeline. Instruct GitLab Duo Agent Platform to create these jobs:
 
 Example prompt snippet: `Link the new one-off policy in .gitlab/ci/one-off.yml to run the policy in CI. Create two jobs: a dry-run and an actual job. The job names must follow the instructions listed in one-off.yml.`
 

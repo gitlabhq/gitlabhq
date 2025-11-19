@@ -382,7 +382,7 @@ Component statuses are linked to configuration documentation for each component.
 | Component                                             | Description                                                          | [Omnibus GitLab](https://docs.gitlab.com/omnibus/) | [GitLab Environment Toolkit (GET)](https://gitlab.com/gitlab-org/gitlab-environment-toolkit) | [GitLab chart](https://docs.gitlab.com/charts/) | [minikube Minimal](https://docs.gitlab.com/charts/development/minikube/#deploying-gitlab-with-minimal-settings) | [GitLab.com](https://gitlab.com) | [Source](../install/self_compiled/_index.md) | [GDK](https://gitlab.com/gitlab-org/gitlab-development-kit) |  [CE/EE](https://about.gitlab.com/install/ce-or-ee/)  |
 |-------------------------------------------------------|----------------------------------------------------------------------|:--------------:|:--------------:|:------------:|:----------------:|:----------:|:------:|:---:|:-------:|
 | [AI Gateway](#ai-gateway)                             | GitLab AI-native features                                            |       ⤓      |       ❌        |      ✅       |      ❌           |     ✅      |  ⤓      |  ✅  | EE Only |
-| [Duo Workflow Service](#duo-workflow-service)                             | GitLab AI-native features                                            |       ⤓       |       ❌        |      ✅       |      ❌           |     ✅      |   ⤓      |  ✅  | EE Only |
+| [GitLab Duo Workflow Service](#gitlab-duo-workflow-service)                             | GitLab AI-native features                                            |       ⤓       |       ❌        |      ✅       |      ❌           |     ✅      |   ⤓      |  ✅  | EE Only |
 | [Certificate Management](#certificate-management)     | TLS Settings, Let's Encrypt                                          |       ✅       |       ✅        |      ✅       |        ⚙         |     ✅      |   ⚙    |  ⚙  | CE & EE |
 | [Consul](#consul)                                     | Database node discovery, failover                                    |       ⚙       |       ✅         |      ❌       |        ❌         |     ✅      |   ❌    |  ❌  | EE Only |
 | [Database Migrations](#database-migrations)           | Database migrations                                                  |       ✅       |       ✅        |      ✅       |        ✅         |     ✅      |   ⚙    |  ✅  | CE & EE |
@@ -465,7 +465,7 @@ You can read more:
 - In [the project's README](https://gitlab.com/gitlab-org/modelops/applied-ml/code-suggestions/ai-assist).
 - In [the installation instructions](../install/install_ai_gateway.md).
 
-#### Duo Workflow Service
+#### GitLab Duo Workflow Service
 
 - Project page:
   - [Charts](https://gitlab.com/gitlab-org/charts/ai-gateway-helm-chart)
@@ -473,7 +473,7 @@ You can read more:
   - [Source](../administration/gitlab_duo/gateway.md)
 - GitLab.com: [Monitoring of GitLab.com](https://runbooks.gitlab.com/ai-gateway/)
 
-Duo Workflow Service is our agentic AI Features that is deployed via our [Runway service in the](#ai-gateway)
+GitLab Duo Workflow Service is our agentic AI Features that is deployed via our [Runway service in the](#ai-gateway)
 
 You can read more about:
 

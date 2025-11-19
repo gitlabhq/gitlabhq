@@ -26,6 +26,7 @@ module SupplyChain
     scope :for_project, ->(project_id) { where(project_id: project_id) }
     scope :with_digest, ->(subject_digest) { where(subject_digest: subject_digest) }
     scope :with_predicate_kind, ->(predicate_kind) { where(predicate_kind: predicate_kind) }
+    scope :with_iid, ->(iid) { where(iid: iid) }
 
     attribute :file_store, default: -> { AttestationUploader.default_store }
 

@@ -33,19 +33,19 @@ This should enable everyone to locally see how any change made in an IDE is sent
 
 See the [instructions for setting up GitLab Duo features in the local development environment](_index.md)
 
-### Bulk assign users to Duo Pro/Duo Enterprise add-on
+### Bulk assign users to GitLab Duo Pro/GitLab Duo Enterprise add-on
 
-After purchasing the Duo add-on, existing eligible users can be assigned/un-assigned to the Duo `add_on_purchase` in bulk. There are a few ways to perform this action, that apply for both GitLab.com and GitLab Self-Managed instances,
+After purchasing the GitLab Duo add-on, existing eligible users can be assigned/un-assigned to the GitLab Duo `add_on_purchase` in bulk. There are a few ways to perform this action, that apply for both GitLab.com and GitLab Self-Managed instances,
 
-1. [Duo users management UI](../../subscriptions/subscription-add-ons.md#assign-gitlab-duo-seats)
+1. [GitLab Duo users management UI](../../subscriptions/subscription-add-ons.md#assign-gitlab-duo-seats)
 1. [GraphQL endpoint](../../api/graphql/assign_gitlab_duo_seats.md)
 1. [Rake task](../../administration/raketasks/user_management.md#bulk-assign-users-to-gitlab-duo)
 
 The above methods make use of the [BulkAssignService](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/app/services/gitlab_subscriptions/duo/bulk_assign_service.rb)/[BulkUnassignService](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/app/services/gitlab_subscriptions/duo/bulk_unassign_service.rb), which evaluates eligibility criteria preliminarily before assigning/un-assigning the passed users in a single SQL operation.
 
-### Setting up Duo on your staging GitLab.com account
+### Setting up GitLab Duo on your staging GitLab.com account
 
-For more information, see [setting up Duo on your GitLab.com staging account](ai_development_license.md#setting-up-gitlab-duo-for-your-staging-gitlabcom-user-account).
+For more information, see [setting up GitLab Duo on your GitLab.com staging account](ai_development_license.md#setting-up-gitlab-duo-for-your-staging-gitlabcom-user-account).
 
 ### Video demonstrations of installing and using Code Suggestions in IDEs
 

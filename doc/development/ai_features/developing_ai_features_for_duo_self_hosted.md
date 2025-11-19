@@ -2,10 +2,10 @@
 stage: AI-powered
 group: Custom Models
 info: Any user with at least the Maintainer role can merge updates to this content. For details, see https://docs.gitlab.com/ee/development/development_processes.html#development-guidelines-review.
-title: Developing AI Features for Duo Self-Hosted
+title: Developing AI Features for GitLab Duo Self-Hosted
 ---
 
-This document outlines the process for developing AI features for GitLab Duo Self-Hosted. Developing AI features for GitLab Duo Self-Hosted is quite similar to developing AI features for Duo SaaS, but there are some differences.
+This document outlines the process for developing AI features for GitLab Duo Self-Hosted. Developing AI features for GitLab Duo Self-Hosted is quite similar to developing AI features for GitLab Duo SaaS, but there are some differences.
 
 ## Gaining access to a hosted model
 
@@ -99,7 +99,7 @@ To use the hosted models, set the following environment variables on your AI gat
    export GITLAB_SIMULATE_SAAS=0
    ```
 
-1. Seed your Duo self-hosted models using `bundle exec rake gitlab:duo:seed_self_hosted_models`.
+1. Seed your GitLab Duo Self-Hosted models using `bundle exec rake gitlab:duo:seed_self_hosted_models`.
 
 1. Running `bundle exec rake gitlab:duo:list_self_hosted_models` should output the list of created models
 
@@ -131,9 +131,9 @@ To use the created self-hosted model to power AI-native features:
 
 With this, you have successfully configured the self-hosted model to power AI-native features in your GitLab instance. To test the feature using, for example, Chat, open Chat and say `Hello`. You should see the response powered by your self-hosted model in the chat.
 
-### Cleaning up Duo Self-hosted
+### Cleaning up GitLab Duo Self-Hosted
 
-To revert to using .com configuration and remove any duo self-hosted related data, use `bundle exec rake gitlab:duo:clean_up_duo_self_hosted`.
+To revert to using .com configuration and remove any GitLab Duo Self-Hosted related data, use `bundle exec rake gitlab:duo:clean_up_duo_self_hosted`.
 
 ## Moving a feature available in GitLab.com or GitLab Self-Managed to GitLab Duo Self-Hosted
 
@@ -153,14 +153,14 @@ When a feature is available in GitLab.com or GitLab Self-Managed, it should be c
 
 Please refer to the following merge requests for reference:
 
-- [Move Code Review Summary to Beta in Self-Hosted Duo](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/186662)
-- [Move Vulnerability Explanation to Beta in Self-Hosted Duo](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/186500)
+- [Move Code Review Summary to Beta in GitLab Duo Self-Hosted](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/186662)
+- [Move Vulnerability Explanation to Beta in GitLab Duo Self-Hosted](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/186500)
 
 ### Adding prompts for the feature
 
 For each model family you want to support for the feature, you must add a prompt. Prompts are stored in the [AI Gateway repository](https://gitlab.com/gitlab-org/modelops/applied-ml/code-suggestions/ai-assist).
 
-In most cases, the prompt that is used on GitLab.com is also used for Self-Hosted Duo.
+In most cases, the prompt that is used on GitLab.com is also used for GitLab Duo Self-Hosted.
 
 Please refer to the following Merge Requests for reference:
 
@@ -181,7 +181,7 @@ When designing your evaluation, you are responsible for selecting the most appro
 
 The traffic-light system will automatically interpret your results according to these thresholds, providing a consistent classification across all AI features.
 
-For example, to evaluate Duo Chat's performance on GitLab documentation questions, we use an LLM-based scoring system. Another language model rates each response on a 1-4 scale, and we calculate the percentage of responses that achieve scores of 3 or 4. This percentage serves as our benchmark metric for comparing the effectiveness of different LLMs, and the traffic-light system indicates the level of compatibility for each model based on the defined threshold.
+For example, to evaluate GitLab Duo Chat's performance on GitLab documentation questions, we use an LLM-based scoring system. Another language model rates each response on a 1-4 scale, and we calculate the percentage of responses that achieve scores of 3 or 4. This percentage serves as our benchmark metric for comparing the effectiveness of different LLMs, and the traffic-light system indicates the level of compatibility for each model based on the defined threshold.
 
 The general process for testing your feature is as follows:
 

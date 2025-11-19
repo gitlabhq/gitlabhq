@@ -328,6 +328,16 @@ Use this scope to search wikis.
 
 This scope is available only when [advanced search is enabled](../user/search/advanced_search.md#use-advanced-search).
 
+The following filters are available for this scope:
+
+- `filename`
+- `path`
+- `extension`
+
+To use a filter, include it in your query (for example, `a query filename:some_name*`).
+
+You can use wildcards (`*`) for glob matching.
+
 ```shell
 curl --request GET \
   --header "PRIVATE-TOKEN: <your_access_token>" \
@@ -753,6 +763,16 @@ Example response:
 Use this scope to search wikis.
 
 This scope is available only when [advanced search is enabled](../user/search/advanced_search.md#use-advanced-search).
+
+The following filters are available for this scope:
+
+- `filename`
+- `path`
+- `extension`
+
+To use a filter, include it in your query (for example, `a query filename:some_name*`).
+
+You can use wildcards (`*`) for glob matching.
 
 ```shell
 curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/groups/6/search?scope=wiki_blobs&search=bye"

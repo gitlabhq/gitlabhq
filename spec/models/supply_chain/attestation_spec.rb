@@ -66,6 +66,14 @@ RSpec.describe SupplyChain::Attestation, feature_category: :artifact_security do
     end
   end
 
+  describe '#with_iid' do
+    subject(:attestation) { create(:supply_chain_attestation) }
+
+    it 'returns the appropriate attestation' do
+      expect(described_class.for_project(attestation.project).with_iid(attestation.iid).take).to eq(attestation)
+    end
+  end
+
   describe 'modules' do
     let_it_be(:project) { create(:project) }
 

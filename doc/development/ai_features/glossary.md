@@ -17,7 +17,7 @@ A variation on Fine Tuning. Instead of opening the model and adjusting the layer
 
 ### AI Catalog
 
-A central registry of available agents and flows in the Duo Agent Platform.
+A central registry of available agents and flows in the GitLab Duo Agent Platform.
 Shared across the instance. The Catalog functions as both a marketplace and
 control plane, enabling safe, observable, and scalable AI deployment across
 GitLab.
@@ -155,7 +155,7 @@ Logic that performs a specific LLM-related task; each tool has a description and
 
 ### Unit primitive
 
-GitLab-specific term that refers to the fundamental logical feature that a permission or access scope can control. Examples: [`duo_chat`](../../user/gitlab_duo_chat/_index.md) and [`code_suggestions`](../../api/code_suggestions.md). These features are both currently part of the GitLab Duo Pro license but we are building the concept of a Unit Primitive around each Duo feature so that Duo features are easily composable into different groupings to accommodate potential future product packaging needs.
+GitLab-specific term that refers to the fundamental logical feature that a permission or access scope can control. Examples: [`duo_chat`](../../user/gitlab_duo_chat/_index.md) and [`code_suggestions`](../../api/code_suggestions.md). These features are both currently part of the GitLab Duo Pro license but we are building the concept of a Unit Primitive around each GitLab Duo feature so that GitLab Duo features are easily composable into different groupings to accommodate potential future product packaging needs.
 
 ### Word-level metrics
 
@@ -189,7 +189,7 @@ Example: "Generate test cases → Update CI pipeline file → Commit changes →
 
 #### Flow types
 
-- **Foundational**: Defined in the Duo Workflow Service, shipped and maintained by GitLab (for example, issue-to-MR flow).
+- **Foundational**: Defined in the GitLab Duo Workflow Service, shipped and maintained by GitLab (for example, issue-to-MR flow).
 - **Custom**: Built by users through the AI Catalog.
 
 #### Flow execution
@@ -217,24 +217,24 @@ system in the GitLab ecosystem
 - **Foundational**: A GitLab-maintained, platform-native agent that provides general or cross-workflow intelligence.
   - Purpose: Serves as a baseline capability accessible across the product,
     ensuring consistent quality, safety, and governance.
-  - How to invoke: Foundational Agents can be invoked in Duo Chat only
-  - Example: Duo Security Analyst Chat Agent for answering questions about
+  - How to invoke: Foundational Agents can be invoked in GitLab Duo Chat only
+  - Example: GitLab Duo Security Analyst Chat Agent for answering questions about
     vulnerabilities in chat.
 - **Custom**: Built by users through the AI Catalog.
   - Purpose: Enables teams to leverage proprietary knowledge, tools, and decision logic in GitLab guardrails.
-  - How to invoke: Custom Agents can be invoked in Duo Chat only
+  - How to invoke: Custom Agents can be invoked in GitLab Duo Chat only
   - Example: An agent created specifically answering a questions about a codebase
-- **External**: Also known as "Third-Party Flows" or "CLI Agents." An externally developed agent integrated into the Duo Agent Platform
+- **External**: Also known as "Third-Party Flows" or "CLI Agents." An externally developed agent integrated into the GitLab Duo Agent Platform
   - Purpose: Expands platform capability by allowing external vendors to operate
     in the GitLab workflow orchestration and policy layer.
   - How to invoke: External Agents are invoked through `@` mentions in comments OR through
-    assignment to issues, epics, or merge requests. They cannot be invoked through Duo
+    assignment to issues, epics, or merge requests. They cannot be invoked through GitLab Duo
     Chat.
   - Example: Amazon Q or Claude integrated for code generation or review.
 
 #### Agent Execution
 
-Custom and foundational agents can be executed in the Duo Chat interface.
+Custom and foundational agents can be executed in the GitLab Duo Chat interface.
 
 External agents can be configured with triggers.
 
@@ -352,7 +352,7 @@ aims to build vector embeddings representation of files in a repository. The fil
 for the chunked content and stored in a vector store.
 
 With Code Embeddings, we can perform a semantic search over a given repository, with the search results then used as additional context for an LLM.
-(See [Codebase as Chat Context](#codebase-as-chat-context) for how Code Embeddings will be used in Duo Chat.)
+(See [Codebase as Chat Context](#codebase-as-chat-context) for how Code Embeddings will be used in GitLab Duo Chat.)
 
 ### GitLab Zoekt
 
@@ -368,7 +368,7 @@ Most likely, this distributed database system will be used to power [Knowledge G
 
 The [Knowledge Graph](https://gitlab.com/gitlab-org/rust/knowledge-graph) project aims to create a structured, queryable graph database from code repositories to power AI features and enhance developer productivity within GitLab.
 
-Think of it like creating a detailed blueprint that shows which functions call other functions, how classes relate to each other, and where variables are used throughout the codebase. Instead of GitLab Duo having to read through thousands of files every time you ask it something, it can quickly navigate this pre-built map to give you better code suggestions, find related code snippets, or help debug issues. It gives Duo a much smarter way to understand your codebase so it can assist you more effectively with things like code reviews, refactoring, or finding where to make changes when you're working on a feature.
+Think of it like creating a detailed blueprint that shows which functions call other functions, how classes relate to each other, and where variables are used throughout the codebase. Instead of GitLab Duo having to read through thousands of files every time you ask it something, it can quickly navigate this pre-built map to give you better code suggestions, find related code snippets, or help debug issues. It gives GitLab Duo a much smarter way to understand your codebase so it can assist you more effectively with things like code reviews, refactoring, or finding where to make changes when you're working on a feature.
 
 ### One parser (GitLab Code Parser)
 
@@ -387,15 +387,15 @@ can provide supplementary user context with the `/include` command (IDE only).
 
 Additional features or services that can be purchased and added to a GitLab subscription. Examples include:
 
-- **Duo Core**: Basic AI-powered features assigned at the namespace level
-- **Duo Pro**: Advanced AI-powered features for individual users
-- **Duo Enterprise**: Enterprise-level AI features with additional security and compliance capabilities
+- **GitLab Duo Core**: Basic AI-powered features assigned at the namespace level
+- **GitLab Duo Pro**: Advanced AI-powered features for individual users
+- **GitLab Duo Enterprise**: Enterprise-level AI features with additional security and compliance capabilities
 
 ### User add-on assignment
 
-The process of assigning add-on features to individual users. For most add-ons like Duo Pro and Duo Enterprise, this creates a direct user-to-add-on relationship.
+The process of assigning add-on features to individual users. For most add-ons like GitLab Duo Pro and GitLab Duo Enterprise, this creates a direct user-to-add-on relationship.
 
-However, Duo Core is an exception as it's assigned at the namespace level. On GitLab.com, Duo Core user access is determined by checking if the user has membership in any namespace with the Duo Core [turned on](../../user/gitlab_duo/turn_on_off.md#turn-gitlab-duo-core-on-or-off). On other instances, Duo Core user access is determined by checking if the instance has Duo Core turned on.
+However, GitLab Duo Core is an exception as it's assigned at the namespace level. On GitLab.com, GitLab Duo Core user access is determined by checking if the user has membership in any namespace with the GitLab Duo Core [turned on](../../user/gitlab_duo/turn_on_off.md#turn-gitlab-duo-core-on-or-off). On other instances, GitLab Duo Core user access is determined by checking if the instance has GitLab Duo Core turned on.
 
 ### License
 

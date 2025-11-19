@@ -57,14 +57,14 @@ Teams must consider requirements for supporting [GitLab Duo Self-Hosted](../../a
 - [Feature flag implementation](_index.md#push-feature-flags-to-ai-gateway)
 - Event tracking instrumentation:
   - [AI usage tracking metrics](usage_tracking.md)
-  - [Duo feature classification](../internal_analytics/internal_event_instrumentation/duo_classification.md)
+  - [GitLab Duo feature classification](../internal_analytics/internal_event_instrumentation/duo_classification.md)
 
 #### Resources
 
 - [AI Gateway architecture design document](https://handbook.gitlab.com/handbook/engineering/architecture/design-documents/ai_gateway/)
 - [AI Gateway API documentation](https://gitlab.com/gitlab-org/modelops/applied-ml/code-suggestions/ai-assist/-/blob/main/docs/api.md)
 - [AI Gateway prompt registry](https://gitlab.com/gitlab-org/modelops/applied-ml/code-suggestions/ai-assist/-/blob/main/docs/aigw_prompt_registry.md)
-- [Developing AI Features for Duo Self-Hosted](developing_ai_features_for_duo_self_hosted.md)
+- [Developing AI Features for GitLab Duo Self-Hosted](developing_ai_features_for_duo_self_hosted.md)
 - [Cloud Connector dev docs](cloud_connector.md)
 - [Cloud Connector design docs in Handbook](https://handbook.gitlab.com/handbook/engineering/architecture/design-documents/cloud_connector)
 

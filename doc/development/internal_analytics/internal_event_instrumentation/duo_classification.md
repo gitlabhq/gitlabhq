@@ -2,20 +2,20 @@
 stage: Analytics
 group: Analytics Instrumentation
 info: Any user with at least the Maintainer role can merge updates to this content. For details, see https://docs.gitlab.com/development/development_processes/#development-guidelines-review.
-title: Duo Classification
+title: GitLab Duo Classification
 ---
 
-This guide explains how to properly add the `classification: duo` field to event definitions for AI and Duo features.
+This guide explains how to properly add the `classification: duo` field to event definitions for AI and GitLab Duo features.
 
 ## What is the classification field?
 
-The `classification` field is an optional property in event definitions that categorizes events based on their data handling requirements. Currently, the only supported value is `duo`, which is used specifically for AI and Duo-related features.
+The `classification` field is an optional property in event definitions that categorizes events based on their data handling requirements. Currently, the only supported value is `duo`, which is used specifically for AI and GitLab Duo-related features.
 
 ## When to use classification: duo
 
 Add `classification: duo` to your event definition when:
 
-- You are instrumenting AI or Duo features (e.g., Duo Chat, Duo Workflow, AI-powered suggestions)
+- You are instrumenting AI or GitLab Duo features (e.g., GitLab Duo Chat, GitLab Duo Workflow, AI-powered suggestions)
 - Your event is owned by AI Engineering product groups such as:
   - `duo_chat`
   - `ai_framework`
@@ -65,13 +65,13 @@ additional_properties:
     description: Request ID to link to other events of the same AI request.
 ```
 
-### Adding Duo events to external services
+### Adding GitLab Duo events to external services
 
 Events defined by other services that are forwarded through the monolith should be added to the list in [EventEligibilityChecker](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/lib/ee/gitlab/tracking/event_eligibility_checker.rb#L10).
 
 This ensures that events are forwarded through the instance even when analytics data collection is opted out.
 
-### Duo Workflow Events
+### GitLab Duo Workflow Events
 
 ```yaml
 ---

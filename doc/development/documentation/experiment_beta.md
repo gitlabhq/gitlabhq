@@ -15,9 +15,9 @@ When you document an [experiment or beta](../../policy/development_stages_suppor
 
 The **Use experiment and beta features** toggle in namespace settings is specifically for
 [GitLab Duo features](../../user/gitlab_duo/turn_on_off.md#turn-on-beta-and-experimental-features) only.
-This setting should not be used for non-AI/Duo experiment or beta features.
+This setting should not be used for non-AI/GitLab Duo experiment or beta features.
 
-For non-Duo experiment and beta features:
+For non-GitLab Duo experiment and beta features:
 
 - Use feature-specific toggles or feature flags appropriate to your feature.
 - Do not tie your feature to the namespace-level experiment and beta setting.

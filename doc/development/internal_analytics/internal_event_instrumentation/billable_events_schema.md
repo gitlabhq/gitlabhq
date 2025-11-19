@@ -20,7 +20,7 @@ Fields that uniquely identify and categorize the billable event.
 | Field | Description | Snowplow Field | Type |
 |-------|-------------|----------------|------|
 | `event_id` | Unique identifier for the event (RFC9562 UUID) | `event_id` | UUID (String) |
-| `app_id` | Identifier for the application (e.g., Duo Workflow, Dedicated Hosted Runners) | `app_id` | String |
+| `app_id` | Identifier for the application (e.g., GitLab Duo Workflow, Dedicated Hosted Runners) | `app_id` | String |
 | `event_type` | Name of the billable event (breakdown of feature, e.g., `code_review`) | `event_type` | String |
 | `timestamp` | Timestamp when the event occurred | `context_generated_at` | String |
 | `correlation_id` | Unique request ID for each request | `correlation_id` | String |
@@ -81,7 +81,7 @@ The following fields are critical for billing calculations and must be present i
 1. **Quantity**: Must be a non-negative, non-zero number representing actual usage
 1. **Metadata**: Use for additional context that aids in analytics but is not required for billing
 
-### Metadata fields for Duo Agent Platform
+### Metadata fields for GitLab Duo Agent Platform
 
 | Field | Type | Description | Required |
 |-------|------|-------------|----------|

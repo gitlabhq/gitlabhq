@@ -112,6 +112,6 @@ We have several instance-wide GitLab Duo settings in the `application_settings` 
 
 At some point, we realized it was simpler to add new instance-wide settings to a different table. Going forward, any new Duo-related instance-wide settings should be added to the `ai_settings` table.
 
-For Duo settings at the group or project level, there is also a `namespace_ai_settings` table.
+For GitLab Duo settings at the group or project level, there is also a `namespace_ai_settings` table.
 
-The [cascading settings framework](cascading_settings.md) assumes that the instance-wide setting is on the `application_settings` table and that group and project settings are on `namespace_settings` and `project_settings`, respectively. If you are considering adding a cascading setting for Duo, that may be a good reason to use `application_settings` instead of `ai_settings`.
+The [cascading settings framework](cascading_settings.md) assumes that the instance-wide setting is on the `application_settings` table and that group and project settings are on `namespace_settings` and `project_settings`, respectively. If you are considering adding a cascading setting for GitLab Duo, that may be a good reason to use `application_settings` instead of `ai_settings`.

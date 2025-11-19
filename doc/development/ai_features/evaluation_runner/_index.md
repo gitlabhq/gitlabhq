@@ -29,11 +29,11 @@ flowchart LR
     CI["CI/CD pipelines"]
     subgraph GDKS["Remote GDKs"]
         subgraph GDKM["GDK-master"]
-          bl1["Duo features on master branch"]
+          bl1["GitLab Duo features on master branch"]
           fi1["fixtures (Issue,MR,etc)"]
         end
         subgraph GDKF["GDK-feature"]
-          bl2["Duo features on feature branch"]
+          bl2["GitLab Duo features on feature branch"]
           fi2["fixtures (Issue,MR,etc)"]
         end
     end

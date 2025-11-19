@@ -1268,7 +1268,7 @@ and should leave it off when you can.
 Use **GitLab Duo plugin for JetBrains IDEs** to refer to the extension. You can also use **Plugins for JetBrains IDEs**
 or **Plugins for JetBrains**.
 
-Do not use **GitLab plugin**. Ensure you include **Duo** in the name.
+Do not use **GitLab plugin**. Ensure you include **GitLab Duo** in the name.
 
 ## GitLab Duo Pro
 

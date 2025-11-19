@@ -7,12 +7,12 @@ title: Managing foundational agents
 
 [Foundational agents](../../user/duo_agent_platform/agents/foundational_agents/_index.md) are specialized agents
 that are created and maintained by GitLab, providing more accurate responses for specific use cases. These agents are
-available by default on any place chat and duo chat are available, including groups, and are supported on Duo Self-hosted.
+available by default on any place chat and GitLab Duo chat are available, including groups, and are supported on GitLab Duo Self-Hosted.
 
 ## Create a foundational agent
 
-There are two ways of creating a foundational agent, using the AI Catalog or Duo Workflow Service. AI Catalog provides
-a user-friendly interface, and it is the preferred approach, but writing a definition on Duo Workflow Service provides
+There are two ways of creating a foundational agent, using the AI Catalog or GitLab Duo Workflow Service. AI Catalog provides
+a user-friendly interface, and it is the preferred approach, but writing a definition on GitLab Duo Workflow Service provides
 more flexibility for complex cases.
 
 ### Using the AI catalog
@@ -20,8 +20,8 @@ more flexibility for complex cases.
 1. Create your agent on the [AI Catalog](https://gitlab.com/explore/ai-catalog/agents/), and note its ID. Make sure the agent is set to
    public. Example: [Planner Agent](https://gitlab.com/explore/ai-catalog/agents/356/) has ID 356.
 
-1. Agents created on the AI Catalog need to be bundled into Duo Workflow Service, so they can be available to self-hosted
-   setups that do not have access to our SaaS. To achieve this, open an MR to Duo Workflow Service adding the ID of the
+1. Agents created on the AI Catalog need to be bundled into GitLab Duo Workflow Service, so they can be available to self-hosted
+   setups that do not have access to our SaaS. To achieve this, open an MR to GitLab Duo Workflow Service adding the ID of the
    agent:
 
    ```diff
@@ -48,7 +48,7 @@ more flexibility for complex cases.
 
 1. Update [user facing documentation](../../user/duo_agent_platform/agents/foundational_agents/_index.md).
 
-### Using Duo workflow service
+### Using GitLab Duo Workflow Service
 
 1. Create a flow configuration file in `/duo_workflow_service/agent_platform/v1/flows/configs/` (located either on your GDK under `PATH-TO-YOUR-GDK/gdk/gitlab-ai-gateway` or on the [ai-assist repository](https://gitlab.com/gitlab-org/modelops/applied-ml/code-suggestions/ai-assist/-/tree/main/duo_workflow_service/agent_platform/v1/flows/configs/)):
 
@@ -105,7 +105,7 @@ more flexibility for complex cases.
            reference: 'chat',
            version: '',
            name: 'GitLab Duo Agent',
-           description: "Duo is your general development assistant"
+           description: "GitLab Duo is your general development assistant"
          },
          {
            id: 2,
@@ -125,10 +125,10 @@ Tips:
 
 1. You can use the AI Catalog to test foundational agents, even before you add them to the codebase.
    Create a new private agent in the AI Catalog with the same prompt and same tools, and enable it on your test project.
-   Once results reach desired levels, add to Duo Workflow Service.
-1. Add prompts to the Duo Workflow Service to enable testing the agent in your local GDK.
+   Once results reach desired levels, add to GitLab Duo Workflow Service.
+1. Add prompts to the GitLab Duo Workflow Service to enable testing the agent in your local GDK.
 1. When using AI catalog, the version field of an agent in `FoundationalChatAgentsDefinitions.rb` should be `experimental`.
-   When creating the definition in Duo workflow service, the version should be `v1`.
+   When creating the definition in GitLab Duo Workflow Service, the version should be `v1`.
 
 ## Use feature flags for releasing chat agents
 
@@ -179,7 +179,7 @@ It is possible to test the setup locally.
      --output-path duo_workflow_service/agent_platform/experimental/flows/configs
    ```
 
-1. Restart duo workflow service.
+1. Restart GitLab Duo Workflow Service.
 
    ```shell
    gdk restart duo-workflow-service

@@ -227,10 +227,10 @@ Add-on Purchases Supported attributes:
 
 | Attribute      | Type      | Required   | Description                                                                                                                        |
 | :------------  | :-------- | :--------- | :------------                                                                                                                      |
-| `quantity`     | integer   | No         | Amount of units in the subscription add-on purchase. Must be a non-negative integer. (Example: Number of seats for Duo Pro add-on) |
+| `quantity`     | integer   | No         | Amount of units in the subscription add-on purchase. Must be a non-negative integer. (Example: Number of seats for GitLab Duo Pro add-on) |
 | `started_on`   | date      | Yes        | Date the subscription add-on purchase became available                                                                             |
 | `expires_on`   | date      | Yes        | Expiration date of the subscription add-on purchase                                                                                |
-| `purchase_xid` | string    | No         | Identifier for the subscription add-on purchase (Example: Subscription name for a Duo Pro add-on)                                  |
+| `purchase_xid` | string    | No         | Identifier for the subscription add-on purchase (Example: Subscription name for a GitLab Duo Pro add-on)                                  |
 | `trial`        | boolean   | No         | Whether the add-on is a trial                                                                                                      |
 
 Example request:
@@ -571,7 +571,7 @@ Supported attributes:
 
 | Attribute   | Type    | Required | Description |
 |:------------|:--------|:---------|:------------|
-| `quantity` | integer | No | Amount of units in the subscription add-on purchase. Must be a non-negative integer. (Example: Number of seats for Duo Pro add-on)  |
+| `quantity` | integer | No | Amount of units in the subscription add-on purchase. Must be a non-negative integer. (Example: Number of seats for GitLab Duo Pro add-on)  |
 | `started_on` | date | Yes | Date the subscription add-on purchase became available |
 | `expires_on` | date | Yes | Expiration date of the subscription add-on purchase |
 | `purchase_xid` | string | No | Identifier for the subscription add-on purchase (Example: Subscription name for a Code Suggestions add-on) |
@@ -583,7 +583,7 @@ If successful, returns [`201`](../../api/rest/troubleshooting.md#status-codes) a
 |:----------------|:--------|:------------|
 | `namespace_id`  | integer | Unique identifier for the namespace associated with the purchase |
 | `namespace_name`| string  | Name of the namespace linked to the purchase |
-| `add_on`        | integer | Type of add-on related to the purchase. Possible add-on types are `Code Suggestions` alias Duo Pro, `Duo Enterprise` and `Product Analytics`  |
+| `add_on`        | integer | Type of add-on related to the purchase. Possible add-on types are `Code Suggestions` alias GitLab Duo Pro, `Duo Enterprise` and `Product Analytics`  |
 | `quantity`      | integer | Number of units purchased for the subscription add-on |
 | `started_on`    | date    | Date the subscription add-on became active |
 | `expires_on`    | date    | Date the subscription add-on will expire |

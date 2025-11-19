@@ -118,7 +118,8 @@ module Users
       email_otp_enrollment_callout: 114,
       merge_request_dashboard_show_drafts: 115,
       focused_vulnerability_reporting: 116,
-      expired_trial_status_widget: 117 # EE-only
+      expired_trial_status_widget: 117, # EE-only
+      work_item_consolidated_list_feedback: 118
     }
 
     validates :feature_name,

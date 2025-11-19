@@ -47,6 +47,7 @@
 - :elastic_clean
 - :elastic_delete_by_query
 - :elastic_helpers
+- :elasticsearch_settings_enabled
 - :enable_admin_mode
 - :event_store_publisher
 - :example_group

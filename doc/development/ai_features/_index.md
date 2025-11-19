@@ -18,9 +18,9 @@ Here is a list of all of the main steps to go through from a fresh, GDK-less com
 1. [Setup your Google Cloud Platform account and the CLI](https://gitlab-org.gitlab.io/gitlab-development-kit/howto/gitlab_ai_gateway/#set-up-google-cloud-platform-in-ai-gateway)
 1. Get your Anthropic license key by [making an access request like this](https://gitlab.com/gitlab-com/team-member-epics/access-requests/-/issues/37278)
 1. Get your OpenAI API key by [making an access request like this](https://gitlab.com/gitlab-com/team-member-epics/access-requests/-/issues/40277)
-1. [If you want to use Duo Chat, Code Suggestions, and other non-Duo Agent Platform features, install and configure AI gateway](https://gitlab-org.gitlab.io/gitlab-development-kit/howto/gitlab_ai_gateway/)
-1. [If you want to use Duo Agent Platform or Agentic Chat locally, setup Duo Workflow Service](https://gitlab-org.gitlab.io/gitlab-development-kit/howto/duo_agent_platform/)
-1. [Run the Duo setup Rake task](#run-gitlabduosetup-script)
+1. [If you want to use GitLab Duo Chat, Code Suggestions, and other non-GitLab Duo Agent Platform features, install and configure AI gateway](https://gitlab-org.gitlab.io/gitlab-development-kit/howto/gitlab_ai_gateway/)
+1. [If you want to use GitLab Duo Agent Platform or Agentic Chat locally, setup GitLab Duo Workflow Service](https://gitlab-org.gitlab.io/gitlab-development-kit/howto/duo_agent_platform/)
+1. [Run the GitLab Duo setup Rake task](#run-gitlabduosetup-script)
 
 More details on each step can be found down below for help and troubleshooting.
 
@@ -41,11 +41,11 @@ If there is any issue, check out [the troubleshooting documentation](ai_developm
 This step includes getting your Google Cloud account setup, getting your Anthropic key and then setting up AI Gateway. Follow [these instructions](https://gitlab-org.gitlab.io/gitlab-development-kit/howto/gitlab_ai_gateway/) to install the AI gateway with GDK.
 
 {{< alert type="note" >}}
-Make sure your license has a Duo Pro or Duo Enterprise add-on enabled before you proceed.
-Duo Core access is available automatically when you have a Premium or Enterprise license. For Duo Pro, [you can provision a license yourself](ai_development_license.md#set-up-gitlab-team-member-license-for-gdk). For Duo Enterprise, ask [#g_provision](ai_development_license.md#duo-enterprise).
+Make sure your license has a GitLab Duo Pro or GitLab Duo Enterprise add-on enabled before you proceed.
+GitLab Duo Core access is available automatically when you have a Premium or Enterprise license. For GitLab Duo Pro, [you can provision a license yourself](ai_development_license.md#set-up-gitlab-team-member-license-for-gdk). For GitLab Duo Enterprise, ask [#g_provision](ai_development_license.md#gitlab-duo-enterprise).
 {{< /alert >}}
 
-**Why**: This ensures that your instance or group has the correct licenses, settings, and feature flags to test Duo features locally.
+**Why**: This ensures that your instance or group has the correct licenses, settings, and feature flags to test GitLab Duo features locally.
 AI gateway is what routes request between GitLab Rails and the LLM. The script should take care of most of the setup required. Once it has been run, make sure
 to check in your GDK database that the ai gateway URL is correct. Run:
 
@@ -60,7 +60,7 @@ If the value points to a non-local URL, you should ensure that:
 - `DEVELOPMENT_AI_GATEWAY_URL` is set to `"http://0.0.0.0:5052"`
 - `AI_GATEWAY_URL` is unset and `Ai::Setting.instance.ai_gateway_url` is `nil.
 
-If you are setting up Duo Self-Hosted, the there are [specific instructions](developing_ai_features_for_duo_self_hosted.md) for that GDK configuration.
+If you are setting up GitLab Duo Self-Hosted, the there are [specific instructions](developing_ai_features_for_duo_self_hosted.md) for that GDK configuration.
 
 Now in your `gdk` directory, you can `cd` into the `gitlab-ai-gateway` directory
 and run `poetry sync`. This should install all project dependencies. If this
@@ -70,7 +70,7 @@ with your configuration.
 
 Finally, run `gdk tail gitlab-ai-gateway` from the GitLab project directory. There should be no errors in the log.
 
-### Setup Duo Workflow Service
+### Setup GitLab Duo Workflow Service
 
 After following the steps in the [setup](https://gitlab-org.gitlab.io/gitlab-development-kit/howto/duo_agent_platform/), run `gdk status`. You should see the `duo-workflow-service` running. You can run `gdk tail duo-workflow-service` in case there might be errors.
 
@@ -80,7 +80,7 @@ Note: this task is idempotent and skips reseeding if the `gitlab-duo` group
 already exists. To force reseeding from this task, set `GITLAB_DUO_RESEED=1`.
 For details on the seeds used, see [Development seed files](../development_seed_files.md#seed-project-and-group-resources-for-gitlab-duo).
 
-This ensures that your instance or group has the correct licenses, settings, and feature flags to test Duo features locally. Below are several options. If you are unsure, use option 1.
+This ensures that your instance or group has the correct licenses, settings, and feature flags to test GitLab Duo features locally. Below are several options. If you are unsure, use option 1.
 
 Be sure to run the Rake task from the GitLab Rails root directory (typically `/path/to/gdk/gitlab`), not from the GDK root directory.
 
@@ -94,7 +94,7 @@ Be sure to run the Rake task from the GitLab Rails root directory (typically `/p
 
    - Creates a test group called `gitlab-duo`, which contains a project called `test`
    - Applies an Ultimate license to the group
-   - Sets up Duo Enterprise seats for the group
+   - Sets up GitLab Duo Enterprise seats for the group
    - Enables all feature flags for the group
    - Updates group settings to enable all available GitLab Duo features
 
@@ -114,7 +114,7 @@ Be sure to run the Rake task from the GitLab Rails root directory (typically `/p
 
    - Creates a test group called `gitlab-duo`, which contains a project called `test`
    - Applies an Ultimate license to the instance
-   - Sets up Duo Enterprise seats for the instance
+   - Sets up GitLab Duo Enterprise seats for the instance
    - Enables all feature flags for the instance
    - Updates instance settings to enable all available GitLab Duo features
 
@@ -124,7 +124,7 @@ Be sure to run the Rake task from the GitLab Rails root directory (typically `/p
    GITLAB_SIMULATE_SAAS=0 bundle exec 'rake gitlab:duo:setup[duo_pro]'
    ```
 
-  After the script finishes without error, now go to `gitlab-duo/test` and validate that you can see Duo Chat. Send a question to Chat
+  After the script finishes without error, now go to `gitlab-duo/test` and validate that you can see GitLab Duo Chat. Send a question to Chat
   and make sure there are no errors. If there are, the two most common problems in development are [A1003](../../user/gitlab_duo_chat/troubleshooting.md#error-a1003) and [A9999](../../user/gitlab_duo_chat/troubleshooting.md#error-a9999).
 
   A9999 is a catchall error. The biggest offender is not having the ai gateway URL setup properly as described in [Install AI gateway](#install-ai-gateway). If not, make sure to check the tests are passing in the `gitlab-ai-gateway` repository with `make test` and that `gdk tail gitlab-ai-gateway` returns no error.

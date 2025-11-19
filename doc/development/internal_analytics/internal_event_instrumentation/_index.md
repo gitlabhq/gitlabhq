@@ -11,7 +11,7 @@ Currently Internal Event Tracking is consolidating the following systems:
 
 - [Service Ping](../service_ping/_index.md)
 - Snowplow
-- AiTracking (Duo Chat) WIP
+- AiTracking (GitLab Duo Chat) WIP
 
 Internal Events is an unified interface to track events in GitLab. Each tracking call represents a user action and the
 associated properties. Internal Events then provides underlying systems the properties they require for their specific
@@ -39,4 +39,4 @@ This page is a work in progress. If you have access to the GitLab Slack workspac
 - [Internal Events CLI contribution guide](../cli_contribution_guidelines.md)
 - [Internal Events Payload Samples](internal_events_payload.md)
 - [Standard context fields description](standard_context_fields.md)
-- [Duo Classification](duo_classification.md)
+- [GitLab Duo Classification](duo_classification.md)

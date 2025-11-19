@@ -116,7 +116,7 @@ According to this definition, the feature:
 - Describes "New Feature" owned by "Your Group".
 - Is available in beta (free of charge) starting with GitLab 16.8.
 - It is only available via paid add-ons on GitLab versions 16.9 or newer.
-- It transitions from free access to paid access on October 17, 2024 at midnight UTC. Beyond this point, you must have either Duo Pro or Duo Enterprise, and a Premium or Ultimate subscription.
+- It transitions from free access to paid access on October 17, 2024 at midnight UTC. Beyond this point, you must have either GitLab Duo Pro or GitLab Duo Enterprise, and a Premium or Ultimate subscription.
 - If the above listed conditions hold true, a Cloud Connector token will carry this feature
   in its `scopes` claim, allowing backend services to verify access accordingly.
 - This feature is only relevant for requests to the AI gateway. The corresponding entry in `scopes` does not need to be present
