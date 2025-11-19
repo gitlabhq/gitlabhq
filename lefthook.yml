@@ -11,7 +11,7 @@ pre-push:
       tags: frontend style
       files: git diff --name-only --diff-filter=d $(git merge-base origin/master HEAD)..HEAD
       glob: '*.{js,vue}'
-      run: yarn run lint:eslint --no-warn-ignored {files}
+      run: REVEAL_ESLINT_TODO=0 yarn run lint:eslint --no-warn-ignored {files}
     circular-dependencies:
       tags: frontend
       files: git diff --name-only --diff-filter=d $(git merge-base origin/master HEAD)..HEAD
@@ -232,7 +232,7 @@ auto-fix:
       tags: frontend style
       files: git diff --name-only --diff-filter=d $(git merge-base origin/master HEAD) --cached
       glob: '*.{js,vue}'
-      run: 'yarn run lint:eslint:fix {files} && yarn run prettier --write --list-different {files}'
+      run: 'REVEAL_ESLINT_TODO=0 yarn run lint:eslint:fix {files} && yarn run prettier --write --list-different {files}'
     jsonlint:
       tags: style
       files: git diff --name-only --diff-filter=d $(git merge-base origin/master HEAD) --cached

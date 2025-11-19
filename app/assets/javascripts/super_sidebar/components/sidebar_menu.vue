@@ -255,7 +255,12 @@ export default {
       @pin-remove="destroyPin"
       @pin-reorder="movePin"
     />
-    <hr v-if="supportsPins" aria-hidden="true" class="gl-my-4" data-testid="main-menu-separator" />
+    <hr
+      v-if="supportsPins"
+      aria-hidden="true"
+      class="super-sidebar-main-separator gl-my-4"
+      data-testid="main-menu-separator"
+    />
     <ul
       aria-labelledby="super-sidebar-context-header"
       class="gl-mb-0 gl-list-none gl-p-0"

@@ -1,4 +1,5 @@
 <script>
+import { GlResizeObserverDirective } from '@gitlab/ui';
 import {
   generateColumnsFromLayersListMemoized,
   keepLatestDownstreamPipelines,
@@ -17,6 +18,9 @@ export default {
     LinkedPipelinesColumn: () =>
       import(/* webpackChunkName: 'linked_pipelines_column' */ './linked_pipelines_column.vue'),
     StageColumnComponent,
+  },
+  directives: {
+    GlResizeObserver: GlResizeObserverDirective,
   },
   props: {
     configPaths: {
@@ -80,6 +84,8 @@ export default {
         jobName: '',
         expanded: false,
       },
+      containerWidth: 0,
+      containerScrollWidth: 0,
     };
   },
   computed: {
@@ -141,9 +147,16 @@ export default {
       }
       return this.userPermissions[this.pipeline?.id] || {};
     },
+    hasHorizontalOverflow() {
+      if (!this.containerWidth) return false;
+      return this.containerScrollWidth > this.containerWidth;
+    },
   },
   mounted() {
-    this.getMeasurements();
+    this.$nextTick(() => {
+      this.getMeasurements();
+      this.updateContainerWidth();
+    });
   },
   methods: {
     getMeasurements() {
@@ -151,6 +164,25 @@ export default {
         width: this.$refs[this.containerId].scrollWidth,
         height: this.$refs[this.containerId].scrollHeight,
       };
+    },
+    updateContainerWidth() {
+      const container = this.$refs.mainPipelineContainer;
+      if (container) {
+        this.containerWidth = container.clientWidth;
+        this.containerScrollWidth = container.scrollWidth;
+      }
+    },
+    syncScrollToSticky({ target }) {
+      const { stickyScrollbar } = this.$refs;
+      if (!stickyScrollbar) return;
+
+      stickyScrollbar.scrollLeft = target.scrollLeft;
+    },
+    syncScrollFromSticky({ target }) {
+      const mainContainer = this.$refs.mainPipelineContainer;
+      if (!mainContainer) return;
+
+      mainContainer.scrollLeft = target.scrollLeft;
     },
     onError(payload) {
       this.$emit('error', payload);
@@ -183,7 +215,7 @@ export default {
 <template>
   <div class="js-pipeline-graph">
     <div
-      ref="mainPipelineContainer"
+      :ref="isLinkedPipeline ? 'linkedPipelineContainer' : 'mainPipelineContainer'"
       class="pipeline-graph gl-position-relative gl-flex gl-whitespace-nowrap gl-rounded-lg"
       :class="{
         'pipeline-graph-container gl-pipeline-min-h gl-mt-3 gl-items-start gl-overflow-auto gl-bg-subtle gl-pb-8 gl-pt-3':
@@ -191,8 +223,9 @@ export default {
         'gl-bg-strong @sm/panel:gl-ml-5': isLinkedPipeline,
       }"
       data-testid="pipeline-container"
+      @scroll="syncScrollToSticky"
     >
-      <linked-graph-wrapper>
+      <linked-graph-wrapper v-gl-resize-observer="updateContainerWidth">
         <template #upstream>
           <linked-pipelines-column
             v-if="showUpstreamPipelines"
@@ -267,6 +300,20 @@ export default {
           />
         </template>
       </linked-graph-wrapper>
+    </div>
+
+    <div
+      v-if="!isLinkedPipeline && hasHorizontalOverflow"
+      ref="stickyScrollbar"
+      data-testid="sticky-scrollbar"
+      class="gl-z-10 gl-border-t gl-sticky gl-bottom-0 gl-h-5 gl-overflow-x-auto gl-overflow-y-hidden gl-bg-subtle"
+      @scroll="syncScrollFromSticky"
+    >
+      <div
+        data-testid="sticky-scrollbar-inner"
+        :style="{ width: `${containerScrollWidth}px` }"
+        class="gl-h-1"
+      ></div>
     </div>
   </div>
 </template>

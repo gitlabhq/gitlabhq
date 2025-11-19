@@ -240,6 +240,12 @@
 }
 
 .pipeline-graph-container {
+  scrollbar-width: none;
+
+  &::-webkit-scrollbar {
+    display: none;
+  }
+
   .stage-column.is-stage-view:not(:last-of-type)::after {
     content: "";
     position: absolute;

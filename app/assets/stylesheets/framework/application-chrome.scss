@@ -758,6 +758,14 @@
       border-color: var(--gl-color-alpha-dark-8);
     }
 
+    .super-sidebar-main-separator {
+      @apply gl-mx-3;
+    }
+
+    .super-sidebar-is-icon-only .super-sidebar-main-separator {
+      border-color: var(--gl-border-color-strong);
+    }
+
     .super-sidebar .super-sidebar-nav-item:not(.super-sidebar-nav-item-current) .badge {
       background-color: transparent;
     }
@@ -824,6 +832,14 @@
 
     .super-sidebar hr {
       border-color: var(--gl-color-alpha-light-16);
+    }
+
+    .super-sidebar-main-separator {
+      @apply gl-mx-3;
+    }
+
+    .super-sidebar-is-icon-only .super-sidebar-main-separator {
+      border-color: var(--gl-border-color-strong);
     }
 
     .super-sidebar .super-sidebar-nav-item:not(.super-sidebar-nav-item-current) .badge {

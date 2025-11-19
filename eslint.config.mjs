@@ -8,6 +8,11 @@ import { FlatCompat } from '@eslint/eslintrc';
 import graphqlPlugin from '@graphql-eslint/eslint-plugin';
 import * as todoLists from './.eslint_todo/index.mjs';
 
+let { REVEAL_ESLINT_TODO } = process.env;
+if (!REVEAL_ESLINT_TODO || REVEAL_ESLINT_TODO === 'false' || REVEAL_ESLINT_TODO === '0') {
+  REVEAL_ESLINT_TODO = false;
+}
+
 const { dirname } = import.meta;
 const compat = new FlatCompat({
   baseDirectory: dirname,
@@ -799,5 +804,5 @@ export default [
     },
   },
   ...jhConfigs,
-  ...Object.values(todoLists),
+  ...Object.values(REVEAL_ESLINT_TODO ? {} : todoLists),
 ];

@@ -15,6 +15,14 @@ RSpec.describe Gitlab::Database, feature_category: :database do
     end
   end
 
+  describe 'TABLES_TO_BE_RENAMED' do
+    it 'contains the expected tables to be renamed' do
+      expect(described_class::TABLES_TO_BE_RENAMED).to include({
+        'virtual_registries_packages_maven_cache_entries' => 'virtual_registries_packages_maven_cache_remote_entries'
+      })
+    end
+  end
+
   describe '.all_database_connections' do
     it 'the first entry is always main' do
       expect(described_class.all_database_connections.keys).to start_with('main')

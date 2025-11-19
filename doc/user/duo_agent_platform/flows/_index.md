@@ -39,7 +39,7 @@ A flow is a combination of one or more agents working together to solve a comple
 Flows are available in IDEs and the GitLab UI.
 
 - In the UI, they run directly in GitLab CI/CD, helping you automate common development tasks without the need to leave your browser.
-- In IDEs, flows are available in VS Code, Visual Studio, and JetBrains.
+- In IDEs, the software development flow is available in VS Code, Visual Studio, and JetBrains. Support for other flows is being proposed.
 
 For more information about flows executing in CI/CD, see [the flow execution documentation](execution.md).
 

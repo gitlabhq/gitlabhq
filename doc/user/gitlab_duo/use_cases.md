@@ -265,7 +265,7 @@ Resources:
 
 ### Explain, test, and refactor a Kotlin application
 
-In this example, the adventure application from the [Kotlin Code Generation prompts](use_cases.md#kotlin-code-generation-prompts)
+In this example, the adventure application from the [Kotlin code generation prompts](use_cases.md#kotlin-code-generation-prompts)
 must be analyzed, and improved with refactoring and tests.
 
 The current source code looks like this:

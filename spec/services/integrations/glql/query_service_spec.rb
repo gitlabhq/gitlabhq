@@ -54,6 +54,22 @@ RSpec.describe Integrations::Glql::QueryService, feature_category: :integrations
         expect(result[:duration_s]).to be_a(Float)
       end
 
+      it 'calls LoggingService to log execution metrics' do
+        logging_service = instance_double(Integrations::Glql::LoggingService)
+        expect(Integrations::Glql::LoggingService).to receive(:new).with(
+          current_user: user,
+          result: hash_including(
+            data: { '__typename' => 'Query' },
+            complexity_score: 5,
+            timeout_occurred: false
+          ),
+          query_sha: service.send(:query_sha)
+        ).and_return(logging_service)
+        expect(logging_service).to receive(:execute)
+
+        service.execute(query: query, variables: variables, context: context)
+      end
+
       it 'calls GitlabSchema.execute with correct parameters' do
         expected_context = {
           current_user: user,
@@ -131,6 +147,24 @@ RSpec.describe Integrations::Glql::QueryService, feature_category: :integrations
           timeout_occurred: true,
           rate_limited: false
         )
+      end
+
+      it 'calls LoggingService to log timeout' do
+        allow(Gitlab::ApplicationRateLimiter).to receive(:peek).and_return(false)
+        allow(Gitlab::ApplicationRateLimiter).to receive(:throttled?)
+
+        logging_service = instance_double(Integrations::Glql::LoggingService)
+        expect(Integrations::Glql::LoggingService).to receive(:new).with(
+          current_user: user,
+          result: hash_including(
+            timeout_occurred: true,
+            complexity_score: 3
+          ),
+          query_sha: service.send(:query_sha)
+        ).and_return(logging_service)
+        expect(logging_service).to receive(:execute)
+
+        service.execute(query: query, variables: variables, context: context)
       end
 
       it 'tracks SLI metrics for timeout' do

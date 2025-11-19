@@ -21,13 +21,27 @@ module Gitlab
         @client ||= service_class.new(
           topology_service_address,
           service_credentials,
-          interceptors: [
-            Labkit::Correlation::GRPC::ClientInterceptor.instance,
-            Gitlab::Cells::TopologyService::MetadataClient.new(
-              Gitlab.config.cell.topology_service_client.metadata)
-          ],
+          interceptors: build_interceptors,
           **options
         )
+      end
+
+      def build_interceptors
+        interceptors = [
+          Labkit::Correlation::GRPC::ClientInterceptor.instance,
+          Gitlab::Cells::TopologyService::MetadataClient.new(
+            Gitlab.config.cell.topology_service_client.metadata)
+        ]
+
+        # Add metrics interceptor if metrics are enabled
+        if ::Gitlab::Metrics.prometheus_metrics_enabled?
+          interceptors << MetricsInterceptor.new(
+            cell_id: cell_id,
+            topology_service_address: topology_service_address
+          )
+        end
+
+        interceptors
       end
 
       def options

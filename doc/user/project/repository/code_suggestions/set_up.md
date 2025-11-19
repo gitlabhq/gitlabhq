@@ -20,7 +20,7 @@ title: Set up Code Suggestions
 
 {{< /history >}}
 
-You can use Code Suggestions in several different IDEs.
+You can use GitLab Duo Code Suggestions in several different IDEs.
 To set up Code Suggestions, follow the instructions for your IDE.
 
 ## Prerequisites

@@ -31,7 +31,7 @@ module Integrations
           # Enhance GraphQL logs with GLQL metadata for both controller and API
           enhance_graphql_logs
 
-          {
+          query_result = {
             data: result&.dig('data'),
             errors: result&.dig('errors'),
             complexity_score: extract_complexity_score,
@@ -39,6 +39,11 @@ module Integrations
             timeout_occurred: false,
             rate_limited: false
           }
+
+          # Log execution metrics for monitoring and optimization
+          log_execution_metrics(query_result)
+
+          query_result
 
         rescue GlqlQueryLockedError => e
           exception_caught = e
@@ -62,7 +67,7 @@ module Integrations
           # Enhance logs for timeout scenarios
           enhance_graphql_logs
 
-          {
+          query_result = {
             data: nil,
             errors: [{ message: 'Query timed out' }],
             complexity_score: extract_complexity_score,
@@ -70,6 +75,11 @@ module Integrations
             timeout_occurred: true,
             rate_limited: false
           }
+
+          # Log execution metrics for monitoring and optimization
+          log_execution_metrics(query_result)
+
+          query_result
 
         rescue StandardError => e
           exception_caught = e
@@ -180,6 +190,17 @@ module Integrations
       def caller_endpoint_id
         # Try to get from ApplicationContext, fallback to generic
         ::Gitlab::ApplicationContext.current_context_attribute(:caller_id) || 'Glql::QueryService'
+      end
+
+      def log_execution_metrics(result)
+        # Use LoggingService for consistent logging across API and Controller
+        # Note: GLQL-specific details (glql_query, generated_graphql) are not available here
+        # and should be added by the caller (API) if needed
+        LoggingService.new(
+          current_user: current_user,
+          result: result,
+          query_sha: query_sha
+        ).execute
       end
 
       def error_type_from(exception)

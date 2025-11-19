@@ -516,6 +516,24 @@ done
 echo "Package download complete"
 ```
 
+## Delete a package
+
+Before you delete a package, make sure you understand
+the [associated security risks](../package_registry/supported_functionality.md#deleting-packages).
+
+To delete a package, you can either:
+
+- [Use the API](../../../api/packages.md#delete-a-project-package).
+- Use the UI.
+
+To delete a package in the UI:
+
+1. On the left sidebar, select **Search or go to** and find your project. If you've [turned on the new navigation](../../../user/interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
+1. On the left sidebar, in the **Deploy** dropdown list, select **Package registry**.
+1. On the **Package registry** overview page, find the package you want to delete.
+1. Select the vertical ellipsis ({{< icon name="ellipsis_v" >}}) > **Delete package**.
+1. In the **Delete package version** confirmation dialogue, select **Permanently delete**.
+
 ## Verify file integrity with checksums
 
 SHA256 checksums are automatically calculated and stored for all uploaded files. You can use these checksums to verify the integrity of downloaded files.

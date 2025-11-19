@@ -24,12 +24,7 @@ extend ignore_feature_category
 gem 'bundler-checksum', '~> 0.1.0', path: 'gems/bundler-checksum', require: false, feature_category: :shared
 
 # See https://docs.gitlab.com/ee/development/gemfile.html#upgrade-rails for guidelines when upgrading Rails
-
-if next?
-  gem 'rails', '~> 7.2.3', feature_category: :shared
-else
-  gem 'rails', '~> 7.1.6', feature_category: :shared
-end
+gem 'rails', '~> 7.2.3', feature_category: :shared
 
 # Pin Zeitwerk until https://gitlab.com/gitlab-org/omnibus-gitlab/-/issues/9408 is fixed
 gem 'zeitwerk', '= 2.6.18', feature_category: :shared

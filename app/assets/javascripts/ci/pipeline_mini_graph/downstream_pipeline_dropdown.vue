@@ -59,6 +59,7 @@ export default {
         return {
           iid: this.pipeline.iid,
           fullPath: this.projectPath,
+          retried: false,
         };
       },
       skip() {

@@ -26,7 +26,7 @@ title: Code Suggestions
 
 - [Introduced support for Google Vertex AI Codey APIs](https://gitlab.com/groups/gitlab-org/-/epics/10562) in GitLab 16.1.
 - [Removed support for GitLab native model](https://gitlab.com/groups/gitlab-org/-/epics/10752) in GitLab 16.2.
-- [Introduced support for Code Generation](https://gitlab.com/gitlab-org/gitlab/-/issues/415583) in GitLab 16.3.
+- [Introduced support for code generation](https://gitlab.com/gitlab-org/gitlab/-/issues/415583) in GitLab 16.3.
 - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/435271) in GitLab 16.7.
 - [Changed](https://gitlab.com/gitlab-org/fulfillment/meta/-/issues/2031) to require the GitLab Duo Pro add-on on February 15, 2024. Previously, this feature was included with Premium and Ultimate subscriptions.
 - [Changed](https://gitlab.com/gitlab-org/fulfillment/meta/-/issues/2031) to require the GitLab Duo Pro or GitLab Duo Enterprise add-on for all supported GitLab versions starting October 17, 2024.
@@ -36,7 +36,7 @@ title: Code Suggestions
 - Changed to include GitLab Duo Core in GitLab 18.0.
 - Enabled Fireworks hosted `Codestral` as the default model in GitLab 18.1.
 - To opt out of Fireworks for a group, the feature flag `code_completion_opt_out_fireworks` is available.
-- [Changed](https://gitlab.com/gitlab-org/gitlab/-/issues/545489) the default model for Code Generation to Claude Sonnet 4 in GitLab 18.2.
+- [Changed](https://gitlab.com/gitlab-org/gitlab/-/issues/545489) the default model for code generation to Claude Sonnet 4 in GitLab 18.2.
 - [Removed](https://gitlab.com/gitlab-org/gitlab/-/issues/462750) feature flag `code_suggestions_context` in GitLab 18.6.
 
 {{< /history >}}
@@ -134,10 +134,7 @@ To get the best results from code generation:
 - Add additional information, like the framework or library you want to use.
 - Add a space or new line after each comment.
   This space tells the code generator that you have completed your instructions.
-- In GitLab 17.2 and later, when the `advanced_context_resolver` and `code_suggestions_context`
-  feature flags are enabled, open related files in other tabs to expand the
-  [context that Code Suggestions is aware of](../../../gitlab_duo/context.md#code-suggestions).
-- [Removed](https://gitlab.com/gitlab-org/gitlab/-/issues/462750) feature flag `code_suggestions_context` in GitLab 18.6.
+- Review and adjust the [context available to Code Suggestions](../../../gitlab_duo/context.md#code-suggestions).
 
 For example, to create a Python web service with some specific requirements,
 you might write something like:
@@ -181,7 +178,7 @@ However, Code Suggestions might generate suggestions that are:
 
 - Irrelevant.
 - Incomplete.
-- Results in failed pipelines.
+- Likely to result in failed pipelines.
 - Potentially insecure.
 - Offensive or insensitive.
 
@@ -251,7 +248,7 @@ This API connection securely transmits a context window from your IDE/editor to 
 
 ### Streaming
 
-Streaming of Code Generation responses is supported in JetBrains and Visual Studio, leading to
+Streaming of code generation responses is supported in JetBrains and Visual Studio, leading to
 perceived faster response times.
 Other supported IDEs will return the generated code in a single block.
 

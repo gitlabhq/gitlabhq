@@ -1,5 +1,11 @@
-# Documentation
+# English documentation
 - source: /doc/(.+?/)_index\.md/  # doc/administration/_index.md
   public: '\1'                    # administration/
 - source: /doc/(.+?)\.md/         # doc/administration/page.md
   public: '\1/'                   # administration/page/
+
+# Japanese documentation
+- source: /doc-locale/ja-jp/(.+?/)_index\.md/  # doc-locale/ja-jp/administration/_index.md
+  public: 'ja-jp/\1'                           # ja-jp/administration/
+- source: /doc-locale/ja-jp/(.+?)\.md/         # doc-locale/ja-jp/administration/page.md
+  public: 'ja-jp/\1/'                          # ja-jp/administration/page/

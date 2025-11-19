@@ -9,6 +9,8 @@ title: Tooling
 
 We use ESLint to encapsulate and enforce frontend code standards. Our configuration may be found in the [`gitlab-eslint-config`](https://gitlab.com/gitlab-org/gitlab-eslint-config) project.
 
+You can set the environment variable `REVEAL_ESLINT_TODO` to `1` in your environment (and your IDE's) to see pending eslint todo's that were excluded by `.eslint_todo/*.mjs`. This allows you to reveal existing `eslint` exceptions to fix them along your daily work.
+
 ### Yarn Script
 
 This section describes yarn scripts that are available to validate and apply automatic fixes to files using ESLint.

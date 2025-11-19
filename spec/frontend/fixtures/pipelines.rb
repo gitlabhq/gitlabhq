@@ -115,12 +115,13 @@ RSpec.describe Projects::PipelinesController, '(JavaScript fixtures)', type: :co
     it "#{fixtures_path}get_downstream_pipeline_jobs.query.graphql.json" do
       stage = create(:ci_stage, name: 'test', pipeline: base_pipeline, project: base_pipeline.project)
       create(:ci_build, pipeline: base_pipeline, ci_stage: stage, name: 'test_job')
+      create(:ci_build, :retried, pipeline: base_pipeline, ci_stage: stage, name: 'test_job')
       create(:ci_build, pipeline: base_pipeline, ci_stage: stage, name: 'another_test_job')
 
       post_graphql(
         queries[:downstream_jobs],
         current_user: user,
-        variables: { fullPath: project.full_path, iid: base_pipeline.iid }
+        variables: { fullPath: project.full_path, iid: base_pipeline.iid, retried: false }
       )
 
       expect_graphql_errors_to_be_empty

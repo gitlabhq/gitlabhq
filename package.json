@@ -73,7 +73,7 @@
     "@gitlab/web-ide": "^0.0.1-dev-20251030144717",
     "@gleam-lang/highlight.js-gleam": "^1.5.0",
     "@mattiasbuelens/web-streams-adapter": "^0.1.0",
-    "@rails/actioncable": "7.1.600",
+    "@rails/actioncable": "7.2.300",
     "@rails/ujs": "7.1.600",
     "@rollup/plugin-graphql": "^2.0.5",
     "@sentry/browser": "10.25.0",

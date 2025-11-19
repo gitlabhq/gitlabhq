@@ -22,12 +22,13 @@ module Ci
           validates :last_used_date, uniqueness: { scope: [:component_id, :used_by_project_id] }, presence: true
 
           def self.get_usage_for(component, used_by_project)
-            Ci::Catalog::Resources::Components::LastUsage.find_or_initialize_by(
-              component: component,
-              catalog_resource: component.catalog_resource,
-              component_project: component.project,
+            find_or_initialize_by(
+              component_id: component.id,
               used_by_project_id: used_by_project.id
-            )
+            ) do |last_usage|
+              last_usage.catalog_resource_id = component.catalog_resource_id
+              last_usage.component_project_id = component.project_id
+            end
           end
 
           def self.by_project_ids(project_ids)

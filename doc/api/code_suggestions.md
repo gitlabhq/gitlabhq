@@ -6,7 +6,7 @@ description: Documentation for the REST API for Code Suggestions.
 title: Code Suggestions API
 ---
 
-Use this API to access the [Code Suggestions](../user/project/repository/code_suggestions/_index.md) feature.
+Use this API to access the [GitLab Duo Code Suggestions](../user/project/repository/code_suggestions/_index.md) feature.
 
 ## Generate code completions
 

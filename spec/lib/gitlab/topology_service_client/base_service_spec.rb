@@ -54,7 +54,7 @@ RSpec.describe Gitlab::TopologyServiceClient::BaseService, feature_category: :ce
     subject(:service_credentials) { base_service.send(:service_credentials) }
 
     before do
-      stub_config(cell: { enabled: true, topology_service_client: tls_config.merge(config) })
+      stub_config_cell({ enabled: true, topology_service_client: tls_config.merge(config) })
     end
 
     after do
@@ -185,7 +185,7 @@ RSpec.describe Gitlab::TopologyServiceClient::BaseService, feature_category: :ce
     let(:base_service) { described_class.new(timeout: timeout) }
 
     before do
-      stub_config(cell: {
+      stub_config_cell({
         enabled: true,
         topology_service_client: {
           address: 'test:50051',
@@ -222,7 +222,7 @@ RSpec.describe Gitlab::TopologyServiceClient::BaseService, feature_category: :ce
 
   describe '#options' do
     before do
-      stub_config(cell: { enabled: true })
+      stub_config_cell({ enabled: true })
     end
 
     it 'returns a hash with timeout set to DEFAULT_TIMEOUT_IN_SECONDS from now' do
