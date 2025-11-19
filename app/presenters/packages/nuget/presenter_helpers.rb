@@ -5,6 +5,7 @@ module Packages
     module PresenterHelpers
       include ::API::Helpers::RelatedResourcesHelpers
       include Packages::Nuget::VersionHelpers
+      include ::Gitlab::Utils::StrongMemoize
 
       PACKAGE_DEPENDENCY_GROUP = 'PackageDependencyGroup'
       PACKAGE_DEPENDENCY = 'PackageDependency'
@@ -26,20 +27,22 @@ module Packages
       end
 
       def archive_url_for(package)
-        package_filename = package.installable_nuget_package_files
-                                  .last
-                                  &.file_name
-        path = api_v4_projects_packages_nuget_download_package_name_package_version_package_filename_path(
-          {
-            id: package.project_id,
-            package_name: package.name,
-            package_version: package.version,
-            package_filename: package_filename
-          },
-          true
-        )
+        strong_memoize_with(:archive_url_for, package) do
+          package_filename = package.installable_nuget_package_files
+                                    .last
+                                    &.file_name
+          path = api_v4_projects_packages_nuget_download_package_name_package_version_package_filename_path(
+            {
+              id: package.project_id,
+              package_name: package.name,
+              package_version: package.version,
+              package_filename: package_filename
+            },
+            true
+          )
 
-        expose_url(path)
+          expose_url(path)
+        end
       end
 
       def catalog_entry_for(package)

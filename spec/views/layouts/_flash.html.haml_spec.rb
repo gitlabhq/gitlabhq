@@ -2,14 +2,15 @@
 
 require 'spec_helper'
 
-RSpec.describe 'layouts/_flash' do
+RSpec.describe 'layouts/_flash', feature_category: :shared do
   let_it_be(:template) { 'layouts/_flash' }
   let_it_be(:flash_container_no_margin_class) { 'flash-container-no-margin' }
 
   let(:locals) { {} }
+  let(:allow_signup) { true }
 
   before do
-    allow(view).to receive(:flash).and_return(flash)
+    allow(view).to receive_messages(flash: flash, allow_signup?: allow_signup)
     render(template: template, locals: locals)
   end
 
@@ -70,6 +71,17 @@ RSpec.describe 'layouts/_flash' do
       expect(rendered).to include('Sign in or sign up before continuing')
       expect(rendered).not_to include('js-close')
       expect(rendered).to have_selector(".btn[href='/users/sign_up']")
+    end
+
+    context 'when signup is disabled' do
+      let(:allow_signup) { false }
+
+      it 'renders message without registration button' do
+        expect(rendered).to include('Sign in before continuing.')
+        expect(rendered).not_to include('Sign in or sign up before continuing')
+        expect(rendered).not_to include('Register now')
+        expect(rendered).not_to have_selector(".btn[href='/users/sign_up']")
+      end
     end
   end
 end

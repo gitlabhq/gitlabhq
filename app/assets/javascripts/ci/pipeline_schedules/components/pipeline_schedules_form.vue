@@ -131,6 +131,7 @@ export default {
         totalModified: 0,
         newlyModified: 0,
       },
+      isSubmitDisabled: false,
     };
   },
   i18n: {
@@ -201,6 +202,9 @@ export default {
     },
   },
   methods: {
+    handleValidityChange(isFormValid) {
+      this.isSubmitDisabled = !isFormValid;
+    },
     async createPipelineSchedule() {
       try {
         const {
@@ -381,6 +385,7 @@ export default {
       :editing="editing"
       :user-callouts-feature-name="$options.userCalloutsFeatureName"
       @update-variables="updatedVariables = $event"
+      @validity-change="handleValidityChange"
     />
 
     <!--Activated-->
@@ -393,6 +398,7 @@ export default {
         variant="confirm"
         data-testid="schedule-submit-button"
         class="gl-w-full @sm/panel:gl-w-auto"
+        :disabled="isSubmitDisabled"
       >
         {{ buttonText }}
       </gl-button>

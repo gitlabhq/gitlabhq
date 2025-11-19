@@ -42,6 +42,9 @@ describe('Pipeline variables form group', () => {
   const findMarkdown = () => wrapper.findComponent(Markdown);
   const findVariableValuesListbox = () =>
     wrapper.findAllByTestId('pipeline-form-ci-variable-value-dropdown');
+  const findKeyValidationErrorAt = (i) =>
+    wrapper.findAllByTestId('pipeline-form-ci-variable-key-group').at(i).find('.invalid-feedback');
+  const findKeyInputsAt = (i) => findKeyInputs().at(i);
 
   const addVariableToForm = async () => {
     const input = findKeyInputs().at(0);
@@ -203,6 +206,106 @@ describe('Pipeline variables form group', () => {
         },
         { destroy: false, empty: true, key: '', value: '', variableType: 'ENV_VAR' },
       ]);
+    });
+
+    it('invalidates key that has non-alphanumeric or underscore character', async () => {
+      const message = 'Variable key can only contain letters, numbers, and underscores.';
+      await findKeyInputsAt(0).setValue('invalid key');
+
+      expect(findKeyValidationErrorAt(0).text()).toBe(message);
+      expect(wrapper.emitted('validity-change')).toEqual([[false]]);
+    });
+
+    it('invalidates key that starts with number', async () => {
+      const message = 'Variable key cannot start with a number.';
+      await findKeyInputsAt(0).setValue('9key_starts_with_number');
+
+      expect(findKeyValidationErrorAt(0).text()).toBe(message);
+      expect(wrapper.emitted('validity-change')).toEqual([[false]]);
+    });
+
+    it('invalidates key that starts with CI_', async () => {
+      const message = 'Variable key cannot start with CI_.';
+      await findKeyInputsAt(0).setValue('CI_val');
+
+      expect(findKeyValidationErrorAt(0).text()).toBe(message);
+      expect(wrapper.emitted('validity-change')).toEqual([[false]]);
+    });
+
+    it('invalidates duplicate key', async () => {
+      const message = 'Variable key already exists.';
+
+      await findKeyInputsAt(0).setValue('duplicate_key');
+      await findKeyInputsAt(0).trigger('change');
+
+      await findKeyInputsAt(1).setValue('duplicate_key');
+
+      expect(findKeyValidationErrorAt(1).text()).toBe(message);
+      expect(wrapper.emitted('validity-change')).toEqual([[false]]);
+    });
+
+    it('validates the key again if it was changed from invalid to valid', async () => {
+      const message = 'Variable key can only contain letters, numbers, and underscores.';
+
+      await findKeyInputsAt(0).setValue('invalid key');
+
+      expect(findKeyValidationErrorAt(0).text()).toBe(message);
+
+      await findKeyInputsAt(0).setValue('valid_key');
+
+      expect(findKeyValidationErrorAt(0).exists()).toBe(false);
+      expect(wrapper.emitted('validity-change')[1]).toEqual([true]);
+    });
+
+    it('validates the empty key', async () => {
+      await findKeyInputsAt(0).setValue('invalid key');
+      await findKeyInputsAt(0).setValue('');
+
+      expect(findKeyValidationErrorAt(0).exists()).toBe(false);
+      expect(wrapper.emitted('validity-change')[1]).toEqual([true]);
+    });
+
+    it('re-validates the duplicate key once the original key was removed', async () => {
+      await findKeyInputsAt(0).setValue('duplicate_key');
+      await findKeyInputsAt(0).trigger('change');
+
+      await findKeyInputsAt(1).setValue('duplicate_key');
+      await findKeyInputsAt(1).trigger('change');
+
+      expect(findKeyValidationErrorAt(1).exists()).toBe(true);
+      expect(wrapper.emitted('validity-change')[0]).toEqual([false]);
+
+      findRemoveButtonAt(0).trigger('click');
+      await nextTick();
+
+      expect(findKeyValidationErrorAt(1).exists()).toBe(false);
+      expect(wrapper.emitted('validity-change')[1]).toEqual([true]);
+    });
+
+    it('re-validates the duplicate key once the original key was changed', async () => {
+      await findKeyInputsAt(0).setValue('duplicate_key');
+      await findKeyInputsAt(0).trigger('change');
+
+      await findKeyInputsAt(1).setValue('duplicate_key');
+      await findKeyInputsAt(1).trigger('change');
+
+      expect(findKeyValidationErrorAt(1).exists()).toBe(true);
+      expect(wrapper.emitted('validity-change')[0]).toEqual([false]);
+
+      await findKeyInputsAt(0).setValue('duplicate_key_updated');
+      await nextTick();
+
+      expect(findKeyValidationErrorAt(1).exists()).toBe(false);
+      expect(wrapper.emitted('validity-change')[1]).toEqual([true]);
+    });
+
+    it('emits validity-change event only when form validity changes', async () => {
+      await findKeyInputsAt(0).setValue('some_value');
+      await findKeyInputsAt(0).setValue('some invalid value');
+
+      await nextTick();
+
+      expect(wrapper.emitted('validity-change')).toEqual([[false]]);
     });
   });
 

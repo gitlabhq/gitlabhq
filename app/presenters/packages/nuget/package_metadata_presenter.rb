@@ -7,6 +7,8 @@ module Packages
 
       def initialize(package)
         @package = package
+
+        preload_associations
       end
 
       def json_url
@@ -19,6 +21,14 @@ module Packages
 
       def catalog_entry
         catalog_entry_for(@package)
+      end
+
+      private
+
+      def preload_associations
+        ActiveRecord::Associations::Preloader
+          .new(records: [@package], associations: [dependency_links: %i[dependency nuget_metadatum]])
+          .call
       end
     end
   end

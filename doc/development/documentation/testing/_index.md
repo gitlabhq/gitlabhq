@@ -85,8 +85,7 @@ pipelines:
 - `check_docs_links` job in the `charts/gitlab` project. For example:
   <https://gitlab.com/gitlab-org/charts/gitlab/-/jobs/7066011619>.
 
-These jobs check links, including anchor links, and report any problems. Any link that requires a network
-connection is skipped.
+These jobs check links, including anchor links, and report any problems. Any link that requires a network connection is skipped.
 
 ## Tests for translated documentation
 
@@ -176,6 +175,23 @@ To add language-specific linting for additional languages:
 
 The universal script approach eliminates code duplication while maintaining language-specific
 customization through environment variables.
+
+## Tests in `docs-i18n-lint links` and other jobs
+
+To check for broken links in translated documentation, merge requests containing changes to
+translated Markdown (`.md`) files run these jobs in their pipelines:
+
+- `docs-i18n-lint links` job in the `gitlab` project. For example: <https://gitlab.com/gitlab-org/gitlab/-/jobs/7065686331>.
+- `docs-i18n-lint links` job in the `omnibus-gitlab` project. For example: <https://gitlab.com/gitlab-org/omnibus-gitlab/-/jobs/7065337075>.
+- `docs-i18n-lint links` job in the `gitlab-operator` project.
+- `docs:lint i18n markdown` job in the `gitlab-runner` project, which includes link checking. For example:
+  <https://gitlab.com/gitlab-org/gitlab-runner/-/jobs/7056674997>.
+- `check_docs_i18n_links` job in the `charts/gitlab` project. For example:
+  <https://gitlab.com/gitlab-org/charts/gitlab/-/jobs/7066011619>.
+
+These jobs check for broken links, including anchor links. Any link that requires a network connection is skipped.
+If broken links are found, they are listed in the job log, but the jobs do not fail the pipeline.
+The jobs must be started manually, except for the `docs:lint i18n markdown` job in the Runner project.
 
 ### Path verification of orphaned translation files
 

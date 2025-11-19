@@ -83,6 +83,9 @@ export default {
     this.clearTimeouts();
   },
   methods: {
+    onValidityChange(state) {
+      this.$emit('validity-change', state);
+    },
     onVariablesUpdate(variables) {
       this.$emit('variables-updated', filterVariables(variables));
     },
@@ -207,6 +210,7 @@ export default {
     :is-loading="isLoading"
     :user-callouts-feature-name="$options.userCalloutsFeatureName"
     @update-variables="onVariablesUpdate"
+    @validity-change="onValidityChange"
   >
     <template #description>
       <gl-sprintf

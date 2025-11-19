@@ -5,10 +5,11 @@ require 'spec_helper'
 RSpec.describe Packages::Nuget::PackageMetadataPresenter, feature_category: :package_registry do
   include_context 'with expected presenters dependency groups'
 
-  let_it_be(:package) { create(:nuget_package, :with_symbol_package, :with_metadatum) }
+  let_it_be_with_reload(:package) { create(:nuget_package, :with_symbol_package, :with_metadatum) }
   let_it_be(:tag1) { create(:packages_tag, name: 'tag1', package: package) }
   let_it_be(:tag2) { create(:packages_tag, name: 'tag2', package: package) }
-  let_it_be(:presenter) { described_class.new(package) }
+
+  let(:presenter) { described_class.new(package) }
 
   describe '#json_url' do
     let_it_be(:expected_suffix) { "/api/v4/projects/#{package.project_id}/packages/nuget/metadata/#{package.name}/#{package.version}.json" }
@@ -19,7 +20,7 @@ RSpec.describe Packages::Nuget::PackageMetadataPresenter, feature_category: :pac
   end
 
   describe '#archive_url' do
-    let_it_be(:expected_suffix) { "/api/v4/projects/#{package.project_id}/packages/nuget/download/#{package.name}/#{package.version}/#{package.package_files.with_format('nupkg').last.file_name}" }
+    let(:expected_suffix) { "/api/v4/projects/#{package.project_id}/packages/nuget/download/#{package.name}/#{package.version}/#{package.package_files.with_format('nupkg').last.file_name}" }
 
     subject { presenter.archive_url }
 
@@ -30,12 +31,22 @@ RSpec.describe Packages::Nuget::PackageMetadataPresenter, feature_category: :pac
 
       it { is_expected.not_to include('pending_destruction.nupkg') }
     end
+
+    context 'when package has no installable files' do
+      let(:expected_suffix) { "/api/v4/projects/#{package.project_id}/packages/nuget/download/#{package.name}/#{package.version}" }
+
+      before do
+        package.package_files.delete_all
+      end
+
+      it { is_expected.to end_with(expected_suffix) }
+    end
   end
 
   describe '#catalog_entry' do
     subject { presenter.catalog_entry }
 
-    before do
+    before_all do
       create_dependencies_for(package)
     end
 
@@ -52,6 +63,14 @@ RSpec.describe Packages::Nuget::PackageMetadataPresenter, feature_category: :pac
       %i[authors description project_url license_url icon_url].each do |field|
         expect(entry.dig(:metadatum, field)).to eq(package.nuget_metadatum.send(field))
       end
+    end
+
+    it 'avoids N+1 queries' do
+      control = ActiveRecord::QueryRecorder.new { described_class.new(package.reset).catalog_entry }
+
+      create(:packages_dependency_link, :with_nuget_metadatum, package:)
+
+      expect { described_class.new(package.reset).catalog_entry }.not_to exceed_query_limit(control)
     end
   end
 end

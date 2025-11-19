@@ -29,7 +29,7 @@ RSpec.describe 'Database schema',
   # TODO: Automate this to reduce the list of exceptions: https://gitlab.com/gitlab-org/gitlab/-/issues/544795
   let(:ignored_fk_columns_map) do
     {
-      abuse_reports: %w[reporter_id user_id],
+      abuse_reports: %w[user_id],
       abuse_report_notes: %w[discussion_id],
       ai_code_suggestion_events: %w[user_id],
       ai_duo_chat_events: %w[user_id],
@@ -38,7 +38,7 @@ RSpec.describe 'Database schema',
       ai_events_counts: %w[user_id namespace_id],
       application_settings: %w[performance_bar_allowed_group_id slack_app_id snowplow_app_id eks_account_id
         eks_access_key_id],
-      approvals: %w[user_id project_id],
+      approvals: %w[user_id],
       approver_groups: %w[target_id],
       approvers: %w[target_id user_id],
       analytics_cycle_analytics_aggregations: %w[last_full_issues_id last_full_merge_requests_id
@@ -51,9 +51,7 @@ RSpec.describe 'Database schema',
       analytics_cycle_analytics_issue_stage_events: %w[author_id group_id issue_id milestone_id project_id
         stage_event_hash_id state_id sprint_id],
       analytics_cycle_analytics_stage_aggregations: %w[last_issues_id last_merge_requests_id],
-      analytics_cycle_analytics_stage_event_hashes: %w[organization_id],
       audit_events: %w[author_id entity_id target_id],
-      approval_merge_request_rules_users: %w[project_id],
       authentication_event_archived_records: %w[user_id],
       user_audit_events: %w[author_id user_id target_id],
       group_audit_events: %w[author_id group_id target_id],
@@ -70,20 +68,17 @@ RSpec.describe 'Database schema',
       ci_build_pending_states: %w[project_id],
       ci_build_trace_chunks: %w[project_id],
       ci_builds_runner_session: %w[project_id],
-      ci_daily_build_group_report_results: %w[partition_id],
       ci_deleted_objects: %w[project_id],
       ci_gitlab_hosted_runner_monthly_usages: %w[root_namespace_id project_id runner_id],
       ci_namespace_monthly_usages: %w[namespace_id],
-      ci_pipeline_artifacts: %w[partition_id],
-      ci_pipeline_chat_data: %w[partition_id project_id],
-      ci_pipeline_messages: %w[partition_id project_id],
-      ci_pipeline_metadata: %w[partition_id],
+      ci_pipeline_chat_data: %w[project_id],
+      ci_pipeline_messages: %w[project_id],
       ci_pipeline_schedule_variables: %w[project_id],
       ci_pipelines_config: %w[partition_id project_id],
       ci_secure_file_states: %w[project_id],
       ci_unit_test_failures: %w[project_id],
       ci_resources: %w[project_id],
-      p_ci_pipelines: %w[partition_id auto_canceled_by_partition_id auto_canceled_by_id trigger_id],
+      p_ci_pipelines: %w[partition_id trigger_id],
       p_ci_runner_machine_builds: %w[project_id],
       ci_runner_taggings: %w[runner_id organization_id], # The organization_id value is meant to populate the partitioned table, no other usage.
       ci_runner_taggings_instance_type: %w[tag_id organization_id], # organization_id is always NULL in this partition, tag_id is handled on ci_runner_taggings.
@@ -96,10 +91,7 @@ RSpec.describe 'Database schema',
       instance_type_ci_runner_machines: %w[organization_id], # This field is always NULL in this partition.
       group_type_ci_runner_machines: %w[organization_id], # No need for LFK, rows will be deleted by the FK to ci_runners.
       project_type_ci_runner_machines: %w[organization_id], # No need for LFK, rows will be deleted by the FK to ci_runners.
-      ci_runner_projects: %w[runner_id],
-      ci_sources_pipelines: %w[partition_id source_partition_id source_job_id],
-      ci_sources_projects: %w[partition_id],
-      ci_job_artifact_states: %w[partition_id project_id],
+      ci_job_artifact_states: %w[project_id],
       cluster_providers_aws: %w[security_group_id vpc_id access_key_id],
       cluster_providers_gcp: %w[gcp_project_id operation_id],
       compliance_management_frameworks: %w[source_id],
@@ -122,9 +114,7 @@ RSpec.describe 'Database schema',
       geo_repository_deleted_events: %w[project_id],
       ghost_user_migrations: %w[initiator_user_id],
       gitlab_subscription_histories: %w[gitlab_subscription_id hosted_plan_id namespace_id],
-      identities: %w[user_id],
-      import_failures: %w[project_id],
-      issues: %w[last_edited_by_id state_id work_item_type_id],
+      issues: %w[last_edited_by_id state_id],
       issue_emails: %w[email_message_id],
       jira_tracker_data: %w[jira_issue_transition_id],
       keys: %w[user_id],
@@ -132,11 +122,7 @@ RSpec.describe 'Database schema',
       ldap_group_links: %w[group_id],
       members: %w[source_id created_by_id],
       merge_requests: %w[last_edited_by_id state_id],
-      merge_request_cleanup_schedules: %w[project_id],
       merge_request_commits_metadata: %w[project_id commit_author_id committer_id],
-      merge_requests_compliance_violations: %w[target_project_id],
-      merge_request_diffs: %w[project_id],
-      merge_request_diff_files: %w[project_id],
       # merge_request_diff_files_99208b8fac is the temporary table for the
       # merge_request_diff_files partitioning backfill. It will get foreign keys
       # after the partitioning is finished.
@@ -146,37 +132,36 @@ RSpec.describe 'Database schema',
       # merge_request_diff_commits_b5377a7a34 is the temporary table for the merge_request_diff_commits partitioning
       # backfill. It will get foreign keys after the partitioning is finished.
       merge_request_diff_commits_b5377a7a34: %w[merge_request_diff_id commit_author_id committer_id project_id],
-      namespaces: %w[owner_id parent_id],
+      namespaces: %w[owner_id],
       namespace_descendants: %w[namespace_id],
       notes: %w[author_id commit_id noteable_id updated_by_id resolved_by_id discussion_id],
       notes_archived: %w[author_id commit_id noteable_id updated_by_id resolved_by_id discussion_id organization_id],
-      label_links_archived: %w[label_id target_id namespace_id],
+      label_links_archived: %w[label_id target_id namespace_id], # temp table
+      award_emoji_archived: %w[user_id awardable_id namespace_id organization_id], # temp table
       notification_settings: %w[source_id],
       oauth_access_grants: %w[resource_owner_id application_id],
       oauth_access_grant_archived_records: %w[resource_owner_id application_id],
       oauth_access_tokens: %w[resource_owner_id application_id],
       oauth_access_token_archived_records: %w[resource_owner_id application_id],
       oauth_applications: %w[owner_id],
-      oauth_device_grants: %w[resource_owner_id application_id],
+      oauth_device_grants: %w[resource_owner_id],
       packages_nuget_symbols: %w[project_id],
       packages_package_files: %w[project_id],
-      p_ci_builds: %w[erased_by_id partition_id auto_canceled_by_partition_id execution_config_id
-        upstream_pipeline_partition_id scoped_user_id],
-      p_ci_builds_metadata: %w[project_id build_id partition_id],
+      p_ci_builds: %w[erased_by_id execution_config_id scoped_user_id],
+      p_ci_builds_metadata: %w[project_id],
       p_ci_build_trace_metadata: %w[project_id],
       p_batched_git_ref_updates_deletions: %w[project_id partition_id],
       p_catalog_resource_sync_events: %w[catalog_resource_id project_id partition_id],
       p_catalog_resource_component_usages: %w[used_by_project_id], # No FK constraint because we want to preserve historical usage data
       p_ci_finished_build_ch_sync_events: %w[build_id],
       p_ci_finished_pipeline_ch_sync_events: %w[pipeline_id project_namespace_id],
-      p_ci_job_annotations: %w[partition_id job_id project_id],
-      p_ci_job_artifacts: %w[partition_id project_id job_id],
+      p_ci_job_annotations: %w[project_id],
+      p_ci_job_artifacts: %w[project_id],
       p_ci_job_definitions: %w[partition_id],
       p_ci_pipeline_artifact_states: %w[partition_id pipeline_artifact_id],
-      p_ci_pipeline_variables: %w[partition_id pipeline_id project_id],
+      p_ci_pipeline_variables: %w[project_id],
       p_ci_pipelines_config: %w[partition_id project_id],
-      p_ci_builds_execution_configs: %w[partition_id],
-      p_ci_stages: %w[partition_id project_id pipeline_id],
+      p_ci_stages: %w[project_id],
       pool_repositories: %w[organization_id],
       p_duo_workflows_checkpoints: %w[project_id namespace_id],
       project_build_artifacts_size_refreshes: %w[last_job_artifact_id],
@@ -184,7 +169,6 @@ RSpec.describe 'Database schema',
       project_error_tracking_settings: %w[sentry_project_id],
       project_statistics: %w[namespace_id],
       projects: %w[mirror_user_id],
-      push_event_payloads: %w[project_id],
       redirect_routes: %w[source_id],
       repository_languages: %w[programming_language_id],
       routes: %w[source_id],
@@ -198,7 +182,7 @@ RSpec.describe 'Database schema',
       subscriptions: %w[subscribable_id],
       suggestions: %w[commit_id],
       timelogs: %w[user_id],
-      todos: %w[target_id commit_id organization_id], # https://gitlab.com/gitlab-org/gitlab/-/merge_requests/204559
+      todos: %w[target_id commit_id],
       uploads: %w[model_id organization_id namespace_id project_id],
       uploads_9ba88c4165: %w[model_id],
       abuse_report_uploads: %w[model_id],
@@ -225,7 +209,7 @@ RSpec.describe 'Database schema',
       vulnerability_archive_export_uploads: %w[model_id],
       vulnerability_remediation_uploads: %w[model_id],
       user_agent_details: %w[subject_id],
-      users: %w[color_mode_id color_scheme_id created_by_id theme_id managing_group_id accepted_term_id organization_id],
+      users: %w[color_mode_id color_scheme_id created_by_id theme_id managing_group_id accepted_term_id],
       user_preferences: %w[dark_color_scheme_id],
       users_star_projects: %w[user_id],
       vulnerability_finding_links: %w[project_id],
@@ -273,11 +257,7 @@ RSpec.describe 'Database schema',
       zoekt_tasks: %w[partition_id zoekt_repository_id zoekt_node_id], # needed for: cells sharding key, partitioning, and performance reasons
       p_knowledge_graph_tasks: %w[partition_id knowledge_graph_replica_id zoekt_node_id namespace_id], # needed for: partitioning, and performance reasons
       # TODO: To remove with https://gitlab.com/gitlab-org/gitlab/-/merge_requests/155256
-      approval_group_rules: %w[approval_policy_rule_id],
-      approval_project_rules: %w[approval_policy_rule_id],
       approval_merge_request_rules: %w[approval_policy_rule_id],
-      scan_result_policy_violations: %w[approval_policy_rule_id],
-      software_license_policies: %w[approval_policy_rule_id],
       ai_testing_terms_acceptances: %w[user_id], # testing terms only have 1 entry, and if the user is deleted the record should remain
       namespace_settings: %w[early_access_program_joined_by_id], # isn't used inside product itself. Only through Snowflake
       workspaces_agent_config_versions: %w[item_id], # polymorphic associations
@@ -302,7 +282,6 @@ RSpec.describe 'Database schema',
       security_trainings: %w[training_provider_id provider_id], # training_provider_id is a fixed items model reference.
       background_operation_jobs_cell_local: %w[worker_id], # background operation workers partitions have to dropped independently.
       background_operation_jobs: %w[worker_id], # background operation workers partitions have to dropped independently.
-      note_diff_files: %w[namespace_id], # Adding FK after indexes are created async
       sbom_occurrence_refs: %w[pipeline_id project_id]
     }.with_indifferent_access.freeze
   end
@@ -395,14 +374,25 @@ RSpec.describe 'Database schema',
 
           context 'with columns ending with _id' do
             let(:column_names) { columns.map(&:name) }
+            let(:all_foreign_keys_columns) do
+              to_columns(
+                exclude_id_conversion_columns(all_foreign_keys)
+              )
+            end
+
+            let(:foreign_keys_columns) do # NOTE: excluding loose foreign keys
+              to_columns(
+                exclude_id_conversion_columns(foreign_keys)
+              )
+            end
+
             let(:column_names_with_id) { column_names.select { |column_name| column_name.ends_with?('_id') } }
             let(:ignored_columns) { ignored_fk_columns(table) }
-            let(:foreign_keys_columns) do
-              to_columns(
-                all_foreign_keys
-                  .reject { |fk| fk.name&.end_with?("_id_convert_to_bigint") }
-                  .map(&:column)
-              )
+
+            def exclude_id_conversion_columns(columns)
+              columns
+                .reject { |fk| fk.name&.end_with?("_id_convert_to_bigint") }
+                .map(&:column)
             end
 
             specify 'ignored columns exist' do
@@ -410,15 +400,17 @@ RSpec.describe 'Database schema',
             end
 
             it 'do have the foreign keys' do
-              expect(column_names_with_id - ignored_columns).to be_a_foreign_key_column_of(foreign_keys_columns)
+              expect(column_names_with_id - ignored_columns).to be_a_foreign_key_column_of(all_foreign_keys_columns)
             end
 
             it 'does not contain additional columns (not ending with _id) in the ignore list' do
               expect(ignored_columns - column_names_with_id).to be_empty
             end
 
-            it 'and having foreign key are not in the ignore list' do
-              expect(ignored_columns).to match_array(ignored_columns - foreign_keys)
+            it 'ensures foreign key columns are not ignored' do
+              overlapping_columns = ignored_columns & foreign_keys_columns.flatten
+              expect(overlapping_columns).to be_empty,
+                "Found ignored columns that are foreign keys: #{overlapping_columns}"
             end
           end
 

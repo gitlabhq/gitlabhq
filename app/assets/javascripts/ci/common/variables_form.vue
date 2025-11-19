@@ -64,6 +64,7 @@ export default {
     return {
       variables: [...this.initialVariables],
       showVarValues: false,
+      isFormValid: true,
     };
   },
   computed: {
@@ -75,6 +76,9 @@ export default {
     },
   },
   watch: {
+    isFormValid() {
+      this.$emit('validity-change', this.isFormValid);
+    },
     variables: {
       handler(newVariables) {
         this.$emit('update-variables', newVariables);
@@ -90,6 +94,44 @@ export default {
     },
   },
   methods: {
+    handleKeyChange(key, index) {
+      this.variables[index].key = key;
+      this.validateVariables();
+    },
+    validateVariables() {
+      const seenKeys = new Set();
+
+      this.variables.forEach(({ key, destroy }, index) => {
+        if (destroy) return;
+
+        this.validateKey(key, index, seenKeys);
+        seenKeys.add(key);
+      });
+
+      this.isFormValid = this.variables.every(({ error, destroy }) => !error || destroy);
+    },
+    validateKey(key, index, seenKeys) {
+      // validation rules: only include alphanumeric(a-z, A-Z, 0-9) and underscores,
+      // cannot start with number, cannot start with CI_ and cannot have duplicate key
+      const isDuplicate = key && seenKeys.has(key);
+      const includesNonAlphanumericOrUnderscore = !/^[A-Za-z0-9_]*$/.test(key);
+      const startsWithNumber = /^[0-9]/.test(key);
+      const startsWithCIUnderscore = /^CI_/.test(key);
+
+      const { i18n } = this.$options;
+
+      if (isDuplicate) {
+        this.variables[index].error = i18n.keyErrorCannotHaveDuplicateKey;
+      } else if (includesNonAlphanumericOrUnderscore) {
+        this.variables[index].error = i18n.keyErrorCannotHaveNonAlphanumericOrUnderscore;
+      } else if (startsWithNumber) {
+        this.variables[index].error = i18n.keyErrorCannotStartWithNumber;
+      } else if (startsWithCIUnderscore) {
+        this.variables[index].error = i18n.keyErrorCannotStartWithCIUnderscore;
+      } else {
+        this.variables[index].error = null;
+      }
+    },
     addEmptyVariable() {
       const lastVar = this.variables[this.variables.length - 1];
       if (lastVar?.key === '' && lastVar?.value === '') {
@@ -129,7 +171,11 @@ export default {
       return index < this.variables.length - 1;
     },
     removeVariable(index) {
-      this.variables = this.variables.map((v, i) => (i === index ? { ...v, destroy: true } : v));
+      const updatedVariables = [...this.variables];
+      updatedVariables[index].destroy = true;
+
+      this.variables = updatedVariables;
+      this.validateVariables();
     },
     displayHiddenChars(index) {
       const isEmpty = this.variables[index]?.empty;
@@ -141,6 +187,14 @@ export default {
         this.variables[index].empty = false;
       }
     },
+  },
+  i18n: {
+    keyErrorCannotStartWithCIUnderscore: s__('CIVariablesForm|Variable key cannot start with CI_.'),
+    keyErrorCannotStartWithNumber: s__('CIVariablesForm|Variable key cannot start with a number.'),
+    keyErrorCannotHaveNonAlphanumericOrUnderscore: s__(
+      'CIVariablesForm|Variable key can only contain letters, numbers, and underscores.',
+    ),
+    keyErrorCannotHaveDuplicateKey: s__('CIVariablesForm|Variable key already exists.'),
   },
 };
 </script>
@@ -158,7 +212,9 @@ export default {
             class="gl-mb-4"
             data-testid="ci-variable-row-container"
           >
-            <div class="gl-flex gl-flex-col gl-items-stretch gl-gap-4 @md/panel:gl-flex-row">
+            <div
+              class="gl-flex gl-flex-col gl-gap-4 @md/panel:gl-flex-row @md/panel:gl-items-start"
+            >
               <gl-collapsible-listbox
                 :items="$options.typeOptions"
                 :selected="variable.variableType"
@@ -168,15 +224,25 @@ export default {
                 data-testid="pipeline-form-ci-variable-type"
                 @select="setVariableType(index, $event)"
               />
-              <gl-form-input
-                v-model="variable.key"
-                :placeholder="s__('CiVariables|Input variable key')"
-                :aria-label="s__('CiVariables|Input variable key')"
+              <gl-form-group
+                :state="!variable.error"
+                :invalid-feedback="variable.error"
                 :class="$options.formElementClasses"
-                class="gl-self-start"
-                data-testid="pipeline-form-ci-variable-key-field"
-                @change="addEmptyVariable()"
-              />
+                class="gl-mb-0"
+                label-class="!gl-pb-0"
+                data-testid="pipeline-form-ci-variable-key-group"
+              >
+                <gl-form-input
+                  :value="variable.key"
+                  :placeholder="s__('CiVariables|Input variable key')"
+                  :aria-label="s__('CiVariables|Input variable key')"
+                  :state="!variable.error"
+                  class="gl-self-start"
+                  data-testid="pipeline-form-ci-variable-key-field"
+                  @input="(key) => handleKeyChange(key, index)"
+                  @change="addEmptyVariable()"
+                />
+              </gl-form-group>
               <variable-values-listbox
                 v-if="shouldShowValuesDropdown(variable.valueOptions)"
                 :items="createListItemsFromVariableOptions(variable.valueOptions)"

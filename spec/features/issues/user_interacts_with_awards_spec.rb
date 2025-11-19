@@ -162,7 +162,7 @@ RSpec.describe 'User interacts with awards', :js, feature_category: :team_planni
     describe 'visiting an issue with a legacy award emoji that is not valid anymore' do
       before do
         # The `heart_tip` emoji is not valid anymore so we need to skip validation
-        issue.award_emoji.build(user: user, name: 'heart_tip').save!(validate: false)
+        issue.award_emoji.build(user: user, name: 'heart_tip', namespace_id: issue.namespace_id).save!(validate: false)
         visit project_issue_path(project, issue)
       end
 

@@ -196,6 +196,20 @@ docs-i18n-lint markdown:
     - install_gitlab_gem
     - scripts/i18n_lint_doc.sh
 
+docs-i18n-lint links:
+  extends:
+    - .default-retry
+    - .docs:rules:docs-i18n-lint
+    - .docs-markdown-lint-image
+  stage: lint
+  needs: []
+  when: manual
+  allow_failure: true
+  before_script:
+    - source scripts/utils.sh
+  script:
+    - lychee --offline --no-progress --include-fragments doc-locale
+
 # Japanese-specific Vale linting with language-specific rules
 docs-i18n-lint japanese-vale:
   extends:

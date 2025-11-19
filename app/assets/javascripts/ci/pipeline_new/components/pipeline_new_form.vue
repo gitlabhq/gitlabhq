@@ -94,6 +94,7 @@ export default {
       totalWarnings: 0,
       isWarningDismissed: false,
       submitted: false,
+      isSubmitDisabled: false,
     };
   },
   computed: {
@@ -127,6 +128,9 @@ export default {
     },
   },
   methods: {
+    handleValidityChange(isFormValid) {
+      this.isSubmitDisabled = !isFormValid;
+    },
     async createPipeline() {
       this.submitted = true;
       try {
@@ -271,6 +275,7 @@ export default {
         :settings-link="settingsLink"
         :variable-params="variableParams"
         @variables-updated="handleVariablesUpdated"
+        @validity-change="handleValidityChange"
       />
 
       <div class="gl-flex">
@@ -280,7 +285,7 @@ export default {
           variant="confirm"
           class="js-no-auto-disable gl-mr-3"
           data-testid="run-pipeline-button"
-          :disabled="submitted"
+          :disabled="submitted || isSubmitDisabled"
           >{{ s__('Pipeline|New pipeline') }}</gl-button
         >
         <gl-button :href="pipelinesPath">{{ __('Cancel') }}</gl-button>

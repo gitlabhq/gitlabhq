@@ -12835,6 +12835,21 @@ CREATE TABLE award_emoji (
     organization_id bigint
 );
 
+CREATE TABLE award_emoji_archived (
+    id bigint NOT NULL,
+    name character varying,
+    user_id bigint,
+    awardable_type character varying,
+    created_at timestamp without time zone,
+    updated_at timestamp without time zone,
+    awardable_id bigint,
+    namespace_id bigint,
+    organization_id bigint,
+    archived_at timestamp with time zone DEFAULT CURRENT_TIMESTAMP
+);
+
+COMMENT ON TABLE award_emoji_archived IS 'Temporary table for storing orphaned award_emoji during sharding key backfill. To be dropped after migration completion.';
+
 CREATE SEQUENCE award_emoji_id_seq
     START WITH 1
     INCREMENT BY 1
@@ -33653,6 +33668,9 @@ ALTER TABLE ONLY authentication_events
 ALTER TABLE ONLY automation_rules
     ADD CONSTRAINT automation_rules_pkey PRIMARY KEY (id);
 
+ALTER TABLE ONLY award_emoji_archived
+    ADD CONSTRAINT award_emoji_archived_pkey PRIMARY KEY (id);
+
 ALTER TABLE ONLY award_emoji
     ADD CONSTRAINT award_emoji_pkey PRIMARY KEY (id);
 
@@ -33856,6 +33874,9 @@ ALTER TABLE note_metadata
 
 ALTER TABLE ONLY group_type_ci_runners
     ADD CONSTRAINT check_81b90172a6 UNIQUE (id);
+
+ALTER TABLE award_emoji
+    ADD CONSTRAINT check_8ef14b7067 CHECK ((num_nonnulls(namespace_id, organization_id) = 1)) NOT VALID;
 
 ALTER TABLE merge_request_context_commit_diff_files
     ADD CONSTRAINT check_90390c308c CHECK ((project_id IS NOT NULL)) NOT VALID;

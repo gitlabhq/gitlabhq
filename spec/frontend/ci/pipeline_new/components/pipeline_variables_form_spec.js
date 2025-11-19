@@ -187,6 +187,15 @@ describe('PipelineVariablesForm', () => {
         expect.arrayContaining([expect.objectContaining({ key: 'TEST_KEY', value: 'test_value' })]),
       );
     });
+
+    it('emits validity-change event correctly', async () => {
+      createComponent();
+
+      wrapper.vm.$emit('validity-change', true);
+      await nextTick();
+
+      expect(wrapper.emitted('validity-change')).toStrictEqual([[true]]);
+    });
   });
 
   describe('Loading states', () => {

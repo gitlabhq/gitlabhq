@@ -12929,6 +12929,18 @@ msgstr ""
 msgid "CICD|instance enabled"
 msgstr ""
 
+msgid "CIVariablesForm|Variable key already exists."
+msgstr ""
+
+msgid "CIVariablesForm|Variable key can only contain letters, numbers, and underscores."
+msgstr ""
+
+msgid "CIVariablesForm|Variable key cannot start with CI_."
+msgstr ""
+
+msgid "CIVariablesForm|Variable key cannot start with a number."
+msgstr ""
+
 msgid "CONTRIBUTING"
 msgstr ""
 
@@ -63585,6 +63597,9 @@ msgid "Sign in"
 msgstr ""
 
 msgid "Sign in as a user with the matching email address, add the email to this account, or sign-up for a new account using the matching email."
+msgstr ""
+
+msgid "Sign in before continuing."
 msgstr ""
 
 msgid "Sign in preview"

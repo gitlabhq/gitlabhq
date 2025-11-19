@@ -2,7 +2,7 @@
 stage: Security Risk Management
 group: Security Insights
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
-title: GitLab Security Dashboards and Security Center
+title: Security dashboards
 description: Security dashboards, vulnerability trends, project ratings, and metrics.
 ---
 
@@ -100,7 +100,7 @@ chart:
 1. Select **Secure** > **Security dashboard**.
 1. Select **Save chart as an image** ({{< icon name="download" >}}).
 
-You will then be prompted to download the image in SVG format.
+You are prompted to download the image in SVG format.
 
 ### Group Security Dashboard
 
@@ -122,7 +122,7 @@ supplies the following:
 To view group security dashboard:
 
 1. On the left sidebar, select **Search or go to** and find your group. If you've [turned on the new navigation](../../interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
-1. Select **Security > Security dashboard**.
+1. Select **Security** > **Security dashboard**.
 1. Hover over the **Vulnerabilities over time** chart to get more details about vulnerabilities.
    - You can display the vulnerability trends over a 30, 60, or 90-day time frame (the default is 90 days).
    - To view aggregated data beyond a 90-day time frame, use the [`VulnerabilitiesCountByDay` GraphQL API](../../../api/graphql/reference/_index.md#vulnerabilitiescountbyday). GitLab retains the data for 365 days.
@@ -283,78 +283,8 @@ To apply a filter to the whole dashboard:
 1. From the dropdown list, choose the filter type.
 1. Select one or more filter values.
 
-## Security Center
-
-The Security Center is a configurable personal space where you can view vulnerabilities across all the
-projects you belong to. You can add up to 1,000 projects to the Security Center, however the **Project** listing in
-the **Security Center** settings page displays a maximum of 100 projects. You can use the search filter to find projects not shown in the first 100 projects.
-
-The Security Center includes:
-
-- The group Security Dashboard
-- A [vulnerability report](../vulnerability_report/_index.md)
-- A settings area to configure which projects to display
-
-### Viewing the Security Center
-
-To view the Security Center:
-
-1. On the left sidebar, select **Search or go to**. If you've [turned on the new navigation](../../interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
-1. Select **Your work**.
-1. Select **Security** > **Security dashboard**.
-
-The Security Center is blank by default. You must add a project which have been configured with at least one security scanner.
-
-### Adding projects to the Security Center
-
-To add projects:
-
-1. On the left sidebar, select **Search or go to**. If you've [turned on the new navigation](../../interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
-1. Select **Your work**.
-1. Expand **Security**.
-1. Select **Settings**.
-1. Use the **Search your projects** text box to search for and select projects.
-1. Select **Add projects**.
-
-After you add projects, the security dashboard and vulnerability report show the vulnerabilities found in those projects' default branches.
-
-### Removing projects from the Security Center
-
-The Security Center displays a maximum of 100 projects, so you may need to use the search function to remove a project. To remove projects:
-
-1. On the left sidebar, select **Search or go to**. If you've [turned on the new navigation](../../interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
-1. Select **Your work**.
-1. Expand **Security**.
-1. Select **Settings**.
-1. Use the **Search your projects** text box to search for the project.
-1. Select **Remove project from dashboard** ({{< icon name="remove" >}}).
-
-After you remove projects, the security dashboard and vulnerability report no longer show the vulnerabilities found in those projects' default branches.
-
-## Exporting
-
-{{< history >}}
-
-- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/196607) in GitLab 18.2. Enabled by default.
-- Feature flag `vulnerabilities_pdf_export` removed.
-
-{{< /history >}}
-
-You can export a PDF file that includes details of the vulnerabilities listed in the security dashboard.
-
-Charts in the export include:
-
-- Vulnerabilities over time
-- Project security status
-- Project's security dashboard
-
-### Export details
-
-To export the details of all vulnerabilities listed in the security dashboard, select **Export**.
-
-When the exported details are available, GitLab sends you an email. To download the exported details, select the link in the email.
-
 ## Related topics
 
+- [Security center](../security_center/_index.md)
 - [Vulnerability reports](../vulnerability_report/_index.md)
 - [Vulnerability Page](../vulnerabilities/_index.md)

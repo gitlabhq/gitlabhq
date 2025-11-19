@@ -1,5 +1,5 @@
 import { GlForm, GlLoadingIcon } from '@gitlab/ui';
-import Vue from 'vue';
+import Vue, { nextTick } from 'vue';
 import VueApollo from 'vue-apollo';
 import createMockApollo from 'helpers/mock_apollo_helper';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
@@ -545,6 +545,17 @@ describe('Pipeline schedules form', () => {
 
       const { trackEventSpy } = bindInternalEventDocument(wrapper.element);
       expect(trackEventSpy).not.toHaveBeenCalled();
+    });
+  });
+
+  describe.each([false, true])('when `validity-change` event is emitted with %s', (state) => {
+    it(`sets Create pipeline schedule button disabled state to ${!state}`, async () => {
+      createComponent();
+
+      findPipelineVariables().vm.$emit('validity-change', state);
+      await nextTick();
+
+      expect(findSubmitButton().props('disabled')).toBe(!state);
     });
   });
 });

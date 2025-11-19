@@ -26638,6 +26638,7 @@ Information about an asynchronous pipeline creation request.
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | <a id="cipipelinecreationrequesterror"></a>`error` | [`String`](#string) | Error message if pipeline creation failed. |
+| <a id="cipipelinecreationrequestpipeline"></a>`pipeline` | [`Pipeline`](#pipeline) | Pipeline object created by the request. |
 | <a id="cipipelinecreationrequestpipelineid"></a>`pipelineId` | [`CiPipelineID`](#cipipelineid) | ID of the created pipeline if creation was successful. |
 | <a id="cipipelinecreationrequeststatus"></a>`status` | [`CiPipelineCreationStatus!`](#cipipelinecreationstatus) | Current status of the pipeline creation. |
 
@@ -31688,7 +31689,6 @@ GPG signature for a signed commit.
 | <a id="grouppermanentdeletiondate"></a>`permanentDeletionDate` {{< icon name="warning-solid" >}} | [`String`](#string) | **Introduced** in GitLab 16.11. **Status**: Experiment. For groups pending deletion, returns the group's scheduled deletion date. For groups not pending deletion, returns a theoretical date based on current settings if marked for deletion today. |
 | <a id="groupplan"></a>`plan` {{< icon name="warning-solid" >}} | [`NamespacePlan`](#namespaceplan) | **Introduced** in GitLab 18.2. **Status**: Experiment. Subscription plan associated with the namespace. |
 | <a id="groupproductanalyticsstoredeventslimit"></a>`productAnalyticsStoredEventsLimit` {{< icon name="warning-solid" >}} | [`Int`](#int) | **Introduced** in GitLab 16.9. **Status**: Experiment. Number of product analytics events namespace is permitted to store per cycle. |
-| <a id="groupprojectcomplianceviolations"></a>`projectComplianceViolations` {{< icon name="warning-solid" >}} | [`ProjectComplianceViolationConnection`](#projectcomplianceviolationconnection) | **Introduced** in GitLab 18.1. **Status**: Experiment. Compliance violations for the projects in a group and its subgroups. |
 | <a id="groupprojectcreationlevel"></a>`projectCreationLevel` | [`String`](#string) | Permission level required to create projects in the group. |
 | <a id="groupprojectstatistics"></a>`projectStatistics` {{< icon name="warning-solid" >}} | [`NamespaceProjectStatistics`](#namespaceprojectstatistics) | **Introduced** in GitLab 18.2. **Status**: Experiment. Statistics of the projects in the group. Only available from [Query.groups](#querygroups). |
 | <a id="groupprojectscount"></a>`projectsCount` | [`Int!`](#int) | Count of direct projects in the group. |
@@ -32879,6 +32879,27 @@ four standard [pagination arguments](#pagination-arguments):
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | <a id="groupprojectcompliancestandardsadherencefilters"></a>`filters` | [`ComplianceStandardsAdherenceInput`](#compliancestandardsadherenceinput) | Filters applied when retrieving compliance standards adherence. |
+
+##### `Group.projectComplianceViolations`
+
+{{< details >}}
+**Introduced** in GitLab 18.1.
+**Status**: Experiment.
+{{< /details >}}
+
+Compliance violations for the projects in a group and its subgroups.
+
+Returns [`ProjectComplianceViolationConnection`](#projectcomplianceviolationconnection).
+
+This field returns a [connection](#connections). It accepts the
+four standard [pagination arguments](#pagination-arguments):
+`before: String`, `after: String`, `first: Int`, and `last: Int`.
+
+###### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="groupprojectcomplianceviolationsfilters"></a>`filters` | [`ProjectComplianceViolationFilterInput`](#projectcomplianceviolationfilterinput) | Filters applied when retrieving compliance violations. |
 
 ##### `Group.projects`
 
@@ -56947,6 +56968,20 @@ Representation of who is provided access to. For eg: User/Role/MemberRole/Group.
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | <a id="projectcompliancecontrolstatusinputcompliancerequirementid"></a>`complianceRequirementId` | [`ComplianceManagementComplianceFrameworkComplianceRequirementID`](#compliancemanagementcomplianceframeworkcompliancerequirementid) | Compliance requirement id of the statuses. |
+
+### `ProjectComplianceViolationFilterInput`
+
+Filters for project compliance violations.
+
+#### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="projectcomplianceviolationfilterinputcontrolid"></a>`controlId` | [`ComplianceManagementComplianceFrameworkComplianceRequirementsControlID`](#compliancemanagementcomplianceframeworkcompliancerequirementscontrolid) | Control ID for which to filter compliance violations. |
+| <a id="projectcomplianceviolationfilterinputcreatedafter"></a>`createdAfter` | [`Date`](#date) | Compliance violations created on or after the date (inclusive). |
+| <a id="projectcomplianceviolationfilterinputcreatedbefore"></a>`createdBefore` | [`Date`](#date) | Compliance violations created on or before the date (inclusive). |
+| <a id="projectcomplianceviolationfilterinputprojectid"></a>`projectId` | [`ProjectID`](#projectid) | Project ID for which to filter compliance violations. |
+| <a id="projectcomplianceviolationfilterinputstatus"></a>`status` | [`[ComplianceViolationStatus!]`](#complianceviolationstatus) | Status of the project compliance violation. |
 
 ### `ProjectRequirementComplianceStatusInput`
 
