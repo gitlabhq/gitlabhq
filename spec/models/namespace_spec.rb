@@ -3272,4 +3272,46 @@ RSpec.describe Namespace, feature_category: :groups_and_projects do
       end
     end
   end
+
+  describe 'state transitions' do
+    let_it_be(:user) { create(:user) }
+    let_it_be_with_reload(:namespace) { create(:namespace) }
+
+    describe 'transfer workflow' do
+      it 'can transition through complete workflow' do
+        namespace.state = Namespaces::Stateful::STATES[:ancestor_inherited]
+
+        namespace.start_transfer(current_user: user)
+        expect(namespace.state_name).to eq(:transfer_in_progress)
+
+        namespace.complete_transfer(current_user: user)
+        expect(namespace.state_name).to eq(:ancestor_inherited)
+      end
+
+      it 'tracks metadata through transitions' do
+        freeze_time do
+          namespace.state = Namespaces::Stateful::STATES[:ancestor_inherited]
+          namespace.start_transfer(current_user: user)
+
+          namespace.namespace_details.reload
+          metadata = namespace.namespace_details.state_metadata
+
+          expect(metadata['last_changed_by_user_id']).to eq(user.id)
+          expect(metadata['last_updated_at']).to be_present
+          expect(metadata['last_error']).to be_nil
+          expect(metadata['correlation_id']).to be_present
+        end
+      end
+
+      it 'supports system-triggered transitions without user' do
+        namespace.state = Namespaces::Stateful::STATES[:ancestor_inherited]
+        namespace.start_transfer
+
+        expect(namespace.state_name).to eq(:transfer_in_progress)
+
+        metadata = namespace.namespace_details.reload.state_metadata
+        expect(metadata['last_changed_by_user_id']).to be_nil
+      end
+    end
+  end
 end

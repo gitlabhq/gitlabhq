@@ -419,9 +419,9 @@ The following filters are available for this scope:
 - `path`
 - `extension`
 
-To use a filter, include it in your query. For example: `a query filename:some_name*`.
+To use a filter, include it in your query (for example, `a query filename:some_name*`).
 
-You may use wildcards (`*`) to use glob matching.
+You can use wildcards (`*`) for glob matching.
 
 ```shell
 curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/search?scope=blobs&search=installation"
@@ -841,9 +841,9 @@ The following filters are available for this scope:
 - `path`
 - `extension`
 
-To use a filter, include it in your query. For example: `a query filename:some_name*`.
+To use a filter, include it in your query (for example, `a query filename:some_name*`).
 
-You may use wildcards (`*`) to use glob matching.
+You can use wildcards (`*`) for glob matching.
 
 ```shell
 curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/groups/6/search?scope=blobs&search=installation"
@@ -1142,8 +1142,9 @@ The following filters are available for this scope:
 - `path`
 - `extension`
 
-To use a filter, include it in your query. For example: `a query filename:some_name*`.
-You may use wildcards (`*`) to use glob matching.
+To use a filter, include it in your query (for example, `a query filename:some_name*`).
+
+You can use wildcards (`*`) for glob matching.
 
 Wiki blobs searches are performed on both filenames and contents. Search
 results:
@@ -1223,8 +1224,9 @@ The following filters are available for this scope:
 - `path`
 - `extension`
 
-To use a filter, include it in your query. For example: `a query filename:some_name*`.
-You may use wildcards (`*`) to use glob matching.
+To use a filter, include it in your query (for example, `a query filename:some_name*`).
+
+You can use wildcards (`*`) for glob matching.
 
 Blobs searches are performed on both filenames and contents. Search results:
 

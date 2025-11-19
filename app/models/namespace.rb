@@ -14,6 +14,7 @@ class Namespace < ApplicationRecord
   include Namespaces::Traversal::Cached
   include Namespaces::Traversal::Traversable
   include Namespaces::AdjournedDeletable
+  include Namespaces::Stateful
   include Organizations::Isolatable
   include EachBatch
   include BlocksUnsafeSerialization

@@ -223,7 +223,7 @@ Examples of relative URLs:
 The navigation Vue.js component [`sidebar_menu.vue`](https://gitlab.com/gitlab-org/technical-writing/docs-gitlab-com/-/blob/main/themes/gitlab-docs/src/components/sidebar_menu.vue)
 is fed by the [data file](#data-file) and builds the global nav.
 
-The global nav contains links from all [five upstream projects](https://gitlab.com/gitlab-org/technical-writing/docs-gitlab-com/-/blob/main/doc/architecture.md).
+The global nav contains links from all [six upstream projects](https://gitlab.com/gitlab-org/technical-writing/docs-gitlab-com/-/blob/main/doc/architecture.md).
 The [global nav URL](#urls) has a different prefix depending on the documentation file you change.
 
 | Repository                                                                     | Link prefix | Final URL |
@@ -233,6 +233,7 @@ The [global nav URL](#urls) has a different prefix depending on the documentatio
 | <https://gitlab.com/gitlab-org/omnibus-gitlab/tree/master/doc>                 | `omnibus/`  | `https://docs.gitlab.com/omnibus/` |
 | <https://gitlab.com/gitlab-org/cloud-native/gitlab-operator/-/tree/master/doc> | `operator`  | `https://docs.gitlab.com/operator/` |
 | <https://gitlab.com/gitlab-org/gitlab-runner/-/tree/main/docs>                 | `runner/`   | `https://docs.gitlab.com/runner/` |
+| <https://gitlab.com/gitlab-org/cli/-/tree/main/docs/source>                    | `cli/`      | `https://docs.gitlab.com/cli/` |
 
 ### CSS classes
 

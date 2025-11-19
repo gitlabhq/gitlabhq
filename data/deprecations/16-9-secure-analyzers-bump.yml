@@ -23,13 +23,13 @@
     Specifically, the following analyzers are being deprecated and will no longer be updated after
     the GitLab 17.0 release:
 
-    - Container Scanning: version 6
-    - Dependency Scanning: version 4
+    - Container scanning: version 6
+    - Dependency scanning: version 4
     - DAST: version 4
     - DAST API: version 3
     - Fuzz API: version 3
     - IaC scanning: version 4
-    - Secret Detection: version 5
+    - Secret detection: version 5
     - Static Application Security Testing (SAST): version 4 of [all analyzers](https://docs.gitlab.com/user/application_security/sast/analyzers/)
       - `brakeman`
       - `flawfinder`

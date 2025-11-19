@@ -274,7 +274,21 @@ It's not available in Production environment.
 1. Access [LangSmith](https://smith.langchain.com/) and create an account
    1. Optional. [Create an Access Request](https://gitlab.com/gitlab-com/team-member-epics/access-requests/-/issues/new?issuable_template=Individual_Bulk_Access_Request) to be added to the GitLab organization in LangSmith.
 1. Create [an API key](https://docs.smith.langchain.com/#create-an-api-key) (be careful where you create API key - they can be created in personal namespace or in GL namespace).
-1. Set the following environment variables in GDK. You can define it in `env.runit` or directly `export` in the terminal.
+1. Set the following environment variables in GDK.
+
+   You can [define it in `gdk.yml`](https://gitlab.com/gitlab-org/gitlab-development-kit/-/blob/main/doc/configuration.md#environment-variables):
+
+   ```yaml
+   # on your gdk.yml
+   env:
+     LANGCHAIN_TRACING_V2: 'true'
+     LANGCHAIN_API_KEY: '<your-api-key>'
+     LANGCHAIN_PROJECT: '<your-project-name>'
+     LANGCHAIN_ENDPOINT: 'https://api.smith.langchain.com'
+     GITLAB_RAILS_RACK_TIMEOUT: '180' # Extending puma timeout for using LangSmith with CEF as the evaluation tool.
+   ```
+
+   Or directly `export` in the terminal:
 
    ```shell
    export LANGCHAIN_TRACING_V2=true
@@ -284,8 +298,8 @@ It's not available in Production environment.
    export GITLAB_RAILS_RACK_TIMEOUT=180 # Extending puma timeout for using LangSmith with CEF as the evaluation tool.
    ```
 
-   Project name is the existing project in LangSmith or new one. It's enough to put new name in the environment variable -
-   project will be created during request.
+   Project name is an existing project in LangSmith or a new one. It's enough to put a new name in the environment variable -
+   the project will be created during request.
 
 1. Restart GDK.
 1. Ask any question to Chat.

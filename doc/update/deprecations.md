@@ -830,13 +830,13 @@ required, security patches will be backported within the latest 3 minor releases
 Specifically, the following analyzers will no longer be updated after the GitLab 18.0 release:
 
 - GitLab Advanced SAST: version 1
-- Container Scanning: version 7
+- Container scanning: version 7
 - Gemnasium: version 5
 - DAST: version 5
 - DAST API: version 4
 - Fuzz API: version 4
 - IaC scanning: version 5
-- Pipeline Secret Detection: version 6
+- Pipeline secret detection: version 6
 - Static Application Security Testing (SAST): version 5 of [all analyzers](https://docs.gitlab.com/user/application_security/sast/analyzers/)
   - `kics`
   - `kubesec`
@@ -2045,7 +2045,7 @@ The GraphQL fields, `isTemporaryStorageIncreaseEnabled` and `temporaryStorageInc
 
 <div class="deprecation breaking-change" data-milestone="17.0">
 
-### Deprecate Grype scanner for Container Scanning
+### Deprecate Grype scanner for container scanning
 
 <div class="deprecation-notes">
 
@@ -2055,7 +2055,7 @@ The GraphQL fields, `isTemporaryStorageIncreaseEnabled` and `temporaryStorageInc
 
 </div>
 
-Support for the Grype scanner in the GitLab Container Scanning analyzer is deprecated in
+Support for the Grype scanner in the GitLab container scanning analyzer is deprecated in
 GitLab 16.9.
 
 From GitLab 17.0, the Grype analyzer will no longer be maintained, except for limited fixes as
@@ -3161,13 +3161,13 @@ required, security patches will be backported within the latest 3 minor releases
 Specifically, the following analyzers are being deprecated and will no longer be updated after
 the GitLab 17.0 release:
 
-- Container Scanning: version 6
-- Dependency Scanning: version 4
+- Container scanning: version 6
+- Dependency scanning: version 4
 - DAST: version 4
 - DAST API: version 3
 - Fuzz API: version 3
 - IaC scanning: version 4
-- Secret Detection: version 5
+- Secret detection: version 5
 - Static Application Security Testing (SAST): version 4 of [all analyzers](https://docs.gitlab.com/user/application_security/sast/analyzers/)
   - `brakeman`
   - `flawfinder`
@@ -3446,11 +3446,11 @@ The [`after_script`](https://docs.gitlab.com/ci/yaml/#after_script) CI/CD keywor
 
 </div>
 
-Today in GitLab, a project's dependency list is generated using content from `dependency_files` in the Dependency Scanning report. However, to maintain consistency with the group dependency list, starting with GitLab 17.0, the project's dependency list will use CycloneDX SBOM report artifacts, stored in the PostgreSQL database. As such, the `dependency_files` property of the Dependency Scanning report schema is deprecated, and will be removed in 17.0.
+Today in GitLab, a project's dependency list is generated using content from `dependency_files` in the dependency scanning report. However, to maintain consistency with the group dependency list, starting with GitLab 17.0, the project's dependency list will use CycloneDX SBOM report artifacts, stored in the PostgreSQL database. As such, the `dependency_files` property of the dependency scanning report schema is deprecated, and will be removed in 17.0.
 
 As a part of this deprecation, the [`dependency_path`](https://docs.gitlab.com/user/application_security/dependency_list/#dependency-paths) will also be deprecated and removed in 17.0. GitLab will move forward with the implementation of the [dependency graph using the CycloneDX specification](https://gitlab.com/gitlab-org/gitlab/-/issues/441118) to provide similar information.
 
-Additionally, the Container Scanning CI job [will no longer produce a Dependency Scanning report](https://gitlab.com/gitlab-org/gitlab/-/issues/439782) to provide the list of Operating System components as this is replaced with the CycloneDX SBOM report. The `CS_DISABLE_DEPENDENCY_LIST` environment variable for Container Scanning is no longer in use and will also be removed in 17.0.
+Additionally, the container scanning CI job [will no longer produce a dependency scanning report](https://gitlab.com/gitlab-org/gitlab/-/issues/439782) to provide the list of Operating System components as this is replaced with the CycloneDX SBOM report. The `CS_DISABLE_DEPENDENCY_LIST` environment variable for container scanning is no longer in use and will also be removed in 17.0.
 
 </div>
 
@@ -4103,22 +4103,6 @@ config file locations instead, for example `config/redis.cache.yml` or
 
 <div class="deprecation breaking-change" data-milestone="16.0">
 
-### Container Scanning variables that reference Docker
-
-<div class="deprecation-notes">
-
-- Announced in GitLab <span class="milestone">15.4</span>
-- Removal in GitLab <span class="milestone">16.0</span> ([breaking change](https://docs.gitlab.com/update/terminology/#breaking-change))
-- To discuss this change or learn more, see the [deprecation issue](https://gitlab.com/gitlab-org/gitlab/-/issues/371840).
-
-</div>
-
-All Container Scanning variables that are prefixed by `DOCKER_` in variable name are deprecated. This includes the `DOCKER_IMAGE`, `DOCKER_PASSWORD`, `DOCKER_USER`, and `DOCKERFILE_PATH` variables. Support for these variables will be removed in the GitLab 16.0 release. Use the [new variable names](https://docs.gitlab.com/user/application_security/container_scanning/#available-cicd-variables) `CS_IMAGE`, `CS_REGISTRY_PASSWORD`, `CS_REGISTRY_USER`, and `CS_DOCKERFILE_PATH` in place of the deprecated names.
-
-</div>
-
-<div class="deprecation breaking-change" data-milestone="16.0">
-
 ### Container registry pull-through cache
 
 <div class="deprecation-notes">
@@ -4130,6 +4114,22 @@ All Container Scanning variables that are prefixed by `DOCKER_` in variable name
 </div>
 
 The container registry [pull-through cache](https://docs.docker.com/docker-hub/mirror/) is deprecated in GitLab 15.8 and will be removed in GitLab 16.0. The pull-through cache is part of the upstream [Docker Distribution project](https://github.com/distribution/distribution). However, we are removing the pull-through cache in favor of the GitLab Dependency Proxy, which allows you to proxy and cache container images from Docker Hub. Removing the pull-through cache allows us also to remove the upstream client code without sacrificing functionality.
+
+</div>
+
+<div class="deprecation breaking-change" data-milestone="16.0">
+
+### Container scanning variables that reference Docker
+
+<div class="deprecation-notes">
+
+- Announced in GitLab <span class="milestone">15.4</span>
+- Removal in GitLab <span class="milestone">16.0</span> ([breaking change](https://docs.gitlab.com/update/terminology/#breaking-change))
+- To discuss this change or learn more, see the [deprecation issue](https://gitlab.com/gitlab-org/gitlab/-/issues/371840).
+
+</div>
+
+All container scanning variables that are prefixed by `DOCKER_` in variable name are deprecated. This includes the `DOCKER_IMAGE`, `DOCKER_PASSWORD`, `DOCKER_USER`, and `DOCKERFILE_PATH` variables. Support for these variables will be removed in the GitLab 16.0 release. Use the [new variable names](https://docs.gitlab.com/user/application_security/container_scanning/#available-cicd-variables) `CS_IMAGE`, `CS_REGISTRY_PASSWORD`, `CS_REGISTRY_USER`, and `CS_DOCKERFILE_PATH` in place of the deprecated names.
 
 </div>
 
@@ -5000,15 +5000,15 @@ If you are not using the default included templates, or have pinned your analyze
 Users of GitLab 13.0-15.10 will continue to experience analyzer updates as normal until the release of GitLab 16.0, following which all newly fixed bugs and released features will be released only in the new major version of the analyzers. We do not backport bugs and features to deprecated versions as per our [maintenance policy](https://docs.gitlab.com/policy/maintenance/). As required, security patches will be backported within the latest 3 minor releases.
 Specifically, the following are being deprecated and will no longer be updated after 16.0 GitLab release:
 
-- API Fuzzing: version 2
-- Container Scanning: version 5
+- API fuzzing: version 2
+- Container scanning: version 5
 - Coverage-guided fuzz testing: version 3
-- Dependency Scanning: version 3
+- Dependency scanning: version 3
 - Dynamic Application Security Testing (DAST): version 3
 - DAST API: version 2
 - IaC scanning: version 3
-- License Scanning: version 4
-- Secret Detection: version 4
+- License scanning: version 4
+- Secret detection: version 4
 - Static Application Security Testing (SAST): version 3 of [all analyzers](https://docs.gitlab.com/user/application_security/sast/#supported-languages-and-frameworks)
   - `brakeman`: version 3
   - `flawfinder`: version 3
@@ -5044,15 +5044,15 @@ In all updated templates, we're updating the definition of variables like `SAST_
 
 The following templates will be updated:
 
-- API Fuzzing: [`API-Fuzzing.gitlab-ci.yml`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/ci/templates/Security/API-Fuzzing.gitlab-ci.yml)
-- Container Scanning: [`Container-Scanning.gitlab-ci.yml`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/ci/templates/Jobs/Container-Scanning.gitlab-ci.yml)
-- Coverage-Guided Fuzzing: [`Coverage-Fuzzing.gitlab-ci.yml`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/ci/templates/Security/Coverage-Fuzzing.gitlab-ci.yml)
+- API fuzzing: [`API-Fuzzing.gitlab-ci.yml`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/ci/templates/Security/API-Fuzzing.gitlab-ci.yml)
+- Container scanning: [`Container-Scanning.gitlab-ci.yml`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/ci/templates/Jobs/Container-Scanning.gitlab-ci.yml)
+- Coverage-guided fuzzing: [`Coverage-Fuzzing.gitlab-ci.yml`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/ci/templates/Security/Coverage-Fuzzing.gitlab-ci.yml)
 - DAST: [`DAST.gitlab-ci.yml`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/ci/templates/Security/DAST.gitlab-ci.yml)
 - DAST API: [`DAST-API.gitlab-ci.yml`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/ci/templates/Security/DAST-API.gitlab-ci.yml)
-- Dependency Scanning: [`Dependency-Scanning.gitlab-ci.yml`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/ci/templates/Jobs/Dependency-Scanning.gitlab-ci.yml)
+- Dependency scanning: [`Dependency-Scanning.gitlab-ci.yml`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/ci/templates/Jobs/Dependency-Scanning.gitlab-ci.yml)
 - IaC scanning: [`SAST-IaC.gitlab-ci.yml`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/ci/templates/Jobs/SAST-IaC.gitlab-ci.yml)
 - SAST: [`SAST.gitlab-ci.yml`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/ci/templates/Jobs/SAST.gitlab-ci.yml)
-- Secret Detection: [`Secret-Detection.gitlab-ci.yml`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/ci/templates/Jobs/Secret-Detection.gitlab-ci.yml)
+- Secret detection: [`Secret-Detection.gitlab-ci.yml`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/ci/templates/Jobs/Secret-Detection.gitlab-ci.yml)
 
 We recommend that you test your pipelines before the 16.0 release if you use one of the templates listed above and you use the `_DISABLED` variables but set a value other than `"true"`.
 
@@ -6739,8 +6739,8 @@ Starting in GitLab 14.8, new versions of GitLab Secure and Protect analyzers are
 
 We will update the default value of [GitLab-managed CI/CD templates](https://gitlab.com/gitlab-org/gitlab/-/tree/master/lib/gitlab/ci/templates/Security) to reflect this change:
 
-- For all analyzers except Container Scanning, we will update the variable `SECURE_ANALYZERS_PREFIX` to the new image registry location.
-- For Container Scanning, the default image address is already updated. There is no `SECURE_ANALYZERS_PREFIX` variable for Container Scanning.
+- For all analyzers except container scanning, we will update the variable `SECURE_ANALYZERS_PREFIX` to the new image registry location.
+- For container scanning, the default image address is already updated. There is no `SECURE_ANALYZERS_PREFIX` variable for container scanning.
 
 In a future release, we will stop publishing images to `registry.gitlab.com/gitlab-org/security-products/analyzers`.
 Once this happens, you must take action if you manually pull images and push them into a separate registry. This is commonly the case for [offline deployments](https://docs.gitlab.com/user/application_security/offline_deployments/).
@@ -6771,14 +6771,14 @@ If you are not using the default inclusion templates, or have pinned your analyz
 Users of GitLab 12.0-14.10 will continue to experience analyzer updates as normal until the release of GitLab 15.0, following which all newly fixed bugs and newly released features in the new major versions of the analyzers will not be available in the deprecated versions because we do not backport bugs and new features as per our [maintenance policy](https://docs.gitlab.com/policy/maintenance/). As required security patches will be backported within the latest 3 minor releases.
 Specifically, the following are being deprecated and will no longer be updated after 15.0 GitLab release:
 
-- API Security: version 1
-- Container Scanning: version 4
+- API security: version 1
+- Container scanning: version 4
 - Coverage-guided fuzz testing: version 2
-- Dependency Scanning: version 2
+- Dependency scanning: version 2
 - Dynamic Application Security Testing (DAST): version 2
-- Infrastructure as Code (IaC) Scanning: version 1
-- License Scanning: version 3
-- Secret Detection: version 3
+- Infrastructure as Code (IaC) scanning: version 1
+- License scanning: version 3
+- Secret detection: version 3
 - Static Application Security Testing (SAST): version 2 of [all analyzers](https://docs.gitlab.com/user/application_security/sast/#supported-languages-and-frameworks), except `gosec` which is currently at version 3
   - `bandit`: version 2
   - `brakeman`: version 2
@@ -7846,7 +7846,7 @@ The following changes have been canceled.
 
 <div class="deprecation breaking-change">
 
-### Container Scanning default severity threshold set to `medium`
+### Container scanning default severity threshold set to `medium`
 
 <div class="deprecation-notes">
 
@@ -7860,11 +7860,11 @@ This change has been canceled.
 
 {{< /alert >}}
 
-The Container Scanning security feature generates a lot of security findings and this volume is often difficult for engineering teams to manage.
+The container scanning security feature generates a lot of security findings and this volume is often difficult for engineering teams to manage.
 By changing the severity threshold to `medium`, we provide a more reasonable default to our users, where any findings with a severity below `medium` are not reported.
 Starting with GitLab 18.0, the default value for the `CS_SEVERITY_THRESHOLD` environment variable is set to `medium` instead of `unknown`. As a result, the security findings with the `low` and `unknown`
 severity levels will no longer be reported by default. Consequently, any vulnerablity with these severities that were previously reported on the default branch will be marked as no longer detected
-upon the next execution of Container Scanning.
+upon the next execution of container scanning.
 To continue showing these findings, you must configure the `CS_SEVERITY_THRESHOLD` variable to the desired level.
 
 </div>

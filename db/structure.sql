@@ -14441,6 +14441,23 @@ CREATE SEQUENCE ci_resources_id_seq
 
 ALTER SEQUENCE ci_resources_id_seq OWNED BY ci_resources.id;
 
+CREATE TABLE ci_runner_controllers (
+    id bigint NOT NULL,
+    description text,
+    created_at timestamp with time zone NOT NULL,
+    updated_at timestamp with time zone NOT NULL,
+    CONSTRAINT check_0d6af097e9 CHECK ((char_length(description) <= 1024))
+);
+
+CREATE SEQUENCE ci_runner_controllers_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+ALTER SEQUENCE ci_runner_controllers_id_seq OWNED BY ci_runner_controllers.id;
+
 CREATE TABLE ci_runner_machines (
     id bigint NOT NULL,
     runner_id bigint NOT NULL,
@@ -31247,6 +31264,8 @@ ALTER TABLE ONLY ci_resource_groups ALTER COLUMN id SET DEFAULT nextval('ci_reso
 
 ALTER TABLE ONLY ci_resources ALTER COLUMN id SET DEFAULT nextval('ci_resources_id_seq'::regclass);
 
+ALTER TABLE ONLY ci_runner_controllers ALTER COLUMN id SET DEFAULT nextval('ci_runner_controllers_id_seq'::regclass);
+
 ALTER TABLE ONLY ci_runner_namespaces ALTER COLUMN id SET DEFAULT nextval('ci_runner_namespaces_id_seq'::regclass);
 
 ALTER TABLE ONLY ci_runner_projects ALTER COLUMN id SET DEFAULT nextval('ci_runner_projects_id_seq'::regclass);
@@ -33990,6 +34009,9 @@ ALTER TABLE ONLY ci_resource_groups
 
 ALTER TABLE ONLY ci_resources
     ADD CONSTRAINT ci_resources_pkey PRIMARY KEY (id);
+
+ALTER TABLE ONLY ci_runner_controllers
+    ADD CONSTRAINT ci_runner_controllers_pkey PRIMARY KEY (id);
 
 ALTER TABLE ONLY ci_runner_machines
     ADD CONSTRAINT ci_runner_machines_pkey PRIMARY KEY (id, runner_type);

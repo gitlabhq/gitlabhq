@@ -1,4 +1,4 @@
-- title: "Deprecate Grype scanner for Container Scanning"
+- title: "Deprecate Grype scanner for container scanning"
   removal_milestone: "17.0"
   announcement_milestone: "16.9"
   breaking_change: true
@@ -6,7 +6,7 @@
   stage: secure
   issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/439164
   body: |  # (required) Don't change this line.
-    Support for the Grype scanner in the GitLab Container Scanning analyzer is deprecated in
+    Support for the Grype scanner in the GitLab container scanning analyzer is deprecated in
     GitLab 16.9.
 
     From GitLab 17.0, the Grype analyzer will no longer be maintained, except for limited fixes as

@@ -1,0 +1,11 @@
+---
+table_name: ci_runner_controllers
+classes:
+  - Ci::RunnerController
+feature_categories:
+  - continuous_integration
+description: Manages controllers for GitLab Runners
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/210821
+milestone: '18.6'
+gitlab_schema: gitlab_ci_cell_local
+table_size: small

@@ -236,6 +236,7 @@ module API
         mount ::API::Ci::SecureFiles
         mount ::API::Ci::Pipelines
         mount ::API::Ci::PipelineSchedules
+        mount ::API::Ci::RunnerControllers
         mount ::API::Ci::Triggers
         mount ::API::Ci::Variables
         mount ::API::ClusterDiscovery

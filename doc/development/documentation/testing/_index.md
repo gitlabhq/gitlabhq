@@ -420,10 +420,10 @@ in the relevant projects:
 - <https://gitlab.com/gitlab-org/omnibus-gitlab/-/blob/master/gitlab-ci-config/gitlab-com.yml>
 - <https://gitlab.com/gitlab-org/charts/gitlab/-/blob/master/.gitlab-ci.yml>
 - <https://gitlab.com/gitlab-org/cloud-native/gitlab-operator/-/blob/master/.gitlab-ci.yml>
+- <https://gitlab.com/gitlab-org/cli/-/blob/main/.gitlab-ci.yml>
 
 We also run some documentation tests in these projects:
 
-- GitLab CLI: <https://gitlab.com/gitlab-org/cli/-/blob/main/.gitlab-ci.yml>
 - GitLab Development Kit:
   <https://gitlab.com/gitlab-org/gitlab-development-kit/-/blob/main/.gitlab/ci/test.gitlab-ci.yml>
 - GitLab Docs website: <https://gitlab.com/gitlab-org/technical-writing/docs-gitlab-com/-/blob/main/.gitlab/ci/lint.gitlab-ci.yml>

@@ -24,6 +24,7 @@ The documentation source files are in the same repositories as the product code.
 | [Omnibus GitLab](https://gitlab.com/gitlab-org/omnibus-gitlab/) | [`/doc`](https://gitlab.com/gitlab-org/omnibus-gitlab/tree/master/doc) |
 | [Charts](https://gitlab.com/gitlab-org/charts/gitlab) | [`/doc`](https://gitlab.com/gitlab-org/charts/gitlab/tree/master/doc) |
 | [GitLab Operator](https://gitlab.com/gitlab-org/cloud-native/gitlab-operator) | [`/doc`](https://gitlab.com/gitlab-org/cloud-native/gitlab-operator/-/tree/master/doc) |
+| [GitLab CLI (glab)](https://gitlab.com/gitlab-org/cli/) | [`/docs/source`](https://gitlab.com/gitlab-org/cli/-/tree/main/docs/source) |
 
 Documentation issues and merge requests are part of their respective repositories and all have the label `Documentation`.
 

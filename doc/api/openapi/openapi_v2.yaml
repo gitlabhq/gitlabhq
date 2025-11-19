@@ -91,6 +91,8 @@ tags:
   description: Operations about jobs
 - name: jobs
   description: Operations about jobs
+- name: runner_controllers
+  description: Operations about runner_controllers
 - name: events
   description: Operations about events
 - name: keys
@@ -41167,6 +41169,115 @@ paths:
       tags:
       - jobs
       operationId: getApiV4JobsIdArtifacts
+  "/api/v4/runner_controllers":
+    get:
+      summary: List runner controllers
+      description: Get all runner controllers.
+      produces:
+      - application/json
+      parameters:
+      - in: query
+        name: page
+        description: Current page number
+        type: integer
+        format: int32
+        default: 1
+        required: false
+        example: 1
+      - in: query
+        name: per_page
+        description: Number of items per page
+        type: integer
+        format: int32
+        default: 20
+        required: false
+        example: 20
+      responses:
+        '200':
+          description: List runner controllers
+          schema:
+            type: array
+            items:
+              "$ref": "#/definitions/API_Entities_Ci_RunnerController"
+        '403':
+          description: Forbidden
+      tags:
+      - runner_controllers
+      operationId: getApiV4RunnerControllers
+    post:
+      summary: Register a runner controller
+      description: Register a new runner controller.
+      produces:
+      - application/json
+      consumes:
+      - application/json
+      parameters:
+      - name: postApiV4RunnerControllers
+        in: body
+        required: true
+        schema:
+          "$ref": "#/definitions/postApiV4RunnerControllers"
+      responses:
+        '201':
+          description: Register a runner controller
+          schema:
+            "$ref": "#/definitions/API_Entities_Ci_RunnerController"
+        '403':
+          description: Forbidden
+        '400':
+          description: Bad Request
+      tags:
+      - runner_controllers
+      operationId: postApiV4RunnerControllers
+  "/api/v4/runner_controllers/{id}":
+    get:
+      summary: Get single runner controller
+      description: Get a runner controller by using the ID of the controller.
+      produces:
+      - application/json
+      parameters:
+      - in: path
+        name: id
+        description: ID of the runner controller
+        type: integer
+        format: int32
+        required: true
+      responses:
+        '200':
+          description: Get single runner controller
+          schema:
+            "$ref": "#/definitions/API_Entities_Ci_RunnerController"
+        '403':
+          description: Forbidden
+        '404':
+          description: Not found
+      tags:
+      - runner_controllers
+      operationId: getApiV4RunnerControllersId
+    delete:
+      summary: Delete a runner controller
+      description: Delete a runner controller by using the ID of the controller.
+      produces:
+      - application/json
+      parameters:
+      - in: path
+        name: id
+        description: ID of the runner controller
+        type: integer
+        format: int32
+        required: true
+      responses:
+        '403':
+          description: Forbidden
+        '204':
+          description: Delete a runner controller
+          schema:
+            "$ref": "#/definitions/API_Entities_Ci_RunnerController"
+        '404':
+          description: Not found
+      tags:
+      - runner_controllers
+      operationId: deleteApiV4RunnerControllersId
   "/api/v4/group/{id}/-/packages/composer/packages":
     get:
       summary: Composer packages endpoint at group level
@@ -68166,6 +68277,31 @@ definitions:
     required:
     - file
     description: Upload a job artifact
+  API_Entities_Ci_RunnerController:
+    type: object
+    properties:
+      id:
+        type: integer
+        format: int32
+        example: 1
+      description:
+        type: string
+        example: Controller for managing runner
+      created_at:
+        type: string
+        format: date-time
+      updated_at:
+        type: string
+        format: date-time
+    description: API_Entities_Ci_RunnerController model
+  postApiV4RunnerControllers:
+    type: object
+    properties:
+      description:
+        type: string
+        description: Description of the runner controller
+        example: Controller for managing runner
+    description: Register a runner controller
   putApiV4PackagesConanV1FilesPackageNamePackageVersionPackageUsernamePackageChannelRecipeRevisionExportFileName:
     type: object
     properties:

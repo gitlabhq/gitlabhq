@@ -40,6 +40,7 @@ This branch pulls content from the corresponding stable branches of included pro
 - The stable branch from the `charts/gitlab` project (for example, `7-2-stable`).
   `charts/gitlab` versions are [mapped](https://docs.gitlab.com/charts/installation/version_mappings.html) to GitLab versions.
 - The default branch for the `gitlab-org/cloud-native/gitlab-operator`.
+- The default branch for the `cli` project.
 
 The Technical Writing team [creates the stable branch](https://gitlab.com/gitlab-org/technical-writing/docs-gitlab-com/-/blob/main/.gitlab/issue_templates/release.md?ref_type=heads#create-a-stable-branch-and-docker-image-for-the-release) for the `docs-gitlab-com` project, which makes use of the stable branches created by other teams.
 
