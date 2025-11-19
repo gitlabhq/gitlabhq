@@ -74,4 +74,5 @@ The tracking systems are triggered by the order of the `extra_trackers:` propert
 ## Systems that use the Single Instrumentation Layer
 
 1. [Internal Event](internal_event_instrumentation/quick_start.md). Is the main system that implements the tracking layer.
-1. [AiTracking](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/tracking/ai_tracking.rb?ref_type=heads). Work in progress on migrating to the new layer.
+1. [AiTracking](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/tracking/ai_tracking.rb?ref_type=heads).
+1. [Contribution Analytics](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/tracking/contribution_analytics_tracking.rb?ref_type=heads).

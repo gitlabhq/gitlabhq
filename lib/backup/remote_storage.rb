@@ -38,6 +38,8 @@ module Backup
       end
     end
 
+    private
+
     def remote_target
       if options.remote_directory
         File.join(options.remote_directory, tar_file)
@@ -47,22 +49,57 @@ module Backup
     end
 
     def create_attributes
-      attrs = {
+      {
         key: remote_target,
-        body: File.open(File.join(backup_path, tar_file)),
-        multipart_chunk_size: Gitlab.config.backup.upload.multipart_chunk_size,
+        body: File.open(backup_filename),
+        multipart_chunk_size: upload_multipart_chunk_size,
         storage_class: Gitlab.config.backup.upload.storage_class
-      }.merge(encryption_attributes)
+      }.merge(provider_attributes)
+    end
 
+    def provider_attributes
+      if aws_provider?
+        default_attributes.merge(aws_attributes)
+      else
+        default_attributes
+      end
+    end
+
+    def default_attributes
       # Google bucket-only policies prevent setting an ACL. In any case, by default,
       # all objects are set to the default ACL, which is project-private:
       # https://cloud.google.com/storage/docs/json_api/v1/defaultObjectAccessControls
-      attrs[:public] = false unless google_provider?
+      return {} if google_provider?
+
+      { public: false }
+    end
+
+    def aws_attributes
+      attrs = aws_encryption_attributes || {}
+
+      return attrs if ::Gitlab::FIPS.enabled?
+
+      size = File.stat(backup_filename).size
+      # Multipart uploads automatically add the MD5 header for each chunk
+      if size < upload_multipart_chunk_size
+        File.open(backup_filename, 'rb') do |file|
+          # This needs to be base64-encoded: https://datatracker.ietf.org/doc/html/rfc1864
+          attrs[:content_md5] = Base64.encode64(OpenSSL::Digest::MD5.digest(file.read)).strip # rubocop:disable Fips/MD5 -- This is not used in FIPS
+        end
+      end
 
       attrs
     end
 
-    def encryption_attributes
+    def backup_filename
+      @backup_filename ||= File.join(backup_path, tar_file)
+    end
+
+    def upload_multipart_chunk_size
+      Gitlab.config.backup.upload.multipart_chunk_size
+    end
+
+    def aws_encryption_attributes
       return object_storage_config.fog_attributes if object_storage_config.aws_server_side_encryption_enabled?
 
       # Use customer-managed keys. Also, this preserves backward-compatibility
@@ -96,10 +133,12 @@ module Backup
     end
 
     def google_provider?
-      Gitlab.config.backup.upload.connection&.provider&.downcase == 'google'
+      object_storage_config.google?
     end
 
-    private
+    def aws_provider?
+      object_storage_config.aws?
+    end
 
     def connect_to_remote_directory
       connection = ::Fog::Storage.new(object_storage_config.credentials)

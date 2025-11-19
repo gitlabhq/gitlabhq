@@ -647,6 +647,110 @@ RSpec.describe Backup::Manager, feature_category: :backup_restore do
               expect(progress.string).to include('Uploading backup archive to remote storage directory ... done (encrypted with aws:kms)')
             end
           end
+
+          context 'with MD5 checksum for small files' do
+            let(:small_backup_file) { Tempfile.new('small_backup', backup_path) }
+            let(:small_backup_filename) { File.basename(small_backup_file.path) }
+
+            before do
+              # Create a small file (1KB) that's smaller than multipart threshold
+              small_backup_file.write('x' * 1024)
+              small_backup_file.close
+
+              allow_next_instance_of(described_class) do |manager|
+                allow(manager).to receive(:tar_file).and_return(small_backup_filename)
+                allow(manager.remote_storage).to receive(:tar_file).and_return(small_backup_filename)
+              end
+
+              stub_backup_setting(
+                upload: {
+                  connection: {
+                    provider: 'AWS',
+                    aws_access_key_id: 'id',
+                    aws_secret_access_key: 'secret'
+                  },
+                  remote_directory: 'directory',
+                  multipart_chunk_size: 5 * 1024 * 1024, # 5MB threshold
+                  encryption: nil,
+                  encryption_key: nil,
+                  storage_class: nil
+                }
+              )
+            end
+
+            after do
+              small_backup_file.unlink
+            end
+
+            it 'includes MD5 checksum for files smaller than multipart threshold' do
+              expect_any_instance_of(Fog::Collection).to receive(:create) do |_, attributes|
+                expect(attributes).to have_key(:content_md5)
+                expect(attributes[:content_md5]).to be_a(String)
+                expect(attributes[:content_md5]).to be_present
+              end
+
+              subject.create # rubocop:disable Rails/SaveBang
+            end
+          end
+
+          context 'with FIPS mode enabled' do
+            before do
+              allow(::Gitlab::FIPS).to receive(:enabled?).and_return(true)
+            end
+
+            it 'does not include MD5 checksum when FIPS is enabled' do
+              expect_any_instance_of(Fog::Collection).to receive(:create) do |_, attributes|
+                expect(attributes).not_to have_key(:content_md5)
+              end
+
+              subject.create # rubocop:disable Rails/SaveBang
+            end
+          end
+
+          context 'with large files and multipart uploads' do
+            let(:large_backup_file) { Tempfile.new('large_backup', backup_path) }
+            let(:large_backup_filename) { File.basename(large_backup_file.path) }
+
+            before do
+              # Create a large file that exceeds multipart threshold
+              # We'll mock the file size instead of creating a huge file
+              allow(File).to receive(:stat).with(large_backup_file.path).and_return(
+                instance_double(File::Stat, size: 10 * 1024 * 1024) # 10MB
+              )
+
+              allow_next_instance_of(described_class) do |manager|
+                allow(manager).to receive(:tar_file).and_return(large_backup_filename)
+                allow(manager.remote_storage).to receive(:tar_file).and_return(large_backup_filename)
+              end
+
+              stub_backup_setting(
+                upload: {
+                  connection: {
+                    provider: 'AWS',
+                    aws_access_key_id: 'id',
+                    aws_secret_access_key: 'secret'
+                  },
+                  remote_directory: 'directory',
+                  multipart_chunk_size: 5 * 1024 * 1024, # 5MB threshold
+                  encryption: nil,
+                  encryption_key: nil,
+                  storage_class: nil
+                }
+              )
+            end
+
+            after do
+              large_backup_file.unlink
+            end
+
+            it 'does not include MD5 checksum for files larger than multipart threshold' do
+              expect_any_instance_of(Fog::Collection).to receive(:create) do |_, attributes|
+                expect(attributes).not_to have_key(:content_md5)
+              end
+
+              subject.create # rubocop:disable Rails/SaveBang
+            end
+          end
         end
 
         context 'with Google provider' do

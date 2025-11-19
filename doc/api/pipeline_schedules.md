@@ -490,6 +490,53 @@ curl --request POST \
 }
 ```
 
+### Get a pipeline schedule variable
+
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/386005) in GitLab 18.7.
+
+{{< /history >}}
+
+Get a single variable of a pipeline schedule.
+
+```plaintext
+GET /projects/:id/pipeline_schedules/:pipeline_schedule_id/variables/:key
+```
+
+| Attribute              | Type              | Required | Description |
+| ---------------------- | ----------------- | -------- | ----------- |
+| `id`                   | integer or string | Yes      | ID or [URL-encoded path of the project](rest/_index.md#namespaced-paths). |
+| `key`                  | string            | Yes      | Key of a variable. |
+| `pipeline_schedule_id` | integer           | Yes      | ID of the pipeline schedule. |
+
+If successful, returns [`200 OK`](rest/troubleshooting.md#status-codes) and the following
+response attributes:
+
+| Attribute       | Type   | Description |
+| --------------- | ------ | ----------- |
+| `key`           | string | Key of the variable. |
+| `value`         | string | Value of the variable. |
+| `variable_type` | string | Type of the variable. Either `env_var` or `file`. |
+
+Example request:
+
+```shell
+curl --request GET \
+  --header "PRIVATE-TOKEN: <your_access_token>" \
+  --url "https://gitlab.example.com/api/v4/projects/29/pipeline_schedules/13/variables/NEW_VARIABLE"
+```
+
+Example response:
+
+```json
+{
+    "key": "NEW_VARIABLE",
+    "variable_type": "env_var",
+    "value": "new value"
+}
+```
+
 ### Edit a pipeline schedule variable
 
 Updates the variable of a pipeline schedule.

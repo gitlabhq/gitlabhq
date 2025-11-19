@@ -301,6 +301,26 @@ module API
           end
         end
 
+        desc 'Get a single pipeline schedule variable' do
+          success code: 200, model: Entities::Ci::Variable
+          failure [
+            { code: 401, message: 'Unauthorized' },
+            { code: 403, message: 'Forbidden' },
+            { code: 404, message: 'Not found' }
+          ]
+        end
+        params do
+          requires :pipeline_schedule_id, type: Integer, desc: 'The pipeline schedule id', documentation: { example: 13 }
+          requires :key, type: String, desc: 'The key of the variable', documentation: { example: 'NEW_VARIABLE' }
+        end
+
+        route_setting :authorization, permissions: :read_pipeline_schedule_variable, boundary_type: :project
+        get ':id/pipeline_schedules/:pipeline_schedule_id/variables/:key' do
+          authorize! :read_pipeline_schedule_variables, pipeline_schedule
+
+          present pipeline_schedule_variable, with: Entities::Ci::Variable
+        end
+
         desc 'Edit a pipeline schedule variable' do
           success code: 200, model: Entities::Ci::Variable
           failure [
