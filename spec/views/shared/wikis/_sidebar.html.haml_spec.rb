@@ -30,6 +30,10 @@ RSpec.describe 'shared/wikis/_sidebar.html.haml', feature_category: :wiki do
   end
 
   describe 'link to edit the sidebar' do
+    before do
+      stub_feature_flags(wiki_vue_sidebar: false)
+    end
+
     context 'when the user has edit permission and there are wiki pages' do
       before do
         create(:wiki_page, wiki: wiki, title: 'home', content: 'Home page')

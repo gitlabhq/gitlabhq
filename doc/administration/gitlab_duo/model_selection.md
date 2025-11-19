@@ -9,7 +9,7 @@ title: Model selection
 {{< details >}}
 
 - Tier: Premium, Ultimate
-- Add-on: GitLab Duo Enterprise
+- Add-on: GitLab Duo Core, Pro, or Enterprise
 - Offering: GitLab Self-Managed, GitLab Dedicated
 
 {{< /details >}}
@@ -29,6 +29,7 @@ If you select a specific LLM for a feature, the feature uses that LLM until you 
 - [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/19144) in GitLab 18.4 with a [flag](../../administration/feature_flags/_index.md) named `instance_level_model_selection`. Enabled by default.
 - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/208017) to GitLab Dedicated in GitLab 18.5.
 - Feature flag `instance_level_model_selection` [removed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/209698) in GitLab 18.6.
+- [Changed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/210969) to include GitLab Duo Core and Pro in GitLab 18.6.
 
 {{< /history >}}
 

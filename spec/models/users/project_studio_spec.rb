@@ -37,7 +37,6 @@ RSpec.describe Users::ProjectStudio, feature_category: :user_profile do
         before do
           stub_feature_flags(paneled_view: false)
           stub_env('GLCI_OVERRIDE_PROJECT_STUDIO_ENABLED', 'false')
-          user.user_preference.update!(project_studio_enabled: true)
         end
 
         it 'returns `false`' do
@@ -50,48 +49,32 @@ RSpec.describe Users::ProjectStudio, feature_category: :user_profile do
           stub_feature_flags(paneled_view: true)
         end
 
-        context 'when `project_studio_enabled` is `true`' do
+        context "when the user hasn't updated their setting yet" do
           before do
-            user.user_preference.update!(project_studio_enabled: true)
+            user.user_preference.update!(new_ui_enabled: nil)
           end
 
-          it 'returns `true`' do
+          it 'returns true' do
             expect(project_studio.enabled?).to be true
           end
         end
 
-        context 'when `project_studio_enabled` is `false`' do
+        context 'when the user has already updated their setting' do
           before do
-            user.user_preference.update!(project_studio_enabled: false)
+            user.user_preference.update!(new_ui_enabled: new_ui_enabled)
           end
 
-          context "when the user hasn't updated their setting yet" do
-            before do
-              user.user_preference.update!(new_ui_enabled: nil)
-            end
-
-            it 'returns true' do
-              expect(project_studio.enabled?).to be true
-            end
+          where(
+            :new_ui_enabled,
+            :expected_result
+          ) do
+            true  | true
+            false | false
           end
 
-          context 'when the user has already updated their setting' do
-            before do
-              user.user_preference.update!(new_ui_enabled: new_ui_enabled)
-            end
-
-            where(
-              :new_ui_enabled,
-              :expected_result
-            ) do
-              true  | true
-              false | false
-            end
-
-            with_them do
-              it 'returns expected result' do
-                expect(project_studio.enabled?).to be expected_result
-              end
+          with_them do
+            it 'returns expected result' do
+              expect(project_studio.enabled?).to be expected_result
             end
           end
         end
@@ -113,18 +96,18 @@ RSpec.describe Users::ProjectStudio, feature_category: :user_profile do
     context 'when user is present' do
       where(
         :paneled_view_flag,
-        :project_studio_enabled,
+        :new_ui_enabled,
         :expected_result
       ) do
         false | false | true
-        true | false | true
-        false | true | true
-        true | true | true
+        true  | false | true
+        false | true  | true
+        true  | true  | true
       end
 
       with_them do
         before do
-          user.user_preference.update!(new_ui_enabled: project_studio_enabled)
+          user.user_preference.update!(new_ui_enabled: new_ui_enabled)
           stub_feature_flags(paneled_view: paneled_view_flag)
         end
 

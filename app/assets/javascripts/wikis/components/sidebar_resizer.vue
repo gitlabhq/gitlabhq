@@ -19,32 +19,37 @@ export default {
   mounted() {
     window.addEventListener('resize', this.updateWidths);
     this.updateWidths();
-    this.$options.sidebar.classList.remove('gl-hidden');
+    this.getSidebar().classList.remove('gl-hidden');
   },
   beforeDestroy() {
     window.removeEventListener('resize', this.updateWidths);
   },
   methods: {
+    getSidebar() {
+      return document.querySelector('.sidebar-container');
+    },
+    updateSidebarWidth(width) {
+      const el = this.getSidebar();
+      el.style.width = width;
+    },
+    updateSidebarTransition(transition) {
+      const el = this.getSidebar();
+      el.style.transition = transition;
+    },
     removeTransitions() {
-      const { sidebar } = this.$options;
-
       this.prevTransitions = {
-        sidebar: sidebar.style.transition,
+        sidebar: this.getSidebar().style.transition,
       };
 
-      sidebar.style.transition = '0s';
+      this.updateSidebarTransition('0s');
     },
     restoreTransitions() {
-      const { sidebar } = this.$options;
-
-      sidebar.style.transition = this.prevTransitions.sidebar;
+      this.updateSidebarTransition(this.prevTransitions.sidebar);
     },
     updateWidths(width) {
       if (typeof width === 'number') this.sidebarWidth = width;
 
-      const { sidebar } = this.$options;
-
-      sidebar.style.width = `${this.sidebarWidth}px`;
+      this.updateSidebarWidth(`${this.sidebarWidth}px`);
 
       this.resizeEnabled = true;
     },
@@ -53,7 +58,6 @@ export default {
       this.updateWidths();
     },
   },
-  sidebar: document.querySelector('.sidebar-container'),
 };
 </script>
 <template>

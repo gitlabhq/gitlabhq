@@ -271,3 +271,17 @@ export const PIPELINE_EVENT_TYPE_MAP = {
     ),
   },
 };
+
+/**
+ * Mapping from GraphQL security scan field names to report type enums
+ */
+export const SECURITY_SCAN_TO_REPORT_TYPE = {
+  sast: 'SAST',
+  dast: 'DAST',
+  secretDetection: 'SECRET_DETECTION',
+  apiFuzzing: 'API_FUZZING',
+  coverageFuzzing: 'COVERAGE_FUZZING',
+  dependencyScanning: 'DEPENDENCY_SCANNING',
+  containerScanning: 'CONTAINER_SCANNING',
+  clusterImageScanning: 'CLUSTER_IMAGE_SCANNING',
+};

@@ -57,7 +57,6 @@
 {"name":"benchmark-memory","version":"0.2.0","platform":"ruby","checksum":"ca1e436433b09535ee8f64f80600a5edb407cff1f6ac70e089ca238118e6ab5c"},
 {"name":"benchmark-perf","version":"0.6.0","platform":"ruby","checksum":"fe2b01959f3de0f9dd34820d54ef881eb4f3589fccb7d17b63068ac92d7f9621"},
 {"name":"benchmark-trend","version":"0.4.0","platform":"ruby","checksum":"de5a02a9f443babefbbd97784759820decee8554a0c273d859c02a0990845d81"},
-{"name":"better_errors","version":"2.10.1","platform":"ruby","checksum":"f798f1bac93f3e775925b7fcb24cffbcf0bb62ee2210f5350f161a6b75fc0a73"},
 {"name":"bigdecimal","version":"3.2.3","platform":"java","checksum":"7293e87efd050feac875bff1c62335dd5e8ce65d86ad22d7a4a3b5ed4f0ab48d"},
 {"name":"bigdecimal","version":"3.2.3","platform":"ruby","checksum":"ffd11d1ac67a0d3b2f44aec0a6487210b3f813f363dd11f1fcccf5ba00da4e1b"},
 {"name":"bindata","version":"2.4.11","platform":"ruby","checksum":"c38e0c99ffcd80c10a0a7ae6c8586d2fe26bf245cbefac90bec8764523220f6a"},

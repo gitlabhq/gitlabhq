@@ -487,9 +487,6 @@ group :development do
   gem 'letter_opener_web', '~> 3.0.0', feature_category: :shared
   gem 'lookbook', '~> 2.3', feature_category: :shared
 
-  # Better errors handler
-  gem 'better_errors', '~> 2.10.1', feature_category: :shared
-
   gem 'sprite-factory', '~> 1.7', feature_category: :shared
 
   gem 'listen', '~> 3.7', feature_category: :shared

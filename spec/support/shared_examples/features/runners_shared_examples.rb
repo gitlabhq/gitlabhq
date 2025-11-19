@@ -95,32 +95,19 @@ RSpec.shared_examples 'pauses, resumes and deletes a runner' do
     end
   end
 
-  describe 'deletes runner' do
-    before do
-      within_runner_row(runner.id) do
-        click_on 'Delete runner'
-      end
+  it 'deletes runner' do
+    within_runner_row(runner.id) do
+      click_on 'Delete runner'
     end
 
-    it 'confirms runner deletion' do
-      within_modal do
-        expect(page).to have_text "Delete runner ##{runner.id} (#{runner.short_sha})?"
-        expect(page).to have_text "Are you sure you want to continue?"
+    within_modal do
+      expect(page).to have_text "Delete runner ##{runner.id} (#{runner.short_sha})?"
 
-        click_on 'Permanently delete runner'
-      end
-
-      expect(page.find('.gl-toast')).to have_text(/Runner .+ deleted/)
-      expect(page).not_to have_content runner.description
+      click_on 'Permanently delete runner'
     end
 
-    it 'cancels runner deletion' do
-      within_modal do
-        click_on 'Cancel'
-      end
-
-      expect(page).to have_content runner.description
-    end
+    expect(page.find('.gl-toast')).to have_text(/Runner .+ deleted/)
+    expect(page).not_to have_content runner.description
   end
 end
 

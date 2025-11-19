@@ -76,6 +76,9 @@ export default {
       skip() {
         return !this.sort;
       },
+      error(error) {
+        Sentry.captureException(error);
+      },
     },
     groupSettings: {
       query: getGroupPackageSettings,

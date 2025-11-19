@@ -18,8 +18,6 @@ module Users
 
       return true if user.nil?
 
-      return true if user.project_studio_enabled # allow us to control those already in vs everyone else below
-
       return true if user.new_ui_enabled.nil?
 
       user.new_ui_enabled

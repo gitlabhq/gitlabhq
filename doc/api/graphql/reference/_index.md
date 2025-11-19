@@ -14080,7 +14080,6 @@ Input type: `UserPreferencesUpdateInput`
 | <a id="mutationuserpreferencesupdatenewuienabled"></a>`newUiEnabled` {{< icon name="warning-solid" >}} | [`Boolean`](#boolean) | **Deprecated**: **Status**: Experiment. Introduced in GitLab 18.6. |
 | <a id="mutationuserpreferencesupdateorganizationgroupsprojectsdisplay"></a>`organizationGroupsProjectsDisplay` {{< icon name="warning-solid" >}} | [`OrganizationGroupProjectDisplay`](#organizationgroupprojectdisplay) | **Deprecated**: **Status**: Experiment. Introduced in GitLab 17.2. |
 | <a id="mutationuserpreferencesupdateorganizationgroupsprojectssort"></a>`organizationGroupsProjectsSort` {{< icon name="warning-solid" >}} | [`OrganizationGroupProjectSort`](#organizationgroupprojectsort) | **Deprecated**: **Status**: Experiment. Introduced in GitLab 17.2. |
-| <a id="mutationuserpreferencesupdateprojectstudioenabled"></a>`projectStudioEnabled` {{< icon name="warning-solid" >}} | [`Boolean`](#boolean) | **Deprecated**: **Status**: Experiment. Introduced in GitLab 18.4. |
 | <a id="mutationuserpreferencesupdateprojectssort"></a>`projectsSort` | [`ProjectSort`](#projectsort) | Sort order for projects. |
 | <a id="mutationuserpreferencesupdateuseworkitemsview"></a>`useWorkItemsView` | [`Boolean`](#boolean) | Use work item view instead of legacy issue view. |
 | <a id="mutationuserpreferencesupdatevisibilitypipelineidtype"></a>`visibilityPipelineIdType` | [`VisibilityPipelineIdType`](#visibilitypipelineidtype) | Determines whether the pipeline list shows ID or IID. |
@@ -44411,8 +44410,8 @@ Returns [`VulnerabilitiesPerSeverity`](#vulnerabilitiesperseverity).
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
-| <a id="securitymetricsvulnerabilitiesperseverityenddate"></a>`endDate` {{< icon name="warning-solid" >}} | [`ISO8601Date`](#iso8601date) | **Introduced** in GitLab 18.3. **Status**: Experiment. End date for the vulnerability metrics time range. Defaults to current date if not provided. |
-| <a id="securitymetricsvulnerabilitiesperseveritystartdate"></a>`startDate` {{< icon name="warning-solid" >}} | [`ISO8601Date`](#iso8601date) | **Introduced** in GitLab 18.3. **Status**: Experiment. Start date for the vulnerability metrics time range. Defaults to 365 days ago if not provided. |
+| <a id="securitymetricsvulnerabilitiesperseverityenddate"></a>`endDate` {{< icon name="warning-solid" >}} | [`ISO8601Date`](#iso8601date) | **Introduced** in GitLab 18.3. **Status**: Experiment. End date for the vulnerability metrics time range. Optional. |
+| <a id="securitymetricsvulnerabilitiesperseveritystartdate"></a>`startDate` {{< icon name="warning-solid" >}} | [`ISO8601Date`](#iso8601date) | **Introduced** in GitLab 18.3. **Status**: Experiment. Start date for the vulnerability metrics time range. Optional. |
 
 ### `SecurityPolicyType`
 
@@ -46157,7 +46156,6 @@ Returns [`String`](#string).
 | <a id="userpreferencesnewuienabled"></a>`newUiEnabled` {{< icon name="warning-solid" >}} | [`Boolean`](#boolean) | **Introduced** in GitLab 18.6. **Status**: Experiment. Whether the new UI is enabled for the user. |
 | <a id="userpreferencesorganizationgroupsprojectsdisplay"></a>`organizationGroupsProjectsDisplay` {{< icon name="warning-solid" >}} | [`OrganizationGroupProjectDisplay!`](#organizationgroupprojectdisplay) | **Introduced** in GitLab 17.2. **Status**: Experiment. Default list view for organization groups and projects. |
 | <a id="userpreferencesorganizationgroupsprojectssort"></a>`organizationGroupsProjectsSort` {{< icon name="warning-solid" >}} | [`OrganizationGroupProjectSort`](#organizationgroupprojectsort) | **Introduced** in GitLab 17.2. **Status**: Experiment. Sort order for organization groups and projects. |
-| <a id="userpreferencesprojectstudioenabled"></a>`projectStudioEnabled` {{< icon name="warning-solid" >}} | [`Boolean!`](#boolean) | **Introduced** in GitLab 18.4. **Status**: Experiment. Whether Project Studio is enabled for the user. |
 | <a id="userpreferencesprojectssort"></a>`projectsSort` | [`ProjectSort`](#projectsort) | Sort order for projects. |
 | <a id="userpreferencestimezone"></a>`timezone` {{< icon name="warning-solid" >}} | [`String`](#string) | **Introduced** in GitLab 17.7. **Status**: Experiment. Timezone of the user. |
 | <a id="userpreferencesuseworkitemsview"></a>`useWorkItemsView` | [`Boolean`](#boolean) | Use work item view instead of legacy issue view. |

@@ -779,11 +779,11 @@ To create a guide, follow this example:
 ```markdown
 {{</* guide */>}}
 
-1. Guide item with text
+1. Guide item with text.
 
    An item with text only.
 
-1. Guide item with alert
+1. Guide item with alert.
 
    This is an item with an alert.
 
@@ -800,11 +800,11 @@ This code renders on the GitLab documentation site as:
 
 {{< guide >}}
 
-1. Guide item with text
+1. Guide item with text.
 
    An item with text only.
 
-1. Guide item with alert
+1. Guide item with alert.
 
    An item with an alert.
 

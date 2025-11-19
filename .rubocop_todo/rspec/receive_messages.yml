@@ -517,7 +517,6 @@ RSpec/ReceiveMessages:
     - 'spec/views/projects/merge_requests/creations/_new_submit.html.haml_spec.rb'
     - 'spec/views/projects/merge_requests/edit.html.haml_spec.rb'
     - 'spec/views/projects/project_members/index.html.haml_spec.rb'
-    - 'spec/views/projects/runners/_project_runners.html.haml_spec.rb'
     - 'spec/views/projects/settings/operations/show.html.haml_spec.rb'
     - 'spec/views/projects/settings/repository/_protected_branches.html.haml_spec.rb'
     - 'spec/views/projects/tags/index.html.haml_spec.rb'

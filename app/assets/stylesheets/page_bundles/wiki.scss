@@ -276,6 +276,11 @@ ul.wiki-pages-list.content-list {
   }
 }
 
+/** Remove the below when the vue-wiki-sidebar FF is removed */
+.blocks-container:has(.wiki-list.collapsed) {
+  flex-grow: 0;
+}
+
 .drawio-editor {
   position: fixed;
   top: 0;

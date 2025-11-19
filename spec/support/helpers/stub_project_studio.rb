@@ -5,7 +5,7 @@ module StubProjectStudio
   def enable_project_studio!(user)
     stub_feature_flags(paneled_view: user)
 
-    user.project_studio_enabled = true
+    user.new_ui_enabled = true
   end
 
   def dismiss_welcome_banner_if_present(page)

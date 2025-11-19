@@ -288,8 +288,11 @@ The `ci.skip` push option does not skip merge request pipelines.
 
 {{< alert type="note" >}}
 
-Pipeline execution policies can restrict or disable the `[skip ci]` directive.
-For more information, see [`skip_ci` type](../../user/application_security/policies/pipeline_execution_policies.md#skip_ci-type).
+Pipeline execution policies and scan execution policies can restrict or disable the `[skip ci]` directive.
+For more information, see:
+
+- The [`skip_ci` type](../../user/application_security/policies/pipeline_execution_policies.md#skip_ci-type) in pipeline execution policies.
+- The [`skip_ci` type](../../user/application_security/policies/scan_execution_policies.md#skip_ci-type) in scan execution policies.
 
 {{< /alert >}}
 
