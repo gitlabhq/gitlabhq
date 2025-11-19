@@ -52,7 +52,7 @@ module Gitlab
         when BranchesFinder
           Feature.enabled?(:branch_list_keyset_pagination, project)
         when TagsFinder
-          true
+          params[:search].blank? # Gitaly pagination does not support tags search
         when ::Repositories::TreeFinder
           true
         end
