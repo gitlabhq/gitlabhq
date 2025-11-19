@@ -8,7 +8,7 @@ title: AI Usage Tracking
 GitLab stores AI usage data to provide usage analytics for our customers. AI usage tracking have been generalized to
 make it easy for developers to add new usage events and metrics.
 
-### Usage event record structure
+## Usage event record structure
 
 Usage records have mandatory and optional fields as described below:
 
@@ -23,7 +23,7 @@ Usage records have mandatory and optional fields as described below:
 Events are stored in the `ai_usage_events` table in Postgres and in the `ai_usage_events` table in ClickHouse, if it is available and
 enabled for analytics.
 
-### Adding new event for tracking
+## Adding new event for tracking
 
 {{< alert type="note" >}}
 
@@ -66,7 +66,7 @@ After you have defined the event, you must register it for AI tracking:
 
 1. Invoke `InternalEvents.track_event` with your new event in appropriate codebase places to trigger the event.
 
-### Removing an event from AI usage tracking
+## Removing an event from AI usage tracking
 
 {{< alert type="note" >}}
 
@@ -82,7 +82,7 @@ To remove your event from the AI usage tracking system:
 
 You can completely remove definition in `AiTracking` only if you are sure no data with such ID exists anymore in databases or buffers.
 
-### GraphQL exposure
+## GraphQL exposure
 
 All events declared for AI tracking can be automatically exposed
 in the [`AiUsageData.all`](../../api/graphql/reference/_index.md#aiusagedata) GraphQL field.
@@ -96,7 +96,7 @@ editing or removing events.
 If you want to completely remove an event type from GraphQL, you should follow the
 [GraphQL field deprecation process](../../api/graphql/_index.md#deprecation-and-removal-process).
 
-### External calls exposure
+## External calls exposure
 
 All events declared for AI tracking are automatically exposed for external event tracking. That can be useful
 when tracking for events outside of Rails app. For example in IDE extension. External events can be tracked by calling

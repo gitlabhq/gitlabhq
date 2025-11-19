@@ -41,7 +41,7 @@ Each version of your site gets its own URL based on a path prefix that you speci
 Control how long these parallel deployments exist.
 They expire after 24 hours by default, but you can customize this duration to fit your review timeline.
 
-### Create a parallel deployment
+## Create a parallel deployment
 
 Prerequisites:
 
@@ -102,7 +102,7 @@ For example, if your main deployment has content at `/index.html`, a parallel de
 To prevent path clashes, avoid using path prefixes that match the names of existing folders in your site.
 For more information, see [Path clash](#path-clash).
 
-### Example configuration
+## Example configuration
 
 Consider a project such as `https://gitlab.example.com/namespace/project`. By default, its main Pages deployment can be accessed through:
 
@@ -116,7 +116,7 @@ branch named `username/testing_feature`, this parallel Pages deployment would be
 - When using a [unique domain](_index.md#unique-domains): `https://project-123456.gitlab.io/username-testing-feature`.
 - When not using a unique domain: `https://namespace.gitlab.io/project/username-testing-feature`.
 
-### Limits
+## Limits
 
 The number of parallel deployments is limited by the root-level namespace. For
 specific limits for:
@@ -133,7 +133,7 @@ To configure an expiry time to automatically
 delete older deployments, see
 [Expiring deployments](_index.md#expiring-deployments).
 
-### Expiration
+## Expiration
 
 By default, parallel deployments [expire](_index.md#expiring-deployments) after 24 hours,
 after which they are deleted. If you're using a self-hosted instance, your instance admin can
@@ -144,7 +144,7 @@ To customize the expiry time, [configure `pages.expire_in`](_index.md#expiring-d
 To prevent deployments from automatically expiring, set `pages.expire_in` to
 `never`.
 
-### Path clash
+## Path clash
 
 `pages.path_prefix` can take dynamic values from [CI/CD variables](../../../ci/variables/_index.md)
 that can create pages deployments which could clash with existing paths in your site.
@@ -191,7 +191,7 @@ Some other examples of mixing [variables](../../../ci/variables/_index.md) with 
 
 The previous YAML example uses [user-defined job names](_index.md#user-defined-job-names).
 
-### Use parallel deployments to create Pages environments
+## Use parallel deployments to create Pages environments
 
 You can use parallel GitLab Pages deployments to create a new [environment](../../../ci/environments/_index.md).
 For example:
@@ -226,12 +226,12 @@ You can also [group similar environments](../../../ci/environments/_index.md#gro
 
 The previous YAML example uses [user-defined job names](_index.md#user-defined-job-names).
 
-#### Auto-clean
+### Auto-clean
 
 Parallel Pages deployments, created by a merge request with a `path_prefix`, are automatically deleted when the
 merge request is closed or merged.
 
-### Usage with redirects
+## Usage with redirects
 
 Redirects use absolute paths.
 Because parallel deployments are available on a sub-path, redirects require

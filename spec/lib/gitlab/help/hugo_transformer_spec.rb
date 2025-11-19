@@ -527,7 +527,6 @@ RSpec.describe Gitlab::Help::HugoTransformer, feature_category: :gitlab_docs do
         | {{< yes >}} | {{< no >}} |
 
       MARKDOWN
-
       expected_content = <<~MARKDOWN
         # Documentation
 
@@ -536,7 +535,102 @@ RSpec.describe Gitlab::Help::HugoTransformer, feature_category: :gitlab_docs do
         | feature 1 | feature 2 |
         | --------- | --------- |
         | yes | no |
+      MARKDOWN
 
+      expect(transformer.transform(content).strip).to eq(expected_content.strip)
+    end
+
+    it 'handles markdown attributes by removing them from the content' do
+      content = <<~MARKDOWN
+        # Documentation
+        Here is a table:
+        | Header 1 | Header 2 |
+        |----------|----------|
+        | Cell 1   | Cell 2   |
+        {.expandable}
+      MARKDOWN
+      expected_content = <<~MARKDOWN
+        # Documentation
+        Here is a table:
+        | Header 1 | Header 2 |
+        |----------|----------|
+        | Cell 1   | Cell 2   |
+      MARKDOWN
+
+      expect(transformer.transform(content).strip).to eq(expected_content.strip)
+    end
+
+    it 'handles markdown attributes in long format by removing them from the content' do
+      content = <<~MARKDOWN
+        # Documentation
+        Here is a table:
+        | Header 1 | Header 2 |
+        |----------|----------|
+        | Cell 1   | Cell 2   |
+        {class="expandable"}
+      MARKDOWN
+      expected_content = <<~MARKDOWN
+        # Documentation
+        Here is a table:
+        | Header 1 | Header 2 |
+        |----------|----------|
+        | Cell 1   | Cell 2   |
+      MARKDOWN
+
+      expect(transformer.transform(content).strip).to eq(expected_content.strip)
+    end
+
+    it 'handles multiple markdown attributes by removing them from the content' do
+      content = <<~MARKDOWN
+        # Documentation
+        Here is a table:
+        | Header 1 | Header 2 |
+        |----------|----------|
+        | Cell 1   | Cell 2   |
+        {.something-dashed .word .another}
+      MARKDOWN
+      expected_content = <<~MARKDOWN
+        # Documentation
+        Here is a table:
+        | Header 1 | Header 2 |
+        |----------|----------|
+        | Cell 1   | Cell 2   |
+      MARKDOWN
+
+      expect(transformer.transform(content).strip).to eq(expected_content.strip)
+    end
+
+    it 'handles multiple markdown attributes in long format by removing them from the content' do
+      content = <<~MARKDOWN
+        # Documentation
+        Here is a table:
+        | Header 1 | Header 2 |
+        |----------|----------|
+        | Cell 1   | Cell 2   |
+        {class="expandable condensed"}
+      MARKDOWN
+      expected_content = <<~MARKDOWN
+        # Documentation
+        Here is a table:
+        | Header 1 | Header 2 |
+        |----------|----------|
+        | Cell 1   | Cell 2   |
+      MARKDOWN
+
+      expect(transformer.transform(content).strip).to eq(expected_content.strip)
+    end
+
+    it 'does not transform content in code blocks' do
+      content = <<~MARKDOWN
+        ```shell
+        {range .env[*]}{.name}{","}{end}{"\n"}{end}
+        ```
+      MARKDOWN
+
+      expected_content = <<~MARKDOWN
+        ```shell
+        {range .env[*]}{.name}{","}{end}{"\n"}{end}
+        ```
       MARKDOWN
 
       expect(transformer.transform(content).strip).to eq(expected_content.strip)

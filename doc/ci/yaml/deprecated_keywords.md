@@ -14,7 +14,7 @@ but could be scheduled for removal in a future major milestone.
 
 {{< /alert >}}
 
-### Globally-defined `image`, `services`, `cache`, `before_script`, `after_script`
+## Globally-defined `image`, `services`, `cache`, `before_script`, `after_script`
 
 Defining `image`, `services`, `cache`, `before_script`, and `after_script` globally is deprecated.
 Use [`default`](_index.md#default) instead.
@@ -35,7 +35,7 @@ default:
     - rm -rf tmp/
 ```
 
-### `only` / `except`
+## `only` / `except`
 
 {{< alert type="note" >}}
 
@@ -48,7 +48,7 @@ You can use `only` and `except` to control when to add jobs to pipelines.
 - Use `only` to define when a job runs.
 - Use `except` to define when a job **does not** run.
 
-#### `only:refs` / `except:refs`
+### `only:refs` / `except:refs`
 
 {{< alert type="note" >}}
 
@@ -139,7 +139,7 @@ job2:
       - tags
   ```
 
-#### `only:variables` / `except:variables`
+### `only:variables` / `except:variables`
 
 {{< alert type="note" >}}
 
@@ -168,7 +168,7 @@ deploy:
       - $STAGING
 ```
 
-#### `only:changes` / `except:changes`
+### `only:changes` / `except:changes`
 
 {{< alert type="note" >}}
 
@@ -230,7 +230,7 @@ docker build:
 
 - [Jobs or pipelines can run unexpectedly when using `only: changes`](../jobs/job_troubleshooting.md#jobs-or-pipelines-run-unexpectedly-when-using-changes).
 
-#### `only:kubernetes` / `except:kubernetes`
+### `only:kubernetes` / `except:kubernetes`
 
 {{< alert type="note" >}}
 
@@ -260,14 +260,14 @@ deploy:
 In this example, the `deploy` job runs only when the Kubernetes service is active
 in the project.
 
-### `publish` keyword and `pages` job name for GitLab Pages
+## `publish` keyword and `pages` job name for GitLab Pages
 
 The job-level `publish` keyword and the `pages` job name for GitLab Pages deployment jobs are deprecated.
 
 To control the pages deployment, use the [`pages`](_index.md#pages) and [`pages.publish`](_index.md#pagespublish)
 keywords instead.
 
-### `environment:kubernetes:namespace` and `environment:kubernetes:flux_resource_path`
+## `environment:kubernetes:namespace` and `environment:kubernetes:flux_resource_path`
 
 {{< alert type="note" >}}
 

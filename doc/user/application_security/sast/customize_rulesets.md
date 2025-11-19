@@ -22,7 +22,7 @@ title: Customize rulesets
 You can customize the behavior of our SAST analyzers by [defining a ruleset configuration file](#create-the-configuration-file) in the
 repository being scanned.
 
-### Customization options by analyzer
+## Customization options by analyzer
 
 | Customization                                                                   | GitLab Advanced SAST                                                                                                                                             | GitLab Semgrep                              | [Other Analyzers](analyzers.md#official-analyzers) |
 |---------------------------------------------------------------------------------|------------------------------------------------------------------------------------------------------------------------------------------------------------------|---------------------------------------------|----------------------------------------------------|

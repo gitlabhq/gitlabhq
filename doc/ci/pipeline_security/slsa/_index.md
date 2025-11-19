@@ -11,13 +11,13 @@ Related topics:
 
 - [Provenance version 1 buildType specification](provenance_v1.md)
 
-### SLSA provenance generation
+## SLSA provenance generation
 
 GitLab offers a SLSA Level 1 compliant provenance statement that can be
 [automatically generated for all build artifacts produced by the GitLab Runner](../../runners/configure_runners.md#artifact-provenance-metadata).
 This provenance statement is produced by the runner itself.
 
-#### Sign and verify SLSA provenance with a CI/CD Component
+### Sign and verify SLSA provenance with a CI/CD Component
 
 The [GitLab SLSA CI/CD component](https://gitlab.com/explore/catalog/components/slsa)
 provides configurations for:

@@ -27,7 +27,7 @@ Use contribution analytics to get insights into team activity and individual per
 - Training opportunities: Identify areas where team members may benefit from mentorship or training, such as low merge request approval or issue resolution rates.
 - Retrospective evaluation: Incorporate contribution analytics into retrospectives to assess how effectively the team met objectives and where adjustments may be needed.
 
-### Tracking
+## Tracking
 
 Contribution analytics are based on push events, because they provide a more reliable view of contributions than unique commits.
 Counting unique commits may lead to duplication when commits are pushed across multiple branches.

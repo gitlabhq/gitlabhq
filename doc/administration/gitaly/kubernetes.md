@@ -26,7 +26,7 @@ title: Gitaly on Kubernetes
 Running Gitaly on Kubernetes has availability trade-offs, so consider these trade-offs when planing a production environment and set expectations accordingly.
 This document describes and provides guidance on how to minimize, and plan for existing limitations.
 
-### Timeline
+## Timeline
 
 Gitaly on Kubernetes has been evaluated by the Gitaly team and determined to be a safe
 way to deploy Gitaly. The rest of this document details best practices for doing
