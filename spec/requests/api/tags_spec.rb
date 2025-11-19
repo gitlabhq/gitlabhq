@@ -86,6 +86,22 @@ RSpec.describe API::Tags, feature_category: :source_code_management do
         expect(json_response.size).to eq(1)
         expect(json_response[0]['name']).to eq('v1.1.0')
       end
+
+      context 'with page parameters' do
+        it 'returns a paginated first page' do
+          get api(route.to_s, user), params: { search: '^v', page: 1, per_page: 2 }
+
+          expect(response).to have_gitlab_http_status(:ok)
+          expect(json_response.size).to eq(2)
+        end
+
+        it 'returns a paginated first page when page is nil' do
+          get api(route.to_s, user), params: { search: '^v', per_page: 2 }
+
+          expect(response).to have_gitlab_http_status(:ok)
+          expect(json_response.size).to eq(2)
+        end
+      end
     end
 
     shared_examples_for 'repository tags' do
