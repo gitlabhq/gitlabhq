@@ -61,6 +61,7 @@ They require a Premium or Ultimate subscription and one of the available add-ons
 | [Merge Request Summary](../project/merge_requests/duo_in_merge_requests.md#generate-a-description-by-summarizing-code-changes) | {{< icon name="dash-circle" >}} No | {{< icon name="dash-circle" >}} No | {{< icon name="check-circle-filled" >}} Yes | {{< icon name="dash-circle" >}} No | Beta | Beta | {{< icon name="dash-circle" >}} No | Beta |
 | [Code Review Summary](../project/merge_requests/duo_in_merge_requests.md#summarize-a-code-review) | {{< icon name="dash-circle" >}} No | {{< icon name="dash-circle" >}} No | {{< icon name="check-circle-filled" >}} Yes | {{< icon name="dash-circle" >}} No | Experiment | Experiment | Experiment | Experiment |
 | [Issue Description Generation](../project/issues/managing_issues.md#populate-an-issue-with-issue-description-generation) | {{< icon name="dash-circle" >}} No | {{< icon name="dash-circle" >}} No | {{< icon name="check-circle-filled" >}} Yes | {{< icon name="dash-circle" >}} No | Experiment | {{< icon name="dash-circle" >}} No | {{< icon name="dash-circle" >}} No | Not applicable |
+| [MCP Server](model_context_protocol/mcp_server.md) | {{< icon name="check-circle-filled" >}} Yes | {{< icon name="check-circle-filled" >}} Yes | {{< icon name="check-circle-filled" >}} Yes | {{< icon name="dash-circle" >}} No | Beta | Beta | Beta | Beta |
 
 **Footnotes**:
 

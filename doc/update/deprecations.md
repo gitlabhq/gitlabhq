@@ -7339,6 +7339,7 @@ The following changes have been removed from their original milestone and are be
 - To discuss this change or learn more, see the [deprecation issue](https://gitlab.com/gitlab-org/gitlab/-/issues/501308).
 
 </div>
+
 {{< alert type="note" >}}
 
 This change has been removed from its original milestone and is being reassessed.
@@ -7365,6 +7366,7 @@ A replacement feature will be developed with [Dependency Scanning on vendored li
 - To discuss this change or learn more, see the [deprecation issue](https://gitlab.com/gitlab-org/gitlab/-/issues/501308).
 
 </div>
+
 {{< alert type="note" >}}
 
 This change has been removed from its original milestone and is being reassessed.
@@ -7416,6 +7418,7 @@ See the corresponding [deprecation announcement](https://docs.gitlab.com/update/
 - To discuss this change or learn more, see the [deprecation issue](https://gitlab.com/gitlab-org/gitlab/-/issues/387937).
 
 </div>
+
 {{< alert type="note" >}}
 
 This change has been removed from its original milestone and is being reassessed.
@@ -7438,6 +7441,7 @@ are deprecated and will be removed from the GraphQL API. For installation instru
 - To discuss this change or learn more, see the [deprecation issue](https://gitlab.com/groups/gitlab-org/configure/-/epics/8).
 
 </div>
+
 {{< alert type="note" >}}
 
 This change has been removed from its original milestone and is being reassessed.
@@ -7469,6 +7473,7 @@ For updates and details about this deprecation, see [epic 8](https://gitlab.com/
 - To discuss this change or learn more, see the [deprecation issue](https://gitlab.com/groups/gitlab-org/configure/-/epics/8).
 
 </div>
+
 {{< alert type="note" >}}
 
 This change has been removed from its original milestone and is being reassessed.
@@ -7496,6 +7501,7 @@ GitLab Self-Managed customers can still use the feature [with a feature flag](ht
 - To discuss this change or learn more, see the [deprecation issue](https://gitlab.com/gitlab-org/gitlab/-/issues/414236).
 
 </div>
+
 {{< alert type="note" >}}
 
 This change has been removed from its original milestone and is being reassessed.
@@ -7518,6 +7524,7 @@ Use `dependencyProxyTotalSizeBytes` instead, introduced in GitLab 16.1.
 - To discuss this change or learn more, see the [deprecation issue](https://gitlab.com/gitlab-org/gitlab/-/issues/458835).
 
 </div>
+
 {{< alert type="note" >}}
 
 This change has been removed from its original milestone and is being reassessed.
@@ -7540,6 +7547,7 @@ Along with this change we are also deprecating and removing the 2017 GraphQL API
 - To discuss this change or learn more, see the [deprecation issue](https://gitlab.com/gitlab-org/gitlab/-/issues/502382).
 
 </div>
+
 {{< alert type="note" >}}
 
 This change has been removed from its original milestone and is being reassessed.
@@ -7564,6 +7572,7 @@ Starting in 17.7, `no one allowed` is the default for all new projects in new na
 - To discuss this change or learn more, see the [deprecation issue](https://gitlab.com/components/opentofu/-/issues/43#note_1913822299).
 
 </div>
+
 {{< alert type="note" >}}
 
 This change has been removed from its original milestone and is being reassessed.
@@ -7588,6 +7597,7 @@ For information about migrating from the CI/CD template to the component, see th
 - To discuss this change or learn more, see the [deprecation issue](https://gitlab.com/gitlab-org/gitlab/-/issues/573447).
 
 </div>
+
 {{< alert type="note" >}}
 
 This change has been removed from its original milestone and is being reassessed.
@@ -7612,6 +7622,7 @@ To prepare for the pending removal, update all pipeline execution policies that 
 - To discuss this change or learn more, see the [deprecation issue](https://gitlab.com/gitlab-org/gitlab/-/issues/480914).
 
 </div>
+
 {{< alert type="note" >}}
 
 This change has been removed from its original milestone and is being reassessed.
@@ -7639,6 +7650,7 @@ Instance administrators can set higher or lower limits as needed in the Admin ar
 - To discuss this change or learn more, see the [deprecation issue](https://gitlab.com/gitlab-org/gitlab/-/issues/459869).
 
 </div>
+
 {{< alert type="note" >}}
 
 This change has been removed from its original milestone and is being reassessed.
@@ -7661,6 +7673,7 @@ To prepare for this change, we recommend reviewing and updating your GraphQL que
 - To discuss this change or learn more, see the [deprecation issue](https://gitlab.com/gitlab-org/gitlab/-/issues/424417).
 
 </div>
+
 {{< alert type="note" >}}
 
 This change has been removed from its original milestone and is being reassessed.
@@ -7681,6 +7694,7 @@ The `previousStageJobsOrNeeds` field in GraphQL will be removed as it has been r
 - To discuss this change or learn more, see the [deprecation issue](https://gitlab.com/gitlab-org/gitlab/-/issues/501308).
 
 </div>
+
 {{< alert type="note" >}}
 
 This change has been removed from its original milestone and is being reassessed.
@@ -7707,6 +7721,7 @@ A replacement feature is planned as part of the [Auto Remediation vision](https:
 - To discuss this change or learn more, see the [deprecation issue](https://gitlab.com/gitlab-org/gitlab/-/issues/515371#note_2319368251).
 
 </div>
+
 {{< alert type="note" >}}
 
 This change has been removed from its original milestone and is being reassessed.
@@ -7744,6 +7759,7 @@ You shouldn't experience any impact as a result of this change, as these are end
 - To discuss this change or learn more, see the [deprecation issue](https://gitlab.com/gitlab-org/cluster-integration/gitlab-agent/-/issues/630).
 
 </div>
+
 {{< alert type="note" >}}
 
 This change has been removed from its original milestone and is being reassessed.
@@ -7775,6 +7791,7 @@ the new `agentk` image will start deploying from the new location seamlessly in 
 - To discuss this change or learn more, see the [deprecation issue](https://gitlab.com/gitlab-org/cluster-integration/gitlab-agent/-/issues/656).
 
 </div>
+
 {{< alert type="note" >}}
 
 This change has been removed from its original milestone and is being reassessed.
@@ -7802,6 +7819,7 @@ To migrate from `kpt` to Helm, follow [the agent installation documentation](htt
 - To discuss this change or learn more, see the [deprecation issue](https://gitlab.com/gitlab-org/gitlab/-/issues/473759).
 
 </div>
+
 {{< alert type="note" >}}
 
 This change has been removed from its original milestone and is being reassessed.
@@ -7825,6 +7843,7 @@ use `count` from `cars` in `MergeTrains::TrainType` instead.
 - To discuss this change or learn more, see the [deprecation issue](https://gitlab.com/gitlab-org/gitlab/-/issues/439199).
 
 </div>
+
 {{< alert type="note" >}}
 
 This change has been removed from its original milestone and is being reassessed.
@@ -7854,6 +7873,7 @@ The following changes have been canceled.
 - To discuss this change or learn more, see the [deprecation issue](https://gitlab.com/gitlab-org/gitlab/-/issues/515358).
 
 </div>
+
 {{< alert type="note" >}}
 
 This change has been canceled.
@@ -7879,6 +7899,7 @@ To continue showing these findings, you must configure the `CS_SEVERITY_THRESHOL
 - To discuss this change or learn more, see the [deprecation issue](https://gitlab.com/gitlab-org/gitlab/-/issues/439301).
 
 </div>
+
 {{< alert type="note" >}}
 
 This change has been canceled.
@@ -7902,6 +7923,7 @@ Instead, you should use [License scanning of CycloneDX files](https://docs.gitla
 - To discuss this change or learn more, see the [deprecation issue](https://gitlab.com/gitlab-org/gitlab/-/issues/519133).
 
 </div>
+
 {{< alert type="note" >}}
 
 This change has been canceled.
@@ -7939,6 +7961,7 @@ upgrading to 18.0 to avoid disruptions to your CI/CD pipelines.
 - To discuss this change or learn more, see the [deprecation issue](https://gitlab.com/gitlab-org/gitlab/-/issues/470641).
 
 </div>
+
 {{< alert type="note" >}}
 
 This change has been canceled.
@@ -7972,6 +7995,7 @@ to ensure the correct locations are being used to mirror the required scanner im
 - To discuss this change or learn more, see the [deprecation issue](https://gitlab.com/gitlab-org/gitlab/-/issues/512564).
 
 </div>
+
 {{< alert type="note" >}}
 
 This change has been canceled.
@@ -8004,6 +8028,7 @@ If you need to use the cache when scanning a project, you can restore the previo
 - To discuss this change or learn more, see the [deprecation issue](https://gitlab.com/gitlab-org/gitlab/-/issues/476160).
 
 </div>
+
 {{< alert type="note" >}}
 
 This change has been canceled.
@@ -8024,6 +8049,7 @@ This planned change to the secret detection analyzer is cancelled. You can still
 - To discuss this change or learn more, see the [deprecation issue](https://gitlab.com/gitlab-org/gitlab/-/issues/513409).
 
 </div>
+
 {{< alert type="note" >}}
 
 This change has been canceled.

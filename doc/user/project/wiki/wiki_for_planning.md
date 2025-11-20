@@ -151,7 +151,6 @@ Transform your wiki pages into live dashboards using [GitLab Query Language](../
 Embedded views automatically update when data changes, providing real-time visibility into your planning data
 without leaving the wiki.
 
-<!-- Other types: flag, warning, disclaimer -->
 {{< alert type="note" >}}
 
 Embedded views have performance considerations. Large queries may time out or be rate-limited.

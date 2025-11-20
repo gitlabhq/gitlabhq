@@ -36,36 +36,14 @@ GitLabに接続するすべてのクラスターに、個別のエージェン�
 
 エージェントは常にGitLabプロジェクトに登録されます。エージェントが登録およびインストールされると、クラスターへのエージェント接続は、他のプロジェクト、グループ、およびユーザーと共有できます。このアプローチは、GitLab自体からエージェントインスタンスを管理および設定できること、および単一のインストールを複数のテナントにスケールできることを意味します。
 
-## 受信エージェント {#receptive-agents}
-
-{{< details >}}
-
-- プラン: Ultimate
-- 提供形態: GitLab Self-Managed
-
-{{< /details >}}
-
-{{< history >}}
-
-- GitLab 17.4で[導入](https://gitlab.com/groups/gitlab-org/-/epics/12180)されました。
-
-{{< /history >}}
-
-受容エージェントを使用すると、GitLabはGitLabインスタンスへのネットワーク接続を確立できないものの、GitLabから接続できるKubernetesクラスターと統合できます。たとえば、これは次の場合に発生する可能性があります: 
-
-1. GitLabがプライベートネットワーク内またはファイアウォールの内側で実行されており、VPN経由でのみアクセスできる。
-1. Kubernetesクラスターがクラウドプロバイダーによってホストされているが、インターネットに公開されているか、プライベートネットワークから到達可能である。
-
-この機能が有効になっている場合、GitLabは提供されたURLを使用してエージェントに接続します。エージェントと受容エージェントを同時に使用できます。
-
 ## GitLabの機能でサポートされているKubernetesのバージョン {#supported-kubernetes-versions-for-gitlab-features}
 
-GitLabは、次のKubernetesバージョンをサポートしています。KubernetesクラスターでGitLabを実行する場合は、異なるバージョンのKubernetesが必要になる場合があります。
+GitLabは、次のKubernetesバージョンをサポートしています。KubernetesクラスターでGitLabを実行する場合は、異なるバージョンのKubernetesが必要になる場合があります:
 
 - [Helm Chart](https://docs.gitlab.com/charts/installation/cloud/)の場合。
 - [GitLab Operator](https://docs.gitlab.com/operator/installation.html)の場合。
 
-サポートされているバージョンにKubernetesバージョンをいつでもアップグレードできます。
+サポートされているバージョンにKubernetesバージョンをいつでもアップグレードできます:
 
 - 1.33（GitLabバージョン19.2のリリース時、または1.36がサポートされるようになったときにサポートが終了）
 - 1.32（GitLabバージョン18.10のリリース時、または1.35がサポートされるようになったときにサポートが終了）
@@ -73,7 +51,7 @@ GitLabは、次のKubernetesバージョンをサポートしています。Kube
 
 GitLabは、新しいマイナーKubernetesバージョンの初期リリース後、3か月以内にサポートすることを目指しています。GitLabは、常に少なくとも3つの本番環境対応のKubernetesマイナーバージョンをサポートしています。
 
-新しいバージョンのKubernetesがリリースされると、以下を行います。
+新しいバージョンのKubernetesがリリースされると、以下を行います:
 
 - 約4週間以内に、初期スモークテストの結果をこのページで更新します。
 - 新しいバージョンサポートのリリースが遅れることが予想される場合は、約8週間以内に、このページで予想されるGitLabサポートバージョンを更新します。
@@ -96,7 +74,7 @@ GitLabでは、[GitOpsにFluxを使用](gitops.md)することをお勧めしま
 
 [**CI/CD**ワークフロー](ci_cd_workflow.md)では、Kubernetes APIを使用してクラスターをクエリおよび更新するようにGitLab CI/CDを設定します。
 
-GitLab CI/CDからクラスターにリクエストをプッシュするため、このワークフローは**プッシュベース**と見なされます。
+GitLab CI/CDからクラスターにリクエストをプッシュするため、このワークフローは**push-based**（プッシュベース）と見なされます。
 
 このワークフローは次の場合に使用します: 
 
@@ -107,14 +85,36 @@ GitLab CI/CDからクラスターにリクエストをプッシュするため�
 
 ## エージェントの接続に関する技術的な詳細 {#agent-connection-technical-details}
 
-エージェントは、通信のためにKASへの双方向チャンネルを開きます。このチャンネルは、エージェントとKAS間のすべての通信に使用されます。
+エージェントは、通信のためにKASへの双方向チャンネルを開きます。このチャンネルは、エージェントとKAS間のすべての通信に使用されます:
 
 - 各エージェントは、アクティブストリームとアイドルストリームを含め、最大500の論理gRPCストリームを維持できます。
 - gRPCストリームで使用されるTCP接続の数は、gRPC自体によって決定されます。
 - 各接続の最大ライフタイムは2時間で、1時間の猶予期間があります。
-  - KASの前にあるプロキシは、接続の最大ライフタイムに影響を与える可能性があります。GitLab.comでは、これは[2時間](https://gitlab.com/gitlab-cookbooks/gitlab-haproxy/-/blob/68df3484087f0af368d074215e17056d8ab69f1c/attributes/default.rb#L217)です。猶予期間は、最大ライフタイムの50％です。
+  - KASの前にあるプロキシは、接続の最大ライフタイムに影響を与える可能性があります。GitLab.comでは、これは[2時間](https://gitlab.com/gitlab-cookbooks/gitlab-haproxy/-/blob/68df3484087f0af368d074215e17056d8ab69f1c/attributes/default.rb#L217)です。猶予期間は、最大ライフタイムの50%です。
 
 チャンネルルーティングの詳細については、[エージェントでのKASリクエストのルーティング](https://gitlab.com/gitlab-org/cluster-integration/gitlab-agent/-/blob/master/doc/kas_request_routing.md)を参照してください。
+
+## 受信エージェント {#receptive-agents}
+
+{{< details >}}
+
+- プラン: Ultimate
+- 提供形態: GitLab Self-Managed
+
+{{< /details >}}
+
+{{< history >}}
+
+- GitLab 17.4で[導入](https://gitlab.com/groups/gitlab-org/-/epics/12180)されました。
+
+{{< /history >}}
+
+受容エージェントを使用すると、GitLabはGitLabインスタンスへのネットワーク接続を確立できないものの、GitLabから接続できるKubernetesクラスターと統合できます。たとえば、これは次の場合に発生する可能性があります: 
+
+1. GitLabがプライベートネットワーク内またはファイアウォールの内側で実行されており、VPN経由でのみアクセスできる。
+1. Kubernetesクラスターがクラウドプロバイダーによってホストされているが、インターネットに公開されているか、プライベートネットワークから到達可能である。
+
+この機能が有効になっている場合、GitLabは提供されたURLを使用してエージェントに接続します。エージェントと受容エージェントを同時に使用できます。
 
 ## Kubernetesインテグレーション用語集 {#kubernetes-integration-glossary}
 

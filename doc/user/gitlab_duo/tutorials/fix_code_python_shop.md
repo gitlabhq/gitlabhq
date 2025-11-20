@@ -656,7 +656,7 @@ code you end up with after following the tutorial.
 
 {{< tabs >}}
 
-{{< tab title=".gitignore" >}}
+{{< tab title="`.gitignore`" >}}
 
 This file shows standard Python project exclusions:
 
@@ -710,8 +710,8 @@ wheels/
 
 {{< /tab >}}
 
-{{< tab title="README.md" >}}
-<!-- markdownlint-disable MD029 -->
+{{< tab title="`README.md`" >}}
+
 A comprehensive `README` file with setup and usage instructions.
 
 ````markdown
@@ -784,10 +784,10 @@ Run tests with `pytest`:
 python -m pytest
 ```
 ````
-<!-- markdownlint-enable MD029 -->
+
 {{< /tab >}}
 
-{{< tab title="requirements.txt" >}}
+{{< tab title="`requirements.txt`" >}}
 
 Lists all required Python packages with versions.
 
@@ -804,7 +804,7 @@ requests==2.28.2
 
 {{< /tab >}}
 
-{{< tab title="setup.py" >}}
+{{< tab title="`setup.py`" >}}
 
 Project configuration for packaging.
 
@@ -846,7 +846,7 @@ setup(
 
 {{< /tab >}}
 
-{{< tab title=".env" >}}
+{{< tab title="`.env`" >}}
 
 Contains environment variables for the application.
 
@@ -869,7 +869,7 @@ MAX_QUANTITY=1000
 
 {{< /tab >}}
 
-{{< tab title="app/models/article.py" >}}
+{{< tab title="`app/models/article.py`" >}}
 
 Article class with full validation.
 
@@ -996,7 +996,7 @@ class Article:
 
 {{< /tab >}}
 
-{{< tab title="app/routes/shop.py" >}}
+{{< tab title="`app/routes/shop.py`" >}}
 
 Complete API endpoints with error handling.
 
@@ -1124,7 +1124,7 @@ def delete_book(book_id):
 
 {{< /tab >}}
 
-{{< tab title="app/database.py" >}}
+{{< tab title="`app/database.py`" >}}
 
 Database operations with connection management.
 
@@ -1333,9 +1333,9 @@ def delete_article(article_id):
 ```
 
 {{< /tab >}}
-<!-- markdownlint-disable -->
-{{< tab title="app/__init__.py" >}}
-<!-- markdownlint-enable -->
+
+{{< tab title="`app/__init__.py`" >}}
+
 Flask application factory.
 
 ```python

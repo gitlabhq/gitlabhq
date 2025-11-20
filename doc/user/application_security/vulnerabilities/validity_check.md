@@ -59,7 +59,22 @@ for example after revoking it, re-run the `secret_detection` CI/CD job.
 
 ### Coverage
 
-Validity checks supports the following secret types:
+{{< history >}}
+
+- [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/16890) support for external service tokens in GitLab 18.7 [with a flag](../../../api/feature_flags.md) named `secret_detection_partner_token_verification`. Disabled by default.
+
+{{< /history >}}
+
+{{< alert type="flag" >}}
+
+The availability of this feature is controlled by a feature flag.
+For more information, see the history.
+
+{{< /alert >}}
+
+Validity checks support the following secret types:
+
+**GitLab tokens:**
 
 - GitLab personal access tokens
 - Routable GitLab personal access tokens
@@ -72,6 +87,14 @@ Validity checks supports the following secret types:
 - GitLab incoming email tokens
 - GitLab feed tokens (v2)
 - GitLab pipeline trigger tokens
+
+**External service tokens:**
+
+- AWS IAM secret access keys
+- GCP API keys
+- GCP OAuth client secrets
+- Google (GCP) service account keys
+- Postman API tokens
 
 ## Validity check workflow
 
@@ -91,7 +114,7 @@ flowchart TD
     accTitle: Validity checks workflow
     accDescr: Process flow for secret detection showing three possible outcomes.
     A[Secret detection analyzer runs] --> B[Secret detected]
-    B --> C{Worker verifies<br>secret status}
+    B --> C{Verification<br>with vendor}
 
     C -->|Cannot verify or unsupported type| D[Possibly active]
     C -->|Valid and not expired| E[Active]
@@ -138,3 +161,10 @@ To resolve this issue, re-run the `secret_detection` job. If the status persists
 you might need to validate the secret manually.
 
 Unless you're certain the token isn't active, you should revoke and replace possibly active secrets as soon as possible.
+
+### External service token verification delays
+
+External service token verification might take longer than GitLab token verification due to rate limits
+imposed by external services. If an external service token shows **possibly active** status temporarily,
+this is typical. The verification is queued and completes shortly. Check the **Last verified at**
+timestamp to see when the status was last updated, or refresh the page after a few moments.
