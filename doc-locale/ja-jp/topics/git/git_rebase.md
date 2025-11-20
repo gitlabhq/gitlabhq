@@ -227,7 +227,7 @@ Gitを使用してターゲットブランチに対してブランチをリベ�
 1. 変更をリモートブランチへ強制プッシュします。
 
    ```shell
-    git push origin my-feature-branch --force-with-lease
+   git push origin my-feature-branch --force-with-lease
    ```
 
 ## リモートブランチへ強制プッシュする {#force-push-to-a-remote-branch}
