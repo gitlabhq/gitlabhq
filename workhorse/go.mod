@@ -31,8 +31,8 @@ require (
 	github.com/sony/gobreaker/v2 v2.1.0
 	github.com/stretchr/testify v1.11.1
 	gitlab.com/gitlab-org/gitaly/v16 v16.11.0-rc1.0.20250408053233-c6d43513e93c
-	gitlab.com/gitlab-org/labkit v1.30.0
-	gitlab.com/gitlab-org/modelops/applied-ml/code-suggestions/ai-assist/clients/gopb v0.0.0-20251010122251-fc8d08ac681f
+	gitlab.com/gitlab-org/labkit v1.31.2
+	gitlab.com/gitlab-org/modelops/applied-ml/code-suggestions/ai-assist/clients/gopb v0.0.0-20251016113217-3fb8f2892a6d
 	go.uber.org/goleak v1.3.0
 	gocloud.dev v0.40.1-0.20241107185025-56954848c3aa
 	golang.org/x/image v0.28.0
@@ -42,7 +42,7 @@ require (
 )
 
 require (
-	cel.dev/expr v0.23.0 // indirect
+	cel.dev/expr v0.23.1 // indirect
 	cloud.google.com/go v0.115.1 // indirect
 	cloud.google.com/go/auth v0.9.3 // indirect
 	cloud.google.com/go/auth/oauth2adapt v0.2.4 // indirect
@@ -108,7 +108,7 @@ require (
 	github.com/googleapis/enterprise-certificate-proxy v0.3.4 // indirect
 	github.com/googleapis/gax-go/v2 v2.13.0 // indirect
 	github.com/grpc-ecosystem/go-grpc-middleware v1.4.0 // indirect
-	github.com/grpc-ecosystem/go-grpc-middleware/v2 v2.3.1 // indirect
+	github.com/grpc-ecosystem/go-grpc-middleware/v2 v2.3.2 // indirect
 	github.com/hashicorp/errwrap v1.1.0 // indirect
 	github.com/hashicorp/go-multierror v1.1.1 // indirect
 	github.com/hashicorp/yamux v0.1.2-0.20220728231024-8f49b6f63f18 // indirect
