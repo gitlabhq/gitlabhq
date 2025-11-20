@@ -34,6 +34,7 @@ config:
   reference-links-images: false     # MD052
   ul-style:                         # MD004
     style: "dash"
+  table-column-style: false         # MD060
 
   # Keep this item last due to length
   proper-names:                     # MD044

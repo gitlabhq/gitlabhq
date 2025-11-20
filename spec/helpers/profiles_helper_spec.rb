@@ -197,6 +197,168 @@ RSpec.describe ProfilesHelper, feature_category: :user_profile do
     end
   end
 
+  describe '#email_otp_enrollment_restriction_readable_reason' do
+    let(:user) { create(:user) }
+    let(:email_otp_required_after) { nil }
+
+    before do
+      allow(user).to receive_messages(email_otp_required_after: email_otp_required_after)
+    end
+
+    it 'returns nil when there are no restrictions' do
+      expect(helper.email_otp_enrollment_restriction_readable_reason(user)).to be_nil
+    end
+
+    context 'when user cannot modify email_otp enrollment' do
+      let(:reason) { :unknown_reason }
+
+      before do
+        allow(user).to receive_messages(can_modify_email_otp_enrollment?: false, email_otp_enrollment_restriction: reason)
+      end
+
+      it 'starts with enrollment restriction message' do
+        result = helper.email_otp_enrollment_restriction_readable_reason(user)
+
+        expect(result).to eq('You cannot modify your enrollment because of an email OTP enrollment restriction.')
+      end
+
+      context 'when restriction is feature_disabled' do
+        let(:reason) { :feature_disabled }
+
+        it 'returns message with feature disabled reason' do
+          result = helper.email_otp_enrollment_restriction_readable_reason(user)
+
+          expect(result).to eq('You cannot modify your enrollment because the feature is disabled.')
+        end
+      end
+
+      context 'when restriction is uses_external_authenticator' do
+        let(:reason) { :uses_external_authenticator }
+
+        it 'returns message with external authenticator reason' do
+          result = helper.email_otp_enrollment_restriction_readable_reason(user)
+
+          expect(result).to eq('You cannot modify your enrollment because your account does not use a password to sign in.')
+        end
+      end
+
+      context 'when restriction is global_enforcement' do
+        let(:reason) { :global_enforcement }
+
+        it 'returns message with global enforcement reason' do
+          result = helper.email_otp_enrollment_restriction_readable_reason(user)
+
+          expect(result).to eq('You cannot modify your enrollment because the instance requires OTP or WebAuthn two-factor authentication.')
+        end
+      end
+
+      context 'when restriction is admin_2fa_enforcement' do
+        let(:reason) { :admin_2fa_enforcement }
+
+        it 'returns message with admin 2FA enforcement reason' do
+          result = helper.email_otp_enrollment_restriction_readable_reason(user)
+
+          expect(result).to eq('You cannot modify your enrollment because administrators are required to use OTP or WebAuthn two-factor authentication.')
+        end
+      end
+
+      context 'when restriction is group_enforcement' do
+        let(:reason) { :group_enforcement }
+
+        it 'returns message with group enforcement reason' do
+          result = helper.email_otp_enrollment_restriction_readable_reason(user)
+
+          expect(result).to eq('You cannot modify your enrollment because a group you belong to requires OTP or WebAuthn two-factor authentication.')
+        end
+      end
+
+      context 'when restriction is future_enforcement' do
+        let(:email_otp_required_after) { Time.current + 10.seconds }
+        let(:reason) { :future_enforcement }
+
+        it 'returns message with future enforcement reason', :freeze_time do
+          expected_date = l(email_otp_required_after.to_date, format: :long)
+
+          result = helper.email_otp_enrollment_restriction_readable_reason(user)
+
+          expect(result).to eq("You can skip email verification for now. Email verification becomes mandatory on #{expected_date}.")
+        end
+      end
+
+      context 'when restriction is email_otp_required' do
+        let(:reason) { :email_otp_required }
+
+        it 'returns message with email OTP required reason' do
+          result = helper.email_otp_enrollment_restriction_readable_reason(user)
+
+          expect(result).to eq('You cannot modify your enrollment because email verification is required at a minimum.')
+        end
+      end
+    end
+  end
+
+  describe '#email_otp_enrollment_restriction_confirm_data' do
+    let(:user) { create(:user) }
+    let(:can_modify_email_otp_enrollment) { nil }
+    let(:email_otp_required_as_boolean) { nil }
+    let(:email_otp_required_after) { nil }
+
+    before do
+      allow(user).to receive_messages(
+        email_otp_required_as_boolean: email_otp_required_as_boolean,
+        email_otp_required_after: email_otp_required_after
+      )
+    end
+
+    subject(:result) { helper.email_otp_enrollment_restriction_confirm_data(user) }
+
+    it "includes a :path of '/-/user_settings/profile'" do
+      expect(result[:path]).to eq('/-/user_settings/profile')
+    end
+
+    context 'when email_otp_required_as_boolean is false' do
+      let(:email_otp_required_as_boolean) { false }
+
+      it "returns email_otp_required: 'false'" do
+        expect(result[:email_otp_required]).to eq('false')
+      end
+    end
+
+    context 'when email_otp_required_as_boolean is true' do
+      let(:email_otp_required_as_boolean) { true }
+
+      it "returns email_otp_required: 'true'" do
+        expect(result[:email_otp_required]).to eq('true')
+      end
+    end
+
+    context 'when email_otp_required_after is in the past' do
+      let(:email_otp_required_after) { Time.current - 10.seconds }
+
+      it "returns a Hash with :disabled 'false'" do
+        expect(result[:disabled]).to include('false')
+      end
+
+      it 'returns no :help_text' do
+        expect(result[:help_text]).to be_nil
+      end
+    end
+
+    context 'when email_otp_required_after is in the future', :freeze_time do
+      let(:email_otp_required_after) { Time.current + 10.seconds }
+
+      it "returns a Hash with :disabled 'false'" do
+        expect(result[:disabled]).to include('true')
+      end
+
+      it 'returns :help_text' do
+        expected_date = l(email_otp_required_after.to_date, format: :long)
+
+        expect(result[:help_text]).to eq("You can skip email verification for now. Email verification becomes mandatory on #{expected_date}.")
+      end
+    end
+  end
+
   describe '#email_profile_data' do
     include Devise::Test::ControllerHelpers
 

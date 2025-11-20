@@ -113,3 +113,30 @@ Install the Community Edition package by following the [installation instruction
 {{< /tab >}}
 
 {{< /tabs >}}
+
+## Troubleshooting
+
+This section contains possible solutions for problems you might encounter.
+
+### Error: `Cookbook gitlab-ee not found`
+
+You might encounter the `Cookbook gitlab-ee not found` error when installing the Linux package for GitLab CE on a GitLab EE instance. To resolve this issue:
+
+1. Remove the `gitlab-ee` cookbook:
+
+   ```shell
+   sudo rm -rf /opt/gitlab/embedded/cookbooks/cache/cookbooks/gitlab-ee
+   ```
+
+1. Re-install GitLab CE.
+1. Check that all services are up:
+
+   ```shell
+   sudo gitlab-ctl status
+   ```
+
+   If not, restart GitLab:
+
+   ```shell
+   sudo gitlab-ctl restart
+   ```

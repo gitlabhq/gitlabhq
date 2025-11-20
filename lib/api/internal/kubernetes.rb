@@ -43,26 +43,6 @@ module API
             check_agent_token
           end
 
-          # TODO: Remove this endpoint once KAS points to the new endpoint - /internal/agents/agentk/agent_info
-          #       https://gitlab.com/gitlab-org/gitlab/-/issues/550719
-          desc 'Gets agent info' do
-            detail 'Retrieves agent info for the given token'
-          end
-          route_setting :authentication, cluster_agent_token_allowed: true
-          get '/agent_info', feature_category: :deployment_management, urgency: :low do
-            project = agent.project
-
-            status 200
-            {
-              project_id: project.id,
-              agent_id: agent.id,
-              agent_name: agent.name,
-              gitaly_info: gitaly_info(project),
-              gitaly_repository: gitaly_repository(project),
-              default_branch: project.default_branch_or_main
-            }
-          end
-
           desc 'Verify agent access to a project' do
             detail 'Verifies if the agent (owning the token) is authorized to access the given project'
           end

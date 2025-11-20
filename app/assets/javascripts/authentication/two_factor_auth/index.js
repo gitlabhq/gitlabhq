@@ -3,6 +3,7 @@ import { parseBoolean } from '~/lib/utils/common_utils';
 import { updateHistory, removeParams } from '~/lib/utils/url_utility';
 import RecoveryCodes from './components/recovery_codes.vue';
 import TwoFactorActionConfirm from './components/two_factor_action_confirm.vue';
+import EmailOtpActionConfirm from './components/email_otp_action_confirm.vue';
 import { SUCCESS_QUERY_PARAM } from './constants';
 
 export const initRecoveryCodes = () => {
@@ -71,5 +72,29 @@ export const initTwoFactorConfirm = () => {
         });
       },
     });
+  });
+};
+
+export const initEmailOtpConfirm = () => {
+  const el = document.getElementById('js-email-otp-action-confirm');
+
+  if (!el) {
+    return false;
+  }
+
+  const { helpText, disabled, emailOtpRequired, path } = el.dataset;
+
+  return new Vue({
+    el,
+    render(createElement) {
+      return createElement(EmailOtpActionConfirm, {
+        props: {
+          helpText,
+          disabled: parseBoolean(disabled),
+          emailOtpRequired: parseBoolean(emailOtpRequired),
+          path,
+        },
+      });
+    },
   });
 };

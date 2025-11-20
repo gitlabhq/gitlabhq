@@ -340,10 +340,14 @@ describe('DiffFileHeader component', () => {
         });
       });
 
-      it('should show edit button', () => {
+      it('should show edit button when can edit', () => {
         createComponent({
           props: {
             addMergeRequestButtons: true,
+            diffFile: {
+              ...getFirstDiffFile(),
+              can_modify_blob: true,
+            },
           },
         });
         expect(findEditButton().exists()).toBe(true);
@@ -682,5 +686,48 @@ describe('DiffFileHeader component', () => {
     });
 
     expect(wrapper.find('[data-testid="comment-files-button"]').exists()).toEqual(true);
+  });
+
+  describe('edit in single-file editor button', () => {
+    const existingEditPath = 'link/to/edit/path';
+    const createProps = ({
+      canModifyBlob = true,
+      editPath = existingEditPath,
+      canFork = false,
+    } = {}) => ({
+      props: {
+        diffFile: {
+          ...createDiffFile(),
+          edit_path: editPath,
+          can_modify_blob: canModifyBlob,
+        },
+        canCurrentUserFork: canFork,
+        addMergeRequestButtons: true,
+      },
+    });
+
+    it('hides when edit path is not present', () => {
+      createComponent(createProps({ canModifyBlob: true, editPath: null }));
+      expect(findEditButton().exists()).toBe(false);
+    });
+
+    it('hides when can not modify blob and can not fork', () => {
+      createComponent(createProps({ canModifyBlob: false, canFork: false }));
+      expect(findEditButton().exists()).toBe(false);
+    });
+
+    it('has href when user can modify the blob', () => {
+      createComponent(createProps({ canModifyBlob: true }));
+      expect(findEditButton().props('item').href).toBe(existingEditPath);
+    });
+
+    it('emits showForkMessage when button action is triggered', () => {
+      createComponent(createProps({ canModifyBlob: false, canFork: true }));
+
+      findEditButton().props('item').action();
+
+      expect(findEditButton().props('item').href).toBeUndefined();
+      expect(wrapper.emitted('showForkMessage')).toStrictEqual([[]]);
+    });
   });
 });

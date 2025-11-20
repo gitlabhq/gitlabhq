@@ -541,49 +541,6 @@ RSpec.describe API::Internal::Kubernetes, feature_category: :deployment_manageme
     end
   end
 
-  describe 'GET /internal/kubernetes/agent_info' do
-    def send_request(headers: {}, params: {})
-      get api('/internal/kubernetes/agent_info'), params: params, headers: headers.reverse_merge(jwt_auth_headers)
-    end
-
-    include_examples 'authorization'
-    include_examples 'agent authentication'
-
-    context 'an agent is found' do
-      let!(:agent_token) { create(:cluster_agent_token) }
-
-      let(:agent) { agent_token.agent }
-      let(:project) { agent.project }
-
-      include_examples 'agent token tracking'
-
-      it 'returns expected data', :aggregate_failures do
-        send_request(headers: agent_token_headers)
-
-        expect(response).to have_gitlab_http_status(:success)
-
-        expect(json_response).to match(
-          a_hash_including(
-            'project_id' => project.id,
-            'agent_id' => agent.id,
-            'agent_name' => agent.name,
-            'gitaly_info' => a_hash_including(
-              'address' => match(/\.socket$/),
-              'token' => 'secret'
-            ),
-            'gitaly_repository' => a_hash_including(
-              'storage_name' => project.repository_storage,
-              'relative_path' => project.disk_path + '.git',
-              'gl_repository' => "project-#{project.id}",
-              'gl_project_path' => project.full_path
-            ),
-            'default_branch' => project.default_branch_or_main
-          )
-        )
-      end
-    end
-  end
-
   describe 'GET /internal/kubernetes/verify_project_access' do
     def send_request(headers: {}, params: {})
       get api("/internal/kubernetes/verify_project_access"), params: params, headers: headers.reverse_merge(jwt_auth_headers)

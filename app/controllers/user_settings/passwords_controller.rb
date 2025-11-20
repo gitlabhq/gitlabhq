@@ -21,7 +21,7 @@ module UserSettings
 
     def create
       unless @user.password_automatically_set || @user.valid_password?(user_params[:password])
-        redirect_to new_user_settings_password_path, alert: _('You must provide a valid current password')
+        redirect_to new_user_settings_password_path, alert: _('You must provide a valid current password.')
         return
       end
 
@@ -43,7 +43,7 @@ module UserSettings
       unless @user.password_automatically_set || @user.valid_password?(user_params[:password])
         handle_invalid_current_password_attempt!
 
-        redirect_to edit_user_settings_password_path, alert: _('You must provide a valid current password')
+        redirect_to edit_user_settings_password_path, alert: _('You must provide a valid current password.')
         return
       end
 

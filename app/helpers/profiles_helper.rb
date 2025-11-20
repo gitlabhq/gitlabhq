@@ -156,6 +156,44 @@ module ProfilesHelper
     sanitize(doc.to_html, tags: %w[strong p], attributes: [])
   end
 
+  def email_otp_enrollment_restriction_readable_reason(user)
+    return unless user && !user.can_modify_email_otp_enrollment?
+
+    # rubocop:disable Layout/LineLength -- full length strings required for i18n
+    case user.email_otp_enrollment_restriction
+    when :feature_disabled
+      s_('ProfilesAuthentication|You cannot modify your enrollment because the feature is disabled.')
+    when :uses_external_authenticator
+      s_('ProfilesAuthentication|You cannot modify your enrollment because your account does not use a password to sign in.')
+    when :global_enforcement
+      s_('ProfilesAuthentication|You cannot modify your enrollment because the instance requires OTP or WebAuthn two-factor authentication.')
+    when :admin_2fa_enforcement
+      s_('ProfilesAuthentication|You cannot modify your enrollment because administrators are required to use OTP or WebAuthn two-factor authentication.')
+    when :group_enforcement
+      s_('ProfilesAuthentication|You cannot modify your enrollment because a group you belong to requires OTP or WebAuthn two-factor authentication.')
+    when :future_enforcement
+      safe_format(s_("ProfilesAuthentication|You can skip email verification for now. Email verification becomes mandatory on %{date}."), date: l(user.email_otp_required_after.to_date, format: :long))
+    when :email_otp_required
+      s_('ProfilesAuthentication|You cannot modify your enrollment because email verification is required at a minimum.')
+    else
+      s_('ProfilesAuthentication|You cannot modify your enrollment because of an email OTP enrollment restriction.')
+    end
+    # rubocop:enable Layout/LineLength
+  end
+
+  def email_otp_enrollment_restriction_confirm_data(user)
+    disabled = !user.can_modify_email_otp_enrollment?
+    help_text = email_otp_enrollment_restriction_readable_reason(user) if disabled
+    email_otp_required = user.email_otp_required_as_boolean
+
+    {
+      help_text: help_text,
+      disabled: disabled.to_s,
+      email_otp_required: email_otp_required.to_s,
+      path: user_settings_profile_path
+    }
+  end
+
   private
 
   def needs_password_confirmation?(user)

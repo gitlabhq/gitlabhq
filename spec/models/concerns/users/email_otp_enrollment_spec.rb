@@ -16,6 +16,50 @@ RSpec.describe Users::EmailOtpEnrollment, feature_category: :system_access do
     user.reload if group_require_two_factor_authentication
   end
 
+  describe '#email_otp_required_as_boolean' do
+    subject { user.email_otp_required_as_boolean }
+
+    context 'when email_otp_required_after is set' do
+      it { is_expected.to be true }
+    end
+
+    context 'when email_otp_required_after is nil' do
+      let(:email_otp_required_after) { nil }
+
+      it { is_expected.to be false }
+    end
+  end
+
+  describe '#email_otp_required_as_boolean=' do
+    subject(:set_boolean) { user.email_otp_required_as_boolean = value }
+
+    context 'when set to truthy value when already truthy', :freeze_time do
+      let(:email_otp_required_after) { 5.days.from_now }
+      let(:value) { '1' }
+
+      it 'does not change the existing timestamp' do
+        expect { set_boolean }.not_to change { user.email_otp_required_after }
+      end
+    end
+
+    context 'when set to truthy value from nil' do
+      let(:email_otp_required_after) { nil }
+      let(:value) { '1' }
+
+      it 'sets email_otp_required_after to current time', :freeze_time do
+        expect { set_boolean }.to change { user.email_otp_required_after }.to(Time.current)
+      end
+    end
+
+    context 'when set to falsy value' do
+      let(:value) { '0' }
+
+      it 'sets email_otp_required_after to nil' do
+        expect { set_boolean }.to change { user.email_otp_required_after }.to(nil)
+      end
+    end
+  end
+
   describe '#can_modify_email_otp_enrollment?' do
     subject { user.can_modify_email_otp_enrollment? }
 
@@ -209,7 +253,7 @@ RSpec.describe Users::EmailOtpEnrollment, feature_category: :system_access do
       context 'when email_otp_required_after is being changed from a value to nil' do
         let(:new_email_otp_required_after) { nil }
 
-        it 'allows it as there is no minimum requirement for Email OTP' do
+        it 'allows it as there is no minimum requirement for email OTP' do
           expect { set_email_otp }.to change { user.email_otp_required_after }.to(nil)
         end
       end
@@ -224,7 +268,7 @@ RSpec.describe Users::EmailOtpEnrollment, feature_category: :system_access do
       end
     end
 
-    it 'prevents Email OTP when 2FA is required and enabled, and minimum Email OTP requirement is enabled' do
+    it 'prevents email OTP when 2FA is required and enabled, and minimum email OTP requirement is enabled' do
       stub_application_setting(require_minimum_email_based_otp_for_users_with_passwords: true)
       allow_next_instance_of(Gitlab::Auth::TwoFactorAuthVerifier) do |verifier|
         allow(verifier).to receive(:two_factor_authentication_required?).and_return(true)
@@ -268,7 +312,7 @@ RSpec.describe Users::EmailOtpEnrollment, feature_category: :system_access do
       end
 
       context 'when a change is made', :freeze_time do
-        # Set up preconditions for mandatory Email OTP
+        # Set up preconditions for mandatory email OTP
         let(:email_otp_required_after) { nil }
 
         before do

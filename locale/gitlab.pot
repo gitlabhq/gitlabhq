@@ -2715,7 +2715,7 @@ msgstr ""
 msgid "AICatalog|Failed to disable agent. %{error}"
 msgstr ""
 
-msgid "AICatalog|Failed to disable flow. %{error}"
+msgid "AICatalog|Failed to disable flow"
 msgstr ""
 
 msgid "AICatalog|Failed to load group flows"
@@ -9259,6 +9259,9 @@ msgid "Are you sure you want to delete this pipeline? Doing so will expire all p
 msgstr ""
 
 msgid "Are you sure you want to deploy this environment?"
+msgstr ""
+
+msgid "Are you sure you want to disable email OTP? Enter your password to continue."
 msgstr ""
 
 msgid "Are you sure you want to discard this comment?"
@@ -26313,6 +26316,9 @@ msgstr ""
 msgid "Enable diagrams.net"
 msgstr ""
 
+msgid "Enable email OTP"
+msgstr ""
+
 msgid "Enable email notification"
 msgstr ""
 
@@ -26599,6 +26605,9 @@ msgid "Enter verification code"
 msgstr ""
 
 msgid "Enter your password to approve"
+msgstr ""
+
+msgid "Enter your password to continue."
 msgstr ""
 
 msgid "Enterprise"
@@ -50740,6 +50749,30 @@ msgstr ""
 msgid "ProfilesAuthentication|WebAuthn device"
 msgstr ""
 
+msgid "ProfilesAuthentication|You can skip email verification for now. Email verification becomes mandatory on %{date}."
+msgstr ""
+
+msgid "ProfilesAuthentication|You cannot modify your enrollment because a group you belong to requires OTP or WebAuthn two-factor authentication."
+msgstr ""
+
+msgid "ProfilesAuthentication|You cannot modify your enrollment because administrators are required to use OTP or WebAuthn two-factor authentication."
+msgstr ""
+
+msgid "ProfilesAuthentication|You cannot modify your enrollment because email verification is required at a minimum."
+msgstr ""
+
+msgid "ProfilesAuthentication|You cannot modify your enrollment because of an email OTP enrollment restriction."
+msgstr ""
+
+msgid "ProfilesAuthentication|You cannot modify your enrollment because the feature is disabled."
+msgstr ""
+
+msgid "ProfilesAuthentication|You cannot modify your enrollment because the instance requires OTP or WebAuthn two-factor authentication."
+msgstr ""
+
+msgid "ProfilesAuthentication|You cannot modify your enrollment because your account does not use a password to sign in."
+msgstr ""
+
 msgid "ProfilesAuthentication|You currently use passkeys for secure and faster sign in. %{link_start}Manage passkeys%{link_end}."
 msgstr ""
 
@@ -50804,6 +50837,9 @@ msgid "Profiles|Assign an individual who has legal authority to assume ownership
 msgstr ""
 
 msgid "Profiles|Assign an individual who has legal authority to manage your GitLab account in the event of your incapacity. %{link_start}Learn more%{link_end}."
+msgstr ""
+
+msgid "Profiles|Automatically sends a verification code to your primary email address during sign-in."
 msgstr ""
 
 msgid "Profiles|Avatar cropper"
@@ -50933,6 +50969,9 @@ msgid "Profiles|Email address is too long (maximum is 255 characters)."
 msgstr ""
 
 msgid "Profiles|Email addresses"
+msgstr ""
+
+msgid "Profiles|Email one-time password (email OTP)"
 msgstr ""
 
 msgid "Profiles|Ensure you have two-factor authentication recovery codes stored in a safe place."
@@ -51274,6 +51313,9 @@ msgstr ""
 msgid "Profiles|Who you represent or work for."
 msgstr ""
 
+msgid "Profiles|You are not permitted to change email OTP enrollment"
+msgstr ""
+
 msgid "Profiles|You can change your avatar here"
 msgstr ""
 
@@ -51296,6 +51338,9 @@ msgid "Profiles|You don't have access to delete this user."
 msgstr ""
 
 msgid "Profiles|You must accept the Terms of Service in order to perform this action."
+msgstr ""
+
+msgid "Profiles|You must provide a valid current password."
 msgstr ""
 
 msgid "Profiles|You must transfer ownership or delete groups you are an owner of before you can delete your account"
@@ -61407,6 +61452,9 @@ msgstr ""
 msgid "SecurityOrchestration|on every"
 msgstr ""
 
+msgid "SecurityOrchestration|personal projects"
+msgstr ""
+
 msgid "SecurityOrchestration|pipeline sources"
 msgstr ""
 
@@ -70897,6 +70945,9 @@ msgstr ""
 msgid "Update appearance settings"
 msgstr ""
 
+msgid "Update email OTP settings"
+msgstr ""
+
 msgid "Update failed"
 msgstr ""
 
@@ -77875,9 +77926,6 @@ msgid "You must provide a commit message"
 msgstr ""
 
 msgid "You must provide a file path"
-msgstr ""
-
-msgid "You must provide a valid current password"
 msgstr ""
 
 msgid "You must provide a valid current password."

@@ -643,6 +643,10 @@ p_ci_pipeline_artifact_states:
   - table: ci_pipeline_artifacts
     column: pipeline_artifact_id
     on_delete: async_delete
+p_ci_pipeline_iids:
+  - table: projects
+    column: project_id
+    on_delete: async_delete
 p_ci_pipelines:
   - table: merge_requests
     column: merge_request_id

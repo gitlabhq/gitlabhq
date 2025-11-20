@@ -8,7 +8,7 @@ RSpec.describe 'Two factor auths', feature_category: :system_access do
 
   context 'when signed in' do
     let(:current_organization) { user.organization }
-    let(:invalid_current_pwd_msg) { 'You must provide a valid current password' }
+    let(:invalid_current_pwd_msg) { 'You must provide a valid current password.' }
 
     before do
       sign_in(user)
@@ -282,6 +282,110 @@ RSpec.describe 'Two factor auths', feature_category: :system_access do
 
           expect_user_cannot_visit_group_path_without_enabling_2fa(group_name)
         end
+      end
+    end
+
+    context 'for email OTP enrollment', :js do
+      let(:email_otp_required_after) { nil }
+      let(:user) { create(:user, email_otp_required_after: email_otp_required_after) }
+
+      context 'when email_based_mfa feature flag is disabled' do
+        before do
+          stub_feature_flags(email_based_mfa: false)
+        end
+
+        it 'does not show the email OTP section' do
+          visit profile_two_factor_auth_path
+
+          expect(page).not_to have_content('Email one-time password (email OTP)')
+        end
+      end
+
+      it 'shows the email OTP section' do
+        visit profile_two_factor_auth_path
+
+        within('#email-otp-settings') do
+          expect(page).to have_content('Email one-time password (email OTP)')
+          expect(page).to have_field('Enable email OTP', disabled: false)
+          expect(page).to have_button('Save changes', disabled: false)
+        end
+      end
+
+      it 'does not allow updating if incorrect password provided' do
+        visit profile_two_factor_auth_path
+
+        check 'Enable email OTP'
+
+        email_otp_save_and_enter_password('incorrect-password')
+        expect(page).to have_content(invalid_current_pwd_msg)
+
+        expect(user.reload.email_otp_required_after).to be_nil
+      end
+
+      it 'allows updating when correct password provided', :freeze_time do
+        visit profile_two_factor_auth_path
+
+        check 'Enable email OTP'
+
+        email_otp_save_and_enter_password(user.password)
+
+        expect(page).to have_current_path(profile_two_factor_auth_path)
+        expect(page).to have_content('Profile was successfully updated')
+        expect(user.reload.email_otp_required_after).to eq(Time.current)
+      end
+
+      context 'when email_otp_required_after is nil' do
+        it 'shows the checkbox as unchecked' do
+          visit profile_two_factor_auth_path
+
+          expect(page).to have_unchecked_field('Enable email OTP')
+        end
+      end
+
+      context 'when email_otp_required_after is in the past' do
+        let(:email_otp_required_after) { 1.day.ago }
+
+        it 'shows the checkbox as checked without help text' do
+          visit profile_two_factor_auth_path
+
+          expect(page).to have_checked_field('Enable email OTP')
+          expect(page).not_to have_content('You can skip email verification for now')
+        end
+      end
+
+      context 'when email_otp_required_after is in the future' do
+        let(:email_otp_required_after) { 30.days.from_now }
+
+        it 'shows the checkbox as checked with future enforcement date' do
+          visit profile_two_factor_auth_path
+
+          expect(page).to have_field('Enable email OTP', checked: true, disabled: true)
+          expect(page).to have_content('You can skip email verification for now')
+          expect(page).to have_content(I18n.l(email_otp_required_after.to_date, format: :long))
+          expect(page).to have_button('Save changes', disabled: true)
+        end
+      end
+
+      context 'when user cannot modify enrollment' do
+        let(:email_otp_required_after) { Time.current }
+
+        before do
+          stub_application_setting(require_minimum_email_based_otp_for_users_with_passwords: true)
+        end
+
+        it 'disables the checkbox and submit button with a tooltip' do
+          visit profile_two_factor_auth_path
+
+          expect(page).to have_field('Enable email OTP', checked: true, disabled: true)
+          expect(page).to have_button('Save changes', disabled: true)
+          expect(page).to have_content('You cannot modify your enrollment because')
+        end
+      end
+
+      def email_otp_save_and_enter_password(password = nil)
+        click_button 'Save changes'
+        fill_in 'current_password', with: password
+        click_button _('Update email OTP settings')
       end
     end
 

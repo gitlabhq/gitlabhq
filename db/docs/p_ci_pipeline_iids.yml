@@ -1,0 +1,15 @@
+---
+table_name: p_ci_pipeline_iids
+classes: []
+feature_categories:
+- continuous_integration
+description: |
+  This table is used to ensure pipeline iid uniqueness across partitions (within a project scope).
+  Its data is modified only by database triggers. It tracks the pipeline iid when a p_ci_pipelines
+  record is added, deleted, or has its iid updated.
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/213065
+milestone: '18.7'
+gitlab_schema: gitlab_ci
+sharding_key:
+  project_id: projects
+table_size: small

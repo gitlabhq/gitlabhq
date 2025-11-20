@@ -457,9 +457,9 @@ end
 On GitLab.com, we have applied a [default concurrency limit for all workers](https://gitlab.com/gitlab-com/gl-infra/tenant-scale/tenant-services/team/-/issues/215)
 calculated based on the Sidekiq shard's capacity (`threads * maxReplicas * maxPercentage`).
 
-- `threads`: Number of `concurrency` configured for the shard. Example for `catchall` shard can be found [here](https://gitlab.com/gitlab-com/gl-infra/k8s-workloads/gitlab-com/-/blob/d322295ee8c4aa1681d92695678af232c4135cfb/releases/gitlab/values/gprd.yaml.gotmpl#L706).
-- `maxReplicas`: Number of max replicas configured for the shard. Example for `catchall` shard can be found [here](https://gitlab.com/gitlab-com/gl-infra/k8s-workloads/gitlab-com/-/blob/d322295ee8c4aa1681d92695678af232c4135cfb/releases/gitlab/values/gprd.yaml.gotmpl#L709-710)
-- `maxPercentage`: A percentage based on the worker's urgency. The configuration can be found [here](https://gitlab.com/gitlab-org/gitlab/blob/69deb38d99685f72d7e8494fe503d80b93b650ed/app/workers/concerns/worker_attributes.rb#L44-48)
+- `threads`: Number of `concurrency` configured for the shard. [Example for `catchall` shard](https://gitlab.com/gitlab-com/gl-infra/k8s-workloads/gitlab-com/-/blob/d322295ee8c4aa1681d92695678af232c4135cfb/releases/gitlab/values/gprd.yaml.gotmpl#L706).
+- `maxReplicas`: Number of max replicas configured for the shard. [Example for `catchall` shard](https://gitlab.com/gitlab-com/gl-infra/k8s-workloads/gitlab-com/-/blob/d322295ee8c4aa1681d92695678af232c4135cfb/releases/gitlab/values/gprd.yaml.gotmpl#L709-710).
+- `maxPercentage`: A percentage based on the worker's urgency. The [configuration](https://gitlab.com/gitlab-org/gitlab/blob/69deb38d99685f72d7e8494fe503d80b93b650ed/app/workers/concerns/worker_attributes.rb#L44-48).
 
 {{< alert type="note" >}}
 

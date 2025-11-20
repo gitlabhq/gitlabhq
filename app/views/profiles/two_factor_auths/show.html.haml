@@ -47,3 +47,11 @@
     = render 'passkeys_2fa'
     - if current_user.two_factor_enabled?
       = render 'recovery_codes'
+
+- if Feature.enabled?(:email_based_mfa, current_user)
+  #email-otp-settings
+    = render ::Layouts::SettingsSectionComponent.new(s_("Profiles|Email one-time password (email OTP)")) do |c|
+      - c.with_description do
+        = s_("Profiles|Automatically sends a verification code to your primary email address during sign-in.")
+      - c.with_body do
+        #js-email-otp-action-confirm{ data: email_otp_enrollment_restriction_confirm_data(current_user) }

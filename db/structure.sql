@@ -7955,6 +7955,332 @@ CREATE TABLE gitlab_partitions_static.namespace_descendants_31 (
     CONSTRAINT check_60ae9ef706 CHECK ((all_unarchived_project_ids IS NOT NULL))
 );
 
+CREATE TABLE p_ci_pipeline_iids (
+    project_id bigint NOT NULL,
+    iid integer NOT NULL
+)
+PARTITION BY HASH (project_id);
+
+CREATE TABLE gitlab_partitions_static.p_ci_pipeline_iids_00 (
+    project_id bigint NOT NULL,
+    iid integer NOT NULL
+);
+
+CREATE TABLE gitlab_partitions_static.p_ci_pipeline_iids_01 (
+    project_id bigint NOT NULL,
+    iid integer NOT NULL
+);
+
+CREATE TABLE gitlab_partitions_static.p_ci_pipeline_iids_02 (
+    project_id bigint NOT NULL,
+    iid integer NOT NULL
+);
+
+CREATE TABLE gitlab_partitions_static.p_ci_pipeline_iids_03 (
+    project_id bigint NOT NULL,
+    iid integer NOT NULL
+);
+
+CREATE TABLE gitlab_partitions_static.p_ci_pipeline_iids_04 (
+    project_id bigint NOT NULL,
+    iid integer NOT NULL
+);
+
+CREATE TABLE gitlab_partitions_static.p_ci_pipeline_iids_05 (
+    project_id bigint NOT NULL,
+    iid integer NOT NULL
+);
+
+CREATE TABLE gitlab_partitions_static.p_ci_pipeline_iids_06 (
+    project_id bigint NOT NULL,
+    iid integer NOT NULL
+);
+
+CREATE TABLE gitlab_partitions_static.p_ci_pipeline_iids_07 (
+    project_id bigint NOT NULL,
+    iid integer NOT NULL
+);
+
+CREATE TABLE gitlab_partitions_static.p_ci_pipeline_iids_08 (
+    project_id bigint NOT NULL,
+    iid integer NOT NULL
+);
+
+CREATE TABLE gitlab_partitions_static.p_ci_pipeline_iids_09 (
+    project_id bigint NOT NULL,
+    iid integer NOT NULL
+);
+
+CREATE TABLE gitlab_partitions_static.p_ci_pipeline_iids_10 (
+    project_id bigint NOT NULL,
+    iid integer NOT NULL
+);
+
+CREATE TABLE gitlab_partitions_static.p_ci_pipeline_iids_11 (
+    project_id bigint NOT NULL,
+    iid integer NOT NULL
+);
+
+CREATE TABLE gitlab_partitions_static.p_ci_pipeline_iids_12 (
+    project_id bigint NOT NULL,
+    iid integer NOT NULL
+);
+
+CREATE TABLE gitlab_partitions_static.p_ci_pipeline_iids_13 (
+    project_id bigint NOT NULL,
+    iid integer NOT NULL
+);
+
+CREATE TABLE gitlab_partitions_static.p_ci_pipeline_iids_14 (
+    project_id bigint NOT NULL,
+    iid integer NOT NULL
+);
+
+CREATE TABLE gitlab_partitions_static.p_ci_pipeline_iids_15 (
+    project_id bigint NOT NULL,
+    iid integer NOT NULL
+);
+
+CREATE TABLE gitlab_partitions_static.p_ci_pipeline_iids_16 (
+    project_id bigint NOT NULL,
+    iid integer NOT NULL
+);
+
+CREATE TABLE gitlab_partitions_static.p_ci_pipeline_iids_17 (
+    project_id bigint NOT NULL,
+    iid integer NOT NULL
+);
+
+CREATE TABLE gitlab_partitions_static.p_ci_pipeline_iids_18 (
+    project_id bigint NOT NULL,
+    iid integer NOT NULL
+);
+
+CREATE TABLE gitlab_partitions_static.p_ci_pipeline_iids_19 (
+    project_id bigint NOT NULL,
+    iid integer NOT NULL
+);
+
+CREATE TABLE gitlab_partitions_static.p_ci_pipeline_iids_20 (
+    project_id bigint NOT NULL,
+    iid integer NOT NULL
+);
+
+CREATE TABLE gitlab_partitions_static.p_ci_pipeline_iids_21 (
+    project_id bigint NOT NULL,
+    iid integer NOT NULL
+);
+
+CREATE TABLE gitlab_partitions_static.p_ci_pipeline_iids_22 (
+    project_id bigint NOT NULL,
+    iid integer NOT NULL
+);
+
+CREATE TABLE gitlab_partitions_static.p_ci_pipeline_iids_23 (
+    project_id bigint NOT NULL,
+    iid integer NOT NULL
+);
+
+CREATE TABLE gitlab_partitions_static.p_ci_pipeline_iids_24 (
+    project_id bigint NOT NULL,
+    iid integer NOT NULL
+);
+
+CREATE TABLE gitlab_partitions_static.p_ci_pipeline_iids_25 (
+    project_id bigint NOT NULL,
+    iid integer NOT NULL
+);
+
+CREATE TABLE gitlab_partitions_static.p_ci_pipeline_iids_26 (
+    project_id bigint NOT NULL,
+    iid integer NOT NULL
+);
+
+CREATE TABLE gitlab_partitions_static.p_ci_pipeline_iids_27 (
+    project_id bigint NOT NULL,
+    iid integer NOT NULL
+);
+
+CREATE TABLE gitlab_partitions_static.p_ci_pipeline_iids_28 (
+    project_id bigint NOT NULL,
+    iid integer NOT NULL
+);
+
+CREATE TABLE gitlab_partitions_static.p_ci_pipeline_iids_29 (
+    project_id bigint NOT NULL,
+    iid integer NOT NULL
+);
+
+CREATE TABLE gitlab_partitions_static.p_ci_pipeline_iids_30 (
+    project_id bigint NOT NULL,
+    iid integer NOT NULL
+);
+
+CREATE TABLE gitlab_partitions_static.p_ci_pipeline_iids_31 (
+    project_id bigint NOT NULL,
+    iid integer NOT NULL
+);
+
+CREATE TABLE gitlab_partitions_static.p_ci_pipeline_iids_32 (
+    project_id bigint NOT NULL,
+    iid integer NOT NULL
+);
+
+CREATE TABLE gitlab_partitions_static.p_ci_pipeline_iids_33 (
+    project_id bigint NOT NULL,
+    iid integer NOT NULL
+);
+
+CREATE TABLE gitlab_partitions_static.p_ci_pipeline_iids_34 (
+    project_id bigint NOT NULL,
+    iid integer NOT NULL
+);
+
+CREATE TABLE gitlab_partitions_static.p_ci_pipeline_iids_35 (
+    project_id bigint NOT NULL,
+    iid integer NOT NULL
+);
+
+CREATE TABLE gitlab_partitions_static.p_ci_pipeline_iids_36 (
+    project_id bigint NOT NULL,
+    iid integer NOT NULL
+);
+
+CREATE TABLE gitlab_partitions_static.p_ci_pipeline_iids_37 (
+    project_id bigint NOT NULL,
+    iid integer NOT NULL
+);
+
+CREATE TABLE gitlab_partitions_static.p_ci_pipeline_iids_38 (
+    project_id bigint NOT NULL,
+    iid integer NOT NULL
+);
+
+CREATE TABLE gitlab_partitions_static.p_ci_pipeline_iids_39 (
+    project_id bigint NOT NULL,
+    iid integer NOT NULL
+);
+
+CREATE TABLE gitlab_partitions_static.p_ci_pipeline_iids_40 (
+    project_id bigint NOT NULL,
+    iid integer NOT NULL
+);
+
+CREATE TABLE gitlab_partitions_static.p_ci_pipeline_iids_41 (
+    project_id bigint NOT NULL,
+    iid integer NOT NULL
+);
+
+CREATE TABLE gitlab_partitions_static.p_ci_pipeline_iids_42 (
+    project_id bigint NOT NULL,
+    iid integer NOT NULL
+);
+
+CREATE TABLE gitlab_partitions_static.p_ci_pipeline_iids_43 (
+    project_id bigint NOT NULL,
+    iid integer NOT NULL
+);
+
+CREATE TABLE gitlab_partitions_static.p_ci_pipeline_iids_44 (
+    project_id bigint NOT NULL,
+    iid integer NOT NULL
+);
+
+CREATE TABLE gitlab_partitions_static.p_ci_pipeline_iids_45 (
+    project_id bigint NOT NULL,
+    iid integer NOT NULL
+);
+
+CREATE TABLE gitlab_partitions_static.p_ci_pipeline_iids_46 (
+    project_id bigint NOT NULL,
+    iid integer NOT NULL
+);
+
+CREATE TABLE gitlab_partitions_static.p_ci_pipeline_iids_47 (
+    project_id bigint NOT NULL,
+    iid integer NOT NULL
+);
+
+CREATE TABLE gitlab_partitions_static.p_ci_pipeline_iids_48 (
+    project_id bigint NOT NULL,
+    iid integer NOT NULL
+);
+
+CREATE TABLE gitlab_partitions_static.p_ci_pipeline_iids_49 (
+    project_id bigint NOT NULL,
+    iid integer NOT NULL
+);
+
+CREATE TABLE gitlab_partitions_static.p_ci_pipeline_iids_50 (
+    project_id bigint NOT NULL,
+    iid integer NOT NULL
+);
+
+CREATE TABLE gitlab_partitions_static.p_ci_pipeline_iids_51 (
+    project_id bigint NOT NULL,
+    iid integer NOT NULL
+);
+
+CREATE TABLE gitlab_partitions_static.p_ci_pipeline_iids_52 (
+    project_id bigint NOT NULL,
+    iid integer NOT NULL
+);
+
+CREATE TABLE gitlab_partitions_static.p_ci_pipeline_iids_53 (
+    project_id bigint NOT NULL,
+    iid integer NOT NULL
+);
+
+CREATE TABLE gitlab_partitions_static.p_ci_pipeline_iids_54 (
+    project_id bigint NOT NULL,
+    iid integer NOT NULL
+);
+
+CREATE TABLE gitlab_partitions_static.p_ci_pipeline_iids_55 (
+    project_id bigint NOT NULL,
+    iid integer NOT NULL
+);
+
+CREATE TABLE gitlab_partitions_static.p_ci_pipeline_iids_56 (
+    project_id bigint NOT NULL,
+    iid integer NOT NULL
+);
+
+CREATE TABLE gitlab_partitions_static.p_ci_pipeline_iids_57 (
+    project_id bigint NOT NULL,
+    iid integer NOT NULL
+);
+
+CREATE TABLE gitlab_partitions_static.p_ci_pipeline_iids_58 (
+    project_id bigint NOT NULL,
+    iid integer NOT NULL
+);
+
+CREATE TABLE gitlab_partitions_static.p_ci_pipeline_iids_59 (
+    project_id bigint NOT NULL,
+    iid integer NOT NULL
+);
+
+CREATE TABLE gitlab_partitions_static.p_ci_pipeline_iids_60 (
+    project_id bigint NOT NULL,
+    iid integer NOT NULL
+);
+
+CREATE TABLE gitlab_partitions_static.p_ci_pipeline_iids_61 (
+    project_id bigint NOT NULL,
+    iid integer NOT NULL
+);
+
+CREATE TABLE gitlab_partitions_static.p_ci_pipeline_iids_62 (
+    project_id bigint NOT NULL,
+    iid integer NOT NULL
+);
+
+CREATE TABLE gitlab_partitions_static.p_ci_pipeline_iids_63 (
+    project_id bigint NOT NULL,
+    iid integer NOT NULL
+);
+
 CREATE TABLE virtual_registries_container_cache_entries (
     group_id bigint NOT NULL,
     upstream_id bigint NOT NULL,
@@ -30671,6 +30997,134 @@ ALTER TABLE ONLY namespace_descendants ATTACH PARTITION gitlab_partitions_static
 
 ALTER TABLE ONLY namespace_descendants ATTACH PARTITION gitlab_partitions_static.namespace_descendants_31 FOR VALUES WITH (modulus 32, remainder 31);
 
+ALTER TABLE ONLY p_ci_pipeline_iids ATTACH PARTITION gitlab_partitions_static.p_ci_pipeline_iids_00 FOR VALUES WITH (modulus 64, remainder 0);
+
+ALTER TABLE ONLY p_ci_pipeline_iids ATTACH PARTITION gitlab_partitions_static.p_ci_pipeline_iids_01 FOR VALUES WITH (modulus 64, remainder 1);
+
+ALTER TABLE ONLY p_ci_pipeline_iids ATTACH PARTITION gitlab_partitions_static.p_ci_pipeline_iids_02 FOR VALUES WITH (modulus 64, remainder 2);
+
+ALTER TABLE ONLY p_ci_pipeline_iids ATTACH PARTITION gitlab_partitions_static.p_ci_pipeline_iids_03 FOR VALUES WITH (modulus 64, remainder 3);
+
+ALTER TABLE ONLY p_ci_pipeline_iids ATTACH PARTITION gitlab_partitions_static.p_ci_pipeline_iids_04 FOR VALUES WITH (modulus 64, remainder 4);
+
+ALTER TABLE ONLY p_ci_pipeline_iids ATTACH PARTITION gitlab_partitions_static.p_ci_pipeline_iids_05 FOR VALUES WITH (modulus 64, remainder 5);
+
+ALTER TABLE ONLY p_ci_pipeline_iids ATTACH PARTITION gitlab_partitions_static.p_ci_pipeline_iids_06 FOR VALUES WITH (modulus 64, remainder 6);
+
+ALTER TABLE ONLY p_ci_pipeline_iids ATTACH PARTITION gitlab_partitions_static.p_ci_pipeline_iids_07 FOR VALUES WITH (modulus 64, remainder 7);
+
+ALTER TABLE ONLY p_ci_pipeline_iids ATTACH PARTITION gitlab_partitions_static.p_ci_pipeline_iids_08 FOR VALUES WITH (modulus 64, remainder 8);
+
+ALTER TABLE ONLY p_ci_pipeline_iids ATTACH PARTITION gitlab_partitions_static.p_ci_pipeline_iids_09 FOR VALUES WITH (modulus 64, remainder 9);
+
+ALTER TABLE ONLY p_ci_pipeline_iids ATTACH PARTITION gitlab_partitions_static.p_ci_pipeline_iids_10 FOR VALUES WITH (modulus 64, remainder 10);
+
+ALTER TABLE ONLY p_ci_pipeline_iids ATTACH PARTITION gitlab_partitions_static.p_ci_pipeline_iids_11 FOR VALUES WITH (modulus 64, remainder 11);
+
+ALTER TABLE ONLY p_ci_pipeline_iids ATTACH PARTITION gitlab_partitions_static.p_ci_pipeline_iids_12 FOR VALUES WITH (modulus 64, remainder 12);
+
+ALTER TABLE ONLY p_ci_pipeline_iids ATTACH PARTITION gitlab_partitions_static.p_ci_pipeline_iids_13 FOR VALUES WITH (modulus 64, remainder 13);
+
+ALTER TABLE ONLY p_ci_pipeline_iids ATTACH PARTITION gitlab_partitions_static.p_ci_pipeline_iids_14 FOR VALUES WITH (modulus 64, remainder 14);
+
+ALTER TABLE ONLY p_ci_pipeline_iids ATTACH PARTITION gitlab_partitions_static.p_ci_pipeline_iids_15 FOR VALUES WITH (modulus 64, remainder 15);
+
+ALTER TABLE ONLY p_ci_pipeline_iids ATTACH PARTITION gitlab_partitions_static.p_ci_pipeline_iids_16 FOR VALUES WITH (modulus 64, remainder 16);
+
+ALTER TABLE ONLY p_ci_pipeline_iids ATTACH PARTITION gitlab_partitions_static.p_ci_pipeline_iids_17 FOR VALUES WITH (modulus 64, remainder 17);
+
+ALTER TABLE ONLY p_ci_pipeline_iids ATTACH PARTITION gitlab_partitions_static.p_ci_pipeline_iids_18 FOR VALUES WITH (modulus 64, remainder 18);
+
+ALTER TABLE ONLY p_ci_pipeline_iids ATTACH PARTITION gitlab_partitions_static.p_ci_pipeline_iids_19 FOR VALUES WITH (modulus 64, remainder 19);
+
+ALTER TABLE ONLY p_ci_pipeline_iids ATTACH PARTITION gitlab_partitions_static.p_ci_pipeline_iids_20 FOR VALUES WITH (modulus 64, remainder 20);
+
+ALTER TABLE ONLY p_ci_pipeline_iids ATTACH PARTITION gitlab_partitions_static.p_ci_pipeline_iids_21 FOR VALUES WITH (modulus 64, remainder 21);
+
+ALTER TABLE ONLY p_ci_pipeline_iids ATTACH PARTITION gitlab_partitions_static.p_ci_pipeline_iids_22 FOR VALUES WITH (modulus 64, remainder 22);
+
+ALTER TABLE ONLY p_ci_pipeline_iids ATTACH PARTITION gitlab_partitions_static.p_ci_pipeline_iids_23 FOR VALUES WITH (modulus 64, remainder 23);
+
+ALTER TABLE ONLY p_ci_pipeline_iids ATTACH PARTITION gitlab_partitions_static.p_ci_pipeline_iids_24 FOR VALUES WITH (modulus 64, remainder 24);
+
+ALTER TABLE ONLY p_ci_pipeline_iids ATTACH PARTITION gitlab_partitions_static.p_ci_pipeline_iids_25 FOR VALUES WITH (modulus 64, remainder 25);
+
+ALTER TABLE ONLY p_ci_pipeline_iids ATTACH PARTITION gitlab_partitions_static.p_ci_pipeline_iids_26 FOR VALUES WITH (modulus 64, remainder 26);
+
+ALTER TABLE ONLY p_ci_pipeline_iids ATTACH PARTITION gitlab_partitions_static.p_ci_pipeline_iids_27 FOR VALUES WITH (modulus 64, remainder 27);
+
+ALTER TABLE ONLY p_ci_pipeline_iids ATTACH PARTITION gitlab_partitions_static.p_ci_pipeline_iids_28 FOR VALUES WITH (modulus 64, remainder 28);
+
+ALTER TABLE ONLY p_ci_pipeline_iids ATTACH PARTITION gitlab_partitions_static.p_ci_pipeline_iids_29 FOR VALUES WITH (modulus 64, remainder 29);
+
+ALTER TABLE ONLY p_ci_pipeline_iids ATTACH PARTITION gitlab_partitions_static.p_ci_pipeline_iids_30 FOR VALUES WITH (modulus 64, remainder 30);
+
+ALTER TABLE ONLY p_ci_pipeline_iids ATTACH PARTITION gitlab_partitions_static.p_ci_pipeline_iids_31 FOR VALUES WITH (modulus 64, remainder 31);
+
+ALTER TABLE ONLY p_ci_pipeline_iids ATTACH PARTITION gitlab_partitions_static.p_ci_pipeline_iids_32 FOR VALUES WITH (modulus 64, remainder 32);
+
+ALTER TABLE ONLY p_ci_pipeline_iids ATTACH PARTITION gitlab_partitions_static.p_ci_pipeline_iids_33 FOR VALUES WITH (modulus 64, remainder 33);
+
+ALTER TABLE ONLY p_ci_pipeline_iids ATTACH PARTITION gitlab_partitions_static.p_ci_pipeline_iids_34 FOR VALUES WITH (modulus 64, remainder 34);
+
+ALTER TABLE ONLY p_ci_pipeline_iids ATTACH PARTITION gitlab_partitions_static.p_ci_pipeline_iids_35 FOR VALUES WITH (modulus 64, remainder 35);
+
+ALTER TABLE ONLY p_ci_pipeline_iids ATTACH PARTITION gitlab_partitions_static.p_ci_pipeline_iids_36 FOR VALUES WITH (modulus 64, remainder 36);
+
+ALTER TABLE ONLY p_ci_pipeline_iids ATTACH PARTITION gitlab_partitions_static.p_ci_pipeline_iids_37 FOR VALUES WITH (modulus 64, remainder 37);
+
+ALTER TABLE ONLY p_ci_pipeline_iids ATTACH PARTITION gitlab_partitions_static.p_ci_pipeline_iids_38 FOR VALUES WITH (modulus 64, remainder 38);
+
+ALTER TABLE ONLY p_ci_pipeline_iids ATTACH PARTITION gitlab_partitions_static.p_ci_pipeline_iids_39 FOR VALUES WITH (modulus 64, remainder 39);
+
+ALTER TABLE ONLY p_ci_pipeline_iids ATTACH PARTITION gitlab_partitions_static.p_ci_pipeline_iids_40 FOR VALUES WITH (modulus 64, remainder 40);
+
+ALTER TABLE ONLY p_ci_pipeline_iids ATTACH PARTITION gitlab_partitions_static.p_ci_pipeline_iids_41 FOR VALUES WITH (modulus 64, remainder 41);
+
+ALTER TABLE ONLY p_ci_pipeline_iids ATTACH PARTITION gitlab_partitions_static.p_ci_pipeline_iids_42 FOR VALUES WITH (modulus 64, remainder 42);
+
+ALTER TABLE ONLY p_ci_pipeline_iids ATTACH PARTITION gitlab_partitions_static.p_ci_pipeline_iids_43 FOR VALUES WITH (modulus 64, remainder 43);
+
+ALTER TABLE ONLY p_ci_pipeline_iids ATTACH PARTITION gitlab_partitions_static.p_ci_pipeline_iids_44 FOR VALUES WITH (modulus 64, remainder 44);
+
+ALTER TABLE ONLY p_ci_pipeline_iids ATTACH PARTITION gitlab_partitions_static.p_ci_pipeline_iids_45 FOR VALUES WITH (modulus 64, remainder 45);
+
+ALTER TABLE ONLY p_ci_pipeline_iids ATTACH PARTITION gitlab_partitions_static.p_ci_pipeline_iids_46 FOR VALUES WITH (modulus 64, remainder 46);
+
+ALTER TABLE ONLY p_ci_pipeline_iids ATTACH PARTITION gitlab_partitions_static.p_ci_pipeline_iids_47 FOR VALUES WITH (modulus 64, remainder 47);
+
+ALTER TABLE ONLY p_ci_pipeline_iids ATTACH PARTITION gitlab_partitions_static.p_ci_pipeline_iids_48 FOR VALUES WITH (modulus 64, remainder 48);
+
+ALTER TABLE ONLY p_ci_pipeline_iids ATTACH PARTITION gitlab_partitions_static.p_ci_pipeline_iids_49 FOR VALUES WITH (modulus 64, remainder 49);
+
+ALTER TABLE ONLY p_ci_pipeline_iids ATTACH PARTITION gitlab_partitions_static.p_ci_pipeline_iids_50 FOR VALUES WITH (modulus 64, remainder 50);
+
+ALTER TABLE ONLY p_ci_pipeline_iids ATTACH PARTITION gitlab_partitions_static.p_ci_pipeline_iids_51 FOR VALUES WITH (modulus 64, remainder 51);
+
+ALTER TABLE ONLY p_ci_pipeline_iids ATTACH PARTITION gitlab_partitions_static.p_ci_pipeline_iids_52 FOR VALUES WITH (modulus 64, remainder 52);
+
+ALTER TABLE ONLY p_ci_pipeline_iids ATTACH PARTITION gitlab_partitions_static.p_ci_pipeline_iids_53 FOR VALUES WITH (modulus 64, remainder 53);
+
+ALTER TABLE ONLY p_ci_pipeline_iids ATTACH PARTITION gitlab_partitions_static.p_ci_pipeline_iids_54 FOR VALUES WITH (modulus 64, remainder 54);
+
+ALTER TABLE ONLY p_ci_pipeline_iids ATTACH PARTITION gitlab_partitions_static.p_ci_pipeline_iids_55 FOR VALUES WITH (modulus 64, remainder 55);
+
+ALTER TABLE ONLY p_ci_pipeline_iids ATTACH PARTITION gitlab_partitions_static.p_ci_pipeline_iids_56 FOR VALUES WITH (modulus 64, remainder 56);
+
+ALTER TABLE ONLY p_ci_pipeline_iids ATTACH PARTITION gitlab_partitions_static.p_ci_pipeline_iids_57 FOR VALUES WITH (modulus 64, remainder 57);
+
+ALTER TABLE ONLY p_ci_pipeline_iids ATTACH PARTITION gitlab_partitions_static.p_ci_pipeline_iids_58 FOR VALUES WITH (modulus 64, remainder 58);
+
+ALTER TABLE ONLY p_ci_pipeline_iids ATTACH PARTITION gitlab_partitions_static.p_ci_pipeline_iids_59 FOR VALUES WITH (modulus 64, remainder 59);
+
+ALTER TABLE ONLY p_ci_pipeline_iids ATTACH PARTITION gitlab_partitions_static.p_ci_pipeline_iids_60 FOR VALUES WITH (modulus 64, remainder 60);
+
+ALTER TABLE ONLY p_ci_pipeline_iids ATTACH PARTITION gitlab_partitions_static.p_ci_pipeline_iids_61 FOR VALUES WITH (modulus 64, remainder 61);
+
+ALTER TABLE ONLY p_ci_pipeline_iids ATTACH PARTITION gitlab_partitions_static.p_ci_pipeline_iids_62 FOR VALUES WITH (modulus 64, remainder 62);
+
+ALTER TABLE ONLY p_ci_pipeline_iids ATTACH PARTITION gitlab_partitions_static.p_ci_pipeline_iids_63 FOR VALUES WITH (modulus 64, remainder 63);
+
 ALTER TABLE ONLY virtual_registries_container_cache_entries ATTACH PARTITION gitlab_partitions_static.virtual_registries_container_cache_entries_00 FOR VALUES WITH (modulus 16, remainder 0);
 
 ALTER TABLE ONLY virtual_registries_container_cache_entries ATTACH PARTITION gitlab_partitions_static.virtual_registries_container_cache_entries_01 FOR VALUES WITH (modulus 16, remainder 1);
@@ -32992,6 +33446,201 @@ ALTER TABLE ONLY gitlab_partitions_static.namespace_descendants_30
 
 ALTER TABLE ONLY gitlab_partitions_static.namespace_descendants_31
     ADD CONSTRAINT namespace_descendants_31_pkey PRIMARY KEY (namespace_id);
+
+ALTER TABLE ONLY p_ci_pipeline_iids
+    ADD CONSTRAINT p_ci_pipeline_iids_pkey PRIMARY KEY (project_id, iid);
+
+ALTER TABLE ONLY gitlab_partitions_static.p_ci_pipeline_iids_00
+    ADD CONSTRAINT p_ci_pipeline_iids_00_pkey PRIMARY KEY (project_id, iid);
+
+ALTER TABLE ONLY gitlab_partitions_static.p_ci_pipeline_iids_01
+    ADD CONSTRAINT p_ci_pipeline_iids_01_pkey PRIMARY KEY (project_id, iid);
+
+ALTER TABLE ONLY gitlab_partitions_static.p_ci_pipeline_iids_02
+    ADD CONSTRAINT p_ci_pipeline_iids_02_pkey PRIMARY KEY (project_id, iid);
+
+ALTER TABLE ONLY gitlab_partitions_static.p_ci_pipeline_iids_03
+    ADD CONSTRAINT p_ci_pipeline_iids_03_pkey PRIMARY KEY (project_id, iid);
+
+ALTER TABLE ONLY gitlab_partitions_static.p_ci_pipeline_iids_04
+    ADD CONSTRAINT p_ci_pipeline_iids_04_pkey PRIMARY KEY (project_id, iid);
+
+ALTER TABLE ONLY gitlab_partitions_static.p_ci_pipeline_iids_05
+    ADD CONSTRAINT p_ci_pipeline_iids_05_pkey PRIMARY KEY (project_id, iid);
+
+ALTER TABLE ONLY gitlab_partitions_static.p_ci_pipeline_iids_06
+    ADD CONSTRAINT p_ci_pipeline_iids_06_pkey PRIMARY KEY (project_id, iid);
+
+ALTER TABLE ONLY gitlab_partitions_static.p_ci_pipeline_iids_07
+    ADD CONSTRAINT p_ci_pipeline_iids_07_pkey PRIMARY KEY (project_id, iid);
+
+ALTER TABLE ONLY gitlab_partitions_static.p_ci_pipeline_iids_08
+    ADD CONSTRAINT p_ci_pipeline_iids_08_pkey PRIMARY KEY (project_id, iid);
+
+ALTER TABLE ONLY gitlab_partitions_static.p_ci_pipeline_iids_09
+    ADD CONSTRAINT p_ci_pipeline_iids_09_pkey PRIMARY KEY (project_id, iid);
+
+ALTER TABLE ONLY gitlab_partitions_static.p_ci_pipeline_iids_10
+    ADD CONSTRAINT p_ci_pipeline_iids_10_pkey PRIMARY KEY (project_id, iid);
+
+ALTER TABLE ONLY gitlab_partitions_static.p_ci_pipeline_iids_11
+    ADD CONSTRAINT p_ci_pipeline_iids_11_pkey PRIMARY KEY (project_id, iid);
+
+ALTER TABLE ONLY gitlab_partitions_static.p_ci_pipeline_iids_12
+    ADD CONSTRAINT p_ci_pipeline_iids_12_pkey PRIMARY KEY (project_id, iid);
+
+ALTER TABLE ONLY gitlab_partitions_static.p_ci_pipeline_iids_13
+    ADD CONSTRAINT p_ci_pipeline_iids_13_pkey PRIMARY KEY (project_id, iid);
+
+ALTER TABLE ONLY gitlab_partitions_static.p_ci_pipeline_iids_14
+    ADD CONSTRAINT p_ci_pipeline_iids_14_pkey PRIMARY KEY (project_id, iid);
+
+ALTER TABLE ONLY gitlab_partitions_static.p_ci_pipeline_iids_15
+    ADD CONSTRAINT p_ci_pipeline_iids_15_pkey PRIMARY KEY (project_id, iid);
+
+ALTER TABLE ONLY gitlab_partitions_static.p_ci_pipeline_iids_16
+    ADD CONSTRAINT p_ci_pipeline_iids_16_pkey PRIMARY KEY (project_id, iid);
+
+ALTER TABLE ONLY gitlab_partitions_static.p_ci_pipeline_iids_17
+    ADD CONSTRAINT p_ci_pipeline_iids_17_pkey PRIMARY KEY (project_id, iid);
+
+ALTER TABLE ONLY gitlab_partitions_static.p_ci_pipeline_iids_18
+    ADD CONSTRAINT p_ci_pipeline_iids_18_pkey PRIMARY KEY (project_id, iid);
+
+ALTER TABLE ONLY gitlab_partitions_static.p_ci_pipeline_iids_19
+    ADD CONSTRAINT p_ci_pipeline_iids_19_pkey PRIMARY KEY (project_id, iid);
+
+ALTER TABLE ONLY gitlab_partitions_static.p_ci_pipeline_iids_20
+    ADD CONSTRAINT p_ci_pipeline_iids_20_pkey PRIMARY KEY (project_id, iid);
+
+ALTER TABLE ONLY gitlab_partitions_static.p_ci_pipeline_iids_21
+    ADD CONSTRAINT p_ci_pipeline_iids_21_pkey PRIMARY KEY (project_id, iid);
+
+ALTER TABLE ONLY gitlab_partitions_static.p_ci_pipeline_iids_22
+    ADD CONSTRAINT p_ci_pipeline_iids_22_pkey PRIMARY KEY (project_id, iid);
+
+ALTER TABLE ONLY gitlab_partitions_static.p_ci_pipeline_iids_23
+    ADD CONSTRAINT p_ci_pipeline_iids_23_pkey PRIMARY KEY (project_id, iid);
+
+ALTER TABLE ONLY gitlab_partitions_static.p_ci_pipeline_iids_24
+    ADD CONSTRAINT p_ci_pipeline_iids_24_pkey PRIMARY KEY (project_id, iid);
+
+ALTER TABLE ONLY gitlab_partitions_static.p_ci_pipeline_iids_25
+    ADD CONSTRAINT p_ci_pipeline_iids_25_pkey PRIMARY KEY (project_id, iid);
+
+ALTER TABLE ONLY gitlab_partitions_static.p_ci_pipeline_iids_26
+    ADD CONSTRAINT p_ci_pipeline_iids_26_pkey PRIMARY KEY (project_id, iid);
+
+ALTER TABLE ONLY gitlab_partitions_static.p_ci_pipeline_iids_27
+    ADD CONSTRAINT p_ci_pipeline_iids_27_pkey PRIMARY KEY (project_id, iid);
+
+ALTER TABLE ONLY gitlab_partitions_static.p_ci_pipeline_iids_28
+    ADD CONSTRAINT p_ci_pipeline_iids_28_pkey PRIMARY KEY (project_id, iid);
+
+ALTER TABLE ONLY gitlab_partitions_static.p_ci_pipeline_iids_29
+    ADD CONSTRAINT p_ci_pipeline_iids_29_pkey PRIMARY KEY (project_id, iid);
+
+ALTER TABLE ONLY gitlab_partitions_static.p_ci_pipeline_iids_30
+    ADD CONSTRAINT p_ci_pipeline_iids_30_pkey PRIMARY KEY (project_id, iid);
+
+ALTER TABLE ONLY gitlab_partitions_static.p_ci_pipeline_iids_31
+    ADD CONSTRAINT p_ci_pipeline_iids_31_pkey PRIMARY KEY (project_id, iid);
+
+ALTER TABLE ONLY gitlab_partitions_static.p_ci_pipeline_iids_32
+    ADD CONSTRAINT p_ci_pipeline_iids_32_pkey PRIMARY KEY (project_id, iid);
+
+ALTER TABLE ONLY gitlab_partitions_static.p_ci_pipeline_iids_33
+    ADD CONSTRAINT p_ci_pipeline_iids_33_pkey PRIMARY KEY (project_id, iid);
+
+ALTER TABLE ONLY gitlab_partitions_static.p_ci_pipeline_iids_34
+    ADD CONSTRAINT p_ci_pipeline_iids_34_pkey PRIMARY KEY (project_id, iid);
+
+ALTER TABLE ONLY gitlab_partitions_static.p_ci_pipeline_iids_35
+    ADD CONSTRAINT p_ci_pipeline_iids_35_pkey PRIMARY KEY (project_id, iid);
+
+ALTER TABLE ONLY gitlab_partitions_static.p_ci_pipeline_iids_36
+    ADD CONSTRAINT p_ci_pipeline_iids_36_pkey PRIMARY KEY (project_id, iid);
+
+ALTER TABLE ONLY gitlab_partitions_static.p_ci_pipeline_iids_37
+    ADD CONSTRAINT p_ci_pipeline_iids_37_pkey PRIMARY KEY (project_id, iid);
+
+ALTER TABLE ONLY gitlab_partitions_static.p_ci_pipeline_iids_38
+    ADD CONSTRAINT p_ci_pipeline_iids_38_pkey PRIMARY KEY (project_id, iid);
+
+ALTER TABLE ONLY gitlab_partitions_static.p_ci_pipeline_iids_39
+    ADD CONSTRAINT p_ci_pipeline_iids_39_pkey PRIMARY KEY (project_id, iid);
+
+ALTER TABLE ONLY gitlab_partitions_static.p_ci_pipeline_iids_40
+    ADD CONSTRAINT p_ci_pipeline_iids_40_pkey PRIMARY KEY (project_id, iid);
+
+ALTER TABLE ONLY gitlab_partitions_static.p_ci_pipeline_iids_41
+    ADD CONSTRAINT p_ci_pipeline_iids_41_pkey PRIMARY KEY (project_id, iid);
+
+ALTER TABLE ONLY gitlab_partitions_static.p_ci_pipeline_iids_42
+    ADD CONSTRAINT p_ci_pipeline_iids_42_pkey PRIMARY KEY (project_id, iid);
+
+ALTER TABLE ONLY gitlab_partitions_static.p_ci_pipeline_iids_43
+    ADD CONSTRAINT p_ci_pipeline_iids_43_pkey PRIMARY KEY (project_id, iid);
+
+ALTER TABLE ONLY gitlab_partitions_static.p_ci_pipeline_iids_44
+    ADD CONSTRAINT p_ci_pipeline_iids_44_pkey PRIMARY KEY (project_id, iid);
+
+ALTER TABLE ONLY gitlab_partitions_static.p_ci_pipeline_iids_45
+    ADD CONSTRAINT p_ci_pipeline_iids_45_pkey PRIMARY KEY (project_id, iid);
+
+ALTER TABLE ONLY gitlab_partitions_static.p_ci_pipeline_iids_46
+    ADD CONSTRAINT p_ci_pipeline_iids_46_pkey PRIMARY KEY (project_id, iid);
+
+ALTER TABLE ONLY gitlab_partitions_static.p_ci_pipeline_iids_47
+    ADD CONSTRAINT p_ci_pipeline_iids_47_pkey PRIMARY KEY (project_id, iid);
+
+ALTER TABLE ONLY gitlab_partitions_static.p_ci_pipeline_iids_48
+    ADD CONSTRAINT p_ci_pipeline_iids_48_pkey PRIMARY KEY (project_id, iid);
+
+ALTER TABLE ONLY gitlab_partitions_static.p_ci_pipeline_iids_49
+    ADD CONSTRAINT p_ci_pipeline_iids_49_pkey PRIMARY KEY (project_id, iid);
+
+ALTER TABLE ONLY gitlab_partitions_static.p_ci_pipeline_iids_50
+    ADD CONSTRAINT p_ci_pipeline_iids_50_pkey PRIMARY KEY (project_id, iid);
+
+ALTER TABLE ONLY gitlab_partitions_static.p_ci_pipeline_iids_51
+    ADD CONSTRAINT p_ci_pipeline_iids_51_pkey PRIMARY KEY (project_id, iid);
+
+ALTER TABLE ONLY gitlab_partitions_static.p_ci_pipeline_iids_52
+    ADD CONSTRAINT p_ci_pipeline_iids_52_pkey PRIMARY KEY (project_id, iid);
+
+ALTER TABLE ONLY gitlab_partitions_static.p_ci_pipeline_iids_53
+    ADD CONSTRAINT p_ci_pipeline_iids_53_pkey PRIMARY KEY (project_id, iid);
+
+ALTER TABLE ONLY gitlab_partitions_static.p_ci_pipeline_iids_54
+    ADD CONSTRAINT p_ci_pipeline_iids_54_pkey PRIMARY KEY (project_id, iid);
+
+ALTER TABLE ONLY gitlab_partitions_static.p_ci_pipeline_iids_55
+    ADD CONSTRAINT p_ci_pipeline_iids_55_pkey PRIMARY KEY (project_id, iid);
+
+ALTER TABLE ONLY gitlab_partitions_static.p_ci_pipeline_iids_56
+    ADD CONSTRAINT p_ci_pipeline_iids_56_pkey PRIMARY KEY (project_id, iid);
+
+ALTER TABLE ONLY gitlab_partitions_static.p_ci_pipeline_iids_57
+    ADD CONSTRAINT p_ci_pipeline_iids_57_pkey PRIMARY KEY (project_id, iid);
+
+ALTER TABLE ONLY gitlab_partitions_static.p_ci_pipeline_iids_58
+    ADD CONSTRAINT p_ci_pipeline_iids_58_pkey PRIMARY KEY (project_id, iid);
+
+ALTER TABLE ONLY gitlab_partitions_static.p_ci_pipeline_iids_59
+    ADD CONSTRAINT p_ci_pipeline_iids_59_pkey PRIMARY KEY (project_id, iid);
+
+ALTER TABLE ONLY gitlab_partitions_static.p_ci_pipeline_iids_60
+    ADD CONSTRAINT p_ci_pipeline_iids_60_pkey PRIMARY KEY (project_id, iid);
+
+ALTER TABLE ONLY gitlab_partitions_static.p_ci_pipeline_iids_61
+    ADD CONSTRAINT p_ci_pipeline_iids_61_pkey PRIMARY KEY (project_id, iid);
+
+ALTER TABLE ONLY gitlab_partitions_static.p_ci_pipeline_iids_62
+    ADD CONSTRAINT p_ci_pipeline_iids_62_pkey PRIMARY KEY (project_id, iid);
+
+ALTER TABLE ONLY gitlab_partitions_static.p_ci_pipeline_iids_63
+    ADD CONSTRAINT p_ci_pipeline_iids_63_pkey PRIMARY KEY (project_id, iid);
 
 ALTER TABLE ONLY virtual_registries_container_cache_entries
     ADD CONSTRAINT virtual_registries_container_cache_entries_pkey PRIMARY KEY (upstream_id, relative_path, status);
@@ -46367,6 +47016,134 @@ ALTER INDEX namespace_descendants_pkey ATTACH PARTITION gitlab_partitions_static
 ALTER INDEX index_on_namespace_descendants_outdated ATTACH PARTITION gitlab_partitions_static.namespace_descendants_31_namespace_id_idx;
 
 ALTER INDEX namespace_descendants_pkey ATTACH PARTITION gitlab_partitions_static.namespace_descendants_31_pkey;
+
+ALTER INDEX p_ci_pipeline_iids_pkey ATTACH PARTITION gitlab_partitions_static.p_ci_pipeline_iids_00_pkey;
+
+ALTER INDEX p_ci_pipeline_iids_pkey ATTACH PARTITION gitlab_partitions_static.p_ci_pipeline_iids_01_pkey;
+
+ALTER INDEX p_ci_pipeline_iids_pkey ATTACH PARTITION gitlab_partitions_static.p_ci_pipeline_iids_02_pkey;
+
+ALTER INDEX p_ci_pipeline_iids_pkey ATTACH PARTITION gitlab_partitions_static.p_ci_pipeline_iids_03_pkey;
+
+ALTER INDEX p_ci_pipeline_iids_pkey ATTACH PARTITION gitlab_partitions_static.p_ci_pipeline_iids_04_pkey;
+
+ALTER INDEX p_ci_pipeline_iids_pkey ATTACH PARTITION gitlab_partitions_static.p_ci_pipeline_iids_05_pkey;
+
+ALTER INDEX p_ci_pipeline_iids_pkey ATTACH PARTITION gitlab_partitions_static.p_ci_pipeline_iids_06_pkey;
+
+ALTER INDEX p_ci_pipeline_iids_pkey ATTACH PARTITION gitlab_partitions_static.p_ci_pipeline_iids_07_pkey;
+
+ALTER INDEX p_ci_pipeline_iids_pkey ATTACH PARTITION gitlab_partitions_static.p_ci_pipeline_iids_08_pkey;
+
+ALTER INDEX p_ci_pipeline_iids_pkey ATTACH PARTITION gitlab_partitions_static.p_ci_pipeline_iids_09_pkey;
+
+ALTER INDEX p_ci_pipeline_iids_pkey ATTACH PARTITION gitlab_partitions_static.p_ci_pipeline_iids_10_pkey;
+
+ALTER INDEX p_ci_pipeline_iids_pkey ATTACH PARTITION gitlab_partitions_static.p_ci_pipeline_iids_11_pkey;
+
+ALTER INDEX p_ci_pipeline_iids_pkey ATTACH PARTITION gitlab_partitions_static.p_ci_pipeline_iids_12_pkey;
+
+ALTER INDEX p_ci_pipeline_iids_pkey ATTACH PARTITION gitlab_partitions_static.p_ci_pipeline_iids_13_pkey;
+
+ALTER INDEX p_ci_pipeline_iids_pkey ATTACH PARTITION gitlab_partitions_static.p_ci_pipeline_iids_14_pkey;
+
+ALTER INDEX p_ci_pipeline_iids_pkey ATTACH PARTITION gitlab_partitions_static.p_ci_pipeline_iids_15_pkey;
+
+ALTER INDEX p_ci_pipeline_iids_pkey ATTACH PARTITION gitlab_partitions_static.p_ci_pipeline_iids_16_pkey;
+
+ALTER INDEX p_ci_pipeline_iids_pkey ATTACH PARTITION gitlab_partitions_static.p_ci_pipeline_iids_17_pkey;
+
+ALTER INDEX p_ci_pipeline_iids_pkey ATTACH PARTITION gitlab_partitions_static.p_ci_pipeline_iids_18_pkey;
+
+ALTER INDEX p_ci_pipeline_iids_pkey ATTACH PARTITION gitlab_partitions_static.p_ci_pipeline_iids_19_pkey;
+
+ALTER INDEX p_ci_pipeline_iids_pkey ATTACH PARTITION gitlab_partitions_static.p_ci_pipeline_iids_20_pkey;
+
+ALTER INDEX p_ci_pipeline_iids_pkey ATTACH PARTITION gitlab_partitions_static.p_ci_pipeline_iids_21_pkey;
+
+ALTER INDEX p_ci_pipeline_iids_pkey ATTACH PARTITION gitlab_partitions_static.p_ci_pipeline_iids_22_pkey;
+
+ALTER INDEX p_ci_pipeline_iids_pkey ATTACH PARTITION gitlab_partitions_static.p_ci_pipeline_iids_23_pkey;
+
+ALTER INDEX p_ci_pipeline_iids_pkey ATTACH PARTITION gitlab_partitions_static.p_ci_pipeline_iids_24_pkey;
+
+ALTER INDEX p_ci_pipeline_iids_pkey ATTACH PARTITION gitlab_partitions_static.p_ci_pipeline_iids_25_pkey;
+
+ALTER INDEX p_ci_pipeline_iids_pkey ATTACH PARTITION gitlab_partitions_static.p_ci_pipeline_iids_26_pkey;
+
+ALTER INDEX p_ci_pipeline_iids_pkey ATTACH PARTITION gitlab_partitions_static.p_ci_pipeline_iids_27_pkey;
+
+ALTER INDEX p_ci_pipeline_iids_pkey ATTACH PARTITION gitlab_partitions_static.p_ci_pipeline_iids_28_pkey;
+
+ALTER INDEX p_ci_pipeline_iids_pkey ATTACH PARTITION gitlab_partitions_static.p_ci_pipeline_iids_29_pkey;
+
+ALTER INDEX p_ci_pipeline_iids_pkey ATTACH PARTITION gitlab_partitions_static.p_ci_pipeline_iids_30_pkey;
+
+ALTER INDEX p_ci_pipeline_iids_pkey ATTACH PARTITION gitlab_partitions_static.p_ci_pipeline_iids_31_pkey;
+
+ALTER INDEX p_ci_pipeline_iids_pkey ATTACH PARTITION gitlab_partitions_static.p_ci_pipeline_iids_32_pkey;
+
+ALTER INDEX p_ci_pipeline_iids_pkey ATTACH PARTITION gitlab_partitions_static.p_ci_pipeline_iids_33_pkey;
+
+ALTER INDEX p_ci_pipeline_iids_pkey ATTACH PARTITION gitlab_partitions_static.p_ci_pipeline_iids_34_pkey;
+
+ALTER INDEX p_ci_pipeline_iids_pkey ATTACH PARTITION gitlab_partitions_static.p_ci_pipeline_iids_35_pkey;
+
+ALTER INDEX p_ci_pipeline_iids_pkey ATTACH PARTITION gitlab_partitions_static.p_ci_pipeline_iids_36_pkey;
+
+ALTER INDEX p_ci_pipeline_iids_pkey ATTACH PARTITION gitlab_partitions_static.p_ci_pipeline_iids_37_pkey;
+
+ALTER INDEX p_ci_pipeline_iids_pkey ATTACH PARTITION gitlab_partitions_static.p_ci_pipeline_iids_38_pkey;
+
+ALTER INDEX p_ci_pipeline_iids_pkey ATTACH PARTITION gitlab_partitions_static.p_ci_pipeline_iids_39_pkey;
+
+ALTER INDEX p_ci_pipeline_iids_pkey ATTACH PARTITION gitlab_partitions_static.p_ci_pipeline_iids_40_pkey;
+
+ALTER INDEX p_ci_pipeline_iids_pkey ATTACH PARTITION gitlab_partitions_static.p_ci_pipeline_iids_41_pkey;
+
+ALTER INDEX p_ci_pipeline_iids_pkey ATTACH PARTITION gitlab_partitions_static.p_ci_pipeline_iids_42_pkey;
+
+ALTER INDEX p_ci_pipeline_iids_pkey ATTACH PARTITION gitlab_partitions_static.p_ci_pipeline_iids_43_pkey;
+
+ALTER INDEX p_ci_pipeline_iids_pkey ATTACH PARTITION gitlab_partitions_static.p_ci_pipeline_iids_44_pkey;
+
+ALTER INDEX p_ci_pipeline_iids_pkey ATTACH PARTITION gitlab_partitions_static.p_ci_pipeline_iids_45_pkey;
+
+ALTER INDEX p_ci_pipeline_iids_pkey ATTACH PARTITION gitlab_partitions_static.p_ci_pipeline_iids_46_pkey;
+
+ALTER INDEX p_ci_pipeline_iids_pkey ATTACH PARTITION gitlab_partitions_static.p_ci_pipeline_iids_47_pkey;
+
+ALTER INDEX p_ci_pipeline_iids_pkey ATTACH PARTITION gitlab_partitions_static.p_ci_pipeline_iids_48_pkey;
+
+ALTER INDEX p_ci_pipeline_iids_pkey ATTACH PARTITION gitlab_partitions_static.p_ci_pipeline_iids_49_pkey;
+
+ALTER INDEX p_ci_pipeline_iids_pkey ATTACH PARTITION gitlab_partitions_static.p_ci_pipeline_iids_50_pkey;
+
+ALTER INDEX p_ci_pipeline_iids_pkey ATTACH PARTITION gitlab_partitions_static.p_ci_pipeline_iids_51_pkey;
+
+ALTER INDEX p_ci_pipeline_iids_pkey ATTACH PARTITION gitlab_partitions_static.p_ci_pipeline_iids_52_pkey;
+
+ALTER INDEX p_ci_pipeline_iids_pkey ATTACH PARTITION gitlab_partitions_static.p_ci_pipeline_iids_53_pkey;
+
+ALTER INDEX p_ci_pipeline_iids_pkey ATTACH PARTITION gitlab_partitions_static.p_ci_pipeline_iids_54_pkey;
+
+ALTER INDEX p_ci_pipeline_iids_pkey ATTACH PARTITION gitlab_partitions_static.p_ci_pipeline_iids_55_pkey;
+
+ALTER INDEX p_ci_pipeline_iids_pkey ATTACH PARTITION gitlab_partitions_static.p_ci_pipeline_iids_56_pkey;
+
+ALTER INDEX p_ci_pipeline_iids_pkey ATTACH PARTITION gitlab_partitions_static.p_ci_pipeline_iids_57_pkey;
+
+ALTER INDEX p_ci_pipeline_iids_pkey ATTACH PARTITION gitlab_partitions_static.p_ci_pipeline_iids_58_pkey;
+
+ALTER INDEX p_ci_pipeline_iids_pkey ATTACH PARTITION gitlab_partitions_static.p_ci_pipeline_iids_59_pkey;
+
+ALTER INDEX p_ci_pipeline_iids_pkey ATTACH PARTITION gitlab_partitions_static.p_ci_pipeline_iids_60_pkey;
+
+ALTER INDEX p_ci_pipeline_iids_pkey ATTACH PARTITION gitlab_partitions_static.p_ci_pipeline_iids_61_pkey;
+
+ALTER INDEX p_ci_pipeline_iids_pkey ATTACH PARTITION gitlab_partitions_static.p_ci_pipeline_iids_62_pkey;
+
+ALTER INDEX p_ci_pipeline_iids_pkey ATTACH PARTITION gitlab_partitions_static.p_ci_pipeline_iids_63_pkey;
 
 ALTER INDEX idx_vregs_container_cache_entries_on_upt_id_relpath ATTACH PARTITION gitlab_partitions_static.virtual_registries_container_ca_upstream_id_relative_path_idx10;
 
