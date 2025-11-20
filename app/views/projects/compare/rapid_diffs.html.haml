@@ -2,8 +2,6 @@
 - container_class = fluid_layout ? '' : 'container-limited'
 - add_to_breadcrumbs s_("CompareRevisions|Compare revisions"), project_compare_index_path(@project)
 - page_title "#{params[:from]} to #{params[:to]}"
--# Only show commit list in the first page
-- hide_commit_list = params[:page].present? && params[:page] != '1'
 - add_page_specific_style 'page_bundles/merge_requests'
 - add_page_specific_style 'page_bundles/compare_rapid_diffs'
 
@@ -12,24 +10,7 @@
     .js-signature-container{ data: { 'signatures-path' => signatures_namespace_project_compare_index_path } }
       #js-compare-selector{ data: project_compare_selector_data(@project, @merge_request, params) }
 
-- if @commits.present?
-  .container-fluid{ class: [container_class] }
-    = render "projects/commits/commit_list" unless hide_commit_list
-  .container-fluid
-    = render ::RapidDiffs::AppComponent.new(@rapid_diffs_presenter)
-- else
-  .container-fluid
-    = render Pajamas::CardComponent.new(card_options: { class: "gl-bg-subtle" }) do |c|
-      - c.with_body do
-        = render Pajamas::EmptyStateComponent.new(svg_path: 'illustrations/empty-state/empty-commit-md.svg',
-          title: s_("CompareRevisions|There isn't anything to compare")) do |c|
-
-          - c.with_description do
-            - if params[:to] == params[:from]
-              - source_branch = capture do
-                %span.ref-name= params[:from]
-              - target_branch = capture do
-                %span.ref-name= params[:to]
-              = (s_("CompareRevisions|%{source_branch} and %{target_branch} are the same.") % { source_branch: source_branch, target_branch: target_branch }).html_safe
-            - else
-              = _("To get a valid comparison, select two different branches.")
+.container-fluid{ class: [container_class] }
+  = render "projects/commits/commit_list"
+.container-fluid
+  = render ::RapidDiffs::AppComponent.new(@rapid_diffs_presenter)

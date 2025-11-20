@@ -17,6 +17,7 @@ module HomepageData
       assigned_merge_requests_path: merge_requests_dashboard_path,
       assigned_work_items_path: issues_dashboard_path(assignee_username: user.username),
       authored_work_items_path: issues_dashboard_path(author_username: user.username),
+      preferences_path: profile_preferences_path(anchor: 'behavior'),
       duo_code_review_bot_username: duo_code_review_bot.username,
       merge_requests_review_requested_title: dashboard_list_title(mr_requested_id),
       merge_requests_your_merge_requests_title: dashboard_list_title(mr_requests_id),

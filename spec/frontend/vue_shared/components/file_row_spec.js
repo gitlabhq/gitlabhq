@@ -253,6 +253,28 @@ describe('File row component', () => {
     });
   });
 
+  describe('rovingTabindex prop', () => {
+    it('sets tabindex to 0 by default', () => {
+      createComponent({
+        file: file('test.txt'),
+        level: 0,
+        rovingTabindex: false,
+      });
+
+      expect(findFileButton().attributes('tabindex')).toBe('0');
+    });
+
+    it('sets tabindex to -1 when rovingTabindex is true', () => {
+      createComponent({
+        file: file('test.txt'),
+        level: 0,
+        rovingTabindex: true,
+      });
+
+      expect(findFileButton().attributes('tabindex')).toBe('-1');
+    });
+  });
+
   describe('Tree toggle chevron button', () => {
     const findChevronButton = () => wrapper.findByTestId('tree-toggle-button');
     const folderPath = 'path/to/folder';

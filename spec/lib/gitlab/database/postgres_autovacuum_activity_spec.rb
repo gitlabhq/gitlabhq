@@ -39,28 +39,14 @@ RSpec.describe Gitlab::Database::PostgresAutovacuumActivity, type: :model, featu
     end
 
     context 'with partitioned tables' do
-      let(:partitioned_table) { 'partitioned_events' }
-      let(:regular_table) { 'regular_table' }
+      let(:partitioned_table) { '_test_table_partitioned_events' }
+      let(:regular_table) { '_test_table_regular_events' }
       let(:tables) { [partitioned_table, regular_table] }
       let(:partition_schema) { 'gitlab_partitions_dynamic' }
-      let(:partition_name) { 'partitioned_events_202310' }
+      let(:partition_name) { '_test_table_partitioned_events_1' }
 
       before do
-        allow(Gitlab::Database::PostgresPartitionedTable)
-          .to receive(:find_by_name_in_current_schema)
-          .with(partitioned_table)
-          .and_return(instance_double(Gitlab::Database::PostgresPartitionedTable, present?: true))
-
-        allow(Gitlab::Database::PostgresPartitionedTable)
-          .to receive(:find_by_name_in_current_schema)
-          .with(regular_table)
-          .and_return(nil)
-
-        allow(Gitlab::Database::PostgresPartition)
-          .to receive(:with_parent_tables)
-          .with([partitioned_table])
-          .and_return(instance_double(ActiveRecord::Relation, pluck: [[partition_schema, partition_name]]))
-
+        create_table(partitioned_table, [["#{partition_schema}.#{partition_name}", 1]])
         create(:postgres_autovacuum_activity, table: regular_table, schema: 'public')
         create(:postgres_autovacuum_activity, table: partition_name, schema: partition_schema)
         create(:postgres_autovacuum_activity, table: 'unrelated', schema: 'public')
@@ -81,23 +67,16 @@ RSpec.describe Gitlab::Database::PostgresAutovacuumActivity, type: :model, featu
     end
 
     context 'with only partitioned tables' do
-      let(:partitioned_table) { 'events' }
+      let(:partitioned_table) { '_test_table_partitioned_events' }
       let(:tables) { [partitioned_table] }
       let(:partition_schema) { 'gitlab_partitions_dynamic' }
       let(:partition_names) { %w[events_202310 events_202311] }
 
       before do
-        allow(Gitlab::Database::PostgresPartitionedTable)
-          .to receive(:find_by_name_in_current_schema)
-          .with(partitioned_table)
-          .and_return(instance_double(Gitlab::Database::PostgresPartitionedTable, present?: true))
-
-        partition_data = partition_names.map { |name| [partition_schema, name] }
-        allow(Gitlab::Database::PostgresPartition)
-          .to receive(:with_parent_tables)
-          .with([partitioned_table])
-          .and_return(instance_double(ActiveRecord::Relation, pluck: partition_data))
-
+        create_table(
+          partitioned_table,
+          partition_names.map.with_index { |name, index| ["#{partition_schema}.#{name}", index] }
+        )
         partition_names.each do |partition_name|
           create(:postgres_autovacuum_activity, table: partition_name, schema: partition_schema)
         end
@@ -105,9 +84,65 @@ RSpec.describe Gitlab::Database::PostgresAutovacuumActivity, type: :model, featu
 
       it 'returns autovacuum activity for all partitions' do
         result_tables = subject.map { |activity| [activity.schema, activity.table] }
-
         expected_results = partition_names.map { |name| [partition_schema, name] }
         expect(result_tables).to match_array(expected_results)
+      end
+    end
+
+    context 'with partitioned tables, table partitions and regular tables' do
+      let(:partitioned_table) { '_test_table_partitioned_events' }
+      let(:other_partitioned_table) { '_test_table_partitioned_event_details' }
+      let(:regular_table) { '_test_table_regular_events' }
+      let(:partition_schema) { 'gitlab_partitions_dynamic' }
+      let(:partition_names) { %w[_test_table_events_202310 _test_table_events_202311] }
+      let(:other_partition_names) { %w[_test_table_event_details_202410 _test_table_event_details_202411] }
+      let(:specific_partition_name) { "#{partition_schema}.#{other_partition_names.first}" }
+      let(:tables) { [partitioned_table, regular_table, specific_partition_name] }
+
+      before do
+        create_table(
+          partitioned_table,
+          partition_names.map.with_index { |name, index| ["#{partition_schema}.#{name}", index] }
+        )
+
+        create_table(
+          other_partitioned_table,
+          other_partition_names.map.with_index { |name, index| ["#{partition_schema}.#{name}", index] }
+        )
+
+        (partition_names + other_partition_names).each do |partition_name|
+          create(:postgres_autovacuum_activity, table: partition_name, schema: partition_schema)
+        end
+
+        create(:postgres_autovacuum_activity, table: regular_table, schema: 'public')
+      end
+
+      it 'returns autovacuum activity' do
+        result_tables = subject.map { |activity| [activity.schema, activity.table] }
+        expected_results = partition_names.map { |name| [partition_schema, name] }
+        expected_results << specific_partition_name.split('.')
+        expected_results << ['public', regular_table]
+
+        expect(result_tables).to match_array(expected_results)
+      end
+    end
+
+    def create_table(table_name, partitions)
+      options = {
+        primary_key: [:id, :partition_id],
+        options: 'PARTITION BY LIST (partition_id)',
+        if_not_exists: true
+      }
+
+      ApplicationRecord.connection.create_table(table_name, **options) do |t|
+        t.bigserial :id, null: false
+        t.bigint :partition_id, null: false
+      end
+
+      partitions.each do |partition_name, values|
+        ApplicationRecord.connection.execute(<<~SQL)
+          CREATE TABLE #{partition_name} PARTITION OF #{table_name} FOR VALUES IN (#{values});
+        SQL
       end
     end
   end

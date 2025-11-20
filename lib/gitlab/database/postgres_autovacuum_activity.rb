@@ -12,22 +12,45 @@ module Gitlab
         def for_tables(tables)
           return [] if tables.empty?
 
-          partitioned_tables, regular_tables = partition_tables(tables)
-          partitions = PostgresPartition.with_parent_tables(partitioned_tables).pluck(:schema, :name)
+          default_tables, qualified_tables = prepare_table_names(tables)
 
           execute_in_primary_scope do
-            build_query_scope(regular_tables, partitions).to_a
+            build_query_scope(default_tables, qualified_tables).to_a
           end
         end
 
         private
 
-        def partition_tables(tables)
-          tables.partition { |table_name| partitioned_table?(table_name) }
+        def prepare_table_names(tables)
+          qualified_tables, simple_tables = split_qualified_and_simple_tables(tables)
+
+          partitioned_tables = find_partitioned_tables(simple_tables)
+          default_tables = simple_tables - partitioned_tables
+          partitions = fetch_partitions(partitioned_tables)
+
+          [default_tables, qualified_tables + partitions]
         end
 
-        def partitioned_table?(table_name)
-          Gitlab::Database::PostgresPartitionedTable.find_by_name_in_current_schema(table_name).present?
+        def split_qualified_and_simple_tables(tables)
+          tables
+            .partition { |name| fully_qualified?(name) }
+            .then { |qualified, simple| [split_qualified_names(qualified), simple.map(&:to_s)] }
+        end
+
+        def fully_qualified?(name)
+          Gitlab::Database::FULLY_QUALIFIED_IDENTIFIER.match?(name)
+        end
+
+        def split_qualified_names(qualified_tables)
+          qualified_tables.map { |name| name.split('.') }
+        end
+
+        def find_partitioned_tables(tables)
+          Gitlab::Database::PostgresPartitionedTable.by_name_in_current_schema(tables).pluck(:name)
+        end
+
+        def fetch_partitions(partitioned_tables)
+          Gitlab::Database::PostgresPartition.with_parent_tables(partitioned_tables).pluck(:schema, :name)
         end
 
         def execute_in_primary_scope(&block)

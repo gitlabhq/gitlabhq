@@ -16,14 +16,15 @@ import { useMockInternalEventsTracking } from 'helpers/tracking_internal_events_
 import paginatedTreeQuery from 'shared_queries/repository/paginated_tree.query.graphql';
 import { Mousetrap } from '~/lib/mousetrap';
 import FileTreeBrowserToggle from '~/repository/file_tree_browser/components/file_tree_browser_toggle.vue';
-import * as utils from '~/repository/file_tree_browser/utils';
 import { mockResponse } from '../mock_data';
 
 Vue.use(VueApollo);
 Vue.use(PiniaVuePlugin);
 
 jest.mock('~/repository/utils/ref_type', () => ({ getRefType: jest.fn(() => 'MOCK_REF_TYPE') }));
-jest.mock('~/lib/utils/url_utility', () => ({ joinPaths: jest.fn((...args) => args.join('/')) }));
+jest.mock('~/lib/utils/url_utility', () => ({
+  joinPaths: jest.fn((...args) => args.join('/').replace(/\/+/g, '/')),
+}));
 jest.mock('~/behaviors/shortcuts/shortcuts_toggle');
 
 describe('Tree List', () => {
@@ -49,7 +50,10 @@ describe('Tree List', () => {
       apolloProvider,
       pinia,
       propsData: { projectPath: 'group/project', currentRef: 'main', refType: 'branch' },
-      mocks: { $route: { params: {}, $apollo: { query: jest.fn() } } },
+      mocks: {
+        $router: { push: jest.fn() },
+        $route: { params: {}, $apollo: { query: jest.fn() } },
+      },
     });
 
     await waitForPromises();
@@ -64,6 +68,7 @@ describe('Tree List', () => {
   const findFileTreeToggle = () => wrapper.findComponent(FileTreeBrowserToggle);
   const findTree = () => wrapper.find('[role="tree"]');
   const findHeader = () => wrapper.find('h3');
+  const findTreeItems = () => wrapper.findAll('[role="treeitem"]');
   const findFileRows = () => wrapper.findAllComponents(FileRow);
   const findFileRowPlaceholders = () => wrapper.findAll('[data-placeholder-item]');
   const findFilterInput = () => wrapper.findComponent(GlFormInput);
@@ -101,10 +106,10 @@ describe('Tree List', () => {
         level: 0,
         name: 'dir_2',
         path: '/dir_1/dir_2',
-        routerPath: '/-/tree/main//dir_1/dir_2',
+        routerPath: '/-/tree/main/dir_1/dir_2',
         type: 'tree',
       },
-      fileUrl: '/-/tree/main//dir_1/dir_2',
+      fileUrl: '/-/tree/main/dir_1/dir_2',
       level: 0,
     });
 
@@ -117,9 +122,9 @@ describe('Tree List', () => {
         mode: '100644',
         name: 'file.txt',
         path: '/dir_1/file.txt',
-        routerPath: '/-/blob/main//dir_1/file.txt',
+        routerPath: '/-/blob/main/dir_1/file.txt',
       },
-      fileUrl: '/-/blob/main//dir_1/file.txt',
+      fileUrl: '/-/blob/main/dir_1/file.txt',
       level: 0,
     });
   });
@@ -167,7 +172,7 @@ describe('Tree List', () => {
 
   it('sets aria-setsize and aria-posinset relative to siblings at same level', async () => {
     await createComponent();
-    const treeItems = wrapper.findAll('[role="treeitem"]');
+    const treeItems = findTreeItems();
 
     expect(treeItems.at(0).attributes('aria-setsize')).toBe('2');
     expect(treeItems.at(0).attributes('aria-posinset')).toBe('1');
@@ -199,7 +204,7 @@ describe('Tree List', () => {
           closest: jest.fn(() => ({
             previousElementSibling: {
               nextElementSibling: {
-                firstElementChild: { focus: mockFocus },
+                focus: mockFocus,
               },
             },
           })),
@@ -255,6 +260,22 @@ describe('Tree List', () => {
       const fileNames = findFileRows().wrappers.map((row) => row.props('file').name);
 
       expect(fileNames).toEqual(expect.arrayContaining(expectedNames));
+    });
+
+    it('resets active item when filtered out', async () => {
+      await createComponent();
+      await nextTick();
+
+      findTree().trigger('keydown', { key: 'ArrowDown' });
+      await nextTick();
+      const secondItemId = findTreeItems().at(1).attributes('data-item-id');
+      expect(wrapper.vm.activeItemId).toBe(secondItemId);
+
+      findFilterInput().vm.$emit('input', 'dir_2');
+      await nextTick();
+
+      expect(wrapper.vm.activeItemId).not.toBe(secondItemId);
+      expect(wrapper.vm.activeItemId).toBe(findTreeItems().at(0).attributes('data-item-id'));
     });
   });
 
@@ -454,15 +475,87 @@ describe('Tree List', () => {
   });
 
   describe('keyboard navigation', () => {
-    it('calls handleTreeKeydown when keydown is triggered on tree', async () => {
-      jest.spyOn(utils, 'handleTreeKeydown');
+    it.each([
+      ['ArrowDown', 1],
+      ['ArrowUp', 0],
+    ])('moves focus with %s key', async (key, expectedIndex) => {
+      await createComponent();
+      await nextTick();
+
+      const items = findTreeItems();
+      findTree().trigger('keydown', { key });
+      await nextTick();
+
+      expect(items.at(expectedIndex).attributes('tabindex')).toBe('0');
+    });
+
+    it.each(['Enter', ' '])('expands directory with %s key', async (key) => {
       await createComponent();
 
-      findTree().trigger('keydown', { key: 'ArrowDown' });
+      const subdirResponse = cloneDeep(mockResponse);
+      subdirResponse.data.project.repository.paginatedTree.nodes[0].trees.nodes = [];
+      subdirResponse.data.project.repository.paginatedTree.nodes[0].blobs.nodes = [];
+      getQueryHandlerSuccess.mockResolvedValueOnce(subdirResponse);
 
-      expect(utils.handleTreeKeydown).toHaveBeenCalledWith(
-        expect.objectContaining({ type: 'keydown', key: 'ArrowDown' }),
+      findTree().trigger('keydown', { key }); // Trigger keyboard
+      await waitForPromises();
+
+      expect(getQueryHandlerSuccess).toHaveBeenLastCalledWith(
+        expect.objectContaining({ path: 'dir_1/dir_2' }),
       );
+    });
+
+    it.each(['Enter', ' '])('triggers show more with %s key', async (key) => {
+      const paginatedResponse = cloneDeep(mockResponse);
+      paginatedResponse.data.project.repository.paginatedTree.pageInfo.hasNextPage = true;
+      await createComponent(paginatedResponse);
+
+      const secondPageResponse = cloneDeep(mockResponse);
+      secondPageResponse.data.project.repository.paginatedTree.nodes[0].trees.nodes = [];
+      secondPageResponse.data.project.repository.paginatedTree.nodes[0].blobs.nodes = [];
+      getQueryHandlerSuccess.mockResolvedValueOnce(secondPageResponse);
+
+      findTree().trigger('keydown', { key: 'ArrowDown' });
+      findTree().trigger('keydown', { key: 'ArrowDown' });
+      await nextTick();
+
+      findTree().trigger('keydown', { key, preventDefault: jest.fn() });
+      await waitForPromises();
+
+      expect(getQueryHandlerSuccess).toHaveBeenLastCalledWith(
+        expect.objectContaining({ nextPageCursor: 'cursor123' }),
+      );
+    });
+
+    it.each(['Enter', ' '])('navigates to file with %s key', async (key) => {
+      await createComponent();
+      await nextTick();
+
+      findTree().trigger('keydown', { key: 'ArrowDown' });
+      await nextTick();
+
+      findTree().trigger('keydown', { key });
+      await nextTick();
+
+      expect(wrapper.vm.$router.push).toHaveBeenCalledWith('/-/blob/main/dir_1/file.txt');
+    });
+
+    it('does not move focus beyond list boundaries', async () => {
+      await createComponent();
+      await nextTick();
+
+      const items = findTreeItems();
+
+      findTree().trigger('keydown', { key: 'ArrowUp' });
+      await nextTick();
+      expect(items.at(0).attributes('tabindex')).toBe('0');
+
+      findTree().trigger('keydown', { key: 'ArrowDown' });
+      await nextTick();
+      findTree().trigger('keydown', { key: 'ArrowDown' });
+      await nextTick();
+
+      expect(items.at(1).attributes('tabindex')).toBe('0');
     });
   });
 

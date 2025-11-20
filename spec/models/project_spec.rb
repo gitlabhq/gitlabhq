@@ -3894,6 +3894,10 @@ RSpec.describe Project, factory_default: :keep, feature_category: :groups_and_pr
   describe '#track_project_repository' do
     shared_examples 'tracks storage location' do
       context 'when a project repository entry does not exist' do
+        before do
+          project.project_repository&.delete
+        end
+
         it 'creates a new entry' do
           expect { project.track_project_repository }.to change(project, :project_repository)
         end
@@ -3911,14 +3915,9 @@ RSpec.describe Project, factory_default: :keep, feature_category: :groups_and_pr
         context 'when repository is missing' do
           let(:project) { create(:project) }
 
-          it 'sets a default sha1 object format' do
-            project.track_project_repository
-
-            expect(project.project_repository).to have_attributes(
-              disk_path: project.disk_path,
-              shard_name: project.repository_storage,
-              object_format: 'sha1'
-            )
+          it 'does not create a project_repository record' do
+            expect { project.track_project_repository }.not_to change(project, :project_repository)
+            expect(project.project_repository).to be_nil
           end
         end
 
@@ -3938,7 +3937,10 @@ RSpec.describe Project, factory_default: :keep, feature_category: :groups_and_pr
       end
 
       context 'when a tracking entry exists' do
-        let!(:project_repository) { create(:project_repository, project: project) }
+        before do
+          project.track_project_repository
+        end
+
         let!(:shard) { create(:shard, name: 'foo') }
 
         it 'does not create a new entry in the database' do
@@ -9992,22 +9994,25 @@ RSpec.describe Project, factory_default: :keep, feature_category: :groups_and_pr
   describe '#repository_object_format' do
     subject { project.repository_object_format }
 
-    let_it_be(:project) { create(:project) }
-
     context 'when project without a repository' do
+      let_it_be(:project) { create(:project) }
+
       it { is_expected.to be_nil }
     end
 
-    context 'when project with sha1 repository' do
-      let_it_be(:project_repository) { create(:project_repository, project: project, object_format: 'sha1') }
+    context 'when project with a repository' do
+      context 'when project with sha1 repository' do
+        # :custom_repo uses sha1 object format by default
+        let_it_be(:project) { create(:project, :custom_repo) }
 
-      it { is_expected.to eq 'sha1' }
-    end
+        it { is_expected.to eq 'sha1' }
+      end
 
-    context 'when project with sha256 repository' do
-      let_it_be(:project_repository) { create(:project_repository, project: project, object_format: 'sha256') }
+      context 'when project with sha256 repository' do
+        let_it_be(:project) { create(:project, :custom_repo, object_format: 'sha256') }
 
-      it { is_expected.to eq 'sha256' }
+        it { is_expected.to eq 'sha256' }
+      end
     end
   end
 

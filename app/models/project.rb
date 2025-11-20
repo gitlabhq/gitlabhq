@@ -1547,6 +1547,7 @@ class Project < ApplicationRecord
     @team ||= ProjectTeam.new(self)
   end
 
+  # @return [Repository]
   def repository
     @repository ||= Gitlab::GlRepository::PROJECT.repository_for(self)
   end
@@ -2302,7 +2303,14 @@ class Project < ApplicationRecord
     false
   end
 
+  # When the project has an existing project_repository record, we want to update it.
+  # Otherwise, if a corresponding Git repository exists, we create a new record.
+  # This method might be called when a project_repository record already exists,
+  # during project transfer to another namespace, in Projects::TransferService
+  # or when repository storage is being updated in Projects::UpdateRepositoryStorageService
   def track_project_repository
+    return unless project_repository.presence || repository.raw_repository.exists?
+
     (project_repository || build_project_repository).tap do |proj_repo|
       attributes = { shard_name: repository_storage, disk_path: disk_path }
 

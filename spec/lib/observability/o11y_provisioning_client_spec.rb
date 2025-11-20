@@ -35,9 +35,7 @@ RSpec.describe Observability::O11yProvisioningClient, feature_category: :observa
             body: hash_including(
               'o11y_provision_request' => hash_including(
                 'group_id' => group.id,
-                'email' => user.email,
-                'user_name' => user.name,
-                'group_path' => group.full_path
+                'email' => user.email
               )
             ),
             headers: {

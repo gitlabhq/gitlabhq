@@ -570,7 +570,6 @@ export default {
     'app/assets/javascripts/homepage/components/feedback_widget.vue',
     'app/assets/javascripts/homepage/components/greeting_header.vue',
     'app/assets/javascripts/homepage/components/homepage_app.vue',
-    'app/assets/javascripts/homepage/components/homepage_preferences_banner.vue',
     'app/assets/javascripts/homepage/components/recently_viewed_widget.vue',
     'app/assets/javascripts/homepage/components/todos_widget.vue',
     'app/assets/javascripts/import/bitbucket_server/import_from_bitbucket_server_app.vue',

@@ -195,6 +195,12 @@ RSpec.describe Projects::CreateService, '#execute', feature_category: :groups_an
       create_project(user, opts)
     end
 
+    it 'creates a project_repository record' do
+      project = create_project(user, opts)
+
+      expect(project.project_repository).to be_persisted
+    end
+
     it 'creates associated project settings' do
       project = create_project(user, opts)
 

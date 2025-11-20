@@ -24,7 +24,6 @@ import {
   shouldStopPagination,
   hasMorePages,
   isExpandable,
-  handleTreeKeydown,
   createItemVisibilityObserver,
   observeElements,
 } from '../utils';
@@ -68,6 +67,7 @@ export default {
       loadingPathsMap: {},
       appearedItems: {},
       itemObserver: null,
+      activeItemId: null,
     };
   },
   computed: {
@@ -117,8 +117,11 @@ export default {
     ...mapState(useFileTreeBrowserVisibility, ['fileTreeBrowserIsPeekOn']),
   },
   watch: {
-    filteredFlatFilesList() {
+    filteredFlatFilesList(newList) {
       this.$nextTick(() => this.observeListItems());
+      if (newList.length && !newList.find((item) => item.id === this.activeItemId)) {
+        this.activeItemId = newList[0].id; // Reset active item to first in list if current active item was filtered out
+      }
     },
     fileTreeBrowserIsPeekOn() {
       this.$nextTick(() => this.observeItemVisibility());
@@ -376,7 +379,30 @@ export default {
       return [siblings.length, siblings.indexOf(item.id) + 1];
     },
     onTreeKeydown(event) {
-      handleTreeKeydown(event);
+      const items = this.filteredFlatFilesList;
+      const current = items.findIndex((i) => i.id === this.activeItemId);
+      const item = items[current];
+
+      // Enter/Space
+      if (event.key === 'Enter' || event.key === ' ') {
+        event.preventDefault();
+        if (item?.isShowMore) this.handleShowMore(item.parentPath, event);
+        if (item?.type === 'tree') this.toggleDirectory(item.path, { toggleClose: false });
+        if (item?.routerPath && !this.isCurrentPath(item?.path)) this.$router.push(item.routerPath);
+        return;
+      }
+
+      // Arrow keys (Up/Down)
+      if (event.key !== 'ArrowDown' && event.key !== 'ArrowUp') return;
+
+      event.preventDefault();
+      const move = event.key === 'ArrowDown' ? 1 : -1;
+      const next = current + move;
+
+      if (next < 0 || next >= items.length) return;
+
+      this.activeItemId = items[next].id;
+      this.$nextTick(() => this.$refs.activeItem?.[0]?.focus());
     },
     observeListItems() {
       this.$nextTick(() => observeElements(this.$refs.fileTreeList, this.itemObserver));
@@ -385,7 +411,10 @@ export default {
       const prevItem = event.target.closest('li')?.previousElementSibling;
       await this.fetchDirectory(parentPath);
       await this.$nextTick();
-      prevItem?.nextElementSibling?.firstElementChild?.focus(); // Ensures the next available item is focussed after loading more items
+      const nextItem = prevItem?.nextElementSibling;
+      if (!nextItem) return;
+      this.activeItemId = nextItem.dataset?.itemId;
+      nextItem.focus(); // Ensures the next available item is focussed after loading more items
     },
   },
   filterPlaceholder: s__('Repository|Filter files (*.vue, *.rb...)'),
@@ -441,6 +470,7 @@ export default {
         <li
           v-for="item in filteredFlatFilesList"
           :key="`${item.path}-${item.type}`"
+          :ref="item.id === activeItemId ? 'activeItem' : undefined"
           :data-item-id="item.id"
           :aria-current="isCurrentPath(item.path)"
           role="treeitem"
@@ -450,7 +480,10 @@ export default {
           :aria-setsize="siblingInfo(item)[0]"
           :aria-posinset="siblingInfo(item)[1]"
           :aria-label="item.name"
-          tabindex="-1"
+          :tabindex="item.id === activeItemId ? 0 : -1"
+          class="gl-rounded-base focus-visible:gl-focus-inset"
+          :class="{ '!gl-bg-gray-50': isCurrentPath(item.path) }"
+          @click="activeItemId = item.id"
         >
           <file-row
             v-if="appearedItems[item.id]"
@@ -460,17 +493,17 @@ export default {
             :opened="item.opened"
             :loading="item.loading"
             show-tree-toggle
+            roving-tabindex
             :style="{ '--level': item.level }"
             :class="{
               'tree-list-parent': item.level > 0,
-              '!gl-bg-gray-50': isCurrentPath(item.path),
             }"
             class="gl-relative !gl-mx-0 gl-w-fit gl-min-w-full"
             truncate-middle
             @clickTree="(options) => toggleDirectory(item.path, options)"
             @showMore="handleShowMore(item.parentPath, $event)"
           />
-          <div v-else data-placeholder-item class="gl-h-7" tabindex="0"></div>
+          <div v-else data-placeholder-item class="gl-h-7" tabindex="-1"></div>
         </li>
       </ul>
       <p v-else class="gl-my-6 gl-text-center">

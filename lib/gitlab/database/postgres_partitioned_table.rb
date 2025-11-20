@@ -17,8 +17,14 @@ module Gitlab
         find(identifier)
       end
 
+      scope :by_name_in_current_schema, ->(names) do
+        identifiers = Array.wrap(names).map { |name| "#{connection.current_schema}.#{name}" }
+
+        where(identifier: identifiers)
+      end
+
       def self.find_by_name_in_current_schema(name)
-        find_by("identifier = concat(current_schema(), '.', ?::text)", name)
+        by_name_in_current_schema(name).take
       end
 
       def self.each_partition(table_name, &block)

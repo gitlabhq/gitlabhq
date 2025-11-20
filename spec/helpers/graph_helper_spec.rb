@@ -16,18 +16,6 @@ RSpec.describe GraphHelper do
     end
   end
 
-  describe '#should_render_dora_charts' do
-    let(:project) { create(:project, :private) }
-
-    before do
-      self.instance_variable_set(:@project, project)
-    end
-
-    it 'always returns false' do
-      expect(should_render_dora_charts).to be(false)
-    end
-  end
-
   describe '#should_render_quality_summary' do
     let(:project) { create(:project, :private) }
 

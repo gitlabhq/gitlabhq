@@ -43,7 +43,7 @@ RSpec.describe Gitlab::BackgroundMigration::MoveCiBuildsMetadata, feature_catego
     )
   end
 
-  let(:pipeline) { pipelines_table.create!(partition_id: 100, project_id: project.id) }
+  let(:pipeline) { pipelines_table.create!(partition_id: 101, project_id: project.id) }
 
   let!(:job_a) do
     builds_table.create!(partition_id: pipeline.partition_id, project_id: project.id, commit_id: pipeline.id)
@@ -79,12 +79,12 @@ RSpec.describe Gitlab::BackgroundMigration::MoveCiBuildsMetadata, feature_catego
     {
       start_id: builds_table.minimum(:id),
       end_id: builds_table.maximum(:id),
-      batch_table: :p_ci_builds,
+      batch_table: 'gitlab_partitions_dynamic.ci_builds_101',
       batch_column: :id,
       sub_batch_size: 2,
       pause_ms: 0,
       connection: Ci::ApplicationRecord.connection,
-      job_arguments: ['partition_id', 100]
+      job_arguments: ['partition_id', 101]
     }
   end
 
@@ -92,11 +92,14 @@ RSpec.describe Gitlab::BackgroundMigration::MoveCiBuildsMetadata, feature_catego
 
   before do
     Ci::ApplicationRecord.connection.execute(<<~SQL)
-      CREATE TABLE IF NOT EXISTS gitlab_partitions_dynamic.ci_job_definitions_100
-        PARTITION OF p_ci_job_definitions FOR VALUES IN (100);
+      CREATE TABLE IF NOT EXISTS gitlab_partitions_dynamic.ci_builds_101
+        PARTITION OF p_ci_builds FOR VALUES IN (101);
 
-      CREATE TABLE IF NOT EXISTS gitlab_partitions_dynamic.ci_job_definition_instances_100
-        PARTITION OF p_ci_job_definition_instances FOR VALUES IN (100);
+      CREATE TABLE IF NOT EXISTS gitlab_partitions_dynamic.ci_job_definitions_101
+        PARTITION OF p_ci_job_definitions FOR VALUES IN (101);
+
+      CREATE TABLE IF NOT EXISTS gitlab_partitions_dynamic.ci_job_definition_instances_101
+        PARTITION OF p_ci_job_definition_instances FOR VALUES IN (101);
     SQL
   end
 
@@ -267,8 +270,8 @@ RSpec.describe Gitlab::BackgroundMigration::MoveCiBuildsMetadata, feature_catego
         [{ 'name' => 'metrics', 'step' => 'gitlab.com/components/cicd-components/metrics@ref' }]
       end
 
-      let!(:pipeline_a) { pipelines_table.create!(partition_id: 100, project_id: project.id) }
-      let!(:pipeline_b) { pipelines_table.create!(partition_id: 100, project_id: project.id) }
+      let!(:pipeline_a) { pipelines_table.create!(partition_id: 101, project_id: project.id) }
+      let!(:pipeline_b) { pipelines_table.create!(partition_id: 101, project_id: project.id) }
 
       let!(:execution_config_a) do
         execution_configs_table.create!(
@@ -506,8 +509,8 @@ RSpec.describe Gitlab::BackgroundMigration::MoveCiBuildsMetadata, feature_catego
       let!(:production_a) { environments_table.create!(project_id: project_a.id, name: 'production_a', slug: 'prod_a') }
       let!(:production_b) { environments_table.create!(project_id: project_b.id, name: 'production_b', slug: 'prod_b') }
 
-      let!(:pipeline_a) { pipelines_table.create!(partition_id: 100, project_id: project_a.id) }
-      let!(:pipeline_b) { pipelines_table.create!(partition_id: 100, project_id: project_b.id) }
+      let!(:pipeline_a) { pipelines_table.create!(partition_id: 101, project_id: project_a.id) }
+      let!(:pipeline_b) { pipelines_table.create!(partition_id: 101, project_id: project_b.id) }
 
       let!(:job_a) do
         builds_table.create!(partition_id: pipeline_a.partition_id, commit_id: pipeline_a.id, project_id: project_a.id)

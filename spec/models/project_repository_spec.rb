@@ -15,8 +15,7 @@ RSpec.describe ProjectRepository, feature_category: :source_code_management do
 
   describe '.find_project' do
     it 'finds project by disk path' do
-      project = create(:project)
-      project.track_project_repository
+      project = create(:project_with_repo)
 
       expect(described_class.find_project(project.disk_path)).to eq(project)
     end

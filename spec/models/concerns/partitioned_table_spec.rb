@@ -54,4 +54,42 @@ RSpec.describe PartitionedTable, feature_category: :database do
       expect { create(:ci_build) }.not_to raise_error
     end
   end
+
+  describe '.with_each_partition' do
+    let(:partition1) { instance_double(Gitlab::Database::PostgresPartition, name: 'partition_1') }
+    let(:partition2) { instance_double(Gitlab::Database::PostgresPartition, name: 'partition_2') }
+
+    before do
+      allow(Gitlab::Database::PostgresPartitionedTable).to receive(:each_partition)
+        .with(my_class.table_name)
+        .and_yield(partition1)
+        .and_yield(partition2)
+    end
+
+    it 'yields a relation for each partition' do
+      yielded_relations = []
+
+      my_class.with_each_partition do |relation|
+        yielded_relations << relation
+      end
+
+      expect(yielded_relations.size).to eq(2)
+      expect(yielded_relations.first).to be_a(ActiveRecord::Relation)
+      expect(yielded_relations.last).to be_a(ActiveRecord::Relation)
+    end
+
+    it 'constructs relations with correct partition schema and table name' do
+      sql_queries = []
+
+      my_class.with_each_partition do |relation|
+        sql_queries << relation.to_sql
+      end
+
+      expect(sql_queries.size).to eq(2)
+      expect(sql_queries[0]).to include(Gitlab::Database::DYNAMIC_PARTITIONS_SCHEMA.to_s)
+      expect(sql_queries[0]).to include('partition_1')
+      expect(sql_queries[1]).to include(Gitlab::Database::DYNAMIC_PARTITIONS_SCHEMA.to_s)
+      expect(sql_queries[1]).to include('partition_2')
+    end
+  end
 end

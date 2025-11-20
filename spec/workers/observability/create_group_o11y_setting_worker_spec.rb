@@ -61,8 +61,8 @@ RSpec.describe Observability::CreateGroupO11ySettingWorker, feature_category: :o
                 'o11y_provision_request' => hash_including(
                   'group_id' => group.id,
                   'email' => user.email,
-                  'user_name' => user.name,
-                  'group_path' => group.full_path
+                  'password' => match(/\A[a-f0-9]{32}\z/),
+                  'encryption_key' => match(/\A[a-f0-9]{64}\z/)
                 )
               )
             )

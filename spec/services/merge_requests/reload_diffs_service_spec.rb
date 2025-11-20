@@ -100,5 +100,85 @@ RSpec.describe MergeRequests::ReloadDiffsService, :use_clean_rails_memory_store_
           expect { subject.execute }.not_to exceed_query_limit(control + 1)
         end
       end
+
+      context 'duration logging' do
+        context 'when log_refresh_service_duration is true' do
+          before do
+            stub_feature_flags(log_refresh_service_duration: true)
+          end
+
+          context 'when log_duration is true' do
+            it 'logs duration statistics' do
+              expect(Gitlab::AppJsonLogger).to receive(:info).with(
+                hash_including(
+                  'event' => 'merge_requests_reload_diffs_service',
+                  'create_merge_request_diff_duration_s' => kind_of(Float),
+                  'clear_cache_duration_s' => kind_of(Float),
+                  'update_diff_discussion_positions_duration_s' => kind_of(Float),
+                  'reload_diffs_service_total_duration_s' => kind_of(Float),
+                  'diff_refs_duration_s' => kind_of(Float)
+                )
+              )
+
+              subject.execute(log_duration: true)
+            end
+
+            it 'calculates total duration' do
+              allow(Gitlab::AppJsonLogger).to receive(:info) do |log_data|
+                total = log_data['reload_diffs_service_total_duration_s']
+
+                individual_sum = (log_data['create_merge_request_diff_duration_s'] +
+                                  log_data['clear_cache_duration_s'] +
+                                  log_data['diff_refs_duration_s'] +
+                                  log_data['update_diff_discussion_positions_duration_s'])
+
+                expect(total).to be_within(0.0001).of(individual_sum)
+              end
+
+              subject.execute(log_duration: true)
+            end
+
+            context 'when log_duration is not provided' do
+              it 'defaults to false and does not log' do
+                expect(Gitlab::AppJsonLogger).not_to receive(:info)
+
+                subject.execute
+              end
+            end
+          end
+
+          context 'when log_duration is false' do
+            it 'does not log duration statistics' do
+              expect(Gitlab::AppJsonLogger).not_to receive(:info)
+
+              subject.execute(log_duration: false)
+            end
+
+            it 'does not measure durations' do
+              subject.execute(log_duration: false)
+
+              expect(subject.send(:duration_statistics)).to be_empty
+            end
+          end
+        end
+
+        context 'when feature flag is disabled' do
+          before do
+            stub_feature_flags(log_refresh_service_duration: false)
+          end
+
+          it 'does not log duration statistics even when log_duration is true' do
+            expect(Gitlab::AppJsonLogger).not_to receive(:info)
+
+            subject.execute(log_duration: true)
+          end
+
+          it 'does not measure durations' do
+            subject.execute(log_duration: true)
+
+            expect(subject.send(:duration_statistics)).to be_empty
+          end
+        end
+      end
     end
   end

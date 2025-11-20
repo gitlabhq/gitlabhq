@@ -3,7 +3,7 @@
 require 'spec_helper'
 require_migration!
 
-RSpec.describe QueueMoveCiBuildsMetadata, migration: :gitlab_ci, feature_category: :continuous_integration do
+RSpec.describe RequeueBuildsMetadataMigration, migration: :gitlab_ci, feature_category: :continuous_integration do
   let!(:batched_migration) { described_class::MIGRATION }
 
   let(:pipelines_table) { table(:p_ci_pipelines, primary_key: :id, database: :ci) }
@@ -40,7 +40,7 @@ RSpec.describe QueueMoveCiBuildsMetadata, migration: :gitlab_ci, feature_categor
         migration.after -> {
           expect(batched_migration).to have_scheduled_batched_migration(
             gitlab_schema: :gitlab_ci,
-            table_name: :p_ci_builds,
+            table_name: "gitlab_partitions_dynamic.ci_builds_100",
             column_name: :id,
             job_arguments: [:partition_id, [100]],
             batch_size: described_class::BATCH_SIZE,
@@ -49,7 +49,7 @@ RSpec.describe QueueMoveCiBuildsMetadata, migration: :gitlab_ci, feature_categor
 
           expect(batched_migration).to have_scheduled_batched_migration(
             gitlab_schema: :gitlab_ci,
-            table_name: :p_ci_builds,
+            table_name: "gitlab_partitions_dynamic.ci_builds_101",
             column_name: :id,
             job_arguments: [:partition_id, [101]],
             batch_size: described_class::BATCH_SIZE,
@@ -58,7 +58,7 @@ RSpec.describe QueueMoveCiBuildsMetadata, migration: :gitlab_ci, feature_categor
 
           expect(batched_migration).not_to have_scheduled_batched_migration(
             gitlab_schema: :gitlab_ci,
-            table_name: :p_ci_builds,
+            table_name: "gitlab_partitions_dynamic.ci_builds_102",
             column_name: :id,
             job_arguments: [:partition_id, [102]],
             batch_size: described_class::BATCH_SIZE,

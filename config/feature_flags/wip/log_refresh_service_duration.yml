@@ -1,0 +1,10 @@
+---
+name: log_refresh_service_duration
+description: Log the duration of methods in the MR refresh service
+feature_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/548046
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/208619
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/576798
+milestone: '18.6'
+group: group::code review
+type: wip
+default_enabled: false

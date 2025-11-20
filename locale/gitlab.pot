@@ -1166,6 +1166,9 @@ msgstr ""
 msgid "%{milliseconds}ms"
 msgstr ""
 
+msgid "%{modelName} - Default"
+msgstr ""
+
 msgid "%{model_name} not found"
 msgstr ""
 
@@ -2496,6 +2499,15 @@ msgstr ""
 msgid "AICatalog|Add triggers"
 msgstr ""
 
+msgid "AICatalog|Additional details are required."
+msgstr ""
+
+msgid "AICatalog|Additional details cannot exceed 1000 characters."
+msgstr ""
+
+msgid "AICatalog|Additional information"
+msgstr ""
+
 msgid "AICatalog|Agent configuration"
 msgstr ""
 
@@ -2595,6 +2607,9 @@ msgstr ""
 msgid "AICatalog|Connect an agent to automate complex tasks"
 msgstr ""
 
+msgid "AICatalog|Contains dangerous code, exploits, or harmful actions."
+msgstr ""
+
 msgid "AICatalog|Copy configuration"
 msgstr ""
 
@@ -2644,6 +2659,9 @@ msgid "AICatalog|Delete agent"
 msgstr ""
 
 msgid "AICatalog|Delete flow"
+msgstr ""
+
+msgid "AICatalog|Describe any relevant information for your admin"
 msgstr ""
 
 msgid "AICatalog|Description"
@@ -2697,6 +2715,9 @@ msgstr ""
 msgid "AICatalog|Enable in project"
 msgstr ""
 
+msgid "AICatalog|Excessive resource usage"
+msgstr ""
+
 msgid "AICatalog|Explore AI Catalog agents"
 msgstr ""
 
@@ -2719,6 +2740,12 @@ msgid "AICatalog|Failed to disable flow"
 msgstr ""
 
 msgid "AICatalog|Failed to load group flows"
+msgstr ""
+
+msgid "AICatalog|Failed to report agent. %{error}"
+msgstr ""
+
+msgid "AICatalog|Failed to report flow. %{error}"
 msgstr ""
 
 msgid "AICatalog|Flow"
@@ -2760,10 +2787,19 @@ msgstr ""
 msgid "AICatalog|Flows use multiple agents to complete tasks automatically."
 msgstr ""
 
+msgid "AICatalog|Frequently failing or nuisance activity."
+msgstr ""
+
 msgid "AICatalog|Get started with the AI Catalog"
 msgstr ""
 
 msgid "AICatalog|Group is required."
+msgstr ""
+
+msgid "AICatalog|Hypothetical or low risk security flaws that could be exploited."
+msgstr ""
+
+msgid "AICatalog|Immediate security threat"
 msgstr ""
 
 msgid "AICatalog|Input cannot exceed %{value} characters. Please shorten your input."
@@ -2805,6 +2841,18 @@ msgstr ""
 msgid "AICatalog|Open source projects."
 msgstr ""
 
+msgid "AICatalog|Other"
+msgstr ""
+
+msgid "AICatalog|Please describe below."
+msgstr ""
+
+msgid "AICatalog|Please select a reason for reporting."
+msgstr ""
+
+msgid "AICatalog|Potential security threat"
+msgstr ""
+
 msgid "AICatalog|Private %{itemTypePlural} are best for:"
 msgstr ""
 
@@ -2827,6 +2875,18 @@ msgid "AICatalog|Provide a brief description."
 msgstr ""
 
 msgid "AICatalog|Public %{itemTypePlural} are best for:"
+msgstr ""
+
+msgid "AICatalog|Reason for reporting"
+msgstr ""
+
+msgid "AICatalog|Report %{itemName}"
+msgstr ""
+
+msgid "AICatalog|Report submitted successfully."
+msgstr ""
+
+msgid "AICatalog|Report to admin"
 msgstr ""
 
 msgid "AICatalog|Save changes"
@@ -2860,6 +2920,9 @@ msgid "AICatalog|Shared resources."
 msgstr ""
 
 msgid "AICatalog|Source project"
+msgstr ""
+
+msgid "AICatalog|Spam or low quality"
 msgstr ""
 
 msgid "AICatalog|System prompt"
@@ -2929,6 +2992,12 @@ msgid "AICatalog|Visibility"
 msgstr ""
 
 msgid "AICatalog|Visibility & access"
+msgstr ""
+
+msgid "AICatalog|Wasting compute or causing performance issues."
+msgstr ""
+
+msgid "AICatalog|Why are you reporting this %{itemType}?"
 msgstr ""
 
 msgid "AICatalog|Working with sensitive data."
@@ -4801,15 +4870,6 @@ msgid "AdminAIPoweredFeatures|GitLab Duo for issues"
 msgstr ""
 
 msgid "AdminAIPoweredFeatures|GitLab Duo for merge requests"
-msgstr ""
-
-msgid "AdminAIPoweredFeatures|GitLab default model"
-msgstr ""
-
-msgid "AdminAIPoweredFeatures|GitLab default model %{defaultModel}"
-msgstr ""
-
-msgid "AdminAIPoweredFeatures|GitLab default model (%{defaultModel})"
 msgstr ""
 
 msgid "AdminAIPoweredFeatures|GitLab managed model"
@@ -29961,6 +30021,12 @@ msgid "Geo|Missing on Primary!"
 msgstr ""
 
 msgid "Geo|Model ID"
+msgstr ""
+
+msgid "Geo|Model ID: %{value}"
+msgstr ""
+
+msgid "Geo|Model information"
 msgstr ""
 
 msgid "Geo|Model record: %{modelRecordId}"

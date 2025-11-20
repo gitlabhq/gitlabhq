@@ -31,6 +31,8 @@
   - 1
 - - ai_active_context_code_ad_hoc_indexing
   - 1
+- - ai_active_context_code_mark_repository_as_pending_deletion_event
+  - 1
 - - ai_active_context_code_mark_repository_as_ready_event
   - 1
 - - ai_active_context_code_process_pending_enabled_namespace_event

@@ -220,8 +220,8 @@ export const VALUE_STREAM_METRIC_TILE_METADATA = {
     description: s__(
       'ValueStreamAnalytics|Average number of deployments to production per day. This metric measures how often value is delivered to end users.',
     ),
-    groupLink: '-/analytics/ci_cd?tab=deployment-frequency',
-    projectLink: '-/pipelines/charts?chart=deployment-frequency',
+    groupLink: '-/analytics/dashboards/dora_metrics',
+    projectLink: '-/analytics/dashboards/dora_metrics',
     docsLink: helpPagePath('user/analytics/dora_metrics', { anchor: 'deployment-frequency' }),
   },
   [DORA_METRICS.LEAD_TIME_FOR_CHANGES]: {
@@ -230,8 +230,8 @@ export const VALUE_STREAM_METRIC_TILE_METADATA = {
     description: s__(
       'ValueStreamAnalytics|The time to successfully deliver a commit into production. This metric reflects the efficiency of CI/CD pipelines.',
     ),
-    groupLink: '-/analytics/ci_cd?tab=lead-time',
-    projectLink: '-/pipelines/charts?chart=lead-time',
+    groupLink: '-/analytics/dashboards/dora_metrics',
+    projectLink: '-/analytics/dashboards/dora_metrics',
     docsLink: helpPagePath('user/analytics/dora_metrics', { anchor: 'lead-time-for-changes' }),
   },
   [DORA_METRICS.TIME_TO_RESTORE_SERVICE]: {
@@ -240,8 +240,8 @@ export const VALUE_STREAM_METRIC_TILE_METADATA = {
     description: s__(
       'ValueStreamAnalytics|The time it takes an organization to recover from a failure in production.',
     ),
-    groupLink: '-/analytics/ci_cd?tab=time-to-restore-service',
-    projectLink: '-/pipelines/charts?chart=time-to-restore-service',
+    groupLink: '-/analytics/dashboards/dora_metrics',
+    projectLink: '-/analytics/dashboards/dora_metrics',
     docsLink: helpPagePath('user/analytics/dora_metrics', { anchor: 'time-to-restore-service' }),
   },
   [DORA_METRICS.CHANGE_FAILURE_RATE]: {
@@ -249,8 +249,8 @@ export const VALUE_STREAM_METRIC_TILE_METADATA = {
     description: s__(
       'ValueStreamAnalytics|Percentage of deployments that cause an incident in production.',
     ),
-    groupLink: '-/analytics/ci_cd?tab=change-failure-rate',
-    projectLink: '-/pipelines/charts?chart=change-failure-rate',
+    groupLink: '-/analytics/dashboards/dora_metrics',
+    projectLink: '-/analytics/dashboards/dora_metrics',
     docsLink: helpPagePath('user/analytics/dora_metrics', { anchor: 'change-failure-rate' }),
     unit: UNITS.PERCENT,
   },

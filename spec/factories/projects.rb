@@ -322,6 +322,8 @@ FactoryBot.define do
             branch_name: project.default_branch || 'master'
           )
         end
+
+        project.track_project_repository
       end
     end
 

@@ -19,6 +19,7 @@ export default () => {
     assignedMergeRequestsPath,
     assignedWorkItemsPath,
     authoredWorkItemsPath,
+    preferencesPath,
     duoCodeReviewBotUsername,
     mergeRequestsReviewRequestedTitle,
     mergeRequestsYourMergeRequestsTitle,
@@ -32,6 +33,7 @@ export default () => {
   return new Vue({
     el,
     provide: {
+      preferencesPath,
       duoCodeReviewBotUsername,
       mergeRequestsReviewRequestedTitle,
       mergeRequestsYourMergeRequestsTitle,

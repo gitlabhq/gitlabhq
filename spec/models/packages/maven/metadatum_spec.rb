@@ -55,15 +55,25 @@ RSpec.describe Packages::Maven::Metadatum, type: :model, feature_category: :pack
         it { is_expected.to match_array(metadata) }
       end
 
-      describe '.order_created' do
-        let_it_be(:metadatum1) { create(:maven_metadatum, package: package) }
-        let_it_be(:metadatum2) { create(:maven_metadatum, package: package) }
-        let_it_be(:metadatum3) { create(:maven_metadatum, package: package) }
-        let_it_be(:metadatum4) { create(:maven_metadatum, package: package) }
+      context 'with multiple metadata' do
+        let_it_be(:metadatum1) { create(:maven_metadatum, package: package, project_id: create(:project).id) }
+        let_it_be(:metadatum2) { create(:maven_metadatum, package: package, project_id: create(:project).id) }
+        let_it_be(:metadatum3) { create(:maven_metadatum, package: package, project_id: create(:project).id) }
+        let_it_be(:metadatum4) { create(:maven_metadatum, package: package, project_id: create(:project).id) }
 
-        subject { described_class.for_package_ids(package.id).order_created }
+        describe '.for_project_ids' do
+          let(:project_ids) { [metadatum1.project_id, metadatum3.project_id] }
 
-        it { is_expected.to eq([metadatum1, metadatum2, metadatum3, metadatum4]) }
+          subject { described_class.for_project_ids(project_ids) }
+
+          it { is_expected.to contain_exactly(metadatum1, metadatum3) }
+        end
+
+        describe '.order_created' do
+          subject { described_class.for_package_ids(package.id).order_created }
+
+          it { is_expected.to contain_exactly(metadatum1, metadatum2, metadatum3, metadatum4) }
+        end
       end
 
       describe '.pluck_app_name' do

@@ -161,7 +161,7 @@ module MergeRequests
         skip_merge_status_trigger = true
 
         if branch_and_project_match?(merge_request) || @push.force_push?
-          merge_request.reload_diff(current_user)
+          merge_request.reload_diff(current_user, log_duration: true)
           schedule_duo_code_review(merge_request)
           # Clear existing merge error if the push were directed at the
           # source branch. Clearing the error when the target branch
@@ -172,7 +172,7 @@ module MergeRequests
           # when the push if for the MR's source branch and project.
           skip_merge_status_trigger = false
         elsif merge_request.merge_request_diff.includes_any_commits?(push_commit_ids)
-          merge_request.reload_diff(current_user)
+          merge_request.reload_diff(current_user, log_duration: true)
         end
 
         merge_request.skip_merge_status_trigger = skip_merge_status_trigger

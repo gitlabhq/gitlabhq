@@ -259,7 +259,7 @@ RSpec.shared_examples 'User views a wiki page' do
     end
   end
 
-  context 'when a page has headings' do
+  context 'when a page has headings', :js do
     before do
       wiki_page.update(content: "# Heading 1\n\n## Heading 1.1\n\n### Heading 1.1.1\n\n# Heading 2") # rubocop:disable Rails/SaveBang -- not an ActiveRecord
     end
