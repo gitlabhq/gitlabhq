@@ -2,16 +2,6 @@
 Migration/PreventForeignKeyCreation:
   Details: grace period
   Exclude:
-    - 'db/migrate/20240829210003_add_ci_job_artifact_reports_upstream_fk.rb'
-    - 'db/post_migrate/20240717124747_partitioned_fk_to_ci_pipelines_from_p_ci_builds_on_commit_id.rb'
-    - 'db/post_migrate/20240717124817_partitioned_fk_to_ci_pipelines_from_p_ci_builds_on_auto_canceled_by_id.rb'
-    - 'db/post_migrate/20240806065239_add_async_fk_upstream_pipeline_id_for_p_ci_builds.rb'
-    - 'db/post_migrate/20240809135718_fk_ci_builds_ci_build_trace_metadata.rb'
-    - 'db/post_migrate/20240809135746_fk_ci_jobs_artifacts_ci_build_trace_metadata.rb'
-    - 'db/post_migrate/20240812084612_add_fk_upstream_pipeline_id_for_p_ci_builds.rb'
-    - 'db/post_migrate/20240917110159_partition_fk_upstream_pipeline_id_for_p_ci_builds_and_p_ci_pipelines.rb'
-    - 'db/post_migrate/20240917111256_partition_fk_auto_canceled_pipeline_id_for_p_ci_builds_and_p_ci_pipelines.rb'
-    - 'db/post_migrate/20240917114903_partition_fk_for_p_ci_builds_and_p_ci_pipelines.rb'
     - 'db/post_migrate/20241015060654_prepare_async_foreign_key_validation_for_pipelines_upstream_pipeline_id.rb'
     - 'db/post_migrate/20241106092213_sync_foreign_key_validation_for_pipelines_upstream_pipeline_id.rb'
     - 'db/post_migrate/20241119143004_async_validation_for_builds_pipelines_fk.rb'

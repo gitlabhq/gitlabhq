@@ -3,7 +3,7 @@
 require 'spec_helper'
 
 RSpec.describe Gitlab::BackgroundMigration::BackfillRunnerTypeAndShardingKeyIdOnCiRunnerManagers,
-  schema: 20241003110148, migration: :gitlab_ci, feature_category: :runner_core do
+  schema: 20241024204816, migration: :gitlab_ci, feature_category: :runner_core do
   let(:connection) { Ci::ApplicationRecord.connection }
 
   describe '#perform' do

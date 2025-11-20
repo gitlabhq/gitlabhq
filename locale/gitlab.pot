@@ -33245,6 +33245,9 @@ msgstr ""
 msgid "Groups|Avatar will be removed. Are you sure?"
 msgstr ""
 
+msgid "Groups|Cancel, keep group"
+msgstr ""
+
 msgid "Groups|Changing group URL can have unintended side effects."
 msgstr ""
 
@@ -33329,10 +33332,16 @@ msgstr ""
 msgid "Groups|There was an error creating the Group README."
 msgstr ""
 
+msgid "Groups|This group can be restored until %{date}. %{linkStart}Learn more%{linkEnd}."
+msgstr ""
+
 msgid "Groups|This will create a README.md for project %{path}."
 msgstr ""
 
 msgid "Groups|This will create a project %{path} and add a README.md."
+msgstr ""
+
+msgid "Groups|Yes, delete group"
 msgstr ""
 
 msgid "Groups|You don't have any active groups yet."
@@ -53122,9 +53131,6 @@ msgid "Projects|An error occurred unarchiving the project. Please refresh the pa
 msgstr ""
 
 msgid "Projects|Copy project ID: %{id}"
-msgstr ""
-
-msgid "Projects|Delete %{nameWithNamespace}"
 msgstr ""
 
 msgid "Projects|No projects found."

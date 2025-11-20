@@ -1,9 +1,0 @@
----
-migration_job_name: BackfillApprovalProjectRulesUsersProjectId
-description: Backfills sharding key `approval_project_rules_users.project_id` from
-  `approval_project_rules`.
-feature_category: source_code_management
-introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/151631
-milestone: '17.0'
-queued_migration_version: 20240501044505
-finalized_by: '20241006231846'

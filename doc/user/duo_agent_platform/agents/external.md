@@ -271,23 +271,15 @@ Prerequisites:
 
 - You must have at least the Developer role for the project.
 - If you created an external agent from the AI Catalog, the agent must be enabled in your project.
+- To allow the agent to push to workload branches (`workloads/*`), you might have to create [branch rules](../../project/repository/branches/branch_rules.md).
 
 1. In your project, open an issue, merge request, or epic.
-1. Add a comment on the task you want the external agent to complete, mentioning the service account user.
+1. Mention, assign, or request a review from the flow service account user.
    For example:
 
    ```markdown
    @service-account-username can you help analyze this code change?
    ```
 
-1. Under your comment, the external agent replies **Processing the request and starting the agent...**.
-1. While the external agent is working, the comment **Agent has started. You can view the progress here**
-   is displayed. You can select **here** to see the pipeline in progress.
 1. After the external agent has completed the task, you see a confirmation, and either a
    ready-to-merge change or an inline comment.
-
-{{< alert type="note" >}}
-
-To allow the agent to push to `workloads/*`, you might have to create [branch rules](../../project/repository/branches/branch_rules.md).
-
-{{< /alert >}}

@@ -1,8 +1,0 @@
----
-migration_job_name: UpdateWorkspacesConfigVersion3
-description: Update config_version to 3 and force_include_all_resources to true for existing workspaces
-feature_category: remote_development
-introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/140972
-milestone: '16.8'
-queued_migration_version: 20240104085448
-finalized_by: 20240924214435

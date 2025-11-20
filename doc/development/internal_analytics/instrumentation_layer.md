@@ -22,7 +22,25 @@ The Single Instrumentation Layer allows to:
 
 [See example MR](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/167415/diffs).
 
-[Event definitions](internal_event_instrumentation/event_definition_guide.md) are used as a declarative specification for processing logic and are single source of truth for event properties, tracking parameters, and other metadata.
+[Event definitions](internal_event_instrumentation/event_definition_guide.md) are used as a declarative specification
+for processing logic and are the single source of truth for event properties, tracking parameters, and other metadata.
+
+When the Instrumentation Layer tracking method is called (`InternalEventsTracking.track_internal_event`),
+the Instrumentation Layer passes the payload to Internal Events. If extra trackers are defined for the event,
+they are called in order of declaration and the original payload is passed as a parameter. For more information,
+see [how to implement it for your tracking system](#how-to-implement-it-for-your-tracking-system).
+
+```mermaid
+flowchart TD
+    A[Application code] -->|.track_internal_event| B(Instrumentation Layer)
+    B --> C[Extra trackers]
+    B --> D[Internal Events]
+    C -->|Ai Tracking| E[AiTracking.track_event]
+    C -->|Contribution Analytics| F[ContributionAnalyticsTracking.track_event]
+    D --> G[Redis/HLL Counters, Service Ping metrics]
+    D --> |Snowplow tracking enabled?| H[Snowplow]
+
+```
 
 ### Additional tracking systems
 

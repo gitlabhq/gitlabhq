@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Gitlab::BackgroundMigration::BackfillUserDetails, schema: 20240716191121, feature_category: :acquisition do
+RSpec.describe Gitlab::BackgroundMigration::BackfillUserDetails, feature_category: :acquisition do
   let(:users) { table(:users) }
   let(:user_details) { table(:user_details) }
   let(:organizations) { table(:organizations) }

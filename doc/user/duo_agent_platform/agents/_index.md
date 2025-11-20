@@ -47,12 +47,11 @@ GitLab provides three types of agents:
   your team's specific needs. You define their behavior through system
   prompts, and choose what tools they can access. Custom agents are
   ideal when you need specialized workflows that aren't covered by
-  foundational agents, such as automating your team's code review
-  process or managing project-specific tasks. To interact with a
-  custom agent, enable it in a group or project to use it with Chat.
+  foundational agents. To interact with a custom agent, enable it in a
+  group or project to use it with Chat.
 - [External agents](external.md) integrate with AI model providers
   outside GitLab. Use external agents to allow model providers like
-  Claude to operate directly in GitLab. You can trigger an
-  external agent directly from a discussion, issue, or merge request.
+  Claude to operate in GitLab. You can trigger an external agent
+  directly from a discussion, issue, or merge request.
 
 To use agents, you must meet the [prerequisites](../_index.md#prerequisites).

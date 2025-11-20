@@ -1,10 +1,11 @@
-import { GlFormInput, GlModal, GlAlert } from '@gitlab/ui';
-import { nextTick } from 'vue';
+import { GlModal, GlAlert } from '@gitlab/ui';
 import { mountExtended } from 'helpers/vue_test_utils_helper';
 import DeleteModal from '~/projects/components/shared/delete_modal.vue';
+import GroupsProjectsDeleteModal from '~/groups_projects/components/delete_modal.vue';
 import { sprintf } from '~/locale';
 import HelpPageLink from '~/vue_shared/components/help_page_link/help_page_link.vue';
 import { stubComponent } from 'helpers/stub_component';
+import { RESOURCE_TYPES } from '~/groups_projects/constants';
 
 jest.mock('lodash/uniqueId', () => () => 'fake-id');
 
@@ -37,28 +38,20 @@ describe('DeleteModal', () => {
     });
   };
 
-  const findGlModal = () => wrapper.findComponent(GlModal);
+  const findGroupsProjectsDeleteModal = () => wrapper.findComponent(GroupsProjectsDeleteModal);
   const alertText = () => wrapper.findComponent(GlAlert).text();
-  const findFormInput = () => wrapper.findComponent(GlFormInput);
-  const findRestoreMessage = () => wrapper.findByTestId('restore-message');
 
-  it('renders modal with correct props', () => {
+  it('renders GroupsProjectsDeleteModal with correct props', () => {
     createComponent();
 
-    expect(findGlModal().props()).toMatchObject({
+    expect(findGroupsProjectsDeleteModal().props()).toMatchObject({
       visible: defaultPropsData.visible,
-      modalId: 'fake-id',
-      actionPrimary: {
-        text: 'Yes, delete project',
-        attributes: {
-          variant: 'danger',
-          disabled: true,
-          'data-testid': 'confirm-delete-button',
-        },
-      },
-      actionCancel: {
-        text: 'Cancel, keep project',
-      },
+      resourceType: RESOURCE_TYPES.PROJECT,
+      confirmPhrase: defaultPropsData.confirmPhrase,
+      confirmLoading: defaultPropsData.confirmLoading,
+      fullName: defaultPropsData.nameWithNamespace,
+      markedForDeletion: defaultPropsData.markedForDeletion,
+      permanentDeletionDate: defaultPropsData.permanentDeletionDate,
     });
   });
 
@@ -120,36 +113,10 @@ describe('DeleteModal', () => {
     });
   });
 
-  describe('when correct confirm phrase is used', () => {
-    beforeEach(() => {
-      createComponent();
-
-      findFormInput().vm.$emit('input', defaultPropsData.confirmPhrase);
-    });
-
-    it('enables the primary action', () => {
-      expect(findGlModal().props('actionPrimary').attributes.disabled).toBe(false);
-    });
-  });
-
-  describe('when correct confirm phrase is not used', () => {
-    beforeEach(() => {
-      createComponent();
-
-      findFormInput().vm.$emit('input', 'bar');
-    });
-
-    it('keeps the primary action disabled', () => {
-      expect(findGlModal().props('actionPrimary').attributes.disabled).toBe(true);
-    });
-  });
-
-  it('emits `primary` with .prevent event', () => {
+  it('emits `primary` event', () => {
     createComponent();
 
-    findGlModal().vm.$emit('primary', {
-      preventDefault: jest.fn(),
-    });
+    findGroupsProjectsDeleteModal().vm.$emit('primary');
 
     expect(wrapper.emitted('primary')).toEqual([[]]);
   });
@@ -157,20 +124,17 @@ describe('DeleteModal', () => {
   it('emits `change` event', () => {
     createComponent();
 
-    findGlModal().vm.$emit('change', true);
+    findGroupsProjectsDeleteModal().vm.$emit('change', true);
 
     expect(wrapper.emitted('change')).toEqual([[true]]);
   });
 
   describe('when markedForDeletion prop is false', () => {
-    it('renders restore message', () => {
+    it('renders restore message help page link', () => {
       createComponent();
 
       const helpPageLinkComponent = wrapper.findComponent(HelpPageLink);
 
-      expect(findRestoreMessage().text()).toContain(
-        `This project can be restored until ${defaultPropsData.permanentDeletionDate}.`,
-      );
       expect(helpPageLinkComponent.props()).toEqual({
         href: 'user/project/working_with_projects',
         anchor: 'restore-a-project',
@@ -180,31 +144,10 @@ describe('DeleteModal', () => {
   });
 
   describe('when markedForDeletion prop is true', () => {
-    it('does not render restore message', () => {
-      createComponent({
-        markedForDeletion: true,
-      });
+    it('does not render restore message help page link', () => {
+      createComponent({ markedForDeletion: true });
 
-      expect(findRestoreMessage().exists()).toBe(false);
+      expect(wrapper.findComponent(HelpPageLink).exists()).toBe(false);
     });
-  });
-
-  it('renders aria-label', () => {
-    createComponent();
-
-    expect(findGlModal().props('ariaLabel')).toBe('Delete Foo / Bar');
-  });
-
-  it('when confirmLoading switches from true to false, emits `change event`', async () => {
-    createComponent({ confirmLoading: true });
-
-    // setProps is justified here because we are testing the component's
-    // reactive behavior which constitutes an exception
-    // See https://docs.gitlab.com/ee/development/fe_guide/style/vue.html#setting-component-state
-    wrapper.setProps({ confirmLoading: false });
-
-    await nextTick();
-
-    expect(wrapper.emitted('change')).toEqual([[false]]);
   });
 });

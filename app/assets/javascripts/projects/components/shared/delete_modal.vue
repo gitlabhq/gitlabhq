@@ -1,15 +1,14 @@
 <script>
-import { GlModal, GlAlert, GlSprintf, GlFormInput } from '@gitlab/ui';
-import uniqueId from 'lodash/uniqueId';
-import { __, s__, sprintf } from '~/locale';
+import { GlAlert, GlSprintf } from '@gitlab/ui';
+import { __ } from '~/locale';
 import HelpPageLink from '~/vue_shared/components/help_page_link/help_page_link.vue';
 import { numberToMetricPrefix } from '~/lib/utils/number_utils';
+import GroupsProjectsDeleteModal from '~/groups_projects/components/delete_modal.vue';
+import { RESOURCE_TYPES } from '~/groups_projects/constants';
 
 export default {
+  RESOURCE_TYPES,
   i18n: {
-    deleteProject: __('Delete project'),
-    title: __('Are you absolutely sure?'),
-    confirmText: __('Enter the following to confirm:'),
     isForkAlertTitle: __('You are about to delete this forked project containing:'),
     isNotForkAlertTitle: __('You are about to delete this project containing:'),
     isForkAlertBody: __('This process deletes the project repository and all related resources.'),
@@ -20,7 +19,7 @@ export default {
       'This project is %{strongStart}NOT%{strongEnd} a fork, and has the following:',
     ),
   },
-  components: { GlModal, GlAlert, GlSprintf, GlFormInput, HelpPageLink },
+  components: { GroupsProjectsDeleteModal, GlAlert, GlSprintf, HelpPageLink },
   model: {
     prop: 'visible',
     event: 'change',
@@ -76,40 +75,7 @@ export default {
       required: true,
     },
   },
-  data() {
-    return {
-      userInput: null,
-      modalId: uniqueId('delete-project-modal-'),
-    };
-  },
   computed: {
-    confirmDisabled() {
-      return this.userInput !== this.confirmPhrase;
-    },
-    modalActionProps() {
-      return {
-        primary: {
-          text: __('Yes, delete project'),
-          attributes: {
-            variant: 'danger',
-            disabled: this.confirmDisabled,
-            loading: this.confirmLoading,
-            'data-testid': 'confirm-delete-button',
-          },
-        },
-        cancel: {
-          text: __('Cancel, keep project'),
-        },
-      };
-    },
-    ariaLabel() {
-      return sprintf(s__('Projects|Delete %{nameWithNamespace}'), {
-        nameWithNamespace: this.nameWithNamespace,
-      });
-    },
-    showRestoreMessage() {
-      return !this.markedForDeletion;
-    },
     hasStats() {
       return (
         this.issuesCount !== null ||
@@ -119,15 +85,6 @@ export default {
       );
     },
   },
-  watch: {
-    confirmLoading(isLoading, wasLoading) {
-      // If the button was loading and now no longer is
-      if (!isLoading && wasLoading) {
-        // Hide the modal
-        this.$emit('change', false);
-      }
-    },
-  },
   methods: {
     numberToMetricPrefix,
   },
@@ -135,19 +92,18 @@ export default {
 </script>
 
 <template>
-  <gl-modal
+  <groups-projects-delete-modal
+    :resource-type="$options.RESOURCE_TYPES.PROJECT"
     :visible="visible"
-    :modal-id="modalId"
-    footer-class="gl-bg-subtle gl-p-5"
-    title-class="gl-text-danger"
-    :action-primary="modalActionProps.primary"
-    :action-cancel="modalActionProps.cancel"
-    :aria-label="ariaLabel"
-    @primary.prevent="$emit('primary')"
+    :confirm-phrase="confirmPhrase"
+    :full-name="nameWithNamespace"
+    :confirm-loading="confirmLoading"
+    :marked-for-deletion="markedForDeletion"
+    :permanent-deletion-date="permanentDeletionDate"
+    @primary="$emit('primary')"
     @change="$emit('change', $event)"
   >
-    <template #modal-title>{{ $options.i18n.title }}</template>
-    <div>
+    <template #alert>
       <gl-alert class="gl-mb-5" variant="danger" :dismissible="false">
         <h4 v-if="isFork" class="gl-alert-title">
           {{ $options.i18n.isForkAlertTitle }}
@@ -188,36 +144,11 @@ export default {
           </template>
         </gl-sprintf>
       </gl-alert>
-      <p class="gl-mb-1">{{ $options.i18n.confirmText }}</p>
-      <p>
-        <code class="gl-whitespace-pre-wrap">{{ confirmPhrase }}</code>
-      </p>
-
-      <gl-form-input
-        id="confirm_name_input"
-        v-model="userInput"
-        name="confirm_name_input"
-        type="text"
-        data-testid="confirm-name-field"
-      />
-      <p
-        v-if="showRestoreMessage"
-        class="gl-mb-0 gl-mt-3 gl-text-subtle"
-        data-testid="restore-message"
-      >
-        <gl-sprintf
-          :message="
-            __('This project can be restored until %{date}. %{linkStart}Learn more%{linkEnd}.')
-          "
-        >
-          <template #date>{{ permanentDeletionDate }}</template>
-          <template #link="{ content }">
-            <help-page-link href="user/project/working_with_projects" anchor="restore-a-project">{{
-              content
-            }}</help-page-link>
-          </template>
-        </gl-sprintf>
-      </p>
-    </div>
-  </gl-modal>
+    </template>
+    <template #restore-help-page-link="{ content }">
+      <help-page-link href="user/project/working_with_projects" anchor="restore-a-project">{{
+        content
+      }}</help-page-link>
+    </template>
+  </groups-projects-delete-modal>
 </template>

@@ -1,8 +1,0 @@
----
-migration_job_name: BackfillApprovalsProjectId
-description: Backfills sharding key `approvals.project_id` from `merge_requests`.
-feature_category: code_review_workflow
-introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/160035
-milestone: '17.3'
-queued_migration_version: 20240719090631
-finalized_by: '20241001232051'

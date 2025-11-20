@@ -40,10 +40,11 @@
     - if @release
       = render 'release_link', project: @project, release: @release
 
-  .nav-controls
+  .nav-controls.gl-flex-wrap.gl-items-center{ class: '!gl-flex' }
     - if @tag.has_signature?
       - signature_object = tag_view_signature(@tag)
-      = render partial: 'projects/commit/signature', object: signature_object
+      .gl-mr-3
+        = render partial: 'projects/commit/signature', object: signature_object
     - if can?(current_user, :admin_tag, @project)
       = render 'edit_release_button', tag: @tag, project: @project, release: @release
     = link_button_to nil, project_tree_path(@project, @tag.name, ref_type: :tags), class: 'has-tooltip', title: s_('TagsPage|Browse files'), icon: 'folder-open'

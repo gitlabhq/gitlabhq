@@ -1,9 +1,0 @@
----
-migration_job_name: RemoveNamespaceFromOsTypeSbomComponents
-description: Removes namespace from operating system components
-feature_category: software_composition_analysis
-introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/151444
-milestone: '17.0'
-queued_migration_version: 20240425205205
-finalize_after: '2024-05-06'
-finalized_by: 20240909204952

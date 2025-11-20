@@ -356,7 +356,6 @@ RSpec/ExampleWithoutDescription:
     - 'spec/lib/system_check/app/redis_version_check_spec.rb'
     - 'spec/mailers/emails/profile_spec.rb'
     - 'spec/mailers/previews_spec.rb'
-    - 'spec/migrations/db/migrate/20240806100120_remove_records_without_project_from_project_saved_replies_table_spec.rb'
     - 'spec/models/abuse_report_spec.rb'
     - 'spec/models/activity_pub/releases_subscription_spec.rb'
     - 'spec/models/alert_management/alert_assignee_spec.rb'
