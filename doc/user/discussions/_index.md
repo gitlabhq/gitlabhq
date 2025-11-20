@@ -155,6 +155,11 @@ you can reply to comments by sending an email.
 
 You can use [Markdown](../markdown.md) and [quick actions](../project/quick_actions.md) in your email replies.
 
+### Comment reply expiration
+
+Email replies that create standard or threaded comments are subject to a two year
+[retention policy](../../administration/reply_by_email.md#retention-policy-for-notifications).
+
 ## Edit a comment
 
 You can edit your own comment at any time.

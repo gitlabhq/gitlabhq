@@ -512,6 +512,9 @@ The `List-Unsubscribe` header has two entries:
 - An email address for software to send an unsubscribe email.
   The content of the email is ignored.
 
+Unsubscribing by email is subject to the same two year
+[retention policy](../../administration/reply_by_email.md#retention-policy-for-notifications) as replying by email.
+
 ## Email headers you can use to filter email
 
 Notification email messages include GitLab-specific headers. To better manage your notifications,

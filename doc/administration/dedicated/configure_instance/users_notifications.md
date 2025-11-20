@@ -13,7 +13,7 @@ title: GitLab Dedicated users and notifications
 
 {{< /details >}}
 
-Manage users who can access Switchboard and configure email notifications for your GitLab Dedicated instance.
+Manage users who can access Switchboard and configure notifications for your GitLab Dedicated instance.
 
 ## Switchboard user management
 
@@ -65,28 +65,28 @@ If multi-factor authentication (MFA) is set up for your account, you're prompted
 To reset your MFA for Switchboard, [submit a support ticket](https://support.gitlab.com/hc/en-us/requests/new?ticket_form_id=4414917877650).
 The support team will help you regain access to your account.
 
-## Email notifications
+## Notifications
 
-GitLab sends email notifications about instance incidents, maintenance, performance issues,
-and security updates.
+GitLab sends notifications about instance incidents, maintenance,
+performance issues, and security updates through Switchboard.
 
 Notifications are sent to:
 
-- Switchboard users: Receive notifications based on their notification settings.
-- Operational contacts: Receive notifications for important instance events and service updates,
-  regardless of their notification settings.
+- Switchboard users: Users who can access Switchboard. They receive notifications based on their notification settings.
+- Operational contacts: Designated individuals or groups who serve as the primary point of communication for operational matters.
+  They receive notifications for important instance events and service updates, regardless of their notification settings.
 
-Operational contacts receive customer notifications, even if recipients:
+Operational contacts receive notifications, even if recipients:
 
 - Are not Switchboard users.
 - Have not signed in to Switchboard.
-- Turn off email notifications.
+- Turn off notifications.
 
 ### Manage email addresses for operational contacts
 
 Add multiple email addresses or a distribution list as operational contacts.
 
-To manage operational contact addresses:
+To manage email addresses for operational contacts:
 
 1. Sign in to [Switchboard](https://console.gitlab-dedicated.com/).
 1. At the top of the page, select **Configuration**.
@@ -104,19 +104,19 @@ To manage operational contact addresses:
      1. Select the trash can ({{< icon name="remove" >}}) next to the address.
      1. On the confirmation dialog, select **Delete**.
 
-### Manage notification preferences
+### Manage notification settings
 
-To receive email notifications, you must first:
+Switchboard users can control their personal notification settings.
 
-- Receive an email invitation and sign in to Switchboard.
+To receive notifications, you must first:
+
+- Receive an invitation and sign in to Switchboard.
 - Set up a password and two-factor authentication (2FA).
 
 To turn your personal notifications on or off:
 
 1. Select the dropdown list next to your user name.
 1. Select **Toggle email notifications off** or **Toggle email notifications on**.
-
-An alert confirms that your notification preferences have been updated.
 
 ## SMTP email service
 
