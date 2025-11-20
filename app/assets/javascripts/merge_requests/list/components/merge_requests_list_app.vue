@@ -146,7 +146,6 @@ export default {
     canBulkUpdate: { default: false },
     environmentNamesPath: { default: '' },
     mergeTrainsPath: { default: undefined },
-    defaultBranch: { default: '' },
     getMergeRequestsQuery: { default: undefined },
     getMergeRequestsCountsQuery: { default: undefined },
     getMergeRequestsApprovalsQuery: { default: undefined },
@@ -803,6 +802,9 @@ export default {
     handleDismissAlert() {
       this.mergeRequestsError = null;
     },
+    showTargetBranchRef(mergeRequest) {
+      return mergeRequest.targetBranch !== mergeRequest.project?.repository?.rootRef;
+    },
   },
   STATUS_OPEN,
 };
@@ -906,7 +908,7 @@ export default {
 
       <template #target-branch="{ issuable = {} }">
         <span
-          v-if="defaultBranch && issuable.targetBranch !== defaultBranch"
+          v-if="showTargetBranchRef(issuable)"
           class="project-ref-path gl-inline-block gl-max-w-26 gl-truncate gl-align-bottom"
           data-testid="target-branch"
         >

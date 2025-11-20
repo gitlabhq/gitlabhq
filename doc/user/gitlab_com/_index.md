@@ -464,47 +464,47 @@ for the Projects, Groups, and Users APIs do not include informational headers.
 
 The following table describes the rate limits for GitLab.com:
 
-| Rate limit                                                       | Setting                       |
-|:-----------------------------------------------------------------|:------------------------------|
-| Protected paths for an IP address                                | 10 requests each minute        |
-| Raw endpoint traffic for a project, commit, or file path         | 300 requests each minute       |
-| Unauthenticated traffic from an IP address                       | 500 requests each minute       |
-| Authenticated API traffic for a user                             | 2,000 requests each minute     |
-| Authenticated non-API HTTP traffic for a user                    | 1,000 requests each minute     |
-| All traffic from an IP address                                   | 2,000 requests each minute     |
-| Issue creation                                                   | 200 requests each minute       |
-| Note creation on issues and merge requests                       | 60 requests each minute        |
-| Advanced, project, or group search API for an IP address         | 10 requests each minute        |
+| Rate limit                                                       | Setting                         |
+|:-----------------------------------------------------------------|:--------------------------------|
+| Protected paths for an IP address                                | 10 requests each minute         |
+| Raw endpoint traffic for a project, commit, or file path         | 300 requests each minute        |
+| Unauthenticated traffic from an IP address                       | 500 requests each minute        |
+| Authenticated API traffic for a user                             | 2,000 requests each minute      |
+| Authenticated non-API HTTP traffic for a user                    | 1,000 requests each minute      |
+| All traffic from an IP address                                   | 2,000 requests each minute      |
+| Issue creation                                                   | 200 requests each minute        |
+| Note creation on issues and merge requests                       | 60 requests each minute         |
+| Advanced, project, or group search API for an IP address         | 10 requests each minute         |
 | GitLab Pages requests for an IP address                          | 1,000 requests every 50 seconds |
 | GitLab Pages requests for a GitLab Pages domain                  | 5,000 requests every 10 seconds |
 | GitLab Pages TLS connections for an IP address                   | 1,000 requests every 50 seconds |
 | GitLab Pages TLS connections for a GitLab Pages domain           | 400 requests every 10 seconds   |
-| Pipeline creation requests for a project, user, or commit        | 25 requests each minute        |
+| Pipeline creation requests for a project, user, or commit        | 25 requests each minute         |
 | Alert integration endpoint requests for a project                | 3,600 requests every hour       |
 | GitLab Duo `aiAction`  requests                                  | 160 requests every 8 hours      |
-| [Pull mirroring](../project/repository/mirror/pull.md) intervals | 5 minutes                     |
+| [Pull mirroring](../project/repository/mirror/pull.md) intervals | 5 minutes                       |
 | API requests from a user to `/api/v4/users/:id`                  | 300 requests every 10 minutes   |
-| GitLab package cloud requests for an IP address ([introduced](https://gitlab.com/gitlab-com/gl-infra/production-engineering/-/issues/24083) in GitLab 16.11) | 3,000 requests each minute |
-| GitLab repository files | 500 requests each minute |
-| User followers requests (`/api/v4/users/:id/followers`)            | 100 requests each minute       |
-| User following requests (`/api/v4/users/:id/following`)            | 100 requests each minute       |
-| User status requests (`/api/v4/users/:user_id/status`)             | 240 requests each minute       |
-| User SSH keys requests (`/api/v4/users/:user_id/keys`)             | 120 requests each minute       |
-| Single SSH key requests (`/api/v4/users/:id/keys/:key_id`)         | 120 requests each minute       |
-| User GPG keys requests (`/api/v4/users/:id/gpg_keys`)              | 120 requests each minute       |
-| Single GPG key requests (`/api/v4/users/:id/gpg_keys/:key_id`)     | 120 requests each minute       |
-| User projects requests (`/api/v4/users/:user_id/projects`)         | 300 requests each minute       |
-| User contributed projects requests (`/api/v4/users/:user_id/contributed_projects`) | 100 requests each minute |
-| User starred projects requests (`/api/v4/users/:user_id/starred_projects`) | 100 requests each minute      |
+| GitLab package cloud requests for an IP address ([introduced](https://gitlab.com/gitlab-com/gl-infra/production-engineering/-/issues/24083) in GitLab 16.11) | 3,000 requests each minute      |
+| GitLab repository files | 500 requests each minute        |
+| User followers requests (`/api/v4/users/:id/followers`)            | 100 requests each minute        |
+| User following requests (`/api/v4/users/:id/following`)            | 100 requests each minute        |
+| User status requests (`/api/v4/users/:user_id/status`)             | 240 requests each minute        |
+| User SSH keys requests (`/api/v4/users/:user_id/keys`)             | 120 requests each minute        |
+| Single SSH key requests (`/api/v4/users/:id/keys/:key_id`)         | 120 requests each minute        |
+| User GPG keys requests (`/api/v4/users/:id/gpg_keys`)              | 120 requests each minute        |
+| Single GPG key requests (`/api/v4/users/:id/gpg_keys/:key_id`)     | 120 requests each minute        |
+| User projects requests (`/api/v4/users/:user_id/projects`)         | 300 requests each minute        |
+| User contributed projects requests (`/api/v4/users/:user_id/contributed_projects`) | 100 requests each minute        |
+| User starred projects requests (`/api/v4/users/:user_id/starred_projects`) | 100 requests each minute        |
 | Projects list requests (`/api/v4/projects`)                        | 2,000 requests every 10 minutes |
-| Group projects requests (`/api/v4/groups/:id/projects`)            | 600 requests each minute       |
-| Single project requests (`/api/v4/projects/:id`)                   | 400 requests each minute       |
-| Groups list requests (`/api/v4/groups`)                            | 200 requests each minute       |
-| Single group requests (`/api/v4/groups/:id`)                       | 400 requests each minute       |
-| Runner jobs requests using a runner token (`/api/v4/jobs/request`) | 2,000 requests each minute     |
-| Runner job trace patch requests using a job token (`/api/v4/jobs/trace`) | 2,000 requests each minute     |
-| Runner jobs requests using a job token (`/api/v4/jobs/*`)          | 200 requests each minute       |
-| List all project members in a project                              | 60 requests each minute        |
+| Group projects requests (`/api/v4/groups/:id/projects`)            | 600 requests each minute        |
+| Single project requests (`/api/v4/projects/:id`)                   | 400 requests each minute        |
+| Groups list requests (`/api/v4/groups`)                            | 200 requests each minute        |
+| Single group requests (`/api/v4/groups/:id`)                       | 400 requests each minute        |
+| Runner jobs requests using a runner token (`/api/v4/jobs/request`) | 2,000 requests each minute      |
+| Runner job trace patch requests using a job token (`/api/v4/jobs/trace`) | 2,000 requests each minute      |
+| Runner jobs requests using a job token (`/api/v4/jobs/*`)          | 200 requests each minute        |
+| List all project members in a project                              | 200 requests each minute        |
 
 More details are available on the rate limits for
 [protected paths](#protected-paths-throttle) and

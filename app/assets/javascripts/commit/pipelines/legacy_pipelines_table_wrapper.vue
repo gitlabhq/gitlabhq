@@ -1,18 +1,38 @@
 <script>
-import { GlButton, GlEmptyState, GlLoadingIcon, GlModal, GlLink, GlSprintf } from '@gitlab/ui';
+import {
+  GlAlert,
+  GlButton,
+  GlEmptyState,
+  GlLoadingIcon,
+  GlModal,
+  GlLink,
+  GlSprintf,
+} from '@gitlab/ui';
 import { helpPagePath } from '~/helpers/help_page_helper';
 import { getParameterByName } from '~/lib/utils/url_utility';
 import PipelinesTable from '~/ci/common/pipelines_table.vue';
 import { PIPELINE_ID_KEY } from '~/ci/constants';
+import { DEFAULT_DEBOUNCE_AND_THROTTLE_MS } from '~/lib/utils/constants';
 import eventHub from '~/ci/event_hub';
 import PipelinesMixin from '~/ci/pipeline_details/mixins/pipelines_mixin';
 import PipelinesService from '~/ci/pipelines_page/services/pipelines_service';
 import PipelineStore from '~/ci/pipeline_details/stores/pipelines_store';
 import TablePagination from '~/vue_shared/components/pagination/table_pagination.vue';
+import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import { s__, __ } from '~/locale';
+import getPipelineCreationRequests from '~/ci/merge_requests/graphql/queries/get_pipeline_creation_requests.query.graphql';
+import pipelineCreationRequestsUpdatedSubscription from '~/ci/merge_requests/graphql/subscriptions/pipeline_creation_requests_updated.subscription.graphql';
+import { getIdFromGraphQLId, convertToGraphQLId } from '~/graphql_shared/utils';
+import { TYPENAME_CI_PIPELINE } from '~/graphql_shared/constants';
+import { createAlert } from '~/alert';
+import retryPipelineMutation from '~/ci/pipelines_page/graphql/mutations/retry_pipeline.mutation.graphql';
+import cancelPipelineMutation from '~/ci/pipelines_page/graphql/mutations/cancel_pipeline.mutation.graphql';
+import { MR_PIPELINE_TYPE_DETACHED } from '~/ci/merge_requests/constants';
+import * as Sentry from '~/sentry/sentry_browser_wrapper';
 
 export default {
   components: {
+    GlAlert,
     GlButton,
     GlEmptyState,
     GlLink,
@@ -22,7 +42,7 @@ export default {
     PipelinesTable,
     TablePagination,
   },
-  mixins: [PipelinesMixin],
+  mixins: [PipelinesMixin, glFeatureFlagsMixin()],
   props: {
     canCreatePipelineInTargetProject: {
       type: Boolean,
@@ -72,7 +92,64 @@ export default {
       default: 'root',
     },
   },
+  apollo: {
+    pipelineCreationRequests: {
+      query: getPipelineCreationRequests,
+      variables() {
+        return {
+          fullPath: this.targetProjectFullPath,
+          mergeRequestIid: String(this.mergeRequestId),
+        };
+      },
+      skip() {
+        return (
+          !this.isRealtimePipelineCreationRequestsEnabled ||
+          !this.isMergeRequestTable ||
+          !this.mergeRequestId ||
+          !this.targetProjectFullPath
+        );
+      },
+      update(data) {
+        if (data.project?.mergeRequest) {
+          const { pipelineCreationRequests, ...mergeRequest } = data.project.mergeRequest;
+          this.mergeRequest = mergeRequest;
 
+          return pipelineCreationRequests;
+        }
+        return [];
+      },
+      subscribeToMore: {
+        document: pipelineCreationRequestsUpdatedSubscription,
+        variables() {
+          return {
+            mergeRequestId: this.mergeRequest.id,
+          };
+        },
+        skip() {
+          return (
+            !this.isRealtimePipelineCreationRequestsEnabled ||
+            !this.isMergeRequestTable ||
+            !this.mergeRequest.id
+          );
+        },
+        updateQuery: (previousResult, { subscriptionData }) => {
+          if (!subscriptionData.data?.ciPipelineCreationRequestsUpdated) return previousResult;
+
+          const updated = subscriptionData.data.ciPipelineCreationRequestsUpdated;
+          return {
+            ...previousResult,
+            project: {
+              ...previousResult.project,
+              mergeRequest: {
+                ...previousResult.project.mergeRequest,
+                pipelineCreationRequests: updated.pipelineCreationRequests,
+              },
+            },
+          };
+        },
+      },
+    },
+  },
   data() {
     const store = new PipelineStore();
 
@@ -82,10 +159,18 @@ export default {
       page: getParameterByName('page') || '1',
       requestData: {},
       modalId: 'create-pipeline-for-fork-merge-request-modal',
+      pipelineCreationRequests: [],
+      showCreationFailedAlert: false,
+      isCreatingPipeline: false,
+      loaderTimeout: null,
+      mergeRequest: {},
     };
   },
 
   computed: {
+    isRealtimePipelineCreationRequestsEnabled() {
+      return this.glFeatures.ciPipelineCreationRequestsRealtime;
+    },
     shouldRenderTable() {
       return !this.isLoading && this.state.pipelines.length > 0 && !this.hasError;
     },
@@ -129,16 +214,74 @@ export default {
      */
     latestPipelineDetachedFlag() {
       const latest = this.state.pipelines[0];
-      return (
-        latest &&
-        latest.flags &&
-        (latest.flags.detached_merge_request_pipeline || latest.flags.merge_request_pipeline)
-      );
+      if (latest) {
+        if (
+          latest.flags &&
+          (latest.flags.detached_merge_request_pipeline || latest.flags.merge_request_pipeline)
+        ) {
+          return true;
+        }
+        if (
+          latest.mergeRequestEventType &&
+          latest.mergeRequestEventType === MR_PIPELINE_TYPE_DETACHED
+        ) {
+          return true;
+        }
+      }
+      return false;
+    },
+    hasInProgressCreationRequests() {
+      return this.requestLengthByStatus(this.pipelineCreationRequests, 'IN_PROGRESS') > 0;
+    },
+    showRunPipelineButtonLoader() {
+      return this.isMergeRequestTable && this.isRealtimePipelineCreationRequestsEnabled
+        ? this.hasInProgressCreationRequests
+        : this.state.isRunningMergeRequestPipeline;
+    },
+    latestPipelineId() {
+      const latest = this.state.pipelines[0];
+      return latest ? latest.id : 0;
+    },
+  },
+  watch: {
+    pipelineCreationRequests: {
+      handler(newRequests, oldRequests) {
+        const hasInProgress = this.requestLengthByStatus(newRequests, 'IN_PROGRESS') > 0;
+
+        if (hasInProgress) {
+          this.startDebouncedPipelineLoader();
+        } else {
+          this.stopDebouncedPipelineLoader();
+        }
+
+        const hasSucceededRequests = this.hasSuccessCountIncreased(oldRequests, newRequests);
+        const hasFailedRequests = this.hasFailureCountIncreased(oldRequests, newRequests);
+
+        if (hasSucceededRequests) {
+          const createdPipelines = newRequests
+            .filter(
+              (req) =>
+                req.status === 'SUCCEEDED' &&
+                req.pipeline &&
+                this.latestPipelineId < getIdFromGraphQLId(req.pipeline.id),
+            )
+            .map((req) => ({ ...req.pipeline, id: getIdFromGraphQLId(req.pipeline.id) }));
+
+          this.store.storePipelines([...createdPipelines, ...this.state.pipelines]);
+        }
+
+        this.showCreationFailedAlert = hasFailedRequests;
+      },
+      deep: true,
+      immediate: true,
     },
   },
   created() {
     this.service = new PipelinesService(this.endpoint);
     this.requestData = { page: this.page };
+  },
+  beforeUnmount() {
+    clearTimeout(this.loaderTimeout);
   },
   methods: {
     // eslint-disable-next-line vue/no-unused-properties -- successCallback() is used by the `PipelinesMixin` mixin
@@ -148,6 +291,9 @@ export default {
 
       this.store.storePagination(resp.headers);
       this.setCommonData(pipelines, this.isMergeRequestTable);
+      if (!this.hasInProgressCreationRequests) {
+        this.stopDebouncedPipelineLoader();
+      }
 
       if (resp.headers?.['x-total']) {
         const updatePipelinesEvent = new CustomEvent('update-pipelines-count', {
@@ -171,6 +317,9 @@ export default {
      *
      */
     onClickRunPipeline() {
+      if (this.isRealtimePipelineCreationRequestsEnabled) {
+        this.startDebouncedPipelineLoader();
+      }
       eventHub.$emit('runMergeRequestPipeline', {
         projectId: this.projectId,
         mergeRequestId: this.mergeRequestId,
@@ -183,6 +332,78 @@ export default {
       } else {
         this.$refs.modal.show();
       }
+    },
+    hasSuccessCountIncreased(previousRequests = [], currentRequests = []) {
+      const oldRequestsCount = this.requestLengthByStatus(previousRequests, 'SUCCEEDED');
+      const newRequestsCount = this.requestLengthByStatus(currentRequests, 'SUCCEEDED');
+
+      return newRequestsCount > oldRequestsCount;
+    },
+    hasFailureCountIncreased(previousRequests = [], currentRequests = []) {
+      const oldRequestsCount = this.requestLengthByStatus(previousRequests, 'FAILED');
+      const newRequestsCount = this.requestLengthByStatus(currentRequests, 'FAILED');
+
+      return newRequestsCount > oldRequestsCount;
+    },
+    requestLengthByStatus(requests, status) {
+      return requests.filter((request) => request.status === status).length;
+    },
+    startDebouncedPipelineLoader() {
+      if (this.loaderTimeout) {
+        clearTimeout(this.loaderTimeout);
+      }
+
+      this.loaderTimeout = setTimeout(() => {
+        this.isCreatingPipeline = true;
+      }, DEFAULT_DEBOUNCE_AND_THROTTLE_MS);
+    },
+    stopDebouncedPipelineLoader() {
+      if (this.loaderTimeout) {
+        clearTimeout(this.loaderTimeout);
+        this.loaderTimeout = null;
+      }
+
+      this.isCreatingPipeline = false;
+    },
+    async action({ pipeline, mutation, mutationType, defaultErrorMessage }) {
+      try {
+        const { data } = await this.$apollo.mutate({
+          mutation,
+          variables: {
+            id: pipeline.id,
+          },
+        });
+
+        const [errorMessage] = data[mutationType]?.errors ?? [];
+
+        if (errorMessage) {
+          createAlert({
+            message: defaultErrorMessage,
+          });
+          this.captureError(errorMessage);
+        }
+      } catch (error) {
+        this.captureError(error);
+      }
+    },
+    retryPipeline(pipeline) {
+      this.action({
+        pipeline: { ...pipeline, id: convertToGraphQLId(TYPENAME_CI_PIPELINE, pipeline.id) },
+        mutation: retryPipelineMutation,
+        mutationType: 'pipelineRetry',
+        defaultErrorMessage: s__('Pipelines|The pipeline could not be retried.'),
+      });
+    },
+    cancelPipeline(pipeline) {
+      this.action({
+        pipeline: { ...pipeline, id: convertToGraphQLId(TYPENAME_CI_PIPELINE, pipeline.id) },
+        mutation: cancelPipelineMutation,
+        mutationType: 'pipelineCancel',
+        defaultErrorMessage: s__('Pipelines|The pipeline could not be canceled.'),
+      });
+    },
+    captureError(exception) {
+      Sentry.captureException(exception);
     },
   },
   pipelineIdKey: PIPELINE_ID_KEY,
@@ -208,6 +429,7 @@ export default {
     ),
     runPipelineText: s__('Pipeline|Run pipeline'),
     emptyStateTitle: s__('Pipelines|There are currently no pipelines.'),
+    pipelineCreationFailed: s__('Pipeline|Pipeline creation failed. Please try again.'),
   },
   mrPipelinesDocsPath: helpPagePath('ci/pipelines/merge_request_pipelines.md', {
     anchor: 'prerequisites',
@@ -225,6 +447,12 @@ export default {
 </script>
 <template>
   <div class="content-list pipelines">
+    <gl-alert
+      v-if="showCreationFailedAlert"
+      variant="danger"
+      @dismiss="showCreationFailedAlert = false"
+      >{{ $options.i18n.pipelineCreationFailed }}</gl-alert
+    >
     <gl-loading-icon
       v-if="isLoading"
       :label="s__('Pipelines|Loading pipelines')"
@@ -273,7 +501,8 @@ export default {
           <div class="gl-align-middle">
             <gl-button
               variant="confirm"
-              :loading="state.isRunningMergeRequestPipeline"
+              :loading="showRunPipelineButtonLoader"
+              :disabled="showRunPipelineButtonLoader"
               data-testid="run_pipeline_button"
               @click="tryRunPipeline"
             >
@@ -292,7 +521,8 @@ export default {
         <gl-button
           class="gl-mb-3 gl-mt-3 gl-w-full @md/panel:gl-w-auto"
           data-testid="run_pipeline_button_mobile"
-          :loading="state.isRunningMergeRequestPipeline"
+          :loading="showRunPipelineButtonLoader"
+          :disabled="showRunPipelineButtonLoader"
           @click="tryRunPipeline"
         >
           {{ $options.i18n.runPipelineText }}
@@ -300,20 +530,21 @@ export default {
       </div>
 
       <pipelines-table
-        :is-creating-pipeline="state.isRunningMergeRequestPipeline"
+        :is-creating-pipeline="isCreatingPipeline"
         :pipeline-id-type="$options.pipelineIdKey"
         :pipelines="state.pipelines"
         :view-type="viewType"
         class="@lg/panel:-gl-mt-px"
-        @cancel-pipeline="onCancelPipeline"
+        @cancel-pipeline="cancelPipeline"
         @refresh-pipelines-table="onRefreshPipelinesTable"
-        @retry-pipeline="onRetryPipeline"
+        @retry-pipeline="retryPipeline"
       >
         <template #table-header-actions>
           <div v-if="canRenderPipelineButton" class="gl-text-right">
             <gl-button
               data-testid="run_pipeline_button"
-              :loading="state.isRunningMergeRequestPipeline"
+              :loading="showRunPipelineButtonLoader"
+              :disabled="showRunPipelineButtonLoader"
               @click="tryRunPipeline"
             >
               {{ $options.i18n.runPipelineText }}

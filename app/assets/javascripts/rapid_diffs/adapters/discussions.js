@@ -17,6 +17,7 @@ function mountVueApp(el, id, appData) {
           markdownDocs: appData.markdownDocsEndpoint,
           register: appData.registerPath,
           signIn: appData.signInPath,
+          reportAbuse: appData.reportAbusePath,
         },
         noteableType: appData.noteableType,
       };

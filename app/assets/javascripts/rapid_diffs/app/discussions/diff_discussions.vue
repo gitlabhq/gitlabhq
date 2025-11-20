@@ -19,6 +19,7 @@ export default {
       'addNote',
       'updateNote',
       'deleteNote',
+      'setEditingMode',
       'expandDiscussionReplies',
       'toggleDiscussionReplies',
       'requestLastNoteEditing',
@@ -43,6 +44,8 @@ export default {
           @replyAdded="addNote"
           @noteUpdated="updateNote"
           @noteDeleted="deleteNote"
+          @startEditing="setEditingMode($event, true)"
+          @cancelEditing="setEditingMode($event, false)"
         />
       </ul>
     </div>

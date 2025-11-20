@@ -14,6 +14,7 @@ Sidekiq/EnforceDatabaseHealthSignalDeferral:
     - 'app/workers/ci/cancel_redundant_pipelines_worker.rb'
     - 'app/workers/ci/catalog/resources/aggregate_last30_day_usage_worker.rb'
     - 'app/workers/ci/catalog/resources/cleanup_last_usages_worker.rb'
+    - 'app/workers/ci/create_downstream_pipeline_worker.rb'
     - 'app/workers/ci/destroy_old_pipelines_worker.rb'
     - 'app/workers/ci/execute_build_hooks_worker.rb'
     - 'app/workers/ci/job_token/log_authorization_worker.rb'

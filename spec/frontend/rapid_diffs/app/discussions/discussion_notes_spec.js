@@ -1,7 +1,7 @@
 import { merge } from 'lodash';
 import { shallowMount } from '@vue/test-utils';
 import DiscussionNotes from '~/rapid_diffs/app/discussions/discussion_notes.vue';
-import NoteableNote from '~/notes/components/noteable_note.vue';
+import NoteableNote from '~/rapid_diffs/app/discussions/noteable_note.vue';
 import SystemNote from '~/vue_shared/components/notes/system_note.vue';
 import ToggleRepliesWidget from '~/notes/components/toggle_replies_widget.vue';
 
@@ -43,40 +43,64 @@ describe('DiscussionNotes', () => {
   });
 
   describe('noteable notes', () => {
-    it('renders as first note', () => {
-      const note = { id: 'foo' };
-      createComponent({ notes: [note] });
-      const noteComponent = wrapper.findComponent(NoteableNote);
-      expect(noteComponent.props('note')).toBe(note);
-      expect(noteComponent.props('showReplyButton')).toBe(
-        defaultProvisions.userPermissions.can_create_note,
-      );
+    describe('first note', () => {
+      it('renders as first note', () => {
+        const note = { id: 'foo' };
+        createComponent({ notes: [note] });
+        const noteComponent = wrapper.findComponent(NoteableNote);
+        expect(noteComponent.props('note')).toBe(note);
+        expect(noteComponent.props('showReplyButton')).toBe(
+          defaultProvisions.userPermissions.can_create_note,
+        );
+      });
+
+      it('propagates startReplying event', () => {
+        const note = { id: 'foo' };
+        createComponent({ notes: [note] });
+        wrapper.findComponent(NoteableNote).vm.$emit('startReplying');
+        expect(wrapper.emitted('startReplying')).toStrictEqual([[]]);
+      });
     });
 
-    it('propagates startReplying event', () => {
-      createComponent({ notes: [{ id: 'foo' }] });
-      wrapper.findComponent(NoteableNote).vm.$emit('startReplying');
-      expect(wrapper.emitted('startReplying')).toStrictEqual([[]]);
-    });
+    describe('all notes', () => {
+      const notes = [{ id: 'first' }, { id: 'second' }];
 
-    it('propagates noteDeleted event', () => {
-      const notes = { id: 'foo' };
-      createComponent({ notes: [notes] });
-      wrapper.findComponent(NoteableNote).vm.$emit('noteDeleted');
-      expect(wrapper.emitted('noteDeleted')).toStrictEqual([[notes]]);
-    });
+      describe.each(notes)('for %s note', (note) => {
+        const findNoteableNote = () => {
+          return wrapper
+            .findAllComponents(NoteableNote)
+            .filter((component) => component.props('note') === note)
+            .at(0);
+        };
 
-    it('renders as reply', () => {
-      const reply = { id: 'bar' };
-      createComponent({ notes: [{ id: 'foo' }, reply] });
-      expect(wrapper.findAllComponents(NoteableNote).at(1).props('note')).toBe(reply);
-    });
+        it('renders note', () => {
+          createComponent({ notes });
+          expect(findNoteableNote().exists()).toBe(true);
+        });
 
-    it('propagates noteDeleted event on reply', () => {
-      const reply = { id: 'bar' };
-      createComponent({ notes: [{ id: 'foo' }, reply] });
-      wrapper.findAllComponents(NoteableNote).at(1).vm.$emit('noteDeleted');
-      expect(wrapper.emitted('noteDeleted')).toStrictEqual([[reply]]);
+        it.each(['noteDeleted', 'startEditing', 'cancelEditing'])(
+          'propagates %s event',
+          (event) => {
+            createComponent({ notes });
+            findNoteableNote().vm.$emit(event, note);
+            expect(wrapper.emitted(event)).toStrictEqual([[note]]);
+          },
+        );
+
+        it('propagates noteUpdated event', () => {
+          const updatedNote = {};
+          createComponent({ notes });
+          findNoteableNote().vm.$emit('noteUpdated', updatedNote);
+          expect(wrapper.emitted('noteUpdated')).toStrictEqual([[updatedNote]]);
+        });
+
+        it('propagates award event', () => {
+          const award = 'smile';
+          createComponent({ notes });
+          findNoteableNote().vm.$emit('award', award);
+          expect(wrapper.emitted('award')).toStrictEqual([[{ note, award }]]);
+        });
+      });
     });
   });
 

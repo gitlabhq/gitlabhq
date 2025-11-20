@@ -11,6 +11,7 @@ RSpec.describe RapidDiffs::CommitAppComponent, feature_category: :code_review_wo
   let(:register_path) { '/register_path' }
   let(:sign_in_path) { '/sign_in_path' }
   let(:markdown_docs_path) { '/markdown_docs_path' }
+  let(:report_abuse_path) { '/report_abuse' }
 
   let(:presenter) do
     instance_double(
@@ -21,6 +22,7 @@ RSpec.describe RapidDiffs::CommitAppComponent, feature_category: :code_review_wo
       preview_markdown_endpoint: preview_markdown_endpoint,
       register_path: register_path,
       sign_in_path: sign_in_path,
+      report_abuse_path: report_abuse_path,
       markdown_docs_path: markdown_docs_path
     )
   end
@@ -43,6 +45,7 @@ RSpec.describe RapidDiffs::CommitAppComponent, feature_category: :code_review_wo
         preview_markdown_endpoint: preview_markdown_endpoint,
         register_path: register_path,
         sign_in_path: sign_in_path,
+        report_abuse_path: report_abuse_path,
         markdown_docs_path: markdown_docs_path
       },
       extra_prefetch_endpoints: [discussions_endpoint]

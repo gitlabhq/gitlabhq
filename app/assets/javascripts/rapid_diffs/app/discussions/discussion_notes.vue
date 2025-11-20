@@ -2,7 +2,7 @@
 import SystemNote from '~/vue_shared/components/notes/system_note.vue';
 import ToggleRepliesWidget from '~/notes/components/toggle_replies_widget.vue';
 import DiscussionNotesRepliesWrapper from '~/notes/components/discussion_notes_replies_wrapper.vue';
-import NoteableNote from '~/notes/components/noteable_note.vue';
+import NoteableNote from './noteable_note.vue';
 
 export default {
   name: 'DiscussionNotes',
@@ -50,8 +50,12 @@ export default {
         v-else
         :note="firstNote"
         :show-reply-button="userPermissions.can_create_note"
-        @startReplying="$emit('startReplying')"
         @noteDeleted="$emit('noteDeleted', firstNote)"
+        @noteUpdated="$emit('noteUpdated', $event)"
+        @startReplying="$emit('startReplying')"
+        @startEditing="$emit('startEditing', firstNote)"
+        @cancelEditing="$emit('cancelEditing', firstNote)"
+        @award="$emit('award', { note: firstNote, award: $event })"
       >
         <template #avatar-badge>
           <slot name="avatar-badge"></slot>
@@ -75,6 +79,10 @@ export default {
               :key="note.id"
               :note="note"
               @noteDeleted="$emit('noteDeleted', note)"
+              @noteUpdated="$emit('noteUpdated', $event)"
+              @startEditing="$emit('startEditing', note)"
+              @cancelEditing="$emit('cancelEditing', note)"
+              @award="$emit('award', { note, award: $event })"
             >
               <template #avatar-badge>
                 <slot name="avatar-badge"></slot>

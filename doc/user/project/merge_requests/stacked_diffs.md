@@ -8,7 +8,7 @@ title: Stacked diffs
 
 {{< details >}}
 
-- Tier: Core, Premium, Ultimate
+- Tier: Free, Premium, Ultimate
 - Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
 - Status: Experiment
 
@@ -20,14 +20,32 @@ title: Stacked diffs
 
 {{< /history >}}
 
-In the [GitLab CLI](https://gitlab.com/gitlab-org/cli), stacked diffs are a way of
-creating small changes that build upon each other to ultimately deliver a feature.
-Each stack is separate, so you can keep building your feature in one stack
-while previous parts of the stack receive reviews and updates.
+Use stacked diffs in the [GitLab CLI](https://docs.gitlab.com/cli/) to create small changes that
+build upon each other to ultimately deliver a feature. Each stack is separate, so you can:
+
+- Continue building new features while earlier changes are reviewed.
+- Respond to review feedback on specific diffs without affecting other work.
+- Merge diffs independently as they're approved.
+
+The workflow for stacked diffs is:
+
+1. Create changes: When you run `glab stack save`, the GitLab CLI:
+
+   - Stages all your changes.
+   - Creates a new commit with your message.
+   - Creates a new branch for this commit.
+   - Moves you to the new branch automatically.
+
+1. Sync to GitLab: When you run `glab stack sync`, the GitLab CLI:
+
+   - Pushes all branches in your stack to GitLab.
+   - Creates a merge request for each diff that doesn't have one yet.
+   - Chains the merge requests together. Each merge request, except the first one,
+     targets the previous diff branch.
 
 The base command for this feature in the CLI is
-[`stack`](https://gitlab.com/gitlab-org/cli/-/tree/main/docs/source/stack), which
-you then extend with other commands.
+[`stack`](https://docs.gitlab.com/cli/stack/), which
+you then extend with [other commands](#available-commands).
 
 <div class="video-fallback">
   To learn more, see: <a href="https://www.youtube.com/watch?v=TOQOV8PWYic">Stacked Diffs in the CLI overview</a>.
@@ -42,42 +60,98 @@ We'd love to hear your feedback in [issue 7473](https://gitlab.com/gitlab-org/cl
 
 ## Create a stacked diff
 
-To do create a stacked diff in the GitLab CLI:
+Create a stacked diff when you want to break a large feature into smaller, reviewable changes.
 
-1. In your terminal window, create a new stack with `glab stack create`, and give your stack a name.
-1. Make your first set of changes.
-1. To save your first set of changes, enter `glab stack save`, then a commit message.
-1. Continue creating changes, saving them with `glab stack save`. Each time you
-   save a stack, `glab` creates a new branch.
-1. To push your changes up to GitLab, enter `glab stack sync`. GitLab creates a
-   merge request for each stack.
+Prerequisites:
 
-### Commands that build upon `glab stack`
+- You must have the [GitLab CLI](https://docs.gitlab.com/cli/) installed and authenticated.
 
-Use these sub-commands with `glab stack`:
+To create a stacked diff:
 
-- [`amend`](https://gitlab.com/gitlab-org/cli/-/blob/main/docs/source/stack/amend.md)
-- [`create`](https://gitlab.com/gitlab-org/cli/-/blob/main/docs/source/stack/create.md)
-- [`first`](https://gitlab.com/gitlab-org/cli/-/blob/main/docs/source/stack/first.md)
-- [`last`](https://gitlab.com/gitlab-org/cli/-/blob/main/docs/source/stack/last.md)
-- [`move`](https://gitlab.com/gitlab-org/cli/-/blob/main/docs/source/stack/move.md)
-- [`next`](https://gitlab.com/gitlab-org/cli/-/blob/main/docs/source/stack/next.md)
-- [`prev`](https://gitlab.com/gitlab-org/cli/-/blob/main/docs/source/stack/prev.md)
-- [`save`](https://gitlab.com/gitlab-org/cli/-/blob/main/docs/source/stack/save.md)
-- [`sync`](https://gitlab.com/gitlab-org/cli/-/blob/main/docs/source/stack/sync.md)
+1. In your terminal, create a new stack and give it a name. For example:
+
+   ```shell
+   glab stack create add-authentication
+   ```
+
+1. Make your first set of changes in your editor.
+1. Save your changes as the first diff:
+
+   ```shell
+   glab stack save
+   ```
+
+   When prompted, enter a commit message that describes this change.
+
+1. Make your next set of changes and save these as a second diff:
+
+   ```shell
+   glab stack save
+   ```
+
+   Each time you run `glab stack save`, you create a new diff and branch.
+   When prompted, enter a commit message that describes this change.
+
+1. When you're ready to push your changes to GitLab and create merge requests, run:
+
+   ```shell
+   glab stack sync
+   ```
+
+Your merge requests are available for review. You can continue creating more diffs in this stack,
+or switch to work on something else.
 
 ## Add changes to a diff in a stack
 
 To return to a specific point in the stack to add more changes to it:
 
-1. In your terminal window, use the `glab stack move` command. `glab` displays
-   a list of stacks.
-1. Select the stack you want to edit, and make your changes.
-1. When you're ready to save your changes, use the `glab stack amend` command.
-1. Optional. Change the description of the stack, if desired.
-1. Run `glab stack sync` to push your changes back up to GitLab.
+1. Display a list of stacks:
+
+   ```shell
+   glab stack move
+   ```
+
+1. Select the stack you want to edit and press <kbd>Enter</kbd>.
+1. Make your changes.
+1. When you're ready, save your changes, and run:
+
+   ```shell
+   glab stack amend
+   ```
+
+1. Optional. Change the description of the stack.
+1. Push your changes:
+
+   ```shell
+   glab stack sync
+   ```
 
 When you sync an existing stack, GitLab:
 
 - Updates the existing stack with your new changes.
 - Rebases the other merge requests in the stack to bring in your latest changes.
+
+## Available commands
+
+Use these commands to work with stacked diffs:
+
+| Command                                               | Description |
+|-------------------------------------------------------|-------------|
+| [`create`](https://docs.gitlab.com/cli/stack/create/) | Create a new stack. |
+| [`save`](https://docs.gitlab.com/cli/stack/save/)     | Save your changes as a new diff. |
+| [`amend`](https://docs.gitlab.com/cli/stack/amend/)   | Modify the current diff. |
+| [`prev`](https://docs.gitlab.com/cli/stack/prev/)     | Move to the previous diff. |
+| [`next`](https://docs.gitlab.com/cli/stack/next/)     | Move to the next diff. |
+| [`first`](https://docs.gitlab.com/cli/stack/first/)   | Move to the first diff. |
+| [`last`](https://docs.gitlab.com/cli/stack/last/)     | Move to the last diff. |
+| [`move`](https://docs.gitlab.com/cli/stack/move/)     | Select any diff from a list. |
+| [`sync`](https://docs.gitlab.com/cli/stack/sync/)     | Push branches and create/update merge requests. |
+
+### Choose between save and amend
+
+Use the following commands for different purposes:
+
+- `glab stack save`: Creates a new diff (commit and branch). Use this when you're adding
+  a new logical change to your stack.
+- `glab stack amend`: Modifies the current diff. Use this when responding to review feedback
+  or fixing the current change.

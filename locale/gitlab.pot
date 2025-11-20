@@ -13376,6 +13376,9 @@ msgstr ""
 msgid "CascadingSettings|cannot be nil when locking the attribute"
 msgstr ""
 
+msgid "Catalog item: %{itemLinkStart}%{name}%{itemLinkEnd} (ID: %{id})"
+msgstr ""
+
 msgid "Catalog item: %{name} (ID: %{id})"
 msgstr ""
 
@@ -30864,6 +30867,9 @@ msgid "GitLab project export"
 msgstr ""
 
 msgid "GitLab single sign-on URL"
+msgstr ""
+
+msgid "GitLab user %{strongStart}@%{username}%{strongEnd} flagged the AI Catalog item %{strongStart}%{item_name}%{strongEnd} for review."
 msgstr ""
 
 msgid "GitLab user %{username} flagged the AI Catalog item %{item_name} for review."
@@ -49514,6 +49520,9 @@ msgstr ""
 msgid "Pipeline|Pipeline cannot be run."
 msgstr ""
 
+msgid "Pipeline|Pipeline creation failed. Please try again."
+msgstr ""
+
 msgid "Pipeline|Pipelines"
 msgstr ""
 
@@ -55340,6 +55349,9 @@ msgid "ReportAbuse|Why are you reporting this user?"
 msgstr ""
 
 msgid "Reported %{timeAgo} by %{reportedBy}"
+msgstr ""
+
+msgid "Reported by: %{linkStart}@%{username}%{linkEnd} at %{time}"
 msgstr ""
 
 msgid "Reported by: %{username} at %{time}"
@@ -62268,6 +62280,9 @@ msgstr ""
 msgid "SecurityTrackedRefs|Could not search refs. Please try again later."
 msgstr ""
 
+msgid "SecurityTrackedRefs|Could not track refs. Please refresh the page, or try again later."
+msgstr ""
+
 msgid "SecurityTrackedRefs|Currently tracked refs"
 msgstr ""
 
@@ -62275,6 +62290,12 @@ msgid "SecurityTrackedRefs|If you do not archive associated vulnerabilities, the
 msgid_plural "SecurityTrackedRefs|If you do not archive associated vulnerabilities, the data for %{count} vulnerabilities will be permanently deleted."
 msgstr[0] ""
 msgstr[1] ""
+
+msgid "SecurityTrackedRefs|Loading tracked refs. Please wait."
+msgstr ""
+
+msgid "SecurityTrackedRefs|Maximum number of tracked refs reached. Remove a ref to track a new one."
+msgstr ""
 
 msgid "SecurityTrackedRefs|Most recently updated"
 msgstr ""
@@ -62310,6 +62331,9 @@ msgid "SecurityTrackedRefs|Track new ref(s)"
 msgstr ""
 
 msgid "SecurityTrackedRefs|Track ref(s)"
+msgstr ""
+
+msgid "SecurityTrackedRefs|Tracking refs in progress. Please wait."
 msgstr ""
 
 msgid "SecurityTrackedRefs|You can remove tracked refs in the Configuration page."

@@ -36,3 +36,28 @@ type SecurityTrackedRefsUntrackPayload {
   untrackedRefIds: [ID!]!
   errors: [String]!
 }
+
+input LocalTrackedCommitInput {
+  sha: String
+  shortId: String
+  title: String
+  authoredDate: String
+  webPath: String
+}
+
+input LocalTrackedRefInput {
+  name: String!
+  refType: String!
+  isProtected: Boolean
+  commit: LocalTrackedCommitInput
+}
+
+input SecurityTrackedRefsTrackInput {
+  projectPath: ID!
+  refs: [LocalTrackedRefInput!]!
+}
+
+type SecurityTrackedRefsTrackPayload {
+  trackedRefs: [LocalTrackedRef!]!
+  errors: [String]!
+}

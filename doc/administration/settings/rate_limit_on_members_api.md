@@ -65,11 +65,11 @@ The rate limit:
 - Applies per project per user.
 - Can be set to 0 to disable rate limits.
 
-The default value of the rate limit is `60`.
+The default value of the rate limit is `200`.
 
 Requests over the rate limit are logged into the `auth.log` file.
 
-For example, if you set a limit of 60, requests sent to the
+For example, if you set a limit of 200, requests sent to the
 [list members endpoint](../../api/project_members.md#list-all-members-of-a-project) project endpoint that
 exceed a rate of 300 per minute
 are blocked. Access to the endpoint is allowed after one minute.

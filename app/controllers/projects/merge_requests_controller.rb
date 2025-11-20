@@ -40,6 +40,7 @@ class Projects::MergeRequestsController < Projects::MergeRequests::ApplicationCo
 
   before_action only: [:show, :diffs, :rapid_diffs, :reports] do
     push_frontend_feature_flag(:mr_pipelines_graphql, project)
+    push_frontend_feature_flag(:ci_pipeline_creation_requests_realtime, project)
     push_frontend_feature_flag(:notifications_todos_buttons, current_user)
     push_frontend_feature_flag(:mr_review_batch_submit, current_user)
   end

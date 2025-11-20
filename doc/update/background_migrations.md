@@ -17,7 +17,7 @@ title: Check migrations before upgrade
 {{< history >}}
 
 - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/191722) in GitLab 18.5.
-- [Enhanced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/211674) in GitLab 18.6.
+- [Enhanced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/211674) in GitLab 18.7.
 
 {{< /history >}}
 
@@ -141,7 +141,7 @@ state results in an error.
 
 {{< history >}}
 
-- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/211674) in GitLab 18.6.
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/211674) in GitLab 18.7.
 
 {{< /history >}}
 
@@ -180,7 +180,7 @@ migration status with `gitlab:background_migrations:show[<migration_id>]` for mo
 
 {{< history >}}
 
-- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/211674) in GitLab 18.6.
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/211674) in GitLab 18.7.
 
 {{< /history >}}
 

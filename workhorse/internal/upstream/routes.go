@@ -293,7 +293,7 @@ func configureRoutes(u *upstream) {
 	api := u.APIClient
 	static := &staticpages.Static{DocumentRoot: u.DocumentRoot, Exclude: staticExclude, API: u.APIClient}
 	dependencyProxyInjector := dependencyproxy.NewInjector()
-	dwHandler := duoworkflow.NewHandler(api)
+	dwHandler := duoworkflow.NewHandler(api, u.rdb)
 
 	if u.upgradedConnsManager != nil {
 		u.upgradedConnsManager.Register(dwHandler)

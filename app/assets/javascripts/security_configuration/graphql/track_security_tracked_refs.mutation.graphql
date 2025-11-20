@@ -1,0 +1,20 @@
+mutation securityTrackedRefsTrack($input: SecurityTrackedRefsTrackInput!) {
+  securityTrackedRefsTrack(input: $input) @client {
+    trackedRefs {
+      id
+      name
+      refType
+      isDefault
+      isProtected
+      commit {
+        sha
+        shortId
+        title
+        authoredDate
+        webPath
+      }
+      vulnerabilitiesCount
+    }
+    errors
+  }
+}

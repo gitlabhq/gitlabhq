@@ -157,6 +157,20 @@ describe('NoteableDiscussion', () => {
     expect(wrapper.emitted('noteDeleted')).toStrictEqual([[note]]);
   });
 
+  it('propagates startEditing event', () => {
+    const note = {};
+    createComponent();
+    wrapper.findComponent(DiscussionNotes).vm.$emit('startEditing', note);
+    expect(wrapper.emitted('startEditing')).toStrictEqual([[note]]);
+  });
+
+  it('propagates cancelEditing event', () => {
+    const note = {};
+    createComponent();
+    wrapper.findComponent(DiscussionNotes).vm.$emit('cancelEditing', note);
+    expect(wrapper.emitted('cancelEditing')).toStrictEqual([[note]]);
+  });
+
   describe('when saving reply', () => {
     beforeEach(() => {
       detectAndConfirmSensitiveTokens.mockResolvedValue(true);

@@ -24334,6 +24334,7 @@ Model offered for Model Selection.
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
+| <a id="aimodelselectionofferedmodelmodeldescription"></a>`modelDescription` {{< icon name="warning-solid" >}} | [`String`](#string) | **Introduced** in GitLab 18.7. **Status**: Experiment. Brief description of the model, e.g "Fast, cost-effective responses". |
 | <a id="aimodelselectionofferedmodelmodelprovider"></a>`modelProvider` {{< icon name="warning-solid" >}} | [`String`](#string) | **Introduced** in GitLab 18.6. **Status**: Experiment. Provider for the model, e.g "OpenAI". |
 | <a id="aimodelselectionofferedmodelname"></a>`name` | [`String!`](#string) | Humanized name for the offered model, e.g "Chat GPT 4o". |
 | <a id="aimodelselectionofferedmodelref"></a>`ref` | [`String!`](#string) | Identifier for the offered model. |

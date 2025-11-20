@@ -53,7 +53,7 @@ module Gitlab
 
           @model.singleton_class.alias_method(:lease_connection, :connection)
           @model.singleton_class.define_method(:with_connection) do |*_args, **_kwargs, &block|
-            next block&.call(connection) unless connection.is_a?(ConnectionProxy)
+            next block&.call(connection) unless connection.is_a?(::Gitlab::Database::LoadBalancing::ConnectionProxy)
 
             connection_already_checked_out = load_balancer.connection_checked_out?
 

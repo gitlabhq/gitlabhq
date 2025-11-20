@@ -7,7 +7,7 @@ module Ci
 
     sidekiq_options retry: 3
     worker_resource_boundary :cpu
-    urgency :high
+    urgency :low
 
     def perform(bridge_id)
       Gitlab::QueryLimiting.disable!('https://gitlab.com/gitlab-org/gitlab/-/issues/464668')

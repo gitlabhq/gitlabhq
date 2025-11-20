@@ -1186,7 +1186,7 @@ class ApplicationSetting < ApplicationRecord
       group_archive_unarchive_api_limit: [:integer, { default: 60 }],
       project_invited_groups_api_limit: [:integer, { default: 60 }],
       projects_api_limit: [:integer, { default: 2000 }],
-      project_members_api_limit: [:integer, { default: 60 }],
+      project_members_api_limit: [:integer, { default: 200 }],
       runner_jobs_request_api_limit: [:integer, { default: 2000 }],
       runner_jobs_patch_trace_api_limit: [:integer, { default: 200 }],
       runner_jobs_endpoints_api_limit: [:integer, { default: 200 }],

@@ -10,6 +10,8 @@ import (
 	"sync"
 	"time"
 
+	redsync "github.com/go-redsync/redsync/v4"
+	redis "github.com/redis/go-redis/v9"
 	pb "gitlab.com/gitlab-org/modelops/applied-ml/code-suggestions/ai-assist/clients/gopb/contract"
 
 	"gitlab.com/gitlab-org/gitlab/workhorse/internal/api"
@@ -22,6 +24,8 @@ import (
 
 const wsCloseTimeout = 5 * time.Second
 const wsStopWorkflowTimeout = 10 * time.Second
+
+var errFailedToAcquireLockError = errors.New("handleWebSocketMessages: failed to acquire lock")
 
 var normalClosureErrCodes = []int{websocket.CloseGoingAway, websocket.CloseNormalClosure}
 
@@ -58,9 +62,13 @@ type runner struct {
 	client      *Client
 	sendMu      sync.Mutex
 	mcpManager  mcpManager
+	lockManager *workflowLockManager
+	workflowID  string
+	mutex       *redsync.Mutex
+	lockFlow    bool
 }
 
-func newRunner(conn websocketConn, rails *api.API, r *http.Request, cfg *api.DuoWorkflow) (*runner, error) {
+func newRunner(conn websocketConn, rails *api.API, r *http.Request, cfg *api.DuoWorkflow, rdb *redis.Client) (*runner, error) {
 	userAgent := r.Header.Get("User-Agent")
 
 	client, err := NewClient(cfg.ServiceURI, cfg.Headers, cfg.Secure, userAgent)
@@ -88,6 +96,8 @@ func newRunner(conn websocketConn, rails *api.API, r *http.Request, cfg *api.Duo
 		wf:          wf,
 		client:      client,
 		mcpManager:  mcpManager,
+		lockManager: newWorkflowLockManager(rdb),
+		lockFlow:    cfg.LockConcurrentFlow,
 	}, nil
 }
 
@@ -96,6 +106,19 @@ func (r *runner) Execute(ctx context.Context) error {
 
 	go r.handleWebSocketMessages(errCh)
 	go r.handleAgentMessages(ctx, errCh)
+
+	// Unfortunately the lock is acquired in handleWebSocketMessage.  This is
+	// because the workflowID is not known until after we see the startReq. But
+	// we need to keep it as long as either of these connections is running. So
+	// we release it here instead.
+	defer func() {
+		if r.lockFlow {
+			log.WithContextFields(ctx, log.Fields{
+				"workflowID": r.workflowID,
+			}).Info("Releasing lock for workflow")
+			r.lockManager.releaseLock(ctx, r.mutex, r.workflowID)
+		}
+	}()
 
 	return <-errCh
 }
@@ -182,6 +205,13 @@ func (r *runner) handleWebSocketMessage(message []byte) error {
 
 	if startReq := response.GetStartRequest(); startReq != nil {
 		startReq.McpTools = append(startReq.McpTools, r.mcpManager.Tools()...)
+
+		// Acquire distributed lock when workflow starts
+		if r.lockFlow {
+			if err := r.acquireWorkflowLock(startReq); err != nil {
+				return err
+			}
+		}
 	}
 
 	log.WithContextFields(r.originalReq.Context(), log.Fields{
@@ -199,6 +229,24 @@ func (r *runner) handleWebSocketMessage(message []byte) error {
 		return fmt.Errorf("handleWebSocketMessage: failed to write a gRPC message: %v", err)
 	}
 
+	return nil
+}
+
+func (r *runner) acquireWorkflowLock(startReq *pb.StartWorkflowRequest) error {
+	r.workflowID = startReq.WorkflowID
+
+	if r.workflowID == "" {
+		log.WithRequest(r.originalReq).Error("No workflow ID provided in StartWorkflowRequest")
+		return fmt.Errorf("handleWebSocketMessage: no workflow ID provided in StartWorkflowRequest")
+	}
+
+	mutex, err := r.lockManager.acquireLock(r.originalReq.Context(), r.workflowID)
+	if err != nil {
+		log.WithRequest(r.originalReq).WithError(err).Error("Failed to acquire workflow lock")
+		return errFailedToAcquireLockError
+	}
+
+	r.mutex = mutex
 	return nil
 }
 

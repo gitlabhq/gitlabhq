@@ -2719,7 +2719,7 @@
   :worker_name: Ci::CreateDownstreamPipelineWorker
   :feature_category: :continuous_integration
   :has_external_dependencies: false
-  :urgency: :high
+  :urgency: :low
   :resource_boundary: :cpu
   :weight: 3
   :idempotent: false

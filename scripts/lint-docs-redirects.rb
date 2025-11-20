@@ -19,7 +19,8 @@ class LintDocsRedirect
     'gitlab-org/gitlab-runner',
     'gitlab-org/omnibus-gitlab',
     'gitlab-org/charts/gitlab',
-    'gitlab-org/cloud-native/gitlab-operator'].freeze
+    'gitlab-org/cloud-native/gitlab-operator',
+    'gitlab-org/cli'].freeze
 
   def execute
     return unless project_supported?
@@ -45,32 +46,29 @@ class LintDocsRedirect
       'charts'
     when 'gitlab-org/cloud-native/gitlab-operator'
       'operator'
+    when 'gitlab-org/cli'
+      'cli'
     end
   end
 
   # Location of docs files in the project
   def docs_path
-    ENV['CI_PROJECT_PATH'] == 'gitlab-org/gitlab-runner' ? 'docs/' : 'doc/'
+    case ENV['CI_PROJECT_PATH']
+    when 'gitlab-org/gitlab-runner'
+      'docs/'
+    when 'gitlab-org/cli'
+      'docs/source'
+    else
+      'doc/'
+    end
   end
 
   def navigation_file
     @navigation_file ||= begin
-      # Temporary handling for multiple navigation locations.
-      # The navigation YAML file will move when this merges:
-      # https://gitlab.com/gitlab-org/technical-writing/docs-gitlab-com/-/merge_requests/307.
-      #
-      # We are not able to control these changes merging at exactly the same time,
-      # so this temporarily supports both the new and old file location.
       url = URI('https://gitlab.com/gitlab-org/technical-writing/docs-gitlab-com/-/raw/main/data/en-us/navigation.yaml')
       response = Net::HTTP.get_response(url)
 
-      # If new URL fails, try the old URL
-      if response.code != '200'
-        url = URI('https://gitlab.com/gitlab-org/technical-writing/docs-gitlab-com/-/raw/main/data/navigation.yaml')
-        response = Net::HTTP.get_response(url)
-
-        raise "Could not download navigation.yaml. Response code: #{response.code}" if response.code != '200'
-      end
+      raise "Could not download navigation.yaml. Response code: #{response.code}" if response.code != '200'
 
       # response.body should be memoized in a method, so that it doesn't
       # need to be downloaded multiple times in one CI job.

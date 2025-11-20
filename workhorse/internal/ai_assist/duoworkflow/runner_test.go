@@ -191,7 +191,7 @@ func Test_newRunner(t *testing.T) {
 		Secure: false,
 	}
 
-	runner, err := newRunner(mockConn, apiClient, req, cfg)
+	runner, err := newRunner(mockConn, apiClient, req, cfg, initRdb(t))
 
 	require.NoError(t, err)
 	require.NotNil(t, runner)
@@ -420,7 +420,7 @@ func TestRunner_handleWebSocketMessage(t *testing.T) {
 		},
 		{
 			name:    "start request with mcp tools",
-			message: []byte(`{"startRequest": {"goal": "test goal", "mcpTools": [{"name": "get_issue"}]}}`),
+			message: []byte(`{"startRequest": {"workflowID": "id-123", "goal": "test goal", "mcpTools": [{"name": "get_issue"}]}}`),
 			mcpManager: &mockMcpManager{
 				tools: []*pb.McpTool{
 					{Name: "test_tool", Description: "A test tool"},
@@ -431,7 +431,7 @@ func TestRunner_handleWebSocketMessage(t *testing.T) {
 		},
 		{
 			name:           "start request without mcp manager",
-			message:        []byte(`{"startRequest": {"goal": "test goal"}}`),
+			message:        []byte(`{"startRequest": {"workflowID": "id-123", "goal": "test goal"}}`),
 			mcpManager:     nil,
 			expectMcpTools: false,
 			expectedErrMsg: "",
@@ -444,6 +444,8 @@ func TestRunner_handleWebSocketMessage(t *testing.T) {
 				sendError: tt.sendError,
 			}
 
+			rdb := initRdb(t)
+
 			testURL, _ := url.Parse("http://example.com")
 			r := &runner{
 				rails: &api.API{
@@ -455,6 +457,7 @@ func TestRunner_handleWebSocketMessage(t *testing.T) {
 				conn:        &mockWebSocketConn{},
 				wf:          mockWf,
 				mcpManager:  tt.mcpManager,
+				lockManager: newWorkflowLockManager(rdb),
 			}
 
 			err := r.handleWebSocketMessage(tt.message)
@@ -893,4 +896,141 @@ func TestRunner_Shutdown(t *testing.T) {
 		require.NotNil(t, stopEvent)
 		require.Equal(t, "WORKHORSE_SERVER_SHUTDOWN", stopEvent.Reason)
 	})
+}
+
+func TestRunner_AcquireWorkflowLock_ConcurrentAttempts(t *testing.T) {
+	rdb := initRdb(t)
+	mockConn1 := &mockWebSocketConn{}
+	mockWf1 := &mockWorkflowStream{}
+
+	// We only mock websocket connection 2 as we are calling
+	// handleWorkflowMessage directly for the first runner. The second runner
+	// we want to call Execute on so we need to mock it properly.
+	mockConn2 := &mockWebSocketConn{
+		readMessages: [][]byte{
+			[]byte(`{"startRequest": {"goal": "test", "workflowID": "concurrent-test-123"}}`),
+		},
+	}
+	mockWf2 := &mockWorkflowStream{
+		blockCh: make(chan bool),
+	}
+
+	testURL, _ := url.Parse("http://example.com")
+
+	r1 := &runner{
+		rails: &api.API{
+			Client: &http.Client{},
+			URL:    testURL,
+		},
+		originalReq: httptest.NewRequest("GET", "/", nil),
+		conn:        mockConn1,
+		wf:          mockWf1,
+		lockManager: newWorkflowLockManager(rdb),
+		mcpManager:  &mockMcpManager{},
+		lockFlow:    true,
+	}
+
+	r2 := &runner{
+		rails: &api.API{
+			Client: &http.Client{},
+			URL:    testURL,
+		},
+		originalReq: httptest.NewRequest("GET", "/", nil),
+		conn:        mockConn2,
+		wf:          mockWf2,
+		lockManager: newWorkflowLockManager(rdb),
+		mcpManager:  &mockMcpManager{},
+		lockFlow:    true,
+	}
+
+	startReq := &pb.StartWorkflowRequest{
+		Goal:       "test workflow",
+		WorkflowID: "concurrent-test-123",
+		McpTools:   []*pb.McpTool{},
+	}
+
+	// First runner acquires the lock
+	err := r1.acquireWorkflowLock(startReq)
+	require.NoError(t, err)
+	assert.NotNil(t, r1.mutex)
+
+	// Second runner should fail to acquire the same lock. This uses the full
+	// Execute() code path to be closer to an integration test.
+	err = r2.Execute(context.Background())
+	require.Error(t, err)
+	assert.Contains(t, err.Error(), "failed to acquire lock")
+	assert.Nil(t, r2.mutex)
+
+	// Clean up
+	r1.lockManager.releaseLock(context.Background(), r1.mutex, r1.workflowID)
+}
+
+func TestRunner_HandleWebSocketMessage_AcquiresLock(t *testing.T) {
+	rdb := initRdb(t)
+	mockConn := &mockWebSocketConn{}
+	mockWf := &mockWorkflowStream{}
+
+	testURL, _ := url.Parse("http://example.com")
+	r := &runner{
+		rails: &api.API{
+			Client: &http.Client{},
+			URL:    testURL,
+		},
+		originalReq: httptest.NewRequest("GET", "/", nil),
+		conn:        mockConn,
+		wf:          mockWf,
+		lockManager: newWorkflowLockManager(rdb),
+		mcpManager:  &mockMcpManager{},
+		lockFlow:    true,
+	}
+
+	message := []byte(`{"startRequest": {"goal": "test", "workflowID": "msg-test-123"}}`)
+	err := r.handleWebSocketMessage(message)
+	require.NoError(t, err)
+
+	// Verify lock was acquired
+	assert.Equal(t, "msg-test-123", r.workflowID)
+	assert.NotNil(t, r.mutex)
+
+	// Clean up
+	r.lockManager.releaseLock(context.Background(), r.mutex, r.workflowID)
+}
+
+func TestRunner_Execute_ReleasesLock(t *testing.T) {
+	rdb := initRdb(t)
+
+	mockConn := &mockWebSocketConn{
+		readMessages: [][]byte{
+			[]byte(`{"startRequest": {"goal": "test", "workflowID": "execute-test-123"}}`),
+		},
+	}
+
+	mockWf := &mockWorkflowStream{
+		blockCh: make(chan bool),
+	}
+
+	testURL, _ := url.Parse("http://example.com")
+	r := &runner{
+		rails: &api.API{
+			Client: &http.Client{},
+			URL:    testURL,
+		},
+		originalReq: httptest.NewRequest("GET", "/", nil),
+		conn:        mockConn,
+		wf:          mockWf,
+		lockManager: newWorkflowLockManager(rdb),
+		mcpManager:  &mockMcpManager{},
+		lockFlow:    true,
+	}
+
+	ctx := context.Background()
+	err := r.Execute(ctx)
+
+	// since we block gRPC stream we expect websockets to end with EOF
+	require.Equal(t, "handleWebSocketMessages: failed to read a WS message: EOF", err.Error())
+
+	// Verify lock was released (we can acquire it again)
+	mutex, err := r.lockManager.acquireLock(ctx, "execute-test-123")
+	require.NoError(t, err)
+	require.NotNil(t, mutex)
 }

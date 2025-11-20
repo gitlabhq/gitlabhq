@@ -201,9 +201,8 @@ export default {
         .then(() => {
           if (!options.isAsync) {
             this.$toast.show(TOAST_MESSAGE);
+            this.updateTable();
           }
-
-          this.updateTable();
         })
         .catch((e) => {
           const unauthorized = e.response.status === HTTP_STATUS_UNAUTHORIZED;

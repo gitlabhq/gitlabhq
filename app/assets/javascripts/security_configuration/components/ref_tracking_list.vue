@@ -6,11 +6,13 @@ import {
   GlSkeletonLoader,
   GlAlert,
   GlKeysetPagination,
+  GlTooltipDirective,
 } from '@gitlab/ui';
 import { s__ } from '~/locale';
 import { untrackRefsOptimisticResponse, updateUntrackedRefsCache } from '../graphql/cache_utils';
 import securityTrackedRefs from '../graphql/security_tracked_refs.query.graphql';
 import untrackSecurityTrackedRefsMutation from '../graphql/untrack_security_tracked_refs.mutation.graphql';
+import trackSecurityTrackedRefsMutation from '../graphql/track_security_tracked_refs.mutation.graphql';
 import RefTrackingListItem from './ref_tracking_list_item.vue';
 import RefUntrackingConfirmation from './ref_untracking_confirmation.vue';
 import RefTrackingSelection from './ref_tracking_selection.vue';
@@ -28,6 +30,9 @@ export default {
     RefTrackingListItem,
     RefUntrackingConfirmation,
     RefTrackingSelection,
+  },
+  directives: {
+    GlTooltip: GlTooltipDirective,
   },
   inject: ['projectFullPath'],
   apollo: {
@@ -70,13 +75,15 @@ export default {
       refToUntrack: null,
       hasFetchError: false,
       hasUntrackError: false,
+      hasTrackError: false,
+      isTrackingRefs: false,
       totalCount: null,
       pageCursor: {
         after: null,
         before: null,
       },
       pageInfo: {},
-      showTrackingModal: false,
+      showTrackingSelection: false,
     };
   },
   computed: {
@@ -92,8 +99,71 @@ export default {
     showPagination() {
       return this.hasPreviousPage || this.hasNextPage;
     },
+    hasMaxTrackedRefs() {
+      return this.totalCount >= this.$options.MAX_TRACKED_REFS;
+    },
+    shouldDisableTrackNewRefButton() {
+      return this.isLoading || this.isTrackingRefs || this.hasMaxTrackedRefs;
+    },
+    trackNewRefButtonTooltip() {
+      if (this.isLoading) {
+        return s__('SecurityTrackedRefs|Loading tracked refs. Please wait.');
+      }
+
+      if (this.isTrackingRefs) {
+        return s__('SecurityTrackedRefs|Tracking refs in progress. Please wait.');
+      }
+
+      if (this.hasMaxTrackedRefs) {
+        return s__(
+          'SecurityTrackedRefs|Maximum number of tracked refs reached. Remove a ref to track a new one.',
+        );
+      }
+      return '';
+    },
   },
   methods: {
+    async trackRefs(selectedRefs) {
+      this.showTrackingSelection = false;
+      this.isTrackingRefs = true;
+
+      try {
+        const refs = selectedRefs.map((ref) => ({
+          name: ref.name,
+          refType: ref.refType,
+          isProtected: ref.isProtected,
+          commit: ref.commit,
+        }));
+
+        const { data } = await this.$apollo.mutate({
+          mutation: trackSecurityTrackedRefsMutation,
+          variables: {
+            input: {
+              projectPath: this.projectFullPath,
+              refs,
+            },
+          },
+          refetchQueries: [
+            {
+              query: securityTrackedRefs,
+              variables: { fullPath: this.projectFullPath },
+            },
+          ],
+          awaitRefetchQueries: true,
+        });
+
+        if (data.securityTrackedRefsTrack.errors?.length) {
+          throw new Error();
+        }
+      } catch {
+        this.hasTrackError = true;
+        this.errorMessage = s__(
+          'SecurityTrackedRefs|Could not track refs. Please refresh the page, or try again later.',
+        );
+      } finally {
+        this.isTrackingRefs = false;
+      }
+    },
     async untrackRef({ refId, archiveVulnerabilities }) {
       try {
         const { data } = await this.$apollo.mutate({
@@ -155,22 +225,35 @@ export default {
             >{{ totalCount === null ? '-' : totalCount }}/{{ $options.MAX_TRACKED_REFS }}</gl-badge
           >
         </div>
-        <gl-button variant="confirm" size="small" @click="showTrackingModal = true">{{
-          s__('SecurityTrackedRefs|Track new ref(s)')
-        }}</gl-button>
+        <span
+          v-gl-tooltip
+          :title="trackNewRefButtonTooltip"
+          data-testid="track-new-ref-button-tooltip"
+        >
+          <gl-button
+            variant="confirm"
+            size="small"
+            :disabled="shouldDisableTrackNewRefButton"
+            @click="showTrackingSelection = true"
+            >{{ s__('SecurityTrackedRefs|Track new ref(s)') }}</gl-button
+          >
+        </span>
       </div>
     </template>
 
     <gl-alert
-      v-if="hasFetchError || hasUntrackError"
+      v-if="hasFetchError || hasUntrackError || hasTrackError"
       variant="danger"
-      :dismissible="hasUntrackError"
-      @dismiss="hasUntrackError = false"
+      :dismissible="hasUntrackError || hasTrackError"
+      @dismiss="
+        hasUntrackError = false;
+        hasTrackError = false;
+      "
     >
       {{ errorMessage }}
     </gl-alert>
 
-    <div v-if="isLoading" class="gl-px-4 gl-py-6">
+    <div v-if="isLoading || isTrackingRefs" class="gl-px-4 gl-py-6">
       <gl-skeleton-loader v-for="i in 4" :key="i" :width="600" :height="35">
         <rect width="100" height="8" x="0" y="0" rx="4" />
         <rect width="100" height="8" x="500" y="0" rx="4" />
@@ -179,7 +262,7 @@ export default {
     </div>
 
     <ul
-      v-if="!isLoading && !hasFetchError"
+      v-if="!isLoading && !isTrackingRefs && !hasFetchError"
       class="gl-m-0 gl-list-none gl-p-0"
       data-testid="tracked-refs-list"
     >
@@ -191,11 +274,6 @@ export default {
         @untrack="openUntrackConfirmation"
       />
     </ul>
-    <ref-untracking-confirmation
-      :ref-to-untrack="refToUntrack"
-      @confirm="untrackRef"
-      @cancel="closeUntrackConfirmation"
-    />
 
     <template v-if="showPagination" #footer>
       <gl-keyset-pagination
@@ -210,11 +288,18 @@ export default {
       />
     </template>
 
+    <ref-untracking-confirmation
+      :ref-to-untrack="refToUntrack"
+      @confirm="untrackRef"
+      @cancel="closeUntrackConfirmation"
+    />
+
     <ref-tracking-selection
-      v-if="showTrackingModal"
+      v-if="showTrackingSelection"
       :tracked-refs="trackedRefs"
       :max-tracked-refs="$options.MAX_TRACKED_REFS"
-      @cancel="showTrackingModal = false"
+      @select="trackRefs"
+      @cancel="showTrackingSelection = false"
     />
   </gl-card>
 </template>

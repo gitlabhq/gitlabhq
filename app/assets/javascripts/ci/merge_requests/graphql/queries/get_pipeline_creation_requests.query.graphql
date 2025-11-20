@@ -1,0 +1,22 @@
+#import "~/ci/pipelines_page/graphql/fragments/pipeline_details.fragment.graphql"
+
+query getPipelineCreationRequests($fullPath: ID!, $mergeRequestIid: String!) {
+  project(fullPath: $fullPath) {
+    id
+    fullPath
+    mergeRequest(iid: $mergeRequestIid) {
+      id
+      iid
+      title
+      webPath
+      pipelineCreationRequests {
+        status
+        pipelineId
+        error
+        pipeline {
+          ...PipelineDetails
+        }
+      }
+    }
+  }
+}

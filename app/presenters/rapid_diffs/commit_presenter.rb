@@ -62,5 +62,9 @@ module RapidDiffs
     def sign_in_path
       new_user_session_path(redirect_to_referer: 'yes')
     end
+
+    def report_abuse_path
+      add_category_abuse_reports_path
+    end
   end
 end

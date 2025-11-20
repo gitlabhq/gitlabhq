@@ -18,7 +18,20 @@ export const initSecurityConfiguration = (el) => {
   Vue.use(GlToast);
 
   const apolloProvider = new VueApollo({
-    defaultClient: createDefaultClient(resolvers, { typeDefs }),
+    defaultClient: createDefaultClient(resolvers, {
+      typeDefs,
+      cacheConfig: {
+        typePolicies: {
+          Project: {
+            fields: {
+              securityTrackedRefs: {
+                keyArgs: false, // Merge all paginated results into a single list
+              },
+            },
+          },
+        },
+      },
+    }),
   });
 
   const {

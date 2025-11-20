@@ -7,7 +7,7 @@ INFO_COLOR_SET="\e[1;32m"
 COLOR_RESET="\e[0m"
 
 # Directories for projects that are included on the GitLab Docs website in addition to the 'gitlab' project
-EXTERNAL_DOCS_PROJECTS="omnibus charts runner operator"
+EXTERNAL_DOCS_PROJECTS="omnibus charts runner operator cli"
 
 cd "$(dirname "$0")/.." || exit 1
 printf "${INFO_COLOR_SET}INFO${COLOR_RESET} Linting '$(pwd)' as $(whoami)...\n"

@@ -213,6 +213,9 @@ export default {
         this.selectedRefs.push(ref);
       }
     },
+    handlePrimary() {
+      this.$emit('select', this.selectedRefs);
+    },
     handleHidden() {
       this.$emit('cancel');
     },
@@ -233,6 +236,7 @@ export default {
     modal-class="gl-pt-12 gl-px-2 sm:gl-pt-20 sm:gl-px-4 [&_.modal-dialog]:!gl-items-start"
     size="lg"
     :centered="false"
+    @primary="handlePrimary"
     @hidden="handleHidden"
   >
     <gl-search-box-by-type

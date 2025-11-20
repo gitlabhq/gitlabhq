@@ -73,4 +73,18 @@ describe('DiffDiscussions', () => {
     wrapper.findComponent(NoteableDiscussion).vm.$emit('noteDeleted', note);
     expect(useDiffDiscussions().deleteNote).toHaveBeenCalledWith(note);
   });
+
+  it('handles startEditing event', () => {
+    const note = { id: '1' };
+    createComponent({ discussions: [{ id: '1' }] });
+    wrapper.findComponent(NoteableDiscussion).vm.$emit('startEditing', note);
+    expect(useDiffDiscussions().setEditingMode).toHaveBeenCalledWith(note, true);
+  });
+
+  it('handles cancelEditing event', () => {
+    const note = { id: '1' };
+    createComponent({ discussions: [{ id: '1' }] });
+    wrapper.findComponent(NoteableDiscussion).vm.$emit('cancelEditing', note);
+    expect(useDiffDiscussions().setEditingMode).toHaveBeenCalledWith(note, false);
+  });
 });

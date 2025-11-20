@@ -72,6 +72,12 @@ RSpec.describe ::RapidDiffs::CommitPresenter, feature_category: :source_code_man
     it { is_expected.to eq("#{base_path}/discussions") }
   end
 
+  describe '#report_abuse_path' do
+    subject(:url) { presenter.report_abuse_path }
+
+    it { is_expected.to eq("/-/abuse_reports/add_category") }
+  end
+
   describe '#lazy?' do
     subject(:method) { presenter.lazy? }
 

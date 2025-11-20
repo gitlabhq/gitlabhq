@@ -151,10 +151,11 @@ type McpServerConfig struct {
 
 // DuoWorkflow holds configuration for the Duo Workflow service.
 type DuoWorkflow struct {
-	Headers    map[string]string
-	ServiceURI string
-	Secure     bool
-	McpServers map[string]McpServerConfig
+	Headers            map[string]string
+	ServiceURI         string
+	Secure             bool
+	McpServers         map[string]McpServerConfig
+	LockConcurrentFlow bool
 }
 
 // Response represents a structure containing various GitLab-related environment variables.

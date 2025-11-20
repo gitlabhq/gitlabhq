@@ -44,6 +44,7 @@ describe('discussions adapters', () => {
     markdownDocs: 'markdownDocsEndpoint',
     register: 'registerPath',
     signIn: 'signInPath',
+    reportAbuse: 'reportAbusePath',
   };
   const appData = {
     userPermissions,
@@ -52,6 +53,7 @@ describe('discussions adapters', () => {
     registerPath: 'registerPath',
     signInPath: 'signInPath',
     noteableType: 'Commit',
+    reportAbusePath: 'reportAbusePath',
   };
 
   const getDiffFile = () => document.querySelector('diff-file');

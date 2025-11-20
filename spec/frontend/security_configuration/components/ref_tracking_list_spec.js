@@ -11,9 +11,7 @@ import VueApollo from 'vue-apollo';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import createMockApollo from 'helpers/mock_apollo_helper';
 import waitForPromises from 'helpers/wait_for_promises';
-import RefTrackingList, {
-  MAX_TRACKED_REFS,
-} from '~/security_configuration/components/ref_tracking_list.vue';
+import RefTrackingList from '~/security_configuration/components/ref_tracking_list.vue';
 import RefTrackingListItem from '~/security_configuration/components/ref_tracking_list_item.vue';
 import RefUntrackingConfirmation from '~/security_configuration/components/ref_untracking_confirmation.vue';
 import RefTrackingSelection from '~/security_configuration/components/ref_tracking_selection.vue';
@@ -22,38 +20,30 @@ import { createTrackedRef, createMockTrackedRefsResponse } from '../mock_data';
 
 Vue.use(VueApollo);
 
+const MAX_TRACKED_REFS = 3;
+
 const mockTrackedRefs = [
   createTrackedRef({
     id: 'gid://gitlab/TrackedRef/1',
     name: 'Main',
-    refType: 'HEAD',
     isDefault: true,
-    isProtected: true,
     vulnerabilitiesCount: 258,
-    commit: {
-      sha: 'df210850abc123',
-      shortId: 'df21085',
-      title: 'Apply 1 suggestion(s) to 1 file(s)',
-      authoredDate: '2024-10-17T09:59:00Z',
-      webPath: '/project/-/commit/df21085',
-    },
   }),
   createTrackedRef({
     id: 'gid://gitlab/TrackedRef/2',
     name: 'v18.1.4-33',
-    refType: 'TAG',
-    commit: {
-      sha: '693bb5e6abc456',
-      shortId: '693bb5e6',
-      title: 'Update VERSION files',
-      authoredDate: '2024-10-15T14:30:00Z',
-      webPath: '/project/-/commit/693bb5e6',
-    },
+    vulnerabilitiesCount: 100,
   }),
 ];
 
 const mockTrackedRefsResponse = createMockTrackedRefsResponse({
   nodes: mockTrackedRefs,
+});
+
+const mockTrackedRefsResponseAtMaxLimit = createMockTrackedRefsResponse({
+  nodes: mockTrackedRefs.concat([
+    createTrackedRef({ id: 'gid://gitlab/TrackedRef/3', name: 'v1.0.0' }),
+  ]),
 });
 
 describe('RefTrackingList component', () => {
@@ -80,6 +70,9 @@ describe('RefTrackingList component', () => {
   const findCountBadge = () => wrapper.findByTestId('tracked-refs-header').findComponent(GlBadge);
   const findTrackNewRefButton = () =>
     wrapper.findByTestId('tracked-refs-header').findComponent(GlButton);
+  const getTrackNewRefButtonTooltip = () => {
+    return wrapper.findByTestId('track-new-ref-button-tooltip').element.getAttribute('title');
+  };
   const findRefList = () => wrapper.find('ul[data-testid="tracked-refs-list"]');
   const findRefListItems = () => wrapper.findAllComponents(RefTrackingListItem);
   const findSkeletonLoaders = () => wrapper.findAllComponents(GlSkeletonLoader);
@@ -90,6 +83,11 @@ describe('RefTrackingList component', () => {
 
   const triggerUntrackRefItem = async (refToUntrack) => {
     findRefListItems().at(0).vm.$emit('untrack', refToUntrack);
+    await nextTick();
+  };
+
+  const openTrackingModal = async () => {
+    findTrackNewRefButton().vm.$emit('click');
     await nextTick();
   };
 
@@ -361,11 +359,6 @@ describe('RefTrackingList component', () => {
       await waitForPromises();
     });
 
-    const openModal = async () => {
-      findTrackNewRefButton().vm.$emit('click');
-      await nextTick();
-    };
-
     it('modal is initially hidden', () => {
       expect(findTrackingSelection().exists()).toBe(false);
     });
@@ -373,13 +366,13 @@ describe('RefTrackingList component', () => {
     it('opens the tracking selection modal when "Track new ref" button is clicked', async () => {
       expect(findTrackingSelection().exists()).toBe(false);
 
-      await openModal();
+      await openTrackingModal();
 
       expect(findTrackingSelection().exists()).toBe(true);
     });
 
     it('closes the tracking selection modal when the modal emits the "cancel" event', async () => {
-      await openModal();
+      await openTrackingModal();
 
       expect(findTrackingSelection().exists()).toBe(true);
 
@@ -390,9 +383,240 @@ describe('RefTrackingList component', () => {
     });
 
     it('passes tracked refs to the tracking selection modal', async () => {
-      await openModal();
+      await openTrackingModal();
 
       expect(findTrackingSelection().props('trackedRefs')).toEqual(mockTrackedRefs);
+    });
+
+    it('passes max tracked refs to the tracking selection modal', async () => {
+      await openTrackingModal();
+
+      expect(findTrackingSelection().props('maxTrackedRefs')).toBe(MAX_TRACKED_REFS);
+    });
+
+    describe('track-new-ref-button disabled state', () => {
+      it('is enabled when under max limit', async () => {
+        createComponent({
+          queryHandler: jest.fn().mockResolvedValue(mockTrackedRefsResponse),
+        });
+        await waitForPromises();
+
+        expect(findTrackNewRefButton().attributes('disabled')).toBeUndefined();
+      });
+
+      it('is disabled when at max limit', async () => {
+        createComponent({
+          queryHandler: jest.fn().mockResolvedValue(mockTrackedRefsResponseAtMaxLimit),
+        });
+        await waitForPromises();
+
+        expect(findTrackNewRefButton().attributes('disabled')).toBeDefined();
+      });
+
+      it('is disabled when loading', () => {
+        createComponent();
+
+        expect(findTrackNewRefButton().attributes('disabled')).toBeDefined();
+      });
+    });
+
+    describe('track-new-ref-button tooltip', () => {
+      it('shows loading tooltip when loading', () => {
+        createComponent();
+
+        expect(getTrackNewRefButtonTooltip()).toBe('Loading tracked refs. Please wait.');
+      });
+
+      it('shows tracking tooltip when tracking', async () => {
+        createComponent();
+        await waitForPromises();
+
+        await openTrackingModal();
+        findTrackingSelection().vm.$emit('select', [createTrackedRef()]);
+        await nextTick();
+
+        expect(getTrackNewRefButtonTooltip()).toBe('Tracking refs in progress. Please wait.');
+      });
+
+      it('shows max limit tooltip when at max limit', async () => {
+        createComponent({
+          queryHandler: jest.fn().mockResolvedValue(mockTrackedRefsResponseAtMaxLimit),
+        });
+        await waitForPromises();
+
+        expect(getTrackNewRefButtonTooltip()).toBe(
+          'Maximum number of tracked refs reached. Remove a ref to track a new one.',
+        );
+      });
+
+      it('returns empty string when button is enabled', async () => {
+        createComponent({
+          queryHandler: jest.fn().mockResolvedValue(mockTrackedRefsResponse),
+        });
+        await waitForPromises();
+
+        expect(getTrackNewRefButtonTooltip()).toBe('');
+      });
+    });
+
+    describe('tracking refs', () => {
+      const selectedRefs = [
+        {
+          name: 'develop',
+          refType: 'HEAD',
+          isProtected: false,
+          commit: {
+            sha: 'abc123',
+            shortId: 'abc123',
+            title: 'Test commit',
+            authoredDate: '2024-11-01T10:00:00Z',
+            webPath: '/project/-/commit/abc123',
+          },
+        },
+      ];
+
+      describe('success', () => {
+        beforeEach(() => {
+          jest.spyOn(wrapper.vm.$apollo, 'mutate').mockResolvedValue({
+            data: {
+              securityTrackedRefsTrack: {
+                errors: [],
+              },
+            },
+          });
+        });
+
+        it('closes the tracking modal when the modal emits the "select" event', async () => {
+          await openTrackingModal();
+          expect(findTrackingSelection().exists()).toBe(true);
+
+          findTrackingSelection().vm.$emit('select', selectedRefs);
+          await nextTick();
+
+          expect(findTrackingSelection().exists()).toBe(false);
+        });
+
+        it('calls the mutation with the correct variables when refs are selected', async () => {
+          const mutateSpy = jest.spyOn(wrapper.vm.$apollo, 'mutate').mockResolvedValue({
+            data: {
+              securityTrackedRefsTrack: {
+                errors: [],
+              },
+            },
+          });
+
+          await openTrackingModal();
+
+          findTrackingSelection().vm.$emit('select', selectedRefs);
+          await waitForPromises();
+
+          expect(mutateSpy).toHaveBeenCalledWith(
+            expect.objectContaining({
+              variables: {
+                input: {
+                  projectPath: 'namespace/project',
+                  refs: [
+                    {
+                      name: 'develop',
+                      refType: 'HEAD',
+                      isProtected: false,
+                      commit: {
+                        sha: 'abc123',
+                        shortId: 'abc123',
+                        title: 'Test commit',
+                        authoredDate: '2024-11-01T10:00:00Z',
+                        webPath: '/project/-/commit/abc123',
+                      },
+                    },
+                  ],
+                },
+              },
+            }),
+          );
+        });
+
+        it('shows loading state during tracking', async () => {
+          await openTrackingModal();
+
+          findTrackingSelection().vm.$emit('select', selectedRefs);
+          await nextTick();
+
+          expect(findSkeletonLoaders()).toHaveLength(4);
+        });
+
+        it('hides loading state after tracking completes', async () => {
+          await openTrackingModal();
+
+          findTrackingSelection().vm.$emit('select', selectedRefs);
+          await waitForPromises();
+
+          expect(findSkeletonLoaders()).toHaveLength(0);
+        });
+
+        it('refetches tracked refs query after successful mutation', async () => {
+          // Note: Once we have the actual mutation available on the BE, we can move from using a spy to mocking the actual mutation.
+          // Currently this would cause an error with mock-apollo
+          const mutateSpy = jest.spyOn(wrapper.vm.$apollo, 'mutate').mockResolvedValue({
+            data: {
+              securityTrackedRefsTrack: {
+                errors: [],
+              },
+            },
+          });
+
+          await openTrackingModal();
+
+          findTrackingSelection().vm.$emit('select', selectedRefs);
+          await waitForPromises();
+
+          expect(mutateSpy).toHaveBeenCalledWith(
+            expect.objectContaining({
+              refetchQueries: [
+                {
+                  query: securityTrackedRefsQuery,
+                  variables: { fullPath: 'namespace/project' },
+                },
+              ],
+              awaitRefetchQueries: true,
+            }),
+          );
+        });
+      });
+
+      describe('tracking refs errors', () => {
+        let mutateSpy;
+
+        beforeEach(async () => {
+          mutateSpy = jest.spyOn(wrapper.vm.$apollo, 'mutate');
+          createComponent();
+          await waitForPromises();
+        });
+
+        describe('when mutation fails', () => {
+          it.each`
+            scenario                                 | mockImplementation
+            ${'mutation throws an error'}            | ${() => mutateSpy.mockRejectedValue(new Error('Network error'))}
+            ${'mutation returns errors in response'} | ${() => mutateSpy.mockResolvedValue({ data: { securityTrackedRefsTrack: { errors: ['Something went wrong'] } } })}
+          `('shows dismissible error alert when $scenario', async ({ mockImplementation }) => {
+            mockImplementation();
+
+            await openTrackingModal();
+
+            findTrackingSelection().vm.$emit('select', selectedRefs);
+            await waitForPromises();
+
+            expect(findErrorAlert().exists()).toBe(true);
+            expect(findErrorAlert().text()).toBe(
+              'Could not track refs. Please refresh the page, or try again later.',
+            );
+
+            findErrorAlert().vm.$emit('dismiss');
+            await nextTick();
+
+            expect(findErrorAlert().exists()).toBe(false);
+          });
+        });
+      });
     });
   });
 });

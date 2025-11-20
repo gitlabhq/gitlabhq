@@ -182,7 +182,7 @@ The rate limit is 60 deletions per minute.
 {{< /history >}}
 
 Sets a rate limit for listing all project members in a group or project. Defaults
-to 60 requests per minute on the following endpoints:
+to 200 requests per minute on the following endpoints:
 
 ```plaintext
 GET /groups/:id/members/all
