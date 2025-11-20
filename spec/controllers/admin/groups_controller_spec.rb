@@ -12,66 +12,10 @@ RSpec.describe Admin::GroupsController, :with_current_organization, feature_cate
   end
 
   describe 'GET #index' do
-    let!(:group_2) { create(:group, name: 'Ygroup') }
-    let!(:group_3) { create(:group, name: 'Jgroup', created_at: 2.days.ago, updated_at: 1.day.ago) }
-
-    before do
-      # This endpoint will become a no-op once the `admin_groups_vue` flag has been rolled out.
-      stub_feature_flags(admin_groups_vue: false)
-    end
-
-    render_views
-
-    it 'lists available groups' do
+    it "renders the index template" do
       get :index
 
-      expect(response).to have_gitlab_http_status(:ok)
       expect(response).to render_template(:index)
-      expect(assigns(:groups)).to match_array([group, group_2, group_3])
-    end
-
-    context 'when a sort param is present' do
-      it 'returns a sorted by name_asc result' do
-        get :index, params: { sort: 'name_asc' }
-
-        expect(assigns(:groups)).to eq([group, group_3, group_2])
-      end
-    end
-
-    context 'when a name param is present' do
-      it 'returns a search by name result' do
-        get :index, params: { name: 'Ygr' }
-
-        expect(assigns(:groups)).to eq([group_2])
-      end
-
-      it 'returns an empty list if no match' do
-        get :index, params: { name: 'nomatch' }
-
-        expect(assigns(:groups)).to be_empty
-      end
-    end
-
-    context 'when page is specified' do
-      before do
-        allow(Kaminari.config).to receive(:default_per_page).and_return(1)
-      end
-
-      it 'redirects to the page', quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/464681' do
-        get :index, params: { page: 1 }
-
-        expect(response).to have_gitlab_http_status(:ok)
-        expect(assigns(:groups).current_page).to eq(1)
-        expect(assigns(:groups)).to eq([group])
-      end
-
-      it 'redirects to the page', quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/464681' do
-        get :index, params: { page: 2 }
-
-        expect(response).to have_gitlab_http_status(:ok)
-        expect(assigns(:groups).current_page).to eq(2)
-        expect(assigns(:groups)).to eq([group_2])
-      end
     end
   end
 

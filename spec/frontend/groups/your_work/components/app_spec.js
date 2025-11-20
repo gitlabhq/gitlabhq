@@ -88,6 +88,7 @@ describe('YourWorkGroupsApp', () => {
 
     expect(wrapper.findComponent(TabsWithList).props()).toEqual({
       tabs: GROUP_DASHBOARD_TABS,
+      filteredSearchTestid: null,
       filteredSearchSupportedTokens: [],
       filteredSearchTermKey: FILTERED_SEARCH_TERM_KEY,
       filteredSearchNamespace: FILTERED_SEARCH_NAMESPACE,

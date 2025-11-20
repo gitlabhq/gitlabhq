@@ -278,6 +278,88 @@ RSpec.describe EmailsHelper, feature_category: :shared do
     end
   end
 
+  describe 'confirmation_link_for' do
+    let_it_be(:user) { create(:user) }
+
+    let(:resource) { user }
+
+    subject(:confirmation_link_for) { helper.confirmation_link_for(resource, 'faketoken') }
+
+    it 'generates a user confirmation link' do
+      is_expected.to eq(organization_user_confirmation_url(resource.organization, confirmation_token: 'faketoken'))
+    end
+
+    context 'for an Email' do
+      let(:resource) { create(:email, user: user) }
+
+      it 'generates an email confirmation link' do
+        is_expected.to eq(organization_email_confirmation_url(resource.organization, confirmation_token: 'faketoken'))
+      end
+    end
+
+    context 'for an unknown object type' do
+      let(:resource) { Users::Anonymous.new }
+
+      it 'raises an error' do
+        expect { confirmation_link_for }.to raise_error(ArgumentError)
+      end
+    end
+
+    context 'when devise_email_organization_routes FF is disabled' do
+      before do
+        stub_feature_flags(devise_email_organization_routes: false)
+      end
+
+      it 'generates a legacy link' do
+        expect(confirmation_link_for).not_to include('/o/')
+      end
+    end
+  end
+
+  describe 'edit_password_link_for' do
+    let_it_be(:user) { create(:user) }
+
+    let(:resource) { user }
+
+    subject(:edit_password_link_for) { helper.edit_password_link_for(resource, 'faketoken') }
+
+    it 'generates organization link' do
+      expect(edit_password_link_for).to eq(edit_organization_user_password_url(resource.organization, reset_password_token: 'faketoken'))
+    end
+
+    context 'when devise_email_organization_routes FF is disabled' do
+      before do
+        stub_feature_flags(devise_email_organization_routes: false)
+      end
+
+      it 'generates a legacy link' do
+        expect(edit_password_link_for).not_to include('/o/')
+      end
+    end
+  end
+
+  describe 'unlock_link_for' do
+    let_it_be(:user) { create(:user) }
+
+    let(:resource) { user }
+
+    subject(:unlock_link_for) { helper.unlock_link_for(resource, 'faketoken') }
+
+    it 'generates organization link' do
+      expect(unlock_link_for).to eq(organization_user_unlock_url(resource.organization, unlock_token: 'faketoken'))
+    end
+
+    context 'when devise_email_organization_routes FF is disabled' do
+      before do
+        stub_feature_flags(devise_email_organization_routes: false)
+      end
+
+      it 'generates a legacy link' do
+        expect(unlock_link_for).not_to include('/o/')
+      end
+    end
+  end
+
   describe '#header_logo' do
     context 'there is a brand item with a logo' do
       let_it_be(:appearance) { create(:appearance) }

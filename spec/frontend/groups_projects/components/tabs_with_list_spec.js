@@ -69,6 +69,7 @@ const defaultRoute = {
 
 const defaultPropsData = {
   tabs: PROJECT_DASHBOARD_TABS,
+  filteredSearchTestid: 'foo-bar',
   filteredSearchSupportedTokens: [
     FILTERED_SEARCH_TOKEN_LANGUAGE,
     FILTERED_SEARCH_TOKEN_MIN_ACCESS_LEVEL,
@@ -368,6 +369,9 @@ describe('TabsWithList', () => {
         activeSortOption: SORT_OPTION_CREATED,
         isAscending: false,
       });
+      expect(findFilteredSearchAndSort().attributes('data-testid')).toBe(
+        defaultPropsData.filteredSearchTestid,
+      );
     });
 
     describe('when initialSort prop is not set', () => {

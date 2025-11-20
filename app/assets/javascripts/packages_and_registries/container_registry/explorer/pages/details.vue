@@ -89,6 +89,7 @@ export default {
         !this.hidePartialCleanupWarning
       );
     },
+    // eslint-disable-next-line vue/no-unused-properties -- tracking() is required by Tracking mixin.
     tracking() {
       return {
         label: 'registry_image_delete',

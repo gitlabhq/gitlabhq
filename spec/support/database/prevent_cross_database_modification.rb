@@ -60,6 +60,8 @@ RSpec.configure do |config|
   config.before do |example_file|
     ::Gitlab::Database::QueryAnalyzers::PreventCrossDatabaseModification.suppress_in_rspec =
       CROSS_DB_MODIFICATION_ALLOW_LIST.include?(example_file.file_path_rerun_argument)
+
+    ::ApplicationRecord.gitlab_transactions_stack.clear
   end
 
   # Reset after execution to preferred state

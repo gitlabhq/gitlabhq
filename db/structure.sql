@@ -10652,6 +10652,9 @@ CREATE TABLE ai_settings (
     duo_agent_platform_request_count integer DEFAULT 0 NOT NULL,
     foundational_agents_default_enabled boolean DEFAULT true,
     ai_gateway_timeout_seconds integer DEFAULT 60,
+    minimum_access_level_execute smallint,
+    minimum_access_level_manage smallint,
+    minimum_access_level_enable_on_projects smallint,
     CONSTRAINT check_3cf9826589 CHECK ((char_length(ai_gateway_url) <= 2048)),
     CONSTRAINT check_900d7a89b3 CHECK ((char_length(duo_agent_platform_service_url) <= 2048)),
     CONSTRAINT check_a02bd8868c CHECK ((char_length(amazon_q_role_arn) <= 2048)),
@@ -20691,7 +20694,10 @@ CREATE TABLE namespace_aggregation_schedules (
 CREATE TABLE namespace_ai_settings (
     namespace_id bigint NOT NULL,
     duo_workflow_mcp_enabled boolean DEFAULT false NOT NULL,
-    foundational_agents_default_enabled boolean DEFAULT true
+    foundational_agents_default_enabled boolean DEFAULT true,
+    minimum_access_level_execute smallint,
+    minimum_access_level_manage smallint,
+    minimum_access_level_enable_on_projects smallint
 );
 
 CREATE TABLE namespace_bans (

@@ -612,6 +612,7 @@ lib/gitlab/checks/
 /doc/administration/cells.md @emily.sahlani
 /doc/administration/cicd/ @lyspin
 /doc/administration/cicd/job_logs.md @rsarangadharan
+/doc/administration/clusters/ @rsarangadharan
 /doc/administration/configure.md @axil @eread
 /doc/administration/consul.md @axil @eread
 /doc/administration/credentials_inventory.md @idurham
@@ -642,6 +643,7 @@ lib/gitlab/checks/
 /doc/administration/integration/kroki.md @msedlakjakubowski
 /doc/administration/integration/mailgun.md @msedlakjakubowski
 /doc/administration/integration/plantuml.md @brendan777
+/doc/administration/integration/terminal.md @rsarangadharan
 /doc/administration/invalidate_markdown_cache.md @msedlakjakubowski
 /doc/administration/issue_closing_pattern.md @brendan777
 /doc/administration/labels.md @msedlakjakubowski
@@ -720,6 +722,7 @@ lib/gitlab/checks/
 /doc/administration/settings/sign_in_restrictions.md @idurham
 /doc/administration/settings/sign_up_restrictions.md @idurham
 /doc/administration/settings/slack_app.md @msedlakjakubowski
+/doc/administration/settings/terraform_limits.md @rsarangadharan
 /doc/administration/settings/third_party_offers.md @z_painter
 /doc/administration/settings/visibility_and_access_controls.md @brendan777
 /doc/administration/settings/web_ide.md @sselhorn
@@ -728,6 +731,7 @@ lib/gitlab/checks/
 /doc/administration/smime_signing_email.md @axil @eread
 /doc/administration/snippets/ @brendan777
 /doc/administration/system_hooks.md @eread
+/doc/administration/terraform_state.md @rsarangadharan
 /doc/administration/timezone.md @axil @eread
 /doc/administration/troubleshooting/ @axil @eread
 /doc/administration/uploads.md @axil @eread
@@ -744,6 +748,8 @@ lib/gitlab/checks/
 /doc/api/branches.md @brendan777
 /doc/api/bulk_imports.md @eread
 /doc/api/chat.md @jglassman1
+/doc/api/cluster_agents.md @rsarangadharan
+/doc/api/cluster_discovery.md @rsarangadharan
 /doc/api/code_suggestions.md @sselhorn
 /doc/api/commits.md @brendan777
 /doc/api/compliance_policy_settings.md @rlehmann1
@@ -754,13 +760,21 @@ lib/gitlab/checks/
 /doc/api/dependencies.md @rdickenson
 /doc/api/dependency_list_export.md @rlehmann1
 /doc/api/dependency_proxy.md @z_painter
+/doc/api/deploy_keys.md @rsarangadharan
+/doc/api/deploy_tokens.md @rsarangadharan
+/doc/api/deployments.md @rsarangadharan
 /doc/api/discussions.md @brendan777
 /doc/api/dora/ @lciutacu
 /doc/api/draft_notes.md @brendan777
 /doc/api/emoji_reactions.md @msedlakjakubowski
+/doc/api/environments.md @rsarangadharan
 /doc/api/epic_issues.md @msedlakjakubowski
 /doc/api/epic_links.md @msedlakjakubowski
 /doc/api/epics.md @msedlakjakubowski
+/doc/api/feature_flag_user_lists.md @rsarangadharan
+/doc/api/feature_flags.md @rsarangadharan
+/doc/api/features.md @rsarangadharan
+/doc/api/freeze_periods.md @rsarangadharan
 /doc/api/geo_nodes.md @axil
 /doc/api/geo_sites.md @axil
 /doc/api/google_cloud_integration.md @idurham
@@ -775,6 +789,7 @@ lib/gitlab/checks/
 /doc/api/group_activity_analytics.md @lciutacu
 /doc/api/group_badges.md @z_painter
 /doc/api/group_boards.md @msedlakjakubowski
+/doc/api/group_clusters.md @rsarangadharan
 /doc/api/group_enterprise_users.md @idurham
 /doc/api/group_epic_boards.md @msedlakjakubowski
 /doc/api/group_import_export.md @eread
@@ -787,14 +802,17 @@ lib/gitlab/checks/
 /doc/api/group_milestones.md @msedlakjakubowski
 /doc/api/group_placeholder_reassignments.md @eread
 /doc/api/group_protected_branches.md @brendan777
+/doc/api/group_protected_environments.md @rsarangadharan
 /doc/api/group_push_rules.md @brendan777
 /doc/api/group_relations_export.md @eread
+/doc/api/group_releases.md @rsarangadharan
 /doc/api/group_security_settings.md @rlehmann1
 /doc/api/group_ssh_certificates.md @brendan777
 /doc/api/group_webhooks.md @eread
 /doc/api/group_wikis.md @brendan777
 /doc/api/groups.md @z_painter
 /doc/api/import.md @eread
+/doc/api/instance_clusters.md @rsarangadharan
 /doc/api/instance_level_ci_variables.md @marcel.amirault
 /doc/api/invitations.md @z_painter
 /doc/api/issue_links.md @msedlakjakubowski
@@ -816,6 +834,7 @@ lib/gitlab/checks/
 /doc/api/merge_request_context_commits.md @brendan777
 /doc/api/merge_requests.md @brendan777
 /doc/api/merge_trains.md @lyspin
+/doc/api/metadata.md @rsarangadharan
 /doc/api/milestones.md @msedlakjakubowski
 /doc/api/namespaces.md @z_painter
 /doc/api/notes.md @msedlakjakubowski
@@ -834,6 +853,7 @@ lib/gitlab/checks/
 /doc/api/project_access_tokens.md @idurham
 /doc/api/project_aliases.md @brendan777
 /doc/api/project_badges.md @z_painter
+/doc/api/project_clusters.md @rsarangadharan
 /doc/api/project_forks.md @z_painter
 /doc/api/project_import_export.md @eread
 /doc/api/project_job_token_scopes.md @marcel.amirault
@@ -854,11 +874,14 @@ lib/gitlab/checks/
 /doc/api/project_webhooks.md @eread
 /doc/api/projects.md @z_painter
 /doc/api/protected_branches.md @brendan777
+/doc/api/protected_environments.md @rsarangadharan
 /doc/api/protected_tags.md @brendan777
+/doc/api/releases/ @rsarangadharan
 /doc/api/remote_mirrors.md @brendan777
 /doc/api/repositories.md @brendan777
 /doc/api/repository_files.md @brendan777
 /doc/api/repository_submodules.md @brendan777
+/doc/api/resource_groups.md @rsarangadharan
 /doc/api/resource_iteration_events.md @msedlakjakubowski
 /doc/api/resource_label_events.md @msedlakjakubowski
 /doc/api/resource_milestone_events.md @msedlakjakubowski
@@ -892,6 +915,7 @@ lib/gitlab/checks/
 /doc/api/user_moderation.md @idurham
 /doc/api/user_tokens.md @idurham
 /doc/api/users.md @idurham
+/doc/api/version.md @rsarangadharan
 /doc/api/virtual_registries_cleanup_policies.md @z_painter
 /doc/api/vulnerabilities.md @rlehmann1
 /doc/api/vulnerability_exports.md @rlehmann1
@@ -901,13 +925,17 @@ lib/gitlab/checks/
 /doc/auth/ @idurham
 /doc/ci/_index.md @lyspin
 /doc/ci/caching/ @marcel.amirault
+/doc/ci/chatops/ @rsarangadharan
 /doc/ci/ci_cd_for_external_repos/ @lyspin
+/doc/ci/cloud_deployment/ @rsarangadharan
 /doc/ci/cloud_services/ @marcel.amirault
 /doc/ci/components/ @marcel.amirault
 /doc/ci/debugging.md @marcel.amirault
 /doc/ci/docker/ @lyspin
 /doc/ci/docker/using_docker_images.md @rsarangadharan
+/doc/ci/environments/ @rsarangadharan
 /doc/ci/examples/ @lyspin
+/doc/ci/examples/deployment/ @rsarangadharan
 /doc/ci/examples/semantic-release.md @z_painter
 /doc/ci/gitlab_google_cloud_integration/ @z_painter
 /doc/ci/inputs/ @marcel.amirault
@@ -928,6 +956,7 @@ lib/gitlab/checks/
 /doc/ci/pipelines/downstream_pipelines_troubleshooting.md @marcel.amirault
 /doc/ci/pipelines/pipeline_architectures.md @marcel.amirault
 /doc/ci/quick_start/ @marcel.amirault
+/doc/ci/resource_groups/ @rsarangadharan
 /doc/ci/review_apps/ @lyspin
 /doc/ci/runners/ @rsarangadharan
 /doc/ci/runners/git_submodules.md @lyspin
@@ -1008,7 +1037,9 @@ lib/gitlab/checks/
 /doc/integration/mattermost/ @axil @eread
 /doc/integration/sourcegraph.md @brendan777
 /doc/integration/trello_power_up.md @msedlakjakubowski
+/doc/integration/vault.md @rsarangadharan
 /doc/integration/zoekt/ @ashrafkhamis
+/doc/operations/ @rsarangadharan
 /doc/policy/ @axil @eread
 /doc/security/ @idurham
 /doc/security/asset_proxy.md @msedlakjakubowski
@@ -1023,6 +1054,7 @@ lib/gitlab/checks/
 /doc/subscriptions/gitlab_dedicated/ @lyspin
 /doc/subscriptions/gitlab_dedicated_for_government/ @lyspin
 /doc/topics/ @msedlakjakubowski
+/doc/topics/autodevops/ @rsarangadharan
 /doc/topics/git/ @brendan777
 /doc/topics/git/project.md @z_painter
 /doc/topics/offline/ @axil @eread
@@ -1062,6 +1094,7 @@ lib/gitlab/checks/
 /doc/update/ @axil @eread
 /doc/user/analytics/ @lciutacu
 /doc/user/analytics/ci_cd_analytics.md @rsarangadharan
+/doc/user/analytics/dora_metrics_charts.md @rsarangadharan
 /doc/user/application_security/ @rdickenson
 /doc/user/application_security/api_fuzzing/ @rsarangadharan
 /doc/user/application_security/api_security/ @rsarangadharan
@@ -1085,6 +1118,7 @@ lib/gitlab/checks/
 /doc/user/application_security/vulnerability_archival/ @rlehmann1
 /doc/user/application_security/vulnerability_report/ @rlehmann1
 /doc/user/asciidoc.md @brendan777
+/doc/user/clusters/ @rsarangadharan
 /doc/user/compliance/ @rlehmann1
 /doc/user/compliance/license_scanning_of_cyclonedx_files/ @rdickenson
 /doc/user/crm/ @msedlakjakubowski
@@ -1096,6 +1130,7 @@ lib/gitlab/checks/
 /doc/user/enterprise_user/ @idurham
 /doc/user/free_user_limit.md @lciutacu
 /doc/user/get_started/get_started_managing_code.md @brendan777
+/doc/user/get_started/get_started_managing_infrastructure.md @rsarangadharan
 /doc/user/get_started/get_started_planning_work.md @msedlakjakubowski
 /doc/user/get_started/get_started_projects.md @z_painter
 /doc/user/get_started/get_started_runner.md @rsarangadharan
@@ -1107,6 +1142,7 @@ lib/gitlab/checks/
 /doc/user/glql/ @brendan777
 /doc/user/group/_index.md @z_painter
 /doc/user/group/access_and_permissions.md @z_painter
+/doc/user/group/clusters/ @rsarangadharan
 /doc/user/group/contribution_analytics/ @lciutacu
 /doc/user/group/credentials_inventory.md @idurham
 /doc/user/group/custom_project_templates.md @brendan777
@@ -1131,10 +1167,12 @@ lib/gitlab/checks/
 /doc/user/group/subgroups/ @z_painter
 /doc/user/group/troubleshooting.md @z_painter
 /doc/user/group/value_stream_analytics/ @lciutacu
+/doc/user/infrastructure/ @rsarangadharan
 /doc/user/infrastructure/clusters/manage/management_project_applications/ @rsarangadharan
 /doc/user/markdown.md @brendan777
 /doc/user/namespace/ @z_painter
 /doc/user/okrs.md @msedlakjakubowski
+/doc/user/operations_dashboard/ @rsarangadharan
 /doc/user/organization/ @z_painter
 /doc/user/packages/ @z_painter
 /doc/user/permissions.md @idurham
@@ -1146,8 +1184,12 @@ lib/gitlab/checks/
 /doc/user/project/autocomplete_characters.md @brendan777
 /doc/user/project/badges.md @z_painter
 /doc/user/project/changelogs.md @brendan777
+/doc/user/project/clusters/ @rsarangadharan
 /doc/user/project/code_intelligence.md @brendan777
 /doc/user/project/codeowners/ @brendan777
+/doc/user/project/deploy_boards.md @rsarangadharan
+/doc/user/project/deploy_keys/ @rsarangadharan
+/doc/user/project/deploy_tokens/ @rsarangadharan
 /doc/user/project/description_templates.md @msedlakjakubowski
 /doc/user/project/file_lock.md @brendan777
 /doc/user/project/import/ @eread
@@ -1186,6 +1228,7 @@ lib/gitlab/checks/
 /doc/user/project/project_topics.md @z_painter
 /doc/user/project/protected_tags.md @brendan777
 /doc/user/project/quick_actions.md @msedlakjakubowski
+/doc/user/project/releases/ @rsarangadharan
 /doc/user/project/repository/ @brendan777
 /doc/user/project/repository/code_explain.md @sselhorn
 /doc/user/project/repository/code_suggestions/ @sselhorn

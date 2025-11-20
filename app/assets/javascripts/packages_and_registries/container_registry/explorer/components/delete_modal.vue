@@ -77,6 +77,7 @@ export default {
       };
     },
   },
+  expose: ['show'],
   methods: {
     show() {
       this.$refs.deleteModal.show();

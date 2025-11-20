@@ -93,6 +93,7 @@ describe('YourWorkProjectsApp', () => {
 
     expect(wrapper.findComponent(TabsWithList).props()).toEqual({
       tabs: PROJECT_DASHBOARD_TABS,
+      filteredSearchTestid: null,
       filteredSearchSupportedTokens: [
         FILTERED_SEARCH_TOKEN_LANGUAGE,
         FILTERED_SEARCH_TOKEN_MIN_ACCESS_LEVEL,

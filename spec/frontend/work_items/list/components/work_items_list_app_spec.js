@@ -75,11 +75,7 @@ import {
   STATE_CLOSED,
   WORK_ITEM_TYPE_ENUM_EPIC,
   WORK_ITEM_TYPE_NAME_EPIC,
-  WORK_ITEM_TYPE_NAME_INCIDENT,
   WORK_ITEM_TYPE_NAME_ISSUE,
-  WORK_ITEM_TYPE_NAME_KEY_RESULT,
-  WORK_ITEM_TYPE_NAME_OBJECTIVE,
-  WORK_ITEM_TYPE_NAME_TASK,
 } from '~/work_items/constants';
 import { createRouter } from '~/work_items/router';
 import workItemsReorderMutation from '~/work_items/graphql/work_items_reorder.mutation.graphql';
@@ -1718,39 +1714,6 @@ describeSkipVue3(skipReason, () => {
       await waitForPromises();
 
       expect(findCreateWorkItemModal().props('creationContext')).toBe(CREATION_CONTEXT_LIST_ROUTE);
-    });
-
-    describe('allowedWorkItemTypes', () => {
-      it('returns empty array when group', async () => {
-        mountComponent({ provide: { isGroup: true } });
-        await waitForPromises();
-
-        expect(findCreateWorkItemModal().props('allowedWorkItemTypes')).toEqual([]);
-      });
-
-      it('returns project-level types when project', async () => {
-        mountComponent({ provide: { isGroup: false } });
-        await waitForPromises();
-
-        expect(findCreateWorkItemModal().props('allowedWorkItemTypes')).toEqual([
-          WORK_ITEM_TYPE_NAME_INCIDENT,
-          WORK_ITEM_TYPE_NAME_ISSUE,
-          WORK_ITEM_TYPE_NAME_TASK,
-        ]);
-      });
-
-      it('returns project-level types including okr types when project and when okrs is enabled', async () => {
-        mountComponent({ provide: { isGroup: false, hasOkrsFeature: true } });
-        await waitForPromises();
-
-        expect(findCreateWorkItemModal().props('allowedWorkItemTypes')).toEqual([
-          WORK_ITEM_TYPE_NAME_INCIDENT,
-          WORK_ITEM_TYPE_NAME_ISSUE,
-          WORK_ITEM_TYPE_NAME_TASK,
-          WORK_ITEM_TYPE_NAME_KEY_RESULT,
-          WORK_ITEM_TYPE_NAME_OBJECTIVE,
-        ]);
-      });
     });
 
     describe('alwaysShowWorkItemTypeSelect', () => {

@@ -143,11 +143,6 @@ export default {
     ),
   },
   props: {
-    allowedWorkItemTypes: {
-      type: Array,
-      required: false,
-      default: () => [],
-    },
     alwaysShowWorkItemTypeSelect: {
       type: Boolean,
       required: false,
@@ -244,7 +239,7 @@ export default {
       loading: false,
       initialLoadingWorkItem: true,
       initialLoadingWorkItemTypes: true,
-      selectedNamespacePath: null,
+      selectedNamespacePath: this.initialSelectedProject(),
       showWorkItemTypeSelect: false,
       discussionToResolve: getParameterByName('discussion_to_resolve'),
       mergeRequestToResolveDiscussionsOf: getParameterByName('merge_request_id'),
@@ -281,7 +276,8 @@ export default {
       },
       variables() {
         return {
-          fullPath: this.selectedProjectFullPath,
+          fullPath: this.inputNamespacePath,
+          onlyAvailable: true,
         };
       },
       update(data) {
@@ -304,7 +300,7 @@ export default {
 
         for await (const workItemType of this.workItemTypes) {
           await setNewWorkItemCache({
-            fullPath: this.selectedProjectFullPath,
+            fullPath: this.inputNamespacePath,
             context: this.creationContext,
             widgetDefinitions: workItemType?.widgetDefinitions,
             workItemType: workItemType.name,
@@ -321,7 +317,7 @@ export default {
 
         if (selectedWorkItemType) {
           updateDraftWorkItemType({
-            fullPath: this.selectedProjectFullPath,
+            fullPath: this.inputNamespacePath,
             context: this.creationContext,
             relatedItemId: this.relatedItemId,
             workItemType: {
@@ -354,7 +350,7 @@ export default {
       return this.namespace?.workItemTypes?.nodes ?? [];
     },
     newWorkItemPath() {
-      return newWorkItemFullPath(this.selectedProjectFullPath, this.selectedWorkItemTypeName);
+      return newWorkItemFullPath(this.inputNamespacePath, this.selectedWorkItemTypeName);
     },
     canSetNewWorkItemMetadata() {
       return this.namespace?.userPermissions.setNewWorkItemMetadata;
@@ -435,15 +431,7 @@ export default {
       return findWidget(WIDGET_TYPE_CRM_CONTACTS, this.workItem);
     },
     workItemTypesForSelect() {
-      let workItemTypes = this.workItemTypes ?? [];
-
-      if (this.allowedWorkItemTypes.length) {
-        workItemTypes = workItemTypes.filter((workItemType) =>
-          this.allowedWorkItemTypes.includes(workItemType.name),
-        );
-      }
-
-      return workItemTypes.map((workItemType) => ({
+      return this.workItemTypes.map((workItemType) => ({
         value: workItemType.id,
         text: NAME_TO_TEXT_MAP[workItemType.name],
       }));
@@ -967,7 +955,7 @@ export default {
           mutation: updateNewWorkItemMutation,
           variables: {
             input: {
-              fullPath: this.selectedProjectFullPath,
+              fullPath: this.inputNamespacePath,
               context: this.creationContext,
               workItemType: this.selectedWorkItemTypeName,
               relatedItemId: this.relatedItemId,

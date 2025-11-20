@@ -77,6 +77,7 @@ describe('AdminGroupsApp', () => {
 
     expect(findTabsWithList().props()).toMatchObject({
       tabs: ADMIN_GROUPS_TABS,
+      filteredSearchTestid: 'admin-groups-filtered-search-and-sort',
       filteredSearchTermKey: FILTERED_SEARCH_TERM_KEY,
       filteredSearchNamespace: FILTERED_SEARCH_NAMESPACE,
       filteredSearchRecentSearchesStorageKey: RECENT_SEARCHES_STORAGE_KEY_GROUPS,

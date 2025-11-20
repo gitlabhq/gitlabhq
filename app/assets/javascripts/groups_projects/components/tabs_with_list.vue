@@ -78,6 +78,11 @@ export default {
       required: false,
       default: __('Filter or search (3 character minimum)'),
     },
+    filteredSearchTestid: {
+      type: String,
+      required: false,
+      default: null,
+    },
     timestampTypeMap: {
       type: Object,
       required: true,
@@ -633,6 +638,7 @@ export default {
     <template #toolbar-end>
       <filtered-search-and-sort
         class="gl-w-full gl-border-b-0"
+        :data-testid="filteredSearchTestid"
         :filtered-search-namespace="filteredSearchNamespace"
         :filtered-search-tokens="filteredSearchTokens"
         :filtered-search-term-key="filteredSearchTermKey"

@@ -85,6 +85,8 @@ describe('Create work item component', () => {
     webUrl: '/full-path/-/issues/22',
   };
 
+  let namespaceWorkItemTypesHandler;
+
   const findFormTitle = () => wrapper.find('h1');
   const findAlert = () => wrapper.findComponent(GlAlert);
   const findTitleInput = () => wrapper.findComponent(WorkItemTitle);
@@ -122,7 +124,7 @@ describe('Create work item component', () => {
     namespaceResponseCopy.data.workspace.id = 'gid://gitlab/Group/33';
     const namespaceResponse = isGroupWorkItem ? namespaceResponseCopy : namespaceQueryResponse;
 
-    const namespaceWorkItemTypesHandler = jest.fn().mockResolvedValue(namespaceResponse);
+    namespaceWorkItemTypesHandler = jest.fn().mockResolvedValue(namespaceResponse);
 
     mockApollo = createMockApollo(
       [
@@ -391,6 +393,23 @@ describe('Create work item component', () => {
         expect(findGroupProjectSelector().exists()).toBe(expected);
       },
     );
+
+    it('updates available work item types when new namespace is selected', async () => {
+      createComponent({
+        props: { isGroup: true },
+        provide: { workItemPlanningViewEnabled: true },
+      });
+      await waitForPromises();
+
+      findGroupProjectSelector().vm.$emit('selectNamespace', 'other-namespace/path');
+
+      await waitForPromises();
+
+      expect(namespaceWorkItemTypesHandler).toHaveBeenCalledWith({
+        onlyAvailable: true,
+        fullPath: 'other-namespace/path',
+      });
+    });
   });
 
   describe('Work item types dropdown', () => {
@@ -445,20 +464,6 @@ describe('Create work item component', () => {
       expect(findSelect().attributes('options').split(',')).toHaveLength(
         namespaceWorkItemTypes.length,
       );
-    });
-
-    it('restricts the type selector to types provided by allowedWorkItemTypes', async () => {
-      const allowedWorkItemTypes = [
-        WORK_ITEM_TYPE_NAME_INCIDENT,
-        WORK_ITEM_TYPE_NAME_ISSUE,
-        WORK_ITEM_TYPE_NAME_TASK,
-      ];
-      createComponent({ props: { preselectedWorkItemType: null, allowedWorkItemTypes } });
-      await waitForPromises();
-      // +1 for the "Select type" option
-      const expectedOptions = allowedWorkItemTypes.length + 1;
-
-      expect(findSelect().attributes('options').split(',')).toHaveLength(expectedOptions);
     });
 
     it('selects a work item type on click', async () => {

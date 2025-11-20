@@ -27,11 +27,6 @@ export default {
     GlTooltip: GlTooltipDirective,
   },
   props: {
-    allowedWorkItemTypes: {
-      type: Array,
-      required: false,
-      default: () => [],
-    },
     alwaysShowWorkItemTypeSelect: {
       type: Boolean,
       required: false,
@@ -343,7 +338,6 @@ export default {
         </div>
       </template>
       <create-work-item
-        :allowed-work-item-types="allowedWorkItemTypes"
         :always-show-work-item-type-select="alwaysShowWorkItemTypeSelect"
         :creation-context="creationContext"
         :description="description"

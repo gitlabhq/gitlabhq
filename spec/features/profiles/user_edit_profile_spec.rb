@@ -5,6 +5,7 @@ require 'spec_helper'
 RSpec.describe 'User edit profile', feature_category: :user_profile do
   include Features::NotesHelpers
   include ListboxHelpers
+  include EmailHelpers
 
   let_it_be_with_reload(:user) { create(:user) }
 
@@ -137,9 +138,44 @@ RSpec.describe 'User edit profile', feature_category: :user_profile do
       end
 
       it 'with the correct password successfully updates' do
-        confirm_password(user.password)
+        perform_enqueued_jobs do
+          confirm_password(user.password)
+          expect(page).to have_text("Profile was successfully updated")
+        end
 
-        expect(page).to have_text("Profile was successfully updated")
+        mail = find_email_for('new-email@example.com')
+        expect(mail.subject).to eq('Confirmation instructions')
+
+        body = Nokogiri::HTML::DocumentFragment.parse(mail.body.parts.last.to_s)
+        confirmation_link = body.css('#cta a').attribute('href').value
+
+        # for some reason, the flash message about email confirmation does not appear reliably
+        # here, but the confirmed_at seems to update reliably
+        expect { visit confirmation_link }.to change { user.reload.confirmed_at }
+      end
+
+      context 'when devise_email_organization_routes FF is disabled' do
+        before do
+          stub_feature_flags(devise_email_organization_routes: false)
+        end
+
+        it 'sends email with working email link' do
+          perform_enqueued_jobs do
+            confirm_password(user.password)
+            expect(page).to have_text("Profile was successfully updated")
+          end
+
+          mail = find_email_for('new-email@example.com')
+          expect(mail.subject).to eq('Confirmation instructions')
+
+          body = Nokogiri::HTML::DocumentFragment.parse(mail.body.parts.last.to_s)
+          confirmation_link = body.css('#cta a').attribute('href').value
+          expect(confirmation_link).not_to include("/o/#{user.organization.path}")
+
+          # for some reason, the flash message about email confirmation does not appear reliably
+          # here, but the confirmed_at seems to update reliably
+          expect { visit confirmation_link }.to change { user.reload.confirmed_at }
+        end
       end
 
       it 'with the incorrect password fails to update' do

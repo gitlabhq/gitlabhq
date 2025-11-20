@@ -21,7 +21,6 @@ import {
   NAME_TO_TEXT_LOWERCASE_MAP,
   STATE_OPEN,
   WORK_ITEM_TYPE_NAME_EPIC,
-  WORK_ITEM_TYPE_NAME_INCIDENT,
   WORK_ITEM_TYPE_NAME_ISSUE,
   WORK_ITEM_TYPE_NAME_KEY_RESULT,
   WORK_ITEM_TYPE_NAME_OBJECTIVE,
@@ -631,42 +630,6 @@ describe('WorkItemActions component', () => {
       await nextTick();
 
       expect(wrapper.emitted('toggleReportAbuseModal')).toEqual([[true]]);
-    });
-  });
-
-  describe('allowed work item types for modal', () => {
-    describe('when group', () => {
-      it('passes empty array', () => {
-        createComponent({ isGroup: true });
-
-        expect(findCreateWorkItemModal().props('allowedWorkItemTypes')).toEqual([]);
-      });
-    });
-
-    describe('when okrs feature is not available', () => {
-      it('passes default of incident, issue, and task', () => {
-        createComponent({ hasOkrsFeature: false, okrsMvc: false });
-
-        expect(findCreateWorkItemModal().props('allowedWorkItemTypes')).toEqual([
-          WORK_ITEM_TYPE_NAME_INCIDENT,
-          WORK_ITEM_TYPE_NAME_ISSUE,
-          WORK_ITEM_TYPE_NAME_TASK,
-        ]);
-      });
-    });
-
-    describe('when okrs feature is available', () => {
-      it('passes default of incident, issue, and task', () => {
-        createComponent({ hasOkrsFeature: true, okrsMvc: true });
-
-        expect(findCreateWorkItemModal().props('allowedWorkItemTypes')).toEqual([
-          WORK_ITEM_TYPE_NAME_INCIDENT,
-          WORK_ITEM_TYPE_NAME_ISSUE,
-          WORK_ITEM_TYPE_NAME_TASK,
-          WORK_ITEM_TYPE_NAME_KEY_RESULT,
-          WORK_ITEM_TYPE_NAME_OBJECTIVE,
-        ]);
-      });
     });
   });
 

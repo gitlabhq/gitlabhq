@@ -274,6 +274,7 @@ After you turn off this setting:
 
 - New look [introduced](https://gitlab.com/groups/gitlab-org/-/epics/17783) in GitLab 18.2 [with a flag](feature_flags/_index.md) named `admin_groups_vue`. Disabled by default.
 - [Enabled on GitLab.com, GitLab Self-Managed, and GitLab Dedicated](https://gitlab.com/gitlab-org/gitlab/-/issues/553229) in GitLab 18.5.
+- [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/574017) in GitLab 18.6. Feature flag `admin_groups_vue` removed.
 
 {{< /history >}}
 

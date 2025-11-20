@@ -182,6 +182,7 @@ export default {
         ...this.pageParams,
       };
     },
+    // eslint-disable-next-line vue/no-unused-properties -- tracking() is required by Tracking mixin.
     tracking() {
       return {
         label: 'registry_repository_delete',
@@ -259,7 +260,6 @@ export default {
       this.setDeleteErrorMessages(errorMessages);
     },
   },
-  containerRegistryHelpUrl: helpPagePath('user/packages/container_registry/_index'),
   dockerConnectionErrorHelpUrl: helpPagePath(
     'user/packages/container_registry/troubleshoot_container_registry',
     {
@@ -318,7 +318,6 @@ export default {
         :metadata-loading="isLoading"
         :images-count="containerRepositoriesCount"
         :expiration-policy="config.expirationPolicy"
-        :help-page-path="$options.containerRegistryHelpUrl"
         :hide-expiration-policy-data="config.isGroupPage"
         :cleanup-policies-settings-path="config.cleanupPoliciesSettingsPath"
         :show-cleanup-policy-link="config.showCleanupPolicyLink"

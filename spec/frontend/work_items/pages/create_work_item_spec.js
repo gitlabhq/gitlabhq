@@ -100,7 +100,6 @@ describe('Create work item page component', () => {
 
     expect(findCreateWorkItem().props()).toMatchObject({
       alwaysShowWorkItemTypeSelect: true,
-      allowedWorkItemTypes: ['Incident', 'Issue', 'Task'],
     });
   });
 

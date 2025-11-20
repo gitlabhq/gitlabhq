@@ -34802,9 +34802,6 @@ msgid_plural "Importing %d repositories"
 msgstr[0] ""
 msgstr[1] ""
 
-msgid "Importing GitLab projects? Migrating GitLab projects when migrating groups by direct transfer is in Beta. %{link_start}Learn more.%{link_end}"
-msgstr ""
-
 msgid "Importing…"
 msgstr ""
 
@@ -38897,7 +38894,7 @@ msgstr ""
 msgid "Learn more about groups."
 msgstr ""
 
-msgid "Learn more about importing GitLab projects"
+msgid "Learn more about importing GitLab projects by using direct transfer"
 msgstr ""
 
 msgid "Learn more about linking epics"
@@ -41755,6 +41752,9 @@ msgid "Microsoft|Use the default value, unless you're using using Microsoft Grap
 msgstr ""
 
 msgid "Migrated %{success_count}/%{total_count} files."
+msgstr ""
+
+msgid "Migrating GitLab projects? Migrating projects when you migrate groups by using direct transfer is recommended. %{link_start}What is direct transfer%{link_end}?"
 msgstr ""
 
 msgid "Migration"

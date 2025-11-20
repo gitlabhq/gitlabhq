@@ -139,14 +139,4 @@ describe('registry_header', () => {
       });
     });
   });
-
-  describe('info messages', () => {
-    describe('default message', () => {
-      it('is correctly bound to title_area props', () => {
-        mountComponent({ helpPagePath: 'foo' });
-
-        expect(findTitleArea().props('infoMessages')).toEqual([]);
-      });
-    });
-  });
 });

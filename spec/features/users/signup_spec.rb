@@ -41,6 +41,7 @@ RSpec.shared_examples 'Signup name validation' do |field, max_length, label|
 end
 
 RSpec.describe 'Signup', :with_current_organization, :js, feature_category: :user_management do
+  include EmailHelpers
   include TermsHelper
   using RSpec::Parameterized::TableSyntax
 
@@ -189,15 +190,48 @@ RSpec.describe 'Signup', :with_current_organization, :js, feature_category: :use
 
       context 'when email confirmation setting is not `soft`' do
         it 'creates the user account and sends a confirmation email, and pre-fills email address after confirming' do
-          visit new_user_registration_path
+          perform_enqueued_jobs do
+            visit new_user_registration_path
 
-          expect { fill_in_sign_up_form(new_user) }.to change { User.count }.by(1)
-          expect(page).to have_current_path users_almost_there_path, ignore_query: true
-          expect(page).to have_content("Please check your email (#{new_user.email}) to confirm your account")
+            expect { fill_in_sign_up_form(new_user) }.to change { User.count }.by(1)
+            expect(page).to have_current_path users_almost_there_path, ignore_query: true
+            expect(page).to have_content("Please check your email (#{new_user.email}) to confirm your account")
+          end
 
-          confirm_email(new_user)
+          mail = find_email_for(new_user.email)
+          expect(mail.subject).to eq('Confirmation instructions')
 
+          body = Nokogiri::HTML::DocumentFragment.parse(mail.body.parts.last.to_s)
+          confirmation_link = body.css('#cta a').attribute('href').value
+
+          expect { visit confirmation_link }.to change { User.find_by_email(new_user.email).confirmed_at }
           expect(find_field('Username or primary email').value).to eq(new_user.email)
+        end
+
+        context 'when devise_email_organization_routes FF is disabled' do
+          let(:other_user) { build_stubbed(:user) }
+
+          before do
+            stub_feature_flags(devise_email_organization_routes: false)
+          end
+
+          it 'creates the user account and sends a confirmation email, and pre-fills email address after confirming' do
+            perform_enqueued_jobs do
+              visit new_user_registration_path
+              expect { fill_in_sign_up_form(other_user) }.to change { User.count }.by(1)
+              expect(page).to have_current_path users_almost_there_path, ignore_query: true
+            end
+
+            mail = find_email_for(other_user.email)
+            expect(mail.subject).to eq('Confirmation instructions')
+
+            body = Nokogiri::HTML::DocumentFragment.parse(mail.body.parts.last.to_s)
+            confirmation_link = body.css('#cta a').attribute('href').value
+            expect(confirmation_link).not_to include("/o/")
+
+            expect { visit confirmation_link }.to change { User.find_by_email(other_user.email).confirmed_at }
+            expect(find_field('Username or primary email').value).to eq(other_user.email)
+          end
         end
       end
 
