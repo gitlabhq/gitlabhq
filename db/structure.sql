@@ -4981,7 +4981,6 @@ CREATE TABLE background_operation_workers (
     job_arguments jsonb DEFAULT '"[]"'::jsonb,
     min_cursor jsonb,
     max_cursor jsonb,
-    next_min_cursor jsonb,
     CONSTRAINT check_10f672741a CHECK ((char_length(column_name) <= 63)),
     CONSTRAINT check_510f6260d5 CHECK ((char_length(gitlab_schema) <= 255)),
     CONSTRAINT check_63fe8b8121 CHECK ((sub_batch_size > 0)),
@@ -5017,7 +5016,6 @@ CREATE TABLE background_operation_workers_cell_local (
     job_arguments jsonb DEFAULT '"[]"'::jsonb,
     min_cursor jsonb,
     max_cursor jsonb,
-    next_min_cursor jsonb,
     CONSTRAINT check_1da63db6a8 CHECK ((char_length(table_name) <= 63)),
     CONSTRAINT check_4cc5ecb4f2 CHECK ((char_length(column_name) <= 63)),
     CONSTRAINT check_5f184cd88f CHECK ((char_length(gitlab_schema) <= 255)),
@@ -15116,8 +15114,6 @@ CREATE TABLE ci_triggers (
     project_id bigint,
     owner_id bigint NOT NULL,
     description character varying,
-    encrypted_token bytea,
-    encrypted_token_iv bytea,
     expires_at timestamp with time zone,
     token_encrypted text,
     CONSTRAINT check_4905e4c2cb CHECK ((char_length(token_encrypted) <= 255)),
@@ -26328,7 +26324,8 @@ CREATE TABLE scim_oauth_access_tokens (
     created_at timestamp with time zone NOT NULL,
     updated_at timestamp with time zone NOT NULL,
     group_id bigint,
-    token_encrypted character varying NOT NULL
+    token_encrypted character varying NOT NULL,
+    organization_id bigint
 );
 
 CREATE SEQUENCE scim_oauth_access_tokens_id_seq
@@ -43668,6 +43665,8 @@ CREATE UNIQUE INDEX index_scim_identities_on_user_id_and_group_id ON scim_identi
 
 CREATE UNIQUE INDEX index_scim_oauth_access_tokens_on_group_id_and_token_encrypted ON scim_oauth_access_tokens USING btree (group_id, token_encrypted);
 
+CREATE INDEX index_scim_oauth_access_tokens_on_organization_id ON scim_oauth_access_tokens USING btree (organization_id);
+
 CREATE INDEX index_secret_rotation_infos_on_next_reminder_at ON secret_rotation_infos USING btree (next_reminder_at);
 
 CREATE INDEX index_security_attributes_on_namespace_id ON security_attributes USING btree (namespace_id);
@@ -50215,6 +50214,9 @@ ALTER TABLE ONLY work_item_custom_lifecycles
 
 ALTER TABLE ONLY protected_environment_approval_rules
     ADD CONSTRAINT fk_6ee8249821 FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE;
+
+ALTER TABLE ONLY scim_oauth_access_tokens
+    ADD CONSTRAINT fk_6f24f34b0d FOREIGN KEY (organization_id) REFERENCES organizations(id) ON DELETE CASCADE;
 
 ALTER TABLE ONLY deploy_tokens
     ADD CONSTRAINT fk_7082f8a288 FOREIGN KEY (creator_id) REFERENCES users(id) ON DELETE SET NULL;

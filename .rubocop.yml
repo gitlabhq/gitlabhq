@@ -170,6 +170,13 @@ Style/SignalException:
     - '**/*/Dangerfile'
     - 'tooling/danger/**/*.rb'
 
+# See https://gitlab.com/groups/gitlab-org/-/epics/5076
+RSpec/RailsControllerTesting:
+  Enabled: true
+  Include:
+    - '{,ee/,jh/}spec/controllers/**/*'
+    - '{,ee/,jh/}spec/requests/**/*'
+
 RSpec/SpecFilePathFormat:
   Exclude:
     - 'qa/**/*'
@@ -856,6 +863,12 @@ API/DescriptionTags:
     - 'ee/lib/**/api/**/*.rb'
 
 API/ParameterDescription:
+  Enabled: true
+  Include:
+    - 'lib/**/api/**/*.rb'
+    - 'ee/lib/**/api/**/*.rb'
+
+API/ParameterType:
   Enabled: true
   Include:
     - 'lib/**/api/**/*.rb'

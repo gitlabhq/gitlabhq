@@ -49412,6 +49412,9 @@ msgstr ""
 msgid "Pipelines|View merge train details"
 msgstr ""
 
+msgid "Pipelines|Visual CI Editor"
+msgstr ""
+
 msgid "Pipelines|Visualize"
 msgstr ""
 

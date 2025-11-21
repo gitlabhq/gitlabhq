@@ -166,6 +166,14 @@ module NavbarStructureHelper
     )
   end
 
+  def insert_visual_ci_editor_nav
+    insert_after_sub_nav_item(
+      _('Artifacts'),
+      within: _('Build'),
+      new_sub_nav_item_name: s_('Pipelines|Visual CI Editor')
+    )
+  end
+
   def project_analytics_sub_nav_item
     [
       _('Value stream analytics'),

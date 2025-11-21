@@ -6,7 +6,7 @@ module Gitlab
       module Header
         class Inputs
           class Validator
-            RULE_IF_KEY = :if
+            RULE_EXPRESSION_KEY = ::Ci::Inputs::RulesEvaluator::RULE_EXPRESSION_KEY
 
             def initialize(entries)
               @entries = entries
@@ -34,9 +34,9 @@ module Gitlab
             end
 
             def validate_rule_references(input_name, rule, rule_index, defined_inputs)
-              return unless rule[RULE_IF_KEY]
+              return unless rule[RULE_EXPRESSION_KEY]
 
-              referenced_inputs = extract_input_names_from(rule[RULE_IF_KEY])
+              referenced_inputs = extract_input_names_from(rule[RULE_EXPRESSION_KEY])
               return unless referenced_inputs
 
               undefined_inputs = referenced_inputs - defined_inputs
@@ -70,9 +70,9 @@ module Gitlab
               return [] unless input.input_rules
 
               input.input_rules.flat_map do |rule|
-                next [] unless rule[RULE_IF_KEY]
+                next [] unless rule[RULE_EXPRESSION_KEY]
 
-                (extract_input_names_from(rule[RULE_IF_KEY]) || []).map(&:to_s)
+                (extract_input_names_from(rule[RULE_EXPRESSION_KEY]) || []).map(&:to_s)
               end
             end
 

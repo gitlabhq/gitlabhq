@@ -7292,6 +7292,7 @@ Task Runnerポッドは、GitLabアプリケーション内で定期的なハウ
 - この変更について議論したり、詳細を確認したりするには、[非推奨に関するイシュー](https://gitlab.com/groups/gitlab-org/configure/-/epics/8)を参照してください。
 
 </div>
+
 {{< alert type="note" >}}
 
 この変更は、元のマイルストーンから削除され、再度評価されています。
@@ -7318,6 +7319,7 @@ GitLab Self-Managedのお客様は、[機能フラグを使用して](https://do
 - この変更について議論したり、詳細を確認したりするには、[非推奨に関するイシュー](https://gitlab.com/gitlab-org/gitlab/-/issues/458835)を参照してください。
 
 </div>
+
 {{< alert type="note" >}}
 
 この変更は、元のマイルストーンから削除され、再度評価されています。
@@ -7338,6 +7340,7 @@ OWASP Top 10 2017で脆弱性レポートをグループ化することは非推
 - この変更について議論したり、詳細を確認したりするには、[非推奨に関するイシュー](https://gitlab.com/gitlab-org/gitlab/-/issues/502382)を参照してください。
 
 </div>
+
 {{< alert type="note" >}}
 
 この変更は、元のマイルストーンから削除され、再度評価されています。
@@ -7360,6 +7363,7 @@ GitLabは、セキュアバイデフォルトの実践を重視しています�
 - この変更について議論したり、詳細を確認したりするには、[非推奨に関するイシュー](https://gitlab.com/components/opentofu/-/issues/43#note_1913822299)を参照してください。
 
 </div>
+
 {{< alert type="note" >}}
 
 この変更は、元のマイルストーンから削除され、再度評価されています。
@@ -7382,6 +7386,7 @@ CI/CDテンプレートからコンポーネントへの移行については、
 - この変更について議論したり、詳細を確認したりするには、[非推奨に関するイシュー](https://gitlab.com/gitlab-org/gitlab/-/issues/480914)を参照してください。
 
 </div>
+
 {{< alert type="note" >}}
 
 この変更は、元のマイルストーンから削除され、再度評価されています。
@@ -7404,6 +7409,7 @@ CI/CDテンプレートからコンポーネントへの移行については、
 - この変更について議論したり、詳細を確認したりするには、[非推奨に関するイシュー](https://gitlab.com/gitlab-org/gitlab/-/issues/424417)を参照してください。
 
 </div>
+
 {{< alert type="note" >}}
 
 この変更は、元のマイルストーンから削除され、再度評価されています。
@@ -7424,6 +7430,7 @@ CI/CDテンプレートからコンポーネントへの移行については、
 - この変更について議論したり、詳細を確認したりするには、[非推奨に関するイシュー](https://gitlab.com/gitlab-org/cluster-integration/gitlab-agent/-/issues/630)を参照してください。
 
 </div>
+
 {{< alert type="note" >}}
 
 この変更は、元のマイルストーンから削除され、再度評価されています。
@@ -7446,6 +7453,7 @@ CI/CDテンプレートからコンポーネントへの移行については、
 - この変更について議論したり、詳細を確認したりするには、[非推奨に関するイシュー](https://gitlab.com/gitlab-org/cluster-integration/gitlab-agent/-/issues/656)を参照してください。
 
 </div>
+
 {{< alert type="note" >}}
 
 この変更は、元のマイルストーンから削除され、再度評価されています。
@@ -7472,6 +7480,7 @@ Kubernetesエージェントの`kpt`ベースのインストールに対する�
 - この変更について議論したり、詳細を確認したりするには、[非推奨に関するイシュー](https://gitlab.com/gitlab-org/gitlab/-/issues/473759)を参照してください。
 
 </div>
+
 {{< alert type="note" >}}
 
 この変更は、元のマイルストーンから削除され、再度評価されています。
@@ -7499,6 +7508,7 @@ Kubernetesエージェントの`kpt`ベースのインストールに対する�
 - この変更について議論したり、詳細を確認したりするには、[非推奨に関するイシュー](https://gitlab.com/gitlab-org/gitlab/-/issues/515358)を参照してください。
 
 </div>
+
 {{< alert type="note" >}}
 
 この変更はキャンセルされました。
@@ -7519,6 +7529,7 @@ Kubernetesエージェントの`kpt`ベースのインストールに対する�
 - この変更について議論したり、詳細を確認したりするには、[非推奨に関するイシュー](https://gitlab.com/gitlab-org/gitlab/-/issues/439301)を参照してください。
 
 </div>
+
 {{< alert type="note" >}}
 
 この変更はキャンセルされました。
@@ -7541,6 +7552,7 @@ GitLab 16.3で従来のライセンススキャンCI/CDジョブが削除され�
 - この変更について議論したり、詳細を確認したりするには、[非推奨に関するイシュー](https://gitlab.com/gitlab-org/gitlab/-/issues/519133)を参照してください。
 
 </div>
+
 {{< alert type="note" >}}
 
 この変更はキャンセルされました。
@@ -7574,6 +7586,7 @@ GitLab 18.0では、SAST CI/CDテンプレートを更新して、以前のリ�
 - この変更について議論したり、詳細を確認したりするには、[非推奨に関するイシュー](https://gitlab.com/gitlab-org/gitlab/-/issues/470641)を参照してください。
 
 </div>
+
 {{< alert type="note" >}}
 
 この変更はキャンセルされました。
@@ -7600,6 +7613,7 @@ GitLab 18.0では、`registry.gitlab.com/gitlab-org/security-products/`配下の
 - この変更について議論したり、詳細を確認したりするには、[非推奨に関するイシュー](https://gitlab.com/gitlab-org/gitlab/-/issues/512564)を参照してください。
 
 </div>
+
 {{< alert type="note" >}}
 
 この変更はキャンセルされました。
@@ -7631,6 +7645,7 @@ GitLab 18.0では、SASTおよびIaCスキャンを更新して、デフォル�
 - この変更について議論したり、詳細を確認したりするには、[非推奨に関するイシュー](https://gitlab.com/gitlab-org/gitlab/-/issues/476160)を参照してください。
 
 </div>
+
 {{< alert type="note" >}}
 
 この変更はキャンセルされました。
@@ -7651,6 +7666,7 @@ GitLab 18.0では、SASTおよびIaCスキャンを更新して、デフォル�
 - この変更について議論したり、詳細を確認したりするには、[非推奨に関するイシュー](https://gitlab.com/gitlab-org/gitlab/-/issues/513409)を参照してください。
 
 </div>
+
 {{< alert type="note" >}}
 
 この変更はキャンセルされました。

@@ -558,6 +558,7 @@
     "jobInputs": {
       "type": "object",
       "markdownDescription": "Define input parameters for a job. Job inputs must always include a `default` value. [Learn More](https://docs.gitlab.com/ci/yaml/#inputs).",
+      "maxProperties": 50,
       "patternProperties": {
         ".*": {
           "allOf": [

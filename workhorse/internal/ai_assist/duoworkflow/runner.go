@@ -204,14 +204,15 @@ func (r *runner) handleWebSocketMessage(message []byte) error {
 	}
 
 	if startReq := response.GetStartRequest(); startReq != nil {
-		startReq.McpTools = append(startReq.McpTools, r.mcpManager.Tools()...)
-
 		// Acquire distributed lock when workflow starts
 		if r.lockFlow {
 			if err := r.acquireWorkflowLock(startReq); err != nil {
 				return err
 			}
 		}
+
+		startReq.McpTools = append(startReq.McpTools, r.mcpManager.Tools()...)
+		startReq.PreapprovedTools = append(startReq.PreapprovedTools, r.mcpManager.PreApprovedTools()...)
 	}
 
 	log.WithContextFields(r.originalReq.Context(), log.Fields{

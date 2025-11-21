@@ -33,6 +33,7 @@ module Gitlab
           name: 'job_with_inputs',
           inputs: {
             string_input: {
+              type: 'string',
               default: 'hello'
             },
             number_input: {

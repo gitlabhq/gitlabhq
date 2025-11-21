@@ -70,6 +70,12 @@ module Gitlab
               next unless inputs_defined?
 
               inputs_spec = inputs_value || {}
+
+              if inputs_spec.size > 50
+                errors.add(:inputs, "has too many entries (maximum 50)")
+                next
+              end
+
               builder = ::Ci::Inputs::Builder.new(inputs_spec)
 
               builder.validate_input_params!({})

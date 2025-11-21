@@ -26,7 +26,7 @@ following levels are recognized:
 - Reporter (`20`)
 - Developer (`30`)
 - Maintainer (`40`)
-- Owner (`50`).
+- Owner (`50`)
 
 ## List access requests for a group or project
 

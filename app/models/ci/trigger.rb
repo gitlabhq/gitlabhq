@@ -20,25 +20,20 @@ module Ci
 
     has_many :pipelines, class_name: 'Ci::Pipeline'
 
-    validates :token, presence: true, uniqueness: true
+    validates :token_encrypted, presence: true, uniqueness: true
     validates :owner, presence: true
     validates :project, presence: true
 
     validate :expires_at_before_instance_max_expiry_date, on: :create
 
-    before_validation :set_default_values
+    before_validation :ensure_token
 
-    ignore_column :encrypted_token, remove_with: '18.4', remove_after: '2025-09-30'
-    ignore_column :encrypted_token_iv, remove_with: '18.4', remove_after: '2025-09-30'
+    ignore_column :token, remove_with: '18.9', remove_after: '2026-01-31'
+    ignore_column :encrypted_token, remove_with: '18.8', remove_after: '2025-12-31'
+    ignore_column :encrypted_token_iv, remove_with: '18.8', remove_after: '2025-12-31'
 
-    # rubocop:disable Gitlab/TokenWithoutPrefix -- we are doing this ourselves here since ensure_token
-    # does not work as expected
-    add_authentication_token_field(:token,
-      encrypted: -> {
-        Feature.enabled?(:encrypted_trigger_token_lookup, :instance) ? :required : :migrating
-      }
-    )
-    # rubocop:enable Gitlab/TokenWithoutPrefix
+    add_authentication_token_field(:token, encrypted: :required, format_with_prefix: :token_prefix)
+
     scope :with_last_used, -> do
       ci_pipelines = Ci::Pipeline.arel_table
       last_used_pipelines =
@@ -54,12 +49,8 @@ module Ci
 
     scope :with_token, ->(tokens) {
       tokens = Array.wrap(tokens).reject(&:blank?)
-      if Feature.enabled?(:encrypted_trigger_token_lookup, :instance)
-        encrypted_tokens = tokens.map { |token| Ci::Trigger.encode(token) }
-        where(token_encrypted: encrypted_tokens)
-      else
-        where(token: tokens)
-      end
+      encrypted_tokens = tokens.map { |token| Ci::Trigger.encode(token) }
+      where(token_encrypted: encrypted_tokens)
     }
 
     scope :ready_for_deletion, -> {
@@ -71,13 +62,7 @@ module Ci
     end
 
     def token=(token_value)
-      super
       self.set_token(token_value)
-    end
-
-    def set_default_values
-      self.set_token(self.attributes['token']) if self.attributes['token'].present?
-      self.set_token("#{self.class.prefix_for_trigger_token}#{SecureRandom.hex(20)}") if self.token.blank?
     end
 
     def last_used
@@ -100,6 +85,10 @@ module Ci
     end
 
     protected
+
+    def token_prefix
+      Ci::Trigger.prefix_for_trigger_token
+    end
 
     def expires_at_before_instance_max_expiry_date
       return unless expires_at

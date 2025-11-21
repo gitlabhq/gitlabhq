@@ -64,8 +64,7 @@ module ActiveContext
         'meta.indexing.flushing_duration_s' => flushing_duration_s
       )
 
-      # Re-enqueue any failures so they are retried
-      ActiveContext.track!(failures, queue: queue)
+      track_failures!(failures)
 
       # Remove all the successes
       scores.each do |set_key, (first_score, last_score, count)|
@@ -102,6 +101,13 @@ module ActiveContext
 
     def current_time
       Process.clock_gettime(Process::CLOCK_MONOTONIC)
+    end
+
+    def track_failures!(failures)
+      return if failures.empty?
+
+      target_queue = queue == RetryQueue ? DeadQueue : RetryQueue
+      ActiveContext.track!(failures, queue: target_queue)
     end
   end
 end

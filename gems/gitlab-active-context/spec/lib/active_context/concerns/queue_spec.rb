@@ -27,8 +27,10 @@ RSpec.describe ActiveContext::Concerns::Queue do
       mock_queue_class.register!
 
       expect(ActiveContext::Queues.queues).to include(mock_queue_class.redis_key)
-      expect(ActiveContext::Queues.raw_queues.size).to eq(2)
-      expect(ActiveContext::Queues.raw_queues.all?(mock_queue_class)).to be true
+      expect(ActiveContext::Queues.raw_queues.size).to eq(3)
+      mock_queue_instances = ActiveContext::Queues.raw_queues.select { |q| q.is_a?(mock_queue_class) }
+      expect(mock_queue_instances.size).to eq(2)
+      expect(mock_queue_instances.all?(mock_queue_class)).to be true
     end
   end
 

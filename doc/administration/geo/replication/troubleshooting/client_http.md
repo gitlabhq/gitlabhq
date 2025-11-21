@@ -131,7 +131,7 @@ The bug causes all wildcard domains (`.example.com`) to be ignored except for th
 
    ```ruby
    gitaly['env'] = {
-     "no_proxy" => "sever.yourdomain.org, .yourdomain.com",
+     "no_proxy" => "server.yourdomain.org, .yourdomain.com",
    }
    ```
 

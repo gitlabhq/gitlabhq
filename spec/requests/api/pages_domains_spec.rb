@@ -131,6 +131,10 @@ RSpec.describe API::PagesDomains, feature_category: :pages do
       end
 
       it_behaves_like 'get pages domains'
+      it_behaves_like 'authorizing granular token permissions', :read_pages_domain do
+        let(:boundary_object) { project }
+        let(:request) { get api(route, personal_access_token: pat) }
+      end
     end
 
     context 'when user is a developer' do
@@ -241,6 +245,10 @@ RSpec.describe API::PagesDomains, feature_category: :pages do
       end
 
       it_behaves_like 'get pages domain'
+      it_behaves_like 'authorizing granular token permissions', :read_pages_domain do
+        let(:boundary_object) { project }
+        let(:request) { get api(route_domain, personal_access_token: pat) }
+      end
     end
 
     context 'when user is a developer' do
@@ -359,6 +367,10 @@ RSpec.describe API::PagesDomains, feature_category: :pages do
       end
 
       it_behaves_like 'post pages domains'
+      it_behaves_like 'authorizing granular token permissions', :create_pages_domain do
+        let(:boundary_object) { project }
+        let(:request) { post api(route, personal_access_token: pat), params: params }
+      end
     end
 
     context 'when user is a developer' do
@@ -536,6 +548,10 @@ RSpec.describe API::PagesDomains, feature_category: :pages do
       end
 
       it_behaves_like 'put pages domain'
+      it_behaves_like 'authorizing granular token permissions', :update_pages_domain do
+        let(:boundary_object) { project }
+        let(:request) { put api(route_domain, personal_access_token: pat), params: params_secure }
+      end
     end
 
     context 'when user is a developer' do
@@ -618,6 +634,11 @@ RSpec.describe API::PagesDomains, feature_category: :pages do
           end
         end
 
+        it_behaves_like 'authorizing granular token permissions', :verify_pages_domain do
+          let(:boundary_object) { project }
+          let(:request) { put api(verify_domain_path, personal_access_token: pat) }
+        end
+
         it 'returns the verified domain' do
           put api(verify_domain_path, user)
 
@@ -681,6 +702,10 @@ RSpec.describe API::PagesDomains, feature_category: :pages do
       end
 
       it_behaves_like 'delete pages domain'
+      it_behaves_like 'authorizing granular token permissions', :delete_pages_domain do
+        let(:boundary_object) { project }
+        let(:request) { delete api(route_domain, personal_access_token: pat) }
+      end
     end
 
     context 'when user is a developer' do

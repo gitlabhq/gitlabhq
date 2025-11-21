@@ -15,6 +15,7 @@ description: きめ細かなアクセス制御のために、特定の権限を�
   To make changes to the output of the Rake task,
   edit `tooling/custom_roles/docs/templates/custom_abilities.md.erb`.
 -->
+
 {{< history >}}
 
 - カスタム管理者ロールは、GitLab 17.9で[導入](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/181346)されました。`custom_admin_roles`という名前の[フラグ付き](../../administration/feature_flags/_index.md)。デフォルトでは無効になっています。

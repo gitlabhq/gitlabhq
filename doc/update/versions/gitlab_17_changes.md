@@ -539,9 +539,9 @@ The OpenSSL 3 upgrade has been postponed to GitLab 17.7.0.
   if ALPN is not used. You can disable this enforcement by setting `GRPC_ENFORCE_ALPN_ENABLED=false` in the
   Praefect environment. With the Linux package, edit `/etc/gitlab/gitlab.rb`:
 
-    ```ruby
-    praefect['env'] = { 'GRPC_ENFORCE_ALPN_ENABLED' => 'false' }
-    ```
+  ```ruby
+  praefect['env'] = { 'GRPC_ENFORCE_ALPN_ENABLED' => 'false' }
+  ```
 
   Then run `gitlab-ctl reconfigure`.
 

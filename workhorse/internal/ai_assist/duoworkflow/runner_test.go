@@ -118,6 +118,7 @@ func (m *mockWorkflowStream) CloseSend() error {
 
 type mockMcpManager struct {
 	tools               []*pb.McpTool
+	preApprovedTools    []string
 	hasToolResult       bool
 	callToolResult      *pb.ClientEvent
 	callToolError       error
@@ -142,6 +143,14 @@ func (m *mockMcpManager) Tools() []*pb.McpTool {
 	}
 
 	return m.tools
+}
+
+func (m *mockMcpManager) PreApprovedTools() []string {
+	if m == nil {
+		return nil
+	}
+
+	return m.preApprovedTools
 }
 
 func (m *mockMcpManager) CallTool(_ context.Context, action *pb.Action) (*pb.ClientEvent, error) {

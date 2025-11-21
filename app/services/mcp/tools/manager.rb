@@ -40,6 +40,8 @@ module Mcp
         'get_mcp_server_version' => ::Mcp::Tools::GetServerVersionService
       }.freeze
 
+      GRAPHQL_TOOLS = {}.freeze
+
       attr_reader :tools
 
       def initialize
@@ -55,6 +57,8 @@ module Mcp
 
         return get_custom_tool(name, version) if CUSTOM_TOOLS.key?(name)
 
+        return get_graphql_tool(name, version) if GRAPHQL_TOOLS.key?(name)
+
         return get_api_tool(name, version) if discover_api_tools.key?(name)
 
         return get_aggregated_api_tool(name, version) if discover_aggregated_api_tools.key?(name)
@@ -65,7 +69,15 @@ module Mcp
       private
 
       def get_custom_tool(name, version)
-        tool_class = CUSTOM_TOOLS[name]
+        get_tool_from_registry(CUSTOM_TOOLS, name, version)
+      end
+
+      def get_graphql_tool(name, version)
+        get_tool_from_registry(GRAPHQL_TOOLS, name, version)
+      end
+
+      def get_tool_from_registry(tool_registry, name, version)
+        tool_class = tool_registry[name]
 
         unless version.nil? || tool_class.version_exists?(version)
           available_versions = tool_class.available_versions
@@ -100,6 +112,10 @@ module Mcp
 
         # Build custom tools using their latest versions
         CUSTOM_TOOLS.each do |name, tool_class|
+          tools[name] = tool_class.new(name: name)
+        end
+
+        GRAPHQL_TOOLS.each do |name, tool_class|
           tools[name] = tool_class.new(name: name)
         end
 

@@ -60,7 +60,7 @@ To remove an emoji reaction, select the emoji again.
 - Enabled on GitLab.com in GitLab 14.0.
 - UI to add emoji [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/333095) in GitLab 16.2.
 - [Enabled on GitLab Self-Managed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/138969) in GitLab 16.7.
-- [Generally available](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/) in GitLab 16.9. Feature flag `custom_emoji` removed.
+- [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/231317) in GitLab 16.9. Feature flag `custom_emoji` removed.
 
 {{< /history >}}
 

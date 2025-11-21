@@ -1,0 +1,14 @@
+API/ParameterType:
+  Details: grace period
+  Exclude:
+    - 'ee/lib/api/virtual_registries/packages/maven/registry_upstreams.rb'
+    - 'lib/api/conan/v2/project_packages.rb'
+    - 'lib/api/concerns/packages/conan/shared_endpoints.rb'
+    - 'lib/api/concerns/packages/nuget/public_endpoints.rb'
+    - 'lib/api/discussions.rb'
+    - 'lib/api/helpers/merge_requests_helpers.rb'
+    - 'lib/api/integrations.rb'
+    - 'lib/api/integrations/integratable_operations.rb'
+    - 'lib/api/mcp/base.rb'
+    - 'lib/api/settings.rb'
+    - 'lib/api/terraform/modules/v1/project_packages.rb'

@@ -217,6 +217,20 @@ module Ci
       )
     end
 
+    scope :timed_out_builds, -> do
+      joins(:runtime_metadata)
+        .where("#{Ci::RunningBuild.table_name}.created_at + INTERVAL \'1 second\' * #{table_name}.timeout <= ?",
+          Time.current)
+        .where(arel_table[:partition_id].eq(Ci::RunningBuild.arel_table[:partition_id]))
+    end
+
+    scope :not_timed_out_builds, -> do
+      joins(:runtime_metadata)
+        .where("#{Ci::RunningBuild.table_name}.created_at + INTERVAL \'1 second\' * #{table_name}.timeout > ?",
+          Time.current)
+        .where(arel_table[:partition_id].eq(Ci::RunningBuild.arel_table[:partition_id]))
+    end
+
     # TODO: remove this scope with `ci_builds_metadata`
     scope :with_secure_reports_from_metadata_config_options, ->(job_types) do
       joins(:metadata).where("#{Ci::BuildMetadata.quoted_table_name}.config_options -> 'artifacts' -> 'reports' ?| array[:job_types]", job_types: job_types)
@@ -413,6 +427,14 @@ module Ci
               Gitlab::AppLogger.error "Unable to auto-retry job #{build.id}: #{e}"
             end
           end
+        end
+      end
+
+      before_transition running: [:failed] do |build|
+        if build.failure_reason&.to_sym == :job_execution_timeout &&
+            Feature.enabled?(:enforce_job_configured_timeouts, :instance)
+          # If job was stuck or timed-out, only bill the set timeout.
+          build.finished_at = build.started_at + build.timeout.seconds
         end
       end
 

@@ -16,6 +16,10 @@ module Gitlab
               errors.add(:base, 'must have a default value') if config[:default].nil?
             end
           end
+
+          def value
+            config.merge(type: config[:type] || 'string')
+          end
         end
       end
     end

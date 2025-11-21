@@ -46,6 +46,26 @@ RSpec.describe Mcp::Tools::Concerns::Versionable, feature_category: :mcp_server 
     end
   end
 
+  describe 'VERSION_FORMAT constant' do
+    it 'is defined' do
+      expect(described_class::VERSION_FORMAT).to be_a(Regexp)
+    end
+
+    it 'matches valid semantic versions' do
+      valid_versions = %w[0.0.0 1.0.0 1.2.3 10.20.30 99.99.99]
+
+      expect(valid_versions).to all(match(described_class::VERSION_FORMAT))
+    end
+
+    it 'does not match invalid versions' do
+      invalid_versions = ['1.0', '1', 'v1.0.0', '1.0.0-beta', '1.0.0.0', 'abc', '1.0.x', '']
+
+      invalid_versions.each do |version|
+        expect(version).not_to match(described_class::VERSION_FORMAT)
+      end
+    end
+  end
+
   describe '.register_version' do
     it 'registers version metadata' do
       expect(test_class.version_metadata('1.0.0')).to eq({
@@ -61,6 +81,14 @@ RSpec.describe Mcp::Tools::Concerns::Versionable, feature_category: :mcp_server 
     it 'freezes the metadata' do
       metadata = test_class.version_metadata('1.0.0')
       expect(metadata).to be_frozen
+    end
+
+    context 'with invalid version format' do
+      it 'raises ArgumentError for two-part version' do
+        expect do
+          test_class.register_version('1.0', { description: 'test' })
+        end.to raise_error(ArgumentError, /Invalid version format: 1.0. Expected format: MAJOR.MINOR.PATCH/)
+      end
     end
   end
 
@@ -169,6 +197,13 @@ RSpec.describe Mcp::Tools::Concerns::Versionable, feature_category: :mcp_server 
       end
     end
 
+    context 'with invalid version is specified' do
+      it 'raises error' do
+        expect { test_class.new(version: '1.0') }
+          .to raise_error(ArgumentError, /Invalid version format: 1.0. Expected format: MAJOR.MINOR.PATCH/)
+      end
+    end
+
     context 'when no versions are registered' do
       let(:empty_class) do
         Class.new do
@@ -245,6 +280,281 @@ RSpec.describe Mcp::Tools::Concerns::Versionable, feature_category: :mcp_server 
       instance = test_class_without_schema.new(version: '1.0.0')
       expect { instance.input_schema }
         .to raise_error(NoMethodError, 'Input schema not defined for version 1.0.0')
+    end
+  end
+
+  describe '#graphql_operation' do
+    context 'when graphql_operation is defined in version metadata' do
+      let(:graphql_class) do
+        Class.new do
+          include Mcp::Tools::Concerns::Versionable
+
+          register_version '1.0.0', {
+            description: 'GraphQL tool v1',
+            graphql_operation: 'query { test }'
+          }
+
+          register_version '2.0.0', {
+            description: 'GraphQL tool v2',
+            graphql_operation: 'query { testV2 { id name } }'
+          }
+
+          def initialize(version: nil)
+            initialize_version(version)
+          end
+        end
+      end
+
+      it 'returns graphql_operation from metadata' do
+        instance = graphql_class.new(version: '1.0.0')
+        expect(instance.graphql_operation).to eq('query { test }')
+      end
+
+      it 'returns different operations for different versions' do
+        instance_v1 = graphql_class.new(version: '1.0.0')
+        instance_v2 = graphql_class.new(version: '2.0.0')
+
+        expect(instance_v1.graphql_operation).to eq('query { test }')
+        expect(instance_v2.graphql_operation).to eq('query { testV2 { id name } }')
+      end
+    end
+
+    context 'when graphql_operation is not defined in metadata' do
+      it 'raises NotImplementedError' do
+        instance = test_class.new(version: '1.0.0')
+
+        expect { instance.graphql_operation }
+          .to raise_error(NotImplementedError, 'GraphQL operation not defined for version 1.0.0')
+      end
+    end
+  end
+
+  describe '#operation_name' do
+    context 'when operation_name is defined in version metadata' do
+      let(:graphql_class) do
+        Class.new do
+          include Mcp::Tools::Concerns::Versionable
+
+          register_version '1.0.0', {
+            operation_name: 'createIssue',
+            graphql_operation: 'mutation { createIssue }'
+          }
+
+          register_version '2.0.0', {
+            operation_name: 'createWorkItem',
+            graphql_operation: 'mutation { createWorkItem }'
+          }
+
+          def initialize(version: nil)
+            initialize_version(version)
+          end
+        end
+      end
+
+      it 'returns operation_name from metadata' do
+        instance = graphql_class.new(version: '1.0.0')
+        expect(instance.operation_name).to eq('createIssue')
+      end
+
+      it 'returns different operation names for different versions' do
+        instance_v1 = graphql_class.new(version: '1.0.0')
+        instance_v2 = graphql_class.new(version: '2.0.0')
+
+        expect(instance_v1.operation_name).to eq('createIssue')
+        expect(instance_v2.operation_name).to eq('createWorkItem')
+      end
+    end
+
+    context 'when operation_name is not defined in metadata' do
+      it 'raises NotImplementedError' do
+        instance = test_class.new(version: '1.0.0')
+
+        expect { instance.operation_name }
+          .to raise_error(NotImplementedError, 'operation_name must be defined')
+      end
+    end
+  end
+
+  describe '#graphql_operation_for_version' do
+    context 'when graphql_operation is in version metadata' do
+      let(:graphql_class) do
+        Class.new do
+          include Mcp::Tools::Concerns::Versionable
+
+          register_version '1.0.0', {
+            description: 'GraphQL tool',
+            graphql_operation: 'query { metadata }'
+          }
+
+          def initialize(version: nil)
+            initialize_version(version)
+          end
+        end
+      end
+
+      it 'returns graphql_operation from metadata' do
+        instance = graphql_class.new(version: '1.0.0')
+        expect(instance.send(:graphql_operation_for_version)).to eq('query { metadata }')
+      end
+    end
+
+    context 'when graphql_operation is not in metadata but method is overridden' do
+      let(:graphql_class_with_override) do
+        Class.new do
+          include Mcp::Tools::Concerns::Versionable
+
+          register_version '1.0.0', {
+            description: 'GraphQL tool',
+            operation_name: 'test'
+          }
+
+          def initialize(version: nil)
+            initialize_version(version)
+          end
+
+          def graphql_operation
+            'query { overridden }'
+          end
+        end
+      end
+
+      it 'falls back to graphql_operation method' do
+        instance = graphql_class_with_override.new(version: '1.0.0')
+        expect(instance.send(:graphql_operation_for_version)).to eq('query { overridden }')
+      end
+    end
+
+    context 'when neither metadata nor override exists' do
+      it 'raises NotImplementedError' do
+        instance = test_class.new(version: '1.0.0')
+
+        expect { instance.send(:graphql_operation_for_version) }
+          .to raise_error(NotImplementedError, /GraphQL operation not defined/)
+      end
+    end
+  end
+
+  describe '#build_variables_for_version' do
+    context 'when version-specific build_variables method exists' do
+      let(:graphql_class_with_version_variables) do
+        Class.new do
+          include Mcp::Tools::Concerns::Versionable
+
+          register_version '1.0.0', {
+            operation_name: 'test',
+            graphql_operation: 'query { test }'
+          }
+
+          register_version '2.0.0', {
+            operation_name: 'test',
+            graphql_operation: 'query { testV2 }'
+          }
+
+          attr_reader :params
+
+          def initialize(version: nil, params: {})
+            @params = params
+            initialize_version(version)
+          end
+
+          def build_variables
+            { default: true, id: params[:id] }
+          end
+
+          private
+
+          def build_variables_1_0_0
+            { version: '1.0.0', basic: true, id: params[:id] }
+          end
+
+          def build_variables_2_0_0
+            {
+              version: '2.0.0',
+              advanced: true,
+              id: params[:id],
+              extra: params[:extra]
+            }.compact
+          end
+        end
+      end
+
+      it 'calls version-specific method for v1.0.0' do
+        instance = graphql_class_with_version_variables.new(version: '1.0.0', params: { id: '123' })
+        result = instance.send(:build_variables_for_version)
+
+        expect(result).to eq({ version: '1.0.0', basic: true, id: '123' })
+      end
+
+      it 'calls version-specific method for v2.0.0' do
+        instance = graphql_class_with_version_variables.new(
+          version: '2.0.0',
+          params: { id: '456', extra: 'data' }
+        )
+        result = instance.send(:build_variables_for_version)
+
+        expect(result).to eq({ version: '2.0.0', advanced: true, id: '456', extra: 'data' })
+      end
+    end
+
+    context 'when version-specific method does not exist' do
+      let(:graphql_class_fallback) do
+        Class.new do
+          include Mcp::Tools::Concerns::Versionable
+
+          register_version '3.0.0', {
+            operation_name: 'test',
+            graphql_operation: 'query { testV3 }'
+          }
+
+          attr_reader :params
+
+          def initialize(version: nil, params: {})
+            @params = params
+            initialize_version(version)
+          end
+
+          def build_variables
+            { fallback: true, id: params[:id] }
+          end
+        end
+      end
+
+      it 'falls back to build_variables method' do
+        instance = graphql_class_fallback.new(version: '3.0.0', params: { id: '789' })
+        result = instance.send(:build_variables_for_version)
+
+        expect(result).to eq({ fallback: true, id: '789' })
+      end
+    end
+
+    context 'when version-specific method exists but build_variables is not defined' do
+      let(:graphql_class_no_fallback) do
+        Class.new do
+          include Mcp::Tools::Concerns::Versionable
+
+          register_version '1.0.0', {
+            operation_name: 'test',
+            graphql_operation: 'query { test }'
+          }
+
+          def initialize(version: nil)
+            initialize_version(version)
+          end
+
+          private
+
+          def build_variables_1_0_0
+            { version: '1.0.0' }
+          end
+        end
+      end
+
+      it 'calls version-specific method' do
+        instance = graphql_class_no_fallback.new(version: '1.0.0')
+        result = instance.send(:build_variables_for_version)
+
+        expect(result).to eq({ version: '1.0.0' })
+      end
     end
   end
 

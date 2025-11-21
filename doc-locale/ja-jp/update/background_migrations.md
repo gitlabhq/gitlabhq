@@ -18,14 +18,14 @@ GitLabをアップグレードする前に、既存のすべてのバックグ�
 
 {{< history >}}
 
-- 機能[フラグ](../administration/feature_flags/_index.md)`execute_batched_migrations_on_schedule`は、GitLab 13.12で[デフォルトで有効](https://gitlab.com/gitlab-org/gitlab/-/issues/329511)になっています。
-- GitLab Self-Managedでは、管理者は無効にすることを選択できます。
+- 機能[フラグ](../administration/feature_flags/_index.md)`execute_batched_migrations_on_schedule`は、GitLab 13.12で[デフォルトで有効](https://gitlab.com/gitlab-org/gitlab/-/issues/329511)になりました。
+- GitLab Self-Managedでは、管理者がこの機能を無効にすることもできます。
 
 {{< /history >}}
 
-データベーステーブルをバッチで更新するために、GitLabはバッチバックグラウンド移行を使用できます。これらの移行はGitLabの開発者により作成され、アップグレード時に自動的に実行されます。ただし、このような移行は、一部の`integer`データベースの列を`bigint`に移行できるようにするために、スコープが制限されています。これは、一部のテーブルで整数のオーバーフローを防ぐために必要です。
+データベーステーブルをバッチで更新するために、GitLabはバッチバックグラウンド移行を使用できます。これらの移行はGitLabのデベロッパーにより作成され、アップグレード時に自動的に実行されます。ただし、このような移行は、テーブルの整数オーバーフローを防ぐために一部の`integer`データベース列を`bigint`に移行するなど、用途が限られています。
 
-バッチバックグラウンド移行はSidekiqによって処理され、分離して実行されるため、インスタンスは移行の処理中も動作し続けることができます。ただし、バッチバックグラウンド移行の実行中に、大規模なインスタンスが頻繁に使用されると、パフォーマンスが低下する可能性があります。すべての移行が完了するまで、[Sidekiqのステータスを常にモニタリング](../administration/admin_area.md#background-jobs)する必要があります。
+バッチバックグラウンド移行はSidekiqによって処理され、独立して実行されるため、移行の処理中もインスタンスは動作し続けることができます。ただし、大規模なインスタンスで負荷が高い場合、バッチバックグラウンド移行の実行中にパフォーマンスが低下する可能性があります。すべての移行が完了するまで、[Sidekiqのステータスを注意深くモニタリングする](../administration/admin_area.md#background-jobs)必要があります。
 
 これらの移行を完了するために必要な時間を短縮するには、`background_migration`キューでジョブを処理できる[Sidekiqワーカー](../administration/sidekiq/extra_sidekiq_processes.md)の数を増やします。
 
@@ -33,7 +33,7 @@ GitLabをアップグレードする前に、既存のすべてのバックグ�
 
 GitLab UIで、またはデータベースに直接クエリを実行することで、バッチバックグラウンド移行のステータスを確認できます。GitLabをアップグレードする前に、すべての移行が`Finished`ステータスになっている必要があります。
 
-移行が完了していない状態でGitLabをアップグレードしようとすると、次のエラーが表示されることがあります。
+移行が完了していない状態でGitLabをアップグレードしようとすると、次のエラーが表示されることがあります:
 
 ```plaintext
 Expected batched background migration for the given configuration to be marked
@@ -51,8 +51,8 @@ as 'finished', but it is 'active':
 バッチバックグラウンド移行のステータスを確認するには:
 
 1. 左側のサイドバーの下部で、**管理者**を選択します。
-1. **モニタリング > バックグラウンド移行**を選択します。
-1. **待機中**または**完了中**を選択して未完了の移行を表示し、**失敗**を選択して失敗した移行を表示します。
+1. **モニタリング** > **バックグラウンド移行**を選択します。
+1. **待機中**または**完了中**を選択すると未完了の移行を確認できます。**失敗**を選択すると失敗した移行を確認できます。
 
 #### データベースから {#from-the-database}
 
@@ -62,8 +62,8 @@ as 'finished', but it is 'active':
 
 データベースに直接クエリを実行して、バッチバックグラウンド移行のステータスを確認するには:
 
-1. インスタンスのインストール方法の説明に従って、`psql`プロンプトにサインインします。たとえば、Linuxパッケージのインストールでは、`sudo gitlab-psql`を使用します。
-1. 未完了のバッチバックグラウンド移行の詳細を表示するには、`psql`セッションで次のクエリを実行します。
+1. インスタンスのインストール方法の説明に従って、`psql`プロンプトにサインインします。たとえば、Linuxパッケージインストールの場合は、`sudo gitlab-psql`を使用します。
+1. 未完了のバッチバックグラウンド移行の詳細を確認するには、`psql`セッションで次のクエリを実行します:
 
    ```sql
    SELECT
@@ -75,35 +75,35 @@ as 'finished', but it is 'active':
    WHERE status NOT IN(3, 6);
    ```
 
-または、`gitlab-psql -c "<QUERY>"`でクエリをラップして、バッチバックグラウンド移行のステータスを確認することもできます。
+または、`gitlab-psql -c "<QUERY>"`でクエリをラップして、バッチバックグラウンド移行のステータスを確認することもできます:
 
 ```shell
 gitlab-psql -c "SELECT job_class_name, table_name, column_name, job_arguments FROM batched_background_migrations WHERE status NOT IN(3, 6);"
 ```
 
-クエリがゼロ行を返す場合、すべてのバッチバックグラウンド移行は完了しています。
+クエリの結果がゼロ行の場合、すべてのバッチバックグラウンド移行が完了しています。
 
 ### 高度な機能を有効または無効にする {#enable-or-disable-advanced-features}
 
-バッチバックグラウンド移行は、移行をカスタマイズしたり、完全に一時停止したりできる機能フラグを提供します。これらの機能フラグは、無効にするリスクを理解している上級ユーザーのみが無効にすることができます。
+バッチバックグラウンド移行は、移行をカスタマイズしたり、完全に一時停止したりできる機能フラグを提供します。これらの機能フラグは、無効にするリスクを理解している上級ユーザーのみが無効にするようにしてください。
 
 #### バッチバックグラウンド移行を一時停止する {#pause-batched-background-migrations}
 
 {{< alert type="warning" >}}
 
-[リリースされた機能を無効にすると、リスクが生じる](../administration/feature_flags/_index.md#risks-when-disabling-released-features)可能性があります。詳細については、各機能の履歴を参照してください。
+[リリース済みの機能を無効にすると、リスクが生じる](../administration/feature_flags/_index.md#risks-when-disabling-released-features)可能性があります。詳細については、各機能の履歴を参照してください。
 
 {{< /alert >}}
 
-進行中のバッチバックグラウンド移行を一時停止するには、バッチバックグラウンド移行機能を無効にします。この機能を無効にすると、現在の移行のバッチが完了し、機能が再び有効になるまで、次のバッチの開始を待機します。
+進行中のバッチバックグラウンド移行を一時停止するには、バッチバックグラウンド移行機能を無効にします。この機能を無効にすると、現在の移行のバッチが完了した後、機能が再び有効にされるまで次のバッチは開始されません。
 
 前提要件:
 
 - インスタンスへの管理者アクセス権が必要です。
 
-現在のバッチバックグラウンド移行の状態を確認するには、次のデータベースクエリを使用します。
+現在のバッチバックグラウンド移行の状態を確認するには、次のデータベースクエリを使用します:
 
-1. 実行中の移行のIDを取得します。
+1. 実行中の移行のIDを取得します:
 
    ```sql
    SELECT
@@ -116,7 +116,7 @@ gitlab-psql -c "SELECT job_class_name, table_name, column_name, job_arguments FR
    WHERE status NOT IN(3, 6);
    ```
 
-1. 次のクエリを実行します。`XX`を前の手順で取得したIDに置き換えて、移行のステータスを確認します。
+1. `XX`を前の手順で取得したIDに置き換えて次のクエリを実行し、移行のステータスを確認します:
 
    ```sql
    SELECT
@@ -135,49 +135,44 @@ gitlab-psql -c "SELECT job_class_name, table_name, column_name, job_arguments FR
 
 1. 数分以内にクエリを複数回実行して、新しい行が追加されていないことを確認します。新しい行が追加されていない場合、移行は一時停止されています。
 
-1. 移行が一時停止されたことを確認したら、（上記の`enable`コマンドを使用して）移行を再開してバッチを続行します。大規模なインスタンスでは、バックグラウンド移行で各バッチの完了に最大48時間かかります。
+1. 移行が一時停止されたことを確認したら、（上記の`enable`コマンドを使用して）移行を再開し、バッチを続行します。大規模なインスタンスでは、バックグラウンド移行の各バッチを完了するまでに最大48時間かかることがあります。
 
 #### バッチサイズの自動最適化 {#automatic-batch-size-optimization}
 
 {{< history >}}
 
 - GitLab 13.2で`optimize_batched_migrations`[フラグ](../administration/feature_flags/_index.md)とともに[導入](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/60133)されました。デフォルトでは有効になっています。
+- GitLab 18.4で[一般提供](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/204173)になりました。機能フラグ`optimize_batched_migrations`は削除されました。
 
 {{< /history >}}
 
 {{< alert type="warning" >}}
 
-[リリースされた機能を無効にすると、リスクが生じる](../administration/feature_flags/_index.md#risks-when-disabling-released-features)可能性があります。詳細については、この機能の履歴を参照してください。
+[リリース済みの機能を無効にすると、リスクが生じる](../administration/feature_flags/_index.md#risks-when-disabling-released-features)可能性があります。詳細については、この機能の履歴を参照してください。
 
 {{< /alert >}}
 
-{{< alert type="flag" >}}
-
-GitLab Self-Managedでは、デフォルトでこの機能を利用できます。機能を非表示にするには、管理者に`optimize_batched_migrations`という名前の[機能フラグを無効](../administration/feature_flags/_index.md)にするように依頼してください。GitLab.comでは、この機能を利用できます。GitLab Dedicatedでは、この機能は利用できません。
-
-{{< /alert >}}
-
-バッチバックグラウンド移行のスループット（時間単位で更新されるレコード数）を最大化するために、バッチサイズは、以前のバッチの完了にかかった処理時間に基づいて自動的に調整されます。
+バッチバックグラウンド移行のスループット（時間単位で更新されるタプル数）を最大化するために、バッチサイズは、以前のバッチの完了までにかかった時間に基づいて自動的に調整されます。
 
 #### 並列実行 {#parallel-execution}
 
 {{< history >}}
 
 - GitLab 15.7で`batched_migrations_parallel_execution`[フラグ](../administration/feature_flags/_index.md)とともに[導入](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/104027)されました。デフォルトでは無効になっています。
-- GitLab 15.11の[GitLab.comで有効になりました](https://gitlab.com/gitlab-org/gitlab/-/issues/372316)。
+- GitLab 15.11の[GitLab.comで有効](https://gitlab.com/gitlab-org/gitlab/-/issues/372316)になりました。
 - GitLab 16.1で[一般提供](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/120808)になりました。機能フラグ`batched_migrations_parallel_execution`は削除されました。
 
 {{< /history >}}
 
 {{< alert type="warning" >}}
 
-[リリースされた機能を無効にすると、リスクが生じる](../administration/feature_flags/_index.md#risks-when-disabling-released-features)可能性があります。詳細については、この機能の履歴を参照してください。
+[リリース済みの機能を無効にすると、リスクが生じる](../administration/feature_flags/_index.md#risks-when-disabling-released-features)可能性があります。詳細については、この機能の履歴を参照してください。
 
 {{< /alert >}}
 
 バッチバックグラウンド移行の実行を高速化するために、2つの移行が同時に実行されます。
 
-[GitLab Railsコンソールへのアクセス権を持つGitLab管理者](../administration/feature_flags/_index.md)は、並行して実行されるバッチバックグラウンド移行の数を変更できます。
+[GitLab Railsコンソールへのアクセス権を持つGitLab管理者](../administration/feature_flags/_index.md)は、並列実行されるバッチバックグラウンド移行の数を変更できます:
 
 ```ruby
 ApplicationSetting.update_all(database_max_running_batched_background_migrations: 4)
@@ -185,27 +180,27 @@ ApplicationSetting.update_all(database_max_running_batched_background_migrations
 
 ### 失敗したバッチバックグラウンド移行を解決する {#resolve-failed-batched-background-migrations}
 
-バッチバックグラウンド移行が失敗した場合は、[修正して再試行](#fix-and-retry-the-migration)してください。移行がエラーで引き続き失敗する場合は、次のいずれかの操作を行います。
+バッチバックグラウンド移行が失敗した場合は、[修正して再試行](#fix-and-retry-the-migration)してください。それでもなおエラーが発生して移行が失敗する場合は、次のいずれかの操作を行います:
 
 - [失敗した移行を手動で完了する](#finish-a-failed-migration-manually)
 - [失敗した移行を完了済みとしてマークする](#mark-a-failed-migration-finished)
 
 #### 移行を修正して再試行する {#fix-and-retry-the-migration}
 
-GitLabの新しいバージョンにアップグレードするには、失敗したバッチバックグラウンド移行をすべて解決する必要があります。バッチバックグラウンド移行の[ステータスを確認](#check-the-status-of-batched-background-migrations)すると、**失敗**タブに一部の移行が**失敗**ステータスで表示される場合があります。
+GitLabの新しいバージョンにアップグレードするには、失敗したバッチバックグラウンド移行をすべて解決する必要があります。バッチバックグラウンド移行の[ステータスを確認](#check-the-status-of-batched-background-migrations)すると、**失敗**タブに一部の移行が**失敗**ステータスで表示される場合があります:
 
 ![失敗したバッチバックグラウンド移行のテーブル](img/batched_background_migrations_failed_v14_3.png)
 
-バッチバックグラウンド移行が失敗した理由を特定するには、失敗のエラーログを表示するか、UIでエラー情報を表示します。
+バッチバックグラウンド移行が失敗した理由を特定するには、失敗のエラーログを確認するか、UIでエラー情報を確認します。
 
 前提要件:
 
 - インスタンスへの管理者アクセス権が必要です。
 
 1. 左側のサイドバーの下部で、**管理者**を選択します。
-1. **モニタリング > バックグラウンド移行**を選択します。
+1. **モニタリング** > **バックグラウンド移行**を選択します。
 1. **失敗**タブを選択します。これにより、失敗したバッチバックグラウンド移行のリストが表示されます。
-1. 失敗した**移行**を選択して、移行パラメータと失敗したジョブを確認します。
+1. 失敗した**マイグレーション**を選択して、移行パラメータと失敗したジョブを確認します。
 1. **失敗したジョブ**で、各**ID**を選択して、ジョブが失敗した理由を確認します。
 
 GitLabのお客様は、バッチバックグラウンド移行が失敗した理由をデバッグするために、[サポートリクエスト](https://support.gitlab.com/hc/en-us/requests/new)を開くことを検討してください。
@@ -217,21 +212,21 @@ GitLabのお客様は、バッチバックグラウンド移行が失敗した�
 - インスタンスへの管理者アクセス権が必要です。
 
 1. 左側のサイドバーの下部で、**管理者**を選択します。
-1. **モニタリング > バックグラウンド移行**を選択します。
+1. **モニタリング** > **バックグラウンド移行**を選択します。
 1. **失敗**タブを選択します。これにより、失敗したバッチバックグラウンド移行のリストが表示されます。
-1. 再試行ボタン（{{< icon name="retry" >}}）をクリックして、失敗したバッチバックグラウンド移行を選択して、再試行します。
+1. 失敗したバッチバックグラウンド移行を選択して再試行するには、再試行ボタン（{{< icon name="retry" >}}）をクリックします。
 
-再試行されたバッチバックグラウンド移行をモニタリングするには、定期的に[バッチバックグラウンド移行のステータスを確認](#check-the-status-of-batched-background-migrations)します。
+再試行したバッチバックグラウンド移行をモニタリングするには、定期的に[バッチバックグラウンド移行のステータスを確認](#check-the-status-of-batched-background-migrations)します。
 
 #### 失敗した移行を手動で完了する {#finish-a-failed-migration-manually}
 
-エラーで失敗したバッチバックグラウンド移行を手動で完了するには、失敗のエラーログまたはデータベースの情報を使用します。
+エラーで失敗したバッチバックグラウンド移行を手動で完了するには、失敗のエラーログまたはデータベースの情報を使用します:
 
 {{< tabs >}}
 
 {{< tab title="失敗のエラーログから" >}}
 
-1. 失敗のエラーログを表示し、次のような`An error has occurred, all later migrations canceled`エラーメッセージを探します。
+1. 失敗のエラーログを表示し、次のような`An error has occurred, all later migrations canceled`エラーメッセージを探します:
 
    ```plaintext
    StandardError: An error has occurred, all later migrations canceled:
@@ -246,13 +241,13 @@ GitLabのお客様は、バッチバックグラウンド移行が失敗した�
      }
    ```
 
-1. 次のコマンドを実行し、山かっこ内の値を正しい引数に置き換えます。
+1. 山かっこ内の値を正しい引数に置き換えたうえで、次のコマンドを実行します:
 
    ```shell
    sudo gitlab-rake gitlab:background_migrations:finalize[<job_class_name>,<table_name>,<column_name>,'<job_arguments>']
    ```
 
-   `[["id"],["id_convert_to_bigint"]]`などの複数の引数を処理する場合は、無効な文字エラーを防ぐために、各引数間のコンマをバックスラッシュ` \ `でエスケープします。たとえば、前のステップから移行を完了するには、次のようにします。
+   `[["id"],["id_convert_to_bigint"]]`などの複数の引数を処理する場合は、無効な文字エラーを防ぐために、各引数間のカンマをバックスラッシュ` \ `でエスケープします。たとえば、前のステップから移行を完了するには、次のようにします:
 
    ```shell
    sudo gitlab-rake gitlab:background_migrations:finalize[CopyColumnUsingBackgroundMigrationJob,push_event_payloads,event_id,'[["event_id"]\, ["event_id_convert_to_bigint"]]']
@@ -263,7 +258,7 @@ GitLabのお客様は、バッチバックグラウンド移行が失敗した�
 {{< tab title="データベースから" >}}
 
 1. データベースで移行の[ステータスを確認](#check-the-status-of-batched-background-migrations)します。
-1. クエリ結果を使用して移行コマンドを作成し、山かっこ内の値を正しい引数に置き換えます。
+1. クエリ結果を使用して移行コマンドを作成し、山かっこ内の値を正しい引数に置き換えます:
 
    ```shell
    sudo gitlab-rake gitlab:background_migrations:finalize[<job_class_name>,<table_name>,<column_name>,'<job_arguments>']
@@ -276,9 +271,9 @@ GitLabのお客様は、バッチバックグラウンド移行が失敗した�
    - `column_name`: `id`
    - `job_arguments`: `[["id"], ["id_convert_to_bigint"]]`
 
- `[["id"],["id_convert_to_bigint"]]`などの複数の引数を処理する場合は、無効な文字エラーを防ぐために、各引数間のコンマをバックスラッシュ` \ `でエスケープします。`job_arguments`パラメータ値のすべてのコンマは、バックスラッシュでエスケープする必要があります。
+ `[["id"],["id_convert_to_bigint"]]`などの複数の引数を処理する場合は、無効な文字エラーを防ぐために、各引数間のカンマをバックスラッシュ` \ `でエスケープします。`job_arguments`パラメータ値のすべてのカンマは、バックスラッシュでエスケープする必要があります。
 
- 次に例を示します。
+ 例: 
 
  ```shell
  sudo gitlab-rake gitlab:background_migrations:finalize[CopyColumnUsingBackgroundMigrationJob,ci_builds,id,'[["id"\, "stage_id"]\,["id_convert_to_bigint"\,"stage_id_convert_to_bigint"]]']
@@ -292,17 +287,17 @@ GitLabのお客様は、バッチバックグラウンド移行が失敗した�
 
 {{< alert type="warning" >}}
 
-これらの手順を使用する前に、[GitLabサポートにお問い合わせ](https://about.gitlab.com/support/#contact-support)ください。この操作を行うと、データが失われたり、インスタンスが回復困難な方法で失敗したりする可能性があります。
+以下の手順を使用する前に、[GitLabサポートにお問い合わせ](https://about.gitlab.com/support/#contact-support)ください。この操作を行うと、データ損失やインスタンスの障害が発生し、復旧が困難になる可能性があります。
 
 {{< /alert >}}
 
-多数のバージョンアップグレードをスキップしたり、下位互換性のないデータベーススキーマの変更を行ったりすると、バックグラウンド移行が失敗する場合があります（例については、[イシュー393216](https://gitlab.com/gitlab-org/gitlab/-/issues/393216)を参照してください）。失敗したバックグラウンド移行があると、アプリケーションをさらにアップグレードすることができません。
+多数のバージョンアップグレードをスキップしたり、下位互換性のないデータベーススキーマの変更を行ったりすると、バックグラウンド移行が失敗する場合があります（例については、[イシュー393216](https://gitlab.com/gitlab-org/gitlab/-/issues/393216)を参照してください）。バックグラウンド移行に失敗すると、それ以降のアプリケーションのアップグレードを妨げる場合があります。
 
-バックグラウンド移行がスキップしても「安全」であると判断された場合、移行を手動で完了済みとしてマークできます。
+バックグラウンド移行がスキップしても「安全」であると判断された場合、移行を手動で完了済みとしてマークできます:
 
 {{< alert type="warning" >}}
 
-続行する前に、必ずバックアップを作成してください。
+この操作を実行する前に、必ずバックアップを作成してください。
 
 {{< /alert >}}
 
@@ -354,6 +349,59 @@ Gitlab::Database.database_base_models.each do |database_name, model|
 end
 ```
 
+## バッチバックグラウンド移行ログを表示する {#view-batched-background-migration-logs}
+
+バッチバックグラウンド移行のトラブルシューティングを行う場合、複数の場所で詳細な実行ログを確認できます。
+
+### Sidekiqログ {#sidekiq-logs}
+
+[Sidekiqログ](../administration/logs/_index.md#sidekiq-logs)には、`Database::BatchedBackgroundMigrationWorker`ジョブがいつ実行されたかが表示されます。これらのログでジョブの実行状況がわかりますが、どの特定の移行が実行されているかは識別できません。
+
+### アプリケーションログ {#application-logs}
+
+どのバッチバックグラウンド移行が実行されているかを特定するには、[アプリケーションログ](../administration/logs/_index.md#application_jsonlog)を確認します。アプリケーションログには、次の詳細情報が含まれています:
+
+- 特定のバッチバックグラウンド移行のクラス名（`job_class_name`）
+- ステータスの遷移（保留中、実行中、成功、失敗）
+
+### 移行の実行をトレースする {#trace-a-migration-execution}
+
+特定のバッチバックグラウンド移行をトレースするには、次の手順に従います:
+
+1. `Database::BatchedBackgroundMigrationWorker`のSidekiqログエントリで`correlation_id`を見つけます。
+1. その`correlation_id`でアプリケーションログを検索し、詳細なステータスの遷移を確認します。
+
+アプリケーションログエントリの例:
+
+```json
+{
+  "severity": "INFO",
+  "time": "2025-08-27T22:52:07.806Z",
+  "meta.caller_id": "Database::BatchedBackgroundMigration::MainExecutionWorker",
+  "correlation_id": "74d0295cbe4bb6147230a7d481fb0f8a",
+  "message": "BatchedJob transition",
+  "batched_job_id": 725,
+  "previous_state": "pending",
+  "new_state": "running",
+  "batched_migration_id": 638,
+  "job_class_name": "BackfillSentNotificationsAfterPartition",
+  "job_arguments": []
+},
+{
+  "severity": "INFO",
+  "time": "2025-08-27T22:52:14.293Z",
+  "meta.caller_id": "Database::BatchedBackgroundMigration::MainExecutionWorker",
+  "correlation_id": "74d0295cbe4bb6147230a7d481fb0f8a",
+  "message": "BatchedJob transition",
+  "batched_job_id": 725,
+  "previous_state": "running",
+  "new_state": "succeeded",
+  "batched_migration_id": 638,
+  "job_class_name": "BackfillSentNotificationsAfterPartition",
+  "job_arguments": []
+}
+```
+
 ## 保留中の高度な検索の移行を確認する {#check-for-pending-advanced-search-migrations}
 
 {{< details >}}
@@ -363,7 +411,7 @@ end
 
 {{< /details >}}
 
-このセクションは、[Elasticsearchのインテグレーション](../integration/advanced_search/elasticsearch.md)を有効にしている場合にのみ適用されます。メジャーリリースでは、メジャーバージョンのアップグレード前に、現在のバージョンで最新のマイナーリリースからすべての[高度な検索の移行](../integration/advanced_search/elasticsearch.md#advanced-search-migrations)を完了する必要があります。保留中の移行は、次のコマンドを実行すると見つかります。
+このセクションは、[Elasticsearchのインテグレーション](../integration/advanced_search/elasticsearch.md)を有効にしている場合にのみ適用されます。メジャーリリースでは、メジャーバージョンのアップグレード前に、現在のバージョンで最新のマイナーリリースからすべての[高度な検索の移行](../integration/advanced_search/elasticsearch.md#advanced-search-migrations)を完了する必要があります。保留中の移行を見つけるには、次のコマンドを実行します。
 
 {{< tabs >}}
 
@@ -386,10 +434,10 @@ sudo -u git -H bundle exec rake gitlab:elastic:list_pending_migrations
 
 {{< /tabs >}}
 
-アップグレードパスが長く、保留中の移行が多い場合は、`Requeue indexing workers`と`Number of shards for non-code indexing`を設定して、インデックス作成を高速化することをおすすめします。もう1つのオプションは、保留中の移行を無視し、GitLabをターゲットバージョンにアップグレードした後で[インスタンスのインデックスを再作成](../integration/advanced_search/elasticsearch.md#index-the-instance)することです。このプロセス中に、[`Search with Elasticsearch enabled`](../integration/advanced_search/elasticsearch.md#advanced-search-configuration)設定で高度な検索を無効にすることもできます。
+アップグレードパスが長く、保留中の移行が多い場合は、**インデックス作成ワーカーをキューに再度追加**と**非コードインデックス作成のシャード数**を設定して、インデックス作成を高速化することをおすすめします。もう1つのオプションは、保留中の移行を無視し、GitLabをターゲットバージョンにアップグレードした後で[インスタンスのインデックスを再作成](../integration/advanced_search/elasticsearch.md#index-the-instance)することです。この処理中は、[**高度な検索で検索**](../integration/advanced_search/elasticsearch.md#advanced-search-configuration)設定で高度な検索を無効にすることもできます。
 
 {{< alert type="warning" >}}
 
-大規模なインスタンスのインデックス作成にはリスクが伴います。詳細については、[大規模なインスタンスのインデックスを効率的に作成する](../integration/advanced_search/elasticsearch.md#index-large-instances-efficiently)を参照してください。
+大規模なインスタンスのインデックス作成にはリスクが伴います。詳細については、[大規模なインスタンスにインデックスを効率的に作成する](../integration/advanced_search/elasticsearch.md#index-large-instances-efficiently)を参照してください。
 
 {{< /alert >}}

@@ -1,0 +1,10 @@
+---
+name: enforce_job_configured_timeouts
+description: Introduces timeout handling on the rails app too, not just the runner, leading to improved timeout enforcement in case of timeout failures.
+feature_issue_url: https://gitlab.com/gitlab-org/gitlab-runner/-/issues/27040
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/206010
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/571971
+milestone: '18.7'
+group: group::pipeline execution
+type: gitlab_com_derisk
+default_enabled: false

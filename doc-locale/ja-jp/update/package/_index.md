@@ -3,7 +3,7 @@ stage: GitLab Delivery
 group: Operate
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 title: Linuxパッケージインスタンスをアップグレードする
-description: Linuxパッケージベースのインスタンスをアップグレードします。
+description: 単一ノードのLinuxパッケージベースのインスタンスをアップグレードします。
 ---
 
 {{< details >}}
@@ -13,27 +13,29 @@ description: Linuxパッケージベースのインスタンスをアップグ�
 
 {{< /details >}}
 
-LinuxパッケージインストールをGitLabの新しいバージョンにアップグレードします。
+Linuxパッケージインスタンスをアップグレードする手順は、単一ノードのGitLabインスタンスか、マルチノードのGitLabインスタンスかによって異なります。マルチノードのLinuxパッケージGitLabインスタンスをアップグレードするには、以下を参照してください:
 
-## オペレーティングシステムをアップグレードする（オプション） {#upgrade-the-operating-system-optional}
+- [ダウンタイム](../with_downtime.md)を設けてマルチノードインスタンスをアップグレードする
+- [ダウンタイム](../zero_downtime.md)なしでマルチノードインスタンスをアップグレードする
 
-必要に応じて、GitLab自体をアップグレードする前に、[サポートされているオペレーティングシステム](../../administration/package_information/supported_os.md)にアップグレードしてください。
+単一ノードのLinuxパッケージGitLabインスタンスをアップグレードするには、このページの情報を参照してください。
 
-オペレーティングシステムをアップグレードした後、パッケージマネージャーの設定でGitLabパッケージソースURLの更新が必要となる場合もあります。パッケージマネージャーでこれ以上の更新はないと報告されているが、更新が存在することがわかっている場合は、[Linuxパッケージインストールガイド](https://about.gitlab.com/install/#content)の手順を繰り返して、GitLabパッケージリポジトリを追加してください。今後のGitLabアップグレードは、アップグレードされたオペレーティングシステムに従って取得されます。
+{{< alert type="note" >}}
 
-### OSをアップグレードした後のPostgreSQLインデックスの破損 {#corrupted-postgresql-indexes-after-upgrading-the-os}
+製品ドキュメントをホストしている場合は、[以降のバージョンにアップグレードすることもできます](../../administration/docs_self_host.md#upgrade-the-product-documentation-to-a-later-version)。
 
-オペレーティングシステムのアップグレードの一環として、`glibc`のバージョンが変更された場合は、インデックスの破損を避けるために、[PostgreSQLのオペレーティングシステムのアップグレード](../../administration/postgresql/upgrading_os.md)に従う必要があります。
+{{< /alert >}}
 
-## GitLabの以前のバージョン {#earlier-gitlab-versions}
+## 前提要件 {#prerequisites}
 
-GitLabの以前のバージョンのバージョン固有の情報については、[ドキュメントアーカイブ](https://archives.docs.gitlab.com)を参照してください。アーカイブ内のドキュメントのバージョンには、さらに以前のバージョンのGitLabに関するバージョン固有の情報が含まれています。
+単一ノードのLinuxパッケージGitLabインスタンスをアップグレードする前に:
 
-たとえば、[GitLab 15.11のドキュメント](https://archives.docs.gitlab.com/15.11/ee/update/package/#version-specific-changes)には、GitLab 11までのバージョンに関する情報が含まれています。
+- [必要な情報を読み取り、必要な手順を実行する](../plan_your_upgrade.md)必要があります。
+- 必要に応じて、[サポートされているオペレーティングシステム](../../install/package/_index.md)にアップグレードします。
+- オペレーティングシステムのアップグレードの際に`glibc`のバージョンが変更された場合は、インデックスの破損を避けるために、[PostgreSQLのオペレーティングシステムのアップグレード](../../administration/postgresql/upgrading_os.md)に従う必要があります。
+- PostgreSQL、Redis、およびGitalyが実行されていることを確認します。
 
-## 自動データベースバックアップをスキップする {#skip-automatic-database-backups}
-
-GitLabデータベースは、新しいGitLabバージョンをインストールする前にバックアップされます。次の場所に空のファイルを作成すると、このデータベースの自動バックアップをスキップできます（`/etc/gitlab/skip-auto-backup`）。
+GitLabデータベースは、新しいGitLabバージョンをインストールする前にバックアップされます。次の場所に空のファイルを作成すると、このデータベースの自動バックアップをスキップできます（`/etc/gitlab/skip-auto-backup`）:
 
 ```shell
 sudo touch /etc/gitlab/skip-auto-backup
@@ -41,143 +43,206 @@ sudo touch /etc/gitlab/skip-auto-backup
 
 ただし、ご自身で最新の完全な[バックアップ](../../administration/backup_restore/_index.md)を保持しておく必要があります。
 
-## Linuxパッケージインスタンスをアップグレードする {#upgrade-a-linux-package-instance}
+## 単一ノードのLinuxパッケージインスタンスをアップグレードします {#upgrade-a-single-node-linux-package-instance}
 
-Linuxパッケージインスタンスをアップグレードするには、次の手順に従います。
+単一ノードのLinuxパッケージインスタンスをアップグレードするには:
 
-1. メインのGitLabアップグレードドキュメントの[初期手順を完了](../upgrade.md#upgrade-gitlab)します。
-1. パッケージ以外のインストールからGitLabパッケージインストールにアップグレードする場合は、[パッケージ以外のインストールからGitLabパッケージインストールにアップグレードする](https://docs.gitlab.com/omnibus/update/convert_to_omnibus.html)の手順に従ってください。
-1. 以降のセクションに従って、アップグレードを続行します。
+1. アップグレード中に[メンテナンスモードをオンにすること](../../administration/maintenance_mode/_index.md)を検討してください。
+1. [実行中のCI/CDパイプラインとジョブ](../plan_your_upgrade.md#pause-cicd-pipelines-and-jobs)を一時停止します。
+1. GitLabのバージョンと同じバージョンに[GitLab Runner](https://docs.gitlab.com/runner/install/)をアップグレードします。
+1. [LinuxパッケージでGitLabをアップグレードする](#upgrade-with-the-linux-package)。
 
-### 必須サービス {#required-services}
+アップグレード後:
 
-GitLabインスタンスをオンラインにした状態でアップグレードを実行できます。アップグレードコマンドを実行するときは、PostgreSQL、Redis、Gitalyが実行されている必要があります。
+1. [実行中のCI/CDパイプラインとジョブ](../plan_your_upgrade.md#pause-cicd-pipelines-and-jobs)の一時停止を解除します。
+1. 有効になっている場合は、[メンテナンスモードをオフにします](../../administration/maintenance_mode/_index.md#disable-maintenance-mode)。
+1. [アップグレードヘルスチェックを実行します](../plan_your_upgrade.md#run-upgrade-health-checks)。
 
-### 公式リポジトリを使用する（推奨） {#by-using-the-official-repositories-recommended}
+## Linuxパッケージでアップグレードする {#upgrade-with-the-linux-package}
 
-すべてのGitLabパッケージは、GitLab[パッケージサーバー](https://packages.gitlab.com/gitlab/)に公開されています。6つのリポジトリが保持されています。
+単一ノードで実行されているGitLabをアップグレードするか、マルチノードのGitLabインスタンスの一部であるノードをアップグレードするには、次のいずれかの方法でアップグレードします:
 
-- [`gitlab/gitlab-ee`](https://packages.gitlab.com/gitlab/gitlab-ee): すべてのCommunity Edition機能に加えて、[Enterprise Edition](https://about.gitlab.com/pricing/)機能を含む完全なGitLabパッケージ。
-- [`gitlab/gitlab-ce`](https://packages.gitlab.com/gitlab/gitlab-ce): Community Edition機能のみを含む簡素化されたパッケージ。
-- [`gitlab/gitlab-fips`](https://packages.gitlab.com/gitlab/gitlab-fips): FIPS準拠ビルド。
-- [`gitlab/unstable`](https://packages.gitlab.com/gitlab/unstable): リリース候補およびその他の不安定なバージョン。
-- [`gitlab/nightly-builds`](https://packages.gitlab.com/gitlab/nightly-builds): 毎日夜間に作成されるビルド。
-- [`gitlab/raspberry-pi2`](https://packages.gitlab.com/gitlab/raspberry-pi2): [Raspberry Pi](https://www.raspberrypi.org)パッケージ用に構築された公式Community Editionリリース。
+- [公式リポジトリを使用する](#upgrade-with-the-official-repositories-recommended)。
+- [ダウンロードしたパッケージを使用する](#upgrade-with-a-downloaded-package)。
 
-GitLab [Community Edition](https://about.gitlab.com/install/?version=ce)またはGitLab [Enterprise Edition](https://about.gitlab.com/install/)をインストールしている場合、公式GitLabリポジトリがすでに設定されているはずです。
+### 公式リポジトリでアップグレードする（推奨） {#upgrade-with-the-official-repositories-recommended}
 
-#### 最新バージョンにアップグレードする {#upgrade-to-the-latest-version}
+すべてのGitLabパッケージは、GitLab[パッケージサーバー](https://packages.gitlab.com/gitlab/)に公開されています。
 
-GitLabを定期的に（たとえば、毎月）アップグレードする場合は、Linuxディストリビューション用のパッケージマネージャーを使用して最新バージョンにアップグレードできます。
+| リポジトリ                                                                             | 説明 |
+|:---------------------------------------------------------------------------------------|:------------|
+| [`gitlab/gitlab-ce`](https://packages.gitlab.com/gitlab/gitlab-ce)                     | Community Edition機能のみを含む簡素化されたパッケージ。 |
+| [`gitlab/gitlab-ee`](https://packages.gitlab.com/gitlab/gitlab-ee)                     | すべてのCommunity Edition機能に加えて、Enterprise Edition機能を含む完全なGitLabパッケージ。 |
+| [`gitlab/nightly-builds`](https://packages.gitlab.com/gitlab/nightly-builds)           | 毎日夜間に作成されるビルド。 |
+| [`gitlab/nightly-fips-builds`](https://packages.gitlab.com/gitlab/nightly-fips-builds) | 毎晩FIPS準拠ビルド。 |
+| [`gitlab/gitlab-fips`](https://packages.gitlab.com/gitlab/gitlab-fips)                 | FIPS準拠ビルド。 |
 
-最新のGitLabバージョンにアップグレードするには、次のコマンドを実行します。
+デフォルトでは、Linuxディストリビューションパッケージマネージャーは、利用可能な最新バージョンのパッケージをインストールします。[アップグレード](../upgrade_paths.md)で複数の停止が必要な場合、GitLabの最新メジャーバージョンに直接アップグレードすることはできません。アップグレードに複数のバージョンが含まれている場合は、アップグレードごとに特定のGitLabパッケージバージョンを指定する必要があります。
+
+アップグレードに中間ステップがない場合は、最新バージョンに直接アップグレードできます。
+
+{{< tabs >}}
+
+{{< tab title="Ubuntu/Debian" >}}
 
 ```shell
-# Ubuntu/Debian
+# GitLab Enterprise Edition (specific version)
+sudo apt update && sudo apt install gitlab-ee=<version>-ee.0
+
+# GitLab Community Edition (specific version)
+sudo apt update && sudo apt install gitlab-ce=<version>-ce.0
+
+# GitLab Enterprise Edition (latest version)
 sudo apt update && sudo apt install gitlab-ee
 
-# RHEL/CentOS 7 and Amazon Linux 2
-sudo yum install gitlab-ee
-
-# RHEL/Almalinux 8/9 and Amazon Linux 2023
-sudo dnf install gitlab-ee
-
-# SUSE
-sudo zypper install gitlab-ee
+# GitLab Community Edition (latest version)
+sudo apt update && sudo apt install gitlab-ce
 ```
 
-{{< alert type="note" >}}
+{{< /tab >}}
 
-GitLab Community Editionの場合、`gitlab-ee`を`gitlab-ce`に置き換えます。
+{{< tab title="Amazon Linux 2" >}}
 
-{{< /alert >}}
+```shell
+# GitLab Enterprise Edition (specific version)
+sudo yum install gitlab-ee-<version>-ee.0.amazon2
 
-#### 特定のバージョンにアップグレードする {#upgrade-to-a-specific-version}
+# GitLab Community Edition (specific version)
+sudo yum install gitlab-ce-<version>-ce.0.amazon2
 
-Linuxパッケージマネージャーは、インストールおよびアップグレードに使用できる最新バージョンのパッケージをデフォルトでインストールします。最新のメジャーバージョンに直接アップグレードすると、複数段階の[アップグレードパス](../upgrade_paths.md)を必要とする以前のGitLabバージョンで問題が発生する可能性があります。アップグレードパスは複数のバージョンにまたがる可能性があるため、アップグレードごとに特定のGitLabパッケージを指定する必要があります。
+# GitLab Enterprise Edition (latest version)
+sudo yum install gitlab-ee
 
-パッケージマネージャーのインストールまたはアップグレードコマンドで目的のGitLabバージョン番号を指定するには、次の手順に従います。
+# GitLab Community Edition (latest version)
+sudo yum install gitlab-ce
+```
 
-1. インストールされているパッケージのバージョン番号を特定します。
+{{< /tab >}}
 
-   ```shell
-   # Ubuntu/Debian
-   sudo apt-cache madison gitlab-ee
+{{< tab title="RHEL/Oracle Linux/AlmaLinux 8/9" >}}
 
-   # RHEL/CentOS 7 and Amazon Linux 2
-   yum --showduplicates list gitlab-ee
+```shell
+# GitLab Enterprise Edition (specific version)
+sudo dnf install gitlab-ee-<version>-ee.0.el9
 
-   # RHEL/Almalinux 8/9 and Amazon Linux 2023
-   dnf --showduplicates list gitlab-ee
+# GitLab Enterprise Edition (specific version)
+sudo dnf install gitlab-ee-<version>-ee.0.el8
 
-   # SUSE
-   zypper search -s gitlab-ee
-   ```
+# GitLab Community Edition (specific version)
+sudo dnf install gitlab-ce-<version>-ce.0.el9
 
-1. 次のいずれかのコマンドを使用して、`<version>`を、インストールする次のサポートバージョンに置き換えて、特定の`gitlab-ee`パッケージをインストールします（インストールするバージョンがサポートされているパスの一部であることを確認するには、[アップグレードパス](../upgrade_paths.md)を確認してください）。
+# GitLab Community Edition (specific version)
+sudo dnf install gitlab-ce-<version>-ce.0.el8
 
-   ```shell
-   # Ubuntu/Debian
-   sudo apt install gitlab-ee=<version>-ee.0
+# GitLab Enterprise Edition (latest version)
+sudo dnf install gitlab-ee
 
-   # RHEL/CentOS 7 and Amazon Linux 2
-   sudo yum install gitlab-ee-<version>-ee.0.el7
+# GitLab Community Edition (latest version)
+sudo dnf install gitlab-ce
+```
 
-   # RHEL/Almalinux 8/9
-   sudo dnf install gitlab-ee-<version>-ee.0.el8
+{{< /tab >}}
 
-   # Amazon Linux 2023
-   sudo dnf install gitlab-ee-<version>-ee.0.amazon2023
+{{< tab title="Amazon Linux 2023" >}}
 
-   # OpenSUSE Leap 15.5
-   sudo zypper install gitlab-ee=<version>-ee.sles15
+```shell
+# GitLab Enterprise Edition (specific version)
+sudo dnf install gitlab-ee-<version>-ee.0.amazon2023
 
-   # SUSE Enterprise Server 12.2/12.5
-   sudo zypper install gitlab-ee=<version>-ee.0.sles12
-   ```
+# GitLab Community Edition (specific version)
+sudo dnf install gitlab-ce-<version>-ce.0.amazon2023
 
-{{< alert type="note" >}}
+# GitLab Enterprise Edition (latest version)
+sudo dnf install gitlab-ee
 
-GitLab Community Editionの場合、`ee`を`ce`に置き換えます。
+# GitLab Community Edition (latest version)
+sudo dnf install gitlab-ce
+```
 
-{{< /alert >}}
+{{< /tab >}}
 
-### ダウンロードしたパッケージを使用する {#by-using-a-downloaded-package}
+{{< tab title="OpenSUSE Leap 15.5" >}}
+
+```shell
+# GitLab Enterprise Edition (specific version)
+sudo zypper install gitlab-ee=<version>-ee.sles15
+
+# GitLab Community Edition (specific version)
+sudo zypper install gitlab-ce=<version>-ce.sles15
+
+# GitLab Enterprise Edition (latest version)
+sudo zypper install gitlab-ee
+
+# GitLab Community Edition (latest version)
+sudo zypper install gitlab-ce
+```
+
+{{< /tab >}}
+
+{{< tab title="SUSE Enterprise Server 12.2/12.5" >}}
+
+```shell
+# GitLab Enterprise Edition (specific version)
+sudo zypper install gitlab-ee=<version>-ee.0.sles12
+
+# GitLab Community Edition (specific version)
+sudo zypper install gitlab-ce=<version>-ce.0.sles12
+
+# GitLab Enterprise Edition (latest version)
+sudo zypper install gitlab-ee
+
+# GitLab Community Edition (latest version)
+sudo zypper install gitlab-ce
+```
+
+{{< /tab >}}
+
+{{< /tabs >}}
+
+### ダウンロードしたパッケージでアップグレードする {#upgrade-with-a-downloaded-package}
 
 公式リポジトリを使用したくない場合は、パッケージをダウンロードして手動でインストールできます。この方法は、GitLabを初めてインストールするか、アップグレードする場合に使用できます。
 
-GitLabをダウンロードしてインストールまたはアップグレードするには、次の手順に従います。
+GitLabをダウンロードしてインストールまたはアップグレードするには、次の手順に従います:
 
-1. お使いの[パッケージ](#by-using-the-official-repositories-recommended)の公式リポジトリに移動します。
-1. インストールするバージョンを検索して、リストをフィルタリングします。たとえば、`14.1.8`です。単一バージョンに対して複数のパッケージ（サポートされているディストリビューションとアーキテクチャにそれぞれ1つ）が存在する場合があります。ファイル名が同じ場合があるため、ファイル名の横にはディストリビューションを示すラベルがあります。
+1. お使いの[パッケージ](#upgrade-with-the-official-repositories-recommended)の公式リポジトリに移動します。
+1. インストールするバージョンを検索して、リストをフィルタリングします。たとえば、`18.4.1`です。単一バージョンに対して複数のパッケージ（サポートされているディストリビューションとアーキテクチャにそれぞれ1つ）が存在する場合があります。一部のファイルは複数のLinuxディストリビューションに関連するため、ファイル名の横にLinuxディストリビューションを示すラベルがあります。
 1. インストールするバージョンのパッケージを探し、リストからファイル名を選択します。
 1. 右上隅で、**ダウンロード**を選択します。
-1. パッケージのダウンロード後、次のいずれかのコマンドを使用して、`<package_name>`を、ダウンロードしたパッケージ名に置き換えてインストールします。
+1. パッケージのダウンロード後、次のいずれかのコマンドを使用して、`<package_name>`を、ダウンロードしたパッケージ名に置き換えてインストールします:
+
+   {{< tabs >}}
+
+   {{< tab title="Ubuntu/Debian" >}}
 
    ```shell
-   # Debian/Ubuntu
    dpkg -i <package_name>
+   ```
 
-   # RHEL/CentOS 7 and Amazon Linux 2
+   {{< /tab >}}
+
+   {{< tab title="Amazon Linux 2" >}}
+
+   ```shell
    rpm -Uvh <package_name>
+   ```
 
-   # RHEL/Almalinux 8/9 and Amazon Linux 2023
+   {{< /tab >}}
+
+   {{< tab title="RHEL/Oracle Linux/AlmaLinux 8/9およびAmazon Linux 2023" >}}
+
+   ```shell
    dnf install <package_name>
+   ```
 
-   # SUSE
+   {{< /tab >}}
+
+   {{< tab title="SUSEとOpenSUSE" >}}
+
+   ```shell
    zypper install <package_name>
    ```
 
-{{< alert type="note" >}}
+   {{< /tab >}}
 
-GitLab Community Editionの場合、`gitlab-ee`を`gitlab-ce`に置き換えます。
-
-{{< /alert >}}
-
-## 製品ドキュメントをアップグレードする（オプション） {#upgrade-the-product-documentation-optional}
-
-[製品ドキュメントをインストール](../../administration/docs_self_host.md)した場合は、[新しいバージョンにアップグレードする](../../administration/docs_self_host.md#upgrade-using-docker)方法を参照してください。
-
-## トラブルシューティング {#troubleshooting}
-
-詳細については、[トラブルシューティング](package_troubleshooting.md)を参照してください。
+   {{< /tabs >}}

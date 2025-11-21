@@ -93,3 +93,5 @@ END IF;
 RETURN NEW;
 END
 $$;
+
+CREATE TRIGGER gitlab_schema_write_trigger_for_p_ci_pipeline_iids_00 BEFORE INSERT OR DELETE OR UPDATE OR TRUNCATE ON gitlab_partitions_static.p_ci_pipeline_iids_00 FOR EACH STATEMENT EXECUTE FUNCTION gitlab_schema_prevent_write();

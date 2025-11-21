@@ -25,6 +25,8 @@ module ActiveContext
         register!(q)
       end
 
+      register!(RetryQueue)
+
       @queues_registered = true
     end
 

@@ -1,0 +1,7 @@
+---
+name: delete_pages_domain
+description: Grants the ability to delete pages domains
+feature_category: pages
+available_for_tokens: true
+boundaries:
+  - project

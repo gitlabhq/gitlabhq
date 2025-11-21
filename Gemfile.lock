@@ -1231,7 +1231,9 @@ GEM
     net-imap (0.5.9)
       date
       net-protocol
-    net-ldap (0.17.1)
+    net-ldap (0.20.0)
+      base64
+      ostruct
     net-ntp (2.1.3)
     net-pop (0.1.2)
       net-protocol
@@ -1623,7 +1625,7 @@ GEM
     rchardet (1.8.0)
     rdoc (6.13.0)
       psych (>= 4.0.0)
-    re2 (2.20.0)
+    re2 (2.21.0)
       mini_portile2 (~> 2.8.9)
     recaptcha (5.12.3)
       json
@@ -2282,7 +2284,7 @@ DEPENDENCIES
   minitest (~> 5.11.0)
   multi_json (~> 1.17.0)
   net-http (= 0.6.0)
-  net-ldap (~> 0.17.1)
+  net-ldap (~> 0.20.0)
   net-ntp
   net-protocol (~> 0.2.2)
   nkf (~> 0.2.0)

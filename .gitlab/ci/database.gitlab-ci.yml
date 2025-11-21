@@ -94,7 +94,14 @@ db:rollback:
     - .db-job-base
     - .rails:rules:db-rollback
   script:
-    - bundle exec rake db:migrate VERSION=20241003144714 # First migration after InitSchema based on db:migrate:status
+    - first_migration_version=$(bundle exec rake db:migrate:status | grep '^\s*up' | awk 'NR==2 {print $2}') # Rollback to the first migration after InitSchema
+    - |
+      if [ -z "$first_migration_version" ]; then
+        echo "Error: Could not determine first migration version"
+        exit 1
+      fi
+    - echo "Rolling back to version $first_migration_version"
+    - bundle exec rake db:migrate VERSION=$first_migration_version
     - bundle exec rake db:migrate
 
 db:rollback single-db:

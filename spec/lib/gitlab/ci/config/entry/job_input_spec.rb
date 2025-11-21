@@ -29,17 +29,32 @@ RSpec.describe Gitlab::Ci::Config::Entry::JobInput, feature_category: :pipeline_
   end
 
   describe '#value' do
-    let(:config) do
-      {
-        default: 'staging',
-        description: 'Environment name',
-        options: %w[staging production],
-        type: 'string'
-      }
+    context 'when type is specified' do
+      let(:config) do
+        {
+          default: 'staging',
+          description: 'Environment name',
+          options: %w[staging production],
+          type: 'string'
+        }
+      end
+
+      it 'returns the config hash with the specified type' do
+        expect(entry.value).to eq(config)
+      end
     end
 
-    it 'returns the config hash' do
-      expect(entry.value).to eq(config)
+    context 'when type is not specified' do
+      let(:config) do
+        {
+          default: 'staging',
+          description: 'Environment name'
+        }
+      end
+
+      it 'returns the config hash with type defaulting to string' do
+        expect(entry.value).to eq(config.merge(type: 'string'))
+      end
     end
   end
 end

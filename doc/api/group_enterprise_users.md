@@ -302,7 +302,7 @@ Other possible responses:
 
 - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/199646) in GitLab 18.3.
 
-{{</ history >}}
+{{< /history >}}
 
 Deletes the specified enterprise user.
 

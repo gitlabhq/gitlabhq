@@ -1,5 +1,6 @@
 import MockAdapter from 'axios-mock-adapter';
 import { resetHTMLFixture, setHTMLFixture } from 'helpers/fixtures';
+import { ignoreConsoleMessages } from 'helpers/console_watcher';
 import axios from '~/lib/utils/axios_utils';
 import { HTTP_STATUS_OK } from '~/lib/utils/http_status';
 import initPerformanceBarAndLog from '~/performance_bar';
@@ -27,6 +28,10 @@ describe.each([
 ])('Performance Bar – Using %s', (_, setupFn) => {
   let mock;
   let vm;
+
+  // Setting Vue.config.ignoredElements is not sufficient here for some reason.
+  // Instead, just ignore the warnings.
+  ignoreConsoleMessages([/Failed to resolve component: gl-emoji/]);
 
   beforeEach(() => {
     const peekWrapper = setupFn();

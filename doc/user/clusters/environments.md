@@ -45,7 +45,7 @@ With cluster environments, you can gain insight into:
 ![Cluster environments page](img/cluster_environments_table_v12_3.png)
 
 Access to cluster environments is restricted to
-[group maintainers and owners](../permissions.md#group-members-permissions)
+[group maintainers and owners](../permissions.md#group-members-permissions).
 
 ## Usage
 

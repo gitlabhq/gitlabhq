@@ -66,4 +66,5 @@ We suggest using the `CU-` format (`CU-<ID>`) if you have both internal and exte
 trackers enabled. If you use the shorter format, and an issue with the same ID exists in the
 internal issue tracker, the internal issue is linked.
 
-For [Custom Task IDs](https://help.clickup.com/hc/en-us/sections/17044579323671-Custom-Task-IDs), you **must** include the full ID, including your custom prefix. For example, `SOP-1432`.
+For [Custom Task IDs](https://help.clickup.com/hc/en-us/sections/17044579323671-Custom-Task-IDs),
+you must include the full ID, including your custom prefix. For example, `SOP-1432`.

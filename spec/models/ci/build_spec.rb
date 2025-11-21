@@ -150,6 +150,38 @@ RSpec.describe Ci::Build, feature_category: :continuous_integration, factory_def
       end
     end
 
+    describe 'timed_out_builds', :freeze_time do
+      let!(:running_build) { create(:ci_running_build, build: build) }
+      let!(:timed_out_running_build) do
+        create(:ci_running_build,
+          build: timed_out_build,
+          created_at: timed_out_build.timeout.seconds.ago)
+      end
+
+      let(:build) { create(:ci_build, :running, timeout: 600) }
+      let(:timed_out_build) { create(:ci_build, :running, timeout: 300) }
+
+      it 'only fetches the timed out builds' do
+        expect(described_class.timed_out_builds.pluck(:id)).to contain_exactly(timed_out_build.id)
+      end
+    end
+
+    describe 'not_timed_out_builds', :freeze_time do
+      let!(:running_build) { create(:ci_running_build, build: build) }
+      let!(:timed_out_running_build) do
+        create(:ci_running_build,
+          build: timed_out_build,
+          created_at: timed_out_build.timeout.seconds.ago)
+      end
+
+      let(:build) { create(:ci_build, :running, timeout: 600) }
+      let(:timed_out_build) { create(:ci_build, :running, timeout: 300) }
+
+      it 'only fetches the timed out builds' do
+        expect(described_class.not_timed_out_builds.pluck(:id)).to contain_exactly(build.id)
+      end
+    end
+
     describe 'for_project_ids' do
       subject { described_class.for_project_ids([new_project.id]) }
 
@@ -4319,6 +4351,46 @@ RSpec.describe Ci::Build, feature_category: :continuous_integration, factory_def
       end
 
       it_behaves_like 'saves data on transition'
+    end
+  end
+
+  describe "state transition: running => failed", :freeze_time do
+    let_it_be(:pipeline) { create(:ci_pipeline, :running) }
+    let(:timeout) { 1000 }
+    let(:build) { create(:ci_build, :running, pipeline: pipeline, timeout: timeout) }
+
+    context 'when failure reason is job_execution_timeout' do
+      it 'overwrites finished_at' do
+        build.drop!(:job_execution_timeout)
+        expect(build.reload.finished_at).to eq(build.started_at + timeout.seconds)
+      end
+    end
+
+    context 'when the failure reason is not job_execution_timeout' do
+      it 'does not overwrite finished_at' do
+        build.drop!(:script_failure)
+        expect(build.reload.finished_at).not_to eq(build.started_at + timeout.seconds)
+      end
+    end
+
+    context 'when FF enforce_job_configured_timeouts is disabled' do
+      before do
+        stub_feature_flags(enforce_job_configured_timeouts: false)
+      end
+
+      context 'when failure reason is job_execution_timeout' do
+        it 'does not overwrite finished_at' do
+          build.drop!(:job_execution_timeout)
+          expect(build.reload.finished_at).not_to eq(build.started_at + timeout.seconds)
+        end
+      end
+
+      context 'when the failure reason is not job_execution_timeout' do
+        it 'does not overwrite finished_at' do
+          build.drop!(:script_failure)
+          expect(build.reload.finished_at).not_to eq(build.started_at + timeout.seconds)
+        end
+      end
     end
   end
 

@@ -547,6 +547,16 @@
   :idempotent: true
   :tags: []
   :queue_namespace: :cronjob
+- :name: cronjob:ci_timed_out_builds_drop_timed_out
+  :worker_name: Ci::TimedOutBuilds::DropTimedOutWorker
+  :feature_category: :continuous_integration
+  :has_external_dependencies: false
+  :urgency: :low
+  :resource_boundary: :unknown
+  :weight: 1
+  :idempotent: true
+  :tags: []
+  :queue_namespace: :cronjob
 - :name: cronjob:ci_update_locked_unknown_artifacts
   :worker_name: Ci::UpdateLockedUnknownArtifactsWorker
   :feature_category: :job_artifacts

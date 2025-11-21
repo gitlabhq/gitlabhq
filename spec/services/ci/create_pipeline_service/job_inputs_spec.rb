@@ -40,7 +40,8 @@ module Ci
       rspec_job = pipeline.processables.find_by(name: 'rspec')
       expect(rspec_job.options[:inputs]).to eq(
         test_string: {
-          default: 'hello world'
+          default: 'hello world',
+          type: 'string'
         },
         test_number: {
           type: 'number',

@@ -24085,6 +24085,18 @@ An AI catalog item configuration.
 | <a id="aicatalogitemconsumerpinnedversionprefix"></a>`pinnedVersionPrefix` | [`String`](#string) | Major version, minor version, or patch item is pinned to. |
 | <a id="aicatalogitemconsumerproject"></a>`project` | [`Project`](#project) | Project in which the catalog item is configured. |
 | <a id="aicatalogitemconsumerserviceaccount"></a>`serviceAccount` | [`UserCore`](#usercore) | Service account associated with the item consumer. |
+| <a id="aicatalogitemconsumeruserpermissions"></a>`userPermissions` | [`AiCatalogItemConsumerPermissions!`](#aicatalogitemconsumerpermissions) | Permissions for the current user on the resource. |
+
+### `AiCatalogItemConsumerPermissions`
+
+Check permissions for the current user on an AI catalog item consumer.
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="aicatalogitemconsumerpermissionsadminaicatalogitemconsumer"></a>`adminAiCatalogItemConsumer` | [`Boolean!`](#boolean) | If `true`, the user can perform `admin_ai_catalog_item_consumer` on this resource. |
+| <a id="aicatalogitemconsumerpermissionsreadaicatalogitemconsumer"></a>`readAiCatalogItemConsumer` | [`Boolean!`](#boolean) | If `true`, the user can perform `read_ai_catalog_item_consumer` on this resource. |
 
 ### `AiCatalogItemPermissions`
 

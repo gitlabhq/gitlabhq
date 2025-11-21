@@ -180,7 +180,7 @@ To access AWS Bedrock models:
 
    Temporary credentials are not supported by AI gateway at this time. For more information on adding support for Bedrock to use instance profile or temporary credentials, see [issue 542389](https://gitlab.com/gitlab-org/gitlab/-/issues/542389).
 
-   {{</alert>}}
+   {{< /alert >}}
 
 1. Optional. To set up a private Bedrock endpoint operating in a virtual private cloud (VPC),
    make sure the `AWS_BEDROCK_RUNTIME_ENDPOINT` environment variable is configured

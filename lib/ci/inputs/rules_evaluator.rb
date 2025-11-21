@@ -11,7 +11,7 @@ module Ci
       include Gitlab::Utils::StrongMemoize
 
       RULE_EXPRESSION_STATEMENT = Gitlab::Ci::Pipeline::Expression::Statement
-      RULE_IF_KEY = :if
+      RULE_EXPRESSION_KEY = :if
 
       def initialize(rules, current_inputs)
         @rules = rules || []
@@ -36,9 +36,9 @@ module Ci
       strong_memoize_attr :matching_rule
 
       def rule_matches?(rule)
-        return true unless rule[RULE_IF_KEY]
+        return true unless rule[RULE_EXPRESSION_KEY]
 
-        evaluate_condition(rule[RULE_IF_KEY])
+        evaluate_condition(rule[RULE_EXPRESSION_KEY])
       end
 
       def evaluate_condition(if_clause)

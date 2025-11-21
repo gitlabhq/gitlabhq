@@ -10,13 +10,18 @@ module Ci
       def execute
         Gitlab::AppLogger.info "#{self.class}: Cleaning running, timed-out builds"
 
-        drop(running_timed_out_builds, failure_reason: :stuck_or_timeout_failure)
+        Ci::Partition.find_each do |partition|
+          drop(running_stuck_builds(partition), failure_reason: :stuck_or_timeout_failure)
+        end
       end
 
       private
 
-      def running_timed_out_builds
-        Ci::Build.running.updated_at_before(BUILD_RUNNING_OUTDATED_TIMEOUT.ago)
+      def running_stuck_builds(partition)
+        Ci::Build
+          .not_timed_out_builds
+          .updated_at_before(BUILD_RUNNING_OUTDATED_TIMEOUT.ago)
+          .in_partition(partition.id)
       end
     end
   end

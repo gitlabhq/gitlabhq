@@ -28,22 +28,23 @@ RSpec.describe ActiveContext::Queues do
 
   describe '.register!' do
     it 'registers the queue class' do
-      expect(described_class.queues).to be_empty
-      expect(described_class.raw_queues).to be_empty
+      expect(described_class.queues).to contain_exactly('activecontext:{retry_queue}')
+      expect(described_class.raw_queues.size).to eq(1)
 
       described_class.register!(test_queue_class)
 
-      expect(described_class.queues.size).to eq(1)
-      expect(described_class.queues.first).to eq('testmodule:{test_queue}')
+      expect(described_class.queues.size).to eq(2)
+      expect(described_class.queues).to include('testmodule:{test_queue}')
     end
 
     it 'creates instances for each shard' do
       expect { described_class.register!(test_queue_class) }.to change { described_class.raw_queues.size }.by(3)
 
       raw_queues = described_class.raw_queues
-      expect(raw_queues.size).to eq(3)
-      expect(raw_queues.all?(test_queue_class)).to be true
-      expect(raw_queues.map(&:shard)).to eq([0, 1, 2])
+      expect(raw_queues.size).to eq(4)
+      test_queue_instances = raw_queues.select { |q| q.is_a?(test_queue_class) }
+      expect(test_queue_instances.size).to eq(3)
+      expect(test_queue_instances.map(&:shard)).to eq([0, 1, 2])
     end
 
     it 'does not register the same queue class twice' do
@@ -82,9 +83,10 @@ RSpec.describe ActiveContext::Queues do
       it 'registers all configured queues' do
         described_class.register_all_queues!
 
-        expect(described_class.queues).to eq Set.new(['testmodule:{test_queue}', "test_queues:{mock}"])
+        expect(described_class.queues).to eq Set.new(['testmodule:{test_queue}', "test_queues:{mock}",
+          "activecontext:{retry_queue}"])
 
-        expect(described_class.raw_queues.length).to eq 7
+        expect(described_class.raw_queues.length).to eq 8
         expect(length_raw_queues_for_class(Test::Queues::Mock)).to eq Test::Queues::Mock.number_of_shards
         expect(length_raw_queues_for_class(test_queue_class)).to eq test_queue_class.number_of_shards
       end
@@ -93,6 +95,7 @@ RSpec.describe ActiveContext::Queues do
         allow(described_class).to receive(:register!).and_call_original
         expect(described_class).to receive(:register!).with(Test::Queues::Mock).once
         expect(described_class).to receive(:register!).with(test_queue_class).once
+        expect(described_class).to receive(:register!).with(ActiveContext::RetryQueue).once
 
         described_class.register_all_queues!
         described_class.register_all_queues!
@@ -104,7 +107,7 @@ RSpec.describe ActiveContext::Queues do
       it 'calls register_all_queues!' do
         expect(described_class).to receive(:register_all_queues!).at_least(:once).and_call_original
 
-        expect(described_class.raw_queues.length).to eq 7
+        expect(described_class.raw_queues.length).to eq 8
         expect(length_raw_queues_for_class(Test::Queues::Mock)).to eq Test::Queues::Mock.number_of_shards
         expect(length_raw_queues_for_class(test_queue_class)).to eq test_queue_class.number_of_shards
       end
@@ -114,7 +117,8 @@ RSpec.describe ActiveContext::Queues do
       it 'calls register_all_queues!' do
         expect(described_class).to receive(:register_all_queues!).at_least(:once).and_call_original
 
-        expect(described_class.queues).to eq Set.new(['testmodule:{test_queue}', "test_queues:{mock}"])
+        expect(described_class.queues).to eq Set.new(['testmodule:{test_queue}', "test_queues:{mock}",
+          "activecontext:{retry_queue}"])
       end
     end
   end
@@ -170,20 +174,25 @@ RSpec.describe ActiveContext::Queues do
       allow(redis).to receive(:zcard).with('testmodule:{test_queue}:0:zset').and_return(4)
       allow(redis).to receive(:zcard).with('testmodule:{test_queue}:1:zset').and_return(0)
       allow(redis).to receive(:zcard).with('testmodule:{test_queue}:2:zset').and_return(2)
+      allow(redis).to receive(:zcard).with('activecontext:{retry_queue}:0:zset').and_return(0)
 
       result = described_class.queue_counts
 
       expect(result).to contain_exactly(
         { queue_name: 'TestModule::TestQueue', shard: 0, count: 4 },
         { queue_name: 'TestModule::TestQueue', shard: 1, count: 0 },
-        { queue_name: 'TestModule::TestQueue', shard: 2, count: 2 }
+        { queue_name: 'TestModule::TestQueue', shard: 2, count: 2 },
+        { queue_name: 'ActiveContext::RetryQueue', shard: 0, count: 0 }
       )
     end
 
     it 'returns an empty array when no queues are registered' do
       allow(ActiveContext::Config).to receive(:queue_classes).and_return([])
+      allow(redis).to receive(:zcard).with('activecontext:{retry_queue}:0:zset').and_return(0)
 
-      expect(described_class.queue_counts).to eq([])
+      expect(described_class.queue_counts).to eq([
+        { queue_name: 'ActiveContext::RetryQueue', shard: 0, count: 0 }
+      ])
     end
   end
 end

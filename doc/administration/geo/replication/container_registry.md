@@ -117,7 +117,7 @@ To be able to replicate new container images, the container registry must send n
 
    Replace `<example.com>` with the `external_url` defined in your primary site's `/etc/gitlab/gitlab.rb` file, and
    replace `<replace_with_a_secret_token>` with a case-sensitive alphanumeric string
-   that starts with a letter. You can generate one with `< /dev/urandom tr -dc _A-Z-a-z-0-9 | head -c 32 | sed "s/^[0-9]*//"; echo`
+   that starts with a letter. You can generate one with `/dev/urandom tr -dc _A-Z-a-z-0-9 | head -c 32 | sed "s/^[0-9]*//"; echo`
 
    {{< /alert >}}
 

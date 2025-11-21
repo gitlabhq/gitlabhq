@@ -816,7 +816,8 @@ RSpec.describe Gitlab::Ci::Config::Entry::Job, feature_category: :pipeline_compo
         expect(entry).to be_valid
         expect(entry.value[:inputs]).to eq(
           test_string: {
-            default: 'hello'
+            default: 'hello',
+            type: 'string'
           },
           test_number: {
             type: 'number',
@@ -867,6 +868,39 @@ RSpec.describe Gitlab::Ci::Config::Entry::Job, feature_category: :pipeline_compo
         it 'reports an error about the invalid default value type' do
           expect(entry).not_to be_valid
           expect(entry.errors).to contain_exactly('job inputs `number_input`: default value is not a number')
+        end
+      end
+
+      context 'when there are more than 50 inputs' do
+        let(:config) do
+          inputs_hash = (1..51).to_h { |i| ["input#{i}", { default: "value#{i}" }] }
+          {
+            script: 'echo',
+            inputs: inputs_hash
+          }
+        end
+
+        it 'reports an error about too many inputs' do
+          expect(entry).not_to be_valid
+          expect(entry.errors).to contain_exactly('job inputs has too many entries (maximum 50)')
+        end
+      end
+
+      context 'when type is not specified' do
+        let(:config) do
+          {
+            script: 'echo',
+            inputs: {
+              test_input: {
+                default: 'hello'
+              }
+            }
+          }
+        end
+
+        it 'defaults the type to string' do
+          expect(entry).to be_valid
+          expect(entry.value[:inputs][:test_input]).to eq(default: 'hello', type: 'string')
         end
       end
 

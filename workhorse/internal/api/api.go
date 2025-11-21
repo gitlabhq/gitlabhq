@@ -144,9 +144,10 @@ type RemoteObject struct {
 
 // McpServerConfig holds configuration for MCP servers configured in GitLab Rails
 type McpServerConfig struct {
-	URL     string
-	Headers map[string]string
-	Tools   *[]string
+	URL              string
+	Headers          map[string]string
+	Tools            *[]string
+	PreApprovedTools *[]string
 }
 
 // DuoWorkflow holds configuration for the Duo Workflow service.

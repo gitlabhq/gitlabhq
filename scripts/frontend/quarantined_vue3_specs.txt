@@ -1,4 +1,3 @@
 # Lines beginning with a hash are ignored, like this one.
 # Do not add new specs to this file.
 spec/frontend/lib/utils/confirm_via_gl_modal/confirm_action_spec.js
-spec/frontend/performance_bar/index_spec.js

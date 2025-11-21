@@ -27,8 +27,8 @@ module TestApis
       tags %w[users_api]
     end
     params do
-      requires :version, type: 'String', desc: "A version string"
-      requires :name, type: 'String', desc: 'A non-path parameter in a POST request'
+      requires :version, type: String, desc: "A version string"
+      requires :name, type: String, desc: 'A non-path parameter in a POST request'
     end
     post '/api/:version/users' do
       status 201

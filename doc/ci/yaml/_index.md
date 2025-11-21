@@ -6372,7 +6372,7 @@ trigger-multi-project-pipeline:
 
 - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/519963) in GitLab 17.11.
 
-{{</history >}}
+{{< /history >}}
 
 Use `trigger:inputs` to set the [inputs](../inputs/_index.md) for a multi-project pipeline
 when the downstream pipeline configuration uses [`spec:inputs`](#specinputs).
@@ -6444,7 +6444,7 @@ Use:
 
 - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/519963) in GitLab 17.11.
 
-{{</history >}}
+{{< /history >}}
 
 Use `trigger:include:inputs` to set the [inputs](../inputs/_index.md) for a child pipeline
 when the downstream pipeline configuration uses [`spec:inputs`](#specinputs).

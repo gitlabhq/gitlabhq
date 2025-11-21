@@ -560,7 +560,7 @@ python-shop-app/
 
 {{< tabs >}}
 
-{{< tab title=".gitignore" >}}
+{{< tab title="`.gitignore`" >}}
 
 このファイルは、標準のPythonプロジェクトの除外を示しています:
 
@@ -614,8 +614,8 @@ wheels/
 
 {{< /tab >}}
 
-{{< tab title="README.md" >}}
-<!-- markdownlint-disable MD029 -->
+{{< tab title="`README.md`" >}}
+
 設定と使用方法の指示が記載された包括的な`README`ファイル。
 
 ````markdown
@@ -688,10 +688,10 @@ Run tests with `pytest`:
 python -m pytest
 ```
 ````
-<!-- markdownlint-enable MD029 -->
+
 {{< /tab >}}
 
-{{< tab title="requirements.txt" >}}
+{{< tab title="`requirements.txt`" >}}
 
 必要なすべてのPythonパッケージをバージョンとともにリストします。
 
@@ -708,7 +708,7 @@ requests==2.28.2
 
 {{< /tab >}}
 
-{{< tab title="setup.py" >}}
+{{< tab title="`setup.py`" >}}
 
 パッケージングのプロジェクト設定。
 
@@ -750,7 +750,7 @@ setup(
 
 {{< /tab >}}
 
-{{< tab title=".env" >}}
+{{< tab title="`.env`" >}}
 
 アプリケーションの環境変数が含まれています。
 
@@ -773,7 +773,7 @@ MAX_QUANTITY=1000
 
 {{< /tab >}}
 
-{{< tab title="app/models/article.py" >}}
+{{< tab title="`app/models/article.py`" >}}
 
 完全な検証を備えた記事クラス。
 
@@ -900,7 +900,7 @@ class Article:
 
 {{< /tab >}}
 
-{{< tab title="app/routes/shop.py" >}}
+{{< tab title="`app/routes/shop.py`" >}}
 
 エラー処理を備えた完全なAPIエンドポイント。
 
@@ -1028,7 +1028,7 @@ def delete_book(book_id):
 
 {{< /tab >}}
 
-{{< tab title="app/database.py" >}}
+{{< tab title="`app/database.py`" >}}
 
 接続管理によるデータベース操作。
 
@@ -1237,9 +1237,9 @@ def delete_article(article_id):
 ```
 
 {{< /tab >}}
-<!-- markdownlint-disable -->
-{{< tab title="app/__init__.py" >}}
-<!-- markdownlint-enable -->
+
+{{< tab title="`app/__init__.py`" >}}
+
 Flaskアプリケーションファクトリー。
 
 ```python
