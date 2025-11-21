@@ -404,7 +404,6 @@ Layout/LineLength:
     - 'ee/app/controllers/projects/integrations/zentao/issues_controller.rb'
     - 'ee/app/controllers/projects/protected_environments_controller.rb'
     - 'ee/app/controllers/projects/requirements_management/requirements_controller.rb'
-    - 'ee/app/controllers/projects/security/policies_controller.rb'
     - 'ee/app/controllers/projects/security/vulnerabilities/notes_controller.rb'
     - 'ee/app/enums/vulnerabilities/dismissal_reason_enum.rb'
     - 'ee/app/finders/compliance_management/merge_requests/compliance_violations_finder.rb'

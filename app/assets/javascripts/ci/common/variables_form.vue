@@ -116,7 +116,6 @@ export default {
       const isDuplicate = key && seenKeys.has(key);
       const includesNonAlphanumericOrUnderscore = !/^[A-Za-z0-9_]*$/.test(key);
       const startsWithNumber = /^[0-9]/.test(key);
-      const startsWithCIUnderscore = /^CI_/.test(key);
 
       const { i18n } = this.$options;
 
@@ -126,8 +125,6 @@ export default {
         this.variables[index].error = i18n.keyErrorCannotHaveNonAlphanumericOrUnderscore;
       } else if (startsWithNumber) {
         this.variables[index].error = i18n.keyErrorCannotStartWithNumber;
-      } else if (startsWithCIUnderscore) {
-        this.variables[index].error = i18n.keyErrorCannotStartWithCIUnderscore;
       } else {
         this.variables[index].error = null;
       }
@@ -189,7 +186,6 @@ export default {
     },
   },
   i18n: {
-    keyErrorCannotStartWithCIUnderscore: s__('CIVariablesForm|Variable key cannot start with CI_.'),
     keyErrorCannotStartWithNumber: s__('CIVariablesForm|Variable key cannot start with a number.'),
     keyErrorCannotHaveNonAlphanumericOrUnderscore: s__(
       'CIVariablesForm|Variable key can only contain letters, numbers, and underscores.',

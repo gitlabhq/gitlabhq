@@ -71,6 +71,7 @@ config:
       "Git",
       "Gitaly",
       "GitHub",
+      "gitlab-duo",
       "gitlab.vim",
       "GitLab chart",
       "GitLab Geo",

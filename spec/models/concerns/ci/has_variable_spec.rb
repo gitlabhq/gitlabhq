@@ -63,7 +63,8 @@ RSpec.describe Ci::HasVariable, feature_category: :continuous_integration do
 
     it 'fails to decrypt if iv is incorrect' do
       # attr_encrypted expects the IV to be 16 bytes and base64-encoded
-      subject.encrypted_value_iv = [SecureRandom.hex(8)].pack('m')
+      # Use a fixed corrupted IV to ensure deterministic test behavior
+      subject.encrypted_value_iv = ['0' * 16].pack('m')
       subject.instance_variable_set(:@value, nil)
 
       expect { subject.value }

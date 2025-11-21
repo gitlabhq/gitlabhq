@@ -169,7 +169,7 @@ In order for the pipeline to communicate with ServiceNow, the webhook integratio
 
 | Variable | Description | Example Value |
 |----------|-------------|---------------|
-| `SNOW_URL` | URL of your SeriveNow instance| `https://<SNOW_INSTANCE>.com/` |
+| `SNOW_URL` | URL of your ServiceNow instance| `https://<SNOW_INSTANCE>.com/` |
 | `SNOW_TOOLID` | ServiceNow instance ID  | `3b5w345629212105c5ddaccwonworw2` |
 | `SNOW_TOKEN` | API token to access ServiceNow| `Oxxxxxxxxxx` |
 

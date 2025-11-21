@@ -13055,9 +13055,6 @@ msgstr ""
 msgid "CIVariablesForm|Variable key can only contain letters, numbers, and underscores."
 msgstr ""
 
-msgid "CIVariablesForm|Variable key cannot start with CI_."
-msgstr ""
-
 msgid "CIVariablesForm|Variable key cannot start with a number."
 msgstr ""
 

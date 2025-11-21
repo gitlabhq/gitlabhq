@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-require 'spec_helper'
+require 'fast_spec_helper'
 
 RSpec.describe Gitlab::Ci::Tags::TagList, feature_category: :continuous_integration do
   let(:tag_list) { described_class.new('chunky', 'bacon') }

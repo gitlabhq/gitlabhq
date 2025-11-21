@@ -8,38 +8,16 @@ This guide provides step-by-step instructions for setting up and using the Code 
 
 - GitLab Development Kit (GDK) running in [SaaS mode](https://docs.gitlab.com/development/ee_features/#simulate-a-saas-instance)
 - Install [AI Gateway](https://docs.gitlab.com/development/ai_features/#install-ai-gateway)
-- Access to GitLab rails console
+- Access to GitLab Rails console
+- [Elasticsearch](https://gitlab.com/gitlab-org/gitlab-development-kit/blob/main/doc/howto/elasticsearch.md) GDK setup
 
 ## Infrastructure Setup
-
-### Elasticsearch and Kibana
-
-1. Install and configure Elasticsearch following the [GDK Elasticsearch guide](https://gitlab.com/gitlab-org/gitlab-development-kit/-/blob/main/doc/howto/elasticsearch.md).
-
-2. Install Kibana:
-
-   ```bash
-   brew tap elastic/tap
-   brew install elastic/tap/kibana-full
-   ```
-
-3. Start Kibana:
-
-   ```bash
-   # As a background service
-   brew services start elastic/tap/kibana-full
-
-   # Or in foreground
-   /opt/homebrew/opt/kibana-full/bin/kibana
-   ```
-
-4. Access Kibana at [http://localhost:5601/app/dev_tools#/console](http://localhost:5601/app/dev_tools#/console).
 
 ### Optional: Enable Elasticsearch slowlog monitoring
 
 To monitor ActiveContext operations, enable debug logging for both indices:
 
-```bash
+```sh
 # For gitlab_active_context_code_0
 curl -H 'Content-Type: application/json' -XPUT "http://localhost:9200/gitlab_active_context_code_0/_settings" -d '{
 "index.indexing.slowlog.threshold.index.debug" : "0s",
@@ -59,7 +37,7 @@ curl -H 'Content-Type: application/json' -XPUT "http://localhost:9200/gitlab_act
 
 ### Enable Required Feature Flags
 
-In GitLab rails console:
+In GitLab Rails console:
 
 ```ruby
 Feature.enable(:active_context_code_incremental_index_project)
@@ -106,7 +84,7 @@ The worker runs on a cron schedule. You can run manually to ensure all migration
 
 **Tip**: Monitor the `log/active_context.log` file to track migration progress:
 
-```bash
+```sh
 tail -f log/active_context.log | jq
 ```
 
@@ -116,7 +94,7 @@ tail -f log/active_context.log | jq
 
 In Kibana Dev Tools console ([http://localhost:5601/app/dev_tools#/console](http://localhost:5601/app/dev_tools#/console)):
 
-```
+```console
 GET gitlab_active_context_code
 ```
 
@@ -124,13 +102,14 @@ This should return index information if the migration was successful.
 
 ### Verify Collection Record
 
-In GitLab rails console:
+In GitLab Rails console:
 
 ```ruby
 ActiveContext.adapter.connection.collections
 ```
 
 Expected output should include a collection record with:
+
 - `name: "gitlab_active_context_code"`
 - `number_of_partitions: 1`
 - Other metadata fields
@@ -139,7 +118,7 @@ Expected output should include a collection record with:
 
 If migrations fail, check the database:
 
-```bash
+```sh
 gdk psql
 ```
 
@@ -160,36 +139,37 @@ Then re-run the migration worker.
 ### Setup Eligible Namespace
 
 Create or ensure a namespace meets these eligibility criteria:
+
 - Active, non-trial Duo Core, Pro, or Enterprise license
 - Unexpired paid hosted GitLab subscription
 - Namespace has `duo_features_enabled` AND `experiment_features_enabled`
 
-#### Use "gitlab-duo/test" project
+#### Use gitlab-duo/test Project
 
-A simpler alternative would be to use `gitlab-duo/test` project:
+A simpler alternative would be to use the gitlab-duo/test project:
 
 ```ruby
 project = Project.find_by_full_path("gitlab-duo/test")
 namespace = project.namespace
 ```
 
-#### Check if the namespace is eligible
+#### Check if the Namespace is Eligible
 
 ```ruby
 project = Project.find_by_full_path("gitlab-duo/test")
 namespace = project.namespace
 
 GitlabSubscriptions::AddOnPurchase.active.non_trial.for_duo_core_pro_or_enterprise.by_namespace(namespace.id)
-# Should return a GitlabSubscriptions::AddOnPurchase record
+# => Returns a GitlabSubscriptions::AddOnPurchase record
 
 GitlabSubscription.with_a_paid_hosted_plan.not_expired.namespace_id_in(namespace.id)
-# Should return a GitlabSubscription record
+# => Returns a GitlabSubscription record
 
 namespace.duo_features_enabled
-# Should be true
+# => Returns true
 
 namespace.experiment_features_enabled
-# Should be true
+# => Returns true
 ```
 
 ### Run Initial Indexing Workflow
@@ -265,7 +245,6 @@ Execute these scheduling tasks in sequence:
 
 #### 1. Create EnabledNamespace Records
 
-
 Now run the initial indexing:
 
 ```ruby
@@ -332,7 +311,7 @@ Ai::ActiveContext::Connection.active.enabled_namespaces.first.repositories
 
 Check if documents were indexed:
 
-```bash
+```sh
 curl -X GET "http://localhost:9200/gitlab_active_context_code/_search?pretty" -H 'Content-Type: application/json' -d '
 {
   "query": {
@@ -376,7 +355,7 @@ p.repository.relative_path
 
 Clone and build the indexer:
 
-```bash
+```sh
 git clone https://gitlab.com/gitlab-org/gitlab-elasticsearch-indexer
 cd gitlab-elasticsearch-indexer
 make
@@ -384,7 +363,7 @@ make
 
 Run the indexer (update paths and IDs as needed):
 
-```bash
+```sh
 make && \
 GITLAB_INDEXER_MODE=chunk \
 GITLAB_INDEXER_DEBUG_LOGGING=1 \
@@ -410,7 +389,6 @@ GITLAB_INDEXER_DEBUG_LOGGING=1 \
 ```
 
 **Note**: Update the `address` path to match your actual GDK setup. You can find your praefect socket path in your GDK configuration.
-
 
 ## Performing Searches
 
@@ -450,7 +428,7 @@ Ai::ActiveContext::Code::Repository.destroy_all
 Ai::ActiveContext::Queues::Code.clear_tracking!
 
 # Verify cleanup
-Ai::ActiveContext::Queues::Code.queued_items  # Should return empty hash
+Ai::ActiveContext::Queues::Code.queued_items  # => Returns {}
 
 # Alternative verification using curl
 curl -X GET "http://localhost:9200/gitlab_active_context_code_0/_search?pretty" -H 'Content-Type: application/json' -d '
@@ -460,7 +438,7 @@ curl -X GET "http://localhost:9200/gitlab_active_context_code_0/_search?pretty" 
   },
   "size": 100
 }'
-# Should return null/empty results
+# => Returns null/empty results
 ```
 
 ## Troubleshooting
@@ -468,9 +446,9 @@ curl -X GET "http://localhost:9200/gitlab_active_context_code_0/_search?pretty" 
 ### Common Issues
 
 1. **Migration failures**: Check `ai_active_context_migrations` table for error messages
-2. **Connection issues**: Ensure Elasticsearch is running and accessible on localhost:9200
-3. **Permission errors**: Verify namespace eligibility criteria are met
-4. **No collection_class set**: This is expected in the current setup - the collection record may show `collection_class: nil`
+1. **Connection issues**: Ensure Elasticsearch is running and accessible on localhost:9200
+1. **Permission errors**: Verify namespace eligibility criteria are met
+1. **No collection_class set**: This is expected in the current setup - the collection record may show `collection_class: nil`
 
 #### Queue count remains unchanged after execution
 
@@ -498,6 +476,7 @@ If you are still stuck, you can contact `#subteam-codebase-as-chat-context` or `
 This error occurs when AI Gateway (AIGW) lacks the necessary permissions to access Google Vertex AI.
 
 **Resolution steps:**
+
 1. Verify your local Rails instance is configured to connect to your local AIGW instance
 2. Ensure your local AIGW has valid credentials and permissions to access Google Vertex AI
 3. Check AIGW logs for authentication errors

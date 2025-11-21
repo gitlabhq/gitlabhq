@@ -23,6 +23,8 @@ Prerequisites:
 - Use a valid hostname that is accessible in your network. Do not use `localhost`.
 - Ensure you have approximately 340 MB (compressed) for the `linux/amd64` architecture and
   a minimum of 512 MB of RAM.
+- Ensure the container has access to at least two CPUs for
+  the `ai_gateway` and `duo-workflow-service` services.
 - Generate a JWT signing key for GitLab Duo Agent Platform functionality:
 
   ```shell

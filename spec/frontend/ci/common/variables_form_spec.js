@@ -224,14 +224,6 @@ describe('Pipeline variables form group', () => {
       expect(wrapper.emitted('validity-change')).toEqual([[false]]);
     });
 
-    it('invalidates key that starts with CI_', async () => {
-      const message = 'Variable key cannot start with CI_.';
-      await findKeyInputsAt(0).setValue('CI_val');
-
-      expect(findKeyValidationErrorAt(0).text()).toBe(message);
-      expect(wrapper.emitted('validity-change')).toEqual([[false]]);
-    });
-
     it('invalidates duplicate key', async () => {
       const message = 'Variable key already exists.';
 
