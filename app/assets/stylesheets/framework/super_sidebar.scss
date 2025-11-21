@@ -340,6 +340,9 @@ html:not(.application-chrome) .super-sidebar {
   }
 
   .super-sidebar-nav-item {
+    font-weight: 425;
+    min-height: 1.75rem;
+
     &:hover,
     &:focus,
     &.with-mouse-over-flyout {

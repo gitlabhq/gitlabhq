@@ -9,6 +9,7 @@ import CiResourceHeader from '../details/ci_resource_header.vue';
 import { VISIBILITY_LEVEL_PRIVATE } from '../../constants';
 
 export default {
+  name: 'CiResourceDetailsPage',
   components: {
     CiResourceDetails,
     CiResourceHeader,

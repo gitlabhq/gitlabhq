@@ -6,7 +6,8 @@ import { mountExtended, shallowMountExtended } from 'helpers/vue_test_utils_help
 import createMockApollo from 'helpers/mock_apollo_helper';
 import waitForPromises from 'helpers/wait_for_promises';
 import { createAlert } from '~/alert';
-import { getIdFromGraphQLId } from '~/graphql_shared/utils';
+import { getIdFromGraphQLId, convertToGraphQLId } from '~/graphql_shared/utils';
+import { TYPENAME_WORK_ITEM } from '~/graphql_shared/constants';
 
 import BaseToken from '~/vue_shared/components/filtered_search_bar/tokens/base_token.vue';
 import WorkItemParentToken from '~/vue_shared/components/filtered_search_bar/tokens/work_item_parent_token.vue';
@@ -228,6 +229,29 @@ describe('WorkItemParentToken', () => {
             includeAncestors: true,
             types: ['EPIC', 'OBJECTIVE', 'ISSUE'],
             isProject: true,
+          });
+        });
+      });
+
+      describe('with search term id', () => {
+        const searchTerm = '132';
+
+        beforeEach(() => {
+          createComponent();
+          return triggerFetchWorkItems(searchTerm);
+        });
+
+        it('queries by ids when searching with a numeric term', () => {
+          expect(searchProjectWorkItemsParentQueryHandler).toHaveBeenCalledWith({
+            fullPath: 'gitlab-org/gitlab-test',
+            groupPath: 'gitlab-org',
+            search: '',
+            in: undefined,
+            includeDescendants: false,
+            includeAncestors: true,
+            types: ['EPIC', 'OBJECTIVE', 'ISSUE'],
+            isProject: true,
+            ids: [convertToGraphQLId(TYPENAME_WORK_ITEM, searchTerm)],
           });
         });
       });

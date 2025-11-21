@@ -179,7 +179,6 @@ Feature Flags (Non-Default Values)
 Feature flags:                            none
 
 Feature Flags (Default Values)
-- zoekt_debug_delete_repo_logging:        disabled
 - zoekt_load_balancer:                    disabled
 - zoekt_rollout_worker:                   enabled
 - zoekt_search_meta_project_ids:          disabled

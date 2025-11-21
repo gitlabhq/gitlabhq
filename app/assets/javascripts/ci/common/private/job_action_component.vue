@@ -18,6 +18,7 @@ import { reportToSentry } from '~/ci/utils';
  * - pipelines detail page in big graph
  */
 export default {
+  name: 'JobActionComponent',
   components: {
     GlIcon,
     GlButton,

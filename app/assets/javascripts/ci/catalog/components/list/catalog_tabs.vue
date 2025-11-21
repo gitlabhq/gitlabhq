@@ -4,6 +4,7 @@ import { s__ } from '~/locale';
 import { SCOPE } from '../../constants';
 
 export default {
+  name: 'CatalogTabs',
   components: {
     GlBadge,
     GlTab,

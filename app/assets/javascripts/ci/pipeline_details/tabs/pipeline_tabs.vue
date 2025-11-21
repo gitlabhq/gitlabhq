@@ -14,6 +14,7 @@ import {
 } from '../constants';
 
 export default {
+  name: 'PipelineTabs',
   i18n: {
     tabs: {
       failedJobsTitle: __('Failed Jobs'),

@@ -416,7 +416,7 @@ RSpec.describe API::Helpers, :enable_admin_mode, feature_category: :system_acces
       let_it_be(:header_organization) { create(:organization) }
 
       it 'sets the organization from header' do
-        request.headers['X-GitLab-Organization-ID'] = header_organization.id.to_s
+        request.env["HTTP_X_GITLAB_ORGANIZATION_ID"] = header_organization.id.to_s
 
         set_current_organization(user: user)
 

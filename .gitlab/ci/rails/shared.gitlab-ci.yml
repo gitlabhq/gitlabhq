@@ -275,11 +275,6 @@ include:
     - !reference [.clickhouse-setup, script]
     - rspec_section rspec_parallelized_job "--fail-fast=${RSPEC_FAIL_FAST_THRESHOLD} --tag click_house"
 
-.rspec-base-pg14:
-  extends:
-    - .rspec-base
-    - .use-pg14
-
 .rspec-base-pg15:
   extends:
     - .rspec-base
@@ -289,11 +284,6 @@ include:
   extends:
     - .rspec-base
     - .use-pg17
-
-.rspec-ee-base-pg14:
-  extends:
-    - .rspec-base
-    - .use-pg14-es7-ee
 
 .rspec-ee-base-pg15:
   extends:

@@ -7,6 +7,7 @@ import { renderGFM } from '~/behaviors/markdown/render_gfm';
 import getCiCatalogResourceReadme from '../../graphql/queries/get_ci_catalog_resource_readme.query.graphql';
 
 export default {
+  name: 'CiResourceReadme',
   components: {
     GlLoadingIcon,
   },

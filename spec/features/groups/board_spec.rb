@@ -3,7 +3,6 @@
 require 'spec_helper'
 
 RSpec.describe 'Group Boards', feature_category: :portfolio_management do
-  include DragTo
   include MobileHelpers
   include BoardHelpers
 
@@ -73,6 +72,8 @@ RSpec.describe 'Group Boards', feature_category: :portfolio_management do
 
       drag(list_from_index: 0, from_index: 0, list_to_index: 1)
 
+      wait_for_requests
+
       expect(all('[data-testid="board-list"]')[1]).to have_content(issue2.title)
       expect(issue2.reload.labels).to contain_exactly(group_label1)
     end
@@ -88,7 +89,10 @@ RSpec.describe 'Group Boards', feature_category: :portfolio_management do
     end
 
     it 'does not allow user to re-position lists' do
-      drag(list_from_index: 1, list_to_index: 2, selector: '.board-header')
+      headers = all('.board-header')
+      from_item = headers.at(1)
+      to_item = headers.at(2)
+      from_item.drag_to(to_item)
 
       expect(all('[data-testid="board-list"]')[1]).to have_content(group_label1.title)
       expect(all('[data-testid="board-list"]')[2]).to have_content(group_label2.title)
@@ -113,5 +117,11 @@ RSpec.describe 'Group Boards', feature_category: :portfolio_management do
         expect(page).to have_selector('.board-card-button[data-col-index="0"]', focused: true)
       end
     end
+  end
+
+  def drag(list_from_index: 0, list_to_index: 0, from_index: 0)
+    lists = all('.board-list')
+    item = lists.at(list_from_index).all('.board-card').at(from_index)
+    item.drag_to(lists.at(list_to_index))
   end
 end

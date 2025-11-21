@@ -9,7 +9,7 @@ module CurrentOrganization
     organization = Gitlab::Current::Organization.new(
       params: organization_params,
       user: current_user,
-      headers: request.headers
+      rack_env: request.env
     ).organization
 
     ::Current.organization = organization

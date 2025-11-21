@@ -7,7 +7,11 @@
 - if show_empty_state
   = render 'shared/empty_states/topics', button_text: _('New topic'), button_path: new_admin_topic_path
 - else
-  = render ::Layouts::PageHeadingComponent.new(_('Topics'), options: { data: { event_tracking_load: 'true', event_tracking: 'view_admin_topics_pageload' } })
+  = render ::Layouts::PageHeadingComponent.new(_('Topics'), options: { data: { event_tracking_load: 'true', event_tracking: 'view_admin_topics_pageload' } }) do |c|
+    - c.with_actions do
+      .js-merge-topics{ data: { path: merge_admin_topics_path } }
+      = render Pajamas::ButtonComponent.new(href: new_admin_topic_path, variant: 'confirm') do
+        = _('New topic')
 
   .gl-flex.gl-min-w-0.gl-grow
     = form_tag admin_topics_path, method: :get, class: 'gl-w-full' do |f|
@@ -19,15 +23,6 @@
   - if show_empty_search
     = render ::Layouts::EmptyResultComponent.new(type: :search)
   - else
-    = render ::Layouts::CrudComponent.new(_('Topics'),
-      icon: 'overview',
-      count: @topics.count,
-      options: { class: 'gl-mt-5' }) do |c|
-      - c.with_actions do
-        .js-merge-topics{ data: { path: merge_admin_topics_path } }
-        = render Pajamas::ButtonComponent.new(href: new_admin_topic_path, variant: 'confirm', size: 'small') do
-          = _('New topic')
-      - c.with_body do
-        %ul.content-list
-          = render partial: 'topic', collection: @topics
-        = paginate_collection @topics
+    %ul.content-list
+      = render partial: 'topic', collection: @topics
+    = paginate_collection @topics

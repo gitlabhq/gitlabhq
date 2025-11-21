@@ -5,6 +5,7 @@ import { s__ } from '~/locale';
 import { helpPagePath } from '~/helpers/help_page_helper';
 
 export default {
+  name: 'ManualVariablesEmptyState',
   components: {
     GlEmptyState,
     GlSprintf,

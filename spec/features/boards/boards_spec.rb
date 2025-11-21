@@ -18,7 +18,6 @@ require 'spec_helper'
 # - https://gitlab.com/gitlab-org/gitlab/-/issues/383970
 #
 RSpec.describe 'Project issue boards', :js, feature_category: :portfolio_management do
-  include DragTo
   include MobileHelpers
   include BoardHelpers
 
@@ -203,7 +202,10 @@ RSpec.describe 'Project issue boards', :js, feature_category: :portfolio_managem
 
       context 'lists' do
         it 'changes position of list' do
-          drag(list_from_index: 2, list_to_index: 1, selector: '.board-header')
+          headers = all('.board-header')
+          from_item = headers.at(2)
+          to_item = headers.at(1)
+          from_item.drag_to(to_item)
 
           expect(all('[data-testid="board-list"]')[1]).to have_content(development.title)
           expect(all('[data-testid="board-list"]')[2]).to have_content(planning.title)
@@ -223,7 +225,12 @@ RSpec.describe 'Project issue boards', :js, feature_category: :portfolio_managem
           it 'changes position of list' do
             visit_project_board_path_without_query_limit(project, board)
 
-            drag(list_from_index: 0, list_to_index: 1, selector: '.board-header')
+            headers = all('.board-header')
+            from_item = headers.at(0)
+            to_item = headers.at(1)
+            from_item.drag_to(to_item)
+
+            wait_for_all_requests
 
             expect(all('[data-testid="board-list"]')[0]).to have_content(development.title)
             expect(all('[data-testid="board-list"]')[1]).to have_content(planning.title)
@@ -240,7 +247,10 @@ RSpec.describe 'Project issue boards', :js, feature_category: :portfolio_managem
           expect(page).to have_selector(selector, text: development.title, count: 1)
 
           inspect_requests(inject_headers: { 'X-GITLAB-DISABLE-SQL-QUERY-LIMIT' => 'https://gitlab.com/gitlab-org/gitlab/-/issues/323426' }) do
-            drag(list_from_index: 2, list_to_index: 1, selector: '.board-header', perform_drop: false)
+            headers = all('.board-header')
+            from_item = headers.at(2)
+            to_item = headers.at(1)
+            from_item.drag_to(to_item)
           end
 
           expect(page).to have_selector(selector, text: development.title, count: 1)
@@ -584,5 +594,21 @@ RSpec.describe 'Project issue boards', :js, feature_category: :portfolio_managem
     inspect_requests(inject_headers: { 'X-GITLAB-DISABLE-SQL-QUERY-LIMIT' => 'https://gitlab.com/gitlab-org/gitlab/-/issues/323426' }) do
       visit_project_board(project, board)
     end
+  end
+
+  def drag(selector: '.board-list', list_from_index: 0, from_index: 0, to_index: 0, list_to_index: 0)
+    # ensure there is enough horizontal space for four lists
+    resize_window(2000, 800)
+
+    lists = all(selector)
+    from_list = lists.at(list_from_index)
+    from_item = from_list.all('.board-card').at(from_index)
+    to_list = lists.at(list_to_index)
+
+    to_item = to_list.all('.board-card').at(to_index).presence || to_list
+
+    from_item.drag_to(to_item)
+
+    wait_for_requests
   end
 end

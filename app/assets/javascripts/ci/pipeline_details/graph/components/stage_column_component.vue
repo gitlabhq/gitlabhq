@@ -11,6 +11,7 @@ import JobGroupDropdown from './job_group_dropdown.vue';
 import JobItem from './job_item.vue';
 
 export default {
+  name: 'StageColumnComponent',
   components: {
     ActionComponent,
     JobGroupDropdown,

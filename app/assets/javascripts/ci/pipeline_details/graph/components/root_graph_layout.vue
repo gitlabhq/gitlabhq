@@ -2,6 +2,7 @@
 import { GlCard } from '@gitlab/ui';
 
 export default {
+  name: 'RootGraphLayout',
   components: {
     GlCard,
   },

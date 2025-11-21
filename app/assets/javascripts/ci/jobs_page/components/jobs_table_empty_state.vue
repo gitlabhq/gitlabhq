@@ -3,6 +3,7 @@ import { GlEmptyState } from '@gitlab/ui';
 import { s__ } from '~/locale';
 
 export default {
+  name: 'JobsTableEmptyState',
   i18n: {
     title: s__('Jobs|Use jobs to automate your tasks'),
     description: s__(

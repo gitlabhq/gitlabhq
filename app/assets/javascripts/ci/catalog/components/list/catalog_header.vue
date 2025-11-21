@@ -11,6 +11,7 @@ const defaultDescription = s__(
 );
 
 export default {
+  name: 'CatalogHeader',
   components: {
     GlBanner,
     GlLink,

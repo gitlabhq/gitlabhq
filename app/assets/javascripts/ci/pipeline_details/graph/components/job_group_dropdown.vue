@@ -18,6 +18,7 @@ import JobItem from './job_item.vue';
  *
  */
 export default {
+  name: 'JobGroupDropdown',
   components: {
     JobDropdownItem,
     JobItem,

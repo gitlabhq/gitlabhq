@@ -31425,10 +31425,25 @@ paths:
         required: false
       - in: formData
         name: namespace
-        description: The ID or name of the namespace that the project will be imported
-          into. Defaults to the current user's namespace.
+        description: "(deprecated) The ID or path of the namespace to import the project
+          to. Defaults to the current user's namespace."
         type: string
         required: false
+      - in: formData
+        name: namespace_id
+        description: The ID of the namespace that the project will be imported into.
+          Defaults to the current user's namespace.
+        type: integer
+        format: int32
+        required: false
+        example: 1
+      - in: formData
+        name: namespace_path
+        description: The path of the namespace that the project will be imported into.
+          Defaults to the current user's namespace.
+        type: string
+        required: false
+        example: new_path/gitlab
       - in: formData
         name: overwrite
         description: If there is a project in the same namespace and with the same
@@ -32127,10 +32142,25 @@ paths:
         required: false
       - in: formData
         name: namespace
-        description: The ID or name of the namespace that the project will be imported
-          into. Defaults to the current user's namespace.
+        description: "(deprecated) The ID or path of the namespace to import the project
+          to. Defaults to the current user's namespace."
         type: string
         required: false
+      - in: formData
+        name: namespace_id
+        description: The ID of the namespace that the project will be imported into.
+          Defaults to the current user's namespace.
+        type: integer
+        format: int32
+        required: false
+        example: 1
+      - in: formData
+        name: namespace_path
+        description: The path of the namespace that the project will be imported into.
+          Defaults to the current user's namespace.
+        type: string
+        required: false
+        example: new_path/gitlab
       - in: formData
         name: overwrite
         description: If there is a project in the same namespace and with the same
@@ -32908,10 +32938,25 @@ paths:
         required: false
       - in: formData
         name: namespace
-        description: The ID or name of the namespace that the project will be imported
-          into. Defaults to the current user's namespace.
+        description: "(deprecated) The ID or path of the namespace to import the project
+          to. Defaults to the current user's namespace."
         type: string
         required: false
+      - in: formData
+        name: namespace_id
+        description: The ID of the namespace that the project will be imported into.
+          Defaults to the current user's namespace.
+        type: integer
+        format: int32
+        required: false
+        example: 1
+      - in: formData
+        name: namespace_path
+        description: The path of the namespace that the project will be imported into.
+          Defaults to the current user's namespace.
+        type: string
+        required: false
+        example: new_path/gitlab
       - in: formData
         name: overwrite
         description: If there is a project in the same namespace and with the same

@@ -5,6 +5,7 @@ import LinkCell from '~/ci/runner/components/cells/link_cell.vue';
 import { getIdFromGraphQLId } from '~/graphql_shared/utils';
 
 export default {
+  name: 'PipelineCell',
   i18n: {
     stageLabel: s__('Jobs|Stage'),
   },

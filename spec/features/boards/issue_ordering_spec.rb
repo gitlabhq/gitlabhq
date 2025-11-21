@@ -3,8 +3,6 @@
 require 'spec_helper'
 
 RSpec.describe 'Issue Boards', :js, feature_category: :portfolio_management do
-  include DragTo
-
   let(:project) { create(:project, :public) }
   let(:board) { create(:board, project: project) }
   let(:user) { create(:user) }
@@ -37,7 +35,7 @@ RSpec.describe 'Issue Boards', :js, feature_category: :portfolio_management do
     end
 
     it 'moves un-ordered issue to top of list' do
-      drag(from_index: 3, to_index: 0, duration: 1180)
+      drag(from_index: 3, to_index: 0)
 
       wait_for_requests
 
@@ -105,7 +103,7 @@ RSpec.describe 'Issue Boards', :js, feature_category: :portfolio_management do
     end
 
     it 'moves from bottom to top', quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/546388' do
-      drag(from_index: 2, to_index: 0, duration: 1020)
+      drag(from_index: 2, to_index: 0)
 
       wait_for_requests
 
@@ -192,7 +190,15 @@ RSpec.describe 'Issue Boards', :js, feature_category: :portfolio_management do
     end
 
     it 'moves to bottom of another list' do
-      drag(list_from_index: 1, list_to_index: 2, to_index: 3, duration: 1020, extra_height: 50)
+      lists = all('.board-list')
+      from_list = lists.at(1)
+      from_item = from_list.all('.board-card').at(0)
+      to_list = lists.at(2)
+
+      # drag to the footer of the last card to ensure from_item is dropped below
+      to_item = to_list.all('.board-card').last.find('.board-card-footer')
+
+      from_item.drag_to(to_item)
 
       wait_for_requests
 
@@ -218,16 +224,14 @@ RSpec.describe 'Issue Boards', :js, feature_category: :portfolio_management do
     end
   end
 
-  def drag(selector: '.board-list', list_from_index: 1, from_index: 0, to_index: 0, list_to_index: 1, duration: 1000, extra_height: 0)
-    drag_to(
-      selector: selector,
-      scrollable: '#board-app',
-      list_from_index: list_from_index,
-      from_index: from_index,
-      to_index: to_index,
-      list_to_index: list_to_index,
-      duration: duration,
-      extra_height: extra_height
-    )
+  def drag(selector: '.board-list', list_from_index: 1, from_index: 0, to_index: 0, list_to_index: 1)
+    lists = all(selector)
+    from_list = lists.at(list_from_index)
+    from_item = from_list.all('.board-card').at(from_index)
+    to_list = lists.at(list_to_index)
+
+    to_item = to_list.all('.board-card').at(to_index)
+
+    from_item.drag_to(to_item)
   end
 end

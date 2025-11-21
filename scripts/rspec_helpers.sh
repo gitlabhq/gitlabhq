@@ -264,7 +264,7 @@ function rspec_parallelized_job() {
   read -ra job_name <<< "${CI_JOB_NAME}"
   local test_tool="${job_name[0]}"
   local test_level="${job_name[1]}"
-  # e.g. 'rspec unit pg14 1/24 278964' would become 'rspec_unit_pg14_1_24_278964'
+  # e.g. 'rspec unit pg16 1/24 278964' would become 'rspec_unit_pg16_1_24_278964'
   local report_name=$(echo "${CI_JOB_NAME} ${CI_PROJECT_ID}" | sed -E 's|[/ ]|_|g')
   local rspec_opts="--force-color ${1:-}"
   local rspec_tests_mapping_enabled="${GLCI_PREDICTIVE_RSPEC_TESTS_MAPPING_ENABLED:-}"

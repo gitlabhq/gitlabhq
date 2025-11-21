@@ -11,6 +11,7 @@ import {
 } from '../../constants';
 
 export default {
+  name: 'CatalogSearch',
   components: {
     GlSearchBoxByClick,
     GlSorting,

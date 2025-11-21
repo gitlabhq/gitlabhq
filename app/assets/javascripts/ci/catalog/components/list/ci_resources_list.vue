@@ -4,6 +4,7 @@ import { GlKeysetPagination } from '@gitlab/ui';
 import CiResourcesListItem from './ci_resources_list_item.vue';
 
 export default {
+  name: 'CiResourcesList',
   components: {
     CiResourcesListItem,
     GlKeysetPagination,

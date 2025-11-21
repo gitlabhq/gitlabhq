@@ -183,6 +183,8 @@ export default {
           },
           this.searchAbortController.signal,
         );
+
+        this.isSearching = false;
       } catch (error) {
         const requestCancelled = axios.isCancel(error);
 
@@ -190,10 +192,11 @@ export default {
           this.errorMessage = s__(
             'SecurityTrackedRefs|Could not search refs. Please try again later.',
           );
+
+          this.isSearching = false;
         }
       } finally {
         this.searchAbortController = null;
-        this.isSearching = false;
       }
     },
     isRefSelected(ref) {

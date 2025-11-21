@@ -10,6 +10,7 @@ import JobCell from './job_cells/job_cell.vue';
 import PipelineCell from './job_cells/pipeline_cell.vue';
 
 export default {
+  name: 'JobsTable',
   components: {
     ActionsCell,
     StatusCell,

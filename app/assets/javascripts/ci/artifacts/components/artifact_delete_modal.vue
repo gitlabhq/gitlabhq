@@ -9,6 +9,7 @@ import {
 } from '../constants';
 
 export default {
+  name: 'ArtifactDeleteModal',
   components: {
     GlModal,
   },

@@ -18,6 +18,7 @@ title: Database development guidelines
 ## Upgrade
 
 - [Timeline for version upgrades](pg_upgrade_timeline.md)
+- [Database upgrade DDL lock](database_upgrade_ddl_lock.md)
 
 ## Tooling
 

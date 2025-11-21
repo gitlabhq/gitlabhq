@@ -30,7 +30,7 @@ export default {
   <gl-button
     v-gl-tooltip.right="isIconOnly ? text : ''"
     :class="[
-      'super-sidebar-nav-item !gl-mx-3 !-gl-mt-2 !gl-mb-2 !gl-justify-start !gl-px-[0.375rem] !gl-py-2 gl-font-semibold',
+      'super-sidebar-nav-item !gl-mx-3 !-gl-mt-2 !gl-mb-2 !gl-justify-start !gl-px-[0.375rem] !gl-py-2',
       { 'gl-gap-3': !isIconOnly },
     ]"
     :button-text-classes="isIconOnly ? 'gl-hidden' : null"

@@ -21,6 +21,7 @@ import getJobQuery from '../graphql/queries/get_job.query.graphql';
 import jobCiStatusUpdatedSubscription from '../graphql/subscriptions/job_ci_status_updated.subscription.graphql';
 
 export default {
+  name: 'JobHeader',
   components: {
     CiIcon,
     GlAvatarLabeled,

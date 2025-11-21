@@ -19,6 +19,7 @@ import JobRunnerTypeToken from './tokens/job_runner_type_token.vue';
 import JobKindToken from './tokens/job_kind_token.vue';
 
 export default {
+  name: 'JobsFilteredSearch',
   components: {
     GlFilteredSearch,
   },

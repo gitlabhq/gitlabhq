@@ -11,11 +11,6 @@ class MergeRequestDiff < ApplicationRecord
   include ObjectStorable
   include FromUnion
 
-  ignore_columns %i[
-    id_convert_to_bigint
-    merge_request_id_convert_to_bigint
-  ], remove_with: '18.7', remove_after: '2025-11-20'
-
   STORE_COLUMN = :external_diff_store
 
   # Don't display more than 100 commits at once

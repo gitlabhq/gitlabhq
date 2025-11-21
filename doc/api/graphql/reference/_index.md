@@ -2973,6 +2973,8 @@ Input type: `AiDuoWorkflowCreateInput`
 | <a id="mutationaiduoworkflowcreateclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
 | <a id="mutationaiduoworkflowcreateenvironment"></a>`environment` | [`WorkflowEnvironment`](#workflowenvironment) | Environment for the workflow. |
 | <a id="mutationaiduoworkflowcreategoal"></a>`goal` | [`String`](#string) | Goal of the workflow. |
+| <a id="mutationaiduoworkflowcreateissueid"></a>`issueId` | [`BigInt`](#bigint) | IID of the noteable (Issue) that the workflow is associated with. |
+| <a id="mutationaiduoworkflowcreatemergerequestid"></a>`mergeRequestId` | [`BigInt`](#bigint) | IID of the noteable (MergeRequest) that the workflow is associated with. |
 | <a id="mutationaiduoworkflowcreatenamespaceid"></a>`namespaceId` | [`NamespaceID`](#namespaceid) | Global ID of the namespace the user is acting on. |
 | <a id="mutationaiduoworkflowcreatepreapprovedagentprivileges"></a>`preApprovedAgentPrivileges` | [`[Int!]`](#int) | Actions the agent can perform without asking for approval. |
 | <a id="mutationaiduoworkflowcreateprojectid"></a>`projectId` | [`ProjectID`](#projectid) | Global ID of the project the user is acting on. |
@@ -26939,6 +26941,28 @@ GitLab CI/CD configuration template.
 | <a id="citemplatecontent"></a>`content` | [`String!`](#string) | Contents of the CI template. |
 | <a id="citemplatename"></a>`name` | [`String!`](#string) | Name of the CI template. |
 
+### `CleanupPolicyLastRunDetailedMetrics`
+
+Represents the metrics of the last run virtual registry cleanup policy.
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="cleanuppolicylastrundetailedmetricscontainer"></a>`container` {{< icon name="warning-solid" >}} | [`CleanupPolicyLastRunUpstreamMetrics`](#cleanuppolicylastrunupstreammetrics) | **Introduced** in GitLab 18.7. **Status**: Experiment. Last run detail metrics of container. |
+| <a id="cleanuppolicylastrundetailedmetricsmaven"></a>`maven` {{< icon name="warning-solid" >}} | [`CleanupPolicyLastRunUpstreamMetrics`](#cleanuppolicylastrunupstreammetrics) | **Introduced** in GitLab 18.7. **Status**: Experiment. Last run detail metrics of maven. |
+
+### `CleanupPolicyLastRunUpstreamMetrics`
+
+Represents the metrics of the last run virtual registry cleanup policy of an upstream.
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="cleanuppolicylastrunupstreammetricsdeletedentriescount"></a>`deletedEntriesCount` {{< icon name="warning-solid" >}} | [`Int!`](#int) | **Introduced** in GitLab 18.7. **Status**: Experiment. Number of entries deleted. |
+| <a id="cleanuppolicylastrunupstreammetricsdeletedsize"></a>`deletedSize` {{< icon name="warning-solid" >}} | [`Int!`](#int) | **Introduced** in GitLab 18.7. **Status**: Experiment. Size in bytes of data deleted. |
+
 ### `CloudConnectorProbeResult`
 
 #### Fields
@@ -31662,6 +31686,7 @@ GPG signature for a signed commit.
 | <a id="groupupdatedat"></a>`updatedAt` | [`Time`](#time) | Timestamp of when the group was last updated. |
 | <a id="groupuserpermissions"></a>`userPermissions` | [`GroupPermissions!`](#grouppermissions) | Permissions for the current user on the resource. |
 | <a id="groupvaluestreamanalytics"></a>`valueStreamAnalytics` | [`ValueStreamAnalytics`](#valuestreamanalytics) | Information about Value Stream Analytics within the group. |
+| <a id="groupvirtualregistriescleanuppolicy"></a>`virtualRegistriesCleanupPolicy` {{< icon name="warning-solid" >}} | [`VirtualRegistryCleanupPolicy`](#virtualregistrycleanuppolicy) | **Introduced** in GitLab 18.7. **Status**: Experiment. Virtual registries cleanup policy of the group. Returns null if the `maven_virtual_registry` or `virtual_registry_cleanup_policies`feature flag is disabled. |
 | <a id="groupvirtualregistriespackagesmavenregistries"></a>`virtualRegistriesPackagesMavenRegistries` {{< icon name="warning-solid" >}} | [`MavenRegistryConnection`](#mavenregistryconnection) | **Introduced** in GitLab 18.6. **Status**: Experiment. Maven virtual registries registered to the group. Returns null if the `maven_virtual_registry` feature flag is disabled. |
 | <a id="groupvirtualregistriessetting"></a>`virtualRegistriesSetting` {{< icon name="warning-solid" >}} | [`VirtualRegistriesSetting`](#virtualregistriessetting) | **Introduced** in GitLab 18.5. **Status**: Experiment. Virtual registries settings for the group. Returns null if the `maven_virtual_registry` feature flag is disabled. |
 | <a id="groupvisibility"></a>`visibility` | [`String`](#string) | Visibility of the namespace. |
@@ -46339,6 +46364,28 @@ Root group level virtual registries settings.
 | ---- | ---- | ----------- |
 | <a id="virtualregistriessettingenabled"></a>`enabled` | [`Boolean!`](#boolean) | Indicates whether virtual registries are enabled for the group. |
 
+### `VirtualRegistryCleanupPolicy`
+
+Represents a virtual registry cleanup policy.
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="virtualregistrycleanuppolicycadence"></a>`cadence` {{< icon name="warning-solid" >}} | [`Int!`](#int) | **Introduced** in GitLab 18.7. **Status**: Experiment. Frequency in days for running the cleanup policy. Valid values: 1, 7, 14, 30, 90. |
+| <a id="virtualregistrycleanuppolicycreatedat"></a>`createdAt` {{< icon name="warning-solid" >}} | [`Time!`](#time) | **Introduced** in GitLab 18.7. **Status**: Experiment. Timestamp when the cleanup policy was created. |
+| <a id="virtualregistrycleanuppolicyenabled"></a>`enabled` {{< icon name="warning-solid" >}} | [`Boolean!`](#boolean) | **Introduced** in GitLab 18.7. **Status**: Experiment. Whether the cleanup policy is enabled. |
+| <a id="virtualregistrycleanuppolicyfailuremessage"></a>`failureMessage` {{< icon name="warning-solid" >}} | [`String`](#string) | **Introduced** in GitLab 18.7. **Status**: Experiment. Error message when the cleanup policy fails. |
+| <a id="virtualregistrycleanuppolicygroupid"></a>`groupId` {{< icon name="warning-solid" >}} | [`ID!`](#id) | **Introduced** in GitLab 18.7. **Status**: Experiment. ID of the Group. |
+| <a id="virtualregistrycleanuppolicykeepndaysafterdownload"></a>`keepNDaysAfterDownload` {{< icon name="warning-solid" >}} | [`Int!`](#int) | **Introduced** in GitLab 18.7. **Status**: Experiment. Number of days to keep cached entries after their last download. |
+| <a id="virtualregistrycleanuppolicylastrunat"></a>`lastRunAt` {{< icon name="warning-solid" >}} | [`Time`](#time) | **Introduced** in GitLab 18.7. **Status**: Experiment. Last time that the virtual registry cleanup policy executed. |
+| <a id="virtualregistrycleanuppolicylastrundeletedentriescount"></a>`lastRunDeletedEntriesCount` {{< icon name="warning-solid" >}} | [`Int`](#int) | **Introduced** in GitLab 18.7. **Status**: Experiment. Number of entries deleted during the last cleanup run. |
+| <a id="virtualregistrycleanuppolicylastrundeletedsize"></a>`lastRunDeletedSize` {{< icon name="warning-solid" >}} | [`Int`](#int) | **Introduced** in GitLab 18.7. **Status**: Experiment. Size in bytes of data deleted during the last cleanup run. |
+| <a id="virtualregistrycleanuppolicylastrundetailedmetrics"></a>`lastRunDetailedMetrics` {{< icon name="warning-solid" >}} | [`CleanupPolicyLastRunDetailedMetrics`](#cleanuppolicylastrundetailedmetrics) | **Introduced** in GitLab 18.7. **Status**: Experiment. Detailed metrics from the last cleanup run. |
+| <a id="virtualregistrycleanuppolicynextrunat"></a>`nextRunAt` {{< icon name="warning-solid" >}} | [`Time`](#time) | **Introduced** in GitLab 18.7. **Status**: Experiment. Next time the virtual registry cleanup policy runs. |
+| <a id="virtualregistrycleanuppolicystatus"></a>`status` {{< icon name="warning-solid" >}} | [`PolicyStatus!`](#policystatus) | **Introduced** in GitLab 18.7. **Status**: Experiment. Current execution status of the cleanup policy. |
+| <a id="virtualregistrycleanuppolicyupdatedat"></a>`updatedAt` {{< icon name="warning-solid" >}} | [`Time!`](#time) | **Introduced** in GitLab 18.7. **Status**: Experiment. Timestamp when the cleanup policy was last updated. |
+
 ### `VulnerabilitiesCountByDay`
 
 Represents the count of vulnerabilities by severity on a particular day. This data is retained for 365 days.
@@ -51536,6 +51583,16 @@ Types of security policy project created status.
 | ----- | ----------- |
 | <a id="policyprojectcreatedstatuserror"></a>`ERROR` | Creating the security policy project faild. |
 | <a id="policyprojectcreatedstatussuccess"></a>`SUCCESS` | Creating the security policy project was successful. |
+
+### `PolicyStatus`
+
+Lists the status of a virtual registry cleanup policy.
+
+| Value | Description |
+| ----- | ----------- |
+| <a id="policystatusfailed"></a>`FAILED` | Cleanup policy status failed. |
+| <a id="policystatusrunning"></a>`RUNNING` | Cleanup policy status running. |
+| <a id="policystatusscheduled"></a>`SCHEDULED` | Cleanup policy status scheduled. |
 
 ### `PolicyType`
 

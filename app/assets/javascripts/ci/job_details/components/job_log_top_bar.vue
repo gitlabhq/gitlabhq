@@ -7,6 +7,7 @@ import { s__, n__, sprintf } from '~/locale';
 import { compactJobLog, getLineText } from '~/ci/job_details/utils';
 
 export default {
+  name: 'JobLogTopBar',
   i18n: {
     scrollToBottomButtonLabel: s__('Job|Scroll to bottom'),
     scrollToTopButtonLabel: s__('Job|Scroll to top'),

@@ -7,6 +7,7 @@ import HelpIcon from '~/vue_shared/components/help_icon/help_icon.vue';
 import { CI_CONFIG_STATUS_VALID } from '~/ci/pipeline_editor/constants';
 
 export default {
+  name: 'CiLint',
   components: {
     GlButton,
     GlFormCheckbox,

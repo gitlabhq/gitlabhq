@@ -5,6 +5,7 @@ import { __ } from '~/locale';
 const DEFAULT_TD_CLASSES = '!gl-text-sm';
 
 export default {
+  name: 'TriggerBlock',
   fields: [
     {
       key: 'key',

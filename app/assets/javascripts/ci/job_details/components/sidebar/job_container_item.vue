@@ -5,6 +5,7 @@ import { sprintf } from '~/locale';
 import CiIcon from '~/vue_shared/components/ci_icon/ci_icon.vue';
 
 export default {
+  name: 'JobContainerItem',
   components: {
     CiIcon,
     GlIcon,

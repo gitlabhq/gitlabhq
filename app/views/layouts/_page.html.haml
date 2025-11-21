@@ -63,8 +63,7 @@
           class: 'gl-@container/panel !gl-absolute gl-shadow-lg @xl/content-panels:gl-w-1/2 @xl/content-panels:gl-shadow-none @xl/content-panels:!gl-relative'
         }
 
-    .paneled-view.ai-panels
-      = dispensable_render_if_exists 'layouts/duo_chat_panel'
+    = dispensable_render_if_exists 'layouts/duo_chat_panel'
 
   - else
     - @content_wrapper_class = "#{@content_wrapper_class || ""} gl-@container" if project_studio_enabled?

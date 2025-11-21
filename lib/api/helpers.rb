@@ -114,7 +114,7 @@ module API
       ::Current.organization = Gitlab::Current::Organization.new(
         params: {},
         user: user,
-        headers: request.headers
+        rack_env: request.env
       ).organization
     end
 

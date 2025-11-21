@@ -2,6 +2,7 @@
 import { GlSkeletonLoader } from '@gitlab/ui';
 
 export default {
+  name: 'CatalogListSkeletonLoader',
   components: {
     GlSkeletonLoader,
   },

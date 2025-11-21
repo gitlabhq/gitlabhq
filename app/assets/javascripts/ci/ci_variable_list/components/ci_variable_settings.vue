@@ -4,6 +4,7 @@ import CiVariableDrawer from './ci_variable_drawer.vue';
 import CiVariableTable from './ci_variable_table.vue';
 
 export default {
+  name: 'CiVariableSettings',
   components: {
     CiVariableDrawer,
     CiVariableTable,

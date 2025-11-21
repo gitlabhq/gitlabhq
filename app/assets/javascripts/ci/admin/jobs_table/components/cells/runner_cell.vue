@@ -4,6 +4,7 @@ import RunnerTypeIcon from '~/ci/runner/components/runner_type_icon.vue';
 import { RUNNER_EMPTY_TEXT, RUNNER_NO_DESCRIPTION } from '../../constants';
 
 export default {
+  name: 'RunnerCell',
   i18n: {
     emptyRunnerText: RUNNER_EMPTY_TEXT,
     noRunnerDescription: RUNNER_NO_DESCRIPTION,

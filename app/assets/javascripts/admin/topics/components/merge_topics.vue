@@ -86,7 +86,7 @@ export default {
 </script>
 <template>
   <div>
-    <gl-button v-gl-modal="$options.modal.id" category="secondary" size="small">{{
+    <gl-button v-gl-modal="$options.modal.id" category="secondary">{{
       $options.i18n.title
     }}</gl-button>
     <gl-modal

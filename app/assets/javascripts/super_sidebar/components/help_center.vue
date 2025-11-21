@@ -255,8 +255,7 @@ export default {
       data-track-property="nav_whats_new"
       :aria-label="$options.i18n.whatsnew"
       :button-text-classes="{
-        'gl-w-full gl-flex gl-items-center gl-justify-between gl-font-semibold !gl-text-default':
-          !isIconOnly,
+        'gl-w-full gl-flex gl-items-center gl-justify-between !gl-text-default': !isIconOnly,
         'gl-hidden': isIconOnly,
       }"
       @click="showWhatsNew"
@@ -287,7 +286,7 @@ export default {
           v-gl-tooltip.right="isIconOnly ? $options.i18n.help : ''"
           category="tertiary"
           icon="question-o"
-          class="super-sidebar-help-center-toggle super-sidebar-nav-item gl-w-full !gl-justify-start gl-gap-3 !gl-px-[0.375rem] !gl-py-2 gl-font-semibold"
+          class="super-sidebar-help-center-toggle super-sidebar-nav-item gl-w-full !gl-justify-start gl-gap-3 !gl-px-[0.375rem] !gl-py-2"
           :button-text-classes="{ '!gl-text-default': !isIconOnly, 'gl-hidden': isIconOnly }"
           :aria-label="$options.i18n.help"
           data-testid="sidebar-help-button"

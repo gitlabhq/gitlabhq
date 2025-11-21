@@ -37,7 +37,7 @@ and reduces navigation complexity.
 To test this feature on GitLab Self-Managed: Contact your GitLab administrator.
 Provide feedback in [issue 577554](https://gitlab.com/gitlab-org/gitlab/-/issues/577554).
 
-![Projects page with the new UI.](img/paneled_view_projects_v18_6.png)
+![Projects page with the new UI.](img/paneled_view_projects_v18_7.png)
 
 ## Turn new navigation on or off
 
@@ -86,7 +86,7 @@ The following buttons are in the upper-right corner:
 Buttons to access GitLab Duo Chat, sessions, and suggestions are visible in all GitLab views.
 They open in a sidebar and can stay open as you move across GitLab.
 
-![GitLab Duo buttons with the new UI](img/paneled_view_duo_sidebar_v18_6.png)
+![GitLab Duo buttons with the new UI](img/paneled_view_duo_sidebar_v18_7.png)
 
 ### Improved opening work items in the details panel
 

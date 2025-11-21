@@ -67,30 +67,71 @@ RSpec.describe API::ProjectImport, :aggregate_failures, feature_category: :impor
       expect(control.count).to be <= 135
     end
 
-    it 'schedules an import using a namespace' do
-      stub_import(namespace)
-      params[:namespace] = namespace.id
+    context 'when specifying a destination namespace' do
+      it 'schedules an import using a namespace ID' do
+        stub_import(namespace)
+        params[:namespace_id] = namespace.id
 
-      perform_archive_upload
+        perform_archive_upload
 
-      expect(json_response).to include({
-        'id' => kind_of(Integer),
-        'name' => 'test-import',
-        'name_with_namespace' => "#{namespace.name} / test-import",
-        'path' => 'test-import',
-        'import_type' => 'gitlab_project',
-        'path_with_namespace' => "#{namespace.path}/test-import"
-      })
-      expect(response).to have_gitlab_http_status(:created)
-    end
+        expect(json_response).to include({
+          'id' => kind_of(Integer),
+          'name' => 'test-import',
+          'name_with_namespace' => "#{namespace.name} / test-import",
+          'path' => 'test-import',
+          'import_type' => 'gitlab_project',
+          'path_with_namespace' => "#{namespace.path}/test-import"
+        })
+        expect(response).to have_gitlab_http_status(:created)
+      end
 
-    it 'schedules an import using the namespace path' do
-      stub_import(namespace)
-      params[:namespace] = namespace.full_path
+      it 'schedules an import using the namespace path' do
+        stub_import(namespace)
+        params[:namespace_path] = namespace.full_path
 
-      perform_archive_upload
+        perform_archive_upload
 
-      expect(response).to have_gitlab_http_status(:created)
+        expect(response).to have_gitlab_http_status(:created)
+      end
+
+      it 'requires that only one namespace parameter is provided' do
+        params[:namespace] = namespace.id
+        params[:namespace_id] = namespace.id
+        params[:namespace_path] = namespace.full_path
+
+        perform_archive_upload
+
+        expect(response).to have_gitlab_http_status(:bad_request)
+        expect(json_response['error']).to eq('namespace, namespace_id, namespace_path are mutually exclusive')
+      end
+
+      context 'when using the deprecated `namespace` parameter' do
+        it 'finds the namespace by the provided ID' do
+          stub_import(namespace)
+          params[:namespace] = namespace.id
+
+          perform_archive_upload
+
+          expect(json_response).to include({
+            'id' => kind_of(Integer),
+            'name' => 'test-import',
+            'name_with_namespace' => "#{namespace.name} / test-import",
+            'path' => 'test-import',
+            'import_type' => 'gitlab_project',
+            'path_with_namespace' => "#{namespace.path}/test-import"
+          })
+          expect(response).to have_gitlab_http_status(:created)
+        end
+
+        it 'finds the namespace by the provided path' do
+          stub_import(namespace)
+          params[:namespace] = namespace.full_path
+
+          perform_archive_upload
+
+          expect(response).to have_gitlab_http_status(:created)
+        end
+      end
     end
 
     context 'when a name is explicitly set' do
@@ -99,7 +140,7 @@ RSpec.describe API::ProjectImport, :aggregate_failures, feature_category: :impor
       it 'schedules an import using a namespace and a different name' do
         stub_import(namespace)
         params[:name] = expected_name
-        params[:namespace] = namespace.id
+        params[:namespace_id] = namespace.id
 
         perform_archive_upload
 
@@ -109,7 +150,7 @@ RSpec.describe API::ProjectImport, :aggregate_failures, feature_category: :impor
       it 'schedules an import using the namespace path and a different name' do
         stub_import(namespace)
         params[:name] = expected_name
-        params[:namespace] = namespace.full_path
+        params[:namespace_path] = namespace.full_path
 
         perform_archive_upload
 
@@ -119,7 +160,7 @@ RSpec.describe API::ProjectImport, :aggregate_failures, feature_category: :impor
       it 'sets name correctly' do
         stub_import(namespace)
         params[:name] = expected_name
-        params[:namespace] = namespace.full_path
+        params[:namespace_path] = namespace.full_path
 
         perform_archive_upload
 
@@ -130,7 +171,7 @@ RSpec.describe API::ProjectImport, :aggregate_failures, feature_category: :impor
       it 'sets name correctly with an overwrite' do
         stub_import(namespace)
         params[:name] = 'new project name'
-        params[:namespace] = namespace.full_path
+        params[:namespace_path] = namespace.full_path
         params[:overwrite] = true
 
         perform_archive_upload
@@ -142,7 +183,7 @@ RSpec.describe API::ProjectImport, :aggregate_failures, feature_category: :impor
       it 'schedules an import using the path and name explicitly set to nil' do
         stub_import(namespace)
         params[:name] = nil
-        params[:namespace] = namespace.full_path
+        params[:namespace_path] = namespace.full_path
 
         perform_archive_upload
 
@@ -178,30 +219,54 @@ RSpec.describe API::ProjectImport, :aggregate_failures, feature_category: :impor
       end
     end
 
-    it 'does not schedule an import for a namespace that does not exist' do
-      expect_any_instance_of(ProjectImportState).not_to receive(:schedule)
-      expect(::Projects::CreateService).not_to receive(:new)
+    context 'when specified namespace does not exist', :aggregate_failures do
+      it 'does not schedule an import when specifying namespace_id' do
+        expect(::Import::GitlabProjects::CreateProjectService).not_to receive(:new)
 
-      params[:namespace] = 'nonexistent'
-      params[:path] = 'test-import2'
+        params[:namespace_id] = Group.maximum(:id) + 1_000
 
-      perform_archive_upload
+        perform_archive_upload
 
-      expect(response).to have_gitlab_http_status(:not_found)
-      expect(json_response['message']).to eq('404 Namespace Not Found')
+        expect(response).to have_gitlab_http_status(:not_found)
+        expect(json_response['message']).to eq('404 Namespace Not Found')
+      end
+
+      it 'does not schedule an import when specifying namespace_path' do
+        expect(::Import::GitlabProjects::CreateProjectService).not_to receive(:new)
+
+        params[:namespace_path] = 'nonexistent'
+
+        perform_archive_upload
+
+        expect(response).to have_gitlab_http_status(:not_found)
+        expect(json_response['message']).to eq('404 Namespace Not Found')
+      end
     end
 
-    it 'does not schedule an import if the user has no permission to the namespace' do
-      expect_any_instance_of(ProjectImportState).not_to receive(:schedule)
+    context 'when the user has no permission to the namespace', :aggregate_failures do
+      let_it_be(:new_namespace) { create(:group) }
 
-      new_namespace = create(:group)
-      params[:path] = 'test-import3'
-      params[:namespace] = new_namespace.full_path
+      it 'does not schedule an import when specifying namespace_id' do
+        expect(::Import::GitlabProjects::CreateProjectService).not_to receive(:new)
 
-      perform_archive_upload
+        params[:namespace_id] = new_namespace.id
 
-      expect(response).to have_gitlab_http_status(:not_found)
-      expect(json_response['message']).to eq('404 Namespace Not Found')
+        perform_archive_upload
+
+        expect(response).to have_gitlab_http_status(:not_found)
+        expect(json_response['message']).to eq('404 Namespace Not Found')
+      end
+
+      it 'does not schedule an import when specifying namespace_path' do
+        expect(::Import::GitlabProjects::CreateProjectService).not_to receive(:new)
+
+        params[:namespace_path] = new_namespace.full_path
+
+        perform_archive_upload
+
+        expect(response).to have_gitlab_http_status(:not_found)
+        expect(json_response['message']).to eq('404 Namespace Not Found')
+      end
     end
 
     context 'when passed in namespace is a bot user namespace' do
@@ -209,7 +274,7 @@ RSpec.describe API::ProjectImport, :aggregate_failures, feature_category: :impor
 
       it 'does not schedule an import' do
         expect_any_instance_of(ProjectImportState).not_to receive(:schedule)
-        params[:namespace] = user.namespace.full_path
+        params[:namespace_path] = user.namespace.full_path
 
         perform_archive_upload
 
@@ -237,7 +302,7 @@ RSpec.describe API::ProjectImport, :aggregate_failures, feature_category: :impor
       stub_import(namespace)
       override_params = { 'description' => 'Hello world' }
 
-      params[:namespace] = namespace.id
+      params[:namespace_id] = namespace.id
       params[:override_params] = override_params
 
       perform_archive_upload
@@ -251,7 +316,7 @@ RSpec.describe API::ProjectImport, :aggregate_failures, feature_category: :impor
       stub_import(namespace)
       override_params = { 'not_allowed' => 'Hello world' }
 
-      params[:namespace] = namespace.id
+      params[:namespace_id] = namespace.id
       params[:override_params] = override_params
 
       perform_archive_upload
@@ -295,7 +360,7 @@ RSpec.describe API::ProjectImport, :aggregate_failures, feature_category: :impor
       end
 
       it 'prevents users from importing projects' do
-        params[:namespace] = namespace.id
+        params[:namespace_id] = namespace.id
 
         perform_archive_upload
 
@@ -324,7 +389,7 @@ RSpec.describe API::ProjectImport, :aggregate_failures, feature_category: :impor
 
       it 'schedules an import' do
         stub_import(namespace)
-        params[:namespace] = namespace.id
+        params[:namespace_id] = namespace.id
 
         perform_archive_upload
 

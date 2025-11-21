@@ -1083,41 +1083,6 @@ rspec-ee system pg16 es8:
 ##########################################
 # EE/FOSS: default branch nightly scheduled jobs #
 
-# PG14
-rspec migration pg14:
-  extends:
-    - .rspec-base-pg14
-    - .rspec-base-migration
-    - .rails:rules:default-branch-schedule-nightly--code-backstage
-    - .rspec-migration-parallel
-
-rspec background_migration pg14:
-  extends:
-    - .rspec-base-pg14
-    - .rspec-base-migration
-    - .rails:rules:default-branch-schedule-nightly--code-backstage
-    - .rspec-background-migration-parallel
-
-rspec unit pg14:
-  extends:
-    - .rspec-base-pg14
-    - .rails:rules:default-branch-schedule-nightly--code-backstage
-    - .rspec-unit-parallel
-
-rspec integration pg14:
-  extends:
-    - .rspec-base-pg14
-    - .rails:rules:default-branch-schedule-nightly--code-backstage
-    - .rspec-integration-parallel
-
-rspec system pg14:
-  extends:
-    - .rspec-base-pg14
-    - .rspec-system-parallel
-  rules:
-    - !reference [".rails:rules:only-run-system-if-medium-runners-available", rules]
-    - !reference [".rails:rules:default-branch-schedule-nightly--code-backstage", rules]
-
 # PG15
 rspec migration pg15:
   extends:
@@ -1195,41 +1160,6 @@ rspec system pg17:
 
 #####################################
 # EE: default branch nightly scheduled jobs #
-
-# PG14
-rspec-ee migration pg14:
-  extends:
-    - .rspec-ee-base-pg14
-    - .rspec-base-migration
-    - .rails:rules:default-branch-schedule-nightly--code-backstage-ee-only
-    - .rspec-ee-migration-parallel
-
-rspec-ee background_migration pg14:
-  extends:
-    - .rspec-ee-base-pg14
-    - .rspec-base-migration
-    - .rails:rules:default-branch-schedule-nightly--code-backstage-ee-only
-    - .rspec-ee-background-migration-parallel
-
-rspec-ee unit pg14:
-  extends:
-    - .rspec-ee-base-pg14
-    - .rails:rules:default-branch-schedule-nightly--code-backstage-ee-only
-    - .rspec-ee-unit-parallel
-
-rspec-ee integration pg14:
-  extends:
-    - .rspec-ee-base-pg14
-    - .rails:rules:default-branch-schedule-nightly--code-backstage-ee-only
-    - .rspec-ee-integration-parallel
-
-rspec-ee system pg14:
-  extends:
-    - .rspec-ee-base-pg14
-    - .rspec-ee-system-parallel
-  rules:
-    - !reference [".rails:rules:only-run-system-if-medium-runners-available", rules]
-    - !reference [".rails:rules:default-branch-schedule-nightly--code-backstage-ee-only", rules]
 
 # PG15
 rspec-ee migration pg15:

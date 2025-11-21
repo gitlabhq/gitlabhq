@@ -14580,9 +14580,6 @@ msgstr ""
 msgid "Close design"
 msgstr ""
 
-msgid "Close file tree browser"
-msgstr ""
-
 msgid "Close milestone"
 msgstr ""
 

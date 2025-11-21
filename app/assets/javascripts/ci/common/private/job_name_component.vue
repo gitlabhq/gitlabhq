@@ -8,6 +8,7 @@ import CiIcon from '~/vue_shared/components/ci_icon/ci_icon.vue';
  *  - Dropdown badge components
  */
 export default {
+  name: 'JobNameComponent',
   components: {
     CiIcon,
   },

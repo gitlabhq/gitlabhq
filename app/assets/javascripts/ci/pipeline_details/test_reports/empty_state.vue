@@ -15,6 +15,7 @@ export const i18n = {
 };
 
 export default {
+  name: 'TestReportsEmptyState',
   i18n,
   components: {
     GlEmptyState,

@@ -117,6 +117,7 @@ export const i18n = {
 const VARIABLE_REFERENCE_REGEX = /\$/;
 
 export default {
+  name: 'CiVariableDrawer',
   DRAWER_Z_INDEX,
   components: {
     CiEnvironmentsDropdown,

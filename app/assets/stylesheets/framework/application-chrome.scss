@@ -250,12 +250,6 @@
     @apply gl-flex gl-gap-0 lg:gl-gap-3 gl-items-stretch gl-justify-start lg:gl-justify-center gl-flex-col lg:gl-flex-row lg:gl-pl-0 gl-pt-3 lg:gl-pb-3 gl-pr-3;
     min-height: 0;
     flex: 1;
-
-    // Temporarily solution to hide empty AI Chat divs
-    // empty:gl-hidden and :empty doesn't work because these empty divs have comment blocks
-    > div:not(:has(*)) {
-      @apply gl-hidden;
-    }
   }
 
   // Unset fixed positions

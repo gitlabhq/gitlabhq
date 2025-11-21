@@ -21,6 +21,7 @@ import { validateQueryData, validateMutationData } from '../utils';
 import CiVariableSettings from './ci_variable_settings.vue';
 
 export default {
+  name: 'CiVariableShared',
   components: {
     CiVariableSettings,
   },

@@ -1146,7 +1146,9 @@ RSpec.shared_examples 'work items hierarchy' do |testid, type|
       expect(page).to have_css('.tree-item:nth-child(2) .item-title', text: 'Child 2')
       expect(page).to have_css('.tree-item:nth-child(3) .item-title', text: 'Child 1')
 
-      drag_to(selector: '.sortable-container', from_index: 0, to_index: 2)
+      item = find('.tree-item:nth-child(1)')
+
+      item.drag_to(find('.tree-item:nth-child(3)'))
 
       expect(page).to have_css('.tree-item:nth-child(1) .item-title', text: 'Child 2')
       expect(page).to have_css('.tree-item:nth-child(2) .item-title', text: 'Child 1')

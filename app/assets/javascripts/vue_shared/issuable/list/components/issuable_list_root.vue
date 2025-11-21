@@ -20,7 +20,7 @@ const VueDraggable = () => import('vuedraggable');
 export default {
   vueDraggableAttributes: {
     animation: 200,
-    forceFallback: true,
+    forceFallback: false,
     ghostClass: 'gl-invisible',
     tag: 'ul',
     delay: DRAG_DELAY,

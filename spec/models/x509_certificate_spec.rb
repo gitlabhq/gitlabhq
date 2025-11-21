@@ -12,7 +12,7 @@ RSpec.describe X509Certificate, feature_category: :source_code_management do
 
   describe 'associations' do
     it { is_expected.to belong_to(:x509_issuer).required }
-    it { is_expected.to belong_to(:project) }
+    it { is_expected.to belong_to(:project).required }
   end
 
   describe '.safe_create!' do

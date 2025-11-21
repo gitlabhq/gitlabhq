@@ -24,6 +24,7 @@ import { PIPELINES_PER_PAGE } from '~/ci/pipelines_page/constants';
 import { formatPipelinesGraphQLDataToREST } from '../utils';
 
 export default {
+  name: 'PipelinesTableWrapper',
   components: {
     GlButton,
     GlEmptyState,

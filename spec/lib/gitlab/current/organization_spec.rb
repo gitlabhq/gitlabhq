@@ -27,52 +27,52 @@ RSpec.describe Gitlab::Current::Organization, feature_category: :organization do
   let_it_be(:params_with_invalid_groups_id) { { controller: 'groups', id: 'not_found' } }
   let_it_be(:params_with_invalid_group_id) { { group_id: 'not_found' } }
   let_it_be(:empty_params) { {} }
-  let_it_be(:headers_with_valid_org) { { 'X-GitLab-Organization-ID' => header_organization.id.to_s } }
-  let_it_be(:headers_with_invalid_org) { { 'X-GitLab-Organization-ID' => non_existing_record_id.to_s } }
-  let_it_be(:headers_with_zero) { { 'X-GitLab-Organization-ID' => '0' } }
-  let_it_be(:headers_with_negative) { { 'X-GitLab-Organization-ID' => '-1' } }
-  let_it_be(:headers_with_non_numeric) { { 'X-GitLab-Organization-ID' => 'abc' } }
-  let_it_be(:empty_headers) { {} }
-  let_it_be(:nil_headers) { nil }
+  let_it_be(:rack_env_with_valid_org) { { 'HTTP_X_GITLAB_ORGANIZATION_ID' => header_organization.id.to_s } }
+  let_it_be(:rack_env_with_invalid_org) { { 'HTTP_X_GITLAB_ORGANIZATION_ID' => non_existing_record_id.to_s } }
+  let_it_be(:rack_env_with_zero) { { 'HTTP_X_GITLAB_ORGANIZATION_ID' => '0' } }
+  let_it_be(:rack_env_with_negative) { { 'HTTP_X_GITLAB_ORGANIZATION_ID' => '-1' } }
+  let_it_be(:rack_env_with_non_numeric) { { 'HTTP_X_GITLAB_ORGANIZATION_ID' => 'abc' } }
+  let_it_be(:empty_rack_env) { {} }
+  let_it_be(:nil_rack_env) { nil }
 
   describe '#organization' do
     subject(:current_organization) do
-      described_class.new(params: params, user: user_param, headers: headers_param)
+      described_class.new(params: params, user: user_param, rack_env: rack_env)
     end
 
     # rubocop:disable Layout/LineLength -- Parameterized table format requires long lines
-    where(:params, :headers_param, :user_param, :expected, :enables_fallback) do
+    where(:params, :rack_env, :user_param, :expected, :enables_fallback) do
       # Valid params take precedence over everything
-      ref(:params_with_namespace_id)      | ref(:headers_with_valid_org)   | ref(:user) | ref(:organization)         | false
-      ref(:params_with_group_id)          | ref(:headers_with_valid_org)   | ref(:user) | ref(:organization)         | false
-      ref(:params_with_groups_id)         | ref(:headers_with_valid_org)   | ref(:user) | ref(:organization)         | false
-      ref(:params_with_org_path)          | ref(:headers_with_valid_org)   | ref(:user) | ref(:other_organization)   | false
+      ref(:params_with_namespace_id)      | ref(:rack_env_with_valid_org)   | ref(:user) | ref(:organization)         | false
+      ref(:params_with_group_id)          | ref(:rack_env_with_valid_org)   | ref(:user) | ref(:organization)         | false
+      ref(:params_with_groups_id)         | ref(:rack_env_with_valid_org)   | ref(:user) | ref(:organization)         | false
+      ref(:params_with_org_path)          | ref(:rack_env_with_valid_org)   | ref(:user) | ref(:other_organization)   | false
 
       # Invalid params fall back to headers, then session, then user, then default
-      ref(:params_with_invalid_namespace) | ref(:headers_with_valid_org)   | ref(:user) | ref(:header_organization)  | false
-      ref(:params_with_invalid_namespace) | ref(:empty_headers)            | ref(:user) | ref(:user_organization)    | false
-      ref(:params_with_invalid_namespace) | ref(:headers_with_invalid_org) | ref(:user) | ref(:user_organization)    | false
-      ref(:params_with_invalid_namespace) | ref(:empty_headers)            | nil        | ref(:default_organization) | true
-      ref(:params_with_invalid_namespace) | ref(:headers_with_invalid_org) | nil        | ref(:default_organization) | true
+      ref(:params_with_invalid_namespace) | ref(:rack_env_with_valid_org)   | ref(:user) | ref(:header_organization)  | false
+      ref(:params_with_invalid_namespace) | ref(:empty_rack_env)            | ref(:user) | ref(:user_organization)    | false
+      ref(:params_with_invalid_namespace) | ref(:rack_env_with_invalid_org) | ref(:user) | ref(:user_organization)    | false
+      ref(:params_with_invalid_namespace) | ref(:empty_rack_env)            | nil        | ref(:default_organization) | true
+      ref(:params_with_invalid_namespace) | ref(:rack_env_with_invalid_org) | nil        | ref(:default_organization) | true
 
       # Empty params follow same fallback chain
-      ref(:empty_params)                  | ref(:headers_with_valid_org)   | ref(:user) | ref(:header_organization)  | false
-      ref(:empty_params)                  | ref(:empty_headers)            | ref(:user) | ref(:user_organization)    | false
-      ref(:empty_params)                  | ref(:headers_with_invalid_org) | ref(:user) | ref(:user_organization)    | false
-      ref(:empty_params)                  | ref(:empty_headers)            | nil        | ref(:default_organization) | true
-      ref(:empty_params)                  | ref(:nil_headers)              | nil        | ref(:default_organization) | true
+      ref(:empty_params)                  | ref(:rack_env_with_valid_org)   | ref(:user) | ref(:header_organization)  | false
+      ref(:empty_params)                  | ref(:empty_rack_env)            | ref(:user) | ref(:user_organization)    | false
+      ref(:empty_params)                  | ref(:rack_env_with_invalid_org) | ref(:user) | ref(:user_organization)    | false
+      ref(:empty_params)                  | ref(:empty_rack_env)            | nil        | ref(:default_organization) | true
+      ref(:empty_params)                  | ref(:nil_rack_env)              | nil        | ref(:default_organization) | true
 
       # Test header regex validation - invalid formats should fall back to user/default
-      ref(:empty_params)                  | ref(:headers_with_zero)        | ref(:user) | ref(:user_organization)    | false
-      ref(:empty_params)                  | ref(:headers_with_negative)    | ref(:user) | ref(:user_organization)    | false
-      ref(:empty_params)                  | ref(:headers_with_non_numeric) | ref(:user) | ref(:user_organization)    | false
-      ref(:empty_params)                  | ref(:headers_with_zero)        | nil        | ref(:default_organization) | true
+      ref(:empty_params)                  | ref(:rack_env_with_zero)        | ref(:user) | ref(:user_organization)    | false
+      ref(:empty_params)                  | ref(:rack_env_with_negative)    | ref(:user) | ref(:user_organization)    | false
+      ref(:empty_params)                  | ref(:rack_env_with_non_numeric) | ref(:user) | ref(:user_organization)    | false
+      ref(:empty_params)                  | ref(:rack_env_with_zero)        | nil        | ref(:default_organization) | true
 
       # Test other invalid parameter types to ensure consistent fallback behavior
-      ref(:params_with_empty_namespace)   | ref(:empty_headers)            | nil        | ref(:default_organization) | true
-      ref(:params_with_invalid_groups_id) | ref(:headers_with_valid_org)   | ref(:user) | ref(:header_organization)  | false
-      ref(:params_with_invalid_org_path)  | ref(:headers_with_invalid_org) | ref(:user) | ref(:user_organization)    | false
-      ref(:params_with_invalid_group_id)  | ref(:headers_with_invalid_org) | nil        | ref(:default_organization) | true
+      ref(:params_with_empty_namespace)   | ref(:empty_rack_env)            | nil        | ref(:default_organization) | true
+      ref(:params_with_invalid_groups_id) | ref(:rack_env_with_valid_org)   | ref(:user) | ref(:header_organization)  | false
+      ref(:params_with_invalid_org_path)  | ref(:rack_env_with_invalid_org) | ref(:user) | ref(:user_organization)    | false
+      ref(:params_with_invalid_group_id)  | ref(:rack_env_with_invalid_org) | nil        | ref(:default_organization) | true
     end
     # rubocop:enable Layout/LineLength
 
@@ -102,7 +102,7 @@ RSpec.describe Gitlab::Current::Organization, feature_category: :organization do
 
     context 'when set_current_organization_from_session is disabled' do
       let(:params) { empty_params }
-      let(:headers_param) { empty_headers }
+      let(:rack_env) { empty_rack_env }
       let(:session_param) { session_with_org }
       let(:user_param) { user }
 
