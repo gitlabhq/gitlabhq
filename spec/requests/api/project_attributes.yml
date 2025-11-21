@@ -120,7 +120,6 @@ ci_cd_settings:
   computed_attributes:
     - restrict_user_defined_variables
 
-
 build_import_state: # import_state
   unexposed_attributes:
     - id
@@ -205,7 +204,7 @@ project_setting:
     - duo_context_exclusion_settings
     - duo_remote_flows_enabled
     - duo_foundational_flows_enabled
-
+    - duo_sast_fp_detection_enabled
 build_service_desk_setting: # service_desk_setting
   unexposed_attributes:
     - project_id

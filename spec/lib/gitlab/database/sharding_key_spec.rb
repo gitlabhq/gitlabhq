@@ -13,7 +13,6 @@ RSpec.describe 'new tables missing sharding_key', feature_category: :organizatio
       'web_hook_logs_daily', # temporary copy of web_hook_logs
       'uploads_9ba88c4165', # https://gitlab.com/gitlab-org/gitlab/-/issues/398199
       'merge_request_diff_files_99208b8fac', # has a desired sharding key instead
-      'notes_archived', # temp table: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/191155
       'label_links_archived', # temp table: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/206448
       'award_emoji_archived', # temp table: https://gitlab.com/gitlab-org/gitlab/-/issues/580326
       'authentication_event_archived_records', # temp table: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/202447
@@ -309,7 +308,6 @@ RSpec.describe 'new tables missing sharding_key', feature_category: :organizatio
       "abuse_report_assignees" => "https://gitlab.com/gitlab-org/gitlab/-/issues/553428",
       "labels" => "https://gitlab.com/gitlab-org/gitlab/-/issues/563889",
       "member_roles" => "https://gitlab.com/gitlab-org/gitlab/-/issues/567738",
-      "notes_archived" => "https://gitlab.com/gitlab-org/gitlab/-/issues/569521",
       "award_emoji_archived" => "https://gitlab.com/gitlab-org/gitlab/-/issues/580326",
       "system_note_metadata" => "https://gitlab.com/gitlab-org/gitlab/-/issues/571215",
       "note_diff_files" => "https://gitlab.com/gitlab-org/gitlab/-/issues/550694",

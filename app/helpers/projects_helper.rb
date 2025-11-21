@@ -1040,6 +1040,11 @@ module ProjectsHelper
         :duo_foundational_flows_enabled,
         project,
         method(:edit_group_path)
+      ),
+      duo_sast_fp_detection_cascading_settings: project_cascading_namespace_settings_tooltip_data(
+        :duo_sast_fp_detection_enabled,
+        project,
+        method(:edit_group_path)
       )
     }
   end

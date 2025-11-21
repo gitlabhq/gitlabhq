@@ -971,3 +971,7 @@ $diff-file-header-top: 11px;
 .merge-request-overview .md-header {
   top: calc(#{$calc-application-header-height} + #{$mr-sticky-header-height});
 }
+
+.merge-request-review-drawer .rte-text-box{
+  line-height: 1.5;
+}

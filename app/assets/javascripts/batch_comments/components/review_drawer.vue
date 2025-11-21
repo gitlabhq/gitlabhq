@@ -269,6 +269,7 @@ export default {
     placeholder: __('Write a comment or drag your files here…'),
     'aria-label': __('Comment'),
     'data-testid': 'comment-textarea',
+    class: 'gl-leading-[1.5]',
   },
   restrictedToolbarItems: ['full-screen'],
   REVIEW_STATES,

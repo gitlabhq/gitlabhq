@@ -609,7 +609,6 @@ lib/gitlab/checks/
 /doc/administration/auth/ldap/ldap_synchronization.md @lciutacu
 /doc/administration/backup_restore/ @axil
 /doc/administration/broadcast_messages.md @kpaizee
-/doc/administration/cells.md @emily.sahlani
 /doc/administration/cicd/ @lyspin
 /doc/administration/cicd/job_logs.md @rsarangadharan
 /doc/administration/clusters/ @rsarangadharan
@@ -693,7 +692,7 @@ lib/gitlab/checks/
 /doc/administration/settings/account_and_limit_settings.md @brendan777
 /doc/administration/settings/continuous_integration.md @lyspin
 /doc/administration/settings/deprecated_api_rate_limits.md @brendan777
-/doc/administration/settings/editor_extensions.md @sselhorn
+/doc/administration/settings/editor_extensions.md @uchandran
 /doc/administration/settings/email.md @msedlakjakubowski
 /doc/administration/settings/external_authorization.md @idurham
 /doc/administration/settings/files_api_rate_limits.md @brendan777
@@ -725,7 +724,7 @@ lib/gitlab/checks/
 /doc/administration/settings/terraform_limits.md @rsarangadharan
 /doc/administration/settings/third_party_offers.md @z_painter
 /doc/administration/settings/visibility_and_access_controls.md @brendan777
-/doc/administration/settings/web_ide.md @sselhorn
+/doc/administration/settings/web_ide.md @uchandran
 /doc/administration/sidekiq/ @axil
 /doc/administration/silent_mode/ @axil
 /doc/administration/smime_signing_email.md @axil @eread
@@ -750,7 +749,7 @@ lib/gitlab/checks/
 /doc/api/chat.md @jglassman1
 /doc/api/cluster_agents.md @rsarangadharan
 /doc/api/cluster_discovery.md @rsarangadharan
-/doc/api/code_suggestions.md @sselhorn
+/doc/api/code_suggestions.md @uchandran
 /doc/api/commits.md @brendan777
 /doc/api/compliance_policy_settings.md @rlehmann1
 /doc/api/container_registry.md @z_painter
@@ -1022,7 +1021,7 @@ lib/gitlab/checks/
 /doc/development/stage_group_observability/ @gitlab-org/analytics-section/product-analytics/engineers/frontend
 /doc/development/tracing.md @gitlab-org/analytics-section/product-analytics/engineers/frontend
 /doc/drawers/ @ashrafkhamis
-/doc/editor_extensions/ @sselhorn
+/doc/editor_extensions/ @uchandran
 /doc/install/ @axil @eread
 /doc/install/install_ai_gateway.md @ashrafkhamis
 /doc/integration/ @idurham
@@ -1109,6 +1108,7 @@ lib/gitlab/checks/
 /doc/user/application_security/get-started-security.md @rsarangadharan
 /doc/user/application_security/policies/ @rlehmann1
 /doc/user/application_security/secret_detection/ @rsarangadharan
+/doc/user/application_security/security_center/ @rlehmann1
 /doc/user/application_security/security_dashboard/ @rlehmann1
 /doc/user/application_security/security_inventory/ @rlehmann1
 /doc/user/application_security/vulnerabilities/_index.md @rlehmann1
@@ -1220,7 +1220,7 @@ lib/gitlab/checks/
 /doc/user/project/labels.md @msedlakjakubowski
 /doc/user/project/members/ @z_painter
 /doc/user/project/merge_requests/ @brendan777
-/doc/user/project/merge_requests/duo_in_merge_requests.md @sselhorn
+/doc/user/project/merge_requests/duo_in_merge_requests.md @uchandran
 /doc/user/project/merge_requests/status_checks.md @rlehmann1
 /doc/user/project/milestones/ @msedlakjakubowski
 /doc/user/project/organize_work_with_projects.md @z_painter
@@ -1230,9 +1230,9 @@ lib/gitlab/checks/
 /doc/user/project/quick_actions.md @msedlakjakubowski
 /doc/user/project/releases/ @rsarangadharan
 /doc/user/project/repository/ @brendan777
-/doc/user/project/repository/code_explain.md @sselhorn
-/doc/user/project/repository/code_suggestions/ @sselhorn
-/doc/user/project/repository/knowledge_graph/ @sselhorn
+/doc/user/project/repository/code_explain.md @uchandran
+/doc/user/project/repository/code_suggestions/ @uchandran
+/doc/user/project/repository/knowledge_graph/ @uchandran
 /doc/user/project/repository/monorepos/ @eread
 /doc/user/project/requirements/ @msedlakjakubowski
 /doc/user/project/service_desk/ @msedlakjakubowski

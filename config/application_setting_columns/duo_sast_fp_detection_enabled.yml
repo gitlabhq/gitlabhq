@@ -1,0 +1,11 @@
+api_type:
+attr: duo_sast_fp_detection_enabled
+clusterwide: false
+column: duo_sast_fp_detection_enabled
+db_type: boolean
+default: 'true'
+description:
+encrypted: false
+gitlab_com_different_than_default: false
+jihu: false
+not_null: true

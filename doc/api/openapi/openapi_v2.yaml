@@ -31991,6 +31991,11 @@ paths:
         type: boolean
         required: false
       - in: formData
+        name: override_params[duo_sast_fp_detection_enabled]
+        description: Enable GitLab Duo SAST false positive detection for this project
+        type: boolean
+        required: false
+      - in: formData
         name: override_params[spp_repository_pipeline_access]
         description: Grant read-only access to security policy configurations for
           enforcement in linked CI/CD projects
@@ -32685,6 +32690,11 @@ paths:
       - in: formData
         name: override_params[duo_remote_flows_enabled]
         description: Enable GitLab Duo remote flows for this project
+        type: boolean
+        required: false
+      - in: formData
+        name: override_params[duo_sast_fp_detection_enabled]
+        description: Enable GitLab Duo SAST false positive detection for this project
         type: boolean
         required: false
       - in: formData
@@ -33461,6 +33471,11 @@ paths:
       - in: formData
         name: override_params[duo_remote_flows_enabled]
         description: Enable GitLab Duo remote flows for this project
+        type: boolean
+        required: false
+      - in: formData
+        name: override_params[duo_sast_fp_detection_enabled]
+        description: Enable GitLab Duo SAST false positive detection for this project
         type: boolean
         required: false
       - in: formData
@@ -48058,6 +48073,9 @@ definitions:
       duo_foundational_flows_availability:
         type: boolean
         description: Enable GitLab foundational Duo flows for this group
+      duo_sast_fp_detection_availability:
+        type: boolean
+        description: Enable GitLab Duo SAST false position detection for this group
       amazon_q_auto_review_enabled:
         type: boolean
         description: Enable Amazon Q auto review for merge request
@@ -48264,6 +48282,9 @@ definitions:
       duo_foundational_flows_availability:
         type: boolean
         description: Enable GitLab foundational Duo flows for this group
+      duo_sast_fp_detection_availability:
+        type: boolean
+        description: Enable GitLab Duo SAST false position detection for this group
       amazon_q_auto_review_enabled:
         type: boolean
         description: Enable Amazon Q auto review for merge request
@@ -48946,6 +48967,8 @@ definitions:
       duo_remote_flows_enabled:
         type: string
       duo_foundational_flows_enabled:
+        type: string
+      duo_sast_fp_detection_enabled:
         type: string
       web_based_commit_signing_enabled:
         type: string
@@ -64419,6 +64442,9 @@ definitions:
       duo_remote_flows_enabled:
         type: boolean
         description: Enable GitLab Duo remote flows for this project
+      duo_sast_fp_detection_enabled:
+        type: boolean
+        description: Enable GitLab Duo SAST false positive detection for this project
       spp_repository_pipeline_access:
         type: boolean
         description: Grant read-only access to security policy configurations for
@@ -64862,6 +64888,9 @@ definitions:
       duo_remote_flows_enabled:
         type: boolean
         description: Enable GitLab Duo remote flows for this project
+      duo_sast_fp_detection_enabled:
+        type: boolean
+        description: Enable GitLab Duo SAST false positive detection for this project
       spp_repository_pipeline_access:
         type: boolean
         description: Grant read-only access to security policy configurations for
@@ -65308,6 +65337,8 @@ definitions:
       duo_remote_flows_enabled:
         type: string
       duo_foundational_flows_enabled:
+        type: string
+      duo_sast_fp_detection_enabled:
         type: string
       web_based_commit_signing_enabled:
         type: string
@@ -65788,6 +65819,9 @@ definitions:
       duo_remote_flows_enabled:
         type: boolean
         description: Enable GitLab Duo remote flows for this project
+      duo_sast_fp_detection_enabled:
+        type: boolean
+        description: Enable GitLab Duo SAST false positive detection for this project
       spp_repository_pipeline_access:
         type: boolean
         description: Grant read-only access to security policy configurations for
