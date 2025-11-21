@@ -491,7 +491,7 @@ describe('Create work item component', () => {
         widgetDefinitions: expect.any(Array),
         workItemType: mockId,
         workItemTypeId: 'gid://gitlab/WorkItems::Type/1',
-        workItemTypeIconName: 'issue-type-issue',
+        workItemTypeIconName: 'work-item-issue',
         relatedItemId: mockRelatedItem.id,
       });
 
@@ -513,7 +513,7 @@ describe('Create work item component', () => {
         workItemType: {
           id: 'gid://gitlab/WorkItems::Type/1',
           name: mockId,
-          iconName: 'issue-type-issue',
+          iconName: 'work-item-issue',
         },
       });
     });

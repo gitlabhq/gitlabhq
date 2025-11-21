@@ -37,7 +37,7 @@ Prerequisites:
    For more information, see [Self-signed certificate error when installing Python support in WSL](https://github.com/microsoft/vscode/issues/131836#issuecomment-909983815) in the Visual Studio Code issue tracker.
 
 1. In your VS Code `settings.json`, set `"http.systemCertificates": true`. The default value is `true`, so you might not need to change this value.
-1. Follow the instructions for your operating system:
+1. Complete the instructions in the following sections for your operating system.
 
 ### Windows
 

@@ -412,7 +412,7 @@ create an issue to resolve it separately:
 1. Select **Code** > **Merge requests** and find your merge request.
 1. In the merge request, find the thread you want to move.
 1. Below the last reply to the thread, next to **Resolve thread**, select
-   **Create issue to resolve thread** ({{< icon name="issue-new" >}}).
+   **Create issue to resolve thread** ({{< icon name="work-item-new" >}}).
 1. Fill out the fields in the new issue, and select **Create issue**.
 
 GitLab marks the thread as resolved, and adds a link from the merge request to

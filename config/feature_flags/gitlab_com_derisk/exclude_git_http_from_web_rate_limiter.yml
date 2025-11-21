@@ -1,0 +1,10 @@
+---
+name: exclude_git_http_from_web_rate_limiter
+description:
+feature_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/581142
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/213141
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/581527
+milestone: '18.6'
+group: group::source code
+type: gitlab_com_derisk
+default_enabled: false

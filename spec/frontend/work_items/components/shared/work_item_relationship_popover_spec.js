@@ -20,7 +20,7 @@ describe('WorkItemRelationshipPopover', () => {
         workItemType: {
           id: 'gid://gitlab/WorkItems::Type/6',
           name: 'Objective',
-          iconName: 'issue-type-objective',
+          iconName: 'work-item-objective',
           __typename: 'WorkItemType',
         },
         namespace: {
@@ -51,7 +51,7 @@ describe('WorkItemRelationshipPopover', () => {
       workItemType: {
         id: 'gid://gitlab/WorkItems::Type/8',
         name: 'Objective',
-        iconName: 'issue-type-objective',
+        iconName: 'work-item-objective',
         __typename: 'WorkItemType',
       },
       namespace: {

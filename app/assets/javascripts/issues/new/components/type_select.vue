@@ -61,7 +61,7 @@ export default {
         ? {
             value: TYPE_ISSUE,
             text: __('Issue'),
-            icon: 'issue-type-issue',
+            icon: 'work-item-issue',
             href: this.issuePath,
           }
         : null;
@@ -69,7 +69,7 @@ export default {
         ? {
             value: TYPE_INCIDENT,
             text: __('Incident'),
-            icon: 'issue-type-incident',
+            icon: 'work-item-incident',
             href: this.incidentPath,
             tracking: {
               action: 'select_issue_type_incident',

@@ -1,7 +1,10 @@
 # frozen_string_literal: true
 
 module QA
-  RSpec.describe 'Plan', :smoke, feature_category: :team_planning do
+  RSpec.describe 'Plan', :smoke, feature_category: :team_planning, quarantine: {
+    issue: 'https://gitlab.com/gitlab-org/quality/test-failure-issues/-/issues/1507',
+    type: :flaky
+  } do
     describe 'Project milestone' do
       include QA::Support::Dates
 

@@ -23,13 +23,13 @@ const defaultProps = {
 const issue = {
   value: TYPE_ISSUE,
   text: 'Issue',
-  icon: 'issue-type-issue',
+  icon: 'work-item-issue',
   href: issuePath,
 };
 const incident = {
   value: TYPE_INCIDENT,
   text: 'Incident',
-  icon: 'issue-type-incident',
+  icon: 'work-item-incident',
   href: incidentPath,
   tracking,
 };

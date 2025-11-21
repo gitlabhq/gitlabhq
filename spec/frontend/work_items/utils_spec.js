@@ -460,7 +460,7 @@ describe('updateDraftWorkItemType', () => {
   const workItemType = {
     id: 'gid://gitlab/WorkItemType/1',
     name: WORK_ITEM_TYPE_NAME_ISSUE,
-    iconName: 'issue-type-issue',
+    iconName: 'work-item-issue',
   };
 
   afterEach(() => {

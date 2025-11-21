@@ -435,8 +435,6 @@ mark_for_retry!:
   file: app/models/remote_mirror.rb
 owner_class_attribute_default:
   file: app/models/service_desk/custom_email_verification.rb
-valid_secret_token?:
-  file: app/models/snippet.rb
 unmergeable?:
   file: app/models/todo.rb
 merge_train_removed?:

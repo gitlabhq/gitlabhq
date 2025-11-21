@@ -22,7 +22,7 @@ RSpec.describe Projects::AutocompleteService, feature_category: :groups_and_proj
         autocomplete = described_class.new(project, nil)
         issues = autocomplete.issues.map(&:icon_name)
 
-        expect(issues).to include 'issue-type-issue'
+        expect(issues).to include 'work-item-issue'
       end
 
       it 'does not list project confidential issues for guests' do

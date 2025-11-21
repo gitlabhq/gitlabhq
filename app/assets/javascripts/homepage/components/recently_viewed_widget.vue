@@ -53,9 +53,9 @@ export default {
     },
     getIconForItemType(itemType) {
       const iconMap = {
-        Issue: 'issues',
+        Issue: 'work-item-issue',
         MergeRequest: 'merge-request',
-        Epic: 'epic',
+        Epic: 'work-item-epic',
       };
       return iconMap[itemType] || 'question';
     },

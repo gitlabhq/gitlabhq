@@ -56,7 +56,7 @@ export default {
       return convertTypeEnumToName(this.workItemTypeEnum);
     },
     iconName() {
-      return NAME_TO_ICON_MAP[this.workItemTypeName] || this.typeIconName || 'issue-type-issue';
+      return NAME_TO_ICON_MAP[this.workItemTypeName] || this.typeIconName || 'work-item-issue';
     },
     workItemTypeText() {
       return NAME_TO_TEXT_MAP[this.workItemTypeName];

@@ -97,9 +97,9 @@ export const getDefaultWorkItemTypes = () => [
 ];
 
 export const getTypeTokenOptions = () => [
-  { icon: 'issue-type-issue', title: s__('WorkItem|Issue'), value: 'issue' },
-  { icon: 'issue-type-incident', title: s__('WorkItem|Incident'), value: 'incident' },
-  { icon: 'issue-type-task', title: s__('WorkItem|Task'), value: 'task' },
+  { icon: 'work-item-issue', title: s__('WorkItem|Issue'), value: 'issue' },
+  { icon: 'work-item-incident', title: s__('WorkItem|Incident'), value: 'incident' },
+  { icon: 'work-item-task', title: s__('WorkItem|Task'), value: 'task' },
 ];
 
 export const getInitialPageParams = (

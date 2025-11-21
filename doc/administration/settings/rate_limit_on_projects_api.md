@@ -2,7 +2,8 @@
 stage: Tenant Scale
 group: Organizations
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
-title: Rate limit on Projects API
+title: Rate limits on Projects API
+description: Set rate limits on Projects API endpoints.
 ---
 
 {{< details >}}
@@ -12,18 +13,17 @@ title: Rate limit on Projects API
 
 {{< /details >}}
 
+## Configure Projects API rate limits
+
 {{< history >}}
 
-- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/112283) in GitLab 15.10 with a [flag](../feature_flags/_index.md) named `rate_limit_for_unauthenticated_projects_api_access`. Disabled by default.
-- [Enabled on GitLab.com](https://gitlab.com/gitlab-org/gitlab/-/issues/391922) on May 08, 2023.
-- [Enabled on GitLab Self-Managed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/119603) in GitLab 16.0 by default.
 - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/120445) in GitLab 16.0. Feature flag `rate_limit_for_unauthenticated_projects_api_access` removed.
-- Rate limit for group and projects API [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/152733) in GitLab 17.1. with a [flag](../feature_flags/_index.md) named `rate_limit_groups_and_projects_api`. Disabled by default.
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/421909) rate limit for the group and projects API in GitLab 17.1 with a [flag](../feature_flags/_index.md) named `rate_limit_groups_and_projects_api`. Disabled by default.
 - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/461316) in GitLab 18.1. Feature flag `rate_limit_groups_and_projects_api` removed.
 
 {{< /history >}}
 
-You can configure the rate limit per IP address and per user for requests to the following [projects API](../../api/projects.md#list-all-projects).
+Configure the rate limit for each IP address and user for requests to the following Projects API endpoints:
 
 | Limit                                                                                                       | Default | Interval |
 |-------------------------------------------------------------------------------------------------------------|---------|----------|
@@ -39,17 +39,78 @@ To change the rate limit:
 1. On the left sidebar, at the bottom, select **Admin**. If you've [turned on the new navigation](../../user/interface_redesign.md#turn-new-navigation-on-or-off), in the upper-right corner, select **Admin**.
 1. Select **Settings** > **Network**.
 1. Expand **Projects API rate limits**.
-1. Change the value of any rate limit. The rate limits are per minute per user for authenticated requests and per IP address unauthenticated requests.
-   Set to `0` to disable a rate limit.
+1. Change the value of a rate limit, or set a rate limit to `0` to disable it.
 1. Select **Save changes**.
 
 The rate limits:
 
-- Apply per user if the user is authenticated.
-- Apply per IP address if the user is unauthenticated.
-- Can be set to 0 to disable rate limiting.
+- Apply to each authenticated user. If requests are not authenticated, rate limits apply to the IP address.
 
 Requests over the rate limit are logged into the `auth.log` file.
 
 For example, if you set a limit of 400 for `GET /projects/:id`, requests to the API endpoint that
-exceed a rate of 400 within 1 minutes are blocked. Access to the endpoint is restored after one minutes have elapsed.
+exceed a rate of 400 requests per minute are blocked. Access to the endpoint is restored after one minute.
+
+For more information about project API endpoints, see the [projects API](../../api/projects.md#list-all-projects).
+
+## Configure rate limits on deleting project members
+
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/420321) in GitLab 16.9.
+
+{{< /history >}}
+
+Configure the rate limit for each project and user for requests to the
+[delete members endpoint](../../api/project_members.md#remove-a-member-from-a-project).
+
+To change the rate limit:
+
+1. On the left sidebar, at the bottom, select **Admin**. If you've [turned on the new navigation](../../user/interface_redesign.md#turn-new-navigation-on-or-off), in the upper-right corner, select **Admin**.
+1. Select **Settings** > **Network**.
+1. Expand **Members API rate limit**.
+1. In the **Maximum requests per minute per group / project** text box, enter a value.
+1. Select **Save changes**.
+
+The rate limit:
+
+- Defaults to 60 requests every minute
+- Applies for each project and user.
+- Can be set to 0 to disable the rate limit.
+
+Requests over the rate limit are logged into the `auth.log` file.
+
+For example, if you set a limit of 60, requests to the API endpoint that exceed
+a rate of 60 requests per minute are blocked. Access to the endpoint resumes
+after one minute.
+
+## Configure rate limits on listing project members
+
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/578527) in GitLab 18.6.
+
+{{< /history >}}
+
+Configure the rate limit for requests to the
+[list project members endpoint](../../api/project_members.md#list-all-members-of-a-project).
+
+To change the rate limit:
+
+1. On the left sidebar, at the bottom, select **Admin**. If you've [turned on the new navigation](../../user/interface_redesign.md#turn-new-navigation-on-or-off), in the upper-right corner, select **Admin**.
+1. Select **Settings** > **Network**.
+1. Expand **Projects API**.
+1. In the **Maximum requests to the GET /projects/:id/members/all API per minute per user or IP address** text box, enter a value.
+1. Select **Save changes**.
+
+The rate limit:
+
+- Defaults to 200 requests every minute.
+- Applies to each project and user.
+- Can be set to 0 to disable rate limits.
+
+Requests over the rate limit are logged into the `auth.log` file.
+
+For example, if you set a limit of 200, requests to the API endpoint that
+exceed a rate of 200 requests per minute
+are blocked. Access to the endpoint resumes after one minute.

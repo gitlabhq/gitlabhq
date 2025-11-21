@@ -32,15 +32,15 @@ module WorkItems
     # This constant is used by the DB seeder
     # TODO - where to add new icon names created?
     BASE_TYPES = {
-      issue: { name: TYPE_NAMES[:issue], icon_name: 'issue-type-issue', enum_value: 0, id: 1 },
-      incident: { name: TYPE_NAMES[:incident], icon_name: 'issue-type-incident', enum_value: 1, id: 2 },
-      test_case: { name: TYPE_NAMES[:test_case], icon_name: 'issue-type-test-case', enum_value: 2, id: 3 }, ## EE-only
-      requirement: { name: TYPE_NAMES[:requirement], icon_name: 'issue-type-requirements', enum_value: 3, id: 4 }, ## EE
-      task: { name: TYPE_NAMES[:task], icon_name: 'issue-type-task', enum_value: 4, id: 5 },
-      objective: { name: TYPE_NAMES[:objective], icon_name: 'issue-type-objective', enum_value: 5, id: 6 }, ## EE-only
-      key_result: { name: TYPE_NAMES[:key_result], icon_name: 'issue-type-keyresult', enum_value: 6, id: 7 }, ## EE-only
-      epic: { name: TYPE_NAMES[:epic], icon_name: 'issue-type-epic', enum_value: 7, id: 8 }, ## EE-only
-      ticket: { name: TYPE_NAMES[:ticket], icon_name: 'issue-type-issue', enum_value: 8, id: 9 }
+      issue: { name: TYPE_NAMES[:issue], icon_name: 'work-item-issue', enum_value: 0, id: 1 },
+      incident: { name: TYPE_NAMES[:incident], icon_name: 'work-item-incident', enum_value: 1, id: 2 },
+      test_case: { name: TYPE_NAMES[:test_case], icon_name: 'work-item-test-case', enum_value: 2, id: 3 }, ## EE-only
+      requirement: { name: TYPE_NAMES[:requirement], icon_name: 'work-item-requirement', enum_value: 3, id: 4 }, ## EE
+      task: { name: TYPE_NAMES[:task], icon_name: 'work-item-task', enum_value: 4, id: 5 },
+      objective: { name: TYPE_NAMES[:objective], icon_name: 'work-item-objective', enum_value: 5, id: 6 }, ## EE-only
+      key_result: { name: TYPE_NAMES[:key_result], icon_name: 'work-item-keyresult', enum_value: 6, id: 7 }, ## EE-only
+      epic: { name: TYPE_NAMES[:epic], icon_name: 'work-item-epic', enum_value: 7, id: 8 }, ## EE-only
+      ticket: { name: TYPE_NAMES[:ticket], icon_name: 'work-item-ticket', enum_value: 8, id: 9 }
     }.freeze
 
     # A list of types user can change between - both original and new

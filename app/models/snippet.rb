@@ -297,12 +297,6 @@ class Snippet < ApplicationRecord
     'snippet'
   end
 
-  def valid_secret_token?(token)
-    return false unless token && secret_token
-
-    ActiveSupport::SecurityUtils.secure_compare(token.to_s, secret_token.to_s)
-  end
-
   def as_json(options = {})
     options[:except] = Array.wrap(options[:except])
     options[:except] << :secret_token

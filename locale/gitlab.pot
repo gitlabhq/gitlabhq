@@ -6735,6 +6735,12 @@ msgstr ""
 msgid "AiPowered|Allow GitLab Duo agents to execute flows in this group and its subgroups and projects. %{linkStart}What are flows%{linkEnd}?"
 msgstr ""
 
+msgid "AiPowered|Allow GitLab Duo agents to execute foundational flows for the instance."
+msgstr ""
+
+msgid "AiPowered|Allow GitLab Duo agents to execute foundational flows in this group and its subgroups and projects."
+msgstr ""
+
 msgid "AiPowered|Allow GitLab to process your code and project data for AI-powered features throughout this namespace. Your data will be sent to GitLab Duo for processing. Groups, subgroups, and projects can individually opt out if needed."
 msgstr ""
 
@@ -6973,6 +6979,9 @@ msgid "AiPowered|This setting applies to the whole instance. By turning this on,
 msgstr ""
 
 msgid "AiPowered|This setting applies to the whole top-level group. By turning this on, you accept the %{termsLinkStart}GitLab AI Functionality Terms%{termsLinkEnd} unless your organization has a separate agreement with GitLab governing AI feature usage. Check the %{requirementsLinkStart}eligibility requirements%{requirementsLinkEnd}."
+msgstr ""
+
+msgid "AiPowered|This setting requires Allow flow execution to be on"
 msgstr ""
 
 msgid "AiPowered|This setting requires GitLab Duo availability to be on or off by default."
@@ -25072,7 +25081,13 @@ msgstr ""
 msgid "DuoAgentPlatform|Allow GitLab Duo agents to execute flows in this project."
 msgstr ""
 
+msgid "DuoAgentPlatform|Allow GitLab Duo agents to execute foundational flows in this project."
+msgstr ""
+
 msgid "DuoAgentPlatform|Allow flow execution"
+msgstr ""
+
+msgid "DuoAgentPlatform|Allow foundational flows"
 msgstr ""
 
 msgid "DuoAgentPlatform|Details"
@@ -25088,6 +25103,9 @@ msgid "DuoAgentPlatform|Flow"
 msgstr ""
 
 msgid "DuoAgentPlatform|Flow started successfully."
+msgstr ""
+
+msgid "DuoAgentPlatform|Foundational GitLab Duo Flows"
 msgstr ""
 
 msgid "DuoAgentPlatform|GitLab Duo Core Off"
@@ -26314,9 +26332,6 @@ msgid "Embedded view options"
 msgstr ""
 
 msgid "Embedded view timed out. Add more filters to reduce the number of results."
-msgstr ""
-
-msgid "Embedded view timed out. Try again later."
 msgstr ""
 
 msgid "Emoji"
@@ -66367,6 +66382,9 @@ msgstr ""
 msgid "Targeted message"
 msgstr ""
 
+msgid "TargetedMessages|Are you sure you want to delete this targeted message?"
+msgstr ""
+
 msgid "TargetedMessages|Create a new targeted message"
 msgstr ""
 
@@ -66385,10 +66403,16 @@ msgstr ""
 msgid "TargetedMessages|Target Type"
 msgstr ""
 
+msgid "TargetedMessages|Targeted message failed to delete. Please try again."
+msgstr ""
+
 msgid "TargetedMessages|Targeted message was successfully created."
 msgstr ""
 
 msgid "TargetedMessages|Targeted message was successfully created. But %{invalid_namespace_ids_message}"
+msgstr ""
+
+msgid "TargetedMessages|Targeted message was successfully deleted."
 msgstr ""
 
 msgid "TargetedMessages|Targeted message was successfully updated."
@@ -70704,9 +70728,6 @@ msgid "Unable to load the diff. %{button_try_again}"
 msgstr ""
 
 msgid "Unable to load the merge request widget. Try reloading the page."
-msgstr ""
-
-msgid "Unable to load the next page."
 msgstr ""
 
 msgid "Unable to load user list. Reload the page and try again."
@@ -77860,6 +77881,9 @@ msgid "You do not have permission to unlock it"
 msgstr ""
 
 msgid "You do not have permission to update the environment."
+msgstr ""
+
+msgid "You do not have permission to view this embedded view."
 msgstr ""
 
 msgid "You do not have permissions to run the import."

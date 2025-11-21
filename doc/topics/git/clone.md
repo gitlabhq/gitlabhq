@@ -131,7 +131,7 @@ Prerequisites:
 
      After Visual Studio Code clones your project, it opens the folder.
 - From Visual Studio Code, with the [extension](../../editor_extensions/visual_studio_code/_index.md) installed, use the
-  extension's [`Git: Clone` command](https://marketplace.visualstudio.com/items?itemName=GitLab.gitlab-workflow#clone-gitlab-projects).
+  extension's [`Git: Clone` command](../../editor_extensions/visual_studio_code/remote_urls.md#clone-a-git-project).
 
 ## Clone and open in IntelliJ IDEA
 

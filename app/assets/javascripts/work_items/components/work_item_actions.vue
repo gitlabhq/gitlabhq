@@ -654,7 +654,7 @@ export default {
         @action="showChangeTypeModal"
       >
         <template #list-item>
-          <gl-icon name="issue-type-issue" class="gl-mr-2" variant="subtle" />
+          <gl-icon name="work-item-issue" class="gl-mr-2" variant="subtle" />
           {{ $options.i18n.changeWorkItemType }}
         </template>
       </gl-disclosure-dropdown-item>

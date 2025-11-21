@@ -54,7 +54,7 @@ describe('ReportHeader', () => {
 
   describe.each`
     status           | text                                 | variant      | badgeIcon
-    ${STATUS_OPEN}   | ${REPORT_HEADER_I18N[STATUS_OPEN]}   | ${'success'} | ${'issue-type-issue'}
+    ${STATUS_OPEN}   | ${REPORT_HEADER_I18N[STATUS_OPEN]}   | ${'success'} | ${'work-item-issue'}
     ${STATUS_CLOSED} | ${REPORT_HEADER_I18N[STATUS_CLOSED]} | ${'info'}    | ${'issue-close'}
   `('rendering the report $status status badge', ({ status, text, variant, badgeIcon }) => {
     beforeEach(() => {

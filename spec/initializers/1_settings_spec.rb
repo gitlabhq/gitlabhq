@@ -241,6 +241,7 @@ RSpec.describe '1_settings', feature_category: :settings do
         deactivate_expired_deployments_cron_worker
         delete_expired_trigger_token_worker
         deploy_tokens_expiring_worker
+        drop_timed_out_worker
         environments_auto_delete_cron_worker
         environments_auto_stop_cron_worker
         expire_build_artifacts_worker

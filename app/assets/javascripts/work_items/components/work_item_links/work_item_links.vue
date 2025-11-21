@@ -294,7 +294,7 @@ export default {
     ref="workItemsLinks"
     :anchor-id="widgetName"
     :title="$options.i18n.title"
-    icon="issue-type-task"
+    icon="work-item-task"
     :count="childrenCountLabel"
     :is-loading="isLoading && !fetchNextPageInProgress"
     is-collapsible

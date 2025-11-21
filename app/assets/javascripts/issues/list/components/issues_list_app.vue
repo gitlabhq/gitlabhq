@@ -438,7 +438,7 @@ export default {
         {
           type: TOKEN_TYPE_TYPE,
           title: TOKEN_TITLE_TYPE,
-          icon: 'issue-type-issue',
+          icon: 'work-item-issue',
           token: GlFilteredSearchToken,
           options: this.typeTokenOptions,
         },

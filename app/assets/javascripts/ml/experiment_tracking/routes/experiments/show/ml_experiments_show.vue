@@ -147,7 +147,7 @@ export default {
     <title-area :title="experiment.name">
       <template #metadata-versions-count>
         <div class="detail-page-header-body gl-flex-wrap gl-gap-x-2" data-testid="metadata">
-          <gl-icon name="issue-type-test-case" />
+          <gl-icon name="work-item-test-case" />
           <gl-sprintf :message="createdMessage">
             <template #timeAgo>
               <time-ago-tooltip :time="experiment.created_at" />

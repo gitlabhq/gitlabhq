@@ -52,11 +52,11 @@ export const ICON_MAP = {
 };
 
 export const SUBITEMS_FILTER = {
-  issue: { order: 1, icon: 'issue-type-issue', label: s__('GlobalSearch|Issues') },
-  epic: { order: 2, icon: 'issue-type-epic', label: s__('GlobalSearch|Epics') },
-  task: { order: 3, icon: 'issue-type-task', label: s__('GlobalSearch|Tasks') },
-  objective: { order: 4, icon: 'issue-type-objective', label: s__('GlobalSearch|Objectives') },
-  key_result: { order: 5, icon: 'issue-type-keyresult', label: s__('GlobalSearch|Key results') },
+  issue: { order: 1, icon: 'work-item-issue', label: s__('GlobalSearch|Issues') },
+  epic: { order: 2, icon: 'work-item-epic', label: s__('GlobalSearch|Epics') },
+  task: { order: 3, icon: 'work-item-task', label: s__('GlobalSearch|Tasks') },
+  objective: { order: 4, icon: 'work-item-objective', label: s__('GlobalSearch|Objectives') },
+  key_result: { order: 5, icon: 'work-item-keyresult', label: s__('GlobalSearch|Key results') },
 };
 
 export const SCOPE_NAVIGATION_MAP = {

@@ -108,7 +108,7 @@ describe('Work Item rolled up count', () => {
             workItemType: {
               id: 'gid://gitlab/WorkItems::Type/5',
               name: 'Task',
-              iconName: 'issue-type-task',
+              iconName: 'work-item-task',
               __typename: 'WorkItemType',
             },
             __typename: 'WorkItemTypeCountsByState',

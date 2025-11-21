@@ -1,0 +1,9 @@
+---
+name: use_duo_chat_ui_for_flow
+description: Use Duo Chat UI for flow execution interface
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/213406
+rollout_issue_url: https://gitlab.com/gitlab-org/editor-extensions/gitlab-lsp/-/issues/1624
+milestone: '18.7'
+group: group::editor extensions
+type: gitlab_com_derisk
+default_enabled: false

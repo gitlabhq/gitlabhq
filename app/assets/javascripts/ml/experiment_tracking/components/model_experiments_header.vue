@@ -67,7 +67,7 @@ export default {
     </template>
     <template #metadata-models-count>
       <div class="detail-page-header-body gl-flex-wrap gl-gap-x-2" data-testid="count">
-        <gl-icon name="issue-type-test-case" />
+        <gl-icon name="work-item-test-case" />
         {{ modelsCountLabel }}
       </div>
     </template>

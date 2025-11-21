@@ -43,7 +43,7 @@ describe('~/content_editor/components/suggestions_dropdown', () => {
     title: 'Test Issue',
     reference: 'gitlab-org/gitlab#123',
   };
-  const exampleIssueWithIcon = { iid: 123, title: 'Test Issue', icon_name: 'issue-type-issue' };
+  const exampleIssueWithIcon = { iid: 123, title: 'Test Issue', icon_name: 'work-item-issue' };
   const exampleMergeRequest = { iid: 224, title: 'Test MR' };
   const exampleMilestone1 = { iid: 21, title: '13' };
   const exampleMilestone2 = { iid: 24, title: 'Milestone with spaces' };

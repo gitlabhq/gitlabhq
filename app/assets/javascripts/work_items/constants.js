@@ -104,7 +104,7 @@ export const FORM_TYPES = {
   create: 'create',
   add: 'add',
   [WORK_ITEM_TYPE_ENUM_OBJECTIVE]: {
-    icon: `issue-type-issue`,
+    icon: `work-item-objective`,
     name: s__('WorkItem|Objective'),
   },
 };
@@ -190,7 +190,7 @@ export const TASKS_ANCHOR = 'tasks';
 export const DEVELOPMENT_ITEMS_ANCHOR = 'developmentitems';
 export const VULNERABILITIES_ITEMS_ANCHOR = 'vulnerabilitiesitems';
 
-export const ISSUABLE_EPIC = 'issue-type-epic';
+export const ISSUABLE_EPIC = 'work-item-epic';
 
 export const EPIC_COLORS = [
   { '#1068bf': s__('WorkItem|Blue') },
@@ -280,15 +280,15 @@ export const NAME_TO_ENUM_MAP = {
 };
 
 export const NAME_TO_ICON_MAP = {
-  [WORK_ITEM_TYPE_NAME_EPIC]: 'epic',
-  [WORK_ITEM_TYPE_NAME_INCIDENT]: 'issue-type-incident',
-  [WORK_ITEM_TYPE_NAME_ISSUE]: 'issue-type-issue',
-  [WORK_ITEM_TYPE_NAME_KEY_RESULT]: 'issue-type-keyresult',
-  [WORK_ITEM_TYPE_NAME_OBJECTIVE]: 'issue-type-objective',
-  [WORK_ITEM_TYPE_NAME_REQUIREMENTS]: 'issue-type-requirements',
-  [WORK_ITEM_TYPE_NAME_TASK]: 'issue-type-task',
-  [WORK_ITEM_TYPE_NAME_TEST_CASE]: 'issue-type-test-case',
-  [WORK_ITEM_TYPE_NAME_TICKET]: 'issue-type-ticket',
+  [WORK_ITEM_TYPE_NAME_EPIC]: 'work-item-epic',
+  [WORK_ITEM_TYPE_NAME_INCIDENT]: 'work-item-incident',
+  [WORK_ITEM_TYPE_NAME_ISSUE]: 'work-item-issue',
+  [WORK_ITEM_TYPE_NAME_KEY_RESULT]: 'work-item-keyresult',
+  [WORK_ITEM_TYPE_NAME_OBJECTIVE]: 'work-item-objective',
+  [WORK_ITEM_TYPE_NAME_REQUIREMENTS]: 'work-item-requirement',
+  [WORK_ITEM_TYPE_NAME_TASK]: 'work-item-task',
+  [WORK_ITEM_TYPE_NAME_TEST_CASE]: 'work-item-test-case',
+  [WORK_ITEM_TYPE_NAME_TICKET]: 'work-item-ticket',
 };
 
 export const NAME_TO_ROUTE_MAP = {

@@ -253,11 +253,11 @@ One or more AI agents can be part of a [**flow**](#flows), where they are orches
 
 ## AI Catalog
 
-Use title case for the **AI Catalog**. Do not use **catalog**.
+Use title case for **AI Catalog**. Do not use **AI catalog** (lowercase), and do not hyphenate.
 
-## AI gateway
+## AI Gateway
 
-Use lowercase for **AI gateway** and do not hyphenate.
+Use title case for **AI Gateway**. Do not use **AI gateway** (lowercase), and do not hyphenate.
 
 ## AI-powered, AI-native
 

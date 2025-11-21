@@ -70,7 +70,7 @@ export default {
       <template #description>
         <div class="gl-flex gl-flex-wrap gl-items-center gl-gap-x-2">
           <gl-badge :variant="statusVariant">
-            <gl-icon name="issue-type-test-case" />
+            <gl-icon name="work-item-test-case" />
             {{ info.status }}
           </gl-badge>
           <time-ago-tooltip :time="info.createdAt" />

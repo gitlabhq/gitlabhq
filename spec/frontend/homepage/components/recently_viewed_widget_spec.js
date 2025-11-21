@@ -273,7 +273,7 @@ describe('RecentlyViewedWidget', () => {
     });
 
     it('adds correct icon to issues', () => {
-      const issueItems = wrapper.vm.items.filter((item) => item.icon === 'issues');
+      const issueItems = wrapper.vm.items.filter((item) => item.icon === 'work-item-issue');
 
       expect(issueItems).toHaveLength(2);
       expect(issueItems[0].id).toBe('issue-1');
@@ -287,7 +287,7 @@ describe('RecentlyViewedWidget', () => {
     });
 
     it('adds correct icon to epics', () => {
-      const epicItems = wrapper.vm.items.filter((item) => item.icon === 'epic');
+      const epicItems = wrapper.vm.items.filter((item) => item.icon === 'work-item-epic');
 
       expect(epicItems).toHaveLength(1);
       expect(epicItems[0].id).toBe('epic-1');
@@ -307,9 +307,9 @@ describe('RecentlyViewedWidget', () => {
       const icons = findItemIcons();
 
       expect(icons.at(0).props('name')).toBe('merge-request');
-      expect(icons.at(1).props('name')).toBe('issues');
-      expect(icons.at(2).props('name')).toBe('epic');
-      expect(icons.at(3).props('name')).toBe('issues');
+      expect(icons.at(1).props('name')).toBe('work-item-issue');
+      expect(icons.at(2).props('name')).toBe('work-item-epic');
+      expect(icons.at(3).props('name')).toBe('work-item-issue');
       expect(icons.at(4).props('name')).toBe('merge-request');
     });
 
@@ -333,7 +333,7 @@ describe('RecentlyViewedWidget', () => {
     it('tracks click on issue item', () => {
       const { trackEventSpy } = bindInternalEventDocument(wrapper.element);
 
-      const mockIssueItem = { icon: 'issues', __typename: 'Issue' };
+      const mockIssueItem = { icon: 'work-item-issue', __typename: 'Issue' };
       wrapper.vm.handleItemClick(mockIssueItem);
 
       expect(trackEventSpy).toHaveBeenCalledWith(

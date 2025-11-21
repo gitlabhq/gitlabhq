@@ -445,7 +445,7 @@ export const USAGE_OVERVIEW_METADATA = {
     options: { title: __('Users'), titleIcon: 'user' },
   },
   [USAGE_OVERVIEW_IDENTIFIER_ISSUES]: {
-    options: { title: __('Issues'), titleIcon: 'issue-type-issue' },
+    options: { title: __('Issues'), titleIcon: 'work-item-issue' },
   },
   [USAGE_OVERVIEW_IDENTIFIER_MERGE_REQUESTS]: {
     options: { title: __('Merge requests'), titleIcon: 'merge-request' },

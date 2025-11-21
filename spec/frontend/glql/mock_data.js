@@ -71,7 +71,7 @@ export const MOCK_ITERATION = {
 
 export const MOCK_WORK_ITEM_TYPE = {
   __typename: 'WorkItemType',
-  iconName: 'issue-type-issue',
+  iconName: 'work-item-issue',
   name: 'Issue',
 };
 

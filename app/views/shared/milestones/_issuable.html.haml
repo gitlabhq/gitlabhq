@@ -9,7 +9,7 @@
 - base_url_args = [container]
 - issuable_type = is_merge_request ? :merge_requests : (is_epic ? :epics : :issues)
 - issuable_type_args = base_url_args + [issuable_type]
-- issuable_icon = is_epic ? 'epic' : "issue-type-#{issuable.respond_to?(:work_item_type) ? issuable.work_item_type.name.downcase : 'issue'}"
+- issuable_icon = is_epic ? 'work-item-epic' : "work-item-#{issuable.respond_to?(:work_item_type) ? issuable.work_item_type.name.downcase : 'issue'}"
 
 %li{ class: '!gl-border-b-section' }
   %span

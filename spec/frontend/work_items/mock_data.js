@@ -266,7 +266,7 @@ export const workItemQueryResponse = {
         __typename: 'WorkItemType',
         id: 'gid://gitlab/WorkItems::Type/5',
         name: 'Task',
-        iconName: 'issue-type-task',
+        iconName: 'work-item-task',
       },
       userPermissions: {
         adminParentLink: false,
@@ -336,7 +336,7 @@ export const workItemQueryResponse = {
             workItemType: {
               id: 'gid://gitlab/WorkItems::Type/1',
               name: 'Issue',
-              iconName: 'issue-type-issue',
+              iconName: 'work-item-issue',
             },
           },
           children: {
@@ -360,7 +360,7 @@ export const workItemQueryResponse = {
                 workItemType: {
                   id: '1',
                   name: 'Task',
-                  iconName: 'issue-type-task',
+                  iconName: 'work-item-task',
                 },
                 widgets: [
                   {
@@ -422,7 +422,7 @@ export const workItemWithEpicParentQueryResponse = {
         __typename: 'WorkItemType',
         id: 'gid://gitlab/WorkItems::Type/5',
         name: 'Task',
-        iconName: 'issue-type-task',
+        iconName: 'work-item-task',
       },
       userPermissions: {
         adminParentLink: false,
@@ -450,7 +450,7 @@ export const workItemWithEpicParentQueryResponse = {
             workItemType: {
               id: 'gid://gitlab/WorkItems::Type/6',
               name: 'Epic',
-              iconName: 'issue-type-epic',
+              iconName: 'work-item-epic',
               __typename: 'WorkItemType',
             },
           },
@@ -505,7 +505,7 @@ export const updateWorkItemMutationResponse = {
           __typename: 'WorkItemType',
           id: 'gid://gitlab/WorkItems::Type/5',
           name: 'Task',
-          iconName: 'issue-type-task',
+          iconName: 'work-item-task',
         },
         userPermissions: {
           adminParentLink: false,
@@ -542,7 +542,7 @@ export const updateWorkItemMutationResponse = {
                   workItemType: {
                     id: '1',
                     name: 'Task',
-                    iconName: 'issue-type-task',
+                    iconName: 'work-item-task',
                   },
                 },
               ],
@@ -599,7 +599,7 @@ export const mockWorkItemReferenceQueryResponse = {
             __typename: 'Namespace',
           },
           workItemType: {
-            iconName: 'issue-type-objective',
+            iconName: 'work-item-objective',
             id: 'gid://gitlab/WorkItems::Type/6',
             name: 'Objective',
             __typename: 'WorkItemType',
@@ -667,7 +667,7 @@ export const convertWorkItemMutationResponse = {
           __typename: 'WorkItemType',
           id: 'gid://gitlab/WorkItems::Type/4',
           name: 'Objective',
-          iconName: 'issue-type-objective',
+          iconName: 'work-item-objective',
         },
         userPermissions: {
           adminParentLink: false,
@@ -704,7 +704,7 @@ export const convertWorkItemMutationResponse = {
                   workItemType: {
                     id: '1',
                     name: 'Task',
-                    iconName: 'issue-type-task',
+                    iconName: 'work-item-task',
                   },
                 },
               ],
@@ -749,7 +749,7 @@ export const mockParent = {
     workItemType: {
       id: 'gid://gitlab/WorkItems::Type/1',
       name: 'Issue',
-      iconName: 'issue-type-issue',
+      iconName: 'work-item-issue',
     },
   },
 };
@@ -790,28 +790,28 @@ export const taskType = {
   __typename: 'WorkItemType',
   id: 'gid://gitlab/WorkItems::Type/5',
   name: 'Task',
-  iconName: 'issue-type-task',
+  iconName: 'work-item-task',
 };
 
 export const objectiveType = {
   __typename: 'WorkItemType',
   id: 'gid://gitlab/WorkItems::Type/2411',
   name: 'Objective',
-  iconName: 'issue-type-objective',
+  iconName: 'work-item-objective',
 };
 
 export const issueType = {
   __typename: 'WorkItemType',
   id: 'gid://gitlab/WorkItems::Type/2411',
   name: 'Issue',
-  iconName: 'issue-type-issue',
+  iconName: 'work-item-issue',
 };
 
 export const epicType = {
   __typename: 'WorkItemType',
   id: 'gid://gitlab/WorkItems::Type/2411',
   name: 'Epic',
-  iconName: 'issue-type-epic',
+  iconName: 'work-item-epic',
 };
 
 export const mockEmptyLinkedItems = {
@@ -841,7 +841,7 @@ export const mockBlockingLinkedItem = {
           workItemType: {
             id: 'gid://gitlab/WorkItems::Type/5',
             name: 'Task',
-            iconName: 'issue-type-task',
+            iconName: 'work-item-task',
             __typename: 'WorkItemType',
           },
           namespace: {
@@ -883,7 +883,7 @@ export const mockBlockedByLinkedItem = {
           workItemType: {
             id: 'gid://gitlab/WorkItems::Type/5',
             name: 'Task',
-            iconName: 'issue-type-task',
+            iconName: 'work-item-task',
             __typename: 'WorkItemType',
           },
           namespace: {
@@ -913,7 +913,7 @@ export const mockBlockedByLinkedItem = {
           workItemType: {
             id: 'gid://gitlab/WorkItems::Type/5',
             name: 'Task',
-            iconName: 'issue-type-task',
+            iconName: 'work-item-task',
             __typename: 'WorkItemType',
           },
           namespace: {
@@ -955,7 +955,7 @@ export const mockBlockedByOpenAndClosedLinkedItems = {
           workItemType: {
             id: 'gid://gitlab/WorkItems::Type/5',
             name: 'Task',
-            iconName: 'issue-type-task',
+            iconName: 'work-item-task',
             __typename: 'WorkItemType',
           },
           namespace: {
@@ -985,7 +985,7 @@ export const mockBlockedByOpenAndClosedLinkedItems = {
           workItemType: {
             id: 'gid://gitlab/WorkItems::Type/5',
             name: 'Task',
-            iconName: 'issue-type-task',
+            iconName: 'work-item-task',
             __typename: 'WorkItemType',
           },
           namespace: {
@@ -1034,7 +1034,7 @@ export const mockLinkedItems = {
           workItemType: {
             id: 'gid://gitlab/WorkItems::Type/5',
             name: 'Task',
-            iconName: 'issue-type-task',
+            iconName: 'work-item-task',
             __typename: 'WorkItemType',
           },
           namespace: {
@@ -1064,7 +1064,7 @@ export const mockLinkedItems = {
           workItemType: {
             id: 'gid://gitlab/WorkItems::Type/6',
             name: 'Objective',
-            iconName: 'issue-type-objective',
+            iconName: 'work-item-objective',
             __typename: 'WorkItemType',
           },
           namespace: {
@@ -1094,7 +1094,7 @@ export const mockLinkedItems = {
           workItemType: {
             id: 'gid://gitlab/WorkItems::Type/6',
             name: 'Objective',
-            iconName: 'issue-type-objective',
+            iconName: 'work-item-objective',
             __typename: 'WorkItemType',
           },
           namespace: {
@@ -1183,7 +1183,7 @@ export const workItemSingleLinkedItemResponse = {
                     workItemType: {
                       id: 'gid://gitlab/WorkItems::Type/5',
                       name: 'Task',
-                      iconName: 'issue-type-task',
+                      iconName: 'work-item-task',
                       __typename: 'WorkItemType',
                     },
                     namespace: {
@@ -1573,7 +1573,7 @@ export const mockRolledUpCountsByType = [
     workItemType: {
       id: 'gid://gitlab/WorkItems::Type/8',
       name: 'Epic',
-      iconName: 'issue-type-epic',
+      iconName: 'work-item-epic',
       __typename: 'WorkItemType',
     },
     __typename: 'WorkItemTypeCountsByState',
@@ -1588,7 +1588,7 @@ export const mockRolledUpCountsByType = [
     workItemType: {
       id: 'gid://gitlab/WorkItems::Type/1',
       name: 'Issue',
-      iconName: 'issue-type-issue',
+      iconName: 'work-item-issue',
       __typename: 'WorkItemType',
     },
     __typename: 'WorkItemTypeCountsByState',
@@ -1603,7 +1603,7 @@ export const mockRolledUpCountsByType = [
     workItemType: {
       id: 'gid://gitlab/WorkItems::Type/5',
       name: 'Task',
-      iconName: 'issue-type-task',
+      iconName: 'work-item-task',
       __typename: 'WorkItemType',
     },
     __typename: 'WorkItemTypeCountsByState',
@@ -2044,7 +2044,7 @@ export const workItemResponseFactory = ({
                     workItemType: {
                       id: '1',
                       name: 'Task',
-                      iconName: 'issue-type-task',
+                      iconName: 'work-item-task',
                     },
                     widgets: [
                       {
@@ -2243,7 +2243,7 @@ export const createWorkItemMutationResponse = {
           __typename: 'WorkItemType',
           id: 'gid://gitlab/WorkItems::Type/5',
           name: 'Task',
-          iconName: 'issue-type-task',
+          iconName: 'work-item-task',
         },
         userPermissions: {
           adminParentLink: false,
@@ -2319,7 +2319,7 @@ export const workItemHierarchyNoUpdatePermissionResponse = {
       workItemType: {
         id: 'gid://gitlab/WorkItems::Type/6',
         name: 'Issue',
-        iconName: 'issue-type-issue',
+        iconName: 'work-item-issue',
         __typename: 'WorkItemType',
       },
       title: 'New title',
@@ -2376,7 +2376,7 @@ export const workItemHierarchyNoUpdatePermissionResponse = {
                 workItemType: {
                   id: 'gid://gitlab/WorkItems::Type/5',
                   name: 'Task',
-                  iconName: 'issue-type-task',
+                  iconName: 'work-item-task',
                   __typename: 'WorkItemType',
                 },
                 title: 'xyz',
@@ -2520,7 +2520,7 @@ export const confidentialWorkItemTask = {
   workItemType: {
     id: 'gid://gitlab/WorkItems::Type/5',
     name: 'Task',
-    iconName: 'issue-type-task',
+    iconName: 'work-item-task',
     __typename: 'WorkItemType',
   },
   title: 'xyz',
@@ -2546,7 +2546,7 @@ export const closedWorkItemTask = {
   workItemType: {
     id: 'gid://gitlab/WorkItems::Type/5',
     name: 'Task',
-    iconName: 'issue-type-task',
+    iconName: 'work-item-task',
     __typename: 'WorkItemType',
   },
   title: 'abc',
@@ -2572,7 +2572,7 @@ export const workItemTask = {
   workItemType: {
     id: 'gid://gitlab/WorkItems::Type/5',
     name: 'Task',
-    iconName: 'issue-type-task',
+    iconName: 'work-item-task',
     __typename: 'WorkItemType',
   },
   title: 'bar',
@@ -2608,7 +2608,7 @@ export const workItemEpic = {
   workItemType: {
     id: 'gid://gitlab/WorkItems::Type/6',
     name: 'Epic',
-    iconName: 'issue-type-epic',
+    iconName: 'work-item-epic',
     __typename: 'WorkItemType',
   },
   title: 'bar',
@@ -2642,7 +2642,7 @@ export const otherNamespaceChild = {
   workItemType: {
     id: 'gid://gitlab/WorkItems::Type/5',
     name: 'Task',
-    iconName: 'issue-type-task',
+    iconName: 'work-item-task',
     __typename: 'WorkItemType',
   },
   title: 'baz',
@@ -2672,7 +2672,7 @@ export const childrenWorkItems = [
     workItemType: {
       id: 'gid://gitlab/WorkItems::Type/5',
       name: 'Task',
-      iconName: 'issue-type-task',
+      iconName: 'work-item-task',
       __typename: 'WorkItemType',
     },
     title: 'foobar',
@@ -2762,7 +2762,7 @@ export const workItemHierarchyResponse = {
         workItemType: {
           id: 'gid://gitlab/WorkItems::Type/1',
           name: 'Issue',
-          iconName: 'issue-type-issue',
+          iconName: 'work-item-issue',
           __typename: 'WorkItemType',
         },
         title: 'New title',
@@ -2827,7 +2827,7 @@ export const workItemObjectiveWithChild = {
   workItemType: {
     id: 'gid://gitlab/WorkItems::Type/2411',
     name: 'Objective',
-    iconName: 'issue-type-objective',
+    iconName: 'work-item-objective',
     __typename: 'WorkItemType',
   },
   webUrl: 'http://gdk.test/gitlab-org/gitlab/-/issues/1',
@@ -2896,7 +2896,7 @@ export const workItemWithParentAsChild = {
   workItemType: {
     id: 'gid://gitlab/WorkItems::Type/2411',
     name: 'Objective',
-    iconName: 'issue-type-objective',
+    iconName: 'work-item-objective',
     __typename: 'WorkItemType',
   },
   widgets: [
@@ -2921,7 +2921,7 @@ export const workItemObjectiveWithoutChild = {
   workItemType: {
     id: 'gid://gitlab/WorkItems::Type/2411',
     name: 'Objective',
-    iconName: 'issue-type-objective',
+    iconName: 'work-item-objective',
     __typename: 'WorkItemType',
   },
   webUrl: 'http://gdk.test/gitlab-org/gitlab/-/issues/1',
@@ -2985,7 +2985,7 @@ export const workItemHierarchyTreeEmptyResponse = {
       workItemType: {
         id: 'gid://gitlab/WorkItems::Type/2411',
         name: 'Objective',
-        iconName: 'issue-type-objective',
+        iconName: 'work-item-objective',
         __typename: 'WorkItemType',
       },
       title: 'New title',
@@ -3052,7 +3052,7 @@ export const mockHierarchyChildren = [
     workItemType: {
       id: 'gid://gitlab/WorkItems::Type/2411',
       name: 'Objective',
-      iconName: 'issue-type-objective',
+      iconName: 'work-item-objective',
       __typename: 'WorkItemType',
     },
     namespace: {
@@ -3134,7 +3134,7 @@ export const mockOpenChildrenCount = {
                 workItemType: {
                   id: 'gid://gitlab/WorkItems::Type/8',
                   name: 'Epic',
-                  iconName: 'issue-type-epic',
+                  iconName: 'work-item-epic',
                   __typename: 'WorkItemType',
                 },
                 __typename: 'WorkItemTypeCountsByState',
@@ -3149,7 +3149,7 @@ export const mockOpenChildrenCount = {
                 workItemType: {
                   id: 'gid://gitlab/WorkItems::Type/1',
                   name: 'Issue',
-                  iconName: 'issue-type-issue',
+                  iconName: 'work-item-issue',
                   __typename: 'WorkItemType',
                 },
                 __typename: 'WorkItemTypeCountsByState',
@@ -3164,7 +3164,7 @@ export const mockOpenChildrenCount = {
                 workItemType: {
                   id: 'gid://gitlab/WorkItems::Type/5',
                   name: 'Task',
-                  iconName: 'issue-type-task',
+                  iconName: 'work-item-task',
                   __typename: 'WorkItemType',
                 },
                 __typename: 'WorkItemTypeCountsByState',
@@ -3200,7 +3200,7 @@ export const mockNoOpenChildrenCount = {
                 workItemType: {
                   id: 'gid://gitlab/WorkItems::Type/8',
                   name: 'Epic',
-                  iconName: 'issue-type-epic',
+                  iconName: 'work-item-epic',
                   __typename: 'WorkItemType',
                 },
                 __typename: 'WorkItemTypeCountsByState',
@@ -3215,7 +3215,7 @@ export const mockNoOpenChildrenCount = {
                 workItemType: {
                   id: 'gid://gitlab/WorkItems::Type/1',
                   name: 'Issue',
-                  iconName: 'issue-type-issue',
+                  iconName: 'work-item-issue',
                   __typename: 'WorkItemType',
                 },
                 __typename: 'WorkItemTypeCountsByState',
@@ -3230,7 +3230,7 @@ export const mockNoOpenChildrenCount = {
                 workItemType: {
                   id: 'gid://gitlab/WorkItems::Type/5',
                   name: 'Task',
-                  iconName: 'issue-type-task',
+                  iconName: 'work-item-task',
                   __typename: 'WorkItemType',
                 },
                 __typename: 'WorkItemTypeCountsByState',
@@ -3255,7 +3255,7 @@ export const workItemHierarchyTreeResponse = {
       workItemType: {
         id: 'gid://gitlab/WorkItems::Type/2411',
         name: 'Objective',
-        iconName: 'issue-type-objective',
+        iconName: 'work-item-objective',
         __typename: 'WorkItemType',
       },
       title: 'New title',
@@ -3304,7 +3304,7 @@ export const workItemHierarchyTreeSingleClosedItemResponse = {
       workItemType: {
         id: 'gid://gitlab/WorkItems::Type/2411',
         name: 'Objective',
-        iconName: 'issue-type-objective',
+        iconName: 'work-item-objective',
         __typename: 'WorkItemType',
       },
       title: 'New title',
@@ -3360,7 +3360,7 @@ export const workItemHierarchyTreeSingleClosedItemResponse = {
                 workItemType: {
                   id: 'gid://gitlab/WorkItems::Type/2411',
                   name: 'Objective',
-                  iconName: 'issue-type-objective',
+                  iconName: 'work-item-objective',
                   __typename: 'WorkItemType',
                 },
                 namespace: {
@@ -3442,7 +3442,7 @@ export const workItemObjectiveWithClosedChild = {
   workItemType: {
     id: 'gid://gitlab/WorkItems::Type/2411',
     name: 'Objective',
-    iconName: 'issue-type-objective',
+    iconName: 'work-item-objective',
     __typename: 'WorkItemType',
   },
   namespace: {
@@ -3490,7 +3490,7 @@ export const workItemObjectiveWithClosedChild = {
           workItemType: {
             id: 'gid://gitlab/WorkItems::Type/1',
             name: 'Issue',
-            iconName: 'issue-type-issue',
+            iconName: 'work-item-issue',
             __typename: 'WorkItemType',
           },
           __typename: 'WorkItemTypeCountsByState',
@@ -3518,7 +3518,7 @@ export const changeWorkItemParentMutationResponse = {
           __typename: 'WorkItemType',
           id: 'gid://gitlab/WorkItems::Type/1',
           name: 'Issue',
-          iconName: 'issue-type-issue',
+          iconName: 'work-item-issue',
         },
         userPermissions: {
           adminParentLink: true,
@@ -3604,7 +3604,7 @@ export const availableWorkItemsResponse = {
             title: 'Task 1',
             confidential: false,
             workItemType: {
-              iconName: 'issue-type-task',
+              iconName: 'work-item-task',
               id: 'gid://gitlab/WorkItems::Type/5',
               name: 'Task',
               __typename: 'WorkItemType',
@@ -3617,7 +3617,7 @@ export const availableWorkItemsResponse = {
             title: 'Task 2',
             confidential: false,
             workItemType: {
-              iconName: 'issue-type-task',
+              iconName: 'work-item-task',
               id: 'gid://gitlab/WorkItems::Type/5',
               name: 'Task',
               __typename: 'WorkItemType',
@@ -3630,7 +3630,7 @@ export const availableWorkItemsResponse = {
             title: 'Task 3',
             confidential: false,
             workItemType: {
-              iconName: 'issue-type-task',
+              iconName: 'work-item-task',
               id: 'gid://gitlab/WorkItems::Type/5',
               name: 'Task',
               __typename: 'WorkItemType',
@@ -3662,7 +3662,7 @@ export const availableObjectivesResponse = {
               __typename: 'Namespace',
             },
             workItemType: {
-              iconName: 'issue-type-objective',
+              iconName: 'work-item-objective',
               id: 'gid://gitlab/WorkItems::Type/6',
               name: 'Objective',
               __typename: 'WorkItemType',
@@ -3681,7 +3681,7 @@ export const availableObjectivesResponse = {
               __typename: 'Namespace',
             },
             workItemType: {
-              iconName: 'issue-type-objective',
+              iconName: 'work-item-objective',
               id: 'gid://gitlab/WorkItems::Type/6',
               name: 'Objective',
               __typename: 'WorkItemType',
@@ -3700,7 +3700,7 @@ export const availableObjectivesResponse = {
               __typename: 'Namespace',
             },
             workItemType: {
-              iconName: 'issue-type-objective',
+              iconName: 'work-item-objective',
               id: 'gid://gitlab/WorkItems::Type/6',
               name: 'Objective',
               __typename: 'WorkItemType',
@@ -3732,7 +3732,7 @@ export const searchedObjectiveResponse = {
               __typename: 'Namespace',
             },
             workItemType: {
-              iconName: 'issue-type-objective',
+              iconName: 'work-item-objective',
               id: 'gid://gitlab/WorkItems::Type/6',
               name: 'Objective',
               __typename: 'WorkItemType',
@@ -4004,7 +4004,7 @@ export const mockParentWidgetResponse = {
   workItemType: {
     id: 'gid://gitlab/WorkItems::Type/6',
     name: 'Objective',
-    iconName: 'issue-type-objective',
+    iconName: 'work-item-objective',
     __typename: 'WorkItemType',
   },
   __typename: 'WorkItem',
@@ -4034,7 +4034,7 @@ export const mockAncestorWidgetResponse = {
               workItemType: {
                 id: 'gid://gitlab/WorkItems::Type/6',
                 name: 'Objective',
-                iconName: 'issue-type-objective',
+                iconName: 'work-item-objective',
                 __typename: 'WorkItemType',
               },
               __typename: 'WorkItem',
@@ -4048,7 +4048,7 @@ export const mockAncestorWidgetResponse = {
                   workItemType: {
                     id: 'gid://gitlab/WorkItems::Type/6',
                     name: 'Objective',
-                    iconName: 'issue-type-objective',
+                    iconName: 'work-item-objective',
                     __typename: 'WorkItemType',
                   },
                   title: 'Objective 3',
@@ -4074,7 +4074,7 @@ export const mockAncestorWidgetResponse = {
                   workItemType: {
                     id: 'gid://gitlab/WorkItems::Type/6',
                     name: 'Objective',
-                    iconName: 'issue-type-objective',
+                    iconName: 'work-item-objective',
                     __typename: 'WorkItemType',
                   },
                   title: 'Objective 333',
@@ -5587,7 +5587,7 @@ export const groupEpicsWithMilestonesQueryResponse = {
             workItemType: {
               id: 'gid://gitlab/WorkItems::Type/8',
               name: 'Epic',
-              iconName: 'issue-type-epic',
+              iconName: 'work-item-epic',
               __typename: 'WorkItemType',
             },
           },
@@ -5607,7 +5607,7 @@ export const groupEpicsWithMilestonesQueryResponse = {
             workItemType: {
               id: 'gid://gitlab/WorkItems::Type/8',
               name: 'Epic',
-              iconName: 'issue-type-epic',
+              iconName: 'work-item-epic',
               __typename: 'WorkItemType',
             },
           },
@@ -6596,7 +6596,7 @@ export const createWorkItemQueryResponse = (widgets = []) => ({
         workItemType: {
           id: 'gid://gitlab/WorkItems::Type/8',
           name: 'Epic',
-          iconName: 'issue-type-epic',
+          iconName: 'work-item-epic',
           __typename: 'WorkItemType',
         },
         userPermissions: {
@@ -7061,7 +7061,7 @@ export const workItemHierarchyNoChildrenTreeResponse = {
       workItemType: {
         id: 'gid://gitlab/WorkItems::Type/2411',
         name: 'Objective',
-        iconName: 'issue-type-objective',
+        iconName: 'work-item-objective',
         __typename: 'WorkItemType',
       },
       title: 'New title without children',
@@ -7279,7 +7279,7 @@ export const mockCreateWorkItemDraftData = {
         __typename: 'WorkItemType',
         id: 'gid://gitlab/WorkItems::Type/8',
         name: 'Epic',
-        iconName: 'issue-type-epic',
+        iconName: 'work-item-epic',
       },
       userPermissions: {
         __typename: 'WorkItemPermissions',
@@ -7399,7 +7399,7 @@ export const mockCreateWorkItemDraftData = {
               __typename: 'WorkItemType',
               id: 'gid://gitlab/WorkItems::Type/8',
               name: 'Epic',
-              iconName: 'issue-type-epic',
+              iconName: 'work-item-epic',
             },
           },
         },
@@ -7531,7 +7531,7 @@ export const mockNewWorkItemCache = {
   ],
   workItemType: 'Epic',
   workItemTypeId: 'gid://gitlab/WorkItems::Type/8',
-  workItemTypeIconName: 'issue-type-epic',
+  workItemTypeIconName: 'work-item-epic',
 };
 
 export const restoredDraftDataWidgets = [
@@ -7614,7 +7614,7 @@ export const restoredDraftDataWidgets = [
         __typename: 'WorkItemType',
         id: 'gid://gitlab/WorkItems::Type/8',
         name: 'Epic',
-        iconName: 'issue-type-epic',
+        iconName: 'work-item-epic',
       },
     },
     depthLimitReachedByType: [],
@@ -7836,7 +7836,7 @@ export const namespaceWorkItemTypesQueryResponse = {
           {
             id: 'gid://gitlab/WorkItems::Type/8',
             name: 'Epic',
-            iconName: 'issue-type-epic',
+            iconName: 'work-item-epic',
             supportedConversionTypes: [
               {
                 id: 'gid://gitlab/WorkItems::Type/2',
@@ -7957,7 +7957,7 @@ export const namespaceWorkItemTypesQueryResponse = {
           {
             id: 'gid://gitlab/WorkItems::Type/2',
             name: 'Incident',
-            iconName: 'issue-type-incident',
+            iconName: 'work-item-incident',
             supportedConversionTypes: [
               {
                 id: 'gid://gitlab/WorkItems::Type/8',
@@ -8067,7 +8067,7 @@ export const namespaceWorkItemTypesQueryResponse = {
           {
             id: 'gid://gitlab/WorkItems::Type/1',
             name: 'Issue',
-            iconName: 'issue-type-issue',
+            iconName: 'work-item-issue',
             supportedConversionTypes: [
               {
                 id: 'gid://gitlab/WorkItems::Type/8',
@@ -8273,7 +8273,7 @@ export const namespaceWorkItemTypesQueryResponse = {
           {
             id: 'gid://gitlab/WorkItems::Type/7',
             name: 'Key Result',
-            iconName: 'issue-type-keyresult',
+            iconName: 'work-item-keyresult',
             supportedConversionTypes: [
               {
                 id: 'gid://gitlab/WorkItems::Type/8',
@@ -8372,7 +8372,7 @@ export const namespaceWorkItemTypesQueryResponse = {
           {
             id: 'gid://gitlab/WorkItems::Type/6',
             name: 'Objective',
-            iconName: 'issue-type-objective',
+            iconName: 'work-item-objective',
             supportedConversionTypes: [
               {
                 id: 'gid://gitlab/WorkItems::Type/8',
@@ -8485,7 +8485,7 @@ export const namespaceWorkItemTypesQueryResponse = {
           {
             id: 'gid://gitlab/WorkItems::Type/4',
             name: 'Requirement',
-            iconName: 'issue-type-requirements',
+            iconName: 'work-item-requirements',
             supportedConversionTypes: [
               {
                 id: 'gid://gitlab/WorkItems::Type/8',
@@ -8554,7 +8554,7 @@ export const namespaceWorkItemTypesQueryResponse = {
           {
             id: 'gid://gitlab/WorkItems::Type/5',
             name: 'Task',
-            iconName: 'issue-type-task',
+            iconName: 'work-item-task',
             supportedConversionTypes: [
               {
                 id: 'gid://gitlab/WorkItems::Type/8',
@@ -8739,7 +8739,7 @@ export const namespaceWorkItemTypesQueryResponse = {
           {
             id: 'gid://gitlab/WorkItems::Type/3',
             name: 'Test Case',
-            iconName: 'issue-type-test-case',
+            iconName: 'work-item-test-case',
             supportedConversionTypes: [
               {
                 id: 'gid://gitlab/WorkItems::Type/8',
@@ -8803,7 +8803,7 @@ export const namespaceWorkItemTypesQueryResponse = {
           {
             id: 'gid://gitlab/WorkItems::Type/9',
             name: 'Ticket',
-            iconName: 'issue-type-issue',
+            iconName: 'work-item-issue',
             supportedConversionTypes: [
               {
                 id: 'gid://gitlab/WorkItems::Type/8',
@@ -8948,7 +8948,7 @@ export const namespaceWorkItemTypesWithOKRsQueryResponse = {
           {
             id: 'gid://gitlab/WorkItems::Type/8',
             name: 'Epic',
-            iconName: 'issue-type-epic',
+            iconName: 'work-item-epic',
             supportedConversionTypes: [],
             widgetDefinitions: [],
             __typename: 'WorkItemType',
@@ -8956,7 +8956,7 @@ export const namespaceWorkItemTypesWithOKRsQueryResponse = {
           {
             id: 'gid://gitlab/WorkItems::Type/2',
             name: 'Incident',
-            iconName: 'issue-type-incident',
+            iconName: 'work-item-incident',
             supportedConversionTypes: [],
             widgetDefinitions: [],
             __typename: 'WorkItemType',
@@ -8964,7 +8964,7 @@ export const namespaceWorkItemTypesWithOKRsQueryResponse = {
           {
             id: 'gid://gitlab/WorkItems::Type/1',
             name: 'Issue',
-            iconName: 'issue-type-issue',
+            iconName: 'work-item-issue',
             supportedConversionTypes: [
               {
                 id: 'gid://gitlab/WorkItems::Type/8',
@@ -9114,7 +9114,7 @@ export const namespaceWorkItemTypesWithOKRsQueryResponse = {
           {
             id: 'gid://gitlab/WorkItems::Type/7',
             name: 'Key Result',
-            iconName: 'issue-type-keyresult',
+            iconName: 'work-item-keyresult',
             supportedConversionTypes: [
               {
                 id: 'gid://gitlab/WorkItems::Type/8',
@@ -9218,7 +9218,7 @@ export const namespaceWorkItemTypesWithOKRsQueryResponse = {
           {
             id: 'gid://gitlab/WorkItems::Type/6',
             name: 'Objective',
-            iconName: 'issue-type-objective',
+            iconName: 'work-item-objective',
             supportedConversionTypes: [],
             widgetDefinitions: [],
             __typename: 'WorkItemType',
@@ -9226,7 +9226,7 @@ export const namespaceWorkItemTypesWithOKRsQueryResponse = {
           {
             id: 'gid://gitlab/WorkItems::Type/4',
             name: 'Requirement',
-            iconName: 'issue-type-requirements',
+            iconName: 'work-item-requirements',
             supportedConversionTypes: [],
             widgetDefinitions: [],
             __typename: 'WorkItemType',
@@ -9234,7 +9234,7 @@ export const namespaceWorkItemTypesWithOKRsQueryResponse = {
           {
             id: 'gid://gitlab/WorkItems::Type/5',
             name: 'Task',
-            iconName: 'issue-type-task',
+            iconName: 'work-item-task',
             supportedConversionTypes: [],
             widgetDefinitions: [],
             __typename: 'WorkItemType',
@@ -9242,7 +9242,7 @@ export const namespaceWorkItemTypesWithOKRsQueryResponse = {
           {
             id: 'gid://gitlab/WorkItems::Type/3',
             name: 'Test Case',
-            iconName: 'issue-type-test-case',
+            iconName: 'work-item-test-case',
             supportedConversionTypes: [],
             widgetDefinitions: [],
             __typename: 'WorkItemType',
@@ -9250,7 +9250,7 @@ export const namespaceWorkItemTypesWithOKRsQueryResponse = {
           {
             id: 'gid://gitlab/WorkItems::Type/9',
             name: 'Ticket',
-            iconName: 'issue-type-issue',
+            iconName: 'work-item-issue',
             supportedConversionTypes: [],
             widgetDefinitions: [],
             __typename: 'WorkItemType',

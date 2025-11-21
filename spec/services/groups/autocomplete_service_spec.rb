@@ -76,7 +76,7 @@ RSpec.describe Groups::AutocompleteService, feature_category: :groups_and_projec
       expect(issues.map(&:title)).to contain_exactly(
         project_issue.title, sub_group_project_issue.title
       )
-      expect(issues.map(&:icon_name).uniq).to contain_exactly('issue-type-issue')
+      expect(issues.map(&:icon_name).uniq).to contain_exactly('work-item-issue')
     end
 
     it 'returns only confidential issues if confidential_only is true' do

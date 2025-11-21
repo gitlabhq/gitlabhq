@@ -20,12 +20,12 @@ title: Security Analyst Agent
 
 {{< /history >}}
 
-The GitLab Security Analyst Agent is a specialized AI assistant that helps with vulnerability management
+The Security Analyst Agent is a specialized AI assistant that helps with vulnerability management
 and security analysis workflows in GitLab. It combines security expertise with deep knowledge of GitLab
 security features, vulnerability reports, security dashboards, and compliance tools to help you
 efficiently triage, assess, and remediate security findings.
 
-Use the GitLab Security Analyst Agent when you need assistance with:
+Use the Security Analyst Agent when you need assistance with:
 
 - Vulnerability triage: Analyze and prioritize security findings across different scan types.
 - Risk assessment: Evaluate the severity, exploitability, and business impact of vulnerabilities.
@@ -35,11 +35,11 @@ Use the GitLab Security Analyst Agent when you need assistance with:
 - Remediation planning: Create actionable plans to address security vulnerabilities.
 - Security workflow automation: Streamline repetitive security assessment tasks.
 
-The GitLab Security Analyst Agent understands GitLab-specific security implementations, including
+The Security Analyst Agent understands GitLab-specific security implementations, including
 vulnerability states, severity levels, and security scanner outputs. It can interpret EPSS scores,
 CVE data, and reachability analysis to provide contextual security guidance.
 
-## Access the GitLab Security Analyst Agent
+## Access the Security Analyst Agent
 
 Prerequisites:
 
@@ -72,7 +72,7 @@ Prerequisites:
 
    {{< /tabs >}}
 
-1. From the **New chat** ({{< icon name="duo-chat-new" >}}) dropdown list, select **Security Analyst Agent**.
+1. From the **New chat** ({{< icon name="duo-chat-new" >}}) dropdown list, select **Security Analyst**.
 1. Enter your security-related question or request. To get the best results from your request:
 
    - Provide context about your security requirements and risk tolerance.

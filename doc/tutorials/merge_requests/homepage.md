@@ -60,7 +60,7 @@ GitLab shows the total number of **Active** merge requests in the left sidebar o
 
 ![The upper-right corner showing the number of active merge requests.](img/homepage_totals_v18_6.png)
 
-- 15 open issues ({{< icon name="issue-type-issue" >}})
+- 15 open issues ({{< icon name="work-item-issue" >}})
 - 5 active merge requests ({{< icon name="merge-request-open" >}})
 - 3 to-do items ({{< icon name="todo-done" >}})
 

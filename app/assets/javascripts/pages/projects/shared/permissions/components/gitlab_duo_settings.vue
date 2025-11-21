@@ -31,6 +31,11 @@ export default {
       required: false,
       default: () => ({}),
     },
+    duoFoundationalFlowsCascadingSettings: {
+      type: Object,
+      required: false,
+      default: () => ({}),
+    },
     duoFeaturesEnabled: {
       type: Boolean,
       required: false,
@@ -66,6 +71,11 @@ export default {
       required: false,
       default: false,
     },
+    initialDuoFoundationalFlowsAvailability: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
     experimentFeaturesEnabled: {
       type: Boolean,
       required: false,
@@ -83,6 +93,7 @@ export default {
       duoEnabled: this.duoFeaturesEnabled,
       exclusionRules: this.duoContextExclusionSettings?.exclusionRules || [],
       duoRemoteFlowsAvailability: this.initialDuoRemoteFlowsAvailability,
+      duoFoundationalFlowsAvailability: this.initialDuoFoundationalFlowsAvailability,
     };
   },
   computed: {
@@ -126,6 +137,12 @@ export default {
       return (
         this.duoRemoteFlowsCascadingSettings?.lockedByAncestor ||
         this.duoRemoteFlowsCascadingSettings?.lockedByApplicationSetting
+      );
+    },
+    areFoundationalFlowsLocked() {
+      return (
+        this.duoFoundationalFlowsCascadingSettings?.lockedByAncestor ||
+        this.duoFoundationalFlowsCascadingSettings?.lockedByApplicationSetting
       );
     },
     showDuoContextExclusion() {
@@ -248,6 +265,42 @@ export default {
               </template>
             </gl-sprintf>
           </template>
+        </project-setting-row>
+        <project-setting-row
+          v-if="glFeatures.duoFoundationalFlows"
+          :label="s__('DuoAgentPlatform|Allow foundational flows')"
+          :help-text="
+            s__(
+              'DuoAgentPlatform|Allow GitLab Duo agents to execute foundational flows in this project.',
+            )
+          "
+        >
+          <template #label-icon>
+            <cascading-lock-icon
+              v-if="areFoundationalFlowsLocked"
+              data-testid="duo-foundational-flows-cascading-lock-icon"
+              :is-locked-by-group-ancestor="duoFoundationalFlowsCascadingSettings.lockedByAncestor"
+              :is-locked-by-application-settings="
+                duoFoundationalFlowsCascadingSettings.lockedByApplicationSetting
+              "
+              :ancestor-namespace="duoFoundationalFlowsCascadingSettings.ancestorNamespace"
+              class="gl-ml-1"
+            />
+          </template>
+          <gl-toggle
+            v-model="duoFoundationalFlowsAvailability"
+            class="gl-mt-2"
+            :disabled="
+              duoFeaturesLocked ||
+              !duoEnabled ||
+              !duoRemoteFlowsAvailability ||
+              areFoundationalFlowsLocked
+            "
+            :label="s__('DuoAgentPlatform|Foundational GitLab Duo Flows')"
+            label-position="hidden"
+            name="project[project_setting_attributes][duo_foundational_flows_enabled]"
+            data-testid="duo-foundational-flows-enabled"
+          />
         </project-setting-row>
       </div>
     </project-setting-row>

@@ -258,7 +258,13 @@ Bot users for projects:
 When the project access token is [revoked](#revoke-or-rotate-a-project-access-token):
 
 - The bot user is retained as per [inactive token retention setting](#inactive-token-retention).
-- After 30 days the bot user is deleted. All records are moved to a system-wide user with the username [Ghost User](../../profile/account/delete_account.md#associated-records).
+- The bot user is deleted 30 days after the token expiration date. This applies even if the token is revoked before the expiration date. After deletion, all existing user records are associated to a system-wide [ghost user](../../profile/account/delete_account.md#associated-records).
+
+{{< alert type="note" >}}
+
+The original expiration date of the token always defines when the bot user is deleted. For example, if a token is revoked on April 5 but expires on April 20, the bot user will be deleted around May 20 (30 days after the expiration date).
+
+{{< /alert >}}
 
 For more information, see [bot users for groups](../../group/settings/group_access_tokens.md#bot-users-for-groups).
 

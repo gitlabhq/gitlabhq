@@ -5,8 +5,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 title: GitLab remote URL format
 ---
 
-In VS Code, you can clone Git repositories, or browse them
-in read-only mode.
+In VS Code, you can clone Git repositories or browse them in read-only mode.
 
 GitLab remote URLs require these parameters:
 
@@ -33,7 +32,7 @@ The parameters are then placed together in this order:
 gitlab-remote://<instanceUrl>/<label>?project=<projectId>&ref=<gitReference>
 ```
 
-For example, the `projectID` for the main GitLab project is `278964`, so the remote URL for the main GitLab project is:
+For example, the `projectId` for the main GitLab project is `278964`, so the remote URL for the main GitLab project is:
 
 ```plaintext
 gitlab-remote://gitlab.com/<label>?project=278964&ref=master
@@ -50,14 +49,14 @@ Prerequisites:
   [added an access token](setup.md#authenticate-with-gitlab) to that GitLab instance.
 - You must be a member of a project for search to return it as a result.
 
-To search for, then clone, a GitLab project:
+To search for and clone a GitLab project:
 
 1. Open the Command Palette by pressing:
    - MacOS: <kbd>Command</kbd>+<kbd>Shift</kbd>+<kbd>P</kbd>.
    - Windows: <kbd>Control</kbd>+<kbd>Shift</kbd>+<kbd>P</kbd>.
 1. Run the **Git: Clone** command.
 1. Select either GitHub or GitLab as a repository source.
-1. Search for, then select, a **Repository name**.
+1. Search for and then select a **Repository name**.
 1. Select a local folder to clone the repository into.
 1. If cloning a GitLab repository, select a cloning method:
    - To clone with Git, select the URL that begins with `user@hostname.com`.

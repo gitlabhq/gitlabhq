@@ -333,7 +333,7 @@ class AddTicketWorkItemType < Gitlab::Database::Migration[2.1]
       name: TICKET_NAME,
       namespace_id: nil,
       base_type: TICKET_ENUM_VALUE,
-      icon_name: 'issue-type-issue'
+      icon_name: 'work-item-issue'
     )
 
     return say('Ticket work item type create record failed, skipping creation') if new_ticket_work_item_type.new_record?

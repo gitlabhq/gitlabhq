@@ -69,7 +69,7 @@ The extension shows information in the VS Code status bar if both:
 To configure settings, go to **Settings** > **Extensions** > **GitLab Workflow**.
 Settings can be configured at the user or workspace level.
 
-By default, Code Suggestions and GitLab Duo Chat are enabled, so if you have
+By default, GitLab Duo Code Suggestions and GitLab Duo Chat are enabled, so if you have
 the GitLab Duo add-on and a seat assigned, you should have access.
 
 ### Authentication

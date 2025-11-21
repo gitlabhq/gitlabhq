@@ -67,7 +67,7 @@ describe('WorkItemLinkChildMetadata', () => {
               workItemType: {
                 id: 'gid://gitlab/WorkItems::Type/8',
                 name: 'Epic',
-                iconName: 'issue-type-epic',
+                iconName: 'work-item-epic',
                 __typename: 'WorkItemType',
               },
               __typename: 'WorkItemTypeCountsByState',

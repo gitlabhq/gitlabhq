@@ -119,7 +119,7 @@ RSpec.describe 'Work item detail', :js, feature_category: :team_planning do
     end
 
     it_behaves_like 'work items parent', :issue
-    it_behaves_like 'work items change type', 'Issue', '[data-testid="issue-type-issue-icon"]'
+    it_behaves_like 'work items change type', 'Issue', '[data-testid="work-item-issue-icon"]'
   end
 
   context 'for signed in admin' do

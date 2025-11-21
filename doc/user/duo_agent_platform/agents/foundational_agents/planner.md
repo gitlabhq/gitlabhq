@@ -20,14 +20,14 @@ title: Planner Agent
 
 {{< /history >}}
 
-Planner Agent is a specialized AI agent that assists with product management
+The Planner Agent is a specialized AI agent that assists with product management
 and planning workflows in GitLab. It helps you organize, prioritize, and track work more effectively
 because it combines:
 
 - Product management expertise.
 - Awareness of GitLab planning objects, like issues and epics.
 
-Use Planner Agent when you need help with:
+Use the Planner Agent when you need help with:
 
 - Prioritization: Applying frameworks like RICE, MoSCoW, or WSJF to rank work items.
 - Work breakdown: Decomposing initiatives into epics, features, and user stories.
@@ -39,13 +39,13 @@ Use Planner Agent when you need help with:
 
 Please leave feedback in [issue 576622](https://gitlab.com/gitlab-org/gitlab/-/issues/576622).
 
-## Access Planner Agent
+## Access the Planner Agent
 
 Prerequisites:
 
 - You must be working in a project, not a group.
 - Foundational agents must be [turned on](_index.md#turn-foundational-agents-on-or-off).
-- During the beta, Planner Agent is in read-only mode.
+- During the beta, the Planner Agent is in read-only mode.
 
 1. On the left sidebar, select **Search or go to** and find your project.
 
@@ -74,7 +74,7 @@ Prerequisites:
 
    {{< /tabs >}}
 
-1. From the **New chat** ({{< icon name="duo-chat-new" >}}) dropdown list, select **Planner Agent**.
+1. From the **New chat** ({{< icon name="duo-chat-new" >}}) dropdown list, select **Planner**.
 1. Enter your planning-related question or request. To get the best results from your request:
 
    - Provide context about your request, like URLs, filter criteria, or scope.

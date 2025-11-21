@@ -18,6 +18,7 @@ const defaultProps = {
     exclusionRules: ['*.log', 'node_modules/'],
   },
   initialDuoRemoteFlowsAvailability: false,
+  initialDuoFoundationalFlowsAvailability: false,
 };
 
 describe('GitlabDuoSettings', () => {
@@ -52,7 +53,15 @@ describe('GitlabDuoSettings', () => {
     );
   const findDuoRemoteFlowsHiddenInput = () =>
     wrapper.find('input[name="project[project_setting_attributes][duo_remote_flows_enabled]"]');
+  const findDuoFoundationalFlowsHiddenInput = () =>
+    wrapper.find(
+      'input[name="project[project_setting_attributes][duo_foundational_flows_enabled]"]',
+    );
   const findDuoRemoteFlowsToggle = () => wrapper.findByTestId('duo-remote-flows-enabled');
+  const findDuoFoundationalFlowsToggle = () =>
+    wrapper.findByTestId('duo-foundational-flows-enabled');
+  const findDuoFoundationalFlowsCascadingLockIcon = () =>
+    wrapper.findByTestId('duo-foundational-flows-cascading-lock-icon');
   const findAutoReviewToggle = () => wrapper.findByTestId('amazon-q-auto-review-enabled');
 
   beforeEach(() => {
@@ -161,11 +170,18 @@ describe('GitlabDuoSettings', () => {
         'when $scenario',
         ({ duoWorkflowInCi, amazonQAvailable, duoFeaturesEnabled, shouldRender }) => {
           beforeEach(() => {
-            wrapper = createWrapper({ amazonQAvailable, duoFeaturesEnabled }, { duoWorkflowInCi });
+            wrapper = createWrapper(
+              { amazonQAvailable, duoFeaturesEnabled },
+              { duoWorkflowInCi, duoFoundationalFlows: true },
+            );
           });
 
           it(`${shouldRender ? 'renders' : 'does not render'} the Duo remote flows toggle`, () => {
             expect(findDuoRemoteFlowsToggle().exists()).toBe(shouldRender);
+          });
+
+          it(`${shouldRender ? 'renders' : 'does not render'} the Duo foundational flows toggle`, () => {
+            expect(findDuoFoundationalFlowsToggle().exists()).toBe(shouldRender);
           });
         },
       );
@@ -178,7 +194,7 @@ describe('GitlabDuoSettings', () => {
           );
         });
 
-        it('clicking on the checkbox and submitting passes along the data to the rest call', async () => {
+        it('clicking on the remote flows checkbox and submitting passes along the data', async () => {
           const duoRemoteFlowsToggle = findDuoRemoteFlowsToggle();
           const hiddenInput = findDuoRemoteFlowsHiddenInput();
 
@@ -189,6 +205,103 @@ describe('GitlabDuoSettings', () => {
 
           expect(parseBoolean(hiddenInput.attributes('value'))).toBe(true);
         });
+      });
+
+      describe('when Duo foundational flows toggle is rendered', () => {
+        beforeEach(() => {
+          wrapper = createWrapper(
+            {
+              duoFeaturesEnabled: true,
+              amazonQAvailable: false,
+              initialDuoRemoteFlowsAvailability: true,
+            },
+            { duoWorkflowInCi: true, duoFoundationalFlows: true },
+          );
+        });
+
+        it('renders the foundational flows toggle', () => {
+          expect(findDuoFoundationalFlowsToggle().exists()).toBe(true);
+        });
+
+        it('is disabled when remote flows is disabled', () => {
+          wrapper = createWrapper(
+            {
+              duoFeaturesEnabled: true,
+              amazonQAvailable: false,
+              initialDuoRemoteFlowsAvailability: false,
+            },
+            { duoWorkflowInCi: true, duoFoundationalFlows: true },
+          );
+
+          expect(findDuoFoundationalFlowsToggle().props('disabled')).toBe(true);
+        });
+
+        it('is enabled when remote flows is enabled', () => {
+          expect(findDuoFoundationalFlowsToggle().props('disabled')).toBe(false);
+        });
+
+        it('clicking on the foundational flows checkbox updates the hidden input', async () => {
+          const duoFoundationalFlowsToggle = findDuoFoundationalFlowsToggle();
+          const hiddenInput = findDuoFoundationalFlowsHiddenInput();
+
+          expect(duoFoundationalFlowsToggle.exists()).toBe(true);
+          expect(parseBoolean(hiddenInput.attributes('value'))).toBe(false);
+
+          await duoFoundationalFlowsToggle.vm.$emit('change', true);
+
+          expect(parseBoolean(hiddenInput.attributes('value'))).toBe(true);
+        });
+
+        it('is disabled when Duo features are locked', () => {
+          wrapper = createWrapper(
+            {
+              duoFeaturesEnabled: true,
+              duoFeaturesLocked: true,
+              initialDuoRemoteFlowsAvailability: true,
+            },
+            { duoWorkflowInCi: true, duoFoundationalFlows: true },
+          );
+
+          expect(findDuoFoundationalFlowsToggle().props('disabled')).toBe(true);
+        });
+
+        it('is disabled when cascading lock is active', () => {
+          wrapper = createWrapper(
+            {
+              duoFeaturesEnabled: true,
+              initialDuoRemoteFlowsAvailability: true,
+              duoFoundationalFlowsCascadingSettings: {
+                lockedByAncestor: true,
+                lockedByApplicationSetting: false,
+              },
+            },
+            { duoWorkflowInCi: true, duoFoundationalFlows: true },
+          );
+
+          expect(findDuoFoundationalFlowsToggle().props('disabled')).toBe(true);
+          expect(findDuoFoundationalFlowsCascadingLockIcon().exists()).toBe(true);
+        });
+      });
+    });
+
+    describe('when duoFoundationalFlows feature flag is disabled', () => {
+      beforeEach(() => {
+        wrapper = createWrapper(
+          {
+            duoFeaturesEnabled: true,
+            amazonQAvailable: false,
+            initialDuoRemoteFlowsAvailability: true,
+          },
+          {
+            duoWorkflowInCi: true,
+            duoFoundationalFlows: false,
+          },
+        );
+      });
+
+      it('does not render the foundational flows toggle', () => {
+        expect(findDuoRemoteFlowsToggle().exists()).toBe(true);
+        expect(findDuoFoundationalFlowsToggle().exists()).toBe(false);
       });
     });
 

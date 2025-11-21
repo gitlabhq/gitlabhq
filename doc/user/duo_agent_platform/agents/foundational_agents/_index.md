@@ -46,9 +46,9 @@ actionable, and contextually appropriate responses compared to general-purpose A
 
 The following foundational agents are available:
 
-- [GitLab Planner Agent](planner.md), for product management and
+- [Planner](planner.md), for product management and
   planning workflows.
-- [GitLab Security Analyst Agent](security_analyst_agent.md), for
+- [Security Analyst](security_analyst_agent.md), for
   security analysis and vulnerability management.
 
 ## Turn foundational agents on or off
@@ -73,6 +73,11 @@ Prerequisites:
    - **On by default**
    - **Off by default**
 1. Select **Save changes**.
+
+These settings apply to:
+
+- Users who have the top-level group as the [default GitLab Duo namespace](../../../gitlab_duo/model_selection.md#assign-a-default-gitlab-duo-namespace).
+- Users without a default namespace, and who visit a namespace that belongs to the top-level group.
 
 If you turn off foundational agents for a top-level group, users with that group as their default GitLab Duo namespace can't access foundational agents in any namespace.
 

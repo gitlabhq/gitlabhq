@@ -61,7 +61,7 @@ jest.mock('~/graphql_shared/issuable_client', () => ({
           __typename: 'WorkItemType',
           id: 'gid://gitlab/WorkItems::Type/1',
           name: 'Issue',
-          iconName: 'issue-type-issue',
+          iconName: 'work-item-issue',
         },
       },
       {
@@ -72,7 +72,7 @@ jest.mock('~/graphql_shared/issuable_client', () => ({
           __typename: 'WorkItemType',
           id: 'gid://gitlab/WorkItems::Type/1',
           name: 'Issue',
-          iconName: 'issue-type-issue',
+          iconName: 'work-item-issue',
         },
       },
     ],

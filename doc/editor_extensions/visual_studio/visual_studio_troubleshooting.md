@@ -42,7 +42,7 @@ Replace these values in the directory path:
 - `WINDOWS_USERNAME`: Your Windows username.
 - `VS_VERSION`: The version of your Visual Studio installation.
 
-## Required Information for Support
+## Required information for support
 
 Before contacting Support, make sure the latest GitLab extension is installed. Visual Studio should automatically update to the latest version of the extension.
 

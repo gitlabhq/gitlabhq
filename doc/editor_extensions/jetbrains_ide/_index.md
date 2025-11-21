@@ -25,7 +25,7 @@ For information about installing plugins in remote development environments, see
 Some features in the plugin are in experiment or beta status. To use them, you must opt in:
 
 1. Go to your IDE's top menu bar and select **Settings**, or:
-   - MacOS: press <kbd>⌘</kbd>+<kbd>,</kbd>
+   - MacOS: press <kbd>Command</kbd>+<kbd>,</kbd>
    - Windows or Linux: press <kbd>Control</kbd>+<kbd>Alt</kbd>+<kbd>S</kbd>
 1. On the left sidebar, expand **Tools**, then select **GitLab Duo**.
 1. Select **Enable Experiment or BETA features**.
@@ -64,7 +64,8 @@ information to GitLab. To enable telemetry in your JetBrains IDE:
 
 {{< /history >}}
 
-You can configure the plugin to use 1Password secret references for authentication, instead of hard-coding personal access tokens.
+You can configure the plugin to use 1Password secret references for authentication instead of
+hard-coding personal access tokens.
 
 Prerequisites:
 
@@ -76,8 +77,7 @@ To integrate GitLab for JetBrains with the 1Password CLI:
 1. Authenticate with GitLab. Either:
    - [Install the `glab`](https://docs.gitlab.com/cli/#install-the-cli) CLI and
      configure the [1Password shell plugin](https://developer.1password.com/docs/cli/shell-plugins/gitlab/).
-   - Follow the GitLab for JetBrains
-     [steps](https://gitlab.com/gitlab-org/editor-extensions/gitlab-jetbrains-plugin#setup).
+   - Follow the GitLab for JetBrains [set up steps](setup.md).
 1. Open the 1Password item.
 1. [Copy the secret reference](https://developer.1password.com/docs/cli/secret-references/#step-1-copy-secret-references).
 

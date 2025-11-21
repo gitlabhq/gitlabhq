@@ -133,7 +133,7 @@ export default {
             category="secondary"
             variant="confirm"
             data-testid="job-new-issue"
-            icon="issue-new"
+            icon="work-item-new"
           />
           <gl-button
             v-if="restJob.terminal_path"

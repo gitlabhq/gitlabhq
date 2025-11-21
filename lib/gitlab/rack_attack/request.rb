@@ -116,6 +116,7 @@ module Gitlab
       def throttle_authenticated_web?
         (web_request? || frontend_request?) &&
           !throttle_authenticated_git_lfs? &&
+          !(git_path? && !git_lfs_path? && Feature.enabled?(:exclude_git_http_from_web_rate_limiter, :instance)) &&
           Gitlab::Throttle.settings.throttle_authenticated_web_enabled
       end
 

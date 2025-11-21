@@ -19,20 +19,20 @@ describe('Work Item type component', () => {
   const findButton = () => wrapper.findByTestId('work-item-type-icon');
 
   describe.each`
-    workItemType           | iconName                     | text             | showTooltipOnHover | iconVariant
-    ${'TASK'}              | ${'issue-type-task'}         | ${'Task'}        | ${false}           | ${'default'}
-    ${'ISSUE'}             | ${'issue-type-issue'}        | ${'Issue'}       | ${true}            | ${'default'}
-    ${'REQUIREMENT'}       | ${'issue-type-requirements'} | ${'Requirement'} | ${true}            | ${'default'}
-    ${'INCIDENT'}          | ${'issue-type-incident'}     | ${'Incident'}    | ${false}           | ${'default'}
-    ${'TEST_CASE'}         | ${'issue-type-test-case'}    | ${'Test case'}   | ${true}            | ${'default'}
-    ${'random-issue-type'} | ${'issue-type-issue'}        | ${''}            | ${true}            | ${'default'}
-    ${'Task'}              | ${'issue-type-task'}         | ${'Task'}        | ${false}           | ${'default'}
-    ${'Issue'}             | ${'issue-type-issue'}        | ${'Issue'}       | ${true}            | ${'default'}
-    ${'Requirement'}       | ${'issue-type-requirements'} | ${'Requirement'} | ${true}            | ${'default'}
-    ${'Incident'}          | ${'issue-type-incident'}     | ${'Incident'}    | ${false}           | ${'default'}
-    ${'Test_case'}         | ${'issue-type-test-case'}    | ${'Test case'}   | ${true}            | ${'default'}
-    ${'Objective'}         | ${'issue-type-objective'}    | ${'Objective'}   | ${true}            | ${'default'}
-    ${'Key Result'}        | ${'issue-type-keyresult'}    | ${'Key result'}  | ${true}            | ${'subtle'}
+    workItemType           | iconName                   | text             | showTooltipOnHover | iconVariant
+    ${'TASK'}              | ${'work-item-task'}        | ${'Task'}        | ${false}           | ${'default'}
+    ${'ISSUE'}             | ${'work-item-issue'}       | ${'Issue'}       | ${true}            | ${'default'}
+    ${'REQUIREMENT'}       | ${'work-item-requirement'} | ${'Requirement'} | ${true}            | ${'default'}
+    ${'INCIDENT'}          | ${'work-item-incident'}    | ${'Incident'}    | ${false}           | ${'default'}
+    ${'TEST_CASE'}         | ${'work-item-test-case'}   | ${'Test case'}   | ${true}            | ${'default'}
+    ${'random-issue-type'} | ${'work-item-issue'}       | ${''}            | ${true}            | ${'default'}
+    ${'Task'}              | ${'work-item-task'}        | ${'Task'}        | ${false}           | ${'default'}
+    ${'Issue'}             | ${'work-item-issue'}       | ${'Issue'}       | ${true}            | ${'default'}
+    ${'Requirement'}       | ${'work-item-requirement'} | ${'Requirement'} | ${true}            | ${'default'}
+    ${'Incident'}          | ${'work-item-incident'}    | ${'Incident'}    | ${false}           | ${'default'}
+    ${'Test_case'}         | ${'work-item-test-case'}   | ${'Test case'}   | ${true}            | ${'default'}
+    ${'Objective'}         | ${'work-item-objective'}   | ${'Objective'}   | ${true}            | ${'default'}
+    ${'Key Result'}        | ${'work-item-keyresult'}   | ${'Key result'}  | ${true}            | ${'subtle'}
   `(
     'with workItemType set to "$workItemType"',
     ({ workItemType, iconName, text, showTooltipOnHover, iconVariant }) => {
