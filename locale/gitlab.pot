@@ -2517,6 +2517,9 @@ msgstr ""
 msgid "AICatalog|Agent deleted."
 msgstr ""
 
+msgid "AICatalog|Agent disabled in this %{namespaceType}."
+msgstr ""
+
 msgid "AICatalog|Agent disabled in this project."
 msgstr ""
 
@@ -2554,6 +2557,9 @@ msgid "AICatalog|Are you sure you want to disable agent %{name}? The agent and a
 msgstr ""
 
 msgid "AICatalog|Are you sure you want to disable agent %{name}? The agent and any associated flows, triggers, and service accounts will no longer work in this project."
+msgstr ""
+
+msgid "AICatalog|Are you sure you want to disable agent %{name}? The agent will also be disabled from any projects in this group."
 msgstr ""
 
 msgid "AICatalog|Are you sure you want to disable flow %{name}?"
@@ -2676,7 +2682,7 @@ msgstr ""
 msgid "AICatalog|Disable agent"
 msgstr ""
 
-msgid "AICatalog|Disable agent in this project"
+msgid "AICatalog|Disable agent from this %{namespaceType}"
 msgstr ""
 
 msgid "AICatalog|Disable flow from this %{namespaceType}"
@@ -2734,6 +2740,9 @@ msgid "AICatalog|Failed to delete agent. %{error}"
 msgstr ""
 
 msgid "AICatalog|Failed to delete flow. %{error}"
+msgstr ""
+
+msgid "AICatalog|Failed to disable agent"
 msgstr ""
 
 msgid "AICatalog|Failed to disable agent. %{error}"
@@ -2979,7 +2988,7 @@ msgstr ""
 msgid "AICatalog|Trigger this flow when the service account user is mentioned in an issue or merge request."
 msgstr ""
 
-msgid "AICatalog|Use agents in your project."
+msgid "AICatalog|Use agents in your %{namespaceType}."
 msgstr ""
 
 msgid "AICatalog|Use agents to automate tasks and answer questions."

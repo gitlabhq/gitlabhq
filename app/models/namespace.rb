@@ -58,7 +58,7 @@ class Namespace < ApplicationRecord
   ].freeze
 
   has_many :projects, dependent: :destroy # rubocop:disable Cop/ActiveRecordDependent
-  has_many :non_archived_projects, -> { where.not(archived: true) }, class_name: 'Project'
+  has_many :non_archived_projects, -> { self_and_ancestors_non_archived }, class_name: 'Project'
   has_many :project_statistics
   has_one :namespace_settings, inverse_of: :namespace, class_name: 'NamespaceSetting', autosave: true
   has_one :namespace_settings_with_ancestors_inherited_settings, -> { with_ancestors_inherited_settings },
@@ -234,10 +234,10 @@ class Namespace < ApplicationRecord
   scope :with_visibility_level_greater_than, ->(level) { where("visibility_level > ?", level) }
   scope :with_namespace_details, -> { preload(:namespace_details) }
 
-  scope :archived, -> { joins(:namespace_settings).where(namespace_settings: { archived: true }) }
+  scope :archived, -> { self_or_ancestors_archived }
   scope :self_or_ancestors_archived, -> { where(self_or_ancestors_archived_setting_subquery.exists) }
 
-  scope :non_archived, -> { joins(:namespace_settings).where(namespace_settings: { archived: false }) }
+  scope :non_archived, -> { self_and_ancestors_non_archived }
   scope :self_and_ancestors_non_archived, -> { where.not(self_or_ancestors_archived_setting_subquery.exists) }
 
   scope :with_statistics, -> do
@@ -426,10 +426,6 @@ class Namespace < ApplicationRecord
   end
 
   alias_method :self_archived?, :archived?
-
-  def archived_ancestor
-    ancestors(hierarchy_order: :asc, skope: Namespace).archived.first
-  end
 
   def self_or_ancestors_archived?
     if association(:namespace_settings_with_ancestors_inherited_settings).loaded? &&

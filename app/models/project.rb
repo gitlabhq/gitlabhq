@@ -539,7 +539,6 @@ class Project < ApplicationRecord
 
   with_options to: :project_namespace, allow_nil: true do
     delegate :deletion_schedule
-    delegate :archived_ancestor
   end
   delegate :merge_requests_access_level, :forking_access_level, :issues_access_level, :wiki_access_level, :snippets_access_level, :builds_access_level, :repository_access_level, :package_registry_access_level, :pages_access_level, :metrics_dashboard_access_level, :analytics_access_level, :operations_access_level, :security_and_compliance_access_level, :container_registry_access_level, :environments_access_level, :feature_flags_access_level, :monitor_access_level, :releases_access_level, :infrastructure_access_level, :model_experiments_access_level, :model_registry_access_level, to: :project_feature, allow_nil: true
   delegate :name, to: :owner, allow_nil: true, prefix: true
@@ -827,14 +826,26 @@ class Project < ApplicationRecord
   scope :visible_to_user, ->(user) { where(id: user.authorized_projects.select(:id).reorder(nil)) }
   scope :visible_to_user_and_access_level, ->(user, access_level) { where(id: user.authorized_projects.where('project_authorizations.access_level >= ?', access_level).select(:id).reorder(nil)) }
 
-  scope :archived, -> { where(archived: true) }
+  scope :archived, -> do
+    if Feature.enabled?(:ancestor_aware_archive_scopes, Feature.current_request, type: :gitlab_com_derisk)
+      self_or_ancestors_archived
+    else
+      where(archived: true)
+    end
+  end
   scope :self_or_ancestors_archived, -> do
     left_joins(:group)
       .where(archived: true)
       .or(where(Group.self_or_ancestors_archived_setting_subquery.exists))
   end
 
-  scope :non_archived, -> { where(archived: false) }
+  scope :non_archived, -> do
+    if Feature.enabled?(:ancestor_aware_archive_scopes, Feature.current_request, type: :gitlab_com_derisk)
+      self_and_ancestors_non_archived
+    else
+      where(archived: false)
+    end
+  end
   scope :self_and_ancestors_non_archived, -> do
     left_joins(:group)
       .where(archived: false)
@@ -1297,7 +1308,7 @@ class Project < ApplicationRecord
       Project
         .where('NOT EXISTS (?)', integrations)
         .where(pending_delete: false)
-        .where(archived: false)
+        .non_archived
     end
 
     def project_features_defaults

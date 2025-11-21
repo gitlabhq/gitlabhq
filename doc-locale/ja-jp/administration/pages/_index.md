@@ -12,7 +12,7 @@ title: GitLab Pagesの管理
 
 {{< /details >}}
 
-GitLab Pagesは、GitLabプロジェクトおよびグループの静的サイトホスティングを提供します。ユーザーがこの機能にアクセスできるようにするには、サーバー管理者がPagesを設定しておく必要があります。GitLab Pagesを使用すると、管理者は次のことが可能になります。
+GitLab Pagesは、GitLabプロジェクトおよびグループの静的サイトホスティングを提供します。ユーザーがこの機能にアクセスできるようにするには、サーバー管理者がPagesを設定しておく必要があります。GitLab Pagesを使用すると、管理者は次のことが可能になります:
 
 - カスタムドメインとSSL/TLS証明書を使用して、静的ウェブサイトを安全にホストする。
 - GitLabの権限を通じてPagesサイトへのアクセスを制御するための認証を有効にする。
@@ -34,9 +34,9 @@ GitLab Pagesは、[GitLab Pagesデーモン](https://gitlab.com/gitlab-org/gitla
 
 [カスタムドメイン](#custom-domains)で使用する場合、Pagesデーモンは、ポート`80`および/または`443`でリッスンする必要があります。これは、[ワイルドカードドメイン](#wildcard-domains)では必要ありません。
 
-Pagesデーモンは、柔軟な方法で設定できます。
+Pagesデーモンは、柔軟な方法で設定できます:
 
-- GitLabと同じサーバーでPagesデーモンを実行し、**セカンダリIP**でリッスンする。
+- GitLabと同じサーバーでPagesデーモンを実行し、**secondary IP**（セカンダリIP）でリッスンする。
 - [別のサーバー](#running-gitlab-pages-on-a-separate-server)でPagesデーモンを実行する。この場合、Pagesデーモンをインストールしたサーバーにも[Pagesのパス](#change-storage-path)が存在する必要があるため、ネットワーク経由で共有する必要があります。
 - GitLabと同じサーバーでPagesデーモンを実行し、同じIP上の別のポートでリッスンする。この場合、ロードバランサーによるトラフィックのプロキシ処理が必要になります。このルートを選択する場合、HTTPSではTCPロードバランシングを使用する必要があります。TLS終端（HTTPSロードバランシング）を使用する場合、ユーザーが提供する証明書ではページを配信できません。HTTPの場合は、HTTPまたはTCPロードバランシングを使用できます。
 
@@ -48,7 +48,7 @@ Pagesデーモンは、柔軟な方法で設定できます。
 
 ### ワイルドカードドメイン {#wildcard-domains}
 
-ワイルドカードドメインのPagesを設定する前に、次の準備が必要です。
+ワイルドカードドメインのPagesを設定する前に、次の準備が必要です:
 
 1. GitLabインスタンスドメインのサブドメインではない、Pagesのドメインを用意します。
 
@@ -58,14 +58,14 @@ Pagesデーモンは、柔軟な方法で設定できます。
    | `example.com`        | `pages.example.com` | {{< icon name="dotted-circle" >}}いいえ |
    | `gitlab.example.com` | `pages.example.com` | {{< icon name="check-circle" >}}はい |
 
-1. **ワイルドカードDNSレコード**を設定します。
-1. （オプション）HTTPSでPagesを提供する場合は、そのドメインの**ワイルドカード証明書**を用意します。
+1. **wildcard DNS record**（ワイルドカードDNSレコード）を設定します。
+1. オプション。HTTPSでPagesを提供する場合は、そのドメインの**wildcard certificate**（ワイルドカード証明書）を用意します。
 1. （推奨されるオプション）ユーザーが独自にRunnerを用意しなくてもいいように、[インスタンスRunner](../../ci/runners/_index.md)を有効にします。
-1. カスタムドメインの場合は、**セカンダリIP**を用意します。
+1. カスタムドメインの場合は、**secondary IP**（セカンダリIP）を用意します。
 
 ### シングルドメインサイト {#single-domain-sites}
 
-シングルドメインサイトのPagesを設定する前に、次の準備が必要です。
+シングルドメインサイトのPagesを設定する前に、次の準備が必要です:
 
 1. GitLabインスタンスドメインのサブドメインではない、Pagesのドメインを用意します。
 
@@ -75,10 +75,10 @@ Pagesデーモンは、柔軟な方法で設定できます。
    | `example.com`        | `pages.example.com` | {{< icon name="dotted-circle" >}}いいえ |
    | `gitlab.example.com` | `pages.example.com` | {{< icon name="check-circle" >}}はい |
 
-1. **DNSレコード**を設定します。
-1. （オプション）HTTPSでPagesを提供する場合は、そのドメインの**TLS証明書**を用意します。
+1. **DNS record**（DNSレコード）を設定します。
+1. オプション。HTTPSでPagesを提供する場合は、そのドメインの**TLS certificate**（TLS証明書）を用意します。
 1. （推奨されるオプション）ユーザーが独自にRunnerを用意しなくてもいいように、[インスタンスRunner](../../ci/runners/_index.md)を有効にします。
-1. カスタムドメインの場合は、**セカンダリIP**を用意します。
+1. カスタムドメインの場合は、**secondary IP**（セカンダリIP）を用意します。
 
 {{< alert type="note" >}}
 
@@ -94,7 +94,7 @@ GitLab Pagesのサブドメインを登録するには、[Submit amendments to t
 
 ### DNS設定 {#dns-configuration}
 
-GitLab Pagesは、独自の仮想ホストで実行されることを想定しています。DNSサーバー/プロバイダーで、GitLabを実行しているホストを指す[ワイルドカードDNS `A`レコード](https://en.wikipedia.org/wiki/Wildcard_DNS_record)を追加します。たとえば、次のようなエントリになります。
+GitLab Pagesは、独自の仮想ホストで実行されることを想定しています。DNSサーバー/プロバイダーで、GitLabを実行しているホストを指す[ワイルドカードDNS `A`レコード](https://en.wikipedia.org/wiki/Wildcard_DNS_record)を追加します。たとえば、次のようなエントリになります:
 
 ```plaintext
 *.example.io. 1800 IN A    192.0.2.1
@@ -114,22 +114,22 @@ GitLab Pagesは、独自の仮想ホストで実行されることを想定し�
 
 {{< /history >}}
 
-ワイルドカードDNSを使用せずに、シングルドメインサイトのGitLab Pages DNSを設定するには、次の手順に従います。
+ワイルドカードDNSを使用せずに、シングルドメインサイトのGitLab Pages DNSを設定するには、次の手順に従います:
 
 1. `/etc/gitlab/gitlab.rb`に`gitlab_pages['namespace_in_path'] = true`を追加して、この機能のGitLab Pagesフラグを有効にします。
-1. DNSプロバイダーで、`example.io`のエントリを追加します。`example.io`をドメイン名に、`192.0.0.0`をIPアドレスのIPv4バージョンに置き換えます。次のようなエントリになります。
+1. DNSプロバイダーで、`example.io`のエントリを追加します。`example.io`をドメイン名に、`192.0.0.0`をIPアドレスのIPv4バージョンに置き換えます。次のようなエントリになります:
 
    ```plaintext
    example.io          1800 IN A    192.0.0.0
    ```
 
-1. （オプション）GitLabインスタンスにIPv6アドレスがある場合は、そのエントリを追加します。`example.io`をドメイン名に、`2001:db8::1`をIPアドレスのIPv6バージョンに置き換えます。次のようなエントリになります。
+1. オプション。GitLabインスタンスにIPv6アドレスがある場合は、そのエントリを追加します。`example.io`をドメイン名に、`2001:db8::1`をIPアドレスのIPv6バージョンに置き換えます。次のようなエントリになります:
 
    ```plaintext
    example.io          1800 IN AAAA 2001:db8::1
    ```
 
-この例には、次の項目が含まれています。
+この例には、次の項目が含まれています:
 
 - `example.io`: GitLab Pagesを提供するドメイン。
 
@@ -137,14 +137,14 @@ GitLab Pagesは、独自の仮想ホストで実行されることを想定し�
 
 カスタムドメインのサポートが必要な場合は、Pagesのルートドメインに属するすべてのサブドメインがセカンダリIP（Pagesデーモン専用）を指す必要があります。この設定がないと、ユーザーは`CNAME`レコードを使用して、カスタムドメインがGitLab Pagesを指すように指定することができません。
 
-たとえば、次のようなエントリになります。
+たとえば、次のようなエントリになります:
 
 ```plaintext
 example.com   1800 IN A    192.0.2.1
 *.example.io. 1800 IN A    192.0.2.2
 ```
 
-この例には、次の項目が含まれています。
+この例には、次の項目が含まれています:
 
 - `example.com`: GitLabドメイン。
 - `example.io`: GitLab Pagesを提供するドメイン。
@@ -165,7 +165,7 @@ GitLabドメインを使用してユーザーページを提供すべきでは�
 
 ### ワイルドカードドメイン {#wildcard-domains-1}
 
-次の設定は、GitLab Pagesを使用するための最小限のセットアップです。これは、このセクションで説明する他のすべての設定の基礎となります。この設定では、次のようになります。
+次の設定は、GitLab Pagesを使用するための最小限のセットアップです。これは、このセクションで説明する他のすべての設定の基礎となります。この設定では、次のようになります:
 
 - NGINXがすべてのリクエストをGitLab Pagesデーモンにプロキシします。
 - GitLab Pagesデーモンは、パブリックインターネットを直接リッスンしません。
@@ -174,9 +174,9 @@ GitLabドメインを使用してユーザーページを提供すべきでは�
 
 - [ワイルドカードDNS](#dns-configuration)の設定が完了している。
 
-ワイルドカードドメインを使用するようにGitLab Pagesを設定するには、次の手順に従います。
+ワイルドカードドメインを使用するようにGitLab Pagesを設定するには、次の手順に従います:
 
-1. `/etc/gitlab/gitlab.rb`でGitLab Pagesの外部URLを設定します。
+1. `/etc/gitlab/gitlab.rb`でGitLab Pagesの外部URLを設定します:
 
    ```ruby
    external_url "http://example.com" # external_url here is only for reference
@@ -187,7 +187,7 @@ GitLabドメインを使用してユーザーページを提供すべきでは�
 
 この設定でアクセス可能になるURLスキームは、`http://<namespace>.example.io/<project_slug>`です。
 
-<i class="fa fa-youtube-play youtube" aria-hidden="true"></i> 概要については、[How to Enable GitLab Pages for GitLab CE and EE](https://youtu.be/dD8c7WNcc6s)（GitLab CEおよびEEでGitLab Pagesを有効にする方法）をご覧ください。
+<i class="fa fa-youtube-play youtube" aria-hidden="true"></i>概要については、[How to Enable GitLab Pages for GitLab CE and EE](https://youtu.be/dD8c7WNcc6s)（GitLab CEおよびEEでGitLab Pagesを有効にする方法）をご覧ください。
 <!-- Video published on 2017-02-22 -->
 
 ### シングルドメインサイト {#single-domain-sites-1}
@@ -201,7 +201,7 @@ GitLabドメインを使用してユーザーページを提供すべきでは�
 
 {{< /history >}}
 
-次の設定は、GitLab Pagesを使用するための最小限のセットアップです。これは、このセクションで説明する他のすべての設定の基礎となります。この設定では、次のようになります。
+次の設定は、GitLab Pagesを使用するための最小限のセットアップです。これは、このセクションで説明する他のすべての設定の基礎となります。この設定では、次のようになります:
 
 - NGINXがすべてのリクエストをGitLab Pagesデーモンにプロキシします。
 - GitLab Pagesデーモンは、パブリックインターネットを直接リッスンしません。
@@ -210,9 +210,9 @@ GitLabドメインを使用してユーザーページを提供すべきでは�
 
 - [シングルドメインサイト](#dns-configuration-for-single-domain-sites)のDNS設定が完了している。
 
-シングルドメインサイトを使用するようにGitLab Pagesを設定するには、次の手順に従います。
+シングルドメインサイトを使用するようにGitLab Pagesを設定するには、次の手順に従います:
 
-1. `/etc/gitlab/gitlab.rb`で、GitLab Pagesの外部URLを設定し、機能を有効にします。
+1. `/etc/gitlab/gitlab.rb`で、GitLab Pagesの外部URLを設定し、機能を有効にします:
 
    ```ruby
    external_url "http://example.com" # Swap out this URL for your own
@@ -242,7 +242,7 @@ NGINXはすべてのリクエストをデーモンにプロキシします。Pag
 - TLS証明書を所有している。ワイルドカードでも、[要件](../../user/project/pages/custom_domains_ssl_tls_certification/_index.md#manual-addition-of-ssltls-certificates)を満たす他のタイプでもかまいません。
 
 1. `*.example.io`のワイルドカードTLS証明書とキーを`/etc/gitlab/ssl`内に配置します。
-1. `/etc/gitlab/gitlab.rb`で、次のように設定します。
+1. `/etc/gitlab/gitlab.rb`で、次のように設定します:
 
    ```ruby
    external_url "https://example.com" # external_url here is only for reference
@@ -251,7 +251,7 @@ NGINXはすべてのリクエストをデーモンにプロキシします。Pag
    pages_nginx['redirect_http_to_https'] = true
    ```
 
-1. 証明書に`example.io.crt`、キーに`example.io.key`という名前を付けていない場合は、次のようにフルパスも指定する必要があります。
+1. 証明書に`example.io.crt`、キーに`example.io.key`という名前を付けていない場合は、次のようにフルパスも指定する必要があります:
 
    ```ruby
    pages_nginx['ssl_certificate'] = "/etc/gitlab/ssl/pages-nginx.crt"
@@ -284,7 +284,7 @@ NGINXはすべてのリクエストをデーモンにプロキシします。Pag
 
 {{< /history >}}
 
-この設定では、NGINXはすべてのリクエストをデーモンにプロキシします。GitLab Pagesデーモンはパブリックインターネットをリッスンしません。
+この設定では、NGINXはすべてのリクエストをデーモンにプロキシします。GitLab Pagesデーモンはパブリックインターネットをリッスンしません:
 
 前提要件:
 
@@ -292,7 +292,7 @@ NGINXはすべてのリクエストをデーモンにプロキシします。Pag
 - ドメイン（例: `example.io`）をカバーするTLS証明書を所有している。
 
 1. 前提要件にあるTLS証明書とキーを`/etc/gitlab/ssl`に配置します。
-1. `/etc/gitlab/gitlab.rb`で、GitLab Pagesの外部URLを設定し、機能を有効にします。
+1. `/etc/gitlab/gitlab.rb`で、GitLab Pagesの外部URLを設定し、機能を有効にします:
 
    ```ruby
    external_url "https://example.com" # Swap out this URL for your own
@@ -304,7 +304,7 @@ NGINXはすべてのリクエストをデーモンにプロキシします。Pag
    gitlab_pages['namespace_in_path'] = true
    ```
 
-1. TLS証明書およびキーのファイル名がドメイン名（例: `example.io.crt`や`example.io.key`）と一致しない場合は、証明書とキーのファイルのフルパスを`/etc/gitlab/gitlab.rb`に追加します。
+1. TLS証明書およびキーのファイル名がドメイン名（例: `example.io.crt`や`example.io.key`）と一致しない場合は、証明書とキーのファイルのフルパスを`/etc/gitlab/gitlab.rb`に追加します:
 
    ```ruby
    pages_nginx['ssl_certificate'] = "/etc/gitlab/ssl/pages-nginx.crt"
@@ -315,7 +315,7 @@ NGINXはすべてのリクエストをデーモンにプロキシします。Pag
 
    {{< alert type="warning" >}}
 
-   GitLab PagesはOAuthアプリケーションを更新せず、デフォルトの`auth_redirect_uri`が`https://example.io/projects/auth`に更新されます。再設定する前に、`/etc/gitlab/gitlab-secrets.json`から`gitlab_pages`セクションを削除し、`gitlab-ctl reconfigure`を実行してください。詳細については、[GitLab PagesがOAuthを再生成しない](https://gitlab.com/gitlab-org/omnibus-gitlab/-/issues/3947)を参照してください。
+   GitLab PagesはOAuthアプリケーションを更新せず、デフォルトの`auth_redirect_uri`が`https://example.io/projects/auth`に更新されます。再設定する前に、`gitlab_pages`から`/etc/gitlab/gitlab-secrets.json`セクションを削除し、`gitlab-ctl reconfigure`を実行してください。詳細については、[GitLab PagesがOAuthを再生成しない](https://gitlab.com/gitlab-org/omnibus-gitlab/-/issues/3947)を参照してください。
 
    {{< /alert >}}
 
@@ -338,7 +338,7 @@ GitLab Pagesでは、一度にサポートできるURLスキームは1つのみ�
 - [ワイルドカードDNS](#dns-configuration)の設定が完了している。
 - TLS終端ロードバランサーがある。
 
-1. `/etc/gitlab/gitlab.rb`で、次のように設定します。
+1. `/etc/gitlab/gitlab.rb`で、次のように設定します:
 
    ```ruby
    external_url "https://example.com" # external_url here is only for reference
@@ -380,7 +380,7 @@ GitLab Pagesでは、一度にサポートできるURLスキームは1つのみ�
 | `external_https`                        | N/A                                                   | HTTPSリクエストを処理するため、1つ以上のセカンダリIPアドレスにバインドするようにPagesを設定します。複数のアドレスは配列として指定でき、ポートを明示的に含めることもできます（例: `['1.2.3.4', '1.2.3.5:8063']`）。`listen_https`の値を設定します。 |
 | `custom_domain_mode`                    | N/A                                                   | カスタムドメインを有効にするようにPagesを設定します（`http`または`https`）。個別のPagesサーバーを運用している場合は、GitLabサーバーでもこのように設定してください。GitLab 18.1で[導入](https://gitlab.com/gitlab-org/gitlab/-/issues/285089)されました。 |
 | `server_shutdown_timeout`               | `30s`                                                 | GitLab Pagesサーバーのシャットダウンタイムアウト（秒単位）。 |
-| `gitlab_client_http_timeout`            | `10s`                                                 | GitLab API HTTPクライアント接続タイムアウト（秒単位）。 |
+| `gitlab_client_http_timeout`            | `60s`                                                 | GitLab API HTTPクライアント接続タイムアウト（秒単位）。 |
 | `gitlab_client_jwt_expiry`              | `30s`                                                 | JWTトークンの有効期限（秒単位）。 |
 | `gitlab_cache_expiry`                   | `600s`                                                | ドメインの設定が[キャッシュ](#gitlab-api-cache-configuration)に保存される最大時間。 |
 | `gitlab_cache_refresh`                  | `60s`                                                 | ドメインの設定が更新対象とされる間隔。 |
@@ -446,7 +446,7 @@ GitLab Pagesでは、一度にサポートできるURLスキームは1つのみ�
 
 ## 高度な設定 {#advanced-configuration}
 
-ワイルドカードドメインに加えて、GitLab Pagesがカスタムドメインで動作するように設定することもできます。この場合も、カスタムドメインでTLS証明書を使用する、使用しないの2つのオプションがあります。最も簡単なセットアップは、TLS証明書を使用しない方法です。いずれの場合も、**セカンダリIP**が必要になります。IPv4アドレスとIPv6アドレスがある場合は、両方を使用できます。
+ワイルドカードドメインに加えて、GitLab Pagesがカスタムドメインで動作するように設定することもできます。この場合も、カスタムドメインでTLS証明書を使用する、使用しないの2つのオプションがあります。最も簡単なセットアップは、TLS証明書を使用しない方法です。いずれの場合も、**secondary IP**（セカンダリIP）が必要になります。IPv4アドレスとIPv6アドレスがある場合は、両方を使用できます。
 
 ### カスタムドメイン {#custom-domains}
 
@@ -457,7 +457,7 @@ GitLab Pagesでは、一度にサポートできるURLスキームは1つのみ�
 - ワイルドカードDNSの設定が完了している。
 - セカンダリIPがある。
 
-1. `/etc/gitlab/gitlab.rb`で、次のように設定します。
+1. `/etc/gitlab/gitlab.rb`で、次のように設定します:
 
    ```ruby
    external_url "http://example.com" # external_url here is only for reference
@@ -485,7 +485,7 @@ GitLab Pagesでは、一度にサポートできるURLスキームは1つのみ�
 - セカンダリIP。
 
 1. `*.example.io`のワイルドカードTLS証明書とキーを`/etc/gitlab/ssl`内に配置します。
-1. `/etc/gitlab/gitlab.rb`で、次のように設定します。
+1. `/etc/gitlab/gitlab.rb`で、次のように設定します:
 
    ```ruby
    external_url "https://example.com" # external_url here is only for reference
@@ -501,7 +501,7 @@ GitLab Pagesでは、一度にサポートできるURLスキームは1つのみ�
 
    IPv6を使用していない場合は、IPv6アドレスは省略できます。
 
-1. 証明書に`example.io.crt`、キーに`example.io.key`という名前を付けていない場合は、次のようにフルパスも指定する必要があります。
+1. 証明書に`example.io.crt`、キーに`example.io.key`という名前を付けていない場合は、次のようにフルパスも指定する必要があります:
 
    ```ruby
    gitlab_pages['cert'] = "/etc/gitlab/ssl/example.io.crt"
@@ -509,7 +509,6 @@ GitLab Pagesでは、一度にサポートできるURLスキームは1つのみ�
    ```
 
 1. ファイルを保存して、[GitLabを再設定](../restart_gitlab.md#reconfigure-a-linux-package-installation)し、変更を有効にします。
-1. Pagesアクセス制御を使用している場合は、GitLab Pagesの[システムOAuthアプリケーション](../../integration/oauth_provider.md#create-an-instance-wide-application)のリダイレクトを更新して、HTTPSプロトコルを使用します。
 1. Pagesへのアクセス制御を使用している場合は、GitLab Pagesの[システムOAuthアプリケーション](../../integration/oauth_provider.md#create-an-instance-wide-application)のリダイレクトURIを更新して、HTTPSプロトコルを使用します。
 
 ### カスタムドメインの検証 {#custom-domain-verification}
@@ -522,10 +521,10 @@ GitLab Pagesでは、一度にサポートできるURLスキームは1つのみ�
 
 {{< /alert >}}
 
-ユーザーベースがプライベートであるか、または信頼できる場合は、検証要件を無効にできます。
+ユーザーベースがプライベートであるか、または信頼できる場合は、検証要件を無効にできます:
 
-1. 左側のサイドバーの下部で、**管理者**を選択します。
-1. **設定 > 設定**を選択します。
+1. 左側のサイドバーの下部で、**管理者**を選択します。[新しいナビゲーションをオンにしている](../../user/interface_redesign.md#turn-new-navigation-on-or-off)場合は、右上隅でアバターを選択し、**管理者**を選択します。
+1. **設定** > **設定**を選択します。
 1. **Pages**を展開します。
 1. **ユーザーにカスタムドメインの所有権を証明することを要求する**チェックボックスをオフにします。この設定はデフォルトで有効になっています。
 
@@ -533,11 +532,11 @@ GitLab Pagesでは、一度にサポートできるURLスキームは1つのみ�
 
 [GitLab PagesのLet's Encryptのインテグレーション](../../user/project/pages/custom_domains_ssl_tls_certification/lets_encrypt_integration.md)を使用すると、カスタムドメインで提供されるGitLab PagesサイトにLet's Encrypt SSL証明書を追加できます。
 
-有効にするには、次の手順に従います。
+有効にするには、次の手順に従います:
 
 1. 有効期限が近づいているドメインに関する通知を受信するメールアドレスを選択します。
-1. 左側のサイドバーの下部で、**管理者**を選択します。
-1. **設定 > 設定**を選択します。
+1. 左側のサイドバーの下部で、**管理者**を選択します。[新しいナビゲーションをオンにしている](../../user/interface_redesign.md#turn-new-navigation-on-or-off)場合は、右上隅でアバターを選択し、**管理者**を選択します。
+1. **設定** > **設定**を選択します。
 1. **Pages**を展開します。
 1. 通知を受信するメールアドレスを入力し、Let's Encryptの利用規約に同意します。
 1. **変更を保存**を選択します。
@@ -550,9 +549,9 @@ GitLab Pagesへのアクセス制御はプロジェクトごとに設定でき�
 
 プライベートサイトのリソースを表示する各リクエストは、そのトークンを使用してPagesによって認証されます。Pagesは受信したリクエストごとにGitLab APIにリクエストを送り、ユーザーにそのサイトを閲覧する権限があるかどうかを確認します。
 
-Pagesへのアクセス制御はデフォルトで無効になっています。有効にするには、次の手順に従います。
+Pagesへのアクセス制御はデフォルトで無効になっています。有効にするには、次の手順に従います:
 
-1. `/etc/gitlab/gitlab.rb`で、この設定を有効にします。
+1. `/etc/gitlab/gitlab.rb`で、この設定を有効にします:
 
    ```ruby
    gitlab_pages['access_control'] = true
@@ -571,7 +570,7 @@ Pagesへのアクセス制御はデフォルトで無効になっています。
 
 Pagesデーモンが認証に使用するスコープを設定できます。デフォルトでは、Pagesデーモンは`api`スコープを使用します。
 
-たとえば、`/etc/gitlab/gitlab.rb`でスコープを`read_api`に制限するには、次のように設定します。
+たとえば、`/etc/gitlab/gitlab.rb`でスコープを`read_api`に制限するには、次のように設定します:
 
 ```ruby
 gitlab_pages['auth_scope'] = 'read_api'
@@ -583,9 +582,9 @@ gitlab_pages['auth_scope'] = 'read_api'
 
 - [アクセス制御](#access-control)を有効にしている。
 
-Pagesが使用するスコープを変更するには、次の手順に従います。
+Pagesが使用するスコープを変更するには、次の手順に従います:
 
-1. 左側のサイドバーの下部で、**管理者**を選択します。
+1. 左側のサイドバーの下部で、**管理者**を選択します。[新しいナビゲーションをオンにしている](../../user/interface_redesign.md#turn-new-navigation-on-or-off)場合は、右上隅でアバターを選択し、**管理者**を選択します。
 1. **アプリケーション**を選択します。
 1. **GitLab Pages**を展開します。
 1. `api`スコープのチェックボックスをオフにして、必要なスコープのチェックボックス（`read_api`など）をオンにします。
@@ -602,10 +601,10 @@ GitLabインスタンスでホストしているすべてのGitLab Pagesウェ�
 - インスタンスへの管理者アクセス権が必要です。
 - この設定を管理者エリアに表示するには、まずアクセス制御を有効にする必要があります。
 
-すべてのPagesサイトへの公開アクセスを無効にするには、次の手順に従います。
+すべてのPagesサイトへの公開アクセスを無効にするには、次の手順に従います:
 
-1. 左側のサイドバーの下部で、**管理者**を選択します。
-1. **設定 > 設定**を選択します。
+1. 左側のサイドバーの下部で、**管理者**を選択します。[新しいナビゲーションをオンにしている](../../user/interface_redesign.md#turn-new-navigation-on-or-off)場合は、右上隅でアバターを選択し、**管理者**を選択します。
+1. **設定** > **設定**を選択します。
 1. **Pages**を展開します。
 1. **Pagesサイトへの公開アクセスを無効にする**チェックボックスをオンにします。
 1. **変更を保存**を選択します。
@@ -628,10 +627,10 @@ GitLabインスタンスでホストしているすべてのGitLab Pagesウェ�
 
 - インスタンスへの管理者アクセス権が必要です。
 
-デフォルトで一意のドメインを無効にするには、次の手順に従います。
+デフォルトで一意のドメインを無効にするには、次の手順に従います:
 
-1. 左側のサイドバーの下部で、**管理者**を選択します。
-1. **設定 > 設定**を選択します。
+1. 左側のサイドバーの下部で、**管理者**を選択します。[新しいナビゲーションをオンにしている](../../user/interface_redesign.md#turn-new-navigation-on-or-off)場合は、右上隅でアバターを選択し、**管理者**を選択します。
+1. **設定** > **設定**を選択します。
 1. **Pages**を展開します。
 1. **デフォルトで一意のドメインを有効にする**チェックボックスをオフにします。
 1. **変更を保存**を選択します。
@@ -640,9 +639,9 @@ GitLabインスタンスでホストしているすべてのGitLab Pagesウェ�
 
 ### プロキシの背後で実行する {#running-behind-a-proxy}
 
-GitLabの他の機能と同様に、Pagesも外部インターネット接続がプロキシで制限されている環境で使用できます。GitLab Pagesにプロキシを使用するには、次の手順に従います。
+GitLabの他の機能と同様に、Pagesも外部インターネット接続がプロキシで制限されている環境で使用できます。GitLab Pagesにプロキシを使用するには、次の手順に従います:
 
-1. `/etc/gitlab/gitlab.rb`で次のように設定します。
+1. `/etc/gitlab/gitlab.rb`で次のように設定します:
 
    ```ruby
    gitlab_pages['env']['http_proxy'] = 'http://example:8080'
@@ -654,7 +653,7 @@ GitLabの他の機能と同様に、Pagesも外部インターネット接続が
 
 カスタムCAによって発行された証明書を使用する場合、そのカスタムCAが認識されないと、アクセス制御や[HTMLジョブアーティファクトのオンライン表示](../../ci/jobs/job_artifacts.md#download-job-artifacts)が機能しません。
 
-その場合は通常、次のようなエラーが表示されます。
+その場合は通常、次のようなエラーが表示されます:
 
 ```plaintext
 Post /oauth/token: x509: certificate signed by unknown authority
@@ -674,7 +673,7 @@ Linuxパッケージインストールの場合、[カスタムCAをインスト
 
 GitLabの[設定で相互TLSを必須にしている](https://docs.gitlab.com/omnibus/settings/ssl/#enable-2-way-ssl-client-authentication)場合は、GitLab Pagesの設定にクライアント証明書を追加する必要があります。
 
-証明書には次の要件があります。
+証明書には次の要件があります:
 
 - 証明書には、ホスト名またはIPアドレスがSubject Alternative Name（サブジェクトの別名）として指定されている必要があります。
 - エンドユーザー証明書、中間証明書、ルート証明書をこの順序で含む完全な証明書チェーンが必要です。
@@ -685,9 +684,9 @@ GitLabの[設定で相互TLSを必須にしている](https://docs.gitlab.com/om
 
 - Linuxパッケージを使用してインスタンスをインストールしている必要があります。
 
-GitLab Pagesサーバーで証明書を設定するには、次の手順に従います。
+GitLab Pagesサーバーで証明書を設定するには、次の手順に従います:
 
-1. GitLab Pagesノードで、`/etc/gitlab/ssl`ディレクトリを作成し、キーと完全な証明書チェーンをそこにコピーします。
+1. GitLab Pagesノードで、`/etc/gitlab/ssl`ディレクトリを作成し、キーと完全な証明書チェーンをそこにコピーします:
 
    ```shell
    sudo mkdir -p /etc/gitlab/ssl
@@ -696,14 +695,14 @@ GitLab Pagesサーバーで証明書を設定するには、次の手順に従�
    sudo chmod 644 key.pem cert.pem
    ```
 
-1. `/etc/gitlab/gitlab.rb`を編集します。
+1. `/etc/gitlab/gitlab.rb`を編集します:
 
    ```ruby
    gitlab_pages['client_cert'] = ['/etc/gitlab/ssl/cert.pem']
    gitlab_pages['client_key'] = ['/etc/gitlab/ssl/key.pem']
    ```
 
-1. カスタム認証局（CA）を使用している場合は、ルートCA証明書を`/etc/gitlab/ssl`にコピーし、`/etc/gitlab/gitlab.rb`を編集する必要があります。
+1. カスタム認証局（CA）を使用している場合は、ルートCA証明書を`/etc/gitlab/ssl`にコピーし、`/etc/gitlab/gitlab.rb`を編集する必要があります:
 
    ```ruby
    gitlab_pages['client_ca_certs'] = ['/etc/gitlab/ssl/ca.pem']
@@ -734,7 +733,7 @@ GitLab Pagesは、オブジェクトストレージを通じてZIPアーカイ�
 
 #### ZIPキャッシュの更新例 {#zip-cache-refresh-example}
 
-アーカイブは、`zip_cache_expiration`の有効期限内にアクセスされ、有効期限が切れるまでの残り時間が`zip_cache_refresh`以下の場合、キャッシュ内で更新（メモリ内での保持時間が延長）されます。たとえば、`0s`の時点で`archive.zip`にアクセスされた場合、有効期限は`60s`（`zip_cache_expiration`のデフォルト）になります。以下の例では、`15s`後にアーカイブが再度開かれても、有効期限までの残り時間（`45s`）が`zip_cache_refresh`（デフォルトは`30s`）よりも長いため、更新**されません**。ただし、アーカイブが（最初に開いたときから）`45s`後に再度アクセスされた場合は、キャッシュが更新されます。これにより、メモリ内でのアーカイブの保持時間が`45s + zip_cache_expiration (60s)`に延長され、合計で`105s`になります。
+アーカイブは、`zip_cache_expiration`の有効期限内にアクセスされ、有効期限が切れるまでの残り時間が`zip_cache_refresh`以下の場合、キャッシュ内で更新（メモリ内での保持時間が延長）されます。たとえば、`0s`の時点で`archive.zip`にアクセスされた場合、有効期限は`60s`（`zip_cache_expiration`のデフォルト）になります。以下の例では、`15s`後にアーカイブが再度開かれても、有効期限までの残り時間（`45s`）が`zip_cache_refresh`（デフォルトは`30s`）よりも長いため、更新**not**（されません）。ただし、アーカイブが（最初に開いたときから）`45s`後に再度アクセスされた場合は、キャッシュが更新されます。これにより、メモリ内でのアーカイブの保持時間が`45s + zip_cache_expiration (60s)`に延長され、合計で`105s`になります。
 
 アーカイブが`zip_cache_expiration`に達すると、期限切れとマークされ、次回の`zip_cache_cleanup`の間隔が経過するとメモリから削除されます。
 
@@ -758,7 +757,7 @@ gitlab_pages['headers'] = ['Strict-Transport-Security: max-age=63072000']
 
 GitLab Pagesでは、パフォーマンスへの影響を最小限に抑えるため、[`_redirects`ファイル](../../user/project/pages/redirects.md)に一連のデフォルト制限が適用されています。
 
-制限を増減するには、次のように制限を設定します。
+制限を増減するには、次のように制限を設定します:
 
 ```ruby
 gitlab_pages['redirects_max_config_size'] = 131072
@@ -770,9 +769,9 @@ gitlab_pages['redirects_max_rule_count'] = 2000
 
 環境変数をPagesデーモンに渡すことができます（たとえば、機能フラグを有効または無効にするため）。
 
-設定可能なディレクトリ機能を無効にするには、次の手順に従います。
+設定可能なディレクトリ機能を無効にするには、次の手順に従います:
 
-1. `/etc/gitlab/gitlab.rb`を編集します。
+1. `/etc/gitlab/gitlab.rb`を編集します:
 
    ```ruby
    gitlab_pages['env'] = {
@@ -786,7 +785,7 @@ gitlab_pages['redirects_max_rule_count'] = 2000
 
 GitLab Pagesデーモンの冗長なログの生成を設定するには、次の手順に従います。
 
-1. デフォルトでは、デーモンは`INFO`レベルでのみログを生成します。`DEBUG`レベルでイベントをログに記録する場合は、`/etc/gitlab/gitlab.rb`で次のように設定する必要があります。
+1. デフォルトでは、デーモンは`INFO`レベルでのみログを生成します。`DEBUG`レベルでイベントをログに記録する場合は、`/etc/gitlab/gitlab.rb`で次のように設定する必要があります:
 
    ```ruby
    gitlab_pages['log_verbose'] = true
@@ -798,9 +797,9 @@ GitLab Pagesデーモンの冗長なログの生成を設定するには、次�
 
 `propagate_correlation_id`をtrueに設定すると、リバースプロキシの背後にあるインストール環境で、GitLab Pagesに送信されるリクエストに対して相関IDを生成し、設定できるようになります。リバースプロキシが`X-Request-ID`ヘッダーの値を設定すると、その値はリクエストチェーン内で伝播されます。ユーザーは[この相関IDをログで確認できます](../logs/tracing_correlation_id.md#identify-the-correlation-id-for-a-request)。
 
-相関IDの伝播を有効にするには、次の手順に従います。
+相関IDの伝播を有効にするには、次の手順に従います:
 
-1. `/etc/gitlab/gitlab.rb`で、パラメータをtrueに設定します。
+1. `/etc/gitlab/gitlab.rb`で、パラメータをtrueに設定します:
 
    ```ruby
    gitlab_pages['propagate_correlation_id'] = true
@@ -812,7 +811,7 @@ GitLab Pagesデーモンの冗長なログの生成を設定するには、次�
 
 GitLab Pagesのコンテンツを保存するデフォルトのパスを変更するには、次の手順に従います。
 
-1. ページはデフォルトで`/var/opt/gitlab/gitlab-rails/shared/pages`に保存されます。別の場所に保存する場合は、`/etc/gitlab/gitlab.rb`で設定する必要があります。
+1. ページはデフォルトで`/var/opt/gitlab/gitlab-rails/shared/pages`に保存されます。別の場所に保存する場合は、`/etc/gitlab/gitlab.rb`で設定する必要があります:
 
    ```ruby
    gitlab_rails['pages_path'] = "/mnt/storage/pages"
@@ -826,13 +825,13 @@ GitLab Pagesのプロキシリスナーを設定するには、次の手順に�
 
 1. デフォルトでは、リスナーは`localhost:8090`でリクエストをリッスンするように設定されています。
 
-   無効にする場合は、`/etc/gitlab/gitlab.rb`で次のように設定します。
+   無効にする場合は、`/etc/gitlab/gitlab.rb`で次のように設定します:
 
    ```ruby
    gitlab_pages['listen_proxy'] = nil
    ```
 
-   別のポートでリッスンする場合も、`/etc/gitlab/gitlab.rb`で次のように設定する必要があります。
+   別のポートでリッスンする場合も、`/etc/gitlab/gitlab.rb`で次のように設定する必要があります:
 
    ```ruby
    gitlab_pages['listen_proxy'] = "localhost:10080"
@@ -853,12 +852,12 @@ GitLab Pagesのプロキシリスナーを設定するには、次の手順に�
 
 - インスタンスへの管理者アクセス権が必要です。
 
-プロジェクトのグローバルな最大ページサイズを設定するには、次の手順に従います。
+プロジェクトのグローバルな最大ページサイズを設定するには、次の手順に従います:
 
-1. 左側のサイドバーの下部で、**管理者**を選択します。
-1. **設定 > 設定**を選択します。
+1. 左側のサイドバーの下部で、**管理者**を選択します。[新しいナビゲーションをオンにしている](../../user/interface_redesign.md#turn-new-navigation-on-or-off)場合は、右上隅でアバターを選択し、**管理者**を選択します。
+1. **設定** > **設定**を選択します。
 1. **Pages**を展開します。
-1. **ページの最大サイズ**に値を入力します。デフォルトは`100`です。
+1. **Maximum size of pages**（ページの最大サイズ）に値を入力します。デフォルトは`100`です。
 1. **変更を保存**を選択します。
 
 ## グループ内の各GitLab Pagesサイトの最大サイズを設定する {#set-maximum-size-of-each-gitlab-pages-site-in-a-group}
@@ -874,12 +873,12 @@ GitLab Pagesのプロキシリスナーを設定するには、次の手順に�
 
 - インスタンスへの管理者アクセス権が必要です。
 
-グループ内の各GitLab Pagesサイトの最大サイズを設定し、継承された設定をオーバーライドするには、次の手順に従います。
+グループ内の各GitLab Pagesサイトの最大サイズを設定し、継承された設定をオーバーライドするには、次の手順に従います:
 
-1. 左側のサイドバーで、**検索または移動先**を選択して、グループを見つけます。
-1. **設定 > 一般**を選択します。
+1. 左側のサイドバーで、**検索または移動先**を選択して、グループを見つけます。[新しいナビゲーションをオン](../../user/interface_redesign.md#turn-new-navigation-on-or-off)にしている場合、このフィールドは上部のバーにあります。
+1. **設定** > **一般**を選択します。
 1. **Pages**を展開します。
-1. **最大サイズ**に値をMB単位で入力します。
+1. **Maximum size**（最大サイズ）に値をMB単位で入力します。
 1. **変更を保存**を選択します。
 
 ## プロジェクト内のGitLab Pagesサイトの最大サイズを設定する {#set-maximum-size-of-gitlab-pages-site-in-a-project}
@@ -895,11 +894,11 @@ GitLab Pagesのプロキシリスナーを設定するには、次の手順に�
 
 - インスタンスへの管理者アクセス権が必要です。
 
-プロジェクト内のGitLab Pagesサイトの最大サイズを設定し、継承された設定をオーバーライドするには、次の手順に従います。
+プロジェクト内のGitLab Pagesサイトの最大サイズを設定し、継承された設定をオーバーライドするには、次の手順に従います:
 
-1. 左側のサイドバーで、**検索または移動先**を選択して、プロジェクトを見つけます。
-1. **デプロイ > Pages**を選択します。
-1. **ページの最大サイズ**に、サイズをMB単位で入力します。
+1. 左側のサイドバーで、**検索または移動先**を選択して、プロジェクトを見つけます。[新しいナビゲーションをオン](../../user/interface_redesign.md#turn-new-navigation-on-or-off)にしている場合、このフィールドは上部のバーにあります。
+1. **デプロイ** > **Pages**を選択します。
+1. **Maximum size of pages**（ページの最大サイズ）に、サイズをMB単位で入力します。
 1. **変更を保存**を選択します。
 
 ## プロジェクトのGitLab Pagesカスタムドメインの最大数を設定する {#set-maximum-number-of-gitlab-pages-custom-domains-for-a-project}
@@ -908,10 +907,10 @@ GitLab Pagesのプロキシリスナーを設定するには、次の手順に�
 
 - インスタンスへの管理者アクセス権が必要です。
 
-プロジェクトのGitLab Pagesカスタムドメインの最大数を設定するには、次の手順に従います。
+プロジェクトのGitLab Pagesカスタムドメインの最大数を設定するには、次の手順に従います:
 
-1. 左側のサイドバーの下部で、**管理者**を選択します。
-1. **設定 > 設定**を選択します。
+1. 左側のサイドバーの下部で、**管理者**を選択します。[新しいナビゲーションをオンにしている](../../user/interface_redesign.md#turn-new-navigation-on-or-off)場合は、右上隅でアバターを選択し、**管理者**を選択します。
+1. **設定** > **設定**を選択します。
 1. **Pages**を展開します。
 1. **プロジェクトごとのカスタムドメインの最大数**に値を入力します。カスタムドメイン数を無制限にする場合は、`0`を入力します。
 1. **変更を保存**を選択します。
@@ -928,12 +927,12 @@ GitLab Pagesのプロキシリスナーを設定するには、次の手順に�
 
 - インスタンスへの管理者アクセス権が必要です。
 
-[並列デプロイ](../../user/project/pages/_index.md#parallel-deployments)が削除されるまでの、インスタンスのデフォルト期間を設定するには、次の手順に従います。
+[並列デプロイ](../../user/project/pages/_index.md#parallel-deployments)が削除されるまでの、インスタンスのデフォルト期間を設定するには、次の手順に従います:
 
-1. 左側のサイドバーの下部で、**管理者**を選択します。
-1. **設定 > 設定**を選択します。
+1. 左側のサイドバーの下部で、**管理者**を選択します。[新しいナビゲーションをオンにしている](../../user/interface_redesign.md#turn-new-navigation-on-or-off)場合は、右上隅でアバターを選択し、**管理者**を選択します。
+1. **設定** > **設定**を選択します。
 1. **Pages**を展開します。
-1. **並列デプロイのデフォルトの有効期限（秒）**に値を入力します。並列デプロイをデフォルトで期限切れにしない場合は、`0`を入力します。
+1. **Default expiration for parallel deployments in seconds**（並列デプロイのデフォルトの有効期限（秒））に値を入力します。並列デプロイをデフォルトで期限切れにしない場合は、`0`を入力します。
 1. **変更を保存**を選択します。
 
 ## GitLab Pagesウェブサイトごとのファイルの最大数を設定する {#set-maximum-number-of-files-per-gitlab-pages-website}
@@ -948,7 +947,7 @@ GitLab Pagesウェブサイトごとに、ファイルエントリ（ディレ�
 
 GitLab Pagesデーモンを別のサーバーで実行することで、メインアプリケーションサーバーの負荷を軽減できます。
 
-別のサーバーでGitLab Pagesを設定するには、次の手順に従います。
+別のサーバーでGitLab Pagesを設定するには、次の手順に従います:
 
 {{< alert type="warning" >}}
 
@@ -956,7 +955,7 @@ GitLab Pagesデーモンを別のサーバーで実行することで、メイ�
 
 {{< /alert >}}
 
-1. （オプション）アクセス制御を有効にするには、`/etc/gitlab/gitlab.rb`に次の内容を追加し、[**GitLabサーバー**を再設定します](../restart_gitlab.md#reconfigure-a-linux-package-installation)。
+1. オプション。アクセス制御を有効にするには、`/etc/gitlab/gitlab.rb`に次の内容を追加し、[**GitLab server**（GitLabサーバー）を再設定します](../restart_gitlab.md#reconfigure-a-linux-package-installation):
 
    {{< alert type="warning" >}}
 
@@ -968,27 +967,27 @@ GitLab Pagesデーモンを別のサーバーで実行することで、メイ�
    gitlab_pages['access_control'] = true
    ```
 
-1. **GitLabサーバー**でシークレットファイルのバックアップを作成します。
+1. **GitLab server**（GitLabサーバー）でシークレットファイルのバックアップを作成します:
 
    ```shell
    cp /etc/gitlab/gitlab-secrets.json /etc/gitlab/gitlab-secrets.json.bak
    ```
 
-1. **GitLabサーバー**でPagesを有効にするには、`/etc/gitlab/gitlab.rb`に次の内容を追加します。
+1. **GitLab server**（GitLabサーバー）でPagesを有効にするには、`/etc/gitlab/gitlab.rb`に次の内容を追加します:
 
    ```ruby
    pages_external_url "http://<pages_server_URL>"
    ```
 
-1. 次のいずれかの方法でオブジェクトストレージを設定します。
+1. 次のいずれかの方法でオブジェクトストレージを設定します:
    - [オブジェクトストレージを設定し、GitLab Pagesのデータを移行する](#object-storage-settings)。
    - [ネットワークストレージを設定する](#enable-pages-network-storage-in-multi-node-environments)。
 
-1. 変更を有効にするには、[**GitLabサーバー**を再設定](../restart_gitlab.md#reconfigure-a-linux-package-installation)します。これで、`gitlab-secrets.json`ファイルが新しい設定で更新されました。
+1. 変更を有効にするには、[**GitLab server**（GitLabサーバー）を再設定](../restart_gitlab.md#reconfigure-a-linux-package-installation)します。これで、`gitlab-secrets.json`ファイルが新しい設定で更新されました。
 
-1. 新しいサーバーを設定します。これが**Pagesサーバー**になります。
+1. 新しいサーバーを設定します。これが**Pages server**（Pagesサーバー）になります。
 
-1. **Pagesサーバー**で、Linuxパッケージを使用してGitLabをインストールし、`/etc/gitlab/gitlab.rb`を次のように変更します。
+1. **Pages server**（Pagesサーバー）で、Linuxパッケージを使用してGitLabをインストールし、`/etc/gitlab/gitlab.rb`を次のように変更します:
 
    ```ruby
    roles ['pages_role']
@@ -1001,20 +1000,20 @@ GitLab Pagesデーモンを別のサーバーで実行することで、メイ�
    gitlab_pages['access_control'] = true
    ```
 
-1. **GitLabサーバー**でカスタムUID/GIDを設定している場合は、**Pagesサーバー**の`/etc/gitlab/gitlab.rb`にも同じ設定を追加してください。そうしないと、**GitLabサーバー**で`gitlab-ctl reconfigure`を実行した際に、ファイルの所有権が変更され、Pagesリクエストが失敗する原因になります。
+1. **GitLab server**（GitLabサーバー）でカスタムUID/GIDを設定している場合は、**Pages server**（Pagesサーバー）の`/etc/gitlab/gitlab.rb`にも同じ設定を追加してください。そうしないと、**GitLab server**（GitLabサーバー）で`gitlab-ctl reconfigure`を実行した際に、ファイルの所有権が変更され、Pagesリクエストが失敗する原因になります。
 
-1. **Pagesサーバー**でシークレットファイルのバックアップを作成します。
+1. **Pages server**（Pagesサーバー）でシークレットファイルのバックアップを作成します:
 
    ```shell
    cp /etc/gitlab/gitlab-secrets.json /etc/gitlab/gitlab-secrets.json.bak
    ```
 
-1. 個々のGitLab Pagesサイトでカスタムドメインを有効にするには、次のいずれかを使用して**Pagesサーバー**を設定します。
+1. 個々のGitLab Pagesサイトでカスタムドメインを有効にするには、次のいずれかを使用して**Pages server**（Pagesサーバー）を設定します:
 
    - [カスタムドメイン](#custom-domains)
    - [TLS対応のカスタムドメイン](#custom-domains-with-tls-support)
 
-1. `/etc/gitlab/gitlab-secrets.json`ファイルを**GitLabサーバー**から**Pagesサーバー**にコピーします。
+1. `/etc/gitlab/gitlab-secrets.json`ファイルを**GitLab server**（GitLabサーバー）から**Pages server**（Pagesサーバー）にコピーします。
 
    ```shell
    # On the GitLab server
@@ -1024,9 +1023,9 @@ GitLab Pagesデーモンを別のサーバーで実行することで、メイ�
    mv /var/opt/gitlab/gitlab-rails/shared/pages/gitlab-secrets.json /etc/gitlab/gitlab-secrets.json
    ```
 
-1. 変更を有効にするには、[**Pagesサーバー**を再設定](../restart_gitlab.md#reconfigure-a-linux-package-installation)します。
+1. 変更を有効にするには、[**Pages server**（Pagesサーバー）を再設定](../restart_gitlab.md#reconfigure-a-linux-package-installation)します。
 
-1. **GitLabサーバー**で、`/etc/gitlab/gitlab.rb`を次のように変更します。
+1. **GitLab server**（GitLabサーバー）で、`/etc/gitlab/gitlab.rb`を次のように変更します:
 
    ```ruby
    pages_external_url "http://<pages_server_URL>"
@@ -1034,7 +1033,7 @@ GitLab Pagesデーモンを別のサーバーで実行することで、メイ�
    pages_nginx['enable'] = false
    ```
 
-1. 個々のGitLab Pagesサイトでカスタムドメインを有効にするには、**GitLabサーバー**で`/etc/gitlab/gitlab.rb`に次の変更を加えます。
+1. 個々のGitLab Pagesサイトでカスタムドメインを有効にするには、**GitLab server**（GitLabサーバー）で`/etc/gitlab/gitlab.rb`に次の変更を加えます:
 
    - カスタムドメイン
 
@@ -1048,7 +1047,7 @@ GitLab Pagesデーモンを別のサーバーで実行することで、メイ�
         gitlab_pages['custom_domain_mode'] = 'https' # Enable custom domain mode to https
      ```
 
-1. 変更を有効にするには、[**GitLabサーバー**を再設定](../restart_gitlab.md#reconfigure-a-linux-package-installation)します。
+1. 変更を有効にするには、[**GitLab server**（GitLabサーバー）を再設定](../restart_gitlab.md#reconfigure-a-linux-package-installation)します。
 
 負荷を分散させたい場合は、複数のサーバーでGitLab Pagesを実行できます。これを実現するには、DNSサーバーを設定してPagesサーバーの複数のIPを返すようにするか、IPレベルで動作するようにロードバランサーを設定するなど、標準的なロードバランシング手法を使用します。複数のサーバーでGitLab Pagesをセットアップする場合は、各Pagesサーバーに対して前述の手順を実行してください。
 
@@ -1081,7 +1080,7 @@ APIベースの設定では、Pagesの配信のパフォーマンスと信頼性
 
 ## オブジェクトストレージ設定 {#object-storage-settings}
 
-以下の[オブジェクトストレージ](../object_storage.md)設定では、次のようになります。
+以下の[オブジェクトストレージ](../object_storage.md)設定では、次のようになります:
 
 - 自己コンパイルによるインストールでは、設定は`pages:`の下の`object_store:`にネストされます。
 - Linuxパッケージインストールでは、プレフィックスとして`pages_object_store_`が付きます。
@@ -1106,23 +1105,23 @@ NFSサーバーの使用を停止して切断する場合は、[ローカルス�
 
 ### Pagesデプロイをオブジェクトストレージに移行する {#migrate-pages-deployments-to-object-storage}
 
-既存のPagesデプロイオブジェクト（zipアーカイブ）は、次のいずれかに保存できます。
+既存のPagesデプロイオブジェクト（zipアーカイブ）は、次のいずれかに保存できます:
 
 - ローカルストレージ
 - オブジェクトストレージ
 
-既存のPagesデプロイをローカルストレージからオブジェクトストレージに移行するには、次のコマンドを実行します。
+既存のPagesデプロイをローカルストレージからオブジェクトストレージに移行するには、次のコマンドを実行します:
 
 ```shell
 sudo gitlab-rake gitlab:pages:deployments:migrate_to_object_storage
 ```
 
-[PostgreSQLコンソール](https://docs.gitlab.com/omnibus/settings/database.html#connecting-to-the-bundled-postgresql-database)を使用して、進行状況を追跡し、すべてのPagesデプロイを正常に移行したことを確認できます。
+[PostgreSQLコンソール](https://docs.gitlab.com/omnibus/settings/database.html#connecting-to-the-bundled-postgresql-database)を使用して、進行状況を追跡し、すべてのPagesデプロイを正常に移行したことを確認できます:
 
 - Linuxパッケージインストールの場合: `sudo gitlab-rails dbconsole --database main`。
 - 自己コンパイルによるインストールの場合: `sudo -u git -H psql -d gitlabhq_production`。
 
-以下の`objectstg`（`store=2`）が、すべてのPagesデプロイの数と一致することを確認します。
+以下の`objectstg`（`store=2`）が、すべてのPagesデプロイの数と一致することを確認します:
 
 ```shell
 gitlabhq_production=# SELECT count(*) AS total, sum(case when file_store = '1' then 1 else 0 end) AS filesystem, sum(case when file_store = '2' then 1 else 0 end) AS objectstg FROM pages_deployments;
@@ -1136,7 +1135,7 @@ total | filesystem | objectstg
 
 ### Pagesデプロイをローカルストレージにロールバックする {#rolling-pages-deployments-back-to-local-storage}
 
-オブジェクトストレージへの移行を実行した後、Pagesデプロイをローカルストレージに戻すことができます。
+オブジェクトストレージへの移行を実行した後、Pagesデプロイをローカルストレージに戻すことができます:
 
 ```shell
 sudo gitlab-rake gitlab:pages:deployments:migrate_to_local
@@ -1144,9 +1143,9 @@ sudo gitlab-rake gitlab:pages:deployments:migrate_to_local
 
 ### Pagesローカルストレージを無効にする {#disable-pages-local-storage}
 
-オブジェクトストレージを使用する場合は、不要なディスクの使用や書き込みを防ぐため、ローカルストレージを無効にできます。
+オブジェクトストレージを使用する場合は、不要なディスクの使用や書き込みを防ぐため、ローカルストレージを無効にできます:
 
-1. `/etc/gitlab/gitlab.rb`を編集します。
+1. `/etc/gitlab/gitlab.rb`を編集します:
 
    ```ruby
    gitlab_rails['pages_local_store_enabled'] = false
@@ -1156,10 +1155,10 @@ sudo gitlab-rake gitlab:pages:deployments:migrate_to_local
 
 ## マルチノード環境でPagesのネットワークストレージを有効にする {#enable-pages-network-storage-in-multi-node-environments}
 
-オブジェクトストレージは、ほとんどの環境において推奨される設定です。ただし、要件によってネットワークストレージが必要であり、[別のサーバー](#running-gitlab-pages-on-a-separate-server)でPagesを実行する必要がある場合は、次の手順に従います。
+オブジェクトストレージは、ほとんどの環境において推奨される設定です。ただし、要件によってネットワークストレージが必要であり、[別のサーバー](#running-gitlab-pages-on-a-separate-server)でPagesを実行する必要がある場合は、次の手順に従います:
 
 1. 使用する予定の共有ストレージボリュームが、プライマリサーバーと目的のPagesサーバーの両方にすでにマウントされ、使用可能であることを確認します。
-1. 各ノードの`/etc/gitlab/gitlab.rb`に、次の設定を追加します。
+1. 各ノードの`/etc/gitlab/gitlab.rb`に、次の設定を追加します:
 
    ```ruby
    gitlab_pages['enable_disk'] = true
@@ -1190,32 +1189,32 @@ GitLab Pagesは[定期バックアップ](../backup_restore/_index.md)に含ま�
 
 {{< history >}}
 
-- GitLab 17.3で[変更](https://gitlab.com/groups/gitlab-org/-/epics/14653)され、サブネットをPagesのレート制限から除外できるようになりました。
+- GitLab 17.3で[変更](https://gitlab.com/groups/gitlab-org/-/epics/14653)され、: サブネットをPagesのレート制限から除外できるようになりました。
 
 {{< /history >}}
 
 サービス拒否（DoS）攻撃のリスクを最小限に抑えるために、レート制限を適用できます。GitLab Pagesは、トークンバケットアルゴリズムを使用してレート制限を実施しています。デフォルトでは、指定された制限を超えたリクエストまたはTLS接続は報告され、拒否されます。
 
-GitLab Pagesでは、次の種類のレート制限をサポートしています。
+GitLab Pagesでは、次の種類のレート制限をサポートしています:
 
 - `source_ip`ごと: 1つのクライアントIPアドレスごとに、許可されるリクエストまたはTLS接続の数を制限します。
 - `domain`ごと: GitLab Pagesでホストしているドメインごとに、許可されるリクエストまたはTLS接続の数を制限します。`example.com`のようなカスタムドメインや、`group.gitlab.io`のようなグループドメインが対象となります。
 
-HTTPリクエストベースのレート制限は、以下の設定を使用して適用されます。
+HTTPリクエストベースのレート制限は、以下の設定を使用して適用されます:
 
 - `rate_limit_source_ip`: クライアントIPごとに、1秒あたりのリクエスト数の最大しきい値を設定します。この機能を無効にするには、0に設定します。
 - `rate_limit_source_ip_burst`: クライアントIPごとに、リクエストが一度に多数発生する初期のタイミングで許可される、リクエスト数の最大しきい値を設定します。たとえば、複数のリソースを同時に読み込むWebページを読み込む場合などです。
 - `rate_limit_domain`: ホストしているPagesドメインごとに、1秒あたりのリクエスト数の最大しきい値を設定します。この機能を無効にするには、0に設定します。
 - `rate_limit_domain_burst`: ホストしているPagesドメインごとに、リクエストが一度に多数発生する初期のタイミングで許可される、リクエスト数の最大しきい値を設定します。
 
-TLS接続ベースのレート制限は、以下の設定を使用して適用されます。
+TLS接続ベースのレート制限は、以下の設定を使用して適用されます:
 
 - `rate_limit_tls_source_ip`: クライアントIPごとに、1秒あたりのTLS接続数の最大しきい値を設定します。この機能を無効にするには、0に設定します。
 - `rate_limit_tls_source_ip_burst`: クライアントIPごとに、TLS接続が一度に多数発生する初期のタイミングで許可される、TLS接続数の最大しきい値を設定します。たとえば、異なるWebブラウザから同時にウェブページを読み込む場合などです。
 - `rate_limit_tls_domain`: ホストしているPagesドメインごとに、1秒あたりのTLS接続数の最大しきい値を設定します。この機能を無効にするには、0に設定します。
 - `rate_limit_tls_domain_burst`: ホストしているPagesドメインごとに、TLS接続が一度に多数発生する初期のタイミングで許可される、TLS接続数の最大しきい値を設定します。
 
-特定のIP範囲（サブネット）がすべてのレート制限を回避できるようにするには、次の手順に従います。
+特定のIP範囲（サブネット）がすべてのレート制限を回避できるようにするには、次の手順に従います:
 
 - `rate_limit_subnets_allow_list`: すべてのレート制限を回避させるIP範囲（サブネット）を指定する許可リストを設定します。例: `['1.2.3.4/24', '2001:db8::1/32']`。[GitLab Pagesチャートの例](https://docs.gitlab.com/charts/charts/gitlab/gitlab-pages/#configure-rate-limits-subnets-allow-list)が利用可能です。
 
@@ -1223,7 +1222,7 @@ IPv6アドレスには、128ビットのアドレス空間の中で大きなプ�
 
 #### 送信元IPごとのHTTPリクエストレート制限を有効にする {#enable-http-requests-rate-limits-by-source-ip}
 
-1. `/etc/gitlab/gitlab.rb`に、次のようにレート制限を設定します。
+1. `/etc/gitlab/gitlab.rb`に、次のようにレート制限を設定します:
 
    ```ruby
    gitlab_pages['rate_limit_source_ip'] = 20.0
@@ -1234,7 +1233,7 @@ IPv6アドレスには、128ビットのアドレス空間の中で大きなプ�
 
 #### ドメインごとのHTTPリクエストレート制限を有効にする {#enable-http-requests-rate-limits-by-domain}
 
-1. `/etc/gitlab/gitlab.rb`に、次のようにレート制限を設定します。
+1. `/etc/gitlab/gitlab.rb`に、次のようにレート制限を設定します:
 
    ```ruby
    gitlab_pages['rate_limit_domain'] = 1000
@@ -1245,7 +1244,7 @@ IPv6アドレスには、128ビットのアドレス空間の中で大きなプ�
 
 #### 送信元IPごとのTLS接続レート制限を有効にする {#enable-tls-connections-rate-limits-by-source-ip}
 
-1. `/etc/gitlab/gitlab.rb`に、次のようにレート制限を設定します。
+1. `/etc/gitlab/gitlab.rb`に、次のようにレート制限を設定します:
 
    ```ruby
    gitlab_pages['rate_limit_tls_source_ip'] = 20.0
@@ -1256,7 +1255,7 @@ IPv6アドレスには、128ビットのアドレス空間の中で大きなプ�
 
 #### ドメインごとのTLS接続レート制限を有効にする {#enable-tls-connections-rate-limits-by-domain}
 
-1. `/etc/gitlab/gitlab.rb`に、次のようにレート制限を設定します。
+1. `/etc/gitlab/gitlab.rb`に、次のようにレート制限を設定します:
 
    ```ruby
    gitlab_pages['rate_limit_tls_domain'] = 1000

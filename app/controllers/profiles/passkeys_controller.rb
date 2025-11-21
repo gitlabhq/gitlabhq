@@ -2,6 +2,8 @@
 
 module Profiles
   class PasskeysController < Profiles::ApplicationController
+    include AuthenticatesWithTwoFactor
+
     before_action :check_passkeys_available!
     skip_before_action :check_two_factor_requirement
     before_action :validate_current_password,
@@ -36,6 +38,8 @@ module Profiles
       result = Authn::Passkey::DestroyService.new(current_user, current_user, destroy_params[:id]).execute
 
       if result.success?
+        destroy_all_but_current_user_session!(current_user, session)
+
         redirect_to profile_two_factor_auth_path, status: :found, notice: result.message
       else
         redirect_to profile_two_factor_auth_path, status: :found, alert: result.message

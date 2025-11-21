@@ -15,6 +15,7 @@ class Profiles::TwoFactorAuthsController < Profiles::ApplicationController
   include SafeFormatHelper
   include BaseServiceUtility
   include AuthHelper
+  include AuthenticatesWithTwoFactor
 
   def show
     setup_show_page
@@ -28,11 +29,11 @@ class Profiles::TwoFactorAuthsController < Profiles::ApplicationController
     notify_on_success(:otp) if validated
 
     if validated && current_user.otp_backup_codes?
-      ActiveSession.destroy_all_but_current(current_user, session)
+      destroy_all_but_current_user_session!(current_user, session)
       Users::UpdateService.new(current_user, user: current_user, otp_required_for_login: true).execute!
       redirect_to profile_two_factor_auth_path, notice: _("Your Time-based OTP device was registered!")
     elsif validated
-      ActiveSession.destroy_all_but_current(current_user, session)
+      destroy_all_but_current_user_session!(current_user, session)
 
       Users::UpdateService.new(current_user, user: current_user, otp_required_for_login: true).execute! do |user|
         @codes = user.generate_otp_backup_codes!

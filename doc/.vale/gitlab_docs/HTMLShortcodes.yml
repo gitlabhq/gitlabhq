@@ -1,0 +1,14 @@
+---
+name: gitlab_docs.HTMLShortcodes
+description: |
+  If HTML code is immediately followed by Hugo shortcodes, add a newline between them.
+extends: existence
+message: "If HTML code is immediately followed by Hugo shortcodes, add a newline between them."
+link: https://docs.gitlab.com/development/documentation/styleguide/#shortcodes
+vocab: false
+ignorecase: true
+level: error
+nonword: true
+scope: raw
+tokens:
+  - '>\n\{\{<'

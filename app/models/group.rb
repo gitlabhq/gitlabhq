@@ -248,17 +248,10 @@ class Group < Namespace
 
   scope :with_users, -> { includes(:users) }
 
-  scope :active, -> { non_archived.not_aimed_for_deletion }
+  scope :active, -> { self_and_ancestors_active }
   scope :self_and_ancestors_active, -> { self_and_ancestors_non_archived.self_and_ancestors_not_aimed_for_deletion }
 
-  scope :inactive, -> do
-    joins(:namespace_settings)
-      .left_joins(:deletion_schedule)
-      .where(<<~SQL)
-        #{reflections['namespace_settings'].table_name}.archived = TRUE
-        OR #{reflections['deletion_schedule'].table_name}.#{reflections['deletion_schedule'].foreign_key} IS NOT NULL
-      SQL
-  end
+  scope :inactive, -> { self_or_ancestors_inactive }
   scope :self_or_ancestors_inactive, -> { self_or_ancestors_archived.or(self_or_ancestors_aimed_for_deletion) }
 
   scope :with_non_archived_projects, -> { includes(:non_archived_projects) }

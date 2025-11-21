@@ -48,15 +48,24 @@ export default {
     },
   },
   mounted() {
-    const url = new URL(window.location);
-
-    if (url.searchParams.has('edit')) {
-      this.setEditingMode(true);
-    }
+    this.checkEditingMode();
+    window.addEventListener('popstate', this.checkEditingMode);
+  },
+  beforeDestroy() {
+    window.removeEventListener('popstate', this.checkEditingMode);
   },
   methods: {
     setEditingMode(value) {
       this.isEditing = value;
+    },
+    checkEditingMode() {
+      const url = new URL(window.location);
+
+      if (url.searchParams.has('edit')) {
+        this.setEditingMode(true);
+      } else {
+        this.setEditingMode(false);
+      }
     },
   },
 };

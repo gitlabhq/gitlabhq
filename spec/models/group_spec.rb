@@ -1692,50 +1692,46 @@ RSpec.describe Group, feature_category: :groups_and_projects do
       end
     end
 
-    describe '.active' do
-      let_it_be(:active_group) { create(:group) }
-      let_it_be(:archived_group) { create(:group, :archived) }
-      let_it_be(:marked_for_deletion_group) { create(:group_with_deletion_schedule) }
-
-      subject { described_class.active }
-
-      it { is_expected.to include(active_group) }
-      it { is_expected.not_to include(marked_for_deletion_group) }
-      it { is_expected.not_to include(archived_group) }
-    end
-
-    describe '.self_and_ancestors_active' do
+    shared_examples 'ancestor aware active scope' do
       let_it_be(:active_group) { create(:group) }
       let_it_be(:inactive_group) { create(:group, :archived) }
       let_it_be(:inactive_subgroup) { create(:group, parent: inactive_group) }
-
-      subject { described_class.self_and_ancestors_active }
 
       it { is_expected.to include(active_group) }
       it { is_expected.not_to include(inactive_group, inactive_subgroup) }
     end
 
-    describe '.inactive' do
-      let_it_be(:active_group) { create(:group) }
-      let_it_be(:archived_group) { create(:group, :archived) }
-      let_it_be(:marked_for_deletion_group) { create(:group_with_deletion_schedule) }
+    describe '.active' do
+      subject { described_class.active }
 
-      subject { described_class.inactive }
-
-      it { is_expected.to include(archived_group) }
-      it { is_expected.to include(marked_for_deletion_group) }
-      it { is_expected.not_to include(active_group) }
+      it_behaves_like 'ancestor aware active scope'
     end
 
-    describe '.self_or_ancestors_inactive' do
+    describe '.self_and_ancestors_active' do
+      subject { described_class.self_and_ancestors_active }
+
+      it_behaves_like 'ancestor aware active scope'
+    end
+
+    shared_examples 'ancestor aware inactive scope' do
       let_it_be(:active_group) { create(:group) }
       let_it_be(:inactive_group) { create(:group, :archived) }
       let_it_be(:inactive_subgroup) { create(:group, parent: inactive_group) }
 
-      subject { described_class.self_or_ancestors_inactive }
-
       it { is_expected.to include(inactive_group, inactive_subgroup) }
       it { is_expected.not_to include(active_group) }
+    end
+
+    describe '.inactive' do
+      subject { described_class.inactive }
+
+      it_behaves_like 'ancestor aware inactive scope'
+    end
+
+    describe '.self_or_ancestors_inactive' do
+      subject { described_class.self_or_ancestors_inactive }
+
+      it_behaves_like 'ancestor aware inactive scope'
     end
 
     describe '.with_integrations' do

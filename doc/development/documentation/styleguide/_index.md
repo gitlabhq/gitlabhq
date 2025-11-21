@@ -193,6 +193,15 @@ GitLab documentation uses the following shortcodes:
   - Yes
   - No
 
+If a page has shortcodes and HTML tags on adjacent lines, there must be a newline between them.
+For example, in the [deprecations page](../../../update/deprecations.md):
+
+```markdown
+</div>
+
+{{</* alert type="note" */>}}
+```
+
 ## Language
 
 GitLab documentation should be clear and easy to understand.

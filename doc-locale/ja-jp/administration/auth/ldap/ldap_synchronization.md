@@ -4,6 +4,7 @@ group: Seat Management
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 gitlab_dedicated: no
 title: LDAP同期
+description: ユーザーとグループのLDAP同期を設定し、同期スケジュールを調整する方法について説明します。
 ---
 
 {{< details >}}
@@ -23,7 +24,7 @@ LDAP同期では、LDAPアイデンティティが割り当てられている既
 
 一部のLDAPサーバーには、レート制限が設定されています。
 
-GitLabは、次のようにLDAPサーバーへのクエリを実行します。
+GitLabは、次のようにLDAPサーバーへのクエリを実行します:
 
 - スケジュールされた[ユーザー同期](#user-sync)プロセスにおいて、各ユーザーに対してクエリを実行する。
 - スケジュールされた[グループ同期](#group-sync)プロセスにおいて、各グループに対してクエリを実行する。
@@ -47,7 +48,7 @@ LDAPサーバーにレート制限が設定されており、その制限に達�
 
 GitLabは1日に1回ワーカーを実行し、LDAPに対してGitLabユーザーの確認と更新を行います。
 
-このプロセスでは、次のアクセスチェックを実行します。
+このプロセスでは、次のアクセスチェックを実行します:
 
 - ユーザーがLDAPにまだ存在することを確認する。
 - LDAPサーバーがActive Directoryの場合、ユーザーがアクティブである（ブロック/無効化されていない）ことを確認する。このチェックは、LDAPの設定で`active_directory: true`が有効になっている場合にのみ実行されます。
@@ -60,7 +61,7 @@ Active Directoryでは、ユーザーアカウント制御属性（`userAccountC
 
 <!-- vale gitlab_base.Spelling = YES -->
 
-このプロセスでは、次のユーザー情報も更新されます。
+このプロセスでは、次のユーザー情報も更新されます:
 
 - 名前。[同期の問題](https://gitlab.com/gitlab-org/gitlab/-/issues/342598)により、[**ユーザーがプロファイル名を変更できないようにする**](../../settings/account_and_limit_settings.md#disable-user-profile-name-changes)が有効になっているか、`sync_name`が`false`に設定されている場合、`name`は同期されません。
 - メールアドレス。
@@ -83,7 +84,7 @@ LDAPサーバーにレート制限が設定されている場合、ユーザー�
 
 {{< tab title="Linuxパッケージ（Omnibus）" >}}
 
-1. `/etc/gitlab/gitlab.rb`を編集します。
+1. `/etc/gitlab/gitlab.rb`を編集します:
 
    ```ruby
    gitlab_rails['ldap_servers'] = {
@@ -93,7 +94,7 @@ LDAPサーバーにレート制限が設定されている場合、ユーザー�
    }
    ```
 
-1. ファイルを保存して、GitLabを再設定します。
+1. ファイルを保存して、GitLabを再設定します:
 
    ```shell
    sudo gitlab-ctl reconfigure
@@ -103,13 +104,13 @@ LDAPサーバーにレート制限が設定されている場合、ユーザー�
 
 {{< tab title="Helmチャート（Kubernetes）" >}}
 
-1. Helmの値をエクスポートします。
+1. Helmの値をエクスポートします: 
 
    ```shell
    helm get values gitlab > gitlab_values.yaml
    ```
 
-1. `gitlab_values.yaml`を編集します。
+1. `gitlab_values.yaml`を編集します:
 
    ```yaml
    global:
@@ -120,7 +121,7 @@ LDAPサーバーにレート制限が設定されている場合、ユーザー�
              sync_name: false
    ```
 
-1. ファイルを保存して、新しい値を適用します。
+1. ファイルを保存して、新しい値を適用します: 
 
    ```shell
    helm upgrade -f gitlab_values.yaml gitlab gitlab/gitlab
@@ -130,7 +131,7 @@ LDAPサーバーにレート制限が設定されている場合、ユーザー�
 
 {{< tab title="Docker" >}}
 
-1. `docker-compose.yml`を編集します。
+1. `docker-compose.yml`を編集します:
 
    ```yaml
    version: "3.6"
@@ -145,7 +146,7 @@ LDAPサーバーにレート制限が設定されている場合、ユーザー�
            }
    ```
 
-1. ファイルを保存して、GitLabを再起動します。
+1. ファイルを保存して、GitLabを再起動します: 
 
    ```shell
    docker compose up -d
@@ -155,7 +156,7 @@ LDAPサーバーにレート制限が設定されている場合、ユーザー�
 
 {{< tab title="自己コンパイル（ソース）" >}}
 
-1. `/home/git/gitlab/config/gitlab.yml`を編集します。
+1. `/home/git/gitlab/config/gitlab.yml`を編集します:
 
    ```yaml
    production: &base
@@ -165,7 +166,7 @@ LDAPサーバーにレート制限が設定されている場合、ユーザー�
            sync_name: false
    ```
 
-1. ファイルを保存して、GitLabを再起動します。
+1. ファイルを保存して、GitLabを再起動します: 
 
    ```shell
    # For systems running systemd
@@ -181,14 +182,14 @@ LDAPサーバーにレート制限が設定されている場合、ユーザー�
 
 ### ブロックされたユーザー {#blocked-users}
 
-ユーザーは、次のいずれかの条件に該当するとブロックされます。
+ユーザーは、次のいずれかの条件に該当するとブロックされます:
 
 - [アクセスチェックに失敗](#user-sync)し、そのユーザーがGitLabで`ldap_blocked`状態に設定される。
 - ユーザーのサインイン時にLDAPサーバーが利用できない。
 
 ユーザーがブロックされると、サインインやコードのプッシュ/プルができなくなります。
 
-ブロックされたユーザーは、次のすべての条件を満たす場合、LDAPでサインインしたときにブロックが解除されます。
+ブロックされたユーザーは、次のすべての条件を満たす場合、LDAPでサインインしたときにブロックが解除されます:
 
 - アクセスチェックのすべての条件を満たしている。
 - ユーザーのサインイン時にLDAPサーバーが利用可能である。
@@ -219,7 +220,7 @@ LDAPサーバーにレート制限が設定されている場合、グループ�
 
 {{< tab title="Linuxパッケージ（Omnibus）" >}}
 
-1. `/etc/gitlab/gitlab.rb`を編集します。
+1. `/etc/gitlab/gitlab.rb`を編集します:
 
    ```ruby
    gitlab_rails['ldap_servers'] = {
@@ -229,7 +230,7 @@ LDAPサーバーにレート制限が設定されている場合、グループ�
    }
    ```
 
-1. ファイルを保存して、GitLabを再設定します。
+1. ファイルを保存して、GitLabを再設定します:
 
    ```shell
    sudo gitlab-ctl reconfigure
@@ -239,13 +240,13 @@ LDAPサーバーにレート制限が設定されている場合、グループ�
 
 {{< tab title="Helmチャート（Kubernetes）" >}}
 
-1. Helmの値をエクスポートします。
+1. Helmの値をエクスポートします: 
 
    ```shell
    helm get values gitlab > gitlab_values.yaml
    ```
 
-1. `gitlab_values.yaml`を編集します。
+1. `gitlab_values.yaml`を編集します:
 
    ```yaml
    global:
@@ -256,7 +257,7 @@ LDAPサーバーにレート制限が設定されている場合、グループ�
              group_base: ou=groups,dc=example,dc=com
    ```
 
-1. ファイルを保存して、新しい値を適用します。
+1. ファイルを保存して、新しい値を適用します: 
 
    ```shell
    helm upgrade -f gitlab_values.yaml gitlab gitlab/gitlab
@@ -266,7 +267,7 @@ LDAPサーバーにレート制限が設定されている場合、グループ�
 
 {{< tab title="Docker" >}}
 
-1. `docker-compose.yml`を編集します。
+1. `docker-compose.yml`を編集します:
 
    ```yaml
    version: "3.6"
@@ -281,7 +282,7 @@ LDAPサーバーにレート制限が設定されている場合、グループ�
            }
    ```
 
-1. ファイルを保存して、GitLabを再起動します。
+1. ファイルを保存して、GitLabを再起動します: 
 
    ```shell
    docker compose up -d
@@ -291,7 +292,7 @@ LDAPサーバーにレート制限が設定されている場合、グループ�
 
 {{< tab title="自己コンパイル（ソース）" >}}
 
-1. `/home/git/gitlab/config/gitlab.yml`を編集します。
+1. `/home/git/gitlab/config/gitlab.yml`を編集します:
 
    ```yaml
    production: &base
@@ -301,7 +302,7 @@ LDAPサーバーにレート制限が設定されている場合、グループ�
            group_base: ou=groups,dc=example,dc=com
    ```
 
-1. ファイルを保存して、GitLabを再起動します。
+1. ファイルを保存して、GitLabを再起動します: 
 
    ```shell
    # For systems running systemd
@@ -319,7 +320,7 @@ LDAPサーバーにレート制限が設定されている場合、グループ�
 
 {{< alert type="note" >}}
 
-LDAPサーバーとGitLabインスタンスの間で接続の問題が頻繁に発生する場合は、[グループ同期ワーカーの実行間隔をデフォルトの1時間よりも長く設定](#adjust-ldap-group-sync-schedule)することで、GitLabがLDAPグループ同期を実行する頻度を減らしてみてください。
+LDAPサーバーとGitLabインスタンスの間で接続の問題が頻繁に発生する場合は、グループ同期ワーカーの実行間隔をデフォルトの1時間よりも長く設定することで、GitLabがLDAPグループ同期を実行する頻度を減らしてみてください。
 
 {{< /alert >}}
 
@@ -345,7 +346,7 @@ CNとフィルターを使用してカスタム管理者ロールのリンクを
 
 {{< tab title="Linuxパッケージ（Omnibus）" >}}
 
-1. `/etc/gitlab/gitlab.rb`を編集します。
+1. `/etc/gitlab/gitlab.rb`を編集します:
 
    ```ruby
    gitlab_rails['ldap_servers'] = {
@@ -356,7 +357,7 @@ CNとフィルターを使用してカスタム管理者ロールのリンクを
    }
    ```
 
-1. ファイルを保存して、GitLabを再設定します。
+1. ファイルを保存して、GitLabを再設定します:
 
    ```shell
    sudo gitlab-ctl reconfigure
@@ -366,13 +367,13 @@ CNとフィルターを使用してカスタム管理者ロールのリンクを
 
 {{< tab title="Helmチャート（Kubernetes）" >}}
 
-1. Helmの値をエクスポートします。
+1. Helmの値をエクスポートします: 
 
    ```shell
    helm get values gitlab > gitlab_values.yaml
    ```
 
-1. `gitlab_values.yaml`を編集します。
+1. `gitlab_values.yaml`を編集します:
 
    ```yaml
    global:
@@ -384,7 +385,7 @@ CNとフィルターを使用してカスタム管理者ロールのリンクを
              admin_group: my_admin_group
    ```
 
-1. ファイルを保存して、新しい値を適用します。
+1. ファイルを保存して、新しい値を適用します: 
 
    ```shell
    helm upgrade -f gitlab_values.yaml gitlab gitlab/gitlab
@@ -394,7 +395,7 @@ CNとフィルターを使用してカスタム管理者ロールのリンクを
 
 {{< tab title="Docker" >}}
 
-1. `docker-compose.yml`を編集します。
+1. `docker-compose.yml`を編集します:
 
    ```yaml
    version: "3.6"
@@ -410,7 +411,7 @@ CNとフィルターを使用してカスタム管理者ロールのリンクを
            }
    ```
 
-1. ファイルを保存して、GitLabを再起動します。
+1. ファイルを保存して、GitLabを再起動します: 
 
    ```shell
    docker compose up -d
@@ -420,7 +421,7 @@ CNとフィルターを使用してカスタム管理者ロールのリンクを
 
 {{< tab title="自己コンパイル（ソース）" >}}
 
-1. `/home/git/gitlab/config/gitlab.yml`を編集します。
+1. `/home/git/gitlab/config/gitlab.yml`を編集します:
 
    ```yaml
    production: &base
@@ -431,7 +432,7 @@ CNとフィルターを使用してカスタム管理者ロールのリンクを
            admin_group: my_admin_group
    ```
 
-1. ファイルを保存して、GitLabを再起動します。
+1. ファイルを保存して、GitLabを再起動します: 
 
    ```shell
    # For systems running systemd
@@ -453,15 +454,15 @@ GitLab管理者は、メンバーシップがLDAPと同期されているサブ�
 
 グローバルグループメンバーシップのロックが有効になっている場合:
 
-- グループまたはサブグループをコードオーナーとして設定することはできません。詳細については、[Incompatibility with Global group memberships locks](../../../user/project/codeowners/troubleshooting.md#incompatibility-with-global-group-memberships-locks)（グローバルグループメンバーシップロックとの非互換性）を参照してください。
+- グループまたはサブグループをコードオーナーとして設定することはできません。詳細については、[グローバルグループメンバーシップロックとの非互換性](../../../user/project/codeowners/troubleshooting.md#incompatibility-with-global-group-memberships-locks)を参照してください。
 - 管理者のみが、アクセスレベルを含め、グループのメンバーシップを管理できます。
 - ユーザーは、プロジェクトを他のグループと共有したり、グループで作成されたプロジェクトにメンバーを招待したりすることはできません。
 
-グローバルグループメンバーシップのロックを有効にするには、次の手順に従います。
+グローバルグループメンバーシップのロックを有効にするには、次の手順に従います:
 
 1. [LDAPを設定](_index.md#configure-ldap)します。
-1. 左側のサイドバーの下部で、**管理者**を選択します。
-1. **設定 > 一般**を選択します。
+1. 左側のサイドバーの下部で、**管理者**を選択します。[新しいナビゲーションをオンにしている](../../../user/interface_redesign.md#turn-new-navigation-on-or-off)場合は、右上隅でアバターを選択し、**管理者**を選択します。
+1. **設定** > **一般**を選択します。
 1. **表示レベルとアクセス制御**を展開します。
 1. **メンバーシップをLDAP同期に限定**チェックボックスがオンになっていることを確認します。
 
@@ -469,11 +470,11 @@ GitLab管理者は、メンバーシップがLDAPと同期されているサブ�
 
 デフォルトでは、オーナーロールを持つグループメンバーは、[LDAPグループ同期設定](../../../user/group/access_and_permissions.md#manage-group-memberships-with-ldap)を管理できます。
 
-GitLab管理者は、グループのオーナーからこの権限を削除できます。
+GitLab管理者は、グループのオーナーからこの権限を削除できます:
 
 1. [LDAPを設定](_index.md#configure-ldap)します。
-1. 左側のサイドバーの下部で、**管理者**を選択します。
-1. **設定 > 一般**を選択します。
+1. 左側のサイドバーの下部で、**管理者**を選択します。[新しいナビゲーションをオンにしている](../../../user/interface_redesign.md#turn-new-navigation-on-or-off)場合は、右上隅でアバターを選択し、**管理者**を選択します。
+1. **設定** > **一般**を選択します。
 1. **表示レベルとアクセス制御**を展開します。
 1. **グループオーナーがLDAP関連の設定を管理できるようにする**チェックボックスがオンになっていないことを確認します。
 
@@ -490,7 +491,7 @@ GitLab管理者は、グループのオーナーからこの権限を削除で�
 
 {{< tab title="Linuxパッケージ（Omnibus）" >}}
 
-1. `/etc/gitlab/gitlab.rb`を編集します。
+1. `/etc/gitlab/gitlab.rb`を編集します:
 
    ```ruby
    gitlab_rails['ldap_servers'] = {
@@ -500,7 +501,7 @@ GitLab管理者は、グループのオーナーからこの権限を削除で�
    }
    ```
 
-1. ファイルを保存して、GitLabを再設定します。
+1. ファイルを保存して、GitLabを再設定します:
 
    ```shell
    sudo gitlab-ctl reconfigure
@@ -510,13 +511,13 @@ GitLab管理者は、グループのオーナーからこの権限を削除で�
 
 {{< tab title="Helmチャート（Kubernetes）" >}}
 
-1. Helmの値をエクスポートします。
+1. Helmの値をエクスポートします: 
 
    ```shell
    helm get values gitlab > gitlab_values.yaml
    ```
 
-1. `gitlab_values.yaml`を編集します。
+1. `gitlab_values.yaml`を編集します:
 
    ```yaml
    global:
@@ -527,7 +528,7 @@ GitLab管理者は、グループのオーナーからこの権限を削除で�
              external_groups: ['interns', 'contractors']
    ```
 
-1. ファイルを保存して、新しい値を適用します。
+1. ファイルを保存して、新しい値を適用します: 
 
    ```shell
    helm upgrade -f gitlab_values.yaml gitlab gitlab/gitlab
@@ -537,7 +538,7 @@ GitLab管理者は、グループのオーナーからこの権限を削除で�
 
 {{< tab title="Docker" >}}
 
-1. `docker-compose.yml`を編集します。
+1. `docker-compose.yml`を編集します:
 
    ```yaml
    version: "3.6"
@@ -552,7 +553,7 @@ GitLab管理者は、グループのオーナーからこの権限を削除で�
            }
    ```
 
-1. ファイルを保存して、GitLabを再起動します。
+1. ファイルを保存して、GitLabを再起動します: 
 
    ```shell
    docker compose up -d
@@ -562,7 +563,7 @@ GitLab管理者は、グループのオーナーからこの権限を削除で�
 
 {{< tab title="自己コンパイル（ソース）" >}}
 
-1. `/home/git/gitlab/config/gitlab.yml`を編集します。
+1. `/home/git/gitlab/config/gitlab.yml`を編集します:
 
    ```yaml
    production: &base
@@ -572,7 +573,7 @@ GitLab管理者は、グループのオーナーからこの権限を削除で�
            external_groups: ['interns', 'contractors']
    ```
 
-1. ファイルを保存して、GitLabを再起動します。
+1. ファイルを保存して、GitLabを再起動します: 
 
    ```shell
    # For systems running systemd
@@ -590,18 +591,18 @@ GitLab管理者は、グループのオーナーからこの権限を削除で�
 
 `duo_add_on_groups`設定を使用すると、LDAPを通じて認証するユーザーに対して、[GitLab Duoアドオンのシートを自動的に管理](../../duo_add_on_seat_management_with_ldap.md)できます。この機能により、組織はLDAPグループメンバーシップに基づいて**GitLab Duo**シートの割り当てプロセスを効率化できます。
 
-GitLab Duoのシートの同期は、次の2つの方法で行われます。
+GitLab Duoのシートの同期は、次の2つの方法で行われます:
 
 - **On user sign-in**（ユーザーサインイン時）: ユーザーがLDAP経由でサインインすると、GitLabはそのグループメンバーシップを即座にチェックします。
-- **Scheduled sync**（スケジュールされた同期）: GitLabは毎日午前2:00（サーバー時刻）に、すべてのLDAPユーザーを自動的に同期し、ユーザーがサインインしていなくてもシート割り当てが最新の状態に保たれるようにします。
+- **Scheduled sync**（定刻同期）: GitLabは毎日午前2:00（サーバー時刻）に、すべてのLDAPユーザーを自動的に同期し、ユーザーがサインインしていなくてもシート割り当てが最新の状態に保たれるようにします。
 
-グループに対してアドオンシート管理を有効にするには、GitLabインスタンスで`duo_add_on_groups`設定を指定する必要があります。
+グループに対してアドオンシート管理を有効にするには、GitLabインスタンスで`duo_add_on_groups`設定を指定する必要があります:
 
 {{< tabs >}}
 
 {{< tab title="Linuxパッケージ（Omnibus）" >}}
 
-1. `/etc/gitlab/gitlab.rb`を編集します。
+1. `/etc/gitlab/gitlab.rb`を編集します:
 
    ```ruby
    gitlab_rails['ldap_servers'] = {
@@ -611,7 +612,7 @@ GitLab Duoのシートの同期は、次の2つの方法で行われます。
    }
    ```
 
-1. ファイルを保存して、GitLabを再設定します。
+1. ファイルを保存して、GitLabを再設定します:
 
    ```shell
    sudo gitlab-ctl reconfigure
@@ -621,13 +622,13 @@ GitLab Duoのシートの同期は、次の2つの方法で行われます。
 
 {{< tab title="Helmチャート（Kubernetes）" >}}
 
-1. Helmの値をエクスポートします。
+1. Helmの値をエクスポートします: 
 
    ```shell
    helm get values gitlab > gitlab_values.yaml
    ```
 
-1. `gitlab_values.yaml`を編集します。
+1. `gitlab_values.yaml`を編集します:
 
    ```yaml
    global:
@@ -635,10 +636,10 @@ GitLab Duoのシートの同期は、次の2つの方法で行われます。
        ldap:
          servers:
            main:
-            duo_add_on_groups: ['duo_group_1', 'duo_group_2']
+             duo_add_on_groups: ['duo_group_1', 'duo_group_2']
    ```
 
-1. ファイルを保存して、新しい値を適用します。
+1. ファイルを保存して、新しい値を適用します: 
 
    ```shell
    helm upgrade -f gitlab_values.yaml gitlab gitlab/gitlab
@@ -648,7 +649,7 @@ GitLab Duoのシートの同期は、次の2つの方法で行われます。
 
 {{< tab title="Docker" >}}
 
-1. `docker-compose.yml`を編集します。
+1. `docker-compose.yml`を編集します:
 
    ```yaml
    version: "3.6"
@@ -663,7 +664,7 @@ GitLab Duoのシートの同期は、次の2つの方法で行われます。
            }
    ```
 
-1. ファイルを保存して、GitLabを再起動します。
+1. ファイルを保存して、GitLabを再起動します: 
 
    ```shell
    docker compose up -d
@@ -673,7 +674,7 @@ GitLab Duoのシートの同期は、次の2つの方法で行われます。
 
 {{< tab title="自己コンパイル（ソース）" >}}
 
-1. `/home/git/gitlab/config/gitlab.yml`を編集します。
+1. `/home/git/gitlab/config/gitlab.yml`を編集します:
 
    ```yaml
    production: &base
@@ -683,7 +684,7 @@ GitLab Duoのシートの同期は、次の2つの方法で行われます。
            duo_add_on_groups: ['duo_group_1', 'duo_group_2']
    ```
 
-1. ファイルを保存して、GitLabを再起動します。
+1. ファイルを保存して、GitLabを再起動します: 
 
    ```shell
    # For systems running systemd
@@ -701,11 +702,11 @@ GitLab Duoのシートの同期は、次の2つの方法で行われます。
 
 このセクションでは、実行されるLDAPクエリの内容と、グループ同期によって予想される動作の概要を説明します。
 
-LDAPグループメンバーシップが変更された場合、それに応じて、グループメンバーのアクセス権は上位レベルからダウングレードされます。たとえば、あるユーザーがグループでオーナー権限を持っていても、次回のグループ同期で本来はデベロッパー権限のみであることが判明した場合、そのユーザーのアクセス権はそれに応じて調整されます。唯一の例外は、そのユーザーがグループ内の最後のオーナーである場合です。グループには、管理業務を行うために少なくとも1人のオーナーが必要であるためです。
+ユーザーのLDAPグループメンバーシップが変更されると、グループのアクセスレベルがダウングレードされることがあります。たとえば、あるユーザーがグループでオーナー権限を持っていても、次回のグループ同期で本来はデベロッパー権限のみであることが判明した場合、そのユーザーのアクセス権はそれに応じて調整されます。唯一の例外は、そのユーザーがグループ内の最後のオーナーである場合です。グループには、管理業務を行うために少なくとも1人のオーナーが必要であるためです。サブスクリプションシートの管理が制限付きアクセスに設定され、使用可能なサブスクリプションシートが残っていない場合、グループの同期中に、ユーザーには自動的に最小アクセスロールが割り当てられます。これにより、シートを消費せずにユーザーを同期できます。
 
 #### サポートされているLDAPグループのタイプ/属性 {#supported-ldap-group-typesattributes}
 
-GitLabは、メンバー属性を使用するLDAPグループをサポートしています。
+GitLabは、メンバー属性を使用するLDAPグループをサポートしています:
 
 - `member`
 - `submember`
@@ -713,7 +714,7 @@ GitLabは、メンバー属性を使用するLDAPグループをサポートし�
 - `memberof`
 - `memberuid`
 
-つまり、グループ同期は（少なくとも）次のオブジェクトクラスを持つLDAPグループをサポートしています。
+つまり、グループ同期は（少なくとも）次のオブジェクトクラスを持つLDAPグループをサポートしています:
 
 - `groupOfNames`
 - `posixGroup`
@@ -730,11 +731,11 @@ Active Directoryはネストされたグループをサポートしています�
 #### クエリ {#queries}
 
 - 各LDAPグループは、`group_base`をベースとし、フィルター`(cn=<cn_from_group_link>)`を使用して、最大1回クエリされます。
-- LDAPグループに`memberuid`属性がある場合、GitLabは各メンバーごとに追加のLDAPクエリを実行し、ユーザーの完全なDNを取得します。これらのクエリは、ベース`base`、スコープ「base object」、および`user_filter`が設定されているかどうかに応じたフィルターを用いて実行されます。フィルターには、`(uid=<uid_from_group>)`、または`user_filter`の結合条件が使用されます。
+- LDAPグループに`memberuid`属性がある場合、GitLabは各メンバーごとに追加のLDAPクエリを実行し、ユーザーの完全なDNを取得します。これらのクエリは、`base`、`baseObject`、および`user_filter`が設定されているかどうかに応じたフィルターを用いて実行されます。フィルターには、`(uid=<uid_from_group>)`、または`user_filter`の結合条件が使用されます。
 
 #### ベンチマーク {#benchmarks}
 
-グループ同期は、可能な限りパフォーマンスが高くなるように設計されています。データはキャッシュされ、データベースクエリは最適化され、LDAPクエリは最小限に抑えられています。直近のベンチマークで得られたメトリクスは次のとおりです。
+グループ同期は、可能な限りパフォーマンスが高くなるように設計されています。データはキャッシュされ、データベースクエリは最適化され、LDAPクエリは最小限に抑えられています。直近のベンチマークで得られたメトリクスは次のとおりです:
 
 LDAPユーザー数20,000、LDAPグループ数11,000、各グループに10件のLDAPグループリンクを持つGitLabグループ数1,000の場合:
 
@@ -743,7 +744,11 @@ LDAPユーザー数20,000、LDAPグループ数11,000、各グループに10件�
 
 これらのメトリクスはベースラインを提供することを目的としており、実際のパフォーマンスはさまざまな要因によって異なる場合があります。このベンチマークは極端なケースであり、ほとんどのインスタンスにはこれほど多くのユーザーやグループは存在しません。ディスク速度、データベースのパフォーマンス、ネットワーク、LDAPサーバーの応答時間が、これらのメトリクスに影響します。
 
-### LDAPユーザー同期スケジュールを調整する {#adjust-ldap-user-sync-schedule}
+## LDAP同期スケジュールの調整 {#adjust-ldap-sync-schedule}
+
+LDAPがユーザー、グループ、Duoアドオンシートを同期する時間と間隔を変更できます。
+
+### ユーザーの場合 {#for-users}
 
 デフォルトでは、GitLabは1日に1回、サーバー時刻の午前1時30分にワーカーを実行し、LDAPに対してGitLabユーザーの確認と更新を行います。
 
@@ -759,13 +764,13 @@ cron形式で次の設定値を指定することで、LDAPユーザー同期の
 
 {{< tab title="Linuxパッケージ（Omnibus）" >}}
 
-1. `/etc/gitlab/gitlab.rb`を編集します。
+1. `/etc/gitlab/gitlab.rb`を編集します:
 
    ```ruby
    gitlab_rails['ldap_sync_worker_cron'] = "0 */12 * * *"
    ```
 
-1. ファイルを保存して、GitLabを再設定します。
+1. ファイルを保存して、GitLabを再設定します:
 
    ```shell
    sudo gitlab-ctl reconfigure
@@ -775,13 +780,13 @@ cron形式で次の設定値を指定することで、LDAPユーザー同期の
 
 {{< tab title="Helmチャート（Kubernetes）" >}}
 
-1. Helmの値をエクスポートします。
+1. Helmの値をエクスポートします: 
 
    ```shell
    helm get values gitlab > gitlab_values.yaml
    ```
 
-1. `gitlab_values.yaml`を編集します。
+1. `gitlab_values.yaml`を編集します:
 
    ```yaml
    global:
@@ -791,7 +796,7 @@ cron形式で次の設定値を指定することで、LDAPユーザー同期の
            cron: "0 */12 * * *"
    ```
 
-1. ファイルを保存して、新しい値を適用します。
+1. ファイルを保存して、新しい値を適用します: 
 
    ```shell
    helm upgrade -f gitlab_values.yaml gitlab gitlab/gitlab
@@ -801,7 +806,7 @@ cron形式で次の設定値を指定することで、LDAPユーザー同期の
 
 {{< tab title="Docker" >}}
 
-1. `docker-compose.yml`を編集します。
+1. `docker-compose.yml`を編集します:
 
    ```yaml
    version: "3.6"
@@ -812,7 +817,7 @@ cron形式で次の設定値を指定することで、LDAPユーザー同期の
            gitlab_rails['ldap_sync_worker_cron'] = "0 */12 * * *"
    ```
 
-1. ファイルを保存して、GitLabを再起動します。
+1. ファイルを保存して、GitLabを再起動します: 
 
    ```shell
    docker compose up -d
@@ -822,7 +827,7 @@ cron形式で次の設定値を指定することで、LDAPユーザー同期の
 
 {{< tab title="自己コンパイル（ソース）" >}}
 
-1. `/home/git/gitlab/config/gitlab.yml`を編集します。
+1. `/home/git/gitlab/config/gitlab.yml`を編集します:
 
    ```yaml
    production: &base
@@ -831,7 +836,7 @@ cron形式で次の設定値を指定することで、LDAPユーザー同期の
          cron: "0 */12 * * *"
    ```
 
-1. ファイルを保存して、GitLabを再起動します。
+1. ファイルを保存して、GitLabを再起動します: 
 
    ```shell
    # For systems running systemd
@@ -845,7 +850,7 @@ cron形式で次の設定値を指定することで、LDAPユーザー同期の
 
 {{< /tabs >}}
 
-### LDAPグループ同期スケジュールを調整する {#adjust-ldap-group-sync-schedule}
+### グループの場合 {#for-groups}
 
 デフォルトでは、GitLabは毎時0分にグループ同期プロセスを実行します。値はcron形式で指定します。必要に応じて、[crontab generator](https://it-tools.tech/crontab-generator)を使用することもできます。
 
@@ -861,13 +866,13 @@ cron形式で次の設定値を指定することで、LDAPユーザー同期の
 
 {{< tab title="Linuxパッケージ（Omnibus）" >}}
 
-1. `/etc/gitlab/gitlab.rb`を編集します。
+1. `/etc/gitlab/gitlab.rb`を編集します:
 
    ```ruby
    gitlab_rails['ldap_group_sync_worker_cron'] = "0 */2 * * *"
    ```
 
-1. ファイルを保存して、GitLabを再設定します。
+1. ファイルを保存して、GitLabを再設定します:
 
    ```shell
    sudo gitlab-ctl reconfigure
@@ -877,13 +882,13 @@ cron形式で次の設定値を指定することで、LDAPユーザー同期の
 
 {{< tab title="Helmチャート（Kubernetes）" >}}
 
-1. Helmの値をエクスポートします。
+1. Helmの値をエクスポートします: 
 
    ```shell
    helm get values gitlab > gitlab_values.yaml
    ```
 
-1. `gitlab_values.yaml`を編集します。
+1. `gitlab_values.yaml`を編集します:
 
    ```yaml
    global:
@@ -893,7 +898,7 @@ cron形式で次の設定値を指定することで、LDAPユーザー同期の
            cron: "*/30 * * * *"
    ```
 
-1. ファイルを保存して、新しい値を適用します。
+1. ファイルを保存して、新しい値を適用します: 
 
    ```shell
    helm upgrade -f gitlab_values.yaml gitlab gitlab/gitlab
@@ -903,7 +908,7 @@ cron形式で次の設定値を指定することで、LDAPユーザー同期の
 
 {{< tab title="Docker" >}}
 
-1. `docker-compose.yml`を編集します。
+1. `docker-compose.yml`を編集します:
 
    ```yaml
    version: "3.6"
@@ -914,7 +919,7 @@ cron形式で次の設定値を指定することで、LDAPユーザー同期の
            gitlab_rails['ldap_group_sync_worker_cron'] = "0 */2 * * *"
    ```
 
-1. ファイルを保存して、GitLabを再起動します。
+1. ファイルを保存して、GitLabを再起動します: 
 
    ```shell
    docker compose up -d
@@ -924,7 +929,7 @@ cron形式で次の設定値を指定することで、LDAPユーザー同期の
 
 {{< tab title="自己コンパイル（ソース）" >}}
 
-1. `/home/git/gitlab/config/gitlab.yml`を編集します。
+1. `/home/git/gitlab/config/gitlab.yml`を編集します:
 
    ```yaml
    production: &base
@@ -933,7 +938,7 @@ cron形式で次の設定値を指定することで、LDAPユーザー同期の
          cron: "*/30 * * * *"
    ```
 
-1. ファイルを保存して、GitLabを再起動します。
+1. ファイルを保存して、GitLabを再起動します: 
 
    ```shell
    # For systems running systemd
@@ -947,9 +952,9 @@ cron形式で次の設定値を指定することで、LDAPユーザー同期の
 
 {{< /tabs >}}
 
-### LDAP GitLab Duoアドオンシートの同期スケジュールの調整 {#adjust-ldap-duo-add-on-seat-sync-schedule}
+### Duoアドオンシートの場合 {#for-duo-add-on-seats}
 
-デフォルトでは、GitLabは毎日午前2時00分（サーバー時間）にDuoアドオンシートの同期プロセスを実行し、LDAPグループメンバーシップをチェックし、それに応じてDuoアドオンシートを割り当てまたは削除します。
+デフォルトでは、GitLabは毎日午前2時00分（サーバー時間）にDuoアドオンシートの同期プロセスを実行し、LDAPグループグループメンバーシップをチェックし、それに応じてDuoアドオンシートを割り当てまたは削除します。
 
 {{< alert type="warning" >}}
 
@@ -963,13 +968,13 @@ LDAP Duoアドオンシートの同期時間を手動で設定するには、設
 
 {{< tab title="Linuxパッケージ（Omnibus）" >}}
 
-1. `/etc/gitlab/gitlab.rb`を編集します。
+1. `/etc/gitlab/gitlab.rb`を編集します:
 
    ```ruby
    gitlab_rails['ldap_add_on_seat_sync_worker_cron'] = "0 */4 * * *"
    ```
 
-1. ファイルを保存して、GitLabを再設定します。
+1. ファイルを保存して、GitLabを再設定します:
 
    ```shell
    sudo gitlab-ctl reconfigure
@@ -979,13 +984,13 @@ LDAP Duoアドオンシートの同期時間を手動で設定するには、設
 
 {{< tab title="Helmチャート（Kubernetes）" >}}
 
-1. Helmの値をエクスポートします。
+1. Helmの値をエクスポートします: 
 
    ```shell
    helm get values gitlab > gitlab_values.yaml
    ```
 
-1. `gitlab_values.yaml`を編集します。
+1. `gitlab_values.yaml`を編集します:
 
    ```yaml
    global:
@@ -995,7 +1000,7 @@ LDAP Duoアドオンシートの同期時間を手動で設定するには、設
            cron: "0 */4 * * *"
    ```
 
-1. ファイルを保存して、新しい値を適用します。
+1. ファイルを保存して、新しい値を適用します: 
 
    ```shell
    helm upgrade -f gitlab_values.yaml gitlab gitlab/gitlab
@@ -1005,7 +1010,7 @@ LDAP Duoアドオンシートの同期時間を手動で設定するには、設
 
 {{< tab title="Docker" >}}
 
-1. `docker-compose.yml`を編集します。
+1. `docker-compose.yml`を編集します:
 
    ```yaml
    version: "3.6"
@@ -1016,7 +1021,7 @@ LDAP Duoアドオンシートの同期時間を手動で設定するには、設
            gitlab_rails['ldap_add_on_seat_sync_worker_cron'] = "0 */4 * * *"
    ```
 
-1. ファイルを保存して、GitLabを再起動します。
+1. ファイルを保存して、GitLabを再起動します: 
 
    ```shell
    docker compose up -d
@@ -1026,7 +1031,7 @@ LDAP Duoアドオンシートの同期時間を手動で設定するには、設
 
 {{< tab title="自己コンパイル（ソース）" >}}
 
-1. `/home/git/gitlab/config/gitlab.yml`を編集します。
+1. `/home/git/gitlab/config/gitlab.yml`を編集します:
 
    ```yaml
    production: &base
@@ -1035,7 +1040,7 @@ LDAP Duoアドオンシートの同期時間を手動で設定するには、設
          cron: "0 */4 * * *"
    ```
 
-1. ファイルを保存して、GitLabを再起動します。
+1. ファイルを保存して、GitLabを再起動します: 
 
    ```shell
    # For systems running systemd
@@ -1048,7 +1053,3 @@ LDAP Duoアドオンシートの同期時間を手動で設定するには、設
 {{< /tab >}}
 
 {{< /tabs >}}
-
-## トラブルシューティング {#troubleshooting}
-
-[LDAPのトラブルシューティングに関する管理者ガイド](ldap-troubleshooting.md)を参照してください。

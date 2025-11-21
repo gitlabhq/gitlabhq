@@ -1,5 +1,5 @@
 ---
-stage: Tenant Scale
+stage: Runtime
 group: Organizations
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 title: グループAPI
@@ -24,7 +24,7 @@ title: グループAPI
 GET /groups/:id
 ```
 
-パラメータは以下のとおりです。
+パラメータは以下のとおりです:
 
 | 属性                | 型           | 必須 | 説明 |
 |--------------------------|----------------|----------|-------------|
@@ -217,7 +217,7 @@ curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/a
 
 `prevent_sharing_groups_outside_hierarchy`属性は、トップレベルグループにのみ存在します。
 
-[GitLab PremiumまたはUltimate](https://about.gitlab.com/pricing/)のユーザーには、次の属性も表示されます。
+[GitLab PremiumまたはUltimate](https://about.gitlab.com/pricing/)のユーザーには、次の属性も表示されます:
 
 - `shared_runners_minutes_limit`
 - `extra_shared_runners_minutes_limit`
@@ -282,12 +282,12 @@ curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/a
 
 APIの結果は[ページネーション](rest/_index.md#pagination)されるため、デフォルトでは、このリクエストは一度に20個の結果を返します。
 
-認証なしでアクセスする場合、この[キーセットページネーション](rest/_index.md#keyset-based-pagination)もサポートします。
+認証なしでアクセスする場合、この[キーセットページネーション](rest/_index.md#keyset-based-pagination)もサポートします:
 
 - 連続する結果ページをする場合は、キーセットページネーションを使用する必要があります。
 - 特定の制限（[ベースのページネーション用のREST APIで許可される最大オフセット](../administration/instance_limits.md#max-offset-allowed-by-the-rest-api-for-offset-based-pagination)で指定）を超えると、ページネーションは使用できなくなります。
 
-パラメータは以下のとおりです。
+パラメータは以下のとおりです:
 
 | 属性                | 型              | 必須 | 説明 |
 |--------------------------|-------------------|----------|-------------|
@@ -364,7 +364,7 @@ GET /groups
 GET /groups?statistics=true
 ```
 
-パラメータ`statistics=true`を使用すると、認証済みユーザーが管理者の場合、レスポンスにはコンテナレジストリのストレージサイズに関する情報が含まれます。
+パラメータ`statistics=true`を使用すると、認証済みユーザーが管理者の場合、レスポンスにはコンテナレジストリのストレージサイズに関する情報が含まれます:
 
 - `container_registry_size`: グループとそのサブグループ内のすべてのコンテナで使用されるストレージサイズの合計（バイト単位）。グループのプロジェクトとサブグループ内のすべてのリポジトリサイズの合計として計算されます。メタデータデータベースが有効になっている場合にのみ使用できます。
 
@@ -452,7 +452,7 @@ GitLab Self-Managedインスタンスの場合、コンテナレジストリサ�
 
 グループは名前またはパスで検索できます。以下を参照してください。
 
-[カスタム属性](custom_attributes.md)でフィルタリングするには、以下を使用します。
+[カスタム属性](custom_attributes.md)でフィルタリングするには、以下を使用します:
 
 ```plaintext
 GET /groups?custom_attributes[key]=value&custom_attributes[other_key]=other_value
@@ -462,13 +462,13 @@ GET /groups?custom_attributes[key]=value&custom_attributes[other_key]=other_valu
 
 デフォルトでは、APIの結果はページネーションされるため、一度に20個のグループのみが表示されます。
 
-取得するネームスペースの数を増やすには（最大100個）、以下を引数としてAPIコールに渡します。
+取得するネームスペースの数を増やすには（最大100個）、以下を引数としてAPIコールに渡します:
 
 ```plaintext
 /groups?per_page=100
 ```
 
-ページをスイッチするには、以下を追加します。
+ページをスイッチするには、以下を追加します:
 
 ```plaintext
 /groups?per_page=100&page=2
@@ -505,7 +505,7 @@ APIの結果は[ページネーション](rest/_index.md#pagination)されるた
 GET /groups/:id/projects
 ```
 
-パラメータは以下のとおりです。
+パラメータは以下のとおりです:
 
 | 属性                     | 型           | 必須 | 説明 |
 |-------------------------------|----------------|----------|-------------|
@@ -527,7 +527,7 @@ GET /groups/:id/projects
 | `with_custom_attributes`      | ブール値        | いいえ       | レスポンスに[カスタム属性](custom_attributes.md)を含めます（管理者のみ）。 |
 | `with_security_reports`       | ブール値        | いいえ       | ビルドのいずれかにセキュリティレポートアーティファクトが存在するプロジェクトのみを返します。これは、「セキュリティが有効になっているプロジェクト」を意味します。デフォルトは`false`です。Ultimateのみです。 |
 
-**脚注**:
+**Footnotes**（脚注）:
 
 1. `search`パラメータから計算された類似性スコアで結果を並べ替えます。`order_by=similarity`を使用すると、`sort`パラメータは無視されます。`search`パラメータが指定されていない場合、APIは`name`で並べ替えられたプロジェクトを返します。
 
@@ -592,7 +592,7 @@ APIの結果は[ページネーション](rest/_index.md#pagination)されるた
 GET /groups/:id/projects/shared
 ```
 
-パラメータは以下のとおりです。
+パラメータは以下のとおりです:
 
 | 属性                     | 型           | 必須 | 説明 |
 | ----------------------------- | -------------- | -------- | ----------- |
@@ -742,7 +742,7 @@ GET /groups/:id/projects/shared
 GET /groups/:id/saml_users
 ```
 
-サポートされている属性は以下のとおりです。
+サポートされている属性は以下のとおりです:
 
 | 属性        | 型           | 必須 | 説明 |
 |:-----------------|:---------------|:---------|:------------|
@@ -751,8 +751,8 @@ GET /groups/:id/saml_users
 | `search`         | 文字列         | いいえ       | 一致する名前、メール、またはユーザー名を持つユーザーを返します。部分的な値を使用すると、結果が増えます。 |
 | `active`         | ブール値        | いいえ       | アクティブユーザーのみを返します。 |
 | `blocked`        | ブール値        | いいえ       | ブロックされたユーザーのみを返します。 |
-| `created_after`  | 日時       | いいえ       | 指定された時刻以降に作成されたユーザーを返します。形式は、ISO 8601（`YYYY-MM-DDTHH:MM:SSZ`）です。 |
-| `created_before` | 日時       | いいえ       | 指定された時刻よりも前に作成されたユーザーを返します。形式は、ISO 8601（`YYYY-MM-DDTHH:MM:SSZ`）です。 |
+| `created_after`  | 日時       | いいえ       | 指定された時刻以降に作成されたユーザーを返します。形式は、: ISO 8601（`YYYY-MM-DDTHH:MM:SSZ`）です。 |
+| `created_before` | 日時       | いいえ       | 指定された時刻よりも前に作成されたユーザーを返します。形式は、: ISO 8601（`YYYY-MM-DDTHH:MM:SSZ`）です。 |
 
 リクエストの例:
 
@@ -838,11 +838,11 @@ curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/a
 GET /groups/:id/provisioned_users
 ```
 
-パラメータは以下のとおりです。
+パラメータは以下のとおりです:
 
 | 属性        | 型           | 必須 | 説明 |
 |:-----------------|:---------------|:---------|:------------|
-| `id`             | 整数または文字列 | はい      | グループのIDまたは[URLエンコードされたパス](rest/_index.md#namespaced-paths)。 |
+| `id`             | 整数または文字列 | はい      | IDまたは[URLエンコードされた](rest/_index.md#namespaced-paths)パス。 |
 | `username`       | 文字列         | いいえ       | 特定のユーザー名を持つ1つのユーザーを返します。 |
 | `search`         | 文字列         | いいえ       | 名前、メールアドレス、ユーザー名でユーザーを検索します。 |
 | `active`         | ブール値        | いいえ       | アクティブユーザーのみを返します。 |
@@ -904,12 +904,12 @@ GET /groups/:id/provisioned_users
 
 APIの結果は[ページネーション](rest/_index.md#pagination)されるため、デフォルトでは、このリクエストは一度に20個の結果を返します。
 
-このリストを次のいずれかのユーザーとしてリクエストする場合は、次のようになります。
+このリストを次のいずれかのユーザーとしてリクエストする場合は、次のようになります:
 
 - 認証されていないユーザーの場合、公開グループのみが返されます。
 - 認証済みユーザーの場合、メンバーであるグループのみが返され、公開グループは含まれません。
 
-パラメータは以下のとおりです。
+パラメータは以下のとおりです:
 
 | 属性                | 型              | 必須 | 説明 |
 | ------------------------ | ----------------- | -------- | ----------- |
@@ -984,7 +984,7 @@ GET /groups/:id/subgroups
 
 APIの結果は[ページネーション](rest/_index.md#pagination)されるため、デフォルトでは、このリクエストは一度に20個の結果を返します。
 
-パラメータは以下のとおりです。
+パラメータは以下のとおりです:
 
 | 属性                | 型              | 必須 | 説明 |
 | ------------------------ | ----------------- | -------- | ----------- |
@@ -1097,7 +1097,7 @@ GET /groups/:id/descendant_groups
 
 APIの結果は[ページネーション](rest/_index.md#pagination)されるため、デフォルトでは、このリクエストは一度に20個の結果を返します。
 
-パラメータは以下のとおりです。
+パラメータは以下のとおりです:
 
 | 属性                             | 型              | 必須 | 説明 |
 | ------------------------------------- | ----------------- | -------- | ---------- |
@@ -1175,7 +1175,7 @@ GET /groups/:id/groups/shared
 
 APIの結果は[ページネーション](rest/_index.md#pagination)されるため、デフォルトでは、このリクエストは一度に20個の結果を返します。
 
-パラメータは以下のとおりです。
+パラメータは以下のとおりです:
 
 | 属性                             | 型              | 必須 | 説明 |
 | ------------------------------------- | ----------------- | -------- | ---------- |
@@ -1270,7 +1270,7 @@ GitLab SaaSで親グループのないグループを作成するには、GitLab
 POST /groups
 ```
 
-パラメータは以下のとおりです。
+パラメータは以下のとおりです:
 
 | 属性                            | 型    | 必須 | 説明 |
 |--------------------------------------|---------|----------|-------------|
@@ -1295,25 +1295,25 @@ POST /groups
 | `share_with_group_lock`              | ブール値 | いいえ       | このグループ内で別のグループとプロジェクトを共有することを禁止します。 |
 | `subgroup_creation_level`            | 文字列  | いいえ       | [サブグループ](../user/group/subgroups/_index.md#create-a-subgroup)の作成を許可します。`owner`（オーナーロールを持つユーザー）または`maintainer`（メンテナーロールを持つユーザー）を指定できます。 |
 | `two_factor_grace_period`            | 整数 | いいえ       | 2要素認証が強制的に適用されるまでの時間（時間単位）。 |
-| `visibility`                         | 文字列  | いいえ       | グループの表示レベル。`private`、`internal`、または`public`のいずれかです。 |
+| `visibility`                         | 文字列  | いいえ       | グループの表示レベル。`private`、`internal`、または`public`を指定できます。 |
 | `membership_lock`                    | ブール値 | いいえ       | このグループのプロジェクトにユーザーを追加できません。PremiumおよびUltimateのみです。 |
 | `extra_shared_runners_minutes_limit` | 整数 | いいえ       | 管理者のみが設定できます。このグループの追加のコンピューティング時間です。GitLab Self-Managed、Premium、およびUltimateのみです。 |
 | `shared_runners_minutes_limit`       | 整数 | いいえ       | 管理者のみが設定できます。このグループの1か月あたりのコンピューティング時間の最大数。`nil`（デフォルト、システムのデフォルトを継承）、`0`（無制限）、または`> 0`のいずれかです。GitLab Self-Managed、Premium、およびUltimateのみです。 |
-| `wiki_access_level`                  | 文字列  | いいえ       | Wikiのアクセスレベル。`disabled`、`private`、または`enabled`のいずれかです。PremiumおよびUltimateのみです。 |
+| `wiki_access_level`                  | 文字列  | いいえ       | Wikiのアクセスレベル。`disabled`、`private`、または`enabled`を指定できます。PremiumおよびUltimateのみです。 |
 | `duo_availability` | 文字列 | いいえ | GitLab Duoの可用性設定。有効な値は`default_on`、`default_off`、または`never_on`です。注: UIでは`never_on`は「常にオフ」として表示されます。 |
 | `experiment_features_enabled` | ブール値 | いいえ | このグループに対して実験的機能を有効にします。 |
 
 #### `default_branch_protection`のオプション {#options-for-default_branch_protection}
 
-`default_branch_protection`属性は、[デベロッパー](../user/project/repository/branches/default.md)またはメンテナーのロールを持つユーザーが該当するデフォルトブランチにプッシュできるかどうかを決定します。次のテーブルで詳しく説明します。
+`default_branch_protection`属性は、[デベロッパー](../user/project/repository/branches/default.md)またはメンテナーのロールを持つユーザーが該当するデフォルトブランチにプッシュできるかどうかを決定します。次のテーブルで詳しく説明します:
 
 | 値 | 説明 |
 |-------|-------------|
-| `0`   | 保護されません。デベロッパーまたはメンテナーのロールを持つユーザーは、以下の操作を実行できます。<br>\- 新しいコミットをプッシュする<br>\- 変更を強制プッシュする<br>\- ブランチを削除する |
-| `1`   | 部分的に保護されます。デベロッパーまたはメンテナーのロールを持つユーザーは、以下の操作を実行できます。<br>\- 新しいコミットをプッシュする |
-| `2`   | 完全に保護されます。メンテナーのロールを持つユーザーのみが、以下の操作を実行できます。<br>\- 新しいコミットをプッシュする |
-| `3`   | プッシュから保護されています。メンテナーのロールを持つユーザーが以下の操作を実行できます。<br>\- 新しいコミットをプッシュする<br>\- 変更を強制プッシュする<br>\- マージリクエストを承認する<br>デベロッパーのロールを持つユーザーは、以下の操作を実行できます。<br>\- マージリクエストを承認する |
-| `4`   | 初回プッシュ後に完全に保護されます。デベロッパーのロールを持つユーザーは、以下の操作を実行できます。<br>\- 空のリポジトリにコミットをプッシュする<br> メンテナーのロールを持つユーザーが以下の操作を実行できます。<br>\- 新しいコミットをプッシュする<br>\- マージリクエストを承認する |
+| `0`   | 保護されません。デベロッパーまたはメンテナーのロールを持つユーザーは、以下の操作を実行できます:<br>\- 新しいコミットをプッシュする<br>\- 変更を強制プッシュする<br>\- ブランチを削除する |
+| `1`   | 部分的に保護されます。デベロッパーまたはメンテナーのロールを持つユーザーは、以下の操作を実行できます:<br>\- 新しいコミットをプッシュする |
+| `2`   | 完全に保護されます。メンテナーのロールを持つユーザーのみが、以下の操作を実行できます:<br>\- 新しいコミットをプッシュする |
+| `3`   | プッシュから保護されています。メンテナーのロールを持つユーザーが以下の操作を実行できます:<br>\- 新しいコミットをプッシュする<br>\- 変更を強制プッシュする<br>\- マージリクエストを承認する<br>デベロッパーのロールを持つユーザーは、以下の操作を実行できます:<br>\- マージリクエストを承認する |
+| `4`   | 初回プッシュ後に完全に保護されます。デベロッパーのロールを持つユーザーは、以下の操作を実行できます:<br>\- 空のリポジトリにコミットをプッシュする<br> メンテナーのロールを持つユーザーが以下の操作を実行できます:<br>\- 新しいコミットをプッシュする<br>\- マージリクエストを承認する |
 
 #### `default_branch_protection_defaults`のオプション {#options-for-default_branch_protection_defaults}
 
@@ -1334,7 +1334,7 @@ POST /groups
 
 ### サブグループを作成する {#create-a-subgroup}
 
-これは、[新しいグループ](#create-a-group)の作成に似ています。[グループのリスト](#list-groups)呼び出しからの`parent_id`が必要です。その後、必要な情報を入力できます。
+これは、[新しいグループ](#create-a-group)の作成に似ています。[グループのリスト](#list-groups)呼び出しからの`parent_id`が必要です。その後、必要な情報を入力できます:
 
 - `subgroup_path`
 - `subgroup_name`
@@ -1351,7 +1351,7 @@ curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" \
 {{< history >}}
 
 - GitLab 18.0のFreeプランで、削除対象のグループのマークが[利用可能](https://gitlab.com/groups/gitlab-org/-/epics/17208)になりました。
-- `permanently_remove`は、`disallow_immediate_deletion`という名前の[フラグ](../administration/feature_flags/_index.md)でGitLab 18.4で[非推奨](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/201957)になりました。
+- GitLab 18.5以降、即時削除[インスタンス設定](../administration/settings/visibility_and_access_controls.md#immediate-deletion)が無効になっている場合（`allow_immediate_namespaces_deletion`という[機能フラグ](../administration/feature_flags/_index.md)の裏側）は、`permanently_remove`[許可されません](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/205572)。この設定は、自己管理インスタンスではデフォルトで有効になっていますが、GitLab.comとDedicatedでは無効になっています。
 
 {{< /history >}}
 
@@ -1359,20 +1359,30 @@ curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" \
 
 - グループの管理者であるか、オーナーロールを持っている必要があります。
 
-グループを削除対象としてマークします。グループは、保持期間の終了時に削除されます。
+グループを削除対象としてマークします。グループは、保持期間の終了時に削除されます:
 
 - GitLab.comでは、グループは30日間保持されます。
 - GitLab Self-Managedでは、保持期間は[インスタンスの設定](../administration/settings/visibility_and_access_controls.md#deletion-protection)によって制御されます。
 
 このエンドポイントは、以前に削除対象としてマークされたサブグループを即座に削除することもできます。
 
+{{< alert type="warning" >}}
+
+GitLab.comでは、グループを削除した後、そのデータは30日間保持され、即時削除はできません。GitLab.comでグループをすぐに削除する必要がある場合は、[サポートチケット](https://about.gitlab.com/support/)を開いてください。
+
+{{< /alert >}}
+
 ```plaintext
 DELETE /groups/:id
 ```
 
-パラメータは以下のとおりです。
+パラメータは以下のとおりです:
 
-| `id` | integerまたはstring | yes | グループの[URLエンコードされたパス](rest/_index.md#namespaced-paths)またはID。| | `permanently_remove` | boolean/string | no | GitLab 18.4で[非推奨](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/201957)。`true`の場合、既に削除対象としてマークされているサブグループをすぐに削除します。トップレベルグループは削除できません。| | `full_path` | string | no | サブグループへのフルパス。サブグループの削除の確認に使用されます。`permanently_remove`が`true`の場合、この属性は必須です。[グループの詳細](groups.md#get-a-single-group)を確認するには、サブグループのパスを参照してください。
+| 属性            | 型              | 必須 | 説明 |
+|----------------------|-------------------|----------|-------------|
+| `id`                 | 整数または文字列 | はい      | グループのIDまたは[URLエンコードされたパス](rest/_index.md#namespaced-paths)。 |
+| `permanently_remove` | ブール値/文字列    | いいえ       | `true`の場合、既に削除対象としてマークされているサブグループをすぐに削除します。トップレベルグループは削除できません。GitLab.comとDedicatedでは無効になっています。 |
+| `full_path`          | 文字列            | いいえ       | サブグループへのパス全体。サブグループの削除の確認に使用されます。`permanently_remove`が`true`の場合、この属性は必須です。サブグループのパスを確認するには、[グループ](groups.md#get-a-single-group)の詳細を参照してください。 |
 
 ユーザーに認証がある場合、レスポンスは`202 Accepted`です。
 
@@ -1390,7 +1400,7 @@ DELETE /groups/:id
 POST /groups/:id/restore
 ```
 
-パラメータは以下のとおりです。
+パラメータは以下のとおりです:
 
 | 属性 | 型           | 必須 | 説明 |
 |-----------|----------------|----------|-------------|
@@ -1428,11 +1438,11 @@ POST /groups/:id/restore
 POST /groups/:id/archive
 ```
 
-パラメータは以下のとおりです。
+パラメータは以下のとおりです:
 
-| 属性                             | 型              | 必須 | 説明 |
-| ------------------------------------- | ----------------- | -------- | ---------- |
-| `id`                                  | 整数または文字列 | はい      | 認証済みユーザーが所有しているグループのIDまたは[URLエンコードされたパス](rest/_index.md#namespaced-paths)。 |
+| 属性 | 型              | 必須 | 説明 |
+|-----------|-------------------|----------|-------------|
+| `id`      | 整数または文字列 | はい      | 認証済みユーザーが所有しているグループのIDまたは[URLエンコードされたパス](rest/_index.md#namespaced-paths)。 |
 
 レスポンス例:
 
@@ -1526,11 +1536,11 @@ POST /groups/:id/archive
 POST /groups/:id/unarchive
 ```
 
-パラメータは以下のとおりです。
+パラメータは以下のとおりです:
 
-| 属性                             | 型              | 必須 | 説明 |
-| ------------------------------------- | ----------------- | -------- | ---------- |
-| `id`                                  | 整数または文字列 | はい      | 認証済みユーザーが所有しているグループのIDまたは[URLエンコードされたパス](rest/_index.md#namespaced-paths)。 |
+| 属性 | 型              | 必須 | 説明 |
+|-----------|-------------------|----------|-------------|
+| `id`      | 整数または文字列 | はい      | 認証済みユーザーが所有しているグループのIDまたは[URLエンコードされたパス](rest/_index.md#namespaced-paths)。 |
 
 レスポンス例:
 
@@ -1606,7 +1616,7 @@ POST /groups/:id/unarchive
 POST /groups/:id/transfer
 ```
 
-パラメータは以下のとおりです。
+パラメータは以下のとおりです:
 
 | 属性  | 型    | 必須 | 説明 |
 |------------|---------|----------|-------------|
@@ -1686,7 +1696,7 @@ curl --request GET "https://gitlab.example.com/api/v4/groups/1/transfer_location
 POST /groups/:id/projects/:project_id
 ```
 
-パラメータは以下のとおりです。
+パラメータは以下のとおりです:
 
 | 属性    | 型           | 必須 | 説明 |
 | ------------ | -------------- | -------- | ----------- |
@@ -1710,7 +1720,15 @@ curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" \
 POST /groups/:id/share
 ```
 
-| `id` | 整数または文字列 | はい | ターゲットグループの[URLエンコードされたパス](rest/_index.md#namespaced-paths)またはID。| | `group_id` | 整数 | はい | 招待するグループのID。| | `group_access` | 整数 | はい | 招待されたグループに割り当てるデフォルトロールの[ロール (`access_level`)](members.md#roles)。| | `expires_at` | 日付（ISO 8601）| いいえ | グループ招待の有効期限の日付。| | `member_role_id` | 整数 | いいえ | 招待されたグループに割り当てる[カスタムロール](../user/custom_roles/_index.md#assign-a-custom-role-to-an-invited-group)のID。定義されている場合、`group_access`はカスタムロールの作成に使用されるベースロールと一致する必要があります。|
+パラメータは以下のとおりです:
+
+| 属性        | 型              | 必須 | 説明 |
+|------------------|-------------------|----------|-------------|
+| `id`             | 整数または文字列 | はい      | ターゲットグループのIDまたは[URLエンコードされたパス](rest/_index.md#namespaced-paths)。 |
+| `group_id`       | 整数           | はい      | 招待するグループのID。 |
+| `group_access`   | 整数           | はい      | 招待されたグループに割り当てるデフォルトロール（[`access_level`）](members.md#roles)。 |
+| `expires_at`     | 日付（ISO 8601）   | いいえ       | グループ招待の有効期限日。 |
+| `member_role_id` | 整数           | いいえ       | 招待されたグループに割り当てる[カスタムロール](../user/custom_roles/_index.md#assign-a-custom-role-to-an-invited-group)のID定義されている場合、`group_access`はカスタムロールの作成に使用されるベースロールと一致する必要があります。 |
 
 成功すると、`200`とグループの詳細が返されます。
 
@@ -1774,22 +1792,23 @@ PUT /groups/:id
 | `require_two_factor_authentication`                  | ブール値           | いいえ       | このグループのすべてのユーザーに対して2要素認証のセットアップを必須にします。 |
 | `shared_runners_setting`                             | 文字列            | いいえ       | [`shared_runners_setting`のオプション](#options-for-shared_runners_setting)を参照してください。グループのサブグループおよびプロジェクトのインスタンスRunnerを有効または無効にします。 |
 | `share_with_group_lock`                              | ブール値           | いいえ       | このグループ内で別のグループとプロジェクトを共有することを禁止します。 |
+| `step_up_auth_required_oauth_provider`               | 文字列            | いいえ       | ステップアップ認証に必要なOAuthプロバイダー。無効にするには、空の文字列を渡します。GitLab 18.4で[導入](https://gitlab.com/gitlab-org/gitlab/-/issues/556943)されました。`omniauth_step_up_auth_for_namespace`機能フラグが有効な場合にのみ使用できます。 |
 | `subgroup_creation_level`                            | 文字列            | いいえ       | [サブグループ](../user/group/subgroups/_index.md#create-a-subgroup)の作成を許可します。`owner`（オーナーロールを持つユーザー）または`maintainer`（メンテナーロールを持つユーザー）を指定できます。 |
 | `two_factor_grace_period`                            | 整数           | いいえ       | 2要素認証が強制的に適用されるまでの時間（時間単位）。 |
-| `visibility`                                         | 文字列            | いいえ       | グループの表示レベル。`private`、`internal`、または`public`のいずれかです。 |
+| `visibility`                                         | 文字列            | いいえ       | グループの表示レベル。`private`、`internal`、または`public`を指定できます。 |
 | `extra_shared_runners_minutes_limit`                 | 整数           | いいえ       | 管理者のみが設定できます。このグループの追加のコンピューティング時間です。GitLab Self-Managed、Premium、およびUltimateのみです。 |
 | `file_template_project_id`                           | 整数           | いいえ       | カスタムファイルテンプレートの読み込み元のプロジェクトのID。PremiumおよびUltimateのみです。 |
 | `membership_lock`                                    | ブール値           | いいえ       | このグループのプロジェクトにユーザーを追加できません。PremiumおよびUltimateのみです。 |
 | `prevent_forking_outside_group`                      | ブール値           | いいえ       | 有効にすると、ユーザーはこのグループから外部ネームスペースへプロジェクトをフォークできません。PremiumおよびUltimateのみです。 |
 | `shared_runners_minutes_limit`                       | 整数           | いいえ       | 管理者のみが設定できます。このグループの1か月あたりのコンピューティング時間の最大数。`nil`（デフォルト、システムのデフォルトを継承）、`0`（無制限）、または`> 0`のいずれかです。GitLab Self-Managed、Premium、およびUltimateのみです。 |
-| `unique_project_download_limit`                      | 整数           | いいえ       | 指定された期間内にユーザーがダウンロードできる一意のプロジェクトの最大数。この数を超えると、ユーザーはBANされます。トップレベルグループでのみ使用できます。デフォルトは、0、最大値は10,000です。Ultimateのみです。 |
-| `unique_project_download_limit_interval_in_seconds`  | 整数           | いいえ       | ユーザーが最大量のプロジェクトをダウンロードできる期間。この期間を経過すると、ユーザーはBANされます。トップレベルグループでのみ使用できます。デフォルトは、0、最大値は864,000秒（10日間）です。Ultimateのみです。 |
-| `unique_project_download_limit_allowlist`            | 文字列の配列  | いいえ       | 一意のプロジェクトのダウンロード制限から除外されるユーザー名のリスト。トップレベルグループでのみ使用できます。デフォルトは`[]`、最大値は100個のユーザー名です。Ultimateのみです。 |
-| `unique_project_download_limit_alertlist`            | 整数の配列 | いいえ       | 一意のプロジェクトのダウンロード制限を超えた場合にメールで通知されるユーザーIDのリスト。トップレベルグループでのみ使用できます。デフォルトは`[]`、最大値は100個のユーザーIDです。Ultimateのみです。 |
+| `unique_project_download_limit`                      | 整数           | いいえ       | 指定された期間内にユーザーがダウンロードできる一意のプロジェクトの最大数。この数を超えると、ユーザーはBANされます。トップレベルグループでのみ使用できます。デフォルトは、: 0、最大値は: 10,000です。Ultimateのみです。 |
+| `unique_project_download_limit_interval_in_seconds`  | 整数           | いいえ       | ユーザーが最大量のプロジェクトをダウンロードできる期間。この期間を経過すると、ユーザーはBANされます。トップレベルグループでのみ使用できます。デフォルトは、: 0、最大値は: 864,000秒（10日間）です。Ultimateのみです。 |
+| `unique_project_download_limit_allowlist`            | 文字列の配列  | いいえ       | 一意のプロジェクトのダウンロード制限から除外されるユーザー名のリスト。トップレベルグループでのみ使用できます。デフォルトは`[]`、最大値は: 100個のユーザー名です。Ultimateのみです。 |
+| `unique_project_download_limit_alertlist`            | 整数の配列 | いいえ       | 一意のプロジェクトのダウンロード制限を超えた場合にメールで通知されるユーザーIDのリスト。トップレベルグループでのみ使用できます。デフォルトは`[]`、最大値は: 100個のユーザーIDです。Ultimateのみです。 |
 | `auto_ban_user_on_excessive_projects_download`       | ブール値           | いいえ       | 有効にすると、ユーザーが`unique_project_download_limit`と`unique_project_download_limit_interval_in_seconds`で指定されている一意のプロジェクトの最大数を超えてダウンロードすると、.ユーザーは自動的にグループからBANされます。Ultimateのみです。 |
 | `ip_restriction_ranges`                              | 文字列      | いいえ       | グループアクセスを制限するためのIPアドレスまたはサブネットマスクのカンマ区切りリスト。PremiumおよびUltimateのみです。 |
 | `allowed_email_domains_list`                         | 文字列      | いいえ       | グループアクセスを許可するメールアドレスドメインのカンマ区切りリスト。GitLab 17.4で[導入](https://gitlab.com/gitlab-org/gitlab/-/issues/351494)されました。GitLab PremiumおよびUltimateのみです。 |
-| `wiki_access_level`                                  | 文字列            | いいえ       | Wikiのアクセスレベル。`disabled`、`private`、または`enabled`のいずれかです。PremiumおよびUltimateのみです。 |
+| `wiki_access_level`                                  | 文字列            | いいえ       | Wikiのアクセスレベル。`disabled`、`private`、または`enabled`を指定できます。PremiumおよびUltimateのみです。 |
 | `duo_availability`                                   | 文字列 | いいえ | GitLab Duoの可用性設定。有効な値は`default_on`、`default_off`、または`never_on`です。注: UIでは`never_on`は「常にオフ」として表示されます。 |
 | `experiment_features_enabled`                        | ブール値 | いいえ | このグループに対して実験的機能を有効にします。 |
 | `math_rendering_limits_enabled`                      | ブール値           | いいえ       | 数式レンダリングの制限がこのグループに使用されるかどうかを示します。 |
@@ -1921,7 +1940,7 @@ curl --header "PRIVATE-TOKEN: $GITLAB_LOCAL_TOKEN" \
 
 ### グループアバターをアップロードする {#upload-a-group-avatar}
 
-ファイルシステムからアバターファイルをアップロードするには、`--form`引数を使用します。これにより、cURLはヘッダー`Content-Type: multipart/form-data`を使用してデータを送信します。`file=`パラメータは、ファイルシステムのファイルを指しており、先頭に`@`を付ける必要があります。例は次のとおりです。
+ファイルシステムからアバターファイルをアップロードするには、`--form`引数を使用します。これにより、cURLはヘッダー`Content-Type: multipart/form-data`を使用してデータを送信します。`file=`パラメータは、ファイルシステムのファイルを指しており、先頭に`@`を付ける必要があります。例: 
 
 ```shell
 curl --request PUT --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/groups/22" \
@@ -1956,11 +1975,11 @@ curl --request PUT --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab
 
 トークンにグループ、またはそのサブグループとプロジェクトのいずれかへのアクセス権がある場合は、トークンを失効させます。トークンが失効した場合、またはすでに失効している場合は、その詳細がレスポンスで返されます。
 
-次の条件を満たしている必要があります。
+次の条件を満たしている必要があります:
 
 - このグループはトップレベルグループである必要があります。
 - グループのオーナーロールを持っている必要があります。
-- トークンタイプが次のいずれかである必要があります。
+- トークンタイプが次のいずれかである必要があります:
   - パーソナルアクセストークン
   - グループアクセストークン
   - プロジェクトアクセストークン
@@ -2030,57 +2049,56 @@ POST /groups/:id/ldap_sync
 
 | 属性 | 型                | 必須 | 説明                            |
 | --------- | ------------------- | -------- | -------------------------------------- |
-| `id`      | 整数または文字列   | はい      | グループのID、またはURLエンコードされたパス。 |
+| `id`      | 整数または文字列   | はい      | グループのIDまたはURLエンコードされたパス。 |
 
-<!--
-### Credentials inventory management
+## 認証情報インベントリ {#credentials-inventory-management}
 
 {{< details >}}
 
-- Tier: Premium, Ultimate
-- Offering: GitLab.com
+- プラン: Premium、Ultimate
+- 提供形態: GitLab.com
 
 {{< /details >}}
 
 {{< history >}}
 
-- [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/16343) in GitLab 18.1 [with a flag](../administration/feature_flags/_index.md) named `manage_pat_by_group_owners_ready`. Disabled by default.
+- GitLab 18.6で`manage_pat_by_group_owners_ready`[フラグ](../administration/feature_flags/_index.md)とともに[導入](https://gitlab.com/groups/gitlab-org/-/epics/16343)されました。デフォルトでは無効になっています。
 
 {{< /history >}}
 
-View, revoke, and rotate the credentials of enterprise users on GitLab.com.
+GitLab.comでエンタープライズユーザーの認証情報を表示、失効、およびローテーションします。
 
-Prerequisites:
+前提要件:
 
-- You must have the Owner role for the group.
+- グループのオーナーロールを持っている必要があります。
 
-#### List all personal access tokens for a group
+### グループのすべてのパーソナルアクセストークンをリスト表示します {#list-all-personal-access-tokens-for-a-group}
 
-Lists all personal access tokens associated with enterprise users in a top-level group.
+トップレベルグループのエンタープライズユーザーに関連付けられているすべてのパーソナルアクセストークンをリストします。
 
 ```plaintext
 GET /groups/:id/manage/personal_access_tokens
 ```
 
-| Attribute          | Type                | Required | Description |
+| 属性          | 型                | 必須 | 説明 |
 | ------------------ | ------------------- | -------- | ----------- |
-| `id`               | integer or string   | Yes      | The ID or [URL-encoded path](rest/_index.md#namespaced-paths) of a group. |
-| `created_after`    | datetime (ISO 8601) | No       | If defined, returns tokens created after the specified time. |
-| `created_before`   | datetime (ISO 8601) | No       | If defined, returns tokens created before the specified time. |
-| `last_used_after`  | datetime (ISO 8601) | No       | If defined, returns tokens last used after the specified time. |
-| `last_used_before` | datetime (ISO 8601) | No       | If defined, returns tokens last used before the specified time. |
-| `revoked`          | boolean             | No       | If `true`, only returns revoked tokens. |
-| `search`           | string              | No       | If defined, returns tokens that include the specified value in the name. |
-| `state`            | string              | No       | If defined, returns tokens with the specified state. Possible values: `active` and `inactive`. |
-| `sort`             | string              | No       | If defined, sorts the results by the specified value. Possible values: `created_asc`, `created_desc`, `expires_asc`, `expires_desc`, `last_used_asc`, `last_used_desc`, `name_asc`, `name_desc`. |
+| `id`               | 整数または文字列   | はい      | グループのIDまたは[URLエンコードされたパス](rest/_index.md#namespaced-paths)。 |
+| `created_after`    | 日時（ISO 8601） | いいえ       | 定義されている場合、指定された時刻より後に作成されたトークンを返します。 |
+| `created_before`   | 日時（ISO 8601） | いいえ       | 定義されている場合、指定された時刻より前に作成されたトークンを返します。 |
+| `last_used_after`  | 日時（ISO 8601） | いいえ       | 定義されている場合、指定された時刻より後に最終使用されたトークンを返します。 |
+| `last_used_before` | 日時（ISO 8601） | いいえ       | 定義されている場合、指定された時刻より前に最終使用されたトークンを返します。 |
+| `revoked`          | ブール値             | いいえ       | `true`の場合、失効したトークンのみを返します。 |
+| `search`           | 文字列              | いいえ       | 定義されている場合、指定された値が名前に含まれたトークンを返します。 |
+| `state`            | 文字列              | いいえ       | 定義されている場合、指定された状態のトークンを返します。使用できる値は、`active`と`inactive`です。 |
+| `sort`             | 文字列              | いいえ       | 定義されている場合、指定された値で結果を並べ替えます。使用できる値は、`created_asc`、`created_desc`、`expires_asc`、`expires_desc`、`last_used_asc`、`last_used_desc`、`name_asc`、`name_desc`です。 |
 
-Example request:
+リクエストの例:
 
 ```shell
 curl --header "PRIVATE-TOKEN: <group_owner_token>" "https://gitlab.example.com/api/v4/groups/1/manage/personal_access_tokens"
 ```
 
-Example response:
+レスポンス例:
 
 ```json
 [
@@ -2096,38 +2114,38 @@ Example response:
     "user_id": 3,
     "last_used_at": "2021-10-06T17:58:37.550Z",
     "active": true,
-    "expires_at": 2025-11-08
+    "expires_at": "2025-11-08"
   }
 ]
 ```
 
-#### List all group and project access tokens for a group
+### グループのすべてのグループおよびプロジェクトアクセストークンをリスト表示します {#list-all-group-and-project-access-tokens-for-a-group}
 
-Lists all group and project access tokens associated with a top-level-group.
+トップレベルグループに関連付けられているすべてのグループおよびプロジェクトアクセストークンをリストします。
 
 ```plaintext
 GET /groups/:id/manage/resource_access_tokens
 ```
 
-| Attribute          | Type                | Required | Description |
+| 属性          | 型                | 必須 | 説明 |
 | ------------------ | ------------------- | -------- | ----------- |
-| `id`               | integer or string   | Yes      | The ID or [URL-encoded path](rest/_index.md#namespaced-paths) of a group. |
-| `created_after`    | datetime (ISO 8601) | No       | If defined, returns tokens created after the specified time. |
-| `created_before`   | datetime (ISO 8601) | No       | If defined, returns tokens created before the specified time. |
-| `last_used_after`  | datetime (ISO 8601) | No       | If defined, returns tokens last used after the specified time. |
-| `last_used_before` | datetime (ISO 8601) | No       | If defined, returns tokens last used before the specified time. |
-| `revoked`          | boolean             | No       | If `true`, only returns revoked tokens. |
-| `search`           | string              | No       | If defined, returns tokens that include the specified value in the name. |
-| `state`            | string              | No       | If defined, returns tokens with the specified state. Possible values: `active` and `inactive`. |
-| `sort`             | string              | No       | If defined, sorts the results by the specified value. Possible values: `created_asc`, `created_desc`, `expires_asc`, `expires_desc`, `last_used_asc`, `last_used_desc`, `name_asc`, `name_desc`. |
+| `id`               | 整数または文字列   | はい      | グループのIDまたは[URLエンコードされたパス](rest/_index.md#namespaced-paths)。 |
+| `created_after`    | 日時（ISO 8601） | いいえ       | 定義されている場合、指定された時刻より後に作成されたトークンを返します。 |
+| `created_before`   | 日時（ISO 8601） | いいえ       | 定義されている場合、指定された時刻より前に作成されたトークンを返します。 |
+| `last_used_after`  | 日時（ISO 8601） | いいえ       | 定義されている場合、指定された時刻より後に最終使用されたトークンを返します。 |
+| `last_used_before` | 日時（ISO 8601） | いいえ       | 定義されている場合、指定された時刻より前に最終使用されたトークンを返します。 |
+| `revoked`          | ブール値             | いいえ       | `true`の場合、失効したトークンのみを返します。 |
+| `search`           | 文字列              | いいえ       | 定義されている場合、指定された値が名前に含まれたトークンを返します。 |
+| `state`            | 文字列              | いいえ       | 定義されている場合、指定された状態のトークンを返します。使用できる値は、`active`と`inactive`です。 |
+| `sort`             | 文字列              | いいえ       | 定義されている場合、指定された値で結果を並べ替えます。使用できる値は、`created_asc`、`created_desc`、`expires_asc`、`expires_desc`、`last_used_asc`、`last_used_desc`、`name_asc`、`name_desc`です。 |
 
-Example request:
+リクエストの例:
 
 ```shell
 curl --header "PRIVATE-TOKEN: <group_owner_token>" "https://gitlab.example.com/api/v4/groups/1/manage/resource_access_tokens"
 ```
 
-Example response:
+レスポンス例:
 
 ```json
 [
@@ -2151,27 +2169,27 @@ Example response:
 ]
 ```
 
-#### List all SSH keys for a group
+### グループのすべてのSSHキーをリスト表示します {#list-all-ssh-keys-for-a-group}
 
-Lists all SSH public keys associated with enterprise users in a top-level-group.
+トップレベルグループのエンタープライズユーザーに関連付けられているすべてのSSH公開キーをリストします。
 
 ```plaintext
 GET /groups/:id/manage/ssh_keys
 ```
 
-| Attribute        | Type                | Required | Description |
+| 属性        | 型                | 必須 | 説明 |
 | ---------------- | ------------------- | -------- | ----------- |
-| `id`             | integer or string   | Yes      | The ID or [URL-encoded path](rest/_index.md#namespaced-paths) of a group. |
-| `created_after`  | datetime (ISO 8601) | No       | If defined, returns SSH keys created after the specified time. |
-| `created_before` | datetime (ISO 8601) | No       | If defined, returns SSH keys created before the specified time. |
-| `expires_before` | datetime (ISO 8601) | No       | If defined, returns SSH keys that expire before the specified time. |
-| `expires_after`  | datetime (ISO 8601) | No       | If defined, returns SSH keys that expire after the specified time. |
+| `id`             | 整数または文字列   | はい      | グループのIDまたは[URLエンコードされたパス](rest/_index.md#namespaced-paths)。 |
+| `created_after`  | 日時（ISO 8601） | いいえ       | 定義されている場合、指定された時刻より後に作成されたSSHキーを返します。 |
+| `created_before` | 日時（ISO 8601） | いいえ       | 定義されている場合、指定された時刻より前に作成されたSSHキーを返します。 |
+| `expires_before` | 日時（ISO 8601） | いいえ       | 定義されている場合、指定された時刻より前に有効期限が切れるSSHキーを返します。 |
+| `expires_after`  | 日時（ISO 8601） | いいえ       | 定義されている場合、指定された時刻より後に有効期限が切れるSSHキーを返します。 |
 
 ```shell
 curl --header "PRIVATE-TOKEN: <group_owner_token>" "https://gitlab.example.com/api/v4/groups/1/manage/ssh_keys"
 ```
 
-Example response:
+レスポンス例:
 
 ```json
 [
@@ -2180,108 +2198,107 @@ Example response:
     "title":"Sample key 3",
     "created_at":"2024-12-23T05:40:11.891Z",
     "expires_at":null,
-    "last_used_at":"2024-13-23T05:40:11.891Z",
+    "last_used_at":"2024-12-23T05:40:11.891Z",
     "usage_type":"auth_and_signing",
     "user_id":3
   }
 ]
 ```
 
-#### Revoke a personal access token for an enterprise user
+### エンタープライズユーザーのパーソナルアクセストークンを失効します {#revoke-a-personal-access-token-for-an-enterprise-user}
 
-Revokes a specified personal access token for an enterprise user.
+指定されたエンタープライズユーザーのパーソナルアクセストークンを失効します。
 
 ```plaintext
 DELETE groups/:id/manage/personal_access_tokens/:id
 ```
 
-| Attribute | Type    | Required | Description         |
+| 属性 | 型    | 必須 | 説明         |
 |-----------|---------|----------|---------------------|
-| `id` | integer or string | yes | ID of a personal access token or the keyword `self`. |
+| `id` | 整数または文字列 | はい | パーソナルアクセストークン、またはキーワード`self`のID。 |
 
 ```shell
 curl --request DELETE \
   --header "PRIVATE-TOKEN: <your_access_token>" \
-  --url "https://gitlab.example.com/api/v4/groups/1/personal_access_tokens/<personal_access_token_id>"
+  --url "https://gitlab.example.com/api/v4/groups/1/manage/personal_access_tokens/<personal_access_token_id>"
 ```
 
-If successful, returns `204: No Content`.
+成功した場合、`204: No Content`を返します。
 
-Other possible responses:
+その他の発生しうる応答:
 
-- `400: Bad Request` if not revoked successfully.
-- `401: Unauthorized` if the access token is invalid.
-- `403: Forbidden` if the access token does not have the required permissions.
+- 正常に失効しなかった場合は`400: Bad Request`。
+- アクセストークンが無効な場合は`401: Unauthorized`。
+- アクセストークンに必要な権限がない場合は`403: Forbidden`。
 
-#### Revoke a group or project access token for an enterprise user
+### エンタープライズユーザーのグループまたはプロジェクトアクセストークンを失効します {#revoke-a-group-or-project-access-token-for-an-enterprise-user}
 
-Revokes a specified group or project access token for an enterprise user associated with the top-level group.
+トップレベルグループに関連付けられているエンタープライズユーザーの指定されたグループまたはプロジェクトアクセストークンを失効します。
 
 ```plaintext
 DELETE groups/:id/manage/resource_access_tokens/:id
 ```
 
-| Attribute | Type    | Required | Description         |
+| 属性 | 型    | 必須 | 説明         |
 |-----------|---------|----------|---------------------|
-| `id` | integer or string | yes | ID of a resource access token or the keyword `self`. |
+| `id` | 整数または文字列 | はい | リソースアクセストークンのIDまたはキーワード`self`。 |
 
 ```shell
 curl --request DELETE \
   --header "PRIVATE-TOKEN: <your_access_token>" \
-  --url "https://gitlab.example.com/api/v4/groups/1/resource_access_tokens/<personal_access_token_id>"
+  --url "https://gitlab.example.com/api/v4/groups/1/manage/resource_access_tokens/<personal_access_token_id>"
 ```
 
-If successful, returns `204: No Content`.
+成功した場合、`204: No Content`を返します。
 
-Other possible responses:
+その他の発生しうる応答:
 
-- `400: Bad Request` if not revoked successfully.
-- `401: Unauthorized` if the access token is invalid.
-- `403: Forbidden` if the access token does not have the required permissions.
+- 正常に失効しなかった場合は`400: Bad Request`。
+- アクセストークンが無効な場合は`401: Unauthorized`。
+- アクセストークンに必要な権限がない場合は`403: Forbidden`。
 
-#### Delete an SSH key for an enterprise user
+### エンタープライズユーザーのSSHキーを削除します {#delete-an-ssh-key-for-an-enterprise-user}
 
-Deletes a specified SSH public key for an enterprise user associated with the top-level group.
+トップレベルグループに関連付けられているエンタープライズユーザーの指定されたSSH公開キーを削除します。
 
 ```plaintext
 DELETE /groups/:id/manage/keys/:key_id
 ```
 
-Supported attributes:
+サポートされている属性は以下のとおりです:
 
-| Attribute | Type    | Required | Description |
+| 属性 | 型    | 必須 | 説明 |
 |:----------|:--------|:---------|:------------|
-| `key_id`  | integer | yes      | ID of existing key.  |
+| `key_id`  | 整数 | はい      | 既存のキーのID。  |
 
-If successful, returns `204: No Content`.
+成功した場合、`204: No Content`を返します。
 
-Other possible responses:
+その他の発生しうる応答:
 
-- `400: Bad Request` if SSH Key is not deleted successfully.
-- `401: Unauthorized` if the SSH Key is invalid.
-- `403: Forbidden` if the user does not have the required permissions.
+- SSHキーが正常に削除されなかった場合は`400: Bad Request`。
+- SSHキーが無効な場合は`401: Unauthorized`。
+- ユーザーに必要な権限がない場合は`403: Forbidden`。
 
-#### Rotate a personal access token for an enterprise user
+### エンタープライズユーザーのパーソナルアクセストークンをローテーションします {#rotate-a-personal-access-token-for-an-enterprise-user}
 
-Rotates a specified personal access token for an enterprise user associated with the top-level group. This revokes the previous token and creates a new token
-that expires after one week.
+トップレベルグループに関連付けられているエンタープライズユーザーの指定されたパーソナルアクセストークンをローテーションします。これにより、以前のトークンは失効し、1週間後に有効期限が切れる新しいトークンが作成されます。
 
 ```plaintext
 POST groups/:id/manage/personal_access_tokens/:id/rotate
 ```
 
-| Attribute | Type      | Required | Description         |
+| 属性 | 型      | 必須 | 説明         |
 |-----------|-----------|----------|---------------------|
-| `id` | integer or string | yes      | ID of a personal access token or the keyword `self`. |
-| `expires_at` | date   | no       | Expiration date of the access token in ISO format (`YYYY-MM-DD`). The date must be one year or less from the rotation date. If undefined, the token expires after one week. |
+| `id` | 整数または文字列 | はい      | パーソナルアクセストークン、またはキーワード`self`のID。 |
+| `expires_at` | 日付   | いいえ       | ISO形式（`YYYY-MM-DD`）のアクセストークンの有効期限。日付はローテーション日から1年以内である必要があります。未定義の場合、トークンは1週間後に期限切れになります。 |
 
 ```shell
 curl --request POST \
   --header "PRIVATE-TOKEN: <your_access_token>" \
-  --url "https://gitlab.example.com/api/v4/groups/:id/managepersonal_access_tokens/<personal_access_token_id>/rotate"
+  --url "https://gitlab.example.com/api/v4/groups/:id/manage/personal_access_tokens/<personal_access_token_id>/rotate"
 ```
 
-Example response:
+レスポンス例:
 
 ```json
 {
@@ -2299,33 +2316,32 @@ Example response:
 }
 ```
 
-If successful, returns `200: OK`.
+成功した場合、`200: OK`を返します。
 
-Other possible responses:
+その他の発生しうる応答:
 
-- `400: Bad Request` if not rotated successfully.
-- `401: Unauthorized` if any of the following conditions are true:
-  - The token does not exist.
-  - The token has expired.
-  - The token was revoked.
-  - You do not have access to the specified token.
-- `403: Forbidden` if the token is not allowed to rotate itself.
-- `404: Not Found` if the user has the Owner role, but the token does not exist.
-- `405: Method Not Allowed` if the token is not a personal access token.
+- ローテーションが正常に完了しなかった場合は`400: Bad Request`。
+- 次のいずれかの条件に該当する場合は`401: Unauthorized`:
+  - トークンが存在しない。
+  - トークンの有効期限が切れた。
+  - トークンが失効した。
+  - 指定されたトークンへのアクセス権がない。
+- トークンがローテーションを許可されていない場合は`403: Forbidden`。
+- ユーザーにオーナーロールがあるが、トークンが存在しない場合は`404: Not Found`。
+- トークンがパーソナルアクセストークンでない場合は`405: Method Not Allowed`。
 
-#### Rotate a group or project access token for an enterprise user
+### エンタープライズユーザーのグループまたはプロジェクトアクセストークンをローテーションします {#rotate-a-group-or-project-access-token-for-an-enterprise-user}
 
-Rotates a specified group or project access token for an enterprise user associated with the top-level group. This revokes the previous token and creates a new token
-that expires after one week.
+トップレベルグループに関連付けられているエンタープライズユーザーの指定されたグループまたはプロジェクトアクセストークンをローテーションします。これにより、以前のトークンは失効し、1週間後に有効期限が切れる新しいトークンが作成されます。
 
 ```plaintext
 POST groups/:id/manage/resource_access_tokens/:id/rotate
 ```
 
-| Attribute | Type      | Required | Description         |
+| 属性 | 型      | 必須 | 説明         |
 |-----------|-----------|----------|---------------------|
-| `id` | integer or string | yes      | ID of a personal access token or the keyword `self`. |
-| `expires_at` | date   | no       | Expiration date of the access token in ISO format (`YYYY-MM-DD`). The date must be one year or less from the rotation date. If undefined, the token expires after one week. |
+| `id` | 整数または文字列 | はい      | パーソナルアクセストークン、またはキーワード`self`のID。 |
+| `expires_at` | 日付   | いいえ       | ISO形式（`YYYY-MM-DD`）のアクセストークンの有効期限。日付はローテーション日から1年以内である必要があります。未定義の場合、トークンは1週間後に期限切れになります。 |
 
 ```shell
 curl --request POST \
@@ -2333,7 +2349,7 @@ curl --request POST \
   --url "https://gitlab.example.com/api/v4/groups/:id/manage/resource_access_tokens/<resource_access_token_id>/rotate"
 ```
 
-Example response:
+レスポンス例:
 
 ```json
 {
@@ -2351,16 +2367,15 @@ Example response:
 }
 ```
 
-If successful, returns `200: OK`.
+成功した場合、`200: OK`を返します。
 
-Other possible responses:
+その他の発生しうる応答:
 
-- `400: Bad Request` if not rotated successfully.
-- `401: Unauthorized` if any of the following conditions are true:
-  - The token does not exist.
-  - The token has expired.
-  - The token was revoked.
-  - You do not have access to the specified token.
-- `403: Forbidden` if the token is not allowed to rotate itself or token is not a bot user token.
-- `404: Not Found` if the user has the Owner role, but the token does not exist.
--->
+- ローテーションが正常に完了しなかった場合は`400: Bad Request`。
+- 次のいずれかの条件に該当する場合は`401: Unauthorized`:
+  - トークンが存在しない。
+  - トークンの有効期限が切れた。
+  - トークンが失効した。
+  - 指定されたトークンへのアクセス権がない。
+- トークン自体をローテーションすることが許可されていない場合、またはトークンがボットユーザートークンでない場合は`403: Forbidden`。
+- ユーザーにオーナーロールがあるが、トークンが存在しない場合は`404: Not Found`。

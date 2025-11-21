@@ -17,8 +17,8 @@ RSpec.describe AuthenticatesWithTwoFactor, :aggregate_failures, feature_category
     end
   end
 
-  let(:user) { create(:user) }
-  let(:passkey) { create(:webauthn_registration, :passkey, user: user) }
+  let_it_be_with_reload(:user) { create(:user) }
+  let_it_be_with_reload(:passkey) { create(:webauthn_registration, :passkey, user: user) }
 
   before do
     routes.draw do
@@ -122,6 +122,36 @@ RSpec.describe AuthenticatesWithTwoFactor, :aggregate_failures, feature_category
       let(:params) { {} }
 
       it_behaves_like 'prompts the user to authenticate with a passkey'
+    end
+  end
+
+  describe '#destroy_all_but_current_user_session!' do
+    def all_sessions_count
+      ActiveSession.list(user).size
+    end
+
+    it 'invalidates all but the current user session' do
+      4.times do
+        rack_session = Rack::Session::SessionId.new(SecureRandom.hex(16))
+        session = instance_double(ActionDispatch::TestRequest::Session, id: rack_session, '[]': {}, dig: {})
+        request = instance_double(
+          ActionDispatch::TestRequest,
+          { user_agent: 'Mozilla/5.0 (iPhone; CPU iPhone OS 8_1_3 like Mac OS X) AppleWebKit/600.1.4',
+            remote_ip: '124.00.22',
+            session: session }
+        )
+        ActiveSession.set(user, request)
+      end
+
+      expect(all_sessions_count).to be(4)
+
+      # Sign-in with a new active session
+      sign_in(user)
+      ActiveSession.set(user, request)
+
+      controller.send(:destroy_all_but_current_user_session!, user, session)
+
+      expect(all_sessions_count).to be(1)
     end
   end
 end

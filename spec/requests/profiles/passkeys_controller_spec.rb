@@ -280,6 +280,18 @@ RSpec.describe Profiles::PasskeysController, feature_category: :system_access do
 
       context "when a valid password is given" do
         context 'when authentication succeeds' do
+          it 'destroys the passkey' do
+            expect { go }.to change { user.passkeys.count }.by(-1)
+          end
+
+          it 'invalidates all but the current_user ActiveSession' do
+            expect_next_instance_of(described_class) do |instance|
+              expect(instance).to receive(:destroy_all_but_current_user_session!)
+            end
+
+            go
+          end
+
           it "redirects back to the 2FA profile page with a backend service notice" do
             go
 
@@ -287,14 +299,6 @@ RSpec.describe Profiles::PasskeysController, feature_category: :system_access do
             expect(flash[:notice]).to match(
               /Passkey has been deleted!/
             )
-          end
-
-          it 'destroys the passkey' do
-            count = user.passkeys.count
-
-            go
-
-            expect(user.passkeys.count).to eq(count - 1)
           end
         end
 

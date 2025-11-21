@@ -222,6 +222,10 @@ module AuthenticatesWithTwoFactor
   def passkey_via_2fa_enabled?(user)
     Feature.enabled?(:passkeys, user) && user.two_factor_enabled? && user.passkeys_enabled?
   end
+
+  def destroy_all_but_current_user_session!(user, session)
+    ActiveSession.destroy_all_but_current(user, session)
+  end
 end
 
 AuthenticatesWithTwoFactor.prepend_mod_with('AuthenticatesWithTwoFactor')

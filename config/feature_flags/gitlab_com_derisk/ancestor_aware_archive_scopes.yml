@@ -1,0 +1,10 @@
+---
+name: ancestor_aware_archive_scopes
+description:
+feature_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/578809
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/212106
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/581011
+milestone: '18.7'
+group: group::organizations
+type: gitlab_com_derisk
+default_enabled: false

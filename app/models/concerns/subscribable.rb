@@ -107,7 +107,7 @@ module Subscribable
         other_subscriptions.where(project: nil)
       end
 
-    other_subscriptions.update_all(subscribed: false)
+    Subscription.id_in(other_subscriptions).update_all(subscribed: false)
   end
 
   def find_or_initialize_subscription(user, project)
