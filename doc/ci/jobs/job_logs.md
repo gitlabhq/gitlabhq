@@ -19,7 +19,7 @@ A job log displays the full execution history of a [CI/CD job](_index.md).
 To view job logs:
 
 1. Select the project for which you want to view job logs.
-1. On the left sidebar, select **CI/CD > Pipelines**.
+1. On the left sidebar, select **CI/CD** > **Pipelines**.
 1. Select the pipeline you want to inspect.
 1. In the pipeline view, in the list of jobs, select a job to view the job logs page.
 

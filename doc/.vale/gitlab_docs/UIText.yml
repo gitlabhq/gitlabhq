@@ -1,0 +1,12 @@
+---
+name: gitlab_docs.UIText
+description: |
+  Checks that bold around UI text is formatted properly in navigation descriptions.
+extends: existence
+message: "The '>' should not be in the bold emphasis in navigation descriptions. Make every step bold separately."
+link: https://docs.gitlab.com/development/documentation/styleguide/#how-to-write-navigation-task-steps
+vocab: false
+level: warning
+scope: raw
+raw:
+  - '\*\*.*? > [^\*].*?\*\*'

@@ -33,6 +33,39 @@ RSpec.describe Observability::CreateGroupO11ySettingWorker, feature_category: :o
     end
   end
 
+  shared_examples 'logs status' do |status, error_message = nil|
+    it "logs #{status} status" do
+      allow(worker).to receive(:log_extra_metadata_on_done)
+
+      perform
+
+      expect(worker).to have_received(:log_extra_metadata_on_done).with(:status, status.to_s)
+      expect(worker).to have_received(:log_extra_metadata_on_done).with(:group_id, group.id)
+
+      expect(worker).to have_received(:log_extra_metadata_on_done).with(:error, error_message) if error_message
+    end
+  end
+
+  shared_examples 'logs error' do |expected_message, expected_error = nil|
+    it 'logs an error message' do
+      allow(Gitlab::AppLogger).to receive(:error).and_call_original
+
+      perform
+
+      expected_group_id = defined?(group_id) ? group_id : group.id
+      expected_user_id = defined?(user_id) ? user_id : user.id
+
+      expected_hash_args = {
+        message: expected_message,
+        group_id: expected_group_id,
+        user_id: expected_user_id
+      }
+      expected_hash_args[:error] = expected_error if expected_error
+
+      expect(Gitlab::AppLogger).to have_received(:error).with(hash_including(expected_hash_args))
+    end
+  end
+
   describe '#perform' do
     subject(:perform) { worker.perform(user.id, group.id) }
 
@@ -76,6 +109,41 @@ RSpec.describe Observability::CreateGroupO11ySettingWorker, feature_category: :o
           expect(setting.o11y_service_post_message_encryption_key).to match(/\A[a-f0-9]{64}\z/)
         end
 
+        it 'creates CI variable with correct attributes' do
+          expect { perform }.to change { group.reload.variables.count }.by(1)
+
+          variable = group.variables.find_by(key: 'GITLAB_OBSERVABILITY_EXPORT')
+          expect(variable).to be_present
+          expect(variable.value).to eq('traces,metrics,logs')
+          expect(variable.variable_type).to eq('env_var')
+          expect(variable.protected).to be(false)
+          expect(variable.masked).to be(false)
+          expect(variable.raw).to be(false)
+        end
+
+        include_examples 'logs status', :success
+
+        context 'when CI variable creation fails' do
+          before do
+            create(:ci_group_variable, group: group, key: 'GITLAB_OBSERVABILITY_EXPORT')
+            allow_next_instance_of(Ci::ChangeVariablesService) do |instance|
+              allow(instance).to receive(:execute).and_return(false)
+            end
+          end
+
+          it 'still creates the observability setting' do
+            expect { perform }.to change { group.reload.observability_group_o11y_setting }.from(nil)
+          end
+
+          it 'does not create an additional CI variable' do
+            initial_count = group.reload.variables.count
+            expect { perform }.not_to change { group.reload.variables.count }
+            expect(group.reload.variables.count).to eq(initial_count)
+          end
+
+          include_examples 'logs error', 'Failed to create CI variable for observability export'
+        end
+
         context 'when in production environment' do
           before do
             allow(Rails.env).to receive(:production?).and_return(true)
@@ -102,6 +170,22 @@ RSpec.describe Observability::CreateGroupO11ySettingWorker, feature_category: :o
 
         it 'does not create an observability setting when API fails' do
           expect { perform }.not_to change { group.reload.observability_group_o11y_setting }
+        end
+
+        include_examples 'logs status', :api_failed
+
+        it 'logs an error message' do
+          allow(Gitlab::AppLogger).to receive(:error).and_call_original
+
+          perform
+
+          expect(Gitlab::AppLogger).to have_received(:error).with(
+            hash_including(
+              message: be_a(String),
+              group_id: group.id,
+              user_id: user.id
+            )
+          )
         end
       end
 

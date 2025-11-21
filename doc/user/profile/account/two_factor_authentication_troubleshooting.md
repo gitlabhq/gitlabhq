@@ -53,14 +53,14 @@ To resolve this issue, turn on time synchronization for the device that generate
 
 {{< tab title="Android" >}}
 
-  1. Go to **Settings > System > Date & time**.
+  1. Go to **Settings** > **System** > **Date & time**.
   1. Turn on **Set time automatically**. If the setting is already on, turn it off, wait a few seconds, and turn it on again.
 
 {{< /tab >}}
 
 {{< tab title="iOS" >}}
 
-  1. Go to **Settings > General > Date & Time**.
+  1. Go to **Settings** > **General** > **Date & Time**.
   1. Turn on **Set Automatically**. If the setting is already on, turn it off, wait a few seconds, and turn it on again.
 
 {{< /tab >}}

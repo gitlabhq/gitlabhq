@@ -56,7 +56,7 @@ Auto Buildは、プロジェクトの`Dockerfile`が存在する場合、それ�
 
 複数のボリュームを渡す場合は、パイプ`|`文字を使用します。リストの各項目は、個別の`--volume`引数を使用して`build back`に渡されます。
 
-次の例では、3つのボリュームがコンテナに`/etc/foo`、`/opt/foo`、`/var/opt/foo`としてマウントされています。
+次の例では、3つのボリュームがコンテナに`/etc/foo`、`/opt/foo`、`/var/opt/foo`としてマウントされています。:
 
 ```yaml
 buildjob:
@@ -68,7 +68,7 @@ buildjob:
 
 ### HerokuishからCloud Native Buildpacksに移行する {#moving-from-herokuish-to-cloud-native-buildpacks}
 
-Cloud Native Buildpacksを使用したビルドは、Herokuishを使用したビルドと同じオプションをサポートしていますが、次の注意事項があります。
+Cloud Native Buildpacksを使用したビルドは、Herokuishを使用したビルドと同じオプションをサポートしていますが、次の注意事項があります。:
 
 - BuildpackはCloud Native Buildpackである必要があります。Heroku Buildpackは、Herokuの[`cnb-shim`](https://github.com/heroku/cnb-shim)を使用してCloud Native Buildpackに変換できます。
 - `BUILDPACK_URL`は、[`pack`でサポートされている](https://buildpacks.io/docs/app-developer-guide/specify-buildpacks/)形式である必要があります。
@@ -94,7 +94,7 @@ Auto Testは、アプリケーションにすでに用意されているテス�
 
 Auto Testは比較的新しい機能強化であるため、まだすべてのBuildpackがサポートしているわけではありません。ただし、Herokuが[公式にサポートしている言語](https://devcenter.heroku.com/articles/heroku-ci#supported-languages)はすべて、Auto Testをサポートしています。HerokuのHerokuish Buildpackがサポートする言語はすべてAuto Testをサポートしていますが、特にマルチBuildpackはサポートしていません。
 
-サポートされているBuildpackは次のとおりです。
+サポートされているBuildpackは次のとおりです。:
 
 ```plaintext
 - heroku-buildpack-multi
@@ -136,7 +136,7 @@ Auto Code Qualityは、[Code Qualityイメージ](https://gitlab.com/gitlab-org/
 
 レポートは作成後、アーティファクトとしてアップロードされるため、後でダウンロードして確認できます。[Ultimate](https://about.gitlab.com/pricing/)ライセンスの場合、マージリクエストウィジェットにはセキュリティ警告も表示されます。
 
-詳細については、[静的アプリケーションセキュリティテスト（SAST）](../../user/application_security/sast/_index.md)を参照してください。
+詳細については、[SAST](../../user/application_security/sast/_index.md)を参照してください。
 
 ## Auto Secret Detection {#auto-secret-detection}
 
@@ -219,7 +219,7 @@ GitLabでは、[DAST Full Scan](../../user/application_security/dast/browser/_in
 
 ### Auto DASTをスキップする {#skipping-auto-dast}
 
-DASTジョブをスキップできます。
+DASTジョブをスキップできます。:
 
 - `DAST_DISABLED` CI/CD変数を`"true"`に設定して、すべてのブランチでスキップします。
 - `DAST_DISABLED_FOR_DEFAULT_BRANCH`変数を`"true"`に設定して、デフォルトブランチでのみスキップします。
@@ -234,7 +234,7 @@ DASTジョブをスキップできます。
 
 {{< /details >}}
 
-Auto [Browser Performance Testing](../../ci/testing/browser_performance_testing.md)は、[Sitespeed.ioコンテナ](https://hub.docker.com/r/sitespeedio/sitespeed.io/)を使用してWebページのブラウザパフォーマンスを測定し、各ページの全体的なパフォーマンススコアを含むJSONレポートを作成し、レポートをアーティファクトとしてアップロードします。デフォルトでは、レビュー環境と本番環境のルートページをテストします。追加のURLをテストする場合は、ルートディレクトリに`.gitlab-urls.txt`という名前のファイルを作成し、1行に1つずつパスを追加します。次に例を示します。
+Auto [Browser Performance Testing](../../ci/testing/browser_performance_testing.md)は、[Sitespeed.ioコンテナ](https://hub.docker.com/r/sitespeedio/sitespeed.io/)を使用してWebページのブラウザパフォーマンスを測定し、各ページの全体的なパフォーマンススコアを含むJSONレポートを作成し、レポートをアーティファクトとしてアップロードします。デフォルトでは、レビュー環境と本番環境のルートページをテストします。追加のURLをテストする場合は、ルートディレクトリに`.gitlab-urls.txt`という名前のファイルを作成し、1行に1つずつパスを追加します。次に例を示します。:
 
 ```plaintext
 /
@@ -303,7 +303,7 @@ GitLabデプロイトークンが見つからない場合、`CI_REGISTRY_PASSWOR
 
 Kubernetes 1.16以降では、`extensions/v1beta1`バージョンの`Deployment`のサポートを含む、多くの[APIが削除](https://kubernetes.io/blog/2019/07/18/api-deprecations-in-1-16/)されています。
 
-Kubernetes 1.16以降のクラスターでAuto Deployを使用するには、次の手順に従います。
+Kubernetes 1.16以降のクラスターでAuto Deployを使用するには、次の手順に従います。:
 
 1. GitLab 13.0以降で初めてアプリケーションをデプロイする場合は、設定は必要ありません。
 
@@ -325,7 +325,7 @@ PostgreSQLのデータベースの初期化と移行をアプリケーション�
 
 `DB_MIGRATE`が存在する場合、これはHelmのアップグレード前フックとして、アプリケーションポッド内でShellコマンドとして実行されます。
 
-たとえば、[Cloud Native Buildpacks](#auto-build-using-cloud-native-buildpacks)でビルドされたイメージ内のRailsアプリケーションでは、次のようになります。
+たとえば、[Cloud Native Buildpacks](#auto-build-using-cloud-native-buildpacks)でビルドされたイメージ内のRailsアプリケーションでは、次のようになります。:
 
 - `DB_INITIALIZE`は次のように設定できます。`RAILS_ENV=production /cnb/lifecycle/launcher bin/rails db:setup`
 - `DB_MIGRATE`は次のように設定できます。`RAILS_ENV=production /cnb/lifecycle/launcher bin/rails db:migrate`
@@ -344,12 +344,12 @@ Auto Deployに使用される[デフォルトのHelmチャート](https://gitlab
 
 ワーカーを実行するには、ワーカーが標準ヘルスチェックに応答できるようにする必要があります。このヘルスチェックは、ポート`5000`でのHTTP応答が成功することを想定しています。[Sidekiq](https://github.com/mperham/sidekiq)の場合、[`sidekiq_alive` gemを使用できます。](https://rubygems.org/gems/sidekiq_alive)
 
-Sidekiqを操作するには、デプロイでRedisインスタンスにアクセスできることも確認する必要があります。Auto DevOpsはこのインスタンスをデプロイしないため、次の対応が必要になります。
+Sidekiqを操作するには、デプロイでRedisインスタンスにアクセスできることも確認する必要があります。Auto DevOpsはこのインスタンスをデプロイしないため、次の対応が必要になります。:
 
 - 独自のRedisインスタンスを管理する。
 - CI/CD変数`K8S_SECRET_REDIS_URL`にこのインスタンスのURLを設定し、デプロイに確実に渡されるようにする。
 
-ヘルスチェックに応答するようにワーカーを設定した後、Railsアプリケーション用にSidekiqワーカーを実行します。[`.gitlab/auto-deploy-values.yaml`ファイル](customize.md#customize-helm-chart-values)に以下を設定すると、ワーカーを有効にできます。
+ヘルスチェックに応答するようにワーカーを設定した後、Railsアプリケーション用にSidekiqワーカーを実行します。[`.gitlab/auto-deploy-values.yaml`ファイル](customize.md#customize-helm-chart-values)に以下を設定すると、ワーカーを有効にできます。:
 
 ```yaml
 workers:
@@ -367,18 +367,18 @@ workers:
 
 ### コンテナ内でコマンドを実行する {#running-commands-in-the-container}
 
-リポジトリに[カスタムDockerfile](#auto-build-using-a-dockerfile)が含まれていない限り、[Auto Build](#auto-build)されたアプリケーションでは、コマンドを次のようにラップする必要がある場合があります。
+リポジトリに[カスタムDockerfile](#auto-build-using-a-dockerfile)が含まれていない限り、[Auto Build](#auto-build)されたアプリケーションでは、コマンドを次のようにラップする必要がある場合があります。:
 
 ```shell
 /cnb/lifecycle/launcher $COMMAND
 ```
 
-コマンドをラップする必要がある理由の一部を次に示します。
+コマンドをラップする必要がある理由の一部を次に示します。:
 
 - `kubectl exec`を使用してアタッチするため。
 - GitLab [Webターミナル](../../ci/environments/_index.md#web-terminals-deprecated)を使用するため。
 
-たとえば、アプリケーションのルートディレクトリからRailsコンソールを起動するには、次を実行します。
+たとえば、アプリケーションのルートディレクトリからRailsコンソールを起動するには、次を実行します。:
 
 ```shell
 /cnb/lifecycle/launcher procfile exec bin/rails c

@@ -54,7 +54,7 @@ To create an IdP application:
 {{< tab title="Okta" >}}
 
 1. Sign in to Okta as an administrator.
-1. In the Admin Console, select **Applications > Applications**.
+1. In the Admin Console, select **Applications** > **Applications**.
 1. Select **Create App Integration**.
 1. In the **Sign-in method** section, select **SAML 2.0**.
 1. Select **Next**.
@@ -90,7 +90,7 @@ see the [SAML SSO documentation](../../user/group/saml_sso/_index.md#okta).
 {{< tab title="Entra ID" >}}
 
 1. Sign in to the [Microsoft Entra admin center](https://entra.microsoft.com/).
-1. Select **Identity > Applications > Enterprise applications**.
+1. Select **Identity** > **Applications** > **Enterprise applications**.
 1. Select **New application**.
 1. Select **Create your own application**.
 1. In the dialog, complete the fields:
@@ -179,7 +179,7 @@ the connection details to turn on SAML authentication for your group.
 To configure SAML:
 
 1. Return to your GitLab group.
-1. Select **Settings > SAML SSO**.
+1. Select **Settings** > **SAML SSO**.
 1. In the **Configuration** section, complete the fields:
    - **Identity provider single sign-on URL**: Enter the URL from Step 3.
    - **Certificate fingerprint**: Enter the fingerprint from Step 3.
@@ -236,7 +236,7 @@ which strengthens security. However, it prevents access through other authentica
 To turn on SSO enforcement:
 
 1. On the left sidebar, select **Search or go to** and find your group.
-1. Select **Settings > SAML SSO**.
+1. Select **Settings** > **SAML SSO**.
 1. Select **Enforce SSO-only authentication for web activity for this group**.
 1. Select **Save changes**.
 

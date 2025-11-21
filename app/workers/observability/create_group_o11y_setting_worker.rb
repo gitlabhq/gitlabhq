@@ -34,7 +34,7 @@ module Observability
       result = client.provision_group(group, user)
 
       if result[:success]
-        handle_successful_api_call(group, result[:settings_params], group_id, user_id)
+        handle_successful_api_call(group, result[:settings_params], group_id, user_id, user)
       else
         log_completion(:api_failed, group_id)
         log_error(result[:error], group_id, user_id)
@@ -43,17 +43,48 @@ module Observability
 
     private
 
-    def handle_successful_api_call(group, settings_params, group_id, user_id)
+    def handle_successful_api_call(group, settings_params, group_id, user_id, user)
       setting = group.build_observability_group_o11y_setting
       result = ::Observability::GroupO11ySettingsUpdateService.new.execute(setting, settings_params)
 
       if result.success?
+        add_ci_variable(group, user)
         log_completion(:success, group_id)
       else
         log_completion(:database_failed, group_id, result.message)
         log_error('Failed to save observability group setting after successful API call', group_id, user_id,
           result.message)
       end
+    end
+
+    def add_ci_variable(group, user)
+      params = {
+        variables_attributes: [
+          {
+            key: 'GITLAB_OBSERVABILITY_EXPORT',
+            value: 'traces,metrics,logs',
+            variable_type: 'env_var',
+            protected: false,
+            masked: false,
+            raw: false
+          }
+        ]
+      }
+
+      result = Ci::ChangeVariablesService.new(
+        container: group,
+        current_user: user,
+        params: params
+      ).execute
+
+      return if result
+
+      log_error(
+        'Failed to create CI variable for observability export',
+        group.id,
+        user.id,
+        group.errors.full_messages.join(', ')
+      )
     end
 
     def log_completion(status, group_id, error_message = nil)

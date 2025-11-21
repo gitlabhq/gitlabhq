@@ -82,7 +82,7 @@ export default {
             <span class="gl-font-bold"> {{ stateTitle }} </span>
             {{ timeFormatted(closedOrCreatedDate) }}
           </span>
-          <span class="gl-text-tertiary">{{ tooltipTitle(closedOrCreatedDate) }}</span>
+          <span class="gl-text-subtle">{{ tooltipTitle(closedOrCreatedDate) }}</span>
         </gl-tooltip>
         #{{ suggestion.iid }} &bull;
         {{ __('opened') }}
@@ -101,7 +101,7 @@ export default {
           >
             <span class="gl-block gl-font-bold">{{ __('Author') }}</span>
             {{ suggestion.author.name }}
-            <span class="gl-text-tertiary">@{{ suggestion.author.username }}</span>
+            <span class="gl-text-subtle">@{{ suggestion.author.username }}</span>
           </user-avatar-image>
         </gl-link>
       </div>

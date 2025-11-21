@@ -6,6 +6,7 @@ class Group < Namespace
   include Gitlab::ConfigHelper
   include AfterCommitQueue
   include AccessRequestable
+  include Authz::HasRoles
   include Avatarable
   include SelectForProjectAuthorization
   include LoadedInGroupList
@@ -1290,15 +1291,6 @@ class Group < Namespace
     return false unless deletion_schedule
 
     deletion_schedule.marked_for_deletion_on.future?
-  end
-
-  def assigning_role_too_high?(current_user, access_level)
-    return false if current_user.can_admin_all_resources?
-    return false unless access_level
-
-    max_access_level = max_member_access(current_user)
-
-    !Gitlab::Access.level_encompasses?(current_access_level: max_access_level, level_to_assign: access_level)
   end
 
   private

@@ -162,7 +162,7 @@ After configuring your project, manually trigger the provisioning of your cluste
 
 When the pipeline finishes successfully, you can view the new cluster:
 
-- In AWS: From the [EKS console](https://console.aws.amazon.com/eks/home), select **Amazon EKS > Clusters**.
+- In AWS: From the [EKS console](https://console.aws.amazon.com/eks/home), select **Amazon EKS** > **Clusters**.
 - In GitLab: On the left sidebar, select **Operate** > **Kubernetes clusters**.
 
 ## Use your cluster

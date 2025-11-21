@@ -1,12 +1,12 @@
 /* eslint-disable import/no-default-export */
 import path from 'node:path';
 import { existsSync } from 'node:fs';
-import localRules from 'eslint-plugin-local-rules';
 import js from '@eslint/js';
 import { FlatCompat } from '@eslint/eslintrc';
 // eslint-disable-next-line import/no-unresolved
 import graphqlPlugin from '@graphql-eslint/eslint-plugin';
 import * as todoLists from './.eslint_todo/index.mjs';
+import { eslintLocalRules } from './tooling/eslint-config/eslint-local-rules/index.mjs';
 
 let { REVEAL_ESLINT_TODO } = process.env;
 if (!REVEAL_ESLINT_TODO || REVEAL_ESLINT_TODO === 'false' || REVEAL_ESLINT_TODO === '0') {
@@ -139,7 +139,7 @@ export default [
     files: ['**/*.{js,vue}'],
 
     plugins: {
-      'local-rules': localRules,
+      'local-rules': eslintLocalRules,
     },
 
     languageOptions: {
@@ -598,6 +598,7 @@ export default [
       '**/*.config.js',
       '**/*.config.*.js',
       '**/jest_resolver.js',
+      'tooling/eslint-config/**/*',
       'eslint.config.mjs',
     ],
 

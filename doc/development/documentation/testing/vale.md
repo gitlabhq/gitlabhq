@@ -150,7 +150,7 @@ Most new rules belong in [`gitlab_base`](https://gitlab.com/gitlab-org/gitlab/-/
 
 You can set Visual Studio Code to display only a subset of Vale alerts when viewing files:
 
-1. Go to **Preferences > Settings > Extensions > Vale**.
+1. Go to **Preferences** > **Settings** > **Extensions** > **Vale**.
 1. In **Vale CLI: Min Alert Level**, select the minimum alert level you want displayed in files.
 
 To display only a subset of Vale alerts when running Vale from the command line, use

@@ -588,12 +588,12 @@ jest-snapshot-vue3:
       - jest-snapshot-test-match.json
       - jest-snapshot-test-report.json
 
-jest-linters:
+test-linters:
   extends:
     - .frontend-test-base
-    - .frontend:rules:jest-linters
+    - .frontend:rules:test-linters
   script:
-    - yarn jest:eslint --ci
+    - yarn vitest:eslint
 
 coverage-frontend:
   extends:
@@ -625,6 +625,7 @@ coverage-frontend:
     paths:
       - coverage-frontend/
       - jest-reports/
+      - jest-test-mapping/
     reports:
       coverage_report:
         coverage_format: cobertura

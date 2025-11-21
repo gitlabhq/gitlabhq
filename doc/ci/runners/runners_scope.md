@@ -58,7 +58,7 @@ When you create a runner, it is assigned a runner authentication token that you 
 To create an instance runner:
 
 1. On the left sidebar, at the bottom, select **Admin**. If you've [turned on the new navigation](../../user/interface_redesign.md#turn-new-navigation-on-or-off), in the upper-right corner, select **Admin**.
-1. Select **CI/CD > Runners**.
+1. Select **CI/CD** > **Runners**.
 1. Select **Create instance runner**.
 1. Select the operating system where GitLab Runner is installed.
 1. In the **Tags** section, in the **Tags** field, enter the job tags to specify jobs the runner can run.
@@ -104,7 +104,7 @@ Prerequisites:
 To create an instance runner:
 
 1. On the left sidebar, at the bottom, select **Admin**. If you've [turned on the new navigation](../../user/interface_redesign.md#turn-new-navigation-on-or-off), in the upper-right corner, select **Admin**.
-1. Select **CI/CD > Runners**.
+1. Select **CI/CD** > **Runners**.
 1. Select **Register an instance runner**.
 1. Copy the registration token.
 1. [Register the runner](https://docs.gitlab.com/runner/register/#register-with-a-runner-registration-token-legacy).
@@ -118,7 +118,7 @@ Prerequisites:
 You can pause a runner so that it does not accept jobs from groups and projects in the GitLab instance.
 
 1. On the left sidebar, at the bottom, select **Admin**. If you've [turned on the new navigation](../../user/interface_redesign.md#turn-new-navigation-on-or-off), in the upper-right corner, select **Admin**.
-1. Select **CI/CD > Runners**.
+1. Select **CI/CD** > **Runners**.
 1. In the search box, enter the runner description or filter the runner list.
 1. In the runner list, to the right of the runner:
    - To pause the runner, select **Pause** ({{< icon name="pause" >}}).
@@ -137,7 +137,7 @@ jobs, you can [pause](#pause-or-resume-an-instance-runner) the runner instead.
 To delete a single or multiple instance runners:
 
 1. On the left sidebar, at the bottom, select **Admin**. If you've [turned on the new navigation](../../user/interface_redesign.md#turn-new-navigation-on-or-off), in the upper-right corner, select **Admin**.
-1. Select **CI/CD > Runners**.
+1. Select **CI/CD** > **Runners**.
 1. In the search box, enter the runner description or filter the list of runners.
 1. Delete the instance runner:
    - To delete a single runner, next to the runner, select **Delete runner** ({{< icon name="remove" >}}).
@@ -297,7 +297,7 @@ The runner authentication token displays in the UI for only a short period of ti
 
 {{< history >}}
 
-- Path changed from **Settings > CI/CD > Runners**.
+- Path changed from **Settings** > **CI/CD** > **Runners**.
 
 {{< /history >}}
 
@@ -703,7 +703,7 @@ median value.
 To view runner statistics:
 
 1. On the left sidebar, at the bottom, select **Admin**. If you've [turned on the new navigation](../../user/interface_redesign.md#turn-new-navigation-on-or-off), in the upper-right corner, select **Admin**.
-1. Select **CI/CD > Runners**.
+1. Select **CI/CD** > **Runners**.
 1. Select **View metrics**.
 
 ## Determine which runners need to be upgraded
@@ -732,7 +732,7 @@ To determine which runners need to be upgraded:
      1. Select **Build** > **Runners**.
    - For the instance:
      1. On the left sidebar, at the bottom, select **Admin**. If you've [turned on the new navigation](../../user/interface_redesign.md#turn-new-navigation-on-or-off), in the upper-right corner, select **Admin**.
-     1. Select **CI/CD > Runners**.
+     1. Select **CI/CD** > **Runners**.
 
 1. Above the list of runners, view the status:
    - **Outdated - recommended**: The runner does not have the latest `PATCH` version, which may make it vulnerable
@@ -760,7 +760,7 @@ Prerequisites:
 To determine the IP address of an instance runner:
 
 1. On the left sidebar, at the bottom, select **Admin**. If you've [turned on the new navigation](../../user/interface_redesign.md#turn-new-navigation-on-or-off), in the upper-right corner, select **Admin**.
-1. Select **CI/CD > Runners**.
+1. Select **CI/CD** > **Runners**.
 1. Find the runner in the table and view the **IP Address** column.
 
 ![Admin area showing the IP address column for an instance runner](img/shared_runner_ip_address_v14_5.png)

@@ -43,7 +43,7 @@ To use GitLab with GCP Secret Manager, you must:
 GCP IAM WIF must be configured to recognize ID tokens issued by GitLab and assign an appropriate principal to them.
 The principal is used to authorize access to the Secret Manager resources:
 
-1. In GCP Console, go to **IAM & Admin > Workload Identity Federation**.
+1. In GCP Console, go to **IAM & Admin** > **Workload Identity Federation**.
 1. Select **CREATE POOL** and create a new identity pool with a unique name, for example `gitlab-pool`.
 1. Select **ADD PROVIDER** to add a new OIDC Provider to the Identity Pool with a unique name, for example `gitlab-provider`.
    1. Set **Issuer (URL)** to the GitLab URL, for example `https://gitlab.com`.
@@ -62,7 +62,7 @@ The principal is used to authorize access to the Secret Manager resources:
 
 After setting up WIF, you must grant the WIF principal access to the secrets in Secret Manager.
 
-1. In GCP Console, go to **Security > Secret Manager**.
+1. In GCP Console, go to **Security** > **Secret Manager**.
 1. Select the name of the secret you wish to grant access to, to view the secret's details.
 1. From the **PERMISSIONS** tab, select **GRANT ACCESS** to grant access to the principal set created through the WIF provider.
    The external identity format is:

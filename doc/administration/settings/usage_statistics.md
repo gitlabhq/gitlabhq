@@ -348,7 +348,7 @@ You can access the exact JSON payload sent to GitLab Inc. in the **Admin** area 
 
 1. Sign in as a user with administrator access.
 1. On the left sidebar, at the bottom, select **Admin**. If you've [turned on the new navigation](../../user/interface_redesign.md#turn-new-navigation-on-or-off), in the upper-right corner, select **Admin**.
-1. Select **Settings > Metrics and profiling > Usage statistics**.
+1. Select **Settings** > **Metrics and profiling** > **Usage statistics**.
 1. Select **Preview payload**.
 
 ### Through the API
@@ -364,7 +364,7 @@ To upload the payload manually:
 
 1. Sign in as a user with administrator access.
 1. On the left sidebar, at the bottom, select **Admin**. If you've [turned on the new navigation](../../user/interface_redesign.md#turn-new-navigation-on-or-off), in the upper-right corner, select **Admin**.
-1. Select **Settings > Metrics and profiling > Usage statistics**.
+1. Select **Settings** > **Metrics and profiling** > **Usage statistics**.
 1. Select **Download payload**.
 1. Save the JSON file.
 1. Visit [Service usage data center](https://version.gitlab.com/usage_data/new).

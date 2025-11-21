@@ -175,7 +175,7 @@ To use a secret that already exists in Fortanix DSM with GitLab:
    ```
 
 1. The pipeline should run automatically after saving the `.gitlab-ci.yml` file.
-   If not, select **Build > Pipelines > Run pipeline**.
+   If not, select **Build** > **Pipelines** > **Run pipeline**.
 1. Go to **Build** > **Jobs** and check the `build` job's log:
 
    - ![gitlab_build_result_2](img/gitlab_build_result_2_v16_9.png)
@@ -225,7 +225,7 @@ To set up code signing securely in your GitLab environment:
    ```
 
 1. The pipeline should run automatically after saving the `.gitlab-ci.yml` file.
-   If not, select **Build > Pipelines > Run pipeline**.
+   If not, select **Build** > **Pipelines** > **Run pipeline**.
 1. Go to **Build** > **Jobs** and check the `build` job's log:
 
    - ![gitlab_build_result_3](img/gitlab_build_result_3_v16_9.png)

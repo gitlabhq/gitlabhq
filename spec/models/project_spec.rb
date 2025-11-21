@@ -10419,51 +10419,7 @@ RSpec.describe Project, factory_default: :keep, feature_category: :groups_and_pr
     end
   end
 
-  describe '#assigning_role_too_high?' do
-    let_it_be(:user) { create(:user) }
-    let_it_be(:project) { create(:project) }
-    let_it_be(:member, reload: true) { create(:project_member, :reporter, project: project, user: user) }
-
-    subject(:assigning_role_too_high) { project.assigning_role_too_high?(user, access_level) }
-
-    context 'when the access_level is nil' do
-      let(:access_level) { nil }
-
-      it 'returns false' do
-        expect(assigning_role_too_high).to be_falsey
-      end
-    end
-
-    context 'when the role being assigned is lower than the role of current user' do
-      let(:access_level) { Gitlab::Access::GUEST }
-
-      it { is_expected.to be(false) }
-    end
-
-    context 'when the role being assigned is equal to the role of current user' do
-      let(:access_level) { Gitlab::Access::REPORTER }
-
-      it { is_expected.to be(false) }
-    end
-
-    context 'when the role being assigned is higher than the role of current user' do
-      let(:access_level) { Gitlab::Access::MAINTAINER }
-
-      it 'returns true' do
-        expect(assigning_role_too_high).to be_truthy
-      end
-
-      context 'when the current user is admin', :enable_admin_mode do
-        before do
-          user.update!(admin: true)
-        end
-
-        it 'returns false' do
-          expect(assigning_role_too_high).to be_falsey
-        end
-      end
-    end
-  end
+  it_behaves_like 'a resource that has roles', :project
 
   describe '#owner_entity' do
     let(:project) { build_stubbed(:project) }

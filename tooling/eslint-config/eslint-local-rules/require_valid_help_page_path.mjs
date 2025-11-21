@@ -1,5 +1,5 @@
-const { existsSync, readFileSync } = require('fs');
-const { getDocsFilePath, getAnchorsInMarkdown } = require('./utils/help_page_path_utils');
+import { existsSync, readFileSync } from 'node:fs';
+import { getDocsFilePath, getAnchorsInMarkdown } from './utils/help_page_path_utils.mjs';
 
 const TYPE_LITERAL = 'Literal';
 
@@ -23,7 +23,7 @@ function getAnchor(node) {
   );
 }
 
-module.exports = {
+export const requireValidHelpPagePath = {
   meta: {
     type: 'problem',
     docs: {

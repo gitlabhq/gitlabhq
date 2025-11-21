@@ -92,7 +92,7 @@ After configuring your project, manually trigger the provisioning of your cluste
 
 When the pipeline finishes successfully, you can view the new cluster:
 
-- In Azure: From the [Azure portal](https://portal.azure.com/#home), select **Kubernetes services > View**.
+- In Azure: From the [Azure portal](https://portal.azure.com/#home), select **Kubernetes services** > **View**.
 - In GitLab: On the left sidebar, select **Operate** > **Kubernetes clusters**.
 
 ## Use your cluster

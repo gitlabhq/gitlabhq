@@ -95,7 +95,7 @@ export default {
         v-if="milestoneStart || milestoneDue"
         :class="{
           'gl-text-red-300': isMilestonePastDue,
-          'gl-text-tertiary': !isMilestonePastDue,
+          'gl-text-subtle': !isMilestonePastDue,
         }"
         ><span>{{ milestoneDatesHuman }}</span
         ><br /><span>{{ milestoneDatesAbsolute }}</span>

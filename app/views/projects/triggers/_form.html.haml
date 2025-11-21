@@ -12,7 +12,7 @@
   .form-group
     = f.label :expires_at, s_('Trigger|Expiration Date')
     = f.gitlab_ui_datepicker :expires_at, class: 'gl-datepicker-input form-control gl-form-input', placeholder: 'YYYY-MM-DD', autocomplete: 'off'
-    %span.form-text.text-muted
+    %span.form-text.gl-text-subtle
       = s_('Trigger|By default, trigger tokens never expire if no expiration date is selected.')
   = f.submit btn_text, pajamas_button: true
   - if show_cancel_button

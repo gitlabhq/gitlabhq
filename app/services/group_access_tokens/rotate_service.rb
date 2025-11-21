@@ -8,16 +8,10 @@ module GroupAccessTokens
 
     override :valid_access_level?
     def valid_access_level?
-      return true if current_user.can_admin_all_resources?
       return false unless current_user.can?(:manage_resource_access_tokens, group)
 
       token_access_level = group.max_member_access_for_user(token.user).to_i
-      current_user_access_level = group.max_member_access_for_user(current_user).to_i
-
-      Gitlab::Access.level_encompasses?(
-        current_access_level: current_user_access_level,
-        level_to_assign: token_access_level
-      )
+      group.can_assign_role?(current_user, token_access_level)
     end
 
     private

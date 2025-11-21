@@ -138,7 +138,7 @@ To create the new `excelsior` project:
 1. On the left sidebar, select **Search or go to** and search for `engineering`.If you've [turned on the new navigation](../../user/interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
 1. Select the group named `Engineering`.
 1. On the overview page for the `engineering` group, on the left sidebar, at the top,
-   select **Create new** ({{< icon name="plus" >}}) and **In this group > New project/repository**. If you've [turned on the new navigation](../../user/interface_redesign.md#turn-new-navigation-on-or-off), this button is in the upper-right corner.
+   select **Create new** ({{< icon name="plus" >}}) and **In this group** > **New project/repository**. If you've [turned on the new navigation](../../user/interface_redesign.md#turn-new-navigation-on-or-off), this button is in the upper-right corner.
 1. Select **Create blank project**.
 1. Enter the project details:
    - In the **Project name** field, enter `Excelsior`. The **Project slug** should

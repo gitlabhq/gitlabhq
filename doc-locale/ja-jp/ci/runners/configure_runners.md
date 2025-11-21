@@ -1,6 +1,6 @@
 ---
 stage: Verify
-group: Runner
+group: Runner Core
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 description: タイムアウトの設定、機密情報の保護、タグと変数による動作の制御、およびGitLab Runnerのアーティファクトとキャッシュの設定を行います。
 title: Runnerの設定
@@ -25,7 +25,7 @@ Runnerの最大タイムアウトを設定するには、REST APIエンドポイ
 
 ### インスタンスRunnerの場合 {#for-an-instance-runner}
 
-前提要件:
+前提要件: 
 
 - 管理者である必要があります。
 
@@ -33,65 +33,65 @@ GitLab Self-ManagedのインスタンスRunnerのジョブタイムアウトは�
 
 GitLab.comでは、GitLabでホストされるインスタンスRunnerのジョブタイムアウトをオーバーライドできません。代わりに、[プロジェクトで定義されたタイムアウト](../pipelines/settings.md#set-a-limit-for-how-long-jobs-can-run)を使用する必要があります。
 
-ジョブの最大タイムアウトを設定するには、次の手順に従います。
+ジョブの最大タイムアウトを設定するには、次の手順に従います:
 
-1. 左側のサイドバーの下部で、**管理者**を選択します。
-1. **CI/CD > Runner**を選択します。
+1. 左側のサイドバーの下部で、**管理者**を選択します。[新しいナビゲーションをオン](../../user/interface_redesign.md#turn-new-navigation-on-or-off)にしている場合は、左側のサイドバーの下部にあるアバターを選択し、**管理者**を選択します。
+1. **CI/CD > Runners**を選択します。
 1. 編集するRunnerの右側で、**編集**（{{< icon name="pencil" >}}）を選択します。
-1. **最大ジョブタイムアウト**フィールドに値（秒単位）を入力します。最小値は600秒（10分）です。
+1. **ジョブタイムアウトの最大値**フィールドに値（秒単位）を入力します。最小値は600秒（10分）です。
 1. **変更を保存**を選択します。
 
 ### グループRunnerの場合 {#for-a-group-runner}
 
-前提要件:
+前提要件: 
 
 - グループのオーナーロールが必要です。
 
-ジョブの最大タイムアウトを設定するには、次の手順に従います。
+ジョブの最大タイムアウトを設定するには、次の手順に従います:
 
-1. 左側のサイドバーで、**検索または移動先**を選択して、グループを検索します。
-1. **ビルド > Runner**を選択します。
+1. 左側のサイドバーで、**検索または移動先**を選択して、グループを見つけます。[新しいナビゲーションをオン](../../user/interface_redesign.md#turn-new-navigation-on-or-off)にしている場合、このフィールドは上部のバーにあります。
+1. **ビルド** > **Runners**を選択します。
 1. 編集するRunnerの右側で、**編集**（{{< icon name="pencil" >}}）を選択します。
-1. **最大ジョブタイムアウト**フィールドに値（秒単位）を入力します。最小値は600秒（10分）です。
+1. **ジョブタイムアウトの最大値**フィールドに値（秒単位）を入力します。最小値は600秒（10分）です。
 1. **変更を保存**を選択します。
 
 ### プロジェクトRunnerの場合 {#for-a-project-runner}
 
-前提要件:
+前提要件: 
 
 - プロジェクトのオーナーロールが必要です。
 
-ジョブの最大タイムアウトを設定するには、次の手順に従います。
+ジョブの最大タイムアウトを設定するには、次の手順に従います:
 
-1. 左側のサイドバーで、**検索または移動先**を選択して、プロジェクトを見つけます。
-1. **設定 > CI/CD**を選択します。
-1. **Runner**を展開します。
+1. 左側のサイドバーで、**検索または移動先**を選択して、プロジェクトを見つけます。[新しいナビゲーションをオン](../../user/interface_redesign.md#turn-new-navigation-on-or-off)にしている場合、このフィールドは上部のバーにあります。
+1. **設定** > **CI/CD**を選択します。
+1. **Runners**を展開します。
 1. 編集するRunnerの右側で、**編集**（{{< icon name="pencil" >}}）を選択します。
-1. **最大ジョブタイムアウト**フィールドに値（秒単位）を入力します。最小値は600秒（10分）です。定義されていない場合、代わりに[プロジェクトのジョブタイムアウト](../pipelines/settings.md#set-a-limit-for-how-long-jobs-can-run)が使用されます。
+1. **ジョブタイムアウトの最大値**フィールドに値（秒単位）を入力します。最小値は600秒（10分）です。定義されていない場合、代わりに[プロジェクトのジョブタイムアウト](../pipelines/settings.md#set-a-limit-for-how-long-jobs-can-run)が使用されます。
 1. **変更を保存**を選択します。
 
 ## ジョブの最大タイムアウトの仕組み {#how-maximum-job-timeout-works}
 
-**例1 - Runnerのタイムアウトがプロジェクトのタイムアウトより長い場合**
+**Example 1 - Runner timeout bigger than project timeout**（例1 - Runnerのタイムアウトがプロジェクトのタイムアウトより長い場合）
 
 1. Runnerの`maximum_timeout`パラメータを24時間に設定します。
-1. プロジェクトの**最大ジョブタイムアウト**を**2時間**に設定します。
+1. プロジェクトの**ジョブタイムアウトの最大値**を**2 hours**（2時間）に設定します。
 1. ジョブを開始します。
-1. ジョブは**2時間**後にタイムアウトします（実行時間がそれより長い場合）。
+1. ジョブは**2 hours**（2時間）後にタイムアウトします（実行時間がそれより長い場合）。
 
-**例2 - Runnerのタイムアウトが設定されていない場合**
+**Example 2 - Runner timeout not configured**（例2 - Runnerのタイムアウトが設定されていない場合）
 
 1. Runnerから`maximum_timeout`パラメータの設定を削除します。
-1. プロジェクトの**最大ジョブタイムアウト**を**2時間**に設定します。
+1. プロジェクトの**ジョブタイムアウトの最大値**を**2 hours**（2時間）に設定します。
 1. ジョブを開始します。
-1. ジョブは**2時間**後にタイムアウトします（実行時間がそれより長い場合）。
+1. ジョブは**2 hours**（2時間）後にタイムアウトします（実行時間がそれより長い場合）。
 
-**例3 - Runnerのタイムアウトがプロジェクトのタイムアウトより短い場合**
+**Example 3 - Runner timeout smaller than project timeout**（例3 - Runnerのタイムアウトがプロジェクトのタイムアウトより短い場合）
 
-1. Runnerの`maximum_timeout`パラメータを**30分**に設定します。
-1. プロジェクトの**最大ジョブタイムアウト**を2時間に設定します。
+1. Runnerの`maximum_timeout`パラメータを**30 minutes**（30分）に設定します。
+1. プロジェクトの**ジョブタイムアウトの最大値**を2時間に設定します。
 1. ジョブを開始します。
-1. ジョブは**30分**後にタイムアウトします（実行時間がそれより長い場合）。
+1. ジョブは**30 minutes**（30分）後にタイムアウトします（実行時間がそれより長い場合）。
 
 ## `script`および`after_script`タイムアウトを設定する {#set-script-and-after_script-timeouts}
 
@@ -110,7 +110,7 @@ GitLab.comでは、GitLabでホストされるインスタンスRunnerのジョ�
 
 これらの変数はいずれも、[Goの長さ書式](https://pkg.go.dev/time#ParseDuration)（`40s`、`1h20m`、`2h` `4h30m30s`など）をサポートします。
 
-次に例を示します。
+次に例を示します:
 
 ```yaml
 job-with-script-timeouts:
@@ -139,7 +139,7 @@ job-artifact-upload-on-timeout:
 
 `after_script`を正常に実行するには、`RUNNER_SCRIPT_TIMEOUT` + `RUNNER_AFTER_SCRIPT_TIMEOUT`の合計が、ジョブで設定されたタイムアウトを超えないようにする必要があります。
 
-次の例は、メインスクリプトがタイムアウトした場合でも`after_script`が実行されるようにタイムアウトを設定する方法を示しています。
+次の例は、メインスクリプトがタイムアウトした場合でも`after_script`が実行されるようにタイムアウトを設定する方法を示しています:
 
 ```yaml
 job-with-script-timeouts:
@@ -182,18 +182,18 @@ job-with-script-timeouts:
 
 {{< alert type="warning" >}}
 
-Runner登録トークンを渡すオプションと、特定の設定引数のサポートは、GitLab 15.6で[非推奨](https://gitlab.com/gitlab-org/gitlab/-/issues/380872)となっており、GitLab 20.0で削除される予定です。[Runner作成ワークフロー](https://docs.gitlab.com/runner/register/#register-with-a-runner-authentication-token)を使用して、Runnerを登録するための認証トークンを生成します。このプロセスは、Runnerの所有権の完全なトレーサビリティを提供し、Runnerフリートのセキュリティを強化します。詳細については、[新しいRunner登録ワークフローに移行する](new_creation_workflow.md)を参照してください。
+Runner登録トークンを渡し、特定の設定引数をサポートするオプションは、レガシーと見なされており、推奨されません。[Runner作成ワークフロー](https://docs.gitlab.com/runner/register/#register-with-a-runner-authentication-token)を使用して、Runnerを登録するための認証トークンを生成します。このプロセスは、Runnerの所有権の完全なトレーサビリティを提供し、Runnerフリートのセキュリティを強化します。詳細については、[新しいRunner登録ワークフローに移行する](new_creation_workflow.md)を参照してください。
 
 {{< /alert >}}
 
 プロジェクトの登録トークンが漏洩したと思われる場合は、リセットする必要があります。登録トークンを使用して、プロジェクトの別のRunnerを登録できます。その新しいRunnerを使用して、シークレット変数の値を取得したり、プロジェクトコードをクローンしたりできます。
 
-登録トークンは、次の手順でリセットできます。
+登録トークンは、次の手順でリセットできます:
 
-1. 左側のサイドバーで、**検索または移動先**を選択して、プロジェクトを見つけます。
-1. **設定 > CI/CD**を選択します。
-1. **Runner**を展開します。
-1. **新しいプロジェクトRunner**の右側にある縦方向の省略記号（{{< icon name="ellipsis_v" >}}）を選択します。
+1. 左側のサイドバーで、**検索または移動先**を選択して、プロジェクトを見つけます。[新しいナビゲーションをオン](../../user/interface_redesign.md#turn-new-navigation-on-or-off)にしている場合、このフィールドは上部のバーにあります。
+1. **設定** > **CI/CD**を選択します。
+1. **Runners**を展開します。
+1. **New project runner**（新しいプロジェクトRunner）の右側にある縦方向の省略記号（{{< icon name="ellipsis_v" >}}）を選択します。
 1. **登録トークンをリセット**を選択します。
 1. **トークンのリセット**を選択します。
 
@@ -220,17 +220,17 @@ Runner認証トークンを手動で更新する必要がある場合は、コ�
 
 Runnerの認証トークンが公開されている場合、攻撃者はそれを使用して[Runnerをクローン](https://docs.gitlab.com/runner/security/#cloning-a-runner)できる可能性があります。
 
-Runner設定認証トークンは、次の手順でリセットできます。
+Runner設定認証トークンは、次の手順でリセットできます:
 
-1. 次の手順でRunnerを削除します。
+1. 次の手順でRunnerを削除します:
    - [インスタンスRunnerを削除します](runners_scope.md#delete-instance-runners)。
    - [グループRunnerを削除します](runners_scope.md#delete-a-group-runner)。
    - [プロジェクトRunnerを削除します](runners_scope.md#delete-a-project-runner)。
-1. 次の手順で新しいRunnerを作成して、新しいRunner認証トークンが割り当てられるようにします。
+1. 次の手順で新しいRunnerを作成して、新しいRunner認証トークンが割り当てられるようにします:
    - [インスタンスRunnerを作成します](runners_scope.md#create-an-instance-runner-with-a-runner-authentication-token)。
    - [グループRunnerを作成します](runners_scope.md#create-a-group-runner-with-a-runner-authentication-token)。
    - [プロジェクトRunnerを作成します](runners_scope.md#create-a-project-runner-with-a-runner-authentication-token)。
-1. （オプション）以前のRunner認証トークンが失効したことを確認するには、[Runners API](../../api/runners.md#verify-authentication-for-a-registered-runner)を使用します。
+1. オプション。以前のRunner認証トークンが失効したことを確認するには、[Runners API](../../api/runners.md#verify-authentication-for-a-registered-runner)を使用します。
 
 Runner設定認証トークンをリセットするために、[Runners API](../../api/runners.md)を使用することもできます。
 
@@ -238,60 +238,60 @@ Runner設定認証トークンをリセットするために、[Runners API](../
 
 Runner認証トークンをローテーションする間隔を指定できます。Runner認証トークンを定期的にローテーションすることで、不正なトークンを介してGitLabインスタンスに不正アクセスされるリスクを最小限に抑えることができます。
 
-前提要件:
+前提要件: 
 
 - Runnerは、[GitLab Runner 15.3以降](https://docs.gitlab.com/runner/#gitlab-runner-versions)を使用する必要があります。
 - 管理者である必要があります。
 
-次の手順でRunner認証トークンを自動的にローテーションできます。
+次の手順でRunner認証トークンを自動的にローテーションできます:
 
-1. 左側のサイドバーの下部で、**管理者**を選択します。
-1. **設定 > CI/CD**を選択します。
+1. 左側のサイドバーの下部で、**管理者**を選択します。[新しいナビゲーションをオン](../../user/interface_redesign.md#turn-new-navigation-on-or-off)にしている場合は、左側のサイドバーの下部にあるアバターを選択し、**管理者**を選択します。
+1. **設定** > **CI/CD**を選択します。
 1. **継続的インテグレーションとデプロイ**を展開します。
-1. Runnerについて**Runnerの有効期限**を設定します。有効期限がない場合は空のままにします。
+1. Runnerについて**Runners expiration**（Runnerの有効期限）を設定します。有効期限がない場合は空のままにします。
 1. **変更を保存**を選択します。
 
 一定期間の有効期限が切れる前に、Runnerは新しいRunner認証トークンを自動的に要求します。トークンローテーションの詳細については、[Runner認証トークンがローテーション時に更新されない](new_creation_workflow.md#runner-authentication-token-does-not-update-when-rotated)を参照してください。
 
 ## Runnerが機密情報を公開しないようにする {#prevent-runners-from-revealing-sensitive-information}
 
-Runnerが機密情報を公開しないようにするには、[保護ブランチ](../../user/project/repository/branches/protected.md)、または[保護タグ](../../user/project/protected_tags.md)を含むジョブでのみジョブを実行するようにRunnerを設定します。
+Runnerが機密情報を公開しないようにするには、[保護ブランチ](../../user/project/repository/branches/protected.md) 、または[保護タグ](../../user/project/protected_tags.md)を含むジョブでのみジョブを実行するようにRunnerを設定します。
 
 保護ブランチでジョブを実行するように設定されたRunnerは、[必要に応じてマージリクエストパイプラインでジョブを実行](../pipelines/merge_request_pipelines.md#control-access-to-protected-variables-and-runners)できます。
 
 ### インスタンスRunnerの場合 {#for-an-instance-runner-1}
 
-前提要件:
+前提要件: 
 
 - 管理者である必要があります。
 
-1. 左側のサイドバーの下部で、**管理者**を選択します。
-1. **CI/CD > Runner**を選択します。
+1. 左側のサイドバーの下部で、**管理者**を選択します。[新しいナビゲーションをオン](../../user/interface_redesign.md#turn-new-navigation-on-or-off)にしている場合は、左側のサイドバーの下部にあるアバターを選択し、**管理者**を選択します。
+1. **CI/CD > Runners**を選択します。
 1. 保護するRunnerの右側で、**編集**（{{< icon name="pencil" >}}）を選択します。
 1. **保護**チェックボックスをオンにします。
 1. **変更を保存**を選択します。
 
 ### グループRunnerの場合 {#for-a-group-runner-1}
 
-前提要件:
+前提要件: 
 
 - グループのオーナーロールが必要です。
 
-1. 左側のサイドバーで、**検索または移動先**を選択して、グループを検索します。
-1. **ビルド > Runner**を選択します。
+1. 左側のサイドバーで、**検索または移動先**を選択して、グループを見つけます。[新しいナビゲーションをオン](../../user/interface_redesign.md#turn-new-navigation-on-or-off)にしている場合、このフィールドは上部のバーにあります。
+1. **ビルド** > **Runners**を選択します。
 1. 保護するRunnerの右側で、**編集**（{{< icon name="pencil" >}}）を選択します。
 1. **保護**チェックボックスをオンにします。
 1. **変更を保存**を選択します。
 
 ### プロジェクトRunnerの場合 {#for-a-project-runner-1}
 
-前提要件:
+前提要件: 
 
 - プロジェクトのオーナーロールが必要です。
 
-1. 左側のサイドバーで、**検索または移動先**を選択して、プロジェクトを見つけます。
-1. **設定 > CI/CD**を選択します。
-1. **Runner**を展開します。
+1. 左側のサイドバーで、**検索または移動先**を選択して、プロジェクトを見つけます。[新しいナビゲーションをオン](../../user/interface_redesign.md#turn-new-navigation-on-or-off)にしている場合、このフィールドは上部のバーにあります。
+1. **設定** > **CI/CD**を選択します。
+1. **Runners**を展開します。
 1. 保護するRunnerの右側で、**編集**（{{< icon name="pencil" >}}）を選択します。
 1. **保護**チェックボックスをオンにします。
 1. **変更を保存**を選択します。
@@ -304,49 +304,49 @@ GitLab CI/CDタグはGitタグとは異なります。GitLab CI/CDタグはRunne
 
 ### インスタンスRunnerの場合 {#for-an-instance-runner-2}
 
-前提要件:
+前提要件: 
 
 - 管理者である必要があります。
 
-インスタンスRunnerが実行できるジョブは、次の手順で制御できます。
+インスタンスRunnerが実行できるジョブは、次の手順で制御できます:
 
-1. 左側のサイドバーの下部で、**管理者**を選択します。
-1. **CI/CD > Runner**を選択します。
+1. 左側のサイドバーの下部で、**管理者**を選択します。[新しいナビゲーションをオン](../../user/interface_redesign.md#turn-new-navigation-on-or-off)にしている場合は、左側のサイドバーの下部にあるアバターを選択し、**管理者**を選択します。
+1. **CI/CD > Runners**を選択します。
 1. 編集するRunnerの右側で、**編集**（{{< icon name="pencil" >}}）を選択します。
-1. タグ付きジョブまたはタグなしジョブを実行するようにRunnerを設定します。
+1. タグ付きジョブまたはタグなしジョブを実行するようにRunnerを設定します:
    - タグ付きジョブを実行するには、**タグ**フィールドに、ジョブタグをコンマで区切って入力します。たとえば、`macos`、`rails`などです。
    - タグなしジョブを実行するには、**タグのないジョブの実行**チェックボックスをオンにします。
 1. **変更を保存**を選択します。
 
 ### グループRunnerの場合 {#for-a-group-runner-2}
 
-前提要件:
+前提要件: 
 
 - グループのオーナーロールが必要です。
 
-グループRunnerが実行できるジョブは、次の手順で制御できます。
+グループRunnerが実行できるジョブは、次の手順で制御できます:
 
-1. 左側のサイドバーで、**検索または移動先**を選択して、グループを検索します。
-1. **ビルド > Runner**を選択します。
+1. 左側のサイドバーで、**検索または移動先**を選択して、グループを見つけます。[新しいナビゲーションをオン](../../user/interface_redesign.md#turn-new-navigation-on-or-off)にしている場合、このフィールドは上部のバーにあります。
+1. **ビルド** > **Runners**を選択します。
 1. 編集するRunnerの右側で、**編集**（{{< icon name="pencil" >}}）を選択します。
-1. タグ付きジョブまたはタグなしジョブを実行するようにRunnerを設定します。
+1. タグ付きジョブまたはタグなしジョブを実行するようにRunnerを設定します:
    - タグ付きジョブを実行するには、**タグ**フィールドに、ジョブタグをコンマで区切って入力します。たとえば、`macos`、`ruby`などです。
    - タグなしジョブを実行するには、**タグのないジョブの実行**チェックボックスをオンにします。
 1. **変更を保存**を選択します。
 
 ### プロジェクトRunnerの場合 {#for-a-project-runner-2}
 
-前提要件:
+前提要件: 
 
 - プロジェクトのオーナーロールが必要です。
 
-プロジェクトRunnerが実行できるジョブは、次の手順で制御できます。
+プロジェクトRunnerが実行できるジョブは、次の手順で制御できます:
 
-1. 左側のサイドバーで、**検索または移動先**を選択して、プロジェクトを見つけます。
-1. **設定 > CI/CD**を選択します。
-1. **Runner**を展開します。
+1. 左側のサイドバーで、**検索または移動先**を選択して、プロジェクトを見つけます。[新しいナビゲーションをオン](../../user/interface_redesign.md#turn-new-navigation-on-or-off)にしている場合、このフィールドは上部のバーにあります。
+1. **設定** > **CI/CD**を選択します。
+1. **Runners**を展開します。
 1. 編集するRunnerの右側で、**編集**（{{< icon name="pencil" >}}）を選択します。
-1. タグ付きジョブまたはタグなしジョブを実行するようにRunnerを設定します。
+1. タグ付きジョブまたはタグなしジョブを実行するようにRunnerを設定します:
    - タグ付きジョブを実行するには、**タグ**フィールドに、ジョブタグをコンマで区切って入力します。たとえば、`macos`、`ruby`などです。
    - タグなしジョブを実行するには、**タグのないジョブの実行**チェックボックスをオンにします。
 1. **変更を保存**を選択します。
@@ -413,7 +413,7 @@ GitLab CI/CDタグはGitタグとは異なります。GitLab CI/CDタグはRunne
 
 タグを使用すると、さまざまなプラットフォームでさまざまなジョブを実行できます。たとえば、タグ`osx`を持つOS X Runnerとタグ`windows`を持つWindows Runnerがある場合、それぞれのプラットフォームでジョブを実行できます。
 
-`.gitlab-ci.yml`の`tags`フィールドを更新します。
+`.gitlab-ci.yml`の`tags`フィールドを更新します:
 
 ```yaml
 windows job:
@@ -433,7 +433,7 @@ osx job:
 
 ### タグでCI/CD変数を使用する {#use-cicd-variables-in-tags}
 
-`.gitlab-ci.yml`ファイルで、`tags`を含む[CI/CD変数](../variables/_index.md)を使用して、動的にRunnerを選択します。
+`.gitlab-ci.yml`ファイルで、`tags`を含む[CI/CD変数](../variables/_index.md)を使用して、動的にRunnerを選択します:
 
 ```yaml
 variables:
@@ -449,13 +449,14 @@ variables:
 
 ## 変数でRunnerの動作を設定する {#configure-runner-behavior-with-variables}
 
-[CI/CD変数](../variables/_index.md)を使用して、RunnerのGitの動作をグローバルに、または個々のジョブに対して設定できます。
+[CI/CD変数](../variables/_index.md)を使用して、RunnerのGitの動作をグローバルに、または個々のジョブに対して設定できます:
 
 - [`GIT_STRATEGY`](#git-strategy)
 - [`GIT_SUBMODULE_STRATEGY`](#git-submodule-strategy)
 - [`GIT_CHECKOUT`](#git-checkout)
 - [`GIT_CLEAN_FLAGS`](#git-clean-flags)
 - [`GIT_FETCH_EXTRA_FLAGS`](#git-fetch-extra-flags)
+- [`GIT_CLONE_EXTRA_FLAGS`](#git-clone-extra-flags)
 - [`GIT_SUBMODULE_UPDATE_FLAGS`](#git-submodule-update-flags)
 - [`GIT_SUBMODULE_FORCE_HTTPS`](#rewrite-submodule-urls-to-https)
 - [`GIT_DEPTH`](#shallow-cloning)（シャロークローン）
@@ -472,6 +473,8 @@ variables:
 変数を使用して、Runnerが[ジョブ実行の特定のステージを試行](#job-stages-attempts)する回数を設定することもできます。
 
 Kubernetes executorを使用する場合、変数を使用して、[リクエストと制限に対するKubernetes CPUおよびメモリの割り当てをオーバーライド](https://docs.gitlab.com/runner/executors/kubernetes/#overwrite-container-resources)できます。
+
+[Runnerの機能フラグ](https://docs.gitlab.com/runner/configuration/feature-flags/#available-feature-flags)は、[ジョブとパイプラインの変数](https://docs.gitlab.com/runner/configuration/feature-flags/#enable-feature-flag-in-pipeline-configuration)としても受け入れられます。
 
 ### Git戦略 {#git-strategy}
 
@@ -496,7 +499,7 @@ Git戦略の`none`もローカルの実行コピーを再利用しますが、�
 
 これは、デプロイジョブなど、アーティファクトでのみ動作するジョブに使用できます。Gitリポジトリデータが残っている可能性がありますが、（残っていても）古くなっていると考えられます。キャッシュまたはアーティファクトからローカルの実行コピーに取り込まれたファイルのみを使用する必要があります。前のパイプラインからのキャッシュファイルとアーティファクトファイルがまだ残っている可能性があることに注意してください。
 
-`none`とは異なり、`empty` Git戦略は、キャッシュファイルまたはアーティファクトファイルをダウンロードする前に、専用のビルドディレクトリを削除してから再作成します。この戦略では、GitLab Runnerのフックスクリプトが引き続き実行され（提供されている場合）、動作のさらなるカスタマイズを可能にします。次の場合は、`empty` Git戦略を使用します。
+`none`とは異なり、`empty` Git戦略は、キャッシュファイルまたはアーティファクトファイルをダウンロードする前に、専用のビルドディレクトリを削除してから再作成します。この戦略では、GitLab Runnerのフックスクリプトが引き続き実行され（提供されている場合）、動作のさらなるカスタマイズを可能にします。次の場合は、`empty` Git戦略を使用します:
 
 - リポジトリデータが存在する必要がない。
 - ジョブが実行されるたびに、クリーンで制御された、またはカスタマイズされた開始状態が必要になる。
@@ -505,25 +508,25 @@ Git戦略の`none`もローカルの実行コピーを再利用しますが、�
 
 ビルド前にコードをフェッチするときに、`GIT_SUBMODULE_STRATEGY`変数を使用して、[Gitサブモジュール](https://git-scm.com/book/en/v2/Git-Tools-Submodules)を含めるかどうか、またはどのように含めるかを制御します。これらは、[`variables`](../yaml/_index.md#variables)セクションでグローバルに、またはジョブごとに設定できます。
 
-使用可能な3つの値は、`none`、`normal`、`recursive`です。
+使用可能な3つの値は、`none`、`normal`、`recursive`です:
 
 - `none`は、プロジェクトコードの取得時にサブモジュールが含まれないことを意味します。この設定は、1.10より前のバージョンのデフォルトの動作と一致します。
 
-- `normal`は、トップレベルのサブモジュールのみが含まれることを意味します。次のコマンドと同等です。
+- `normal`は、トップレベルのサブモジュールのみが含まれることを意味します。次のコマンドと同等です:
 
   ```shell
   git submodule sync
   git submodule update --init
   ```
 
-- `recursive`は、すべてのサブモジュール（サブモジュールのサブモジュールを含む）が含まれることを意味します。この機能にはGit v1.8.1以降が必要です。Dockerに基づいていないexecutorでGitLab Runnerを使用する場合は、Gitのバージョンがその要件を満たしていることを確認してください。次のコマンドと同等です。
+- `recursive`は、すべてのサブモジュール（サブモジュールのサブモジュールを含む）が含まれることを意味します。この機能にはGit v1.8.1以降が必要です。Dockerに基づいていないexecutorでGitLab Runnerを使用する場合は、Gitのバージョンがその要件を満たしていることを確認してください。次のコマンドと同等です:
 
   ```shell
   git submodule sync --recursive
   git submodule update --init --recursive
   ```
 
-この機能が正しく動作するには、（`.gitmodules`で）サブモジュールが次のいずれかで設定されている必要があります。
+この機能が正しく動作するには、（`.gitmodules`で）サブモジュールが次のいずれかで設定されている必要があります:
 
 - 公開されているリポジトリのHTTP(S) URL
 - 同じGitLabサーバー上にある別のリポジトリの相対パス[Gitサブモジュール](git_submodules.md)のドキュメントを参照してください。
@@ -534,12 +537,12 @@ Git戦略の`none`もローカルの実行コピーを再利用しますが、�
 
 `GIT_CHECKOUT`変数を使用すると、`GIT_STRATEGY`が`clone`または`fetch`に設定されている場合に、`git checkout`を実行するかどうかを指定できます。指定しない場合、デフォルトはtrueです。これらは、[`variables`](../yaml/_index.md#variables)セクションでグローバルに、またはジョブごとに設定できます。
 
-`false`に設定すると、Runnerは次のようになります。
+`false`に設定すると、Runnerは次のようになります:
 
 - `fetch`の実行時 - リポジトリを更新し、実行コピーを現在のリビジョンに残します。
 - `clone`の実行時 - リポジトリをクローンして、実行コピーをデフォルトブランチに残します。
 
-`GIT_CHECKOUT`が`true`に設定されている場合、`clone`と`fetch`の両方が同じように動作します。Runnerは、CIパイプラインに関連するリビジョンの実行コピーをチェックアウトします。
+`GIT_CHECKOUT`が`true`に設定されている場合、`clone`と`fetch`の両方が同じように動作します。Runnerは、CIパイプラインに関連するリビジョンの実行コピーをチェックアウトします:
 
 ```yaml
 variables:
@@ -558,12 +561,12 @@ script:
 
 `GIT_CHECKOUT: "false"`が指定されている場合、`git clean`は無効になります。
 
-`GIT_CLEAN_FLAGS`の動作は次のようになります。
+`GIT_CLEAN_FLAGS`の動作は次のようになります:
 
 - 指定されていない場合、`git clean`フラグはデフォルトで`-ffdx`になります。
 - 値`none`が指定されている場合、`git clean`は実行されません。
 
-次に例を示します。
+次に例を示します:
 
 ```yaml
 variables:
@@ -578,18 +581,18 @@ script:
 
 `GIT_FETCH_EXTRA_FLAGS`は、[`git fetch`](https://git-scm.com/docs/git-fetch)コマンドのすべてのオプションを受け入れます。ただし、`GIT_FETCH_EXTRA_FLAGS`フラグは、変更できないデフォルトのフラグの後に追加されます。
 
-デフォルトのフラグは次のとおりです。
+デフォルトのフラグは次のとおりです:
 
 - [`GIT_DEPTH`](#shallow-cloning)。
 - [refspec](https://git-scm.com/book/en/v2/Git-Internals-The-Refspec)のリスト。
 - `origin`という名前のremote。
 
-`GIT_FETCH_EXTRA_FLAGS`の動作は次のようになります。
+`GIT_FETCH_EXTRA_FLAGS`の動作は次のようになります:
 
 - 指定されていない場合、`git fetch`フラグはデフォルトで`--prune --quiet`とデフォルトのフラグになります。
 - 値`none`が指定されている場合、`git fetch`はデフォルトのフラグでのみ実行されます。
 
-たとえば、デフォルトのフラグは`--prune --quiet`であるため、これを`--prune`だけでオーバーライドすることにより、`git fetch`をより冗長にすることができます。
+たとえば、デフォルトのフラグは`--prune --quiet`であるため、これを`--prune`だけでオーバーライドすることにより、`git fetch`をより冗長にすることができます:
 
 ```yaml
 variables:
@@ -598,7 +601,7 @@ script:
   - ls -al cache/
 ```
 
-上記の設定では、`git fetch`が次のように呼び出されます。
+上記の設定では、`git fetch`が次のように呼び出されます:
 
 ```shell
 git fetch origin $REFSPECS --depth 20  --prune
@@ -606,20 +609,43 @@ git fetch origin $REFSPECS --depth 20  --prune
 
 上の`$REFSPECS`は、GitLabによってRunnerに内部的に提供される値です。
 
+### Gitクローンの追加フラグ {#git-clone-extra-flags}
+
+`GIT_CLONE_EXTRA_FLAGS`変数を使用して、ネイティブな`git clone`操作に追加の引数を渡します。この変数は、[`variables`](../yaml/_index.md#variables)セクションでグローバルに、またはジョブごとに設定できます。
+
+`GIT_CLONE_EXTRA_FLAGS`を使用するには:
+
+- ネイティブ`git clone`機能を有効にするには、`FF_USE_GIT_NATIVE_CLONE`を`true`に設定します。
+- フェッチの代わりにクローン戦略を使用するには、`GIT_STRATEGY`を`clone`に設定します。
+- Gitクライアントは少なくともバージョン2.49である必要があります。[ヘルパーイメージ](https://docs.gitlab.com/runner/configuration/advanced-configuration/#helper-image)がLinuxフレーバーのイメージ、バージョン18.1以降の場合、この条件は自動的に満たされます。
+
+`GIT_CLONE_EXTRA_FLAGS`は、`git clone`コマンドのすべてのオプションを受け入れます。これらのフラグはネイティブ`git clone`コマンドに追加され、代替リポジトリへの参照やクローンパフォーマンスの最適化など、高度なユースケースに柔軟性を提供します。
+
+たとえば、参照リポジトリを使用してクローンのパフォーマンスを最適化できます:
+
+```yaml
+variables:
+  FF_USE_GIT_NATIVE_CLONE: true
+  GIT_STRATEGY: clone
+  GIT_CLONE_EXTRA_FLAGS: "--reference-if-available /tmp/test"
+```
+
+`GIT_CLONE_EXTRA_FLAGS`が指定されていない場合、`git clone`はデフォルトのフラグのみを使用します。
+
 ### CIジョブから特定のサブモジュールを同期または除外する {#sync-or-exclude-specific-submodules-from-ci-jobs}
 
 同期または更新する必要があるサブモジュールがどれかを制御するには、`GIT_SUBMODULE_PATHS`変数を使用します。この変数は、[`variables`](../yaml/_index.md#variables)セクションでグローバルに、またはジョブごとに設定できます。
 
-パス構文は[`git submodule`](https://git-scm.com/docs/git-submodule#Documentation/git-submodule.txt-ltpathgt82308203)と同じです。
+パス構文は[`git submodule`](https://git-scm.com/docs/git-submodule#Documentation/git-submodule.txt-ltpathgt82308203)と同じです:
 
-- 次のように、特定のパスを同期して更新できます。
+- 次のように、特定のパスを同期して更新できます:
 
   ```yaml
   variables:
      GIT_SUBMODULE_PATHS: submoduleA submoduleB
   ```
 
-- 次のように、特定のパスを除外できます。
+- 次のように、特定のパスを除外できます:
 
   ```yaml
   variables:
@@ -628,7 +654,7 @@ git fetch origin $REFSPECS --depth 20  --prune
 
 {{< alert type="warning" >}}
 
-Gitはネストされたパスを無視します。ネストされたサブモジュールを無視するには、親サブモジュールを除外し、ジョブのスクリプトでそのクローンを手動で作成します。たとえば、`git clone <repo> --recurse-submodules=':(exclude)nested-submodule'`です。YAMLが正常に解析されるように、文字列を単一引用符で囲んでください。
+Gitはネストされたパスを無視します。ネストされたサブモジュールを無視するには、親サブモジュールを除外し、ジョブのスクリプトでそのクローンを手動で作成します。例: `git clone <repo> --recurse-submodules=':(exclude)nested-submodule'`。YAMLが正常に解析されるように、文字列を単一引用符で囲んでください。
 
 {{< /alert >}}
 
@@ -636,7 +662,7 @@ Gitはネストされたパスを無視します。ネストされたサブモ�
 
 [`GIT_SUBMODULE_STRATEGY`](#git-submodule-strategy)が`normal`または`recursive`のいずれかに設定されている場合、`GIT_SUBMODULE_UPDATE_FLAGS`変数を使用して`git submodule update`の動作を制御します。この変数は、[`variables`](../yaml/_index.md#variables)セクションでグローバルに、またはジョブごとに設定できます。
 
-`GIT_SUBMODULE_UPDATE_FLAGS`は、[`git submodule update`](https://git-scm.com/docs/git-submodule#Documentation/git-submodule.txt-update--init--remote-N--no-fetch--no-recommend-shallow-f--force--checkout--rebase--merge--referenceltrepositorygt--depthltdepthgt--recursive--jobsltngt--no-single-branch--ltpathgt82308203)サブコマンドのすべてのオプションを受け入れます。ただし、`GIT_SUBMODULE_UPDATE_FLAGS`フラグは、いくつかのデフォルトのフラグの後に追加されます。
+`GIT_SUBMODULE_UPDATE_FLAGS`は、[`git submodule update`](https://git-scm.com/docs/git-submodule#Documentation/git-submodule.txt-update--init--remote-N--no-fetch--no-recommend-shallow-f--force--checkout--rebase--merge--referenceltrepositorygt--depthltdepthgt--recursive--jobsltngt--no-single-branch--ltpathgt82308203)サブコマンドのすべてのオプションを受け入れます。ただし、`GIT_SUBMODULE_UPDATE_FLAGS`フラグは、いくつかのデフォルトのフラグの後に追加されます:
 
 - [`GIT_SUBMODULE_STRATEGY`](#git-submodule-strategy)が`normal`または`recursive`に設定されている場合: `--init`。
 - [`GIT_SUBMODULE_STRATEGY`](#git-submodule-strategy)が`recursive`に設定されている場合: `--recursive`。
@@ -644,7 +670,7 @@ Gitはネストされたパスを無視します。ネストされたサブモ�
 
 Gitは引数リストで最後に出現するフラグを優先するため、`GIT_SUBMODULE_UPDATE_FLAGS`でフラグを手動で指定すると、これらのデフォルトフラグがオーバーライドされます。
 
-たとえば、この変数を使用して次のことができます。
+たとえば、この変数を使用して次のことができます:
 
 - `--remote`フラグを使用して、リポジトリ（デフォルト）で追跡されたコミットではなく、最新のリモート`HEAD`をフェッチして、すべてのサブモジュールを自動的に更新します。
 - `--jobs 4`フラグを使用して、複数の並列ジョブでサブモジュールをフェッチすることにより、チェックアウトを高速化します。
@@ -657,7 +683,7 @@ script:
   - ls -al .git/modules/
 ```
 
-上記の設定では、`git submodule update`が次のように呼び出されます。
+上記の設定では、`git submodule update`が次のように呼び出されます:
 
 ```shell
 git submodule update --init --depth 20 --recursive --remote --jobs 4
@@ -671,13 +697,13 @@ git submodule update --init --depth 20 --recursive --remote --jobs 4
 
 {{< /alert >}}
 
-`--remote`の動作は、Gitのバージョンによって異なります。スーパープロジェクトの`.gitmodules`ファイルで指定されたブランチが、サブモジュールリポジトリのデフォルトブランチと異なる場合、一部のGitバージョンは以下のエラーで失敗する可能性があります。
+`--remote`の動作は、Gitのバージョンによって異なります。スーパープロジェクトの`.gitmodules`ファイルで指定されたブランチが、サブモジュールリポジトリのデフォルトブランチと異なる場合、一部のGitバージョンは以下のエラーで失敗する可能性があります:
 
 `fatal: Unable to find refs/remotes/origin/<branch> revision in submodule path '<submodule-path>'`
 
 Runnerは「ベストエフォート」フォールバックを実装して、サブモジュールの更新が失敗した場合にリモート参照のプルを試みます。
 
-このフォールバックがお使いのGitのバージョンで動作しない場合は、次のいずれかの回避策を試してください。
+このフォールバックがお使いのGitのバージョンで動作しない場合は、次のいずれかの回避策を試してください:
 
 - スーパープロジェクトの`.gitmodules`で設定されたブランチと一致するように、サブモジュールリポジトリのデフォルトブランチを更新します。
 - `GIT_SUBMODULE_DEPTH`を`0`に設定します。
@@ -713,7 +739,7 @@ Gitのフェッチとクローン作成はブランチ名などのrefに基づ�
 
 `git describe`に依存するジョブは、`GIT_DEPTH`が設定されていると正しく動作しない場合があります。これは、Gitの履歴の一部のみが残っているためです。
 
-次のコマンドで、最後の3つのコミットのみをフェッチまたはクローンできます。
+次のコマンドで、最後の3つのコミットのみをフェッチまたはクローンできます:
 
 ```yaml
 variables:
@@ -734,7 +760,7 @@ variables:
 
 `GIT_SUBMODULE_DEPTH`変数を設定すると、サブモジュールに対してのみ[`GIT_DEPTH`](#shallow-cloning)設定が上書きされます。
 
-次のコマンドで、最後の3つのコミットのみをフェッチまたはクローンできます。
+次のコマンドで、最後の3つのコミットのみをフェッチまたはクローンできます:
 
 ```yaml
 variables:
@@ -743,7 +769,7 @@ variables:
 
 ### カスタムビルドディレクトリ {#custom-build-directories}
 
-デフォルトでは、GitLab Runnerは、`$CI_BUILDS_DIR`ディレクトリの一意のサブパスにリポジトリをクローンします。ただし、プロジェクトでは、特定のディレクトリ（Goプロジェクトなど）にコードが必要になる場合があります。その場合は、`GIT_CLONE_PATH`変数を指定して、リポジトリのクローンを作成するディレクトリをRunnerに指示できます。
+デフォルトでは、GitLab Runnerは、`$CI_BUILDS_DIR`ディレクトリの一意のサブパスにリポジトリをクローンします。ただし、プロジェクトでは、特定のディレクトリ（Goプロジェクトなど）にコードが必要になる場合があります。その場合は、`GIT_CLONE_PATH`変数を指定して、リポジトリのクローンを作成するディレクトリをRunnerに指示できます:
 
 ```yaml
 variables:
@@ -764,12 +790,12 @@ test:
 
 Runnerはこの状況を防ごうとしません。Runnerの設定要件を遵守することは、管理者とデベロッパーの責任です。
 
-このシナリオを回避するには、`$CI_BUILDS_DIR`で一意のパスを使用します。Runnerが、並行処理の一意の`ID`を提供する2つの追加変数を公開するからです。
+このシナリオを回避するには、`$CI_BUILDS_DIR`で一意のパスを使用します。Runnerが、並行処理の一意の`ID`を提供する2つの追加変数を公開するからです:
 
 - `$CI_CONCURRENT_ID`: 指定されたexecutorで実行されているすべてのジョブの一意のID。
 - `$CI_CONCURRENT_PROJECT_ID`: 指定されたexecutorおよびプロジェクトで実行されているすべてのジョブの一意のID。
 
-シナリオやexecutorを問わず確実に動作する最も安定した設定は、`GIT_CLONE_PATH`で`$CI_CONCURRENT_ID`を使用することです。次に例を示します。
+シナリオやexecutorを問わず確実に動作する最も安定した設定は、`GIT_CLONE_PATH`で`$CI_CONCURRENT_ID`を使用することです。次に例を示します:
 
 ```yaml
 variables:
@@ -780,7 +806,7 @@ test:
     - pwd -P
 ```
 
-`$CI_CONCURRENT_PROJECT_ID`は、`$CI_PROJECT_PATH`と組み合わせて使用する必要があります。`$CI_PROJECT_PATH`は、`group/subgroup/project`形式でリポジトリのパスを提供します。次に例を示します。
+`$CI_CONCURRENT_PROJECT_ID`は、`$CI_PROJECT_PATH`と組み合わせて使用する必要があります。`$CI_PROJECT_PATH`は、`group/subgroup/project`形式でリポジトリのパスを提供します。次に例を示します:
 
 ```yaml
 variables:
@@ -795,7 +821,7 @@ test:
 
 `GIT_CLONE_PATH`の値は1回展開されます。この値に変数をネストすることはできません。
 
-たとえば、`.gitlab-ci.yml`ファイルで以下の両方の変数を定義します。
+たとえば、`.gitlab-ci.yml`ファイルで以下の両方の変数を定義します:
 
 ```yaml
 variables:
@@ -809,7 +835,7 @@ variables:
 
 ジョブで[`after_script`](../yaml/_index.md#after_script)を使用して、ジョブの`before_script`および`script`セクションの後に実行する必要があるコマンドの配列を定義できます。`after_script`コマンドは、スクリプトの終了ステータス（失敗または成功）に関係なく実行されます。
 
-デフォルトでは、GitLab Runnerは`after_script`の実行時に発生するエラーを無視します。`after_script`の実行時にエラーが発生するとジョブが即座に失敗するように設定するには、`AFTER_SCRIPT_IGNORE_ERRORS` CI/CD変数を`false`に設定します。次に例を示します。
+デフォルトでは、GitLab Runnerは`after_script`の実行時に発生するエラーを無視します。`after_script`の実行時にエラーが発生するとジョブが即座に失敗するように設定するには、`AFTER_SCRIPT_IGNORE_ERRORS` CI/CD変数を`false`に設定します。次に例を示します:
 
 ```yaml
 variables:
@@ -818,7 +844,7 @@ variables:
 
 ### ジョブステージの試行回数 {#job-stages-attempts}
 
-実行中のジョブが以下のステージの実行を試みる回数を設定できます。
+実行中のジョブが以下のステージの実行を試みる回数を設定できます:
 
 | 変数                        | 説明 |
 |---------------------------------|-------------|
@@ -887,7 +913,7 @@ variables:
 
 Runnerは[SLSA Provenance](https://slsa.dev/spec/v1.0/provenance)を生成し、すべてのビルドアーティファクトに来歴をバインドする[SLSA Statement](https://slsa.dev/spec/v1.0/attestation-model#model-and-terminology)を生成できます。このステートメントは、アーティファクトの来歴メタデータと呼ばれます。
 
-アーティファクト来歴メタデータを有効にするには、`RUNNER_GENERATE_ARTIFACTS_METADATA`環境変数を`true`に設定します。グローバルに変数を設定することも、個々のジョブに設定することもできます。
+アーティファクト来歴メタデータを有効にするには、`RUNNER_GENERATE_ARTIFACTS_METADATA`環境変数を`true`に設定します。グローバルに変数を設定することも、個々のジョブに設定することもできます:
 
 ```yaml
 variables:
@@ -904,7 +930,7 @@ job1:
 
 アーティファクト来歴メタデータは、[in-toto v0.1 Statement](https://github.com/in-toto/attestation/tree/v0.1.0/spec#statement)形式で生成されます。これには、[SLSA 1.0 Provenance](https://slsa.dev/spec/v1.0/provenance)形式で生成された来歴情報が含まれています。
 
-これらのフィールドには、デフォルトで入力された値が入ります。
+これらのフィールドには、デフォルトで入力された値が入ります:
 
 | フィールド                                                             | 値 |
 |-------------------------------------------------------------------|-------|
@@ -928,7 +954,7 @@ job1:
 | `predicate.runDetails.metadata.startedOn`                         | ビルドが開始された時間。このフィールドは`RFC3339`形式です。 |
 | `predicate.runDetails.metadata.finishedOn`                        | ビルドが終了した時間。メタデータの生成はビルド中に行われるため、この時間は、GitLabでレポートされている時間よりもわずかに前の時間になります。このフィールドは`RFC3339`形式です。 |
 
-来歴ステートメントは、次の例のようになります。
+来歴ステートメントは、次の例のようになります:
 
 ```json
 {

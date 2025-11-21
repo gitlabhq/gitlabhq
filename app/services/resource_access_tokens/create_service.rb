@@ -16,7 +16,7 @@ module ResourceAccessTokens
 
       access_level = params[:access_level] || Gitlab::Access::MAINTAINER
 
-      return error("Access level of the token contains permissions not held by the creating user") unless validate_access_level(access_level)
+      return error("Access level of the token contains permissions not held by the creating user") unless valid_access_level?(access_level)
 
       return error(s_('AccessTokens|Access token limit reached')) if reached_access_token_limit?
 
@@ -144,15 +144,10 @@ module ResourceAccessTokens
       ServiceResponse.success(payload: { access_token: access_token })
     end
 
-    def validate_access_level(access_level)
+    def valid_access_level?(access_level)
       return true if current_user.bot?
 
-      user_access_level = resource.max_member_access_for_user(current_user)
-
-      Gitlab::Access.level_encompasses?(
-        current_access_level: user_access_level,
-        level_to_assign: access_level.to_i
-      )
+      resource.can_assign_role?(current_user, access_level)
     end
   end
 end

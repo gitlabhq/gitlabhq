@@ -139,7 +139,7 @@ not respond" is displayed.
 ## Classification labels
 
 You can use your own classification label in the project's
-**Settings > General > General project settings** page in the "Classification
+**Settings** > **General** > **General project settings** page in the "Classification
 label" box. When no classification label is specified on a project, the default
 label defined in the [global settings](#configuration) is used.
 

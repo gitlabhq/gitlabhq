@@ -6,6 +6,7 @@ class Project < ApplicationRecord
   include Gitlab::ConfigHelper
   include Gitlab::VisibilityLevel
   include AccessRequestable
+  include Authz::HasRoles
   include Avatarable
   include CacheMarkdownField
   include Sortable
@@ -3704,15 +3705,6 @@ class Project < ApplicationRecord
   # Ensures project has a pool repository without exposing private creation logic
   def ensure_pool_repository
     pool_repository || create_new_pool_repository
-  end
-
-  def assigning_role_too_high?(current_user, access_level)
-    return false unless access_level
-    return false if current_user.can_admin_all_resources?
-
-    max_access_level = max_member_access_for_user(current_user)
-
-    !Gitlab::Access.level_encompasses?(current_access_level: max_access_level, level_to_assign: access_level)
   end
 
   private

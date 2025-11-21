@@ -148,7 +148,7 @@ To configure the default namespace:
 
 1. [Determine the namespace your project is in](../namespace/_index.md#determine-which-type-of-namespace-youre-in).
 1. In VS Code, select **File** > **Preferences** > **Settings**.
-1. Search for **GitLab > Duo Agent Platform: Default Namespace** and enter your namespace.
+1. Search for **GitLab** > **Duo Agent Platform: Default Namespace** and enter your namespace.
 
 ### Project not in a group namespace
 

@@ -29,6 +29,8 @@ review-docs-deploy-localization:
   extends:
     - .review-docs
     - .docs:rules:docs-i18n-lint
+  when: manual
+  allow_failure: true
   variables:
     # Use the Hugo translation environment
     # https://gitlab.com/gitlab-org/technical-writing/docs-gitlab-com/-/blob/main/config/translation/hugo.yaml

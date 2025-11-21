@@ -1430,7 +1430,7 @@ Follow these best practices when you build projects that use CocoaPods for depen
 
      1. Open your `.xcworkspace` file in Xcode.
      1. Select your target scheme.
-     1. Select **Product > Build**. You can also press <kbd>⌘</kbd>+<kbd>B</kbd>.
+     1. Select **Product** > **Build**. You can also press <kbd>⌘</kbd>+<kbd>B</kbd>.
 
    - [fastlane](https://fastlane.tools/), a tool for automating builds and releases for iOS and Android apps:
 

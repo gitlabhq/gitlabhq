@@ -19,11 +19,7 @@ title: マージリクエスト承認API
 
 {{< /history >}}
 
-このAPIは、プロジェクトまたはグループ内のマージリクエストに対する承認の設定を管理します。
-
-- ユーザーとしてマージリクエストを承認および承認解除します。
-- マージリクエストに対する自分自身だけでなく、すべての承認をリセットします。
-- プロジェクトの承認ルールを表示および管理します。
+このAPIを使用して、[マージリクエスト承認](../user/project/merge_requests/approvals/_index.md)を管理します。
 
 すべてのエンドポイントで認証が必要です。
 
@@ -41,8 +37,8 @@ POST /projects/:id/merge_requests/:merge_request_iid/approve
 
 | 属性           | 型              | 必須 | 説明 |
 |---------------------|-------------------|----------|-------------|
-| `id`                | 整数または文字列 | はい      | プロジェクトのID、または[URLエンコードされたパス](rest/_index.md#namespaced-paths)。 |
-| `approval_password` | 文字列            | いいえ       | 現在のユーザーのパスワード。プロジェクトの設定で、[**承認するにはユーザーの再認証を要求する**](../user/project/merge_requests/approvals/settings.md#require-user-re-authentication-to-approve)が有効になっている場合は、必須です。グループまたはGitLab Self-ManagedインスタンスがSAML認証を強制するように設定されている場合、常に失敗します。 |
+| `id`                | 整数または文字列 | はい      | プロジェクトのIDまたは[URLエンコードされたパス](rest/_index.md#namespaced-paths)。 |
+| `approval_password` | 文字列            | いいえ       | 現在のユーザーのパスワード。プロジェクトの設定で、[**Require user re-authentication to approve**（承認するにはユーザーの再認証を要求する）](../user/project/merge_requests/approvals/settings.md#require-user-re-authentication-to-approve)が有効になっている場合は、必須です。グループまたはGitLab Self-ManagedインスタンスがSAML認証を強制するように設定されている場合、常に失敗します。 |
 | `merge_request_iid` | 整数           | はい      | マージリクエストのIID。 |
 | `sha`               | 文字列            | いいえ       | マージリクエストの`HEAD`。 |
 
@@ -88,13 +84,13 @@ POST /projects/:id/merge_requests/:merge_request_iid/approve
 
 ### 自動化されたマージリクエストの承認 {#approvals-for-automated-merge-requests}
 
-APIを使用してマージリクエストを作成し、すぐに承認すると、自動化によってコミットが完全に処理される前に、マージリクエストが承認される可能性があります。デフォルトでは、新しい[コミット](../user/project/merge_requests/approvals/settings.md#remove-all-approvals-when-commits-are-added-to-the-source-branch)をマージリクエストに追加すると、既存のすべての承認がリセットされます。この場合、**アクティビティー**領域には、次のような一連のメッセージがマージリクエストに表示されます。
+APIを使用してマージリクエストを作成し、すぐに承認すると、自動化によってコミットが完全に処理される前に、マージリクエストが承認される可能性があります。デフォルトでは、新しい[コミット](../user/project/merge_requests/approvals/settings.md#remove-all-approvals-when-commits-are-added-to-the-source-branch)をマージリクエストに追加すると、既存のすべての承認がリセットされます。この場合、**アクティビティー**領域には、次のような一連のメッセージがマージリクエストに表示されます:
 
 - `(botname)`が5分前にこのマージリクエストを承認しました
 - `(botname)`が5分前に1件のコミットを追加しました
 - `(botname)`が5分前にブランチにプッシュすることにより、`(botname)`から承認をリセットしました
 
-コミットの処理が完了する前に自動承認が適用されないようにするには、自動化で次のようになるまで待機（または`sleep`）関数を追加する必要があります。
+コミットの処理が完了する前に自動承認が適用されないようにするには、自動化で次のようになるまで待機（または`sleep`）関数を追加する必要があります:
 
 - `detailed_merge_status`属性が、`checking`または`approvals_syncing`のいずれの状態にもありません。
 - マージリクエストの差分にNULLではない`patch_id_sha`が含まれています。
@@ -111,7 +107,7 @@ POST /projects/:id/merge_requests/:merge_request_iid/unapprove
 
 | 属性           | 型              | 必須 | 説明 |
 |---------------------|-------------------|----------|-------------|
-| `id`                | 整数または文字列 | はい      | プロジェクトのID、または[URLエンコードされたパス](rest/_index.md#namespaced-paths)。 |
+| `id`                | 整数または文字列 | はい      | プロジェクトのIDまたは[URLエンコードされたパス](rest/_index.md#namespaced-paths)。 |
 | `merge_request_iid` | 整数           | はい      | マージリクエストのIID。 |
 
 ## マージリクエストの承認をリセットする {#reset-approvals-for-a-merge-request}
@@ -151,7 +147,7 @@ GET /projects/:id/approvals
 
 | 属性 | 型              | 必須 | 説明 |
 |-----------|-------------------|----------|-------------|
-| `id`      | 整数または文字列 | はい      | プロジェクトのID、または[URLエンコードされたパス](rest/_index.md#namespaced-paths)。 |
+| `id`      | 整数または文字列 | はい      | プロジェクトのIDまたは[URLエンコードされたパス](rest/_index.md#namespaced-paths)。 |
 
 ```json
 {
@@ -180,7 +176,7 @@ POST /projects/:id/approvals
 
 | 属性                                        | 型              | 必須 | 説明 |
 |--------------------------------------------------|-------------------|----------|-------------|
-| `id`                                             | 整数または文字列 | はい      | プロジェクトのID、または[URLエンコードされたパス](rest/_index.md#namespaced-paths)。 |
+| `id`                                             | 整数または文字列 | はい      | プロジェクトのIDまたは[URLエンコードされたパス](rest/_index.md#namespaced-paths)。 |
 | `approvals_before_merge`（非推奨）            | 整数           | いいえ       | マージリクエストをマージするために必要な承認の数。GitLab 12.3で[非推奨](https://gitlab.com/gitlab-org/gitlab/-/issues/11132)になりました。代わりに、[承認ルールを作成](#create-an-approval-rule-for-a-project)します。 |
 | `disable_overriding_approvers_per_merge_request` | ブール値           | いいえ       | `true`の場合、マージリクエスト内の承認者のオーバーライドを防ぎます。 |
 | `merge_requests_author_approval`                 | ブール値           | いいえ       | `true`の場合、作成者は自分のマージリクエストを自己承認できます。 |
@@ -217,7 +213,7 @@ GET /projects/:id/approval_rules
 
 | 属性 | 型              | 必須 | 説明 |
 |-----------|-------------------|----------|-------------|
-| `id`      | 整数または文字列 | はい      | プロジェクトのID、または[URLエンコードされたパス](rest/_index.md#namespaced-paths)。 |
+| `id`      | 整数または文字列 | はい      | プロジェクトのIDまたは[URLエンコードされたパス](rest/_index.md#namespaced-paths)。 |
 
 ```json
 [
@@ -396,7 +392,7 @@ GET /projects/:id/approval_rules/:approval_rule_id
 
 | 属性          | 型              | 必須 | 説明 |
 |--------------------|-------------------|----------|-------------|
-| `id`               | 整数または文字列 | はい      | プロジェクトのID、または[URLエンコードされたパス](rest/_index.md#namespaced-paths)。 |
+| `id`               | 整数または文字列 | はい      | プロジェクトのIDまたは[URLエンコードされたパス](rest/_index.md#namespaced-paths)。 |
 | `approval_rule_id` | 整数           | はい      | 承認ルールのID。 |
 
 ```json
@@ -486,7 +482,7 @@ GET /projects/:id/approval_rules/:approval_rule_id
 
 プロジェクトの承認ルールを作成します。
 
-`rule_type`フィールドは、次のルールタイプをサポートします。
+`rule_type`フィールドは、次のルールタイプをサポートします:
 
 - `any_approver`: `approvals_required`が`0`に設定された、事前設定済みのデフォルトルール。
 - `regular`: 通常の[マージリクエストの承認ルール](../user/project/merge_requests/approvals/rules.md)に使用されます。
@@ -500,7 +496,7 @@ POST /projects/:id/approval_rules
 
 | 属性                           | 型              | 必須 | 説明 |
 |-------------------------------------|-------------------|----------|-------------|
-| `id`                                | 整数または文字列 | はい      | プロジェクトのID、または[URLエンコードされたパス](rest/_index.md#namespaced-paths)。 |
+| `id`                                | 整数または文字列 | はい      | プロジェクトのIDまたは[URLエンコードされたパス](rest/_index.md#namespaced-paths)。 |
 | `approvals_required`                | 整数           | はい      | このルールに必要な承認の数。 |
 | `name`                              | 文字列            | はい      | 承認ルールの名前。1024文字に制限されています。 |
 | `applies_to_all_protected_branches` | ブール値           | いいえ       | `true`の場合、ルールはすべての保護ブランチに適用され、`protected_branch_ids`属性は無視されます。 |
@@ -593,7 +589,7 @@ POST /projects/:id/approval_rules
 }
 ```
 
-必要な承認者のデフォルト数を0から増やすには、次のようにします。
+必要な承認者のデフォルト数を0から増やすには、次のようにします:
 
 ```shell
 curl --request POST \
@@ -603,7 +599,7 @@ curl --request POST \
   --url "https://gitlab.example.com/api/v4/projects/<project_id>/approval_rules"
 ```
 
-別の例として、ユーザー固有のルールを作成する方法を次に示します。
+別の例として、ユーザー固有のルールを作成する方法を次に示します:
 
 ```shell
 curl --request POST \
@@ -628,7 +624,7 @@ PUT /projects/:id/approval_rules/:approval_rule_id
 | 属性                           | 型              | 必須 | 説明 |
 |-------------------------------------|-------------------|----------|-------------|
 | `approval_rule_id`                  | 整数           | はい      | 承認ルールのID。 |
-| `id`                                | 整数または文字列 | はい      | プロジェクトのID、または[URLエンコードされたパス](rest/_index.md#namespaced-paths)。 |
+| `id`                                | 整数または文字列 | はい      | プロジェクトのIDまたは[URLエンコードされたパス](rest/_index.md#namespaced-paths)。 |
 | `applies_to_all_protected_branches` | ブール値           | いいえ       | `true`の場合、ルールはすべての保護ブランチに適用され、`protected_branch_ids`属性は無視されます。 |
 | `approvals_required`                | 整数           | いいえ       | このルールに必要な承認の数。 |
 | `group_ids`                         | 配列             | いいえ       | 承認者としてのグループのID。 |
@@ -732,7 +728,7 @@ DELETE /projects/:id/approval_rules/:approval_rule_id
 
 | 属性          | 型              | 必須 | 説明 |
 |--------------------|-------------------|----------|-------------|
-| `id`               | 整数または文字列 | はい      | プロジェクトのID、または[URLエンコードされたパス](rest/_index.md#namespaced-paths)。 |
+| `id`               | 整数または文字列 | はい      | プロジェクトのIDまたは[URLエンコードされたパス](rest/_index.md#namespaced-paths)。 |
 | `approval_rule_id` | 整数           | はい      | 承認ルールのID。 |
 
 ## マージリクエストの承認ルール {#approval-rules-for-a-merge-request}
@@ -753,7 +749,7 @@ GET /projects/:id/merge_requests/:merge_request_iid/approvals
 
 | 属性           | 型              | 必須 | 説明 |
 |---------------------|-------------------|----------|-------------|
-| `id`                | 整数または文字列 | はい      | プロジェクトのID、または[URLエンコードされたパス](rest/_index.md#namespaced-paths)。 |
+| `id`                | 整数または文字列 | はい      | プロジェクトのIDまたは[URLエンコードされたパス](rest/_index.md#namespaced-paths)。 |
 | `merge_request_iid` | 整数           | はい      | マージリクエストのIID。 |
 
 ```json
@@ -779,7 +775,7 @@ GET /projects/:id/merge_requests/:merge_request_iid/approvals
         "avatar_url": "http://www.gravatar.com/avatar/e64c7d89f26bd1972efa854d13d7dd61?s=80\u0026d=identicon",
         "web_url": "http://localhost:3000/root"
       },
-      "approved_by": "2016-06-09T01:45:21.720Z"
+      "approved_at": "2016-06-09T01:45:21.720Z"
     }
   ]
 }
@@ -789,7 +785,7 @@ GET /projects/:id/merge_requests/:merge_request_iid/approvals
 
 指定されたマージリクエストの承認の詳細を取得します。
 
-ユーザーがマージリクエストの承認ルールを変更した場合、応答には以下が含まれます。
+ユーザーがマージリクエストの承認ルールを変更した場合、応答には以下が含まれます:
 
 - `approval_rules_overwritten`: `true`の場合、デフォルトの承認ルールが変更されたことを示します。
 - `approved`: `true`の場合、関連付けられた承認ルールが承認されたことを示します。
@@ -803,7 +799,7 @@ GET /projects/:id/merge_requests/:merge_request_iid/approval_state
 
 | 属性           | 型              | 必須 | 説明 |
 |---------------------|-------------------|----------|-------------|
-| `id`                | 整数または文字列 | はい      | プロジェクトのID、または[URLエンコードされたパス](rest/_index.md#namespaced-paths)。 |
+| `id`                | 整数または文字列 | はい      | プロジェクトのIDまたは[URLエンコードされたパス](rest/_index.md#namespaced-paths)。 |
 | `merge_request_iid` | 整数           | はい      | マージリクエストのIID。 |
 
 ```json
@@ -869,7 +865,7 @@ GET /projects/:id/merge_requests/:merge_request_iid/approval_rules
 
 | 属性           | 型              | 必須 | 説明 |
 |---------------------|-------------------|----------|-------------|
-| `id`                | 整数または文字列 | はい      | プロジェクトのID、または[URLエンコードされたパス](rest/_index.md#namespaced-paths)。 |
+| `id`                | 整数または文字列 | はい      | プロジェクトのIDまたは[URLエンコードされたパス](rest/_index.md#namespaced-paths)。 |
 | `merge_request_iid` | 整数           | はい      | マージリクエストのIID。 |
 
 ```json
@@ -1001,7 +997,7 @@ GET /projects/:id/merge_requests/:merge_request_iid/approval_rules/:approval_rul
 
 | 属性           | 型              | 必須 | 説明 |
 |---------------------|-------------------|----------|-------------|
-| `id`                | 整数または文字列 | はい      | プロジェクトのID、または[URLエンコードされたパス](rest/_index.md#namespaced-paths)。 |
+| `id`                | 整数または文字列 | はい      | プロジェクトのIDまたは[URLエンコードされたパス](rest/_index.md#namespaced-paths)。 |
 | `approval_rule_id`  | 整数           | はい      | 承認ルールのID。 |
 | `merge_request_iid` | 整数           | はい      | マージリクエストのIID。 |
 
@@ -1066,7 +1062,7 @@ GET /projects/:id/merge_requests/:merge_request_iid/approval_rules/:approval_rul
 
 ### マージリクエストの承認ルールを作成する {#create-an-approval-rule-for-a-merge-request}
 
-特定のマージリクエストの承認ルールを作成します。`approval_project_rule_id`がプロジェクトからの既存の承認ルールのIDで設定されている場合、このエンドポイントは次のようになります。
+特定のマージリクエストの承認ルールを作成します。`approval_project_rule_id`がプロジェクトからの既存の承認ルールのIDで設定されている場合、このエンドポイントは次のようになります:
 
 - プロジェクトのルールから、`name`、`users`、および`groups`の値をコピーします。
 - 指定した`approvals_required`値を使用します。
@@ -1079,7 +1075,7 @@ POST /projects/:id/merge_requests/:merge_request_iid/approval_rules
 
 | 属性                  | 型              | 必須               | 説明                                                                  |
 |----------------------------|-------------------|------------------------|------------------------------------------------------------------------------|
-| `id`                       | 整数または文字列 | はい | プロジェクトのID、または[URLエンコードされたパス](rest/_index.md#namespaced-paths)。 |
+| `id`                       | 整数または文字列 | はい | プロジェクトのIDまたは[URLエンコードされたパス](rest/_index.md#namespaced-paths)。 |
 | `approvals_required`       | 整数           | はい | このルールに必要な承認の数。                              |
 | `merge_request_iid`        | 整数           | はい | マージリクエストのIID。                                                |
 | `name`                     | 文字列            | はい | 承認ルールの名前。1024文字に制限されています。                                               |
@@ -1160,7 +1156,7 @@ PUT /projects/:id/merge_requests/:merge_request_iid/approval_rules/:approval_rul
 
 | 属性              | 型              | 必須 | 説明 |
 |------------------------|-------------------|----------|-------------|
-| `id`                   | 整数または文字列 | はい      | プロジェクトのID、または[URLエンコードされたパス](rest/_index.md#namespaced-paths)。 |
+| `id`                   | 整数または文字列 | はい      | プロジェクトのIDまたは[URLエンコードされたパス](rest/_index.md#namespaced-paths)。 |
 | `approval_rule_id`     | 整数           | はい      | 承認ルールのID。 |
 | `merge_request_iid`    | 整数           | はい      | マージリクエストのIID。 |
 | `approvals_required`   | 整数           | いいえ       | このルールに必要な承認の数。 |
@@ -1242,7 +1238,7 @@ DELETE /projects/:id/merge_requests/:merge_request_iid/approval_rules/:approval_
 
 | 属性           | 型              | 必須 | 説明 |
 |---------------------|-------------------|----------|-------------|
-| `id`                | 整数または文字列 | はい      | プロジェクトのID、または[URLエンコードされたパス](rest/_index.md#namespaced-paths)。 |
+| `id`                | 整数または文字列 | はい      | プロジェクトのIDまたは[URLエンコードされたパス](rest/_index.md#namespaced-paths)。 |
 | `approval_rule_id`  | 整数           | はい      | 承認ルールのID。 |
 | `merge_request_iid` | 整数           | はい      | マージリクエストのIID。 |
 
@@ -1288,7 +1284,7 @@ GET /groups/:id/approval_rules
 
 | 属性 | 型              | 必須 | 説明 |
 |-----------|-------------------|----------|-------------|
-| `id`      | 整数または文字列 | はい      | プロジェクトのID、または[URLエンコードされたパス](rest/_index.md#namespaced-paths)。 |
+| `id`      | 整数または文字列 | はい      | プロジェクトのIDまたは[URLエンコードされたパス](rest/_index.md#namespaced-paths)。 |
 
 リクエスト例:
 
@@ -1349,7 +1345,7 @@ curl --request GET \
 
 グループの承認ルールを作成します。グループ管理者に制限されています。
 
-APIから承認ルールをビルドするときは、`rule_type`フィールドを使用しないでください。フィールドは、次のルールタイプをサポートします。
+APIから承認ルールをビルドするときは、`rule_type`フィールドを使用しないでください。フィールドは、次のルールタイプをサポートします:
 
 - `any_approver`: `approvals_required`が`0`に設定された、事前設定済みのデフォルトルール。
 - `regular`: 通常の[マージリクエストの承認ルール](../user/project/merge_requests/approvals/rules.md)に使用されます。
@@ -1363,7 +1359,7 @@ POST /groups/:id/approval_rules
 
 | 属性            | 型              | 必須 | 説明 |
 |----------------------|-------------------|----------|-------------|
-| `id`                 | 整数または文字列 | はい      | グループのID、または[URLエンコードされたパス](rest/_index.md#namespaced-paths)。 |
+| `id`                 | 整数または文字列 | はい      | グループのIDまたは[URLエンコードされたパス](rest/_index.md#namespaced-paths)。 |
 | `approvals_required` | 整数           | はい      | このルールに必要な承認の数。 |
 | `name`               | 文字列            | はい      | 承認ルールの名前。1024文字に制限されています。 |
 | `group_ids`          | 配列             | いいえ       | 承認者としてのグループのID。 |
@@ -1433,7 +1429,7 @@ curl --request POST \
 
 グループの承認ルールを更新します。グループ管理者に制限されています。
 
-APIから承認ルールをビルドするときは、`rule_type`フィールドを使用しないでください。フィールドは、次のルールタイプをサポートします。
+APIから承認ルールをビルドするときは、`rule_type`フィールドを使用しないでください。フィールドは、次のルールタイプをサポートします:
 
 - `any_approver`: `approvals_required`が`0`に設定された、事前設定済みのデフォルトルール。
 - `regular`: 通常の[マージリクエストの承認ルール](../user/project/merge_requests/approvals/rules.md)に使用されます。
@@ -1447,8 +1443,8 @@ PUT /groups/:id/approval_rules/:approval_rule_id
 
 | 属性            | 型              | 必須 | 説明 |
 |----------------------|-------------------|----------|-------------|
-| `approval_rule_id`。  | 整数           | はい      | 承認ルールのID。 |
-| `id`                 | 整数または文字列 | はい      | グループのID、または[URLエンコードされたパス](rest/_index.md#namespaced-paths)。 |
+| `approval_rule_id`   | 整数           | はい      | 承認ルールのID。 |
+| `id`                 | 整数または文字列 | はい      | グループのIDまたは[URLエンコードされたパス](rest/_index.md#namespaced-paths)。 |
 | `approvals_required` | 文字列            | いいえ       | このルールに必要な承認の数。 |
 | `group_ids`          | 整数           | いいえ       | 承認者としてのユーザーのID。 |
 | `name`               | 文字列            | いいえ       | 承認ルールの名前。1024文字に制限されています。 |

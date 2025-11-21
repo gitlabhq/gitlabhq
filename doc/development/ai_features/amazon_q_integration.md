@@ -50,7 +50,7 @@ This guide describes how to set up Amazon Q in a GitLab Linux package running in
    1. Go to [staging customers portal](https://customers.staging.gitlab.com/), select "Signin with GitLab.com account".
    1. Instead of clicking "Buy new subscription", go to the [product page](https://customers.staging.gitlab.com/subscriptions/new?plan_id=2c92a00c76f0c6c20176f2f9328b33c9) directly. For reason of this, see [buy_subscription](https://gitlab.com/gitlab-org/customers-gitlab-com/-/blob/8aa922840091ad5c5d96ada43d0065a1b6198841/doc/flows/buy_subscription.md)
    1. Purchase the subscription using [a test credit card](https://gitlab.com/gitlab-org/customers-gitlab-com/#testing-credit-card-information). An activation code will be given. Do not purchase a duo-pro add-on, because currently duo-pro and Q are mutually exclusive.
-   1. Go to the GitLab instance created earlier (`https://<vm-instance-external-ip>.nip.io`), log in with root account. Then on the left sidebar, go to **Admin > Subscription**, and enter the activation code
+   1. Go to the GitLab instance created earlier (`https://<vm-instance-external-ip>.nip.io`), log in with root account. Then on the left sidebar, go to **Admin** > **Subscription**, and enter the activation code
 
 ## Create and configure an AWS sandbox
 

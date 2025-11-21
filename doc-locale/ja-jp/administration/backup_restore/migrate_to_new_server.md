@@ -15,39 +15,39 @@ GitLabのバックアップと復元機能を使用して、インスタンス�
 
 {{< /alert >}}
 
-前提要件:
+前提要件: 
 
 - 移行の少し前に、[ブロードキャストメッセージバナー](../broadcast_messages.md)で今後のスケジュール済みメンテナンスについてユーザーに通知することを検討してください。
 - バックアップが完了し、最新の状態であることを確認してください。破壊的なコマンド（`rm`など）が誤って実行された場合に備えて、システムレベルの完全なバックアップを作成するか、移行に関わるすべてのサーバーのスナップショットを作成しておいてください。
 
 ## 新しいサーバーを準備する {#prepare-the-new-server}
 
-新しいサーバーを準備するには、次の手順に従います。
+新しいサーバーを準備するには、次の手順に従います:
 
 1. 中間者攻撃に関する警告を避けるため、旧サーバーから[SSHホストキー](https://superuser.com/questions/532040/copy-ssh-keys-from-one-server-to-another-server/532079#532079)をコピーします。手順の例については、[プライマリサイトのSSHホストキーを手動でレプリケートする](../geo/replication/configuration.md#step-2-manually-replicate-the-primary-sites-ssh-host-keys)を参照してください。
-1. [GitLabをインストールして設定](https://about.gitlab.com/install/)します（[受信メール](../incoming_email.md)を除く）。
+1. [GitLabをインストールして設定](https://about.gitlab.com/install/)します（[受信メール](../incoming_email.md)を除く）:
    1. GitLabをインストールします。
    1. 旧サーバーから新サーバーに`/etc/gitlab`ファイルをコピーして設定し、必要に応じて更新します。詳細については、[Linuxパッケージインストールのバックアップおよび復元手順](https://docs.gitlab.com/omnibus/settings/backups.html)を参照してください。
    1. 該当する場合は、[受信メール](../incoming_email.md)を無効にします。
-   1. バックアップと復元後の最初の起動時に、新しいCI/CDジョブが開始されないようにブロックします。`/etc/gitlab/gitlab.rb`を編集し、次のように設定します。
+   1. バックアップと復元後の最初の起動時に、新しいCI/CDジョブが開始されないようにブロックします。`/etc/gitlab/gitlab.rb`を編集し、次のように設定します:
 
       ```ruby
       nginx['custom_gitlab_server_config'] = "location = /api/v4/jobs/request {\n    deny all;\n    return 503;\n  }\n"
       ```
 
-   1. GitLabを再設定します。
+   1. GitLabを再設定します:
 
       ```shell
       sudo gitlab-ctl reconfigure
       ```
 
-1. 不要かつ意図しないデータ処理を避けるため、GitLabを停止します。
+1. 不要かつ意図しないデータ処理を避けるため、GitLabを停止します:
 
    ```shell
    sudo gitlab-ctl stop
    ```
 
-1. RedisデータベースおよびGitLabバックアップファイルを受信できるように、新しいサーバーを設定します。
+1. RedisデータベースおよびGitLabバックアップファイルを受信できるように、新しいサーバーを設定します:
 
    ```shell
    sudo rm -f /var/opt/gitlab/redis/dump.rdb
@@ -58,40 +58,44 @@ GitLabのバックアップと復元機能を使用して、インスタンス�
 
 1. 旧サーバーの最新のシステムレベルのバックアップまたはスナップショットがあることを確認します。
 1. お使いのGitLabのエディションでサポートされている場合は、[メンテナンスモード](../maintenance_mode/_index.md)を有効にします。
-1. 新しいCI/CDジョブが開始されないようにブロックします。
-   1. `/etc/gitlab/gitlab.rb`を編集し、次のように設定します。
+1. 新しいCI/CDジョブが開始されないようにブロックします:
+   1. `/etc/gitlab/gitlab.rb`を編集し、次のように設定します:
 
       ```ruby
       nginx['custom_gitlab_server_config'] = "location = /api/v4/jobs/request {\n    deny all;\n    return 503;\n  }\n"
       ```
 
-   1. GitLabを再設定します。
+   1. GitLabを再設定します:
 
       ```shell
       sudo gitlab-ctl reconfigure
       ```
 
-1. 定期的なバックグラウンドジョブを無効にします。
-   1. 左側のサイドバーの下部で、**管理者**を選択します。
+1. 定期的なバックグラウンドジョブを無効にします:
+   1. 左側のサイドバーの下部で、**管理者**を選択します。[新しいナビゲーションをオン](../../user/interface_redesign.md#turn-new-navigation-on-or-off)にしている場合は、左側のサイドバーの下部にあるアバターを選択し、**管理者**を選択します。
+   1. 左側のサイドバーで、**モニタリング** > **バックグラウンドジョブ**を選択して、Sidekiqダッシュボードを表示します。
+   1. Sidekiqダッシュボードの上部メニューで、**Cron**を選択します。
+   1. Sidekiqダッシュボードの右上にある**Disable All**（すべて無効にする）を選択します。
+1. 実行中のCI/CDジョブが完了するまで待ちます。そうしないと、完了していないジョブが失われる可能性があります。実行中のすべてのジョブを表示するには:
+   1. 左側のサイドバーで、**CI/CD** > **ジョブ**を選択します。
+   1. フィルターバーで、**ステータス** > **実行中**を選択します。
+1. Sidekiqジョブが完了するのを待ちます:
    1. 左側のサイドバーで、**モニタリング** > **バックグラウンドジョブ**を選択します。
-   1. Sidekiqのダッシュボードで、**Cron**タブを選択し、次に**Disable All**を選択します。
-1. 実行中のCI/CDジョブが完了するまで待ちます。そうしないと、完了していないジョブが失われる可能性があります。実行中のジョブを表示するには、左側のサイドバーで**Overviews** > **Jobs**を選択し、次に**Running**を選択します。
-1. Sidekiqジョブが完了するのを待ちます。
-   1. 左側のサイドバーで、**モニタリング** > **バックグラウンドジョブ**を選択します。
-   1. Sidekiqダッシュボードで、**Queues**を選択し、次に**Live Poll**を選択します。**Busy**および**Enqueued**が0になるまで待ちます。これらのキューにはユーザーから送信された作業が含まれています。これらのジョブが完了する前にシャットダウンすると、作業が失われる可能性があります。移行後の検証に備えて、Sidekiqダッシュボードに表示されている数値をメモしておいてください。
-1. Redisデータベースをディスクにフラッシュし、移行に必要なサービス以外のGitLabを停止します。
+   1. Sidekiqダッシュボードの上部メニューで、**Queues**（キュー）を選択します。
+   1. Sidekiqダッシュボードの右上にある**Live Poll**（ライブポール）を選択します。**ビジー**および**Enqueued**が0になるまで待ちます。これらのキューにはユーザーから送信された作業が含まれています。これらのジョブが完了する前にシャットダウンすると、作業が失われる可能性があります。移行後の検証に備えて、Sidekiqダッシュボードに表示されている数値をメモしておいてください。
+1. Redisデータベースをディスクにフラッシュし、移行に必要なサービス以外のGitLabを停止します:
 
    ```shell
    sudo /opt/gitlab/embedded/bin/redis-cli -s /var/opt/gitlab/redis/redis.socket save && sudo gitlab-ctl stop && sudo gitlab-ctl start postgresql && sudo gitlab-ctl start gitaly
    ```
 
-1. GitLabのバックアップを作成します。
+1. GitLabのバックアップを作成します:
 
    ```shell
    sudo gitlab-backup create
    ```
 
-1. 次のGitLabサービスを無効にし、意図しない再起動を防ぐため、`/etc/gitlab/gitlab.rb`の末尾に次の設定を追加します。
+1. 次のGitLabサービスを無効にし、意図しない再起動を防ぐため、`/etc/gitlab/gitlab.rb`の末尾に次の設定を追加します:
 
    ```ruby
    alertmanager['enable'] = false
@@ -114,25 +118,25 @@ GitLabのバックアップと復元機能を使用して、インスタンス�
    sidekiq['enable'] = false
    ```
 
-1. GitLabを再設定します。
+1. GitLabを再設定します:
 
    ```shell
    sudo gitlab-ctl reconfigure
    ```
 
-1. すべてが停止していること、そして実行中のサービスがないことを確認します。
+1. すべてが停止していること、そして実行中のサービスがないことを確認します:
 
    ```shell
    sudo gitlab-ctl status
    ```
 
-1. Redisデータベースのバックアップを転送する前に、新しいサーバー上のRedisを停止します。
+1. Redisデータベースのバックアップを転送する前に、新しいサーバー上のRedisを停止します:
 
    ```shell
    sudo gitlab-ctl stop redis
    ```
 
-1. RedisデータベースとGitLabのバックアップを新しいサーバーに転送します。
+1. RedisデータベースとGitLabのバックアップを新しいサーバーに転送します:
 
    ```shell
    sudo scp /var/opt/gitlab/redis/dump.rdb <your-linux-username>@new-server:/var/opt/gitlab/redis
@@ -143,9 +147,9 @@ GitLabのバックアップと復元機能を使用して、インスタンス�
 
 GitLabインスタンスのローカルボリューム上に大量のデータがある場合、たとえば1 TBを超えるようなケースでは、バックアップに時間がかかることがあります。そのような場合は、新しいインスタンスの適切なボリュームにデータを転送する方が簡単なこともあります。
 
-手動で移行する必要がある主なボリュームは次のとおりです。
+手動で移行する必要がある主なボリュームは次のとおりです:
 
-- すべてのGitデータを含む`/var/opt/gitlab/git-data`ディレクトリ。Gitデータの破損を防ぐために、[リポジトリの移動に関するドキュメントの該当セクション](../operations/moving_repositories.md#migrating-to-another-gitlab-instance)を必ずお読みください。
+- すべてのGitデータを含む`/var/opt/gitlab/git-data`ディレクトリ。Gitデータの破損を防ぐために、[リポジトリの移動に関するドキュメントの該当セクション](../operations/moving_repositories.md#migrate-to-another-gitlab-instance)を必ずお読みください。
 - アーティファクトなどのオブジェクトデータを含む`/var/opt/gitlab/gitlab-rails/shared`ディレクトリ。
 - Linuxパッケージに含まれているバンドル版PostgreSQLを使用している場合は、`/var/opt/gitlab/postgresql/data`にある[PostgreSQLデータディレクトリ](https://docs.gitlab.com/omnibus/settings/database.html#store-postgresql-data-in-a-different-directory)も移行する必要があります。
 
@@ -153,7 +157,7 @@ GitLabインスタンスのローカルボリューム上に大量のデータ�
 
 ## 新しいサーバーでデータを復元する {#restore-data-on-the-new-server}
 
-1. 適切なファイルシステムの権限を復元します。
+1. 適切なファイルシステムの権限を復元します:
 
    ```shell
    sudo chown gitlab-redis /var/opt/gitlab/redis
@@ -162,7 +166,7 @@ GitLabインスタンスのローカルボリューム上に大量のデータ�
    sudo chown git:git /var/opt/gitlab/backups/your-backup.tar
    ```
 
-1. Redisを起動します。
+1. Redisを起動します:
 
    ```shell
    sudo gitlab-ctl start redis
@@ -171,8 +175,8 @@ GitLabインスタンスのローカルボリューム上に大量のデータ�
    Redisは`dump.rdb`を自動的に検出して復元します。
 
 1. [GitLabバックアップを復元](restore_gitlab.md)します。
-1. Redisデータベースが正しく復元されたことを確認します。
-   1. 左側のサイドバーの下部で、**管理者**を選択します。
+1. Redisデータベースが正しく復元されたことを確認します:
+   1. 左側のサイドバーの下部で、**管理者**を選択します。[新しいナビゲーションをオン](../../user/interface_redesign.md#turn-new-navigation-on-or-off)にしている場合は、左側のサイドバーの下部にあるアバターを選択し、**管理者**を選択します。
    1. 左側のサイドバーで、**モニタリング** > **バックグラウンドジョブ**を選択します。
    1. Sidekiqダッシュボードで、表示されている数値が旧サーバーの数値と一致することを確認します。
    1. Sidekiqダッシュボードで、**Cron**を選択し、次に**Enable All**を選択して、定期的なバックグラウンドジョブを再度有効にします。
@@ -181,14 +185,14 @@ GitLabインスタンスのローカルボリューム上に大量のデータ�
 1. GitLabインスタンスが期待どおりに動作していることをテストします。
 1. 該当する場合は、[受信メール](../incoming_email.md)を再度有効にし、期待どおりに動作していることをテストします。
 1. DNSまたはロードバランサーを更新して、新しいサーバーを指すようにします。
-1. 以前に追加したカスタムNGINX設定を削除して、新しいCI/CDジョブの開始をブロック解除します。
+1. 以前に追加したカスタムNGINX設定を削除して、新しいCI/CDジョブの開始をブロック解除します:
 
    ```ruby
    # The following line must be removed
    nginx['custom_gitlab_server_config'] = "location = /api/v4/jobs/request {\n    deny all;\n    return 503;\n  }\n"
    ```
 
-1. GitLabを再設定します。
+1. GitLabを再設定します:
 
    ```shell
    sudo gitlab-ctl reconfigure

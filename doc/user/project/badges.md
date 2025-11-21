@@ -371,7 +371,7 @@ Prerequisites:
 To add a custom badge with an image:
 
 1. On the left sidebar, select **Search or go to** and find your project or group. If you've [turned on the new navigation](../interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
-1. Select **Settings > General**.
+1. Select **Settings** > **General**.
 1. Expand **Badges**.
 1. Under **Name**, enter the name for the badge.
 1. Under **Link**, enter the URL that the badge should point to.

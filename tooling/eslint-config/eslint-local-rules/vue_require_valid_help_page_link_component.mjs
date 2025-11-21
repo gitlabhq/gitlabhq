@@ -1,6 +1,6 @@
-const { existsSync, readFileSync } = require('fs');
-const { defineTemplateBodyVisitor } = require('./utils/eslint_parsing_utils');
-const { getDocsFilePath, getAnchorsInMarkdown } = require('./utils/help_page_path_utils');
+import { existsSync, readFileSync } from 'node:fs';
+import { defineTemplateBodyVisitor } from './utils/eslint_parsing_utils.mjs';
+import { getDocsFilePath, getAnchorsInMarkdown } from './utils/help_page_path_utils.mjs';
 
 /**
  * Extracts the anchor from a given `HelpPageLink` component. The anchor can either be passed in the
@@ -16,7 +16,7 @@ function getAnchor(node) {
   return node.attributes.find((attr) => attr.key.name === 'anchor')?.value?.value ?? null;
 }
 
-module.exports = {
+export const vueRequireValidHelpPageLinkComponent = {
   meta: {
     type: 'problem',
     docs: {

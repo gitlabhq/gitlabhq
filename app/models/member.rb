@@ -671,8 +671,7 @@ class Member < ApplicationRecord
       level_to_assign: assigning_access_level
     )
 
-    # prevent assignement in case the role access level is higher than current user's role
-    source.assigning_role_too_high?(current_user, assigning_access_level)
+    !source.can_assign_role?(current_user, assigning_access_level)
   end
 
   private

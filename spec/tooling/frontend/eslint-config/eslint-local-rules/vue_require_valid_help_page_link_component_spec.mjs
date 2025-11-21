@@ -1,12 +1,8 @@
-const path = require('path');
-const { existsSync, readFileSync } = require('fs');
-const { RuleTester } = require('eslint');
-const { marked } = require('marked');
-const vueEslintParser = require('vue-eslint-parser');
-const rule = require('../../../../../tooling/eslint-config/eslint-local-rules/vue_require_valid_help_page_link_component');
-
-jest.mock('fs');
-jest.mock('marked');
+import path from 'node:path';
+import { vi } from 'vitest';
+import { RuleTester } from 'eslint';
+import vueEslintParser from 'vue-eslint-parser';
+import { vueRequireValidHelpPageLinkComponent } from '../../../../../tooling/eslint-config/eslint-local-rules/vue_require_valid_help_page_link_component';
 
 const VALID_PATH = 'this/file/exists';
 const VALID_PATH_MD = 'this/file/exists.md';
@@ -15,16 +11,26 @@ const INVALID_PATH = 'this/file/does/not/exist';
 const VALID_ANCHOR = 'valid-anchor';
 const INVALID_ANCHOR = 'invalid-anchor';
 
-existsSync.mockImplementation((docsPath) => {
-  if (docsPath.includes(VALID_PATH)) {
-    return true;
-  }
-  return false;
+vi.mock('fs', () => ({
+  existsSync: (docsPath) => {
+    if (docsPath.includes(VALID_PATH)) {
+      return true;
+    }
+    return false;
+  },
+  readFileSync: () => '',
+}));
+vi.mock('marked', async (importOriginal) => {
+  const actual = await importOriginal();
+
+  return {
+    ...actual,
+    marked: {
+      ...actual.marked,
+      parse: () => VALID_ANCHOR,
+    },
+  };
 });
-
-readFileSync.mockImplementation(() => '');
-
-marked.parse.mockImplementation(() => VALID_ANCHOR);
 
 const ruleTester = new RuleTester({
   languageOptions: {
@@ -46,7 +52,7 @@ function makeComponent(href, anchor = null) {
   `);
 }
 
-ruleTester.run('require-valid-help-page-path', rule, {
+ruleTester.run('require-valid-help-page-path', vueRequireValidHelpPageLinkComponent, {
   valid: [
     makeComponent(VALID_PATH),
     makeComponent(VALID_PATH_MD),

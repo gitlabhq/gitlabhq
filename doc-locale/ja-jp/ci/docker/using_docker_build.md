@@ -20,7 +20,7 @@ Runnerで`privileged`モードを有効にせずにDockerイメージをビル�
 
 ## CI/CDジョブでDockerコマンドを有効にする {#enable-docker-commands-in-your-cicd-jobs}
 
-CI/CDジョブでDockerコマンドを有効にするには、次のいずれかを使用できます。
+CI/CDジョブでDockerコマンドを有効にするには、次のいずれかを使用できます:
 
 - [Shell executor](#use-the-shell-executor)
 - [Docker-in-Docker](#use-docker-in-docker)
@@ -32,7 +32,7 @@ CI/CDジョブでDockerコマンドを有効にするには、次のいずれか
 CI/CDジョブにDockerコマンドを含めるには、`shell` executorを使用するようにRunnerを設定します。この設定では、`gitlab-runner`ユーザーがDockerコマンドを実行しますが、そのためには権限が必要です。
 
 1. GitLab Runnerを[インストール](https://gitlab.com/gitlab-org/gitlab-runner/#installation)します。
-1. Runnerを[登録](https://docs.gitlab.com/runner/register/)します。`shell` executorを選択します。次に例を示します。
+1. Runnerを[登録](https://docs.gitlab.com/runner/register/)します。`shell` executorを選択します。次に例を示します:
 
    ```shell
    sudo gitlab-runner register -n \
@@ -44,19 +44,19 @@ CI/CDジョブにDockerコマンドを含めるには、`shell` executorを使�
 
 1. GitLab Runnerがインストールされているサーバーに、Docker Engineをインストールします。[サポートされているプラットフォーム](https://docs.docker.com/engine/install/)の一覧を確認してください。
 
-1. `gitlab-runner`ユーザーを`docker`グループに追加します。
+1. `gitlab-runner`ユーザーを`docker`グループに追加します:
 
    ```shell
    sudo usermod -aG docker gitlab-runner
    ```
 
-1. `gitlab-runner`にDockerへのアクセス権があることを確認します。
+1. `gitlab-runner`にDockerへのアクセス権があることを確認します:
 
    ```shell
    sudo -u gitlab-runner -H docker info
    ```
 
-1. GitLabで、`docker info`を`.gitlab-ci.yml`に追加して、Dockerが動作していることを確認します。
+1. GitLabで、`docker info`を`.gitlab-ci.yml`に追加して、Dockerが動作していることを確認します:
 
    ```yaml
    default:
@@ -75,7 +75,7 @@ CI/CDジョブにDockerコマンドを含めるには、`shell` executorを使�
 
 ### Docker-in-Dockerを使用する {#use-docker-in-docker}
 
-「Docker-in-Docker」（`dind`）を使用することは、以下を意味します。
+「Docker-in-Docker」（`dind`）を使用することは、以下を意味します:
 
 - 登録済みのRunnerは、[Docker executor](https://docs.gitlab.com/runner/executors/docker.html)または[Kubernetes executor](https://docs.gitlab.com/runner/executors/kubernetes/)を使用する。
 - executorは、Dockerが提供する[Dockerのコンテナイメージ](https://hub.docker.com/_/docker/)を使用して、CI/CDジョブを実行する。
@@ -100,10 +100,10 @@ Dockerデーモンは、TLS経由の接続をサポートしています。TLS�
 
 {{< /alert >}}
 
-次の手順で、TLSを有効にしてDocker-in-Dockerを使用できます。
+次の手順で、TLSを有効にしてDocker-in-Dockerを使用できます:
 
 1. [GitLab Runner](https://docs.gitlab.com/runner/install/)をインストールします。
-1. 次のように、コマンドラインからGitLab Runnerを登録します。`docker`および`privileged`モードを使用します。
+1. 次のように、コマンドラインからGitLab Runnerを登録します。`docker`および`privileged`モードを使用します:
 
    ```shell
    sudo gitlab-runner register -n \
@@ -112,15 +112,15 @@ Dockerデーモンは、TLS経由の接続をサポートしています。TLS�
      --executor docker \
      --description "My Docker Runner" \
      --tag-list "tls-docker-runner" \
-     --docker-image "docker:24.0.5" \
+     --docker-image "docker:24.0.5-cli" \
      --docker-privileged \
      --docker-volumes "/certs/client"
    ```
 
-   - このコマンドは、（ジョブレベルで指定されていない場合）`docker:24.0.5`イメージを使用するように新しいRunnerを登録します。ビルドコンテナとサービスコンテナを起動するには、`privileged`モードを使用します。Docker-in-Dockerを使用する場合は、Dockerコンテナで常に`privileged = true`を使用する必要があります。
+   - このコマンドは、（ジョブレベルで指定されていない場合）`docker:24.0.5-cli`イメージを使用するように新しいRunnerを登録します。ビルドコンテナとサービスコンテナを起動するには、`privileged`モードを使用します。Docker-in-Dockerを使用する場合は、Dockerコンテナで常に`privileged = true`を使用する必要があります。
    - このコマンドは、`/certs/client`をサービスコンテナとビルドコンテナにマウントします。これは、Dockerクライアントがそのディレクトリ内の証明書を使用するために必要です。詳細については、[Dockerイメージのドキュメント](https://hub.docker.com/_/docker/)を参照してください。
 
-   前述のコマンドは、次の例のような`config.toml`エントリを作成します。
+   前述のコマンドは、次の例のような`config.toml`エントリを作成します:
 
    ```toml
    [[runners]]
@@ -129,7 +129,7 @@ Dockerデーモンは、TLS経由の接続をサポートしています。TLS�
      executor = "docker"
      [runners.docker]
        tls_verify = false
-       image = "docker:24.0.5"
+       image = "docker:24.0.5-cli"
        privileged = true
        disable_cache = false
        volumes = ["/certs/client", "/cache"]
@@ -138,11 +138,11 @@ Dockerデーモンは、TLS経由の接続をサポートしています。TLS�
        [runners.cache.gcs]
    ```
 
-1. これで、ジョブスクリプトで`docker`を使用できるようになりました。次のように、`docker:24.0.5-dind`サービスを含める必要があります。
+1. これで、ジョブスクリプトで`docker`を使用できるようになりました。次のように、`docker:24.0.5-dind`サービスを含める必要があります:
 
    ```yaml
    default:
-     image: docker:24.0.5
+     image: docker:24.0.5-cli
      services:
        - docker:24.0.5-dind
      before_script:
@@ -180,7 +180,7 @@ Dockerデーモンは、TLS経由の接続をサポートしています。TLS�
 
 この競合に対処するには、Docker-in-Dockerサービスとビルドコンテナの間で共有されるボリューム上でUnixソケットを使用します。このアプローチは、パフォーマンスを向上させ、サービスとクライアント間の安全な接続を確立します。
 
-以下は、ビルドコンテナとサービスコンテナ間で共有される一時ボリュームを設定した`config.toml`のサンプルです。
+以下は、ビルドコンテナとサービスコンテナ間で共有される一時ボリュームを設定した`config.toml`のサンプルです:
 
 ```toml
 [[runners]]
@@ -188,7 +188,7 @@ Dockerデーモンは、TLS経由の接続をサポートしています。TLS�
   token = TOKEN
   executor = "docker"
   [runners.docker]
-    image = "docker:24.0.5"
+    image = "docker:24.0.5-cli"
     privileged = true
     volumes = ["/runner/services/docker"] # Temporary volume shared between build and service containers.
 ```
@@ -204,7 +204,7 @@ job:
     DOCKER_HOST: "unix:///runner/services/docker/docker.sock"
   services:
     - docker:24.0.5-dind
-  image: docker:24.0.5
+  image: docker:24.0.5-cli
   script:
     - docker version
 ```
@@ -213,7 +213,7 @@ job:
 
 場合によっては、TLSを無効にする正当な理由があります。たとえば、使用しているGitLab Runnerの設定を制御できない場合などです。
 
-1. 次のように、コマンドラインからGitLab Runnerを登録します。`docker`および`privileged`モードを使用します。
+1. 次のように、コマンドラインからGitLab Runnerを登録します。`docker`および`privileged`モードを使用します:
 
    ```shell
    sudo gitlab-runner register -n \
@@ -222,11 +222,11 @@ job:
      --executor docker \
      --description "My Docker Runner" \
      --tag-list "no-tls-docker-runner" \
-     --docker-image "docker:24.0.5" \
+     --docker-image "docker:24.0.5-cli" \
      --docker-privileged
    ```
 
-   前述のコマンドは、次の例のような`config.toml`エントリを作成します。
+   前述のコマンドは、次の例のような`config.toml`エントリを作成します:
 
    ```toml
    [[runners]]
@@ -235,7 +235,7 @@ job:
      executor = "docker"
      [runners.docker]
        tls_verify = false
-       image = "docker:24.0.5"
+       image = "docker:24.0.5-cli"
        privileged = true
        disable_cache = false
        volumes = ["/cache"]
@@ -244,11 +244,11 @@ job:
        [runners.cache.gcs]
    ```
 
-1. ジョブスクリプトに`docker:24.0.5-dind`サービスを含めます。
+1. ジョブスクリプトに`docker:24.0.5-dind`サービスを含めます:
 
    ```yaml
    default:
-     image: docker:24.0.5
+     image: docker:24.0.5-cli
      services:
        - docker:24.0.5-dind
      before_script:
@@ -288,7 +288,7 @@ job:
 
 ##### KubernetesでTLSが有効になっているDocker-in-Docker {#docker-in-docker-with-tls-enabled-in-kubernetes}
 
-次の手順で、KubernetesでTLSを有効にしてDocker-in-Dockerを使用できます。
+次の手順で、KubernetesでTLSを有効にしてDocker-in-Dockerを使用できます:
 
 1. [Helmチャート](https://docs.gitlab.com/runner/install/kubernetes.html)を使用して、[`values.yml`ファイル](https://gitlab.com/gitlab-org/charts/gitlab-runner/-/blob/00c1a2098f303dffb910714752e9a981e119f5b5/values.yaml#L133-137)を更新し、ボリュームマウントを指定します。
 
@@ -306,11 +306,11 @@ job:
            medium = "Memory"
    ```
 
-1. ジョブに`docker:24.0.5-dind`サービスを含めます。
+1. ジョブに`docker:24.0.5-dind`サービスを含めます:
 
    ```yaml
    default:
-     image: docker:24.0.5
+     image: docker:24.0.5-cli
      services:
        - name: docker:24.0.5-dind
          variables:
@@ -350,15 +350,15 @@ job:
 
 ##### KubernetesでTLSが無効になっているDocker-in-Docker {#docker-in-docker-with-tls-disabled-in-kubernetes}
 
-KubernetesでTLSを無効にしてDocker-in-Dockerを使用するには、前述の例を次のように変更する必要があります。
+KubernetesでTLSを無効にしてDocker-in-Dockerを使用するには、前述の例を次のように変更する必要があります:
 
 - `values.yml`ファイルから`[[runners.kubernetes.volumes.empty_dir]]`セクションを削除する。
 - `DOCKER_HOST: tcp://docker:2375`を指定し、ポートを`2376`から`2375`に変更する。
 - `DOCKER_TLS_CERTDIR: ""`を指定し、TLSを無効にしてDockerを起動するように指示する。
 
-次に例を示します。
+次に例を示します:
 
-1. [Helmチャート](https://docs.gitlab.com/runner/install/kubernetes.html)を使用して、[`values.yml`ファイル](https://gitlab.com/gitlab-org/charts/gitlab-runner/-/blob/00c1a2098f303dffb910714752e9a981e119f5b5/values.yaml#L133-137)を更新します。
+1. [Helmチャート](https://docs.gitlab.com/runner/install/kubernetes.html)を使用して、[`values.yml`ファイル](https://gitlab.com/gitlab-org/charts/gitlab-runner/-/blob/00c1a2098f303dffb910714752e9a981e119f5b5/values.yaml#L133-137)を更新します:
 
    ```yaml
    runners:
@@ -370,11 +370,11 @@ KubernetesでTLSを無効にしてDocker-in-Dockerを使用するには、前述
            privileged = true
    ```
 
-1. これで、ジョブスクリプトで`docker`を使用できるようになりました。次のように、`docker:24.0.5-dind`サービスを含める必要があります。
+1. これで、ジョブスクリプトで`docker`を使用できるようになりました。次のように、`docker:24.0.5-dind`サービスを含める必要があります:
 
    ```yaml
    default:
-     image: docker:24.0.5
+     image: docker:24.0.5-cli
      services:
        - name: docker:24.0.5-dind
          variables:
@@ -405,12 +405,12 @@ KubernetesでTLSを無効にしてDocker-in-Dockerを使用するには、前述
 
 #### Docker-in-Dockerに関する既知の問題 {#known-issues-with-docker-in-docker}
 
-Docker-in-Dockerは推奨される設定ですが、次の問題に注意してください。
+Docker-in-Dockerは推奨される設定ですが、次の問題に注意してください:
 
-- **`docker-compose`コマンド**: この設定において、デフォルトではこのコマンドは使用できません。ジョブスクリプトで`docker-compose`を使用するには、Docker Composeの[インストール手順](https://docs.docker.com/compose/install/)に従ってください。
-- **キャッシュ**: 各ジョブは新しい環境で実行されます。各ビルドが独自のDockerエンジンインスタンスを取得するため、同時ジョブが競合を引き起こすことはありません。ただし、レイヤーがキャッシュされないため、ジョブが遅くなる可能性があります。[Dockerレイヤーキャッシュ](#make-docker-in-docker-builds-faster-with-docker-layer-caching)を参照してください。
-- **ストレージドライバー**: デフォルトでは、以前のバージョンのDockerでは`vfs`ストレージドライバーを使用し、ジョブごとにファイルシステムをコピーします。Docker 17.09以降では`--storage-driver overlay2`を使用し、これが推奨されるストレージドライバーです。詳細については、[OverlayFSドライバーを使用する](#use-the-overlayfs-driver)を参照してください。
-- **ルートファイルシステム**: `docker:24.0.5-dind`コンテナとRunnerコンテナはルートファイルシステムを共有しないため、ジョブの作業ディレクトリを子コンテナのマウントポイントとして使用できます。たとえば、子コンテナと共有するファイルがある場合は、`/builds/$CI_PROJECT_PATH`の下にサブディレクトリを作成し、それをマウントポイントとして使用できます。詳細については、[イシュー41227](https://gitlab.com/gitlab-org/gitlab-foss/-/issues/41227)を参照してください。
+- **The `docker-compose` command**（コマンド）: この設定において、デフォルトではこのコマンドは使用できません。ジョブスクリプトで`docker-compose`を使用するには、Docker Composeの[インストール手順](https://docs.docker.com/compose/install/)に従ってください。
+- **Cache**（キャッシュ）: 各ジョブは新しい環境で実行されます。各ビルドが独自のDockerエンジンインスタンスを取得するため、同時ジョブが競合を引き起こすことはありません。ただし、レイヤーがキャッシュされないため、ジョブが遅くなる可能性があります。[Dockerレイヤーキャッシュ](#make-docker-in-docker-builds-faster-with-docker-layer-caching)を参照してください。
+- **Storage drivers**（ストレージドライバー）: デフォルトでは、以前のバージョンのDockerでは`vfs`ストレージドライバーを使用し、ジョブごとにファイルシステムをコピーします。Docker 17.09以降では`--storage-driver overlay2`を使用し、これが推奨されるストレージドライバーです。詳細については、[OverlayFSドライバーを使用する](#use-the-overlayfs-driver)を参照してください。
+- **Root file system**（ルートファイルシステム）: `docker:24.0.5-dind`コンテナとRunnerコンテナはルートファイルシステムを共有しないため、ジョブの作業ディレクトリを子コンテナのマウントポイントとして使用できます。たとえば、子コンテナと共有するファイルがある場合は、`/builds/$CI_PROJECT_PATH`の下にサブディレクトリを作成し、それをマウントポイントとして使用できます。詳細については、[イシュー41227](https://gitlab.com/gitlab-org/gitlab-foss/-/issues/41227)を参照してください。
 
   ```yaml
   variables:
@@ -430,7 +430,7 @@ Dockerソケットをバインドすると、`docker:24.0.5-dind`をサービス
 
 Docker executorでDockerソケットをマウントするには、[`[runners.docker]`セクションのボリューム](https://docs.gitlab.com/runner/configuration/advanced-configuration.html#volumes-in-the-runnersdocker-section)に`"/var/run/docker.sock:/var/run/docker.sock"`を追加します。
 
-1. Runnerの登録時に`/var/run/docker.sock`をマウントするには、次のオプションを含めます。
+1. Runnerの登録時に`/var/run/docker.sock`をマウントするには、次のオプションを含めます:
 
    ```shell
    sudo gitlab-runner register \
@@ -440,11 +440,11 @@ Docker executorでDockerソケットをマウントするには、[`[runners.doc
      --executor "docker" \
      --description "docker-runner" \
      --tag-list "socket-binding-docker-runner" \
-     --docker-image "docker:24.0.5" \
+     --docker-image "docker:24.0.5-cli" \
      --docker-volumes "/var/run/docker.sock:/var/run/docker.sock"
    ```
 
-   前述のコマンドは、次の例のような`config.toml`エントリを作成します。
+   前述のコマンドは、次の例のような`config.toml`エントリを作成します:
 
    ```toml
    [[runners]]
@@ -453,7 +453,7 @@ Docker executorでDockerソケットをマウントするには、[`[runners.doc
      executor = "docker"
      [runners.docker]
        tls_verify = false
-       image = "docker:24.0.5"
+       image = "docker:24.0.5-cli"
        privileged = false
        disable_cache = false
        volumes = ["/var/run/docker.sock:/var/run/docker.sock", "/cache"]
@@ -461,11 +461,11 @@ Docker executorでDockerソケットをマウントするには、[`[runners.doc
        Insecure = false
    ```
 
-1. ジョブスクリプトでDockerを使用します。
+1. ジョブスクリプトでDockerを使用します:
 
    ```yaml
    default:
-     image: docker:24.0.5
+     image: docker:24.0.5-cli
      before_script:
        - docker info
 
@@ -500,11 +500,11 @@ Kubernetes executorでDockerソケットをマウントするには、[`[[runner
              read_only = true
    ```
 
-1. ジョブスクリプトでDockerを使用します。
+1. ジョブスクリプトでDockerを使用します:
 
    ```yaml
    default:
-     image: docker:24.0.5
+     image: docker:24.0.5-cli
      before_script:
        - docker info
    build:
@@ -518,22 +518,22 @@ Kubernetes executorでDockerソケットをマウントするには、[`[[runner
 
 #### Dockerソケットバインディングに関する既知の問題 {#known-issues-with-docker-socket-binding}
 
-Dockerソケットバインディングを使用すると、特権モードでDockerを実行することを回避できます。ただし、この方法には次の注意点があります。
+Dockerソケットバインディングを使用すると、特権モードでDockerを実行することを回避できます。ただし、この方法には次の注意点があります:
 
 - Dockerデーモンを共有すると、コンテナのセキュリティメカニズムが事実上無効になり、ホストが特権エスカレーションのリスクにさらされます。これにより、コンテナのブレイクアウトが発生する可能性があります。たとえば、プロジェクトで`docker rm -f $(docker ps -a -q)`を実行すると、GitLab Runnerコンテナが削除されます。
 - 同時ジョブが機能しない可能性があります。テストで特定の名前のコンテナを作成する場合、それらが相互に競合する可能性があります。
 - Dockerコマンドによって作成されたコンテナは、Runnerの子ではなく、Runnerの兄弟になります。これにより、ワークフローが複雑になる可能性があります。
-- ソースリポジトリからコンテナへのファイルとディレクトリの共有が、期待どおりに動作しない可能性があります。ボリュームのマウントは、ビルドコンテナではなく、ホストマシンのコンテキストで実行されるためです。次に例を示します。
+- ソースリポジトリからコンテナへのファイルとディレクトリの共有が、期待どおりに動作しない可能性があります。ボリュームのマウントは、ビルドコンテナではなく、ホストマシンのコンテキストで実行されるためです。次に例を示します:
 
    ```shell
    docker run --rm -t -i -v $(pwd)/src:/home/app/src test-image:latest run_app_tests
    ```
 
-`docker:24.0.5-dind`サービスを含める必要はありません。Docker-in-Docker executorを使用する場合は、このサービスが必要になります。
+`docker:24.0.5-dind`サービスを含める必要はありません。Docker-in-Docker executorを使用する場合は、このサービスが必要になります:
 
 ```yaml
 default:
-  image: docker:24.0.5
+  image: docker:24.0.5-cli
   before_script:
     - docker info
 
@@ -564,7 +564,7 @@ Dockerパイプバインディングを使用するための必須前提要件�
 
 Docker executorでDockerパイプをマウントするには、[`[runners.docker]`セクションのボリューム](https://docs.gitlab.com/runner/configuration/advanced-configuration.html#volumes-in-the-runnersdocker-section)に`"\\.\pipe\docker_engine:\\.\pipe\docker_engine"`を追加します。
 
-1. Runnerの登録時に`"\\.\pipe\docker_engine`をマウントするには、次のオプションを含めます。
+1. Runnerの登録時に`"\\.\pipe\docker_engine`をマウントするには、次のオプションを含めます:
 
    ```powershell
    .\gitlab-runner.exe register \
@@ -578,7 +578,7 @@ Docker executorでDockerパイプをマウントするには、[`[runners.docker
      --docker-volumes "\\.\pipe\docker_engine:\\.\pipe\docker_engine"
    ```
 
-   前述のコマンドは、次の例のような`config.toml`エントリを作成します。
+   前述のコマンドは、次の例のような`config.toml`エントリを作成します:
 
    ```toml
    [[runners]]
@@ -595,7 +595,7 @@ Docker executorでDockerパイプをマウントするには、[`[runners.docker
        Insecure = false
    ```
 
-1. ジョブスクリプトでDockerを使用します。
+1. ジョブスクリプトでDockerを使用します:
 
    ```yaml
    default:
@@ -651,7 +651,7 @@ Kubernetes executorでDockerパイプをマウントするには、[`[[runners.k
              "node.kubernetes.io/windows-build" = "10.0.20348"
    ```
 
-1. ジョブスクリプトでDockerを使用します。
+1. ジョブスクリプトでDockerを使用します:
 
    ```yaml
    default:
@@ -671,7 +671,7 @@ Kubernetes executorでDockerパイプをマウントするには、[`[[runners.k
 
 ##### AWS EKS Kubernetesクラスターに関する既知の問題 {#known-issues-with-aws-eks-kubernetes-cluster}
 
-`dockerd`から`containerd`に移行する際、AWS EKSブートストラップスクリプト`Start-EKSBootstrap.ps1`はDockerサービスを停止して無効にします。この問題を回避するには、[Windows ServerにDocker Community Edition（CE）をインストール](https://learn.microsoft.com/en-us/virtualization/windowscontainers/quick-start/set-up-environment?tabs=dockerce#windows-server-1)した後、次のスクリプトを使用してDockerサービスの名前を変更します。
+`dockerd`から`containerd`に移行する際、AWS EKSブートストラップスクリプト`Start-EKSBootstrap.ps1`はDockerサービスを停止して無効にします。この問題を回避するには、[Windows ServerにDocker Community Edition（CE）をインストール](https://learn.microsoft.com/en-us/virtualization/windowscontainers/quick-start/set-up-environment?tabs=dockerce#windows-server-1)した後、次のスクリプトを使用してDockerサービスの名前を変更します:
 
 ```powershell
 Write-Output "Rename the just installed Docker Engine Service from docker to dockerd"
@@ -692,7 +692,7 @@ Dockerパイプバインディングには、[Dockerソケットバインディ�
 
 ### `.gitlab-ci.yml`ファイル内のサービス {#the-service-in-the-gitlab-ciyml-file}
 
-`dind`サービスに追加のCLIフラグを追加して、レジストリミラーを設定できます。
+`dind`サービスに追加のCLIフラグを追加して、レジストリミラーを設定できます:
 
 ```yaml
 services:
@@ -736,7 +736,7 @@ Kubernetes:
 
 GitLab Runnerの管理者は、すべての`dind`サービスに対してミラーを使用できます。[設定](https://docs.gitlab.com/runner/configuration/advanced-configuration.html)を更新して、[ボリュームマウント](https://docs.gitlab.com/runner/configuration/advanced-configuration.html#volumes-in-the-runnersdocker-section)を指定します。
 
-たとえば、次の内容の`/opt/docker/daemon.json`ファイルがあるとします。
+たとえば、次の内容の`/opt/docker/daemon.json`ファイルがあるとします:
 
 ```json
 {
@@ -746,7 +746,7 @@ GitLab Runnerの管理者は、すべての`dind`サービスに対してミラ�
 }
 ```
 
-上記のファイルを`/etc/docker/daemon.json`にマウントするために`config.toml`ファイルを更新します。これにより、GitLab Runnerが作成する**すべて**のコンテナにこのファイルがマウントされます。`dind`サービスがこの設定を検出します。
+上記のファイルを`/etc/docker/daemon.json`にマウントするために`config.toml`ファイルを更新します。これにより、GitLab Runnerが作成する**every**（すべて）のコンテナにこのファイルがマウントされます。`dind`サービスがこの設定を検出します。
 
 ```toml
 [[runners]]
@@ -762,7 +762,7 @@ GitLab Runnerの管理者は、すべての`dind`サービスに対してミラ�
 
 GitLab Runnerの管理者は、すべての`dind`サービスに対してミラーを使用できます。[設定](https://docs.gitlab.com/runner/configuration/advanced-configuration.html)を更新して、[ConfigMapボリュームマウント](https://docs.gitlab.com/runner/executors/kubernetes/#configmap-volume)を指定します。
 
-たとえば、次の内容の`/tmp/daemon.json`ファイルがあるとします。
+たとえば、次の内容の`/tmp/daemon.json`ファイルがあるとします:
 
 ```json
 {
@@ -772,7 +772,7 @@ GitLab Runnerの管理者は、すべての`dind`サービスに対してミラ�
 }
 ```
 
-このファイルの内容で[ConfigMap](https://kubernetes.io/docs/concepts/configuration/configmap/)を作成します。そのためには、次のようなコマンドを実行します。
+このファイルの内容で[ConfigMap](https://kubernetes.io/docs/concepts/configuration/configmap/)を作成します。そのためには、次のようなコマンドを実行します:
 
 ```shell
 kubectl create configmap docker-daemon --namespace gitlab-runner --from-file /tmp/daemon.json
@@ -784,7 +784,7 @@ GitLab RunnerのKubernetes executorがジョブポッドの作成に使用する
 
 {{< /alert >}}
 
-ConfigMapが作成されたら、そのファイルを`/etc/docker/daemon.json`にマウントするために`config.toml`ファイルを更新します。この更新により、GitLab Runnerが作成する**すべて**のコンテナにこのファイルがマウントされます。`dind`サービスがこの設定を検出します。
+ConfigMapが作成されたら、そのファイルを`/etc/docker/daemon.json`にマウントするために`config.toml`ファイルを更新します。この更新により、GitLab Runnerが作成する**every**（すべて）のコンテナにこのファイルがマウントされます。`dind`サービスがこの設定を検出します。
 
 ```toml
 [[runners]]
@@ -820,19 +820,19 @@ GitLab.comのインスタンスRunnerは、デフォルトで`overlay2`ドライ
 ### 要件 {#requirements}
 
 1. 最新のカーネルを使用していることを確認してください（`>= 4.2`を推奨）。
-1. `overlay`モジュールが読み込まれているかどうかを確認します。
+1. `overlay`モジュールが読み込まれているかどうかを確認します:
 
    ```shell
    sudo lsmod | grep overlay
    ```
 
-   結果が表示されない場合は、モジュールが読み込まれていません。モジュールを読み込むには、次を使用します。
+   結果が表示されない場合は、モジュールが読み込まれていません。モジュールを読み込むには、次を使用します:
 
    ```shell
    sudo modprobe overlay
    ```
 
-   モジュールが読み込まれたら、再起動時にもモジュールが読み込まれるようにする必要があります。そのためには、Ubuntuシステムでは`/etc/modules`に次の行を追加します。
+   モジュールが読み込まれたら、再起動時にもモジュールが読み込まれるようにする必要があります。そのためには、Ubuntuシステムでは`/etc/modules`に次の行を追加します:
 
    ```plaintext
    overlay
@@ -840,7 +840,7 @@ GitLab.comのインスタンスRunnerは、デフォルトで`overlay2`ドライ
 
 ### OverlayFSドライバーをプロジェクトごとに使用する {#use-the-overlayfs-driver-per-project}
 
-`.gitlab-ci.yml`で[CI/CD変数](../yaml/_index.md#variables)`DOCKER_DRIVER`を使用して、プロジェクトごとに個別にドライバーを有効にすることができます。
+`.gitlab-ci.yml`で[CI/CD変数](../yaml/_index.md#variables)`DOCKER_DRIVER`を使用して、プロジェクトごとに個別にドライバーを有効にすることができます:
 
 ```yaml
 variables:
@@ -849,7 +849,7 @@ variables:
 
 ### OverlayFSドライバーをすべてのプロジェクトに使用する {#use-the-overlayfs-driver-for-every-project}
 
-独自の[Runner](https://docs.gitlab.com/runner/)を使用している場合は、[`config.toml`ファイルの`[[runners]]`セクション](https://docs.gitlab.com/runner/configuration/advanced-configuration.html#the-runners-section)で`DOCKER_DRIVER`環境変数を設定することにより、すべてのプロジェクトでドライバーを有効にできます。
+独自の[Runner](https://docs.gitlab.com/runner/)を使用している場合は、[`config.toml`ファイルの`[[runners]]`セクション](https://docs.gitlab.com/runner/configuration/advanced-configuration.html#the-runners-section)で`DOCKER_DRIVER`環境変数を設定することにより、すべてのプロジェクトでドライバーを有効にできます:
 
 ```toml
 environment = ["DOCKER_DRIVER=overlay2"]
@@ -861,25 +861,25 @@ environment = ["DOCKER_DRIVER=overlay2"]
 
 ## Dockerの代替手段 {#docker-alternatives}
 
-Runnerで特権モードを有効にしなくても、コンテナイメージをビルドできます。
+Runnerで特権モードを有効にしなくても、コンテナイメージをビルドできます:
 
 - [BuildKit](using_buildkit.md): Dockerデーモンの依存関係をなくすルートレスBuildKitオプションが含まれています。
 - [Buildah](#buildah-example): Dockerデーモンを必要とせず、OCI準拠のイメージをビルドします。
 
 ### Buildahの例 {#buildah-example}
 
-BuildahをGitLab CI/CDで使用するには、次のいずれかのexecutorを備えた[Runner](https://docs.gitlab.com/runner/)が必要です。
+BuildahをGitLab CI/CDで使用するには、次のいずれかのexecutorを備えた[Runner](https://docs.gitlab.com/runner/)が必要です:
 
 - [Kubernetes](https://docs.gitlab.com/runner/executors/kubernetes/)。
 - [Docker](https://docs.gitlab.com/runner/executors/docker.html)。
 - [Docker Machine](https://docs.gitlab.com/runner/executors/docker_machine.html)。
 
-この例では、Buildahを使用して以下を行います。
+この例では、Buildahを使用して以下を行います:
 
 1. Dockerイメージをビルドする。
 1. それを[GitLabコンテナレジストリ](../../user/packages/container_registry/_index.md)にプッシュする。
 
-最後のステップで、Buildahはプロジェクトのルートディレクトリにある`Dockerfile`を使用してDockerイメージをビルドします。最後に、そのイメージをプロジェクトのコンテナレジストリにプッシュします。
+最後のステップで、Buildahはプロジェクトのルートディレクトリにある`Dockerfile`を使用してDockerイメージをビルドします。最後に、そのイメージをプロジェクトのコンテナレジストリにプッシュします:
 
 ```yaml
 build:
@@ -916,7 +916,7 @@ Dockerイメージをビルドしたら、それを[GitLabコンテナレジス�
 
 ### `open //./pipe/docker_engine: The system cannot find the file specified` {#open-pipedocker_engine-the-system-cannot-find-the-file-specified}
 
-マウントされたDockerパイプにアクセスするためにPowerShellスクリプトで`docker`コマンドを実行すると、次のエラーが表示される場合があります。
+マウントされたDockerパイプにアクセスするためにPowerShellスクリプトで`docker`コマンドを実行すると、次のエラーが表示される場合があります:
 
 ```powershell
 PS C:\> docker version

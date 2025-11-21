@@ -31,6 +31,52 @@ RSpec.describe EventCreateService, :clean_gitlab_redis_cache, :clean_gitlab_redi
     end
   end
 
+  describe 'manage event tracking' do
+    context 'when event is for a project' do
+      let(:issue) { create(:issue, project: project) }
+
+      context 'when user is human' do
+        subject { service.open_issue(issue, user) }
+
+        it 'tracks both manage_event and manage_event_human_users with project and namespace' do
+          expect { subject }
+            .to trigger_internal_events('manage_event')
+            .with(user: user, project: project, namespace: project.namespace)
+            .and trigger_internal_events('manage_event_human_users')
+            .with(user: user, project: project, namespace: project.namespace)
+        end
+      end
+
+      context 'when user is a bot' do
+        let(:bot_user) { create(:user, :project_bot) }
+
+        subject { service.open_issue(issue, bot_user) }
+
+        it 'tracks manage_event but not manage_event_human_users' do
+          expect { subject }
+            .to trigger_internal_events('manage_event')
+            .with(user: bot_user, project: project, namespace: project.namespace)
+            .and not_trigger_internal_events('manage_event_human_users')
+        end
+      end
+    end
+
+    context 'when event is for a group' do
+      let(:group) { create(:group) }
+      let(:group_milestone) { create(:milestone, group: group) }
+
+      subject { service.close_milestone(group_milestone, user) }
+
+      it 'tracks both manage_event and manage_event_human_users with namespace only' do
+        expect { subject }
+          .to trigger_internal_events('manage_event')
+          .with(user: user, namespace: group)
+          .and trigger_internal_events('manage_event_human_users')
+          .with(user: user, namespace: group)
+      end
+    end
+  end
+
   describe 'no project or group' do
     it 'links the event to the personal namespace of the author' do
       author = create(:user, :with_namespace)

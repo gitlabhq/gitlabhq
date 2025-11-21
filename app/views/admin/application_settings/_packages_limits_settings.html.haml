@@ -16,6 +16,6 @@
             = f.number_field :helm_max_packages_count,
               class: 'form-control gl-form-input',
               placeholder: ::ApplicationSetting::DEFAULT_HELM_MAX_PACKAGES_COUNT
-            .form-text.text-muted
+            .form-text.gl-text-subtle
               = _('Maximum number of Helm packages that can be listed per channel. Must be at least 1.')
           = f.submit _('Save changes'), pajamas_button: true

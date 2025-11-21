@@ -46,8 +46,8 @@ To create a group or project runner and provision it on Google Cloud:
 
 1. On the left sidebar, select **Search or go to** and find your group. If you've [turned on the new navigation](../../user/interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
 1. Create a new runner.
-   - To create a new group runner, select **Build > Runners > New group runner**.
-   - To create a new project runner, select **Settings > CI/CD > Runners > New project runner**.
+   - To create a new group runner, select **Build** > **Runners** > **New group runner**.
+   - To create a new project runner, select **Settings** > **CI/CD** > **Runners** > **New project runner**.
 1. In the **Tags** section, in the **Tags** field, enter the job tags to specify jobs the runner can run.
    To use the runner for jobs without tags in addition to the tagged jobs, select **Run untagged**.
 1. Optional. In the **Configuration** section, add runner description and additional configurations.

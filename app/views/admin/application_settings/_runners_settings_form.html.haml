@@ -31,21 +31,21 @@
     .form-group
       = f.label :runner_jobs_request_api_limit, s_('Runners|Maximum requests per minute to the POST /jobs/request endpoint')
       = f.number_field :runner_jobs_request_api_limit, class: 'form-control gl-form-input'
-      .form-text.gl-text-muted
+      .form-text.gl-text-subtle
         = s_('Runners|Limits how many API requests a runner can make to request jobs within a 1-minute window.')
 
   %fieldset
     .form-group
       = f.label :runner_jobs_patch_trace_api_limit, s_('Runners|Maximum requests per minute to the PATCH /jobs/:id/trace endpoint')
       = f.number_field :runner_jobs_patch_trace_api_limit, class: 'form-control gl-form-input'
-      .form-text.gl-text-muted
+      .form-text.gl-text-subtle
         = s_('Runners|Limits how many API requests a runner can make to patch the job trace within a 1-minute window, per job token.')
 
   %fieldset
     .form-group
       = f.label :runner_jobs_endpoints_api_limit, s_('Runners|Maximum requests per minute to other Runner Jobs API endpoints')
       = f.number_field :runner_jobs_endpoints_api_limit, class: 'form-control gl-form-input'
-      .form-text.gl-text-muted
+      .form-text.gl-text-subtle
         = s_('Runners|Limits how many API requests a runner can make to jobs endpoints within a 1-minute window, per job token.')
 
   = f.submit _('Save changes'), pajamas_button: true

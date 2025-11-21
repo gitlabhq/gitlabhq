@@ -1747,7 +1747,7 @@
   rules:
     - <<: *if-default-branch-schedule-nightly
 
-.frontend:rules:jest-linters:
+.frontend:rules:test-linters:
   rules:
     - <<: *if-merge-request-labels-run-all-jest
     - <<: *if-default-refs

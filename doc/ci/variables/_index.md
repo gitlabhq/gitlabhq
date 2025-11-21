@@ -184,7 +184,7 @@ To add a group variable:
      It is not possible to reference another variable if **Visibility** is set to **Masked** or **Masked and hidden**.
 
 The group variables that are available in a project are listed in the project's
-**Settings > CI/CD > Variables** section. Variables from subgroups are recursively inherited.
+**Settings** > **CI/CD** > **Variables** section. Variables from subgroups are recursively inherited.
 
 Alternatively, group variables can be added [by using the API](../../api/group_level_variables.md).
 
@@ -575,7 +575,7 @@ Prerequisites:
 
 To limit the use of pipeline variables to only the Maintainer role and higher:
 
-- Go to **Settings > CI/CD > Variables**.
+- Go to **Settings** > **CI/CD** > **Variables**.
 - Under **Minimum role to use pipeline variables**, select one of:
   - `no_one_allowed`: No pipelines can run with pipeline variables.
     Default for new projects in new namespaces on GitLab.com.

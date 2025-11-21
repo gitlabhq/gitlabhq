@@ -20,6 +20,7 @@ title: Exact code search
 - Global code search [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/147077) in GitLab 16.11 [with a flag](../../administration/feature_flags/_index.md) named `zoekt_cross_namespace_search`. Disabled by default.
 - Feature flags `index_code_with_zoekt` and `search_code_with_zoekt` [removed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/148378) in GitLab 17.1.
 - [Changed](https://gitlab.com/groups/gitlab-org/-/epics/17918) from beta to limited availability in GitLab 18.6.
+- Feature flag `zoekt_cross_namespace_search` [removed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/213413) in GitLab 18.7.
 
 {{< /history >}}
 
@@ -74,8 +75,8 @@ The following scopes are available for exact code search:
 **Footnotes**:
 
 1. An administrator can [disable global search scopes](_index.md#disable-global-search-scopes).
-   On GitLab Self-Managed, an administrator can enable global search
-   with the `zoekt_cross_namespace_search` feature flag.
+   In GitLab 18.6 and earlier, to enable global search on GitLab Self-Managed,
+   an administrator must also enable the `zoekt_cross_namespace_search` feature flag.
 1. On GitLab.com, global search is not enabled.
 
 ## Zoekt search API
