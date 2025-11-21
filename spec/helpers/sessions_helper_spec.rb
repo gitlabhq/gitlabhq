@@ -210,6 +210,30 @@ RSpec.describe SessionsHelper, feature_category: :system_access do
     end
   end
 
+  describe '#passkey_authentication_data' do
+    describe 'when remember_me is set' do
+      it 'returns correct data' do
+        expect(helper.passkey_authentication_data({
+          remember_me: '1'
+        })).to match(a_hash_including({
+          path: users_passkeys_sign_in_path,
+          remember_me: '1',
+          sign_in_path: root_path
+        }))
+      end
+    end
+
+    describe 'when remember_me is not set' do
+      it 'returns correct data' do
+        expect(helper.passkey_authentication_data({})).to match(a_hash_including({
+          path: users_passkeys_sign_in_path,
+          remember_me: '0',
+          sign_in_path: root_path
+        }))
+      end
+    end
+  end
+
   describe '#webauthn_authentication_data' do
     let(:user) { build_stubbed(:user) }
     let(:params) { { user: { remember_me: 1 } } }

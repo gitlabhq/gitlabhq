@@ -24436,8 +24436,15 @@ Pre-aggregated per-user metrics for GitLab Code Suggestions and GitLab Duo Chat.
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
-| <a id="aiusermetricscodesuggestionsacceptedcount"></a>`codeSuggestionsAcceptedCount` | [`Int`](#int) | Total count of code suggestions accepted by the user. |
-| <a id="aiusermetricsduochatinteractionscount"></a>`duoChatInteractionsCount` | [`Int`](#int) | Number of user interactions with GitLab Duo Chat. |
+| <a id="aiusermetricsagentplatform"></a>`agentPlatform` | [`agentPlatformUserMetrics`](#agentplatformusermetrics) | Agent Platform metrics for the user. |
+| <a id="aiusermetricschat"></a>`chat` | [`chatUserMetrics`](#chatusermetrics) | Chat metrics for the user. |
+| <a id="aiusermetricscodereview"></a>`codeReview` | [`codeReviewUserMetrics`](#codereviewusermetrics) | Code Review metrics for the user. |
+| <a id="aiusermetricscodesuggestions"></a>`codeSuggestions` | [`codeSuggestionsUserMetrics`](#codesuggestionsusermetrics) | Code Suggestions metrics for the user. |
+| <a id="aiusermetricscodesuggestionsacceptedcount"></a>`codeSuggestionsAcceptedCount` {{< icon name="warning-solid" >}} | [`Int`](#int) | **Deprecated** in GitLab 18.7. Use `codeSuggestions.codeSuggestionAcceptedInIdeEventCount` instead. |
+| <a id="aiusermetricsduochatinteractionscount"></a>`duoChatInteractionsCount` {{< icon name="warning-solid" >}} | [`Int`](#int) | **Deprecated** in GitLab 18.7. Use `chat.requestDuoChatResponseEventCount` instead. |
+| <a id="aiusermetricsmcp"></a>`mcp` | [`mcpUserMetrics`](#mcpusermetrics) | Mcp metrics for the user. |
+| <a id="aiusermetricstotaleventcount"></a>`totalEventCount` | [`Int`](#int) | Total count of all tracked events for the user. |
+| <a id="aiusermetricstroubleshootjob"></a>`troubleshootJob` | [`troubleshootJobUserMetrics`](#troubleshootjobusermetrics) | Troubleshoot Job metrics for the user. |
 | <a id="aiusermetricsuser"></a>`user` | [`AddOnUser!`](#addonuser) | User associated with metrics. |
 
 ### `AiXrayReport`
@@ -48465,6 +48472,33 @@ X.509 signature for a signed commit.
 | <a id="x509signatureverificationstatus"></a>`verificationStatus` | [`VerificationStatus`](#verificationstatus) | Indicates verification status of the associated key or certificate. |
 | <a id="x509signaturex509certificate"></a>`x509Certificate` | [`X509Certificate`](#x509certificate) | Certificate used for the signature. |
 
+### `agentPlatformUserMetrics`
+
+Agent Platform user metrics for a user. Requires ClickHouse. Premium and Ultimate with GitLab Duo Enterprise only.
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="agentplatformusermetricsagentplatformsessioncreatedeventcount"></a>`agentPlatformSessionCreatedEventCount` | [`Int`](#int) | Total count of `agent_platform_session_created` event. |
+| <a id="agentplatformusermetricsagentplatformsessiondroppedeventcount"></a>`agentPlatformSessionDroppedEventCount` | [`Int`](#int) | Total count of `agent_platform_session_dropped` event. |
+| <a id="agentplatformusermetricsagentplatformsessionfinishedeventcount"></a>`agentPlatformSessionFinishedEventCount` | [`Int`](#int) | Total count of `agent_platform_session_finished` event. |
+| <a id="agentplatformusermetricsagentplatformsessionresumedeventcount"></a>`agentPlatformSessionResumedEventCount` | [`Int`](#int) | Total count of `agent_platform_session_resumed` event. |
+| <a id="agentplatformusermetricsagentplatformsessionstartedeventcount"></a>`agentPlatformSessionStartedEventCount` | [`Int`](#int) | Total count of `agent_platform_session_started` event. |
+| <a id="agentplatformusermetricsagentplatformsessionstoppedeventcount"></a>`agentPlatformSessionStoppedEventCount` | [`Int`](#int) | Total count of `agent_platform_session_stopped` event. |
+| <a id="agentplatformusermetricstotaleventcount"></a>`totalEventCount` | [`Int`](#int) | Total count of all Agent Platform events for the user. |
+
+### `chatUserMetrics`
+
+Chat user metrics for a user. Requires ClickHouse. Premium and Ultimate with GitLab Duo Enterprise only.
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="chatusermetricsrequestduochatresponseeventcount"></a>`requestDuoChatResponseEventCount` | [`Int`](#int) | Total count of `request_duo_chat_response` event. |
+| <a id="chatusermetricstotaleventcount"></a>`totalEventCount` | [`Int`](#int) | Total count of all Chat events for the user. |
+
 ### `codeReviewMetrics`
 
 Requires ClickHouse. Premium and Ultimate with GitLab Duo Enterprise only.
@@ -48482,6 +48516,25 @@ Requires ClickHouse. Premium and Ultimate with GitLab Duo Enterprise only.
 | <a id="codereviewmetricsreactthumbsuponduocodereviewcommenteventcount"></a>`reactThumbsUpOnDuoCodeReviewCommentEventCount` | [`Int`](#int) | Total count of `react_thumbs_up_on_duo_code_review_comment` event. |
 | <a id="codereviewmetricsrequestreviewduocodereviewonmrbyauthoreventcount"></a>`requestReviewDuoCodeReviewOnMrByAuthorEventCount` | [`Int`](#int) | Total count of `request_review_duo_code_review_on_mr_by_author` event. |
 | <a id="codereviewmetricsrequestreviewduocodereviewonmrbynonauthoreventcount"></a>`requestReviewDuoCodeReviewOnMrByNonAuthorEventCount` | [`Int`](#int) | Total count of `request_review_duo_code_review_on_mr_by_non_author` event. |
+
+### `codeReviewUserMetrics`
+
+Code Review user metrics for a user. Requires ClickHouse. Premium and Ultimate with GitLab Duo Enterprise only.
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="codereviewusermetricsencounterduocodereviewerrorduringrevieweventcount"></a>`encounterDuoCodeReviewErrorDuringReviewEventCount` | [`Int`](#int) | Total count of `encounter_duo_code_review_error_during_review` event. |
+| <a id="codereviewusermetricsexcludedfilesfromduocoderevieweventcount"></a>`excludedFilesFromDuoCodeReviewEventCount` | [`Int`](#int) | Total count of `excluded_files_from_duo_code_review` event. |
+| <a id="codereviewusermetricsfindnoissuesduocodereviewafterrevieweventcount"></a>`findNoIssuesDuoCodeReviewAfterReviewEventCount` | [`Int`](#int) | Total count of `find_no_issues_duo_code_review_after_review` event. |
+| <a id="codereviewusermetricsfindnothingtoreviewduocodereviewonmreventcount"></a>`findNothingToReviewDuoCodeReviewOnMrEventCount` | [`Int`](#int) | Total count of `find_nothing_to_review_duo_code_review_on_mr` event. |
+| <a id="codereviewusermetricspostcommentduocodereviewondiffeventcount"></a>`postCommentDuoCodeReviewOnDiffEventCount` | [`Int`](#int) | Total count of `post_comment_duo_code_review_on_diff` event. |
+| <a id="codereviewusermetricsreactthumbsdownonduocodereviewcommenteventcount"></a>`reactThumbsDownOnDuoCodeReviewCommentEventCount` | [`Int`](#int) | Total count of `react_thumbs_down_on_duo_code_review_comment` event. |
+| <a id="codereviewusermetricsreactthumbsuponduocodereviewcommenteventcount"></a>`reactThumbsUpOnDuoCodeReviewCommentEventCount` | [`Int`](#int) | Total count of `react_thumbs_up_on_duo_code_review_comment` event. |
+| <a id="codereviewusermetricsrequestreviewduocodereviewonmrbyauthoreventcount"></a>`requestReviewDuoCodeReviewOnMrByAuthorEventCount` | [`Int`](#int) | Total count of `request_review_duo_code_review_on_mr_by_author` event. |
+| <a id="codereviewusermetricsrequestreviewduocodereviewonmrbynonauthoreventcount"></a>`requestReviewDuoCodeReviewOnMrByNonAuthorEventCount` | [`Int`](#int) | Total count of `request_review_duo_code_review_on_mr_by_non_author` event. |
+| <a id="codereviewusermetricstotaleventcount"></a>`totalEventCount` | [`Int`](#int) | Total count of all Code Review events for the user. |
 
 ### `codeSuggestionMetrics`
 
@@ -48510,6 +48563,44 @@ Premium and Ultimate with GitLab Duo Pro and Enterprise only.
 | ---- | ---- | ----------- |
 | <a id="codesuggestionmetricsbasicacceptedcount"></a>`acceptedCount` | [`Int`](#int) | Total count of code suggestions accepted. |
 | <a id="codesuggestionmetricsbasicshowncount"></a>`shownCount` | [`Int`](#int) | Total count of code suggestions shown. |
+
+### `codeSuggestionsUserMetrics`
+
+Code Suggestions user metrics for a user. Requires ClickHouse. Premium and Ultimate with GitLab Duo Enterprise only.
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="codesuggestionsusermetricscodesuggestionacceptedinideeventcount"></a>`codeSuggestionAcceptedInIdeEventCount` | [`Int`](#int) | Total count of `code_suggestion_accepted_in_ide` event. |
+| <a id="codesuggestionsusermetricscodesuggestiondirectaccesstokenrefresheventcount"></a>`codeSuggestionDirectAccessTokenRefreshEventCount` | [`Int`](#int) | Total count of `code_suggestion_direct_access_token_refresh` event. |
+| <a id="codesuggestionsusermetricscodesuggestionrejectedinideeventcount"></a>`codeSuggestionRejectedInIdeEventCount` | [`Int`](#int) | Total count of `code_suggestion_rejected_in_ide` event. |
+| <a id="codesuggestionsusermetricscodesuggestionshowninideeventcount"></a>`codeSuggestionShownInIdeEventCount` | [`Int`](#int) | Total count of `code_suggestion_shown_in_ide` event. |
+| <a id="codesuggestionsusermetricscodesuggestionsrequestedeventcount"></a>`codeSuggestionsRequestedEventCount` | [`Int`](#int) | Total count of `code_suggestions_requested` event. |
+| <a id="codesuggestionsusermetricstotaleventcount"></a>`totalEventCount` | [`Int`](#int) | Total count of all Code Suggestions events for the user. |
+
+### `mcpUserMetrics`
+
+Mcp user metrics for a user. Requires ClickHouse. Premium and Ultimate with GitLab Duo Enterprise only.
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mcpusermetricsfinishmcptoolcalleventcount"></a>`finishMcpToolCallEventCount` | [`Int`](#int) | Total count of `finish_mcp_tool_call` event. |
+| <a id="mcpusermetricsstartmcptoolcalleventcount"></a>`startMcpToolCallEventCount` | [`Int`](#int) | Total count of `start_mcp_tool_call` event. |
+| <a id="mcpusermetricstotaleventcount"></a>`totalEventCount` | [`Int`](#int) | Total count of all Mcp events for the user. |
+
+### `troubleshootJobUserMetrics`
+
+Troubleshoot Job user metrics for a user. Requires ClickHouse. Premium and Ultimate with GitLab Duo Enterprise only.
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="troubleshootjobusermetricstotaleventcount"></a>`totalEventCount` | [`Int`](#int) | Total count of all Troubleshoot Job events for the user. |
+| <a id="troubleshootjobusermetricstroubleshootjobeventcount"></a>`troubleshootJobEventCount` | [`Int`](#int) | Total count of `troubleshoot_job` event. |
 
 ## Enumeration types
 

@@ -2,8 +2,6 @@
 import Draggable from 'vuedraggable';
 import { s__ } from '~/locale';
 import { setCookie, getCookie } from '~/lib/utils/common_utils';
-import Tracking from '~/tracking';
-import { getExperimentData } from '~/experimentation/utils';
 import {
   PINNED_NAV_STORAGE_KEY,
   SIDEBAR_PINS_EXPANDED_COOKIE,
@@ -30,7 +28,6 @@ export default {
     MenuSection,
     NavItem,
   },
-  mixins: [Tracking.mixin({ experiment: 'default_pinned_nav_items' })],
   props: {
     items: {
       type: Array,
@@ -98,11 +95,8 @@ export default {
     onPinRemove(itemId, itemTitle) {
       this.$emit('pin-remove', itemId, itemTitle);
     },
-    writePinnedClick(id) {
+    writePinnedClick() {
       sessionStorage.setItem(PINNED_NAV_STORAGE_KEY, true);
-      if (getExperimentData('default_pinned_nav_items')) {
-        this.track('click_pinned_menu_item', { label: id });
-      }
     },
   },
 };
@@ -133,7 +127,7 @@ export default {
         :async-count="asyncCount"
         is-in-pinned-section
         @pin-remove="onPinRemove(item.id, item.title)"
-        @nav-link-click="writePinnedClick(item.id)"
+        @nav-link-click="writePinnedClick"
       />
     </draggable>
     <li v-else class="gl-ml-[2.25rem] gl-py-3 gl-text-sm gl-text-subtle">

@@ -2652,6 +2652,9 @@ msgstr ""
 msgid "AICatalog|Could not update flow. Try again."
 msgstr ""
 
+msgid "AICatalog|Create a copy of this agent with the same configuration."
+msgstr ""
+
 msgid "AICatalog|Create agent"
 msgstr ""
 
@@ -2661,7 +2664,7 @@ msgstr ""
 msgid "AICatalog|Creating proprietary business logic."
 msgstr ""
 
-msgid "AICatalog|Define the agent's personality, expertise, and behavioral guidelines. This shapes how the agent responds and approaches tasks."
+msgid "AICatalog|Define the agent's personality, expertise, and behavior. This changes how the agent solves problems and responds to requests."
 msgstr ""
 
 msgid "AICatalog|Delete agent"
@@ -2700,9 +2703,6 @@ msgstr ""
 msgid "AICatalog|Duplicate flow"
 msgstr ""
 
-msgid "AICatalog|Duplicate this agent with all its settings and configuration."
-msgstr ""
-
 msgid "AICatalog|Duplicate this flow with all its settings and configuration."
 msgstr ""
 
@@ -2727,10 +2727,7 @@ msgstr ""
 msgid "AICatalog|Excessive resource usage"
 msgstr ""
 
-msgid "AICatalog|Explore AI Catalog agents"
-msgstr ""
-
-msgid "AICatalog|Explore AI Catalog flows"
+msgid "AICatalog|Explore the AI Catalog"
 msgstr ""
 
 msgid "AICatalog|External"
@@ -2761,6 +2758,9 @@ msgid "AICatalog|Failed to report flow. %{error}"
 msgstr ""
 
 msgid "AICatalog|Flow"
+msgstr ""
+
+msgid "AICatalog|Flow \"%{flowName}\" could not be enabled."
 msgstr ""
 
 msgid "AICatalog|Flow ID: %{id}"
@@ -2814,7 +2814,7 @@ msgstr ""
 msgid "AICatalog|Immediate security threat"
 msgstr ""
 
-msgid "AICatalog|Input cannot exceed %{value} characters. Please shorten your input."
+msgid "AICatalog|Input cannot exceed %{value} characters."
 msgstr ""
 
 msgid "AICatalog|Is visible only to users with at least the Developer role for this project, and to users with the Owner role for the top-level group."
@@ -2823,13 +2823,13 @@ msgstr ""
 msgid "AICatalog|Is visible to all users."
 msgstr ""
 
+msgid "AICatalog|Manage agent settings."
+msgstr ""
+
+msgid "AICatalog|Manage flow settings."
+msgstr ""
+
 msgid "AICatalog|Managed"
-msgstr ""
-
-msgid "AICatalog|Modify the agent settings and configuration."
-msgstr ""
-
-msgid "AICatalog|Modify the flow settings and configuration."
 msgstr ""
 
 msgid "AICatalog|Name is required."
@@ -2901,10 +2901,13 @@ msgstr ""
 msgid "AICatalog|Report to admin"
 msgstr ""
 
+msgid "AICatalog|Research Assistant, Creative Writer, Code Helper"
+msgstr ""
+
 msgid "AICatalog|Save changes"
 msgstr ""
 
-msgid "AICatalog|Search and select tools for this agent."
+msgid "AICatalog|Search tools."
 msgstr ""
 
 msgid "AICatalog|Select a flow"
@@ -2922,7 +2925,7 @@ msgstr ""
 msgid "AICatalog|Select the type of your flow."
 msgstr ""
 
-msgid "AICatalog|Select tools that this agent will have access to."
+msgid "AICatalog|Select which tools this agent can use."
 msgstr ""
 
 msgid "AICatalog|Selected %{itemType}"
@@ -3043,9 +3046,6 @@ msgid "AICatalog|cannot be changed from public to private as it has catalog cons
 msgstr ""
 
 msgid "AICatalog|cannot be changed from public to private as it is used by other flows"
-msgstr ""
-
-msgid "AICatalog|e.g., Research Assistant, Creative Writer, Code Helper"
 msgstr ""
 
 msgid "AICatalog|flow"
@@ -48003,6 +48003,21 @@ msgstr ""
 msgid "Passkey successfully authenticated."
 msgstr ""
 
+msgid "PasskeyAuthentication|Back to sign-in"
+msgstr ""
+
+msgid "PasskeyAuthentication|Passkeys only works with HTTPS-enabled websites. Contact your administrator for more details."
+msgstr ""
+
+msgid "PasskeyAuthentication|Sign in with Passkeys"
+msgstr ""
+
+msgid "PasskeyAuthentication|We heard back from your device. Authenticating..."
+msgstr ""
+
+msgid "PasskeyAuthentication|Your browser doesn't support passkeys."
+msgstr ""
+
 msgid "Password"
 msgstr ""
 
@@ -61411,6 +61426,9 @@ msgid "SecurityOrchestration|You can select this option only once."
 msgstr ""
 
 msgid "SecurityOrchestration|You can't change the default branch because its protection is enforced by one or more %{security_policies_link_start}security policies%{security_policies_link_end}. %{learn_more_link_start}Learn more%{learn_more_link_end}."
+msgstr ""
+
+msgid "SecurityOrchestration|You can't unprotect this branch because its protection is enforced by one or more %{securityPoliciesPathStart}security policies%{securityPoliciesPathEnd}. %{linkStart}Learn more%{linkEnd}."
 msgstr ""
 
 msgid "SecurityOrchestration|You can't unprotect this branch because its protection is enforced by one or more %{security_policies_link_start}security policies%{security_policies_link_end}. %{learn_more_link_start}Learn more%{learn_more_link_end}."

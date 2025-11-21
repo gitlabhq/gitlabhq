@@ -20,6 +20,8 @@ module Gitlab
               exit 1
             fi
           SH
+          # @return [String] secret name for OAuth provider
+          OAUTH_SECRET_NAME = "gitlab-oauth-github"
 
           # Instance of kind deployment configuration
           #
@@ -50,6 +52,7 @@ module Gitlab
           def run_pre_deployment_setup
             create_initial_root_password
             create_pre_receive_hook
+            create_oauth_secret if oauth_enabled?
           end
 
           # Run post-deployment setup
@@ -194,6 +197,37 @@ module Gitlab
               }
             }.to_json
             puts kubeclient.patch('svc', 'gitlab-registry', patch_data)
+          end
+
+          # Create OAuth provider secret
+          #
+          # @return [void]
+          def create_oauth_secret
+            app_id = ENV['QA_GITHUB_OAUTH_APP_ID']
+            app_secret = ENV['QA_GITHUB_OAUTH_APP_SECRET']
+
+            if app_id.nil? || app_id.empty? || app_secret.nil? || app_secret.empty?
+              raise "OAuth environment variables QA_GITHUB_OAUTH_APP_ID and QA_GITHUB_OAUTH_APP_SECRET must be set"
+            end
+
+            log("Creating OAuth provider secret", :info)
+
+            provider_config = <<~YAML
+              name: 'github'
+              app_id: '#{ENV['QA_GITHUB_OAUTH_APP_ID']}'
+              app_secret: '#{ENV['QA_GITHUB_OAUTH_APP_SECRET']}'
+            YAML
+
+            secret = Kubectl::Resources::Secret.new(OAUTH_SECRET_NAME, "provider", provider_config)
+            secrets_to_mask = [ENV['QA_GITHUB_OAUTH_APP_ID'], ENV['QA_GITHUB_OAUTH_APP_SECRET']]
+            puts mask_secrets(kubeclient.create_resource(secret), secrets_to_mask)
+          end
+
+          # Check if OAuth is enabled
+          #
+          # @return [Boolean]
+          def oauth_enabled?
+            ENV['QA_RSPEC_TAGS']&.include?('oauth')
           end
         end
       end

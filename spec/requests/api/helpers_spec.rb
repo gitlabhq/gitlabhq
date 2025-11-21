@@ -319,9 +319,9 @@ RSpec.describe API::Helpers, :enable_admin_mode, feature_category: :system_acces
         allow(self).to receive(:route_setting)
       end
 
-      context 'when the `authorize_granular_pats` feature flag is disabled' do
+      context 'when the `granular_personal_access_tokens` feature flag is disabled' do
         before do
-          stub_feature_flags(authorize_granular_pats: false)
+          stub_feature_flags(granular_personal_access_tokens: false)
         end
 
         it 'raises an error stating that the feature is not yet supported' do

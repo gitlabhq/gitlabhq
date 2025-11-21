@@ -44,6 +44,14 @@ module SessionsHelper
       !treat_as_locked?(user)
   end
 
+  def passkey_authentication_data(params)
+    {
+      path: users_passkeys_sign_in_path,
+      remember_me: params.fetch(:remember_me, '0'),
+      sign_in_path: root_path
+    }
+  end
+
   def webauthn_authentication_data(user:, params:, admin_mode: false)
     target_path = admin_mode ? admin_session_path : user_session_path
     render_remember_me = admin_mode ? false : remember_me_enabled?

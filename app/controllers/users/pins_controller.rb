@@ -14,7 +14,7 @@ module Users
       panel = pins_params[:panel]
       new_menu_items = pins_params[:menu_item_ids]
       prev_menu_items = current_user.pinned_nav_items[panel] ||
-        super_sidebar_default_pins(panel, current_user).map(&:to_s)
+        pinned_items(current_user, panel).map(&:to_s)
 
       pinned_nav_items = current_user.pinned_nav_items.merge({ panel => new_menu_items })
 
@@ -71,5 +71,3 @@ module Users
     end
   end
 end
-
-Users::PinsController.prepend_mod

@@ -56,9 +56,9 @@ RSpec.describe ::Authz::Tokens::AuthorizeGranularScopesService, feature_category
   describe '#execute' do
     it_behaves_like 'successful response'
 
-    context 'when the `authorize_granular_pats` feature flag is disabled' do
+    context 'when the `granular_personal_access_tokens` feature flag is disabled' do
       before do
-        stub_feature_flags(authorize_granular_pats: false)
+        stub_feature_flags(granular_personal_access_tokens: false)
       end
 
       it_behaves_like 'error response', 'Granular tokens are not yet supported'

@@ -16,7 +16,7 @@ module Gitlab
           # @param [String] domain
           # @return [Hash]
           def common_values(domain)
-            {
+            base_config = {
               global: {
                 hosts: {
                   domain: domain,
@@ -55,6 +55,11 @@ module Gitlab
               "gitlab-runner": { install: false },
               installCertmanager: false
             }
+
+            # Only merge OAuth config if enabled (don't set to nil)
+            base_config[:global][:appConfig][:omniauth] = oauth_config if ENV['QA_RSPEC_TAGS']&.include?('oauth')
+
+            base_config
           end
 
           # Key value pairs for ci specific component version values
@@ -97,6 +102,20 @@ module Gitlab
             return version unless version.match?(/^[0-9]+\.[0-9]+\.[0-9]+(-rc[0-9]+)?(-ee)?$/)
 
             "v#{version}"
+          end
+
+          def oauth_config
+            {
+              enabled: true,
+              allowSingleSignOn: ['github'],
+              blockAutoCreatedUsers: false,
+              providers: [
+                {
+                  secret: Gitlab::Orchestrator::Deployment::Configurations::Kind::OAUTH_SECRET_NAME,
+                  key: 'provider'
+                }
+              ]
+            }
           end
         end
       end

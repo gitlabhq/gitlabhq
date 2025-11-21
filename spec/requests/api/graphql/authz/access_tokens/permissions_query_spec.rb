@@ -56,9 +56,9 @@ RSpec.describe 'Query.accessTokenPermissions', feature_category: :permissions do
     end
   end
 
-  context 'when feature-flag `fine_grained_personal_access_tokens` is disabled' do
+  context 'when feature-flag `granular_personal_access_tokens` is disabled' do
     before do
-      stub_feature_flags(fine_grained_personal_access_tokens: false)
+      stub_feature_flags(granular_personal_access_tokens: false)
     end
 
     it 'returns an error' do

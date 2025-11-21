@@ -8,7 +8,7 @@ module UserSettings
 
     before_action :check_personal_access_tokens_enabled
     before_action only: :index do
-      push_frontend_feature_flag(:fine_grained_personal_access_tokens)
+      push_frontend_feature_flag(:granular_personal_access_tokens, current_user)
     end
     prepend_before_action(only: [:index]) { authenticate_sessionless_user!(:ics) }
 
@@ -47,7 +47,7 @@ module UserSettings
     end
 
     def new
-      render_404 unless Feature.enabled?(:fine_grained_personal_access_tokens, :instance)
+      render_404 unless Feature.enabled?(:granular_personal_access_tokens, current_user)
     end
 
     def create

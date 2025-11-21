@@ -179,19 +179,6 @@ group-saml:
     - !reference [.rules:test:omnibus-base, rules]
     - if: $QA_SUITES =~ /Test::Integration::GroupSAML/
 
-oauth:
-  extends:
-    - .omnibus-e2e
-  variables:
-    QA_SCENARIO: Test::Instance::Image
-    QA_GITLAB_HOSTNAME: "gitlab"
-    QA_GITLAB_USE_TLS: "true"
-    QA_RSPEC_TAGS: --tag oauth
-    GITLAB_QA_OPTS: --omnibus-config github_oauth
-  rules:
-    - !reference [.rules:test:omnibus-base, rules]
-    - if: $QA_SUITES =~ /Test::Integration::OAuth/
-
 instance-saml:
   extends: .omnibus-e2e
   variables:

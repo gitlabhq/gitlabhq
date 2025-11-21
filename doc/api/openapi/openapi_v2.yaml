@@ -48140,6 +48140,21 @@ definitions:
           foundational_agents_default_enabled:
             type: boolean
             description: Whether new foundational agents are enabled by default
+          minimum_access_level_execute:
+            type: integer
+            format: int32
+            description: The minimum access level required to execute Duo Agent Platform.
+              This field is behind a feature flag.
+          minimum_access_level_manage:
+            type: integer
+            format: int32
+            description: The minimum access level required to manage Duo Agent Platform.
+              This field is behind a feature flag.
+          minimum_access_level_enable_on_projects:
+            type: integer
+            format: int32
+            description: The minimum access level required to enable Duo Agent Platform.
+              This field is behind a feature flag.
     required:
     - name
     - path
@@ -48349,6 +48364,21 @@ definitions:
           foundational_agents_default_enabled:
             type: boolean
             description: Whether new foundational agents are enabled by default
+          minimum_access_level_execute:
+            type: integer
+            format: int32
+            description: The minimum access level required to execute Duo Agent Platform.
+              This field is behind a feature flag.
+          minimum_access_level_manage:
+            type: integer
+            format: int32
+            description: The minimum access level required to manage Duo Agent Platform.
+              This field is behind a feature flag.
+          minimum_access_level_enable_on_projects:
+            type: integer
+            format: int32
+            description: The minimum access level required to enable Duo Agent Platform.
+              This field is behind a feature flag.
       prevent_sharing_groups_outside_hierarchy:
         type: boolean
         description: Prevent sharing groups within this namespace with any groups

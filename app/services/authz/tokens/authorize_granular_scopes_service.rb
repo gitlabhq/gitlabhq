@@ -54,7 +54,7 @@ module Authz
       end
 
       def feature_enabled?
-        Feature.enabled?(:authorize_granular_pats, boundary&.namespace)
+        Feature.enabled?(:granular_personal_access_tokens, token.user)
       end
 
       def authorized?

@@ -1,0 +1,10 @@
+---
+name: granular_personal_access_tokens
+description: Enables Granular Personal Access Tokens
+feature_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/579802
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/213553
+rollout_issue_url:
+milestone: '18.7'
+group: group::authorization
+type: wip
+default_enabled: false

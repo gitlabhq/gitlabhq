@@ -7,7 +7,7 @@ module QA
         class OAuth < Test::Instance::All
           tags :oauth
 
-          pipeline_mappings test_on_omnibus: %w[oauth]
+          pipeline_mappings test_on_cng: %w[cng-oauth]
         end
       end
     end

@@ -1,5 +1,5 @@
 - title: "Coverage-guided fuzz testing is deprecated"
-  removal_milestone: "19.0"
+  removal_milestone: "Pending"
   announcement_milestone: "18.0"
   breaking_change: true
   window: 1

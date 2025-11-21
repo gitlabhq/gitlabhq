@@ -1,7 +1,15 @@
 <script>
 // eslint-disable-next-line no-restricted-imports
 import { mapActions } from 'vuex';
-import { GlSprintf, GlLink, GlLoadingIcon, GlButton, GlModal, GlModalDirective } from '@gitlab/ui';
+import {
+  GlSprintf,
+  GlLink,
+  GlLoadingIcon,
+  GlButton,
+  GlModal,
+  GlModalDirective,
+  GlPopover,
+} from '@gitlab/ui';
 import { getIdFromGraphQLId } from '~/graphql_shared/utils';
 import { sprintf, n__, s__ } from '~/locale';
 import {
@@ -71,6 +79,7 @@ export default {
     GlLoadingIcon,
     GlModal,
     GlButton,
+    GlPopover,
     BranchRuleModal,
     AccessLevelsDrawer,
     SquashSettingsDrawer,
@@ -210,6 +219,10 @@ export default {
       const { mergeAccessLevels } = this.branchProtection || {};
       return this.getAccessLevels(mergeAccessLevels);
     },
+    // needed to override EE component
+    modificationBlockedByPolicy() {
+      return false;
+    },
     pushAccessLevels() {
       const { pushAccessLevels } = this.branchProtection || {};
       return this.getAccessLevels(pushAccessLevels);
@@ -238,6 +251,9 @@ export default {
     },
     isAllProtectedBranchesRule() {
       return this.branch === this.$options.i18n.allProtectedBranches;
+    },
+    isDeleteButtonDisabled() {
+      return this.$apollo.loading || this.modificationBlockedByPolicy;
     },
     isPredefinedRule() {
       return this.isAllBranchesRule || this.isAllProtectedBranchesRule;
@@ -489,6 +505,7 @@ export default {
         });
     },
   },
+  deleteButtonId: 'delete-button',
 };
 </script>
 
@@ -496,15 +513,28 @@ export default {
   <div>
     <page-heading :heading="$options.i18n.pageTitle">
       <template #actions>
-        <gl-button
-          v-if="showDeleteRuleBtn"
-          v-gl-modal="$options.deleteModalId"
-          data-testid="delete-rule-button"
-          category="secondary"
-          variant="danger"
-          :disabled="$apollo.loading"
-          >{{ $options.i18n.deleteRule }}
-        </gl-button>
+        <span :id="$options.deleteButtonId">
+          <gl-button
+            v-if="showDeleteRuleBtn"
+            v-gl-modal="$options.deleteModalId"
+            data-testid="delete-rule-button"
+            category="secondary"
+            variant="danger"
+            :disabled="isDeleteButtonDisabled"
+            >{{ $options.i18n.deleteRule }}
+          </gl-button>
+        </span>
+        <!-- EE only-->
+        <gl-popover v-if="modificationBlockedByPolicy" :target="$options.deleteButtonId">
+          <gl-sprintf :message="$options.i18n.disabledDeleteTooltip">
+            <template #securityPoliciesPath="{ content }">
+              <gl-link :href="securityPoliciesPath">{{ content }}</gl-link>
+            </template>
+            <template #link="{ content }">
+              <gl-link :href="$options.policiesDocumentationLink">{{ content }}</gl-link>
+            </template>
+          </gl-sprintf>
+        </gl-popover>
       </template>
     </page-heading>
 

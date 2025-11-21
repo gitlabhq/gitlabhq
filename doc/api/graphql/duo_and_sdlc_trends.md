@@ -179,29 +179,46 @@ To see which events are being tracked, you can examine the events declared in th
 {{< history >}}
 
 - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/483049) in GitLab 17.6.
+- Feature-specific metric types [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/483049) in GitLab 18.7
 
 {{< /history >}}
 
-The `AiUserMetrics` endpoint provides pre-aggregated per-user metrics for Code Suggestions and GitLab Duo Chat.
+The `AiUserMetrics` endpoint provides pre-aggregated per-user metrics for all registered GitLab Duo features, including Code Suggestions, Duo Chat, Code Review, Agent Platform (Agentic Chat), Job Troubleshooting, and Model Context Protocol (MCP) tool calls.
 
-You can use this endpoint to list all Duo users and their usage frequency for Code Suggestions and Duo Chat.
+You can use this endpoint to analyze GitLab Duo user engagement and measure usage frequency across different GitLab Duo features.
 
 Prerequisites:
 
 - You must have ClickHouse configured.
 
-For example, to retrieve the number of accepted Code Suggestions and interactions with Duo Chat for all users
-in the `gitlab-org` group:
+### Total event counts
+
+The `AiUserMetrics` endpoint provides the following levels of event count aggregation:
+
+- Top-level `totalEventCount`: Returns the sum of all event counts across all GitLab Duo features for a user.
+- Feature-level `totalEventCount`: Available in each feature metric type, returns the sum of all event counts for that specific feature.
+
+You can use these fields to get aggregate counts at different levels of granularity.
+
+For example, to retrieve both top-level and feature-level totals:
 
 ```graphql
 query {
   group(fullPath:"gitlab-org") {
     aiUserMetrics {
       nodes {
-        codeSuggestionsAcceptedCount
-        duoChatInteractionsCount
         user {
           username
+        }
+        totalEventCount
+        codeSuggestions {
+          totalEventCount
+          codeSuggestionAcceptedInIdeEventCount
+          codeSuggestionShownInIdeEventCount
+        }
+        chat {
+          totalEventCount
+          requestDuoChatResponseEventCount
         }
       }
     }
@@ -218,17 +235,158 @@ The query returns the following output:
       "aiUserMetrics": {
         "nodes": [
           {
-            "codeSuggestionsAcceptedCount": 10,
-            "duoChatInteractionsCount": 22,
             "user": {
               "username": "USER_1"
+            },
+            "totalEventCount": 82,
+            "codeSuggestions": {
+              "totalEventCount": 60,
+              "codeSuggestionAcceptedInIdeEventCount": 10,
+              "codeSuggestionShownInIdeEventCount": 50
+            },
+            "chat": {
+              "totalEventCount": 22,
+              "requestDuoChatResponseEventCount": 22
             }
           },
           {
-            "codeSuggestionsAcceptedCount": 12,
-            "duoChatInteractionsCount": 30,
             "user": {
               "username": "USER_2"
+            },
+            "totalEventCount": 102,
+            "codeSuggestions": {
+              "totalEventCount": 72,
+              "codeSuggestionAcceptedInIdeEventCount": 12,
+              "codeSuggestionShownInIdeEventCount": 60
+            },
+            "chat": {
+              "totalEventCount": 30,
+              "requestDuoChatResponseEventCount": 30
+            }
+          }
+        ]
+      }
+    }
+  }
+}
+```
+
+In this example:
+
+- The top-level `totalEventCount` (82 for USER_1) is the sum of all events across all features.
+- Each feature's `totalEventCount` represents the sum of events within that feature only.
+  - Code Suggestions: 60 events (10 accepted + 50 shown)
+  - Chat: 22 events
+
+### Feature-specific metric types
+
+The `AiUserMetrics` endpoint provides detailed metrics through feature-specific nested types. Each GitLab Duo feature has its own dedicated metric type that exposes event count fields for all tracked events related to that feature.
+
+Available feature metric types include:
+
+- `codeSuggestions`: Code Suggestions-specific metrics
+- `chat`: GitLab Duo Chat-specific metrics
+- `codeReview`: Code Review-specific metrics
+- `agentPlatform`: Agent Platform-specific metrics (includes Agentic Chat sessions)
+- `troubleshootJob`: Job troubleshooting-specific metrics
+- `mcp`: Model Context Protocol (MCP) tool call metrics
+
+Each feature metric type includes:
+
+- Individual event count fields for all tracked events in that feature
+- A `totalEventCount` field that sums all events for that specific feature
+
+The available event count fields are dynamically generated based on the events registered in the system. To see which events are tracked for each feature, examine the events declared in the [`ai_tracking.rb`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/lib/gitlab/tracking/ai_tracking.rb) file.
+
+For example, to retrieve detailed metrics across multiple GitLab Duo features:
+
+```graphql
+query {
+  group(fullPath:"gitlab-org") {
+    aiUserMetrics {
+      nodes {
+        user {
+          username
+        }
+        codeSuggestions {
+          totalEventCount
+          codeSuggestionAcceptedInIdeEventCount
+          codeSuggestionShownInIdeEventCount
+        }
+        chat {
+          totalEventCount
+          requestDuoChatResponseEventCount
+        }
+        codeReview {
+          totalEventCount
+          requestReviewDuoCodeReviewOnMrByAuthorEventCount
+          findNoIssuesDuoCodeReviewAfterReviewEventCount
+        }
+        agentPlatform {
+          totalEventCount
+          agentPlatformSessionStartedEventCount
+          agentPlatformSessionFinishedEventCount
+        }
+      }
+    }
+  }
+}
+```
+
+The query returns the following output:
+
+```graphql
+{
+  "data": {
+    "group": {
+      "aiUserMetrics": {
+        "nodes": [
+          {
+            "user": {
+              "username": "USER_1"
+            },
+            "codeSuggestions": {
+              "totalEventCount": 60,
+              "codeSuggestionAcceptedInIdeEventCount": 10,
+              "codeSuggestionShownInIdeEventCount": 50
+            },
+            "chat": {
+              "totalEventCount": 22,
+              "requestDuoChatResponseEventCount": 22
+            },
+            "codeReview": {
+              "totalEventCount": 8,
+              "requestReviewDuoCodeReviewOnMrByAuthorEventCount": 5,
+              "findNoIssuesDuoCodeReviewAfterReviewEventCount": 3
+            },
+            "agentPlatform": {
+              "totalEventCount": 15,
+              "agentPlatformSessionStartedEventCount": 8,
+              "agentPlatformSessionFinishedEventCount": 7
+            }
+          },
+          {
+            "user": {
+              "username": "USER_2"
+            },
+            "codeSuggestions": {
+              "totalEventCount": 72,
+              "codeSuggestionAcceptedInIdeEventCount": 12,
+              "codeSuggestionShownInIdeEventCount": 60
+            },
+            "chat": {
+              "totalEventCount": 30,
+              "requestDuoChatResponseEventCount": 30
+            },
+            "codeReview": {
+              "totalEventCount": 5,
+              "requestReviewDuoCodeReviewOnMrByAuthorEventCount": 3,
+              "findNoIssuesDuoCodeReviewAfterReviewEventCount": 2
+            },
+            "agentPlatform": {
+              "totalEventCount": 20,
+              "agentPlatformSessionStartedEventCount": 12,
+              "agentPlatformSessionFinishedEventCount": 8
             }
           }
         ]

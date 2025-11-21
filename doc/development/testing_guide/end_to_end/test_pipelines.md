@@ -189,6 +189,7 @@ Jobs in `test` stage:
 - `cng-qa-min-redis-version` runs validation for minimal supported Redis version using `Test::Instance::HealthCheck` scenario against CNG
 - `cng-registry` runs tests in the registry scenario `Test::Integration::Registry` against CNG
 - `cng-relative-url` runs the smoke suite, `Test::Instance::Smoke`, but with a relative URL set for CNG
+- `cng-oauth` runs e2e spec for authentication between GitHub and GitLab with OmniAuth enabled.
 
 ##### report
 

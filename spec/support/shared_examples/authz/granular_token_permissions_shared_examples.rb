@@ -31,9 +31,9 @@ RSpec.shared_examples 'authorizing granular token permissions' do |permissions|
 
     it_behaves_like 'granting access'
 
-    context 'when the `authorize_granular_pats` feature flag is disabled' do
+    context 'when the `granular_personal_access_tokens` feature flag is disabled' do
       before do
-        stub_feature_flags(authorize_granular_pats: false)
+        stub_feature_flags(granular_personal_access_tokens: false)
       end
 
       let(:message) { 'Granular tokens are not yet supported' }

@@ -15,7 +15,7 @@ module Resolvers
         private
 
         def resource_available?
-          Feature.enabled?(:fine_grained_personal_access_tokens, :instance)
+          Feature.enabled?(:granular_personal_access_tokens, current_user)
         end
       end
     end

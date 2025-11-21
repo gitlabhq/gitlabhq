@@ -78,6 +78,8 @@ Example response:
   "status": "scheduled",
   "cadence": 7,
   "enabled": true,
+  "notify_on_success": false,
+  "notify_on_failure": false,
   "failure_message": null,
   "last_run_detailed_metrics": {
     "maven": {
@@ -110,6 +112,8 @@ POST /groups/:id/-/virtual_registries/cleanup/policy
 | `cadence` | integer | No | How often the cleanup policy should run. Must be one of: `1` (daily), `7` (weekly), `14` (bi-weekly), `30` (monthly), `90` (quarterly). |
 | `enabled` | boolean | No | Enable or disable the cleanup policy. |
 | `keep_n_days_after_download` | integer | No | Number of days after which unused cache entries should be cleaned up. Must be between 1 and 365. |
+| `notify_on_success` | boolean | No | Notify group owners on successful cleanup runs. |
+| `notify_on_failure` | boolean | No | Notify group owners on failed cleanup runs. |
 
 Example request:
 
@@ -135,6 +139,8 @@ Example response:
   "status": "scheduled",
   "cadence": 7,
   "enabled": true,
+  "notify_on_success": false,
+  "notify_on_failure": false,
   "failure_message": null,
   "last_run_detailed_metrics": {},
   "created_at": "2024-05-30T12:28:27.855Z",
@@ -162,6 +168,8 @@ PATCH /groups/:id/-/virtual_registries/cleanup/policy
 | `cadence` | integer | No | How often the cleanup policy should run. Must be one of: `1` (daily), `7` (weekly), `14` (bi-weekly), `30` (monthly), `90` (quarterly). |
 | `enabled` | boolean | No | Boolean to enable/disable the policy. |
 | `keep_n_days_after_download` | integer | No | Number of days after which unused cache entries should be cleaned up. Must be between 1 and 365. |
+| `notify_on_success` | boolean | No | Notify group owners on successful cleanup runs. |
+| `notify_on_failure` | boolean | No | Notify group owners on failed cleanup runs. |
 
 {{< alert type="note" >}}
 
@@ -192,6 +200,8 @@ Example response:
   "status": "scheduled",
   "cadence": 7,
   "enabled": true,
+  "notify_on_success": false,
+  "notify_on_failure": false,
   "failure_message": null,
   "last_run_detailed_metrics": {
     "maven": {

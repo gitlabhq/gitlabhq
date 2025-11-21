@@ -47,26 +47,29 @@ For test case limits, see [Maximum test cases per unit test report](../../user/g
 
 ### JUnit XML format specification
 
-GitLab parses the following elements and attributes from your JUnit XML files:
+GitLab parses a subset of JUnit XML elements and attributes to display test results in the UI.
 
 | XML Element  | XML Attribute   | Description |
 | ------------ | --------------- | ----------- |
-| `testsuite`  | `name`          | Test suite name (parsed but not displayed in UI) |
-| `testcase`   | `classname`     | Test class or category name (used as the suite name) |
-| `testcase`   | `name`          | Individual test name |
-| `testcase`   | `file`          | File path where the test is defined |
-| `testcase`   | `time`          | Test execution time in seconds |
-| `failure`    | Element content | Failure message and stack trace |
-| `error`      | Element content | Error message and stack trace |
-| `skipped`    | Element content | Reason for skipping the test |
-| `system-out` | Element content | System output and attachment tags (only parsed from `testcase` elements) |
-| `system-err` | Element content | System error output (only parsed from `testcase` elements) |
+| `testsuites` | `time`          | Total execution time for all test suites. Used for test execution time calculations. |
+| `testsuite`  | `name`          | Test suite name. Parsed for internal grouping. |
+| `testsuite`  | `time`          | Execution time for an individual test suite. Used for test execution time calculations. |
+| `testcase`   | `classname`     | Test class or category name. Displayed as the suite name in UI. |
+| `testcase`   | `name`          | Individual test name. |
+| `testcase`   | `file`          | File path where the test is defined. |
+| `testcase`   | `time`          | Test execution time in seconds. |
+| `failure`    | Element content | Failure message and stack trace. |
+| `error`      | Element content | Error message and stack trace. |
+| `skipped`    | Element content | Reason for skipping the test. |
+| `system-out` | Element content | System output and attachment tags. Only parsed from `testcase` elements. |
+| `system-err` | Element content | System error output. Only parsed from `testcase` elements. |
 
-{{< alert type="note" >}}
+The following elements and attributes are not parsed:
 
-The `testcase classname` attribute is used as the suite name, not the `testsuite name` attribute.
-
-{{< /alert >}}
+- `testsuite` attributes (tests, failures, errors, timestamp)
+- `testcase` attributes (assertions, line, status)
+- `properties` elements
+- `system-out` and `system-err` at the `testsuite` level
 
 #### XML structure example
 

@@ -105,27 +105,6 @@ The metadata database provides better performance, reliability, and enables new 
 </div>
 </div>
 
-<div class="milestone-wrapper" data-milestone="20.0">
-
-## GitLab 20.0
-
-<div class="deprecation breaking-change" data-milestone="20.0">
-
-### GitLab Runner Docker Machine executor is deprecated
-
-<div class="deprecation-notes">
-
-- Announced in GitLab <span class="milestone">17.5</span>
-- Removal in GitLab <span class="milestone">20.0</span> ([breaking change](https://docs.gitlab.com/update/terminology/#breaking-change))
-- To discuss this change or learn more, see the [deprecation issue](https://gitlab.com/gitlab-org/gitlab/-/issues/498268).
-
-</div>
-
-The [GitLab Runner Docker Machine executor](https://docs.gitlab.com/runner/executors/docker_machine/) is deprecated and will be fully removed from the product as a supported feature in GitLab 20.0 (May 2027). The replacement for Docker Machine, [GitLab Runner Autoscaler](https://docs.gitlab.com/runner/runner_autoscale/) with GitLab developed plugins for Amazon Web Services (AWS) EC2, Google Compute Engine (GCE) and Microsoft Azure virtual machines (VMs) is generally available. With this announcement, the GitLab Runner team will no longer accept community contributions for the GitLab maintained Docker Machine fork, or resolve newly identified bugs.
-
-</div>
-</div>
-
 <div class="milestone-wrapper" data-milestone="19.0">
 
 ## GitLab 19.0
@@ -155,37 +134,6 @@ To migrate to the `azure_v2` driver:
 1. Test the new configuration in a non-production environment before deploying to production.
 
 For more information about updating your storage driver configuration, see [use object storage](https://docs.gitlab.com/administration/packages/container_registry/#use-object-storage).
-
-</div>
-
-<div class="deprecation breaking-change" data-milestone="19.0">
-
-### CodeClimate-based Code Quality scanning will be removed
-
-<div class="deprecation-notes">
-
-- Announced in GitLab <span class="milestone">17.3</span>
-- Removal in GitLab <span class="milestone">19.0</span> ([breaking change](https://docs.gitlab.com/update/terminology/#breaking-change))
-- To discuss this change or learn more, see the [deprecation issue](https://gitlab.com/gitlab-org/gitlab/-/issues/471677).
-
-</div>
-
-In GitLab 19.0, we will remove CodeClimate-based Code Quality scanning.
-This change was previously scheduled for GitLab 18.0 and has now been delayed.
-
-In its place, you should use quality tools directly in your CI/CD pipeline and [provide the tool's report as an artifact](https://docs.gitlab.com/ci/testing/code_quality/#import-code-quality-results-from-a-cicd-job).
-We've already documented how to integrate many tools directly, and you can integrate them by following the [documentation](https://docs.gitlab.com/ci/testing/code_quality/#integrate-common-tools-with-code-quality).
-
-We expect to implement this change by:
-
-1. Changing the [`Code-Quality.gitlab-ci.yml` CI/CD template](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/ci/templates/Jobs/Code-Quality.gitlab-ci.yml) to no longer execute scans. Today, this template runs CodeClimate-based scans. (We plan to change the template rather than delete it to reduce the impact on any pipelines that still `include` the template after 19.0.)
-1. No longer running CodeClimate-based scanning as part of Auto DevOps.
-
-Effective immediately, CodeClimate-based scanning will receive only [limited updates](https://docs.gitlab.com/update/terminology/#deprecation).
-After End of Support in GitLab 19.0, we won't provide further updates.
-However, we won't delete previously published container images or remove the ability to run them by using custom CI/CD pipeline job definitions.
-
-For more details, see [Scan code for quality violations](https://docs.gitlab.com/ci/testing/code_quality/#scan-code-for-quality-violations).
 
 </div>
 
@@ -248,28 +196,6 @@ If you encounter any issues after making these changes, try regenerating your AW
 
 <div class="deprecation breaking-change" data-milestone="19.0">
 
-### Coverage-guided fuzz testing is deprecated
-
-<div class="deprecation-notes">
-
-- Announced in GitLab <span class="milestone">18.0</span>
-- End of Support in GitLab <span class="milestone">18.0</span>
-- Removal in GitLab <span class="milestone">19.0</span> ([breaking change](https://docs.gitlab.com/update/terminology/#breaking-change))
-- To discuss this change or learn more, see the [deprecation issue](https://gitlab.com/gitlab-org/gitlab/-/issues/517841).
-
-</div>
-
-Coverage-guided fuzz testing is deprecated and will not be supported
-from GitLab 18.0. The feature will be completely removed in GitLab 19.0.
-
-Coverage-guided fuzz testing integrated several open-source fuzzers into GitLab.
-If you are impacted, you can integrate your open-source fuzzers as standalone applications,
-or migrate to another security feature like [GitLab Advanced SAST](https://docs.gitlab.com/ee/user/application_security/sast/gitlab_advanced_sast.html).
-
-</div>
-
-<div class="deprecation breaking-change" data-milestone="19.0">
-
 ### Design Management deprecated
 
 <div class="deprecation-notes">
@@ -298,50 +224,6 @@ In GitLab 19.0, GitLab will begin deprecation of Design Management. Design Manag
 
 The Audit Event APIs for instances, groups, and projects currently support optional keyset pagination. In GitLab 18.0
 we will enforce keyset pagination on these APIs.
-
-</div>
-
-<div class="deprecation breaking-change" data-milestone="19.0">
-
-### GitLab Advanced SAST will be enabled by default
-
-<div class="deprecation-notes">
-
-- Announced in GitLab <span class="milestone">17.9</span>
-- Removal in GitLab <span class="milestone">19.0</span> ([breaking change](https://docs.gitlab.com/update/terminology/#breaking-change))
-- To discuss this change or learn more, see the [deprecation issue](https://gitlab.com/gitlab-org/gitlab/-/issues/513685).
-
-</div>
-
-In GitLab 19.0, we will update the [SAST CI/CD templates](https://docs.gitlab.com/user/application_security/sast#stable-vs-latest-sast-templates) to enable [GitLab Advanced SAST](https://docs.gitlab.com/user/application_security/sast/gitlab_advanced_sast) by default in projects with GitLab Ultimate.
-Before this change, the GitLab Advanced SAST analyzer is enabled only if you set the CI/CD variable `GITLAB_ADVANCED_SAST_ENABLED` to `true`.
-This change was previously scheduled for GitLab 18.0 and has now been delayed.
-
-Advanced SAST delivers more accurate results by using cross-file, cross-function scanning and a new ruleset.
-Advanced SAST takes over coverage for [supported languages](https://docs.gitlab.com/user/application_security/sast/gitlab_advanced_sast#supported-languages) and disables scanning for that language in the previous scanner.
-An automated process migrates results from previous scanners after the first scan on each project's default branch, if they're still detected.
-
-Because it scans your project in more detail, Advanced SAST may take more time to scan your project.
-If needed, you can [disable GitLab Advanced SAST](https://docs.gitlab.com/user/application_security/sast/gitlab_advanced_sast#disable-gitlab-advanced-sast-scanning) by setting the CI/CD variable `GITLAB_ADVANCED_SAST_ENABLED` to `false`.
-You can set this variable in your project, group, or policy now to prevent Advanced SAST from being enabled by default in GitLab 19.0.
-
-</div>
-
-<div class="deprecation breaking-change" data-milestone="19.0">
-
-### Replace GraphQL field `take_ownership_pipeline_schedule` with `admin_pipeline_schedule` in PipelineSchedulePermissions
-
-<div class="deprecation-notes">
-
-- Announced in GitLab <span class="milestone">15.9</span>
-- Removal in GitLab <span class="milestone">19.0</span> ([breaking change](https://docs.gitlab.com/update/terminology/#breaking-change))
-- To discuss this change or learn more, see the [deprecation issue](https://gitlab.com/gitlab-org/gitlab/-/issues/391941).
-
-</div>
-
-The GraphQL field `take_ownership_pipeline_schedule` will be deprecated. To
-determine if a user can take ownership of a pipeline schedule, use the
-`admin_pipeline_schedule` field instead.
 
 </div>
 
@@ -432,46 +314,6 @@ The cloud native buildpack (CNB) builder image was updated to `heroku/builder:24
 - [Heroku stack packages](https://devcenter.heroku.com/articles/stack-packages)
 
 These changes affect you if your pipelines use the [`auto-build-image`](https://gitlab.com/gitlab-org/cluster-integration/auto-build-image) provided by [the Auto Build stage of Auto DevOps](https://docs.gitlab.com/topics/autodevops/stages/#auto-build).
-
-</div>
-
-<div class="deprecation breaking-change" data-milestone="19.0">
-
-### Updating CI/CD job tokens to JWT standard
-
-<div class="deprecation-notes">
-
-- Announced in GitLab <span class="milestone">17.9</span>
-- Removal in GitLab <span class="milestone">19.0</span> ([breaking change](https://docs.gitlab.com/update/terminology/#breaking-change))
-- To discuss this change or learn more, see the [deprecation issue](https://gitlab.com/gitlab-org/gitlab/-/issues/509578).
-
-</div>
-
-In GitLab 19.0, CI/CD job tokens will switch from a string token format to the JWT token format. This changes impacts new and existing CI/CD job tokens in all projects. If you experience issues, you can still [use the legacy format for your CI/CD tokens](https://docs.gitlab.com/ci/jobs/ci_job_token#use-legacy-format-for-cicd-tokens) until the GitLab 20.0 release.
-
-Known issues:
-
-1. GitLab Runner's AWS Fargate Drive 0.5.0 and earlier is incompatible with the JWT standard. Jobs will fail with a `file name too long` error. Users of the [AWS Fargate custom executor driver](https://docs.gitlab.com/runner/configuration/runner_autoscale_aws_fargate/) must upgrade to 0.5.1 or later. For migration instructions, see [the documentation](https://gitlab.com/gitlab-org/ci-cd/custom-executor-drivers/fargate/-/tree/master/docs).
-1. The much longer JWT standard breaks the `echo $CI_JOB_TOKEN | base64` command used in some CI/CD configuration files. You can use the `echo $CI_JOB_TOKEN | base64 -w0` command instead.
-
-</div>
-
-<div class="deprecation breaking-change" data-milestone="19.0">
-
-### `bin_path` and `use_bundled_binaries` configuration options in Gitaly
-
-<div class="deprecation-notes">
-
-- Announced in GitLab <span class="milestone">18.2</span>
-- Removal in GitLab <span class="milestone">19.0</span> ([breaking change](https://docs.gitlab.com/update/terminology/#breaking-change))
-- To discuss this change or learn more, see the [deprecation issue](https://gitlab.com/gitlab-org/omnibus-gitlab/-/issues/9181).
-
-</div>
-
-Support for using `bin_path` and `use_bundled_binaries` configuration options in Gitaly is deprecated and will be
-removed in GitLab 19.0.
-
-The Git binaries provided by Gitaly will be the only supported way to execute Git.
 
 </div>
 
@@ -7331,6 +7173,68 @@ The following changes have been removed from their original milestone and are be
 
 <div class="deprecation breaking-change">
 
+### CodeClimate-based Code Quality scanning will be removed
+
+<div class="deprecation-notes">
+
+- Announced in GitLab <span class="milestone">17.3</span>
+- To discuss this change or learn more, see the [deprecation issue](https://gitlab.com/gitlab-org/gitlab/-/issues/471677).
+
+</div>
+
+{{< alert type="note" >}}
+
+This change has been removed from its original milestone and is being reassessed.
+
+{{< /alert >}}
+
+In GitLab 19.0, we will remove CodeClimate-based Code Quality scanning.
+This change was previously scheduled for GitLab 18.0 and has now been delayed.
+
+In its place, you should use quality tools directly in your CI/CD pipeline and [provide the tool's report as an artifact](https://docs.gitlab.com/ci/testing/code_quality/#import-code-quality-results-from-a-cicd-job).
+We've already documented how to integrate many tools directly, and you can integrate them by following the [documentation](https://docs.gitlab.com/ci/testing/code_quality/#integrate-common-tools-with-code-quality).
+
+We expect to implement this change by:
+
+1. Changing the [`Code-Quality.gitlab-ci.yml` CI/CD template](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/ci/templates/Jobs/Code-Quality.gitlab-ci.yml) to no longer execute scans. Today, this template runs CodeClimate-based scans. (We plan to change the template rather than delete it to reduce the impact on any pipelines that still `include` the template after 19.0.)
+1. No longer running CodeClimate-based scanning as part of Auto DevOps.
+
+Effective immediately, CodeClimate-based scanning will receive only [limited updates](https://docs.gitlab.com/update/terminology/#deprecation).
+After End of Support in GitLab 19.0, we won't provide further updates.
+However, we won't delete previously published container images or remove the ability to run them by using custom CI/CD pipeline job definitions.
+
+For more details, see [Scan code for quality violations](https://docs.gitlab.com/ci/testing/code_quality/#scan-code-for-quality-violations).
+
+</div>
+
+<div class="deprecation breaking-change">
+
+### Coverage-guided fuzz testing is deprecated
+
+<div class="deprecation-notes">
+
+- Announced in GitLab <span class="milestone">18.0</span>
+- To discuss this change or learn more, see the [deprecation issue](https://gitlab.com/gitlab-org/gitlab/-/issues/517841).
+
+</div>
+
+{{< alert type="note" >}}
+
+This change has been removed from its original milestone and is being reassessed.
+
+{{< /alert >}}
+
+Coverage-guided fuzz testing is deprecated and will not be supported
+from GitLab 18.0. The feature will be completely removed in GitLab 19.0.
+
+Coverage-guided fuzz testing integrated several open-source fuzzers into GitLab.
+If you are impacted, you can integrate your open-source fuzzers as standalone applications,
+or migrate to another security feature like [GitLab Advanced SAST](https://docs.gitlab.com/ee/user/application_security/sast/gitlab_advanced_sast.html).
+
+</div>
+
+<div class="deprecation breaking-change">
+
 ### Dependency Scanning for JavaScript vendored libraries
 
 <div class="deprecation-notes">
@@ -7405,6 +7309,58 @@ See the corresponding [deprecation announcement](https://docs.gitlab.com/update/
 - The [Dependency Scanning for JavaScript vendored libraries](https://docs.gitlab.com/user/application_security/dependency_scanning/#javascript) feature is deprecated in GitLab 17.9.
 While this functionality will continue to work when using the Gemnasium analyzer, it will not be available after migrating to the new Dependency Scanning analyzer.
 See the corresponding [deprecation announcement](https://docs.gitlab.com/update/deprecations/#dependency-scanning-for-javascript-vendored-libraries) for more details.
+
+</div>
+
+<div class="deprecation breaking-change">
+
+### GitLab Advanced SAST will be enabled by default
+
+<div class="deprecation-notes">
+
+- Announced in GitLab <span class="milestone">17.9</span>
+- To discuss this change or learn more, see the [deprecation issue](https://gitlab.com/gitlab-org/gitlab/-/issues/513685).
+
+</div>
+
+{{< alert type="note" >}}
+
+This change has been removed from its original milestone and is being reassessed.
+
+{{< /alert >}}
+
+In GitLab 19.0, we will update the [SAST CI/CD templates](https://docs.gitlab.com/user/application_security/sast#stable-vs-latest-sast-templates) to enable [GitLab Advanced SAST](https://docs.gitlab.com/user/application_security/sast/gitlab_advanced_sast) by default in projects with GitLab Ultimate.
+Before this change, the GitLab Advanced SAST analyzer is enabled only if you set the CI/CD variable `GITLAB_ADVANCED_SAST_ENABLED` to `true`.
+This change was previously scheduled for GitLab 18.0 and has now been delayed.
+
+Advanced SAST delivers more accurate results by using cross-file, cross-function scanning and a new ruleset.
+Advanced SAST takes over coverage for [supported languages](https://docs.gitlab.com/user/application_security/sast/gitlab_advanced_sast#supported-languages) and disables scanning for that language in the previous scanner.
+An automated process migrates results from previous scanners after the first scan on each project's default branch, if they're still detected.
+
+Because it scans your project in more detail, Advanced SAST may take more time to scan your project.
+If needed, you can [disable GitLab Advanced SAST](https://docs.gitlab.com/user/application_security/sast/gitlab_advanced_sast#disable-gitlab-advanced-sast-scanning) by setting the CI/CD variable `GITLAB_ADVANCED_SAST_ENABLED` to `false`.
+You can set this variable in your project, group, or policy now to prevent Advanced SAST from being enabled by default in GitLab 19.0.
+
+</div>
+
+<div class="deprecation breaking-change">
+
+### GitLab Runner Docker Machine executor is deprecated
+
+<div class="deprecation-notes">
+
+- Announced in GitLab <span class="milestone">17.5</span>
+- To discuss this change or learn more, see the [deprecation issue](https://gitlab.com/gitlab-org/gitlab/-/issues/498268).
+
+</div>
+
+{{< alert type="note" >}}
+
+This change has been removed from its original milestone and is being reassessed.
+
+{{< /alert >}}
+
+The [GitLab Runner Docker Machine executor](https://docs.gitlab.com/runner/executors/docker_machine/) is deprecated and will be fully removed from the product as a supported feature in GitLab 20.0 (May 2027). The replacement for Docker Machine, [GitLab Runner Autoscaler](https://docs.gitlab.com/runner/runner_autoscale/) with GitLab developed plugins for Amazon Web Services (AWS) EC2, Google Compute Engine (GCE) and Microsoft Azure virtual machines (VMs) is generally available. With this announcement, the GitLab Runner team will no longer accept community contributions for the GitLab maintained Docker Machine fork, or resolve newly identified bugs.
 
 </div>
 
@@ -7686,6 +7642,29 @@ The `previousStageJobsOrNeeds` field in GraphQL will be removed as it has been r
 
 <div class="deprecation breaking-change">
 
+### Replace GraphQL field `take_ownership_pipeline_schedule` with `admin_pipeline_schedule` in PipelineSchedulePermissions
+
+<div class="deprecation-notes">
+
+- Announced in GitLab <span class="milestone">15.9</span>
+- To discuss this change or learn more, see the [deprecation issue](https://gitlab.com/gitlab-org/gitlab/-/issues/391941).
+
+</div>
+
+{{< alert type="note" >}}
+
+This change has been removed from its original milestone and is being reassessed.
+
+{{< /alert >}}
+
+The GraphQL field `take_ownership_pipeline_schedule` will be deprecated. To
+determine if a user can take ownership of a pipeline schedule, use the
+`admin_pipeline_schedule` field instead.
+
+</div>
+
+<div class="deprecation breaking-change">
+
 ### Resolve a vulnerability for Dependency Scanning on Yarn projects
 
 <div class="deprecation-notes">
@@ -7778,6 +7757,56 @@ If you mirror the `agentk` container to a local registry, you should change your
 
 If you use the official [GitLab Agent Helm chart](https://gitlab.com/gitlab-org/charts/gitlab-agent/),
 the new `agentk` image will start deploying from the new location seamlessly in GitLab 18.0.
+
+</div>
+
+<div class="deprecation breaking-change">
+
+### Updating CI/CD job tokens to JWT standard
+
+<div class="deprecation-notes">
+
+- Announced in GitLab <span class="milestone">17.9</span>
+- To discuss this change or learn more, see the [deprecation issue](https://gitlab.com/gitlab-org/gitlab/-/issues/509578).
+
+</div>
+
+{{< alert type="note" >}}
+
+This change has been removed from its original milestone and is being reassessed.
+
+{{< /alert >}}
+
+In GitLab 19.0, CI/CD job tokens will switch from a string token format to the JWT token format. This changes impacts new and existing CI/CD job tokens in all projects. If you experience issues, you can still [use the legacy format for your CI/CD tokens](https://docs.gitlab.com/ci/jobs/ci_job_token#use-legacy-format-for-cicd-tokens) until the GitLab 20.0 release.
+
+Known issues:
+
+1. GitLab Runner's AWS Fargate Drive 0.5.0 and earlier is incompatible with the JWT standard. Jobs will fail with a `file name too long` error. Users of the [AWS Fargate custom executor driver](https://docs.gitlab.com/runner/configuration/runner_autoscale_aws_fargate/) must upgrade to 0.5.1 or later. For migration instructions, see [the documentation](https://gitlab.com/gitlab-org/ci-cd/custom-executor-drivers/fargate/-/tree/master/docs).
+1. The much longer JWT standard breaks the `echo $CI_JOB_TOKEN | base64` command used in some CI/CD configuration files. You can use the `echo $CI_JOB_TOKEN | base64 -w0` command instead.
+
+</div>
+
+<div class="deprecation breaking-change">
+
+### `bin_path` and `use_bundled_binaries` configuration options in Gitaly
+
+<div class="deprecation-notes">
+
+- Announced in GitLab <span class="milestone">18.2</span>
+- To discuss this change or learn more, see the [deprecation issue](https://gitlab.com/gitlab-org/omnibus-gitlab/-/issues/9181).
+
+</div>
+
+{{< alert type="note" >}}
+
+This change has been removed from its original milestone and is being reassessed.
+
+{{< /alert >}}
+
+Support for using `bin_path` and `use_bundled_binaries` configuration options in Gitaly is deprecated and will be
+removed in GitLab 19.0.
+
+The Git binaries provided by Gitaly will be the only supported way to execute Git.
 
 </div>
 

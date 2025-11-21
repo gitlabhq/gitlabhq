@@ -9,6 +9,9 @@ import {
 export const I18N = {
   pageTitle: s__('BranchRules|Branch rule details'),
   deleteRule: s__('BranchRules|Delete rule'),
+  disabledDeleteTooltip: s__(
+    "SecurityOrchestration|You can't unprotect this branch because its protection is enforced by one or more %{securityPoliciesPathStart}security policies%{securityPoliciesPathEnd}. %{linkStart}Learn more%{linkEnd}.",
+  ),
   manageProtectionsLinkTitle: s__('BranchRules|Manage in protected branches'),
   targetBranch: s__('BranchRules|Target branch'),
   ruleTarget: s__('BranchRules|Rule target'),

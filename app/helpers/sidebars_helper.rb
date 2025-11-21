@@ -438,27 +438,19 @@ module SidebarsHelper
   # rubocop:disable Lint/UnusedMethodArgument -- group is used on EE
   def pinned_items(user, panel_type, group: nil)
     user.pinned_nav_items[panel_type]&.map(&:to_s) ||
-      super_sidebar_default_pins(panel_type, user)
+      super_sidebar_default_pins(panel_type)
   end
   # rubocop:enable Lint/UnusedMethodArgument
 
-  def super_sidebar_default_pins(panel_type, user)
+  def super_sidebar_default_pins(panel_type)
     case panel_type
     when 'project'
-      project_default_pins(user)
+      %w[project_issue_list project_merge_request_list]
     when 'group'
-      group_default_pins(user)
+      %w[group_issue_list group_merge_request_list]
     else
       []
     end
-  end
-
-  def project_default_pins(_user)
-    %w[project_issue_list project_merge_request_list]
-  end
-
-  def group_default_pins(_user)
-    %w[group_issue_list group_merge_request_list]
   end
 
   def terms_link

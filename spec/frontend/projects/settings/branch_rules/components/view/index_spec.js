@@ -1,6 +1,6 @@
 import Vue, { nextTick } from 'vue';
 import VueApollo from 'vue-apollo';
-import { GlModal, GlCollapsibleListbox, GlToast, GlSprintf } from '@gitlab/ui';
+import { GlCollapsibleListbox, GlModal, GlPopover, GlSprintf, GlToast } from '@gitlab/ui';
 import { sprintf } from '~/locale';
 import * as util from '~/lib/utils/url_utility';
 import { useMockInternalEventsTracking } from 'helpers/tracking_internal_events_helper';
@@ -160,6 +160,7 @@ describe('View branch rules', () => {
   const findAllowForcePushToggle = () => wrapper.findByTestId('force-push-content');
   const findStatusChecksTitle = () => wrapper.findByText(I18N.statusChecksTitle);
   const findDeleteRuleButton = () => wrapper.findByTestId('delete-rule-button');
+  const findDeleteRuleButtonPopover = () => wrapper.findComponent(GlPopover);
   const findEditRuleNameButton = () => wrapper.findByTestId('edit-rule-name-button');
   const findDeleteRuleModal = () => wrapper.findComponent(GlModal);
   const findBranchRuleModal = () => wrapper.findComponent(BranchRuleModal);
@@ -662,6 +663,10 @@ describe('View branch rules', () => {
         message: 'Something went wrong while deleting branch rule.',
         error: expect.any(Error),
       });
+    });
+
+    it('does not render prevent delete by security policy popover', () => {
+      expect(findDeleteRuleButtonPopover().exists()).toBe(false);
     });
   });
 

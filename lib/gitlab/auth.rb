@@ -532,7 +532,7 @@ module Gitlab
       end
 
       def unavailable_ai_features_scopes
-        AI_WORKFLOW_SCOPES
+        AI_WORKFLOW_SCOPES + [MCP_SCOPE]
       end
 
       def unavailable_observability_scopes_for_resource(resource)

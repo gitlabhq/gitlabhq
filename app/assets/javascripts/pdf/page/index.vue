@@ -13,7 +13,7 @@ export default {
   },
   data() {
     return {
-      scale: 4,
+      scale: 2,
       rendering: false,
     };
   },
