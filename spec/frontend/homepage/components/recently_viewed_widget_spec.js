@@ -6,7 +6,7 @@ import createMockApollo from 'helpers/mock_apollo_helper';
 import waitForPromises from 'helpers/wait_for_promises';
 import RecentlyViewedWidget from '~/homepage/components/recently_viewed_widget.vue';
 import TooltipOnTruncate from '~/vue_shared/components/tooltip_on_truncate/tooltip_on_truncate.vue';
-import RecentlyViewedItemsQuery from '~/homepage/graphql/queries/recently_viewed_items.query.graphql';
+import RecentlyViewedItemsQuery from 'ee_else_ce/homepage/graphql/queries/recently_viewed_items.query.graphql';
 import * as Sentry from '~/sentry/sentry_browser_wrapper';
 import BaseWidget from '~/homepage/components/base_widget.vue';
 import { useMockInternalEventsTracking } from 'helpers/tracking_internal_events_helper';
@@ -47,16 +47,6 @@ describe('RecentlyViewedWidget', () => {
               id: 'issue-1',
               title: 'Fix critical bug in payment processing',
               webUrl: '/project/-/issues/123',
-            },
-          },
-          {
-            viewedAt: '2025-06-19T15:30:00Z',
-            itemType: 'Issue',
-            item: {
-              __typename: 'Epic',
-              id: 'epic-1',
-              title: 'Q3 Development Roadmap',
-              webUrl: '/groups/company/-/epics/999',
             },
           },
           {
@@ -102,6 +92,9 @@ describe('RecentlyViewedWidget', () => {
   const findEmptyState = () =>
     wrapper.findByText('Issues and merge requests you visit will appear here.');
   const findItemsList = () => wrapper.find('ul');
+  const findListItems = () => findItemsList().findAll('li');
+  const findItemsByIconName = (iconName) =>
+    findListItems().wrappers.filter((w) => w.findComponent(GlIcon).props('name') === iconName);
   const findItemLinks = () => wrapper.findAll('a[href^="/"]');
   const findItemIcons = () => wrapper.findAllComponents(GlIcon);
   const findTooltipComponents = () => wrapper.findAllComponents(TooltipOnTruncate);
@@ -188,7 +181,7 @@ describe('RecentlyViewedWidget', () => {
       createComponent();
       await waitForPromises();
 
-      expect(findItemLinks()).toHaveLength(5);
+      expect(findItemLinks()).toHaveLength(4);
     });
 
     it('handles empty response gracefully', async () => {
@@ -232,18 +225,18 @@ describe('RecentlyViewedWidget', () => {
     });
 
     it('renders the correct number of items', () => {
-      expect(findItemLinks()).toHaveLength(5);
+      expect(findItemLinks()).toHaveLength(4);
     });
 
     it('sorts items by viewedAt in descending order (most recent first)', () => {
-      const { items } = wrapper.vm;
+      const items = findListItems();
+      const { recentlyViewedItems } = mockRecentlyViewedResponse.data.currentUser;
 
-      // Should be sorted by viewedAt (backend already sorts): !gl-mr-2, issue-1, epic-1, issue-2, !gl-mr-3
-      expect(items[0].id).toBe('!gl-mr-2');
-      expect(items[1].id).toBe('issue-1');
-      expect(items[2].id).toBe('epic-1');
-      expect(items[3].id).toBe('issue-2');
-      expect(items[4].id).toBe('!gl-mr-3');
+      // Should be sorted by viewedAt (backend already sorts): !gl-mr-2, issue-1, issue-2, !gl-mr-3
+      expect(items.at(0).text()).toBe(recentlyViewedItems[0].item.title);
+      expect(items.at(1).text()).toBe(recentlyViewedItems[1].item.title);
+      expect(items.at(2).text()).toBe(recentlyViewedItems[2].item.title);
+      expect(items.at(3).text()).toBe(recentlyViewedItems[3].item.title);
     });
 
     it('limits items to MAX_ITEMS', async () => {
@@ -273,24 +266,17 @@ describe('RecentlyViewedWidget', () => {
     });
 
     it('adds correct icon to issues', () => {
-      const issueItems = wrapper.vm.items.filter((item) => item.icon === 'work-item-issue');
+      const issueItems = findItemsByIconName('work-item-issue');
 
       expect(issueItems).toHaveLength(2);
-      expect(issueItems[0].id).toBe('issue-1');
+      expect(issueItems.at(0).text()).toBe('Fix critical bug in payment processing');
     });
 
     it('adds correct icon to merge requests', () => {
-      const mrItems = wrapper.vm.items.filter((item) => item.icon === 'merge-request');
+      const mrItems = findItemsByIconName('merge-request');
 
       expect(mrItems).toHaveLength(2);
-      expect(mrItems[0].id).toBe('!gl-mr-2');
-    });
-
-    it('adds correct icon to epics', () => {
-      const epicItems = wrapper.vm.items.filter((item) => item.icon === 'work-item-epic');
-
-      expect(epicItems).toHaveLength(1);
-      expect(epicItems[0].id).toBe('epic-1');
+      expect(mrItems.at(0).text()).toBe('Implement authentication improvements');
     });
 
     it('renders items with correct URLs', () => {
@@ -298,9 +284,8 @@ describe('RecentlyViewedWidget', () => {
 
       expect(links.at(0).attributes('href')).toBe('/project/-/merge_requests/456');
       expect(links.at(1).attributes('href')).toBe('/project/-/issues/123');
-      expect(links.at(2).attributes('href')).toBe('/groups/company/-/epics/999');
-      expect(links.at(3).attributes('href')).toBe('/project/-/issues/124');
-      expect(links.at(4).attributes('href')).toBe('/project/-/merge_requests/457');
+      expect(links.at(2).attributes('href')).toBe('/project/-/issues/124');
+      expect(links.at(3).attributes('href')).toBe('/project/-/merge_requests/457');
     });
 
     it('renders items with correct icons', () => {
@@ -308,17 +293,16 @@ describe('RecentlyViewedWidget', () => {
 
       expect(icons.at(0).props('name')).toBe('merge-request');
       expect(icons.at(1).props('name')).toBe('work-item-issue');
-      expect(icons.at(2).props('name')).toBe('work-item-epic');
-      expect(icons.at(3).props('name')).toBe('work-item-issue');
-      expect(icons.at(4).props('name')).toBe('merge-request');
+      expect(icons.at(2).props('name')).toBe('work-item-issue');
+      expect(icons.at(3).props('name')).toBe('merge-request');
     });
 
     it('renders tooltip components for each item', () => {
       const tooltips = findTooltipComponents();
 
-      expect(tooltips).toHaveLength(5);
+      expect(tooltips).toHaveLength(4);
       expect(tooltips.at(0).props('title')).toBe('Implement authentication improvements');
-      expect(tooltips.at(2).props('title')).toBe('Q3 Development Roadmap');
+      expect(tooltips.at(2).props('title')).toBe('Add new feature for user management');
     });
   });
 

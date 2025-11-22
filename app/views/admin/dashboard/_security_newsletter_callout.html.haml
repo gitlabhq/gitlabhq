@@ -2,7 +2,7 @@
 
 = render Pajamas::AlertComponent.new(variant: :tip,
     title: s_('AdminArea|Get security updates from GitLab and stay up to date'),
-    alert_options: { class: 'js-security-newsletter-callout',
+    alert_options: { class: 'js-security-newsletter-callout gl-mt-3',
                      data: { feature_id: Users::CalloutsHelper::SECURITY_NEWSLETTER_CALLOUT,
                              dismiss_endpoint: callouts_path,
                              defer_links: 'true' }},
