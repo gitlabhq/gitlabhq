@@ -100,7 +100,7 @@ export default {
     },
   },
   mounted() {
-    this.$refs.modal.show();
+    this.$refs.modal.show?.();
   },
 };
 </script>
