@@ -1,5 +1,6 @@
 <script>
 import { mapState } from 'pinia';
+import { GlButton } from '@gitlab/ui';
 import { InternalEvents } from '~/tracking';
 import PanelResizer from '~/vue_shared/components/panel_resizer.vue';
 import FileBrowserHeight from '~/diffs/components/file_browser_height.vue';
@@ -16,6 +17,7 @@ export default {
     TreeList,
     FileBrowserHeight,
     PanelResizer,
+    GlButton,
   },
   mixins: [InternalEvents.mixin()],
   props: {
@@ -45,8 +47,8 @@ export default {
     ]),
     visibilityClasses() {
       return {
-        'file-tree-browser-expanded gl-sticky': this.fileTreeBrowserIsExpanded,
-        'file-tree-browser-peek gl-left-0': this.fileTreeBrowserIsPeekOn,
+        'file-tree-browser-expanded gl-sticky gl-pb-5': this.fileTreeBrowserIsExpanded,
+        'file-tree-browser-peek gl-left-0 gl-pb-9': this.fileTreeBrowserIsPeekOn,
       };
     },
   },
@@ -70,6 +72,7 @@ export default {
   fileTreeBrowserStorageKey: FILE_TREE_BROWSER_STORAGE_KEY,
   minTreeWidth: MIN_TREE_WIDTH,
   maxTreeWidth: 500,
+  feedbackIssue: 'https://gitlab.com/gitlab-org/gitlab/-/issues/581271',
 };
 </script>
 
@@ -95,6 +98,13 @@ export default {
         @resize-end="saveTreeWidthPreference"
       />
       <tree-list :project-path="projectPath" :current-ref="currentRef" :ref-type="refType" />
+      <gl-button
+        target="_blank"
+        icon="comment-dots"
+        rel="noopener noreferrer"
+        :href="$options.feedbackIssue"
+        >{{ __('Provide feedback') }}</gl-button
+      >
     </file-browser-height>
   </div>
 </template>
