@@ -19,6 +19,7 @@ const defaultProps = {
   },
   initialDuoRemoteFlowsAvailability: false,
   initialDuoFoundationalFlowsAvailability: false,
+  initialDuoSastFpDetectionEnabled: false,
 };
 
 describe('GitlabDuoSettings', () => {
@@ -36,6 +37,7 @@ describe('GitlabDuoSettings', () => {
         glFeatures: {
           useDuoContextExclusion: true,
           duoWorkflowInCi: false,
+          aiExperimentSastFpDetection: true,
           ...provide,
         },
       },
@@ -62,6 +64,9 @@ describe('GitlabDuoSettings', () => {
     wrapper.findByTestId('duo-foundational-flows-enabled');
   const findDuoFoundationalFlowsCascadingLockIcon = () =>
     wrapper.findByTestId('duo-foundational-flows-cascading-lock-icon');
+  const findDuoSastFpDetectionToggle = () => wrapper.findByTestId('duo-sast-fp-detection-enabled');
+  const findDuoSastFpDetectionCascadingLockIcon = () =>
+    wrapper.findByTestId('duo-sast-fp-detection-cascading-lock-icon');
   const findAutoReviewToggle = () => wrapper.findByTestId('amazon-q-auto-review-enabled');
 
   beforeEach(() => {
@@ -252,6 +257,18 @@ describe('GitlabDuoSettings', () => {
           expect(parseBoolean(hiddenInput.attributes('value'))).toBe(true);
         });
 
+        it('updates the hidden input value when toggled', async () => {
+          const duoFoundationalFlowsToggle = findDuoFoundationalFlowsToggle();
+          const hiddenInput = findDuoFoundationalFlowsHiddenInput();
+
+          expect(duoFoundationalFlowsToggle.exists()).toBe(true);
+          expect(parseBoolean(hiddenInput.attributes('value'))).toBe(false);
+
+          await duoFoundationalFlowsToggle.vm.$emit('change', true);
+
+          expect(parseBoolean(hiddenInput.attributes('value'))).toBe(true);
+        });
+
         it('is disabled when Duo features are locked', () => {
           wrapper = createWrapper(
             {
@@ -259,7 +276,7 @@ describe('GitlabDuoSettings', () => {
               duoFeaturesLocked: true,
               initialDuoRemoteFlowsAvailability: true,
             },
-            { duoWorkflowInCi: true, duoFoundationalFlows: true },
+            { duoFoundationalFlows: true, duoWorkflowInCi: true },
           );
 
           expect(findDuoFoundationalFlowsToggle().props('disabled')).toBe(true);
@@ -280,6 +297,118 @@ describe('GitlabDuoSettings', () => {
 
           expect(findDuoFoundationalFlowsToggle().props('disabled')).toBe(true);
           expect(findDuoFoundationalFlowsCascadingLockIcon().exists()).toBe(true);
+        });
+      });
+
+      describe('Duo SAST FP Detection settings', () => {
+        it('shows SAST FP Detection toggle when feature flag is enabled', () => {
+          wrapper = createWrapper(
+            { duoFeaturesEnabled: true, amazonQAvailable: false },
+            { duoWorkflowInCi: true, aiExperimentSastFpDetection: true },
+          );
+
+          expect(findDuoSastFpDetectionToggle().exists()).toBe(true);
+          expect(findDuoSastFpDetectionToggle().props('disabled')).toBe(false);
+        });
+
+        it('does not show SAST FP Detection toggle when feature flag is disabled', () => {
+          wrapper = createWrapper(
+            { duoFeaturesEnabled: true, amazonQAvailable: false },
+            { duoWorkflowInCi: true, aiExperimentSastFpDetection: false },
+          );
+
+          expect(findDuoSastFpDetectionToggle().exists()).toBe(false);
+        });
+
+        it('disables SAST FP Detection toggle when Duo features are locked', () => {
+          wrapper = createWrapper(
+            {
+              duoFeaturesEnabled: true,
+              duoFeaturesLocked: true,
+              amazonQAvailable: false,
+            },
+            { duoWorkflowInCi: true, aiExperimentSastFpDetection: true },
+          );
+
+          expect(findDuoSastFpDetectionToggle().props('disabled')).toBe(true);
+        });
+
+        it('does not render SAST FP Detection toggle when Duo features are not enabled', () => {
+          wrapper = createWrapper(
+            {
+              duoFeaturesEnabled: false,
+              amazonQAvailable: false,
+            },
+            { duoWorkflowInCi: true, aiExperimentSastFpDetection: true },
+          );
+
+          expect(findDuoSastFpDetectionToggle().exists()).toBe(false);
+        });
+
+        it('shows cascading lock icon when SAST FP Detection is locked by ancestor', () => {
+          wrapper = createWrapper(
+            {
+              duoFeaturesEnabled: true,
+              amazonQAvailable: false,
+              duoSastFpDetectionCascadingSettings: {
+                lockedByAncestor: true,
+                lockedByApplicationSetting: false,
+                ancestorNamespace: { path: 'test-namespace', fullName: 'Test Namespace' },
+              },
+            },
+            { duoWorkflowInCi: true, aiExperimentSastFpDetection: true },
+          );
+
+          expect(findDuoSastFpDetectionCascadingLockIcon().exists()).toBe(true);
+          expect(findDuoSastFpDetectionToggle().props('disabled')).toBe(true);
+        });
+
+        it('shows cascading lock icon when SAST FP Detection is locked by application settings', () => {
+          wrapper = createWrapper(
+            {
+              duoFeaturesEnabled: true,
+              amazonQAvailable: false,
+              duoSastFpDetectionCascadingSettings: {
+                lockedByAncestor: false,
+                lockedByApplicationSetting: true,
+              },
+            },
+            { duoWorkflowInCi: true, aiExperimentSastFpDetection: true },
+          );
+
+          expect(findDuoSastFpDetectionCascadingLockIcon().exists()).toBe(true);
+          expect(findDuoSastFpDetectionToggle().props('disabled')).toBe(true);
+        });
+
+        it('does not show cascading lock icon when not locked', () => {
+          wrapper = createWrapper(
+            { duoFeaturesEnabled: true, amazonQAvailable: false },
+            { duoWorkflowInCi: true, aiExperimentSastFpDetection: true },
+          );
+
+          expect(findDuoSastFpDetectionCascadingLockIcon().exists()).toBe(false);
+        });
+
+        it('updates the hidden input value when toggled', async () => {
+          wrapper = createWrapper(
+            {
+              duoFeaturesEnabled: true,
+              amazonQAvailable: false,
+              initialDuoSastFpDetectionEnabled: true,
+            },
+            { duoWorkflowInCi: true, aiExperimentSastFpDetection: true },
+          );
+
+          const findHiddenInput = () =>
+            wrapper.find(
+              'input[name="project[project_setting_attributes][duo_sast_fp_detection_enabled]"]',
+            );
+
+          expect(parseBoolean(findHiddenInput().attributes('value'))).toBe(true);
+
+          await findDuoSastFpDetectionToggle().vm.$emit('change', false);
+
+          expect(parseBoolean(findHiddenInput().attributes('value'))).toBe(false);
         });
       });
     });
@@ -304,58 +433,58 @@ describe('GitlabDuoSettings', () => {
         expect(findDuoFoundationalFlowsToggle().exists()).toBe(false);
       });
     });
+  });
 
-    describe('when areDuoSettingsLocked is false', () => {
-      it('does not show CascadingLockIcon', () => {
-        wrapper = createWrapper({ duoFeaturesLocked: false });
-        expect(findDuoCascadingLockIcon().exists()).toBe(false);
+  describe('when areDuoSettingsLocked is false', () => {
+    it('does not show CascadingLockIcon', () => {
+      wrapper = createWrapper({ duoFeaturesLocked: false });
+      expect(findDuoCascadingLockIcon().exists()).toBe(false);
+    });
+  });
+
+  describe('when areDuoSettingsLocked is true', () => {
+    it('shows CascadingLockIcon when duoAvailabilityCascadingSettings is provided', () => {
+      wrapper = createWrapper({
+        duoAvailabilityCascadingSettings: {
+          lockedByAncestor: false,
+          lockedByApplicationSetting: false,
+          ancestorNamespace: null,
+        },
+        duoFeaturesLocked: true,
+      });
+      expect(findDuoCascadingLockIcon().exists()).toBe(true);
+    });
+
+    it('passes correct props to CascadingLockIcon', () => {
+      wrapper = createWrapper({
+        duoAvailabilityCascadingSettings: {
+          lockedByAncestor: false,
+          lockedByApplicationSetting: false,
+          ancestorNamespace: null,
+        },
+        duoFeaturesLocked: true,
+      });
+      expect(findDuoCascadingLockIcon().props()).toMatchObject({
+        isLockedByGroupAncestor: false,
+        isLockedByApplicationSettings: false,
+        ancestorNamespace: null,
       });
     });
 
-    describe('when areDuoSettingsLocked is true', () => {
-      it('shows CascadingLockIcon when duoAvailabilityCascadingSettings is provided', () => {
-        wrapper = createWrapper({
-          duoAvailabilityCascadingSettings: {
-            lockedByAncestor: false,
-            lockedByApplicationSetting: false,
-            ancestorNamespace: null,
-          },
-          duoFeaturesLocked: true,
-        });
-        expect(findDuoCascadingLockIcon().exists()).toBe(true);
+    it('does not show CascadingLockIcon when duoAvailabilityCascadingSettings is empty', () => {
+      wrapper = createWrapper({
+        duoAvailabilityCascadingSettings: {},
+        duoFeaturesLocked: true,
       });
+      expect(findDuoCascadingLockIcon().exists()).toBe(false);
+    });
 
-      it('passes correct props to CascadingLockIcon', () => {
-        wrapper = createWrapper({
-          duoAvailabilityCascadingSettings: {
-            lockedByAncestor: false,
-            lockedByApplicationSetting: false,
-            ancestorNamespace: null,
-          },
-          duoFeaturesLocked: true,
-        });
-        expect(findDuoCascadingLockIcon().props()).toMatchObject({
-          isLockedByGroupAncestor: false,
-          isLockedByApplicationSettings: false,
-          ancestorNamespace: null,
-        });
+    it('does not show CascadingLockIcon when duoAvailabilityCascadingSettings is null', () => {
+      wrapper = createWrapper({
+        duoAvailabilityCascadingSettings: null,
+        duoFeaturesLocked: true,
       });
-
-      it('does not show CascadingLockIcon when duoAvailabilityCascadingSettings is empty', () => {
-        wrapper = createWrapper({
-          duoAvailabilityCascadingSettings: {},
-          duoFeaturesLocked: true,
-        });
-        expect(findDuoCascadingLockIcon().exists()).toBe(false);
-      });
-
-      it('does not show CascadingLockIcon when duoAvailabilityCascadingSettings is null', () => {
-        wrapper = createWrapper({
-          duoAvailabilityCascadingSettings: null,
-          duoFeaturesLocked: true,
-        });
-        expect(findDuoCascadingLockIcon().exists()).toBe(false);
-      });
+      expect(findDuoCascadingLockIcon().exists()).toBe(false);
     });
   });
 
