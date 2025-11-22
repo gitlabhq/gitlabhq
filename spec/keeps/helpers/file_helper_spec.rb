@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-require 'spec_helper'
+require 'fast_spec_helper'
 require './keeps/helpers/file_helper'
 
 RSpec.describe Keeps::Helpers::FileHelper, feature_category: :tooling do

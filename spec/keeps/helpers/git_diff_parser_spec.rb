@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-require 'spec_helper'
+require 'fast_spec_helper'
 require './keeps/helpers/git_diff_parser'
 
 RSpec.describe Keeps::Helpers::GitDiffParser, feature_category: :tooling do

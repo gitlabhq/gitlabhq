@@ -72,18 +72,17 @@ To resolve this issue, turn on time synchronization for the device that generate
 You might get an error that states `Permission denied (publickey)`.
 
 This issue occurs if you are using a non-default SSH key pair file path and attempt to
-[generate recovery codes using SSH](two_factor_authentication_troubleshooting.md#generate-new-recovery-codes-using-ssh).
+[generate recovery codes using SSH](two_factor_authentication_troubleshooting.md#regenerate-recovery-codes-with-ssh).
 
 To resolve this, [configure SSH to point to a different directory](../../ssh.md#configure-ssh-to-point-to-a-different-directory) using `ssh-agent`.
 
 ## Recovery options and 2FA reset
 
-If you have enabled 2FA and cannot generate codes, use one of the following methods to access your
-account:
-
 ### Use a recovery code
 
-When you enabled 2FA, GitLab provided you with a series of recovery codes. You can use these codes to sign in to your account.
+When you enabled a one-time password (OTP) authenticator, GitLab provided you with a series of
+[recovery codes](two_factor_authentication.md#recovery-codes).
+You can use these codes to sign in to your account.
 
 To use a recovery code:
 
@@ -93,9 +92,35 @@ To use a recovery code:
 After you use a recovery code, you cannot use the same code again.
 Your other recovery codes remain valid.
 
-### Generate new recovery codes using SSH
+### Regenerate recovery codes with the UI
 
-If you added an SSH key to your GitLab account, you can generate a new set of recovery codes with SSH:
+If you can still access your account, you can regenerate your recovery codes through your user settings.
+
+To regenerate recovery codes with the UI:
+
+1. Access your [**User settings**](../_index.md#access-your-user-settings).
+1. Select **Account** > **Two-Factor Authentication (2FA)**.
+1. Select **Manage two-factor authentication**.
+1. In the **Disable two-factor authentication** section, select **Regenerate recovery codes**.
+1. In the dialog, enter your current password and select **Regenerate recovery codes**.
+
+{{< alert type="note" >}}
+
+Every time you regenerate 2FA recovery codes, save them. You can't use any previously created 2FA codes.
+
+{{< /alert >}}
+
+### Regenerate recovery codes with SSH
+
+If you added an SSH key to your GitLab account, you can regenerate your recovery codes with SSH:
+
+{{< alert type="note" >}}
+
+- You cannot use `gitlab-sshd` to regenerate recovery codes.
+
+{{< /alert >}}
+
+To regenerate recovery codes with SSH:
 
 1. In a terminal, run:
 
@@ -111,6 +136,30 @@ If you added an SSH key to your GitLab account, you can generate a new set of re
 1. When prompted for a two-factor code, enter one of your new recovery codes.
 
 After signing in, immediately set up 2FA with a new device.
+
+### Restore 2FA codes from authenticator backup
+
+In addition to the GitLab recovery codes, many authenticator apps offer their own backup and
+recovery methods. If you lose your device, you may be able to restore your 2FA codes by
+logging into your authenticator app on a new device, provided you enabled backup features
+beforehand.
+
+{{< alert type="note" >}}
+
+- You must enable your authenticator backup features before you lose access to your device.
+- GitLab Support cannot assist with recovery issues related to third-party authenticator apps.
+- GitLab recommends using recovery codes as your primary recovery method. Make sure you save
+  your recovery codes when you enable 2FA.
+
+{{< /alert >}}
+
+For more information, see the documentation for your specific authenticator app.
+Documentation for common authenticators is available through the following locations:
+
+- [Microsoft Authenticator](https://support.microsoft.com/en-us/account-billing/restore-account-credentials-from-microsoft-authenticator-ce53096e-1e1c-4840-9e32-1618bc33cd43)
+- [Google Authenticator](https://support.google.com/accounts/answer/1066447)
+- [Authy](https://www.twilio.com/en-us/blog/how-the-authy-two-factor-backups-work)
+- [1Password](https://support.1password.com/recovery-codes/?mac#recover-your-account)
 
 ### Reset 2FA on your account
 

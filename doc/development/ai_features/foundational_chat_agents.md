@@ -26,20 +26,19 @@ more flexibility for complex cases.
 
    ```diff
    # https://gitlab.com/gitlab-org/modelops/applied-ml/code-suggestions/ai-assist/-/blob/main/Dockerfile
-   - RUN poetry run fetch-foundational-agents "https://gitlab.com" "$GITLAB_TOKEN" "348,356" \
-   + RUN poetry run fetch-foundational-agents "https://gitlab.com" "$GITLAB_TOKEN" "348,356,<your-id-here>" \
+   - RUN poetry run fetch-foundational-agents "https://gitlab.com" "$GITLAB_TOKEN" "348" \
+   + RUN poetry run fetch-foundational-agents "https://gitlab.com" "$GITLAB_TOKEN" "duo_planner:348,<agent-reference>:<agent-catalog-id>" \
    ```
 
-   The command above can also be executed locally for testing purposes.
+   The command above can also be executed locally for testing purposes. Agent reference must be lowercase without spaces (example: 'test_agent').
 
 1. To make the agent be selectable, add it to the [`FoundationalChatAgentsDefinitions.rb`](https://gitlab.com/gitlab-org/gitlab/blob/master/ee/lib/ai/foundational_chat_agents_definitions.rb).
-   The `reference` field must be the name of the agent lowercased and underscored, version must be `v1`. For example,
-   a definition for an agent named `Test Agent` would be:
+   Use the reference used in the Dockerfile:
 
    ```ruby
    {
      id: 3,
-     reference: 'test_agent',
+     reference: '<agent-reference>',
      version: 'experimental',
      name: 'Test Agent',
      description: "An agent for testing"
@@ -174,8 +173,8 @@ It is possible to test the setup locally.
    Catalog or on GitLab.com AI Catalog. Then, on `$GDK/gitlab-ai-gateway`, run the following command:
 
    ```shell
-   poetry run fetch-foundational-agents "http://gdk.test:3000 or https://gitlab.com" "<TOKEN TO YOUR GDK OR GITLAB>" \
-     "<ID OF AGENT IN YOUR GDK>" \
+   poetry run fetch-foundational-agents "http://gdk.test:3000 or https://gitlab.com" "<token-to-your-local-gdk>" \
+     "<agent-reference>:<agent-id-in-local-catalog>" \
      --output-path duo_workflow_service/agent_platform/experimental/flows/configs
    ```
 

@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-require 'spec_helper'
+require 'fast_spec_helper'
 require './keeps/prompts/remove_feature_flags'
 require './keeps/helpers/milestones'
 

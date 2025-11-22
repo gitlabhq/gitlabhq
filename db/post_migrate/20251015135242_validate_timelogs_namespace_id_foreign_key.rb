@@ -6,7 +6,10 @@ class ValidateTimelogsNamespaceIdForeignKey < Gitlab::Database::Migration[2.3]
   milestone '18.6'
 
   def up
-    validate_foreign_key :timelogs, :namespace_id, name: FK_NAME
+    # We had to no-op this migration because the timestamp had the wrong value and we need this one to
+    # be executed after 20251020103600
+    # https://gitlab.com/gitlab-org/gitlab/-/issues/581680
+    # no-op
   end
 
   def down

@@ -65,6 +65,18 @@ Your account email must be confirmed to enable 2FA.
 
 ### Enable a one-time password authenticator
 
+{{< alert type="warning" >}}
+
+If you lose access to your OTP authenticator, you might be locked out of your account.
+
+To minimize this risk:
+
+- Enable cloud backup in your authenticator app.
+- Save your backup passwords, secret keys, or recovery credentials in a secure location.
+- Review the documentation for your specific OTP authenticator.
+
+{{< /alert >}}
+
 To enable 2FA with an OTP authenticator:
 
 1. **In GitLab**:
@@ -90,8 +102,11 @@ To enable 2FA with an OTP authenticator:
    1. Enter your current password.
    1. Select **Submit**.
 
-If you entered the correct pin, GitLab displays a list of [recovery codes](#recovery-codes). Download them and keep them
-in a safe place.
+If you entered the correct pin, GitLab displays a list of [recovery codes](#recovery-codes).
+Download them and keep them in a safe place.
+
+If your OTP authenticator supports cloud backups, consider configuring the feature now. For more
+information, see the documentation for your specific authenticator.
 
 ### Enable a one-time password authenticator using FortiAuthenticator
 
@@ -360,42 +375,18 @@ Immediately after successfully enabling 2FA with an OTP authenticator, you're pr
 a set of generated recovery codes. If you ever lose access to your OTP authenticator, you can use one of
 these recovery codes to sign in to your account.
 
-{{< alert type="warning" >}}
-
-Each code can be used only once to sign in to your account.
-
-{{< /alert >}}
-
 You should copy and print the codes, or use **Download codes** to download them for storage in a safe
 place. If you choose to download them, the file is called `gitlab-recovery-codes.txt`.
 
 {{< alert type="note" >}}
 
+- You can use each code only once to sign in to your account.
 - Recovery codes are not generated for WebAuthn devices.
-- `gitlab-sshd` is not suitable for regenerating recovery codes.
 
 {{< /alert >}}
 
-If you lose the recovery codes, or want to generate new ones, you can use either:
-
-- The [2FA account settings](#regenerate-two-factor-authentication-recovery-codes) page.
-- [SSH](two_factor_authentication_troubleshooting.md#generate-new-recovery-codes-using-ssh).
-
-### Regenerate two-factor authentication recovery codes
-
-To regenerate 2FA recovery codes, you need access to a desktop browser:
-
-1. Access your [**User settings**](../_index.md#access-your-user-settings).
-1. Select **Account** > **Two-Factor Authentication (2FA)**.
-1. If you've already configured 2FA, select **Manage two-factor authentication**.
-1. In the **Disable two-factor authentication** section, select **Regenerate recovery codes**.
-1. On the dialog, enter your current password and select **Regenerate recovery codes**.
-
-{{< alert type="note" >}}
-
-If you regenerate 2FA recovery codes, save them. You can't use any previously created 2FA codes.
-
-{{< /alert >}}
+For information on regenerating or restoring your recovery codes, see
+[recovery options and 2FA reset](two_factor_authentication_troubleshooting.md#recovery-options-and-2fa-reset).
 
 ## Sign in with two-factor authentication enabled
 

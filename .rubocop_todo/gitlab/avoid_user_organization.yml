@@ -1,6 +1,5 @@
 ---
 Gitlab/AvoidUserOrganization:
-  Details: grace period
   Exclude:
     - 'app/helpers/admin/users_helper.rb'
     - 'app/models/todo.rb'

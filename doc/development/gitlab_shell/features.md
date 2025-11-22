@@ -39,7 +39,7 @@ It limits the set of commands to predefined Git commands:
 ## Generate new 2FA recovery codes
 
 Enables users to
-[generate new 2FA recovery codes](../../user/profile/account/two_factor_authentication_troubleshooting.md#generate-new-recovery-codes-using-ssh):
+[generate new 2FA recovery codes](../../user/profile/account/two_factor_authentication_troubleshooting.md#regenerate-recovery-codes-with-ssh):
 
 ```shell
 $ ssh git@<hostname> 2fa_recovery_codes

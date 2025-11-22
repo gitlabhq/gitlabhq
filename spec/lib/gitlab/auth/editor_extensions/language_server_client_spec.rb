@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-require 'spec_helper'
+require 'fast_spec_helper'
 
 RSpec.describe Gitlab::Auth::EditorExtensions::LanguageServerClient, feature_category: :editor_extensions do
   describe '#lsp_client?' do

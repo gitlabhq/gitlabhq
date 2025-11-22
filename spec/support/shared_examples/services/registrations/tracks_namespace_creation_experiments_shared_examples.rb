@@ -28,23 +28,30 @@ RSpec.shared_examples 'tracks namespace creation experiments' do
     end
 
     context 'with experiment lightweight_trial_registration_redesign' do
-      let(:experiment) { instance_double(ApplicationExperiment) }
+      let(:lightweight_experiment) { instance_double(ApplicationExperiment) }
+      let(:premium_positioning_experiment) { instance_double(ApplicationExperiment) }
+      let(:premium_message_experiment) { instance_double(ApplicationExperiment) }
 
       it 'tracks experiment assignment' do
         allow_next_instance_of(::Projects::CreateService) do |service|
           allow(service).to receive(:after_create_actions)
         end
 
+        allow(premium_positioning_experiment).to receive(:exclude!)
+        allow(premium_message_experiment).to receive(:exclude!)
+
         expect_next_instance_of(described_class) do |service|
           expect(service).to receive(:experiment).with(:lightweight_trial_registration_redesign,
-            actor: user).and_return(experiment)
+            actor: user).and_return(lightweight_experiment)
           expect(service).to receive(:experiment).with(:premium_trial_positioning,
-            actor: user).and_call_original
+            actor: user).and_yield(premium_positioning_experiment)
           expect(service).to receive(:experiment).with(:premium_message_during_trial,
-            namespace: an_instance_of(Group)).and_call_original
+            namespace: an_instance_of(Group)).and_yield(premium_message_experiment)
         end
 
-        expect(experiment).to receive(:track).with(:assignment, namespace: an_instance_of(Group))
+        expect(lightweight_experiment).to receive(:track).with(:assignment, namespace: an_instance_of(Group))
+        expect(premium_positioning_experiment).to receive(:track).with(:assignment, namespace: an_instance_of(Group))
+
         expect(execute).to be_success
       end
     end

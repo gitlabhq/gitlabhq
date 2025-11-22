@@ -141,18 +141,18 @@ The agent appears on the project's **Automate** > **Agents** page.
 In the project, you can start a new chat with the agent.
 For more information, see [select an agent](../../gitlab_duo_chat/agentic_chat.md#select-an-agent).
 
-### Remove an agent from a project
+### Disable an agent for a project
 
 Prerequisites:
 
 - You must have at least the Maintainer role for the project.
 
-To remove an agent:
+To disable an agent:
 
 1. On the left sidebar, select **Search or go to** and find your project. If you've [turned on the new navigation](../../interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
 1. Select **Automate** > **Agents**.
-1. Find the agent you want to remove and select **Actions** ({{< icon name="ellipsis_v" >}}) > **Remove**.
-1. On the confirmation dialog, select **Remove**.
+1. Find the agent you want to disable and select **Actions** ({{< icon name="ellipsis_v" >}}) > **Disable**.
+1. On the confirmation dialog, select **Disable**.
 
 The agent no longer appears in the project, and is not available in Chat.
 
@@ -181,6 +181,8 @@ Prerequisites:
 
 - You must be a member of the source project and have at least the Maintainer role.
 
+To manage an agent:
+
 1. On the left sidebar, select **Search or go to** > **Explore**. If you've [turned on the new navigation](../../interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
 1. Select **AI Catalog** and select the agent you want to manage.
    - To edit an agent:
@@ -189,3 +191,17 @@ Prerequisites:
    - To delete an agent:
      1. In the upper-right corner, select **Actions** ({{< icon name="ellipsis_v" >}}) > **Delete**.
      1. On the confirmation dialog, select **Delete**.
+
+## Report an agent
+
+You can report an agent if it contains potentially offensive material or poses a risk to your organization.
+
+To report an agent:
+
+1. On the left sidebar, select **Search or go to** > **Explore**. If you've [turned on the new navigation](../../interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
+1. Select **AI Catalog**, then select the **Agents** tab.
+1. Select the agent you want to report.
+1. In the upper-right corner, select **Actions** ({{< icon name="ellipsis_v" >}}) > **Report to admin**.
+1. Complete the abuse report, then select **Submit**.
+
+An administrator is notified and can choose to hide or delete the agent.

@@ -353,8 +353,6 @@
   - 1
 - - counters_cleanup_refresh
   - 1
-- - counters_flush_stale_counter_increments
-  - 1
 - - create_commit_signature
   - 2
 - - create_github_webhook
@@ -992,6 +990,8 @@
 - - security_attributes_cleanup_project_to_security_attribute
   - 1
 - - security_attributes_cleanup_schedule
+  - 1
+- - security_attributes_process_project_transfer_events
   - 1
 - - security_collect_policies_limit_audit_events
   - 1

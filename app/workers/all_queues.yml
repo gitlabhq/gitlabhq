@@ -597,16 +597,6 @@
   :idempotent: true
   :tags: []
   :queue_namespace: :cronjob
-- :name: cronjob:counters_flush_stale_counter_increments_cron
-  :worker_name: Gitlab::Counters::FlushStaleCounterIncrementsCronWorker
-  :feature_category: :continuous_integration
-  :has_external_dependencies: false
-  :urgency: :low
-  :resource_boundary: :unknown
-  :weight: 1
-  :idempotent: true
-  :tags: []
-  :queue_namespace: :cronjob
 - :name: cronjob:database_background_operation_base_scheduler
   :worker_name: Database::BackgroundOperation::BaseSchedulerWorker
   :feature_category: :database
@@ -3726,16 +3716,6 @@
   :feature_category: :not_owned
   :has_external_dependencies: false
   :urgency: :low
-  :resource_boundary: :unknown
-  :weight: 1
-  :idempotent: true
-  :tags: []
-  :queue_namespace:
-- :name: counters_flush_stale_counter_increments
-  :worker_name: Gitlab::Counters::FlushStaleCounterIncrementsWorker
-  :feature_category: :continuous_integration
-  :has_external_dependencies: false
-  :urgency: :throttled
   :resource_boundary: :unknown
   :weight: 1
   :idempotent: true
