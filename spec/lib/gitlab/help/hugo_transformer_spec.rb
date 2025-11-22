@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-require 'spec_helper'
+require 'fast_spec_helper'
 
 RSpec.describe Gitlab::Help::HugoTransformer, feature_category: :gitlab_docs do
   describe '#transform' do

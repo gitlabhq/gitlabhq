@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-require 'spec_helper'
+require 'fast_spec_helper'
 
 RSpec.describe Gitlab::Import::UsernameMentionRewriter, feature_category: :importers do
   let(:klass) { Class.new { include Gitlab::Import::UsernameMentionRewriter } }

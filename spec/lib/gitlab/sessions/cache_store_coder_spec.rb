@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-require 'spec_helper'
+require 'fast_spec_helper'
 
 RSpec.describe Gitlab::Sessions::CacheStoreCoder, feature_category: :system_access do
   let(:hash) { { a: 1, b: 2 } }

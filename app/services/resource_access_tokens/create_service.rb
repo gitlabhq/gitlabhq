@@ -145,8 +145,6 @@ module ResourceAccessTokens
     end
 
     def valid_access_level?(access_level)
-      return true if current_user.bot?
-
       resource.can_assign_role?(current_user, access_level)
     end
   end

@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-require 'spec_helper'
+require 'fast_spec_helper'
 
 RSpec.describe Gitlab::Encryption::KeyProviderWrapper, feature_category: :shared do
   let(:key_provider) { instance_double(ActiveRecord::Encryption::KeyProvider) }

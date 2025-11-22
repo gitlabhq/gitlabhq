@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-require 'spec_helper'
+require 'fast_spec_helper'
 
 RSpec.describe Banzai::RenderContext, feature_category: :markdown do
   let(:document) { Nokogiri::HTML.fragment('<p>hello</p>') }

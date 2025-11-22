@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-require 'spec_helper'
+require 'fast_spec_helper'
 
 RSpec.describe API::Helpers::Snippets::HttpResponseMap, feature_category: :source_code_management do
   describe '.status_for' do

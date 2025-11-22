@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-require 'spec_helper'
+require 'fast_spec_helper'
 
 RSpec.describe Gitlab::Search::AbuseDetection, feature_category: :global_search do
   subject { described_class.new(params) }

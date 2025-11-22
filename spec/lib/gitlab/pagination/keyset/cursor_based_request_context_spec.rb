@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-require 'spec_helper'
+require 'fast_spec_helper'
 
 RSpec.describe Gitlab::Pagination::Keyset::CursorBasedRequestContext do
   let(:params) { { per_page: 2, cursor: 'eyJuYW1lIjoiR2l0TGFiIEluc3RhbmNlIiwiaWQiOiI1MiIsIl9rZCI6Im4ifQ==', order_by: :name, sort: :asc } }

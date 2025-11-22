@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-require 'spec_helper'
+require 'fast_spec_helper'
 require_relative '../../../../lib/tasks/gitlab/audit_event_types/compile_docs_task'
 
 RSpec.describe Tasks::Gitlab::AuditEventTypes::CompileDocsTask, feature_category: :audit_events do

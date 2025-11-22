@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-require 'spec_helper'
+require 'fast_spec_helper'
 
 RSpec.describe API::Concerns::McpAccess, feature_category: :mcp_server do
   let(:dummy_class) do

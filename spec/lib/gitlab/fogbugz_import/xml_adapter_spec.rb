@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-require 'spec_helper'
+require 'fast_spec_helper'
 
 # These specs are copying the requirements laid out by the original adapter
 # spec: https://github.com/relatel/ruby-fogbugz/blob/master/spec/adapters/xml/crack_spec.rb

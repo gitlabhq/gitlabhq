@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-require 'spec_helper'
+require 'fast_spec_helper'
 require_relative '../../../provider/helpers/contract_source_helper'
 
 RSpec.describe Provider::ContractSourceHelper, feature_category: :shared do

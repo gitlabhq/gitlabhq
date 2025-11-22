@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-require 'spec_helper'
+require 'fast_spec_helper'
 require 'omniauth/strategies/saml'
 
 RSpec.describe 'processing of SAMLResponse in dependencies' do

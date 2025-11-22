@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-require 'spec_helper'
+require 'fast_spec_helper'
 
 RSpec.describe ErrorTracking::SentryClient::Token, feature_category: :observability do
   describe '.masked_token?' do

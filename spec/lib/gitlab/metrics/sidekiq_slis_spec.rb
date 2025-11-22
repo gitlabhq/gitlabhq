@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-require 'spec_helper'
+require 'fast_spec_helper'
 
 RSpec.describe Gitlab::Metrics::SidekiqSlis, feature_category: :error_budgets do
   using RSpec::Parameterized::TableSyntax

@@ -2,7 +2,7 @@
 
 # rubocop:disable RSpec/VariableDefinition, RSpec/VariableName
 
-require 'spec_helper'
+require 'fast_spec_helper'
 require 'mail'
 require_relative '../../config/initializers/mail_starttls_patch'
 

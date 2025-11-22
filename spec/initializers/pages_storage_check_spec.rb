@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-require 'spec_helper'
+require 'fast_spec_helper'
 
 RSpec.describe 'pages storage check' do
   let(:main_error_message) { "Please enable at least one of the two Pages storage strategy (local_store or object_store) in your config/gitlab.yml." }

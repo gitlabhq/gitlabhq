@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-require 'spec_helper'
+require 'fast_spec_helper'
 
 RSpec.describe 'gitlab:openapi namespace rake tasks', :silence_stdout, feature_category: :api do
   before :all do

@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-require 'spec_helper'
+require 'fast_spec_helper'
 
 RSpec.describe GemExtensions::ActiveRecord::ConnectionAdapters::Transaction::NullTransactionCallbacks, feature_category: :shared do
   describe '.after_commit' do

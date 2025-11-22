@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-require 'spec_helper'
+require 'fast_spec_helper'
 
 RSpec.describe Gitlab::Utils::BatchedBackgroundMigrationsDictionary, feature_category: :database do
   let(:bbm_dictionary_file_name) { "#{described_class::DICTIONARY_BASE_DIR}/test_migration.yml" }

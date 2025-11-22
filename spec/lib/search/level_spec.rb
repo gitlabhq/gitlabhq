@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-require 'spec_helper'
+require 'fast_spec_helper'
 
 RSpec.describe Search::Level, feature_category: :global_search do
   let(:project_options) { { project_id: 1 } }

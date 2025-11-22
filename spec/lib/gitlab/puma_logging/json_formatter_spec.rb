@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-require 'spec_helper'
+require 'fast_spec_helper'
 
 RSpec.describe Gitlab::PumaLogging::JSONFormatter do
   it "generate json format with timestamp and pid" do

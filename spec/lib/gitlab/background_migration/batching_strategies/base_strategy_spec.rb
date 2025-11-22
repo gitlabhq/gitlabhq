@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-require 'spec_helper'
+require 'fast_spec_helper'
 
 RSpec.describe Gitlab::BackgroundMigration::BatchingStrategies::BaseStrategy, '#next_batch' do
   let(:connection) { double(:connection) }

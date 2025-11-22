@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-require 'spec_helper'
+require 'fast_spec_helper'
 
 RSpec.describe BitbucketServer::Representation::User, feature_category: :importers do
   let(:email) { 'test@email.com' }

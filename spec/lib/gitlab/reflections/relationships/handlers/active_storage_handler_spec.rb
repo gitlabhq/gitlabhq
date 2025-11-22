@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-require 'spec_helper'
+require 'fast_spec_helper'
 
 RSpec.describe Gitlab::Reflections::Relationships::Handlers::ActiveStorageHandler, feature_category: :database do
   # rubocop:disable RSpec/VerifiedDoubles -- Using generic mock objects

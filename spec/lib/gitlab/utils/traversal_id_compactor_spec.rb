@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-require 'spec_helper'
+require 'fast_spec_helper'
 
 RSpec.describe Gitlab::Utils::TraversalIdCompactor, feature_category: :secrets_management do
   let(:traversal_ids) do

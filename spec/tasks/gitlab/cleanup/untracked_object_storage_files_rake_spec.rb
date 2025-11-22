@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-require 'spec_helper'
+require 'fast_spec_helper'
 
 RSpec.describe 'gitlab:cleanup:untracked_object_storage_files rake task', :silence_stdout, feature_category: :geo_replication do
   subject(:rake_task) { run_rake_task('gitlab:cleanup:untracked_object_storage_files') }

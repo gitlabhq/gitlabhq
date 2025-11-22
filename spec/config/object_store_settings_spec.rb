@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-require 'spec_helper'
+require 'fast_spec_helper'
 require Rails.root.join('config', 'object_store_settings.rb')
 
 RSpec.describe ObjectStoreSettings, feature_category: :shared do

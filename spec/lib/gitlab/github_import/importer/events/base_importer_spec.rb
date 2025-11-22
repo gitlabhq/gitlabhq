@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-require 'spec_helper'
+require 'fast_spec_helper'
 
 RSpec.describe Gitlab::GithubImport::Importer::Events::BaseImporter, feature_category: :importers do
   let(:project) { instance_double('Project') }
