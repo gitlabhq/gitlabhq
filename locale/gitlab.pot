@@ -59073,6 +59073,9 @@ msgstr ""
 msgid "Secrets manager"
 msgstr ""
 
+msgid "SecretsManagerPermissions|An error occurred while disabling the secrets manager."
+msgstr ""
+
 msgid "SecretsManagerPermissions|An error occurred while enabling the secrets manager."
 msgstr ""
 
@@ -59116,6 +59119,9 @@ msgid "SecretsManagerPermissions|Remove secrets manager permissions?"
 msgstr ""
 
 msgid "SecretsManagerPermissions|Secrets manager"
+msgstr ""
+
+msgid "SecretsManagerPermissions|Secrets manager has been deprovisioned for this project."
 msgstr ""
 
 msgid "SecretsManagerPermissions|Secrets manager has been provisioned for this project."
