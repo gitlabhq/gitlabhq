@@ -2,6 +2,7 @@
 
 require_relative '../../code_reuse_helpers'
 require_relative '../../node_pattern_helper'
+require_relative '../../api_hidden_param_helpers'
 
 module RuboCop
   module Cop
@@ -46,6 +47,7 @@ module RuboCop
       #
       class ParameterType < RuboCop::Cop::Base
         include CodeReuseHelpers
+        include APIHiddenParamHelpers
         extend NodePatternHelper
 
         # Grape::Validations::Types - https://github.com/ruby-grape/grape/blob/master/lib/grape/validations/types.rb
@@ -59,14 +61,6 @@ module RuboCop
         DUPLICATE_TYPES = 'Duplicate type definitions. API params must only define one of type or types.'
 
         RESTRICT_ON_SEND = %i[requires optional].freeze
-
-        # @!method hidden_param?(node)
-        def_node_matcher :hidden_param?, <<~PATTERN
-          (send _
-            ...
-            (hash <(pair (sym :documentation) (hash <(pair (sym :hidden) (true))>)) ...>)
-          )
-        PATTERN
 
         # @!method custom_api_validation_type?(node)
         def_node_matcher :custom_api_validation_type?, <<~PATTERN

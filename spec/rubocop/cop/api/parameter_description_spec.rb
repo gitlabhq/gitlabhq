@@ -99,4 +99,14 @@ RSpec.describe RuboCop::Cop::API::ParameterDescription, :config, feature_categor
       end
     end
   end
+
+  context 'with hidden params' do
+    it 'does not register an offense for hidden params without a description' do
+      expect_no_offenses(<<~RUBY)
+        params do
+          requires :invisible, type: String, documentation: { hidden: true }
+        end
+      RUBY
+    end
+  end
 end

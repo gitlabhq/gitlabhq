@@ -50,6 +50,8 @@ module Tooling
       end
 
       def mentioned_lines(filename, todo)
+        filename = Regexp.escape(filename)
+
         File
           .foreach(todo)
           .with_index(1)

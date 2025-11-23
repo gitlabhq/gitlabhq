@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 require_relative '../../code_reuse_helpers'
+require_relative '../../api_hidden_param_helpers'
 
 module RuboCop
   module Cop
@@ -45,6 +46,7 @@ module RuboCop
       #
       class ParameterDescription < RuboCop::Cop::Base
         include CodeReuseHelpers
+        include APIHiddenParamHelpers
 
         MSG = 'API params must include a desc.'
         RESTRICT_ON_SEND = %i[requires optional].freeze
@@ -58,7 +60,7 @@ module RuboCop
         PATTERN
 
         def on_send(node)
-          return if has_desc?(node)
+          return if has_desc?(node) || hidden_param?(node)
 
           add_offense(node)
         end
