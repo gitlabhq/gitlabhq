@@ -7,7 +7,7 @@ title: Security Analyst Agent
 
 {{< details >}}
 
-- Tier: Premium, Ultimate
+- Tier: Ultimate
 - Add-on: GitLab Duo Core, Pro, or Enterprise
 - Offering: GitLab.com
 - Status: Beta
