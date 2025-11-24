@@ -122,7 +122,10 @@ RSpec.describe ClickHouse::Finders::Ci::FinishedBuildsFinder, :click_house, :fre
           result
         end.to raise_error(ArgumentError,
           "Cannot aggregate columns: [:invalid_aggregation]. Allowed: mean_duration_in_seconds, " \
-            "p95_duration_in_seconds, rate_of_success, rate_of_failed, rate_of_canceled, rate_of_skipped")
+            "p50_duration, p75_duration, p90_duration, p95_duration, p99_duration, p95_duration_in_seconds, " \
+            "rate_of_success, rate_of_failed, rate_of_canceled, rate_of_skipped, " \
+            "count_success, count_failed, count_canceled, count_skipped, total_count"
+        )
       end
     end
   end
@@ -136,7 +139,7 @@ RSpec.describe ClickHouse::Finders::Ci::FinishedBuildsFinder, :click_house, :fre
     end
 
     it 'calculates average duration correctly' do
-      expect(result).to include(
+      is_expected.to include(
         a_hash_including('name' => 'compile', 'mean_duration_in_seconds' => 1.0),
         a_hash_including('name' => 'compile-slow', 'mean_duration_in_seconds' => 5.0),
         a_hash_including('name' => 'rspec', 'mean_duration_in_seconds' => be_within(0.01).of(2.67))
@@ -144,15 +147,14 @@ RSpec.describe ClickHouse::Finders::Ci::FinishedBuildsFinder, :click_house, :fre
     end
 
     it 'rounds the result to 2 decimal places' do
-      expect(result.all? { |r| r['mean_duration_in_seconds'].to_s.split('.').last.size <= 2 }).to be true
+      is_expected.to be_rounded_to_decimal_places('mean_duration_in_seconds', decimal_places: 2)
     end
   end
 
-  describe '#p95_duration_in_seconds' do
-    before do
-      # Creating additional builds to ensure the percentile calculation is more accurate
-      additional_builds = (1..20).map do |i|
-        create(:ci_build, :success,
+  shared_context 'with percentile test data' do
+    let!(:additional_builds) do
+      (1..20).map do |i|
+        build_stubbed(:ci_build, :success,
           project: project,
           pipeline: pipeline,
           ci_stage: stage1,
@@ -161,27 +163,51 @@ RSpec.describe ClickHouse::Finders::Ci::FinishedBuildsFinder, :click_house, :fre
           finished_at: base_time + ((i * 100.0) / 1000.0) # adding [100, 200, ..., 2000]
         )
       end
+    end
+
+    before do
       insert_ci_builds_to_click_house(additional_builds)
     end
+  end
 
-    it 'calculates 95th percentile duration correctly' do
-      result = instance.for_project(project.id)
-                       .select(:name)
-                       .p95_duration_in_seconds
-                       .execute
-
-      percentile_result = result.find { |r| r['name'] == 'percentile-test' }
-
-      # p95 of 100ms, 200ms, ..., 2000ms should be 1900ms = 1.9 seconds
-      expect(percentile_result['p95_duration_in_seconds']).to be_within(0.1).of(1.9)
+  shared_examples 'percentile duration calculation' do |percentile, method_name, expected_value:|
+    subject(:result) do
+      instance.for_project(project.id)
+              .select(:name)
+              .public_send(method_name)
+              .execute
     end
 
-    it 'rounds the result to 2 decimal places' do
-      result = instance.for_project(project.id)
-                       .p95_duration_in_seconds
-                       .execute
+    let(:percentile_result) { result.find { |r| r['name'] == 'percentile-test' } }
 
-      expect(result.first['p95_duration_in_seconds'].to_s.split('.').last.size <= 2).to be true
+    it "calculates #{percentile} percentile duration correctly and rounds the result to 2 decimal places",
+      :aggregate_failures do
+      expect(percentile_result.fetch(method_name)).to be_within(0.1).of(expected_value)
+      is_expected.to be_rounded_to_decimal_places(method_name, decimal_places: 2)
+    end
+  end
+
+  describe 'percentile duration methods' do
+    include_context 'with percentile test data'
+
+    describe '#p50_duration' do
+      it_behaves_like 'percentile duration calculation', '50th', 'p50_duration', expected_value: 1.0
+    end
+
+    describe '#p75_duration' do
+      it_behaves_like 'percentile duration calculation', '75th', 'p75_duration', expected_value: 1.5
+    end
+
+    describe '#p90_duration' do
+      it_behaves_like 'percentile duration calculation', '90th', 'p90_duration', expected_value: 1.8
+    end
+
+    describe '#p95_duration_in_seconds' do
+      it_behaves_like 'percentile duration calculation', '95th', 'p95_duration_in_seconds', expected_value: 1.9
+    end
+
+    describe '#p99_duration' do
+      it_behaves_like 'percentile duration calculation', '99th', 'p99_duration', expected_value: 1.98
     end
   end
 
@@ -189,7 +215,7 @@ RSpec.describe ClickHouse::Finders::Ci::FinishedBuildsFinder, :click_house, :fre
     subject(:result) do
       instance.for_project(project.id)
               .select(:name)
-              .rate_of_status(status)
+              .public_send(:"rate_of_#{status}")
               .execute
     end
 
@@ -205,26 +231,14 @@ RSpec.describe ClickHouse::Finders::Ci::FinishedBuildsFinder, :click_house, :fre
 
       context 'with status - failed' do
         let(:status) { :failed }
+        let(:rspec_result) { result.find { |r| r['name'] == 'rspec' } }
 
         it 'calculates failed rate correctly and rounds off to 2 decimal places', :aggregate_failures do
-          rspec_result = result.find { |r| r['name'] == 'rspec' }
-
           # rspec: 2 failed out of 3 = 66.67%
-          expect(rspec_result['rate_of_failed']).to be_within(0.01).of(66.67)
+          expect(rspec_result.fetch('rate_of_failed')).to be_within(0.01).of(66.67)
           # assert round off
-          expect(result.first['rate_of_failed'].to_s.split('.').last.size <= 2).to be true
+          is_expected.to be_rounded_to_decimal_places('rate_of_failed', decimal_places: 2)
         end
-      end
-    end
-
-    context 'with invalid status' do
-      let(:status) { 'invalid_status' }
-
-      it 'raises ArgumentError' do
-        expect do
-          result
-        end.to raise_error(ArgumentError,
-          "Invalid status: invalid_status. Must be one of: success, failed, canceled, skipped")
       end
     end
   end
@@ -232,14 +246,114 @@ RSpec.describe ClickHouse::Finders::Ci::FinishedBuildsFinder, :click_house, :fre
   describe 'dynamic status methods' do
     %w[success failed canceled skipped].each do |status|
       describe "#rate_of_#{status}" do
-        it "calculates rate correctly" do
-          result = instance.for_project(project.id)
-                           .select(:stage_id)
-                           .public_send(:"rate_of_#{status}")
-                           .execute
+        subject(:result) do
+          instance.for_project(project.id)
+            .select(:stage_id)
+            .public_send(:"rate_of_#{status}")
+            .execute
+        end
 
-          expect(result).not_to be_empty
-          expect(result.first.keys).to include("rate_of_#{status}")
+        it "calculates rate correctly" do
+          is_expected.not_to be_empty
+          expect(result.first.fetch("rate_of_#{status}")).to be_a(Integer)
+        end
+      end
+
+      describe "#count_#{status}" do
+        subject(:result) do
+          instance.for_project(project.id)
+            .select(:stage_id)
+            .public_send(:"count_#{status}")
+            .execute
+        end
+
+        it "calculates count correctly" do
+          is_expected.not_to be_empty
+          expect(result.first.fetch("count_#{status}")).to be_a(Integer)
+        end
+      end
+    end
+  end
+
+  describe '#total_count' do
+    subject(:result) do
+      instance.for_project(project.id)
+              .select(:name)
+              .total_count
+              .execute
+    end
+
+    it 'calculates total count correctly' do
+      is_expected.to include(
+        a_hash_including('name' => 'compile', 'total_count' => 3),
+        a_hash_including('name' => 'compile-slow', 'total_count' => 2),
+        a_hash_including('name' => 'rspec', 'total_count' => 3)
+      )
+    end
+
+    it 'returns integer values' do
+      expect(result.pluck('total_count')).to all(be_an_instance_of(Integer))
+    end
+  end
+
+  describe '#count_of_status' do
+    subject(:result) do
+      instance.for_project(project.id)
+              .select(:name)
+              .send(:count_of_status, status)
+              .execute
+    end
+
+    context 'with valid status' do
+      let(:status) { :success }
+
+      it 'calculates success count correctly' do
+        is_expected.to include(
+          a_hash_including('name' => 'compile', 'count_success' => 3),
+          a_hash_including('name' => 'rspec', 'count_success' => 0)
+        )
+      end
+
+      context 'with status - failed' do
+        let(:status) { :failed }
+        let(:rspec_result) { result.find { |r| r['name'] == 'rspec' } }
+
+        it 'calculates failed count correctly' do
+          # rspec: 2 failed out of 3
+          expect(rspec_result.fetch('count_failed')).to eq(2)
+        end
+      end
+    end
+  end
+
+  describe '#duration_of_percentile' do
+    include_context 'with percentile test data'
+
+    subject(:result) do
+      instance.for_project(project.id)
+              .select(:name)
+              .send(:duration_of_percentile, percentile)
+              .execute
+    end
+
+    context 'with valid percentile' do
+      let(:percentile) { 50 }
+      let(:percentile_result) { result.find { |r| r['name'] == 'percentile-test' } }
+
+      it 'calculates 50th percentile duration correctly' do
+        expect(percentile_result.fetch('p50_duration')).to be_within(0.1).of(1.0)
+      end
+
+      it 'rounds the result to 2 decimal places' do
+        is_expected.to be_rounded_to_decimal_places('p50_duration', decimal_places: 2)
+      end
+
+      context 'with percentile - 95' do
+        let(:percentile) { 95 }
+
+        it 'calculates 95th percentile duration correctly' do
+          # p95 of 100ms, 200ms, ..., 2000ms should be 1900ms = 1.9 seconds
+          expect(percentile_result.fetch('p95_duration')).to be_within(0.1).of(1.9)
         end
       end
     end
@@ -578,6 +692,28 @@ RSpec.describe ClickHouse::Finders::Ci::FinishedBuildsFinder, :click_house, :fre
                        .execute
 
       expect(result.pluck('name')).to match_array(%w[compile compile-slow ref-build source-build])
+    end
+  end
+
+  private
+
+  RSpec::Matchers.define :be_rounded_to_decimal_places do |field_name, decimal_places:|
+    match do |values|
+      @unrounded = values.select do |value|
+        frac = BigDecimal(value.fetch(field_name)).frac
+        frac != frac.round(decimal_places)
+      end
+
+      @unrounded.empty?
+    end
+
+    failure_message do
+      "expected all values in '#{field_name}' to be rounded to #{decimal_places} decimal places, " \
+        "but found #{@unrounded.size} unrounded value(s): #{@unrounded.pluck(field_name).inspect}"
+    end
+
+    description do
+      "have all '#{field_name}' values rounded to #{decimal_places} decimal places"
     end
   end
 end

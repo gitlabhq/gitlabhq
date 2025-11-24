@@ -29333,10 +29333,7 @@ CREATE TABLE vulnerability_namespace_statistics (
     low integer DEFAULT 0 NOT NULL,
     unknown integer DEFAULT 0 NOT NULL,
     info integer DEFAULT 0 NOT NULL,
-    traversal_ids bigint[] DEFAULT '{}'::bigint[] NOT NULL,
-    age_average double precision DEFAULT 0.0 NOT NULL,
-    age_standard_deviation double precision DEFAULT 0.0 NOT NULL,
-    risk_score double precision DEFAULT 0.0 NOT NULL
+    traversal_ids bigint[] DEFAULT '{}'::bigint[] NOT NULL
 );
 
 CREATE SEQUENCE vulnerability_namespace_statistics_id_seq
@@ -29592,9 +29589,6 @@ CREATE TABLE vulnerability_statistics (
     latest_pipeline_id bigint,
     archived boolean DEFAULT false NOT NULL,
     traversal_ids bigint[] DEFAULT '{}'::bigint[] NOT NULL,
-    age_mean double precision DEFAULT 0.0 NOT NULL,
-    age_sum_of_squares double precision DEFAULT 0.0 NOT NULL,
-    risk_score double precision DEFAULT 0.0 NOT NULL,
     security_project_tracked_context_id bigint
 );
 

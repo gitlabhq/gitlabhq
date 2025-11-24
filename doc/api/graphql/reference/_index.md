@@ -17452,6 +17452,29 @@ The edge type for [`ContainerProtectionTagRule`](#containerprotectiontagrule).
 | <a id="containerprotectiontagruleedgecursor"></a>`cursor` | [`String!`](#string) | A cursor for use in pagination. |
 | <a id="containerprotectiontagruleedgenode"></a>`node` | [`ContainerProtectionTagRule`](#containerprotectiontagrule) | The item at the end of the edge. |
 
+#### `ContainerRegistryConnection`
+
+The connection type for [`ContainerRegistry`](#containerregistry).
+
+##### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="containerregistryconnectionedges"></a>`edges` | [`[ContainerRegistryEdge]`](#containerregistryedge) | A list of edges. |
+| <a id="containerregistryconnectionnodes"></a>`nodes` | [`[ContainerRegistry]`](#containerregistry) | A list of nodes. |
+| <a id="containerregistryconnectionpageinfo"></a>`pageInfo` | [`PageInfo!`](#pageinfo) | Information to aid in pagination. |
+
+#### `ContainerRegistryEdge`
+
+The edge type for [`ContainerRegistry`](#containerregistry).
+
+##### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="containerregistryedgecursor"></a>`cursor` | [`String!`](#string) | A cursor for use in pagination. |
+| <a id="containerregistryedgenode"></a>`node` | [`ContainerRegistry`](#containerregistry) | The item at the end of the edge. |
+
 #### `ContainerRepositoryConnection`
 
 The connection type for [`ContainerRepository`](#containerrepository).
@@ -27723,6 +27746,19 @@ A container repository tag protection rule designed to prevent users with a cert
 | <a id="containerprotectiontagruletagnamepattern"></a>`tagNamePattern` {{< icon name="warning-solid" >}} | [`String!`](#string) | **Introduced** in GitLab 17.8. **Status**: Experiment. The pattern that matches container image tags to protect. For example, `v1.*`. Wildcard character `*` allowed. |
 | <a id="containerprotectiontagruleuserpermissions"></a>`userPermissions` | [`ContainerRegistryProtectionTagRulePermissions!`](#containerregistryprotectiontagrulepermissions) | Permissions for the current user on the resource. |
 
+### `ContainerRegistry`
+
+Represents a container virtual registry.
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="containerregistrydescription"></a>`description` | [`String`](#string) | Description of the virtual registry. |
+| <a id="containerregistryid"></a>`id` | [`ID!`](#id) | ID of the virtual registry. |
+| <a id="containerregistryname"></a>`name` | [`String!`](#string) | Name of the virtual registry. |
+| <a id="containerregistryupdatedat"></a>`updatedAt` | [`Time!`](#time) | Timestamp of when the virtual registry was updated. |
+
 ### `ContainerRegistryProtectionTagRulePermissions`
 
 #### Fields
@@ -31706,6 +31742,7 @@ GPG signature for a signed commit.
 | <a id="groupuserpermissions"></a>`userPermissions` | [`GroupPermissions!`](#grouppermissions) | Permissions for the current user on the resource. |
 | <a id="groupvaluestreamanalytics"></a>`valueStreamAnalytics` | [`ValueStreamAnalytics`](#valuestreamanalytics) | Information about Value Stream Analytics within the group. |
 | <a id="groupvirtualregistriescleanuppolicy"></a>`virtualRegistriesCleanupPolicy` {{< icon name="warning-solid" >}} | [`VirtualRegistryCleanupPolicy`](#virtualregistrycleanuppolicy) | **Introduced** in GitLab 18.7. **Status**: Experiment. Virtual registries cleanup policy of the group. Returns null if the `maven_virtual_registry` or `virtual_registry_cleanup_policies`feature flag is disabled. |
+| <a id="groupvirtualregistriescontainerregistries"></a>`virtualRegistriesContainerRegistries` {{< icon name="warning-solid" >}} | [`ContainerRegistryConnection`](#containerregistryconnection) | **Introduced** in GitLab 18.7. **Status**: Experiment. Container virtual registries registered to the group. Returns null if the `container_virtual_registry` feature flag is disabled. |
 | <a id="groupvirtualregistriespackagesmavenregistries"></a>`virtualRegistriesPackagesMavenRegistries` {{< icon name="warning-solid" >}} | [`MavenRegistryConnection`](#mavenregistryconnection) | **Introduced** in GitLab 18.6. **Status**: Experiment. Maven virtual registries registered to the group. Returns null if the `maven_virtual_registry` feature flag is disabled. |
 | <a id="groupvirtualregistriessetting"></a>`virtualRegistriesSetting` {{< icon name="warning-solid" >}} | [`VirtualRegistriesSetting`](#virtualregistriessetting) | **Introduced** in GitLab 18.5. **Status**: Experiment. Virtual registries settings for the group. Returns null if the `maven_virtual_registry` feature flag is disabled. |
 | <a id="groupvisibility"></a>`visibility` | [`String`](#string) | Visibility of the namespace. |

@@ -592,7 +592,6 @@ read_member_access_request
 read_merge_request
 read_merge_request_closing_issue
 read_merge_request_iid
-read_merge_train
 read_merge_train_car
 read_milestone
 read_model_experiments

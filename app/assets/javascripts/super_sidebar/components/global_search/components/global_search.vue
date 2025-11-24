@@ -25,6 +25,7 @@ import {
   SEARCH_DESCRIBED_BY_UPDATED,
   SEARCH_RESULTS_LOADING,
   COMMAND_PALETTE_TIP,
+  EVENT_OPEN_GLOBAL_SEARCH,
 } from '~/vue_shared/global_search/constants';
 import modalKeyboardNavigationMixin from '~/vue_shared/mixins/modal_keyboard_navigation_mixin';
 import { darkModeEnabled } from '~/lib/utils/color_utils';
@@ -169,8 +170,17 @@ export default {
   created() {
     addStopCallback(this.allowMousetrapBindingOnSearchInput);
   },
+  mounted() {
+    document.addEventListener(EVENT_OPEN_GLOBAL_SEARCH, this.showModal);
+  },
+  beforeDestroy() {
+    document.removeEventListener(EVENT_OPEN_GLOBAL_SEARCH, this.showModal);
+  },
   methods: {
     ...mapActions(['setSearch', 'setCommand', 'fetchAutocompleteOptions', 'clearAutocomplete']),
+    showModal() {
+      this.$refs.modal?.show();
+    },
     getAutocompleteOptions: debounce(function debouncedSearch(searchTerm) {
       if (this.isCommandMode) {
         return;

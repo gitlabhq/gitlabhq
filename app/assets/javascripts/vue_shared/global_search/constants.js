@@ -121,3 +121,5 @@ export const I18N = {
   DESCRIBE_LABEL_FILTER,
   DESCRIBE_LABEL_FILTER_INPUT,
 };
+
+export const EVENT_OPEN_GLOBAL_SEARCH = 'globalSearch:open';

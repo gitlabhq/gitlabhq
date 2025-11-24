@@ -15,6 +15,7 @@ import CommandsOverviewDropdown from '~/super_sidebar/components/global_search/c
 import ScrollScrim from '~/super_sidebar/components/scroll_scrim.vue';
 import { useMockInternalEventsTracking } from 'helpers/tracking_internal_events_helper';
 import { useMockLocationHelper } from 'helpers/mock_window_location_helper';
+import { stubComponent } from 'helpers/stub_component';
 import {
   COMMON_HANDLES,
   COMMAND_HANDLE,
@@ -773,6 +774,42 @@ describe('GlobalSearchModal', () => {
 
         expect(document.activeElement).toBe(wrapper.findByTestId('test-result-1').element);
       });
+    });
+  });
+
+  describe('globalSearch:open event', () => {
+    const modalStub = { show: jest.fn() };
+
+    beforeEach(() =>
+      createComponent({ stubs: { GlModal: stubComponent(GlModal, { methods: modalStub }) } }),
+    );
+
+    it('adds event listener on mount', () => {
+      const addEventListenerSpy = jest.spyOn(document, 'addEventListener');
+      createComponent({ stubs: { GlModal: stubComponent(GlModal, { methods: modalStub }) } });
+
+      expect(addEventListenerSpy).toHaveBeenCalledWith('globalSearch:open', expect.any(Function));
+
+      addEventListenerSpy.mockRestore();
+    });
+
+    it('removes event listener on destroy', () => {
+      const removeEventListenerSpy = jest.spyOn(document, 'removeEventListener');
+      wrapper.destroy();
+
+      expect(removeEventListenerSpy).toHaveBeenCalledWith(
+        'globalSearch:open',
+        expect.any(Function),
+      );
+
+      removeEventListenerSpy.mockRestore();
+    });
+
+    it('opens modal when event is dispatched', async () => {
+      document.dispatchEvent(new CustomEvent('globalSearch:open'));
+      await nextTick();
+
+      expect(modalStub.show).toHaveBeenCalled();
     });
   });
 });

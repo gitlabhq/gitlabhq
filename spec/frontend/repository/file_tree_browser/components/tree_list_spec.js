@@ -1,5 +1,5 @@
 import Vue, { nextTick } from 'vue';
-import { GlFormInput, GlIcon, GlTooltip } from '@gitlab/ui';
+import { GlTooltip } from '@gitlab/ui';
 import VueApollo from 'vue-apollo';
 import { cloneDeep } from 'lodash';
 import { PiniaVuePlugin } from 'pinia';
@@ -15,6 +15,7 @@ import createMockApollo from 'helpers/mock_apollo_helper';
 import { useMockInternalEventsTracking } from 'helpers/tracking_internal_events_helper';
 import paginatedTreeQuery from 'shared_queries/repository/paginated_tree.query.graphql';
 import { Mousetrap } from '~/lib/mousetrap';
+import { waitForElement } from '~/lib/utils/dom_utils';
 import FileTreeBrowserToggle from '~/repository/file_tree_browser/components/file_tree_browser_toggle.vue';
 import { mockResponse } from '../mock_data';
 
@@ -26,6 +27,7 @@ jest.mock('~/lib/utils/url_utility', () => ({
   joinPaths: jest.fn((...args) => args.join('/').replace(/\/+/g, '/')),
 }));
 jest.mock('~/behaviors/shortcuts/shortcuts_toggle');
+jest.mock('~/lib/utils/dom_utils');
 
 describe('Tree List', () => {
   let wrapper;
@@ -71,9 +73,7 @@ describe('Tree List', () => {
   const findTreeItems = () => wrapper.findAll('[role="treeitem"]');
   const findFileRows = () => wrapper.findAllComponents(FileRow);
   const findFileRowPlaceholders = () => wrapper.findAll('[data-placeholder-item]');
-  const findFilterInput = () => wrapper.findComponent(GlFormInput);
-  const findFilterIcon = () => wrapper.findComponent(GlIcon);
-  const findNoFilesMessage = () => wrapper.findByText('No files found');
+  const findSearchButton = () => wrapper.findByTestId('search-trigger');
   const findTooltip = () => wrapper.findComponent(GlTooltip);
 
   const { bindInternalEventDocument } = useMockInternalEventsTracking();
@@ -226,110 +226,106 @@ describe('Tree List', () => {
 
       expect(mockFocus).toHaveBeenCalled();
     });
-
-    it('can filter with Show more button in the list', async () => {
-      const filterQuery = '/dir_1/dir_2';
-      expect(findFileRows()).toHaveLength(3); // Contains all items before filtering
-
-      findFilterInput().vm.$emit('input', filterQuery);
-      await nextTick();
-
-      expect(findFileRows()).toHaveLength(1); // Contains only one item after filtering
-      expect(findFileRows().at(0).props('file')).toMatchObject({ path: filterQuery });
-    });
   });
 
-  describe('filtering', () => {
-    it('renders filter input with icon', () => {
-      expect(findFilterInput().exists()).toBe(true);
-      expect(findFilterIcon().exists()).toBe(true);
-      expect(findFilterIcon().props('name')).toBe('filter');
-      expect(findFilterIcon().props('variant')).toBe('subtle');
-      expect(findFilterInput().attributes('type')).toBe('search');
+  describe('search button', () => {
+    it('renders search button with correct props', () => {
+      const button = findSearchButton();
+
+      expect(button.props('icon')).toBe('search');
+      expect(button.attributes('aria-label')).toBe('Search files (*.vue, *.rb...)');
+      expect(button.text()).toBe('Search files (*.vue, *.rb...)');
     });
 
-    const filterTestCases = [
-      { filter: 'file.txt', expectedNames: ['file.txt'] },
-      { filter: '*.txt', expectedNames: ['file.txt'] },
-      { filter: 'dir_2', expectedNames: ['dir_2'] },
-      { filter: '*.nonexistent', expectedNames: [] },
-    ];
+    it('dispatches global search event when search button is clicked', async () => {
+      const dispatchEventSpy = jest.spyOn(document, 'dispatchEvent');
+      const mockSearchInput = document.createElement('input');
+      mockSearchInput.id = 'search';
+      waitForElement.mockResolvedValue(mockSearchInput);
 
-    it.each(filterTestCases)('filters correctly with "$filter"', ({ filter, expectedNames }) => {
-      findFilterInput().vm.$emit('input', filter);
-      const fileNames = findFileRows().wrappers.map((row) => row.props('file').name);
+      findSearchButton().vm.$emit('click');
+      await nextTick();
 
-      expect(fileNames).toEqual(expect.arrayContaining(expectedNames));
+      expect(dispatchEventSpy).toHaveBeenCalledWith(
+        expect.objectContaining({
+          type: 'globalSearch:open',
+        }),
+      );
     });
 
-    it('resets active item when filtered out', async () => {
-      await createComponent();
-      await nextTick();
+    it('sets search input value to "~" after opening global search', async () => {
+      const mockSearchInput = document.createElement('input');
+      mockSearchInput.id = 'search';
+      waitForElement.mockResolvedValue(mockSearchInput);
 
-      findTree().trigger('keydown', { key: 'ArrowDown' });
-      await nextTick();
-      const secondItemId = findTreeItems().at(1).attributes('data-item-id');
-      expect(wrapper.vm.activeItemId).toBe(secondItemId);
-
-      findFilterInput().vm.$emit('input', 'dir_2');
-      await nextTick();
-
-      expect(wrapper.vm.activeItemId).not.toBe(secondItemId);
-      expect(wrapper.vm.activeItemId).toBe(findTreeItems().at(0).attributes('data-item-id'));
-    });
-  });
-
-  describe('empty state', () => {
-    it('shows no files message when filtered list is empty', async () => {
-      findFilterInput().vm.$emit('input', '*.nonexistent');
+      findSearchButton().vm.$emit('click');
       await waitForPromises();
-      expect(findNoFilesMessage().exists()).toBe(true);
+
+      expect(mockSearchInput.value).toBe('~');
+    });
+
+    it('dispatches input event on search input after setting value', async () => {
+      const mockSearchInput = document.createElement('input');
+      mockSearchInput.id = 'search';
+      const dispatchEventSpy = jest.spyOn(mockSearchInput, 'dispatchEvent');
+      waitForElement.mockResolvedValue(mockSearchInput);
+
+      findSearchButton().vm.$emit('click');
+      await waitForPromises();
+
+      expect(dispatchEventSpy).toHaveBeenCalledWith(expect.any(Event));
+      expect(dispatchEventSpy.mock.calls[0][0].type).toBe('input');
+    });
+
+    it('triggers a tracking event when search button is clicked', async () => {
+      const { trackEventSpy } = bindInternalEventDocument(wrapper.element);
+
+      findSearchButton().vm.$emit('click');
+      await nextTick();
+
+      expect(trackEventSpy).toHaveBeenCalledWith(
+        'focus_file_tree_browser_filter_bar_on_repository_page',
+        { label: 'click' },
+        undefined,
+      );
     });
   });
 
-  it('triggers a tracking event when filter bar is click', async () => {
-    const { trackEventSpy } = bindInternalEventDocument(wrapper.element);
-
-    createComponent();
-    findFilterInput().vm.$emit('click', '*.nonexistent');
-
-    await nextTick();
-
-    expect(trackEventSpy).toHaveBeenCalledWith(
-      'focus_file_tree_browser_filter_bar_on_repository_page',
-      { label: 'click' },
-      undefined,
-    );
-  });
-
-  describe('handles filter bar focus correctly when shortcuts are enabled', () => {
+  describe('handles search button focus correctly when shortcuts are enabled', () => {
     beforeEach(() => {
       shouldDisableShortcuts.mockReturnValue(false);
       createComponent();
     });
 
-    it('focuses filter input when triggerFocusFilterBar is called', async () => {
-      const mockFocus = jest.fn();
-      findFilterInput().vm.focus = mockFocus;
+    it('opens global search when shortcut is triggered', async () => {
+      const dispatchEventSpy = jest.spyOn(document, 'dispatchEvent');
+      const mockSearchInput = document.createElement('input');
+      mockSearchInput.id = 'search';
+      waitForElement.mockResolvedValue(mockSearchInput);
 
       const mousetrapInstance = wrapper.vm.mousetrap;
       mousetrapInstance.trigger('f');
 
-      await nextTick();
+      await waitForPromises();
 
-      expect(mockFocus).toHaveBeenCalled();
+      expect(dispatchEventSpy).toHaveBeenCalledWith(
+        expect.objectContaining({
+          type: 'globalSearch:open',
+        }),
+      );
+      expect(mockSearchInput.value).toBe('~');
     });
 
     it('triggers a tracking event when shortcut is used', async () => {
       const { trackEventSpy } = bindInternalEventDocument(wrapper.element);
-
-      const mockFocus = jest.fn();
-      findFilterInput().vm.focus = mockFocus;
+      const mockSearchInput = document.createElement('input');
+      mockSearchInput.id = 'search';
+      waitForElement.mockResolvedValue(mockSearchInput);
 
       const mousetrapInstance = wrapper.vm.mousetrap;
       mousetrapInstance.trigger('f');
 
-      await nextTick();
+      await waitForPromises();
 
       expect(trackEventSpy).toHaveBeenCalledWith(
         'focus_file_tree_browser_filter_bar_on_repository_page',
@@ -356,24 +352,30 @@ describe('Tree List', () => {
       wrapper.destroy();
       expect(unbindSpy).toHaveBeenCalledWith(keysFor(FOCUS_FILE_TREE_BROWSER_FILTER_BAR));
     });
+
+    it('sets correct aria-keyshortcuts attribute on search button', () => {
+      const button = findSearchButton();
+      expect(button.attributes('aria-keyshortcuts')).toBe(
+        keysFor(FOCUS_FILE_TREE_BROWSER_FILTER_BAR)[0],
+      );
+    });
   });
 
-  describe('handles filter bar focus correctly when shortcuts are disabled', () => {
+  describe('handles search button focus correctly when shortcuts are disabled', () => {
     beforeEach(() => {
       shouldDisableShortcuts.mockReturnValue(true);
       createComponent();
     });
 
-    it('does not focus when shortcuts are disabled', async () => {
-      const mockFocus = jest.fn();
-      findFilterInput().vm.focus = mockFocus;
+    it('does not open global search when shortcuts are disabled', async () => {
+      const dispatchEventSpy = jest.spyOn(document, 'dispatchEvent');
 
       const mousetrapInstance = wrapper.vm.mousetrap;
       mousetrapInstance.trigger('f');
 
       await nextTick();
 
-      expect(mockFocus).not.toHaveBeenCalled();
+      expect(dispatchEventSpy).not.toHaveBeenCalled();
     });
 
     it('does not display tooltip', () => {
@@ -388,6 +390,11 @@ describe('Tree List', () => {
         keysFor(FOCUS_FILE_TREE_BROWSER_FILTER_BAR),
         wrapper.vm.triggerFocusFilterBar,
       );
+    });
+
+    it('does not set aria-keyshortcuts attribute on search button', () => {
+      const button = findSearchButton();
+      expect(button.attributes('aria-keyshortcuts')).toBeUndefined();
     });
   });
 

@@ -2559,7 +2559,7 @@ msgstr ""
 msgid "AICatalog|Anyone can view and use the flow."
 msgstr ""
 
-msgid "AICatalog|Are you sure you want to delete agent %{name}?"
+msgid "AICatalog|Are you sure you want to delete %{itemType} %{name}?"
 msgstr ""
 
 msgid "AICatalog|Are you sure you want to delete flow %{name}?"
@@ -2575,6 +2575,9 @@ msgid "AICatalog|Are you sure you want to disable agent %{name}? The agent will 
 msgstr ""
 
 msgid "AICatalog|Are you sure you want to disable flow %{name}?"
+msgstr ""
+
+msgid "AICatalog|Are you sure you want to disable flow %{name}? The flow and associated triggers and service account will no longer work in this project."
 msgstr ""
 
 msgid "AICatalog|Are you sure you want to disable flow %{name}? The flow will also be disabled from any projects in this group."
@@ -2679,10 +2682,7 @@ msgstr ""
 msgid "AICatalog|Define the agent's personality, expertise, and behavior. This changes how the agent solves problems and responds to requests."
 msgstr ""
 
-msgid "AICatalog|Delete agent"
-msgstr ""
-
-msgid "AICatalog|Delete flow"
+msgid "AICatalog|Delete %{itemType}"
 msgstr ""
 
 msgid "AICatalog|Describe any relevant information for your admin"
@@ -2694,7 +2694,7 @@ msgstr ""
 msgid "AICatalog|Description is required."
 msgstr ""
 
-msgid "AICatalog|Disable agent"
+msgid "AICatalog|Disable %{itemType}"
 msgstr ""
 
 msgid "AICatalog|Disable agent from this %{namespaceType}"
@@ -2763,6 +2763,9 @@ msgstr ""
 msgid "AICatalog|Failed to disable flow"
 msgstr ""
 
+msgid "AICatalog|Failed to disable flow. %{error}"
+msgstr ""
+
 msgid "AICatalog|Failed to load group agents"
 msgstr ""
 
@@ -2794,6 +2797,9 @@ msgid "AICatalog|Flow deleted."
 msgstr ""
 
 msgid "AICatalog|Flow disabled in this %{namespaceType}."
+msgstr ""
+
+msgid "AICatalog|Flow disabled in this project."
 msgstr ""
 
 msgid "AICatalog|Flow does not exist"
@@ -29131,9 +29137,6 @@ msgstr ""
 msgid "Filter by test cases that are currently open."
 msgstr ""
 
-msgid "Filter input"
-msgstr ""
-
 msgid "Filter list for %{title}"
 msgstr ""
 
@@ -29278,7 +29281,7 @@ msgstr ""
 msgid "Focus filter bar"
 msgstr ""
 
-msgid "Focus on the filter bar"
+msgid "Focus on the search bar"
 msgstr ""
 
 msgid "FogBugz Email"
@@ -55792,9 +55795,6 @@ msgstr ""
 msgid "RepositoryGraph|Select display option"
 msgstr ""
 
-msgid "Repository|Filter files (*.vue, *.rb...)"
-msgstr ""
-
 msgid "Repository|New branch"
 msgstr ""
 
@@ -55805,6 +55805,9 @@ msgid "Repository|New file"
 msgstr ""
 
 msgid "Repository|New tag"
+msgstr ""
+
+msgid "Repository|Search files (*.vue, *.rb...)"
 msgstr ""
 
 msgid "Repository|This directory"

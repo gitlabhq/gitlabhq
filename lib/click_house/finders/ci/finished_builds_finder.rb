@@ -11,14 +11,25 @@ module ClickHouse # rubocop:disable Gitlab/BoundedContexts -- Existing module
         ALLOWED_TO_SELECT = %i[name stage_id].freeze
         ALLOWED_AGGREGATIONS = %i[
           mean_duration_in_seconds
+          p50_duration
+          p75_duration
+          p90_duration
+          p95_duration
+          p99_duration
           p95_duration_in_seconds
           rate_of_success
           rate_of_failed
           rate_of_canceled
           rate_of_skipped
+          count_success
+          count_failed
+          count_canceled
+          count_skipped
+          total_count
         ].freeze
         ALLOWED_TO_ORDER = (ALLOWED_TO_SELECT + ALLOWED_AGGREGATIONS).freeze
         STATUS = %w[success failed canceled skipped].freeze
+        ALLOWED_PERCENTILES = [50, 75, 90, 95, 99].freeze
 
         ERROR_MESSAGES = {
           select: "Cannot select columns: %{columns}. Allowed: #{ALLOWED_TO_SELECT.join(', ')}",
@@ -87,15 +98,6 @@ module ClickHouse # rubocop:disable Gitlab/BoundedContexts -- Existing module
           )
         end
 
-        def rate_of_status(status = 'success')
-          validate_status!(status)
-
-          select(
-            build_rate_aggregate(status),
-            aggregate: true
-          )
-        end
-
         def order_by(field, direction = :asc)
           validate_columns!(field, :order)
 
@@ -113,10 +115,27 @@ module ClickHouse # rubocop:disable Gitlab/BoundedContexts -- Existing module
           group(*fields.map { |f| @query_builder.table[f] }.uniq)
         end
 
+        def total_count
+          select(
+            query_builder.count.as('total_count'),
+            aggregate: true
+          )
+        end
+
         # Meta methods for STATUSes
         STATUS.each do |status|
           define_method(:"rate_of_#{status}") do
             rate_of_status(status)
+          end
+
+          define_method(:"count_#{status}") do
+            count_of_status(status)
+          end
+        end
+
+        ALLOWED_PERCENTILES.each do |percentile|
+          define_method(:"p#{percentile}_duration") do
+            duration_of_percentile(percentile)
           end
         end
 
@@ -148,22 +167,40 @@ module ClickHouse # rubocop:disable Gitlab/BoundedContexts -- Existing module
           )
         end
 
-        def validate_status!(status)
-          return if STATUS.include?(status.to_s)
-
-          raise ArgumentError, "Invalid status: #{status}. Must be one of: #{STATUS.join(', ')}"
+        def rate_of_status(status = 'success')
+          select(
+            build_rate_aggregate(status),
+            aggregate: true
+          )
         end
 
         def build_rate_aggregate(status)
-          builds_with_status = query_builder.count_if(
-            query_builder.equality(:status, Arel::Nodes.build_quoted(status))
-          )
-          total_builds = query_builder.count
-
-          percentage = query_builder.division(builds_with_status, total_builds)
+          percentage = query_builder.division(build_count_aggregate(status), query_builder.count)
           percentage_value = query_builder.multiply(percentage, 100)
 
           round(percentage_value).as("rate_of_#{status}")
+        end
+
+        def count_of_status(status)
+          select(
+            build_count_aggregate(status).as("count_#{status}"),
+            aggregate: true
+          )
+        end
+
+        def build_count_aggregate(status)
+          query_builder.count_if(
+            query_builder.equality(:status, Arel::Nodes.build_quoted(status))
+          )
+        end
+
+        def duration_of_percentile(percentile)
+          select(
+            round(
+              ms_to_s(query_builder.quantile(percentile.to_f / 100.0, :duration))
+            ).as("p#{percentile}_duration"),
+            aggregate: true
+          )
         end
 
         def aggregate?(field)

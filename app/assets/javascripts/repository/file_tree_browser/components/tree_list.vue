@@ -1,11 +1,11 @@
 <script>
 import { mapState } from 'pinia';
-import { GlTooltipDirective, GlLoadingIcon, GlFormInput, GlIcon, GlTooltip } from '@gitlab/ui';
-import micromatch from 'micromatch';
+import { GlTooltipDirective, GlLoadingIcon, GlTooltip, GlButton } from '@gitlab/ui';
 import { createAlert } from '~/alert';
 import FileRow from '~/vue_shared/components/file_row.vue';
 import FileTreeBrowserToggle from '~/repository/file_tree_browser/components/file_tree_browser_toggle.vue';
 import { s__, __ } from '~/locale';
+import { waitForElement } from '~/lib/utils/dom_utils';
 import { InternalEvents } from '~/tracking';
 import { joinPaths } from '~/lib/utils/url_utility';
 import paginatedTreeQuery from 'shared_queries/repository/paginated_tree.query.graphql';
@@ -16,6 +16,7 @@ import { shouldDisableShortcuts } from '~/behaviors/shortcuts/shortcuts_toggle';
 import { Mousetrap } from '~/lib/mousetrap';
 import Shortcut from '~/behaviors/shortcuts/shortcut.vue';
 import { useFileTreeBrowserVisibility } from '~/repository/stores/file_tree_browser_visibility';
+import { EVENT_OPEN_GLOBAL_SEARCH } from '~/vue_shared/global_search/constants';
 import {
   normalizePath,
   dedupeByFlatPathAndId,
@@ -35,8 +36,7 @@ export default {
     GlTooltip: GlTooltipDirective,
   },
   components: {
-    GlFormInput,
-    GlIcon,
+    GlButton,
     FileRow,
     GlLoadingIcon,
     FileTreeBrowserToggle,
@@ -61,7 +61,6 @@ export default {
   },
   data() {
     return {
-      filter: '',
       directoriesCache: {},
       expandedPathsMap: {},
       loadingPathsMap: {},
@@ -87,27 +86,12 @@ export default {
     shortcutsDisabled() {
       return shouldDisableShortcuts();
     },
-    filteredFlatFilesList() {
-      const filter = this.filter.trim();
-      if (!filter) return this.flatFilesList;
-
-      const terms = filter
-        .toLowerCase()
-        .split(',')
-        .map((s) => s.trim())
-        .filter(Boolean);
-      const pattern = terms.length > 1 ? `(${terms.join('|')})` : terms[0];
-
-      return this.flatFilesList.filter((item) =>
-        micromatch.contains(item.path || '', pattern, { nocase: true }),
-      );
-    },
     currentRouterPath() {
       return this.$route.params?.path && normalizePath(this.$route.params.path);
     },
     siblingMap() {
       const map = new Map();
-      this.filteredFlatFilesList.forEach((item) => {
+      this.flatFilesList.forEach((item) => {
         const key = `${item.parentPath || ''}-${item.level}`;
         if (!map.has(key)) map.set(key, []);
         map.get(key).push(item.id);
@@ -117,7 +101,7 @@ export default {
     ...mapState(useFileTreeBrowserVisibility, ['fileTreeBrowserIsPeekOn']),
   },
   watch: {
-    filteredFlatFilesList(newList) {
+    flatFilesList(newList) {
       this.$nextTick(() => this.observeListItems());
       if (newList.length && !newList.find((item) => item.id === this.activeItemId)) {
         this.activeItemId = newList[0].id; // Reset active item to first in list if current active item was filtered out
@@ -362,13 +346,22 @@ export default {
         this.trackEvent('focus_file_tree_browser_filter_bar_on_repository_page', {
           label: 'shortcut',
         });
-        filterBar.focus();
+        this.openGlobalSearch();
       }
     },
     onFilterBarClick() {
       this.trackEvent('focus_file_tree_browser_filter_bar_on_repository_page', {
         label: 'click',
       });
+
+      this.openGlobalSearch();
+    },
+    async openGlobalSearch() {
+      document.dispatchEvent(new CustomEvent(EVENT_OPEN_GLOBAL_SEARCH));
+      const searchInput = await waitForElement('#super-sidebar-search-modal #search');
+      if (!searchInput) return;
+      searchInput.value = '~';
+      searchInput.dispatchEvent(new Event('input')); // Ensures the @input handler is called on global_search.vue
     },
     filterInputTooltipTarget() {
       // The input might not always be available (i.e. when the FTB is in collapsed state)
@@ -379,7 +372,7 @@ export default {
       return [siblings.length, siblings.indexOf(item.id) + 1];
     },
     onTreeKeydown(event) {
-      const items = this.filteredFlatFilesList;
+      const items = this.flatFilesList;
       const current = items.findIndex((i) => i.id === this.activeItemId);
       const item = items[current];
 
@@ -417,7 +410,7 @@ export default {
       nextItem.focus(); // Ensures the next available item is focussed after loading more items
     },
   },
-  filterPlaceholder: s__('Repository|Filter files (*.vue, *.rb...)'),
+  searchLabel: s__('Repository|Search files (*.vue, *.rb...)'),
 };
 </script>
 
@@ -431,23 +424,24 @@ export default {
     </div>
 
     <div class="gl-relative gl-flex">
-      <gl-icon name="filter" class="gl-absolute gl-left-3 gl-top-3" variant="subtle" />
-      <gl-form-input
+      <gl-button
         ref="filterInput"
-        v-model="filter"
-        :aria-label="__('Filter input')"
+        icon="search"
+        data-testid="search-trigger"
+        :aria-label="$options.searchLabel"
         :aria-keyshortcuts="filterSearchShortcutKey"
-        type="search"
-        class="!gl-pl-7"
-        :placeholder="$options.filterPlaceholder"
+        class="gl-w-full !gl-px-3"
+        button-text-classes="gl-flex gl-w-full gl-text-secondary"
         @click="onFilterBarClick"
-      />
+      >
+        <span class="gl-grow gl-text-left">{{ $options.searchLabel }}</span>
+      </gl-button>
       <gl-tooltip
         v-if="!shortcutsDisabled"
         custom-class="file-browser-filter-tooltip"
         :target="filterInputTooltipTarget"
       >
-        {{ __('Focus on the filter bar') }}
+        {{ __('Focus on the search bar') }}
         <shortcut
           class="gl-whitespace-nowrap"
           :shortcuts="$options.FOCUS_FILE_TREE_BROWSER_FILTER_BAR.defaultKeys"
@@ -461,14 +455,14 @@ export default {
       :aria-label="__('File tree')"
     >
       <ul
-        v-if="filteredFlatFilesList.length"
+        v-if="flatFilesList.length"
         ref="fileTreeList"
         class="gl-h-full gl-min-h-0 gl-flex-grow gl-list-none gl-overflow-y-auto !gl-pl-2"
         role="tree"
         @keydown="onTreeKeydown"
       >
         <li
-          v-for="item in filteredFlatFilesList"
+          v-for="item in flatFilesList"
           :key="`${item.path}-${item.type}`"
           :ref="item.id === activeItemId ? 'activeItem' : undefined"
           :data-item-id="item.id"

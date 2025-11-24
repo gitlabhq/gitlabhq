@@ -85,31 +85,25 @@ RSpec.describe 'Repository file tree browser', :js, feature_category: :source_co
     end
   end
 
-  describe 'filtering' do
-    it 'filters files by name' do
+  describe 'global search integration' do
+    it 'opens global search modal when search button is clicked' do
       within('.file-tree-browser') do
-        fill_in 'Filter input', with: 'README'
-
-        expect(page).to have_file('README.md')
-        expect(page).not_to have_file('files')
+        click_button 'Search files (*.vue, *.rb...)'
       end
-    end
 
-    it 'shows no results message when nothing matches' do
-      within('.file-tree-browser') do
-        fill_in 'Filter input', with: 'nonexistent'
+      expect(page.find('#super-sidebar-search-modal')).to be_visible
 
-        expect(page).to have_content('No files found')
+      within('#super-sidebar-search-modal') do
+        expect(find('#search').value).to eq('~')
       end
     end
   end
 
   describe 'keyboard shortcuts' do
-    it 'focuses filter with f key' do
-      # This key is registered as a shortcut for focusing the filter bar
+    it 'opens global search with f key' do
       send_keys('f')
 
-      expect(page).to have_css('input[aria-label="Filter input"]:focus')
+      expect(page.find('#super-sidebar-search-modal')).to be_visible
     end
 
     it 'toggles visibility with Shift+f' do
