@@ -240,7 +240,7 @@ export default {
       return this.state.commitsWithoutMergeCommits?.nodes;
     },
     commitsCount() {
-      return this.mr.commitCount || 0;
+      return this.mr.commitsCount || 0;
     },
     preferredAutoMergeStrategy() {
       return MergeRequestStore.getPreferredAutoMergeStrategy(this.mr.availableAutoMergeStrategies);
