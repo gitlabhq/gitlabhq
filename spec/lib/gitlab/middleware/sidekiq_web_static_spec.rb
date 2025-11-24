@@ -1,39 +1,90 @@
 # frozen_string_literal: true
 
 require 'fast_spec_helper'
+require 'tempfile'
 
 RSpec.describe Gitlab::Middleware::SidekiqWebStatic do
   let(:app) { double(:app) }
   let(:middleware) { described_class.new(app) }
-  let(:env) { {} }
+  let(:env) { { 'PATH_INFO' => path } }
+  let(:status) { 200 }
+  let(:headers) { {} }
+  let(:body) { StringIO.new }
+
+  before do
+    allow(app).to receive(:call).with(env).and_return([status, headers, body])
+  end
 
   describe '#call' do
-    before do
-      env['HTTP_X_SENDFILE_TYPE'] = 'X-Sendfile'
-      env['PATH_INFO'] = path
-    end
-
     context 'with an /admin/sidekiq route' do
       let(:path) { '/admin/sidekiq/javascripts/application.js' }
 
-      it 'deletes the HTTP_X_SENDFILE_TYPE header' do
-        expect(app).to receive(:call)
+      context 'when X-Sendfile header is present' do
+        let(:file_content) { 'console.log("test");' }
+        let(:temp_file) { Tempfile.new('test.js') }
 
-        middleware.call(env)
+        before do
+          temp_file.write(file_content)
+          temp_file.rewind
+          headers['X-Sendfile'] = temp_file.path
+        end
 
-        expect(env['HTTP_X_SENDFILE_TYPE']).to be_nil
+        after do
+          temp_file.close
+          temp_file.unlink
+        end
+
+        it 'removes the X-Sendfile header and reads the file content' do
+          result_status, result_headers, result_body = middleware.call(env)
+
+          expect(result_status).to eq(200)
+          expect(result_headers['X-Sendfile']).to be_nil
+          expect(result_headers['Content-Length']).to eq(file_content.bytesize.to_s)
+          expect(result_body).to eq([file_content])
+          expect(body).to be_closed
+        end
+      end
+
+      context 'when X-Sendfile header points to a non-existent file' do
+        before do
+          headers['X-Sendfile'] = '/path/to/non/existent/file.js'
+        end
+
+        it 'returns a 404 response' do
+          result_status, result_headers, result_body = middleware.call(env)
+
+          expect(result_status).to eq(404)
+          expect(result_headers).to eq({})
+          expect(result_body).to eq(['File not found'])
+        end
+      end
+
+      context 'when X-Sendfile header is not present' do
+        it 'does not modify the response' do
+          result_status, result_headers, result_body = middleware.call(env)
+
+          expect(result_status).to eq(200)
+          expect(result_headers).to eq(headers)
+          expect(result_body).to eq(body)
+        end
       end
     end
 
     context 'with some static asset route' do
       let(:path) { '/assets/test.png' }
 
-      it 'keeps the HTTP_X_SENDFILE_TYPE header' do
-        expect(app).to receive(:call)
+      context 'when X-Sendfile header is present' do
+        before do
+          headers['X-Sendfile'] = '/path/to/file.png'
+        end
 
-        middleware.call(env)
+        it 'does not modify the response' do
+          result_status, result_headers, result_body = middleware.call(env)
 
-        expect(env['HTTP_X_SENDFILE_TYPE']).to eq('X-Sendfile')
+          expect(result_status).to eq(200)
+          expect(result_headers['X-Sendfile']).to eq('/path/to/file.png')
+          expect(result_body).to eq(body)
+        end
       end
     end
   end
