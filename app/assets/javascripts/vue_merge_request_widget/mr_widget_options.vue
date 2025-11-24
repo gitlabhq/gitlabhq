@@ -87,14 +87,12 @@ export default {
       skip() {
         return !this.mr;
       },
+      throttle: STATE_QUERY_POLLING_INTERVAL_DEFAULT,
       variables() {
         return {
           initialRequest: this.initialRequest,
           ...this.mergeRequestQueryVariables,
         };
-      },
-      pollInterval() {
-        return this.pollInterval;
       },
       result(response) {
         if (!this.initialRequest && response.networkStatus === 6) {
@@ -104,7 +102,10 @@ export default {
         // 7 is the value for when the network status is ready
         if (response.networkStatus !== 7 || response.error) return;
 
-        this.pollInterval = this.apolloStateQueryPollingInterval();
+        this.pollInterval = Math.max(
+          STATE_QUERY_POLLING_INTERVAL_DEFAULT,
+          Math.trunc(this.apolloStateQueryPollingInterval() || 0),
+        );
 
         if (response.data?.project) {
           this.mr.setGraphqlData(response.data.project);
@@ -160,7 +161,7 @@ export default {
       machineState: store?.machineValue || STATE_MACHINE.definition.initial,
       loading: true,
       startingPollInterval: STATE_QUERY_POLLING_INTERVAL_DEFAULT,
-      pollInterval: STATE_QUERY_POLLING_INTERVAL_DEFAULT,
+      pollInterval: -1,
       initialRequest: true,
     };
   },
@@ -266,8 +267,10 @@ export default {
       },
     },
     pollInterval(newVal) {
-      if (!newVal) {
-        this.stopPolling();
+      this.stopPolling();
+
+      if (this.startingPollInterval > 0 && newVal >= STATE_QUERY_POLLING_INTERVAL_DEFAULT) {
+        this.resumePolling();
       }
     },
   },
@@ -448,9 +451,9 @@ export default {
 
       notify.notifyMe(title, message, this.mr.gitlabLogo);
     },
-    resumePolling() {
+    resumePolling: throttle(function resumePollingThrottled() {
       this.$apollo.queries.state.startPolling(this.pollInterval);
-    },
+    }, STATE_QUERY_POLLING_INTERVAL_DEFAULT),
     stopPolling() {
       this.$apollo.queries.state.stopPolling();
     },
