@@ -118,6 +118,7 @@ import getWorkItemsSlimQuery from 'ee_else_ce/work_items/graphql/list/get_work_i
 import getWorkItemsCountOnlyQuery from 'ee_else_ce/work_items/graphql/list/get_work_items_count_only.query.graphql';
 import searchProjectsQuery from '~/issues/list/queries/search_projects.query.graphql';
 import hasWorkItemsQuery from '~/work_items/graphql/list/has_work_items.query.graphql';
+import { initWorkItemsFeedback } from '~/work_items_feedback';
 import CreateWorkItemModal from '../components/create_work_item_modal.vue';
 import WorkItemHealthStatus from '../components/work_item_health_status.vue';
 import WorkItemDrawer from '../components/work_item_drawer.vue';
@@ -161,6 +162,9 @@ const statusMap = {
   [STATUS_OPEN]: STATE_OPEN,
   [STATUS_CLOSED]: STATE_CLOSED,
 };
+
+const CONSOLIDATED_LIST_FEEDBACK_PROMPT_EXPIRY = '2026-01-01';
+const FEATURE_NAME = 'work_item_consolidated_list_feedback';
 
 export default {
   CREATION_CONTEXT_LIST_ROUTE,
@@ -945,6 +949,21 @@ export default {
         this.checkDrawerParams();
       } else {
         this.activeItem = null;
+      }
+    },
+    isGroup(value) {
+      if (this.isPlanningViewsEnabled && value) {
+        initWorkItemsFeedback({
+          feedbackIssue: 'https://gitlab.com/gitlab-org/gitlab/-/issues/579558',
+          feedbackIssueText: __('Share feedback on the experience'),
+          badgeContent: __(
+            'All your work items are now in one place, making them easier to manage.',
+          ),
+          badgeTitle: __('New unified list'),
+          badgePopoverTitle: __('New unified work items list'),
+          featureName: FEATURE_NAME,
+          expiry: CONSOLIDATED_LIST_FEEDBACK_PROMPT_EXPIRY,
+        });
       }
     },
   },

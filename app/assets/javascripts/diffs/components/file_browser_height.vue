@@ -40,7 +40,7 @@ export default {
   },
   methods: {
     updateIsNarrowScreen() {
-      this.isNarrowScreen = PanelBreakpointInstance.isBreakpointDown('sm');
+      this.isNarrowScreen = PanelBreakpointInstance.isBreakpointDown('md');
     },
   },
 };

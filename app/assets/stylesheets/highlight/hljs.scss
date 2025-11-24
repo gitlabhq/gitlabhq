@@ -3,7 +3,8 @@
 * Do not remove unless removing the library
 **/
 
-.code.highlight {
+.code.highlight,
+.code.duo-message-pre-block {
   .hljs-comment {
     color: var(--color-hljs-comment);
   }

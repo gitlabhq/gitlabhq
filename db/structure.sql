@@ -4031,6 +4031,20 @@ RETURN NEW;
 END
 $$;
 
+CREATE FUNCTION trigger_c48e4298f362() RETURNS trigger
+    LANGUAGE plpgsql
+    AS $$
+DECLARE
+  row_data JSONB;
+BEGIN
+  row_data := to_jsonb(NEW);
+  IF row_data ? 'company' THEN
+    NEW."company" := NEW."organization";
+  END IF;
+  RETURN NEW;
+END;
+$$;
+
 CREATE FUNCTION trigger_c52d215d50a1() RETURNS trigger
     LANGUAGE plpgsql
     AS $$
@@ -28183,6 +28197,7 @@ CREATE TABLE user_details (
     email_otp_last_sent_to text,
     email_otp_last_sent_at timestamp with time zone,
     email_otp_required_after timestamp with time zone,
+    company text DEFAULT ''::text NOT NULL,
     CONSTRAINT check_18a53381cd CHECK ((char_length(bluesky) <= 256)),
     CONSTRAINT check_245664af82 CHECK ((char_length(webauthn_xid) <= 100)),
     CONSTRAINT check_444573ee52 CHECK ((char_length(skype) <= 500)),
@@ -34457,6 +34472,9 @@ ALTER TABLE labels
 
 ALTER TABLE vulnerability_scanners
     ADD CONSTRAINT check_37608c9db5 CHECK ((char_length(vendor) <= 255)) NOT VALID;
+
+ALTER TABLE user_details
+    ADD CONSTRAINT check_3b9aec5742 CHECK ((char_length(company) <= 500)) NOT VALID;
 
 ALTER TABLE diff_note_positions
     ADD CONSTRAINT check_4c86140f48 CHECK ((namespace_id IS NOT NULL)) NOT VALID;
@@ -48885,6 +48903,8 @@ CREATE TRIGGER trigger_b8eecea7f351 BEFORE INSERT OR UPDATE ON dependency_proxy_
 CREATE TRIGGER trigger_bulk_import_trackers_sharding_key BEFORE INSERT OR UPDATE ON bulk_import_trackers FOR EACH ROW EXECUTE FUNCTION bulk_import_trackers_sharding_key();
 
 CREATE TRIGGER trigger_c17a166692a2 BEFORE INSERT OR UPDATE ON audit_events_streaming_headers FOR EACH ROW EXECUTE FUNCTION trigger_c17a166692a2();
+
+CREATE TRIGGER trigger_c48e4298f362 BEFORE INSERT OR UPDATE ON user_details FOR EACH ROW EXECUTE FUNCTION trigger_c48e4298f362();
 
 CREATE TRIGGER trigger_c52d215d50a1 BEFORE INSERT OR UPDATE ON incident_management_pending_issue_escalations FOR EACH ROW EXECUTE FUNCTION trigger_c52d215d50a1();
 

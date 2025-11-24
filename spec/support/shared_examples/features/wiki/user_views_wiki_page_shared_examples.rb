@@ -77,7 +77,7 @@ RSpec.shared_examples 'User views a wiki page' do
       fill_in('Content', with: 'Updated Wiki Content')
       click_on('Save changes')
 
-      expect(page).to have_content('Wiki page was successfully updated.')
+      expect(page).to have_content('Updated Wiki Content')
 
       more_actions_dropdown.click
       click_on('Page history')

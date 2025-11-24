@@ -88,11 +88,11 @@ RSpec.shared_examples 'work items comments' do |type|
   end
 
   it 'successfully posts comments using shortcut only once' do
-    expected_matches = find('ul.main-notes-list').all('li').size + 1
+    expected_matches = find('ul.main-notes-list').all('li.note').size + 1
     set_comment
     send_keys([modifier_key, :enter], [modifier_key, :enter], [modifier_key, :enter])
 
-    expect(find('ul.main-notes-list')).to have_selector('li', count: expected_matches)
+    expect(find('ul.main-notes-list')).to have_selector('li.note', count: expected_matches)
   end
 
   context 'when using quick actions' do

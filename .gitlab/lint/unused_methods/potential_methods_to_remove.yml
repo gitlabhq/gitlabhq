@@ -187,8 +187,6 @@ project_dropdown_label:
   file: app/helpers/issuables_helper.rb
 group_dropdown_label:
   file: app/helpers/issuables_helper.rb
-request_access_group_members_path:
-  file: app/helpers/routing/groups/members_helper.rb
 approve_access_request_group_member_path:
   file: app/helpers/routing/groups/members_helper.rb
 resend_invite_group_member_path:

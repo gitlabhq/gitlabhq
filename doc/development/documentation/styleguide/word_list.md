@@ -536,7 +536,7 @@ When talking about GitLab features, use **CI/CD**. Do not use **CI** or **CD** a
 
 ## CI/CD
 
-**CI/CD** is always uppercase. You are not required spell it out on first use.
+**CI/CD** is always uppercase. You are not required to spell it out on first use.
 
 You can omit **CI/CD** when the context is clear, especially after the first use. For example:
 

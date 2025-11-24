@@ -275,7 +275,6 @@ RSpec/NamedSubject:
     - 'ee/spec/lib/gitlab/analytics/cycle_analytics/summary/stage_time_summary_spec.rb'
     - 'ee/spec/lib/gitlab/analytics/cycle_analytics/summary/time_to_restore_service_spec.rb'
     - 'ee/spec/lib/gitlab/analytics/type_of_work/tasks_by_type_spec.rb'
-    - 'ee/spec/lib/gitlab/applied_ml/suggested_reviewers/client_spec.rb'
     - 'ee/spec/lib/gitlab/audit/events/preloader_spec.rb'
     - 'ee/spec/lib/gitlab/audit/levels/group_spec.rb'
     - 'ee/spec/lib/gitlab/audit/levels/instance_spec.rb'

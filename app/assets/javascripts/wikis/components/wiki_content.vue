@@ -41,6 +41,8 @@ export default {
       const tocComponent = new TableOfContentsComponent({ propsData: { headings } }).$mount();
       const tocContainer = document.querySelector('.js-wiki-toc');
 
+      if (!tocContainer) return;
+
       tocContainer.innerHTML = '';
       tocContainer.appendChild(tocComponent.$el);
     },

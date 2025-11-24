@@ -1354,11 +1354,6 @@ production: &base
     # The client timeout in seconds for the KAS API (used by the GitLab backend)
     # client_timeout_seconds: 5
 
-  suggested_reviewers:
-    # File that contains the secret key for verifying access to GitLab internal API for Suggested Reviewers.
-    # Default is '.gitlab_suggested_reviewers_secret' relative to Rails.root (i.e. root of the GitLab app).
-    # secret_file: /home/git/gitlab/.gitlab_suggested_reviewers_secret
-
   zoekt:
     # Files that contain username and password for basic auth for Zoekt
     # Default is '.gitlab_zoekt_username' and '.gitlab_zoekt_password' in Rails.root

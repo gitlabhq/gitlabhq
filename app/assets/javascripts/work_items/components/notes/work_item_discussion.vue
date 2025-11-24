@@ -252,43 +252,10 @@ export default {
 </script>
 
 <template>
-  <work-item-note
-    v-if="isOnlyCommentOfAThread"
-    :is-first-note="true"
-    :note="firstNote"
-    :discussion-id="discussionId"
-    :full-path="fullPath"
-    :has-replies="hasReplies"
-    :work-item-type="workItemType"
-    :is-modal="isModal"
-    :autocomplete-data-sources="autocompleteDataSources"
-    :markdown-preview-path="markdownPreviewPath"
-    :new-comment-template-paths="newCommentTemplatePaths"
-    :class="{ 'gl-mb-4': hasReplies }"
-    :assignees="assignees"
-    :can-reply="canReply"
-    :can-set-work-item-metadata="canSetWorkItemMetadata"
-    :is-discussion-resolved="isDiscussionResolved"
-    :is-discussion-resolvable="isDiscussionResolvable"
-    :work-item-id="workItemId"
-    :work-item-iid="workItemIid"
-    :is-resolving="isResolving"
-    :resolved-by="discussion.resolvedBy"
-    :hide-fullscreen-markdown-button="hideFullscreenMarkdownButton"
-    :uploads-path="uploadsPath"
-    @startEditing="$emit('startEditing')"
-    @resolve="resolveDiscussion"
-    @startReplying="showReplyForm"
-    @deleteNote="$emit('deleteNote', firstNote)"
-    @reportAbuse="$emit('reportAbuse', firstNote)"
-    @cancelEditing="$emit('cancelEditing')"
-    @error="$emit('error', $event)"
-  />
   <timeline-entry-item
-    v-else
     :data-note-id="firstNoteId"
     :data-discussion-id="discussionId"
-    class="note note-discussion gl-px-0"
+    class="note-discussion gl-px-0"
   >
     <div class="timeline-content">
       <div class="discussion">
@@ -298,6 +265,7 @@ export default {
               <ul class="notes" data-testid="note-container">
                 <work-item-note
                   is-first-note
+                  :is-only-comment-of-a-thread="isOnlyCommentOfAThread"
                   :note="firstNote"
                   :discussion-id="discussionId"
                   :full-path="fullPath"

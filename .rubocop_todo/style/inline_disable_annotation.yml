@@ -1408,7 +1408,6 @@ Style/InlineDisableAnnotation:
     - 'ee/lib/gitlab/analytics/cycle_analytics/summary/base_time.rb'
     - 'ee/lib/gitlab/analytics/type_of_work/tasks_by_type.rb'
     - 'ee/lib/gitlab/analytics/value_stream_dashboard/namespace_cursor.rb'
-    - 'ee/lib/gitlab/applied_ml/suggested_reviewers/recommender_pb.rb'
     - 'ee/lib/gitlab/auth/group_saml/identity_linker.rb'
     - 'ee/lib/gitlab/auth/group_saml/membership_updater.rb'
     - 'ee/lib/gitlab/auth/saml/membership_updater.rb'

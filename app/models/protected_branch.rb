@@ -20,6 +20,12 @@ class ProtectedBranch < ApplicationRecord
   scope :for_group, ->(group) { where(group: group) }
   scope :preload_access_levels, -> { preload(:push_access_levels, :merge_access_levels) }
 
+  scope :after_name_and_id, ->(name, id) {
+    return none unless name && id
+
+    where('(name > ?) OR (name = ? AND id > ?)', name, name, id).order(:name, :id)
+  }
+
   protected_ref_access_levels :merge, :push
 
   def self.get_ids_by_name(name)

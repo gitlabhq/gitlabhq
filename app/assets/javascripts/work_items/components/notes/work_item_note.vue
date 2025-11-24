@@ -59,6 +59,11 @@ export default {
       required: false,
       default: false,
     },
+    isOnlyCommentOfAThread: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
     hasReplies: {
       type: Boolean,
       required: false,
@@ -392,7 +397,7 @@ export default {
         />
       </gl-avatar-link>
     </div>
-    <div class="timeline-content">
+    <div class="timeline-content" :class="{ 'gl-rounded-b-lg': isOnlyCommentOfAThread }">
       <div data-testid="note-wrapper">
         <div :class="noteHeaderClass">
           <note-header

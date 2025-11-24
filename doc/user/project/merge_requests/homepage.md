@@ -68,13 +68,13 @@ For more information, see the history.
 
 GitLab shows the total number of **Active** merge requests in the left sidebar on all pages. If you've [turned on the new navigation](../../interface_redesign.md#turn-new-navigation-on-or-off), this information is in the upper-right corner. For example, this user has:
 
-![Upper-right corner displaying user activity summary.](img/homepage_totals_v18_6.png)
+![Upper-right corner displaying user activity summary.](img/homepage_totals_v18_7.png)
 
 This user has:
 
-- 15 open issues ({{< icon name="issue-type-issue" >}})
-- 5 active merge requests ({{< icon name="merge-request-open" >}})
-- 3 to-do items ({{< icon name="todo-done" >}})
+- 8 open issues ({{< icon name="work-item-issue" >}})
+- 3 active merge requests ({{< icon name="merge-request-open" >}})
+- 6 to-do items ({{< icon name="todo-done" >}})
 
 Your merge request homepage shows more information about these merge requests. To see it,
 use any of these methods:

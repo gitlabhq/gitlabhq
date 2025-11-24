@@ -755,6 +755,73 @@ When reviewing merge requests added by wider community contributors:
   the current milestone. This is to avoid confusion around when it'll be
   merged and avoid moving milestone too often when it's not yet ready.
 
+#### Testing community contributions locally
+
+When reviewing merge requests from forked repositories, you have several methods to test the changes locally:
+
+- Use the GitLab CLI:
+
+  ```shell
+  glab mr checkout <MR_ID>
+  ```
+
+  For more information, see the [GitLab CLI commands](https://docs.gitlab.com/cli/mr/checkout/).
+
+- Use cURL to apply the diff.
+  Use one of the following methods:
+
+  - Fetch and apply the diff directly:
+
+     ```shell
+     curl --silent <MR_URL>.diff | git apply
+     ```
+
+     Replace `<MR_URL>` with the full URL to the merge request.
+     For example: `https://gitlab.com/gitlab-org/gitlab/-/merge_requests/1234.diff`.
+
+  - Create a Git alias to avoid typing the full URL each time:
+
+     ```shell
+     git config --global alias.mr '!f() { curl --silent "https://gitlab.com/gitlab-org/gitlab/-/merge_requests/$1.diff" | git apply; }; f'
+     ```
+
+    After the alias is created, use it with just the merge request ID. For example:
+
+     ```shell
+     git mr 1234
+     ```
+
+- Use GDK switch:
+
+  ```shell
+  gdk switch <MR_ID>
+  ```
+
+  {{< alert type="note" >}}
+
+  This command also runs `gdk update`, which updates your development environment.
+  The process can take several minutes to complete.
+
+  {{< /alert >}}
+
+  For more information, see the
+  [GDK `switch.rb` file](https://gitlab.com/gitlab-org/gitlab-development-kit/-/blob/main/lib/gdk/command/switch.rb).
+
+#### Add the canonical project/fork as a remote
+
+  If you frequently need to checkout upstream branches, you can add the canonical project/fork as a remote:
+
+  ```shell
+  git remote add upstream https://gitlab.com/<canonical group>/<canonical project>.git
+  ```
+
+  Then:
+
+   ```shell
+   git fetch upstream
+   git checkout upstream/<remote-branch-name>
+   ```
+
 #### Taking over a community merge request
 
 When an MR needs further changes but the author is not responding for a long period of time,

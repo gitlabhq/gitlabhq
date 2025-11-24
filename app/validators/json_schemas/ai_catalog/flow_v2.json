@@ -397,7 +397,8 @@
         "prompt_id",
         "name",
         "model",
-        "prompt_template"
+        "prompt_template",
+        "unit_primitives"
       ],
       "additionalProperties": false,
       "properties": {

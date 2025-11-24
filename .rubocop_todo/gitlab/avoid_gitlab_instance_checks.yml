@@ -50,7 +50,6 @@ Gitlab/AvoidGitlabInstanceChecks:
     - 'ee/app/services/gitlab_subscriptions/activate_service.rb'
     - 'ee/app/workers/ee/ci/build_finished_worker.rb'
     - 'ee/app/workers/update_all_mirrors_worker.rb'
-    - 'ee/config/initializers/gitlab_suggested_reviewers_secret.rb'
     - 'ee/lib/api/code_suggestions.rb'
     - 'ee/lib/api/scim/instance_scim.rb'
     - 'ee/lib/ee/gitlab/gon_helper.rb'

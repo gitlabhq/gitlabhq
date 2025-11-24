@@ -194,7 +194,7 @@ Dangerfile
 
 # Secure & Threat Management ownership delineation
 # https://handbook.gitlab.com/handbook/engineering/development/sec/delineate-sec/#technical-boundaries
-^[Threat Insights backend] @gitlab-org/security-risk-management/security-insights/backend
+^[Security Insights backend] @gitlab-org/security-risk-management/security-insights/backend
 /development/sec/cyclonedx_property_taxonomy.md
 /app/finders/security/
 /app/models/vulnerability.rb
@@ -210,7 +210,7 @@ Dangerfile
 /ee/spec/policies/vulnerabilities/
 /ee/spec/policies/vulnerability*.rb
 
-^[Threat Insights frontend] @gitlab-org/security-risk-management/security-insights/frontend
+^[Security Insights frontend] @gitlab-org/security-risk-management/security-insights/frontend
 /app/assets/javascripts/vue_merge_request_widget/widgets/security_reports/
 /ee/app/assets/javascripts/vue_merge_request_widget/widgets/security_reports/
 /ee/app/assets/javascripts/security_dashboard/
@@ -220,6 +220,9 @@ Dangerfile
 /ee/spec/frontend/vue_merge_request_widget/widgets/security_reports/
 /ee/app/assets/javascripts/dependencies/
 /ee/spec/frontend/dependencies/
+
+[Security Insights frontend] @gitlab-org/security-risk-management/security-insights/frontend
+/ee/app/assets/javascripts/security_dashboard/graphql/
 
 ^[Composition Analysis backend] @gitlab-org/secure/composition-analysis-be
 /app/events/package_metadata/

@@ -133,6 +133,7 @@ export default {
       class="whats-new-article-drawer"
       :open="articleOpen"
       :header-height="getDrawerHeaderHeight"
+      header-sticky
       @close="toggleArticle"
     >
       <template #title>
@@ -148,7 +149,7 @@ export default {
           {{ __("What's new at GitLab") }}
         </h3>
       </template>
-      <div class="gl-m-3 gl-h-auto gl-overflow-y-auto">
+      <div class="gl-m-3">
         <h3 class="gl-mb-3 gl-mt-0 gl-text-lg" data-testid="feature-name">
           <gl-link
             :href="feature.documentation_link"

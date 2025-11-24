@@ -23,3 +23,6 @@ attribute_names_for_serialization:
 user_group_saml_omniauth_metadata_path:
   file: ee/app/helpers/ee/gitlab_routing_helper.rb
   reason: Used to dynamically generate a method via `#url_helper`
+request_access_group_members_path:
+  file: app/helpers/routing/groups/members_helper.rb
+  reason: Dynamically accessed via GroupsHelper#groups_projects_more_actions_dropdown_data
