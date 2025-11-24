@@ -8,7 +8,7 @@ feature_categories:
 description: Stores uploads for Project model
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/175203
 milestone: '17.11'
-table_size: medium
+table_size: large
 gitlab_schema: gitlab_main_org
 sharding_key:
   project_id: projects

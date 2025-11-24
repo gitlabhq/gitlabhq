@@ -328,25 +328,21 @@ export default {
               v-if="showWorkItemTypeIcon"
               :aria-label="createIssueNumberAriaLabel()"
               :work-item-type="item.type"
-              :show-derived-text="itemId"
               class="gl-text-subtle"
               icon-class="gl-flex-shrink-0 gl-fill-icon-subtle"
               variant="subtle"
-              show-text
               show-tooltip-on-hover
             />
-            <span
+            <button
               v-if="showReferencePath"
               v-gl-tooltip
               :title="itemReferencePath"
               data-placement="bottom"
-              class="board-item-path gl-cursor-help gl-truncate gl-font-bold"
+              class="board-item-path gl-max-w-26 !gl-cursor-default gl-truncate gl-border-none gl-bg-transparent gl-p-0 gl-align-bottom gl-text-subtle focus-visible:gl-focus-inset"
             >
               {{ directNamespaceReference }}
-            </span>
-            <span v-if="!showWorkItemTypeIcon" data-testid="work-item-id-textOnly">{{
-              itemId
-            }}</span>
+            </button>
+            <span data-testid="work-item-id-text">{{ itemId }}</span>
           </span>
           <epic-countables
             v-if="shouldRenderEpicCountables"

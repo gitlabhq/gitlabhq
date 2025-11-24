@@ -1,17 +1,23 @@
 # frozen_string_literal: true
 
-CONFIG_FILES = ['app/validators/json_schemas/build_metadata_config_options.json'].freeze
+CONFIG_FILES = %w[
+  app/validators/json_schemas/build_metadata_id_tokens.json
+  app/validators/json_schemas/build_metadata_config_options.json
+  app/validators/json_schemas/build_metadata_secrets.json
+  app/validators/json_schemas/ci_job_definition_config.json
+  app/validators/json_schemas/run_steps.json
+].freeze
 
 def format_file_path(path)
   "`#{path}`"
 end
 
-# Check if config options schema has changed
-config_changes = helper.all_changed_files & CONFIG_FILES
+# Check if any schema has changed
+changes = helper.all_changed_files & CONFIG_FILES
 
-if config_changes.any?
-  config_message = <<~MSG
-    ## 🚨 Critical: CI Build Metadata Config Options Modified
+if changes.any?
+  message = <<~MSG
+    ## 🚨 Critical: CI JSON Schema Modified
 
     ### ⚠️ **IMPORTANT NOTICE**
 
@@ -21,10 +27,10 @@ if config_changes.any?
     - Deduplicating data
     - Splitting between processing data and intrinsic data
 
-    This merge request modifies **config_options** validations which directly impacts this table's growth.
+    This merge request modifies CI JSON schema validations which directly impacts this table's growth.
 
     ### 🔴 What NOT to do:
-    - Do not add new fields to config_options
+    - Do not add new properties or validation rules to CI JSON schema files related to `Ci::JobDefinition` & `Ci::BuildMetadata`
     - Do not add complex nested structures
     - Do not store data that could be normalized elsewhere
 
@@ -44,5 +50,5 @@ if config_changes.any?
     **CI Platform Team Review Required**: Please tag `@gitlab-com/ci-platform-group` for review of these changes.
   MSG
 
-  warn(config_message)
+  warn(message)
 end

@@ -12,6 +12,7 @@ Migration/UpdateLargeTable:
   - :description_versions
   - :events
   - :issues
+  - :lfs_objects_projects
   - :merge_request_diff_commits
   - :merge_request_diff_files
   - :merge_request_diffs
@@ -24,6 +25,7 @@ Migration/UpdateLargeTable:
   - :p_ci_pipelines
   - :packages_package_files
   - :project_authorizations
+  - :project_authorizations_for_migration
   - :push_event_payloads
   - :resource_label_events
   - :sbom_occurrences
@@ -52,6 +54,7 @@ Migration/UpdateLargeTable:
   - :personal_access_tokens
   - :project_authorizations_for_migration
   - :project_daily_statistics
+  - :project_uploads
   - :projects
   - :resource_state_events
   - :sbom_occurrences
