@@ -17,6 +17,7 @@ import { Mousetrap } from '~/lib/mousetrap';
 import Shortcut from '~/behaviors/shortcuts/shortcut.vue';
 import { useFileTreeBrowserVisibility } from '~/repository/stores/file_tree_browser_visibility';
 import { EVENT_OPEN_GLOBAL_SEARCH } from '~/vue_shared/global_search/constants';
+import getRefMixin from '~/repository/mixins/get_ref';
 import {
   normalizePath,
   dedupeByFlatPathAndId,
@@ -43,7 +44,7 @@ export default {
     GlTooltip,
     Shortcut,
   },
-  mixins: [InternalEvents.mixin()],
+  mixins: [InternalEvents.mixin(), getRefMixin],
   props: {
     currentRef: {
       type: String,
@@ -154,7 +155,11 @@ export default {
         directoryList.push({
           id: `${treePath}-${tree.id}-${index}`,
           path: treePath,
-          routerPath: joinPaths('/-/tree', this.currentRef, treePath),
+          routerPath: joinPaths(
+            '/-/tree',
+            this.escapedRef,
+            treePath.split('/').map(encodeURIComponent).join('/'),
+          ),
           type: 'tree',
           name: tree.name,
           level,
@@ -182,7 +187,11 @@ export default {
           id: `${blobPath}-${blob.id}-${index}`,
           fileHash: blob.sha,
           path: blobPath,
-          routerPath: joinPaths('/-/blob', this.currentRef, blobPath),
+          routerPath: joinPaths(
+            '/-/blob',
+            this.escapedRef,
+            blobPath.split('/').map(encodeURIComponent).join('/'),
+          ),
           name: blob.name,
           mode: blob.mode,
           level,

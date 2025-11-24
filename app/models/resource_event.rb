@@ -30,14 +30,7 @@ class ResourceEvent < ApplicationRecord
     [self.class.name, id, user_id]
   end
 
-  def exactly_one_issuable
-    issuable_count = self.class.issuable_attrs.count { |attr| self["#{attr}_id"] }
-
-    return true if issuable_count == 1
-
-    errors.add(
-      :base, _("Exactly one of %{attributes} is required") %
-        { attributes: self.class.issuable_attrs.join(', ') }
-    )
+  def issuable_id_attrs
+    self.class.issuable_attrs.map { |attr| :"#{attr}_id" }
   end
 end

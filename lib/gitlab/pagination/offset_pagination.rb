@@ -23,7 +23,7 @@ module Gitlab
 
       def paginate_with_limit_optimization(relation, without_count:, skip_pagination_check: false)
         pagination_data = if !skip_pagination_check && needs_pagination?(relation)
-                            relation.page(params[:page]).per(params[:per_page])
+                            relation.page(page).per(per_page)
                           else
                             relation
                           end
@@ -41,8 +41,8 @@ module Gitlab
 
       def needs_pagination?(relation)
         return true unless relation.respond_to?(:current_page)
-        return true if params[:page].present? && relation.current_page != params[:page].to_i
-        return true if params[:per_page].present? && relation.limit_value != params[:per_page].to_i
+        return true if page.present? && relation.current_page != page.to_i
+        return true if per_page.present? && relation.limit_value != per_page.to_i
 
         false
       end
@@ -89,6 +89,23 @@ module Gitlab
         limited_total_count = paginated_data.total_count_with_limit
 
         limited_total_count > Kaminari::ActiveRecordRelationMethods::MAX_COUNT_LIMIT
+      end
+
+      def page
+        to_integer(params[:page])
+      end
+
+      def per_page
+        to_integer(params[:per_page])
+      end
+
+      def to_integer(value)
+        case value
+        when Integer
+          value
+        when String
+          Integer(value, 10, exception: false)
+        end
       end
     end
   end

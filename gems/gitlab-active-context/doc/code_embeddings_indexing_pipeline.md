@@ -35,15 +35,6 @@ curl -H 'Content-Type: application/json' -XPUT "http://localhost:9200/gitlab_act
 
 ## ActiveContext Configuration
 
-### Enable Required Feature Flags
-
-In GitLab Rails console:
-
-```ruby
-Feature.enable(:active_context_code_incremental_index_project)
-Feature.enable(:active_context_code_index_project)
-```
-
 ### Create and Activate Connection
 
 **Note**: If you already have an Elasticsearch connection for advanced search, you can reuse it by setting `use_advanced_search_config` to `true`:

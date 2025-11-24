@@ -11,7 +11,7 @@ class ResourceLabelEvent < ResourceEvent
   scope :inc_relations, -> { includes(:label, :user) }
 
   validates :label, presence: { unless: :importing? }, on: :create
-  validate :exactly_one_issuable, unless: :importing?
+  validates_with ExactlyOnePresentValidator, fields: :issuable_id_attrs, unless: :importing?
   validates :namespace, presence: true
 
   before_validation :ensure_namespace_id

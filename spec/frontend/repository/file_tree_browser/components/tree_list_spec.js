@@ -16,6 +16,7 @@ import { useMockInternalEventsTracking } from 'helpers/tracking_internal_events_
 import paginatedTreeQuery from 'shared_queries/repository/paginated_tree.query.graphql';
 import { Mousetrap } from '~/lib/mousetrap';
 import { waitForElement } from '~/lib/utils/dom_utils';
+import refQuery from '~/repository/queries/ref.query.graphql';
 import FileTreeBrowserToggle from '~/repository/file_tree_browser/components/file_tree_browser_toggle.vue';
 import { mockResponse } from '../mock_data';
 
@@ -44,14 +45,18 @@ describe('Tree List', () => {
   };
 
   const createComponent = async (apiResponse = mockResponse) => {
+    const currentRef = 'main';
     getQueryHandlerSuccess = jest.fn().mockResolvedValue(apiResponse);
 
     apolloProvider = createMockApollo([[paginatedTreeQuery, getQueryHandlerSuccess]]);
-
+    apolloProvider.defaultClient.cache.writeQuery({
+      query: refQuery,
+      data: { ref: currentRef, escapedRef: currentRef },
+    });
     wrapper = shallowMountExtended(TreeList, {
       apolloProvider,
       pinia,
-      propsData: { projectPath: 'group/project', currentRef: 'main', refType: 'branch' },
+      propsData: { projectPath: 'group/project', currentRef, refType: 'branch' },
       mocks: {
         $router: { push: jest.fn() },
         $route: { params: {}, $apollo: { query: jest.fn() } },
@@ -622,6 +627,55 @@ describe('Tree List', () => {
 
       expect(findFileRows()).toHaveLength(2);
       expect(findFileRowPlaceholders()).toHaveLength(0);
+    });
+  });
+
+  describe('special character encoding', () => {
+    it('correctly encodes special characters in file paths', async () => {
+      const specialCharResponse = cloneDeep(mockResponse);
+      specialCharResponse.data.project.repository.paginatedTree.nodes[0].blobs.nodes.push({
+        __typename: 'Blob',
+        id: 'gid://special',
+        sha: 'xyz789',
+        name: 'file with spaces & special#chars.txt',
+        path: 'dir_1/file with spaces & special#chars.txt',
+        mode: '100644',
+        webPath: '/dir_1/file with spaces & special#chars.txt',
+        flatPath: 'dir_1/file with spaces & special#chars.txt',
+        type: 'text',
+        lfsOid: null,
+      });
+
+      await createComponent(specialCharResponse);
+
+      const fileRows = findFileRows();
+      expect(fileRows.at(2).props('file')).toMatchObject({
+        name: 'file with spaces & special#chars.txt',
+        path: '/dir_1/file with spaces & special#chars.txt',
+        routerPath: '/-/blob/main/dir_1/file%20with%20spaces%20%26%20special%23chars.txt',
+      });
+    });
+
+    it('correctly encodes special characters in directory paths', async () => {
+      const specialCharResponse = cloneDeep(mockResponse);
+      specialCharResponse.data.project.repository.paginatedTree.nodes[0].trees.nodes.push({
+        __typename: 'TreeEntry',
+        id: 'gid://special-dir',
+        sha: 'def456',
+        name: 'dir with spaces & special#chars',
+        path: 'dir_1/dir with spaces & special#chars',
+        flatPath: 'dir_1/dir with spaces & special#chars',
+        type: 'tree',
+        webPath: '/root/jerasmus-test-project/-/tree/master/dir_1/dir with spaces & special#chars',
+      });
+
+      await createComponent(specialCharResponse);
+
+      expect(findFileRows().at(1).props('file')).toMatchObject({
+        name: 'dir with spaces & special#chars',
+        path: '/dir_1/dir with spaces & special#chars',
+        routerPath: '/-/tree/main/dir_1/dir%20with%20spaces%20%26%20special%23chars',
+      });
     });
   });
 });

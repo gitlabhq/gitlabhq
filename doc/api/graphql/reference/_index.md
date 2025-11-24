@@ -25842,6 +25842,7 @@ Branch protection details for a branch rule.
 | <a id="branchprotectionisgrouplevel"></a>`isGroupLevel` {{< icon name="warning-solid" >}} | [`Boolean!`](#boolean) | **Introduced** in GitLab 18.3. **Status**: Experiment. Indicates whether the branch protection rule was created at the group level. |
 | <a id="branchprotectionmergeaccesslevels"></a>`mergeAccessLevels` | [`MergeAccessLevelConnection`](#mergeaccesslevelconnection) | Details about who can merge when the branch is the source branch. (see [Connections](#connections)) |
 | <a id="branchprotectionmodificationblockedbypolicy"></a>`modificationBlockedByPolicy` | [`Boolean!`](#boolean) | Indicates if a security policy prevents modification. |
+| <a id="branchprotectionprotectedfrompushbysecuritypolicy"></a>`protectedFromPushBySecurityPolicy` | [`Boolean!`](#boolean) | Indicates if a security policy prevents push or force push. |
 | <a id="branchprotectionpushaccesslevels"></a>`pushAccessLevels` | [`PushAccessLevelConnection`](#pushaccesslevelconnection) | Details about who can push when the branch is the source branch. (see [Connections](#connections)) |
 | <a id="branchprotectionunprotectaccesslevels"></a>`unprotectAccessLevels` | [`UnprotectAccessLevelConnection`](#unprotectaccesslevelconnection) | Details about who can unprotect the branch. (see [Connections](#connections)) |
 
