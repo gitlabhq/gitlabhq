@@ -10,8 +10,13 @@ module QA
         Page::Main::Login.perform(&:sign_in_with_github)
 
         Vendor::Github::Page::Login.perform(&:login)
+        Page::Main::Menu.perform(&:dismiss_welcome_modal_if_present)
 
-        expect(page).to have_content('Welcome to GitLab')
+        # After OAuth login, user might be on profile page or dashboard
+        # Check that we're logged in by verifying the user menu is present
+        Page::Main::Menu.perform do |menu|
+          expect(menu).to be_signed_in
+        end
       end
     end
   end

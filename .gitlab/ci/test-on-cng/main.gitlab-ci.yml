@@ -184,6 +184,41 @@ cng-relative-url:
     QA_RELATIVE_URL_ROOT: "/relative"
     EXTRA_DEPLOY_VALUES: "--set global.appConfig.relativeUrlRoot=${QA_RELATIVE_URL_ROOT}"
 
+cng-oauth:
+  extends:
+    - .cng-test
+  variables:
+    QA_SCENARIO: Test::Integration::OAuth
+    QA_RSPEC_TAGS: --tag oauth
+    QA_RUN_IN_PARALLEL: "false"
+    QA_GITHUB_OAUTH_APP_ID: $QA_GITHUB_OAUTH_APP_ID
+    QA_GITHUB_OAUTH_APP_SECRET: $QA_GITHUB_OAUTH_APP_SECRET
+  before_script:
+    # Install 1Password CLI for GitHub 2FA authentication
+    - |
+      curl -sSfO https://downloads.1password.com/linux/debian/amd64/stable/1password-cli-amd64-latest.deb
+      dpkg -i 1password-cli-amd64-latest.deb || apt-get install -f -y
+      rm 1password-cli-amd64-latest.deb
+      op --version
+    - !reference [.qa-install, before_script]
+    # Set up gitlab.test domain with hosts file
+    - export CLUSTER_IP="$(getent hosts docker | awk '{ print $1 }' | head -n1)"
+    - echo "${CLUSTER_IP} gitlab.test" >> /etc/hosts
+    - export GITLAB_DOMAIN="test"
+    # Deploy with test domain (don't use reference to avoid override)
+    - echo "${EXTRA_DEPLOY_VALUES}" > $CI_PROJECT_DIR/EXTRA_DEPLOY_VALUES
+    - |
+      bundle exec orchestrator create deployment "${DEPLOYMENT_TYPE:-kind}" \
+        --gitlab-domain "${GITLAB_DOMAIN}" \
+        --timeout 5m \
+        --chart-sha "${GITLAB_HELM_CHART_REF}" \
+        --admin-token "${GITLAB_QA_ADMIN_ACCESS_TOKEN}" \
+        --retry 1 \
+        --resource-preset high \
+        --ci ${EXTRA_DEPLOY_VALUES}
+    - export QA_GITLAB_URL="http://gitlab.${GITLAB_DOMAIN}${QA_RELATIVE_URL_ROOT}"
+    - bundle exec orchestrator metrics start --interval 1
+
 # ==========================================
 # Post test stage
 # ==========================================
