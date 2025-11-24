@@ -98,7 +98,7 @@ export default {
       <gl-link
         v-tooltip-on-truncate
         :href="branchComparePath"
-        class="gl-max-w-17/20 gl-truncate gl-font-semibold gl-text-primary hover:gl-text-primary hover:gl-underline"
+        class="gl-max-w-17/20 gl-truncate gl-font-semibold gl-text-default hover:gl-text-default hover:gl-underline"
       >
         {{ branchName }}
       </gl-link>

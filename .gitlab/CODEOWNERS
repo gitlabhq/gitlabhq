@@ -1664,6 +1664,9 @@ lib/gitlab/checks/
 /app/uploaders/job_artifact_uploader.rb
 /app/validators/json_schemas/build_metadata_id_tokens.json
 /app/validators/json_schemas/build_metadata_config_options.json
+/app/validators/json_schemas/build_metadata_secrets.json
+/app/validators/json_schemas/ci_job_definition_config.json
+/app/validators/json_schemas/run_steps.json
 /app/workers/build_queue_worker.rb
 /app/workers/create_pipeline_worker.rb
 /app/workers/expire_build_artifacts_worker.rb
