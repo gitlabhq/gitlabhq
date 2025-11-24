@@ -84,12 +84,12 @@ content specific to the Service Desk ticket or your GitLab instance.
 
 | Placeholder            | `thank_you.md` and `new_participant` | `new_note.md`          | Description |
 |------------------------|--------------------------------------|------------------------|-------------|
-| `%{ISSUE_ID}`          | {{< icon name="check-circle" >}} Yes               | {{< icon name="check-circle" >}} Yes | Ticket IID. |
-| `%{ISSUE_PATH}`        | {{< icon name="check-circle" >}} Yes               | {{< icon name="check-circle" >}} Yes | Project path appended with the ticket IID. |
-| `%{ISSUE_URL}`         | {{< icon name="check-circle" >}} Yes               | {{< icon name="check-circle" >}} Yes | URL of the ticket. External participants can only view the ticket if the project is public and ticket is not confidential (Service Desk tickets are confidential by default). |
-| `%{ISSUE_DESCRIPTION}` | {{< icon name="check-circle" >}} Yes               | {{< icon name="check-circle" >}} Yes | Ticket description. If a user has edited the description, it may contain sensitive information that is not intended to be delivered to external participants. Use this placeholder with care and ideally only if you never modify descriptions or your team is aware of the template design. |
-| `%{UNSUBSCRIBE_URL}`   | {{< icon name="check-circle" >}} Yes               | {{< icon name="check-circle" >}} Yes | Unsubscribe URL. Learn how to [unsubscribe as an external participant](external_participants.md#unsubscribing-from-notification-emails) and [use unsubscribe headers in notification emails from GitLab](../../profile/notifications.md#using-an-email-client-or-other-software). |
-| `%{NOTE_TEXT}`         | {{< icon name="dotted-circle" >}} No               | {{< icon name="check-circle" >}} Yes | The new comment added to the ticket by a user. Take care to include this placeholder in `new_note.md`. Otherwise, the external participants may never see the updates on their Service Desk ticket. |
+| `%{ISSUE_ID}`          | {{< yes >}}               | {{< yes >}} | Ticket IID. |
+| `%{ISSUE_PATH}`        | {{< yes >}}               | {{< yes >}} | Project path appended with the ticket IID. |
+| `%{ISSUE_URL}`         | {{< yes >}}               | {{< yes >}} | URL of the ticket. External participants can only view the ticket if the project is public and ticket is not confidential (Service Desk tickets are confidential by default). |
+| `%{ISSUE_DESCRIPTION}` | {{< yes >}}               | {{< yes >}} | Ticket description. If a user has edited the description, it may contain sensitive information that is not intended to be delivered to external participants. Use this placeholder with care and ideally only if you never modify descriptions or your team is aware of the template design. |
+| `%{UNSUBSCRIBE_URL}`   | {{< yes >}}               | {{< yes >}} | Unsubscribe URL. Learn how to [unsubscribe as an external participant](external_participants.md#unsubscribing-from-notification-emails) and [use unsubscribe headers in notification emails from GitLab](../../profile/notifications.md#using-an-email-client-or-other-software). |
+| `%{NOTE_TEXT}`         | {{< no >}}                | {{< yes >}} | The new comment added to the ticket by a user. Take care to include this placeholder in `new_note.md`. Otherwise, the external participants may never see the updates on their Service Desk ticket. |
 
 ### Thank you email
 

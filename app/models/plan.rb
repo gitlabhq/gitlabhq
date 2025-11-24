@@ -78,6 +78,10 @@ class Plan < ApplicationRecord
     false
   end
 
+  def ultimate_or_ultimate_trial_plans?
+    false
+  end
+
   private
 
   def set_plan_name_uid

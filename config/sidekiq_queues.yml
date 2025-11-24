@@ -1107,6 +1107,8 @@
   - 1
 - - security_sync_scan_policies
   - 1
+- - security_unassign_policy_configurations_for_expired_namespace
+  - 1
 - - security_unassign_redundant_policy_configurations
   - 1
 - - security_unenforceable_policy_rules_notification

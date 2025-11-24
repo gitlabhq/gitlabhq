@@ -509,7 +509,7 @@ Blocked recursive webhook calls are logged in `auth.log` with the message `"Recu
 
 {{< /history >}}
 
-The number of [placeholder users](../user/project/import/_index.md#placeholder-users) created during an import can be limited per top-level namespace.
+The number of [placeholder users](../user/import/mapping.md#placeholder-users) created during an import can be limited per top-level namespace.
 
 The default limit for [GitLab Self-Managed](../subscriptions/manage_subscription.md) is `0` (unlimited).
 

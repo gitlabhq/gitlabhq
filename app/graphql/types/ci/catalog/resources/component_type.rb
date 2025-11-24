@@ -24,6 +24,7 @@ module Types
             description: 'Number of times the component has been used in the last 30 days ' \
               'in a pipeline using `include`.'
 
+          # rubocop:disable GraphQL/ResolverMethodLength -- Temporary until ci_dynamic_pipeline_inputs flag is removed
           def inputs
             object.spec.fetch('inputs', {}).map do |key, value|
               {
@@ -32,10 +33,13 @@ module Types
                 default: value&.dig('default'),
                 description: value&.dig('description'),
                 regex: value&.dig('regex'),
-                type: value&.dig('type') || 'string'
+                type: value&.dig('type') || 'string',
+                rules: value&.dig('rules'),
+                project: object.project # TODO: Remove when ci_dynamic_pipeline_inputs flag is removed
               }
             end
           end
+          # rubocop:enable GraphQL/ResolverMethodLength
         end
       end
       # rubocop: enable Graphql/AuthorizeTypes

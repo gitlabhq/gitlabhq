@@ -63,6 +63,7 @@ query getPipelines(
         source
         latest
         yamlErrors
+        yamlErrorMessages
         failureReason
         configSource
         stuck

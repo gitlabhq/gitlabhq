@@ -72,7 +72,7 @@ on the GitLab instance you import to.
 {{< /history >}}
 
 Before using [the old method of user contribution mapping](#old-method-of-user-contribution-mapping) for imports to GitLab Self-Managed and GitLab
-Dedicated, you must meet certain requirements. Imports to GitLab.com use an [improved method](_index.md#user-contribution-and-membership-mapping)
+Dedicated, you must meet certain requirements. Imports to GitLab.com use an [improved method](../../import/mapping.md)
 that doesn't require preparation.
 
 These requirements are:
@@ -272,12 +272,12 @@ These backticks prevent linking to an incorrect user with the same username on t
 
 {{< history >}}
 
-- [Changed on GitLab.com](https://gitlab.com/groups/gitlab-org/-/epics/14667) to [**user contribution and membership mapping**](_index.md#user-contribution-and-membership-mapping) in GitLab 17.8.
+- [Changed on GitLab.com](https://gitlab.com/groups/gitlab-org/-/epics/14667) to [**user contribution and membership mapping**](../../import/mapping.md) in GitLab 17.8.
 - [Enabled on GitLab.com, GitLab Self-Managed, and GitLab Dedicated](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/176675) in GitLab 17.8.
 
 {{< /history >}}
 
-The GitHub importer uses an [improved method](_index.md#user-contribution-and-membership-mapping)
+The GitHub importer uses an [improved method](../../import/mapping.md)
 of mapping user contributions for GitLab.com, GitLab Self-Managed, and GitLab Dedicated.
 
 ### Old method of user contribution mapping
@@ -285,7 +285,7 @@ of mapping user contributions for GitLab.com, GitLab Self-Managed, and GitLab De
 You can use the old user contribution mapping method for imports to GitLab Self-Managed and GitLab Dedicated instances.
 To use this method, `github_user_mapping` must be disabled.
 For imports to GitLab.com, you must
-use the [improved method](_index.md#user-contribution-and-membership-mapping) instead.
+use the [improved method](../../import/mapping.md) instead.
 
 Using the old method, when [user accounts are provisioned correctly](#accounts-for-user-contribution-mapping), users are mapped during the import.
 

@@ -74,37 +74,6 @@ A new `maxretries` parameter has been added to control how many times an event w
 </div>
 </div>
 
-<div class="milestone-wrapper" data-milestone="21.0">
-
-## GitLab 21.0
-
-<div class="deprecation " data-milestone="21.0">
-
-### Container Registry legacy metadata storage
-
-<div class="deprecation-notes">
-
-- Announced in GitLab <span class="milestone">18.5</span>
-- Removal in GitLab <span class="milestone">21.0</span>
-- To discuss this change or learn more, see the [deprecation issue](https://gitlab.com/gitlab-org/gitlab/-/issues/571531).
-
-</div>
-
-The GitLab container registry's legacy metadata storage approach is deprecated in favor of the container registry metadata database.
-
-GitLab.com already uses the metadata database. This deprecation affects GitLab Self-Managed instances currently using the legacy container registry that stores metadata information directly in the storage backend (whether object storage or a local filesystem).
-
-The legacy metadata storage method will remain supported in maintenance mode, but will not receive new features or improvements. We strongly recommend migrating to the container registry metadata database at your earliest convenience.
-
-This change only affects how the container registry stores metadata about your images and tags. Your choice of storage backend (object storage or filesystem) remains the same. You can continue using [object storage](https://docs.gitlab.com/administration/packages/container_registry/#use-object-storage) or filesystem storage with the metadata database.
-
-To migrate from legacy metadata storage to the metadata database, follow the [container registry metadata database migration guide](https://docs.gitlab.com/administration/packages/container_registry_metadata_database/). The migration process involves enabling the metadata database feature and running the import tool to transfer your existing registry data.
-
-The metadata database provides better performance, reliability, and enables new container registry features that are not available with the legacy metadata storage approach.
-
-</div>
-</div>
-
 <div class="milestone-wrapper" data-milestone="19.0">
 
 ## GitLab 19.0
@@ -7204,6 +7173,37 @@ After End of Support in GitLab 19.0, we won't provide further updates.
 However, we won't delete previously published container images or remove the ability to run them by using custom CI/CD pipeline job definitions.
 
 For more details, see [Scan code for quality violations](https://docs.gitlab.com/ci/testing/code_quality/#scan-code-for-quality-violations).
+
+</div>
+
+<div class="deprecation ">
+
+### Container Registry legacy metadata storage
+
+<div class="deprecation-notes">
+
+- Announced in GitLab <span class="milestone">18.5</span>
+- To discuss this change or learn more, see the [deprecation issue](https://gitlab.com/gitlab-org/gitlab/-/issues/571531).
+
+</div>
+
+{{< alert type="note" >}}
+
+This change has been removed from its original milestone and is being reassessed.
+
+{{< /alert >}}
+
+The GitLab container registry's legacy metadata storage approach is deprecated in favor of the container registry metadata database.
+
+GitLab.com already uses the metadata database. This deprecation affects GitLab Self-Managed instances currently using the legacy container registry that stores metadata information directly in the storage backend (whether object storage or a local filesystem).
+
+The legacy metadata storage method will remain supported in maintenance mode, but will not receive new features or improvements. We strongly recommend migrating to the container registry metadata database at your earliest convenience.
+
+This change only affects how the container registry stores metadata about your images and tags. Your choice of storage backend (object storage or filesystem) remains the same. You can continue using [object storage](https://docs.gitlab.com/administration/packages/container_registry/#use-object-storage) or filesystem storage with the metadata database.
+
+To migrate from legacy metadata storage to the metadata database, follow the [container registry metadata database migration guide](https://docs.gitlab.com/administration/packages/container_registry_metadata_database/). The migration process involves enabling the metadata database feature and running the import tool to transfer your existing registry data.
+
+The metadata database provides better performance, reliability, and enables new container registry features that are not available with the legacy metadata storage approach.
 
 </div>
 

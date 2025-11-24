@@ -306,11 +306,19 @@ Individual conversations expire and are automatically deleted after 30 days of i
 {{< history >}}
 
 - Custom rules [added](https://gitlab.com/gitlab-org/gitlab/-/issues/550743) in GitLab 18.2.
+- User-level custom rules [added](https://gitlab.com/gitlab-org/editor-extensions/gitlab-lsp/-/merge_requests/2452) in GitLab 18.7.
 
 {{< /history >}}
 
 In your IDE, if you have specific instructions that you want
 GitLab Duo Chat to follow in every conversation, you can create custom rules.
+
+You can create custom rules at two levels:
+
+- User-level rules: Apply to all of your projects and workspaces.
+- Workspace-level rules: Apply only to a specific project or workspace.
+
+If both user-level and workspace-level rules exist, GitLab Duo Chat applies both to conversations.
 
 Prerequisites:
 
@@ -323,6 +331,33 @@ Prerequisites:
 Conversations that existed before you created any custom rules do not follow those rules.
 
 {{< /alert >}}
+
+#### Create user-level custom rules
+
+User-level custom rules apply to all of your projects and workspaces.
+
+1. Create a custom rules file in your user configuration directory:
+   - If you have set the `GLAB_CONFIG_DIR` environment variable, create the file at: `$GLAB_CONFIG_DIR/chat-rules.md`
+   - Otherwise, create the file in your platform's default configuration directory:
+     - macOS: `~/Library/Application Support/glab-cli/chat-rules.md`
+     - Linux: `~/.config/glab-cli/chat-rules.md`
+     - Windows: `%LOCALAPPDATA%\glab-cli\chat-rules.md`
+1. Add custom rules to the file. For example:
+
+   ```markdown
+   - Don't put comments in the generated code
+   - Be brief in your explanations
+   - Always use single quotes for JavaScript strings
+   ```
+
+1. Save the file.
+1. To apply the new custom rules, start a new GitLab Duo conversation.
+
+   You must do this every time you change the custom rules.
+
+#### Create workspace-level custom rules
+
+Workspace-level custom rules apply only to a specific project or workspace.
 
 1. In your IDE workspace, create a custom rules file: `.gitlab/duo/chat-rules.md`.
 1. Enter the custom rules into the file. For example:

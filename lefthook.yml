@@ -206,6 +206,11 @@ pre-commit:
       files: git diff --name-only --diff-filter=d --staged
       glob: '{app,lib,ee,spec,doc,scripts}/*.md'
       run: scripts/lint/check_mermaid.mjs {files}
+    loose-foreign-keys-ordering:
+      tags: database
+      files: git diff --name-only --diff-filter=d $(git merge-base origin/master HEAD) --cached
+      glob: 'config/gitlab_loose_foreign_keys.yml'
+      run: scripts/validate_loose_foreign_keys_ordering
     vale: # Requires Vale: https://docs.gitlab.com/development/documentation/testing/vale/
       tags: documentation style
       files: git diff --name-only --diff-filter=d --staged

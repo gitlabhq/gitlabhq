@@ -33,25 +33,18 @@ With the GitLab Duo Agent Platform, multiple AI agents can work in parallel, hel
 research results, and perform tasks simultaneously.
 The agents have full context across your entire software development lifecycle.
 
-The Agent Platform is made up of [GitLab Duo Chat (Agentic)](../gitlab_duo_chat/agentic_chat.md),
-[agents](agents/_index.md), and [flows](flows/_index.md), which are available in the GitLab UI and IDEs.
+The Agent Platform is made up of [several features](../gitlab_duo/feature_summary.md),
+which are available in the GitLab UI and IDEs.
 
-{{< alert type="note" >}}
-
-The Agent Platform public beta requires GitLab 18.2 or later. For the best experience and access to the latest agents and flows, use the latest version of GitLab.
-
-{{< /alert >}}
-
-For more details, view these blog posts about:
-
-- [What's next for intelligent DevSecOps](https://about.gitlab.com/blog/gitlab-duo-agent-platform-what-is-next-for-intelligent-devsecops/)
-- [GitLab Duo Agent Platform Public Beta: Next-gen AI orchestration and more](https://about.gitlab.com/blog/gitlab-duo-agent-platform-public-beta/)
-- [GitLab 18.3: Expanding AI orchestration in software engineering](https://about.gitlab.com/blog/gitlab-18-3-expanding-ai-orchestration-in-software-engineering/)
+<i class="fa-youtube-play" aria-hidden="true"></i>
+For an overview, see [Developer Onboarding with GitLab Duo Agent Platform](https://youtu.be/UD8vAAglkY0?si=7AWWDfd-mLGdkBwT).
+<!-- Video published on 2025-11-20 -->
 
 ## Prerequisites
 
 To use the Agent Platform:
 
+- Use GitLab 18.2 or later. For the best experience, use the latest version of GitLab.
 - [GitLab Duo, including GitLab Duo Core and flow execution, must be turned on](../gitlab_duo/turn_on_off.md).
 - [Beta and experimental features must be turned on](../gitlab_duo/turn_on_off.md#turn-on-beta-and-experimental-features).
 - For GitLab Self-Managed, you must [ensure your instance is configured](../../administration/gitlab_duo/setup.md)

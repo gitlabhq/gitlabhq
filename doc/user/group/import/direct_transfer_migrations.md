@@ -16,8 +16,7 @@ description: "Migrate groups and projects between GitLab instances by using dire
 To migrate GitLab groups and projects by using direct transfer:
 
 1. Ensure you meet the [prerequisites](#prerequisites).
-1. Review [user contribution](../../project/import/_index.md#user-contribution-and-membership-mapping)
-   and [user membership](#user-membership-mapping) mapping.
+1. Review [user contribution](../../import/mapping.md) and [user membership](#user-membership-mapping) mapping.
 1. [Connect the source GitLab instance](#connect-the-source-gitlab-instance).
 1. [Select groups and projects to import](#select-the-groups-and-projects-to-import) and begin the migration.
 1. [Review the results of the import](#review-results-of-the-import).
@@ -105,7 +104,7 @@ Instead, user memberships on the source instance are mapped to users on the dest
 The type of mapping for user memberships depends on the
 [membership type](../../project/members/_index.md#membership-types) on the source instance:
 
-- Imported memberships are initially mapped to [placeholder users](../../project/import/_index.md#placeholder-users).
+- Imported memberships are initially mapped to [placeholder users](../../import/mapping.md#placeholder-users).
 - Direct memberships are mapped as direct memberships on the destination instance.
 - Inherited memberships are mapped as inherited memberships on the destination instance.
 - Shared memberships are mapped as direct memberships on the destination instance unless the user has an existing shared

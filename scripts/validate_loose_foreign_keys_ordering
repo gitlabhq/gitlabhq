@@ -1,0 +1,12 @@
+#!/usr/bin/env ruby
+
+# frozen_string_literal: true
+
+require_relative './database/loose_foreign_keys_ordering_checker'
+
+result = LooseForeignKeysOrderingChecker.new.check
+
+if result
+  puts result.error_message
+  exit result.error_code
+end

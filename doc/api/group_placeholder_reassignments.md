@@ -28,7 +28,7 @@ For more information, see the history.
 
 {{< /alert >}}
 
-Use this API to [reassign placeholder users in bulk](../user/project/import/_index.md#request-reassignment-by-using-a-csv-file).
+Use this API to [reassign placeholder users in bulk](../user/import/mapping.md#request-reassignment-by-using-a-csv-file).
 
 Prerequisites:
 

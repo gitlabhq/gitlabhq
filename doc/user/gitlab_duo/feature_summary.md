@@ -6,9 +6,23 @@ description: AI-native features and functionality.
 title: Summary of GitLab Duo features
 ---
 
+The following features are part of the GitLab Duo Agent Platform.
+
+| Feature | Description |
+|---------|-------------|
+| [GitLab Duo Chat (Agentic)](../gitlab_duo_chat/agentic_chat.md) | Enhanced Chat that autonomously performs actions, searches multiple sources, and can create and edit files to answer complex questions. |
+| [AI Catalog](../duo_agent_platform/ai_catalog.md) | Central list of agents and flows where you can discover, create, and enable them in your projects. |
+| [Agents](../duo_agent_platform/agents/_index.md) | AI-powered assistants that help accomplish specific tasks. Includes foundational agents (pre-built), custom agents (team-specific), and external agents (third-party integrations). |
+| [Flows](../duo_agent_platform/flows/_index.md) | One or more agents working together to solve complex problems and automate development tasks. |
+| [MCP clients](model_context_protocol/mcp_clients.md) | Standardized way for GitLab Duo features to securely connect to external data sources and tools. |
+| [MCP server](model_context_protocol/mcp_server.md) | Enables AI tools like Claude Desktop and Cursor to securely connect to your GitLab instance. |
+| [Knowledge Graph](../project/repository/knowledge_graph/_index.md) | Framework that creates structured, queryable representations of code repositories to power AI features. |
+
+## GitLab Duo classic features
+
 {{< history >}}
 
-- [First GitLab Duo features introduced](https://about.gitlab.com/blog/2023/05/03/gitlab-ai-assisted-features/) in GitLab 16.0.
+- [GitLab Duo first introduced](https://about.gitlab.com/blog/2023/05/03/gitlab-ai-assisted-features/) in GitLab 16.0.
 - [Removed third-party AI setting](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/136144) in GitLab 16.6.
 - [Removed support for OpenAI from all GitLab Duo features](https://gitlab.com/groups/gitlab-org/-/epics/10964) in GitLab 16.6.
 
@@ -22,20 +36,20 @@ are available on GitLab Self-Managed only.
 
 | Feature | GitLab Duo Core | GitLab Duo Pro | GitLab Duo Enterprise | GitLab Duo with Amazon Q |
 |---------|----------|---------|----------------|--------------------------|
-| [Code Suggestions](../project/repository/code_suggestions/_index.md) | {{< icon name="check-circle-filled" >}} Yes | {{< icon name="check-circle-filled" >}} Yes | {{< icon name="check-circle-filled" >}} Yes | {{< icon name="check-circle-filled" >}} Yes |
-| [GitLab Duo Chat (Classic)](../gitlab_duo_chat/_index.md) | {{< icon name="check-circle-filled" >}} Yes | {{< icon name="check-circle-filled" >}} Yes | {{< icon name="check-circle-filled" >}} Yes | {{< icon name="check-circle-filled" >}} Yes |
-| [Code Explanation](../gitlab_duo_chat/examples.md#explain-selected-code) in IDEs | {{< icon name="check-circle-filled" >}} Yes | {{< icon name="check-circle-filled" >}} Yes | {{< icon name="check-circle-filled" >}} Yes | {{< icon name="check-circle-filled" >}} Yes |
-| [Refactor Code](../gitlab_duo_chat/examples.md#refactor-code-in-the-ide) in IDEs | {{< icon name="check-circle-filled" >}} Yes | {{< icon name="check-circle-filled" >}} Yes | {{< icon name="check-circle-filled" >}} Yes | {{< icon name="check-circle-filled" >}} Yes |
-| [Fix Code](../gitlab_duo_chat/examples.md#fix-code-in-the-ide) in IDEs | {{< icon name="check-circle-filled" >}} Yes | {{< icon name="check-circle-filled" >}} Yes | {{< icon name="check-circle-filled" >}} Yes | {{< icon name="check-circle-filled" >}} Yes |
-| [Test Generation](../gitlab_duo_chat/examples.md#write-tests-in-the-ide) in IDEs | {{< icon name="check-circle-filled" >}} Yes | {{< icon name="check-circle-filled" >}} Yes | {{< icon name="check-circle-filled" >}} Yes | {{< icon name="check-circle-filled" >}} Yes |
-| [Code Explanation](../project/repository/code_explain.md) in GitLab UI | {{< icon name="dash-circle" >}} No | {{< icon name="check-circle-filled" >}} Yes | {{< icon name="check-circle-filled" >}} Yes | {{< icon name="check-circle-filled" >}} Yes |
-| [Discussion Summary](../discussions/_index.md#summarize-issue-discussions-with-gitlab-duo-chat) | {{< icon name="dash-circle" >}} No | {{< icon name="dash-circle" >}} No | {{< icon name="check-circle-filled" >}} Yes | {{< icon name="check-circle-filled" >}} Yes |
-| [Code Review](../project/merge_requests/duo_in_merge_requests.md#have-gitlab-duo-review-your-code) | {{< icon name="dash-circle" >}} No | {{< icon name="dash-circle" >}} No | {{< icon name="check-circle-filled" >}} Yes | {{< icon name="check-circle-filled" >}} Yes <sup>1</sup> |
-| [Root Cause Analysis](../gitlab_duo_chat/examples.md#troubleshoot-failed-cicd-jobs-with-root-cause-analysis) | {{< icon name="dash-circle" >}} No | {{< icon name="dash-circle" >}} No | {{< icon name="check-circle-filled" >}} Yes | {{< icon name="check-circle-filled" >}} Yes |
-| [Vulnerability Explanation](../application_security/vulnerabilities/_index.md#vulnerability-explanation) | {{< icon name="dash-circle" >}} No | {{< icon name="dash-circle" >}} No | {{< icon name="check-circle-filled" >}} Yes | {{< icon name="check-circle-filled" >}} Yes |
-| [Vulnerability Resolution](../application_security/vulnerabilities/_index.md#vulnerability-resolution) | {{< icon name="dash-circle" >}} No | {{< icon name="dash-circle" >}} No | {{< icon name="check-circle-filled" >}} Yes | {{< icon name="check-circle-filled" >}} Yes |
-| [GitLab Duo and SDLC trends](../analytics/duo_and_sdlc_trends.md) | {{< icon name="dash-circle" >}} No | {{< icon name="dash-circle" >}} No | {{< icon name="check-circle-filled" >}} Yes | {{< icon name="check-circle-filled" >}} Yes |
-| [Merge Commit Message Generation](../project/merge_requests/duo_in_merge_requests.md#generate-a-merge-commit-message) | {{< icon name="dash-circle" >}} No | {{< icon name="dash-circle" >}} No | {{< icon name="check-circle-filled" >}} Yes | {{< icon name="check-circle-filled" >}} Yes |
+| [Code Suggestions](../project/repository/code_suggestions/_index.md) | {{< yes >}} | {{< yes >}} | {{< yes >}} | {{< yes >}} |
+| [GitLab Duo Chat (Classic)](../gitlab_duo_chat/_index.md) | {{< yes >}} | {{< yes >}} | {{< yes >}} | {{< yes >}} |
+| [Code Explanation](../gitlab_duo_chat/examples.md#explain-selected-code) in IDEs | {{< yes >}} | {{< yes >}} | {{< yes >}} | {{< yes >}} |
+| [Refactor Code](../gitlab_duo_chat/examples.md#refactor-code-in-the-ide) in IDEs | {{< yes >}} | {{< yes >}} | {{< yes >}} | {{< yes >}} |
+| [Fix Code](../gitlab_duo_chat/examples.md#fix-code-in-the-ide) in IDEs | {{< yes >}} | {{< yes >}} | {{< yes >}} | {{< yes >}} |
+| [Test Generation](../gitlab_duo_chat/examples.md#write-tests-in-the-ide) in IDEs | {{< yes >}} | {{< yes >}} | {{< yes >}} | {{< yes >}} |
+| [Code Explanation](../project/repository/code_explain.md) in GitLab UI | {{< no >}} | {{< yes >}} | {{< yes >}} | {{< yes >}} |
+| [Discussion Summary](../discussions/_index.md#summarize-issue-discussions-with-gitlab-duo-chat) | {{< no >}} | {{< no >}} | {{< yes >}} | {{< yes >}} |
+| [Code Review](../project/merge_requests/duo_in_merge_requests.md#have-gitlab-duo-review-your-code) <sup>1</sup> | {{< no >}} | {{< no >}} | {{< yes >}} | {{< yes >}} |
+| [Root Cause Analysis](../gitlab_duo_chat/examples.md#troubleshoot-failed-cicd-jobs-with-root-cause-analysis) | {{< no >}} | {{< no >}} | {{< yes >}} | {{< yes >}} |
+| [Vulnerability Explanation](../application_security/vulnerabilities/_index.md#vulnerability-explanation) | {{< no >}} | {{< no >}} | {{< yes >}} | {{< yes >}} |
+| [Vulnerability Resolution](../application_security/vulnerabilities/_index.md#vulnerability-resolution) | {{< no >}} | {{< no >}} | {{< yes >}} | {{< yes >}} |
+| [GitLab Duo and SDLC trends](../analytics/duo_and_sdlc_trends.md) | {{< no >}} | {{< no >}} | {{< yes >}} | {{< yes >}} |
+| [Merge Commit Message Generation](../project/merge_requests/duo_in_merge_requests.md#generate-a-merge-commit-message) | {{< no >}} | {{< no >}} | {{< yes >}} | {{< yes >}} |
 
 **Footnotes**:
 
@@ -44,41 +58,23 @@ are available on GitLab Self-Managed only.
 
 ## Beta and experimental features
 
-{{< history >}}
+The following features are not yet generally available.
 
-- GitLab Duo Agentic Chat added in GitLab 18.2.
+They require a Premium or Ultimate subscription and the GitLab Duo Enterprise add-on.
 
-{{< /history >}}
-
-The following features are not generally available.
-
-They require a Premium or Ultimate subscription and one of the available add-ons.
-
-| Feature | GitLab Duo Core | GitLab Duo Pro | GitLab Duo Enterprise | GitLab Duo with Amazon Q | GitLab.com | GitLab Self-Managed | GitLab Dedicated | GitLab Duo Self-Hosted |
-|---------|----------|---------|----------------|--------------------------|-----------|-------------|-----------|------------------------|
-| [GitLab Duo Agent Platform](../duo_agent_platform/_index.md) | {{< icon name="check-circle-filled" >}} Yes | {{< icon name="check-circle-filled" >}} Yes | {{< icon name="check-circle-filled" >}} Yes | {{< icon name="dash-circle" >}} No | Beta | Beta | Beta | {{< icon name="dash-circle" >}} No |
-| [GitLab Duo Chat (Agentic)](../gitlab_duo_chat/agentic_chat.md) | {{< icon name="check-circle-filled" >}} Yes | {{< icon name="check-circle-filled" >}} Yes | {{< icon name="check-circle-filled" >}} Yes | {{< icon name="check-circle-filled" >}} Yes <sup>1</sup> | Beta | Beta | Beta | {{< icon name="dash-circle" >}} No |
-| [Merge Request Summary](../project/merge_requests/duo_in_merge_requests.md#generate-a-description-by-summarizing-code-changes) | {{< icon name="dash-circle" >}} No | {{< icon name="dash-circle" >}} No | {{< icon name="check-circle-filled" >}} Yes | {{< icon name="dash-circle" >}} No | Beta | Beta | {{< icon name="dash-circle" >}} No | Beta |
-| [Code Review Summary](../project/merge_requests/duo_in_merge_requests.md#summarize-a-code-review) | {{< icon name="dash-circle" >}} No | {{< icon name="dash-circle" >}} No | {{< icon name="check-circle-filled" >}} Yes | {{< icon name="dash-circle" >}} No | Experiment | Experiment | Experiment | Experiment |
-| [Issue Description Generation](../project/issues/managing_issues.md#populate-an-issue-with-issue-description-generation) | {{< icon name="dash-circle" >}} No | {{< icon name="dash-circle" >}} No | {{< icon name="check-circle-filled" >}} Yes | {{< icon name="dash-circle" >}} No | Experiment | {{< icon name="dash-circle" >}} No | {{< icon name="dash-circle" >}} No | Not applicable |
-| [MCP Server](model_context_protocol/mcp_server.md) | {{< icon name="check-circle-filled" >}} Yes | {{< icon name="check-circle-filled" >}} Yes | {{< icon name="check-circle-filled" >}} Yes | {{< icon name="dash-circle" >}} No | Beta | Beta | Beta | Beta |
-
-**Footnotes**:
-
-1. Amazon Q supports a different version of this feature.
-   [View details](#amazon-q-developer-pro-included-with-gitlab-duo-with-amazon-q).
+| Feature | GitLab Duo Core | GitLab Duo Pro | GitLab Duo Enterprise | GitLab Duo with Amazon Q | 
+|---------|-----------------|----------------|-----------------------|--------------------------|
+| [Merge Request Summary](../project/merge_requests/duo_in_merge_requests.md#generate-a-description-by-summarizing-code-changes) | {{< no >}} | {{< no >}} | {{< yes >}} | {{< no >}} |
+| [Code Review Summary](../project/merge_requests/duo_in_merge_requests.md#summarize-a-code-review) | {{< no >}} | {{< no >}} | {{< yes >}} | {{< no >}} |
+| [Issue Description Generation](../project/issues/managing_issues.md#populate-an-issue-with-issue-description-generation) | {{< no >}} | {{< no >}} | {{< yes >}} | {{< no >}} |
 
 ## Features available in GitLab Duo Self-Hosted
 
-Your organization can use [GitLab Duo Self-Hosted](../../administration/gitlab_duo_self_hosted/_index.md)
-to self-host the AI gateway and language models if you:
+Your organization can self-host your language models.
 
-- Have the GitLab Duo Enterprise add-on.
-- Are a GitLab Self-Managed customer.
-
-To check which GitLab Duo features are available for use with GitLab Duo Self-Hosted,
-and the status of those features, see the
-[supported GitLab Duo features for GitLab Duo Self-Hosted](../../administration/gitlab_duo_self_hosted/_index.md#supported-gitlab-duo-features).
+To learn which GitLab Duo features are available with GitLab Duo Self-Hosted,
+see the
+[supported features list](../../administration/gitlab_duo_self_hosted/_index.md#supported-gitlab-duo-features).
 
 ## Amazon Q Developer Pro included with GitLab Duo With Amazon Q
 

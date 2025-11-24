@@ -25,8 +25,16 @@ RSpec.describe Types::Ci::Inputs::SpecType, feature_category: :pipeline_composit
   end
 
   describe '#rules' do
-    let(:input) { Ci::Inputs::StringInput.new(name: 'test_input', spec: spec) }
-    let(:spec_type) { described_class.authorized_new(input, query_context) }
+    let_it_be(:project) { create(:project) }
+
+    let(:input_hash) do
+      spec.merge(
+        name: 'test_input',
+        project: project
+      )
+    end
+
+    let(:spec_type) { described_class.authorized_new(input_hash, query_context) }
 
     context 'when the feature flag is disabled' do
       let(:spec) do
@@ -52,7 +60,7 @@ RSpec.describe Types::Ci::Inputs::SpecType, feature_category: :pipeline_composit
 
     context 'when the feature flag is enabled' do
       before do
-        stub_feature_flags(ci_dynamic_pipeline_inputs: true)
+        stub_feature_flags(ci_dynamic_pipeline_inputs: project)
       end
 
       context 'when rules are present' do

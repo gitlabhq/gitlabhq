@@ -133,7 +133,7 @@ To administer all users from the **Admin** area's Users page:
    - User **access level**.
    - Whether **two-factor authentication** is enabled or disabled.
    - User **state**.
-   - Whether the user **type** is [placeholder](../user/project/import/_index.md#placeholder-users).
+   - Whether the user **type** is [placeholder](../user/import/mapping.md#placeholder-users).
 
 1. Optional. In the user search field, enter text, then press <kbd>Enter</kbd>. This case-insensitive
    text search applies partial matching to name, username, and email.

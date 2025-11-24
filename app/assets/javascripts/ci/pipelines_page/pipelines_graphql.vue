@@ -7,7 +7,6 @@ import NO_PIPELINES_SVG from '@gitlab/svgs/dist/illustrations/empty-state/empty-
 import ERROR_STATE_SVG from '@gitlab/svgs/dist/illustrations/empty-state/empty-job-failed-md.svg?url';
 import { GlCollapsibleListbox, GlEmptyState, GlKeysetPagination, GlLoadingIcon } from '@gitlab/ui';
 import { createAlert, VARIANT_INFO, VARIANT_WARNING } from '~/alert';
-import { fetchPolicies } from '~/lib/graphql';
 import { s__, __ } from '~/locale';
 import Tracking from '~/tracking';
 import { limitedCounterWithDelimiter } from '~/lib/utils/text_utility';
@@ -95,6 +94,9 @@ export default {
     usesExternalConfig: {
       default: false,
     },
+    hasGitlabCi: {
+      default: false,
+    },
   },
   props: {
     params: {
@@ -110,8 +112,7 @@ export default {
   apollo: {
     pipelines: {
       query: getPipelinesQuery,
-      // Use cache-and-network to get refetches when scope is null
-      fetchPolicy: fetchPolicies.CACHE_AND_NETWORK,
+      notifyOnNetworkStatusChange: true,
       variables() {
         // Map frontend scope to GraphQL scope
         const scopeMap = {
@@ -245,13 +246,16 @@ export default {
       return (
         this.isEmptyState &&
         this.scope === this.$options.scopes.all &&
-        Object.keys(this.filterParams).length === 0
+        Object.keys(this.filterParams).length === 0 &&
+        !this.hasGitlabCi
       );
     },
     showEmptyTab() {
       return (
         this.isEmptyState &&
-        (this.scope !== this.$options.scopes.all || Object.keys(this.filterParams).length > 0)
+        (this.scope !== this.$options.scopes.all ||
+          Object.keys(this.filterParams).length > 0 ||
+          this.hasGitlabCi)
       );
     },
     showTable() {
@@ -314,6 +318,17 @@ export default {
     },
     showControls() {
       return this.hasInitiallyLoaded && !this.showEmptyState;
+    },
+  },
+  watch: {
+    scope(newScope, oldScope) {
+      // this avoids having to use CACHE_AND_NETWORK fetch policy
+      // which does not play nice with subscriptions
+      if (newScope === 'all' && oldScope !== 'all') {
+        this.$nextTick(() => {
+          this.$apollo.queries.pipelines.refetch();
+        });
+      }
     },
   },
   methods: {
@@ -488,7 +503,7 @@ export default {
     },
     transformFilterParams(filterParams) {
       // Transform filter params to be GraphQL compatible
-      const upperCaseFields = ['status', 'source'];
+      const upperCaseFields = ['status'];
 
       return Object.keys(filterParams).reduce((acc, key) => {
         acc[key] = upperCaseFields.includes(key)

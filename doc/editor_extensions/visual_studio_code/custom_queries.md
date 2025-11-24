@@ -72,49 +72,52 @@ To override the extension's default queries and replace them with your own:
 
 Not all item types support all parameters. These parameters apply to all query types:
 
-| Parameter    | Required | Default           | Definition |
-|--------------|----------|-------------------|------------|
-| `name`       | {{< icon name="check-circle" >}} Yes | not applicable               | The label to show in the GitLab panel. |
-| `noItemText` | {{< icon name="dotted-circle" >}} No       | `No items found.` | The text to show if the query returns no items. |
-| `type`       | {{< icon name="dotted-circle" >}} No       | `merge_requests`  | Which item types to return. Possible values: `issues`, `merge_requests`, `epics`, `snippets`, `vulnerabilities`. Snippets [don't support](../../api/project_snippets.md) any other filters. Epics are available only on GitLab Premium and Ultimate.|
+| Parameter    | Required    | Default           | Definition |
+|--------------|-------------|-------------------|------------|
+| `name`       | {{< yes >}} | not applicable    | The label to show in the GitLab panel. |
+| `noItemText` | {{< no >}}  | `No items found.` | The text to show if the query returns no items. |
+| `type`       | {{< no >}}  | `merge_requests`  | Which item types to return. Possible values: `issues`, `merge_requests`, `epics`, `snippets`, `vulnerabilities`. Snippets [don't support](../../api/project_snippets.md) any other filters. Epics are available only on GitLab Premium and Ultimate. |
 
 ### Supported parameters for issue, epic, and merge request queries
 
-| Parameter          | Required               | Default      | Definition |
-|--------------------|------------------------|--------------|------------|
-| `assignee`         | {{< icon name="dotted-circle" >}} No | not applicable          | Return items assigned to the given username. `None` returns unassigned GitLab items. `Any` returns GitLab items with an assignee. Not available for epics and vulnerabilities. |
-| `author`           | {{< icon name="dotted-circle" >}} No | not applicable          | Return items created by the given username. |
-| `confidential`     | {{< icon name="dotted-circle" >}} No | not applicable          | Filter confidential or public issues. Available only for issues. |
-| `createdAfter`     | {{< icon name="dotted-circle" >}} No | not applicable          | Return items created after the given date. |
-| `createdBefore`    | {{< icon name="dotted-circle" >}} No | not applicable          | Return items created before the given date. |
-| `draft`            | {{< icon name="dotted-circle" >}} No | `no`         | Filter merge requests against their draft status: `yes` returns only merge requests in [draft status](../../user/project/merge_requests/drafts.md), `no` returns only merge requests not in draft status. Available only for merge requests. |
-| `excludeAssignee`  | {{< icon name="dotted-circle" >}} No | not applicable          | Return items not assigned to the given username. Available only for issues. For the current user, set to `<current_user>`. |
-| `excludeAuthor`    | {{< icon name="dotted-circle" >}} No | not applicable          | Return items not created by the given username. Available only for issues. For the current user, set to `<current_user>`. |
-| `excludeLabels`    | {{< icon name="dotted-circle" >}} No | `[]`         | Array of label names. Available only for issues. Items returned have none of the labels in the array. Predefined names are case-insensitive. |
-| `excludeMilestone` | {{< icon name="dotted-circle" >}} No | not applicable          | The milestone title to exclude. Available only for issues. |
-| `excludeSearch`    | {{< icon name="dotted-circle" >}} No | not applicable          | Search GitLab items that doesn't have the search key in their title or description. Works only with issues. |
-| `labels`           | {{< icon name="dotted-circle" >}} No | `[]`         | Array of label names. Items returned have all labels in the array. `None` returns items with no labels. `Any` returns items with at least one label. Predefined names are case-insensitive. |
-| `maxResults`       | {{< icon name="dotted-circle" >}} No | 20           | The number of results to show. |
-| `milestone`        | {{< icon name="dotted-circle" >}} No | not applicable          | The milestone title. `None` lists all items with no milestone. `Any` lists all items with an assigned milestone. Not available for epics and vulnerabilities. |
-| `orderBy`          | {{< icon name="dotted-circle" >}} No | `created_at` | Return entities ordered by the selected value. Possible values: `created_at`, `updated_at`, `priority`, `due_date`, `relative_position`, `label_priority`, `milestone_due`, `popularity`, `weight`. Some values are specific to issues, and some to merge requests. For more information, see [List merge requests](../../api/merge_requests.md#list-merge-requests). |
-| `reviewer`         | {{< icon name="dotted-circle" >}} No | not applicable          | Return merge requests assigned for review to this username. For the current user, set to `<current_user>`. `None` returns items without a reviewer. `Any` returns items with a reviewer. |
-| `scope`            | {{< icon name="dotted-circle" >}} No | `all`        | Return GitLab items for the given scope. Not applicable for epics. Possible values: `assigned_to_me`, `created_by_me`, `all`. |
-| `search`           | {{< icon name="dotted-circle" >}} No | not applicable          | Search GitLab items against their title and description. |
-| `searchIn`         | {{< icon name="dotted-circle" >}} No | `all`        | Change the scope of the `excludeSearch` search attribute. Possible values: `all`, `title`, `description`. Works only with issues. |
-| `sort`             | {{< icon name="dotted-circle" >}} No | `desc`       | Return issues sorted in ascending or descending order. Possible values: `asc`, `desc`. |
-| `state`            | {{< icon name="dotted-circle" >}} No | `opened`     | Return all issues, or only those matching a particular state. Possible values: `all`, `opened`, `closed`. |
-| `updatedAfter`     | {{< icon name="dotted-circle" >}} No | not applicable          | Return items updated after the given date. |
-| `updatedBefore`    | {{< icon name="dotted-circle" >}} No | not applicable          | Return items updated before the given date. |
+All of these parameters are optional.
+
+| Parameter          | Default        | Definition |
+|--------------------|----------------|------------|
+| `assignee`         | not applicable | Return items assigned to the given username. `None` returns unassigned GitLab items. `Any` returns GitLab items with an assignee. Not available for epics and vulnerabilities. |
+| `author`           | not applicable | Return items created by the given username. |
+| `confidential`     | not applicable | Filter confidential or public issues. Available only for issues. |
+| `createdAfter`     | not applicable | Return items created after the given date. |
+| `createdBefore`    | not applicable | Return items created before the given date. |
+| `draft`            | `no`           | Filter merge requests against their draft status: `yes` returns only merge requests in [draft status](../../user/project/merge_requests/drafts.md), `no` returns only merge requests not in draft status. Available only for merge requests. |
+| `excludeAssignee`  | not applicable | Return items not assigned to the given username. Available only for issues. For the current user, set to `<current_user>`. |
+| `excludeAuthor`    | not applicable | Return items not created by the given username. Available only for issues. For the current user, set to `<current_user>`. |
+| `excludeLabels`    | `[]`           | Array of label names. Available only for issues. Items returned have none of the labels in the array. Predefined names are case-insensitive. |
+| `excludeMilestone` | not applicable | The milestone title to exclude. Available only for issues. |
+| `excludeSearch`    | not applicable | Search GitLab items that doesn't have the search key in their title or description. Works only with issues. |
+| `labels`           | `[]`           | Array of label names. Items returned have all labels in the array. `None` returns items with no labels. `Any` returns items with at least one label. Predefined names are case-insensitive. |
+| `maxResults`       | 20             | The number of results to show. |
+| `milestone`        | not applicable | The milestone title. `None` lists all items with no milestone. `Any` lists all items with an assigned milestone. Not available for epics and vulnerabilities. |
+| `orderBy`          | `created_at`   | Return entities ordered by the selected value. Possible values: `created_at`, `updated_at`, `priority`, `due_date`, `relative_position`, `label_priority`, `milestone_due`, `popularity`, `weight`. Some values are specific to issues, and some to merge requests. For more information, see [List merge requests](../../api/merge_requests.md#list-merge-requests). |
+| `reviewer`         | not applicable | Return merge requests assigned for review to this username. For the current user, set to `<current_user>`. `None` returns items without a reviewer. `Any` returns items with a reviewer. |
+| `scope`            | `all`          | Return GitLab items for the given scope. Not applicable for epics. Possible values: `assigned_to_me`, `created_by_me`, `all`. |
+| `search`           | not applicable | Search GitLab items against their title and description. |
+| `searchIn`         | `all`          | Change the scope of the `excludeSearch` search attribute. Possible values: `all`, `title`, `description`. Works only with issues. |
+| `sort`             | `desc`         | Return issues sorted in ascending or descending order. Possible values: `asc`, `desc`. |
+| `state`            | `opened`       | Return all issues, or only those matching a particular state. Possible values: `all`, `opened`, `closed`. |
+| `updatedAfter`     | not applicable | Return items updated after the given date. |
+| `updatedBefore`    | not applicable | Return items updated before the given date. |
 
 ### Supported parameters for vulnerability report queries
 
 Vulnerability reports don't share
 [any common query parameters](../../api/vulnerability_findings.md)
-with other entry types. Each parameter listed in this table works with vulnerability reports only:
+with other entry types. Each parameter listed in this table works with
+vulnerability reports only, and all parameters are optional:
 
-| Parameter          | Required               | Default        | Definition |
-|--------------------|------------------------|----------------|------------|
-| `confidenceLevels` | {{< icon name="dotted-circle" >}} No | `all`          | Returns vulnerabilities belonging to specified confidence levels. Possible values: `undefined`, `ignore`, `unknown`, `experimental`, `low`, `medium`, `high`, `confirmed`. |
-| `reportTypes`      | {{< icon name="dotted-circle" >}} No | Not applicable | Returns vulnerabilities belonging to specified report types. Possible values: `sast`, `dast`, `dependency_scanning`, `container_scanning`. |
-| `scope`            | {{< icon name="dotted-circle" >}} No | `dismissed`    | Returns vulnerability findings for the given scope. Possible values: `all`, `dismissed`. For more information, see the [Vulnerability findings API](../../api/vulnerability_findings.md). |
-| `severityLevels`   | {{< icon name="dotted-circle" >}} No | `all`          | Returns vulnerabilities belonging to specified severity levels. Possible values: `undefined`, `info`, `unknown`, `low`, `medium`, `high`, `critical`. |
+| Parameter          | Default        | Definition |
+|--------------------|----------------|------------|
+| `confidenceLevels` | `all`          | Returns vulnerabilities belonging to specified confidence levels. Possible values: `undefined`, `ignore`, `unknown`, `experimental`, `low`, `medium`, `high`, `confirmed`. |
+| `reportTypes`      | Not applicable | Returns vulnerabilities belonging to specified report types. Possible values: `sast`, `dast`, `dependency_scanning`, `container_scanning`. |
+| `scope`            | `dismissed`    | Returns vulnerability findings for the given scope. Possible values: `all`, `dismissed`. For more information, see the [Vulnerability findings API](../../api/vulnerability_findings.md). |
+| `severityLevels`   | `all`          | Returns vulnerabilities belonging to specified severity levels. Possible values: `undefined`, `info`, `unknown`, `low`, `medium`, `high`, `critical`. |

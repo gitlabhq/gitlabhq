@@ -35,7 +35,7 @@ export default {
       <gl-single-stat :title="s__('UserMapping|Placeholder user limit')" :value="statValue" />
       <p class="gl-mb-0 gl-px-2 gl-text-subtle">
         {{ s__("UserMapping|This limit is shared with all subgroups in the group's hierarchy.") }}
-        <help-page-link href="user/project/import/_index" anchor="placeholder-user-limits">{{
+        <help-page-link href="user/import/mapping" anchor="placeholder-user-limits">{{
           __('Learn more')
         }}</help-page-link
         >.

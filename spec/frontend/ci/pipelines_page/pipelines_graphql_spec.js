@@ -104,6 +104,7 @@ describe('Pipelines app', () => {
         identityVerificationRequired: false,
         identityVerificationPath: '#',
         usesExternalConfig: false,
+        hasGitlabCi: false,
         ...provide,
       },
       stubs: {
@@ -323,6 +324,24 @@ describe('Pipelines app', () => {
         }
       },
     );
+
+    it('refetches query when scope is null', async () => {
+      createComponent();
+
+      expect(successHandler).toHaveBeenCalledTimes(1);
+
+      findTabs().vm.$emit('onChangeTab', 'finished');
+
+      await waitForPromises();
+
+      expect(successHandler).toHaveBeenCalledTimes(2);
+
+      findTabs().vm.$emit('onChangeTab', 'all');
+
+      await waitForPromises();
+
+      expect(successHandler).toHaveBeenCalledTimes(3);
+    });
   });
 
   describe('nav links', () => {
@@ -406,7 +425,7 @@ describe('Pipelines app', () => {
         last: null,
         ref: 'test',
         scope: null,
-        source: 'SCHEDULE',
+        source: 'schedule',
         status: 'SUCCESS',
         username: 'root',
       };

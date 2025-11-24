@@ -31,18 +31,21 @@ module Ci
       end
 
       def validate_param!(param, all_params = {})
+        param = nil if param.is_a?(String) && param.empty? && rules
+
         error('required value has not been provided') if required? && param.nil?
         return if errors.present?
 
-        run_validations(default, all_params, default: true) unless required?
+        run_validations(resolved_default(all_params), all_params, default: true) unless required?
+
         run_validations(param, all_params) unless param.nil?
       end
 
       def actual_value(param, all_params = {})
-        # nil check is to support boolean values.
+        param = nil if param.is_a?(String) && param.empty? && rules
+
         if param.nil?
-          default_value = rules ? resolved_default(all_params) : default
-          coerced_value(default_value)
+          coerced_value(resolved_default(all_params))
         else
           coerced_value(param)
         end

@@ -22,16 +22,16 @@ are supported.
 
 | Feature                                           | Supported              | Example |
 |---------------------------------------------------|------------------------|---------|
-| [Redirects (`301`, `302`)](#redirects)            | {{< icon name="check-circle" >}} Yes | `/wardrobe.html /narnia.html 302` |
-| [Rewrites (`200`)](#rewrites)                     | {{< icon name="check-circle" >}} Yes | `/* / 200` |
-| [Splats](#splats)                                 | {{< icon name="check-circle" >}} Yes | `/news/*  /blog/:splat` |
-| [Placeholders](#placeholders)                     | {{< icon name="check-circle" >}} Yes | `/news/:year/:month/:date /blog-:year-:month-:date.html` |
-| Rewrites (other than `200`)                       | {{< icon name="dotted-circle" >}} No | `/en/* /en/404.html 404` |
-| Query parameters                                  | {{< icon name="dotted-circle" >}} No | `/store id=:id  /blog/:id  301` |
-| Force ([shadowing](https://docs.netlify.com/routing/redirects/rewrites-proxies/#shadowing)) | {{< icon name="dotted-circle" >}} No | `/app/  /app/index.html  200!` |
-| [Domain-level redirects](#domain-level-redirects) | {{< icon name="check-circle" >}} Yes | `http://blog.example.com/* https://www.example.com/blog/:splat 301` |
-| Redirect by country or language                   | {{< icon name="dotted-circle" >}} No | `/  /anz     302  Country=au,nz` |
-| Redirect by role                                  | {{< icon name="dotted-circle" >}} No | `/admin/*  200!  Role=admin` |
+| [Redirects (`301`, `302`)](#redirects)            | {{< yes >}} | `/wardrobe.html /narnia.html 302` |
+| [Rewrites (`200`)](#rewrites)                     | {{< yes >}} | `/* / 200` |
+| [Splats](#splats)                                 | {{< yes >}} | `/news/*  /blog/:splat` |
+| [Placeholders](#placeholders)                     | {{< yes >}} | `/news/:year/:month/:date /blog-:year-:month-:date.html` |
+| Rewrites (other than `200`)                       | {{< no >}} | `/en/* /en/404.html 404` |
+| Query parameters                                  | {{< no >}} | `/store id=:id  /blog/:id  301` |
+| Force ([shadowing](https://docs.netlify.com/routing/redirects/rewrites-proxies/#shadowing)) | {{< no >}} | `/app/  /app/index.html  200!` |
+| [Domain-level redirects](#domain-level-redirects) | {{< yes >}} | `http://blog.example.com/* https://www.example.com/blog/:splat 301` |
+| Redirect by country or language                   | {{< no >}} | `/  /anz     302  Country=au,nz` |
+| Redirect by role                                  | {{< no >}} | `/admin/*  200!  Role=admin` |
 
 {{< alert type="note" >}}
 

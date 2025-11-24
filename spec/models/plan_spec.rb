@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Plan do
+RSpec.describe Plan, feature_category: :subscription_management do
   describe 'validations' do
     describe 'plan_name_uid' do
       it 'validates presence on create' do
@@ -104,5 +104,11 @@ RSpec.describe Plan do
     subject(:plan) { described_class.names_for_ids([default_plan.id]) }
 
     it { is_expected.to eq([default_plan.name]) }
+  end
+
+  describe '#ultimate_or_ultimate_trial_plans?' do
+    subject(:plan) { build(:default_plan).ultimate_or_ultimate_trial_plans? }
+
+    it { is_expected.to be_falsey }
   end
 end

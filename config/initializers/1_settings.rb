@@ -953,6 +953,9 @@ Gitlab.ee do
   Settings.cron_jobs['security_pipeline_execution_policies_schedule_worker'] ||= {}
   Settings.cron_jobs['security_pipeline_execution_policies_schedule_worker']['cron'] ||= '* * * * *'
   Settings.cron_jobs['security_pipeline_execution_policies_schedule_worker']['job_class'] = 'Security::PipelineExecutionPolicies::ScheduleWorker'
+  Settings.cron_jobs['security_unassign_policy_configurations_for_expired_licenses_worker'] ||= {}
+  Settings.cron_jobs['security_unassign_policy_configurations_for_expired_licenses_worker']['cron'] ||= '0 1 * * *'
+  Settings.cron_jobs['security_unassign_policy_configurations_for_expired_licenses_worker']['job_class'] = 'Security::UnassignPolicyConfigurationsForExpiredLicensesCronWorker'
   Settings.cron_jobs['users_security_policy_bot_cleanup_cron_worker'] ||= {}
   Settings.cron_jobs['users_security_policy_bot_cleanup_cron_worker']['cron'] ||= '0 * * * *'
   Settings.cron_jobs['users_security_policy_bot_cleanup_cron_worker']['job_class'] = 'Users::SecurityPolicyBotCleanupCronWorker'

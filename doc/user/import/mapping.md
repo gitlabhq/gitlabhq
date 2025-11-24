@@ -1,0 +1,667 @@
+---
+stage: Create
+group: Import
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+title: Contribution and membership mapping
+---
+
+{{< details >}}
+
+- Tier: Free, Premium, Ultimate
+- Offering: GitLab.com, GitLab Self-Managed
+
+{{< /details >}}
+
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/443557) in GitLab 17.4 for direct transfer [with flags](../../administration/feature_flags/_index.md) named `importer_user_mapping` and `bulk_import_importer_user_mapping`. Disabled by default.
+- Introduced in GitLab 17.6 for [Gitea](https://gitlab.com/gitlab-org/gitlab/-/issues/467084) [with flags](../../administration/feature_flags/_index.md) named `importer_user_mapping` and `gitea_user_mapping`, and for [GitHub](https://gitlab.com/gitlab-org/gitlab/-/issues/466355) with flags named `importer_user_mapping` and `github_user_mapping`. Disabled by default.
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/466356) in GitLab 17.7 for Bitbucket Server [with flags](../../administration/feature_flags/_index.md) named `importer_user_mapping` and `bitbucket_server_user_mapping`. Disabled by default.
+- [Enabled on GitLab.com and GitLab Self-Managed](https://gitlab.com/gitlab-org/gitlab/-/issues/472735) in GitLab 17.7 for direct transfer.
+- Enabled on GitLab.com in GitLab 17.7 for [Bitbucket Server](https://gitlab.com/gitlab-org/gitlab/-/issues/509897), [Gitea](https://gitlab.com/gitlab-org/gitlab/-/issues/498390), and [GitHub](https://gitlab.com/gitlab-org/gitlab/-/issues/499993).
+- Enabled on GitLab Self-Managed in GitLab 17.8 for [Bitbucket Server](https://gitlab.com/gitlab-org/gitlab/-/issues/509897), [Gitea](https://gitlab.com/gitlab-org/gitlab/-/issues/498390), and [GitHub](https://gitlab.com/gitlab-org/gitlab/-/issues/499993).
+- Reassigning contributions to a personal namespace owner when importing to a personal namespace [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/525342) in GitLab 18.3 [with a flag](../../administration/feature_flags/_index.md) named `user_mapping_to_personal_namespace_owner`. Disabled by default.
+- [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/508945) in GitLab 18.4 for direct transfer. Feature flag `bulk_import_importer_user_mapping` removed.
+- Reassigning contributions to service accounts, project bots, and group bots [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/573124) in GitLab 18.5 [with a flag](../../administration/feature_flags/_index.md) named `user_mapping_service_account_and_bots`. Enabled by default.
+- [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/512211) in GitLab 18.6 for Gitea. Feature flag `gitea_user_mapping` removed.
+- Reassigning contributions to a personal namespace owner when importing to a personal namespace [generally available](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/211626) in GitLab 18.6. Feature flag `user_mapping_to_personal_namespace_owner` removed.
+
+{{< /history >}}
+
+{{< alert type="flag" >}}
+
+The availability of this feature is controlled by feature flags.
+For more information, see the history.
+
+{{< /alert >}}
+
+{{< alert type="note" >}}
+
+To leave feedback about this feature, add a comment to [issue 502565](https://gitlab.com/gitlab-org/gitlab/-/issues/502565).
+
+{{< /alert >}}
+
+When you import groups or projects into GitLab, user contributions and memberships from the source instance are initially assigned to placeholder users rather than real users on the destination instance. This gives you time to review the import and reassign contributions to the correct users, ensuring accurate attribution while maintaining control over the mapping process.
+
+The mapping process allows you to reassign placeholders to existing users, create new users for reassignment, or choose to keep certain contributions assigned to placeholders to preserve historical context.
+
+This method of user contribution and membership mapping is available by default for
+[direct transfer](../group/import/_index.md), [GitHub importer](../project/import/github.md),
+[Bitbucket Server importer](../project/import/bitbucket_server.md), and [Gitea importer](../project/import/gitea.md) on
+GitLab.com and GitLab Self-Managed.
+For information on the other method available for GitLab Self-Managed with disabled feature flags,
+see the documentation for each importer.
+
+Any memberships and contributions you import are first mapped to [placeholder users](#placeholder-users).
+These placeholders are created on the destination instance even if
+users with the same email addresses exist on the source instance.
+Until you reassign contributions on the destination instance,
+all contributions display as associated with placeholders.
+
+{{< alert type="note" >}}
+
+Contributions from a deleted user on the source instance are
+mapped automatically to that user on the destination instance.
+
+{{< /alert >}}
+
+After the import has completed, you can:
+
+- Reassign memberships and contributions to existing users on the destination instance
+  after you review the results.
+  You can map memberships and contributions for users with different email addresses
+  on source and destination instances.
+- Create new users on the destination instance to reassign memberships and contributions to.
+
+When you reassign contributions to a user on the destination instance, the user can
+[accept](#accept-contribution-reassignment) or [reject](#reject-contribution-reassignment) the reassignment.
+When the user accepts the reassignment:
+
+- Contributions are reassigned. This process might take a few minutes.
+- In subsequent imports from the same source instance to the same top-level group or subgroup
+  on the destination instance, contributions are mapped automatically to the user.
+
+[In GitLab 18.0 and later](https://gitlab.com/gitlab-org/gitlab/-/issues/510673), if your top-level group
+has at least one [enterprise user](../enterprise_user/_index.md), you can reassign contributions
+only to enterprise users in your organization in the UI or by using a CSV file.
+This feature is meant to prevent accidental reassignment to users outside your organization.
+
+{{< alert type="note" >}}
+
+When you use a supported method to import projects to a
+[personal namespace](../namespace/_index.md#types-of-namespaces),
+user contribution mapping is not supported.
+When you import to a personal namespace, all contributions are assigned to the
+personal namespace owner and they cannot be reassigned.
+
+{{< /alert >}}
+
+## Requirements
+
+- You must be able to create enough users, subject to [user limits](#placeholder-user-limits).
+- If you import to GitLab.com, you must set up your paid namespace before the import.
+- If you import to GitLab.com and use [SAML SSO for GitLab.com groups](../group/saml_sso/_index.md),
+  all users must link their SAML identity to their GitLab.com account before you can
+  [reassign contributions and memberships](#reassign-contributions-and-memberships).
+
+## Placeholder users
+
+Instead of immediately assigning contributions and memberships to users on the destination instance, a
+placeholder user is created for any active, inactive, or bot user with imported contributions or memberships.
+For deleted users on the source instance, placeholders are created
+without all [placeholder user attributes](#placeholder-user-attributes).
+You should [keep these users as placeholders](#keep-as-placeholder).
+For more information, see [issue 506432](https://gitlab.com/gitlab-org/gitlab/-/issues/506432).
+
+Both contributions and memberships are first assigned to these placeholder users and can be reassigned after import
+to existing users on the destination instance.
+Until they are reassigned, contributions display as associated with the placeholder. Placeholder memberships
+do not display in member lists.
+
+Placeholder users do not count towards license limits.
+
+### Exceptions
+
+A placeholder user is created for each user on the source instance, except in the following scenarios:
+
+- You're importing a project from [Gitea](../project/import/gitea.md), and the user was deleted on Gitea before the import.
+  Contributions from these users are mapped to the user who imported the project, not to a placeholder user.
+- You have exceeded your [placeholder user limit](#placeholder-user-limits). Contributions from any new users after exceeding your limit are
+  mapped to a single non-functional user called `Import User`.
+- You're importing to a [personal namespace](../namespace/_index.md#types-of-namespaces)
+  Contributions are assigned to the personal namespace owner.
+
+### Placeholder user attributes
+
+Placeholder users are different to regular users and cannot:
+
+- Sign in.
+- Perform any actions. For example, running pipelines.
+- Appear in suggestions as assignees or reviewers for issues and merge requests.
+- Be members of projects and groups.
+
+To maintain a connection with a user on a source instance, placeholder users have:
+
+- A unique identifier (`source_user_id`) used by the import process to determine if a new placeholder user is required.
+- A source hostname or domain (`source_hostname`).
+- A source user's name (`source_name`) to help with reassignment of contributions.
+- A source user's username (`source_username`) to facilitate group owners during the reassignment of the contribution.
+- An import type (`import_type`) to distinguish which importer created the placeholder.
+- A timestamp of when the source user was created (`created_at`) in local time for migration tracking
+  ([introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/507297) in GitLab 17.10).
+
+To preserve historical context, the placeholder user name and username are derived from the source user name and username:
+
+- Placeholder user's name is `Placeholder <source user name>`.
+- Placeholder user's username is `%{source_username}_placeholder_user_%{incremental_number}`.
+
+### View placeholder users
+
+Prerequisites:
+
+- You must have the Owner role for the group.
+
+Placeholder users are created on the destination instance while a group or project is imported.
+To view placeholder users created during imports to a top-level group and its subgroups:
+
+1. On the left sidebar, select **Search or go to** and find your group. If you've [turned on the new navigation](../interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
+   This group must be at the top level.
+1. Select **Manage** > **Members**.
+1. Select the **Placeholders** tab.
+
+### Filter for placeholder users
+
+{{< details >}}
+
+- Offering: GitLab Self-Managed, GitLab Dedicated
+
+{{< /details >}}
+
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/521974) in GitLab 17.11.
+
+{{< /history >}}
+
+Prerequisites:
+
+- You must have administrator access to the instance.
+
+Placeholder users are created on the destination instance while a group or project is imported.
+To filter for placeholder users created during imports for an entire instance:
+
+1. On the left sidebar, at the bottom, select **Admin**. If you've [turned on the new navigation](../interface_redesign.md#turn-new-navigation-on-or-off), in the upper-right corner, select **Admin**.
+1. Select **Overview** > **Users**.
+1. In the search box, filter users by **type**.
+
+### Creating placeholder users
+
+Placeholder users are created per import source and per top-level group:
+
+- If you import the same project twice to the same top-level group on the destination instance, the second import uses
+  the same placeholder users as the first import.
+- If you import the same project twice, but to a different top-level group on the destination instance, the second import
+  creates new placeholder users under that top-level group.
+
+{{< alert type="note" >}}
+
+Placeholder users are associated only with the top-level group.
+When you delete a subgroup or project, their placeholder users
+no longer reference any contributions in the top-level group.
+For testing, you should use a designated top-level group.
+Deleting placeholder users is proposed in [issue 519391](https://gitlab.com/gitlab-org/gitlab/-/issues/519391)
+and [issue 537340](https://gitlab.com/gitlab-org/gitlab/-/issues/537340).
+
+{{< /alert >}}
+
+When a user [accepts the reassignment](#accept-contribution-reassignment),
+subsequent imports from the same source instance to the same top-level group or
+subgroup on the destination instance do not create placeholder users.
+Instead, contributions are mapped automatically to the user.
+
+### Placeholder user deletion
+
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/473256) in GitLab 18.0.
+
+{{< /history >}}
+
+When you delete a top-level group that contains placeholder users,
+these users are automatically scheduled for removal.
+This process might take some time to complete.
+However, placeholder users remain in the system if
+they're also associated with other projects or groups.
+
+{{< alert type="note" >}}
+
+There is no other way to delete placeholder users, but support for improvements is proposed in
+[issue 519391](https://gitlab.com/gitlab-org/gitlab/-/issues/519391) and
+[issue 537340](https://gitlab.com/gitlab-org/gitlab/-/issues/537340).
+
+{{< /alert >}}
+
+### Placeholder user limits
+
+If importing to GitLab.com, placeholder users are limited per top-level group on the destination instance. The limits differ depending on your plan and seat count. Placeholder users do not count towards license limits.
+
+| GitLab.com plan          | Number of seats | Placeholder user limit on top-level group |
+|:-------------------------|:----------------|:------------------------------------------|
+| Free and any trial       | Any amount      | 200                                       |
+| Premium                  | < 100           | 500                                       |
+| Premium                  | 101-500         | 2000                                      |
+| Premium                  | 501 - 1000      | 4000                                      |
+| Premium                  | > 1000          | 6000                                      |
+| Ultimate and open source | < 100           | 1000                                      |
+| Ultimate and open source | 101-500         | 4000                                      |
+| Ultimate and open source | 501 - 1000      | 6000                                      |
+| Ultimate and open source | > 1000          | 8000                                      |
+
+For GitLab Self-Managed and GitLab Dedicated, no placeholder limits apply by default.
+A GitLab administrator can [set a placeholder limit](../../administration/instance_limits.md#import-placeholder-user-limits) on their instance.
+
+To view your current placeholder user usage and limits:
+
+1. On the left sidebar, select **Search or go to** and find your group. If you've [turned on the new navigation](../interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar. This group must be at the top level.
+1. Select **Settings** > **Usage quotas**.
+1. Select the **Import** tab.
+
+You cannot determine the number of placeholder users you need in advance.
+
+When the placeholder user limit is reached, all contributions
+are assigned to a single non-functional user called `Import User`.
+Contributions assigned to `Import User` might be deduplicated,
+and some contributions might not be created during the import.
+For example, if multiple approvals from a merge request approver are assigned
+to `Import User`, only the first approval is created and the others are ignored.
+The contributions that might be deduplicated are:
+
+- Approval rules
+- Emoji reactions
+- Issue assignees
+- Memberships
+- Merge request approvals, assignees, and reviewers
+- Push, merge request, and deploy access levels
+
+Every change creates a system note, which is not affected by the placeholder user limit.
+
+## Reassign contributions and memberships
+
+Users with the Owner role for a top-level group can reassign contributions and memberships
+from placeholder users to existing active non-bot users.
+On the destination instance, users with the Owner role for a top-level group can:
+
+- Request users to review reassignment of contributions and memberships [in the UI](#request-reassignment-in-ui)
+  or [through a CSV file](#request-reassignment-by-using-a-csv-file).
+  For a large number of placeholder users, you should use a CSV file.
+  In both cases, users receive a request by email to accept or reject the reassignment.
+  The reassignment starts only after the selected user
+  [accepts the reassignment request](#accept-contribution-reassignment).
+- Choose not to reassign contributions and memberships and [keep them assigned to placeholder users](#keep-as-placeholder).
+
+On GitLab Self-Managed and GitLab Dedicated, administrators can reassign
+contributions and memberships to active and inactive non-bot users immediately without their confirmation.
+For more information, see [skip confirmation when administrators reassign placeholder users](../../administration/settings/import_and_export_settings.md#skip-confirmation-when-administrators-reassign-placeholder-users).
+To reassign contributions and memberships to administrators, see
+[allow contribution mapping to administrators](../../administration/settings/import_and_export_settings.md#allow-contribution-mapping-to-administrators).
+
+## Bypass confirmation when reassigning placeholder users
+
+{{< details >}}
+
+- Tier: Premium, Ultimate
+- Offering: GitLab.com
+
+{{< /details >}}
+
+{{< history >}}
+
+- [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/17871) in GitLab 18.3 [with a flag](../../administration/feature_flags/list.md) named `group_owner_placeholder_confirmation_bypass`. Disabled by default.
+- [Enabled on GitLab.com](https://gitlab.com/gitlab-org/gitlab/-/issues/548946) in GitLab 18.4.
+
+{{< /history >}}
+
+{{< alert type="flag" >}}
+
+The availability of this feature is controlled by a feature flag.
+For more information, see the history.
+
+{{< /alert >}}
+
+Prerequisites:
+
+- You must have the Owner role for the group.
+
+To bypass confirmation for [enterprise users](../enterprise_user/_index.md)
+when you reassign placeholders:
+
+1. On the left sidebar, select **Search or go to** and find your group. If you've [turned on the new navigation](../interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
+   This group must be at the top level.
+1. Select **Settings** > **General**.
+1. Expand **Permissions and group features**.
+1. Under **Placeholder user confirmation**, select the
+   **Reassign placeholders to enterprise users without user confirmation** checkbox.
+1. In **When to restore user confirmation**,
+   select an end date for bypassing user confirmation.
+   The default value is one day.
+1. Select **Save changes**.
+
+### Reassigning contributions from multiple placeholder users
+
+You can reassign all contributions initially assigned to a single placeholder user to a
+single active regular user, service accounts, project bots, and group bots on the destination instance.
+You cannot split contributions assigned to a single placeholder user among multiple users.
+
+You can reassign contributions from multiple placeholder users to the same user
+on the destination instance if the placeholder users are from:
+
+- Different source instances
+- The same source instance and are imported to different top-level groups on the destination instance
+
+If an assigned user becomes inactive before accepting the reassignment request,
+the pending reassignment remains linked to the user until they accept it.
+
+Users that receive a reassignment request can:
+
+- [Accept the request](#accept-contribution-reassignment). All contributions and membership previously attributed to the placeholder user are re-attributed
+  to the accepting user. This process can take a few minutes, depending on the number of contributions.
+- [Reject the request](#reject-contribution-reassignment) or report it as spam. This option is available in the reassignment
+  request email.
+
+When you reassign contributions to service accounts, project bots, and group bots,
+the reassignment request is automatically approved.
+
+In subsequent imports to the same top-level group, contributions and memberships that belong to the same source user
+are mapped automatically to the user who previously accepted reassignments for that source user.
+
+On GitLab Self-Managed and GitLab Dedicated, administrators can reassign
+contributions and memberships to active and inactive non-bot users immediately without their confirmation.
+For more information, see [skip confirmation when administrators reassign placeholder users](../../administration/settings/import_and_export_settings.md#skip-confirmation-when-administrators-reassign-placeholder-users).
+To reassign contributions and memberships to administrators, see
+[allow contribution mapping to administrators](../../administration/settings/import_and_export_settings.md#allow-contribution-mapping-to-administrators).
+
+### Completing the reassignment
+
+The reassignment process must be fully completed before you:
+
+- [Move an imported group in the same GitLab instance](../group/manage.md#transfer-a-group).
+- [Move an imported project to a different group](../project/working_with_projects.md#transfer-a-project).
+- Duplicate an imported issue.
+- Promote an imported issue to an epic.
+
+If the process isn't complete, contributions still assigned to placeholder users cannot be reassigned to real users and
+they stay associated with placeholder users.
+
+### Security considerations
+
+Contribution and membership reassignment cannot be undone, so check everything carefully before you start.
+
+Reassigning contributions and membership to an incorrect user poses a security threat, because the user becomes a member
+of your group. They can, therefore, view information they should not be able to see.
+
+Reassigning contributions to users with administrator access is disabled by default, but you can
+[enable](../../administration/settings/import_and_export_settings.md#allow-contribution-mapping-to-administrators) it.
+
+#### Membership security considerations
+
+Because of the GitLab permissions model, when a group or project is imported into an existing parent group, members of
+the parent group are granted [inherited membership](../project/members/_index.md#membership-types) of the imported group or project.
+
+Selecting a user for contribution and membership reassignment who already has an
+existing inherited membership of the imported group or project can affect how memberships
+are reassigned to them.
+
+GitLab does not allow a membership in a child project or group to have a lower role
+than an inherited membership. If an imported membership for an assigned user has a lower role
+than their existing inherited membership, the imported membership is not reassigned to the user.
+
+This results in their membership for the imported group or project being higher than it was on the source.
+
+### Request reassignment in UI
+
+Prerequisites:
+
+- You must have the Owner role for the group.
+
+You can reassign contributions and memberships in the top-level group.
+To request reassignment of contributions and memberships:
+
+1. On the left sidebar, select **Search or go to** and find your group. If you've [turned on the new navigation](../interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
+   This group must be at the top level.
+1. Select **Manage** > **Members**.
+1. Select the **Placeholders** tab.
+1. Go to **Awaiting reassignment** sub-tab, where placeholders are listed in a table.
+1. For each placeholder, review information in table columns **Placeholder user** and **Source**.
+1. In the **Reassign placeholder to** column, select the a user from the dropdown list.
+1. Select **Reassign**.
+
+Contributions of only one placeholder user can be reassigned to an active non-bot user on destination instance.
+
+Before a user accepts the reassignment, you can [cancel the request](#cancel-reassignment-request).
+
+On GitLab Self-Managed and GitLab Dedicated, administrators can reassign
+contributions and memberships to active and inactive non-bot users immediately without their confirmation.
+For more information, see [skip confirmation when administrators reassign placeholder users](../../administration/settings/import_and_export_settings.md#skip-confirmation-when-administrators-reassign-placeholder-users).
+To reassign contributions and memberships to administrators, see
+[allow contribution mapping to administrators](../../administration/settings/import_and_export_settings.md#allow-contribution-mapping-to-administrators).
+
+### Request reassignment by using a CSV file
+
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/455901) in GitLab 17.10 [with a flag](../../administration/feature_flags/_index.md) named `importer_user_mapping_reassignment_csv`. Enabled by default.
+- [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/478022) in GitLab 18.0. Feature flag `importer_user_mapping_reassignment_csv` removed.
+
+{{< /history >}}
+
+Prerequisites:
+
+- You must have the Owner role for the group.
+
+For a large number of placeholder users, you might want to
+reassign contributions and memberships by using a CSV file.
+You can download a prefilled CSV template with the following information.
+For example:
+
+| Source host          | Import type | Source user identifier | Source user name | Source username |
+|----------------------|-------------|------------------------|------------------|-----------------|
+| `gitlab.example.com` | `gitlab`    | `alice`                | `Alice Coder`    | `a.coer`        |
+
+Do not update **Source host**, **Import type**, or **Source user identifier**.
+This information locates the corresponding database record
+after you've uploaded the completed CSV file.
+**Source user name** and **Source username** identify the source user
+and are not used after you've uploaded the CSV file.
+
+You do not have to update every row of the CSV file.
+Only rows with **GitLab username** or **GitLab public email** are processed.
+All other rows are skipped.
+
+To request reassignment of contributions and memberships by using a CSV file:
+
+1. On the left sidebar, select **Search or go to** and find your group. If you've [turned on the new navigation](../interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
+1. Select **Manage** > **Members**.
+1. Select the **Placeholders** tab.
+1. Select **Reassign with CSV**.
+1. Download the prefilled CSV template.
+1. In **GitLab username** or **GitLab public email**, enter the username or public email address
+   of the GitLab user on the destination instance.
+   Instance administrators can reassign users with any confirmed email address.
+1. Upload the completed CSV file.
+1. Select **Reassign**.
+
+You can assign only contributions from a single placeholder user
+to each active non-bot user on the destination instance.
+Users receive an email to review and [accept any contributions](#accept-contribution-reassignment) you've reassigned to them.
+You can [cancel the reassignment request](#cancel-reassignment-request) before the user reviews it.
+
+On GitLab Self-Managed and GitLab Dedicated, administrators can reassign
+contributions and memberships to active and inactive non-bot users immediately without their confirmation.
+For more information, see [skip confirmation when administrators reassign placeholder users](../../administration/settings/import_and_export_settings.md#skip-confirmation-when-administrators-reassign-placeholder-users).
+To reassign contributions and memberships to administrators, see
+[allow contribution mapping to administrators](../../administration/settings/import_and_export_settings.md#allow-contribution-mapping-to-administrators).
+
+After you reassign contributions, GitLab sends you an email with the number of:
+
+- Successfully processed rows
+- Unsuccessfully processed rows
+- Skipped rows
+
+If any rows have not been successfully processed, the email has a CSV file with more detailed results.
+
+To reassign placeholder users in bulk without using the UI,
+see [Group placeholder reassignments API](../../api/group_placeholder_reassignments.md).
+
+### Keep as placeholder
+
+{{< history >}}
+
+- [Changed](https://gitlab.com/gitlab-org/gitlab/-/issues/535431) in GitLab 18.5, the operation can be undone.
+
+{{< /history >}}
+
+You might not want to reassign contributions and memberships to users on the destination instance. For example, you
+might have former employees that contributed on the source instance, but they do not exist as users on the destination
+instance.
+
+In these cases, you can keep the contributions assigned to placeholder users. Placeholder users do not keep
+membership information because they [cannot be members of projects or groups](#placeholder-user-attributes).
+
+Because names and usernames of placeholder users resemble names and usernames of source users, you keep a lot of
+historical context.
+
+You can keep contributions assigned to placeholder users either one at a time or in bulk.
+When you reassign contributions in bulk, the entire namespace and users with the following
+[reassignment statuses](#view-and-filter-by-reassignment-status) are affected:
+
+- `Not started`
+- `Rejected`
+
+To keep placeholder users one at a time:
+
+1. On the left sidebar, select **Search or go to** and find your group. If you've [turned on the new navigation](../interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
+   This group must be at the top level.
+1. Select **Manage** > **Members**.
+1. Select the **Placeholders** tab.
+1. Go to **Awaiting reassignment** sub-tab, where placeholders are listed in a table.
+1. Find placeholder user you want to keep by reviewing **Placeholder user** and **Source** columns.
+1. In **Reassign placeholder to** column, select **Do not reassign**.
+1. Select **Confirm**.
+
+To keep placeholder users in bulk:
+
+1. On the left sidebar, select **Search or go to** and find your group. If you've [turned on the new navigation](../interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
+   This group must be at the top level.
+1. Select **Manage** > **Members**.
+1. Select the **Placeholders** tab.
+1. Above the list, select the vertical ellipsis ({{< icon name="ellipsis_v" >}}) > **Keep all as placeholders**.
+1. On the confirmation dialog, select **Confirm**.
+
+To undo the operation:
+
+1. On the left sidebar, select **Search or go to** and find your group. If you've [turned on the new navigation](../interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
+   This group must be at the top level.
+1. Select **Manage** > **Members**.
+1. Select the **Placeholders** tab.
+1. Go to **Reassigned** sub-tab, where placeholders are listed in a table.
+1. Select **Undo** in the correct row.
+
+### Cancel reassignment request
+
+Before a user accepts a reassignment request, you can cancel the request:
+
+1. On the left sidebar, select **Search or go to** and find your group. If you've [turned on the new navigation](../interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
+   This group must be at the top level.
+1. Select **Manage** > **Members**.
+1. Select the **Placeholders** tab.
+1. Go to **Awaiting reassignment** sub-tab, where placeholders are listed in a table.
+1. Select **Cancel** in the correct row.
+
+### Notify user again about pending reassignment requests
+
+If a user is not acting on a reassignment request, you can prompt them again by sending another email:
+
+1. On the left sidebar, select **Search or go to** and find your group. If you've [turned on the new navigation](../interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
+   This group must be at the top level.
+1. Select **Manage** > **Members**.
+1. Select the **Placeholders** tab.
+1. Go to **Awaiting reassignment** sub-tab, where placeholders are listed in a table.
+1. Select **Notify** in the correct row.
+
+### View and filter by reassignment status
+
+To view the reassignment status of all placeholder users:
+
+1. On the left sidebar, select **Search or go to** and find your group. If you've [turned on the new navigation](../interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
+   This group must be at the top level.
+1. Select **Manage** > **Members**.
+1. Select the **Placeholders** tab.
+1. Go to **Awaiting reassignment** sub-tab, where placeholders are listed in a table.
+1. See the status of each placeholder user in **Reassignment status** column.
+
+In the **Awaiting reassignment** tab, possible statuses are:
+
+- `Not started` - Reassignment has not started.
+- `Pending approval` - Reassignment is waiting on user approval.
+- `Reassigning` - Reassignment is in progress.
+- `Rejected` - Reassignment was rejected by user.
+- `Failed` - Reassignment failed.
+
+In the **Reassigned** tab, possible statuses are:
+
+- `Success` - Reassignment succeeded.
+- `Kept as placeholder` - Placeholder user was made permanent.
+
+By default, the table is sorted alphabetically by placeholder user name.
+You can also sort the table by reassignment status.
+
+## Confirm contribution reassignment
+
+When [**Skip confirmation when administrators reassign placeholder users**](../../administration/settings/import_and_export_settings.md#skip-confirmation-when-administrators-reassign-placeholder-users) is enabled:
+
+- Administrators can reassign contributions immediately without user confirmation.
+- Administrators can reassign contributions to active and inactive non-bot users.
+- You receive an email informing you that you've been reassigned contributions.
+
+If this setting is not enabled, you can [accept](#accept-contribution-reassignment)
+or [reject](#reject-contribution-reassignment) the reassignment.
+
+### Accept contribution reassignment
+
+You might receive an email informing you that an import process took place and asking you to confirm reassignment of
+contributions to yourself.
+
+If you were informed about this import process, you must still review reassignment details very carefully. Details
+listed in the email are:
+
+- **Imported from** - The platform the imported content originates from. For example, another instance of GitLab,
+  GitHub, or Bitbucket.
+- **Original user** - The name and username of the user on the source platform. This could be your name and user name on
+  that platform.
+- **Imported to** - The name of the new platform, which can only be a GitLab instance.
+- **Reassigned to** - Your full name and username on the GitLab instance.
+- **Reassigned by** - The full name and username of your colleague or manager that performed the import.
+
+### Reject contribution reassignment
+
+If you receive an email asking you to confirm reassignment of contributions to yourself and you don't recognize or you
+notice mistakes in this information:
+
+1. Do not proceed at all or reject the contribution reassignment.
+1. Talk to a trusted colleague or your manager.
+
+### Security considerations
+
+You must review the reassignment details of any reassignment request very carefully. If you were not already informed
+about this process by a trusted colleague or your manager, take extra care.
+
+Rather than accept any reassignments that you have any doubts about:
+
+1. Don't act on the emails.
+1. Talk to a trusted colleague or your manager.
+
+Accept reassignments only from the users that you know and trust. Reassignment of contributions is permanent and cannot
+be undone. Accepting the reassignment might cause contributions to be incorrectly attributed to you.
+
+The contribution reassignment process starts only after you accept the reassignment request by selecting
+**Approve reassignment** in GitLab. The process doesn't start by selecting links in the email.

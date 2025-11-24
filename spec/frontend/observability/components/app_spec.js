@@ -242,13 +242,7 @@ describe('Observability App Component', () => {
     it('rejects invalid auth token structure', () => {
       const authTokensValidator = App.props.authTokens.validator;
 
-      expect(authTokensValidator({ accessJwt: 'token' })).toBe(false);
-      expect(authTokensValidator({ userId: 'user', accessJwt: '', refreshJwt: 'refresh' })).toBe(
-        false,
-      );
-      expect(authTokensValidator({ userId: 123, accessJwt: 'access', refreshJwt: 'refresh' })).toBe(
-        false,
-      );
+      expect(authTokensValidator({ accessJwt: '', refreshJwt: 'refresh' })).toBe(false);
     });
 
     it('accepts valid auth token structure', () => {

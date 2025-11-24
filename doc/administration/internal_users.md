@@ -44,7 +44,7 @@ Other examples of internal users:
 - [Alert Bot](../operations/incident_management/alerts.md#trigger-actions-from-alerts)
 - [Ghost User](../user/profile/account/delete_account.md#associated-records)
 - [Support Bot](../user/project/service_desk/configure.md#support-bot-user)
-- [Placeholder User](../user/project/import/_index.md#placeholder-users) created during imports
+- [Placeholder User](../user/import/mapping.md#placeholder-users) created during imports
 - Visual Review Bot
 - Resource access tokens, including [project access tokens](../user/project/settings/project_access_tokens.md)
   and [group access tokens](../user/group/settings/group_access_tokens.md), which are

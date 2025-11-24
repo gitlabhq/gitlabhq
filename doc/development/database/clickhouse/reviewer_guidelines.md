@@ -150,6 +150,10 @@ For example: `185/72937` granules means only a small subset of the table was sca
 
 Ensure performance validation uses real-world (or synthetic) data from large namespaces (e.g., `gitlab-org` or `gitlab-org/gitlab`).
 
+## New materialized views review
+
+Make sure materialized view is created with the `POPULATE` keyword or has a backfill migration for large datasets.
+
 ## Table Engine Specific Behavior
 
 With the **MergeTree** family, the *primary key* (i.e., `ORDER BY`) defines the sort/index, **not** a uniqueness constraint. Rows with the same primary-key values can coexist. If your ingestion pipeline may produce duplicates or updates, you must handle them at read time (or pick an engine that collapses versions).

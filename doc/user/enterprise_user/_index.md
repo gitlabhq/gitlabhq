@@ -235,14 +235,8 @@ Enterprise users can follow the same process as other GitLab users to
 The new email address must be from a verified domain. If your organization has no verified
 domains, your enterprise users cannot change their primary email address.
 
-Enterprise users can follow the same process as other GitLab users to
-[change their primary email address](../../user/profile/_index.md#change-your-primary-email).
-
 Group Owners can modify the email address for enterprise users in their group with the
 [group enterprise users API](../../api/group_enterprise_users.md#modify-an-enterprise-user).
-
-The new email address must be from a verified domain. If your group has no verified
-domains, your enterprise users cannot change their primary email address.
 
 Only GitLab support can change the primary email address to an email address from a
 non-verified domain. This action [releases the enterprise user](#release-an-enterprise-user).

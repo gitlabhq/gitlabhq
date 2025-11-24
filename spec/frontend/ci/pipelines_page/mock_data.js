@@ -52,6 +52,7 @@ export const mockPipelinesData = {
             source: 'schedule',
             latest: true,
             yamlErrors: false,
+            yamlErrorMessages: '',
             failureReason: null,
             configSource: 'REPOSITORY_SOURCE',
             stuck: false,
@@ -162,6 +163,7 @@ export const mockPipelinesData = {
             source: 'web',
             latest: true,
             yamlErrors: false,
+            yamlErrorMessages: '',
             failureReason: null,
             configSource: 'REPOSITORY_SOURCE',
             stuck: false,
@@ -373,6 +375,7 @@ export const mockPipelineUpdateResponse = {
       cancelable: false,
       stuck: false,
       yamlErrors: false,
+      yamlErrorMessages: '',
       failureReason: null,
       stages: {
         nodes: [
@@ -446,6 +449,7 @@ export const mockNewPipeline = {
   cancelable: true,
   stuck: false,
   yamlErrors: false,
+  yamlErrorMessages: '',
   failureReason: null,
   stages: {
     nodes: [

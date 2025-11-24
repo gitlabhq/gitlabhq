@@ -1,0 +1,10 @@
+---
+name: automatically_unassign_security_policies_for_expired_licenses
+description:
+feature_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/431229
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/209602
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/577920
+milestone: '18.7'
+group: group::security policies
+type: gitlab_com_derisk
+default_enabled: false

@@ -51,6 +51,14 @@ RSpec.describe Ci::Inputs::BaseInput, feature_category: :pipeline_composition do
         expect { input.validate_param!(nil) }.to raise_error(NotImplementedError)
       end
     end
+
+    context 'when param is an empty string' do
+      let(:input) { described_class.new(name: :test_input, spec: { default: 'test' }) }
+
+      it 'treats empty string as nil and uses default' do
+        expect { input.validate_param!('') }.to raise_error(NotImplementedError)
+      end
+    end
   end
 
   describe 'attributes' do

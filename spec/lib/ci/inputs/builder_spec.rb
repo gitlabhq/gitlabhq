@@ -249,6 +249,102 @@ RSpec.describe Ci::Inputs::Builder, feature_category: :pipeline_composition do
           expect(spec_inputs.errors).to be_empty
         end
       end
+
+      context 'when rules-based input receives empty string' do
+        let(:params) do
+          {
+            'cloud_provider' => 'aws',
+            'instance_type' => ''
+          }
+        end
+
+        let(:specs) do
+          {
+            'cloud_provider' => {
+              type: 'string',
+              options: %w[aws gcp],
+              default: 'aws'
+            },
+            'instance_type' => {
+              type: 'string',
+              rules: [
+                {
+                  if: '$[[ inputs.cloud_provider ]] == "aws"',
+                  options: ['t3.micro', 't3.small'],
+                  default: 't3.micro'
+                }
+              ]
+            }
+          }
+        end
+
+        it 'treats empty string as nil and uses resolved default' do
+          result = validate
+          expect(spec_inputs.errors).to be_empty
+          expect(result['cloud_provider']).to eq('aws')
+          expect(result['instance_type']).to eq('t3.micro')
+        end
+      end
+    end
+
+    context 'with boolean false value' do
+      let(:specs) do
+        {
+          'bool_param' => { type: 'boolean', default: true }
+        }
+      end
+
+      let(:params) { { 'bool_param' => false } }
+
+      it 'treats false as a valid provided value, not as nil' do
+        result = validate
+        expect(spec_inputs.errors).to be_empty
+        expect(result['bool_param']).to be(false)
+      end
+    end
+
+    context 'with empty string as user input for non-rules-based input' do
+      let(:specs) do
+        {
+          'string_param' => { type: 'string', default: 'default-value' }
+        }
+      end
+
+      let(:params) { { 'string_param' => '' } }
+
+      it 'treats empty string as a valid provided value (not as nil)' do
+        result = validate
+        expect(spec_inputs.errors).to be_empty
+        expect(result['string_param']).to eq('')
+      end
+    end
+
+    context 'with empty string as default value' do
+      let(:specs) do
+        {
+          'string_param' => { type: 'string', default: '' }
+        }
+      end
+
+      context 'when user provides no value' do
+        let(:params) { {} }
+
+        it 'uses the empty string default' do
+          result = validate
+          expect(spec_inputs.errors).to be_empty
+          expect(result['string_param']).to eq('')
+        end
+      end
+
+      context 'when user provides a value' do
+        let(:params) { { 'string_param' => 'custom' } }
+
+        it 'uses the provided value' do
+          result = validate
+          expect(spec_inputs.errors).to be_empty
+          expect(result['string_param']).to eq('custom')
+        end
+      end
     end
   end
 

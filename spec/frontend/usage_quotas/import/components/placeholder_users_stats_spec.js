@@ -38,8 +38,7 @@ describe('PlaceholderUsersStats', () => {
     const helpPageLink = findHelpPageLink();
 
     expect(helpPageLink.props()).toMatchObject({
-      href: 'user/project/import/_index',
-      anchor: 'placeholder-user-limits',
+      href: 'user/import/mapping',
     });
     expect(helpPageLink.text()).toBe('Learn more');
   });

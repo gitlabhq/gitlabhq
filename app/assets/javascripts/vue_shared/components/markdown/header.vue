@@ -16,7 +16,7 @@ import {
 } from '~/behaviors/shortcuts/keybindings';
 import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import { getModifierKey } from '~/constants';
-import { getSelectedFragment } from '~/lib/utils/common_utils';
+import { getSelectedFragment, insertText } from '~/lib/utils/common_utils';
 import { truncateSha } from '~/lib/utils/text_utility';
 import { s__, __, sprintf } from '~/locale';
 import { CopyAsGFM } from '~/behaviors/markdown/copy_as_gfm';
@@ -418,9 +418,9 @@ export default {
 
       // Regex with global modifier maintains state between calls, causing inconsistent behaviour.
       // So we have to test against a regexp without the global flag when matching segments.
-      const regexWithoutG = new RegExp(escapedText, 'gi');
+      const regexWithoutG = new RegExp(escapedText, 'g');
 
-      const segments = textArea.value.split(new RegExp(`(${escapedText})`, 'gi'));
+      const segments = textArea.value.split(new RegExp(`(${escapedText})`, 'g'));
       const options = this.$options.findAndReplace;
 
       // Clear previous contents
@@ -531,6 +531,36 @@ export default {
       if (this.findAndReplace.highlightedMatchIndex > this.findAndReplace.totalMatchCount) {
         this.findAndReplace.highlightedMatchIndex = 1;
       }
+    },
+    findAndReplace_replaceNext() {
+      const textArea = this.getCurrentTextArea();
+
+      if (!textArea) {
+        return;
+      }
+
+      function findNthOccurrence(str, searchStr, n) {
+        let index = -1;
+
+        for (let i = 0; i < n; i += 1) {
+          index = str.indexOf(searchStr, index + 1);
+          if (index === -1) return -1; // Not found
+        }
+
+        return index;
+      }
+
+      const index = findNthOccurrence(
+        textArea.value,
+        this.findAndReplace.find,
+        this.findAndReplace.highlightedMatchIndex,
+      );
+
+      textArea.setSelectionRange(index, index + this.findAndReplace.find.length);
+      insertText(textArea, this.findAndReplace.replace);
+
+      // Re-higlight
+      this.findAndReplace_highlightMatchingText(this.findAndReplace.find);
     },
     skipToInput() {
       this.$el.closest('.md-area')?.querySelector('textarea')?.focus();
@@ -827,18 +857,30 @@ export default {
     </div>
     <div
       v-if="findAndReplace.shouldShowBar"
-      class="gl-border gl-absolute gl-right-0 gl-z-3 gl-flex gl-w-34 gl-items-center gl-rounded-bl-base gl-border-r-0 gl-bg-section gl-p-3 gl-shadow-sm"
+      class="gl-border gl-absolute gl-right-0 gl-z-3 gl-flex gl-items-start gl-rounded-bl-base gl-border-r-0 gl-bg-section gl-p-3 gl-shadow-sm"
       data-testid="find-and-replace"
     >
-      <gl-form-input
-        v-model="findAndReplace.find"
-        :placeholder="s__('MarkdownEditor|Find')"
-        autofocus
-        data-testid="find-btn"
-        @keydown="findAndReplace_handleKeyDown"
-        @keyup="findAndReplace_handleKeyUp"
-      />
-      <div class="gl-ml-4 gl-min-w-12 gl-whitespace-nowrap">
+      <div>
+        <gl-form-input
+          v-model="findAndReplace.find"
+          :placeholder="s__('MarkdownEditor|Find')"
+          autofocus
+          class="gl-min-w-36 gl-mb-3"
+          data-testid="find-input"
+          @keydown="findAndReplace_handleKeyDown"
+          @keyup="findAndReplace_handleKeyUp"
+        />
+        <gl-form-input
+          v-model="findAndReplace.replace"
+          :placeholder="s__('MarkdownEditor|Replace')"
+          class="gl-mb-3"
+          data-testid="replace-input"
+        />
+        <gl-button @click="findAndReplace_replaceNext">
+          {{ s__('MarkdownEditor|Replace') }}
+        </gl-button>
+      </div>
+      <div class="gl-ml-4 gl-min-w-12 gl-whitespace-nowrap" data-testid="find-and-replace-matches">
         {{ findAndReplace_MatchCountText }}
       </div>
       <div class="gl-ml-2 gl-flex gl-items-center">
