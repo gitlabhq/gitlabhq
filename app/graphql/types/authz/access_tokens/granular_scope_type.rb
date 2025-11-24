@@ -23,10 +23,6 @@ module Types
           null: true,
           description: 'List of permissions of a granular scope.'
 
-        def access
-          'personal_projects'
-        end
-
         def permissions
           object.permissions.filter_map { |permission_name| ::Authz::Permission.get(permission_name) }
         end

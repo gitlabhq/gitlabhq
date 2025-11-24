@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-require 'spec_helper'
+require 'fast_spec_helper'
 
 RSpec.describe 'ci:job_tokens rake tasks', feature_category: :permissions do
   let(:task_class) { Tasks::Ci::JobTokensTask }

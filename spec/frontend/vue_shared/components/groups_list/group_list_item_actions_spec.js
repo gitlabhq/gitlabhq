@@ -15,6 +15,8 @@ import {
   ACTION_LEAVE,
   ACTION_RESTORE,
   ACTION_UNARCHIVE,
+  ACTION_REQUEST_ACCESS,
+  ACTION_WITHDRAW_ACCESS_REQUEST,
 } from '~/vue_shared/components/list_actions/constants';
 import { groups } from 'jest/vue_shared/components/groups_list/mock_data';
 import { archiveGroup, restoreGroup, unarchiveGroup } from '~/api/groups_api';
@@ -500,6 +502,61 @@ describe('GroupListItemActions', () => {
         findLeaveModal().vm.$emit('success');
 
         expect(wrapper.emitted('refetch')).toEqual([[]]);
+      });
+    });
+  });
+
+  describe('when group does not have requestAccessPath', () => {
+    it('does not display Request access action', () => {
+      createComponent();
+
+      expect(findListActions().props('actions')[ACTION_REQUEST_ACCESS]).toBeUndefined();
+    });
+  });
+
+  describe('when group has requestAccessPath', () => {
+    it('displays Request access action', () => {
+      const requestAccessPath = '/request_access';
+
+      createComponent({
+        propsData: { group: { ...group, requestAccessPath } },
+      });
+
+      expect(findListActions().props('actions')[ACTION_REQUEST_ACCESS]).toEqual({
+        href: requestAccessPath,
+        extraAttrs: {
+          'data-method': 'post',
+          'data-testid': 'request-access-link',
+          rel: 'nofollow',
+        },
+      });
+    });
+  });
+
+  describe('when group does not have withdrawAccessRequestPath', () => {
+    it('does not display Withdraw access request action', () => {
+      createComponent();
+
+      expect(findListActions().props('actions')[ACTION_WITHDRAW_ACCESS_REQUEST]).toBeUndefined();
+    });
+  });
+
+  describe('when group has withdrawAccessRequestPath', () => {
+    it('displays Withdraw access request action', () => {
+      const withdrawAccessRequestPath = '/withdraw_access_request';
+
+      createComponent({
+        propsData: { group: { ...group, withdrawAccessRequestPath } },
+      });
+
+      expect(findListActions().props('actions')[ACTION_WITHDRAW_ACCESS_REQUEST]).toEqual({
+        href: withdrawAccessRequestPath,
+        extraAttrs: {
+          'data-method': 'delete',
+          'data-testid': 'withdraw-access-link',
+          'data-confirm': `Are you sure you want to withdraw your access request for the ${group.fullName} group?`,
+          rel: 'nofollow',
+        },
       });
     });
   });

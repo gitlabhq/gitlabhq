@@ -2508,6 +2508,15 @@ msgstr ""
 msgid "AICatalog|Additional information"
 msgstr ""
 
+msgid "AICatalog|Agent"
+msgstr ""
+
+msgid "AICatalog|Agent \"%{name}\" could not be enabled."
+msgstr ""
+
+msgid "AICatalog|Agent ID: %{id}"
+msgstr ""
+
 msgid "AICatalog|Agent configuration"
 msgstr ""
 
@@ -2527,6 +2536,9 @@ msgid "AICatalog|Agent does not exist"
 msgstr ""
 
 msgid "AICatalog|Agent enabled in %{name}."
+msgstr ""
+
+msgid "AICatalog|Agent is required."
 msgstr ""
 
 msgid "AICatalog|Agent not found."
@@ -2715,6 +2727,9 @@ msgstr ""
 msgid "AICatalog|Enable %{itemType} in a %{targetType}"
 msgstr ""
 
+msgid "AICatalog|Enable agent from group"
+msgstr ""
+
 msgid "AICatalog|Enable flow from group"
 msgstr ""
 
@@ -2748,6 +2763,9 @@ msgstr ""
 msgid "AICatalog|Failed to disable flow"
 msgstr ""
 
+msgid "AICatalog|Failed to load group agents"
+msgstr ""
+
 msgid "AICatalog|Failed to load group flows"
 msgstr ""
 
@@ -2760,7 +2778,7 @@ msgstr ""
 msgid "AICatalog|Flow"
 msgstr ""
 
-msgid "AICatalog|Flow \"%{flowName}\" could not be enabled."
+msgid "AICatalog|Flow \"%{name}\" could not be enabled."
 msgstr ""
 
 msgid "AICatalog|Flow ID: %{id}"
@@ -2832,6 +2850,9 @@ msgstr ""
 msgid "AICatalog|Managed"
 msgstr ""
 
+msgid "AICatalog|Managed by a private project you don't have access to."
+msgstr ""
+
 msgid "AICatalog|Name is required."
 msgstr ""
 
@@ -2845,6 +2866,9 @@ msgid "AICatalog|New agent"
 msgstr ""
 
 msgid "AICatalog|New flow"
+msgstr ""
+
+msgid "AICatalog|Only agents enabled in your top-level group are shown."
 msgstr ""
 
 msgid "AICatalog|Only flows enabled in your top-level group are shown."
@@ -2866,6 +2890,9 @@ msgid "AICatalog|Potential security threat"
 msgstr ""
 
 msgid "AICatalog|Private %{itemTypePlural} are best for:"
+msgstr ""
+
+msgid "AICatalog|Private project"
 msgstr ""
 
 msgid "AICatalog|Project is required."
@@ -2917,6 +2944,9 @@ msgid "AICatalog|Select a project for your AI agent to be associated with."
 msgstr ""
 
 msgid "AICatalog|Select a project for your AI flow to be associated with."
+msgstr ""
+
+msgid "AICatalog|Select an agent"
 msgstr ""
 
 msgid "AICatalog|Select at least one trigger."
@@ -33401,6 +33431,9 @@ msgstr ""
 msgid "Groups|An error occurred updating this group. Please try again."
 msgstr ""
 
+msgid "Groups|Are you sure you want to withdraw your access request for the %{fullName} group?"
+msgstr ""
+
 msgid "Groups|Avatar will be removed. Are you sure?"
 msgstr ""
 
@@ -53346,6 +53379,9 @@ msgstr ""
 msgid "Projects|An error occurred unarchiving the project. Please refresh the page to try again."
 msgstr ""
 
+msgid "Projects|Are you sure you want to withdraw your access request for the %{nameWithNamespace} project?"
+msgstr ""
+
 msgid "Projects|Copy project ID: %{id}"
 msgstr ""
 
@@ -55793,6 +55829,9 @@ msgid "Request a new one"
 msgstr ""
 
 msgid "Request a review"
+msgstr ""
+
+msgid "Request access"
 msgstr ""
 
 msgid "Request changes"
@@ -75642,6 +75681,9 @@ msgid "With requirements, you can set criteria to check your products against"
 msgstr ""
 
 msgid "Withdraw Access Request"
+msgstr ""
+
+msgid "Withdraw access request"
 msgstr ""
 
 msgid "Work Item type with id %{id} was not found"

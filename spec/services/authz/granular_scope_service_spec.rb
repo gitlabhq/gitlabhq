@@ -44,8 +44,8 @@ RSpec.describe Authz::GranularScopeService, feature_category: :permissions do
       end
 
       context 'when adding duplicate instance-level scopes' do
-        let(:instance_scope) { build(:granular_scope, :standalone) }
-        let(:duplicate_instance_scope) { build(:granular_scope, :standalone) }
+        let(:instance_scope) { build(:granular_scope, :instance) }
+        let(:duplicate_instance_scope) { build(:granular_scope, :instance) }
         let(:scopes_to_add) { duplicate_instance_scope }
 
         before do

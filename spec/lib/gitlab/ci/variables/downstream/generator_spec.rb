@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-require 'spec_helper'
+require 'fast_spec_helper'
 
 RSpec.describe Gitlab::Ci::Variables::Downstream::Generator, feature_category: :pipeline_composition do
   let(:bridge_variables) do

@@ -18,6 +18,8 @@ import {
   ACTION_LEAVE,
   ACTION_RESTORE,
   ACTION_UNARCHIVE,
+  ACTION_REQUEST_ACCESS,
+  ACTION_WITHDRAW_ACCESS_REQUEST,
 } from '~/vue_shared/components/list_actions/constants';
 import { archiveGroup, restoreGroup, unarchiveGroup } from '~/api/groups_api';
 import { InternalEvents } from '~/tracking';
@@ -62,7 +64,7 @@ export default {
       return this.group.availableActions ?? [];
     },
     actions() {
-      return {
+      const baseActions = {
         [ACTION_COPY_ID]: {
           text: sprintf(s__('Groups|Copy group ID: %{id}'), { id: this.group.id }),
           action: this.onCopyId,
@@ -108,6 +110,36 @@ export default {
           action: this.onActionLeave,
         },
       };
+
+      if (this.group.requestAccessPath) {
+        baseActions[ACTION_REQUEST_ACCESS] = {
+          href: this.group.requestAccessPath,
+          extraAttrs: {
+            'data-method': 'post',
+            'data-testid': 'request-access-link',
+            rel: 'nofollow',
+          },
+        };
+      }
+
+      if (this.group.withdrawAccessRequestPath) {
+        baseActions[ACTION_WITHDRAW_ACCESS_REQUEST] = {
+          href: this.group.withdrawAccessRequestPath,
+          extraAttrs: {
+            'data-method': 'delete',
+            'data-testid': 'withdraw-access-link',
+            'data-confirm': sprintf(
+              s__(
+                'Groups|Are you sure you want to withdraw your access request for the %{fullName} group?',
+              ),
+              { fullName: this.group.fullName },
+            ),
+            rel: 'nofollow',
+          },
+        };
+      }
+
+      return baseActions;
     },
     hasActionDelete() {
       return (

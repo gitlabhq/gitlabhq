@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-require 'spec_helper'
+require 'fast_spec_helper'
 
 RSpec.describe WebIde::SettingsSync, feature_category: :web_ide do
   describe '#settings_context_hash' do

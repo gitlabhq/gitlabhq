@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-require 'spec_helper'
+require 'fast_spec_helper'
 
 RSpec.describe WebIde::Config::Entry::Terminal, feature_category: :web_ide do
   let(:entry) { described_class.new(config, with_image_ports: true) }

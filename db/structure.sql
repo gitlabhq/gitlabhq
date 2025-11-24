@@ -18069,6 +18069,7 @@ CREATE TABLE granular_scopes (
     updated_at timestamp with time zone NOT NULL,
     permissions jsonb DEFAULT '[]'::jsonb NOT NULL,
     all_membership_namespaces boolean DEFAULT false NOT NULL,
+    access smallint DEFAULT 0 NOT NULL,
     CONSTRAINT check_permissions_is_array CHECK ((jsonb_typeof(permissions) = 'array'::text))
 );
 

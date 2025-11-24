@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-require 'spec_helper'
+require 'fast_spec_helper'
 
 RSpec.describe WebIde::Config::Entry::Global, feature_category: :web_ide do
   let(:global) { described_class.new(hash) }

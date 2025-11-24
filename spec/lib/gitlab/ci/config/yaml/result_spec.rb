@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-require 'spec_helper'
+require 'fast_spec_helper'
 
 RSpec.describe Gitlab::Ci::Config::Yaml::Result, feature_category: :pipeline_composition do
   it 'raises an error when reading a header when there is none' do

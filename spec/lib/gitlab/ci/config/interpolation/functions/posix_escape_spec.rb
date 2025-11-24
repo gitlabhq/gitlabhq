@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-require 'spec_helper'
+require 'fast_spec_helper'
 
 RSpec.describe Gitlab::Ci::Config::Interpolation::Functions::PosixEscape, feature_category: :pipeline_composition do
   it 'validates function syntax in CI config context' do

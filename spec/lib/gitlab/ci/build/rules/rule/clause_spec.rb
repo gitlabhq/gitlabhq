@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-require 'spec_helper'
+require 'fast_spec_helper'
 
 RSpec.describe Gitlab::Ci::Build::Rules::Rule::Clause, feature_category: :pipeline_composition do
   describe '.fabricate' do

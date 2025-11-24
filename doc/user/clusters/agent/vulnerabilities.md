@@ -103,7 +103,7 @@ The Kubernetes agent must be running in your cluster to scan running container i
 
 {{< alert type="note" >}}
 
-Operational Container Scanning operates independently of GitLab pipelines. It is fully automated and managed by the Kubernetes Agent, which initiates new scans at the scheduled time configured in the Scan Execution Policy. The agent creates a dedicated Job within your cluster to perform the scan and report findings back to GitLab.
+Operational container scanning operates independently of GitLab pipelines. It is fully automated and managed by the Kubernetes Agent, which initiates new scans at the scheduled time configured in the Scan Execution Policy. The agent creates a dedicated Job within your cluster to perform the scan and report findings back to GitLab.
 {{< /alert >}}
 
 Here is an example of a policy which enables operational container scanning within the cluster the Kubernetes agent is attached to:
@@ -184,8 +184,8 @@ When using a fractional value for CPU, format the value as a string.
 
 {{< alert type="note" >}}
 
-- Resource requirements can only be set by using the agent configuration. If you enabled Operational Container Scanning through scan execution policies and need to configure resource requirements, you should do so via the agent configuration file.
-- When using Google Kubernetes Engine (GKE) for Kubernetes orchestration, [the ephemeral storage limit value will always be set to equal the request value](https://cloud.google.com/kubernetes-engine/docs/concepts/autopilot-resource-requests#resource-limits). This is enforced by GKE.
+- Resource requirements must be set using the agent configuration file, even when operational container scanning is enabled through scan execution policies.
+- When using Google Kubernetes Engine (GKE) for Kubernetes orchestration, [ephemeral storage limits are automatically set to equal requests](https://cloud.google.com/kubernetes-engine/docs/concepts/autopilot-resource-requests#resource-limits).
 
 {{< /alert >}}
 

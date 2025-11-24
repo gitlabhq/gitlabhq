@@ -15,9 +15,15 @@ RSpec.describe ::Authz::GranularScope, feature_category: :permissions do
       let_it_be(:organization) { create(:organization) }
       let_it_be(:namespace1) { create(:namespace, organization: organization) }
       let_it_be(:namespace2) { create(:namespace, organization: organization) }
-      let_it_be(:scope_with_namespace1) { create(:granular_scope, namespace: namespace1, organization: organization) }
-      let_it_be(:scope_with_namespace2) { create(:granular_scope, namespace: namespace2, organization: organization) }
-      let_it_be(:scope_without_namespace) { create(:granular_scope, :standalone, organization: organization) }
+      let_it_be(:scope_with_namespace1) do
+        create(:granular_scope, :selected_memberships, namespace: namespace1, organization: organization)
+      end
+
+      let_it_be(:scope_with_namespace2) do
+        create(:granular_scope, :selected_memberships, namespace: namespace2, organization: organization)
+      end
+
+      let_it_be(:scope_without_namespace) { create(:granular_scope, :user, organization: organization) }
 
       it 'returns scopes for the given namespace' do
         expect(described_class.with_namespace(namespace1.id)).to contain_exactly(scope_with_namespace1)
@@ -94,7 +100,7 @@ RSpec.describe ::Authz::GranularScope, feature_category: :permissions do
 
     context 'when a scope exists for a boundary' do
       before do
-        create(:granular_scope, namespace: boundary.namespace, permissions: token_permissions)
+        create(:granular_scope, :selected_memberships, namespace: boundary.namespace, permissions: token_permissions)
       end
 
       it { is_expected.to be true }
@@ -129,13 +135,14 @@ RSpec.describe ::Authz::GranularScope, feature_category: :permissions do
     before do
       allow(::Authz::Permission).to receive(:all).and_return((:a..:i).index_with(nil))
 
-      create(:granular_scope, namespace: nil_boundary.namespace, permissions: [:a])
-      create(:granular_scope, namespace: rootgroup_boundary.namespace, permissions: [:b, :c])
-      create(:granular_scope, namespace: subgroup_boundary.namespace, permissions: [:c, :d])
-      create(:granular_scope, namespace: project_boundary.namespace, permissions: [:d, :e])
-      create(:granular_scope, namespace: user_boundary.namespace, permissions: [:f, :g])
-      create(:granular_scope, namespace: personal_project_boundary.namespace, permissions: [:g, :h])
-      create(:granular_scope, :all_membership_namespaces, permissions: [:i])
+      create(:granular_scope, :instance, permissions: [:a])
+      create(:granular_scope, :selected_memberships, namespace: rootgroup_boundary.namespace, permissions: [:b, :c])
+      create(:granular_scope, :selected_memberships, namespace: subgroup_boundary.namespace, permissions: [:c, :d])
+      create(:granular_scope, :selected_memberships, namespace: project_boundary.namespace, permissions: [:d, :e])
+      create(:granular_scope, :personal_projects, namespace: user_boundary.namespace, permissions: [:f, :g])
+      create(:granular_scope, :selected_memberships, namespace: personal_project_boundary.namespace,
+        permissions: [:g, :h])
+      create(:granular_scope, :all_memberships, permissions: [:i])
     end
 
     where(:boundary, :expected_result) do

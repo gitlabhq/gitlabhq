@@ -111,6 +111,29 @@ RSpec.describe 'Get a list of personal access tokens that belong to a user', fea
 
       expect { post_graphql(query, current_user: current_user) }.not_to exceed_query_limit(control)
     end
+
+    describe 'scope access' do
+      include Rspec::Parameterized::TableSyntax
+
+      where(access: Authz::GranularScope.accesses.keys)
+
+      with_them do
+        before do
+          granular_token.granular_scopes.first.update!(access:)
+        end
+
+        it 'sets the access' do
+          post_graphql(query, current_user:)
+
+          expect(personal_access_tokens_data['nodes']).to include(
+            a_hash_including(
+              'id' => granular_token.to_gid.to_s,
+              'scopes' => [a_hash_including('access' => access.upcase)]
+            )
+          )
+        end
+      end
+    end
   end
 
   context 'when current user is another user' do

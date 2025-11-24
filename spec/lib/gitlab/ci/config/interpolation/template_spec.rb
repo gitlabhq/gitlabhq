@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-require 'spec_helper'
+require 'fast_spec_helper'
 
 RSpec.describe Gitlab::Ci::Config::Interpolation::Template, feature_category: :pipeline_composition do
   subject { described_class.new(YAML.safe_load(config), ctx) }

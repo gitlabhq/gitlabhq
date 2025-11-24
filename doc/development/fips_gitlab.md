@@ -117,7 +117,7 @@ listed here that also do not work properly in FIPS mode:
 - [Static application security testing (SAST)](../user/application_security/sast/_index.md)
   supports a reduced set of [analyzers](../user/application_security/sast/_index.md#fips-enabled-images)
   when operating in FIPS-compliant mode.
-- [Operational Container Scanning](../user/clusters/agent/vulnerabilities.md).
+- [Operational container scanning](../user/clusters/agent/vulnerabilities.md).
 - GitLab and FIPS do not support [DSA certificate files](../security/ssh_keys_restrictions.md#default-settings).
   If you encounter DSA certificate errors in logs, configure the [`sshHostKeys.types`](https://docs.gitlab.com/charts/charts/gitlab/webservice/#installation-command-line-options) setting to exclude DSA:
 

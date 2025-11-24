@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-require 'spec_helper'
+require 'fast_spec_helper'
 
 RSpec.describe ::Ci::JobToken::Policies, feature_category: :secrets_management do
   describe '.all_policies' do

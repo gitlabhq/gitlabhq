@@ -167,6 +167,12 @@ If you are trying to run a flow but it's not visible in the GitLab UI:
 1. Ensure GitLab Duo is [turned on and flows are allowed to execute](../gitlab_duo/turn_on_off.md).
 1. Ensure the required feature flags, [`duo_workflow` and `duo_workflow_in_ci`](../../administration/feature_flags/_index.md), are enabled.
 
+## Flow is created but nothing seems to happen
+
+After a flow is created, you can view the flow's session by going to **Automate** > **Sessions**. 
+The **Details** tab shows a link to the CI/CD job logs. 
+These logs can contain troubleshooting information.
+
 ## Sessions stuck in created state
 
 If a session for your flow does not start:

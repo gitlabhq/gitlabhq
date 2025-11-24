@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-require 'spec_helper'
+require 'fast_spec_helper'
 
 RSpec.describe Gitlab::Ci::Config::Header::Spec, feature_category: :pipeline_composition do
   let(:factory) { Gitlab::Config::Entry::Factory.new(described_class).value(spec_hash) }

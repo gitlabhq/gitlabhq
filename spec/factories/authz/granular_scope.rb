@@ -6,13 +6,27 @@ FactoryBot.define do
     namespace
     permissions { [:create_issue] }
 
-    trait :standalone do
-      namespace { nil }
+    trait :personal_projects do
+      access { :personal_projects }
     end
 
-    trait :all_membership_namespaces do
+    trait :all_memberships do
       namespace { nil }
-      all_membership_namespaces { true }
+      access { :all_memberships }
+    end
+
+    trait :selected_memberships do
+      access { :selected_memberships }
+    end
+
+    trait :user do
+      namespace { nil }
+      access { :user }
+    end
+
+    trait :instance do
+      namespace { nil }
+      access { :instance }
     end
   end
 end
