@@ -29329,12 +29329,6 @@ msgstr ""
 msgid "Footer message"
 msgstr ""
 
-msgid "For %{link_to_pipeline_ref}"
-msgstr ""
-
-msgid "For %{ref}"
-msgstr ""
-
 msgid "For a faster browsing experience, only %{strongStart}%{visible} of %{total}%{strongEnd} files are shown. Download one of the files below to see all changes."
 msgstr ""
 
@@ -49523,9 +49517,6 @@ msgstr ""
 msgid "Pipelines|error"
 msgstr ""
 
-msgid "Pipelines|finished"
-msgstr ""
-
 msgid "Pipelines|invalid"
 msgstr ""
 
@@ -49577,7 +49568,25 @@ msgstr ""
 msgid "Pipeline|Created"
 msgstr ""
 
+msgid "Pipeline|Created %{createdTimeAgo}"
+msgstr ""
+
+msgid "Pipeline|Created %{createdTimeAgo} by %{user}"
+msgstr ""
+
+msgid "Pipeline|Created %{createdTimeAgo} by %{user}, finished %{finishedTimeAgo}"
+msgstr ""
+
+msgid "Pipeline|Created %{createdTimeAgo}, finished %{finishedTimeAgo}"
+msgstr ""
+
 msgid "Pipeline|Created by"
+msgstr ""
+
+msgid "Pipeline|Created by %{user}"
+msgstr ""
+
+msgid "Pipeline|Created by %{user}, finished %{finishedTimeAgo}"
 msgstr ""
 
 msgid "Pipeline|Creating pipeline."
@@ -49595,7 +49604,16 @@ msgstr ""
 msgid "Pipeline|Failed to retrieve CI/CD variables."
 msgstr ""
 
+msgid "Pipeline|Finished %{finishedTimeAgo}"
+msgstr ""
+
 msgid "Pipeline|Fix pipeline with Duo"
+msgstr ""
+
+msgid "Pipeline|For commit %{link}"
+msgstr ""
+
+msgid "Pipeline|In %{pipeline_ref}"
 msgstr ""
 
 msgid "Pipeline|Manual"
@@ -79645,9 +79663,6 @@ msgid "created %{timeAgo} by %{email} via %{author}"
 msgstr ""
 
 msgid "created by"
-msgstr ""
-
-msgid "created pipeline for commit %{linkStart}%{shortId}%{linkEnd}"
 msgstr ""
 
 msgid "custom_roles licensed feature must be available"

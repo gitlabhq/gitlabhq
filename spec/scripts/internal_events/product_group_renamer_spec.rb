@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-require 'spec_helper'
+require 'fast_spec_helper'
 require_relative '../../../scripts/internal_events/product_group_renamer'
 
 RSpec.describe ProductGroupRenamer, feature_category: :service_ping do

@@ -9,14 +9,13 @@ import {
   WORK_ITEM_CREATE_ENTITY_MODAL_TARGET_BRANCH,
 } from '~/work_items/constants';
 import { visitUrl } from '~/lib/utils/url_utility';
-import toast from '~/vue_shared/plugins/global_toast';
 import { createBranchMRApiPathHelper } from '~/work_items/utils';
 import { helpPagePath } from '~/helpers/help_page_helper';
 import {
   findInvalidBranchNameCharacters,
   humanizeBranchValidationErrors,
 } from '~/lib/utils/text_utility';
-import ModalCopyButton from '~/vue_shared/components/modal_copy_button.vue';
+import SimpleCopyButton from '~/vue_shared/components/simple_copy_button.vue';
 
 import getProjectRootRef from '~/work_items/graphql/get_project_root_ref.query.graphql';
 import { s__, __, sprintf } from '~/locale';
@@ -31,7 +30,7 @@ export default {
     GlFormGroup,
     GlModal,
     ProjectFormGroup,
-    ModalCopyButton,
+    SimpleCopyButton,
   },
   i18n: {
     sourceLabel: __('Source (branch or tag)'),
@@ -340,9 +339,6 @@ export default {
         this.invalidForm = false;
       });
     },
-    copyToClipboard() {
-      toast(__('Copied branch name.'));
-    },
   },
   WORK_ITEM_CREATE_ENTITY_MODAL_TARGET_SOURCE,
   WORK_ITEM_CREATE_ENTITY_MODAL_TARGET_BRANCH,
@@ -416,12 +412,7 @@ export default {
             @input="checkValidity($event, $options.WORK_ITEM_CREATE_ENTITY_MODAL_TARGET_BRANCH)"
           >
             <template #append>
-              <modal-copy-button
-                :text="branchName"
-                :title="__('Copy to clipboard')"
-                :modal-id="$options.createMRModalId"
-                @success="copyToClipboard"
-              />
+              <simple-copy-button :text="branchName" :title="__('Copy to clipboard')" />
             </template>
           </gl-form-input-group>
         </gl-form-group>

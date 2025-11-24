@@ -16,7 +16,7 @@ A module is validated after it completes testing by a NIST-certified laboratory 
 [Cryptographic Module Validation Program](https://csrc.nist.gov/projects/cryptographic-module-validation-program). A cryptographic module must be compiled,
 installed, and configured according to its CMVP security policy.
 
-## Why should you care?
+## Regulatory requirements
 
 GitLab is committed to releasing software for our customers who are required to comply with FIPS 140-2 and 140-3.
 
@@ -86,7 +86,7 @@ module selection per CSP10 is as follows:
    - Module not in FIPS validation process; validated algorithm.
    - Algorithm is approved and tested but not yet validated, and the module is not in FIPS validation process.
 
-### How is this audited?
+### Validation workflow
 
 Third party assessment organizations (3PAOs) validate the use of a FIPS-validated CM by:
 

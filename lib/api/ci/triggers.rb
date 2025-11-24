@@ -69,6 +69,7 @@ module API
         params do
           use :pagination
         end
+        route_setting :authorization, permissions: :read_trigger, boundary_type: :project
         get ':id/triggers' do
           authenticate!
           authorize! :admin_build, user_project
@@ -88,6 +89,7 @@ module API
         params do
           requires :trigger_id, type: Integer, desc: 'The trigger token ID', documentation: { example: 10 }
         end
+        route_setting :authorization, permissions: :read_trigger, boundary_type: :project
         get ':id/triggers/:trigger_id' do
           authenticate!
           authorize! :admin_build, user_project
@@ -113,6 +115,7 @@ module API
           optional :expires_at, type: DateTime, desc: 'Timestamp of when the pipeline trigger token expires.',
             documentation: { example: '2024-07-01' }
         end
+        route_setting :authorization, permissions: :create_trigger, boundary_type: :project
         post ':id/triggers' do
           authenticate!
           authorize! :manage_trigger, user_project
@@ -147,6 +150,7 @@ module API
           requires :trigger_id, type: Integer,  desc: 'The trigger token ID'
           optional :description, type: String,  desc: 'The trigger token description'
         end
+        route_setting :authorization, permissions: :update_trigger, boundary_type: :project
         put ':id/triggers/:trigger_id' do
           authenticate!
 
@@ -181,6 +185,7 @@ module API
         params do
           requires :trigger_id, type: Integer, desc: 'The trigger token ID', documentation: { example: 10 }
         end
+        route_setting :authorization, permissions: :delete_trigger, boundary_type: :project
         delete ':id/triggers/:trigger_id' do
           authenticate!
           authorize! :manage_trigger, user_project

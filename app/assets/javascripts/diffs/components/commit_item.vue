@@ -3,7 +3,7 @@ import { GlButtonGroup, GlButton, GlTooltipDirective, GlFormCheckbox } from '@gi
 import SafeHtml from '~/vue_shared/directives/safe_html';
 
 import CommitPipelineStatus from '~/projects/tree/components/commit_pipeline_status.vue';
-import ModalCopyButton from '~/vue_shared/components/modal_copy_button.vue';
+import SimpleCopyButton from '~/vue_shared/components/simple_copy_button.vue';
 import TimeAgoTooltip from '~/vue_shared/components/time_ago_tooltip.vue';
 import UserAvatarLink from '~/vue_shared/components/user_avatar/user_avatar_link.vue';
 
@@ -24,7 +24,7 @@ import UserAvatarLink from '~/vue_shared/components/user_avatar/user_avatar_link
 export default {
   components: {
     UserAvatarLink,
-    ModalCopyButton,
+    SimpleCopyButton,
     TimeAgoTooltip,
     CommitPipelineStatus,
     GlButtonGroup,
@@ -105,7 +105,7 @@ export default {
           <gl-button label class="gl-font-monospace" data-testid="commit-sha-short-id">{{
             commit.short_id
           }}</gl-button>
-          <modal-copy-button
+          <simple-copy-button
             :text="commit.id"
             :title="__('Copy commit SHA')"
             class="input-group-text"

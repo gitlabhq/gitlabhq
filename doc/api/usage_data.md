@@ -22,11 +22,17 @@ Use this API to interact with the GitLab Service Ping process.
 
 {{< /history >}}
 
-Requires a personal access token with `read_service_ping` scope.
-
-Returns the JSON payload collected in Service Ping. If no payload data is available in the application cache, it returns empty response.
+Exports the JSON payload collected in Service Ping. If no payload data is available in the application cache, it returns empty response.
 If payload data is empty, make sure the [Service Ping feature is enabled](../administration/settings/usage_statistics.md#enable-or-disable-service-ping) and
 wait for the cron job to be executed, or generate payload data manually.
+
+Prerequisites:
+
+- You must authenticate with a personal access token that has the `read_service_ping` scope.
+
+```plaintext
+GET /usage_data/service_ping
+```
 
 Example request:
 
@@ -165,7 +171,7 @@ Example response:
 ...
 ```
 
-## UsageDataNonSqlMetrics API
+## List all non-SQL metrics
 
 {{< history >}}
 
@@ -174,9 +180,13 @@ Example response:
 
 {{< /history >}}
 
-Return all non-SQL metrics data used in the Service ping. This action is behind the
+Lists all non-SQL metrics data used in the Service ping. This action is behind the
 `usage_data_non_sql_metrics` feature flag and is available only for the GitLab instance
 [Administrator](../user/permissions.md) users.
+
+```plaintext
+GET /usage_data/non_sql_metrics
+```
 
 Example request:
 
@@ -222,9 +232,17 @@ Sample response:
 ...
 ```
 
-## Events Tracking API
+## Track internal events
 
-Tracks internal events in GitLab. Requires a personal access token with the `api` or `ai_workflows` scope.
+Tracks internal events in the GitLab instance.
+
+Prerequisites:
+
+- You must authenticate with a personal access token that has either the `api` or `ai_workflows` scopes.
+
+```plaintext
+POST /usage_data/track_event
+```
 
 To track events to Snowplow, set the `send_to_snowplow` parameter to `true`.
 

@@ -26,11 +26,9 @@ You can configure external controls with periodic ping functionality. When ping 
 
 For a single external control, use the API to inform GitLab that a control has passed or failed a check by an external service.
 
-### Authentication
+Prerequisites
 
-External controls API requires HMAC, Timestamp, and Nonce authentication for security.
-
-### Endpoint
+- Must use HMAC, Timestamp, and Nonce authentication for security.
 
 ```plaintext
 PATCH /api/v4/projects/:id/compliance_external_controls/:external_control_id/status

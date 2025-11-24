@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-require 'spec_helper'
+require 'fast_spec_helper'
 
 RSpec.describe Gitlab::InternalEvents::EventsRouter, feature_category: :product_analytics do
   let(:event_name) { 'test_event' }

@@ -199,7 +199,7 @@ RSpec.describe Ci::PipelinePresenter do
         end
 
         it 'returns a correct ref text' do
-          is_expected.to eq("For <a class=\"ref-container gl-link\" href=\"#{project_commits_path(pipeline.project, pipeline.ref)}\">#{pipeline.ref}</a>")
+          is_expected.to eq("In <a class=\"ref-container gl-link\" href=\"#{project_commits_path(pipeline.project, pipeline.ref)}\">#{pipeline.ref}</a>")
         end
 
         context 'when ref contains malicious script' do
@@ -217,7 +217,7 @@ RSpec.describe Ci::PipelinePresenter do
         end
 
         it 'returns a correct ref text' do
-          is_expected.to eq("For <span class=\"ref-name\">#{pipeline.ref}</span>")
+          is_expected.to eq("In <span class=\"ref-name\">#{pipeline.ref}</span>")
         end
 
         context 'when ref contains malicious script' do

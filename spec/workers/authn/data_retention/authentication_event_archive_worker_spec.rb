@@ -20,20 +20,6 @@ RSpec.describe Authn::DataRetention::AuthenticationEventArchiveWorker, feature_c
       create(:authentication_event, created_at: cutoff_time + 1.hour)
     end
 
-    # The `authentication_event_archived_records` table is only used by the archive jobs. We want to discourage its
-    # use throughout the app as it is meant to be a temporary table and will be removed from the codebase soon. Rather
-    # than define a full ActiveRecord model with factory and spec, let's just mock a model class for test purposes.
-    let(:authentication_event_archived_record_model) do
-      Class.new(ApplicationRecord) do
-        self.table_name = 'authentication_event_archived_records'
-
-        enum :result, {
-          failed: 0,
-          success: 1
-        }
-      end
-    end
-
     it_behaves_like 'an idempotent worker'
 
     it 'deletes records from the operational authentication_events table' do
@@ -42,40 +28,22 @@ RSpec.describe Authn::DataRetention::AuthenticationEventArchiveWorker, feature_c
       expect(AuthenticationEvent.pluck(:id)).to contain_exactly(after_cutoff_record.id)
     end
 
-    it 'archives records from the operational table to the archived records table' do
-      expect { worker.perform }.to change { authentication_event_archived_record_model.count }.by(2)
-
-      expect(authentication_event_archived_record_model.pluck(:id))
-        .to contain_exactly(before_cutoff_record.id, on_cutoff_record.id)
-    end
-
-    it 'sets attributes correctly in archive table' do
-      original_attributes = before_cutoff_record.serializable_hash
-
-      worker.perform
-
-      archived_attributes = authentication_event_archived_record_model.find(before_cutoff_record.id).serializable_hash
-
-      expect(archived_attributes.except("archived_at")).to match(original_attributes.except("organization_id"))
-      expect(archived_attributes["archived_at"]).to be_present
-    end
-
-    it 'logs the per-batch archived count' do
+    it 'logs the per-batch deletion count' do
       expect(Gitlab::AppLogger).to receive(:info).with(
         class: described_class.name,
-        message: "Archived 2 authentication events",
+        message: "Deleted 2 authentication events",
         cutoff_time: cutoff_time
       )
 
       worker.perform
     end
 
-    it 'logs the total archived count' do
+    it 'logs the total deleted count' do
       expect(worker)
         .to receive(:log_extra_metadata_on_done)
               .with(:result, hash_including(
                 over_time: false,
-                total_archived: 2,
+                total_deleted: 2,
                 cutoff_time: cutoff_time
               ))
 
@@ -131,7 +99,7 @@ RSpec.describe Authn::DataRetention::AuthenticationEventArchiveWorker, feature_c
           .to receive(:log_extra_metadata_on_done)
                 .with(:result, hash_including(
                   over_time: true,
-                  total_archived: 2
+                  total_deleted: 2
                 ))
 
         worker.perform

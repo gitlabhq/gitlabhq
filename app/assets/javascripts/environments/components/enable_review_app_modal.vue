@@ -2,7 +2,7 @@
 import { GlLink, GlModal, GlSprintf, GlIcon, GlPopover } from '@gitlab/ui';
 import { uniqueId } from 'lodash';
 import { helpPagePath } from '~/helpers/help_page_helper';
-import ModalCopyButton from '~/vue_shared/components/modal_copy_button.vue';
+import SimpleCopyButton from '~/vue_shared/components/simple_copy_button.vue';
 import { REVIEW_APP_MODAL_I18N as i18n } from '../constants';
 
 export default {
@@ -12,7 +12,7 @@ export default {
     GlSprintf,
     GlIcon,
     GlPopover,
-    ModalCopyButton,
+    SimpleCopyButton,
   },
   model: {
     prop: 'visible',
@@ -107,11 +107,10 @@ export default {
                   data-testid="enable-review-app-copy-string"
                   >{{ modalInfoCopyStr }}</pre
                 >
-                <modal-copy-button
+                <simple-copy-button
                   :title="$options.i18n.copyToClipboardText"
-                  :modal-id="modalId"
-                  css-classes="!gl-border-0"
-                  :target="`#${modalInfoCopyId}`"
+                  class="!gl-border-0"
+                  :text="modalInfoCopyStr"
                 />
               </div>
             </li>

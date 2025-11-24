@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-require 'spec_helper'
+require 'fast_spec_helper'
 
 RSpec.describe Gitlab::Usage::TimeSeriesStorable, feature_category: :service_ping do
   let(:counter_class) do

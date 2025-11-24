@@ -52,7 +52,9 @@ Next, create the CI/CD configuration file that you want your pipeline execution 
 1. In the file's content, copy the following:
 
    ```yaml
-   # This file defines the CI/CD jobs that will be enforced by the pipeline execution policy
+   ---
+   # This file defines the CI/CD jobs that will be
+   # enforced by the pipeline execution policy
    enforced-security-scan:
      stage: .pipeline-policy-pre
      script:
@@ -66,12 +68,12 @@ Next, create the CI/CD configuration file that you want your pipeline execution 
    enforced-test-job:
      stage: test
      script:
-      - echo "Running enforced test job in test stage"
-      - echo "Creating test stage if it doesn't exist"
-      - echo "Performing mandatory testing requirements..."
-      - echo "Enforced tests completed successfully"
-    rules:
-      - when: always
+       - echo "Running enforced test job in test stage"
+       - echo "Creating test stage if it doesn't exist"
+       - echo "Performing mandatory testing requirements..."
+       - echo "Enforced tests completed successfully"
+     rules:
+       - when: always
 
    enforced-compliance-check:
      stage: .pipeline-policy-post
@@ -100,10 +102,7 @@ Next, add a pipeline execution policy to your test project:
 
 1. Set **Actions** to the following:
 
-   ```plaintext
-   Inject into into the .gitlab-ci.yml with the pipeline execution file from My Pipeline Execution Policy
-   Filepath: [group]/my-pipeline-execution/policy/pipeline-config.yml
-   ```
+   ![Pipeline Execution Policy Actions](img/pipeline_execution_policy_actions_v18_7.png)
 
 1. Select **Configure with a merge request**.
 

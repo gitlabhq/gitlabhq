@@ -49,19 +49,11 @@ fields `start_date_is_fixed` and `due_date_is_fixed`, and four date fields `star
 - `start_date_from_milestones` has been deprecated in favor of `start_date_from_inherited_source`
 - `due_date_from_milestones` has been deprecated in favor of `due_date_from_inherited_source`
 
-## Epics pagination
+## List epics for a group
 
-By default, `GET` requests return 20 results at a time because the API results
-are paginated.
+Gets all epics of the requested group and its subgroups.
 
-Read more on [pagination](rest/_index.md#pagination).
-
-{{< alert type="warning" >}}
-
-In [GitLab 12.6](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/20354) and later,
-the `reference` attribute in responses is deprecated in favor of `references`.
-
-{{< /alert >}}
+Responses are [paginated](rest/_index.md#pagination) and return 20 results by default.
 
 {{< alert type="note" >}}
 
@@ -70,10 +62,6 @@ is fetched from its origin group, the `relative` format is the same as the `shor
 When an epic is requested across groups, the `relative` format is expected to be the same as the `full` format.
 
 {{< /alert >}}
-
-## List epics for a group
-
-Gets all epics of the requested group and its subgroups.
 
 ```plaintext
 GET /groups/:id/epics

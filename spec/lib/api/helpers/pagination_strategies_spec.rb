@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe API::Helpers::PaginationStrategies do
+RSpec.describe API::Helpers::PaginationStrategies, feature_category: :api do
   subject { Class.new.include(described_class).new }
 
   let(:expected_result) { double("result") }
@@ -17,7 +17,7 @@ RSpec.describe API::Helpers::PaginationStrategies do
     let(:paginator) { double("paginator", paginate: expected_result, finalize: nil) }
 
     before do
-      allow(subject).to receive(:paginator).with(relation, nil).and_return(paginator)
+      allow(subject).to receive(:paginator).with(relation, nil, true).and_return(paginator)
     end
 
     it 'yields paginated relation' do
@@ -166,6 +166,67 @@ RSpec.describe API::Helpers::PaginationStrategies do
       context 'when keyset pagination is not available' do
         before do
           allow(Gitlab::Pagination::Keyset).to receive(:available?).with(request_context, relation).and_return(false)
+        end
+
+        it 'renders a 501 error' do
+          expect(subject).to receive(:error!).with(/not yet available/, 405)
+
+          subject.paginator(relation)
+        end
+      end
+
+      context 'when cursor based keyset pagination is available' do
+        before do
+          allow(subject).to receive(:cursor_based_keyset_pagination_supported?).and_return(true)
+        end
+
+        context 'when use_cursor is true - default' do
+          before do
+            allow(Gitlab::Pagination::CursorBasedKeyset).to receive(:available?).and_return(true)
+            allow(Gitlab::Pagination::Keyset::CursorBasedRequestContext).to receive(:new)
+                                                                              .with(subject)
+                                                                              .and_return(request_context)
+            allow(Gitlab::Pagination::Keyset::CursorPager).to receive(:new).with(request_context).and_return(pager)
+          end
+
+          it 'delegates to CursorPager' do
+            expect(subject.paginator(relation)).to eq(pager)
+          end
+        end
+
+        context 'when use_cursor is false' do
+          before do
+            allow(Gitlab::Pagination::Keyset).to receive(:available?).and_return(true)
+            allow(Gitlab::Pagination::Keyset::Pager).to receive(:new).with(request_context).and_return(pager)
+          end
+
+          it 'delegates to Pager' do
+            expect(subject.paginator(relation, nil, false)).to eq(pager)
+          end
+        end
+      end
+
+      context 'when cursor based keyset pagination is not supported' do
+        before do
+          allow(subject).to receive(:cursor_based_keyset_pagination_supported?).and_return(false)
+          allow(Gitlab::Pagination::Keyset).to receive(:available?).and_return(true)
+          allow(Gitlab::Pagination::Keyset::Pager).to receive(:new).with(request_context).and_return(pager)
+        end
+
+        it 'delegate to keyset Pager' do
+          expect(subject.paginator(relation)).to eq(pager)
+        end
+      end
+
+      context 'when cursor based keyset pagination is not available' do
+        before do
+          allow(subject).to receive(:cursor_based_keyset_pagination_supported?).and_return(true)
+          allow(Gitlab::Pagination::CursorBasedKeyset).to receive(:available?)
+                                                            .with(request_context, relation)
+                                                            .and_return(false)
+          allow(Gitlab::Pagination::Keyset::CursorBasedRequestContext).to receive(:new)
+                                                                            .with(subject)
+                                                                            .and_return(request_context)
         end
 
         it 'renders a 501 error' do

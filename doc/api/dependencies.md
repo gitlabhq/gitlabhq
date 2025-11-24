@@ -24,6 +24,8 @@ Get a list of project dependencies. This API partially mirroring
 This list can be generated only for [languages and package managers](../user/application_security/dependency_scanning/_index.md#supported-languages-and-package-managers)
 supported by Gemnasium.
 
+Responses are [paginated](rest/_index.md#pagination) and return 20 results by default.
+
 ```plaintext
 GET /projects/:id/dependencies
 GET /projects/:id/dependencies?package_manager=maven
@@ -79,10 +81,3 @@ Example response:
   }
 ]
 ```
-
-## Dependencies pagination
-
-By default, `GET` requests return 20 results at a time because the API results
-are paginated.
-
-Read more on [pagination](rest/_index.md#pagination).

@@ -3,7 +3,7 @@ import { GlAlert, GlIcon, GlLink, GlLoadingIcon, GlSprintf, GlTooltipDirective }
 import DuoWorkflowAction from 'ee_component/ai/components/duo_workflow_action.vue';
 import { timeIntervalInWords } from '~/lib/utils/datetime_utility';
 import { setUrlFragment, visitUrl } from '~/lib/utils/url_utility';
-import { __, n__, sprintf, formatNumber } from '~/locale';
+import { __, s__, n__, sprintf, formatNumber } from '~/locale';
 import { getIdFromGraphQLId } from '~/graphql_shared/utils';
 import PageHeading from '~/vue_shared/components/page_heading.vue';
 import { reportToSentry } from '~/ci/utils';
@@ -214,10 +214,38 @@ export default {
         jobs: totalJobs,
       });
     },
-    triggeredText() {
-      return sprintf(__('created pipeline for commit %{linkStart}%{shortId}%{linkEnd}'), {
-        shortId: this.shortId,
-      });
+    createdAt() {
+      return this.pipeline?.createdAt;
+    },
+    finishedAt() {
+      return this.pipeline?.finishedAt;
+    },
+    createdDetailsText() {
+      // It's possible for some/all to be empty (including `createdAt`, see: https://gitlab.com/gitlab-org/gitlab/-/issues/25795)
+      if (this.user) {
+        if (this.createdAt && this.finishedAt) {
+          return s__('Pipeline|Created %{createdTimeAgo} by %{user}, finished %{finishedTimeAgo}');
+        }
+        if (this.createdAt) {
+          return s__('Pipeline|Created %{createdTimeAgo} by %{user}');
+        }
+        if (this.finishedAt) {
+          return s__('Pipeline|Created by %{user}, finished %{finishedTimeAgo}');
+        }
+        return s__('Pipeline|Created by %{user}');
+      }
+
+      if (this.createdAt && this.finishedAt) {
+        return s__('Pipeline|Created %{createdTimeAgo}, finished %{finishedTimeAgo}');
+      }
+      if (this.createdAt) {
+        return s__('Pipeline|Created %{createdTimeAgo}');
+      }
+      if (this.finishedAt) {
+        return s__('Pipeline|Finished %{finishedTimeAgo}');
+      }
+
+      return '';
     },
     inProgress() {
       return this.status === 'RUNNING';
@@ -398,26 +426,37 @@ export default {
       </template>
 
       <template #description>
-        <ci-icon :status="detailedStatus" show-status-text class="gl-mb-3" />
-        <div class="gl-inline-block">
-          <gl-link
-            v-if="user"
-            :href="user.webUrl"
-            class="js-user-link gl-inline-block gl-font-bold gl-text-default"
-            :data-user-id="userId"
-            :data-username="user.username"
-            data-testid="pipeline-user-link"
-          >
-            {{ user.name }}
-          </gl-link>
-          <gl-sprintf :message="triggeredText">
-            <template #link="{ content }">
+        <div class="gl-mb-3" data-testid="pipeline-created-status">
+          <ci-icon :status="detailedStatus" show-status-text />
+          <gl-sprintf v-if="createdDetailsText" :message="createdDetailsText">
+            <template v-if="user" #user>
+              <gl-link
+                :href="user.webUrl"
+                class="js-user-link gl-inline-block gl-font-bold gl-text-default"
+                :data-user-id="userId"
+                :data-username="user.username"
+                data-testid="pipeline-user-link"
+                >{{ user.name }}</gl-link
+              >
+            </template>
+            <template v-if="createdAt" #createdTimeAgo>
+              <time-ago-tooltip :time="createdAt" data-testid="pipeline-created-time-ago" />
+            </template>
+            <template v-if="finishedAt" #finishedTimeAgo>
+              <time-ago-tooltip :time="finishedAt" data-testid="pipeline-finished-time-ago" />
+            </template>
+          </gl-sprintf>
+        </div>
+
+        <div class="gl-mb-3">
+          <gl-sprintf :message="s__('Pipeline|For commit %{link}')">
+            <template #link>
               <gl-link
                 :href="commitPath"
                 class="commit-sha-container"
                 data-testid="commit-link"
                 target="_blank"
-                >{{ content }}</gl-link
+                >{{ shortId }}</gl-link
               >
             </template>
           </gl-sprintf>
@@ -429,27 +468,10 @@ export default {
             size="small"
           />
         </div>
-        <div class="gl-inline-block">
-          <time-ago-tooltip
-            v-if="inProgress"
-            :time="pipeline.createdAt"
-            data-testid="pipeline-created-time-ago"
-          />
-          <template v-if="isFinished">
-            <time-ago-tooltip
-              :time="pipeline.createdAt"
-              data-testid="pipeline-finished-created-time-ago"
-            />, {{ s__('Pipelines|finished') }}
-            <time-ago-tooltip
-              :time="pipeline.finishedAt"
-              data-testid="pipeline-finished-time-ago"
-            />
-          </template>
-        </div>
 
         <div
           v-safe-html="refText"
-          class="gl-my-3 @sm/panel:gl-mt-0"
+          class="gl-mb-3 @sm/panel:gl-mt-0"
           data-testid="pipeline-ref-text"
         ></div>
         <div>

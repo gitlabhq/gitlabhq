@@ -9,7 +9,7 @@ import * as Sentry from '~/sentry/sentry_browser_wrapper';
  * Button that programmatically copies text to the clipboard upon click. Attempts
  * to copy in both secure and non-secure contexts.
  *
- * It is meant to supersede `<modal-copy-button>` and `<clipboard-button>`, should work
+ * It is meant to supersede `<clipboard-button>`, should work
  * in modals and it does not have a ClipboardJS dependency.
  *
  * By default, shows a toast (where available) when contents are copied successfully.

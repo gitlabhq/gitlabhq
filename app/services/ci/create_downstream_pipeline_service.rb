@@ -15,6 +15,8 @@ module Ci
     def execute(bridge)
       @bridge = bridge
 
+      return ServiceResponse.error(message: 'Can not run a failed bridge') if @bridge.failed?
+
       if @bridge.has_downstream_pipeline?
         Gitlab::ErrorTracking.track_exception(
           DuplicateDownstreamPipelineError.new,

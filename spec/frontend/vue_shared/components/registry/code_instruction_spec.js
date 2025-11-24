@@ -1,6 +1,6 @@
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import { mockTracking, unmockTracking } from 'helpers/tracking_helper';
-import ModalCopyButton from '~/vue_shared/components/modal_copy_button.vue';
+import SimpleCopyButton from '~/vue_shared/components/simple_copy_button.vue';
 import CodeInstruction from '~/vue_shared/components/registry/code_instruction.vue';
 
 jest.mock('lodash/uniqueId', () => (prefix) => (prefix ? `${prefix}1` : 1));
@@ -22,7 +22,7 @@ describe('Package code instruction', () => {
     });
   }
 
-  const findCopyButton = () => wrapper.findComponent(ModalCopyButton);
+  const findCopyButton = () => wrapper.findComponent(SimpleCopyButton);
   const findLabel = () => wrapper.find('label');
   const findInputElement = () => wrapper.findByTestId('instruction-input');
   const findMultilineInstruction = () => wrapper.findByTestId('multiline-instruction');

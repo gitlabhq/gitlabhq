@@ -23,7 +23,7 @@ module Authn
         return unless Feature.enabled?(:archive_authentication_events, :instance)
 
         runtime_limiter = Gitlab::Metrics::RuntimeLimiter.new(MAX_RUNTIME)
-        total_archived_count = 0
+        total_deleted_count = 0
 
         # rubocop: disable CodeReuse/ActiveRecord -- not a useful scope for re-use
         AuthenticationEvent.where('id > ?', cursor.to_i).each_batch(of: BATCH_SIZE) do |batch|
@@ -31,13 +31,13 @@ module Authn
           last_id_in_batch = batch.last.id
 
           batch.each_batch(of: SUB_BATCH_SIZE) do |sub_batch|
-            events_to_archive = sub_batch
+            events_to_delete = sub_batch
 
-            count = archive_old_events(events_to_archive)
+            count = delete_old_events(events_to_delete)
 
-            total_archived_count += count
+            total_deleted_count += count
 
-            log_archived(count)
+            log_deleted(count)
 
             sleep ITERATION_DELAY
           end
@@ -50,34 +50,26 @@ module Authn
 
         log_extra_metadata_on_done(:result, {
           over_time: runtime_limiter.was_over_time?,
-          total_archived: total_archived_count,
+          total_deleted: total_deleted_count,
           cutoff_time: retention_period_cutoff
         })
       end
 
       private
 
-      def archive_old_events(events)
+      def delete_old_events(events)
         return 0 unless events.exists?
 
         sql = <<~SQL
-            WITH batch AS MATERIALIZED (
+          WITH batch AS MATERIALIZED (
                 #{events.select(:id, :created_at).limit(SUB_BATCH_SIZE).to_sql}
             ),
             filtered_batch AS MATERIALIZED (
               SELECT id, created_at FROM batch
               WHERE created_at <= '#{retention_period_cutoff.to_fs(:db)}' LIMIT #{SUB_BATCH_SIZE}
-            ),
-            deleted_records AS MATERIALIZED (
-              DELETE FROM authentication_events
-              WHERE id IN (SELECT id FROM filtered_batch)
-              RETURNING *
             )
-            INSERT INTO authentication_event_archived_records
-              (id, created_at, user_id, result, ip_address, provider, user_name, archived_at)
-            SELECT
-              id, created_at, user_id, result, ip_address, provider, user_name, CURRENT_TIMESTAMP as archived_at
-            FROM deleted_records
+            DELETE FROM authentication_events
+            WHERE id IN (SELECT id FROM filtered_batch)
         SQL
 
         connection.execute(sql).cmd_tuples
@@ -87,12 +79,12 @@ module Authn
         @connection ||= AuthenticationEvent.connection
       end
 
-      def log_archived(count)
+      def log_deleted(count)
         return if count == 0
 
         Gitlab::AppLogger.info(
           class: self.class.name,
-          message: "Archived #{count} authentication events",
+          message: "Deleted #{count} authentication events",
           cutoff_time: retention_period_cutoff
         )
       end

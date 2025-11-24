@@ -258,7 +258,6 @@ create_terraform_state
 create_test_case
 create_timelog
 create_todo
-create_trigger
 create_user_personal_access_token
 create_virtual_registry
 create_vulnerability
@@ -842,7 +841,6 @@ update_subscription_limit
 update_terraform_state
 update_timelog
 update_todo
-update_trigger
 update_user
 update_user_achievement
 update_user_status

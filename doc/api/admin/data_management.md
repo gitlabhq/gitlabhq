@@ -62,11 +62,13 @@ The `:model_name` parameter must be one of:
 
 Supported attributes:
 
-| Attribute         | Type   | Required | Description                                                                                                                 |
-|-------------------|--------|----------|-----------------------------------------------------------------------------------------------------------------------------|
-| `model_name`      | string | Yes      | The name of the requested model. Must belong to the `:model_name` list above.                                               |
-| `checksum_state`  | string | No       | Search by checksum status. Allowed values: pending, started, succeeded, failed, disabled.                                   |
-| `identifiers`     | array  | No       | Filter results with an array of unique identifiers of the requested model, which can be integers or base64 encoded strings. |
+| Attribute        | Type   | Required | Description                                                                                                                 |
+|------------------|--------|----------|-----------------------------------------------------------------------------------------------------------------------------|
+| `model_name`     | string | Yes      | The name of the requested model. Must belong to the `:model_name` list above.                                               |
+| `checksum_state` | string | No       | Search by checksum status. Allowed values: pending, started, succeeded, failed, disabled.                                   |
+| `identifiers`    | array  | No       | Filter results with an array of unique identifiers of the requested model, which can be integers or base64 encoded strings. |
+
+This endpoint supports [keyset pagination](../rest/_index.md#keyset-based-pagination) on the model's primary key, with sorting in ascending or descending order. To use keyset pagination, add the `pagination=keyset` parameter to the request. By default, keyset pagination loads 20 records per page sorted in ascending order. You can modify the sorting order with the query parameter `sort`, and values `asc` or `desc`. To select a number of records per page, use the parameter `per_page`.
 
 If successful, returns [`200`](../rest/troubleshooting.md#status-codes) and information about the model. It includes the following
 response attributes:
@@ -80,7 +82,7 @@ response attributes:
 | `record_identifier`    | string or integer | Unique identifier of the record. Can be an integer or a base64 encoded string. |
 
 ```shell
-curl --header "PRIVATE-TOKEN: <your_access_token>" "https://primary.example.com/api/v4/admin/data_management/project"
+curl --header "PRIVATE-TOKEN: <your_access_token>" "https://primary.example.com/api/v4/admin/data_management/project?pagination=keyset"
 ```
 
 Example response:

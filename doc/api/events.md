@@ -12,6 +12,12 @@ title: Events API
 
 {{< /details >}}
 
+{{< history >}}
+
+- [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/13056) `epics` target type in GitLab 17.3.
+
+{{< /history >}}
+
 Use this API to review event activity. Events can include a wide range of actions including things
 like joining projects, commenting on issues, pushing changes to MRs, or closing epics.
 
@@ -19,6 +25,15 @@ For information about activity retention limits, see:
 
 - [User activity time period limit](../user/profile/contributions_calendar.md#event-time-period-limit)
 - [Project activity time period limit](../user/project/working_with_projects.md#view-project-activity)
+
+{{< alert type="note" >}}
+
+This API has limitations related to epics and merge requests:
+
+- Some epic features like child items, linked items, start dates, due dates, and health statuses are not returned by the API.
+- Some merge request notes may instead use the `DiscussionNote` type. This target type is [not supported by the API](discussions.md#understand-note-types-in-the-api).
+
+{{< /alert >}}
 
 ## List all events
 
@@ -37,7 +52,7 @@ Parameters:
 | Parameter     | Type            | Required | Description |
 | ------------- | --------------- | -------- | ----------- |
 | `action`      | string          | no       | If defined, returns events with the specified [action type](../user/profile/contributions_calendar.md#user-contribution-events). |
-| `target_type` | string          | no       | If defined, returns events with the specified [target type](#target-type). |
+| `target_type` | string          | no       | If defined, returns the specified events. Possible values: `epic`, `issue`, `merge_request`, `milestone`, `note`, `project`, `snippet`, and `user`. |
 | `before`      | date (ISO 8601) | no       | If defined, returns events created before the specified date. |
 | `after`       | date (ISO 8601) | no       | If defined, returns events created after the specified date. |
 | `scope`       | string          | no       | Include all events across a user's projects. |
@@ -122,7 +137,7 @@ Parameters:
 | ------------- | --------------- | -------- | ----------- |
 | `id`          | integer         | yes      | ID or Username of a user. |
 | `action`      | string          | no       | If defined, returns events with the specified [action type](../user/profile/contributions_calendar.md#user-contribution-events). |
-| `target_type` | string          | no       | If defined, returns events with the specified [target type](#target-type). |
+| `target_type` | string          | no       | If defined, returns the specified events. Possible values: `epic`, `issue`, `merge_request`, `milestone`, `note`, `project`, `snippet`, and `user`. |
 | `before`      | date (ISO 8601) | no       | If defined, returns events created before the specified date. |
 | `after`       | date (ISO 8601) | no       | If defined, returns events created after the specified date. |
 | `sort`        | string          | no       | Direction to sort the results by creation date. Possible values: `asc`, `desc`. Default: `desc`. |
@@ -271,7 +286,7 @@ Parameters:
 | ------------- | --------------- | -------- | ----------- |
 | `project_id`  | integer or string  | yes      | ID or [URL-encoded path](rest/_index.md#namespaced-paths) of a project. |
 | `action`      | string          | no       | If defined, returns events with the specified [action type](../user/profile/contributions_calendar.md#user-contribution-events). |
-| `target_type` | string          | no       | If defined, returns events with the specified [target type](#target-type). |
+| `target_type` | string          | no       | If defined, returns the specified events. Possible values: `epic`, `issue`, `merge_request`, `milestone`, `note`, `project`, `snippet`, and `user`. |
 | `before`      | date (ISO 8601) | no       | If defined, returns events created before the specified date. |
 | `after`       | date (ISO 8601) | no       | If defined, returns events created after the specified date. |
 | `sort`        | string          | no       | Direction to sort the results by creation date. Possible values: `asc`, `desc`. Default: `desc`. |
@@ -378,27 +393,3 @@ Example response:
   }
 ]
 ```
-
-## Target type
-
-{{< history >}}
-
-- [Added](https://gitlab.com/groups/gitlab-org/-/epics/13056) `epics` in GitLab 17.3.
-
-{{< /history >}}
-
-You can filter the results to return events from a specific target type. Possible values are:
-
-- `epic`<sup>1</sup>
-- `issue`
-- `merge_request`
-- `milestone`
-- `note`<sup>2</sup>
-- `project`
-- `snippet`
-- `user`
-
-Footnotes:
-
-1. Some epic features like child items, linked items, start dates, due dates, and health statuses are not returned by the API.
-1. Some merge request notes may instead use the `DiscussionNote` type. This target type is [not supported by the API](discussions.md#understand-note-types-in-the-api).

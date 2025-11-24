@@ -65,16 +65,13 @@ Example response:
 }
 ```
 
-## Container registry pagination
-
-By default, `GET` requests return 20 results at a time because the API results
-are [paginated](rest/_index.md#pagination).
-
 ## List registry repositories
 
 ### Within a project
 
 Get a list of registry repositories in a project.
+
+Responses are [paginated](rest/_index.md#pagination) and return 20 results by default.
 
 ```plaintext
 GET /projects/:id/registry/repositories
@@ -127,6 +124,8 @@ Example response:
 {{< /history >}}
 
 Get a list of registry repositories in a group.
+
+Responses are [paginated](rest/_index.md#pagination) and return 20 results by default.
 
 ```plaintext
 GET /groups/:id/registry/repositories
@@ -242,6 +241,8 @@ curl --request DELETE \
 {{< /history >}}
 
 Get a list of tags for given registry repository.
+
+Responses are [paginated](rest/_index.md#pagination) and return 20 results by default.
 
 {{< alert type="note" >}}
 

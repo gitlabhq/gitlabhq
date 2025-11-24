@@ -2,9 +2,7 @@
 stage: Runtime
 group: Organizations
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
-title: Manage members using the Projects API
-
-description: Interact with project members.
+title: Projects members API
 ---
 
 {{< details >}}
@@ -17,21 +15,6 @@ description: Interact with project members.
 Use this endpoint to interact with project members.
 
 For information about group members, see the [Group members API](group_members.md).
-
-## Roles
-
-The [role](../user/permissions.md) assigned to a user or group is defined
-in the `Gitlab::Access` module as `access_level`.
-
-- No access (`0`)
-- Minimal access (`5`)
-- Guest (`10`)
-- Planner (`15`)
-- Reporter (`20`)
-- Developer (`30`)
-- Maintainer (`40`)
-- Owner (`50`)
-- Admin (`60`)
 
 ## Known issues
 
@@ -359,11 +342,11 @@ POST /projects/:id/members
 ```
 
 | Attribute        | Type              | Required                           | Description |
-|------------------|-------------------|------------------------------------|-------------|
+| ---------------- | ----------------- | ---------------------------------- | ----------- |
 | `id`             | integer or string | yes                                | The ID or [URL-encoded path of the project](rest/_index.md#namespaced-paths). |
 | `user_id`        | integer or string | yes, if `username` is not provided | The user ID of the new member or multiple IDs separated by commas. |
 | `username`       | string            | yes, if `user_id` is not provided  | The username of the new member or multiple usernames separated by commas. |
-| `access_level`   | integer           | yes                                | [A valid access level](access_requests.md#valid-access-levels). |
+| `access_level`   | integer           | yes                                | A valid [access level](../user/permissions.md#default-roles) Possible values: `0` (No access), `5` (Minimal access), `10` (Guest), `15` (Planner), `20` (Reporter), `30` (Developer), `40` (Maintainer), or `50` (Owner). Default: `30`. |
 | `expires_at`     | string            | no                                 | A date string in the format `YEAR-MONTH-DAY`. |
 | `invite_source`  | string            | no                                 | The source of the invitation that starts the member creation process. GitLab team members can view more information in this confidential issue: `https://gitlab.com/gitlab-org/gitlab/-/issues/327120`. |
 | `member_role_id` | integer           | no                                 | Ultimate only. The ID of a custom member role. |
@@ -452,10 +435,10 @@ PUT /projects/:id/members/:user_id
 ```
 
 | Attribute        | Type              | Required | Description |
-|------------------|-------------------|----------|-------------|
+| ---------------- | ----------------- | -------- | ----------- |
 | `id`             | integer or string | yes      | The ID or [URL-encoded path of the project](rest/_index.md#namespaced-paths). |
 | `user_id`        | integer           | yes      | The user ID of the member. |
-| `access_level`   | integer           | yes      | A [valid access level](access_requests.md#valid-access-levels). |
+| `access_level`   | integer           | yes       | A valid [access level](../user/permissions.md#default-roles) Possible values: `0` (No access), `5` (Minimal access), `10` (Guest), `15` (Planner), `20` (Reporter), `30` (Developer), `40` (Maintainer), or `50` (Owner). Default: `30`. |
 | `expires_at`     | string            | no       | A date string in the format `YEAR-MONTH-DAY`. |
 | `member_role_id` | integer           | no       | Ultimate only. The ID of a custom member role. If no value is specified, removes all roles. |
 

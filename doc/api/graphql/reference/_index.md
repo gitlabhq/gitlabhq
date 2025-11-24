@@ -31415,9 +31415,9 @@ Describes the overage of consumables for the subscription.
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
-| <a id="gitlabsubscriptionoveragecreditsused"></a>`creditsUsed` | [`Float!`](#float) | Overage consumed by the subscription. |
-| <a id="gitlabsubscriptionoveragedailyusage"></a>`dailyUsage` | [`[GitlabSubscriptionDailyUsage!]!`](#gitlabsubscriptiondailyusage) | Array of daily overage usage. |
-| <a id="gitlabsubscriptionoverageisallowed"></a>`isAllowed` | [`Boolean!`](#boolean) | Whether GitLab Credits overage is allowed for the subscription. |
+| <a id="gitlabsubscriptionoveragecreditsused"></a>`creditsUsed` | [`Float`](#float) | Overage consumed by the subscription. |
+| <a id="gitlabsubscriptionoveragedailyusage"></a>`dailyUsage` | [`[GitlabSubscriptionDailyUsage!]`](#gitlabsubscriptiondailyusage) | Array of daily overage usage. |
+| <a id="gitlabsubscriptionoverageisallowed"></a>`isAllowed` | [`Boolean`](#boolean) | Whether GitLab Credits overage is allowed for the subscription. |
 
 ### `GitlabSubscriptionUsage`
 

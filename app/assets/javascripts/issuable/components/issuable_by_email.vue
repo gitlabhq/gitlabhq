@@ -12,7 +12,7 @@ import {
 import { TYPE_ISSUE } from '~/issues/constants';
 import axios from '~/lib/utils/axios_utils';
 import { sprintf, __ } from '~/locale';
-import ModalCopyButton from '~/vue_shared/components/modal_copy_button.vue';
+import SimpleCopyButton from '~/vue_shared/components/simple_copy_button.vue';
 import HelpIcon from '~/vue_shared/components/help_icon/help_icon.vue';
 
 export default {
@@ -27,7 +27,7 @@ export default {
     GlLink,
     GlFormInputGroup,
     HelpIcon,
-    ModalCopyButton,
+    SimpleCopyButton,
     GlDisclosureDropdownItem,
   },
   directives: {
@@ -118,7 +118,7 @@ export default {
       </p>
       <gl-form-input-group :value="email" readonly select-on-click class="gl-mb-4">
         <template #append>
-          <modal-copy-button :text="email" :title="__('Copy')" :modal-id="$options.modalId" />
+          <simple-copy-button :text="email" />
           <gl-button
             v-gl-tooltip.hover
             :href="mailToLink"

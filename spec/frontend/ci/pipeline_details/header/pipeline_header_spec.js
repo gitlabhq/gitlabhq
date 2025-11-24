@@ -70,10 +70,9 @@ describe('Pipeline header', () => {
   const findLoadingIcon = () => wrapper.findComponent(GlLoadingIcon);
   const findBadges = () => wrapper.findComponent(HeaderBadges);
   const findHeaderActions = () => wrapper.findComponent(HeaderActions);
+  const findCreatedStatus = () => wrapper.findByTestId('pipeline-created-status');
   const findCreatedTimeAgo = () => wrapper.findByTestId('pipeline-created-time-ago');
   const findFinishedTimeAgo = () => wrapper.findByTestId('pipeline-finished-time-ago');
-  const findFinishedCreatedTimeAgo = () =>
-    wrapper.findByTestId('pipeline-finished-created-time-ago');
   const findPipelineName = () => wrapper.findByTestId('pipeline-name');
   const findCommitTitle = () => wrapper.findByTestId('pipeline-commit-title');
   const findTotalJobs = () => wrapper.findByTestId('total-jobs');
@@ -115,7 +114,13 @@ describe('Pipeline header', () => {
       provide: {
         ...defaultProvideOptions,
       },
-      stubs: { GlSprintf },
+      stubs: {
+        GlSprintf,
+        TimeAgoTooltip: {
+          props: ['time'],
+          template: '<span>{{time}}</span>',
+        },
+      },
       apolloProvider,
     });
 
@@ -190,13 +195,7 @@ describe('Pipeline header', () => {
     });
 
     it('displays pipeline user link with required user popover attributes', () => {
-      const {
-        data: {
-          project: {
-            pipeline: { user },
-          },
-        },
-      } = pipelineHeaderSuccess;
+      const { user } = pipelineHeaderSuccess.data.project.pipeline;
 
       const userId = getIdFromGraphQLId(user.id).toString();
 
@@ -221,15 +220,50 @@ describe('Pipeline header', () => {
     });
   });
 
-  describe('finished pipeline', () => {
-    it('displays finished time and created time', async () => {
+  describe('pipeline created/finished status', () => {
+    const { createdAt, finishedAt, user } = pipelineHeaderSuccess.data.project.pipeline;
+
+    it.each`
+      createdAt    | finishedAt    | user    | expectedText
+      ${createdAt} | ${finishedAt} | ${user} | ${`Created ${createdAt} by ${user.name}, finished ${finishedAt}`}
+      ${createdAt} | ${finishedAt} | ${null} | ${`Created ${createdAt}, finished ${finishedAt}`}
+      ${createdAt} | ${null}       | ${user} | ${`Created ${createdAt} by ${user.name}`}
+      ${createdAt} | ${null}       | ${null} | ${`Created ${createdAt}`}
+      ${null}      | ${finishedAt} | ${user} | ${`Created by ${user.name}, finished ${finishedAt}`}
+      ${null}      | ${finishedAt} | ${null} | ${`Finished ${finishedAt}`}
+      ${null}      | ${null}       | ${user} | ${`Created by ${user.name}`}
+      ${null}      | ${null}       | ${null} | ${''}
+    `('displays "$expectedText"', async ({ expectedText, ...pipeline }) => {
+      successHandler.mockResolvedValueOnce({
+        data: {
+          project: {
+            id: 'gid://gitlab/Project/1',
+            pipeline: {
+              ...pipelineHeaderSuccess.data.project.pipeline,
+              ...pipeline,
+            },
+          },
+        },
+      });
+
       await createComponent();
 
-      expect(findFinishedTimeAgo().exists()).toBe(true);
-      expect(findFinishedCreatedTimeAgo().exists()).toBe(true);
+      expect(findCreatedStatus().text()).toMatchInterpolatedText(expectedText);
+
+      if (pipeline.createdAt) {
+        expect(findCreatedTimeAgo().props('time')).toBe(pipeline.createdAt);
+      } else {
+        expect(findCreatedTimeAgo().exists()).toBe(false);
+      }
+
+      if (pipeline.finishedAt) {
+        expect(findFinishedTimeAgo().props('time')).toBe(pipeline.finishedAt);
+      } else {
+        expect(findFinishedTimeAgo().exists()).toBe(false);
+      }
     });
 
-    it('displays pipeline duartion text', async () => {
+    it('displays pipeline duration text', async () => {
       await createComponent();
 
       expect(findPipelineDuration().text()).toBe(
@@ -246,21 +280,12 @@ describe('Pipeline header', () => {
       ]);
     });
 
-    it('does not display finished time ago', () => {
-      expect(findFinishedTimeAgo().exists()).toBe(false);
-      expect(findFinishedCreatedTimeAgo().exists()).toBe(false);
-    });
-
     it('does not display pipeline duration text', () => {
       expect(findPipelineDuration().exists()).toBe(false);
     });
 
     it('displays pipeline running text', () => {
       expect(findPipelineRunningText()).toBe('In progress, queued for 3,600 seconds');
-    });
-
-    it('displays created time ago', () => {
-      expect(findCreatedTimeAgo().exists()).toBe(true);
     });
   });
 

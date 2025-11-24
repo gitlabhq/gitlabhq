@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-require 'spec_helper'
+require 'fast_spec_helper'
 
 RSpec.describe Gitlab::Usage::MetricDefinition, feature_category: :product_analytics do
   # rubocop:disable Rails/FindEach -- The all method invoked here is unrelated to the ActiveRecord scope all

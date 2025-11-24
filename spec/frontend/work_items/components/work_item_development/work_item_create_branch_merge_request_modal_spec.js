@@ -6,7 +6,7 @@ import MockAdapter from 'axios-mock-adapter';
 import axios from '~/lib/utils/axios_utils';
 import createMockApollo from 'helpers/mock_apollo_helper';
 import waitForPromises from 'helpers/wait_for_promises';
-import ModalCopyButton from '~/vue_shared/components/modal_copy_button.vue';
+import SimpleCopyButton from '~/vue_shared/components/simple_copy_button.vue';
 import { HTTP_STATUS_OK, HTTP_STATUS_UNPROCESSABLE_ENTITY } from '~/lib/utils/http_status';
 import WorkItemCreateBranchMergeRequestModal from '~/work_items/components/work_item_development/work_item_create_branch_merge_request_modal.vue';
 import getProjectRootRef from '~/work_items/graphql/get_project_root_ref.query.graphql';
@@ -89,7 +89,7 @@ describe('CreateBranchMergeRequestModal', () => {
   const findPrivateForksSelector = () => wrapper.findComponent(ProjectFormGroup);
   const findSourceBranch = () => wrapper.find('[data-testid="source-name"]');
   const findTargetBranch = () => wrapper.find('[data-testid="target-name"]');
-  const findCopyToClipboardButton = () => wrapper.findComponent(ModalCopyButton);
+  const findCopyToClipboardButton = () => wrapper.findComponent(SimpleCopyButton);
 
   describe('when hosted at the root', () => {
     beforeEach(() => {

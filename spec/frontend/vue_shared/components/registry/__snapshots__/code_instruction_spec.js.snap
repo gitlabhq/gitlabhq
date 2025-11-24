@@ -16,18 +16,18 @@ exports[`Package code instruction multiline to match the snapshot 1`] = `
     >
       this is somemultiline text
     </pre>
-    <modal-copy-button-stub
-      category="primary"
+    <simple-copy-button-stub
+      category="secondary"
       class="gl-absolute gl-right-3 gl-top-3"
-      container=""
-      cssclasses=""
+      icon="copy-to-clipboard"
       id="reference-0"
-      modalid=""
-      target=""
+      size="medium"
       text="this is some
 multiline text"
       title="Copy the command"
+      toastmessage="Copied to clipboard."
       tooltipplacement="top"
+      variant="default"
     />
   </div>
 </div>

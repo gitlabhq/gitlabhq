@@ -214,7 +214,7 @@ module API
         projects = reorder_projects(projects) unless order_by_similarity?(allow_unauthorized: false)
         projects = apply_filters(projects)
 
-        records, options = paginate_with_strategies(projects, options[:request_scope]) do |projects|
+        records, options = paginate_with_strategies(projects, options[:request_scope], use_cursor: false) do |projects|
           projects, options = with_custom_attributes(projects, options)
 
           options = options.reverse_merge(

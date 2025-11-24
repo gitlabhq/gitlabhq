@@ -873,6 +873,55 @@ To make tables easier to maintain:
   - Put spaces between the `|` characters and cell contents.
     For example `| Cell 1 | Cell 2 |`, not `|Cell1|Cell2|`.
 
+### Options for large tables
+
+You can use [Hugo class attributes](https://gohugo.io/content-management/markdown-attributes/) to make a table condensed or expandable.
+To use a Hugo attribute with a table, you must [disable Markdown rules](../testing/markdownlint.md#disable-markdownlint-tests) `055` and `056`.
+To avoid introducing linting errors in a table, test the table locally with all rules enabled.
+
+Hugo class attributes only render on the GitLab documentation site (`https://docs.gitlab.com`).
+
+#### Condensed tables
+
+A condensed table is scrollable vertically and horizontally, as necessary, and has a restricted height.
+By default, wide tables that do not fit on the page are condensed. Long tables are not condensed. You can optionally add
+the `condensed` class attribute to reduce the space the table takes up on a page.
+
+```markdown
+| Parameter | Default      | Requirements |
+|-----------|--------------|--------------|
+| `param1`  | `true`       | A and B.     |
+| `param2`  | `gitlab.com` | None         |
+{.condensed}
+```
+
+or
+
+```markdown
+| Parameter | Default      | Requirements |
+|-----------|--------------|--------------|
+| `param1`  | `true`       | A and B.     |
+| `param2`  | `gitlab.com` | None         |
+{class="condensed"}
+```
+
+#### Expandable tables
+
+Expandable tables have an **Expand table** button that, when selected, opens the table in a dialog. 
+To create an expandable table, use the `expandable` class attribute.
+
+To make a table both condensed and expandable, use both attributes. For example:
+
+```markdown
+{.condensed .expandable}
+```
+
+Or:
+
+```markdown
+{class="condensed expandable"}
+```
+
 ### Editor extensions for table formatting
 
 To ensure consistent table formatting across all Markdown files, consider formatting your tables

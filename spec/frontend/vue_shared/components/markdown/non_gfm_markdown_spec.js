@@ -2,7 +2,7 @@ import { nextTick } from 'vue';
 import Markdown from '~/vue_shared/components/markdown/non_gfm_markdown.vue';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import CodeBlockHighlighted from '~/vue_shared/components/code_block_highlighted.vue';
-import ModalCopyButton from '~/vue_shared/components/modal_copy_button.vue';
+import SimpleCopyButton from '~/vue_shared/components/simple_copy_button.vue';
 
 describe('NonGitlabMarkdown', () => {
   let wrapper;
@@ -27,7 +27,7 @@ describe('NonGitlabMarkdown', () => {
   `;
 
   const findCodeBlock = () => wrapper.findComponent(CodeBlockHighlighted);
-  const findCopyCodeButton = () => wrapper.findComponent(ModalCopyButton);
+  const findCopyCodeButton = () => wrapper.findComponent(SimpleCopyButton);
   const findCodeBlockWrapper = () => wrapper.findByTestId('code-block-wrapper');
   const findMarkdownBlock = () => wrapper.findByTestId('non-code-markdown');
   const findImageTags = () => wrapper.findAll('img');
@@ -131,7 +131,7 @@ describe('NonGitlabMarkdown', () => {
       });
 
       it('should render only one copy button per code block', () => {
-        const copyCodeButtons = wrapper.findAllComponents(ModalCopyButton);
+        const copyCodeButtons = wrapper.findAllComponents(SimpleCopyButton);
         expect(copyCodeButtons).toHaveLength(1);
       });
 

@@ -13,12 +13,12 @@ import SafeHtml from '~/vue_shared/directives/safe_html';
 import { sanitize } from '~/lib/dompurify';
 import { markdownConfig } from '~/lib/utils/text_utility';
 import { __ } from '~/locale';
-import ModalCopyButton from '~/vue_shared/components/modal_copy_button.vue';
+import SimpleCopyButton from '~/vue_shared/components/simple_copy_button.vue';
 
 export default {
   components: {
     CodeBlockHighlighted,
-    ModalCopyButton,
+    SimpleCopyButton,
   },
   directives: {
     SafeHtml,
@@ -109,7 +109,7 @@ export default {
         @mouseenter="setHoverOn(`code-${index}`)"
         @mouseleave="setHoverOff(`code-${index}`)"
       >
-        <modal-copy-button
+        <simple-copy-button
           v-if="hoverMap[`code-${index}`]"
           :title="$options.i18n.copyCodeTitle"
           :text="block.text"

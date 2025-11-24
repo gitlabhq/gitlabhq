@@ -39,7 +39,7 @@ RSpec.describe InternalEventsCli::GlobalState, :aggregate_failures, :silence_std
 
       global_state.reload_definitions
 
-      # Defintions should be reloaded with stubs
+      # Definitions should be reloaded with stubs
       expect { definitions }.not_to raise_error
       expect(definitions).to all satisfy { |definition| definition.product_group.nil? }
     end

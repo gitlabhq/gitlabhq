@@ -203,7 +203,7 @@ POST /projects/:id/pipeline_schedules
 | `cron`          | string            | Yes      | Cron schedule, for example: `0 1 * * *`. |
 | `description`   | string            | Yes      | Description of the pipeline schedule. |
 | `id`            | integer or string | Yes      | ID or [URL-encoded path of the project](rest/_index.md#namespaced-paths). |
-| `ref`           | string            | Yes      | Branch or tag name that triggers the pipeline. Accepts both short refs (for example: `main`) and full refs (for example: `refs/heads/main` or `refs/tags/main`). Short refs are automatically expanded to full refs, but the request will be rejected if the ref is ambiguous. |
+| `ref`           | string            | Yes      | Branch or tag name that triggers the pipeline. Accepts either short refs (`main`) or full refs (`refs/heads/main` or `refs/tags/main`). Short refs are automatically expanded to full refs, unless the value could match either a branch or a tag. |
 | `active`        | boolean           | No       | Activates the pipeline schedule. If false is set, the pipeline schedule is initially deactivated (default: `true`). |
 | `cron_timezone` | string            | No       | Time zone supported by `ActiveSupport::TimeZone`, for example: `Pacific Time (US & Canada)` (default: `UTC`). |
 | `inputs`        | hash              | No       | Array of [inputs](../ci/inputs/_index.md#for-a-pipeline) to pass to the pipeline schedule. Each input contains a `name` and `value`. Values can be strings, arrays, numbers, or booleans. |
@@ -277,7 +277,7 @@ PUT /projects/:id/pipeline_schedules/:pipeline_schedule_id
 | `cron_timezone`        | string            | No       | Time zone supported by `ActiveSupport::TimeZone` (for example `Pacific Time (US & Canada)`), or `TZInfo::Timezone` (for example `America/Los_Angeles`). |
 | `cron`                 | string            | No       | Cron schedule, for example: `0 1 * * *`. |
 | `description`          | string            | No       | Description of the pipeline schedule. |
-| `ref`                  | string            | No       | Branch or tag name that triggers the pipeline. Accepts both short refs (for example: `main`) and full refs (for example: `refs/heads/main` or `refs/tags/main`). Short refs are automatically expanded to full refs, but the request will be rejected if the ref is ambiguous. |
+| `ref`                  | string            | No       | Branch or tag name that triggers the pipeline. Accepts either short refs (`main`) or full refs (`refs/heads/main` or `refs/tags/main`). Short refs are automatically expanded to full refs, unless the value could match either a branch or a tag. |
 | `inputs`               | hash              | No       | Array of [inputs](../ci/inputs/_index.md) to pass to the pipeline schedule. Each input contains a `name` and `value`. To delete an existing input, include the `name` field and set `destroy` to `true`. Values can be strings, arrays, numbers, or booleans. |
 
 Example request:
@@ -456,9 +456,7 @@ Example response:
 }
 ```
 
-## Pipeline schedule variables
-
-### Create a new pipeline schedule variable
+## Create a new pipeline schedule variable
 
 Create a new variable of a pipeline schedule.
 
@@ -490,7 +488,7 @@ curl --request POST \
 }
 ```
 
-### Get a pipeline schedule variable
+## Get a pipeline schedule variable
 
 {{< history >}}
 
@@ -537,7 +535,7 @@ Example response:
 }
 ```
 
-### Edit a pipeline schedule variable
+## Edit a pipeline schedule variable
 
 Updates the variable of a pipeline schedule.
 
@@ -568,7 +566,7 @@ curl --request PUT \
 }
 ```
 
-### Delete a pipeline schedule variable
+## Delete a pipeline schedule variable
 
 Delete the variable of a pipeline schedule.
 
@@ -594,17 +592,6 @@ curl --request DELETE \
     "value": "updated value"
 }
 ```
-
-## Troubleshooting
-
-When working with the pipeline schedules API, you might encounter the following issues.
-
-### Short refs are expanded to full refs
-
-When you provide a short `ref`, it is automatically expanded to a full `ref`.
-This behavior is intended and ensures explicit resource identification.
-
-The API accepts both short refs (such as `main`) and full refs (such as `refs/heads/main` or `refs/tags/main`).
 
 ### Ambiguous refs
 

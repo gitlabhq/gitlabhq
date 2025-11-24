@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-require 'spec_helper'
+require 'fast_spec_helper'
 
 # If this spec fails, we need to add the new code review event to the correct aggregated metric
 # NOTE: ONLY user related metrics to be added to the aggregates - otherwise add it to the exception list

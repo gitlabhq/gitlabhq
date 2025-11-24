@@ -14,20 +14,6 @@ title: Group and project access requests API
 
 Use this API to interact with access requests for group and projects.
 
-## Valid access levels
-
-The access levels are defined in the `Gitlab::Access` module, and the
-following levels are recognized:
-
-- No access (`0`)
-- Minimal access (`5`)
-- Guest (`10`)
-- Planner (`15`)
-- Reporter (`20`)
-- Developer (`30`)
-- Maintainer (`40`)
-- Owner (`50`)
-
 ## List access requests for a group or project
 
 Gets a list of access requests viewable by the authenticated user.
@@ -128,7 +114,7 @@ PUT /projects/:id/access_requests/:user_id/approve
 |----------------|----------------|----------|-------------|
 | `id`           | integer or string | yes      | The ID or [URL-encoded path of the project](rest/_index.md#namespaced-paths) |
 | `user_id`      | integer        | yes      | The user ID of the access requester |
-| `access_level` | integer        | no       | A valid access level (defaults: `30`, the Developer role) |
+| `access_level` | integer        | no       | A valid [access level](../user/permissions.md#default-roles) Possible values: `0` (No access), `5` (Minimal access), `10` (Guest), `15` (Planner), `20` (Reporter), `30` (Developer), `40` (Maintainer), `50` (Owner). Default: `30`. |
 
 Example request:
 

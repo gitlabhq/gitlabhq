@@ -35,8 +35,9 @@ at a time. If you move your domain to another paid group, all enterprise users a
 claimed by the new group.
 
 Group domains are linked to a project in your top-level group. The linked project needs
-[GitLab Pages](../project/pages/_index.md), but does not need to create a GitLab Pages website.
-If GitLab Pages is turned off, you cannot verify the domain.
+to have [GitLab Pages](../project/pages/_index.md) enabled to verify the domain, but does not need
+to create or deploy a GitLab Pages website. On GitLab.com, GitLab Pages is enabled by default
+for all projects, so no configuration is required.
 
 Even though the domain is linked to a project, it is available to the entire group hierarchy
 including all nested subgroups and projects. Members in the linked project with

@@ -268,6 +268,13 @@ RSpec.describe API::Ci::Triggers, feature_category: :pipeline_composition do
   end
 
   describe 'GET /projects/:id/triggers' do
+    it_behaves_like 'authorizing granular token permissions', :read_trigger do
+      let(:boundary_object) { project }
+      let(:request) do
+        get api("/projects/#{project.id}/triggers", personal_access_token: pat)
+      end
+    end
+
     context 'authenticated user who can access triggers' do
       it 'returns a list of triggers with tokens exposed correctly' do
         get api("/projects/#{project.id}/triggers", user)
@@ -312,6 +319,13 @@ RSpec.describe API::Ci::Triggers, feature_category: :pipeline_composition do
   end
 
   describe 'GET /projects/:id/triggers/:trigger_id' do
+    it_behaves_like 'authorizing granular token permissions', :read_trigger do
+      let(:boundary_object) { project }
+      let(:request) do
+        get api("/projects/#{project.id}/triggers/#{trigger.id}", personal_access_token: pat)
+      end
+    end
+
     context 'authenticated user with valid permissions' do
       it 'returns trigger details' do
         get api("/projects/#{project.id}/triggers/#{trigger.id}", user)
@@ -345,6 +359,14 @@ RSpec.describe API::Ci::Triggers, feature_category: :pipeline_composition do
   end
 
   describe 'POST /projects/:id/triggers' do
+    it_behaves_like 'authorizing granular token permissions', :create_trigger do
+      let(:boundary_object) { project }
+      let(:request) do
+        post api("/projects/#{project.id}/triggers", personal_access_token: pat),
+          params: { description: 'trigger' }
+      end
+    end
+
     context 'authenticated user with valid permissions' do
       context 'with required parameters' do
         it 'creates trigger' do
@@ -473,6 +495,14 @@ RSpec.describe API::Ci::Triggers, feature_category: :pipeline_composition do
   end
 
   describe 'PUT /projects/:id/triggers/:trigger_id' do
+    it_behaves_like 'authorizing granular token permissions', :update_trigger do
+      let(:boundary_object) { project }
+      let(:request) do
+        put api("/projects/#{project.id}/triggers/#{trigger.id}", personal_access_token: pat),
+          params: { description: 'new description' }
+      end
+    end
+
     context 'user is maintainer of the project' do
       context 'the trigger belongs to user' do
         let(:new_description) { 'new description' }
@@ -562,6 +592,13 @@ RSpec.describe API::Ci::Triggers, feature_category: :pipeline_composition do
   end
 
   describe 'DELETE /projects/:id/triggers/:trigger_id' do
+    it_behaves_like 'authorizing granular token permissions', :delete_trigger do
+      let(:boundary_object) { project }
+      let(:request) do
+        delete api("/projects/#{project.id}/triggers/#{trigger.id}", personal_access_token: pat)
+      end
+    end
+
     context 'authenticated user with valid permissions' do
       it 'deletes trigger' do
         expect do

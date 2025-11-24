@@ -165,6 +165,13 @@ RSpec.describe API::PersonalAccessTokens, :aggregate_failures, feature_category:
         end
 
         context 'test last_used_after' do
+          # this is to make sure last_used_at value is updated for current token
+          before do
+            allow_next_instance_of(Gitlab::ExclusiveLease) do |instance|
+              allow(instance).to receive(:try_obtain).and_return(true)
+            end
+          end
+
           where(:last_used_at, :status, :result_count, :result) do
             '2022-01-03'            | :ok          | 1 | lazy { [current_users_token.id] }
             '2022-01-01'            | :ok          | 2 | lazy { [token1.id, current_users_token.id] }
@@ -238,6 +245,13 @@ RSpec.describe API::PersonalAccessTokens, :aggregate_failures, feature_category:
           nil          | '2022-01-01' | :ok | 2 | lazy { [token1.id, current_users_token.id] }
         end
 
+        # this is to make sure last_used_at value is updated for current token
+        before do
+          allow_next_instance_of(Gitlab::ExclusiveLease) do |instance|
+            allow(instance).to receive(:try_obtain).and_return(true)
+          end
+        end
+
         with_them do
           it_behaves_like 'response as expected', { created_before: params[:date_before],
                                                     created_after: params[:date_after] }
@@ -308,6 +322,12 @@ RSpec.describe API::PersonalAccessTokens, :aggregate_failures, feature_category:
 
       context 'when a token is recently used from an IP' do
         let(:request_ip_address) { '192.168.1.2' }
+
+        before do
+          allow_next_instance_of(Gitlab::ExclusiveLease) do |instance|
+            allow(instance).to receive(:try_obtain).and_return(true)
+          end
+        end
 
         it 'returns IPs' do
           get api("/personal_access_tokens/#{current_users_token.id}", personal_access_token: current_users_token),
@@ -413,6 +433,12 @@ RSpec.describe API::PersonalAccessTokens, :aggregate_failures, feature_category:
         context 'last_used_after' do
           let_it_be(:result_count) { 2 }
           let_it_be(:result) { [token1.id, current_users_token.id] }
+
+          before do
+            allow_next_instance_of(Gitlab::ExclusiveLease) do |instance|
+              allow(instance).to receive(:try_obtain).and_return(true)
+            end
+          end
 
           it_behaves_like 'response as expected', last_used_after: '2022-01-01'
         end

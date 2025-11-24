@@ -725,7 +725,7 @@ RSpec.describe Ci::CreateDownstreamPipelineService, '#execute', feature_category
       it 'returns the error' do
         expect { subject }.not_to change(downstream_project.ci_pipelines, :count)
         expect(subject).to be_error
-        expect(subject.message).to eq('Can not run the bridge')
+        expect(subject.message).to eq('Can not run a failed bridge')
       end
     end
 

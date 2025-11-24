@@ -729,7 +729,7 @@ The `bypass_settings` field allows you to specify exceptions to the policy for c
 
 {{< /history >}}
 
-With branch-based exceptions, you can configure merge request approval policies to automatically waive approval requirements for specific source and target branch combinations. This enables you to preserve security governance and maintain strict approval rules for certain types of merges, such as feature-to-main, while allowing more flexibility for others, such as release-to-main.
+With branch-based exceptions, you can configure merge request approval policies to automatically waive approval requirements for specific source and target branch combinations. This enables you to preserve security governance and maintain strict approval rules for certain types of merges, such as feature-to-main, while allowing more flexibility for others, such as release-to-main. Bypass events are logged as audit events in a security policy project.
 
 | Field   | Type   | Required | Possible values | Description |
 |---------|--------|----------|-----------------|-------------|
@@ -745,7 +745,7 @@ With branch-based exceptions, you can configure merge request approval policies 
 
 {{< /history >}}
 
-With access token and service account exceptions, you can designate specific service accounts and access tokens that can bypass branch protections enforced by merge request approval policies when necessary. This approach enables automations that you trust to operate without manual approval while maintaining restrictions for human users. For example, trusted automations might include CI/CD pipelines, repository mirroring, and automated updates. Bypass events are fully audited to allow you to support your compliance and emergency access needs.
+With access token and service account exceptions, you can designate specific service accounts and access tokens that can bypass branch protections enforced by merge request approval policies when necessary. This approach enables automations that you trust to operate without manual approval while maintaining restrictions for human users. For example, trusted automations might include CI/CD pipelines, repository mirroring, and automated updates. Bypass events are logged as audit events in a security policy project.
 
 | Field | Type    | Required | Description                                    |
 |-------|---------|----------|------------------------------------------------|
@@ -760,7 +760,7 @@ With access token and service account exceptions, you can designate specific ser
 
 {{< /history >}}
 
-You can prepare for urgent situations by designating specific users, groups, roles, or custom roles that can bypass merge request approval policies. This capability provides flexibility for emergency responses, while providing comprehensive audit trails and maintaining governance controls. To allow a user, group, role, or custom role the ability to bypass security policies, you grant them an exception.
+You can prepare for urgent situations by designating specific users, groups, roles, or custom roles that can bypass merge request approval policies. This capability provides flexibility for emergency responses and maintaining governance controls. To allow a user, group, role, or custom role the ability to bypass security policies, you grant them an exception. Bypass events are logged as audit events in a security policy project.
 
 Users who have these exceptions can bypass at two levels:
 

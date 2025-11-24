@@ -24,11 +24,7 @@ Use this API to manage [issues](../user/project/issues/_index.md). You can:
 If a user is not a member of a private project, a `GET`
 request on that project results in a `404` status code.
 
-## Issues pagination
-
-By default, `GET` requests return 20 results at a time because the API results
-are paginated.
-Read more on [pagination](rest/_index.md#pagination).
+Responses in this API are [paginated](rest/_index.md#pagination) and return 20 results by default.
 
 {{< alert type="note" >}}
 
