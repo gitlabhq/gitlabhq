@@ -3409,3 +3409,8 @@
   rules:
     - <<: *if-merge-request-tier-3
       when: never
+
+.test-metadata:rules:export-predictive-test-metrics:
+  rules:
+    - <<: *if-merge-request-tier-3
+      changes: *code-backstage-patterns

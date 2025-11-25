@@ -222,7 +222,8 @@ Dependency scanning produces the following output:
 
 Dependency scanning outputs a report containing details of all vulnerabilities. The report is
 processed internally and the results are shown in the UI. The report is also output as an artifact
-of the dependency scanning job, named `gl-dependency-scanning-report.json`.
+of the dependency scanning job, named `gl-dependency-scanning-report.json`, and is always generated
+at the root of the project.
 
 For more details of the dependency scanning report, see the
 [Dependency scanning report schema](https://gitlab.com/gitlab-org/security-products/security-report-schemas/-/blob/master/dist/dependency-scanning-report-format.json).

@@ -54,6 +54,7 @@ export const initWorkItemsRoot = ({ workItemType, workspaceType, withTabs } = {}
     isIssueRepositioningDisabled,
     hasProjects,
     newIssuePath,
+    workItemsSavedViewsEnabled,
   } = el.dataset;
 
   const isGroup = workspaceType === WORKSPACE_GROUP;
@@ -116,6 +117,7 @@ export const initWorkItemsRoot = ({ workItemType, workspaceType, withTabs } = {}
       showNewIssueLink: parseBoolean(showNewWorkItem),
       isIssueRepositioningDisabled: parseBoolean(isIssueRepositioningDisabled),
       hasProjects: parseBoolean(hasProjects),
+      workItemsSavedViewsEnabled: parseBoolean(workItemsSavedViewsEnabled),
     },
     mounted() {
       performanceMarkAndMeasure({

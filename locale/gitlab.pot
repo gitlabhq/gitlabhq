@@ -6723,10 +6723,22 @@ msgstr ""
 msgid "AiImpactAnalytics|Duo Chat usage"
 msgstr ""
 
+msgid "AiImpactAnalytics|Duo Code Review comments"
+msgstr ""
+
+msgid "AiImpactAnalytics|Duo Code Review requests"
+msgstr ""
+
 msgid "AiImpactAnalytics|Duo RCA usage"
 msgstr ""
 
 msgid "AiImpactAnalytics|Duo features usage"
+msgstr ""
+
+msgid "AiImpactAnalytics|Number of Duo Code Review comments."
+msgstr ""
+
+msgid "AiImpactAnalytics|Number of Duo Code Review requests."
 msgstr ""
 
 msgid "AiImpactAnalytics|Number of contributors who used any GitLab Duo feature."

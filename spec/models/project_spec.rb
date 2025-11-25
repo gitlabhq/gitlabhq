@@ -9987,6 +9987,95 @@ RSpec.describe Project, factory_default: :keep, feature_category: :groups_and_pr
     end
   end
 
+  describe '#work_items_saved_views_enabled?' do
+    let_it_be(:group) { create(:group) }
+    let_it_be(:project) { create(:project, group: group) }
+    let_it_be(:user) { create(:user) }
+
+    context "when the project's group has work_items_saved_views enabled" do
+      before do
+        allow(group).to receive(:work_items_saved_views_enabled?).and_return(true)
+      end
+
+      it 'returns true' do
+        expect(project.work_items_saved_views_enabled?).to eq(true)
+        expect(project.work_items_saved_views_enabled?(user)).to eq(true)
+      end
+    end
+
+    context "when the project's group has work_items_saved_views disabled" do
+      before do
+        allow(group).to receive(:work_items_saved_views_enabled?).and_return(false)
+      end
+
+      context 'when work_items_saved_views is enabled' do
+        before do
+          stub_feature_flags(work_items_saved_views: true)
+        end
+
+        it 'returns true regardless of user' do
+          expect(project.work_items_saved_views_enabled?).to eq(true)
+          expect(project.work_items_saved_views_enabled?(user)).to eq(true)
+        end
+      end
+
+      context 'when work_items_saved_views is disabled' do
+        before do
+          stub_feature_flags(work_items_saved_views: false)
+        end
+
+        context 'when work_items_saved_views_user is enabled for user' do
+          before do
+            stub_feature_flags(work_items_saved_views_user: user)
+          end
+
+          it 'returns true when user is provided' do
+            expect(project.work_items_saved_views_enabled?(user)).to eq(true)
+          end
+
+          it 'returns false when no user is provided' do
+            expect(project.work_items_saved_views_enabled?).to eq(false)
+          end
+        end
+
+        context 'when work_items_saved_views_user is disabled' do
+          before do
+            stub_feature_flags(work_items_saved_views_user: false)
+          end
+
+          it 'returns false' do
+            expect(project.work_items_saved_views_enabled?(user)).to eq(false)
+            expect(project.work_items_saved_views_enabled?).to eq(false)
+          end
+        end
+      end
+    end
+
+    context 'when the project belongs to a user namespace' do
+      let_it_be(:project_without_group) { create(:project, namespace: user.namespace) }
+
+      context 'when work_items_saved_views is enabled' do
+        before do
+          stub_feature_flags(work_items_saved_views: true)
+        end
+
+        it 'returns true' do
+          expect(project_without_group.work_items_saved_views_enabled?).to eq(true)
+        end
+      end
+
+      context 'when all saved view feature flags are disabled' do
+        before do
+          stub_feature_flags(work_items_saved_views: false, work_items_saved_views_user: false)
+        end
+
+        it 'returns false' do
+          expect(project_without_group.work_items_saved_views_enabled?).to eq(false)
+        end
+      end
+    end
+  end
+
   describe 'catalog resource process sync events worker' do
     let_it_be_with_reload(:project) { create(:project, name: 'Test project', description: 'Test description') }
 

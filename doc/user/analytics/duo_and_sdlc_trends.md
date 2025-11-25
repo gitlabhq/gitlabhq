@@ -74,6 +74,7 @@ The **Metric trends** table displays metrics for the last six months, with month
 - Duo RCA usage [enabled on GitLab.com, GitLab Self-Managed, and GitLab Dedicated](https://gitlab.com/gitlab-org/gitlab/-/issues/543987) in GitLab 18.3.
 - Duo RCA usage [generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/556726) in GitLab 18.4. Feature flag `duo_rca_usage_rate` removed.
 - Duo features usage [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/207562) in GitLab 18.6.
+- Duo Code Review requests and Duo Code Review comments [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/573979) in GitLab 18.7.
 
 {{< /history >}}
 
@@ -104,6 +105,11 @@ The **Metric trends** table displays metrics for the last six months, with month
   {{< /alert >}}
 
 - **Duo features usage**: Number of contributors who used any GitLab Duo feature.
+
+- **Duo Code Review requests**: Number of Duo Code Review requests made on merge requests.
+  This includes requests initiated by both merge request authors and non-authors.
+
+- **Duo Code Review comments**: Number of comments posted by Duo Code Review on merge request diffs.
 
 ### Development metrics
 

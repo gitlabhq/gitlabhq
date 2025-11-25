@@ -1,5 +1,5 @@
 <script>
-import { GlEmptyState, GlPagination, GlLoadingIcon, GlFilteredSearchToken } from '@gitlab/ui';
+import { GlEmptyState, GlKeysetPagination, GlLoadingIcon, GlFilteredSearchToken } from '@gitlab/ui';
 import EMPTY_STATE_SVG_URL from '@gitlab/svgs/dist/illustrations/empty-state/empty-activity-md.svg?url';
 import { DEFAULT_PER_PAGE } from '~/api';
 import { __, s__ } from '~/locale';
@@ -28,7 +28,7 @@ export default {
     FilteredSearch,
     ContributionEvents,
     GlEmptyState,
-    GlPagination,
+    GlKeysetPagination,
     GlLoadingIcon,
   },
   props: {
@@ -49,21 +49,21 @@ export default {
     return {
       events: [],
       eventsLoading: false,
-      page: 1,
       eventFilter: this.organizationActivityAllEvent,
       hasNextPage: false,
+      hasPreviousPage: false,
+      currentOffset: 0,
     };
   },
   computed: {
     showEmptyState() {
       return !this.eventsLoading && !this.events.length;
     },
-    nextPage() {
-      // next-page prop expects number or undefined
-      return this.hasNextPage ? this.page + 1 : undefined;
-    },
-    prevPage() {
-      return this.page - 1;
+    paginationInfo() {
+      return {
+        hasNextPage: this.hasNextPage,
+        hasPreviousPage: this.hasPreviousPage,
+      };
     },
     availableTokens() {
       return [
@@ -83,15 +83,13 @@ export default {
     this.fetchEvents();
   },
   methods: {
-    calculateOffset(page) {
-      // Offset is starts at 0, but pages start at page 1.  We need to use -1 logic to generate offset
-      return (page - 1) * DEFAULT_PER_PAGE;
-    },
     onSearchFilter(tokens) {
       this.eventFilter = convertTokensToFilter(tokens) || this.organizationActivityAllEvent;
+      this.currentOffset = 0;
+      this.hasPreviousPage = false;
       this.fetchEvents();
     },
-    async fetchEvents(page = 1) {
+    async fetchEvents(offset = 0) {
       this.eventsLoading = true;
 
       try {
@@ -99,20 +97,29 @@ export default {
           data: { events, has_next_page: hasNextPage },
         } = await axios.get(this.organizationActivityPath, {
           params: {
-            offset: this.calculateOffset(page),
+            offset,
             limit: DEFAULT_PER_PAGE,
             event_filter: this.eventFilter,
           },
         });
 
         this.hasNextPage = hasNextPage;
+        this.hasPreviousPage = offset > 0;
+        this.currentOffset = offset;
         this.events = events;
-        this.page = page;
       } catch (error) {
         createAlert({ message: this.$options.i18n.eventsErrorMessage, error, captureError: true });
       } finally {
         this.eventsLoading = false;
       }
+    },
+    handleNextPage() {
+      const nextOffset = this.currentOffset + DEFAULT_PER_PAGE;
+      this.fetchEvents(nextOffset);
+    },
+    handlePrevPage() {
+      const prevOffset = Math.max(0, this.currentOffset - DEFAULT_PER_PAGE);
+      this.fetchEvents(prevOffset);
     },
   },
   EMPTY_STATE_SVG_URL,
@@ -134,14 +141,12 @@ export default {
     <template v-if="!showEmptyState">
       <contribution-events :events="events" />
       <gl-loading-icon v-if="eventsLoading" size="md" class="gl-mb-3" />
-      <gl-pagination
+      <gl-keyset-pagination
         v-else
-        :value="page"
-        :prev-page="prevPage"
-        :next-page="nextPage"
-        align="center"
-        class="gl-w-full"
-        @input="fetchEvents"
+        v-bind="paginationInfo"
+        class="gl-my-6 gl-flex gl-justify-center"
+        @prev="handlePrevPage"
+        @next="handleNextPage"
       />
     </template>
 

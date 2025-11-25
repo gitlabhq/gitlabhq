@@ -53,6 +53,29 @@ RSpec.describe 'Query.project.ciPipelineCreationInputs', feature_category: :pipe
     YAML
   end
 
+  let_it_be(:config_yaml_with_rules) do
+    <<~YAML
+    spec:
+      inputs:
+        environment:
+          type: string
+          options: ['dev', 'staging', 'prod']
+          default: 'dev'
+        instance_type:
+          type: string
+          rules:
+            - if: '$[[ inputs.environment ]] == "dev"'
+              options: ['t3.micro', 't3.small']
+              default: 't3.micro'
+            - if: '$[[ inputs.environment ]] == "prod"'
+              options: ['m5.large', 'm5.xlarge']
+              default: 'm5.large'
+    ---
+    job:
+      script: echo hello world
+    YAML
+  end
+
   let(:query) do
     <<~GQL
       query {
@@ -85,6 +108,13 @@ RSpec.describe 'Query.project.ciPipelineCreationInputs', feature_category: :pipe
       config_yaml_without_inputs,
       message: 'Add CI',
       branch_name: 'feature-no-inputs')
+
+    project.repository.create_file(
+      project.creator,
+      '.gitlab-ci.yml',
+      config_yaml_with_rules,
+      message: 'Add CI with rules',
+      branch_name: 'feature-with-rules')
   end
 
   context 'when current user has access to the project' do
@@ -229,6 +259,83 @@ RSpec.describe 'Query.project.ciPipelineCreationInputs', feature_category: :pipe
 
         expect(graphql_errors)
           .to include(a_hash_including('message' => 'The branch or tag does not exist'))
+      end
+    end
+
+    context 'when inputs have rules' do
+      let(:ref) { 'feature-with-rules' }
+
+      let(:query_with_rules) do
+        <<~GQL
+          query {
+            project(fullPath: "#{project.full_path}") {
+              ciPipelineCreationInputs(ref: "#{ref}") {
+                name
+                type
+                description
+                required
+                default
+                options
+                rules {
+                  if
+                  options
+                  default
+                }
+              }
+            }
+          }
+        GQL
+      end
+
+      context 'when the feature flag is enabled' do
+        before do
+          stub_feature_flags(ci_dynamic_pipeline_inputs: project)
+        end
+
+        it 'returns inputs with rules' do
+          post_graphql(query_with_rules, current_user: user)
+
+          expect(graphql_data['project']['ciPipelineCreationInputs']).to contain_exactly(
+            a_hash_including(
+              'name' => 'environment',
+              'type' => 'STRING',
+              'default' => 'dev',
+              'options' => %w[dev staging prod],
+              'rules' => nil
+            ),
+            a_hash_including(
+              'name' => 'instance_type',
+              'type' => 'STRING',
+              'rules' => contain_exactly(
+                a_hash_including(
+                  'if' => '$[[ inputs.environment ]] == "dev"',
+                  'options' => %w[t3.micro t3.small],
+                  'default' => 't3.micro'
+                ),
+                a_hash_including(
+                  'if' => '$[[ inputs.environment ]] == "prod"',
+                  'options' => %w[m5.large m5.xlarge],
+                  'default' => 'm5.large'
+                )
+              )
+            )
+          )
+        end
+      end
+
+      context 'when the feature flag is disabled' do
+        before do
+          stub_feature_flags(ci_dynamic_pipeline_inputs: false)
+        end
+
+        it 'does not return rules field' do
+          post_graphql(query_with_rules, current_user: user)
+
+          inputs = graphql_data['project']['ciPipelineCreationInputs']
+          instance_type_input = inputs.find { |i| i['name'] == 'instance_type' }
+
+          expect(instance_type_input['rules']).to be_nil
+        end
       end
     end
   end

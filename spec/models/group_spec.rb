@@ -4293,6 +4293,52 @@ RSpec.describe Group, feature_category: :groups_and_projects do
     end
   end
 
+  describe '#work_items_saved_views_enabled?' do
+    let_it_be(:user) { create(:user) }
+
+    context 'when work_items_saved_views is enabled for the group' do
+      before do
+        stub_feature_flags(work_items_saved_views: group)
+      end
+
+      it 'returns true regardless of user' do
+        expect(group.work_items_saved_views_enabled?).to eq(true)
+        expect(group.work_items_saved_views_enabled?(user)).to eq(true)
+      end
+    end
+
+    context 'when work_items_saved_views is disabled for the group' do
+      before do
+        stub_feature_flags(work_items_saved_views: false)
+      end
+
+      context 'when work_items_saved_views_user is enabled for the user' do
+        before do
+          stub_feature_flags(work_items_saved_views_user: user)
+        end
+
+        it 'returns true when user is provided' do
+          expect(group.work_items_saved_views_enabled?(user)).to eq(true)
+        end
+
+        it 'returns false when no user is provided' do
+          expect(group.work_items_saved_views_enabled?).to eq(false)
+        end
+      end
+
+      context 'when work_items_saved_views_user feature flag is disabled' do
+        before do
+          stub_feature_flags(work_items_saved_views_user: false)
+        end
+
+        it 'returns false' do
+          expect(group.work_items_saved_views_enabled?(user)).to eq(false)
+          expect(group.work_items_saved_views_enabled?).to eq(false)
+        end
+      end
+    end
+  end
+
   describe '#has_active_hooks?' do
     let(:group) { build(:group) }
 

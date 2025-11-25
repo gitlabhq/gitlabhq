@@ -1045,7 +1045,19 @@ module Types
 
       raise Gitlab::Graphql::Errors::ArgumentError, response.message if response.error?
 
-      response.payload[:inputs].all_inputs
+      response.payload[:inputs].all_inputs.map do |input|
+        {
+          name: input.name,
+          type: input.type,
+          default: input.default,
+          description: input.description,
+          regex: input.regex,
+          required?: input.required?,
+          options: input.options,
+          rules: input.rules,
+          project: object # TODO: Remove when ci_dynamic_pipeline_inputs flag is removed
+        }
+      end
     end
 
     def ci_config_variables(ref:, fail_on_cache_miss: false)

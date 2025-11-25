@@ -12,6 +12,7 @@ module Groups
       push_force_frontend_feature_flag(:glql_load_on_click, !!group&.glql_load_on_click_feature_flag_enabled?)
       push_force_frontend_feature_flag(:work_item_planning_view,
         !!group&.work_items_consolidated_list_enabled?(current_user))
+      push_force_frontend_feature_flag(:work_items_saved_views, !!group&.work_items_saved_views_enabled?(current_user))
     end
 
     before_action :handle_new_work_item_path, only: [:show]
