@@ -54,11 +54,11 @@ RSpec.describe RegistrationsController, :with_current_organization, feature_cate
       allow(::Gitlab::ApplicationRateLimiter).to receive(:throttled?).and_return(false)
     end
 
-    let_it_be(:base_user_params) do
+    let(:base_user_params) do
       { first_name: 'first', last_name: 'last', username: 'new_username', email: 'new@user.com', password: User.random_password }
     end
 
-    let_it_be(:user_params) { { user: base_user_params } }
+    let(:user_params) { { user: base_user_params } }
 
     let(:session_params) { {} }
 
@@ -210,7 +210,7 @@ RSpec.describe RegistrationsController, :with_current_organization, feature_cate
 
         context 'when registration is triggered from an accepted invite' do
           context 'when it is part from the initial invite email', :snowplow do
-            let_it_be(:member) { create(:project_member, :invited, invite_email: user_params.dig(:user, :email)) }
+            let_it_be_with_reload(:member) { create(:project_member, :invited) }
 
             let(:originating_member_id) { member.id }
             let(:session_params) do
@@ -218,6 +218,10 @@ RSpec.describe RegistrationsController, :with_current_organization, feature_cate
                 invite_email: user_params.dig(:user, :email),
                 originating_member_id: originating_member_id
               }
+            end
+
+            before do
+              member.update!(invite_email: user_params.dup.dig(:user, :email))
             end
 
             context 'when member exists from the session key value' do
@@ -538,7 +542,7 @@ RSpec.describe RegistrationsController, :with_current_organization, feature_cate
 
     context 'when the password is weak' do
       render_views
-      let_it_be(:new_user_params) { { new_user: base_user_params.merge({ password: "password" }) } }
+      let(:new_user_params) { { new_user: base_user_params.merge({ password: "password" }) } }
 
       subject(:post_create) { post(:create, params: new_user_params) }
 
@@ -692,6 +696,24 @@ RSpec.describe RegistrationsController, :with_current_organization, feature_cate
             post :create, params: user_params
           end.to change { User.count }.by(1)
         end
+      end
+    end
+
+    context 'when organization is specified' do
+      let(:first_organization) { current_organization }
+      let_it_be(:other_organization) { create(:organization, path: 'other') }
+
+      before do
+        allow(Current).to receive(:organization).and_return(other_organization)
+      end
+
+      it 'creates user in first organization' do
+        subject
+
+        user = User.find_by(email: base_user_params[:email])
+
+        expect(user.organizations).to eq([first_organization])
+        expect(user.organization).to eq(first_organization)
       end
     end
   end
