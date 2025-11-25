@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<package xmlns="http://schemas.microsoft.com/packaging/2012/06/nuspec.xsd">
+  <metadata>
+    <id>TestPackage</id>
+    <version>1.0.0</version>
+    <authors>Test Author</authors>
+    <description>Test package with empty dependency groups</description>
+    <dependencies>
+      <dependency id="Moqi" version="2.5.6" include="Runtime,Compile" />
+      <group targetFramework=".NETFramework4.5" />
+      <group targetFramework=".NETCore4.5" />
+      <group targetFramework=".NETStandard2.0">
+        <dependency id="System.Net.Http" version="4.3.1" />
+      </group>
+    </dependencies>
+  </metadata>
+</package>

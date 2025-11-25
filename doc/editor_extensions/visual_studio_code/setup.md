@@ -34,6 +34,13 @@ The extension matches your Git repository remote URL with the GitLab instance UR
 for your token. If you have multiple accounts or projects, you can choose the one you want to use.
 For more details, see [Switch GitLab accounts in VS Code](_index.md#switch-gitlab-accounts-in-vs-code).
 
+{{< alert type="note" >}}
+
+If your GitLab instance or network uses a custom SSL setup,
+you can configure the extension to support self-signed certificates. For more information, see [using the extension with self-signed certificates](ssl.md).
+
+{{< /alert >}}
+
 ### Connect to your repository
 
 To connect to your GitLab repository from VS Code:

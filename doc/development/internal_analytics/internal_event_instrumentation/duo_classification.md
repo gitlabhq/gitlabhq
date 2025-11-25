@@ -7,11 +7,11 @@ title: GitLab Duo Classification
 
 This guide explains how to properly add the `classification: duo` field to event definitions for AI and GitLab Duo features.
 
-## What is the classification field?
+## What is the `classification` field?
 
 The `classification` field is an optional property in event definitions that categorizes events based on their data handling requirements. Currently, the only supported value is `duo`, which is used specifically for AI and GitLab Duo-related features.
 
-## When to use classification: duo
+## When to use `classification: duo`
 
 Add `classification: duo` to your event definition when:
 
@@ -23,14 +23,14 @@ Add `classification: duo` to your event definition when:
   - Other AI-related product groups
 - The event data should be considered operational data for GitLab self-managed instances
 
-## When NOT to use classification: duo
+## When NOT to use `classification: duo`
 
 **Important**: Do not add `classification: duo` if:
 
-- Your event is not related to AI or Duo features
+- Your event is not related to AI or GitLab Duo features
 - You are instrumenting general GitLab features unrelated to AI
 
-If your event doesn't fall under Duo features, remove the classification field entirely rather than leaving it empty.
+If your event doesn't fall under GitLab Duo features, remove the classification field entirely rather than leaving it empty.
 
 ## Data handling implications
 
@@ -40,9 +40,9 @@ Events with `classification: duo` are treated as operational data, which means:
 - This ensures essential AI feature functionality and monitoring continues to work
 - The data is considered necessary for operational purposes rather than purely analytical
 
-## Example event definition with classification: duo
+## Example event definition with `classification: duo`
 
-Here's an example of a properly configured Duo Chat event:
+Here's an example of a properly configured GitLab Duo Chat event:
 
 ```yaml
 ---
@@ -92,4 +92,4 @@ tiers:
 
 ## Validation
 
-The classification field is validated against the JSON Schema. Currently, only "duo" is accepted as a valid value.
+The classification field is validated against the JSON Schema. Currently, only `duo` is accepted as a valid value.

@@ -63,6 +63,7 @@ To fix the CI/CD pipeline in a merge request:
    - Select the **Pipelines** tab and in the rightmost column, select **Fix pipeline with Duo** ({{< icon name="tanuki-ai" >}}).
 
 1. To monitor progress, select **Automate** > **Sessions**.
+
 When the session is complete, a comment shows a link to a merge request that contains the fix,
 or a comment describes possible next steps.
 

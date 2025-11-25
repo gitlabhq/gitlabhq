@@ -2,11 +2,13 @@
 
 require 'spec_helper'
 
-RSpec.describe Packages::Nuget::PackagesMetadataPresenter, feature_category: :package_registry do
+RSpec.describe Packages::Nuget::PackagesMetadataPresenter, :aggregate_failures, feature_category: :package_registry do
   include_context 'with expected presenters dependency groups'
 
   let_it_be(:project) { create(:project) }
-  let_it_be(:packages) { create_list(:nuget_package, 5, :with_metadatum, name: 'Dummy.Package', project: project) }
+  let_it_be(:packages) do
+    create_list(:nuget_package, 5, :with_metadatum, without_package_files: true, name: 'Dummy.Package', project: project)
+  end
 
   let(:presenter) { described_class.new(::Packages::Nuget::Package.for_projects(project)) }
 
@@ -17,11 +19,11 @@ RSpec.describe Packages::Nuget::PackagesMetadataPresenter, feature_category: :pa
   end
 
   describe '#items' do
-    let(:tag_names) { %w[tag1 tag2] }
+    let_it_be(:tag_names) { %w[tag1 tag2] }
 
     subject { presenter.items }
 
-    before do
+    before_all do
       packages.each do |pkg|
         tag_names.each { |tag| create(:packages_tag, package: pkg, name: tag) }
 

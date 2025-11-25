@@ -30,8 +30,8 @@ module QA
         end
 
         if Runtime::Env.personal_access_tokens_disabled?
-          Resource::Issue.fabricate_via_browser_ui! do |issue|
-            issue.project = project
+          Resource::WorkItem.fabricate_via_browser_ui! do |work_item|
+            work_item.project = project
           end.visit!
         else
           create(:issue, project: project).visit!

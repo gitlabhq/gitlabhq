@@ -14,7 +14,8 @@ title: Troubleshooting the GitLab Duo Agent Platform
 
 {{< /details >}}
 
-If you are working with the GitLab Duo Agent Platform in your Integrated Development Environment (IDE), you might encounter the following issues.
+If you are working with the GitLab Duo Agent Platform in your
+Integrated Development Environment (IDE), you might encounter the following issues.
 
 ## General guidance
 
@@ -27,44 +28,11 @@ Start by ensuring that GitLab Duo is on and that you are properly connected.
 
 ## Network issues
 
-Your network might block the connection to the Agent Platform,
-for example, by using a firewall. By default the Agent Platform uses a gRPC
-(Google Remote Procedure Call) connection. The network must let HTTP/2 traffic through to
-the service for gRPC to work.
-
-gRPC can be [changed to a WebSocket connection](#use-websocket-connection-instead-of-grpc) in the IDE.
-
-To confirm that you can connect to the Agent Platform service using gRPC:
-
-1. In Google Chrome or Firefox, open Developer Tools and select the **Network** tab.
-1. Right-click the column headers to show the **Protocol** column.
-1. In the address bar, enter `https://duo-workflow-svc.runway.gitlab.net/DuoWorkflow/ExecuteWorkflow`.
-1. Ensure the request was successful and the **Protocol** column includes `h2` in Chrome or `HTTP/2` in Firefox.
-
-If the request fails or does not show the HTTP/2 protocol:
-
-- A security system like Netskope or Zscaler might be configured to block or inspect traffic.
-- The HTTP/2 protocol downgrades to HTTP/1.1, which prevents the Agent Platform from working correctly.
-
-To correct this issue, ask your network administrator to put `https://duo-workflow-svc.runway.gitlab.net/DuoWorkflow/ExecuteWorkflow`
-on the correct allowlist, or to exempt it from traffic inspection.
-
-### Use WebSocket connection instead of gRPC
-
-If your network conditions do not allow a gRPC connection, WebSocket is an alternative in
-VS Code and JetBrains IDEs:
-
-- In VS Code:
-  1. Select **File** > **Preferences** > **Settings**
-  1. Search for the setting **GitLab: Duo Agent Platform: Connection Type**, then select `WebSocket`.
-
-- In JetBrains:
-  1. On the top bar, select the main menu, then select **Settings**.
-  1. On the left sidebar, select **Tools** > **GitLab Duo**.
-  1. In the **GitLab Duo Agent Platform** > **Connection Type** section, select `WebSocket`.
-
 If you are seeing `HTTP/1.1` responses from GitLab Duo rather than `/-/cable` WebSocket endpoints in your logs, your WebSocket connections may be blocked.
-Ensure you allow [WebSocket connections](../../administration/gitlab_duo/setup.md) through your proxy.
+Your GitLab instance must allow inbound WebSocket connections from IDE clients.
+Ask your network administrator to
+[allow WebSocket traffic to your GitLab instance](../../administration/gitlab_duo/setup.md#allow-inbound-connections-from-clients-to-the-gitlab-instance)
+if you suspect this is the issue.
 
 ## View debugging logs in VS Code
 

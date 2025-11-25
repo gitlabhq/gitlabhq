@@ -142,5 +142,25 @@ RSpec.describe RapidDiffs::StreamingResource, type: :controller, feature_categor
         expect(stream).not_to have_received(:close)
       end
     end
+
+    context 'when stream is lost' do
+      where(:error) do
+        [
+          [[ActionController::Live::ClientDisconnected]],
+          [[IOError, 'closed stream']]
+        ]
+      end
+
+      with_them do
+        before do
+          allow(stream).to receive(:write).and_raise(*error)
+        end
+
+        it 'silently handles the disconnection' do
+          expect { controller_instance.send(:diffs) }.not_to raise_error
+          expect(Gitlab::AppLogger).not_to receive(:error)
+        end
+      end
+    end
   end
 end

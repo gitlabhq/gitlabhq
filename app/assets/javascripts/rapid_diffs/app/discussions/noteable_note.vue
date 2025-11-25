@@ -11,9 +11,9 @@ import { __, sprintf } from '~/locale';
 import { detectAndConfirmSensitiveTokens } from '~/lib/utils/secret_detection';
 import { updateNoteErrorMessage } from '~/notes/utils';
 import { isCurrentUser } from '~/lib/utils/common_utils';
-import NoteActions from '~/notes/components/note_actions.vue';
-import NoteHeader from './note_header.vue';
+import NoteActions from './note_actions.vue';
 import NoteBody from './note_body.vue';
+import NoteHeader from './note_header.vue';
 
 export default {
   name: 'NoteableNote',
@@ -218,9 +218,7 @@ export default {
           :is-imported="note.imported"
         />
         <note-actions
-          :author="author"
           :author-id="authorId"
-          :note-id="note.id"
           :note-url="note.noteable_note_url"
           :access-level="note.human_access"
           :is-contributor="note.is_contributor"

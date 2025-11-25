@@ -33,7 +33,7 @@ Use the GraphQL API to retrieve and export GitLab Duo data.
 
 The `AiUsageData` endpoint provides raw event data. It exposes Code Suggestions-specific events through `codeSuggestionEvents` and all raw event data through `all`:
 
-You can use this endpoint to import events into a BI tool or write scripts that aggregate the data, acceptance rates, and per-user metrics for all Duo events.
+You can use this endpoint to import events into a BI tool or write scripts that aggregate the data, acceptance rates, and per-user metrics for all GitLab Duo events.
 
 Data is retained for three months for customers without ClickHouse installed. For customers with ClickHouse configured, there is currently no data retention policy.
 
@@ -103,7 +103,7 @@ The query returns the following output:
 }
 ```
 
-Alternatively, to retrieve usage data for all Duo events for the `gitlab-org` group:
+Alternatively, to retrieve usage data for all GitLab Duo events for the `gitlab-org` group:
 
 ```graphql
 query {
@@ -180,7 +180,7 @@ To see which events are being tracked, you can examine the events declared in th
 
 {{< /history >}}
 
-The `AiUserMetrics` endpoint provides pre-aggregated per-user metrics for all registered GitLab Duo features, including Code Suggestions, Duo Chat, Code Review, Agent Platform (Agentic Chat), Job Troubleshooting, and Model Context Protocol (MCP) tool calls.
+The `AiUserMetrics` endpoint provides pre-aggregated per-user metrics for all registered GitLab Duo features, including Code Suggestions, GitLab Duo Chat, Code Review, Agent Platform (Agentic Chat), Job Troubleshooting, and Model Context Protocol (MCP) tool calls.
 
 You can use this endpoint to analyze GitLab Duo user engagement and measure usage frequency across different GitLab Duo features.
 
@@ -409,7 +409,7 @@ The query returns the following output:
 
 {{< /history >}}
 
-The `AiMetrics` endpoint powers the GitLab Duo and SDLC trends dashboard and provides the following pre-aggregated metrics for Code Suggestions and Duo Chat:
+The `AiMetrics` endpoint powers the GitLab Duo and SDLC trends dashboard and provides the following pre-aggregated metrics for Code Suggestions and GitLab Duo Chat:
 
 - `codeSuggestionsShown`
 - `codeSuggestionsAccepted`
@@ -421,7 +421,7 @@ Prerequisites:
 
 - You must have ClickHouse configured.
 
-For example, to retrieve Code Suggestions and Duo Chat usage data for a specified time period for the `gitlab-org` group:
+For example, to retrieve Code Suggestions and GitLab Duo Chat usage data for a specified time period for the `gitlab-org` group:
 
 ```graphql
 query {

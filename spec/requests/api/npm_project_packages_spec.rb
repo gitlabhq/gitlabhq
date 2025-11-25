@@ -52,6 +52,12 @@ RSpec.describe API::NpmProjectPackages, :aggregate_failures, feature_category: :
           .to change { npm_metadata_cache.reload.last_downloaded_at }.from(nil).to(instance_of(ActiveSupport::TimeWithZone))
       end
 
+      context 'for head request' do
+        it 'does not update last_downloaded_at' do
+          expect { head url }.not_to change { npm_metadata_cache.reload.last_downloaded_at }
+        end
+      end
+
       it_behaves_like 'does not enqueue a worker to sync a npm metadata cache'
 
       context 'when metadata cache file does not exist' do

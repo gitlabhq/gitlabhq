@@ -24,18 +24,6 @@ RSpec.describe 'Group Level Work Items', feature_category: :team_planning do
         expect(response.body).to have_pushed_frontend_feature_flags(workItemsSavedViews: true)
       end
 
-      context 'when work_item_planning_view is disabled' do
-        before do
-          stub_feature_flags(work_item_planning_view: false)
-        end
-
-        it 'renders not found' do
-          get work_items_path
-
-          expect(response).to have_gitlab_http_status(:not_found)
-        end
-      end
-
       context 'for work_items_client_side_boards feature flag' do
         before do
           stub_feature_flags(work_items_client_side_boards: current_user)

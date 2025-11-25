@@ -2,6 +2,8 @@
 key_path: redis_hll_counters.count_distinct_user_id_from_click_history_control_on_blob_page_weekly
 description: Weekly count of unique users who navigated from Blob to Commits page
 product_group: source_code
+product_categories:
+- source_code_management
 performance_indicator_type: []
 value_type: number
 status: active

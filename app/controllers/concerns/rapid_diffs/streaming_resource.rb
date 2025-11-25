@@ -20,7 +20,7 @@ module RapidDiffs
 
       streaming_time = (Process.clock_gettime(Process::CLOCK_MONOTONIC) - streaming_start_time).round(2)
       response.stream.write "<server-timings streaming=\"#{streaming_time}\"></server-timings>"
-    rescue ActionController::Live::ClientDisconnected
+    rescue ActionController::Live::ClientDisconnected, IOError
       # Ignored
     rescue StandardError => e
       Gitlab::AppLogger.error("Error streaming diffs: #{e.message}")

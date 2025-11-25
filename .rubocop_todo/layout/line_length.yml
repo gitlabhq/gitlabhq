@@ -2176,7 +2176,6 @@ Layout/LineLength:
     - 'qa/qa/specs/features/browser_ui/2_plan/issue/custom_issue_template_spec.rb'
     - 'qa/qa/specs/features/browser_ui/2_plan/issue/export_as_csv_spec.rb'
     - 'qa/qa/specs/features/browser_ui/2_plan/issue/issue_suggestions_spec.rb'
-    - 'qa/qa/specs/features/browser_ui/2_plan/related_issues/related_issues_spec.rb'
     - 'qa/qa/specs/features/browser_ui/3_create/merge_request/rebase_merge_request_spec.rb'
     - 'qa/qa/specs/features/browser_ui/3_create/merge_request/view_merge_request_diff_patch_spec.rb'
     - 'qa/qa/specs/features/browser_ui/3_create/repository/branch_with_unusual_name_spec.rb'

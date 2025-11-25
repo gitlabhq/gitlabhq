@@ -2487,12 +2487,6 @@ msgstr ""
 msgid "AICatalog|A public %{itemType}:"
 msgstr ""
 
-msgid "AICatalog|A public agent can be made private only if it is not used."
-msgstr ""
-
-msgid "AICatalog|A public flow can be made private only if it is not used."
-msgstr ""
-
 msgid "AICatalog|AI Catalog"
 msgstr ""
 
@@ -2865,6 +2859,9 @@ msgstr ""
 msgid "AICatalog|Managed"
 msgstr ""
 
+msgid "AICatalog|Managed by"
+msgstr ""
+
 msgid "AICatalog|Managed by a private project you don't have access to."
 msgstr ""
 
@@ -2887,6 +2884,12 @@ msgid "AICatalog|Only agents enabled in your top-level group are shown."
 msgstr ""
 
 msgid "AICatalog|Only flows enabled in your top-level group are shown."
+msgstr ""
+
+msgid "AICatalog|Only members of this project can edit or delete this agent."
+msgstr ""
+
+msgid "AICatalog|Only members of this project can edit or delete this flow."
 msgstr ""
 
 msgid "AICatalog|Open source projects."
@@ -2955,12 +2958,6 @@ msgstr ""
 msgid "AICatalog|Select a flow"
 msgstr ""
 
-msgid "AICatalog|Select a project for your AI agent to be associated with."
-msgstr ""
-
-msgid "AICatalog|Select a project for your AI flow to be associated with."
-msgstr ""
-
 msgid "AICatalog|Select an agent"
 msgstr ""
 
@@ -2979,9 +2976,6 @@ msgstr ""
 msgid "AICatalog|Shared resources."
 msgstr ""
 
-msgid "AICatalog|Source project"
-msgstr ""
-
 msgid "AICatalog|Spam or low quality"
 msgstr ""
 
@@ -2997,6 +2991,9 @@ msgstr ""
 msgid "AICatalog|There was a problem fetching agents."
 msgstr ""
 
+msgid "AICatalog|There was a problem fetching flows."
+msgstr ""
+
 msgid "AICatalog|This %{itemType} is private and can only be enabled in the project it was created in or its top-level group. Duplicate the agent to use the same configuration in other projects."
 msgstr ""
 
@@ -3006,16 +3003,10 @@ msgstr ""
 msgid "AICatalog|This YAML configuration file determines the prompts, tools, and capabilities of your flow. Required properties: version, environment, components, prompts, routers, flow."
 msgstr ""
 
-msgid "AICatalog|This agent can be made private if it is not used."
-msgstr ""
-
 msgid "AICatalog|This agent can be viewed only by members of this project, or by users with the Owner role for the top-level group. This agent can't be shared with other projects."
 msgstr ""
 
 msgid "AICatalog|This agent specializes in... It can help you with... Best suited for..."
-msgstr ""
-
-msgid "AICatalog|This flow can be made private if it is not used."
 msgstr ""
 
 msgid "AICatalog|This flow can be viewed only by members of this project, or by users with the Owner role for the top-level group. This flow can't be shared with other projects."
@@ -6673,6 +6664,9 @@ msgid "Agent not found for provided id."
 msgstr ""
 
 msgid "AggregationEngine|at least one metric is required"
+msgstr ""
+
+msgid "AggregationEngine|duplicated identifier found: %{identifier}"
 msgstr ""
 
 msgid "AggregationEngine|maximum two dimensions are supported"
@@ -16338,6 +16332,9 @@ msgid "Commit SHA copied to clipboard."
 msgstr ""
 
 msgid "Commit actions"
+msgstr ""
+
+msgid "Commit author"
 msgstr ""
 
 msgid "Commit changes"
@@ -41478,6 +41475,9 @@ msgstr ""
 msgid "Merge request approvals settings"
 msgstr ""
 
+msgid "Merge request author"
+msgstr ""
+
 msgid "Merge request author cannot push to target project"
 msgstr ""
 
@@ -62117,7 +62117,7 @@ msgstr ""
 msgid "SecurityReports|GitLab Duo (AI)"
 msgstr ""
 
-msgid "SecurityReports|Go to Policies"
+msgid "SecurityReports|Go to policies"
 msgstr ""
 
 msgid "SecurityReports|Group your vulnerabilities by one of the provided categories. Leave feedback or suggestions in %{feedbackIssueStart}this issue%{feedbackIssueEnd}."
@@ -62397,6 +62397,9 @@ msgstr ""
 msgid "SecurityReports|The security report for this pipeline has %{helpPageLinkStart}expired%{helpPageLinkEnd}. Re-run the pipeline to generate a new security report."
 msgstr ""
 
+msgid "SecurityReports|The vulnerabilities over time chart includes vulnerabilities that are no longer detected and might include more vulnerabilities than the totals shown in the counts per severity or in the vulnerability report."
+msgstr ""
+
 msgid "SecurityReports|There was an error creating a Jira issue for the finding. Please try again."
 msgstr ""
 
@@ -62439,7 +62442,7 @@ msgstr ""
 msgid "SecurityReports|Time period"
 msgstr ""
 
-msgid "SecurityReports|To ensure that open vulnerabilities only include vulnerabilities that are still detected, we recommend enabling the policy to auto-resolve vulnerabilities when no longer detected."
+msgid "SecurityReports|To ensure that open vulnerabilities include only vulnerabilities that are still detected, use a vulnerability management policy to automatically resolve vulnerabilities that are no longer detected."
 msgstr ""
 
 msgid "SecurityReports|To widen your search, change or remove filters above"
@@ -79334,7 +79337,7 @@ msgstr ""
 msgid "ciReport|%{criticalStart}critical%{criticalEnd}, %{highStart}high%{highEnd} and %{otherStart}other%{otherEnd} vulnerabilities detected."
 msgstr ""
 
-msgid "ciReport|%{criticalStart}critical%{criticalEnd}, %{highStart}high%{highEnd} and %{otherStart}others%{otherEnd}"
+msgid "ciReport|%{criticalStart}critical%{criticalEnd}, %{highStart}high%{highEnd}, and %{otherStart}others%{otherEnd}"
 msgstr ""
 
 msgid "ciReport|%{danger_start}%{degradedNum} degraded%{danger_end}, %{same_start}%{sameNum} same%{same_end}, and %{success_start}%{improvedNum} improved%{success_end}"

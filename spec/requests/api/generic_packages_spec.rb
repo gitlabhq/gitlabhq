@@ -1227,12 +1227,23 @@ RSpec.describe API::GenericPackages, feature_category: :package_registry do
       subject { download_file(personal_access_token_header) }
     end
 
-    def download_file(request_headers, package_name: nil, file_name: nil)
+    context 'for head request' do
+      before do
+        project.add_developer(user)
+        download_file(personal_access_token_header, method: :head)
+      end
+
+      it 'does not bump last downloaded at field' do
+        expect(package.reload.last_downloaded_at).to be_nil
+      end
+    end
+
+    def download_file(request_headers, package_name: nil, file_name: nil, method: :get)
       package_name ||= package.name
       file_name ||= package_file.file_name
       url = "/projects/#{project.id}/packages/generic/#{package_name}/#{package.version}/#{file_name}"
 
-      get api(url), headers: request_headers
+      public_send(method, api(url), headers: request_headers)
     end
   end
 end

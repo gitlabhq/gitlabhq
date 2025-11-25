@@ -59,13 +59,13 @@ The configuration for each unit primitive adhere to the following schema.
 
 ##### Required Fields
 
-| Field | Type | Description                                                                                                                                                       |
-|-------|------|-------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| `name` | string | Unit primitive name in `snake_case` format (lowercase letters, numbers, underscores). Should follow `$VERB_$NOUN` pattern (for example, `explain_vulnerability`). |
-| `description` | string | Description of the unit primitive's purpose and functionality.                                                                                                    |
-| `group` | string | Engineering group that owns the unit primitive (for example, "group::duo chat").                                                                                     |
-| `feature_category` | string | Feature category classification (see [categories](https://gitlab.com/gitlab-com/www-gitlab-com/-/blob/master/data/categories.yml)).                               |
-| `documentation_url` | string | URL to the unit primitive's documentation.                                                                                                                        |
+| Field               | Type   | Description |
+|---------------------|--------|-------------|
+| `name`              | string | Unit primitive name in `snake_case` format (lowercase letters, numbers, underscores). Should follow `$VERB_$NOUN` pattern (for example, `explain_vulnerability`). |
+| `description`       | string | Description of the unit primitive's purpose and functionality. |
+| `group`             | string | Engineering group that owns the unit primitive (for example, `group::duo chat`). |
+| `feature_category`  | string | Feature category classification (see [categories](https://gitlab.com/gitlab-com/www-gitlab-com/-/blob/master/data/categories.yml)). |
+| `documentation_url` | string | URL to the unit primitive's documentation. |
 
 ##### Optional Fields
 

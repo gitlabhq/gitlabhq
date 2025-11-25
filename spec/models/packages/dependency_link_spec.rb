@@ -120,4 +120,25 @@ RSpec.describe Packages::DependencyLink, type: :model, feature_category: :packag
       expect(subject[0].attributes).to eq('dependency_id' => dependency1.id, 'id' => nil)
     end
   end
+
+  describe '.without_empty_nuget_dependencies' do
+    let_it_be(:project) { create(:project) }
+    let_it_be(:nuget_package) { create(:nuget_package, without_package_files: true, project: project) }
+    let_it_be(:regular_dependency) { create(:packages_dependency, project:) }
+    let_it_be(:empty_nuget_dependency) do
+      create(:packages_dependency, name: "#{::Packages::Nuget::EMPTY_DEPENDENCY_PREFIX}-.NETStandard2.0", project: project)
+    end
+
+    let_it_be(:regular_link) do
+      create(:packages_dependency_link, package: nuget_package, dependency: regular_dependency)
+    end
+
+    let_it_be(:empty_nuget_link) do
+      create(:packages_dependency_link, package: nuget_package, dependency: empty_nuget_dependency)
+    end
+
+    subject { described_class.without_empty_nuget_dependencies }
+
+    it { is_expected.to include(regular_link).and exclude(empty_nuget_link) }
+  end
 end

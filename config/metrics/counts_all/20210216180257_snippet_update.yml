@@ -3,6 +3,8 @@ data_category: optional
 key_path: counts.snippet_update
 description: Count of updates to existing Snippets
 product_group: source_code
+product_categories:
+- source_code_management
 value_type: number
 status: active
 time_frame: all

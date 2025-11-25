@@ -10,41 +10,37 @@ module QA
           super
 
           base.class_eval do
-            view 'app/assets/javascripts/design_management/components/design_notes/design_discussion.vue' do
-              element 'design-discussion-content'
+            view 'app/assets/javascripts/work_items/components/design_management/archive_design_button.vue' do
+              element 'confirm-archiving-button'
             end
 
-            view 'app/assets/javascripts/design_management/components/design_notes/design_note.vue' do
-              element 'note-text'
-            end
-
-            view 'app/assets/javascripts/design_management/components/design_notes/design_reply_form.vue' do
-              element 'note-textarea'
-              element 'save-comment-button'
-            end
-
-            view 'app/assets/javascripts/design_management/components/design_overlay.vue' do
-              element 'design-image-button'
-            end
-
-            view 'app/assets/javascripts/design_management/components/list/item.vue' do
+            view 'app/assets/javascripts/work_items/components/design_management/design_item.vue' do
               element 'design-file-name'
               element 'design-image'
               element 'design-status-icon'
             end
 
-            view 'app/assets/javascripts/design_management/pages/index.vue' do
+            view 'app/assets/javascripts/work_items/components/design_management/design_management_widget.vue' do
               element 'archive-button'
               element 'design-checkbox'
-              element 'design-dropzone-content'
-            end
-
-            view 'app/assets/javascripts/design_management/components/delete_button.vue' do
-              element 'confirm-archiving-button'
-            end
-
-            view 'app/assets/javascripts/work_items/components/design_management/design_management_widget.vue' do
               element 'design-item'
+            end
+
+            view 'app/assets/javascripts/work_items/components/design_management/design_notes/design_discussion.vue' do
+              element 'design-discussion-content'
+            end
+
+            view 'app/assets/javascripts/work_items/components/design_management/design_notes/design_note.vue' do
+              element 'note-text'
+            end
+
+            view 'app/assets/javascripts/work_items/components/design_management/design_notes/design_reply_form.vue' do
+              element 'note-textarea'
+              element 'save-comment-button'
+            end
+
+            view 'app/assets/javascripts/work_items/components/design_management/design_preview/design_overlay.vue' do
+              element 'design-image-button'
             end
           end
         end

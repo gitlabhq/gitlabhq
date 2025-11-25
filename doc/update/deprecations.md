@@ -301,24 +301,6 @@ These changes affect you if your pipelines use the [`auto-build-image`](https://
 With the [upcoming default behavior change to the CI/CD job token](https://docs.gitlab.com/update/deprecations/#default-cicd-job-token-ci_job_token-scope-changed) in GitLab 18.0, we are also deprecating the associated `ciJobTokenScopeAddProject` GraphQL mutation in favor of `ciJobTokenScopeAddGroupOrProject`.
 
 </div>
-
-<div class="deprecation breaking-change" data-milestone="19.0">
-
-### `workflow:rules` templates
-
-<div class="deprecation-notes">
-
-- Announced in GitLab <span class="milestone">17.0</span>
-- Removal in GitLab <span class="milestone">19.0</span> ([breaking change](https://docs.gitlab.com/update/terminology/#breaking-change))
-- To discuss this change or learn more, see the [deprecation issue](https://gitlab.com/gitlab-org/gitlab/-/issues/456394).
-
-</div>
-
-The [`workflow:rules`](https://docs.gitlab.com/ci/yaml/workflow/#workflowrules-templates) templates are deprecated and no longer recommended for use. Using these templates greatly limits the flexibility of your pipelines and makes it hard to use new `workflow` features.
-
-This is one small step towards moving away from CI/CD templates in preference of [CI/CD components](https://docs.gitlab.com/ci/components/). You can search the [CI/CD Catalog](https://docs.gitlab.com/ci/components/#cicd-catalog) for a replacement, or [add `workflow:rules`](https://docs.gitlab.com/ci/yaml/workflow/) to your pipeline explicitly.
-
-</div>
 </div>
 
 <div class="milestone-wrapper" data-milestone="18.9">

@@ -3,7 +3,7 @@
 module QA
   module Page
     module Project
-      module Issue
+      module WorkItem
         class Index < Page::Base
           view 'app/assets/javascripts/issuable/components/issue_assignees.vue' do
             element 'assignee-link'
@@ -106,4 +106,4 @@ module QA
   end
 end
 
-QA::Page::Project::Issue::Index.prepend_mod_with('Page::Project::Issue::Index', namespace: QA)
+QA::Page::Project::WorkItem::Index.prepend_mod_with('Page::Project::WorkItem::Index', namespace: QA)

@@ -14,9 +14,14 @@ RSpec.describe ::Gitlab::Ci::Pipeline::Chain::Limit::ActiveJobs do
       project: project,
       current_user: user,
       save_incompleted: true,
-      pipeline_seed: pipeline_seed_double
+      pipeline_seed: pipeline_seed_double,
+      current_pipeline_size: pipeline_seed_double.size,
+      jobs_count_in_alive_pipelines: existing_pipeline.statuses.size,
+      ci_refactor_jobs_count_in_alive_pipelines_enabled?: ci_refactor_jobs_count_in_alive_pipelines_enabled
     )
   end
+
+  let(:ci_refactor_jobs_count_in_alive_pipelines_enabled) { true }
 
   let(:pipeline_seed_double) do
     instance_double(::Gitlab::Ci::Pipeline::Seed::Pipeline, size: 5)
@@ -85,6 +90,16 @@ RSpec.describe ::Gitlab::Ci::Pipeline::Chain::Limit::ActiveJobs do
       let(:limit) { 0 }
 
       it_behaves_like 'successful step'
+    end
+
+    context 'when the FF ci_refactor_jobs_count_in_alive_pipelines is disabled' do
+      let(:ci_refactor_jobs_count_in_alive_pipelines_enabled) { false }
+
+      it 'breaks the chain' do
+        subject
+
+        expect(step).to be_break
+      end
     end
   end
 

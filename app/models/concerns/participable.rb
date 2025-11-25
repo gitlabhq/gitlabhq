@@ -60,13 +60,6 @@ module Participable
     filtered_participants_hash[user]
   end
 
-  # Returns only participants visible for the user
-  #
-  # Returns an Array of User instances.
-  def visible_participants(user)
-    filter_by_ability(raw_participants(user, verify_access: true))
-  end
-
   # Checks if the user is a participant in a discussion.
   #
   # This method processes attributes of objects in breadth-first order.
@@ -91,7 +84,7 @@ module Participable
     end
   end
 
-  def raw_participants(current_user = nil, verify_access: false)
+  def raw_participants(current_user = nil)
     extractor = Gitlab::ReferenceExtractor.new(project, current_user)
 
     # Used to extract references from confidential notes.
@@ -110,7 +103,6 @@ module Participable
         participants << source
       when Participable
         next if skippable_system_notes?(source, participants)
-        next unless !verify_access || source_visible_to_user?(source, current_user)
 
         source.class.participant_attrs.each do |attr|
           if attr.respond_to?(:call)
@@ -151,12 +143,6 @@ module Participable
     Ability.users_that_can_read_internal_notes(extractor.users, self.resource_parent)
   end
 
-  def source_visible_to_user?(source, user)
-    ability = read_ability_for(source)
-
-    Ability.allowed?(user, ability[:name], ability[:subject])
-  end
-
   def filter_by_ability(participants)
     case self
     when PersonalSnippet
@@ -189,14 +175,6 @@ module Participable
 
       false
     end
-  end
-
-  # Returns Hash containing ability name and subject needed to read a specific participable.
-  # Should be overridden if a different ability is required.
-  def read_ability_for(participable_source)
-    name =  participable_source.try(:to_ability_name) || participable_source.model_name.element
-
-    { name: :"read_#{name}", subject: participable_source }
   end
 end
 

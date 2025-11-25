@@ -3,6 +3,8 @@ data_category: optional
 key_path: redis_hll_counters.source_code.design_action_weekly
 description: Count of total design actions (upload, delete, comment, reply)
 product_group: source_code
+product_categories:
+- source_code_management
 value_type: number
 status: active
 time_frame: 7d

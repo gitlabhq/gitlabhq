@@ -8,7 +8,7 @@ module API
         expose :type, as: :@type, documentation: { type: 'string', example: 'PackageDependencyGroup' }
         expose :target_framework, as: :targetFramework, expose_nil: false,
           documentation: { type: 'string', example: 'fwk test' }
-        expose :dependencies, using: ::API::Entities::Nuget::Dependency,
+        expose :dependencies, using: ::API::Entities::Nuget::Dependency, expose_nil: false,
           documentation: { is_array: true, type: 'API::Entities::Nuget::Dependency' }
       end
     end

@@ -2,6 +2,8 @@
 key_path: redis_hll_counters.count_distinct_user_id_from_click_find_file_button_on_repository_pages_weekly
 description: Weekly count of unique users who searched for files via Find file button.
 product_group: source_code
+product_categories:
+- source_code_management
 performance_indicator_type: []
 value_type: number
 status: active

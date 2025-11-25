@@ -34,12 +34,21 @@ module Gitlab
 
             def log_attrs
               {
-                jobs_count: pipeline.statuses.count,
+                jobs_count: jobs_count,
                 pipeline_source: pipeline.source,
                 plan: project.actual_plan_name,
                 project_id: project.id,
                 project_full_path: project.full_path
               }
+            end
+
+            # Remove when `ci_refactor_jobs_count_in_alive_pipelines` is removed.
+            def jobs_count
+              if command.ci_refactor_jobs_count_in_alive_pipelines_enabled?
+                command.current_pipeline_size
+              else
+                pipeline.statuses.count
+              end
             end
           end
         end

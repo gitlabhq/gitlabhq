@@ -47,16 +47,12 @@ module Gitlab
 
             def count_jobs_in_alive_pipelines
               strong_memoize(:count_jobs_in_alive_pipelines) do
-                count_persisted_jobs_in_all_alive_pipelines + count_current_pipeline_jobs
+                if command.ci_refactor_jobs_count_in_alive_pipelines_enabled?
+                  command.current_pipeline_size + command.jobs_count_in_alive_pipelines
+                else
+                  command.pipeline_seed.size + project.all_pipelines.legacy_jobs_count_in_alive_pipelines
+                end
               end
-            end
-
-            def count_current_pipeline_jobs
-              command.pipeline_seed.size
-            end
-
-            def count_persisted_jobs_in_all_alive_pipelines
-              project.all_pipelines.jobs_count_in_alive_pipelines
             end
           end
         end

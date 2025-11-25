@@ -19,11 +19,11 @@ module QA
       ) do
         design.issue.visit!
 
-        Page::Project::Issue::Show.perform do |issue|
+        Page::Project::WorkItem::Show.perform do |issue|
           expect(issue).to have_created_icon
         end
 
-        Page::Project::Issue::Show.perform do |issue|
+        Page::Project::WorkItem::Show.perform do |issue|
           issue.update_design(design.filename)
           expect(issue).to have_modified_icon
         end

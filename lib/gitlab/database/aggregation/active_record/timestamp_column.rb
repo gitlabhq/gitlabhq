@@ -12,7 +12,7 @@ module Gitlab
           def initialize(
             name, type, granularities: [DEFAULT_GRANULARITY], expression: nil, formatter: nil, scope_proc: nil,
             description: nil)
-            @granularities = granularities.to_set
+            @granularities = granularities.to_set.freeze
             super(name, type, expression:, formatter:, scope_proc:, description:)
           end
 
@@ -26,6 +26,10 @@ module Gitlab
               granularities: granularities.to_a,
               default_granularity: DEFAULT_GRANULARITY
             )
+          end
+
+          def instance_key(context)
+            "#{context[:identifier]}_#{context[:granularity]}"
           end
 
           def to_arel(context)

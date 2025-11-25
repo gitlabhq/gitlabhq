@@ -15,7 +15,7 @@ module QA
       end
 
       it 'successfully exports issues list as CSV', testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/347968' do
-        Page::Project::Issue::Index.perform do |index|
+        Page::Project::WorkItem::Index.perform do |index|
           index.click_work_items_list_more_actions_dropdown
 
           index.click_export_as_csv_button

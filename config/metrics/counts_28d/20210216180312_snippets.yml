@@ -3,6 +3,8 @@ data_category: operational
 key_path: counts_monthly.snippets
 description: Monthly count of All Snippets
 product_group: source_code
+product_categories:
+- source_code_management
 value_type: number
 status: active
 time_frame: 28d

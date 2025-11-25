@@ -5,7 +5,7 @@ import MockAdapter from 'axios-mock-adapter';
 import { nextTick } from 'vue';
 import NoteableNote from '~/rapid_diffs/app/discussions/noteable_note.vue';
 import NoteHeader from '~/rapid_diffs/app/discussions/note_header.vue';
-import NoteActions from '~/notes/components/note_actions.vue';
+import NoteActions from '~/rapid_diffs/app/discussions/note_actions.vue';
 import NoteBody from '~/rapid_diffs/app/discussions/note_body.vue';
 import { confirmAction } from '~/lib/utils/confirm_via_gl_modal/confirm_via_gl_modal';
 import { createAlert } from '~/alert';
@@ -120,9 +120,7 @@ describe('NoteableNote', () => {
   it('shows note actions with correct props', () => {
     createComponent({ showReplyButton: true });
     expect(findNoteActions().props()).toMatchObject({
-      author: defaultProps.note.author,
       authorId: defaultProps.note.author.id,
-      noteId: defaultProps.note.id,
       noteUrl: defaultProps.note.noteable_note_url,
       accessLevel: defaultProps.note.human_access,
       isContributor: defaultProps.note.is_contributor,

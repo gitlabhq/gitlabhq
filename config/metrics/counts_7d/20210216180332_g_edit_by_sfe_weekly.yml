@@ -3,6 +3,8 @@ data_category: optional
 key_path: redis_hll_counters.ide_edit.g_edit_by_sfe_weekly
 description: Weekly number of users editing from the single file editor
 product_group: source_code
+product_categories:
+- source_code_management
 value_type: number
 status: active
 time_frame: 7d

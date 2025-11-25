@@ -28,7 +28,7 @@ module QA
 
           Page::Project::WorkItem::Show.perform(&:delete_issue)
 
-          Page::Project::Issue::Index.perform do |index|
+          Page::Project::WorkItem::Index.perform do |index|
             expect(index).not_to have_issue(issue)
           end
         end

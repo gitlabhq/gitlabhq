@@ -25,9 +25,7 @@ module Groups
 
     urgency :low, [:rss, :calendar]
 
-    def index
-      not_found unless group&.work_items_consolidated_list_enabled?(current_user)
-    end
+    def index; end
 
     def show
       not_found unless group.supports_group_work_items?

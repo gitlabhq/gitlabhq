@@ -7,10 +7,16 @@ RSpec.describe 'nuget package details', feature_category: :package_registry do
 
   let_it_be(:package) { create(:nuget_package, :last_downloaded_at, :with_metadatum, project: project) }
   let_it_be(:dependency_link) { create(:packages_dependency_link, :with_nuget_metadatum, package: package) }
+  let_it_be(:empty_dependency) do
+    create(:packages_dependency, project: project,
+      name: "#{::Packages::Nuget::EMPTY_DEPENDENCY_PREFIX}-.NETStandard2.0").tap do |dependency|
+      create(:packages_dependency_link, :with_nuget_metadatum, package:, dependency:)
+    end
+  end
 
   let(:metadata) { query_graphql_fragment('NugetMetadata') }
-  let(:dependency_link_response) { graphql_data_at(:package, :dependency_links, :nodes, 0) }
-  let(:dependency_response) { graphql_data_at(:package, :dependency_links, :nodes, 0, :dependency) }
+  let(:dependency_link_response) { graphql_data_at(:package, :dependency_links, :nodes) }
+  let(:dependency_response) { graphql_dig_at(dependency_link_response, :dependency) }
 
   subject { post_graphql(query, current_user: user) }
 
@@ -27,14 +33,13 @@ RSpec.describe 'nuget package details', feature_category: :package_registry do
     )
   end
 
-  it 'has dependency links' do
-    expect(dependency_link_response).to match a_graphql_entity_for(
-      dependency_link,
-      'dependencyType' => dependency_link.dependency_type.upcase
+  it 'has dependency links', :aggregate_failures do
+    expect(dependency_link_response).to contain_exactly(
+      a_graphql_entity_for(dependency_link, 'dependencyType' => dependency_link.dependency_type.upcase)
     )
 
-    expect(dependency_response).to match a_graphql_entity_for(
-      dependency_link.dependency, :name, :version_pattern
+    expect(dependency_response).to contain_exactly(
+      a_graphql_entity_for(dependency_link.dependency, :name, :version_pattern)
     )
   end
 

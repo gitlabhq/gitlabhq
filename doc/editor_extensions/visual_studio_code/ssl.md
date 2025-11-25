@@ -17,6 +17,7 @@ all existing SSL issues for the GitLab Workflow extension.
 Prerequisites:
 
 - Your GitLab instance uses a certificate signed with a self-signed certificate authority (CA).
+- Your GitLab Workflow extension version is 6.51.1 or later.
 - Your VS Code version is 1.101.2 (May 2025) or later.
 - The `gitlab.ca` VS Code setting is **not** in use.
 
@@ -72,8 +73,7 @@ These instructions were tested on Arch Linux `5.14.3-arch1-1` and VS Code 1.60.0
 
 {{< alert type="note" >}}
 
-These instructions are untested, but should work as intended. If you can confirm this setup,
-create a documentation issue with more information.
+These instructions were tested on macOS Tahoe 26, VS Code 1.101.2, and GitLab Workflow 6.51.1.
 
 {{< /alert >}}
 
@@ -81,4 +81,7 @@ Make sure you see the self-signed CA in your keychain:
 
 1. Go to **Finder** > **Applications** > **Utilities** > **Keychain Access**.
 1. In the left-hand column, select **System**.
-1. Your self-signed CA certificate should be on the list, and should be `Valid` or `Trusted`.
+1. Find your self-signed CA certificate in the list.
+1. Right-click the certificate and select **Get Info**.
+1. Expand the **Trust** section.
+1. Ensure the **Secure Sockets Layer (SSL)** option is set to 'Always Trust'.

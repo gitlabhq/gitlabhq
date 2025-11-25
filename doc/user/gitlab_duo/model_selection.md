@@ -63,7 +63,7 @@ To select a different LLM for a feature:
 
 - Model selection for GitLab Duo Chat (Agentic) is independent from GitLab Duo Chat (Classic). You must configure each feature separately — changes to one won't affect the other.
 
-- In the IDE, model selection for GitLab Duo Chat (Agentic) is applied only when the connection type is set to websockets. The default connection type is gRPC.
+- In the IDE, model selection for GitLab Duo Chat (Agentic) is applied only when the connection type is set to WebSocket.
 
 - The OpenAI models used in GitLab Duo Chat (Agentic) have experimental support, specifically for GPT-5, GPT-5 mini, and GPT-5-Codex.
   Please leave your feedback about using OpenAI models in GitLab Duo Chat (Agentic) in this [issue](https://gitlab.com/gitlab-org/gitlab/-/issues/572864).

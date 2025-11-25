@@ -39,9 +39,7 @@ class Projects::WorkItemsController < Projects::ApplicationController
     end
   end
 
-  def index
-    not_found unless project&.work_items_consolidated_list_enabled?(current_user)
-  end
+  def index; end
 
   def show
     return if show_params[:iid] == 'new'

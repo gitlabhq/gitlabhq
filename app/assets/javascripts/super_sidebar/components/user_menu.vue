@@ -310,7 +310,7 @@ export default {
 <template>
   <div
     :class="{
-      'gl-flex gl-rounded-[1rem] gl-bg-neutral-800 dark:gl-bg-neutral-50': projectStudioEnabled,
+      'gl-flex gl-rounded-[1rem]': projectStudioEnabled,
     }"
   >
     <gl-button

@@ -596,10 +596,20 @@ module Ci
     end
 
     def self.jobs_count_in_alive_pipelines
+      in_partition(current_partition_value)
+        .created_after(24.hours.ago)
+        .alive
+        .joins(:statuses)
+        .count
+    end
+
+    # Remove when `ci_refactor_jobs_count_in_alive_pipelines` is removed.
+    def self.legacy_jobs_count_in_alive_pipelines
       created_after(24.hours.ago).alive.joins(:statuses).count
     end
 
-    def self.builds_count_in_alive_pipelines
+    # Remove when `ci_refactor_jobs_count_in_alive_pipelines` is removed.
+    def self.legacy_builds_count_in_alive_pipelines
       created_after(24.hours.ago).alive.joins(:builds).count
     end
 

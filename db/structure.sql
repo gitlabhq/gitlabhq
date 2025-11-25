@@ -13129,7 +13129,7 @@ CREATE TABLE authentication_events (
     ip_address inet,
     provider text NOT NULL,
     user_name text NOT NULL,
-    organization_id bigint DEFAULT 1 NOT NULL,
+    organization_id bigint NOT NULL,
     CONSTRAINT check_45a6cc4e80 CHECK ((char_length(user_name) <= 255)),
     CONSTRAINT check_c64f424630 CHECK ((char_length(provider) <= 64))
 );

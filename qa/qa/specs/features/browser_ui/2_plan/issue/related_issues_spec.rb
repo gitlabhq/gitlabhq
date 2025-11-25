@@ -10,7 +10,8 @@ module QA
         Flow::Login.sign_in
       end
 
-      it 'relates and unrelates one issue to/from another', testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/347994' do
+      it 'relates and unrelates one issue to/from another',
+        testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/347994' do
         issues.first.visit!
 
         Page::Project::WorkItem::Show.perform do |show|

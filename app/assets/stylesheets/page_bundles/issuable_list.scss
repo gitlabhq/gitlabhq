@@ -109,3 +109,38 @@
   }
 }
 
+.issuable-list-container {
+  .sticky-filter {
+    position: fixed;
+    top: $calc-application-header-height;
+    width: 100%;
+    max-width: $fixed-layout-width;
+    padding-right: 2rem;
+
+    // XL breakpoint adjustments
+    @media (min-width: $breakpoint-xl) {
+      padding-right: 3rem;
+
+      // Super sidebar adjustments at XL
+      .page-with-super-sidebar & {
+        width: calc(100% - #{$super-sidebar-width});
+      }
+
+      .page-with-super-sidebar-collapsed & {
+        width: 100%;
+      }
+    }
+
+    // Panel-specific overrides
+    :where(.page-with-panels) & {
+      width: 100% !important;
+      padding-right: 1rem;
+
+      @media (max-width: $breakpoint-lg) {
+        padding-right: 0;
+      }
+    }
+  }
+}
+
+

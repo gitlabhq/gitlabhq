@@ -81,15 +81,17 @@ module Packages
       def dependencies_for(nuget_id, dependency_links)
         return [] if dependency_links.empty?
 
-        dependency_links.map do |dependency_link|
+        dependency_links.filter_map do |dependency_link|
           dependency = dependency_link.dependency
+          next if dependency.name.start_with?(::Packages::Nuget::EMPTY_DEPENDENCY_PREFIX)
+
           {
             id: "#{nuget_id}/#{dependency.name.downcase}",
             type: PACKAGE_DEPENDENCY,
             name: dependency.name,
             range: dependency.version_pattern
           }
-        end
+        end.presence
       end
 
       def target_framework_nuget_id(base_nuget_id, target_framework)

@@ -198,7 +198,7 @@ module API
           not_found!('Packages') if packages.empty?
 
           if metadata_cache&.file&.exists?
-            metadata_cache.touch_last_downloaded_at
+            metadata_cache.touch_last_downloaded_at unless request.head?
             present_carrierwave_file!(metadata_cache.file)
 
             break

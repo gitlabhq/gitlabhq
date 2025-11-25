@@ -58,10 +58,10 @@ To verify that Code Suggestions is turned on in VS Code:
 
 1. In VS Code, go to **Settings** > **Extensions** > **GitLab Workflow**.
 1. Select **Manage** ({{< icon name="settings" >}}).
-1. Ensure that **GitLab › Duo Code Suggestions: Enabled** is selected.
-1. Optional. For **GitLab › Duo Code Suggestions: Enabled Supported Languages**,
+1. Ensure that **GitLab** > **Duo Code Suggestions: Enabled** is selected.
+1. Optional. For **GitLab** > **Duo Code Suggestions: Enabled Supported Languages**,
    select the languages you want to suggest or generate code for.
-1. Optional. For **GitLab › Duo Code Suggestions: Additional Languages**, add other languages you'd like to use.
+1. Optional. For **GitLab** > **Duo Code Suggestions: Additional Languages**, add other languages you'd like to use.
 
 ### Visual Studio
 

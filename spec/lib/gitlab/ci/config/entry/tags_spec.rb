@@ -24,12 +24,13 @@ RSpec.describe Gitlab::Ci::Config::Entry::Tags do
 
     context 'when entry value is not correct' do
       describe '#errors' do
+        subject(:errors) { entry.errors }
+
         context 'when tags config is not an array of strings' do
           let(:config) { [1, 2] }
 
           it 'reports error' do
-            expect(entry.errors)
-              .to include 'tags config should be an array of strings'
+            is_expected.to include 'tags config should be an array of strings'
           end
         end
 
@@ -37,8 +38,15 @@ RSpec.describe Gitlab::Ci::Config::Entry::Tags do
           let(:config) { Array.new(50) { |i| "tag-#{i}" } }
 
           it 'reports error' do
-            expect(entry.errors)
-              .to include "tags config must be less than the limit of #{described_class::TAGS_LIMIT} tags"
+            is_expected.to include "tags config must be less than the limit of #{described_class::TAGS_LIMIT} tags"
+          end
+
+          context 'and tags are specified as comma separated tags' do
+            let(:config) { [super().join(',')] }
+
+            it 'reports error' do
+              is_expected.to include "tags config must be less than the limit of #{described_class::TAGS_LIMIT} tags"
+            end
           end
         end
       end

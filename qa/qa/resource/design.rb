@@ -4,7 +4,7 @@ module QA
   module Resource
     class Design < Base
       attribute :issue do
-        Issue.fabricate_via_api!
+        Resource::Issue.fabricate_via_api!
       end
 
       attributes :id,
@@ -20,7 +20,7 @@ module QA
       def fabricate!
         issue.visit!
 
-        Page::Project::Issue::Show.perform do |issue|
+        Page::Project::WorkItem::Show.perform do |issue|
           issue.add_design(filepath)
         end
       end

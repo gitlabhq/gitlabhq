@@ -155,7 +155,7 @@ To change open files being used as context:
 1. Search for GitLab Workflow in the list, and select the gear icon.
 1. Select **Settings**.
 1. In your **User** settings, search for `open tabs`.
-1. Under **GitLab › Duo Code Suggestions: Open Tabs Context**,
+1. Under **GitLab** > **Duo Code Suggestions: Open Tabs Context**,
    select or clear **Use the contents of open tabs as context**.
 
 {{< /tab >}}

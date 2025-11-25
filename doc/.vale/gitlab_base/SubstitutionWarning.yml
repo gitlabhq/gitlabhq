@@ -3,7 +3,7 @@ name: gitlab_base.SubstitutionWarning
 description: |
   Checks for misused terms or common shorthand that should not be used at GitLab, but can't be flagged as errors. Substitutions.yml also exists.
 extends: substitution
-message: "Use '%s' instead of '%s' when possible."
+message: "Use '%s' instead of '%s'."
 link: https://docs.gitlab.com/development/documentation/styleguide/word_list/
 vocab: false
 level: warning
@@ -34,6 +34,7 @@ swap:
   dialog box: "dialog"
   distro: "distribution"
   docs: "documentation"
+  (?<!GitLab )(?<!Cisco )(?<!Fix (pipeline )?with )(?<!Generate MR with )Duo: "GitLab Duo"
   e-mail: "email"
   emojis: "emoji"
   ex: "for example"

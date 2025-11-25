@@ -61,7 +61,7 @@ To change GitLab Duo Core availability:
 1. On the left sidebar, select **Search or go to** and find your top-level group. If you've [turned on the new navigation](../interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
 1. Select **Settings** > **GitLab Duo**.
 1. Select **Change configuration**.
-1. Under **GitLab Duo availability in this namespace**, select an option.
+1. Under **GitLab Duo availability**, select an option.
 1. Under **GitLab Duo Core**, select or clear the **Turn on features for GitLab Duo Core** checkbox.
    If you selected **Always off** for GitLab Duo availability, you cannot access
    this setting.
@@ -82,7 +82,7 @@ To change GitLab Duo Core availability:
 1. On the left sidebar, at the bottom, select **Admin**. If you've [turned on the new navigation](../interface_redesign.md#turn-new-navigation-on-or-off), in the upper-right corner, select **Admin**.
 1. Select **GitLab Duo**.
 1. Select **Change configuration**.
-1. Under **GitLab Duo availability in this instance**, select an option.
+1. Under **GitLab Duo availability**, select an option.
 1. Under **GitLab Duo Core**, select or clear the **Turn on features for GitLab Duo Core** checkbox.
    If you selected **Always off** for GitLab Duo availability, you cannot access
    this setting.
@@ -109,7 +109,7 @@ To change GitLab Duo availability for the top-level group:
 1. On the left sidebar, select **Search or go to** and find your top-level group. If you've [turned on the new navigation](../interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
 1. Select **Settings** > **GitLab Duo**.
 1. Select **Change configuration**.
-1. Under **GitLab Duo availability in this namespace**, select an option.
+1. Under **GitLab Duo availability**, select an option.
 1. Use the **Allow flow execution** toggle to control whether agents can run in the GitLab UI.
    When turned on, agents execute in CI/CD pipelines and consume compute minutes.
 1. Select **Save changes**.
@@ -127,7 +127,7 @@ To change GitLab Duo availability for a group or subgroup:
 1. On the left sidebar, select **Search or go to** and find your group or subgroup. If you've [turned on the new navigation](../interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
 1. Select **Settings** > **General**.
 1. Expand **GitLab Duo features**.
-1. Under **GitLab Duo availability in this group**, select an option.
+1. Under **GitLab Duo availability**, select an option.
 1. Use the **Allow flow execution** toggle to control whether agents can run in the GitLab UI.
    When turned on, agents execute in CI/CD pipelines and consume compute minutes.
 1. Select **Save changes**.
@@ -166,7 +166,7 @@ To change GitLab Duo availability for the instance:
 1. On the left sidebar, at the bottom, select **Admin**. If you've [turned on the new navigation](../interface_redesign.md#turn-new-navigation-on-or-off), in the upper-right corner, select **Admin**.
 1. Select **GitLab Duo**.
 1. Select **Change configuration**.
-1. Under **GitLab Duo availability in this instance**, select an option.
+1. Under **GitLab Duo availability**, select an option.
 1. Use the **Allow flow execution** toggle to control whether agents can run in the GitLab UI.
    When turned on, agents execute in CI/CD pipelines and consume compute minutes.
 1. Select **Save changes**.
@@ -184,7 +184,7 @@ To change GitLab Duo availability for a group or subgroup:
 1. On the left sidebar, select **Search or go to** and find your group or subgroup. If you've [turned on the new navigation](../interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
 1. Select **Settings** > **General**.
 1. Expand **GitLab Duo features**.
-1. Under **GitLab Duo availability in this group**, select an option.
+1. Under **GitLab Duo availability**, select an option.
 1. Use the **Allow flow execution** toggle to control whether agents can run in the GitLab UI.
    When turned on, agents execute in CI/CD pipelines and consume compute minutes.
 1. Select **Save changes**.

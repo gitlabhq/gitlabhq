@@ -3,6 +3,8 @@ data_category: optional
 key_path: redis_hll_counters.ide_edit.g_edit_by_snippet_ide_monthly
 description: Count of monthly edits to a snippet
 product_group: source_code
+product_categories:
+- source_code_management
 value_type: number
 status: active
 time_frame: 28d

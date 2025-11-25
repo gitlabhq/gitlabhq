@@ -15,7 +15,7 @@ module QA
         import_jira_issues
 
         Page::Project::Menu.perform(&:go_to_work_items)
-        Page::Project::Issue::Index.perform do |issues_page|
+        Page::Project::WorkItem::Index.perform do |issues_page|
           expect { issues_page }.to eventually_have_content(jira_issue_title).within(
             max_attempts: 5, sleep_interval: 1, reload_page: issues_page
           )
@@ -53,7 +53,7 @@ module QA
 
       def import_jira_issues
         Page::Project::Menu.perform(&:go_to_work_items)
-        Page::Project::Issue::Index.perform(&:go_to_jira_import_form)
+        Page::Project::WorkItem::Index.perform(&:go_to_jira_import_form)
 
         Page::Project::Issue::JiraImport.perform do |form|
           form.select_project_and_import(jira_project_key)

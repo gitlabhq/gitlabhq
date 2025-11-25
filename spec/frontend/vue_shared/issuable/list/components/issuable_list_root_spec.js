@@ -154,9 +154,7 @@ describe('IssuableListRoot component', () => {
     createComponent({ issuablesLoading: true });
 
     expect(findResourceListsLoadingStateList().exists()).toBe(true);
-    expect(findResourceListsLoadingStateList().props('listLength')).toBe(
-      mockIssuableListProps.issuables.length,
-    );
+    expect(findResourceListsLoadingStateList().props('listLength')).toBe(10);
   });
 
   describe('manual ordering', () => {

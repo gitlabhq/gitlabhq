@@ -16,7 +16,7 @@ module Gitlab
         }.freeze
 
         def self.name
-          self.class.to_s
+          to_s
         end
 
         def self.mapping
@@ -76,6 +76,9 @@ module Gitlab
 
         # Override this method if you want to add engine-specific validations.
         def run_validations(plan)
+          ensure_instance_keys(:dimensions, plan.dimensions)
+          ensure_instance_keys(:metrics, plan.metrics)
+
           return unless plan.metrics.empty?
 
           errors.add(:metrics, s_("AggregationEngine|at least one metric is required"))
@@ -83,6 +86,21 @@ module Gitlab
 
         def to_value_hash(type, value)
           TYPE_CASTERS.fetch(type).call(value)
+        end
+
+        def ensure_instance_keys(error_key, collection)
+          instance_keys = collection.group_by(&:instance_key)
+          duplicates = instance_keys.select { |_value, occurrences| occurrences.size > 1 }.values
+
+          return unless duplicates.any?
+
+          duplicate = duplicates.first.first
+
+          placeholder = { identifier: duplicate.definition.identifier }
+          errors.add(
+            error_key,
+            format(s_("AggregationEngine|duplicated identifier found: %{identifier}"), placeholder)
+          )
         end
       end
     end

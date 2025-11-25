@@ -3,6 +3,8 @@ data_category: optional
 key_path: redis_hll_counters.source_code.git_write_action_weekly
 description: Count of unique Git write actions
 product_group: source_code
+product_categories:
+- source_code_management
 value_type: number
 status: active
 time_frame: 7d

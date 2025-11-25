@@ -9,7 +9,7 @@ module Gitlab
         def initialize(metrics:, dimensions:, order: [])
           @metrics = metrics
           @dimensions = dimensions
-          @order = order
+          @order = order || []
         end
       end
     end

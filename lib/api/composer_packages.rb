@@ -222,7 +222,7 @@ module API
 
           # For now we keep writing to the existing packages_packages table.
           # It contains the trigger to sync the data with packages_composer_packages table.
-          ::Packages::Composer::Sti::Package.touch_last_downloaded_at(package.id)
+          ::Packages::Composer::Sti::Package.touch_last_downloaded_at(package.id) unless request.head?
 
           send_git_archive project.repository, ref: package.target_sha, format: 'zip', append_sha: true
         end

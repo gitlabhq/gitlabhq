@@ -1010,6 +1010,22 @@ You can view the issue's status in:
 
 You can also set the status by using the `/status` [quick action](../quick_actions.md#issues-merge-requests-and-epics).
 
+## Participants
+
+Participants are users who interacted with an issue.
+They include authors, assignees, and users who commented on the issue, added emoji reactions, or
+were mentioned in comments or descriptions.
+
+### View participants
+
+All users see the same participant list, regardless of their role in the project.
+
+To view participants:
+
+1. On the left sidebar, select **Search or go to** and find your project. If you've [turned on the new navigation](../../interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
+1. Select **Plan** > **Issues**, then select your issue to view it.
+1. On the right sidebar, in the **Participants** section, view all users who participated in the issue.
+
 ## Publish an issue
 
 {{< details >}}

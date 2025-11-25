@@ -16,6 +16,11 @@ $file-tree-browser-z-index: 500;
   z-index: $file-tree-browser-z-index - 1;
 }
 
+// Remove the below after the UI has been fully migrated to paneled views
+html:not(.page-with-panels) .file-tree-browser  {
+  top: calc(var(--application-header-height) + 1px); // header + 1px border
+}
+
 .file-tree-browser {
   --file-row-level-padding: #{$gl-spacing-scale-5};
   --file-tree-min-height: 300px;
@@ -26,7 +31,6 @@ $file-tree-browser-z-index: 500;
   min-height: var(--file-tree-min-height);
   transform: translate3d(-100%, 0, 0);
   z-index: $file-tree-browser-z-index;
-
 
   @media (prefers-reduced-motion: no-preference) {
     @apply gl-transition-transform;
@@ -47,7 +51,6 @@ $file-tree-browser-z-index: 500;
   &.file-tree-browser-peek {
     @apply gl-shadow;
     @apply gl-rounded-base;
-    top: var(--application-header-height);;
     bottom: 0;
   }
 }

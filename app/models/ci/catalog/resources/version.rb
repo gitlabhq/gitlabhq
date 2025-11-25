@@ -54,7 +54,10 @@ module Ci
           def versions_for_catalog_resources(catalog_resources)
             return none if catalog_resources.empty?
 
-            for_catalog_resources(catalog_resources).with_semver.order_by_semantic_version_desc
+            for_catalog_resources(catalog_resources)
+              .with_semver
+              .includes(:components)
+              .order_by_semantic_version_desc
           end
         end
 

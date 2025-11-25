@@ -150,7 +150,7 @@ Turn on GitLab Duo Chat:
 <!-- markdownlint-disable MD044 -->
 1. In VS Code, go to **Settings** > **Settings**.
 1. Search for `agent platform`.
-1. Under **Gitlab › Duo Agent Platform: Enabled**, select the
+1. Under **GitLab** > **Duo Agent Platform: Enabled**, select the
    **Enable GitLab Duo Agent Platform** checkbox.
 <!-- markdownlint-enable MD044 -->
 

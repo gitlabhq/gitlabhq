@@ -517,7 +517,7 @@ module API
       end
       get ':id/issues/:issue_iid/participants' do
         issue = find_project_issue(params[:issue_iid])
-        participants = ::Kaminari.paginate_array(issue.visible_participants(current_user))
+        participants = ::Kaminari.paginate_array(issue.participants(current_user))
 
         present paginate(participants), with: Entities::UserBasic, current_user: current_user, project: user_project
       end

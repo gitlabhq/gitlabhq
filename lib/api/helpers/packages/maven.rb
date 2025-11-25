@@ -55,7 +55,7 @@ module API
         end
 
         def download_package_file!(package_file, extra_send_url_params: {}, extra_response_headers: {})
-          package_file.package.touch_last_downloaded_at
+          package_file.package.touch_last_downloaded_at unless request.head?
           file = package_file.file
 
           headers = extra_response_headers.merge(SHA1_CHECKSUM_HEADER => package_file.file_sha1)

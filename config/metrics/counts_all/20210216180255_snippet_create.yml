@@ -3,6 +3,8 @@ data_category: optional
 key_path: counts.snippet_create
 description: Count of newly created Snippets
 product_group: source_code
+product_categories:
+- source_code_management
 value_type: number
 status: active
 time_frame: all

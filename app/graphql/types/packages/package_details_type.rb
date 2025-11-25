@@ -73,6 +73,12 @@ module Types
       def public_package
         object.project.project_feature.public_packages?
       end
+
+      def dependency_links
+        object.dependency_links.then do |links|
+          object.nuget? ? links.without_empty_nuget_dependencies : links
+        end
+      end
     end
   end
 end

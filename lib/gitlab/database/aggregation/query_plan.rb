@@ -6,33 +6,56 @@ module Gitlab
       class QueryPlan
         include ActiveModel::Validations
 
-        class DimensionPlan
-          attr_reader :configuration, :dimension
+        class Dimension
+          attr_reader :definition, :configuration
 
-          def initialize(configuration, dimension)
+          def initialize(definition, configuration)
+            @definition = definition
             @configuration = configuration
-            @dimension = dimension
+          end
+
+          def instance_key
+            definition.instance_key(configuration).to_s
           end
         end
 
-        class MetricPlan
-          attr_reader :configuration, :metric
+        class Metric
+          attr_reader :definition, :configuration
 
-          def initialize(configuration, metric)
+          def initialize(definition, configuration)
+            @definition = definition
             @configuration = configuration
-            @metric = metric
+          end
+
+          def instance_key
+            definition.instance_key(configuration).to_s
+          end
+        end
+
+        class Order
+          attr_reader :plan_part, :configuration
+
+          def initialize(plan_part, configuration)
+            @plan_part = plan_part
+            @configuration = configuration
+          end
+
+          delegate :instance_key, to: :plan_part
+
+          def direction
+            configuration[:direction]
           end
         end
 
         attr_reader :dimensions, :metrics, :order
 
         def self.build(request, engine)
-          configured_dimensions = engine.dimensions.index_by(&:identifier)
-          configured_metrics = engine.metrics.index_by(&:identifier)
+          dimension_definitions = engine.dimensions.index_by(&:identifier)
+          metric_definitions = engine.metrics.index_by(&:identifier)
 
           plan = new
           request.dimensions.each do |dimension|
-            dimension_column_configuration = configured_dimensions[dimension[:identifier]]
+            dimension_column_configuration = dimension_definitions[dimension[:identifier]]
             if dimension_column_configuration.nil?
               add_error_for(plan, :dimensions, dimension[:identifier])
               break
@@ -42,7 +65,7 @@ module Gitlab
           end
 
           request.metrics.each do |metric|
-            metric_column_configuration = configured_metrics[metric[:identifier]]
+            metric_column_configuration = metric_definitions[metric[:identifier]]
             if metric_column_configuration.nil?
               add_error_for(plan, :metrics, metric[:identifier])
               break
@@ -51,13 +74,17 @@ module Gitlab
             plan.add_metric(metric_column_configuration, metric)
           end
 
-          request.order.each do |order|
-            unless configured_dimensions[order[:identifier]] || configured_metrics[order[:identifier]]
-              add_error_for(plan, :order, order[:identifier])
+          request.order.each do |configuration|
+            plan_part = plan.parts.detect do |plan_part|
+              configuration.except(:direction) == plan_part.configuration
+            end
+
+            unless plan_part
+              add_error_for(plan, :order, configuration[:identifier])
               break
             end
 
-            plan.add_order(order)
+            plan.add_order(plan_part, configuration)
           end
 
           plan
@@ -75,16 +102,20 @@ module Gitlab
           @order = []
         end
 
-        def add_dimension(configuration, dimension)
-          @dimensions << DimensionPlan.new(configuration, dimension)
+        def parts
+          dimensions + metrics
         end
 
-        def add_metric(configuration, metric)
-          @metrics << MetricPlan.new(configuration, metric)
+        def add_dimension(definition, configuration)
+          @dimensions << Dimension.new(definition, configuration)
         end
 
-        def add_order(kind)
-          @order << kind
+        def add_metric(definition, configuration)
+          @metrics << Metric.new(definition, configuration)
+        end
+
+        def add_order(plan_part, configuration)
+          @order << Order.new(plan_part, configuration)
         end
       end
     end

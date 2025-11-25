@@ -45,7 +45,7 @@ Fields that identify users, seats, and resources associated with the billable ev
 |-------|-------------|----------------|------|
 | `subject` | Identifier for the user in the customer organization or identifier for runner where user identification is not present | `subject` | String |
 | `global_user_id` | Anonymized global user ID which is unique across instances | `global_user_id` | String |
-| `assignments` | Product assignments associated with the user at the time of event creation (e.g., 'Duo Pro', 'Duo Enterprise') | - | Array[String] |
+| `assignments` | Product assignments associated with the user at the time of event creation (e.g., `Duo Pro`, `Duo Enterprise`) | - | Array[String] |
 | `project_id` | ID of the associated project (e.g., `122344`) | `project_id` | Integer |
 | `namespace_id` | ID of the associated namespace (e.g., `3445555`) | `namespace_id` | Integer |
 | `root_namespace_id` | ID of the associated ultimate parent namespace (e.g., `5343322`) | `root_namespace_id` | Integer |

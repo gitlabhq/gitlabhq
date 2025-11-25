@@ -3,6 +3,8 @@ data_category: optional
 key_path: redis_hll_counters.quickactions.i_quickactions_wip_weekly
 description: Count of WAU using the `/wip` quick action on Merge Requests
 product_group: source_code
+product_categories:
+- source_code_management
 value_type: number
 status: active
 time_frame: 7d

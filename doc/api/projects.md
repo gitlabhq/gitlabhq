@@ -1706,7 +1706,7 @@ Supported general project attributes:
 | `auto_cancel_pending_pipelines`                    | string            | No       | Auto-cancel pending pipelines. This action toggles between an enabled state and a disabled state; it is not a boolean. |
 | `auto_devops_deploy_strategy`                      | string            | No       | Auto Deploy strategy (`continuous`, `manual`, or `timed_incremental`). |
 | `auto_devops_enabled`                              | boolean           | No       | Enable Auto DevOps for this project. |
-| `auto_duo_code_review_enabled`                     | boolean           | No       | Enable automatic reviews by GitLab Duo on merge requests. See [Duo in merge requests](../user/project/merge_requests/duo_in_merge_requests.md#have-gitlab-duo-review-your-code). Ultimate only. |
+| `auto_duo_code_review_enabled`                     | boolean           | No       | Enable automatic reviews by GitLab Duo on merge requests. See [GitLab Duo in merge requests](../user/project/merge_requests/duo_in_merge_requests.md#have-gitlab-duo-review-your-code). Ultimate only. |
 | `autoclose_referenced_issues`                      | boolean           | No       | Set whether auto-closing referenced issues on default branch. |
 | `avatar`                                           | mixed             | No       | Image file for avatar of the project. |
 | `build_git_strategy`                               | string            | No       | The Git strategy. Defaults to `fetch`. |

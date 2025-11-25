@@ -53,6 +53,7 @@ module Gitlab
             @description = description
           end
 
+          # Returns the static, definition-time identifier for this dimension or metric.
           def identifier
             :"column_#{name}"
           end
@@ -75,6 +76,16 @@ module Gitlab
             scope_proc ? scope_proc.call(scope, context) : scope
           end
 
+          # Returns a per-request, per-instance identity key for this dimension or metric.
+          # This combines the definition identifier with runtime parameters (e.g. granularity)
+          # to uniquely distinguish multiple uses of the same dimension in a single request.
+          # Also used as the SQL alias in SELECT/GROUP BY/ORDER BY.
+          def instance_key(_context)
+            identifier.to_s
+          end
+
+          # Returns an Arel node representing this column or metric in a SELECT statement.
+          # Subclasses may wrap the expression (e.g., date_trunc, AVG, COUNT).
           def to_arel(context)
             expression ? expression.call : context[:arel_table][name]
           end

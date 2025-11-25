@@ -98,6 +98,20 @@ module Gitlab
             self[:logger] ||= ::Gitlab::Ci::Pipeline::Logger.new(project: project)
           end
 
+          def current_pipeline_size
+            # The `pipeline_seed` attribute is assigned after the Seed step.
+            # And, the seed is populated when calling the `pipeline_seed.stages` method in Populate.
+            # So, there is no guarantee that `pipeline_seed` will return a meaningful result.
+            # If it does not, it's not important, we can just return 0.
+            # This is also the reason why we don't "strong memoize" this method.
+            pipeline_seed&.size || 0
+          end
+
+          def jobs_count_in_alive_pipelines
+            project.all_pipelines.jobs_count_in_alive_pipelines
+          end
+          strong_memoize_attr :jobs_count_in_alive_pipelines
+
           def observe_step_duration(step_class, duration)
             step = step_class.name.underscore.parameterize(separator: '_')
             logger.observe("pipeline_step_#{step}_duration_s", duration, once: true)
@@ -123,16 +137,24 @@ module Gitlab
           end
 
           def observe_jobs_count_in_alive_pipelines
-            jobs_count = project.all_pipelines.jobs_count_in_alive_pipelines
-
-            metrics.active_jobs_histogram
-              .observe({ plan: project.actual_plan_name }, jobs_count)
+            if ci_refactor_jobs_count_in_alive_pipelines_enabled?
+              metrics.active_jobs_histogram
+                .observe({ plan: project.actual_plan_name }, jobs_count_in_alive_pipelines + current_pipeline_size)
+            else
+              metrics.active_jobs_histogram
+                .observe({ plan: project.actual_plan_name }, project.all_pipelines.legacy_jobs_count_in_alive_pipelines)
+            end
           end
 
           def increment_pipeline_failure_reason_counter(reason)
             metrics.pipeline_failure_reason_counter
               .increment(reason: (reason || :unknown_failure).to_s)
           end
+
+          def ci_refactor_jobs_count_in_alive_pipelines_enabled?
+            ::Feature.enabled?(:ci_refactor_jobs_count_in_alive_pipelines, project)
+          end
+          strong_memoize_attr :ci_refactor_jobs_count_in_alive_pipelines_enabled?
 
           private
 

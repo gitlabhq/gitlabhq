@@ -29,7 +29,7 @@ module QA
       ) do
         third_design.issue.visit!
 
-        Page::Project::Issue::Show.perform do |issue|
+        Page::Project::WorkItem::Show.perform do |issue|
           issue.select_design(third_design.filename)
 
           issue.archive_selected_designs
@@ -39,7 +39,7 @@ module QA
           expect(issue).to have_design(second_design.filename)
         end
 
-        Page::Project::Issue::Show.perform do |issue|
+        Page::Project::WorkItem::Show.perform do |issue|
           issue.select_design(second_design.filename)
           issue.select_design(first_design.filename)
 

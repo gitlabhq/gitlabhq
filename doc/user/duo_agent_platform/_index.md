@@ -56,8 +56,6 @@ In addition, to use the Agent Platform in your IDE:
 
 - You must install an editor extension, like the GitLab Workflow extension for VS Code, and authenticate with GitLab.
 - You must have a project in a [group namespace](../namespace/_index.md) and have at least the Developer role.
-- You must [ensure an HTTP/2 connection to the backend service is possible](troubleshooting.md#network-issues).
-- For [GitLab Duo with self-hosted models](../../administration/gitlab_duo_self_hosted/_index.md), you must use [WebSocket connection instead of gRPC](troubleshooting.md#use-websocket-connection-instead-of-grpc).
 
 ## Related topics
 

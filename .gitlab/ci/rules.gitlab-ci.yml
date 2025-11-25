@@ -1668,6 +1668,8 @@
       when: never
     - <<: *if-merge-request
       changes: *frontend-fe-predictive-patterns
+    - <<: *if-default-refs
+      changes: *frontend-fe-predictive-patterns
 
 .frontend:rules:jest:predictive:
   rules:

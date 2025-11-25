@@ -1006,7 +1006,7 @@ RSpec.describe Ci::Pipeline, :mailer, factory_default: :keep, feature_category: 
     end
   end
 
-  describe '.builds_count_in_alive_pipelines' do
+  describe '.legacy_builds_count_in_alive_pipelines' do
     before do
       ::Ci::HasStatus::ALIVE_STATUSES.each do |status|
         alive_pipeline = create(:ci_pipeline, status: status, project: project)
@@ -1022,7 +1022,7 @@ RSpec.describe Ci::Pipeline, :mailer, factory_default: :keep, feature_category: 
     end
 
     it 'includes all builds in alive pipelines created in the last 24 hours' do
-      expect(described_class.builds_count_in_alive_pipelines)
+      expect(described_class.legacy_builds_count_in_alive_pipelines)
         .to eq(::Ci::HasStatus::ALIVE_STATUSES.count)
     end
   end

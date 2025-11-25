@@ -337,6 +337,12 @@ RSpec.describe API::MavenPackages, feature_category: :package_registry do
     end
   end
 
+  shared_examples 'not touching last downloaded at field for head request' do
+    it 'does not touch last downloaded at field' do
+      expect { subject }.not_to change { package_file.package.reload.last_downloaded_at }
+    end
+  end
+
   describe 'GET /api/v4/packages/maven/*path/:file_name' do
     context 'a public project' do
       let(:snowplow_gitlab_standard_context) { { project: project, namespace: project.namespace, property: 'i_package_maven_user' } }
@@ -498,6 +504,10 @@ RSpec.describe API::MavenPackages, feature_category: :package_registry do
 
     it_behaves_like 'updating personal access token last used' do
       subject { download_file_with_token(file_name: package_file.file_name) }
+    end
+
+    it_behaves_like 'not touching last downloaded at field for head request' do
+      subject { head api("/packages/maven/#{maven_metadatum.path}/#{package_file.file_name}"), headers: headers_with_token }
     end
 
     def download_file(file_name:, params: {}, request_headers: headers, path: maven_metadatum.path)
@@ -778,6 +788,10 @@ RSpec.describe API::MavenPackages, feature_category: :package_registry do
       subject { download_file_with_token(file_name: package_file.file_name) }
     end
 
+    it_behaves_like 'not touching last downloaded at field for head request' do
+      subject { head api("/groups/#{group.id}/-/packages/maven/#{maven_metadatum.path}/#{package_file.file_name}"), headers: headers_with_token }
+    end
+
     def download_file(file_name:, params: {}, request_headers: headers, path: maven_metadatum.path, group_id: group.id)
       get api("/groups/#{group_id}/-/packages/maven/#{path}/#{file_name}"), params: params, headers: request_headers
     end
@@ -892,6 +906,10 @@ RSpec.describe API::MavenPackages, feature_category: :package_registry do
 
     it_behaves_like 'updating personal access token last used' do
       subject { download_file_with_token(file_name: package_file.file_name) }
+    end
+
+    it_behaves_like 'not touching last downloaded at field for head request' do
+      subject { head api("/projects/#{project.id}/packages/maven/#{maven_metadatum.path}/#{package_file.file_name}"), headers: headers_with_token }
     end
 
     def download_file(file_name:, params: {}, request_headers: headers, path: maven_metadatum.path)

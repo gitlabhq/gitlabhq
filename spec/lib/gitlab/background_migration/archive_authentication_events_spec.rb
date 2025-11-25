@@ -113,7 +113,8 @@ RSpec.describe Gitlab::BackgroundMigration::ArchiveAuthenticationEvents, feature
       user_name: FFaker::Internet.user_name,
       result: AuthenticationEvent.results.values.sample,
       ip_address: FFaker::Internet.ip_v4_address,
-      provider: AuthenticationEvent::STATIC_PROVIDERS.sample
+      provider: AuthenticationEvent::STATIC_PROVIDERS.sample,
+      organization_id: organization.id
     )
   end
 end

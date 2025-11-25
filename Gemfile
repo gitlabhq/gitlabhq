@@ -484,11 +484,11 @@ group :development do
 
   gem 'listen', '~> 3.7', feature_category: :shared
 
-  gem 'ruby-lsp', "~> 0.26.0", require: false, feature_category: :tooling
+  gem 'ruby-lsp', "~> 0.26.4", require: false, feature_category: :tooling
 
   gem 'ruby-lsp-rails', "~> 0.4.8", feature_category: :tooling
 
-  gem 'ruby-lsp-rspec', "~> 0.1.27", require: false, feature_category: :tooling
+  gem 'ruby-lsp-rspec', "~> 0.1.28", require: false, feature_category: :tooling
 
   gem 'gdk-toogle', '~> 0.9', '>= 0.9.5', require: 'toogle', feature_category: :tooling
 

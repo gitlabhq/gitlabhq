@@ -4,6 +4,8 @@ key_path: usage_activity_by_stage_monthly.create.projects_without_disable_overri
 description: Count of the number of projects without setting to disable overriding
   approvers per merge request
 product_group: source_code
+product_categories:
+- source_code_management
 value_type: number
 status: active
 time_frame: 28d
