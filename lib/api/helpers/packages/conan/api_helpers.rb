@@ -203,7 +203,7 @@ module API
           end
 
           def file_names
-            json_payload = Gitlab::Json.parse(request.body.read)
+            json_payload = Gitlab::Json.safe_parse(request.body.read)
             json_payload.keys
           rescue JSON::ParserError,
             Encoding::UndefinedConversionError,

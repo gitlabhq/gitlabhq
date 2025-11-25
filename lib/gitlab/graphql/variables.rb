@@ -50,26 +50,9 @@ module Gitlab
       end
 
       def parse_json(user_input)
-        limits = @parse_limits
-
-        handler = ::Gitlab::Json::StreamValidator.new(@parse_limits)
-        handler.sc_parse(user_input)
-      rescue Oj::ParseError, EncodingError => ex
+        Gitlab::Json.safe_parse(user_input, parse_limits: @parse_limits)
+      rescue JSON::ParserError => ex
         raise Invalid, ex
-      rescue ::Gitlab::Json::StreamValidator::LimitExceededError => ex
-        log_exceeded(ex, limits)
-        message = ::Gitlab::Json::StreamValidator.user_facing_error_message(ex)
-
-        raise Invalid, message
-      end
-
-      def log_exceeded(ex, limits)
-        payload = limits.merge({
-          class_name: self.class.name,
-          message: ex.to_s
-        })
-
-        Gitlab::AppLogger.warn(payload)
       end
     end
   end
