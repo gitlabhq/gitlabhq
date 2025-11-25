@@ -310,8 +310,8 @@ Individual conversations expire and are automatically deleted after 30 days of i
 
 {{< /history >}}
 
-In your IDE, if you have specific instructions that you want
-GitLab Duo Chat to follow in every conversation, you can create custom rules.
+Use custom rules to specify instructions for GitLab Duo Chat to follow for every conversation in
+your IDE.
 
 You can create custom rules at two levels:
 
@@ -360,16 +360,16 @@ User-level custom rules apply to all of your projects and workspaces.
 Workspace-level custom rules apply only to a specific project or workspace.
 
 1. In your IDE workspace, create a custom rules file: `.gitlab/duo/chat-rules.md`.
-1. Enter the custom rules into the file. For example:
+1. Add custom rules to the file. For example:
 
    ```markdown
-   - don't put comments in the generated code
-   - be brief in your explanations
-   - always use single quotes for JavaScript strings
+   - Don't put comments in the generated code
+   - Be brief in your explanations
+   - Always use single quotes for JavaScript strings
    ```
 
 1. Save the file.
-1. To have GitLab Duo Chat follow the new custom rules, start a new conversation.
+1. To apply the new custom rules, start a new GitLab Duo conversation.
 
    You must do this every time you change the custom rules.
 
@@ -377,7 +377,8 @@ For more information, see the [Custom rules in GitLab Duo Agentic Chat blog](htt
 
 #### Update custom rules
 
-To update your custom rules, edit and save the custom rules file.
+To update your custom rules, edit and save the custom rules file. Then, start a new GitLab Duo
+conversation to apply the updated rules.
 
 You cannot use Chat to edit your custom rules file directly.
 

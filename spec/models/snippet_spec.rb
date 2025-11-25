@@ -42,7 +42,7 @@ RSpec.describe Snippet, feature_category: :source_code_management do
       end
     end
 
-    describe '.for_user_organization' do
+    describe '.in_organization' do
       let_it_be(:organization) { create(:organization) }
       let_it_be(:other_organization) { create(:organization) }
       let_it_be(:project) { create(:project, organization: organization) }
@@ -56,7 +56,7 @@ RSpec.describe Snippet, feature_category: :source_code_management do
       let_it_be(:project_snippet) { create(:project_snippet, project: project) }
       let_it_be(:project_snippet_other_org) { create(:project_snippet, project: other_project) }
 
-      subject { described_class.for_user_organization(organization.id) }
+      subject { described_class.in_organization(organization.id) }
 
       it 'returns personal snippets for the specified organization' do
         expect(subject).to include(personal_snippet_in_org)

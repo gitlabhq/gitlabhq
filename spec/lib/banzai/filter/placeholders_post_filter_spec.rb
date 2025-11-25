@@ -284,28 +284,25 @@ RSpec.describe Banzai::Filter::PlaceholdersPostFilter, feature_category: :markdo
     it 'does not allow project_title in a link href' do
       markdown = '[test](%{gitlab_server}/%{project_title}/foo.png)'
       expected = '<p dir="auto"><a href="localhost/%{project_title}/foo.png" ' \
-        'data-placeholder="%%7Bgitlab_server%7D/%%7Bproject_title%7D/foo.png" ' \
-        'rel="nofollow noreferrer noopener" target="_blank" ' \
-        'data-canonical-src="%%7Bgitlab_server%7D/%%7Bproject_title%7D/foo.png">test</a></p>'
+        'data-placeholder="%25%7Bgitlab_server%7D/%25%7Bproject_title%7D/foo.png" ' \
+        'data-canonical-src="%25%7Bgitlab_server%7D/%25%7Bproject_title%7D/foo.png">test</a></p>'
 
       expect(run_pipeline(markdown)).to eq expected
     end
 
     it 'does not recognize unknown placeholder in a link href' do
       markdown = '[test](%{gitlab_server}/%{foo}/foo.png)'
-      expected = '<p dir="auto"><a href="localhost/%%7Bfoo%7D/foo.png" ' \
-        'data-placeholder="%%7Bgitlab_server%7D/%%7Bfoo%7D/foo.png" ' \
-        'rel="nofollow noreferrer noopener" target="_blank" ' \
-        'data-canonical-src="%%7Bgitlab_server%7D/%%7Bfoo%7D/foo.png">test</a></p>'
+      expected = '<p dir="auto"><a href="localhost/%25%7Bfoo%7D/foo.png" ' \
+        'data-placeholder="%25%7Bgitlab_server%7D/%25%7Bfoo%7D/foo.png" ' \
+        'data-canonical-src="%25%7Bgitlab_server%7D/%25%7Bfoo%7D/foo.png">test</a></p>'
 
       expect(run_pipeline(markdown)).to eq expected
     end
 
-    it 'does not allow placeholders in link text (parser limitation)' do
+    it 'allows placeholders in link text' do
       markdown = '[%{gitlab_server}](%{gitlab_server})'
-      expected = '<p dir="auto"><a href="localhost" data-placeholder="%%7Bgitlab_server%7D" ' \
-        'rel="nofollow noreferrer noopener" target="_blank" ' \
-        'data-canonical-src="%%7Bgitlab_server%7D">%{gitlab_server}</a></p>'
+      expected = '<p dir="auto"><a href="localhost" data-placeholder="%25%7Bgitlab_server%7D" ' \
+        'data-canonical-src="%25%7Bgitlab_server%7D"><span data-placeholder="%{gitlab_server}">localhost</span></a></p>'
 
       expect(run_pipeline(markdown)).to eq expected
     end
@@ -336,9 +333,9 @@ RSpec.describe Banzai::Filter::PlaceholdersPostFilter, feature_category: :markdo
       it 'generates the correct attributes' do
         markdown = '![](https://%{gitlab_server}/%{project_name}/foo.png)'
         expected = "<p><img src=\"https://#{Gitlab.config.gitlab.host}/#{project.path}/foo.png\" " \
-          'data-placeholder="https://%%7Bgitlab_server%7D/%%7Bproject_name%7D/foo.png" alt="" ' \
+          'data-placeholder="https://%25%7Bgitlab_server%7D/%25%7Bproject_name%7D/foo.png" alt="" ' \
           "data-src=\"https://#{Gitlab.config.gitlab.host}/#{project.path}/foo.png\" " \
-          'data-canonical-src="https://%%7Bgitlab_server%7D/%%7Bproject_name%7D/foo.png"></p>'
+          'data-canonical-src="https://%25%7Bgitlab_server%7D/%25%7Bproject_name%7D/foo.png"></p>'
 
         # can't use the pipeline because the image_link_filter modifies `src`
         expect(run_filter(markdown)).to eq expected
@@ -347,9 +344,9 @@ RSpec.describe Banzai::Filter::PlaceholdersPostFilter, feature_category: :markdo
       it 'does not allow project_title in a src' do
         markdown = '![](https://%{gitlab_server}/%{project_title}/foo.png)'
         expected = "<p><img src=\"https://#{Gitlab.config.gitlab.host}/%{project_title}/foo.png\" " \
-          'data-placeholder="https://%%7Bgitlab_server%7D/%%7Bproject_title%7D/foo.png" alt="" ' \
+          'data-placeholder="https://%25%7Bgitlab_server%7D/%25%7Bproject_title%7D/foo.png" alt="" ' \
           "data-src=\"https://#{Gitlab.config.gitlab.host}/%{project_title}/foo.png\" " \
-          'data-canonical-src="https://%%7Bgitlab_server%7D/%%7Bproject_title%7D/foo.png"></p>'
+          'data-canonical-src="https://%25%7Bgitlab_server%7D/%25%7Bproject_title%7D/foo.png"></p>'
 
         expect(run_filter(markdown)).to eq expected
       end
@@ -359,9 +356,9 @@ RSpec.describe Banzai::Filter::PlaceholdersPostFilter, feature_category: :markdo
 
         markdown = '![](https://%{gitlab_server}/%{project_name}/foo.png)'
         expected = "<p><img src=\"https:///#{project.path}/foo.png\" " \
-          'data-placeholder="https://%%7Bgitlab_server%7D/%%7Bproject_name%7D/foo.png" alt="" ' \
+          'data-placeholder="https://%25%7Bgitlab_server%7D/%25%7Bproject_name%7D/foo.png" alt="" ' \
           "data-src=\"https:///#{project.path}/foo.png\" " \
-          'data-canonical-src="https://%%7Bgitlab_server%7D/%%7Bproject_name%7D/foo.png"></p>'
+          'data-canonical-src="https://%25%7Bgitlab_server%7D/%25%7Bproject_name%7D/foo.png"></p>'
 
         expect(run_filter(markdown)).to eq expected
       end
@@ -379,7 +376,7 @@ RSpec.describe Banzai::Filter::PlaceholdersPostFilter, feature_category: :markdo
 
         expect(result).to include "href=\"https://#{Gitlab.config.gitlab.host}/#{project.path}/foo.png\""
         expect(result).to include "data-src=\"https://#{Gitlab.config.gitlab.host}/#{project.path}/foo.png\""
-        expect(result).to include 'data-canonical-src="https://%%7Bgitlab_server%7D/%%7Bproject_name%7D/foo.png"'
+        expect(result).to include 'data-canonical-src="https://%25%7Bgitlab_server%7D/%25%7Bproject_name%7D/foo.png"'
         expect(result)
           .to include '<img src="data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw=="'
       end
@@ -399,7 +396,7 @@ RSpec.describe Banzai::Filter::PlaceholdersPostFilter, feature_category: :markdo
         result = run_pipeline(markdown)
 
         expect(result).to include 'href="https://assets.example.com/8641679ca136e7fe8cf9415852374bbe4595f929/68747470733a2f2f6578616d706c652e636f6d2f70726f6a6563742d696d672f666f6f2e706e67"'
-        expect(result).to include 'f6f2e706e67" data-canonical-src="https://example.com/%%7Bproject_name%7D/foo.png"'
+        expect(result).to include 'f6f2e706e67" data-canonical-src="https://example.com/%25%7Bproject_name%7D/foo.png"'
         expect(result).to include 'data-src="https://assets.example.com/8641679ca136e7fe8cf9415852374bbe4595f929/68747470733a2f2f6578616d706c652e636f6d2f70726f6a6563742d696d672f666f6f2e706e67"'
         expect(result)
           .to include '<img src="data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw=="'

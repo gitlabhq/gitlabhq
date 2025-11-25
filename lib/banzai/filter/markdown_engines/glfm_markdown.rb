@@ -1,10 +1,9 @@
 # frozen_string_literal: true
 
-require 'glfm_markdown'
+require 'gitlab-glfm-markdown'
 
-# Use the glfm_markdown gem (https://gitlab.com/gitlab-org/ruby/gems/gitlab-glfm-markdown)
-# to interface with the Rust based `comrak` parser
-# https://github.com/kivikakk/comrak
+# Use the gitlab-glfm-markdown gem (https://gitlab.com/gitlab-org/ruby/gems/gitlab-glfm-markdown)
+# to interface with the Rust-based Comrak parser (https://github.com/kivikakk/comrak).
 module Banzai
   module Filter
     module MarkdownEngines
@@ -23,6 +22,7 @@ module Banzai
           full_info_string: true,
           github_pre_lang: true,
           hardbreaks: false,
+          header_accessibility: true,
           header_ids: Banzai::Renderer::USER_CONTENT_ID_PREFIX,
           math_code: true,
           math_dollars: true,
@@ -36,6 +36,7 @@ module Banzai
           table: true,
           tagfilter: false,
           tasklist: false, # still handled by a banzai filter/gem,
+          taskfilter_in_table: false,
           wikilinks_title_before_pipe: true,
           unsafe: true
         }.freeze

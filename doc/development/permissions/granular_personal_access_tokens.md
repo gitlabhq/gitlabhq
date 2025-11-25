@@ -48,11 +48,7 @@ Before starting, ensure you:
 
 **Goal:** Define granular permissions following GitLab naming conventions.
 
-#### Permission Granularity Guidelines
-
-- Use **specific action verbs**: `create`, `read`, `update`, `delete`, `push`, `download`
-- **Do not use** broad verbs like: `admin_*`, `manage_*`, `access_*`
-- Be as granular as possible while remaining practical
+For guidance on permission granularity and preferred actions, see the [Naming Permissions](conventions.md#naming-permissions) section in the conventions documentation.
 
 #### Permission Naming Pattern
 
@@ -91,35 +87,7 @@ Follow the pattern: `action_resource(_subresource)`
 
 **Goal:** Create YAML definition files for each new permission.
 
-#### Run the Generator
-
-For each permission identified in Step 2, run:
-
-```shell
-bundle exec rails generate authz:permission <permission_name>
-```
-
-**Example:**
-
-```shell
-bundle exec rails generate authz:permission read_job
-```
-
-#### For Multi-Word Actions
-
-If the action contains multiple words, use the `--action` flag:
-
-```shell
-bundle exec rails generate authz:permission force_delete_ai_catalog_item --action force_delete
-```
-
-#### Generated File Location
-
-Files are created in: `config/authz/permissions/<resource>/<action>.yml`
-
-**Example:**
-
-- `read_job` → `config/authz/permissions/job/read.yml`
+For details on generating permission definition files, see the [Permission Definition File](conventions.md#permission-definition-file) section in the conventions documentation.
 
 #### Complete the YAML Definition
 
@@ -188,7 +156,7 @@ end
 
 ### Step 6: Add Test Coverage
 
-Test files are usually located at `spec/requests/api/<resource>_spec.rb`. If you don’t find them there, you may need to look around a bit more for the relevant spec files.
+Test files are usually located at `spec/requests/api/<resource>_spec.rb`. If you don't find them there, you may need to look around a bit more for the relevant spec files.
 
 #### Add Shared Examples for Each Endpoint
 
@@ -252,12 +220,43 @@ This MR enables granular Personal Access Token (PAT) permissions for [Resource N
 
 - Added authorization tests using shared examples for all endpoints
 
+## How to set up and validate locally
+
+1. In Rails console, create a granular PAT for a user and copy a URL to test the endpoint with the token:
+
+```ruby
+# Enable feature flag
+Feature.enable(:authorize_granular_pats)
+
+user = User.first
+
+# Create granular token
+token = PersonalAccessTokens::CreateService.new(
+  current_user: user,
+  target_user: user,
+  organization_id: user.organization_id,
+  params: { expires_at: 1.month.from_now, scopes: ['granular'], granular: true, name: 'gPAT' }
+).execute[:personal_access_token]
+
+# Get the appropriate boundary object (project, group, or user)
+project = user.projects.first
+
+# Create scope with the permission being tested (replace :read_job with your permission)
+scope = Authz::GranularScope.new(namespace: project.project_namespace, permissions: [:read_job])
+
+Authz::GranularScopeService.new(token).add_granular_scopes(scope)
+
+# Copy the API endpoint URL with the token (replace with your endpoint)
+IO.popen('pbcopy', 'w') { |f| f.puts "curl \"http://#{Gitlab.host_with_port}/api/v4/projects/#{project.id}/jobs\" --request GET --header \"PRIVATE-TOKEN: #{token.token}\"" }
+```
+
+1. Paste the URL in another terminal. It should succeed.
+
 ## Related Issues
 
 Closes #[issue_number]
-```
 
-#### Checklist Before Submitting
+### Checklist Before Submitting
 
 - [ ] All permission YAML files are complete with description and feature_category
 - [ ] Authorization decorators added to all endpoints
@@ -266,7 +265,7 @@ Closes #[issue_number]
 - [ ] MR description lists all modified endpoints
 - [ ] MR is linked to the related issue
 
-#### Reviewers
+### Reviewers
 
 Tag the authorization team _@GitLab-org/software-supply-chain-security/authorization/approvers_ for review.
 

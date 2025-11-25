@@ -49645,13 +49645,13 @@ Comparable security report type.
 
 | Value | Description |
 | ----- | ----------- |
-| <a id="comparablesecurityreporttypeapi_fuzzing"></a>`API_FUZZING` | API Fuzzing report. |
-| <a id="comparablesecurityreporttypecontainer_scanning"></a>`CONTAINER_SCANNING` | Container Scanning report. |
-| <a id="comparablesecurityreporttypecoverage_fuzzing"></a>`COVERAGE_FUZZING` | Coverage Fuzzing report. |
+| <a id="comparablesecurityreporttypeapi_fuzzing"></a>`API_FUZZING` | API fuzzing report. |
+| <a id="comparablesecurityreporttypecontainer_scanning"></a>`CONTAINER_SCANNING` | Container scanning report. |
+| <a id="comparablesecurityreporttypecoverage_fuzzing"></a>`COVERAGE_FUZZING` | Coverage fuzzing report. |
 | <a id="comparablesecurityreporttypedast"></a>`DAST` | DAST report. |
-| <a id="comparablesecurityreporttypedependency_scanning"></a>`DEPENDENCY_SCANNING` | Dependency Scanning report. |
+| <a id="comparablesecurityreporttypedependency_scanning"></a>`DEPENDENCY_SCANNING` | Dependency scanning report. |
 | <a id="comparablesecurityreporttypesast"></a>`SAST` | SAST report. |
-| <a id="comparablesecurityreporttypesecret_detection"></a>`SECRET_DETECTION` | Secret Detection report. |
+| <a id="comparablesecurityreporttypesecret_detection"></a>`SECRET_DETECTION` | Secret detection report. |
 
 ### `ComparisonOperator`
 
@@ -52172,16 +52172,16 @@ The type of the security scanner.
 
 | Value | Description |
 | ----- | ----------- |
-| <a id="securityscannertypeapi_fuzzing"></a>`API_FUZZING` | API Fuzzing scanner. |
-| <a id="securityscannertypecluster_image_scanning"></a>`CLUSTER_IMAGE_SCANNING` | Cluster Image Scanning scanner. |
-| <a id="securityscannertypecontainer_scanning"></a>`CONTAINER_SCANNING` | Container Scanning scanner. |
-| <a id="securityscannertypecoverage_fuzzing"></a>`COVERAGE_FUZZING` | Coverage Fuzzing scanner. |
+| <a id="securityscannertypeapi_fuzzing"></a>`API_FUZZING` | API fuzzing scanner. |
+| <a id="securityscannertypecluster_image_scanning"></a>`CLUSTER_IMAGE_SCANNING` | Cluster image scanning scanner. |
+| <a id="securityscannertypecontainer_scanning"></a>`CONTAINER_SCANNING` | Container scanning scanner. |
+| <a id="securityscannertypecoverage_fuzzing"></a>`COVERAGE_FUZZING` | Coverage fuzzing scanner. |
 | <a id="securityscannertypedast"></a>`DAST` | DAST scanner. |
-| <a id="securityscannertypedependency_scanning"></a>`DEPENDENCY_SCANNING` | Dependency Scanning scanner. |
+| <a id="securityscannertypedependency_scanning"></a>`DEPENDENCY_SCANNING` | Dependency scanning scanner. |
 | <a id="securityscannertypesast"></a>`SAST` | SAST scanner. |
-| <a id="securityscannertypesast_advanced"></a>`SAST_ADVANCED` | Sast Advanced scanner. |
-| <a id="securityscannertypesast_iac"></a>`SAST_IAC` | Sast Iac scanner. |
-| <a id="securityscannertypesecret_detection"></a>`SECRET_DETECTION` | Secret Detection scanner. |
+| <a id="securityscannertypesast_advanced"></a>`SAST_ADVANCED` | SAST advanced scanner. |
+| <a id="securityscannertypesast_iac"></a>`SAST_IAC` | SAST IaC scanner. |
+| <a id="securityscannertypesecret_detection"></a>`SECRET_DETECTION` | Secret detection scanner. |
 
 ### `SentryErrorStatus`
 
@@ -52900,16 +52900,16 @@ The type of the security scan that found the vulnerability.
 
 | Value | Description |
 | ----- | ----------- |
-| <a id="vulnerabilityreporttypeapi_fuzzing"></a>`API_FUZZING` | API Fuzzing report. |
-| <a id="vulnerabilityreporttypecluster_image_scanning"></a>`CLUSTER_IMAGE_SCANNING` | Cluster Image Scanning report. |
-| <a id="vulnerabilityreporttypecontainer_scanning"></a>`CONTAINER_SCANNING` | Container Scanning report. |
-| <a id="vulnerabilityreporttypecontainer_scanning_for_registry"></a>`CONTAINER_SCANNING_FOR_REGISTRY` | Container Scanning For Registry report. |
-| <a id="vulnerabilityreporttypecoverage_fuzzing"></a>`COVERAGE_FUZZING` | Coverage Fuzzing report. |
+| <a id="vulnerabilityreporttypeapi_fuzzing"></a>`API_FUZZING` | API fuzzing report. |
+| <a id="vulnerabilityreporttypecluster_image_scanning"></a>`CLUSTER_IMAGE_SCANNING` | Cluster image scanning report. |
+| <a id="vulnerabilityreporttypecontainer_scanning"></a>`CONTAINER_SCANNING` | Container scanning report. |
+| <a id="vulnerabilityreporttypecontainer_scanning_for_registry"></a>`CONTAINER_SCANNING_FOR_REGISTRY` | Container scanning for registry report. |
+| <a id="vulnerabilityreporttypecoverage_fuzzing"></a>`COVERAGE_FUZZING` | Coverage fuzzing report. |
 | <a id="vulnerabilityreporttypedast"></a>`DAST` | DAST report. |
-| <a id="vulnerabilityreporttypedependency_scanning"></a>`DEPENDENCY_SCANNING` | Dependency Scanning report. |
+| <a id="vulnerabilityreporttypedependency_scanning"></a>`DEPENDENCY_SCANNING` | Dependency scanning report. |
 | <a id="vulnerabilityreporttypegeneric"></a>`GENERIC` | Generic report. |
 | <a id="vulnerabilityreporttypesast"></a>`SAST` | SAST report. |
-| <a id="vulnerabilityreporttypesecret_detection"></a>`SECRET_DETECTION` | Secret Detection report. |
+| <a id="vulnerabilityreporttypesecret_detection"></a>`SECRET_DETECTION` | Secret detection report. |
 
 ### `VulnerabilitySeverity`
 

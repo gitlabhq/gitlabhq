@@ -45,7 +45,7 @@ RSpec.describe Gitlab::StringPlaceholderReplacer, feature_category: :shared do
       end
 
       it 'replaces placeholders with encoded brackets' do
-        string = '%%7Bpath%7D/%{id}/%{branch}'
+        string = '%25%7Bpath%7D/%{id}/%{branch}'
 
         result = described_class.replace_string_placeholders(string, regex) do |arg|
           'WHATEVER'
@@ -60,7 +60,7 @@ RSpec.describe Gitlab::StringPlaceholderReplacer, feature_category: :shared do
     it 'returns correct regex' do
       regex = described_class.placeholder_full_regex('(one|two)')
 
-      expect(regex).to eq(/%(\{|%7B)((one|two))(\}|%7D)/)
+      expect(regex).to eq(/%(\{|25%7B)((one|two))(\}|%7D)/)
     end
   end
 end

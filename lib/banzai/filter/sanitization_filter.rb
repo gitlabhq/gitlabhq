@@ -9,6 +9,7 @@ module Banzai
       # Styles used by Markdown for table alignment
       TABLE_ALIGNMENT_PATTERN = /text-align: (?<alignment>center|left|right)/
       ALLOWED_IDIFF_CLASSES = %w[idiff left right deletion addition].freeze
+      HEADER_NODE_NAMES = %w[h1 h2 h3 h4 h5 h6].freeze
 
       def customize_allowlist(allowlist)
         allowlist[:allow_comments] = context[:allow_comments]
@@ -19,6 +20,7 @@ module Banzai
         allow_id_attributes(allowlist)
         allow_class_attributes(allowlist)
         allow_section_footnotes(allowlist)
+        allow_anchor_data_heading_content(allowlist)
 
         allowlist
       end
@@ -32,7 +34,7 @@ module Banzai
         allowlist[:css] = { properties: ['text-align'] }
 
         # Remove any `style` properties not required for table alignment
-        allowlist[:transformers].push(self.class.remove_unsafe_table_style)
+        allowlist[:transformers].push(self.class.method(:remove_unsafe_table_style))
       end
 
       def allow_json_table_attributes(allowlist)
@@ -47,11 +49,13 @@ module Banzai
       end
 
       def allow_id_attributes(allowlist)
-        # Allow `id` in `a` and `li` elements for footnotes and `a` elements for header anchors.
+        # Allow `id` in `a` and `li` elements for footnotes and `h1`~`h6` elements for header anchors.
         # Remove any `id` properties not matching these patterns via transformer
         allowlist[:attributes]['a'].push('id')
-        allowlist[:attributes]['li'] = %w[id]
-        allowlist[:transformers].push(self.class.remove_id_attributes)
+        (["li"] + HEADER_NODE_NAMES).each do |tag|
+          allowlist[:attributes][tag] = %w[id]
+        end
+        allowlist[:transformers].push(self.class.method(:remove_id_attributes))
       end
 
       def allow_class_attributes(allowlist)
@@ -61,7 +65,7 @@ module Banzai
         allowlist[:attributes]['p'] = %w[class]
         allowlist[:attributes]['span'].push('class')
         allowlist[:attributes]['code'].push('class')
-        allowlist[:transformers].push(self.class.remove_unsafe_classes)
+        allowlist[:transformers].push(self.class.method(:remove_unsafe_classes))
       end
 
       def allow_section_footnotes(allowlist)
@@ -71,40 +75,40 @@ module Banzai
         allowlist[:attributes]['a'].push('data-footnote-ref', 'data-footnote-backref', 'data-footnote-backref-idx')
       end
 
+      def allow_anchor_data_heading_content(allowlist)
+        allowlist[:attributes]['a'].push('data-heading-content')
+      end
+
       class << self
-        def remove_unsafe_table_style
-          ->(env) do
-            node = env[:node]
+        def remove_unsafe_table_style(env)
+          node = env[:node]
 
-            return unless node.name == 'th' || node.name == 'td'
-            return unless node.has_attribute?('style')
+          return unless node.name == 'th' || node.name == 'td'
+          return unless node.has_attribute?('style')
 
-            if node['style'] =~ TABLE_ALIGNMENT_PATTERN
-              node['style'] = "text-align: #{$~[:alignment]}"
-            else
-              node.remove_attribute('style')
-            end
+          if node['style'] =~ TABLE_ALIGNMENT_PATTERN
+            node['style'] = "text-align: #{$~[:alignment]}"
+          else
+            node.remove_attribute('style')
           end
         end
 
-        def remove_unsafe_classes
-          ->(env) do
-            node = env[:node]
+        def remove_unsafe_classes(env)
+          node = env[:node]
 
-            return unless node.has_attribute?('class')
+          return unless node.has_attribute?('class')
 
-            case node.name
-            when 'a'
-              node.remove_attribute('class') if remove_link_class?(node)
-            when 'div'
-              node.remove_attribute('class') if remove_div_class?(node)
-            when 'p'
-              node.remove_attribute('class') if remove_p_class?(node)
-            when 'span'
-              node.remove_attribute('class') if remove_span_class?(node)
-            when 'code'
-              node.remove_attribute('class') if remove_code_class?(node)
-            end
+          case node.name
+          when 'a'
+            node.remove_attribute('class') if remove_link_class?(node)
+          when 'div'
+            node.remove_attribute('class') if remove_div_class?(node)
+          when 'p'
+            node.remove_attribute('class') if remove_p_class?(node)
+          when 'span'
+            node.remove_attribute('class') if remove_span_class?(node)
+          when 'code'
+            node.remove_attribute('class') if remove_code_class?(node)
           end
         end
 
@@ -134,24 +138,27 @@ module Banzai
           node['class'] != 'idiff'
         end
 
-        def remove_id_attributes
-          ->(env) do
-            node = env[:node]
+        def remove_id_attributes(env)
+          node = env[:node]
+          return unless node.has_attribute?('id')
 
-            return unless node.name == 'a' || node.name == 'li'
-            return unless node.has_attribute?('id')
+          id = node['id']
 
+          case node.name
+          when 'a'
             # footnote ids should not be removed
-            return if node.name == 'li' && node['id'].start_with?(Banzai::Filter::FootnoteFilter::FOOTNOTE_ID_PREFIX)
-            return if node.name == 'a' &&
-              node['id'].start_with?(Banzai::Filter::FootnoteFilter::FOOTNOTE_LINK_ID_PREFIX)
-
-            # links with generated header anchors should not be removed
-            return if node.name == 'a' && node['class'] == 'anchor' &&
-              node['id'].start_with?(Banzai::Renderer::USER_CONTENT_ID_PREFIX)
-
-            node.remove_attribute('id')
+            return if id.start_with?(Banzai::Filter::FootnoteFilter::FOOTNOTE_LINK_ID_PREFIX)
+          when 'li'
+            # footnote ids should not be removed
+            return if id.start_with?(Banzai::Filter::FootnoteFilter::FOOTNOTE_ID_PREFIX)
+          when *HEADER_NODE_NAMES
+            # headers with generated header anchors should not be removed
+            return if id.start_with?(Banzai::Renderer::USER_CONTENT_ID_PREFIX)
+          else
+            return
           end
+
+          node.remove_attribute('id')
         end
       end
     end

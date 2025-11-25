@@ -82,7 +82,7 @@ class Snippet < ApplicationRecord
   scope :with_repository_storage_moves, -> { joins(:repository_storage_moves) }
   scope :inc_projects_namespace_route, -> { includes(project: [:route, :namespace]) }
 
-  scope :for_user_organization, ->(organization_id) do
+  scope :in_organization, ->(organization_id) do
     where.not(project_id: nil).or(where(project_id: nil, organization_id: organization_id))
   end
 

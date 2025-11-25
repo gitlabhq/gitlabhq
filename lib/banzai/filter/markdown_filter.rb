@@ -3,7 +3,7 @@
 module Banzai
   module Filter
     class MarkdownFilter < HTML::Pipeline::TextFilter
-      GLFM_ENGINE    = :glfm_markdown # glfm_markdown/comrak
+      GLFM_ENGINE    = :glfm_markdown # gitlab-glfm-markdown/Comrak
       DEFAULT_ENGINE = GLFM_ENGINE
 
       def initialize(text, context = nil, result = nil)

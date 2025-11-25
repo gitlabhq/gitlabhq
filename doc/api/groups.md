@@ -1323,7 +1323,7 @@ Parameters:
 | `extra_shared_runners_minutes_limit` | integer | no       | Can be set by administrators only. Additional compute minutes for this group. GitLab Self-Managed, Premium and Ultimate only. |
 | `shared_runners_minutes_limit`       | integer | no       | Can be set by administrators only. Maximum number of monthly compute minutes for this group. Can be `nil` (default; inherit system default), `0` (unlimited), or `> 0`. GitLab Self-Managed, Premium and Ultimate only. |
 | `wiki_access_level`                  | string  | no       | The wiki access level. Can be `disabled`, `private`, or `enabled`. Premium and Ultimate only. |
-| `duo_availability` | string | no | Duo availability setting. Valid values are: `default_on`, `default_off`, `never_on`. Note: In the UI, `never_on` is displayed as "Always Off". |
+| `duo_availability` | string | no | GitLab Duo availability setting. Valid values are: `default_on`, `default_off`, `never_on`. Note: In the UI, `never_on` is displayed as "Always Off". |
 | `experiment_features_enabled` | boolean | no | Enable experiment features for this group. |
 
 #### Options for `default_branch_protection`
@@ -1846,7 +1846,7 @@ PUT /groups/:id
 | `ip_restriction_ranges`                              | string      | no       | Comma-separated list of IP addresses or subnet masks to restrict group access. Premium and Ultimate only. |
 | `allowed_email_domains_list`                         | string      | no       | Comma-separated list of email address domains to allow group access. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/351494) in 17.4. GitLab Premium and Ultimate only. |
 | `wiki_access_level`                                  | string            | no       | The wiki access level. Can be `disabled`, `private`, or `enabled`. Premium and Ultimate only. |
-| `duo_availability`                                   | string | no | Duo availability setting. Valid values are: `default_on`, `default_off`, `never_on`. Note: In the UI, `never_on` is displayed as "Always Off". |
+| `duo_availability`                                   | string | no | GitLab Duo availability setting. Valid values are: `default_on`, `default_off`, `never_on`. Note: In the UI, `never_on` is displayed as "Always Off". |
 | `experiment_features_enabled`                        | boolean | no | Enable experiment features for this group. |
 | `math_rendering_limits_enabled`                      | boolean           | no       | Indicates if math rendering limits are used for this group. |
 | `lock_math_rendering_limits_enabled`                 | boolean           | no       | Indicates if math rendering limits are locked for all descendent groups. |

@@ -417,7 +417,7 @@ To add a private hosted zone:
      Only links with the `Available` or `Pending Acceptance` status are shown.
      - For other PHZ entries, provide a list of DNS aliases.
 1. Select **Save**.
-Your PHZ entry and any aliases should appear in the list.
+   Your PHZ entry and any aliases should appear in the list.
 1. Scroll to the top of the page, and select whether to apply the changes immediately or during the next maintenance window.
 
 ### Add a private hosted zone with a support request

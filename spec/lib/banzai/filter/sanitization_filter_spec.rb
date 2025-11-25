@@ -222,24 +222,17 @@ RSpec.describe Banzai::Filter::SanitizationFilter, feature_category: :markdown d
       end
     end
 
-    describe 'link anchors' do
-      it 'allows id property on anchor links' do
-        exp = %q(<a href="#this-is-a-header" class="anchor" id="user-content-this-is-a-header"></a>)
+    describe 'heading anchors' do
+      it 'allows id property on headings' do
+        exp = %q(<h1 id="user-content-this-is-a-header"></h1>)
         act = filter(exp)
 
         expect(act.to_html).to eq exp
       end
 
-      it 'removes id property for non-anchor links' do
-        exp = %q(<a href="#this-is-a-header"></a>)
-        act = filter(%q(<a href="#this-is-a-header" id="user-content-this-is-a-header"></a>))
-
-        expect(act.to_html).to eq exp
-      end
-
       it 'removes id property for non-user-content links' do
-        exp = %q(<a href="#this-is-a-header" class="anchor"></a>)
-        act = filter(%q(<a href="#this-is-a-header" class="anchor" id="this-is-a-header"></a>))
+        act = filter(%q(<h1 id="this-is-a-header"></h1>))
+        exp = %q(<h1></h1>)
 
         expect(act.to_html).to eq exp
       end

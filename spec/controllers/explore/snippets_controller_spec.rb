@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Explore::SnippetsController do
+RSpec.describe Explore::SnippetsController, :with_current_organization, feature_category: :source_code_management do
   describe 'GET #index' do
     let!(:project_snippet) { create_list(:project_snippet, 3, :public) }
     let!(:personal_snippet) { create_list(:personal_snippet, 3, :public) }

@@ -397,7 +397,8 @@ RSpec.describe MarkupHelper, feature_category: :markdown do
 
         result = helper.render_wiki_content(wiki_page)
 
-        expect(result).to include('Header</h2>')
+        expect(result).to include('>Header<a ')
+        expect(result).to include('</a>&#x000A;</h2>')
       end
     end
 

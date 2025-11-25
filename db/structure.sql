@@ -52299,11 +52299,11 @@ ALTER TABLE ONLY analytics_cycle_analytics_stage_aggregations
 ALTER TABLE ONLY board_assignees
     ADD CONSTRAINT fk_rails_3f6f926bd5 FOREIGN KEY (board_id) REFERENCES boards(id) ON DELETE CASCADE;
 
-ALTER TABLE ONLY instance_type_ci_runner_machines
-    ADD CONSTRAINT fk_rails_3f92913d27 FOREIGN KEY (runner_id, runner_type) REFERENCES instance_type_ci_runners(id, runner_type) ON UPDATE CASCADE ON DELETE CASCADE;
-
 ALTER TABLE ONLY group_type_ci_runner_machines
     ADD CONSTRAINT fk_rails_3f92913d27 FOREIGN KEY (runner_id, runner_type) REFERENCES group_type_ci_runners(id, runner_type) ON UPDATE CASCADE ON DELETE CASCADE;
+
+ALTER TABLE ONLY instance_type_ci_runner_machines
+    ADD CONSTRAINT fk_rails_3f92913d27 FOREIGN KEY (runner_id, runner_type) REFERENCES instance_type_ci_runners(id, runner_type) ON UPDATE CASCADE ON DELETE CASCADE;
 
 ALTER TABLE ONLY project_type_ci_runner_machines
     ADD CONSTRAINT fk_rails_3f92913d27 FOREIGN KEY (runner_id, runner_type) REFERENCES project_type_ci_runners(id, runner_type) ON UPDATE CASCADE ON DELETE CASCADE;
@@ -52887,11 +52887,11 @@ ALTER TABLE ONLY dependency_list_export_parts
 ALTER TABLE ONLY zentao_tracker_data
     ADD CONSTRAINT fk_rails_84efda7be0 FOREIGN KEY (integration_id) REFERENCES integrations(id) ON DELETE CASCADE;
 
-ALTER TABLE ONLY ci_runner_taggings_instance_type
-    ADD CONSTRAINT fk_rails_84f15fe4c6 FOREIGN KEY (runner_id, runner_type) REFERENCES instance_type_ci_runners(id, runner_type) ON UPDATE CASCADE ON DELETE CASCADE;
-
 ALTER TABLE ONLY ci_runner_taggings_group_type
     ADD CONSTRAINT fk_rails_84f15fe4c6 FOREIGN KEY (runner_id, runner_type) REFERENCES group_type_ci_runners(id, runner_type) ON UPDATE CASCADE ON DELETE CASCADE;
+
+ALTER TABLE ONLY ci_runner_taggings_instance_type
+    ADD CONSTRAINT fk_rails_84f15fe4c6 FOREIGN KEY (runner_id, runner_type) REFERENCES instance_type_ci_runners(id, runner_type) ON UPDATE CASCADE ON DELETE CASCADE;
 
 ALTER TABLE ONLY ci_runner_taggings_project_type
     ADD CONSTRAINT fk_rails_84f15fe4c6 FOREIGN KEY (runner_id, runner_type) REFERENCES project_type_ci_runners(id, runner_type) ON UPDATE CASCADE ON DELETE CASCADE;

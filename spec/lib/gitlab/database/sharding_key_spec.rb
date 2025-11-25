@@ -19,6 +19,29 @@ RSpec.describe 'new tables missing sharding_key', feature_category: :organizatio
     ]
   end
 
+  # The following tables have a `desired_sharding_key` but are missing a `sharding_key_issue_url`.
+  # This list serves as a temporary exemption for existing tables to prevent spec failures.
+  # DO NOT ADD new tables to this list. New tables must have a `sharding_key_issue_url`.
+  let(:allowed_to_be_missing_sharding_key_issue_url) do
+    %w[
+      bulk_import_batch_trackers
+      cluster_platforms_kubernetes
+      cluster_providers_aws
+      cluster_providers_gcp
+      clusters_kubernetes_namespaces
+      deployment_clusters
+      deployment_merge_requests
+      gpg_key_subkeys
+      merge_request_context_commit_diff_files
+      merge_request_diff_commits
+      merge_request_diff_files
+      merge_request_diff_files_99208b8fac
+      p_ci_build_trace_metadata
+      security_findings
+      spam_logs
+    ]
+  end
+
   # Specific tables can be temporarily exempt from this requirement. You must add an issue link in a comment next to
   # the table name to remove this once a decision has been made.
   let(:allowed_to_be_missing_not_null) do
@@ -400,12 +423,22 @@ RSpec.describe 'new tables missing sharding_key', feature_category: :organizatio
   it 'does not allow invalid follow-up issue URLs', :aggregate_failures do
     issue_url_regex = %r{\Ahttps://gitlab\.com/gitlab-org/gitlab/-/issues/\d+\z}
 
-    entries_with_issue_link.each do |entry|
-      if entry.sharding_key.present? || entry.desired_sharding_key.present?
+    ::Gitlab::Database::Dictionary.entries.each do |entry|
+      if entry.sharding_key.present?
         expect(entry.sharding_key_issue_url).not_to be_present,
           "You must remove `sharding_key_issue_url` from #{entry.table_name} now that it " \
-            "has a valid sharding key/desired sharding key."
-      else
+            "has a valid sharding key."
+      elsif entry.desired_sharding_key.present?
+        if allowed_to_be_missing_sharding_key_issue_url.include?(entry.table_name)
+          expect(entry.sharding_key_issue_url).to be_blank,
+            "The table #{entry.table_name} has a `sharding_key_issue_url` but is listed in " \
+              "`allowed_to_be_missing_sharding_key_issue_url`. Please remove it from the exemption list."
+        else
+          expect(entry.sharding_key_issue_url).to match(issue_url_regex),
+            "The table #{entry.table_name} has a `desired_sharding_key` which indicates work is in progress. " \
+              "Please add a valid `sharding_key_issue_url` (https://gitlab.com/gitlab-org/gitlab/-/issues/XXX)."
+        end
+      elsif entry.sharding_key_issue_url.present?
         expect(entry.sharding_key_issue_url).to match(issue_url_regex),
           "Invalid `sharding_key_issue_url` url for #{entry.table_name}. Please use the following format: " \
             "https://gitlab.com/gitlab-org/gitlab/-/issues/XXX"

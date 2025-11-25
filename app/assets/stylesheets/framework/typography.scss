@@ -83,16 +83,8 @@
     @apply gl-mb-5;
   }
 
-  // Shift the anchor link for a heading inside a details summary to the left
-  // to make room for the summary toggle
   details summary {
     @apply gl-font-bold;
-
-    h1, h2, h3, h4, h5, h6 {
-      a.anchor {
-        @apply -gl-ml-7;
-      }
-    }
   }
 
   summary > * {
@@ -686,19 +678,35 @@
   h4,
   h5,
   h6 {
-    $anchor-offset: 16px;
-
     a.anchor {
-      margin-left: calc(-1 * $anchor-offset);
-      text-decoration: none;
-      outline: none;
-      position: absolute;
-      width: $anchor-offset;
+      &:not([aria-hidden=true]) {
+        &::after {
+          @apply gl-inline-block;
+          @apply gl-bg-cover;
+          @include gl-dark-invert-keep-hue;
+          content: "";
+          background-image: url('icon_anchor.svg');
+          height: 0.9em;
+          width: 0.9em;
+          margin-inline-start: 0.2em;
+          @apply gl-invisible;
+        }
+      }
 
-      &::after {
-        @include gl-dark-invert-keep-hue;
-        content: url('icon_anchor.svg');
-        visibility: hidden;
+      &:is([aria-hidden=true]) {
+        $anchor-offset: 20px;
+
+        margin-left: calc(-1 * $anchor-offset);
+        @apply gl-no-underline;
+        @apply gl-outline-none;
+        @apply gl-absolute;
+        width: $anchor-offset;
+
+        &::after {
+          @include gl-dark-invert-keep-hue;
+          content: url('icon_anchor.svg');
+          @apply gl-invisible;
+        }
       }
     }
 

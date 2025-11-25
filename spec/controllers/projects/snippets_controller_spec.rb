@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Projects::SnippetsController do
+RSpec.describe Projects::SnippetsController, :with_current_organization, feature_category: :source_code_management do
   include Gitlab::Routing
 
   let_it_be(:user) { create(:user) }

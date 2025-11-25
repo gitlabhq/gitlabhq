@@ -180,28 +180,6 @@ ul.related-merge-requests > li gl-emoji {
   }
 }
 
-.issue-details {
-  .card-title {
-    a.anchor {
-      left: -16px;
-      top: 4px;
-      outline: none;
-
-      &::after {
-        @include gl-dark-invert-keep-hue;
-        content: url('icon_anchor.svg');
-        visibility: hidden;
-      }
-    }
-
-    &:hover > a.anchor::after {
-      position: relative;
-      top: -3px;
-      visibility: visible;
-    }
-  }
-}
-
 .issue-sticky-header {
   left: var(--application-bar-left);
   right: var(--application-bar-right);
