@@ -14,7 +14,6 @@ export default {
     'app/assets/javascripts/repository/components/tree_content.vue',
     'app/assets/javascripts/repository/components/upload_blob_modal.vue',
     'app/assets/javascripts/repository/pages/blob_edit_header.vue',
-    'app/assets/javascripts/user_lists/components/user_lists.vue',
     'app/assets/javascripts/wikis/components/wiki_content.vue',
     'app/assets/javascripts/wikis/components/wiki_form.vue',
     'app/assets/javascripts/wikis/wiki_notes/components/placeholder_note.vue',

@@ -19,7 +19,7 @@
 
 = render ::Layouts::CrudComponent.new(s_("Wiki|Templates"), count: @wiki_entries_count, icon: 'template', body_options: { class: '' }) do |c|
   - c.with_actions do
-    = render Pajamas::ButtonComponent.new(href: wiki_page_path(@wiki, "#{Wiki::TEMPLATES_DIR}/#{SecureRandom.uuid}", random_title: true), size: :small) do
+    = render Pajamas::ButtonComponent.new(href: wiki_page_path(@wiki, "#{Wiki::TEMPLATES_DIR}/#{SecureRandom.uuid}", view: 'create', random_title: true), size: :small) do
       = s_("Wiki|New template")
   - c.with_body do
     %ul.wiki-pages-list.content-list.wiki-templates-list.content-list-items-padding

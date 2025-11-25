@@ -28,7 +28,7 @@
       page_persisted: (@page.persisted? && can?(current_user, :create_wiki, @wiki.container)).to_s,
       wiki_url: wiki_page_path(@wiki, @page),
       edit_button_url: wiki_page_path(@wiki, @page, action: :edit),
-      new_url: @page.template? ? wiki_page_path(@wiki, "#{Wiki::TEMPLATES_DIR}/#{SecureRandom.uuid}", random_title: true) : wiki_path(@wiki, action: :new),
+      new_url: @page.template? ? wiki_page_path(@wiki, "#{Wiki::TEMPLATES_DIR}/#{SecureRandom.uuid}", view: 'create', random_title: true) : wiki_path(@wiki, action: :new),
       author_url: wiki_page_version_author_url(@page.historical? ? @page.version.commit : @page.last_version),
       history_url: page_history,
       templates_url: wiki_page_path(@wiki, Wiki::TEMPLATES_DIR),

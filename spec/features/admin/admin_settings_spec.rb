@@ -12,7 +12,7 @@ RSpec.describe 'Admin updates settings', feature_category: :shared do
   context 'application setting :admin_mode is enabled', :request_store do
     before do
       stub_env('IN_MEMORY_APPLICATION_SETTINGS', 'false')
-      sign_in(admin)
+      gitlab_sign_in(admin)
       enable_admin_mode!(admin, use_ui: true)
     end
 
@@ -98,10 +98,10 @@ RSpec.describe 'Admin updates settings', feature_category: :shared do
           click_button 'Save changes'
         end
 
+        expect(page).to have_content 'Application settings saved successfully'
         expect(current_settings.project_export_enabled).to be(false)
         expect(current_settings.bulk_import_enabled).to be(true)
         expect(current_settings.silent_admin_exports_enabled).to be(true)
-        expect(page).to have_content 'Application settings saved successfully'
       end
 
       it 'change Keys settings' do
@@ -132,8 +132,8 @@ RSpec.describe 'Admin updates settings', feature_category: :shared do
           click_button 'Save changes'
         end
 
-        expect(current_settings.gravatar_enabled).to be_falsey
         expect(page).to have_content 'Application settings saved successfully'
+        expect(current_settings.gravatar_enabled).to be_falsey
       end
 
       it 'change Maximum export size' do
@@ -142,8 +142,8 @@ RSpec.describe 'Admin updates settings', feature_category: :shared do
           click_button 'Save changes'
         end
 
-        expect(current_settings.max_export_size).to eq 25
         expect(page).to have_content 'Application settings saved successfully'
+        expect(current_settings.max_export_size).to eq 25
       end
 
       it 'change Maximum import size' do
@@ -152,8 +152,8 @@ RSpec.describe 'Admin updates settings', feature_category: :shared do
           click_button 'Save changes'
         end
 
-        expect(current_settings.max_import_size).to eq 15
         expect(page).to have_content 'Application settings saved successfully'
+        expect(current_settings.max_import_size).to eq 15
       end
 
       it 'change New users set to external', :js do
@@ -253,8 +253,8 @@ RSpec.describe 'Admin updates settings', feature_category: :shared do
               click_button 'Save changes'
             end
 
-            expect(current_settings.require_admin_approval_after_user_signup).to be_truthy
             expect(page).to have_content 'Application settings saved successfully'
+            expect(current_settings.require_admin_approval_after_user_signup).to be_truthy
           end
         end
 
@@ -269,8 +269,8 @@ RSpec.describe 'Admin updates settings', feature_category: :shared do
               click_button 'Save changes'
             end
 
-            expect(current_settings.email_confirmation_setting).to eq('hard')
             expect(page).to have_content 'Application settings saved successfully'
+            expect(current_settings.email_confirmation_setting).to eq('hard')
           end
         end
       end
@@ -281,8 +281,8 @@ RSpec.describe 'Admin updates settings', feature_category: :shared do
           click_button 'Save changes'
         end
 
-        expect(current_settings.home_page_url).to eq "https://about.gitlab.com/"
         expect(page).to have_content 'Application settings saved successfully'
+        expect(current_settings.home_page_url).to eq "https://about.gitlab.com/"
       end
 
       it 'terms of Service', :js do
@@ -393,10 +393,10 @@ RSpec.describe 'Admin updates settings', feature_category: :shared do
             click_button 'Save changes'
           end
 
+          expect(page).to have_content 'Application settings saved successfully'
           expect(current_settings.jira_connect_application_key).to eq('1234')
           expect(current_settings.jira_connect_proxy_url).to eq('https://example.com')
           expect(current_settings.jira_connect_public_key_storage_enabled).to eq(true)
-          expect(page).to have_content 'Application settings saved successfully'
         end
       end
 
@@ -434,6 +434,7 @@ RSpec.describe 'Admin updates settings', feature_category: :shared do
             click_button 'Save changes'
           end
 
+          expect(page).to have_content 'Application settings saved successfully'
           expect(current_settings).to have_attributes(
             slack_app_enabled: true,
             slack_app_id: 'slack_app_id',
@@ -441,7 +442,6 @@ RSpec.describe 'Admin updates settings', feature_category: :shared do
             slack_app_signing_secret: 'slack_app_signing_secret',
             slack_app_verification_token: 'slack_app_verification_token'
           )
-          expect(page).to have_content 'Application settings saved successfully'
         end
       end
 
@@ -557,6 +557,7 @@ RSpec.describe 'Admin updates settings', feature_category: :shared do
           click_button 'Save changes'
         end
 
+        expect(page).to have_content 'Application settings saved successfully'
         expect(current_settings.auto_devops_enabled?).to be true
         expect(current_settings.auto_devops_domain).to eq('domain.com')
         expect(current_settings.keep_latest_artifact).to be false
@@ -564,7 +565,6 @@ RSpec.describe 'Admin updates settings', feature_category: :shared do
         expect(current_settings.show_migrate_from_jenkins_banner).to be false
         expect(current_settings.ci_max_includes).to be 200
         expect(current_settings.downstream_pipeline_trigger_limit_per_project_user_sha).to be 500
-        expect(page).to have_content 'Application settings saved successfully'
       end
 
       it 'changes CI/CD limits', :aggregate_failures do
@@ -609,8 +609,8 @@ RSpec.describe 'Admin updates settings', feature_category: :shared do
             click_button 'Save changes'
           end
 
-          expect(current_settings.nuget_skip_metadata_url_validation).to be true
           expect(page).to have_content 'Application settings saved successfully'
+          expect(current_settings.nuget_skip_metadata_url_validation).to be true
         end
       end
 
@@ -628,8 +628,8 @@ RSpec.describe 'Admin updates settings', feature_category: :shared do
             click_button 'Save changes'
           end
 
-          expect(current_settings.valid_runner_registrars).to eq([])
           expect(page).to have_content 'Application settings saved successfully'
+          expect(current_settings.valid_runner_registrars).to eq([])
         end
 
         it 'changes `/jobs/request` rate limits settings' do
@@ -674,8 +674,8 @@ RSpec.describe 'Admin updates settings', feature_category: :shared do
             click_button 'Save changes'
           end
 
-          expect(current_settings.enforce_ci_inbound_job_token_scope_enabled).to eq(false)
           expect(page).to have_content 'Application settings saved successfully'
+          expect(current_settings.enforce_ci_inbound_job_token_scope_enabled).to eq(false)
         end
       end
 
@@ -705,8 +705,8 @@ RSpec.describe 'Admin updates settings', feature_category: :shared do
                 click_button 'Save changes'
               end
 
-              expect(current_settings.public_send(setting)).to eq(400)
               expect(page).to have_content 'Application settings saved successfully'
+              expect(current_settings.public_send(setting)).to eq(400)
             end
           end
         end
@@ -722,8 +722,8 @@ RSpec.describe 'Admin updates settings', feature_category: :shared do
               click_button 'Save changes'
             end
 
-            expect(current_settings.container_registry_expiration_policies_caching).to eq(!old_value)
             expect(page).to have_content 'Application settings saved successfully'
+            expect(current_settings.container_registry_expiration_policies_caching).to eq(!old_value)
           end
         end
       end
@@ -809,8 +809,8 @@ RSpec.describe 'Admin updates settings', feature_category: :shared do
           click_button 'Save changes'
         end
 
-        expect(current_settings.prometheus_metrics_enabled?).to be true
         expect(page).to have_content 'Application settings saved successfully'
+        expect(current_settings.prometheus_metrics_enabled?).to be true
       end
 
       it 'change Performance bar settings' do
@@ -1394,11 +1394,11 @@ RSpec.describe 'Admin updates settings', feature_category: :shared do
           click_button 'Save changes'
         end
 
+        expect(page).to have_content 'Application settings saved successfully'
         expect(current_settings.help_page_text).to eq "Example text"
         expect(current_settings.help_page_hide_commercial_content).to be_truthy
         expect(current_settings.help_page_support_url).to eq new_support_url
         expect(current_settings.help_page_documentation_base_url).to eq new_documentation_url
-        expect(page).to have_content 'Application settings saved successfully'
       end
 
       it 'change Pages settings' do
@@ -1408,9 +1408,9 @@ RSpec.describe 'Admin updates settings', feature_category: :shared do
           click_button 'Save changes'
         end
 
+        expect(page).to have_content 'Application settings saved successfully'
         expect(current_settings.max_pages_size).to eq 15
         expect(current_settings.pages_domain_verification_enabled?).to be_truthy
-        expect(page).to have_content 'Application settings saved successfully'
       end
 
       it 'change Real-time features settings' do
@@ -1419,8 +1419,8 @@ RSpec.describe 'Admin updates settings', feature_category: :shared do
           click_button 'Save changes'
         end
 
-        expect(current_settings.polling_interval_multiplier).to eq 5.0
         expect(page).to have_content 'Application settings saved successfully'
+        expect(current_settings.polling_interval_multiplier).to eq 5.0
       end
 
       it 'shows an error when validation fails' do
@@ -1480,7 +1480,7 @@ RSpec.describe 'Admin updates settings', feature_category: :shared do
 
       stub_env('IN_MEMORY_APPLICATION_SETTINGS', 'false')
 
-      sign_in(admin)
+      gitlab_sign_in(admin)
       visit general_admin_application_settings_path
     end
 

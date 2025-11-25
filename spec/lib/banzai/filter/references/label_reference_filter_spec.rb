@@ -6,7 +6,7 @@ require 'html/pipeline'
 RSpec.describe Banzai::Filter::References::LabelReferenceFilter, feature_category: :markdown do
   include FilterSpecHelper
 
-  let(:project)   { create(:project, :public, name: 'sample-project') }
+  let_it_be(:project) { create(:project, :public, name: 'sample-project') }
   let(:label)     { create(:label, project: project) }
   let(:reference) { label.to_reference }
 
@@ -376,8 +376,8 @@ RSpec.describe Banzai::Filter::References::LabelReferenceFilter, feature_categor
   end
 
   describe 'group label references' do
-    let(:group)       { create(:group) }
-    let(:project)     { create(:project, :public, namespace: group) }
+    let_it_be(:group) { create(:group) }
+    let_it_be(:project) { create(:project, :public, namespace: group) }
     let(:group_label) { create(:group_label, name: 'gfm references', group: group) }
 
     context 'without project reference' do
@@ -428,7 +428,7 @@ RSpec.describe Banzai::Filter::References::LabelReferenceFilter, feature_categor
   end
 
   describe 'cross-project / cross-namespace complete reference' do
-    let(:project2)  { create(:project) }
+    let_it_be(:project2)  { create(:project) }
     let(:label)     { create(:label, project: project2, color: '#00ff00') }
     let(:reference) { "#{project2.full_path}~#{label.name}" }
     let!(:result)   { reference_filter("See #{reference}") }
@@ -468,9 +468,9 @@ RSpec.describe Banzai::Filter::References::LabelReferenceFilter, feature_categor
   end
 
   describe 'cross-project / same-namespace complete reference' do
-    let(:namespace) { create(:namespace) }
-    let(:project)   { create(:project, namespace: namespace) }
-    let(:project2)  { create(:project, namespace: namespace) }
+    let_it_be(:namespace) { create(:namespace) }
+    let_it_be(:project)   { create(:project, namespace: namespace) }
+    let_it_be(:project2)  { create(:project, namespace: namespace) }
     let(:label)     { create(:label, project: project2, color: '#00ff00') }
     let(:reference) { "#{project2.full_path}~#{label.name}" }
     let!(:result)   { reference_filter("See #{reference}") }
@@ -500,9 +500,9 @@ RSpec.describe Banzai::Filter::References::LabelReferenceFilter, feature_categor
   end
 
   describe 'cross-project shorthand reference' do
-    let(:namespace) { create(:namespace) }
-    let(:project)   { create(:project, namespace: namespace) }
-    let(:project2)  { create(:project, namespace: namespace) }
+    let_it_be(:namespace) { create(:namespace) }
+    let_it_be(:project)   { create(:project, namespace: namespace) }
+    let_it_be(:project2)  { create(:project, namespace: namespace) }
     let(:label)     { create(:label, project: project2, color: '#00ff00') }
     let(:reference) { "#{project2.path}~#{label.name}" }
     let!(:result)   { reference_filter("See #{reference}") }
@@ -533,13 +533,13 @@ RSpec.describe Banzai::Filter::References::LabelReferenceFilter, feature_categor
   end
 
   describe 'cross group label references' do
-    let(:group)            { create(:group) }
-    let(:project)          { create(:project, :public, namespace: group) }
-    let(:another_group)    { create(:group) }
-    let(:another_project)  { create(:project, :public, namespace: another_group) }
-    let(:group_label)      { create(:group_label, group: another_group, color: '#00ff00') }
-    let(:reference)        { "#{another_project.full_path}~#{group_label.name}" }
-    let!(:result)          { reference_filter("See #{reference}", project: project) }
+    let_it_be(:group) { create(:group) }
+    let_it_be(:project) { create(:project, :public, namespace: group) }
+    let_it_be(:another_group) { create(:group) }
+    let_it_be(:another_project) { create(:project, :public, namespace: another_group) }
+    let_it_be(:group_label) { create(:group_label, group: another_group, color: '#00ff00') }
+    let(:reference) { "#{another_project.full_path}~#{group_label.name}" }
+    let!(:result) { reference_filter("See #{reference}", project: project) }
 
     it 'points to referenced project issues page' do
       expect(result.css('a').first.attr('href'))
@@ -568,7 +568,7 @@ RSpec.describe Banzai::Filter::References::LabelReferenceFilter, feature_categor
     end
 
     context 'when group name has HTML entities' do
-      let(:another_group) { create(:group, name: 'random', path: 'another_group') }
+      let_it_be(:another_group) { create(:group, name: 'random', path: 'another_group') }
 
       before do
         another_group.name = "<img src=x onerror=alert(1)>"
@@ -583,8 +583,8 @@ RSpec.describe Banzai::Filter::References::LabelReferenceFilter, feature_categor
   end
 
   describe 'cross-project / same-group_label complete reference' do
-    let(:group)            { create(:group) }
-    let(:project)          { create(:project, :public, namespace: group) }
+    let_it_be(:group) { create(:group) }
+    let_it_be(:project) { create(:project, :public, namespace: group) }
     let(:another_project)  { create(:project, :public, namespace: group) }
     let(:group_label)      { create(:group_label, group: group, color: '#00ff00') }
     let(:reference)        { "#{another_project.full_path}~#{group_label.name}" }
@@ -618,8 +618,8 @@ RSpec.describe Banzai::Filter::References::LabelReferenceFilter, feature_categor
   end
 
   describe 'same project / same group_label complete reference' do
-    let(:group)       { create(:group) }
-    let(:project)     { create(:project, :public, namespace: group) }
+    let_it_be(:group) { create(:group) }
+    let_it_be(:project) { create(:project, :public, namespace: group) }
     let(:group_label) { create(:group_label, group: group, color: '#00ff00') }
     let(:reference)   { "#{project.full_path}~#{group_label.name}" }
     let!(:result)     { reference_filter("See #{reference}", project: project) }
@@ -650,8 +650,8 @@ RSpec.describe Banzai::Filter::References::LabelReferenceFilter, feature_categor
   end
 
   describe 'same project / same group_label shorthand reference' do
-    let(:group)       { create(:group) }
-    let(:project)     { create(:project, :public, namespace: group) }
+    let_it_be(:group) { create(:group) }
+    let_it_be(:project) { create(:project, :public, namespace: group) }
     let(:group_label) { create(:group_label, group: group, color: '#00ff00') }
     let(:reference)   { "#{project.path}~#{group_label.name}" }
     let!(:result)     { reference_filter("See #{reference}", project: project) }

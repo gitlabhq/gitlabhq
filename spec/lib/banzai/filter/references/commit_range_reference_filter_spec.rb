@@ -5,7 +5,7 @@ require 'spec_helper'
 RSpec.describe Banzai::Filter::References::CommitRangeReferenceFilter, feature_category: :source_code_management do
   include FilterSpecHelper
 
-  let(:project) { create(:project, :public, :repository) }
+  let_it_be(:project) { create(:project, :public, :repository) }
   let(:commit1) { project.commit("HEAD~2") }
   let(:commit2) { project.commit }
 
@@ -102,7 +102,7 @@ RSpec.describe Banzai::Filter::References::CommitRangeReferenceFilter, feature_c
   end
 
   context 'cross-project / cross-namespace complete reference' do
-    let(:project2)  { create(:project, :public, :repository) }
+    let_it_be(:project2) { create(:project, :public, :repository) }
     let(:reference) { "#{project2.full_path}@#{commit1.id}...#{commit2.id}" }
 
     it 'links to a valid reference' do
@@ -135,9 +135,9 @@ RSpec.describe Banzai::Filter::References::CommitRangeReferenceFilter, feature_c
   end
 
   context 'cross-project / same-namespace complete reference' do
-    let(:namespace)         { create(:namespace) }
-    let(:project)           { create(:project, :public, :repository, namespace: namespace) }
-    let(:project2)          { create(:project, :public, :repository, path: "same-namespace", namespace: namespace) }
+    let_it_be(:namespace)   { create(:namespace) }
+    let_it_be(:project)     { create(:project, :public, :repository, namespace: namespace) }
+    let_it_be(:project2)    { create(:project, :public, :repository, path: "same-namespace", namespace: namespace) }
     let(:reference)         { "#{project2.path}@#{commit1.id}...#{commit2.id}" }
 
     it 'links to a valid reference' do
@@ -205,8 +205,8 @@ RSpec.describe Banzai::Filter::References::CommitRangeReferenceFilter, feature_c
   end
 
   context 'cross-project URL reference' do
-    let(:namespace) { create(:namespace) }
-    let(:project2)  { create(:project, :public, :repository, namespace: namespace) }
+    let_it_be(:namespace) { create(:namespace) }
+    let_it_be(:project2) { create(:project, :public, :repository, namespace: namespace) }
     let(:range) { CommitRange.new("#{commit1.id}...master", project) }
     let(:reference) { urls.project_compare_url(project2, from: commit1.id, to: 'master') }
 
