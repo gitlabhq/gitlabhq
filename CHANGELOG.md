@@ -2,6 +2,22 @@
 documentation](doc/development/changelog.md) for instructions on adding your own
 entry.
 
+## 18.4.5 (2025-11-25)
+
+### Fixed (3 changes)
+
+- [Fix /admin/sidekiq not loading CSS assets in Cloud Native GitLab](https://gitlab.com/gitlab-org/security/gitlab/-/commit/97c8878813e680f9d285b5594f393f0a29273b76)
+- [Relax blobs complexity in favor of limiting data](https://gitlab.com/gitlab-org/security/gitlab/-/commit/a4f51be0757c3fe921d7cafb2b7ba5927fbd51dd)
+- [Fix the Planningservice bug when there is a single node available](https://gitlab.com/gitlab-org/security/gitlab/-/commit/d6395811e890b00887990fbe8bfff7fd0c4cd173) ([merge request](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/211778)) **GitLab Enterprise Edition**
+
+### Security (5 changes)
+
+- [Override organization of signup users](https://gitlab.com/gitlab-org/security/gitlab/-/commit/424642a8c5f052808361585a40575c184a02821e) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/5522))
+- [Redact vulnerability references when Security and Compliance is disabled](https://gitlab.com/gitlab-org/security/gitlab/-/commit/f971a62e1625e4eda22e44fb4652d93e7ca6e8e9) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/5471))
+- [Use Gitlab::Json.safe_parse to prevent parsing of large JSON objects](https://gitlab.com/gitlab-org/security/gitlab/-/commit/000b956fd416240c636593943fd7fa81faabad07) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/5497))
+- [Limit JSON parsing depth, size, and elements in HTTParty](https://gitlab.com/gitlab-org/security/gitlab/-/commit/b8704d0dbc8336178407c0c1ac12d1c3f03cea0c) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/5505))
+- [Add protection suffix to cache depending on role](https://gitlab.com/gitlab-org/security/gitlab/-/commit/7ecfa32e474da0a15bcdb8ff7e86b16a6dc68f70) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/5482))
+
 ## 18.4.4 (2025-11-11)
 
 ### Fixed (8 changes)
