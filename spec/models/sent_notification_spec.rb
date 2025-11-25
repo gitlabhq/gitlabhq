@@ -120,6 +120,42 @@ RSpec.describe SentNotification, :request_store, feature_category: :shared do
     end
   end
 
+  describe 'sliding_list partitioning' do
+    let(:partitioned_class) { PartitionedSentNotification }
+    let(:partition_manager) { Gitlab::Database::Partitioning::PartitionManager.new(partitioned_class) }
+
+    describe 'next_partition_if callback' do
+      let(:active_partition) { partitioned_class.partitioning_strategy.active_partition }
+
+      subject(:value) { partitioned_class.partitioning_strategy.next_partition_if.call(active_partition) }
+
+      context 'when the partition is empty' do
+        it { is_expected.to be(false) }
+      end
+
+      context 'when the partition has records' do
+        before do
+          create_sent_notification(project: project)
+          create_sent_notification(project: project)
+        end
+
+        it { is_expected.to be(false) }
+      end
+
+      context 'when the first record of the partition is older than PARTITION_DURATION' do
+        before do
+          create_sent_notification(
+            project: project,
+            created_at: (partitioned_class::PARTITION_DURATION + 1.day).ago
+          )
+          create_sent_notification
+        end
+
+        it { is_expected.to be(true) }
+      end
+    end
+  end
+
   describe '.for' do
     let_it_be_with_reload(:sent_notification) { create(:sent_notification, project: project) }
 

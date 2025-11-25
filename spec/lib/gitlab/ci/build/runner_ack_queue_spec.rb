@@ -66,14 +66,27 @@ RSpec.describe Gitlab::Ci::Build::RunnerAckQueue, :clean_gitlab_redis_cache, fea
   describe '#cancel_wait_for_runner_ack' do
     let(:runner_manager_id) { 123 }
 
-    before do
-      runner_ack_queue.set_waiting_for_runner_ack(runner_manager_id)
+    subject(:cancel_wait_for_runner_ack) { runner_ack_queue.cancel_wait_for_runner_ack }
+
+    context 'when runner manager is waiting for ack' do
+      before do
+        runner_ack_queue.set_waiting_for_runner_ack(runner_manager_id)
+      end
+
+      it 'atomically retrieves and removes the runner manager ID from Redis' do
+        expect(cancel_wait_for_runner_ack).to eq(runner_manager_id.to_s)
+        expect(runner_ack_queue.runner_manager_id_waiting_for_ack).to be_nil
+      end
+
+      it 'removes the runner manager ID from Redis' do
+        expect do
+          cancel_wait_for_runner_ack
+        end.to change { runner_ack_queue.runner_manager_id_waiting_for_ack }.from(runner_manager_id).to(nil)
+      end
     end
 
-    it 'removes the runner manager ID from Redis' do
-      expect do
-        runner_ack_queue.cancel_wait_for_runner_ack
-      end.to change { runner_ack_queue.runner_manager_id_waiting_for_ack }.from(runner_manager_id).to(nil)
+    context 'when no runner manager is waiting for ack' do
+      it { is_expected.to be_nil }
     end
   end
 
@@ -132,12 +145,12 @@ RSpec.describe Gitlab::Ci::Build::RunnerAckQueue, :clean_gitlab_redis_cache, fea
     context 'when runner_manager_id does not exist' do
       let(:runner_manager_id) { non_existing_record_id }
 
-      it 'does not create new Redis cache entry' do
+      it 'does not create new Redis cache entry and returns nil' do
         expect { heartbeat_runner_ack_wait }
           .to not_change { runner_build_ack_queue_key_ttl }.from(-2)
           .and not_change { runner_ack_queue.runner_manager_id_waiting_for_ack }.from(nil)
 
-        expect(heartbeat_runner_ack_wait).to be_falsey
+        expect(heartbeat_runner_ack_wait).to be_nil
       end
     end
 
@@ -151,7 +164,7 @@ RSpec.describe Gitlab::Ci::Build::RunnerAckQueue, :clean_gitlab_redis_cache, fea
         end
       end
 
-      it 'updates the Redis cache entry with new TTL' do
+      it 'updates the Redis cache entry with new TTL and returns true' do
         redis_klass.with do |redis|
           expect(redis).to receive(:set)
             .with(runner_build_ack_queue_key, runner_manager_id,
@@ -163,16 +176,16 @@ RSpec.describe Gitlab::Ci::Build::RunnerAckQueue, :clean_gitlab_redis_cache, fea
           .to change { runner_build_ack_queue_key_ttl }.by_at_least(10)
           .and not_change { runner_ack_queue.runner_manager_id_waiting_for_ack }.from(runner_manager_id)
 
-        expect(heartbeat_runner_ack_wait).to be_truthy
+        expect(heartbeat_runner_ack_wait).to be true
       end
 
       context 'and runner_manager_id does not match existing cache entry' do
-        it 'does not create new Redis cache entry and returns false' do
+        it 'does not create new Redis cache entry and returns nil' do
           expect { runner_ack_queue.heartbeat_runner_ack_wait(non_existing_record_id) }
             .to not_change { runner_build_ack_queue_key_ttl > 0 }.from(true)
             .and not_change { runner_ack_queue.runner_manager_id_waiting_for_ack }.from(runner_manager_id)
 
-          expect(runner_ack_queue.heartbeat_runner_ack_wait(non_existing_record_id)).to be_falsey
+          expect(runner_ack_queue.heartbeat_runner_ack_wait(non_existing_record_id)).to be_nil
         end
       end
 

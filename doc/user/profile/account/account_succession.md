@@ -107,3 +107,8 @@ To delete an account successor:
 1. On the left sidebar, select **Account**.
 1. Next to the account successor, select **Delete** ({{< icon name="remove" >}}).
 1. Select **Delete account successor**.
+
+## Request access to a GitLab account
+
+If you are currently an account manager or account successor for a GitLab account,
+you can request access to that account by [contacting GitLab Support](https://about.gitlab.com/support/).

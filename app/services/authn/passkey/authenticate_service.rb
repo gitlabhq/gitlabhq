@@ -5,6 +5,9 @@
 module Authn
   module Passkey
     class AuthenticateService < BaseService
+      include WebauthnErrors
+      include SafeFormatHelper
+
       def initialize(device_response, challenge)
         @device_response = device_response
         @challenge = challenge
@@ -33,22 +36,39 @@ module Authn
 
       rescue JSON::ParserError
         ServiceResponse.error(
-          message: _('Your Passkey did not send a valid JSON response.')
+          message: _('Your passkey did not send a valid JSON response.')
         )
       rescue ActiveRecord::RecordNotFound
         ServiceResponse.error(
-          message: _(
-            'Failed to authenticate passkey. Log in with your username and password' \
-              'to add a passkey for your account. Learn more about setting up passkeys.'
-          )
+          message: record_not_found_error_message
         )
       rescue WebAuthn::Error => err
         ServiceResponse.error(
-          message: err.message
+          message: webauthn_human_readable_errors(err.class.name, passkey: true)
         )
       end
 
       private
+
+      def record_not_found_error_message
+        docs_link = ActionController::Base.helpers.link_to(
+          _('setting up passkeys'),
+          Rails.application.routes.url_helpers.help_page_url(
+            'auth/passkeys.md',
+            anchor: 'add-a-passkey'
+          ),
+          target: '_blank',
+          rel: 'noopener noreferrer'
+        )
+
+        safe_format(
+          _(
+            # rubocop:disable Layout/LineLength -- To maintain translations in other languages
+            'Failed to authenticate passkey. Log in with your username and password to add a passkey for your account. Learn more about %{passkey_docs_hyperlink}.'
+            # rubocop:enable Layout/LineLength
+          ), passkey_docs_hyperlink: docs_link
+        )
+      end
 
       def verify_passkey(stored_passkey_credential, passkey_credential, challenge, encoder)
         stored_passkey_credential &&

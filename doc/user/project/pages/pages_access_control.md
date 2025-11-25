@@ -32,22 +32,22 @@ For a demonstration, see [Pages access controls](https://www.youtube.com/watch?v
 1. On the left sidebar, select **Search or go to** and find your project. If you've [turned on the new navigation](../../interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
 1. Select **Settings** > **General**.
 1. Expand **Visibility, project features, permissions**.
-1. Toggle the **Pages** button to enable the access control. If you don't see the toggle button,
+1. To enable the access control, toggle **Pages**  If you don't see the toggle button,
    that means it isn't enabled. Ask your administrator to [enable it](../../../administration/pages/_index.md#access-control).
 
 1. The Pages access control dropdown list allows you to set who can view pages hosted
    with GitLab Pages, depending on your project's visibility:
 
    - If your project is private:
-     - **Only project members**: Only project members are able to browse the website.
-     - **Everyone**: Everyone, both logged into and logged out of GitLab, is able to browse the website, no matter their project membership.
+     - **Only project members**: Only project members can browse the website.
+     - **Everyone**: Everyone, both logged into and logged out of GitLab, can browse the website, no matter their project membership.
    - If your project is internal:
-     - **Only project members**: Only project members are able to browse the website.
-     - **Everyone with access**: Everyone logged into GitLab is able to browse the website, no matter their project membership. [External users](../../../administration/external_users.md) can access the website only if they have a membership in the project.
-     - **Everyone**: Everyone, both logged into and logged out of GitLab, is able to browse the website, no matter their project membership.
+     - **Only project members**: Only project members can browse the website.
+     - **Everyone with access**: Everyone logged into GitLab can browse the website, no matter their project membership. [External users](../../../administration/external_users.md) can access the website only if they have a membership in the project.
+     - **Everyone**: Everyone, both logged into and logged out of GitLab, can browse the website, no matter their project membership.
    - If your project is public:
-     - **Only project members**: Only project members are able to browse the website.
-     - **Everyone with access**: Everyone, both logged into and logged out of GitLab, is able to browse the website, no matter their project membership.
+     - **Only project members**: Only project members can browse the website.
+     - **Everyone with access**: Everyone, both logged into and logged out of GitLab, can browse the website, no matter their project membership.
 
 1. Select **Save changes**. Your changes may not take effect immediately. GitLab Pages uses
    a caching mechanism for efficiency. Your changes may not take effect until that cache is
@@ -69,12 +69,12 @@ and the access control is enabled, users must authenticate using SSO before acce
 {{< /history >}}
 
 Configure a setting for the group to remove the public visibility option for Pages.
-When enabled, all projects in the group and its subgroups lose the ability to use the "Everyone" visibility
+When enabled, all projects in the group and its subgroups lose the option to use the "Everyone" visibility
 level and are restricted to project members or everyone with access, depending on the project's visibility setting.
 
 Prerequisites
 
-- Public access to Pages must not be [disabled at the instance level.](../../../administration/pages/_index.md#disable-public-access-to-all-pages-sites)
+- Public access to Pages must not be [disabled for the instance](../../../administration/pages/_index.md#disable-public-access-to-all-pages-sites).
 - You must have the Owner role for the group.
 
 To do this:
@@ -85,7 +85,7 @@ To do this:
 1. Under **Pages public access**, select the **Remove public access** checkbox.
 1. Select **Save changes**.
 
-GitLab Pages uses a cache for efficiency. Changes to access settings typically take effect within one minute when the cache updates.
+GitLab Pages uses a cache for efficiency. Changes to access settings typically take effect in one minute when the cache updates.
 
 ## Authenticate with an access token
 

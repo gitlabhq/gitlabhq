@@ -1053,6 +1053,8 @@
   - 1
 - - security_scan_result_policies_add_approvers_to_rules
   - 1
+- - security_scan_result_policies_audit_warn_mode_merge_request_approval_settings
+  - 1
 - - security_scan_result_policies_cleanup_merge_request_violations
   - 1
 - - security_scan_result_policies_create_project_warn_mode_audit_events

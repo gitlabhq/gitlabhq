@@ -77,20 +77,6 @@ RSpec.describe Import::ReassignPlaceholderUserRecordsService, feature_category: 
 
           service.execute
         end
-
-        context 'when user_mapping_direct_reassignment feature flag is disabled' do
-          before do
-            stub_feature_flags(user_mapping_direct_reassignment: false)
-          end
-
-          it 'does not log when placeholder references are used' do
-            expect(Import::Framework::Logger).not_to receive(:info).with(
-              hash_including(message: 'Placeholder references used')
-            )
-
-            service.execute
-          end
-        end
       end
 
       it 'sleeps between processing each model relation batch' do

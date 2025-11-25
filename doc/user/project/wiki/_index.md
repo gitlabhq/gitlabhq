@@ -708,4 +708,4 @@ All data from the wiki has been cleared, and the wiki is ready for use.
 - [Group repository storage moves API](../../../api/group_repository_storage_moves.md)
 - [Wiki keyboard shortcuts](../../shortcuts.md#wiki-pages)
 - [GitLab Flavored Markdown](../../markdown.md)
-- [Asciidoc](../../asciidoc.md)
+- [AsciiDoc](../../asciidoc.md)

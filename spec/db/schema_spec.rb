@@ -30,7 +30,6 @@ RSpec.describe 'Database schema',
   let(:ignored_fk_columns_map) do
     {
       abuse_reports: %w[user_id],
-      abuse_report_notes: %w[discussion_id],
       ai_code_suggestion_events: %w[user_id],
       ai_duo_chat_events: %w[user_id],
       ai_troubleshoot_job_events: %w[user_id job_id],

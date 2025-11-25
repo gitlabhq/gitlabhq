@@ -11,8 +11,6 @@ discover_page_hand_raise_lead_data:
   file: ee/app/helpers/gitlab_subscriptions/hand_raise_leads_helper.rb
 discover_duo_pro_hand_raise_lead_data:
   file: ee/app/helpers/gitlab_subscriptions/hand_raise_leads_helper.rb
-update_options!:
-  file: ee/app/models/ai/active_context/collection.rb
 decrease_retries!:
   file: ee/app/models/ai/active_context/migration.rb
 code_suggestions_self_hosted?:
@@ -99,10 +97,6 @@ old_path_with_namespace_for:
   file: ee/app/models/ee/namespace.rb
 default_plan?:
   file: ee/app/models/ee/namespace.rb
-bronze_plan?:
-  file: ee/app/models/ee/namespace.rb
-silver_plan?:
-  file: ee/app/models/ee/namespace.rb
 premium_trial_plan?:
   file: ee/app/models/ee/namespace.rb
 update_wiki_size:
@@ -123,8 +117,6 @@ provisioned_by_this_group?:
   file: ee/app/models/ee/project_member.rb
 commit_count_for:
   file: ee/app/models/ee/push_event_payload.rb
-zoekt_indexed_namespaces:
-  file: ee/app/models/ee/user.rb
 ci_namespace_mirrors_permitted_to:
   file: ee/app/models/ee/user.rb
 no_eligible_duo_add_on_assignments?:
@@ -167,8 +159,6 @@ can_view_namespace_catalog?:
   file: app/helpers/ci/catalog/resources_helper.rb
 js_ci_catalog_data:
   file: app/helpers/ci/catalog/resources_helper.rb
-environments_list_data:
-  file: app/helpers/environments_helper.rb
 event_feed_title:
   file: app/helpers/events_helper.rb
 event_feed_summary:
@@ -205,12 +195,8 @@ approve_access_request_project_member_path:
   file: app/helpers/routing/projects/members_helper.rb
 resend_invite_project_member_path:
   file: app/helpers/routing/projects/members_helper.rb
-sidebar_attributes_for_object:
-  file: app/helpers/sidebars_helper.rb
 sort_title_stars:
   file: app/helpers/sorting_titles_values_helper.rb
-telesign_score:
-  file: app/models/anti_abuse/user_trust_score.rb
 deleted_from_database?:
   file: app/models/application_record.rb
 max_login_attempts_column_exists?:
@@ -237,8 +223,6 @@ waiting_processables:
   file: app/models/ci/resource_group.rb
 fallback_owner_project:
   file: app/models/ci/runner.rb
-find_or_build_integration_prometheus:
-  file: app/models/clusters/cluster.rb
 platform_kubernetes_active?:
   file: app/models/clusters/cluster.rb
 legacy_auto_devops_domain:
@@ -413,8 +397,6 @@ deploy_token_create_url:
   file: app/models/project.rb
 deploy_token_revoke_url_for:
   file: app/models/project.rb
-enabled_group_deploy_keys:
-  file: app/models/project.rb
 update_wiki_size:
   file: app/models/project_statistics.rb
 update_snippets_size:
@@ -458,4 +440,50 @@ find_by_private_commit_email:
 will_save_change_to_login?:
   file: app/models/user.rb
 can_leave_project?:
+  file: app/models/user.rb
+render_items_list:
+  file: ee/app/helpers/ee/merge_requests_helper.rb
+trial_submit_text:
+  file: ee/app/helpers/gitlab_subscriptions/trials_helper.rb
+namespace_selector_data:
+  file: ee/app/helpers/gitlab_subscriptions/trials_helper.rb
+get_primary_key:
+  file: ee/app/models/geo/tracking_base.rb
+ci_policy_name_for_environment:
+  file: ee/app/models/secrets_management/group_secrets_managers/pipeline_helper.rb
+really_destroy!:
+  file: ee/app/models/security/attribute.rb
+really_destroy!:
+  file: ee/app/models/security/category.rb
+local_project_id:
+  file: ee/app/models/virtual_registries/packages/maven/upstream.rb
+local_group_id:
+  file: ee/app/models/virtual_registries/packages/maven/upstream.rb
+runner_status_icon:
+  file: app/helpers/ci/runners_helper.rb
+runner_link:
+  file: app/helpers/ci/runners_helper.rb
+duration_in_numbers:
+  file: app/helpers/time_helper.rb
+offline?:
+  file: app/models/bulk_imports/export.rb
+belongs_to_one_project?:
+  file: app/models/ci/runner.rb
+touch_later:
+  file: app/models/commit.rb
+not_isolated?:
+  file: app/models/concerns/organizations/isolatable.rb
+mark_as_isolated!:
+  file: app/models/concerns/organizations/isolatable.rb
+mark_as_not_isolated!:
+  file: app/models/concerns/organizations/isolatable.rb
+prometheus_client_default_options:
+  file: app/models/concerns/prometheus_adapter.rb
+can_modify_email_otp_enrollment?:
+  file: app/models/concerns/users/email_otp_enrollment.rb
+head_pipeline_active?:
+  file: app/models/merge_request.rb
+not_isolated?:
+  file: app/models/organizations/isolation_record.rb
+ban_and_report:
   file: app/models/user.rb

@@ -129,7 +129,6 @@ module Import
           { aliased_user_reference_column => import_source_user.reassign_to_user_id }
         )
 
-        # Temporary log to track for each models/attributes placeholder references are still used
         if log_placeholder_reference_used?(update_count)
           log_info('Placeholder references used', model: model_relation.klass.name,
             user_reference_column: aliased_user_reference_column)
@@ -158,9 +157,7 @@ module Import
     end
 
     def log_placeholder_reference_used?(update_count)
-      Feature.enabled?(:user_mapping_direct_reassignment, reassigned_by_user) &&
-        update_count > 0 &&
-        import_source_user.placeholder_user.placeholder?
+      update_count > 0 && import_source_user.placeholder_user.placeholder?
     end
 
     def create_memberships

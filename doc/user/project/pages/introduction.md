@@ -72,7 +72,12 @@ You can configure redirects for your site using a `_redirects` file. For more in
 ## Delete a Pages site
 
 Permanently delete all Pages deployments for a project.
-This is permanent and cannot be undone.
+
+{{< alert type="note" >}}
+
+The change cannot be undone.
+
+{{< /alert >}}
 
 To delete your pages:
 
@@ -143,7 +148,7 @@ See this document for a [step-by-step guide](getting_started/pages_from_scratch.
 
 ### `.gitlab-ci.yml` for a repository with code
 
-Remember that GitLab Pages are by default branch/tag agnostic and their
+Remember that GitLab Pages are by default branch/tag independent, and their
 deployment relies solely on what you specify in `.gitlab-ci.yml`. You can limit
 the `pages` job with [`rules:if`](../../../ci/yaml/_index.md#rulesif),
 whenever a new commit is pushed to a branch used specifically for your
@@ -335,7 +340,7 @@ The top-level `publish` keyword was [deprecated](https://gitlab.com/gitlab-org/g
 You can regenerate the unique domain for your GitLab Pages site.
 
 After the domain is regenerated, the previous URL is no longer active.
-If anyone tries to access the old URL, they'll receive a `404` error.
+If anyone tries to access the old URL, they receive a `404` error.
 
 Prerequisites
 

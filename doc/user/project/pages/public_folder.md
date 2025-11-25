@@ -16,7 +16,7 @@ title: GitLab Pages public folder
 {{< history >}}
 
 - GitLab 16.1 introduced support for configuring the published folder in
-  `.gitlab-ci.yml`. You no longer need to change your framework config. For more
+  `.gitlab-ci.yml`. You no longer need to change your framework configuration. For more
   information, see [set a custom folder to be deployed with Pages](introduction.md#customize-the-default-folder).
 
 {{< /history >}}
@@ -107,7 +107,7 @@ Next's [Static HTML export functionality](https://nextjs.org/docs/pages/building
 {{< /alert >}}
 
 With the release of [Next.js 13](https://nextjs.org/blog/next-13) a lot has changed on how Next.js works.
-It is recommended to use the following `next.config.js` so all static assets can be exported properly:
+You should use the following `next.config.js` so all static assets can be exported properly:
 
 ```javascript
 /** @type {import('next').NextConfig} */

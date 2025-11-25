@@ -2792,6 +2792,7 @@ RSpec.describe Repository, feature_category: :source_code_management do
 
   describe '#cherry_pick' do
     let(:project) { create(:project, :repository) }
+    let(:commit) { repository.commit('7d3b0f7cff5f37573aea97cebfd5692ea1689924') }
     let(:target_sha) { repository.commit(branch_name).id }
     let(:message) { 'cherry-pick message' }
     let(:branch_name) { 'master' }
@@ -2812,8 +2813,6 @@ RSpec.describe Repository, feature_category: :source_code_management do
     end
 
     context 'when the commit is pickable' do
-      let(:commit) { repository.commit('7d3b0f7cff5f37573aea97cebfd5692ea1689924') }
-
       context 'when commit was already cherry-picked' do
         before do
           repository.cherry_pick(user, commit, 'master', message)
@@ -2854,6 +2853,28 @@ RSpec.describe Repository, feature_category: :source_code_management do
       it 'sets target_sha' do
         expect(repository.raw_repository).to receive(:cherry_pick).with(a_hash_including(target_sha: target_sha))
         cherry_pick
+      end
+    end
+
+    describe 'delegating to Repositories::WebBasedCommitSigningSetting for sign' do
+      using RSpec::Parameterized::TableSyntax
+
+      where(:expected_sign) { [true, false] }
+
+      with_them do
+        before do
+          allow_next_instance_of(Repositories::WebBasedCommitSigningSetting) do |instance|
+            allow(instance).to receive(:sign_commits?).and_return(expected_sign)
+          end
+        end
+
+        it 'calls UserCherryPick with the expected value for sign' do
+          expect_next_instance_of(Gitlab::GitalyClient::OperationService) do |client|
+            expect(client).to receive(:user_cherry_pick).with(a_hash_including(sign: expected_sign))
+          end
+
+          subject
+        end
       end
     end
   end
@@ -4731,7 +4752,7 @@ RSpec.describe Repository, feature_category: :source_code_management do
   end
 
   describe '#commit_files' do
-    let_it_be(:project) { create(:project, :repository) }
+    let_it_be_with_refind(:project) { create(:project, :repository) }
     let(:target_sha) { repository.commit('master').sha }
     let(:expected_params) do
       [
@@ -4745,7 +4766,7 @@ RSpec.describe Repository, feature_category: :source_code_management do
        nil, # start_repository
        true, # force
        nil, # start_sha
-       true, # sign
+       expected_sign, # sign
        target_sha # target_sha
       ]
     end
@@ -4808,6 +4829,28 @@ RSpec.describe Repository, feature_category: :source_code_management do
           end
 
           commit_files
+        end
+      end
+    end
+
+    describe 'delegating to Repositories::WebBasedCommitSigningSetting for sign' do
+      using RSpec::Parameterized::TableSyntax
+
+      where(:expected_sign) { [true, false] }
+
+      with_them do
+        before do
+          allow_next_instance_of(Repositories::WebBasedCommitSigningSetting) do |instance|
+            allow(instance).to receive(:sign_commits?).and_return(expected_sign)
+          end
+        end
+
+        it 'calls UserCommitFiles with the expected value for sign' do
+          expect_next_instance_of(Gitlab::GitalyClient::OperationService) do |client|
+            expect(client).to receive(:user_commit_files).with(*expected_params)
+          end
+
+          subject
         end
       end
     end

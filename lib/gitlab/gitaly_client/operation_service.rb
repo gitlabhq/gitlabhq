@@ -268,7 +268,7 @@ module Gitlab
       # rubocop:disable Metrics/ParameterLists
       def user_cherry_pick(
         user:, commit:, branch_name:, message:,
-        start_branch_name:, start_repository:, author_name: nil, author_email: nil, dry_run: false, target_sha: nil
+        start_branch_name:, start_repository:, author_name: nil, author_email: nil, dry_run: false, target_sha: nil, sign: false
       )
         request = Gitaly::UserCherryPickRequest.new(
           repository: @gitaly_repo,
@@ -282,7 +282,8 @@ module Gitlab
           commit_author_email: encode_binary(author_email),
           dry_run: dry_run,
           timestamp: Google::Protobuf::Timestamp.new(seconds: Time.now.utc.to_i),
-          expected_old_oid: target_sha
+          expected_old_oid: target_sha,
+          sign: sign
         )
 
         response = gitaly_client_call(

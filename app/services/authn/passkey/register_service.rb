@@ -3,6 +3,8 @@
 module Authn
   module Passkey
     class RegisterService < BaseService
+      include WebauthnErrors
+
       def initialize(user, params, challenge)
         @user = user
         @params = params
@@ -37,9 +39,13 @@ module Authn
           ServiceResponse.error(
             message: _('Your Passkey did not send a valid JSON response.')
           )
-        rescue ActiveRecord::RecordInvalid, WebAuthn::Error => err
+        rescue ActiveRecord::RecordInvalid => err
           ServiceResponse.error(
             message: err.message
+          )
+        rescue WebAuthn::Error => err
+          ServiceResponse.error(
+            message: webauthn_human_readable_errors(err.class.name, passkey: true)
           )
         end
       end

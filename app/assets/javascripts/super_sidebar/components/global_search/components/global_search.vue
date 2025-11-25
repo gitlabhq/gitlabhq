@@ -50,6 +50,7 @@ import {
   KEY_P,
   SEARCH_INPUT_SELECTOR,
   SEARCH_RESULTS_ITEM_SELECTOR,
+  GLOBAL_SEARCH_MODAL_CLASS,
 } from '../constants';
 import CommandPaletteItems from '../command_palette/command_palette_items.vue';
 import FakeSearchInput from '../command_palette/fake_search_input.vue';
@@ -437,6 +438,7 @@ export default {
   MODAL_CLOSE_ESC,
   MODAL_CLOSE_BACKGROUND,
   MODAL_CLOSE_HEADERCLOSE,
+  GLOBAL_SEARCH_MODAL_CLASS,
 };
 </script>
 
@@ -450,7 +452,7 @@ export default {
     scrollable
     :title="$options.i18n.COMMAND_PALETTE"
     body-class="!gl-p-0"
-    modal-class="global-search-modal"
+    :modal-class="$options.GLOBAL_SEARCH_MODAL_CLASS"
     content-class="gl-mt-2"
     :centered="false"
     @shown="onSearchModalShown"

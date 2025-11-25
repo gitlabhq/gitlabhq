@@ -252,8 +252,8 @@ This source displays a view with columns `Title`, `Workflow` and `Priority`.
 
 {{< /history >}}
 
-When a view appears on a page, use the **View actions** ({{< icon name="ellipsis_v" >}}) dropdown to take
-an action on it.
+When a view appears on a page, use the **View actions** ({{< icon name="ellipsis_v" >}})
+dropdown list to take an action on it.
 
 Supported actions:
 

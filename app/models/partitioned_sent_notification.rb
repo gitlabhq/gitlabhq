@@ -13,14 +13,24 @@ class PartitionedSentNotification < ApplicationRecord # rubocop:disable Gitlab/N
   # while we partition the table.
   include SentNotificationsShared
 
-  # Both procs return false for now until the backfill of the table is complete
+  PARTITION_DURATION = 2.months
+
   partitioned_by :partition, strategy: :sliding_list,
-    next_partition_if: ->(_) do
-      false
+    next_partition_if: ->(active_partition) do
+      oldest_record_in_partition = select(:id, :created_at)
+        .for_partition(active_partition.value)
+        .order(:id)
+        .limit(1)
+        .take
+
+      oldest_record_in_partition.present? &&
+        oldest_record_in_partition.created_at < PARTITION_DURATION.ago
     end,
     detach_partition_if: ->(_) do
       false
     end
+
+  scope :for_partition, ->(partition) { where(partition: partition) }
 
   before_save do
     # attr_readonly still allows setting the column on insert

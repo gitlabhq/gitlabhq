@@ -218,7 +218,7 @@ create-pages:
         PAGES_PREFIX: 'mr-$CI_MERGE_REQUEST_IID' # prefix with the mr-<iid>, like `mr-123`
 ```
 
-With this configuration, users will have the access to each GitLab Pages deployment through the UI.
+With this configuration, users have access to each GitLab Pages deployment through the UI.
 When using [environments](../../../ci/environments/_index.md) for pages, all pages environments are
 listed on the project environment list.
 

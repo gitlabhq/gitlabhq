@@ -259,7 +259,7 @@ create-pages:
 
 ### Specify a stage to deploy
 
-There are three default stages for GitLab CI/CD: build, test,
+The three default stages for GitLab CI/CD are build, test,
 and deploy.
 
 If you want to test your script and check the built site before deploying

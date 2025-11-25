@@ -34,6 +34,7 @@ RSpec.describe Authn::Passkey::RegisterService, feature_category: :system_access
       it 'returns a Service.error' do
         expect(register_service).to be_a(ServiceResponse)
         expect(register_service).to be_error
+        expect(register_service.message).to be_present
       end
     end
 

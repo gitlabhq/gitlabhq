@@ -116,26 +116,6 @@ RSpec.describe Import::DirectReassignService, feature_category: :importers do
       described_class.new(import_source_user, reassignment_throttling: reassignment_throttling, sleep_time: 0)
     end
 
-    context 'when user_mapping_direct_reassignment feature is disabled' do
-      before do
-        stub_feature_flags(user_mapping_direct_reassignment: false)
-      end
-
-      it 'returns early without processing' do
-        expect(direct_reassign).not_to receive(:direct_reassign_model_user_references)
-
-        direct_reassign.execute
-      end
-    end
-
-    context 'when user_mapping_direct_reassignment feature is enabled' do
-      it 'reassigns references' do
-        expect(direct_reassign).to receive(:direct_reassign_model_user_references).at_least(:once)
-
-        direct_reassign.execute
-      end
-    end
-
     it 'updates records ownership' do
       expect { direct_reassign.execute }.to change { merge_requests[0].reload.author_id }
           .from(placeholder_user_id).to(reassign_to_user_id)

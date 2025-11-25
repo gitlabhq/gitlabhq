@@ -60,6 +60,7 @@ RSpec.describe Authn::Passkey::AuthenticateService, feature_category: :system_ac
       it 'returns a Service.error' do
         expect(authenticate_service).to be_a(ServiceResponse)
         expect(authenticate_service).to be_error
+        expect(authenticate_service.message).to be_present
       end
     end
 
@@ -151,7 +152,7 @@ RSpec.describe Authn::Passkey::AuthenticateService, feature_category: :system_ac
         end
       end
 
-      context 'with a user trying to sign with a passkey, without having registered one' do
+      context 'with a user trying to sign-in with a passkey, without having registered one' do
         let(:device_response) do
           create_response = client.create(challenge: challenge) # rubocop:disable Rails/SaveBang -- .create is a FakeClient method
           credential_id = create_response["rawId"]
@@ -171,6 +172,13 @@ RSpec.describe Authn::Passkey::AuthenticateService, feature_category: :system_ac
         end
 
         it_behaves_like 'returns authentication failure'
+
+        it 'returns an error message with a hyperlink to the passkey page' do
+          expect(authenticate_service.message).to be_html_safe
+          expect(authenticate_service.message).to include(
+            'passkeys.md#add-a-passkey">setting up passkeys</a>.'
+          )
+        end
       end
     end
   end

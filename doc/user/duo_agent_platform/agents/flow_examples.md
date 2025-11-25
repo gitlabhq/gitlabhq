@@ -7,7 +7,7 @@ title: Flow configuration examples
 
 {{< details >}}
 
-- Tier: Ultimate
+- Tier: Premium, Ultimate
 - Add-on: GitLab Duo Core, Pro, or Enterprise, GitLab Duo with Amazon Q
 - Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
 - Status: Experiment

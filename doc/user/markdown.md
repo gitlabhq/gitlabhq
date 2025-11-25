@@ -610,12 +610,6 @@ plain text editor. For more information, see [issue 535956](https://gitlab.com/g
 
 ### Task lists
 
-{{< history >}}
-
-- Inapplicable checkboxes [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/85982) in GitLab 15.3.
-
-{{< /history >}}
-
 You can add task lists anywhere Markdown is supported.
 
 - In issues, merge requests, epics, and comments, you can select the boxes.
@@ -1016,8 +1010,7 @@ entry and paste the spreadsheet:
 
 {{< history >}}
 
-- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/86353) in GitLab 15.3.
-- Ability to use Markdown [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/375177) in GitLab 17.9.
+- Markdown rendering [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/375177) in GitLab 17.9.
 
 {{< /history >}}
 
@@ -1249,13 +1242,6 @@ This example only works when [rendered in GitLab](https://gitlab.com/gitlab-org/
 > ![Sample Video](img/markdown_video.mp4)
 
 ### Change image or video dimensions
-
-{{< history >}}
-
-- Support for images [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/28118) in GitLab 15.7.
-- Support for videos [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/17139) in GitLab 15.9.
-
-{{< /history >}}
 
 You can control the width and height of an image or video by following the image with
 an attribute list.
@@ -1571,13 +1557,6 @@ For more information, see the [Kroki integration](../administration/integration/
 
 ## Math equations
 
-{{< history >}}
-
-- LaTeX-compatible fencing [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/21757) in GitLab 15.4 [with a flag](../administration/feature_flags/_index.md) named `markdown_dollar_math`. Disabled by default. Enabled on GitLab.com.
-- LaTeX-compatible fencing [generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/371180) in GitLab 15.8. Feature flag `markdown_dollar_math` removed.
-
-{{< /history >}}
-
 Math written in LaTeX syntax is rendered with [KaTeX](https://github.com/KaTeX/KaTeX).
 _KaTeX only supports a [subset](https://katex.org/docs/supported.html) of LaTeX._
 This syntax also works in AsciiDoc wikis and files using `:stem: latexmath`. For details, see
@@ -1810,7 +1789,7 @@ For example:
 
 In all cases, the backslash is removed, and no color chip is rendered in the output.
 
-This is especially useful when you want to include values like issue numbers in inline code
+Use when you want to include values like issue numbers in inline code
 without accidentally triggering a color chip.
 
 ## Emoji

@@ -57,15 +57,14 @@ RSpec.describe Gitlab::Ci::Pipeline::Chain::Create, feature_category: :pipeline_
     end
   end
 
-  context 'when pipeline has duplicate iid' do
+  shared_examples 'when pipeline has duplicate iid' do
     let_it_be(:old_pipeline) do
-      create(:ci_empty_pipeline, project: project, ref: 'master', user: user)
+      create(:ci_empty_pipeline, project: project, ref: 'master', user: user, partition_id: 100)
     end
 
     let(:pipeline) do
-      build(:ci_empty_pipeline, project: project, ref: 'master', user: user).tap do |pipeline|
-        pipeline.write_attribute(:iid, old_pipeline.iid)
-      end
+      build(:ci_empty_pipeline, project: project, ref: 'master', user: user, partition_id: partition_id)
+        .tap { |pipeline| pipeline.write_attribute(:iid, old_pipeline.iid) }
     end
 
     it 'breaks the chain' do
@@ -93,6 +92,18 @@ RSpec.describe Gitlab::Ci::Pipeline::Chain::Create, feature_category: :pipeline_
         .to raise_error(ActiveRecord::RecordNotUnique)
         .and not_change { InternalId.count }
     end
+  end
+
+  context 'when pipeline iid already exists in the same partition' do
+    let(:partition_id) { old_pipeline.partition_id }
+
+    it_behaves_like 'when pipeline has duplicate iid'
+  end
+
+  context 'when pipeline iid already exists in a different partition' do
+    let(:partition_id) { old_pipeline.partition_id + 1 }
+
+    it_behaves_like 'when pipeline has duplicate iid'
   end
 
   context 'tags persistence' do

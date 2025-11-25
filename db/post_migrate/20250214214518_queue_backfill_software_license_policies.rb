@@ -10,18 +10,8 @@ class QueueBackfillSoftwareLicensePolicies < Gitlab::Database::Migration[2.2]
   BATCH_SIZE = 1000
   SUB_BATCH_SIZE = 100
 
-  def up
-    queue_batched_background_migration(
-      MIGRATION,
-      :software_license_policies,
-      :id,
-      job_interval: DELAY_INTERVAL,
-      batch_size: BATCH_SIZE,
-      sub_batch_size: SUB_BATCH_SIZE
-    )
-  end
+  # This migration is already finalized and we are removing the software_licenses table.
+  def up; end
 
-  def down
-    delete_batched_background_migration(MIGRATION, :software_license_policies, :id, [])
-  end
+  def down; end
 end

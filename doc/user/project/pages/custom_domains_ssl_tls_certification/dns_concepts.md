@@ -18,7 +18,7 @@ numeric IP addresses (such as `192.0.2.1`) that computers use to
 connect to each other.
 
 A DNS record is created to point a (sub)domain to a certain location,
-which can be an IP address or another domain. In case you want to use
+which can be an IP address or another domain. If you want to use
 GitLab Pages with your own (sub)domain, you need to access your domain's
 registrar control panel to add a DNS record pointing it back to your
 GitLab Pages site.

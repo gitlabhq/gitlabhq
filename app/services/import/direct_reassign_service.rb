@@ -76,7 +76,6 @@ module Import
     end
 
     def execute
-      return if Feature.disabled?(:user_mapping_direct_reassignment, reassigned_by_user)
       return unless import_source_user.placeholder_user.placeholder?
 
       self.class.model_list.each do |model, columns|

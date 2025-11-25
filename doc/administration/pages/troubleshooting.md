@@ -12,7 +12,7 @@ title: Troubleshooting GitLab Pages administration
 
 {{< /details >}}
 
-This page contains a list of issues you might encounter when administering GitLab Pages.
+When administering GitLab Pages, you might encounter the following issues.
 
 ## How to see GitLab Pages logs
 
@@ -303,7 +303,7 @@ in all of your GitLab Pages instances.
 
 ## Intermittent 502 errors when using an AWS Network Load Balancer and GitLab Pages
 
-Connections will time out when using a Network Load Balancer with client IP preservation enabled and [the request is looped back to the source server](https://docs.aws.amazon.com/elasticloadbalancing/latest/network/load-balancer-troubleshooting.html#loopback-timeout).
+Connections time out when using a Network Load Balancer with client IP preservation enabled and [the request is looped back to the source server](https://docs.aws.amazon.com/elasticloadbalancing/latest/network/load-balancer-troubleshooting.html#loopback-timeout).
 This can happen to GitLab instances with multiple servers
 running both the core GitLab application and GitLab Pages. This can also happen when a single
 container is running both the core GitLab application and GitLab Pages.

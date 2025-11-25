@@ -50,7 +50,7 @@ To create redirects, create a configuration file named `_redirects` in the
 - All paths must start with a forward slash `/`.
 - A default status code of `301` is applied if no [status code](#http-status-codes) is provided.
 - The `_redirects` file has a file size limit and a maximum number of rules per project,
-  configured at the instance level. Only the first matching rules within the configured maximum are processed.
+  configured for the instance. Only the first matching rules in the configured maximum are processed.
   The default file size limit is 64 KB, and the default maximum number of rules is 1,000.
 - If your GitLab Pages site uses the default domain name (such as
   `namespace.gitlab.io/project-slug`) you must prefix every rule with the path:
@@ -107,12 +107,6 @@ and an [HTTP status code](#http-status-codes):
 ```
 
 ## Rewrites
-
-{{< history >}}
-
-- [Enabled on GitLab.com and GitLab Self-Managed](https://gitlab.com/gitlab-org/gitlab-pages/-/issues/619) in GitLab 15.2.
-
-{{< /history >}}
 
 Provide a status code of `200` to serve the content of the `to` path when the
 request matches the `from`:

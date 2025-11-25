@@ -112,10 +112,6 @@ module Gitlab
         end
       end
 
-      def abuse_report_note_url(note, **options)
-        instance.admin_abuse_report_url(note.abuse_report, anchor: dom_id(note), **options)
-      end
-
       def snippet_url(snippet, **options)
         if options[:file].present?
           file, ref = options.values_at(:file, :ref)

@@ -51,6 +51,7 @@ To use this flow, you must:
 - Have an existing failed pipeline.
 - Have at least the Developer role in the project.
 - Meet [the other prerequisites](../../../duo_agent_platform/_index.md#prerequisites).
+- [Ensure the GitLab Duo service account can create commits and branches](../../troubleshooting.md#session-is-stuck-in-created-state).
 
 ## Fix the pipeline in a merge request
 

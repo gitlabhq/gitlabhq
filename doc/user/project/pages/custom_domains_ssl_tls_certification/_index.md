@@ -12,12 +12,6 @@ title: GitLab Pages custom domains
 
 {{< /details >}}
 
-{{< history >}}
-
-- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/238461) in GitLab 15.4, you can use verified domains to [bypass user email confirmation for SAML- or SCIM-provisioned users](../../../group/saml_sso/_index.md#bypass-user-email-confirmation-with-verified-domains).
-
-{{< /history >}}
-
 You can use custom domains:
 
 - With GitLab Pages.
@@ -135,7 +129,7 @@ without any path.
 
 ##### For both root and subdomains
 
-There are a few cases where you need to point both the subdomain and root
+You might need to point both the subdomain and root
 domain to the same website, for instance, `example.com` and `www.example.com`.
 
 They require:

@@ -579,10 +579,6 @@ RSpec.describe Ci::UpdateBuildStateService, '#execute', feature_category: :conti
               .and not_change { build.reload.runner_manager }
           end
 
-          it 'does not change ttl' do
-            expect { execute }.not_to change { redis_ttl(runner_build_ack_queue_key) }
-          end
-
           it 'does not transition build to running' do
             expect(build).not_to receive(:run!)
 
@@ -591,26 +587,57 @@ RSpec.describe Ci::UpdateBuildStateService, '#execute', feature_category: :conti
         end
       end
 
-      context 'when state is invalid for two-phase commit workflow' do
-        %w[success failed].each do |state|
-          context "when state is #{state}" do
-            let(:params) { { state: state } }
+      context 'when state is failed' do
+        let(:params) do
+          {
+            state: 'failed',
+            failure_reason: 'runner_system_failure',
+            exit_code: 42
+          }
+        end
 
-            it 'returns 400 Bad Request status' do
-              result = execute
+        it 'drops the job and returns 200 OK' do
+          expect(build).to receive(:drop_with_exit_code!).with('runner_system_failure', 42).and_call_original
 
-              expect(result.status).to eq 400
-              expect(result.backoff).to be_nil
-            end
+          result = execute
 
-            it 'does not change build state' do
-              expect { execute }.not_to change { build.reload.status }
-            end
+          expect(result.status).to eq 200
+          expect(build.reload).to be_failed
+          expect(build.failure_reason).to eq 'runner_system_failure'
+        end
 
-            it 'does not change ttl' do
-              expect { execute }.not_to change { redis_ttl(runner_build_ack_queue_key) }
-            end
+        it 'cancels the wait for runner ack' do
+          expect { execute }.to change { build.reload.runner_manager_id_waiting_for_ack }.to(nil)
+        end
+
+        context 'when failure_reason and exit_code are not provided' do
+          let(:params) { { state: 'failed' } }
+
+          it 'drops the job with nil failure_reason and exit_code' do
+            expect(build).to receive(:drop_with_exit_code!).with(nil, nil).and_call_original
+
+            expect(execute.status).to eq 200
+            expect(build.reload).to be_failed
           end
+        end
+      end
+
+      context 'when state is success' do
+        let(:params) { { state: 'success' } }
+
+        it 'returns 400 Bad Request status' do
+          result = execute
+
+          expect(result.status).to eq 400
+          expect(result.backoff).to be_nil
+        end
+
+        it 'does not change build state' do
+          expect { execute }.not_to change { build.reload.status }
+        end
+
+        it 'does not change ttl' do
+          expect { execute }.not_to change { redis_ttl(runner_build_ack_queue_key) }
         end
       end
 

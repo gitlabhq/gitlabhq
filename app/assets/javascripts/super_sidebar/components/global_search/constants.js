@@ -30,3 +30,5 @@ export const KEY_K = 'KeyK';
 export const KEY_N = 'KeyN';
 
 export const KEY_P = 'KeyP';
+
+export const GLOBAL_SEARCH_MODAL_CLASS = 'global-search-modal';

@@ -128,7 +128,8 @@ If you use the same service account across multiple projects, that gives the ext
 To set up the service account, take the following actions. If you do not have sufficient
 permissions, ask your instance administrator or top-level group Owner for help.
 
-1. [Create a service account](../../../user/profile/service_accounts.md#create-a-service-account).
+1. For the top-level group, [create a service account](../../../user/profile/service_accounts.md#create-a-service-account).
+   Service accounts created for the instance are not supported.
 1. [Create a personal access token for the service account](../../../user/profile/service_accounts.md#create-a-personal-access-token-for-a-service-account) with the following [scopes](../../../user/profile/personal_access_tokens.md#personal-access-token-scopes):
    - `write_repository`
    - `api`

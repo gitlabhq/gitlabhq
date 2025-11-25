@@ -30,9 +30,7 @@ class AbuseReport < ApplicationRecord
   has_many :events, class_name: 'ResourceEvents::AbuseReportEvent', inverse_of: :abuse_report
   has_many :admin_abuse_report_assignees, class_name: "Admin::AbuseReportAssignee"
   has_many :assignees, class_name: "User", through: :admin_abuse_report_assignees
-
   has_many :abuse_events, class_name: 'AntiAbuse::Event', inverse_of: :abuse_report
-
   has_many :user_mentions, class_name: 'AntiAbuse::Reports::UserMention'
 
   validates :reporter, presence: true

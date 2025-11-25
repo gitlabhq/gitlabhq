@@ -271,9 +271,9 @@ Create a connected documentation flow throughout your sprint:
 
 #### During sprint
 
-- Daily standups: Create daily wiki pages with links to blocked issues
-- Technical decisions: Document design decisions with links to implementation issues
-- Impediments: Track blockers in wiki with issue references
+- Daily stand-ups: Create daily wiki pages with links to blocked issues.
+- Technical decisions: Document design decisions with links to implementation issues.
+- Impediments: Track blockers in wiki with issue references.
 
 #### Post-sprint
 

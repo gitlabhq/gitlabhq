@@ -61,12 +61,6 @@ All files in the wiki are available in this Git repository.
 
 ## Configure group wiki visibility
 
-{{< history >}}
-
-- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/208412) in GitLab 15.0.
-
-{{< /history >}}
-
 Wikis are enabled by default in GitLab. Group [administrators](../../permissions.md)
 can enable or disable a group wiki through the group settings.
 

@@ -125,7 +125,7 @@ To move around the image while zoomed in, drag the image.
 
 {{< history >}}
 
-- Ability to edit the description [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/388449) in GitLab 16.1.
+- Edit descriptions [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/388449) in GitLab 16.1.
 - Minimum role to add a design to an issue [changed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/147053) from Developer to Reporter in GitLab 16.11.
 - Minimum role to add a design to an issue [changed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/169256) from Reporter to Planner in GitLab 17.7.
 
@@ -276,7 +276,6 @@ so that everyone involved can participate in the discussion.
 
 {{< history >}}
 
-- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/385100) in GitLab 15.9.
 - Minimum role to delete comment from a design [changed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/169256) from Reporter to Planner in GitLab 17.7.
 
 {{< /history >}}

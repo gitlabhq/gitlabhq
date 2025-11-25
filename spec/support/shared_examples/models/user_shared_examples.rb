@@ -105,7 +105,6 @@ RSpec.shared_examples 'associations with defined deletion strategies', :aggregat
 
   let(:tables_with_known_missing_associations) do
     %w[
-      abuse_report_notes
       abuse_report_uploads
       abuse_trust_scores
       achievement_uploads

@@ -1034,7 +1034,8 @@ class Repository
         author_name: author_name,
         author_email: author_email,
         dry_run: dry_run,
-        target_sha: target_sha
+        target_sha: target_sha,
+        sign: sign_commits?
       )
     end
   end
@@ -1476,7 +1477,7 @@ class Repository
   end
 
   def sign_commits?
-    true
+    ::Repositories::WebBasedCommitSigningSetting.new(self).sign_commits?
   end
 end
 

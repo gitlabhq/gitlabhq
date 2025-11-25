@@ -66,7 +66,14 @@ GitLab provides the following information for you to configure in your identity 
 | Callback/ACS URL    | The URL where your identity provider should send SAML responses after authentication. |
 | Required attributes | Attributes that must be included in the SAML response. At minimum, an attribute mapped to `email` is required. |
 
-If you require encrypted responses, GitLab can provide the necessary certificates upon request.
+When configuring your identity provider, make sure to encrypt SAML assertions.
+GitLab can provide encryption and signing certificates when needed.
+
+Refer to your identity provider's documentation for certificate import steps.
+For Entra ID (Azure AD), see:
+
+- [Configure Microsoft Entra SAML token encryption](https://learn.microsoft.com/en-us/entra/identity/enterprise-apps/howto-saml-token-encryption?tabs=azure-portal)
+- [Enforce signed SAML authentication requests](https://learn.microsoft.com/en-us/entra/identity/enterprise-apps/howto-enforce-signed-saml-authentication)
 
 {{< alert type="note" >}}
 
@@ -103,3 +110,19 @@ Your GitLab Dedicated instance supports these authentication methods:
 
 - [Configure SAML SSO](saml.md)
 - [Configure OIDC](openid_connect.md)
+
+### Troubleshooting
+
+When configuring SAML SSO for Switchboard, you might encounter the following issues.
+
+#### Error: `Invalid SAML response received...`
+
+This error occurs because Switchboard expects encrypted SAML assertions,
+but your identity provider is not configured to encrypt them:
+
+```plaintext
+Invalid SAML response received: Responses must contain exactly one Encrypted Assertion
+```
+
+To resolve this issue, ensure the encryption certificate provided by GitLab
+is imported and enabled in your IdP application settings.

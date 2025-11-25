@@ -48,7 +48,7 @@ For **GitLab Self-Managed** instances, make sure your administrator has
 
 ## Enabling Let's Encrypt integration for your custom domain
 
-Once you've met the requirements, enable Let's Encrypt integration:
+After you've met the requirements, enable Let's Encrypt integration:
 
 1. On the left sidebar, select **Search or go to** and find your project. If you've [turned on the new navigation](../../../interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
 1. Select **Deploy** > **Pages**.

@@ -128,13 +128,15 @@ module Ci
 
         # Keep-alive signal during runner preparation
         # The runner is still preparing and confirming it can handle the job
-        build.heartbeat_runner_ack_wait(build.runner_manager_id_waiting_for_ack)
-
-        Result.new(status: 200)
+        if build.heartbeat_runner_ack_wait(build.runner_manager_id_waiting_for_ack)
+          Result.new(status: 200)
+        else
+          Result.new(status: 400) # Bad request: Job is not in pending state or not assigned to a runner
+        end
       when 'running'
-        # Runner is ready to start execution and has accepted the job - transition job to running state
-        runner_manager = ::Ci::RunnerManager.find_by_id(build.runner_manager_id_waiting_for_ack)
-
+        # Runner is ready to start execution and has accepted the job - transition job to running state after
+        # atomically removing the key from the Redis cache
+        runner_manager = ::Ci::RunnerManager.find_by_id(build.cancel_wait_for_runner_ack)
         if runner_manager.nil?
           return Result.new(status: 400) # Bad request: Job is not in pending state or not assigned to a runner
         end
@@ -143,7 +145,14 @@ module Ci
         build.run!
         build.runner_manager = runner_manager
 
-        nil # Continue processing with update_build_state!
+        nil # Continue processing
+      when 'failed'
+        # Cancel the wait for runner ack before dropping the job
+        # NOTE: Even though the wait is canceled indirectly by UpdateBuildQueueService#pop, we cancel it
+        # as soon as we know that the build has failed, to allow a concurrent call to immediately return HTTP 400
+        build.cancel_wait_for_runner_ack
+
+        update_build_state!
       else
         # Invalid state for two-phase commit workflow
         Result.new(status: 400)

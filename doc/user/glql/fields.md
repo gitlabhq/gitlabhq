@@ -398,7 +398,7 @@ The table below provides an overview of all available query fields and their spe
   ```
 
 - List all issues where the single-select "Subscription" and "Team" custom fields are set to
-  "Free" and "Engineering" respectively:
+  "Free" and "Engineering":
 
   ```plaintext
   customField("Subscription") = "Free" and customField("Team") = "Engineering"
@@ -551,7 +551,7 @@ The table below provides an overview of all available query fields and their spe
 
 ### Group
 
-**Description**: Query issues, epics, or merge requests within all projects in a given group.
+**Description**: Query issues, epics, or merge requests in all projects in a given group.
 
 **Allowed value types**: `String`
 
@@ -660,7 +660,7 @@ The table below provides an overview of all available query fields and their spe
 
 {{< /history >}}
 
-**Description**: Query issues, epics, or merge requests within the entire hierarchy of a group.
+**Description**: Query issues, epics, or merge requests in the entire hierarchy of a group.
 
 **Allowed value types**:
 
@@ -679,7 +679,7 @@ The table below provides an overview of all available query fields and their spe
   group = "gitlab-org" and includeSubgroups = false
   ```
 
-- List issues in any project within the entire hierarchy of the `gitlab-org` group:
+- List issues in any project in the entire hierarchy of the `gitlab-org` group:
 
   ```plaintext
   group = "gitlab-org" and includeSubgroups = true
@@ -961,7 +961,7 @@ The table below provides an overview of all available query fields and their spe
 
 ### Project
 
-**Description**: Query issues or merge requests within a particular project.
+**Description**: Query issues or merge requests in a particular project.
 
 **Allowed value types**: `String`
 

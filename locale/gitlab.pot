@@ -10092,6 +10092,9 @@ msgstr ""
 msgid "Authentication with the AI gateway services succeeded."
 msgstr ""
 
+msgid "Authenticator may have been cloned. Contact your administrator."
+msgstr ""
+
 msgid "Author"
 msgstr ""
 
@@ -20176,6 +20179,12 @@ msgstr ""
 msgid "Could not upload your designs as one or more files uploaded are not supported."
 msgstr ""
 
+msgid "Could not verify device authenticity. Try using a different device."
+msgstr ""
+
+msgid "Could not verify passkey authenticity. Try using a different passkey."
+msgstr ""
+
 msgid "Couldn't assign policy to project or group"
 msgstr ""
 
@@ -21532,6 +21541,48 @@ msgid "Daily"
 msgstr ""
 
 msgid "Dashboard"
+msgstr ""
+
+msgid "Dashboards|Frequently visited groups"
+msgstr ""
+
+msgid "Dashboards|Frequently visited projects"
+msgstr ""
+
+msgid "Dashboards|Groups I'm a member of"
+msgstr ""
+
+msgid "Dashboards|Groups you visit often will appear here."
+msgstr ""
+
+msgid "Dashboards|No groups found"
+msgstr ""
+
+msgid "Dashboards|No projects found"
+msgstr ""
+
+msgid "Dashboards|No projects or groups found"
+msgstr ""
+
+msgid "Dashboards|Projects I'm a member of"
+msgstr ""
+
+msgid "Dashboards|Projects you visit often will appear here."
+msgstr ""
+
+msgid "Dashboards|Search for a project or group..."
+msgstr ""
+
+msgid "Dashboards|Search found %{groups} groups and %{projects} projects"
+msgstr ""
+
+msgid "Dashboards|Searching for groups and projects"
+msgstr ""
+
+msgid "Dashboards|Select a group or project for this analytics dashboard"
+msgstr ""
+
+msgid "Dashboards|Type at least 2 characters to search"
 msgstr ""
 
 msgid "Dashboard|%{firstProject} and %{secondProject}"
@@ -25219,7 +25270,7 @@ msgstr ""
 msgid "DuoAgentsPlatform|An error occurred while fetching users."
 msgstr ""
 
-msgid "DuoAgentsPlatform|Are you sure you want to delete this flow trigger? This action cannot be undone."
+msgid "DuoAgentsPlatform|Are you sure you want to delete this trigger? This action cannot be undone."
 msgstr ""
 
 msgid "DuoAgentsPlatform|Automate"
@@ -25243,7 +25294,7 @@ msgstr ""
 msgid "DuoAgentsPlatform|Could not display logs. Please try again."
 msgstr ""
 
-msgid "DuoAgentsPlatform|Create a new flow trigger."
+msgid "DuoAgentsPlatform|Create a new trigger."
 msgstr ""
 
 msgid "DuoAgentsPlatform|Create commit"
@@ -25252,19 +25303,16 @@ msgstr ""
 msgid "DuoAgentsPlatform|Create file"
 msgstr ""
 
-msgid "DuoAgentsPlatform|Create flow trigger"
-msgstr ""
-
-msgid "DuoAgentsPlatform|Create flow triggers to automatically run pipelines when specified events occur in your project."
-msgstr ""
-
 msgid "DuoAgentsPlatform|Create merge request"
 msgstr ""
 
-msgid "DuoAgentsPlatform|Default"
+msgid "DuoAgentsPlatform|Create trigger"
 msgstr ""
 
-msgid "DuoAgentsPlatform|Delete flow trigger"
+msgid "DuoAgentsPlatform|Create triggers to automatically run pipelines when specified events occur in your project."
+msgstr ""
+
+msgid "DuoAgentsPlatform|Default"
 msgstr ""
 
 msgid "DuoAgentsPlatform|Delete trigger"
@@ -25279,16 +25327,13 @@ msgstr ""
 msgid "DuoAgentsPlatform|Edit file"
 msgstr ""
 
-msgid "DuoAgentsPlatform|Edit flow trigger"
-msgstr ""
-
-msgid "DuoAgentsPlatform|Edit flow trigger."
-msgstr ""
-
 msgid "DuoAgentsPlatform|Edit trigger"
 msgstr ""
 
-msgid "DuoAgentsPlatform|Enter a description for this flow trigger"
+msgid "DuoAgentsPlatform|Edit trigger."
+msgstr ""
+
+msgid "DuoAgentsPlatform|Enter a description for this trigger"
 msgstr ""
 
 msgid "DuoAgentsPlatform|Enter the path to your configuration file."
@@ -25300,10 +25345,10 @@ msgstr ""
 msgid "DuoAgentsPlatform|Event types"
 msgstr ""
 
-msgid "DuoAgentsPlatform|Failed to delete flow trigger."
+msgid "DuoAgentsPlatform|Failed to delete trigger."
 msgstr ""
 
-msgid "DuoAgentsPlatform|Failed to fetch flow triggers"
+msgid "DuoAgentsPlatform|Failed to fetch triggers"
 msgstr ""
 
 msgid "DuoAgentsPlatform|Failed to fetch workflows"
@@ -25313,18 +25358,6 @@ msgid "DuoAgentsPlatform|Fix pipeline"
 msgstr ""
 
 msgid "DuoAgentsPlatform|Flow"
-msgstr ""
-
-msgid "DuoAgentsPlatform|Flow trigger created successfully."
-msgstr ""
-
-msgid "DuoAgentsPlatform|Flow trigger deleted successfully."
-msgstr ""
-
-msgid "DuoAgentsPlatform|Flow trigger not found."
-msgstr ""
-
-msgid "DuoAgentsPlatform|Flow trigger updated successfully."
 msgstr ""
 
 msgid "DuoAgentsPlatform|From the flows configured for this project, select the flow that this trigger will execute."
@@ -25357,16 +25390,16 @@ msgstr ""
 msgid "DuoAgentsPlatform|New agent sessions will appear here."
 msgstr ""
 
-msgid "DuoAgentsPlatform|New flow trigger"
+msgid "DuoAgentsPlatform|New trigger"
 msgstr ""
 
 msgid "DuoAgentsPlatform|No agent sessions yet"
 msgstr ""
 
-msgid "DuoAgentsPlatform|No flow triggers yet"
+msgid "DuoAgentsPlatform|No triggers yet"
 msgstr ""
 
-msgid "DuoAgentsPlatform|Once the service account is configured for use with flow triggers, it cannot be used for other things."
+msgid "DuoAgentsPlatform|Once the service account is configured for use with triggers, it cannot be used for other things."
 msgstr ""
 
 msgid "DuoAgentsPlatform|Owner"
@@ -25426,16 +25459,28 @@ msgstr ""
 msgid "DuoAgentsPlatform|Start agent session"
 msgstr ""
 
-msgid "DuoAgentsPlatform|The flow trigger could not be created. Try again."
+msgid "DuoAgentsPlatform|The trigger could not be created. Try again."
 msgstr ""
 
-msgid "DuoAgentsPlatform|The flow trigger could not be updated. Try again."
+msgid "DuoAgentsPlatform|The trigger could not be updated. Try again."
 msgstr ""
 
 msgid "DuoAgentsPlatform|This session has no activity"
 msgstr ""
 
 msgid "DuoAgentsPlatform|To learn more about this session, view the %{boldStart}Details%{boldEnd} tab."
+msgstr ""
+
+msgid "DuoAgentsPlatform|Trigger created successfully."
+msgstr ""
+
+msgid "DuoAgentsPlatform|Trigger deleted successfully."
+msgstr ""
+
+msgid "DuoAgentsPlatform|Trigger not found."
+msgstr ""
+
+msgid "DuoAgentsPlatform|Trigger updated successfully."
 msgstr ""
 
 msgid "DuoAgentsPlatform|Triggers"
@@ -28318,10 +28363,16 @@ msgstr ""
 msgid "Failed to add a resource link"
 msgstr ""
 
+msgid "Failed to add authentication method. Try again."
+msgstr ""
+
 msgid "Failed to add compliance requirement control %{control_name}: %{error_message}"
 msgstr ""
 
 msgid "Failed to add emoji. Please try again"
+msgstr ""
+
+msgid "Failed to add passkey. Try again."
 msgstr ""
 
 msgid "Failed to apply commands."
@@ -28353,7 +28404,13 @@ msgstr ""
 msgid "Failed to assign you issues related to the merge request."
 msgstr ""
 
-msgid "Failed to authenticate passkey. Log in with your username and passwordto add a passkey for your account. Learn more about setting up passkeys."
+msgid "Failed to authenticate due to a configuration issue. Try again later or contact support."
+msgstr ""
+
+msgid "Failed to authenticate passkey. Log in with your username and password to add a passkey for your account. Learn more about %{passkey_docs_hyperlink}."
+msgstr ""
+
+msgid "Failed to authenticate. Verify your identity with your device."
 msgstr ""
 
 msgid "Failed to cancel auto stop because failed to update the environment."
@@ -28372,6 +28429,9 @@ msgid "Failed to check related branches."
 msgstr ""
 
 msgid "Failed to clone this item: wrong parameters."
+msgstr ""
+
+msgid "Failed to connect to your device. Try again."
 msgstr ""
 
 msgid "Failed to create a branch for this issue. Please try again."
@@ -28699,6 +28759,15 @@ msgid "Failed to upload object map file"
 msgstr ""
 
 msgid "Failed to validate password due to server or connection issue. Try again."
+msgstr ""
+
+msgid "Failed to verify WebAuthn challenge. Try again."
+msgstr ""
+
+msgid "Failed to verify connection security. Try adding the authentication method again."
+msgstr ""
+
+msgid "Failed to verify cryptographic signature. Try authenticating again."
 msgstr ""
 
 msgid "Failure"
@@ -36230,6 +36299,9 @@ msgstr ""
 msgid "Invalid access credentials. %{cta}"
 msgstr ""
 
+msgid "Invalid credential data received. Try registering the device again."
+msgstr ""
+
 msgid "Invalid date"
 msgstr ""
 
@@ -36258,6 +36330,9 @@ msgid "Invalid login or password"
 msgstr ""
 
 msgid "Invalid name %{input} was given for this default stage, allowed names: %{names}"
+msgstr ""
+
+msgid "Invalid passkey data received. Try creating a new passkey."
 msgstr ""
 
 msgid "Invalid pin code."
@@ -48079,6 +48154,9 @@ msgid "Passkey deleted"
 msgstr ""
 
 msgid "Passkey has been deleted!"
+msgstr ""
+
+msgid "Passkey may have been cloned. Contact your administrator."
 msgstr ""
 
 msgid "Passkey registered"
@@ -68246,6 +68324,9 @@ msgstr ""
 msgid "This attachment has been truncated to avoid exceeding the maximum allowed attachment size of %{size_limit}. %{written_count} of %{total_count} projects have been included."
 msgstr ""
 
+msgid "This authentication method is not supported. Use a different authentication method."
+msgstr ""
+
 msgid "This block is self-referential"
 msgstr ""
 
@@ -70950,6 +71031,9 @@ msgid "Unable to update label prioritization at this time"
 msgstr ""
 
 msgid "Unable to update this issue at this time."
+msgstr ""
+
+msgid "Unable to use this authentication method. Try a different authentication method."
 msgstr ""
 
 msgid "Unapprove a merge request"
@@ -78769,6 +78853,9 @@ msgstr ""
 msgid "Your new comment"
 msgstr ""
 
+msgid "Your passkey did not send a valid JSON response."
+msgstr ""
+
 msgid "Your password"
 msgstr ""
 
@@ -81246,6 +81333,9 @@ msgid "service %{service_num} doesn't exist"
 msgstr ""
 
 msgid "service accounts"
+msgstr ""
+
+msgid "setting up passkeys"
 msgstr ""
 
 msgid "severity|Blocker"

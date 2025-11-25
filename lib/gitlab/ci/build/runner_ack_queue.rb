@@ -36,10 +36,11 @@ module Gitlab
         end
 
         # Remove the Redis cache entry containing the runner manager id on which we're waiting on
-        # for acknowledgement (job accepted or job declined)
+        # for acknowledgement (job accepted or job declined).
+        # If it exists, the existing value is atomically retrieved and return, before the key is removed.
         def cancel_wait_for_runner_ack
           with_redis do |redis|
-            redis.del(redis_key)
+            redis.getdel(redis_key)
           end
         end
 

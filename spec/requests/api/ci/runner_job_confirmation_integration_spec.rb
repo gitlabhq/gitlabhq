@@ -231,6 +231,42 @@ RSpec.describe 'Job confirmation integration', :freeze_time, :clean_gitlab_redis
         end
       end
 
+      it 'handles job failure during acknowledgment workflow' do
+        # Step 1: Runner requests a job
+        post '/api/v4/jobs/request', params: runner_params
+
+        expect(response).to have_gitlab_http_status(:created)
+        job_response = Gitlab::Json.parse(response.body)
+        job_id = job_response['id']
+        job_token = job_response['token']
+
+        # Verify job is assigned to runner but still pending
+        job = Ci::Build.find(job_id)
+        expect(job).to be_pending
+        expect(job.runner_ack_wait_status).to eq(:waiting)
+        expect(job.runner_manager_id_waiting_for_ack).to eq(runner_manager.id)
+
+        # Step 2: Runner reports job failure during preparation
+        put "/api/v4/jobs/#{job_id}", params: {
+          token: job_token,
+          state: 'failed',
+          failure_reason: 'runner_system_failure',
+          exit_code: 1
+        }
+
+        expect(response).to have_gitlab_http_status(:ok)
+
+        # Verify job transitioned to failed
+        job.reload
+        expect(job).to be_failed
+        expect(job.failure_reason).to eq('runner_system_failure')
+        expect(job.runner_ack_wait_status).to eq(:not_waiting)
+        expect(job.runner_manager_id_waiting_for_ack).to be_nil
+
+        # Verify no running build tracking entry was created
+        expect(Ci::RunningBuild.find_by(build: job)).to be_nil
+      end
+
       context 'when allow_runner_job_acknowledgement feature flag is disabled' do
         before do
           stub_feature_flags(allow_runner_job_acknowledgement: false)
