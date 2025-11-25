@@ -7,7 +7,7 @@ function addReactiveDiscussionProps(discussion) {
     repliesExpanded: true,
     isReplying: false,
     notes: discussion.notes.map((note) => {
-      return Object.assign(note, { isEditing: false });
+      return Object.assign(note, { isEditing: false, editedNote: null });
     }),
   });
 }
@@ -51,6 +51,9 @@ export const useDiffDiscussions = defineStore('diffDiscussions', {
     },
     updateNote(note) {
       merge(this.allNotesById[note.id], note);
+    },
+    editNote({ note, value }) {
+      note.editedNote = value;
     },
     deleteNote(note) {
       const { notes } = this.getDiscussionById(note.discussion_id);
@@ -103,6 +106,23 @@ export const useDiffDiscussions = defineStore('diffDiscussions', {
     },
     setNewLineDiscussionFormAutofocus(discussion, value) {
       discussion.shouldFocus = value;
+    },
+    toggleAward({ note, award }) {
+      const existingAwardIndex = note.award_emoji.findIndex(
+        (emoji) => emoji.name === award && isCurrentUser(emoji.user.id),
+      );
+      if (existingAwardIndex !== -1) {
+        note.award_emoji.splice(existingAwardIndex, 1);
+      } else {
+        note.award_emoji.push({
+          name: award,
+          user: {
+            id: window.gon?.current_user_id,
+            name: window.gon?.current_user_fullname,
+            username: window.gon?.current_username,
+          },
+        });
+      }
     },
     /* eslint-enable no-param-reassign */
   },

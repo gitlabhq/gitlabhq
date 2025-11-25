@@ -497,7 +497,9 @@ export default {
       return discussionId.split('/')[discussionId.split('/').length - 1];
     },
     isSystemNote(note) {
-      return note.notes.nodes[0].system;
+      // Only treat notes with only ONE node as system node
+      // Some legacy system notes are part of a thread and user notes attached
+      return note.notes.nodes.length === 1 && note.notes.nodes[0].system;
     },
     setSort(direction) {
       this.sortOrder = direction;

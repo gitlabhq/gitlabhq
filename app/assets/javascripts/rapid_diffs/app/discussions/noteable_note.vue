@@ -12,8 +12,8 @@ import { detectAndConfirmSensitiveTokens } from '~/lib/utils/secret_detection';
 import { updateNoteErrorMessage } from '~/notes/utils';
 import { isCurrentUser } from '~/lib/utils/common_utils';
 import NoteActions from '~/notes/components/note_actions.vue';
-import NoteBody from '~/notes/components/note_body.vue';
 import NoteHeader from './note_header.vue';
+import NoteBody from './note_body.vue';
 
 export default {
   name: 'NoteableNote',
@@ -170,6 +170,17 @@ export default {
       }
       this.$emit('cancelEditing');
     }),
+    async toggleAward(name) {
+      try {
+        await axios.post(this.note.toggle_award_path, { name });
+        this.$emit('toggleAward', name);
+      } catch (error) {
+        createAlert({
+          message: __('Failed to set a reaction. Please try again.'),
+          error,
+        });
+      }
+    },
   },
 };
 </script>
@@ -224,7 +235,7 @@ export default {
           @delete="onDelete"
           @startEditing="$emit('startEditing')"
           @startReplying="$emit('startReplying')"
-          @award="$emit('award', $event)"
+          @award="toggleAward"
         />
       </div>
       <div class="timeline-discussion-body">
@@ -236,7 +247,8 @@ export default {
           :restore-from-autosave="restoreFromAutosave"
           :save-note="saveNote"
           @cancelEditing="onCancelEditing"
-          @award="$emit('award', $event)"
+          @input="$emit('noteEdited', $event)"
+          @award="toggleAward"
         />
       </div>
     </div>

@@ -161,8 +161,10 @@ export default {
               @startReplying="showReplyForm"
               @noteUpdated="$emit('noteUpdated', $event)"
               @noteDeleted="$emit('noteDeleted', $event)"
+              @noteEdited="$emit('noteEdited', $event)"
               @startEditing="$emit('startEditing', $event)"
               @cancelEditing="$emit('cancelEditing', $event)"
+              @toggleAward="$emit('toggleAward', $event)"
             >
               <template #avatar-badge>
                 <slot name="avatar-badge"></slot>

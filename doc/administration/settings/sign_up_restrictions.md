@@ -91,7 +91,7 @@ The following settings are available:
 - **Soft** - Send a confirmation email during sign up. New users can sign in immediately, but must confirm their email in three days. After three days, the user is not able to sign in until they confirm their email.
 - **Off** - New users can sign up without confirming their email address.
 
-## Turn on restricted access
+## Restricted access
 
 {{< details >}}
 
@@ -107,22 +107,34 @@ The following settings are available:
 
 {{< /history >}}
 
+When you turn on restricted access, instances cannot add new billable users when no licensed seats
+are left in the subscription.
+
+Restrictive access is a more restrictive setting than user cap,
+as it prevents additions rather than requiring approval of new users.
+
 Use restricted access to prevent overage fees.
 Overage fees occur when you exceed the number of licensed users in your subscription,
 and must be paid at the next [quarterly reconciliation](../../subscriptions/quarterly_reconciliation.md).
 
-When you turn on restricted access, instances cannot add new billable users when there are no licensed seats
-left in the subscription.
+### Turn on restricted access
 
 Prerequisites:
 
 - You must be an administrator.
+- The group or one of its subgroups or projects must not be shared externally.
 
 To turn on restricted access:
 
 1. On the left sidebar, select **Settings** > **General**.
 1. Expand **Sign-up restrictions**.
 1. Under **Seat control**, select **Restricted access**.
+
+When you turn on restricted access, the following settings are disabled automatically:
+
+- [Project sharing for the group and its subgroups](../../user/project/members/sharing_projects_groups.md#prevent-a-project-from-being-shared-with-groups).
+- [Inviting groups outside the group hierarchy](../../user/project/members/sharing_projects_groups.md#prevent-inviting-groups-outside-the-group-hierarchy).
+  This setting prevents unexpectedly adding new billable users, which might result in overage fees.
 
 ### Known issues
 
@@ -153,6 +165,16 @@ by an administrator. Users can use their account only after they have been appro
 
 If an administrator increases or removes the user cap, users pending approval are automatically approved.
 
+The number of [billable users](../../subscriptions/manage_users_and_seats.md#billable-users) is updated once a day.
+The user cap might apply only retrospectively after the cap has already been exceeded.
+If the cap is set to a value below the current number of billable users (for example, `1`), the cap is enabled immediately.
+
+When you set a user cap, the following settings are disabled automatically:
+
+- [Project sharing for the group and its subgroups](../../user/project/members/sharing_projects_groups.md#prevent-a-project-from-being-shared-with-groups).
+- [Inviting groups outside the group hierarchy](../../user/project/members/sharing_projects_groups.md#prevent-inviting-groups-outside-the-group-hierarchy).
+  This setting prevents unexpectedly adding new billable users, which might result in overage fees.
+
 You can also set up [user caps for individual groups](../../user/group/manage.md#user-cap-for-groups).
 
 {{< alert type="note" >}}
@@ -164,12 +186,6 @@ You can set a user cap to enforce approvals for new users.
 {{< /alert >}}
 
 ### Set a user cap
-
-Set a user cap to restrict the number of users who can sign up without administrator approval.
-
-The number of [billable users](../../subscriptions/manage_users_and_seats.md#billable-users) is updated once a day.
-The user cap might apply only retrospectively after the cap has already been exceeded.
-If the cap is set to a value below the current number of billable users (for example, `1`), the cap is enabled immediately.
 
 Prerequisites:
 

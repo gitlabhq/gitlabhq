@@ -34,6 +34,7 @@ For more information, see the history.
 The GitLab virtual registry is available as part of the GitLab [beta](../../../policy/development_stages_support.md#beta) program. While it is currently available on Premium and Ultimate, final availability and pricing will be announced when the virtual registry is generally available.
 
 {{< /alert >}}
+
 Use the GitLab virtual registry to proxy, cache, and distribute packages from multiple upstream registries behind a single, well-known URL.
 
 With this approach, you can configure your applications to use one virtual registry instead of multiple upstream registries.

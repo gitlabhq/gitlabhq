@@ -27,12 +27,12 @@ describe('NoteableDiscussion', () => {
   let axiosMock;
   let defaultProps;
 
-  const createDiscussion = (props) => ({
+  const createDiscussion = (discussionProps, noteProps) => ({
     id: 'discussion-1',
     reply_id: 'reply-1',
     internal: false,
-    notes: [{ id: 'note-1', internal: false }],
-    ...props,
+    notes: [{ id: 'note-1', internal: false, ...noteProps }],
+    ...discussionProps,
   });
 
   const defaultProvide = {
@@ -158,6 +158,22 @@ describe('NoteableDiscussion', () => {
     createComponent();
     wrapper.findComponent(DiscussionNotes).vm.$emit('cancelEditing', note);
     expect(wrapper.emitted('cancelEditing')).toStrictEqual([[note]]);
+  });
+
+  it('propagates toggleAward event', () => {
+    const note = {};
+    const award = 'smile';
+    createComponent();
+    wrapper.findComponent(DiscussionNotes).vm.$emit('toggleAward', { note, award });
+    expect(wrapper.emitted('toggleAward')).toStrictEqual([[{ note, award }]]);
+  });
+
+  it('propagates noteEdited event', () => {
+    const note = {};
+    const value = 'edit';
+    createComponent();
+    wrapper.findComponent(DiscussionNotes).vm.$emit('noteEdited', { note, value });
+    expect(wrapper.emitted('noteEdited')).toStrictEqual([[{ note, value }]]);
   });
 
   describe('when saving reply', () => {

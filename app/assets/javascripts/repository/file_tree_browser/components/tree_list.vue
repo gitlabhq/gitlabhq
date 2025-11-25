@@ -7,7 +7,7 @@ import FileTreeBrowserToggle from '~/repository/file_tree_browser/components/fil
 import { s__, __ } from '~/locale';
 import { waitForElement } from '~/lib/utils/dom_utils';
 import { InternalEvents } from '~/tracking';
-import { joinPaths } from '~/lib/utils/url_utility';
+import { joinPaths, buildURLwithRefType } from '~/lib/utils/url_utility';
 import paginatedTreeQuery from 'shared_queries/repository/paginated_tree.query.graphql';
 import { TREE_PAGE_SIZE } from '~/repository/constants';
 import { getRefType } from '~/repository/utils/ref_type';
@@ -155,11 +155,14 @@ export default {
         directoryList.push({
           id: `${treePath}-${tree.id}-${index}`,
           path: treePath,
-          routerPath: joinPaths(
-            '/-/tree',
-            this.escapedRef,
-            treePath.split('/').map(encodeURIComponent).join('/'),
-          ),
+          routerPath: buildURLwithRefType({
+            path: joinPaths(
+              '/-/tree',
+              this.escapedRef,
+              treePath.split('/').map(encodeURIComponent).join('/'),
+            ),
+            refType: this.refType,
+          }),
           type: 'tree',
           name: tree.name,
           level,
@@ -187,11 +190,14 @@ export default {
           id: `${blobPath}-${blob.id}-${index}`,
           fileHash: blob.sha,
           path: blobPath,
-          routerPath: joinPaths(
-            '/-/blob',
-            this.escapedRef,
-            blobPath.split('/').map(encodeURIComponent).join('/'),
-          ),
+          routerPath: buildURLwithRefType({
+            path: joinPaths(
+              '/-/blob',
+              this.escapedRef,
+              blobPath.split('/').map(encodeURIComponent).join('/'),
+            ),
+            refType: this.refType,
+          }),
           name: blob.name,
           mode: blob.mode,
           level,

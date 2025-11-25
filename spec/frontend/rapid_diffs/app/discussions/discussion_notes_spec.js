@@ -60,6 +60,22 @@ describe('DiscussionNotes', () => {
         wrapper.findComponent(NoteableNote).vm.$emit('startReplying');
         expect(wrapper.emitted('startReplying')).toStrictEqual([[]]);
       });
+
+      it('propagates toggleAward event', () => {
+        const award = 'smile';
+        const note = { id: 'foo' };
+        createComponent({ notes: [note] });
+        wrapper.findComponent(NoteableNote).vm.$emit('toggleAward', award);
+        expect(wrapper.emitted('toggleAward')).toStrictEqual([[{ note, award }]]);
+      });
+
+      it('propagates noteEdited event', () => {
+        const value = 'smile';
+        const note = { id: 'foo' };
+        createComponent({ notes: [note] });
+        wrapper.findComponent(NoteableNote).vm.$emit('noteEdited', value);
+        expect(wrapper.emitted('noteEdited')).toStrictEqual([[{ note, value }]]);
+      });
     });
 
     describe('all notes', () => {
@@ -94,11 +110,18 @@ describe('DiscussionNotes', () => {
           expect(wrapper.emitted('noteUpdated')).toStrictEqual([[updatedNote]]);
         });
 
-        it('propagates award event', () => {
+        it('propagates toggleAward event', () => {
           const award = 'smile';
           createComponent({ notes });
-          findNoteableNote().vm.$emit('award', award);
-          expect(wrapper.emitted('award')).toStrictEqual([[{ note, award }]]);
+          findNoteableNote().vm.$emit('toggleAward', award);
+          expect(wrapper.emitted('toggleAward')).toStrictEqual([[{ note, award }]]);
+        });
+
+        it('propagates noteEdited event', () => {
+          const value = 'smile';
+          createComponent({ notes });
+          findNoteableNote().vm.$emit('noteEdited', value);
+          expect(wrapper.emitted('noteEdited')).toStrictEqual([[{ note, value }]]);
         });
       });
     });

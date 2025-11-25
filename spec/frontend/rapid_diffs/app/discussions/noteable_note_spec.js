@@ -6,7 +6,7 @@ import { nextTick } from 'vue';
 import NoteableNote from '~/rapid_diffs/app/discussions/noteable_note.vue';
 import NoteHeader from '~/rapid_diffs/app/discussions/note_header.vue';
 import NoteActions from '~/notes/components/note_actions.vue';
-import NoteBody from '~/notes/components/note_body.vue';
+import NoteBody from '~/rapid_diffs/app/discussions/note_body.vue';
 import { confirmAction } from '~/lib/utils/confirm_via_gl_modal/confirm_via_gl_modal';
 import { createAlert } from '~/alert';
 import {
@@ -148,6 +148,12 @@ describe('NoteableNote', () => {
     });
   });
 
+  it('propagates note edited event', () => {
+    createComponent();
+    findNoteBody().vm.$emit('input', 'edit');
+    expect(wrapper.emitted('noteEdited')).toStrictEqual([['edit']]);
+  });
+
   describe('note deletion', () => {
     it('confirms deletion, sends DELETE request, and emits noteDeleted on success', async () => {
       mockAdapter.onDelete(defaultProps.note.path).reply(HTTP_STATUS_OK);
@@ -190,9 +196,7 @@ describe('NoteableNote', () => {
     });
   });
 
-  // TODO: enable when NoteBody is migrated
-  // eslint-disable-next-line jest/no-disabled-tests
-  describe.skip('note editing/saving via NoteBody', () => {
+  describe('note editing/saving via NoteBody', () => {
     const noteText = 'updated note content';
 
     it('scrolls element into view when editing', async () => {
@@ -278,5 +282,27 @@ describe('NoteableNote', () => {
 
       expect(wrapper.emitted('cancelEditing')).toBeUndefined();
     });
+  });
+
+  it('handles award event on note body', async () => {
+    const award = 'smile';
+    const awardPath = '/award';
+    const note = createNote({ toggle_award_path: awardPath });
+    mockAdapter.onPost(awardPath, { name: award }).reply(HTTP_STATUS_OK);
+    createComponent({ note });
+    await wrapper.findComponent(NoteBody).vm.$emit('award', award);
+    await axios.waitForAll();
+    expect(wrapper.emitted('toggleAward')).toStrictEqual([[award]]);
+  });
+
+  it('handles award event on note actions', async () => {
+    const award = 'smile';
+    const awardPath = '/award';
+    const note = createNote({ toggle_award_path: awardPath });
+    mockAdapter.onPost(awardPath, { name: award }).reply(HTTP_STATUS_OK);
+    createComponent({ note });
+    await wrapper.findComponent(NoteActions).vm.$emit('award', award);
+    await axios.waitForAll();
+    expect(wrapper.emitted('toggleAward')).toStrictEqual([[award]]);
   });
 });

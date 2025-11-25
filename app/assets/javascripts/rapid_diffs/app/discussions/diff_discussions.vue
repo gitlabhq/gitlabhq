@@ -19,11 +19,13 @@ export default {
       'addNote',
       'updateNote',
       'deleteNote',
+      'editNote',
       'setEditingMode',
       'toggleDiscussionReplies',
       'requestLastNoteEditing',
       'startReplying',
       'stopReplying',
+      'toggleAward',
     ]),
   },
 };
@@ -44,10 +46,12 @@ export default {
           @replyAdded="addNote"
           @noteUpdated="updateNote"
           @noteDeleted="deleteNote"
+          @noteEdited="editNote"
           @startEditing="setEditingMode($event, true)"
           @cancelEditing="setEditingMode($event, false)"
           @startReplying="startReplying(discussion)"
           @stopReplying="stopReplying(discussion)"
+          @toggleAward="toggleAward"
         />
       </ul>
     </div>

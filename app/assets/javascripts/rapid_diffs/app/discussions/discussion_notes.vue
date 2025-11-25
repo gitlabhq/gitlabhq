@@ -52,10 +52,11 @@ export default {
         :show-reply-button="userPermissions.can_create_note"
         @noteDeleted="$emit('noteDeleted', firstNote)"
         @noteUpdated="$emit('noteUpdated', $event)"
+        @noteEdited="$emit('noteEdited', { note: firstNote, value: $event })"
         @startReplying="$emit('startReplying')"
         @startEditing="$emit('startEditing', firstNote)"
         @cancelEditing="$emit('cancelEditing', firstNote)"
-        @award="$emit('award', { note: firstNote, award: $event })"
+        @toggleAward="$emit('toggleAward', { note: firstNote, award: $event })"
       >
         <template #avatar-badge>
           <slot name="avatar-badge"></slot>
@@ -80,9 +81,10 @@ export default {
               :note="note"
               @noteDeleted="$emit('noteDeleted', note)"
               @noteUpdated="$emit('noteUpdated', $event)"
+              @noteEdited="$emit('noteEdited', { note, value: $event })"
               @startEditing="$emit('startEditing', note)"
               @cancelEditing="$emit('cancelEditing', note)"
-              @award="$emit('award', { note, award: $event })"
+              @toggleAward="$emit('toggleAward', { note, award: $event })"
             >
               <template #avatar-badge>
                 <slot name="avatar-badge"></slot>

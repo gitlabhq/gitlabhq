@@ -13,6 +13,7 @@ describe('diffDiscussions store', () => {
       useDiffDiscussions().setInitialDiscussions(discussions);
       expect(useDiffDiscussions().discussions[0].repliesExpanded).toBe(true);
       expect(useDiffDiscussions().discussions[0].notes[0].isEditing).toBe(false);
+      expect(useDiffDiscussions().discussions[0].notes[0].editedNote).toBeNull();
     });
   });
 
@@ -93,6 +94,17 @@ describe('diffDiscussions store', () => {
       ];
       useDiffDiscussions().updateNote({ id: 'foo', discussion_id: 'abc', note: 'Hello world!' });
       expect(useDiffDiscussions().discussions[0].notes[0].note).toBe('Hello world!');
+    });
+  });
+
+  describe('editNote', () => {
+    it('updates existing note', () => {
+      const value = 'edit';
+      const note = { id: 'foo', discussion_id: 'abc', note: 'Hello!' };
+      useDiffDiscussions().discussions = [{ id: 'abc', notes: [note] }];
+      useDiffDiscussions().editNote({ note, value });
+      expect(useDiffDiscussions().discussions[0].notes[0].note).toBe('Hello!');
+      expect(useDiffDiscussions().discussions[0].notes[0].editedNote).toBe(value);
     });
   });
 
@@ -283,6 +295,85 @@ describe('diffDiscussions store', () => {
       expect(useDiffDiscussions().getDiscussionById(targetDiscussion.id)).toStrictEqual(
         targetDiscussion,
       );
+    });
+  });
+
+  describe('toggleAward', () => {
+    beforeEach(() => {
+      window.gon.current_user_id = 1;
+      window.gon.current_user_fullname = 'Test User';
+      window.gon.current_username = 'testuser';
+    });
+
+    it('adds award when it does not exist', () => {
+      const note = { id: 'foo', award_emoji: [] };
+      useDiffDiscussions().discussions = [{ id: 'abc', notes: [{}, note] }];
+
+      useDiffDiscussions().toggleAward({ note, award: 'thumbsup' });
+
+      expect(useDiffDiscussions().discussions[0].notes[1].award_emoji).toHaveLength(1);
+      expect(useDiffDiscussions().discussions[0].notes[1].award_emoji[0]).toStrictEqual({
+        name: 'thumbsup',
+        user: {
+          id: 1,
+          name: 'Test User',
+          username: 'testuser',
+        },
+      });
+    });
+
+    it('removes award when current user already awarded it', () => {
+      const note = {
+        id: 'foo',
+        award_emoji: [
+          {
+            name: 'thumbsup',
+            user: { id: 1, name: 'Test User', username: 'testuser' },
+          },
+        ],
+      };
+      useDiffDiscussions().discussions = [{ id: 'abc', notes: [{}, note] }];
+
+      useDiffDiscussions().toggleAward({ note, award: 'thumbsup' });
+
+      expect(useDiffDiscussions().discussions[0].notes[1].award_emoji).toHaveLength(0);
+    });
+
+    it('does not remove award from another user', () => {
+      const note = {
+        id: 'foo',
+        award_emoji: [
+          {
+            name: 'thumbsup',
+            user: { id: 2, name: 'Other User', username: 'otheruser' },
+          },
+        ],
+      };
+      useDiffDiscussions().discussions = [{ id: 'abc', notes: [{}, note] }];
+
+      useDiffDiscussions().toggleAward({ note, award: 'thumbsup' });
+
+      expect(useDiffDiscussions().discussions[0].notes[1].award_emoji).toHaveLength(2);
+      expect(useDiffDiscussions().discussions[0].notes[1].award_emoji[0].user.id).toBe(2);
+      expect(useDiffDiscussions().discussions[0].notes[1].award_emoji[1].user.id).toBe(1);
+    });
+
+    it('handles multiple awards from same user', () => {
+      const note = {
+        id: 'foo',
+        award_emoji: [
+          {
+            name: 'thumbsup',
+            user: { id: 1, name: 'Test User', username: 'testuser' },
+          },
+        ],
+      };
+      useDiffDiscussions().discussions = [{ id: 'abc', notes: [{}, note] }];
+
+      useDiffDiscussions().toggleAward({ note, award: 'heart' });
+
+      expect(useDiffDiscussions().discussions[0].notes[1].award_emoji).toHaveLength(2);
+      expect(useDiffDiscussions().discussions[0].notes[1].award_emoji[1].name).toBe('heart');
     });
   });
 

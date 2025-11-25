@@ -385,7 +385,7 @@ The output lists direct members and members inherited from the ancestor groups.
 For members with `Minimal Access` in the selected group, their `Max Role` and `Source` are derived from their membership in subgroups.
 [Issue 390358](https://gitlab.com/gitlab-org/gitlab/-/issues/390358) tracks the discussion about the group members CSV export list not matching the UI members list.
 
-## Turn on restricted access
+## Restricted access
 
 {{< details >}}
 
@@ -413,6 +413,8 @@ left in the subscription.
 If [user cap](#user-cap-for-groups) is enabled for a group that has pending members, when you enable restricted access all pending members are automatically removed from the group.
 
 {{< /alert >}}
+
+### Turn on restricted access
 
 Prerequisites:
 
@@ -475,13 +477,13 @@ When you specify a user cap, any members added through group sharing lose access
 
 {{< /alert >}}
 
-### Specify a user cap for a group
+### Set a user cap for a group
 
 Prerequisites:
 
 - You must be assigned the Owner role for the group.
 
-To specify a user cap:
+To set a user cap:
 
 1. On the left sidebar, select **Search or go to** and find your group. If you've [turned on the new navigation](../interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
    You can set a cap on the top-level group only.
@@ -537,7 +539,9 @@ The user cap cannot be enabled if a group, subgroup, or project is shared extern
 or project is shared externally, it is shared outside of the namespace hierarchy, regardless of its level
 in the hierarchy.
 
-To ensure that the user cap applies when groups, subgroups, or projects are shared externally, restrict group sharing only in the top-level namespace. A top-level namespace restriction allows invitations in the same namespace and prevents new user (seat) additions from external shares.
+To ensure that the user cap applies when groups, subgroups, or projects are shared externally,
+[restrict group sharing only in the top-level namespace](../../user/project/members/sharing_projects_groups.md#prevent-inviting-groups-outside-the-group-hierarchy).
+A top-level namespace restriction allows invitations in the same namespace and prevents new user (seat) additions from external shares.
 
 GitLab.com Ultimate has a [known issue](https://gitlab.com/gitlab-org/gitlab/-/issues/441504) where you cannot add guest users to a group when billable users exceed the user cap. For example, suppose you have a user cap of 5, with 3 developers, and 2 guests. After you add 2 more developers, you cannot add any more users, even if they are guest users that don't consume a billable seat.
 

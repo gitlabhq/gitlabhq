@@ -26,6 +26,9 @@ Vue.use(PiniaVuePlugin);
 jest.mock('~/repository/utils/ref_type', () => ({ getRefType: jest.fn(() => 'MOCK_REF_TYPE') }));
 jest.mock('~/lib/utils/url_utility', () => ({
   joinPaths: jest.fn((...args) => args.join('/').replace(/\/+/g, '/')),
+  buildURLwithRefType: jest.fn(({ path, refType }) =>
+    refType ? `${path}?ref_type=${refType.toLowerCase()}` : path,
+  ),
 }));
 jest.mock('~/behaviors/shortcuts/shortcuts_toggle');
 jest.mock('~/lib/utils/dom_utils');
@@ -44,7 +47,7 @@ describe('Tree List', () => {
     });
   };
 
-  const createComponent = async (apiResponse = mockResponse) => {
+  const createComponent = async (apiResponse = mockResponse, options = {}) => {
     const currentRef = 'main';
     getQueryHandlerSuccess = jest.fn().mockResolvedValue(apiResponse);
 
@@ -56,10 +59,15 @@ describe('Tree List', () => {
     wrapper = shallowMountExtended(TreeList, {
       apolloProvider,
       pinia,
-      propsData: { projectPath: 'group/project', currentRef, refType: 'branch' },
+      propsData: {
+        projectPath: 'group/project',
+        currentRef: 'main',
+        refType: 'heads',
+        ...options.propsData,
+      },
       mocks: {
         $router: { push: jest.fn() },
-        $route: { params: {}, $apollo: { query: jest.fn() } },
+        $route: { params: {}, $apollo: { query: jest.fn() }, ...options.mocks?.$route },
       },
     });
 
@@ -111,10 +119,10 @@ describe('Tree List', () => {
         level: 0,
         name: 'dir_2',
         path: '/dir_1/dir_2',
-        routerPath: '/-/tree/main/dir_1/dir_2',
+        routerPath: '/-/tree/main/dir_1/dir_2?ref_type=heads',
         type: 'tree',
       },
-      fileUrl: '/-/tree/main/dir_1/dir_2',
+      fileUrl: '/-/tree/main/dir_1/dir_2?ref_type=heads',
       level: 0,
     });
 
@@ -127,9 +135,9 @@ describe('Tree List', () => {
         mode: '100644',
         name: 'file.txt',
         path: '/dir_1/file.txt',
-        routerPath: '/-/blob/main/dir_1/file.txt',
+        routerPath: '/-/blob/main/dir_1/file.txt?ref_type=heads',
       },
-      fileUrl: '/-/blob/main/dir_1/file.txt',
+      fileUrl: '/-/blob/main/dir_1/file.txt?ref_type=heads',
       level: 0,
     });
   });
@@ -549,7 +557,9 @@ describe('Tree List', () => {
       findTree().trigger('keydown', { key });
       await nextTick();
 
-      expect(wrapper.vm.$router.push).toHaveBeenCalledWith('/-/blob/main/dir_1/file.txt');
+      expect(wrapper.vm.$router.push).toHaveBeenCalledWith(
+        '/-/blob/main/dir_1/file.txt?ref_type=heads',
+      );
     });
 
     it('does not move focus beyond list boundaries', async () => {
@@ -652,7 +662,8 @@ describe('Tree List', () => {
       expect(fileRows.at(2).props('file')).toMatchObject({
         name: 'file with spaces & special#chars.txt',
         path: '/dir_1/file with spaces & special#chars.txt',
-        routerPath: '/-/blob/main/dir_1/file%20with%20spaces%20%26%20special%23chars.txt',
+        routerPath:
+          '/-/blob/main/dir_1/file%20with%20spaces%20%26%20special%23chars.txt?ref_type=heads',
       });
     });
 
@@ -674,8 +685,32 @@ describe('Tree List', () => {
       expect(findFileRows().at(1).props('file')).toMatchObject({
         name: 'dir with spaces & special#chars',
         path: '/dir_1/dir with spaces & special#chars',
-        routerPath: '/-/tree/main/dir_1/dir%20with%20spaces%20%26%20special%23chars',
+        routerPath: '/-/tree/main/dir_1/dir%20with%20spaces%20%26%20special%23chars?ref_type=heads',
       });
+    });
+  });
+
+  describe('ref_type preservation in URLs', () => {
+    it('includes ref_type in router paths when refType prop is provided', async () => {
+      await createComponent();
+
+      const fileRows = findFileRows();
+
+      expect(fileRows.at(0).props('file').routerPath).toBe(
+        '/-/tree/main/dir_1/dir_2?ref_type=heads',
+      );
+      expect(fileRows.at(1).props('file').routerPath).toBe(
+        '/-/blob/main/dir_1/file.txt?ref_type=heads',
+      );
+    });
+
+    it('excludes ref_type when refType prop is empty', async () => {
+      await createComponent(mockResponse, { propsData: { refType: '' } });
+
+      const fileRows = findFileRows();
+
+      expect(fileRows.at(0).props('file').routerPath).toBe('/-/tree/main/dir_1/dir_2');
+      expect(fileRows.at(1).props('file').routerPath).toBe('/-/blob/main/dir_1/file.txt');
     });
   });
 });
