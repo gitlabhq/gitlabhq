@@ -286,6 +286,12 @@ capitalization, to your commit message.
 Alternatively, with Git 2.10 or later, use the `ci.skip` [Git push option](../../topics/git/commit.md#push-options-for-gitlab-cicd).
 The `ci.skip` push option does not skip merge request pipelines.
 
+When you skip a pipeline:
+
+- An empty pipeline, with no jobs or stages, is still created in GitLab.
+  The pipeline appears in the UI and can be returned in API responses.
+- The pipeline status is **Skipped** in the UI, and `skipped` in the API.
+
 {{< alert type="note" >}}
 
 Pipeline execution policies and scan execution policies can restrict or disable the `[skip ci]` directive.

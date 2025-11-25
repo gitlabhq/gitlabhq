@@ -111,17 +111,31 @@ Packages can be pulled from your project, group, or instance.
 
 {{< /details >}}
 
-When a package is not found in your project's package registry, GitLab can forward the request to the corresponding public registry. For example, Maven Central, npmjs, or PyPI.
+Prerequisites:
 
-The default forwarding behavior varies by package type and can introduce a [dependency confusion vulnerability](https://medium.com/@alex.birsan/dependency-confusion-4a5d60fec610).
+- On GitLab.com: You must be the Owner of the group.
+- On GitLab Self-Managed: You must be an administrator.
+
+When a package is not found in your project's package registry, requests are forwarded to the corresponding public registry of the package manager.
+
+The default forwarding behavior varies by package type and can introduce a [dependency confusion vulnerability](https://medium.com/@alex.birsan/dependency-confusion-4a5d60fec610). The table below shows which package managers support package forwarding.
 
 To reduce the associated security risks:
 
 - Verify the package is not being actively used.
-- Disable request forwarding:
-  - Instance administrators can disable forwarding in the [**Continuous Integration** section](../../../administration/settings/continuous_integration.md#control-package-forwarding) of the **Admin** area.
-  - Group owners can disable forwarding in the **Packages and Registries** section of the group settings.
 - Implement a version control tool, like Git, to track changes to packages.
+- Turn off request forwarding:
+  - Instance administrators can disable forwarding in the **Admin** area. For more information, see [Control package forwarding](../../../administration/settings/continuous_integration.md#control-package-forwarding).
+  - Group owners can turn off package forwarding in the group settings.
+
+To turn off request forwarding for a group:
+
+1. On the left sidebar, select **Search or go to** and find your group. If you've [turned on the new navigation](../../../user/interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
+1. On the left sidebar, select **Settings** > **Packages and registries**.
+1. Under **Package forwarding**, clear either of the following checkboxes:
+   - **Forward npm package requests**
+   - **Forward PyPI package requests**
+1. Select **Save changes**.
 
 | Package type                                           | Supports request forwarding | Security considerations |
 |--------------------------------------------------------|-----------------------------|------------------------|
@@ -129,34 +143,37 @@ To reduce the associated security risks:
 | [Maven (with `gradle`)](../maven_repository/_index.md) | [Yes (disabled by default)](../../../administration/settings/continuous_integration.md#control-package-forwarding) | Requires explicit opt-in for security. |
 | [Maven (with `sbt`)](../maven_repository/_index.md)    | [Yes (disabled by default)](../../../administration/settings/continuous_integration.md#control-package-forwarding) | Requires explicit opt-in for security. |
 | [npm](../npm_registry/_index.md)                       | [Yes](../../../administration/settings/continuous_integration.md#control-package-forwarding) | Consider disabling for private packages. |
-| [NuGet](../nuget_repository/_index.md)                 | N                           | N |
 | [PyPI](../pypi_repository/_index.md)                   | [Yes](../../../administration/settings/continuous_integration.md#control-package-forwarding) | Consider disabling for private packages. |
-| [Generic packages](../generic_packages/_index.md)      | N                           | N |
-| [Terraform](../terraform_module_registry/_index.md)    | N                           | N |
-| [Composer](../composer_repository/_index.md)           | N                           | N |
-| [Conan 1](../conan_1_repository/_index.md)               | N                           | N |
-| [Conan 2](../conan_2_repository/_index.md)               | N                           | N |
-| [Helm](../helm_repository/_index.md)                   | N                           | N |
-| [Debian](../debian_repository/_index.md)               | N                           | N |
-| [Go](../go_proxy/_index.md)                            | N                           | N |
-| [Ruby gems](../rubygems_registry/_index.md)            | N                           | N |
+| [NuGet](../nuget_repository/_index.md)                 | No                           | No |
+| [Generic packages](../generic_packages/_index.md)      | No                           | No |
+| [Terraform](../terraform_module_registry/_index.md)    | No                           | No |
+| [Composer](../composer_repository/_index.md)           | No                           | No |
+| [Conan 1](../conan_1_repository/_index.md)               | No                           | No |
+| [Conan 2](../conan_2_repository/_index.md)               | No                           | No |
+| [Helm](../helm_repository/_index.md)                   | No                           | No |
+| [Debian](../debian_repository/_index.md)               | No                           | No |
+| [Go](../go_proxy/_index.md)                            | No                           | No |
+| [Ruby gems](../rubygems_registry/_index.md)            | No                           | No |
 
 ## Deleting packages
 
-When package requests are forwarded to a public registry, deleting packages can
-be a [dependency confusion vulnerability](https://medium.com/@alex.birsan/dependency-confusion-4a5d60fec610).
+When package requests are forwarded to a public registry, package deletion can
+cause a [dependency confusion vulnerability](https://medium.com/@alex.birsan/dependency-confusion-4a5d60fec610).
 
-If a system tries to pull a deleted package, the request is forwarded to the public
-registry. If a package with the same name and version is found in the public registry, that package
-is pulled instead. There is a risk that the package pulled from the registry might not be
-what is expected, and could even be malicious.
+If a system tries to pull a deleted package, the request forwards to the public registry.
+If a package with the same name and version is in the public registry, that package is
+pulled instead. The package pulled from the registry might not be what you expect, and
+could be malicious.
 
-To reduce the associated security risks, before deleting a package you can:
+To reduce the associated security risks, before you delete a package:
 
 - Verify the package is not being actively used.
-- Disable request forwarding:
-  - Instance administrators can disable forwarding in the [**Continuous Integration** section](../../../administration/settings/continuous_integration.md#control-package-forwarding) of the **Admin** area.
-  - Group owners can disable forwarding in the **Packages and Registries** section of the group settings.
+- [Disable request forwarding](#forwarding-requests).
+
+To delete packages, you can:
+
+- [Delete packages in the UI](reduce_package_registry_storage.md#delete-a-package).
+- [Delete packages with the API](../../../api/packages.md#delete-a-project-package).
 
 ## Importing packages from other repositories
 

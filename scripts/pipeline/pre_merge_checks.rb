@@ -16,7 +16,7 @@ require 'time'
 class PreMergeChecks
   DEFAULT_API_ENDPOINT                                  = "https://gitlab.com/api/v4"
   MERGE_TRAIN_REF_REGEX                                 = %r{\Arefs/merge-requests/\d+/train\z}
-  PIPELINE_FRESHNESS_DEFAULT_THRESHOLD_IN_HOURS         = 8
+  PIPELINE_FRESHNESS_DEFAULT_THRESHOLD_IN_HOURS         = 16
   PIPELINE_FRESHNESS_STABLE_BRANCHES_THRESHOLD_IN_HOURS = 72
   PREDICTIVE_PIPELINE_IDENTIFIER                        = 'predictive'
   REQUIRED_TIER_IDENTIFIER                              = 'tier:3'

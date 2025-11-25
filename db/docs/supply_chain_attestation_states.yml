@@ -1,0 +1,11 @@
+---
+table_name: supply_chain_attestation_states
+description: Separate table for Supply Chain Attestation verification states
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/212350
+milestone: '18.7'
+feature_categories:
+- geo_replication
+classes:
+- Geo::SupplyChainAttestationState
+gitlab_schema: gitlab_main_cell_local
+table_size: small

@@ -22,7 +22,10 @@ module Ci
       validates :pipeline, presence: true
 
       def logs_url
-        Gitlab::Routing.url_helpers.project_pipeline_url(project, pipeline)
+        first_job = pipeline.builds.order(id: :asc).first
+        return unless first_job
+
+        Gitlab::Routing.url_helpers.project_job_url(project, first_job)
       end
 
       def included_ci_variable_names

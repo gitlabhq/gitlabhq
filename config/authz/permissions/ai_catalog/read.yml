@@ -1,0 +1,4 @@
+---
+name: read_ai_catalog
+description: Grants the ability to view the AI Catalog on an instance
+feature_category: workflow_catalog

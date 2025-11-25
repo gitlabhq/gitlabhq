@@ -273,14 +273,6 @@ RSpec.shared_context '"Explore" navbar structure' do
         nav_item: _("CI/CD Catalog"),
         nav_sub_items: []
       },
-
-      if Gitlab.ee?
-        {
-          nav_item: s_("AICatalog|AI Catalog"),
-          nav_sub_items: []
-        }
-      end,
-
       {
         nav_item: _("Topics"),
         nav_sub_items: []

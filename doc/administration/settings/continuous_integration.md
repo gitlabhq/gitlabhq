@@ -446,17 +446,22 @@ Control whether package requests are forwarded to public registries when package
 
 By default, GitLab forwards package requests to their respective public registries:
 
-- Maven requests to [Maven Central](https://search.maven.org/)
-- npm requests to [npmjs.com](https://www.npmjs.com/)
-- PyPI requests to [pypi.org](https://pypi.org/)
+- Maven requests are forwarded to [Maven Central](https://search.maven.org/).
+- npm requests are forwarded to [npmjs.com](https://www.npmjs.com/).
+- PyPI requests are forwarded to [pypi.org](https://pypi.org/).
 
-To stop package forwarding:
+To turn off package forwarding:
 
-1. Clear any of these checkboxes:
-   - **Forward Maven package requests to the Maven registry if the packages are not found in the GitLab Package registry**
-   - **Forward npm package requests to the npm registry if the packages are not found in the GitLab package registry**
-   - **Forward PyPI package requests to the PyPI registry if the packages are not found in the GitLab package registry**
+1. On the left sidebar, at the bottom, select **Admin**. If you've [turned on the new navigation](../../user/interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
+1. On the left sidebar, select **Groups** and find your group.
+1. On the left sidebar, select **Settings** > **CI/CD**.
+1. Expand **Package registry**.
+1. Clear either of the following checkboxes:
+   - **Forward npm package requests**
+   - **Forward PyPI package requests**
 1. Select **Save changes**.
+
+To turn off request forwarding for Maven packages, see [Maven packages in the package registry](../../user/packages/maven_repository/_index.md#request-forwarding-to-maven-central).
 
 ## Access runner settings
 

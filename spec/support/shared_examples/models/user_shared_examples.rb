@@ -124,7 +124,6 @@ RSpec.shared_examples 'associations with defined deletion strategies', :aggregat
       design_management_action_uploads
       import_export_upload_uploads
       ml_experiments
-      merge_requests_compliance_violations
       merge_requests_merge_data
       namespace_uploads
       organization_detail_uploads

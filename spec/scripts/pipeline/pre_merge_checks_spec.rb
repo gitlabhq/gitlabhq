@@ -233,15 +233,15 @@ RSpec.describe PreMergeChecks, time_travel_to: Time.parse('2024-05-29T10:00:00 U
         end
 
         context 'and it is not fresh enough' do
-          let(:latest_mr_pipeline_created_at) { "2024-05-29T01:30:00 UTC" }
+          let(:latest_mr_pipeline_created_at) { "2024-05-28T17:30:00 UTC" }
 
           it 'returns a failed PreMergeChecksStatus' do
             expect(instance.execute).to be_a(described_class::PreMergeChecksStatus)
             expect(instance.execute).not_to be_success
             expect(instance.execute.message)
               .to include(
-                "Expected latest pipeline (#{latest_mr_pipeline_web_url}) to be created within the last 8 hours " \
-                  "(it was created 8.5 hours ago)!"
+                "Expected latest pipeline (#{latest_mr_pipeline_web_url}) to be created within the last 16 hours " \
+                  "(it was created 16.5 hours ago)!"
               )
           end
         end

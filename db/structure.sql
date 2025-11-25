@@ -27478,6 +27478,28 @@ CREATE SEQUENCE suggestions_id_seq
 
 ALTER SEQUENCE suggestions_id_seq OWNED BY suggestions.id;
 
+CREATE TABLE supply_chain_attestation_states (
+    id bigint NOT NULL,
+    verification_started_at timestamp with time zone,
+    verification_retry_at timestamp with time zone,
+    verified_at timestamp with time zone,
+    supply_chain_attestation_id bigint NOT NULL,
+    verification_state smallint DEFAULT 0 NOT NULL,
+    verification_retry_count smallint DEFAULT 0 NOT NULL,
+    verification_checksum bytea,
+    verification_failure text,
+    CONSTRAINT check_ef9d3c1760 CHECK ((char_length(verification_failure) <= 255))
+);
+
+CREATE SEQUENCE supply_chain_attestation_states_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+ALTER SEQUENCE supply_chain_attestation_states_id_seq OWNED BY supply_chain_attestation_states.id;
+
 CREATE TABLE system_access_group_microsoft_applications (
     id bigint NOT NULL,
     created_at timestamp with time zone NOT NULL,
@@ -32669,6 +32691,8 @@ ALTER TABLE ONLY subscriptions ALTER COLUMN id SET DEFAULT nextval('subscription
 
 ALTER TABLE ONLY suggestions ALTER COLUMN id SET DEFAULT nextval('suggestions_id_seq'::regclass);
 
+ALTER TABLE ONLY supply_chain_attestation_states ALTER COLUMN id SET DEFAULT nextval('supply_chain_attestation_states_id_seq'::regclass);
+
 ALTER TABLE ONLY system_access_group_microsoft_applications ALTER COLUMN id SET DEFAULT nextval('system_access_group_microsoft_applications_id_seq'::regclass);
 
 ALTER TABLE ONLY system_access_group_microsoft_graph_access_tokens ALTER COLUMN id SET DEFAULT nextval('system_access_group_microsoft_graph_access_tokens_id_seq'::regclass);
@@ -36506,6 +36530,9 @@ ALTER TABLE ONLY subscriptions
 
 ALTER TABLE ONLY suggestions
     ADD CONSTRAINT suggestions_pkey PRIMARY KEY (id);
+
+ALTER TABLE ONLY supply_chain_attestation_states
+    ADD CONSTRAINT supply_chain_attestation_states_pkey PRIMARY KEY (id);
 
 ALTER TABLE ONLY system_access_group_microsoft_applications
     ADD CONSTRAINT system_access_group_microsoft_applications_pkey PRIMARY KEY (id);
@@ -43940,6 +43967,16 @@ CREATE INDEX index_suggestions_on_namespace_id ON suggestions USING btree (names
 
 CREATE UNIQUE INDEX index_suggestions_on_note_id_and_relative_order ON suggestions USING btree (note_id, relative_order);
 
+CREATE INDEX index_supply_chain_attestation_states_failed_verification ON supply_chain_attestation_states USING btree (verification_retry_at NULLS FIRST) WHERE (verification_state = 3);
+
+CREATE INDEX index_supply_chain_attestation_states_needs_verification ON supply_chain_attestation_states USING btree (verification_state) WHERE ((verification_state = 0) OR (verification_state = 3));
+
+CREATE UNIQUE INDEX index_supply_chain_attestation_states_on_attestation_id ON supply_chain_attestation_states USING btree (supply_chain_attestation_id);
+
+CREATE INDEX index_supply_chain_attestation_states_on_verification_state ON supply_chain_attestation_states USING btree (verification_state);
+
+CREATE INDEX index_supply_chain_attestation_states_pending_verification ON supply_chain_attestation_states USING btree (verified_at NULLS FIRST) WHERE (verification_state = 0);
+
 CREATE UNIQUE INDEX index_system_access_group_microsoft_applications_on_group_id ON system_access_group_microsoft_applications USING btree (group_id);
 
 CREATE UNIQUE INDEX index_system_access_microsoft_applications_on_namespace_id ON system_access_microsoft_applications USING btree (namespace_id);
@@ -48569,6 +48606,8 @@ CREATE TRIGGER set_sharding_key_for_diff_note_positions_on_insert_and_update BEF
 CREATE TRIGGER set_sharding_key_for_note_metadata_on_insert_and_update BEFORE INSERT OR UPDATE ON note_metadata FOR EACH ROW EXECUTE FUNCTION sync_sharding_key_with_notes_table();
 
 CREATE TRIGGER set_sharding_key_for_suggestions_on_insert_and_update BEFORE INSERT OR UPDATE ON suggestions FOR EACH ROW EXECUTE FUNCTION sync_sharding_key_with_notes_table();
+
+CREATE TRIGGER slsa_attestations_loose_fk_trigger AFTER DELETE ON slsa_attestations REFERENCING OLD TABLE AS old_table FOR EACH STATEMENT EXECUTE FUNCTION insert_into_loose_foreign_keys_deleted_records();
 
 CREATE TRIGGER sync_project_authorizations_to_migration AFTER INSERT OR DELETE OR UPDATE ON project_authorizations FOR EACH ROW EXECUTE FUNCTION sync_project_authorizations_to_migration_table();
 

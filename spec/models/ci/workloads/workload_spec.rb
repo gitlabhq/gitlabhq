@@ -49,11 +49,33 @@ RSpec.describe Ci::Workloads::Workload, feature_category: :continuous_integratio
   end
 
   describe '#logs_url' do
-    it 'returns the pipeline url' do
-      allow(Gitlab::Routing).to receive_message_chain(:url_helpers, :project_pipeline_url)
-        .with(workload.project, workload.pipeline).and_return('log-url')
+    context 'when pipeline has logs' do
+      let!(:log) { create(:ci_build, pipeline: workload.pipeline) }
 
-      expect(workload.logs_url).to eq('log-url')
+      it 'returns the log url' do
+        allow(Gitlab::Routing).to receive_message_chain(:url_helpers, :project_job_url)
+          .with(workload.project, log).and_return('log-url')
+
+        expect(workload.logs_url).to eq('log-url')
+      end
+    end
+
+    context 'when pipeline has no logs' do
+      it 'returns nil' do
+        expect(workload.logs_url).to be_nil
+      end
+    end
+
+    context 'when pipeline has multiple logs' do
+      let!(:second_job) { create(:ci_build, pipeline: workload.pipeline) }
+      let!(:first_job) { create(:ci_build, pipeline: workload.pipeline) }
+
+      it 'returns the url of the first job by id' do
+        allow(Gitlab::Routing).to receive_message_chain(:url_helpers, :project_job_url)
+          .with(workload.project, second_job).and_return('logs-url')
+
+        expect(workload.logs_url).to eq('logs-url')
+      end
     end
   end
 

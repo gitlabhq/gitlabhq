@@ -45,7 +45,7 @@ To delete a package:
    - Or, from the **Package registry** page,
    select the vertical ellipsis ({{< icon name="ellipsis_v" >}})
    and select **Delete package**.
-1. Select **Delete**.
+1. On the **Delete package version** confirmation dialog, select **Permanently delete**.
 
 The package is permanently deleted.
 
@@ -53,9 +53,9 @@ To delete a package, you can also use [the API](../../../api/packages.md#delete-
 
 {{< alert type="note" >}}
 
-You can introduce a [dependency confusion risk](supported_functionality.md#deleting-packages)
+You can introduce a dependency confusion risk
 if you delete a package while
-[request forwarding](supported_functionality.md#forwarding-requests) is enabled.
+[request forwarding](supported_functionality.md#forwarding-requests) is turned on.
 
 {{< /alert >}}
 

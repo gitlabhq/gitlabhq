@@ -711,7 +711,6 @@ lib/gitlab/checks/
 /doc/administration/settings/push_event_activities_limit.md @brendan777
 /doc/administration/settings/rate_limit_on_groups_api.md @z_painter
 /doc/administration/settings/rate_limit_on_issues_creation.md @msedlakjakubowski
-/doc/administration/settings/rate_limit_on_members_api.md @z_painter
 /doc/administration/settings/rate_limit_on_notes_creation.md @msedlakjakubowski
 /doc/administration/settings/rate_limit_on_organizations_api.md @z_painter
 /doc/administration/settings/rate_limit_on_pipelines_creation.md @lyspin
@@ -1170,6 +1169,7 @@ lib/gitlab/checks/
 /doc/user/group/subgroups/ @z_painter
 /doc/user/group/troubleshooting.md @z_painter
 /doc/user/group/value_stream_analytics/ @lciutacu
+/doc/user/import/ @eread
 /doc/user/infrastructure/ @rsarangadharan
 /doc/user/infrastructure/clusters/manage/management_project_applications/ @rsarangadharan
 /doc/user/markdown.md @brendan777

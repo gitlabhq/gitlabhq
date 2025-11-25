@@ -4,7 +4,7 @@ import { GlAvatar, GlAvatarLink } from '@gitlab/ui';
 import MockAdapter from 'axios-mock-adapter';
 import { nextTick } from 'vue';
 import NoteableNote from '~/rapid_diffs/app/discussions/noteable_note.vue';
-import NoteHeader from '~/notes/components/note_header.vue';
+import NoteHeader from '~/rapid_diffs/app/discussions/note_header.vue';
 import NoteActions from '~/notes/components/note_actions.vue';
 import NoteBody from '~/notes/components/note_body.vue';
 import { confirmAction } from '~/lib/utils/confirm_via_gl_modal/confirm_via_gl_modal';

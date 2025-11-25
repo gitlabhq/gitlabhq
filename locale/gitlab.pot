@@ -48054,6 +48054,9 @@ msgstr ""
 msgid "PasskeyAuthentication|Back to sign-in"
 msgstr ""
 
+msgid "PasskeyAuthentication|Passkey"
+msgstr ""
+
 msgid "PasskeyAuthentication|Passkeys only works with HTTPS-enabled websites. Contact your administrator for more details."
 msgstr ""
 
@@ -60247,6 +60250,9 @@ msgstr ""
 msgid "SecurityOrchestration|API request"
 msgstr ""
 
+msgid "SecurityOrchestration|Acceptable Risk"
+msgstr ""
+
 msgid "SecurityOrchestration|Access tokens (%{count})"
 msgstr ""
 
@@ -60532,6 +60538,9 @@ msgstr ""
 msgid "SecurityOrchestration|Direct"
 msgstr ""
 
+msgid "SecurityOrchestration|Dismissed"
+msgstr ""
+
 msgid "SecurityOrchestration|Don't show the alert anymore"
 msgstr ""
 
@@ -60644,6 +60653,9 @@ msgid "SecurityOrchestration|Failed to load projects"
 msgstr ""
 
 msgid "SecurityOrchestration|Fallback behavior in case of policy failure"
+msgstr ""
+
+msgid "SecurityOrchestration|False positive"
 msgstr ""
 
 msgid "SecurityOrchestration|Fetching"
@@ -60790,6 +60802,9 @@ msgstr ""
 msgid "SecurityOrchestration|Merge request pipeline"
 msgstr ""
 
+msgid "SecurityOrchestration|Mitigating Control"
+msgstr ""
+
 msgid "SecurityOrchestration|Never"
 msgstr ""
 
@@ -60848,6 +60863,9 @@ msgid "SecurityOrchestration|Non-existing DAST profiles have been detected in th
 msgstr ""
 
 msgid "SecurityOrchestration|Non-existing tags have been detected in the policy yaml. As a result, rule mode has been disabled. To enable rule mode, remove those non-existing tags from the policy yaml."
+msgstr ""
+
+msgid "SecurityOrchestration|Not Applicable"
 msgstr ""
 
 msgid "SecurityOrchestration|Not enabled"
@@ -61140,6 +61158,9 @@ msgstr ""
 msgid "SecurityOrchestration|Select days"
 msgstr ""
 
+msgid "SecurityOrchestration|Select dismiss reason"
+msgstr ""
+
 msgid "SecurityOrchestration|Select frameworks"
 msgstr ""
 
@@ -61275,6 +61296,9 @@ msgstr ""
 msgid "SecurityOrchestration|The schedule is snoozed until %{until}."
 msgstr ""
 
+msgid "SecurityOrchestration|Then automatically %{boldStart}dismiss%{boldEnd} these vulnerabilities with the %{reason} reason."
+msgstr ""
+
 msgid "SecurityOrchestration|Then automatically set the status of these vulnerabilities to %{type}."
 msgstr ""
 
@@ -61405,6 +61429,9 @@ msgid "SecurityOrchestration|Use the format %{schemaStart}path-to-package@packag
 msgstr ""
 
 msgid "SecurityOrchestration|Use this compliance and security policy group to create security policies. Do not create new projects in this group."
+msgstr ""
+
+msgid "SecurityOrchestration|Used in tests"
 msgstr ""
 
 msgid "SecurityOrchestration|Users and Groups (%{count})"

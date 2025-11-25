@@ -13,7 +13,7 @@ import { updateNoteErrorMessage } from '~/notes/utils';
 import { isCurrentUser } from '~/lib/utils/common_utils';
 import NoteActions from '~/notes/components/note_actions.vue';
 import NoteBody from '~/notes/components/note_body.vue';
-import NoteHeader from '~/notes/components/note_header.vue';
+import NoteHeader from './note_header.vue';
 
 export default {
   name: 'NoteableNote',

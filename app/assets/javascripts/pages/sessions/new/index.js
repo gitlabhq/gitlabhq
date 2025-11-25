@@ -8,6 +8,7 @@ import {
   appendUrlFragment,
   appendRedirectQuery,
   toggleRememberMeQuery,
+  toggleRememberMePasskey,
 } from './preserve_url_fragment';
 import UsernameValidator from './username_validator';
 
@@ -18,6 +19,7 @@ new NoEmojiValidator(); // eslint-disable-line no-new
 appendUrlFragment();
 appendRedirectQuery();
 toggleRememberMeQuery();
+toggleRememberMePasskey();
 initVueAlerts();
 initLanguageSwitcher();
 initEmailVerification();

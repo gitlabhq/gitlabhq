@@ -4,6 +4,7 @@ import {
   appendUrlFragment,
   appendRedirectQuery,
   toggleRememberMeQuery,
+  toggleRememberMePasskey,
 } from '~/pages/sessions/new/preserve_url_fragment';
 
 describe('preserve_url_fragment', () => {
@@ -29,6 +30,19 @@ describe('preserve_url_fragment', () => {
         appendUrlFragment();
 
         expect(findFormAction()).toBe('http://test.host/users/sign_in');
+      });
+    });
+
+    describe('toggleRememberMePasskey', () => {
+      it('toggles "remember_me" hidden field', () => {
+        const rememberMe = document.querySelector('.js-remember-me-passkey');
+        const hiddenField = document.getElementById('js-remember-me-passkey-hidden-field');
+        toggleRememberMePasskey();
+        expect(hiddenField.value).toBe('0');
+
+        rememberMe.click();
+
+        expect(hiddenField.value).toBe('1');
       });
     });
   });

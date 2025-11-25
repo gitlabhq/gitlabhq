@@ -325,6 +325,7 @@
 
 .docs-patterns: &docs-patterns
   - ".gitlab/ci/docs.gitlab-ci.yml"
+  - ".gitlab/ci/rules.gitlab-ci.yml"
   - ".gitlab/route-map.yml"
   - ".markdownlint-cli2.yaml"
   - "doc/**/*"
@@ -336,6 +337,11 @@
 
 .docs-i18n-patterns: &docs-i18n-patterns
   - ".gitlab/ci/docs.gitlab-ci.yml"
+  - ".gitlab/ci/rules.gitlab-ci.yml"
+  - ".gitlab/route-map.yml"
+  - ".markdownlint-cli2.yaml"
+  - "doc/.markdownlint/**/*"
+  - "doc/.vale/**/*"
   - "doc-locale/**/*"
   - "doc-locale/.markdownlint/.markdownlint-cli2.yaml"
   - "scripts/i18n_lint_doc.sh"
@@ -343,6 +349,11 @@
 
 .docs-ja-jp-patterns: &docs-ja-jp-patterns
   - ".gitlab/ci/docs.gitlab-ci.yml"
+  - ".gitlab/ci/rules.gitlab-ci.yml"
+  - ".gitlab/route-map.yml"
+  - ".markdownlint-cli2.yaml"
+  - "doc/.markdownlint/**/*"
+  - "doc/.vale/**/*"
   - "scripts/i18n_lint_language_vale.sh"
   - "doc-locale/ja-jp/**/*"
   - "doc-locale/ja-jp/.*"
@@ -1742,10 +1753,6 @@
     - <<: *if-merge-request
       changes: [".gitlab/ci/rules.gitlab-ci.yml", ".gitlab/ci/frontend.gitlab-ci.yml"]
       allow_failure: true
-
-.frontend:rules:jest-vue3-nightly:
-  rules:
-    - <<: *if-default-branch-schedule-nightly
 
 .frontend:rules:test-linters:
   rules:
