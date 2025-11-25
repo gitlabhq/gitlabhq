@@ -2,6 +2,22 @@
 documentation](doc/development/changelog.md) for instructions on adding your own
 entry.
 
+## 18.6.1 (2025-11-25)
+
+### Fixed (3 changes)
+
+- [Fix /admin/sidekiq not loading CSS assets in Cloud Native GitLab](https://gitlab.com/gitlab-org/security/gitlab/-/commit/ccf15957c87ce3fe5dd6e5ed83bd59c9ea81c876)
+- [Fix BackfillTimelogsNamespace finalization order](https://gitlab.com/gitlab-org/security/gitlab/-/commit/4460d317e1c5b8a76406d09d0cfad0f1b56b1b48)
+- [Fix custom role approvers lookup for inherited users](https://gitlab.com/gitlab-org/security/gitlab/-/commit/743ff5eb22638654df2598fa054243606d301cac) **GitLab Enterprise Edition**
+
+### Security (5 changes)
+
+- [Override organization of signup users](https://gitlab.com/gitlab-org/security/gitlab/-/commit/5a175db6ae54ee6430a1c87b0e1bc83b5469b257) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/5520))
+- [Redact vulnerability references when Security and Compliance is disabled](https://gitlab.com/gitlab-org/security/gitlab/-/commit/293e3c4cba406b32ee96e6a625f6168ec7b54ee8) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/5508))
+- [Use Gitlab::Json.safe_parse to prevent parsing of large JSON objects](https://gitlab.com/gitlab-org/security/gitlab/-/commit/124790eb84c20cd00b8e05c06f7d514b75bcd3b0) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/5495))
+- [Limit JSON parsing depth, size, and elements in HTTParty](https://gitlab.com/gitlab-org/security/gitlab/-/commit/c83315f5257169a6dce0eb04eb14dc4894915a6e) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/5504))
+- [Add protection suffix to cache depending on role](https://gitlab.com/gitlab-org/security/gitlab/-/commit/44f7d7162660a5dbe506dac85acb7eb47a1ef6a6) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/5483))
+
 ## 18.6.0 (2025-11-19)
 
 ### Added (194 changes)
