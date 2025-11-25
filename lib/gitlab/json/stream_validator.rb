@@ -11,6 +11,11 @@ module Gitlab
       HashSizeLimitError = Class.new(LimitExceededError)
       BodySizeExceededError = Class.new(LimitExceededError)
 
+      # Match integers, floats, and scientific notation with reasonable size limits
+      # Supports: 123, -123, 12.3, -12.3, 1.23e10, -1.23E-10
+      # Limits: max 15 digits for integer part, max 15 digits for fractional part, max 3 digits for exponent
+      NUMERIC_REGEX = /\A[+-]?(?:\d{1,15}\.?\d{0,15}|\.\d{1,15})(?:[eE][+-]?\d{1,3})?\z/
+
       attr_reader :result, :options
 
       # We want to hide the limits configured, but still show what type
@@ -45,14 +50,41 @@ module Gitlab
         @max_hash_count = 0
       end
 
-      def sc_parse(body)
+      # This method validates the JSON input against configured size limits.
+      # It uses Oj's streaming parser for efficient processing of large JSON
+      # documents while enforcing safety limits.
+      #
+      # @param body [String] the JSON string to parse
+      # @return [nil] returns nil after successful validation or when skipping primitive values
+      # @raise [Oj::ParseError] when the JSON is malformed or invalid
+      # @raise [EncodingError] when the JSON is malformed or invalid
+      # @raise [::Gitlab::Json::StreamValidator::LimitExceededError] when parsing limits (depth, array size, etc.)
+      # are exceeded
+      #
+      # @example Parse a simple JSON string
+      #   validator = Gitlab::Json::StreamValidator.new(max_json_size_bytes: 1024)
+      #   validator.validate!('{"key": "value"}') #=> nil
+      #
+      # @example Handle size limit exceeded
+      #   validator = Gitlab::Json::StreamValidator.new(max_json_size_bytes: 10)
+      #   validator.validate!('{"very": "long json string"}')
+      #   # raises BodySizeExceededError
+      def validate!(body)
+        return if body.nil? || body.empty?
+
         @body_bytesize = body.bytesize
 
-        if options[:max_json_size_bytes].to_i > 0 && body.bytesize > options[:max_json_size_bytes]
-          raise BodySizeExceededError, "JSON body too large: #{body.bytesize} bytes"
-        end
+        check_body_size!
+
+        # Oj.sc_parse does not handle primitive values (see https://github.com/ohler55/oj/issues/979)
+        # so we need to handle them separately before calling the streaming parser
+        return if %w[true false null].include?(body)
+        return if quoted_string?(body)
+        return if body.encoding == Encoding::UTF_8 && body.valid_encoding? && NUMERIC_REGEX.match?(body)
 
         ::Oj.sc_parse(self, body)
+
+        nil
       end
 
       # Called when a hash starts
@@ -152,6 +184,20 @@ module Gitlab
       end
 
       private
+
+      def quoted_string?(body)
+        return false if body.nil? || body.length < 2
+
+        body.start_with?('"') && body.end_with?('"')
+      end
+
+      def check_body_size!
+        return unless options[:max_json_size_bytes].to_i > 0
+        return unless @body_bytesize
+        return unless @body_bytesize > options[:max_json_size_bytes]
+
+        raise BodySizeExceededError, "JSON body too large: #{@body_bytesize} bytes"
+      end
 
       def check_depth!
         return unless options[:max_depth].to_i > 0

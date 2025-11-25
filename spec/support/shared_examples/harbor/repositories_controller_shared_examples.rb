@@ -77,7 +77,8 @@ RSpec.shared_examples 'a harbor repositories controller' do |args|
         headers: {
           Authorization: 'Basic aGFyYm9ydXNlcm5hbWU6aGFyYm9ycGFzc3dvcmQ=',
           'Content-Type': 'application/json'
-        }).to_return(status: 200, body: mock_repositories.to_json, headers: { "x-total-count": 2 })
+        }).to_return(status: 200, body: mock_repositories.to_json, headers: { "x-total-count": 2,
+                                                                              'Content-Type': 'application/json' })
     container.add_reporter(user)
     sign_in(user)
   end

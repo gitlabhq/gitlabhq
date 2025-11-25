@@ -32,7 +32,7 @@ module BulkImports
           )
         end
 
-        ::Gitlab::Json.parse(response.body)
+        response.parsed_response
       rescue *Gitlab::HTTP::HTTP_ERRORS, JSON::ParserError => e
         raise ::BulkImports::NetworkError, e
       end

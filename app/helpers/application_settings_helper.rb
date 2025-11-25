@@ -385,6 +385,8 @@ module ApplicationSettingsHelper
       :max_github_response_json_value_count,
       :max_http_decompressed_size,
       :max_http_response_size_limit,
+      :max_http_response_json_depth,
+      :max_http_response_json_structural_chars,
       :max_import_size,
       :max_import_remote_file_size,
       :max_login_attempts,
