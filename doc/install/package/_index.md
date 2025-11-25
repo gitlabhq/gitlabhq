@@ -31,31 +31,29 @@ Check that the required GitLab version is available for your host operating syst
 
 ## Supported platforms
 
-GitLab officially supports long term support (LTS) versions of operating
-systems. Some operating systems, such as Ubuntu, have a clear distinction
-between LTS and non-LTS versions. However, there are other operating systems,
-openSUSE for example, that don't follow the LTS concept.
+GitLab provides Linux packages for the operating systems listed below. We build and
+distribute packages for these platforms. The table shows which GitLab versions
+are available for each operating system.
 
-We will usually provide support for a version of an operating system until it
-is no longer supported by its vendor, where support is defined as standard or
-maintenance support and not as expanded, extended, or premium support. However,
-we might end support earlier than the operating system's vendor in these
-circumstances:
+We provide Linux packages for operating systems based on vendor support lifecycles.
+Where long term support (LTS) versions exist, we target those, though not all operating systems
+follow an LTS model.
+
+Package builds typically continue until an operating system reaches vendor end-of-life (EOL).
+We follow standard or maintenance support timelines, not extended or premium support periods.
+
+We may discontinue package builds before vendor EOL due to:
 
 - Business considerations: Including but not limited to low customer adoption,
   disproportionate maintenance costs, or strategic product direction changes.
 - Technical constraints: When third-party dependencies, security requirements,
-  or underlying technology changes make continued support impractical or
+  or underlying technology changes make continued package builds impractical or
   impossible.
 - Vendor actions: When operating system vendors make changes that fundamentally
   impact our software's functionality or when required components become
   unavailable.
 
-We will usually issue a deprecation notice at least 6 months before support for
-any operating system version is discontinued, on a best-effort basis. In cases
-where technical constraints, vendor actions, or other external factors require
-that we provide shorter notice periods, we will communicate any support changes
-as soon as reasonably possible.
+We aim to provide at least 6 months' notice before discontinuing support for any operating system version. When technical limitations or vendor constraints require shorter notice, we will communicate changes as soon as possible.
 
 {{< alert type="note" >}}
 
@@ -106,17 +104,7 @@ community and are not supported by GitLab:
 
 ## End-of-life versions
 
-GitLab provides Linux packages for operating systems only until their
-end-of-life (EOL) date. After the EOL date, GitLab stops releasing
-official packages.
-
-However, sometimes we don't deprecate an operating system even after it's EOL
-because we can't provide packages for a newer version.
-The most common reason for this is PackageCloud, our package repository provider,
-not supporting newer versions and so we can't upload packages to it.
-
-The list of deprecated operating systems and the final GitLab
-release for them can be found below:
+You can find the list of deprecated operating systems and the final GitLab release for them in the table below:
 
 | OS version       | End of life                                                                         | Last supported GitLab version |
 |:-----------------|:------------------------------------------------------------------------------------|:------------------------------|

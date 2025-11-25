@@ -1,5 +1,27 @@
 @use 'constants';
 
+.rd-discussion-row {
+  display: flex;
+  background-color: var(--gl-background-color-subtle);
+}
+
+.rd-discussion-row:has(> td:not(:empty)) {
+  border-top: 1px solid var(--gl-border-color-default);
+  border-bottom: 1px solid var(--gl-border-color-default);
+}
+
+.rd-discussion-row > td {
+  @apply gl-max-w-limited;
+  flex: 1;
+  padding: 0;
+  border-left: 1px solid transparent;
+  border-right: 1px solid transparent;
+}
+
+.rd-discussion-row > td + td {
+  border-left-color: var(--gl-border-color-default);
+}
+
 .rd-new-discussion-toggle {
   position: absolute;
   left: 0;

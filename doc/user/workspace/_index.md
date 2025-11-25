@@ -518,9 +518,9 @@ For more information, see [configure VS Code Extension Marketplace](../../admini
 
 {{< /history >}}
 
-When you create a workspace, you get a personal access token
+When you create a workspace, you get a personal access token that expires in 365 days
 with `write_repository` and `api` permissions.
-Use this token to clone the project initially, while starting the workspace,
+This token is used to clone the project initially, while starting the workspace,
 and to configure the GitLab Workflow extension for VS Code.
 
 Any Git operation you perform in the workspace uses this token for authentication and authorization.

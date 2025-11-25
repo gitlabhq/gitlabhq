@@ -17,7 +17,16 @@ module MergeRequests
 
       # Mark the merge request as merged, everything that happens afterwards is
       # executed once
-      merge_request.mark_as_merged
+      unless merge_request.mark_as_merged
+        Gitlab::AppLogger.warn(
+          message: 'Failed to mark merge request as merged',
+          merge_request_id: merge_request.id,
+          merge_request_iid: merge_request.iid,
+          project_id: merge_request.project_id,
+          delete_source_branch: params[:delete_source_branch],
+          errors: merge_request.errors.full_messages
+        )
+      end
 
       create_event(merge_request)
       todo_service.merge_merge_request(merge_request, current_user)

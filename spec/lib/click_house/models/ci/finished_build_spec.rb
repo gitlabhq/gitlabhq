@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-require 'spec_helper'
+require 'fast_spec_helper'
 
 RSpec.describe ClickHouse::Models::Ci::FinishedBuild, feature_category: :fleet_visibility do
   describe '.table_name' do

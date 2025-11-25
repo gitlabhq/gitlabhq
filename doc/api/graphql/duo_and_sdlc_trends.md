@@ -8,7 +8,6 @@ title: Retrieve GitLab Duo and SDLC trend data
 {{< details >}}
 
 - Tier: Premium, Ultimate
-- Add-on: GitLab Duo Pro, GitLab Duo Enterprise
 - Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
 
 {{< /details >}}
@@ -19,7 +18,6 @@ Use the GraphQL API to retrieve and export GitLab Duo data.
 
 {{< details >}}
 
-- Add-on: GitLab Duo Enterprise
 - Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
 
 {{< /details >}}
@@ -171,7 +169,6 @@ To see which events are being tracked, you can examine the events declared in th
 
 {{< details >}}
 
-- Add-on: GitLab Duo Enterprise
 - Offering: GitLab.com, GitLab Dedicated
 
 {{< /details >}}
@@ -400,7 +397,6 @@ The query returns the following output:
 
 {{< details >}}
 
-- Add-on: GitLab Duo Pro, GitLab Duo Enterprise
 - Offering: GitLab.com, GitLab Dedicated
 
 {{< /details >}}
@@ -409,6 +405,7 @@ The query returns the following output:
 
 - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/443696) in GitLab 16.11.
 - Add-on requirement [changed](https://gitlab.com/gitlab-org/gitlab/-/issues/498497) from GitLab Duo Enterprise to GitLab Duo Pro in GitLab 17.6.
+- Add-on requirement [removed](https://gitlab.com/gitlab-org/gitlab/-/issues/580174) in GitLab 18.7.
 
 {{< /history >}}
 

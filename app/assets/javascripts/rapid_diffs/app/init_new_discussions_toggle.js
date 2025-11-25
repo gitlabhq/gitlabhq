@@ -9,6 +9,10 @@ export function initNewDiscussionToggle(appElement) {
   let hideTimerId;
   let lastFocusedElement;
 
+  function isValidTarget(element) {
+    return element.closest('[data-hunk-lines]') && !element.closest('[data-change="meta"]');
+  }
+
   function moveTo(target) {
     const row = target.closest('tr');
     if (row.querySelector('[data-position="old"]:first-child + [data-position="new"]')) {
@@ -27,7 +31,7 @@ export function initNewDiscussionToggle(appElement) {
   }
 
   function onEnter(event) {
-    if (!event.target.closest('[data-hunk-lines]')) return;
+    if (!isValidTarget(event.target)) return;
     if (event instanceof FocusEvent) lastFocusedElement = event.target;
     clearTimeout(hideTimerId);
     toggle.hidden = false;
@@ -35,7 +39,7 @@ export function initNewDiscussionToggle(appElement) {
   }
 
   function onLeave(event) {
-    if (!event.target.closest('[data-hunk-lines]')) return;
+    if (!isValidTarget(event.target)) return;
     if (event instanceof FocusEvent) lastFocusedElement = undefined;
     clearTimeout(hideTimerId);
     hideTimerId = setTimeout(() => {

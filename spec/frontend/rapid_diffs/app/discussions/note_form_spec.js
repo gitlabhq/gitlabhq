@@ -134,6 +134,13 @@ describe('NoteForm', () => {
       expect(wrapper.emitted('handleSuggestDismissed')).toStrictEqual([[]]);
     });
 
+    it('propagates input event', () => {
+      const inputValue = 'foo';
+      createComponent();
+      findEditor().vm.$emit('input', inputValue);
+      expect(wrapper.emitted('input')).toStrictEqual([[inputValue]]);
+    });
+
     describe('last note edit', () => {
       it('calls for last note edit', () => {
         const requestLastNoteEditing = jest.fn().mockReturnValue(true);

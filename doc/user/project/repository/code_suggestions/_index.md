@@ -216,9 +216,10 @@ To learn about the code that builds the prompt, see these files:
 
 Prompt caching is enabled by default to improve Code Suggestions latency. When prompt caching is enabled, code completion prompt data is temporarily stored in memory by the model vendor. Prompt caching significantly improves latency by avoiding the re-processing of cached prompt and input data. The cached data is never logged to any persistent storage.
 
-### Disable prompt caching
+### Turn off prompt caching
 
-You can disable prompt caching for top-level groups in the GitLab Duo settings.
+You can turn off prompt caching for top-level groups in the GitLab Duo settings.
+This also turns off prompt caching for [GitLab Duo Chat (Agentic)](../../../gitlab_duo_chat/agentic_chat.md#prompt-caching).
 
 On GitLab.com:
 

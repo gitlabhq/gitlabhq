@@ -19,9 +19,6 @@
   --rd-line-link-color: var(--code-line-number-color, #{$gl-color-neutral-400});
   --rd-line-theme-border-color: oklch(from var(--code-background) calc(l + var(--rd-code-border-adjust)) c h);
   background-color: var(--code-background, $gl-color-neutral-0);
-  font-family: $monospace-font;
-  line-height: var(--rd-body-font-line-height);
-  font-size: var(--rd-body-font-size);
   border-radius: 0 0 var(--rd-diff-file-border-radius) var(--rd-diff-file-border-radius);
 }
 
@@ -44,9 +41,16 @@
   display: block;
 }
 
+.rd-text-view-root:has(.rd-new-discussion-toggle) {
+  --rd-line-number-area-extend-left: 16px;
+}
+
 .rd-hunk-header,
 .rd-hunk-lines {
   display: grid;
+  font-family: $monospace-font;
+  line-height: var(--rd-body-font-line-height);
+  font-size: var(--rd-body-font-size);
   // this property is set in the DiffFileComponent from virtual_rendering_params
   content-visibility: var(--virtual-rows-visibility);
   contain-intrinsic-size: 0 var(--rd-row-intrinsic-height);
@@ -173,6 +177,15 @@
   text-align: right;
   background-color: var(--code-line-number-background-color, $white);
   scroll-margin-top: var(--rd-diff-file-header-height);
+
+  &::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    width: var(--rd-line-number-area-extend-left);
+    left: calc(1px + var(--rd-line-number-area-extend-left) * -1);
+  }
 }
 
 .rd-hunk-lines:target {

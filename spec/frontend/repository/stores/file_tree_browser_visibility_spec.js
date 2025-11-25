@@ -154,4 +154,41 @@ describe('useFileTreeBrowserVisibility', () => {
       expect(store.fileTreeBrowserIsExpanded).toBe(expectedExpanded);
     });
   });
+
+  describe('focus restoration', () => {
+    describe('shouldRestoreFocusToToggle state', () => {
+      it('initializes to false', () => {
+        expect(store.shouldRestoreFocusToToggle).toBe(false);
+      });
+    });
+
+    describe('handleFileTreeBrowserToggleClick', () => {
+      it('sets shouldRestoreFocusToToggle to true when toggling', () => {
+        store.handleFileTreeBrowserToggleClick();
+
+        expect(store.shouldRestoreFocusToToggle).toBe(true);
+      });
+
+      it('sets flag before toggling expanded state', () => {
+        const initialExpanded = store.fileTreeBrowserIsExpanded;
+
+        store.handleFileTreeBrowserToggleClick();
+
+        // Flag should be set
+        expect(store.shouldRestoreFocusToToggle).toBe(true);
+        // State should have toggled
+        expect(store.fileTreeBrowserIsExpanded).toBe(!initialExpanded);
+      });
+    });
+
+    describe('clearRestoreFocusFlag', () => {
+      it('sets shouldRestoreFocusToToggle to false', () => {
+        store.shouldRestoreFocusToToggle = true;
+
+        store.clearRestoreFocusFlag();
+
+        expect(store.shouldRestoreFocusToToggle).toBe(false);
+      });
+    });
+  });
 });

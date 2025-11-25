@@ -93,6 +93,14 @@ module MergeRequests
       # create an `empty` diff for `closed` MRs without a source branch, keeping
       # the latest diff state as the last _valid_ one.
       merge_requests_for_source_branch.reject(&:source_branch_exists?).each do |mr|
+        Gitlab::AppLogger.info(
+          message: 'Closing merge request due to missing source branch',
+          merge_request_id: mr.id,
+          merge_request_iid: mr.iid,
+          project_id: mr.project_id,
+          source_branch: mr.source_branch
+        )
+
         MergeRequests::CloseService
           .new(project: mr.target_project, current_user: @current_user)
           .execute(mr)

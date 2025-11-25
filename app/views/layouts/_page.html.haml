@@ -46,7 +46,7 @@
               = render 'layouts/alerts', alert_class: alert_class, context: context
 
               %div{ class: "#{container_class unless @no_container} #{@content_class}" }
-                %main#content-body.content{ class: "gl-@container/panel", **page_itemtype }
+                %main#content-body.content{ class: "gl-@container/panel gl-pb-3", **page_itemtype }
                   -# mount drawers here for better page performance
                   #js-drawer-container
                   -# Sticky alerts

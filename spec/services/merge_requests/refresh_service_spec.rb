@@ -224,6 +224,22 @@ RSpec.describe MergeRequests::RefreshService, feature_category: :code_review_wor
           expect(@fork_merge_request.reload).to be_open
         end
 
+        it 'logs when closing MR due to missing source branch' do
+          allow(Gitlab::AppLogger).to receive(:info)
+
+          expect(Gitlab::AppLogger).to receive(:info).with(
+            hash_including(
+              message: 'Closing merge request due to missing source branch',
+              merge_request_id: @merge_request.id,
+              merge_request_iid: @merge_request.iid,
+              project_id: @merge_request.project_id,
+              source_branch: @merge_request.source_branch
+            )
+          ).and_call_original
+
+          refresh_service.execute(@oldrev, @newrev, 'refs/heads/master')
+        end
+
         it 'does not change the merge request diff' do
           expect { refresh_service.execute(@oldrev, @newrev, 'refs/heads/master') }
             .not_to change { @merge_request.reload.merge_request_diff }

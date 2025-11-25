@@ -20,9 +20,10 @@ export default {
       'updateNote',
       'deleteNote',
       'setEditingMode',
-      'expandDiscussionReplies',
       'toggleDiscussionReplies',
       'requestLastNoteEditing',
+      'startReplying',
+      'stopReplying',
     ]),
   },
 };
@@ -39,13 +40,14 @@ export default {
         <noteable-discussion
           :discussion="discussion"
           :request-last-note-editing="requestLastNoteEditing"
-          @showReplyForm="expandDiscussionReplies(discussion)"
           @toggleDiscussionReplies="toggleDiscussionReplies(discussion)"
           @replyAdded="addNote"
           @noteUpdated="updateNote"
           @noteDeleted="deleteNote"
           @startEditing="setEditingMode($event, true)"
           @cancelEditing="setEditingMode($event, false)"
+          @startReplying="startReplying(discussion)"
+          @stopReplying="stopReplying(discussion)"
         />
       </ul>
     </div>

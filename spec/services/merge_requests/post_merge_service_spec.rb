@@ -268,4 +268,33 @@ RSpec.describe MergeRequests::PostMergeService, feature_category: :code_review_w
       expect(event.source_merge_request).to eq source
     end
   end
+
+  context 'when mark_as_merged fails' do
+    before do
+      merge_request.close!
+    end
+
+    it 'logs a warning with error details' do
+      expect(Gitlab::AppLogger).to receive(:warn).with(
+        hash_including(
+          message: 'Failed to mark merge request as merged',
+          merge_request_id: merge_request.id,
+          merge_request_iid: merge_request.iid,
+          project_id: merge_request.project_id,
+          delete_source_branch: nil,
+          errors: ["State cannot transition via \"mark as merged\""]
+        )
+      ).and_call_original
+
+      subject
+    end
+
+    it 'continues with the rest of the post-merge process' do
+      allow(Gitlab::AppLogger).to receive(:warn).and_call_original
+
+      expect(merge_request).to receive(:invalidate_project_counter_caches)
+
+      subject
+    end
+  end
 end

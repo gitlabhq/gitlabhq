@@ -112,6 +112,7 @@ describe('WikiForm', () => {
           csrfToken: '',
           pagePersisted: false,
           drawioUrl: null,
+          glFeatures: { wikiImmersiveEditor: false },
           ...provide,
         },
         stubs: {
@@ -155,6 +156,7 @@ describe('WikiForm', () => {
         renderMarkdownPath: pageInfoPersisted.markdownPreviewPath,
         uploadsPath: pageInfoPersisted.uploadsPath,
         autofocus: pageInfoPersisted.persisted,
+        immersive: false,
       }),
     );
 
@@ -660,6 +662,21 @@ describe('WikiForm', () => {
         await findTitle().setValue('updated-title');
         expect(findTitle().element.value).toBe('updated-title');
       });
+    });
+  });
+
+  describe('immersive mode', () => {
+    beforeEach(() => {
+      createWrapper({
+        mountFn: shallowMount,
+        provide: {
+          glFeatures: { wikiImmersiveEditor: true },
+        },
+      });
+    });
+
+    it('enables immersive mode on markdown editor', () => {
+      expect(findMarkdownEditor().props().immersive).toBe(true);
     });
   });
 });

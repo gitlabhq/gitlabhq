@@ -148,7 +148,7 @@ export default {
         </template>
       </gl-sprintf>
     </div>
-    <div class="flash-container"></div>
+    <div class="flash-container gl-mb-5"></div>
     <form ref="form" class="edit-note common-note-form js-quick-submit gfm-form">
       <markdown-editor
         ref="markdownEditor"
@@ -163,6 +163,7 @@ export default {
         :supports-quick-actions="supportsQuickActions"
         :autofocus="autofocus"
         :restore-from-autosave="restoreFromAutosave"
+        @input="$emit('input', $event)"
         @keydown.shift.meta.enter="handleKeySubmit(true)"
         @keydown.shift.ctrl.enter="handleKeySubmit(true)"
         @keydown.meta.enter.exact="handleKeySubmit()"

@@ -14799,6 +14799,26 @@ CREATE SEQUENCE ci_resources_id_seq
 
 ALTER SEQUENCE ci_resources_id_seq OWNED BY ci_resources.id;
 
+CREATE TABLE ci_runner_controller_tokens (
+    id bigint NOT NULL,
+    description text,
+    token_digest text NOT NULL,
+    runner_controller_id bigint NOT NULL,
+    created_at timestamp with time zone NOT NULL,
+    updated_at timestamp with time zone NOT NULL,
+    CONSTRAINT check_84d7d76c86 CHECK ((char_length(description) <= 1024)),
+    CONSTRAINT check_ec7c3fc764 CHECK ((char_length(token_digest) <= 255))
+);
+
+CREATE SEQUENCE ci_runner_controller_tokens_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+ALTER SEQUENCE ci_runner_controller_tokens_id_seq OWNED BY ci_runner_controller_tokens.id;
+
 CREATE TABLE ci_runner_controllers (
     id bigint NOT NULL,
     description text,
@@ -31719,6 +31739,8 @@ ALTER TABLE ONLY ci_resource_groups ALTER COLUMN id SET DEFAULT nextval('ci_reso
 
 ALTER TABLE ONLY ci_resources ALTER COLUMN id SET DEFAULT nextval('ci_resources_id_seq'::regclass);
 
+ALTER TABLE ONLY ci_runner_controller_tokens ALTER COLUMN id SET DEFAULT nextval('ci_runner_controller_tokens_id_seq'::regclass);
+
 ALTER TABLE ONLY ci_runner_controllers ALTER COLUMN id SET DEFAULT nextval('ci_runner_controllers_id_seq'::regclass);
 
 ALTER TABLE ONLY ci_runner_namespaces ALTER COLUMN id SET DEFAULT nextval('ci_runner_namespaces_id_seq'::regclass);
@@ -34664,6 +34686,9 @@ ALTER TABLE ONLY ci_resource_groups
 
 ALTER TABLE ONLY ci_resources
     ADD CONSTRAINT ci_resources_pkey PRIMARY KEY (id);
+
+ALTER TABLE ONLY ci_runner_controller_tokens
+    ADD CONSTRAINT ci_runner_controller_tokens_pkey PRIMARY KEY (id);
 
 ALTER TABLE ONLY ci_runner_controllers
     ADD CONSTRAINT ci_runner_controllers_pkey PRIMARY KEY (id);
@@ -40605,6 +40630,8 @@ CREATE UNIQUE INDEX index_ci_project_mirrors_on_project_id ON ci_project_mirrors
 
 CREATE UNIQUE INDEX index_ci_project_monthly_usages_on_project_id_and_date ON ci_project_monthly_usages USING btree (project_id, date);
 
+CREATE INDEX index_ci_rac_tokens_on_rac_id ON ci_runner_controller_tokens USING btree (runner_controller_id);
+
 CREATE UNIQUE INDEX index_ci_refs_on_project_id_and_ref_path ON ci_refs USING btree (project_id, ref_path);
 
 CREATE UNIQUE INDEX index_ci_resource_groups_on_project_id_and_key ON ci_resource_groups USING btree (project_id, key);
@@ -40614,6 +40641,8 @@ CREATE INDEX index_ci_resources_on_build_id ON ci_resources USING btree (build_i
 CREATE INDEX index_ci_resources_on_project_id ON ci_resources USING btree (project_id);
 
 CREATE UNIQUE INDEX index_ci_resources_on_resource_group_id_and_build_id ON ci_resources USING btree (resource_group_id, build_id);
+
+CREATE UNIQUE INDEX index_ci_runner_controller_tokens_on_token_digest ON ci_runner_controller_tokens USING btree (token_digest);
 
 CREATE INDEX index_ci_runner_machines_on_executor_type ON ONLY ci_runner_machines USING btree (executor_type);
 
@@ -51833,6 +51862,9 @@ ALTER TABLE ONLY packages_conan_file_metadata
 
 ALTER TABLE ONLY related_epic_links
     ADD CONSTRAINT fk_rails_0b72027748 FOREIGN KEY (target_id) REFERENCES epics(id) ON DELETE CASCADE;
+
+ALTER TABLE ONLY ci_runner_controller_tokens
+    ADD CONSTRAINT fk_rails_0b9e370fc6 FOREIGN KEY (runner_controller_id) REFERENCES ci_runner_controllers(id) ON DELETE CASCADE;
 
 ALTER TABLE ai_code_suggestion_events
     ADD CONSTRAINT fk_rails_0ba241cf56 FOREIGN KEY (organization_id) REFERENCES organizations(id);

@@ -1,0 +1,11 @@
+---
+table_name: ci_runner_controller_tokens
+classes:
+  - Ci::RunnerControllerToken
+feature_categories:
+  - continuous_integration
+description: Manages runner controller tokens
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/212206
+milestone: '18.7'
+gitlab_schema: gitlab_ci_cell_local
+table_size: small

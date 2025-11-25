@@ -8,6 +8,7 @@ export const useFileTreeBrowserVisibility = defineStore('fileTreeVisibility', {
   state: () => ({
     fileTreeBrowserIsExpanded: false,
     fileTreeBrowserIsPeekOn: false,
+    shouldRestoreFocusToToggle: false,
   }),
   getters: {
     fileTreeBrowserIsVisible: (state) =>
@@ -46,11 +47,17 @@ export const useFileTreeBrowserVisibility = defineStore('fileTreeVisibility', {
       }
     },
     handleFileTreeBrowserToggleClick() {
+      // Mark that focus should be restored after toggle
+      this.shouldRestoreFocusToToggle = true;
+
       if (useMainContainer().isIntermediate) {
         this.toggleFileTreeBrowserIsPeek();
       } else {
         this.toggleFileTreeBrowserIsExpanded();
       }
+    },
+    clearRestoreFocusFlag() {
+      this.shouldRestoreFocusToToggle = false;
     },
     initializeFileTreeBrowser() {
       // Only load expanded state on wide screens

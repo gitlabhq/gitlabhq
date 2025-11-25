@@ -26,13 +26,20 @@ GitLab Duo AI-native features are powered by a generative AI model. The processi
 
 The below reflects the current retention periods of GitLab AI model [Sub-Processors](https://about.gitlab.com/privacy/subprocessors/#third-party-sub-processors):
 
-Excluding [Fireworks AI prompt caching](../project/repository/code_suggestions/_index.md#prompt-caching), GitLab has arranged zero-day data retention with Anthropic, Fireworks AI, and Google for GitLab Duo requests. Anthropic, Fireworks AI (when prompt caching is disabled), and Google discard model input and output data immediately after the output is provided; input and output data is not stored for abuse monitoring. Model input and output is never used to train models.
+GitLab has arranged zero-day data retention with Anthropic, Fireworks AI, AWS, and Google for GitLab Duo requests. These vendors:
 
-All of these AI providers are under data protection agreements with GitLab that prohibit the use of Customer Content for their own purposes, except to perform their independent legal obligations.
+- Discard model input and output data immediately after the output is provided and do not store input and output data for abuse monitoring.
+  The exception to this is when Fireworks AI, Anthropic and VertexAI prompt caching is enabled for Code
+  Suggestions and GitLab Duo Chat (Agentic).
 
-GitLab Duo Chat and GitLab Duo Agent Platform retain chat history and workflow history, respectively, to help you return quickly to previously discussed topics. You can delete chats in the GitLab Duo Chat interface. GitLab does not otherwise retain input and output data unless customers provide consent through a GitLab [Support Ticket](https://about.gitlab.com/support/portal/). Learn more about [AI feature logging](../../administration/logs/_index.md).
+  For more information on how to turn off prompt caching, see [prompt caching](../project/repository/code_suggestions/_index.md#prompt-caching).
+- Do not use model input and output to train models.
+- Are under data protection agreements with GitLab that prohibit the use of Customer Content for their own purposes, except to perform their independent legal obligations.
 
-Fireworks AI prompt caching is enabled by default to improve Code Suggestions latency. For more information and how to opt out of prompt caching, see the [Code Suggestions prompt caching documentation](../project/repository/code_suggestions/_index.md#prompt-caching).
+GitLab Duo Chat and GitLab Duo Agent Platform retain chat history and workflow history, respectively,
+to help you return quickly to previously discussed topics. You can delete chats in the GitLab Duo Chat interface.
+GitLab does not otherwise retain input and output data unless customers provide consent through a GitLab [support ticket](https://about.gitlab.com/support/portal/).
+For more information, see [AI feature logging](../../administration/logs/_index.md).
 
 ## Training data
 

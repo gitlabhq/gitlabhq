@@ -473,6 +473,25 @@ After you create a conversation with an agent:
 - If you go back to a conversation and the associated agent is no longer available,
   you cannot continue that conversation.
 
+## Prompt caching
+
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/577544) in GitLab 18.7.
+
+{{< /history >}}
+
+Prompt caching is enabled by default to improve GitLab Duo Chat (Agentic) latency.
+When prompt caching is enabled, chat prompt data is temporarily stored in memory by the model
+vendor (Anthropic or VertexAI). Prompt caching significantly improves latency by avoiding the
+re-processing of cached prompt and input data.
+
+### Turn off prompt caching
+
+You can [turn off prompt caching](../project/repository/code_suggestions/_index.md#turn-off-prompt-caching)
+for top-level groups in the GitLab Duo settings.
+This also turns off prompt caching for Code Suggestions.
+
 ## GitLab Duo Chat capabilities
 
 GitLab Duo Chat (Agentic) extends GitLab Duo Chat (Classic) capabilities with the following features:

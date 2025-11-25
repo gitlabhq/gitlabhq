@@ -44,7 +44,6 @@ export default {
   data() {
     return {
       isLoggedIn: isLoggedIn(),
-      isReplying: false,
     };
   },
   computed: {
@@ -62,15 +61,14 @@ export default {
     },
     discussionHolderClass() {
       return {
-        'is-replying': this.isReplying,
+        'is-replying': this.discussion.isReplying,
         'internal-note': this.isDiscussionInternal,
       };
     },
   },
   methods: {
     showReplyForm(text) {
-      this.$emit('showReplyForm');
-      this.isReplying = true;
+      this.$emit('startReplying');
       if (typeof text !== 'undefined') {
         this.$nextTick(() => {
           this.$refs.noteForm.append(text);
@@ -94,7 +92,7 @@ export default {
         }
       }
 
-      this.isReplying = false;
+      this.$emit('stopReplying');
     }),
     async saveReply(noteText) {
       if (!noteText) {
@@ -139,7 +137,7 @@ export default {
         }
         throw error;
       } finally {
-        this.isReplying = false;
+        this.$emit('stopReplying');
       }
     },
   },
@@ -179,7 +177,7 @@ export default {
                   <div class="flash-container !gl-mt-0 gl-mb-2"></div>
                   <note-signed-out-widget v-if="!isLoggedIn" />
                   <note-form
-                    v-else-if="isReplying"
+                    v-else-if="discussion.isReplying"
                     ref="noteForm"
                     :internal="discussion.internal"
                     :save-button-title="saveButtonTitle"

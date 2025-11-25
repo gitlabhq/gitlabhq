@@ -148,6 +148,11 @@ export default {
       required: false,
       default: () => [],
     },
+    immersive: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
   },
   data() {
     let editingMode;
@@ -465,6 +470,7 @@ export default {
         :editable="!disabled"
         :disable-attachments="disableAttachments"
         :code-suggestions-config="codeSuggestionsConfig"
+        :immersive="immersive"
         :data-testid="formFieldProps['data-testid'] || 'markdown-editor-form-field'"
         @initialized="setEditorAsAutofocused"
         @change="updateMarkdownFromContentEditor"

@@ -60,7 +60,7 @@ RSpec.describe RapidDiffs::CommitAppComponent, feature_category: :code_review_wo
     it "renders before_diffs_list slot with new discussion toggle" do
       render_component
 
-      expect(page).to have_selector('[data-new-discussion-toggle][hidden]', visible: :all)
+      expect(page).to have_selector('[data-new-discussion-toggle][data-click="newDiscussion"][hidden]', visible: :all)
     end
   end
 

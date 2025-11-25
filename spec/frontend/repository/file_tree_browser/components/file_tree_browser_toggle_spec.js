@@ -124,6 +124,95 @@ describe('FileTreeBrowserToggle', () => {
     });
   });
 
+  describe('focus restoration', () => {
+    describe('watcher for shouldRestoreFocusToToggle', () => {
+      it('calls restoreToggleFocus when flag becomes true', async () => {
+        createComponent();
+        const restoreFocusSpy = jest.spyOn(wrapper.vm, 'restoreToggleFocus');
+
+        fileTreeBrowserStore.shouldRestoreFocusToToggle = true;
+        await nextTick();
+        await nextTick();
+
+        expect(restoreFocusSpy).toHaveBeenCalled();
+      });
+
+      it('does not call restoreFocus when flag is false', async () => {
+        createComponent();
+        const restoreFocusSpy = jest.spyOn(wrapper.vm, 'restoreToggleFocus');
+
+        fileTreeBrowserStore.shouldRestoreFocusToToggle = false;
+        await nextTick();
+
+        expect(restoreFocusSpy).not.toHaveBeenCalled();
+      });
+
+      it('does not call restoreFocus when flag changes from true to false', async () => {
+        fileTreeBrowserStore.shouldRestoreFocusToToggle = true;
+        createComponent();
+        await nextTick();
+
+        const restoreFocusSpy = jest.spyOn(wrapper.vm, 'restoreToggleFocus');
+
+        fileTreeBrowserStore.shouldRestoreFocusToToggle = false;
+        await nextTick();
+
+        expect(restoreFocusSpy).not.toHaveBeenCalled();
+      });
+    });
+
+    describe('mounted hook', () => {
+      it('calls restoreToggleFocus if flag is true', async () => {
+        fileTreeBrowserStore.shouldRestoreFocusToToggle = true;
+
+        const restoreFocusSpy = jest.spyOn(FileTreeBrowserToggle.methods, 'restoreToggleFocus');
+
+        createComponent();
+        await nextTick();
+
+        expect(restoreFocusSpy).toHaveBeenCalled();
+      });
+
+      it('does not call restoreFocus if shouldRestoreFocusToToggle is false', () => {
+        fileTreeBrowserStore.shouldRestoreFocusToToggle = false;
+
+        const restoreFocusSpy = jest.spyOn(FileTreeBrowserToggle.methods, 'restoreToggleFocus');
+
+        createComponent();
+
+        expect(restoreFocusSpy).not.toHaveBeenCalled();
+      });
+    });
+
+    describe('restoreToggleFocus method', () => {
+      it('focuses the toggle button', async () => {
+        createComponent();
+        await nextTick();
+
+        // ✅ GitLab Pattern: Mock the focus method on the ref
+        const mockFocus = jest.fn();
+        wrapper.vm.$refs.toggle.$el.focus = mockFocus;
+
+        wrapper.vm.restoreToggleFocus();
+        await nextTick();
+
+        expect(mockFocus).toHaveBeenCalled();
+      });
+
+      it('clears the restore focus flag', async () => {
+        createComponent();
+        await nextTick();
+
+        const clearFlagSpy = jest.spyOn(wrapper.vm, 'clearRestoreFocusFlag');
+
+        wrapper.vm.restoreToggleFocus();
+        await nextTick();
+
+        expect(clearFlagSpy).toHaveBeenCalled();
+      });
+    });
+  });
+
   describe('tooltip', () => {
     it('displays "Hide file tree browser" tooltip when browser is expanded and shortcuts are enabled', () => {
       shouldDisableShortcuts.mockReturnValue(false);

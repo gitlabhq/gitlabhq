@@ -39,11 +39,18 @@ describe('DiffDiscussions', () => {
     expect(useDiffDiscussions().requestLastNoteEditing).toHaveBeenCalled();
   });
 
-  it('expands replies on showReplyForm', () => {
+  it('handles startReplying event', () => {
     const discussion = { id: '1' };
     createComponent({ discussions: [discussion] });
-    wrapper.findComponent(NoteableDiscussion).vm.$emit('showReplyForm');
-    expect(useDiffDiscussions().expandDiscussionReplies).toHaveBeenCalledWith(discussion);
+    wrapper.findComponent(NoteableDiscussion).vm.$emit('startReplying');
+    expect(useDiffDiscussions().startReplying).toHaveBeenCalledWith(discussion);
+  });
+
+  it('handles stopReplying event', () => {
+    const discussion = { id: '1' };
+    createComponent({ discussions: [discussion] });
+    wrapper.findComponent(NoteableDiscussion).vm.$emit('stopReplying');
+    expect(useDiffDiscussions().stopReplying).toHaveBeenCalledWith(discussion);
   });
 
   it('toggles replies', () => {

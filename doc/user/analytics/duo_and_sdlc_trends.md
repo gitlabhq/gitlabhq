@@ -8,7 +8,6 @@ title: GitLab Duo and SDLC trends
 {{< details >}}
 
 - Tier: Premium, Ultimate
-- Add-on: GitLab Duo Enterprise, GitLab Duo with Amazon Q
 - Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
 - Status: Beta for GitLab Self-Managed
 
@@ -23,6 +22,7 @@ title: GitLab Duo and SDLC trends
 - Changed to support Amazon Q in GitLab 18.2.1.
 - Pipeline metrics table [added](https://gitlab.com/gitlab-org/gitlab/-/issues/550356) in GitLab 18.4.
 - Renamed from `AI impact analytics` to `GitLab Duo and SDLC trends` in GitLab 18.4.
+- Changed to not require add-ons in GitLab 18.7.
 
 {{< /history >}}
 

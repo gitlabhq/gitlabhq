@@ -2676,6 +2676,9 @@ msgstr ""
 msgid "AICatalog|Create flow"
 msgstr ""
 
+msgid "AICatalog|Created and maintained by %{boldStart}GitLab%{boldEnd}"
+msgstr ""
+
 msgid "AICatalog|Creating proprietary business logic."
 msgstr ""
 
@@ -2823,6 +2826,9 @@ msgstr ""
 msgid "AICatalog|Flows use multiple agents to complete tasks automatically."
 msgstr ""
 
+msgid "AICatalog|Foundational agent"
+msgstr ""
+
 msgid "AICatalog|Frequently failing or nuisance activity."
 msgstr ""
 
@@ -2845,6 +2851,9 @@ msgid "AICatalog|Is visible only to users with at least the Developer role for t
 msgstr ""
 
 msgid "AICatalog|Is visible to all users."
+msgstr ""
+
+msgid "AICatalog|Learn more about foundational agents"
 msgstr ""
 
 msgid "AICatalog|Manage agent settings."
@@ -28647,6 +28656,9 @@ msgstr ""
 msgid "Failed to submit access request"
 msgstr ""
 
+msgid "Failed to submit your comment. Please try again."
+msgstr ""
+
 msgid "Failed to toggle the to-do status for the design."
 msgstr ""
 
@@ -40486,6 +40498,9 @@ msgstr ""
 msgid "Maximum field length"
 msgstr ""
 
+msgid "Maximum file size for indexing"
+msgstr ""
+
 msgid "Maximum file size indexed (KiB)"
 msgstr ""
 
@@ -43119,6 +43134,9 @@ msgid "Must be in the following format: `30m`, `2h`, or `1d`. Set to `%{val}` fo
 msgstr ""
 
 msgid "Must be in the following format: `30m`, `2h`, or `1d`. Set to `%{val}` to disable."
+msgstr ""
+
+msgid "Must be in the following format: `5B`, `5b`, `1KB`, `1kb`, `2MB`, `2mb`, `1GB`, or `1gb`"
 msgstr ""
 
 msgid "Must start with letter, digit, emoji, or underscore. Can also contain periods, dashes, spaces, and parentheses."
@@ -54470,6 +54488,9 @@ msgid "Rake Tasks Help"
 msgstr ""
 
 msgid "Random"
+msgstr ""
+
+msgid "RapidDiffs|Add comment"
 msgstr ""
 
 msgid "RapidDiffs|Added %d line."
