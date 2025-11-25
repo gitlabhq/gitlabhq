@@ -258,7 +258,9 @@ RSpec.describe Gitlab::Ci::Pipeline::Seed::Build::Cache, feature_category: :pipe
       end
 
       it 'includes fallback keys in attributes' do
-        expect(subject).to include(config)
+        expect(subject[:key]).to eq('ruby-branch-key')
+        expect(subject[:fallback_keys]).to eq(['ruby-default'])
+        expect(subject[:paths]).to eq(['vendor/ruby'])
       end
     end
 

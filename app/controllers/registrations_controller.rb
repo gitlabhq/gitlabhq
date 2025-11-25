@@ -285,7 +285,7 @@ class RegistrationsController < Devise::RegistrationsController
     @resource ||= Users::RegistrationsBuildService
                     .new(current_user, sign_up_params.merge({ skip_confirmation: skip_confirmation?,
                                                               preferred_language: preferred_language,
-                                                              organization_id: Current.organization.id }))
+                                                              organization_id: initial_organization.id }))
                     .execute
   end
 
@@ -372,6 +372,10 @@ class RegistrationsController < Devise::RegistrationsController
   # overridden by EE module
   def track_error(new_user)
     track_weak_password_error(new_user, self.class.name, 'create')
+  end
+
+  def initial_organization
+    ::Organizations::Organization.first
   end
 end
 

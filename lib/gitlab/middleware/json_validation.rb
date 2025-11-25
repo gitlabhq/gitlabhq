@@ -273,7 +273,7 @@ module Gitlab
         return if body.empty?
 
         handler = ::Gitlab::Json::StreamValidator.new(limits)
-        handler.sc_parse(body)
+        handler.validate!(body)
       # Could be either a Oj::ParseError or an EncodingError depending on
       # whether mimic_JSON has been called.
       rescue Oj::ParseError, EncodingError

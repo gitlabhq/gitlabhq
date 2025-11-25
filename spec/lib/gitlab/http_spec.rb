@@ -86,7 +86,8 @@ RSpec.describe Gitlab::HTTP, feature_category: :shared do
 
     context 'when response is a JSON payload' do
       before do
-        stub_request(:get, 'http://example.org').to_return(status: 200, body: '{ "key": "value" }',
+        stub_request(:get, 'http://example.org').to_return(status: 200,
+          body: '{"key1": {"key2": {"key3": "value"}}}',
           headers: { 'Content-Type' => 'application/json' })
       end
 
@@ -97,32 +98,19 @@ RSpec.describe Gitlab::HTTP, feature_category: :shared do
 
         result = described_class.get('http://example.org')
 
-        expect(result.parsed_response).to eq({ 'key' => 'value' })
+        expect(result.parsed_response).to eq({ 'key1' => { 'key2' => { 'key3' => 'value' } } })
       end
 
-      context 'when log_large_json_objects feature flag is disabled' do
+      context 'when body content exceeds the number of JSON structural characters' do
         before do
-          stub_feature_flags(log_large_json_objects: false)
+          stub_application_setting(max_http_response_json_structural_chars: 4)
         end
 
-        it 'does not use Gitlab::HttpResponseParser parser' do
-          expect(Gitlab::HttpResponseParser).not_to receive(:new)
-
+        it 'raises JSON::ParserError' do
           result = described_class.get('http://example.org')
 
-          expect(result.parsed_response).to eq({ 'key' => 'value' })
-        end
-      end
-
-      context 'when customer parser is provided' do
-        it 'parses the response using the provided parser' do
-          parser = class_double(HTTParty::Parser)
-
-          allow(parser).to receive(:call).and_return({ 'key' => 'customer parser' })
-
-          result = described_class.get('http://example.org', parser: parser)
-
-          expect(result.parsed_response).to eq({ 'key' => 'customer parser' })
+          expect { result.parsed_response }
+            .to raise_error(JSON::ParserError, 'JSON response exceeded the maximum number of objects')
         end
       end
     end

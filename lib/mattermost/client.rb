@@ -49,7 +49,7 @@ module Mattermost
     end
 
     def json_response(response)
-      json_response = Gitlab::Json.parse(response.body, legacy_mode: true)
+      json_response = response.parsed_response
 
       unless response.success?
         raise ::Mattermost::ClientError, json_response['message'] || 'Undefined error'

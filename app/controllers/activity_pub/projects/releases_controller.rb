@@ -46,7 +46,7 @@ module ActivityPub
 
       def payload
         @payload ||= begin
-          Gitlab::Json.parse(request.body.read)
+          Gitlab::Json.safe_parse(request.body.read)
         rescue JSON::ParserError
           nil
         end
