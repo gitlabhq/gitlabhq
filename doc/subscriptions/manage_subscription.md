@@ -211,7 +211,7 @@ The renewal period start date is displayed on the group Billing page under **Nex
 Contact the:
 
 - [Support team](https://support.gitlab.com/hc/en-us/requests/new?ticket_form_id=360000071293)
-if you need help accessing the Customers Portal or changing the contact person who manages your subscription.
+  if you need help accessing the Customers Portal or changing the contact person who manages your subscription.
 - [Sales team](https://customers.gitlab.com/contact_us) if you need help renewing your subscription.
 
 ### Check when subscription expires
@@ -299,9 +299,8 @@ Subscription renewals with fewer seats must have or exceed the current number of
 
 Before you renew your subscription:
 
-- For GitLab.com,
-[reduce the number of billable users](manage_users_and_seats.md#remove-users-from-subscription)
-if it exceeds the number of seats you want to renew for.
+- For GitLab.com, [reduce the number of billable users](manage_users_and_seats.md#remove-users-from-subscription)
+  if it exceeds the number of seats you want to renew for.
 - For GitLab Self-Managed, [block inactive or unwanted users](../administration/moderate_users.md#block-a-user).
 
 To manually renew your subscription for fewer seats, you can either:

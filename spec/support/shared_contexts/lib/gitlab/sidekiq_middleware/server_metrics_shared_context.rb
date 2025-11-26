@@ -1,5 +1,6 @@
 # frozen_string_literal: true
 
+# rubocop:disable RSpec/MultipleMemoizedHelpers -- All metrics need to be mocked
 RSpec.shared_context 'server metrics with mocked prometheus' do
   let(:concurrency_metric) { double('concurrency metric') }
 
@@ -25,6 +26,9 @@ RSpec.shared_context 'server metrics with mocked prometheus' do
   let(:gitaly_seconds_sum_metric) { double('gitaly seconds sum metric') }
   let(:redis_seconds_sum_metric) { double('redis seconds sum metric') }
   let(:elasticsearch_seconds_sum_metric) { double('elasticsearch seconds sum metric') }
+  let(:gvl_thread_metric) { double('gvl thread duration metric') }
+  let(:gvl_process_metric) { double('gvl process duration metric') }
+  let(:gvl_enabled_metric) { double('gvl enabled') }
 
   before do
     allow(Gitlab::Metrics).to receive(:histogram).and_call_original
@@ -37,6 +41,7 @@ RSpec.shared_context 'server metrics with mocked prometheus' do
     allow(Gitlab::Metrics).to receive(:histogram).with(:sidekiq_jobs_gitaly_seconds, anything, anything, anything).and_return(gitaly_seconds_metric)
     allow(Gitlab::Metrics).to receive(:histogram).with(:sidekiq_redis_requests_duration_seconds, anything, anything, anything).and_return(redis_seconds_metric)
     allow(Gitlab::Metrics).to receive(:histogram).with(:sidekiq_elasticsearch_requests_duration_seconds, anything, anything, anything).and_return(elasticsearch_seconds_metric)
+    allow(Gitlab::Metrics).to receive(:histogram).with(:sidekiq_gvl_thread_wait_seconds, anything, anything, anything).and_return(gvl_thread_metric)
     allow(Gitlab::Metrics).to receive(:counter).with(:sidekiq_jobs_failed_total, anything).and_return(failed_total_metric)
     allow(Gitlab::Metrics).to receive(:counter).with(:sidekiq_jobs_retried_total, anything).and_return(retried_total_metric)
     allow(Gitlab::Metrics).to receive(:counter).with(:sidekiq_jobs_interrupted_total, anything).and_return(interrupted_total_metric)
@@ -53,11 +58,14 @@ RSpec.shared_context 'server metrics with mocked prometheus' do
     allow(Gitlab::Metrics).to receive(:gauge).with(:sidekiq_running_jobs, anything, {}, :all).and_return(running_jobs_metric)
     allow(Gitlab::Metrics).to receive(:gauge).with(:sidekiq_concurrency, anything, {}, :all).and_return(concurrency_metric)
     allow(Gitlab::Metrics).to receive(:gauge).with(:sidekiq_mem_total_bytes, anything, {}, :all).and_return(sidekiq_mem_total_bytes)
+    allow(Gitlab::Metrics).to receive(:gauge).with(:sidekiq_gvl_process_wait_seconds, anything, anything, anything).and_return(gvl_process_metric)
+    allow(Gitlab::Metrics).to receive(:gauge).with(:sidekiq_gvl_measurement_enabled, anything, anything, anything).and_return(gvl_enabled_metric)
 
     allow(concurrency_metric).to receive(:set)
     allow(completion_seconds_metric).to receive(:get)
   end
 end
+# rubocop:enable RSpec/MultipleMemoizedHelpers
 
 RSpec.shared_context 'server metrics call' do
   let(:thread_cputime_before) { 1 }
@@ -91,12 +99,17 @@ RSpec.shared_context 'server metrics call' do
     }
   end
 
+  let(:gvl_thread_duration) { 1_000_000_000 } # 1s
+  let(:gvl_process_duration) { 2_000_000_000 } # 2s
+
   before do
     allow(subject).to receive(:get_thread_cputime).and_return(thread_cputime_before, thread_cputime_after)
 
     allow(Gitlab::Metrics::System).to receive(:monotonic_time).and_return(monotonic_time_before, monotonic_time_after)
     allow(Gitlab::InstrumentationHelper).to receive(:queue_duration_for_job).with(job).and_return(queue_duration_for_job)
     allow(ActiveRecord::RuntimeRegistry).to receive(:sql_runtime).and_return(db_duration * 1000)
+    allow(GVLTools::LocalTimer).to receive(:monotonic_time).and_return(0, gvl_thread_duration)
+    allow(GVLTools::GlobalTimer).to receive(:monotonic_time).and_return(0, gvl_process_duration)
 
     job[:instrumentation] = instrumentation
     job[:gitaly_duration_s] = gitaly_duration
@@ -125,5 +138,8 @@ RSpec.shared_context 'server metrics call' do
     allow(redis_seconds_metric).to receive(:observe)
     allow(elasticsearch_seconds_metric).to receive(:observe)
     allow(sidekiq_mem_total_bytes).to receive(:set)
+    allow(gvl_thread_metric).to receive(:observe)
+    allow(gvl_process_metric).to receive(:increment)
+    allow(gvl_enabled_metric).to receive(:set)
   end
 end

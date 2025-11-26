@@ -2356,7 +2356,6 @@ RSpec/NamedSubject:
     - 'spec/models/ml/experiment_spec.rb'
     - 'spec/models/ml/model_spec.rb'
     - 'spec/models/namespace/traversal_hierarchy_spec.rb'
-    - 'spec/models/namespace_setting_spec.rb'
     - 'spec/models/namespace_spec.rb'
     - 'spec/models/note_spec.rb'
     - 'spec/models/notification_recipient_spec.rb'

@@ -18796,6 +18796,9 @@ msgstr ""
 msgid "Connect repositories from GitHub"
 msgstr ""
 
+msgid "Connect to Advanced Search cluster"
+msgstr ""
+
 msgid "Connect with your team and collaborate on a project."
 msgstr ""
 
@@ -25168,9 +25171,6 @@ msgstr ""
 msgid "DuoAgentPlatform|Error occurred when starting the flow."
 msgstr ""
 
-msgid "DuoAgentPlatform|Executor ID"
-msgstr ""
-
 msgid "DuoAgentPlatform|Flow"
 msgstr ""
 
@@ -25184,6 +25184,9 @@ msgid "DuoAgentPlatform|GitLab Duo Core Off"
 msgstr ""
 
 msgid "DuoAgentPlatform|GitLab Duo Core On"
+msgstr ""
+
+msgid "DuoAgentPlatform|Job ID"
 msgstr ""
 
 msgid "DuoAgentPlatform|Remote GitLab Duo Flows"
@@ -62971,6 +62974,9 @@ msgstr ""
 msgid "Self hosted AI Gateway URL is set to %{url}. It can be changed in the Gitlab Duo configuration."
 msgstr ""
 
+msgid "Semantic search"
+msgstr ""
+
 msgid "Send"
 msgstr ""
 
@@ -65963,6 +65969,9 @@ msgid "Successfully blocked"
 msgstr ""
 
 msgid "Successfully confirmed"
+msgstr ""
+
+msgid "Successfully created connection for semantic search."
 msgstr ""
 
 msgid "Successfully deactivated"
@@ -72057,6 +72066,9 @@ msgid "Use %{webhooks_link_start}webhooks%{webhooks_link_end} to send notificati
 msgstr ""
 
 msgid "Use .gitlab-ci.yml"
+msgstr ""
+
+msgid "Use Advanced Search cluster for semantic search."
 msgstr ""
 
 msgid "Use Amazon Q to streamline development workflow and project upgrades"

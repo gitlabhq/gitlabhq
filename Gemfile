@@ -77,7 +77,7 @@ gem 'logger', '~> 1.7.0', feature_category: :shared
 gem 'marginalia', '~> 1.11.1', feature_category: :database
 
 # Authorization
-gem 'declarative_policy', '~> 2.0.1', feature_category: :shared
+gem 'declarative_policy', '~> 2.0.1', feature_category: :permissions
 
 # For source code paths mapping
 gem 'coverband', '6.1.5', require: false, feature_category: :shared
@@ -634,7 +634,7 @@ gem 'ssh_data', '~> 2.0', feature_category: :shared
 gem 'spamcheck', '~> 1.3.0', feature_category: :insider_threat
 
 # Gitaly GRPC protocol definitions
-gem 'gitaly', '~> 18.6.0.pre.rc1', feature_category: :gitaly
+gem 'gitaly', '~> 18.6.0', feature_category: :gitaly
 
 # KAS GRPC protocol definitions
 gem 'gitlab-kas-grpc', '~> 18.5.0-rc4', feature_category: :deployment_management
@@ -752,3 +752,5 @@ gem 'paper_trail', '~> 16.0', feature_category: :shared
 gem "i18n_data", "~> 0.13.1", feature_category: :system_access
 
 gem "gitlab-cloud-connector", "~> 1.35", require: 'gitlab/cloud_connector', feature_category: :plan_provisioning
+
+gem "gvltools", "~> 0.4.0", feature_category: :shared

@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe NamespaceSetting, feature_category: :groups_and_projects, type: :model do
+RSpec.describe NamespaceSetting, feature_category: :groups_and_projects do
   using RSpec::Parameterized::TableSyntax
 
   let_it_be(:group) { create(:group) }
@@ -17,7 +17,14 @@ RSpec.describe NamespaceSetting, feature_category: :groups_and_projects, type: :
     it { is_expected.to belong_to(:namespace) }
   end
 
-  it { is_expected.to define_enum_for(:jobs_to_be_done).with_values([:basics, :move_repository, :code_storage, :exploring, :ci, :other]).with_suffix }
+  it 'defines enum for jobs_to_be_done' do
+    is_expected.to(
+      define_enum_for(:jobs_to_be_done)
+        .with_values([:basics, :move_repository, :code_storage, :exploring, :ci, :other])
+        .with_suffix
+    )
+  end
+
   it { is_expected.to define_enum_for(:enabled_git_access_protocol).with_values([:all, :ssh, :http]).with_suffix }
 
   describe 'default values' do
@@ -188,7 +195,7 @@ RSpec.describe NamespaceSetting, feature_category: :groups_and_projects, type: :
       end
     end
 
-    context 'default_branch_protections_defaults validations' do
+    context 'for default_branch_protections_defaults validations' do
       let(:charset) { [*'a'..'z'] + [*0..9] }
       let(:value) { Array.new(byte_size) { charset.sample }.join }
 
@@ -206,7 +213,7 @@ RSpec.describe NamespaceSetting, feature_category: :groups_and_projects, type: :
     end
 
     context 'when enterprise bypass confirmation is allowed' do
-      subject do
+      subject(:setting) do
         build(:namespace_settings, allow_enterprise_bypass_placeholder_confirmation: true)
       end
 
@@ -215,26 +222,24 @@ RSpec.describe NamespaceSetting, feature_category: :groups_and_projects, type: :
 
       it 'does not allow invalid expiration times' do
         invalid_times.each do |time|
-          expect(subject).not_to allow_value(time).for(:enterprise_bypass_expires_at)
+          expect(setting).not_to allow_value(time).for(:enterprise_bypass_expires_at)
         end
       end
 
       it 'allows valid expiration times' do
         valid_times.each do |time|
-          expect(subject).to allow_value(time).for(:enterprise_bypass_expires_at)
+          expect(setting).to allow_value(time).for(:enterprise_bypass_expires_at)
         end
       end
     end
 
     context 'when allow_enterprise_bypass_placeholder_confirmation is false' do
-      subject do
-        build(:namespace_settings, allow_enterprise_bypass_placeholder_confirmation: false)
-      end
+      subject { build(:namespace_settings, allow_enterprise_bypass_placeholder_confirmation: false) }
 
-      it { expect(subject).to allow_value(nil).for(:enterprise_bypass_expires_at) }
-      it { expect(subject).to allow_value('').for(:enterprise_bypass_expires_at) }
-      it { expect(subject).to allow_value(1.day.ago).for(:enterprise_bypass_expires_at) }
-      it { expect(subject).to allow_value(Time.current).for(:enterprise_bypass_expires_at) }
+      it { is_expected.to allow_value(nil).for(:enterprise_bypass_expires_at) }
+      it { is_expected.to allow_value('').for(:enterprise_bypass_expires_at) }
+      it { is_expected.to allow_value(1.day.ago).for(:enterprise_bypass_expires_at) }
+      it { is_expected.to allow_value(Time.current).for(:enterprise_bypass_expires_at) }
     end
 
     context 'for duo_agent_platform_request_count' do
@@ -397,7 +402,7 @@ RSpec.describe NamespaceSetting, feature_category: :groups_and_projects, type: :
     end
   end
 
-  context 'runner registration settings' do
+  context 'for runner registration settings' do
     shared_context 'with runner registration settings changing in hierarchy' do
       context 'when there are no parents' do
         it { is_expected.to be_truthy }
@@ -553,26 +558,31 @@ RSpec.describe NamespaceSetting, feature_category: :groups_and_projects, type: :
   end
 
   describe '#math_rendering_limits_enabled' do
-    it_behaves_like 'a cascading namespace setting boolean attribute', settings_attribute_name: :math_rendering_limits_enabled
+    it_behaves_like 'a cascading namespace setting boolean attribute',
+      settings_attribute_name: :math_rendering_limits_enabled
   end
 
   describe '#resource_access_token_notify_inherited' do
-    it_behaves_like 'a cascading namespace setting boolean attribute', settings_attribute_name: :resource_access_token_notify_inherited
+    it_behaves_like 'a cascading namespace setting boolean attribute',
+      settings_attribute_name: :resource_access_token_notify_inherited
   end
 
   describe '#web_based_commit_signing_enabled' do
-    it_behaves_like 'a cascading namespace setting boolean attribute', settings_attribute_name: :web_based_commit_signing_enabled
+    it_behaves_like 'a cascading namespace setting boolean attribute',
+      settings_attribute_name: :web_based_commit_signing_enabled
   end
 
-  describe 'default_branch_protection_defaults' do
+  describe '#default_branch_protection_defaults' do
+    subject(:setting) { described_class.new }
+
     let(:defaults) { { name: 'main', push_access_level: 30, merge_access_level: 30, unprotect_access_level: 40 } }
 
     it 'returns the value for default_branch_protection_defaults' do
-      subject.default_branch_protection_defaults = defaults
-      expect(subject.default_branch_protection_defaults['name']).to eq('main')
-      expect(subject.default_branch_protection_defaults['push_access_level']).to eq(30)
-      expect(subject.default_branch_protection_defaults['merge_access_level']).to eq(30)
-      expect(subject.default_branch_protection_defaults['unprotect_access_level']).to eq(40)
+      setting.default_branch_protection_defaults = defaults
+      expect(setting.default_branch_protection_defaults['name']).to eq('main')
+      expect(setting.default_branch_protection_defaults['push_access_level']).to eq(30)
+      expect(setting.default_branch_protection_defaults['merge_access_level']).to eq(30)
+      expect(setting.default_branch_protection_defaults['unprotect_access_level']).to eq(40)
     end
 
     context 'when provided with content that does not match the JSON schema' do
@@ -587,7 +597,7 @@ RSpec.describe NamespaceSetting, feature_category: :groups_and_projects, type: :
   describe 'pipeline_variables_default_role' do
     subject { group.namespace_settings.pipeline_variables_default_role }
 
-    context 'validations' do
+    context 'for validations' do
       let(:namespace_settings) { build(:namespace_settings) }
 
       context 'when pipeline_variables_default_role is valid' do
@@ -702,7 +712,8 @@ RSpec.describe NamespaceSetting, feature_category: :groups_and_projects, type: :
       let!(:parent_cache) { create(:namespace_descendants, namespace: parent_group) }
 
       it 'invalidates the parent cache when child is archived' do
-        expect { child_group.namespace_settings.update!(archived: true) }.to change { parent_cache.reload.outdated_at }.from(nil)
+        expect { child_group.namespace_settings.update!(archived: true) }
+          .to change { parent_cache.reload.outdated_at }.from(nil)
       end
     end
   end
@@ -735,11 +746,25 @@ RSpec.describe NamespaceSetting, feature_category: :groups_and_projects, type: :
         allow(Devise).to receive(:omniauth_providers).and_return([ommiauth_provider_config_with_step_up_auth.name])
       end
 
-      it { is_expected.to validate_inclusion_of(:step_up_auth_required_oauth_provider).in_array([ommiauth_provider_config_with_step_up_auth.name]) }
+      it 'validates inclusion' do
+        is_expected.to(
+          validate_inclusion_of(:step_up_auth_required_oauth_provider)
+            .in_array([ommiauth_provider_config_with_step_up_auth.name])
+        )
+      end
 
-      it { is_expected.to allow_value(ommiauth_provider_config_with_step_up_auth.name).for(:step_up_auth_required_oauth_provider) }
+      it 'validates allowance' do
+        is_expected
+          .to allow_value(ommiauth_provider_config_with_step_up_auth.name).for(:step_up_auth_required_oauth_provider)
+      end
+
       it { is_expected.to allow_value('').for(:step_up_auth_required_oauth_provider) }
-      it { is_expected.not_to allow_value('google_oauth2').for(:step_up_auth_required_oauth_provider).with_message('is not included in the list') }
+
+      it 'does not allow an undefined provider' do
+        is_expected.not_to allow_value('google_oauth2')
+          .for(:step_up_auth_required_oauth_provider)
+          .with_message('is not included in the list')
+      end
 
       context 'when parent group defines step-up auth provider' do
         let_it_be_with_reload(:subsubgroup) { create(:group, parent: subgroup) }
@@ -750,13 +775,18 @@ RSpec.describe NamespaceSetting, feature_category: :groups_and_projects, type: :
           group.namespace_settings.update!(step_up_auth_required_oauth_provider: 'openid_connect')
         end
 
-        it { is_expected.not_to allow_value('openid_connect').for(:step_up_auth_required_oauth_provider).with_message("cannot be changed because it is inherited from parent group \"#{group.name}\"") }
+        it 'does not allow change when inherited from parent group' do
+          is_expected.not_to allow_value('openid_connect')
+            .for(:step_up_auth_required_oauth_provider)
+            .with_message("cannot be changed because it is inherited from parent group \"#{group.name}\"")
+        end
+
         it { is_expected.to allow_value(nil).for(:step_up_auth_required_oauth_provider) }
       end
     end
   end
 
-  describe '#step_up_auth_required_oauth_provider_inherited_namespace_setting and #step_up_auth_required_oauth_provider_from_self_or_inherited' do
+  describe 'step-up auth provider inheritance' do
     let_it_be_with_reload(:group) { group }
     let_it_be_with_reload(:subgroup) { subgroup }
     let_it_be_with_reload(:subsubgroup) { create(:group, parent: subgroup) }
@@ -791,14 +821,16 @@ RSpec.describe NamespaceSetting, feature_category: :groups_and_projects, type: :
 
     before do
       stub_omniauth_setting(enabled: true, providers: [step_up_provider_oidc, step_up_provider_oidc_aad])
-      allow(Devise).to receive(:omniauth_providers).and_return([step_up_provider_oidc.name, step_up_provider_oidc_aad.name])
+      allow(Devise).to receive(:omniauth_providers).and_return([step_up_provider_oidc.name,
+        step_up_provider_oidc_aad.name])
 
       subsubgroup.namespace_settings.update!(step_up_auth_required_oauth_provider: subsubgroup_step_up_provider)
       subgroup.namespace_settings.update!(step_up_auth_required_oauth_provider: subgroup_step_up_provider)
       group.namespace_settings.update!(step_up_auth_required_oauth_provider: group_step_up_provider)
     end
 
-    where(:group_step_up_provider, :subgroup_step_up_provider, :subsubgroup_step_up_provider, :test_group, :expected_inherited_namespace, :expected_provider_from_self_or_inherited) do
+    where(:group_step_up_provider, :subgroup_step_up_provider, :subsubgroup_step_up_provider, :test_group,
+      :expected_inherited_namespace, :expected_provider_from_self_or_inherited) do
       # Test inheritance precedence (most distant ancestor wins)
       'oidc_aad' | 'oidc' | nil    | ref(:subsubgroup) | ref(:group)    | 'oidc_aad'
       'oidc_aad' | nil    | nil    | ref(:subsubgroup) | ref(:group)    | 'oidc_aad'
@@ -823,7 +855,9 @@ RSpec.describe NamespaceSetting, feature_category: :groups_and_projects, type: :
 
     with_them do
       describe '#step_up_auth_required_oauth_provider_inherited_namespace_setting' do
-        subject { test_group.namespace_settings.step_up_auth_required_oauth_provider_inherited_namespace_setting&.namespace }
+        subject do
+          test_group.namespace_settings.step_up_auth_required_oauth_provider_inherited_namespace_setting&.namespace
+        end
 
         it { is_expected.to eq expected_inherited_namespace }
       end

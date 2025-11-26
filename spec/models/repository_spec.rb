@@ -2526,22 +2526,52 @@ RSpec.describe Repository, feature_category: :source_code_management do
       )
     end
 
-    it 'writes merge of source SHA and first parent ref to MR merge_ref_path' do
-      merge_commit_id = repository.merge_to_ref(
-        user,
+    let(:params) do
+      {
         source_sha: merge_request.diff_head_sha,
         branch: merge_request.target_branch,
         target_ref: merge_request.merge_ref_path,
         message: 'Custom message',
         first_parent_ref: merge_request.target_branch_ref
-      )
+      }
+    end
 
-      merge_commit = repository.commit(merge_commit_id)
+    subject(:merge_to_ref) do
+      repository.merge_to_ref(
+        user,
+        **params
+      )
+    end
+
+    it 'writes merge of source SHA and first parent ref to MR merge_ref_path' do
+      merge_commit = repository.commit(merge_to_ref)
 
       expect(merge_commit.message).to eq('Custom message')
       expect(merge_commit.author_name).to eq(user.name)
       expect(merge_commit.author_email).to eq(user.commit_email_or_default)
       expect(repository.blob_at(merge_commit.id, 'files/ruby/feature.rb')).to be_present
+    end
+
+    describe 'delegating to Repositories::WebBasedCommitSigningSetting for sign' do
+      using RSpec::Parameterized::TableSyntax
+
+      where(:expected_sign) { [true, false] }
+
+      with_them do
+        before do
+          allow_next_instance_of(Repositories::WebBasedCommitSigningSetting) do |instance|
+            allow(instance).to receive(:sign_commits?).and_return(expected_sign)
+          end
+        end
+
+        it 'calls UserMergeToRef with the expected value for sign' do
+          expect_next_instance_of(Gitlab::GitalyClient::OperationService) do |client|
+            expect(client).to receive(:user_merge_to_ref).with(user, **params, expected_old_oid: '', sign: expected_sign)
+          end
+
+          subject
+        end
+      end
     end
   end
 

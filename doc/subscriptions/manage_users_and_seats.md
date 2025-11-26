@@ -113,7 +113,7 @@ The user must not be assigned any other role, anywhere in the instance for GitLa
   - Private or internal, a user with the Guest role has [a set of permissions](../user/permissions.md#project-members-permissions).
   - Public, all users, including those with the Guest role, can access your project.
 - For GitLab.com, if a user with the Guest role creates a project in their personal namespace, the user does not consume a seat.
-The project is under the user's personal namespace and does not relate to the group with the Ultimate subscription.
+  The project is under the user's personal namespace and does not relate to the group with the Ultimate subscription.
 - On GitLab Self-Managed, a user's highest assigned role is updated asynchronously and may take some time to update.
 
 {{< alert type="note" >}}

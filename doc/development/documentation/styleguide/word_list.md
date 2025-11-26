@@ -2896,7 +2896,7 @@ Use:
 
 - The GitLab virtual registry supports A, B, and C.
 - You can configure your applications to use one virtual registry instead
-of multiple upstream registries.
+  of multiple upstream registries.
 
 ## VS Code user interface
 

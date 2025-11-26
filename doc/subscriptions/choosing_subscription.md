@@ -46,13 +46,13 @@ You can purchase the following add-ons:
 - [GitLab Duo](subscription-add-ons.md): Get access to AI-native features like Code Suggestions,
   GitLab Duo Chat, and more.
 - [Enterprise Agile Planning](manage_subscription.md#enterprise-agile-planning): Increase collaboration between
-technical and non-technical teams on a single platform. Non-engineering team members can participate in planning,
-measure impact with Value Stream Analytics, and gain visibility into software development velocity.
+  technical and non-technical teams on a single platform. Non-engineering team members can participate in planning,
+  measure impact with Value Stream Analytics, and gain visibility into software development velocity.
 - [Storage](../user/storage_usage_quotas.md#purchase-more-storage): Buy more storage when you exceed your
-free 10 GiB storage quota.
+  free 10 GiB storage quota.
 - [Compute minutes](gitlab_com/compute_minutes.md): Buy additional compute minutes when your
-plan exceeds its allocated amount and you need to continue running automated
-builds, tests, and deployments without interruption.
+  plan exceeds its allocated amount and you need to continue running automated
+  builds, tests, and deployments without interruption.
 
 Some add-ons are only available to specific subscription tiers and offerings.
 

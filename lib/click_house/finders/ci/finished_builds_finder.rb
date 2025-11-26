@@ -61,14 +61,16 @@ module ClickHouse # rubocop:disable Gitlab/BoundedContexts -- Existing module
           where(project_id: project_id)
         end
 
-        def select(*fields, aggregate: false)
-          fields = Array(fields).flatten
-          return self unless fields.any?
+        # Validation is skipped for aggregate expressions - they're either validated via select_aggregations
+        # or are defined methods that will raise NoMethodError if invalid
+        def select(*fields, group_by_fields: true)
+          fields = Array(fields).flatten.compact
+          return self if fields.empty?
 
-          validate_columns!(fields, :select, aggregate)
+          validate_columns!(fields, :select) if group_by_fields
 
           query = super(*fields)
-          aggregate ? query : query.group_by(*fields)
+          group_by_fields ? query.group_by(*fields) : query
         end
 
         def select_aggregations(*aggregations)
@@ -85,7 +87,7 @@ module ClickHouse # rubocop:disable Gitlab/BoundedContexts -- Existing module
             round(
               ms_to_s(query_builder.avg(:duration))
             ).as('mean_duration_in_seconds'),
-            aggregate: true
+            group_by_fields: false
           )
         end
 
@@ -94,7 +96,7 @@ module ClickHouse # rubocop:disable Gitlab/BoundedContexts -- Existing module
             round(
               ms_to_s(query_builder.quantile(0.95, :duration))
             ).as('p95_duration_in_seconds'),
-            aggregate: true
+            group_by_fields: false
           )
         end
 
@@ -118,7 +120,7 @@ module ClickHouse # rubocop:disable Gitlab/BoundedContexts -- Existing module
         def total_count
           select(
             query_builder.count.as('total_count'),
-            aggregate: true
+            group_by_fields: false
           )
         end
 
@@ -155,9 +157,7 @@ module ClickHouse # rubocop:disable Gitlab/BoundedContexts -- Existing module
 
         private
 
-        def validate_columns!(fields, operation, aggregate = false)
-          return if aggregate && operation == :select
-
+        def validate_columns!(fields, operation)
           invalid_columns = Array(fields) - ALLOWED_COLUMNS_BY_OPERATION[operation]
           return if invalid_columns.empty?
 
@@ -170,7 +170,7 @@ module ClickHouse # rubocop:disable Gitlab/BoundedContexts -- Existing module
         def rate_of_status(status = 'success')
           select(
             build_rate_aggregate(status),
-            aggregate: true
+            group_by_fields: false
           )
         end
 
@@ -184,7 +184,7 @@ module ClickHouse # rubocop:disable Gitlab/BoundedContexts -- Existing module
         def count_of_status(status)
           select(
             build_count_aggregate(status).as("count_#{status}"),
-            aggregate: true
+            group_by_fields: false
           )
         end
 
@@ -199,7 +199,7 @@ module ClickHouse # rubocop:disable Gitlab/BoundedContexts -- Existing module
             round(
               ms_to_s(query_builder.quantile(percentile.to_f / 100.0, :duration))
             ).as("p#{percentile}_duration"),
-            aggregate: true
+            group_by_fields: false
           )
         end
 

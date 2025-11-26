@@ -300,8 +300,8 @@ to add the raw SQL query and query plan to the merge request description, and re
 ### Useful tips
 
 - If you often find yourself applying and reverting migrations from a specific branch, you might want to try out
-[`scripts/database/migrate.rb`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/scripts/database/migrate.rb)
-to make this process more efficient.
+  [`scripts/database/migrate.rb`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/scripts/database/migrate.rb)
+  to make this process more efficient.
 
 ### How to review for database
 

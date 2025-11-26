@@ -54,8 +54,7 @@ REST API requests are subject to rate limit settings. These settings reduce the 
 instance being overloaded.
 
 - For details, see [Rate limits](../../security/rate_limits.md).
-- For details of the rate limit settings used by
-GitLab.com, see
+- For details of the rate limit settings used by GitLab.com, see
   [GitLab.com-specific rate limits](../../user/gitlab_com/_index.md#rate-limits-on-gitlabcom).
 
 ## Response format

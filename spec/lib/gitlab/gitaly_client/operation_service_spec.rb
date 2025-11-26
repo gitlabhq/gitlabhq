@@ -205,7 +205,8 @@ RSpec.describe Gitlab::GitalyClient::OperationService, feature_category: :source
               repository: repository.gitaly_repository.to_h,
               message: message.dup.force_encoding(Encoding::ASCII_8BIT),
               user: Gitlab::Git::User.from_gitlab(user).to_gitaly.to_h,
-              timestamp: { nanos: 0, seconds: Time.current.to_i }
+              timestamp: { nanos: 0, seconds: Time.current.to_i },
+              sign: false
             })
           )
         end.and_return(response)

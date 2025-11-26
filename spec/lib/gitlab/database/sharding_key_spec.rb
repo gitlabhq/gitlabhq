@@ -45,7 +45,6 @@ RSpec.describe 'new tables missing sharding_key', feature_category: :organizatio
   let(:allowed_to_be_missing_not_null) do
     [
       'member_roles.namespace_id', # https://gitlab.com/gitlab-org/gitlab/-/issues/444161
-      'abuse_trust_scores.user_id', # https://gitlab.com/gitlab-org/gitlab/-/issues/553436
       *uploads_and_partitions,
       'security_scans.project_id', # NOT NULL constraint NOT VALID
       'keys.organization_id', # https://gitlab.com/gitlab-org/gitlab/-/issues/577246

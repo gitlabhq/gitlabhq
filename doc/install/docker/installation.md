@@ -18,18 +18,17 @@ To install GitLab in a Docker container, use Docker Compose, Docker Engine, or D
 Prerequisites:
 
 - You must have a working [Docker installation](https://docs.docker.com/engine/install/#server) that is not Docker for Windows.
-Docker for Windows is not officially supported as the images have known compatibility issues with volume
-permissions and potentially other unknown issues. If you are trying to run on Docker
-for Windows, see the [getting help page](https://about.gitlab.com/get-help/). This page
-contains links to community resources (like IRC or forums) where you can seek help
-from other users.
+  Docker for Windows is not officially supported as the images have known compatibility issues with volume
+  permissions and potentially other unknown issues. If you are trying to run on Docker
+  for Windows, see the [getting help page](https://about.gitlab.com/get-help/). This page
+  contains links to community resources (like IRC or forums) where you can seek help
+  from other users.
 - You must have a mail transport agent (MTA), such as Postfix or Sendmail. The GitLab images don't include an MTA. You can
-install an MTA in a separate container. While you can install an MTA in the same container as GitLab, you might need to
-reinstall the MTA after every upgrade or restart.
+  install an MTA in a separate container. While you can install an MTA in the same container as GitLab, you might need to
+  reinstall the MTA after every upgrade or restart.
 - You should not plan to deploy the GitLab Docker image in Kubernetes as it creates a
-single point of failure. If you want to deploy GitLab in Kubernetes, use the
-[GitLab Helm Chart](https://docs.gitlab.com/charts/) or [GitLab Operator](https://docs.gitlab.com/operator/)
-instead.
+  single point of failure. If you want to deploy GitLab in Kubernetes, use the
+  [GitLab Helm Chart](https://docs.gitlab.com/charts/) or [GitLab Operator](https://docs.gitlab.com/operator/) instead.
 - You must have a valid, externally accessible hostname for your Docker installation. Do not use `localhost`.
 
 ## Configure the SSH port

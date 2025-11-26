@@ -3237,7 +3237,6 @@ Layout/LineLength:
     - 'spec/models/merge_request_spec.rb'
     - 'spec/models/milestone_spec.rb'
     - 'spec/models/namespace/package_setting_spec.rb'
-    - 'spec/models/namespace_setting_spec.rb'
     - 'spec/models/namespace_spec.rb'
     - 'spec/models/namespace_statistics_spec.rb'
     - 'spec/models/note_spec.rb'

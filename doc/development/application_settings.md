@@ -82,8 +82,8 @@ To migrate a column to JSONB, add the new setting under the JSONB accessor.
 - Follow the [process to add a new application setting](#add-a-new-application-setting).
 - Use the same name as the existing column to maintain consistency.
 - During transition, Rails writes the same information to both the existing database
-column and the field under the new JSONB column. This ensures data consistency and
-prevents downtime.
+  column and the field under the new JSONB column. This ensures data consistency and
+  prevents downtime.
 
 ### Required cleanup steps
 
