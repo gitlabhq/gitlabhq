@@ -948,28 +948,8 @@ module Ci
 
     def cache
       cache = Array.wrap(options[:cache])
-
-      cache.each do |single_cache|
-        single_cache[:fallback_keys] = [] unless single_cache.key?(:fallback_keys)
-      end
-
-      if project.jobs_cache_index
-        cache = cache.map do |single_cache|
-          cache = single_cache.merge(key: "#{single_cache[:key]}-#{project.jobs_cache_index}")
-          fallback = cache.slice(:fallback_keys).transform_values { |keys| keys.map { |key| "#{key}-#{project.jobs_cache_index}" } }
-          cache.merge(fallback.compact)
-        end
-      end
-
-      return cache unless project.ci_separated_caches
-
-      cache.map do |entry|
-        type_suffix = !entry[:unprotect] && pipeline.protected_ref? ? 'protected' : 'non_protected'
-
-        cache = entry.merge(key: "#{entry[:key]}-#{type_suffix}")
-        fallback = cache.slice(:fallback_keys).transform_values { |keys| keys.map { |key| "#{key}-#{type_suffix}" } }
-        cache.merge(fallback.compact)
-      end
+      cache = apply_jobs_cache_index(cache)
+      apply_cache_protection_suffix(cache)
     end
 
     def fallback_cache_keys_defined?
@@ -1252,6 +1232,13 @@ module Ci
       pending? && runner_id.present? && runner_manager_id_waiting_for_ack.present?
     end
 
+    def uses_protected_cache?
+      return false unless user
+      return false unless project.ci_separated_caches
+
+      project.team.max_member_access(user.id) >= Gitlab::Access::MAINTAINER
+    end
+
     protected
 
     def run_status_commit_hooks!
@@ -1261,6 +1248,33 @@ module Ci
     end
 
     private
+
+    def apply_jobs_cache_index(cache)
+      return cache unless project.jobs_cache_index
+
+      cache.map do |entry|
+        entry.merge(
+          key: "#{entry[:key]}-#{project.jobs_cache_index}",
+          fallback_keys: (entry[:fallback_keys] || []).map { |key| "#{key}-#{project.jobs_cache_index}" }
+        )
+      end
+    end
+
+    def apply_cache_protection_suffix(cache)
+      return cache unless project.ci_separated_caches
+
+      cache.map do |entry|
+        suffix = cache_suffix_for(entry)
+        entry.merge(
+          key: "#{entry[:key]}-#{suffix}",
+          fallback_keys: (entry[:fallback_keys] || []).map { |key| "#{key}-#{suffix}" }
+        )
+      end
+    end
+
+    def cache_suffix_for(entry)
+      entry[:unprotect] || !uses_protected_cache? ? 'non_protected' : 'protected'
+    end
 
     def reports_definitions
       options.dig(:artifacts, :reports)

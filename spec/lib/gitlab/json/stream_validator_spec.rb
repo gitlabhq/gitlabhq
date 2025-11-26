@@ -34,7 +34,7 @@ RSpec.describe Gitlab::Json::StreamValidator, feature_category: :shared do
 
     subject(:parse) do
       validator = described_class.new(options)
-      validator.sc_parse(json)
+      validator.validate!(json)
       validator.result
     end
 
@@ -58,6 +58,79 @@ RSpec.describe Gitlab::Json::StreamValidator, feature_category: :shared do
     end
   end
 
+  describe 'with literal strings' do
+    let(:options) do
+      {
+        max_depth: 3,
+        max_array_size: 5,
+        max_hash_size: 10,
+        max_total_elements: 50,
+        max_json_size_bytes: 20
+      }
+    end
+
+    subject(:validator) do
+      described_class.new(options)
+    end
+
+    where(:json, :body_bytesize) do
+      'true' | 4
+      'false' | 5
+      'null' | 4
+      "123" | 3
+      "-123" | 4
+      "-1.23" | 5
+      "-1.23e10" | 8
+      "-1.23E-1" | 8
+      '"simple"' | 8
+      '"hello world"' | 13
+      '""' | 2
+    end
+
+    with_them do
+      it 'returns true for valid JSON within limits' do
+        expect(validator.validate!(json)).to be_nil
+        expect(validator.result).to be_nil
+        expect(validator.metadata).to eq({
+          body_bytesize: body_bytesize,
+          total_elements: 0,
+          max_array_count: 0,
+          max_hash_count: 0,
+          max_depth: 0
+        })
+      end
+    end
+
+    context 'when literal string exceeds max_json_size_bytes' do
+      it 'raises BodySizeExceededError' do
+        json = "\"#{'a' * 30}\""
+
+        expect { validator.validate!(json) }
+          .to raise_error(described_class::BodySizeExceededError, 'JSON body too large: 32 bytes')
+      end
+    end
+
+    context 'when numeric number has encoding errors' do
+      it 'raises EncodingError' do
+        json = "\xFF\xFE123"
+
+        expect { validator.validate!(json) }.to raise_error(EncodingError)
+      end
+    end
+  end
+
+  context 'when json is nil' do
+    it 'returns nil' do
+      expect(described_class.new({}).validate!(nil)).to be_nil
+    end
+  end
+
+  context 'when json is an empty string' do
+    it 'returns nil' do
+      expect(described_class.new({}).validate!('')).to be_nil
+    end
+  end
+
   describe 'complex structure with depth limit' do
     let(:options) do
       {
@@ -73,7 +146,7 @@ RSpec.describe Gitlab::Json::StreamValidator, feature_category: :shared do
 
     subject(:parse) do
       validator = described_class.new(options)
-      validator.sc_parse(json)
+      validator.validate!(json)
       validator.result
     end
 
@@ -95,7 +168,7 @@ RSpec.describe Gitlab::Json::StreamValidator, feature_category: :shared do
 
     subject(:parse) do
       validator = described_class.new(options)
-      validator.sc_parse(json)
+      validator.validate!(json)
     end
 
     where(:max_json_size_bytes, :json, :error_message) do
@@ -116,7 +189,7 @@ RSpec.describe Gitlab::Json::StreamValidator, feature_category: :shared do
 
     subject(:parse) do
       validator = described_class.new(options)
-      validator.sc_parse(json)
+      validator.validate!(json)
     end
 
     where(:max_depth, :json, :error_message) do
@@ -138,7 +211,7 @@ RSpec.describe Gitlab::Json::StreamValidator, feature_category: :shared do
 
     subject(:parse) do
       validator = described_class.new(options)
-      validator.sc_parse(json)
+      validator.validate!(json)
     end
 
     where(:max_size, :json, :error_message) do
@@ -160,7 +233,7 @@ RSpec.describe Gitlab::Json::StreamValidator, feature_category: :shared do
 
     subject(:parse) do
       validator = described_class.new(options)
-      validator.sc_parse(json)
+      validator.validate!(json)
     end
 
     where(:max_size, :json, :error_message) do
@@ -182,7 +255,7 @@ RSpec.describe Gitlab::Json::StreamValidator, feature_category: :shared do
 
     subject(:parse) do
       validator = described_class.new(options)
-      validator.sc_parse(json)
+      validator.validate!(json)
     end
 
     where(:max_elements, :json, :expected_error) do
@@ -211,7 +284,7 @@ RSpec.describe Gitlab::Json::StreamValidator, feature_category: :shared do
 
     subject(:parse) do
       validator = described_class.new(options)
-      validator.sc_parse(json)
+      validator.validate!(json)
       validator.result
     end
 
@@ -250,7 +323,7 @@ RSpec.describe Gitlab::Json::StreamValidator, feature_category: :shared do
 
     subject(:parse) do
       validator = described_class.new(options)
-      validator.sc_parse(json)
+      validator.validate!(json)
       validator.result
     end
 
@@ -272,7 +345,7 @@ RSpec.describe Gitlab::Json::StreamValidator, feature_category: :shared do
 
     subject(:parse) do
       validator = described_class.new(options)
-      validator.sc_parse(json)
+      validator.validate!(json)
     end
 
     where(:json) do
@@ -308,7 +381,7 @@ RSpec.describe Gitlab::Json::StreamValidator, feature_category: :shared do
 
     subject(:metadata) do
       validator = described_class.new(options)
-      validator.sc_parse(json)
+      validator.validate!(json)
       validator.metadata
     end
 

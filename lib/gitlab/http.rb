@@ -78,9 +78,7 @@ module Gitlab
           options[:extra_allowed_uris] = ObjectStoreSettings.enabled_endpoint_uris
         end
 
-        if !options[:parser] && Feature.enabled?(:log_large_json_objects, :instance)
-          options[:parser] = Gitlab::HttpResponseParser
-        end
+        options[:parser] = Gitlab::HttpResponseParser
 
         # Configure HTTP_V2 Client
         {

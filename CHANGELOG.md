@@ -2,6 +2,25 @@
 documentation](doc/development/changelog.md) for instructions on adding your own
 entry.
 
+## 18.5.3 (2025-11-25)
+
+### Fixed (6 changes)
+
+- [Fix custom role approvers lookup for inherited users](https://gitlab.com/gitlab-org/security/gitlab/-/commit/72d4caccc77ed4ab55936353f8ed5f1c8fd8f35e) **GitLab Enterprise Edition**
+- [Revert "Support nested variables expention in rules:if"](https://gitlab.com/gitlab-org/security/gitlab/-/commit/49c0aa322da8a85508a98f0657cf046bbead1a1b)
+- [Fix /admin/sidekiq not loading CSS assets in Cloud Native GitLab](https://gitlab.com/gitlab-org/security/gitlab/-/commit/7627f8b8b2437092c47126761d887810d1b8740f)
+- [Relax blobs complexity in favor of limiting data](https://gitlab.com/gitlab-org/security/gitlab/-/commit/26a7f1e8fc314e4a31631c1070e21113fd5750e1)
+- [Fix missing gitaly_context forward in BranchPushService](https://gitlab.com/gitlab-org/security/gitlab/-/commit/54b93a422709b4087e0e06d3cbf061e082e05a7a)
+- [Fix the Planningservice bug when there is a single node available](https://gitlab.com/gitlab-org/security/gitlab/-/commit/08a57cb55aee64ab46112f6322a5922261e15485) ([merge request](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/211774)) **GitLab Enterprise Edition**
+
+### Security (5 changes)
+
+- [Override organization of signup users](https://gitlab.com/gitlab-org/security/gitlab/-/commit/5ed73cbb59f02d20ff64f94b517b016f37ddab42) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/5521))
+- [Redact vulnerability references when Security and Compliance is disabled](https://gitlab.com/gitlab-org/security/gitlab/-/commit/1d27402d580b9ad4b5d67eaa64c01c47a41c80a9) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/5472))
+- [Use Gitlab::Json.safe_parse to prevent parsing of large JSON objects](https://gitlab.com/gitlab-org/security/gitlab/-/commit/b9618017c50858a8d6c61a42c34bdb8eaf8e9ead) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/5496))
+- [Limit JSON parsing depth, size, and elements in HTTParty](https://gitlab.com/gitlab-org/security/gitlab/-/commit/f21cb314c598233d34d4fb2764cf39cd4aefe495) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/5503))
+- [Add protection suffix to cache depending on role](https://gitlab.com/gitlab-org/security/gitlab/-/commit/e0b72775b7e3f08aa5153df6d7576e7ff9632ec8) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/5481))
+
 ## 18.5.2 (2025-11-11)
 
 ### Fixed (10 changes)

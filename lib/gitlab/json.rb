@@ -8,6 +8,14 @@ module Gitlab
   module Json
     INVALID_LEGACY_TYPES = [String, TrueClass, FalseClass].freeze
 
+    PARSE_LIMITS = {
+      max_depth: 32,
+      max_array_size: 50000,
+      max_hash_size: 50000,
+      max_total_elements: 100000,
+      max_json_size_bytes: 20.megabytes
+    }.freeze
+
     class << self
       # Parse a string and convert it to a Ruby object
       #
@@ -38,6 +46,22 @@ module Gitlab
       alias_method :parse!, :parse
       alias_method :load, :parse
       alias_method :decode, :parse
+
+      # Parse a string and convert it to a Ruby object, but with limits
+      #
+      # @param string [String] the JSON string to convert to Ruby objects
+      # @param opts [Hash] an options hash in the standard JSON gem format
+      # @return [Boolean, String, Array, Hash]
+      # @raise [JSON::ParserError] raised if parsing fails
+      def safe_parse(string, opts = {})
+        return if string.nil?
+
+        parse_limits = PARSE_LIMITS.merge(opts.delete(:parse_limits) || {})
+
+        validate!(string, parse_limits)
+
+        parse(string, opts)
+      end
 
       # Restricted method for converting a Ruby object to JSON. If you
       # need to pass options to this, you should use `.generate` instead,
@@ -108,6 +132,22 @@ module Gitlab
         Oj.load(string, opts)
       rescue Oj::ParseError, EncodingError, Encoding::UndefinedConversionError, JSON::GeneratorError => ex
         raise parser_error, ex
+      end
+
+      def validate!(string, parse_limits)
+        Gitlab::Json::StreamValidator.new(parse_limits).validate!(string)
+      rescue Oj::ParseError, EncodingError => ex
+        raise parser_error, ex
+      rescue ::Gitlab::Json::StreamValidator::LimitExceededError => ex
+        log_exceeded_json(ex, parse_limits)
+        message = ::Gitlab::Json::StreamValidator.user_facing_error_message(ex)
+        raise parser_error, message
+      end
+
+      def log_exceeded_json(exception, parse_limits)
+        payload = { message: 'Exceeded allowed limits for parsing JSON input', parse_limits: parse_limits }
+        Gitlab::ExceptionLogFormatter.format!(exception, payload)
+        Gitlab::AppLogger.warn(payload)
       end
 
       # Take a Ruby object and convert it to a string. This method varies

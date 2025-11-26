@@ -428,13 +428,13 @@ RSpec.describe ErrorTracking::ProjectErrorTrackingSetting, feature_category: :ob
       let(:sentry_client) { ErrorTracking::SentryClient.new(sentry_url, token) }
 
       before do
-        stub_sentry_request(sentry_request_url, :put, body: true)
+        stub_sentry_request(sentry_request_url, :put, body: { id: issue_id })
 
         allow(sentry_client).to receive(:update_issue).and_call_original
       end
 
       it 'returns the successful response' do
-        expect(result).to eq(updated: true)
+        expect(result).to eq(updated: { "id" => issue_id })
       end
     end
   end

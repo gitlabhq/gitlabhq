@@ -11,7 +11,7 @@ module Oauth
 
     # POST /oauth/register
     def create
-      client_metadata = Gitlab::Json.parse(request.body.read).symbolize_keys
+      client_metadata = Gitlab::Json.safe_parse(request.body.read).symbolize_keys
 
       allowed_params = [:redirect_uris, :client_name]
 
@@ -54,11 +54,10 @@ module Oauth
       else
         error_message = application.errors.full_messages.join(", ")
 
-        render json: {
-          error: "invalid_client_metadata",
-          error_description: error_message
-        }, status: :bad_request
+        render json: error_data(error_message), status: :bad_request
       end
+    rescue JSON::ParserError => e
+      render json: error_data(e.message), status: :bad_request
     end
 
     private
@@ -66,9 +65,13 @@ module Oauth
     def validate_dynamic_fields(client_metadata)
       return if client_metadata[:client_name].present? && (client_metadata[:client_name].length < 200)
 
+      error_data("client_name is too long")
+    end
+
+    def error_data(error_description)
       {
         error: "invalid_client_metadata",
-        error_description: "client_name is too long"
+        error_description: error_description
       }
     end
 
