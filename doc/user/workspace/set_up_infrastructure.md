@@ -57,7 +57,7 @@ Next, set up the necessary permissions in AWS so the infrastructure can be prope
 To set up AWS credentials:
 
 1. Create an [IAM User](https://docs.aws.amazon.com/IAM/latest/UserGuide/id_users.html) or
-[IAM Role](https://docs.aws.amazon.com/IAM/latest/UserGuide/id_roles.html).
+   [IAM Role](https://docs.aws.amazon.com/IAM/latest/UserGuide/id_roles.html).
 1. Assign the following permissions:
 
    ```json
@@ -112,7 +112,7 @@ To set up AWS credentials:
    ```
 
 1. [Create an access key](https://docs.aws.amazon.com/IAM/latest/UserGuide/id_credentials_access-keys.html)
-for the user or role.
+   for the user or role.
 1. Save your access key ID and secret access key. You'll need them when configuring CI/CD variables later.
 
 ## Prepare domain and certificates
@@ -136,7 +136,7 @@ Now you need to create security keys for authentication and SSH connections.
 To create the required keys:
 
 1. Generate a signing key consisting of random letters, numbers, and special characters.
-For example, run:
+   For example, run:
 
    ```shell
    openssl rand -base64 32

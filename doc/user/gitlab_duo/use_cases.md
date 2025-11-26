@@ -476,7 +476,7 @@ PowerShell support is [experimental](../project/repository/code_suggestions/supp
    ```
 
 1. Wait for Code Suggestions to complete the prompt, and then add the following prompts to
-experiment with different output formats:
+   experiment with different output formats:
 
    ```powershell
    # Collect the files in a directory and print their size

@@ -555,12 +555,12 @@ have a foreign key constraint. If that spec fails, add the column to
 `ignored_fk_columns_map` if the column fits any of the two criteria:
 
 1. The column references another table, such as the two tables belong to
-[GitLab schemas](multiple_databases.md#gitlab-schema) that don't
-allow Foreign Keys between them.
+   [GitLab schemas](multiple_databases.md#gitlab-schema) that don't
+   allow Foreign Keys between them.
 1. The foreign key is replaced by a [Loose Foreign Key](loose_foreign_keys.md) for performance reasons.
 1. The column represents a [polymorphic relationship](polymorphic_associations.md). Note that polymorphic associations should not be used.
 1. The column is not meant to reference another table. For example, it's common to have `partition_id`
-for partitioned tables.
+   for partitioned tables.
 
 ## Dependent removals
 

@@ -415,48 +415,6 @@ RSpec.describe Ci::JobDefinition, feature_category: :continuous_integration do
             end
           end
         end
-
-        context 'when ff ci_job_definition_config_schema_validation is disabled' do
-          before do
-            stub_feature_flags(ci_job_definition_config_schema_validation: false)
-          end
-
-          it 'is valid' do
-            expect(job_definition).to be_valid
-          end
-
-          context 'with invalid config properties' do
-            let(:config) { { unknown_property: 'random value' } }
-
-            it 'is valid' do
-              expect(job_definition).to be_valid
-            end
-          end
-
-          context 'with invalid id_tokens' do
-            let(:config) { { id_tokens: { TEST_JWT_TOKEN: { id_token: { aud: nil } } } } }
-
-            it 'is valid' do
-              expect(job_definition).to be_valid
-            end
-          end
-
-          context 'with invalid secrets' do
-            let(:config) { { secrets: { DATABASE_PASSWORD: { vault: {} } } } }
-
-            it 'is valid' do
-              expect(job_definition).to be_valid
-            end
-          end
-
-          context 'with invalid interruptible' do
-            let(:config) { { interruptible: {} } }
-
-            it 'is valid' do
-              expect(job_definition).to be_valid
-            end
-          end
-        end
       end
     end
   end

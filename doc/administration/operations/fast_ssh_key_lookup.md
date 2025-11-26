@@ -149,8 +149,8 @@ To resolve this, you can disable writes to the `authorized_keys` file:
    1. Try to pull a repository.
 
 1. Back up and delete your `authorized_keys` file.
-The current users' keys are already present in the database, so there is no need for migration
-or for users to re-add their keys.
+   The current users' keys are already present in the database, so there is no need for migration
+   or for users to re-add their keys.
 
 ### How to go back to using the `authorized_keys` file
 

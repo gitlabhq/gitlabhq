@@ -38,6 +38,7 @@ This error can occur for several reasons. Work through the following troubleshoo
 
 1. Ensure you have at least the Developer role for both the workspace project and agent project.
 1. Verify the agent is allowed in an ancestor group of your workspace project.
+
 For more information, see [allow an agent](gitlab_agent_configuration.md#allow-a-cluster-agent-for-workspaces-in-a-group).
 
 ### Check agent configuration

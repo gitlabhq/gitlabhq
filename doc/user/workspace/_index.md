@@ -271,10 +271,10 @@ are used in the table:
 **Footnotes**:
 
 1. When you create a workspace, it cannot access container image details, for example, from private
-or internal registries. When `overrideCommand` is `false` and the Devfile doesn't specify `command`
-or `args`, GitLab does not validate container images or check for required `Entrypoint` or `Cmd` fields.
-You must ensure that either the Devfile or container specifies these fields, or the container exits
-prematurely and the workspace fails to start.
+   or internal registries. When `overrideCommand` is `false` and the Devfile doesn't specify `command`
+   or `args`, GitLab does not validate container images or check for required `Entrypoint` or `Cmd` fields.
+   You must ensure that either the Devfile or container specifies these fields, or the container exits
+   prematurely and the workspace fails to start.
 
 ### User-defined `postStart` events
 

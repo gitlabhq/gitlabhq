@@ -1775,7 +1775,7 @@ To create a diagram for GitLab documentation with Mermaid:
 1. Copy the content of the **Code** pane and paste it in the Markdown file, wrapped in a `mermaid` code block. For more
    details, see [GitLab Flavored Markdown for Mermaid](../../../user/markdown.md#mermaid).
 1. To add GitLab font styling to your diagram, between the Mermaid code block declaration
-and the type of diagram, add the following line:
+   and the type of diagram, add the following line:
 
    ```plaintext
    %%{init: { "fontFamily": "GitLab Sans" }}%%

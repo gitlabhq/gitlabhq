@@ -31,7 +31,7 @@ features. Premium gets access to only a subset of GitLab Duo features.
 **How**:
 
 1. Follow [the process to obtain an Ultimate license](https://handbook.gitlab.com/handbook/support/internal-support#gitlab-plan-or-license-for-team-members)
-for your local instance. Start with a GitLab Self-Managed Ultimate license. After you have a GitLab Self-Managed license configured, you can always [simulate a SaaS instance](../ee_features.md#simulate-a-saas-instance) and assign individual groups Premium and Ultimate licenses in the admin panel.
+   for your local instance. Start with a GitLab Self-Managed Ultimate license. After you have a GitLab Self-Managed license configured, you can always [simulate a SaaS instance](../ee_features.md#simulate-a-saas-instance) and assign individual groups Premium and Ultimate licenses in the admin panel.
 1. [Upload your license activation code](../../administration/license.md#activate-gitlab-ee)
 1. [Set environment variables](https://gitlab-org.gitlab.io/gitlab-development-kit/contributing/runit/#using-environment-variables) in GDK:
 

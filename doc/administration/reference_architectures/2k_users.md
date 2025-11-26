@@ -142,7 +142,7 @@ To set up GitLab and its components to accommodate up to 40 RPS or 2,000 users:
    to handle the load balancing of the GitLab application services nodes.
 1. [Configure PostgreSQL](#configure-postgresql), the database for GitLab.
 1. [Configure Redis](#configure-redis), which stores session data, temporary
-cache information, and background job queues.
+   cache information, and background job queues.
 1. [Configure Gitaly](#configure-gitaly), which provides access to the Git
    repositories.
 1. [Configure Sidekiq](#configure-sidekiq) for background job processing.
@@ -476,9 +476,9 @@ installation has two repository storages: `default` and `storage1`.
 To configure the Gitaly server, on the server node you want to use for Gitaly:
 
 1. [Download and install](../../install/package/_index.md#supported-platforms) the Linux package
-of your choice. Be sure to only add the GitLab
-package repository and install GitLab for your chosen operating system,
-but do **not** provide the `EXTERNAL_URL` value.
+   of your choice. Be sure to only add the GitLab
+   package repository and install GitLab for your chosen operating system,
+   but do **not** provide the `EXTERNAL_URL` value.
 1. Edit the Gitaly server node's `/etc/gitlab/gitlab.rb` file to configure
    storage paths, enable the network listener, and to configure the token:
 

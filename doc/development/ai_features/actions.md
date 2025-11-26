@@ -75,7 +75,7 @@ model:
 ### 3. Create a Completion class
 
 1. Create a new completion under `ee/lib/gitlab/llm/ai_gateway/completions/` and inherit it from the `Base`
-AI gateway Completion.
+   AI gateway Completion.
 
 ```ruby
 # ee/lib/gitlab/llm/ai_gateway/completions/rewrite_description.rb

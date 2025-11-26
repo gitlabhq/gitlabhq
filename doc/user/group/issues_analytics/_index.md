@@ -44,8 +44,8 @@ To view issue analytics:
    - Weight
 
 1. Optional. To change the total number of months displayed, append the parameter `months_back=n` to the URL.
-For example, `https://gitlab.com/groups/gitlab-org/-/issues_analytics?months_back=15`
-displays a chart with data for 15 months for the GitLab.org group.
+   For example, `https://gitlab.com/groups/gitlab-org/-/issues_analytics?months_back=15`
+   displays a chart with data for 15 months for the GitLab.org group.
 
 You can also access issue analytics from the [Value Streams Dashboard](../../analytics/value_streams_dashboard.md) through the **New issues** drill-down report.
 

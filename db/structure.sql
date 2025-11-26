@@ -12460,7 +12460,7 @@ CREATE TABLE application_settings (
     lock_duo_remote_flows_enabled boolean DEFAULT false NOT NULL,
     terraform_state_settings jsonb DEFAULT '{}'::jsonb NOT NULL,
     namespace_deletion_settings jsonb DEFAULT '{}'::jsonb NOT NULL,
-    duo_foundational_flows_enabled boolean DEFAULT false NOT NULL,
+    duo_foundational_flows_enabled boolean DEFAULT true NOT NULL,
     lock_duo_foundational_flows_enabled boolean DEFAULT false NOT NULL,
     duo_sast_fp_detection_enabled boolean DEFAULT true NOT NULL,
     lock_duo_sast_fp_detection_enabled boolean DEFAULT false NOT NULL,

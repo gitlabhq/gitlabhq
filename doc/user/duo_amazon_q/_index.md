@@ -144,7 +144,7 @@ Amazon Q creates a merge request with the suggested tests.
 
 1. Open your merge request.
 1. On the **Changes** tab, leave an inline comment where you want to add tests. Include
-as much detail as possible in your feedback, such as file name, class name and line number.
+   as much detail as possible in your feedback, such as file name, class name and line number.
 1. In the comment, type `/q dev` on a new line and select **Add comment now**.
 
 Amazon Q updates the merge request with the suggested tests.

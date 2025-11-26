@@ -13,6 +13,7 @@ scope: raw
 tokens:
   - '^1\. [^\n]*\n\n?( |  |    )[`\w-]'
   - '^- [^\n]*\n\n?( |   |    )[`\w-]'
+  - '^1\..*\n[a-zA-Z\[]'
 
 # Regex guide:
 #

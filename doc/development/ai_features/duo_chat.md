@@ -186,7 +186,7 @@ If you want to add a new tool, contact the GitLab Duo Chat team. We're working o
    `epic_reader` as a template.
 
 1. Write a class for the tool that includes instructions for the large language model on how to use the tool
-to gather information - the main prompts that this tool is using.
+   to gather information - the main prompts that this tool is using.
 
 1. Implement code in the tool to parse the response from the large language model and return it to the [chat agent](https://gitlab.com/gitlab-org/gitlab/-/blob/e0220502f1b3459b5a571d510ce5d1826877c3ce/ee/lib/gitlab/llm/chain/agents/single_action_executor.rb).
 

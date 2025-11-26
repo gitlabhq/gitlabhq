@@ -1281,7 +1281,7 @@ Follow these steps to modify the `settings.xml` file:
 1. Check if there's an existing `<pluginRepositories>` section in the file.
 
 1. If a `<pluginRepositories>` section already exists, add only the following `<pluginRepository>` element inside it.
-Otherwise, add the entire `<pluginRepositories>` section:
+   Otherwise, add the entire `<pluginRepositories>` section:
 
    ```xml
      <pluginRepositories>

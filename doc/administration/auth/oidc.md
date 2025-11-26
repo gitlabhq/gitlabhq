@@ -1592,7 +1592,7 @@ To require step-up authentication for Admin Mode with Microsoft Entra ID:
 1. [Configure Microsoft Entra ID](#configure-microsoft-azure) in GitLab.
 
 1. Follow the steps in the Microsoft Entra ID documentation to
-[define conditional access authentication contexts in Microsoft Entra ID](https://learn.microsoft.com/en-us/entra/identity-platform/developer-guide-conditional-access-authentication-context).
+   [define conditional access authentication contexts in Microsoft Entra ID](https://learn.microsoft.com/en-us/entra/identity-platform/developer-guide-conditional-access-authentication-context).
 
 1. In Microsoft Entra ID, define [the optional claim `acrs` to include in the ID token](https://openid.net/specs/openid-connect-core-1_0.html#IDToken).
 

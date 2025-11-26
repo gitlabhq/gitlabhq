@@ -45,9 +45,9 @@ the default NGINX installation. GitLab administrators and DevOps engineers
 should adapt this guide to other installation methods.
 
 1. Follow the guide to [insert custom settings into the NGINX configuration](https://docs.gitlab.com/omnibus/settings/nginx/#insert-custom-settings-into-the-nginx-configuration) to create a `server` block that handles requests for the
-extension host domain. You can use the [GitLab NGINX configuration file](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/support/nginx/gitlab)
-as a starting point. Make sure to scope the configuration by defining a `location` block only handles requests
-for the `/assets/` path, for example:
+   extension host domain. You can use the [GitLab NGINX configuration file](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/support/nginx/gitlab)
+   as a starting point. Make sure to scope the configuration by defining a `location` block only handles requests
+   for the `/assets/` path, for example:
 
    ```nginx
    location /assets/ {

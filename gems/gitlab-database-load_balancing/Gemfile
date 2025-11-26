@@ -17,8 +17,4 @@ gem 'activerecord-gitlab', path: '../activerecord-gitlab'
 gem 'gitlab-utils', path: '../gitlab-utils'
 gem 'gitlab-safe_request_store', path: '../gitlab-safe_request_store'
 
-if next?
-  gem 'rails', '~> 7.2'
-else
-  gem 'rails', '~> 7.1.5.1'
-end
+gem 'rails', '~> 7.2'

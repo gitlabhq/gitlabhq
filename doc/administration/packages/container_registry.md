@@ -1708,12 +1708,12 @@ for all installations. You can override this behavior using the [`internal_key`]
 The following steps describe the communication flow:
 
 1. GitLab interacts with the registry using the registry's private key. When a registry
-request is sent, a short-lived (10 minutes), namespace-limited token is generated
-and signed with the private key.
+   request is sent, a short-lived (10 minutes), namespace-limited token is generated
+   and signed with the private key.
 1. The registry verifies that the signature matches the registry certificate
-specified in its configuration and allows the operation.
+   specified in its configuration and allows the operation.
 1. GitLab processes background jobs through Sidekiq, which also interacts with the registry.
-These jobs communicate directly with the registry to handle image deletion.
+   These jobs communicate directly with the registry to handle image deletion.
 
 ## Migrate from a third-party registry
 

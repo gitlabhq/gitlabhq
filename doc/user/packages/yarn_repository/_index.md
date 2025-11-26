@@ -97,7 +97,7 @@ You can use pipeline variables when you publish with CI/CD.
       - If you are building from branches without tags, select **Branch rules**.
 
 1. Add the `NPM_AUTH_TOKEN` you created to the `.yarnrc.yml` configuration
-in your package project root directory where `package.json` is found:
+   in your package project root directory where `package.json` is found:
 
    ```yaml
    npmScopes:
@@ -126,7 +126,7 @@ in your package project root directory where `package.json` is found:
    In this configuration, replace `<my-org>` with your organization scope, excluding the `@` symbol.
 
 1. In the GitLab project with your `.yarnrc.yml`, edit or create a `.gitlab-ci.yml` file.
-For example, to trigger only on any tag push:
+   For example, to trigger only on any tag push:
 
    In Yarn 1:
 

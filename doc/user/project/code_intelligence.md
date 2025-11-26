@@ -95,7 +95,7 @@ To enable code intelligence for a project, add GitLab CI/CD jobs to your project
 {{< tab title="With a SCIP indexer" >}}
 
 1. Add a job to your `.gitlab-ci.yml` configuration. This job generates the
-SCIP index and converts it to LSIF for use in GitLab:
+   SCIP index and converts it to LSIF for use in GitLab:
 
    ```yaml
    "code_navigation":

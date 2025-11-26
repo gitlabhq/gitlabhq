@@ -75,7 +75,6 @@ module Ci
 
     def validate_config_json_schema
       return if config.blank?
-      return if Feature.disabled?(:ci_job_definition_config_schema_validation, project)
 
       validator = JsonSchemaValidator.new({
         filename: 'ci_job_definition_config',

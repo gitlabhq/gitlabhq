@@ -4,7 +4,7 @@ attr: duo_foundational_flows_enabled
 clusterwide: true
 column: duo_foundational_flows_enabled
 db_type: boolean
-default: 'false'
+default: 'true'
 description:
 encrypted: false
 gitlab_com_different_than_default: false

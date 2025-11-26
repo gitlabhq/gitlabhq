@@ -222,7 +222,7 @@ install, and upgrade your Docker-based GitLab installation:
 Alternatively, you can install GitLab using Docker Engine.
 
 1. If you've set up the `GITLAB_HOME` variable, adjust the directories to meet your requirements
-and run the image:
+   and run the image:
 
    - If you are not on SELinux, run this command:
 
@@ -265,10 +265,10 @@ and run the image:
      files in the mounted volumes.
 
 1. If you're using the [Kerberos integration](../../integration/kerberos.md),
-you must also publish your Kerberos port (for example, `--publish 8443:8443`).
-Failing to do so prevents Git operations with Kerberos.
-The initialization process may take a long time. You can track this
-process with:
+   you must also publish your Kerberos port (for example, `--publish 8443:8443`).
+   Failing to do so prevents Git operations with Kerberos.
+   The initialization process may take a long time. You can track this
+   process with:
 
    ```shell
    sudo docker logs -f gitlab
@@ -278,7 +278,7 @@ process with:
    a while before the Docker container starts to respond to queries.
 
 1. Visit the GitLab URL, and sign in with the username `root`
-and the password from the following command:
+   and the password from the following command:
 
    ```shell
    sudo docker exec -it gitlab grep 'Password:' /etc/gitlab/initial_root_password

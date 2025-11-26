@@ -21289,12 +21289,6 @@ msgid_plural "DORA4Metrics|%d projects"
 msgstr[0] ""
 msgstr[1] ""
 
-msgid "DORA4Metrics|Accept testing terms"
-msgstr ""
-
-msgid "DORA4Metrics|Accept testing terms of use?"
-msgstr ""
-
 msgid "DORA4Metrics|All labels"
 msgstr ""
 
@@ -21305,9 +21299,6 @@ msgid "DORA4Metrics|Average (last %{days}d)"
 msgstr ""
 
 msgid "DORA4Metrics|Background aggregation not enabled"
-msgstr ""
-
-msgid "DORA4Metrics|By enabling this feature, you accept the %{url}"
 msgstr ""
 
 msgid "DORA4Metrics|Change failure rate"
@@ -21332,12 +21323,6 @@ msgid "DORA4Metrics|Cycle time"
 msgstr ""
 
 msgid "DORA4Metrics|DORA metrics have moved to %{dashboardsLinkStart}Analytics dashboards%{dashboardsLinkEnd} &gt; %{doraMetricsLinkStart}DORA metrics%{doraMetricsLinkEnd}."
-msgstr ""
-
-msgid "DORA4Metrics|Date"
-msgstr ""
-
-msgid "DORA4Metrics|Days for an open incident"
 msgstr ""
 
 msgid "DORA4Metrics|Deployment frequency"
@@ -21423,9 +21408,6 @@ msgstr ""
 msgid "DORA4Metrics|Median time (last %{days}d)"
 msgstr ""
 
-msgid "DORA4Metrics|Median time an incident was open in a production environment over the given time period."
-msgstr ""
-
 msgid "DORA4Metrics|Median time to merge"
 msgstr ""
 
@@ -21459,16 +21441,7 @@ msgstr ""
 msgid "DORA4Metrics|Not included"
 msgstr ""
 
-msgid "DORA4Metrics|Number of deployments"
-msgstr ""
-
-msgid "DORA4Metrics|Number of incidents divided by the number of deployments to a production environment in the given time period."
-msgstr ""
-
 msgid "DORA4Metrics|Past 6 Months"
-msgstr ""
-
-msgid "DORA4Metrics|Percentage of failed deployments"
 msgstr ""
 
 msgid "DORA4Metrics|Some metric charts failed to load"
@@ -21477,31 +21450,10 @@ msgstr ""
 msgid "DORA4Metrics|Some metric comparisons failed to load"
 msgstr ""
 
-msgid "DORA4Metrics|Something went wrong while getting change failure rate data."
-msgstr ""
-
-msgid "DORA4Metrics|Something went wrong while getting deployment frequency data."
-msgstr ""
-
-msgid "DORA4Metrics|Something went wrong while getting lead time data."
-msgstr ""
-
-msgid "DORA4Metrics|Something went wrong while getting time to restore service data."
-msgstr ""
-
-msgid "DORA4Metrics|The chart displays the frequency of deployments to production environment(s) that are based on the %{linkStart}deployment_tier%{linkEnd} value."
-msgstr ""
-
-msgid "DORA4Metrics|The chart displays the median time between a merge request being merged and deployed to production environment(s) that are based on the %{linkStart}deployment_tier%{linkEnd} value."
-msgstr ""
-
 msgid "DORA4Metrics|This is a lower-bound approximation. Your group has too many issues and MRs to calculate in real time."
 msgstr ""
 
 msgid "DORA4Metrics|This visualization is not supported for project namespaces."
-msgstr ""
-
-msgid "DORA4Metrics|Time from merge to deploy"
 msgstr ""
 
 msgid "DORA4Metrics|Time to restore service"

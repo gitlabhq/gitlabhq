@@ -250,7 +250,7 @@ To use SSH with GitLab, copy your public key to your GitLab account:
    `Home Workstation`.
 1. Optional. Select the **Usage type** of the key. It can be used either for `Authentication` or `Signing` or both. `Authentication & Signing` is the default value.
 1. Optional. Update **Expiration date** to modify the default expiration date. For more information, see
-[SSH key expiration](#ssh-key-expiration).
+   [SSH key expiration](#ssh-key-expiration).
 1. Select **Add key**.
 
 ## Verify that you can connect

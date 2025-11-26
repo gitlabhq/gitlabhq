@@ -1,7 +1,11 @@
 # frozen_string_literal: true
 
+def next?
+  File.basename(__FILE__) == "Gemfile.next"
+end
+
 source "https://rubygems.org"
 
 gemspec
 
-gem 'activerecord', '~> 7.1.5.1' # rubocop:disable Gemfile/MissingFeatureCategory
+gem 'activerecord', '~> 7.2' # rubocop:disable Gemfile/MissingFeatureCategory

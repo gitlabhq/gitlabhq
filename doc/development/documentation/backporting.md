@@ -42,7 +42,7 @@ Prerequisites:
   least the Developer role for the [Technical Writing team tasks project](https://gitlab.com/gitlab-org/technical-writing/team-tasks).
 
 1. Open an [issue in the Technical Writing team tasks project](https://gitlab.com/gitlab-org/technical-writing/team-tasks/-/issues/new)
-using the [backport changes template](https://gitlab.com/gitlab-org/technical-writing/team-tasks/-/blob/main/.gitlab/issue_templates/backport_changes.md).
+   using the [backport changes template](https://gitlab.com/gitlab-org/technical-writing/team-tasks/-/blob/main/.gitlab/issue_templates/backport_changes.md).
 
 1. In the issue, state why the backport is needed. Include:
    - The background to this change.
