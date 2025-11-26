@@ -23,10 +23,11 @@ module Gitlab
           params[:cursor]
         end
 
-        def apply_headers(cursor_for_next_page)
-          Gitlab::Pagination::Keyset::HeaderBuilder
-            .new(request_context)
-            .add_next_page_header({ cursor: cursor_for_next_page })
+        def apply_headers(cursor_for_next_page, cursor_for_previous_page)
+          header_builder = Gitlab::Pagination::Keyset::HeaderBuilder.new(request_context)
+
+          header_builder.add_prev_and_next_cursor_headers(cursor_for_previous_page, cursor_for_next_page)
+          header_builder.add_next_page_header({ cursor: cursor_for_next_page }) if cursor_for_next_page
         end
 
         def order_by

@@ -9,13 +9,29 @@ RSpec.describe Gitlab::Search::AbuseDetection, feature_category: :global_search 
 
   describe 'abusive scopes validation' do
     it 'allows only approved scopes' do
-      described_class::ALLOWED_SCOPES.each do |scope|
+      Search::Scopes.all_scope_names.each do |scope|
         expect(described_class.new({ scope: scope })).to be_valid
       end
     end
 
     it 'disallows anything not approved' do
       expect(described_class.new({ scope: 'nope' })).not_to be_valid
+    end
+
+    context 'when search_scope_registry feature flag is disabled' do
+      before do
+        stub_feature_flags(search_scope_registry: false)
+      end
+
+      it 'allows only legacy approved scopes' do
+        described_class::LEGACY_ALLOWED_SCOPES.each do |scope|
+          expect(described_class.new({ scope: scope })).to be_valid
+        end
+      end
+
+      it 'disallows anything not in legacy scopes' do
+        expect(described_class.new({ scope: 'nope' })).not_to be_valid
+      end
     end
   end
 

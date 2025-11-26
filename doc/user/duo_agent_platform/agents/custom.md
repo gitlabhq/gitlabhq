@@ -43,11 +43,11 @@ start using it with GitLab Duo Chat.
 
 ## Agent visibility
 
-When you create a custom agent, you associate it with a source project and choose whether it is public or private.
+When you create a custom agent, you select a project to manage it and choose whether the agent is public or private.
 
 - A public agent can be viewed by anyone and can be enabled in any project that meets the prerequisites.
-- A private agent can be viewed only by members of the source project who have at least the Developer role.
-  Private agents cannot be enabled in projects other than the source project.
+- A private agent can be viewed only by members of the managing project who have at least the Developer role.
+  Private agents cannot be enabled in projects other than the managing project.
   You cannot make a private agent public if the agent is currently enabled.
 
 ## View the agents for your project
@@ -106,8 +106,8 @@ To create an agent:
    1. In **Display name**, enter a name for the agent.
    1. In **Description**, enter a description for the agent.
 1. Under **Visibility & access**:
+   1. From the **Managed by** dropdown list, select a project for the agent.
    1. For **Visibility**, select **Private** or **Public**.
-   1. From the **Source project** dropdown list, select a project for the agent.
 1. Under **Prompts**, in **System prompt**, enter a prompt to define
    the agent's personality, expertise, and behavior.
 1. Optional. Under **Available tools**, from the **Tools** dropdown list,
@@ -158,7 +158,7 @@ The agent no longer appears in the project, and is not available in Chat.
 
 ## Duplicate an agent
 
-Create a copy of an existing agent in a different source project.
+Create a copy of an existing agent.
 Do this if you want to use an agent someone else created, or make changes to an agent without overwriting the original.
 
 Prerequisites:
@@ -179,7 +179,7 @@ Edit an agent to change its configuration, or delete it to remove it from the AI
 
 Prerequisites:
 
-- You must be a member of the source project and have at least the Maintainer role.
+- You must be a member of the managing project and have at least the Maintainer role.
 
 To manage an agent:
 

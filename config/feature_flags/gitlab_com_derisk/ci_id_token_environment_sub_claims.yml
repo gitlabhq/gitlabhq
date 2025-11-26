@@ -1,0 +1,10 @@
+---
+name: ci_id_token_environment_sub_claims
+description:
+feature_issue_url:
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/213847
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/581891
+milestone: '18.7'
+group: group::authorization
+type: gitlab_com_derisk
+default_enabled: false

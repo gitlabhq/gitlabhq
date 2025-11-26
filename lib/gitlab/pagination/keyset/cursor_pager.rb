@@ -27,10 +27,10 @@ module Gitlab
         private
 
         def apply_headers
-          return unless paginator.has_next_page?
+          return unless paginator.has_next_page? || paginator.has_previous_page?
 
           cursor_based_request_context
-            .apply_headers(paginator.cursor_for_next_page)
+            .apply_headers(paginator.cursor_for_next_page, paginator.cursor_for_previous_page)
         end
       end
     end

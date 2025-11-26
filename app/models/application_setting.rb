@@ -760,7 +760,16 @@ class ApplicationSetting < ApplicationRecord
   validates :search, json_schema: { filename: 'application_setting_search' }
   validates :default_search_scope,
     inclusion: {
-      in: Gitlab::Search::AbuseDetection::ALLOWED_SCOPES + [SEARCH_SCOPE_SYSTEM_DEFAULT],
+      in: -> {
+        scopes =
+          if Feature.enabled?(:search_scope_registry, :instance)
+            ::Search::Scopes.all_scope_names
+          else
+            ::Gitlab::Search::AbuseDetection::LEGACY_ALLOWED_SCOPES
+          end
+
+        scopes + [SEARCH_SCOPE_SYSTEM_DEFAULT]
+      },
       message: 'invalid scope selected'
     },
     allow_blank: true
@@ -1283,7 +1292,11 @@ class ApplicationSetting < ApplicationRecord
   end
 
   def custom_default_search_scope_set?
-    ::Gitlab::Search::AbuseDetection::ALLOWED_SCOPES.include?(default_search_scope)
+    if Feature.enabled?(:search_scope_registry, :instance)
+      ::Search::Scopes.all_scope_names.include?(default_search_scope)
+    else
+      ::Gitlab::Search::AbuseDetection::LEGACY_ALLOWED_SCOPES.include?(default_search_scope)
+    end
   end
 
   private

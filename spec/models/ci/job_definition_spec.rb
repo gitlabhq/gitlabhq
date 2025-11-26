@@ -504,16 +504,29 @@ RSpec.describe Ci::JobDefinition, feature_category: :continuous_integration do
     end
 
     context 'with tag_list' do
-      let(:config) do
-        {
-          options: { script: ['echo test'] },
-          tag_list: ['build'],
-          extra_field: 'should be ignored'
-        }
+      using RSpec::Parameterized::TableSyntax
+
+      where(:input_tags, :expected_tags) do
+        ['build']                      | ['build']
+        ['TAG1,TAG2']                  | %w[TAG1 TAG2]
+        %w[TAG1,TAG2 TAG3]             | %w[TAG1 TAG2 TAG3]
+        ['  TAG1,TAG2  ', '   TAG3  '] | %w[TAG1 TAG2 TAG3]
+        %w[TAG1 TAG2 TAG1]             | %w[TAG1 TAG2]
+        %w[TAG3 TAG1,TAG2]             | %w[TAG3 TAG1 TAG2]
       end
 
-      it 'sets the correct config' do
-        expect(fabricate.config).to include(tag_list: ['build'])
+      with_them do
+        let(:config) do
+          {
+            options: { script: ['echo test'] },
+            tag_list: input_tags,
+            extra_field: 'should be ignored'
+          }
+        end
+
+        it 'parses and normalizes tags correctly' do
+          expect(fabricate.config[:tag_list]).to eq(expected_tags)
+        end
       end
     end
 
@@ -532,6 +545,40 @@ RSpec.describe Ci::JobDefinition, feature_category: :continuous_integration do
       it 'includes all specified CONFIG_ATTRIBUTES' do
         expect(fabricate.config.keys).to match_array(described_class::CONFIG_ATTRIBUTES)
       end
+    end
+  end
+
+  describe '#tag_list' do
+    using RSpec::Parameterized::TableSyntax
+
+    subject(:tag_list) { job_definition.tag_list }
+
+    where(:config_tags, :expected_tags, :description) do
+      ['tag1,tag2']       | %w[tag1 tag2]      | 'comma-delimited string in array'
+      ['tag1, tag2']      | %w[tag1 tag2]      | 'comma-delimited string with spaces'
+      %w[tag1 tag2]       | %w[tag1 tag2]      | 'array of strings'
+      ['']                | []                 | 'empty string in array'
+      []                  | []                 | 'empty array'
+      ['  tag1  , tag2 '] | %w[tag1 tag2]      | 'string with extra whitespace'
+      %w[tag1 tag2 tag1]  | %w[tag1 tag2]      | 'duplicate tags are removed'
+    end
+
+    with_them do
+      let(:job_definition) do
+        create(:ci_job_definition, project: project, config: { tag_list: config_tags })
+      end
+
+      it 'parses tags correctly' do
+        is_expected.to match_array(expected_tags)
+      end
+    end
+
+    context 'when tag_list is not present in config' do
+      let(:job_definition) do
+        create(:ci_job_definition, project: project, config: { options: { script: ['echo test'] } })
+      end
+
+      it { is_expected.to eq([]) }
     end
   end
 

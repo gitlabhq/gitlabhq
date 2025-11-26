@@ -67,6 +67,24 @@ and paste them in your domain's control panel as a `TXT` record on the next step
 
 ![GitLab Pages showing the generated verification code for a new domain.](img/get_domain_verification_code_v12_0.png)
 
+The structure of the **Verification status** field is:
+
+- Name/Host:
+  - For root domains: `_gitlab-pages-verification-code.example.com`
+  - For subdomains: `_gitlab-pages-verification-code.subdomain.example.com`
+- DNS record type: `TXT`
+- Value: `gitlab-pages-verification-code=00112233445566778899aabbccddeeff`
+  (use your actual code from GitLab)
+
+{{< alert type="note" >}}
+
+Some DNS providers, like Cloudflare, automatically append your domain name to the
+Name or Host field. If your provider does this, enter only
+`_gitlab-pages-verification-code` for root domains or
+`_gitlab-pages-verification-code.subdomain` for subdomains.
+
+{{< /alert >}}
+
 #### 3. Set up DNS records
 
 Read this document for an [overview of DNS records for Pages](dns_concepts.md).

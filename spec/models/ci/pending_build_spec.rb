@@ -203,8 +203,6 @@ RSpec.describe Ci::PendingBuild, feature_category: :continuous_integration do
         let!(:build) { create(:ci_build, options: { script: ['echo hello'] }) }
 
         before do
-          stub_feature_flags(ci_build_uses_job_definition_tag_list: true)
-
           # Manually add tags to the build via the legacy tables
           create(:ci_build_tag, tag: create(:ci_tag, name: 'legacy_tag'), build: build, project_id: build.project.id)
         end

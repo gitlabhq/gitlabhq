@@ -810,6 +810,28 @@ RSpec.describe ApplicationSetting, feature_category: :shared, type: :model do
         expect(setting.errors[:default_search_scope]).to be_present
         expect(setting.errors[:default_search_scope].first).to include('invalid scope selected')
       end
+
+      context 'when search_scope_registry feature flag is disabled' do
+        before do
+          stub_feature_flags(search_scope_registry: false)
+        end
+
+        it 'allows legacy scopes' do
+          %w[blobs code commits epics issues merge_requests milestones notes projects snippet_titles
+            users wiki_blobs].each do |scope|
+            setting.default_search_scope = scope
+
+            expect(setting).to be_valid, "expected #{scope} to be valid with feature flag disabled"
+          end
+        end
+
+        it 'rejects invalid scopes' do
+          setting.default_search_scope = 'invalid_scope'
+
+          expect(setting).not_to be_valid
+          expect(setting.errors[:default_search_scope]).to be_present
+        end
+      end
     end
 
     describe 'default_branch_name validations' do
@@ -2724,6 +2746,36 @@ RSpec.describe ApplicationSetting, feature_category: :shared, type: :model do
         setting.update!(default_search_scope: 'users')
 
         expect(setting.custom_default_search_scope_set?).to be(true)
+      end
+    end
+
+    context 'when search_scope_registry feature flag is disabled' do
+      before do
+        stub_feature_flags(search_scope_registry: false)
+      end
+
+      it 'returns false for empty string' do
+        setting.update!(default_search_scope: '')
+
+        expect(setting.custom_default_search_scope_set?).to be(false)
+      end
+
+      it 'returns false for system default' do
+        setting.update!(default_search_scope: described_class::SEARCH_SCOPE_SYSTEM_DEFAULT)
+
+        expect(setting.custom_default_search_scope_set?).to be(false)
+      end
+
+      it 'returns true for valid legacy scope' do
+        setting.update!(default_search_scope: 'users')
+
+        expect(setting.custom_default_search_scope_set?).to be(true)
+      end
+
+      it 'returns false for invalid scope' do
+        setting.default_search_scope = 'invalid_scope'
+
+        expect(setting.custom_default_search_scope_set?).to be(false)
       end
     end
   end

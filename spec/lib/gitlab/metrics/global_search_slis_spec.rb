@@ -198,4 +198,27 @@ RSpec.describe Gitlab::Metrics::GlobalSearchSlis, feature_category: :global_sear
       )
     end
   end
+
+  describe '.search_scopes' do
+    it 'returns all scope names from Search::Scopes' do
+      result = described_class.send(:search_scopes)
+      expect(result).to eq(::Search::Scopes.all_scope_names)
+    end
+
+    it 'includes expected scopes' do
+      result = described_class.send(:search_scopes)
+      expect(result).to include('blobs', 'issues', 'merge_requests', 'projects')
+    end
+
+    context 'when search_scope_registry feature flag is disabled' do
+      before do
+        stub_feature_flags(search_scope_registry: false)
+      end
+
+      it 'returns legacy allowed scopes' do
+        result = described_class.send(:search_scopes)
+        expect(result).to eq(::Gitlab::Search::AbuseDetection::LEGACY_ALLOWED_SCOPES)
+      end
+    end
+  end
 end

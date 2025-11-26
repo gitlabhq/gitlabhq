@@ -29016,10 +29016,12 @@ CREATE TABLE virtual_registries_container_upstreams (
     url text NOT NULL,
     name text NOT NULL,
     description text,
+    auth_url text,
     CONSTRAINT check_4b5467ff6f CHECK ((char_length(description) <= 1024)),
     CONSTRAINT check_5eb36d5a0e CHECK ((cache_validity_hours >= 0)),
     CONSTRAINT check_6aea67ba05 CHECK ((char_length(name) <= 255)),
     CONSTRAINT check_df12da285f CHECK (((num_nonnulls(username, password) = 2) OR (num_nulls(username, password) = 2))),
+    CONSTRAINT check_ed691f06a1 CHECK ((char_length(auth_url) <= 512)),
     CONSTRAINT check_f565894f21 CHECK ((char_length(url) <= 255))
 );
 

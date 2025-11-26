@@ -64,10 +64,28 @@ To complete the setup and generate a GitLab Pages deployment:
 1. For **Step 4**, add a commit message and select **Commit**. This commit triggers your first
    GitLab Pages deployment.
 
-To view the running pipeline, go to **Build** > **Pipelines**.
+To view the running pipeline, go to **Build** > **Pipelines**. When the pipeline succeeds,
+your Pages site is deployed and accessible.
 
 To view the artifacts that were created during the deployment, view the job,
 and on the right side, select **Download artifacts**.
+
+## View deployment URL
+
+After your pipeline completes successfully:
+
+1. On the left sidebar, select **Search or go to** and find your project.
+   If you've [turned on the new navigation](../../../interface_redesign.md#turn-new-navigation-on-or-off),
+   this field is on the top bar.
+1. Select **Deploy** > **Pages**.
+1. In **Deployments**, you can view your active deployment URL.
+1. To visit your deployed GitLab Pages site, select the URL.
+
+{{< alert type="note" >}}
+
+It might take a few minutes for your site to become available after the pipeline completes.
+
+{{< /alert >}}
 
 ## Troubleshooting
 

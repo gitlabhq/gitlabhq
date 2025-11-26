@@ -148,7 +148,7 @@ Indexing timeout per project:                      30m
 Maximum number of files per project to be indexed: 500000
 Maximum file size for indexing:                    1MB
 Retry interval for failed namespaces:              1d
-Specify default number of replicas per namespace. Currently in development. See: https://gitlab.com/groups/gitlab-org/-/epics/19097: 1
+Number of replicas per namespace:                  1
 
 Nodes
 # Number of Zoekt nodes and their status
@@ -533,6 +533,34 @@ To define the retry interval for failed namespaces:
 1. Expand **Exact code search**.
 1. In the **Retry interval for failed namespaces** text box, enter a value
    (for example, `30m` (30 minutes), `2h` (two hours), or `1d` (one day)).
+1. Select **Save changes**.
+
+## Set the number of replicas per namespace
+
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/214067) in GitLab 18.7.
+
+{{< /history >}}
+
+Prerequisites:
+
+- You must have administrator access to the instance.
+
+You can set the number of replicas per namespace.
+The default value is `1` (one replica per namespace).
+
+Increasing the number of replicas per namespace improves search availability
+by distributing the load across multiple Zoekt nodes.
+More replicas increase storage requirements.
+
+To set the number of replicas per namespace:
+
+1. On the left sidebar, at the bottom, select **Admin**. If you've [turned on the new navigation](../../user/interface_redesign.md#turn-new-navigation-on-or-off), in the upper-right corner, select **Admin**.
+1. Select **Settings** > **Search**.
+1. Expand **Exact code search**.
+1. In the **Number of replicas per namespace** text box,
+   enter a number greater than zero.
 1. Select **Save changes**.
 
 ## Run Zoekt on a separate server

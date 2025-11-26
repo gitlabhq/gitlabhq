@@ -60,13 +60,32 @@ module Ci
     end
 
     def self.sanitize_and_checksum(config)
-      sanitized_config = config.symbolize_keys.slice(*CONFIG_ATTRIBUTES)
+      sanitized_config = config
+        .symbolize_keys
+        .slice(*CONFIG_ATTRIBUTES)
+        .then { |data| data.merge!(extract_and_parse_tags(data)) }
 
       checksum = sanitized_config
         .then { |data| Gitlab::Json.dump(data) }
         .then { |data| Digest::SHA256.hexdigest(data) }
 
       [sanitized_config, checksum]
+    end
+
+    def self.extract_and_parse_tags(config)
+      tag_list = config[:tag_list]
+      return {} unless tag_list
+
+      { tag_list: Gitlab::Ci::Tags::Parser.new(tag_list).parse }
+    end
+
+    # We need to re-parse the tags because there are a few
+    # records in the 106-107 partitions that were not properly
+    # parsed during the pipeline creation.
+    def tag_list
+      tags = config.fetch(:tag_list) { [] }
+
+      Gitlab::Ci::Tags::Parser.new(tags).parse
     end
 
     def readonly?

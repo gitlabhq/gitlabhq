@@ -30,6 +30,10 @@ module Ci
     # rubocop:enable Cop/ActiveRecordSerialize
 
     state_machine :status do
+      before_transition [:created, :manual, :waiting_for_resource] => :pending do |bridge|
+        bridge.started_at = Time.current
+      end
+
       after_transition [:created, :manual, :waiting_for_resource] => :pending do |bridge|
         bridge.run_after_commit do
           Ci::TriggerDownstreamPipelineService.new(bridge).execute # rubocop: disable CodeReuse/ServiceClass

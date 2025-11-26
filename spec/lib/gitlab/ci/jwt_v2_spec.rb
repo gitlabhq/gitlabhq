@@ -99,6 +99,118 @@ RSpec.describe Gitlab::Ci::JwtV2, feature_category: :secrets_management do
       end
     end
 
+    describe 'environment-related claims in sub' do
+      let(:environment) { build_stubbed(:environment, name: 'production', project: project) }
+
+      let(:build) do
+        build_stubbed(
+          :ci_build,
+          project: project,
+          user: user,
+          pipeline: pipeline,
+          runner: runner
+        ).tap do |b|
+          allow(b).to receive_messages(persisted_environment: environment, environment_tier: 'production')
+        end
+      end
+
+      before do
+        stub_feature_flags(ci_id_token_environment_sub_claims: true)
+      end
+
+      describe 'when project_path and environment_protected provided' do
+        let(:sub_components) { [:project_path, :environment_protected] }
+
+        it 'includes environment_protected in sub claim' do
+          expect(payload[:sub]).to eq("project_path:#{project.full_path}:environment_protected:false")
+        end
+      end
+
+      describe 'when project_path and deployment_tier provided' do
+        let(:sub_components) { [:project_path, :deployment_tier] }
+
+        it 'includes deployment_tier in sub claim' do
+          expect(payload[:sub]).to eq("project_path:#{project.full_path}:deployment_tier:production")
+        end
+      end
+
+      describe 'when project_path, ref, and all environment claims provided' do
+        let(:sub_components) { [:project_path, :ref, :environment_protected, :deployment_tier] }
+
+        it 'includes all specified claims in sub' do
+          expected_sub = "project_path:#{project.full_path}:ref:#{pipeline.source_ref}:" \
+            "environment_protected:false:deployment_tier:production"
+          expect(payload[:sub]).to eq(expected_sub)
+        end
+      end
+
+      describe 'when environment claims requested but no environment present' do
+        let(:build) do
+          build_stubbed(
+            :ci_build,
+            project: project,
+            user: user,
+            pipeline: pipeline,
+            runner: runner
+          )
+        end
+
+        let(:sub_components) { [:project_path, :environment_protected, :deployment_tier] }
+
+        it 'only includes project_path when environment is not set' do
+          expect(payload[:sub]).to eq("project_path:#{project.full_path}")
+        end
+      end
+
+      describe 'when feature flag is disabled' do
+        let(:sub_components) { [:project_path, :environment_protected, :deployment_tier] }
+
+        before do
+          stub_feature_flags(ci_id_token_environment_sub_claims: false)
+        end
+
+        it 'does not include environment claims in sub' do
+          expect(payload[:sub]).to eq("project_path:#{project.full_path}")
+        end
+      end
+
+      describe 'colon validation in claim values' do
+        let(:sub_components) { [:project_path, :deployment_tier] }
+
+        context 'when deployment_tier contains a colon (potential claim injection)' do
+          before do
+            allow(build).to receive(:environment_tier).and_return('production:project_path:attacker/project')
+          end
+
+          it 'raises an ArgumentError' do
+            expect { payload }.to raise_error(ArgumentError, /claim 'deployment_tier' cannot contain a colon/)
+          end
+        end
+
+        context 'when project_path contains a colon' do
+          before do
+            allow(project).to receive(:full_path).and_return('group:project_path:injected')
+          end
+
+          it 'raises an ArgumentError' do
+            expect { payload }.to raise_error(ArgumentError, /claim 'project_path' cannot contain a colon/)
+          end
+        end
+
+        context 'when ref contains a colon' do
+          let(:sub_components) { [:project_path, :ref] }
+
+          before do
+            allow(pipeline).to receive(:source_ref).and_return('main:project_path:evil/project')
+          end
+
+          it 'raises an ArgumentError' do
+            expect { payload }.to raise_error(ArgumentError, /claim 'ref' cannot contain a colon/)
+          end
+        end
+      end
+    end
+
     context 'when given an aud' do
       let(:aud) { 'AWS' }
 

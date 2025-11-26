@@ -18,7 +18,7 @@ class ProjectCiCdSetting < ApplicationRecord
       maintainer: MAINTAINER_ROLE,
       owner: OWNER_ROLE }.freeze
 
-  ALLOWED_SUB_CLAIM_COMPONENTS = %w[project_path ref_type ref].freeze
+  ALLOWED_SUB_CLAIM_COMPONENTS = %w[project_path ref_type ref environment_protected deployment_tier].freeze
 
   enum :pipeline_variables_minimum_override_role, PIPELINE_VARIABLES_OVERRIDE_ROLES, prefix: true
 

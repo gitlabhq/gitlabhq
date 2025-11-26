@@ -2046,6 +2046,37 @@ RSpec.describe Ci::Build, feature_category: :continuous_integration, factory_def
 
     subject(:tag_list) { build.reload.tag_list }
 
+    context 'with various tag input formats' do
+      where(:tag_input, :expected_tags, :description) do
+        ['tag1,tag2']       | %w[tag1 tag2]      | 'comma-delimited string in array'
+        ['tag1, tag2']      | %w[tag1 tag2]      | 'comma-delimited string with spaces'
+        %w[tag1 tag2]       | %w[tag1 tag2]      | 'array of strings'
+        ['']                | []                 | 'empty string in array'
+        []                  | []                 | 'empty array'
+        ['  tag1  , tag2 '] | %w[tag1 tag2]      | 'string with extra whitespace'
+        'tag1,tag2'         | %w[tag1 tag2]      | 'plain comma-delimited string'
+        'tag1, tag2, tag3'  | %w[tag1 tag2 tag3] | 'multiple tags with spaces'
+      end
+
+      with_them do
+        let(:build) { create(:ci_build, tag_list: tag_input, pipeline: pipeline) }
+
+        it 'parses job_definition tags correctly' do
+          expect(tag_list).to match_array(expected_tags)
+        end
+
+        context 'when ci_build_uses_job_definition_tag_list FF is disabled' do
+          before do
+            stub_feature_flags(ci_build_uses_job_definition_tag_list: false)
+          end
+
+          it 'parses job_definition tags correctly' do
+            expect(tag_list).to match_array(expected_tags)
+          end
+        end
+      end
+    end
+
     context 'when tags are preloaded' do
       it 'does not trigger queries' do
         build_with_tags = described_class.eager_load_tags.id_in([build]).to_a.first
@@ -6097,6 +6128,50 @@ RSpec.describe Ci::Build, feature_category: :continuous_integration, factory_def
           expect_no_snowplow_event
         end
       end
+    end
+  end
+
+  describe 'id_tokens with ci_cd_settings integration' do
+    let_it_be(:project) { create(:project) }
+    let_it_be(:user) { create(:user) }
+    let_it_be(:pipeline) { create(:ci_pipeline, project: project, ref: 'main') }
+    let_it_be(:environment) { create(:environment, name: 'production', project: project) }
+
+    let(:build) do
+      create(
+        :ci_build,
+        project: project,
+        pipeline: pipeline,
+        user: user,
+        environment: environment.name,
+        options: { environment: { name: 'production', deployment_tier: 'production' } },
+        id_tokens: { 'ID_TOKEN_1' => { aud: 'https://example.com' } }
+      )
+    end
+
+    before do
+      stub_application_setting(ci_jwt_signing_key: OpenSSL::PKey::RSA.generate(3072).to_s)
+      stub_feature_flags(ci_id_token_environment_sub_claims: true)
+
+      project.ci_cd_settings.update!(
+        id_token_sub_claim_components: %w[project_path environment_protected deployment_tier]
+      )
+    end
+
+    it 'generates JWT with environment_protected and deployment_tier in sub claim' do
+      expect(build.id_tokens).to eq({ 'ID_TOKEN_1' => { 'aud' => 'https://example.com' } })
+
+      expect(project.ci_cd_settings.id_token_sub_claim_components)
+        .to eq(%w[project_path environment_protected deployment_tier])
+
+      id_token = build.variables.find { |v| v[:key] == 'ID_TOKEN_1' }
+      expect(id_token).not_to be_nil
+
+      token = JWT.decode(id_token[:value], nil, false).first
+      expect(token['sub']).to include('project_path')
+      expect(token['sub']).to include('environment_protected')
+      expect(token['sub']).to include('deployment_tier')
+      expect(token['sub']).to eq("project_path:#{project.full_path}:environment_protected:false:deployment_tier:production")
     end
   end
 

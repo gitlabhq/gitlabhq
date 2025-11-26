@@ -38,6 +38,11 @@ RSpec.describe ProjectCiCdSetting, feature_category: :continuous_integration do
         .to include("not_existing_claim is not an allowed sub claim component")
     end
 
+    it 'validates environment_protected and deployment_tier are allowed sub claim components' do
+      subject.id_token_sub_claim_components = %w[project_path environment_protected deployment_tier]
+      expect(subject).to be_valid
+    end
+
     it 'validates delete_pipelines_in_seconds' do
       is_expected.to validate_numericality_of(:delete_pipelines_in_seconds)
         .only_integer

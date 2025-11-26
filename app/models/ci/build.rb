@@ -882,9 +882,9 @@ module Ci
     def tag_list
       # Check job_definition first to avoid loading project if not needed
       return super if job_definition.nil?
-      return super if Feature.disabled?(:ci_build_uses_job_definition_tag_list, project)
+      return super if Feature.disabled?(:ci_build_uses_job_definition_tag_list, Project.actor_from_id(project_id))
 
-      Gitlab::Ci::Tags::TagList.new(job_definition.config.fetch(:tag_list, []))
+      job_definition.tag_list
     end
     strong_memoize_attr :tag_list
 

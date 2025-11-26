@@ -28,6 +28,12 @@ module Search
 
       @projects = super.inside_path(group.full_path)
     end
+
+    private
+
+    def searched_container
+      group
+    end
   end
 end
 

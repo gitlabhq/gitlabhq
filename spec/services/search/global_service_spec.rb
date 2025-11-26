@@ -150,4 +150,27 @@ RSpec.describe Search::GlobalService, feature_category: :global_search do
       end
     end
   end
+
+  describe '#allowed_scopes' do
+    subject(:service) { described_class.new(user, search: 'searchable', search_type: 'foo') }
+
+    it 'returns scopes from Search::Scopes registry' do
+      expect(Search::Scopes).to receive(:available_for_context).with(
+        context: :global,
+        container: nil,
+        requested_search_type: 'foo'
+      )
+      service.allowed_scopes
+    end
+
+    context 'when search_scope_registry feature flag is disabled' do
+      before do
+        stub_feature_flags(search_scope_registry: false)
+      end
+
+      it 'returns legacy allowed scopes' do
+        expect(service.allowed_scopes).to eq(described_class::LEGACY_ALLOWED_SCOPES)
+      end
+    end
+  end
 end

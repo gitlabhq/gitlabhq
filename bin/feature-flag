@@ -374,6 +374,8 @@ class FeatureFlagOptionParser
     end
 
     def open_url!(url)
+      return 1 if open_command.nil?
+
       _, open_url_status = Gitlab::Popen.popen([open_command, url])
 
       open_url_status

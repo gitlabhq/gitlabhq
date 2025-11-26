@@ -300,6 +300,20 @@ RSpec.describe Ci::Bridge, feature_category: :continuous_integration do
 
         expect { bridge.enqueue! }.to raise_error(StateMachines::InvalidTransition)
       end
+
+      %i[created manual waiting_for_resource].each do |status|
+        it "sets started_at when transitioning from #{status} to pending" do
+          bridge.status = status
+          bridge.started_at = nil
+
+          freeze_time do
+            bridge.enqueue! if status != :waiting_for_resource
+            bridge.enqueue_waiting_for_resource! if status == :waiting_for_resource
+
+            expect(bridge.started_at).to be_within(1.second).of(Time.current)
+          end
+        end
+      end
     end
   end
 

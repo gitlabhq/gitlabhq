@@ -1,0 +1,8 @@
+---
+migration_job_name: BackfillUserDetailsCompany
+description: Copy values from organization column to company column
+feature_category: organization
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/213914
+milestone: '18.7'
+queued_migration_version: 20251124110943
+finalized_by: # version of the migration that finalized this BBM

@@ -17,6 +17,11 @@ module Gitlab
           header('Link', link)
         end
 
+        def add_prev_and_next_cursor_headers(previous_cursor, next_cursor)
+          header('X-PREV-CURSOR', previous_cursor) if previous_cursor
+          header('X-NEXT-CURSOR', next_cursor) if next_cursor
+        end
+
         private
 
         def next_page_link(href)

@@ -130,13 +130,13 @@ export default {
       return null;
     },
     resolveButtonTitle() {
-      let title = __('Resolve thread');
-
-      if (this.resolvedBy) {
-        title = sprintf(__('Resolved by %{name}'), { name: this.resolvedBy.name });
+      if (!this.isResolved) {
+        return __('Resolve thread');
       }
-
-      return title;
+      if (this.resolvedBy) {
+        return sprintf(__('Resolved by %{name}'), { name: this.resolvedBy.name });
+      }
+      return __('Resolved');
     },
   },
   methods: {
@@ -187,7 +187,7 @@ export default {
     <gl-button
       v-if="canResolve"
       ref="resolveButton"
-      v-gl-tooltip
+      v-gl-tooltip.hover
       data-testid="wiki-note-resolve-button"
       category="tertiary"
       class="note-action-button"

@@ -8,6 +8,7 @@ module Gitlab
 
       GITLAB_HOSTED_RUNNER = 'gitlab-hosted'
       SELF_HOSTED_RUNNER = 'self-hosted'
+      ADDITIONAL_SUBJECT_CLAIMS = [:environment_protected, :deployment_tier].freeze
 
       def self.for_build(
         build, aud:, sub_components: [:project_path, :ref_type,
@@ -20,8 +21,7 @@ module Gitlab
         super(build, ttl: ttl)
 
         @aud = aud
-        @sub = sub_components.select { |claim_name| custom_claims[claim_name] }
-          .flat_map { |claim_name| [claim_name, custom_claims[claim_name]] }.join(':')
+        @sub = subject_value(sub_components)
         @target_audience = target_audience
       end
 
@@ -43,6 +43,27 @@ module Gitlab
           ref_type: ref_type,
           ref: source_ref }
       end
+
+      def subject_value(sub_components)
+        selected_claims = sub_components
+          .select { |claim_name| sub_claims[claim_name] }
+          .map { |claim_name| [claim_name, sub_claims[claim_name]] }
+
+        selected_claims.to_h.each_pair do |name, value|
+          if value.to_s.include?(':')
+            raise ArgumentError, "claim '#{name}' cannot contain a colon (:) but value is '#{value}'"
+          end
+        end
+
+        selected_claims.flatten.join(':')
+      end
+
+      def sub_claims
+        return custom_claims if Feature.disabled?(:ci_id_token_environment_sub_claims, project)
+
+        ci_claims.slice(*ADDITIONAL_SUBJECT_CLAIMS).merge(custom_claims)
+      end
+      strong_memoize_attr :sub_claims
 
       def predefined_claims
         additional_custom_claims = {

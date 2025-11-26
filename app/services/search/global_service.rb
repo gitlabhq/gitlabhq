@@ -6,7 +6,7 @@ module Search
     include Gitlab::Utils::StrongMemoize
 
     DEFAULT_SCOPE = 'projects'
-    ALLOWED_SCOPES = %w[projects issues merge_requests milestones users].freeze
+    LEGACY_ALLOWED_SCOPES = %w[projects issues merge_requests milestones users].freeze
 
     attr_accessor :current_user, :params
 
@@ -31,7 +31,13 @@ module Search
     end
 
     def allowed_scopes
-      ALLOWED_SCOPES
+      return legacy_allowed_scopes unless Feature.enabled?(:search_scope_registry, :instance)
+
+      Search::Scopes.available_for_context(
+        context: :global,
+        container: searched_container,
+        requested_search_type: params[:search_type]
+      )
     end
 
     def scope
@@ -49,6 +55,13 @@ module Search
 
       DEFAULT_SCOPE
     end
+
+    def legacy_allowed_scopes
+      LEGACY_ALLOWED_SCOPES
+    end
+
+    # Global search doesn't have a container
+    def searched_container; end
   end
 end
 
