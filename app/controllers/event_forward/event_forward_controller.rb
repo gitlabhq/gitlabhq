@@ -17,7 +17,7 @@ module EventForward
       tracker = Gitlab::Tracking.tracker
       event_eligibility_checker = Gitlab::Tracking::EventEligibilityChecker.new
 
-      payload = Gitlab::Json.parse(request.raw_post)
+      payload = Gitlab::Json.safe_parse(request.raw_post)
 
       events_to_forward = payload['data'].select do |event|
         event_eligibility_checker.eligible?(event['se_ac'], event['aid'])

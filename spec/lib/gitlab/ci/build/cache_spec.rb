@@ -72,7 +72,7 @@ RSpec.describe Gitlab::Ci::Build::Cache do
         attributes = cache.cache_attributes
 
         expect(attributes).to eq({
-          options: { cache: cache_config }
+          options: { cache: [{ key: 'key-a' }, { key: 'key-b' }] }
         })
       end
     end

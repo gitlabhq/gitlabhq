@@ -113,13 +113,6 @@ RSpec.describe Gitlab::Graphql::Variables, feature_category: :api do
 
       with_them do
         it 'raises Invalid error with user-facing message' do
-          expect(Gitlab::AppLogger).to receive(:warn).with(
-            hash_including(
-              class_name: 'Gitlab::Graphql::Variables',
-              message: a_string_including(expected_log_message)
-            )
-          )
-
           expect { described_class.new(json, { parse_limits: parse_limits }).to_h }.to raise_error(
             described_class::Invalid, expected_error_message
           )

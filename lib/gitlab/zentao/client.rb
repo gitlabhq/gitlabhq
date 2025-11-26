@@ -68,7 +68,7 @@ module Gitlab
 
         raise RequestError unless response.success?
 
-        Gitlab::Json.parse(response.body)
+        response.parsed_response
       rescue JSON::ParserError
         raise Error, 'invalid response format'
       end

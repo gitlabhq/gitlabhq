@@ -182,7 +182,7 @@ RSpec.describe Gitlab::Middleware::JsonValidation, feature_category: :shared do
 
       it 'passes through without validation' do
         expect(app).to receive(:call).with(env)
-        expect(::Oj).not_to receive(:sc_parse)
+        expect(::Oj).not_to receive(:validate!)
 
         middleware.call(env)
       end
