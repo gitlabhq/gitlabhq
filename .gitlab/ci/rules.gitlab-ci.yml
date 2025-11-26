@@ -202,6 +202,12 @@
 .if-schedule-maintenance: &if-schedule-maintenance
   if: '$CI_PIPELINE_SOURCE == "schedule" && $SCHEDULE_TYPE == "maintenance"'
 
+.if-missing-clickhouse-coverage-credentials: &if-missing-clickhouse-coverage-credentials
+  if: '$GLCI_CLICKHOUSE_METRICS_URL == null || $GLCI_CLICKHOUSE_TEST_COVERAGE_DB == null || $GLCI_CLICKHOUSE_METRICS_USERNAME == null || $GLCI_CLICKHOUSE_METRICS_PASSWORD == null'
+
+.if-coverband-enabled: &if-coverband-enabled
+  if: '$COVERBAND_ENABLED == "true"'
+
 .if-default-branch-schedule-nightly: &if-default-branch-schedule-nightly
   if: '$CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH && $CI_PIPELINE_SOURCE == "schedule" && $SCHEDULE_TYPE == "nightly"'
 
@@ -1661,9 +1667,8 @@
     - <<: *if-default-refs
       changes: *code-backstage-patterns
 
-.frontend:rules:fe-islands:predictive:
+.frontend:rules:fe-islands:
   rules:
-    - if: '$ENABLE_JEST_PREDICTIVE == "true"'
     - <<: *if-not-ee
       when: never
     - <<: *if-merge-request
@@ -2662,9 +2667,29 @@
   rules:
     - <<: *if-not-ee
       when: never
-    - if: '$GLCI_CLICKHOUSE_METRICS_URL == null || $GLCI_CLICKHOUSE_TEST_COVERAGE_DB == null || $GLCI_CLICKHOUSE_METRICS_USERNAME == null || $GLCI_CLICKHOUSE_METRICS_PASSWORD == null'
+    - <<: *if-missing-clickhouse-coverage-credentials
       when: never
     - <<: *if-schedule-maintenance
+
+# Export RSpec-only coverage (skips when E2E coverage is being collected via Coverband)
+.rails:rules:coverage-export-rspec-only:
+  rules:
+    - <<: *if-not-ee
+      when: never
+    - <<: *if-missing-clickhouse-coverage-credentials
+      when: never
+    - <<: *if-coverband-enabled
+      when: never
+    - <<: *if-schedule-maintenance
+
+# Export merged RSpec + E2E coverage (only when Coverband is enabled)
+.rails:rules:coverage-export-rspec-and-e2e:
+  rules:
+    - <<: *if-not-ee
+      when: never
+    - <<: *if-missing-clickhouse-coverage-credentials
+      when: never
+    - <<: *if-coverband-enabled
 
 .rails:rules:rspec-undercoverage:
   rules:

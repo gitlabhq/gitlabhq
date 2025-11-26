@@ -137,6 +137,20 @@ To update the Helm client with the most currently available charts.
 
 See [Using Helm](https://helm.sh/docs/intro/using_helm/) for more information.
 
+## Delete a Helm package
+
+Prerequisites:
+
+- You must have at least the Maintainer role.
+
+Before you delete a package, make sure you understand
+the [associated security risks](../package_registry/supported_functionality.md#deleting-packages).
+
+To delete a package, you can either:
+
+- [Use the UI](../package_registry/reduce_package_registry_storage.md#delete-a-package).
+- [Use the API](../../../api/packages.md#delete-a-project-package).
+
 ## Troubleshooting
 
 ### The chart is not visible in the package registry after uploading

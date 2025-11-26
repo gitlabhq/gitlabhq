@@ -372,6 +372,20 @@ used to access them:
   subgroups.
 - A project deploy token only has access to packages published to that particular project.
 
+## Delete a Composer package
+
+Prerequisites:
+
+- You must have at least the Maintainer role.
+
+Before you delete a package, make sure you understand
+the [associated security risks](../package_registry/supported_functionality.md#deleting-packages).
+
+To delete a package, you can either:
+
+- [Use the UI](../package_registry/reduce_package_registry_storage.md#delete-a-package).
+- [Use the API](../../../api/packages.md#delete-a-project-package).
+
 ## Troubleshooting
 
 ### Caching

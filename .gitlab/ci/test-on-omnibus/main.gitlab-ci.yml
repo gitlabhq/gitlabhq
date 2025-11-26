@@ -530,6 +530,10 @@ upload-test-runtime-data:
   variables:
     QA_JSON_REPORT_FILE_PATTERN: $CI_PROJECT_DIR/gitlab-qa-run-*/gitlab-*-qa-*/rspec-*.json
 
+process-backend-coverage:
+  extends:
+    - .process-backend-coverage
+
 notify-slack:
   extends:
     - .notify-slack

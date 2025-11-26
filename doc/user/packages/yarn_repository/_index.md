@@ -342,6 +342,20 @@ See [Yarn issue 4451](https://github.com/yarnpkg/yarn/issues/4451#issuecomment-7
 
 {{< /tabs >}}
 
+## Delete a Yarn package
+
+Prerequisites:
+
+- You must have at least the Maintainer role.
+
+Before you delete a package, make sure you understand
+the [associated security risks](../package_registry/supported_functionality.md#deleting-packages).
+
+To delete a package, you can either:
+
+- [Use the UI](../package_registry/reduce_package_registry_storage.md#delete-a-package).
+- [Use the API](../../../api/packages.md#delete-a-project-package).
+
 ## Related topics
 
 - [npm package registry documentation](../npm_registry/_index.md#helpful-hints)

@@ -496,7 +496,6 @@ install from an instance.
 
 {{< history >}}
 
-- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/55344) in GitLab 12.9.
 - Required role [changed](https://gitlab.com/gitlab-org/gitlab/-/issues/370471) from Maintainer to Owner in GitLab 17.0.
 
 {{< /history >}}
@@ -549,6 +548,20 @@ npm deprecate @scope/package ""
 ```
 
 When a package's deprecation warning is removed, its status will be updated to `default`.
+
+## Delete a package
+
+Prerequisites:
+
+- You must have at least the Maintainer role.
+
+Before you delete a package, make sure you understand
+the [associated security risks](../package_registry/supported_functionality.md#deleting-packages).
+
+To delete a package, you can either:
+
+- [Use the UI](../package_registry/reduce_package_registry_storage.md#delete-a-package).
+- [Use the API](../../../api/packages.md#delete-a-project-package).
 
 ## Helpful hints
 

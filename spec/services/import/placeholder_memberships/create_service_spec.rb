@@ -93,7 +93,7 @@ RSpec.describe Import::PlaceholderMemberships::CreateService, feature_category: 
         expect { result }.not_to change { Import::Placeholders::Membership.count }
         expect(result).to be_error
         expect(result.http_status).to eq(:bad_request)
-        expect(result.message).to include('one of group_id or project_id must be present')
+        expect(result.message).to include('Exactly one of group_id, project_id must be present')
       end
     end
   end

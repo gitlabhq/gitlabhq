@@ -151,6 +151,10 @@ export-frontend-code-paths-mapping:
   extends:
     - .export-frontend-code-paths-mapping
 
+process-backend-coverage:
+  extends:
+    - .process-backend-coverage
+
 notify-slack:
   extends:
     - .notify-slack

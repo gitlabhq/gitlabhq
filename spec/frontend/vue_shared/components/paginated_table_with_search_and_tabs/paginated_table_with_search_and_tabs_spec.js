@@ -1,4 +1,4 @@
-import { GlAlert, GlBadge, GlPagination, GlTabs, GlTab } from '@gitlab/ui';
+import { GlAlert, GlBadge, GlKeysetPagination, GlTabs, GlTab } from '@gitlab/ui';
 import { mount } from '@vue/test-utils';
 import { nextTick } from 'vue';
 import Tracking from '~/tracking';
@@ -91,10 +91,9 @@ describe('AlertManagementEmptyState', () => {
   const EmptyState = () => wrapper.find('.empty-state');
   const ItemsTable = () => wrapper.find('.gl-table');
   const ErrorAlert = () => wrapper.findComponent(GlAlert);
-  const Pagination = () => wrapper.findComponent(GlPagination);
   const ActionButton = () => wrapper.find('.header-actions > button');
   const findFilteredSearchBar = () => wrapper.findComponent(FilteredSearchBar);
-  const findPagination = () => wrapper.findComponent(GlPagination);
+  const findPagination = () => wrapper.findComponent(GlKeysetPagination);
   const findStatusFilterTabs = () => wrapper.findAllComponents(GlTab);
   const findStatusTabs = () => wrapper.findComponent(GlTabs);
   const findStatusFilterBadge = () => wrapper.findAllComponents(GlBadge);
@@ -165,7 +164,7 @@ describe('AlertManagementEmptyState', () => {
         props: { pageInfo: { hasNextPage: true } },
       });
 
-      expect(Pagination().exists()).toBe(true);
+      expect(findPagination().exists()).toBe(true);
     });
 
     it('renders the filter set with the tokens according to the prop filterSearchTokens', () => {
@@ -210,67 +209,49 @@ describe('AlertManagementEmptyState', () => {
         props: {
           itemsCount,
           statusTabs: ITEMS_STATUS_TABS,
-          pageInfo: { hasNextPage: true },
+          pageInfo: {
+            hasNextPage: true,
+            hasPreviousPage: false,
+            startCursor: 'start-cursor',
+            endCursor: 'end-cursor',
+          },
         },
       });
     });
 
-    it('should render pagination', () => {
-      expect(wrapper.findComponent(GlPagination).exists()).toBe(true);
-    });
-
-    describe('prevPage', () => {
-      it('returns prevPage button', async () => {
-        findPagination().vm.$emit('input', 3);
-
-        await nextTick();
-        expect(findPagination().find('[data-testid="gl-pagination-prev"]').text()).toBe('Previous');
-      });
-
-      it('returns prevPage number', async () => {
-        findPagination().vm.$emit('input', 3);
-
-        await nextTick();
-        expect(findPagination().props('prevPage')).toBe(2);
-      });
-
-      it('returns 0 when it is the first page', async () => {
-        findPagination().vm.$emit('input', 1);
-
-        await nextTick();
-        expect(findPagination().props('prevPage')).toBe(0);
+    it('should render pagination with correct props', () => {
+      expect(findPagination().exists()).toBe(true);
+      expect(findPagination().props()).toMatchObject({
+        hasNextPage: true,
+        hasPreviousPage: false,
       });
     });
 
-    describe('nextPage', () => {
-      it('returns nextPage button', async () => {
-        findPagination().vm.$emit('input', 3);
-
-        await nextTick();
-        expect(findPagination().find('[data-testid="gl-pagination-next"]').text()).toBe('Next');
-      });
-
-      it('returns nextPage number', async () => {
+    it.each`
+      event     | pageInfo                                                                                               | expectedCursor
+      ${'next'} | ${{ hasNextPage: true, hasPreviousPage: false, startCursor: 'start-cursor', endCursor: 'end-cursor' }} | ${{ nextPageCursor: 'end-cursor' }}
+      ${'prev'} | ${{ hasNextPage: true, hasPreviousPage: true, startCursor: 'start-cursor', endCursor: 'end-cursor' }}  | ${{ prevPageCursor: 'start-cursor' }}
+    `(
+      'emits page-changed event with cursor when $event is clicked',
+      async ({ event, pageInfo, expectedCursor }) => {
         mountComponent({
           props: {
             itemsCount,
             statusTabs: ITEMS_STATUS_TABS,
-            pageInfo: { hasNextPage: true },
+            pageInfo,
           },
         });
-        findPagination().vm.$emit('input', 1);
 
-        await nextTick();
-        expect(findPagination().props('nextPage')).toBe(2);
-      });
+        const emittedBefore = wrapper.emitted('page-changed')?.length || 0;
 
-      it('returns `null` when currentPage is already last page', async () => {
-        findStatusTabs().vm.$emit('input', 1);
-        findPagination().vm.$emit('input', 1);
+        findPagination().vm.$emit(event);
         await nextTick();
-        expect(findPagination().props('nextPage')).toBeNull();
-      });
-    });
+
+        const emittedEvents = wrapper.emitted('page-changed');
+        expect(emittedEvents.length).toBeGreaterThan(emittedBefore);
+        expect(emittedEvents[emittedEvents.length - 1][0]).toMatchObject(expectedCursor);
+      },
+    );
   });
 
   describe('Filtered search component', () => {

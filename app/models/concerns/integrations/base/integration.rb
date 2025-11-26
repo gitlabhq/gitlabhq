@@ -523,7 +523,7 @@ module Integrations
         validates :type, uniqueness: { scope: :instance }, if: :instance_level?
         validates :type, uniqueness: { scope: :project_id }, if: :project_level?
         validates :type, uniqueness: { scope: :group_id }, if: :group_level?
-        validate :validate_belongs_to_one_of_project_group_or_organization
+        validates_with ExactlyOnePresentValidator, fields: [:project_id, :group_id, :organization_id]
 
         scope :external_issue_trackers, -> { where(category: 'issue_tracker').active }
         scope :third_party_wikis, -> { where(category: 'third_party_wiki').active }
@@ -821,12 +821,6 @@ module Integrations
       end
 
       private
-
-      def validate_belongs_to_one_of_project_group_or_organization
-        return if [group_id, project_id, organization_id].compact.one?
-
-        errors.add(:base, 'The integration must belong to one organization, group, or project.')
-      end
 
       def validate_recipients?
         activated? && !importing?

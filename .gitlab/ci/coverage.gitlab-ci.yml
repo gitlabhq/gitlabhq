@@ -19,7 +19,7 @@
 test-coverage:export-rspec:
   extends:
     - .coverage-export-base
-    - .rails:rules:coverage-export
+    - .rails:rules:coverage-export-rspec-only
   needs:
     - job: rspec:coverage
     - job: update-tests-metadata
@@ -48,3 +48,32 @@ test-coverage:export-jest:
         --clickhouse-url "${CLICKHOUSE_URL}"
         --clickhouse-database "${CLICKHOUSE_DATABASE}"
         --clickhouse-username "${CLICKHOUSE_USERNAME}"
+
+test-coverage:export-rspec-and-e2e:
+  extends:
+    - .coverage-export-base
+    - .rails:rules:coverage-export-rspec-and-e2e
+  stage: post-qa
+  needs:
+    - job: e2e:test-on-gdk
+    - job: rspec:coverage
+    - job: update-tests-metadata
+  script:
+    - ruby scripts/coverage/download_e2e_coverage_from_child_pipeline.rb
+    - ruby scripts/coverage/merge_backend_coverage.rb
+    - echo "Exporting merged RSpec + E2E coverage to ClickHouse..."
+    - bundle exec test-coverage
+        --test-reports 'rspec/rspec-*.json'
+        --coverage-report 'coverage-backend/coverage.lcov'
+        --test-map 'crystalball/packed-mapping.json.gz'
+        --clickhouse-url "${CLICKHOUSE_URL}"
+        --clickhouse-database "${CLICKHOUSE_DATABASE}"
+        --clickhouse-username "${CLICKHOUSE_USERNAME}"
+  artifacts:
+    paths:
+      - coverage-backend/
+      - coverage-e2e-backend/
+      - coverage/
+      - crystalball/
+      - rspec/
+    expire_in: 7d

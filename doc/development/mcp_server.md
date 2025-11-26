@@ -127,10 +127,10 @@ and follow the template instructions.
 {{< alert type="note" >}}
 Tool implementation location depends on GitLab resource interaction:
 
-- Tools that interact with GitLab resources should eventually live in MCP Server, but can be implemented in DAP for short-term or urgent needs.
-- Tools that don't interact with GitLab resources should be implemented in DAP.
+- Tools that interact with GitLab resources should eventually live in MCP Server, but can be implemented in the Agent Platform for short-term or urgent needs.
+- Tools that don't interact with GitLab resources should be implemented in the Agent Platform.
 
-We are working to integrate MCP server functionality into DAP. You can track progress via [this issue](https://gitlab.com/gitlab-org/gitlab/-/issues/561296).
+We are working to integrate MCP server functionality into the Agent Platform. You can track progress via [this issue](https://gitlab.com/gitlab-org/gitlab/-/issues/561296).
 
 We strongly encourage all engineers to follow the tool proposal process and provide clear explanations of their use cases.
 {{< /alert >}}

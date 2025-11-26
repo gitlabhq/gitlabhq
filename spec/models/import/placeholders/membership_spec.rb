@@ -72,14 +72,14 @@ RSpec.describe Import::Placeholders::Membership, feature_category: :importers do
         placeholder_membership.project = nil
 
         expect(placeholder_membership).to be_invalid
-        expect(placeholder_membership.errors[:base]).to include('one of group_id or project_id must be present')
+        expect(placeholder_membership.errors[:base]).to include('Exactly one of group_id, project_id must be present')
       end
 
       it 'is invalid when both project and group are present' do
         placeholder_membership.group = create(:group)
 
         expect(placeholder_membership).to be_invalid
-        expect(placeholder_membership.errors[:base]).to include('one of group_id or project_id must be present')
+        expect(placeholder_membership.errors[:base]).to include('Exactly one of group_id, project_id must be present')
       end
     end
   end

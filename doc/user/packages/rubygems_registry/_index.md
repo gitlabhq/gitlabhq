@@ -135,6 +135,20 @@ It can take up to 10 minutes before GitLab processes and displays your gem.
 You can push a gem if a package of the same name and version already exists.
 Both are visible and accessible in the UI.
 
+## Delete a Ruby gem
+
+Prerequisites:
+
+- You must have at least the Maintainer role.
+
+Before you delete a package, make sure you understand
+the [associated security risks](../package_registry/supported_functionality.md#deleting-packages).
+
+To delete a package, you can either:
+
+- [Use the UI](../package_registry/reduce_package_registry_storage.md#delete-a-package).
+- [Use the API](../../../api/packages.md#delete-a-project-package).
+
 ## Download gems
 
 You can't install Ruby gems from the GitLab package registry. However, you can download gem files for local use.

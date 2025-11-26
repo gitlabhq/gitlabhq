@@ -20,7 +20,7 @@ module Integrations
       validates :project_id, :organization_id, absence: true, if: -> { group_level? }
       validates :group_id, :organization_id, absence: true, if: -> { project_level? }
 
-      validate :validate_belongs_to_one_of_project_group_or_organization
+      validates_with ExactlyOnePresentValidator, fields: [:project_id, :group_id, :organization_id]
     end
 
     class_methods do
@@ -61,12 +61,6 @@ module Integrations
       self.project_id = integration.project_id if integration.project_id
       self.group_id = integration.group_id if integration.group_id
       self.organization_id = integration.organization_id if integration.organization_id
-    end
-
-    def validate_belongs_to_one_of_project_group_or_organization
-      return if [group_id, project_id, organization_id].compact.one?
-
-      errors.add(:base, 'one of project_id, group_id or organization_id must be present')
     end
 
     def project_level?

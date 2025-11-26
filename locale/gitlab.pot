@@ -27893,9 +27893,6 @@ msgstr ""
 msgid "Exact code search"
 msgstr ""
 
-msgid "Exactly one of %{attributes} is required"
-msgstr ""
-
 msgid "Exactly one of %{fields} must be present"
 msgstr ""
 

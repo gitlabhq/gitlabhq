@@ -23,8 +23,8 @@
 #
 #   # Using a Proc/lambda for dynamic field resolution
 #   class MyModel < ApplicationRecord
-#     validates_with ExactlyOnePresentValidator, fields: ->(record) {
-#       record.type == 'TypeA' ? %i[field_a field_b] : %i[field_c field_d]
+#     validates_with ExactlyOnePresentValidator, fields: -> {
+#       self.type == 'TypeA' ? %i[field_a field_b] : %i[field_c field_d]
 #     }
 #   end
 #

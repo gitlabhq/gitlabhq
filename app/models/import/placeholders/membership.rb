@@ -16,21 +16,13 @@ module Import
       validates :access_level, inclusion: { in: Gitlab::Access.all_values }
       validates :group_id, uniqueness: { scope: [:source_user_id] }, allow_nil: true
       validates :project_id, uniqueness: { scope: [:source_user_id] }, allow_nil: true
-      validate :validate_project_or_group_present
+      validates_with ExactlyOnePresentValidator, fields: [:group_id, :project_id]
 
       scope :with_projects, -> { includes(:project) }
       scope :with_groups, -> { includes(:group) }
       scope :by_source_user, ->(source_users) { where(source_user: source_users) }
       scope :by_group, ->(groups) { where(group: groups) }
       scope :by_project, ->(projects) { where(project: projects) }
-
-      private
-
-      def validate_project_or_group_present
-        return if group_id.present? ^ project_id.present?
-
-        errors.add(:base, :blank, message: 'one of group_id or project_id must be present')
-      end
     end
   end
 end

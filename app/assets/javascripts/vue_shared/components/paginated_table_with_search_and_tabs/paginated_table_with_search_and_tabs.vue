@@ -1,5 +1,5 @@
 <script>
-import { GlAlert, GlBadge, GlPagination, GlTab, GlTabs } from '@gitlab/ui';
+import { GlAlert, GlBadge, GlKeysetPagination, GlTab, GlTabs } from '@gitlab/ui';
 import SafeHtml from '~/vue_shared/directives/safe_html';
 import Api from '~/api';
 import { updateHistory, setUrlParams } from '~/lib/utils/url_utility';
@@ -21,7 +21,7 @@ export default {
   components: {
     GlAlert,
     GlBadge,
-    GlPagination,
+    GlKeysetPagination,
     GlTabs,
     GlTab,
     FilteredSearchBar,
@@ -156,18 +156,14 @@ export default {
 
       return value;
     },
-    itemsForCurrentTab() {
-      return this.itemsCount?.[this.filteredByStatus.toLowerCase()] ?? 0;
-    },
     showPaginationControls() {
       return Boolean(this.pageInfo?.hasNextPage || this.pageInfo?.hasPreviousPage);
     },
-    previousPage() {
-      return Math.max(this.pagination.page - 1, 0);
-    },
-    nextPage() {
-      const nextPage = this.pagination.page + 1;
-      return nextPage > Math.ceil(this.itemsForCurrentTab / defaultPageSize) ? null : nextPage;
+    paginationInfo() {
+      return {
+        hasNextPage: Boolean(this.pageInfo?.hasNextPage),
+        hasPreviousPage: Boolean(this.pageInfo?.hasPreviousPage),
+      };
     },
   },
   mounted() {
@@ -188,25 +184,22 @@ export default {
 
       this.$emit('tabs-changed', { filters, status });
     },
-    handlePageChange(page) {
-      const { startCursor, endCursor } = this.pageInfo;
-
-      if (page > this.pagination.page) {
-        this.pagination = {
-          ...initialPaginationState,
-          nextPageCursor: endCursor,
-          page,
-        };
-      } else {
-        this.pagination = {
-          lastPageSize: defaultPageSize,
-          firstPageSize: null,
-          prevPageCursor: startCursor,
-          nextPageCursor: '',
-          page,
-        };
-      }
-
+    handleNextPage() {
+      const { endCursor } = this.pageInfo;
+      this.pagination = {
+        ...initialPaginationState,
+        nextPageCursor: endCursor,
+      };
+      this.$emit('page-changed', this.pagination);
+    },
+    handlePrevPage() {
+      const { startCursor } = this.pageInfo;
+      this.pagination = {
+        lastPageSize: defaultPageSize,
+        firstPageSize: null,
+        prevPageCursor: startCursor,
+        nextPageCursor: '',
+      };
       this.$emit('page-changed', this.pagination);
     },
     resetPagination() {
@@ -309,14 +302,12 @@ export default {
 
     <slot v-if="showItems" name="table"></slot>
 
-    <gl-pagination
+    <gl-keyset-pagination
       v-if="showPaginationControls"
-      :value="pagination.page"
-      :prev-page="previousPage"
-      :next-page="nextPage"
-      align="center"
-      class="gl-pagination gl-mt-3"
-      @input="handlePageChange"
+      v-bind="paginationInfo"
+      class="gl-my-6 gl-flex gl-justify-center"
+      @prev="handlePrevPage"
+      @next="handleNextPage"
     />
 
     <slot v-if="!showItems" name="empty-state"></slot>

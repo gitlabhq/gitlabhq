@@ -132,6 +132,9 @@ during onboarding or randomly selected.
 Prerequisites:
 
 - Your VPC must be in the same region as your GitLab Dedicated instance.
+- Use IAM principals with role names only. Do not include role paths.
+  - Valid: `arn:aws:iam::AWS_ACCOUNT_ID:role/RoleName`
+  - Invalid: `arn:aws:iam::AWS_ACCOUNT_ID:role/somepath/AnotherRoleName`
 
 To create an inbound private link:
 

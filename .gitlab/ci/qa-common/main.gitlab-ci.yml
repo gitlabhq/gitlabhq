@@ -131,6 +131,24 @@ stages:
   rules:
     - if: '$BABEL_ENV == "istanbul"'
 
+.process-backend-coverage:
+  extends:
+    - .qa-install
+  stage: report
+  before_script:
+    - cd $CI_PROJECT_DIR
+  script:
+    - echo "Collecting E2E Coverband coverage files..."
+    - mkdir -p coverage-e2e-backend
+    - cp qa/tmp/coverband-coverage-*.json coverage-e2e-backend/ 2>/dev/null || echo "No Coverband files found"
+  artifacts:
+    paths:
+      - coverage-e2e-backend/
+    expire_in: 7d
+    when: always
+  rules:
+    - if: '$COVERBAND_ENABLED == "true"'
+
 .notify-slack:
   extends:
     - .post-to-slack

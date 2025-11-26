@@ -73,8 +73,8 @@ RSpec.shared_examples Integrations::BaseDataFields do
     it 'validates presence correctly' do
       expect(model.valid?).to eq(false)
       expect(model.errors.full_messages).to contain_exactly(
-        "Integration can't be blank",
-        'one of project_id, group_id or organization_id must be present'
+        "Exactly one of project_id, group_id, organization_id must be present",
+        "Integration can't be blank"
       )
     end
 
@@ -84,7 +84,7 @@ RSpec.shared_examples Integrations::BaseDataFields do
 
         expect(model.valid?).to eq(false)
         expect(model.errors.full_messages).to contain_exactly(
-          'one of project_id, group_id or organization_id must be present'
+          'Exactly one of project_id, group_id, organization_id must be present'
         )
       end
     end

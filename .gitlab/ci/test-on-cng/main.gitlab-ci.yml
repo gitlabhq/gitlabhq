@@ -227,6 +227,10 @@ e2e-test-report:
   variables:
     ALLURE_REPORT_RESULTS_GLOB: "qa/tmp/allure-results"
 
+process-backend-coverage:
+  extends:
+    - .process-backend-coverage
+
 notify-slack:
   extends:
     - .notify-slack

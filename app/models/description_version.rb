@@ -10,7 +10,7 @@ class DescriptionVersion < ApplicationRecord
   belongs_to :namespace
 
   validates :namespace, presence: true
-  validate :exactly_one_issuable
+  validates_with ExactlyOnePresentValidator, fields: :issuable_id_attrs
 
   before_validation :ensure_namespace_id
 
@@ -32,16 +32,8 @@ class DescriptionVersion < ApplicationRecord
     self.namespace_id = Gitlab::Issuable::NamespaceGetter.new(issuable, allow_nil: true).namespace_id
   end
 
-  def exactly_one_issuable
-    issuable_count = self.class.issuable_attrs.count { |attr| self["#{attr}_id"] }
-
-    if issuable_count != 1
-      errors.add(
-        :base,
-        _("Exactly one of %{attributes} is required") %
-          { attributes: self.class.issuable_attrs.join(', ') }
-      )
-    end
+  def issuable_id_attrs
+    self.class.issuable_attrs.map { |attr| :"#{attr}_id" }
   end
 end
 

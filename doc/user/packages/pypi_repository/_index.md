@@ -297,6 +297,20 @@ When using private packages, keep in mind the following best practices:
 - Use `--no-index` and `--index-url` flags together when installing private packages.
 - Regularly audit your package sources using `pip debug`.
 
+## Delete a PyPI package
+
+Prerequisites:
+
+- You must have at least the Maintainer role.
+
+Before you delete a package, make sure you understand
+the [associated security risks](../package_registry/supported_functionality.md#deleting-packages).
+
+To delete a package, you can either:
+
+- [Use the UI](../package_registry/reduce_package_registry_storage.md#delete-a-package).
+- [Use the API](../../../api/packages.md#delete-a-project-package).
+
 ## Using `requirements.txt`
 
 If you want pip to access your public registry, add the `--extra-index-url` parameter along with the URL for your registry to your `requirements.txt` file.

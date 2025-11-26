@@ -111,7 +111,7 @@ verify-approvals:
 validate-fe-islands-ci:
   extends:
     - .predictive-job
-    - .frontend:rules:fe-islands:predictive
+    - .frontend:rules:fe-islands
   stage: preflight
   variables:
     USE_BUNDLE_INSTALL: "false"
@@ -121,7 +121,7 @@ validate-fe-islands-ci:
 type-check-fe-islands:
   extends:
     - .predictive-job
-    - .frontend:rules:fe-islands:predictive
+    - .frontend:rules:fe-islands
     - .fe-islands-parallel
   stage: preflight
   variables:
