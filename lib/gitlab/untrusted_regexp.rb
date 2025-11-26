@@ -18,7 +18,7 @@ module Gitlab
 
     # recreate Ruby's \R metacharacter
     # https://ruby-doc.org/3.2.2/Regexp.html#class-Regexp-label-Character+Classes
-    BACKSLASH_R = '(\n|\v|\f|\r|\x{0085}|\x{2028}|\x{2029}|\r\n)'
+    BACKSLASH_R = '(\n|\v|\f|\r\n|\r|\x{0085}|\x{2028}|\x{2029})'
 
     delegate :===, :source, to: :regexp
 

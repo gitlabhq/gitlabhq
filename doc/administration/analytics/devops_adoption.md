@@ -36,7 +36,7 @@ the last 30 days, averaged over the number of billable users in that time period
 - **Your score** represents the average of your feature scores.
 - **Your usage** represents the average usage of a feature per billable user in the last 30 days.
 - The **Leader usage** is calculated from top-performing instances based on
-[Service Ping data](../settings/usage_statistics.md#service-ping) collected by GitLab.
+  [Service Ping data](../settings/usage_statistics.md#service-ping) collected by GitLab.
 
 Service Ping data is aggregated on GitLab servers for analysis.
 Your usage information is **not sent** to any other GitLab instances.

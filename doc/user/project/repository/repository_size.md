@@ -142,7 +142,7 @@ details to become unavailable.
 Prerequisites:
 
 - The list of objects to remove. Use the [`git filter-repo`](https://github.com/newren/git-filter-repo)
-to produce a list of objects in a`commit-map` file.
+  to produce a list of objects in a`commit-map` file.
 
 To clean up a repository:
 

@@ -44,10 +44,8 @@ AWS KMS key, creating a secure envelope around your data.
 
 Your AWS KMS encryption key can come from one of the following sources:
 
-- [AWS-managed keys](#aws-managed-keys) (default): GitLab and AWS handle all aspects of key generation and
-management.
-- [Bring your own key (BYOK)](#bring-your-own-key-byok): You provide and control your own AWS KMS
-keys.
+- [AWS-managed keys](#aws-managed-keys) (default): GitLab and AWS handle all aspects of key generation and management.
+- [Bring your own key (BYOK)](#bring-your-own-key-byok): You provide and control your own AWS KMS keys.
 
 All key generation takes place in AWS KMS using dedicated hardware, ensuring high security
 standards for encryption across all storage services.

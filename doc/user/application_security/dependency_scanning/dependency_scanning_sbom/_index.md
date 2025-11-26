@@ -702,9 +702,9 @@ The SBOM reports are used to support other SBOM based features like the [Depende
 The Dependency Scanning report follows the generic process for [security scanning results](../../detect/security_scanning_results.md)
 
 - If the dependency scanning report is declared by a CI/CD job on the default branch: vulnerabilities are created,
-and can be seen in the [vulnerability report](../../vulnerability_report/_index.md).
+  and can be seen in the [vulnerability report](../../vulnerability_report/_index.md).
 - If the dependency scanning report is declared by a CI/CD job on a non-default branch: security findings are created,
-and can be seen in the [security tab of the pipeline view](../../detect/security_scanning_results.md) and MR security widget.
+  and can be seen in the [security tab of the pipeline view](../../detect/security_scanning_results.md) and MR security widget.
 
 ## Offline support
 

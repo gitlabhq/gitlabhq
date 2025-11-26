@@ -15,10 +15,9 @@ description: "Start and view group and project migrations with the REST API."
 
 Use this API to migrate groups and projects by using [direct transfer](../user/group/import/direct_transfer_migrations.md).
 
-## Prerequisites
+Prerequisites:
 
-For information on prerequisites for group migration by direct transfer API, see
-prerequisites for [migrating groups by direct transfer](../user/group/import/direct_transfer_migrations.md#prerequisites).
+- See [prerequisites for migrating groups by direct transfer](../user/group/import/direct_transfer_migrations.md#prerequisites).
 
 ## Start a new group or project migration
 

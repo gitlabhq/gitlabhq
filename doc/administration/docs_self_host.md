@@ -56,7 +56,7 @@ Make sure you either:
 
 - Allow port `4000` in your firewall.
 - Use a different port.
-In following examples, replace the leftmost `4000` with a different port number.
+  In following examples, replace the leftmost `4000` with a different port number.
 
 To run the GitLab product documentation website in a Docker container:
 
@@ -157,7 +157,7 @@ In this example:
 
 - `17.8/` is the directory where the documentation is hosted.
 - `index.html` is a simple HTML file that redirects to the directory containing the documentation.
-In this case, `17.8/`.
+  In this case, `17.8/`.
 
 To extract the HTML files of the documentation site:
 

@@ -110,9 +110,9 @@ By default, the packages cleanup policy is disabled. To enable it:
 ### Available rules
 
 - `Number of duplicated assets to keep`: Some package formats support multiple copies of the same asset.
-You can set a limit on how many duplicated assets to keep.
-When the limit is reached, the oldest assets are automatically deleted.
-Unique filenames, like those produced by Maven snapshots, are not counted as duplicated assets.
+  You can set a limit on how many duplicated assets to keep.
+  When the limit is reached, the oldest assets are automatically deleted.
+  Unique filenames, like those produced by Maven snapshots, are not counted as duplicated assets.
 
 - `Number of duplicated assets to keep` runs [every 12 hours](https://gitlab.com/gitlab-org/gitlab/-/blob/master/app/models/packages/cleanup/policy.rb).
 

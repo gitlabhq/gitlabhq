@@ -41,8 +41,7 @@ You're going to create:
 - The software development organization.
 - Groups, subgroups, and projects to manage work.
 - Users to add to the groups and projects and assign roles to those users.
-- A project in the organization for a specific piece of work, and add users to
-that project.
+- A project in the organization for a specific piece of work, and add users to that project.
 
 ## Before you begin
 

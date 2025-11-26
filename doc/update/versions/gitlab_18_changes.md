@@ -124,8 +124,8 @@ For more information, see [HTTP request limits](../../administration/instance_li
 ### GitLab Duo
 
 - A new worker `LdapAddOnSeatSyncWorker` was introduced, which could unintentionally remove all users from
-GitLab Duo seats nightly when LDAP is enabled. This was fixed in GitLab 18.4.0 and 18.3.2. See
-[issue 565064](https://gitlab.com/gitlab-org/gitlab/-/issues/565064) for details.
+  GitLab Duo seats nightly when LDAP is enabled. This was fixed in GitLab 18.4.0 and 18.3.2. See
+  [issue 565064](https://gitlab.com/gitlab-org/gitlab/-/issues/565064) for details.
 
 ### Geo installations 18.3.0
 

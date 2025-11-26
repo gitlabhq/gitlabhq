@@ -3,6 +3,8 @@
 module Types
   # rubocop: disable Graphql/AuthorizeTypes
   class LimitedCountableConnectionType < GraphQL::Types::Relay::BaseConnection
+    include CountableConnectionHelper
+
     COUNT_LIMIT = 1000
     COUNT_DESCRIPTION = "Limited count of collection. Returns limit + 1 for counts greater than the limit."
 
@@ -14,13 +16,7 @@ module Types
     end
 
     def count(limit:)
-      relation = object.items
-
-      if relation.respond_to?(:page)
-        relation.page.total_count_with_limit(:all, limit: limit)
-      else
-        [relation.size, limit.next].min
-      end
+      limited_count(object.items, limit)
     end
   end
 end

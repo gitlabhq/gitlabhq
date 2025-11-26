@@ -337,6 +337,8 @@ Example response:
 
 Adds a member to a project.
 
+To give a group access to a project, see [share a project with group](projects.md#share-a-project-with-a-group).
+
 ```plaintext
 POST /projects/:id/members
 ```

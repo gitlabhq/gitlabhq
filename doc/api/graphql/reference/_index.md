@@ -15300,10 +15300,23 @@ The connection type for [`Achievement`](#achievement).
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
-| <a id="achievementconnectioncount"></a>`count` | [`Int!`](#int) | Total count of collection. |
 | <a id="achievementconnectionedges"></a>`edges` | [`[AchievementEdge]`](#achievementedge) | A list of edges. |
 | <a id="achievementconnectionnodes"></a>`nodes` | [`[Achievement]`](#achievement) | A list of nodes. |
 | <a id="achievementconnectionpageinfo"></a>`pageInfo` | [`PageInfo!`](#pageinfo) | Information to aid in pagination. |
+
+##### Fields with arguments
+
+###### `AchievementConnection.count`
+
+Total count of collection. Returns limit + 1 for counts greater than the limit.
+
+Returns [`Int!`](#int).
+
+####### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="achievementconnectioncountlimit"></a>`limit` | [`Int`](#int) | Limit applied to the count query, returns limit + 1. When not provided, returns the exact count. |
 
 #### `AchievementEdge`
 
@@ -15324,10 +15337,23 @@ The connection type for [`AddOnUser`](#addonuser).
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
-| <a id="addonuserconnectioncount"></a>`count` | [`Int!`](#int) | Total count of collection. |
 | <a id="addonuserconnectionedges"></a>`edges` | [`[AddOnUserEdge]`](#addonuseredge) | A list of edges. |
 | <a id="addonuserconnectionnodes"></a>`nodes` | [`[AddOnUser]`](#addonuser) | A list of nodes. |
 | <a id="addonuserconnectionpageinfo"></a>`pageInfo` | [`PageInfo!`](#pageinfo) | Information to aid in pagination. |
+
+##### Fields with arguments
+
+###### `AddOnUserConnection.count`
+
+Total count of collection. Returns limit + 1 for counts greater than the limit.
+
+Returns [`Int!`](#int).
+
+####### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="addonuserconnectioncountlimit"></a>`limit` | [`Int`](#int) | Limit applied to the count query, returns limit + 1. When not provided, returns the exact count. |
 
 #### `AddOnUserEdge`
 
@@ -15463,10 +15489,23 @@ The connection type for [`AiCatalogItem`](#aicatalogitem).
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
-| <a id="aicatalogitemconnectioncount"></a>`count` | [`Int!`](#int) | Total count of collection. |
 | <a id="aicatalogitemconnectionedges"></a>`edges` | [`[AiCatalogItemEdge]`](#aicatalogitemedge) | A list of edges. |
 | <a id="aicatalogitemconnectionnodes"></a>`nodes` | [`[AiCatalogItem]`](#aicatalogitem) | A list of nodes. |
 | <a id="aicatalogitemconnectionpageinfo"></a>`pageInfo` | [`PageInfo!`](#pageinfo) | Information to aid in pagination. |
+
+##### Fields with arguments
+
+###### `AiCatalogItemConnection.count`
+
+Total count of collection. Returns limit + 1 for counts greater than the limit.
+
+Returns [`Int!`](#int).
+
+####### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="aicatalogitemconnectioncountlimit"></a>`limit` | [`Int`](#int) | Limit applied to the count query, returns limit + 1. When not provided, returns the exact count. |
 
 #### `AiCatalogItemConsumerConnection`
 
@@ -15476,10 +15515,23 @@ The connection type for [`AiCatalogItemConsumer`](#aicatalogitemconsumer).
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
-| <a id="aicatalogitemconsumerconnectioncount"></a>`count` | [`Int!`](#int) | Total count of collection. |
 | <a id="aicatalogitemconsumerconnectionedges"></a>`edges` | [`[AiCatalogItemConsumerEdge]`](#aicatalogitemconsumeredge) | A list of edges. |
 | <a id="aicatalogitemconsumerconnectionnodes"></a>`nodes` | [`[AiCatalogItemConsumer]`](#aicatalogitemconsumer) | A list of nodes. |
 | <a id="aicatalogitemconsumerconnectionpageinfo"></a>`pageInfo` | [`PageInfo!`](#pageinfo) | Information to aid in pagination. |
+
+##### Fields with arguments
+
+###### `AiCatalogItemConsumerConnection.count`
+
+Total count of collection. Returns limit + 1 for counts greater than the limit.
+
+Returns [`Int!`](#int).
+
+####### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="aicatalogitemconsumerconnectioncountlimit"></a>`limit` | [`Int`](#int) | Limit applied to the count query, returns limit + 1. When not provided, returns the exact count. |
 
 #### `AiCatalogItemConsumerEdge`
 
@@ -15511,10 +15563,23 @@ The connection type for [`AiCatalogItemVersion`](#aicatalogitemversion).
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
-| <a id="aicatalogitemversionconnectioncount"></a>`count` | [`Int!`](#int) | Total count of collection. |
 | <a id="aicatalogitemversionconnectionedges"></a>`edges` | [`[AiCatalogItemVersionEdge]`](#aicatalogitemversionedge) | A list of edges. |
 | <a id="aicatalogitemversionconnectionnodes"></a>`nodes` | [`[AiCatalogItemVersion]`](#aicatalogitemversion) | A list of nodes. |
 | <a id="aicatalogitemversionconnectionpageinfo"></a>`pageInfo` | [`PageInfo!`](#pageinfo) | Information to aid in pagination. |
+
+##### Fields with arguments
+
+###### `AiCatalogItemVersionConnection.count`
+
+Total count of collection. Returns limit + 1 for counts greater than the limit.
+
+Returns [`Int!`](#int).
+
+####### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="aicatalogitemversionconnectioncountlimit"></a>`limit` | [`Int`](#int) | Limit applied to the count query, returns limit + 1. When not provided, returns the exact count. |
 
 #### `AiCatalogItemVersionEdge`
 
@@ -15581,10 +15646,23 @@ The connection type for [`AiFlowTriggerType`](#aiflowtriggertype).
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
-| <a id="aiflowtriggertypeconnectioncount"></a>`count` | [`Int!`](#int) | Total count of collection. |
 | <a id="aiflowtriggertypeconnectionedges"></a>`edges` | [`[AiFlowTriggerTypeEdge]`](#aiflowtriggertypeedge) | A list of edges. |
 | <a id="aiflowtriggertypeconnectionnodes"></a>`nodes` | [`[AiFlowTriggerType]`](#aiflowtriggertype) | A list of nodes. |
 | <a id="aiflowtriggertypeconnectionpageinfo"></a>`pageInfo` | [`PageInfo!`](#pageinfo) | Information to aid in pagination. |
+
+##### Fields with arguments
+
+###### `AiFlowTriggerTypeConnection.count`
+
+Total count of collection. Returns limit + 1 for counts greater than the limit.
+
+Returns [`Int!`](#int).
+
+####### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="aiflowtriggertypeconnectioncountlimit"></a>`limit` | [`Int`](#int) | Limit applied to the count query, returns limit + 1. When not provided, returns the exact count. |
 
 #### `AiFlowTriggerTypeEdge`
 
@@ -16065,10 +16143,23 @@ The connection type for [`BoardEpic`](#boardepic).
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
-| <a id="boardepicconnectioncount"></a>`count` | [`Int!`](#int) | Total count of collection. |
 | <a id="boardepicconnectionedges"></a>`edges` | [`[BoardEpicEdge]`](#boardepicedge) | A list of edges. |
 | <a id="boardepicconnectionnodes"></a>`nodes` | [`[BoardEpic]`](#boardepic) | A list of nodes. |
 | <a id="boardepicconnectionpageinfo"></a>`pageInfo` | [`PageInfo!`](#pageinfo) | Information to aid in pagination. |
+
+##### Fields with arguments
+
+###### `BoardEpicConnection.count`
+
+Total count of collection. Returns limit + 1 for counts greater than the limit.
+
+Returns [`Int!`](#int).
+
+####### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="boardepicconnectioncountlimit"></a>`limit` | [`Int`](#int) | Limit applied to the count query, returns limit + 1. When not provided, returns the exact count. |
 
 #### `BoardEpicEdge`
 
@@ -16204,10 +16295,23 @@ The connection type for [`CiCatalogResource`](#cicatalogresource).
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
-| <a id="cicatalogresourceconnectioncount"></a>`count` | [`Int!`](#int) | Total count of collection. |
 | <a id="cicatalogresourceconnectionedges"></a>`edges` | [`[CiCatalogResourceEdge]`](#cicatalogresourceedge) | A list of edges. |
 | <a id="cicatalogresourceconnectionnodes"></a>`nodes` | [`[CiCatalogResource]`](#cicatalogresource) | A list of nodes. |
 | <a id="cicatalogresourceconnectionpageinfo"></a>`pageInfo` | [`PageInfo!`](#pageinfo) | Information to aid in pagination. |
+
+##### Fields with arguments
+
+###### `CiCatalogResourceConnection.count`
+
+Total count of collection. Returns limit + 1 for counts greater than the limit.
+
+Returns [`Int!`](#int).
+
+####### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="cicatalogresourceconnectioncountlimit"></a>`limit` | [`Int`](#int) | Limit applied to the count query, returns limit + 1. When not provided, returns the exact count. |
 
 #### `CiCatalogResourceEdge`
 
@@ -16228,10 +16332,23 @@ The connection type for [`CiCatalogResourceVersion`](#cicatalogresourceversion).
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
-| <a id="cicatalogresourceversionconnectioncount"></a>`count` | [`Int!`](#int) | Total count of collection. |
 | <a id="cicatalogresourceversionconnectionedges"></a>`edges` | [`[CiCatalogResourceVersionEdge]`](#cicatalogresourceversionedge) | A list of edges. |
 | <a id="cicatalogresourceversionconnectionnodes"></a>`nodes` | [`[CiCatalogResourceVersion]`](#cicatalogresourceversion) | A list of nodes. |
 | <a id="cicatalogresourceversionconnectionpageinfo"></a>`pageInfo` | [`PageInfo!`](#pageinfo) | Information to aid in pagination. |
+
+##### Fields with arguments
+
+###### `CiCatalogResourceVersionConnection.count`
+
+Total count of collection. Returns limit + 1 for counts greater than the limit.
+
+Returns [`Int!`](#int).
+
+####### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="cicatalogresourceversionconnectioncountlimit"></a>`limit` | [`Int`](#int) | Limit applied to the count query, returns limit + 1. When not provided, returns the exact count. |
 
 #### `CiCatalogResourceVersionEdge`
 
@@ -16672,10 +16789,23 @@ The connection type for [`CiJobTokenAuthLog`](#cijobtokenauthlog).
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
-| <a id="cijobtokenauthlogconnectioncount"></a>`count` | [`Int!`](#int) | Total count of collection. |
 | <a id="cijobtokenauthlogconnectionedges"></a>`edges` | [`[CiJobTokenAuthLogEdge]`](#cijobtokenauthlogedge) | A list of edges. |
 | <a id="cijobtokenauthlogconnectionnodes"></a>`nodes` | [`[CiJobTokenAuthLog]`](#cijobtokenauthlog) | A list of nodes. |
 | <a id="cijobtokenauthlogconnectionpageinfo"></a>`pageInfo` | [`PageInfo!`](#pageinfo) | Information to aid in pagination. |
+
+##### Fields with arguments
+
+###### `CiJobTokenAuthLogConnection.count`
+
+Total count of collection. Returns limit + 1 for counts greater than the limit.
+
+Returns [`Int!`](#int).
+
+####### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="cijobtokenauthlogconnectioncountlimit"></a>`limit` | [`Int`](#int) | Limit applied to the count query, returns limit + 1. When not provided, returns the exact count. |
 
 #### `CiJobTokenAuthLogEdge`
 
@@ -16696,10 +16826,23 @@ The connection type for [`CiJobTokenScopeAllowlistEntry`](#cijobtokenscopeallowl
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
-| <a id="cijobtokenscopeallowlistentryconnectioncount"></a>`count` | [`Int!`](#int) | Total count of collection. |
 | <a id="cijobtokenscopeallowlistentryconnectionedges"></a>`edges` | [`[CiJobTokenScopeAllowlistEntryEdge]`](#cijobtokenscopeallowlistentryedge) | A list of edges. |
 | <a id="cijobtokenscopeallowlistentryconnectionnodes"></a>`nodes` | [`[CiJobTokenScopeAllowlistEntry]`](#cijobtokenscopeallowlistentry) | A list of nodes. |
 | <a id="cijobtokenscopeallowlistentryconnectionpageinfo"></a>`pageInfo` | [`PageInfo!`](#pageinfo) | Information to aid in pagination. |
+
+##### Fields with arguments
+
+###### `CiJobTokenScopeAllowlistEntryConnection.count`
+
+Total count of collection. Returns limit + 1 for counts greater than the limit.
+
+Returns [`Int!`](#int).
+
+####### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="cijobtokenscopeallowlistentryconnectioncountlimit"></a>`limit` | [`Int`](#int) | Limit applied to the count query, returns limit + 1. When not provided, returns the exact count. |
 
 #### `CiJobTokenScopeAllowlistEntryEdge`
 
@@ -16789,10 +16932,23 @@ The connection type for [`CiProjectSubscription`](#ciprojectsubscription).
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
-| <a id="ciprojectsubscriptionconnectioncount"></a>`count` | [`Int!`](#int) | Total count of collection. |
 | <a id="ciprojectsubscriptionconnectionedges"></a>`edges` | [`[CiProjectSubscriptionEdge]`](#ciprojectsubscriptionedge) | A list of edges. |
 | <a id="ciprojectsubscriptionconnectionnodes"></a>`nodes` | [`[CiProjectSubscription]`](#ciprojectsubscription) | A list of nodes. |
 | <a id="ciprojectsubscriptionconnectionpageinfo"></a>`pageInfo` | [`PageInfo!`](#pageinfo) | Information to aid in pagination. |
+
+##### Fields with arguments
+
+###### `CiProjectSubscriptionConnection.count`
+
+Total count of collection. Returns limit + 1 for counts greater than the limit.
+
+Returns [`Int!`](#int).
+
+####### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="ciprojectsubscriptionconnectioncountlimit"></a>`limit` | [`Int`](#int) | Limit applied to the count query, returns limit + 1. When not provided, returns the exact count. |
 
 #### `CiProjectSubscriptionEdge`
 
@@ -16837,11 +16993,24 @@ The connection type for [`CiRunner`](#cirunner).
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
-| <a id="cirunnerconnectioncount"></a>`count` | [`Int!`](#int) | Total count of collection. |
 | <a id="cirunnerconnectionedges"></a>`edges` | [`[CiRunnerEdge]`](#cirunneredge) | A list of edges. |
 | <a id="cirunnerconnectionjobsstatistics"></a>`jobsStatistics` | [`CiJobsStatistics`](#cijobsstatistics) | Jobs statistics for jobs executed by a collection of runners. Available only to admins. |
 | <a id="cirunnerconnectionnodes"></a>`nodes` | [`[CiRunner]`](#cirunner) | A list of nodes. |
 | <a id="cirunnerconnectionpageinfo"></a>`pageInfo` | [`PageInfo!`](#pageinfo) | Information to aid in pagination. |
+
+##### Fields with arguments
+
+###### `CiRunnerConnection.count`
+
+Total count of collection. Returns limit + 1 for counts greater than the limit.
+
+Returns [`Int!`](#int).
+
+####### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="cirunnerconnectioncountlimit"></a>`limit` | [`Int`](#int) | Limit applied to the count query, returns limit + 1. When not provided, returns the exact count. |
 
 #### `CiRunnerEdge`
 
@@ -16864,10 +17033,23 @@ The connection type for [`CiRunnerManager`](#cirunnermanager).
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
-| <a id="cirunnermanagerconnectioncount"></a>`count` | [`Int!`](#int) | Total count of collection. |
 | <a id="cirunnermanagerconnectionedges"></a>`edges` | [`[CiRunnerManagerEdge]`](#cirunnermanageredge) | A list of edges. |
 | <a id="cirunnermanagerconnectionnodes"></a>`nodes` | [`[CiRunnerManager]`](#cirunnermanager) | A list of nodes. |
 | <a id="cirunnermanagerconnectionpageinfo"></a>`pageInfo` | [`PageInfo!`](#pageinfo) | Information to aid in pagination. |
+
+##### Fields with arguments
+
+###### `CiRunnerManagerConnection.count`
+
+Total count of collection. Returns limit + 1 for counts greater than the limit.
+
+Returns [`Int!`](#int).
+
+####### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="cirunnermanagerconnectioncountlimit"></a>`limit` | [`Int`](#int) | Limit applied to the count query, returns limit + 1. When not provided, returns the exact count. |
 
 #### `CiRunnerManagerEdge`
 
@@ -16948,10 +17130,23 @@ The connection type for [`CiSubscriptionsProject`](#cisubscriptionsproject).
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
-| <a id="cisubscriptionsprojectconnectioncount"></a>`count` | [`Int!`](#int) | Total count of collection. |
 | <a id="cisubscriptionsprojectconnectionedges"></a>`edges` | [`[CiSubscriptionsProjectEdge]`](#cisubscriptionsprojectedge) | A list of edges. |
 | <a id="cisubscriptionsprojectconnectionnodes"></a>`nodes` | [`[CiSubscriptionsProject]`](#cisubscriptionsproject) | A list of nodes. |
 | <a id="cisubscriptionsprojectconnectionpageinfo"></a>`pageInfo` | [`PageInfo!`](#pageinfo) | Information to aid in pagination. |
+
+##### Fields with arguments
+
+###### `CiSubscriptionsProjectConnection.count`
+
+Total count of collection. Returns limit + 1 for counts greater than the limit.
+
+Returns [`Int!`](#int).
+
+####### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="cisubscriptionsprojectconnectioncountlimit"></a>`limit` | [`Int`](#int) | Limit applied to the count query, returns limit + 1. When not provided, returns the exact count. |
 
 #### `CiSubscriptionsProjectEdge`
 
@@ -16972,10 +17167,23 @@ The connection type for [`ClusterAgentActivityEvent`](#clusteragentactivityevent
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
-| <a id="clusteragentactivityeventconnectioncount"></a>`count` | [`Int!`](#int) | Total count of collection. |
 | <a id="clusteragentactivityeventconnectionedges"></a>`edges` | [`[ClusterAgentActivityEventEdge]`](#clusteragentactivityeventedge) | A list of edges. |
 | <a id="clusteragentactivityeventconnectionnodes"></a>`nodes` | [`[ClusterAgentActivityEvent]`](#clusteragentactivityevent) | A list of nodes. |
 | <a id="clusteragentactivityeventconnectionpageinfo"></a>`pageInfo` | [`PageInfo!`](#pageinfo) | Information to aid in pagination. |
+
+##### Fields with arguments
+
+###### `ClusterAgentActivityEventConnection.count`
+
+Total count of collection. Returns limit + 1 for counts greater than the limit.
+
+Returns [`Int!`](#int).
+
+####### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="clusteragentactivityeventconnectioncountlimit"></a>`limit` | [`Int`](#int) | Limit applied to the count query, returns limit + 1. When not provided, returns the exact count. |
 
 #### `ClusterAgentActivityEventEdge`
 
@@ -17042,10 +17250,23 @@ The connection type for [`ClusterAgent`](#clusteragent).
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
-| <a id="clusteragentconnectioncount"></a>`count` | [`Int!`](#int) | Total count of collection. |
 | <a id="clusteragentconnectionedges"></a>`edges` | [`[ClusterAgentEdge]`](#clusteragentedge) | A list of edges. |
 | <a id="clusteragentconnectionnodes"></a>`nodes` | [`[ClusterAgent]`](#clusteragent) | A list of nodes. |
 | <a id="clusteragentconnectionpageinfo"></a>`pageInfo` | [`PageInfo!`](#pageinfo) | Information to aid in pagination. |
+
+##### Fields with arguments
+
+###### `ClusterAgentConnection.count`
+
+Total count of collection. Returns limit + 1 for counts greater than the limit.
+
+Returns [`Int!`](#int).
+
+####### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="clusteragentconnectioncountlimit"></a>`limit` | [`Int`](#int) | Limit applied to the count query, returns limit + 1. When not provided, returns the exact count. |
 
 #### `ClusterAgentEdge`
 
@@ -17066,10 +17287,23 @@ The connection type for [`ClusterAgentToken`](#clusteragenttoken).
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
-| <a id="clusteragenttokenconnectioncount"></a>`count` | [`Int!`](#int) | Total count of collection. |
 | <a id="clusteragenttokenconnectionedges"></a>`edges` | [`[ClusterAgentTokenEdge]`](#clusteragenttokenedge) | A list of edges. |
 | <a id="clusteragenttokenconnectionnodes"></a>`nodes` | [`[ClusterAgentToken]`](#clusteragenttoken) | A list of nodes. |
 | <a id="clusteragenttokenconnectionpageinfo"></a>`pageInfo` | [`PageInfo!`](#pageinfo) | Information to aid in pagination. |
+
+##### Fields with arguments
+
+###### `ClusterAgentTokenConnection.count`
+
+Total count of collection. Returns limit + 1 for counts greater than the limit.
+
+Returns [`Int!`](#int).
+
+####### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="clusteragenttokenconnectioncountlimit"></a>`limit` | [`Int`](#int) | Limit applied to the count query, returns limit + 1. When not provided, returns the exact count. |
 
 #### `ClusterAgentTokenEdge`
 
@@ -17090,10 +17324,23 @@ The connection type for [`ClusterAgentUrlConfiguration`](#clusteragenturlconfigu
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
-| <a id="clusteragenturlconfigurationconnectioncount"></a>`count` | [`Int!`](#int) | Total count of collection. |
 | <a id="clusteragenturlconfigurationconnectionedges"></a>`edges` | [`[ClusterAgentUrlConfigurationEdge]`](#clusteragenturlconfigurationedge) | A list of edges. |
 | <a id="clusteragenturlconfigurationconnectionnodes"></a>`nodes` | [`[ClusterAgentUrlConfiguration]`](#clusteragenturlconfiguration) | A list of nodes. |
 | <a id="clusteragenturlconfigurationconnectionpageinfo"></a>`pageInfo` | [`PageInfo!`](#pageinfo) | Information to aid in pagination. |
+
+##### Fields with arguments
+
+###### `ClusterAgentUrlConfigurationConnection.count`
+
+Total count of collection. Returns limit + 1 for counts greater than the limit.
+
+Returns [`Int!`](#int).
+
+####### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="clusteragenturlconfigurationconnectioncountlimit"></a>`limit` | [`Int`](#int) | Limit applied to the count query, returns limit + 1. When not provided, returns the exact count. |
 
 #### `ClusterAgentUrlConfigurationEdge`
 
@@ -17137,10 +17384,23 @@ The connection type for [`CodeQualityDegradation`](#codequalitydegradation).
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
-| <a id="codequalitydegradationconnectioncount"></a>`count` | [`Int!`](#int) | Total count of collection. |
 | <a id="codequalitydegradationconnectionedges"></a>`edges` | [`[CodeQualityDegradationEdge]`](#codequalitydegradationedge) | A list of edges. |
 | <a id="codequalitydegradationconnectionnodes"></a>`nodes` | [`[CodeQualityDegradation]`](#codequalitydegradation) | A list of nodes. |
 | <a id="codequalitydegradationconnectionpageinfo"></a>`pageInfo` | [`PageInfo!`](#pageinfo) | Information to aid in pagination. |
+
+##### Fields with arguments
+
+###### `CodeQualityDegradationConnection.count`
+
+Total count of collection. Returns limit + 1 for counts greater than the limit.
+
+Returns [`Int!`](#int).
+
+####### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="codequalitydegradationconnectioncountlimit"></a>`limit` | [`Int`](#int) | Limit applied to the count query, returns limit + 1. When not provided, returns the exact count. |
 
 #### `CodeQualityDegradationEdge`
 
@@ -17207,10 +17467,23 @@ The connection type for [`ComplianceFramework`](#complianceframework).
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
-| <a id="complianceframeworkconnectioncount"></a>`count` | [`Int!`](#int) | Total count of collection. |
 | <a id="complianceframeworkconnectionedges"></a>`edges` | [`[ComplianceFrameworkEdge]`](#complianceframeworkedge) | A list of edges. |
 | <a id="complianceframeworkconnectionnodes"></a>`nodes` | [`[ComplianceFramework]`](#complianceframework) | A list of nodes. |
 | <a id="complianceframeworkconnectionpageinfo"></a>`pageInfo` | [`PageInfo!`](#pageinfo) | Information to aid in pagination. |
+
+##### Fields with arguments
+
+###### `ComplianceFrameworkConnection.count`
+
+Total count of collection. Returns limit + 1 for counts greater than the limit.
+
+Returns [`Int!`](#int).
+
+####### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="complianceframeworkconnectioncountlimit"></a>`limit` | [`Int`](#int) | Limit applied to the count query, returns limit + 1. When not provided, returns the exact count. |
 
 #### `ComplianceFrameworkCoverageDetailConnection`
 
@@ -17590,10 +17863,23 @@ The connection type for [`CountableVulnerability`](#countablevulnerability).
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
-| <a id="countablevulnerabilityconnectioncount"></a>`count` | [`Int!`](#int) | Total count of collection. |
 | <a id="countablevulnerabilityconnectionedges"></a>`edges` | [`[CountableVulnerabilityEdge]`](#countablevulnerabilityedge) | A list of edges. |
 | <a id="countablevulnerabilityconnectionnodes"></a>`nodes` | [`[CountableVulnerability]`](#countablevulnerability) | A list of nodes. |
 | <a id="countablevulnerabilityconnectionpageinfo"></a>`pageInfo` | [`PageInfo!`](#pageinfo) | Information to aid in pagination. |
+
+##### Fields with arguments
+
+###### `CountableVulnerabilityConnection.count`
+
+Total count of collection. Returns limit + 1 for counts greater than the limit.
+
+Returns [`Int!`](#int).
+
+####### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="countablevulnerabilityconnectioncountlimit"></a>`limit` | [`Int`](#int) | Limit applied to the count query, returns limit + 1. When not provided, returns the exact count. |
 
 #### `CountableVulnerabilityEdge`
 
@@ -17637,10 +17923,23 @@ The connection type for [`CustomEmoji`](#customemoji).
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
-| <a id="customemojiconnectioncount"></a>`count` | [`Int!`](#int) | Total count of collection. |
 | <a id="customemojiconnectionedges"></a>`edges` | [`[CustomEmojiEdge]`](#customemojiedge) | A list of edges. |
 | <a id="customemojiconnectionnodes"></a>`nodes` | [`[CustomEmoji]`](#customemoji) | A list of nodes. |
 | <a id="customemojiconnectionpageinfo"></a>`pageInfo` | [`PageInfo!`](#pageinfo) | Information to aid in pagination. |
+
+##### Fields with arguments
+
+###### `CustomEmojiConnection.count`
+
+Total count of collection. Returns limit + 1 for counts greater than the limit.
+
+Returns [`Int!`](#int).
+
+####### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="customemojiconnectioncountlimit"></a>`limit` | [`Int`](#int) | Limit applied to the count query, returns limit + 1. When not provided, returns the exact count. |
 
 #### `CustomEmojiEdge`
 
@@ -17661,10 +17960,23 @@ The connection type for [`CustomField`](#customfield).
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
-| <a id="customfieldconnectioncount"></a>`count` | [`Int!`](#int) | Total count of collection. |
 | <a id="customfieldconnectionedges"></a>`edges` | [`[CustomFieldEdge]`](#customfieldedge) | A list of edges. |
 | <a id="customfieldconnectionnodes"></a>`nodes` | [`[CustomField]`](#customfield) | A list of nodes. |
 | <a id="customfieldconnectionpageinfo"></a>`pageInfo` | [`PageInfo!`](#pageinfo) | Information to aid in pagination. |
+
+##### Fields with arguments
+
+###### `CustomFieldConnection.count`
+
+Total count of collection. Returns limit + 1 for counts greater than the limit.
+
+Returns [`Int!`](#int).
+
+####### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="customfieldconnectioncountlimit"></a>`limit` | [`Int`](#int) | Limit applied to the count query, returns limit + 1. When not provided, returns the exact count. |
 
 #### `CustomFieldEdge`
 
@@ -17846,10 +18158,23 @@ The connection type for [`DastProfile`](#dastprofile).
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
-| <a id="dastprofileconnectioncount"></a>`count` | [`Int!`](#int) | Total count of collection. |
 | <a id="dastprofileconnectionedges"></a>`edges` | [`[DastProfileEdge]`](#dastprofileedge) | A list of edges. |
 | <a id="dastprofileconnectionnodes"></a>`nodes` | [`[DastProfile]`](#dastprofile) | A list of nodes. |
 | <a id="dastprofileconnectionpageinfo"></a>`pageInfo` | [`PageInfo!`](#pageinfo) | Information to aid in pagination. |
+
+##### Fields with arguments
+
+###### `DastProfileConnection.count`
+
+Total count of collection. Returns limit + 1 for counts greater than the limit.
+
+Returns [`Int!`](#int).
+
+####### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="dastprofileconnectioncountlimit"></a>`limit` | [`Int`](#int) | Limit applied to the count query, returns limit + 1. When not provided, returns the exact count. |
 
 #### `DastProfileEdge`
 
@@ -18500,10 +18825,23 @@ The connection type for [`Epic`](#epic).
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
-| <a id="epicconnectioncount"></a>`count` | [`Int!`](#int) | Total count of collection. |
 | <a id="epicconnectionedges"></a>`edges` | [`[EpicEdge]`](#epicedge) | A list of edges. |
 | <a id="epicconnectionnodes"></a>`nodes` | [`[Epic]`](#epic) | A list of nodes. |
 | <a id="epicconnectionpageinfo"></a>`pageInfo` | [`PageInfo!`](#pageinfo) | Information to aid in pagination. |
+
+##### Fields with arguments
+
+###### `EpicConnection.count`
+
+Total count of collection. Returns limit + 1 for counts greater than the limit.
+
+Returns [`Int!`](#int).
+
+####### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="epicconnectioncountlimit"></a>`limit` | [`Int`](#int) | Limit applied to the count query, returns limit + 1. When not provided, returns the exact count. |
 
 #### `EpicEdge`
 
@@ -18524,11 +18862,24 @@ The connection type for [`EpicIssue`](#epicissue).
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
-| <a id="epicissueconnectioncount"></a>`count` | [`Int!`](#int) | Total count of collection. |
 | <a id="epicissueconnectionedges"></a>`edges` | [`[EpicIssueEdge]`](#epicissueedge) | A list of edges. |
 | <a id="epicissueconnectionnodes"></a>`nodes` | [`[EpicIssue]`](#epicissue) | A list of nodes. |
 | <a id="epicissueconnectionpageinfo"></a>`pageInfo` | [`PageInfo!`](#pageinfo) | Information to aid in pagination. |
 | <a id="epicissueconnectionweight"></a>`weight` | [`Int!`](#int) | Total weight of issues collection. |
+
+##### Fields with arguments
+
+###### `EpicIssueConnection.count`
+
+Total count of collection. Returns limit + 1 for counts greater than the limit.
+
+Returns [`Int!`](#int).
+
+####### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="epicissueconnectioncountlimit"></a>`limit` | [`Int`](#int) | Limit applied to the count query, returns limit + 1. When not provided, returns the exact count. |
 
 #### `EpicIssueEdge`
 
@@ -18572,10 +18923,23 @@ The connection type for [`ErrorTrackingStackTrace`](#errortrackingstacktrace).
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
-| <a id="errortrackingstacktraceconnectioncount"></a>`count` | [`Int!`](#int) | Total count of collection. |
 | <a id="errortrackingstacktraceconnectionedges"></a>`edges` | [`[ErrorTrackingStackTraceEdge]`](#errortrackingstacktraceedge) | A list of edges. |
 | <a id="errortrackingstacktraceconnectionnodes"></a>`nodes` | [`[ErrorTrackingStackTrace]`](#errortrackingstacktrace) | A list of nodes. |
 | <a id="errortrackingstacktraceconnectionpageinfo"></a>`pageInfo` | [`PageInfo!`](#pageinfo) | Information to aid in pagination. |
+
+##### Fields with arguments
+
+###### `ErrorTrackingStackTraceConnection.count`
+
+Total count of collection. Returns limit + 1 for counts greater than the limit.
+
+Returns [`Int!`](#int).
+
+####### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="errortrackingstacktraceconnectioncountlimit"></a>`limit` | [`Int`](#int) | Limit applied to the count query, returns limit + 1. When not provided, returns the exact count. |
 
 #### `ErrorTrackingStackTraceEdge`
 
@@ -18849,10 +19213,23 @@ The connection type for [`Group`](#group).
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
-| <a id="groupconnectioncount"></a>`count` | [`Int!`](#int) | Total count of collection. |
 | <a id="groupconnectionedges"></a>`edges` | [`[GroupEdge]`](#groupedge) | A list of edges. |
 | <a id="groupconnectionnodes"></a>`nodes` | [`[Group]`](#group) | A list of nodes. |
 | <a id="groupconnectionpageinfo"></a>`pageInfo` | [`PageInfo!`](#pageinfo) | Information to aid in pagination. |
+
+##### Fields with arguments
+
+###### `GroupConnection.count`
+
+Total count of collection. Returns limit + 1 for counts greater than the limit.
+
+Returns [`Int!`](#int).
+
+####### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="groupconnectioncountlimit"></a>`limit` | [`Int`](#int) | Limit applied to the count query, returns limit + 1. When not provided, returns the exact count. |
 
 #### `GroupEdge`
 
@@ -18873,10 +19250,23 @@ The connection type for [`GroupInterface`](#groupinterface).
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
-| <a id="groupinterfaceconnectioncount"></a>`count` | [`Int!`](#int) | Total count of collection. |
 | <a id="groupinterfaceconnectionedges"></a>`edges` | [`[GroupInterfaceEdge]`](#groupinterfaceedge) | A list of edges. |
 | <a id="groupinterfaceconnectionnodes"></a>`nodes` | [`[GroupInterface]`](#groupinterface) | A list of nodes. |
 | <a id="groupinterfaceconnectionpageinfo"></a>`pageInfo` | [`PageInfo!`](#pageinfo) | Information to aid in pagination. |
+
+##### Fields with arguments
+
+###### `GroupInterfaceConnection.count`
+
+Total count of collection. Returns limit + 1 for counts greater than the limit.
+
+Returns [`Int!`](#int).
+
+####### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="groupinterfaceconnectioncountlimit"></a>`limit` | [`Int`](#int) | Limit applied to the count query, returns limit + 1. When not provided, returns the exact count. |
 
 #### `GroupInterfaceEdge`
 
@@ -18920,10 +19310,23 @@ The connection type for [`GroupSavedReply`](#groupsavedreply).
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
-| <a id="groupsavedreplyconnectioncount"></a>`count` | [`Int!`](#int) | Total count of collection. |
 | <a id="groupsavedreplyconnectionedges"></a>`edges` | [`[GroupSavedReplyEdge]`](#groupsavedreplyedge) | A list of edges. |
 | <a id="groupsavedreplyconnectionnodes"></a>`nodes` | [`[GroupSavedReply]`](#groupsavedreply) | A list of nodes. |
 | <a id="groupsavedreplyconnectionpageinfo"></a>`pageInfo` | [`PageInfo!`](#pageinfo) | Information to aid in pagination. |
+
+##### Fields with arguments
+
+###### `GroupSavedReplyConnection.count`
+
+Total count of collection. Returns limit + 1 for counts greater than the limit.
+
+Returns [`Int!`](#int).
+
+####### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="groupsavedreplyconnectioncountlimit"></a>`limit` | [`Int`](#int) | Limit applied to the count query, returns limit + 1. When not provided, returns the exact count. |
 
 #### `GroupSavedReplyEdge`
 
@@ -19234,11 +19637,24 @@ The connection type for [`Issue`](#issue).
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
-| <a id="issueconnectioncount"></a>`count` | [`Int!`](#int) | Total count of collection. |
 | <a id="issueconnectionedges"></a>`edges` | [`[IssueEdge]`](#issueedge) | A list of edges. |
 | <a id="issueconnectionnodes"></a>`nodes` | [`[Issue]`](#issue) | A list of nodes. |
 | <a id="issueconnectionpageinfo"></a>`pageInfo` | [`PageInfo!`](#pageinfo) | Information to aid in pagination. |
 | <a id="issueconnectionweight"></a>`weight` | [`Int!`](#int) | Total weight of issues collection. |
+
+##### Fields with arguments
+
+###### `IssueConnection.count`
+
+Total count of collection. Returns limit + 1 for counts greater than the limit.
+
+Returns [`Int!`](#int).
+
+####### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="issueconnectioncountlimit"></a>`limit` | [`Int`](#int) | Limit applied to the count query, returns limit + 1. When not provided, returns the exact count. |
 
 #### `IssueEdge`
 
@@ -19411,10 +19827,23 @@ The connection type for [`Label`](#label).
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
-| <a id="labelconnectioncount"></a>`count` | [`Int!`](#int) | Total count of collection. |
 | <a id="labelconnectionedges"></a>`edges` | [`[LabelEdge]`](#labeledge) | A list of edges. |
 | <a id="labelconnectionnodes"></a>`nodes` | [`[Label]`](#label) | A list of nodes. |
 | <a id="labelconnectionpageinfo"></a>`pageInfo` | [`PageInfo!`](#pageinfo) | Information to aid in pagination. |
+
+##### Fields with arguments
+
+###### `LabelConnection.count`
+
+Total count of collection. Returns limit + 1 for counts greater than the limit.
+
+Returns [`Int!`](#int).
+
+####### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="labelconnectioncountlimit"></a>`limit` | [`Int`](#int) | Limit applied to the count query, returns limit + 1. When not provided, returns the exact count. |
 
 #### `LabelEdge`
 
@@ -19564,10 +19993,23 @@ The connection type for [`MavenUpstream`](#mavenupstream).
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
-| <a id="mavenupstreamconnectioncount"></a>`count` | [`Int!`](#int) | Total count of collection. |
 | <a id="mavenupstreamconnectionedges"></a>`edges` | [`[MavenUpstreamEdge]`](#mavenupstreamedge) | A list of edges. |
 | <a id="mavenupstreamconnectionnodes"></a>`nodes` | [`[MavenUpstream]`](#mavenupstream) | A list of nodes. |
 | <a id="mavenupstreamconnectionpageinfo"></a>`pageInfo` | [`PageInfo!`](#pageinfo) | Information to aid in pagination. |
+
+##### Fields with arguments
+
+###### `MavenUpstreamConnection.count`
+
+Total count of collection. Returns limit + 1 for counts greater than the limit.
+
+Returns [`Int!`](#int).
+
+####### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mavenupstreamconnectioncountlimit"></a>`limit` | [`Int`](#int) | Limit applied to the count query, returns limit + 1. When not provided, returns the exact count. |
 
 #### `MavenUpstreamEdge`
 
@@ -19588,10 +20030,23 @@ The connection type for [`MemberApproval`](#memberapproval).
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
-| <a id="memberapprovalconnectioncount"></a>`count` | [`Int!`](#int) | Total count of collection. |
 | <a id="memberapprovalconnectionedges"></a>`edges` | [`[MemberApprovalEdge]`](#memberapprovaledge) | A list of edges. |
 | <a id="memberapprovalconnectionnodes"></a>`nodes` | [`[MemberApproval]`](#memberapproval) | A list of nodes. |
 | <a id="memberapprovalconnectionpageinfo"></a>`pageInfo` | [`PageInfo!`](#pageinfo) | Information to aid in pagination. |
+
+##### Fields with arguments
+
+###### `MemberApprovalConnection.count`
+
+Total count of collection. Returns limit + 1 for counts greater than the limit.
+
+Returns [`Int!`](#int).
+
+####### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="memberapprovalconnectioncountlimit"></a>`limit` | [`Int`](#int) | Limit applied to the count query, returns limit + 1. When not provided, returns the exact count. |
 
 #### `MemberApprovalEdge`
 
@@ -19681,10 +20136,23 @@ The connection type for [`MergeRequestAssignee`](#mergerequestassignee).
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
-| <a id="mergerequestassigneeconnectioncount"></a>`count` | [`Int!`](#int) | Total count of collection. |
 | <a id="mergerequestassigneeconnectionedges"></a>`edges` | [`[MergeRequestAssigneeEdge]`](#mergerequestassigneeedge) | A list of edges. |
 | <a id="mergerequestassigneeconnectionnodes"></a>`nodes` | [`[MergeRequestAssignee]`](#mergerequestassignee) | A list of nodes. |
 | <a id="mergerequestassigneeconnectionpageinfo"></a>`pageInfo` | [`PageInfo!`](#pageinfo) | Information to aid in pagination. |
+
+##### Fields with arguments
+
+###### `MergeRequestAssigneeConnection.count`
+
+Total count of collection. Returns limit + 1 for counts greater than the limit.
+
+Returns [`Int!`](#int).
+
+####### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mergerequestassigneeconnectioncountlimit"></a>`limit` | [`Int`](#int) | Limit applied to the count query, returns limit + 1. When not provided, returns the exact count. |
 
 #### `MergeRequestAssigneeEdge`
 
@@ -19705,11 +20173,24 @@ The connection type for [`MergeRequest`](#mergerequest).
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
-| <a id="mergerequestconnectioncount"></a>`count` | [`Int!`](#int) | Total count of collection. |
 | <a id="mergerequestconnectionedges"></a>`edges` | [`[MergeRequestEdge]`](#mergerequestedge) | A list of edges. |
 | <a id="mergerequestconnectionnodes"></a>`nodes` | [`[MergeRequest]`](#mergerequest) | A list of nodes. |
 | <a id="mergerequestconnectionpageinfo"></a>`pageInfo` | [`PageInfo!`](#pageinfo) | Information to aid in pagination. |
 | <a id="mergerequestconnectiontotaltimetomerge"></a>`totalTimeToMerge` | [`Float`](#float) | Total sum of time to merge, in seconds, for the collection of merge requests. |
+
+##### Fields with arguments
+
+###### `MergeRequestConnection.count`
+
+Total count of collection. Returns limit + 1 for counts greater than the limit.
+
+Returns [`Int!`](#int).
+
+####### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mergerequestconnectioncountlimit"></a>`limit` | [`Int`](#int) | Limit applied to the count query, returns limit + 1. When not provided, returns the exact count. |
 
 #### `MergeRequestDiffConnection`
 
@@ -19790,10 +20271,23 @@ The connection type for [`MergeRequestParticipant`](#mergerequestparticipant).
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
-| <a id="mergerequestparticipantconnectioncount"></a>`count` | [`Int!`](#int) | Total count of collection. |
 | <a id="mergerequestparticipantconnectionedges"></a>`edges` | [`[MergeRequestParticipantEdge]`](#mergerequestparticipantedge) | A list of edges. |
 | <a id="mergerequestparticipantconnectionnodes"></a>`nodes` | [`[MergeRequestParticipant]`](#mergerequestparticipant) | A list of nodes. |
 | <a id="mergerequestparticipantconnectionpageinfo"></a>`pageInfo` | [`PageInfo!`](#pageinfo) | Information to aid in pagination. |
+
+##### Fields with arguments
+
+###### `MergeRequestParticipantConnection.count`
+
+Total count of collection. Returns limit + 1 for counts greater than the limit.
+
+Returns [`Int!`](#int).
+
+####### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mergerequestparticipantconnectioncountlimit"></a>`limit` | [`Int`](#int) | Limit applied to the count query, returns limit + 1. When not provided, returns the exact count. |
 
 #### `MergeRequestParticipantEdge`
 
@@ -19814,10 +20308,23 @@ The connection type for [`MergeRequestReviewer`](#mergerequestreviewer).
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
-| <a id="mergerequestreviewerconnectioncount"></a>`count` | [`Int!`](#int) | Total count of collection. |
 | <a id="mergerequestreviewerconnectionedges"></a>`edges` | [`[MergeRequestReviewerEdge]`](#mergerequestrevieweredge) | A list of edges. |
 | <a id="mergerequestreviewerconnectionnodes"></a>`nodes` | [`[MergeRequestReviewer]`](#mergerequestreviewer) | A list of nodes. |
 | <a id="mergerequestreviewerconnectionpageinfo"></a>`pageInfo` | [`PageInfo!`](#pageinfo) | Information to aid in pagination. |
+
+##### Fields with arguments
+
+###### `MergeRequestReviewerConnection.count`
+
+Total count of collection. Returns limit + 1 for counts greater than the limit.
+
+Returns [`Int!`](#int).
+
+####### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mergerequestreviewerconnectioncountlimit"></a>`limit` | [`Int`](#int) | Limit applied to the count query, returns limit + 1. When not provided, returns the exact count. |
 
 #### `MergeRequestReviewerEdge`
 
@@ -19838,10 +20345,23 @@ The connection type for [`MergeTrainCar`](#mergetraincar).
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
-| <a id="mergetraincarconnectioncount"></a>`count` | [`Int!`](#int) | Total count of collection. |
 | <a id="mergetraincarconnectionedges"></a>`edges` | [`[MergeTrainCarEdge]`](#mergetraincaredge) | A list of edges. |
 | <a id="mergetraincarconnectionnodes"></a>`nodes` | [`[MergeTrainCar]`](#mergetraincar) | A list of nodes. |
 | <a id="mergetraincarconnectionpageinfo"></a>`pageInfo` | [`PageInfo!`](#pageinfo) | Information to aid in pagination. |
+
+##### Fields with arguments
+
+###### `MergeTrainCarConnection.count`
+
+Total count of collection. Returns limit + 1 for counts greater than the limit.
+
+Returns [`Int!`](#int).
+
+####### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mergetraincarconnectioncountlimit"></a>`limit` | [`Int`](#int) | Limit applied to the count query, returns limit + 1. When not provided, returns the exact count. |
 
 #### `MergeTrainCarEdge`
 
@@ -19862,10 +20382,23 @@ The connection type for [`MergeTrain`](#mergetrain).
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
-| <a id="mergetrainconnectioncount"></a>`count` | [`Int!`](#int) | Total count of collection. |
 | <a id="mergetrainconnectionedges"></a>`edges` | [`[MergeTrainEdge]`](#mergetrainedge) | A list of edges. |
 | <a id="mergetrainconnectionnodes"></a>`nodes` | [`[MergeTrain]`](#mergetrain) | A list of nodes. |
 | <a id="mergetrainconnectionpageinfo"></a>`pageInfo` | [`PageInfo!`](#pageinfo) | Information to aid in pagination. |
+
+##### Fields with arguments
+
+###### `MergeTrainConnection.count`
+
+Total count of collection. Returns limit + 1 for counts greater than the limit.
+
+Returns [`Int!`](#int).
+
+####### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mergetrainconnectioncountlimit"></a>`limit` | [`Int`](#int) | Limit applied to the count query, returns limit + 1. When not provided, returns the exact count. |
 
 #### `MergeTrainEdge`
 
@@ -20237,10 +20770,23 @@ The connection type for [`Note`](#note).
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
-| <a id="noteconnectioncount"></a>`count` | [`Int!`](#int) | Total count of collection. |
 | <a id="noteconnectionedges"></a>`edges` | [`[NoteEdge]`](#noteedge) | A list of edges. |
 | <a id="noteconnectionnodes"></a>`nodes` | [`[Note]`](#note) | A list of nodes. |
 | <a id="noteconnectionpageinfo"></a>`pageInfo` | [`PageInfo!`](#pageinfo) | Information to aid in pagination. |
+
+##### Fields with arguments
+
+###### `NoteConnection.count`
+
+Total count of collection. Returns limit + 1 for counts greater than the limit.
+
+Returns [`Int!`](#int).
+
+####### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="noteconnectioncountlimit"></a>`limit` | [`Int`](#int) | Limit applied to the count query, returns limit + 1. When not provided, returns the exact count. |
 
 #### `NoteEdge`
 
@@ -20261,10 +20807,23 @@ The connection type for [`ObservabilityLog`](#observabilitylog).
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
-| <a id="observabilitylogconnectioncount"></a>`count` | [`Int!`](#int) | Total count of collection. |
 | <a id="observabilitylogconnectionedges"></a>`edges` | [`[ObservabilityLogEdge]`](#observabilitylogedge) | A list of edges. |
 | <a id="observabilitylogconnectionnodes"></a>`nodes` | [`[ObservabilityLog]`](#observabilitylog) | A list of nodes. |
 | <a id="observabilitylogconnectionpageinfo"></a>`pageInfo` | [`PageInfo!`](#pageinfo) | Information to aid in pagination. |
+
+##### Fields with arguments
+
+###### `ObservabilityLogConnection.count`
+
+Total count of collection. Returns limit + 1 for counts greater than the limit.
+
+Returns [`Int!`](#int).
+
+####### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="observabilitylogconnectioncountlimit"></a>`limit` | [`Int`](#int) | Limit applied to the count query, returns limit + 1. When not provided, returns the exact count. |
 
 #### `ObservabilityLogEdge`
 
@@ -20285,10 +20844,23 @@ The connection type for [`ObservabilityMetric`](#observabilitymetric).
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
-| <a id="observabilitymetricconnectioncount"></a>`count` | [`Int!`](#int) | Total count of collection. |
 | <a id="observabilitymetricconnectionedges"></a>`edges` | [`[ObservabilityMetricEdge]`](#observabilitymetricedge) | A list of edges. |
 | <a id="observabilitymetricconnectionnodes"></a>`nodes` | [`[ObservabilityMetric]`](#observabilitymetric) | A list of nodes. |
 | <a id="observabilitymetricconnectionpageinfo"></a>`pageInfo` | [`PageInfo!`](#pageinfo) | Information to aid in pagination. |
+
+##### Fields with arguments
+
+###### `ObservabilityMetricConnection.count`
+
+Total count of collection. Returns limit + 1 for counts greater than the limit.
+
+Returns [`Int!`](#int).
+
+####### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="observabilitymetricconnectioncountlimit"></a>`limit` | [`Int`](#int) | Limit applied to the count query, returns limit + 1. When not provided, returns the exact count. |
 
 #### `ObservabilityMetricEdge`
 
@@ -20309,10 +20881,23 @@ The connection type for [`ObservabilityTrace`](#observabilitytrace).
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
-| <a id="observabilitytraceconnectioncount"></a>`count` | [`Int!`](#int) | Total count of collection. |
 | <a id="observabilitytraceconnectionedges"></a>`edges` | [`[ObservabilityTraceEdge]`](#observabilitytraceedge) | A list of edges. |
 | <a id="observabilitytraceconnectionnodes"></a>`nodes` | [`[ObservabilityTrace]`](#observabilitytrace) | A list of nodes. |
 | <a id="observabilitytraceconnectionpageinfo"></a>`pageInfo` | [`PageInfo!`](#pageinfo) | Information to aid in pagination. |
+
+##### Fields with arguments
+
+###### `ObservabilityTraceConnection.count`
+
+Total count of collection. Returns limit + 1 for counts greater than the limit.
+
+Returns [`Int!`](#int).
+
+####### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="observabilitytraceconnectioncountlimit"></a>`limit` | [`Int`](#int) | Limit applied to the count query, returns limit + 1. When not provided, returns the exact count. |
 
 #### `ObservabilityTraceEdge`
 
@@ -20356,10 +20941,23 @@ The connection type for [`Organization`](#organization).
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
-| <a id="organizationconnectioncount"></a>`count` | [`Int!`](#int) | Total count of collection. |
 | <a id="organizationconnectionedges"></a>`edges` | [`[OrganizationEdge]`](#organizationedge) | A list of edges. |
 | <a id="organizationconnectionnodes"></a>`nodes` | [`[Organization]`](#organization) | A list of nodes. |
 | <a id="organizationconnectionpageinfo"></a>`pageInfo` | [`PageInfo!`](#pageinfo) | Information to aid in pagination. |
+
+##### Fields with arguments
+
+###### `OrganizationConnection.count`
+
+Total count of collection. Returns limit + 1 for counts greater than the limit.
+
+Returns [`Int!`](#int).
+
+####### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="organizationconnectioncountlimit"></a>`limit` | [`Int`](#int) | Limit applied to the count query, returns limit + 1. When not provided, returns the exact count. |
 
 #### `OrganizationEdge`
 
@@ -20403,10 +21001,23 @@ The connection type for [`PackageBase`](#packagebase).
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
-| <a id="packagebaseconnectioncount"></a>`count` | [`Int!`](#int) | Total count of collection. |
 | <a id="packagebaseconnectionedges"></a>`edges` | [`[PackageBaseEdge]`](#packagebaseedge) | A list of edges. |
 | <a id="packagebaseconnectionnodes"></a>`nodes` | [`[PackageBase]`](#packagebase) | A list of nodes. |
 | <a id="packagebaseconnectionpageinfo"></a>`pageInfo` | [`PageInfo!`](#pageinfo) | Information to aid in pagination. |
+
+##### Fields with arguments
+
+###### `PackageBaseConnection.count`
+
+Total count of collection. Returns limit + 1 for counts greater than the limit.
+
+Returns [`Int!`](#int).
+
+####### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="packagebaseconnectioncountlimit"></a>`limit` | [`Int`](#int) | Limit applied to the count query, returns limit + 1. When not provided, returns the exact count. |
 
 #### `PackageBaseEdge`
 
@@ -20427,10 +21038,23 @@ The connection type for [`Package`](#package).
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
-| <a id="packageconnectioncount"></a>`count` | [`Int!`](#int) | Total count of collection. |
 | <a id="packageconnectionedges"></a>`edges` | [`[PackageEdge]`](#packageedge) | A list of edges. |
 | <a id="packageconnectionnodes"></a>`nodes` | [`[Package]`](#package) | A list of nodes. |
 | <a id="packageconnectionpageinfo"></a>`pageInfo` | [`PageInfo!`](#pageinfo) | Information to aid in pagination. |
+
+##### Fields with arguments
+
+###### `PackageConnection.count`
+
+Total count of collection. Returns limit + 1 for counts greater than the limit.
+
+Returns [`Int!`](#int).
+
+####### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="packageconnectioncountlimit"></a>`limit` | [`Int`](#int) | Limit applied to the count query, returns limit + 1. When not provided, returns the exact count. |
 
 #### `PackageDependencyLinkConnection`
 
@@ -20617,10 +21241,23 @@ The connection type for [`PagesDeployment`](#pagesdeployment).
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
-| <a id="pagesdeploymentconnectioncount"></a>`count` | [`Int!`](#int) | Total count of collection. |
 | <a id="pagesdeploymentconnectionedges"></a>`edges` | [`[PagesDeploymentEdge]`](#pagesdeploymentedge) | A list of edges. |
 | <a id="pagesdeploymentconnectionnodes"></a>`nodes` | [`[PagesDeployment]`](#pagesdeployment) | A list of nodes. |
 | <a id="pagesdeploymentconnectionpageinfo"></a>`pageInfo` | [`PageInfo!`](#pageinfo) | Information to aid in pagination. |
+
+##### Fields with arguments
+
+###### `PagesDeploymentConnection.count`
+
+Total count of collection. Returns limit + 1 for counts greater than the limit.
+
+Returns [`Int!`](#int).
+
+####### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="pagesdeploymentconnectioncountlimit"></a>`limit` | [`Int`](#int) | Limit applied to the count query, returns limit + 1. When not provided, returns the exact count. |
 
 #### `PagesDeploymentEdge`
 
@@ -20784,10 +21421,23 @@ The connection type for [`Pipeline`](#pipeline).
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
-| <a id="pipelineconnectioncount"></a>`count` | [`Int!`](#int) | Total count of collection. |
 | <a id="pipelineconnectionedges"></a>`edges` | [`[PipelineEdge]`](#pipelineedge) | A list of edges. |
 | <a id="pipelineconnectionnodes"></a>`nodes` | [`[Pipeline]`](#pipeline) | A list of nodes. |
 | <a id="pipelineconnectionpageinfo"></a>`pageInfo` | [`PageInfo!`](#pageinfo) | Information to aid in pagination. |
+
+##### Fields with arguments
+
+###### `PipelineConnection.count`
+
+Total count of collection. Returns limit + 1 for counts greater than the limit.
+
+Returns [`Int!`](#int).
+
+####### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="pipelineconnectioncountlimit"></a>`limit` | [`Int`](#int) | Limit applied to the count query, returns limit + 1. When not provided, returns the exact count. |
 
 #### `PipelineEdge`
 
@@ -20900,10 +21550,23 @@ The connection type for [`PipelineSchedule`](#pipelineschedule).
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
-| <a id="pipelinescheduleconnectioncount"></a>`count` | [`Int!`](#int) | Total count of collection. |
 | <a id="pipelinescheduleconnectionedges"></a>`edges` | [`[PipelineScheduleEdge]`](#pipelinescheduleedge) | A list of edges. |
 | <a id="pipelinescheduleconnectionnodes"></a>`nodes` | [`[PipelineSchedule]`](#pipelineschedule) | A list of nodes. |
 | <a id="pipelinescheduleconnectionpageinfo"></a>`pageInfo` | [`PageInfo!`](#pageinfo) | Information to aid in pagination. |
+
+##### Fields with arguments
+
+###### `PipelineScheduleConnection.count`
+
+Total count of collection. Returns limit + 1 for counts greater than the limit.
+
+Returns [`Int!`](#int).
+
+####### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="pipelinescheduleconnectioncountlimit"></a>`limit` | [`Int`](#int) | Limit applied to the count query, returns limit + 1. When not provided, returns the exact count. |
 
 #### `PipelineScheduleEdge`
 
@@ -20970,10 +21633,23 @@ The connection type for [`PipelineTrigger`](#pipelinetrigger).
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
-| <a id="pipelinetriggerconnectioncount"></a>`count` | [`Int!`](#int) | Total count of collection. |
 | <a id="pipelinetriggerconnectionedges"></a>`edges` | [`[PipelineTriggerEdge]`](#pipelinetriggeredge) | A list of edges. |
 | <a id="pipelinetriggerconnectionnodes"></a>`nodes` | [`[PipelineTrigger]`](#pipelinetrigger) | A list of nodes. |
 | <a id="pipelinetriggerconnectionpageinfo"></a>`pageInfo` | [`PageInfo!`](#pageinfo) | Information to aid in pagination. |
+
+##### Fields with arguments
+
+###### `PipelineTriggerConnection.count`
+
+Total count of collection. Returns limit + 1 for counts greater than the limit.
+
+Returns [`Int!`](#int).
+
+####### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="pipelinetriggerconnectioncountlimit"></a>`limit` | [`Int`](#int) | Limit applied to the count query, returns limit + 1. When not provided, returns the exact count. |
 
 #### `PipelineTriggerEdge`
 
@@ -21063,10 +21739,23 @@ The connection type for [`Project`](#project).
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
-| <a id="projectconnectioncount"></a>`count` | [`Int!`](#int) | Total count of collection. |
 | <a id="projectconnectionedges"></a>`edges` | [`[ProjectEdge]`](#projectedge) | A list of edges. |
 | <a id="projectconnectionnodes"></a>`nodes` | [`[Project]`](#project) | A list of nodes. |
 | <a id="projectconnectionpageinfo"></a>`pageInfo` | [`PageInfo!`](#pageinfo) | Information to aid in pagination. |
+
+##### Fields with arguments
+
+###### `ProjectConnection.count`
+
+Total count of collection. Returns limit + 1 for counts greater than the limit.
+
+Returns [`Int!`](#int).
+
+####### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="projectconnectioncountlimit"></a>`limit` | [`Int`](#int) | Limit applied to the count query, returns limit + 1. When not provided, returns the exact count. |
 
 #### `ProjectEdge`
 
@@ -21087,10 +21776,23 @@ The connection type for [`ProjectInterface`](#projectinterface).
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
-| <a id="projectinterfaceconnectioncount"></a>`count` | [`Int!`](#int) | Total count of collection. |
 | <a id="projectinterfaceconnectionedges"></a>`edges` | [`[ProjectInterfaceEdge]`](#projectinterfaceedge) | A list of edges. |
 | <a id="projectinterfaceconnectionnodes"></a>`nodes` | [`[ProjectInterface]`](#projectinterface) | A list of nodes. |
 | <a id="projectinterfaceconnectionpageinfo"></a>`pageInfo` | [`PageInfo!`](#pageinfo) | Information to aid in pagination. |
+
+##### Fields with arguments
+
+###### `ProjectInterfaceConnection.count`
+
+Total count of collection. Returns limit + 1 for counts greater than the limit.
+
+Returns [`Int!`](#int).
+
+####### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="projectinterfaceconnectioncountlimit"></a>`limit` | [`Int`](#int) | Limit applied to the count query, returns limit + 1. When not provided, returns the exact count. |
 
 #### `ProjectInterfaceEdge`
 
@@ -21171,10 +21873,23 @@ The connection type for [`ProjectSavedReply`](#projectsavedreply).
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
-| <a id="projectsavedreplyconnectioncount"></a>`count` | [`Int!`](#int) | Total count of collection. |
 | <a id="projectsavedreplyconnectionedges"></a>`edges` | [`[ProjectSavedReplyEdge]`](#projectsavedreplyedge) | A list of edges. |
 | <a id="projectsavedreplyconnectionnodes"></a>`nodes` | [`[ProjectSavedReply]`](#projectsavedreply) | A list of nodes. |
 | <a id="projectsavedreplyconnectionpageinfo"></a>`pageInfo` | [`PageInfo!`](#pageinfo) | Information to aid in pagination. |
+
+##### Fields with arguments
+
+###### `ProjectSavedReplyConnection.count`
+
+Total count of collection. Returns limit + 1 for counts greater than the limit.
+
+Returns [`Int!`](#int).
+
+####### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="projectsavedreplyconnectioncountlimit"></a>`limit` | [`Int`](#int) | Limit applied to the count query, returns limit + 1. When not provided, returns the exact count. |
 
 #### `ProjectSavedReplyEdge`
 
@@ -21241,10 +21956,23 @@ The connection type for [`ProjectTargetBranchRule`](#projecttargetbranchrule).
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
-| <a id="projecttargetbranchruleconnectioncount"></a>`count` | [`Int!`](#int) | Total count of collection. |
 | <a id="projecttargetbranchruleconnectionedges"></a>`edges` | [`[ProjectTargetBranchRuleEdge]`](#projecttargetbranchruleedge) | A list of edges. |
 | <a id="projecttargetbranchruleconnectionnodes"></a>`nodes` | [`[ProjectTargetBranchRule]`](#projecttargetbranchrule) | A list of nodes. |
 | <a id="projecttargetbranchruleconnectionpageinfo"></a>`pageInfo` | [`PageInfo!`](#pageinfo) | Information to aid in pagination. |
+
+##### Fields with arguments
+
+###### `ProjectTargetBranchRuleConnection.count`
+
+Total count of collection. Returns limit + 1 for counts greater than the limit.
+
+Returns [`Int!`](#int).
+
+####### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="projecttargetbranchruleconnectioncountlimit"></a>`limit` | [`Int`](#int) | Limit applied to the count query, returns limit + 1. When not provided, returns the exact count. |
 
 #### `ProjectTargetBranchRuleEdge`
 
@@ -21417,10 +22145,23 @@ The connection type for [`Release`](#release).
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
-| <a id="releaseconnectioncount"></a>`count` | [`Int!`](#int) | Total count of collection. |
 | <a id="releaseconnectionedges"></a>`edges` | [`[ReleaseEdge]`](#releaseedge) | A list of edges. |
 | <a id="releaseconnectionnodes"></a>`nodes` | [`[Release]`](#release) | A list of nodes. |
 | <a id="releaseconnectionpageinfo"></a>`pageInfo` | [`PageInfo!`](#pageinfo) | Information to aid in pagination. |
+
+##### Fields with arguments
+
+###### `ReleaseConnection.count`
+
+Total count of collection. Returns limit + 1 for counts greater than the limit.
+
+Returns [`Int!`](#int).
+
+####### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="releaseconnectioncountlimit"></a>`limit` | [`Int`](#int) | Limit applied to the count query, returns limit + 1. When not provided, returns the exact count. |
 
 #### `ReleaseEdge`
 
@@ -21671,10 +22412,23 @@ The connection type for [`SavedReply`](#savedreply).
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
-| <a id="savedreplyconnectioncount"></a>`count` | [`Int!`](#int) | Total count of collection. |
 | <a id="savedreplyconnectionedges"></a>`edges` | [`[SavedReplyEdge]`](#savedreplyedge) | A list of edges. |
 | <a id="savedreplyconnectionnodes"></a>`nodes` | [`[SavedReply]`](#savedreply) | A list of nodes. |
 | <a id="savedreplyconnectionpageinfo"></a>`pageInfo` | [`PageInfo!`](#pageinfo) | Information to aid in pagination. |
+
+##### Fields with arguments
+
+###### `SavedReplyConnection.count`
+
+Total count of collection. Returns limit + 1 for counts greater than the limit.
+
+Returns [`Int!`](#int).
+
+####### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="savedreplyconnectioncountlimit"></a>`limit` | [`Int`](#int) | Limit applied to the count query, returns limit + 1. When not provided, returns the exact count. |
 
 #### `SavedReplyEdge`
 
@@ -22078,10 +22832,23 @@ The connection type for [`TerraformState`](#terraformstate).
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
-| <a id="terraformstateconnectioncount"></a>`count` | [`Int!`](#int) | Total count of collection. |
 | <a id="terraformstateconnectionedges"></a>`edges` | [`[TerraformStateEdge]`](#terraformstateedge) | A list of edges. |
 | <a id="terraformstateconnectionnodes"></a>`nodes` | [`[TerraformState]`](#terraformstate) | A list of nodes. |
 | <a id="terraformstateconnectionpageinfo"></a>`pageInfo` | [`PageInfo!`](#pageinfo) | Information to aid in pagination. |
+
+##### Fields with arguments
+
+###### `TerraformStateConnection.count`
+
+Total count of collection. Returns limit + 1 for counts greater than the limit.
+
+Returns [`Int!`](#int).
+
+####### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="terraformstateconnectioncountlimit"></a>`limit` | [`Int`](#int) | Limit applied to the count query, returns limit + 1. When not provided, returns the exact count. |
 
 #### `TerraformStateEdge`
 
@@ -22139,10 +22906,23 @@ The connection type for [`TestCase`](#testcase).
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
-| <a id="testcaseconnectioncount"></a>`count` | [`Int!`](#int) | Total count of collection. |
 | <a id="testcaseconnectionedges"></a>`edges` | [`[TestCaseEdge]`](#testcaseedge) | A list of edges. |
 | <a id="testcaseconnectionnodes"></a>`nodes` | [`[TestCase]`](#testcase) | A list of nodes. |
 | <a id="testcaseconnectionpageinfo"></a>`pageInfo` | [`PageInfo!`](#pageinfo) | Information to aid in pagination. |
+
+##### Fields with arguments
+
+###### `TestCaseConnection.count`
+
+Total count of collection. Returns limit + 1 for counts greater than the limit.
+
+Returns [`Int!`](#int).
+
+####### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="testcaseconnectioncountlimit"></a>`limit` | [`Int`](#int) | Limit applied to the count query, returns limit + 1. When not provided, returns the exact count. |
 
 #### `TestCaseEdge`
 
@@ -22186,10 +22966,23 @@ The connection type for [`TestSuiteSummary`](#testsuitesummary).
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
-| <a id="testsuitesummaryconnectioncount"></a>`count` | [`Int!`](#int) | Total count of collection. |
 | <a id="testsuitesummaryconnectionedges"></a>`edges` | [`[TestSuiteSummaryEdge]`](#testsuitesummaryedge) | A list of edges. |
 | <a id="testsuitesummaryconnectionnodes"></a>`nodes` | [`[TestSuiteSummary]`](#testsuitesummary) | A list of nodes. |
 | <a id="testsuitesummaryconnectionpageinfo"></a>`pageInfo` | [`PageInfo!`](#pageinfo) | Information to aid in pagination. |
+
+##### Fields with arguments
+
+###### `TestSuiteSummaryConnection.count`
+
+Total count of collection. Returns limit + 1 for counts greater than the limit.
+
+Returns [`Int!`](#int).
+
+####### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="testsuitesummaryconnectioncountlimit"></a>`limit` | [`Int`](#int) | Limit applied to the count query, returns limit + 1. When not provided, returns the exact count. |
 
 #### `TestSuiteSummaryEdge`
 
@@ -22279,11 +23072,24 @@ The connection type for [`Timelog`](#timelog).
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
-| <a id="timelogconnectioncount"></a>`count` | [`Int!`](#int) | Total count of collection. |
 | <a id="timelogconnectionedges"></a>`edges` | [`[TimelogEdge]`](#timelogedge) | A list of edges. |
 | <a id="timelogconnectionnodes"></a>`nodes` | [`[Timelog]`](#timelog) | A list of nodes. |
 | <a id="timelogconnectionpageinfo"></a>`pageInfo` | [`PageInfo!`](#pageinfo) | Information to aid in pagination. |
 | <a id="timelogconnectiontotalspenttime"></a>`totalSpentTime` | [`BigInt!`](#bigint) | Total time spent in seconds. |
+
+##### Fields with arguments
+
+###### `TimelogConnection.count`
+
+Total count of collection. Returns limit + 1 for counts greater than the limit.
+
+Returns [`Int!`](#int).
+
+####### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="timelogconnectioncountlimit"></a>`limit` | [`Int`](#int) | Limit applied to the count query, returns limit + 1. When not provided, returns the exact count. |
 
 #### `TimelogEdge`
 
@@ -22304,10 +23110,23 @@ The connection type for [`Todo`](#todo).
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
-| <a id="todoconnectioncount"></a>`count` | [`Int!`](#int) | Total count of collection. |
 | <a id="todoconnectionedges"></a>`edges` | [`[TodoEdge]`](#todoedge) | A list of edges. |
 | <a id="todoconnectionnodes"></a>`nodes` | [`[Todo]`](#todo) | A list of nodes. |
 | <a id="todoconnectionpageinfo"></a>`pageInfo` | [`PageInfo!`](#pageinfo) | Information to aid in pagination. |
+
+##### Fields with arguments
+
+###### `TodoConnection.count`
+
+Total count of collection. Returns limit + 1 for counts greater than the limit.
+
+Returns [`Int!`](#int).
+
+####### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="todoconnectioncountlimit"></a>`limit` | [`Int`](#int) | Limit applied to the count query, returns limit + 1. When not provided, returns the exact count. |
 
 #### `TodoEdge`
 
@@ -22480,10 +23299,23 @@ The connection type for [`UserAchievement`](#userachievement).
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
-| <a id="userachievementconnectioncount"></a>`count` | [`Int!`](#int) | Total count of collection. |
 | <a id="userachievementconnectionedges"></a>`edges` | [`[UserAchievementEdge]`](#userachievementedge) | A list of edges. |
 | <a id="userachievementconnectionnodes"></a>`nodes` | [`[UserAchievement]`](#userachievement) | A list of nodes. |
 | <a id="userachievementconnectionpageinfo"></a>`pageInfo` | [`PageInfo!`](#pageinfo) | Information to aid in pagination. |
+
+##### Fields with arguments
+
+###### `UserAchievementConnection.count`
+
+Total count of collection. Returns limit + 1 for counts greater than the limit.
+
+Returns [`Int!`](#int).
+
+####### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="userachievementconnectioncountlimit"></a>`limit` | [`Int`](#int) | Limit applied to the count query, returns limit + 1. When not provided, returns the exact count. |
 
 #### `UserAchievementEdge`
 
@@ -22550,10 +23382,23 @@ The connection type for [`UserCore`](#usercore).
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
-| <a id="usercoreconnectioncount"></a>`count` | [`Int!`](#int) | Total count of collection. |
 | <a id="usercoreconnectionedges"></a>`edges` | [`[UserCoreEdge]`](#usercoreedge) | A list of edges. |
 | <a id="usercoreconnectionnodes"></a>`nodes` | [`[UserCore]`](#usercore) | A list of nodes. |
 | <a id="usercoreconnectionpageinfo"></a>`pageInfo` | [`PageInfo!`](#pageinfo) | Information to aid in pagination. |
+
+##### Fields with arguments
+
+###### `UserCoreConnection.count`
+
+Total count of collection. Returns limit + 1 for counts greater than the limit.
+
+Returns [`Int!`](#int).
+
+####### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="usercoreconnectioncountlimit"></a>`limit` | [`Int`](#int) | Limit applied to the count query, returns limit + 1. When not provided, returns the exact count. |
 
 #### `UserCoreEdge`
 
@@ -22597,10 +23442,23 @@ The connection type for [`UsersQueuedForRolePromotion`](#usersqueuedforrolepromo
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
-| <a id="usersqueuedforrolepromotionconnectioncount"></a>`count` | [`Int!`](#int) | Total count of collection. |
 | <a id="usersqueuedforrolepromotionconnectionedges"></a>`edges` | [`[UsersQueuedForRolePromotionEdge]`](#usersqueuedforrolepromotionedge) | A list of edges. |
 | <a id="usersqueuedforrolepromotionconnectionnodes"></a>`nodes` | [`[UsersQueuedForRolePromotion]`](#usersqueuedforrolepromotion) | A list of nodes. |
 | <a id="usersqueuedforrolepromotionconnectionpageinfo"></a>`pageInfo` | [`PageInfo!`](#pageinfo) | Information to aid in pagination. |
+
+##### Fields with arguments
+
+###### `UsersQueuedForRolePromotionConnection.count`
+
+Total count of collection. Returns limit + 1 for counts greater than the limit.
+
+Returns [`Int!`](#int).
+
+####### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="usersqueuedforrolepromotionconnectioncountlimit"></a>`limit` | [`Int`](#int) | Limit applied to the count query, returns limit + 1. When not provided, returns the exact count. |
 
 #### `UsersQueuedForRolePromotionEdge`
 
@@ -22967,10 +23825,23 @@ The connection type for [`WorkItem`](#workitem).
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
-| <a id="workitemconnectioncount"></a>`count` | [`Int!`](#int) | Total count of collection. |
 | <a id="workitemconnectionedges"></a>`edges` | [`[WorkItemEdge]`](#workitemedge) | A list of edges. |
 | <a id="workitemconnectionnodes"></a>`nodes` | [`[WorkItem]`](#workitem) | A list of nodes. |
 | <a id="workitemconnectionpageinfo"></a>`pageInfo` | [`PageInfo!`](#pageinfo) | Information to aid in pagination. |
+
+##### Fields with arguments
+
+###### `WorkItemConnection.count`
+
+Total count of collection. Returns limit + 1 for counts greater than the limit.
+
+Returns [`Int!`](#int).
+
+####### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="workitemconnectioncountlimit"></a>`limit` | [`Int`](#int) | Limit applied to the count query, returns limit + 1. When not provided, returns the exact count. |
 
 #### `WorkItemDescriptionTemplateConnection`
 
@@ -23106,11 +23977,24 @@ The connection type for [`WorkItemTimelog`](#workitemtimelog).
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
-| <a id="workitemtimelogconnectioncount"></a>`count` | [`Int!`](#int) | Total count of collection. |
 | <a id="workitemtimelogconnectionedges"></a>`edges` | [`[WorkItemTimelogEdge]`](#workitemtimelogedge) | A list of edges. |
 | <a id="workitemtimelogconnectionnodes"></a>`nodes` | [`[WorkItemTimelog]`](#workitemtimelog) | A list of nodes. |
 | <a id="workitemtimelogconnectionpageinfo"></a>`pageInfo` | [`PageInfo!`](#pageinfo) | Information to aid in pagination. |
 | <a id="workitemtimelogconnectiontotalspenttime"></a>`totalSpentTime` | [`BigInt!`](#bigint) | Total time spent in seconds. |
+
+##### Fields with arguments
+
+###### `WorkItemTimelogConnection.count`
+
+Total count of collection. Returns limit + 1 for counts greater than the limit.
+
+Returns [`Int!`](#int).
+
+####### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="workitemtimelogconnectioncountlimit"></a>`limit` | [`Int`](#int) | Limit applied to the count query, returns limit + 1. When not provided, returns the exact count. |
 
 #### `WorkItemTimelogEdge`
 

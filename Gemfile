@@ -284,7 +284,7 @@ gem 'rack', '~> 2.2.9', feature_category: :shared
 gem 'rack-timeout', '~> 0.7.0', require: 'rack/timeout/base', feature_category: :shared
 
 group :puma do
-  gem 'puma', '= 6.6.1', require: false, feature_category: :shared
+  gem 'puma', '~> 7.1', require: false, feature_category: :shared
   gem 'sd_notify', '~> 0.1.0', require: false, feature_category: :shared
 end
 

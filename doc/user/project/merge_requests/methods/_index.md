@@ -59,8 +59,7 @@ These diagrams show how the `feature` branch merges into `main` if you use the
 **Merge commit** strategy. They are equivalent to the command `git merge --no-ff <feature>`,
 and selecting `Merge commit` as the **Merge method** in the GitLab UI:
 
-- After a feature branch is merged with the **Merge commit** method, your `main` branch
-looks like this:
+- After a feature branch is merged with the **Merge commit** method, your `main` branch looks like this:
 
   ```mermaid
   %%{init: { 'gitGraph': {'logLevel': 'debug', 'showBranches': true, 'showCommitLabel':true,'mainBranchName': 'main', 'fontFamily': 'GitLab Sans'}} }%%
@@ -78,8 +77,8 @@ looks like this:
   ```
 
 - In comparison, a squash merge constructs a squash commit, a virtual copy of all commits
-from the `feature` branch. The original commits (B and D) remain unchanged
-on the `feature` branch, and then a merge commit is made on the `main` branch to merge in the squashed branch:
+  from the `feature` branch. The original commits (B and D) remain unchanged
+  on the `feature` branch, and then a merge commit is made on the `main` branch to merge in the squashed branch:
 
   ```mermaid
   %%{init: { 'gitGraph': {'showBranches': true, 'showCommitLabel':true,'mainBranchName': 'main', 'fontFamily': 'GitLab Sans'}} }%%

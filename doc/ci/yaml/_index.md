@@ -2911,12 +2911,11 @@ deploy:
 
 This configuration:
 
-- Sets up the `deploy` job to deploy to the `production`
-environment
-- Associates the [agent](../../user/clusters/agent/_index.md) named `agent-name` with the environment
+- Sets up the `deploy` job to deploy to the `production` environment.
+- Associates the [agent](../../user/clusters/agent/_index.md) named `agent-name` with the environment.
 - Configures the [dashboard for Kubernetes](../environments/kubernetes_dashboard.md) for an environment with
-the namespace `my-namespace` and the `flux_resource_path` set to
-`helm.toolkit.fluxcd.io/v2/namespaces/flux-system/helmreleases/helm-release-resource`.
+  the namespace `my-namespace` and the `flux_resource_path` set to
+  `helm.toolkit.fluxcd.io/v2/namespaces/flux-system/helmreleases/helm-release-resource`.
 
 **Additional details**:
 

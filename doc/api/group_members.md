@@ -981,7 +981,3 @@ Example response:
   }
 ]
 ```
-
-## Give a group access to a project
-
-For more information, see [share a project with group](projects.md#share-a-project-with-a-group).

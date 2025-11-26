@@ -124,7 +124,7 @@ For an overview, see [Multiple Approvers](https://www.youtube.com/watch?v=8JQJ58
 To get email notifications every time a merge request you're eligible to approve is created:
 
 - [Set your notification level](../../../profile/notifications.md#edit-notification-settings) to **Custom**
-and select the **Merge request you're eligible to approve is created** event.
+  and select the **Merge request you're eligible to approve is created** event.
 
 ## Edit or override merge request approval rules
 

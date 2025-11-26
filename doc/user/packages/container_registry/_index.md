@@ -216,8 +216,7 @@ next to each tag that has an associated signature. To see the details of the sig
 Prerequisites:
 
 - To sign container images, Cosign v2.0 or later.
-- For GitLab Self-Managed, you need a GitLab container
-registry configured with a metadata database
+- For GitLab Self-Managed, you need a GitLab container registry configured with a metadata database
   to display signatures. For more information, see [container registry metadata database](../../../administration/packages/container_registry_metadata_database.md).
 
 ### Sign container images with OCI referrer data

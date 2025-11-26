@@ -84,7 +84,7 @@ To make projects easier to find:
 
 - Create a consistent and recognizable naming scheme for your projects with reserved project and group names.
 - Add badges to your project's `README` file. Badges can display important information,
-like build status, project health, test coverage, or version number.
+  like build status, project health, test coverage, or version number.
 - Assign project topics. Topics are labels that help you organize and find projects.
 
 For more information, see:

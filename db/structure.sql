@@ -12928,42 +12928,6 @@ CREATE SEQUENCE approvals_id_seq
 
 ALTER SEQUENCE approvals_id_seq OWNED BY approvals.id;
 
-CREATE TABLE approver_groups (
-    id bigint NOT NULL,
-    target_id bigint NOT NULL,
-    target_type character varying NOT NULL,
-    group_id bigint NOT NULL,
-    created_at timestamp without time zone,
-    updated_at timestamp without time zone
-);
-
-CREATE SEQUENCE approver_groups_id_seq
-    START WITH 1
-    INCREMENT BY 1
-    NO MINVALUE
-    NO MAXVALUE
-    CACHE 1;
-
-ALTER SEQUENCE approver_groups_id_seq OWNED BY approver_groups.id;
-
-CREATE TABLE approvers (
-    id bigint NOT NULL,
-    target_id bigint NOT NULL,
-    target_type character varying,
-    user_id bigint NOT NULL,
-    created_at timestamp without time zone,
-    updated_at timestamp without time zone
-);
-
-CREATE SEQUENCE approvers_id_seq
-    START WITH 1
-    INCREMENT BY 1
-    NO MINVALUE
-    NO MAXVALUE
-    CACHE 1;
-
-ALTER SEQUENCE approvers_id_seq OWNED BY approvers.id;
-
 CREATE TABLE ar_internal_metadata (
     key character varying NOT NULL,
     value character varying,
@@ -31876,10 +31840,6 @@ ALTER TABLE ONLY approval_project_rules_users ALTER COLUMN id SET DEFAULT nextva
 
 ALTER TABLE ONLY approvals ALTER COLUMN id SET DEFAULT nextval('approvals_id_seq'::regclass);
 
-ALTER TABLE ONLY approver_groups ALTER COLUMN id SET DEFAULT nextval('approver_groups_id_seq'::regclass);
-
-ALTER TABLE ONLY approvers ALTER COLUMN id SET DEFAULT nextval('approvers_id_seq'::regclass);
-
 ALTER TABLE ONLY arkose_sessions ALTER COLUMN id SET DEFAULT nextval('arkose_sessions_id_seq'::regclass);
 
 ALTER TABLE ONLY atlassian_identities ALTER COLUMN user_id SET DEFAULT nextval('atlassian_identities_user_id_seq'::regclass);
@@ -34564,12 +34524,6 @@ ALTER TABLE ONLY approval_project_rules_users
 
 ALTER TABLE ONLY approvals
     ADD CONSTRAINT approvals_pkey PRIMARY KEY (id);
-
-ALTER TABLE ONLY approver_groups
-    ADD CONSTRAINT approver_groups_pkey PRIMARY KEY (id);
-
-ALTER TABLE ONLY approvers
-    ADD CONSTRAINT approvers_pkey PRIMARY KEY (id);
 
 ALTER TABLE ONLY ar_internal_metadata
     ADD CONSTRAINT ar_internal_metadata_pkey PRIMARY KEY (key);
@@ -40459,14 +40413,6 @@ CREATE INDEX index_approvals_on_merge_request_id_and_created_at ON approvals USI
 CREATE INDEX index_approvals_on_project_id ON approvals USING btree (project_id);
 
 CREATE UNIQUE INDEX index_approvals_on_user_id_and_merge_request_id ON approvals USING btree (user_id, merge_request_id);
-
-CREATE INDEX index_approver_groups_on_group_id ON approver_groups USING btree (group_id);
-
-CREATE INDEX index_approver_groups_on_target_id_and_target_type ON approver_groups USING btree (target_id, target_type);
-
-CREATE INDEX index_approvers_on_target_id_and_target_type ON approvers USING btree (target_id, target_type);
-
-CREATE INDEX index_approvers_on_user_id ON approvers USING btree (user_id);
 
 CREATE INDEX index_arkose_sessions_on_session_xid ON arkose_sessions USING btree (session_xid);
 
@@ -52374,9 +52320,6 @@ ALTER TABLE ONLY board_assignees
 
 ALTER TABLE ONLY epic_user_mentions
     ADD CONSTRAINT fk_rails_1c65976a49 FOREIGN KEY (note_id) REFERENCES notes(id) ON DELETE CASCADE;
-
-ALTER TABLE ONLY approver_groups
-    ADD CONSTRAINT fk_rails_1cdcbd7723 FOREIGN KEY (group_id) REFERENCES namespaces(id) ON DELETE CASCADE;
 
 ALTER TABLE ONLY packages_cargo_metadata
     ADD CONSTRAINT fk_rails_1dd80bdb24 FOREIGN KEY (project_id) REFERENCES projects(id) ON DELETE CASCADE;

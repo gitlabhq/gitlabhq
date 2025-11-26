@@ -79,8 +79,8 @@ For Conan 1:
 
 - Add the GitLab package registry as a Conan registry remote.
 - [Create your Conan 1 package](build_packages.md#build-a-conan-1-package) using the plus-separated (`+`) project path as your Conan user. For example,
-if your project is located at `https://gitlab.com/foo/bar/my-proj`,
-create your Conan package using `conan create . foo+bar+my-proj/channel`. `channel` is the package channel, such as `beta` or `stable`:
+  if your project is located at `https://gitlab.com/foo/bar/my-proj`,
+  create your Conan package using `conan create . foo+bar+my-proj/channel`. `channel` is the package channel, such as `beta` or `stable`:
 
    ```shell
    CONAN_LOGIN_USERNAME=<gitlab-username> CONAN_PASSWORD=<personal_access_token> conan upload MyPackage/1.0.0@foo+bar+my-proj/channel --all --remote=gitlab

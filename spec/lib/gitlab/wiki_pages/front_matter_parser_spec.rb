@@ -9,7 +9,7 @@ RSpec.describe Gitlab::WikiPages::FrontMatterParser, feature_category: :wiki do
   let(:end_divider) { '---' }
 
   let(:with_front_matter) do
-    <<~MD
+    <<~MD.rstrip
     ---
     a: 1
     b: 2
@@ -35,7 +35,7 @@ RSpec.describe Gitlab::WikiPages::FrontMatterParser, feature_category: :wiki do
       it do
         is_expected.to have_attributes(
           front_matter: have_correct_front_matter,
-          content: content + "\n",
+          content: content,
           error: be_nil
         )
       end
@@ -48,6 +48,28 @@ RSpec.describe Gitlab::WikiPages::FrontMatterParser, feature_category: :wiki do
         is_expected.to have_attributes(
           front_matter: {},
           content: raw_content,
+          error: be_nil
+        )
+      end
+    end
+
+    context 'the content itself appears to contain frontmatter' do
+      let(:content) do
+        <<~MD.rstrip
+        ---
+        custom: frontmatter
+        ---
+
+        Yay!
+        MD
+      end
+
+      let(:raw_content) { with_front_matter }
+
+      it do
+        is_expected.to have_attributes(
+          front_matter: have_correct_front_matter,
+          content: content,
           error: be_nil
         )
       end
@@ -67,7 +89,7 @@ RSpec.describe Gitlab::WikiPages::FrontMatterParser, feature_category: :wiki do
       it do
         is_expected.to have_attributes(
           front_matter: have_correct_front_matter,
-          content: content + "\n",
+          content: content,
           reason: be_nil
         )
       end

@@ -88,7 +88,7 @@ Prerequisites:
 To configure a dashboard for a dynamic environment:
 
 - Specify the agent in your `.gitlab-ci.yml` file. You must specify the full path to the agent configuration project,
-followed by a colon and the name of the agent.
+  followed by a colon and the name of the agent.
 
 For example:
 

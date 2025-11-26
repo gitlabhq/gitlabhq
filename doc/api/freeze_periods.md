@@ -14,15 +14,13 @@ title: Freeze Periods API
 
 Use this API to interact with deployment [freeze periods](../user/project/releases/_index.md#prevent-unintentional-releases-by-setting-a-deploy-freeze).
 
-## Permissions and security
-
-Users with Reporter [permissions](../user/permissions.md) or greater can read
-Freeze Period API endpoints. Only users with the Maintainer role can modify
-Freeze Periods.
-
 ## List freeze periods
 
 Paginated list of freeze periods, sorted by `created_at` in ascending order.
+
+Prerequisites:
+
+- You must have at least the Reporter role for the project.
 
 ```plaintext
 GET /projects/:id/freeze_periods
@@ -57,6 +55,10 @@ Example response:
 
 Get a freeze period for a specified `freeze_period_id`.
 
+Prerequisites:
+
+- You must have at least the Reporter role for the project.
+
 ```plaintext
 GET /projects/:id/freeze_periods/:freeze_period_id
 ```
@@ -88,6 +90,10 @@ Example response:
 ## Create a freeze period
 
 Create a freeze period.
+
+Prerequisites:
+
+- You must have at least the Maintainer role for the project.
 
 ```plaintext
 POST /projects/:id/freeze_periods
@@ -125,6 +131,10 @@ Example response:
 
 Update a freeze period for the given `freeze_period_id`.
 
+Prerequisites:
+
+- You must have at least the Maintainer role for the project.
+
 ```plaintext
 PUT /projects/:id/freeze_periods/:freeze_period_id
 ```
@@ -161,6 +171,10 @@ Example response:
 ## Delete a freeze period
 
 Delete a freeze period for the given `freeze_period_id`.
+
+Prerequisites:
+
+- You must have at least the Maintainer role for the project.
 
 ```plaintext
 DELETE /projects/:id/freeze_periods/:freeze_period_id

@@ -22,12 +22,10 @@ After using this API, you might want to use the [project-level CI/CD variables A
 You must still migrate your [Container Registry](../user/packages/container_registry/_index.md)
 over a series of Docker pulls and pushes. Re-run any CI/CD pipelines to retrieve any build artifacts.
 
-## Prerequisites
+Prerequisites:
 
-For prerequisites for project import and export API, see:
-
-- Prerequisites for [project export](../user/project/settings/import_export.md#export-a-project-and-its-data).
-- Prerequisites for [project import](../user/project/settings/import_export.md#import-a-project-and-its-data).
+- For project exports, see [export a project and its data](../user/project/settings/import_export.md#export-a-project-and-its-data).
+- For project imports, see [import a project and its data](../user/project/settings/import_export.md#import-a-project-and-its-data).
 
 ## Schedule an export
 

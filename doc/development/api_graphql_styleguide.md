@@ -677,6 +677,28 @@ to expose collections of items. This provides the clients with a lot
 of flexibility while also allowing the backend to use different
 pagination models.
 
+#### Choosing between CountableConnectionType and LimitedCountableConnectionType
+
+GitLab provides two connection types for collections that support counting:
+
+- `CountableConnectionType` - Returns exact counts by default, with optional limit argument for performance optimization
+- `LimitedCountableConnectionType` - Always returns limited counts (default limit: 1000)
+
+**Use `CountableConnectionType` when:**
+
+- Exact counts are important for the user experience (for example, showing total number of issues)
+- The collection size is typically small to moderate
+- Clients can opt-in to performance optimization by providing a `limit` argument when exact counts aren't needed
+
+**Use `LimitedCountableConnectionType` when:**
+
+- Exact counts are not critical for the user experience
+- The collection can be very large and counting all items would be expensive
+- You want to enforce a performance limit by default
+
+Both connection types use the same underlying limited counting logic when a limit is applied,
+sharing implementation through the `CountableConnectionHelper` module.
+
 To expose a collection of resources we can use a connection type. This wraps the array with default pagination fields. For example a query for project-pipelines could look like this:
 
 ```graphql

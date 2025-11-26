@@ -36,7 +36,7 @@ With GitLab Duo Self-Hosted, you can:
 - Isolate the GitLab instance, AI gateway, and models in your own environment.
 - Eliminate reliance on the shared GitLab AI gateway.
 - Manage the lifecycle of requests to LLM backends for GitLab Duo features,
-and avoid external dependencies so that requests stay in your enterprise network.
+  and avoid external dependencies so that requests stay in your enterprise network.
 
 For a click-through demo, see [GitLab Duo Self-Hosted product tour](https://gitlab.navattic.com/gitlab-duo-self-hosted).
 <!-- Demo published on 2025-02-13 -->

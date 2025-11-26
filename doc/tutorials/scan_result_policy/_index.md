@@ -24,7 +24,7 @@ To set up a merge request approval policy:
 ## Before you begin
 
 - The namespace you use for this tutorial must contain a minimum of three users, including your own. If you don't have two other
-users, you must first create them. For details, see [Creating users](../../user/profile/account/create_accounts.md).
+  users, you must first create them. For details, see [Creating users](../../user/profile/account/create_accounts.md).
 - You need permission to create new projects in an existing group.
 
 ## Create a test project

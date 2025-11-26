@@ -12,15 +12,15 @@ title: Markdown API
 
 {{< /details >}}
 
-Use this API to render [Markdown](../user/markdown.md) content as HTML.
-
-## Required authentication
-
 {{< history >}}
 
-- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/93727) in GitLab 15.3 [with a flag](../administration/feature_flags/_index.md) named `authenticate_markdown_api`. Enabled by default.
+- Introduced [required authentication](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/93727) in GitLab 15.3 [with a flag](../administration/feature_flags/_index.md) named `authenticate_markdown_api`. Enabled by default.
 
 {{< /history >}}
+
+Use this API to render [Markdown](../user/markdown.md) content as HTML.
+
+All requests to this API must be [authenticated](rest/authentication.md).
 
 {{< alert type="flag" >}}
 
@@ -29,8 +29,6 @@ For more information, see the history.
 This feature is available for testing, but not ready for production use.
 
 {{< /alert >}}
-
-All API calls to the Markdown API must be [authenticated](rest/authentication.md).
 
 ## Render an arbitrary Markdown document
 

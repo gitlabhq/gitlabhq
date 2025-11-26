@@ -29,8 +29,8 @@ Scan result policies feature was renamed to merge request approval policies in G
 You can use merge request approval policies for multiple purposes, including:
 
 - Detect results from security and license scanners to enforce approval rules. For example, one type of merge request
-policy is a security approval policy that allows approval to be required based on the
-findings of one or more security scan jobs. Merge request approval policies are evaluated after a CI scanning job is fully executed and both vulnerability and license type policies are evaluated based on the job artifact reports that are published in the completed pipeline.
+  policy is a security approval policy that allows approval to be required based on the
+  findings of one or more security scan jobs. Merge request approval policies are evaluated after a CI scanning job is fully executed and both vulnerability and license type policies are evaluated based on the job artifact reports that are published in the completed pipeline.
 - Enforce approval rules on all merge requests that meet certain conditions. For example, enforce that MRs are reviewed by multiple users with Developer and Maintainer roles for all MRs that target default branches.
 - Enforce settings for security and compliance on a project. For example, prevent users who have authored or committed changes to an MR from approving the MR. Or prevent users from pushing or force pushing to the default branch to ensure all changes go through an MR.
 

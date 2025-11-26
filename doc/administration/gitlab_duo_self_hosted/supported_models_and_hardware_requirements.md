@@ -41,7 +41,7 @@ depending on the specific model and feature combination.
 - Full functionality: The model can likely handle the feature without any loss of quality.
 - Partial functionality: The model supports the feature, but there might be compromises or limitations.
 - Limited functionality: The model is unsuitable for the feature, likely resulting in significant quality loss or performance issues.
-Models that have limited functionality for a feature will not receive GitLab support for that specific feature.
+  Models that have limited functionality for a feature will not receive GitLab support for that specific feature.
 
 <!-- vale gitlab_base.Spelling = NO -->
 

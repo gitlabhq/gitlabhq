@@ -467,7 +467,7 @@ Prerequisites:
 
 - For GitLab Self-Managed and GitLab Dedicated, a GitLab administrator must [enable the extension registry](../../administration/settings/vscode_extension_marketplace.md#enable-the-extension-registry).
 - For enterprise users, a group Owner must [enable the Extension Marketplace](../enterprise_user/_index.md#enable-the-extension-marketplace-for-enterprise-users)
-for the associated group.
+  for the associated group.
 
 To integrate with the Extension Marketplace:
 

@@ -15,6 +15,8 @@ title: Project wikis API
 Use this API to manage [project wikis](../user/project/wiki/_index.md).
 An API for [group wikis](group_wikis.md) is also available.
 
+Comments on a wiki page are called `notes`. To interact with them, use the [notes API](notes.md#project-wikis).
+
 ## List wiki pages
 
 Get all wiki pages for a given project.
@@ -221,7 +223,3 @@ Example response:
   }
 }
 ```
-
-## Comments on wiki pages
-
-Wiki comments are called `notes`. You can interact with them using the [Notes API](notes.md#project-wikis).

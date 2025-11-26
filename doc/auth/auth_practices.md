@@ -20,22 +20,20 @@ This principle reduces security risks by limiting potential damage from compromi
 
 - Grant users the minimum permissions necessary to complete their work.
 - Assign minimum roles (Minimal Access or Guest) at the top-level group, then grant higher
-permissions only in specific subgroups and projects where needed.
+  permissions only in specific subgroups and projects where needed.
 - Minimize the number of Owners and Maintainers by implementing custom roles that restrict access
-to sensitive settings.
+  to sensitive settings.
 - When creating tokens, use the most limited scope possible or create multiple tokens with
-different scopes for specific purposes.
+  different scopes for specific purposes.
 
 ### Hierarchical permission management
 
 Organize permissions to match your organizational structure and reduce administrative overhead.
 
 - Apply group membership permissions rather than project membership permissions when possible to reduce
-administrative overhead.
-- Create a single top-level group for your organization to enable centralized access control
-and reporting.
-- Organize your group hierarchy to match your organizational structure with clear ownership
-boundaries.
+  administrative overhead.
+- Create a single top-level group for your organization to enable centralized access control and reporting.
+- Organize your group hierarchy to match your organizational structure with clear ownership boundaries.
 
 ### Defense in depth
 
@@ -43,11 +41,11 @@ Layer multiple security controls to protect against various types of attacks and
 If one control fails, others provide backup protection.
 
 - Set up [protected branches](../user/project/repository/branches/protected.md) for critical
-applications to prevent unauthorized changes.
+  applications to prevent unauthorized changes.
 - Configure [protected environments](../ci/environments/protected_environments.md) to restrict
-deployments to specific roles or users.
+  deployments to specific roles or users.
 - Use [protected containers](../user/packages/container_registry/container_repository_protection_rules.md)
-to add extra security for sensitive artifacts.
+  to add extra security for sensitive artifacts.
 
 ## Authentication and credentials
 
@@ -60,9 +58,9 @@ policies reduce the risk of credential-based attacks by requiring strong passwor
 your organization's security standards.
 
 - Configure [password length limits](../security/password_length_limits.md) appropriate for
-your security requirements.
+  your security requirements.
 - Enable [compromised password detection](../security/compromised_password_detection.md) to
-prevent the use of known compromised passwords.
+  prevent the use of known compromised passwords.
 
 ### Two-factor authentication
 
@@ -70,7 +68,7 @@ Two-factor authentication (2FA) significantly improves security by requiring a s
 of verification. Even if passwords are compromised, 2FA prevents unauthorized access.
 
 - Require [two-factor authentication](../user/profile/account/two_factor_authentication.md)
-for all users, especially those with elevated permissions.
+  for all users, especially those with elevated permissions.
 - Provide clear documentation and support for 2FA setup to ensure user adoption.
 - Implement backup recovery methods to prevent account lockouts.
 
@@ -80,10 +78,10 @@ Tokens provide secure, programmatic access to GitLab resources. Different token 
 different purposes and have varying security implications.
 
 - Rotate [personal access tokens](../user/profile/personal_access_tokens.md) regularly and
-before they expire.
+  before they expire.
 - Use [group access tokens](../user/group/settings/group_access_tokens.md) and
-[project access tokens](../user/project/settings/project_access_tokens.md) instead of
-personal tokens for automated processes.
+  [project access tokens](../user/project/settings/project_access_tokens.md) instead of
+  personal tokens for automated processes.
 - Store tokens securely and never commit them to repositories.
 
 ### SSH key authentication
@@ -92,8 +90,7 @@ SSH keys provide secure, passwordless access to Git repositories. Proper key man
 is essential for maintaining security.
 
 - Use strong SSH key algorithms (at minimum, RSA 2048-bit or Ed25519).
-- Configure [SSH key restrictions](../security/ssh_keys_restrictions.md) to enforce security
-standards.
+- Configure [SSH key restrictions](../security/ssh_keys_restrictions.md) to enforce security standards.
 - Regularly audit and rotate SSH keys, especially for service accounts.
 
 ## Access management
@@ -106,10 +103,10 @@ management balances security requirements with operational efficiency.
 Different user types require different access levels based on their relationship to your organization and security requirements. Properly classifying users helps enforce appropriate access boundaries.
 
 - Designate contractors and third parties as [external users](../administration/external_users.md)
-to automatically restrict their visibility to internal projects.
+  to automatically restrict their visibility to internal projects.
 - Assign the Guest role to external collaborators who need limited interaction with repositories.
 - Use [auditor users](../administration/auditor_users.md) for compliance and security personnel
-who need read-only access across the instance.
+  who need read-only access across the instance.
 
 ### Regular access reviews
 
@@ -117,8 +114,8 @@ Periodic access reviews ensure user permissions remain appropriate as roles and 
 
 - Conduct regular access reviews to validate user permissions and resolve discrepancies immediately.
 - Use [user export](../administration/admin_area.md#user-permission-export) and
-[group export](../user/group/manage.md#export-members-as-csv) features to generate
-comprehensive access reports.
+  [group export](../user/group/manage.md#export-members-as-csv) features to generate
+  comprehensive access reports.
 - Remove access immediately when users leave the organization or change roles.
 
 ### Access monitoring and auditing
@@ -127,7 +124,7 @@ Continuous monitoring of access patterns and permission changes helps detect sec
 
 - Configure [audit event streaming](../administration/compliance/audit_event_streaming.md) to a SIEM tool for real-time security monitoring.
 - Review [credentials inventory](../user/group/credentials_inventory.md) regularly to identify
-unused or overprivileged tokens.
+  unused or overprivileged tokens.
 - Monitor for unauthorized access changes or privilege escalations.
 
 ## Organizational scaling
@@ -149,7 +146,7 @@ Focus on establishing good foundations without complex processes that could impe
 Balance security requirements with the need for scalable processes.
 
 - Integrate [LDAP](../user/group/access_and_permissions.md#manage-group-memberships-with-ldap)
-or [SAML](../user/group/saml_sso/group_sync.md) with user groups to simplify management.
+  or [SAML](../user/group/saml_sso/group_sync.md) with user groups to simplify management.
 - Create separate subgroups for shared resources and sensitive resources to control access.
 - Develop formal onboarding and offboarding processes for team members.
 - Minimize deeply nested group structures (limit to 4-5 levels for most organizations).
@@ -159,11 +156,10 @@ or [SAML](../user/group/saml_sso/group_sync.md) with user groups to simplify man
 Implement enterprise-grade controls and governance processes.
 
 - Develop [custom roles](../user/custom_roles/_index.md) for unique access needs while reducing the
-number of highly privileged users.
+  number of highly privileged users.
 - Automate bulk access operations using GitLab APIs to reduce manual provisioning overhead.
 - Establish governance processes for permission changes to prevent business disruption.
-- Implement time-bound access for privileged roles and compliance frameworks for separation
-of duties.
+- Implement time-bound access for privileged roles and compliance frameworks for separation of duties.
 
 ## Repository and CI/CD security
 
@@ -175,29 +171,28 @@ These controls ensure the integrity of your software development and delivery pi
 CI/CD pipelines often have elevated privileges to deploy applications and access sensitive resources. Securing pipeline execution prevents unauthorized actions and protects your deployment process.
 
 - Use [job permissions](../ci/jobs/fine_grained_permissions.md) to control what resources
-are accessible during pipeline execution.
+  are accessible during pipeline execution.
 - Configure [approval gates](../ci/environments/deployment_approvals.md) for critical
-deployment stages.
+  deployment stages.
 - Use environment-specific runners or runner tags to isolate deployments and limit access
-to sensitive production resources.
+  to sensitive production resources.
 
 ### Repository protection
 
 Source code repositories contain your organization's intellectual property and need protection from unauthorized changes. Repository security controls ensure code integrity and prevent malicious modifications.
 
 - Implement [push rules](../user/project/repository/push_rules.md) to enforce commit standards
-and prevent sensitive data exposure.
+  and prevent sensitive data exposure.
 - Require [code review](../user/project/merge_requests/approvals/rules.md) through approval
-rules before merging changes to protected branches.
+  rules before merging changes to protected branches.
 - Use [signed commits](../user/project/repository/signed_commits/_index.md) to provide
-cryptographic verification of commit authenticity.
+  cryptographic verification of commit authenticity.
 
 ### API and automation security
 
 Automated processes and API integrations often use long-lived credentials with broad access. These non-human access patterns require special security considerations to prevent credential abuse.
 
-- Use service accounts with limited permissions for automated processes rather than personal
-tokens.
+- Use service accounts with limited permissions for automated processes rather than personal tokens.
 - Regularly rotate credentials used in automation and CI/CD pipelines.
 - Monitor automated access patterns for unusual behavior or privilege escalation attempts.
 - Use the most specific scopes possible when creating tokens for API access.

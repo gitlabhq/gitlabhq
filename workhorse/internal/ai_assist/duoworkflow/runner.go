@@ -22,6 +22,7 @@ import (
 	"google.golang.org/protobuf/proto"
 )
 
+const wsWriteDeadline = 5 * time.Second
 const wsCloseTimeout = 5 * time.Second
 const wsStopWorkflowTimeout = 10 * time.Second
 
@@ -43,6 +44,7 @@ type websocketConn interface {
 	WriteMessage(int, []byte) error
 	WriteControl(int, []byte, time.Time) error
 	SetReadDeadline(time.Time) error
+	SetWriteDeadline(time.Time) error
 	Close() error
 }
 
@@ -321,6 +323,11 @@ func (r *runner) sendActionToWs(action *pb.Action) error {
 	r.marshalBuf, err = marshaler.MarshalAppend(r.marshalBuf[:0], action)
 	if err != nil {
 		return fmt.Errorf("sendActionToWs: failed to unmarshal action: %v", err)
+	}
+
+	deadline := time.Now().Add(wsWriteDeadline)
+	if deadlineErr := r.conn.SetWriteDeadline(deadline); deadlineErr != nil {
+		return fmt.Errorf("sendActionToWs: failed to set write deadline: %v", deadlineErr)
 	}
 
 	if err = r.conn.WriteMessage(websocket.BinaryMessage, r.marshalBuf); err != nil {

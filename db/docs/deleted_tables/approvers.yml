@@ -10,3 +10,5 @@ milestone: '7.13'
 gitlab_schema: gitlab_main_cell_local
 notes: Exempted because Marked for drop - https://gitlab.com/gitlab-org/gitlab/-/issues/444234
 table_size: small
+removed_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/211525
+removed_in_milestone: '18.7'

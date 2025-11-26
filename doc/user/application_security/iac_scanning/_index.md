@@ -28,14 +28,14 @@ With GitLab Ultimate, IaC scanning results are also processed so you can:
 
 ## Getting started
 
-If you are new to IaC scanning, the following steps show
-how you can quickly enable IaC scanning for your project.
+If you are new to IaC scanning, follow these steps to enable it for your project.
 
 Prerequisites:
 
 - IaC scanning requires the AMD64 architecture. Microsoft Windows is not supported.
 - Minimum of 4 GB RAM to ensure consistent performance.
-- The `test` stage is required in the `.gitlab-ci.yml` file.
+- The `test` stage is required in the `.gitlab-ci.yml` file. If your project defines its own
+  `stages` list, make sure the `test` stage is included.
 - On GitLab Self-Managed you need GitLab Runner with the
   [`docker`](https://docs.gitlab.com/runner/executors/docker.html) or
   [`kubernetes`](https://docs.gitlab.com/runner/install/kubernetes.html) executor.
@@ -45,21 +45,21 @@ To enable IaC scanning:
 
 1. On the left sidebar, select **Search or go to** and find your project. If you've [turned on the new navigation](../../interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
 1. If your project does not already have one, create a `.gitlab-ci.yml` file in the root directory.
-1. At the top of the `.gitlab-ci.yml` file, add one of the following lines:
+1. At the top of the `.gitlab-ci.yml` file, add one of the following:
 
-Using a template:
+   Using a template:
 
-   ```yaml
-   include:
-     - template: Jobs/SAST-IaC.gitlab-ci.yml
-   ```
+     ```yaml
+     include:
+       - template: Jobs/SAST-IaC.gitlab-ci.yml
+     ```
 
-Or using a CI/CD component:
+   Or using a CI/CD component:
 
-   ```yaml
-   include:
-     - component: gitlab.com/components/sast/iac-sast@main
-   ```
+     ```yaml
+     include:
+       - component: gitlab.com/components/sast/iac-sast@main
+     ```
 
 At this point, IaC scanning is enabled in your pipeline:
 

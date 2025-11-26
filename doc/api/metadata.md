@@ -24,6 +24,7 @@ Retrieve metadata information for this GitLab instance.
 
 ```plaintext
 GET /metadata
+GET /version
 ```
 
 Response body attributes:
@@ -45,6 +46,12 @@ Example request:
 curl --request GET \
   --header "PRIVATE-TOKEN: <your_access_token>" \
   --url "https://gitlab.example.com/api/v4/metadata"
+```
+
+```shell
+curl --request GET \
+  --header "PRIVATE-TOKEN: <your_access_token>" \
+  --url "https://gitlab.example.com/api/v4/version"
 ```
 
 Example response:

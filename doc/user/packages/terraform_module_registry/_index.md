@@ -21,11 +21,8 @@ title: Terraform Module Registry
 
 With the Terraform Module Registry, you can:
 
-- Use GitLab projects as a
-private registry for Terraform modules.
-- Create and publish
-modules with GitLab CI/CD, which can then be consumed from other private
-projects.
+- Use GitLab projects as a private registry for Terraform modules.
+- Create and publish modules with GitLab CI/CD, which can then be consumed from other private projects.
 
 ## Authenticate to the Terraform Module Registry
 
@@ -207,6 +204,7 @@ For example, if:
 
 - The project is `gitlab.example.com/parent-group/subgroup/my-project`.
 - The Terraform module is `my-infra-package`.
+
 If duplicates are allowed, `my-infra-package` is a valid module.
 If duplicates are not allowed, the module name must be unique in all
 projects in all groups under `parent-group`.
@@ -214,7 +212,7 @@ projects in all groups under `parent-group`.
 When you name a module, keep these naming conventions in mind:
 
 - Your project and group names must not include a dot (`.`).
-For example, `source = "gitlab.example.com/my.group/project.name"` is invalid.
+  For example, `source = "gitlab.example.com/my.group/project.name"` is invalid.
 - Module versions should follow the [semantic versioning specification](https://semver.org/).
 
 ### Allow duplicate Terraform modules

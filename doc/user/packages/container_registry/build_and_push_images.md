@@ -162,8 +162,7 @@ build:
 
 In the previous example:
 
-- `$CI_REGISTRY_IMAGE` resolves to the address of the registry tied
-to this project.
+- `$CI_REGISTRY_IMAGE` resolves to the address of the registry tied to this project.
 - `$IMAGE_TAG` is a custom variable that combines the registry address with `$CI_COMMIT_REF_SLUG`, the image tag. The [`$CI_COMMIT_REF_NAME` predefined variable](../../../ci/variables/predefined_variables.md#predefined-variables) resolves to the branch or tag name and can contain forward slashes. Image tags cannot contain forward slashes. Use `$CI_COMMIT_REF_SLUG` instead.
 
 The following example splits CI/CD tasks into four pipeline stages, including two tests that run in parallel.

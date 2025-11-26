@@ -12,7 +12,7 @@ RSpec.describe 'Puma', feature_category: :tooling do
       .gsub('config.ru', File.join(__dir__, 'configs/config.ru'))
       .gsub('workers 2', 'workers 1')
       .gsub('/home/git/gitlab.socket', File.join(project_root, 'tmp/tests/puma.socket'))
-      .gsub('on_worker_boot do', "on_worker_boot do\nFile.write('#{File.join(project_root, 'tmp/tests/puma-worker-ready')}', Process.pid)")
+      .gsub('before_worker_boot do', "before_worker_boot do\nFile.write('#{File.join(project_root, 'tmp/tests/puma-worker-ready')}', Process.pid)")
       .gsub(%r{/home/git(/gitlab)?}, project_root)
     config_path = File.join(project_root, 'tmp/tests/puma.rb')
     @socket_path = File.join(project_root, 'tmp/tests/puma.socket')

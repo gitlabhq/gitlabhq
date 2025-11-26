@@ -68,6 +68,10 @@ func (m *mockWebSocketConn) SetReadDeadline(_ time.Time) error {
 	return m.setDeadlineError
 }
 
+func (m *mockWebSocketConn) SetWriteDeadline(_ time.Time) error {
+	return m.setDeadlineError
+}
+
 type mockWorkflowStream struct {
 	sendEvents  []*pb.ClientEvent
 	sendMu      sync.Mutex
@@ -790,10 +794,11 @@ func TestRunner_closeWebSocketConnection(t *testing.T) {
 
 func TestRunner_sendActionToWs(t *testing.T) {
 	tests := []struct {
-		name           string
-		action         *pb.Action
-		writeError     error
-		expectedErrMsg string
+		name             string
+		action           *pb.Action
+		writeError       error
+		setDeadlineError error
+		expectedErrMsg   string
 	}{
 		{
 			name: "successful send",
@@ -820,12 +825,26 @@ func TestRunner_sendActionToWs(t *testing.T) {
 			writeError:     errors.New("write failed"),
 			expectedErrMsg: "sendActionToWs: failed to send WS message: write failed",
 		},
+		{
+			name: "set write deadline error",
+			action: &pb.Action{
+				RequestID: "req-789",
+				Action: &pb.Action_RunCommand{
+					RunCommand: &pb.RunCommandAction{
+						Program: "ls",
+					},
+				},
+			},
+			setDeadlineError: errors.New("set write deadline failed"),
+			expectedErrMsg:   "sendActionToWs: failed to set write deadline: set write deadline failed",
+		},
 	}
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			mockConn := &mockWebSocketConn{
-				writeError: tt.writeError,
+				writeError:       tt.writeError,
+				setDeadlineError: tt.setDeadlineError,
 			}
 
 			testURL, _ := url.Parse("http://example.com")

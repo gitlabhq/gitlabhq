@@ -120,7 +120,7 @@ You do not need to do the following in preparation before importing:
 
 - Allocate extra object storage or file system space: The import makes no significant writes to this storage.
 - Run offline garbage collection: While not harmful, offline garbage collection does not shorten the
-import enough to recoup the time spent running this command.
+  import enough to recoup the time spent running this command.
 
 {{< alert type="note" >}}
 

@@ -57,7 +57,7 @@ Example response:
 }
 ```
 
-## Update `secret_push_protection_enabled` setting
+## Update the `secret_push_protection_enabled` setting
 
 {{< history >}}
 
@@ -65,18 +65,20 @@ Example response:
 
 {{< /history >}}
 
-Update the `secret_push_protection_enabled` setting for the project to the provided value.
-
-Set to `true` to enable [secret push protection](../user/application_security/secret_detection/secret_push_protection/_index.md) for the project.
+Updates the `secret_push_protection_enabled` setting for the specified project.
 
 Prerequisites:
 
 - You must have at least the Maintainer role for the project.
 
-| Attribute           | Type              | Required   | Description                                                                                                                  |
-| ------------------- | ----------------- | ---------- | -----------------------------------------------------------------------------------------------------------------------------|
-| `id`                | integer or string | yes        | The ID or [URL-encoded path of the project](rest/_index.md#namespaced-paths) which the authenticated user is a member of  |
-| `secret_push_protection_enabled`        | boolean | yes        | The value to update `secret_push_protection_enabled` to  |
+```plaintext
+PUT /projects/:id/security_settings
+```
+
+| Attribute                        | Type              | Required | Description |
+| -------------------------------- | ----------------- | -------- | ----------- |
+| `id`                             | integer or string | Yes      | ID or [URL-encoded path](rest/_index.md#namespaced-paths) of a project. |
+| `secret_push_protection_enabled` | boolean           | Yes      | Enables secret push protection for the project. |
 
 ```shell
 curl --request PUT \

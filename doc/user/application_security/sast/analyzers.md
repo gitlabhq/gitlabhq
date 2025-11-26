@@ -126,6 +126,7 @@ But, vulnerabilities may not match up if:
 
 - The new Semgrep-based rule detects the vulnerability in a different location, or in a different way, than the old analyzer did.
 - You previously [disabled SAST analyzers](#disable-specific-default-analyzers).
+
 This can interfere with automatic translation by preventing necessary identifiers from being recorded for each vulnerability.
 
 If a vulnerability doesn't match:

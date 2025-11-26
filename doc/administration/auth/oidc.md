@@ -1583,7 +1583,7 @@ Consider the following aspects:
 - Authentication context IDs use fixed values from `c1` to `c99`, each representing a specific
   authentication context with conditional access policies.
 - By default, Microsoft Entra ID does not include the `acrs` claim in the ID token. To enable this, you must
-[configure optional claims](https://learn.microsoft.com/en-us/entra/identity-platform/optional-claims?tabs=appui#configure-optional-claims-in-your-application).
+  [configure optional claims](https://learn.microsoft.com/en-us/entra/identity-platform/optional-claims?tabs=appui#configure-optional-claims-in-your-application).
 - When step-up authentication succeeds, the response returns the [`acrs` claim](https://learn.microsoft.com/en-us/entra/identity-platform/access-token-claims-reference#payload-claims) as a JSON array
   of strings. For example: `acrs: ["c1", "c2", "c3"]`.
 

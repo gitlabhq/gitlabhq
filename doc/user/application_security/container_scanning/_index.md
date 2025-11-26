@@ -772,10 +772,10 @@ If this is not found, `index.json` is used to fetch the `io.containerd.image.nam
 is used instead.
 
 - `manifest.json` is defined in [Docker Image Specification v1.1.0](https://github.com/moby/docker-image-spec/blob/v1.1.0/v1.1.md#combined-image-json--filesystem-changeset-format)
-and created by using the command `docker save`.
+  and created by using the command `docker save`.
 - `index.json` format is defined in the [OCI image specification v1.1.1](https://github.com/opencontainers/image-spec/blob/v1.1.1/spec.md).
-`io.containerd.image.name` is [available in containerd v1.3.0 and later](https://github.com/containerd/containerd/blob/v1.3.0/images/annotations.go)
-when using `ctr image export`.
+  `io.containerd.image.name` is [available in containerd v1.3.0 and later](https://github.com/containerd/containerd/blob/v1.3.0/images/annotations.go)
+  when using `ctr image export`.
 
 ### Scanning archives built in a previous job
 
