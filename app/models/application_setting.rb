@@ -88,6 +88,7 @@ class ApplicationSetting < ApplicationRecord
   serialize :disabled_oauth_sign_in_sources, type: Array # rubocop:disable Cop/ActiveRecordSerialize
   serialize :domain_allowlist, type: Array # rubocop:disable Cop/ActiveRecordSerialize
   serialize :domain_denylist, type: Array # rubocop:disable Cop/ActiveRecordSerialize
+  serialize :iframe_rendering_allowlist, type: Array # rubocop:disable Cop/ActiveRecordSerialize
 
   # See https://gitlab.com/gitlab-org/gitlab/-/issues/300916
   serialize :asset_proxy_allowlist, type: Array # rubocop:disable Cop/ActiveRecordSerialize
@@ -1025,6 +1026,21 @@ class ApplicationSetting < ApplicationRecord
   validates :math_rendering_limits_enabled,
     inclusion: { in: [true, false], message: N_('must be a boolean value') }
 
+  validates :iframe_rendering_enabled,
+    inclusion: { in: [true, false], message: N_('must be a boolean value') }
+
+  validates_each :iframe_rendering_allowlist, on: :update do |record, attr, value|
+    # Leading "http://" or "https://" and trailing "/" are removed in
+    # ApplicationSettingImplementation#coerce_iframe_rendering_allowlist.
+    # Normalising the values in here is crucial, since we rely on it to
+    # correctly (securely) check iframe src attributes and construct our frame-src CSP.
+    value.each do |entry|
+      unless %r{\A[a-zA-Z0-9.-]+(?::\d+)?\z}.match?(entry)
+        record.errors.add(attr, format(_("'%{entry}' is not a valid domain name"), entry:))
+      end
+    end
+  end
+
   validates :require_admin_two_factor_authentication,
     inclusion: { in: [true, false], message: N_('must be a boolean value') }
 
@@ -1058,6 +1074,7 @@ class ApplicationSetting < ApplicationRecord
   before_validation :ensure_uuid!
   before_validation :coerce_repository_storages_weighted, if: :repository_storages_weighted_changed?
   before_validation :normalize_default_branch_name
+  before_validation :coerce_iframe_rendering_allowlist, if: :iframe_rendering_allowlist_changed?
 
   before_save :ensure_runners_registration_token
   before_save :ensure_health_check_access_token

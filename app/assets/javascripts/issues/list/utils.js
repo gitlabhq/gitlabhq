@@ -7,6 +7,7 @@ import { __, s__ } from '~/locale';
 import {
   FILTERED_SEARCH_TERM,
   OPERATOR_NOT,
+  OPERATOR_IS,
   OPERATOR_OR,
   OPERATOR_AFTER,
   OPERATORS_TO_GROUP,
@@ -307,8 +308,34 @@ const getOperatorFromUrlParamKey = (tokenType, urlParamKey) =>
     Object.values(filterObj).includes(urlParamKey),
   )[0];
 
-export const getFilterTokens = (locationSearch, options = {}) =>
-  Array.from(new URLSearchParams(locationSearch).entries())
+export const convertMultipleIsTypeTokensToOr = (tokens) => {
+  const typeIsTokenIndices = [];
+  tokens.forEach((token, index) => {
+    if (token.type === TOKEN_TYPE_TYPE && token.value.operator === OPERATOR_IS) {
+      typeIsTokenIndices.push(index);
+    }
+  });
+
+  if (typeIsTokenIndices.length <= 1) {
+    return tokens;
+  }
+
+  return tokens.map((token, index) => {
+    if (typeIsTokenIndices.includes(index)) {
+      return {
+        ...token,
+        value: {
+          ...token.value,
+          operator: OPERATOR_OR,
+        },
+      };
+    }
+    return token;
+  });
+};
+
+export const getFilterTokens = (locationSearch, options = {}) => {
+  const tokens = Array.from(new URLSearchParams(locationSearch).entries())
     .filter(
       ([key]) =>
         urlParamKeys.includes(key) && (options.includeStateToken || key !== TOKEN_TYPE_STATE),
@@ -321,6 +348,13 @@ export const getFilterTokens = (locationSearch, options = {}) =>
         value: { data, operator },
       };
     });
+  if (options.convertTypeTokens) {
+    const hasTypeToken = tokens.some((token) => token.type === TOKEN_TYPE_TYPE);
+    if (hasTypeToken) return convertMultipleIsTypeTokensToOr(tokens);
+  }
+
+  return tokens;
+};
 
 export function groupMultiSelectFilterTokens(filterTokensToGroup, tokenDefs) {
   const groupedTokens = [];
@@ -415,14 +449,20 @@ const requiresUpperCaseValue = (tokenType, value) =>
   tokenType === TOKEN_TYPE_TYPE || isWildcardValue(tokenType, value);
 
 const formatData = (token) => {
-  if (requiresUpperCaseValue(token.type, token.value.data)) {
-    return token.value.data.toUpperCase();
-  }
-  if ([TOKEN_TYPE_CONFIDENTIAL, TOKEN_TYPE_DRAFT].includes(token.type)) {
-    return token.value.data === 'yes';
+  const { data } = token.value;
+
+  if (Array.isArray(data)) {
+    return data.map((item) => formatData({ ...token, value: { ...token.value, data: item } }));
   }
 
-  return token.value.data;
+  if (requiresUpperCaseValue(token.type, data)) {
+    return data.toUpperCase();
+  }
+  if ([TOKEN_TYPE_CONFIDENTIAL, TOKEN_TYPE_DRAFT].includes(token.type)) {
+    return data === 'yes';
+  }
+
+  return data;
 };
 
 function fullIterationCadenceId(id) {
@@ -438,7 +478,22 @@ export const convertToApiParams = (filterTokens) => {
   const not = new Map();
   const or = new Map();
 
-  filterTokens.filter(isNotEmptySearchToken).forEach((token) => {
+  // Normalize type tokens: convert OPERATOR_OR to OPERATOR_IS
+  // because backend doesn't support or[type][] yet
+  const normalizedTokens = filterTokens.map((token) => {
+    if (token.type === TOKEN_TYPE_TYPE && token.value.operator === OPERATOR_OR) {
+      return {
+        ...token,
+        value: {
+          ...token.value,
+          operator: OPERATOR_IS,
+        },
+      };
+    }
+    return token;
+  });
+
+  normalizedTokens.filter(isNotEmptySearchToken).forEach((token) => {
     const filterType = getFilterType(token);
     const apiField = filtersMap[token.type][API_PARAM][filterType];
     let obj;

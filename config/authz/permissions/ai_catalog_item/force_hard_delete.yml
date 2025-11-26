@@ -2,3 +2,5 @@
 name: force_hard_delete_ai_catalog_item
 description: Force hard delete an AI Catalog item
 feature_category: workflow_catalog
+action: force_hard_delete
+resource: ai_catalog_item

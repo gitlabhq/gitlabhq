@@ -2743,7 +2743,7 @@ class User < ApplicationRecord
   end
 
   def uploads_sharding_key
-    {}
+    { organization_id: organization_id }
   end
 
   def add_admin_note(new_note)

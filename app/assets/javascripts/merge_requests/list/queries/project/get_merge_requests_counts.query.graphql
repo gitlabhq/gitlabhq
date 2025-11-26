@@ -24,6 +24,7 @@ query getProjectMergeRequestsCount(
   $mergedBefore: Time
   $mergedAfter: Time
   $not: MergeRequestsResolverNegatedParams
+  $or: UnionedMergeRequestFilterInput
 ) {
   namespace: project(fullPath: $fullPath) {
     id
@@ -53,6 +54,7 @@ query getProjectMergeRequestsCount(
       mergedBefore: $mergedBefore
       mergedAfter: $mergedAfter
       not: $not
+      or: $or
     ) {
       count
     }
@@ -82,6 +84,7 @@ query getProjectMergeRequestsCount(
       mergedBefore: $mergedBefore
       mergedAfter: $mergedAfter
       not: $not
+      or: $or
     ) {
       count
     }
@@ -111,6 +114,7 @@ query getProjectMergeRequestsCount(
       mergedBefore: $mergedBefore
       mergedAfter: $mergedAfter
       not: $not
+      or: $or
     ) {
       count
     }
@@ -140,6 +144,7 @@ query getProjectMergeRequestsCount(
       mergedBefore: $mergedBefore
       mergedAfter: $mergedAfter
       not: $not
+      or: $or
     ) {
       count
     }

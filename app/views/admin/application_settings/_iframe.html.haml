@@ -1,0 +1,23 @@
+- expanded = integration_expanded?('iframe_')
+
+= render ::Layouts::SettingsBlockComponent.new(_('Embedded content'),
+  id: 'js-iframe-settings',
+  testid: 'admin-iframe-settings',
+  expanded: expanded) do |c|
+  - c.with_description do
+    = _('Allow embedding of external videos and designs in Markdown.')
+  - c.with_body do
+    = gitlab_ui_form_for @application_setting, url: general_admin_application_settings_path(anchor: 'js-iframe-settings'), html: { class: 'fieldset-form', id: 'iframe-settings' } do |f|
+      = form_errors(@application_setting) if expanded
+
+      %fieldset
+        .form-group
+          = f.gitlab_ui_checkbox_component :iframe_rendering_enabled, _('Enable embedded content'), help_text: _('When enabled, users can embed YouTube videos, Figma designs, and other external content.')
+
+        .form-group{ id: 'iframe-allowlist-group', style: @application_setting.iframe_rendering_enabled? ? '' : 'display: none;' }
+          = f.label :iframe_rendering_allowlist_raw, _('Allowed domains'), class: 'label-bold'
+          = f.text_area :iframe_rendering_allowlist_raw, class: 'form-control gl-form-input', rows: 8
+          .form-text.gl-text-subtle
+            = _('Enter trusted domains that users can embed content from. One domain per line.')
+
+      = f.submit _('Save changes'), pajamas_button: true

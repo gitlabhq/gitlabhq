@@ -22,6 +22,8 @@ module Gitlab
       gon.math_rendering_limits_enabled = Gitlab::CurrentSettings.math_rendering_limits_enabled
       gon.allow_immediate_namespaces_deletion =
         Gitlab::CurrentSettings.allow_immediate_namespaces_deletion_for_user?(current_user)
+      gon.iframe_rendering_enabled      = Gitlab::CurrentSettings.iframe_rendering_enabled?
+      gon.iframe_rendering_allowlist    = Gitlab::CurrentSettings.iframe_rendering_allowlist
 
       # Sentry configurations for the browser client are done
       # via `Gitlab::CurrentSettings` from the Admin panel:
@@ -106,6 +108,7 @@ module Gitlab
       push_frontend_feature_flag(:paneled_view, current_user)
       push_frontend_feature_flag(:archive_group)
       push_frontend_feature_flag(:accessible_loading_button, current_user)
+      push_frontend_feature_flag(:allow_iframes_in_markdown, current_user)
 
       # Expose the Project Studio user preference as if it were a feature flag
       push_force_frontend_feature_flag(:project_studio_enabled, Users::ProjectStudio.new(current_user).enabled?)

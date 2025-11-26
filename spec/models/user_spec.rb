@@ -9943,7 +9943,7 @@ RSpec.describe User, :with_current_organization, feature_category: :user_profile
 
     subject(:uploads_sharding_key) { user.uploads_sharding_key }
 
-    it { is_expected.to eq({}) }
+    it { is_expected.to eq({ organization_id: user.organization_id }) }
   end
 
   describe 'support pin methods', :freeze_time do

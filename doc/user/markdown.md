@@ -1031,6 +1031,10 @@ Watch the following video walkthrough of this feature:
   <iframe src="https://www.youtube-nocookie.com/embed/12yWKw1AdKY" frameborder="0" allowfullscreen> </iframe>
 </figure>
 
+{{< alert type="note" >}}
+Administrators can enable rendering of iframes in Markdown and configure the allowed iframe `src` hosts at the instance level. You can manage these settings via the [Application settings API](../api/settings.md#available-settings): `iframe_rendering_enabled`, `iframe_rendering_allowlist`, and `iframe_rendering_allowlist_raw`.
+{{< /alert >}}
+
 The `items` attribute is a list of objects representing the data points.
 
 ````markdown

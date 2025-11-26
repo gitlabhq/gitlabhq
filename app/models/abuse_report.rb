@@ -168,7 +168,7 @@ class AbuseReport < ApplicationRecord
   end
 
   def uploads_sharding_key
-    {}
+    { organization_id: organization_id }
   end
 
   private

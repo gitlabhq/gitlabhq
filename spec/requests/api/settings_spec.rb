@@ -105,11 +105,54 @@ RSpec.describe API::Settings, 'Settings', :do_not_mock_admin_mode_setting, featu
       expect(json_response['require_personal_access_token_expiry']).to eq(true)
       expect(json_response['organization_cluster_agent_authorization_enabled']).to eq(false)
       expect(json_response['terraform_state_encryption_enabled']).to eq(true)
+      expect(json_response['iframe_rendering_enabled']).to be(false)
+      expect(json_response['iframe_rendering_allowlist']).to eq([])
     end
   end
 
   describe "PUT /application/settings" do
     let(:group) { create(:group) }
+
+    context 'iframe in markdown settings' do
+      it 'updates iframe_rendering_enabled and iframe_rendering_allowlist via array' do
+        put api('/application/settings', admin),
+          params: {
+            iframe_rendering_enabled: true,
+            iframe_rendering_allowlist: ['example.com', 'videos.example.com:443', 'https://example.net/']
+          }
+
+        expect(response).to have_gitlab_http_status(:ok)
+        expect(json_response['iframe_rendering_enabled']).to be(true)
+        expect(json_response['iframe_rendering_allowlist']).to match_array(['example.com', 'videos.example.com:443', 'example.net'])
+        expect(ApplicationSetting.current.iframe_rendering_enabled?).to be(true)
+        expect(ApplicationSetting.current.iframe_rendering_allowlist).to match_array(['example.com', 'videos.example.com:443', 'example.net'])
+      end
+
+      it 'denies bad allowlist entries' do
+        put api('/application/settings', admin),
+          params: {
+            iframe_rendering_enabled: true,
+            iframe_rendering_allowlist: ['gopher://gopherz.tv']
+          }
+
+        expect(response).to have_gitlab_http_status(:bad_request)
+        expect(json_response['message']['iframe_rendering_allowlist']).to include("'gopher://gopherz.tv' is not a valid domain name")
+        expect(ApplicationSetting.current.iframe_rendering_allowlist.join(',')).not_to include('gopherz')
+      end
+
+      it 'allows a raw string for iframe_rendering_allowlist_raw' do
+        raw = "example.com\nvideos.example.com:443"
+        put api('/application/settings', admin),
+          params: {
+            iframe_rendering_allowlist_raw: raw
+          }
+
+        expect(response).to have_gitlab_http_status(:ok)
+        expect(json_response['iframe_rendering_allowlist']).to match_array(['example.com', 'videos.example.com:443'])
+        expect(json_response['iframe_rendering_allowlist_raw']).to eq(raw)
+        expect(ApplicationSetting.current.iframe_rendering_allowlist).to match_array(['example.com', 'videos.example.com:443'])
+      end
+    end
 
     context "custom repository storage type set in the config" do
       before do

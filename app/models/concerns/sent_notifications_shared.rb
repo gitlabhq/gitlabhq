@@ -82,27 +82,10 @@ module SentNotificationsShared # rubocop:disable Gitlab/BoundedContexts -- Tempo
         commit_id: commit_id
       )
 
-      if Feature.enabled?(:insert_into_p_sent_notifications, :instance)
-        # Non-sticky write is used as `.record` is only used in ActionMailer
-        # where there are no queries to SentNotification.
-        new_record = ::Gitlab::Database::LoadBalancing::SessionMap.current(load_balancer).without_sticky_writes do
-          ::PartitionedSentNotification.create(attrs)
-        end
-
-        return new_record
-      end
-
-      legacy_record = ::Gitlab::Database::LoadBalancing::SessionMap.current(load_balancer).without_sticky_writes do
-        create(attrs)
-      end
-
-      return legacy_record unless legacy_record.persisted?
-
-      # This is temporary until we only use the new partitioned table. As a first step will continue to write
-      # only to the original table and let the trigger write to the parttioned table. When reads look good, we
-      # can start writing directly to the new table
-      ::Gitlab::Database::LoadBalancing::SessionMap.current(load_balancer).use_primary(write_fallback: false) do
-        ::PartitionedSentNotification.find_by(id: legacy_record.id)
+      # Non-sticky write is used as `.record` is only used in ActionMailer
+      # where there are no queries to SentNotification.
+      ::Gitlab::Database::LoadBalancing::SessionMap.current(load_balancer).without_sticky_writes do
+        ::PartitionedSentNotification.create(attrs)
       end
     end
 

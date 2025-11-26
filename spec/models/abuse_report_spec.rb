@@ -429,8 +429,8 @@ RSpec.describe AbuseReport, feature_category: :insider_threat do
   end
 
   describe '#uploads_sharding_key' do
-    it 'returns empty hash' do
-      expect(report.uploads_sharding_key).to eq({})
+    it 'returns organization_id' do
+      expect(report.uploads_sharding_key).to eq({ organization_id: report.organization_id })
     end
   end
 end

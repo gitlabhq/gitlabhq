@@ -16,7 +16,7 @@ RSpec.describe RecordsUploads do
       end
     end
 
-    RecordsUploadsExampleUploader.new(build_stubbed(:user))
+    RecordsUploadsExampleUploader.new(create(:user))
   end
 
   def upload_fixture(filename)
@@ -79,7 +79,7 @@ RSpec.describe RecordsUploads do
       existing = Upload.create!(
         path: File.join('uploads', 'rails_sample.jpg'),
         size: 512.kilobytes,
-        model: build_stubbed(:user),
+        model: create(:user),
         uploader: uploader.class.to_s
       )
 

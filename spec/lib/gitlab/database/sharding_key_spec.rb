@@ -9,13 +9,11 @@ RSpec.describe 'new tables missing sharding_key', feature_category: :organizatio
   # the table name to remove this once a decision has been made.
   let(:allowed_to_be_missing_sharding_key) do
     [
-      'abuse_report_uploads', # https://gitlab.com/gitlab-org/gitlab/-/issues/398199
       'web_hook_logs_daily', # temporary copy of web_hook_logs
       'uploads_9ba88c4165', # https://gitlab.com/gitlab-org/gitlab/-/issues/398199
       'merge_request_diff_files_99208b8fac', # has a desired sharding key instead
       'award_emoji_archived', # temp table: https://gitlab.com/gitlab-org/gitlab/-/issues/580326
-      'authentication_event_archived_records', # temp table: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/202447
-      'user_permission_export_upload_uploads' # https://gitlab.com/gitlab-org/gitlab/-/issues/398199
+      'authentication_event_archived_records' # temp table: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/202447
     ]
   end
 
@@ -60,6 +58,7 @@ RSpec.describe 'new tables missing sharding_key', feature_category: :organizatio
   # TODO: Remove these exceptions once the issue is closed.
   let(:uploads_and_partitions) do
     %w[
+      abuse_report_uploads.organization_id
       achievement_uploads.namespace_id
       ai_vectorizable_file_uploads.project_id
       alert_management_alert_metric_image_uploads.project_id
@@ -76,6 +75,8 @@ RSpec.describe 'new tables missing sharding_key', feature_category: :organizatio
       project_topic_uploads.organization_id
       project_uploads.project_id
       snippet_uploads.organization_id
+      user_permission_export_upload_uploads.uploaded_by_user_id
+      user_uploads.organization_id
       vulnerability_export_part_uploads.organization_id
       vulnerability_export_uploads.organization_id
       vulnerability_archive_export_uploads.project_id

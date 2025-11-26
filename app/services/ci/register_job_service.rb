@@ -393,6 +393,7 @@ module Ci
 
         # Save job and remove pending job from db queue
         Ci::Build.transaction do
+          build.update_timeout_state
           build.save!
 
           Ci::UpdateBuildQueueService.new.remove!(build)

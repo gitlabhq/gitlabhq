@@ -315,4 +315,43 @@ RSpec.describe ApplicationController, type: :request, feature_category: :shared 
       end
     end
   end
+
+  describe 'content security policy' do
+    before do
+      sign_in(user)
+    end
+
+    context 'when configuring iframes in Markdown' do
+      let(:iframe_rendering_allowlist) { ['www.youtube.com', 'embed.figma.com', 'www.figma.com'] }
+
+      before do
+        allow(Gitlab::CurrentSettings).to receive_messages(
+          iframe_rendering_enabled?: iframe_rendering_enabled?,
+          iframe_rendering_allowlist: iframe_rendering_allowlist)
+      end
+
+      context 'when disabled' do
+        let(:iframe_rendering_enabled?) { false }
+
+        it 'does not modify frame-src' do
+          get root_path
+
+          expect(response.headers['Content-Security-Policy']).not_to include('www.youtube.com')
+          expect(response.headers['Content-Security-Policy']).not_to include('figma.com')
+        end
+      end
+
+      context 'when enabled' do
+        let(:iframe_rendering_enabled?) { true }
+
+        it 'adds the domains to frame-src' do
+          get root_path
+
+          expect(response.headers['Content-Security-Policy']).to include('https://www.youtube.com')
+          expect(response.headers['Content-Security-Policy']).to include('https://embed.figma.com')
+          expect(response.headers['Content-Security-Policy']).to include('https://www.figma.com')
+        end
+      end
+    end
+  end
 end

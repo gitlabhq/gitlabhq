@@ -3,17 +3,26 @@
 require 'spec_helper'
 
 RSpec.describe Ci::RegisterJobService, 'two-phase commit feature', feature_category: :continuous_integration do
-  let_it_be(:project, freeze: true) { create(:project, :repository) }
+  let_it_be(:project, freeze: true) { create(:project, :repository, build_timeout: 3600) }
   let_it_be(:pipeline, freeze: true) { create(:ci_pipeline, project: project) }
   let_it_be(:runner, freeze: true) { create(:ci_runner, :project, projects: [project]) }
   let_it_be(:runner_manager, freeze: true) { create(:ci_runner_machine, runner: runner) }
+  let_it_be(:two_phase_job_commit_params, freeze: true) do
+    {
+      info: {
+        features: {
+          two_phase_job_commit: true
+        }
+      }
+    }
+  end
 
   let(:service) { described_class.new(runner, runner_manager) }
 
   describe '#execute', :aggregate_failures do
     let!(:build) { create(:ci_build, :pending, :queued, pipeline: pipeline) }
 
-    subject(:execute) { service.execute(runner_params) }
+    subject(:execute) { service.execute(params) }
 
     shared_examples 'the legacy workflow (direct transition to running)' do
       it 'transitions job directly to running state (legacy behavior)' do
@@ -66,15 +75,7 @@ RSpec.describe Ci::RegisterJobService, 'two-phase commit feature', feature_categ
     end
 
     context 'when runner supports two_phase_job_commit feature' do
-      let(:runner_params) do
-        {
-          info: {
-            features: {
-              two_phase_job_commit: true
-            }
-          }
-        }
-      end
+      let(:params) { two_phase_job_commit_params }
 
       it 'assigns runner but keeps job in pending state' do
         expect(build).to be_pending
@@ -124,7 +125,7 @@ RSpec.describe Ci::RegisterJobService, 'two-phase commit feature', feature_categ
         private
 
         def perform_other_runner_request
-          @other_runner_result ||= other_service.execute(runner_params)
+          @other_runner_result ||= other_service.execute(params)
         end
 
         # Step 2: If either Ci::Build#set_waiting_for_runner_ack or
@@ -257,7 +258,7 @@ RSpec.describe Ci::RegisterJobService, 'two-phase commit feature', feature_categ
     end
 
     context 'when runner does not support two_phase_job_commit feature' do
-      let(:runner_params) do
+      let(:params) do
         {
           info: {
             features: {
@@ -271,13 +272,13 @@ RSpec.describe Ci::RegisterJobService, 'two-phase commit feature', feature_categ
     end
 
     context 'when runner has no features specified' do
-      let(:runner_params) { { info: {} } }
+      let(:params) { { info: {} } }
 
       it_behaves_like 'the legacy workflow (direct transition to running)'
     end
 
     context 'when two_phase_job_commit feature is explicitly disabled' do
-      let(:runner_params) do
+      let(:params) do
         {
           info: {
             features: {
@@ -305,7 +306,7 @@ RSpec.describe Ci::RegisterJobService, 'two-phase commit feature', feature_categ
     subject { service.send(:runner_supports_job_acknowledgment?, build, params) }
 
     context 'when two_phase_job_commit feature is true' do
-      let(:params) { { info: { features: { two_phase_job_commit: true } } } }
+      let(:params) { two_phase_job_commit_params }
 
       it { is_expected.to be true }
 
@@ -349,15 +350,7 @@ RSpec.describe Ci::RegisterJobService, 'two-phase commit feature', feature_categ
     subject(:execute) { service.execute(params) }
 
     context 'when runner supports two-phase job commit' do
-      let(:params) do
-        {
-          info: {
-            features: {
-              two_phase_job_commit: true
-            }
-          }
-        }
-      end
+      let(:params) { two_phase_job_commit_params }
 
       it 'assigns job to waiting state' do
         expect(Ci::RetryStuckWaitingJobWorker).to receive(:perform_in)
@@ -410,13 +403,7 @@ RSpec.describe Ci::RegisterJobService, 'two-phase commit feature', feature_categ
 
     context 'when runner does not support two-phase job commit' do
       let(:params) do
-        {
-          info: {
-            features: {
-              upload_multiple_artifacts: true
-            }
-          }
-        }
+        { info: { features: { upload_multiple_artifacts: true } } }
       end
 
       it 'assigns job to running state immediately' do
@@ -451,6 +438,73 @@ RSpec.describe Ci::RegisterJobService, 'two-phase commit feature', feature_categ
         expect(pending_job.runner_ack_wait_status).to eq(:not_waiting)
         expect(pending_job.runner_manager).to eq(runner_manager)
       end
+    end
+  end
+
+  describe 'timeout assignment during job registration' do
+    let!(:build) { create(:ci_build, :pending, :queued, pipeline: pipeline) }
+
+    subject(:execute) { service.execute(params) }
+
+    shared_examples 'keeps build pending and assigns timeout to build' do
+      it 'assigns timeout value to the build and keeps build pending' do
+        expect { execute }
+          .to change { build.reload.timeout }.from(nil).to(project.build_timeout)
+          .and change { build.timeout_source }.from(nil)
+          .and not_change { build.status }
+      end
+
+      it 'includes timeout in the build JSON response' do
+        result = execute
+
+        expect(result).to be_valid
+        expect(result.build).to eq(build)
+        expect(build.reload).to be_pending
+
+        build_json = Gitlab::Json.parse(result.build_json)
+        expect(build_json.dig('runner_info', 'timeout')).to eq(project.build_timeout)
+      end
+    end
+
+    shared_examples 'transitions build to running and assigns timeout to build' do
+      it 'assigns timeout value to the build and transitions to running' do
+        expect { execute }
+          .to change { build.reload.timeout }.from(nil).to(project.build_timeout)
+          .and change { build.timeout_source }.from(nil)
+          .and change { build.status }.from('pending').to('running')
+      end
+
+      it 'includes timeout in the build JSON response' do
+        result = execute
+
+        expect(result).to be_valid
+        expect(result.build).to eq(build)
+
+        build_json = Gitlab::Json.parse(result.build_json)
+        expect(build_json.dig('runner_info', 'timeout')).to eq(project.build_timeout)
+      end
+    end
+
+    context 'when runner supports two-phase job commit' do
+      let(:params) { two_phase_job_commit_params }
+
+      it_behaves_like 'keeps build pending and assigns timeout to build'
+
+      context 'when allow_runner_job_acknowledgement feature flag is disabled' do
+        before do
+          stub_feature_flags(allow_runner_job_acknowledgement: false)
+        end
+
+        it_behaves_like 'transitions build to running and assigns timeout to build'
+      end
+    end
+
+    context 'when runner does not support two-phase job commit' do
+      let(:params) do
+        { info: { features: { upload_multiple_artifacts: true } } }
+      end
+
+      it_behaves_like 'transitions build to running and assigns timeout to build'
     end
   end
 end

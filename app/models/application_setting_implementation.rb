@@ -506,6 +506,24 @@ module ApplicationSettingImplementation
     self.search_rate_limit_allowlist = strings_to_array(values).map(&:downcase)
   end
 
+  def coerce_iframe_rendering_allowlist
+    self.iframe_rendering_allowlist = iframe_rendering_allowlist.map do |entry|
+      # We mandate https://, and always add a trailing slash; we expect the configured
+      # list has neither present, so we remove them if present.
+      entry
+        .sub(%r{\Ahttps?://}i, '')
+        .sub(%r{/+\z}, '')
+    end.sort
+  end
+
+  def iframe_rendering_allowlist_raw
+    array_to_string(iframe_rendering_allowlist)
+  end
+
+  def iframe_rendering_allowlist_raw=(values)
+    self.iframe_rendering_allowlist = strings_to_array(values)
+  end
+
   def asset_proxy_whitelist=(values)
     values = strings_to_array(values) if values.is_a?(String)
 

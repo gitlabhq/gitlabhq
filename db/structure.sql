@@ -1884,6 +1884,22 @@ RETURN NEW;
 END
 $$;
 
+CREATE FUNCTION trigger_1825cdc71779() RETURNS trigger
+    LANGUAGE plpgsql
+    AS $$
+BEGIN
+IF NEW."organization_id" IS NULL THEN
+  SELECT "organization_id"
+  INTO NEW."organization_id"
+  FROM "organization_details"
+  WHERE "organization_details"."organization_id" = NEW."model_id";
+END IF;
+
+RETURN NEW;
+
+END
+$$;
+
 CREATE FUNCTION trigger_18bc439a6741() RETURNS trigger
     LANGUAGE plpgsql
     AS $$
@@ -1909,6 +1925,38 @@ IF NEW."organization_id" IS NULL THEN
   INTO NEW."organization_id"
   FROM "abuse_reports"
   WHERE "abuse_reports"."id" = NEW."abuse_report_id";
+END IF;
+
+RETURN NEW;
+
+END
+$$;
+
+CREATE FUNCTION trigger_1a052e65e9d9() RETURNS trigger
+    LANGUAGE plpgsql
+    AS $$
+BEGIN
+IF NEW."namespace_id" IS NULL THEN
+  SELECT "group_id"
+  INTO NEW."namespace_id"
+  FROM "import_export_uploads"
+  WHERE "import_export_uploads"."id" = NEW."model_id";
+END IF;
+
+RETURN NEW;
+
+END
+$$;
+
+CREATE FUNCTION trigger_1a41d368edd5() RETURNS trigger
+    LANGUAGE plpgsql
+    AS $$
+BEGIN
+IF NEW."project_id" IS NULL THEN
+  SELECT "project_id"
+  INTO NEW."project_id"
+  FROM "import_export_uploads"
+  WHERE "import_export_uploads"."id" = NEW."model_id";
 END IF;
 
 RETURN NEW;
@@ -2126,6 +2174,22 @@ RETURN NEW;
 END
 $$;
 
+CREATE FUNCTION trigger_25ba78722e56() RETURNS trigger
+    LANGUAGE plpgsql
+    AS $$
+BEGIN
+IF NEW."organization_id" IS NULL THEN
+  SELECT "organization_id"
+  INTO NEW."organization_id"
+  FROM "users"
+  WHERE "users"."id" = NEW."model_id";
+END IF;
+
+RETURN NEW;
+
+END
+$$;
+
 CREATE FUNCTION trigger_25c44c30884f() RETURNS trigger
     LANGUAGE plpgsql
     AS $$
@@ -2318,6 +2382,22 @@ RETURN NEW;
 END
 $$;
 
+CREATE FUNCTION trigger_3434b82e5e12() RETURNS trigger
+    LANGUAGE plpgsql
+    AS $$
+BEGIN
+IF NEW."organization_id" IS NULL THEN
+  SELECT "organization_id"
+  INTO NEW."organization_id"
+  FROM "abuse_reports"
+  WHERE "abuse_reports"."id" = NEW."model_id";
+END IF;
+
+RETURN NEW;
+
+END
+$$;
+
 CREATE FUNCTION trigger_363d0fd35f2c() RETURNS trigger
     LANGUAGE plpgsql
     AS $$
@@ -2375,6 +2455,22 @@ IF NEW."project_id" IS NULL THEN
   INTO NEW."project_id"
   FROM "p_ci_builds"
   WHERE "p_ci_builds"."id" = NEW."build_id";
+END IF;
+
+RETURN NEW;
+
+END
+$$;
+
+CREATE FUNCTION trigger_38b6d9d97935() RETURNS trigger
+    LANGUAGE plpgsql
+    AS $$
+BEGIN
+IF NEW."project_id" IS NULL THEN
+  SELECT "id"
+  INTO NEW."project_id"
+  FROM "projects"
+  WHERE "projects"."id" = NEW."model_id";
 END IF;
 
 RETURN NEW;
@@ -2542,6 +2638,22 @@ RETURN NEW;
 END
 $$;
 
+CREATE FUNCTION trigger_442d030cfdfe() RETURNS trigger
+    LANGUAGE plpgsql
+    AS $$
+BEGIN
+IF NEW."namespace_id" IS NULL THEN
+  SELECT "id"
+  INTO NEW."namespace_id"
+  FROM "namespaces"
+  WHERE "namespaces"."id" = NEW."model_id";
+END IF;
+
+RETURN NEW;
+
+END
+$$;
+
 CREATE FUNCTION trigger_44558add1625() RETURNS trigger
     LANGUAGE plpgsql
     AS $$
@@ -2615,6 +2727,22 @@ IF NEW."project_id" IS NULL THEN
   INTO NEW."project_id"
   FROM "bulk_import_exports"
   WHERE "bulk_import_exports"."id" = NEW."export_id";
+END IF;
+
+RETURN NEW;
+
+END
+$$;
+
+CREATE FUNCTION trigger_47c43d40f0d2() RETURNS trigger
+    LANGUAGE plpgsql
+    AS $$
+BEGIN
+IF NEW."project_id" IS NULL THEN
+  SELECT "project_id"
+  INTO NEW."project_id"
+  FROM "alert_management_alert_metric_images"
+  WHERE "alert_management_alert_metric_images"."id" = NEW."model_id";
 END IF;
 
 RETURN NEW;
@@ -2743,6 +2871,22 @@ IF NEW."project_id" IS NULL THEN
   INTO NEW."project_id"
   FROM "issues"
   WHERE "issues"."id" = NEW."issue_id";
+END IF;
+
+RETURN NEW;
+
+END
+$$;
+
+CREATE FUNCTION trigger_4f1b6c76fdfc() RETURNS trigger
+    LANGUAGE plpgsql
+    AS $$
+BEGIN
+IF NEW."organization_id" IS NULL THEN
+  SELECT "organization_id"
+  INTO NEW."organization_id"
+  FROM "topics"
+  WHERE "topics"."id" = NEW."model_id";
 END IF;
 
 RETURN NEW;
@@ -2935,6 +3079,22 @@ IF NEW."project_id" IS NULL THEN
   INTO NEW."project_id"
   FROM "merge_requests"
   WHERE "merge_requests"."id" = NEW."merge_request_id";
+END IF;
+
+RETURN NEW;
+
+END
+$$;
+
+CREATE FUNCTION trigger_67d0d39e2f41() RETURNS trigger
+    LANGUAGE plpgsql
+    AS $$
+BEGIN
+IF NEW."uploaded_by_user_id" IS NULL THEN
+  SELECT "user_id"
+  INTO NEW."uploaded_by_user_id"
+  FROM "user_permission_export_uploads"
+  WHERE "user_permission_export_uploads"."id" = NEW."model_id";
 END IF;
 
 RETURN NEW;
@@ -3915,6 +4075,22 @@ RETURN NEW;
 END
 $$;
 
+CREATE FUNCTION trigger_a68471fea292() RETURNS trigger
+    LANGUAGE plpgsql
+    AS $$
+BEGIN
+IF NEW."organization_id" IS NULL THEN
+  SELECT "organization_id"
+  INTO NEW."organization_id"
+  FROM "snippets"
+  WHERE "snippets"."id" = NEW."model_id";
+END IF;
+
+RETURN NEW;
+
+END
+$$;
+
 CREATE FUNCTION trigger_a7e0fb195210() RETURNS trigger
     LANGUAGE plpgsql
     AS $$
@@ -4091,6 +4267,38 @@ RETURN NEW;
 END
 $$;
 
+CREATE FUNCTION trigger_c24a252f7b04() RETURNS trigger
+    LANGUAGE plpgsql
+    AS $$
+BEGIN
+IF NEW."namespace_id" IS NULL THEN
+  SELECT "namespace_id"
+  INTO NEW."namespace_id"
+  FROM "design_management_designs_versions"
+  WHERE "design_management_designs_versions"."id" = NEW."model_id";
+END IF;
+
+RETURN NEW;
+
+END
+$$;
+
+CREATE FUNCTION trigger_c40a5bb7c1c3() RETURNS trigger
+    LANGUAGE plpgsql
+    AS $$
+BEGIN
+IF NEW."project_id" IS NULL THEN
+  SELECT "project_id"
+  INTO NEW."project_id"
+  FROM "bulk_import_export_uploads"
+  WHERE "bulk_import_export_uploads"."id" = NEW."model_id";
+END IF;
+
+RETURN NEW;
+
+END
+$$;
+
 CREATE FUNCTION trigger_c48e4298f362() RETURNS trigger
     LANGUAGE plpgsql
     AS $$
@@ -4233,6 +4441,22 @@ RETURN NEW;
 END
 $$;
 
+CREATE FUNCTION trigger_cca6a43d90dd() RETURNS trigger
+    LANGUAGE plpgsql
+    AS $$
+BEGIN
+IF NEW."namespace_id" IS NULL THEN
+  SELECT "namespace_id"
+  INTO NEW."namespace_id"
+  FROM "achievements"
+  WHERE "achievements"."id" = NEW."model_id";
+END IF;
+
+RETURN NEW;
+
+END
+$$;
+
 CREATE FUNCTION trigger_cd50823537a3() RETURNS trigger
     LANGUAGE plpgsql
     AS $$
@@ -4290,6 +4514,22 @@ IF NEW."project_id" IS NULL THEN
   INTO NEW."project_id"
   FROM "deployments"
   WHERE "deployments"."id" = NEW."deployment_id";
+END IF;
+
+RETURN NEW;
+
+END
+$$;
+
+CREATE FUNCTION trigger_d32ff9d5c63d() RETURNS trigger
+    LANGUAGE plpgsql
+    AS $$
+BEGIN
+IF NEW."namespace_id" IS NULL THEN
+  SELECT "group_id"
+  INTO NEW."namespace_id"
+  FROM "bulk_import_export_uploads"
+  WHERE "bulk_import_export_uploads"."id" = NEW."model_id";
 END IF;
 
 RETURN NEW;
@@ -4537,6 +4777,22 @@ RETURN NEW;
 END
 $$;
 
+CREATE FUNCTION trigger_e740510cfd33() RETURNS trigger
+    LANGUAGE plpgsql
+    AS $$
+BEGIN
+IF NEW."namespace_id" IS NULL THEN
+  SELECT "namespace_id"
+  INTO NEW."namespace_id"
+  FROM "issuable_metric_images"
+  WHERE "issuable_metric_images"."id" = NEW."model_id";
+END IF;
+
+RETURN NEW;
+
+END
+$$;
+
 CREATE FUNCTION trigger_e815625b59fa() RETURNS trigger
     LANGUAGE plpgsql
     AS $$
@@ -4633,6 +4889,22 @@ RETURN NEW;
 END
 $$;
 
+CREATE FUNCTION trigger_f468204dcd5d() RETURNS trigger
+    LANGUAGE plpgsql
+    AS $$
+BEGIN
+IF NEW."project_id" IS NULL THEN
+  SELECT "project_id"
+  INTO NEW."project_id"
+  FROM "project_relation_export_uploads"
+  WHERE "project_relation_export_uploads"."id" = NEW."model_id";
+END IF;
+
+RETURN NEW;
+
+END
+$$;
+
 CREATE FUNCTION trigger_f6c61cdddf31() RETURNS trigger
     LANGUAGE plpgsql
     AS $$
@@ -4722,6 +4994,22 @@ IF NEW."group_id" IS NULL THEN
   INTO NEW."group_id"
   FROM "boards_epic_boards"
   WHERE "boards_epic_boards"."id" = NEW."epic_board_id";
+END IF;
+
+RETURN NEW;
+
+END
+$$;
+
+CREATE FUNCTION trigger_fcc3ea1f9d4e() RETURNS trigger
+    LANGUAGE plpgsql
+    AS $$
+BEGIN
+IF NEW."project_id" IS NULL THEN
+  SELECT "project_id"
+  INTO NEW."project_id"
+  FROM "ai_vectorizable_files"
+  WHERE "ai_vectorizable_files"."id" = NEW."model_id";
 END IF;
 
 RETURN NEW;
@@ -12176,6 +12464,8 @@ CREATE TABLE application_settings (
     lock_duo_foundational_flows_enabled boolean DEFAULT false NOT NULL,
     duo_sast_fp_detection_enabled boolean DEFAULT true NOT NULL,
     lock_duo_sast_fp_detection_enabled boolean DEFAULT false NOT NULL,
+    iframe_rendering_enabled boolean DEFAULT false NOT NULL,
+    iframe_rendering_allowlist text,
     CONSTRAINT app_settings_container_reg_cleanup_tags_max_list_size_positive CHECK ((container_registry_cleanup_tags_service_max_list_size >= 0)),
     CONSTRAINT app_settings_dep_proxy_ttl_policies_worker_capacity_positive CHECK ((dependency_proxy_ttl_group_policy_worker_capacity >= 0)),
     CONSTRAINT app_settings_ext_pipeline_validation_service_url_text_limit CHECK ((char_length(external_pipeline_validation_service_url) <= 255)),
@@ -12218,6 +12508,7 @@ CREATE TABLE application_settings (
     CONSTRAINT check_85a39b68ff CHECK ((char_length(encrypted_ci_jwt_signing_key_iv) <= 255)),
     CONSTRAINT check_8dca35398a CHECK ((char_length(public_runner_releases_url) <= 255)),
     CONSTRAINT check_8e7df605a1 CHECK ((char_length(cube_api_base_url) <= 512)),
+    CONSTRAINT check_987903e806 CHECK ((char_length(iframe_rendering_allowlist) <= 5000)),
     CONSTRAINT check_9a719834eb CHECK ((char_length(secret_detection_token_revocation_url) <= 255)),
     CONSTRAINT check_9c6c447a13 CHECK ((char_length(maintenance_mode_message) <= 255)),
     CONSTRAINT check_a5704163cc CHECK ((char_length(secret_detection_revocation_token_types_url) <= 255)),
@@ -48713,9 +49004,15 @@ CREATE TRIGGER trigger_158ac875f254 BEFORE INSERT OR UPDATE ON approval_group_ru
 
 CREATE TRIGGER trigger_174b23fa3dfb BEFORE INSERT OR UPDATE ON approval_project_rules_users FOR EACH ROW EXECUTE FUNCTION trigger_174b23fa3dfb();
 
+CREATE TRIGGER trigger_1825cdc71779 BEFORE INSERT OR UPDATE ON organization_detail_uploads FOR EACH ROW EXECUTE FUNCTION trigger_1825cdc71779();
+
 CREATE TRIGGER trigger_18bc439a6741 BEFORE INSERT OR UPDATE ON packages_conan_metadata FOR EACH ROW EXECUTE FUNCTION trigger_18bc439a6741();
 
 CREATE TRIGGER trigger_1996c9e5bea0 BEFORE INSERT OR UPDATE ON abuse_report_events FOR EACH ROW EXECUTE FUNCTION trigger_1996c9e5bea0();
+
+CREATE TRIGGER trigger_1a052e65e9d9 BEFORE INSERT OR UPDATE ON import_export_upload_uploads FOR EACH ROW EXECUTE FUNCTION trigger_1a052e65e9d9();
+
+CREATE TRIGGER trigger_1a41d368edd5 BEFORE INSERT OR UPDATE ON import_export_upload_uploads FOR EACH ROW EXECUTE FUNCTION trigger_1a41d368edd5();
 
 CREATE TRIGGER trigger_1c0f1ca199a3 BEFORE INSERT OR UPDATE ON ci_resources FOR EACH ROW EXECUTE FUNCTION trigger_1c0f1ca199a3();
 
@@ -48743,6 +49040,8 @@ CREATE TRIGGER trigger_248cafd363ff BEFORE INSERT OR UPDATE ON packages_npm_meta
 
 CREATE TRIGGER trigger_2514245c7fc5 BEFORE INSERT OR UPDATE ON dast_site_profile_secret_variables FOR EACH ROW EXECUTE FUNCTION trigger_2514245c7fc5();
 
+CREATE TRIGGER trigger_25ba78722e56 BEFORE INSERT OR UPDATE ON user_uploads FOR EACH ROW EXECUTE FUNCTION trigger_25ba78722e56();
+
 CREATE TRIGGER trigger_25c44c30884f BEFORE INSERT OR UPDATE ON work_item_parent_links FOR EACH ROW EXECUTE FUNCTION trigger_25c44c30884f();
 
 CREATE TRIGGER trigger_25d35f02ab55 BEFORE INSERT OR UPDATE ON ml_candidate_metadata FOR EACH ROW EXECUTE FUNCTION trigger_25d35f02ab55();
@@ -48767,11 +49066,15 @@ CREATE TRIGGER trigger_30209d0fba3e BEFORE INSERT OR UPDATE ON alert_management_
 
 CREATE TRIGGER trigger_309294c3b889 BEFORE INSERT OR UPDATE ON snippet_statistics FOR EACH ROW EXECUTE FUNCTION trigger_309294c3b889();
 
+CREATE TRIGGER trigger_3434b82e5e12 BEFORE INSERT OR UPDATE ON abuse_report_uploads FOR EACH ROW EXECUTE FUNCTION trigger_3434b82e5e12();
+
 CREATE TRIGGER trigger_363d0fd35f2c BEFORE INSERT OR UPDATE ON packages_nuget_dependency_link_metadata FOR EACH ROW EXECUTE FUNCTION trigger_363d0fd35f2c();
 
 CREATE TRIGGER trigger_36cb404f9a02 BEFORE INSERT OR UPDATE ON bulk_import_failures FOR EACH ROW EXECUTE FUNCTION trigger_36cb404f9a02();
 
 CREATE TRIGGER trigger_388de55cd36c BEFORE INSERT OR UPDATE ON ci_builds_runner_session FOR EACH ROW EXECUTE FUNCTION trigger_388de55cd36c();
+
+CREATE TRIGGER trigger_38b6d9d97935 BEFORE INSERT OR UPDATE ON project_uploads FOR EACH ROW EXECUTE FUNCTION trigger_38b6d9d97935();
 
 CREATE TRIGGER trigger_38bfee591e40 BEFORE INSERT OR UPDATE ON dependency_proxy_blob_states FOR EACH ROW EXECUTE FUNCTION trigger_38bfee591e40();
 
@@ -48793,6 +49096,8 @@ CREATE TRIGGER trigger_41eaf23bf547 BEFORE INSERT OR UPDATE ON release_links FOR
 
 CREATE TRIGGER trigger_43484cb41aca BEFORE INSERT OR UPDATE ON wiki_repository_states FOR EACH ROW EXECUTE FUNCTION trigger_43484cb41aca();
 
+CREATE TRIGGER trigger_442d030cfdfe BEFORE INSERT OR UPDATE ON namespace_uploads FOR EACH ROW EXECUTE FUNCTION trigger_442d030cfdfe();
+
 CREATE TRIGGER trigger_44558add1625 BEFORE INSERT OR UPDATE ON merge_request_assignees FOR EACH ROW EXECUTE FUNCTION trigger_44558add1625();
 
 CREATE TRIGGER trigger_44ff19ad0ab2 BEFORE INSERT OR UPDATE ON packages_pypi_metadata FOR EACH ROW EXECUTE FUNCTION trigger_44ff19ad0ab2();
@@ -48802,6 +49107,8 @@ CREATE TRIGGER trigger_468b8554e533 BEFORE INSERT OR UPDATE ON security_findings
 CREATE TRIGGER trigger_46ebe375f632 BEFORE INSERT OR UPDATE ON epic_issues FOR EACH ROW EXECUTE FUNCTION trigger_46ebe375f632();
 
 CREATE TRIGGER trigger_47b402bdab5f BEFORE INSERT OR UPDATE ON bulk_import_export_batches FOR EACH ROW EXECUTE FUNCTION trigger_47b402bdab5f();
+
+CREATE TRIGGER trigger_47c43d40f0d2 BEFORE INSERT OR UPDATE ON alert_management_alert_metric_image_uploads FOR EACH ROW EXECUTE FUNCTION trigger_47c43d40f0d2();
 
 CREATE TRIGGER trigger_49862b4b3035 BEFORE INSERT OR UPDATE ON approval_group_rules_protected_branches FOR EACH ROW EXECUTE FUNCTION trigger_49862b4b3035();
 
@@ -48818,6 +49125,8 @@ CREATE TRIGGER trigger_4c320a13bc8d BEFORE INSERT OR UPDATE ON scan_result_polic
 CREATE TRIGGER trigger_4cc5c3ac4d7f BEFORE INSERT OR UPDATE ON bulk_import_export_uploads FOR EACH ROW EXECUTE FUNCTION trigger_4cc5c3ac4d7f();
 
 CREATE TRIGGER trigger_4dc8ec48e038 BEFORE INSERT OR UPDATE ON requirements_management_test_reports FOR EACH ROW EXECUTE FUNCTION trigger_4dc8ec48e038();
+
+CREATE TRIGGER trigger_4f1b6c76fdfc BEFORE INSERT OR UPDATE ON project_topic_uploads FOR EACH ROW EXECUTE FUNCTION trigger_4f1b6c76fdfc();
 
 CREATE TRIGGER trigger_4fc14aa830b1 BEFORE INSERT OR UPDATE ON work_item_current_statuses FOR EACH ROW EXECUTE FUNCTION trigger_4fc14aa830b1();
 
@@ -48842,6 +49151,8 @@ CREATE TRIGGER trigger_5f6432d2dccc BEFORE INSERT OR UPDATE ON operations_strate
 CREATE TRIGGER trigger_627949f72f05 BEFORE INSERT OR UPDATE ON packages_rpm_metadata FOR EACH ROW EXECUTE FUNCTION trigger_627949f72f05();
 
 CREATE TRIGGER trigger_664594a3d0a7 BEFORE INSERT OR UPDATE ON merge_request_user_mentions FOR EACH ROW EXECUTE FUNCTION trigger_664594a3d0a7();
+
+CREATE TRIGGER trigger_67d0d39e2f41 BEFORE INSERT OR UPDATE ON user_permission_export_upload_uploads FOR EACH ROW EXECUTE FUNCTION trigger_67d0d39e2f41();
 
 CREATE TRIGGER trigger_68435a54ee2b BEFORE INSERT OR UPDATE ON packages_debian_project_architectures FOR EACH ROW EXECUTE FUNCTION trigger_68435a54ee2b();
 
@@ -48965,6 +49276,8 @@ CREATE TRIGGER trigger_a465de38164e BEFORE INSERT OR UPDATE ON ci_job_artifact_s
 
 CREATE TRIGGER trigger_a4e4fb2451d9 BEFORE INSERT OR UPDATE ON epic_user_mentions FOR EACH ROW EXECUTE FUNCTION trigger_a4e4fb2451d9();
 
+CREATE TRIGGER trigger_a68471fea292 BEFORE INSERT OR UPDATE ON snippet_uploads FOR EACH ROW EXECUTE FUNCTION trigger_a68471fea292();
+
 CREATE TRIGGER trigger_a7e0fb195210 BEFORE INSERT OR UPDATE ON vulnerability_finding_evidences FOR EACH ROW EXECUTE FUNCTION trigger_a7e0fb195210();
 
 CREATE TRIGGER trigger_af3f17817e4d BEFORE INSERT OR UPDATE ON protected_tag_create_access_levels FOR EACH ROW EXECUTE FUNCTION trigger_af3f17817e4d();
@@ -48989,6 +49302,10 @@ CREATE TRIGGER trigger_bulk_import_trackers_sharding_key BEFORE INSERT OR UPDATE
 
 CREATE TRIGGER trigger_c17a166692a2 BEFORE INSERT OR UPDATE ON audit_events_streaming_headers FOR EACH ROW EXECUTE FUNCTION trigger_c17a166692a2();
 
+CREATE TRIGGER trigger_c24a252f7b04 BEFORE INSERT OR UPDATE ON design_management_action_uploads FOR EACH ROW EXECUTE FUNCTION trigger_c24a252f7b04();
+
+CREATE TRIGGER trigger_c40a5bb7c1c3 BEFORE INSERT OR UPDATE ON bulk_import_export_upload_uploads FOR EACH ROW EXECUTE FUNCTION trigger_c40a5bb7c1c3();
+
 CREATE TRIGGER trigger_c48e4298f362 BEFORE INSERT OR UPDATE ON user_details FOR EACH ROW EXECUTE FUNCTION trigger_c48e4298f362();
 
 CREATE TRIGGER trigger_c52d215d50a1 BEFORE INSERT OR UPDATE ON incident_management_pending_issue_escalations FOR EACH ROW EXECUTE FUNCTION trigger_c52d215d50a1();
@@ -49009,6 +49326,8 @@ CREATE TRIGGER trigger_cac7c0698291 BEFORE INSERT OR UPDATE ON evidences FOR EAC
 
 CREATE TRIGGER trigger_catalog_resource_sync_event_on_project_update AFTER UPDATE ON projects FOR EACH ROW WHEN ((((old.name)::text IS DISTINCT FROM (new.name)::text) OR (old.description IS DISTINCT FROM new.description) OR (old.visibility_level IS DISTINCT FROM new.visibility_level))) EXECUTE FUNCTION insert_catalog_resource_sync_event();
 
+CREATE TRIGGER trigger_cca6a43d90dd BEFORE INSERT OR UPDATE ON achievement_uploads FOR EACH ROW EXECUTE FUNCTION trigger_cca6a43d90dd();
+
 CREATE TRIGGER trigger_cd50823537a3 BEFORE INSERT OR UPDATE ON issuable_slas FOR EACH ROW EXECUTE FUNCTION trigger_cd50823537a3();
 
 CREATE TRIGGER trigger_cdfa6500a121 BEFORE INSERT OR UPDATE ON snippet_statistics FOR EACH ROW EXECUTE FUNCTION trigger_cdfa6500a121();
@@ -49018,6 +49337,8 @@ CREATE TRIGGER trigger_cf646a118cbb BEFORE INSERT OR UPDATE ON milestone_release
 CREATE TRIGGER trigger_cfbec3f07e2b BEFORE INSERT OR UPDATE ON deployment_merge_requests FOR EACH ROW EXECUTE FUNCTION trigger_cfbec3f07e2b();
 
 CREATE TRIGGER trigger_cleanup_pipeline_iid_after_delete AFTER DELETE ON p_ci_pipelines FOR EACH ROW EXECUTE FUNCTION cleanup_pipeline_iid_after_delete();
+
+CREATE TRIGGER trigger_d32ff9d5c63d BEFORE INSERT OR UPDATE ON bulk_import_export_upload_uploads FOR EACH ROW EXECUTE FUNCTION trigger_d32ff9d5c63d();
 
 CREATE TRIGGER trigger_d4487a75bd44 BEFORE INSERT OR UPDATE ON terraform_state_versions FOR EACH ROW EXECUTE FUNCTION trigger_d4487a75bd44();
 
@@ -49053,6 +49374,8 @@ CREATE TRIGGER trigger_e49ab4d904a0 BEFORE INSERT OR UPDATE ON vulnerability_fin
 
 CREATE TRIGGER trigger_e4a6cde57b42 BEFORE INSERT OR UPDATE ON resource_weight_events FOR EACH ROW EXECUTE FUNCTION trigger_e4a6cde57b42();
 
+CREATE TRIGGER trigger_e740510cfd33 BEFORE INSERT OR UPDATE ON issuable_metric_image_uploads FOR EACH ROW EXECUTE FUNCTION trigger_e740510cfd33();
+
 CREATE TRIGGER trigger_e815625b59fa BEFORE INSERT OR UPDATE ON resource_link_events FOR EACH ROW EXECUTE FUNCTION trigger_e815625b59fa();
 
 CREATE TRIGGER trigger_ebab34f83f1d BEFORE INSERT OR UPDATE ON packages_debian_publications FOR EACH ROW EXECUTE FUNCTION trigger_ebab34f83f1d();
@@ -49071,6 +49394,8 @@ CREATE TRIGGER trigger_ensure_pipeline_iid_uniqueness_before_insert BEFORE INSER
 
 CREATE TRIGGER trigger_ensure_pipeline_iid_uniqueness_before_update_iid BEFORE UPDATE OF iid ON p_ci_pipelines FOR EACH ROW EXECUTE FUNCTION ensure_pipeline_iid_uniqueness_before_update_iid();
 
+CREATE TRIGGER trigger_f468204dcd5d BEFORE INSERT OR UPDATE ON project_import_export_relation_export_upload_uploads FOR EACH ROW EXECUTE FUNCTION trigger_f468204dcd5d();
+
 CREATE TRIGGER trigger_f6c61cdddf31 BEFORE INSERT OR UPDATE ON ml_model_metadata FOR EACH ROW EXECUTE FUNCTION trigger_f6c61cdddf31();
 
 CREATE TRIGGER trigger_f6f59d8216b3 BEFORE INSERT OR UPDATE ON protected_environment_deploy_access_levels FOR EACH ROW EXECUTE FUNCTION trigger_f6f59d8216b3();
@@ -49082,6 +49407,8 @@ CREATE TRIGGER trigger_fac444e0cae6 BEFORE INSERT OR UPDATE ON design_management
 CREATE TRIGGER trigger_fbd42ed69453 BEFORE INSERT OR UPDATE ON external_status_checks_protected_branches FOR EACH ROW EXECUTE FUNCTION trigger_fbd42ed69453();
 
 CREATE TRIGGER trigger_fbd8825b3057 BEFORE INSERT OR UPDATE ON boards_epic_board_labels FOR EACH ROW EXECUTE FUNCTION trigger_fbd8825b3057();
+
+CREATE TRIGGER trigger_fcc3ea1f9d4e BEFORE INSERT OR UPDATE ON ai_vectorizable_file_uploads FOR EACH ROW EXECUTE FUNCTION trigger_fcc3ea1f9d4e();
 
 CREATE TRIGGER trigger_fd4a1be98713 BEFORE INSERT OR UPDATE ON container_repository_states FOR EACH ROW EXECUTE FUNCTION trigger_fd4a1be98713();
 

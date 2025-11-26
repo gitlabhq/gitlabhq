@@ -186,7 +186,13 @@ COPY --from=gitlab-gems --chown=gdk:gdk ${MISE_DATA_DIR}/shims/ ${MISE_DATA_DIR}
 COPY --from=gitlab-gems --chown=gdk:gdk ${MISE_DATA_DIR}/plugins/ ${MISE_DATA_DIR}/plugins/
 
 # Copy code
-COPY --chown=gdk:gdk --exclude=ee/spec/frontend --exclude=spec/frontend ./ ./gitlab/
+COPY --chown=gdk:gdk \
+  --exclude=ee/spec/frontend \
+  --exclude=spec/frontend \
+  --exclude=public/assets \
+  --exclude=node_modules \
+  --exclude=ee/frontend_islands/apps \
+  ./ ./gitlab/
 COPY --chown=gdk:gdk qa/gdk/entrypoint ../
 
 # Create custom hook for E2E tests

@@ -14,12 +14,12 @@ title: Application Settings analysis
 
 ## Statistics
 
-- Number of attributes: 506
+- Number of attributes: 508
 - Number of encrypted attributes: 42 (8.0%)
-- Number of attributes documented: 295 (57.99999999999999%)
+- Number of attributes documented: 297 (57.99999999999999%)
 - Number of attributes on GitLab.com different from the defaults: 224 (44.0%)
-- Number of attributes with `clusterwide` set: 506 (100.0%)
-- Number of attributes with `clusterwide: true` set: 133 (26.0%)
+- Number of attributes with `clusterwide` set: 508 (100.0%)
+- Number of attributes with `clusterwide: true` set: 135 (27.0%)
 
 ## Individual columns
 
@@ -237,6 +237,8 @@ title: Application Settings analysis
 | `html_emails_enabled` | `false` | `boolean` | `boolean` | `false` | `true` | `false` | `false`| `true` |
 | `id` | `false` | `bigint` | `` | `true` | `???` | `false` | `false`| `false` |
 | `identity_verification_settings` | `false` | `jsonb` | `` | `true` | `'{}'::jsonb` | `true` | `true`| `false` |
+| `iframe_rendering_allowlist` | `false` | `text` | `array of strings` | `false` | `null` | `false` | `true`| `true` |
+| `iframe_rendering_enabled` | `false` | `boolean` | `boolean` | `true` | `false` | `false` | `true`| `true` |
 | `import_sources` | `false` | `text` | `array of strings` | `false` | `null` | `true` | `true`| `true` |
 | `importers` | `false` | `jsonb` | `` | `true` | `'{}'::jsonb` | `true` | `true`| `false` |
 | `inactive_projects_delete_after_months` | `false` | `integer` | `` | `true` | `2` | `false` | `false`| `false` |

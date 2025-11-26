@@ -22,7 +22,7 @@ RSpec.describe Upload do
         upload = described_class.create!(
           path: __FILE__,
           size: described_class::CHECKSUM_THRESHOLD + 1.kilobyte,
-          model: build_stubbed(:user),
+          model: create(:user),
           uploader: double('ExampleUploader'),
           store: ObjectStorage::Store::LOCAL
         )
@@ -37,7 +37,7 @@ RSpec.describe Upload do
         upload = described_class.new(
           path: __FILE__,
           size: described_class::CHECKSUM_THRESHOLD,
-          model: build_stubbed(:user),
+          model: create(:user),
           uploader: double('ExampleUploader'),
           store: ObjectStorage::Store::LOCAL
         )

@@ -365,6 +365,9 @@ export const filtersMap = {
       [OPERATOR_NOT]: {
         [NORMAL_FILTER]: 'not[type][]',
       },
+      [OPERATOR_OR]: {
+        [NORMAL_FILTER]: 'type[]',
+      },
     },
   },
   [TOKEN_TYPE_RELEASE]: {

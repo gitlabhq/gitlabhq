@@ -232,20 +232,6 @@ RSpec.describe SentNotification, :request_store, feature_category: :shared do
       )
     end
 
-    context 'when insert_into_p_sent_notifications feature flag is disabled' do
-      before do
-        stub_feature_flags(insert_into_p_sent_notifications: false)
-      end
-
-      it 'creates a record in both tables' do
-        expect do
-          sent_notification
-        end.to change { SentNotification.count }.by(1).and(
-          change { PartitionedSentNotification.count }.by(1)
-        )
-      end
-    end
-
     context 'with issue email participant' do
       let!(:issue_email_participant) { create(:issue_email_participant, issue: issue) }
 

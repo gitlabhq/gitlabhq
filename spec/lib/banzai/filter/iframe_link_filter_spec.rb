@@ -10,16 +10,22 @@ RSpec.describe Banzai::Filter::IframeLinkFilter, feature_category: :markdown do
   end
 
   def link_to_image(path, height = nil, width = nil)
-    return '<img/>' if path.nil?
+    img = Nokogiri::HTML.fragment("<img>").css('img').first
+    return img.to_html if path.nil?
 
-    attrs = %(src="#{path}")
-    attrs += %( width="#{width}") if width
-    attrs += %( height="#{height}") if height
-
-    %(<img #{attrs}/>)
+    img["src"] = path
+    img["width"] = width if width
+    img["height"] = height if height
+    img.to_html
   end
 
   let_it_be(:project) { create(:project, :repository) }
+
+  before do
+    allow(Gitlab::CurrentSettings).to receive_messages(
+      iframe_rendering_enabled?: true,
+      iframe_rendering_allowlist: ["www.youtube.com"])
+  end
 
   shared_examples 'an iframe element' do
     let(:image) { link_to_image(src, height, width) }
@@ -138,5 +144,7 @@ RSpec.describe Banzai::Filter::IframeLinkFilter, feature_category: :markdown do
     it_behaves_like 'an unchanged element'
   end
 
-  it_behaves_like 'pipeline timing check'
+  it_behaves_like 'pipeline timing check' do
+    let(:context) { { project: } }
+  end
 end

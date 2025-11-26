@@ -440,6 +440,7 @@ This heading is referenced by a script: `scripts/cells/application-settings-anal
 - `require_personal_access_token_expiry` [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/470192) in GitLab 17.3.
 - `receptive_cluster_agents_enabled` [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/463427) in GitLab 17.4.
 - `allow_all_integrations` and `allowed_integrations` [added](https://gitlab.com/gitlab-org/gitlab/-/issues/500610) in GitLab 17.6.
+- `iframe_rendering_enabled`, `iframe_rendering_allowlist`, and `iframe_rendering_allowlist_raw` introduced in GitLab 18.6.
 
 {{< /history >}}
 
@@ -835,6 +836,9 @@ to configure other related settings. These requirements are
 | `secret_push_protection_available` | boolean         | no | Allow projects to enable secret push protection. This does not enable secret push protection. Ultimate only. |
 | `disable_invite_members` | boolean         | no | Disable invite members functionality for group. |
 | `enforce_pipl_compliance` | boolean | no | Sets whether pipl compliance is enforced for the saas application or not |
+| `iframe_rendering_enabled`               | boolean          | no                                   | Allow rendering of iframes in Markdown. Disabled by default. |
+| `iframe_rendering_allowlist`             | array of strings | no                                   | List of allowed iframe `src` host[:port] entries used for Content Security Policy and sanitization. |
+| `iframe_rendering_allowlist_raw`         | string           | no                                   | Raw newline- or comma-separated list of allowed iframe `src` host[:port] entries. |
 
 ### Dormant project settings
 

@@ -15,8 +15,12 @@ RSpec.describe Sanitizable do
       attribute :name, :string
       attribute :description, :string
       attribute :html_body, :string
+      attribute :field_with_true_condition, :string
+      attribute :field_with_false_condition, :string
 
       sanitizes! :name, :description
+      sanitizes! :field_with_true_condition, if: -> { true }
+      sanitizes! :field_with_false_condition, if: -> { false }
 
       def self.model_name
         ActiveModel::Name.new(self, nil, 'SomeModel')
@@ -31,7 +35,10 @@ RSpec.describe Sanitizable do
   end
 
   shared_examples 'a sanitizable field' do |field|
-    let(:record) { klass.new(id: 1, name: input, description: input, html_body: input) }
+    let(:record) do
+      klass.new(id: 1, name: input, description: input, html_body: input, field_with_true_condition: input,
+        field_with_false_condition: input)
+    end
 
     before do
       record.valid?
@@ -77,7 +84,8 @@ RSpec.describe Sanitizable do
           expect(record).not_to be_valid
           expect(record.errors.full_messages).to contain_exactly(
             'Name cannot contain escaped HTML entities',
-            'Description cannot contain escaped HTML entities'
+            'Description cannot contain escaped HTML entities',
+            'Field with true condition cannot contain escaped HTML entities'
           )
         end
       end
@@ -93,7 +101,8 @@ RSpec.describe Sanitizable do
           expect(record).not_to be_valid
           expect(record.errors.full_messages).to contain_exactly(
             'Name cannot contain escaped components',
-            'Description cannot contain escaped components'
+            'Description cannot contain escaped components',
+            'Field with true condition cannot contain escaped components'
           )
         end
       end
@@ -107,7 +116,8 @@ RSpec.describe Sanitizable do
           expect(record).not_to be_valid
           expect(record.errors.full_messages).to contain_exactly(
             'Name cannot contain a path traversal component',
-            'Description cannot contain a path traversal component'
+            'Description cannot contain a path traversal component',
+            'Field with true condition cannot contain a path traversal component'
           )
         end
       end
@@ -125,7 +135,9 @@ RSpec.describe Sanitizable do
             'Name cannot contain a path traversal component',
             'Name cannot contain escaped HTML entities',
             'Description cannot contain a path traversal component',
-            'Description cannot contain escaped HTML entities'
+            'Description cannot contain escaped HTML entities',
+            'Field with true condition cannot contain a path traversal component',
+            'Field with true condition cannot contain escaped HTML entities'
           )
         end
       end
@@ -146,7 +158,9 @@ RSpec.describe Sanitizable do
 
   it_behaves_like 'a non-sanitizable field', :id, 1
   it_behaves_like 'a non-sanitizable field', :html_body, 'hello<script>alert(1)</script>'
+  it_behaves_like 'a non-sanitizable field', :field_with_false_condition, 'hello<script>alert(1)</script>'
 
   it_behaves_like 'a sanitizable field', :name
   it_behaves_like 'a sanitizable field', :description
+  it_behaves_like 'a sanitizable field', :field_with_true_condition
 end

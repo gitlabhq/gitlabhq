@@ -4,7 +4,7 @@ import {
   GlIcon,
   GlLink,
   GlLoadingIcon,
-  GlPagination,
+  GlKeysetPagination,
   GlTable,
   GlBadge,
 } from '@gitlab/ui';
@@ -45,7 +45,7 @@ export default {
     GlIcon,
     GlLink,
     GlLoadingIcon,
-    GlPagination,
+    GlKeysetPagination,
     GlTable,
     GlBadge,
     TotalTime,
@@ -144,11 +144,16 @@ export default {
         },
       ];
     },
-    prevPage() {
-      return Math.max(this.pagination.page - 1, 0);
-    },
-    nextPage() {
-      return this.pagination.hasNextPage ? this.pagination.page + 1 : null;
+    pageInfo() {
+      if (!this.pagination) return {};
+
+      const { page = 1, hasNextPage = false } = this.pagination;
+      return {
+        hasPreviousPage: page > 1,
+        hasNextPage: Boolean(hasNextPage),
+        startCursor: page > 1 ? String(page - 1) : null,
+        endCursor: hasNextPage ? String(page + 1) : null,
+      };
     },
   },
   methods: {
@@ -168,10 +173,18 @@ export default {
     itemTitle(item) {
       return item.title || item.name;
     },
-    onSelectPage(page) {
-      const { sort, direction } = this.pagination;
+    onPrevPage() {
+      const { sort, direction, page } = this.pagination;
+      const prevPage = Math.max(page - 1, 1);
       this.track('click_button', { label: 'pagination' });
-      this.$emit('handleUpdatePagination', { sort, direction, page });
+      this.$emit('handleUpdatePagination', { sort, direction, page: prevPage });
+      this.scrollToTop();
+    },
+    onNextPage() {
+      const { sort, direction, page } = this.pagination;
+      const nextPage = page + 1;
+      this.track('click_button', { label: 'pagination' });
+      this.$emit('handleUpdatePagination', { sort, direction, page: nextPage });
       this.scrollToTop();
     },
     onSort({ sortBy, sortDesc }) {
@@ -284,15 +297,14 @@ export default {
         <span data-testid="vsa-stage-last-event">{{ item.endEventTimestamp }}</span>
       </template>
     </gl-table>
-    <gl-pagination
+
+    <gl-keyset-pagination
       v-if="pagination && !isLoading && !isEmptyStage"
-      :value="pagination.page"
-      :prev-page="prevPage"
-      :next-page="nextPage"
-      align="center"
-      class="gl-mt-3"
+      v-bind="pageInfo"
+      class="gl-mt-6 gl-flex gl-justify-center"
       data-testid="vsa-stage-pagination"
-      @input="onSelectPage"
+      @prev="onPrevPage"
+      @next="onNextPage"
     />
   </div>
 </template>

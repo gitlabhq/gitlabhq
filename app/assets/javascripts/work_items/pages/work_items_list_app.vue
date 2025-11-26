@@ -25,7 +25,6 @@ import {
   getFilterTokens,
   getInitialPageParams,
   getSortOptions,
-  getTypeTokenOptions,
   groupMultiSelectFilterTokens,
 } from 'ee_else_ce/issues/list/utils';
 import axios from '~/lib/utils/axios_utils';
@@ -157,6 +156,8 @@ const CrmContactToken = () =>
   import('~/vue_shared/components/filtered_search_bar/tokens/crm_contact_token.vue');
 const WorkItemParentToken = () =>
   import('~/vue_shared/components/filtered_search_bar/tokens/work_item_parent_token.vue');
+const WorkItemTypeToken = () =>
+  import('~/vue_shared/components/filtered_search_bar/tokens/work_item_type_token.vue');
 
 const statusMap = {
   [STATUS_OPEN]: STATE_OPEN,
@@ -657,9 +658,9 @@ export default {
           title: TOKEN_TITLE_TYPE,
           icon: 'work-item-issue',
           unique: true,
-          token: GlFilteredSearchToken,
-          operators: OPERATORS_IS_NOT,
-          options: this.typeTokenOptions,
+          token: WorkItemTypeToken,
+          operators: OPERATORS_IS_NOT_OR,
+          multiSelect: true,
         });
       }
 
@@ -842,14 +843,6 @@ export default {
         [STATUS_CLOSED]: closed,
         [STATUS_ALL]: all,
       };
-    },
-    typeTokenOptions() {
-      return getTypeTokenOptions({
-        hasEpicsFeature: this.hasEpicsFeature,
-        hasOkrsFeature: this.hasOkrsFeature,
-        hasQualityManagementFeature: this.hasQualityManagementFeature,
-        isGroupIssuesList: this.isGroupIssuesList,
-      });
     },
     urlFilterParams() {
       return convertToUrlParams(this.filterTokens, {
@@ -1230,6 +1223,7 @@ export default {
       const tokens = getFilterTokens(window.location.search, {
         includeStateToken: !this.withTabs,
         hasCustomFieldsFeature: this.hasCustomFieldsFeature,
+        convertTypeTokens: true,
       });
       this.filterTokens = groupMultiSelectFilterTokens(tokens, this.searchTokens);
 
