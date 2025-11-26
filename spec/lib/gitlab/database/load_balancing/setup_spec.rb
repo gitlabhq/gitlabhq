@@ -65,9 +65,7 @@ RSpec.describe Gitlab::Database::LoadBalancing::Setup do
       expect(model.sticking)
         .to be_an_instance_of(Gitlab::Database::LoadBalancing::Sticking)
 
-      if Gitlab.next_rails?
-        expect(model.lease_connection).to be_an_instance_of(Gitlab::Database::LoadBalancing::ConnectionProxy)
-      end
+      expect(model.lease_connection).to be_an_instance_of(Gitlab::Database::LoadBalancing::ConnectionProxy)
     end
   end
 
@@ -75,8 +73,6 @@ RSpec.describe Gitlab::Database::LoadBalancing::Setup do
     let(:model) { Class.new(ActiveRecord::Base) }
 
     before do
-      skip 'Skipping Rails 7.2 only tests' unless Gitlab.next_rails?
-
       described_class.new(model).setup_connection_proxy
       model.load_balancer.release_connections
     end

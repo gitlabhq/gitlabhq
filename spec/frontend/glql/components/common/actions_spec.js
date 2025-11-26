@@ -78,4 +78,20 @@ describe('GlqlActions', () => {
       expect(wrapper.emitted('reload').at(0)).toEqual([]);
     });
   });
+
+  describe('dropdown visibility handling', () => {
+    it('updates cachedShowCopy and sets isDropdownVisible when dropdown is shown', async () => {
+      createComponent({ showCopyContents: true });
+
+      findDropdown().vm.$emit('shown');
+      await nextTick();
+
+      expect(wrapper.vm.cachedShowCopy).toBe(true);
+      expect(wrapper.vm.isDropdownVisible).toBe(true);
+
+      await wrapper.setProps({ showCopyContents: false });
+
+      expect(wrapper.vm.cachedShowCopy).toBe(true);
+    });
+  });
 });

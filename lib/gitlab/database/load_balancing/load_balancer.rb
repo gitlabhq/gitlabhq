@@ -123,12 +123,7 @@ module Gitlab
           transaction_open = nil
 
           # Retry only once when in a transaction (see https://gitlab.com/gitlab-org/gitlab/-/issues/220242)
-          connection =
-            if Gitlab.next_rails?
-              pool.lease_connection
-            else
-              pool.connection
-            end
+          connection = pool.lease_connection
 
           Thread.current[READ_WRITE_HOST_CONN_CHECKOUT_KEY] = true
           attempts = connection.transaction_open? ? 1 : 3

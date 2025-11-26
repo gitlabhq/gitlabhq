@@ -49,11 +49,7 @@ module Gitlab
       end
 
       def needs_migration?
-        if ::Gitlab.next_rails?
-          ::ApplicationSetting.connection_pool.migration_context.needs_migration?
-        else
-          ::ApplicationSetting.connection.migration_context.needs_migration?
-        end
+        ::ApplicationSetting.connection_pool.migration_context.needs_migration?
       end
 
       def in_memory_application_settings

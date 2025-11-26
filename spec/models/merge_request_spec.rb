@@ -41,21 +41,11 @@ RSpec.describe MergeRequest, factory_default: :keep, feature_category: :code_rev
     it { is_expected.to have_many(:created_environments).class_name('Environment').inverse_of(:merge_request) }
     it { is_expected.to have_many(:assignment_events).class_name('ResourceEvents::MergeRequestAssignmentEvent').inverse_of(:merge_request) }
 
-    if ::Gitlab.next_rails?
-      it 'has many generated_ref_commits' do
-        is_expected.to have_many(:generated_ref_commits)
-          .with_primary_key(%i[iid target_project_id])
-          .with_query_constraints(%i[merge_request_iid project_id])
-          .inverse_of(:merge_request)
-      end
-    else
-      it 'has many generated_ref_commits' do
-        is_expected.to have_many(:generated_ref_commits)
-          .with_primary_key(%i[iid target_project_id])
-          .with_foreign_key(:merge_request_iid)
-          .inverse_of(:merge_request)
-          .with_query_constraints(%i[merge_request_iid project_id])
-      end
+    it 'has many generated_ref_commits' do
+      is_expected.to have_many(:generated_ref_commits)
+        .with_primary_key(%i[iid target_project_id])
+        .with_query_constraints(%i[merge_request_iid project_id])
+        .inverse_of(:merge_request)
     end
 
     context 'for forks' do

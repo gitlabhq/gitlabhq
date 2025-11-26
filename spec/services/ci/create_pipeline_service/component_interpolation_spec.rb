@@ -149,22 +149,6 @@ RSpec.describe Ci::CreatePipelineService, feature_category: :pipeline_compositio
             "echo \"Component #{component_name} / #{component_sha} /  / #{component_sha}\""
           ])
         end
-
-        context 'when the FF ci_component_context_interpolation is disabled' do
-          before do
-            stub_feature_flags(ci_component_context_interpolation: false)
-          end
-
-          it 'does not create a pipeline' do
-            response = execute
-            pipeline = response.payload
-
-            expect(response).to be_error
-            expect(response.message).to include('unknown interpolation provided: `name` in `component.name`')
-
-            expect(pipeline).not_to be_created_successfully
-          end
-        end
       end
     end
 

@@ -27,6 +27,7 @@ export default {
     return {
       toggleId: uniqueId('dropdown-toggle-btn-'),
       isDropdownVisible: false,
+      cachedShowCopy: this.showCopyContents,
     };
   },
   computed: {
@@ -40,7 +41,7 @@ export default {
           text: __('Copy source'),
           action: () => this.$emit('copySource'),
         },
-        this.showCopyContents && {
+        this.cachedShowCopy && {
           text: __('Copy contents'),
           action: () => this.$emit('copyAsGFM'),
         },
@@ -52,6 +53,12 @@ export default {
     },
     moreActionsTooltip() {
       return !this.isDropdownVisible ? __('Embedded view options') : '';
+    },
+  },
+  methods: {
+    handleDropdownShown() {
+      this.cachedShowCopy = this.showCopyContents;
+      this.isDropdownVisible = true;
     },
   },
 };
@@ -70,7 +77,7 @@ export default {
       :toggle-text="__('Embedded view options')"
       text-sr-only
       placement="bottom-end"
-      @shown="isDropdownVisible = true"
+      @shown="handleDropdownShown"
       @hidden="isDropdownVisible = false"
     />
   </div>

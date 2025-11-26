@@ -73,20 +73,11 @@ class MergeRequest < ApplicationRecord
   has_many :merge_request_context_commits, inverse_of: :merge_request
   has_many :merge_request_context_commit_diff_files, through: :merge_request_context_commits, source: :diff_files
 
-  if Gitlab.next_rails?
-    has_many :generated_ref_commits,
-      primary_key: [:iid, :target_project_id],
-      class_name: 'MergeRequests::GeneratedRefCommit',
-      foreign_key: [:merge_request_iid, :project_id],
-      inverse_of: :merge_request
-  else
-    has_many :generated_ref_commits,
-      primary_key: [:iid, :target_project_id],
-      class_name: 'MergeRequests::GeneratedRefCommit',
-      foreign_key: :merge_request_iid,
-      inverse_of: :merge_request,
-      query_constraints: [:merge_request_iid, :project_id]
-  end
+  has_many :generated_ref_commits,
+    primary_key: [:iid, :target_project_id],
+    class_name: 'MergeRequests::GeneratedRefCommit',
+    foreign_key: [:merge_request_iid, :project_id],
+    inverse_of: :merge_request
 
   has_one :merge_request_diff,
     -> { regular.order('merge_request_diffs.id DESC') }, inverse_of: :merge_request

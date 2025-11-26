@@ -1,10 +1,10 @@
 import { memoize } from 'lodash';
-import { NEEDS_PROPERTY, PREVIOUS_STAGE_JOBS_UNION_NEEDS_PROPERTY } from '../constants';
+import { NEEDS_PROPERTY, ALL_JOBS_FROM_PREVIOUS_STAGE_PROPERTY } from '../constants';
 import { createSankey } from './drawing_utils';
 import { createNodeDict } from './index';
 
 /*
-  A peformant alternative to lodash's isEqual. Because findIndex always finds
+  A performant alternative to lodash's isEqual. Because findIndex always finds
   the first instance of a match, if the found index is not the first, we know
   it is in fact a duplicate.
 */
@@ -81,9 +81,12 @@ export const filterByAncestors = (links, nodeDict) =>
 
 export const parseData = (nodes, { needsKey = NEEDS_PROPERTY } = {}) => {
   const nodeDict = createNodeDict(nodes, { needsKey });
+  // Always use NEEDS_PROPERTY for ancestor traversal to avoid circular dependencies
+  const needsOnlyNodeDict =
+    needsKey === NEEDS_PROPERTY ? nodeDict : createNodeDict(nodes, { needsKey: NEEDS_PROPERTY });
   const allLinks = makeLinksFromNodes(nodes, nodeDict, { needsKey });
   const filteredLinks = allLinks.filter(deduplicate);
-  const links = filterByAncestors(filteredLinks, nodeDict);
+  const links = filterByAncestors(filteredLinks, needsOnlyNodeDict);
 
   return { nodes, links };
 };
@@ -117,7 +120,7 @@ export const listByLayers = ({ stages }) => {
   const arrayOfJobs = stages.flatMap(({ groups }) => groups);
   const needsOnlyParsedData = parseData(arrayOfJobs, { needsKey: NEEDS_PROPERTY });
   const explicitParsedData = parseData(arrayOfJobs, {
-    needsKey: PREVIOUS_STAGE_JOBS_UNION_NEEDS_PROPERTY,
+    needsKey: ALL_JOBS_FROM_PREVIOUS_STAGE_PROPERTY,
   });
   const dataWithLayers = createSankey()(explicitParsedData);
 

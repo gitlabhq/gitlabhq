@@ -21,6 +21,7 @@ module Banzai
         allow_class_attributes(allowlist)
         allow_section_footnotes(allowlist)
         allow_anchor_data_heading_content(allowlist)
+        allow_tasklists(allowlist)
 
         allowlist
       end
@@ -65,6 +66,10 @@ module Banzai
         allowlist[:attributes]['p'] = %w[class]
         allowlist[:attributes]['span'].push('class')
         allowlist[:attributes]['code'].push('class')
+        allowlist[:attributes]['ul'] = %w[class]
+        allowlist[:attributes]['ol'] = %w[class]
+        allowlist[:attributes]['li'].push('class')
+        allowlist[:attributes]['input'] = %w[class]
         allowlist[:transformers].push(self.class.method(:remove_unsafe_classes))
       end
 
@@ -77,6 +82,12 @@ module Banzai
 
       def allow_anchor_data_heading_content(allowlist)
         allowlist[:attributes]['a'].push('data-heading-content')
+      end
+
+      def allow_tasklists(allowlist)
+        allowlist[:elements].push('input')
+        allowlist[:attributes]['input'].push('data-inapplicable')
+        allowlist[:transformers].push(self.class.method(:remove_non_tasklist_inputs))
       end
 
       class << self
@@ -93,7 +104,7 @@ module Banzai
           end
         end
 
-        def remove_unsafe_classes(env)
+        def remove_unsafe_classes(env) # rubocop:disable Metrics/CyclomaticComplexity -- dispatch method.
           node = env[:node]
 
           return unless node.has_attribute?('class')
@@ -109,6 +120,12 @@ module Banzai
             node.remove_attribute('class') if remove_span_class?(node)
           when 'code'
             node.remove_attribute('class') if remove_code_class?(node)
+          when 'ul', 'ol'
+            node.remove_attribute('class') if remove_ul_ol_class?(node)
+          when 'li'
+            node.remove_attribute('class') if remove_li_class?(node)
+          when 'input'
+            node.remove_attribute('class') if remove_input_class?(node)
           end
         end
 
@@ -138,6 +155,19 @@ module Banzai
           node['class'] != 'idiff'
         end
 
+        def remove_ul_ol_class?(node)
+          node['class'] != 'task-list'
+        end
+
+        def remove_li_class?(node)
+          node['class'] != 'task-list-item' &&
+            node['class'] != 'inapplicable task-list-item'
+        end
+
+        def remove_input_class?(node)
+          node['class'] != 'task-list-item-checkbox'
+        end
+
         def remove_id_attributes(env)
           node = env[:node]
           return unless node.has_attribute?('id')
@@ -159,6 +189,16 @@ module Banzai
           end
 
           node.remove_attribute('id')
+        end
+
+        def remove_non_tasklist_inputs(env)
+          node = env[:node]
+
+          return unless node.name == 'input'
+
+          return if node['type'] == 'checkbox' && node['class'] == 'task-list-item-checkbox' && node.parent.name == 'li'
+
+          node.remove
         end
       end
     end

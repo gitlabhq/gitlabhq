@@ -152,7 +152,7 @@ module Gitlab
             def yaml_context_attributes
               {
                 variables: context.variables,
-                component: (ci_component_context_interpolation_enabled? ? context.component_data : {})
+                component: context.component_data
               }
             end
 
@@ -185,11 +185,6 @@ module Gitlab
                 context.mask_variables_from(location)
               end
             end
-
-            def ci_component_context_interpolation_enabled?
-              ::Feature.enabled?(:ci_component_context_interpolation, context.project)
-            end
-            strong_memoize_attr :ci_component_context_interpolation_enabled?
           end
         end
       end

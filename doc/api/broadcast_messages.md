@@ -130,16 +130,16 @@ POST /broadcast_messages
 
 Parameters:
 
-| Attribute              | Type              | Required | Description                                           |
-|:-----------------------|:------------------|:---------|:------------------------------------------------------|
-| `message`              | string            | yes      | Message to display.                                   |
+| Attribute              | Type              | Required | Description |
+|:-----------------------|:------------------|:---------|:------------|
+| `message`              | string            | yes      | Message to display. |
 | `starts_at`            | datetime          | no       | Starting time (defaults to current time in UTC). Expected in ISO 8601 format (`2019-03-15T08:00:00Z`) |
 | `ends_at`              | datetime          | no       | Ending time (defaults to one hour from current time in UTC). Expected in ISO 8601 format (`2019-03-15T08:00:00Z`) |
-| `font`                 | string            | no       | Foreground color hex code.                            |
-| `target_access_levels` | array of integers | no       | Target access levels (roles) of the broadcast message.|
-| `target_path`          | string            | no       | Target path of the broadcast message.                 |
-| `broadcast_type`       | string            | no       | Appearance type (defaults to banner)                  |
-| `dismissable`          | boolean           | no       | Can the user dismiss the message?                     |
+| `font`                 | string            | no       | Foreground color hex code. |
+| `target_access_levels` | array of integers | no       | Target access levels (roles) of the broadcast message. |
+| `target_path`          | string            | no       | Target path of the broadcast message. |
+| `broadcast_type`       | string            | no       | Appearance type (defaults to banner) |
+| `dismissable`          | boolean           | no       | Can the user dismiss the message? |
 | `theme`                | string            | no       | Color theme for the broadcast message (banners only). |
 
 The `target_access_levels` are defined in the `Gitlab::Access` module. The
@@ -154,16 +154,16 @@ following levels are valid:
 
 The `theme` options are defined in the `System::BroadcastMessage` class. The following themes are valid:
 
-- indigo (default)
-- light-indigo
-- blue
-- light-blue
-- green
-- light-green
-- red
-- light-red
-- dark
-- light
+- `indigo` (default)
+- `light-indigo`
+- `blue`
+- `light-blue`
+- `green`
+- `light-green`
+- `red`
+- `light-red`
+- `dark`
+- `light`
 
 Example request:
 
@@ -207,17 +207,17 @@ PUT /broadcast_messages/:id
 
 Parameters:
 
-| Attribute              | Type              | Required | Description                                           |
-|:-----------------------|:------------------|:---------|:------------------------------------------------------|
-| `id`                   | integer           | yes      | ID of broadcast message to update.                    |
-| `message`              | string            | no       | Message to display.                                   |
+| Attribute              | Type              | Required | Description |
+|:-----------------------|:------------------|:---------|:------------|
+| `id`                   | integer           | yes      | ID of broadcast message to update. |
+| `message`              | string            | no       | Message to display. |
 | `starts_at`            | datetime          | no       | Starting time (UTC). Expected in ISO 8601 format (`2019-03-15T08:00:00Z`) |
 | `ends_at`              | datetime          | no       | Ending time (UTC). Expected in ISO 8601 format (`2019-03-15T08:00:00Z`) |
-| `font`                 | string            | no       | Foreground color hex code.                            |
-| `target_access_levels` | array of integers | no       | Target access levels (roles) of the broadcast message.|
-| `target_path`          | string            | no       | Target path of the broadcast message.                 |
-| `broadcast_type`       | string            | no       | Appearance type (defaults to banner)                  |
-| `dismissable`          | boolean           | no       | Can the user dismiss the message?                     |
+| `font`                 | string            | no       | Foreground color hex code. |
+| `target_access_levels` | array of integers | no       | Target access levels (roles) of the broadcast message. |
+| `target_path`          | string            | no       | Target path of the broadcast message. |
+| `broadcast_type`       | string            | no       | Appearance type (defaults to banner) |
+| `dismissable`          | boolean           | no       | Can the user dismiss the message? |
 | `theme`                | string            | no       | Color theme for the broadcast message (banners only). |
 
 The `target_access_levels` are defined in the `Gitlab::Access` module. The
@@ -232,16 +232,16 @@ following levels are valid:
 
 The `theme` options are defined in the `System::BroadcastMessage` class. The following themes are valid:
 
-- indigo (default)
-- light-indigo
-- blue
-- light-blue
-- green
-- light-green
-- red
-- light-red
-- dark
-- light
+- `indigo` (default)
+- `light-indigo`
+- `blue`
+- `light-blue`
+- `green`
+- `light-green`
+- `red`
+- `light-red`
+- `dark`
+- `light`
 
 Example request:
 

@@ -1935,8 +1935,6 @@ RSpec/FeatureCategory:
     - 'spec/lib/feature_spec.rb'
     - 'spec/lib/file_size_validator_spec.rb'
     - 'spec/lib/forever_spec.rb'
-    - 'spec/lib/gem_extensions/active_record/connection_adapters/transaction/null_transaction_callbacks_spec.rb'
-    - 'spec/lib/gem_extensions/active_record/connection_adapters/transaction/transaction_callbacks_spec.rb'
     - 'spec/lib/generators/gitlab/usage_metric_generator_spec.rb'
     - 'spec/lib/generators/model/model_generator_spec.rb'
     - 'spec/lib/gitaly/server_spec.rb'

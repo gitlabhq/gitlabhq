@@ -1,7 +1,5 @@
 # frozen_string_literal: true
 
-return unless Gitlab.next_rails?
-
 if Gem::Version.new(TestProf::VERSION) > Gem::Version.new('1.4.4')
   raise 'When upgrading test-prof, evaluate if this patch is still needed'
 end

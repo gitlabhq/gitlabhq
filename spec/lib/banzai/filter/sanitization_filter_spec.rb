@@ -261,6 +261,19 @@ RSpec.describe Banzai::Filter::SanitizationFilter, feature_category: :markdown d
 
         %q(<code class="idiff"></code>) | %q(<code class="idiff"></code>)
         %q(<code class="other_class"></code>) | %q(<code></code>)
+
+        %q(<ul class="task-list"></ul>) | %q(<ul class="task-list"></ul>)
+        %q(<ul class="other-list"></ul>) | %q(<ul></ul>)
+
+        %q(<ol class="task-list"></ol>) | %q(<ol class="task-list"></ol>)
+        %q(<ol class="other-list"></ol>) | %q(<ol></ol>)
+
+        %q(<ul><li class="task-list-item"></li></ul>) | %q(<ul><li class="task-list-item"></li></ul>)
+        %q(<ul><li class="inapplicable task-list-item"></li></ul>) | %q(<ul><li class="inapplicable task-list-item"></li></ul>)
+        %q(<ul><li class="other task-list-item"></li></ul>) | %q(<ul><li></li></ul>)
+
+        %q(<ul><li><input type="checkbox" class="task-list-item-checkbox"></li></ul>) | %q(<ul><li><input type="checkbox" class="task-list-item-checkbox"></li></ul>)
+        %q(<ul><li><input type="checkbox" class="other-checkbox"></li></ul>) | %q(<ul><li></li></ul>)
       end
       # rubocop:enable Layout/LineLength
 
@@ -268,8 +281,38 @@ RSpec.describe Banzai::Filter::SanitizationFilter, feature_category: :markdown d
         it 'removes classes' do
           act = filter(html)
 
-          expect(act.to_html).to eq sanitized
+          expect(act.to_html).to eq_html sanitized
         end
+      end
+    end
+
+    describe 'tasklist inputs' do
+      it 'leaves tasklist inputs' do
+        exp = %q(<ul><li><input type="checkbox" class="task-list-item-checkbox"></li></ul>)
+        act = filter(exp)
+
+        expect(act.to_html).to eq exp
+      end
+
+      it 'removes tasklist inputs outside of lists' do
+        exp = %q(<p> Hello</p>)
+        act = filter(%q(<p><input type="checkbox" class="task-list-item-checkbox"> Hello</p>))
+
+        expect(act.to_html).to eq exp
+      end
+
+      it 'removes non-tasklist class inputs' do
+        exp = %q(<ul><li></li></ul>)
+        act = filter(%q(<ul><li><input type="checkbox"></li></ul>))
+
+        expect(act.to_html).to eq_html exp
+      end
+
+      it 'removes non-tasklist type inputs' do
+        exp = %q(<ul><li></li></ul>)
+        act = filter(%q(<ul><li><input type="password" class="task-list-item-checkbox"></li></ul>))
+
+        expect(act.to_html).to eq_html exp
       end
     end
   end

@@ -80,11 +80,7 @@ module Gitlab
         end
 
         def connection
-          if Gitlab.next_rails?
-            pool.lease_connection
-          else
-            pool.connection
-          end
+          pool.lease_connection
         end
 
         # Disconnects the pool, once all connections are no longer in use.

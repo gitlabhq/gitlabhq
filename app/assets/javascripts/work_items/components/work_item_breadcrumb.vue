@@ -32,14 +32,14 @@ export default {
     },
   },
   computed: {
-    isWorkItemOnly() {
+    isWorkItemPlanningViewEnabled() {
       return this.glFeatures.workItemPlanningView;
     },
     isEpicsList() {
       return this.workItemType === WORK_ITEM_TYPE_NAME_EPIC;
     },
     listName() {
-      if (this.isWorkItemOnly) {
+      if (this.isWorkItemPlanningViewEnabled) {
         return s__('WorkItem|Work items');
       }
 
@@ -49,15 +49,26 @@ export default {
 
       return __('Issues');
     },
-    workItemsViewEnabled() {
-      return this.glFeatures.workItemViewForIssues || this.isWorkItemOnly || this.isGroup;
+    shouldUseRouterNavigation() {
+      // NOTE: task are redirected to /issues -> /work_items from BE
+      // When clicking breadcrumb, we navigate to the list view using the same path prefix.
+      // This redirect users to /work_items in case of "tasks"
+      // even if the feature flag is off as we don't show 404 for work_items path when feature flag is off anymore
+      const isOnWorkItemsPath = this.$route.path?.includes('work_items');
+      if (isOnWorkItemsPath && !this.isWorkItemPlanningViewEnabled) {
+        return false;
+      }
+
+      return (
+        this.glFeatures.workItemViewForIssues || this.isWorkItemPlanningViewEnabled || this.isGroup
+      );
     },
     crumbs() {
       const indexCrumb = {
         text: this.listName,
       };
 
-      if (this.workItemsViewEnabled) {
+      if (this.shouldUseRouterNavigation) {
         indexCrumb.to = { name: ROUTES.index, query: this.$route.query };
       } else {
         indexCrumb.href = this.listPath;

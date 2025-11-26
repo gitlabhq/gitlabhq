@@ -5,12 +5,12 @@ module UseSqlFunctionForPrimaryKeyLookups
 
   class_methods do
     def _query_by_sql(*args, **kwargs, &block)
-      idx = Gitlab.next_rails? ? 1 : 0
-      sql = args[idx]
+      sql_arg_idx = 1
+      sql = args[sql_arg_idx]
 
       replaced = try_replace_with_function_call(sql)
 
-      args[idx] = replaced.arel if replaced
+      args[sql_arg_idx] = replaced.arel if replaced
 
       super
     end

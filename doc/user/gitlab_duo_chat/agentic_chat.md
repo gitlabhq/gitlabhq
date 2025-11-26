@@ -398,6 +398,7 @@ To manage who must approve any changes to custom rules, use [Code Owners](../pro
 - [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/19251) in GitLab 18.4 as a [beta](../../policy/development_stages_support.md#beta) feature with a [flag](../../administration/feature_flags/_index.md) called `ai_user_model_switching`. Disabled by default.
 - [Enabled](https://gitlab.com/gitlab-org/gitlab/-/issues/560319) in GitLab 18.4.
 - [Available on GitLab Self-Managed](https://gitlab.com/groups/gitlab-org/-/epics/19344) in GitLab 18.6.
+- Feature flag `ai_user_model_switching` [removed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/214042) in GitLab 18.7.
 
 {{< /history >}}
 

@@ -218,10 +218,6 @@ export const wrappedPipelineReturn = {
                             __typename: 'CiBuildNeedConnection',
                             nodes: [],
                           },
-                          previousStageJobs: {
-                            __typename: 'CiJobConnection',
-                            nodes: [],
-                          },
                           scheduled: false,
                           scheduledAt: null,
                           status: {

@@ -41117,6 +41117,7 @@ Project-level settings for product analytics provider.
 | <a id="projectsecuritypolicyproject"></a>`securityPolicyProject` | [`Project`](#project) | Security policy project assigned to the project, absent if assigned to a parent group. |
 | <a id="projectsecuritypolicyprojectlinkednamespaces"></a>`securityPolicyProjectLinkedNamespaces` {{< icon name="warning-solid" >}} | [`NamespaceConnection`](#namespaceconnection) | **Deprecated** in GitLab 17.4. This was renamed. Use: `security_policy_project_linked_groups`. |
 | <a id="projectsecuritypolicyprojectlinkedprojects"></a>`securityPolicyProjectLinkedProjects` | [`ProjectConnection`](#projectconnection) | Projects linked to the project, when used as Security Policy Project. (see [Connections](#connections)) |
+| <a id="projectsecurityscanprofiles"></a>`securityScanProfiles` {{< icon name="warning-solid" >}} | [`[ScanProfileType!]`](#scanprofiletype) | **Introduced** in GitLab 18.7. **Status**: Experiment. Security scan profiles attached to the project. |
 | <a id="projectsecurityscanners"></a>`securityScanners` | [`SecurityScanners`](#securityscanners) | Information about security analyzers used in the project. |
 | <a id="projectsentryerrors"></a>`sentryErrors` | [`SentryErrorCollection`](#sentryerrorcollection) | Paginated collection of Sentry errors on the project. |
 | <a id="projectservicedeskaddress"></a>`serviceDeskAddress` | [`String`](#string) | E-mail address of the Service Desk. |
@@ -45157,6 +45158,22 @@ Represents policy fields related to the scan execution policy.
 | ---- | ---- | ----------- |
 | <a id="scanexecutionpolicyattributestypedeprecatedproperties"></a>`deprecatedProperties` {{< icon name="warning-solid" >}} | [`[String!]`](#string) | **Introduced** in GitLab 17.3. **Status**: Experiment. All deprecated properties in the policy. |
 | <a id="scanexecutionpolicyattributestypesource"></a>`source` | [`SecurityPolicySource!`](#securitypolicysource) | Source of the policy. Its fields depend on the source type. |
+
+### `ScanProfileType`
+
+A scan profile.
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="scanprofiletypecreatedat"></a>`createdAt` | [`ISO8601DateTime!`](#iso8601datetime) | Timestamp of when the scan profile was created. |
+| <a id="scanprofiletypedescription"></a>`description` | [`String!`](#string) | Description of the security scan profile. |
+| <a id="scanprofiletypegitlabrecommended"></a>`gitlabRecommended` | [`Boolean!`](#boolean) | Indicates whether the scan profile is a default profile. |
+| <a id="scanprofiletypeid"></a>`id` | [`SecurityScanProfileID!`](#securityscanprofileid) | Global ID of the security scan profile. |
+| <a id="scanprofiletypename"></a>`name` | [`String!`](#string) | Name of the security scan profile. |
+| <a id="scanprofiletypescantype"></a>`scanType` | [`SecurityScanProfileType!`](#securityscanprofiletype) | Scan profile type. |
+| <a id="scanprofiletypeupdatedat"></a>`updatedAt` | [`ISO8601DateTime!`](#iso8601datetime) | Timestamp of when the scan profile was last updated. |
 
 ### `ScanResultPolicy`
 
@@ -51884,6 +51901,7 @@ Member role permission.
 | <a id="memberrolepermissionread_dependency"></a>`READ_DEPENDENCY` | Allows read-only access to the dependencies and licenses. |
 | <a id="memberrolepermissionread_runners"></a>`READ_RUNNERS` | Allows read-only access to group or project runners, including the runner fleet dashboard. |
 | <a id="memberrolepermissionread_security_attribute"></a>`READ_SECURITY_ATTRIBUTE` | Allows read-only access to the security categories and attributes belonging to a top-level group. |
+| <a id="memberrolepermissionread_security_scan_profiles"></a>`READ_SECURITY_SCAN_PROFILES` | Read security scan profiles. |
 | <a id="memberrolepermissionread_vulnerability"></a>`READ_VULNERABILITY` | Read vulnerability reports and security dashboards. |
 | <a id="memberrolepermissionremove_group"></a>`REMOVE_GROUP` | Ability to delete or restore a group. This ability does not allow deleting top-level groups. Review the Retention period settings to prevent accidental deletion. |
 | <a id="memberrolepermissionremove_project"></a>`REMOVE_PROJECT` | Allows deletion of projects. |
@@ -51921,6 +51939,7 @@ Member role standard permission.
 | <a id="memberrolestandardpermissionread_dependency"></a>`READ_DEPENDENCY` | Allows read-only access to the dependencies and licenses. |
 | <a id="memberrolestandardpermissionread_runners"></a>`READ_RUNNERS` | Allows read-only access to group or project runners, including the runner fleet dashboard. |
 | <a id="memberrolestandardpermissionread_security_attribute"></a>`READ_SECURITY_ATTRIBUTE` {{< icon name="warning-solid" >}} | **Introduced** in GitLab 18.6. **Status**: Experiment. Allows read-only access to the security categories and attributes belonging to a top-level group. |
+| <a id="memberrolestandardpermissionread_security_scan_profiles"></a>`READ_SECURITY_SCAN_PROFILES` | Read security scan profiles. |
 | <a id="memberrolestandardpermissionread_vulnerability"></a>`READ_VULNERABILITY` | Read vulnerability reports and security dashboards. |
 | <a id="memberrolestandardpermissionremove_group"></a>`REMOVE_GROUP` | Ability to delete or restore a group. This ability does not allow deleting top-level groups. Review the Retention period settings to prevent accidental deletion. |
 | <a id="memberrolestandardpermissionremove_project"></a>`REMOVE_PROJECT` | Allows deletion of projects. |
@@ -53054,6 +53073,17 @@ Template type for predefined security categories.
 | <a id="securityreporttypeenumsast_advanced"></a>`SAST_ADVANCED` | SAST ADVANCED scan report. |
 | <a id="securityreporttypeenumsast_iac"></a>`SAST_IAC` | SAST IAC scan report. |
 | <a id="securityreporttypeenumsecret_detection"></a>`SECRET_DETECTION` | SECRET DETECTION scan report. |
+
+### `SecurityScanProfileType`
+
+Scan profile type.
+
+| Value | Description |
+| ----- | ----------- |
+| <a id="securityscanprofiletypecontainer_scanning"></a>`CONTAINER_SCANNING` | Container scanning. |
+| <a id="securityscanprofiletypedependency_scanning"></a>`DEPENDENCY_SCANNING` | Dependency scanning. |
+| <a id="securityscanprofiletypesast"></a>`SAST` | Sast. |
+| <a id="securityscanprofiletypesecret_detection"></a>`SECRET_DETECTION` | Secret detection. |
 
 ### `SecurityScannerType`
 
@@ -55265,6 +55295,12 @@ An example `SecurityOrchestrationPolicyConfigurationID` is: `"gid://gitlab/Secur
 A `SecurityProjectSecurityExclusionID` is a global ID. It is encoded as a string.
 
 An example `SecurityProjectSecurityExclusionID` is: `"gid://gitlab/Security::ProjectSecurityExclusion/1"`.
+
+### `SecurityScanProfileID`
+
+A `SecurityScanProfileID` is a global ID. It is encoded as a string.
+
+An example `SecurityScanProfileID` is: `"gid://gitlab/Security::ScanProfile/1"`.
 
 ### `SecurityTrainingProviderID`
 

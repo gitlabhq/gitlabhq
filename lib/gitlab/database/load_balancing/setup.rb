@@ -49,8 +49,6 @@ module Gitlab
           setup_class_attribute(:connection, ConnectionProxy.new(load_balancer))
           setup_class_attribute(:sticking, Sticking.new(load_balancer))
 
-          return unless ::Gitlab.next_rails?
-
           @model.singleton_class.alias_method(:lease_connection, :connection)
           @model.singleton_class.define_method(:with_connection) do |*_args, **_kwargs, &block|
             next block&.call(connection) unless connection.is_a?(::Gitlab::Database::LoadBalancing::ConnectionProxy)

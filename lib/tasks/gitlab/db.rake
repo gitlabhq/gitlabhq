@@ -241,7 +241,7 @@ namespace :gitlab do
 
     desc 'GitLab | DB | Run database migrations and print `unattended_migrations_completed` if action taken'
     task unattended: :environment do
-      connection_pool = ::Gitlab.next_rails? ? ActiveRecord::Base.connection_pool : ActiveRecord::Base.connection
+      connection_pool = ActiveRecord::Base.connection_pool
 
       no_database = !connection_pool.schema_migration.table_exists?
       needs_migrations = connection_pool.migration_context.needs_migration?
@@ -479,7 +479,7 @@ namespace :gitlab do
 
     desc 'Check if there have been user additions to the database'
     task active: :environment do
-      connection_pool = ::Gitlab.next_rails? ? ActiveRecord::Base.connection_pool : ActiveRecord::Base.connection
+      connection_pool = ActiveRecord::Base.connection_pool
 
       if connection_pool.migration_context.needs_migration?
         puts "Migrations pending. Database not active"

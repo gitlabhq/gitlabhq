@@ -1,0 +1,4 @@
+---
+name: read_security_scan_profiles
+description: Read security scan profiles.
+feature_category: security_asset_inventories

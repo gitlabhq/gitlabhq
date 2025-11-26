@@ -109,6 +109,24 @@ describe('WorkItemBreadcrumb', () => {
         ]);
       });
     });
+
+    describe('when task is on work_items path with feature flag off', () => {
+      it('renders root `Issues` breadcrumb with href to respect feature flag state', () => {
+        createComponent({
+          isGroup: false,
+          listPath: '/issues',
+          workItemViewForIssues: true,
+          $route: { path: '/work_items/123' },
+        });
+
+        expect(findBreadcrumb().props('items')).toEqual([
+          {
+            text: 'Issues',
+            href: '/issues',
+          },
+        ]);
+      });
+    });
   });
 
   it('renders `New` breadcrumb on new work item page', () => {

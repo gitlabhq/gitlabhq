@@ -985,6 +985,8 @@ project:
 - security_attributes
 - project_to_security_attributes
 - policy_dismissals
+- security_scan_profiles
+- security_scan_profiles_projects
 award_emoji:
 - awardable
 - user

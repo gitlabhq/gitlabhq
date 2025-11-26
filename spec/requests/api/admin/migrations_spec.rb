@@ -48,13 +48,7 @@ RSpec.describe API::Admin::Migrations, feature_category: :database do
     end
 
     context 'when the migration was already executed' do
-      let(:version) do
-        if ::Gitlab.next_rails?
-          connection.pool.migration_context.current_version
-        else
-          connection.migration_context.current_version
-        end
-      end
+      let(:version) { connection.pool.migration_context.current_version }
 
       it 'returns 422' do
         mark

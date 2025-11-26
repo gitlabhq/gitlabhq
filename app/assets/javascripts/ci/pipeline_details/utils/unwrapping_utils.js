@@ -1,9 +1,14 @@
 import { reportToSentry } from '~/ci/utils';
-import {
-  NEEDS_PROPERTY,
-  PREVIOUS_STAGE_JOBS_PROPERTY,
-  PREVIOUS_STAGE_JOBS_UNION_NEEDS_PROPERTY,
-} from '../constants';
+import { NEEDS_PROPERTY, ALL_JOBS_FROM_PREVIOUS_STAGE_PROPERTY } from '../constants';
+
+/**
+ * Extract all job names from a stage's groups
+ * @param {Array} groups - Array of groups from a stage
+ * @returns {Array} - Array of job names
+ */
+const extractJobNamesFromGroups = (groups = []) => {
+  return groups.flatMap((g) => (g.jobs || []).map((j) => j.name));
+};
 
 const unwrapGroups = (stages) => {
   return stages.map((stage, idx) => {
@@ -12,7 +17,7 @@ const unwrapGroups = (stages) => {
     } = stage;
 
     /*
-      Being peformance conscious here means we don't want to spread and copy the
+      Being performance conscious here means we don't want to spread and copy the
       group value just to add one parameter.
     */
     /* eslint-disable no-param-reassign */
@@ -40,45 +45,48 @@ const unwrapNodesWithName = (jobArray, prop, field = 'name') => {
   });
 };
 
-const createPreviousStageJobsOrNeeds = (job) => {
-  const previousStageJobs = job[PREVIOUS_STAGE_JOBS_PROPERTY] || [];
-  const needs = job[NEEDS_PROPERTY] || [];
+const unwrapJobWithNeeds = (denodedJobArray, previousStageJobNames = []) => {
+  const needsUnwrapped = unwrapNodesWithName(denodedJobArray, NEEDS_PROPERTY);
 
-  const combined = [...previousStageJobs, ...needs];
-  return [...new Set(combined)];
-};
+  return needsUnwrapped.map((job) => {
+    const needs = job[NEEDS_PROPERTY] || [];
 
-const unwrapJobWithNeeds = (denodedJobArray) => {
-  const previousStageJobsUnwrapped = unwrapNodesWithName(
-    denodedJobArray,
-    PREVIOUS_STAGE_JOBS_PROPERTY,
-  );
+    const unionNeeds = [...new Set([...previousStageJobNames, ...needs])];
 
-  const needsUnwrapped = unwrapNodesWithName(previousStageJobsUnwrapped, NEEDS_PROPERTY);
-
-  const jobsWithUnion = needsUnwrapped.map((job) => ({
-    ...job,
-    [PREVIOUS_STAGE_JOBS_UNION_NEEDS_PROPERTY]: createPreviousStageJobsOrNeeds(job),
-  }));
-
-  return jobsWithUnion;
+    return {
+      ...job,
+      [NEEDS_PROPERTY]: needs,
+      [ALL_JOBS_FROM_PREVIOUS_STAGE_PROPERTY]: unionNeeds,
+    };
+  });
 };
 
 const unwrapStagesWithNeedsAndLookup = (denodedStages) => {
   const unwrappedNestedGroups = unwrapGroups(denodedStages);
 
   const lookupMap = {};
+  const processedStages = [];
 
-  const nodes = unwrappedNestedGroups.map(({ node, lookup }) => {
+  const nodes = unwrappedNestedGroups.map(({ node, lookup }, stageIndex) => {
     const { groups } = node;
+
+    // Get all job names from the previous stage for non-DAG jobs
+    const previousStage = processedStages[stageIndex - 1];
+    const previousStageJobNames = previousStage
+      ? extractJobNamesFromGroups(previousStage.groups)
+      : [];
+
     const groupsWithJobs = groups.map((group, idx) => {
-      const jobs = unwrapJobWithNeeds(group.jobs.nodes);
+      const jobs = unwrapJobWithNeeds(group.jobs.nodes, previousStageJobNames);
 
       lookupMap[group.name] = { ...lookup, groupIdx: idx };
       return { ...group, jobs };
     });
 
-    return { ...node, groups: groupsWithJobs };
+    const processedNode = { ...node, groups: groupsWithJobs };
+    processedStages.push(processedNode);
+
+    return processedNode;
   });
 
   return { stages: nodes, lookup: lookupMap };
@@ -90,13 +98,19 @@ const unwrapStagesWithNeedsAndLookup = (denodedStages) => {
  * @returns {Array} - Stages with unwrapped job needs
  */
 const unwrapStagesFromMutation = (stages) => {
-  return stages.map((stage) => ({
-    ...stage,
-    groups: (stage.groups || []).map((group) => ({
-      ...group,
-      jobs: unwrapJobWithNeeds(group.jobs || []),
-    })),
-  }));
+  return stages.map((stage, stageIndex) => {
+    // Get all job names from the previous stage for non-DAG jobs
+    const previousStageJobNames =
+      stageIndex > 0 ? extractJobNamesFromGroups(stages[stageIndex - 1].groups) : [];
+
+    return {
+      ...stage,
+      groups: (stage.groups || []).map((group) => ({
+        ...group,
+        jobs: unwrapJobWithNeeds(group.jobs || [], previousStageJobNames),
+      })),
+    };
+  });
 };
 
 export {

@@ -119,8 +119,6 @@ module Gitlab
             end
 
             def component_yaml_context
-              return {} unless ci_component_context_interpolation_enabled?
-
               component_attrs.slice(*Config::Header::Component::ALLOWED_VALUES)
             end
             strong_memoize_attr :component_yaml_context

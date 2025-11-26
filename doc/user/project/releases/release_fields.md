@@ -54,9 +54,10 @@ and [can be downloaded](../repository/_index.md#download-repository-source-code)
 
 ### Links
 
-A link is any URL which can point to whatever you like: documentation, built
+A link is a URL which can point to whatever you like: documentation, built
 binaries, or other related materials. These can be both internal or external
 links from your GitLab instance.
+The URL must use one of the schemes `http`, `https`, or `ftp`.
 Each link as an asset has the following attributes:
 
 | Attribute   | Required | Description |

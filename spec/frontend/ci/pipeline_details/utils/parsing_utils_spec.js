@@ -11,7 +11,7 @@ import {
 import { createNodeDict } from '~/ci/pipeline_details/utils';
 import {
   NEEDS_PROPERTY,
-  PREVIOUS_STAGE_JOBS_UNION_NEEDS_PROPERTY,
+  ALL_JOBS_FROM_PREVIOUS_STAGE_PROPERTY,
 } from '~/ci/pipeline_details/constants';
 
 import { mockDownstreamPipelinesRest } from '../../../vue_merge_request_widget/mock_data';
@@ -148,7 +148,7 @@ describe('DAG visualization parsing utilities', () => {
                   {
                     name: 'build_job',
                     [NEEDS_PROPERTY]: [],
-                    [PREVIOUS_STAGE_JOBS_UNION_NEEDS_PROPERTY]: [],
+                    [ALL_JOBS_FROM_PREVIOUS_STAGE_PROPERTY]: [],
                   },
                 ],
               },
@@ -162,7 +162,7 @@ describe('DAG visualization parsing utilities', () => {
                   {
                     name: 'test_with_needs',
                     [NEEDS_PROPERTY]: ['build_job'],
-                    [PREVIOUS_STAGE_JOBS_UNION_NEEDS_PROPERTY]: ['build_job'],
+                    [ALL_JOBS_FROM_PREVIOUS_STAGE_PROPERTY]: ['build_job'],
                   },
                 ],
               },
@@ -172,7 +172,7 @@ describe('DAG visualization parsing utilities', () => {
                   {
                     name: 'test_with_union_only',
                     [NEEDS_PROPERTY]: [],
-                    [PREVIOUS_STAGE_JOBS_UNION_NEEDS_PROPERTY]: ['build_job'],
+                    [ALL_JOBS_FROM_PREVIOUS_STAGE_PROPERTY]: ['build_job'],
                   },
                 ],
               },
@@ -189,7 +189,7 @@ describe('DAG visualization parsing utilities', () => {
         expect(linkTargets).not.toContain('test_with_union_only');
       });
 
-      it('uses PREVIOUS_STAGE_JOBS_UNION_NEEDS_PROPERTY for pipelineLayers grouping', () => {
+      it('uses ALL_JOBS_FROM_PREVIOUS_STAGE_PROPERTY for pipelineLayers grouping', () => {
         const result = listByLayers(mockPipelineData);
 
         expect(result.pipelineLayers).toHaveLength(2);
@@ -211,7 +211,7 @@ describe('DAG visualization parsing utilities', () => {
               {
                 name: 'build_job',
                 [NEEDS_PROPERTY]: [],
-                [PREVIOUS_STAGE_JOBS_UNION_NEEDS_PROPERTY]: [],
+                [ALL_JOBS_FROM_PREVIOUS_STAGE_PROPERTY]: [],
               },
             ],
           },
@@ -223,7 +223,7 @@ describe('DAG visualization parsing utilities', () => {
               {
                 name: 'test_job',
                 [NEEDS_PROPERTY]: ['build_job'],
-                [PREVIOUS_STAGE_JOBS_UNION_NEEDS_PROPERTY]: ['build_job'],
+                [ALL_JOBS_FROM_PREVIOUS_STAGE_PROPERTY]: ['build_job'],
               },
             ],
           },
@@ -235,16 +235,16 @@ describe('DAG visualization parsing utilities', () => {
               {
                 name: 'deploy_job',
                 [NEEDS_PROPERTY]: [],
-                [PREVIOUS_STAGE_JOBS_UNION_NEEDS_PROPERTY]: ['test_job'],
+                [ALL_JOBS_FROM_PREVIOUS_STAGE_PROPERTY]: ['test_job'],
               },
             ],
           },
         ];
 
-        it('creates different links when using NEEDS_PROPERTY vs PREVIOUS_STAGE_JOBS_UNION_NEEDS_PROPERTY', () => {
+        it('creates different links when using NEEDS_PROPERTY vs ALL_JOBS_FROM_PREVIOUS_STAGE_PROPERTY', () => {
           const needsResult = parseData(mockNodes, { needsKey: NEEDS_PROPERTY });
           const unionResult = parseData(mockNodes, {
-            needsKey: PREVIOUS_STAGE_JOBS_UNION_NEEDS_PROPERTY,
+            needsKey: ALL_JOBS_FROM_PREVIOUS_STAGE_PROPERTY,
           });
 
           expect(needsResult.links).toHaveLength(1);
@@ -271,9 +271,9 @@ describe('DAG visualization parsing utilities', () => {
           expect(defaultResult.links).toEqual(explicitNeedsResult.links);
         });
 
-        it('handles jobs with only union dependencies when using PREVIOUS_STAGE_JOBS_UNION_NEEDS_PROPERTY', () => {
+        it('handles jobs with only union dependencies when using ALL_JOBS_FROM_PREVIOUS_STAGE_PROPERTY', () => {
           const unionResult = parseData(mockNodes, {
-            needsKey: PREVIOUS_STAGE_JOBS_UNION_NEEDS_PROPERTY,
+            needsKey: ALL_JOBS_FROM_PREVIOUS_STAGE_PROPERTY,
           });
 
           const deployLinks = unionResult.links.filter((link) => link.target === 'deploy_job');

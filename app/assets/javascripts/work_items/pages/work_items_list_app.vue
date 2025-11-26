@@ -877,7 +877,7 @@ export default {
       return this.glFeatures.workItemsClientSideBoards;
     },
     isPlanningViewsEnabled() {
-      return this.glFeatures.workItemPlanningView;
+      return this.glFeatures.workItemPlanningView || !this.withTabs;
     },
     preselectedWorkItemType() {
       return this.isEpicsList ? WORK_ITEM_TYPE_NAME_EPIC : WORK_ITEM_TYPE_NAME_ISSUE;
@@ -920,6 +920,9 @@ export default {
     },
     shouldLoad() {
       return !this.isInitialLoadComplete || (!this.isSortKeyInitialized && !this.error);
+    },
+    isBulkEditDisabled() {
+      return this.showBulkEditSidebar || this.workItems.length === 0;
     },
   },
   watch: {
@@ -1495,7 +1498,7 @@ export default {
             </gl-button>
             <gl-button
               v-if="allowBulkEditing"
-              :disabled="showBulkEditSidebar"
+              :disabled="isBulkEditDisabled"
               data-testid="bulk-edit-start-button"
               @click="showBulkEditSidebar = true"
             >
@@ -1543,7 +1546,7 @@ export default {
               </gl-button>
               <gl-button
                 v-if="allowBulkEditing"
-                :disabled="showBulkEditSidebar"
+                :disabled="isBulkEditDisabled"
                 data-testid="bulk-edit-start-button"
                 @click="showBulkEditSidebar = true"
               >

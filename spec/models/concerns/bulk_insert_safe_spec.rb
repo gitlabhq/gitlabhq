@@ -280,22 +280,11 @@ RSpec.describe BulkInsertSafe, feature_category: :database do
       let(:new_object) { bulk_insert_items_with_composite_pk_class.new(instance_id: 1, name: 'composite') }
 
       it 'successfully inserts an item' do
-        args = if ::Gitlab.next_rails?
-                 [
-                   bulk_insert_items_with_composite_pk_class.insert_all_proxy_class.all,
-                   instance_of(Gitlab::Database::LoadBalancing::ConnectionProxy),
-                   [new_object.as_json]
-                 ]
-               else
-                 [
-                   bulk_insert_items_with_composite_pk_class.insert_all_proxy_class,
-                   [new_object.as_json]
-                 ]
-               end
-
         expect(ActiveRecord::InsertAll).to receive(:new)
           .with(
-            *args,
+            bulk_insert_items_with_composite_pk_class.insert_all_proxy_class.all,
+            instance_of(Gitlab::Database::LoadBalancing::ConnectionProxy),
+            [new_object.as_json],
             on_duplicate: :raise, returning: false, unique_by: %w[instance_id name]
           ).and_call_original
 

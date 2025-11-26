@@ -85,6 +85,7 @@ export default {
         :href="user.webUrl"
         class="js-user-link"
         data-testid="assigned-user"
+        :aria-label="user.name"
       >
         <user-avatar :user="user" />
       </gl-avatar-link>

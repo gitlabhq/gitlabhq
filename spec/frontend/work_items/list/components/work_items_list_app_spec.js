@@ -1538,6 +1538,16 @@ describeSkipVue3(skipReason, () => {
         it('does not render the new resource dropdown when group has projects', () => {
           expect(findNewResourceDropdown().exists()).toBe(false);
         });
+
+        it('disables the bulk edit button', async () => {
+          mountComponent({
+            ...getEmptyQueryHandler(),
+          });
+
+          await waitForPromises();
+
+          expect(findBulkEditStartButton().props('disabled')).toBe(true);
+        });
       });
     });
 

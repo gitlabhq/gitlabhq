@@ -2685,6 +2685,9 @@ msgstr ""
 msgid "AICatalog|Delete %{itemType}"
 msgstr ""
 
+msgid "AICatalog|Deletion method"
+msgstr ""
+
 msgid "AICatalog|Describe any relevant information for your admin"
 msgstr ""
 
@@ -2835,6 +2838,9 @@ msgstr ""
 msgid "AICatalog|Group is required."
 msgstr ""
 
+msgid "AICatalog|Hard delete (Recommended)"
+msgstr ""
+
 msgid "AICatalog|Hypothetical or low risk security flaws that could be exploited."
 msgstr ""
 
@@ -2899,6 +2905,9 @@ msgid "AICatalog|Open source projects."
 msgstr ""
 
 msgid "AICatalog|Other"
+msgstr ""
+
+msgid "AICatalog|Permanently deletes the item from the catalog. This action cannot be undone."
 msgstr ""
 
 msgid "AICatalog|Please describe below."
@@ -2979,6 +2988,9 @@ msgstr ""
 msgid "AICatalog|Shared resources."
 msgstr ""
 
+msgid "AICatalog|Soft delete"
+msgstr ""
+
 msgid "AICatalog|Spam or low quality"
 msgstr ""
 
@@ -2989,6 +3001,9 @@ msgid "AICatalog|System prompt is required."
 msgstr ""
 
 msgid "AICatalog|The item consumer must belong to only one organization, group, or project"
+msgstr ""
+
+msgid "AICatalog|The item will be hidden from the catalog but remain functional for projects and groups already using it."
 msgstr ""
 
 msgid "AICatalog|There was a problem fetching agents."
@@ -3058,6 +3073,9 @@ msgid "AICatalog|Working with sensitive data."
 msgstr ""
 
 msgid "AICatalog|You are an expert in [domain]. Your communication style is [style]. When helping users, you should always... Your key strengths include... You approach problems by..."
+msgstr ""
+
+msgid "AICatalog|You can use the GraphQL API to delete items."
 msgstr ""
 
 msgid "AICatalog|You must have the Owner role to add a flow to a group. Only top-level groups are shown."
@@ -19873,6 +19891,9 @@ msgstr ""
 msgid "Copy %{protocol} clone URL"
 msgstr ""
 
+msgid "Copy Chat Session ID (%{id})"
+msgstr ""
+
 msgid "Copy ID"
 msgstr ""
 
@@ -20111,6 +20132,9 @@ msgid "Could not connect to FogBugz, check your URL"
 msgstr ""
 
 msgid "Could not connect to Sentry. Refresh the page to try again."
+msgstr ""
+
+msgid "Could not copy session ID"
 msgstr ""
 
 msgid "Could not create Wiki Repository at this time. Please try again later."
@@ -63452,6 +63476,9 @@ msgid "ServicePing|Turn on service ping to review instance-level analytics."
 msgstr ""
 
 msgid "Session ID"
+msgstr ""
+
+msgid "Session ID copied to clipboard"
 msgstr ""
 
 msgid "SessionExpire|Please, sign in again. To avoid data loss, if you have unsaved edits, dismiss the modal and copy the unsaved text before sign in again."

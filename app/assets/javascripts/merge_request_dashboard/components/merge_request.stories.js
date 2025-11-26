@@ -109,7 +109,13 @@ const Template = (_, { argTypes }) => {
     components: { MergeRequest },
     apolloProvider: defaultApolloProvider,
     props: Object.keys(argTypes),
-    template: '<merge-request v-bind="$props" />',
+    // `role="table" needed for accessibility tests
+    // Full Vue app includes this role
+    template: `
+      <div role="table">
+        <merge-request v-bind="$props" />
+      </div>
+    `,
   };
 };
 

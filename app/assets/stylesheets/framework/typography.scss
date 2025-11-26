@@ -603,25 +603,13 @@
   }
 
   li.inapplicable {
-    // for a single line list item, no paragraph (tight list)
-    > s {
+    // For a single line list item, there's no <p> (tight list); text nodes are wrapped in <s class="inapplicable">.
+    s.inapplicable {
         @apply gl-text-disabled;
     }
 
-    // additional blocks, other than paragraphs
-    > div {
-      text-decoration: line-through;
-      @apply gl-text-disabled;
-    }
-
-    // because of the embedded checkbox, putting line-through on the entire
-    // paragraph causes the space between the checkbox and the text to have the
-    // line-through.  Targeting just the `s` fixes this
-    > p:first-of-type > s {
-      @apply gl-text-disabled;
-    }
-
-    > p:not(:first-of-type) {
+    // Strikethrough block-level items in non-tight lists as a whole; we don't do sublists.
+    > p, div {
       text-decoration: line-through;
       @apply gl-text-disabled;
     }

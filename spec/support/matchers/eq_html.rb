@@ -52,25 +52,32 @@ end
 # partial tag will normalise to text ("<strong" becomes "&lt;strong"), so you can't check that "<strong>"
 # includes the HTML "<strong" --- it doesn't.  (If you really want to know that, you should probably instead
 # parse the HTML with Nokogiri and check for the existence of a "strong" element.)
-RSpec::Matchers.define :include_html do |expected|
+#
+# ---
+#
+# The option "trim_text_nodes: true" can be given. This trims whitespace at the start and
+# end of the text content of text nodes on each side. This should be used with care, but can
+# aid in spec clarity by allowing expected DOMs to be written "prettified".
+RSpec::Matchers.define :include_html do |expected, **normalize_opts|
   include EqHtmlMatcher
 
   match do |actual|
     raise ArgumentError, "expected should be a String, not #{expected.class}" unless expected.is_a?(String)
     raise ArgumentError, "actual should be a String, not #{actual.class}" unless actual.is_a?(String)
 
-    normalize_html(actual).include? normalize_html(expected)
+    normalize_html(actual, **normalize_opts).include? normalize_html(expected, **normalize_opts)
   end
 
   failure_message do |actual|
     "Expected that\n\n  #{actual}\n\nwould contain\n\n  #{expected}\n\nafter normalizing both, but it didn't.\n\n  " \
-      "#{normalize_html(actual).inspect}\ndoesn't contain\n  " \
-      "#{normalize_html(expected).inspect}"
+      "#{normalize_html(actual, **normalize_opts).inspect}\ndoesn't contain\n  " \
+      "#{normalize_html(expected, **normalize_opts).inspect}"
   end
 
   failure_message_when_negated do |actual|
     "Expected that\n\n  #{actual}\n\nwould NOT contain\n\n  #{expected}\n\nafter normalizing both, but it did!\n\n  " \
-      "#{normalize_html(actual).inspect}\nincludes\n  #{normalize_html(expected).inspect}"
+      "#{normalize_html(actual, **normalize_opts).inspect}\nincludes\n  " \
+      "#{normalize_html(expected, **normalize_opts).inspect}"
   end
 end
 
