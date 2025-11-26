@@ -414,6 +414,16 @@ RSpec.describe Oauth::DynamicRegistrationsController, feature_category: :system_
 
           it_behaves_like 'rejects request with bad_request'
         end
+
+        context 'when content type is not JSON and an invalid JSON body is provided' do
+          let(:headers) { { 'Content-Type' => 'multipart/form-data' } }
+          let(:request_body) { '{ invalid json' }
+
+          it 'returns bad request status' do
+            post oauth_registration_path, params: request_body, headers: headers
+            expect(response).to have_gitlab_http_status(:bad_request)
+          end
+        end
       end
 
       context 'with database validation failures' do

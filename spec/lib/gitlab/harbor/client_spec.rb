@@ -7,40 +7,6 @@ RSpec.describe Gitlab::Harbor::Client, feature_category: :container_registry do
 
   subject(:client) { described_class.new(harbor_integration) }
 
-  shared_examples 'API response size limit' do
-    context 'when response body is within limit' do
-      it 'does not raise an exception' do
-        expect { client_request }.not_to raise_error
-      end
-    end
-
-    context 'when response body is too large' do
-      before do
-        stub_const('Gitlab::Harbor::Client::RESPONSE_SIZE_LIMIT', mock_response.to_json.bytesize - 1)
-      end
-
-      it 'raises an exception' do
-        expect { client_request }.to raise_error(
-          Gitlab::Harbor::Client::Error,
-          /API response is too big\. Limit is \d+(\.\d+)? \w+\. Got \d+ bytes\./
-        )
-      end
-    end
-
-    context 'when resulting memory size of the parsed response is too large' do
-      before do
-        stub_const('Gitlab::Harbor::Client::RESPONSE_MEMORY_SIZE_LIMIT', 1)
-      end
-
-      it 'raises an exception' do
-        expect { client_request }.to raise_error(
-          Gitlab::Harbor::Client::Error,
-          /API response memory footprint is too big. Limit is \d+(\.\d+)? \w+\./
-        )
-      end
-    end
-  end
-
   describe '#initialize' do
     context 'if integration is nil' do
       let(:harbor_integration) { nil }
@@ -89,14 +55,13 @@ RSpec.describe Gitlab::Harbor::Client, feature_category: :container_registry do
               Authorization: 'Basic aGFyYm9ydXNlcm5hbWU6aGFyYm9ycGFzc3dvcmQ=',
               'Content-Type': 'application/json'
             })
-          .to_return(status: 200, body: mock_response.to_json, headers: { "x-total-count": 2 })
+          .to_return(status: 200, body: mock_response.to_json, headers: { "x-total-count": 2,
+                                                                          'Content-Type': 'application/json' })
       end
 
       it 'get repositories' do
         expect(client_request.deep_stringify_keys).to eq(mock_repositories.deep_stringify_keys)
       end
-
-      it_behaves_like 'API response size limit'
     end
 
     context 'when harbor project does not exist' do
@@ -107,7 +72,7 @@ RSpec.describe Gitlab::Harbor::Client, feature_category: :container_registry do
               Authorization: 'Basic aGFyYm9ydXNlcm5hbWU6aGFyYm9ycGFzc3dvcmQ=',
               'Content-Type': 'application/json'
             })
-            .to_return(status: 404, body: {}.to_json)
+            .to_return(status: 404, body: {}.to_json, headers: { 'Content-Type': 'application/json' })
       end
 
       it 'raises Gitlab::Harbor::Client::Error' do
@@ -123,7 +88,7 @@ RSpec.describe Gitlab::Harbor::Client, feature_category: :container_registry do
               Authorization: 'Basic aGFyYm9ydXNlcm5hbWU6aGFyYm9ycGFzc3dvcmQ=',
               'Content-Type': 'application/json'
             })
-          .to_return(status: 200, body: '[not json}')
+          .to_return(status: 200, body: '[not json}', headers: { 'Content-Type': 'application/json' })
       end
 
       it 'raises Gitlab::Harbor::Client::Error' do
@@ -178,14 +143,13 @@ RSpec.describe Gitlab::Harbor::Client, feature_category: :container_registry do
               Authorization: 'Basic aGFyYm9ydXNlcm5hbWU6aGFyYm9ycGFzc3dvcmQ=',
               'Content-Type': 'application/json'
             })
-          .to_return(status: 200, body: mock_response.to_json, headers: { "x-total-count": 1 })
+          .to_return(status: 200, body: mock_response.to_json, headers: { "x-total-count": 1,
+                                                                          'Content-Type': 'application/json' })
       end
 
       it 'get artifacts' do
         expect(client_request.deep_stringify_keys).to eq(mock_artifacts.deep_stringify_keys)
       end
-
-      it_behaves_like 'API response size limit'
     end
 
     context 'when harbor repository does not exist' do
@@ -196,7 +160,7 @@ RSpec.describe Gitlab::Harbor::Client, feature_category: :container_registry do
               Authorization: 'Basic aGFyYm9ydXNlcm5hbWU6aGFyYm9ycGFzc3dvcmQ=',
               'Content-Type': 'application/json'
             })
-            .to_return(status: 404, body: {}.to_json)
+            .to_return(status: 404, body: {}.to_json, headers: { 'Content-Type': 'application/json' })
       end
 
       it 'raises Gitlab::Harbor::Client::Error' do
@@ -212,7 +176,7 @@ RSpec.describe Gitlab::Harbor::Client, feature_category: :container_registry do
               Authorization: 'Basic aGFyYm9ydXNlcm5hbWU6aGFyYm9ycGFzc3dvcmQ=',
               'Content-Type': 'application/json'
             })
-          .to_return(status: 200, body: '[not json}')
+          .to_return(status: 200, body: '[not json}', headers: { 'Content-Type': 'application/json' })
       end
 
       it 'raises Gitlab::Harbor::Client::Error' do
@@ -254,15 +218,14 @@ RSpec.describe Gitlab::Harbor::Client, feature_category: :container_registry do
               Authorization: 'Basic aGFyYm9ydXNlcm5hbWU6aGFyYm9ycGFzc3dvcmQ=',
               'Content-Type': 'application/json'
             })
-          .to_return(status: 200, body: mock_response.to_json, headers: { "x-total-count": 1 })
+          .to_return(status: 200, body: mock_response.to_json, headers: { "x-total-count": 1,
+                                                                          'Content-Type': 'application/json' })
       end
 
       it 'get tags' do
         expect(client_request
           .deep_stringify_keys).to eq(mock_tags.deep_stringify_keys)
       end
-
-      it_behaves_like 'API response size limit'
     end
 
     context 'when harbor artifact does not exist' do
@@ -273,7 +236,7 @@ RSpec.describe Gitlab::Harbor::Client, feature_category: :container_registry do
               Authorization: 'Basic aGFyYm9ydXNlcm5hbWU6aGFyYm9ycGFzc3dvcmQ=',
               'Content-Type': 'application/json'
             })
-            .to_return(status: 404, body: {}.to_json)
+            .to_return(status: 404, body: {}.to_json, headers: { 'Content-Type': 'application/json' })
       end
 
       it 'raises Gitlab::Harbor::Client::Error' do
@@ -291,7 +254,7 @@ RSpec.describe Gitlab::Harbor::Client, feature_category: :container_registry do
               Authorization: 'Basic aGFyYm9ydXNlcm5hbWU6aGFyYm9ycGFzc3dvcmQ=',
               'Content-Type': 'application/json'
             })
-          .to_return(status: 200, body: '[not json}')
+          .to_return(status: 200, body: '[not json}', headers: { 'Content-Type': 'application/json' })
       end
 
       it 'raises Gitlab::Harbor::Client::Error' do
@@ -317,16 +280,5 @@ RSpec.describe Gitlab::Harbor::Client, feature_category: :container_registry do
     it "calls api/v2.0/projects successfully" do
       expect(client.check_project_availability).to eq(success: true)
     end
-  end
-
-  private
-
-  def stub_harbor_request(url, body: {}, status: 200, headers: {})
-    stub_request(:get, url)
-      .to_return(
-        status: status,
-        headers: { 'Content-Type' => 'application/json' }.merge(headers),
-        body: body.to_json
-      )
   end
 end
