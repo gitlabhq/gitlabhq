@@ -24,11 +24,11 @@ repository being scanned.
 
 ## Customization options by analyzer
 
-| Customization                                                                   | GitLab Advanced SAST                                                                                                                                             | GitLab Semgrep                              | [Other Analyzers](analyzers.md#official-analyzers) |
-|---------------------------------------------------------------------------------|------------------------------------------------------------------------------------------------------------------------------------------------------------------|---------------------------------------------|----------------------------------------------------|
-| [Disable predefined rules](#disable-predefined-rules)                           | {{< icon name="check-circle-filled" >}} Yes                                                                                                                      | {{< icon name="check-circle-filled" >}} Yes | {{< icon name="check-circle-filled" >}} Yes        |
-| [Override metadata of predefined rules](#override-metadata-of-predefined-rules) | {{< icon name="check-circle-filled" >}} Yes                                                                                                                      | {{< icon name="check-circle-filled" >}} Yes | {{< icon name="check-circle-filled" >}} Yes        |
-| [Replace or add to the predefined rules](#replace-or-add-to-the-predefined-rules)                   | Supports modifying the behavior of predefined non-taint, structural rules and the application of file and raw passthroughs. Other passthrough types are ignored. | Supports full passthroughs                  | {{< icon name="dash-circle" >}} No                 |
+| Customization | GitLab Advanced SAST | GitLab Semgrep | [Other Analyzers](analyzers.md#official-analyzers) |
+|---------------|----------------------|----------------|----------------------------------------------------|
+| [Disable predefined rules](#disable-predefined-rules)                           | {{< yes >}} | {{< yes >}} | {{< yes >}} |
+| [Override metadata of predefined rules](#override-metadata-of-predefined-rules) | {{< yes >}} | {{< yes >}} | {{< yes >}} |
+| [Replace or add to the predefined rules](#replace-or-add-to-the-predefined-rules) | Supports modifying the behavior of predefined non-taint, structural rules and the application of file and raw passthroughs. Other passthrough types are ignored. | Supports full passthroughs | {{< no >}} |
 
 ## Disable predefined rules
 

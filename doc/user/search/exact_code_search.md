@@ -68,9 +68,9 @@ You can also use exact code search in a project or group.
 Scopes describe the type of data you're searching.
 The following scopes are available for exact code search:
 
-| Scope | Global <sup>1</sup> <sup>2</sup>   | Group                                       | Project |
-|-------|:----------------------------------:|:-------------------------------------------:|:-------:|
-| Code  | {{< icon name="dash-circle" >}} No | {{< icon name="check-circle-filled" >}} Yes | {{< icon name="check-circle-filled" >}} Yes |
+| Scope | Global <sup>1</sup> <sup>2</sup> |    Group    | Project     |
+|-------|:--------------------------------:|:-----------:|:-----------:|
+| Code  |           {{< no >}}             | {{< yes >}} | {{< yes >}} |
 
 **Footnotes**:
 

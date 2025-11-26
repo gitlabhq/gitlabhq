@@ -11,11 +11,11 @@ RSpec.describe MergeRequests::UpdateHeadPipelineWorker, feature_category: :code_
   let(:pipeline) { create(:ci_pipeline, project: project, ref: ref) }
   let(:event) { Ci::PipelineCreatedEvent.new(data: { pipeline_id: pipeline.id, partition_id: pipeline.partition_id }) }
 
-  subject { consume_event(subscriber: described_class, event: event) }
+  subject(:handle_event) { consume_event(subscriber: described_class, event: event) }
 
   it_behaves_like 'subscribes to event'
 
-  shared_examples 'when merge requests already exist for this source branch', :sidekiq_inline do
+  context 'when merge requests already exist for this source branch', :sidekiq_inline do
     let(:merge_request_1) do
       create(:merge_request, source_branch: 'feature', target_branch: "master", source_project: project)
     end
@@ -35,7 +35,7 @@ RSpec.describe MergeRequests::UpdateHeadPipelineWorker, feature_category: :code_
         merge_request_1
         merge_request_2
 
-        subject
+        handle_event
 
         expect(merge_request_1.reload.head_pipeline).to eq(pipeline)
         expect(merge_request_2.reload.head_pipeline).to eq(pipeline)
@@ -50,7 +50,7 @@ RSpec.describe MergeRequests::UpdateHeadPipelineWorker, feature_category: :code_
           merge_request_1
           merge_request_2
 
-          subject
+          handle_event
 
           expect(merge_request_1.reload.head_pipeline).not_to eq(pipeline)
           expect(merge_request_2.reload.head_pipeline).to eq(pipeline)
@@ -65,7 +65,7 @@ RSpec.describe MergeRequests::UpdateHeadPipelineWorker, feature_category: :code_
         merge_request_1
         merge_request_2
 
-        subject
+        handle_event
 
         expect(merge_request_1.reload.head_pipeline).not_to eq(pipeline)
         expect(merge_request_2.reload.head_pipeline).not_to eq(pipeline)
@@ -81,7 +81,7 @@ RSpec.describe MergeRequests::UpdateHeadPipelineWorker, feature_category: :code_
           source_project: project
         )
 
-        subject
+        handle_event
 
         expect(merge_request.reload.head_pipeline).not_to eq(pipeline)
       end
@@ -107,7 +107,7 @@ RSpec.describe MergeRequests::UpdateHeadPipelineWorker, feature_category: :code_
           target_project: target_project
         )
 
-        subject
+        handle_event
 
         expect(merge_request.reload.head_pipeline).to eq(pipeline)
       end
@@ -124,7 +124,7 @@ RSpec.describe MergeRequests::UpdateHeadPipelineWorker, feature_category: :code_
 
         create(:ci_pipeline, project: pipeline.project, ref: pipeline.ref)
 
-        subject
+        handle_event
 
         expect(merge_request.reload.head_pipeline).to be_nil
       end
@@ -143,20 +143,10 @@ RSpec.describe MergeRequests::UpdateHeadPipelineWorker, feature_category: :code_
           source_project: project
         )
 
-        subject
+        handle_event
 
         expect(merge_request.reload.head_pipeline).to eq(pipeline)
       end
     end
-  end
-
-  it_behaves_like 'when merge requests already exist for this source branch'
-
-  # TODO: Remove this context after making partition_id required in event data.
-  # See https://gitlab.com/gitlab-org/gitlab/-/issues/578790
-  context 'when event data does not contain partition_id' do
-    let(:event) { Ci::PipelineCreatedEvent.new(data: { pipeline_id: pipeline.id }) }
-
-    it_behaves_like 'when merge requests already exist for this source branch'
   end
 end

@@ -49,8 +49,8 @@ RSpec.describe Gitlab::Zentao::Client, :clean_gitlab_redis_cache do
       let(:mock_response) { { 'id' => zentao_integration.zentao_product_xid } }
 
       before do
-        WebMock.stub_request(:get, mock_get_products_url)
-               .with(mock_headers).to_return(status: 200, body: mock_response.to_json)
+        stub_request(:get, mock_get_products_url).with(mock_headers)
+          .to_return(status: 200, body: mock_response.to_json, headers: { 'Content-Type' => 'application/json' })
       end
 
       it 'fetches the product' do
@@ -60,8 +60,8 @@ RSpec.describe Gitlab::Zentao::Client, :clean_gitlab_redis_cache do
 
     context 'with invalid product' do
       before do
-        WebMock.stub_request(:get, mock_get_products_url)
-               .with(mock_headers).to_return(status: 404, body: {}.to_json)
+        stub_request(:get, mock_get_products_url).with(mock_headers)
+          .to_return(status: 404, body: {}.to_json, headers: { 'Content-Type' => 'application/json' })
       end
 
       it 'fetches the empty product' do
@@ -73,8 +73,8 @@ RSpec.describe Gitlab::Zentao::Client, :clean_gitlab_redis_cache do
 
     context 'with invalid response' do
       before do
-        WebMock.stub_request(:get, mock_get_products_url)
-               .with(mock_headers).to_return(status: 200, body: '[invalid json}')
+        stub_request(:get, mock_get_products_url).with(mock_headers)
+          .to_return(status: 200, body: '[invalid json}', headers: { 'Content-Type' => 'application/json' })
       end
 
       it 'fetches the empty product' do
@@ -88,8 +88,8 @@ RSpec.describe Gitlab::Zentao::Client, :clean_gitlab_redis_cache do
   describe '#ping' do
     context 'with valid resource' do
       before do
-        WebMock.stub_request(:get, mock_get_products_url)
-               .with(mock_headers).to_return(status: 200, body: { 'deleted' => '0' }.to_json)
+        stub_request(:get, mock_get_products_url).with(mock_headers)
+          .to_return(status: 200, body: { 'deleted' => '0' }.to_json, headers: { 'Content-Type' => 'application/json' })
       end
 
       it 'responds with success' do
@@ -99,8 +99,8 @@ RSpec.describe Gitlab::Zentao::Client, :clean_gitlab_redis_cache do
 
     context 'with deleted resource' do
       before do
-        WebMock.stub_request(:get, mock_get_products_url)
-               .with(mock_headers).to_return(status: 200, body: { 'deleted' => '1' }.to_json)
+        stub_request(:get, mock_get_products_url).with(mock_headers)
+          .to_return(status: 200, body: { 'deleted' => '1' }.to_json, headers: { 'Content-Type' => 'application/json' })
       end
 
       it 'responds with unsuccess' do
@@ -113,8 +113,8 @@ RSpec.describe Gitlab::Zentao::Client, :clean_gitlab_redis_cache do
     let(:mock_response) { { 'issues' => [{ 'id' => 'story-1' }, { 'id' => 'bug-11' }] } }
 
     before do
-      WebMock.stub_request(:get, mock_fetch_issues_url)
-             .with(mock_headers).to_return(status: 200, body: mock_response.to_json)
+      stub_request(:get, mock_fetch_issues_url).with(mock_headers)
+        .to_return(status: 200, body: mock_response.to_json, headers: { 'Content-Type' => 'application/json' })
     end
 
     it 'returns the response' do
@@ -190,16 +190,17 @@ RSpec.describe Gitlab::Zentao::Client, :clean_gitlab_redis_cache do
         before do
           issues_body = { issues: valid_ids.map { { id: _1 } } }.to_json
 
-          WebMock.stub_request(:get, mock_fetch_issues_url)
-                 .with(mock_headers).to_return(status: 200, body: issues_body)
+          stub_request(:get, mock_fetch_issues_url).with(mock_headers)
+            .to_return(status: 200, body: issues_body, headers: { 'Content-Type' => 'application/json' })
 
           client.fetch_issues
         end
 
         it 'fetches the issue' do
           valid_ids.each do |id|
-            WebMock.stub_request(:get, mock_fetch_issue_url(id))
-                  .with(mock_headers).to_return(status: 200, body: { issue: { id: id } }.to_json)
+            stub_request(:get, mock_fetch_issue_url(id)).with(mock_headers)
+              .to_return(status: 200, body: { issue: { id: id } }.to_json,
+                headers: { 'Content-Type' => 'application/json' })
 
             expect(client.fetch_issue(id).dig('issue', 'id')).to eq id
           end

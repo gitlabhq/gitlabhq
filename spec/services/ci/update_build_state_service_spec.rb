@@ -514,6 +514,33 @@ RSpec.describe Ci::UpdateBuildStateService, '#execute', feature_category: :conti
           it 'does not change build state' do
             expect { execute }.not_to change { build.reload.status }
           end
+
+          context 'when heartbeat fails' do
+            before do
+              allow(build).to receive(:heartbeat_runner_ack_wait).and_return(false)
+            end
+
+            it 'returns 400 Bad Request status' do
+              result = execute
+
+              expect(result.status).to eq 400
+              expect(result.backoff).to be_nil
+            end
+
+            it 'logs an error message' do
+              expect(Gitlab::AppLogger).to receive(:error).with(
+                message: 'Runner manager not found when performing heartbeat during wait for runner acknowledgement',
+                job_id: build.id,
+                runner_id: build.runner_id
+              )
+
+              execute
+            end
+
+            it 'does not change build state' do
+              expect { execute }.not_to change { build.reload.status }
+            end
+          end
         end
 
         context 'when build is already assigned to a runner manager (race condition)' do
@@ -569,8 +596,8 @@ RSpec.describe Ci::UpdateBuildStateService, '#execute', feature_category: :conti
             end
           end
 
-          it 'returns 400 Bad Request status' do
-            expect(execute.status).to eq 400
+          it 'returns 409 Conflict status' do
+            expect(execute.status).to eq 409
             expect(execute.backoff).to be_nil
           end
 
@@ -581,6 +608,16 @@ RSpec.describe Ci::UpdateBuildStateService, '#execute', feature_category: :conti
 
           it 'does not transition build to running' do
             expect(build).not_to receive(:run!)
+
+            execute
+          end
+
+          it 'logs an error message' do
+            expect(Gitlab::AppLogger).to receive(:error).with(
+              message: 'Runner manager not found when transitioning job to running',
+              job_id: build.id,
+              runner_id: build.runner_id
+            )
 
             execute
           end
@@ -618,6 +655,39 @@ RSpec.describe Ci::UpdateBuildStateService, '#execute', feature_category: :conti
 
             expect(execute.status).to eq 200
             expect(build.reload).to be_failed
+          end
+        end
+
+        context 'when runner_manager_id is nil after canceling wait' do
+          before do
+            allow(build).to receive(:cancel_wait_for_runner_ack).and_return(nil)
+          end
+
+          it 'returns 409 Conflict status' do
+            result = execute
+
+            expect(result.status).to eq 409
+            expect(result.backoff).to be_nil
+          end
+
+          it 'does not drop the job' do
+            expect(build).not_to receive(:drop_with_exit_code!)
+
+            execute
+          end
+
+          it 'does not change build state' do
+            expect { execute }.not_to change { build.reload.status }
+          end
+
+          it 'logs an error message' do
+            expect(Gitlab::AppLogger).to receive(:error).with(
+              message: 'Runner manager not found when transitioning job to failed',
+              job_id: build.id,
+              runner_id: build.runner_id
+            )
+
+            execute
           end
         end
       end

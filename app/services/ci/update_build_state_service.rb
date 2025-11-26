@@ -10,12 +10,13 @@ module Ci
 
     ACCEPT_TIMEOUT = 5.minutes.freeze
 
-    attr_reader :build, :params, :metrics
+    attr_reader :build, :params, :metrics, :logger
 
-    def initialize(build, params, metrics = ::Gitlab::Ci::Trace::Metrics.new)
+    def initialize(build, params, metrics = ::Gitlab::Ci::Trace::Metrics.new, logger = Gitlab::AppLogger)
       @build = build
       @params = params
       @metrics = metrics
+      @logger = logger
     end
 
     def execute
@@ -131,6 +132,11 @@ module Ci
         if build.heartbeat_runner_ack_wait(build.runner_manager_id_waiting_for_ack)
           Result.new(status: 200)
         else
+          logger.error(
+            message: 'Runner manager not found when performing heartbeat during wait for runner acknowledgement',
+            job_id: build.id, runner_id: build.runner_id
+          )
+
           Result.new(status: 400) # Bad request: Job is not in pending state or not assigned to a runner
         end
       when 'running'
@@ -138,7 +144,12 @@ module Ci
         # atomically removing the key from the Redis cache
         runner_manager = ::Ci::RunnerManager.find_by_id(build.cancel_wait_for_runner_ack)
         if runner_manager.nil?
-          return Result.new(status: 400) # Bad request: Job is not in pending state or not assigned to a runner
+          logger.error(
+            message: "Runner manager not found when transitioning job to #{build_state}",
+            job_id: build.id, runner_id: build.runner_id
+          )
+
+          return Result.new(status: 409) # Conflict: Job is not in pending state or not assigned to a runner
         end
 
         # Transition job to running state and assign the runner manager
@@ -150,7 +161,16 @@ module Ci
         # Cancel the wait for runner ack before dropping the job
         # NOTE: Even though the wait is canceled indirectly by UpdateBuildQueueService#pop, we cancel it
         # as soon as we know that the build has failed, to allow a concurrent call to immediately return HTTP 400
-        build.cancel_wait_for_runner_ack
+        runner_manager_id = build.cancel_wait_for_runner_ack
+
+        if runner_manager_id.nil?
+          logger.error(
+            message: "Runner manager not found when transitioning job to #{build_state}",
+            job_id: build.id, runner_id: build.runner_id
+          )
+
+          return Result.new(status: 409) # Conflict
+        end
 
         update_build_state!
       else

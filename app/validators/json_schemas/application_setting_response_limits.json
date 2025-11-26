@@ -12,7 +12,7 @@
     "max_github_response_json_value_count": {
       "type": "integer",
       "minimum": 0,
-      "description": "Maximum allowed object count for GitHub API responses. Count is an estimate based on the number of : , { and [ occurrences in the response."
+      "description": "Maximum allowed object count for GitHub API responses. Count is an estimate based on the number of ':', ',', '{', and '[' in the response."
     },
     "max_http_decompressed_size": {
       "type": "integer",
@@ -22,7 +22,17 @@
     "max_http_response_size_limit": {
       "type": "integer",
       "minimum": 0,
-      "description": "Maximum allowed size in MB for HTTP responses."
+      "description": "Maximum allowed size in MB for HTTP responses from outbound requests."
+    },
+    "max_http_response_json_depth": {
+      "type": "integer",
+      "minimum": 0,
+      "description": "Maximum allowed nesting depth in JSON HTTP API responses from outbound requests."
+    },
+    "max_http_response_json_structural_chars": {
+      "type": "integer",
+      "minimum": 0,
+      "description": "Maximum allowed object count in JSON HTTP API responses. Count is an estimate based on the number of occurrences of ':', ',', '{', and '[' in the response."
     }
   }
 }

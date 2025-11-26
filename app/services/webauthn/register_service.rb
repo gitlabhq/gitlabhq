@@ -12,7 +12,7 @@ module Webauthn
       registration = WebauthnRegistration.new
 
       begin
-        webauthn_credential = WebAuthn::Credential.from_create(Gitlab::Json.parse(@params[:device_response]))
+        webauthn_credential = WebAuthn::Credential.from_create(Gitlab::Json.safe_parse(@params[:device_response]))
         webauthn_credential.verify(@challenge)
 
         registration.update(

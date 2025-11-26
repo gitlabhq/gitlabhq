@@ -596,6 +596,7 @@ class ApplicationSetting < ApplicationRecord
       :max_artifacts_content_include_size,
       :max_artifacts_size,
       :max_attachment_size,
+      :max_http_response_json_depth,
       :max_yaml_depth,
       :max_yaml_size_bytes,
       :namespace_aggregation_schedule_lease_duration_in_seconds,
@@ -661,6 +662,7 @@ class ApplicationSetting < ApplicationRecord
       :max_github_response_json_value_count,
       :max_http_decompressed_size,
       :max_http_response_size_limit,
+      :max_http_response_json_structural_chars,
       :max_import_remote_file_size,
       :max_import_size,
       :max_pages_custom_domains_per_project,
@@ -722,6 +724,8 @@ class ApplicationSetting < ApplicationRecord
   jsonb_accessor :response_limits,
     max_http_response_size_limit: [:integer, { default: 100 }],
     max_http_decompressed_size: [:integer, { default: 100 }],
+    max_http_response_json_depth: [:integer, { default: 32 }],
+    max_http_response_json_structural_chars: [:integer, { default: 1_000_000 }],
     max_github_response_size_limit: [:integer, { default: 8 }],
     max_github_response_json_value_count: [:integer, { default: 250_000 }]
 

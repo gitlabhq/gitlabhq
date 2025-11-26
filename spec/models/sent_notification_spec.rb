@@ -185,24 +185,6 @@ RSpec.describe SentNotification, :request_store, feature_category: :shared do
         end
 
         it { is_expected.to be_nil }
-
-        context 'when sent_notifications_without_fallback feature flag is disabled' do
-          before do
-            stub_feature_flags(sent_notifications_without_fallback: false)
-          end
-
-          it { is_expected.to eq(sent_notification) }
-
-          it 'logs that a record was only found in the legacy table' do
-            expect(Gitlab::AppLogger).to receive(:info).with(
-              class: described_class.name,
-              message: 'SentNotification found but not backfilled',
-              sent_notification_id: sent_notification.id
-            )
-
-            found_sent_notification
-          end
-        end
       end
     end
 

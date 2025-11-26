@@ -85,10 +85,10 @@ For a full list of supported fields, supported operators, and value types, see [
 | `=`           | Equals / Includes all in list           | `is` (equal to)        |
 | `!=`          | Doesn't equal / Isn't contained in list | `is not` (equal to)    |
 | `in`          | Contained in list                       | `or` / `is one of`     |
-| `>`           | Greater than                            | {{< icon name="dotted-circle" >}} No |
-| `<`           | Less than                               | {{< icon name="dotted-circle" >}} No |
-| `>=`          | Greater than or equal to                | {{< icon name="dotted-circle" >}} No |
-| `<=`          | Less than or equal to                   | {{< icon name="dotted-circle" >}} No |
+| `>`           | Greater than                            | {{< no >}} |
+| `<`           | Less than                               | {{< no >}} |
+| `>=`          | Greater than or equal to                | {{< no >}} |
+| `<=`          | Less than or equal to                   | {{< no >}} |
 
 **Logical operators**: Only `and` is supported.
 `or` is indirectly supported for some fields by using the `in` comparison operator.

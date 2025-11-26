@@ -312,30 +312,30 @@ Code Owners.
 When you assign individual users as approvers for approval rules or reference users in `CODEOWNERS`
 files, like `@username`:
 
-| Membership type                                                                                                    | Approval rules                              | Code Owners                                 |
-|--------------------------------------------------------------------------------------------------------------------|---------------------------------------------|---------------------------------------------|
-| Direct member of the project                                                                                       | {{< icon name="check-circle-filled" >}} Yes | {{< icon name="check-circle-filled" >}} Yes |
-| Direct member of the project's group                                                                               | {{< icon name="check-circle-filled" >}} Yes | {{< icon name="check-circle-filled" >}} Yes |
-| Inherited member of the project's group                                                                            | {{< icon name="check-circle-filled" >}} Yes | {{< icon name="check-circle-filled" >}} Yes |
-| Direct member of a [group invited to the project](../../members/sharing_projects_groups.md#sharing-projects)       | {{< icon name="check-circle-filled" >}} Yes | {{< icon name="check-circle-filled" >}} Yes |
-| Inherited member of a group invited to the project                                                                 | {{< icon name="dash-circle" >}} No          | {{< icon name="dash-circle" >}} No          |
-| Direct member of a [group invited to the project's group](../../members/sharing_projects_groups.md#sharing-groups) | {{< icon name="check-circle-filled" >}} Yes | {{< icon name="check-circle-filled" >}} Yes |
-| Inherited member of a group invited to the project's group                                                         | {{< icon name="dash-circle" >}} No          | {{< icon name="dash-circle" >}} No          |
-| Direct member of a group invited to the project's group's parent groups                                            | {{< icon name="check-circle-filled" >}} Yes | {{< icon name="check-circle-filled" >}} Yes |
-| Inherited member of a group invited to the project's group's parent groups                                         | {{< icon name="dash-circle" >}} No          | {{< icon name="dash-circle" >}} No          |
+| Membership type                                                                                                    | Approval rules | Code Owners |
+|--------------------------------------------------------------------------------------------------------------------|----------------|-------------|
+| Direct member of the project                                                                                       | {{< yes >}}    | {{< yes >}} |
+| Direct member of the project's group                                                                               | {{< yes >}}    | {{< yes >}} |
+| Inherited member of the project's group                                                                            | {{< yes >}}    | {{< yes >}} |
+| Direct member of a [group invited to the project](../../members/sharing_projects_groups.md#sharing-projects)       | {{< yes >}}    | {{< yes >}} |
+| Inherited member of a group invited to the project                                                                 | {{< no >}}     | {{< no >}}  |
+| Direct member of a [group invited to the project's group](../../members/sharing_projects_groups.md#sharing-groups) | {{< yes >}}    | {{< yes >}} |
+| Inherited member of a group invited to the project's group                                                         | {{< no >}}     | {{< no >}}  |
+| Direct member of a group invited to the project's group's parent groups                                            | {{< yes >}}    | {{< yes >}} |
+| Inherited member of a group invited to the project's group's parent groups                                         | {{< no >}}     | {{< no >}}  |
 
 #### Group eligibility
 
 When you assign groups as approvers for approval rules or reference groups in `CODEOWNERS` files,
 like `@group-name`, only direct members of eligible groups can provide approvals:
 
-| Group type                                                                                       | Approval rules                              | Code Owners                                 |
-|--------------------------------------------------------------------------------------------------|---------------------------------------------|---------------------------------------------|
-| [Groups invited to the project](../../members/sharing_projects_groups.md#sharing-projects)       | {{< icon name="check-circle-filled" >}} Yes | {{< icon name="check-circle-filled" >}} Yes |
-| [Groups invited to the project's group](../../members/sharing_projects_groups.md#sharing-groups) | {{< icon name="check-circle-filled" >}} Yes | {{< icon name="dash-circle" >}} No          |
-| Groups invited to a parent of the project's group                                                | {{< icon name="check-circle-filled" >}} Yes | {{< icon name="dash-circle" >}} No          |
-| The project's group                                                                              | {{< icon name="check-circle-filled" >}} Yes | {{< icon name="check-circle-filled" >}} Yes |
-| A parent of the project's group                                                                  | {{< icon name="check-circle-filled" >}} Yes | {{< icon name="check-circle-filled" >}} Yes |
+| Group type                                                                                       | Approval rules | Code Owners |
+|--------------------------------------------------------------------------------------------------|----------------|-------------|
+| [Groups invited to the project](../../members/sharing_projects_groups.md#sharing-projects)       | {{< yes >}}    | {{< yes >}} |
+| [Groups invited to the project's group](../../members/sharing_projects_groups.md#sharing-groups) | {{< yes >}}    | {{< no >}}  |
+| Groups invited to a parent of the project's group                                                | {{< yes >}}    | {{< no >}}  |
+| The project's group                                                                              | {{< yes >}}    | {{< yes >}} |
+| A parent of the project's group                                                                  | {{< yes >}}    | {{< yes >}} |
 
 {{< alert type="note" >}}
 

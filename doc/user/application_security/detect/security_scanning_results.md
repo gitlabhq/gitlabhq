@@ -43,12 +43,16 @@ pipeline.
 
 Vulnerabilities identified in the default branch are listed in the [vulnerability report](../vulnerability_report/_index.md).
 
-| Vulnerability information                          | Branch<br />pipeline                                              | Merge request</br >pipeline |
-|----------------------------------------------------|-------------------------------------------------------------------|-----------------------------|
-| Security reports                                   | {{< icon name="check-circle-filled" >}} Yes                       | {{< icon name="check-circle-filled" >}} Yes |
-| Pipeline security report<br />(Ultimate only)      | {{< icon name="check-circle-filled" >}} Yes                       | {{< icon name="check-circle-filled" >}} Yes |
-| Merge request security widget<br />(Ultimate only) | {{< icon name="dash-circle" >}} No                                | {{< icon name="check-circle-filled" >}} Yes |
-| Vulnerability report                               | {{< icon name="check-circle-filled" >}} Yes - Default branch only | {{< icon name="dash-circle" >}} No |
+| Vulnerability information                          | Branch pipeline         | Merge request pipeline |
+|----------------------------------------------------|-------------------------|------------------------|
+| Security reports                                   | {{< yes >}}             | {{< yes >}}            |
+| Pipeline security report<br />(Ultimate only)      | {{< yes >}}             | {{< yes >}}            |
+| Merge request security widget<br />(Ultimate only) | {{< no >}}              | {{< yes >}}            |
+| Vulnerability report                               | {{< yes >}}<sup>1</sup> | {{< no >}}             |
+
+**Footnotes**:
+
+1. Vulnerability report is only available for the default branch.
 
 ## Security report artifacts
 

@@ -73,18 +73,18 @@ For more information, see the history.
 Scopes describe the type of data you're searching.
 The following scopes are available for advanced search:
 
-| Scope                       | Global <sup>1</sup> <sup>2</sup>            | Group                                       | Project |
-|-----------------------------|---------------------------------------------|---------------------------------------------|---------|
-| Code                        | {{< icon name="check-circle-filled" >}} Yes | {{< icon name="check-circle-filled" >}} Yes | {{< icon name="check-circle-filled" >}} Yes |
-| Comments                    | {{< icon name="check-circle-filled" >}} Yes | {{< icon name="check-circle-filled" >}} Yes | {{< icon name="check-circle-filled" >}} Yes |
-| Commits                     | {{< icon name="check-circle-filled" >}} Yes | {{< icon name="check-circle-filled" >}} Yes | {{< icon name="check-circle-filled" >}} Yes |
-| Epics                       | {{< icon name="check-circle-filled" >}} Yes | {{< icon name="check-circle-filled" >}} Yes | {{< icon name="dash-circle" >}} No |
-| Issues <sup>3</sup>         | {{< icon name="check-circle-filled" >}} Yes | {{< icon name="check-circle-filled" >}} Yes | {{< icon name="check-circle-filled" >}} Yes |
-| Merge requests <sup>3</sup> | {{< icon name="check-circle-filled" >}} Yes | {{< icon name="check-circle-filled" >}} Yes | {{< icon name="check-circle-filled" >}} Yes |
-| Milestones                  | {{< icon name="check-circle-filled" >}} Yes | {{< icon name="check-circle-filled" >}} Yes | {{< icon name="check-circle-filled" >}} Yes |
-| Projects                    | {{< icon name="check-circle-filled" >}} Yes | {{< icon name="check-circle-filled" >}} Yes | {{< icon name="dash-circle" >}} No |
-| Users                       | {{< icon name="check-circle-filled" >}} Yes | {{< icon name="check-circle-filled" >}} Yes | {{< icon name="check-circle-filled" >}} Yes |
-| Wikis                       | {{< icon name="check-circle-filled" >}} Yes | {{< icon name="check-circle-filled" >}} Yes | {{< icon name="check-circle-filled" >}} Yes |
+| Scope                       | Global <sup>1</sup> <sup>2</sup> | Group       | Project     |
+|-----------------------------|----------------------------------|-------------|-------------|
+| Code                        | {{< yes >}}                      | {{< yes >}} | {{< yes >}} |
+| Comments                    | {{< yes >}}                      | {{< yes >}} | {{< yes >}} |
+| Commits                     | {{< yes >}}                      | {{< yes >}} | {{< yes >}} |
+| Epics                       | {{< yes >}}                      | {{< yes >}} | {{< no >}}  |
+| Issues <sup>3</sup>         | {{< yes >}}                      | {{< yes >}} | {{< yes >}} |
+| Merge requests <sup>3</sup> | {{< yes >}}                      | {{< yes >}} | {{< yes >}} |
+| Milestones                  | {{< yes >}}                      | {{< yes >}} | {{< yes >}} |
+| Projects                    | {{< yes >}}                      | {{< yes >}} | {{< no >}}  |
+| Users                       | {{< yes >}}                      | {{< yes >}} | {{< yes >}} |
+| Wikis                       | {{< yes >}}                      | {{< yes >}} | {{< yes >}} |
 
 **Footnotes**:
 

@@ -5769,8 +5769,6 @@ CREATE TABLE p_ci_job_inputs (
     job_id bigint NOT NULL,
     partition_id bigint NOT NULL,
     project_id bigint NOT NULL,
-    input_type smallint DEFAULT 0 NOT NULL,
-    sensitive boolean DEFAULT false NOT NULL,
     name text NOT NULL,
     value jsonb,
     CONSTRAINT check_007134e1cd CHECK ((char_length(name) <= 255))

@@ -44,22 +44,7 @@ module SentNotificationsShared # rubocop:disable Gitlab/BoundedContexts -- Tempo
       if matches[:reply_key]
         ::PartitionedSentNotification.find_by(partition: matches[:partition], reply_key: matches[:reply_key])
       else
-        partitioned_record = ::PartitionedSentNotification.find_by(reply_key: matches[:legacy_key])
-        if partitioned_record.present? || Feature.enabled?(:sent_notifications_without_fallback, :instance)
-          return partitioned_record
-        end
-
-        legacy_record = ::SentNotification.find_by(reply_key: matches[:legacy_key])
-
-        if legacy_record.present?
-          Gitlab::AppLogger.info(
-            class: name,
-            message: 'SentNotification found but not backfilled',
-            sent_notification_id: legacy_record.id
-          )
-        end
-
-        legacy_record
+        ::PartitionedSentNotification.find_by(reply_key: matches[:legacy_key])
       end
     end
 

@@ -26,20 +26,20 @@ Bring your existing work into GitLab. You can migrate to GitLab from:
 
 | Migrate from                                                      | GitLab migration tool available? |
 |:------------------------------------------------------------------|:---------------------------------|
-| [Bitbucket Cloud](bitbucket.md)                                   | {{< icon name="check-circle-filled" >}} Yes |
-| [Bitbucket Server](bitbucket_server.md)                           | {{< icon name="check-circle-filled" >}} Yes |
-| [ClearCase](clearcase.md)                                         | {{< icon name="dash-circle" >}} No |
-| [CVS](cvs.md)                                                     | {{< icon name="dash-circle" >}} No |
-| [FogBugz](fogbugz.md)                                             | {{< icon name="check-circle-filled" >}} Yes |
-| [GitHub](github.md)                                               | {{< icon name="check-circle-filled" >}} Yes |
-| [GitLab (by using direct transfer)](../../group/import/_index.md) | {{< icon name="check-circle-filled" >}} Yes |
-| [GitLab (by using file export)](../settings/import_export.md)     | {{< icon name="check-circle-filled" >}} Yes |
-| [Gitea](gitea.md)                                                 | {{< icon name="check-circle-filled" >}} Yes |
-| Git repository through a [manifest file](manifest.md)             | {{< icon name="check-circle-filled" >}} Yes |
-| Git repository through a [repository URL](repo_by_url.md)         | {{< icon name="check-circle-filled" >}} Yes |
-| [Jira (issues only)](jira.md)                                     | {{< icon name="check-circle-filled" >}} Yes |
-| [Perforce Helix](perforce.md)                                     | {{< icon name="dash-circle" >}} No |
-| [Team Foundation Version Control (TFVC)](tfvc.md)                 | {{< icon name="dash-circle" >}} No |
+| [Bitbucket Cloud](bitbucket.md)                                   | {{< yes >}}                      |
+| [Bitbucket Server](bitbucket_server.md)                           | {{< yes >}}                      |
+| [ClearCase](clearcase.md)                                         | {{< no >}}                       |
+| [CVS](cvs.md)                                                     | {{< no >}}                       |
+| [FogBugz](fogbugz.md)                                             | {{< yes >}}                      |
+| [GitHub](github.md)                                               | {{< yes >}}                      |
+| [GitLab (by using direct transfer)](../../group/import/_index.md) | {{< yes >}}                      |
+| [GitLab (by using file export)](../settings/import_export.md)     | {{< yes >}}                      |
+| [Gitea](gitea.md)                                                 | {{< yes >}}                      |
+| Git repository through a [manifest file](manifest.md)             | {{< yes >}}                      |
+| Git repository through a [repository URL](repo_by_url.md)         | {{< yes >}}                      |
+| [Jira (issues only)](jira.md)                                     | {{< yes >}}                      |
+| [Perforce Helix](perforce.md)                                     | {{< no >}}                       |
+| [Team Foundation Version Control (TFVC)](tfvc.md)                 | {{< no >}}                       |
 
 After you start a migration, you should not make any changes to imported groups or projects
 on the source instance because these changes might not be copied to the destination instance.

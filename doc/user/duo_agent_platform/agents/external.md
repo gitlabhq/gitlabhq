@@ -187,7 +187,7 @@ For more information, see how to [add CI/CD variables to a project's settings](.
 
 Create an external agent and configure it to run on your environment with a flow configuration.
 
-### By using the AI Catalog
+### By using the UI
 
 {{< details >}}
 
@@ -218,10 +218,11 @@ Prerequisites:
 1. Under **Basic information**:
    1. In **Display name**, enter a name.
    1. In **Description**, enter a description.
-1. Under **Visibility & access**:
-   1. For **Visibility**, select **Private** or **Public**.
-1. Under **Configuration**, enter your flow configuration.
-   You can write your own configuration, or edit one of the templates below.
+1. Under **Visibility & access**, for **Visibility**, select **Private** or **Public**.
+1. Under **Configuration**:
+   1. Select **External**.
+   1. Enter your flow configuration.
+      You can write your own configuration, or edit one of the templates below.
 1. Select **Create flow**.
 
 The external agent appears in the AI Catalog.
@@ -251,8 +252,7 @@ Prerequisites:
 To enable an external agent in a project:
 
 1. On the left sidebar, select **Search or go to** > **Explore**.
-1. Select **AI Catalog**.
-1. Select the **Flows** tab.
+1. Select **AI Catalog**, then select the **Flows** tab.
 1. Select your external agent, then select **Enable in project**.
 1. From the dropdown list, select the project you want to enable the external agent in.
 1. Select **Enable**.

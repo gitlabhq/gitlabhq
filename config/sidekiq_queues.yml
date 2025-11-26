@@ -1209,6 +1209,8 @@
   - 1
 - - vulnerabilities_trigger_false_positive_detection_workflow
   - 1
+- - vulnerabilities_trigger_resolution_workflow
+  - 1
 - - vulnerabilities_update_archived_attribute_of_vulnerability_reads
   - 1
 - - vulnerabilities_update_archived_attribute_of_vulnerability_statistics

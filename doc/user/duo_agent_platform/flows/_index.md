@@ -36,6 +36,15 @@ For more information, see the history.
 
 A flow is a combination of one or more agents working together to solve a complex problem.
 
+GitLab provides two types of flows:
+
+- [Foundational flows](foundational_flows/_index.md) are pre-built,
+  production-ready workflows created by GitLab for common development
+  tasks.
+- [Custom flows](custom.md) are workflows you create to automate your
+  team's specific processes. You define the workflow steps and agents, and define triggers to control when the
+  flow runs.
+
 Flows are available in IDEs and the GitLab UI.
 
 - In the UI, they run directly in GitLab CI/CD, helping you automate common development tasks without the need to leave your browser.
@@ -46,9 +55,12 @@ For more information about flows executing in CI/CD, see [the flow execution doc
 For more focused pieces of work, like understanding selected code,
 use [GitLab Duo Chat (Agentic)](../../gitlab_duo_chat/agentic_chat.md).
 
-## Turn on flows
+## Prerequisites
 
-To turn flows on or off, use [the GitLab Duo settings](../../gitlab_duo/turn_on_off.md).
+To use flows:
+
+- You must meet the [prerequisites](../_index.md#prerequisites).
+- You must turn on flows with [the GitLab Duo settings](../../gitlab_duo/turn_on_off.md).
 
 ## Monitor running flows in the GitLab UI
 

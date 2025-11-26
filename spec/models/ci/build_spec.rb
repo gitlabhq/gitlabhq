@@ -1413,12 +1413,12 @@ RSpec.describe Ci::Build, feature_category: :continuous_integration, factory_def
 
   describe '#cache' do
     let(:options) do
-      { cache: [{ key: "key", paths: ["public"], policy: "pull-push" }] }
+      { cache: [{ key: "cache", paths: ["public"], policy: "pull-push" }] }
     end
 
     let(:options_with_fallback_keys) do
       { cache: [
-        { key: "key", paths: ["public"], policy: "pull-push", fallback_keys: %w[key1 key2] }
+        { key: "cache", paths: ["public"], policy: "pull-push", fallback_keys: %w[cache1 cache2] }
       ] }
     end
 
@@ -1432,15 +1432,15 @@ RSpec.describe Ci::Build, feature_category: :continuous_integration, factory_def
       context 'when build has multiple caches' do
         let(:options) do
           { cache: [
-            { key: "key", paths: ["public"], policy: "pull-push" },
-            { key: "key2", paths: ["public"], policy: "pull-push" }
+            { key: "cache", paths: ["public"], policy: "pull-push" },
+            { key: "cache2", paths: ["public"], policy: "pull-push" }
           ] }
         end
 
         let(:options_with_fallback_keys) do
           { cache: [
-            { key: "key", paths: ["public"], policy: "pull-push", fallback_keys: %w[key3 key4] },
-            { key: "key2", paths: ["public"], policy: "pull-push", fallback_keys: %w[key5 key6] }
+            { key: "cache", paths: ["public"], policy: "pull-push", fallback_keys: %w[cache3 cache4] },
+            { key: "cache2", paths: ["public"], policy: "pull-push", fallback_keys: %w[cache5 cache6] }
           ] }
         end
 
@@ -1448,11 +1448,11 @@ RSpec.describe Ci::Build, feature_category: :continuous_integration, factory_def
           allow_any_instance_of(Project).to receive(:jobs_cache_index).and_return(1)
         end
 
-        it { is_expected.to match([a_hash_including(key: 'key-1-non_protected'), a_hash_including(key: 'key2-1-non_protected')]) }
+        it { is_expected.to match([a_hash_including(key: 'cache-1-non_protected'), a_hash_including(key: 'cache2-1-non_protected')]) }
 
-        context 'when pipeline is on a protected ref' do
+        context 'when build uses protected cache' do
           before do
-            allow(build.pipeline).to receive(:protected_ref?).and_return(true)
+            allow(build).to receive(:uses_protected_cache?).and_return(true)
           end
 
           context 'without the `unprotect` option' do
@@ -1532,7 +1532,7 @@ RSpec.describe Ci::Build, feature_category: :continuous_integration, factory_def
             end
 
             it 'is expected to have no type suffix' do
-              is_expected.to match([a_hash_including(key: 'key-1'), a_hash_including(key: 'key2-1')])
+              is_expected.to match([a_hash_including(key: 'cache-1'), a_hash_including(key: 'cache2-1')])
             end
 
             context 'and the caches have fallback keys' do
@@ -1541,12 +1541,12 @@ RSpec.describe Ci::Build, feature_category: :continuous_integration, factory_def
               it do
                 is_expected.to match([
                   a_hash_including({
-                    key: 'key-1',
-                    fallback_keys: %w[key3-1 key4-1]
+                    key: 'cache-1',
+                    fallback_keys: %w[cache3-1 cache4-1]
                   }),
                   a_hash_including({
-                    key: 'key2-1',
-                    fallback_keys: %w[key5-1 key6-1]
+                    key: 'cache2-1',
+                    fallback_keys: %w[cache5-1 cache6-1]
                   })
                 ])
               end
@@ -1559,7 +1559,7 @@ RSpec.describe Ci::Build, feature_category: :continuous_integration, factory_def
             end
 
             it 'is expected to have no type suffix' do
-              is_expected.to match([a_hash_including(key: 'key-1'), a_hash_including(key: 'key2-1')])
+              is_expected.to match([a_hash_including(key: 'cache-1'), a_hash_including(key: 'cache2-1')])
             end
 
             context 'and the caches have fallback keys' do
@@ -1568,12 +1568,12 @@ RSpec.describe Ci::Build, feature_category: :continuous_integration, factory_def
               it do
                 is_expected.to match([
                   a_hash_including({
-                    key: 'key-1',
-                    fallback_keys: %w[key3-1 key4-1]
+                    key: 'cache-1',
+                    fallback_keys: %w[cache3-1 cache4-1]
                   }),
                   a_hash_including({
-                    key: 'key2-1',
-                    fallback_keys: %w[key5-1 key6-1]
+                    key: 'cache2-1',
+                    fallback_keys: %w[cache5-1 cache6-1]
                   })
                 ])
               end
@@ -1587,15 +1587,15 @@ RSpec.describe Ci::Build, feature_category: :continuous_integration, factory_def
           allow_any_instance_of(Project).to receive(:jobs_cache_index).and_return(1)
         end
 
-        it { is_expected.to be_an(Array).and all(include(key: a_string_matching(/^key-1-(?>protected|non_protected)/))) }
+        it { is_expected.to be_an(Array).and all(include(key: a_string_matching(/^cache-1-(?>protected|non_protected)/))) }
 
         context 'and the cache have fallback keys' do
           let(:options) { options_with_fallback_keys }
 
           it do
             is_expected.to be_an(Array).and all(include({
-              key: a_string_matching(/^key-1-(?>protected|non_protected)/),
-              fallback_keys: array_including(a_string_matching(/^key\d-1-(?>protected|non_protected)/))
+              key: a_string_matching(/^cache-1-(?>protected|non_protected)/),
+              fallback_keys: array_including(a_string_matching(/^cache\d-1-(?>protected|non_protected)/))
             }))
           end
         end
@@ -1634,6 +1634,48 @@ RSpec.describe Ci::Build, feature_category: :continuous_integration, factory_def
       end
 
       it { is_expected.to be_empty }
+    end
+  end
+
+  describe '#uses_protected_cache?' do
+    let_it_be(:cache_user) { create(:user) }
+
+    let(:test_build) { create(:ci_build, user: cache_user, project: project) }
+
+    subject { test_build.uses_protected_cache? }
+
+    before do
+      project.update!(ci_separated_caches: true)
+    end
+
+    context 'when build has no user' do
+      let(:test_build) { create(:ci_build, user: nil, project: project) }
+
+      it { is_expected.to be_falsey }
+    end
+
+    context 'when ci_separated_caches is disabled' do
+      before do
+        project.update!(ci_separated_caches: false)
+      end
+
+      it { is_expected.to be_falsey }
+    end
+
+    context 'when user is a developer' do
+      before do
+        project.add_developer(cache_user)
+      end
+
+      it { is_expected.to be_falsey }
+    end
+
+    context 'when user is a maintainer' do
+      before do
+        project.add_maintainer(cache_user)
+      end
+
+      it { is_expected.to be_truthy }
     end
   end
 

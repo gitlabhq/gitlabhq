@@ -45,10 +45,16 @@ start using it with GitLab Duo Chat.
 
 When you create a custom agent, you select a project to manage it and choose whether the agent is public or private.
 
-- A public agent can be viewed by anyone and can be enabled in any project that meets the prerequisites.
-- A private agent can be viewed only by members of the managing project who have at least the Developer role.
-  Private agents cannot be enabled in projects other than the managing project.
-  You cannot make a private agent public if the agent is currently enabled.
+Public agents:
+
+- Can be viewed by anyone and can be enabled in any project that meets the prerequisites.
+
+Private agents:
+
+- Can be viewed only by members of the managing project who have at least the Developer role.
+- Cannot be enabled in projects other than the managing project.
+
+You cannot make a private agent public if the agent is currently enabled.
 
 ## View the agents for your project
 
@@ -132,7 +138,8 @@ Prerequisites:
 - You must have at least the Maintainer role for the project.
 
 1. On the left sidebar, select **Search or go to** > **Explore**. If you've [turned on the new navigation](../../interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
-1. Select **AI Catalog** and select the agent you want to enable.
+1. Select **AI Catalog**, then select the **Agents** tab.
+1. Select the agent you want to enable.
 1. In the upper-right corner, select **Enable in project**.
 1. From the **Project** dropdown list, select your project.
 1. Select **Enable**.
@@ -158,8 +165,7 @@ The agent no longer appears in the project, and is not available in Chat.
 
 ## Duplicate an agent
 
-Create a copy of an existing agent.
-Do this if you want to use an agent someone else created, or make changes to an agent without overwriting the original.
+To make changes to an agent without overwriting the original, create a copy of an existing agent.
 
 Prerequisites:
 
@@ -168,7 +174,8 @@ Prerequisites:
 To duplicate an agent:
 
 1. On the left sidebar, select **Search or go to** > **Explore**. If you've [turned on the new navigation](../../interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
-1. Select **AI Catalog** and select the agent you want to duplicate.
+1. Select **AI Catalog**, then select the **Agents** tab.
+1. Select the agent you want to duplicate.
 1. In the upper-right corner, select **Actions** ({{< icon name="ellipsis_v" >}}) > **Duplicate**.
 1. Optional. Edit any fields you want to change.
 1. Select **Create agent**.
@@ -184,7 +191,8 @@ Prerequisites:
 To manage an agent:
 
 1. On the left sidebar, select **Search or go to** > **Explore**. If you've [turned on the new navigation](../../interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
-1. Select **AI Catalog** and select the agent you want to manage.
+1. Select **AI Catalog**, then select the **Agents** tab.
+1. Select the agent you want to manage.
    - To edit an agent:
      1. In the upper-right corner, select **Edit**.
      1. Edit any fields you want to change, then select **Save changes**.

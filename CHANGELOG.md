@@ -2,6 +2,22 @@
 documentation](doc/development/changelog.md) for instructions on adding your own
 entry.
 
+## 18.6.1 (2025-11-25)
+
+### Fixed (3 changes)
+
+- [Fix /admin/sidekiq not loading CSS assets in Cloud Native GitLab](https://gitlab.com/gitlab-org/security/gitlab/-/commit/ccf15957c87ce3fe5dd6e5ed83bd59c9ea81c876)
+- [Fix BackfillTimelogsNamespace finalization order](https://gitlab.com/gitlab-org/security/gitlab/-/commit/4460d317e1c5b8a76406d09d0cfad0f1b56b1b48)
+- [Fix custom role approvers lookup for inherited users](https://gitlab.com/gitlab-org/security/gitlab/-/commit/743ff5eb22638654df2598fa054243606d301cac) **GitLab Enterprise Edition**
+
+### Security (5 changes)
+
+- [Override organization of signup users](https://gitlab.com/gitlab-org/security/gitlab/-/commit/5a175db6ae54ee6430a1c87b0e1bc83b5469b257) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/5520))
+- [Redact vulnerability references when Security and Compliance is disabled](https://gitlab.com/gitlab-org/security/gitlab/-/commit/293e3c4cba406b32ee96e6a625f6168ec7b54ee8) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/5508))
+- [Use Gitlab::Json.safe_parse to prevent parsing of large JSON objects](https://gitlab.com/gitlab-org/security/gitlab/-/commit/124790eb84c20cd00b8e05c06f7d514b75bcd3b0) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/5495))
+- [Limit JSON parsing depth, size, and elements in HTTParty](https://gitlab.com/gitlab-org/security/gitlab/-/commit/c83315f5257169a6dce0eb04eb14dc4894915a6e) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/5504))
+- [Add protection suffix to cache depending on role](https://gitlab.com/gitlab-org/security/gitlab/-/commit/44f7d7162660a5dbe506dac85acb7eb47a1ef6a6) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/5483))
+
 ## 18.6.0 (2025-11-19)
 
 ### Added (194 changes)
@@ -954,6 +970,25 @@ entry.
 - [Finalize BBM DeleteExpiredVulnerabilityExports](https://gitlab.com/gitlab-org/gitlab/-/commit/7a36276fe0a36b9e1a3080f25a66258e6ffa667b) ([merge request](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/203408))
 - [Finalize BBM RemoveOrphanedVulnerabilityNotesBatchedMigration](https://gitlab.com/gitlab-org/gitlab/-/commit/017bb7f2ba173211a05137f575a0ba8e83d0ee55) ([merge request](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/197721))
 
+## 18.5.3 (2025-11-25)
+
+### Fixed (6 changes)
+
+- [Fix custom role approvers lookup for inherited users](https://gitlab.com/gitlab-org/security/gitlab/-/commit/72d4caccc77ed4ab55936353f8ed5f1c8fd8f35e) **GitLab Enterprise Edition**
+- [Revert "Support nested variables expention in rules:if"](https://gitlab.com/gitlab-org/security/gitlab/-/commit/49c0aa322da8a85508a98f0657cf046bbead1a1b)
+- [Fix /admin/sidekiq not loading CSS assets in Cloud Native GitLab](https://gitlab.com/gitlab-org/security/gitlab/-/commit/7627f8b8b2437092c47126761d887810d1b8740f)
+- [Relax blobs complexity in favor of limiting data](https://gitlab.com/gitlab-org/security/gitlab/-/commit/26a7f1e8fc314e4a31631c1070e21113fd5750e1)
+- [Fix missing gitaly_context forward in BranchPushService](https://gitlab.com/gitlab-org/security/gitlab/-/commit/54b93a422709b4087e0e06d3cbf061e082e05a7a)
+- [Fix the Planningservice bug when there is a single node available](https://gitlab.com/gitlab-org/security/gitlab/-/commit/08a57cb55aee64ab46112f6322a5922261e15485) ([merge request](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/211774)) **GitLab Enterprise Edition**
+
+### Security (5 changes)
+
+- [Override organization of signup users](https://gitlab.com/gitlab-org/security/gitlab/-/commit/5ed73cbb59f02d20ff64f94b517b016f37ddab42) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/5521))
+- [Redact vulnerability references when Security and Compliance is disabled](https://gitlab.com/gitlab-org/security/gitlab/-/commit/1d27402d580b9ad4b5d67eaa64c01c47a41c80a9) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/5472))
+- [Use Gitlab::Json.safe_parse to prevent parsing of large JSON objects](https://gitlab.com/gitlab-org/security/gitlab/-/commit/b9618017c50858a8d6c61a42c34bdb8eaf8e9ead) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/5496))
+- [Limit JSON parsing depth, size, and elements in HTTParty](https://gitlab.com/gitlab-org/security/gitlab/-/commit/f21cb314c598233d34d4fb2764cf39cd4aefe495) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/5503))
+- [Add protection suffix to cache depending on role](https://gitlab.com/gitlab-org/security/gitlab/-/commit/e0b72775b7e3f08aa5153df6d7576e7ff9632ec8) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/5481))
+
 ## 18.5.2 (2025-11-11)
 
 ### Fixed (10 changes)
@@ -1699,6 +1734,22 @@ entry.
 - [Quarantine a flaky test](https://gitlab.com/gitlab-org/gitlab/-/commit/505585ad714f2af919f53a2c8f5c3a9c577abad9) ([merge request](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/204086))
 - [Quarantine a flaky test](https://gitlab.com/gitlab-org/gitlab/-/commit/9b431513405bf1d72c77a0c544d3f7f5e6041568) ([merge request](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/202165))
 - [Remove all references to the skip_committer_email_check](https://gitlab.com/gitlab-org/gitlab/-/commit/ed8314ccb8527799595effa96bdbf2c66ba10548) ([merge request](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/203920))
+
+## 18.4.5 (2025-11-25)
+
+### Fixed (3 changes)
+
+- [Fix /admin/sidekiq not loading CSS assets in Cloud Native GitLab](https://gitlab.com/gitlab-org/security/gitlab/-/commit/97c8878813e680f9d285b5594f393f0a29273b76)
+- [Relax blobs complexity in favor of limiting data](https://gitlab.com/gitlab-org/security/gitlab/-/commit/a4f51be0757c3fe921d7cafb2b7ba5927fbd51dd)
+- [Fix the Planningservice bug when there is a single node available](https://gitlab.com/gitlab-org/security/gitlab/-/commit/d6395811e890b00887990fbe8bfff7fd0c4cd173) ([merge request](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/211778)) **GitLab Enterprise Edition**
+
+### Security (5 changes)
+
+- [Override organization of signup users](https://gitlab.com/gitlab-org/security/gitlab/-/commit/424642a8c5f052808361585a40575c184a02821e) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/5522))
+- [Redact vulnerability references when Security and Compliance is disabled](https://gitlab.com/gitlab-org/security/gitlab/-/commit/f971a62e1625e4eda22e44fb4652d93e7ca6e8e9) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/5471))
+- [Use Gitlab::Json.safe_parse to prevent parsing of large JSON objects](https://gitlab.com/gitlab-org/security/gitlab/-/commit/000b956fd416240c636593943fd7fa81faabad07) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/5497))
+- [Limit JSON parsing depth, size, and elements in HTTParty](https://gitlab.com/gitlab-org/security/gitlab/-/commit/b8704d0dbc8336178407c0c1ac12d1c3f03cea0c) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/5505))
+- [Add protection suffix to cache depending on role](https://gitlab.com/gitlab-org/security/gitlab/-/commit/7ecfa32e474da0a15bcdb8ff7e86b16a6dc68f70) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/5482))
 
 ## 18.4.4 (2025-11-11)
 

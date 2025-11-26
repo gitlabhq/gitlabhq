@@ -172,15 +172,15 @@ to **No one**.
 The following examples show what users with the Developer role can do with
 different protection configurations:
 
-| Allowed to merge         | Allowed to push and merge | Direct push                                 | Merge through MR |
-|--------------------------|---------------------------|---------------------------------------------|------------------|
-| No one                   | Developers + Maintainers  | {{< icon name="check-circle-filled" >}} Yes | {{< icon name="check-circle-filled" >}} Yes |
-| Not configured           | Developers + Maintainers  | {{< icon name="check-circle-filled" >}} Yes | {{< icon name="check-circle-filled" >}} Yes |
-| Developers + Maintainers | Not configured            | {{< icon name="dash-circle" >}} No          | {{< icon name="check-circle-filled" >}} Yes |
-| Not configured           | Not configured            | {{< icon name="dash-circle" >}} No          | {{< icon name="dash-circle" >}} No |
-| Maintainers              | Not configured            | {{< icon name="dash-circle" >}} No          | {{< icon name="dash-circle" >}} No |
-| Maintainers              | Maintainers               | {{< icon name="dash-circle" >}} No          | {{< icon name="dash-circle" >}} No |
-| Developers + Maintainers | Maintainers               | {{< icon name="dash-circle" >}} No          | {{< icon name="check-circle-filled" >}} Yes |
+| Allowed to merge         | Allowed to push and merge | Direct push | Merge through MR |
+|--------------------------|---------------------------|-------------|------------------|
+| No one                   | Developers + Maintainers  | {{< yes >}} | {{< yes >}}      |
+| Not configured           | Developers + Maintainers  | {{< yes >}} | {{< yes >}}      |
+| Developers + Maintainers | Not configured            | {{< no >}}  | {{< yes >}}      |
+| Not configured           | Not configured            | {{< no >}}  | {{< no >}}       |
+| Maintainers              | Not configured            | {{< no >}}  | {{< no >}}       |
+| Maintainers              | Maintainers               | {{< no >}}  | {{< no >}}       |
+| Developers + Maintainers | Maintainers               | {{< no >}}  | {{< yes >}}      |
 
 ## Default branch protection settings
 

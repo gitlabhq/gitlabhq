@@ -31,18 +31,18 @@ For code search, GitLab uses these types in this order:
 Scopes describe the type of data you're searching.
 The following scopes are available for basic search:
 
-| Scope          | Global <sup>1</sup>                         | Group                                       | Project |
-|----------------|:-------------------------------------------:|:-------------------------------------------:|:-------:|
-| Code           | {{< icon name="dash-circle" >}} No          | {{< icon name="dash-circle" >}} No          | {{< icon name="check-circle-filled" >}} Yes |
-| Comments       | {{< icon name="dash-circle" >}} No          | {{< icon name="dash-circle" >}} No          | {{< icon name="check-circle-filled" >}} Yes |
-| Commits        | {{< icon name="dash-circle" >}} No          | {{< icon name="dash-circle" >}} No          | {{< icon name="check-circle-filled" >}} Yes |
-| Epics          | {{< icon name="dash-circle" >}} No          | {{< icon name="check-circle-filled" >}} Yes | {{< icon name="dash-circle" >}} No |
-| Issues         | {{< icon name="check-circle-filled" >}} Yes | {{< icon name="check-circle-filled" >}} Yes | {{< icon name="check-circle-filled" >}} Yes |
-| Merge requests | {{< icon name="check-circle-filled" >}} Yes | {{< icon name="check-circle-filled" >}} Yes | {{< icon name="check-circle-filled" >}} Yes |
-| Milestones     | {{< icon name="check-circle-filled" >}} Yes | {{< icon name="check-circle-filled" >}} Yes | {{< icon name="check-circle-filled" >}} Yes |
-| Projects       | {{< icon name="check-circle-filled" >}} Yes | {{< icon name="check-circle-filled" >}} Yes | {{< icon name="dash-circle" >}} No |
-| Users          | {{< icon name="check-circle-filled" >}} Yes | {{< icon name="check-circle-filled" >}} Yes | {{< icon name="check-circle-filled" >}} Yes |
-| Wikis          | {{< icon name="dash-circle" >}} No          | {{< icon name="dash-circle" >}} No          | {{< icon name="check-circle-filled" >}} Yes |
+| Scope          | Global <sup>1</sup> |    Group    | Project |
+|----------------|:-------------------:|:-----------:|:-------:|
+| Code           |     {{< no >}}      | {{< no >}}  | {{< yes >}} |
+| Comments       |     {{< no >}}      | {{< no >}}  | {{< yes >}} |
+| Commits        |     {{< no >}}      | {{< no >}}  | {{< yes >}} |
+| Epics          |     {{< no >}}      | {{< yes >}} | {{< no >}} |
+| Issues         |     {{< yes >}}     | {{< yes >}} | {{< yes >}} |
+| Merge requests |     {{< yes >}}     | {{< yes >}} | {{< yes >}} |
+| Milestones     |     {{< yes >}}     | {{< yes >}} | {{< yes >}} |
+| Projects       |     {{< yes >}}     | {{< yes >}} | {{< no >}} |
+| Users          |     {{< yes >}}     | {{< yes >}} | {{< yes >}} |
+| Wikis          |     {{< no >}}      | {{< no >}}  | {{< yes >}} |
 
 **Footnotes**:
 
