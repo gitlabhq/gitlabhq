@@ -18,10 +18,10 @@ import getMergeRequestPipelines from '~/ci/merge_requests/graphql/queries/get_me
 import cancelPipelineMutation from '~/ci/pipeline_details/graphql/mutations/cancel_pipeline.mutation.graphql';
 import retryPipelineMutation from '~/ci/pipeline_details/graphql/mutations/retry_pipeline.mutation.graphql';
 import { TYPENAME_CI_PIPELINE } from '~/graphql_shared/constants';
-import { convertToGraphQLId } from '~/graphql_shared/utils';
+import { convertToGraphQLId, getIdFromGraphQLId } from '~/graphql_shared/utils';
 import { HTTP_STATUS_UNAUTHORIZED } from '~/lib/utils/http_status';
 import { PIPELINES_PER_PAGE } from '~/ci/pipelines_page/constants';
-import { formatPipelinesGraphQLDataToREST } from '../utils';
+import { MR_PIPELINE_TYPE_DETACHED } from '../constants';
 
 export default {
   name: 'PipelinesTableWrapper',
@@ -95,14 +95,19 @@ export default {
       update(data) {
         this.hasError = false;
 
-        return formatPipelinesGraphQLDataToREST(data?.project) || [];
+        return (
+          data?.project?.mergeRequest?.pipelines?.nodes?.map((pipeline) => ({
+            ...pipeline,
+            id: getIdFromGraphQLId(pipeline.id),
+          })) || []
+        );
       },
       result({ data }) {
-        const pipelineCount = data?.project?.mergeRequest?.pipelines?.count;
-        this.pageInfo = data?.project?.mergeRequest?.pipelines?.pageInfo || {};
+        const pipelines = data?.project?.mergeRequest?.pipelines;
 
-        if (pipelineCount) {
-          this.updateBadgeCount(pipelineCount);
+        if (pipelines) {
+          this.pageInfo = pipelines.pageInfo;
+          this.updateBadgeCount(pipelines.count);
         }
       },
       error() {
@@ -143,7 +148,7 @@ export default {
       return this.sourceProjectFullPath !== this.targetProjectFullPath;
     },
     isLatestPipelineCreatedInTargetProject() {
-      return this.latestPipeline?.project?.full_path === `/${this.targetProjectFullPath}`;
+      return this.latestPipeline?.project?.fullPath === `/${this.targetProjectFullPath}`;
     },
     shouldShowSecurityWarning() {
       return (
@@ -161,8 +166,8 @@ export default {
      */
     latestPipelineDetachedFlag() {
       return Boolean(
-        this.latestPipeline?.flags?.detached_merge_request_pipeline ||
-          this.latestPipeline?.flags?.merge_request_pipeline,
+        this.latestPipeline?.mergeRequestEventType &&
+          this.latestPipeline?.mergeRequestEventType === MR_PIPELINE_TYPE_DETACHED,
       );
     },
     showPagination() {
@@ -175,22 +180,42 @@ export default {
   },
   methods: {
     cancelPipeline(pipeline) {
-      this.executePipelineAction(pipeline, cancelPipelineMutation);
+      this.executePipelineAction({
+        pipeline,
+        mutation: cancelPipelineMutation,
+        mutationType: 'pipelineCancel',
+        defaultErrorMessage: s__('Pipelines|The pipeline could not be canceled.'),
+      });
     },
     retryPipeline(pipeline) {
-      this.executePipelineAction(pipeline, retryPipelineMutation);
+      this.executePipelineAction({
+        pipeline,
+        mutation: retryPipelineMutation,
+        mutationType: 'pipelineRetry',
+        defaultErrorMessage: s__('Pipelines|The pipeline could not be retried.'),
+      });
     },
-    async executePipelineAction(pipeline, mutation) {
+    async executePipelineAction({ pipeline, mutation, mutationType, defaultErrorMessage }) {
       try {
-        await this.$apollo.mutate({
+        const { data } = await this.$apollo.mutate({
           mutation,
           variables: {
             id: convertToGraphQLId(TYPENAME_CI_PIPELINE, pipeline.id),
           },
         });
+        const [errorMessage] = data[mutationType]?.errors ?? [];
+
+        if (errorMessage) {
+          throw new Error(errorMessage);
+        }
+
         this.refreshPipelineTable();
-      } catch {
-        createAlert({ message: __('An error occurred while performing this action.') });
+      } catch (error) {
+        createAlert({
+          message: defaultErrorMessage,
+          captureError: true,
+          error,
+        });
       }
     },
     refreshPipelineTable() {

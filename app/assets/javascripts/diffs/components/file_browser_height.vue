@@ -1,19 +1,24 @@
 <script>
 import { mapState } from 'pinia';
-import { PanelBreakpointInstance } from '~/panel_breakpoint_instance';
 import StickyViewportFillerHeight from '~/diffs/components/sticky_viewport_filler_height.vue';
 import { useBatchComments } from '~/batch_comments/store';
 
 export default {
   name: 'FileBrowserHeight',
   components: { StickyViewportFillerHeight },
+  props: {
+    enableStickyHeight: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
+  },
   data() {
     return {
       minHeight: 0,
       bottomPadding: 0,
       stickyTopOffset: 0,
       reviewBarCachedHeight: 0,
-      isNarrowScreen: false,
     };
   },
   computed: {
@@ -32,23 +37,13 @@ export default {
     this.stickyTopOffset = parseInt(styles.getPropertyValue('top'), 10);
     this.minHeight = parseInt(styles.getPropertyValue('--file-tree-min-height'), 10);
     this.bottomPadding = parseInt(styles.getPropertyValue('--file-tree-bottom-padding'), 10);
-    this.updateIsNarrowScreen();
-    PanelBreakpointInstance.addBreakpointListener(this.updateIsNarrowScreen);
-  },
-  beforeDestroy() {
-    PanelBreakpointInstance.removeBreakpointListener(this.updateIsNarrowScreen);
-  },
-  methods: {
-    updateIsNarrowScreen() {
-      this.isNarrowScreen = PanelBreakpointInstance.isBreakpointDown('md');
-    },
   },
 };
 </script>
 
 <template>
   <sticky-viewport-filler-height
-    v-if="!isNarrowScreen"
+    v-if="enableStickyHeight"
     ref="root"
     :min-height="minHeight"
     :sticky-top-offset="stickyTopOffset"

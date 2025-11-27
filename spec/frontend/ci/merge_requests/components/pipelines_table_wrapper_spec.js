@@ -18,6 +18,7 @@ import {
   HTTP_STATUS_INTERNAL_SERVER_ERROR,
   HTTP_STATUS_UNAUTHORIZED,
 } from '~/lib/utils/http_status';
+import { DEFAULT_MANUAL_ACTIONS_LIMIT } from '~/ci/constants';
 import { generateMRPipelinesResponse } from '../mock_data';
 
 Vue.use(VueApollo);
@@ -74,6 +75,7 @@ const createComponent = ({ mountFn = shallowMountExtended, props = {} } = {}) =>
     apolloProvider: apolloMock,
     provide: {
       ...defaultProvide,
+      manualActionsLimit: DEFAULT_MANUAL_ACTIONS_LIMIT,
     },
     propsData: {
       ...defaultProps,

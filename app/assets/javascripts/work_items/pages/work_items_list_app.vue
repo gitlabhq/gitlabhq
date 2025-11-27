@@ -61,7 +61,7 @@ import { fetchPolicies } from '~/lib/graphql';
 import { isPositiveInteger } from '~/lib/utils/number_utils';
 import { scrollUp } from '~/lib/utils/scroll_utils';
 import { getParameterByName, removeParams, updateHistory } from '~/lib/utils/url_utility';
-import { __, s__, n__ } from '~/locale';
+import { __, s__, n__, formatNumber } from '~/locale';
 import {
   OPERATOR_IS,
   OPERATORS_AFTER_BEFORE,
@@ -918,7 +918,10 @@ export default {
       if (this.workItemsCount === null) {
         return '';
       }
-      return n__('WorkItem|%d item', 'WorkItem|%d items', this.workItemsCount);
+      return n__('WorkItem|%d item', 'WorkItem|%d items', this.workItemsCount).replace(
+        '%d',
+        formatNumber(this.workItemsCount),
+      );
     },
     workItemTypeId() {
       const workItemTypeName = this.workItemType || WORK_ITEM_TYPE_NAME_ISSUE;

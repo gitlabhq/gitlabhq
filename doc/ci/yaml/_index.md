@@ -2116,8 +2116,7 @@ rspec:
 
 **Related topics**:
 
-- See the [common `cache` use cases](../caching/_index.md#common-use-cases-for-caches) for more
-  `cache:paths` examples.
+- See the [CI/CD caching examples](../caching/examples.md) for more `cache:paths` examples.
 
 ---
 
@@ -2170,8 +2169,7 @@ cache-job:
 - You can specify a [fallback cache key](../caching/_index.md#use-a-fallback-cache-key)
   to use if the specified `cache:key` is not found.
 - You can [use multiple cache keys](../caching/_index.md#use-multiple-caches) in a single job.
-- See the [common `cache` use cases](../caching/_index.md#common-use-cases-for-caches) for more
-  `cache:key` examples.
+- See the [CI/CD caching examples](../caching/examples.md) for more `cache:key` examples.
 
 ---
 
@@ -2471,7 +2469,7 @@ faster-test-job:
 
 **Related topics**:
 
-- You can [use a variable to control a job's cache policy](../caching/_index.md#use-a-variable-to-control-a-jobs-cache-policy).
+- You can [use a variable to control a job's cache policy](../caching/examples.md#use-a-variable-to-control-a-jobs-cache-policy).
 
 ---
 

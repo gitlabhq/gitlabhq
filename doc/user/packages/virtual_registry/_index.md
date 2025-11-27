@@ -235,6 +235,6 @@ When an upstream registry caches a request, the time to fulfill an identical req
 
 ### Use the CI/CD cache
 
-You can use [caching in GitLab CI/CD](../../../ci/caching/_index.md#common-use-cases-for-caches) so that jobs do not have to download dependencies from the virtual registry.
+You can use [caching in GitLab CI/CD](../../../ci/caching/_index.md) so that jobs do not have to download dependencies from the virtual registry.
 
 This method improves execution time, but also duplicates storage for each dependency (dependencies are stored in the CI/CD cache and virtual registry).

@@ -147,7 +147,7 @@ export default {
       return keepLatestDownstreamPipelines(downstream);
     },
     getProjectPath(item) {
-      return cleanLeadingSeparator(item.project.full_path);
+      return cleanLeadingSeparator(item.project.full_path || item.project.fullPath);
     },
     getStages(item) {
       return item?.details?.stages || item?.stages?.nodes || [];
@@ -179,7 +179,10 @@ export default {
       return null;
     },
     currentBranch(item) {
-      return item.merge_request?.source_branch || item.ref?.name || null;
+      const mergeRequestSourceBranch =
+        item.merge_request?.source_branch || item.mergeRequest?.sourceBranch;
+      const refName = item.ref?.name || item.ref;
+      return mergeRequestSourceBranch || refName || null;
     },
     showDuoWorkflowAction(item) {
       return this.isFailed(item) && this.mergeRequestPath && this.currentBranch(item);

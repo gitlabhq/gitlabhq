@@ -7611,6 +7611,28 @@ Input type: `GroupSecretsManagerInitializeInput`
 | <a id="mutationgroupsecretsmanagerinitializeerrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during the mutation. |
 | <a id="mutationgroupsecretsmanagerinitializegroupsecretsmanager"></a>`groupSecretsManager` | [`GroupSecretsManager`](#groupsecretsmanager) | Group secrets manager. |
 
+### `Mutation.groupSecretsPermissionUpdate`
+
+Input type: `GroupSecretsPermissionUpdateInput`
+
+#### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mutationgroupsecretspermissionupdateclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutationgroupsecretspermissionupdateexpiredat"></a>`expiredAt` | [`ISO8601Date`](#iso8601date) | Expiration date for Secret Permission (optional). |
+| <a id="mutationgroupsecretspermissionupdategrouppath"></a>`groupPath` | [`ID!`](#id) | Group to which the permissions are added. |
+| <a id="mutationgroupsecretspermissionupdatepermissions"></a>`permissions` | [`[String!]!`](#string) | Permissions to be provided. ['create', 'update', 'read', 'delete']. |
+| <a id="mutationgroupsecretspermissionupdateprincipal"></a>`principal` | [`PrincipalInput!`](#principalinput) | User/MemberRole/Role/Group that is provided access. |
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mutationgroupsecretspermissionupdateclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutationgroupsecretspermissionupdateerrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during the mutation. |
+| <a id="mutationgroupsecretspermissionupdatesecretspermission"></a>`secretsPermission` | [`GroupSecretsPermission`](#groupsecretspermission) | Secrets Permission that was created. |
+
 ### `Mutation.groupUpdate`
 
 Input type: `GroupUpdateInput`
@@ -34920,6 +34942,20 @@ Representation of a group secrets manager.
 | <a id="groupsecretsmanagergroup"></a>`group` | [`Group!`](#group) | Group the secrets manager belongs to. |
 | <a id="groupsecretsmanagerstatus"></a>`status` | [`GroupSecretsManagerStatus`](#groupsecretsmanagerstatus) | Status of the group secrets manager. |
 
+### `GroupSecretsPermission`
+
+Representation of a group secrets permission.
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="groupsecretspermissionexpiredat"></a>`expiredAt` | [`ISO8601Date`](#iso8601date) | Expiration date for Secret Permission (optional). |
+| <a id="groupsecretspermissiongrantedby"></a>`grantedBy` | [`UserCore`](#usercore) | User who created the Secret Permission. |
+| <a id="groupsecretspermissiongroup"></a>`group` | [`Group!`](#group) | Group the secret permission belong to. |
+| <a id="groupsecretspermissionpermissions"></a>`permissions` | [`String!`](#string) | Permissions to be provided. ['create', 'update', 'read', 'delete']. |
+| <a id="groupsecretspermissionprincipal"></a>`principal` | [`Principal!`](#principal) | Who is provided access to. For eg: User/Role/MemberRole/Group. |
+
 ### `GroupSecurityPolicySource`
 
 Represents the source of a security policy belonging to a group.
@@ -52655,7 +52691,7 @@ Lists the status of a virtual registry cleanup policy.
 
 ### `PrincipalType`
 
-Types of principal that can have secret permissions.
+Types of principal that can have secrets permissions.
 
 | Value | Description |
 | ----- | ----------- |
@@ -58009,7 +58045,8 @@ Representation of who is provided access to. For eg: User/Role/MemberRole/Group.
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
-| <a id="principalinputid"></a>`id` | [`Int!`](#int) | ID of the principal. |
+| <a id="principalinputgrouppath"></a>`groupPath` | [`ID`](#id) | Full path of the group principal. Only used when type is GROUP. |
+| <a id="principalinputid"></a>`id` | [`Int`](#int) | ID of the principal. Required unless group_path is provided for Group type. |
 | <a id="principalinputtype"></a>`type` | [`PrincipalType!`](#principaltype) | Type of the principal. |
 
 ### `ProjectComplianceControlStatusInput`

@@ -61,6 +61,7 @@ fragment PipelineDetails on Pipeline {
     iid
     webPath
     title
+    sourceBranch
   }
   mergeRequestEventType
   project {

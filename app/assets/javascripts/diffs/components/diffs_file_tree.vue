@@ -3,6 +3,7 @@ import { debounce } from 'lodash';
 import { mapActions } from 'pinia';
 import PanelResizer from '~/vue_shared/components/panel_resizer.vue';
 import { getCookie, setCookie } from '~/lib/utils/common_utils';
+import { PanelBreakpointInstance } from '~/panel_breakpoint_instance';
 import * as types from '~/diffs/store/mutation_types';
 import { useLegacyDiffs } from '~/diffs/stores/legacy_diffs';
 import FileBrowserHeight from '~/diffs/components/file_browser_height.vue';
@@ -49,6 +50,7 @@ export default {
       newWidth: 0,
       cachedHeight: 0,
       cachedTop: 0,
+      isNarrowScreen: false,
     };
   },
   computed: {
@@ -78,6 +80,11 @@ export default {
   mounted() {
     const computedStyles = getComputedStyle(this.$refs.root.$el);
     this.rowHeight = parseInt(computedStyles.getPropertyValue('--file-row-height'), 10);
+    this.updateIsNarrowScreen();
+    PanelBreakpointInstance.addBreakpointListener(this.updateIsNarrowScreen);
+  },
+  beforeDestroy() {
+    PanelBreakpointInstance.removeBreakpointListener(this.updateIsNarrowScreen);
   },
   methods: {
     ...mapActions(useLegacyDiffs, {
@@ -122,6 +129,9 @@ export default {
         this.treeWidth = this.newWidth;
       }
     },
+    updateIsNarrowScreen() {
+      this.isNarrowScreen = PanelBreakpointInstance.isBreakpointDown('md');
+    },
   },
 };
 </script>
@@ -129,6 +139,7 @@ export default {
 <template>
   <file-browser-height
     ref="root"
+    :enable-sticky-height="!isNarrowScreen"
     data-testid="file-browser-tree"
     :style="{ width: `${treeWidth}px` }"
     class="rd-app-sidebar diff-tree-list"

@@ -144,5 +144,20 @@ describe('FileTreeBrowser', () => {
         'https://gitlab.com/gitlab-org/gitlab/-/issues/581271',
       );
     });
+
+    describe('enableStickyHeight prop', () => {
+      it.each`
+        isExpanded | expectedEnableStickyHeight | description
+        ${true}    | ${true}                    | ${'passes enableStickyHeight as true when peek is off'}
+        ${false}   | ${false}                   | ${'passes enableStickyHeight as false when peek is on'}
+      `('$description', ({ isExpanded, expectedEnableStickyHeight }) => {
+        fileTreeBrowserStore.setFileTreeBrowserIsExpanded(isExpanded);
+        createComponent();
+
+        expect(findFileBrowserHeight().props('enableStickyHeight')).toBe(
+          expectedEnableStickyHeight,
+        );
+      });
+    });
   });
 });

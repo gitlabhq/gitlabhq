@@ -84,6 +84,7 @@ export default {
       data-testid="overlay"
     ></div>
     <file-browser-height
+      :enable-sticky-height="fileTreeBrowserIsExpanded"
       :style="{ '--tree-width': `${treeWidth}px` }"
       class="file-tree-browser file-tree-browser-responsive gl-fixed gl-left-0 gl-flex-none gl-p-4"
       :class="visibilityClasses"

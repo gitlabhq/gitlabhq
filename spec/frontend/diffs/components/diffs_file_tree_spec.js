@@ -2,6 +2,7 @@ import Vue, { nextTick } from 'vue';
 import { shallowMount } from '@vue/test-utils';
 import { PiniaVuePlugin } from 'pinia';
 import { createTestingPinia } from '@pinia/testing';
+import { PanelBreakpointInstance } from '~/panel_breakpoint_instance';
 import DiffsFileTree from '~/diffs/components/diffs_file_tree.vue';
 import TreeList from '~/diffs/components/tree_list.vue';
 import PanelResizer from '~/vue_shared/components/panel_resizer.vue';
@@ -18,6 +19,8 @@ Vue.use(PiniaVuePlugin);
 describe('DiffsFileTree', () => {
   let pinia;
   let wrapper;
+  let breakpointChangeCallback;
+  let mockBreakpointSize;
 
   useLocalStorageSpy();
 
@@ -28,6 +31,28 @@ describe('DiffsFileTree', () => {
         propsData,
       }),
     );
+  };
+
+  const mockBreakpointInstance = (breakpointSize = 'lg') => {
+    mockBreakpointSize = breakpointSize;
+
+    jest.spyOn(PanelBreakpointInstance, 'isBreakpointDown').mockImplementation((bp) => {
+      const breakpoints = ['xl', 'lg', 'md', 'sm', 'xs'];
+      const currentIndex = breakpoints.indexOf(mockBreakpointSize);
+      const targetIndex = breakpoints.indexOf(bp);
+      return currentIndex >= targetIndex;
+    });
+
+    jest.spyOn(PanelBreakpointInstance, 'addBreakpointListener').mockImplementation((callback) => {
+      breakpointChangeCallback = callback;
+    });
+
+    jest.spyOn(PanelBreakpointInstance, 'removeBreakpointListener');
+  };
+
+  const triggerBreakpointChange = (newBreakpoint) => {
+    mockBreakpointSize = newBreakpoint;
+    breakpointChangeCallback(newBreakpoint);
   };
 
   beforeAll(() => {
@@ -41,6 +66,7 @@ describe('DiffsFileTree', () => {
   beforeEach(() => {
     pinia = createTestingPinia();
     useLegacyDiffs();
+    mockBreakpointInstance('lg');
   });
 
   it('renders inside file browser height', () => {
@@ -222,5 +248,57 @@ describe('DiffsFileTree', () => {
     expect(wrapper.findComponent(TreeList).props('totalFilesCount')).toBe(totalFilesCount);
     expect(wrapper.findComponent(TreeList).props('rowHeight')).toBe(rowHeight);
     expect(wrapper.findComponent(TreeList).props('groupBlobsListItems')).toBe(groupBlobsListItems);
+  });
+
+  describe('when screen is wide enough', () => {
+    beforeEach(() => {
+      mockBreakpointInstance('lg');
+    });
+
+    it('passes enableStickyHeight as true to FileBrowserHeight', () => {
+      createComponent();
+      expect(wrapper.findComponent(FileBrowserHeight).props('enableStickyHeight')).toBe(true);
+    });
+
+    it('swaps to narrow view when breakpoint changes', async () => {
+      createComponent();
+      await nextTick();
+
+      triggerBreakpointChange('sm');
+      await nextTick();
+
+      expect(wrapper.findComponent(FileBrowserHeight).props('enableStickyHeight')).toBe(false);
+    });
+  });
+
+  describe('when screen is narrow', () => {
+    beforeEach(() => {
+      mockBreakpointInstance('sm');
+    });
+
+    it('passes enableStickyHeight as false to FileBrowserHeight', async () => {
+      createComponent();
+      await nextTick();
+      expect(wrapper.findComponent(FileBrowserHeight).props('enableStickyHeight')).toBe(false);
+    });
+
+    it('swaps to widescreen view when breakpoint changes', async () => {
+      createComponent();
+      await nextTick();
+
+      triggerBreakpointChange('lg');
+      await nextTick();
+
+      expect(wrapper.findComponent(FileBrowserHeight).props('enableStickyHeight')).toBe(true);
+    });
+  });
+
+  it('unsubscribes from breakpoint changes on destroy', () => {
+    mockBreakpointInstance('lg');
+    createComponent();
+
+    wrapper.destroy();
+
+    expect(PanelBreakpointInstance.removeBreakpointListener).toHaveBeenCalled();
   });
 });

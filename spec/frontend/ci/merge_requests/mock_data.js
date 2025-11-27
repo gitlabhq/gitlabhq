@@ -25,6 +25,7 @@ export const generateMockPipeline = ({
   type: 'merge_request',
   hasManualActions: true,
   hasScheduledActions: false,
+  __typename: 'Pipeline',
   commit: {
     id: 'gid://gitlab/Ci::Commit/1',
     name: "Merge branch '419724-apollo-mr-pipelines-build-pipeline-table-component-2' into 'master' ",
@@ -43,7 +44,9 @@ export const generateMockPipeline = ({
       name: 'Random User',
       webUrl: 'https://gitlab.com/random_user',
       webPath: '/random_user',
+      __typename: 'UserCore',
     },
+    __typename: 'Commit',
   },
   detailedStatus: {
     id: `${status.toLowerCase()}-${id}-${id}`,
@@ -51,6 +54,9 @@ export const generateMockPipeline = ({
     detailsPath: `/gitlab-org/gitlab/-/pipelines/${id}`,
     label: status.toLowerCase(),
     name: status,
+    icon: `status_${status.toLowerCase()}`,
+    text: status,
+    __typename: 'DetailedStatus',
   },
   stages: {
     nodes: [
@@ -63,7 +69,9 @@ export const generateMockPipeline = ({
           text: 'Passed',
           detailsPath: `/gitlab-org/gitlab/-/pipelines/${id}#build`,
           tooltip: 'passed',
+          __typename: 'DetailedStatus',
         },
+        __typename: 'CiStage',
       },
       {
         id: 'gid://gitlab/Ci::Stage/1950',
@@ -74,7 +82,9 @@ export const generateMockPipeline = ({
           text: 'Passed',
           detailsPath: `/gitlab-org/gitlab/-/pipelines/${id}#test`,
           tooltip: 'passed',
+          __typename: 'DetailedStatus',
         },
+        __typename: 'CiStage',
       },
       {
         id: 'gid://gitlab/Ci::Stage/1951',
@@ -85,26 +95,33 @@ export const generateMockPipeline = ({
           text: 'Passed',
           detailsPath: `/gitlab-org/gitlab/-/pipelines/${id}#deploy`,
           tooltip: 'passed',
+          __typename: 'DetailedStatus',
         },
+        __typename: 'CiStage',
       },
     ],
+    __typename: 'CiStageConnection',
   },
   mergeRequest: {
     id: 'gid://gitlab/MergeRequest/1',
     iid: '1',
     webPath: '/gitlab-org/gitlab/-/merge_requests/1',
     title: 'Edit README.md',
+    sourceBranch: 'test-branch',
+    __typename: 'MergeRequest',
   },
   project: {
     id: 'gid://gitlab/Project/1',
     fullPath: 'gitlab-org/gitlab',
+    __typename: 'Project',
   },
   user: {
     id: 'gid://gitlab/User/1',
-    avatar_url: '/uploads/-/system/user/avatar/5327378/avatar.png',
+    avatarUrl: '/uploads/-/system/user/avatar/5327378/avatar.png',
     name: 'Random User',
     path: '/random_user',
     webPath: '/random_user',
+    __typename: 'UserCore',
   },
 });
 
@@ -127,6 +144,7 @@ const createMergeRequestPipelines = ({ mergeRequestEventType = 'MERGE_TRAIN', co
       endCursor: 'eyJpZCI6IjY3NSJ9',
       __typename: 'PageInfo',
     },
+    __typename: 'PipelineConnection',
   };
 };
 
