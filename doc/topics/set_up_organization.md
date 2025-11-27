@@ -16,11 +16,10 @@ and give everyone access to the projects they need.
 - [Members](../user/project/members/_index.md)
 - [Organization (in development)](../user/organization/_index.md)
 - [Groups](../user/group/_index.md)
+- [Import and migrate to GitLab](../user/project/import/_index.md)
 - [Sharing projects and groups](../user/project/members/sharing_projects_groups.md)
-- [Enterprise users](../user/enterprise_user/_index.md)
-- [Service accounts](../user/profile/service_accounts.md)
 - [User account options](../user/profile/_index.md)
-- [SSH keys](../user/ssh.md)
 - [GitLab.com settings](../user/gitlab_com/_index.md)
+- [Logs on GitLab.com](../user/gitlab_com/logging.md)
 
 {{< /cards >}}

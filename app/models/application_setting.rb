@@ -674,6 +674,7 @@ class ApplicationSetting < ApplicationRecord
       :packages_cleanup_package_file_worker_capacity,
       :pages_extra_deployments_default_expiry_seconds,
       :pipeline_limit_per_project_user_sha,
+      :pipeline_limit_per_user,
       :project_api_limit,
       :project_invited_groups_api_limit,
       :projects_api_limit,
@@ -1234,7 +1235,8 @@ class ApplicationSetting < ApplicationRecord
       users_api_limit_ssh_keys: [:integer, { default: 120 }],
       users_api_limit_ssh_key: [:integer, { default: 120 }],
       users_api_limit_gpg_keys: [:integer, { default: 120 }],
-      users_api_limit_gpg_key: [:integer, { default: 120 }]
+      users_api_limit_gpg_key: [:integer, { default: 120 }],
+      pipeline_limit_per_user: [:integer, { default: 0 }]
     }
   end
 

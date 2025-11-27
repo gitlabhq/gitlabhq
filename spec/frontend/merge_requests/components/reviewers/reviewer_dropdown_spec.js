@@ -471,7 +471,7 @@ describe('Reviewer dropdown component', () => {
       });
 
       describe('simple sidebar usage (without using the reviewers panel)', () => {
-        it('sends the "simple sidebar" tracking event', async () => {
+        it('sends the "simple sidebar" tracking event when reviewers are added', async () => {
           createComponent(true, {
             users: [createMockUser(), createMockUser({ id: 2, name: 'Nonadmin', username: 'bob' })],
             usage: 'simple',
@@ -485,6 +485,27 @@ describe('Reviewer dropdown component', () => {
           await waitForPromises();
 
           expect(trackEventSpy).toHaveBeenCalledWith(
+            'user_requests_review_from_mr_simple_sidebar',
+            {},
+            undefined,
+          );
+        });
+
+        it('does not send the "simple sidebar" tracking event when reviewers are removed', async () => {
+          createComponent(true, {
+            users: [createMockUser(), createMockUser({ id: 2, name: 'Nonadmin', username: 'bob' })],
+            selectedReviewers: [createMockUser()],
+            usage: 'simple',
+          });
+
+          await waitForPromises();
+
+          findDropdown().vm.$emit('select', []);
+          findDropdown().vm.$emit('hidden');
+
+          await waitForPromises();
+
+          expect(trackEventSpy).not.toHaveBeenCalledWith(
             'user_requests_review_from_mr_simple_sidebar',
             {},
             undefined,

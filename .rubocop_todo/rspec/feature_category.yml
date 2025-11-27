@@ -702,7 +702,6 @@ RSpec/FeatureCategory:
     - 'ee/spec/models/app_sec/fuzzing/api/ci_configuration_spec.rb'
     - 'ee/spec/models/app_sec/fuzzing/coverage/corpus_spec.rb'
     - 'ee/spec/models/application_setting_spec.rb'
-    - 'ee/spec/models/approval_merge_request_rule_spec.rb'
     - 'ee/spec/models/approval_state_spec.rb'
     - 'ee/spec/models/approval_wrapped_any_approver_rule_spec.rb'
     - 'ee/spec/models/approvals/wrapped_rule_set_spec.rb'

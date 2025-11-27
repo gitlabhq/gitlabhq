@@ -182,6 +182,11 @@
       "type": "integer",
       "minimum": 0,
       "description": "Number of requests allowed to /api/v4/virtual_registries/packages/:package_format/:id/* endpoints."
+    },
+    "pipeline_limit_per_user": {
+      "type": "integer",
+      "minimum": 0,
+      "description": "Number of pipelines allowed to be created per user"
     }
   }
 }

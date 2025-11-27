@@ -13,21 +13,29 @@ module ResetOnColumnErrors
   end
 
   class_methods do
+    def reset_on_unknown_attribute_error(exception)
+      do_reset(exception)
+
+      raise
+    end
+
+    def reset_on_union_error(exception)
+      do_reset(exception) if exception.message.include?("each UNION query must have the same number of columns")
+
+      raise
+    end
+
+    private
+
     def do_reset(exception)
+      return unless should_reset?
+
       class_to_be_reset = base_class
 
       class_to_be_reset.reset_column_information
       Gitlab::ErrorTracking.log_exception(exception, { reset_model_name: class_to_be_reset.name })
 
       class_to_be_reset.previous_reset_columns_from_error = Time.current
-    end
-
-    def reset_on_union_error(exception)
-      if exception.message.include?("each UNION query must have the same number of columns") && should_reset?
-        do_reset(exception)
-      end
-
-      raise
     end
 
     def should_reset?
@@ -43,8 +51,6 @@ module ResetOnColumnErrors
   end
 
   def reset_on_unknown_attribute_error(exception)
-    self.class.do_reset(exception) if self.class.should_reset?
-
-    raise
+    self.class.reset_on_unknown_attribute_error(exception)
   end
 end

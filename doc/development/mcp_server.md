@@ -13,7 +13,7 @@ To set up your development environment:
 
 1. [Enable and configure HTTPS in the GDK](https://gitlab-org.gitlab.io/gitlab-development-kit/howto/nginx/#update-gdkyml-for-https-optional).
 1. Install `node` and install `mcp-remote` globally. GDK comes with Node.js but installed AI assistants cannot use the GDK version.
-1. [Connect an AI assistant to the MCP server](../user/gitlab_duo/model_context_protocol/mcp_server.md#connect-cursor-to-a-gitlab-mcp-server).
+1. [Connect an AI assistant to the MCP server](../user/gitlab_duo/model_context_protocol/mcp_server.md#connect-cursor-to-the-gitlab-mcp-server).
 
 ## Debugging and troubleshooting
 

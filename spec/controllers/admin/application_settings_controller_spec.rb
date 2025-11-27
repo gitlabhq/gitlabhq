@@ -447,6 +447,13 @@ RSpec.describe Admin::ApplicationSettingsController, :do_not_mock_admin_mode_set
         expect(response).to redirect_to(general_admin_application_settings_path)
         expect(application_settings.reload.pipeline_limit_per_project_user_sha).to eq(25)
       end
+
+      it 'updates pipeline_limit_per_user setting' do
+        put :update, params: { application_setting: { pipeline_limit_per_user: 25 } }
+
+        expect(response).to redirect_to(general_admin_application_settings_path)
+        expect(application_settings.reload.pipeline_limit_per_user).to eq(25)
+      end
     end
 
     context 'invitation flow enforcement setting' do

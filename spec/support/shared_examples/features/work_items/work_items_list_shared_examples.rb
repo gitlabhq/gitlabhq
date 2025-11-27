@@ -2,7 +2,7 @@
 
 RSpec.shared_examples 'no work items in the list' do
   it 'shows message when there are no items in the list' do
-    expect(page).to have_content("Track bugs, plan features, and organize your work with issues ")
+    expect(page).to have_content("Track bugs, plan features, and organize your efforts with work items")
   end
 end
 

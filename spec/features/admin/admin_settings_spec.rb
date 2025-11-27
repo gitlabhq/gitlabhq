@@ -1002,12 +1002,14 @@ RSpec.describe 'Admin updates settings', feature_category: :shared do
         visit network_admin_application_settings_path
 
         within_testid('pipeline-limits-settings') do
-          fill_in 'Maximum number of requests per minute', with: 10
+          fill_in 'Maximum number of requests per project, sha and user. Resets after 1 minute.', with: 10
+          fill_in 'Maximum number of requests for a user. Resets after 1 minute.', with: 100
           click_button 'Save changes'
         end
 
         expect(page).to have_content 'Application settings saved successfully'
         expect(current_settings.pipeline_limit_per_project_user_sha).to eq(10)
+        expect(current_settings.pipeline_limit_per_user).to eq(100)
       end
 
       it 'changes gitlab shell operation limits settings' do

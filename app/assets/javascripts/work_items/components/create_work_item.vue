@@ -128,6 +128,9 @@ export default {
     workItemPlanningViewEnabled: {
       default: false,
     },
+    hasEpicsFeature: {
+      default: false,
+    },
   },
   i18n: {
     contributionGuidelinesText: s__(
@@ -211,11 +214,6 @@ export default {
       type: String,
       required: false,
       default: '',
-    },
-    isEpicsList: {
-      type: Boolean,
-      required: false,
-      default: false,
     },
     fromGlobalMenu: {
       type: Boolean,
@@ -634,7 +632,7 @@ export default {
     },
     shouldShowNamespaceSelector() {
       if (this.workItemPlanningViewEnabled) {
-        return this.fromGlobalMenu || (this.isGroup && !this.isEpicsList);
+        return this.fromGlobalMenu || (this.isGroup && this.hasEpicsFeature);
       }
       return false;
     },

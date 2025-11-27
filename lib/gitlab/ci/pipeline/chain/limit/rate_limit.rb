@@ -9,6 +9,11 @@ module Gitlab
             include Chain::Helpers
             include ::Gitlab::Utils::StrongMemoize
 
+            RATE_LIMITS = [
+              { key: :pipelines_create, scope: ->(chain) { [chain.project, chain.current_user, chain.command.sha] } },
+              { key: :pipelines_created_per_user, scope: ->(chain) { chain.current_user } }
+            ].freeze
+
             def perform!
               # We exclude child-pipelines from the rate limit because they represent
               # sub-pipelines, as well as execution policy pipelines
@@ -16,8 +21,10 @@ module Gitlab
               #
               return if pipeline.parent_pipeline? || creating_policy_pipeline?
 
-              if rate_limit_throttled?
-                create_log_entry
+              throttled_keys = find_throttled_keys
+
+              if throttled_keys.any?
+                create_log_entry(throttled_keys)
                 error(throttle_message) if enforce_throttle?
               end
             end
@@ -32,20 +39,21 @@ module Gitlab
               command.pipeline_policy_context&.pipeline_execution_context&.creating_policy_pipeline?
             end
 
-            def rate_limit_throttled?
-              ::Gitlab::ApplicationRateLimiter.throttled?(
-                :pipelines_create, scope: [project, current_user, command.sha]
-              )
+            def find_throttled_keys
+              RATE_LIMITS.filter_map do |limit|
+                scope = limit[:scope].call(self)
+                limit[:key] if ::Gitlab::ApplicationRateLimiter.throttled?(limit[:key], scope: scope)
+              end
             end
 
-            def create_log_entry
+            def create_log_entry(throttled_keys)
               Gitlab::AppJsonLogger.info(
                 class: self.class.name,
                 namespace_id: project.namespace_id,
                 project_id: project.id,
                 commit_sha: command.sha,
                 subscription_plan: project.actual_plan_name,
-                message: 'Activated pipeline creation rate limit',
+                message: "Pipeline rate limit exceeded for #{throttled_keys.to_sentence}",
                 throttled: enforce_throttle?,
                 throttle_override: throttle_override?
               )

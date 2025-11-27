@@ -152,6 +152,12 @@ module Packages
       }.freeze
     end
 
+    def self.package_type_to_class!(package_type)
+      inheritance_column_to_class_map.fetch(package_type) do
+        raise ArgumentError, "'#{package_type}' is not a valid package_type"
+      end.constantize
+    end
+
     def self.by_name_and_file_name(name, file_name)
       with_name(name)
         .joins(:package_files)

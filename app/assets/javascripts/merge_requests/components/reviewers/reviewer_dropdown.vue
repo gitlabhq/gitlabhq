@@ -246,12 +246,14 @@ export default {
           selectable_reviewers_count: selectableList.length,
         });
       });
+
+      return additions.length;
     },
     processReviewers() {
-      this.trackReviewersSelectEvent();
+      const additions = this.trackReviewersSelectEvent();
       this.updateReviewers();
 
-      if (this.usage === 'simple') {
+      if (additions > 0 && this.usage === 'simple') {
         this.trackEvent(REQUEST_REVIEW_SIMPLE);
       }
     },

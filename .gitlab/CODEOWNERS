@@ -23,6 +23,7 @@
 !/.gitlab/merge_request_templates/*.md
 !/doc/*.md
 !/doc/**/*.md
+!/doc/**/*.gif
 !/doc/**/*.jpg
 !/doc/**/*.png
 !/doc/**/*.svg

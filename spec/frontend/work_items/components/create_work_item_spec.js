@@ -367,7 +367,7 @@ describe('Create work item component', () => {
     it('renders with the current namespace selected by default', async () => {
       createComponent({
         props: { isGroup: true },
-        provide: { workItemPlanningViewEnabled: true },
+        provide: { workItemPlanningViewEnabled: true, hasEpicsFeature: true },
       });
       await waitForPromises();
 
@@ -376,17 +376,23 @@ describe('Create work item component', () => {
     });
 
     it.each`
-      scenario                   | isGroup  | fromGlobalMenu | isEpicsList | workItemPlanningViewEnabled | expected
-      ${'group list page'}       | ${true}  | ${false}       | ${false}    | ${true}                     | ${true}
-      ${'project global menu'}   | ${false} | ${true}        | ${false}    | ${true}                     | ${true}
-      ${'legacy epics list'}     | ${true}  | ${false}       | ${true}     | ${false}                    | ${false}
-      ${'disabled feature flag'} | ${true}  | ${false}       | ${false}    | ${false}                    | ${false}
+      scenario                   | isGroup  | fromGlobalMenu | hasEpicsFeature | workItemPlanningViewEnabled | expected
+      ${'group list page'}       | ${true}  | ${false}       | ${true}         | ${true}                     | ${true}
+      ${'project global menu'}   | ${false} | ${true}        | ${false}        | ${true}                     | ${true}
+      ${'EE with epics'}         | ${true}  | ${false}       | ${true}         | ${true}                     | ${true}
+      ${'disabled feature flag'} | ${true}  | ${false}       | ${false}        | ${false}                    | ${false}
     `(
       '$scenario shows selector: $expected',
-      async ({ isGroup, fromGlobalMenu, isEpicsList, workItemPlanningViewEnabled, expected }) => {
+      async ({
+        isGroup,
+        fromGlobalMenu,
+        hasEpicsFeature,
+        workItemPlanningViewEnabled,
+        expected,
+      }) => {
         createComponent({
-          props: { isGroup, fromGlobalMenu, isEpicsList },
-          provide: { workItemPlanningViewEnabled },
+          props: { isGroup, fromGlobalMenu },
+          provide: { workItemPlanningViewEnabled, hasEpicsFeature },
         });
 
         await waitForPromises();
@@ -397,7 +403,7 @@ describe('Create work item component', () => {
     it('updates available work item types when new namespace is selected', async () => {
       createComponent({
         props: { isGroup: true },
-        provide: { workItemPlanningViewEnabled: true },
+        provide: { workItemPlanningViewEnabled: true, hasEpicsFeature: true },
       });
       await waitForPromises();
 

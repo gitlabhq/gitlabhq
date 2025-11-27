@@ -16,7 +16,7 @@ module Packages
     end
 
     def execute
-      return packages_class.none unless group
+      return ::Packages::Package.none unless group
 
       packages_for_group_projects
     end
@@ -90,16 +90,9 @@ module Packages
     end
 
     def packages_class
-      if group
-        return ::Packages::Package unless package_type
+      return ::Packages::Package unless package_type
 
-        klass = ::Packages::Package.inheritance_column_to_class_map[package_type.to_sym]
-        raise ArgumentError, "'#{package_type}' is not a valid package_type" unless klass
-
-        klass.constantize
-      else
-        ::Packages::Package
-      end
+      ::Packages::Package.package_type_to_class!(package_type.to_sym)
     end
   end
 end

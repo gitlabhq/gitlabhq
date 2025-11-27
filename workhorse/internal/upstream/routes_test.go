@@ -7,6 +7,7 @@ import (
 	"net/http"
 	"net/http/httptest"
 	"os"
+	"sync/atomic"
 	"testing"
 
 	"github.com/redis/go-redis/v9"
@@ -125,16 +126,16 @@ func TestAllowedProxyRoute(t *testing.T) {
 
 func TestAllowedProxyRouteWithCircuitBreaker(t *testing.T) {
 	const consecutiveFailures = 0
-	var requestCount int
+	var requestCount atomic.Int32
 	railsServer := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		if requestCount <= 2 {
+		current := requestCount.Add(1)
+		if current <= 3 {
 			w.Header().Set("Enable-Workhorse-Circuit-Breaker", "true")
 			w.WriteHeader(http.StatusTooManyRequests)
 		} else {
 			// Subsequent requests would succeed if they reached the server
 			fmt.Fprint(w, "Local Rails server received request to path "+r.URL.Path)
 		}
-		requestCount++
 	}))
 	defer railsServer.Close()
 

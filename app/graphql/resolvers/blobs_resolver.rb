@@ -42,7 +42,7 @@ module Resolvers
     def resolve_with_lookahead(paths:, ref:, ref_type:)
       authorize!(repository.container)
 
-      return [] if repository.empty?
+      return [] if paths.empty? || repository.empty?
 
       ref ||= repository.root_ref
       validate_ref!(ref)

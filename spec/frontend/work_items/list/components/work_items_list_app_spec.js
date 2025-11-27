@@ -248,6 +248,7 @@ describeSkipVue3(skipReason, () => {
         isIssueRepositioningDisabled,
         hasProjects,
         newIssuePath: '',
+        workItemPlanningViewEnabled: false,
         ...provide,
       },
       propsData: {
