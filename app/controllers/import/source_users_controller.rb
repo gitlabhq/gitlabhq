@@ -49,7 +49,14 @@ module Import
     end
 
     def source_user
-      Import::SourceUser.find_by_reassignment_token(params[:reassignment_token])
+      if params[:namespace_id].present?
+        Import::SourceUser.find_by_namespace_and_token(
+          namespace_id: params[:namespace_id],
+          reassignment_token: params[:reassignment_token]
+        )
+      else
+        Import::SourceUser.find_by_reassignment_token(params[:reassignment_token])
+      end
     end
     strong_memoize_attr :source_user
 

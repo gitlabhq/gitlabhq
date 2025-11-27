@@ -56,7 +56,9 @@ module ActiveContext
           relation = base_relation
           conditions.each do |key, value|
             sanitized_value = model.sanitize_sql_like(value)
-            relation = relation.where("#{model.connection.quote_column_name(key)} LIKE ?", "#{sanitized_value}%")
+            relation = relation.where(
+              "#{model.adapter_class.quote_column_name(key)} LIKE ?", "#{sanitized_value}%"
+            )
           end
           relation
         end
@@ -111,7 +113,9 @@ module ActiveContext
           vector_str = "[#{vector.join(',')}]"
 
           relation
-            .order(Arel.sql("#{model.connection.quote_column_name(column)} <=> #{model.connection.quote(vector_str)}"))
+            .order(
+              Arel.sql("#{model.adapter_class.quote_column_name(column)} <=> #{model.connection.quote(vector_str)}")
+            )
             .limit(limit)
         end
 

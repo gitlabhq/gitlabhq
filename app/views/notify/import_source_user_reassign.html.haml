@@ -27,7 +27,7 @@
     destination_group: destination_group)
 
 %p{ style: text_style }
-  = link_to import_source_user_url(@source_user.reassignment_token), target: '_blank', rel: 'noopener noreferrer' do
+  = link_to namespaced_show_import_source_users_url(@source_user.namespace_id, @source_user.reassignment_token), target: '_blank', rel: 'noopener noreferrer' do
     %button{ type: 'button', style: button_style }
       = s_('UserMapping|Review reassignment details')
 

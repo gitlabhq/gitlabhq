@@ -49,8 +49,8 @@ module Gitlab
           def validate_constraint
             set_statement_timeout do
               connection.execute(<<~SQL.squish)
-                ALTER TABLE #{connection.quote_table_name(table_name)}
-                VALIDATE CONSTRAINT #{connection.quote_column_name(name)};
+                ALTER TABLE #{record.class.adapter_class.quote_table_name(table_name)}
+                VALIDATE CONSTRAINT #{record.class.adapter_class.quote_column_name(name)};
               SQL
             end
           end

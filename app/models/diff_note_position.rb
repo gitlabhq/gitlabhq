@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 class DiffNotePosition < ApplicationRecord
-  include WithAssociatedNote
+  include Notes::WithAssociatedNote
 
   belongs_to :note
   attr_accessor :line_range

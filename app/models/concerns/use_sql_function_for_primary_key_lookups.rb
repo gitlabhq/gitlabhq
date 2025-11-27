@@ -57,7 +57,7 @@ module UseSqlFunctionForPrimaryKeyLookups
       return unless verification_arel.ast == arel.ast
 
       function_call = Arel::Nodes::NamedFunction.new("find_#{table_name}_by_id", [pk_value_attribute]).as(table_name)
-      filter_empty_row = "#{quoted_table_name}.#{connection.quote_column_name(primary_key)} IS NOT NULL"
+      filter_empty_row = "#{quoted_table_name}.#{adapter_class.quote_column_name(primary_key)} IS NOT NULL"
 
       from(function_call).where(filter_empty_row).limit(1)
     end

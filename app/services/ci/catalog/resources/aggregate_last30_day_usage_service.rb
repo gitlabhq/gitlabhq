@@ -77,11 +77,11 @@ module Ci
           ids_list = updates.map { |id, _| connection.quote(id) }.join(',')
 
           connection.execute(<<~SQL.squish)
-            UPDATE #{connection.quote_table_name(table_name)}
+            UPDATE #{model.adapter_class.quote_table_name(table_name)}
             SET
-              #{connection.quote_column_name(update_column)} = CASE #{connection.quote_column_name(id_column)} #{case_statement} END,
-              #{connection.quote_column_name(timestamp_column)} = NOW()
-            WHERE #{connection.quote_column_name(id_column)} IN (#{ids_list})
+              #{model.adapter_class.quote_column_name(update_column)} = CASE #{model.adapter_class.quote_column_name(id_column)} #{case_statement} END,
+              #{model.adapter_class.quote_column_name(timestamp_column)} = NOW()
+            WHERE #{model.adapter_class.quote_column_name(id_column)} IN (#{ids_list})
           SQL
         end
       end

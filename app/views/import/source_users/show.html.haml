@@ -49,8 +49,8 @@
     - c.with_footer do
       .gl-flex.gl-gap-3
         = render Pajamas::ButtonComponent.new(variant: :danger, method: :post,
-          href: accept_import_source_user_path(@source_user.reassignment_token),
+          href: namespaced_accept_import_source_users_path(@source_user.namespace_id, @source_user.reassignment_token),
           button_options: { data: { testid: 'approve-reassignment-button' } }) do
           = s_('UserMapping|Approve reassignment')
-        = render Pajamas::ButtonComponent.new(method: :post, href: decline_import_source_user_path(@source_user.reassignment_token)) do
+        = render Pajamas::ButtonComponent.new(method: :post, href: namespaced_decline_import_source_users_path(@source_user.namespace_id, @source_user.reassignment_token)) do
           = s_('UserMapping|Reject')

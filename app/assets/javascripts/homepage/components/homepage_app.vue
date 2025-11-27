@@ -113,7 +113,7 @@ export default {
   },
   computed: {
     shouldShowPickUpWidget() {
-      if (!this.lastPushEvent) return false;
+      if (!this.lastPushEvent?.create_mr_path) return false;
 
       // Show widget if we have a push event and either backend says show OR we have valid data
       return Boolean(this.lastPushEvent.show_widget || this.lastPushEvent.branch_name);

@@ -1,6 +1,8 @@
+---
 API/ParameterType:
   Details: grace period
   Exclude:
+    - 'ee/lib/api/virtual_registries/container/registry_upstreams.rb'
     - 'ee/lib/api/virtual_registries/packages/maven/registry_upstreams.rb'
     - 'lib/api/conan/v2/project_packages.rb'
     - 'lib/api/concerns/packages/conan/shared_endpoints.rb'

@@ -152,7 +152,9 @@ RSpec.describe Emails::Imports, feature_category: :importers do
       is_expected.to have_content(
         "Reassigned by: #{source_user.reassigned_by_user.name} (@#{source_user.reassigned_by_user.username})"
       )
-      is_expected.to have_body_text(import_source_user_url(source_user.reassignment_token))
+      is_expected.to have_body_text(
+        namespaced_show_import_source_users_url(source_user.namespace_id, source_user.reassignment_token)
+      )
     end
 
     it_behaves_like 'appearance header and footer enabled'

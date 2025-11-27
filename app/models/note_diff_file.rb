@@ -4,7 +4,7 @@ class NoteDiffFile < ApplicationRecord
   include DiffFile
   include Gitlab::EncodingHelper
   include Importable
-  include WithAssociatedNote
+  include Notes::WithAssociatedNote
 
   scope :referencing_sha, ->(oids, project_id:) do
     joins(:diff_note).where(notes: { project_id: project_id, commit_id: oids })

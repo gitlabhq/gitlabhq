@@ -55,12 +55,11 @@ To use GitLab Duo Self-Hosted you must have:
 
 ## Supported GitLab Duo features
 
-The following tables state:
+The following table lists:
 
-- The GitLab Duo features and whether those features are available on GitLab Duo Self-Hosted.
-- Which version of GitLab is needed to use those features on GitLab Duo Self-Hosted.
-- The status of those features. A feature's status on GitLab Duo Self-Hosted can be
-  different to [that same feature's status when it is hosted on GitLab](../../user/gitlab_duo/feature_summary.md).
+- The GitLab Duo features supported by GitLab Duo Self-Hosted.
+- The GitLab version required to use the feature on GitLab Duo Self-Hosted.
+- The feature status. A feature status for GitLab Duo Self-Hosted might be different to the status listed in the [Feature summary](../../user/gitlab_duo/feature_summary.md).
 
 {{< alert type="note" >}}
 
@@ -70,51 +69,25 @@ when GitLab hosts and connects to those models through the cloud-based [AI gatew
 
 {{< /alert >}}
 
-### Code Suggestions
-
-| Feature                                                                      | Available on GitLab Duo Self-Hosted         | GitLab version        | Status  |
-| ---------------------------------------------------------------------------- | ------------------------------------------- | --------------------- | --- |
-| [Code Suggestions](../../user/project/repository/code_suggestions/_index.md) | {{< icon name="check-circle-filled" >}} Yes | GitLab 17.9 and later | Generally available |
-
-### Chat
-
-| Feature                                                                                                           | Available on GitLab Duo Self-Hosted         | GitLab version         | Status  |
-| ----------------------------------------------------------------------------------------------------------------- | ------------------------------------------- | ---------------------- | --- |
-| [General](../../user/gitlab_duo_chat/_index.md)                                                                   | {{< icon name="check-circle-filled" >}} Yes | GitLab 17.9 and later  | Generally available |
-| [Code Explanation](../../user/gitlab_duo_chat/examples.md#explain-selected-code)                                      | {{< icon name="check-circle-filled" >}} Yes | GitLab 17.9 and later  | Generally available |
-| [Test Generation](../../user/gitlab_duo_chat/examples.md#write-tests-in-the-ide)                                       | {{< icon name="check-circle-filled" >}} Yes | GitLab 17.9 and later  | Generally available |
-| [Refactor Code](../../user/gitlab_duo_chat/examples.md#refactor-code-in-the-ide)                                  | {{< icon name="check-circle-filled" >}} Yes | GitLab 17.9 and later  | Generally available |
-| [Fix Code](../../user/gitlab_duo_chat/examples.md#fix-code-in-the-ide)                                            | {{< icon name="check-circle-filled" >}} Yes | GitLab 17.9 and later  | Generally available |
-| [Root Cause Analysis](../../user/gitlab_duo_chat/examples.md#troubleshoot-failed-cicd-jobs-with-root-cause-analysis) | {{< icon name="check-circle-filled" >}} Yes | GitLab 17.10 and later | Beta |
-| [Vulnerability Explanation](../../user/application_security/vulnerabilities/_index.md#vulnerability-explanation)     | {{< icon name="check-circle-filled" >}} Yes | GitLab 18.1.2 and later | Beta |
-
-For more examples of a question you can ask, see
-[Ask about GitLab](../../user/gitlab_duo_chat/examples.md).
-
-### GitLab Duo in merge requests
-
-| Feature                                                                                                                                      | Available on GitLab Duo Self-Hosted         | GitLab version         | Status |
-| -------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------- | ---------------------- | --- |
-| [Merge Commit Message Generation](../../user/project/merge_requests/duo_in_merge_requests.md#generate-a-merge-commit-message)                        | {{< icon name="check-circle-filled" >}} Yes | GitLab 18.1.2 and later | Beta |
-| [Merge Request Summary](../../user/project/merge_requests/duo_in_merge_requests.md#generate-a-description-by-summarizing-code-changes) | {{< icon name="check-circle-filled" >}} Yes | GitLab 18.1.2 and later | Beta |
-| [Code Review](../../user/project/merge_requests/duo_in_merge_requests.md#have-gitlab-duo-review-your-code)                                   | {{< icon name="check-circle-filled" >}} Yes | GitLab 18.3 and later         | Generally available |
-| [Code Review Summary](../../user/project/merge_requests/duo_in_merge_requests.md#summarize-a-code-review)                                    | {{< icon name="check-circle-filled" >}} Yes | GitLab 18.1.2 and later | Experiment |
-
-### GitLab Duo in issues
-
-| Feature                                                                                                                          | Available on GitLab Duo Self-Hosted         | GitLab version         | Status |
-| -------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------- | ---------------------- | --- |
-| [Issue Description Generation](../../user/project/issues/managing_issues.md#populate-an-issue-with-issue-description-generation) | {{< icon name="dash-circle" >}} No  | Not applicable   | Not applicable |
-| [Discussion Summary](../../user/discussions/_index.md#summarize-issue-discussions-with-gitlab-duo-chat)                           | {{< icon name="check-circle-filled" >}} Yes | GitLab 18.1.2 and later | Beta |
-
-### Other features
-
-| Feature                                                                                                        | Available on GitLab Duo Self-Hosted         | GitLab version         | Status |
-| -------------------------------------------------------------------------------------------------------------- | ------------------------------------------- | ---------------------- | --- |
-| [GitLab Duo for the CLI](https://docs.gitlab.com/cli/)                  | {{< icon name="check-circle-filled" >}} Yes | GitLab 18.1.2 and later | Beta |
-| [GitLab Duo Agent Platform](../../user/duo_agent_platform/_index.md)                                                       | {{< icon name="check-circle-filled" >}} Yes  | GitLab 18.4 and later | Beta |
-| [Vulnerability Resolution](../../user/application_security/vulnerabilities/_index.md#vulnerability-resolution) | {{< icon name="check-circle-filled" >}} Yes | GitLab 18.1.2 and later | Beta |
-| [GitLab Duo and SDLC trends Dashboard](../../user/analytics/duo_and_sdlc_trends.md)                                             | {{< icon name="check-circle-filled" >}} Yes | GitLab 17.9 and later  | Beta |
+| Feature                                                                                                                                | GitLab version          | Status              |
+|----------------------------------------------------------------------------------------------------------------------------------------|-------------------------|---------------------|
+| [Code Suggestions](../../user/project/repository/code_suggestions/_index.md)                                                           | GitLab 17.9 and later   | Generally available |
+| [GitLab Duo Chat (Classic)](../../user/gitlab_duo_chat/_index.md)                                                                      | GitLab 17.9 and later   | Generally available |
+| [Code Explanation](../../user/gitlab_duo_chat/examples.md#explain-selected-code)                                                       | GitLab 17.9 and later   | Generally available |
+| [Test Generation](../../user/gitlab_duo_chat/examples.md#write-tests-in-the-ide)                                                       | GitLab 17.9 and later   | Generally available |
+| [Refactor Code](../../user/gitlab_duo_chat/examples.md#refactor-code-in-the-ide)                                                       | GitLab 17.9 and later   | Generally available |
+| [Fix Code](../../user/gitlab_duo_chat/examples.md#fix-code-in-the-ide)                                                                 | GitLab 17.9 and later   | Generally available |
+| [Code Review](../../user/project/merge_requests/duo_in_merge_requests.md#have-gitlab-duo-review-your-code)                             | GitLab 18.3 and later   | Generally available |
+| [Root Cause Analysis](../../user/gitlab_duo_chat/examples.md#troubleshoot-failed-cicd-jobs-with-root-cause-analysis)                   | GitLab 17.10 and later  | Beta                |
+| [Vulnerability Explanation](../../user/application_security/vulnerabilities/_index.md#vulnerability-explanation)                       | GitLab 18.1.2 and later | Beta                |
+| [Merge Commit Message Generation](../../user/project/merge_requests/duo_in_merge_requests.md#generate-a-merge-commit-message)          | GitLab 18.1.2 and later | Beta                |
+| [Merge Request Summary](../../user/project/merge_requests/duo_in_merge_requests.md#generate-a-description-by-summarizing-code-changes) | GitLab 18.1.2 and later | Beta                |
+| [Discussion Summary](../../user/discussions/_index.md#summarize-issue-discussions-with-gitlab-duo-chat)                                | GitLab 18.1.2 and later | Beta                |
+| [GitLab Duo for the CLI](https://docs.gitlab.com/cli/)                                                                                 | GitLab 18.1.2 and later | Beta                |
+| [GitLab Duo Agent Platform](../../user/duo_agent_platform/_index.md)                                                                   | GitLab 18.4 and later   | Beta                |
+| [Vulnerability Resolution](../../user/application_security/vulnerabilities/_index.md#vulnerability-resolution)                         | GitLab 18.1.2 and later | Beta                |
+| [GitLab Duo and SDLC trends Dashboard](../../user/analytics/duo_and_sdlc_trends.md)                                                    | GitLab 17.9 and later   | Beta                |
+| [Code Review Summary](../../user/project/merge_requests/duo_in_merge_requests.md#summarize-a-code-review)                              | GitLab 18.1.2 and later | Experiment          |
 
 ## Configuration types
 

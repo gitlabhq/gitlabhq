@@ -139,6 +139,42 @@ describe('Merge requests list app', () => {
     expect(findIssuableList().exists()).toBe(false);
   });
 
+  it('renders issuable list with showPageSizeSelector as false when there are no merge requests', async () => {
+    const emptyResponse = {
+      data: {
+        namespace: {
+          id: 'gid://gitlab/Group/1',
+          mergeRequests: {
+            nodes: [],
+            pageInfo: {
+              hasNextPage: false,
+              hasPreviousPage: false,
+              startCursor: null,
+              endCursor: null,
+            },
+          },
+        },
+      },
+    };
+
+    createComponent({ response: emptyResponse });
+
+    await waitForPromises();
+
+    expect(findIssuableList().props('showPageSizeSelector')).toBe(false);
+  });
+
+  it('updates url params on handlePageSizeChange', () => {
+    createComponent();
+
+    const pageSize = 100;
+    findIssuableList().vm.$emit('page-size-change', pageSize);
+
+    expect(router.push).toHaveBeenCalledWith({
+      query: expect.objectContaining({ ...wrapper.vm.urlParams, first_page_size: pageSize }),
+    });
+  });
+
   it('shows "New merge request" button', () => {
     createComponent({ provide: { newMergeRequestPath: '/new-mr-path' } });
 
@@ -169,6 +205,7 @@ describe('Merge requests list app', () => {
       isManualOrdering: false,
       showBulkEditSidebar: false,
       showPaginationControls: true,
+      showPageSizeSelector: true,
       useKeysetPagination: true,
       hasPreviousPage: false,
       hasNextPage: true,

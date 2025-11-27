@@ -441,7 +441,7 @@ control over how the Pages daemon runs and serves content in your environment.
 
 | Setting                                 | Default                                               | Description |
 |-----------------------------------------|-------------------------------------------------------|-------------|
-| `pages_external_url`                    | Not applicable                                        | The URL where GitLab Pages is accessible, including protocol (HTTP / HTTPS). If `https://` is used, additional configuration is required. For more information, see [Wildcard domains with TLS support](#wildcard-domains-with-tls-support) and [Custom domains with TLS support](#custom-domains-with-tls-support). |
+| `pages_external_url` <sup>1</sup>       | Not applicable                                        | The URL where GitLab Pages is accessible, including protocol (HTTP / HTTPS). If `https://` is used, additional configuration is required. For more information, see [Wildcard domains with TLS support](#wildcard-domains-with-tls-support) and [Custom domains with TLS support](#custom-domains-with-tls-support). |
 | **`gitlab_pages[]`**                    | Not applicable                                        |             |
 | `access_control`                        | Not applicable                                        | Whether to enable [access control](_index.md#access-control). |
 | `api_secret_key`                        | Auto-generated                                        | Full path to file with secret key used to authenticate with the GitLab API. |
@@ -522,6 +522,11 @@ control over how the Pages daemon runs and serves content in your environment.
 | `server_read_header_timeout`            | `1s`                                                  | Maximum duration to read the request headers. For no timeout, set to `0` or a negative value. |
 | `server_write_timeout`                  | `0`                                                   | Maximum duration to write all files in the response. Larger files require more time. For no timeout, set to `0` or a negative value. |
 | `server_keep_alive`                     | `15s`                                                 | The `Keep-Alive` period for network connections accepted by this listener. If `0`, `Keep-Alive` is enabled if supported by the protocol and operating system. If negative, `Keep-Alive` is disabled. |
+
+**Footnotes**:
+
+1. When you use an external Sidekiq node, you must add `pages_external_url` to your
+   configuration. Without this setting, the external Sidekiq node cannot process deploy jobs.
 
 ## Advanced configuration
 

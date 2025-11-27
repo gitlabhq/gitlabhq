@@ -9,7 +9,7 @@ RSpec.describe LegacyBulkInsert do
   describe '#bulk_insert' do
     before do
       allow(model).to receive(:connection).and_return(dummy_connection)
-      allow(dummy_connection).to receive(:quote_column_name, &:itself)
+      allow(model).to receive_message_chain(:adapter_class, :quote_column_name, &:itself)
       allow(dummy_connection).to receive(:quote, &:itself)
       allow(dummy_connection).to receive(:execute)
     end
@@ -39,9 +39,9 @@ RSpec.describe LegacyBulkInsert do
     end
 
     it 'quotes column names' do
-      expect(dummy_connection).to receive(:quote_column_name).with(:a)
-      expect(dummy_connection).to receive(:quote_column_name).with(:b)
-      expect(dummy_connection).to receive(:quote_column_name).with(:c)
+      expect(model).to receive_message_chain(:adapter_class, :quote_column_name).with(:a)
+      expect(model).to receive_message_chain(:adapter_class, :quote_column_name).with(:b)
+      expect(model).to receive_message_chain(:adapter_class, :quote_column_name).with(:c)
 
       model.legacy_bulk_insert('test', rows)
     end

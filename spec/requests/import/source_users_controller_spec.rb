@@ -148,4 +148,106 @@ RSpec.describe Import::SourceUsersController, feature_category: :importers do
 
     it_behaves_like 'it requires the user to be signed in'
   end
+
+  describe 'POST /accept with namespace_id' do
+    let(:namespace_id) { source_user.namespace_id }
+    let(:path) do
+      namespaced_accept_import_source_users_path(
+        namespace_id: namespace_id,
+        reassignment_token: reassignment_token
+      )
+    end
+
+    subject(:accept_invite) { post path }
+
+    context 'when signed in' do
+      before do
+        sign_in(source_user.reassign_to_user)
+      end
+
+      it { expect { accept_invite }.to change { source_user.reload.reassignment_in_progress? }.from(false).to(true) }
+
+      it 'enqueues the job to reassign contributions' do
+        expect(Import::ReassignPlaceholderUserRecordsWorker).to receive(:perform_async).with(source_user.id)
+
+        accept_invite
+      end
+
+      it 'redirects with a notice when accepted' do
+        accept_invite
+
+        expect(response).to redirect_to(root_path)
+        expect(flash[:raw]).to match(/Reassignment approved/)
+      end
+
+      it_behaves_like 'it notifies about unavailable reassignments'
+      it_behaves_like 'it requires the user is the reassign to user'
+    end
+
+    it_behaves_like 'it requires the user to be signed in'
+  end
+
+  describe 'POST /decline with namespace_id' do
+    let(:message_delivery) { instance_double(ActionMailer::MessageDelivery) }
+    let(:namespace_id) { source_user.namespace_id }
+    let(:path) do
+      namespaced_decline_import_source_users_path(
+        namespace_id: namespace_id,
+        reassignment_token: reassignment_token
+      )
+    end
+
+    subject(:reject_invite) { post path }
+
+    context 'when signed in' do
+      before do
+        sign_in(source_user.reassign_to_user)
+        allow(message_delivery).to receive(:deliver_now)
+        allow(Notify).to receive(:import_source_user_rejected).and_return(message_delivery)
+      end
+
+      it { expect { reject_invite }.to change { source_user.reload.rejected? }.from(false).to(true) }
+
+      it 'redirects with a notice' do
+        reject_invite
+
+        expect(response).to redirect_to(root_path)
+        expect(flash[:raw]).to match(/Reassignment rejected/)
+      end
+
+      it_behaves_like 'it notifies about unavailable reassignments'
+      it_behaves_like 'it requires the user is the reassign to user'
+    end
+
+    it_behaves_like 'it requires the user to be signed in'
+  end
+
+  describe 'GET /show with namespace_id' do
+    let(:namespace_id) { source_user.namespace_id }
+    let(:path) do
+      namespaced_show_import_source_users_path(
+        namespace_id: namespace_id,
+        reassignment_token: reassignment_token
+      )
+    end
+
+    subject(:show_invite) { get path }
+
+    context 'when signed in' do
+      before do
+        sign_in(source_user.reassign_to_user)
+      end
+
+      it 'returns a 200 response' do
+        show_invite
+
+        expect(response).to have_gitlab_http_status(:success)
+      end
+
+      it_behaves_like 'it notifies about unavailable reassignments'
+      it_behaves_like 'it requires the user is the reassign to user'
+    end
+
+    it_behaves_like 'it requires the user to be signed in'
+  end
 end

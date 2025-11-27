@@ -52,7 +52,7 @@ For tier, choose one:
 
 {{< alert type="note" >}}
 
-GitLab Dedicated always includes an Ultimate subscription.
+GitLab Dedicated and GitLab Dedicated for Government always include an Ultimate subscription.
 
 {{< /alert >}}
 
@@ -74,6 +74,7 @@ For offering, use any combination of these entries, in this order, separated by 
 - `GitLab.com`
 - `GitLab Self-Managed`
 - `GitLab Dedicated`
+- `GitLab Dedicated for Government`
 
 For example:
 
@@ -81,6 +82,7 @@ For example:
 - `GitLab.com, GitLab Self-Managed`
 - `GitLab Self-Managed`
 - `GitLab Self-Managed, GitLab Dedicated`
+- `GitLab Dedicated, GitLab Dedicated for Government`
 
 {{< alert type="note" >}}
 
@@ -104,11 +106,11 @@ Generally available features should not have a status.
 For GitLab Duo features available with self-hosted models, use:
 
 ```markdown
-{{< collapsible title="Model information" >}}
+{{</* collapsible title="Model information" */>}}
 
 - Available on [GitLab Duo with self-hosted models](<relative_link_to_gitlab_duo_self_hosted_documentation>)
 
-{{< /collapsible >}}
+{{</* /collapsible */>}}
 ```
 
 Avoid stating that the feature is not available on GitLab Duo with self-hosted models.
@@ -127,13 +129,13 @@ If you need to document the LLMs that the GitLab Duo feature uses:
 For example:
 
 ```markdown
-{{< collapsible title="Model information" >}}
+{{</* collapsible title="Model information" */>}}
 
 - LLMs for code completion: Anthropic [Claude 4.0 Sonnet](https://console.cloud.google.com/vertex-ai/publishers/anthropic/model-garden/claude-sonnet-4)
 - LLMs for code generation: Anthropic [Claude 3.7 Sonnet](https://console.cloud.google.com/vertex-ai/publishers/anthropic/model-garden/claude-3-7-sonnet)
 - LLM for Amazon Q: Amazon Q Developer
 
-{{< /collapsible >}}
+{{</* /collapsible */>}}
 ```
 
 ### History
@@ -265,7 +267,7 @@ for the features on the page. For example:
 - If some sections apply to Premium and Ultimate, and others apply to just Ultimate,
   the H1 `Tier:` should be `Premium, Ultimate`.
 - If some sections apply to all instances, and others apply to only `GitLab Self-Managed`,
-  the `Offering:` should be `GitLab.com, GitLab Self-Managed, GitLab Dedicated`.
+  the `Offering:` should be `GitLab.com, GitLab Self-Managed, GitLab Dedicated, GitLab Dedicated for Government`.
 - If some sections are beta, and others are experiment, the H1 `Status:` should be `Beta`.
   If some sections are beta, and others are generally available, then there should
   be no `Status:` for the H1.

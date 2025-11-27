@@ -7,6 +7,8 @@ import { WORKSPACE_PROJECT } from '~/issues/constants';
 import ConfidentialityBadge from '~/vue_shared/components/confidentiality_badge.vue';
 import ImportedBadge from '~/vue_shared/components/imported_badge.vue';
 import glFeatureFlagMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
+import WorkItemTypeIcon from '~/work_items/components/work_item_type_icon.vue';
+import { STATE_CLOSED } from '~/work_items/constants';
 import { findNotesWidget } from '../utils';
 import TodosToggle from './shared/todos_toggle.vue';
 import WorkItemStateBadge from './work_item_state_badge.vue';
@@ -25,6 +27,7 @@ export default {
     WorkItemNotificationsWidget,
     GlButton,
     GlLink,
+    WorkItemTypeIcon,
   },
   mixins: [glFeatureFlagMixin()],
   props: {
@@ -96,6 +99,7 @@ export default {
     },
   },
   WORKSPACE_PROJECT,
+  STATE_CLOSED,
   TITLE_CLASS: 'gl-mr-auto gl-block gl-truncate gl-pr-3 gl-font-bold gl-text-strong',
 };
 </script>
@@ -118,7 +122,7 @@ export default {
         >
           <archived-badge v-if="archived" :issuable-type="workItemType" />
           <work-item-state-badge
-            v-else-if="workItemState"
+            v-else-if="workItemState === $options.STATE_CLOSED"
             :work-item-state="workItemState"
             :promoted-to-epic-url="workItem.promotedToEpicUrl"
             :duplicated-to-work-item-url="workItem.duplicatedToWorkItemUrl"
@@ -133,6 +137,12 @@ export default {
           <locked-badge v-if="isDiscussionLocked" :issuable-type="workItemType" />
           <hidden-badge v-if="workItem.hidden" />
           <imported-badge v-if="workItem.imported" />
+          <work-item-type-icon
+            v-if="workItemType"
+            class="gl-align-middle"
+            :work-item-type="workItemType"
+            icon-class="gl-fill-icon-subtle"
+          />
           <span v-if="isDrawer" :class="$options.TITLE_CLASS">
             {{ workItem.title }}
           </span>

@@ -112,3 +112,55 @@ For example, the output of the following command must match
 ```shell
 kubectl get secret gitlab-shell-secret -o jsonpath='{.data.secret}' -n your_zoekt_namespace | base64 -d
 ```
+
+## Error: `missing selected ALPN property`
+
+When you use an external load balancer in front of the Zoekt gateway,
+you might see the following error in your GitLab logs:
+
+```plaintext
+rpc error: code = Unavailable desc = connection error: desc = "transport: authentication handshake failed: credentials: cannot check peer: missing selected ALPN property"
+```
+
+This error occurs when the load balancer does not support or advertise
+ALPN (Application-Layer Protocol Negotiation) with HTTP/2.
+Zoekt relies on gRPC for communication between nodes, which requires HTTP/2 support.
+
+To resolve this issue, do one of the following:
+
+- Enable HTTP/2 support on your load balancer (recommended):
+
+  1. Configure your load balancer to support and advertise HTTP/2 through ALPN:
+     - For HAProxy, in your backend, ensure `alpn h2,http/1.1` is configured.
+     - For NGINX, in your server block, use:
+       - In NGINX 1.25.1 and later, `http2 on;`.
+       - In NGINX 1.25.0 and earlier, `listen 443 ssl http2;`.
+  1. Verify HTTP/2 support:
+
+     ```shell
+     curl --verbose --http2 "https://your-zoekt-gateway-url/health" 2>&1 | grep ALPN
+     ```
+
+     You should see output similar to:
+
+     ```plaintext
+     * ALPN, server accepted to use h2
+     ```
+
+- Use TLS passthrough:
+  
+  If your load balancer cannot support HTTP/2, configure the balancer for TLS passthrough.
+  The Zoekt gateway can then handle TLS termination directly, which ensures proper ALPN negotiation.
+  To use TLS passthrough, configure a valid TLS certificate on the Zoekt gateway:
+
+  1. For Helm chart deployments, in your `values.yaml`, configure the certificate:
+
+     ```yaml
+     gateway:
+       tls:
+         certificate:
+           enabled: true
+           secretName: zoekt-gateway-cert
+     ```
+
+  1. Configure your load balancer to pass through encrypted traffic without terminating TLS.

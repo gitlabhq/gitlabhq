@@ -130,6 +130,26 @@ RSpec.describe 'Projects::ReleasesController', feature_category: :release_orches
       end
     end
 
+    context 'when release commit is missing' do
+      let_it_be(:release) { create(:release, project: project, tag: 'missing-tag', sha: '0000000') }
+
+      before do
+        login_as(user)
+      end
+
+      it 'does not show summary for the release' do
+        get(project_releases_url(project, format: :atom))
+
+        expect(response).to have_gitlab_http_status(:ok)
+
+        doc = Hash.from_xml(response.body)
+        entry = doc.dig('feed', 'entry')
+
+        expect(entry).to include('title' => 'missing-tag')
+        expect(entry).not_to include('summary')
+      end
+    end
+
     context 'when user doesn\'t have permissions to read code' do
       let_it_be(:release) { create(:release, project: project, tag: 'v11.9.0-rc2') }
       let_it_be(:new_user) { create(:user, guest_of: project) }

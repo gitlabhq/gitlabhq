@@ -42,6 +42,21 @@ RSpec.shared_examples 'model with associated note' do
           expect(new_record.reload.namespace_id).not_to be_nil
           expect(new_record.namespace_id).to eq(note.namespace_id)
         end
+
+        context 'when there is no namespace_id on the note' do
+          before do
+            note.update_column(:namespace_id, nil)
+          end
+
+          it 'sets the namespace id from the noteable' do
+            expect(new_record).to receive(:ensure_namespace_id).and_call_original
+            new_record.save!
+
+            expect(note.namespace_id).to be_nil
+            expect(new_record.reload.namespace_id).not_to be_nil
+            expect(new_record.namespace_id).to eq(note.noteable.project.project_namespace_id)
+          end
+        end
       end
 
       context "when `skip_namespace_validation?` is `true`" do

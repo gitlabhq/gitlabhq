@@ -2,12 +2,12 @@
 
 require 'spec_helper'
 
-RSpec.describe WithAssociatedNote, feature_category: :code_review_workflow do
+RSpec.describe Notes::WithAssociatedNote, feature_category: :code_review_workflow do
   let(:test_model_class) do
     Class.new(ApplicationRecord) do
       self.table_name = 'suggestions'
 
-      include WithAssociatedNote
+      include Notes::WithAssociatedNote
     end
   end
 

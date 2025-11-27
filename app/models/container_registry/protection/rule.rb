@@ -83,8 +83,8 @@ module ContainerRegistry
         cte_name = :projects_repository_paths_cte
         cte = Gitlab::SQL::CTE.new(cte_name, cte_query)
 
-        rules_cte_project_id = "#{cte_name}.#{connection.quote_column_name('project_id')}"
-        rules_cte_repository_path = "#{cte_name}.#{connection.quote_column_name('repository_path')}"
+        rules_cte_project_id = "#{cte_name}.#{adapter_class.quote_column_name('project_id')}"
+        rules_cte_repository_path = "#{cte_name}.#{adapter_class.quote_column_name('repository_path')}"
 
         protection_rule_exsits_subquery =
           select(1)

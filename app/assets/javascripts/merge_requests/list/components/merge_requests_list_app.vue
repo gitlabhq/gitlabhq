@@ -512,6 +512,9 @@ export default {
         },
       ].filter(Boolean);
     },
+    showPageSizeSelector() {
+      return this.mergeRequests.length > 0;
+    },
     showPaginationControls() {
       return (
         this.mergeRequests.length > 0 &&
@@ -707,6 +710,13 @@ export default {
 
       this.$router.push({ query: this.urlParams });
     },
+    handlePageSizeChange(pageSize) {
+      this.pageSize = pageSize;
+      this.pageParams = getInitialPageParams(pageSize);
+      scrollUp();
+
+      this.$router.push({ query: this.urlParams });
+    },
     handlePreviousPage() {
       this.pageParams = {
         beforeCursor: this.pageInfo.startCursor,
@@ -830,6 +840,7 @@ export default {
       :tab-counts="tabCounts"
       :issuables-loading="isLoading"
       :show-pagination-controls="showPaginationControls"
+      :show-page-size-selector="showPageSizeSelector"
       :default-page-size="pageSize"
       sync-filter-and-sort
       use-keyset-pagination
@@ -841,6 +852,7 @@ export default {
       always-allow-custom-empty-state
       @click-tab="handleClickTab"
       @next-page="handleNextPage"
+      @page-size-change="handlePageSizeChange"
       @previous-page="handlePreviousPage"
       @sort="handleSort"
       @filter="handleFilter"

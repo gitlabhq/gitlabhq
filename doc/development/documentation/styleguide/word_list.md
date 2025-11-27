@@ -1203,11 +1203,21 @@ feature.
 
 ## GitLab Dedicated
 
-Use **GitLab Dedicated** to refer to the product offering. It refers to a GitLab instance that's hosted and managed by GitLab for customers.
+Use **GitLab Dedicated** to refer to the product offering.
+It refers to a GitLab instance that's hosted and managed by GitLab for customers.
 
 GitLab Dedicated can be referred to as a single-tenant SaaS service.
 
 Do not use **Dedicated** by itself. Always use **GitLab Dedicated**.
+
+## GitLab Dedicated for Government
+
+Use **GitLab Dedicated for Government** to refer to the government-specific offering.
+It refers to a GitLab instance that's hosted and managed by GitLab for government agencies and organizations requiring FedRAMP compliance.
+
+GitLab Dedicated for Government is a single-tenant SaaS service, similar to GitLab Dedicated but optimized for government requirements.
+
+Do not use **Dedicated for Government** by itself. Always use **GitLab Dedicated for Government**.
 
 ## GitLab Duo
 
@@ -1948,6 +1958,7 @@ The current product offerings are:
 - [GitLab.com](#gitlabcom)
 - [GitLab Self-Managed](#self-managed)
 - [GitLab Dedicated](#gitlab-dedicated)
+- [GitLab Dedicated for Government](#gitlab-dedicated-for-government)
 
 The [availability details](availability_details.md) reflect these offerings.
 

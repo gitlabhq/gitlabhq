@@ -2580,9 +2580,6 @@ msgstr ""
 msgid "AICatalog|Are you sure you want to disable flow %{name}? The flow will also be disabled from any projects in this group."
 msgstr ""
 
-msgid "AICatalog|Available tools"
-msgstr ""
-
 msgid "AICatalog|Basic information"
 msgstr ""
 
@@ -2935,9 +2932,6 @@ msgid "AICatalog|Project members can use this flow. You must have at least the M
 msgstr ""
 
 msgid "AICatalog|Project-specific automation."
-msgstr ""
-
-msgid "AICatalog|Prompts"
 msgstr ""
 
 msgid "AICatalog|Provide a brief description."
@@ -60415,6 +60409,9 @@ msgstr ""
 msgid "SecurityOrchestration|Add new approver"
 msgstr ""
 
+msgid "SecurityOrchestration|Add new criteria"
+msgstr ""
+
 msgid "SecurityOrchestration|Add new rule"
 msgstr ""
 
@@ -60845,6 +60842,9 @@ msgid "SecurityOrchestration|If any scanner finds a %{strongStart}newly detected
 msgstr ""
 
 msgid "SecurityOrchestration|If any scanner finds a %{strongStart}vulnerability%{strongEnd} that was %{strongStart}previously detected but no longer found%{strongEnd} in a subsequent scan, then automatically %{strongStart}set the status to Resolved%{strongEnd}."
+msgstr ""
+
+msgid "SecurityOrchestration|If vulnerabilities are automatically dismissed when found under following criteria:"
 msgstr ""
 
 msgid "SecurityOrchestration|In each pipeline, a %{boldStart}maximum of 1000%{boldEnd} vulnerabilities that are %{italicStart}no longer detected%{italicEnd} will be set to status %{italicStart}Resolved%{italicEnd} until all have been auto-resolved."
@@ -61290,6 +61290,9 @@ msgstr ""
 msgid "SecurityOrchestration|Select bypass reasons"
 msgstr ""
 
+msgid "SecurityOrchestration|Select criteria"
+msgstr ""
+
 msgid "SecurityOrchestration|Select date"
 msgstr ""
 
@@ -61671,6 +61674,9 @@ msgstr ""
 msgid "SecurityOrchestration|You can add a maximum of %{rulesCount} %{rules}."
 msgstr ""
 
+msgid "SecurityOrchestration|You can add a maximum of 3 criteria."
+msgstr ""
+
 msgid "SecurityOrchestration|You can select this option only once."
 msgstr ""
 
@@ -61806,6 +61812,9 @@ msgstr ""
 msgid "SecurityOrchestration|denylist"
 msgstr ""
 
+msgid "SecurityOrchestration|directory"
+msgstr ""
+
 msgid "SecurityOrchestration|except for:"
 msgstr ""
 
@@ -61824,6 +61833,9 @@ msgstr ""
 msgid "SecurityOrchestration|exceptions: %{exceptions}"
 msgstr ""
 
+msgid "SecurityOrchestration|file path"
+msgstr ""
+
 msgid "SecurityOrchestration|for %{branchType}"
 msgstr ""
 
@@ -61837,6 +61849,9 @@ msgid "SecurityOrchestration|have a fix available"
 msgstr ""
 
 msgid "SecurityOrchestration|have no fix available"
+msgstr ""
+
+msgid "SecurityOrchestration|identifier"
 msgstr ""
 
 msgid "SecurityOrchestration|in timezone %{timezone}"

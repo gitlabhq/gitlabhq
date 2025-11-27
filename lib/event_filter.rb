@@ -180,7 +180,7 @@ class EventFilter
       cartesian = array_scope_ids.product(in_values)
       column_list = Arel::Nodes::ValuesList.new(cartesian)
 
-      as = "array_ids(id, #{Event.connection.quote_column_name(in_column)})"
+      as = "array_ids(id, #{Event.adapter_class.quote_column_name(in_column)})"
       from = Arel::Nodes::Grouping.new(column_list).as(as)
       {
         array_scope: array_scope_model.select(:id, in_column).from(from),

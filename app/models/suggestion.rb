@@ -3,7 +3,7 @@
 class Suggestion < ApplicationRecord
   include Importable
   include Suggestible
-  include WithAssociatedNote
+  include Notes::WithAssociatedNote
 
   belongs_to :note, inverse_of: :suggestions
   validates :note, presence: true, unless: :importing?
