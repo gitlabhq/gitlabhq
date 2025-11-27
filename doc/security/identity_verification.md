@@ -37,65 +37,64 @@ See [Make new users confirm email](user_email_confirmation.md).
 
 ## Phone number verification
 
-In addition to email verification, you might have to provide a valid phone number and verify a one-time code.
+In addition to email verification, you might also be asked to provide a valid phone number and
+verify a one-time password (OTP) code.
+
+{{< alert type="note" >}}
 
 You cannot verify an account with a phone number associated with a banned user.
 
-### Unsupported countries
+{{< /alert >}}
 
-Phone number verification is not supported for numbers from the following countries:
+### Country support
 
-- Bangladesh
-- China
-- Cuba
-- Hong Kong
-- Indonesia
-- Iran
-- Macau
-- Malaysia
-- North Korea
-- Pakistan
-- Russia
-- Saudi Arabia
-- Syria
-- United Arab Emirates
-- Vietnam
+Some countries have limited or no support for phone number verification:
 
-Users with phone numbers from unsupported countries can try [credit card verification](#credit-card-verification), or create a [support ticket](https://about.gitlab.com/support/).
+- Unsupported: Phone verification is not available.
+- Partial support: Phone verification might not work due to local regulations or
+  enforcement policies.
 
-### Partially supported countries
+If phone verification is unavailable in your country, try [credit card verification](#credit-card-verification)
+or create a [support ticket](https://about.gitlab.com/support/).
 
-A user might not receive a one-time password (OTP) if their phone number is from a partially supported country. Whether a message is delivered depends on country enforcement and regulation.
-
-The following countries are partially supported:
-
-<!-- vale gitlab_base.Spelling = NO -->
-
-- Armenia
-- Belarus
-- Cambodia
-- Eswatini
-- Haiti
-- Kazakhstan
-- Kenya
-- Kuwait
-- Mexico
-- Myanmar
-- Nigeria
-- Oman
-- Philippines
-- Qatar
-- South Africa
-- Tanzania
-- Thailand
-- Turkey
-- Uganda
-- Ukraine
-- Uzbekistan
-
-<!-- vale gitlab_base.Spelling = YES -->
-
-Users with phone numbers from partially supported countries can try [credit card verification](#credit-card-verification), or create a [support ticket](https://about.gitlab.com/support/).
+| Country | Support level |
+|---------|---------------|
+| Armenia | Partial support |
+| Bangladesh | Unsupported |
+| Belarus | Partial support |
+| Cambodia | Partial support |
+| China | Unsupported |
+| Cuba | Unsupported |
+| Eswatini | Partial support |
+| Haiti | Partial support |
+| Hong Kong | Unsupported |
+| Indonesia | Unsupported |
+| Iran | Unsupported |
+| Kazakhstan | Partial support |
+| Kenya | Partial support |
+| Kuwait | Partial support |
+| Macau | Unsupported |
+| Malaysia | Unsupported |
+| Mexico | Partial support |
+| Myanmar | Partial support |
+| Nigeria | Partial support |
+| North Korea | Unsupported |
+| Oman | Partial support |
+| Pakistan | Unsupported |
+| Philippines | Partial support |
+| Qatar | Partial support |
+| Russia | Unsupported |
+| Saudi Arabia | Unsupported |
+| South Africa | Partial support |
+| Syria | Unsupported |
+| Tanzania | Partial support |
+| Thailand | Partial support |
+| Turkey | Partial support |
+| Uganda | Partial support |
+| Ukraine | Partial support |
+| United Arab Emirates | Unsupported |
+| Uzbekistan | Partial support |
+| Vietnam | Unsupported |
 
 ## Credit card verification
 

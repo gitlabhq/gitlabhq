@@ -8,12 +8,10 @@ import UserCalloutDismisser from '~/vue_shared/components/user_callout_dismisser
 export const makeMockUserCalloutDismisser = ({
   dismiss = () => {},
   shouldShowCallout = true,
-  isLoadingQuery = false,
 } = {}) => ({
   props: UserCalloutDismisser.props,
   data() {
     return {
-      isLoadingQuery,
       shouldShowCallout,
       dismiss,
     };
@@ -25,7 +23,6 @@ export const makeMockUserCalloutDismisser = ({
     return this.$scopedSlots.default({
       dismiss,
       shouldShowCallout,
-      isLoadingQuery,
     });
   },
 });

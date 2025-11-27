@@ -3823,17 +3823,6 @@ RSpec.describe API::Projects, :aggregate_failures, feature_category: :groups_and
       expect(json_response['error']).to eq 'group_access does not have a valid value'
     end
 
-    it 'returns a 403 when a maintainer tries to create a link with OWNER access' do
-      user = create(:user)
-      project.add_maintainer(user)
-
-      expect do
-        post api(path, user), params: { group_id: group.id, group_access: Gitlab::Access::OWNER }
-      end.to not_change { project.reload.project_group_links.count }
-
-      expect(response).to have_gitlab_http_status(:forbidden)
-    end
-
     it "returns a 409 error when link is not saved" do
       allow(::Projects::GroupLinks::CreateService).to receive_message_chain(:new, :execute)
         .and_return({ status: :error, http_status: 409, message: 'error' })

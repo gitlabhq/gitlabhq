@@ -37,7 +37,7 @@ module Authn
           )
         rescue JSON::ParserError
           ServiceResponse.error(
-            message: _('Your Passkey did not send a valid JSON response.')
+            message: _('Your passkey did not send a valid JSON response.')
           )
         rescue ActiveRecord::RecordInvalid => err
           ServiceResponse.error(

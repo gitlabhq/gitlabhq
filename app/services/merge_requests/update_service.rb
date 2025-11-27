@@ -67,14 +67,6 @@ module MergeRequests
       todo_service.update_merge_request(merge_request, current_user)
     end
 
-    def reopen_service
-      MergeRequests::ReopenService
-    end
-
-    def close_service
-      MergeRequests::CloseService
-    end
-
     def after_update(merge_request, old_associations)
       super
 
@@ -104,7 +96,7 @@ module MergeRequests
     end
 
     override :change_state
-    def change_state(merge_request)
+    def change_state(merge_request, state_event)
       return unless super
 
       @trigger_work_item_updated = true

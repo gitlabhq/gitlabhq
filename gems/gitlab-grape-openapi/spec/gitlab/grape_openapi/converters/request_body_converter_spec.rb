@@ -279,6 +279,26 @@ RSpec.describe Gitlab::GrapeOpenapi::Converters::RequestBodyConverter do
       end
     end
 
+    describe 'range values' do
+      let(:params) do
+        {
+          status: {
+            type: 'integer',
+            desc: 'Position',
+            required: true,
+            values: (1..20)
+          }
+        }
+      end
+
+      it 'generates schema with minimum and maximum' do
+        properties = request_body[:content]['application/json'][:schema][:properties]
+        expect(properties['status'][:type]).to eq('integer')
+        expect(properties['status'][:minimum]).to eq(1)
+        expect(properties['status'][:maximum]).to eq(20)
+      end
+    end
+
     context 'with array types' do
       let(:params) do
         {

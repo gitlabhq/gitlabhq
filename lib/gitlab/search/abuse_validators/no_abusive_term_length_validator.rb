@@ -20,7 +20,9 @@ module Gitlab
         end
 
         def url_detected?(uri_str)
-          URI::DEFAULT_PARSER.regexp[:ABS_URI].match? uri_str
+          # RFC3986_PARSER does not expose :ABS_URI (removed in newer RFC),
+          # so we use the legacy RFC2396_PARSER for backward-compatible ABS_URI matching.
+          ::URI::RFC2396_PARSER.regexp[:ABS_URI].match? uri_str
         end
 
         def maximum_for_url

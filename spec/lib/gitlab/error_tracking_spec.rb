@@ -496,7 +496,7 @@ RSpec.describe Gitlab::ErrorTracking, feature_category: :shared do
           expect(sentry_exception_values).to include(
             hash_including(
               type: 'URI::InvalidURIError',
-              value: 'bad URI(is not URI?): [FILTERED]'
+              value: 'bad URI (is not URI?): [FILTERED]'
             )
           )
         end

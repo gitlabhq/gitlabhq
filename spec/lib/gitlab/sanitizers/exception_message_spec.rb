@@ -18,7 +18,7 @@ RSpec.describe Gitlab::Sanitizers::ExceptionMessage, feature_category: :complian
         error
       end
 
-      it { is_expected.to eq('bad URI(is not URI?): [FILTERED]') }
+      it { is_expected.to eq('bad URI (is not URI?): [FILTERED]') }
     end
 
     context 'when error is an Addressable::URI::InvalidURIError' do

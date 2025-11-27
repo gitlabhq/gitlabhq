@@ -485,6 +485,20 @@ RSpec.describe Gitlab::GrapeOpenapi::Converters::ParameterConverter do
       end
     end
 
+    describe 'range values' do
+      context 'with integer range' do
+        let(:options) { { type: 'Integer', values: 1..20 } }
+
+        it 'generates schema with minimum and maximum' do
+          expect(converter.schema).to eq({
+            type: 'integer',
+            minimum: 1,
+            maximum: 20
+          })
+        end
+      end
+    end
+
     describe 'default values' do
       context 'with string default' do
         let(:options) { { type: 'String', default: 'test' } }

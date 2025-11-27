@@ -79,8 +79,9 @@ following when implementing a merge request approval policy:
   - Branches created before the security scans were configured.
   - Projects with inconsistent scanner configurations between branches.
 - The pipeline must produce artifacts for all enabled scanners, for both the source and target
-  branches. If not, there's no basis for comparison and so the policy can't be evaluated. You should
-  use a scan execution policy to enforce this requirement.
+  branches. If not, there's no basis for comparison and so the policy can't be evaluated reliably.
+  See [Missing security scans](#missing-security-scans) for more information.
+  You should use a scan execution policy to enforce this requirement.
 - Policy evaluation depends on a successful and completed merge base pipeline. If the merge base
   pipeline is skipped, merge requests with the merge base pipeline are blocked.
 - Security scanners specified in a policy must be configured and enabled in the projects on which
@@ -1089,13 +1090,13 @@ When using merge request approval policies, you may encounter situations where m
 
 Example scenarios:
 
-- Missing scans on source or target branches
+- Missing scans on source branches
 
-  If security scans are missing on either the source or target branch, GitLab cannot effectively evaluate whether the merge request is introducing new vulnerabilities. In such cases, approval is required as a precautionary measure.
+  If security scans are missing on the source branch, GitLab cannot effectively evaluate whether the merge request is introducing new vulnerabilities. In such cases, approval is required as a precautionary measure.
 
-- New projects
+- Missing scans on target branches
 
-  For new projects where security scans have not yet been set up or executed on the target branch, all merge requests require approval. This ensures that security checks are active from the project's inception.
+  If security scans are missing on the target branch, GitLab cannot effectively compare the vulnerabilities detected on the source branch. In such cases, any detected vulnerabilities are reported as new.
 
 - Projects with no files to scan
 

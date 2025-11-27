@@ -207,7 +207,7 @@ class IssuableBaseService < ::BaseContainerService
     handle_quick_actions(issuable)
     filter_params(issuable)
 
-    params.delete(:state_event)
+    immediately_close = params.delete(:state_event) == 'close'
 
     if issuable.respond_to?(:assignee_ids)
       params[:assignee_ids] = process_assignee_ids(params, extra_assignee_ids: issuable.assignee_ids.to_a)
@@ -240,6 +240,8 @@ class IssuableBaseService < ::BaseContainerService
       invalidate_cache_counts(issuable, users: issuable.assignees) unless issuable.allows_reviewers?
 
       issuable.invalidate_project_counter_caches
+
+      change_state(issuable, 'close') if immediately_close
     end
 
     issuable
@@ -458,7 +460,7 @@ class IssuableBaseService < ::BaseContainerService
   end
 
   def change_additional_attributes(issuable)
-    change_state(issuable)
+    change_state(issuable, params.delete(:state_event))
     change_subscription(issuable)
     change_todo(issuable)
     toggle_award(issuable)
@@ -467,8 +469,8 @@ class IssuableBaseService < ::BaseContainerService
     assign_requested_crm_contacts(issuable)
   end
 
-  def change_state(issuable)
-    case params.delete(:state_event)
+  def change_state(issuable, state_event)
+    case state_event
     when 'reopen'
       service_class = reopen_service
     when 'close'

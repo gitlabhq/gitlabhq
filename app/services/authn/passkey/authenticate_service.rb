@@ -51,8 +51,7 @@ module Authn
       private
 
       def record_not_found_error_message
-        docs_link = ActionController::Base.helpers.link_to(
-          _('setting up passkeys'),
+        docs_link = ActionController::Base.helpers.link_to('',
           Rails.application.routes.url_helpers.help_page_url(
             'auth/passkeys.md',
             anchor: 'add-a-passkey'
@@ -63,10 +62,9 @@ module Authn
 
         safe_format(
           _(
-            # rubocop:disable Layout/LineLength -- To maintain translations in other languages
-            'Failed to authenticate passkey. Log in with your username and password to add a passkey for your account. Learn more about %{passkey_docs_hyperlink}.'
-            # rubocop:enable Layout/LineLength
-          ), passkey_docs_hyperlink: docs_link
+            'Failed to authenticate passkey. Sign in with your username and password to add a passkey for your ' \
+              'account. Learn more about %{link_start}setting up passkeys%{link_end}.'
+          ), tag_pair(docs_link, :link_start, :link_end)
         )
       end
 

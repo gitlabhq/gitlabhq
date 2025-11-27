@@ -8,12 +8,8 @@ module GroupLink
       ProjectEntity.represent(group_link.shared_from, only: [:id, :full_name])
     end
 
-    expose :valid_roles do |group_link|
-      if can?(current_user, :manage_owners, group_link)
-        Gitlab::Access.options_with_owner
-      else
-        Gitlab::Access.options
-      end
+    expose :valid_roles do |_group_link|
+      Gitlab::Access.options_with_owner
     end
 
     expose :can_update do |group_link, options|

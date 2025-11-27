@@ -10,7 +10,7 @@ RSpec.describe Projects::GroupLinksController, feature_category: :system_access 
 
   before do
     travel_to DateTime.new(2019, 4, 1)
-    project.add_maintainer(user)
+    project.add_owner(user)
     sign_in(user)
   end
 
@@ -75,17 +75,6 @@ RSpec.describe Projects::GroupLinksController, feature_category: :system_access 
 
       expect(response).to have_gitlab_http_status(:not_found)
       expect(json_response['message']).to eq('404 Not Found')
-    end
-
-    context 'when MAINTAINER tries to update the link to OWNER access' do
-      let(:group_access) { Gitlab::Access::OWNER }
-
-      it 'returns 403' do
-        update_link
-
-        expect(response).to have_gitlab_http_status(:forbidden)
-        expect(json_response['message']).to eq('Forbidden')
-      end
     end
   end
 

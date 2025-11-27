@@ -6,7 +6,7 @@ RSpec.describe Projects::GroupLinks::UpdateService, '#execute', feature_category
   let_it_be(:user) { create :user }
   let_it_be(:group) { create :group }
   let_it_be(:project) { create :project }
-  let_it_be(:group_user) { create(:user, developer_of: group) }
+  let_it_be(:group_user) { create(:user, maintainer_of: group) }
 
   let(:group_access) { Gitlab::Access::DEVELOPER }
 
@@ -30,100 +30,6 @@ RSpec.describe Projects::GroupLinks::UpdateService, '#execute', feature_category
   end
 
   context 'when user has proper permissions to update a project group link' do
-    context 'when the user is a MAINTAINER in the project' do
-      before do
-        project.add_maintainer(user)
-      end
-
-      it 'updates existing link' do
-        expect(link.group_access).to eq(Gitlab::Access::DEVELOPER)
-        expect(link.expires_at).to be_nil
-
-        subject
-
-        link.reload
-
-        expect(link.group_access).to eq(Gitlab::Access::GUEST)
-        expect(link.expires_at).to eq(expiry_date)
-      end
-
-      context 'project authorizations update', :sidekiq_inline do
-        it 'calls AuthorizedProjectUpdate::ProjectRecalculateWorker to update project authorizations' do
-          expect(AuthorizedProjectUpdate::ProjectRecalculateWorker)
-            .to receive(:perform_async).with(link.project.id)
-
-          subject
-        end
-
-        it 'calls AuthorizedProjectUpdate::UserRefreshFromReplicaWorker ' \
-           'with a delay to update project authorizations' do
-          stub_feature_flags(do_not_run_safety_net_auth_refresh_jobs: false)
-
-          expect(AuthorizedProjectUpdate::UserRefreshFromReplicaWorker).to(
-            receive(:bulk_perform_in).with(
-              1.hour,
-              [[group_user.id]],
-              batch_delay: 30.seconds, batch_size: 100
-            )
-          )
-
-          subject
-        end
-
-        it 'updates project authorizations of users who had access to the project via the group share' do
-          expect { subject }.to(
-            change { Ability.allowed?(group_user, :developer_access, project) }
-              .from(true).to(false))
-        end
-      end
-
-      context 'with only param not requiring authorization refresh' do
-        let(:group_link_params) { { expires_at: Date.tomorrow } }
-
-        it 'does not perform any project authorizations update using ' \
-           '`AuthorizedProjectUpdate::ProjectRecalculateWorker`', :sidekiq_inline do
-          expect(AuthorizedProjectUpdate::ProjectRecalculateWorker).not_to receive(:perform_async)
-
-          subject
-        end
-      end
-
-      context 'updating a link with OWNER access' do
-        let(:group_access) { Gitlab::Access::OWNER }
-
-        shared_examples_for 'returns :forbidden' do
-          it do
-            expect do
-              result = subject
-
-              expect(result[:status]).to eq(:error)
-              expect(result[:reason]).to eq(:forbidden)
-            end.to not_change { link.expires_at }.and not_change { link.group_access }
-          end
-        end
-
-        context 'updating expires_at' do
-          let(:group_link_params) do
-            { expires_at: 7.days.from_now }
-          end
-
-          it_behaves_like 'returns :forbidden'
-        end
-
-        context 'updating group_access' do
-          let(:group_link_params) do
-            { group_access: Gitlab::Access::MAINTAINER }
-          end
-
-          it_behaves_like 'returns :forbidden'
-        end
-
-        context 'updating both expires_at and group_access' do
-          it_behaves_like 'returns :forbidden'
-        end
-      end
-    end
-
     context 'when the user is an OWNER in the project' do
       before do
         project.add_owner(user)

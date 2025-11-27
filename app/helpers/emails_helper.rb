@@ -52,7 +52,9 @@ module EmailsHelper
   end
 
   def sanitize_name(name)
-    if URI::DEFAULT_PARSER.regexp[:URI_REF].match?(name)
+    # RFC3986_PARSER does not expose :URI_REF (removed in newer RFC),
+    # so we use the legacy RFC2396_PARSER for backward-compatible URI_REF matching.
+    if ::URI::RFC2396_PARSER.regexp[:URI_REF].match?(name)
       name.tr('.', '_')
     else
       name

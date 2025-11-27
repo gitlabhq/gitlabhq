@@ -57,6 +57,12 @@ If your AI gateway URL points to a local network or private IP address (for exam
 
 ## Configure access to the GitLab Duo Agent Platform
 
+{{< details >}}
+
+- Status: Beta
+
+{{< /details >}}
+
 {{< history >}}
 
 - [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/19213) in GitLab 18.4, as an [experiment](../../policy/development_stages_support.md#experiment) with a [feature flag](../feature_flags/_index.md) named `self_hosted_agent_platform`. Disabled by default.

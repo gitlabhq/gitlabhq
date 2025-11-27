@@ -159,6 +159,11 @@ pre-push:
     check-deprecated-files:
       tags: backend frontend view haml
       run: scripts/lint/check_deprecated_files.rb
+    validate-fast-spec-helper:
+      tags: backend test
+      files: git diff --name-only --diff-filter=A $(git merge-base origin/master HEAD)..HEAD
+      glob: '{spec,ee/spec}/**/*_spec.rb'
+      run: scripts/lint/validate_fast_spec_helper_usage.rb
 
   scripts:
     'merge_conflicts':
