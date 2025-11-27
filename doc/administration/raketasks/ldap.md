@@ -286,33 +286,33 @@ echo -e "main:\n  password: '123'" | sudo RAILS_ENV=production -u git -H bundle 
 
 ### Secrets examples
 
-**Editor example**
+- Editor example:
 
-The write task can be used in cases where the edit command does not work with your editor:
+  The write task can be used in cases where the edit command does not work with your editor:
 
-```shell
-# Write the existing secret to a plaintext file
-sudo gitlab-rake gitlab:ldap:secret:show > ldap.yaml
-# Edit the ldap file in your editor
-...
-# Re-encrypt the file
-cat ldap.yaml | sudo gitlab-rake gitlab:ldap:secret:write
-# Remove the plaintext file
-rm ldap.yaml
-```
+  ```shell
+  # Write the existing secret to a plaintext file
+  sudo gitlab-rake gitlab:ldap:secret:show > ldap.yaml
+  # Edit the ldap file in your editor
+  ...
+  # Re-encrypt the file
+  cat ldap.yaml | sudo gitlab-rake gitlab:ldap:secret:write
+  # Remove the plaintext file
+  rm ldap.yaml
+  ```
 
-**KMS integration example**
+- KMS integration example:
 
-It can also be used as a receiving application for content encrypted with a KMS:
+  It can also be used as a receiving application for content encrypted with a KMS:
 
-```shell
-gcloud kms decrypt --key my-key --keyring my-test-kms --plaintext-file=- --ciphertext-file=my-file --location=us-west1 | sudo gitlab-rake gitlab:ldap:secret:write
-```
+  ```shell
+  gcloud kms decrypt --key my-key --keyring my-test-kms --plaintext-file=- --ciphertext-file=my-file --location=us-west1 | sudo gitlab-rake gitlab:ldap:secret:write
+  ```
 
-**Google Cloud secret integration example**
+- Google Cloud secret integration example:
 
-It can also be used as a receiving application for secrets out of Google Cloud:
+  It can also be used as a receiving application for secrets out of Google Cloud:
 
-```shell
-gcloud secrets versions access latest --secret="my-test-secret" > $1 | sudo gitlab-rake gitlab:ldap:secret:write
-```
+  ```shell
+  gcloud secrets versions access latest --secret="my-test-secret" > $1 | sudo gitlab-rake gitlab:ldap:secret:write
+  ```

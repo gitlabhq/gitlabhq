@@ -92,6 +92,8 @@ required upgrade stops occur at versions:
 
   Git operations such clone, push, and pull are unaffected by this issue.
 
+- From GitLab 18.0, the minimum supported version of PostgreSQL is 16. For more information, see [installation requirements](../../install/requirements.md#postgresql).
+
 ## Geo installations 18.4.4
 
 - The missing Geo [migration](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/210512) that prevents Geo log cursor on the secondary site to start is fixed.

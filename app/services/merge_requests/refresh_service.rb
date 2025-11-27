@@ -116,6 +116,7 @@ module MergeRequests
       commit_ids = @commits.map(&:id)
       merge_requests = @project.merge_requests.opened
         .preload_project_and_latest_diff
+        .preload_merge_data(@project)
         .preload_latest_diff_commit(@project)
         .where(target_branch: @push.branch_name).to_a
         .select(&:diff_head_commit)
@@ -177,9 +178,11 @@ module MergeRequests
       merge_requests = @project.merge_requests.opened
         .by_source_or_target_branch(@push.branch_name)
         .preload_project_and_latest_diff
+        .preload_merge_data(@project)
 
       merge_requests_from_forks = merge_requests_for_forks
         .preload_project_and_latest_diff
+        .preload_merge_data(@project)
 
       merge_requests_array = merge_requests.to_a + merge_requests_from_forks.to_a
       filter_merge_requests(merge_requests_array).each do |merge_request|

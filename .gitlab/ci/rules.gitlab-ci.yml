@@ -3183,6 +3183,15 @@
     - <<: *if-default-refs
       changes: *workhorse-patterns
 
+.workhorse:rules:workhorse-coverage:
+  rules:
+    - <<: *if-not-ee
+      when: never
+    - <<: *if-missing-clickhouse-coverage-credentials
+      when: never
+    - <<: *if-schedule-maintenance
+      changes: *workhorse-patterns
+
 #############
 # GDK rules #
 #############

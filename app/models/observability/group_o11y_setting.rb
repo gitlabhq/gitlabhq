@@ -38,6 +38,18 @@ module Observability
       HUMANIZED_ATTRIBUTES[attribute.to_sym] || super
     end
 
+    def self.observability_settings_for(resource)
+      return unless resource
+
+      group = resource.is_a?(Project) ? resource.group : resource
+      return unless group.is_a?(Group)
+
+      group.self_and_ancestors(hierarchy_order: :asc)
+           .lazy
+           .filter_map(&:observability_group_o11y_setting)
+           .first
+    end
+
     def o11y_service_name
       @o11y_service_name || name_from_url || name_from_group
     end

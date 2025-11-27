@@ -89,7 +89,8 @@ class MergeRequest < ApplicationRecord
 
   has_one :merge_schedule, class_name: 'MergeRequests::MergeSchedule', inverse_of: :merge_request
   has_one :metrics, inverse_of: :merge_request, autosave: true
-  has_one :merge_data, class_name: 'MergeRequests::MergeData', inverse_of: :merge_request, foreign_key: :merge_request_id
+  # NOTE: We do not want to autosave merge_data as this is saved manually
+  has_one :merge_data, class_name: 'MergeRequests::MergeData', inverse_of: :merge_request, foreign_key: :merge_request_id, autosave: false
 
   belongs_to :latest_merge_request_diff, class_name: 'MergeRequestDiff'
   manual_inverse_association :latest_merge_request_diff, :merge_request
@@ -172,6 +173,7 @@ class MergeRequest < ApplicationRecord
   after_save :keep_around_commit, unless: :importing?
   after_commit :ensure_metrics!, on: [:create, :update], unless: :importing?
   after_commit :expire_etag_cache, unless: :importing?
+  after_commit :save_merge_data_changes
 
   after_find :preload_branches
 
@@ -465,7 +467,13 @@ class MergeRequest < ApplicationRecord
   scope :preload_author, -> { preload(:author) }
   scope :preload_approved_by_users, -> { preload(:approved_by_users) }
   scope :preload_metrics, ->(relation) { preload(metrics: relation) }
-  scope :preload_project_and_latest_diff, -> { preload(:source_project, :latest_merge_request_diff) }
+  scope :preload_merge_data, ->(project) do
+    return all unless Feature.enabled?(:merge_requests_merge_data_dual_write, project)
+
+    preload(:merge_data)
+  end
+
+  scope :preload_project_and_latest_diff, -> { preload(:source_project, :target_project, :latest_merge_request_diff) }
 
   scope :preload_latest_diff_commit, ->(project) do
     if Feature.enabled?(:merge_request_diff_commits_dedup, project)
@@ -983,7 +991,7 @@ class MergeRequest < ApplicationRecord
   # This helps tracking enqueued and ongoing merge jobs.
   def merge_async(user_id, params)
     jid = MergeWorker.with_status.perform_async(id, user_id, params.to_h)
-    update_column(:merge_jid, jid)
+    update_merge_jid(jid)
 
     # merge_ongoing? depends on merge_jid
     # expire etag cache since the attribute is changed without triggering callbacks
@@ -1617,7 +1625,7 @@ class MergeRequest < ApplicationRecord
   end
 
   def auto_merge_strategy=(strategy)
-    merge_params['auto_merge_strategy'] = strategy
+    append_merge_params({ 'auto_merge_strategy' => strategy })
   end
 
   def remove_source_branch?
@@ -2705,49 +2713,82 @@ class MergeRequest < ApplicationRecord
     all_commits.exists?(sha: sha)
   end
 
-  # Override state machine methods to sync to merge_data
-  %w[preparing unchecked checking mergeable unmergeable].each do |state|
-    define_method(:"mark_as_#{state}") do
-      if should_sync_merge_data?
-        ensure_merge_data
-
-        result = super()
-
-        if result
-          begin
-            # rubocop:disable GitlabSecurity/PublicSend -- temporary manual delegation
-            merge_data_result = merge_data.send(:"mark_as_#{state}")
-            # rubocop:enable GitlabSecurity/PublicSend
-
-            unless merge_data_result
-              Gitlab::AppLogger.warn(
-                message: "Failed to set merge_status to #{state} on MergeData",
-                merge_request_id: id,
-                value_on_merge_request: merge_status,
-                value_on_merge_data: merge_data.merge_status_name.to_s
-              )
-            end
-          rescue StandardError => e
-            Gitlab::ErrorTracking.track_exception(e,
-              message: "Failed to set merge_status to #{state} on MergeData",
-              merge_request_id: id,
-              value_on_merge_request: merge_status,
-              value_on_merge_data: merge_data.merge_status_name.to_s
-            )
-          end
-        end
-
-        result
-      else
-        super()
-      end
+  %w[
+    merge_status
+    merge_params
+    merge_error
+    merge_user_id
+    merge_user
+    merge_jid
+    merge_commit_sha
+    merged_commit_sha
+    merge_ref_sha
+    squash_commit_sha
+    in_progress_merge_commit_sha
+    auto_merge_enabled
+    squash
+  ].each do |column_name|
+    define_method(:"#{column_name}=") do |value|
+      # rubocop:disable GitlabSecurity/PublicSend -- temporary manual delegation
+      with_merge_data_sync(
+        -> { super(value) },
+        -> { merge_data.public_send(__method__, value) }
+      )
+      # rubocop:enable GitlabSecurity/PublicSend
     end
+  end
+
+  def append_merge_params(params)
+    with_merge_data_sync(
+      -> { merge_params.merge!(params) },
+      -> { merge_data.merge_params.merge!(params) }
+    )
+  end
+
+  def clear_merge_params(param_keys)
+    with_merge_data_sync(
+      -> { merge_params.except!(*param_keys) },
+      -> { merge_data.merge_params.except!(*param_keys) }
+    )
+  end
+
+  def update_merge_ref_sha(sha)
+    with_merge_data_sync(
+      -> { update_column(:merge_ref_sha, sha) },
+      -> do
+        # update_column only works if the record is already saved.
+        if merge_data.persisted?
+          merge_data.update_column(:merge_ref_sha, sha)
+        else
+          merge_data.update_attribute(:merge_ref_sha, sha)
+        end
+      end
+    )
+  end
+
+  def update_merge_jid(jid)
+    with_merge_data_sync(
+      -> { update_column(:merge_jid, jid) },
+      -> do
+        # update_column only works if the record is already saved.
+        if merge_data.persisted?
+          merge_data.update_column(:merge_jid, jid)
+        else
+          merge_data.update_attribute(:merge_jid, jid)
+        end
+      end
+    )
   end
 
   def ensure_merge_data
     # Eventually we probably need to set up a callback for this, but we need to
     #   conditionally initialize this for now.
-    merge_data || build_merge_data(merge_data_attributes)
+    record = merge_data || build_merge_data(merge_data_attributes)
+
+    # id may not have been set if the merge_request got saved after the initial
+    #   ensure_merge_data so we need to set merge_request_id here if it is not already set.
+    record.merge_request_id ||= id
+    record
   end
 
   private
@@ -2755,7 +2796,7 @@ class MergeRequest < ApplicationRecord
   def merge_data_attributes
     {
       project: project,
-      merge_status: MergeRequests::MergeData::MERGE_STATUSES[merge_status.to_sym],
+      merge_status: read_attribute(:merge_status),
       merge_params: read_attribute(:merge_params),
       merge_error: read_attribute(:merge_error),
       merge_user_id: read_attribute(:merge_user_id),
@@ -2765,14 +2806,54 @@ class MergeRequest < ApplicationRecord
       merge_ref_sha: read_attribute(:merge_ref_sha),
       squash_commit_sha: read_attribute(:squash_commit_sha),
       in_progress_merge_commit_sha: read_attribute(:in_progress_merge_commit_sha),
-      auto_merge_enabled: read_attribute(:merge_when_pipeline_succeeds),
+      auto_merge_enabled: read_attribute(:auto_merge_enabled),
       squash: read_attribute(:squash)
     }
   end
 
-  def should_sync_merge_data?
+  def with_merge_data_sync(merge_request_block, merge_data_block)
+    if dual_write_to_merge_data_ff_enabled?
+      # We want to ensure the new merge_data is initialized with the current
+      # attributes before we update it.
+      ensure_merge_data
+      result = merge_request_block.call
+
+      begin
+        merge_data_block.call
+
+      rescue StandardError => e
+        Gitlab::ErrorTracking.track_exception(e,
+          message: "Failed to sync MergeData",
+          merge_request_id: id
+        )
+      end
+
+      result
+    else
+      merge_request_block.call
+    end
+  end
+
+  def save_merge_data_changes
+    return unless dual_write_to_merge_data_ff_enabled?
+    return unless merge_data&.changed?
+
+    # id is set when merge_request gets saved so we need to manually
+    #   set merge_request_id here if it is not already set.
+    merge_data.merge_request_id ||= id
+    merge_data.save!
+
+  rescue StandardError => e
+    Gitlab::ErrorTracking.track_exception(e,
+      message: "Failed to save MergeData",
+      merge_request_id: id
+    )
+  end
+
+  def dual_write_to_merge_data_ff_enabled?
     Feature.enabled?(:merge_requests_merge_data_dual_write, project)
   end
+  strong_memoize_attr :dual_write_to_merge_data_ff_enabled?
 
   def viewable_diffs(order_by: :id_asc)
     strong_memoize_with(:viewable_diffs, order_by) do

@@ -7894,27 +7894,29 @@ RSpec.describe MergeRequest, factory_default: :keep, feature_category: :code_rev
   end
 
   describe 'merge_data dual-write functionality' do
-    let(:merge_request) { create(:merge_request, source_project: project, target_project: project, merge_status: "unchecked") }
+    let_it_be(:user) { create(:user) }
+
+    let(:merge_request) { create(:merge_request, source_project: project, target_project: project, merge_status: merge_status) }
     let(:merge_data) { merge_request.merge_data }
+    let(:merge_status) { "unchecked" }
 
     context 'ensure_merge_data' do
       context 'when merge_data does not exist' do
-        let(:user) { create(:user) }
         let(:merge_request) do
-          create(:merge_request,
+          build(:merge_request,
             source_project: project,
             target_project: project,
             merge_status: 'can_be_merged',
             merge_params: { 'commit_message' => 'Custom commit message' },
             merge_error: 'Some error',
-            merge_user: user,
+            merge_user_id: user.id,
             merge_jid: 'job123',
             merge_commit_sha: 'abc111',
             merged_commit_sha: 'abc112',
             merge_ref_sha: 'abc113',
             squash_commit_sha: 'abc114',
             in_progress_merge_commit_sha: 'abc115',
-            merge_when_pipeline_succeeds: true,
+            auto_merge_enabled: true,
             squash: true
           )
         end
@@ -7924,7 +7926,7 @@ RSpec.describe MergeRequest, factory_default: :keep, feature_category: :code_rev
 
           expect(merge_data.persisted?).to be_falsy
           expect(merge_data.project).to eq(merge_request.project)
-          expect(merge_data.merge_status_name).to eq(:can_be_merged)
+          expect(merge_data.merge_status).to eq('can_be_merged')
           expect(merge_data.merge_params).to eq({ 'commit_message' => 'Custom commit message' })
           expect(merge_data.merge_error).to eq('Some error')
           expect(merge_data.merge_user_id).to eq(user.id)
@@ -7941,131 +7943,105 @@ RSpec.describe MergeRequest, factory_default: :keep, feature_category: :code_rev
         it 'saves merge_data when state transition happens' do
           merge_request.ensure_merge_data
 
-          merge_data.mark_as_unchecked
+          merge_request.mark_as_unchecked!
 
           expect(merge_data.persisted?).to be_truthy
-          expect(merge_data.merge_status_name).to eq(:unchecked)
+          expect(merge_data.merge_status).to eq('unchecked')
         end
       end
 
-      context 'when merge_data exists' do
-        before do
-          merge_request.create_merge_data!(project: merge_request.project)
-        end
-
-        it 'returns existing merge_data' do
-          expect(merge_data).not_to be_nil
+      context 'when merge_request exists' do
+        it 'returns the existing merge_data' do
+          expect(merge_data).to be_present
+          expect(merge_data.persisted?).to be_truthy
+          expect(merge_request).not_to receive(:build_merge_data)
 
           merge_request.ensure_merge_data
-
-          expect(merge_data.persisted?).to be_truthy
-          expect(merge_data.merge_status_name).to eq(:unchecked)
         end
       end
     end
 
     context 'merge_status transitions' do
-      context 'when feature flag is enabled' do
-        before do
-          stub_feature_flags(merge_requests_merge_data_dual_write: true)
-        end
+      it 'syncs merge_status state machine transitions' do
+        # Test transition to preparing
+        merge_request.mark_as_preparing!
+        expect(merge_request.merge_status).to eq('preparing')
+        expect(merge_data.merge_status).to eq('preparing')
 
-        it 'syncs merge_status state machine transitions' do
-          # Test transition to preparing
+        # Test transition to unchecked
+        merge_request.mark_as_unchecked!
+        expect(merge_request.merge_status).to eq('unchecked')
+        expect(merge_data.merge_status).to eq('unchecked')
+
+        # Test transition to checking
+        merge_request.mark_as_checking!
+        expect(merge_request.merge_status).to eq('checking')
+        expect(merge_data.merge_status).to eq('checking')
+
+        # Test transition to cannot_be_merged
+        merge_request.mark_as_unmergeable!
+        expect(merge_request.merge_status).to eq('cannot_be_merged')
+        expect(merge_data.merge_status).to eq('cannot_be_merged')
+
+        # Test transition to cannot_be_merged_recheck
+        merge_request.mark_as_unchecked!
+        expect(merge_request.merge_status).to eq('cannot_be_merged_recheck')
+        expect(merge_data.merge_status).to eq('cannot_be_merged_recheck')
+
+        # Test transition to cannot_be_merged_rechecking
+        merge_request.mark_as_checking!
+        expect(merge_request.merge_status).to eq('cannot_be_merged_rechecking')
+        expect(merge_data.merge_status).to eq('cannot_be_merged_rechecking')
+
+        # Test transition to can_be_merged
+        merge_request.mark_as_mergeable!
+        expect(merge_request.merge_status).to eq('can_be_merged')
+        expect(merge_data.merge_status).to eq('can_be_merged')
+      end
+
+      context 'save_merge_data_changes' do
+        it 'saves all attributes when state changes' do
+          merge_request.merge_jid = "job123"
           merge_request.mark_as_preparing!
-          expect(merge_request.merge_status).to eq('preparing')
-          expect(merge_data.merge_status_name).to eq(:preparing)
 
-          # Test transition to unchecked
-          merge_request.mark_as_unchecked!
-          expect(merge_request.merge_status).to eq('unchecked')
-          expect(merge_data.merge_status_name).to eq(:unchecked)
+          expect(merge_data.merge_status).to eq('preparing')
+          expect(merge_data.merge_jid).to eq("job123")
+        end
+      end
 
-          # Test transition to checking
-          merge_request.mark_as_checking!
-          expect(merge_request.merge_status).to eq('checking')
-          expect(merge_data.merge_status_name).to eq(:checking)
+      context 'when state transition fails' do
+        context 'when state transition is invalid' do
+          let(:merge_status) { "can_be_merged" }
 
-          # Test transition to cannot_be_merged
-          merge_request.mark_as_unmergeable!
-          expect(merge_request.merge_status).to eq('cannot_be_merged')
-          expect(merge_data.merge_status_name).to eq(:cannot_be_merged)
+          it 'does not update merge_data' do
+            merge_request.mark_as_unmergeable
 
-          # Test transition to cannot_be_merged_recheck
-          merge_request.mark_as_unchecked!
-          expect(merge_request.merge_status).to eq('cannot_be_merged_recheck')
-          expect(merge_data.merge_status_name).to eq(:cannot_be_merged_recheck)
-
-          # Test transition to cannot_be_merged_rechecking
-          merge_request.mark_as_checking!
-          expect(merge_request.merge_status).to eq('cannot_be_merged_rechecking')
-          expect(merge_data.merge_status_name).to eq(:cannot_be_merged_rechecking)
-
-          # Test transition to can_be_merged
-          merge_request.mark_as_mergeable!
-          expect(merge_request.merge_status).to eq('can_be_merged')
-          expect(merge_data.merge_status_name).to eq(:can_be_merged)
+            expect(merge_request.merge_status).to eq(merge_status)
+            expect(merge_data.merge_status).to eq(merge_status)
+          end
         end
 
-        context 'when state transition fails' do
-          context 'when the state transition preconditions are not met on merge_request' do
-            before do
-              merge_request.mark_as_preparing
-            end
-
-            it 'returns false and do not attempt to update merge_status on merge_requests' do
-              expect(merge_data).not_to receive(:mark_as_preparing)
-
-              expect(merge_request.mark_as_preparing).to be_falsy
-            end
+        context 'when an exception is raised during merge_data save' do
+          before do
+            allow(merge_data).to receive(:save!).and_raise(StandardError)
           end
 
-          context 'when the state transition preconditions are not met on merge_data' do
-            before do
-              merge_request.ensure_merge_data
-              merge_data.mark_as_preparing
-            end
+          it 'saves merge_status on merge_requests and logs the error' do
+            expect(Gitlab::ErrorTracking)
+              .to receive(:track_exception)
+              .with(
+                instance_of(StandardError),
+                message: "Failed to save MergeData",
+                merge_request_id: merge_request.id
+              )
 
-            it 'saves merge_status on merge_requests and logs the error' do
-              expect(merge_data).to receive(:mark_as_preparing)
-              expect(Gitlab::AppLogger)
-                .to receive(:warn)
-                .with({
-                  message: "Failed to set merge_status to preparing on MergeData",
-                  merge_request_id: merge_request.id,
-                  value_on_merge_request: 'preparing',
-                  value_on_merge_data: 'preparing'
-                })
-
-              expect(merge_request.mark_as_preparing).to be_truthy
-            end
-          end
-
-          context 'when an exception is raised during merge_data update' do
-            before do
-              merge_request.ensure_merge_data
-              allow(merge_data).to receive(:mark_as_preparing).and_raise(StandardError)
-            end
-
-            it 'saves merge_status on merge_requests and logs the error' do
-              expect(merge_data).to receive(:mark_as_preparing)
-              expect(Gitlab::ErrorTracking)
-                .to receive(:track_exception)
-                .with(
-                  instance_of(StandardError),
-                  message: "Failed to set merge_status to preparing on MergeData",
-                  merge_request_id: merge_request.id,
-                  value_on_merge_request: 'preparing',
-                  value_on_merge_data: 'unchecked'
-                )
-
-              expect(merge_request.mark_as_preparing).to be_truthy # Can't transition to the same state
-            end
+            merge_request.mark_as_preparing!
+            expect(merge_request.reload.merge_status).to eq('preparing')
           end
         end
       end
 
-      context 'when feature flag is disabled' do
+      context 'when dual write feature flag is disabled' do
         before do
           stub_feature_flags(merge_requests_merge_data_dual_write: false)
         end
@@ -8075,6 +8051,419 @@ RSpec.describe MergeRequest, factory_default: :keep, feature_category: :code_rev
 
           expect(merge_request.merge_status).to eq('checking')
           expect(MergeRequests::MergeData.where(merge_request: merge_request)).to be_blank
+        end
+      end
+    end
+
+    context 'merge_data attributes setters' do
+      shared_examples 'syncs attribute to merge_data' do |attribute, value|
+        it "syncs #{attribute} setter" do
+          merge_request.public_send(:"#{attribute}=", value)
+
+          expect(merge_request.read_attribute(attribute)).to eq(value)
+          expect(merge_data.read_attribute(attribute)).to eq(value)
+        end
+
+        context 'when dual write feature flag is disabled' do
+          before do
+            stub_feature_flags(merge_requests_merge_data_dual_write: false)
+          end
+
+          it 'only updates merge_request without syncing' do
+            merge_request.public_send(:"#{attribute}=", value)
+
+            expect(merge_request.read_attribute(attribute)).to eq(value)
+            expect(merge_data).to be_nil
+          end
+        end
+      end
+
+      include_examples 'syncs attribute to merge_data', :merge_status, 'preparing'
+      include_examples 'syncs attribute to merge_data', :merge_params, { 'commit_message' => 'New message' }
+      include_examples 'syncs attribute to merge_data', :merge_error, 'New error'
+      include_examples 'syncs attribute to merge_data', :merge_jid, 'job123'
+      include_examples 'syncs attribute to merge_data', :merge_commit_sha, 'abc111'
+      include_examples 'syncs attribute to merge_data', :merged_commit_sha, 'abc112'
+      include_examples 'syncs attribute to merge_data', :merge_ref_sha, 'abc113'
+      include_examples 'syncs attribute to merge_data', :squash_commit_sha, 'abc114'
+      include_examples 'syncs attribute to merge_data', :in_progress_merge_commit_sha, 'abc115'
+      include_examples 'syncs attribute to merge_data', :auto_merge_enabled, true
+      include_examples 'syncs attribute to merge_data', :squash, false
+
+      # Inline for merge_user, and merge_user_id since it needs the user context
+      context 'merge_user and merge_user_id ' do
+        it 'syncs merge_user_id setter' do
+          merge_request.merge_user_id = user.id
+
+          expect(merge_request.merge_user_id).to eq(user.id)
+          expect(merge_data.merge_user_id).to eq(user.id)
+        end
+
+        it 'syncs merge_user setter' do
+          merge_request.merge_user = user
+
+          expect(merge_request.merge_user).to eq(user)
+          expect(merge_data.merge_user).to eq(user)
+        end
+
+        context 'when dual write feature flag is disabled' do
+          before do
+            stub_feature_flags(merge_requests_merge_data_dual_write: false)
+          end
+
+          it 'only updates merge_request without syncing merge_user_id' do
+            merge_request.merge_user_id = user.id
+
+            expect(merge_request.merge_user_id).to eq(user.id)
+            expect(merge_data).to be_nil
+          end
+
+          it 'only updates merge_request without syncing merge_user' do
+            merge_request.merge_user = user
+
+            expect(merge_request.merge_user).to eq(user)
+            expect(merge_data).to be_nil
+          end
+        end
+      end
+
+      context 'mass assignments' do
+        let(:expected_attributes) do
+          {
+            merge_status: 'checking',
+            merge_params: { 'commit_message' => 'Custom commit message' },
+            merge_error: 'Some error',
+            merge_user_id: user.id,
+            merge_jid: 'job123',
+            merge_commit_sha: 'abc111',
+            merged_commit_sha: 'abc112',
+            merge_ref_sha: 'abc113',
+            squash_commit_sha: 'abc114',
+            in_progress_merge_commit_sha: 'abc115',
+            auto_merge_enabled: true,
+            squash: true
+          }
+        end
+
+        shared_examples 'syncs mass assigned attributes' do
+          it 'syncs attributes to merge_data' do
+            perform_action
+
+            actual_attributes = merge_data.attributes.symbolize_keys.except(:merge_request_id, :project_id)
+            expect(actual_attributes).to eq(expected_attributes)
+          end
+        end
+
+        shared_examples 'handles merge_data save failure' do
+          it 'saves merge_request and logs errors if merge_data save fails' do
+            allow_any_instance_of(MergeRequests::MergeData).to receive(:save!).and_raise(StandardError)
+
+            expect(Gitlab::ErrorTracking)
+              .to receive(:track_exception)
+              .with(
+                instance_of(StandardError),
+                hash_including(
+                  message: "Failed to save MergeData",
+                  merge_request_id: be_present
+                )
+              )
+
+            expect do
+              perform_action
+            end.to change { MergeRequest.count }.by(1)
+              .and not_change { MergeRequests::MergeData.count }
+
+            merge_request.reload
+            expect(merge_request.persisted?).to be_truthy
+            expect(merge_request.merge_data).to be_nil
+          end
+        end
+
+        context 'via new' do
+          let(:merge_request) do
+            build(:merge_request, source_project: project, target_project: project, **expected_attributes)
+          end
+
+          def perform_action
+            merge_request # initializes a merge_request
+          end
+
+          include_examples 'syncs mass assigned attributes'
+
+          it 'merge_data is not persisted' do
+            perform_action
+
+            expect(merge_data).not_to be_persisted
+          end
+
+          context 'when saved' do
+            def perform_action
+              merge_request.save!
+            end
+
+            it 'persists merge_data with expected values' do
+              perform_action
+              merge_data.reload
+
+              expect(merge_data).to be_persisted
+              actual_attributes = merge_data.attributes.symbolize_keys.except(:merge_request_id, :project_id)
+              expect(actual_attributes).to eq(expected_attributes)
+            end
+
+            include_examples 'handles merge_data save failure'
+          end
+        end
+
+        context 'via create' do
+          let(:merge_request) do
+            create(:merge_request, source_project: project, target_project: project, **expected_attributes)
+          end
+
+          def perform_action
+            merge_request # create a merge_request
+          end
+
+          include_examples 'handles merge_data save failure'
+
+          it 'persists merge_data automatically' do
+            perform_action
+
+            expect(merge_data).to be_persisted
+          end
+        end
+
+        context 'via update' do
+          let(:merge_request) do
+            described_class.create!(
+              title: 'Test MR',
+              source_project: project,
+              target_project: project,
+              author: project.creator,
+              source_branch: 'master',
+              target_branch: 'feature'
+            )
+          end
+
+          def perform_action
+            merge_request.update!(**expected_attributes)
+          end
+
+          include_examples 'syncs mass assigned attributes'
+          include_examples 'handles merge_data save failure'
+
+          it 'persists merge_data automatically' do
+            perform_action
+
+            expect(merge_data).to be_persisted
+          end
+        end
+      end
+    end
+
+    context 'partial merge_params updates' do
+      context 'append_merge_params' do
+        context 'when merge_data and merge_params exists' do
+          before do
+            merge_request.merge_params = { 'commit_message' => 'Commit message' }
+            merge_request.save!
+          end
+
+          it 'syncs appended params to merge_data' do
+            merge_request.append_merge_params({ 'skip_ci' => true })
+
+            expected_hash = { 'commit_message' => 'Commit message', 'skip_ci' => true }
+
+            expect(merge_request.merge_params).to eq(expected_hash)
+            expect(merge_data.merge_params).to eq(expected_hash)
+            expect(merge_data.merge_params_changed?).to be_truthy
+          end
+        end
+
+        context 'when merge_data does not exist' do
+          before do
+            merge_request.merge_data.destroy!
+          end
+
+          it 'initializes merge_data and set params' do
+            merge_request.append_merge_params({ 'skip_ci' => true })
+
+            expected_hash = { 'skip_ci' => true }
+
+            expect(merge_request.merge_params).to eq(expected_hash)
+            expect(merge_data.merge_params).to eq(expected_hash)
+            expect(merge_data.merge_params_changed?).to be_truthy
+          end
+        end
+
+        context 'when feature flag is disabled' do
+          before do
+            stub_feature_flags(merge_requests_merge_data_dual_write: false)
+          end
+
+          it 'does not sync to merge_data' do
+            merge_request.append_merge_params({ 'skip_ci' => true })
+
+            expected_hash = { 'skip_ci' => true }
+
+            expect(merge_request.merge_params).to eq(expected_hash)
+            expect(merge_data).to be_nil
+          end
+        end
+      end
+
+      context 'clear_merge_params' do
+        context 'when merge_data exists' do
+          context 'when merge_params with the key exists' do
+            before do
+              merge_request.merge_params = { 'commit_message' => 'Commit message', 'skip_ci' => true }
+              merge_request.save!
+            end
+
+            it 'syncs cleared params to merge_data' do
+              merge_request.clear_merge_params(['skip_ci'])
+
+              expected_hash = { 'commit_message' => 'Commit message' }
+
+              expect(merge_request.merge_params).to eq(expected_hash)
+              expect(merge_data.merge_params).to eq(expected_hash)
+            end
+          end
+
+          context 'when merge_params is empty' do
+            before do
+              merge_request.update_column(:merge_params, nil)
+              merge_request.reload
+            end
+
+            it 'handles nil merge_params gracefully' do
+              expect { merge_request.clear_merge_params(['skip_ci']) }.not_to raise_error
+
+              expect(merge_request.merge_params).to be_empty
+              expect(merge_data.merge_params).to be_empty
+            end
+          end
+        end
+
+        context 'when merge_data does not exist' do
+          before do
+            merge_request.merge_params = { 'commit_message' => 'Commit message', 'skip_ci' => true }
+            merge_request.merge_data.destroy!
+          end
+
+          it 'initializes merge_data and set merge_params' do
+            merge_request.clear_merge_params(['skip_ci'])
+
+            expected_hash = { 'commit_message' => 'Commit message' }
+
+            expect(merge_request.merge_params).to eq(expected_hash)
+            expect(merge_data.merge_params).to eq(expected_hash)
+            expect(merge_data.persisted?).to be_falsey
+          end
+        end
+
+        context 'when feature flag is disabled' do
+          before do
+            stub_feature_flags(merge_requests_merge_data_dual_write: false)
+          end
+
+          it 'does not sync to merge_data' do
+            merge_request.merge_params = { 'commit_message' => 'Commit message', 'skip_ci' => true }
+
+            merge_request.clear_merge_params(['skip_ci'])
+
+            expected_hash = { 'commit_message' => 'Commit message' }
+
+            expect(merge_request.merge_params).to eq(expected_hash)
+            expect(merge_data).to be_nil
+          end
+        end
+      end
+    end
+
+    context 'direct db updates' do
+      shared_examples 'direct db update method' do |method_name, attribute, value|
+        it "updates #{attribute} directly in database for both records" do
+          merge_request.public_send(method_name, value)
+
+          expect(merge_request.reload.read_attribute(attribute)).to eq(value)
+          expect(merge_data.reload.read_attribute(attribute)).to eq(value)
+        end
+
+        context 'when merge_data does not exist' do
+          before do
+            merge_request.merge_data.destroy!
+            merge_request.reload
+          end
+
+          it 'creates a merge_data and sets the attribute' do
+            merge_request.public_send(method_name, value)
+
+            expect(merge_request.read_attribute(attribute)).to eq(value)
+            expect(merge_data.read_attribute(attribute)).to eq(value)
+            expect(merge_data.persisted?).to be_truthy
+          end
+        end
+
+        context 'when dual write feature flag is disabled' do
+          before do
+            stub_feature_flags(merge_requests_merge_data_dual_write: false)
+          end
+
+          it 'only updates merge_request without syncing' do
+            merge_request.public_send(method_name, value)
+
+            expect(merge_request.read_attribute(attribute)).to eq(value)
+            expect(merge_data).to be_nil
+          end
+        end
+
+        context 'when an exception occurs during merge_data update' do
+          it 'logs the error and still saves merge_request' do
+            allow(merge_data).to receive(:update_column).and_raise(StandardError)
+
+            expect(Gitlab::ErrorTracking)
+              .to receive(:track_exception)
+              .with(
+                instance_of(StandardError),
+                hash_including(
+                  message: "Failed to sync MergeData",
+                  merge_request_id: be_present
+                )
+              )
+
+            merge_request.public_send(method_name, value)
+
+            expect(merge_request.reload.read_attribute(attribute)).to eq(value)
+            expect(merge_data.reload.read_attribute(attribute)).to be_nil
+          end
+        end
+      end
+
+      context 'update_merge_ref_sha' do
+        include_examples 'direct db update method', :update_merge_ref_sha, :merge_ref_sha, 'abc123'
+      end
+
+      context 'update_merge_jid' do
+        include_examples 'direct db update method', :update_merge_jid, :merge_jid, 'job123'
+      end
+    end
+
+    describe '.preload_merge_data' do
+      let(:relation) { described_class.preload_merge_data(project).where(id: merge_request.id) }
+
+      context 'when feature flag is enabled' do
+        it 'preloads merge_data association' do
+          expect(relation.first.association(:merge_data)).to be_loaded
+        end
+      end
+
+      context 'when feature flag is disabled' do
+        before do
+          stub_feature_flags(merge_requests_merge_data_dual_write: false)
+        end
+
+        it 'returns all without preloading' do
+          expect(relation.first.association(:merge_data)).not_to be_loaded
         end
       end
     end

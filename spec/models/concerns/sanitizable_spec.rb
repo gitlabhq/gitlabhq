@@ -3,6 +3,8 @@
 require 'spec_helper'
 
 RSpec.describe Sanitizable do
+  using RSpec::Parameterized::TableSyntax
+
   let_it_be(:klass) do
     Class.new do
       include ActiveModel::Model
@@ -28,125 +30,54 @@ RSpec.describe Sanitizable do
     end
   end
 
-  shared_examples 'noop' do
-    it 'has no effect' do
-      expect(subject).to eq(input)
-    end
+  let(:input_double_escaped_data) do
+    '%2526lt%253Bscript%2526gt%253Balert%25281%2529%2526lt%253B%252Fscript%2526gt%253B'
+  end
+
+  let(:input_path_traversal) { 'main../../../../../../api/v4/projects/1/import_project_members/2' }
+  let(:input_path_traversal_and_pre_escaped_html) do
+    'main../../../../../../api/v4/projects/1/import_project_members/2&lt;script&gt;alert(1)&lt;/script&gt;'
+  end
+
+  let(:input_pre_escaped_html) { '&lt;script&gt;alert(1)&lt;/script&gt;' }
+
+  let(:record) { klass.new(id: 1) }
+
+  subject do
+    record.assign_attributes(attrs)
+    record.validate
+    record
   end
 
   shared_examples 'a sanitizable field' do |field|
-    let(:record) do
-      klass.new(id: 1, name: input, description: input, html_body: input, field_with_true_condition: input,
-        field_with_false_condition: input)
-    end
-
-    before do
-      record.valid?
-    end
-
-    subject { record.public_send(field) }
-
     describe field do
-      context 'when input is nil' do
-        let_it_be(:input) { nil }
+      let(:attrs) { { field => input } }
+      let(:field_label) { field.to_s.humanize }
 
-        it_behaves_like 'noop'
+      # rubocop:disable Layout/LineLength -- Avoid breaking the one-line table structure
+      where(:input, :expected_output, :errors) do
+        nil                                             | nil                                             | []
+        'hello, world!'                                 | 'hello, world!'                                 | []
+        'hello<script>alert(1)</script>'                | 'hello'                                         | []
+        '<div>hello&world</div>'                        | ' hello&world '                                 | []
+        ref(:input_path_traversal_and_pre_escaped_html) | ref(:input_path_traversal_and_pre_escaped_html) | lazy { ["#{field_label} cannot contain a path traversal component", "#{field_label} cannot contain escaped HTML entities"] }
+        ref(:input_double_escaped_data)                 | ref(:input_double_escaped_data)                 | lazy { ["#{field_label} cannot contain escaped components"] }
+        ref(:input_path_traversal)                      | ref(:input_path_traversal)                      | lazy { ["#{field_label} cannot contain a path traversal component"] }
+        ref(:input_pre_escaped_html)                    | ref(:input_pre_escaped_html)                    | lazy { ["#{field_label} cannot contain escaped HTML entities"] }
       end
+      # rubocop:enable Layout/LineLength
 
-      context 'when input does not contain any html' do
-        let_it_be(:input) { 'hello, world!' }
-
-        it_behaves_like 'noop'
-      end
-
-      context 'when input contains html' do
-        let_it_be(:input) { 'hello<script>alert(1)</script>' }
-
-        it 'sanitizes the input' do
-          expect(subject).to eq('hello')
-        end
-
-        context 'when input includes html entities' do
-          let(:input) { '<div>hello&world</div>' }
-
-          it 'does not escape them' do
-            expect(subject).to eq(' hello&world ')
-          end
-        end
-      end
-
-      context 'when input contains pre-escaped html entities' do
-        let_it_be(:input) { '&lt;script&gt;alert(1)&lt;/script&gt;' }
-
-        it_behaves_like 'noop'
-
-        it 'is not valid', :aggregate_failures do
-          expect(record).not_to be_valid
-          expect(record.errors.full_messages).to contain_exactly(
-            'Name cannot contain escaped HTML entities',
-            'Description cannot contain escaped HTML entities',
-            'Field with true condition cannot contain escaped HTML entities'
-          )
-        end
-      end
-
-      context 'when input contains double-escaped data' do
-        let_it_be(:input) do
-          '%2526lt%253Bscript%2526gt%253Balert%25281%2529%2526lt%253B%252Fscript%2526gt%253B'
-        end
-
-        it_behaves_like 'noop'
-
-        it 'is not valid', :aggregate_failures do
-          expect(record).not_to be_valid
-          expect(record.errors.full_messages).to contain_exactly(
-            'Name cannot contain escaped components',
-            'Description cannot contain escaped components',
-            'Field with true condition cannot contain escaped components'
-          )
-        end
-      end
-
-      context 'when input contains a path traversal attempt' do
-        let_it_be(:input) { 'main../../../../../../api/v4/projects/1/import_project_members/2' }
-
-        it_behaves_like 'noop'
-
-        it 'is not valid', :aggregate_failures do
-          expect(record).not_to be_valid
-          expect(record.errors.full_messages).to contain_exactly(
-            'Name cannot contain a path traversal component',
-            'Description cannot contain a path traversal component',
-            'Field with true condition cannot contain a path traversal component'
-          )
-        end
-      end
-
-      context 'when input contains both path traversal attempt and pre-escaped entities' do
-        let_it_be(:input) do
-          'main../../../../../../api/v4/projects/1/import_project_members/2&lt;script&gt;alert(1)&lt;/script&gt;'
-        end
-
-        it_behaves_like 'noop'
-
-        it 'is not valid', :aggregate_failures do
-          expect(record).not_to be_valid
-          expect(record.errors.full_messages).to contain_exactly(
-            'Name cannot contain a path traversal component',
-            'Name cannot contain escaped HTML entities',
-            'Description cannot contain a path traversal component',
-            'Description cannot contain escaped HTML entities',
-            'Field with true condition cannot contain a path traversal component',
-            'Field with true condition cannot contain escaped HTML entities'
-          )
-        end
+      with_them do
+        it { is_expected.to have_attributes(field => expected_output, errors: match_array(errors)) }
       end
     end
   end
 
   shared_examples 'a non-sanitizable field' do |field, input|
     describe field do
-      subject { klass.new(field => input).valid? }
+      let(:attrs) { { field => input } }
+
+      it { is_expected.to have_attributes(field => input, errors: []) }
 
       it 'has no effect' do
         expect(Sanitize).not_to receive(:fragment)
@@ -163,4 +94,28 @@ RSpec.describe Sanitizable do
   it_behaves_like 'a sanitizable field', :name
   it_behaves_like 'a sanitizable field', :description
   it_behaves_like 'a sanitizable field', :field_with_true_condition
+
+  context 'when multiple sanitizable fields are invalid' do
+    let(:attrs) { { name: input, description: input } }
+
+    subject do
+      record.assign_attributes(name: input, description: input)
+      record.validate
+      record
+    end
+
+    # rubocop:disable Layout/LineLength -- Avoid breaking the one-line table structure
+    where(:input, :name_errors, :description_errors) do
+      ref(:input_pre_escaped_html)                    | ['Name cannot contain escaped HTML entities']                                                   | ['Description cannot contain escaped HTML entities']
+      ref(:input_double_escaped_data)                 | ['Name cannot contain escaped components']                                                      | ['Description cannot contain escaped components']
+      ref(:input_path_traversal)                      | ['Name cannot contain a path traversal component']                                              | ['Description cannot contain a path traversal component']
+      ref(:input_path_traversal_and_pre_escaped_html) | ['Name cannot contain a path traversal component', 'Name cannot contain escaped HTML entities'] | ['Description cannot contain a path traversal component', 'Description cannot contain escaped HTML entities']
+    end
+    # rubocop:enable Layout/LineLength
+
+    with_them do
+      it { is_expected.to have_attributes(name: input, description: input) }
+      it { is_expected.to have_attributes(errors: match_array(name_errors + description_errors)) }
+    end
+  end
 end

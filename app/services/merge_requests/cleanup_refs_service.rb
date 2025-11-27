@@ -58,7 +58,7 @@ module MergeRequests
 
       # Caching the merge ref sha is needed before we delete the merge ref so
       # we can still show the merge ref diff (via `MergeRequest#merge_ref_head`)
-      merge_request.update_column(:merge_ref_sha, merge_ref_sha)
+      merge_request.update_merge_ref_sha(merge_ref_sha)
     end
 
     def delete_refs

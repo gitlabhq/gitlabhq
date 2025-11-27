@@ -254,7 +254,8 @@ RSpec.describe Banzai::Filter::References::MergeRequestReferenceFilter, feature_
   end
 
   context 'URL reference for a commit' do
-    let_it_be(:mr) { create(:merge_request) }
+    let_it_be(:mr_project) { create(:project, :public, :repository) }
+    let_it_be(:mr) { create(:merge_request, source_project: mr_project) }
     let(:reference) do
       urls.project_merge_request_url(mr.project, mr) + "/diffs?commit_id=#{mr.diff_head_sha}"
     end

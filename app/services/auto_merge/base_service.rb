@@ -111,7 +111,7 @@ module AutoMerge
       merge_request.auto_merge_enabled = false
       merge_request.merge_user = nil
 
-      merge_request.merge_params&.except!(*clearable_auto_merge_parameters)
+      merge_request.clear_merge_params(clearable_auto_merge_parameters)
 
       merge_request.save!
     end

@@ -111,7 +111,7 @@ RSpec.describe MergeRequests::RefreshService, feature_category: :code_review_wor
           # state of the service. As we reduce the number of queries executed in
           # this service, the limit should be reduced as well.
           expect { refresh_service.execute(@oldrev, @newrev, 'refs/heads/master') }
-            .not_to exceed_query_limit(260)
+            .not_to exceed_query_limit(225)
         end
       end
 

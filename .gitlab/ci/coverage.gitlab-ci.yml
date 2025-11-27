@@ -77,3 +77,25 @@ test-coverage:export-rspec-and-e2e:
       - crystalball/
       - rspec/
     expire_in: 7d
+
+test-coverage:export-workhorse:
+  extends:
+    - .coverage-export-base
+    - .workhorse:rules:workhorse-coverage
+  needs:
+    - job: workhorse-coverage
+  script:
+    - echo "Exporting Workhorse Go coverage to ClickHouse..."
+    - bundle exec test-coverage
+        --test-reports 'workhorse-test-reports/workhorse-tests.json'
+        --coverage-report 'workhorse/coverage.lcov'
+        --test-map 'workhorse-test-mapping/workhorse-source-to-test.json'
+        --clickhouse-url "${CLICKHOUSE_URL}"
+        --clickhouse-database "${CLICKHOUSE_DATABASE}"
+        --clickhouse-username "${CLICKHOUSE_USERNAME}"
+  artifacts:
+    paths:
+      - workhorse/
+      - workhorse-test-reports/
+      - workhorse-test-mapping/
+    expire_in: 7d

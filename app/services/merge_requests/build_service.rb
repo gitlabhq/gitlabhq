@@ -80,7 +80,7 @@ module MergeRequests
 
     def process_params
       # Force remove the source branch?
-      merge_request.merge_params['force_remove_source_branch'] = force_remove_source_branch
+      merge_request.append_merge_params({ 'force_remove_source_branch' => force_remove_source_branch })
 
       # Only assign merge requests params that are allowed
       self.params = assign_allowed_merge_params(merge_request, params)
