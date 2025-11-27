@@ -136,6 +136,32 @@ To remove a lock:
 To remove an exclusive file lock, see
 [Lock and unlock files](../../topics/git/file_management.md#lock-and-unlock-files).
 
+## Merge request checks and lock ownership
+
+When a merge request, that includes changes to locked files or directories, is set to merge,
+GitLab checks if the merge request author is the lock owner.
+GitLab does not check individual commit authors.
+
+For example:
+
+- If the merge request author is the same user who locked the file or directory, the merge
+  request can be merged.
+- If the merge request author is different from the lock owner, the merge request is blocked.
+
+{{< alert type="note" >}}
+
+Users other than the merge request author can push changes to the merge request branch that
+update or change locked files or directories. The lock check only considers the merge request
+author, so the merge request is not blocked.
+
+{{< /alert >}}
+
+To prevent unauthorized changes to locked files:
+
+- Use [merge request approval rules](merge_requests/approvals/rules.md) that require review before merging.
+- Monitor merge requests to locked files to ensure only authorized changes are included.
+- Consider who has permission to push to existing merge request branches in your workflow.
+
 ## Related topics
 
 - [Exclusive file locks](../../topics/git/file_management.md#exclusive-file-locks)

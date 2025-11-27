@@ -38,7 +38,7 @@ RSpec.describe ActiveContext::Concerns::Queue do
     it 'pushes references to Redis' do
       references = %w[ref1 ref2 ref3]
 
-      allow(ActiveContext::Hash).to receive(:consistent_hash).and_return(0, 1, 0)
+      allow(ActiveContext::Hasher).to receive(:consistent_hash).and_return(0, 1, 0)
       expect(redis_double).to receive(:incrby).with('mockmodule:{test_queue}:0:score', 2).and_return(2)
       expect(redis_double).to receive(:incrby).with('mockmodule:{test_queue}:1:score', 1).and_return(1)
       expect(redis_double).to receive(:zadd).with('mockmodule:{test_queue}:0:zset', [[1, 'ref1'], [2, 'ref3']])

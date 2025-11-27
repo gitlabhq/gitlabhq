@@ -114,12 +114,19 @@
     position: fixed;
     top: $calc-application-header-height;
     width: 100%;
-    max-width: $fixed-layout-width;
     padding-right: 2rem;
+
+    // Fixed layout width constraint
+    .container-limited & {
+      max-width: $fixed-layout-width;
+
+      :where(.page-with-panels) & {
+        padding-right: 1rem !important;
+      }
+    }
 
     // XL breakpoint adjustments
     @media (min-width: $breakpoint-xl) {
-      padding-right: 3rem;
 
       // Super sidebar adjustments at XL
       .page-with-super-sidebar & {
@@ -134,13 +141,7 @@
     // Panel-specific overrides
     :where(.page-with-panels) & {
       width: 100% !important;
-      padding-right: 1rem;
-
-      @media (max-width: $breakpoint-lg) {
-        padding-right: 0;
-      }
     }
   }
 }
-
 

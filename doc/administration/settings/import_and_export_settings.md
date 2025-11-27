@@ -28,6 +28,20 @@ Before you can import projects from other systems, you must enable the
 1. Select each of **Import sources** to allow.
 1. Select **Save changes**.
 
+## Disable unused import sources
+
+Only import projects from sources you trust. If you import a project from an untrusted source,
+an attacker could steal your sensitive data. For example, an imported project
+with a malicious `.gitlab-ci.yml` file could allow an attacker to exfiltrate group CI/CD variables.
+
+GitLab Self-Managed administrators can reduce their attack surface by disabling import sources they don't need:
+
+1. On the left sidebar, at the bottom, select **Admin**. If you've [turned on the new navigation](../../user/interface_redesign.md#turn-new-navigation-on-or-off), in the upper-right corner, select **Admin**.
+1. Select **Settings** > **General**.
+1. Expand **Import and export settings**.
+1. Scroll to **Import sources**.
+1. Clear checkboxes for importers that are not required.
+
 ## Enable project export
 
 To enable the export of
@@ -325,3 +339,10 @@ error. To work around this error:
 1. Add `docs.gitlab.com`, or [the redirect help documentation pages URL](help_page.md#redirect-help-pages), to the
    [allowlist](../../security/webhooks.md#allow-outbound-requests-to-certain-ip-addresses-and-domains).
 1. Select **Save Changes**.
+
+## Related topics
+
+- [Import and migrate to GitLab](../../user/project/import/_index.md).
+- [Sidekiq configuration imports](../sidekiq/configuration_for_imports.md).
+- [Running multiple Sidekiq processes](../sidekiq/extra_sidekiq_processes.md).
+- [Processing specific job classes](../sidekiq/processing_specific_job_classes.md).

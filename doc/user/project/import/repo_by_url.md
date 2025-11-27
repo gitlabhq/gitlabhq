@@ -92,3 +92,10 @@ curl --location "https://gitlab.example.com/api/v4/projects/" \
 ```
 
 Some providers do not allow a password and instead require an access token.
+
+## Related topics
+
+- [Import and export settings](../../../administration/settings/import_and_export_settings.md).
+- [Sidekiq configuration for imports](../../../administration/sidekiq/configuration_for_imports.md).
+- [Running multiple Sidekiq processes](../../../administration/sidekiq/extra_sidekiq_processes.md).
+- [Processing specific job classes](../../../administration/sidekiq/processing_specific_job_classes.md).

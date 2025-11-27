@@ -121,3 +121,10 @@ For imports to GitLab.com, you must
 use the [improved method](../../import/mapping.md) instead.
 
 Using the old method, user contributions are assigned to the project creator (usually the user who started the import process) by default.
+
+## Related topics
+
+- [Import and export settings](../../../administration/settings/import_and_export_settings.md).
+- [Sidekiq configuration for imports](../../../administration/sidekiq/configuration_for_imports.md).
+- [Running multiple Sidekiq processes](../../../administration/sidekiq/extra_sidekiq_processes.md).
+- [Processing specific job classes](../../../administration/sidekiq/processing_specific_job_classes.md).

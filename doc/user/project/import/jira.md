@@ -85,3 +85,10 @@ To import Jira issues to a GitLab project:
    to the **Issues** page to see the new issues appearing in the list.
 
 1. To check the status of your import, go to the Jira import page again.
+
+## Related topics
+
+- [Import and export settings](../../../administration/settings/import_and_export_settings.md).
+- [Sidekiq configuration for imports](../../../administration/sidekiq/configuration_for_imports.md).
+- [Running multiple Sidekiq processes](../../../administration/sidekiq/extra_sidekiq_processes.md).
+- [Processing specific job classes](../../../administration/sidekiq/processing_specific_job_classes.md).

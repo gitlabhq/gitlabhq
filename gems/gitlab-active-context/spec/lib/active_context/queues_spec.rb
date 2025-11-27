@@ -134,7 +134,7 @@ RSpec.describe ActiveContext::Queues do
     end
 
     it 'picks up all the queued items' do
-      allow(ActiveContext::Hash).to receive(:consistent_hash).and_return(0, 1, 0)
+      allow(ActiveContext::Hasher).to receive(:consistent_hash).and_return(0, 1, 0)
 
       expect(redis).to receive(:incrby).with('testmodule:{test_queue}:0:score', 1).and_return(1)
       expect(redis).to receive(:incrby).with('test_queues:{mock}:0:score', 1).and_return(3)

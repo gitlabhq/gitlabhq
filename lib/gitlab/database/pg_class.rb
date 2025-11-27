@@ -7,8 +7,7 @@ module Gitlab
 
       def self.for_table(relname)
         joins("LEFT JOIN pg_stat_user_tables ON pg_stat_user_tables.relid = pg_class.oid")
-          .where('schemaname = current_schema()')
-          .find_by(relname: relname)
+          .find_by(Arel.sql("pg_stat_user_tables.relid = to_regclass(?)"), relname)
       end
 
       def cardinality_estimate

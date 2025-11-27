@@ -30,6 +30,16 @@ To provide feedback on this feature, leave a comment on [issue 561564](https://g
 
 When working with GitLab MCP server, you might encounter issues.
 
+## Error: `Server's protocol version is not supported: 2025-06-18`
+
+You might get this error when the MCP client library does not support
+the GitLab MCP server protocol specification.
+To resolve this issue, ask the AI tool provider
+to update their client implementation.
+
+Support for multiple specifications
+is proposed in [issue 581459](https://gitlab.com/gitlab-org/gitlab/-/issues/581459).
+
 ## Troubleshoot the GitLab MCP Server in Cursor
 
 1. In Cursor, to open the Output view, do one of the following:

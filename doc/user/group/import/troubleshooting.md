@@ -69,7 +69,7 @@ grep `BulkImports::RelationBatchExportWorker` sidekiq.log | grep "interrupted_co
 If Sidekiq restarts are causing the issue:
 
 - Configure a separate Sidekiq process for export jobs.
-  For more information, see [Sidekiq configuration](../../project/import/_index.md#sidekiq-configuration).
+  For more information, see [Sidekiq configuration for import](../../../administration/sidekiq/configuration_for_imports.md).
   If the problem persists, reduce Sidekiq concurrency to limit the number of jobs processed simultaneously.
 - Increase Sidekiq memory limits:
   If your instance has available memory, [increase the maximum RSS limit](../../../administration/sidekiq/sidekiq_memory_killer.md#configuring-the-limits) for Sidekiq processes.
@@ -183,7 +183,7 @@ restarts due to high memory or CPU usage during import.
 
 To reduce Sidekiq memory or CPU issues during import:
 
-- Optimize [Sidekiq configuration](../../project/import/_index.md#sidekiq-configuration) for imports.
+- Optimize [Sidekiq configuration for imports](../../../administration/sidekiq/configuration_for_imports.md).
 - Limit the number of concurrent jobs in the `bulk_import_concurrent_pipeline_batch_limit` [application setting](../../../api/settings.md).
 
 ## Error: `BulkImports::FileDownloadService::ServiceError Invalid content type`

@@ -151,8 +151,8 @@ as long as the instance has enough resources to handle additional concurrent job
 In GitLab 16.8 and later, with the introduction of bulk import and export of relations,
 the number of available workers on the destination instance has become more critical.
 
-For more information about how to add Sidekiq workers to the destination instance,
-see [Sidekiq configuration](../../project/import/_index.md#sidekiq-configuration).
+For more information about how to add Sidekiq workers to the destination instance, see information about
+[Sidekiq configuration for imports](../../../administration/sidekiq/configuration_for_imports.md).
 
 ### Redistribute large projects or start separate migrations
 

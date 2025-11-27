@@ -80,3 +80,10 @@ To start the import:
 1. To import:
    - All projects for the first time: Select **Import all repositories**.
    - Individual projects again: Select **Re-import**. Specify a new name and select **Re-import** again. Re-importing creates a new copy of the source project.
+
+## Related topics
+
+- [Import and export settings](../../../administration/settings/import_and_export_settings.md).
+- [Sidekiq configuration for imports](../../../administration/sidekiq/configuration_for_imports.md).
+- [Running multiple Sidekiq processes](../../../administration/sidekiq/extra_sidekiq_processes.md).
+- [Processing specific job classes](../../../administration/sidekiq/processing_specific_job_classes.md).

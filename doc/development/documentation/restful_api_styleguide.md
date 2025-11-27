@@ -24,8 +24,8 @@ The Markdown topic for an API resource must include:
   GET /api/v4/projects/:id/repository/branches
   ```
 
-- A detailed [description of the attributes](#attribute-descriptions).
-- A detailed [description of the response body](#response-body-description).
+- A detailed [description of the attributes](#request-attributes).
+- A detailed [description of the response body](#response-attributes).
 - A cURL example.
 - A response body example (in JSON format).
 
@@ -157,6 +157,23 @@ For example:
 - `Use this API to interact with the [Maven package manager client](path/to/file).`
 - `Use this API to interact with namespaces, a special resource category used to organize users and groups. For more information, see [namespaces](path/to/file).`
 
+## Operation titles
+
+Start an operation title with a verb. For consistency,
+use these verbs based on the HTTP method:
+
+| HTTP method      | Verb     | Alternatives | Examples |
+| ---------------- | -------- | ------------ | -------- |
+| `GET` (multiple) | List all |              | `List all group access tokens` |
+| `GET` (single)   | Retrieve | Download     | `Retrieve a group audit event`, `Download a dependency list export` |
+| `POST`           | Create   | Add          | `Create a repository branch`, `Add a new emoji reaction` |
+| `PUT`            | Update   | Replace      | `Update a project topic` |
+| `PATCH`          | Update   | Modify       | `Update a freeze period`, `Modify an existing commit thread note` |
+| `DELETE`         | Delete   |              | `Delete a feature` |
+
+When possible, use the recommended verb. Alternatives might be needed in specific contexts, but
+minimize their use to maintain consistency.
+
 ## Operation descriptions
 
 Each operation should include a short description that explains its use, and highlights any
@@ -167,13 +184,13 @@ the operation. For example:
 - `Delete an SSH key` -> `Deletes an SSH key from your user account.`
 - `Get details on an enterprise user` -> `Gets details on a specified enterprise user.`
 
-## Attribute descriptions
+## Request attributes
 
-You must document the attributes in an operation. When creating the table and attribute descriptions:
+You must document the request attributes in an operation. When creating the table and attribute descriptions:
 
 - Use the following column names for attribute tables.
 - List any path attributes first, then any required attributes, then sort alphabetically.
-- Place attributes name in code blocks using backticks (`` ` ``).
+- Place the attribute name in code blocks using backticks (`` ` ``).
 - Document any tier or offering information specific to an attribute in the description.
   - If an attribute is available for Premium, mention that it's also available for Ultimate.
   - Combine this tier and offering information when possible. For example: `GitLab Self-Managed, Premium and Ultimate only.`
@@ -198,25 +215,36 @@ For information about writing attribute descriptions, see the [GraphQL API descr
 
 ### Conditionally required attributes
 
-If there are attributes where either one or both are required to make an API
-request:
+If an attribute is related to another item, indicate this in the attribute description.
 
-1. Add `Conditionally` in the `Required` column.
-1. Clearly describe the related attributes in the description.
-   You can use the following template:
+Generally, this happens if one of two attributes is required or if an attribute must be enabled and configured separately.
 
-   ```markdown
-   At least one of `attribute1` or `attribute2` must be included in the API call. Both may be used if needed.
-   ```
+First define the attribute itself, then mention any requirements. Use this format:
+
+  ```markdown
+  Required if `attribute1` is `true`.
+  ```
 
 For example:
 
-| Attribute                  | Type           | Required       | Description                                                                                         |
-|:---------------------------|:---------------|:---------------|:--------------------------------------------------------------------------------------------------- |
-| `include_saml_users`       | boolean        | Conditionally  | Include users with a SAML identity. At least one of `include_saml_users` or `include_service_accounts` must be `true`. Both may be used if needed. |
-| `include_service_accounts` | boolean        | Conditionally  | Include service account users. At least one of `include_saml_users` or `include_service_accounts` must be `true`. Both may be used if needed. |
+| Attribute                  | Type    | Required    | Description |
+| -------------------------- | ------- | ----------- | ----------- |
+| `include_saml_users`       | boolean | Conditional | If `true`, returns users with a SAML identity. Required if `include_service_accounts` is `false`. |
+| `include_service_accounts` | boolean | Conditional | If `true`, returns service account users. Required if `include_saml_users` is `false`. |
+| `a_related_setting`        | boolean | Conditional | If `true`, does something else. Required if `include_saml_users` is `true`. |
 
-## Response body description
+## Response attributes
+
+You might sometimes need to document the response attributes in an operation. This is not usually required.
+When creating the table and attribute descriptions:
+
+- Use the following column names for attribute tables.
+- Sort the table alphabetically.
+- Place the attribute name in code blocks using backticks (`` ` ``).
+- If describing an object or array, use dot notation to represent the sub-attributes. For example, `project.name` or `projects[].name`.
+- Document any tier or offering information specific to an attribute in the description.
+  - If an attribute is available for Premium, mention that it's also available for Ultimate.
+  - Combine this tier and offering information when possible. For example: `GitLab Self-Managed, Premium and Ultimate only.`
 
 Start the description with the following sentence, replacing `status code` with the
 relevant [HTTP status code](../../api/rest/troubleshooting.md#status-codes), for example:
@@ -226,29 +254,21 @@ If successful, returns [`200 OK`](../../api/rest/troubleshooting.md#status-codes
 following response attributes:
 ```
 
-Use the following table headers to describe the response bodies. Attributes should
-always be in code blocks using backticks (`` ` ``).
-
-If the attribute is a complex type, like another object, represent sub-attributes
-with dots (`.`), like `project.name` or `projects[].name` in case of an array.
-
-Sort the table alphabetically.
-
 ```markdown
-| Attribute                    | Type          | Description                               |
-|------------------------------|---------------|-------------------------------------------|
-| `assignee_ids`               | integer array | IDs of the users to assign the issue to. Premium and Ultimate only. |
-| `confidential`               | boolean       | Whether the issue is confidential or not. |
-| `title`                      | string        | Title of the issue.                       |
+| Attribute      | Type          | Description |
+| -------------- | ------------- | ----------- |
+| `assignee_ids` | integer array | IDs of the users to assign the issue to. Premium and Ultimate only. |
+| `commits`      | object array  | Commits in the merge request diff. |
+| `commits[].id` | string        | ID of the commit. |
 ```
 
 Rendered example:
 
-| Attribute                    | Type          | Description                               |
-|------------------------------|---------------|-------------------------------------------|
-| `assignee_ids`               | integer array | IDs of the users to assign the issue to. Premium and Ultimate only. |
-| `confidential`               | boolean       | Whether the issue is confidential or not. |
-| `title`                      | string        | Title of the issue.                       |
+| Attribute      | Type          | Description |
+| -------------- | ------------- | ----------- |
+| `assignee_ids` | integer array | IDs of the users to assign the issue to. Premium and Ultimate only. |
+| `commits`      | object array  | Commits in the merge request diff. |
+| `commits[].id` | string        | ID of the commit. |
 
 For information about writing attribute descriptions, see the [GraphQL API description style guide](../api_graphql_styleguide.md#description-style-guide).
 

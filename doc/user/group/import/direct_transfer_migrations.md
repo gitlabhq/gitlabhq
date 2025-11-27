@@ -58,7 +58,7 @@ This requirement does not apply for migrations from GitLab.com to GitLab Dedicat
 
 ### Configuration
 
-- Ensure [Sidekiq is properly configured](../../project/import/_index.md#sidekiq-configuration).
+- Ensure [Sidekiq is properly configured](../../../administration/sidekiq/configuration_for_imports.md).
 - Both GitLab instances must have group migration by direct transfer
   [enabled in application settings](../../../administration/settings/import_and_export_settings.md#enable-migration-of-groups-and-projects-by-direct-transfer)
   by an instance administrator.
