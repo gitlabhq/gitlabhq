@@ -1514,7 +1514,6 @@ RSpec/NamedSubject:
     - 'spec/lib/gitlab/authorized_keys_spec.rb'
     - 'spec/lib/gitlab/avatar_cache_spec.rb'
     - 'spec/lib/gitlab/background_migration/backfill_project_repositories_spec.rb'
-    - 'spec/lib/gitlab/background_migration/delete_orphans_approval_project_rules2_spec.rb'
     - 'spec/lib/gitlab/background_migration/mailers/unconfirm_mailer_spec.rb'
     - 'spec/lib/gitlab/background_migration/redis/backfill_project_pipeline_status_ttl_spec.rb'
     - 'spec/lib/gitlab/background_task_spec.rb'

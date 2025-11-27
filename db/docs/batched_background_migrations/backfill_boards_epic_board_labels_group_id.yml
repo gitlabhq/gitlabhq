@@ -1,8 +1,0 @@
----
-migration_job_name: BackfillBoardsEpicBoardLabelsGroupId
-description: Backfills sharding key `boards_epic_board_labels.group_id` from `boards_epic_boards`.
-feature_category: portfolio_management
-introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/153674
-milestone: '17.1'
-queued_migration_version: 20240521090846
-finalized_by: '20241023232309'

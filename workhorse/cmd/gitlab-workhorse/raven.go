@@ -43,7 +43,7 @@ func sentryHandler(next http.Handler) http.Handler {
 				return
 			case http.ErrAbortHandler:
 				// Propagate the panic so that the HTTP server aborts the connection and the client knows that something went wrong.
-				// We cannot do better than that because we may have written the response headers already.
+				// We cannot do better than that because we may have written the response headers (and part of the response) already.
 				log.WithRequest(r).Info("Handler aborted connection")
 				panic(http.ErrAbortHandler)
 			default:
@@ -57,7 +57,9 @@ func sentryHandler(next http.Handler) http.Handler {
 					packet = raven.NewPacket(rvalStr, raven.NewException(errors.New(rvalStr), raven.NewStacktrace(1, 2, nil)), raven.NewHttp(r))
 				}
 				raven.Capture(packet, nil)
-				w.WriteHeader(http.StatusInternalServerError)
+				// Propagate the panic so that the HTTP server aborts the connection and the client knows that something went wrong.
+				// We cannot do better than that because we may have written the response headers (and part of the response) already.
+				panic(http.ErrAbortHandler) // panic with this value to avoid the server also logging the panic - we've logged it already.
 			}
 		}()
 		next.ServeHTTP(w, r)

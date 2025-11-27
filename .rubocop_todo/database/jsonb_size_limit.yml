@@ -78,6 +78,5 @@ Database/JsonbSizeLimit:
     - 'ee/app/models/security/vulnerability_management_policy_rule.rb'
     - 'ee/app/models/vulnerabilities/archived_record.rb'
     - 'ee/app/models/vulnerabilities/finding.rb'
-    - 'lib/gitlab/background_migration/migrate_links_for_vulnerability_findings.rb'
     - 'lib/gitlab/ci/config/entry/imageable.rb'
     - 'lib/gitlab/ci/config/entry/job.rb'

@@ -1,8 +1,0 @@
----
-migration_job_name: DeleteStalePackagesNpmMetadataCaches
-description: Deletes stale entries (without `project_id` column) from `packages_npm_metadata_caches` table
-feature_category: package_registry
-introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/165813
-milestone: '17.5'
-queued_migration_version: 20240911115256
-finalized_by: 20241016074421

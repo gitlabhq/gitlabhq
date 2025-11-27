@@ -1,9 +1,0 @@
----
-migration_job_name: PurgeSecurityScansWithEmptyFindingData
-description: This migration sets the status of `security_scans` records associated with invalid `security_findings` as `purged`.
-feature_category: vulnerability_management
-introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/144456
-milestone: '16.10'
-queued_migration_version: 20240209153920
-# Replace with the approximate date you think it's best to ensure the completion of this BBM.
-finalized_by: 20240320102510

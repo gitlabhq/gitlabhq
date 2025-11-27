@@ -1,9 +1,0 @@
----
-migration_job_name: BackfillDesignManagementVersionsNamespaceId
-description: Backfills sharding key `design_management_versions.namespace_id` from
-  `issues`.
-feature_category: design_management
-introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/154281
-milestone: '17.1'
-queued_migration_version: 20240530121656
-finalized_by: '20241105232559'

@@ -33,8 +33,6 @@ Gitlab/Rails/AttrEncrypted:
     - 'app/models/slack_integration.rb'
     - 'app/models/snippet.rb'
     - 'app/models/user.rb'
-    - 'db/migrate/20241017160504_generate_ci_job_token_signing_key.rb'
-    - 'db/migrate/20241017160505_regenerate_ci_job_token_signing_key.rb'
     - 'ee/app/models/ai/self_hosted_model.rb'
     - 'ee/app/models/audit_events/amazon_s3_configuration.rb'
     - 'ee/app/models/audit_events/instance/amazon_s3_configuration.rb'

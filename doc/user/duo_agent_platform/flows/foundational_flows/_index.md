@@ -20,7 +20,7 @@ title: Foundational flows
 
 {{< /collapsible >}}
 
-Foundational flows are built and maintained by GitLab.
+Foundational flows are built and maintained by GitLab and display a GitLab-maintained badge ({{< icon name="tanuki-verified" >}}).
 
 Each flow is designed to solve a specific problem or help you with a development task.
 

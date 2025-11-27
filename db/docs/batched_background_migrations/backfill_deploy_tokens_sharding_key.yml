@@ -1,9 +1,0 @@
----
-migration_job_name: BackfillDeployTokensShardingKey
-description: Backfills sharding keys `deploy_tokens.project_id` and `deploy_tokens.group_id`
-  from `project_deploy_tokens` and `group_deploy_tokens`.
-feature_category: continuous_delivery
-introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/163122
-milestone: '17.4'
-queued_migration_version: 20240819001112
-finalized_by: 20241016215758

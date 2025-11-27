@@ -1,8 +1,0 @@
----
-migration_job_name: BackfillMlExperimentMetadataProjectId
-description: Backfills sharding key `ml_experiment_metadata.project_id` from `ml_experiments`.
-feature_category: mlops
-introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/155223
-milestone: '17.1'
-queued_migration_version: 20240604074204
-finalized_by: '20241107232815'

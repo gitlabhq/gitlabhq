@@ -28,19 +28,7 @@ frameworks, and best practices of their specialized domains. Each agent combines
 GitLab features with role-specific reasoning to provide targeted help that aligns with how
 practitioners actually work.
 
-When you interact with a foundational agent, you're engaging with an AI tool that understands not just
-what you're asking, but the broader context of your role and objectives. For example:
-
-- A product planning agent that understands prioritization frameworks and dependency management.
-- A security agent that recognizes vulnerability patterns and compliance requirements.
-
-These agents integrate into your existing GitLab workflows through Chat,
-and can help provide specialized support without requiring you to leave your current context.
-
-GitLab provides foundational agents for workflows where specialized knowledge significantly improves
-outcome quality. Each agent maintains awareness of GitLab-specific implementations, organizational
-standards, and industry best practices in its domain. This specialization helps enable more accurate,
-actionable, and contextually appropriate responses compared to general-purpose AI help.
+Foundational agents are built and maintained by GitLab and display a GitLab-maintained badge ({{< icon name="tanuki-verified" >}}).
 
 ## Available foundational agents
 
@@ -50,6 +38,28 @@ The following foundational agents are available:
   planning workflows.
 - [Security Analyst](security_analyst_agent.md), for
   security analysis and vulnerability management.
+
+## Duplicate an agent
+
+To make changes to a foundational agent, create a copy of it.
+
+Prerequisites:
+
+- You must have at least the Maintainer role for the project.
+
+To duplicate an agent:
+
+1. On the left sidebar, select **Search or go to** > **Explore**. If you've [turned on the new navigation](../../../interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
+1. Select **AI Catalog**, then select the **Agents** tab.
+1. Select the agent you want to duplicate.
+1. In the upper-right corner, select **Actions** ({{< icon name="ellipsis_v" >}}) > **Duplicate**.
+1. Under **Visibility & access**:
+   1. From the **Managed by** dropdown list, select a project for the agent.
+   1. For **Visibility**, select **Private** or **Public**.
+1. Optional. Edit any fields you want to change.
+1. Select **Create agent**.
+
+A custom agent is created. To use it, you must [enable it](../custom.md#enable-an-agent).
 
 ## Turn foundational agents on or off
 

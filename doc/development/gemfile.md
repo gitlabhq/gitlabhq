@@ -138,15 +138,36 @@ Read more about [Gems development guidelines](gems.md).
 
 ## Upgrade Rails
 
-When upgrading the Rails gem and its dependencies, you also should update the following:
+1. Before upgrading to a new version, make sure all `Gitlab.next_rails?` checks have been cleaned up.
+1. Create a merge request to upgrade the Rails version in `Gemfile.next` to the next Rails version.
 
-- The [`Gemfile` in the `qa` directory](https://gitlab.com/gitlab-org/gitlab/-/blob/master/qa/Gemfile).
+   This can be achieved by adding a `next?` condition in the Gemfile:
 
-You should also update npm packages that follow the current version of Rails:
+   ```ruby
+   if next?
+     gem 'rails', '~> 8.0.4', feature_category: :shared
+   else
+     gem 'rails', '~> 7.2.3', feature_category: :shared
+   end
+   ```
 
-- `@rails/ujs`
-  - Run `yarn patch-package @rails/ujs` after updating this to ensure our local patch file version matches.
-- `@rails/actioncable`
+   Also include `gems/activerecord-gitlab/Gemfile`, `gems/gitlab-backup-cli/Gemfile`, and `gems/gitlab-database-load_balancing/Gemfile`.
+1. Ensure the `rails-next` [scheduled pipeline](https://gitlab.com/gitlab-org/gitlab/-/pipeline_schedules) is passing. You can also
+   create a draft MR that upgrades the `Gemfile` to the next version to easily run new pipelines and test out fixes.
+
+   Fixes for `rails-next` can be done in separate merge requests for easier review. The codebase needs to work for both the current and
+   next version of Rails. Use the `Gitlab.next_rails?` conditional when needed.
+1. Coordinate a [test rollout](https://gitlab.com/gitlab-org/release/docs/-/blob/master/general/rails-upgrades.md) with the Delivery team.
+1. Upgrade the `Gemfile` to use the next Rails version. Also include the Gemfiles in the vendored gems listed in step 2 and the
+   [`Gemfile` in the `qa` directory](https://gitlab.com/gitlab-org/gitlab/-/blob/master/qa/Gemfile).
+
+   You should also update the `@rails/actioncable` NPM package that follows the current version of Rails.
+
+{{< alert type="note" >}}
+
+When upgrading to the next patch release, you can skip to step 5 and upgrade the Gemfiles and NPM packages directly.
+
+{{< /alert >}}
 
 ## Upgrading dependencies because of vulnerabilities
 

@@ -17,6 +17,9 @@ title: Rate limits
 For GitLab.com, see
 [GitLab.com-specific rate limits](../user/gitlab_com/_index.md#rate-limits-on-gitlabcom).
 
+For GitLab Dedicated, see
+[Authenticated user rate limits](../administration/dedicated/user_rate_limits.md).
+
 {{< /alert >}}
 
 Rate limiting is a common technique used to improve the security and durability

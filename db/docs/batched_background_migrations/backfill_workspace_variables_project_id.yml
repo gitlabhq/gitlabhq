@@ -1,8 +1,0 @@
----
-migration_job_name: BackfillWorkspaceVariablesProjectId
-description: Backfills sharding key `workspace_variables.project_id` from `workspaces`.
-feature_category: remote_development
-introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/150074
-milestone: '17.0'
-queued_migration_version: 20240419035360
-finalized_by: '20241105232353'

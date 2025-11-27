@@ -2,10 +2,6 @@
 Migration/PreventForeignKeyCreation:
   Details: grace period
   Exclude:
-    - 'db/post_migrate/20241015060654_prepare_async_foreign_key_validation_for_pipelines_upstream_pipeline_id.rb'
-    - 'db/post_migrate/20241106092213_sync_foreign_key_validation_for_pipelines_upstream_pipeline_id.rb'
-    - 'db/post_migrate/20241119143004_async_validation_for_builds_pipelines_fk.rb'
-    - 'db/post_migrate/20241125085625_add_fk_between_ci_builds_and_ci_pipelines.rb'
     - 'db/post_migrate/20250218025905_sync_fk_for_builds_auto_canceled_by_id.rb'
     - 'db/post_migrate/20250708131241_add_builds_foreign_key_to_ci_job_inputs.rb'
     - 'db/post_migrate/20250725125327_add_fk_to_ci_builds_from_definition_instances.rb'

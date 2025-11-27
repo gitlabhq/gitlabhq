@@ -1,9 +1,0 @@
----
-migration_job_name: BackfillDesignManagementRepositoriesNamespaceId
-description: Backfills sharding key `design_management_repositories.namespace_id`
-  from `projects`.
-feature_category: design_management
-introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/153150
-milestone: '17.1'
-queued_migration_version: 20240515155723
-finalized_by: '20241105232537'

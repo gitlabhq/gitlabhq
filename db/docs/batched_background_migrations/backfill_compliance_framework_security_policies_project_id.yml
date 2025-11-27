@@ -1,9 +1,0 @@
----
-migration_job_name: BackfillComplianceFrameworkSecurityPoliciesProjectId
-description: Backfills sharding key `compliance_framework_security_policies.project_id`
-  from `security_orchestration_policy_configurations`.
-feature_category: security_policy_management
-introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/160211
-milestone: '17.3'
-queued_migration_version: 20240722095915
-finalized_by: '20241015232257'

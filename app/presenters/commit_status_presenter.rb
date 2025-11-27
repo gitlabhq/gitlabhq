@@ -37,6 +37,7 @@ class CommitStatusPresenter < Gitlab::View::Presenter::Delegated
     environment_creation_failure: 'This job could not be executed because it would create an environment with an invalid parameter.',
     deployment_rejected: 'This deployment job was rejected.',
     ip_restriction_failure: "This job could not be executed because group IP address restrictions are enabled, and the runner's IP address is not in the allowed range.",
+    duo_workflow_not_allowed: "Duo Agent Platform cannot run on this runner. Duo jobs can only run on instance wide or top level group runners. Be sure to remove the gitlab--duo tag from this runner to avoid it picking these jobs.",
     failed_outdated_deployment_job: 'The deployment job is older than the latest deployment, and therefore failed.',
     reached_downstream_pipeline_trigger_rate_limit: 'Too many downstream pipelines triggered in the last minute. Try again later.',
     runner_provisioning_timeout: 'The runner manager did not provision a runner to pick up the job in time. The job will be retried automatically.'

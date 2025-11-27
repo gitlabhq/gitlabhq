@@ -2,41 +2,70 @@
 stage: GitLab Dedicated
 group: US Public Sector Services
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
-description: Available features and benefits.
+description: Single-tenant SaaS solution for government agencies.
 title: GitLab Dedicated for Government
 ---
 
 {{< details >}}
 
 - Tier: Ultimate
-- Offering: GitLab Dedicated
+- Offering: GitLab Dedicated for Government
 
 {{< /details >}}
 
-GitLab Dedicated for Government is a fully isolated, single-tenant SaaS solution that is:
+GitLab Dedicated for Government is a single-tenant SaaS solution designed for
+government agencies and organizations with government compliance requirements.
 
-- Hosted and managed by GitLab, Inc.
-- Deployed on [AWS GovCloud](https://docs.aws.amazon.com/govcloud-us/latest/UserGuide/whatis.html) in the US West region.
+Key features include:
 
-GitLab Dedicated for Government removes the overhead of platform management to increase your operational efficiency, reduce risk, and enhance the speed and agility of your organization. Each GitLab Dedicated for Government instance is highly available with disaster recovery. GitLab teams fully manage the maintenance and operations of each isolated instance, so customers can access our latest product improvements while meeting the most complex compliance standards. It is built on the same tech stack as GitLab Dedicated and adapted for US government usage.
+- [FedRAMP Moderate Authority to Operate (ATO)](https://marketplace.fedramp.gov/products/FR2411959145?cache=true)
+- AWS GovCloud deployment
+- High availability and disaster recovery
+- Enhanced security architecture
 
-It's the offering of choice for government agencies and related organizations that need to meet government standards such as FedRAMP compliance.
+GitLab Dedicated for Government removes platform management overhead so your teams can focus on mission delivery.
+GitLab teams manage all maintenance and operations of each isolated instance.
+You access the latest product improvements while meeting compliance standards.
+
+## Government-specific capabilities
+
+GitLab Dedicated for Government includes government-specific enhancements:
+
+Security and compliance:
+
+- Compliance monitoring aligned with FedRAMP requirements
+- Data sovereignty on AWS GovCloud infrastructure
+- Advanced access controls and audit capabilities
+
+Authentication:
+
+- Integration with government identity providers
+- Multi-factor authentication through your identity provider
+
+Managed operations:
+
+- GitLab handles all infrastructure management
+- Compliance-focused maintenance and upgrade processes
 
 ## Available features
 
 ### Data residency
 
-GitLab Dedicated for Government is available in AWS GovCloud and meets US data residency requirements.
+To meet US data residency requirements, GitLab Dedicated for Government is deployed
+on [AWS GovCloud](https://docs.aws.amazon.com/govcloud-us/latest/UserGuide/whatis.html) in the US-West region.
+
+All customer data, including repositories, databases, artifacts, and backups, remains within the AWS GovCloud boundary.
 
 ### Advanced search
 
-{{< details >}}
+{{< alert type="note" >}}
 
-- Status: Beta
+This feature is currently available for use in production environments as a preview and continues to be enhanced.
 
-{{< /details >}}
+{{< /alert >}}
 
-GitLab Dedicated for Government uses [advanced search](../../user/search/advanced_search.md).
+GitLab Dedicated for Government includes [advanced search](../../user/search/advanced_search.md) capabilities.
+You can search across your entire GitLab instance including code, issues, merge requests, and more.
 
 ### Availability and scalability
 
@@ -98,15 +127,9 @@ GitLab Dedicated for Government implements strict access controls to protect you
 - Uses the GitLab Dedicated Control Plane with the Hub account to perform automated actions over tenant accounts.
 
 GitLab Dedicated engineers do not have direct access to customer tenant environments.
-In [break glass](https://gitlab.com/gitlab-com/gl-infra/gitlab-dedicated/team/-/blob/main/engineering/breaking_glass.md)
-situations, where access to resources in the tenant environment is required to
-address a high-severity issue, GitLab engineers must go through the Hub account
-to manage those resources. This is done with an approval process, and after permission
-is granted, the engineer assumes an IAM role on a temporary basis to access
-tenant resources through the Hub account. All actions in the hub account and
-tenant account are logged to CloudTrail.
 
-Inside tenant accounts, GitLab leverages Intrusion Detection and Malware Scanning capabilities from AWS GuardDuty. Infrastructure logs are monitored by the GitLab Security Incident Response Team to detect anomalous events.
+Inside tenant accounts, GitLab leverages Intrusion Detection and Malware Scanning capabilities from AWS GuardDuty.
+Infrastructure logs are monitored by the GitLab Security Incident Response Team to detect anomalous events.
 
 ### Maintenance
 
@@ -170,13 +193,14 @@ Features behind flags that are disabled by default are not ready for production 
 
 When a feature becomes generally available and the flag is enabled or removed, the feature becomes available in GitLab Dedicated for Government in the same GitLab version.
 
-## Service Level Agreement
+## Service level agreement
 
-The following Service Level Agreement (SLA) targets are defined for GitLab Dedicated for Government:
+The following service level agreement (SLA) targets are defined for GitLab Dedicated for Government:
 
-- Recovery Point Objective (RPO) target: 4 hours.
-- Recovery Time Objective (RTO) target: There is no target for RTO. Service is restored on a best-effort basis.
-- Service Level Objective (SLO) target: There is no target for SLO.
+- Recovery point objective (RPO) target: 4 hours maximum data loss window in a disaster recovery scenario.
+- Recovery time objective (RTO) target: Service restoration is prioritized by incident severity and impact.
+  GitLab works to restore service as quickly as possible while ensuring data integrity and security.
+- Service level objective (SLO) target: Specific availability targets are determined based on FedRAMP requirements and operational best practices.
 
 ## Contact sales
 

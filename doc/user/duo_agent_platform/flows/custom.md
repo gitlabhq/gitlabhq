@@ -57,10 +57,12 @@ Prerequisites:
 
 - You must have at least the Developer role for the project.
 
-To view a list of flows enabled in your project:
+To view a list of flows associated with your project:
 
 1. On the left sidebar, select **Search or go to** and find your project. If you've [turned on the new navigation](../../interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
 1. Select **Automate** > **Flows**.
+   - To view flows enabled in the project, select the **Enabled** tab.
+   - To view flows managed by the project, select the **Managed** tab.
 
 Select a flow to view its details.
 

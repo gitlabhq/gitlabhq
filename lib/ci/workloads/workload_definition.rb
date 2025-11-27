@@ -12,7 +12,8 @@ module Ci
         :variables,
         :artifacts_paths,
         :timeout,
-        :cache
+        :cache,
+        :tags
 
       def initialize
         self.timeout = DEFAULT_TIMEOUT
@@ -39,6 +40,8 @@ module Ci
 
         result[:artifacts] = { paths: artifacts_paths } if artifacts_paths.present?
         result[:cache] = cache if cache.present?
+
+        result[:tags] = tags if tags.present?
 
         result
       end

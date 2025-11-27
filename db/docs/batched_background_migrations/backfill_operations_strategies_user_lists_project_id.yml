@@ -1,9 +1,0 @@
----
-migration_job_name: BackfillOperationsStrategiesUserListsProjectId
-description: Backfills sharding key `operations_strategies_user_lists.project_id`
-  from `operations_user_lists`.
-feature_category: feature_flags
-introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/156122
-milestone: '17.1'
-queued_migration_version: 20240612073059
-finalized_by: '20241112232548'

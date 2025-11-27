@@ -1,8 +1,0 @@
----
-migration_job_name: BackfillCiJobVariablesProjectId
-description: Backfills sharding key `ci_job_variables.project_id` from `p_ci_builds`.
-feature_category: continous_integration
-introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/163445
-milestone: '17.4'
-queued_migration_version: 20240821075507
-finalized_by: '20241015063353'

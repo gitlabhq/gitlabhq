@@ -50230,6 +50230,7 @@ Values for sorting CI/CD job analytics.
 | <a id="cijobfailurereasondeployment_rejected"></a>`DEPLOYMENT_REJECTED` | A job that failed due to deployment rejected. |
 | <a id="cijobfailurereasondownstream_bridge_project_not_found"></a>`DOWNSTREAM_BRIDGE_PROJECT_NOT_FOUND` | A job that failed due to downstream bridge project not found. |
 | <a id="cijobfailurereasondownstream_pipeline_creation_failed"></a>`DOWNSTREAM_PIPELINE_CREATION_FAILED` | A job that failed due to downstream pipeline creation failed. |
+| <a id="cijobfailurereasonduo_workflow_not_allowed"></a>`DUO_WORKFLOW_NOT_ALLOWED` | A job that failed due to duo workflow not allowed. |
 | <a id="cijobfailurereasonenvironment_creation_failure"></a>`ENVIRONMENT_CREATION_FAILURE` | A job that failed due to environment creation failure. |
 | <a id="cijobfailurereasonfailed_outdated_deployment_job"></a>`FAILED_OUTDATED_DEPLOYMENT_JOB` | A job that failed due to failed outdated deployment job. |
 | <a id="cijobfailurereasonforward_deployment_failure"></a>`FORWARD_DEPLOYMENT_FAILURE` | A job that failed due to forward deployment failure. |

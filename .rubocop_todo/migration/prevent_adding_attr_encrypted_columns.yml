@@ -1,7 +1,4 @@
 ---
 Migration/PreventAddingAttrEncryptedColumns:
   Exclude:
-    - 'db/migrate/20241017160107_add_ci_job_token_signing_key_to_application_settings.rb'
-    - 'db/migrate/20241106114853_create_system_access_group_microsoft_applications.rb'
-    - 'db/migrate/20241106115015_create_system_access_group_microsoft_graph_access_tokens.rb'
     - 'db/migrate/20250114105214_create_system_hooks.rb'

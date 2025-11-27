@@ -1,0 +1,14 @@
+---
+name: duo_agent_platform_ci_job_tags
+description: Controls whether Duo Agent Platform CI jobs (for remote execution) have
+  the `gitlab--duo` tag. This tag ensures that only specific runners will pick up
+  these jobs. Disabling this means that the jobs are untagged and will only be picked
+  up by runners that can run untagged jobs. Enabling means that only runners with
+  the `gitlab--duo` tag will pick these up.
+feature_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/581415
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/213431
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/581984
+milestone: '18.6'
+group: group::agent foundations
+type: gitlab_com_derisk
+default_enabled: false

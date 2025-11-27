@@ -1,8 +1,0 @@
----
-migration_job_name: BackfillDastProfilesTagsProjectId
-description: Backfills sharding key `dast_profiles_tags.project_id` from `dast_profiles`.
-feature_category: dynamic_application_security_testing
-introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/155285
-milestone: '17.1'
-queued_migration_version: 20240604145223
-finalized_by: '20241103232239'

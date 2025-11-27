@@ -1,0 +1,10 @@
+---
+name: duo_runner_restrictions
+description: When enabled Duo jobs will only run on instance or top level group runners. All other runners will drop the jobs immediately. This is intended to be enabled on GitLab.com to ensure runner trust boundaries are not crossed.
+feature_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/581415
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/213431
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/580765
+milestone: '18.7'
+group: group::agent foundations
+type: ops
+default_enabled: false

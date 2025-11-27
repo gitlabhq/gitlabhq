@@ -1,9 +1,0 @@
----
-migration_job_name: BackfillDastScannerProfilesBuildsProjectId
-description: Backfills sharding key `dast_scanner_profiles_builds.project_id` from
-  `dast_scanner_profiles`.
-feature_category: dynamic_application_security_testing
-introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/167626
-milestone: '17.5'
-queued_migration_version: 20240930135301
-finalized_by: '20241027232438'

@@ -313,9 +313,7 @@ describe('NewEditForm', () => {
     });
 
     it('does not modify `Organization URL` when typing in `Organization name`', () => {
-      expect(wrapper.emitted('submit')).toEqual([
-        [{ name: 'Foo bar baz', id: 1, path: 'foo-bar' }],
-      ]);
+      expect(wrapper.emitted('submit')).toEqual([[{ name: 'Foo bar baz', id: 1 }]]);
     });
   });
 

@@ -62,10 +62,12 @@ Prerequisites:
 
 - You must have at least the Developer role for the project.
 
-To view a list of agents enabled in your project:
+To view a list of agents associated with your project:
 
 1. On the left sidebar, select **Search or go to** and find your project. If you've [turned on the new navigation](../../interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
 1. Select **Automate** > **Agents**.
+   - To view agents enabled in the project, select the **Enabled** tab.
+   - To view agents managed by the project, select the **Managed** tab.
 
 Select an agent to view its details.
 
