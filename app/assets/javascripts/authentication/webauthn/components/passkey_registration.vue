@@ -104,7 +104,7 @@ export default {
 
         <gl-form-group
           :description="s__('Add passkey|Add a name to help you identify the passkey later')"
-          :label="__('Device name')"
+          :label="s__('Add passkey|Passkey name')"
           label-for="device-name"
         >
           <gl-form-input

@@ -474,3 +474,27 @@ The crawler typically begins at the defined target URL and attempts to find furt
 #### Make sure requests are not getting blocked
 
 By default DAST only allows requests to the target URL's domain. If your website makes requests to domains other than the target's, use `DAST_SCOPE_ALLOW_HOSTS` to specify such hosts. Example: "example.com" makes an authentication request to "auth.example.com" to renew the authentication token. Because the domain is not allowed, the request gets blocked and the crawler fails to find new pages.
+
+#### Maximum actions and crawler timeout
+
+The crawler has default limits on its activity and time spent on the target site:
+
+1. By default, the crawler processes 10,000 actions. An action can be selecting a link or filling out a form. If
+   the crawler breaches this limit, you see the debug level log `not adding navigation as it exceeds max actions`.
+1. By default, the crawler runs for a maximum of 24 hours. If it exceeds this time limit, you see the trace
+   level log `crawl complete, timed out`.
+
+When the crawler reached either of these limits, the scanner stops and cannot cover the target website completely.
+Therefore, a breach of these limits might indicate a problem during the scan and a potential opportunity for optimization.
+
+If your application has template-based pages with similar structure but different data across pages or
+you notice URL patterns (for example, `/products/item-123`, `/products/item-456`, `/products/item-789`),
+configure [grouped URLs](configuration/customize_settings.md#grouped-urls) to reduce scan time while
+maintaining security coverage.
+
+Grouped URLs work well for e-commerce sites with many product pages, content-based sites, or search interfaces
+(for example, `/search?q=term&page=1`, `/search?q=term&page=2`).
+
+For more information about managing scan time, see [manage scan time](configuration/customize_settings.md#managing-scan-time).
+If no other strategy is suitable and your target site is extensive, increase the crawler timeout (`DAST_CRAWL_TIMEOUT`)
+or max actions (`DAST_CRAWL_MAX_ACTIONS`).

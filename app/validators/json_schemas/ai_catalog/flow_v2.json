@@ -396,7 +396,6 @@
       "required": [
         "prompt_id",
         "name",
-        "model",
         "prompt_template",
         "unit_primitives"
       ],
@@ -410,9 +409,6 @@
           "type": "string",
           "description": "name for the local prompt"
         },
-        "model": {
-          "$ref": "#/definitions/ModelConfig"
-        },
         "prompt_template": {
           "$ref": "#/definitions/PromptTemplate"
         },
@@ -423,6 +419,10 @@
               "type": "integer",
               "minimum": 1,
               "description": "Timeout in seconds for prompt execution"
+            },
+            "vertex_location": {
+              "type": "string",
+              "description": "Vertex AI location for the flow"
             }
           },
           "additionalProperties": false
@@ -433,37 +433,6 @@
           "items": {
             "type": "string"
           }
-        }
-      }
-    },
-    "ModelConfig": {
-      "type": "object",
-      "required": [
-        "params"
-      ],
-      "additionalProperties": false,
-      "properties": {
-        "params": {
-          "type": "object",
-          "required": [
-            "model_class_provider"
-          ],
-          "properties": {
-            "model_class_provider": {
-              "type": "string",
-              "description": "Model provider. Examples: 'anthropic'"
-            },
-            "model": {
-              "type": "string",
-              "description": "Specific model name. Examples: 'claude-3-sonnet'"
-            },
-            "max_tokens": {
-              "type": "integer",
-              "minimum": 1,
-              "description": "Maximum number of tokens for model response"
-            }
-          },
-          "additionalProperties": false
         }
       }
     },

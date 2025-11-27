@@ -425,6 +425,22 @@ RSpec.describe Gitlab::Workhorse, feature_category: :shared do
         expect(result[:GitalyServer][:call_metadata]).not_to have_key('remote_ip')
       end
     end
+
+    context 'with composite identity', :request_store do
+      let(:primary_user) { create(:user, :service_account, composite_identity_enforced: true) }
+      let(:scoped_user) { user }
+      let(:identity) { ::Gitlab::Auth::Identity.fabricate(primary_user) }
+
+      it { expect(subject).not_to have_key('GlScopedUserID') }
+
+      context 'when identity is linked' do
+        before do
+          identity.link!(scoped_user)
+        end
+
+        it { expect(subject).to include(GlScopedUserID: scoped_user.id.to_s) }
+      end
+    end
   end
 
   describe '.cleanup_key' do

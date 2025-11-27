@@ -1,0 +1,7 @@
+---
+name: create_markdown_upload
+description: Grants the ability to create markdown uploads
+feature_category: team_planning
+boundaries:
+  - project
+available_for_tokens: true

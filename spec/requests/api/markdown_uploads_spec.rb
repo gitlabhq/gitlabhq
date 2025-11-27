@@ -26,6 +26,13 @@ RSpec.describe API::MarkdownUploads, feature_category: :team_planning do
         expect(response).to have_gitlab_http_status(:ok)
         expect(json_response['MaximumSize']).to eq(project.max_attachment_size)
       end
+
+      it_behaves_like 'authorizing granular token permissions', :authorize_markdown_upload do
+        let(:boundary_object) { project }
+        let(:request) do
+          post api(path, personal_access_token: pat), headers: headers
+        end
+      end
     end
 
     context 'with unauthorized user' do
@@ -91,6 +98,13 @@ RSpec.describe API::MarkdownUploads, feature_category: :team_planning do
       expect(File.exist?(path)).to be(false)
     end
 
+    it_behaves_like 'authorizing granular token permissions', :create_markdown_upload do
+      let(:boundary_object) { project }
+      let(:request) do
+        post api(path, personal_access_token: pat), params: { file: file }
+      end
+    end
+
     context 'with anonymous user on public project' do
       let(:project) { public_project }
 
@@ -125,6 +139,14 @@ RSpec.describe API::MarkdownUploads, feature_category: :team_planning do
     it_behaves_like 'an unauthorized request' do
       subject(:make_request) { get api(path, user) }
     end
+
+    it_behaves_like 'authorizing granular token permissions', :read_markdown_upload do
+      let(:boundary_object) { project }
+      let(:user) { project_maintainer }
+      let(:request) do
+        get api(path, personal_access_token: pat)
+      end
+    end
   end
 
   describe "GET /projects/:id/uploads/:upload_id" do
@@ -138,6 +160,15 @@ RSpec.describe API::MarkdownUploads, feature_category: :team_planning do
       expect(response).to have_gitlab_http_status(:ok)
       expect(response.headers['Content-Disposition'])
         .to eq(%(attachment; filename="test.jpg"; filename*=UTF-8''test.jpg))
+    end
+
+    it_behaves_like 'authorizing granular token permissions', :read_markdown_upload do
+      let!(:upload) { create(:upload, :issuable_upload, :with_file, model: project, filename: 'test.jpg') }
+      let(:boundary_object) { project }
+      let(:user) { project_maintainer }
+      let(:request) do
+        get api(path, personal_access_token: pat)
+      end
     end
 
     context 'when the upload does not exist' do
@@ -185,6 +216,15 @@ RSpec.describe API::MarkdownUploads, feature_category: :team_planning do
         expect(response).to have_gitlab_http_status(:not_found)
       end
     end
+
+    it_behaves_like 'authorizing granular token permissions', :read_markdown_upload do
+      let!(:upload) { create(:upload, :issuable_upload, :with_file, model: project, filename: 'test.jpg') }
+      let(:boundary_object) { project }
+      let(:user) { project_maintainer }
+      let(:request) do
+        get api(path, personal_access_token: pat)
+      end
+    end
   end
 
   describe "DELETE /projects/:id/uploads/:upload_id" do
@@ -215,6 +255,14 @@ RSpec.describe API::MarkdownUploads, feature_category: :team_planning do
     it_behaves_like 'an unauthorized request' do
       subject(:make_request) { delete api(path, user) }
     end
+
+    it_behaves_like 'authorizing granular token permissions', :delete_markdown_upload do
+      let(:boundary_object) { project }
+      let(:user) { project_maintainer }
+      let(:request) do
+        delete api(path, personal_access_token: pat)
+      end
+    end
   end
 
   describe "DELETE /projects/:id/uploads/:secret/:filename" do
@@ -233,6 +281,14 @@ RSpec.describe API::MarkdownUploads, feature_category: :team_planning do
     it_behaves_like 'an unauthorized request' do
       subject(:make_request) { delete api(path, user) }
     end
+
+    it_behaves_like 'authorizing granular token permissions', :delete_markdown_upload do
+      let(:boundary_object) { project }
+      let(:user) { project_maintainer }
+      let(:request) do
+        delete api(path, personal_access_token: pat)
+      end
+    end
   end
 
   describe "GET /groups/:id/uploads" do
@@ -249,6 +305,14 @@ RSpec.describe API::MarkdownUploads, feature_category: :team_planning do
 
     it_behaves_like 'an unauthorized request' do
       subject(:make_request) { get api(path, user) }
+    end
+
+    it_behaves_like 'authorizing granular token permissions', :read_markdown_upload do
+      let(:boundary_object) { group }
+      let(:user) { group_maintainer }
+      let(:request) do
+        get api(path, personal_access_token: pat)
+      end
     end
   end
 
@@ -277,6 +341,15 @@ RSpec.describe API::MarkdownUploads, feature_category: :team_planning do
 
     it_behaves_like 'an unauthorized request' do
       subject(:make_request) { get api(path, user) }
+    end
+
+    it_behaves_like 'authorizing granular token permissions', :read_markdown_upload do
+      let!(:upload) { create(:upload, :namespace_upload, :with_file, model: group, filename: 'test.jpg') }
+      let(:boundary_object) { group }
+      let(:user) { group_maintainer }
+      let(:request) do
+        get api(path, personal_access_token: pat)
+      end
     end
   end
 
@@ -310,6 +383,15 @@ RSpec.describe API::MarkdownUploads, feature_category: :team_planning do
         expect(response).to have_gitlab_http_status(:not_found)
       end
     end
+
+    it_behaves_like 'authorizing granular token permissions', :read_markdown_upload do
+      let!(:upload) { create(:upload, :namespace_upload, :with_file, model: group, filename: 'test.jpg') }
+      let(:boundary_object) { group }
+      let(:user) { group_maintainer }
+      let(:request) do
+        get api(path, personal_access_token: pat)
+      end
+    end
   end
 
   describe "DELETE /groups/:id/uploads/:upload_id" do
@@ -340,6 +422,14 @@ RSpec.describe API::MarkdownUploads, feature_category: :team_planning do
     it_behaves_like 'an unauthorized request' do
       subject(:make_request) { delete api(path, user) }
     end
+
+    it_behaves_like 'authorizing granular token permissions', :delete_markdown_upload do
+      let(:boundary_object) { group }
+      let(:user) { group_maintainer }
+      let(:request) do
+        delete api(path, personal_access_token: pat)
+      end
+    end
   end
 
   describe "DELETE /groups/:id/uploads/:secret/:filename" do
@@ -357,6 +447,14 @@ RSpec.describe API::MarkdownUploads, feature_category: :team_planning do
 
     it_behaves_like 'an unauthorized request' do
       subject(:make_request) { delete api(path, user) }
+    end
+
+    it_behaves_like 'authorizing granular token permissions', :delete_markdown_upload do
+      let(:boundary_object) { group }
+      let(:user) { group_maintainer }
+      let(:request) do
+        delete api(path, personal_access_token: pat)
+      end
     end
   end
 end

@@ -1209,40 +1209,6 @@ This field returns a [connection](#connections). It accepts the
 four standard [pagination arguments](#pagination-arguments):
 `before: String`, `after: String`, `first: Int`, and `last: Int`.
 
-### `Query.mavenUpstreamRegistry`
-
-{{< details >}}
-**Introduced** in GitLab 18.4.
-**Status**: Experiment.
-{{< /details >}}
-
-Find a Maven upstream registry. Returns null if the `maven_virtual_registry` feature flag is disabled.
-
-Returns [`MavenUpstreamDetails`](#mavenupstreamdetails).
-
-#### Arguments
-
-| Name | Type | Description |
-| ---- | ---- | ----------- |
-| <a id="querymavenupstreamregistryid"></a>`id` | [`VirtualRegistriesPackagesMavenUpstreamID!`](#virtualregistriespackagesmavenupstreamid) | Global ID of the Maven upstream registry. |
-
-### `Query.mavenVirtualRegistry`
-
-{{< details >}}
-**Introduced** in GitLab 18.3.
-**Status**: Experiment.
-{{< /details >}}
-
-Find a Maven virtual registry. Returns null if the `maven_virtual_registry` feature flag is disabled.
-
-Returns [`MavenRegistryDetails`](#mavenregistrydetails).
-
-#### Arguments
-
-| Name | Type | Description |
-| ---- | ---- | ----------- |
-| <a id="querymavenvirtualregistryid"></a>`id` | [`VirtualRegistriesPackagesMavenRegistryID!`](#virtualregistriespackagesmavenregistryid) | Global ID of the Maven virtual registry. |
-
 ### `Query.memberRole`
 
 {{< details >}}
@@ -32590,7 +32556,6 @@ GPG signature for a signed commit.
 | <a id="groupmarkedfordeletion"></a>`markedForDeletion` {{< icon name="warning-solid" >}} | [`Boolean!`](#boolean) | **Introduced** in GitLab 18.2. **Status**: Experiment. Indicates if group or any ancestor is scheduled to be deleted. |
 | <a id="groupmarkedfordeletionon"></a>`markedForDeletionOn` {{< icon name="warning-solid" >}} | [`Time`](#time) | **Introduced** in GitLab 16.11. **Status**: Experiment. Date when group was scheduled to be deleted. |
 | <a id="groupmathrenderinglimitsenabled"></a>`mathRenderingLimitsEnabled` | [`Boolean`](#boolean) | Indicates if math rendering limits are used for the group. |
-| <a id="groupmavenvirtualregistries"></a>`mavenVirtualRegistries` {{< icon name="warning-solid" >}} | [`MavenRegistryConnection`](#mavenregistryconnection) | **Introduced** in GitLab 18.1. **Status**: Experiment. Maven virtual registries registered to the group. Returns null if the `maven_virtual_registry` feature flag is disabled. |
 | <a id="groupmaxaccesslevel"></a>`maxAccessLevel` | [`AccessLevel!`](#accesslevel) | Maximum access level of the current user in the group. |
 | <a id="groupmentionsdisabled"></a>`mentionsDisabled` | [`Boolean`](#boolean) | Indicates if a group is disabled from getting mentioned. |
 | <a id="groupmergerequestsenabled"></a>`mergeRequestsEnabled` {{< icon name="warning-solid" >}} | [`Boolean!`](#boolean) | **Introduced** in GitLab 18.3. **Status**: Experiment. Indicates if merge requests are enabled for the namespace. |
@@ -36128,20 +36093,33 @@ Represents Maven virtual registry details.
 | <a id="mavenregistrydetailsdescription"></a>`description` | [`String`](#string) | Description of the virtual registry. |
 | <a id="mavenregistrydetailsid"></a>`id` | [`ID!`](#id) | ID of the virtual registry. |
 | <a id="mavenregistrydetailsname"></a>`name` | [`String!`](#string) | Name of the virtual registry. |
+| <a id="mavenregistrydetailsregistryupstreams"></a>`registryUpstreams` {{< icon name="warning-solid" >}} | [`[MavenRegistryUpstreamWithUpstream!]!`](#mavenregistryupstreamwithupstream) | **Introduced** in GitLab 18.7. **Status**: Experiment. List of registry upstreams for the Maven virtual registry. |
 | <a id="mavenregistrydetailsupdatedat"></a>`updatedAt` | [`Time`](#time) | Timestamp of when the virtual registry was updated. |
 | <a id="mavenregistrydetailsupstreams"></a>`upstreams` {{< icon name="warning-solid" >}} | [`[MavenUpstreamDetails!]`](#mavenupstreamdetails) | **Introduced** in GitLab 18.1. **Status**: Experiment. List of upstream registries for the Maven virtual registry. |
 
-### `MavenRegistryUpstream`
+### `MavenRegistryUpstreamWithRegistry`
 
-Represents the upstream registries of a Maven virtual registry.
+Represents a Maven virtual registry upstream and its relationship to the registry.
 
 #### Fields
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
-| <a id="mavenregistryupstreamid"></a>`id` {{< icon name="warning-solid" >}} | [`ID!`](#id) | **Introduced** in GitLab 18.2. **Status**: Experiment. ID of the registry upstream. |
-| <a id="mavenregistryupstreamposition"></a>`position` {{< icon name="warning-solid" >}} | [`Int!`](#int) | **Introduced** in GitLab 18.2. **Status**: Experiment. Position of the upstream registry in an ordered list. |
-| <a id="mavenregistryupstreamregistry"></a>`registry` {{< icon name="warning-solid" >}} | [`MavenRegistry!`](#mavenregistry) | **Introduced** in GitLab 18.6. **Status**: Experiment. Maven registry associated with the registry upstream. |
+| <a id="mavenregistryupstreamwithregistryid"></a>`id` {{< icon name="warning-solid" >}} | [`ID!`](#id) | **Introduced** in GitLab 18.2. **Status**: Experiment. ID of the registry upstream. |
+| <a id="mavenregistryupstreamwithregistryposition"></a>`position` {{< icon name="warning-solid" >}} | [`Int!`](#int) | **Introduced** in GitLab 18.2. **Status**: Experiment. Position of the upstream registry in an ordered list. |
+| <a id="mavenregistryupstreamwithregistryregistry"></a>`registry` {{< icon name="warning-solid" >}} | [`MavenRegistry!`](#mavenregistry) | **Introduced** in GitLab 18.6. **Status**: Experiment. Maven registry associated with the registry upstream. |
+
+### `MavenRegistryUpstreamWithUpstream`
+
+Represents a Maven virtual registry upstream and its relationship to the upstream.
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mavenregistryupstreamwithupstreamid"></a>`id` {{< icon name="warning-solid" >}} | [`ID!`](#id) | **Introduced** in GitLab 18.2. **Status**: Experiment. ID of the registry upstream. |
+| <a id="mavenregistryupstreamwithupstreamposition"></a>`position` {{< icon name="warning-solid" >}} | [`Int!`](#int) | **Introduced** in GitLab 18.2. **Status**: Experiment. Position of the upstream registry in an ordered list. |
+| <a id="mavenregistryupstreamwithupstreamupstream"></a>`upstream` {{< icon name="warning-solid" >}} | [`MavenUpstream!`](#mavenupstream) | **Introduced** in GitLab 18.7. **Status**: Experiment. Maven upstream associated with the registry upstream. |
 
 ### `MavenUpstream`
 
@@ -36173,9 +36151,8 @@ Represents Maven upstream registry details.
 | <a id="mavenupstreamdetailsid"></a>`id` {{< icon name="warning-solid" >}} | [`ID!`](#id) | **Introduced** in GitLab 18.1. **Status**: Experiment. ID of the upstream registry. |
 | <a id="mavenupstreamdetailsmetadatacachevalidityhours"></a>`metadataCacheValidityHours` {{< icon name="warning-solid" >}} | [`Int!`](#int) | **Introduced** in GitLab 18.4. **Status**: Experiment. Time before the cache expires for Maven metadata. |
 | <a id="mavenupstreamdetailsname"></a>`name` {{< icon name="warning-solid" >}} | [`String!`](#string) | **Introduced** in GitLab 18.1. **Status**: Experiment. Name of the upstream registry. |
-| <a id="mavenupstreamdetailsregistries"></a>`registries` {{< icon name="warning-solid" >}} | [`MavenRegistryConnection!`](#mavenregistryconnection) | **Introduced** in GitLab 18.4. **Status**: Experiment. Represents the virtual registries which use the upstream. |
 | <a id="mavenupstreamdetailsregistriescount"></a>`registriesCount` {{< icon name="warning-solid" >}} | [`Int!`](#int) | **Introduced** in GitLab 18.6. **Status**: Experiment. Number of registries using the upstream. |
-| <a id="mavenupstreamdetailsregistryupstreams"></a>`registryUpstreams` {{< icon name="warning-solid" >}} | [`[MavenRegistryUpstream!]!`](#mavenregistryupstream) | **Introduced** in GitLab 18.2. **Status**: Experiment. Represents the upstream registry for the upstream which contains the position data. |
+| <a id="mavenupstreamdetailsregistryupstreams"></a>`registryUpstreams` {{< icon name="warning-solid" >}} | [`[MavenRegistryUpstreamWithRegistry!]!`](#mavenregistryupstreamwithregistry) | **Introduced** in GitLab 18.2. **Status**: Experiment. Represents the upstream registry for the upstream which contains the position data. |
 | <a id="mavenupstreamdetailsurl"></a>`url` {{< icon name="warning-solid" >}} | [`String!`](#string) | **Introduced** in GitLab 18.1. **Status**: Experiment. URL of the upstream registry. |
 | <a id="mavenupstreamdetailsusername"></a>`username` {{< icon name="warning-solid" >}} | [`String`](#string) | **Introduced** in GitLab 18.1. **Status**: Experiment. Username to sign in to the upstream registry. |
 

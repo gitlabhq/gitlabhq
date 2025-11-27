@@ -111,6 +111,12 @@ The **Metric trends** table displays metrics for the last six months, with month
 
 - **Duo Code Review comments**: Number of comments posted by GitLab Duo Code Review on merge request diffs.
 
+  {{< alert type="note" >}}
+
+  Usage data for Duo Code Review requests and comments is calculated with data starting from GitLab 18.3.
+
+  {{< /alert >}}
+
 ### Development metrics
 
 - [**Lead time**](../group/value_stream_analytics/_index.md#lifecycle-metrics)

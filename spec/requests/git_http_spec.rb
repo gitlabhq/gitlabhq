@@ -668,6 +668,17 @@ RSpec.describe 'Git HTTP requests', feature_category: :source_code_management do
 
                   it_behaves_like 'pulls are allowed'
                   it_behaves_like 'pushes are allowed'
+
+                  shared_examples 'validate scoped user id linking' do |action|
+                    it "doesn't link scopes user id for #{action}" do
+                      send(action, path, **env) do |response|
+                        expect(json_response['GlScopedUserID']).to be_nil
+                      end
+                    end
+                  end
+
+                  it_behaves_like 'validate scoped user id linking', :upload
+                  it_behaves_like 'validate scoped user id linking', :download
                 end
 
                 context "when oauth token owner has composite identity" do
@@ -683,8 +694,40 @@ RSpec.describe 'Git HTTP requests', feature_category: :source_code_management do
                     ).plaintext_token
                   end
 
-                  it_behaves_like 'pulls are allowed'
-                  it_behaves_like 'pushes are allowed'
+                  context 'when service account does not have access to the project' do
+                    it 'rejects pulls with 404 not found' do
+                      download(path, **env) do |response|
+                        expect(response).to have_gitlab_http_status(:not_found)
+                      end
+                    end
+
+                    it 'rejects pushes with 404 not found' do
+                      upload(path, **env) do |response|
+                        expect(response).to have_gitlab_http_status(:not_found)
+                      end
+                    end
+                  end
+
+                  context 'when service account has developer access to the project' do
+                    before do
+                      project.add_developer(service_account)
+                    end
+
+                    it_behaves_like 'pulls are allowed'
+                    it_behaves_like 'pushes are allowed'
+
+                    shared_examples 'correct git user attribution' do |action|
+                      it "has the correct git user attribution for #{action}" do
+                        send(action, path, **env) do |response|
+                          expect(json_response['GL_USERNAME']).to eq(service_account.username)
+                          expect(json_response['GlScopedUserID']).to eq(user.id.to_s)
+                        end
+                      end
+                    end
+
+                    it_behaves_like 'correct git user attribution', :upload
+                    it_behaves_like 'correct git user attribution', :download
+                  end
                 end
 
                 context "when oauth token has api scope" do
