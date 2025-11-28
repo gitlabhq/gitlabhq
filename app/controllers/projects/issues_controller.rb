@@ -38,7 +38,7 @@ class Projects::IssuesController < Projects::ApplicationController
   before_action :authorize_create_issue!, only: [:new, :create]
 
   # Allow modify issue
-  before_action :authorize_update_issuable!, only: [:edit, :update, :move, :reorder]
+  before_action :authorize_update_issuable!, only: [:update, :move, :reorder]
 
   # Allow create a new branch and empty WIP merge request from current issue
   before_action :authorize_create_merge_request_from!, only: [:create_merge_request]
@@ -154,7 +154,14 @@ class Projects::IssuesController < Projects::ApplicationController
   alias_method :designs, :show
 
   def edit
-    respond_with(@issue)
+    # Check if user can edit the issue
+    if can?(current_user, :update_issue, issue)
+      # Redirect to issues detail page with edit mode enabled
+      redirect_to project_issue_path(project, issue, edit: 'true')
+    else
+      # Redirect to issues detail page without edit mode
+      redirect_to project_issue_path(project, issue)
+    end
   end
 
   def create
@@ -476,7 +483,10 @@ class Projects::IssuesController < Projects::ApplicationController
   def redirect_if_work_item
     return unless use_work_items_path?(issue)
 
-    redirect_to project_work_item_path(project, issue.iid, params: request.query_parameters)
+    query_params = request.query_parameters
+    query_params = query_params.merge(edit: 'true') if action_name == 'edit' && can?(current_user, :update_issue, issue)
+
+    redirect_to project_work_item_path(project, issue.iid, query_params)
   end
 
   def redirect_index_to_work_items

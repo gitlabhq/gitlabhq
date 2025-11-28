@@ -5,6 +5,7 @@ import { generateDescriptionAction } from 'ee_else_ce/ai/editor_actions/generate
 import { helpPagePath } from '~/helpers/help_page_helper';
 import * as Sentry from '~/sentry/sentry_browser_wrapper';
 import { getDraft, clearDraft, updateDraft } from '~/lib/utils/autosave';
+import { getParameterByName, updateHistory, removeParams } from '~/lib/utils/url_utility';
 import { confirmAction } from '~/lib/utils/confirm_via_gl_modal/confirm_via_gl_modal';
 import { __, s__ } from '~/locale';
 import EditedAt from '~/issues/show/components/edited.vue';
@@ -135,6 +136,7 @@ export default {
       showTemplateApplyWarning: false,
       workspacePermissions: {},
       markdownPaths: {},
+      enableEditFromRedirect: getParameterByName('edit') === 'true',
     };
   },
   apollo: {
@@ -153,11 +155,12 @@ export default {
         return data?.workspace?.workItem || {};
       },
       result() {
-        if (this.isEditing && !this.createFlow) {
-          this.checkForConflicts();
-        }
-        if (this.isEditing && this.createFlow) {
-          this.startEditing();
+        if (this.isEditing) {
+          if (this.createFlow || this.enableEditFromRedirect) {
+            this.startEditing();
+          } else {
+            this.checkForConflicts();
+          }
         }
       },
       error() {
@@ -362,7 +365,7 @@ export default {
       ? DEFAULT_TEMPLATE_NAME
       : templateNameFromRoute || DEFAULT_TEMPLATE_NAME;
 
-    // Ensure that template is set during Create Flow only if any of the following is true:;
+    // Ensure that template is set during Create Flow only if any of the following is true:
     // - Template name is present in URL.
     // - Description is empty.
     if (this.isCreateFlow && (templateNameFromRoute || this.descriptionText.trim() === '')) {
@@ -383,8 +386,12 @@ export default {
       this.isEditing = true;
       this.wasEdited = true;
 
-      if (this.createFlow) {
+      if (this.createFlow || this.enableEditFromRedirect) {
         this.descriptionText = this.workItemDescription?.description;
+        if (this.enableEditFromRedirect) {
+          updateHistory({ url: removeParams(['edit']) });
+        }
+        this.enableEditFromRedirect = false;
       } else {
         const draftDescription = getDraft(this.autosaveKey) || '';
         if (draftDescription.trim() !== '') {

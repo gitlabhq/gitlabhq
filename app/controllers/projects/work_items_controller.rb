@@ -47,6 +47,20 @@ class Projects::WorkItemsController < Projects::ApplicationController
     @work_item = issuable
   end
 
+  def edit
+    # Check if user can edit the work item
+    work_item = issuable
+    return render_404 unless work_item
+
+    if can?(current_user, :update_work_item, work_item)
+      # Redirect to work_items detail page with edit mode enabled
+      redirect_to project_work_item_path(project, show_params[:iid], edit: 'true')
+    else
+      # Redirect to work_items detail page without edit mode
+      redirect_to project_work_item_path(project, show_params[:iid])
+    end
+  end
+
   def calendar
     @work_items = work_items_for_calendar
 

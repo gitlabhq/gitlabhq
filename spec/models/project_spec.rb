@@ -10554,4 +10554,11 @@ RSpec.describe Project, factory_default: :keep, feature_category: :groups_and_pr
       end
     end
   end
+
+  describe '#roles_user_can_assign' do
+    it_behaves_like 'roles_user_can_assign' do
+      let(:resource) { create(:project) }
+      let(:membership) { create(:project_member, user: user, project: resource) }
+    end
+  end
 end

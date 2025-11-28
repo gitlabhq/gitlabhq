@@ -214,6 +214,34 @@ curl --request DELETE --header "PRIVATE-TOKEN: <your_access_token>" \
 
 If successful, returns a [`204 No Content`](rest/troubleshooting.md#status-codes) status code.
 
+### Delete cache entries for a virtual registry
+
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/538327) in GitLab 18.7 [with a flag](../administration/feature_flags/_index.md) named `container_virtual_registries`. Disabled by default.
+
+{{< /history >}}
+
+Schedules all cache entries for deletion in all exclusive upstream registries for a container virtual registry. Cache entries are not scheduled for deletion for upstream registries that are associated with other virtual registries.
+
+```plaintext
+DELETE /virtual_registries/container/registries/:id/cache
+```
+
+| Attribute | Type | Required | Description |
+| --------- | ---- | -------- | ----------- |
+| `id` | integer | Yes | The ID of the container virtual registry. |
+
+Example request:
+
+```shell
+curl --request DELETE --header "PRIVATE-TOKEN: <your_access_token>" \
+     --header "Accept: application/json" \
+     --url "https://gitlab.example.com/api/v4/virtual_registries/container/registries/1/cache"
+```
+
+If successful, returns a [`204 No Content`](rest/troubleshooting.md#status-codes) status code.
+
 ## Manage upstream registries
 
 Use the following endpoints to configure and manage upstream container registries.
@@ -548,6 +576,34 @@ curl --request DELETE \
      --header "Content-Type: application/json" \
      --header "Accept: application/json" \
      --url "https://gitlab.example.com/api/v4/virtual_registries/container/registry_upstreams/1"
+```
+
+If successful, returns a [`204 No Content`](rest/troubleshooting.md#status-codes) status code.
+
+### Delete cache entries for an upstream registry
+
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/538327) in GitLab 18.7 [with a flag](../administration/feature_flags/_index.md) named `container_virtual_registries`. Disabled by default.
+
+{{< /history >}}
+
+Schedules all cache entries for deletion for a specific upstream registry in a container virtual registry.
+
+```plaintext
+DELETE /virtual_registries/container/upstreams/:id/cache
+```
+
+| Attribute | Type | Required | Description |
+| --------- | ---- | -------- | ----------- |
+| `id` | integer | Yes | The ID of the upstream registry. |
+
+Example request:
+
+```shell
+curl --request DELETE --header "PRIVATE-TOKEN: <your_access_token>" \
+     --header "Accept: application/json" \
+     --url "https://gitlab.example.com/api/v4/virtual_registries/container/upstreams/1/cache"
 ```
 
 If successful, returns a [`204 No Content`](rest/troubleshooting.md#status-codes) status code.

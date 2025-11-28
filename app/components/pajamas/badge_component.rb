@@ -14,6 +14,7 @@ module Pajamas
       **html_options
     )
       @text = text.presence
+
       @icon = icon.to_s.presence
       @icon_classes = Array.wrap(icon_classes)
       @icon_only = @icon && icon_only
@@ -36,6 +37,12 @@ module Pajamas
       classes = %w[gl-icon gl-badge-icon] + @icon_classes
       classes.push("-gl-ml-2") if circular_icon?
       classes.join(" ")
+    end
+
+    def icon_aria_label
+      # Icons should have aria-label="" (empty string) when badge has text
+      # to prevent screen readers from announcing both icon and text
+      icon_only? ? nil : ''
     end
 
     def icon_only?

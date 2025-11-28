@@ -2637,22 +2637,22 @@ msgstr ""
 msgid "AICatalog|Could not create flow in the project. Check that the project meets the %{linkStart}prerequisites%{linkEnd} and try again."
 msgstr ""
 
+msgid "AICatalog|Could not enable agent"
+msgstr ""
+
 msgid "AICatalog|Could not enable agent in the %{target}. Check that the %{target} meets the %{linkStart}prerequisites%{linkEnd} and try again."
 msgstr ""
 
 msgid "AICatalog|Could not enable agent in the project. Check that the project meets the %{linkStart}prerequisites%{linkEnd} and try again."
 msgstr ""
 
-msgid "AICatalog|Could not enable agent: %{agentName}"
+msgid "AICatalog|Could not enable flow"
 msgstr ""
 
 msgid "AICatalog|Could not enable flow in the %{target}. Check that the %{target} meets the %{linkStart}prerequisites%{linkEnd} and try again."
 msgstr ""
 
 msgid "AICatalog|Could not enable flow in the project. Check that the project meets the %{linkStart}prerequisites%{linkEnd} and try again."
-msgstr ""
-
-msgid "AICatalog|Could not enable flow: %{flowName}"
 msgstr ""
 
 msgid "AICatalog|Could not update agent. Try again."

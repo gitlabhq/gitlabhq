@@ -42,7 +42,7 @@
             resource: @group,
             token: @resource_access_token,
             scopes: @scopes,
-            access_levels: access_level_roles_user_can_assign(@group, GroupMember.access_level_roles),
+            access_levels: @group.roles_user_can_assign(current_user),
             default_access_level: Gitlab::Access::GUEST,
             prefix: :resource_access_token,
             description_prefix: :group_access_token,

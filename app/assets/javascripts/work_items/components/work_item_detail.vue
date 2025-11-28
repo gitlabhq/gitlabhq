@@ -628,6 +628,8 @@ export default {
   mounted() {
     addShortcutsExtension(ShortcutsWorkItems);
     document.addEventListener('actioncable:reconnected', this.refetchIfStale);
+
+    this.enableEditModeFromQuery();
   },
   methods: {
     async fetchAllowedChildTypes(workItemId) {
@@ -929,6 +931,11 @@ export default {
       if (now - this.lastRealtimeUpdatedAt > staleThreshold) {
         this.$apollo.queries.workItem.refetch();
         this.lastRealtimeUpdatedAt = now;
+      }
+    },
+    enableEditModeFromQuery() {
+      if (getParameterByName('edit') === 'true') {
+        this.enableEditMode();
       }
     },
   },

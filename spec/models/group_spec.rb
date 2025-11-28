@@ -4627,4 +4627,11 @@ RSpec.describe Group, feature_category: :groups_and_projects do
       specify { expect(group_with_inactive_ancestor.active?).to be(false) }
     end
   end
+
+  describe '#roles_user_can_assign' do
+    it_behaves_like 'roles_user_can_assign' do
+      let(:resource) { group }
+      let(:membership) { create(:group_member, user: user, group: resource) }
+    end
+  end
 end

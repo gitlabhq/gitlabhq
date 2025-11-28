@@ -360,7 +360,7 @@ constraints(::Constraints::ProjectUrlConstrainer.new) do
 
         get :work_items, to: 'work_items#calendar', constraints: ->(req) { req.format == :ics }
         get :work_items, to: 'work_items#rss', constraints: ->(req) { req.format == :atom }
-        resources :work_items, only: [:show, :index], param: :iid do
+        resources :work_items, only: [:show, :index, :edit], param: :iid do
           collection do
             post :import_csv
             post 'import_csv/authorize', to: 'work_items#authorize'

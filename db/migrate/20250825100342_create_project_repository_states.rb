@@ -10,7 +10,7 @@ class CreateProjectRepositoryStates < Gitlab::Database::Migration[2.3]
   NEEDS_VERIFICATION_INDEX_NAME = "index_project_repository_states_needs_verification"
 
   def up
-    create_table :project_repository_states do |t| # rubocop:disable Migration/EnsureFactoryForTable -- will be added via https://gitlab.com/gitlab-org/gitlab/-/merge_requests/194051
+    create_table :project_repository_states do |t|
       t.datetime_with_timezone :verification_started_at
       t.datetime_with_timezone :verification_retry_at
       t.datetime_with_timezone :verified_at

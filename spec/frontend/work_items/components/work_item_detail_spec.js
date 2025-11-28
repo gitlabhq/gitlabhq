@@ -1593,4 +1593,31 @@ describe('WorkItemDetail component', () => {
       expect(findStickyHeader().props('archived')).toBe(archived);
     });
   });
+
+  describe('Enables edit mode based on `edit` query parameter', () => {
+    it('enables edit mode when edit=true query parameter is present', async () => {
+      setWindowLocation('?edit=true');
+
+      createComponent();
+      await waitForPromises();
+
+      expect(findWorkItemDescription().props('editMode')).toBe(true);
+    });
+
+    it('does not enable edit mode when edit query parameter is false', async () => {
+      setWindowLocation('?edit=false');
+
+      createComponent();
+      await waitForPromises();
+
+      expect(findWorkItemDescription().props('editMode')).toBe(false);
+    });
+
+    it('does not enable edit mode when edit query parameter is not present', async () => {
+      createComponent();
+      await waitForPromises();
+
+      expect(findWorkItemDescription().props('editMode')).toBe(false);
+    });
+  });
 });

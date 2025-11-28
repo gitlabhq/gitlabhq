@@ -16,3 +16,5 @@ class ProjectRepository < ApplicationRecord
     end
   end
 end
+
+ProjectRepository.prepend_mod

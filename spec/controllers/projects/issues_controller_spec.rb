@@ -254,11 +254,11 @@ RSpec.describe Projects::IssuesController, :request_store, feature_category: :te
       end
 
       context 'edit action' do
-        let(:query) { { query: 'any' } }
+        let(:query) { { query: 'any', edit: 'true' } }
 
         it_behaves_like 'redirects to show work item page' do
           subject(:make_request) do
-            get :edit, params: { namespace_id: project.namespace, project_id: project, id: task.iid, **query }
+            get :edit, params: { namespace_id: project.namespace, project_id: project, id: task.iid, query: 'any' }
           end
         end
       end
@@ -274,6 +274,52 @@ RSpec.describe Projects::IssuesController, :request_store, feature_category: :te
             }
           end
         end
+      end
+    end
+  end
+
+  describe 'GET #edit' do
+    context 'when visiting issues edit route and user can edit issue' do
+      before do
+        project.add_developer(user)
+        sign_in(user)
+      end
+
+      it 'redirects to issues detail page with edit parameter' do
+        get :edit, params: { namespace_id: project.namespace, project_id: project, id: issue.iid }
+
+        expect(response).to redirect_to(project_issue_path(project, issue, edit: 'true'))
+        expect(response).to have_gitlab_http_status(:found)
+      end
+    end
+
+    context 'when visiting issues edit route and user cannot edit issue' do
+      before do
+        project.add_guest(user)
+        sign_in(user)
+      end
+
+      it 'redirects to issue detail page without edit parameter' do
+        get :edit, params: { namespace_id: project.namespace, project_id: project, id: issue.iid }
+
+        expect(response).to redirect_to(project_issue_path(project, issue, params: {}))
+        expect(response).to have_gitlab_http_status(:found)
+      end
+    end
+
+    context 'when item is a work item type and user cannot edit' do
+      let(:work_item_issue) { create(:issue, :task, project: project) }
+
+      before do
+        project.add_guest(user)
+        sign_in(user)
+      end
+
+      it 'redirects to work item detail page without edit parameter' do
+        get :edit, params: { namespace_id: project.namespace, project_id: project, id: work_item_issue }
+
+        expect(response).to redirect_to(project_work_item_path(project, work_item_issue.iid, params: {}))
+        expect(response).to have_gitlab_http_status(:found)
       end
     end
   end
@@ -1080,7 +1126,7 @@ RSpec.describe Projects::IssuesController, :request_store, feature_category: :te
     end
 
     describe 'GET #edit' do
-      it_behaves_like 'restricted action', success: 200
+      it_behaves_like 'restricted action', success: 302
 
       def go(id:)
         get :edit,

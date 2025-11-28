@@ -86,6 +86,53 @@ RSpec.describe Projects::WorkItemsController, feature_category: :team_planning d
     end
   end
 
+  describe 'GET edit' do
+    context 'when visiting work_items edit route' do
+      before do
+        sign_in(reporter)
+      end
+
+      it 'redirects to work_items detail page with edit query parameter' do
+        get :edit, params: { namespace_id: project.namespace, project_id: project, iid: work_item.iid }
+
+        expect(response).to redirect_to(project_work_item_path(project, work_item.iid, edit: 'true'))
+        expect(response).to have_gitlab_http_status(:found)
+      end
+
+      it 'returns 404 when work item does not exist' do
+        get :edit, params: { namespace_id: project.namespace, project_id: project, iid: non_existing_record_iid }
+
+        expect(response).to have_gitlab_http_status(:not_found)
+      end
+    end
+
+    context 'with unauthorized user' do
+      before do
+        sign_in(guest)
+      end
+
+      it 'redirects to work_items detail page without edit parameter' do
+        get :edit, params: { namespace_id: project.namespace, project_id: project, iid: work_item.iid }
+
+        expect(response).to redirect_to(project_work_item_path(project, work_item.iid))
+        expect(response).to have_gitlab_http_status(:found)
+      end
+    end
+
+    context 'with anonymous user' do
+      before do
+        sign_out(:user)
+      end
+
+      it 'redirects to sign in page' do
+        get :edit, params: { namespace_id: project.namespace, project_id: project, iid: work_item.iid }
+
+        expect(response).to redirect_to(new_user_session_path)
+        expect(response).to have_gitlab_http_status(:found)
+      end
+    end
+  end
+
   describe 'POST import_csv' do
     subject { post :import_csv, params: { namespace_id: project.namespace, project_id: project, file: file } }
 

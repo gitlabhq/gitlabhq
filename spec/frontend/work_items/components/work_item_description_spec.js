@@ -3,6 +3,8 @@ import Vue, { nextTick } from 'vue';
 import VueApollo from 'vue-apollo';
 import createMockApollo from 'helpers/mock_apollo_helper';
 import waitForPromises from 'helpers/wait_for_promises';
+import * as urlUtility from '~/lib/utils/url_utility';
+import setWindowLocation from 'helpers/set_window_location_helper';
 import { mockTracking } from 'helpers/tracking_helper';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import EditedAt from '~/issues/show/components/edited.vue';
@@ -695,6 +697,17 @@ describe('WorkItemDescription', () => {
       // Trigger a refetch of the work item data
       await wrapper.vm.$apollo.queries.workItem.refetch();
 
+      expect(findConflictsAlert().exists()).toBe(false);
+    });
+
+    it('does not show conflict warning when redirecting from issues edit page', async () => {
+      jest.spyOn(urlUtility, 'updateHistory');
+
+      setWindowLocation('?edit=true');
+
+      await createComponent({ isEditing: true });
+
+      expect(urlUtility.updateHistory).toHaveBeenCalled();
       expect(findConflictsAlert().exists()).toBe(false);
     });
   });

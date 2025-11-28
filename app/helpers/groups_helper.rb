@@ -198,11 +198,6 @@ module GroupsHelper
     new_group_custom_emoji_path(group)
   end
 
-  def access_level_roles_user_can_assign(group, roles)
-    max_access_level = group.max_member_access_for_user(current_user)
-    Authz::Role.roles_user_can_assign(max_access_level, roles)
-  end
-
   def groups_projects_more_actions_dropdown_data(source)
     model_name = source.model_name.to_s.downcase
     dropdown_data = {

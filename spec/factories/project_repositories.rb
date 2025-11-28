@@ -2,11 +2,11 @@
 
 FactoryBot.define do
   factory :project_repository do
-    project
+    project { association(:project_with_repo) }
+    shard_name { project.repository_storage || 'shard_name' }
+    disk_path { |n| "@hashed/unique_#{n}_#{SecureRandom.hex(8)}" }
 
-    after(:build) do |project_repository, _|
-      project_repository.shard_name = project_repository.project.repository_storage
-      project_repository.disk_path  = project_repository.project.disk_path
-    end
+    # Override to prevent double creation
+    initialize_with { project.project_repository || new(attributes) }
   end
 end
