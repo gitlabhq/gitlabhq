@@ -67,15 +67,15 @@ not limited to, the following:
 
 ### A new approach to security scanning
 
-When using the legacy dependency scanning feature, all scanning work happens within your CI/CD pipeline. When running a scan, the Gemnasium analyzer handles two critical tasks simultaneously: it identifies your project's dependencies and immediately performs a security analysis of those dependencies using a local copy of the GitLab Advisory Database and its specific security scanning engine. Then, it outputs results into various reports (CycloneDX SBOM and dependency scanning security report).
+When using the legacy dependency scanning feature, all scanning work happens in your CI/CD pipeline. When running a scan, the Gemnasium analyzer handles two critical tasks simultaneously: it identifies your project's dependencies and immediately performs a security analysis of those dependencies using a local copy of the GitLab advisory database and its specific security scanning engine. Then, it outputs results into various reports (CycloneDX SBOM and dependency scanning security report).
 
-On the other hand, the dependency scanning using SBOM feature relies on a decomposed dependency analysis approach that separates dependency detection from other analyses, like static reachability or vulnerability scanning. While these tasks are still executed within the same CI job, they function as decoupled, reusable components. For instance, the vulnerability scanning analysis reuses the unified engine, the GitLab SBOM Vulnerability Scanner, that also supports GitLab Continuous Vulnerability Scanning features. This also opens up opportunity for future integration points, enabling more flexible vulnerability scanning workflows.
+On the other hand, the dependency scanning using SBOM feature relies on a decomposed dependency analysis approach that separates dependency detection from other analyses, like static reachability or vulnerability scanning. While these tasks are still executed in the same CI/CD job, they function as decoupled, reusable components. For instance, the vulnerability scanning analysis reuses the unified engine, the GitLab SBOM vulnerability scanner, that also supports GitLab continuous vulnerability scanning features. This also opens up opportunity for future integration points, enabling more flexible vulnerability scanning workflows.
 
 Read more about how dependency scanning using SBOM [scans an application](dependency_scanning_sbom/_index.md#how-it-scans-an-application).
 
 ### CI/CD configuration
 
-To prevent disruption to your CI/CD pipelines, the new approach will not be applied to the stable dependency scanning CI/CD template (`Dependency-Scanning.gitlab-ci.yml`) and as of GitLab 18.5, you must use the `v2` template (`Dependency-Scanning.v2.gitlab-ci.yml`) to enable it.
+To prevent disruption to your CI/CD pipelines, the new approach does not apply to the stable dependency scanning CI/CD template (`Dependency-Scanning.gitlab-ci.yml`) and as of GitLab 18.5, you must use the `v2` template (`Dependency-Scanning.v2.gitlab-ci.yml`) to enable it.
 Other migration paths might be considered as the feature gains maturity.
 
 If you're using [Scan Execution Policies](../policies/scan_execution_policies.md), these changes apply in the same way because they build upon the CI/CD templates.

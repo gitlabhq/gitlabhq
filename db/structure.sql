@@ -18580,11 +18580,8 @@ CREATE TABLE group_scim_auth_access_tokens (
     group_id bigint NOT NULL,
     created_at timestamp with time zone NOT NULL,
     updated_at timestamp with time zone NOT NULL,
-    temp_source_id bigint,
     token_encrypted bytea NOT NULL
 );
-
-COMMENT ON COLUMN group_scim_auth_access_tokens.temp_source_id IS 'Temporary column to store scim_tokens id';
 
 CREATE SEQUENCE group_scim_auth_access_tokens_id_seq
     START WITH 1
@@ -18601,13 +18598,10 @@ CREATE TABLE group_scim_identities (
     user_id bigint NOT NULL,
     created_at timestamp with time zone NOT NULL,
     updated_at timestamp with time zone NOT NULL,
-    temp_source_id bigint,
     active boolean DEFAULT false,
     extern_uid text NOT NULL,
     CONSTRAINT check_53de3ba272 CHECK ((char_length(extern_uid) <= 255))
 );
-
-COMMENT ON COLUMN group_scim_identities.temp_source_id IS 'Temporary column to store scim_idenity id';
 
 CREATE SEQUENCE group_scim_identities_id_seq
     START WITH 1
@@ -21521,7 +21515,6 @@ CREATE TABLE namespace_settings (
     duo_features_enabled boolean,
     lock_duo_features_enabled boolean DEFAULT false NOT NULL,
     disable_personal_access_tokens boolean DEFAULT false NOT NULL,
-    enable_auto_assign_gitlab_duo_pro_seats boolean DEFAULT false NOT NULL,
     early_access_program_participant boolean DEFAULT false NOT NULL,
     remove_dormant_members boolean DEFAULT false NOT NULL,
     remove_dormant_members_period integer DEFAULT 90 NOT NULL,
@@ -27788,7 +27781,6 @@ CREATE TABLE system_access_group_microsoft_applications (
     created_at timestamp with time zone NOT NULL,
     updated_at timestamp with time zone NOT NULL,
     group_id bigint NOT NULL,
-    temp_source_id bigint,
     enabled boolean DEFAULT false NOT NULL,
     tenant_xid text NOT NULL,
     client_xid text NOT NULL,
@@ -27801,8 +27793,6 @@ CREATE TABLE system_access_group_microsoft_applications (
     CONSTRAINT check_92ce93bc07 CHECK ((char_length(tenant_xid) <= 255)),
     CONSTRAINT check_f4c8cf8195 CHECK ((char_length(client_xid) <= 255))
 );
-
-COMMENT ON COLUMN system_access_group_microsoft_applications.temp_source_id IS 'Temporary column to store graph access tokens id';
 
 CREATE SEQUENCE system_access_group_microsoft_applications_id_seq
     START WITH 1
@@ -27819,13 +27809,10 @@ CREATE TABLE system_access_group_microsoft_graph_access_tokens (
     updated_at timestamp with time zone NOT NULL,
     system_access_group_microsoft_application_id bigint,
     group_id bigint NOT NULL,
-    temp_source_id bigint,
     expires_in integer NOT NULL,
     encrypted_token bytea NOT NULL,
     encrypted_token_iv bytea NOT NULL
 );
-
-COMMENT ON COLUMN system_access_group_microsoft_graph_access_tokens.temp_source_id IS 'Temporary column to store graph access tokens id';
 
 CREATE SEQUENCE system_access_group_microsoft_graph_access_tokens_id_seq
     START WITH 1
@@ -41723,8 +41710,6 @@ CREATE INDEX index_group_import_states_on_group_id ON group_import_states USING 
 
 CREATE INDEX index_group_import_states_on_user_id ON group_import_states USING btree (user_id) WHERE (user_id IS NOT NULL);
 
-CREATE UNIQUE INDEX index_group_microsoft_applications_on_temp_source_id ON system_access_group_microsoft_applications USING btree (temp_source_id);
-
 CREATE UNIQUE INDEX index_group_push_rules_on_group_id ON group_push_rules USING btree (group_id);
 
 CREATE INDEX index_group_repository_storage_moves_on_group_id ON group_repository_storage_moves USING btree (group_id);
@@ -41733,13 +41718,9 @@ CREATE INDEX index_group_saved_replies_on_group_id ON group_saved_replies USING 
 
 CREATE UNIQUE INDEX index_group_scim_access_tokens_on_group_id_and_token ON group_scim_auth_access_tokens USING btree (group_id, token_encrypted);
 
-CREATE UNIQUE INDEX index_group_scim_auth_access_tokens_on_temp_source_id ON group_scim_auth_access_tokens USING btree (temp_source_id);
-
 CREATE INDEX index_group_scim_identities_on_group_id ON group_scim_identities USING btree (group_id);
 
 CREATE UNIQUE INDEX index_group_scim_identities_on_lower_extern_uid_group_id ON group_scim_identities USING btree (lower(extern_uid), group_id);
-
-CREATE UNIQUE INDEX index_group_scim_identities_on_temp_source_id ON group_scim_identities USING btree (temp_source_id);
 
 CREATE UNIQUE INDEX index_group_scim_identities_on_user_id_and_group_id ON group_scim_identities USING btree (user_id, group_id);
 
@@ -44152,8 +44133,6 @@ CREATE INDEX index_sop_configurations_project_id_policy_project_id ON security_o
 CREATE INDEX index_sop_schedules_on_sop_configuration_id ON security_orchestration_policy_rule_schedules USING btree (security_orchestration_policy_configuration_id);
 
 CREATE INDEX index_sop_schedules_on_user_id ON security_orchestration_policy_rule_schedules USING btree (user_id);
-
-CREATE UNIQUE INDEX index_source_id_microsoft_access_tokens ON system_access_group_microsoft_graph_access_tokens USING btree (temp_source_id);
 
 CREATE INDEX index_spam_logs_on_organization_id ON spam_logs USING btree (organization_id);
 

@@ -4443,6 +4443,7 @@ for `PROVIDER` and `STACK`:
   the jobs from each other, but [large values can cause names to exceed limits](https://gitlab.com/gitlab-org/gitlab/-/issues/362262):
   - [Job names](../jobs/_index.md#job-names) must be 255 characters or fewer.
   - When using [`needs`](#needs), job names must be 128 characters or fewer.
+- You cannot use the matrix values as variables for [`rules:if`](#rulesif).
 - You cannot create multiple matrix configurations with the same values but different names.
   Job names are generated from the matrix values, not the names, so matrix entries
   with identical values generate identical job names that overwrite each other.

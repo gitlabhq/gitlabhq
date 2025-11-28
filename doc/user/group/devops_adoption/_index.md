@@ -36,7 +36,7 @@ DevOps adoption shows feature adoption for development, security, and operations
 | Category    | Feature |
 |-------------|---------|
 | Development | Approvals<br>Code owners<br>Issues<br>Merge requests |
-| Security    | DAST<br>Dependency Scanning<br>Fuzz Testing<br>SAST |
+| Security    | DAST<br>Dependency scanning<br>Fuzz testing<br>SAST |
 | Operations  | Deployments<br>Pipelines<br>Runners |
 
 A feature shows as **adopted** when a group or subgroup has used the feature in a project in the last full calendar month.

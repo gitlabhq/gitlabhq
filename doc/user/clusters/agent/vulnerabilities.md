@@ -109,7 +109,7 @@ Operational container scanning operates independently of GitLab pipelines. It is
 Here is an example of a policy which enables operational container scanning within the cluster the Kubernetes agent is attached to:
 
 ```yaml
-- name: Enforce Container Scanning in cluster connected through my-gitlab-agent for default and kube-system namespaces
+- name: Enforce container scanning in cluster connected through my-gitlab-agent for default and kube-system namespaces
   enabled: true
   rules:
   - type: schedule

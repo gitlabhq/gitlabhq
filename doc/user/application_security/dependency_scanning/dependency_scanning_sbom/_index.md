@@ -697,9 +697,9 @@ For more information see [available spec inputs](#available-spec-inputs) and [av
 
 The generated reports are uploaded to the GitLab instance when the CI job completes and usually processed after pipeline completion.
 
-The SBOM reports are used to support other SBOM based features like the [Dependency List](../../dependency_list/_index.md), [License Scanning](../../../compliance/license_scanning_of_cyclonedx_files/_index.md) or [Continuous Vulnerability Scanning](../../continuous_vulnerability_scanning/_index.md).
+The SBOM reports are used to support other SBOM based features like the [dependency list](../../dependency_list/_index.md), [license scanning](../../../compliance/license_scanning_of_cyclonedx_files/_index.md) or [continuous vulnerability scanning](../../continuous_vulnerability_scanning/_index.md).
 
-The Dependency Scanning report follows the generic process for [security scanning results](../../detect/security_scanning_results.md)
+The dependency scanning report follows the generic process for [security scanning results](../../detect/security_scanning_results.md)
 
 - If the dependency scanning report is declared by a CI/CD job on the default branch: vulnerabilities are created,
   and can be seen in the [vulnerability report](../../vulnerability_report/_index.md).

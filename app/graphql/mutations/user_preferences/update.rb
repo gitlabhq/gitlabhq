@@ -95,3 +95,5 @@ module Mutations
     end
   end
 end
+
+Mutations::UserPreferences::Update.prepend_mod

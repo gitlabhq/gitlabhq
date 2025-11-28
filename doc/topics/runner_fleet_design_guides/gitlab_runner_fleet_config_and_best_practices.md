@@ -48,7 +48,7 @@ To assess expected CI/CD workloads:
 
 The CPU and RAM resource requirements vary depending on factors like the type of programming language or the type of CI/CD job (build, integration tests, unit tests, security scans). The following section describes a method to gather CI/CD job CPU and resource requirements. You can adopt and build on this approach for your own needs.
 
-For example, to run a CI/CD job similar to the one defined in the FastAPI project fork: [ra-group / fastapi · GitLab](https://gitlab.com/ra-group2/fastapi).
+For example, to run a CI/CD job similar to the one defined in the FastAPI project fork: [`ra-group/fastapi`](https://gitlab.com/ra-group2/fastapi).
 The job in this example uses a Python image, downloads the project's requirements, and runs the existing unit tests.
 The `.gitlab-ci.yml` for the job is as follows:
 
@@ -75,6 +75,7 @@ Complete the following steps to identify the compute and RAM resources needed:
    cd /fastapi || exit
    pip install -r requirements.txt
    pytest
+   ```
 
 1. Create a Dockerfile to create an image where the `entrypoint.sh` file runs the CI script.
 
@@ -153,7 +154,7 @@ Complete the following steps to identify the compute and RAM resources needed:
 Based on the metrics collected, for this job profile, you can limit the Kubernetes executor job to
 `1 CPU` and `~304 Mi of Memory`. Even if this conclusion is accurate, it might not be practical for all use cases.
 
-If you use a cluster with a node pool of three `e2-standard-4` nodes to run jobs, the `1 CPU` limit allows only **12 jobs** to run simultaneously (an `e2-standard-4`  node has **4 vCPU** and **16 GB** of memory). Additional jobs wait for the running jobs to complete and free up the resources before starting.
+If you use a cluster with a node pool of three `e2-standard-4` nodes to run jobs, the `1 CPU` limit allows only 12 jobs to run simultaneously (an `e2-standard-4` node has 4 vCPU and 16 GB of memory). Additional jobs wait for the running jobs to complete and free up the resources before starting.
 
 The memory requested is critical because Kubernetes terminates any pod that uses more memory than the limit set or available on the cluster. However, the CPU limit is more flexible but impacts the job duration. A lower CPU limit set increases the time it takes for a job to complete. In the previous example, setting the CPU limit to `250m` (or `0.25`) instead `1` increased the job duration by four times (from about two minutes to eight to ten minutes).
 
@@ -192,11 +193,11 @@ If there are requirements to segment access to specific runners to certain group
 
 The configuration in the table demonstrates the flexibility available when configuring a runner fleet for your organization. This example uses multiple runners with different instance sizes and different job tags. These runners enables you to support different types of CI/CD jobs, each with specific CPU and RAM resource requirements. However, it may not be the most efficient pattern when using Kubernetes.
 
-| Runner Type | Runner Tag | Scope | Count of Runner type to offer | Runner Worker Specification | Runner Host Environment | Environment Configuration |
-| :---- | :---- | :---- | :---- | :---- | :---- | :---- |
-| Instance | ci-runner-small | Available to run CI/CD jobs for all groups and projects by default. | 5 | 2 vCPU, 8 GB RAM | Kubernetes | → 3 nodes <br> → Runner worker compute node \= **e2-standard-2**  |
-| Instance | ci-runner-medium | Available to run CI/CD jobs for all groups and projects by default. | 2 | 4 vCPU, 16 GB RAM | Kubernetes | → 3 nodes <br> → Runner worker compute node \= **e2-standard-4**   |
-| Instance | ci-runner-large | Available to run CI/CD jobs for all groups and projects by default. | 1 | 8 vCPU, 32 GB RAM | Kubernetes | → 3 nodes <br> → Runner worker compute node \= **e2-standard-8**   |
+| Runner Type | Runner Tag       | Scope                                                               | Count of Runner type to offer | Runner Worker Specification | Runner Host Environment | Environment Configuration |
+|:------------|:-----------------|:--------------------------------------------------------------------|:------------------------------|:----------------------------|:------------------------|:--------------------------|
+| Instance    | ci-runner-small  | Available to run CI/CD jobs for all groups and projects by default. | 5                             | 2 vCPU, 8 GB RAM            | Kubernetes              | → 3 nodes <br> → Runner worker compute node \= `e2-standard-2` |
+| Instance    | ci-runner-medium | Available to run CI/CD jobs for all groups and projects by default. | 2                             | 4 vCPU, 16 GB RAM           | Kubernetes              | → 3 nodes <br> → Runner worker compute node \= `e2-standard-4` |
+| Instance    | ci-runner-large  | Available to run CI/CD jobs for all groups and projects by default. | 1                             | 8 vCPU, 32 GB RAM           | Kubernetes              | → 3 nodes <br> → Runner worker compute node \= `e2-standard-8` |
 
 In the runner fleet configuration example, there are a total of three runner configurations and eight runners actively running CI/CD jobs.
 
@@ -222,35 +223,51 @@ When you are ready to install GitLab Runner on a Google Kubernetes cluster, you 
 
 If you are yet to set up the cluster on GKE, GitLab provides the GitLab Runner Infrastructure Toolkit (GRIT) which simultaneously:
 
-- Create a multi node pool GKE cluster: **Standard Edition** and **Standard Mode**.
+- Create a multi node pool GKE cluster: Standard edition and standard mode.
 - Install GitLab Runner on the cluster using the GitLab Runner Kubernetes operator
 
 The following example uses GRIT to deploy the Google Kubernetes cluster and GitLab Runner Manager.
 
 To have the cluster and GitLab Runner well configured, consider the following information:
 
-- **How many job types do I need to cover**? This information comes from the assess phase. The assess phase aggregates metrics and identifies the number of resulting groups, considering organizational constraints. A **job type** is a collection of categorized jobs identified during the access phase. This categorization is based on the maximum resources needed by the job.
-- **How many GitLab Runner Managers do I need to run**? This information comes from the plan phase. If the organization manages projects separately, apply this framework to each project individually. This approach is relevant only when multiple job profiles are identified (for the entire organization or for a specific project), and they are all handled by an individual or a fleet of GitLab Runners. A basic configuration typically uses one GitLab Runner Manager per GKE cluster.
-- **What is the estimated max concurrent CI/CD jobs**? This information represents an estimate of the maximum number of concurrent CI/CD jobs that are run at any point in time. This information is needed when configuring the GitLab Runner Manager by providing how long it waits during the `Prepare` stage: job pod scheduling on a node with limited available resources.
+- How many job types do I need to cover?
+  - This information comes from the assess phase. The assess phase aggregates metrics and
+    identifies the number of resulting groups, considering organizational constraints.
+    A "job type" is a collection of categorized jobs identified during the access phase.
+    This categorization is based on the maximum resources needed by the job.
+- How many GitLab Runner Managers do I need to run?
+  - This information comes from the plan phase. If the organization manages projects separately,
+    apply this framework to each project individually. This approach is relevant only when multiple job profiles
+    are identified (for the entire organization or for a specific project), and they are all handled by an individual
+    or a fleet of GitLab Runners. A basic configuration typically uses one GitLab Runner Manager per GKE cluster.
+- What is the estimated max concurrent CI/CD jobs?
+  - This information represents an estimate of the maximum number of concurrent CI/CD jobs that
+    are run at any point in time. This information is needed when configuring the GitLab Runner Manager by
+    providing how long it waits during the `Prepare` stage: job pod scheduling on a node with limited available resources.
 
 ### Real life applications for the FastAPI fork
 
 For the FastAPI fork, consider the following information:
 
-- **How many job profiles do I need to cover**? You have one job profile with the following characteristics: `1 CPU` and `303 Mi` of memory. As explained in [Analyzing the metrics collected](#analyzing-the-metrics-collected) sections, those raw values change to the following:
-  - `400 Mi` for the memory limit instead of `303 Mi` to avoid any job failure due to the memory limits.
-  - `0.20` for the CPU instead of `1 CPU`. For this example, you prioritize accuracy and quality over speed when completing tasks.
-- **How many GitLab Runner Managers do I need to run**? Only one GitLab Runner Manager is enough for your tests.
-- **What is the expected Workload**? You want to run up to 20 jobs simultaneously at any time.
+- How many job profiles do I need to cover?
+  - You have one job profile with the following characteristics: `1 CPU` and `303 Mi` of memory.
+    As explained in [Analyzing the metrics collected](#analyzing-the-metrics-collected) sections,
+    those raw values change to the following:
+    - `400 Mi` for the memory limit instead of `303 Mi` to avoid any job failure due to the memory limits.
+    - `0.20` for the CPU instead of `1 CPU`. For this example, you prioritize accuracy and quality over speed when completing tasks.
+- How many GitLab Runner Managers do I need to run?
+  - Only one GitLab Runner Manager is enough for your tests.
+- What is the expected Workload?
+  - You want to run up to 20 jobs simultaneously at any time.
 
 Based on these inputs, any GKE Cluster with the following minimum characteristics should be enough:
 
-- Minimum CPU: **(0.20 + helper CPU usage) * number of jobs simultaneously**. In this example, you get **7 vCPU** with the helper container limit set to **0.15 CPU**.
-- Minimum Memory: **(400Mi + helper memory usage) * number of jobs simultaneously**. In this example, you get at least **10 Gi** with the helper limit set to **100 Mi**.
+- Minimum CPU: `(0.20 + helper CPU usage) * number of jobs simultaneously`. In this example, you get `7 vCPU` with the helper container limit set to `0.15 CPU`.
+- Minimum Memory: `(400Mi + helper memory usage) * number of jobs simultaneously`. In this example, you get at least `10 Gi` with the helper limit set to `100 Mi`.
 
 Other characteristics such as the minimum storage required should also be considered. However, the example does not take this into account.
 
-Possible configurations for our GKE cluster can be (both configuration allows to run more than **20 jobs** simultaneously):
+Possible configurations for our GKE cluster can be (both configuration allows to run more than 20 jobs simultaneously):
 
 - GKE Cluster with a node pool of `3 e2-standard-4` nodes for a total of `12 vCPU` and `48 GiB` of memory
 - GKE Cluster with a node pool of only on `e2-standard-8` nodes for a total of `8 vCPU` and `32 GiB` of memory
@@ -361,28 +378,30 @@ In the previous configuration:
 
 Take the following information in to consideration:
 
-- **How many job profiles do I need to cover**? Two profiles (specifications provided takes the helper limits in account):
-  - Medium jobs: `300m CPU` and `200 MiB`
-  - CPU-intensive jobs: `1 CPU` and `1 GiB`
-- **How many GitLab Runner Managers do I need to run**? One.
-- **What is the expected Workload**?
-  - Up to **50 medium** jobs simultaneously
-  - Up to **25 CPU-intensive** jobs simultaneously
+- How many job profiles do I need to cover?
+  - Two profiles (specifications provided takes the helper limits in account):
+    - Medium jobs: `300m CPU` and `200 MiB`
+    - CPU-intensive jobs: `1 CPU` and `1 GiB`
+- How many GitLab Runner Managers do I need to run?
+  - One.
+- What is the expected Workload?
+  - Up to 50 medium jobs simultaneously
+  - Up to 25 CPU-intensive jobs simultaneously
 
 #### GKE configuration
 
 - Needs for medium jobs:
-  - CPU: 300m * 50 = 5 CPU (approximate)
-  - Memory: 200 MiB * 50 = 10 GiB
+  - CPU: `300m * 50 = 5 CPU` (approximate)
+  - Memory: `200 MiB * 50 = 10 GiB`
 - Needs for CPU-intensive jobs:
-  - CPU: 1 * 25 = 25
-  - Memory: 1 GiB * 25 = 25 GiB
+  - CPU: `1 * 25 = 25`
+  - Memory: `1 GiB * 25 = 25 GiB`
 
 The GKE cluster should have:
 
 - A node pool for GitLab Runner Manager (let's consider that the log processing is not demanding): **1 e2-standard-2** node
-- A node pool for medium jobs: **3 e2-standard-4** nodes
-- A node pool for CPU-intensive jobs: **1 e2-highcpu-32** node (`32 vCPU` and `32 GiB` Memory)
+- A node pool for medium jobs: 3 `e2-standard-4` nodes
+- A node pool for CPU-intensive jobs: 1 `e2-highcpu-32` node (`32 vCPU` and `32 GiB` Memory)
 
 ```terraform
 google_project     = "GCLOUD_PROJECT"
