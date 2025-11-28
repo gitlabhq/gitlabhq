@@ -4,7 +4,6 @@ import VueDraggable from 'vuedraggable';
 import { hasTouchCapability } from '~/lib/utils/touch_detection';
 import * as Sentry from '~/sentry/sentry_browser_wrapper';
 import { s__ } from '~/locale';
-import glFeatureFlagMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import { validateImageName } from '~/lib/utils/file_upload';
 import { isLoggedIn } from '~/lib/utils/common_utils';
 import { TYPENAME_DESIGN_VERSION } from '~/graphql_shared/constants';
@@ -48,7 +47,6 @@ export default {
   directives: {
     GlTooltip: GlTooltipDirective,
   },
-  mixins: [glFeatureFlagMixin()],
   inject: ['fullPath'],
   props: {
     workItemId: {
@@ -229,16 +227,13 @@ export default {
         ? s__('DesignManagement|Deselect all')
         : s__('DesignManagement|Select all');
     },
-    issueAsWorkItem() {
-      return Boolean(!this.isGroup && this.glFeatures.workItemViewForIssues);
-    },
     canUseRouter() {
       return (
         canRouterNav({
           fullPath: this.fullPath,
           webUrl: this.workItemWebUrl,
           isGroup: this.isGroup,
-          issueAsWorkItem: this.issueAsWorkItem,
+          issueAsWorkItem: !this.isGroup,
         }) && !this.isBoard
       );
     },

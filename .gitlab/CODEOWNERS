@@ -1700,21 +1700,22 @@ lib/gitlab/checks/
 /ee/lib/api/merge_trains.rb
 /ee/lib/ee/api/entities/merge_train.rb
 
+# CI/CD templates require approval from specific owners.
+/lib/gitlab/ci/templates/ @gitlab-org/maintainers/cicd-templates
+
 # Overrides for Verify. These files below require approval from teams outside Verify.
 /**/lib/**/ci/reports/**/ @gitlab-org/maintainers/rails-backend
 /**/lib/**/ci/parsers/**/ @gitlab-org/maintainers/rails-backend
 /**/app/views/ci/**/ @gitlab-org/maintainers/rails-backend
 /ee/**/models/ai/ai_resource/ci/ @gitlab-org/maintainers/rails-backend
 /ee/**/serializers/ci/*_ai_*.rb @gitlab-org/maintainers/rails-backend
+
 ^[Security reports]
 /ee/lib/gitlab/ci/parsers/license_compliance/ @gitlab-org/secure/composition-analysis-be
 /ee/lib/gitlab/ci/parsers/security/ @gitlab-org/security-risk-management/security-insights/backend
 /ee/lib/gitlab/ci/reports/coverage_fuzzing/ @gitlab-org/secure/dynamic-analysis
 /ee/lib/gitlab/ci/reports/license_scanning/ @gitlab-org/secure/composition-analysis-be
 /ee/lib/gitlab/ci/reports/security/ @gitlab-org/security-risk-management/security-insights/backend
-
-# CI/CD templates require approval from specific owners.
-/lib/gitlab/ci/templates/ @gitlab-org/maintainers/cicd-templates
 
 # AST shared CI/CD templates
 [AST] @gitlab-org/secure/static-analysis @gitlab-org/secure/composition-analysis-be @gitlab-org/secure/dynamic-analysis @gitlab-org/secure/secret-detection @mbenayoun

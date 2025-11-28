@@ -537,9 +537,6 @@ export default {
     namespaceFullName() {
       return this.workItem?.namespace?.fullName || '';
     },
-    contextualViewEnabled() {
-      return this.glFeatures?.workItemViewForIssues;
-    },
     hasChildren() {
       return this.workItemHierarchy?.hasChildren;
     },
@@ -701,11 +698,7 @@ export default {
         return;
       }
 
-      if (
-        !this.contextualViewEnabled ||
-        modalWorkItem.workItemType?.name === WORK_ITEM_TYPE_NAME_INCIDENT ||
-        this.isDrawer
-      ) {
+      if (modalWorkItem.workItemType?.name === WORK_ITEM_TYPE_NAME_INCIDENT || this.isDrawer) {
         return;
       }
       if (event) {
@@ -1346,7 +1339,7 @@ export default {
                 :confidential="workItem.confidential"
                 :allowed-child-types="allowedChildTypes"
                 :is-drawer="isDrawer"
-                :contextual-view-enabled="contextualViewEnabled"
+                contextual-view-enabled
                 @show-modal="openContextualView"
                 @addChild="$emit('addChild')"
               />
@@ -1360,7 +1353,7 @@ export default {
                 :can-admin-work-item-link="canAdminWorkItemLink"
                 :active-child-item-id="activeChildItemId"
                 :has-blocked-work-items-feature="hasBlockedWorkItemsFeature"
-                :contextual-view-enabled="contextualViewEnabled"
+                contextual-view-enabled
                 @showModal="openContextualView"
               />
 
@@ -1412,7 +1405,7 @@ export default {
         </section>
       </section>
       <work-item-drawer
-        v-if="contextualViewEnabled && !isDrawer"
+        v-if="!isDrawer"
         :active-item="activeChildItem"
         :open="isItemSelected"
         :issuable-type="activeChildItemType"

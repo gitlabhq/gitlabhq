@@ -143,7 +143,6 @@ RSpec.shared_examples 'associations with defined deletion strategies', :aggregat
       catalog_resource_versions
       cluster_agent_tokens
       cluster_agent_url_configurations
-      design_management_versions
       incident_management_timeline_events
       merge_trains
       ml_candidates

@@ -30,11 +30,11 @@ When working with GitLab Duo Self-Hosted, you might encounter issues.
 Before you begin troubleshooting, you should:
 
 - Be able to access the [`gitlab-rails` console](../operations/rails_console.md).
-- Open a shell in the AI gateway Docker image.
+- Open a shell in the AI Gateway Docker image.
 - Know the endpoint where your:
-  - AI gateway is hosted.
+  - AI Gateway is hosted.
   - Model is hosted.
-- [Enable logging](logging.md#enable-logging) to make sure that requests and responses from GitLab to the AI gateway are being logged to [`llm.log`](../logs/_index.md#llmlog).
+- [Enable logging](logging.md#enable-logging) to make sure that requests and responses from GitLab to the AI Gateway are being logged to [`llm.log`](../logs/_index.md#llmlog).
 
 For more information on troubleshooting GitLab Duo, see:
 
@@ -46,7 +46,7 @@ For more information on troubleshooting GitLab Duo, see:
 
 We provide two debugging scripts to help administrators verify their self-hosted model configuration.
 
-1. Debug the GitLab to AI gateway connection. From your GitLab instance, run the
+1. Debug the GitLab to AI Gateway connection. From your GitLab instance, run the
    [Rake task](../../administration/raketasks/_index.md):
 
    ```shell
@@ -56,9 +56,9 @@ We provide two debugging scripts to help administrators verify their self-hosted
    Optional: Include a `<username>` that has an assigned seat.
    If you do not include a username parameter, the Rake task uses the root user.
 
-1. Debug the AI gateway setup. For your AI gateway container:
+1. Debug the AI Gateway setup. For your AI Gateway container:
 
-   - Restart the AI gateway container with authentication disabled by setting:
+   - Restart the AI Gateway container with authentication disabled by setting:
 
      ```shell
      -e AIGW_AUTH__BYPASS_EXTERNAL=true
@@ -66,7 +66,7 @@ We provide two debugging scripts to help administrators verify their self-hosted
 
      This setting is required for the troubleshooting command to run the **System Exchange test**. You must remove this setting after troubleshooting is complete.
 
-   - From your AI gateway container, run:
+   - From your AI Gateway container, run:
 
      ```shell
      docker exec -it <ai-gateway-container> sh
@@ -103,7 +103,7 @@ We provide two debugging scripts to help administrators verify their self-hosted
        --model-endpoint=http://<your-model-endpoint>/v1
      ```
 
-After troubleshooting is complete, stop and restart the AI gateway container **without** `AIGW_AUTH__BYPASS_EXTERNAL=true`.
+After troubleshooting is complete, stop and restart the AI Gateway container **without** `AIGW_AUTH__BYPASS_EXTERNAL=true`.
 
 {{< alert type="warning" >}}
 
@@ -118,7 +118,7 @@ raise an issue on the issue tracker.
 
 ## GitLab Duo health check is not working
 
-When you [run a health check for GitLab Duo](../../administration/gitlab_duo/setup.md#run-a-health-check-for-gitlab-duo), you might get an error like a `401 response from the AI gateway`.
+When you [run a health check for GitLab Duo](../../administration/gitlab_duo/setup.md#run-a-health-check-for-gitlab-duo), you might get an error like a `401 response from the AI Gateway`.
 
 To resolve, first check if GitLab Duo features are functioning correctly. For example, send a message to GitLab Duo Chat.
 
@@ -134,7 +134,7 @@ model_name = "<your_model_name>"
 model_endpoint = "<your_model_endpoint>"
 model_api_key = "<your_model_api_key>"
 body = {:prompt_components=>[{:type=>"prompt", :metadata=>{:source=>"GitLab EE", :version=>"17.3.0"}, :payload=>{:content=>[{:role=>:user, :content=>"Hello"}], :provider=>:litellm, :model=>model_name, :model_endpoint=>model_endpoint, :model_api_key=>model_api_key}}]}
-ai_gateway_url = Ai::Setting.instance.ai_gateway_url # Verify that the AI gateway URL is set in the database
+ai_gateway_url = Ai::Setting.instance.ai_gateway_url # Verify that the AI Gateway URL is set in the database
 client = Gitlab::Llm::AiGateway::Client.new(User.find_by_id(1), unit_primitive_name: :self_hosted_models)
 client.complete(url: "#{ai_gateway_url}/v1/chat/agent", body: body)
 ```
@@ -155,8 +155,8 @@ If that is not the case, this might means one of the following:
   [check if a user can request Code Suggestions](#check-if-a-user-can-request-code-suggestions).
 - The GitLab environment variables are not configured correctly. To resolve, [check that the GitLab environment variables are set up correctly](#check-that-the-ai-gateway-environment-variables-are-set-up-correctly).
 - The GitLab instance is not configured to use self-hosted models. To resolve, [check if the GitLab instance is configured to use self-hosted models](#check-if-gitlab-instance-is-configured-to-use-self-hosted-models).
-- The AI gateway is not reachable. To resolve, [check if GitLab can make an HTTP request to the AI gateway](#check-if-gitlab-can-make-an-http-request-to-the-ai-gateway).
-- When the LLM server is installed on the same instance as the AI gateway container, local requests may not work. To resolve, [allow local requests from the Docker container](#llm-server-is-not-available-inside-the-ai-gateway-container).
+- The AI Gateway is not reachable. To resolve, [check if GitLab can make an HTTP request to the AI Gateway](#check-if-gitlab-can-make-an-http-request-to-the-ai-gateway).
+- When the LLM server is installed on the same instance as the AI Gateway container, local requests may not work. To resolve, [allow local requests from the Docker container](#llm-server-is-not-available-inside-the-ai-gateway-container).
 
 ## Check if a user can request Code Suggestions
 
@@ -183,15 +183,15 @@ To check if GitLab Duo was configured correctly:
 1. Expand **AI-native features**.
 1. Under **Features**, check that **Code Suggestions** and **Code generation** are set to **Self-hosted model**.
 
-## Check that the AI gateway URL is set up correctly
+## Check that the AI Gateway URL is set up correctly
 
-To check that the AI gateway URL is correct, run the following on the GitLab Rails console:
+To check that the AI Gateway URL is correct, run the following on the GitLab Rails console:
 
 ```ruby
 Ai::Setting.instance.ai_gateway_url == "<your-ai-gateway-instance-url>"
 ```
 
-If the AI gateway is not set up, [configure your GitLab instance to access the AI gateway](configure_duo_features.md#configure-access-to-the-local-ai-gateway).
+If the AI Gateway is not set up, [configure your GitLab instance to access the AI Gateway](configure_duo_features.md#configure-access-to-the-local-ai-gateway).
 
 ## Validate the GitLab Duo Agent Platform service URL
 
@@ -205,7 +205,7 @@ The URL for the Agent Platform service is a TCP URL and cannot have the prefixes
 
 If the URL for the Agent Platform has not been set up, you must [configure your GitLab instance to access the URL](configure_duo_features.md#configure-access-to-the-gitlab-duo-agent-platform).
 
-## Check if GitLab can make an HTTP request to the AI gateway
+## Check if GitLab can make an HTTP request to the AI Gateway
 
 In the GitLab Rails console, verify that GitLab can make an HTTP request to AI
 Gateway by running:
@@ -216,12 +216,12 @@ HTTParty.get('<your-aigateway-endpoint>/monitoring/healthz', headers: { 'accept'
 
 If the response is not `200`, this means either of the following:
 
-- The network is not properly configured to allow GitLab to reach the AI gateway container. Contact your network administrator to verify the setup.
-- The AI gateway is not able to process requests. To resolve this issue, [check if the AI gateway can make a request to the model](#check-if-the-ai-gateway-can-make-a-request-to-the-model).
+- The network is not properly configured to allow GitLab to reach the AI Gateway container. Contact your network administrator to verify the setup.
+- The AI Gateway is not able to process requests. To resolve this issue, [check if the AI Gateway can make a request to the model](#check-if-the-ai-gateway-can-make-a-request-to-the-model).
 
-## Check if the AI gateway can make a request to the model
+## Check if the AI Gateway can make a request to the model
 
-From the AI gateway container, make an HTTP request to the AI gateway API for a
+From the AI Gateway container, make an HTTP request to the AI Gateway API for a
 Code Suggestion. Replace:
 
 - `<your_model_name>` with the name of the model you are using. For example `mistral` or `codegemma`.
@@ -237,26 +237,26 @@ curl --request POST "http://localhost:5052/v1/chat/agent" \
 
 If the request fails, the:
 
-- AI gateway might not be configured properly to use self-hosted models. To resolve this,
-  [check that the AI gateway URL is set up correctly](#check-that-the-ai-gateway-url-is-set-up-correctly).
-- AI gateway might not be able to access the model. To resolve,
-  [check if the model is reachable from the AI gateway](#check-if-the-model-is-reachable-from-ai-gateway).
+- AI Gateway might not be configured properly to use self-hosted models. To resolve this,
+  [check that the AI Gateway URL is set up correctly](#check-that-the-ai-gateway-url-is-set-up-correctly).
+- AI Gateway might not be able to access the model. To resolve,
+  [check if the model is reachable from the AI Gateway](#check-if-the-model-is-reachable-from-ai-gateway).
 - Model name or endpoint might be incorrect. Check the values, and correct them
   if necessary.
 
-## Check if AI gateway can process requests
+## Check if AI Gateway can process requests
 
 ```shell
 docker exec -it <ai-gateway-container> sh
 curl '<your-aigateway-endpoint>/monitoring/healthz'
 ```
 
-If the response is not `200`, this means that AI gateway is not installed correctly. To resolve, follow the [documentation on how to install the AI gateway](../../install/install_ai_gateway.md).
+If the response is not `200`, this means that AI Gateway is not installed correctly. To resolve, follow the [documentation on how to install the AI Gateway](../../install/install_ai_gateway.md).
 
-## Check that the AI gateway environment variables are set up correctly
+## Check that the AI Gateway environment variables are set up correctly
 
-To check that the AI gateway environment variables are set up correctly, run the
-following in a console on the AI gateway container:
+To check that the AI Gateway environment variables are set up correctly, run the
+following in a console on the AI Gateway container:
 
 ```shell
 docker exec -it <ai-gateway-container> sh
@@ -266,10 +266,10 @@ echo $AIGW_CUSTOM_MODELS__ENABLED # must be true
 If the environment variables are not set up correctly, set them by
 [creating a container](../../install/install_ai_gateway.md#find-the-ai-gateway-image).
 
-## Check if the model is reachable from AI gateway
+## Check if the model is reachable from AI Gateway
 
-Create a shell on the AI gateway container and make a curl request to the model.
-If you find that the AI gateway cannot make that request, this might be caused by the:
+Create a shell on the AI Gateway container and make a curl request to the model.
+If you find that the AI Gateway cannot make that request, this might be caused by the:
 
 1. Model server not functioning correctly.
 1. Network settings around the container not being properly configured to allow
@@ -302,7 +302,7 @@ If not successful, verify your network configurations.
 
 ## The image's platform does not match the host
 
-When [finding the AI gateway release](../../install/install_ai_gateway.md#find-the-ai-gateway-image),
+When [finding the AI Gateway release](../../install/install_ai_gateway.md#find-the-ai-gateway-image),
 you might get an error that states `The requested image's platform (linux/amd64) does not match the detected host`.
 
 To work around this error, add `--platform linux/amd64` to the `docker run` command:
@@ -311,13 +311,13 @@ To work around this error, add `--platform linux/amd64` to the `docker run` comm
 docker run --platform linux/amd64 -e AIGW_GITLAB_URL=<your-gitlab-endpoint> <image>
 ```
 
-## LLM server is not available inside the AI gateway container
+## LLM server is not available inside the AI Gateway container
 
-If the LLM server is installed on the same instance as the AI gateway container, it may not be accessible through the local host.
+If the LLM server is installed on the same instance as the AI Gateway container, it may not be accessible through the local host.
 
 To resolve this:
 
-1. Include `--network host` in the `docker run` command to enable local requests from the AI gateway container.
+1. Include `--network host` in the `docker run` command to enable local requests from the AI Gateway container.
 1. Use the `-e AIGW_FASTAPI__METRICS_PORT=8083` flag to address the port conflicts.
 
 ```shell
@@ -380,9 +380,9 @@ To verify your GitLab Self-Managed setup, run the following command:
 gitlab-rake gitlab:duo:verify_self_hosted_setup
 ```
 
-## No logs generated in the AI gateway server
+## No logs generated in the AI Gateway server
 
-If no logs are generated in the **AI gateway server**, follow these steps to troubleshoot:
+If no logs are generated in the AI Gateway server, follow these steps to troubleshoot:
 
 1. Ensure that [AI logs are enabled](logging.md#enable-logging).
 1. Run the following commands to view the GitLab Rails logs for any errors:
@@ -394,9 +394,9 @@ If no logs are generated in the **AI gateway server**, follow these steps to tro
 
 1. Look for keywords like "Error" or "Exception" in the logs to identify any underlying issues.
 
-## SSL certificate errors and key de-serialization issues in the AI gateway Container
+## SSL certificate errors and key de-serialization issues in the AI Gateway Container
 
-When attempting to initiate a GitLab Duo Chat inside the AI gateway container, SSL certificate errors and key deserialization issues may occur.
+When attempting to initiate a GitLab Duo Chat inside the AI Gateway container, SSL certificate errors and key deserialization issues may occur.
 
 The system might encounter issues loading the PEM file, resulting in errors like:
 

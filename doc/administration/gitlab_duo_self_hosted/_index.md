@@ -2,7 +2,7 @@
 stage: AI-powered
 group: Custom Models
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
-description: Host your own AI gateway and language models.
+description: Host your own AI Gateway and language models.
 title: GitLab Duo Self-Hosted
 ---
 
@@ -33,8 +33,8 @@ With GitLab Duo Self-Hosted, you can:
 - Choose any GitLab-supported LLM or your own compatible model.
 - Choose specific GitLab Duo features for your users.
 - Keep all request/response logs in your domain with no external API calls.
-- Isolate the GitLab instance, AI gateway, and models in your own environment.
-- Eliminate reliance on the shared GitLab AI gateway.
+- Isolate the GitLab instance, AI Gateway, and models in your own environment.
+- Eliminate reliance on the shared GitLab AI Gateway.
 - Manage the lifecycle of requests to LLM backends for GitLab Duo features,
   and avoid external dependencies so that requests stay in your enterprise network.
 
@@ -51,7 +51,7 @@ To use GitLab Duo Self-Hosted you must have:
 
 - A cloud-based or on-premise supported model
 - A cloud-based or on-premise supported serving platform
-- A locally hosted AI gateway
+- A locally hosted AI Gateway
 
 ## Supported GitLab Duo features
 
@@ -65,7 +65,7 @@ The following table lists:
 
 You must have the GitLab Duo Enterprise add-on to use these features with GitLab Duo Self-Hosted.
 This applies even if you can use these features with GitLab Duo Core or GitLab Duo Pro
-when GitLab hosts and connects to those models through the cloud-based [AI gateway](../../administration/gitlab_duo/gateway.md).
+when GitLab hosts and connects to those models through the cloud-based [AI Gateway](../../administration/gitlab_duo/gateway.md).
 
 {{< /alert >}}
 
@@ -93,37 +93,37 @@ when GitLab hosts and connects to those models through the cloud-based [AI gatew
 
 Use one of the following options to implement AI-native features:
 
-- **Self-hosted AI gateway and LLMs**: Use your own AI gateway and models for full control over your AI infrastructure.
-- **Hybrid AI gateway and model configuration**: For each feature, use either your self-hosted AI gateway with self-hosted models, or the GitLab.com AI gateway with GitLab AI vendor models.
-- **GitLab.com AI gateway with default GitLab external vendor LLMs**: Use GitLab managed AI infrastructure.
+- **Self-hosted AI Gateway and LLMs**: Use your own AI Gateway and models for full control over your AI infrastructure.
+- **Hybrid AI Gateway and model configuration**: For each feature, use either your self-hosted AI Gateway with self-hosted models, or the GitLab.com AI Gateway with GitLab AI vendor models.
+- **GitLab.com AI Gateway with default GitLab external vendor LLMs**: Use GitLab managed AI infrastructure.
 
-| Configuration                     | Self-hosted AI gateway                                                        | Hybrid AI gateway and model configuration | GitLab.com AI gateway                        |
+| Configuration                     | Self-hosted AI Gateway                                                        | Hybrid AI Gateway and model configuration | GitLab.com AI Gateway                        |
 | --------------------------- | ----------------------------------------------------------------------------- | --------------------------------------------------- | -------------------------------------------- |
-| Infrastructure requirements | Requires hosting your own AI gateway and models                               | Requires hosting your own AI gateway and models | No additional infrastructure needed          |
+| Infrastructure requirements | Requires hosting your own AI Gateway and models                               | Requires hosting your own AI Gateway and models | No additional infrastructure needed          |
 | Model options               | Choose from [supported self-hosted models](supported_models_and_hardware_requirements.md) | Choose from [supported self-hosted models](supported_models_and_hardware_requirements.md) or GitLab AI vendor models for each GitLab Duo feature | Uses the default GitLab AI vendor models |
 | Network requirements        | Can operate in fully isolated networks                                        | Requires internet connectivity for GitLab Duo features that use GitLab AI vendor models | Requires internet connectivity               |
-| Responsibilities            | You set up your infrastructure, and do your own maintenance                   | You set up your infrastructure, do your own maintenance, and choose which features use GitLab AI vendor models and AI gateway | GitLab does the set up and maintenance       |
+| Responsibilities            | You set up your infrastructure, and do your own maintenance                   | You set up your infrastructure, do your own maintenance, and choose which features use GitLab AI vendor models and AI Gateway | GitLab does the set up and maintenance       |
 
-### Self-hosted AI gateway and LLMs
+### Self-hosted AI Gateway and LLMs
 
-In a fully self-hosted configuration, you deploy your own AI gateway and use only [supported LLMs](supported_models_and_hardware_requirements.md) in your infrastructure, without using GitLab infrastructure or AI vendor models. This gives you full control over your data and security.
+In a fully self-hosted configuration, you deploy your own AI Gateway and use only [supported LLMs](supported_models_and_hardware_requirements.md) in your infrastructure, without using GitLab infrastructure or AI vendor models. This gives you full control over your data and security.
 
 {{< alert type="note" >}}
 
-This configuration only includes models configured through your self-hosted AI gateway. If you use [GitLab AI vendor models](configure_duo_features.md#configure-a-feature-to-use-a-gitlab-ai-vendor-model) for any features, those features will connect to the GitLab-hosted AI gateway instead of your self-hosted gateway, making it a hybrid configuration rather than fully self-hosted.
+This configuration only includes models configured through your self-hosted AI Gateway. If you use [GitLab AI vendor models](configure_duo_features.md#configure-a-feature-to-use-a-gitlab-ai-vendor-model) for any features, those features will connect to the GitLab-hosted AI Gateway instead of your self-hosted gateway, making it a hybrid configuration rather than fully self-hosted.
 
 {{< /alert >}}
 
-While you deploy your own AI gateway, you can still use cloud-based LLM services like [AWS Bedrock](https://aws.amazon.com/bedrock/) or [Azure OpenAI](https://azure.microsoft.com/en-us/products/ai-services/openai-service) as your model backend and they will continue to connect through your self-hosted AI gateway.
+While you deploy your own AI Gateway, you can still use cloud-based LLM services like [AWS Bedrock](https://aws.amazon.com/bedrock/) or [Azure OpenAI](https://azure.microsoft.com/en-us/products/ai-services/openai-service) as your model backend and they will continue to connect through your self-hosted AI Gateway.
 
 If you have an offline environment with physical barriers or security policies that prevent or limit internet access, and comprehensive LLM controls, you should use this fully self-hosted configuration.
 
 For more information, see:
 
 - [Set up a GitLab Duo Self-Hosted infrastructure](#set-up-a-gitlab-duo-self-hosted-infrastructure)
-- The [self-hosted AI gateway configuration diagram](configuration_types.md#self-hosted-ai-gateway).
+- The [self-hosted AI Gateway configuration diagram](configuration_types.md#self-hosted-ai-gateway).
 
-### Hybrid AI gateway and model configuration
+### Hybrid AI Gateway and model configuration
 
 {{< details >}}
 
@@ -145,7 +145,7 @@ For more information, see the history.
 
 {{< /alert >}}
 
-In this hybrid configuration, you deploy your own AI gateway and self-hosted models for most features, but configure specific features to use GitLab AI vendor models. When a feature is configured to use a GitLab AI vendor model, requests for that feature are sent to the GitLab-hosted AI gateway instead of your self-hosted AI gateway.
+In this hybrid configuration, you deploy your own AI Gateway and self-hosted models for most features, but configure specific features to use GitLab AI vendor models. When a feature is configured to use a GitLab AI vendor model, requests for that feature are sent to the GitLab-hosted AI Gateway instead of your self-hosted AI Gateway.
 
 This option provides flexibility by allowing you to:
 
@@ -156,7 +156,7 @@ This option provides flexibility by allowing you to:
 
 When features are configured to use GitLab AI vendor models:
 
-- All calls to those features use the GitLab-hosted AI gateway, not the self-hosted AI gateway.
+- All calls to those features use the GitLab-hosted AI Gateway, not the self-hosted AI Gateway.
 - Internet connectivity is required for these features.
 - This is not a fully self-hosted or isolated configuration.
 
@@ -172,19 +172,19 @@ Use GitLab managed models to connect to AI models without the need to self-host 
 
 You can select the default GitLab model to use with an AI-native feature. For the default model, GitLab uses the best model based on availability, quality, and reliability. The model used for a feature can change without notice.
 
-When you select a specific GitLab managed model, all requests for that feature use that model exclusively. If the model becomes unavailable, requests to the AI gateway fail and users cannot use that feature until another model is selected.
+When you select a specific GitLab managed model, all requests for that feature use that model exclusively. If the model becomes unavailable, requests to the AI Gateway fail and users cannot use that feature until another model is selected.
 
 {{< alert type="note" >}}
 
 When you configure a feature to use GitLab managed models:
 
-- Calls to those features use the GitLab-hosted AI gateway, not the self-hosted AI gateway.
+- Calls to those features use the GitLab-hosted AI Gateway, not the self-hosted AI Gateway.
 - Internet connectivity is required for these features.
 - The configuration is not fully self-hosted or isolated.
 
 {{< /alert >}}
 
-### GitLab.com AI gateway with default GitLab external vendor LLMs
+### GitLab.com AI Gateway with default GitLab external vendor LLMs
 
 {{< details >}}
 
@@ -193,10 +193,10 @@ When you configure a feature to use GitLab managed models:
 {{< /details >}}
 
 If you do not meet the use case criteria for GitLab Duo Self-Hosted, you can use the
-GitLab.com AI gateway with default GitLab external vendor LLMs.
+GitLab.com AI Gateway with default GitLab external vendor LLMs.
 
-The GitLab.com AI gateway is the default Enterprise offering and is not self-hosted. In this configuration,
-you connect your instance to the GitLab-hosted AI gateway, which
+The GitLab.com AI Gateway is the default Enterprise offering and is not self-hosted. In this configuration,
+you connect your instance to the GitLab-hosted AI Gateway, which
 integrates with external vendor LLM providers, including:
 
 - [Anthropic](https://www.anthropic.com/)
@@ -206,7 +206,7 @@ integrates with external vendor LLM providers, including:
 These LLMs communicate through the GitLab Cloud Connector,
 offering a ready-to-use AI solution without the need for on-premise infrastructure.
 
-For more information, see the [GitLab.com AI gateway configuration diagram](configuration_types.md#gitlabcom-ai-gateway).
+For more information, see the [GitLab.com AI Gateway configuration diagram](configuration_types.md#gitlabcom-ai-gateway).
 
 To set up this infrastructure, see [how to configure GitLab Duo on a GitLab Self-Managed instance](../../administration/gitlab_duo/setup.md).
 
@@ -222,7 +222,7 @@ To set up a fully isolated GitLab Duo Self-Hosted infrastructure:
    - GitLab provides a matrix of supported models with their specific features and hardware requirements. For more information,
    see the [supported models and hardware requirements documentation](supported_models_and_hardware_requirements.md).
 
-1. [Install the AI gateway](../../install/install_ai_gateway.md) to access AI-native GitLab Duo features.
+1. [Install the AI Gateway](../../install/install_ai_gateway.md) to access AI-native GitLab Duo features.
 
 1. [Configure your GitLab instance](configure_duo_features.md) for features to access self-hosted models.
 
@@ -231,6 +231,6 @@ To set up a fully isolated GitLab Duo Self-Hosted infrastructure:
 ## Related topics
 
 - [Troubleshooting](troubleshooting.md)
-- [Install the GitLab AI gateway](../../install/install_ai_gateway.md)
+- [Install the GitLab AI Gateway](../../install/install_ai_gateway.md)
 - [Supported models](supported_models_and_hardware_requirements.md)
 - [GitLab Duo Self-Hosted supported platforms](supported_llm_serving_platforms.md)

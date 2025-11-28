@@ -21,9 +21,6 @@ export default {
     listPath: {
       default: null,
     },
-    isGroup: {
-      default: false,
-    },
   },
   props: {
     staticBreadcrumbs: {
@@ -58,10 +55,7 @@ export default {
       if (isOnWorkItemsPath && !this.isWorkItemPlanningViewEnabled) {
         return false;
       }
-
-      return (
-        this.glFeatures.workItemViewForIssues || this.isWorkItemPlanningViewEnabled || this.isGroup
-      );
+      return true;
     },
     crumbs() {
       const indexCrumb = {

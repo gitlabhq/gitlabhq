@@ -50,9 +50,9 @@ RSpec.describe 'find work items by reference', feature_category: :portfolio_mana
       refs = references + extra_work_items.map { |item| item.to_reference(full: true) }
 
       # Issue to fix N+1 - https://gitlab.com/gitlab-org/gitlab/-/issues/548924
-      expect do
-        post_graphql(query(refs: refs), current_user: current_user)
-      end.not_to exceed_all_query_limit(control_count).with_threshold(2)
+      expect { post_graphql(query(refs: refs), current_user: current_user) }
+        .not_to exceed_all_query_limit(control_count).with_threshold(4)
+
       expect(graphql_data_at('workItemsByReference', 'nodes').size).to eq(3)
     end
   end

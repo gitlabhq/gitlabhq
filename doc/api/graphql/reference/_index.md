@@ -30942,6 +30942,22 @@ Settings for Duo context exclusion rules.
 | ---- | ---- | ----------- |
 | <a id="duocontextexclusionsettingsexclusionrules"></a>`exclusionRules` | [`[String!]`](#string) | List of rules for excluding files from Duo context. |
 
+### `DuoMessage`
+
+A message in a Duo Workflow chat log.
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="duomessagecontent"></a>`content` | [`String!`](#string) | Content of the message. |
+| <a id="duomessagecorrelationid"></a>`correlationId` | [`String`](#string) | Correlation ID of the message. |
+| <a id="duomessagemessagetype"></a>`messageType` | [`String!`](#string) | Type of the message. |
+| <a id="duomessagerole"></a>`role` | [`String`](#string) | Role of the message. |
+| <a id="duomessagestatus"></a>`status` | [`String`](#string) | Status of the message. |
+| <a id="duomessagetimestamp"></a>`timestamp` | [`String`](#string) | Timestamp of the message. |
+| <a id="duomessagetoolinfo"></a>`toolInfo` | [`String`](#string) | Tool information for the message. |
+
 ### `DuoSettings`
 
 GitLab Duo settings.
@@ -31024,6 +31040,7 @@ Events that describe the history and progress of a GitLab Duo Agent Platform ses
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | <a id="duoworkfloweventcheckpoint"></a>`checkpoint` | [`JsonString`](#jsonstring) | Checkpoint of the event. |
+| <a id="duoworkfloweventduomessages"></a>`duoMessages` | [`[DuoMessage!]`](#duomessage) | Messages from the ui_chat_log for the checkpoint. |
 | <a id="duoworkfloweventerrors"></a>`errors` | [`[String!]`](#string) | Message errors. |
 | <a id="duoworkfloweventexecutionstatus"></a>`executionStatus` {{< icon name="warning-solid" >}} | [`String!`](#string) | **Introduced** in GitLab 17.10. **Status**: Experiment. Granular status of the session's execution. |
 | <a id="duoworkfloweventmetadata"></a>`metadata` | [`JsonString`](#jsonstring) | Metadata associated with the event. |

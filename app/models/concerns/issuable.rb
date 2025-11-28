@@ -131,7 +131,9 @@ module Issuable
     scope :join_project, -> { joins(:project) }
     scope :inc_notes_with_associations, -> { includes(notes: [:project, :author, :award_emoji]) }
     scope :references_project, -> { references(:project) }
-    scope :non_archived, -> { join_project.where(projects: { archived: false }) }
+    scope :non_archived, -> do
+      join_project.where(projects: { id: Project.self_and_ancestors_non_archived.select(:id) })
+    end
 
     scope :includes_for_bulk_update, -> do
       associations = %i[

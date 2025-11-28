@@ -82,9 +82,6 @@ export default {
       const path = this.activeItemFullPath.substring(this.activeItemFullPath.lastIndexOf('/') + 1);
       return `${path}#${this.activeItem.iid}`;
     },
-    issueAsWorkItem() {
-      return !this.isGroup && this.glFeatures.workItemViewForIssues;
-    },
     getDrawerHeight() {
       return `calc(${getContentWrapperHeight()} + var(--top-bar-height))`;
     },
@@ -161,7 +158,7 @@ export default {
           fullPath: this.fullPath,
           webUrl: workItem.webUrl,
           isGroup: this.isGroup,
-          issueAsWorkItem: this.issueAsWorkItem,
+          issueAsWorkItem: !this.isGroup,
         });
 
       if (shouldRouterNav) {

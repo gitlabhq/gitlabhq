@@ -10,7 +10,6 @@ import {
 } from '@gitlab/ui';
 import { __, s__, sprintf } from '~/locale';
 import { isScopedLabel } from '~/lib/utils/common_utils';
-import glFeatureFlagMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import UserLinkWithTooltip from '~/vue_shared/components/user_link_with_tooltip.vue';
 import { getIdFromGraphQLId } from '~/graphql_shared/utils';
 import WorkItemLinkChildMetadata from 'ee_else_ce/work_items/components/shared/work_item_link_child_metadata.vue';
@@ -56,7 +55,6 @@ export default {
   directives: {
     GlTooltip: GlTooltipDirective,
   },
-  mixins: [glFeatureFlagMixin()],
   inject: {
     preventRouterNav: {
       from: INJECTION_LINK_CHILD_PREVENT_ROUTER_NAVIGATION,
@@ -167,9 +165,6 @@ export default {
     hasBlockingRelationships() {
       return this.blockingCount > 0 || this.blockedByCount > 0;
     },
-    issueAsWorkItem() {
-      return !this.isGroup && this.glFeatures.workItemViewForIssues;
-    },
     childItemUniqueId() {
       return `listItem-${this.childItemFullPath}/${getIdFromGraphQLId(this.childItem.id)}`;
     },
@@ -189,7 +184,7 @@ export default {
           fullPath: this.workItemFullPath,
           webUrl: workItem.webUrl,
           isGroup: this.isGroup,
-          issueAsWorkItem: this.issueAsWorkItem,
+          issueAsWorkItem: !this.isGroup,
         });
       const hasListRoute = this.$router.getRoutes().some((route) => route.name === 'workItem');
       if (shouldDefaultNavigate || !hasListRoute) {

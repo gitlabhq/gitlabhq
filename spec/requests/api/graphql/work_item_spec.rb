@@ -12,10 +12,6 @@ RSpec.describe 'Query.work_item(id)', :with_current_organization, feature_catego
   let_it_be(:child_link1) { create(:parent_link, work_item_parent: work_item, work_item: child_item1) }
   let_it_be(:child_link2) { create(:parent_link, work_item_parent: work_item, work_item: child_item2) }
 
-  before do
-    stub_feature_flags(work_item_view_for_issues: true)
-  end
-
   context 'when project is archived' do
     before do
       project.update!(archived: true)

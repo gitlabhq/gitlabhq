@@ -13,6 +13,7 @@ module WorkItems
     def preloads
       {
         work_item_type: :work_item_type,
+        author: [:author],
         web_url: { namespace: :route, project: [:project_namespace, {
           namespace: [:route, :namespace_settings_with_ancestors_inherited_settings]
         }] },

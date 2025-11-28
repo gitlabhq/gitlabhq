@@ -34,7 +34,7 @@ module DesignManagement
     end
 
     belongs_to :issue
-    belongs_to :author, class_name: 'User'
+    belongs_to :author, class_name: 'User', inverse_of: :design_management_versions
     belongs_to :namespace
     has_many :actions
     has_many :designs,

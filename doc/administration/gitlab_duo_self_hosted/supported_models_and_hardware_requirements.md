@@ -132,14 +132,14 @@ For more information, see the history.
 
 {{< /alert >}}
 
-GitLab AI vendor models integrate with GitLab-hosted AI gateway infrastructure to provide access to AI models curated and made available by GitLab. Instead of using your own self-hosted models, you can choose to use GitLab AI vendor models for specific GitLab Duo features.
+GitLab AI vendor models integrate with GitLab-hosted AI Gateway infrastructure to provide access to AI models curated and made available by GitLab. Instead of using your own self-hosted models, you can choose to use GitLab AI vendor models for specific GitLab Duo features.
 
 To choose which features use GitLab AI vendor models, see [Configure GitLab AI vendor models](configure_duo_features.md#configure-a-feature-to-use-a-gitlab-ai-vendor-model).
 
 When enabled for a specific feature:
 
-- All calls to those features configured with a GitLab AI vendor model use the GitLab-hosted AI gateway, not the self-hosted AI gateway.
-- No detailed logs are generated in the GitLab-hosted AI gateway, even when [AI logs are enabled](logging.md#enable-logging). This prevents unintended leaks of sensitive information.
+- All calls to those features configured with a GitLab AI vendor model use the GitLab-hosted AI Gateway, not the self-hosted AI Gateway.
+- No detailed logs are generated in the GitLab-hosted AI Gateway, even when [AI logs are enabled](logging.md#enable-logging). This prevents unintended leaks of sensitive information.
 
 ## Hardware requirements
 
@@ -210,4 +210,4 @@ With a `a2-ultragpu-8g` (8 x NVIDIA A100 80 GB - 1360 GB vRAM) machine on GCP or
 
 ### AI Gateway Hardware Requirements
 
-For recommendations on AI gateway hardware, see the [AI gateway scaling recommendations](../../install/install_ai_gateway.md#scaling-recommendations).
+For recommendations on AI Gateway hardware, see the [AI Gateway scaling recommendations](../../install/install_ai_gateway.md#scaling-recommendations).

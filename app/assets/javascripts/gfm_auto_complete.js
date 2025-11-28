@@ -195,16 +195,15 @@ export const defaultAutocompleteConfig = {
 class GfmAutoComplete {
   constructor(dataSources = {}) {
     // Ensure that all possible work item paths are included
-    const { page } = document.body.dataset;
+    const page = document.body.dataset.page || '';
     this.isWorkItemsView =
-      gon.features?.workItemViewForIssues &&
-      (page.includes('groups:work_items') ||
-        page.includes('projects:work_items') ||
-        page.includes('groups:issues') ||
-        page.includes('projects:issues') ||
-        page.includes('groups:epics') ||
-        page.includes('issues:show') ||
-        page.includes('epics:show'));
+      page.includes('groups:work_items') ||
+      page.includes('projects:work_items') ||
+      page.includes('groups:issues') ||
+      page.includes('projects:issues') ||
+      page.includes('groups:epics') ||
+      page.includes('issues:show') ||
+      page.includes('epics:show');
 
     this.dataSources = dataSources;
     this.cachedData = {};

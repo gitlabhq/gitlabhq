@@ -174,7 +174,6 @@ describeSkipVue3(skipReason, () => {
     countsOnlyHandler = defaultCountsOnlyHandler,
     mockPreferencesHandler = mockPreferencesQueryHandler,
     userPreferenceMutationResponse = userPreferenceMutationHandler,
-    workItemsToggleEnabled = true,
     workItemPlanningView = false,
     props = {},
     additionalHandlers = [],
@@ -188,7 +187,6 @@ describeSkipVue3(skipReason, () => {
       ...window.gon,
       features: {
         workItemsClientSideBoards: false,
-        workItemViewForIssues: workItemsToggleEnabled,
       },
     };
     wrapper = shallowMountExtended(WorkItemsListApp, {
@@ -1156,9 +1154,6 @@ describeSkipVue3(skipReason, () => {
           mountComponent({
             mockPreferencesHandler: mockHandler,
             provide: {
-              glFeatures: {
-                workItemViewForIssues: false,
-              },
               isSignedIn: true,
             },
           });
@@ -1220,7 +1215,7 @@ describeSkipVue3(skipReason, () => {
           ]);
         });
 
-        describe('workItemDrawerEnabled', () => {
+        describe('work item drawer', () => {
           it('does not render drawer when shouldOpenItemsInSidePanel is false', async () => {
             const mockHandler = jest.fn().mockResolvedValue({
               data: {
@@ -1245,7 +1240,7 @@ describeSkipVue3(skipReason, () => {
             expect(findDrawer().exists()).toBe(false);
           });
 
-          it('renders drawer when shouldOpenItemsInSidePanel is true and feature is enabled', async () => {
+          it('renders drawer when shouldOpenItemsInSidePanel is true', async () => {
             const mockHandler = jest.fn().mockResolvedValue({
               data: {
                 currentUser: {
@@ -1260,14 +1255,7 @@ describeSkipVue3(skipReason, () => {
               },
             });
 
-            mountComponent({
-              mockPreferencesHandler: mockHandler,
-              provide: {
-                glFeatures: {
-                  workItemViewForIssues: false,
-                },
-              },
-            });
+            mountComponent({ mockPreferencesHandler: mockHandler });
             await waitForPromises();
 
             expect(findDrawer().exists()).toBe(true);

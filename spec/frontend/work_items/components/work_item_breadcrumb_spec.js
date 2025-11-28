@@ -14,7 +14,6 @@ describe('WorkItemBreadcrumb', () => {
     listPath = '/epics',
     isGroup = true,
     workItemPlanningView = false,
-    workItemViewForIssues = false,
     props = {},
   } = {}) => {
     wrapper = shallowMount(WorkItemBreadcrumb, {
@@ -22,7 +21,6 @@ describe('WorkItemBreadcrumb', () => {
         workItemType,
         glFeatures: {
           workItemPlanningView,
-          workItemViewForIssues,
         },
         listPath,
         isGroup,
@@ -80,23 +78,8 @@ describe('WorkItemBreadcrumb', () => {
 
   describe('when the workspace is a project', () => {
     describe('when in issues mode', () => {
-      it('renders root `Issues` breadcrumb with href on work items list page', () => {
+      it('renders root breadcrumb with router link if on work item project issues list', () => {
         createComponent({ isGroup: false, listPath: '/issues' });
-
-        expect(findBreadcrumb().props('items')).toEqual([
-          {
-            text: 'Issues',
-            href: '/issues',
-          },
-        ]);
-      });
-
-      it('renders root breadcrumb with router link if user turned work item view on and is on work item project issues list', () => {
-        createComponent({
-          isGroup: false,
-          listPath: '/issues',
-          workItemViewForIssues: true,
-        });
 
         expect(findBreadcrumb().props('items')).toEqual([
           {

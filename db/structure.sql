@@ -26801,7 +26801,7 @@ CREATE TABLE security_orchestration_policy_rule_schedules (
     updated_at timestamp with time zone NOT NULL,
     next_run_at timestamp with time zone,
     security_orchestration_policy_configuration_id bigint NOT NULL,
-    user_id bigint NOT NULL,
+    user_id bigint,
     policy_index integer NOT NULL,
     cron text NOT NULL,
     rule_index integer DEFAULT 0 NOT NULL,
@@ -44829,6 +44829,8 @@ CREATE INDEX index_web_hooks_on_type ON web_hooks USING btree (type);
 CREATE UNIQUE INDEX index_webauthn_registrations_on_credential_xid ON webauthn_registrations USING btree (credential_xid);
 
 CREATE INDEX index_webauthn_registrations_on_user_id ON webauthn_registrations USING btree (user_id);
+
+CREATE INDEX index_webauthn_registrations_where_authn_mode_is_one ON webauthn_registrations USING btree (authentication_mode) WHERE (authentication_mode = 1);
 
 CREATE UNIQUE INDEX index_wiki_meta_user_mentions_on_wiki_page_meta_id_and_note_id ON wiki_page_meta_user_mentions USING btree (wiki_page_meta_id, note_id);
 

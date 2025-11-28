@@ -111,6 +111,13 @@ module Users
         foreign_key: :creator_id,
         inverse_of: :creator,
         dependent: :nullify
+
+      has_many :design_management_versions,
+        class_name: 'DesignManagement::Version',
+        foreign_key: :author_id,
+        inverse_of: :author,
+        dependent: :nullify
+
       # rubocop:enable Cop/ActiveRecordDependent
     end
   end

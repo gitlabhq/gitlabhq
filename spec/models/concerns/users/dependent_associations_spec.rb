@@ -43,6 +43,10 @@ RSpec.describe Users::DependentAssociations, feature_category: :user_management 
         debian_project_distributions: {
           class_name: 'Packages::Debian::ProjectDistribution',
           foreign_key: :creator_id
+        },
+        design_management_versions: {
+          class_name: 'DesignManagement::Version',
+          foreign_key: :author_id
         }
       }
     end

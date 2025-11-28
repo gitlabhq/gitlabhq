@@ -2,14 +2,23 @@
 
 require 'spec_helper'
 
-RSpec.describe API::Helpers::MergeRequestsHelpers do
-  describe '#handle_merge_request_errors!' do
-    let(:helper) do
-      Class.new do
-        include API::Helpers::MergeRequestsHelpers
-      end.new
-    end
+RSpec.describe API::Helpers::MergeRequestsHelpers, feature_category: :code_review_workflow do
+  let(:helper_class) do
+    Class.new do
+      include API::Helpers::MergeRequestsHelpers
 
+      attr_accessor :access_token
+
+      def initialize(token = nil)
+        @access_token = token
+      end
+    end
+  end
+
+  let(:helper) { helper_class.new(access_token) }
+  let(:access_token) { nil }
+
+  describe '#handle_merge_request_errors!' do
     let(:merge_request) { double }
 
     context 'when merge request is valid' do
@@ -56,6 +65,16 @@ RSpec.describe API::Helpers::MergeRequestsHelpers do
 
         helper.handle_merge_request_errors!(merge_request)
       end
+    end
+  end
+
+  describe '#filter_diffs_for_mcp' do
+    let(:diffs) { [instance_double(Gitlab::Git::Diff), instance_double(Gitlab::Git::Diff)] }
+
+    it 'returns diffs unchanged' do
+      result = helper.filter_diffs_for_mcp(diffs, nil)
+
+      expect(result).to eq(diffs)
     end
   end
 end

@@ -362,12 +362,10 @@ You can also create an epic by
 
 ## Go to an epic from an issue
 
-<!-- Update this section after flag work_item_view_for_issues is removed to refer to the Parent section in the sidebar -->
-
 If an issue belongs to an epic, you can go to the parent epic from:
 
 - Breadcrumbs at the top of the issue.
-- The **Epic** section in the right sidebar.
+- The **Parent** section in the right sidebar.
 
 ## View epics list
 

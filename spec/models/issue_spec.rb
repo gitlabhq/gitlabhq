@@ -577,6 +577,50 @@ RSpec.describe Issue, feature_category: :team_planning do
     end
   end
 
+  describe '.non_archived' do
+    let_it_be(:group) { create(:group) }
+    let_it_be(:archived_group) { create(:group, :archived) }
+    let_it_be(:subgroup) { create(:group, parent: archived_group) }
+
+    let_it_be(:non_archived_project) { create(:project, group: group) }
+    let_it_be(:archived_project) { create(:project, :archived, group: group) }
+    let_it_be(:project_in_archived_group) { create(:project, group: archived_group) }
+    let_it_be(:project_in_subgroup_of_archived_group) { create(:project, group: subgroup) }
+
+    let_it_be(:issue_in_non_archived_project) { create(:issue, project: non_archived_project) }
+    let_it_be(:issue_in_archived_project) { create(:issue, project: archived_project) }
+    let_it_be(:issue_in_archived_group) { create(:issue, project: project_in_archived_group) }
+    let_it_be(:issue_in_subgroup_of_archived_group) { create(:issue, project: project_in_subgroup_of_archived_group) }
+    let_it_be(:group_level_issue) { create(:issue, :group_level, namespace: group) }
+    let_it_be(:group_level_issue_in_archived_group) { create(:issue, :group_level, namespace: archived_group) }
+
+    subject { described_class.non_archived }
+
+    it 'returns issues from non-archived projects' do
+      is_expected.to include(issue_in_non_archived_project)
+    end
+
+    it 'returns group-level issues from non-archived groups' do
+      is_expected.to include(group_level_issue)
+    end
+
+    it 'does not return issues from archived projects' do
+      is_expected.not_to include(issue_in_archived_project)
+    end
+
+    it 'does not return issues from projects in archived groups' do
+      is_expected.not_to include(issue_in_archived_group)
+    end
+
+    it 'does not return issues from projects in subgroups of archived groups' do
+      is_expected.not_to include(issue_in_subgroup_of_archived_group)
+    end
+
+    it 'does not return group-level issues from archived groups' do
+      is_expected.not_to include(group_level_issue_in_archived_group)
+    end
+  end
+
   describe '#sort' do
     let(:project) { reusable_project }
 
@@ -2065,6 +2109,40 @@ RSpec.describe Issue, feature_category: :team_planning do
         expect(issue.reload.description).to eq("new")
         expect(issue.work_item_description.description).to eq("old")
       end
+    end
+  end
+
+  describe '#show_as_work_item?' do
+    subject(:issue_as_work_item) { issue.show_as_work_item? }
+
+    context 'with a service desk issue' do
+      let(:issue) { build_stubbed(:issue, project: reusable_project, author: create(:support_bot)) }
+
+      it { is_expected.to be false }
+    end
+
+    context 'with an incident' do
+      let(:issue) { build_stubbed(:incident, project: reusable_project) }
+
+      it { is_expected.to be false }
+    end
+
+    context 'when work_item_type is not set' do
+      let(:issue) { build_stubbed(:issue, work_item_type: nil) }
+
+      it { is_expected.to be true }
+    end
+
+    context 'with a regular issue' do
+      let(:issue) { build_stubbed(:issue, project: reusable_project) }
+
+      it { is_expected.to be true }
+    end
+
+    context 'with a task' do
+      let(:issue) { build_stubbed(:issue, :task, project: reusable_project) }
+
+      it { is_expected.to be true }
     end
   end
 end

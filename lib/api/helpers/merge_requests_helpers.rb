@@ -152,6 +152,11 @@ module API
       def self.sort_options_help
         sort_options.map { |y| "`#{y}`" }.to_sentence(last_word_connector: ' or ')
       end
+
+      # No-op method for CE - EE will override this to apply context exclusion
+      def filter_diffs_for_mcp(diffs, _project)
+        diffs
+      end
     end
   end
 end

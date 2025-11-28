@@ -303,8 +303,7 @@ export default {
         // incidents and Service Desk issues
         !this.isIncident &&
         !this.isServiceDeskIssue &&
-        !this.isTestCase &&
-        this.glFeatures.workItemViewForIssues
+        !this.isTestCase
       );
     },
     hiddenIssuableTitle() {

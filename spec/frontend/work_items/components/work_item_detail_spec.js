@@ -205,9 +205,6 @@ describe('WorkItemDetail component', () => {
         hasLinkedItemsEpicsFeature: true,
         hasSubepicsFeature: true,
         isGroup: false,
-        glFeatures: {
-          workItemViewForIssues: true,
-        },
         ...provide,
       },
       stubs: {

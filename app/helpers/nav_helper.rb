@@ -99,10 +99,7 @@ module NavHelper
   end
 
   def new_issue_look?
-    current_controller?('issues') &&
-      Feature.enabled?(:work_item_view_for_issues, @project&.group) &&
-      !@issue&.work_item_type&.incident? &&
-      !@issue&.from_service_desk?
+    current_controller?('issues') && @issue&.show_as_work_item?
   end
 
   def skip_right_sidebar_classes?

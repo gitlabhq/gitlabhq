@@ -1304,18 +1304,12 @@ describe('GfmAutoComplete', () => {
     const mockWorkItemId = 'gid://gitlab/WorkItem/1';
     const mockWorkItemFullPath = 'gitlab-test';
     const mockWorkItemIid = '1';
-    const originalGon = window.gon;
     const dataSources = {
       issues: `${TEST_HOST}/autocomplete_sources/issues`,
       members: `${TEST_HOST}/autocomplete_sources/members`,
     };
 
     beforeEach(() => {
-      window.gon = {
-        features: {
-          workItemViewForIssues: true,
-        },
-      };
       document.body.dataset.page = 'projects:issues:show';
       setHTMLFixture(`
         <section>
@@ -1334,7 +1328,6 @@ describe('GfmAutoComplete', () => {
     afterEach(() => {
       autocomplete.destroy();
       resetHTMLFixture();
-      window.gon = originalGon;
     });
 
     describe('unlink', () => {

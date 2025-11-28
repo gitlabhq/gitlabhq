@@ -20,7 +20,7 @@ title: Configure GitLab to access GitLab Duo Self-Hosted
 - [Enabled on GitLab Self-Managed](https://gitlab.com/groups/gitlab-org/-/epics/15176) in GitLab 17.6.
 - Changed to require GitLab Duo add-on in GitLab 17.6 and later.
 - Feature flag `ai_custom_model` removed in GitLab 17.8
-- Ability to set AI gateway URL using UI [added](https://gitlab.com/gitlab-org/gitlab/-/issues/473143) in GitLab 17.9.
+- Ability to set AI Gateway URL using UI [added](https://gitlab.com/gitlab-org/gitlab/-/issues/473143) in GitLab 17.9.
 - Generally available in GitLab 17.9.
 - Changed to include Premium in GitLab 18.0.
 
@@ -34,24 +34,24 @@ Prerequisites:
 To configure your GitLab instance to access the available self-hosted models in your infrastructure:
 
 1. [Confirm that a fully self-hosted configuration is appropriate for your use case](_index.md#configuration-types).
-1. Configure your GitLab instance to access the AI gateway.
+1. Configure your GitLab instance to access the AI Gateway.
 1. In GitLab 18.4 and later, configure your GitLab instance to access the GitLab Duo Agent Platform service.
 1. Configure the self-hosted model.
 1. Configure the GitLab Duo features to use your self-hosted model.
 
-## Configure access to the local AI gateway
+## Configure access to the local AI Gateway
 
-To configure access between your GitLab instance and your local AI gateway:
+To configure access between your GitLab instance and your local AI Gateway:
 
 1. On the left sidebar, at the bottom, select **Admin**. If you've [turned on the new navigation](../../user/interface_redesign.md#turn-new-navigation-on-or-off), in the upper-right corner, select **Admin**.
 1. Select **GitLab Duo**.
 1. Select **Change configuration**.
-1. Under **Local AI Gateway URL**, enter your AI gateway URL.
+1. Under **Local AI Gateway URL**, enter your AI Gateway URL.
 1. Select **Save changes**.
 
 {{< alert type="note" >}}
 
-If your AI gateway URL points to a local network or private IP address (for example, `172.31.x.x` or internal hostnames like `ip-172-xx-xx-xx.region.compute.internal`), GitLab might block the request for security reasons. To allow requests to this address, [add the address to the IP allowlist](../../security/webhooks.md#allow-outbound-requests-to-certain-ip-addresses-and-domains).
+If your AI Gateway URL points to a local network or private IP address (for example, `172.31.x.x` or internal hostnames like `ip-172-xx-xx-xx.region.compute.internal`), GitLab might block the request for security reasons. To allow requests to this address, [add the address to the IP allowlist](../../security/webhooks.md#allow-outbound-requests-to-certain-ip-addresses-and-domains).
 
 {{< /alert >}}
 
@@ -208,7 +208,6 @@ This ensures all Chat functionality works without requiring individual model con
 {{< /history >}}
 
 {{< alert type="flag" >}}
-
 The availability of this feature is controlled by a feature flag.
 For more information, see the history.
 

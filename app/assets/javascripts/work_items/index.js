@@ -60,7 +60,7 @@ export const initWorkItemsRoot = ({ workItemType, workspaceType, withTabs } = {}
   const isGroup = workspaceType === WORKSPACE_GROUP;
   const router = createRouter({ fullPath, workspaceType, defaultBranch });
 
-  const breadcrumbParams = { workItemType, isGroup };
+  const breadcrumbParams = { workItemType };
 
   if (workItemType === WORK_ITEM_TYPE_NAME_EPIC) {
     breadcrumbParams.listPath = epicsListPath;
