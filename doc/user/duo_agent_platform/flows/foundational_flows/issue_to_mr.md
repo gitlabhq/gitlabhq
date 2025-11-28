@@ -17,6 +17,7 @@ title: Issue to Merge Request Flow
 {{< history >}}
 
 - Introduced as [a beta](../../../../policy/development_stages_support.md) in GitLab 18.3 [with a flag](../../../../administration/feature_flags/_index.md) named `duo_workflow_in_ci`. Disabled by default, but can be enabled for the instance or a user.
+- Feature flag `duo_workflow_in_ci` enabled by default in 18.4.
 - The `duo_workflow` flag must also be enabled, but it is enabled by default.
 
 {{< /history >}}

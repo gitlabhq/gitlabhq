@@ -9,7 +9,7 @@ RSpec.describe Projects::ImportExport::RelationExportUpload, type: :model, featu
   let_it_be(:project_relation_export) { create(:project_relation_export, project_id: project.id) }
 
   describe 'associations' do
-    it { is_expected.to belong_to(:relation_export) }
+    it { is_expected.to belong_to(:relation_export).required }
   end
 
   describe '.for_project_export_jobs' do
@@ -60,6 +60,13 @@ RSpec.describe Projects::ImportExport::RelationExportUpload, type: :model, featu
 
     url = "/uploads/-/system/projects/import_export/relation_export_upload/export_file/#{subject.id}/#{filename}"
     expect(subject.export_file.url).to eq(url)
+  end
+
+  it 'validates presence of relation_export' do
+    upload = described_class.new(relation_export: nil)
+
+    expect(upload).not_to be_valid
+    expect(upload.errors[:relation_export]).to include("must exist")
   end
 
   describe 'ActiveRecord callbacks' do

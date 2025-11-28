@@ -12,13 +12,16 @@ title: CI/CD caching examples
 
 {{< /details >}}
 
-Usually you use caches to avoid downloading content, like dependencies
-or libraries, each time you run a job. Node.js packages,
-PHP packages, Ruby gems, Python libraries, and others can be cached.
+Use caching to avoid downloading dependencies and build artifacts every time a job runs.
+Caching speeds up your CI/CD pipelines by reusing previously downloaded content.
 
 For more examples, see the [GitLab CI/CD templates](https://gitlab.com/gitlab-org/gitlab/-/tree/master/lib/gitlab/ci/templates).
 
-## Share caches between jobs in the same branch
+## Cache strategies
+
+These examples show different approaches to sharing caches between jobs and branches.
+
+### Share caches between jobs in the same branch
 
 To have jobs in each branch use the same cache, define a cache with the `key: $CI_COMMIT_REF_SLUG`:
 
@@ -45,7 +48,7 @@ cache:
   key: "$CI_JOB_STAGE-$CI_COMMIT_REF_SLUG"
 ```
 
-## Share caches across jobs in different branches
+### Share caches across jobs in different branches
 
 To share a cache across all branches and all jobs, use the same key for everything:
 
@@ -61,7 +64,7 @@ cache:
   key: $CI_JOB_NAME
 ```
 
-## Use a variable to control a job's cache policy
+### Use a variable to control a job's cache policy
 
 {{< history >}}
 
@@ -98,7 +101,11 @@ In this example, the job's cache policy is:
 - `pull-push` for changes to the default branch.
 - `pull` for changes to other branches.
 
-## Cache Node.js dependencies
+## Cache dependencies
+
+These examples show how to cache common dependencies by programming language.
+
+### Node.js
 
 If your project uses [npm](https://www.npmjs.com/) to install Node.js
 dependencies, the following example defines a default `cache` so that all jobs inherit it.
@@ -121,7 +128,7 @@ test_async:
     - node ./specs/start.js ./specs/async.spec.js
 ```
 
-### Compute the cache key from the lock file
+#### Compute the cache key from the lock file
 
 You can use [`cache:key:files`](../yaml/_index.md#cachekeyfiles) to compute the cache
 key from a lock file like `package-lock.json` or `yarn.lock`, and reuse it in many jobs.
@@ -135,6 +142,8 @@ default:
     paths:
       - .npm/
 ```
+
+#### Yarn with offline mirror
 
 If you're using [Yarn](https://yarnpkg.com/), you can use [`yarn-offline-mirror`](https://classic.yarnpkg.com/blog/2016/11/24/offline-mirror/)
 to cache the zipped `node_modules` tarballs. The cache generates more quickly, because
@@ -154,34 +163,7 @@ job:
       - .yarn-cache/
 ```
 
-## Cache C/C++ compilation using Ccache
-
-If you are compiling C/C++ projects, you can use [Ccache](https://ccache.dev/) to
-speed up your build times. Ccache speeds up recompilation by caching previous compilations
-and detecting when the same compilation is being done again. When building big projects like the Linux kernel,
-you can expect significantly faster compilations.
-
-Use `cache` to reuse the created cache between jobs, for example:
-
-```yaml
-job:
-  cache:
-    paths:
-      - ccache
-  before_script:
-    - export PATH="/usr/lib/ccache:$PATH"  # Override compiler path with ccache (this example is for Debian)
-    - export CCACHE_DIR="${CI_PROJECT_DIR}/ccache"
-    - export CCACHE_BASEDIR="${CI_PROJECT_DIR}"
-    - export CCACHE_COMPILERCHECK=content  # Compiler mtime might change in the container, use checksums instead
-  script:
-    - ccache --zero-stats || true
-    - time make                            # Actually build your code while measuring time and cache efficiency.
-    - ccache --show-stats || true
-```
-
-If you have multiple projects in a single repository you do not need a separate `CCACHE_BASEDIR` for each of them.
-
-## Cache PHP dependencies
+### PHP
 
 If your project uses [Composer](https://getcomposer.org/) to install
 PHP dependencies, the following example defines a default `cache` so that
@@ -205,7 +187,7 @@ test:
     - vendor/bin/phpunit --configuration phpunit.xml --coverage-text --colors=never
 ```
 
-## Cache Python dependencies
+### Python
 
 If your project uses [pip](https://pip.pypa.io/en/stable/) to install
 Python dependencies, the following example defines a default `cache` so that
@@ -233,7 +215,7 @@ test:
     - ruff --format=gitlab .
 ```
 
-## Cache Ruby dependencies
+### Ruby
 
 If your project uses [Bundler](https://bundler.io) to install
 gem dependencies, the following example defines a default `cache` so that all
@@ -290,7 +272,7 @@ deploy_job:
     - bundle exec deploy
 ```
 
-## Cache Go dependencies
+### Go
 
 If your project uses [Go Modules](https://go.dev/wiki/Modules) to install
 Go dependencies, the following example defines `cache` in a `go-cache` template, that
@@ -314,7 +296,38 @@ test:
     - go test ./... -v -short
 ```
 
-## Cache curl downloads
+## Cache build artifacts and downloads
+
+These examples show how to cache compiled objects and downloaded files to speed up builds.
+
+### Cache C/C++ compilation using Ccache
+
+If you are compiling C/C++ projects, you can use [Ccache](https://ccache.dev/) to
+speed up your build times. Ccache speeds up recompilation by caching previous compilations
+and detecting when the same compilation is being done again. When building big projects like the Linux kernel,
+you can expect significantly faster compilations.
+
+Use `cache` to reuse the created cache between jobs, for example:
+
+```yaml
+job:
+  cache:
+    paths:
+      - ccache
+  before_script:
+    - export PATH="/usr/lib/ccache:$PATH"  # Override compiler path with ccache (this example is for Debian)
+    - export CCACHE_DIR="${CI_PROJECT_DIR}/ccache"
+    - export CCACHE_BASEDIR="${CI_PROJECT_DIR}"
+    - export CCACHE_COMPILERCHECK=content  # Compiler mtime might change in the container, use checksums instead
+  script:
+    - ccache --zero-stats || true
+    - time make                            # Actually build your code while measuring time and cache efficiency.
+    - ccache --show-stats || true
+```
+
+If you have multiple projects in a single repository you do not need a separate `CCACHE_BASEDIR` for each of them.
+
+### Cache downloads with cURL
 
 If your project uses [cURL](https://curl.se/) to download dependencies or files,
 you can cache the downloaded content. The files are automatically updated when

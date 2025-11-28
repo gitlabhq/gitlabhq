@@ -82,6 +82,26 @@ RSpec.describe Projects::ImportExport::RelationExportService, feature_category: 
           expect(relation_export.finished?).to eq(true)
           expect(relation_export.upload.export_file.filename).to eq("#{relation}.tar.gz")
         end
+
+        it 'sets project_relation_export_id on upload' do
+          service.execute
+
+          expect(relation_export.upload.project_relation_export_id).to eq(relation_export.id)
+        end
+
+        context 'when upload already exists from previous failed attempt' do
+          it 'reuses existing upload record and updates it' do
+            existing_upload = create(:relation_export_upload, relation_export: relation_export)
+            existing_upload_id = existing_upload.id
+
+            service.execute
+
+            expect(relation_export.reload.upload.id).to eq(existing_upload_id)
+            expect(relation_export.upload).to be_present
+            expect(relation_export.upload.export_file.filename).to eq("#{relation}.tar.gz")
+            expect(relation_export.upload.project_relation_export_id).to eq(relation_export.id)
+          end
+        end
       end
     end
   end

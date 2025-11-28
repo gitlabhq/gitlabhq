@@ -2739,6 +2739,9 @@ msgstr ""
 msgid "AICatalog|Explore the AI Catalog"
 msgstr ""
 
+msgid "AICatalog|Explore your GitLab Duo and SDLC trends"
+msgstr ""
+
 msgid "AICatalog|External"
 msgstr ""
 
@@ -10107,7 +10110,7 @@ msgstr ""
 msgid "Authentication method updated"
 msgstr ""
 
-msgid "Authentication via WebAuthn device failed."
+msgid "Authentication via WebAuthn device failed. Use another 2FA method or %{two_factor_recovery_hyperlink} your account."
 msgstr ""
 
 msgid "Authentication with the AI gateway services failed: %{error}"
@@ -74030,6 +74033,9 @@ msgstr ""
 msgid "VirtualRegistry|Use the arrow buttons to reorder upstreams. Artifacts are resolved from top to bottom."
 msgstr ""
 
+msgid "VirtualRegistry|Used by registries"
+msgstr ""
+
 msgid "VirtualRegistry|Username (optional)"
 msgstr ""
 
@@ -75023,6 +75029,9 @@ msgid "WebAuthn device deleted"
 msgstr ""
 
 msgid "WebAuthn device registered"
+msgstr ""
+
+msgid "WebAuthn device successfully authenticated."
 msgstr ""
 
 msgid "WebAuthn devices"
@@ -79017,6 +79026,9 @@ msgstr ""
 msgid "Your username is %{username}."
 msgstr ""
 
+msgid "Your webauthn device did not send a valid JSON response."
+msgstr ""
+
 msgid "Your work"
 msgstr ""
 
@@ -81252,6 +81264,9 @@ msgid "reached maximum depth"
 msgstr ""
 
 msgid "read-only"
+msgstr ""
+
+msgid "recover"
 msgstr ""
 
 msgid "register"

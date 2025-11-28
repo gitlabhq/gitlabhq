@@ -13,7 +13,7 @@ See [the general developer security guidelines](https://gitlab.com/gitlab-org/re
 ## Developer checklist
 
 - [ ] Familiarize yourself with the latest process to create Security merge requests: https://gitlab.com/gitlab-org/release/docs/blob/master/general/security/engineer.md#process
-- [ ] Create the [security implementation issue]. This is not the original vulnerability report issue on the GitLab canonical `gitlab-org/gitlab` repository or the SIRT issue.
+- [ ] Create the [security implementation issue]. This is not the original vulnerability report issue on the GitLab canonical `gitlab-org/gitlab` repository or the SIRT issue. **To ensure this issue is included in the next patch, add the ~security-target label to it after all the security work is completed.**
 - [ ] **On "Related issues" section, add a link to the security implementation issue you just created (i.e. `Related to <issue_id>`).**
 - [ ] Merge request targets `master`, or a versioned stable branch (`X-Y-stable-ee`).
 - [ ] Title of this merge request is the same as for all backports.

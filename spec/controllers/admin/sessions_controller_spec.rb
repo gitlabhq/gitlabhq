@@ -239,7 +239,11 @@ RSpec.describe Admin::SessionsController, :do_not_mock_admin_mode, feature_categ
         end
 
         it 'can login with valid auth' do
-          allow_any_instance_of(Webauthn::AuthenticateService).to receive(:execute).and_return(true)
+          allow_next_instance_of(Webauthn::AuthenticateService) do |instance|
+            allow(instance).to receive(:execute).and_return(
+              ServiceResponse.success
+            )
+          end
 
           expect(controller.current_user_mode.admin_mode?).to be(false)
 
@@ -253,7 +257,11 @@ RSpec.describe Admin::SessionsController, :do_not_mock_admin_mode, feature_categ
         end
 
         it 'cannot login with invalid auth' do
-          allow_any_instance_of(Webauthn::AuthenticateService).to receive(:execute).and_return(false)
+          allow_next_instance_of(Webauthn::AuthenticateService) do |instance|
+            allow(instance).to receive(:execute).and_return(
+              ServiceResponse.error(message: _('Authentication via WebAuthn device failed.'))
+            )
+          end
 
           expect(controller.current_user_mode.admin_mode?).to be(false)
 

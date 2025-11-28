@@ -149,6 +149,37 @@ export const rawMetricToMetricTile = (metric) => {
 };
 
 /**
+ * Generates a URL link to the analytics dashboards index page.
+ *
+ * @param {Object} params
+ * @param {String} params.namespacePath - Path of the specified namespace
+ * @param {Boolean} params.isGroup - Whether the namespace is a group (true) or project (false)
+ * @returns {String} A URL to the analytics dashboards index
+ */
+export const generateAnalyticsDashboardsIndexLink = ({ namespacePath, isGroup = false }) => {
+  const basePath = isGroup ? `groups/${namespacePath}` : namespacePath;
+  return joinPaths(gon.relative_url_root || '', '/', basePath, '/-/analytics/dashboards');
+};
+
+/**
+ * Generates a URL link to an analytics dashboard based on the
+ * namespace path and dashboard slug.
+ *
+ * @param {Object} params
+ * @param {String} params.namespacePath - Path of the specified namespace
+ * @param {Boolean} params.isGroup - Whether the namespace is a group (true) or project (false)
+ * @param {String} params.dashboardSlug - The slug of the dashboard to link to
+ * @returns {String} A URL to the analytics dashboard
+ */
+export const generateAnalyticsDashboardLink = ({
+  namespacePath,
+  isGroup = false,
+  dashboardSlug,
+}) => {
+  return joinPaths(generateAnalyticsDashboardsIndexLink({ namespacePath, isGroup }), dashboardSlug);
+};
+
+/**
  * Generates a URL link to the VSD dashboard based on the
  * namespace path passed into the method.
  *
@@ -162,11 +193,11 @@ export const generateValueStreamsDashboardLink = (
 ) => {
   if (!namespacePath) return '';
 
-  const dashboardsSlug = '/-/analytics/dashboards/value_streams_dashboard';
-  const formattedNamespacePath = isProjectNamespace ? namespacePath : `groups/${namespacePath}`;
-  const segments = [gon.relative_url_root || '', '/', formattedNamespacePath, dashboardsSlug];
-
-  return joinPaths(...segments);
+  return generateAnalyticsDashboardLink({
+    namespacePath,
+    isGroup: !isProjectNamespace,
+    dashboardSlug: 'value_streams_dashboard',
+  });
 };
 
 /**

@@ -23,16 +23,31 @@ RSpec.describe Webauthn::RegisterService, feature_category: :system_access do
   subject(:register_service) { described_class.new(user, params, challenge).execute }
 
   describe '#execute' do
+    shared_examples 'returns registration failure' do
+      it 'returns a Service.error' do
+        expect(register_service).to be_a(ServiceResponse)
+        expect(register_service).to be_error
+      end
+    end
+
+    shared_examples 'returns registration success' do
+      it 'returns a Service.success' do
+        expect(register_service).to be_a(ServiceResponse)
+        expect(register_service).to be_success
+      end
+    end
+
     context 'with valid registrations' do
       let(:webauthn_credential) { WebAuthn::Credential.from_create(Gitlab::Json.parse(params[:device_response])) }
 
+      it_behaves_like 'returns registration success'
+
       it 'returns a registration if the challenge matches' do
-        expect(register_service.credential_xid).to eq(Base64.strict_encode64(webauthn_credential.raw_id))
-        expect(register_service.errors.size).to eq(0)
+        expect(register_service.payload.credential_xid).to eq(Base64.strict_encode64(webauthn_credential.raw_id))
       end
 
       it 'updates the required webauthn_registration columns' do
-        registration = register_service
+        registration = register_service.payload
 
         expect(registration.public_key).to eq(webauthn_credential.public_key)
         expect(registration.counter).to eq(webauthn_credential.sign_count)
@@ -50,7 +65,7 @@ RSpec.describe Webauthn::RegisterService, feature_category: :system_access do
         end
 
         it 'sets passkey_eligible to true' do
-          expect(register_service.passkey_eligible).to be_truthy
+          expect(register_service.payload.passkey_eligible).to be_truthy
         end
       end
 
@@ -63,18 +78,12 @@ RSpec.describe Webauthn::RegisterService, feature_category: :system_access do
         end
 
         it 'sets passkey_eligible to false' do
-          expect(register_service.passkey_eligible).to be_falsy
+          expect(register_service.payload.passkey_eligible).to be_falsy
         end
       end
     end
 
     context 'with invalid registrations' do
-      shared_examples 'returns a WebAuthn error' do
-        it 'returns a WebAuthn or a sub_error class' do
-          expect(register_service.errors[:base]).to be_present
-        end
-      end
-
       context 'with a tampered challenge from the browser' do
         let(:compromised_challenge) { Base64.strict_encode64(SecureRandom.random_bytes(16)) }
 
@@ -82,19 +91,13 @@ RSpec.describe Webauthn::RegisterService, feature_category: :system_access do
           client.create(challenge: compromised_challenge) # rubocop:disable Rails/SaveBang -- .create is a FakeClient method
         end
 
-        it_behaves_like 'returns a WebAuthn error'
+        it_behaves_like 'returns registration failure'
       end
 
       context 'with an invalid JSON response' do
         let(:device_response) { 'bad response' }
 
-        it 'returns JSON parsing error' do
-          expect(register_service.errors[:base]).to include(
-            _('Your WebAuthn device did not send a valid JSON response.')
-          )
-        end
-
-        it_behaves_like 'returns a WebAuthn error'
+        it_behaves_like 'returns registration failure'
       end
 
       context 'with a tampered origin (origin spoofing)' do
@@ -105,7 +108,13 @@ RSpec.describe Webauthn::RegisterService, feature_category: :system_access do
           )
         end
 
-        it_behaves_like 'returns a WebAuthn error'
+        it_behaves_like 'returns registration failure'
+      end
+
+      context 'with an invalid device name' do
+        let(:device_name) { nil }
+
+        it_behaves_like 'returns registration failure'
       end
     end
   end

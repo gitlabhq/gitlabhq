@@ -149,7 +149,12 @@ module LoginHelpers
   end
 
   def fake_successful_webauthn_authentication
-    allow_any_instance_of(Webauthn::AuthenticateService).to receive(:execute).and_return(true)
+    allow_next_instance_of(Webauthn::AuthenticateService) do |instance|
+      allow(instance).to receive(:execute).and_return(
+        ServiceResponse.success
+      )
+    end
+
     FakeWebauthnDevice.new(page, nil).fake_webauthn_authentication
   end
 

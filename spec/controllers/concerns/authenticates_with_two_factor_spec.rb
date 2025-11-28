@@ -11,9 +11,15 @@ RSpec.describe AuthenticatesWithTwoFactor, :aggregate_failures, feature_category
       handle_passwordless_flow
     end
 
+    private
+
     def passwordless_passkey_params
       permitted_list = [:device_response, :remember_me]
       params.permit(permitted_list)
+    end
+
+    def user_params
+      params.require(:user).permit(:login, :password, :remember_me, :otp_attempt, :device_response)
     end
   end
 
@@ -26,20 +32,23 @@ RSpec.describe AuthenticatesWithTwoFactor, :aggregate_failures, feature_category
     end
 
     allow(controller).to receive(:add_gon_variables)
-    allow(controller).to receive(:render).with('devise/sessions/passkeys')
   end
 
   subject(:perform_request) do
     post :new_passkey, params: params
   end
 
-  describe '#handle_passwordless_flow' do
-    shared_examples 'prompts the user to authenticate with a passkey' do
-      it 'calls .prompt_for_passwordless_authentication_via_passkey' do
-        expect(controller).to receive(:prompt_for_passwordless_authentication_via_passkey)
+  shared_examples 'prompts the user to authenticate with a passkey' do
+    it 'calls .prompt_for_passwordless_authentication_via_passkey' do
+      expect(controller).to receive(:prompt_for_passwordless_authentication_via_passkey)
 
-        perform_request
-      end
+      perform_request
+    end
+  end
+
+  describe '#handle_passwordless_flow' do
+    before do
+      allow(controller).to receive(:render).with('devise/sessions/passkeys')
     end
 
     context 'when a device_response is present' do
@@ -152,6 +161,77 @@ RSpec.describe AuthenticatesWithTwoFactor, :aggregate_failures, feature_category
       controller.send(:destroy_all_but_current_user_session!, user, session)
 
       expect(all_sessions_count).to be(1)
+    end
+  end
+
+  describe 'private methods' do
+    describe '.authenticate_with_two_factor_via_webauthn' do
+      before do
+        allow(controller).to receive(:params).and_return(
+          ActionController::Parameters.new(
+            user: {
+              device_response: 'test_response'
+            }
+          )
+        )
+        allow(controller).to receive(:render).with('devise/sessions/two_factor')
+      end
+
+      let(:user) { create(:user, :two_factor_via_webauthn) }
+
+      let(:authenticate_with_two_factor_via_webauthn) do
+        controller.send(:authenticate_with_two_factor_via_webauthn, user)
+      end
+
+      context 'with a successful Webauthn::AuthenticateService' do
+        before do
+          allow_next_instance_of(Webauthn::AuthenticateService) do |instance|
+            allow(instance).to receive(:execute).and_return(
+              ServiceResponse.success
+            )
+          end
+        end
+
+        it 'signs in the user' do
+          expect(controller).to receive(:sign_in)
+
+          authenticate_with_two_factor_via_webauthn
+        end
+      end
+
+      context 'with a failed Webauthn::AuthenticateService' do
+        before do
+          allow_next_instance_of(Webauthn::AuthenticateService) do |instance|
+            allow(instance).to receive(:execute).and_return(
+              ServiceResponse.error(message: _('Authentication via WebAuthn device failed.'))
+            )
+          end
+        end
+
+        it 'fails to authenticate' do
+          expect(controller).to receive(:handle_two_factor_failure)
+
+          authenticate_with_two_factor_via_webauthn
+        end
+
+        it 'renders a flash alert from the backend service' do
+          authenticate_with_two_factor_via_webauthn
+
+          expect(flash[:alert]).to eq('Authentication via WebAuthn device failed.')
+        end
+
+        it 'logs an error' do
+          expect(Gitlab::AppLogger).to receive(:info)
+
+          authenticate_with_two_factor_via_webauthn
+        end
+
+        it 'prompts the user for 2FA re-authentication' do
+          expect(controller).to receive(:prompt_for_two_factor)
+
+          authenticate_with_two_factor_via_webauthn
+        end
+      end
     end
   end
 end

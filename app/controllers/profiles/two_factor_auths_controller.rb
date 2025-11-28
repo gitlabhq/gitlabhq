@@ -53,14 +53,16 @@ class Profiles::TwoFactorAuthsController < Profiles::ApplicationController
   end
 
   def create_webauthn
-    @webauthn_registration = Webauthn::RegisterService.new(
+    result = Webauthn::RegisterService.new(
       current_user,
       device_registration_params,
       session[:challenge]
     ).execute
 
-    notice = _("Your WebAuthn device was registered!")
-    if @webauthn_registration.persisted?
+    @webauthn_registration = result.payload
+
+    notice = result.message
+    if result.success?
       session.delete(:challenge)
 
       notify_on_success(:webauthn, device_name: @webauthn_registration.name)
@@ -81,6 +83,7 @@ class Profiles::TwoFactorAuthsController < Profiles::ApplicationController
 
       setup_webauthn_registration
 
+      flash.now[:alert] = notice
       render :show
     end
   end

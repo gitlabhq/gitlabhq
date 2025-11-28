@@ -69,7 +69,9 @@ module Projects
       end
 
       def upload_compressed_file
-        upload = relation_export.build_upload
+        # Reuse existing upload if present (e.g., from a previous failed attempt)
+        # or build a new one. This avoids the NOT NULL constraint violation on retry.
+        upload = relation_export.upload || relation_export.build_upload
         File.open(archive_file_full_path) { |file| upload.export_file = file }
         upload.save!
       end

@@ -109,10 +109,12 @@ module AuthenticatesWithTwoFactor
   end
 
   def authenticate_with_two_factor_via_webauthn(user)
-    if Webauthn::AuthenticateService.new(user, user_params[:device_response], session[:challenge]).execute
+    result = Webauthn::AuthenticateService.new(user, user_params[:device_response], session[:challenge]).execute
+
+    if result.success?
       handle_two_factor_success(user)
     else
-      handle_two_factor_failure(user, 'WebAuthn', _('Authentication via WebAuthn device failed.'))
+      handle_two_factor_failure(user, 'WebAuthn', result.message)
     end
   end
 

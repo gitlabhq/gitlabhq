@@ -657,7 +657,12 @@ RSpec.describe SessionsController, feature_category: :system_access do
 
       context 'remember_me field' do
         it 'sets a remember_user_token cookie when enabled' do
-          allow_any_instance_of(Webauthn::AuthenticateService).to receive(:execute).and_return(true)
+          allow_next_instance_of(Webauthn::AuthenticateService) do |instance|
+            allow(instance).to receive(:execute).and_return(
+              ServiceResponse.success
+            )
+          end
+
           allow(controller).to receive(:find_user).and_return(user)
           expect(controller).to receive(:remember_me).with(user).and_call_original
 
@@ -667,7 +672,12 @@ RSpec.describe SessionsController, feature_category: :system_access do
         end
 
         it 'does nothing when disabled' do
-          allow_any_instance_of(Webauthn::AuthenticateService).to receive(:execute).and_return(true)
+          allow_next_instance_of(Webauthn::AuthenticateService) do |instance|
+            allow(instance).to receive(:execute).and_return(
+              ServiceResponse.success
+            )
+          end
+
           allow(controller).to receive(:find_user).and_return(user)
           expect(controller).not_to receive(:remember_me)
 
@@ -678,7 +688,11 @@ RSpec.describe SessionsController, feature_category: :system_access do
       end
 
       it 'creates audit event records' do
-        allow_any_instance_of(Webauthn::AuthenticateService).to receive(:execute).and_return(true)
+        allow_next_instance_of(Webauthn::AuthenticateService) do |instance|
+          allow(instance).to receive(:execute).and_return(
+            ServiceResponse.success
+          )
+        end
 
         expect { authenticate_2fa(login: user.username, device_response: "{}") }.to change { AuditEvent.count }.by(1)
         .and change { AuditEvents::UserAuditEvent.count }.by(1)
@@ -693,7 +707,11 @@ RSpec.describe SessionsController, feature_category: :system_access do
       end
 
       it "creates an authentication event record" do
-        allow_any_instance_of(Webauthn::AuthenticateService).to receive(:execute).and_return(true)
+        allow_next_instance_of(Webauthn::AuthenticateService) do |instance|
+          allow(instance).to receive(:execute).and_return(
+            ServiceResponse.success
+          )
+        end
 
         expect { authenticate_2fa(login: user.username, device_response: "{}") }.to(
           change { AuthenticationEvent.count }.by(1))

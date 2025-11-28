@@ -2,6 +2,9 @@
 
 module Webauthn
   class AuthenticateService < BaseService
+    include Authn::WebauthnErrors
+    include SafeFormatHelper
+
     def initialize(user, device_response, challenge)
       @user = user
       @device_response = device_response
@@ -17,30 +20,66 @@ module Webauthn
 
       encoder = WebAuthn.configuration.encoder
 
-      if stored_webauthn_credential &&
-          validate_webauthn_credential(webauthn_credential) &&
-          verify_webauthn_credential(webauthn_credential, stored_webauthn_credential, @challenge, encoder)
+      verify_webauthn(stored_webauthn_credential, webauthn_credential, @challenge, encoder)
 
-        stored_webauthn_credential.update!(
-          counter: webauthn_credential.sign_count,
-          last_used_at: Time.current
-        )
-        return true
-      end
+      stored_webauthn_credential.update!(
+        counter: webauthn_credential.sign_count,
+        last_used_at: Time.current
+      )
 
-      false
-    rescue JSON::ParserError, WebAuthn::SignCountVerificationError, WebAuthn::Error
-      false
+      ServiceResponse.success(
+        message: _('WebAuthn device successfully authenticated.')
+      )
+
+    rescue JSON::ParserError
+      ServiceResponse.error(
+        message: _('Your webauthn device did not send a valid JSON response.')
+      )
+    rescue ActiveRecord::RecordNotFound
+      ServiceResponse.error(
+        message: webauthn_credential_not_found_error
+      )
+    rescue WebAuthn::Error => err
+      ServiceResponse.error(
+        message: webauthn_human_readable_errors(err.class.name)
+      )
     end
 
     private
 
+    def webauthn_credential_not_found_error
+      docs_link = ActionController::Base.helpers.link_to(
+        _('recover'),
+        Rails.application.routes.url_helpers.help_page_url(
+          'user/profile/account/two_factor_authentication_troubleshooting.md',
+          anchor: 'recovery-options-and-2fa-reset'
+        ),
+        target: '_blank',
+        rel: 'noopener noreferrer'
+      )
+
+      safe_format(
+        _('Authentication via WebAuthn device failed. Use another 2FA method or %{two_factor_recovery_hyperlink} your account.'),
+        two_factor_recovery_hyperlink: docs_link
+      )
+    end
+
+    def verify_webauthn(stored_webauthn_credential, webauthn_credential, challenge, encoder)
+      stored_webauthn_credential &&
+        validate_webauthn_credential(webauthn_credential) &&
+        verify_webauthn_credential(webauthn_credential, stored_webauthn_credential, challenge, encoder)
+    end
+
     def stored_passkey_or_second_factor_webauthn_credential(encoded_raw_id)
       if Feature.enabled?(:passkeys, @user)
-        @user.passkeys.find_by_credential_xid(encoded_raw_id) ||
+        credential = @user.passkeys.find_by_credential_xid(encoded_raw_id) ||
           @user.second_factor_webauthn_registrations.find_by_credential_xid(encoded_raw_id)
+
+        raise(ActiveRecord::RecordNotFound) unless credential
+
+        credential
       else
-        @user.second_factor_webauthn_registrations.find_by_credential_xid(encoded_raw_id)
+        @user.second_factor_webauthn_registrations.find_by_credential_xid!(encoded_raw_id)
       end
     end
 
