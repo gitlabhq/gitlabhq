@@ -1,7 +1,7 @@
 import { GlModal } from '@gitlab/ui';
 import { stubComponent } from 'helpers/stub_component';
 import { mountExtended } from 'helpers/vue_test_utils_helper';
-import CsvImportModal from '~/issuable/components/csv_import_modal.vue';
+import CsvImportModal from '~/merge_requests/list/components/csv_import_modal.vue';
 
 jest.mock('~/lib/utils/csrf', () => ({ token: 'mock-csrf-token' }));
 

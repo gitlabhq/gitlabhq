@@ -7,8 +7,8 @@ import {
   GlDisclosureDropdownGroup,
   GlTooltipDirective,
 } from '@gitlab/ui';
-import CsvImportExportButtons from '~/issuable/components/csv_import_export_buttons.vue';
 import { __ } from '~/locale';
+import CsvImportExportButtons from './csv_import_export_buttons.vue';
 
 export default {
   components: {

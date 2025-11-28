@@ -1,7 +1,7 @@
 import { GlModal, GlIcon } from '@gitlab/ui';
 import { mount } from '@vue/test-utils';
 import { stubComponent } from 'helpers/stub_component';
-import CsvExportModal from '~/issuable/components/csv_export_modal.vue';
+import CsvExportModal from '~/merge_requests/list/components/csv_export_modal.vue';
 
 describe('CsvExportModal', () => {
   let wrapper;

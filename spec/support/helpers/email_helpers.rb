@@ -119,7 +119,8 @@ module EmailHelpers
       user_name: credential.smtp_username,
       password: credential.smtp_password,
       domain: service_desk_setting.custom_email.split('@').last,
-      authentication: credential.smtp_authentication
+      authentication: credential.smtp_authentication,
+      read_timeout: ::ServiceDesk::CustomEmailCredential::SMTP_READ_TIMEOUT
     )
   end
 end

@@ -3,11 +3,11 @@ import { GlFilteredSearchSuggestion } from '@gitlab/ui';
 import { createAlert } from '~/alert';
 import { __ } from '~/locale';
 import { WORKSPACE_GROUP, WORKSPACE_PROJECT } from '~/issues/constants';
-import searchMilestonesQuery from '~/issues/list/queries/search_milestones.query.graphql';
 import { sortMilestonesByDueDate } from '~/milestones/utils';
 import BaseToken from '~/vue_shared/components/filtered_search_bar/tokens/base_token.vue';
 import { stripQuotes } from '~/lib/utils/text_utility';
 import { DEFAULT_MILESTONES } from '../constants';
+import searchMilestonesQuery from '../queries/search_milestones.query.graphql';
 
 export default {
   components: {

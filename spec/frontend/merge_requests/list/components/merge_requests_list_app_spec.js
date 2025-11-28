@@ -48,7 +48,7 @@ import getMergeRequestsQuery from 'ee_else_ce/merge_requests/list/queries/projec
 import getMergeRequestsCountsQuery from 'ee_else_ce/merge_requests/list/queries/project/get_merge_requests_counts.query.graphql';
 import getMergeRequestsApprovalsQuery from 'ee_else_ce/merge_requests/list/queries/group/get_merge_requests_approvals.query.graphql';
 import IssuableList from '~/vue_shared/issuable/list/components/issuable_list_root.vue';
-import MergeRequestReviewers from '~/issuable/components/merge_request_reviewers.vue';
+import MergeRequestReviewers from '~/merge_requests/list/components/merge_request_reviewers.vue';
 import issuableEventHub from '~/issues/list/eventhub';
 
 Vue.use(VueApollo);

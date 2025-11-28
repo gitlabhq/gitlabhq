@@ -1,8 +1,8 @@
 import { createMockDirective } from 'helpers/vue_mock_directive';
 import { mountExtended } from 'helpers/vue_test_utils_helper';
-import CsvExportModal from '~/issuable/components/csv_export_modal.vue';
-import CsvImportExportButtons from '~/issuable/components/csv_import_export_buttons.vue';
-import CsvImportModal from '~/issuable/components/csv_import_modal.vue';
+import CsvExportModal from '~/merge_requests/list/components/csv_export_modal.vue';
+import CsvImportExportButtons from '~/merge_requests/list/components/csv_import_export_buttons.vue';
+import CsvImportModal from '~/merge_requests/list/components/csv_import_modal.vue';
 
 describe('CsvImportExportButtons', () => {
   let wrapper;

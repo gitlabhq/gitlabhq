@@ -23,7 +23,7 @@ import { ignoreConsoleMessages } from 'helpers/console_watcher';
 import * as Sentry from '~/sentry/sentry_browser_wrapper';
 import Api from '~/api';
 import { createAlert, VARIANT_WARNING } from '~/alert';
-import setSortPreferenceMutation from '~/issues/list/queries/set_sort_preference.mutation.graphql';
+import setSortPreferenceMutation from '~/issues/dashboard/queries/set_sort_preference.mutation.graphql';
 import axios from '~/lib/utils/axios_utils';
 import { HTTP_STATUS_INTERNAL_SERVER_ERROR, HTTP_STATUS_OK } from '~/lib/utils/http_status';
 import NavigationControls from '~/ci/pipelines_page/components/nav_controls.vue';

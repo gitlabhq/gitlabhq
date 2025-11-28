@@ -6,6 +6,7 @@ import CsvExportModal from './csv_export_modal.vue';
 import CsvImportModal from './csv_import_modal.vue';
 
 export default {
+  name: 'CsvImportExportButtons',
   components: {
     GlDisclosureDropdownItem,
     CsvExportModal,

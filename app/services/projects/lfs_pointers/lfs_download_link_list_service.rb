@@ -14,6 +14,7 @@ module Projects
       DownloadLinksError = Class.new(StandardError)
       DownloadLinkNotFound = Class.new(StandardError)
       DownloadLinksRequestEntityTooLargeError = Class.new(StandardError)
+      DownloadLinksRequestTooManyRequestsError = Class.new(StandardError)
 
       attr_reader :remote_uri
 
@@ -48,11 +49,14 @@ module Projects
         retry if batch_size > REQUEST_BATCH_SIZE / 3
 
         raise DownloadLinksError, 'Unable to download due to RequestEntityTooLarge errors'
+      rescue DownloadLinksRequestTooManyRequestsError => e
+        raise DownloadLinksError, 'Unable to download due to TooManyRequests error'
       end
 
       def download_links_for(oids)
         response = ::Import::Clients::HTTP.post(remote_uri, body: request_body(oids), headers: headers)
 
+        raise DownloadLinksRequestTooManyRequestsError if response.too_many_requests?
         raise DownloadLinksRequestEntityTooLargeError if response.request_entity_too_large?
         raise DownloadLinksError, response.message unless response.success?
 

@@ -123,7 +123,7 @@ export default {
       :project-branch-count="projectBranchCount"
       @input="onFiltersInput($event)"
     />
-    <div>
+    <div class="gl-flex gl-flex-col gl-gap-5">
       <pipelines-stats :loading="loading" :aggregate="pipelineAnalytics.aggregate" />
       <pipeline-duration-chart :loading="loading" :time-series="pipelineAnalytics.timeSeries" />
       <pipeline-status-chart :loading="loading" :time-series="pipelineAnalytics.timeSeries" />

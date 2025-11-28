@@ -81,12 +81,12 @@ import {
   PARAM_SORT,
 } from '~/issues/list/constants';
 import CiIcon from '~/vue_shared/components/ci_icon/ci_icon.vue';
-import MergeRequestReviewers from '~/issuable/components/merge_request_reviewers.vue';
-import setSortPreferenceMutation from '~/issues/list/queries/set_sort_preference.mutation.graphql';
+import setSortPreferenceMutation from '~/issues/dashboard/queries/set_sort_preference.mutation.graphql';
 import issuableEventHub from '~/issues/list/eventhub';
 import searchLabelsQuery from '~/issues/list/queries/search_labels.query.graphql';
 import { AutocompleteCache } from '../../utils/autocomplete_cache';
 import { i18n, BRANCH_LIST_REFRESH_INTERVAL } from '../constants';
+import MergeRequestReviewers from './merge_request_reviewers.vue';
 import MergeRequestStatistics from './merge_request_statistics.vue';
 import MergeRequestMoreActionsDropdown from './more_actions_dropdown.vue';
 import EmptyState from './empty_state.vue';

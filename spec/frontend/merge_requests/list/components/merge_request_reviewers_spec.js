@@ -1,6 +1,6 @@
 import { shallowMount } from '@vue/test-utils';
 import { mockAssigneesList as mockReviewersList } from 'jest/boards/mock_data';
-import MergeRequestReviewers from '~/issuable/components/merge_request_reviewers.vue';
+import MergeRequestReviewers from '~/merge_requests/list/components/merge_request_reviewers.vue';
 import UserAvatarLink from '~/vue_shared/components/user_avatar/user_avatar_link.vue';
 
 const TEST_CSS_CLASSES = 'test-classes';

@@ -4,6 +4,7 @@ import { TYPE_ISSUE } from '~/issues/constants';
 import { __, n__ } from '~/locale';
 
 export default {
+  name: 'CsvExportModal',
   actionCancel: {
     text: __('Cancel'),
   },

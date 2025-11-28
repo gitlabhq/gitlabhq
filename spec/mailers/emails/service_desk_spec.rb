@@ -279,11 +279,6 @@ RSpec.describe Emails::ServiceDesk, feature_category: :service_desk do
     it 'uses SMTP delivery method and custom email settings' do
       expect_service_desk_custom_email_delivery_options(service_desk_setting)
 
-      # Don't use ActionMailer::Base.smtp_settings, because it only contains explicitly set values.
-      merged_default_settings = Mail::SMTP.new({}).settings
-      # When forcibly used the configuration has a higher timeout. Ensure it's the default!
-      expect(subject.delivery_method.settings[:read_timeout]).to eq(merged_default_settings[:read_timeout])
-
       expect(Gitlab::AppLogger).to have_received(:info).with({ category: 'custom_email' })
     end
 
@@ -549,7 +544,6 @@ RSpec.describe Emails::ServiceDesk, feature_category: :service_desk do
 
     it 'forcibly uses SMTP delivery method and has correct settings' do
       expect_service_desk_custom_email_delivery_options(service_desk_setting)
-      expect(mail.delivery_method.settings[:read_timeout]).to eq(described_class::VERIFICATION_EMAIL_TIMEOUT)
 
       # defaults are unchanged after email overrode settings
       expect(Mail::SMTP.new({}).settings).to include(expected_delivery_method_defaults)

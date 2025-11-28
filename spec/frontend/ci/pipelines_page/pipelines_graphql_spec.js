@@ -18,7 +18,7 @@ import PipelinesTable from '~/ci/common/pipelines_table.vue';
 import getPipelinesQuery from '~/ci/pipelines_page/graphql/queries/get_pipelines.query.graphql';
 import getAllPipelinesCountQuery from '~/ci/pipelines_page/graphql/queries/get_all_pipelines_count.query.graphql';
 import clearRunnerCacheMutation from '~/ci/pipelines_page/graphql/mutations/clear_runner_cache.mutation.graphql';
-import setSortPreferenceMutation from '~/issues/list/queries/set_sort_preference.mutation.graphql';
+import setSortPreferenceMutation from '~/issues/dashboard/queries/set_sort_preference.mutation.graphql';
 import * as urlUtils from '~/lib/utils/url_utility';
 import { PIPELINE_ID_KEY, PIPELINE_IID_KEY, TRACKING_CATEGORIES } from '~/ci/constants';
 import retryPipelineMutation from '~/ci/pipelines_page/graphql/mutations/retry_pipeline.mutation.graphql';

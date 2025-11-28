@@ -23,7 +23,7 @@ import {
 } from 'ee_else_ce/issues/list/utils';
 import { STATUS_ALL, STATUS_CLOSED, STATUS_OPEN } from '~/issues/constants';
 import { i18n, PARAM_STATE, urlSortParams } from '~/issues/list/constants';
-import setSortPreferenceMutation from '~/issues/list/queries/set_sort_preference.mutation.graphql';
+import setSortPreferenceMutation from '~/issues/dashboard/queries/set_sort_preference.mutation.graphql';
 import { fetchPolicies } from '~/lib/graphql';
 import axios from '~/lib/utils/axios_utils';
 import { scrollUp } from '~/lib/utils/scroll_utils';

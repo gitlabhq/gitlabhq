@@ -4,6 +4,7 @@ import csrf from '~/lib/utils/csrf';
 import { __, sprintf } from '~/locale';
 
 export default {
+  name: 'CsvImportModal',
   i18n: {
     maximumFileSizeText: __('The maximum file size allowed is %{size}.'),
     importIssuesText: __('Import issues'),

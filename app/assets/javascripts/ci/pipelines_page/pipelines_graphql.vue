@@ -23,7 +23,7 @@ import {
   RAW_TEXT_WARNING,
   TRACKING_CATEGORIES,
 } from '~/ci/constants';
-import setSortPreferenceMutation from '~/issues/list/queries/set_sort_preference.mutation.graphql';
+import setSortPreferenceMutation from '~/issues/dashboard/queries/set_sort_preference.mutation.graphql';
 import ExternalConfigEmptyState from '~/ci/common/empty_state/external_config_empty_state.vue';
 import PipelinesFilteredSearch from './components/pipelines_filtered_search.vue';
 import NoCiEmptyState from './components/empty_state/no_ci_empty_state.vue';

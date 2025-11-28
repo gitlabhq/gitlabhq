@@ -154,6 +154,22 @@ RSpec.shared_examples Gitlab::GithubImport::StageMethods do
           worker.perform(project.id)
         end
       end
+
+      context 'when RateLimitError has reset_in set' do
+        it 'reschedules the worker using the exception reset_in value' do
+          exception_reset_in = 120
+          client_reset_in = 10
+          client = instance_double(Gitlab::GithubImport::Client, rate_limit_resets_in: client_reset_in)
+          error = Gitlab::GithubImport::RateLimitError.new('Rate Limit exceeded', exception_reset_in)
+
+          allow(Gitlab::GithubImport).to receive(:new_client_for).and_return(client)
+
+          expect(worker).to receive(:import).with(client, project).and_raise(error)
+          expect(worker.class).to receive(:perform_in).with(exception_reset_in, project.id)
+
+          worker.perform(project.id)
+        end
+      end
     end
 
     it 'logs error when import fails with a StandardError' do

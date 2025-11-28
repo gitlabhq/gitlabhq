@@ -115,6 +115,30 @@ RSpec.describe Projects::LfsPointers::LfsDownloadLinkListService, feature_catego
         end
       end
 
+      context 'when request fails with RateLimit error' do
+        def stub_rate_limit_error_request(batch)
+          rate_limit_net_response = Net::HTTPTooManyRequests.new('', '', '')
+          allow(rate_limit_net_response).to receive(:code).and_return(429)
+          response = custom_response(rate_limit_net_response, '{}')
+          allow(response).to receive(:code).and_return(429)
+          stub_request(batch, response)
+        end
+
+        context 'when rate limit is hit' do
+          before do
+            stub_const("#{described_class.name}::REQUEST_BATCH_SIZE", 5)
+
+            data = new_oids.to_a
+            stub_rate_limit_error_request(data)
+          end
+
+          it 'raises DownloadLinksError with TooManyRequests message' do
+            expect { service.each_link(new_oids) }
+              .to raise_error(described_class::DownloadLinksError, 'Unable to download due to TooManyRequests error')
+          end
+        end
+      end
+
       context 'when request fails with PayloadTooLarge error' do
         let(:error_class) { described_class::DownloadLinksRequestEntityTooLargeError }
 
