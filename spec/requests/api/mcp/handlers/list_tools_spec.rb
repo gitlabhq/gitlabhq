@@ -49,7 +49,8 @@ RSpec.describe API::Mcp, 'List tools request', feature_category: :mcp_server do
         'get_merge_request_commits',
         'get_merge_request_diffs',
         'get_merge_request_pipelines',
-        'get_mcp_server_version'
+        'get_mcp_server_version',
+        'create_workitem_note'
       )
     end
 

@@ -1742,22 +1742,27 @@ stored in the SVG file, so it can be edited. Draw.io is also integrated with the
 | **VS Code integration (with extensions)** | {{< icon name="check-circle-filled" >}} Yes (Preview and local editing) | {{< icon name="check-circle-filled" >}} Yes (Preview and local editing) |
 | **Generated dynamically**                 | {{< icon name="check-circle-filled" >}} Yes                             | {{< icon name="dash-circle" >}} No |
 
-#### Guidelines
+#### Diagram guidelines
 
 To create accessible and maintainable diagrams, follow these guidelines:
 
 - Keep diagrams simple and focused. Include only essential elements and information.
-- Use different but consistent visual cues (such as shape, color, and font) to distinguish between categories:
+- Use only shapes to distinguish between elements. Do not use color to differentiate elements, as
+  diagrams must be compatible with both light and dark modes.
 
+  Recommended shapes are:
   - Rectangles for processes or steps.
   - Diamonds for decision points.
   - Solid lines for direct relationships between elements.
   - Dotted lines for indirect relationship between elements.
   - Arrows for flow or direction in a process.
-  - GitLab Sans font.
 
+- Shapes that represent the same element should have the same shape and size.
 - Add clear labels and brief descriptions to diagram elements.
+- For elements that have text, ensure adequate white space exists between the text and the
+  shape's outline. If required, increase the size of the shape and **all** similar shapes in the diagram.
 - Include a title and brief description for the diagram.
+- Use GitLab Sans font for text, or Google Inter font as a fallback option.
 - For complex processes, consider creating multiple simple diagrams instead of one large diagram.
 - Validate diagrams work well when viewed on different devices and screen sizes.
 - Do not include links. Links embedded in diagrams with [`click` actions](https://mermaid.js.org/syntax/classDiagram.html#interaction) are not testable with our link checking tools.
@@ -1811,12 +1816,32 @@ VS Code [Draw.io Integration](https://marketplace.visualstudio.com/items?itemNam
 extension to create the diagram. Each tool provides the same diagram editing experience, but the web
 application provides editable example diagrams.
 
+Diagrams created by using Draw.io must comply with the general
+[diagram guidelines](#diagram-guidelines) and the Draw.io-specific guidelines.
+
+##### Draw.io guidelines
+
+When you create a diagram in Draw.io, it should be visually consistent with a diagram you would
+create with Mermaid. The following rules are an addition to the general
+[diagram guidelines](#diagram-guidelines).
+
+Fonts:
+
+- Use the Inter font for all text. This font is not included in the default fonts.
+  To add Inter font as a custom font:
+  1. From the font dropdown list, select **Custom**.
+  1. Select **Google fonts** and in the **Font name** text box, enter `Inter`.
+
+Shapes:
+
+- For elements, use the rectangle shape.
+- For flowcharts, use shapes from the **Flowchart** shape collection.
+
 ##### Use the web application
 
 To create a diagram by using the Draw.io web application:
 
 1. In the [Draw.io](https://draw.io) web application, create the diagram.
-   Follow the [style guidelines](#style-guidelines).
 1. Save the diagram:
    1. In the Draw.io web application, select **File** > **Export as** > **SVG**.
    1. Select the **Include a copy of my diagram: All pages** checkbox, then select **Export**. Use
@@ -1831,38 +1856,11 @@ To create a diagram by using the Draw.io Integration extension for VS Code:
 1. In the directory that will contain the diagram, create an empty file with the suffix
    `drawio.svg`.
 1. Open the file in VS Code then create the diagram.
-   Follow the [style guidelines](#style-guidelines).
 1. Save the file.
 
    The diagram's definition is stored in Draw.io-compatible format in the SVG file.
 1. [Add the SVG to the docs as an image](#add-the-image-link-to-content).
    These SVGs use the same Markdown as other non-SVG images.
-
-##### Style guidelines
-
-When you create a diagram in Draw.io, it should be visually consistent with a diagram you would create with Mermaid.
-The following rules are an addition to the general [style guidelines](#guidelines).
-
-Fonts:
-
-- Use the Inter font for all text. This font is not included in the default fonts.
-  To add Inter font as a custom font:
-  1. From the font dropdown list, select **Custom**.
-  1. Select **Google fonts** and in the **Font name** text box, enter `Inter`.
-
-Shapes:
-
-- For elements, use the rectangle shape.
-- For flowcharts, use shapes from the **Flowchart** shape collection.
-- Shapes that represent the same element should have the same shape and size.
-- For elements that have text, ensure adequate white space exists between the text and the
-  shape's outline. If required, increase the size of the shape and **all** similar shapes in the diagram.
-
-Colors:
-
-- Use colors in the [GitLab Design System color range](https://design.gitlab.com/brand-design/color/) only.
-- For all elements, shapes, arrows, and text, follow the
-  [Pajamas guidelines for illustration](https://design.gitlab.com/product-foundations/illustration/).
 
 ## Emoji
 

@@ -265,3 +265,20 @@ Before you upgrade:
 
    The values are written to the `gitlab-secrets.json` and must be synchronized across
    all Rails nodes.
+
+1. Prepare for OAuth token migration when upgrading to FIPS 140-3: GitLab 18.6.0, 18.5.2, and 18.4.4 introduced SHA512 hashing for OAuth
+   tokens to comply with FIPS 140-3 requirements. Previously, GitLab used PBKDF2 without
+   salt, which is incompatible with FIPS 140-3 compliant systems like Ubuntu 22.04.
+
+   **Note:** This migration is only required when moving to FIPS 140-3 compliant operating systems
+   (such as Ubuntu 22.04). No changes are needed if you are already running on older FIPS versions
+   (such as Ubuntu 20.04) or staying on non-FIPS systems.
+
+   When migrating from a non-FIPS instance or older FIPS version to a FIPS 140-3 instance:
+
+   1. Upgrade to GitLab 18.4 or later.
+   1. Allow sufficient time for active OAuth access tokens to be automatically rehashed during normal usage.
+   1. Rotate OAuth application secrets to ensure all newly issued tokens use the FIPS-compliant
+   hashing algorithm.
+   1. Notify users that they may need to re-authenticate with OAuth-integrated applications
+   if their tokens have not been used recently. 

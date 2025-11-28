@@ -32,25 +32,25 @@ RSpec.describe ::Packages::Maven::GroupsAndProjectsPackageFilesFinder, :aggregat
       # project ids only
       [] | [ref(:top_level_project)]                   | [ref(:top_level_package_file)]
       [] | [ref(:subproject)]                          | [ref(:subproject_package_file)]
-      [] | [ref(:top_level_project), ref(:subproject)] | [ref(:top_level_package_file), ref(:subproject_package_file)]
+      [] | [ref(:top_level_project), ref(:subproject)] | [ref(:subproject_package_file), ref(:top_level_package_file)]
 
       # group ids only
-      [ref(:top_level_group)]                 | [] | [ref(:top_level_package_file), ref(:subproject_package_file)]
+      [ref(:top_level_group)]                 | [] | [ref(:subproject_package_file), ref(:top_level_package_file)]
       [ref(:subgroup)]                        | [] | [ref(:subproject_package_file)]
-      [ref(:top_level_group), ref(:subgroup)] | [] | [ref(:top_level_package_file), ref(:subproject_package_file)]
+      [ref(:top_level_group), ref(:subgroup)] | [] | [ref(:subproject_package_file), ref(:top_level_package_file)]
 
       # mixed ids
-      [ref(:top_level_group)] | [ref(:top_level_project)]                   | [ref(:top_level_package_file), ref(:subproject_package_file)]
-      [ref(:top_level_group)] | [ref(:top_level_project), ref(:subproject)] | [ref(:top_level_package_file), ref(:subproject_package_file)]
-      [ref(:top_level_group)] | [ref(:subproject)]                          | [ref(:top_level_package_file), ref(:subproject_package_file)]
+      [ref(:top_level_group)] | [ref(:top_level_project)]                   | [ref(:subproject_package_file), ref(:top_level_package_file)]
+      [ref(:top_level_group)] | [ref(:top_level_project), ref(:subproject)] | [ref(:subproject_package_file), ref(:top_level_package_file)]
+      [ref(:top_level_group)] | [ref(:subproject)]                          | [ref(:subproject_package_file), ref(:top_level_package_file)]
 
-      [ref(:subgroup)] | [ref(:top_level_project)]                   | [ref(:top_level_package_file), ref(:subproject_package_file)]
-      [ref(:subgroup)] | [ref(:top_level_project), ref(:subproject)] | [ref(:top_level_package_file), ref(:subproject_package_file)]
+      [ref(:subgroup)] | [ref(:top_level_project)]                   | [ref(:subproject_package_file), ref(:top_level_package_file)]
+      [ref(:subgroup)] | [ref(:top_level_project), ref(:subproject)] | [ref(:subproject_package_file), ref(:top_level_package_file)]
       [ref(:subgroup)] | [ref(:subproject)]                          | [ref(:subproject_package_file)]
 
-      [ref(:top_level_group), ref(:subgroup)] | [ref(:top_level_project)]                   | [ref(:top_level_package_file), ref(:subproject_package_file)]
-      [ref(:top_level_group), ref(:subgroup)] | [ref(:top_level_project), ref(:subproject)] | [ref(:top_level_package_file), ref(:subproject_package_file)]
-      [ref(:top_level_group), ref(:subgroup)] | [ref(:subproject)]                          | [ref(:top_level_package_file), ref(:subproject_package_file)]
+      [ref(:top_level_group), ref(:subgroup)] | [ref(:top_level_project)]                   | [ref(:subproject_package_file), ref(:top_level_package_file)]
+      [ref(:top_level_group), ref(:subgroup)] | [ref(:top_level_project), ref(:subproject)] | [ref(:subproject_package_file), ref(:top_level_package_file)]
+      [ref(:top_level_group), ref(:subgroup)] | [ref(:subproject)]                          | [ref(:subproject_package_file), ref(:top_level_package_file)]
     end
     # rubocop: enable Layout/LineLength
 
@@ -59,7 +59,7 @@ RSpec.describe ::Packages::Maven::GroupsAndProjectsPackageFilesFinder, :aggregat
       let(:project_ids) { projects.map(&:id) }
       let(:path) { "#{package_name}/#{package_version}/#{filename}" }
 
-      it { is_expected.to match_array(expected_package_files) }
+      it { is_expected.to eq(expected_package_files) }
     end
 
     context 'with duplicates' do

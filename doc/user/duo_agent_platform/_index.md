@@ -5,15 +5,6 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 title: GitLab Duo Agent Platform
 ---
 
-{{< details >}}
-
-- Tier: Premium, Ultimate
-- Add-on: GitLab Duo Core, Pro, or Enterprise
-- Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
-- Status: Beta
-
-{{< /details >}}
-
 {{< collapsible title="Model information" >}}
 
 - LLM: Anthropic [Claude Sonnet 4](https://www.anthropic.com/claude/sonnet)
@@ -59,5 +50,7 @@ In addition, to use the Agent Platform in your IDE:
 
 ## Related topics
 
-- [GitLab Duo Agentic Chat](../gitlab_duo_chat/agentic_chat.md)
+- [GitLab Duo Chat (Agentic)](../gitlab_duo_chat/agentic_chat.md)
+- [AI Catalog](ai_catalog.md)
+- [Agents](agents/_index.md)
 - [Flows](flows/_index.md)

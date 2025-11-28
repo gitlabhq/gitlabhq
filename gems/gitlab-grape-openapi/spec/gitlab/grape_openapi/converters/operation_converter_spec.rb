@@ -23,7 +23,7 @@ RSpec.describe Gitlab::GrapeOpenapi::Converters::OperationConverter do
         end
 
         it 'extracts tags' do
-          expect(operation.tags).to eq(['users_api'])
+          expect(operation.tags).to eq(['Users Api'])
         end
 
         it 'extracts parameters' do
@@ -63,7 +63,7 @@ RSpec.describe Gitlab::GrapeOpenapi::Converters::OperationConverter do
         end
 
         it 'extracts tags' do
-          expect(operation.tags).to eq(['users_api'])
+          expect(operation.tags).to eq(['Users Api'])
         end
 
         it 'extracts summary from description' do
@@ -166,7 +166,7 @@ RSpec.describe Gitlab::GrapeOpenapi::Converters::OperationConverter do
         end
 
         it 'extracts tags with different format' do
-          expect(operation.tags).to eq(['users'])
+          expect(operation.tags).to eq(['Users'])
         end
       end
     end
@@ -359,7 +359,7 @@ RSpec.describe Gitlab::GrapeOpenapi::Converters::OperationConverter do
         subject(:operation) { described_class.convert(route, schema_registry) }
 
         it 'returns nil for tags when not specified' do
-          expect(operation.tags).to be_nil
+          expect(operation.tags).to be_empty
         end
       end
 

@@ -20,7 +20,7 @@ module Packages
         return ::Packages::PackageFile.none unless valid?
 
         # rubocop: disable CodeReuse/ActiveRecord -- highly specific query
-        ::Packages::PackageFile
+        inner_query = ::Packages::PackageFile
           .with(metadatum_cte.to_arel)
           .installable
           .for_package_ids(packages)
@@ -28,6 +28,10 @@ module Packages
           .select('DISTINCT ON (package_id) packages_package_files.*')
           .reorder('package_id, id DESC')
           .limit(MAX_IDS_COUNT)
+
+        ::Packages::PackageFile
+          .from(inner_query, :packages_package_files)
+          .reorder(id: :desc)
         # rubocop: enable CodeReuse/ActiveRecord
       end
 

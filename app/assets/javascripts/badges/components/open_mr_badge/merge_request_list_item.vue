@@ -45,7 +45,7 @@ export default {
         <div class="gl-mb-1 gl-mr-2 gl-line-clamp-2">
           {{ mergeRequest.title }}
         </div>
-        <span class="gl-text-sm gl-text-secondary">
+        <span class="gl-text-sm gl-text-subtle">
           {{ s__('OpenMrBadge|Opened') }} <time v-text="formattedTime"></time
         ></span>
       </div>

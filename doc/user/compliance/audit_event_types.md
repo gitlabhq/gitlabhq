@@ -787,6 +787,7 @@ Audit event types belong to the following product categories.
 | Type name | Event triggered when | Saved to database | Introduced in | Scope |
 |:----------|:---------------------|:------------------|:--------------|:------|
 | [`project_feature_infrastructure_access_level_updated`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/106919) | A project's infrastructure access level setting is updated | {{< icon name="check-circle" >}} Yes | GitLab [15.7](https://gitlab.com/gitlab-org/gitlab/-/issues/369305) | Project |
+| [`remove_vulnerability_false_positive_flag`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/213091) | A user removes a false positive flag from a vulnerability. | {{< icon name="check-circle" >}} Yes | GitLab [18.7](https://gitlab.com/gitlab-org/gitlab/-/issues/578903) | Project |
 
 ### Webhooks
 

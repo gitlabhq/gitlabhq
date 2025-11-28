@@ -40,7 +40,9 @@ module Mcp
         'get_mcp_server_version' => ::Mcp::Tools::GetServerVersionService
       }.freeze
 
-      GRAPHQL_TOOLS = {}.freeze
+      GRAPHQL_TOOLS = {
+        'create_workitem_note' => ::Mcp::Tools::WorkItems::GraphqlCreateWorkItemNoteService
+      }.freeze
 
       attr_reader :tools
 

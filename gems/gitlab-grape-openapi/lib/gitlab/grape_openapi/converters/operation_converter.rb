@@ -88,7 +88,9 @@ module Gitlab
         end
 
         def extract_tags
-          @route.settings.dig(:description, :tags)
+          Array(@route.settings.dig(:description, :tags)).map do |tag|
+            Gitlab::GrapeOpenapi::Models::Tag.normalize_tag_name(tag)
+          end
         end
 
         def path_segments

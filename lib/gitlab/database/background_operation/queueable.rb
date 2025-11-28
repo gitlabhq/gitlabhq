@@ -11,7 +11,7 @@ module Gitlab
           sub_batch_size: 100,
           min_cursor: [1],
           interval: 2.minutes,
-          batch_class_name: 'PrimaryKeyBatchingStrategy',
+          batch_class_name: 'PrimaryKey',
           pause_ms: 100
         }.freeze
 
@@ -87,12 +87,13 @@ module Gitlab
             interval = DEFAULT_BATCH_VALUES[:interval] if interval < DEFAULT_BATCH_VALUES[:interval]
 
             unless min_cursor.present?
-              min_cursor = [get_column_value(connection, table_name, column_name, 'MIN')] ||
-                DEFAULT_BATCH_VALUES[:min_cursor]
+              min_cursor = [get_column_value(connection, table_name, column_name, 'MIN')]
+              min_cursor = DEFAULT_BATCH_VALUES[:min_cursor] if min_cursor.compact.empty?
             end
 
             unless max_cursor.present?
-              max_cursor = [get_column_value(connection, table_name, column_name, 'MAX')] || min_cursor
+              max_cursor = [get_column_value(connection, table_name, column_name, 'MAX')]
+              max_cursor = min_cursor if max_cursor.compact.empty?
             end
 
             operation_attrs = {

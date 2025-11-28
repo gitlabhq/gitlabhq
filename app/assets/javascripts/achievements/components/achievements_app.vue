@@ -218,7 +218,7 @@ export default {
         <template v-if="canAwardAchievement" #actions>
           <award-button :achievement-id="achievement.id" :achievement-name="achievement.name" />
         </template>
-        <div class="mb-2 gl-text-sm gl-text-secondary">
+        <div class="mb-2 gl-text-sm gl-text-subtle">
           {{ awardedUsers(achievement.uniqueUsers.count) }}
         </div>
         <user-avatar-list

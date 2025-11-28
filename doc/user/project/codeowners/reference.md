@@ -71,8 +71,8 @@ Adding more sections changes how GitLab evaluates the file:
 - GitLab treats [entries without sections](advanced.md#regular-entries-and-sections), including rules defined
   before the first section header, as if they were another, unnamed section.
 - Each section enforces its rules separately.
-- Only one Code Owner pattern per section is matched to a file path.
-- Rules defined later in the file take precedence over earlier rules.
+- When a file path matches multiple entries in a section, only the last matching entry in that section is used.
+- When a file path matches entries in multiple sections, the last matching entry in each section is used.
 
 For example, in a `CODEOWNERS` file with sections that define the Code Owners of a `README` file:
 
@@ -93,9 +93,9 @@ README.md @user3
   - `@user3`, from `[README other owners]`.
 - The Code Owners for `internal/README.md` are:
   - `@admin`, from the unnamed section.
-  - `@user4`, from the last entry in `[README Owners]`.
-  - `@user3` from `[README other owners]`. (Both lines in `[README Owners]` match this file's name,
-    but only the last line in the section is kept.)
+  - `@user4`, from `[README Owners]`. Both `README.md` and `internal/README.md` entries in this
+    section match the file, but only the last matching entry in the section is used.
+  - `@user3` from `[README other owners]`.
 
 To add a section to the `CODEOWNERS` file, enter a section name in square brackets,
 followed by the files or directories, and users, groups, or subgroups:
