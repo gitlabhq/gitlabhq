@@ -32,28 +32,22 @@ export default {
 </script>
 
 <template>
-  <div>
-    <div
-      v-for="discussion in discussions"
-      :key="discussion.id"
-      class="discussion-notes diff-discussions !gl-relative"
-    >
-      <ul class="notes">
-        <noteable-discussion
-          :discussion="discussion"
-          :request-last-note-editing="requestLastNoteEditing"
-          @toggleDiscussionReplies="toggleDiscussionReplies(discussion)"
-          @replyAdded="addNote"
-          @noteUpdated="updateNote"
-          @noteDeleted="deleteNote"
-          @noteEdited="editNote"
-          @startEditing="setEditingMode($event, true)"
-          @cancelEditing="setEditingMode($event, false)"
-          @startReplying="startReplying(discussion)"
-          @stopReplying="stopReplying(discussion)"
-          @toggleAward="toggleAward"
-        />
-      </ul>
-    </div>
+  <div class="gl-rounded-[var(--content-border-radius)] gl-bg-default gl-text-default">
+    <ul v-for="discussion in discussions" :key="discussion.id" class="gl-m-0 gl-list-none gl-p-0">
+      <noteable-discussion
+        :discussion="discussion"
+        :request-last-note-editing="requestLastNoteEditing"
+        @toggleDiscussionReplies="toggleDiscussionReplies(discussion)"
+        @replyAdded="addNote"
+        @noteUpdated="updateNote"
+        @noteDeleted="deleteNote"
+        @noteEdited="editNote"
+        @startEditing="setEditingMode($event, true)"
+        @cancelEditing="setEditingMode($event, false)"
+        @startReplying="startReplying(discussion)"
+        @stopReplying="stopReplying(discussion)"
+        @toggleAward="toggleAward"
+      />
+    </ul>
   </div>
 </template>

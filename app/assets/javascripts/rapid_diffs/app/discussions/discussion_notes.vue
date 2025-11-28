@@ -1,16 +1,15 @@
 <script>
-import SystemNote from '~/vue_shared/components/notes/system_note.vue';
 import ToggleRepliesWidget from '~/notes/components/toggle_replies_widget.vue';
-import DiscussionNotesRepliesWrapper from '~/notes/components/discussion_notes_replies_wrapper.vue';
 import NoteableNote from './noteable_note.vue';
 
 export default {
   name: 'DiscussionNotes',
   components: {
-    SystemNote,
+    // System note is not migrated yet since we don't need it
+    // Refactor this to static import once the component is migrated
+    SystemNote: () => import('~/vue_shared/components/notes/system_note.vue'),
     NoteableNote,
     ToggleRepliesWidget,
-    DiscussionNotesRepliesWrapper,
   },
   inject: {
     userPermissions: {
@@ -43,33 +42,34 @@ export default {
 </script>
 
 <template>
-  <div class="discussion-notes">
-    <ul class="notes">
-      <system-note v-if="firstNote.system" :note="firstNote" />
-      <noteable-note
-        v-else
-        :note="firstNote"
-        :show-reply-button="userPermissions.can_create_note"
-        @noteDeleted="$emit('noteDeleted', firstNote)"
-        @noteUpdated="$emit('noteUpdated', $event)"
-        @noteEdited="$emit('noteEdited', { note: firstNote, value: $event })"
-        @startReplying="$emit('startReplying')"
-        @startEditing="$emit('startEditing', firstNote)"
-        @cancelEditing="$emit('cancelEditing', firstNote)"
-        @toggleAward="$emit('toggleAward', { note: firstNote, award: $event })"
-      >
-        <template #avatar-badge>
-          <slot name="avatar-badge"></slot>
-        </template>
-      </noteable-note>
-      <discussion-notes-replies-wrapper
-        v-if="hasReplies || userPermissions.can_create_note"
-        is-diff-discussion
-      >
+  <ul class="gl-list-none gl-p-0">
+    <system-note v-if="firstNote.system" :note="firstNote" />
+    <noteable-note
+      v-else
+      :note="firstNote"
+      :show-reply-button="userPermissions.can_create_note"
+      @noteDeleted="$emit('noteDeleted', firstNote)"
+      @noteUpdated="$emit('noteUpdated', $event)"
+      @noteEdited="$emit('noteEdited', { note: firstNote, value: $event })"
+      @startReplying="$emit('startReplying')"
+      @startEditing="$emit('startEditing', firstNote)"
+      @cancelEditing="$emit('cancelEditing', firstNote)"
+      @toggleAward="$emit('toggleAward', { note: firstNote, award: $event })"
+    >
+      <template #avatar-badge>
+        <slot name="avatar-badge"></slot>
+      </template>
+    </noteable-note>
+    <li
+      v-if="hasReplies || userPermissions.can_create_note"
+      class="gl-m-0 gl-rounded-[var(--content-border-radius)] gl-bg-subtle"
+    >
+      <ul class="gl-list-none gl-p-0">
         <toggle-replies-widget
           v-if="hasReplies"
           :collapsed="!expanded"
           :replies="replies"
+          class="gl-border-t !gl-border-x-0 gl-border-t-subtle"
           @toggle="$emit('toggleDiscussionReplies')"
         />
         <template v-if="expanded">
@@ -91,9 +91,9 @@ export default {
               </template>
             </noteable-note>
           </template>
+          <slot name="footer" :has-replies="hasReplies"></slot>
         </template>
-        <slot name="footer" :replies-visible="expanded || !hasReplies"></slot>
-      </discussion-notes-replies-wrapper>
-    </ul>
-  </div>
+      </ul>
+    </li>
+  </ul>
 </template>

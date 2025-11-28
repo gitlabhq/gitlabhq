@@ -97,6 +97,7 @@ class Issue < ApplicationRecord
   has_many :zoom_meetings
   has_many :user_mentions, class_name: "IssueUserMention", dependent: :delete_all # rubocop:disable Cop/ActiveRecordDependent
   has_many :sent_notifications, as: :noteable
+  has_many :partitioned_sent_notifications, as: :noteable
   has_many :designs, class_name: 'DesignManagement::Design', inverse_of: :issue
   has_many :design_versions, class_name: 'DesignManagement::Version', inverse_of: :issue do
     def most_recent

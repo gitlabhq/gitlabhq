@@ -1,12 +1,10 @@
 <script>
-import { GlAvatarLink, GlAvatar } from '@gitlab/ui';
 import axios from '~/lib/utils/axios_utils';
 import { getIdFromGraphQLId } from '~/graphql_shared/utils';
 import { confirmAction } from '~/lib/utils/confirm_via_gl_modal/confirm_via_gl_modal';
 import { createAlert } from '~/alert';
 import { HTTP_STATUS_GONE } from '~/lib/utils/http_status';
 import { ignoreWhilePending } from '~/lib/utils/ignore_while_pending';
-import TimelineEntryItem from '~/vue_shared/components/notes/timeline_entry_item.vue';
 import { __, sprintf } from '~/locale';
 import { detectAndConfirmSensitiveTokens } from '~/lib/utils/secret_detection';
 import { updateNoteErrorMessage } from '~/notes/utils';
@@ -21,9 +19,6 @@ export default {
     NoteHeader,
     NoteActions,
     NoteBody,
-    TimelineEntryItem,
-    GlAvatarLink,
-    GlAvatar,
   },
   inject: {
     endpoints: {
@@ -54,7 +49,7 @@ export default {
   data() {
     return {
       isDeleting: false,
-      isRequesting: false,
+      isSaving: false,
     };
   },
   computed: {
@@ -69,15 +64,6 @@ export default {
     },
     commentType() {
       return this.note.internal ? __('internal note') : __('comment');
-    },
-    classNameBindings() {
-      return {
-        [`note-row-${this.note.id}`]: true,
-        'is-editing': this.isEditing && !this.isRequesting,
-        'is-requesting being-posted': this.isRequesting,
-        'disabled-content': this.isDeleting,
-        'is-editable': this.canEdit,
-      };
     },
     canAwardEmoji() {
       return this.note.current_user?.can_award_emoji ?? false;
@@ -127,7 +113,7 @@ export default {
 
       if (!confirmSubmit) return;
 
-      this.isRequesting = true;
+      this.isSaving = true;
 
       try {
         const {
@@ -151,7 +137,7 @@ export default {
           });
         }
       } finally {
-        this.isRequesting = false;
+        this.isSaving = false;
       }
     },
     onCancelEditing: ignoreWhilePending(async function cancel({ shouldConfirm, isDirty }) {
@@ -186,69 +172,52 @@ export default {
 </script>
 
 <template>
-  <timeline-entry-item
+  <li
     :id="`note_${note.id}`"
-    :class="{ ...classNameBindings, 'internal-note': note.internal }"
-    class="note note-wrapper note-comment"
+    class="gl-p-3 gl-pl-5"
+    :class="{ 'gl-pointer-events-none gl-opacity-5': isSaving || isDeleting }"
     data-testid="noteable-note-container"
   >
-    <div class="timeline-avatar gl-float-left gl-pt-2">
-      <gl-avatar-link
-        :href="author.path"
-        :data-user-id="authorId"
-        :data-username="author.username"
-        class="js-user-link"
-      >
-        <gl-avatar
-          :src="author.avatar_url"
-          :entity-name="author.username"
-          :alt="author.name"
-          :size="24"
-        />
-        <slot name="avatar-badge"></slot>
-      </gl-avatar-link>
+    <div class="gl-flex gl-flex-wrap gl-items-start gl-justify-between gl-gap-2">
+      <note-header
+        class="gl-py-2"
+        :author="author"
+        :created-at="note.created_at"
+        :note-id="note.id"
+        :is-internal-note="note.internal"
+        :is-imported="note.imported"
+      />
+      <note-actions
+        :author-id="authorId"
+        :note-url="note.noteable_note_url"
+        :access-level="note.human_access"
+        :is-contributor="note.is_contributor"
+        :is-author="note.is_noteable_author"
+        :project-name="note.project_name"
+        :noteable-type="note.noteable_type"
+        :show-reply="showReplyButton"
+        :can-edit="canEdit"
+        :can-award-emoji="canAwardEmoji"
+        :can-delete="canEdit"
+        :can-report-as-abuse="canReportAsAbuse"
+        @delete="onDelete"
+        @startEditing="$emit('startEditing')"
+        @startReplying="$emit('startReplying')"
+        @award="toggleAward"
+      />
     </div>
-    <div class="timeline-content">
-      <div class="note-header">
-        <note-header
-          :author="author"
-          :created-at="note.created_at"
-          :note-id="note.id"
-          :is-internal-note="note.internal"
-          :is-imported="note.imported"
-        />
-        <note-actions
-          :author-id="authorId"
-          :note-url="note.noteable_note_url"
-          :access-level="note.human_access"
-          :is-contributor="note.is_contributor"
-          :is-author="note.is_noteable_author"
-          :project-name="note.project_name"
-          :noteable-type="note.noteable_type"
-          :show-reply="showReplyButton"
-          :can-edit="canEdit"
-          :can-award-emoji="canAwardEmoji"
-          :can-delete="canEdit"
-          :can-report-as-abuse="canReportAsAbuse"
-          @delete="onDelete"
-          @startEditing="$emit('startEditing')"
-          @startReplying="$emit('startReplying')"
-          @award="toggleAward"
-        />
-      </div>
-      <div class="timeline-discussion-body">
-        <note-body
-          :note="note"
-          :can-edit="canEdit"
-          :is-editing="isEditing"
-          :autosave-key="autosaveKey"
-          :restore-from-autosave="restoreFromAutosave"
-          :save-note="saveNote"
-          @cancelEditing="onCancelEditing"
-          @input="$emit('noteEdited', $event)"
-          @award="toggleAward"
-        />
-      </div>
+    <div class="gl-pb-3 gl-pl-7">
+      <note-body
+        :note="note"
+        :can-edit="canEdit"
+        :is-editing="isEditing"
+        :autosave-key="autosaveKey"
+        :restore-from-autosave="restoreFromAutosave"
+        :save-note="saveNote"
+        @cancelEditing="onCancelEditing"
+        @input="$emit('noteEdited', $event)"
+        @award="toggleAward"
+      />
     </div>
-  </timeline-entry-item>
+  </li>
 </template>

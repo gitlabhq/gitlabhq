@@ -26,7 +26,7 @@ export default {
 </script>
 
 <template>
-  <div class="gl-grow gl-text-center gl-text-subtle">
+  <div class="gl-flex-1 gl-text-center gl-text-subtle">
     <gl-sprintf
       :message="$options.signedOutPhrase.message"
       :placeholders="$options.signedOutPhrase.placeholders"

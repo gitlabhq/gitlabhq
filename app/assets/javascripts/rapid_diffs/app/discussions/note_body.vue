@@ -66,11 +66,11 @@ export default {
 </script>
 
 <template>
-  <div :class="{ 'js-task-list-container': canEdit }" class="note-body">
+  <div :class="{ 'js-task-list-container': canEdit }">
     <div
       v-gfm="note.note_html"
       :class="{ '[content-visibility:hidden]': isEditing }"
-      class="note-text md"
+      class="md"
     ></div>
     <note-form
       v-if="isEditing"
@@ -87,7 +87,7 @@ export default {
       v-if="canEdit"
       v-model="noteBody"
       :data-update-url="note.path"
-      class="hidden js-task-list-field"
+      class="js-task-list-field gl-hidden"
       dir="auto"
     ></textarea>
     <note-edited-text
@@ -95,9 +95,9 @@ export default {
       :edited-at="note.last_edited_at"
       :edited-by="note.last_edited_by"
       :action-text="__('Edited')"
-      class="note_edited_ago"
+      class="gl-mt-2"
     />
-    <div v-if="note.award_emoji && note.award_emoji.length" class="note-awards">
+    <div v-if="note.award_emoji && note.award_emoji.length" class="gl-mt-3">
       <awards-list
         :awards="note.award_emoji"
         :can-award-emoji="note.current_user.can_award_emoji"

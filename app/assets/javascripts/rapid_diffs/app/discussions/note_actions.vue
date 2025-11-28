@@ -131,11 +131,11 @@ export default {
 </script>
 
 <template>
-  <div class="note-actions">
+  <div class="gl-flex gl-flex-1 gl-items-center gl-justify-end">
     <user-access-role-badge
       v-if="isAuthor"
       v-gl-tooltip
-      class="gl-mr-3 gl-hidden @sm/panel:gl-block"
+      class="gl-mr-3 @max-sm/discussion:gl-hidden"
       :title="authorBadgeTitle"
     >
       {{ __('Author') }}
@@ -143,7 +143,7 @@ export default {
     <user-access-role-badge
       v-if="accessLevel"
       v-gl-tooltip
-      class="gl-mr-3 gl-hidden @sm/panel:gl-block"
+      class="gl-mr-3 @max-sm/discussion:gl-hidden"
       :title="displayMemberBadgeText"
     >
       {{ accessLevel }}
@@ -151,24 +151,19 @@ export default {
     <user-access-role-badge
       v-else-if="isContributor"
       v-gl-tooltip
-      class="gl-mr-3 gl-hidden @sm/panel:gl-block"
+      class="gl-mr-3 @max-sm/discussion:gl-hidden"
       :title="displayContributorBadgeText"
     >
       {{ __('Contributor') }}
     </user-access-role-badge>
-    <span class="note-actions__mobile-spacer"></span>
+    <span class="@max-sm/discussion:gl-flex-1"></span>
     <emoji-picker
       v-if="canAwardEmoji"
-      toggle-class="add-reaction-button btn-default-tertiary"
+      toggle-category="tertiary"
       data-testid="note-emoji-button"
       @click="$emit('award', $event)"
     />
-    <reply-button
-      v-if="showReply"
-      ref="replyButton"
-      class="js-reply-button"
-      @startReplying="$emit('startReplying')"
-    />
+    <reply-button v-if="showReply" ref="replyButton" @startReplying="$emit('startReplying')" />
     <gl-button
       v-if="canEdit"
       v-gl-tooltip
@@ -176,7 +171,6 @@ export default {
       :aria-label="$options.i18n.editCommentLabel"
       icon="pencil"
       category="tertiary"
-      class="note-action-button js-note-edit"
       data-testid="note-edit-button"
       @click="$emit('startEditing')"
     />
@@ -187,10 +181,9 @@ export default {
       :aria-label="$options.i18n.deleteCommentLabel"
       icon="remove"
       category="tertiary"
-      class="note-action-button js-note-delete"
       @click="$emit('delete')"
     />
-    <div v-else-if="shouldShowActionsDropdown" class="more-actions dropdown">
+    <div v-else-if="shouldShowActionsDropdown">
       <gl-disclosure-dropdown
         v-gl-tooltip
         :title="$options.i18n.moreActionsLabel"
@@ -199,12 +192,10 @@ export default {
         icon="ellipsis_v"
         category="tertiary"
         placement="bottom-end"
-        class="note-action-button more-actions-toggle"
         no-caret
       >
         <gl-disclosure-dropdown-item
           v-if="noteUrl"
-          class="js-btn-copy-note-link"
           :data-clipboard-text="noteUrl"
           @action="$toast.show(__('Link copied to clipboard.'))"
         >
@@ -218,12 +209,7 @@ export default {
           >
             <template #list-item>{{ $options.i18n.reportAbuse }}</template>
           </gl-disclosure-dropdown-item>
-          <gl-disclosure-dropdown-item
-            v-if="canEdit"
-            class="js-note-delete"
-            variant="danger"
-            @action="$emit('delete')"
-          >
+          <gl-disclosure-dropdown-item v-if="canEdit" variant="danger" @action="$emit('delete')">
             <template #list-item>{{ __('Delete comment') }}</template>
           </gl-disclosure-dropdown-item>
         </gl-disclosure-dropdown-group>

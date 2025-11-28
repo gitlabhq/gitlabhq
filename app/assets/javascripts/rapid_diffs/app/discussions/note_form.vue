@@ -1,5 +1,5 @@
 <script>
-import { GlButton, GlSprintf, GlLink } from '@gitlab/ui';
+import { GlButton, GlSprintf, GlLink, GlAlert } from '@gitlab/ui';
 import { __ } from '~/locale';
 import MarkdownEditor from '~/vue_shared/components/markdown/markdown_editor.vue';
 import { trackSavedUsingEditor } from '~/vue_shared/components/markdown/tracking';
@@ -13,6 +13,7 @@ export default {
     GlButton,
     GlSprintf,
     GlLink,
+    GlAlert,
   },
   inject: {
     endpoints: {
@@ -136,8 +137,8 @@ export default {
 </script>
 
 <template>
-  <div class="note-edit-form current-note-edit-form js-discussion-note-form">
-    <div v-if="conflictWhileEditing" class="js-conflict-edit-warning alert alert-danger">
+  <div>
+    <gl-alert v-if="conflictWhileEditing" variant="danger" class="gl-mb-3">
       <gl-sprintf
         :message="$options.i18n.editingConflictMessage"
         :placeholders="$options.i18n.editingConflictPlaceholder"
@@ -147,7 +148,7 @@ export default {
           <template v-else>{{ content }}</template>
         </template>
       </gl-sprintf>
-    </div>
+    </gl-alert>
     <div class="flash-container gl-mb-5"></div>
     <form ref="form" class="edit-note common-note-form js-quick-submit gfm-form">
       <markdown-editor
@@ -172,28 +173,24 @@ export default {
         @keydown.exact.esc="cancel(true)"
         @handleSuggestDismissed="$emit('handleSuggestDismissed')"
       />
-      <div class="note-form-actions gl-font-size-0">
-        <div class="gl-display-sm-flex gl-font-size-0 gl-flex-wrap">
-          <gl-button
-            :disabled="!editedNoteBody.length || isSubmitting"
-            category="primary"
-            variant="confirm"
-            data-testid="reply-comment-button"
-            class="js-vue-issue-save js-comment-button gl-mb-3 @sm/panel:gl-mb-0 @sm/panel:gl-mr-3"
-            @click="handleUpdate()"
-          >
-            {{ saveButtonTitle }}
-          </gl-button>
-          <gl-button
-            class="note-edit-cancel js-close-discussion-note-form"
-            category="secondary"
-            variant="default"
-            data-testid="cancel"
-            @click="cancel(true)"
-          >
-            {{ $options.i18n.cancel }}
-          </gl-button>
-        </div>
+      <div class="gl-mt-3 gl-flex gl-flex-wrap gl-gap-4">
+        <gl-button
+          :disabled="!editedNoteBody.length || isSubmitting"
+          category="primary"
+          variant="confirm"
+          data-testid="reply-comment-button"
+          @click="handleUpdate()"
+        >
+          {{ saveButtonTitle }}
+        </gl-button>
+        <gl-button
+          category="secondary"
+          variant="default"
+          data-testid="cancel"
+          @click="cancel(true)"
+        >
+          {{ $options.i18n.cancel }}
+        </gl-button>
       </div>
     </form>
   </div>

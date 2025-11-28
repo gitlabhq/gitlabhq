@@ -5,6 +5,15 @@ import NoteableNote from '~/rapid_diffs/app/discussions/noteable_note.vue';
 import SystemNote from '~/vue_shared/components/notes/system_note.vue';
 import ToggleRepliesWidget from '~/notes/components/toggle_replies_widget.vue';
 
+jest.mock('~/vue_shared/components/notes/system_note.vue', () => {
+  return {
+    props: jest.requireActual('~/vue_shared/components/notes/system_note.vue').default.props,
+    render() {
+      return null;
+    },
+  };
+});
+
 describe('DiscussionNotes', () => {
   let wrapper;
 
@@ -19,6 +28,9 @@ describe('DiscussionNotes', () => {
       propsData,
       provide: merge(defaultProvisions, provide),
       scopedSlots,
+      stubs: {
+        SystemNote,
+      },
     });
   };
 
@@ -36,10 +48,13 @@ describe('DiscussionNotes', () => {
     expect(wrapper.emitted('toggleDiscussionReplies')).toStrictEqual([[]]);
   });
 
-  it('provides footer slot', () => {
+  it('provides footer slot when expanded', () => {
     const footer = jest.fn();
-    createComponent({ notes: [{ id: 'foo' }, { id: 'bar' }] }, { scopedSlots: { footer } });
-    expect(footer).toHaveBeenCalledWith({ repliesVisible: true });
+    createComponent(
+      { notes: [{ id: 'foo' }, { id: 'bar' }], expanded: true },
+      { scopedSlots: { footer } },
+    );
+    expect(footer).toHaveBeenCalledWith({ hasReplies: true });
   });
 
   describe('noteable notes', () => {

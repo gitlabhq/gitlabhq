@@ -4,6 +4,7 @@ import {
   GlDisclosureDropdown,
   GlDisclosureDropdownItem,
   GlDisclosureDropdownGroup,
+  GlButton,
 } from '@gitlab/ui';
 import { shallowMount } from '@vue/test-utils';
 import NoteActions from '~/rapid_diffs/app/discussions/note_actions.vue';
@@ -50,8 +51,14 @@ describe('NoteActions', () => {
       .at(0);
   const findEmojiPicker = () => wrapper.findComponent(EmojiPicker);
   const findReplyButton = () => wrapper.findComponent(ReplyButton);
-  const findEditButton = () => wrapper.find('.js-note-edit');
-  const findDeleteButton = () => wrapper.find('.js-note-delete');
+  const findEditButton = () =>
+    wrapper
+      .findAllComponents(GlButton)
+      .filter((item) => item.props('icon') === 'pencil')
+      .at(0);
+  const findAllDeleteButtons = () =>
+    wrapper.findAllComponents(GlButton).filter((item) => item.props('icon') === 'remove');
+  const findDeleteButton = () => findAllDeleteButtons().at(0);
   const findMoreActionsDropdown = () => wrapper.findComponent(GlDisclosureDropdown);
   const findReportAbuseItem = () => wrapper.find('[data-testid="report-abuse-button"]');
   const findAbuseDrawer = () => wrapper.findComponent(AbuseCategorySelector);
@@ -59,6 +66,11 @@ describe('NoteActions', () => {
     wrapper
       .findAllComponents(GlDisclosureDropdownItem)
       .filter((item) => item.text() === 'Delete comment')
+      .at(0);
+  const findCopyLinkButton = () =>
+    wrapper
+      .findAllComponents(GlDisclosureDropdownItem)
+      .filter((item) => item.text() === 'Copy link')
       .at(0);
 
   const createComponent = (props = {}) => {
@@ -208,7 +220,7 @@ describe('NoteActions', () => {
         'showDeleteAction is $shouldShowStandalone when canDelete is $canDelete, canReportAsAbuse is $canReportAsAbuse, and noteUrl is "$noteUrl"',
         ({ canDelete, canReportAsAbuse, noteUrl, shouldShowStandalone }) => {
           createComponent({ canDelete, canReportAsAbuse, noteUrl });
-          expect(findDeleteButton().exists()).toBe(shouldShowStandalone);
+          expect(findAllDeleteButtons()).toHaveLength(shouldShowStandalone ? 1 : 0);
         },
       );
     });
@@ -239,9 +251,8 @@ describe('NoteActions', () => {
 
       it('shows toast when copy link is clicked', async () => {
         createComponent({ noteUrl: 'http://note.url' });
-        const copyLinkItem = wrapper.find('.js-btn-copy-note-link');
 
-        copyLinkItem.vm.$emit('action');
+        findCopyLinkButton().vm.$emit('action');
         await nextTick();
 
         expect(toast.show).toHaveBeenCalledWith('Link copied to clipboard.');

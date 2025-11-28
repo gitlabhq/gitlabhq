@@ -1,5 +1,5 @@
 <script>
-import { GlBadge, GlLoadingIcon, GlTooltipDirective } from '@gitlab/ui';
+import { GlBadge, GlLoadingIcon, GlTooltipDirective, GlAvatarLink, GlAvatar } from '@gitlab/ui';
 import { isGid, getIdFromGraphQLId } from '~/graphql_shared/utils';
 import { s__ } from '~/locale';
 import ImportedBadge from '~/vue_shared/components/imported_badge.vue';
@@ -12,6 +12,8 @@ export default {
     TimeAgoTooltip,
     GlBadge,
     GlLoadingIcon,
+    GlAvatarLink,
+    GlAvatar,
   },
   directives: {
     GlTooltip: GlTooltipDirective,
@@ -27,11 +29,6 @@ export default {
       required: false,
       default: null,
     },
-    actionText: {
-      type: String,
-      required: false,
-      default: '',
-    },
     noteId: {
       type: String,
       required: false,
@@ -40,7 +37,7 @@ export default {
     isUpdating: {
       type: Boolean,
       required: false,
-      default: true,
+      default: false,
     },
     isInternalNote: {
       type: Boolean,
@@ -48,11 +45,6 @@ export default {
       default: false,
     },
     isImported: {
-      type: Boolean,
-      required: false,
-      default: false,
-    },
-    isSystemNote: {
       type: Boolean,
       required: false,
       default: false,
@@ -88,57 +80,53 @@ export default {
 </script>
 
 <template>
-  <div class="note-header-info">
+  <div class="gl-flex gl-min-w-0 gl-flex-wrap gl-items-center gl-gap-3">
     <template v-if="author">
+      <span class="gl-flex">
+        <gl-avatar-link
+          :href="author.path"
+          :data-user-id="authorId"
+          :data-username="author.username"
+          class="js-user-link"
+        >
+          <gl-avatar
+            :src="author.avatar_url"
+            :entity-name="author.username"
+            :alt="author.name"
+            :size="24"
+          />
+          <slot name="avatar-badge"></slot>
+        </gl-avatar-link>
+      </span>
       <a
         :href="author.path || author.webUrl"
-        class="author-name-link js-user-link gl-overflow-hidden gl-break-words"
+        class="js-user-link gl-overflow-hidden gl-break-words gl-text-default hover:gl-text-link focus:gl-focus"
         :data-user-id="authorId"
         :data-username="author.username"
       >
-        <span
-          class="note-header-author-name gl-font-bold"
-          data-testid="author-name"
-          v-text="author.name"
-        ></span>
-        <span
-          v-if="!isSystemNote"
-          class="author-username -gl-m-2 gl-mr-0 gl-hidden gl-truncate !gl-whitespace-nowrap gl-p-2 @md/panel:gl-inline"
+        <span class="gl-font-bold" data-testid="author-name" v-text="author.name"></span
+        ><span
+          class="gl-ml-2 gl-inline-block gl-max-w-full gl-truncate gl-whitespace-nowrap gl-align-bottom @max-sm/discussion:gl-hidden"
         >
-          <span class="author-username-link focus:gl-focus">
-            <span class="note-headline-light">@{{ author.username }} </span>
-          </span>
+          <span class="gl-text-subtle">@{{ author.username }}</span>
           <slot name="note-header-info"></slot>
         </span>
       </a>
     </template>
     <span v-else>{{ __('A deleted user') }}</span>
-    <span class="note-headline-light note-headline-meta">
-      <span
-        v-if="$scopedSlots.default"
-        class="system-note-message"
-        :class="!isSystemNote && 'md:-gl-ml-2'"
-        data-testid="system-note-content"
-      >
-        <slot></slot>
-      </span>
+    <span class="gl-flex gl-flex-wrap gl-items-center gl-gap-1 gl-text-subtle">
       <template v-if="createdAt">
-        <span class="system-note-separator">
-          <template v-if="actionText">{{ actionText }}</template>
-        </span>
+        <span></span>
         <time-ago-tooltip
           v-if="noteTimestampLink"
           :href="noteTimestampLink"
-          class="note-timestamp system-note-separator"
+          class="gl-text-subtle hover:gl-text-link"
           :time="createdAt"
           tooltip-placement="bottom"
         />
         <time-ago-tooltip v-else :time="createdAt" tooltip-placement="bottom" />
       </template>
-      <template v-if="isImported">
-        <span v-if="isSystemNote">&middot;</span>
-        <imported-badge :text-only="isSystemNote" />
-      </template>
+      <imported-badge v-if="isImported" />
       <gl-badge
         v-if="isInternalNote"
         v-gl-tooltip:tooltipcontainer.bottom
@@ -153,7 +141,7 @@ export default {
       <gl-loading-icon
         v-if="isUpdating"
         size="sm"
-        class="editing-spinner"
+        class="gl-ml-2"
         :label="__('Comment is being updated')"
       />
     </span>

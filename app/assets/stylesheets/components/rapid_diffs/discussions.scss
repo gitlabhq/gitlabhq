@@ -1,8 +1,10 @@
 @use 'constants';
 
 .rd-discussion-row {
+  --content-border-radius: 0 0 var(--rd-row-bottom-right-radius) var(--rd-row-bottom-left-radius);
   display: flex;
   background-color: var(--gl-background-color-subtle);
+  border-radius: var(--content-border-radius);
 }
 
 .rd-discussion-row:has(> td:not(:empty)) {
@@ -10,16 +12,34 @@
   border-bottom: 1px solid var(--gl-border-color-default);
 }
 
+.rd-discussion-row.rd-discussion-row:last-child {
+  border-bottom: 0;
+}
+
 .rd-discussion-row > td {
   @apply gl-max-w-limited;
   flex: 1;
+  min-width: 0;
   padding: 0;
-  border-left: 1px solid transparent;
-  border-right: 1px solid transparent;
+  border-left: 1px solid var(--gl-border-color-default);
+  border-right: 1px solid var(--gl-border-color-default);
 }
 
-.rd-discussion-row > td + td {
-  border-left-color: var(--gl-border-color-default);
+.rd-discussion-row > td:not(:empty) {
+  border-radius: var(--content-border-radius);
+}
+
+.rd-discussion-row > td:first-child {
+  margin-left: -1px;
+}
+
+.rd-discussion-row > td:first-child:not(:only-child),
+.rd-discussion-row > td:first-child:empty {
+  border-right-color: transparent;
+}
+
+.rd-discussion-row > td:last-child {
+  margin-right: -1px;
 }
 
 .rd-new-discussion-toggle {

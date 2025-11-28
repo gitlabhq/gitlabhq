@@ -1,6 +1,5 @@
 import { merge } from 'lodash';
 import { shallowMount } from '@vue/test-utils';
-import { GlAvatar, GlAvatarLink } from '@gitlab/ui';
 import MockAdapter from 'axios-mock-adapter';
 import { nextTick } from 'vue';
 import NoteableNote from '~/rapid_diffs/app/discussions/noteable_note.vue';
@@ -90,21 +89,6 @@ describe('NoteableNote', () => {
 
   const findNoteActions = () => wrapper.findComponent(NoteActions);
   const findNoteBody = () => wrapper.findComponent(NoteBody);
-
-  it('shows avatar with link', () => {
-    createComponent();
-    expect(wrapper.findComponent(GlAvatarLink).attributes()).toMatchObject({
-      href: defaultProps.note.author.path,
-      'data-user-id': defaultProps.note.author.id.toString(),
-      'data-username': defaultProps.note.author.username,
-    });
-    expect(wrapper.findComponent(GlAvatar).props()).toMatchObject({
-      src: defaultProps.note.author.avatar_url,
-      entityName: defaultProps.note.author.username,
-      alt: defaultProps.note.author.name,
-      size: 24,
-    });
-  });
 
   it('shows note header with correct props', () => {
     createComponent();

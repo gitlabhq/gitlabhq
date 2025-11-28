@@ -43009,8 +43009,6 @@ CREATE INDEX index_p_sent_notifications_on_namespace_id ON ONLY p_sent_notificat
 
 CREATE INDEX index_p_sent_notifications_on_noteable_type_noteable_id_and_id ON ONLY p_sent_notifications USING btree (noteable_id, id) WHERE (noteable_type = 'Issue'::text);
 
-CREATE UNIQUE INDEX index_p_sent_notifications_on_reply_key_partition_unique ON ONLY p_sent_notifications USING btree (reply_key, partition);
-
 CREATE INDEX index_packages_build_infos_on_pipeline_id ON packages_build_infos USING btree (pipeline_id);
 
 CREATE INDEX index_packages_build_infos_on_project_id ON packages_build_infos USING btree (project_id);

@@ -7,7 +7,6 @@ import waitForPromises from 'helpers/wait_for_promises';
 import { createAlert } from '~/alert';
 import { confirmAction } from '~/lib/utils/confirm_via_gl_modal/confirm_via_gl_modal';
 import { detectAndConfirmSensitiveTokens } from '~/lib/utils/secret_detection';
-import TimelineEntryItem from '~/vue_shared/components/notes/timeline_entry_item.vue';
 import DiscussionReplyPlaceholder from '~/notes/components/discussion_reply_placeholder.vue';
 import NoteForm from '~/rapid_diffs/app/discussions/note_form.vue';
 import NoteSignedOutWidget from '~/rapid_diffs/app/discussions/note_signed_out_widget.vue';
@@ -65,11 +64,6 @@ describe('NoteableDiscussion', () => {
     defaultProps = {
       requestLastNoteEditing: jest.fn(),
     };
-  });
-
-  it('renders timeline entry item', () => {
-    createComponent();
-    expect(wrapper.findComponent(TimelineEntryItem).exists()).toBe(true);
   });
 
   it('renders discussion notes', () => {

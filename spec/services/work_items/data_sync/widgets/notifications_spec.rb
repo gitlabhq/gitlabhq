@@ -56,22 +56,30 @@ RSpec.describe WorkItems::DataSync::Widgets::Notifications, feature_category: :t
         allow(work_item).to receive(:from_service_desk?).and_return(true)
       end
 
-      context 'when moving work item' do
-        it 'copies notifications from work_item to target_work_item' do
+      context 'when moving work item', :aggregate_failures do
+        it 'copies notifications from work_item to target_work_item and deletes sent_notifications from source' do
           expect(callback).to receive(:new_work_item_subscriptions).and_call_original
           expect(callback).to receive(:new_work_item_sent_notifications).and_call_original
           expect(::Subscription).to receive(:insert_all).and_call_original
-          expect(::SentNotification).to receive(:upsert_all).and_call_original
+          expect(::PartitionedSentNotification).to receive(:insert_all).and_call_original
 
           expected_subscriptions = work_item.subscriptions.pluck(:user_id)
-          expected_sent_notifications = work_item.sent_notifications.pluck(:recipient_id)
+          expected_sent_notifications = work_item.partitioned_sent_notifications.pluck(:recipient_id)
+          old_notification_ids = work_item.partitioned_sent_notifications.pluck(:id)
 
-          callback.after_save_commit
+          expect do
+            callback.after_save_commit
+          end.to change { work_item.partitioned_sent_notifications.count }.by(-2)
 
           subscriptions = target_work_item.reload.subscriptions.pluck(:user_id)
-          sent_notifications = target_work_item.reload.sent_notifications.pluck(:recipient_id)
+          notification_recipients = target_work_item.reload.partitioned_sent_notifications.pluck(:recipient_id)
+          new_notification_ids = target_work_item.partitioned_sent_notifications.pluck(:id)
           expect(subscriptions).to match_array(expected_subscriptions)
-          expect(sent_notifications).to match_array(expected_sent_notifications)
+          expect(notification_recipients).to match_array(expected_sent_notifications)
+          expect(new_notification_ids).not_to match_array(old_notification_ids)
+          expect(target_work_item.partitioned_sent_notifications.pluck(:namespace_id).uniq).to contain_exactly(
+            target_work_item.namespace_id
+          )
         end
 
         it_behaves_like 'notifies participants'
@@ -84,12 +92,12 @@ RSpec.describe WorkItems::DataSync::Widgets::Notifications, feature_category: :t
           expect(callback).not_to receive(:new_work_item_subscriptions)
           expect(callback).not_to receive(:new_work_item_sent_notifications)
           expect(::Subscription).not_to receive(:insert_all)
-          expect(::SentNotification).not_to receive(:upsert_all)
+          expect(::PartitionedSentNotification).not_to receive(:insert_all)
 
           callback.after_save_commit
 
           expect(target_work_item.reload.subscriptions).to be_empty
-          expect(target_work_item.reload.sent_notifications).to be_empty
+          expect(target_work_item.reload.partitioned_sent_notifications).to be_empty
         end
 
         it_behaves_like 'notifies participants'
@@ -104,7 +112,7 @@ RSpec.describe WorkItems::DataSync::Widgets::Notifications, feature_category: :t
           expect(callback).to receive(:new_work_item_subscriptions).and_call_original
           expect(callback).not_to receive(:new_work_item_sent_notifications)
           expect(::Subscription).to receive(:insert_all).and_call_original
-          expect(::SentNotification).not_to receive(:upsert_all)
+          expect(::PartitionedSentNotification).not_to receive(:insert_all)
 
           expected_subscriptions = work_item.subscriptions.pluck(:user_id)
 
@@ -112,7 +120,7 @@ RSpec.describe WorkItems::DataSync::Widgets::Notifications, feature_category: :t
 
           subscriptions = target_work_item.reload.subscriptions.pluck(:user_id)
           expect(subscriptions).to match_array(expected_subscriptions)
-          expect(target_work_item.reload.sent_notifications).to be_empty
+          expect(target_work_item.reload.partitioned_sent_notifications).to be_empty
         end
       end
     end
@@ -127,12 +135,12 @@ RSpec.describe WorkItems::DataSync::Widgets::Notifications, feature_category: :t
         expect(callback).not_to receive(:new_work_item_subscriptions)
         expect(callback).not_to receive(:new_work_item_sent_notifications)
         expect(::Subscription).not_to receive(:insert_all)
-        expect(::SentNotification).not_to receive(:upsert_all)
+        expect(::PartitionedSentNotification).not_to receive(:insert_all)
 
         callback.after_save_commit
 
         expect(target_work_item.reload.subscriptions).to be_empty
-        expect(target_work_item.reload.sent_notifications).to be_empty
+        expect(target_work_item.reload.partitioned_sent_notifications).to be_empty
       end
 
       it 'does not notify participants' do
@@ -146,12 +154,12 @@ RSpec.describe WorkItems::DataSync::Widgets::Notifications, feature_category: :t
   describe '#post_move_cleanup' do
     it 'removes original work item notifications' do
       expect(work_item.subscriptions.count).to eq(2)
-      expect(work_item.sent_notifications.count).to eq(2)
+      expect(work_item.partitioned_sent_notifications.count).to eq(2)
 
       expect { callback.post_move_cleanup }.not_to raise_error
 
       expect(work_item.subscriptions).to be_empty
-      expect(work_item.sent_notifications).to be_empty
+      expect(work_item.partitioned_sent_notifications).to be_empty
     end
 
     context 'when cleanup data in batches' do
@@ -166,12 +174,12 @@ RSpec.describe WorkItems::DataSync::Widgets::Notifications, feature_category: :t
         create_sent_notification(project: work_item.project, noteable: work_item, recipient: create(:user))
 
         expect(work_item.subscriptions.count).to eq(4)
-        expect(work_item.sent_notifications.count).to eq(4)
+        expect(work_item.partitioned_sent_notifications.count).to eq(4)
 
         callback.post_move_cleanup
 
         expect(work_item.subscriptions).to be_empty
-        expect(work_item.sent_notifications).to be_empty
+        expect(work_item.partitioned_sent_notifications).to be_empty
       end
     end
   end

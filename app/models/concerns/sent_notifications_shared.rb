@@ -22,7 +22,6 @@ module SentNotificationsShared # rubocop:disable Gitlab/BoundedContexts -- Tempo
     belongs_to :namespace
 
     validates :recipient, :namespace_id, presence: true
-    validates :reply_key, presence: true, uniqueness: true
     validates :noteable_id, presence: true, unless: :for_commit?
     validates :commit_id, :project, presence: true, if: :for_commit?
     validates :in_reply_to_discussion_id, format: { with: /\A\h{40}\z/, allow_nil: true }
@@ -41,11 +40,23 @@ module SentNotificationsShared # rubocop:disable Gitlab/BoundedContexts -- Tempo
       matches = FULL_REPLY_KEY_REGEX.match(reply_key)
       return unless matches
 
-      if matches[:reply_key]
-        ::PartitionedSentNotification.find_by(partition: matches[:partition], reply_key: matches[:reply_key])
-      else
-        ::PartitionedSentNotification.find_by(reply_key: matches[:legacy_key])
-      end
+      result = if matches[:reply_key]
+                 partition_result = ::PartitionedSentNotification.where(
+                   partition: matches[:partition], reply_key: matches[:reply_key]
+                 ).to_a
+
+                 if partition_result.any?
+                   partition_result
+                 else
+                   ::PartitionedSentNotification.where(reply_key: matches[:reply_key]).to_a
+                 end
+               else
+                 ::PartitionedSentNotification.where(reply_key: matches[:legacy_key]).to_a
+               end
+
+      # We don't expect collisions, but in the unlikely case of one, behave like the record has been deleted
+      # Discussed in https://gitlab.com/gitlab-org/gitlab/-/issues/577844#note_2838135886
+      result.one? ? result.first : nil
     end
 
     def record(noteable, recipient_id, attrs = {})

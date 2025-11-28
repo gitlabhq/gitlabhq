@@ -136,4 +136,25 @@
     --user-contribution-graph-cell-level-3: var(--gl-color-data-blue-400);
     --user-contribution-graph-cell-level-4: var(--gl-color-data-blue-100);
   }
+
+  /**
+   * Severity colors
+   * Discussion: https://gitlab.com/gitlab-org/gitlab/-/issues/581121
+   * Owner: Security Risk Management: Security Insights
+   */
+  --severity-color-critical: var(--gl-color-red-800);
+  --severity-color-high: var(--gl-color-red-600);
+  --severity-color-medium: var(--gl-color-orange-400);
+  --severity-color-low: var(--gl-color-orange-300);
+  --severity-color-info: var(--gl-color-blue-400);
+  --severity-color-unknown: var(--gl-color-neutral-400);
+
+  &.gl-dark {
+    --severity-color-critical: var(--gl-color-red-500);
+    --severity-color-high: var(--gl-color-red-300);
+    --severity-color-medium: var(--gl-color-orange-300);
+    --severity-color-low: var(--gl-color-orange-100);
+    --severity-color-info: var(--gl-color-blue-300);
+    --severity-color-unknown: var(--gl-color-neutral-300);
+  }
 }

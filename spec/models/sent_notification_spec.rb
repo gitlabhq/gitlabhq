@@ -157,7 +157,7 @@ RSpec.describe SentNotification, :request_store, feature_category: :shared do
   end
 
   describe '.for' do
-    let_it_be_with_reload(:sent_notification) { create(:sent_notification, project: project) }
+    let_it_be_with_reload(:sent_notification) { create_sent_notification(project: project) }
 
     subject(:found_sent_notification) { described_class.for(reply_key) }
 
@@ -168,20 +168,22 @@ RSpec.describe SentNotification, :request_store, feature_category: :shared do
     end
 
     context 'when reply key uses old format' do
-      let_it_be(:sent_notification) { create(:sent_notification, :legacy_reply_key, project: project) }
+      let_it_be(:sent_notification) { create_sent_notification(:legacy_reply_key, project: project) }
       let(:reply_key) { sent_notification.reply_key }
 
       it { is_expected.to eq(sent_notification) }
 
-      it 'finds in the partitioned p_sent_notifications table' do
-        expect(PartitionedSentNotification).to receive(:find_by)
-
-        found_sent_notification
-      end
-
       context 'when sent_notification is only found in the legacy table' do
         before do
           PartitionedSentNotification.where(id: sent_notification.id).delete_all
+        end
+
+        it { is_expected.to be_nil }
+      end
+
+      context 'when more than one record exists with the same reply_key' do
+        before do
+          sent_notification.dup.save!
         end
 
         it { is_expected.to be_nil }
@@ -195,6 +197,14 @@ RSpec.describe SentNotification, :request_store, feature_category: :shared do
       end
 
       it { is_expected.to eq(sent_notification) }
+
+      context 'when more than one record exists with the same reply_key' do
+        before do
+          sent_notification.dup.save!
+        end
+
+        it { is_expected.to be_nil }
+      end
     end
   end
 

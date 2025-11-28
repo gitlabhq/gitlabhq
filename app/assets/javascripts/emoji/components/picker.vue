@@ -40,6 +40,11 @@ export default {
       required: false,
       default: () => [],
     },
+    toggleCategory: {
+      type: String,
+      required: false,
+      default: null,
+    },
     dropdownClass: {
       type: [Array, String, Object],
       required: false,
@@ -161,6 +166,7 @@ export default {
           v-gl-tooltip
           :title="buttonTitle || $options.i18n.addReaction"
           :class="[toggleClass, { 'is-active': isVisible }]"
+          :category="toggleCategory"
           class="add-reaction-button btn-icon gl-relative gl-h-full"
           data-testid="add-reaction-button"
           @mouseover="onButtonHovered"

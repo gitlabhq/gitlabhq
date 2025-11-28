@@ -1,5 +1,5 @@
 import { shallowMount } from '@vue/test-utils';
-import { GlBadge, GlLoadingIcon } from '@gitlab/ui';
+import { GlAvatar, GlAvatarLink, GlBadge, GlLoadingIcon } from '@gitlab/ui';
 import NoteHeader from '~/rapid_diffs/app/discussions/note_header.vue';
 import ImportedBadge from '~/vue_shared/components/imported_badge.vue';
 import TimeAgoTooltip from '~/vue_shared/components/time_ago_tooltip.vue';
@@ -20,6 +20,28 @@ describe('NoteHeader', () => {
   const findLoadingIcon = () => wrapper.findComponent(GlLoadingIcon);
 
   describe('author', () => {
+    it('shows avatar with link', () => {
+      const author = {
+        id: 'gid://gitlab/User/123',
+        name: 'John Doe',
+        username: 'johndoe',
+        path: '/johndoe',
+        avatar_url: '/avatar',
+      };
+      createComponent({ author });
+      expect(wrapper.findComponent(GlAvatarLink).attributes()).toMatchObject({
+        href: author.path,
+        'data-user-id': '123',
+        'data-username': author.username,
+      });
+      expect(wrapper.findComponent(GlAvatar).props()).toMatchObject({
+        src: author.avatar_url,
+        entityName: author.username,
+        alt: author.name,
+        size: 24,
+      });
+    });
+
     it('shows author name and username', () => {
       const author = {
         id: 'gid://gitlab/User/123',
@@ -48,25 +70,14 @@ describe('NoteHeader', () => {
       expect(findAuthorLink().attributes('href')).toBe('https://example.com/johndoe');
     });
 
-    it('does not show username for system notes', () => {
+    it('shows username', () => {
       const author = {
         id: 'gid://gitlab/User/123',
         name: 'John Doe',
         username: 'johndoe',
         path: '/johndoe',
       };
-      createComponent({ author, isSystemNote: true });
-      expect(wrapper.text()).not.toContain(author.username);
-    });
-
-    it('shows username for non-system notes', () => {
-      const author = {
-        id: 'gid://gitlab/User/123',
-        name: 'John Doe',
-        username: 'johndoe',
-        path: '/johndoe',
-      };
-      createComponent({ author, isSystemNote: false });
+      createComponent({ author });
       expect(wrapper.text()).toContain(author.username);
     });
 
@@ -114,13 +125,6 @@ describe('NoteHeader', () => {
     });
   });
 
-  describe('action text', () => {
-    it('shows action text when provided', () => {
-      createComponent({ createdAt: '2024-01-01T10:00:00Z', actionText: 'commented' });
-      expect(wrapper.text()).toContain('commented');
-    });
-  });
-
   describe('imported badge', () => {
     it('does not show when isImported is false', () => {
       createComponent({ isImported: false });
@@ -130,16 +134,6 @@ describe('NoteHeader', () => {
     it('shows when isImported is true', () => {
       createComponent({ isImported: true });
       expect(findImportedBadge().exists()).toBe(true);
-    });
-
-    it('shows text-only badge for system notes', () => {
-      createComponent({ isImported: true, isSystemNote: true });
-      expect(findImportedBadge().props('textOnly')).toBe(true);
-    });
-
-    it('shows full badge for non-system notes', () => {
-      createComponent({ isImported: true, isSystemNote: false });
-      expect(findImportedBadge().props('textOnly')).toBe(false);
     });
   });
 

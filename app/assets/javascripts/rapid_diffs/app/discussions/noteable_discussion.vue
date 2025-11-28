@@ -6,7 +6,6 @@ import { isLoggedIn } from '~/lib/utils/common_utils';
 import { confirmAction } from '~/lib/utils/confirm_via_gl_modal/confirm_via_gl_modal';
 import { ignoreWhilePending } from '~/lib/utils/ignore_while_pending';
 import { s__, __, sprintf } from '~/locale';
-import TimelineEntryItem from '~/vue_shared/components/notes/timeline_entry_item.vue';
 import { detectAndConfirmSensitiveTokens } from '~/lib/utils/secret_detection';
 import DiscussionReplyPlaceholder from '~/notes/components/discussion_reply_placeholder.vue';
 import { createNoteErrorMessages } from '~/notes/utils';
@@ -20,7 +19,6 @@ export default {
     DiscussionReplyPlaceholder,
     NoteSignedOutWidget,
     NoteForm,
-    TimelineEntryItem,
     DiscussionNotes,
   },
   inject: {
@@ -55,15 +53,6 @@ export default {
     },
     saveButtonTitle() {
       return this.discussion.internal ? __('Reply internally') : __('Reply');
-    },
-    isDiscussionInternal() {
-      return this.discussion.notes[0]?.internal;
-    },
-    discussionHolderClass() {
-      return {
-        'is-replying': this.discussion.isReplying,
-        'internal-note': this.isDiscussionInternal,
-      };
     },
   },
   methods: {
@@ -145,62 +134,50 @@ export default {
 </script>
 
 <template>
-  <timeline-entry-item class="note note-discussion">
-    <div class="timeline-content">
-      <div
-        :data-discussion-id="discussion.id"
-        class="discussion js-discussion-container"
-        data-testid="discussion-content"
-      >
-        <div class="discussion-body">
-          <div class="card discussion-wrapper">
-            <discussion-notes
-              :notes="discussion.notes"
-              :expanded="discussion.repliesExpanded"
-              @toggleDiscussionReplies="$emit('toggleDiscussionReplies')"
-              @startReplying="showReplyForm"
-              @noteUpdated="$emit('noteUpdated', $event)"
-              @noteDeleted="$emit('noteDeleted', $event)"
-              @noteEdited="$emit('noteEdited', $event)"
-              @startEditing="$emit('startEditing', $event)"
-              @cancelEditing="$emit('cancelEditing', $event)"
-              @toggleAward="$emit('toggleAward', $event)"
-            >
-              <template #avatar-badge>
-                <slot name="avatar-badge"></slot>
-              </template>
-              <template #footer="{ repliesVisible }">
-                <li
-                  v-if="repliesVisible"
-                  data-testid="reply-wrapper"
-                  class="discussion-reply-holder gl-bg-subtle gl-clearfix"
-                  :class="discussionHolderClass"
-                >
-                  <div class="flash-container !gl-mt-0 gl-mb-2"></div>
-                  <note-signed-out-widget v-if="!isLoggedIn" />
-                  <note-form
-                    v-else-if="discussion.isReplying"
-                    ref="noteForm"
-                    :internal="discussion.internal"
-                    :save-button-title="saveButtonTitle"
-                    :save-note="saveReply"
-                    :request-last-note-editing="() => requestLastNoteEditing(discussion)"
-                    autofocus
-                    :autosave-key="autosaveKey"
-                    @cancel="cancelReplyForm"
-                  />
-                  <div
-                    v-else-if="userPermissions.can_create_note"
-                    class="discussion-with-resolve-btn gl-clearfix"
-                  >
-                    <discussion-reply-placeholder @focus="showReplyForm" />
-                  </div>
-                </li>
-              </template>
-            </discussion-notes>
+  <li
+    class="js-discussion-container gl-@container/discussion"
+    :data-discussion-id="discussion.id"
+    data-testid="discussion-content"
+  >
+    <discussion-notes
+      :notes="discussion.notes"
+      :expanded="discussion.repliesExpanded"
+      @toggleDiscussionReplies="$emit('toggleDiscussionReplies')"
+      @startReplying="showReplyForm"
+      @noteUpdated="$emit('noteUpdated', $event)"
+      @noteDeleted="$emit('noteDeleted', $event)"
+      @noteEdited="$emit('noteEdited', $event)"
+      @startEditing="$emit('startEditing', $event)"
+      @cancelEditing="$emit('cancelEditing', $event)"
+      @toggleAward="$emit('toggleAward', $event)"
+    >
+      <template #avatar-badge>
+        <slot name="avatar-badge"></slot>
+      </template>
+      <template #footer="{ hasReplies }">
+        <li
+          data-testid="reply-wrapper"
+          class="gl-list-none gl-rounded-[var(--content-border-radius)] gl-border-t-subtle gl-bg-subtle gl-px-5 gl-py-4"
+          :class="{ 'gl-border-t': !hasReplies, 'gl-pt-0': hasReplies }"
+        >
+          <div class="flash-container !gl-mt-0 gl-mb-2"></div>
+          <note-signed-out-widget v-if="!isLoggedIn" />
+          <note-form
+            v-else-if="discussion.isReplying"
+            ref="noteForm"
+            :internal="discussion.internal"
+            :save-button-title="saveButtonTitle"
+            :save-note="saveReply"
+            :request-last-note-editing="() => requestLastNoteEditing(discussion)"
+            autofocus
+            :autosave-key="autosaveKey"
+            @cancel="cancelReplyForm"
+          />
+          <div v-else-if="userPermissions.can_create_note">
+            <discussion-reply-placeholder @focus="showReplyForm" />
           </div>
-        </div>
-      </div>
-    </div>
-  </timeline-entry-item>
+        </li>
+      </template>
+    </discussion-notes>
+  </li>
 </template>
