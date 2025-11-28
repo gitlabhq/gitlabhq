@@ -2643,16 +2643,10 @@ msgstr ""
 msgid "AICatalog|Could not enable agent in the %{target}. Check that the %{target} meets the %{linkStart}prerequisites%{linkEnd} and try again."
 msgstr ""
 
-msgid "AICatalog|Could not enable agent in the project. Check that the project meets the %{linkStart}prerequisites%{linkEnd} and try again."
-msgstr ""
-
 msgid "AICatalog|Could not enable flow"
 msgstr ""
 
 msgid "AICatalog|Could not enable flow in the %{target}. Check that the %{target} meets the %{linkStart}prerequisites%{linkEnd} and try again."
-msgstr ""
-
-msgid "AICatalog|Could not enable flow in the project. Check that the project meets the %{linkStart}prerequisites%{linkEnd} and try again."
 msgstr ""
 
 msgid "AICatalog|Could not update agent. Try again."
@@ -73723,6 +73717,12 @@ msgid "VirtualRegistry|Artifact caching period"
 msgstr ""
 
 msgid "VirtualRegistry|Cache cleanup completed for %{group_name}"
+msgstr ""
+
+msgid "VirtualRegistry|Cache cleanup disabled. Next run is not scheduled."
+msgstr ""
+
+msgid "VirtualRegistry|Cache cleanup enabled. Next run scheduled for %{nextRun}."
 msgstr ""
 
 msgid "VirtualRegistry|Cache cleanup failed for %{group_name}"

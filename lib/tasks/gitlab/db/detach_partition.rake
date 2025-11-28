@@ -12,7 +12,7 @@ namespace :gitlab do
       # partition_detach_info:
       # - partition_name: foo_table_100
       #   bounds_clause: "FOR VALUES IN ('100')"
-      #   required_constraint: "((partition_id = 100))"
+      #   required_constraint: "(partition_id = 100)"
       #   parent_schema: "public"
       #
       # Before we attempt to test detaching a table, we need to ensure that there is a constraint

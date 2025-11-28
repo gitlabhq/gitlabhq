@@ -25,7 +25,13 @@ example, `13.10.1`.
 
 ## Configure What's new
 
-You can configure **What's new** to display features based on the tier, or you can hide it. To configure it:
+You can configure **What's new** to display features based on the tier, or you can hide it. 
+
+Prerequisites:
+
+- You must be an administrator.
+
+To configure **What's new**:
 
 1. On the left sidebar, at the bottom, select **Admin**. If you've [turned on the new navigation](../user/interface_redesign.md#turn-new-navigation-on-or-off), in the upper-right corner, select **Admin**.
 1. Select **Settings** > **Preferences**.

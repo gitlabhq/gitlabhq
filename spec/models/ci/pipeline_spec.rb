@@ -660,6 +660,16 @@ RSpec.describe Ci::Pipeline, :mailer, factory_default: :keep, feature_category: 
       end
     end
 
+    describe '.created_on_or_after', :freeze_time do
+      let_it_be(:new_pipeline_1) { create(:ci_pipeline, created_at: 1.day.ago) }
+
+      subject { described_class.created_on_or_after(1.day.ago) }
+
+      it 'returns the newer pipeline' do
+        is_expected.to contain_exactly(new_pipeline, new_pipeline_1)
+      end
+    end
+
     describe '.created_before' do
       subject { described_class.created_before(1.day.ago) }
 
@@ -982,6 +992,18 @@ RSpec.describe Ci::Pipeline, :mailer, factory_default: :keep, feature_category: 
 
     it 'only returns the pipelines ordered by id' do
       expect(pipelines_ordered_by_id).to eq([newest_pipeline, older_pipeline])
+    end
+  end
+
+  describe '.order_created_at_asc_id_asc', :freeze_time do
+    subject(:pipelines_ordered_by_created_at_id) { described_class.order_created_at_asc_id_asc }
+
+    let_it_be(:pipeline1) { create(:ci_pipeline, project: project, created_at: 1.week.ago) }
+    let_it_be(:pipeline2) { create(:ci_pipeline, project: project, created_at: 1.day.ago) }
+    let_it_be(:pipeline3) { create(:ci_pipeline, project: project, created_at: 1.day.ago) }
+
+    it 'returns pipelines sorted by created_at ascending and id ascending' do
+      expect(pipelines_ordered_by_created_at_id).to eq([pipeline1, pipeline2, pipeline3])
     end
   end
 

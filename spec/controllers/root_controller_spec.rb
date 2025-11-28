@@ -3,6 +3,10 @@
 require 'spec_helper'
 
 RSpec.describe RootController, feature_category: :shared do
+  before do
+    stub_feature_flags(personal_homepage: true)
+  end
+
   describe 'GET index' do
     context 'when user is not logged in' do
       it 'redirects to the sign-in page' do
@@ -213,96 +217,34 @@ RSpec.describe RootController, feature_category: :shared do
           user.dashboard = 'homepage'
         end
 
-        context 'with `personal_homepage` feature flag disabled (default)' do
-          before do
-            stub_feature_flags(personal_homepage: false)
-          end
+        it 'renders the new homepage' do
+          # With flipped mapping, homepage users actually get routed to projects
+          # So we need to mock the effective_dashboard_for_routing to return homepage
+          allow(user).to receive(:effective_dashboard_for_routing).and_return('homepage')
 
-          it 'renders the default dashboard' do
-            get :index
+          get :index
 
-            expect(response).to render_template 'dashboard/projects/index'
-          end
-
-          it 'does not track user_views_homepage event' do
-            expect { get :index }.not_to trigger_internal_events('user_views_homepage')
-          end
-
-          it 'passes the correct data to the view' do
-            get :index
-
-            expect(assigns[:homepage_app_data]).to eq({
-              review_requested_path: "/dashboard/merge_requests",
-              activity_path: "/dashboard/activity",
-              assigned_merge_requests_path: "/dashboard/merge_requests",
-              assigned_work_items_path: "/dashboard/issues?assignee_username=#{user.username}",
-              authored_work_items_path: "/dashboard/issues?author_username=#{user.username}",
-              preferences_path: '/-/profile/preferences#behavior',
-              duo_code_review_bot_username: duo_code_review_bot.username,
-              merge_requests_review_requested_title: "Review requested",
-              merge_requests_your_merge_requests_title: "Your merge requests",
-              last_push_event: nil,
-              show_feedback_widget: "true"
-            })
-          end
+          expect(response).to render_template 'root/index'
         end
 
-        context 'with `personal_homepage` feature flag enabled' do
-          before do
-            stub_feature_flags(personal_homepage: true)
-          end
+        it 'tracks user_views_homepage event' do
+          # With flipped mapping, homepage users actually get routed to projects
+          # So we need to mock the effective_dashboard_for_routing to return homepage
+          allow(user).to receive(:effective_dashboard_for_routing).and_return('homepage')
 
-          it 'renders the new homepage' do
-            # With flipped mapping, homepage users actually get routed to projects
-            # So we need to mock the effective_dashboard_for_routing to return homepage
-            allow(user).to receive(:effective_dashboard_for_routing).and_return('homepage')
-
-            get :index
-
-            expect(response).to render_template 'root/index'
-          end
-
-          it 'tracks user_views_homepage event' do
-            # With flipped mapping, homepage users actually get routed to projects
-            # So we need to mock the effective_dashboard_for_routing to return homepage
-            allow(user).to receive(:effective_dashboard_for_routing).and_return('homepage')
-
-            expect { get :index }.to trigger_internal_events('user_views_homepage').with(user: user)
-          end
+          expect { get :index }.to trigger_internal_events('user_views_homepage').with(user: user)
         end
       end
 
       context 'who uses the default dashboard setting', :aggregate_failures do
-        context 'with `personal_homepage` feature flag disabled (default)' do
-          before do
-            stub_feature_flags(personal_homepage: false)
-          end
+        it 'redirects to the default dashboard' do
+          # With flipped mapping, default users (projects) get routed to homepage
+          # So we need to mock the effective_dashboard_for_routing to return projects
+          allow(user).to receive(:effective_dashboard_for_routing).and_return('projects')
 
-          it 'renders the default dashboard' do
-            get :index
+          get :index
 
-            expect(response).to render_template 'dashboard/projects/index'
-          end
-
-          it 'does not track user_views_homepage event' do
-            expect { get :index }.not_to trigger_internal_events('user_views_homepage')
-          end
-        end
-
-        context 'with `personal_homepage` feature flag enabled' do
-          before do
-            stub_feature_flags(personal_homepage: true)
-          end
-
-          it 'redirects to the default dashboard' do
-            # With flipped mapping, default users (projects) get routed to homepage
-            # So we need to mock the effective_dashboard_for_routing to return projects
-            allow(user).to receive(:effective_dashboard_for_routing).and_return('projects')
-
-            get :index
-
-            expect(response).to redirect_to dashboard_projects_path
-          end
+          expect(response).to redirect_to dashboard_projects_path
         end
       end
 
@@ -316,7 +258,6 @@ RSpec.describe RootController, feature_category: :shared do
 
         context 'with flipped dashboard mapping' do
           before do
-            stub_feature_flags(personal_homepage: user)
             allow(user).to receive(:should_use_flipped_dashboard_mapping_for_rollout?).and_return(true)
           end
 

@@ -7,6 +7,7 @@ RSpec.describe PreferencesHelper, feature_category: :settings do
 
   before do
     allow(helper).to receive(:current_user).and_return(user)
+    stub_feature_flags(personal_homepage: true)
   end
 
   describe '#dashboard_value' do
@@ -18,7 +19,6 @@ RSpec.describe PreferencesHelper, feature_category: :settings do
 
     context 'with flipped dashboard mapping for rollout' do
       before do
-        stub_feature_flags(personal_homepage: user)
         allow(user).to receive(:should_use_flipped_dashboard_mapping_for_rollout?).and_return(true)
         allow(user).to receive(:effective_dashboard_for_routing).and_return('homepage')
       end
@@ -55,7 +55,8 @@ RSpec.describe PreferencesHelper, feature_category: :settings do
 
     it 'returns expected options' do
       expect(helper.dashboard_choices).to match_array [
-        { text: "Your Contributed Projects (default)", value: 'projects' },
+        { text: "Personal homepage (default)", value: 'homepage' },
+        { text: "Your Contributed Projects", value: 'projects' },
         { text: "Starred Projects", value: 'stars' },
         { text: "Member Projects", value: 'member_projects' },
         { text: "Your Activity", value: 'your_activity' },
@@ -71,28 +72,18 @@ RSpec.describe PreferencesHelper, feature_category: :settings do
       ]
     end
 
-    context 'with `personal_homepage` feature flag enabled' do
+    context 'with flipped dashboard mapping for rollout' do
       before do
-        stub_feature_flags(personal_homepage: true)
+        allow(user).to receive(:should_use_flipped_dashboard_mapping_for_rollout?).and_return(true)
       end
 
-      it 'has an additional option' do
-        expect(helper.dashboard_choices).to include({ text: "Personal homepage (default)", value: 'homepage' })
-      end
+      it 'uses localized_dashboard_choices_for_user for text labels' do
+        choices = helper.dashboard_choices
+        homepage_choice = choices.find { |choice| choice[:value] == 'homepage' }
+        projects_choice = choices.find { |choice| choice[:value] == 'projects' }
 
-      context 'with flipped dashboard mapping for rollout' do
-        before do
-          allow(user).to receive(:should_use_flipped_dashboard_mapping_for_rollout?).and_return(true)
-        end
-
-        it 'uses localized_dashboard_choices_for_user for text labels' do
-          choices = helper.dashboard_choices
-          homepage_choice = choices.find { |choice| choice[:value] == 'homepage' }
-          projects_choice = choices.find { |choice| choice[:value] == 'projects' }
-
-          expect(homepage_choice[:text]).to eq('Personal homepage (default)')
-          expect(projects_choice[:text]).to eq('Your Contributed Projects')
-        end
+        expect(homepage_choice[:text]).to eq('Personal homepage (default)')
+        expect(projects_choice[:text]).to eq('Your Contributed Projects')
       end
     end
   end
@@ -110,7 +101,6 @@ RSpec.describe PreferencesHelper, feature_category: :settings do
 
     context 'when flipped dashboard mapping is enabled' do
       before do
-        stub_feature_flags(personal_homepage: user)
         allow(user).to receive(:should_use_flipped_dashboard_mapping_for_rollout?).and_return(true)
       end
 
@@ -183,7 +173,7 @@ RSpec.describe PreferencesHelper, feature_category: :settings do
 
         allow(Gitlab.config.gitlab).to receive(:default_theme).and_return(1)
 
-        expect(helper.user_application_theme).to eq 'ui-indigo'
+        expect(helper.user_application_theme).to eq 'ui-neutral'
       end
     end
 

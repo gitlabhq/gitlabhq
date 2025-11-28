@@ -191,6 +191,12 @@ To do this:
 
 ## By sending an email
 
+{{< history >}}
+
+- **Email a new merge request to this project** [renamed](https://gitlab.com/gitlab-org/gitlab/-/issues/560277) to **Email merge request to this project** in GitLab 18.6.
+
+{{< /history >}}
+
 You can create a merge request by sending an email message to GitLab.
 The merge request target branch is the repository's default branch.
 
@@ -207,7 +213,7 @@ To create a merge request by sending an email:
 
 1. On the left sidebar, select **Search or go to** and find your project. If you've [turned on the new navigation](../../interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
 1. Select **Code** > **Merge requests**.
-1. If the project contains any merge requests, select **Email a new merge request to this project**.
+1. If the project contains any merge requests, select **Email merge request to this project**.
 1. In the dialog, copy the email address shown. Keep this address private. Anyone who
    has it can create issues or merge requests as if they were you.
 1. Open an email and compose a message with the following information:

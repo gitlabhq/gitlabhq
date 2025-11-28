@@ -60,9 +60,6 @@ The issue is created. You can view it by going to **Plan** > **Issues**.
 For the title text, use the structure `active verb` + `noun`.
 For example, `Create an issue`.
 
-If several tasks on a page share prerequisites, you can create a separate
-topic with the title `Prerequisites`.
-
 ## When a task has only one step
 
 If you need to write a task that has only one step, make that step an unordered list item.
@@ -160,7 +157,40 @@ how to write the phrase for each role.
 
 `Prerequisites` must always be plural, even if the list includes only one item.
 
-Do not list subscriptions or add-ons in the prerequisites. These should only be included in the [product availability details](../styleguide/availability_details.md).
+Do not list subscriptions or add-ons in the prerequisites. These should only be included
+in the [product availability details](../styleguide/availability_details.md).
+
+If several tasks on a page share prerequisites, you can create a separate
+topic with the title `Prerequisites`.
+
+### Writing prerequisite statements
+
+Use clear, consistent language when writing prerequisites. Follow these patterns.
+
+- Assume `you must` and use it as the start of each phrase.
+- Avoid `need to`, `should`, or `ensure that`.
+- Use the active voice.
+- List items in order of importance, if necessary.
+
+For example:
+
+```markdown
+Prerequisites:
+
+- Be a member of a group that has GitLab Duo turned on.
+- Have at least the Developer role for the project.
+- Have the GitLab Workflow extension for VS Code installed.
+- Have your SSH keys configured.
+```
+
+Instead of:
+
+```markdown
+- Access to the project is required.
+- Ensure you are an administrator.
+- GitLab Duo must be turned on for your group.
+- The VS Code extension must be installed.
+```
 
 ## Related topics
 

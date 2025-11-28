@@ -29,7 +29,7 @@ RSpec.describe 'gitlab:db:detach_partition', :silence_stdout, feature_category: 
     allow(mock_entries).to receive(:find_detach_allowed_partitions).and_return({
       test_foo_table_100: {
         bounds_clause: "FOR VALUES IN ('100')",
-        required_constraint: "((partition_id = 100))",
+        required_constraint: "(partition_id = 100)",
         parent_table: "p_test_foo_table",
         parent_schema: "public"
       }

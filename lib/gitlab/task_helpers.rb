@@ -258,14 +258,19 @@ module Gitlab
         WHERE child.relname = $1 LIMIT 1
       SQL
 
-      check_constraints_query = <<~SQL
+      # We have to normalize check_clause formatting between PG16 and PG17.
+      # PG16 returns: ((partition_id = 100)) with double parentheses
+      # PG17 returns: (partition_id = 100) with single parentheses
+      #
+      # The regex strips one layer of parentheses from PG16's format to match PG17.
+      check_constraints_query = <<~'SQL'
         SELECT
           tc.constraint_name,
           format('CONSTRAINT %I CHECK (%s)',
             tc.constraint_name,
-            cc.check_clause
+            regexp_replace(cc.check_clause, '^\(\(([^()]+)\)\)$', '(\1)')
           ) AS constraint_clause,
-          cc.check_clause AS raw_check_clause
+          regexp_replace(cc.check_clause, '^\(\(([^()]+)\)\)$', '(\1)') AS raw_check_clause
         FROM information_schema.table_constraints tc
         JOIN information_schema.check_constraints cc
           ON tc.constraint_name = cc.constraint_name

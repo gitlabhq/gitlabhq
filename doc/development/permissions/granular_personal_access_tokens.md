@@ -196,7 +196,7 @@ Submit your changes for review following GitLab contribution process.
 
 Include the following in your MR description:
 
-```markdown
+````markdown
 ## Summary
 
 This MR enables granular Personal Access Token (PAT) permissions for [Resource Name] REST API endpoints.
@@ -268,6 +268,7 @@ Closes #[issue_number]
 ### Reviewers
 
 Tag the authorization team _@GitLab-org/software-supply-chain-security/authorization/approvers_ for review.
+````
 
 ## Edge Cases and Special Considerations
 

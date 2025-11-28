@@ -484,6 +484,7 @@ module Ci
     end
     scope :for_status, ->(status) { where(status: status) }
     scope :created_after, ->(time) { where(arel_table[:created_at].gt(time)) }
+    scope :created_on_or_after, ->(time) { where(arel_table[:created_at].gteq(time)) }
     scope :created_before, ->(time) { where(arel_table[:created_at].lt(time)) }
     scope :created_before_id, ->(id) { where(arel_table[:id].lt(id)) }
     scope :before_pipeline, ->(pipeline) { created_before_id(pipeline.id).outside_pipeline_family(pipeline) }
@@ -519,6 +520,7 @@ module Ci
 
     scope :order_id_asc, -> { order(id: :asc) }
     scope :order_id_desc, -> { order(id: :desc) }
+    scope :order_created_at_asc_id_asc, -> { order(created_at: :asc, id: :asc) }
 
     scope :not_archived, -> do
       archive_cutoff = Gitlab::CurrentSettings.archive_builds_older_than

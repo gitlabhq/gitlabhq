@@ -56,8 +56,12 @@ export const useDiffDiscussions = defineStore('diffDiscussions', {
       note.editedNote = value;
     },
     deleteNote(note) {
-      const { notes } = this.getDiscussionById(note.discussion_id);
-      notes.splice(notes.indexOf(note), 1);
+      const discussion = this.getDiscussionById(note.discussion_id);
+      discussion.notes.splice(discussion.notes.indexOf(note), 1);
+      if (discussion.notes.length === 0) this.deleteDiscussion(discussion);
+    },
+    deleteDiscussion(discussion) {
+      this.discussions.splice(this.discussions.indexOf(discussion), 1);
     },
     setEditingMode(note, value) {
       note.isEditing = value;

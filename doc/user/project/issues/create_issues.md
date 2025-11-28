@@ -121,6 +121,12 @@ example, if the list is scoped to a label `Frontend`, the new issue also has thi
 
 ## By sending an email
 
+{{< history >}}
+
+- **Email a new issue to this project** [renamed](https://gitlab.com/gitlab-org/gitlab/-/issues/560277) to **Email issue to this project** in GitLab 18.6.
+
+{{< /history >}}
+
 You can send an email to create an issue in a project on the project's
 **Issues** page.
 
@@ -135,7 +141,7 @@ To email an issue to a project:
 
 1. On the left sidebar, select **Search or go to** and find your project. If you've [turned on the new navigation](../../interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
 1. Select **Plan** > **Issues**.
-1. At the bottom of the page, select **Email a new issue to this project**.
+1. At the bottom of the page, select **Email issue to this project**.
 1. To copy the email address, select **Copy** ({{< icon name="copy-to-clipboard" >}}).
 1. From your email client, send an email to this address.
    The subject is used as the title of the new issue, and the email body becomes the description.
@@ -154,7 +160,7 @@ were you.
 
 To regenerate the email address:
 
-1. On the **Issues** page, select **Email a new issue to this project**.
+1. On the **Issues** page, select **Email issue to this project**.
 1. Select **reset this token**.
 
 ## Using a URL with prefilled values

@@ -1,5 +1,5 @@
 <script>
-import { GlTab, GlTabs, GlSprintf, GlLink, GlAlert } from '@gitlab/ui';
+import { GlTab, GlTabs, GlSprintf, GlLink, GlAlert, GlExperimentBadge } from '@gitlab/ui';
 import Api from '~/api';
 import LocalStorageSync from '~/vue_shared/components/local_storage_sync.vue';
 import UserCalloutDismisser from '~/vue_shared/components/user_callout_dismisser.vue';
@@ -9,7 +9,6 @@ import PageHeading from '~/vue_shared/components/page_heading.vue';
 import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import { SERVICE_PING_SECURITY_CONFIGURATION_THREAT_MANAGEMENT_VISIT } from '~/tracking/constants';
 import { REPORT_TYPE_CONTAINER_SCANNING_FOR_REGISTRY } from '~/vue_shared/security_reports/constants';
-import BetaBadge from '~/vue_shared/components/badges/beta_badge.vue';
 import { helpPagePath } from '~/helpers/help_page_helper';
 import {
   AUTO_DEVOPS_ENABLED_ALERT_DISMISSED_STORAGE_KEY,
@@ -46,7 +45,7 @@ export default {
     GlTabs,
     LocalStorageSync,
     SectionLayout,
-    BetaBadge,
+    GlExperimentBadge,
     UpgradeBanner: () =>
       import('ee_component/security_configuration/components/upgrade_banner.vue'),
     UserCalloutDismisser,
@@ -327,7 +326,8 @@ export default {
       </gl-tab>
       <gl-tab v-if="shouldShowSecurityAttributes" query-param-value="security-attributes">
         <template #title>
-          {{ s__('SecurityAttributes|Security attributes') }} <beta-badge class="gl-ml-2" />
+          {{ s__('SecurityAttributes|Security attributes') }}
+          <gl-experiment-badge type="beta" class="gl-ml-2" />
         </template>
         <project-security-attributes-list />
       </gl-tab>

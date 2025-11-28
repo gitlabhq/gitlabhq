@@ -291,8 +291,14 @@ module Gitlab
           @health_context ||= Gitlab::Database::HealthStatus::Context.new(
             self,
             connection,
-            [table_name]
+            health_context_tables
           )
+        end
+
+        def health_context_tables
+          return [table_name] unless job_class.respond_to?(:health_context_tables)
+
+          job_class.health_context_tables.presence || [table_name]
         end
 
         def hold!(until_time: 10.minutes.from_now)

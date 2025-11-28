@@ -110,10 +110,31 @@ describe('diffDiscussions store', () => {
 
   describe('deleteNote', () => {
     it('deletes existing note', () => {
-      const notes = { id: 'foo', discussion_id: 'abc', note: 'Hello!' };
-      useDiffDiscussions().discussions = [{ id: 'abc', notes: [notes] }];
-      useDiffDiscussions().deleteNote(notes);
-      expect(useDiffDiscussions().discussions[0].notes).toHaveLength(0);
+      const note = { id: 'foo', discussion_id: 'abc', note: 'Hello!' };
+      const remainingNote = {};
+      useDiffDiscussions().discussions = [{ id: 'abc', notes: [note, remainingNote] }];
+      useDiffDiscussions().deleteNote(note);
+      expect(useDiffDiscussions().discussions[0].notes).toHaveLength(1);
+      expect(useDiffDiscussions().discussions[0].notes[0]).toStrictEqual(remainingNote);
+    });
+
+    it('deletes discussions when no notes left', () => {
+      const note = { id: 'foo', discussion_id: 'abc', note: 'Hello!' };
+      useDiffDiscussions().discussions = [{ id: 'abc', notes: [note] }];
+      useDiffDiscussions().deleteNote(note);
+      expect(useDiffDiscussions().discussions).toHaveLength(0);
+    });
+  });
+
+  describe('deleteDiscussion', () => {
+    it('deletes existing discussion', () => {
+      const discussion = {
+        id: 'foo',
+        notes: [{ id: 'foo', discussion_id: 'abc', note: 'Hello!' }],
+      };
+      useDiffDiscussions().discussions = [discussion];
+      useDiffDiscussions().deleteDiscussion(discussion);
+      expect(useDiffDiscussions().discussions).toHaveLength(0);
     });
   });
 

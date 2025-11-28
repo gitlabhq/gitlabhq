@@ -603,6 +603,65 @@ module Gitlab
 end
 ```
 
+### Configure tables to check for vacuum
+
+By default, batched background migrations are paused when autovacuum is running on the table being iterated over (the table specified in `queue_batched_background_migration`). However, background migrations don't always write to the table they iterate on. In these cases, it doesn't make sense to pause the migration due to vacuum activity on the iteration table.
+
+Use the `tables_to_check_for_vacuum` class method to explicitly specify which tables should be checked for vacuum activity. When vacuum is detected on any of the specified tables, the migration is paused.
+
+#### When to use this feature
+
+Use `tables_to_check_for_vacuum` when:
+
+- Your migration iterates over one table but writes to different tables.
+- You want to avoid unnecessary pauses caused by vacuum on tables that aren't being modified.
+- You need to monitor vacuum activity on multiple specific tables.
+
+#### Example
+
+Consider a migration that iterates over `merge_request_diff_files` but writes to a partitioned table `merge_request_diff_files_99208b8fac`:
+
+```ruby
+module Gitlab
+  module BackgroundMigration
+    class BackfillMergeRequestFileDiffsPartitionedTable < BackfillPartitionedTable
+      operation_name :backfill
+      feature_category :source_code_management
+
+      cursor :merge_request_diff_id, :relative_order
+
+      # Specify the actual table being written to
+      tables_to_check_for_vacuum :merge_request_diff_files_99208b8fac
+
+      def perform
+        # Migration logic that writes to merge_request_diff_files_99208b8fac
+        # but iterates over merge_request_diff_files
+      end
+    end
+  end
+end
+```
+
+In this example:
+
+- The migration iterates over `merge_request_diff_files` (specified in `queue_batched_background_migration`).
+- The migration writes to `merge_request_diff_files_99208b8fac`.
+- By using `tables_to_check_for_vacuum :merge_request_diff_files_99208b8fac`, the migration is paused only when vacuum runs on the partitioned table, not on the iteration table.
+
+#### Specifying multiple tables
+
+You can specify multiple tables to monitor:
+
+```ruby
+tables_to_check_for_vacuum :table_one, :table_two, :table_three
+```
+
+The migration is paused if vacuum is running on any of the specified tables.
+
+#### Default behavior
+
+If `tables_to_check_for_vacuum` is not specified, the migration defaults to checking vacuum activity on the table being iterated over (the table specified in `queue_batched_background_migration`).
+
 ### Access data for multiple databases
 
 Background migration contrary to regular migrations does have access to multiple databases

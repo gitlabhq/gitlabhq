@@ -190,6 +190,28 @@ RSpec.describe Gitlab::BackgroundMigration::BatchedMigrationJob, feature_categor
     end
   end
 
+  describe '.tables_to_check_for_vacuum' do
+    context 'when not specified' do
+      let(:job_class) { Class.new(described_class) }
+
+      it 'health_context_tables returns empty list' do
+        expect(job_class.health_context_tables).to be_empty
+      end
+    end
+
+    context 'when specified' do
+      let(:job_class) do
+        Class.new(described_class) do
+          tables_to_check_for_vacuum :foo, 'bar'
+        end
+      end
+
+      it 'health_context_tables returns list of the tables' do
+        expect(job_class.health_context_tables).to match_array(%w[foo bar])
+      end
+    end
+  end
+
   describe 'descendants', :eager_load do
     it 'have the same method signature for #perform' do
       expected_arity = described_class.instance_method(:perform).arity
