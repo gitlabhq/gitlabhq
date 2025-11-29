@@ -33,11 +33,11 @@ FactoryBot.define do
       after(:build) do |runner_manager, evaluator|
         if evaluator.uncached_contacted_at.nil? && evaluator.creation_state == :finished
           # Set stale contacted_at value unless this is an `:unregistered` runner manager
-          runner_manager.contacted_at = Ci::Runner.stale_deadline
+          runner_manager.contacted_at = Ci::RunnerManager.stale_deadline
         end
 
         runner_manager.created_at = [
-          runner_manager.created_at, runner_manager.uncached_contacted_at, Ci::Runner.stale_deadline
+          runner_manager.created_at, runner_manager.uncached_contacted_at, Ci::RunnerManager.stale_deadline
         ].compact.min
       end
     end
