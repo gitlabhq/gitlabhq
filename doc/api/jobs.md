@@ -221,6 +221,7 @@ The `status` field in job responses and the `scope` parameter for filtering jobs
 - `scheduled`: Job has been scheduled but execution hasn't started.
 - `skipped`: Job was skipped due to conditions or dependencies.
 - `success`: Job completed successfully.
+- `waiting_for_callback`: Job is waiting for a callback from an external service.
 - `waiting_for_resource`: Job is waiting for resources to become available.
 
 ## List pipeline jobs

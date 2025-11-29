@@ -2,34 +2,34 @@
 
 require 'spec_helper'
 
-RSpec.describe Gitlab::Ci::Status::Build::Play do
-  let_it_be(:user) { create(:user) }
+RSpec.describe Gitlab::Ci::Status::Build::Play, feature_category: :continuous_integration do
+  let_it_be(:user, freeze: true) { create(:user) }
   let_it_be(:project) { create(:project, :stubbed_repository) }
   let_it_be_with_refind(:build) { create(:ci_build, :manual, project: project) }
 
-  let(:status) { Gitlab::Ci::Status::Core.new(build, user) }
+  let(:core_status) { Gitlab::Ci::Status::Core.new(build, user) }
 
-  subject { described_class.new(status) }
+  subject(:status) { described_class.new(core_status) }
 
   describe '#label' do
     it 'has a label that says it is a manual action' do
-      expect(subject.label).to eq 'manual play action'
+      expect(status.label).to eq 'manual play action'
     end
   end
 
   describe '#status_tooltip' do
     it 'does not override status status_tooltip' do
-      expect(status).to receive(:status_tooltip)
+      expect(core_status).to receive(:status_tooltip)
 
-      subject.status_tooltip
+      status.status_tooltip
     end
   end
 
   describe '#badge_tooltip' do
     it 'does not override status badge_tooltip' do
-      expect(status).to receive(:badge_tooltip)
+      expect(core_status).to receive(:badge_tooltip)
 
-      subject.badge_tooltip
+      status.badge_tooltip
     end
   end
 
@@ -61,32 +61,32 @@ RSpec.describe Gitlab::Ci::Status::Build::Play do
   end
 
   describe '#action_path' do
-    it { expect(subject.action_path).to include "#{build.id}/play" }
+    it { expect(status.action_path).to include "#{build.id}/play" }
   end
 
   describe '#action_icon' do
-    it { expect(subject.action_icon).to eq 'play' }
+    it { expect(status.action_icon).to eq 'play' }
   end
 
   describe '#action_title' do
-    it { expect(subject.action_title).to eq 'Run' }
+    it { expect(status.action_title).to eq 'Run' }
   end
 
   describe '#action_button_title' do
-    it { expect(subject.action_button_title).to eq 'Run job' }
+    it { expect(status.action_button_title).to eq 'Run job' }
   end
 
   describe '#confirmation_message' do
     context 'when build does not have manual_confirmation' do
-      it { expect(subject.confirmation_message).to be_nil }
+      it { expect(status.confirmation_message).to be_nil }
     end
 
     context 'when build is manual and has manual_confirmation' do
       let(:build) do
-        create(:ci_build, :playable, :with_manual_confirmation)
+        create(:ci_build, :playable, :with_manual_confirmation, project: project)
       end
 
-      it { expect(subject.confirmation_message).to eq 'Please confirm. Do you want to proceed?' }
+      it { expect(status.confirmation_message).to eq 'Please confirm. Do you want to proceed?' }
     end
   end
 
@@ -96,28 +96,28 @@ RSpec.describe Gitlab::Ci::Status::Build::Play do
     context 'when build is playable' do
       context 'when build stops an environment' do
         let(:build) do
-          create(:ci_build, :playable, :teardown_environment)
+          create(:ci_build, :playable, :teardown_environment, project: project)
         end
 
         it 'does not match' do
-          expect(subject).to be false
+          is_expected.to be false
         end
       end
 
       context 'when build does not stop an environment' do
-        let(:build) { create(:ci_build, :playable) }
+        let(:build) { create(:ci_build, :playable, project: project) }
 
         it 'is a correct match' do
-          expect(subject).to be true
+          is_expected.to be true
         end
       end
     end
 
     context 'when build is not playable' do
-      let(:build) { create(:ci_build) }
+      let(:build) { create(:ci_build, project: project) }
 
       it 'does not match' do
-        expect(subject).to be false
+        is_expected.to be false
       end
     end
   end

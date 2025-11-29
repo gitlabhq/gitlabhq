@@ -23987,6 +23987,9 @@ msgstr ""
 msgid "Deployment|You"
 msgstr ""
 
+msgid "Deployment|You are not authorized to trigger this deployment."
+msgstr ""
+
 msgid "Deprecated"
 msgstr ""
 

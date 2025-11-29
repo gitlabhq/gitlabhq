@@ -2,25 +2,25 @@
 
 require 'spec_helper'
 
-RSpec.describe Gitlab::Ci::Status::Build::Pending do
-  let(:user) { create(:user) }
+RSpec.describe Gitlab::Ci::Status::Build::Pending, feature_category: :continuous_integration do
+  let_it_be(:user, freeze: true) { create(:user) }
 
-  subject do
-    described_class.new(double('subject'))
-  end
+  let(:core_status) { instance_double(Gitlab::Ci::Status::Core) }
+
+  subject(:status) { described_class.new(core_status) }
 
   describe '#illustration' do
-    it { expect(subject.illustration).to include(:image, :size, :title, :content) }
+    it { expect(status.illustration).to include(:image, :size, :title, :content) }
   end
 
   describe '.matches?' do
-    subject { described_class.matches?(build, user) }
+    subject(:matches?) { described_class.matches?(build, user) }
 
     context 'when build is pending' do
       let(:build) { create(:ci_build, :pending) }
 
       it 'is a correct match' do
-        expect(subject).to be true
+        is_expected.to be true
       end
     end
 
@@ -28,7 +28,7 @@ RSpec.describe Gitlab::Ci::Status::Build::Pending do
       let(:build) { create(:ci_build, :success) }
 
       it 'does not match' do
-        expect(subject).to be false
+        is_expected.to be false
       end
     end
   end

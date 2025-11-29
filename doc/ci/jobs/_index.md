@@ -257,6 +257,7 @@ CI/CD jobs can have the following statuses:
 - `scheduled`: Job has been scheduled but execution hasn't started.
 - `skipped`: Job was skipped due to conditions or dependencies.
 - `success`: Job completed successfully.
+- `waiting_for_callback`: Job is waiting for a callback from an external service.
 - `waiting_for_resource`: Job is waiting for resources to become available.
 
 ### View the source of a job

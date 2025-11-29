@@ -142,4 +142,34 @@ describe('JobDropdownItem', () => {
       expect(findDropdownItem().props('item').href).toBe('');
     });
   });
+
+  describe('unauthorized manual action', () => {
+    describe('when user is not authorized to run manual job', () => {
+      const unauthorizedJob = {
+        ...mockJobInfo,
+        detailedStatus: {
+          ...detailedStatus,
+          action: null,
+          group: 'manual',
+          label: 'manual play action (not allowed)',
+        },
+      };
+
+      beforeEach(() => {
+        createComponent({ props: { job: unauthorizedJob } });
+      });
+
+      it('renders a disabled job action button', () => {
+        expect(findJobActionButton().props('disabled')).toBe(true);
+      });
+
+      it('provides the correct data for jobAction', () => {
+        expect(findJobActionButton().props('jobAction')).toEqual({
+          title: 'You are not authorized to run this manual job',
+          icon: 'play',
+          confirmationMessage: null,
+        });
+      });
+    });
+  });
 });

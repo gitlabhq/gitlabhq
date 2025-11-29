@@ -1,6 +1,6 @@
 <script>
 import { GlDisclosureDropdownItem, GlTooltipDirective } from '@gitlab/ui';
-import { sprintf } from '~/locale';
+import { sprintf, __ } from '~/locale';
 import { capitalizeFirstCharacter } from '~/lib/utils/text_utility';
 import delayedJobMixin from '~/ci/mixins/delayed_job_mixin';
 import JobActionButton from './job_action_button.vue';
@@ -48,6 +48,21 @@ export default {
       }
       return statusTooltip;
     },
+    hasUnauthorizedManualAction() {
+      return !this.status?.action && this.status?.group === 'manual';
+    },
+    unauthorizedManualAction() {
+      /*
+        The action object is not available when the user cannot run the action.
+        So we can show the correct icon, extract the action name from the label instead:
+        "manual play action (not allowed)" or "manual stop action (not allowed)"
+      */
+      return {
+        title: __('You are not authorized to run this manual job'),
+        icon: this.status?.label?.split(' ')[1],
+        confirmationMessage: null,
+      };
+    },
   },
 };
 </script>
@@ -74,6 +89,14 @@ export default {
           :job-action="status.action"
           :job-name="job.name"
           @jobActionExecuted="$emit('jobActionExecuted')"
+        />
+        <job-action-button
+          v-if="hasUnauthorizedManualAction"
+          disabled
+          :job-id="job.id"
+          :job-action="unauthorizedManualAction"
+          :job-name="job.name"
+          class="gl-ml-6"
         />
       </div>
     </template>
