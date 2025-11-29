@@ -14,6 +14,7 @@ import {
   REQUEST_REVIEW_SIMPLE,
   SEARCH_SELECT_REVIEWER_EVENT,
   SELECT_REVIEWER_EVENT,
+  REMOVE_REVIEWER_EVENT,
 } from '../../constants';
 import {
   getReviewersForList,
@@ -234,6 +235,7 @@ export default {
       // so we should exclude them for when we check the position
       const selectableList = difference(listUsernames, previousUsernames);
       const additions = difference(this.currentSelectedReviewers, previousUsernames);
+      const removals = difference(previousUsernames, this.currentSelectedReviewers);
 
       additions.forEach((added) => {
         // Convert from 0- to 1-index
@@ -244,6 +246,11 @@ export default {
           value: listPosition,
           suggested_position: suggestedPos,
           selectable_reviewers_count: selectableList.length,
+        });
+      });
+      removals.forEach(() => {
+        this.trackEvent(REMOVE_REVIEWER_EVENT, {
+          via: `ui_${this.usage}`,
         });
       });
 
