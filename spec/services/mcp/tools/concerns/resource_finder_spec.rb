@@ -153,34 +153,23 @@ RSpec.describe Mcp::Tools::Concerns::ResourceFinder, feature_category: :mcp_serv
   describe '#find_work_item_in_parent' do
     let_it_be(:user) { create(:user) }
     let_it_be(:project) { create(:project, :public) }
-    let_it_be(:group) { create(:group) }
     let_it_be(:work_item) { create(:work_item, :issue, project: project, iid: 42) }
-    let_it_be(:group_work_item) { create(:work_item, :epic, namespace: group, iid: 123) }
     let(:service) { test_class.new(user) }
 
     before_all do
       project.add_developer(user)
-      group.add_developer(user)
     end
 
-    shared_examples 'work item finder' do |parent_attr, work_item_attr|
+    context 'with project parent' do
       it 'finds work item by iid' do
-        stub_licensed_features(epics: true)
-
-        parent = send(parent_attr)
-        work_item = send(work_item_attr)
-        result = service.test_find_work_item_in_parent(parent, work_item.iid)
+        result = service.test_find_work_item_in_parent(project, work_item.iid)
         expect(result).to eq(work_item)
       end
 
       it 'raises error when work item not found' do
-        expect { service.test_find_work_item_in_parent(send(parent_attr), 99999) }
+        expect { service.test_find_work_item_in_parent(project, 99999) }
           .to raise_error(ArgumentError, 'Work item #99999 not found')
       end
-    end
-
-    context 'with project parent' do
-      it_behaves_like 'work item finder', :project, :work_item
 
       it 'restricts access to confidential work items for guests' do
         confidential_item = create(:work_item, :issue, :confidential, project: project, iid: 99)
@@ -191,10 +180,6 @@ RSpec.describe Mcp::Tools::Concerns::ResourceFinder, feature_category: :mcp_serv
         expect { guest_service.test_find_work_item_in_parent(project, confidential_item.iid) }
           .to raise_error(ArgumentError, "Work item ##{confidential_item.iid} not found")
       end
-    end
-
-    context 'with group parent' do
-      it_behaves_like 'work item finder', :group, :group_work_item
     end
   end
 

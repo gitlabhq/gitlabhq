@@ -57,21 +57,21 @@ Packages can be published to your project, group, or instance.
 
 | Package type                                           | Project | Group | Instance |
 |--------------------------------------------------------|---------|-------|----------|
-| [Maven (with `mvn`)](../maven_repository/_index.md)    | Y       | N     | N        |
-| [Maven (with `gradle`)](../maven_repository/_index.md) | Y       | N     | N        |
-| [Maven (with `sbt`)](../maven_repository/_index.md)    | N       | N     | N        |
-| [npm](../npm_registry/_index.md)                       | Y       | N     | N        |
-| [NuGet](../nuget_repository/_index.md)                 | Y       | N     | N        |
-| [PyPI](../pypi_repository/_index.md)                   | Y       | N     | N        |
-| [Generic packages](../generic_packages/_index.md)      | Y       | N     | N        |
-| [Terraform](../terraform_module_registry/_index.md)    | Y       | N     | N        |
-| [Composer](../composer_repository/_index.md)           | N       | Y     | N        |
-| [Conan 1](../conan_1_repository/_index.md)             | Y       | N     | Y        |
-| [Conan 2](../conan_2_repository/_index.md)             | Y       | N     | N        |
-| [Helm](../helm_repository/_index.md)                   | Y       | N     | N        |
-| [Debian](../debian_repository/_index.md)               | Y       | N     | N        |
-| [Go](../go_proxy/_index.md)                            | Y       | N     | N        |
-| [Ruby gems](../rubygems_registry/_index.md)            | Y       | N     | N        |
+| [Maven (with `mvn`)](../maven_repository/_index.md)    | Yes       | No     | No        |
+| [Maven (with `gradle`)](../maven_repository/_index.md) | Yes       | No     | No        |
+| [Maven (with `sbt`)](../maven_repository/_index.md)    | No        | No     | No        |
+| [npm](../npm_registry/_index.md)                       | Yes       | No     | No        |
+| [NuGet](../nuget_repository/_index.md)                 | Yes       | No     | No        |
+| [PyPI](../pypi_repository/_index.md)                   | Yes       | No     | No        |
+| [Generic packages](../generic_packages/_index.md)      | Yes       | No     | No        |
+| [Terraform](../terraform_module_registry/_index.md)    | Yes       | No     | No        |
+| [Composer](../composer_repository/_index.md)           | No        | Yes    | No        |
+| [Conan 1](../conan_1_repository/_index.md)             | Yes       | No     | Yes       |
+| [Conan 2](../conan_2_repository/_index.md)             | Yes       | No     | No        |
+| [Helm](../helm_repository/_index.md)                   | Yes       | No     | No        |
+| [Debian](../debian_repository/_index.md)               | Yes       | No     | No        |
+| [Go](../go_proxy/_index.md)                            | Yes       | No     | No        |
+| [Ruby gems](../rubygems_registry/_index.md)            | Yes       | No     | No        |
 
 ## Pulling packages
 
@@ -86,21 +86,21 @@ Packages can be pulled from your project, group, or instance.
 
 | Package type                                           | Project | Group | Instance |
 |--------------------------------------------------------|---------|-------|----------|
-| [Maven (with `mvn`)](../maven_repository/_index.md)    | Y       | Y     | Y        |
-| [Maven (with `gradle`)](../maven_repository/_index.md) | Y       | Y     | Y        |
-| [Maven (with `sbt`)](../maven_repository/_index.md)    | Y       | Y     | Y        |
-| [npm](../npm_registry/_index.md)                       | Y       | Y     | Y        |
-| [NuGet](../nuget_repository/_index.md)                 | Y       | Y     | N        |
-| [PyPI](../pypi_repository/_index.md)                   | Y       | Y     | N        |
-| [Generic packages](../generic_packages/_index.md)      | Y       | N     | N        |
-| [Terraform](../terraform_module_registry/_index.md)    | N       | Y     | N        |
-| [Composer](../composer_repository/_index.md)           | Y       | Y     | N        |
-| [Conan 1](../conan_1_repository/_index.md)             | Y       | N     | Y        |
-| [Conan 2](../conan_2_repository/_index.md)             | Y       | N     | N        |
-| [Helm](../helm_repository/_index.md)                   | Y       | N     | N        |
-| [Debian](../debian_repository/_index.md)               | Y       | N     | N        |
-| [Go](../go_proxy/_index.md)                            | Y       | N     | Y        |
-| [Ruby gems](../rubygems_registry/_index.md)            | Y       | N     | N        |
+| [Maven (with `mvn`)](../maven_repository/_index.md)    | Yes       | Yes     | Yes       |
+| [Maven (with `gradle`)](../maven_repository/_index.md) | Yes       | Yes     | Yes       |
+| [Maven (with `sbt`)](../maven_repository/_index.md)    | Yes       | Yes     | Yes       |
+| [npm](../npm_registry/_index.md)                       | Yes       | Yes     | Yes       |
+| [NuGet](../nuget_repository/_index.md)                 | Yes       | Yes     | No        |
+| [PyPI](../pypi_repository/_index.md)                   | Yes       | Yes     | No        |
+| [Generic packages](../generic_packages/_index.md)      | Yes       | No      | No        |
+| [Terraform](../terraform_module_registry/_index.md)    | No        | Yes     | No        |
+| [Composer](../composer_repository/_index.md)           | Yes       | Yes     | No        |
+| [Conan 1](../conan_1_repository/_index.md)             | Yes       | No      | Yes       |
+| [Conan 2](../conan_2_repository/_index.md)             | Yes       | No      | No        |
+| [Helm](../helm_repository/_index.md)                   | Yes       | No      | No        |
+| [Debian](../debian_repository/_index.md)               | Yes       | No      | No        |
+| [Go](../go_proxy/_index.md)                            | Yes       | No      | Yes       |
+| [Ruby gems](../rubygems_registry/_index.md)            | Yes       | No      | No        |
 
 ## Forwarding requests
 
@@ -181,21 +181,21 @@ You can use GitLab pipelines to import packages from other repositories, such as
 
 | Package type                                           | Importer available? |
 |--------------------------------------------------------|---------------------|
-| [Maven (with `mvn`)](../maven_repository/_index.md)    | Y                   |
-| [Maven (with `gradle`)](../maven_repository/_index.md) | Y                   |
-| [Maven (with `sbt`)](../maven_repository/_index.md)    | Y                   |
-| [npm](../npm_registry/_index.md)                       | Y                   |
-| [NuGet](../nuget_repository/_index.md)                 | Y                   |
-| [PyPI](../pypi_repository/_index.md)                   | Y                   |
-| [Generic packages](../generic_packages/_index.md)      | N                   |
-| [Terraform](../terraform_module_registry/_index.md)    | N                   |
-| [Composer](../composer_repository/_index.md)           | N                   |
-| [Conan 1](../conan_1_repository/_index.md)             | N                   |
-| [Conan 2](../conan_2_repository/_index.md)             | N                   |
-| [Helm](../helm_repository/_index.md)                   | N                   |
-| [Debian](../debian_repository/_index.md)               | N                   |
-| [Go](../go_proxy/_index.md)                            | N                   |
-| [Ruby gems](../rubygems_registry/_index.md)            | N                   |
+| [Maven (with `mvn`)](../maven_repository/_index.md)    | Yes                  |
+| [Maven (with `gradle`)](../maven_repository/_index.md) | Yes                  |
+| [Maven (with `sbt`)](../maven_repository/_index.md)    | Yes                  |
+| [npm](../npm_registry/_index.md)                       | Yes                  |
+| [NuGet](../nuget_repository/_index.md)                 | Yes                  |
+| [PyPI](../pypi_repository/_index.md)                   | Yes                  |
+| [Generic packages](../generic_packages/_index.md)      | No                   |
+| [Terraform](../terraform_module_registry/_index.md)    | No                   |
+| [Composer](../composer_repository/_index.md)           | No                   |
+| [Conan 1](../conan_1_repository/_index.md)             | No                   |
+| [Conan 2](../conan_2_repository/_index.md)             | No                   |
+| [Helm](../helm_repository/_index.md)                   | No                   |
+| [Debian](../debian_repository/_index.md)               | No                   |
+| [Go](../go_proxy/_index.md)                            | No                   |
+| [Ruby gems](../rubygems_registry/_index.md)            | No                   |
 
 ## Allow or prevent duplicates
 
@@ -210,21 +210,21 @@ By default, the GitLab package registry either allows or prevents duplicates bas
 
 | Package type                                           | Duplicates allowed? |
 |--------------------------------------------------------|---------------------|
-| [Maven (with `mvn`)](../maven_repository/_index.md)    | Y (configurable)    |
-| [Maven (with `gradle`)](../maven_repository/_index.md) | Y (configurable)    |
-| [Maven (with `sbt`)](../maven_repository/_index.md)    | Y (configurable)    |
-| [npm](../npm_registry/_index.md)                       | N                   |
-| [NuGet](../nuget_repository/_index.md)                 | Y                   |
-| [PyPI](../pypi_repository/_index.md)                   | N                   |
-| [Generic packages](../generic_packages/_index.md)      | Y (configurable)    |
-| [Terraform](../terraform_module_registry/_index.md)    | N                   |
-| [Composer](../composer_repository/_index.md)           | N                   |
-| [Conan 1](../conan_1_repository/_index.md)             | N                   |
-| [Conan 2](../conan_2_repository/_index.md)             | N                   |
-| [Helm](../helm_repository/_index.md)                   | Y                   |
-| [Debian](../debian_repository/_index.md)               | Y                   |
-| [Go](../go_proxy/_index.md)                            | N                   |
-| [Ruby gems](../rubygems_registry/_index.md)            | Y                   |
+| [Maven (with `mvn`)](../maven_repository/_index.md)    | Yes (configurable)   |
+| [Maven (with `gradle`)](../maven_repository/_index.md) | Yes (configurable)   |
+| [Maven (with `sbt`)](../maven_repository/_index.md)    | Yes (configurable)   |
+| [npm](../npm_registry/_index.md)                       | No                   |
+| [NuGet](../nuget_repository/_index.md)                 | Yes                  |
+| [PyPI](../pypi_repository/_index.md)                   | No                   |
+| [Generic packages](../generic_packages/_index.md)      | Yes (configurable)   |
+| [Terraform](../terraform_module_registry/_index.md)    | No                   |
+| [Composer](../composer_repository/_index.md)           | No                   |
+| [Conan 1](../conan_1_repository/_index.md)             | No                   |
+| [Conan 2](../conan_2_repository/_index.md)             | No                   |
+| [Helm](../helm_repository/_index.md)                   | Yes                  |
+| [Debian](../debian_repository/_index.md)               | Yes                  |
+| [Go](../go_proxy/_index.md)                            | No                   |
+| [Ruby gems](../rubygems_registry/_index.md)            | Yes                  |
 
 ## Authenticate with the registry
 

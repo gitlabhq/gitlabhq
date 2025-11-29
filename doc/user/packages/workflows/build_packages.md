@@ -7,19 +7,6 @@ title: Build packages
 
 Use the GitLab package registry to install and build packages for different package formats.
 
-The following package managers are supported:
-
-- [Composer](#composer)
-- [Conan 1](#conan-1)
-- [Conan 2](#conan-2)
-- [Maven](#maven)
-- [Gradle](#gradle)
-- [sbt](#sbt)
-- [npm](#npm)
-- [Yarn](#yarn)
-- [NuGet](#nuget)
-- [PyPI](#pypi)
-
 ## Composer
 
 1. Create a directory called `my-composer-package` and change to that directory:

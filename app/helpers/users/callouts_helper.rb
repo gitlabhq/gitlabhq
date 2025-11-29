@@ -116,7 +116,7 @@ module Users
       return false if current_user.password_automatically_set? || current_user.two_factor_enabled?
 
       days_until_enrollment = (current_user.email_otp_required_after.to_date - Date.current).to_i
-      days_until_enrollment.between?(31, 60)
+      days_until_enrollment.between?(8, 14)
     end
 
     private

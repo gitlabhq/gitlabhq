@@ -150,14 +150,14 @@ RSpec.describe VerifiesWithEmailHelper, feature_category: :system_access do
       it { is_expected.to be false }
     end
 
-    context 'when at the start of grace period (30 days before required_after)' do
-      let(:email_otp_required_after) { today + 30.days }
+    context 'when at the start of grace period (7 days before required_after)' do
+      let(:email_otp_required_after) { today + 7.days }
 
       it { is_expected.to be true }
     end
 
-    context 'when before grace period starts (31st day before required_after)' do
-      let(:email_otp_required_after) { today + 31.days }
+    context 'when before grace period starts (8 days before required_after)' do
+      let(:email_otp_required_after) { today + 8.days }
 
       it { is_expected.to be false }
     end

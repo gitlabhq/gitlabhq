@@ -7,7 +7,6 @@ RSpec.describe Mcp::Tools::WorkItems::BaseTool, feature_category: :mcp_server do
   let_it_be(:project) { create(:project, :public) }
   let_it_be(:group) { create(:group) }
   let_it_be(:work_item) { create(:work_item, :issue, project: project, iid: 42) }
-  let_it_be(:group_work_item) { create(:work_item, :epic, namespace: group, iid: 123) }
 
   let(:params) { {} }
 
@@ -170,18 +169,6 @@ RSpec.describe Mcp::Tools::WorkItems::BaseTool, feature_category: :mcp_server do
         result = tool.test_resolve_work_item_id
 
         expect(result).to eq(work_item.to_global_id.to_s)
-      end
-    end
-
-    context 'when group_id and work_item_iid are provided' do
-      let(:params) { { group_id: group.id.to_s, work_item_iid: group_work_item.iid } }
-
-      it 'resolves work item from params and returns global ID' do
-        stub_licensed_features(epics: true)
-
-        result = tool.test_resolve_work_item_id
-
-        expect(result).to eq(group_work_item.to_global_id.to_s)
       end
     end
 

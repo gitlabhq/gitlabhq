@@ -5,9 +5,7 @@ require 'spec_helper'
 RSpec.describe Mcp::Tools::WorkItems::CreateWorkItemNoteTool, feature_category: :mcp_server do
   let_it_be(:user) { create(:user) }
   let_it_be(:project) { create(:project, :public) }
-  let_it_be(:group) { create(:group) }
   let_it_be(:work_item) { create(:work_item, :issue, project: project, iid: 42) }
-  let_it_be(:group_work_item) { create(:work_item, :epic, namespace: group, iid: 123) }
   let_it_be(:discussion) { create(:discussion_note_on_issue, project: project, noteable: work_item).discussion }
 
   let(:params) { { project_id: project.id.to_s, work_item_iid: work_item.iid, body: 'Test comment' } }
@@ -15,7 +13,6 @@ RSpec.describe Mcp::Tools::WorkItems::CreateWorkItemNoteTool, feature_category: 
 
   before_all do
     project.add_developer(user)
-    group.add_developer(user)
   end
 
   describe 'class methods' do
@@ -109,24 +106,6 @@ RSpec.describe Mcp::Tools::WorkItems::CreateWorkItemNoteTool, feature_category: 
         variables = tool.build_variables
 
         expect(variables[:input][:noteableId]).to eq(work_item.to_global_id.to_s)
-      end
-    end
-
-    context 'with group work item' do
-      let(:params) do
-        {
-          group_id: group.id.to_s,
-          work_item_iid: group_work_item.iid,
-          body: 'Test comment on epic'
-        }
-      end
-
-      it 'resolves group work item' do
-        stub_licensed_features(epics: true)
-
-        variables = tool.build_variables
-
-        expect(variables[:input][:noteableId]).to eq(group_work_item.to_global_id.to_s)
       end
     end
 

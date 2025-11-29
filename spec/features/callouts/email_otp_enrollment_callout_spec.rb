@@ -7,7 +7,7 @@ RSpec.describe 'Email OTP enrollment callout', :js, feature_category: :system_ac
   let(:expected_title) { s_('EmailOTP|Enhanced authentication coming soon') }
 
   context 'when user is eligible for the callout' do
-    let(:email_otp_required_after) { 31.days.from_now }
+    let(:email_otp_required_after) { 8.days.from_now }
 
     before do
       user.update!(email_otp_required_after: email_otp_required_after)
@@ -59,8 +59,8 @@ RSpec.describe 'Email OTP enrollment callout', :js, feature_category: :system_ac
   context 'when user is not eligible for the callout' do
     # See also: callouts_helper_spec.rb for other conditions which hide
     # the banner
-    context 'when email_otp_required_after is more than 60 days away' do
-      let(:email_otp_required_after) { 61.days.from_now }
+    context 'when email_otp_required_after is more than 14 days away' do
+      let(:email_otp_required_after) { 15.days.from_now }
 
       it 'does not show the callout' do
         visit root_path
