@@ -10,13 +10,16 @@ import FileBrowserHeight from '~/diffs/components/file_browser_height.vue';
 import PanelResizer from '~/vue_shared/components/panel_resizer.vue';
 import { useLocalStorageSpy } from 'helpers/local_storage_helper';
 import { useFileTreeBrowserVisibility } from '~/repository/stores/file_tree_browser_visibility';
+import { useMainContainer } from '~/pinia/global_stores/main_container';
 
 Vue.use(PiniaVuePlugin);
+jest.mock('~/pinia/global_stores/main_container', () => ({ useMainContainer: jest.fn() }));
 
 describe('FileTreeBrowser', () => {
   let wrapper;
   let pinia;
   let fileTreeBrowserStore;
+  let mockMainContainerStore;
 
   useLocalStorageSpy();
 
@@ -47,8 +50,10 @@ describe('FileTreeBrowser', () => {
 
   describe('when not on project overview page', () => {
     beforeEach(() => {
+      mockMainContainerStore = { isWide: true };
+      useMainContainer.mockReturnValue(mockMainContainerStore);
       pinia = createTestingPinia({ stubActions: false });
-      fileTreeBrowserStore = useFileTreeBrowserVisibility();
+      fileTreeBrowserStore = useFileTreeBrowserVisibility(pinia);
       fileTreeBrowserStore.setFileTreeBrowserIsExpanded(true);
       createComponent();
     });
@@ -59,7 +64,7 @@ describe('FileTreeBrowser', () => {
     });
 
     describe('file tree browser overlay', () => {
-      it('does not render the overlay when peek is not on', () => {
+      it('does not show the overlay when peek is not on', () => {
         expect(findOverlay().exists()).toBe(false);
       });
 
@@ -67,7 +72,27 @@ describe('FileTreeBrowser', () => {
         fileTreeBrowserStore.setFileTreeBrowserIsPeekOn(true);
         createComponent();
         expect(findOverlay().exists()).toBe(true);
+        expect(findOverlay().isVisible()).toBe(true);
       });
+    });
+
+    describe('FileBrowserHeight v-show visibility', () => {
+      it.each`
+        isExpanded | isPeekOn | shouldBeVisible
+        ${false}   | ${false} | ${false}
+        ${true}    | ${false} | ${true}
+        ${false}   | ${true}  | ${true}
+      `(
+        'file tree browser visibility is $shouldBeVisible when expanded=$isExpanded and peekOn=$isPeekOn',
+        ({ isExpanded, isPeekOn, shouldBeVisible }) => {
+          fileTreeBrowserStore.setFileTreeBrowserIsExpanded(isExpanded);
+          fileTreeBrowserStore.setFileTreeBrowserIsPeekOn(isPeekOn);
+
+          createComponent();
+
+          expect(findFileBrowserHeight().isVisible()).toBe(shouldBeVisible);
+        },
+      );
     });
 
     describe('visibilityClasses', () => {
@@ -147,11 +172,13 @@ describe('FileTreeBrowser', () => {
 
     describe('enableStickyHeight prop', () => {
       it.each`
-        isExpanded | expectedEnableStickyHeight | description
-        ${true}    | ${true}                    | ${'passes enableStickyHeight as true when peek is off'}
-        ${false}   | ${false}                   | ${'passes enableStickyHeight as false when peek is on'}
-      `('$description', ({ isExpanded, expectedEnableStickyHeight }) => {
-        fileTreeBrowserStore.setFileTreeBrowserIsExpanded(isExpanded);
+        isWide   | expectedEnableStickyHeight | description
+        ${true}  | ${true}                    | ${'passes enableStickyHeight as true when isWide is true'}
+        ${false} | ${false}                   | ${'passes enableStickyHeight as false when isWide is false'}
+      `('$description', ({ isWide, expectedEnableStickyHeight }) => {
+        mockMainContainerStore.isWide = isWide;
+        pinia = createTestingPinia({ stubActions: false });
+        fileTreeBrowserStore = useFileTreeBrowserVisibility(pinia);
         createComponent();
 
         expect(findFileBrowserHeight().props('enableStickyHeight')).toBe(

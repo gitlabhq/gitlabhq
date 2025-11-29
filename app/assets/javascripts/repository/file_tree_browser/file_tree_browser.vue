@@ -5,6 +5,7 @@ import { InternalEvents } from '~/tracking';
 import PanelResizer from '~/vue_shared/components/panel_resizer.vue';
 import FileBrowserHeight from '~/diffs/components/file_browser_height.vue';
 import { useFileTreeBrowserVisibility } from '~/repository/stores/file_tree_browser_visibility';
+import { useMainContainer } from '~/pinia/global_stores/main_container';
 import TreeList from './components/tree_list.vue';
 
 export const TREE_WIDTH = 320;
@@ -44,7 +45,9 @@ export default {
     ...mapState(useFileTreeBrowserVisibility, [
       'fileTreeBrowserIsExpanded',
       'fileTreeBrowserIsPeekOn',
+      'fileTreeBrowserIsVisible',
     ]),
+    ...mapState(useMainContainer, ['isWide']),
     visibilityClasses() {
       return {
         'file-tree-browser-expanded gl-sticky gl-pb-5': this.fileTreeBrowserIsExpanded,
@@ -83,29 +86,32 @@ export default {
       class="gl-fixed gl-bottom-0 gl-left-0 gl-right-0 gl-top-0"
       data-testid="overlay"
     ></div>
-    <file-browser-height
-      :enable-sticky-height="fileTreeBrowserIsExpanded"
-      :style="{ '--tree-width': `${treeWidth}px` }"
-      class="file-tree-browser file-tree-browser-responsive gl-fixed gl-left-0 gl-flex-none gl-p-4"
-      :class="visibilityClasses"
-    >
-      <panel-resizer
-        class="max-@lg/panel:gl-hidden"
-        :start-size="treeWidth"
-        :min-size="$options.minTreeWidth"
-        :max-size="$options.maxTreeWidth"
-        side="right"
-        @update:size="onSizeUpdate"
-        @resize-end="saveTreeWidthPreference"
-      />
-      <tree-list :project-path="projectPath" :current-ref="currentRef" :ref-type="refType" />
-      <gl-button
-        target="_blank"
-        icon="comment-dots"
-        rel="noopener noreferrer"
-        :href="$options.feedbackIssue"
-        >{{ __('Provide feedback') }}</gl-button
+    <transition name="file-tree-browser-slide">
+      <file-browser-height
+        v-show="fileTreeBrowserIsVisible"
+        :enable-sticky-height="isWide"
+        :style="{ '--tree-width': `${treeWidth}px` }"
+        class="file-tree-browser file-tree-browser-responsive gl-fixed gl-left-0 gl-flex-none gl-p-4"
+        :class="visibilityClasses"
       >
-    </file-browser-height>
+        <panel-resizer
+          class="max-@lg/panel:gl-hidden"
+          :start-size="treeWidth"
+          :min-size="$options.minTreeWidth"
+          :max-size="$options.maxTreeWidth"
+          side="right"
+          @update:size="onSizeUpdate"
+          @resize-end="saveTreeWidthPreference"
+        />
+        <tree-list :project-path="projectPath" :current-ref="currentRef" :ref-type="refType" />
+        <gl-button
+          target="_blank"
+          icon="comment-dots"
+          rel="noopener noreferrer"
+          :href="$options.feedbackIssue"
+          >{{ __('Provide feedback') }}</gl-button
+        >
+      </file-browser-height>
+    </transition>
   </div>
 </template>
