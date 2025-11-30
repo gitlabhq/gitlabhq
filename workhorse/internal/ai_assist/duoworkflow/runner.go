@@ -89,6 +89,13 @@ func newRunner(conn websocketConn, rails *api.API, r *http.Request, cfg *api.Duo
 		log.WithRequest(r).WithError(err).Info("failed to initialize MCP server(s)")
 	}
 
+	lockFlow := cfg.LockConcurrentFlow
+
+	if lockFlow && rdb == nil {
+		log.WithRequest(r).Info("Workflow locking will be skipped as redis is not configured")
+		lockFlow = false
+	}
+
 	return &runner{
 		rails:       rails,
 		token:       cfg.Headers["x-gitlab-oauth-token"],
@@ -99,7 +106,7 @@ func newRunner(conn websocketConn, rails *api.API, r *http.Request, cfg *api.Duo
 		client:      client,
 		mcpManager:  mcpManager,
 		lockManager: newWorkflowLockManager(rdb),
-		lockFlow:    cfg.LockConcurrentFlow,
+		lockFlow:    lockFlow,
 	}, nil
 }
 
@@ -115,9 +122,7 @@ func (r *runner) Execute(ctx context.Context) error {
 	// we release it here instead.
 	defer func() {
 		if r.lockFlow {
-			log.WithContextFields(ctx, log.Fields{
-				"workflowID": r.workflowID,
-			}).Info("Releasing lock for workflow")
+			log.WithRequest(r.originalReq).Info("Releasing lock for workflow")
 			r.lockManager.releaseLock(ctx, r.mutex, r.workflowID)
 		}
 	}()
