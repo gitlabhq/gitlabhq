@@ -83,10 +83,10 @@ module RapidDiffs
       view_path = helpers.project_blob_path(project, helpers.tree_join(commit_sha, file_path))
 
       {
-        text: helpers.safe_format(
-          s_('RapidDiffs|View file at %{commitId}'),
-          commitId: helpers.tag.code(@diff_file.content_sha[0..7])
-        ),
+        text: s_('RapidDiffs|View file at %{codeStart}%{commit}%{codeEnd}'),
+        messageData: {
+          commit: @diff_file.content_sha[0..7]
+        },
         href: view_path,
         extraAttrs: { target: '_blank' },
         position: 1

@@ -1112,6 +1112,9 @@ msgstr ""
 msgid "%{label_name} was removed"
 msgstr ""
 
+msgid "%{label}:"
+msgstr ""
+
 msgid "%{lessThan} 1 hour"
 msgstr ""
 
@@ -12036,6 +12039,9 @@ msgstr ""
 msgid "BranchRules|Set the default behavior of this option in merge requests. Changes to this are also applied to existing merge requests. %{linkStart}What is squashing?%{linkEnd}"
 msgstr ""
 
+msgid "BranchRules|Setting blocked by security policy"
+msgstr ""
+
 msgid "BranchRules|Setting inherited"
 msgstr ""
 
@@ -12070,6 +12076,12 @@ msgid "BranchRules|Target branch"
 msgstr ""
 
 msgid "BranchRules|This branch rule is inherited from the group Protected branches settings."
+msgstr ""
+
+msgid "BranchRules|This setting is blocked by a security policy. To make changes, go to the %{linkStart}security policies%{linkEnd}. %{learnMoreStart}Learn more.%{learnMoreEnd}"
+msgstr ""
+
+msgid "BranchRules|This setting is blocked by a security policy. To make changes, go to the security policies. Learn more."
 msgstr ""
 
 msgid "BranchRules|This setting is configured for the group. To make changes, contact a user with required %{linkStart}permissions%{linkEnd}."
@@ -25217,6 +25229,9 @@ msgid "DuoAgentPlatform|Request has been sent to the group Owner"
 msgstr ""
 
 msgid "DuoAgentPlatform|Session ID"
+msgstr ""
+
+msgid "DuoAgentPlatform|Session information"
 msgstr ""
 
 msgid "DuoAgentPlatform|Session triggered"
@@ -46870,9 +46885,6 @@ msgstr ""
 msgid "Organization|Internal - The organization can be accessed by any signed in user except external users."
 msgstr ""
 
-msgid "Organization|Learn more about visibility levels"
-msgstr ""
-
 msgid "Organization|Manage"
 msgstr ""
 
@@ -47013,9 +47025,6 @@ msgid "Organization|Update your organization name, description, and avatar. %{li
 msgstr ""
 
 msgid "Organization|View all"
-msgstr ""
-
-msgid "Organization|Who can see this organization?"
 msgstr ""
 
 msgid "Organization|You can now start using your new organization."
@@ -54662,7 +54671,7 @@ msgstr ""
 msgid "RapidDiffs|View controls"
 msgstr ""
 
-msgid "RapidDiffs|View file at %{commitId}"
+msgid "RapidDiffs|View file at %{codeStart}%{commit}%{codeEnd}"
 msgstr ""
 
 msgid "Rate Limits"

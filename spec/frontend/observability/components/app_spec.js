@@ -29,7 +29,7 @@ jest.mock('~/observability/utils/nonce', () => ({
 const DEFAULTS = {
   O11Y_URL: 'https://o11y.gitlab.com',
   PATH: 'traces-explorer',
-  TOKENS: { userId: 'user123', accessJwt: 'access-token-123', refreshJwt: 'refresh-token-456' },
+  TOKENS: { accessJwt: 'access-token-123', refreshJwt: 'refresh-token-456' },
   TITLE: 'Observability',
 };
 
@@ -242,6 +242,7 @@ describe('Observability App Component', () => {
     it('rejects invalid auth token structure', () => {
       const authTokensValidator = App.props.authTokens.validator;
 
+      expect(authTokensValidator({ accessJwt: 'token' })).toBe(false);
       expect(authTokensValidator({ accessJwt: '', refreshJwt: 'refresh' })).toBe(false);
     });
 
@@ -250,7 +251,6 @@ describe('Observability App Component', () => {
 
       expect(
         authTokensValidator({
-          userId: 'user123',
           accessJwt: 'access-token',
           refreshJwt: 'refresh-token',
         }),

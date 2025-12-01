@@ -181,9 +181,11 @@ export default {
     };
   },
   computed: {
+    allowForcePush() {
+      return this.branchProtection?.allowForcePush;
+    },
     forcePushAttributes() {
-      const { allowForcePush } = this.branchProtection || {};
-      const title = allowForcePush
+      const title = this.allowForcePush
         ? this.$options.i18n.allowForcePushTitle
         : this.$options.i18n.doesNotAllowForcePushTitle;
 
@@ -221,6 +223,10 @@ export default {
     },
     // needed to override EE component
     modificationBlockedByPolicy() {
+      return false;
+    },
+    // needed to override EE component
+    protectedFromPushBySecurityPolicy() {
       return false;
     },
     pushAccessLevels() {
@@ -457,7 +463,7 @@ export default {
               id: this.branchRule.id,
               name,
               branchProtection: {
-                allowForcePush: this.branchProtection.allowForcePush,
+                allowForcePush: this.allowForcePush,
                 codeOwnerApprovalRequired: this.branchProtection.codeOwnerApprovalRequired,
                 pushAccessLevels: this.getAccessLevelInputFromEdges(
                   this.branchProtection.pushAccessLevels.edges,
@@ -531,7 +537,9 @@ export default {
               <gl-link :href="securityPoliciesPath">{{ content }}</gl-link>
             </template>
             <template #link="{ content }">
-              <gl-link :href="$options.policiesDocumentationLink">{{ content }}</gl-link>
+              <gl-link :href="$options.policiesDocumentationLink" target="_blank">{{
+                content
+              }}</gl-link>
             </template>
           </gl-sprintf>
         </gl-popover>
@@ -615,6 +623,7 @@ export default {
           :count="pushAccessLevels.total"
           :header-link-title="$options.i18n.manageProtectionsLinkTitle"
           :header-link-href="protectedBranchesPath"
+          :is-protected-by-policy="protectedFromPushBySecurityPolicy"
           :roles="pushAccessLevels.roles"
           :users="pushAccessLevels.users"
           :groups="pushAccessLevels.groups"
@@ -633,7 +642,8 @@ export default {
           class="gl-mt-6"
           data-testid="force-push-content"
           data-test-id-prefix="force-push"
-          :is-protected="branchProtection.allowForcePush"
+          :is-protected="allowForcePush"
+          :is-protected-by-policy="protectedFromPushBySecurityPolicy"
           :label="$options.i18n.allowForcePushLabel"
           :icon-title="forcePushAttributes.title"
           :description="forcePushAttributes.description"

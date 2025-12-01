@@ -76,7 +76,6 @@ RSpec/AnyInstanceOf:
     - 'spec/controllers/projects/settings/integration_hook_logs_controller_spec.rb'
     - 'spec/controllers/projects/tags_controller_spec.rb'
     - 'spec/controllers/registrations_controller_spec.rb'
-    - 'spec/controllers/sessions_controller_spec.rb'
     - 'spec/controllers/snippets/notes_controller_spec.rb'
     - 'spec/controllers/snippets_controller_spec.rb'
     - 'spec/features/admin/admin_mode/login_spec.rb'

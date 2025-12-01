@@ -6,7 +6,7 @@
 - if @diff_hunk.lines
   - @diff_hunk.lines.each do |line|
     - line_id = line.id(@file_hash)
-    %tr.rd-hunk-lines.rd-hunk-lines-inline{ id: line_id, data: { testid: 'hunk-lines-inline', hunk_lines: true } }
+    %tr.rd-hunk-lines.rd-hunk-lines-inline{ id: line_id, data: { testid: 'hunk-lines-inline', hunk_lines: true, expanded: (true if line.expanded?) } }
       = render RapidDiffs::Viewers::Text::LineNumberComponent.new(line: line, line_id: line_id, position: :old)
       = render RapidDiffs::Viewers::Text::LineNumberComponent.new(line: line, line_id: line_id, position: :new, border: :right)
       = render RapidDiffs::Viewers::Text::LineContentComponent.new(line: line, position: nil)

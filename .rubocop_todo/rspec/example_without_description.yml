@@ -498,7 +498,6 @@ RSpec/ExampleWithoutDescription:
     - 'spec/services/packages/protection/update_rule_service_spec.rb'
     - 'spec/services/projects/create_service_spec.rb'
     - 'spec/services/projects/destroy_service_spec.rb'
-    - 'spec/services/projects/group_links/update_service_spec.rb'
     - 'spec/services/projects/lfs_pointers/lfs_download_service_spec.rb'
     - 'spec/services/projects/overwrite_project_service_spec.rb'
     - 'spec/services/quick_actions/interpret_service_spec.rb'

@@ -10,26 +10,23 @@ module Observability
     SETUP_BUFFER_TIME = 5.minutes.freeze
 
     class TokenResponse
-      attr_reader :user_id, :access_jwt, :refresh_jwt
+      attr_reader :access_jwt, :refresh_jwt
 
       def self.from_json(data)
         data ||= {}
         new(
-          user_id: data.dig('data', 'userId'),
-          access_jwt: data.dig('data', 'accessJwt'),
-          refresh_jwt: data.dig('data', 'refreshJwt')
+          access_jwt: data.dig('data', 'accessToken'),
+          refresh_jwt: data.dig('data', 'refreshToken')
         )
       end
 
-      def initialize(user_id:, access_jwt:, refresh_jwt:)
-        @user_id = user_id
+      def initialize(access_jwt:, refresh_jwt:)
         @access_jwt = access_jwt
         @refresh_jwt = refresh_jwt
       end
 
       def to_h
         {
-          userId: user_id,
           accessJwt: access_jwt,
           refreshJwt: refresh_jwt
         }
@@ -73,21 +70,40 @@ module Observability
     end
 
     def authenticate_user
-      payload = build_payload
-      http_client.post(login_url, payload)
+      account_id = get_account_id
+      http_client.post(login_url, build_payload(account_id))
     rescue *Gitlab::HTTP::HTTP_ERRORS => e
       raise NetworkError, "Failed to connect to O11y service (#{e.class.name}): #{e.message}"
     end
 
-    def build_payload
+    def build_payload(account_id)
       {
         email: o11y_settings.o11y_service_user_email,
-        password: o11y_settings.o11y_service_password
+        password: o11y_settings.o11y_service_password,
+        orgId: account_id
       }
     end
 
     def login_url
-      URI.join(o11y_settings.o11y_service_url, '/api/v1/login').to_s
+      URI.join(api_url, '/api/v2/sessions/email_password').to_s
+    end
+
+    def api_url
+      o11y_settings.o11y_service_url
+    end
+
+    def get_account_id
+      response = http_client.get(account_id_url, context_payload)
+      data = Gitlab::Json.parse(response.body)
+      data.dig('data', 'orgs', 0, 'id')
+    end
+
+    def context_payload
+      { email: o11y_settings.o11y_service_user_email }
+    end
+
+    def account_id_url
+      URI.join(api_url, '/api/v2/sessions/context').to_s
     end
 
     def parse_response(response)
@@ -118,6 +134,15 @@ module Observability
           headers: { 'Content-Type' => 'application/json' },
           body: Gitlab::Json.dump(payload),
           allow_local_requests: allow_local_requests?
+        )
+      end
+
+      def get(url, params = {})
+        ::Gitlab::HTTP.get(
+          url,
+          headers: { 'Content-Type' => 'application/json' },
+          allow_local_requests: allow_local_requests?,
+          query: params
         )
       end
 

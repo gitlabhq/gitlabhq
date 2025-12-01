@@ -255,20 +255,19 @@ To use SSH with GitLab, copy your public key to your GitLab account:
 
 ## Verify that you can connect
 
-Verify that your SSH key was added correctly.
+Verify that your SSH key was added correctly, and that you can connect to the GitLab instance:
 
-1. To ensure you connect to the correct server, identify the SSH host key fingerprint. For:
-   - GitLab.com, see the [SSH host keys fingerprints](gitlab_com/_index.md#ssh-host-keys-fingerprints) documentation.
-   - GitLab Self-Managed or GitLab Dedicated, see `https://gitlab.example.com/help/instance_configuration#ssh-host-keys-fingerprints`
+1. To ensure you connect to the correct server, identify the SSH host key fingerprint:
+   - For GitLab.com, see the [SSH host keys fingerprints](gitlab_com/_index.md#ssh-host-keys-fingerprints) documentation.
+   - For GitLab Self-Managed or GitLab Dedicated, see `https://gitlab.example.com/help/instance_configuration#ssh-host-keys-fingerprints`
      where `gitlab.example.com` is the GitLab instance URL.
-1. Open a terminal and run this command. Replace `gitlab.example.com` with your
-   GitLab instance URL:
+1. Open a terminal and run this command:
+   - For GitLab.com, use `ssh -T git@gitlab.com`.
+   - For GitLab Self-Managed or GitLab Dedicated, use `ssh -T git@gitlab.example.com`
+     where `gitlab.example.com` is the GitLab instance URL.
 
-   ```shell
-   ssh -T git@gitlab.example.com
-   ```
-
-   By default, connections use the `git` username, but administrators can [change the username](https://docs.gitlab.com/omnibus/settings/configuration.html#change-the-name-of-the-git-user-or-group).
+By default, connections use the `git` username, but GitLab Self-Managed or GitLab Dedicated administrators
+can [change the username](https://docs.gitlab.com/omnibus/settings/configuration.html#change-the-name-of-the-git-user-or-group).
 
 1. On your first connection, you might need to verify the authenticity of the GitLab host.
    Follow the on-screen prompts if you see a message like:
@@ -285,7 +284,7 @@ Verify that your SSH key was added correctly.
    Welcome to GitLab, <username>!
    ```
 
-   If the message doesn't appear, you might need to
+   If the message doesn't appear, you can
    [troubleshoot your SSH connection](ssh_troubleshooting.md#general-ssh-troubleshooting).
 
 ## Update your SSH key passphrase

@@ -87,6 +87,7 @@ RSpec.describe Blobs::UnfoldPresenter do
           expect(line.text).to eq(line_number.to_s)
           expect(line.rich_text).to include("LC#{line_number}")
           expect(line.type).to be_nil
+          expect(line.expanded?).to be_truthy
         end
       end
 
@@ -121,6 +122,16 @@ RSpec.describe Blobs::UnfoldPresenter do
         expect(line.type).to eq('match')
         expect(line.old_pos).to eq(5)
         expect(line.new_pos).to eq(5)
+      end
+
+      it 'marks expanded lines' do
+        lines = subject.diff_lines
+
+        lines.each do |line|
+          next if line.type == 'match'
+
+          expect(line.expanded?).to be_truthy
+        end
       end
 
       context 'when "to" is higher than blob size' do

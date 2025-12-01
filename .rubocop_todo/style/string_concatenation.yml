@@ -160,7 +160,6 @@ Style/StringConcatenation:
     - 'spec/lib/gitlab/throttle_spec.rb'
     - 'spec/lib/gitlab/tree_summary_spec.rb'
     - 'spec/lib/gitlab/visibility_level_spec.rb'
-    - 'spec/lib/gitlab/wiki_pages/front_matter_parser_spec.rb'
     - 'spec/lib/gitlab/workhorse_spec.rb'
     - 'spec/lib/kramdown/kramdown_spec.rb'
     - 'spec/lib/safe_zip/entry_spec.rb'

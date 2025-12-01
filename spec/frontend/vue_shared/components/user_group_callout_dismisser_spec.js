@@ -33,6 +33,7 @@ describe('UserGroupCalloutDismisser', () => {
   const MOCK_FEATURE_NAME = 'mock_feature_name';
   const MOCK_GROUP_ID = 'gid://gitlab/Group/123';
   const MOCK_NUMERIC_GROUP_ID = 123;
+  const storageKey = `user_callout_dismissed_${MOCK_NUMERIC_GROUP_ID}_${MOCK_FEATURE_NAME}`;
 
   const successHandlerFactory =
     (dismissedCallouts = []) =>
@@ -75,7 +76,14 @@ describe('UserGroupCalloutDismisser', () => {
     );
   };
 
+  beforeEach(() => {
+    jest.clearAllMocks();
+    sessionStorage.clear();
+  });
+
   describe('when loading', () => {
+    let getStorageSpy;
+
     beforeEach(() => {
       createComponent({
         queryHandler: pendingHandler,
@@ -84,6 +92,18 @@ describe('UserGroupCalloutDismisser', () => {
 
     it('passes expected slot props to child', () => {
       expect(defaultScopedSlotSpy).toHaveBeenLastCalledWith(initialSlotProps());
+    });
+
+    it('checks session storage and dismisses if key is present', () => {
+      getStorageSpy = jest.spyOn(Storage.prototype, 'getItem');
+      sessionStorage.setItem(storageKey, new Date('2025-10-31').toISOString());
+
+      createComponent({ queryHandler: pendingHandler });
+
+      expect(getStorageSpy).toHaveBeenCalledWith(storageKey);
+      expect(defaultScopedSlotSpy).toHaveBeenLastCalledWith(
+        initialSlotProps({ shouldShowCallout: false }),
+      );
     });
   });
 
@@ -170,15 +190,26 @@ describe('UserGroupCalloutDismisser', () => {
         initialSlotProps({ shouldShowCallout: true }),
       );
     });
+
+    it('skips query if session storage key exists', () => {
+      sessionStorage.setItem(storageKey, new Date('2025-10-31').toISOString());
+
+      createComponent({ queryHandler });
+
+      expect(queryHandler).not.toHaveBeenCalled();
+      expect(defaultScopedSlotSpy).toHaveBeenLastCalledWith(
+        initialSlotProps({ shouldShowCallout: false }),
+      );
+    });
   });
 
   describe('dismissing', () => {
-    beforeEach(() => {
-      jest.clearAllMocks();
-    });
-
     describe('given it succeeds', () => {
+      let setStorageSpy;
+
       beforeEach(() => {
+        setStorageSpy = jest.spyOn(Storage.prototype, 'setItem');
+
         createComponent({
           queryHandler: successHandlerFactory(),
           mutationHandler: mutationSuccessHandlerSpy,
@@ -195,6 +226,14 @@ describe('UserGroupCalloutDismisser', () => {
         expect(mutationSuccessHandlerSpy).toHaveBeenCalledWith({
           input: { featureName: MOCK_FEATURE_NAME, groupId: MOCK_GROUP_ID },
         });
+      });
+
+      it('dismissing sets session storage', async () => {
+        callDismissSlotProp();
+
+        await waitForPromises();
+
+        expect(setStorageSpy).toHaveBeenCalledWith(storageKey, expect.any(String));
       });
 
       it('does not report to Sentry on success', async () => {

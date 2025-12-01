@@ -152,6 +152,28 @@ RSpec.describe Gitlab::Diff::Line do
     end
   end
 
+  describe '#expanded?' do
+    subject { line.expanded? }
+
+    it { is_expected.to be_falsey }
+
+    context 'when expanded is true' do
+      before do
+        line.expanded = true
+      end
+
+      it { is_expected.to be_truthy }
+    end
+
+    context 'when expanded is false' do
+      before do
+        line.expanded = false
+      end
+
+      it { is_expected.to be_falsey }
+    end
+  end
+
   describe '#id' do
     let(:file_hash) { '1234567890' }
 

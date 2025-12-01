@@ -173,7 +173,6 @@ Lint/UnusedBlockArgument:
     - 'lib/gem_extensions/active_record/disable_joins/associations/association_scope.rb'
     - 'lib/gitlab/background_migration/backfill_project_feature_package_registry_access_level.rb'
     - 'lib/gitlab/ci/build/artifacts/path.rb'
-    - 'lib/gitlab/ci/config/normalizer.rb'
     - 'lib/gitlab/ci/reports/accessibility_reports.rb'
     - 'lib/gitlab/ci/reports/test_suite.rb'
     - 'lib/gitlab/ci/secure_files/mobile_provision.rb'

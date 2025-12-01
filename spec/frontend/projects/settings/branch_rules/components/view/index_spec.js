@@ -416,6 +416,7 @@ describe('View branch rules', () => {
       roles: protectionPropsMock.roles,
       header: 'Allowed to push and merge',
       count: 2,
+      isProtectedByPolicy: false,
     });
   });
 
@@ -759,8 +760,12 @@ describe('View branch rules', () => {
   });
 
   describe('Allow force push editing', () => {
-    it('renders force push section with the correct toggle label and description', () => {
+    it('renders force push section with the correct props', () => {
       expect(findAllowForcePushToggle().props('label')).toEqual('Allow force push');
+      expect(findAllowForcePushToggle().props('description')).toEqual(
+        'Allow all users with push access to %{linkStart}force push%{linkEnd}.',
+      );
+      expect(findAllowForcePushToggle().props('isProtectedByPolicy')).toEqual(false);
     });
 
     it('when a toggle is triggered, it goes into a loading state, then shows a toast message', async () => {

@@ -10,7 +10,10 @@ export function initNewDiscussionToggle(appElement) {
   let lastFocusedElement;
 
   function isValidTarget(element) {
-    return element.closest('[data-hunk-lines]') && !element.closest('[data-change="meta"]');
+    return (
+      element.closest('[data-hunk-lines]') &&
+      !element.closest('[data-change="meta"], [data-expanded]')
+    );
   }
 
   function moveTo(target) {

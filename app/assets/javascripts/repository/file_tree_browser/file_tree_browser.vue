@@ -83,7 +83,7 @@ export default {
   <div class="gl-relative">
     <div
       v-if="fileTreeBrowserIsPeekOn"
-      class="gl-fixed gl-bottom-0 gl-left-0 gl-right-0 gl-top-0"
+      class="file-tree-browser-overlay gl-fixed gl-bottom-0 gl-left-0 gl-right-0 gl-top-0"
       data-testid="overlay"
     ></div>
     <transition name="file-tree-browser-slide">

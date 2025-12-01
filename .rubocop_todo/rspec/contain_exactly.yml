@@ -92,7 +92,6 @@ RSpec/ContainExactly:
     - 'spec/graphql/types/ci/analytics_job_status_enum_spec.rb'
     - 'spec/graphql/types/ci/freeze_period_status_enum_spec.rb'
     - 'spec/graphql/types/ci/job_artifact_file_type_enum_spec.rb'
-    - 'spec/graphql/types/ci/job_status_enum_spec.rb'
     - 'spec/graphql/types/ci/job_token_scope_type_spec.rb'
     - 'spec/graphql/types/ci/pipeline_schedule_sort_enum_spec.rb'
     - 'spec/graphql/types/ci/pipeline_scope_enum_spec.rb'

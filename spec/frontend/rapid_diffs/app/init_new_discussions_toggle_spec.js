@@ -24,6 +24,11 @@ describe('initNewDiscussionToggle', () => {
                 </td>
                 <td>Diff</td>
               </tr>
+              <tr data-hunk-lines data-expanded>
+                <td data-position="old" data-change="meta"></td>
+                <td data-position="new" data-change="meta"></td>
+                <td data-change="meta">Expanded line</td>
+              </tr>
               <tr data-hunk-lines>
                 <td data-position="old" data-change="meta"></td>
                 <td data-position="new" data-change="meta"></td>
@@ -52,6 +57,12 @@ describe('initNewDiscussionToggle', () => {
                 <td data-position="old">Diff</td>
                 <td data-position="new">${lineNumberHtml('new')}</td>
                 <td data-position="new">Diff</td>
+              </tr>
+              <tr data-hunk-lines data-expanded>
+                <td data-position="old" data-change="meta"></td>
+                <td data-change="meta">Expanded left</td>
+                <td data-position="new" data-change="meta"></td>
+                <td data-change="meta">Expanded right</td>
               </tr>
               <tr data-hunk-lines>
                 <td data-position="old" data-change="meta"></td>
@@ -146,7 +157,7 @@ describe('initNewDiscussionToggle', () => {
     });
 
     it('does not show toggle on meta change rows', () => {
-      const metaRow = appElement.querySelector('tr:nth-child(2)');
+      const metaRow = appElement.querySelector('tr:nth-child(3)');
       const metaCell = metaRow.querySelector('[data-change="meta"]');
 
       metaCell.dispatchEvent(new MouseEvent('mouseover', { bubbles: true }));
@@ -156,6 +167,19 @@ describe('initNewDiscussionToggle', () => {
       metaCell.dispatchEvent(new FocusEvent('focusin', { bubbles: true }));
       expect(toggle.hidden).toBe(true);
       expect(toggle.parentElement).not.toBe(metaCell);
+    });
+
+    it('does not show toggle on expanded lines', () => {
+      const expandedRow = appElement.querySelector('tr:nth-child(2)');
+      const cell = expandedRow.querySelector('[data-change]');
+
+      cell.dispatchEvent(new MouseEvent('mouseover', { bubbles: true }));
+      expect(toggle.hidden).toBe(true);
+      expect(toggle.parentElement).not.toBe(cell);
+
+      cell.dispatchEvent(new FocusEvent('focusin', { bubbles: true }));
+      expect(toggle.hidden).toBe(true);
+      expect(toggle.parentElement).not.toBe(cell);
     });
   });
 
@@ -269,11 +293,10 @@ describe('initNewDiscussionToggle', () => {
       createParallelDiff();
       initNewDiscussionToggle(appElement);
 
-      const metaRow = appElement.querySelector('tr:nth-child(2)');
+      const metaRow = appElement.querySelector('tr:nth-child(3)');
       const metaOldCell = metaRow.querySelector('[data-position="old"][data-change="meta"]');
       const metaNewCell = metaRow.querySelector('[data-position="new"][data-change="meta"]');
 
-      // Test old side
       metaOldCell.dispatchEvent(new MouseEvent('mouseover', { bubbles: true }));
       expect(toggle.hidden).toBe(true);
       expect(toggle.parentElement).not.toBe(metaOldCell);
@@ -282,7 +305,6 @@ describe('initNewDiscussionToggle', () => {
       expect(toggle.hidden).toBe(true);
       expect(toggle.parentElement).not.toBe(metaOldCell);
 
-      // Test new side
       metaNewCell.dispatchEvent(new MouseEvent('mouseover', { bubbles: true }));
       expect(toggle.hidden).toBe(true);
       expect(toggle.parentElement).not.toBe(metaNewCell);
@@ -290,6 +312,31 @@ describe('initNewDiscussionToggle', () => {
       metaNewCell.dispatchEvent(new FocusEvent('focusin', { bubbles: true }));
       expect(toggle.hidden).toBe(true);
       expect(toggle.parentElement).not.toBe(metaNewCell);
+    });
+
+    it('does not show toggle on expanded rows', () => {
+      createParallelDiff();
+      initNewDiscussionToggle(appElement);
+
+      const expandedRow = appElement.querySelector('tr:nth-child(2)');
+      const oldCell = expandedRow.querySelector('[data-position="old"][data-change="meta"]');
+      const newCell = expandedRow.querySelector('[data-position="new"][data-change="meta"]');
+
+      oldCell.dispatchEvent(new MouseEvent('mouseover', { bubbles: true }));
+      expect(toggle.hidden).toBe(true);
+      expect(toggle.parentElement).not.toBe(oldCell);
+
+      oldCell.dispatchEvent(new FocusEvent('focusin', { bubbles: true }));
+      expect(toggle.hidden).toBe(true);
+      expect(toggle.parentElement).not.toBe(oldCell);
+
+      newCell.dispatchEvent(new MouseEvent('mouseover', { bubbles: true }));
+      expect(toggle.hidden).toBe(true);
+      expect(toggle.parentElement).not.toBe(newCell);
+
+      newCell.dispatchEvent(new FocusEvent('focusin', { bubbles: true }));
+      expect(toggle.hidden).toBe(true);
+      expect(toggle.parentElement).not.toBe(newCell);
     });
   });
 

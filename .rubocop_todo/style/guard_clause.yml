@@ -63,7 +63,6 @@ Style/GuardClause:
     - 'app/models/concerns/time_trackable.rb'
     - 'app/models/concerns/timebox.rb'
     - 'app/models/custom_emoji.rb'
-    - 'app/models/description_version.rb'
     - 'app/models/design_management/design.rb'
     - 'app/models/design_management/design_collection.rb'
     - 'app/models/diff_viewer/base.rb'

@@ -16,9 +16,8 @@ RSpec.describe Observability::O11yToken, feature_category: :observability do
   let(:success_response) do
     {
       'data' => {
-        'userId' => '123',
-        'accessJwt' => 'access_token_123',
-        'refreshJwt' => 'refresh_token_456'
+        'accessToken' => 'access_token_123',
+        'refreshToken' => 'refresh_token_456'
       }
     }
   end
@@ -29,6 +28,56 @@ RSpec.describe Observability::O11yToken, feature_category: :observability do
       code: 200,
       body: Gitlab::Json.dump(success_response)
     )
+  end
+
+  let(:account_id_response) do
+    instance_double(
+      HTTParty::Response,
+      code: 200,
+      body: Gitlab::Json.dump({
+        'data' => {
+          'orgs' => [{ 'id' => '123' }]
+        }
+      })
+    )
+  end
+
+  shared_examples 'raises NetworkError on HTTP error' do |http_method|
+    context 'when HTTP request fails' do
+      let(:error_message) { 'Connection failed' }
+      let(:http_error) { SocketError.new(error_message) }
+
+      before do
+        allow(Gitlab::HTTP).to receive(http_method)
+          .and_raise(http_error)
+      end
+
+      it 'raises NetworkError with error message' do
+        expect do
+          subject
+        end.to raise_error(
+          Observability::O11yToken::NetworkError,
+          "Failed to connect to O11y service (SocketError): #{error_message}"
+        )
+      end
+    end
+  end
+
+  shared_examples 'handles NetworkError by logging and returning empty hash' do
+    context 'when HTTP request fails' do
+      before do
+        allow(Gitlab::HTTP).to receive(:get).and_return(account_id_response)
+        allow(Gitlab::HTTP).to receive(:post)
+          .and_raise(SocketError.new('Connection failed'))
+      end
+
+      it 'returns empty hash and logs error' do
+        expect(Gitlab::ErrorTracking).to receive(:log_exception)
+          .with(instance_of(Observability::O11yToken::NetworkError))
+
+        expect(subject).to eq({})
+      end
+    end
   end
 
   describe '#new_settings?' do
@@ -86,14 +135,16 @@ RSpec.describe Observability::O11yToken, feature_category: :observability do
   describe '.generate_tokens' do
     subject(:generate_tokens) { described_class.generate_tokens(o11y_settings) }
 
-    context 'when authentication is successful' do
-      before do
-        allow(Gitlab::HTTP).to receive(:post).and_return(http_response)
-      end
+    before do
+      allow(Gitlab::HTTP).to receive_messages(
+        get: account_id_response,
+        post: http_response
+      )
+    end
 
+    context 'when authentication is successful' do
       it 'returns tokens and user ID' do
         expect(generate_tokens).to eq(
-          userId: '123',
           accessJwt: 'access_token_123',
           refreshJwt: 'refresh_token_456'
         )
@@ -101,11 +152,12 @@ RSpec.describe Observability::O11yToken, feature_category: :observability do
 
       it 'makes HTTP request with correct parameters' do
         expect(Gitlab::HTTP).to receive(:post).with(
-          'https://o11y.example.com/api/v1/login',
+          'https://o11y.example.com/api/v2/sessions/email_password',
           headers: { 'Content-Type' => 'application/json' },
           body: Gitlab::Json.dump({
             email: 'test@example.com',
-            password: 'password123'
+            password: 'password123',
+            orgId: '123'
           }),
           allow_local_requests: anything
         ).and_return(http_response)
@@ -196,19 +248,7 @@ RSpec.describe Observability::O11yToken, feature_category: :observability do
       end
     end
 
-    context 'when HTTP request fails' do
-      before do
-        allow(Gitlab::HTTP).to receive(:post)
-          .and_raise(SocketError.new('Connection failed'))
-      end
-
-      it 'returns empty hash and logs error' do
-        expect(Gitlab::ErrorTracking).to receive(:log_exception)
-          .with(instance_of(Observability::O11yToken::NetworkError))
-
-        expect(generate_tokens).to eq({})
-      end
-    end
+    include_examples 'handles NetworkError by logging and returning empty hash'
 
     context 'when response is not successful' do
       context 'when response code is 500 and settings are new' do
@@ -224,10 +264,6 @@ RSpec.describe Observability::O11yToken, feature_category: :observability do
 
         let(:http_response) do
           instance_double(HTTParty::Response, code: '500', body: 'Internal Server Error')
-        end
-
-        before do
-          allow(Gitlab::HTTP).to receive(:post).and_return(http_response)
         end
 
         it 'returns provisioning status without logging warning' do
@@ -253,10 +289,6 @@ RSpec.describe Observability::O11yToken, feature_category: :observability do
           instance_double(HTTParty::Response, code: '500', body: 'Internal Server Error')
         end
 
-        before do
-          allow(Gitlab::HTTP).to receive(:post).and_return(http_response)
-        end
-
         it 'returns empty hash and logs warning' do
           aggregate_failures do
             expect(Gitlab::AppLogger).to receive(:warn)
@@ -270,10 +302,6 @@ RSpec.describe Observability::O11yToken, feature_category: :observability do
       context 'when response code is not 500' do
         let(:http_response) do
           instance_double(HTTParty::Response, code: '401', body: 'Unauthorized')
-        end
-
-        before do
-          allow(Gitlab::HTTP).to receive(:post).and_return(http_response)
         end
 
         it 'returns empty hash and logs warning' do
@@ -292,10 +320,6 @@ RSpec.describe Observability::O11yToken, feature_category: :observability do
         instance_double(HTTParty::Response, code: 200, body: 'invalid json')
       end
 
-      before do
-        allow(Gitlab::HTTP).to receive(:post).and_return(http_response)
-      end
-
       it 'returns empty hash and logs error' do
         aggregate_failures do
           expect(Gitlab::ErrorTracking).to receive(:log_exception)
@@ -309,10 +333,6 @@ RSpec.describe Observability::O11yToken, feature_category: :observability do
     context 'when response body is nil' do
       let(:http_response) do
         instance_double(HTTParty::Response, code: 200, body: nil)
-      end
-
-      before do
-        allow(Gitlab::HTTP).to receive(:post).and_return(http_response)
       end
 
       it 'returns empty hash and logs error' do
@@ -337,10 +357,6 @@ RSpec.describe Observability::O11yToken, feature_category: :observability do
             instance_double(HTTParty::Response, code: 200, body: test_case[:body])
           end
 
-          before do
-            allow(Gitlab::HTTP).to receive(:post).and_return(http_response)
-          end
-
           it 'returns empty hash and logs error' do
             aggregate_failures do
               expect(Gitlab::ErrorTracking).to receive(:log_exception)
@@ -358,7 +374,10 @@ RSpec.describe Observability::O11yToken, feature_category: :observability do
     subject(:o11y_token) { described_class.new(o11y_settings) }
 
     it 'creates instance with o11y_settings' do
-      allow(Gitlab::HTTP).to receive(:post).and_return(http_response)
+      allow(Gitlab::HTTP).to receive_messages(
+        get: account_id_response,
+        post: http_response
+      )
       expect { o11y_token.generate_tokens }.not_to raise_error
     end
   end
@@ -423,7 +442,6 @@ RSpec.describe Observability::O11yToken, feature_category: :observability do
       it 'parses successful response' do
         result = o11y_token.send(:parse_response, http_response)
         expect(result).to eq(
-          userId: '123',
           accessJwt: 'access_token_123',
           refreshJwt: 'refresh_token_456'
         )
@@ -453,7 +471,7 @@ RSpec.describe Observability::O11yToken, feature_category: :observability do
 
       aggregate_failures do
         expect(login_url).to be_a(String)
-        expect(login_url).to include('/api/v1/login')
+        expect(login_url).to include('/api/v2/sessions/email_password')
         expect { URI.parse(login_url) }.not_to raise_error
       end
     end
@@ -465,7 +483,7 @@ RSpec.describe Observability::O11yToken, feature_category: :observability do
       aggregate_failures do
         expect(parsed_url.host).to eq('o11y.example.com')
         expect(parsed_url.scheme).to eq('https')
-        expect(parsed_url.path).to eq('/api/v1/login')
+        expect(parsed_url.path).to eq('/api/v2/sessions/email_password')
       end
     end
 
@@ -491,8 +509,35 @@ RSpec.describe Observability::O11yToken, feature_category: :observability do
 
         aggregate_failures do
           expect { URI.parse(login_url) }.not_to raise_error
-          expect(login_url).to include('/api/v1/login')
+          expect(login_url).to include('/api/v2/sessions/email_password')
         end
+      end
+    end
+  end
+
+  describe '#get_account_id' do
+    let(:o11y_token) { described_class.new(o11y_settings) }
+
+    subject(:get_account_id) { o11y_token.send(:get_account_id) }
+
+    context 'when request is successful' do
+      before do
+        allow(Gitlab::HTTP).to receive(:get).and_return(account_id_response)
+      end
+
+      it 'returns the account ID' do
+        expect(get_account_id).to eq('123')
+      end
+
+      it 'makes HTTP request with correct parameters' do
+        expect(Gitlab::HTTP).to receive(:get).with(
+          'https://o11y.example.com/api/v2/sessions/context',
+          headers: { 'Content-Type' => 'application/json' },
+          allow_local_requests: anything,
+          query: { email: 'test@example.com' }
+        ).and_return(account_id_response)
+
+        get_account_id
       end
     end
   end
@@ -500,7 +545,6 @@ RSpec.describe Observability::O11yToken, feature_category: :observability do
   describe Observability::O11yToken::TokenResponse do
     let(:token_response) do
       described_class.new(
-        user_id: '123',
         access_jwt: 'access_token',
         refresh_jwt: 'refresh_token'
       )
@@ -509,7 +553,6 @@ RSpec.describe Observability::O11yToken, feature_category: :observability do
     describe '#to_h' do
       it 'returns hash with correct keys' do
         expect(token_response.to_h).to eq(
-          userId: '123',
           accessJwt: 'access_token',
           refreshJwt: 'refresh_token'
         )
@@ -520,9 +563,8 @@ RSpec.describe Observability::O11yToken, feature_category: :observability do
       let(:json_data) do
         {
           'data' => {
-            'userId' => '456',
-            'accessJwt' => 'new_access_token',
-            'refreshJwt' => 'new_refresh_token'
+            'accessToken' => 'new_access_token',
+            'refreshToken' => 'new_refresh_token'
           }
         }
       end
@@ -531,7 +573,6 @@ RSpec.describe Observability::O11yToken, feature_category: :observability do
         result = described_class.from_json(json_data)
 
         aggregate_failures do
-          expect(result.user_id).to eq('456')
           expect(result.access_jwt).to eq('new_access_token')
           expect(result.refresh_jwt).to eq('new_refresh_token')
         end
@@ -549,7 +590,6 @@ RSpec.describe Observability::O11yToken, feature_category: :observability do
               result = described_class.from_json(json_data)
 
               aggregate_failures do
-                expect(result.user_id).to be_nil
                 expect(result.access_jwt).to be_nil
                 expect(result.refresh_jwt).to be_nil
               end

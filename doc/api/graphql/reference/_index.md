@@ -47078,7 +47078,7 @@ four standard [pagination arguments](#pagination-arguments):
 | ---- | ---- | ----------- |
 | <a id="usergroupcalloutdismissedat"></a>`dismissedAt` | [`Time!`](#time) | Date when the callout was dismissed. |
 | <a id="usergroupcalloutfeaturename"></a>`featureName` | [`UserGroupCalloutFeatureName!`](#usergroupcalloutfeaturename) | Name of the feature that the callout is for. |
-| <a id="usergroupcalloutgroupid"></a>`groupId` | [`ID!`](#id) | Group id that the callout applies. |
+| <a id="usergroupcalloutgroupid"></a>`groupId` | [`GroupID!`](#groupid) | Group id that the callout applies. |
 
 ### `UserMemberRole`
 

@@ -16,8 +16,8 @@ description: Security attributes allows security teams to apply custom metadata 
 
 {{< history >}}
 
-- [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/18010) in GitLab 18.5 with flags named `security_context_labels` and `security_categories_and_attributes`. Disabled by default. This feature is in [beta](../../../policy/development_stages_support.md)
-- Feature flags `security_context_labels` and `security_categories_and_attributes` enabled by default in GitLab 18.6.
+- [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/18010) in GitLab 18.5 with flags named `security_context_labels` and `security_categories_and_attributes`. Disabled by default. This feature was introduced in [beta](../../../policy/development_stages_support.md)
+- [Enabled on GitLab.com, GitLab Self-Managed, and GitLab Dedicated](https://gitlab.com/gitlab-org/gitlab/-/issues/551226) in GitLab 18.6.
 
 {{< /history >}}
 

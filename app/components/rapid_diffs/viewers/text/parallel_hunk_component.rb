@@ -31,7 +31,8 @@ module RapidDiffs
                   position: :new,
                   border: :both
                 }
-              ]
+              ],
+              expanded: pair[:left]&.expanded? || pair[:right]&.expanded?
             }
           end
         end

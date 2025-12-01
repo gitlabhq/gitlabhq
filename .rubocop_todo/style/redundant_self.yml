@@ -49,7 +49,6 @@ Style/RedundantSelf:
     - 'app/models/concerns/pg_full_text_searchable.rb'
     - 'app/models/concerns/reactive_caching.rb'
     - 'app/models/concerns/redis_cacheable.rb'
-    - 'app/models/concerns/resolvable_discussion.rb'
     - 'app/models/concerns/resolvable_note.rb'
     - 'app/models/concerns/routable.rb'
     - 'app/models/concerns/sortable.rb'

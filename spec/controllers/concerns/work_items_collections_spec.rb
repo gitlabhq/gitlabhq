@@ -132,5 +132,52 @@ RSpec.describe WorkItemsCollections, feature_category: :team_planning do
         is_expected.to include({ not: { issue_types: %w[task incident] } })
       end
     end
+
+    context 'with group context' do
+      let(:group) { build_stubbed(:group) }
+
+      before do
+        controller.instance_variable_set(:@group, group)
+      end
+
+      context 'when excluding epics' do
+        let(:params) { { not: { type: ['epic'] } } }
+
+        it 'sets exclude_group_work_items to true' do
+          is_expected.to include({
+            'group_id' => group.id,
+            'include_descendants' => true,
+            'exclude_group_work_items' => true,
+            'attempt_group_search_optimizations' => true
+          })
+        end
+      end
+
+      context 'when not excluding epics' do
+        let(:params) { { not: { type: ['issue'] } } }
+
+        it 'sets exclude_group_work_items to false' do
+          is_expected.to include({
+            'group_id' => group.id,
+            'include_descendants' => true,
+            'exclude_group_work_items' => false,
+            'attempt_group_search_optimizations' => true
+          })
+        end
+      end
+
+      context 'without negated type filter' do
+        let(:params) { {} }
+
+        it 'sets exclude_group_work_items to nil' do
+          is_expected.to include({
+            'group_id' => group.id,
+            'include_descendants' => true,
+            'exclude_group_work_items' => nil,
+            'attempt_group_search_optimizations' => true
+          })
+        end
+      end
+    end
   end
 end

@@ -132,7 +132,6 @@ API/DescriptionTags:
     - 'lib/api/statistics.rb'
     - 'lib/api/submodules.rb'
     - 'lib/api/subscriptions.rb'
-    - 'lib/api/supply_chain/attestations.rb'
     - 'lib/api/templates.rb'
     - 'lib/api/todos.rb'
     - 'lib/api/topics.rb'

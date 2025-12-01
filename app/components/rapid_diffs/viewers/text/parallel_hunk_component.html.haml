@@ -4,8 +4,8 @@
     %td.rd-hunk-header-content{ colspan: '3' }= @diff_hunk.header.text
 
 - line_pairs.each do |pair|
-  - line_id, sides = pair.values_at(:line_id, :sides)
-  %tr.rd-hunk-lines.rd-hunk-lines-parallel{ id: line_id, data: { testid: 'hunk-lines-parallel', hunk_lines: true } }
+  - line_id, sides, expanded = pair.values_at(:line_id, :sides, :expanded)
+  %tr.rd-hunk-lines.rd-hunk-lines-parallel{ id: line_id, data: { testid: 'hunk-lines-parallel', hunk_lines: true, expanded: (true if expanded) } }
     - sides.each do |side|
       - line, position, border = side.values_at(:line, :position, :border)
       = render RapidDiffs::Viewers::Text::LineNumberComponent.new(line: line, line_id: line_id, position: position, border: border)

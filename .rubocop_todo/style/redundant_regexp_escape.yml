@@ -21,7 +21,6 @@ Style/RedundantRegexpEscape:
     - 'ee/spec/mailers/notify_spec.rb'
     - 'ee/spec/models/release_highlight_spec.rb'
     - 'ee/spec/support/shared_examples/services/group_saml/saml_provider/base_service_shared_examples.rb'
-    - 'lib/banzai/filter/task_list_filter.rb'
     - 'lib/bulk_imports/common/pipelines/uploads_pipeline.rb'
     - 'lib/gitlab/ci/pipeline/expression/lexeme/not_matches.rb'
     - 'lib/gitlab/ci/pipeline/expression/lexeme/pattern.rb'

@@ -4,6 +4,7 @@ import { s__ } from '~/locale';
 import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import CrudComponent from '~/vue_shared/components/crud_component.vue';
 import ProtectionRow from './protection_row.vue';
+import DisabledByPolicyPopover from './disabled_by_policy_popover.vue';
 import GroupInheritancePopover from './group_inheritance_popover.vue';
 
 export const i18n = {
@@ -16,7 +17,14 @@ export const i18n = {
 export default {
   name: 'ProtectionDetail',
   i18n,
-  components: { GlLink, GlButton, ProtectionRow, CrudComponent, GroupInheritancePopover },
+  components: {
+    GlLink,
+    GlButton,
+    ProtectionRow,
+    CrudComponent,
+    DisabledByPolicyPopover,
+    GroupInheritancePopover,
+  },
   mixins: [glFeatureFlagsMixin()],
   props: {
     header: {
@@ -42,6 +50,11 @@ export default {
       type: String,
       required: false,
       default: null,
+    },
+    isProtectedByPolicy: {
+      type: Boolean,
+      required: false,
+      default: false,
     },
     roles: {
       type: Array,
@@ -105,6 +118,9 @@ export default {
     hasStatusChecks() {
       return Boolean(this.statusChecks.length);
     },
+    isEditDisabled() {
+      return this.isGroupLevel || this.isProtectedByPolicy;
+    },
     showDivider() {
       return this.hasRoles || this.hasUsers;
     },
@@ -133,13 +149,14 @@ export default {
     <template #actions>
       <div v-if="glFeatures.editBranchRules && isEditAvailable" class="gl-flex">
         <gl-button
-          :disabled="isGroupLevel"
+          :disabled="isEditDisabled"
           size="small"
           data-testid="edit-rule-button"
           @click="$emit('edit')"
           >{{ __('Edit') }}
         </gl-button>
-        <group-inheritance-popover v-if="isGroupLevel" />
+        <disabled-by-policy-popover v-if="isProtectedByPolicy" />
+        <group-inheritance-popover v-else-if="isGroupLevel" />
       </div>
       <gl-link v-else-if="headerLinkHref && headerLinkTitle" :href="headerLinkHref">{{
         headerLinkTitle

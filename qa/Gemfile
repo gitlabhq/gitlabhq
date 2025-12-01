@@ -20,7 +20,7 @@ gem 'parallel_tests', '~> 5.5'
 gem 'rotp', '~> 6.3.0'
 gem 'parallel', '~> 1.27'
 gem 'rainbow', '~> 3.1.1'
-gem 'rspec-parameterized', '~> 2.0.0'
+gem 'rspec-parameterized', '~> 2.0.1'
 gem 'octokit', '~> 9.2.0', require: false
 gem "faraday-retry", "~> 2.3", ">= 2.3.2"
 gem 'zeitwerk', '~> 2.7', '>= 2.7.3'

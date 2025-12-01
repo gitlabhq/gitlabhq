@@ -3,6 +3,7 @@ import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import CrudComponent from '~/vue_shared/components/crud_component.vue';
 import Protection, { i18n } from '~/projects/settings/branch_rules/components/view/protection.vue';
 import ProtectionRow from '~/projects/settings/branch_rules/components/view/protection_row.vue';
+import DisabledByPolicyPopover from '~/projects/settings/branch_rules/components/view/disabled_by_policy_popover.vue';
 import GroupInheritancePopover from '~/projects/settings/branch_rules/components/view/group_inheritance_popover.vue';
 import {
   protectionPropsMock,
@@ -55,6 +56,8 @@ describe('Branch rule protection', () => {
   beforeEach(() => createComponent());
 
   const findCrudComponent = () => wrapper.findComponent(CrudComponent);
+  const findDisabledByPolicyPopover = () => wrapper.findComponent(DisabledByPolicyPopover);
+  const findGroupInheritancePopover = () => wrapper.findComponent(GroupInheritancePopover);
   const findHeader = () => wrapper.findByText(protectionPropsMock.header);
   const findLink = () => wrapper.findComponent(GlLink);
   const findProtectionRows = () => wrapper.findAllComponents(ProtectionRow);
@@ -111,15 +114,15 @@ describe('Branch rule protection', () => {
   });
 
   describe('When `isEditAvailable` prop is set to true', () => {
-    beforeEach(() => createComponent({ editBranchRules: true }, { isEditAvailable: true }));
-
     it('renders `Edit` button', () => {
+      createComponent({ editBranchRules: true }, { isEditAvailable: true });
       expect(findEditButton().exists()).toBe(true);
     });
 
     it('does not render group inheritance popover', () => {
+      createComponent({ editBranchRules: true }, { isEditAvailable: true });
       expect(findEditButton().props('disabled')).toBe(false);
-      expect(wrapper.findComponent(GroupInheritancePopover).exists()).toBe(false);
+      expect(findGroupInheritancePopover().exists()).toBe(false);
     });
 
     describe('when `isGroupLevel` is true', () => {
@@ -127,7 +130,21 @@ describe('Branch rule protection', () => {
         createComponent({ editBranchRules: true }, { isGroupLevel: true, isEditAvailable: true });
 
         expect(findEditButton().props('disabled')).toBe(true);
-        expect(wrapper.findComponent(GroupInheritancePopover).exists()).toBe(true);
+        expect(findGroupInheritancePopover().exists()).toBe(true);
+      });
+    });
+
+    describe('when protected by security policies', () => {
+      beforeEach(() => {
+        createComponent(
+          { editBranchRules: true },
+          { isEditAvailable: true, isProtectedByPolicy: true },
+        );
+      });
+
+      it('renders disabled by policy popover and disabled `Edit` button, when protection is on', () => {
+        expect(findEditButton().props('disabled')).toBe(true);
+        expect(findDisabledByPolicyPopover().exists()).toBe(true);
       });
     });
   });

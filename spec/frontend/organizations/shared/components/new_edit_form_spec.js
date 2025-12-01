@@ -13,7 +13,6 @@ import {
   FORM_FIELD_AVATAR,
 } from '~/organizations/shared/constants';
 import VisibilityLevelRadioButtons from '~/visibility_level/components/visibility_level_radio_buttons.vue';
-import HelpPageLink from '~/vue_shared/components/help_page_link/help_page_link.vue';
 import {
   ORGANIZATION_VISIBILITY_LEVEL_DESCRIPTIONS,
   VISIBILITY_LEVEL_PRIVATE_INTEGER,
@@ -52,7 +51,6 @@ describe('NewEditForm', () => {
     wrapper.findByTestId('description-character-counter');
   const findAvatarField = () => wrapper.findComponent(AvatarUploadDropzone);
   const findVisibilityLevelRadioButtons = () => wrapper.findComponent(VisibilityLevelRadioButtons);
-  const findHelpPageLink = () => wrapper.findComponent(HelpPageLink);
 
   const setUrlFieldValue = async (value) => {
     findUrlField().vm.$emit('input', value);
@@ -184,12 +182,6 @@ describe('NewEditForm', () => {
       visibilityLevels: [VISIBILITY_LEVEL_PRIVATE_INTEGER],
       visibilityLevelDescriptions: ORGANIZATION_VISIBILITY_LEVEL_DESCRIPTIONS,
     });
-    expect(wrapper.text()).toContain('Who can see this organization?');
-    expect(findHelpPageLink().props()).toEqual({
-      href: 'user/organization/_index',
-      anchor: 'view-an-organizations-visibility-level',
-    });
-    expect(findHelpPageLink().text()).toBe('Learn more about visibility levels');
   });
 
   describe('when `fieldsToRender` prop is set', () => {
