@@ -51,6 +51,19 @@ module API
         bad_request!('`updated_at` filter and `updated_at` sorting must be paired')
       end
 
+      def track_high_page_offset
+        return if params[:page] * params[:per_page] <= Plan.default.actual_limits.offset_pagination_limit
+
+        track_event(
+          'request_projects_api_high_offset',
+          user: current_user,
+          additional_properties: {
+            label: params[:per_page].to_s,
+            value: params[:page]
+          }
+        )
+      end
+
       def provided_order_is_not_updated_at?
         order_by_param = declared_params[:order_by]
 
@@ -360,6 +373,7 @@ module API
       get feature_category: :groups_and_projects, urgency: :low do
         validate_projects_api_rate_limit!
         validate_updated_at_order_and_filter!
+        track_high_page_offset
         present_projects load_projects
       end
 

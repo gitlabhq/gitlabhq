@@ -250,14 +250,12 @@ projects are unlocked and their excess usage is deducted from the additional sto
 
 {{< details >}}
 
-- Tier: Free, Premium, Ultimate
+- Tier: Premium, Ultimate
 
 {{< /details >}}
 
-Regardless of additional storage purchases, when a repository and LFS exceed 500 GiB,
-GitLab places the project in a read-only state. This limit applies to all tiers and
-cannot be increased. For example, purchasing 1 TB of storage does not allow a single
-project to exceed 500 GiB.
+When a project's repository and LFS exceed 500 GiB, GitLab places the project in a read-only state.
+You cannot push changes to a read-only project.
 
 When a project exceeds the storage limit, owners of the group and top-level namespace
 receive notifications through the UI and email. To manage storage usage, contact your

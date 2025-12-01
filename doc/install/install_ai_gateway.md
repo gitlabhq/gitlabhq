@@ -89,6 +89,12 @@ Using the nightly version is **not recommended** because it can cause incompatib
    From the container host, accessing `http://localhost:5052` should return `{"error":"No authorization header presented"}`.
 
 1. Ensure that ports `5052` and `50052` are forwarded to the container from the host.
+1. For GitLab instances that use an offline license, in the AIGW container,
+   set `-e DUO_WORKFLOW_AUTH__OIDC_CUSTOMER_PORTAL_URL=` (empty string).
+   This configuration:
+   - Forces the GitLab Duo Workflow Service to authenticate
+     exclusively against the local GitLab instance.
+   - Eliminates the 20-second delay caused by unreachable CustomersDot calls.
 1. Configure the [AI gateway URL](../administration/gitlab_duo_self_hosted/configure_duo_features.md#configure-access-to-the-local-ai-gateway) and the [GitLab Duo Agent Platform service URL](../administration/gitlab_duo_self_hosted/configure_duo_features.md#configure-access-to-the-gitlab-duo-agent-platform).
 1. Configure the `DUO_AGENT_PLATFORM_SERVICE_SECURE` environment variable based on your model setup:
    - If you are using a self-hosted model without TLS, set the `DUO_AGENT_PLATFORM_SERVICE_SECURE` environment variable to `false` in your GitLab instance:

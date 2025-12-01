@@ -1347,6 +1347,30 @@ RSpec.describe API::Projects, :aggregate_failures, feature_category: :groups_and
         end
       end
     end
+
+    context 'when page offset is within pagination limit' do
+      subject(:request) { get api(path, user), params: { page: 100, per_page: 20 } }
+
+      it 'does not track internal event' do
+        expect { request }.not_to trigger_internal_events('request_projects_api_high_offset')
+      end
+    end
+
+    context 'when page offset exceeds pagination limit' do
+      subject(:request) { get api(path, user), params: { page: 5000, per_page: 20 } }
+
+      it 'tracks internal event' do
+        expect { request }.to trigger_internal_events('request_projects_api_high_offset')
+          .with(
+            user: user,
+            category: 'InternalEventTracking',
+            additional_properties: {
+              label: '20',
+              value: 5000
+            }
+          )
+      end
+    end
   end
 
   describe 'POST /projects' do

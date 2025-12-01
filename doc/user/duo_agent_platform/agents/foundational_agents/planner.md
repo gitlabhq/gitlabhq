@@ -83,7 +83,7 @@ Prerequisites:
 
 ### Example prompts
 
-- "Help me prioritize issues in my backlog with the label (insert label name)" using the RICE framework."
+- "Help me prioritize issues in my backlog with the label (insert label name) by using the RICE framework."
 - "Use MoSCoW to categorize features with the criteria (insert criteria) based on customer impact."
 - "Which of the bugs with a "boards" label should we fix first, considering user impact?"
 - "Rank these epics by strategic value for Q1."

@@ -55,7 +55,7 @@ For a click-through demo, see [GitLab Duo Agent Platform - GitLab MCP server](ht
 
 To use the GitLab MCP server:
 
-- [Beta and experimental features must be turned on](../../gitlab_duo/turn_on_off.md#turn-on-beta-and-experimental-features).
+- Ensure [GitLab Duo](../../gitlab_duo/turn_on_off.md#turn-gitlab-duo-core-on-or-off) and [beta and experimental features](../../gitlab_duo/turn_on_off.md#turn-on-beta-and-experimental-features) are turned on.
 
 ## Connect a client to the GitLab MCP server
 

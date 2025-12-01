@@ -13,17 +13,19 @@ gitlab_dedicated: no
 
 {{< /details >}}
 
-To ensure GitLab Duo is configured properly and can connect to GitLab:
+## Prerequisites
 
-- Ensure both outbound and inbound connectivity exists. Network firewalls can cause lag or delay.
-- [Silent Mode](../../administration/silent_mode/_index.md) must not be turned on.
-- [Activate your instance with an activation code](../../administration/license.md#activate-gitlab-ee).
-  You cannot use an [offline license](https://about.gitlab.com/pricing/licensing-faq/cloud-licensing/#what-is-an-offline-cloud-license) or a legacy license.
-- Turn on composite identity, to help ensure actions are secure.
-- Use GitLab 17.2 and later for the best results. Earlier versions might continue to work, however the experience may be degraded.
-
-GitLab Duo features that are experimental or beta are turned off by default
-and [must be turned on](../../user/gitlab_duo/turn_on_off.md#turn-on-beta-and-experimental-features).
+- Ensure both outbound and inbound connections are allowed.
+  Network firewalls might cause delay.
+- [Turn on Silent Mode](../../administration/silent_mode/_index.md#turn-on-silent-mode).
+- [Activate your GitLab instance with an activation code](../../administration/license.md#activate-gitlab-ee).
+  You cannot use a legacy license.
+  Except for [GitLab Duo Self-Hosted](../../administration/gitlab_duo_self_hosted/_index.md),
+  you also cannot use an offline license.
+- Turn on composite identity for secure actions.
+- Use GitLab 17.2 and later for the best results.
+  Earlier versions might continue to work, but performance might be degraded.
+- [Ensure beta and experimental features are turned on](../../user/gitlab_duo/turn_on_off.md#turn-on-beta-and-experimental-features).
 
 ## Turn on composite identity
 

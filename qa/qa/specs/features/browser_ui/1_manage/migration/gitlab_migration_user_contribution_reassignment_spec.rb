@@ -133,7 +133,7 @@ module QA
       end
 
       def fetch_reassignment_url(reassignment_email_subject)
-        pattern = %r{https?://[\S]+/import/source_users/[-A-Z0-9]+}i
+        pattern = %r{https?://[\S]+/import/source_users/\d+/[-A-Z0-9]+}i
         email = find_email(reassignment_email_subject)
         email.body&.match(pattern).to_s
       end

@@ -89,11 +89,11 @@ To create a project runner:
 1. On the left sidebar, select **Search or go to** and find your project. If you've [turned on the new navigation](../../user/interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
 1. Select **Settings** > **CI/CD**.
 1. Expand the **Runners** section.
-1. Select **New project runner**.
-1. Select your operating system.
+1. Select **Create project runner**.
 1. In the **Tags** section, select the **Run untagged** checkbox. [Tags](../../ci/runners/configure_runners.md#control-jobs-that-a-runner-can-run) specify which jobs
    the runner can run and are optional.
 1. Select **Create runner**.
+1. Select your operating system.
 1. Follow the on-screen instructions to register the runner from the command line. When prompted:
    - For `executor`, because your runner will run directly on the host computer, enter `shell`. The [executor](https://docs.gitlab.com/runner/executors/)
      is the environment where the runner executes the job.
