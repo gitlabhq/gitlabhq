@@ -113,14 +113,14 @@ variables:
   HOMEBREW_NO_AUTO_UPDATE: 1
 ```
 
-## Optimizing Cocoapods
+## Optimizing CocoaPods
 
-If you use Cocoapods in a project, you should consider the following optimizations to improve CI performance.
+If you use CocoaPods in a project, you should consider the following optimizations to improve CI performance.
 
-**Cocoapods CDN**
+**CocoaPods CDN**
 
 You can use content delivery network (CDN) access to download packages from the CDN instead of having to clone an entire
-project repository. CDN access is available in Cocoapods 1.8 or later and is supported by all GitLab hosted runners on macOS.
+project repository. CDN access is available in CocoaPods 1.8 or later and is supported by all GitLab hosted runners on macOS.
 
 To enable CDN access, ensure your Podfile starts with:
 
@@ -130,7 +130,7 @@ source 'https://cdn.cocoapods.org/'
 
 **Use GitLab caching**
 
-Use caching in Cocoapods packages in GitLab to only run `pod install`
+Use caching in CocoaPods packages in GitLab to only run `pod install`
 when pods change, which can improve build performance.
 
 To [configure caching](../../caching/_index.md) for your project:

@@ -23,18 +23,18 @@ The following machine types are available for GPU-enabled runners on Linux x86-6
 
 | Runner Tag                             | vCPUs | Memory | Storage | GPU                            | GPU Memory |
 |----------------------------------------|-------|--------|---------|--------------------------------|------------|
-| `saas-linux-medium-amd64-gpu-standard` | 4     | 15 GB  | 50 GB   | 1 Nvidia Tesla T4 (or similar) | 16 GB      |
+| `saas-linux-medium-amd64-gpu-standard` | 4     | 15 GB  | 50 GB   | 1 NVIDIA Tesla T4 (or similar) | 16 GB      |
 
 ## Container images with GPU drivers
 
 As with GitLab hosted runners on Linux, your job runs in an isolated virtual machine (VM)
 with a bring-your-own-image policy. GitLab mounts the GPU from the host VM into
 your isolated environment. To use the GPU, you must use a Docker image with the
-GPU driver installed. For Nvidia GPUs, you can use their [CUDA Toolkit](https://catalog.ngc.nvidia.com/orgs/nvidia/containers/cuda).
+GPU driver installed. For NVIDIA GPUs, you can use their [CUDA Toolkit](https://catalog.ngc.nvidia.com/orgs/nvidia/containers/cuda).
 
 ## Example `.gitlab-ci.yml` file
 
-In the following example of the `.gitlab-ci.yml` file, the Nvidia CUDA base Ubuntu image is used.
+In the following example of the `.gitlab-ci.yml` file, the NVIDIA CUDA base Ubuntu image is used.
 In the `script:` section, you install Python.
 
 ```yaml

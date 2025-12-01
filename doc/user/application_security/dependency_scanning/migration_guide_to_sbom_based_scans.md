@@ -81,7 +81,7 @@ Other migration paths might be considered as the feature gains maturity.
 If you're using [Scan Execution Policies](../policies/scan_execution_policies.md), these changes apply in the same way because they build upon the CI/CD templates.
 
 If you're using the [main dependency scanning CI/CD component](https://gitlab.com/components/dependency-scanning/-/tree/main/templates/main) you won't see any changes as it already employs the new analyzer.
-However, if you're using the specialized components for Android, Rust, Swift, or Cocoapods, you'll need to migrate to the main component that now covers all supported languages and package managers.
+However, if you're using the specialized components for Android, Rust, Swift, or CocoaPods, you'll need to migrate to the main component that now covers all supported languages and package managers.
 
 ### Build support for Java and Python
 
@@ -184,7 +184,7 @@ There are no additional steps needed to migrate a Bundler project to use the dep
 
 ### CocoaPods
 
-**Previous behavior**: dependency scanning based on the Gemnasium analyzer does not support CocoaPods projects when using the CI/CD templates or the Scan Execution Policies. Support for CocoaPods is only available on the experimental Cocoapods CI/CD component.
+**Previous behavior**: dependency scanning based on the Gemnasium analyzer does not support CocoaPods projects when using the CI/CD templates or the Scan Execution Policies. Support for CocoaPods is only available on the experimental CocoaPods CI/CD component.
 
 **New behavior**: The new dependency scanning analyzer extracts the project dependencies by parsing the `Podfile.lock` file and generates a CycloneDX SBOM report artifact with the `dependency-scanning` CI/CD job.
 

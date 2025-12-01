@@ -34,6 +34,7 @@
 .markdownlint-cli2.yaml @gitlab-org/technical-writing/tw-docops @gitlab-org/tw-leadership
 /data/deprecations/templates/ @marcel.amirault @gitlab-org/tw-leadership
 /doc/.markdownlint/ @gitlab-org/technical-writing/tw-docops @gitlab-org/tw-leadership
+/doc/.vale/gitlab_base/spelling-exceptions.txt @gl-docsteam
 /doc/.vale/ @gitlab-org/technical-writing/tw-docops @gitlab-org/tw-leadership
 /lib/tasks/gitlab/tw/codeowners.rake @gitlab-org/technical-writing/tw-docops @gitlab-org/tw-leadership
 /scripts/lint-doc.sh @gitlab-org/technical-writing/tw-docops @gitlab-org/tw-leadership

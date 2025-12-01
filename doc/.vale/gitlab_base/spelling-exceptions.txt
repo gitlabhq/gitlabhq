@@ -2,6 +2,7 @@ accessor
 accessors
 ACLs
 Adafruit
+agentic
 Agentic
 Airbnb
 Airtable
@@ -105,6 +106,7 @@ Bootsnap
 bot
 bot's
 Bottlerocket
+Brevo
 browsable
 bugfix
 bugfixed
@@ -137,6 +139,7 @@ captcha
 CAPTCHAs
 Capybara
 Casdoor
+Ccache
 CDNs
 CE
 CentOS
@@ -174,12 +177,15 @@ CMKs
 CNAs
 CNs
 Cobertura
+CocoaPods
 Codeberg
 Codeception
 Codecov
+codemods
 codenames
 Codepen
 CodeSandbox
+Codestral
 Codey
 Cognito
 Coinbase
@@ -198,6 +204,7 @@ Conda
 config
 Configs
 Consul
+containerd
 Contentful
 Corosync
 corpuses
@@ -417,6 +424,7 @@ gitlabsos
 Gitleaks
 Gitpod
 Gitter
+glab
 GLab
 globals
 globbing
@@ -437,6 +445,7 @@ Gradle
 Grafana
 Grafonnet
 gravatar
+Grayson
 Grype
 GUIs
 Gzip
@@ -449,6 +458,7 @@ hardcoded
 hardcodes
 HashiCorp
 Haswell
+Heartbleed
 heatmap
 heatmaps
 Helm
@@ -475,6 +485,7 @@ iCalendar
 iCloud
 IDE's
 idempotence
+idempotency
 IDEs
 idmapper
 Iglu
@@ -507,6 +518,7 @@ Javafuzz
 JavaScript
 Jenkins
 Jenkinsfile
+JFrog
 Jira
 Jitsu
 jq
@@ -548,6 +560,7 @@ Kroki
 kubeconfig
 Kubecost
 kubectl
+Kubelet
 Kubernetes
 Kubesec
 Kucoin
@@ -563,6 +576,7 @@ ldapsearch
 Lefthook
 Leiningen
 Lemmy
+Libbehave
 libFuzzer
 Libgcrypt
 Libravatar
@@ -638,6 +652,7 @@ mitmproxy
 mixin
 mixins
 MLflow
+MLOps
 Mmap
 mockup
 mockups
@@ -677,6 +692,7 @@ NuGet
 nullability
 nullable
 Nurtch
+NVIDIA
 NVMe
 nyc
 OAuth
@@ -691,6 +707,7 @@ Okta
 Ollama
 OLM
 OmniAuth
+Ona
 onboarding
 OpenID
 OpenShift
@@ -739,6 +756,7 @@ Pipfile
 Pipfiles
 Piwik
 plaintext
+pnpm
 podman
 Poedit
 polyfill
@@ -774,6 +792,7 @@ prepopulate
 prepopulated
 presentationals
 Prettifier
+Prioritizer
 Pritaly
 Priyanka
 profiler
@@ -787,11 +806,13 @@ proxyable
 proxying
 pseudocode
 pseudonymization
+pseudonymize
 pseudonymized
 pseudonymizer
 Pulumi
 Puma
 Pumble
+Pydantic
 Pylint
 PyPI
 pytest
@@ -935,6 +956,7 @@ SFCs
 sharded
 sharding
 SHAs
+Shellshock
 shfmt
 Shippo
 Shopify
@@ -1052,11 +1074,13 @@ syslog
 systemd
 tablespace
 tablespaces
+Tailscale
 Tamland
 tanuki
 taskscaler
 tcpdump
 teardown
+Telesign
 templated
 Thanos
 thoughtbot
@@ -1210,6 +1234,7 @@ untarred
 untrack
 untracked
 untrusted
+unvalidated
 unverified
 unverifies
 unverify

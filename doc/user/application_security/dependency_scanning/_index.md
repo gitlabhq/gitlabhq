@@ -474,7 +474,7 @@ The following languages and dependency managers are supported by dependency scan
       <td>N</td>
     </tr>
     <tr>
-      <td>Cocoapods<sup>9</sup></td>
+      <td>CocoaPods<sup>9</sup></td>
       <td>All versions</td>
       <td><a href="https://cocoapods.org/">CocoaPods</a></td>
       <td><code>Podfile.lock</code></td>

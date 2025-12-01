@@ -171,7 +171,7 @@ Use [Hugging Face's memory utility](https://huggingface.co/spaces/hf-accelerate/
 
 #### Small machine
 
-With a `a2-highgpu-2g` (2x Nvidia A100 40 GB - 150 GB vRAM) or equivalent:
+With a `a2-highgpu-2g` (2x NVIDIA A100 40 GB - 150 GB vRAM) or equivalent:
 
 | Model name               | Number of requests | Average time per request (sec) | Average tokens in response | Average tokens per second per request | Total time for requests | Total TPS |
 |--------------------------|--------------------|------------------------------|----------------------------|---------------------------------------|-------------------------|-----------|
@@ -181,7 +181,7 @@ With a `a2-highgpu-2g` (2x Nvidia A100 40 GB - 150 GB vRAM) or equivalent:
 
 #### Medium machine
 
-With a `a2-ultragpu-4g` (4x Nvidia A100 40 GB - 340 GB vRAM) machine on GCP or equivalent:
+With a `a2-ultragpu-4g` (4x NVIDIA A100 40 GB - 340 GB vRAM) machine on GCP or equivalent:
 
 | Model name                 | Number of requests | Average time per request (sec) | Average tokens in response | Average tokens per second per request | Total time for requests | Total TPS |
 |----------------------------|--------------------|------------------------------|----------------------------|---------------------------------------|-------------------------|-----------|
