@@ -1,7 +1,7 @@
 [
 {"name":"CFPropertyList","version":"3.0.7","platform":"ruby","checksum":"c45721614aca8d5eb6fa216f2ec28ec38de1a94505e9766a20e98745492c3c4c"},
 {"name":"RedCloth","version":"4.3.4","platform":"ruby","checksum":"5231b2fdd91a933915cba330e5fd1a74025e77b56f57b7404c7191ebf2812297"},
-{"name":"acme-client","version":"2.0.26","platform":"ruby","checksum":"060e5ea5dd2f66b1b2be3f710ac0884dd469ce3a8b3125c8a5c08e09fb6523bd"},
+{"name":"acme-client","version":"2.0.27","platform":"ruby","checksum":"1db50f9603f9409d7d88ccee85978f7cff95150b73de1884196f1d5dff59333e"},
 {"name":"actioncable","version":"7.2.3","platform":"ruby","checksum":"e15d17b245f1dfe7cafdda4a0c6f7ba8ebaab1af33884415e09cfef4e93ad4f9"},
 {"name":"actionmailbox","version":"7.2.3","platform":"ruby","checksum":"16bbf0a7c330f2d08d52d5e3c1b03813a8ef60bfb0a48e89c0bf92b069cb4d5e"},
 {"name":"actionmailer","version":"7.2.3","platform":"ruby","checksum":"68d646b852a6d2b25d8834fc796c3dc10f76a4c7fd77b3251c3f4dd832ec8ab8"},

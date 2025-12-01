@@ -434,12 +434,13 @@ func TestRunner_Execute_with_close_errors(t *testing.T) {
 
 func TestRunner_handleWebSocketMessage(t *testing.T) {
 	tests := []struct {
-		name           string
-		message        []byte
-		sendError      error
-		mcpManager     *mockMcpManager
-		expectedErrMsg string
-		expectMcpTools bool
+		name               string
+		message            []byte
+		clientCapabilities []string
+		sendError          error
+		mcpManager         *mockMcpManager
+		expectedErrMsg     string
+		expectMcpTools     bool
 	}{
 		{
 			name:           "invalid json",
@@ -464,8 +465,9 @@ func TestRunner_handleWebSocketMessage(t *testing.T) {
 			expectedErrMsg: "",
 		},
 		{
-			name:    "start request with mcp tools",
-			message: []byte(`{"startRequest": {"workflowID": "id-123", "goal": "test goal", "mcpTools": [{"name": "get_issue"}]}}`),
+			name:               "start request with mcp tools",
+			message:            []byte(`{"startRequest": {"workflowID": "id-123", "goal": "test goal", "mcpTools": [{"name": "get_issue"}]}}`),
+			clientCapabilities: []string{},
 			mcpManager: &mockMcpManager{
 				tools: []*pb.McpTool{
 					{Name: "test_tool", Description: "A test tool"},
@@ -475,11 +477,18 @@ func TestRunner_handleWebSocketMessage(t *testing.T) {
 			expectedErrMsg: "",
 		},
 		{
-			name:           "start request without mcp manager",
-			message:        []byte(`{"startRequest": {"workflowID": "id-123", "goal": "test goal"}}`),
-			mcpManager:     nil,
-			expectMcpTools: false,
-			expectedErrMsg: "",
+			name:               "start request without mcp manager",
+			message:            []byte(`{"startRequest": {"workflowID": "id-123", "goal": "test goal"}}`),
+			clientCapabilities: []string{},
+			mcpManager:         nil,
+			expectMcpTools:     false,
+			expectedErrMsg:     "",
+		},
+		{
+			name:               "start request with supported and unsupported ClientCapabilities",
+			message:            []byte(`{"startRequest": {"workflowID": "id-123", "goal": "test goal", "clientCapabilities": ["shell_command", "unsupported_capability"]}}`),
+			clientCapabilities: []string{"shell_command"},
+			expectedErrMsg:     "",
 		},
 	}
 
@@ -521,6 +530,13 @@ func TestRunner_handleWebSocketMessage(t *testing.T) {
 					assert.Equal(t, "get_issue", startReq.McpTools[0].Name)
 					assert.Equal(t, "test_tool", startReq.McpTools[1].Name)
 					assert.Equal(t, "A test tool", startReq.McpTools[1].Description)
+				}
+
+				if tt.clientCapabilities != nil {
+					require.Len(t, mockWf.sendEvents, 1)
+					startReq := mockWf.sendEvents[0].GetStartRequest()
+					require.NotNil(t, startReq)
+					assert.Equal(t, tt.clientCapabilities, startReq.ClientCapabilities)
 				}
 			}
 		})

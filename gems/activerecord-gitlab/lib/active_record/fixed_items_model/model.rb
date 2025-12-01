@@ -23,6 +23,20 @@ module ActiveRecord
     #   attribute :name, :string
     # end
     #
+    # Or items can also be a method, as
+    #
+    # class StaticModel
+    #   include ActiveRecord::FixedItemsModel::Model
+    #
+    #   def self.fixed_items
+    #     [
+    #       { id: 1, name: 'To do' }
+    #     ]
+    #   end
+    #
+    #   attribute :name, :string
+    # end
+    #
     # Usage:
     #
     # StaticModel.find(1)
@@ -63,23 +77,42 @@ module ActiveRecord
 
         private
 
+        def raw_items
+          @raw_items ||= begin
+            has_items_constant = const_defined?(:ITEMS, true)
+            has_fixed_items_method = respond_to?(:fixed_items, true)
+
+            if has_items_constant && has_fixed_items_method
+              raise "Both ITEMS constant and .fixed_items method are defined. Please use only one approach."
+            elsif has_items_constant
+              self::ITEMS
+            elsif has_fixed_items_method
+              fixed_items
+            else
+              raise "No .fixed_items method or ITEMS constant defined for model #{name}!"
+            end
+          end
+        end
+
         def load_items!
           validate_items_definition!
 
-          self::ITEMS.each do |item_definition|
+          raw_items.each do |item_definition|
             item = new(item_definition)
-            raise "Static definition in ITEMS is invalid! #{item.errors.full_messages.join(', ')}" unless item.valid?
+            unless item.valid?
+              raise "Static definition in ITEMS or .fixed_items is invalid! #{item.errors.full_messages.join(', ')}"
+            end
 
             storage[item.id] = item
           end
         end
 
         def validate_items_definition!
-          unique_ids = self::ITEMS.map { |item| item[:id] }.uniq
+          unique_ids = raw_items.map { |item| item[:id] }.uniq
 
-          return if unique_ids.size == self::ITEMS.size
+          return if unique_ids.size == raw_items.size
 
-          raise "Static definition ITEMS has #{self::ITEMS.size - unique_ids.size} duplicated IDs!"
+          raise "Static definition ITEMS or .fixed_items has #{raw_items.size - unique_ids.size} duplicated IDs!"
         end
 
         def validate_attributes_exist!(attribute_names_to_check)

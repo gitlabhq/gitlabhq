@@ -528,7 +528,13 @@ class IssuableFinder
 
   def by_non_archived(items)
     if params[:non_archived].present?
-      items.non_archived
+      if use_namespace_filtering?
+        # If use_join_strategy_for_project? is true, items has been joined onto project already, and we don't need to
+        # perform the join again
+        items.non_archived(use_existing_join: use_join_strategy_for_project?)
+      else
+        items.non_archived
+      end
     else
       items
     end

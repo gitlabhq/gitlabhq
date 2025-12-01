@@ -25,6 +25,7 @@ describe('PipelineVariablesForm', () => {
     isMaintainer: true,
     refParam: 'refs/heads/feature',
     settingsLink: 'link/to/settings',
+    pipelineVariables: [],
   };
 
   const defaultProvide = { projectPath: 'group/project' };
@@ -41,6 +42,19 @@ describe('PipelineVariablesForm', () => {
       value: 'simple-value',
       description: 'Simple variable',
       valueOptions: [],
+    },
+  ];
+
+  const pipelineVariables = [
+    {
+      key: 'NEW_KEY',
+      value: 'value1',
+      variableType: CI_VARIABLE_TYPE_ENV_VAR,
+    },
+    {
+      key: 'SIMPLE_VAR',
+      value: 'new-value',
+      variableType: CI_VARIABLE_TYPE_ENV_VAR,
     },
   ];
 
@@ -327,6 +341,20 @@ describe('PipelineVariablesForm', () => {
       await wrapper.setProps({ refParam: 'refs/heads/new-feature-1' });
 
       expect(startManualPollingSpy).toHaveBeenCalledTimes(2);
+    });
+
+    it('preserves newly added pipeline variables with higher precedence', async () => {
+      await createComponent({
+        props: { pipelineVariables },
+        configVariables: configVariablesWithOptions,
+      });
+
+      expect(findVariablesForm().props('initialVariables')).toMatchObject([
+        { key: configVariablesWithOptions[0].key, value: configVariablesWithOptions[0].value },
+        // value overriden here
+        { key: configVariablesWithOptions[1].key, value: pipelineVariables[1].value },
+        { key: pipelineVariables[0].key, value: pipelineVariables[0].value },
+      ]);
     });
 
     it('stops polling when data is received', async () => {

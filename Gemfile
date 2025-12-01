@@ -127,6 +127,7 @@ gem 'invisible_captcha', '~> 2.3.0', feature_category: :insider_threat
 # Two-factor authentication
 gem 'devise-two-factor', '~> 4.1.1', feature_category: :system_access
 gem 'rqrcode', '~> 2.2', feature_category: :system_access
+gem 'webauthn', '~> 3.0', feature_category: :system_access
 
 gem 'attr_encrypted', '~> 4.2', feature_category: :shared
 
@@ -693,8 +694,6 @@ gem 'oj', '~> 3.16.0', '>=3.16.10', feature_category: :shared
 gem 'oj-introspect', '~> 0.8', feature_category: :shared
 gem 'multi_json', '~> 1.17.0', feature_category: :shared
 gem 'yajl-ruby', '~> 1.4.3', require: 'yajl', feature_category: :shared
-
-gem 'webauthn', '~> 3.0', feature_category: :shared
 
 # IPAddress utilities
 gem 'ipaddress', '~> 0.8.3', feature_category: :shared

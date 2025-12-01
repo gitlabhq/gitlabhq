@@ -12,10 +12,7 @@ RSpec.describe 'new tables with gitlab_main schema', feature_category: :cell do
 
   # Specific tables can be exempted from this requirement, and such tables must be added to the `exempted_tables` list.
   let!(:exempted_tables) do
-    [
-      # temporary table to be removed in https://gitlab.com/gitlab-org/gitlab/-/issues/562154
-      'ai_settings' # awaiting schema decision: https://gitlab.com/gitlab-org/gitlab/-/issues/531356
-    ]
+    []
   end
 
   let!(:starting_from_milestone) { 16.7 }

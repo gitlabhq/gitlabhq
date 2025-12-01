@@ -21,13 +21,13 @@ module WorkItems
 
           # When moving sent notifications for any work item this can entail updating many records in some instances.
           # We should consider moving this to an async worker rather than have it run in a single request.
-          work_item.partitioned_sent_notifications.each_batch(column: :id, of: BATCH_SIZE) do |sent_notifications_batch|
+          work_item.sent_notifications.each_batch(column: :id, of: BATCH_SIZE) do |sent_notifications_batch|
             new_sent_notifications = new_work_item_sent_notifications(sent_notifications_batch)
 
             ::SentNotification.transaction do
               sent_notifications_batch.delete_all
 
-              ::PartitionedSentNotification.insert_all(new_sent_notifications)
+              ::SentNotification.insert_all(new_sent_notifications)
             end
           end
         end
@@ -44,7 +44,7 @@ module WorkItems
 
           # When moving sent notifications for any work item this can entail deleting many records in some instances.
           # We should consider moving this to an async worker rather than have it run in a single request.
-          work_item.partitioned_sent_notifications.each_batch(column: :id, of: BATCH_SIZE) do |sent_notifications_batch|
+          work_item.sent_notifications.each_batch(column: :id, of: BATCH_SIZE) do |sent_notifications_batch|
             sent_notifications_batch.delete_all
           end
         end

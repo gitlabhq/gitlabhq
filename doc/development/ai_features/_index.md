@@ -82,6 +82,8 @@ For details on the seeds used, see [Development seed files](../development_seed_
 
 This ensures that your instance or group has the correct licenses, settings, and feature flags to test GitLab Duo features locally. Below are several options. If you are unsure, use option 1.
 
+**Note:** Duo Core add-on is always created when running this script.
+
 Be sure to run the Rake task from the GitLab Rails root directory (typically `/path/to/gdk/gitlab`), not from the GDK root directory.
 
 1. GitLab.com (SaaS) mode
@@ -104,6 +106,12 @@ Be sure to run the Rake task from the GitLab Rails root directory (typically `/p
    GITLAB_SIMULATE_SAAS=1 bundle exec 'rake gitlab:duo:setup[duo_pro]'
    ```
 
+   To test only Duo Core features, you can run:
+
+   ```shell
+   GITLAB_SIMULATE_SAAS=1 bundle exec 'rake gitlab:duo:setup[duo_core]'
+   ```
+
 1. GitLab Self-Managed / Dedicated mode
 
    ```shell
@@ -122,6 +130,12 @@ Be sure to run the Rake task from the GitLab Rails root directory (typically `/p
 
    ```shell
    GITLAB_SIMULATE_SAAS=0 bundle exec 'rake gitlab:duo:setup[duo_pro]'
+   ```
+
+   To test only Duo Core features, you can run:
+
+   ```shell
+   GITLAB_SIMULATE_SAAS=0 bundle exec 'rake gitlab:duo:setup[duo_core]'
    ```
 
   After the script finishes without error, now go to `gitlab-duo/test` and validate that you can see GitLab Duo Chat. Send a question to Chat

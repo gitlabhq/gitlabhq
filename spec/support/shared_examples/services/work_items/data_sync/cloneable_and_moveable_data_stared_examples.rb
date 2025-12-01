@@ -105,7 +105,7 @@ RSpec.shared_examples 'cloneable and moveable widget data' do
   end
 
   def wi_sent_notifications(work_item)
-    work_item.reload.partitioned_sent_notifications.pluck(:recipient_id)
+    work_item.reload.sent_notifications.pluck(:recipient_id)
   end
 
   def wi_timelogs(work_item)
@@ -159,7 +159,7 @@ RSpec.shared_examples 'cloneable and moveable widget data' do
       project: original_work_item.project, recipient: create(:user)
     )
     # create sent notification for original work item and return recipients as `expected` value for later comparison.
-    original_work_item.reload.partitioned_sent_notifications.pluck(:recipient_id)
+    original_work_item.reload.sent_notifications.pluck(:recipient_id)
   end
 
   let_it_be(:crm_contacts) do
@@ -321,7 +321,7 @@ RSpec.shared_examples 'cloneable and moveable widget data' do
       { widget: :email_participants, assoc_name: :email_participants,          eval_value: :wi_emails,             expected: emails,        operations: [move] },
       { widget: :milestone,          assoc_name: :milestone,                   eval_value: :wi_milestone,          expected: milestone,     operations: [move, clone] },
       { widget: :notifications,      assoc_name: :subscriptions,               eval_value: :wi_subscriptions,      expected: subscriptions, operations: [move] },
-      { widget: :notifications,      assoc_name: :partitioned_sent_notifications, eval_value: :wi_sent_notifications, expected: notifications, operations: [move] },
+      { widget: :notifications,      assoc_name: :sent_notifications,          eval_value: :wi_sent_notifications, expected: notifications, operations: [move] },
       { widget: :time_tracking,      assoc_name: :timelogs,                    eval_value: :wi_timelogs,           expected: timelogs,      operations: [move] },
       { widget: :crm_contacts,       assoc_name: :customer_relations_contacts, eval_value: :wi_crm_contacts,       expected: crm_contacts,  operations: [move, clone] },
       { widget: :designs,            assoc_name: :designs,                     eval_value: :wi_designs,            expected: designs,       operations: [move, clone] },
@@ -372,7 +372,7 @@ RSpec.shared_examples 'for clone and move services' do
         expect([widget_value].flatten).to be_blank
       end
 
-      non_cleanupable_widgets = [:partitioned_sent_notifications, :sent_notifications, :work_item_children]
+      non_cleanupable_widgets = [:sent_notifications, :work_item_children]
       cleanup_data = Feature.enabled?(:cleanup_data_source_work_item_data, original_work_item.resource_parent)
 
       if (cleanup_data || always_cleaned_up_widgets.include?(widget[:assoc_name])) && described_class == move

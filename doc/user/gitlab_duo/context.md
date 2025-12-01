@@ -205,11 +205,15 @@ Use the imported files in your IDE to provide context about your code project. I
 
 {{< /history >}}
 
-You can control which project content is excluded as context for GitLab Duo. Use this to protect sensitive information such as password files and configuration files.
+You can control which project content is excluded as context for GitLab Duo.
+Use this feature to protect sensitive information, like password and configuration files.
 
-For GitLab Duo Chat, excluded context is enforced within [GitLab Duo Chat (Agentic)](../gitlab_duo_chat/agentic_chat.md). Excluded context is not enforced within [GitLab Duo Chat (Classic)](../gitlab_duo_chat/_index.md).
+When you exclude content, all GitLab Duo features, with the exception of [GitLab Duo Chat (Classic)](../gitlab_duo_chat/_index.md),
+exclude this information as context.
 
 ### Manage GitLab Duo context exclusions
+
+To specify content that GitLab Duo excludes:
 
 1. On the left sidebar, select **Search or go to** and find your project. If you've [turned on the new navigation](../interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
 1. Select **Settings** > **General**.

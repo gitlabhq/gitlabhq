@@ -51,7 +51,8 @@ RSpec.describe 'User interacts with awards', :js, feature_category: :team_planni
       expect(page).not_to have_button '😀'
     end
 
-    it 'shows the list of award emoji categories' do
+    it 'shows the list of award emoji categories',
+      quarantine: 'https://gitlab.com/gitlab-org/quality/test-failure-issues/-/issues/5953' do
       click_button 'Add reaction'
       fill_in('Search for an emoji', with: 'hand')
 

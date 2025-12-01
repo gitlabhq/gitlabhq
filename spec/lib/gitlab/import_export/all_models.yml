@@ -18,7 +18,6 @@ issues:
 - resource_iteration_events
 - assignment_events
 - sent_notifications
-- partitioned_sent_notifications
 - sentry_issue
 - issuable_severity
 - label_links

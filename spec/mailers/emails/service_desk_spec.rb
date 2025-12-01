@@ -51,8 +51,8 @@ RSpec.describe Emails::ServiceDesk, feature_category: :service_desk do
 
         # Sets issue email participant in sent notification
         expect(
-          PartitionedSentNotification.where(noteable: issue).first.issue_email_participant)
-        .to eq(issue_email_participant)
+          SentNotification.where(noteable: issue).first.issue_email_participant
+        ).to eq(issue_email_participant)
       end
     end
 
@@ -140,7 +140,7 @@ RSpec.describe Emails::ServiceDesk, feature_category: :service_desk do
     end
 
     context 'with an issue id, issue path and unsubscribe url placeholders' do
-      let(:expected_unsubscribe_url) { unsubscribe_sent_notification_url(PartitionedSentNotification.last) }
+      let(:expected_unsubscribe_url) { unsubscribe_sent_notification_url(SentNotification.last) }
       let(:template_content) do
         'thank you, **your new issue:** %{ISSUE_ID}, path: %{ISSUE_PATH}' \
           '[Unsubscribe](%{UNSUBSCRIBE_URL})'
@@ -284,7 +284,7 @@ RSpec.describe Emails::ServiceDesk, feature_category: :service_desk do
 
     it 'generates Reply-To address from custom email' do
       reply_address = subject.reply_to.first
-      notification = PartitionedSentNotification.last
+      notification = SentNotification.last
       expected_reply_address = service_desk_setting.custom_email.sub('@', "+#{notification.partitioned_reply_key}@")
 
       expect(reply_address).to eq(expected_reply_address)

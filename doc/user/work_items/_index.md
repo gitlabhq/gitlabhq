@@ -43,7 +43,7 @@ GitLab supports the following work item types:
 
 {{< history >}}
 
-- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/513092) in GitLab 17.10 [with a flag](../../administration/feature_flags/_index.md) named `work_item_planning_view`. Disabled by default.
+- [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/11918) in GitLab 18.7 [with a flag](../../administration/feature_flags/_index.md) named `work_item_planning_view`. Disabled by default.
 
 {{< /history >}}
 

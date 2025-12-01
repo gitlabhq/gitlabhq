@@ -26,6 +26,17 @@ const wsWriteDeadline = 60 * time.Second
 const wsCloseTimeout = 5 * time.Second
 const wsStopWorkflowTimeout = 10 * time.Second
 
+// ClientCapabilities is how gitlab-lsp -> workhorse -> Duo Workflow Service communicates
+// capabilities that can be used by Duo Workflow Service without breaking
+// backwards compatibility. We intersect the capabilities of all parties and
+// then new behavior can only depend on that behavior if it makes it all the
+// way through. Whenever you add to this list you must also update the constant in
+// ee/app/assets/javascripts/ai/duo_agentic_chat/utils/workflow_socket_utils.js
+// and gitlab-lsp .
+var ClientCapabilities = []string{
+	"shell_command",
+}
+
 var errFailedToAcquireLockError = errors.New("handleWebSocketMessages: failed to acquire lock")
 
 var normalClosureErrCodes = []int{websocket.CloseGoingAway, websocket.CloseNormalClosure}
@@ -220,6 +231,10 @@ func (r *runner) handleWebSocketMessage(message []byte) error {
 
 		startReq.McpTools = append(startReq.McpTools, r.mcpManager.Tools()...)
 		startReq.PreapprovedTools = append(startReq.PreapprovedTools, r.mcpManager.PreApprovedTools()...)
+		startReq.ClientCapabilities = intersectClientCapabilities(startReq.ClientCapabilities)
+		log.WithRequest(r.originalReq).WithFields(log.Fields{
+			"client_capabilities": startReq.ClientCapabilities,
+		}).Info("Sending startRequest")
 	}
 
 	log.WithContextFields(r.originalReq.Context(), log.Fields{
@@ -238,6 +253,20 @@ func (r *runner) handleWebSocketMessage(message []byte) error {
 	}
 
 	return nil
+}
+
+// Returns the intersection of what gitlab-lsp passed in and what workhorse
+// supports.
+func intersectClientCapabilities(fromClient []string) []string {
+	var result = []string{}
+
+	for _, cap := range ClientCapabilities {
+		if slices.Contains(fromClient, cap) {
+			result = append(result, cap)
+		}
+	}
+
+	return result
 }
 
 func (r *runner) acquireWorkflowLock(startReq *pb.StartWorkflowRequest) error {

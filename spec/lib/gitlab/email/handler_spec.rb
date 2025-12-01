@@ -3,8 +3,6 @@
 require 'spec_helper'
 
 RSpec.describe Gitlab::Email::Handler do
-  include SentNotificationHelpers
-
   let(:email) { Mail.new { body 'email' } }
 
   describe '.for' do
@@ -62,7 +60,7 @@ RSpec.describe Gitlab::Email::Handler do
 
   describe 'regexps are set properly' do
     let_it_be(:project) { create(:project) }
-    let_it_be(:sent_notification) { create_sent_notification(project: project) }
+    let_it_be(:sent_notification) { create(:sent_notification, project: project) }
     let(:reply_key) { sent_notification.partitioned_reply_key }
 
     let(:addresses) do

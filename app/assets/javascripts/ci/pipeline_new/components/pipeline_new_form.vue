@@ -274,6 +274,7 @@ export default {
         :ref-param="refQueryParam"
         :settings-link="settingsLink"
         :variable-params="variableParams"
+        :pipeline-variables="pipelineVariables"
         @variables-updated="handleVariablesUpdated"
         @validity-change="handleValidityChange"
       />

@@ -487,24 +487,6 @@ RSpec.describe API::Issues, feature_category: :team_planning do
             [archived_issue.id, group_closed_issue.id, group_confidential_issue.id, group_issue.id]
           )
         end
-
-        context 'when the group itself is archived' do
-          let_it_be(:archived_group) { create(:group, :public, :archived) }
-          let_it_be(:project_in_archived_group) { create(:project, :public, group: archived_group) }
-          let_it_be(:issue_in_archived_group) { create(:issue, author: user, assignees: [user], project: project_in_archived_group) }
-
-          it 'excludes issues from projects in the archived group' do
-            get api("/groups/#{archived_group.id}/issues", user)
-
-            expect_paginated_array_response([])
-          end
-
-          it 'includes issues from projects in the archived group with non_archived set as false' do
-            get api("/groups/#{archived_group.id}/issues", user), params: { non_archived: false }
-
-            expect_paginated_array_response([issue_in_archived_group.id])
-          end
-        end
       end
 
       it 'returns an array of issues found by iids', :aggregate_failures do

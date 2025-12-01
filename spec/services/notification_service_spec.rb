@@ -1818,9 +1818,9 @@ RSpec.describe NotificationService, :mailer, feature_category: :team_planning do
 
           notification.new_note(note)
 
-          expect(PartitionedSentNotification.last(3).map(&:recipient).map(&:id))
+          expect(SentNotification.last(3).map(&:recipient).map(&:id))
             .to contain_exactly(*merge_request.assignees.pluck(:id), merge_request.author.id, @u_watcher.id)
-          expect(PartitionedSentNotification.last.in_reply_to_discussion_id).to eq(note.discussion_id)
+          expect(SentNotification.last.in_reply_to_discussion_id).to eq(note.discussion_id)
         end
 
         it_behaves_like 'project emails are disabled' do

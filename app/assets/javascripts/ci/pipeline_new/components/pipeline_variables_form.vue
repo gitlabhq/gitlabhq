@@ -51,6 +51,10 @@ export default {
       required: false,
       default: () => ({}),
     },
+    pipelineVariables: {
+      type: Array,
+      required: true,
+    },
   },
   data() {
     return {
@@ -117,6 +121,10 @@ export default {
 
       this.mergeParams(variables, CI_VARIABLE_TYPE_ENV_VAR, this.variableParams);
       this.mergeParams(variables, CI_VARIABLE_TYPE_FILE, this.fileParams);
+
+      this.pipelineVariables.forEach((variable) => {
+        this.mergeParams(variables, variable.variableType, { [variable.key]: variable.value });
+      });
 
       this.currentRefVariables = variables;
     },
