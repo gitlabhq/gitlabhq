@@ -24823,6 +24823,7 @@ An AI catalog agent.
 | ---- | ---- | ----------- |
 | <a id="aicatalogagentcreatedat"></a>`createdAt` | [`Time!`](#time) | Timestamp of when the item was created. |
 | <a id="aicatalogagentdescription"></a>`description` | [`String!`](#string) | Description of the item. |
+| <a id="aicatalogagentfoundational"></a>`foundational` | [`Boolean!`](#boolean) | Whether the item is a foundational agent (only on GitLab SaaS). |
 | <a id="aicatalogagentfoundationalchat"></a>`foundationalChat` | [`Boolean!`](#boolean) | Whether the item is a foundational flow or agent (only on GitLab SaaS). |
 | <a id="aicatalogagentid"></a>`id` | [`ID!`](#id) | ID of the item. |
 | <a id="aicatalogagentitemtype"></a>`itemType` | [`AiCatalogItemType!`](#aicatalogitemtype) | Type of the item. |
@@ -24925,6 +24926,7 @@ An AI catalog flow.
 | ---- | ---- | ----------- |
 | <a id="aicatalogflowcreatedat"></a>`createdAt` | [`Time!`](#time) | Timestamp of when the item was created. |
 | <a id="aicatalogflowdescription"></a>`description` | [`String!`](#string) | Description of the item. |
+| <a id="aicatalogflowfoundational"></a>`foundational` | [`Boolean!`](#boolean) | Whether the item is a foundational flow (only on GitLab SaaS). |
 | <a id="aicatalogflowfoundationalchat"></a>`foundationalChat` | [`Boolean!`](#boolean) | Whether the item is a foundational flow or agent (only on GitLab SaaS). |
 | <a id="aicatalogflowid"></a>`id` | [`ID!`](#id) | ID of the item. |
 | <a id="aicatalogflowitemtype"></a>`itemType` | [`AiCatalogItemType!`](#aicatalogitemtype) | Type of the item. |

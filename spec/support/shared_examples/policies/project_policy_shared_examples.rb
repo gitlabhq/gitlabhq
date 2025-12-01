@@ -216,7 +216,7 @@ RSpec.shared_examples 'project policies as planner' do
     disallowed_reporter_public_permissions +
       %i[
         fork_project read_commit_status read_container_image read_deployment
-        read_environment create_merge_request_in download_code
+        read_environment create_merge_request_in
       ]
   end
 
@@ -244,7 +244,9 @@ RSpec.shared_examples 'project policies as planner' do
       specify do
         expect_allowed(*guest_permissions)
         expect_allowed(*planner_permissions)
+        expect_allowed(:read_code, :download_code)
         expect_allowed(*(base_reporter_permissions - disallowed_reporter_permissions))
+        expect_disallowed(:create_merge_request_in)
         expect_disallowed(*disallowed_reporter_permissions)
         expect_disallowed(*(developer_permissions - [:create_wiki]))
         expect_disallowed(*(maintainer_permissions - [:admin_wiki]))
@@ -300,7 +302,9 @@ RSpec.shared_examples 'project policies as planner' do
       specify do
         expect_allowed(*guest_permissions)
         expect_allowed(*planner_permissions)
+        expect_allowed(:read_code, :download_code)
         expect_allowed(*(base_reporter_permissions - disallowed_reporter_permissions))
+        expect_disallowed(:create_merge_request_in)
         expect_disallowed(*disallowed_reporter_permissions)
         expect_disallowed(*(developer_permissions - [:create_wiki]))
         expect_disallowed(*(maintainer_permissions - [:admin_wiki]))

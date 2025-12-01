@@ -49,6 +49,10 @@ class ExternalIssue
     id
   end
 
+  def supports_time_tracking?
+    false
+  end
+
   def notes
     Note.none
   end

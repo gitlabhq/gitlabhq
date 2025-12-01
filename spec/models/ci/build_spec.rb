@@ -4445,26 +4445,6 @@ RSpec.describe Ci::Build, feature_category: :continuous_integration, factory_def
         expect(build.reload.finished_at).not_to eq(build.started_at + timeout.seconds)
       end
     end
-
-    context 'when FF enforce_job_configured_timeouts is disabled' do
-      before do
-        stub_feature_flags(enforce_job_configured_timeouts: false)
-      end
-
-      context 'when failure reason is job_execution_timeout' do
-        it 'does not overwrite finished_at' do
-          build.drop!(:job_execution_timeout)
-          expect(build.reload.finished_at).not_to eq(build.started_at + timeout.seconds)
-        end
-      end
-
-      context 'when the failure reason is not job_execution_timeout' do
-        it 'does not overwrite finished_at' do
-          build.drop!(:script_failure)
-          expect(build.reload.finished_at).not_to eq(build.started_at + timeout.seconds)
-        end
-      end
-    end
   end
 
   describe '#has_valid_build_dependencies?' do

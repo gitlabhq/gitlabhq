@@ -2,6 +2,23 @@
 
 require_relative '../support/helpers/test_env'
 
+module FactoryHelpers
+  def self.build_project_namespace(project, evaluator)
+    project_namespace_hash = {
+      name: evaluator.name,
+      path: evaluator.path,
+      parent: evaluator.namespace,
+      organization: evaluator.organization,
+      shared_runners_enabled: evaluator.shared_runners_enabled,
+      visibility_level: evaluator.visibility_level
+    }
+
+    project_namespace_hash[:id] = evaluator.project_namespace_id.presence
+
+    project.build_project_namespace(project_namespace_hash)
+  end
+end
+
 FactoryBot.define do
   # Project without repository
   #
@@ -110,17 +127,6 @@ FactoryBot.define do
         security_and_compliance_access_level: evaluator.security_and_compliance_access_level
       }
 
-      project_namespace_hash = {
-        name: evaluator.name,
-        path: evaluator.path,
-        parent: evaluator.namespace,
-        organization: evaluator.organization,
-        shared_runners_enabled: evaluator.shared_runners_enabled,
-        visibility_level: evaluator.visibility_level
-      }
-
-      project_namespace_hash[:id] = evaluator.project_namespace_id.presence
-
       project_ci_cd_settings_hash = {}
 
       ci_cd_settings_attribute_mapping = {
@@ -143,11 +149,15 @@ FactoryBot.define do
         project_ci_cd_settings_hash[ci_cd_settings_attr] = value unless value.nil?
       end
 
-      project.build_project_namespace(project_namespace_hash)
+      FactoryHelpers.build_project_namespace(project, evaluator)
       project.build_project_feature(project_feature_hash)
       project.build_ci_cd_settings(project_ci_cd_settings_hash)
 
       project.set_runners_token(evaluator.runners_token) if evaluator.runners_token.present?
+    end
+
+    after(:stub) do |project, evaluator|
+      FactoryHelpers.build_project_namespace(project, evaluator)
     end
 
     to_create do |project|

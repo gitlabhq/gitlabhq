@@ -780,7 +780,7 @@ Project permissions for [repository](project/repository/_index.md) features incl
    Ultimate license can view private repository content if an administrator (on GitLab Self-Managed
    or GitLab Dedicated) or group owner (on GitLab.com) gives those users permission. The administrator
    or group owner can create a [custom role](custom_roles/_index.md) through the API or UI and assign
-   that role to the users.
+   that role to the users. In GitLab 18.7 and later, users with the Planner role can view private repository content.
 2. On GitLab Self-Managed, users with the Guest role are able to perform this action only on public
    and internal projects (not on private projects). [External users](../administration/external_users.md)
    must be given explicit access (at least the **Reporter** role) even if the project is internal. Users

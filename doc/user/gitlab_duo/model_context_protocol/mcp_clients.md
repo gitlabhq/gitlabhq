@@ -56,17 +56,15 @@ For a click-through demo, see [GitLab Duo Agent Platform - MCP integration](http
 
 ## Prerequisites
 
-Before using a GitLab Duo feature with MCP, you must:
+- Meet the [prerequisites for the GitLab Duo Agent Platform](../../duo_agent_platform/_index.md#prerequisites).
 
-- Meet [the prerequisites for the GitLab Duo Agent Platform](../../duo_agent_platform/_index.md#prerequisites).
-
-In addition, for VS Code:
+For VS Code:
 
 - Install [VSCodium](https://vscodium.com/) or [Visual Studio Code](https://code.visualstudio.com/download) (VS Code).
-- Set up the GitLab Workflow extension from the [Open VSX Registry](https://open-vsx.org/extension/GitLab/gitlab-workflow)
+- Install and set up the GitLab Workflow extension from the [Open VSX Registry](https://open-vsx.org/extension/GitLab/gitlab-workflow)
   or the [Visual Studio Marketplace](https://marketplace.visualstudio.com/items?itemName=GitLab.gitlab-workflow).
-  - MCP support requires version 6.28.2 and later.
-  - Workspace and user configuration features require version 6.35.6 and later.
+  - For MCP support, install version 6.28.2 and later.
+  - For workspace and user configuration, install version 6.35.6 and later.
 
 For JetBrains IDEs:
 

@@ -431,8 +431,7 @@ module Ci
       end
 
       before_transition running: [:failed] do |build|
-        if build.failure_reason&.to_sym == :job_execution_timeout &&
-            Feature.enabled?(:enforce_job_configured_timeouts, :instance)
+        if build.failure_reason&.to_sym == :job_execution_timeout
           # If job was stuck or timed-out, only bill the set timeout.
           build.finished_at = build.started_at + build.timeout.seconds
         end

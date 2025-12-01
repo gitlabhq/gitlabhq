@@ -260,12 +260,6 @@ RSpec.describe ProjectPolicy, feature_category: :system_access do
           it { is_expected.not_to be_allowed(:create_merge_request_in) }
         end
 
-        context 'when the current_user is planner' do
-          let(:current_user) { planner }
-
-          it { is_expected.not_to be_allowed(:create_merge_request_in) }
-        end
-
         context 'when the current_user is reporter or above' do
           let(:current_user) { reporter }
 
@@ -283,36 +277,30 @@ RSpec.describe ProjectPolicy, feature_category: :system_access do
       context 'when project is public' do
         let(:project) { public_project }
 
-        %w[guest planner].each do |role|
-          context "when the current_user is #{role}" do
-            let(:current_user) { send(role) }
+        context 'when the current_user is guest' do
+          let(:current_user) { guest }
 
-            it { is_expected.not_to be_allowed(:create_merge_request_in) }
-          end
+          it { is_expected.not_to be_allowed(:create_merge_request_in) }
         end
       end
 
       context 'when project is internal' do
         let(:project) { internal_project }
 
-        %w[guest planner].each do |role|
-          context "when the current_user is #{role}" do
-            let(:current_user) { send(role) }
+        context 'when the current_user is guest' do
+          let(:current_user) { guest }
 
-            it { is_expected.not_to be_allowed(:create_merge_request_in) }
-          end
+          it { is_expected.not_to be_allowed(:create_merge_request_in) }
         end
       end
 
       context 'when project is private' do
         let(:project) { private_project }
 
-        %w[guest planner].each do |role|
-          context "when the current_user is #{role}" do
-            let(:current_user) { send(role) }
+        context 'when the current_user is guest' do
+          let(:current_user) { guest }
 
-            it { is_expected.not_to be_allowed(:create_merge_request_in) }
-          end
+          it { is_expected.not_to be_allowed(:create_merge_request_in) }
         end
 
         context 'when the current_user is reporter or above' do
@@ -320,6 +308,16 @@ RSpec.describe ProjectPolicy, feature_category: :system_access do
 
           it { is_expected.not_to be_allowed(:create_merge_request_in) }
         end
+      end
+    end
+
+    context 'when the current_user is planner in private project' do
+      let(:project) { private_project }
+      let(:current_user) { planner }
+
+      it 'cannot create merge requests even though they can download code' do
+        expect_allowed(:read_code, :download_code)
+        expect_disallowed(:create_merge_request_in)
       end
     end
   end
@@ -3700,7 +3698,7 @@ RSpec.describe ProjectPolicy, feature_category: :system_access do
           :maintainer | true
           :developer  | true
           :reporter   | true
-          :planner    | false
+          :planner    | true
           :guest      | false
         end
 

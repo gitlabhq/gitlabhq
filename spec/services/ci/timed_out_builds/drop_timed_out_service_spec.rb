@@ -26,16 +26,4 @@ RSpec.describe Ci::TimedOutBuilds::DropTimedOutService, feature_category: :conti
 
     it_behaves_like 'job is unchanged'
   end
-
-  context 'when enforce_job_configured_timeouts is disabled' do
-    before do
-      stub_feature_flags(enforce_job_configured_timeouts: false)
-    end
-
-    context 'when job timeout has been exceeded' do
-      let(:created_at) { job.timeout.seconds.ago }
-
-      it_behaves_like 'job is unchanged'
-    end
-  end
 end

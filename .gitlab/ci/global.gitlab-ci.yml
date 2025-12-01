@@ -94,16 +94,6 @@
       alias: postgres
     - !reference [.redis-services, services]
 
-.use-pg15:
-  extends:
-    - .pg-base-variables
-  services:
-    - !reference [.db-services-with-auto-explain, services]
-  variables:
-    PG_VERSION: "15"
-    REDIS_VERSION: "7.0"
-    REDIS_CLUSTER_VERSION: "7.0.11"
-
 .use-pg16:
   extends:
     - .pg-base-variables
@@ -129,13 +119,6 @@
     - name: elasticsearch:7.17.6
       command: ["elasticsearch", "-E", "discovery.type=single-node", "-E", "xpack.security.enabled=false", "-E", "cluster.routing.allocation.disk.threshold_enabled=false"]
 
-.use-pg15-es7-ee:
-  extends:
-    - .use-pg15
-  services:
-    - !reference [.db-services-with-auto-explain, services]
-    - !reference [.es7-services, services]
-
 .use-pg16-es7-ee:
   extends:
     - .use-pg16
@@ -159,14 +142,6 @@
     ES_SETTING_DISCOVERY_TYPE: "single-node"
     ES_SETTING_XPACK_SECURITY_ENABLED: "false"
     ES_SETTING_CLUSTER_ROUTING_ALLOCATION_DISK_THRESHOLD__ENABLED: "false"
-
-.use-pg15-es8-ee:
-  extends:
-    - .use-pg15
-    - .es8-variables
-  services:
-    - !reference [.db-services-with-auto-explain, services]
-    - !reference [.es8-services, services]
 
 .use-pg16-es8-ee:
   extends:
@@ -221,13 +196,6 @@
       alias: elasticsearch
       command: ["bin/opensearch", "-E", "discovery.type=single-node", "-E", "plugins.security.disabled=true", "-E", "cluster.routing.allocation.disk.threshold_enabled=false"]
 
-.use-pg15-opensearch1-ee:
-  extends:
-    - .use-pg15
-  services:
-    - !reference [.db-services-with-auto-explain, services]
-    - !reference [.os1-services, services]
-
 .use-pg16-opensearch1-ee:
   extends:
     - .use-pg16
@@ -247,13 +215,6 @@
     - name: opensearchproject/opensearch:2.15.0
       alias: elasticsearch
       command: ["bin/opensearch", "-E", "discovery.type=single-node", "-E", "plugins.security.disabled=true", "-E", "cluster.routing.allocation.disk.threshold_enabled=false"]
-
-.use-pg15-opensearch2-ee:
-  extends:
-    - .use-pg15
-  services:
-    - !reference [.db-services-with-auto-explain, services]
-    - !reference [.os2-services, services]
 
 .use-pg16-opensearch2-ee:
   extends:

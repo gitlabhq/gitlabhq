@@ -202,6 +202,25 @@ RSpec.describe ProcessCommitWorker, feature_category: :source_code_management do
       end
     end
 
+    context 'when referenced issue is an external issue' do
+      let(:external_issue) { ExternalIssue.new('JIRA-123', project) }
+      let(:external_issue_message) { "Fix bug in JIRA-123 @2h" }
+
+      before do
+        allow(worker).to receive(:validate_and_limit_time_tracking_references).and_return(external_issue_message)
+
+        allow_next_instance_of(Gitlab::WorkItems::TimeTrackingExtractor) do |instance|
+          allow(instance).to receive(:extract_time_spent).and_return({ external_issue => 7200 })
+        end
+      end
+
+      it 'does not add time spent or create notes for external issues' do
+        expect { track_time.call }
+          .to not_change { Timelog.count }
+          .and not_change { Note.count }
+      end
+    end
+
     context 'when referenced issue does not support time tracking' do
       before do
         # Stub the TimeTrackingExtractor to return our issue that doesn't support time tracking

@@ -402,6 +402,7 @@ RSpec.describe BulkImports::NdjsonPipeline, feature_category: :importers do
         it 'raises ActiveRecord::RecordInvalid exception' do
           object = build_stubbed(:issue)
 
+          expect(object).to receive(:invalid?).and_return(true)
           expect(Gitlab::Import::Errors).to receive(:merge_nested_errors).with(object)
 
           expect { subject.load(nil, [object]) }.to raise_error(ActiveRecord::RecordInvalid)

@@ -69,7 +69,7 @@ Do not confuse **ability** or **able** with [permissions](#permissions) or [role
 Use:
 
 - You cannot change this setting.
-- To change this setting, you must have the Maintainer role.
+- To change this setting, you must have at least the Developer role.
 - Confirm you can sign in.
 - The external load balancer cannot connect.
 - Option to delete branches introduced in GitLab 17.1.
@@ -1742,7 +1742,7 @@ When writing about the Maintainer role:
   - Instead of: if you are a maintainer
 
 - When the Maintainer role is the minimum required role:
-  - Use: at least the Maintainer role
+  - Use: the Maintainer or Owner role
   - Instead of: the Maintainer role or higher
 
 Do not use bold.

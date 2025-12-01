@@ -27,29 +27,28 @@
       .rd-app-content-header{ data: { hidden_files_warning: true } }
       - if empty_state_visible?
         = render RapidDiffs::EmptyStateComponent.new
-      .rd-app-code-theme.code.code-syntax-highlight-theme
-        .rd-app-diffs-list
-          = before_diffs_list
-          -# performance optimization: using a sibling element to cover diffs list is faster than changing opacity on the parent
-          .rd-app-diffs-list-loading-overlay{ data: { diffs_overlay: true } }
-          %div{ data: { diffs_list: true } }
-            - unless lazy?
+      .rd-app-diffs-list
+        = before_diffs_list
+        -# performance optimization: using a sibling element to cover diffs list is faster than changing opacity on the parent
+        .rd-app-diffs-list-loading-overlay{ data: { diffs_overlay: true } }
+        %div{ data: { diffs_list: true } }
+          - unless lazy?
+            = javascript_tag nonce: content_security_policy_nonce do
+              :plain
+                requestAnimationFrame(() => { window.performance.mark('rapid-diffs-first-diff-file-shown') })
+            - unless empty_state_visible?
+              - if diffs_list?
+                = diffs_list
+              - else
+                = render RapidDiffs::DiffFileComponent.with_collection(diffs_slice, parallel_view: parallel_view?)
+            - if diffs_stream_url
+              %div{ data: { stream_remaining_diffs: true } }
+            - else
               = javascript_tag nonce: content_security_policy_nonce do
                 :plain
-                  requestAnimationFrame(() => { window.performance.mark('rapid-diffs-first-diff-file-shown') })
-              - unless empty_state_visible?
-                - if diffs_list?
-                  = diffs_list
-                - else
-                  = render RapidDiffs::DiffFileComponent.with_collection(diffs_slice, parallel_view: parallel_view?)
-              - if diffs_stream_url
-                %div{ data: { stream_remaining_diffs: true } }
-              - else
-                = javascript_tag nonce: content_security_policy_nonce do
-                  :plain
-                    requestAnimationFrame(() => {
-                      window.performance.mark('rapid-diffs-list-loaded');
-                      window.performance.measure('rapid-diffs-list-loading', 'rapid-diffs-first-diff-file-shown', 'rapid-diffs-list-loaded');
-                    })
-          .rd-app-diffs-loading{ data: { list_loading: true }, hidden: !diffs_stream_url }
-            = render Pajamas::SpinnerComponent.new(size: :lg)
+                  requestAnimationFrame(() => {
+                    window.performance.mark('rapid-diffs-list-loaded');
+                    window.performance.measure('rapid-diffs-list-loading', 'rapid-diffs-first-diff-file-shown', 'rapid-diffs-list-loaded');
+                  })
+        .rd-app-diffs-loading{ data: { list_loading: true }, hidden: !diffs_stream_url }
+          = render Pajamas::SpinnerComponent.new(size: :lg)

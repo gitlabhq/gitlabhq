@@ -3,6 +3,8 @@ data_category: optional
 key_path: redis_hll_counters.analytics.i_analytics_cohorts_monthly
 description: "Unique visitors to /-/instance_statistics/cohorts"
 product_group: utilization
+product_categories:
+- consumables_cost_management
 value_type: number
 status: active
 time_frame: 28d

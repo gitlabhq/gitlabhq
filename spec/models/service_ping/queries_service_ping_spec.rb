@@ -35,7 +35,7 @@ RSpec.describe ServicePing::QueriesServicePing, feature_category: :service_ping 
     describe 'uniqueness validation' do
       let!(:existing_record) { create(:queries_service_ping) }
 
-      it { is_expected.to validate_uniqueness_of(:recorded_at) }
+      it { is_expected.to validate_uniqueness_of(:recorded_at).scoped_to(:organization_id) }
     end
   end
 end

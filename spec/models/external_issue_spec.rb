@@ -53,4 +53,8 @@ RSpec.describe ExternalIssue do
       expect(issue.hash).to eq(issue_2.hash)
     end
   end
+
+  describe '#supports_time_tracking?' do
+    it { expect(issue.supports_time_tracking?).to be(false) }
+  end
 end

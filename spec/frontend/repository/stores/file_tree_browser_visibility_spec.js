@@ -1,4 +1,5 @@
 import { createTestingPinia } from '@pinia/testing';
+import { nextTick, reactive } from 'vue';
 import { useFileTreeBrowserVisibility } from '~/repository/stores/file_tree_browser_visibility';
 import { useMainContainer } from '~/pinia/global_stores/main_container';
 import { FILE_TREE_BROWSER_VISIBILITY } from '~/repository/constants';
@@ -13,11 +14,11 @@ describe('useFileTreeBrowserVisibility', () => {
   useLocalStorageSpy();
 
   beforeEach(() => {
-    mockMainContainerStore = {
+    mockMainContainerStore = reactive({
       isCompact: false,
       isIntermediate: false,
       isWide: true,
-    };
+    });
 
     useMainContainer.mockReturnValue(mockMainContainerStore);
     createTestingPinia({
@@ -189,6 +190,86 @@ describe('useFileTreeBrowserVisibility', () => {
 
         expect(store.shouldRestoreFocusToToggle).toBe(false);
       });
+    });
+  });
+
+  describe('setupMainContainerWatcher', () => {
+    beforeEach(() => {
+      store.setupMainContainerWatcher();
+    });
+
+    describe('viewport transitions', () => {
+      it.each`
+        fromViewport      | toViewport        | initialState                        | expectedState                       | wasVisibleBeforeCompact | description
+        ${'wide'}         | ${'compact'}      | ${{ expanded: true, peek: false }}  | ${{ expanded: false, peek: false }} | ${true}                 | ${'hides and saves visible state'}
+        ${'intermediate'} | ${'compact'}      | ${{ expanded: false, peek: true }}  | ${{ expanded: false, peek: false }} | ${true}                 | ${'hides and saves visible state'}
+        ${'wide'}         | ${'compact'}      | ${{ expanded: false, peek: false }} | ${{ expanded: false, peek: false }} | ${false}                | ${'does not save when already hidden'}
+        ${'wide'}         | ${'intermediate'} | ${{ expanded: true, peek: false }}  | ${{ expanded: false, peek: true }}  | ${false}                | ${'converts expanded to peek'}
+        ${'intermediate'} | ${'wide'}         | ${{ expanded: false, peek: true }}  | ${{ expanded: true, peek: false }}  | ${false}                | ${'converts peek to expanded'}
+      `(
+        '$fromViewport -> $toViewport: $description',
+        async ({
+          fromViewport,
+          toViewport,
+          initialState,
+          expectedState,
+          wasVisibleBeforeCompact,
+        }) => {
+          // Set initial viewport
+          const viewportStates = {
+            compact: { isCompact: true, isIntermediate: false, isWide: false },
+            intermediate: { isCompact: false, isIntermediate: true, isWide: false },
+            wide: { isCompact: false, isIntermediate: false, isWide: true },
+          };
+
+          Object.assign(mockMainContainerStore, viewportStates[fromViewport]);
+          store.fileTreeBrowserIsExpanded = initialState.expanded;
+          store.fileTreeBrowserIsPeekOn = initialState.peek;
+          await nextTick();
+
+          // Transition to new viewport
+          Object.assign(mockMainContainerStore, viewportStates[toViewport]);
+          await nextTick();
+
+          expect(store.fileTreeBrowserIsExpanded).toBe(expectedState.expanded);
+          expect(store.fileTreeBrowserIsPeekOn).toBe(expectedState.peek);
+          expect(store.wasVisibleBeforeCompact).toBe(wasVisibleBeforeCompact);
+        },
+      );
+    });
+
+    describe('state restoration from compact', () => {
+      it.each`
+        toViewport        | wasVisibleBeforeCompact | expectedState                       | description
+        ${'intermediate'} | ${true}                 | ${{ expanded: false, peek: true }}  | ${'restores to peek state'}
+        ${'wide'}         | ${true}                 | ${{ expanded: true, peek: false }}  | ${'restores to expanded state'}
+        ${'intermediate'} | ${false}                | ${{ expanded: false, peek: false }} | ${'does not restore when not saved'}
+        ${'wide'}         | ${false}                | ${{ expanded: false, peek: false }} | ${'does not restore when not saved'}
+      `(
+        'compact -> $toViewport: $description',
+        async ({ toViewport, wasVisibleBeforeCompact, expectedState }) => {
+          const viewportStates = {
+            intermediate: { isCompact: false, isIntermediate: true, isWide: false },
+            wide: { isCompact: false, isIntermediate: false, isWide: true },
+          };
+
+          // Start in compact with saved state
+          mockMainContainerStore.isCompact = true;
+          mockMainContainerStore.isIntermediate = false;
+          mockMainContainerStore.isWide = false;
+          store.wasVisibleBeforeCompact = wasVisibleBeforeCompact;
+
+          await nextTick();
+
+          // Transition to target viewport
+          Object.assign(mockMainContainerStore, viewportStates[toViewport]);
+          await nextTick();
+
+          expect(store.fileTreeBrowserIsExpanded).toBe(expectedState.expanded);
+          expect(store.fileTreeBrowserIsPeekOn).toBe(expectedState.peek);
+          expect(store.wasVisibleBeforeCompact).toBe(false);
+        },
+      );
     });
   });
 });

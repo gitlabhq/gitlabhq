@@ -437,6 +437,12 @@ class ProjectPolicy < BasePolicy
     enable :read_internal_note
     enable :read_merge_request
     enable :export_work_items
+    enable :read_code
+    enable :download_code
+  end
+
+  rule { private_project & planner }.policy do
+    prevent :create_merge_request_in
   end
 
   rule { can?(:reporter_access) & can?(:create_issue) }.enable :create_incident
