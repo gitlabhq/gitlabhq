@@ -4,9 +4,8 @@ module QA
   RSpec.describe 'Package', :requires_admin, product_group: :package_registry do
     describe 'Terraform Module Registry',
       quarantine: {
-        only: { job: 'airgapped' },
-        issue: 'https://gitlab.com/gitlab-org/gitlab/-/issues/417407',
-        type: :investigating
+        issue: 'https://gitlab.com/gitlab-org/quality/test-failure-issues/-/issues/14568',
+        type: :flaky
       } do
       include Runtime::Fixtures
 

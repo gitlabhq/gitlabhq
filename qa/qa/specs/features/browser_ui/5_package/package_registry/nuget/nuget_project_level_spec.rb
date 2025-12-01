@@ -2,9 +2,8 @@
 
 module QA
   RSpec.describe 'Package', :object_storage, product_group: :package_registry, quarantine: {
-    issue: 'https://gitlab.com/gitlab-org/gitlab/-/issues/455027',
-    only: { condition: -> { ENV['QA_RUN_TYPE']&.match?('gdk-instance') } },
-    type: :investigating
+    issue: 'https://gitlab.com/gitlab-org/quality/test-failure-issues/-/issues/14566',
+    type: :flaky
   } do
     describe 'NuGet project level endpoint', :external_api_calls do
       include Support::Helpers::MaskToken
