@@ -618,6 +618,15 @@ RSpec.describe Projects::CommitController, feature_category: :source_code_manage
                 expect(json_response['count']['all']).to eq 2
               end
             end
+
+            context 'when page is invalid' do
+              it 'does not fail' do
+                get_pipelines(id: commit.id, ref: project.default_branch, page: ['wrong'], format: :json)
+
+                expect(json_response['pipelines'].count).to eq(2)
+                expect(json_response['count']['all']).to eq 2
+              end
+            end
           end
         end
       end

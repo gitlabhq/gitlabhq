@@ -398,21 +398,19 @@ To manage who must approve any changes to custom rules, use [Code Owners](../pro
 - [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/19251) in GitLab 18.4 as a [beta](../../policy/development_stages_support.md#beta) feature with a [flag](../../administration/feature_flags/_index.md) called `ai_user_model_switching`. Disabled by default.
 - [Enabled](https://gitlab.com/gitlab-org/gitlab/-/issues/560319) in GitLab 18.4.
 - [Available on GitLab Self-Managed](https://gitlab.com/groups/gitlab-org/-/epics/19344) in GitLab 18.6.
+- [Added](https://gitlab.com/groups/gitlab-org/-/epics/19345) to VS Code and JetBrains IDEs in GitLab 18.6.
 - Feature flag `ai_user_model_switching` [removed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/214042) in GitLab 18.7.
 
 {{< /history >}}
 
-{{< alert type="flag" >}}
+When you use Chat in the GitLab UI, VS Code, or a JetBrains IDE, you can select
+the model to use for conversations.
 
-The availability of this feature is controlled by a feature flag.
-For more information, see the history.
+If you open a previous chat from the chat history and continue that conversation,
+Chat uses the model that you previously selected.
 
-{{< /alert >}}
-
-When you use Chat in the GitLab UI, you can select the model to use for conversations. If you open a previous chat from the chat history and continue the conversation,
-Chat uses the currently selected model.
-
-Model selection in the IDE is not supported.
+If you select a new model when in an existing conversation, Chat creates a new
+conversation.
 
 Prerequisites:
 
@@ -437,8 +435,16 @@ Prerequisites:
 
 To select a model:
 
-1. Under the chat text box, turn on the **Agentic mode (Beta)** toggle.
-1. Select a model from the dropdown list.
+- In the GitLab UI:
+  1. Under the chat text box, ensure that the **Agentic mode (Beta)** toggle
+     is turned on.
+  1. Select a model from the dropdown list.
+
+- In your IDE:
+  1. On the left sidebar, select **GitLab Duo Agent Platform (Beta)**
+     ({{< icon name="duo-agentic-chat" >}}).
+  1. Select the **Chat** tab.
+  1. Select a model from the dropdown list.
 
 ### Select an agent
 

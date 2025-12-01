@@ -10,8 +10,8 @@ module Database
       include Database::BackgroundWorkSchedulable
 
       class_methods do
-        def schedule_feature_flag_name
-          :execute_batched_migrations_on_schedule
+        def scheduler_feature_flag_enabled?
+          Feature.enabled?(:execute_batched_migrations_on_schedule, type: :ops) # rubocop:disable Gitlab/FeatureFlagWithoutActor -- Global FF
         end
       end
 

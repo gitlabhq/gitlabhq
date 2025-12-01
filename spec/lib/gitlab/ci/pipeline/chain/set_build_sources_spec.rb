@@ -3,6 +3,8 @@
 require 'spec_helper'
 
 RSpec.describe Gitlab::Ci::Pipeline::Chain::SetBuildSources, feature_category: :security_policy_management do
+  include RepoHelpers
+
   let_it_be(:group) { create(:group) }
   let_it_be(:project) { create(:project, :repository, group: group) }
   let_it_be_with_reload(:compliance_project) { create(:project, :empty_repo, group: group) }
@@ -36,24 +38,38 @@ RSpec.describe Gitlab::Ci::Pipeline::Chain::SetBuildSources, feature_category: :
       {
         production: { stage: 'deploy', script: 'cap prod' },
         rspec: { stage: 'test', script: 'rspec' },
-        spinach: { stage: 'test', script: 'spinach' }
+        spinach: { stage: 'test', script: 'spinach' },
+        child: { trigger: { include: [{ local: 'child.yml' }] } }
       }
     end
 
-    before do
-      stub_ci_pipeline_yaml_file(YAML.dump(config))
+    let(:child_config) do
+      {
+        child_job: { stage: 'test', script: 'child' }
+      }
     end
 
-    context 'without security policy' do
-      it 'sets the build source based on pipeline source' do
-        run_chain
-
-        builds = command.pipeline_seed.stages.flat_map(&:statuses)
-        expect(builds.size).to eq(3)
-        builds.each do |build|
-          expect(build.build_source.project_id).to eq(project.id)
-          expect(build.build_source.source).to eq('push')
+    around do |example|
+      create_and_delete_files(
+        project, { '.gitlab-ci.yml' => YAML.dump(config) }
+      ) do
+        create_and_delete_files(
+          project, { 'child.yml' => YAML.dump(child_config) }
+        ) do
+          pipeline.sha = project.commit.id
+          example.run
         end
+      end
+    end
+
+    it 'sets the build source based on pipeline source' do
+      run_chain
+
+      builds = command.pipeline_seed.stages.flat_map(&:statuses)
+      expect(builds.size).to eq(4)
+      builds.each do |build|
+        expect(build.build_source.project_id).to eq(project.id)
+        expect(build.build_source.source).to eq('push')
       end
     end
   end

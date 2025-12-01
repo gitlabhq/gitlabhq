@@ -19,7 +19,8 @@ module Ci
     partitionable scope: :build, partitioned: true
 
     belongs_to :build, ->(build_name) { in_partition(build_name) },
-      class_name: 'Ci::Build', partition_foreign_key: :partition_id,
+      class_name: 'Ci::Processable', partition_foreign_key: :partition_id,
+      foreign_key: :build_id,
       inverse_of: :build_source
 
     validates :build, presence: true

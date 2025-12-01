@@ -1,5 +1,5 @@
 name: gitlab_main_clusterwide
-description: Schema for all Cluster-wide tables, ex. application_settings, etc.
+description: Schema for all Cluster-wide tables, ex. application_settings, etc. (deprecated)
 allow_cross_joins:
   - gitlab_shared
   - gitlab_main
@@ -18,3 +18,5 @@ allow_cross_transactions:
 allow_cross_foreign_keys:
   - gitlab_main
 require_sharding_key: false
+# To prevent ID confusion between different cells
+disallow_sequences: true

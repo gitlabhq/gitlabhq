@@ -4,7 +4,12 @@ module Projects
   module Forks
     # A service for fetching upstream default branch and merging it to the fork's specified branch.
     class SyncService < BaseService
+      include Gitlab::Utils::StrongMemoize
+
       ONGOING_MERGE_ERROR = 'The synchronization did not happen due to another merge in progress'
+      PROJECT_NOT_A_FORK_ERROR = 'Project is not a fork'
+      SOURCE_PROJECT_MISSING_ERROR = 'Source project is missing'
+      TARGET_BRANCH_MISSING_ERROR = 'Target branch is missing'
 
       MergeError = Class.new(StandardError)
 
@@ -12,12 +17,12 @@ module Projects
         super(project, user)
 
         @source_project = project.fork_source
-        @head_sha = project.repository.commit(target_branch).sha
         @target_branch = target_branch
-        @details = Projects::Forks::Details.new(project, target_branch)
       end
 
       def execute
+        validate_input!
+
         execute_service
 
         ServiceResponse.success
@@ -31,7 +36,7 @@ module Projects
 
       private
 
-      attr_reader :source_project, :head_sha, :target_branch, :details
+      attr_reader :source_project, :target_branch
 
       # The method executes multiple steps:
       #
@@ -64,6 +69,22 @@ module Projects
           merge_commit_id = perform_merge(cross_repo_source_sha, ahead)
           raise MergeError, ONGOING_MERGE_ERROR unless merge_commit_id
         end
+      end
+
+      def head_sha
+        project.repository.commit(target_branch)&.sha
+      end
+      strong_memoize_attr :head_sha
+
+      def details
+        Projects::Forks::Details.new(project, target_branch)
+      end
+      strong_memoize_attr :details
+
+      def validate_input!
+        raise MergeError, PROJECT_NOT_A_FORK_ERROR unless project.forked?
+        raise MergeError, SOURCE_PROJECT_MISSING_ERROR if source_project.blank?
+        raise MergeError, TARGET_BRANCH_MISSING_ERROR if head_sha.blank?
       end
 
       # This method merges the upstream default branch to the fork specified branch.

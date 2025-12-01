@@ -21,6 +21,15 @@ excessive alerts or causing widespread instance degradation.
 When a user exceeds their rate limit, GitLab returns a `429 Too Many Requests`
 HTTP status code with a plain-text response of `Retry later`.
 
+Rate limits are automatically configured and managed by GitLab. You cannot:
+
+- Modify rate limit values.
+- Disable rate limiting.
+- Configure custom rate limits through the Admin area.
+- Access rate limiting settings in the UI.
+
+GitLab manages these settings to ensure optimal performance and stability for your instance.
+
 For more information, see [rate limits](../../security/rate_limits.md).
 
 ## Rate limits by request type
@@ -42,19 +51,6 @@ GitLab automatically sets these limits based on your reference architecture size
 | 50,000 users           | 60,000                  | 6,000                   |
 
 For more information, see [reference architectures](../reference_architectures/_index.md).
-
-## Configuration and management
-
-Rate limits are automatically configured and managed by GitLab.
-
-You cannot:
-
-- Modify rate limit values.
-- Disable rate limiting.
-- Configure custom rate limits through the Admin area.
-- Access rate limiting settings in the UI.
-
-GitLab manages these settings to ensure optimal performance and stability for your instance.
 
 ## Response headers
 

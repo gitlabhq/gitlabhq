@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-module Database # rubocop:disable Gitlab/BoundedContexts -- Database Framework
+module Database # rubocop:disable Gitlab/BoundedContexts -- This is the best place for this module
   module BackgroundOperation
     class BaseSchedulerWorker
       include ApplicationWorker
@@ -11,10 +11,8 @@ module Database # rubocop:disable Gitlab/BoundedContexts -- Database Framework
       data_consistency :sticky
       feature_category :database
 
-      MAX_RUNNING_OPERATIONS = 2
-
-      def self.schedule_feature_flag_name
-        # TODO; Add a FF in https://gitlab.com/gitlab-org/gitlab/-/issues/577666
+      def self.scheduler_feature_flag_enabled?
+        Feature.enabled?(:schedule_background_operations, type: :ops) # rubocop:disable Gitlab/FeatureFlagWithoutActor -- Global FF
       end
 
       def perform
@@ -30,21 +28,17 @@ module Database # rubocop:disable Gitlab/BoundedContexts -- Database Framework
       private
 
       def queueable_workers
-        # Orchestrator worker will be created in https://gitlab.com/gitlab-org/gitlab/-/issues/578058
-        # Which will get `MAX_RUNNING_OPERATIONS` from ApplicationSettings, similar to BBM.
-
-        self.class.worker_class.schedulable_workers(MAX_RUNNING_OPERATIONS).to_a
+        self.class.worker_class.schedulable_workers(self.class.orchestrator_class.max_running_jobs).to_a
       end
 
       def queue_workers_for_execution(workers)
-        # Orchestrator worker will be created in https://gitlab.com/gitlab-org/gitlab/-/issues/578058
-        # Which will uncomment below lines
+        return unless workers.present?
 
-        # return unless workers.present?
+        jobs_arguments = workers.map do |worker|
+          [worker.class.name, worker.partition, worker.id, tracking_database.to_s]
+        end
 
-        # jobs_arguments = workers.map { |worker| [tracking_database.to_s, worker.id] }
-
-        # orchestrator_worker_class.perform_with_capacity(jobs_arguments)
+        self.class.orchestrator_class.perform_with_capacity(jobs_arguments)
       end
     end
   end

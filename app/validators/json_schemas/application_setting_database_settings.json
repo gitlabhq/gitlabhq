@@ -1,0 +1,14 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "description": "Holds database settings",
+  "type": "object",
+  "additionalProperties": false,
+  "properties": {
+    "background_operations_max_jobs": {
+      "type": "integer",
+      "minimum": 1,
+      "default": 10,
+      "description": "Maximum number of background operations jobs that can run concurrently"
+    }
+  }
+}

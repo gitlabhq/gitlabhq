@@ -64,13 +64,6 @@ module Ci
     has_many :report_results, class_name: 'Ci::BuildReportResult', foreign_key: :build_id, inverse_of: :build
     has_one :namespace, through: :project
 
-    has_one :build_source,
-      ->(build) { in_partition(build) },
-      class_name: 'Ci::BuildSource',
-      foreign_key: :build_id,
-      inverse_of: :build,
-      partition_foreign_key: :partition_id
-
     # Projects::DestroyService destroys Ci::Pipelines, which use_fast_destroy on :job_artifacts
     # before we delete builds. By doing this, the relation should be empty and not fire any
     # DELETE queries when the Ci::Build is destroyed. The next step is to remove `dependent: :destroy`.
@@ -1281,11 +1274,6 @@ module Ci
       (::Time.current - queued_at).seconds.to_i
     end
     strong_memoize_attr :time_in_queue_seconds
-
-    def source
-      build_source&.source || pipeline.source
-    end
-    strong_memoize_attr :source
 
     def token
       return encoded_jwt if user&.composite_identity_enforced? || use_jwt_for_ci_cd_job_token?

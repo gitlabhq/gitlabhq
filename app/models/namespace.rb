@@ -868,6 +868,27 @@ class Namespace < ApplicationRecord
     Gitlab::Access.human_access(user_access)
   end
 
+  def allowed_work_item_types
+    ::WorkItems::TypesFilter.new(container: self).allowed_types
+  end
+  strong_memoize_attr :allowed_work_item_types
+
+  def allowed_work_item_type?(type)
+    type = type.to_s
+
+    unless ::WorkItems::TypesFilter.base_types.include?(type)
+      raise ArgumentError,
+        %("#{type}" is not a valid WorkItems::Type.base_types)
+    end
+
+    allowed_work_item_types.include?(type)
+  end
+
+  def supports_work_items?
+    allowed_work_item_types.present?
+  end
+  strong_memoize_attr :supports_work_items?
+
   private
 
   def parent_organization_match

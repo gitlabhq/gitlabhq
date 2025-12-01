@@ -6,5 +6,7 @@ allow_cross_joins:
 allow_cross_transactions:
   - gitlab_internal
 require_sharding_key: true
+# Auto-increment int sequences will collide when moved to a single database.
+disallow_sequences: true
 sharding_root_tables:
   - organizations

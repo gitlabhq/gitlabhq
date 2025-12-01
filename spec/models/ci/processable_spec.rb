@@ -563,4 +563,30 @@ RSpec.describe Ci::Processable, feature_category: :continuous_integration do
         .to change { processable.enqueue_immediately? }.to(true)
     end
   end
+
+  describe '#source' do
+    shared_examples_for 'build_source processable' do
+      it 'defaults to the pipeline source name' do
+        expect(processable.source).to eq(processable.pipeline.source)
+      end
+
+      it 'returns the associated source name when present' do
+        create(:ci_build_source, build: processable, source: 'scan_execution_policy')
+
+        expect(processable.source).to eq('scan_execution_policy')
+      end
+    end
+
+    context 'when the processable is a bridge' do
+      let(:processable) { create(:ci_bridge, pipeline: pipeline) }
+
+      it_behaves_like 'build_source processable'
+    end
+
+    context 'when the processable is a build' do
+      let(:processable) { create(:ci_build, pipeline: pipeline) }
+
+      it_behaves_like 'build_source processable'
+    end
+  end
 end

@@ -1242,27 +1242,23 @@ RSpec.describe Issue, feature_category: :team_planning do
   end
 
   describe '#participants' do
-    it_behaves_like 'issuable participants' do
-      let_it_be(:issuable_parent) { create(:project, :public) }
-      let_it_be_with_refind(:issuable) { create(:issue, project: issuable_parent) }
+    context 'with public project' do
+      it_behaves_like 'issuable participants' do
+        let_it_be(:issuable_parent) { create(:project, :public) }
+        let(:author) { create(:user, developer_of: issuable_parent) }
+        let(:issuable) { create(:issue, project: issuable_parent, author: author) }
 
-      let(:params) { { noteable: issuable, project: issuable_parent } }
+        let(:params) { { noteable: issuable, project: issuable_parent } }
+      end
     end
 
-    context 'using a private project' do
-      it 'does not include mentioned users that do not have access to the project' do
-        project = create(:project)
-        issue = create(:issue, project: project)
-        user = create(:user)
+    context 'with private project' do
+      it_behaves_like 'issuable participants' do
+        let_it_be(:issuable_parent) { create(:project, :private) }
+        let(:author) { create(:user, developer_of: issuable_parent) }
+        let(:issuable) { create(:issue, project: issuable_parent, author: author) }
 
-        create(
-          :note_on_issue,
-          noteable: issue,
-          project: project,
-          note: user.to_reference
-        )
-
-        expect(issue.participants).not_to include(user)
+        let(:params) { { noteable: issuable, project: issuable_parent } }
       end
     end
   end

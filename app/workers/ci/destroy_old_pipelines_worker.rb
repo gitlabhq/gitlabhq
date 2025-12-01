@@ -12,11 +12,14 @@ module Ci
     idempotent!
 
     LIMIT = 250
+    RE_ENQUEUE_THRESHOLD = 100
     CONCURRENCY = 10
 
     def perform_work(*)
       Project.find_by_id(cleanup_queue.fetch_next_project_id!).try do |project|
         with_context(project: project) do
+          next perform_pipelines_cleanup(project) if optimized_pipeline_query?(project)
+
           timestamp = project.ci_delete_pipelines_in_seconds.seconds.ago
           pipelines = Ci::Pipeline.for_project(project.id).created_before(timestamp)
           pipelines = pipelines.not_ref_protected if skip_protected_pipelines?(project)
@@ -55,6 +58,25 @@ module Ci
 
     def skip_locked_pipelines?(project)
       Feature.enabled?(:ci_skip_locked_pipelines, project.root_namespace, type: :wip)
+    end
+
+    def optimized_pipeline_query?(project)
+      Feature.enabled?(:ci_optimized_old_pipelines_query, project.root_namespace, type: :gitlab_com_derisk)
+    end
+
+    def perform_pipelines_cleanup(project)
+      result = Ci::Pipelines::AutoCleanupService.new(project: project).execute
+      payload = result.payload
+
+      destroyed_count = payload[:destroyed_pipelines_size]
+      skipped_count = payload[:skipped_pipelines_size]
+
+      cleanup_queue.enqueue!(project) if destroyed_count > RE_ENQUEUE_THRESHOLD ||
+        skipped_count > RE_ENQUEUE_THRESHOLD
+
+      log_extra_metadata_on_done(:removed_count, destroyed_count)
+      log_extra_metadata_on_done(:skipped_count, skipped_count)
+      log_extra_metadata_on_done(:project, project.full_path)
     end
   end
 end

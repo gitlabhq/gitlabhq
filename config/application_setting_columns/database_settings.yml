@@ -1,0 +1,12 @@
+---
+api_type:
+attr: database_settings
+clusterwide: true
+column: database_settings
+db_type: jsonb
+default: "'{}'::jsonb"
+description: Database settings
+encrypted: false
+gitlab_com_different_than_default: false
+jihu: false
+not_null: true

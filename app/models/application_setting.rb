@@ -947,6 +947,11 @@ class ApplicationSetting < ApplicationRecord
 
   validates :database_reindexing, json_schema: { filename: "application_setting_database_reindexing" }
 
+  jsonb_accessor :database_settings,
+    background_operations_max_jobs: [:integer, { default: 10 }]
+
+  validates :database_settings, json_schema: { filename: "application_setting_database_settings" }
+
   attr_encrypted :external_auth_client_key, encryption_options_base_32_aes_256_gcm
   attr_encrypted :external_auth_client_key_pass, encryption_options_base_32_aes_256_gcm
   attr_encrypted :lets_encrypt_private_key, encryption_options_base_32_aes_256_gcm

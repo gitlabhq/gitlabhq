@@ -51,7 +51,7 @@ module Gitlab
           scope :not_on_hold, -> { where('on_hold_until IS NULL OR on_hold_until < NOW()') }
 
           scope :executable, -> do
-            with_statuses(:queued, :paused).not_on_hold
+            with_statuses(:queued, :active, :paused).not_on_hold
           end
 
           scope :unfinished_with_config, ->(job_class_name, table_name, column_name, job_arguments, org_id: nil) do
@@ -93,11 +93,11 @@ module Gitlab
             state :failed, value: 4
 
             event :finish do
-              transition [:paused, :finished, :active, :finalizing] => :finished
+              transition [:paused, :finished, :active] => :finished
             end
 
             event :failure do
-              transition [:failed, :finalizing, :active] => :failed
+              transition [:failed, :active] => :failed
             end
 
             event :hold do
@@ -152,6 +152,13 @@ module Gitlab
           # skipping the first row, as required by KeysetIterator.
           def next_min_cursor
             last_job&.max_cursor || min_cursor
+          end
+
+          def interval_elapsed?(variance: 0)
+            return true unless last_job
+
+            interval_with_variance = interval - variance
+            last_job.created_at <= Time.current - interval_with_variance
           end
 
           def health_context

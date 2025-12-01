@@ -653,7 +653,8 @@ module ApplicationSettingsHelper
       :resource_usage_limits,
       :runner_jobs_request_api_limit,
       :runner_jobs_patch_trace_api_limit,
-      :runner_jobs_endpoints_api_limit
+      :runner_jobs_endpoints_api_limit,
+      :background_operations_max_jobs
     ].tap do |settings|
       unless Gitlab.com?
         settings << :deactivate_dormant_users

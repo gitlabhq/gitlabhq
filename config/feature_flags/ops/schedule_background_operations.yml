@@ -1,0 +1,10 @@
+---
+name: schedule_background_operations
+description: Controls scheduling of Background operations
+feature_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/578058
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/211385
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/580088
+milestone: '18.7'
+group: group::database frameworks
+type: ops
+default_enabled: false

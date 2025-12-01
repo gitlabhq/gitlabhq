@@ -362,7 +362,8 @@ module ApplicationSettingImplementation
         enforce_pipl_compliance: false,
         model_prompt_cache_enabled: true,
         lock_model_prompt_cache_enabled: false,
-        pipeline_limit_per_user: 0
+        pipeline_limit_per_user: 0,
+        background_operations_max_jobs: 10
       }.tap do |hsh|
         hsh.merge!(non_production_defaults) unless Rails.env.production?
       end

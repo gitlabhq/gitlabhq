@@ -1,6 +1,7 @@
 ---
 table_name: p_ci_pipeline_iids
-classes: []
+classes:
+  - Ci::PipelineIid
 feature_categories:
 - continuous_integration
 description: |

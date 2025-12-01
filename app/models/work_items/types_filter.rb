@@ -7,18 +7,17 @@ module WorkItems
     OKR_TYPES = %w[key_result objective].freeze
     DISABLED_WORKFLOW_TYPES = %w[requirement test_case].freeze
 
-    def self.allowed?(container:, type:)
-      new(container: container)
-        .allowed_types
-        .include?(type)
-    end
+    class << self
+      include ::Gitlab::Utils::StrongMemoize
 
-    def self.allowed_types_for_issues
-      base_types.keys.excluding('epic', *OKR_TYPES)
-    end
+      def allowed_types_for_issues
+        base_types.excluding('epic', *OKR_TYPES)
+      end
 
-    def self.base_types
-      ::WorkItems::Type.base_types
+      def base_types
+        ::WorkItems::Type.base_types.keys.map(&:to_s)
+      end
+      strong_memoize_attr :base_types
     end
 
     def initialize(container:)
@@ -34,7 +33,7 @@ module WorkItems
     def allowed_types
       return [] if resource_parent.blank?
 
-      base_types.keys.to_set
+      base_types.to_set
         .then { |types| filter_resource_parent_type(types) }
         .then { |types| filter_disabled_workflows(types) }
         .then { |types| filter_service_desk(types) }

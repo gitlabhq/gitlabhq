@@ -1766,6 +1766,9 @@ RSpec.describe Project, factory_default: :keep, feature_category: :groups_and_pr
     it { is_expected.to delegate_method(:pypi_package_requests_forwarding).to(:namespace) }
     it { is_expected.to delegate_method(:npm_package_requests_forwarding).to(:namespace) }
     it { is_expected.to delegate_method(:deletion_schedule).to(:project_namespace).allow_nil }
+    it { is_expected.to delegate_method(:allowed_work_item_types).to(:project_namespace).allow_nil }
+    it { is_expected.to delegate_method(:allowed_work_item_type?).to(:project_namespace).allow_nil }
+    it { is_expected.to delegate_method(:supports_work_items?).to(:project_namespace).allow_nil }
 
     describe 'read project settings' do
       %i[

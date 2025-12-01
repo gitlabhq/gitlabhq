@@ -135,6 +135,8 @@
   - 2
 - - auto_merge
   - 3
+- - background_operations
+  - 1
 - - batched_background_migrations
   - 1
 - - batched_git_ref_updates_project_cleanup

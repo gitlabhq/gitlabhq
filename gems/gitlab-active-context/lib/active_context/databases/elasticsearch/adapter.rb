@@ -21,6 +21,10 @@ module ActiveContext
         def executor_klass
           ActiveContext::Databases::Elasticsearch::Executor
         end
+
+        def indexer_connection_options
+          { url: normalize_urls(options[:url]) }
+        end
       end
     end
   end

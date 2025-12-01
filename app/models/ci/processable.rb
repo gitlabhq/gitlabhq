@@ -48,6 +48,13 @@ module Ci
 
     belongs_to :resource_group, class_name: 'Ci::ResourceGroup', inverse_of: :processables
 
+    has_one :build_source,
+      ->(build) { in_partition(build) },
+      class_name: 'Ci::BuildSource',
+      foreign_key: :build_id,
+      inverse_of: :build,
+      partition_foreign_key: :partition_id
+
     accepts_nested_attributes_for :needs
     accepts_nested_attributes_for :job_definition_instance
 
@@ -339,6 +346,11 @@ module Ci
     def set_enqueue_immediately!
       redis_state.enqueue_immediately = true
     end
+
+    def source
+      build_source&.source || pipeline.source
+    end
+    strong_memoize_attr :source
 
     private
 

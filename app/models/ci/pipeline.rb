@@ -72,10 +72,23 @@ module Ci
       track_if: -> { !importing? },
       ensure_if: -> { !importing? },
       init: ->(pipeline, scope) do
-        if pipeline
-          pipeline.project&.all_pipelines&.maximum(:iid) || pipeline.project&.all_pipelines&.count
-        elsif scope
-          ::Ci::Pipeline.where(**scope).maximum(:iid)
+        # Remove this line with FF `update_init_iid_to_read_from_ci_pipeline_iids`
+        project_actor = pipeline&.project || scope&.dig(:project)
+
+        if Feature.enabled?(:update_init_iid_to_read_from_ci_pipeline_iids, project_actor)
+          scope = { project: pipeline.project } if pipeline && !scope
+          next unless scope
+
+          max_from_pipeline_iids = ::Ci::PipelineIid.where(**scope).maximum(:iid)
+          max_from_pipelines = ::Ci::Pipeline.where(**scope).maximum(:iid)
+
+          [max_from_pipeline_iids, max_from_pipelines].compact.max || ::Ci::Pipeline.where(**scope).count
+        else
+          if pipeline # rubocop:disable Style/IfInsideElse -- Temporary for readability behind feature flag
+            pipeline.project&.all_pipelines&.maximum(:iid) || pipeline.project&.all_pipelines&.count
+          elsif scope
+            ::Ci::Pipeline.where(**scope).maximum(:iid)
+          end
         end
       end
 

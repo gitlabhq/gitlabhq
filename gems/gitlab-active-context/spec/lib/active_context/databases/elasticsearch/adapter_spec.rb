@@ -38,4 +38,35 @@ RSpec.describe ActiveContext::Databases::Elasticsearch::Adapter do
       expect(adapter.prefix).to eq('custom')
     end
   end
+
+  describe '#indexer_connection_options' do
+    it 'returns normalized URLs' do
+      adapter = described_class.new(connection, options: {
+        url: [
+          { scheme: 'http', host: 'localhost', port: 9200 },
+          { scheme: 'https', host: 'example.com', port: 9200 }
+        ]
+      })
+
+      result = adapter.indexer_connection_options
+
+      expect(result).to eq(url: ['http://localhost:9200/', 'https://example.com:9200/'])
+    end
+
+    it 'handles string URLs' do
+      adapter = described_class.new(connection, options: { url: ['http://localhost:9200', 'http://localhost:9201'] })
+
+      result = adapter.indexer_connection_options
+
+      expect(result).to eq(url: ['http://localhost:9200', 'http://localhost:9201'])
+    end
+
+    it 'handles single URL' do
+      adapter = described_class.new(connection, options: { url: 'http://localhost:9200' })
+
+      result = adapter.indexer_connection_options
+
+      expect(result).to eq(url: ['http://localhost:9200'])
+    end
+  end
 end

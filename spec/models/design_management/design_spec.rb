@@ -366,7 +366,7 @@ RSpec.describe DesignManagement::Design, feature_category: :design_management do
 
     subject { design.participants(current_user) }
 
-    it { is_expected.to be_empty }
+    it { is_expected.to contain_exactly(version_author, note_author, mentioned_user) }
 
     context 'when participants can read the project' do
       before do

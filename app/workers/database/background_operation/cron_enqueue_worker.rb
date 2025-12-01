@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-# rubocop:disable Gitlab/BoundedContexts -- Doesn't make sense to put this elsewhere
+# rubocop:disable Gitlab/BoundedContexts -- This is the best place for this module
 # rubocop:disable Scalability/CronWorkerContext -- No metadata needed as it's called from cronjobs
 # rubocop:disable Sidekiq/EnforceDatabaseHealthSignalDeferral -- Not applicable here
 module Database

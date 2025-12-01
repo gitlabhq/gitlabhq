@@ -3,7 +3,7 @@ import {
   GlLoadingIcon,
   GlForm,
   GlFormInput,
-  GlPagination,
+  GlKeysetPagination,
   GlDropdown,
   GlDropdownItem,
 } from '@gitlab/ui';
@@ -14,7 +14,6 @@ import Vuex from 'vuex';
 import stubChildren from 'helpers/stub_children';
 import waitForPromises from 'helpers/wait_for_promises';
 import { useMockInternalEventsTracking } from 'helpers/tracking_internal_events_helper';
-import { scrollTo } from '~/lib/utils/scroll_utils';
 import ErrorTrackingActions from '~/error_tracking/components/error_tracking_actions.vue';
 import ErrorTrackingList from '~/error_tracking/components/error_tracking_list.vue';
 import TimelineChart from '~/error_tracking/components/timeline_chart.vue';
@@ -22,8 +21,6 @@ import { extendedWrapper } from 'helpers/vue_test_utils_helper';
 import errorsList from './list_mock.json';
 
 Vue.use(Vuex);
-
-jest.mock('~/lib/utils/scroll_utils');
 
 describe('ErrorTrackingList', () => {
   let store;
@@ -37,7 +34,7 @@ describe('ErrorTrackingList', () => {
   const findStatusFilterDropdown = () => dropdownsArray().at(1).findComponent(GlDropdown);
   const findSortDropdown = () => dropdownsArray().at(2).findComponent(GlDropdown);
   const findLoadingIcon = () => wrapper.findComponent(GlLoadingIcon);
-  const findPagination = () => wrapper.findComponent(GlPagination);
+  const findPagination = () => wrapper.findComponent(GlKeysetPagination);
   const findErrorActions = () => wrapper.findComponent(ErrorTrackingActions);
   const findIntegratedDisabledAlert = () => wrapper.findByTestId('integrated-disabled-alert');
 
@@ -490,8 +487,8 @@ describe('ErrorTrackingList', () => {
       });
 
       it('disables Prev button in the pagination', () => {
-        expect(findPagination().props('prevPage')).toBe(null);
-        expect(findPagination().props('nextPage')).not.toBe(null);
+        expect(findPagination().props('hasPreviousPage')).toBe(false);
+        expect(findPagination().props('hasNextPage')).toBe(true);
       });
     });
     describe('and next cursor is not available', () => {
@@ -502,29 +499,23 @@ describe('ErrorTrackingList', () => {
       });
 
       it('disables Next button in the pagination', () => {
-        expect(findPagination().props('prevPage')).not.toBe(null);
-        expect(findPagination().props('nextPage')).toBe(null);
+        expect(findPagination().props('hasPreviousPage')).toBe(true);
+        expect(findPagination().props('hasNextPage')).toBe(false);
       });
     });
     describe('and the user is not on the first page', () => {
       describe('and the previous button is clicked', () => {
-        const currentPage = 2;
-
         beforeEach(() => {
           store.state.list.loading = false;
           mountComponent({
             stubs: {
-              GlPagination: false,
+              GlKeysetPagination: false,
             },
           });
-          findPagination().vm.$emit('input', currentPage);
         });
 
         it('fetches the previous page of results', () => {
-          expect(
-            wrapper.find('[data-testid="gl-pagination-prev"]').attributes('aria-disabled'),
-          ).toBe(undefined);
-          findPagination().vm.$emit('input', currentPage - 1);
+          findPagination().vm.$emit('prev');
           expect(actions.fetchPaginatedResults).toHaveBeenCalled();
           expect(actions.fetchPaginatedResults).toHaveBeenLastCalledWith(
             expect.anything(),
@@ -540,8 +531,7 @@ describe('ErrorTrackingList', () => {
         });
 
         it('fetches the next page of results', () => {
-          findPagination().vm.$emit('input', 2);
-          expect(scrollTo).toHaveBeenCalledWith({ top: 0, left: 0 }, wrapper.element);
+          findPagination().vm.$emit('next');
           expect(actions.fetchPaginatedResults).toHaveBeenCalled();
           expect(actions.fetchPaginatedResults).toHaveBeenLastCalledWith(
             expect.anything(),

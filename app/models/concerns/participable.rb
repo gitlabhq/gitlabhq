@@ -57,7 +57,7 @@ module Participable
   #
   # Returns an Array of User instances.
   def participants(user = nil)
-    filtered_participants_hash[user]
+    all_participants_hash[user].to_a
   end
 
   # Checks if the user is a participant in a discussion.
@@ -66,8 +66,7 @@ module Participable
   #
   # Returns a Boolean.
   def participant?(user)
-    can_read_participable?(user) &&
-      all_participants_hash[user].include?(user)
+    all_participants_hash[user].include?(user)
   end
 
   private
@@ -75,12 +74,6 @@ module Participable
   def all_participants_hash
     @all_participants_hash ||= Hash.new do |hash, user|
       hash[user] = raw_participants(user)
-    end
-  end
-
-  def filtered_participants_hash
-    @filtered_participants_hash ||= Hash.new do |hash, user|
-      hash[user] = filter_by_ability(all_participants_hash[user])
     end
   end
 
@@ -141,40 +134,6 @@ module Participable
     return [] unless self.is_a?(Noteable) && self.try(:resource_parent)
 
     Ability.users_that_can_read_internal_notes(extractor.users, self.resource_parent)
-  end
-
-  def filter_by_ability(participants)
-    case self
-    when PersonalSnippet
-      Ability.users_that_can_read_personal_snippet(participants.to_a, self)
-    else
-      return Ability.users_that_can_read_project(participants.to_a, project) if project
-
-      # handling group level work items(issues) that would have a namespace,
-      # We need to make sure that scenarios where some models that do not have a project set and also do not have
-      # a namespace are also handled and exceptions are avoided.
-      namespace_level_participable = respond_to?(:namespace) && namespace.present?
-      return Ability.users_that_can_read_group(participants.to_a, namespace) if namespace_level_participable
-
-      []
-    end
-  end
-
-  def can_read_participable?(participant)
-    case self
-    when PersonalSnippet
-      participant.can?(:read_snippet, self)
-    else
-      return participant.can?(:read_project, project) if project
-
-      # handling group level work items(issues) that would have a namespace,
-      # We need to make sure that scenarios where some models that do not have a project set and also do not have
-      # a namespace are also handled and exceptions are avoided.
-      namespace_level_participable = respond_to?(:namespace) && namespace.present?
-      return participant.can?(:read_group, namespace) if namespace_level_participable
-
-      false
-    end
   end
 end
 

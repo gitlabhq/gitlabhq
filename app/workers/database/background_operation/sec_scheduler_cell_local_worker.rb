@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-module Database # rubocop:disable Gitlab/BoundedContexts -- Database Framework
+module Database # rubocop:disable Gitlab/BoundedContexts -- This is the best place for this module
   module BackgroundOperation
     class SecSchedulerCellLocalWorker < BaseSchedulerWorker # rubocop:disable Scalability/IdempotentWorker -- parent has it
       def self.worker_class
@@ -9,6 +9,10 @@ module Database # rubocop:disable Gitlab/BoundedContexts -- Database Framework
 
       def self.tracking_database
         Gitlab::Database::SEC_DATABASE_NAME.to_sym
+      end
+
+      def self.orchestrator_class
+        Database::BackgroundOperation::SecOrchestratorCellLocalWorker
       end
     end
   end

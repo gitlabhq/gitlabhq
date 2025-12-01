@@ -50,8 +50,12 @@ RSpec.shared_context 'with claiming tools' do
         )
       end
 
-    allow(subject).to receive(:"cells_claims_#{type}_changes")
+    hook_method = :"cells_claims_#{type}_changes"
+    allow(subject).to receive(hook_method)
       .and_wrap_original do |original, *args|
+        # We only want to do this ever once
+        allow(subject).to receive(hook_method).and_call_original
+
         # We delay defining this mock because only after saving we have
         # the id we can use for the metadata.
         mock = expect(claim_service).to receive(:begin_update).with(
