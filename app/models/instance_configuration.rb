@@ -133,7 +133,14 @@ class InstanceConfiguration
         requests_per_period: application_settings[:users_get_by_id_limit],
         period_in_seconds: 10.minutes
       },
-      pipeline_creation: application_setting_limit_per_minute(:pipeline_limit_per_project_user_sha)
+      pipeline_creation: application_setting_limit_per_minute(:pipeline_limit_per_project_user_sha),
+      users_api_followers: application_setting_limit_per_minute(:users_api_limit_followers),
+      users_api_following: application_setting_limit_per_minute(:users_api_limit_following),
+      users_api_status: application_setting_limit_per_minute(:users_api_limit_status),
+      users_api_ssh_keys: application_setting_limit_per_minute(:users_api_limit_ssh_keys),
+      users_api_ssh_key: application_setting_limit_per_minute(:users_api_limit_ssh_key),
+      users_api_gpg_keys: application_setting_limit_per_minute(:users_api_limit_gpg_keys),
+      users_api_gpg_key: application_setting_limit_per_minute(:users_api_limit_gpg_key)
     }
   end
 

@@ -29223,6 +29223,24 @@ CREATE SEQUENCE vulnerability_archives_id_seq
 
 ALTER SEQUENCE vulnerability_archives_id_seq OWNED BY vulnerability_archives.id;
 
+CREATE TABLE vulnerability_detection_transitions (
+    id bigint NOT NULL,
+    vulnerability_occurrence_id bigint NOT NULL,
+    project_id bigint NOT NULL,
+    created_at timestamp with time zone NOT NULL,
+    updated_at timestamp with time zone NOT NULL,
+    detected boolean DEFAULT true NOT NULL
+);
+
+CREATE SEQUENCE vulnerability_detection_transitions_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+ALTER SEQUENCE vulnerability_detection_transitions_id_seq OWNED BY vulnerability_detection_transitions.id;
+
 CREATE TABLE vulnerability_export_part_uploads (
     id bigint NOT NULL,
     size bigint NOT NULL,
@@ -33076,6 +33094,8 @@ ALTER TABLE ONLY vulnerability_archive_exports ALTER COLUMN id SET DEFAULT nextv
 ALTER TABLE ONLY vulnerability_archived_records ALTER COLUMN id SET DEFAULT nextval('vulnerability_archived_records_id_seq'::regclass);
 
 ALTER TABLE ONLY vulnerability_archives ALTER COLUMN id SET DEFAULT nextval('vulnerability_archives_id_seq'::regclass);
+
+ALTER TABLE ONLY vulnerability_detection_transitions ALTER COLUMN id SET DEFAULT nextval('vulnerability_detection_transitions_id_seq'::regclass);
 
 ALTER TABLE ONLY vulnerability_export_parts ALTER COLUMN id SET DEFAULT nextval('vulnerability_export_parts_id_seq'::regclass);
 
@@ -37008,6 +37028,9 @@ ALTER TABLE ONLY vulnerability_archived_records
 
 ALTER TABLE ONLY vulnerability_archives
     ADD CONSTRAINT vulnerability_archives_pkey PRIMARY KEY (id, date);
+
+ALTER TABLE ONLY vulnerability_detection_transitions
+    ADD CONSTRAINT vulnerability_detection_transitions_pkey PRIMARY KEY (id);
 
 ALTER TABLE ONLY vulnerability_export_part_uploads
     ADD CONSTRAINT vulnerability_export_part_uploads_pkey PRIMARY KEY (id, model_type);
@@ -44645,6 +44668,10 @@ CREATE UNIQUE INDEX index_vulnerability_archived_records_on_unique_attributes ON
 
 CREATE UNIQUE INDEX index_vulnerability_archives_on_project_id_and_date ON ONLY vulnerability_archives USING btree (project_id, date);
 
+CREATE INDEX index_vulnerability_detection_transitions_on_finding_id ON vulnerability_detection_transitions USING btree (vulnerability_occurrence_id);
+
+CREATE INDEX index_vulnerability_detection_transitions_on_project_id ON vulnerability_detection_transitions USING btree (project_id);
+
 CREATE INDEX index_vulnerability_export_parts_on_organization_id ON vulnerability_export_parts USING btree (organization_id);
 
 CREATE INDEX index_vulnerability_export_parts_on_vulnerability_export_id ON vulnerability_export_parts USING btree (vulnerability_export_id);
@@ -49563,6 +49590,9 @@ ALTER TABLE ONLY lists
 
 ALTER TABLE ONLY subscription_user_add_on_assignments
     ADD CONSTRAINT fk_0d89020c49 FOREIGN KEY (add_on_purchase_id) REFERENCES subscription_add_on_purchases(id) ON DELETE CASCADE;
+
+ALTER TABLE ONLY vulnerability_detection_transitions
+    ADD CONSTRAINT fk_0df30df5da FOREIGN KEY (vulnerability_occurrence_id) REFERENCES vulnerability_occurrences(id) ON DELETE CASCADE;
 
 ALTER TABLE ONLY approval_project_rules_users
     ADD CONSTRAINT fk_0dfcd9e339 FOREIGN KEY (project_id) REFERENCES projects(id) ON DELETE CASCADE;

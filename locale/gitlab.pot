@@ -10626,9 +10626,6 @@ msgstr ""
 msgid "BetaBadge|Are supported on a commercially-reasonable effort basis."
 msgstr ""
 
-msgid "BetaBadge|Beta"
-msgstr ""
-
 msgid "BetaBadge|Beta features:"
 msgstr ""
 
@@ -54687,6 +54684,9 @@ msgid "Rate limit period (in seconds)"
 msgstr ""
 
 msgid "Rate limits can help reduce request volume (like from crawlers or abusive bots)."
+msgstr ""
+
+msgid "Rate limits for specific Users API endpoints."
 msgstr ""
 
 msgid "Rate the review"

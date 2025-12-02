@@ -952,6 +952,10 @@ vulnerability_archives:
   - table: projects
     column: project_id
     on_delete: async_delete
+vulnerability_detection_transitions:
+  - table: projects
+    column: project_id
+    on_delete: async_delete
 vulnerability_export_parts:
   - table: organizations
     column: organization_id

@@ -22,14 +22,12 @@ module Resolvers
       argument :state,
         Types::Authz::AccessTokens::StateEnum,
         required: false,
-        description: 'Filter personal access tokens by state. Default is `active`.',
-        default_value: 'active'
+        description: 'Filter personal access tokens by state.'
 
       argument :revoked,
         GraphQL::Types::Boolean,
         required: false,
-        description: 'Filter personal access tokens by their revoked status. Default is `false`.',
-        default_value: false
+        description: 'Filter personal access tokens by their revoked status.'
 
       argument :expires_after, Types::DateType,
         required: false,
@@ -46,12 +44,7 @@ module Resolvers
       def resolve_with_lookahead(**args)
         personal_access_tokens = PersonalAccessTokensFinder.new({
           user: user,
-          state: args[:state],
-          sort: args[:sort],
-          revoked: args[:revoked],
-          expires_after: args[:expires_after],
-          created_after: args[:created_after],
-          last_used_after: args[:last_used_after]
+          **filter_params(args)
         }, current_user).execute
 
         apply_lookahead(personal_access_tokens)
@@ -65,6 +58,18 @@ module Resolvers
             granular_scopes: [:namespace]
           }
         }
+      end
+
+      def filter_params(args)
+        {
+          state: args[:state],
+          sort: args[:sort],
+          expires_after: args[:expires_after],
+          created_after: args[:created_after],
+          last_used_after: args[:last_used_after]
+        }.tap do |params|
+          params[:revoked] = args[:revoked] unless args[:revoked].nil?
+        end
       end
     end
   end
