@@ -62,7 +62,7 @@ The following features are not yet generally available.
 
 They require a Premium or Ultimate subscription and the GitLab Duo Enterprise add-on.
 
-| Feature | GitLab Duo Core | GitLab Duo Pro | GitLab Duo Enterprise | GitLab Duo with Amazon Q | 
+| Feature | GitLab Duo Core | GitLab Duo Pro | GitLab Duo Enterprise | GitLab Duo with Amazon Q |
 |---------|-----------------|----------------|-----------------------|--------------------------|
 | [Merge Request Summary](../project/merge_requests/duo_in_merge_requests.md#generate-a-description-by-summarizing-code-changes) | {{< no >}} | {{< no >}} | {{< yes >}} | {{< no >}} |
 | [Code Review Summary](../project/merge_requests/duo_in_merge_requests.md#summarize-a-code-review) | {{< no >}} | {{< no >}} | {{< yes >}} | {{< no >}} |

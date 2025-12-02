@@ -19,7 +19,7 @@ this API for your GitLab instance.
 
 {{< alert type="warning" >}}
 
-This API is used by the [Go client](https://maven.apache.org/)
+This API is used by the [`go` command](https://go.dev/ref/mod#go-get)
 and is generally not meant for manual consumption.
 
 {{< /alert >}}

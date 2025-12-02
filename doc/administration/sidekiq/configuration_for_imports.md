@@ -81,7 +81,7 @@ which speeds up migration as long as the instance has sufficient resources.
 
 ## Related topics
 
-- [Import and migrate to GitLab](../../user/project/import/_index.md).
+- [Import and migrate to GitLab](../../user/import/_index.md).
 - [Import and export settings](../settings/import_and_export_settings.md).
 - [Running multiple Sidekiq processes](extra_sidekiq_processes.md).
 - [Processing specific job classes](processing_specific_job_classes.md).

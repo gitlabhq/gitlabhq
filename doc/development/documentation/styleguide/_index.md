@@ -907,7 +907,7 @@ or
 
 #### Expandable tables
 
-Expandable tables have an **Expand table** button that, when selected, opens the table in a dialog. 
+Expandable tables have an **Expand table** button that, when selected, opens the table in a dialog.
 To create an expandable table, use the `expandable` class attribute.
 
 To make a table both condensed and expandable, use both attributes. For example:

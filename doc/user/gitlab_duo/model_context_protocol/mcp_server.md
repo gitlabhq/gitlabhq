@@ -508,6 +508,32 @@ Example:
 Show me all jobs in pipeline 12345 for project gitlab-org/gitlab
 ```
 
+### `create_workitem_note`
+
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/213398) in GitLab 18.7.
+
+{{< /history >}}
+
+Creates a new note (comment) on a GitLab work item.
+
+| Parameter       | Type    | Required | Description |
+|-----------------|---------|----------|-------------|
+| `body`          | string  | Yes      | Content of the note. |
+| `url`           | string  | No       | GitLab URL for the work item (for example, `https://gitlab.com/namespace/project/-/work_items/42`). Required if `group_id` or `project_id` and `work_item_iid` are missing. |
+| `group_id`      | string  | No       | ID or path of the group. Required if `url` and `project_id` are missing. |
+| `project_id`    | string  | No       | ID or path of the project. Required if `url` and `group_id` are missing. |
+| `work_item_iid` | integer | No       | Internal ID of the work item. Required if `url` is missing. |
+| `internal`      | boolean | No       | Marks the note as internal (visible only to users with at least the Reporter role for the project). Default is `false`. |
+| `discussion_id` | string  | No       | Global ID of the discussion to reply to (in the format `gid://gitlab/Discussion/<id>`). |
+
+Example:
+
+```plaintext
+Add a comment "This looks good to me" to work item 42 in project gitlab-org/gitlab
+```
+
 ### `gitlab_search`
 
 {{< history >}}

@@ -25,7 +25,7 @@ example, `13.10.1`.
 
 ## Configure What's new
 
-You can configure **What's new** to display features based on the tier, or you can hide it. 
+You can configure **What's new** to display features based on the tier, or you can hide it.
 
 Prerequisites:
 

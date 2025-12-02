@@ -148,7 +148,7 @@ To resolve this issue, do one of the following:
      ```
 
 - Use TLS passthrough:
-  
+
   If your load balancer cannot support HTTP/2, configure the balancer for TLS passthrough.
   The Zoekt gateway can then handle TLS termination directly, which ensures proper ALPN negotiation.
   To use TLS passthrough, configure a valid TLS certificate on the Zoekt gateway:

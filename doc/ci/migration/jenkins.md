@@ -713,7 +713,7 @@ Before doing any migration work, you should first:
 ### Migration Steps
 
 1. Migrate projects from your SCM solution to GitLab.
-   - (Recommended) You can use the available [importers](../../user/project/import/_index.md)
+   - (Recommended) You can use the available [importers](../../user/import/_index.md)
      to automate mass imports from external SCM providers.
    - You can [import repositories by URL](../../user/project/import/repo_by_url.md).
 1. Create a `.gitlab-ci.yml` file in each project.

@@ -2319,7 +2319,7 @@ Other possible responses:
 Deletes a specified SSH public key for an enterprise user associated with the top-level group.
 
 ```plaintext
-DELETE /groups/:id/manage/keys/:key_id
+DELETE /groups/:id/manage/ssh_keys/:key_id
 ```
 
 Supported attributes:

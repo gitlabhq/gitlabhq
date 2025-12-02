@@ -10203,6 +10203,9 @@ msgstr ""
 msgid "Auto-cancel redundant pipelines"
 msgstr ""
 
+msgid "Auto-dismissed by the vulnerability management policy named '%{policy_name}' as the vulnerability matched the policy criteria in pipeline %{pipeline_link}."
+msgstr ""
+
 msgid "Auto-resolved by the vulnerability management policy named '%{policy_name}' as the vulnerability was no longer detected in pipeline %{pipeline_link}."
 msgstr ""
 
@@ -71637,6 +71640,9 @@ msgstr ""
 msgid "UsageBilling|Credit amount"
 msgstr ""
 
+msgid "UsageBilling|Credits"
+msgstr ""
+
 msgid "UsageBilling|Credits used after all included user credits and monthly commitment pool have been exhausted. Learn about %{linkStart}GitLab Credit pricing%{linkEnd}."
 msgstr ""
 
@@ -71653,6 +71659,9 @@ msgid "UsageBilling|GitLab Credits - On Demand"
 msgstr ""
 
 msgid "UsageBilling|GitLab Credits dashboard"
+msgstr ""
+
+msgid "UsageBilling|GitLab Credits usage"
 msgstr ""
 
 msgid "UsageBilling|Included credits"
@@ -71679,10 +71688,19 @@ msgstr ""
 msgid "UsageBilling|Monthly Waiver credits used this period"
 msgstr ""
 
+msgid "UsageBilling|Monthly commitment"
+msgstr ""
+
 msgid "UsageBilling|Monthly commitments offer significant discounts off list price. Share GitLab Credits across your namespace for flexibility and predictable monthly costs. Learn more about %{linkStart}GitLab Credit pricing%{linkEnd}."
 msgstr ""
 
+msgid "UsageBilling|Monthly waiver"
+msgstr ""
+
 msgid "UsageBilling|No user data available"
+msgstr ""
+
+msgid "UsageBilling|On-demand"
 msgstr ""
 
 msgid "UsageBilling|Purchase monthly commitment"
@@ -71706,7 +71724,13 @@ msgstr ""
 msgid "UsageBilling|Usage Billing is disabled"
 msgstr ""
 
+msgid "UsageBilling|Usage by user"
+msgstr ""
+
 msgid "UsageBilling|Usage period:"
+msgstr ""
+
+msgid "UsageBilling|Usage trends"
 msgstr ""
 
 msgid "UsageBilling|Used this month"

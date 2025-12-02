@@ -122,14 +122,20 @@ export default {
     async dismiss() {
       this.isDismissedLocal = true;
 
-      await this.$apollo.mutate({
+      const mutationOptions = {
         mutation: dismissUserCalloutMutation,
         variables: {
           input: {
             featureName: this.featureName,
           },
         },
-      });
+      };
+
+      if (!this.skipQuery) {
+        mutationOptions.refetchQueries = [{ query: getUserCalloutsQuery }];
+      }
+
+      await this.$apollo.mutate(mutationOptions);
     },
   },
   render() {

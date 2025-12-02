@@ -52,6 +52,7 @@ ID tokens are also used by the [`secrets`](../yaml/_index.md#secrets) keyword.
 ## Configure ID tokens in a CI/CD job
 
 To use ID tokens, configure a CI/CD job with the [`id_tokens`](../yaml/_index.md#id_tokens) keyword.
+Then you can use the token in a `script`, `before_script`, or `after_script` section.
 
 For example:
 

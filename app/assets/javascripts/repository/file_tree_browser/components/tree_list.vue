@@ -99,6 +99,11 @@ export default {
       });
       return map;
     },
+    activeStyles() {
+      return {
+        backgroundColor: 'var(--gl-highlight-target-background-color)',
+      };
+    },
     ...mapState(useFileTreeBrowserVisibility, ['fileTreeBrowserIsPeekOn']),
   },
   watch: {
@@ -490,8 +495,8 @@ export default {
           :aria-posinset="siblingInfo(item)[1]"
           :aria-label="item.name"
           :tabindex="item.id === activeItemId ? 0 : -1"
-          class="gl-rounded-base focus-visible:gl-focus-inset"
-          :class="{ '!gl-bg-gray-50': isCurrentPath(item.path) }"
+          class="gl-action-neutral-colors gl-rounded-lg focus-visible:gl-focus-inset"
+          :style="isCurrentPath(item.path) ? activeStyles : {}"
           @click="activeItemId = item.id"
         >
           <file-row
@@ -507,6 +512,7 @@ export default {
             :class="{
               'tree-list-parent': item.level > 0,
             }"
+            :file-classes="isCurrentPath(item.path) ? 'gl-font-bold' : 'gl-text-subtle'"
             class="gl-relative !gl-mx-0 gl-w-fit gl-min-w-full"
             truncate-middle
             @clickTree="(options) => toggleDirectory(item.path, options)"

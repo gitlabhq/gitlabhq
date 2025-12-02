@@ -601,7 +601,7 @@ To migrate from Bamboo:
    - Identify all shared credentials and their usage.
 
 1. Migrate your source code repositories to GitLab:
-   - Use the available [importers](../../user/project/import/_index.md) to automate mass imports
+   - Use the available [importers](../../user/import/_index.md) to automate mass imports
      from external SCM providers.
    - [Import repositories by URL](../../user/project/import/repo_by_url.md) for individual repositories.
 

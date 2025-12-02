@@ -310,7 +310,7 @@ In GitLab Dedicated:
 - Features enabled by default are available.
 - Features disabled by default are not available and cannot be enabled.
 
-When a feature becomes generally available, it's available in the same version 
+When a feature becomes generally available, it's available in the same version
 following the [release schedule](maintenance.md) for deployments.
 
 ### GitLab Pages
@@ -378,9 +378,9 @@ To migrate your data to GitLab Dedicated:
   - Use [direct transfer](../../user/group/import/_index.md).
   - Use the [direct transfer API](../../api/bulk_imports.md).
 - From third-party services:
-  - Use the [import sources](../../user/project/import/_index.md) (migration tools).
+  - Use the [import sources](../../user/import/_index.md) (migration tools).
 - For complex migrations:
-  - Engage [Professional Services](../../user/project/import/_index.md#migrate-by-engaging-professional-services).
+  - Engage [Professional Services](../../user/import/_index.md#migrate-by-engaging-professional-services).
 
 ## Expired subscriptions
 

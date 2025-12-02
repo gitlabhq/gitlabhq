@@ -414,7 +414,7 @@ When you configure this setting, only administrators can invite users to groups 
 
 {{< alert type="note" >}}
 
-Features such as [sharing](../../user/project/members/sharing_projects_groups.md) or [migrations](../../user/project/import/_index.md) can still allow access to these groups and projects.
+Features such as [sharing](../../user/project/members/sharing_projects_groups.md) or [migrations](../../user/import/_index.md) can still allow access to these groups and projects.
 
 {{< /alert >}}
 

@@ -476,7 +476,7 @@ span.idiff {
   position: absolute;
   z-index: 1;
   pointer-events: none;
-  top: -4px;
+  top: 0;
   left: 14px;
   width: calc(var(--level) * var(--file-row-level-padding));
   bottom: 0;

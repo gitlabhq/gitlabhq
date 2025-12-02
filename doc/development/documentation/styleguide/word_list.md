@@ -109,9 +109,9 @@ Capitalize these words when you refer to the UI. Otherwise use lowercase.
 
 When a specific access level is required, use one of these patterns:
 
-- You must have **at least** the Administrator access level.
-- You must have the Administrator access level **or higher**.
-- You must be an Administrator.
+- You must have **at least** the administrator access level.
+- You must have the administrator access level **or higher**.
+- You must be an administrator.
 
 When there is no specific access level, use **minimum** access level as a noun phrase. For example:
 
@@ -120,8 +120,8 @@ When there is no specific access level, use **minimum** access level as a noun p
 Use **higher** and **lower** to describe the hierarchy:
 
 - **Higher** access levels have more permissions.
-- Administrator is a **higher** access level than Regular.
-- Regular is a **lower** access level than Administrator.
+- Administrator is a **higher** access level than regular.
+- Regular is a **lower** access level than administrator.
 
 ## add
 

@@ -40,13 +40,13 @@ sudo gitlab-rake gitlab:background_migrations:list
 Example output:
 
 ```plaintext
-id      | table_name                                              | job_class_name                                              | status   
+id      | table_name                                              | job_class_name                                              | status
 --------|---------------------------------------------------------|-------------------------------------------------------------|----------
-main_1  | namespace_settings                                      | UpdateRequireDpopForManageApiEndpointsToFalse               | finished 
+main_1  | namespace_settings                                      | UpdateRequireDpopForManageApiEndpointsToFalse               | finished
 main_2  | resource_iteration_events                               | BackfillResourceIterationEventsNamespaceId                  | finalized
 main_3  | identities                                              | DeleteTwitterIdentities                                     | finalized
 main_4  | software_license_policies                               | BackfillLicensesOutsideSpdxCatalogue                        | finalized
-main_5  | security_policies                                       | BackfillPipelineExecutionPoliciesMetadata                   | finished 
+main_5  | security_policies                                       | BackfillPipelineExecutionPoliciesMetadata                   | finished
 ci_1    | ci_runners                                              | MarkAdminBotRunnersAsHosted                                 | finalized
 ci_2    | p_ci_build_trace_metadata                               | BackfillUpsertedCiBuildTraceMetadataProjectId               | finalized
 ci_3    | ci_runners                                              | BackfillOrganizationIdOnCiRunners                           | finalized
@@ -69,30 +69,30 @@ sudo gitlab-rake gitlab:background_migrations:show[ci_1]
 Example output:
 
 ```plaintext
-id                       | ci_1                       
-created_at               | 2025-05-06 22:40:08 UTC    
-updated_at               | 2025-08-20 22:29:07 UTC    
-min_value                | 1                          
-max_value                | 30                         
-batch_size               | 1000                       
-sub_batch_size           | 100                        
-interval                 | 120                        
-status                   | finalized                  
+id                       | ci_1
+created_at               | 2025-05-06 22:40:08 UTC
+updated_at               | 2025-08-20 22:29:07 UTC
+min_value                | 1
+max_value                | 30
+batch_size               | 1000
+sub_batch_size           | 100
+interval                 | 120
+status                   | finalized
 job_class_name           | MarkAdminBotRunnersAsHosted
-batch_class_name         | PrimaryKeyBatchingStrategy 
-table_name               | ci_runners                 
-column_name              | id                         
-job_arguments            | []                         
-total_tuple_count        |                            
-pause_ms                 | 100                        
-max_batch_size           |                            
-started_at               | 2025-05-06 22:40:08 UTC    
-on_hold_until            |                            
-gitlab_schema            | gitlab_ci                  
-finished_at              | 2025-05-06 22:40:13 UTC    
-queued_migration_version | 20250505095336             
-min_cursor               |                            
-max_cursor               |                            
+batch_class_name         | PrimaryKeyBatchingStrategy
+table_name               | ci_runners
+column_name              | id
+job_arguments            | []
+total_tuple_count        |
+pause_ms                 | 100
+max_batch_size           |
+started_at               | 2025-05-06 22:40:08 UTC
+on_hold_until            |
+gitlab_schema            | gitlab_ci
+finished_at              | 2025-05-06 22:40:13 UTC
+queued_migration_version | 20250505095336
+min_cursor               |
+max_cursor               |
 ```
 
 ### Pause a migration

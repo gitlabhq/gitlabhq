@@ -16,7 +16,7 @@ and give everyone access to the projects they need.
 - [Members](../user/project/members/_index.md)
 - [Organization (in development)](../user/organization/_index.md)
 - [Groups](../user/group/_index.md)
-- [Import and migrate to GitLab](../user/project/import/_index.md)
+- [Import and migrate to GitLab](../user/import/_index.md)
 - [Sharing projects and groups](../user/project/members/sharing_projects_groups.md)
 - [User account options](../user/profile/_index.md)
 - [GitLab.com settings](../user/gitlab_com/_index.md)

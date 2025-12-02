@@ -231,7 +231,6 @@ pre-commit:
     type-check-fe-islands:
       tags: frontend
       root: ee/frontend_islands
-      files: git diff --name-only --diff-filter=d --staged
       glob: 'ee/frontend_islands/apps/**/*.{ts,vue}'
       run: 'yarn run lint:types'
 

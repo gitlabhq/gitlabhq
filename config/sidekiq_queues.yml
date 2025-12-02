@@ -463,6 +463,8 @@
   - 1
 - - geo_bulk_primary_verification
   - 1
+- - geo_bulk_registry_resync
+  - 1
 - - github_gists_importer
   - 1
 - - github_import_advance_stage

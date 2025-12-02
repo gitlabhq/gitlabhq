@@ -178,11 +178,15 @@ describe('UserCalloutDismisser', () => {
   });
 
   describe('dismissing', () => {
+    const queryHandler = jest.fn(successHandlerFactory());
+
     beforeEach(() => {
       createComponent({
-        queryHandler: successHandlerFactory(),
+        queryHandler,
         mutationHandler: mutationSuccessHandlerSpy,
       });
+
+      return waitForPromises();
     });
 
     it('calls mutation and updates slotProps.shouldShowCallout', async () => {
@@ -200,6 +204,15 @@ describe('UserCalloutDismisser', () => {
       expect(defaultScopedSlotSpy).toHaveBeenLastCalledWith(
         expect.objectContaining({ shouldShowCallout: false }),
       );
+    });
+
+    it('refetches query after mutation', async () => {
+      expect(queryHandler).toHaveBeenCalledTimes(1);
+
+      callDismissSlotProp();
+      await waitForPromises();
+
+      expect(queryHandler).toHaveBeenCalledTimes(2);
     });
   });
 });

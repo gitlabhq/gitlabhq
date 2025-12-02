@@ -180,7 +180,7 @@ To use a flow:
 
 ## Duplicate a flow
 
-To make changes to a flow without overwriting the original, create a copy of an existing agent.
+To make changes to a flow without overwriting the original, create a copy of an existing flow.
 
 Prerequisites:
 

@@ -27,7 +27,7 @@ For more information, see the history.
 
 {{< /alert >}}
 
-Use this API to [import repositories from external sources](../user/project/import/_index.md).
+Use this API to [import repositories from external sources](../user/import/_index.md).
 
 {{< alert type="note" >}}
 

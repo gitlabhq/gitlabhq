@@ -121,8 +121,8 @@ You can update your [primary email address](#change-your-primary-email).
 
 {{< alert type="note" >}}
 
-[Making your email non-public](#set-your-public-email) does not prevent it from being used for commit matching,
-[project imports](../project/import/_index.md), and [group migrations](../group/import/_index.md).
+[Making your email non-public](#set-your-public-email) does not prevent it from being used for commit matching and
+[group and project imports](../import/_index.md).
 
 {{< /alert >}}
 

@@ -255,6 +255,8 @@ The possible names are:
 - `throttle_authenticated_files_api`
 - `throttle_unauthenticated_deprecated_api`
 - `throttle_authenticated_deprecated_api`
+- `throttle_unauthenticated_git_http`
+- `throttle_authenticated_git_http`
 
 For example, to try out throttles for all authenticated requests to
 non-protected paths can be done by setting

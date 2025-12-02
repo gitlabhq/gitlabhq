@@ -21,7 +21,7 @@ you might encounter the following issues.
 
 After a flow is created, you can view the flow's session by going to **Automate** > **Sessions**.
 
-The **Details** tab shows a link to the CI/CD job logs. 
+The **Details** tab shows a link to the CI/CD job logs.
 These logs can contain troubleshooting information.
 
 ## Flows not visible in the UI

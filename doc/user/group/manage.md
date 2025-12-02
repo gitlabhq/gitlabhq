@@ -349,7 +349,7 @@ For more information, see [prevent invitations to a groups and projects](../../a
 
 {{< alert type="note" >}}
 
-Features such as [sharing](../project/members/sharing_projects_groups.md) or [migrations](../project/import/_index.md) can still allow access to these subgroups and projects.
+Features such as [sharing](../project/members/sharing_projects_groups.md) or [migrations](../import/_index.md) can still allow access to these subgroups and projects.
 
 {{< /alert >}}
 

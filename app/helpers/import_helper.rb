@@ -32,7 +32,7 @@ module ImportHelper
   end
 
   def import_svn_message(_ci_cd_only)
-    svn_link = link_to _('Learn more'), help_page_path('user/project/import/_index.md', anchor: 'import-repositories-from-subversion')
+    svn_link = link_to _('Learn more'), help_page_path('user/import/_index.md', anchor: 'migrate-from-subversion')
     safe_format(s_('Import|You can import a Subversion repository by using third-party tools. %{svn_link}.'), svn_link: svn_link)
   end
 

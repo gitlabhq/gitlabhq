@@ -422,8 +422,13 @@ To replicate the database:
 1. Choose a [database-friendly name](https://www.postgresql.org/docs/16/warm-standby.html#STREAMING-REPLICATION-SLOTS-MANIPULATION)  for your secondary site to
    use as the replication slot name. For example, if your domain is
    `secondary.geo.example.com`, use `secondary_example` as the slot
-   name. Replication slot names must only contain lowercase letters,
+   name.
+
+   {{< alert type="note" >}}
+   Replication slot names must only contain lowercase letters,
    numbers, and the underscore character.
+
+   {{< /alert >}}
 
 1. Execute the following command to back up and restore the database, and begin the replication.
 
@@ -436,7 +441,7 @@ To replicate the database:
 
    ```shell
    gitlab-ctl replicate-geo-database \
-      --slot-name=<secondary_site_name> \
+      --slot-name=<secondary_slot_name> \
       --host=<primary_site_ip> \
       --sslmode=verify-ca
    ```

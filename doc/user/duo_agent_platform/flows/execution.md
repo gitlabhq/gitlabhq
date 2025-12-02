@@ -216,7 +216,7 @@ In addition, runners on GitLab Self-Managed:
 
 - Must allow network traffic to the GitLab Duo Workflow Service configured for the GitLab instance.
   If you aren't using custom models, this traffic goes to `duo-workflow-svc.runway.gitlab.net`, port `443`.
-- Must be able to download the default image from `registry.gitlab.com` 
+- Must be able to download the default image from `registry.gitlab.com`
   or be able to access [the Docker image you specified](#change-the-default-docker-image).
 - Might have to be [privileged](https://docs.gitlab.com/runner/security/#reduce-the-security-risk-of-using-privileged-containers),
   depending on what the flow does. For example, a flow that builds Docker images

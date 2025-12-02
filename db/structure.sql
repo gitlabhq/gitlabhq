@@ -40452,7 +40452,7 @@ CREATE INDEX index_arkose_sessions_on_verified_at ON arkose_sessions USING btree
 
 CREATE UNIQUE INDEX index_atlassian_identities_on_extern_uid ON atlassian_identities USING btree (extern_uid);
 
-CREATE UNIQUE INDEX index_audit_events_external_audit_on_verification_token ON audit_events_external_audit_event_destinations USING btree (verification_token);
+CREATE UNIQUE INDEX index_audit_events_external_audit_on_ns_verification_token ON audit_events_external_audit_event_destinations USING btree (namespace_id, verification_token);
 
 CREATE INDEX index_audit_events_instance_namespace_filters_on_namespace_id ON audit_events_streaming_http_instance_namespace_filters USING btree (namespace_id);
 

@@ -127,6 +127,6 @@ so its members have access or ownership.
 
 For more information, see:
 
-- [Migrate projects by using file exports](../project/import/_index.md)
+- [Import and migrate to GitLab](../import/_index.md)
 - [Project aliases](../project/working_with_projects.md#project-aliases)
 - [Transfer a project to another namespace](../project/working_with_projects.md#transfer-a-project)

@@ -342,7 +342,7 @@ error. To work around this error:
 
 ## Related topics
 
-- [Import and migrate to GitLab](../../user/project/import/_index.md).
+- [Import and migrate to GitLab](../../user/import/_index.md).
 - [Sidekiq configuration imports](../sidekiq/configuration_for_imports.md).
 - [Running multiple Sidekiq processes](../sidekiq/extra_sidekiq_processes.md).
 - [Processing specific job classes](../sidekiq/processing_specific_job_classes.md).
