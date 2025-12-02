@@ -553,7 +553,6 @@ Layout/LineLength:
     - 'ee/app/models/protected_environment.rb'
     - 'ee/app/models/requirements_management/requirement.rb'
     - 'ee/app/models/requirements_management/test_report.rb'
-    - 'ee/app/models/security/orchestration_policy_configuration.rb'
     - 'ee/app/models/security/training_provider.rb'
     - 'ee/app/models/users_security_dashboard_project.rb'
     - 'ee/app/models/vulnerabilities/external_issue_link.rb'

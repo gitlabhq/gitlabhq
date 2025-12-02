@@ -129,4 +129,23 @@ instructions:
       - "locale/gitlab.pot"
     instructions: |
       1. Flag any msgid entry that starts with a lowercase letter - this indicates a split sentence that will be hard to translate
- 
+
+  - name: Experiments
+    fileFilters:
+      - "**/*.rb"
+      - "**/*.js"
+      - "**/*.vue"
+    instructions: |
+      For experiment-related changes, verify:
+      1. Experiment uses an `experiment` type feature flag (not `development` or `ops`)
+      2. Context is appropriate and consistent (e.g., `actor:`, `project:`, `group:`)
+      3. Variants are clearly defined (control, candidate, or named variants)
+      4. If corresponding issue mentions tracking beyond default assignment tracking, there are tracking calls like `experiment(:name, actor: current_user).track(:event_name)`
+      5. Same context is used between experiment runs and tracking calls
+      6. If experiment uses only `experiment(:name, actor: current_user)` as context, but the corresponding issue mentions tracking of namespace based activation events, then assignment should happen based on namespace or actor + namespace
+      7. If experiment is first assigned during registration via `experiment(:name, actor: current_user)` before a namespace is created, there should be another assignment tracking event invoked like this `experiment(:name, actor: current_user).track(:assignment, namespace: group)` to enable tracking of activation events
+      8. Frontend or feature tests exist to prevent premature code removal (see [testing levels](https://docs.gitlab.com/development/testing_guide/testing_levels/#white-box-tests-at-the-system-level-formerly-known-as-system--feature-tests))
+      9. Tests cover experiment variants and tracking behavior
+      10. Temporary assets (icons/illustrations) are in `/ee/app/assets/images` or `/app/assets/images` not Pajamas library
+      11. When both control and variants are being toggled in Vue components layer, we prefer to use the `<gitlab-experiment>` component.
+

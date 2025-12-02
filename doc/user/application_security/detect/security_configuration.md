@@ -165,7 +165,7 @@ base address for Docker images. You can override this for most scanners by setti
 The [container scanning](../container_scanning/_index.md) analyzer is an exception, and it
 does not use the `SECURE_ANALYZERS_PREFIX` variable. To override its Docker image, see
 the instructions for
-[Running container scanning in an offline environment](../container_scanning/_index.md#running-container-scanning-in-an-offline-environment).
+[Running container scanning in an offline environment](../container_scanning/_index.md#offline-environment).
 
 ### Use security scanning tools with merge request pipelines
 

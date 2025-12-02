@@ -9,7 +9,7 @@ This job runs on the test stage of a merge request pipeline. It checks:
 
 1. A schema dump comparison between the author's working branch and the target branch,
    after executing a rollback of your new migrations. This check validates that the
-   schema properly resets to what it was before executing this new migration.
+   schema properly resets to what it was before executing new migrations.
 1. A schema dump comparison between the author's working branch and the `db/structure.sql`
    file that the author committed. This check validates that it contains all the expected changes
    in the migration.
@@ -23,15 +23,18 @@ This job runs on the test stage of a merge request pipeline. It checks:
 
 This job is not allowed to fail, but it can throw some false positives.
 
-For example, when we drop a column and then roll back, this column is always
-re-added at the end of the list of columns. If the column was previously in
-the middle of the list, the rollback can't return the schema back exactly to
-its previous state. In such cases apply the `pipeline:skip-check-migrations`
-label to skip this check.
+**Examples:**
 
-For a real-life example, refer to
-[this failed job](https://gitlab.com/gitlab-org/gitlab/-/jobs/2006544972#L138).
-Here, the author dropped the `position` column.
+1. When we drop a column and then roll back, the column is always
+   re-added at the end of the list of columns. If the column was previously not the last column,
+   the rollback can't return the schema back exactly to its previous state. Reference: [job failure](https://gitlab.com/gitlab-org/gitlab/-/jobs/2006544972#L138).
+1. Sometimes pg_dump can change how it orders the constraints and other database objects in minor PostgreSQL version upgrades.
+   This causes the job to fail by complaining about the ordering of statements in the schema that are not related
+   to the MR. Reference: [job failure](https://gitlab.com/gitlab-org/gitlab/-/jobs/12192481127).
+   - Do report this in #database Slack channel or create an issue, if not already done by someone else. Since this will
+     affect all the feature MRs.
+
+In such cases it's safer to add `pipeline:skip-check-migrations` label to the MR to skip this job.
 
 ### Schema dump comparison fails after rollback
 

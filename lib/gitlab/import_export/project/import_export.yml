@@ -778,6 +778,7 @@ included_attributes:
     - :merge_commit_template
     - :squash_commit_template
     - :max_artifacts_size
+    - :enabled_foundational_flows
   resource_milestone_events:
     - :user_id
     - :action

@@ -988,6 +988,7 @@ project:
 - policy_dismissals
 - security_scan_profiles
 - security_scan_profiles_projects
+- enabled_foundational_flows
 award_emoji:
 - awardable
 - user

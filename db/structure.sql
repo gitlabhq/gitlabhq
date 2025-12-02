@@ -5055,6 +5055,10 @@ CREATE FUNCTION unset_has_issues_on_vulnerability_reads() RETURNS trigger
 DECLARE
   has_issue_links integer;
 BEGIN
+  IF (SELECT current_setting('vulnerability_management.dont_execute_db_trigger', true) = 'true') THEN
+    RETURN NULL;
+  END IF;
+
   PERFORM 1
   FROM
     vulnerability_reads
@@ -5085,6 +5089,10 @@ CREATE FUNCTION unset_has_merge_request_on_vulnerability_reads() RETURNS trigger
 DECLARE
   has_merge_request_links integer;
 BEGIN
+  IF (SELECT current_setting('vulnerability_management.dont_execute_db_trigger', true) = 'true') THEN
+    RETURN NULL;
+  END IF;
+
   PERFORM 1
   FROM
     vulnerability_reads
@@ -11062,8 +11070,10 @@ CREATE TABLE ai_catalog_items (
     latest_released_version_id bigint,
     verification_level smallint DEFAULT 0 NOT NULL,
     identifier text,
+    foundational_flow_reference text,
     CONSTRAINT check_5a87fd2753 CHECK ((char_length(identifier) <= 255)),
     CONSTRAINT check_7e02a4805b CHECK ((char_length(description) <= 1024)),
+    CONSTRAINT check_804e59e032 CHECK ((char_length(foundational_flow_reference) <= 255)),
     CONSTRAINT check_edddd6e1fe CHECK ((char_length(name) <= 255))
 );
 
@@ -17636,6 +17646,25 @@ CREATE SEQUENCE emails_id_seq
     CACHE 1;
 
 ALTER SEQUENCE emails_id_seq OWNED BY emails.id;
+
+CREATE TABLE enabled_foundational_flows (
+    id bigint NOT NULL,
+    namespace_id bigint,
+    project_id bigint,
+    catalog_item_id bigint NOT NULL,
+    created_at timestamp with time zone NOT NULL,
+    updated_at timestamp with time zone NOT NULL,
+    CONSTRAINT check_0a4362ce38 CHECK ((num_nonnulls(namespace_id, project_id) = 1))
+);
+
+CREATE SEQUENCE enabled_foundational_flows_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+ALTER SEQUENCE enabled_foundational_flows_id_seq OWNED BY enabled_foundational_flows.id;
 
 CREATE TABLE environments (
     id bigint NOT NULL,
@@ -32197,6 +32226,8 @@ ALTER TABLE ONLY elastic_reindexing_tasks ALTER COLUMN id SET DEFAULT nextval('e
 
 ALTER TABLE ONLY emails ALTER COLUMN id SET DEFAULT nextval('emails_id_seq'::regclass);
 
+ALTER TABLE ONLY enabled_foundational_flows ALTER COLUMN id SET DEFAULT nextval('enabled_foundational_flows_id_seq'::regclass);
+
 ALTER TABLE ONLY environments ALTER COLUMN id SET DEFAULT nextval('environments_id_seq'::regclass);
 
 ALTER TABLE ONLY epic_issues ALTER COLUMN id SET DEFAULT nextval('epic_issues_id_seq'::regclass);
@@ -35323,6 +35354,9 @@ ALTER TABLE ONLY elasticsearch_indexed_projects
 
 ALTER TABLE ONLY emails
     ADD CONSTRAINT emails_pkey PRIMARY KEY (id);
+
+ALTER TABLE ONLY enabled_foundational_flows
+    ADD CONSTRAINT enabled_foundational_flows_pkey PRIMARY KEY (id);
 
 ALTER TABLE ONLY environments
     ADD CONSTRAINT environments_pkey PRIMARY KEY (id);
@@ -39498,6 +39532,10 @@ CREATE UNIQUE INDEX idx_devops_adoption_segments_namespaces_pair ON analytics_de
 
 CREATE INDEX idx_elastic_reindexing_slices_on_elastic_reindexing_subtask_id ON elastic_reindexing_slices USING btree (elastic_reindexing_subtask_id);
 
+CREATE UNIQUE INDEX idx_enabled_flows_on_namespace_catalog_item ON enabled_foundational_flows USING btree (namespace_id, catalog_item_id) WHERE (namespace_id IS NOT NULL);
+
+CREATE UNIQUE INDEX idx_enabled_flows_on_project_catalog_item ON enabled_foundational_flows USING btree (project_id, catalog_item_id) WHERE (project_id IS NOT NULL);
+
 CREATE INDEX idx_enabled_pkgs_cleanup_policies_on_next_run_at_project_id ON packages_cleanup_policies USING btree (next_run_at, project_id) WHERE (keep_n_duplicated_package_files <> 'all'::text);
 
 CREATE UNIQUE INDEX idx_environment_merge_requests_unique_index ON deployment_merge_requests USING btree (environment_id, merge_request_id);
@@ -39891,6 +39929,8 @@ CREATE INDEX idx_security_inventory_filters_traversal_ids_unarchived_project ON 
 CREATE INDEX idx_security_pipeline_execution_project_schedules_next_run_at ON security_pipeline_execution_project_schedules USING btree (next_run_at, id);
 
 CREATE INDEX idx_security_policies_config_id_policy_index ON security_policies USING btree (security_orchestration_policy_configuration_id, policy_index);
+
+CREATE INDEX idx_security_policy_dismissals_license_occurrence_uuids ON security_policy_dismissals USING gin (license_occurrence_uuids) WHERE (status = 1);
 
 CREATE INDEX idx_security_policy_dismissals_project_findings_uuids ON security_policy_dismissals USING gin (security_findings_uuids);
 
@@ -41479,6 +41519,12 @@ CREATE INDEX index_emails_on_email_trigram ON emails USING gin (email gin_trgm_o
 CREATE INDEX index_emails_on_user_id ON emails USING btree (user_id);
 
 CREATE INDEX index_enabled_clusters_on_id ON clusters USING btree (id) WHERE (enabled = true);
+
+CREATE INDEX index_enabled_foundational_flows_on_catalog_item_id ON enabled_foundational_flows USING btree (catalog_item_id);
+
+CREATE INDEX index_enabled_foundational_flows_on_namespace_id ON enabled_foundational_flows USING btree (namespace_id);
+
+CREATE INDEX index_enabled_foundational_flows_on_project_id ON enabled_foundational_flows USING btree (project_id);
 
 CREATE INDEX index_environments_cluster_agent_id ON environments USING btree (cluster_agent_id) WHERE (cluster_agent_id IS NOT NULL);
 
@@ -50238,6 +50284,9 @@ ALTER TABLE ONLY user_namespace_callouts
 ALTER TABLE ONLY workspace_agentk_states
     ADD CONSTRAINT fk_4b1428e43a FOREIGN KEY (workspace_id) REFERENCES workspaces(id) ON DELETE CASCADE;
 
+ALTER TABLE ONLY enabled_foundational_flows
+    ADD CONSTRAINT fk_4b4e102eb8 FOREIGN KEY (project_id) REFERENCES projects(id) ON DELETE CASCADE;
+
 ALTER TABLE ONLY sbom_occurrences
     ADD CONSTRAINT fk_4b88e5b255 FOREIGN KEY (component_version_id) REFERENCES sbom_component_versions(id) ON DELETE CASCADE;
 
@@ -50844,6 +50893,9 @@ ALTER TABLE ONLY packages_pypi_metadata
 ALTER TABLE ONLY approval_group_rules_users
     ADD CONSTRAINT fk_888a0df3b7 FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE;
 
+ALTER TABLE ONLY enabled_foundational_flows
+    ADD CONSTRAINT fk_88c081c480 FOREIGN KEY (catalog_item_id) REFERENCES ai_catalog_items(id) ON DELETE CASCADE;
+
 ALTER TABLE ONLY bulk_import_entities
     ADD CONSTRAINT fk_88c725229f FOREIGN KEY (namespace_id) REFERENCES namespaces(id) ON DELETE CASCADE;
 
@@ -51236,6 +51288,9 @@ ALTER TABLE ONLY sbom_occurrences
 
 ALTER TABLE ONLY work_item_text_field_values
     ADD CONSTRAINT fk_b22fe079a2 FOREIGN KEY (work_item_id) REFERENCES issues(id) ON DELETE CASCADE;
+
+ALTER TABLE ONLY enabled_foundational_flows
+    ADD CONSTRAINT fk_b273edc28f FOREIGN KEY (namespace_id) REFERENCES namespaces(id) ON DELETE CASCADE;
 
 ALTER TABLE ONLY project_access_tokens
     ADD CONSTRAINT fk_b27801bfbf FOREIGN KEY (project_id) REFERENCES projects(id) ON DELETE CASCADE;

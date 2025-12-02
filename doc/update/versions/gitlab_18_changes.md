@@ -33,7 +33,9 @@ required upgrade stops occur at versions:
 
 ## Issues to be aware of when upgrading from 17.11
 
-- [PostgreSQL 14 is not supported starting from GitLab 18](../deprecations.md#postgresql-14-and-15-no-longer-supported). Upgrade PostgreSQL to at least version 16.8 before upgrading to GitLab 18.0 or later.
+- [PostgreSQL 14 is not supported starting from GitLab 18](../deprecations.md#postgresql-14-and-15-no-longer-supported).
+  Upgrade PostgreSQL to at least version 16.5 before upgrading to GitLab 18.0 or later. For more information, see
+  [installation requirements](../../install/requirements.md#postgresql).
 
   {{< alert type="warning" >}}
 
@@ -91,8 +93,6 @@ required upgrade stops occur at versions:
   available in GitLab 18.5.2 and 18.6.0.
 
   Git operations such clone, push, and pull are unaffected by this issue.
-
-- From GitLab 18.0, the minimum supported version of PostgreSQL is 16. For more information, see [installation requirements](../../install/requirements.md#postgresql).
 
 ## Geo installations 18.4.4
 

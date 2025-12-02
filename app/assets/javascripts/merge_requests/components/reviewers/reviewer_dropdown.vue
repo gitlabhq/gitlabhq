@@ -223,7 +223,7 @@ export default {
     removeAllReviewers() {
       this.currentSelectedReviewers = [];
     },
-    trackReviewersSelectEvent() {
+    trackReviewersChangeEvent() {
       const telemetryEvent = this.search ? SEARCH_SELECT_REVIEWER_EVENT : SELECT_REVIEWER_EVENT;
       const previousUsernames = toUsernames(this.selectedReviewers);
       const listUsernames = toUsernames(this.usersForList);
@@ -257,7 +257,7 @@ export default {
       return additions.length;
     },
     processReviewers() {
-      const additions = this.trackReviewersSelectEvent();
+      const additions = this.trackReviewersChangeEvent();
       this.updateReviewers();
 
       if (additions > 0 && this.usage === 'simple') {
