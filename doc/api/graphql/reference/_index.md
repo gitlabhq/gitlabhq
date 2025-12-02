@@ -36200,7 +36200,7 @@ Represents a Maven virtual registry.
 | <a id="mavenregistrydescription"></a>`description` | [`String`](#string) | Description of the virtual registry. |
 | <a id="mavenregistryid"></a>`id` | [`ID!`](#id) | ID of the virtual registry. |
 | <a id="mavenregistryname"></a>`name` | [`String!`](#string) | Name of the virtual registry. |
-| <a id="mavenregistryupdatedat"></a>`updatedAt` | [`Time`](#time) | Timestamp of when the virtual registry was updated. |
+| <a id="mavenregistryupdatedat"></a>`updatedAt` | [`Time!`](#time) | Timestamp of when the virtual registry was updated. |
 
 ### `MavenRegistryDetails`
 
@@ -36214,7 +36214,7 @@ Represents Maven virtual registry details.
 | <a id="mavenregistrydetailsid"></a>`id` | [`ID!`](#id) | ID of the virtual registry. |
 | <a id="mavenregistrydetailsname"></a>`name` | [`String!`](#string) | Name of the virtual registry. |
 | <a id="mavenregistrydetailsregistryupstreams"></a>`registryUpstreams` {{< icon name="warning-solid" >}} | [`[MavenRegistryUpstreamWithUpstream!]!`](#mavenregistryupstreamwithupstream) | **Introduced** in GitLab 18.7. **Status**: Experiment. List of registry upstreams for the Maven virtual registry. |
-| <a id="mavenregistrydetailsupdatedat"></a>`updatedAt` | [`Time`](#time) | Timestamp of when the virtual registry was updated. |
+| <a id="mavenregistrydetailsupdatedat"></a>`updatedAt` | [`Time!`](#time) | Timestamp of when the virtual registry was updated. |
 | <a id="mavenregistrydetailsupstreams"></a>`upstreams` {{< icon name="warning-solid" >}} | [`[MavenUpstreamDetails!]`](#mavenupstreamdetails) | **Introduced** in GitLab 18.1. **Status**: Experiment. List of upstream registries for the Maven virtual registry. |
 
 ### `MavenRegistryUpstreamWithRegistry`
@@ -56670,6 +56670,23 @@ Implementations:
 | <a id="projectinterfacenamewithnamespace"></a>`nameWithNamespace` | [`String`](#string) | Name of the project including the namespace. |
 | <a id="projectinterfaceuserpermissions"></a>`userPermissions` | [`ProjectPermissions`](#projectpermissions) | Permissions for the current user on the project. |
 | <a id="projectinterfaceweburl"></a>`webUrl` | [`String`](#string) | Web URL of the project. |
+
+#### `RegistryInterface`
+
+Implementations:
+
+- [`ContainerRegistry`](#containerregistry)
+- [`MavenRegistry`](#mavenregistry)
+- [`MavenRegistryDetails`](#mavenregistrydetails)
+
+##### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="registryinterfacedescription"></a>`description` | [`String`](#string) | Description of the virtual registry. |
+| <a id="registryinterfaceid"></a>`id` | [`ID!`](#id) | ID of the virtual registry. |
+| <a id="registryinterfacename"></a>`name` | [`String!`](#string) | Name of the virtual registry. |
+| <a id="registryinterfaceupdatedat"></a>`updatedAt` | [`Time!`](#time) | Timestamp of when the virtual registry was updated. |
 
 #### `ResolvableInterface`
 

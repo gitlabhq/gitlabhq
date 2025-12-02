@@ -69,6 +69,7 @@ module Types
     end
     field :current_user, Types::CurrentUserType,
       null: true,
+      scopes: [:api, :read_api, :ai_workflows],
       description: "Get information about current user."
     field :design_management, Types::DesignManagementType,
       null: false,

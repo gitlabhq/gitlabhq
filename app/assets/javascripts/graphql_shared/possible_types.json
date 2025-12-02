@@ -265,6 +265,11 @@
     "TerraformStateVersionRegistry",
     "UploadRegistry"
   ],
+  "RegistryInterface": [
+    "ContainerRegistry",
+    "MavenRegistry",
+    "MavenRegistryDetails"
+  ],
   "ResolvableInterface": [
     "Discussion",
     "Note"

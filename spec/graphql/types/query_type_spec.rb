@@ -16,10 +16,14 @@ RSpec.describe GitlabSchema.types['Query'], feature_category: :shared do
   end
 
   describe 'current_user field' do
-    subject { described_class.fields['currentUser'] }
+    subject(:field) { described_class.fields['currentUser'] }
 
     it 'returns current user' do
       is_expected.to have_graphql_type(Types::CurrentUserType)
+    end
+
+    it 'includes :ai_workflows scope' do
+      expect(field.instance_variable_get(:@scopes)).to include(:ai_workflows)
     end
   end
 

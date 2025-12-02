@@ -1,0 +1,10 @@
+---
+name: bypass_tag_commit_check_during_tag_hooks
+description:
+feature_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/579813
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/214537
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/582418
+milestone: '18.7'
+group: group::source code
+type: experiment
+default_enabled: false

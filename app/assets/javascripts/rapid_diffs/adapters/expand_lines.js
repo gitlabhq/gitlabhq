@@ -42,7 +42,7 @@ export const expandLinesAdapter = {
           expandDirection,
           surroundingLines: getSurroundingLines(hunkHeaderRow),
           diffLinesPath,
-          view: viewer === 'text_parallel' ? 'parallel' : undefined,
+          view: viewer === 'text_parallel' ? 'parallel' : 'inline',
         });
       } catch (error) {
         createAlert({

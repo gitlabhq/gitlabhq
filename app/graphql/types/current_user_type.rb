@@ -44,6 +44,27 @@ module Types
       resolver: Resolvers::Ci::UserRunnersResolver,
       experiment: { milestone: '18.3' },
       description: 'List all runners the current user manages.'
+
+    # Override id field to add ai_workflows scope
+    field :id,
+      type: Types::GlobalIDType[::User],
+      null: false,
+      scopes: [:api, :read_api, :ai_workflows],
+      description: 'Global ID of the user.'
+
+    # Override web_url field to add ai_workflows scope
+    field :web_url,
+      type: GraphQL::Types::String,
+      null: false,
+      scopes: [:api, :read_api, :ai_workflows],
+      description: 'Web URL of the user.'
+
+    # Override web_path field to add ai_workflows scope
+    field :web_path, # rubocop:disable GraphQL/ExtractType -- This field is overridden from the superclass
+      type: GraphQL::Types::String,
+      null: false,
+      scopes: [:api, :read_api, :ai_workflows],
+      description: 'Web path of the user.'
   end
   # rubocop:enable Graphql/AuthorizeTypes
 end

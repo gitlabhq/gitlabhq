@@ -11,10 +11,19 @@ RSpec.describe GitlabSchema.types['CurrentUser'], feature_category: :user_profil
 
   it 'contains attributes related to a user' do
     expected_fields = %w[
-      id runners
+      id runners web_url web_path
     ]
 
     expect(described_class).to include_graphql_fields(*expected_fields)
+  end
+
+  describe 'fields with :ai_workflows scope' do
+    %w[id webUrl webPath].each do |field_name|
+      it "includes :ai_workflows scope for the #{field_name} field" do
+        field = described_class.fields[field_name]
+        expect(field.instance_variable_get(:@scopes)).to include(:ai_workflows)
+      end
+    end
   end
 
   describe 'work_items field' do

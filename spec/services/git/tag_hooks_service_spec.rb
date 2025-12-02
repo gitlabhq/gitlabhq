@@ -64,8 +64,20 @@ RSpec.describe Git::TagHooksService, :service, feature_category: :source_code_ma
         project.repository.add_tag(user, tag_name, blob_id)
       end
 
-      it "does not create a pipeline", :sidekiq_inline do
-        expect { service.execute }.not_to change { Ci::Pipeline.count }
+      it "creates a new pipeline", :sidekiq_inline do
+        expect { service.execute }.to change { Ci::Pipeline.count }.by(1)
+
+        expect(Ci::Pipeline.last).to be_push
+      end
+
+      context 'when bypass_tag_commit_check_during_tag_hooks is disabled' do
+        before do
+          stub_feature_flags(bypass_tag_commit_check_during_tag_hooks: false)
+        end
+
+        it "does not create a pipeline", :sidekiq_inline do
+          expect { service.execute }.not_to change { Ci::Pipeline.count }
+        end
       end
     end
 
@@ -77,8 +89,20 @@ RSpec.describe Git::TagHooksService, :service, feature_category: :source_code_ma
         project.repository.add_tag(user, tag_name, tree_id)
       end
 
-      it "does not create a pipeline", :sidekiq_inline do
-        expect { service.execute }.not_to change { Ci::Pipeline.count }
+      it "creates a new pipeline", :sidekiq_inline do
+        expect { service.execute }.to change { Ci::Pipeline.count }.by(1)
+
+        expect(Ci::Pipeline.last).to be_push
+      end
+
+      context 'when bypass_tag_commit_check_during_tag_hooks is disabled' do
+        before do
+          stub_feature_flags(bypass_tag_commit_check_during_tag_hooks: false)
+        end
+
+        it "does not create a pipeline", :sidekiq_inline do
+          expect { service.execute }.not_to change { Ci::Pipeline.count }
+        end
       end
     end
   end

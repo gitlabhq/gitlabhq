@@ -280,8 +280,11 @@ RSpec.describe 'Merge request > User creates image diff notes', :js, feature_cat
   def create_image_diff_note
     wait_for_all_requests
 
-    page.all('a', text: 'Click to expand it.', wait: false).each do |element|
-      element.click
+    nb = 0
+    while nb < 100 && page.all('a', text: 'Click to expand it.').any?
+      page.first('a', text: 'Click to expand it.').click
+      wait_for_requests
+      nb += 1
     end
 
     find('.js-add-image-diff-note-button', match: :first).click
