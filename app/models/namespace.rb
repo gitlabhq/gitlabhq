@@ -409,18 +409,6 @@ class Namespace < ApplicationRecord
     end
   end
 
-  def archive
-    return false if archived?
-
-    namespace_settings.update(archived: true)
-  end
-
-  def unarchive
-    return false unless archived?
-
-    namespace_settings.update(archived: false)
-  end
-
   def archived?
     !!namespace_settings&.archived?
   end

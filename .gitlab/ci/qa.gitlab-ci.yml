@@ -142,6 +142,8 @@ e2e:test-on-omnibus-ee:
     - compile-production-assets
     - build-qa-image
     - e2e-test-pipeline-generate
+    - job: coverage-frontend
+      optional: true
   variables:
     # If renaming the child pipeline, please update any references to it in the triage-ops project.
     QA_RUN_TYPE: e2e-test-on-omnibus
@@ -179,6 +181,8 @@ e2e:test-on-gdk:
   needs:
     - build-gdk-image
     - e2e-test-pipeline-generate
+    - job: coverage-frontend
+      optional: true
   variables:
     QA_RUN_TYPE: e2e-test-on-gdk
     PIPELINE_NAME: E2E GDK
@@ -193,6 +197,8 @@ e2e:test-on-cng:
   needs:
     - compile-production-assets
     - e2e-test-pipeline-generate
+    - job: coverage-frontend
+      optional: true
   variables:
     QA_RUN_TYPE: e2e-test-on-cng
     PIPELINE_NAME: E2E CNG

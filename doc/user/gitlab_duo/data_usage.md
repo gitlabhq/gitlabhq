@@ -50,7 +50,7 @@ prohibit the use of Customer Content for their own purposes, except to perform
 their independent legal obligations.
 
 GitLab Duo Chat and GitLab Duo Agent Platform retain chat history and workflow
-history, respectively, to help you return quickly to previously discussed topics.
+history, respectively, to help you return quickly to previously discussed topics and for anti-abuse purposes.
 You can delete chats in the GitLab Duo Chat interface. GitLab does not otherwise
 retain input and output data unless customers provide consent through a GitLab
 [support ticket](https://about.gitlab.com/support/portal/).

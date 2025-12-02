@@ -27910,8 +27910,7 @@ CREATE TABLE system_note_metadata (
     description_version_id bigint,
     note_id bigint NOT NULL,
     id bigint NOT NULL,
-    namespace_id bigint,
-    organization_id bigint
+    namespace_id bigint
 );
 
 CREATE SEQUENCE system_note_metadata_id_seq

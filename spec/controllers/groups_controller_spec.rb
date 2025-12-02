@@ -531,16 +531,16 @@ RSpec.describe GroupsController, :with_current_organization, factory_default: :k
     end
 
     context 'when work_item_planning_view feature flag is enabled' do
-      it 'redirects to work items path with issue type filter' do
+      it 'redirects to work items path without type filter in FOSS' do
         get :issues, params: { id: group.to_param }
 
-        expect(response).to redirect_to(group_work_items_path(group, params: { 'not[type][]' => 'epic' }))
+        expect(response).to redirect_to(group_work_items_path(group))
       end
 
       it 'preserves query parameters except type when redirecting' do
         get :issues, params: { id: group.to_param, search: 'bug', sort: 'created_desc', type: 'old_type' }
 
-        expect(response).to redirect_to(group_work_items_path(group, params: { search: 'bug', sort: 'created_desc', 'not[type][]' => 'epic' }))
+        expect(response).to redirect_to(group_work_items_path(group, params: { search: 'bug', sort: 'created_desc' }))
       end
     end
 

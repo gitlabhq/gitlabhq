@@ -16,6 +16,7 @@ query getYourWorkUserProjects(
   currentUser {
     id
     contributedProjects(
+      active: true
       first: $first
       last: $last
       before: $before

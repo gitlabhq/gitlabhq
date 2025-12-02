@@ -15910,6 +15910,15 @@ msgstr ""
 msgid "CodeOwner|Pattern"
 msgstr ""
 
+msgid "CodeReviewRequestsByRoleChart|Requests by authors"
+msgstr ""
+
+msgid "CodeReviewRequestsByRoleChart|Requests by non-authors"
+msgstr ""
+
+msgid "CodeReviewRequestsByRoleChart|Tracks users who initiated GitLab Duo Code Review. %{linkStart}Learn more%{linkEnd}."
+msgstr ""
+
 msgid "CodeSuggestionsAcceptanceByLanguageChart|Acceptance rate"
 msgstr ""
 

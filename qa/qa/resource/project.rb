@@ -454,16 +454,22 @@ module QA
         # GET latest pipeline immediately after 1st pipeline was created seems to cause 500 or 502
         # Adding a retry block with `retry_on_exception: true` to reduce flakiness
         #
-        retry_until do
+        result = Support::Retrier.retry_until(message: "Wait for latest pipeline with web_url") do
           response = get(request_url(api_latest_pipeline_path))
-          response.code == HTTP_STATUS_OK
-        rescue ResourceQueryError
-          raise(
-            "Could not GET project's latest pipeline. Request returned (#{response.code}): `#{response}`."
-          )
+          next false unless response.code == HTTP_STATUS_OK
+
+          pipeline = parse_body(response)
+          pipeline[:web_url].present? ? pipeline : false
+        rescue ResourceQueryError => e
+          Runtime::Logger.debug("Failed to get latest pipeline: #{e.message}")
+          false
         end
 
-        parse_body(get(request_url(api_latest_pipeline_path)))
+        unless result && result[:web_url]
+          raise ResourceQueryError, "Could not GET project's latest pipeline with valid web_url"
+        end
+
+        result
       end
 
       def visit_latest_pipeline

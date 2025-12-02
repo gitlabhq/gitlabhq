@@ -41,7 +41,7 @@ RSpec.shared_examples 'group archiving abilities' do
 
   context 'when group is archived but not marked for deletion' do
     before do
-      group.archive
+      group.namespace_settings.update!(archived: true)
     end
 
     it_behaves_like 'archived but not marked for deletion'
@@ -49,7 +49,7 @@ RSpec.shared_examples 'group archiving abilities' do
 
   context 'when group is archived and marked for deletion' do
     before do
-      group.archive
+      group.namespace_settings.update!(archived: true)
       group.namespace_details.update!(deleted_at: Time.current)
     end
 
@@ -60,7 +60,7 @@ RSpec.shared_examples 'group archiving abilities' do
     let(:group) { create(:group, :nested) }
 
     before do
-      group.parent.archive
+      group.parent.namespace_settings.update!(archived: true)
     end
 
     it_behaves_like 'archived but not marked for deletion'
@@ -70,7 +70,7 @@ RSpec.shared_examples 'group archiving abilities' do
     let(:group) { create(:group, :nested) }
 
     before do
-      group.parent.archive
+      group.parent.namespace_settings.update!(archived: true)
       group.parent.namespace_details.update!(deleted_at: Time.current)
     end
 

@@ -78,6 +78,42 @@ test-coverage:export-rspec-and-e2e:
       - rspec/
     expire_in: 7d
 
+test-coverage:export-jest-and-e2e:
+  extends:
+    - .coverage-export-base
+    - .with-ci-node-image
+    - .yarn-cache
+    - .frontend:rules:coverage-export-jest-and-e2e
+  stage: post-qa
+  needs:
+    - job: e2e:test-on-gdk
+    - job: coverage-frontend
+  before_script:
+    - !reference [.default-utils-before_script, before_script]
+    - eval "bundle install ${BUNDLE_INSTALL_FLAGS}"
+    - source scripts/utils.sh
+    - yarn_install_script
+  script:
+    - ruby scripts/coverage/download_e2e_frontend_coverage_from_child_pipeline.rb
+    - |
+      echo "Merging Jest + E2E coverage..."
+      node scripts/frontend/merge_coverage_frontend.js
+    - echo "Exporting merged Jest + E2E coverage to ClickHouse..."
+    - bundle exec test-coverage
+        --test-reports 'jest-reports/**/*.json'
+        --coverage-report 'coverage-frontend/lcov.info'
+        --test-map 'jest-test-mapping/jest-source-to-test.json'
+        --clickhouse-url "${CLICKHOUSE_URL}"
+        --clickhouse-database "${CLICKHOUSE_DATABASE}"
+        --clickhouse-username "${CLICKHOUSE_USERNAME}"
+  artifacts:
+    paths:
+      - coverage-frontend/
+      - coverage-e2e-frontend/
+      - jest-reports/
+      - jest-test-mapping/
+    expire_in: 7d
+
 test-coverage:export-workhorse:
   extends:
     - .coverage-export-base

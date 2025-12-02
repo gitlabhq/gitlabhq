@@ -4,6 +4,7 @@ module ContainerRegistry
   module Protection
     class UpdateTagRuleService
       include Gitlab::Allowable
+      include ContainerRegistry::Protection::InternalEventsTracking
 
       ALLOWED_ATTRIBUTES = %i[
         tag_name_pattern
@@ -34,6 +35,8 @@ module ContainerRegistry
         unless container_protection_tag_rule.update(params.slice(*ALLOWED_ATTRIBUTES))
           return service_response_error(message: container_protection_tag_rule.errors.full_messages)
         end
+
+        track_tag_rule_update(container_protection_tag_rule)
 
         ServiceResponse.success(payload: { container_protection_tag_rule: container_protection_tag_rule })
       rescue ArgumentError => e

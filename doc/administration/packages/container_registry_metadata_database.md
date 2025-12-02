@@ -64,6 +64,7 @@ metadata database version.
 - Prior to 18.3, registry regular schema and post-deployment database migrations must be run manually when upgrading versions.
 - No guarantee for registry [zero downtime during upgrades](../../update/zero_downtime.md) on multi-node Linux package environments.
 - Backup and restore jobs do not include the registry database. For more information, see [Backup with metadata database](#backup-with-metadata-database).
+- During metadata imports for existing registries, the `createdAt` and `publishedAt` timestamp values for image tags are set to the import date. This is intentional to ensure consistency, because the legacy registry does not collect tag published dates for all images. While some images have build dates in their metadata, many do not. For more information, see [issue 1384](https://gitlab.com/gitlab-org/container-registry/-/issues/1384).
 
 ## Metadata database feature support
 

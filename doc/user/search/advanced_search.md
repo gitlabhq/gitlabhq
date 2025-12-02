@@ -60,15 +60,9 @@ You can also use advanced search in a project or group.
 - Searching comments on issues [enabled on GitLab.com](https://gitlab.com/gitlab-org/gitlab/-/issues/536912) in GitLab 18.1.
 - Searching comments on issues [generally available](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/191369) in GitLab 18.6. Feature flag `search_work_item_queries_notes` removed.
 - Searching comments on merge requests [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/572590) in GitLab 18.6 [with a flag](../../administration/feature_flags/_index.md) named `search_merge_request_queries_notes`. Disabled by default.
+- [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/573750) in GitLab 18.7. Feature flag `search_merge_request_queries_notes` removed.
 
 {{< /history >}}
-
-{{< alert type="flag" >}}
-
-The availability of this feature is controlled by a feature flag.
-For more information, see the history.
-
-{{< /alert >}}
 
 Scopes describe the type of data you're searching.
 The following scopes are available for advanced search:

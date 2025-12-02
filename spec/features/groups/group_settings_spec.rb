@@ -346,7 +346,7 @@ RSpec.describe 'Edit group settings', :with_current_organization, feature_catego
 
     context 'when group is archived' do
       before do
-        subgroup.archive
+        subgroup.namespace_settings.update!(archived: true)
 
         visit edit_group_path(subgroup)
       end
@@ -364,7 +364,7 @@ RSpec.describe 'Edit group settings', :with_current_organization, feature_catego
 
     context 'when ancestor is archived' do
       before do
-        ancestor.archive
+        ancestor.namespace_settings.update!(archived: true)
 
         visit edit_group_path(subgroup)
       end

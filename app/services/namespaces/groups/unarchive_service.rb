@@ -25,7 +25,7 @@ module Namespaces
         return NotAuthorizedError unless can?(current_user, :archive_group, group)
         return AncestorArchivedError if group.ancestors_archived?
         return AlreadyUnarchivedError unless group.archived
-        return UnarchivingFailedError unless group.unarchive
+        return UnarchivingFailedError unless group.namespace_settings.update(archived: false)
 
         after_unarchive
         ServiceResponse.success

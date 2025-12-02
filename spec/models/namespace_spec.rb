@@ -1040,56 +1040,6 @@ RSpec.describe Namespace, feature_category: :groups_and_projects do
 
   it_behaves_like 'an isolatable', :namespace
 
-  describe 'archive and unarchive' do
-    let_it_be(:namespace) { create(:group) }
-
-    describe '#archive' do
-      context 'when namespace is not archived' do
-        before do
-          namespace.namespace_settings.update!(archived: false)
-        end
-
-        it 'archives the namespace' do
-          expect(namespace.archive).to be true
-          expect(namespace.namespace_settings.reload.archived).to eq(true)
-        end
-      end
-
-      context 'when namespace is already archived' do
-        before do
-          namespace.namespace_settings.update!(archived: true)
-        end
-
-        it 'returns false' do
-          expect(namespace.archive).to be false
-        end
-      end
-    end
-
-    describe '#unarchive' do
-      context 'when namespace is archived' do
-        before do
-          namespace.namespace_settings.update!(archived: true)
-        end
-
-        it 'unarchives the namespace' do
-          expect(namespace.unarchive).to be true
-          expect(namespace.namespace_settings.reload.archived).to eq(false)
-        end
-      end
-
-      context 'when namespace is not archived' do
-        before do
-          namespace.namespace_settings.update!(archived: false)
-        end
-
-        it 'returns false' do
-          expect(namespace.unarchive).to be false
-        end
-      end
-    end
-  end
-
   describe '#self_archived?' do
     let_it_be(:namespace) { create(:group) }
 

@@ -183,4 +183,34 @@ RSpec.describe ContainerRegistry::Protection::CreateTagRuleService, '#execute', 
     it_behaves_like 'an erroneous service response',
       message: 'GitLab container registry API not supported'
   end
+
+  context 'when tracking internal events' do
+    it 'tracks the create_container_registry_protected_tag_rule event for mutable rules' do
+      expect { service_execute }
+        .to trigger_internal_events('create_container_registry_protected_tag_rule')
+        .with(
+          project: project,
+          namespace: project.namespace,
+          user: current_user,
+          additional_properties: { rule_type: 'mutable' }
+        )
+        .once
+    end
+
+    context 'when rule creation fails' do
+      before do
+        allow_next_instance_of(ContainerRegistry::Protection::TagRule) do |instance|
+          allow(instance).to receive_messages(
+            save: false,
+            persisted?: false,
+            errors: instance_double(ActiveModel::Errors, full_messages: ['Validation error'])
+          )
+        end
+      end
+
+      it 'does not track the event' do
+        expect { service_execute }.not_to trigger_internal_events('create_container_registry_protected_tag_rule')
+      end
+    end
+  end
 end

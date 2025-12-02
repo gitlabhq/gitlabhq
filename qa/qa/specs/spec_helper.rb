@@ -28,6 +28,7 @@ RSpec.configure(&:disable_monkey_patching!)
 require_relative('../../../jh/qa/qa/specs/spec_helper') if GitlabEdition.jh?
 
 front_end_coverage_by_example = {}
+front_end_full_coverage_by_example = {}
 
 def save_front_end_coverage_mapping(map_to_save)
   return if map_to_save.empty?
@@ -39,6 +40,17 @@ def save_front_end_coverage_mapping(map_to_save)
   QA::Runtime::Logger.info("Saved test coverage mapping data to #{file}")
 rescue StandardError => e
   QA::Runtime::Logger.error("Failed to save JS coverage mapping data, error: #{e}")
+end
+
+def save_front_end_full_coverage(coverage_to_save)
+  return if coverage_to_save.empty?
+
+  file = "tmp/js-istanbul-coverage-#{ENV['CI_JOB_NAME_SLUG'] || 'local'}-#{SecureRandom.hex(6)}.json"
+
+  File.write(file, coverage_to_save.to_json)
+  QA::Runtime::Logger.info("Saved Istanbul E2E coverage data to #{file}")
+rescue StandardError => e
+  QA::Runtime::Logger.error("Failed to save Istanbul coverage data, error: #{e}")
 end
 
 RSpec.configure do |config|
@@ -76,9 +88,16 @@ RSpec.configure do |config|
     # Reset coverage persistence at the start of each test
     if Capybara::Session.instance_created? && QA::Runtime::Env.istanbul_coverage_enabled?
       begin
-        Capybara.current_session.execute_script("window.__coveragePathsPersistence.reset()")
+        # Visit GitLab page first to ensure coverage bundle is loaded
+        Capybara.current_session.visit(QA::Runtime::Scenario.gitlab_address)
+
+        has_persistence = Capybara.current_session.evaluate_script(
+          "typeof window.__coveragePathsPersistence !== 'undefined'"
+        )
+
+        Capybara.current_session.execute_script("window.__coveragePathsPersistence.reset()") if has_persistence
       rescue StandardError => e
-        QA::Runtime::Logger.warn("Failed to reset coverage paths, check if it is an api spec: #{e.message}")
+        QA::Runtime::Logger.warn("Failed to reset coverage paths: #{e.message}")
       end
     end
 
@@ -107,17 +126,29 @@ RSpec.configure do |config|
       QA::Support::PageErrorChecker.log_request_errors(page)
       QA::Support::PageErrorChecker.check_page_for_error_code(page) if example.exception
     end
-    # Get coverage paths and store in metadata
+
     if Capybara::Session.instance_created? && QA::Runtime::Env.istanbul_coverage_enabled?
       begin
-        Capybara.current_session.execute_script("window.__coveragePathsPersistence.update()")
-        coverage_paths = Capybara.current_session.evaluate_script("window.__coveragePathsPersistence.getPaths()")
-        QA::Runtime::Logger.debug("Coverage paths count: #{coverage_paths.length}")
+        has_persistence = Capybara.current_session.evaluate_script(
+          "typeof window.__coveragePathsPersistence !== 'undefined'"
+        )
 
-        example.metadata[:coverage_paths] = coverage_paths
-        front_end_coverage_by_example[example.metadata[:location]] = coverage_paths
+        Capybara.current_session.execute_script("window.__coveragePathsPersistence.update()") if has_persistence
+
+        has_coverage = Capybara.current_session.evaluate_script(
+          "typeof window.__coverage__ !== 'undefined' && window.__coverage__ !== null"
+        )
+
+        if has_coverage
+          full_coverage_data = Capybara.current_session.evaluate_script("window.__coverage__")
+          coverage_paths = Capybara.current_session.evaluate_script("Object.keys(window.__coverage__ || {})")
+
+          example.metadata[:coverage_paths] = coverage_paths
+          front_end_coverage_by_example[example.metadata[:location]] = coverage_paths
+          front_end_full_coverage_by_example[example.metadata[:location]] = full_coverage_data
+        end
       rescue StandardError => e
-        QA::Runtime::Logger.warn("Failed to collect coverage paths, check if it is an api spec: #{e.message}")
+        QA::Runtime::Logger.warn("Failed to collect coverage data: #{e.message}")
       end
     end
   end
@@ -141,7 +172,10 @@ RSpec.configure do |config|
     # Write all test created resources to JSON file
     QA::Tools::TestResourceDataProcessor.write_to_file(suite.reporter.failed_examples.any?)
 
-    save_front_end_coverage_mapping(front_end_coverage_by_example) if QA::Runtime::Env.istanbul_coverage_enabled?
+    if QA::Runtime::Env.istanbul_coverage_enabled?
+      save_front_end_coverage_mapping(front_end_coverage_by_example)
+      save_front_end_full_coverage(front_end_full_coverage_by_example)
+    end
   end
 
   config.expect_with :rspec do |expectations|

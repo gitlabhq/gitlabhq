@@ -17,7 +17,7 @@ RSpec.describe 'Projects > Settings > User archives a project', :js, feature_cat
 
   context 'when group is archived' do
     before do
-      group.archive
+      group.namespace_settings.update!(archived: true)
 
       visit edit_project_path(project)
     end

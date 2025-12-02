@@ -416,7 +416,7 @@ RSpec.describe ProjectPolicy, feature_category: :system_access do
 
     context 'when parent group is archived' do
       before do
-        group.archive
+        group.namespace_settings.update!(archived: true)
       end
 
       context 'project in parent group' do
@@ -448,7 +448,7 @@ RSpec.describe ProjectPolicy, feature_category: :system_access do
 
     context 'when ancestor group is archived' do
       before do
-        subgroup.archive
+        subgroup.namespace_settings.update!(archived: true)
       end
 
       context 'project in subgroup (with ancestor archived)' do
@@ -484,7 +484,7 @@ RSpec.describe ProjectPolicy, feature_category: :system_access do
 
     context 'when both project and group are archived' do
       before do
-        group.archive
+        group.namespace_settings.update!(archived: true)
         group_project.update!(archived: true)
       end
 

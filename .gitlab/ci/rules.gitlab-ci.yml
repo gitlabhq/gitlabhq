@@ -208,6 +208,9 @@
 .if-coverband-enabled: &if-coverband-enabled
   if: '$COVERBAND_ENABLED == "true"'
 
+.if-babel-env-istanbul: &if-babel-env-istanbul
+  if: '$BABEL_ENV == "istanbul"'
+
 .if-default-branch-schedule-nightly: &if-default-branch-schedule-nightly
   if: '$CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH && $CI_PIPELINE_SOURCE == "schedule" && $SCHEDULE_TYPE == "nightly"'
 
@@ -2690,6 +2693,15 @@
     - <<: *if-missing-clickhouse-coverage-credentials
       when: never
     - <<: *if-coverband-enabled
+
+# Export merged Jest + E2E coverage (only when Istanbul is enabled)
+.frontend:rules:coverage-export-jest-and-e2e:
+  rules:
+    - <<: *if-not-ee
+      when: never
+    - <<: *if-missing-clickhouse-coverage-credentials
+      when: never
+    - <<: *if-babel-env-istanbul
 
 .rails:rules:rspec-undercoverage:
   rules:

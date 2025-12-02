@@ -11,14 +11,18 @@ module Types
 
         implements ::Types::WorkItems::WidgetInterface
 
+        def self.authorization_scopes
+          super + [:ai_workflows]
+        end
+
         field :due_date,
           ::Types::DateType,
-          null: true,
+          null: true, scopes: [:api, :read_api, :ai_workflows],
           description: 'Due date of the work item.'
 
         field :start_date,
           ::Types::DateType,
-          null: true,
+          null: true, scopes: [:api, :read_api, :ai_workflows],
           description: 'Start date of the work item.'
 
         field :roll_up,

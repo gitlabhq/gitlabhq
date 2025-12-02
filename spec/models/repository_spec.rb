@@ -2748,74 +2748,85 @@ RSpec.describe Repository, feature_category: :source_code_management do
     let(:new_image_commit) { repository.commit('33f3729a45c02fc67d00adb1b8bca394b0e761d9') }
     let(:update_image_commit) { repository.commit('2f63565e7aac07bcdadb654e253078b727143ec4') }
     let(:message) { 'revert message' }
+    let(:branch_name) { 'master' }
+    let(:commit) { update_image_commit }
+
+    subject(:revert) { repository.revert(user, commit, branch_name, message) }
 
     context 'when there is a conflict' do
+      let(:commit) { new_image_commit }
+
       it 'raises an error' do
-        expect { repository.revert(user, new_image_commit, 'master', message) }.to raise_error(Gitlab::Git::Repository::CreateTreeError)
+        expect { revert }.to raise_error(Gitlab::Git::Repository::CreateTreeError)
       end
     end
 
     context 'when commit was already reverted' do
-      it 'raises an error' do
-        repository.revert(user, update_image_commit, 'master', message)
+      before do
+        repository.revert(user, update_image_commit, branch_name, message)
+      end
 
-        expect { repository.revert(user, update_image_commit, 'master', message) }.to raise_error(Gitlab::Git::Repository::CreateTreeError)
+      it 'raises an error' do
+        expect { revert }.to raise_error(Gitlab::Git::Repository::CreateTreeError)
       end
     end
 
     context 'when commit can be reverted' do
       it 'reverts the changes' do
-        expect(repository.revert(user, update_image_commit, 'master', message)).to be_truthy
+        expect(revert).to be_truthy
       end
 
       it 'sets target_sha to prevent race conditions' do
         target_sha = repository.commit('master').id
         expect(repository.raw_repository).to receive(:revert).with(a_hash_including(target_sha: target_sha))
-        repository.revert(user, update_image_commit, 'master', message)
+
+        revert
       end
     end
 
     context 'reverting a merge commit' do
-      it 'reverts the changes' do
+      before do
         merge_commit
-        expect(repository.blob_at_branch('master', 'files/ruby/feature.rb')).to be_present
+      end
 
-        repository.revert(user, merge_commit, 'master', message)
-        expect(repository.blob_at_branch('master', 'files/ruby/feature.rb')).not_to be_present
+      let(:commit) { merge_commit }
+
+      it 'reverts the changes' do
+        expect do
+          revert
+        end.to change {
+          repository.blob_at_branch('master', 'files/ruby/feature.rb').present?
+        }.from(true).to(false)
       end
 
       it 'sets target_sha to prevent race conditions' do
-        merge_commit
         target_sha = repository.commit('master').id
         expect(repository.raw_repository).to receive(:revert).with(a_hash_including(target_sha: target_sha))
-        repository.revert(user, merge_commit, 'master', message)
+
+        revert
       end
     end
 
-    context 'when branch_name is nil' do
-      it 'sets target_sha to nil' do
-        expect(repository.raw_repository).to receive(:revert).with(a_hash_including(target_sha: nil))
-        repository.revert(user, update_image_commit, nil, message)
-      end
-    end
-
-    context 'target_sha automatic detection' do
+    describe 'target_sha automatic detection' do
       it 'automatically detects current branch SHA when branch_name is provided' do
         branch = repository.find_branch('master')
         expected_sha = branch.dereferenced_target.id
 
         expect(repository.raw_repository).to receive(:revert).with(a_hash_including(target_sha: expected_sha))
-        repository.revert(user, update_image_commit, 'master', message)
+        revert
       end
 
-      it 'sets target_sha to nil when branch does not exist' do
-        expect(repository.raw_repository).to receive(:revert).with(a_hash_including(target_sha: nil))
-        repository.revert(user, update_image_commit, 'nonexistent-branch', message)
-      end
+      context 'when the branch does not exist' do
+        using RSpec::Parameterized::TableSyntax
+        where(:branch_name) { [nil, 'non-existent-branch', ''] }
 
-      it 'sets target_sha to nil when branch_name is empty string' do
-        expect(repository.raw_repository).to receive(:revert).with(a_hash_including(target_sha: nil))
-        repository.revert(user, update_image_commit, '', message)
+        with_them do
+          it 'sets target_sha to nil' do
+            expect(repository.raw_repository).to receive(:revert).with(a_hash_including(target_sha: nil))
+
+            revert
+          end
+        end
       end
     end
   end

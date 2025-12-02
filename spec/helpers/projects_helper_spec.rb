@@ -2055,7 +2055,7 @@ RSpec.describe ProjectsHelper, feature_category: :source_code_management do
 
     context 'when ancestor is archived' do
       before do
-        ancestor.archive
+        ancestor.namespace_settings.update!(archived: true)
       end
 
       it 'returns correct data' do
@@ -2086,7 +2086,7 @@ RSpec.describe ProjectsHelper, feature_category: :source_code_management do
 
     context 'when ancestor is archived' do
       before do
-        group.archive
+        group.namespace_settings.update!(archived: true)
       end
 
       it { is_expected.to be(true) }

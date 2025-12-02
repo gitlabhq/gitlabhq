@@ -736,7 +736,7 @@ RSpec.describe Project, factory_default: :keep, feature_category: :groups_and_pr
 
       context 'when parent group is archived' do
         before do
-          group.archive
+          group.namespace_settings.update!(archived: true)
         end
 
         it 'returns all projects in the group' do
@@ -759,7 +759,7 @@ RSpec.describe Project, factory_default: :keep, feature_category: :groups_and_pr
 
       context 'when parent group is archived' do
         before do
-          group.archive
+          group.namespace_settings.update!(archived: true)
         end
 
         it 'excludes all projects in the group' do
@@ -1526,7 +1526,7 @@ RSpec.describe Project, factory_default: :keep, feature_category: :groups_and_pr
 
     context 'when project is not archived but parent group is archived' do
       it 'returns true' do
-        group.archive
+        group.namespace_settings.update!(archived: true)
 
         expect(group_project.ancestors_archived?).to eq(true)
       end
@@ -1534,7 +1534,7 @@ RSpec.describe Project, factory_default: :keep, feature_category: :groups_and_pr
 
     context 'when project is not archived but parent subgroup is archived' do
       it 'returns true' do
-        subgroup.archive
+        subgroup.namespace_settings.update!(archived: true)
 
         expect(subgroup_project.ancestors_archived?).to eq(true)
       end

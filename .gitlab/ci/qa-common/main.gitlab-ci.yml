@@ -149,6 +149,29 @@ stages:
   rules:
     - if: '$COVERBAND_ENABLED == "true"'
 
+.process-frontend-coverage:
+  extends:
+    - .with-ci-node-image
+    - .yarn-cache
+  stage: report
+  variables:
+    NODE_ENV: "development"  # Need devDependencies for istanbul packages
+  before_script:
+    - cd $CI_PROJECT_DIR
+    - source scripts/utils.sh
+    - echo "Installing yarn packages with devDependencies..."
+    - yarn install --frozen-lockfile --production=false
+  script:
+    - echo "Processing E2E Istanbul coverage..."
+    - yarn node scripts/frontend/merge_e2e_coverage.js
+  artifacts:
+    paths:
+      - coverage-e2e-frontend/
+    expire_in: 7d
+    when: always
+  rules:
+    - if: '$BABEL_ENV == "istanbul"'
+
 .notify-slack:
   extends:
     - .post-to-slack

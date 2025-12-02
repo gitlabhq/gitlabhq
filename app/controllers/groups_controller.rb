@@ -414,13 +414,18 @@ class GroupsController < Groups::ApplicationController
   def redirect_if_epic_params; end
 
   def redirect_issues_to_work_items
-    params = work_items_redirect_params.except("type", "type[]").merge('not[type][]' => 'epic')
+    params = work_items_redirect_params.except("type", "type[]").merge(additional_work_items_params)
 
     redirect_to group_work_items_path(group, params: params)
   end
 
   def work_items_redirect_params
     request.query_parameters
+  end
+
+  # Overridden in EE
+  def additional_work_items_params
+    {}
   end
 
   def skip_step_up_auth_for_owner_on_edit_and_update?

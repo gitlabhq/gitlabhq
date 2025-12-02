@@ -62,7 +62,7 @@ RSpec.describe 'projects/settings/_archive.html.haml', feature_category: :groups
 
     context 'when group is archived' do
       before do
-        group.archive
+        group.namespace_settings.update!(archived: true)
       end
 
       it 'renders #js-unarchive-settings' do

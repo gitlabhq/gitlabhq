@@ -86,7 +86,7 @@ RSpec.describe 'Group step-up authentication', :with_current_organization, :js, 
           expect(page).to have_current_path(edit_group_path(group))
 
           visit issues_group_path(group)
-          expect(page).to have_current_path(group_work_items_path(group, params: { 'not[type][]' => 'epic' }))
+          expect(page).to have_current_path(group_work_items_path(group))
 
           # Test Case 3: Navigation in and out of group scope
           # Verify step-up auth session persists when navigating away and returning
@@ -201,7 +201,7 @@ RSpec.describe 'Group step-up authentication', :with_current_organization, :js, 
           expect(page).to have_content(group.name)
 
           visit issues_group_path(group)
-          expect(page).to have_current_path(group_work_items_path(group, params: { 'not[type][]' => 'epic' }))
+          expect(page).to have_current_path(group_work_items_path(group))
         end
       end
     end

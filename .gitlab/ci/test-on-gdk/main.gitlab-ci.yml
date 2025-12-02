@@ -155,6 +155,12 @@ process-backend-coverage:
   extends:
     - .process-backend-coverage
 
+process-frontend-coverage:
+  extends:
+    - .process-frontend-coverage
+  needs:
+    - job: gdk-instance
+
 notify-slack:
   extends:
     - .notify-slack

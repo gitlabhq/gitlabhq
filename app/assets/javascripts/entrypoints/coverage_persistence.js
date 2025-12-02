@@ -1,4 +1,4 @@
-/* eslint-disable no-underscore-dangle,@gitlab/require-i18n-strings,no-console */
+/* eslint-disable no-underscore-dangle */
 
 function getPersistedCoverage() {
   const storedPaths = localStorage.getItem('__coverage_paths__');
@@ -10,9 +10,9 @@ function getPersistedCoverage() {
 
 function getCoverage() {
   if (!window.__coverage__) {
-    console.warn(
-      'Coverage object is missing on the page. Did you install Istanbul babel plugin and enable Webpack?',
-    );
+    // eslint-disable-next-line no-console
+    console.warn('Coverage: __coverage__ object missing. Is Istanbul babel plugin enabled?');
+    return getPersistedCoverage();
   }
   const filePaths = Object.keys(window.__coverage__);
   const existingPaths = getPersistedCoverage();
@@ -21,7 +21,6 @@ function getCoverage() {
 
 function persistCoverage(coverage = getCoverage()) {
   localStorage.setItem('__coverage_paths__', JSON.stringify(coverage));
-  console.log(`Coverage paths saved: ${coverage.length} files tracked`);
 }
 
 function updateCoverage() {
@@ -42,6 +41,5 @@ window.__coveragePathsPersistence = {
   reset() {
     localStorage.removeItem('__coverage_paths__');
     window.__coverageFilePaths = [];
-    console.log('Coverage paths reset.');
   },
 };

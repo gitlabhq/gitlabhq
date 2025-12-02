@@ -45,8 +45,8 @@ RSpec.describe Namespaces::Groups::UnarchiveService, '#execute', feature_categor
     end
 
     context 'when unarchiving succeeds' do
-      it 'calls unarchive on the group' do
-        expect(group).to receive(:unarchive).and_return(true)
+      it 'updates namespace_settings archived to false' do
+        expect(group.namespace_settings).to receive(:update).with(archived: false).and_return(true)
         service_response
       end
 
@@ -65,7 +65,7 @@ RSpec.describe Namespaces::Groups::UnarchiveService, '#execute', feature_categor
 
     context 'when unarchiving fails' do
       before do
-        allow(group).to receive(:unarchive).and_return(false)
+        allow(group.namespace_settings).to receive(:update).with(archived: false).and_return(false)
       end
 
       it 'returns an error response with the appropriate message' do

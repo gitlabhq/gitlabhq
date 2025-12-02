@@ -601,7 +601,7 @@ RSpec.describe GroupsHelper, feature_category: :groups_and_projects do
 
     context 'when ancestor is archived' do
       before do
-        ancestor.archive
+        ancestor.namespace_settings.update!(archived: true)
       end
 
       it 'returns correct data' do
