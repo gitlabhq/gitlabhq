@@ -1786,9 +1786,9 @@ First, we must add `errors` to our mutation object:
 ```diff
 mutation createNoteMutation($input: String!) {
   createNoteMutation(input: $input) {
++   errors
     note {
       id
-+     errors
     }
   }
 ```

@@ -38,3 +38,4 @@ desired_sharding_key:
         sharding_key: organization_id
         belongs_to: tracker
     awaiting_backfill_on_parent: true
+sharding_key_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/581115

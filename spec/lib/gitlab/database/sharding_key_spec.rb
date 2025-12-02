@@ -23,7 +23,6 @@ RSpec.describe 'new tables missing sharding_key', feature_category: :organizatio
   # DO NOT ADD new tables to this list. New tables must have a `sharding_key_issue_url`.
   let(:allowed_to_be_missing_sharding_key_issue_url) do
     %w[
-      bulk_import_batch_trackers
       cluster_platforms_kubernetes
       cluster_providers_aws
       cluster_providers_gcp

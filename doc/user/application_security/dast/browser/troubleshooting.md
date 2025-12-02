@@ -310,7 +310,7 @@ Settings from `DAST_LOG_FILE_CONFIG`, `DAST_LOG_DEVTOOLS_CONFIG`, `DAST_AUTH_REP
 
 ### Example - log crawled paths
 
-Set the log module `CRAWL` to `DEBUG` to log navigation paths found during the crawl phase of the scan. This is useful for understanding
+Set the log file module `CRAWL` to `DEBUG` to log navigation paths found during the crawl phase of the scan to the log file. This is useful for understanding
 if DAST is crawling your target application correctly.
 
 ```yaml
@@ -319,7 +319,7 @@ include:
 
 dast:
   variables:
-    DAST_LOG_CONFIG: "crawl:debug"
+    DAST_LOG_FILE_CONFIG: "crawl:debug"
 ```
 
 For example, the following output shows that four anchor links discovered during the crawl of the page at `https://example.com`.

@@ -31,7 +31,7 @@ These variables control how the scan is conducted and where its results are stor
 | `DAST_CRAWL_GRAPH` | boolean | `true` | Set to `true` to generate an SVG graph of navigation paths visited during crawl phase of the scan. You must also define `gl-dast-crawl-graph.svg` as a CI job artifact to be able to access the generated graph. Defaults to `false`. |
 | `DAST_FULL_SCAN` | boolean | `true` | Set to `true` to run both passive and active checks. Default is `false`. |
 | `DAST_LOG_BROWSER_OUTPUT` | boolean | `true` | Set to `true` to log Chromium `STDOUT` and `STDERR`. |
-| `DAST_LOG_CONFIG` | List of strings | `brows:debug,auth:debug` | A list of modules and their intended logging level for use in the console log. |
+| `DAST_LOG_CONFIG` | List of strings | `brows:debug,auth:debug` | (Deprecated) A list of modules and their intended logging level for use in the console log. |
 | `DAST_LOG_DEVTOOLS_CONFIG` | string | `Default:messageAndBody,truncate:2000` | Set to log protocol messages between DAST and the Chromium browser. |
 | `DAST_LOG_FILE_CONFIG` | List of strings | `brows:debug,auth:debug` | A list of modules and their intended logging level for use in the file log. |
 | `DAST_LOG_FILE_PATH` | string | `/output/browserker.log` | Set to the path of the file log. Default is `gl-dast-scan.log`. |
