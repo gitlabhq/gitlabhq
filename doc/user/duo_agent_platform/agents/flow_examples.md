@@ -33,100 +33,6 @@ These examples contain the following variables:
 
 The following agents are integrated with GitLab and available on GitLab.com.
 
-### Amazon Q
-
-Instead of hard-coding your AWS credentials, store them in the AWS Secrets Manager. Then you can reference them in your YAML file.
-
-1. [Create an IAM user](https://docs.aws.amazon.com/IAM/latest/UserGuide/id_users_create.html) that does not have console access.
-1. Generate an access key pair for programmatic access.
-1. In the same AWS account where GitLab Runner is hosted, create a secret in AWS Secrets Manager. Use the following JSON format:
-
-   ```json
-   {
-     "q-cli-access-token": {"AWS_ACCESS_KEY_ID": "AKIA...", "AWS_SECRET_ACCESS_KEY": "abc123..."}
-   }
-   ```
-
-   Important: Replace the placeholder values with your actual access key ID and secret access key.
-
-1. Grant the GitLab Runner IAM role permission to access AWS Secrets Manager.
-1. Create a flow configuration file like the following.
-
-```yaml
-image: node:22-slim
-commands:
-  - echo "Installing glab"
-  - mkdir --parents ~/.aws/amazonq
-  - echo $MCP_CONFIG > ~/.aws/amazonq/mcp.json
-  - export GITLAB_TOKEN=$GITLAB_TOKEN_AMAZON_Q
-  - apt-get update --quiet && apt-get install --quiet --yes curl wget gpg git unzip && rm --recursive --force /var/lib/apt/lists/*
-  - curl --silent --show-error --location "https://raw.githubusercontent.com/upciti/wakemeops/main/assets/install_repository" | bash
-  - apt-get install --yes glab
-  - echo "Installing Python"
-  - curl --location --silent --show-error --fail "https://astral.sh/uv/install.sh" | sh
-  - export PATH="$HOME/.local/bin:$PATH"
-  - uv python install 3.12 --default
-  - TEMP_DIR=$(mktemp -d)
-  - cd "$TEMP_DIR"
-  - echo "Installing AWS cli"
-  - curl --proto '=https' --tlsv1.2 --silent --show-error --fail "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" --output "awscliv2.zip"
-  - unzip -qq awscliv2.zip
-  - ./aws/install
-  - echo "Installing jq"
-  - apt-get install --yes jq
-  - echo "Installing q client"
-  - curl --proto '=https' --tlsv1.2 --silent --show-error --fail "https://desktop-release.q.us-east-1.amazonaws.com/latest/q-x86_64-linux.zip" --output "q.zip"
-  - unzip -qq q.zip
-  - ./q/install.sh --force --no-confirm
-  - cd -
-  - rm -rf "$TEMP_DIR"
-  - echo "Getting AWS access token"
-  - |
-    if SECRET_JSON=$(aws secretsmanager get-secret-value --secret-id "$AWS_SECRET_NAME" --region "$AWS_REGION_NAME" --query SecretString --output text 2>/dev/null); then
-        export AWS_ACCESS_KEY_ID=$(echo "$SECRET_JSON" | jq -r '."q-cli-access-token" | fromjson | ."AWS_ACCESS_KEY_ID"' )
-        export AWS_SECRET_ACCESS_KEY=$(echo "$SECRET_JSON" | jq -r '."q-cli-access-token" | fromjson | ."AWS_SECRET_ACCESS_KEY"')
-        echo "Success to retrieve secret $AWS_SECRET_NAME"
-    else
-        echo "Failed to retrieve secret: $AWS_SECRET_NAME"
-        exit 1
-    fi
-  - echo "Configuring git"
-  - git config --global user.email "amazonq@gitlab.com"
-  - git config --global user.name "AmazonQ Code"
-  - git remote set-url origin https://gitlab-ci-token:$GITLAB_TOKEN_AMAZON_Q@$GITLAB_HOST/internal-test/q-words-demo.git
-  - echo "Running q"
-  - |
-    AMAZON_Q_SIGV4=1 q chat --trust-all-tools --no-interactive --verbose "
-    You are an AI assistant helping with GitLab operations.
-
-    Context: $AI_FLOW_CONTEXT
-    Task: $AI_FLOW_INPUT
-    Event: $AI_FLOW_EVENT
-
-    Please execute the requested task using the available GitLab tools.
-    Be thorough in your analysis and provide clear explanations.
-
-    <important>
-    Use the glab CLI to access data from GitLab. The glab CLI has already been authenticated. You can run the corresponding commands.
-
-    When you complete your work create a new Git branch, if you aren't already working on a feature branch, with the format of 'feature/<short description of feature>' and check in/push code.
-
-    When you check in and push code you will need to use the access token stored in GITLAB_TOKEN and the user AmazonQ Code.
-    Lastly, after pushing the code, if a MR doesn't already exist, create a new MR for the branch and link it to the issue using:
-    `glab mr create --title "<title>" --description "<desc>" --source-branch <branch> --target-branch <branch>`
-
-    If you are asked to summarize a merge request or issue, or asked to provide more information then please post back a note to the merge request / issue so that the user can see it.
-
-    </important>
-    "
-variables:
-  - GITLAB_TOKEN_AMAZON_Q
-  - GITLAB_HOST
-  - AWS_SECRET_NAME
-  - AWS_REGION_NAME
-  - MCP_CONFIG
-```
-
 ### Anthropic Claude
 
 ```yaml
@@ -249,6 +155,104 @@ variables:
   - GITLAB_HOST
 ```
 
+## Bring your own keys
+
+The following integrations require you to bring your own key to authenticate with your model from GitLab.
+
+### Amazon Q
+
+Instead of hard-coding your AWS credentials, store them in the AWS Secrets Manager. Then you can reference them in your YAML file.
+
+1. [Create an IAM user](https://docs.aws.amazon.com/IAM/latest/UserGuide/id_users_create.html) that does not have console access.
+1. Generate an access key pair for programmatic access.
+1. In the same AWS account where GitLab Runner is hosted, create a secret in AWS Secrets Manager. Use the following JSON format:
+
+   ```json
+   {
+     "q-cli-access-token": {"AWS_ACCESS_KEY_ID": "AKIA...", "AWS_SECRET_ACCESS_KEY": "abc123..."}
+   }
+   ```
+
+   Important: Replace the placeholder values with your actual access key ID and secret access key.
+
+1. Grant the GitLab Runner IAM role permission to access AWS Secrets Manager.
+1. Create a flow configuration file like the following.
+
+```yaml
+image: node:22-slim
+commands:
+  - echo "Installing glab"
+  - mkdir --parents ~/.aws/amazonq
+  - echo $MCP_CONFIG > ~/.aws/amazonq/mcp.json
+  - export GITLAB_TOKEN=$GITLAB_TOKEN_AMAZON_Q
+  - apt-get update --quiet && apt-get install --quiet --yes curl wget gpg git unzip && rm --recursive --force /var/lib/apt/lists/*
+  - curl --silent --show-error --location "https://raw.githubusercontent.com/upciti/wakemeops/main/assets/install_repository" | bash
+  - apt-get install --yes glab
+  - echo "Installing Python"
+  - curl --location --silent --show-error --fail "https://astral.sh/uv/install.sh" | sh
+  - export PATH="$HOME/.local/bin:$PATH"
+  - uv python install 3.12 --default
+  - TEMP_DIR=$(mktemp -d)
+  - cd "$TEMP_DIR"
+  - echo "Installing AWS cli"
+  - curl --proto '=https' --tlsv1.2 --silent --show-error --fail "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" --output "awscliv2.zip"
+  - unzip -qq awscliv2.zip
+  - ./aws/install
+  - echo "Installing jq"
+  - apt-get install --yes jq
+  - echo "Installing q client"
+  - curl --proto '=https' --tlsv1.2 --silent --show-error --fail "https://desktop-release.q.us-east-1.amazonaws.com/latest/q-x86_64-linux.zip" --output "q.zip"
+  - unzip -qq q.zip
+  - ./q/install.sh --force --no-confirm
+  - cd -
+  - rm -rf "$TEMP_DIR"
+  - echo "Getting AWS access token"
+  - |
+    if SECRET_JSON=$(aws secretsmanager get-secret-value --secret-id "$AWS_SECRET_NAME" --region "$AWS_REGION_NAME" --query SecretString --output text 2>/dev/null); then
+        export AWS_ACCESS_KEY_ID=$(echo "$SECRET_JSON" | jq -r '."q-cli-access-token" | fromjson | ."AWS_ACCESS_KEY_ID"' )
+        export AWS_SECRET_ACCESS_KEY=$(echo "$SECRET_JSON" | jq -r '."q-cli-access-token" | fromjson | ."AWS_SECRET_ACCESS_KEY"')
+        echo "Success to retrieve secret $AWS_SECRET_NAME"
+    else
+        echo "Failed to retrieve secret: $AWS_SECRET_NAME"
+        exit 1
+    fi
+  - echo "Configuring git"
+  - git config --global user.email "amazonq@gitlab.com"
+  - git config --global user.name "AmazonQ Code"
+  - git remote set-url origin https://gitlab-ci-token:$GITLAB_TOKEN_AMAZON_Q@$GITLAB_HOST/internal-test/q-words-demo.git
+  - echo "Running q"
+  - |
+    AMAZON_Q_SIGV4=1 q chat --trust-all-tools --no-interactive --verbose "
+    You are an AI assistant helping with GitLab operations.
+
+    Context: $AI_FLOW_CONTEXT
+    Task: $AI_FLOW_INPUT
+    Event: $AI_FLOW_EVENT
+
+    Please execute the requested task using the available GitLab tools.
+    Be thorough in your analysis and provide clear explanations.
+
+    <important>
+    Use the glab CLI to access data from GitLab. The glab CLI has already been authenticated. You can run the corresponding commands.
+
+    When you complete your work create a new Git branch, if you aren't already working on a feature branch, with the format of 'feature/<short description of feature>' and check in/push code.
+
+    When you check in and push code you will need to use the access token stored in GITLAB_TOKEN and the user AmazonQ Code.
+    Lastly, after pushing the code, if a MR doesn't already exist, create a new MR for the branch and link it to the issue using:
+    `glab mr create --title "<title>" --description "<desc>" --source-branch <branch> --target-branch <branch>`
+
+    If you are asked to summarize a merge request or issue, or asked to provide more information then please post back a note to the merge request / issue so that the user can see it.
+
+    </important>
+    "
+variables:
+  - GITLAB_TOKEN_AMAZON_Q
+  - GITLAB_HOST
+  - AWS_SECRET_NAME
+  - AWS_REGION_NAME
+  - MCP_CONFIG
+```
+
 ### Google Gemini CLI
 
 ```yaml
@@ -297,10 +301,6 @@ variables:
   - GOOGLE_CLOUD_PROJECT
   - GOOGLE_CLOUD_LOCATION
 ```
-
-## Bring your own keys
-
-The following integrations require you to bring your own key to authenticate with your model from GitLab.
 
 ### Opencode
 

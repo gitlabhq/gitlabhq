@@ -46081,6 +46081,12 @@ msgstr ""
 msgid "OfflineTransfer|Export failed. You do not have permission to export the following resources or they do not exist: %{paths}"
 msgstr ""
 
+msgid "OfflineTransfer|Object storage request responded with status %{status}"
+msgstr ""
+
+msgid "OfflineTransfer|Unable to access object storage bucket."
+msgstr ""
+
 msgid "Oh no!"
 msgstr ""
 

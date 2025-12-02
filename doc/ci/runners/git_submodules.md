@@ -131,6 +131,52 @@ To make submodules work correctly in CI/CD jobs:
      GIT_SUBMODULE_UPDATE_FLAGS: --jobs 4
    ```
 
+### Check out nested submodules
+
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab-runner/-/merge_requests/5912) in GitLab Runner 18.6.
+
+{{< /history >}}
+
+Nested submodules are submodules that contain their own submodules. You
+might need to check out only specific nested submodules rather than all
+submodules in your repository.
+
+GitLab Runner 18.6 and later externalizes Git configuration (including
+credentials) to a separate file to avoid tainting the build
+directory. When you navigate into a submodule directory and run Git
+commands, the main repository's configuration is automatically inherited
+for all submodules depending on `GIT_SUBMODULE_STRATEGY`:
+
+- If `GIT_SUBMODULE_STRATEGY: normal` is used, then the top-level submodules are initialized.
+- If `GIT_SUBMODULE_STRATEGY: recursive` is used, then all the nested submodules are initialized.
+
+To check out a subset of nested submodules:
+
+1. Set the `GIT_SUBMODULE_STRATEGY` to `normal`:
+
+   ```yaml
+      variables:
+        GIT_SUBMODULE_STRATEGY: normal
+   ```
+
+1. In your job, explicitly pass the externalized configuration:
+
+   ```yaml
+      my-job:
+        script:
+          - git submodule sync
+          - git submodule update --init
+          - cd path/to/submodule-with-nested-submodule
+          - git -c "include.path=$(git -C $CI_PROJECT_DIR config include.path)" submodule update --init nested-submodule
+   ```
+
+The `git -C $CI_PROJECT_DIR config include.path` command retrieves the
+path to the externalized configuration file from the main repository.
+This ensures that credentials and other settings are available when you
+check out the nested submodule.
+
 ## Troubleshooting
 
 ### Can't find the `.gitmodules` file
@@ -150,27 +196,22 @@ Setting the `GIT_STRATEGY` to `clone` should resolve the issue.
 
 ### Error: `fatal: could not read Username for 'https://gitlab.com': No such device or address`
 
-If you're using GitLab hosted runners, you may encounter this error when your CI/CD job attempts to clone or fetch Git submodules.
+You might encounter this error when your CI/CD job attempts to clone or fetch Git submodules.
+This issue occurs in two scenarios:
 
-During CI/CD pipeline execution, GitLab Runners automatically perform Git URL substitution to authenticate
-through `CI_JOB_TOKEN`:
+- When working with nested submodules, because GitLab Runner 18.6 and later externalizes Git configuration, which may not automatically inherited by submodules.
+- When using GitLab-hosted runners, because the `CI_SERVER_FQDN` is different from `https://gitlab.com`. GitLab Runner automatically performs Git URL substitution to authenticate through `CI_JOB_TOKEN`, but this substitution may not apply to submodules on `https://gitlab.com`.
 
-```shell
-git config --global url."https://gitlab-ci-token:${CI_JOB_TOKEN}@${CI_SERVER_FQDN}".insteadOf "${CI_SERVER_FQDN}"
-```
+To resolve this issue:
 
-For GitLab hosted runners, the `CI_SERVER_FQDN` is different from `https://gitlab.com`.
-If your submodule resides in `https://gitlab.com`,
-this substitution is not performed, leading to the error.
+- For nested submodules, see [Check out nested submodules](#check-out-nested-submodules).
+- For GitLab-hosted runners, create a `pre_get_sources_script` and configure the URL substitution with `CI_JOB_TOKEN` manually:
 
-One way to resolve this error is to create a `pre_get_sources_script` and
-configure the URL substitution with `CI_JOB_TOKEN` manually:
-
-   ```yaml
-   variables:
-     GIT_SUBMODULE_STRATEGY: recursive
-     GIT_SUBMODULE_DEPTH: 1
-   hooks:
-     pre_get_sources_script:
-       - git config --global url."https://gitlab-ci-token:${CI_JOB_TOKEN}@${CI_SERVER_FQDN}".insteadOf "${SUBMODULE_URL}"
-   ```
+  ```yaml
+  variables:
+    GIT_SUBMODULE_STRATEGY: recursive
+    GIT_SUBMODULE_DEPTH: 1
+  hooks:
+    pre_get_sources_script:
+      - git config --global url."https://gitlab-ci-token:${CI_JOB_TOKEN}@${CI_SERVER_FQDN}".insteadOf "${SUBMODULE_URL}"
+  ```

@@ -11,10 +11,23 @@ module Import
         # @param portable_params [Array<Hash>] list of portables to export.
         #   Each portable hash must have at least its type and full path. E.g.:
         #   { type: 'project', full_path: 'gitlab-org/gitlab' }
-        def initialize(current_user, source_hostname, portable_params)
+        # @param storage_config [Hash] contains object storage configuation settings:
+        #   provider [Symbol], bucket [String], and credentials [Hash (content varies by provider)]. E.g.:
+        #   {
+        #     provider: :aws,
+        #     bucket: 'import-objects',
+        #     credentials: {
+        #       aws_access_key_id: 'AwsUserAccessKey',
+        #       aws_secret_access_key: 'aws/secret+access/key',
+        #       region: 'us-east-1',
+        #       path_style: false
+        #     }
+        #   }
+        def initialize(current_user, source_hostname, portable_params, storage_config)
           @current_user = current_user
           @source_hostname = source_hostname
           @portable_params = portable_params
+          @storage_config = storage_config
         end
 
         def execute
@@ -22,20 +35,26 @@ module Import
           return invalid_params_error unless portable_params_valid?
           return insufficient_permissions_error unless user_can_export_all_portables?
 
+          validate_object_storage!
+
           offline_export = Import::Offline::Export.create!(
             user: current_user,
             organization_id: current_user.organization_id,
-            source_hostname: source_hostname
+            source_hostname: source_hostname,
+            configuration: configuration
           )
 
           ServiceResponse.success(payload: offline_export)
+        rescue Excon::Error
+          # Excon errors may be long and contain sensitive information depending on provider implementation
+          service_error(s_('OfflineTransfer|Unable to access object storage bucket.'))
         rescue ActiveRecord::RecordInvalid => e
           service_error(e.message)
         end
 
         private
 
-        attr_reader :current_user, :source_hostname, :portable_params, :invalid_paths
+        attr_reader :current_user, :source_hostname, :portable_params, :storage_config, :invalid_paths
 
         def user_can_export_all_portables?
           full_path_params = portable_full_paths
@@ -56,6 +75,31 @@ module Import
 
           true
         end
+
+        def validate_object_storage!
+          configuration.validate! # Validate before attempting to connect using this configuration
+
+          client.test_connection!
+        end
+
+        def configuration
+          Import::Offline::Configuration.new(
+            provider: storage_config[:provider],
+            bucket: storage_config[:bucket],
+            object_storage_credentials: storage_config[:credentials],
+            organization_id: current_user.organization_id
+          )
+        end
+        strong_memoize_attr :configuration
+
+        def client
+          Import::Clients::ObjectStorage.new(
+            provider: configuration.provider,
+            bucket: configuration.bucket,
+            credentials: configuration.object_storage_credentials
+          )
+        end
+        strong_memoize_attr :client
 
         def user_can_admin_portable?(portable)
           ability = "admin_#{portable.to_ability_name}"

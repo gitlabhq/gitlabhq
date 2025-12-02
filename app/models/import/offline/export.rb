@@ -10,6 +10,8 @@ module Import
       belongs_to :user
       belongs_to :organization, class_name: 'Organizations::Organization'
 
+      has_one :configuration, class_name: 'Import::Offline::Configuration', foreign_key: :offline_export_id,
+        inverse_of: :offline_export
       has_many :bulk_import_exports, class_name: 'BulkImports::Export', inverse_of: :offline_export
 
       validates :source_hostname, :status, presence: true
@@ -37,13 +39,13 @@ module Import
       def validate_source_hostname
         uri = Gitlab::Utils.parse_url(source_hostname)
 
-        if KNOWN_IMPORT_HOSTS.include?(uri&.host)
-          return errors.add(:source_hostname, :invalid, message: 'must not be the host of a known import source')
+        if KNOWN_IMPORT_HOSTS.include?(uri&.domain)
+          return errors.add(:source_hostname, :invalid, message: 'must not be a known import source domain')
         end
 
         return if uri && uri.scheme && uri.host && uri.path.blank? && uri.query.blank?
 
-        errors.add(:source_hostname, :invalid, message: 'must contain scheme and host, and not path or query')
+        errors.add(:source_hostname, :invalid, message: 'must contain only scheme and host')
       end
     end
   end

@@ -104,7 +104,27 @@ The following environment variables are automatically injected when `injectGatew
 - `AI_FLOW_AI_GATEWAY_TOKEN`: the authentication token for AI Gateway
 - `AI_FLOW_AI_GATEWAY_HEADERS`: formatted headers for API requests
 
-GitLab-managed credentials are available only for Anthropic Claude and Codex.
+GitLab-managed credentials are available only for Anthropic Claude and OpenAI Codex.
+
+#### Supported models
+
+For GitLab-managed credentials, the following AI models are supported:
+
+Anthropic Claude:
+
+- `claude-3-sonnet-20240229`
+- `claude-3-5-sonnet-20240620`
+- `claude-3-haiku-20240307`
+- `claude-3-5-haiku-20241022`
+- `claude-3-5-sonnet-20241022`
+- `claude-3-7-sonnet-20250219`
+- `claude-sonnet-4-20250514`
+- `claude-sonnet-4-5-20250929`
+
+OpenAI Codex:
+
+- `gpt-5`
+- `gpt-5-codex`
 
 ## Create a service account
 
@@ -278,8 +298,8 @@ Prerequisites:
 1. Mention, assign, or request a review from the flow service account user.
    For example:
 
-   ```markdown
-   @service-account-username can you help analyze this code change?
+   ```plaintext
+   @service-account-username Can you help analyze this code change?
    ```
 
 1. After the external agent has completed the task, you see a confirmation, and either a

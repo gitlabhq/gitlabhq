@@ -21,7 +21,7 @@ Sessions show the status of the agents and flows you've run in GitLab.
 In the Agent Platform, sessions are created when you:
 
 - Run an agent or flow in the GitLab UI. This includes:
-  - Flows like the [Fix your CI/CD Pipeline Flow](../flows/convert_to_gitlab_ci.md).
+  - Flows like the [Fix your CI/CD Pipeline Flow](../flows/fix_pipeline.md).
   - Any flow invoked with a trigger.
 
 Sessions are not created when:

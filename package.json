@@ -283,7 +283,7 @@
     "custom-jquery-matchers": "^2.1.0",
     "dependency-cruiser": "^16.9.0",
     "eslint": "9.39.1",
-    "eslint-formatter-gitlab": "^6.0.1",
+    "eslint-formatter-gitlab": "^7.0.0",
     "eslint-import-resolver-jest": "3.0.2",
     "eslint-import-resolver-webpack": "0.13.10",
     "eslint-plugin-import": "^2.32.0",

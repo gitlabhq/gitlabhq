@@ -18940,6 +18940,29 @@ CREATE SEQUENCE import_failures_id_seq
 
 ALTER SEQUENCE import_failures_id_seq OWNED BY import_failures.id;
 
+CREATE TABLE import_offline_configurations (
+    id bigint NOT NULL,
+    offline_export_id bigint NOT NULL,
+    organization_id bigint NOT NULL,
+    created_at timestamp with time zone NOT NULL,
+    updated_at timestamp with time zone NOT NULL,
+    provider smallint NOT NULL,
+    bucket text NOT NULL,
+    export_prefix text NOT NULL,
+    object_storage_credentials jsonb NOT NULL,
+    CONSTRAINT check_94d334d71c CHECK ((char_length(bucket) <= 256)),
+    CONSTRAINT check_f28fa120fe CHECK ((char_length(export_prefix) <= 255))
+);
+
+CREATE SEQUENCE import_offline_configurations_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+ALTER SEQUENCE import_offline_configurations_id_seq OWNED BY import_offline_configurations.id;
+
 CREATE TABLE import_offline_exports (
     id bigint NOT NULL,
     user_id bigint NOT NULL,
@@ -32331,6 +32354,8 @@ ALTER TABLE ONLY import_export_uploads ALTER COLUMN id SET DEFAULT nextval('impo
 
 ALTER TABLE ONLY import_failures ALTER COLUMN id SET DEFAULT nextval('import_failures_id_seq'::regclass);
 
+ALTER TABLE ONLY import_offline_configurations ALTER COLUMN id SET DEFAULT nextval('import_offline_configurations_id_seq'::regclass);
+
 ALTER TABLE ONLY import_offline_exports ALTER COLUMN id SET DEFAULT nextval('import_offline_exports_id_seq'::regclass);
 
 ALTER TABLE ONLY import_placeholder_memberships ALTER COLUMN id SET DEFAULT nextval('import_placeholder_memberships_id_seq'::regclass);
@@ -35536,6 +35561,9 @@ ALTER TABLE ONLY import_export_uploads
 
 ALTER TABLE ONLY import_failures
     ADD CONSTRAINT import_failures_pkey PRIMARY KEY (id);
+
+ALTER TABLE ONLY import_offline_configurations
+    ADD CONSTRAINT import_offline_configurations_pkey PRIMARY KEY (id);
 
 ALTER TABLE ONLY import_offline_exports
     ADD CONSTRAINT import_offline_exports_pkey PRIMARY KEY (id);
@@ -41922,6 +41950,10 @@ CREATE INDEX index_import_failures_on_project_id_and_correlation_id_value ON imp
 CREATE INDEX index_import_failures_on_project_id_not_null ON import_failures USING btree (project_id) WHERE (project_id IS NOT NULL);
 
 CREATE INDEX index_import_failures_on_user_id_not_null ON import_failures USING btree (user_id) WHERE (user_id IS NOT NULL);
+
+CREATE INDEX index_import_offline_configurations_on_offline_export_id ON import_offline_configurations USING btree (offline_export_id);
+
+CREATE INDEX index_import_offline_configurations_on_organization_id ON import_offline_configurations USING btree (organization_id);
 
 CREATE INDEX index_import_offline_exports_on_organization_id ON import_offline_exports USING btree (organization_id);
 
@@ -50292,6 +50324,9 @@ ALTER TABLE ONLY sbom_occurrences
 ALTER TABLE ONLY issue_assignees
     ADD CONSTRAINT fk_4b97267a3e FOREIGN KEY (namespace_id) REFERENCES namespaces(id) ON DELETE CASCADE;
 
+ALTER TABLE ONLY import_offline_configurations
+    ADD CONSTRAINT fk_4c2f23efc7 FOREIGN KEY (organization_id) REFERENCES organizations(id) ON DELETE CASCADE;
+
 ALTER TABLE ONLY packages_conan_recipe_revisions
     ADD CONSTRAINT fk_4d18bd6f82 FOREIGN KEY (project_id) REFERENCES projects(id) ON DELETE CASCADE;
 
@@ -51710,6 +51745,9 @@ ALTER TABLE ONLY software_license_policies
 
 ALTER TABLE ONLY epics
     ADD CONSTRAINT fk_dccd3f98fc FOREIGN KEY (assignee_id) REFERENCES users(id) ON DELETE SET NULL;
+
+ALTER TABLE ONLY import_offline_configurations
+    ADD CONSTRAINT fk_de42c075bd FOREIGN KEY (offline_export_id) REFERENCES import_offline_exports(id) ON DELETE CASCADE;
 
 ALTER TABLE ONLY project_control_compliance_statuses
     ADD CONSTRAINT fk_de8f1f0f22 FOREIGN KEY (compliance_requirement_id) REFERENCES compliance_requirements(id) ON DELETE CASCADE;

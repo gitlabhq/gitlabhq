@@ -6,6 +6,7 @@ RSpec.describe Import::Offline::Export, feature_category: :importers do
   describe 'associations' do
     it { is_expected.to belong_to(:user) }
     it { is_expected.to belong_to(:organization) }
+    it { is_expected.to have_one(:configuration).class_name('Import::Offline::Configuration') }
     it { is_expected.to have_many(:bulk_import_exports).class_name('BulkImports::Export') }
   end
 
@@ -24,6 +25,7 @@ RSpec.describe Import::Offline::Export, feature_category: :importers do
       it { is_expected.not_to allow_value('https://example.com?param=1').for(:source_hostname) }
       it { is_expected.not_to allow_value('https://example.com/dir?param=1').for(:source_hostname) }
       it { is_expected.not_to allow_value('https://github.com').for(:source_hostname) }
+      it { is_expected.not_to allow_value('https://www.github.com').for(:source_hostname) }
       it { is_expected.not_to allow_value('https://bitbucket.org').for(:source_hostname) }
       it { is_expected.not_to allow_value('https://gitea.com').for(:source_hostname) }
     end
