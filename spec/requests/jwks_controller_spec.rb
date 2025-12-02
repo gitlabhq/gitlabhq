@@ -123,5 +123,19 @@ RSpec.describe JwksController, feature_category: :system_access do
         expect(parsed_response['registration_endpoint']).to end_with('/oauth/register')
       end
     end
+
+    context 'when relative_url_root is configured' do
+      let(:relative_url_root) { '/gitlab' }
+      let(:base_url_with_root) { "http://localhost#{relative_url_root}" }
+
+      before do
+        stub_config_setting(relative_url_root: relative_url_root, url: base_url_with_root)
+        get '/.well-known/oauth-authorization-server/api/v4/mcp'
+      end
+
+      it 'includes relative_url_root in registration_endpoint' do
+        expect(parsed_response['registration_endpoint']).to eq("#{base_url_with_root}/oauth/register")
+      end
+    end
   end
 end

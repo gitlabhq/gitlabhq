@@ -17,10 +17,10 @@ module Oauth
     def resource_metadata
       {
         resource: [
-          "#{request.base_url}/api/v4/mcp"
+          Gitlab::Utils.append_path(Gitlab.config.gitlab.url, '/api/v4/mcp')
         ],
         authorization_servers: [
-          request.base_url
+          Gitlab.config.gitlab.url
         ]
       }
     end

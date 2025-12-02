@@ -8,10 +8,10 @@ RSpec.describe Oauth::ProtectedResourceMetadataController, feature_category: :sy
     let(:expected_response) do
       {
         'resource' => [
-          "http://www.example.com/api/v4/mcp"
+          "#{Gitlab.config.gitlab.url}/api/v4/mcp"
         ],
         'authorization_servers' => [
-          "http://www.example.com"
+          Gitlab.config.gitlab.url
         ]
       }
     end
@@ -44,9 +44,7 @@ RSpec.describe Oauth::ProtectedResourceMetadataController, feature_category: :sy
       let(:custom_host) { 'https://custom-gitlab.example.com' }
 
       before do
-        allow_next_instance_of(ActionDispatch::Request) do |instance|
-          allow(instance).to receive(:base_url).and_return(custom_host)
-        end
+        stub_config_setting(url: custom_host)
 
         get protected_resource_path
       end
@@ -114,6 +112,34 @@ RSpec.describe Oauth::ProtectedResourceMetadataController, feature_category: :sy
       end
 
       it 'authorization_servers contains the same base URL as resource' do
+        response_body = response.parsed_body
+        resource_base = response_body['resource'][0].gsub('/api/v4/mcp', '')
+        auth_server = response_body['authorization_servers'].first
+
+        expect(auth_server).to eq(resource_base)
+      end
+    end
+
+    context 'when relative_url_root is configured' do
+      let(:relative_url_root) { '/gitlab' }
+      let(:base_url_with_root) { "http://localhost#{relative_url_root}" }
+
+      before do
+        stub_config_setting(relative_url_root: relative_url_root, url: base_url_with_root)
+        get protected_resource_path
+      end
+
+      it 'includes relative_url_root in resource URLs' do
+        resource_urls = response.parsed_body['resource']
+        expect(resource_urls.first).to eq("#{base_url_with_root}/api/v4/mcp")
+      end
+
+      it 'includes relative_url_root in authorization_servers' do
+        auth_servers = response.parsed_body['authorization_servers']
+        expect(auth_servers.first).to eq(base_url_with_root)
+      end
+
+      it 'maintains consistency between resource and authorization_servers' do
         response_body = response.parsed_body
         resource_base = response_body['resource'][0].gsub('/api/v4/mcp', '')
         auth_server = response_body['authorization_servers'].first
