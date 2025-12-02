@@ -7,6 +7,19 @@ RSpec.describe Users::ProjectStudio, feature_category: :user_profile do
 
   let_it_be(:user) { create(:user) }
 
+  describe "sanity check that project studio is default enabled" do
+    before do
+      # -- temporary Project Studio rollout
+      skip 'Test not applicable in classic UI' if ENV["GLCI_OVERRIDE_PROJECT_STUDIO_ENABLED"] == "false"
+    end
+
+    it "passes" do
+      expect(described_class.new(user).enabled?).to be(true)
+      expect(described_class.new(user).available?).to be(true)
+      expect(described_class.enabled_for_user?(user)).to be(true)
+    end
+  end
+
   describe '#enabled?' do
     context 'when user is nil' do
       context 'when the Project Studio is not available' do
@@ -82,14 +95,14 @@ RSpec.describe Users::ProjectStudio, feature_category: :user_profile do
     end
   end
 
-  describe '#enabled? with GLCI_OVERRIDE_PROJECT_STUDIO_ENABLED set to true' do
+  describe '#enabled? with GLCI_OVERRIDE_PROJECT_STUDIO_ENABLED set to false' do
     before do
-      stub_env('GLCI_OVERRIDE_PROJECT_STUDIO_ENABLED', 'true')
+      stub_env('GLCI_OVERRIDE_PROJECT_STUDIO_ENABLED', 'false')
     end
 
     context 'when user is nil' do
-      it 'returns true' do
-        expect(described_class.new(nil).enabled?).to be true
+      it 'returns false' do
+        expect(described_class.new(nil).enabled?).to be false
       end
     end
 
@@ -99,10 +112,10 @@ RSpec.describe Users::ProjectStudio, feature_category: :user_profile do
         :new_ui_enabled,
         :expected_result
       ) do
-        false | false | true
-        true  | false | true
-        false | true  | true
-        true  | true  | true
+        false | false | false
+        true  | false | false
+        false | true  | false
+        true  | true  | false
       end
 
       with_them do
@@ -140,6 +153,46 @@ RSpec.describe Users::ProjectStudio, feature_category: :user_profile do
       where(:paneled_view_flag, :expected_result) do
         false | false
         true  | true
+      end
+
+      with_them do
+        before do
+          stub_feature_flags(paneled_view: paneled_view_flag)
+        end
+
+        it 'returns expected result' do
+          expect(described_class.new(user).available?).to be expected_result
+        end
+      end
+    end
+  end
+
+  describe '#available? with GLCI_OVERRIDE_PROJECT_STUDIO_ENABLED set to false' do
+    before do
+      stub_env('GLCI_OVERRIDE_PROJECT_STUDIO_ENABLED', 'false')
+    end
+
+    context 'when user is nil' do
+      where(:paneled_view_flag, :expected_result) do
+        false | false
+        true  | false
+      end
+
+      with_them do
+        before do
+          stub_feature_flags(paneled_view: paneled_view_flag)
+        end
+
+        it 'returns expected result' do
+          expect(described_class.new(nil).available?).to be expected_result
+        end
+      end
+    end
+
+    context 'when user is present' do
+      where(:paneled_view_flag, :expected_result) do
+        false | false
+        true  | false
       end
 
       with_them do

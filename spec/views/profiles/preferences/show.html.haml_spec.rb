@@ -24,6 +24,7 @@ RSpec.describe 'profiles/preferences/show' do
 
   context 'navigation theme' do
     before do
+      skip 'Test not applicable in new UI' if Users::ProjectStudio.enabled_for_user?(user)
       render
     end
 

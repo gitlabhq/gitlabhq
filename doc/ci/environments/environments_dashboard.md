@@ -2,6 +2,7 @@
 stage: Verify
 group: Runner Core
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+description: Monitor environments across multiple projects, including latest commits, pipeline status, and deployment times.
 title: Environments Dashboard
 ---
 

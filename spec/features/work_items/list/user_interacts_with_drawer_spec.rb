@@ -15,7 +15,7 @@ RSpec.describe 'Work Items List Drawer', :js, feature_category: :team_planning d
 
   context 'when project studio is enabled' do
     before do
-      enable_project_studio!(user)
+      skip 'Test not applicable in classic UI' unless Users::ProjectStudio.enabled_for_user?(user) # rubocop:disable RSpec/AvoidConditionalStatements -- temporary Project Studio rollout
     end
 
     context 'if user is signed in as developer' do

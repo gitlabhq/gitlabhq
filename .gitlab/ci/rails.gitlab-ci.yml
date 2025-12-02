@@ -221,7 +221,7 @@ rspec system pg16:
   variables:
     DEBUG_GITLAB_TRANSACTION_STACK: "true"
 
-rspec system pg16 project-studio-enabled:
+rspec system pg16 classic-ui:
   tags:
     - $GLCI_MEDIUM_RUNNER_REQUIRED
   extends:
@@ -230,7 +230,7 @@ rspec system pg16 project-studio-enabled:
     - .rails:rules:ee-only-system
   variables:
     DEBUG_GITLAB_TRANSACTION_STACK: "true"
-    GLCI_OVERRIDE_PROJECT_STUDIO_ENABLED: "true"
+    GLCI_OVERRIDE_PROJECT_STUDIO_ENABLED: "false"
   rules:
     - if: '$CI_MERGE_REQUEST_IID == null'
       when: never
@@ -1001,7 +1001,7 @@ rspec-ee system pg16:
     - .rspec-ee-system-parallel
     - .rails:rules:ee-only-system
 
-rspec-ee system pg16 project-studio-enabled:
+rspec-ee system pg16 classic-ui:
   tags:
     - $GLCI_MEDIUM_RUNNER_REQUIRED
   extends:
@@ -1009,7 +1009,7 @@ rspec-ee system pg16 project-studio-enabled:
     - .rspec-ee-system-parallel
     - .rails:rules:ee-only-system
   variables:
-    GLCI_OVERRIDE_PROJECT_STUDIO_ENABLED: "true"
+    GLCI_OVERRIDE_PROJECT_STUDIO_ENABLED: "false"
   rules:
     - if: '$CI_MERGE_REQUEST_IID == null'
       when: never

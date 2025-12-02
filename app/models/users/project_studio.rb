@@ -12,7 +12,7 @@ module Users
     end
 
     def enabled?
-      return true if ENV["GLCI_OVERRIDE_PROJECT_STUDIO_ENABLED"] == "true"
+      return false if ENV["GLCI_OVERRIDE_PROJECT_STUDIO_ENABLED"] == "false"
 
       return false unless available?
 
@@ -24,7 +24,7 @@ module Users
     end
 
     def available?
-      return true if ENV["GLCI_OVERRIDE_PROJECT_STUDIO_ENABLED"] == "true"
+      return false if ENV["GLCI_OVERRIDE_PROJECT_STUDIO_ENABLED"] == "false"
 
       Feature.enabled?(:paneled_view, user)
     end

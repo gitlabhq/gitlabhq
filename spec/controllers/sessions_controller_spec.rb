@@ -649,7 +649,7 @@ RSpec.describe SessionsController, feature_category: :system_access do
     end
 
     context 'when using two-factor authentication via WebAuthn device' do
-      let(:user) { create(:user, :two_factor_via_webauthn, :with_passkey) }
+      let(:user) { create(:user, :two_factor_via_webauthn) }
 
       def authenticate_2fa(user_params)
         post(:create, params: { user: user_params }, session: { otp_user_id: user.id })
@@ -718,24 +718,76 @@ RSpec.describe SessionsController, feature_category: :system_access do
         expect(AuthenticationEvent.last.provider).to eq("two-factor-via-webauthn-device")
       end
 
-      context 'when the :passkeys Feature Flag is enabled' do
-        it 'allows both passkeys & second_factor_authenticators to be used for 2FA' do
-          expect(user).to receive(:get_all_webauthn_credential_ids)
+      context 'with passkeys' do
+        let(:user) { create(:user, :two_factor_via_webauthn, :with_passkey) }
+        let(:device_response) { 'test_response' }
 
-          controller.send(:setup_webauthn_authentication, user)
-        end
-      end
-
-      context 'when the :passkeys Feature Flag is disabled' do
-        before do
-          stub_feature_flags(passkeys: false)
+        def authenticate_2fa_with_passkeys
+          authenticate_2fa(login: user.username, device_response: device_response)
         end
 
-        it 'allows for only second_factor_authenticators to be used for 2FA' do
-          expect(user).not_to receive(:get_all_webauthn_credential_ids)
-          expect(user).to receive(:second_factor_webauthn_registrations)
+        context 'when the :passkeys Feature Flag is enabled' do
+          it 'allows both passkeys & second_factor_authenticators to be used for 2FA' do
+            expect(user).to receive(:get_all_webauthn_credential_ids)
 
-          controller.send(:setup_webauthn_authentication, user)
+            controller.send(:setup_webauthn_authentication, user)
+          end
+
+          context 'when authenticated with a passkey' do
+            before do
+              allow_next_instance_of(Webauthn::AuthenticateService) do |instance|
+                allow(instance).to receive(:execute).and_return(
+                  ServiceResponse.success(
+                    message: _('Successfully authenticated via passkey.'),
+                    payload: user
+                  )
+                )
+              end
+            end
+
+            it 'calls 2 passkey interval events (status: attempt & success)' do
+              expect(controller).to receive(:track_passkey_internal_event).twice
+
+              authenticate_2fa_with_passkeys
+            end
+          end
+
+          context 'when failed to authenticate with a passkey' do
+            before do
+              allow_next_instance_of(Webauthn::AuthenticateService) do |instance|
+                allow(instance).to receive(:execute).and_return(
+                  ServiceResponse.error(
+                    message: _('Failed to authenticate via passkey.')
+                  )
+                )
+              end
+            end
+
+            it 'calls 2 passkey interval events (status: attempt & failure)' do
+              expect(controller).to receive(:track_passkey_internal_event).twice
+
+              authenticate_2fa_with_passkeys
+            end
+          end
+        end
+
+        context 'when the :passkeys Feature Flag is disabled' do
+          before do
+            stub_feature_flags(passkeys: false)
+          end
+
+          it 'allows for only second_factor_authenticators to be used for 2FA' do
+            expect(user).not_to receive(:get_all_webauthn_credential_ids)
+            expect(user).to receive(:second_factor_webauthn_registrations)
+
+            controller.send(:setup_webauthn_authentication, user)
+          end
+
+          it 'does not call a passkey interval event' do
+            expect(controller).not_to receive(:track_passkey_internal_event)
+
+            authenticate_2fa_with_passkeys
+          end
         end
       end
     end

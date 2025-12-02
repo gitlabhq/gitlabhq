@@ -553,8 +553,8 @@ RSpec.describe ApplicationHelper do
             page_type_id: nil,
             group: nil,
             group_full_path: nil,
-            project_studio_available: 'false',
-            project_studio_enabled: 'false'
+            project_studio_available: 'true',
+            project_studio_enabled: 'true'
           }
         )
       end
@@ -571,8 +571,8 @@ RSpec.describe ApplicationHelper do
               page_type_id: nil,
               group: group.path,
               group_full_path: group.full_path,
-              project_studio_available: 'false',
-              project_studio_enabled: 'false'
+              project_studio_available: 'true',
+              project_studio_enabled: 'true'
             }
           )
         end
@@ -599,8 +599,8 @@ RSpec.describe ApplicationHelper do
             project: project.path,
             project_full_path: project.full_path,
             namespace_id: project.namespace.id,
-            project_studio_available: 'false',
-            project_studio_enabled: 'false'
+            project_studio_available: 'true',
+            project_studio_enabled: 'true'
           }
         )
       end
@@ -619,8 +619,8 @@ RSpec.describe ApplicationHelper do
               project: project.path,
               project_full_path: project.full_path,
               namespace_id: project.namespace.id,
-              project_studio_available: 'false',
-              project_studio_enabled: 'false'
+              project_studio_available: 'true',
+              project_studio_enabled: 'true'
             }
           )
         end
@@ -647,8 +647,8 @@ RSpec.describe ApplicationHelper do
                 project: issue.project.path,
                 project_full_path: project.full_path,
                 namespace_id: issue.project.namespace.id,
-                project_studio_available: 'false',
-                project_studio_enabled: 'false'
+                project_studio_available: 'true',
+                project_studio_enabled: 'true'
               }
             )
           end
@@ -802,14 +802,14 @@ RSpec.describe ApplicationHelper do
             allow(helper).to receive(:current_user).and_return(user)
           end
 
-          it { is_expected.not_to include('with-header') }
+          it { is_expected.to include('with-header') }
 
-          context 'when `project studio` feature is enabled' do
+          context 'when `project studio` feature is disabled' do
             before do
-              allow(helper).to receive(:project_studio_enabled?).and_return(true)
+              allow(helper).to receive(:project_studio_enabled?).and_return(false)
             end
 
-            it { is_expected.to include('with-header') }
+            it { is_expected.not_to include('with-header') }
           end
         end
 
@@ -880,17 +880,17 @@ RSpec.describe ApplicationHelper do
   end
 
   describe '#body_scroll_classes' do
-    it 'fixes body scroll by default' do
-      expect(helper.body_scroll_classes).to eq('body-fixed-scrollbar')
+    it 'does not fix body scroll' do
+      expect(helper.body_scroll_classes).to eq('')
     end
 
-    context 'when `project studio` feature is enabled' do
+    context 'when `project studio` feature is disabled' do
       before do
-        allow(helper).to receive(:project_studio_enabled?).and_return(true)
+        allow(helper).to receive(:project_studio_enabled?).and_return(false)
       end
 
-      it 'does not fix body scroll' do
-        expect(helper.body_scroll_classes).to eq('')
+      it 'fixes body scroll by default' do
+        expect(helper.body_scroll_classes).to eq('body-fixed-scrollbar')
       end
     end
   end

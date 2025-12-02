@@ -1,8 +1,10 @@
+- passkey_tracking_entry_point = 1
+
 = render ::Layouts::CrudComponent.new(s_('ProfilesAuthentication|Manage passkeys'),
   icon: 'key',
   count: @passkeys.length ) do |c|
   - c.with_actions do
-    = render Pajamas::ButtonComponent.new(href: new_profile_passkey_path, size: :small, icon: 'passkey') do
+    = render Pajamas::ButtonComponent.new(href: new_profile_passkey_path(entry_point: passkey_tracking_entry_point), size: :small, icon: 'passkey') do
       = s_('ProfilesAuthentication|Add passkey')
   - c.with_body do
     .table-holder

@@ -128,6 +128,16 @@ RSpec.describe Profiles::PasskeysController, feature_category: :system_access do
     end
   end
 
+  shared_examples 'tracks a passkey interval event' do
+    it 'calls the interval event' do
+      expect_next_instance_of(described_class) do |instance|
+        expect(instance).to receive(:track_passkey_internal_event)
+      end
+
+      go
+    end
+  end
+
   context 'when passkeys flag is off' do
     before do
       stub_feature_flags(passkeys: false)
@@ -171,6 +181,7 @@ RSpec.describe Profiles::PasskeysController, feature_category: :system_access do
       end
 
       it_behaves_like 'successfully loads the page'
+      it_behaves_like 'tracks a passkey interval event'
     end
 
     describe 'POST create' do
@@ -240,6 +251,18 @@ RSpec.describe Profiles::PasskeysController, feature_category: :system_access do
               /Passkey added successfully! Next time you sign in, select the sign-in with passkey option./
             )
           end
+
+          context 'with an interval event' do
+            before do
+              allow_next_instance_of(Authn::Passkey::RegisterService) do |instance|
+                allow(instance).to receive(:execute).and_return(
+                  ServiceResponse.success(message: _('Passkey successfully registered.'), payload: user)
+                )
+              end
+            end
+
+            it_behaves_like 'tracks a passkey interval event'
+          end
         end
 
         context 'when registration fails' do
@@ -255,6 +278,18 @@ RSpec.describe Profiles::PasskeysController, feature_category: :system_access do
               expect(response).to redirect_to(profile_two_factor_auth_path)
               expect(flash[:alert]).to be_present
             end
+          end
+
+          context 'with an interval event' do
+            before do
+              allow_next_instance_of(Authn::Passkey::RegisterService) do |instance|
+                allow(instance).to receive(:execute).and_return(
+                  ServiceResponse.error(message: _('Passkey registration failed.'))
+                )
+              end
+            end
+
+            it_behaves_like 'tracks a passkey interval event'
           end
         end
       end

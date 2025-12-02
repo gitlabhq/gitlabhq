@@ -230,7 +230,7 @@ RSpec.configure do |config|
 
   include StubCurrentOrganization
   include StubFeatureFlags
-  include StubProjectStudio
+  include ProjectStudioHelpers
   include StubSnowplow
   include StubMember
   include VersionCheckHelpers
@@ -370,9 +370,6 @@ RSpec.configure do |config|
 
       # New personal homepage is still a WIP and not functional.
       stub_feature_flags(personal_homepage: false)
-
-      # New paneled view is still a WIP and not functional.
-      stub_feature_flags(paneled_view: false)
 
       # Handle dynamic partitions creation
       stub_feature_flags(disallow_database_ddl_feature_flags: false)
