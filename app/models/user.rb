@@ -304,6 +304,8 @@ class User < ApplicationRecord
 
   has_many :timelogs
 
+  has_many :created_saved_views, class_name: 'WorkItems::SavedViews::SavedView', foreign_key: :created_by_id, dependent: :nullify # rubocop:disable Cop/ActiveRecordDependent
+  has_many :user_saved_views, class_name: 'WorkItems::SavedViews::UserSavedView', dependent: :delete_all # rubocop:disable Cop/ActiveRecordDependent
   has_many :resource_label_events, dependent: :nullify # rubocop:disable Cop/ActiveRecordDependent
   has_many :resource_state_events, dependent: :nullify # rubocop:disable Cop/ActiveRecordDependent
   has_many :issue_assignment_events, class_name: 'ResourceEvents::IssueAssignmentEvent', dependent: :nullify # rubocop:disable Cop/ActiveRecordDependent

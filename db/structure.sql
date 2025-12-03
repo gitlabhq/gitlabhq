@@ -14805,7 +14805,8 @@ CREATE TABLE ci_pending_builds (
     tag_ids bigint[] DEFAULT '{}'::bigint[],
     namespace_traversal_ids bigint[] DEFAULT '{}'::bigint[],
     partition_id bigint NOT NULL,
-    plan_id bigint
+    plan_id bigint,
+    plan_name_uid smallint
 );
 
 CREATE SEQUENCE ci_pending_builds_id_seq
@@ -15270,6 +15271,7 @@ CREATE TABLE ci_runners (
     allowed_plans text[] DEFAULT '{}'::text[] NOT NULL,
     allowed_plan_ids bigint[] DEFAULT '{}'::bigint[] NOT NULL,
     organization_id bigint,
+    allowed_plan_name_uids smallint[] DEFAULT '{}'::smallint[] NOT NULL,
     CONSTRAINT check_030ad0773d CHECK ((char_length(token_encrypted) <= 512)),
     CONSTRAINT check_1f8618ab23 CHECK ((char_length(name) <= 256)),
     CONSTRAINT check_24b281f5bf CHECK ((char_length(maintainer_note) <= 1024)),
@@ -18263,6 +18265,7 @@ CREATE TABLE gitlab_subscription_histories (
     auto_renew boolean,
     trial_extension_type smallint,
     seats_in_use integer,
+    hosted_plan_name_uid smallint,
     CONSTRAINT check_6d5f27a106 CHECK ((namespace_id IS NOT NULL))
 );
 
@@ -18294,6 +18297,7 @@ CREATE TABLE gitlab_subscriptions (
     trial_extension_type smallint,
     max_seats_used_changed_at timestamp with time zone,
     last_seat_refresh_at timestamp with time zone,
+    hosted_plan_name_uid smallint,
     CONSTRAINT check_77fea3f0e7 CHECK ((namespace_id IS NOT NULL))
 );
 
@@ -18756,6 +18760,7 @@ CREATE TABLE group_type_ci_runners (
     allowed_plans text[] DEFAULT '{}'::text[] NOT NULL,
     allowed_plan_ids bigint[] DEFAULT '{}'::bigint[] NOT NULL,
     organization_id bigint,
+    allowed_plan_name_uids smallint[] DEFAULT '{}'::smallint[] NOT NULL,
     CONSTRAINT check_030ad0773d CHECK ((char_length(token_encrypted) <= 512)),
     CONSTRAINT check_1f8618ab23 CHECK ((char_length(name) <= 256)),
     CONSTRAINT check_24b281f5bf CHECK ((char_length(maintainer_note) <= 1024)),
@@ -19443,6 +19448,7 @@ CREATE TABLE instance_type_ci_runners (
     allowed_plans text[] DEFAULT '{}'::text[] NOT NULL,
     allowed_plan_ids bigint[] DEFAULT '{}'::bigint[] NOT NULL,
     organization_id bigint,
+    allowed_plan_name_uids smallint[] DEFAULT '{}'::smallint[] NOT NULL,
     CONSTRAINT check_030ad0773d CHECK ((char_length(token_encrypted) <= 512)),
     CONSTRAINT check_1f8618ab23 CHECK ((char_length(name) <= 256)),
     CONSTRAINT check_24b281f5bf CHECK ((char_length(maintainer_note) <= 1024)),
@@ -23888,7 +23894,8 @@ CREATE TABLE plan_limits (
     import_placeholder_user_limit_tier_4 integer DEFAULT 0 NOT NULL,
     ci_max_artifact_size_slsa_provenance_statement bigint DEFAULT 0 NOT NULL,
     cargo_max_file_size bigint DEFAULT '5368709120'::bigint NOT NULL,
-    ci_max_artifact_size_scip integer DEFAULT 200 NOT NULL
+    ci_max_artifact_size_scip integer DEFAULT 200 NOT NULL,
+    plan_name_uid smallint
 );
 
 CREATE SEQUENCE plan_limits_id_seq
@@ -25490,6 +25497,7 @@ CREATE TABLE project_type_ci_runners (
     allowed_plans text[] DEFAULT '{}'::text[] NOT NULL,
     allowed_plan_ids bigint[] DEFAULT '{}'::bigint[] NOT NULL,
     organization_id bigint,
+    allowed_plan_name_uids smallint[] DEFAULT '{}'::smallint[] NOT NULL,
     CONSTRAINT check_030ad0773d CHECK ((char_length(token_encrypted) <= 512)),
     CONSTRAINT check_1f8618ab23 CHECK ((char_length(name) <= 256)),
     CONSTRAINT check_24b281f5bf CHECK ((char_length(maintainer_note) <= 1024)),
@@ -26329,6 +26337,32 @@ CREATE SEQUENCE saved_replies_id_seq
     CACHE 1;
 
 ALTER SEQUENCE saved_replies_id_seq OWNED BY saved_replies.id;
+
+CREATE TABLE saved_views (
+    id bigint NOT NULL,
+    created_at timestamp with time zone NOT NULL,
+    updated_at timestamp with time zone NOT NULL,
+    namespace_id bigint NOT NULL,
+    created_by_id bigint,
+    version integer NOT NULL,
+    private boolean DEFAULT true NOT NULL,
+    name text NOT NULL,
+    description text,
+    sort smallint,
+    filter_data jsonb,
+    display_settings jsonb,
+    CONSTRAINT check_61a6c07bf6 CHECK ((char_length(name) <= 140)),
+    CONSTRAINT check_d27167623c CHECK ((char_length(description) <= 140))
+);
+
+CREATE SEQUENCE saved_views_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+ALTER SEQUENCE saved_views_id_seq OWNED BY saved_views.id;
 
 CREATE TABLE sbom_component_versions (
     id bigint NOT NULL,
@@ -28831,6 +28865,23 @@ CREATE SEQUENCE user_project_member_roles_id_seq
     CACHE 1;
 
 ALTER SEQUENCE user_project_member_roles_id_seq OWNED BY user_project_member_roles.id;
+
+CREATE TABLE user_saved_views (
+    id bigint NOT NULL,
+    user_id bigint NOT NULL,
+    saved_view_id bigint NOT NULL,
+    namespace_id bigint NOT NULL,
+    relative_position integer
+);
+
+CREATE SEQUENCE user_saved_views_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+ALTER SEQUENCE user_saved_views_id_seq OWNED BY user_saved_views.id;
 
 CREATE TABLE user_statuses (
     user_id bigint NOT NULL,
@@ -32906,6 +32957,8 @@ ALTER TABLE ONLY saml_providers ALTER COLUMN id SET DEFAULT nextval('saml_provid
 
 ALTER TABLE ONLY saved_replies ALTER COLUMN id SET DEFAULT nextval('saved_replies_id_seq'::regclass);
 
+ALTER TABLE ONLY saved_views ALTER COLUMN id SET DEFAULT nextval('saved_views_id_seq'::regclass);
+
 ALTER TABLE ONLY sbom_component_versions ALTER COLUMN id SET DEFAULT nextval('sbom_component_versions_id_seq'::regclass);
 
 ALTER TABLE ONLY sbom_components ALTER COLUMN id SET DEFAULT nextval('sbom_components_id_seq'::regclass);
@@ -33113,6 +33166,8 @@ ALTER TABLE ONLY user_preferences ALTER COLUMN id SET DEFAULT nextval('user_pref
 ALTER TABLE ONLY user_project_callouts ALTER COLUMN id SET DEFAULT nextval('user_project_callouts_id_seq'::regclass);
 
 ALTER TABLE ONLY user_project_member_roles ALTER COLUMN id SET DEFAULT nextval('user_project_member_roles_id_seq'::regclass);
+
+ALTER TABLE ONLY user_saved_views ALTER COLUMN id SET DEFAULT nextval('user_saved_views_id_seq'::regclass);
 
 ALTER TABLE ONLY user_synced_attributes_metadata ALTER COLUMN id SET DEFAULT nextval('user_synced_attributes_metadata_id_seq'::regclass);
 
@@ -36648,6 +36703,9 @@ ALTER TABLE ONLY saml_providers
 ALTER TABLE ONLY saved_replies
     ADD CONSTRAINT saved_replies_pkey PRIMARY KEY (id);
 
+ALTER TABLE ONLY saved_views
+    ADD CONSTRAINT saved_views_pkey PRIMARY KEY (id);
+
 ALTER TABLE ONLY sbom_component_versions
     ADD CONSTRAINT sbom_component_versions_pkey PRIMARY KEY (id);
 
@@ -37016,6 +37074,9 @@ ALTER TABLE ONLY user_project_callouts
 
 ALTER TABLE ONLY user_project_member_roles
     ADD CONSTRAINT user_project_member_roles_pkey PRIMARY KEY (id);
+
+ALTER TABLE ONLY user_saved_views
+    ADD CONSTRAINT user_saved_views_pkey PRIMARY KEY (id);
 
 ALTER TABLE ONLY user_statuses
     ADD CONSTRAINT user_statuses_pkey PRIMARY KEY (user_id);
@@ -40875,6 +40936,8 @@ CREATE UNIQUE INDEX index_ci_pending_builds_on_partition_id_build_id ON ci_pendi
 
 CREATE INDEX index_ci_pending_builds_on_plan_id ON ci_pending_builds USING btree (plan_id);
 
+CREATE INDEX index_ci_pending_builds_on_plan_name_uid ON ci_pending_builds USING btree (plan_name_uid);
+
 CREATE INDEX index_ci_pending_builds_on_project_id ON ci_pending_builds USING btree (project_id);
 
 CREATE INDEX index_ci_pending_builds_on_tag_ids ON ci_pending_builds USING btree (tag_ids) WHERE (cardinality(tag_ids) > 0);
@@ -41747,9 +41810,13 @@ CREATE INDEX index_gitlab_subscription_histories_on_end_date ON gitlab_subscript
 
 CREATE INDEX index_gitlab_subscription_histories_on_gitlab_subscription_id ON gitlab_subscription_histories USING btree (gitlab_subscription_id);
 
+CREATE INDEX index_gitlab_subscription_histories_on_hosted_plan_name_uid ON gitlab_subscription_histories USING btree (hosted_plan_name_uid);
+
 CREATE INDEX index_gitlab_subscriptions_on_end_date_and_namespace_id ON gitlab_subscriptions USING btree (end_date, namespace_id);
 
 CREATE INDEX index_gitlab_subscriptions_on_hosted_plan_id_and_trial ON gitlab_subscriptions USING btree (hosted_plan_id, trial);
+
+CREATE INDEX index_gitlab_subscriptions_on_hosted_plan_name_uid_and_trial ON gitlab_subscriptions USING btree (hosted_plan_name_uid, trial);
 
 CREATE INDEX index_gitlab_subscriptions_on_max_seats_used_changed_at ON gitlab_subscriptions USING btree (max_seats_used_changed_at, namespace_id);
 
@@ -43383,6 +43450,8 @@ CREATE INDEX index_pipl_users_on_initial_email_sent_at ON pipl_users USING btree
 
 CREATE UNIQUE INDEX index_plan_limits_on_plan_id ON plan_limits USING btree (plan_id);
 
+CREATE INDEX index_plan_limits_on_plan_name_uid ON plan_limits USING btree (plan_name_uid);
+
 CREATE UNIQUE INDEX index_plans_on_name ON plans USING btree (name);
 
 CREATE UNIQUE INDEX index_plans_on_plan_name_uid ON plans USING btree (plan_name_uid);
@@ -43932,6 +44001,14 @@ CREATE INDEX index_saml_providers_on_group_id ON saml_providers USING btree (gro
 CREATE INDEX index_saml_providers_on_member_role_id ON saml_providers USING btree (member_role_id);
 
 CREATE UNIQUE INDEX index_saved_replies_on_name_text_pattern_ops ON saved_replies USING btree (user_id, name text_pattern_ops);
+
+CREATE INDEX index_saved_views_on_created_by_id ON saved_views USING btree (created_by_id);
+
+CREATE UNIQUE INDEX index_saved_views_on_namespace_id_and_name ON saved_views USING btree (namespace_id, name);
+
+CREATE INDEX index_saved_views_on_namespace_private_created_by ON saved_views USING btree (namespace_id, private, created_by_id);
+
+CREATE INDEX index_saved_views_on_private ON saved_views USING btree (private);
 
 CREATE UNIQUE INDEX index_sbom_component_versions_on_component_id_and_version ON sbom_component_versions USING btree (component_id, version);
 
@@ -44598,6 +44675,14 @@ CREATE INDEX index_user_project_member_roles_on_project_id ON user_project_membe
 CREATE INDEX index_user_project_member_roles_on_shared_with_group_id ON user_project_member_roles USING btree (shared_with_group_id);
 
 CREATE INDEX index_user_project_member_roles_on_user_id ON user_project_member_roles USING btree (user_id);
+
+CREATE INDEX index_user_saved_views_on_namespace_and_user ON user_saved_views USING btree (namespace_id, user_id);
+
+CREATE INDEX index_user_saved_views_on_relative_position ON user_saved_views USING btree (relative_position);
+
+CREATE INDEX index_user_saved_views_on_saved_view_id ON user_saved_views USING btree (saved_view_id);
+
+CREATE UNIQUE INDEX index_user_saved_views_on_user_id_and_saved_view_id ON user_saved_views USING btree (user_id, saved_view_id);
 
 CREATE INDEX index_user_statuses_on_clear_status_at_not_null ON user_statuses USING btree (clear_status_at) WHERE (clear_status_at IS NOT NULL);
 
@@ -49586,6 +49671,9 @@ ALTER TABLE ONLY ai_settings
 ALTER TABLE ONLY merge_requests
     ADD CONSTRAINT fk_06067f5644 FOREIGN KEY (latest_merge_request_diff_id) REFERENCES merge_request_diffs(id) ON DELETE SET NULL;
 
+ALTER TABLE ONLY saved_views
+    ADD CONSTRAINT fk_0673753f57 FOREIGN KEY (created_by_id) REFERENCES users(id) ON DELETE SET NULL;
+
 ALTER TABLE ONLY clusters_managed_resources
     ADD CONSTRAINT fk_068dba90c3 FOREIGN KEY (cluster_agent_id) REFERENCES cluster_agents(id) ON DELETE CASCADE;
 
@@ -50666,6 +50754,9 @@ ALTER TABLE ONLY protected_branch_push_access_levels
 ALTER TABLE ONLY import_source_users
     ADD CONSTRAINT fk_719b74231d FOREIGN KEY (reassigned_by_user_id) REFERENCES users(id) ON DELETE SET NULL;
 
+ALTER TABLE ONLY user_saved_views
+    ADD CONSTRAINT fk_71bf55035c FOREIGN KEY (namespace_id) REFERENCES namespaces(id) ON DELETE CASCADE;
+
 ALTER TABLE ONLY integrations
     ADD CONSTRAINT fk_71cce407f9 FOREIGN KEY (project_id) REFERENCES projects(id) ON DELETE CASCADE;
 
@@ -51043,6 +51134,9 @@ ALTER TABLE ONLY resource_weight_events
 
 ALTER TABLE ONLY agent_user_access_group_authorizations
     ADD CONSTRAINT fk_97ce8e8284 FOREIGN KEY (agent_id) REFERENCES cluster_agents(id) ON DELETE CASCADE;
+
+ALTER TABLE ONLY user_saved_views
+    ADD CONSTRAINT fk_97fc6290ba FOREIGN KEY (saved_view_id) REFERENCES saved_views(id) ON DELETE CASCADE;
 
 ALTER TABLE ONLY vulnerability_occurrences
     ADD CONSTRAINT fk_97ffe77653 FOREIGN KEY (vulnerability_id) REFERENCES vulnerabilities(id) ON DELETE SET NULL;
@@ -52805,6 +52899,9 @@ ALTER TABLE ONLY scim_identities
 ALTER TABLE ONLY snippet_user_mentions
     ADD CONSTRAINT fk_rails_4d3f96b2cb FOREIGN KEY (note_id) REFERENCES notes(id) ON DELETE CASCADE;
 
+ALTER TABLE ONLY saved_views
+    ADD CONSTRAINT fk_rails_4de531feff FOREIGN KEY (namespace_id) REFERENCES namespaces(id) ON DELETE CASCADE;
+
 ALTER TABLE ONLY protected_environment_approval_rules
     ADD CONSTRAINT fk_rails_4e554f96f5 FOREIGN KEY (protected_environment_id) REFERENCES protected_environments(id) ON DELETE CASCADE;
 
@@ -54118,6 +54215,9 @@ ALTER TABLE ONLY protected_branch_unprotect_access_levels
 
 ALTER TABLE ONLY ai_vectorizable_files
     ADD CONSTRAINT fk_rails_ea2e440084 FOREIGN KEY (project_id) REFERENCES projects(id) ON DELETE CASCADE;
+
+ALTER TABLE ONLY user_saved_views
+    ADD CONSTRAINT fk_rails_eb04137afb FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE;
 
 ALTER TABLE ONLY alert_management_alert_user_mentions
     ADD CONSTRAINT fk_rails_eb2de0cdef FOREIGN KEY (note_id) REFERENCES notes(id) ON DELETE CASCADE;

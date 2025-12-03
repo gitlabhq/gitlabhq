@@ -3,7 +3,7 @@ stage: Application Security Testing
 group: Composition Analysis
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 gitlab_dedicated: yes
-title: Security and compliance Admin area settings
+title: Security and compliance settings
 description: Configure security and compliance administration settings, including which package repositories are synchronized.
 ---
 
@@ -14,9 +14,24 @@ description: Configure security and compliance administration settings, includin
 
 {{< /details >}}
 
-The settings for package metadata synchronization are located in the [**Admin** area](_index.md).
+## Dependency Scanning
 
-## Choose package registry metadata to sync
+### SBOM Scan API limits
+
+The [dependency scanning using SBOM feature](../../user/application_security/dependency_scanning/dependency_scanning_sbom/_index.md) uses an internal API
+with [predefined limits](../instance_limits.md#dependency-scanning-using-sbom-limits)
+
+To configure different values for these limits:
+
+1. On the left sidebar, at the bottom, select **Admin**. If you've [turned on the new navigation](../../user/interface_redesign.md#turn-new-navigation-on-or-off), in the upper-right corner, select **Admin**.
+1. Select **Settings** > **Security and compliance**.
+1. Expand **Dependency Scanning**.
+1. Change the value of any rate limit, or set a rate limit to `0` to disable it.
+1. Select **Save changes**.
+
+## Package Metadata Database synchronization
+
+### Choose package registry metadata to sync
 
 To choose the packages you want to synchronize with the GitLab Package Metadata Database for [License Compliance](../../user/compliance/license_scanning_of_cyclonedx_files/_index.md) and [continuous vulnerability scanning](../../user/application_security/continuous_vulnerability_scanning/_index.md):
 

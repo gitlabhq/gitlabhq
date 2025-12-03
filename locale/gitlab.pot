@@ -23410,6 +23410,18 @@ msgstr ""
 msgid "DependencyProxy|Username of the external registry."
 msgstr ""
 
+msgid "DependencyScanning|Maximum number of SBOM uploads allowed per hour for Dependency Scanning. Set to 0 to disable rate limiting."
+msgstr ""
+
+msgid "DependencyScanning|Maximum number of scan result downloads allowed per hour for Dependency Scanning. Set to 0 to disable rate limiting."
+msgstr ""
+
+msgid "DependencyScanning|SBOM Scan API download rate limit"
+msgstr ""
+
+msgid "DependencyScanning|SBOM Scan API upload rate limit"
+msgstr ""
+
 msgid "Depends on %d merge request being merged"
 msgid_plural "Depends on %d merge requests being merged"
 msgstr[0] ""
@@ -40118,6 +40130,9 @@ msgid "Manage comment templates"
 msgstr ""
 
 msgid "Manage configuration"
+msgstr ""
+
+msgid "Manage dependency scanning behavior for all projects in your GitLab instance"
 msgstr ""
 
 msgid "Manage deployments"

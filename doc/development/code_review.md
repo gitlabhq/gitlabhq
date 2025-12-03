@@ -720,7 +720,7 @@ When ready to merge:
     [very specific cases](https://handbook.gitlab.com/handbook/engineering/workflow/#criteria-for-merging-during-broken-master).
     For other cases, follow these [handbook instructions](https://handbook.gitlab.com/handbook/engineering/workflow/#merging-during-broken-master).
   - If the latest pipeline was created before the merge request was approved, start a new pipeline to ensure that full RSpec suite has been run. You may skip this step only if the merge request does not contain any backend change.
-  - If the **latest [merged results pipeline](../ci/pipelines/merged_results_pipelines.md)** was **created less than 8 hours ago (72 hours for stable branches)**, you may merge without starting a new pipeline as the merge request is close enough to the target branch.
+  - If the **latest [merged results pipeline](../ci/pipelines/merged_results_pipelines.md)** was **created less than 16 hours ago (72 hours for stable branches)**, you may merge without starting a new pipeline as the merge request is close enough to the target branch.
 - When you set the MR to auto-merge, you should take over
   subsequent revisions for anything that would be spotted after that.
 - For merge requests that have had [Squash and merge](../user/project/merge_requests/squash_and_merge.md) set,

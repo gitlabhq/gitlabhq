@@ -184,37 +184,39 @@ these parameters:
 
 - `allow_all_integrations`
 - `allowed_integrations`
-- `group_owners_can_manage_default_branch_protection`
+- `default_project_deletion_protection`
+- `delete_unconfirmed_users`
+- `dependency_scanning_sbom_scan_api_download_limit`
+- `dependency_scanning_sbom_scan_api_upload_limit`
+- `disable_personal_access_tokens`
+- `duo_features_enabled`
 - `file_template_project_id`
 - `geo_node_allowed_ips`
 - `geo_status_timeout`
-- `default_project_deletion_protection`
-- `disable_personal_access_tokens`
-- `security_policy_global_group_approvers_enabled`
-- `security_approval_policies_limit`
+- `group_owners_can_manage_default_branch_protection`
+- `lock_duo_features_enabled`
 - `scan_execution_policies_action_limit`
 - `scan_execution_policies_schedule_limit`
-- `delete_unconfirmed_users`
-- `unconfirmed_users_delete_after_days`
-- `duo_features_enabled`
-- `lock_duo_features_enabled`
-- `use_clickhouse_for_analytics`
 - `secret_push_protection_available`
+- `security_approval_policies_limit`
+- `security_policy_global_group_approvers_enabled`
+- `unconfirmed_users_delete_after_days`
+- `use_clickhouse_for_analytics`
 - `virtual_registries_endpoints_api_limit`
 
 ```json
 {
-  "id": 1,
-  "signup_enabled": true,
-  "group_owners_can_manage_default_branch_protection": true,
-  "file_template_project_id": 1,
-  "geo_node_allowed_ips": "0.0.0.0/0, ::/0",
+  "allow_all_integrations": true,
+  "allowed_integrations": [],
   "default_project_deletion_protection": false,
   "disable_personal_access_tokens": false,
   "duo_features_enabled": true,
+  "file_template_project_id": 1,
+  "geo_node_allowed_ips": "0.0.0.0/0, ::/0",
+  "group_owners_can_manage_default_branch_protection": true,
+  "id": 1,
   "lock_duo_features_enabled": false,
-  "allow_all_integrations": true,
-  "allowed_integrations": [],
+  "signup_enabled": true,
   "virtual_registries_endpoints_api_limit": 1000,
   ...
 }

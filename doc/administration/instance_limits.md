@@ -1534,6 +1534,15 @@ The [changelog API](../api/repositories.md#add-changelog-data-to-file) enforces 
 
 - Each top-level group can have a maximum of 5 Amazon S3 streaming destinations.
 
+## Dependency Scanning using SBOM limits
+
+The [dependency scanning using SBOM feature](../user/application_security/dependency_scanning/dependency_scanning_sbom/_index.md) uses an internal API with the following limits:
+
+- Maximum number of upload requests per project per hour: 400
+- Maximum number of download requests per project per hour: 6000
+
+You can configure these limits for GitLab Self-Managed instances using [the Dependency Scanning settings](settings/security_and_compliance.md#sbom-scan-api-limits).
+
 ## List all instance limits
 
 To list all instance limit values, run the following from the [GitLab Rails console](operations/rails_console.md#starting-a-rails-console-session):
