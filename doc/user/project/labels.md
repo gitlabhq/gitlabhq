@@ -411,7 +411,7 @@ To "promote" the label to the parent group:
 
 1. Next to the subgroup label (the old one), select **Issues**, **Merge requests**, or **Epics**.
 1. Add the new label to issues, merge requests, and epics that have the old label.
-   To do it faster, use [bulk editing](issues/managing_issues.md#bulk-edit-issues-from-a-group).
+   To do it faster, use [bulk editing](issues/managing_issues.md#bulk-edit-issues).
 1. In the subgroup or the parent group, [delete the label](#delete-a-group-label) that belongs to
    the lower-level group.
 

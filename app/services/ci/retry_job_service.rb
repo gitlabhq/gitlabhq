@@ -3,6 +3,7 @@
 module Ci
   class RetryJobService < ::BaseService
     include Gitlab::Utils::StrongMemoize
+    include Gitlab::InternalEventsTracking
 
     def execute(job, variables: [], inputs: {})
       if job.retryable?
@@ -11,6 +12,8 @@ module Ci
 
         job.ensure_scheduling_type!
         new_job = retry_job(job, variables: variables, inputs: processed_inputs.payload[:inputs])
+
+        track_retry_with_new_input_values(processed_inputs.payload[:inputs])
 
         ServiceResponse.success(payload: { job: new_job })
       else
@@ -148,6 +151,16 @@ module Ci
     def start_pipeline(job, new_job)
       Ci::PipelineCreation::StartPipelineService.new(job.pipeline).execute
       new_job.reset
+    end
+
+    def track_retry_with_new_input_values(filtered_inputs)
+      return unless filtered_inputs.present?
+
+      track_internal_event(
+        'retry_job_with_new_input_values',
+        project: project,
+        user: current_user
+      )
     end
   end
 end

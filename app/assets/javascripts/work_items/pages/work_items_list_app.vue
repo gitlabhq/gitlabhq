@@ -662,6 +662,7 @@ export default {
           token: WorkItemTypeToken,
           operators: OPERATORS_IS_NOT_OR,
           multiSelect: true,
+          fetchWorkItemTypes: this.fetchWorkItemTypes,
         });
       }
 
@@ -1418,6 +1419,15 @@ export default {
     },
     extractProjects(data) {
       return data?.group?.projects?.nodes;
+    },
+    fetchWorkItemTypes() {
+      return this.$apollo.query({
+        query: namespaceWorkItemTypesQuery,
+        variables: {
+          fullPath: this.rootPageFullPath,
+          onlyAvailable: this.isProject,
+        },
+      });
     },
   },
   constants: {

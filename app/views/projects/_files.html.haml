@@ -2,7 +2,7 @@
 - project = local_assigns.fetch(:project) { @project }
 - pipeline = local_assigns.fetch(:pipeline, nil)
 - is_project_overview = local_assigns.fetch(:is_project_overview, false)
-- repository_file_tree_browser_enabled = Feature.enabled?(:repository_file_tree_browser, @project)
+- repository_file_tree_browser_enabled = Feature.enabled?(:repository_file_tree_browser, current_user)
 - @force_fluid_layout = repository_file_tree_browser_enabled
 - unless @skip_logs_tree_loading
   - add_page_startup_api_call logs_file_project_ref_path(@project, ref, @path, format: "json", offset: 0, ref_type: @ref_type&.upcase)

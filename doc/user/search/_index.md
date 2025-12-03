@@ -184,7 +184,7 @@ For more information, see the history.
 
 As you type in the search box, autocomplete suggestions are displayed for:
 
-- [Projects](#search-for-a-project-by-full-path) and groups
+- Projects and groups
 - Users from authorized projects and groups
 - Help pages
 - Project features (for example, milestones)
@@ -212,23 +212,6 @@ To search in a project:
 1. Press <kbd>Enter</kbd> to search, or select from the list.
 
 The results are displayed. To filter the results, on the left sidebar, select a filter.
-
-## Search for a project by full path
-
-{{< history >}}
-
-- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/108906) in GitLab 15.9 [with a flag](../../administration/feature_flags/_index.md) named `full_path_project_search`. Disabled by default.
-- [Generally available](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/114932) in GitLab 15.11. Feature flag `full_path_project_search` removed.
-
-{{< /history >}}
-
-You can search for a project by entering its full path (including the namespace it belongs to) in the search box.
-As you type the project path, [autocomplete suggestions](#autocomplete-suggestions) are displayed.
-
-For example:
-
-- `gitlab-org/gitlab` searches for the `gitlab` project in the `gitlab-org` namespace.
-- `gitlab-org/` displays autocomplete suggestions for projects that belong to the `gitlab-org` namespace.
 
 ## Include archived projects in search results
 

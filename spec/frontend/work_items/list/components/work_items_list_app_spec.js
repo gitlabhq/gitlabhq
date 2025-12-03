@@ -947,6 +947,47 @@ describe('tokens', () => {
     });
   });
 
+  describe('Type filter token', () => {
+    beforeEach(async () => {
+      mountComponent();
+      await waitForPromises();
+    });
+
+    describe('fetchWorkItemTypes', () => {
+      it('calls namespaceWorkItemTypesQuery with correct variables for project', async () => {
+        mountComponent({ provide: { isProject: true, isGroup: false } });
+        await waitForPromises();
+
+        const typeToken = findIssuableList()
+          .props('searchTokens')
+          .find((token) => token.type === TOKEN_TYPE_TYPE);
+
+        await typeToken.fetchWorkItemTypes();
+
+        expect(namespaceQueryHandler).toHaveBeenCalledWith({
+          fullPath: 'full/path',
+          onlyAvailable: true,
+        });
+      });
+
+      it('calls namespaceWorkItemTypesQuery with correct variables for group', async () => {
+        mountComponent({ provide: { isProject: false, isGroup: true } });
+        await waitForPromises();
+
+        const typeToken = findIssuableList()
+          .props('searchTokens')
+          .find((token) => token.type === TOKEN_TYPE_TYPE);
+
+        await typeToken.fetchWorkItemTypes();
+
+        expect(namespaceQueryHandler).toHaveBeenCalledWith({
+          fullPath: 'full/path',
+          onlyAvailable: false,
+        });
+      });
+    });
+  });
+
   describe('multiSelect property', () => {
     beforeEach(async () => {
       mountComponent();

@@ -308,4 +308,138 @@ RSpec.describe Namespaces::Stateful, feature_category: :groups_and_projects do
       namespace.send(:handle_transition_failure, transition)
     end
   end
+
+  describe '#effective_state' do
+    context 'when namespace has its own explicit state' do
+      it 'returns the namespace own state when archived' do
+        namespace.state = described_class::STATES[:archived]
+        expect(namespace.effective_state).to eq(:archived)
+      end
+
+      it 'returns the namespace own state when transfer_in_progress' do
+        namespace.state = described_class::STATES[:transfer_in_progress]
+        expect(namespace.effective_state).to eq(:transfer_in_progress)
+      end
+
+      it 'returns the namespace own state when maintenance' do
+        namespace.state = described_class::STATES[:maintenance]
+        expect(namespace.effective_state).to eq(:maintenance)
+      end
+
+      it 'returns the namespace own state when deletion_scheduled' do
+        namespace.state = described_class::STATES[:deletion_scheduled]
+        expect(namespace.effective_state).to eq(:deletion_scheduled)
+      end
+
+      it 'returns the namespace own state when creation_in_progress' do
+        namespace.state = described_class::STATES[:creation_in_progress]
+        expect(namespace.effective_state).to eq(:creation_in_progress)
+      end
+
+      it 'returns the namespace own state when deletion_in_progress' do
+        namespace.state = described_class::STATES[:deletion_in_progress]
+        expect(namespace.effective_state).to eq(:deletion_in_progress)
+      end
+    end
+
+    context 'when namespace has ancestor_inherited state' do
+      let_it_be(:root_group) { create(:group) }
+      let_it_be(:parent_group) { create(:group, parent: root_group) }
+      let_it_be(:child_group) { create(:group, parent: parent_group) }
+
+      before do
+        child_group.update_column(:state, described_class::STATES[:ancestor_inherited])
+      end
+
+      it 'returns ancestor_inherited when no ancestors have explicit state' do
+        root_group.update_column(:state, described_class::STATES[:ancestor_inherited])
+        parent_group.update_column(:state, described_class::STATES[:ancestor_inherited])
+
+        expect(child_group.effective_state).to eq(:ancestor_inherited)
+      end
+
+      it 'returns parent state when parent has explicit state' do
+        root_group.update_column(:state, described_class::STATES[:ancestor_inherited])
+        parent_group.update_column(:state, described_class::STATES[:archived])
+
+        expect(child_group.effective_state).to eq(:archived)
+      end
+
+      it 'returns root ancestor state when only root has explicit state' do
+        root_group.update_column(:state, described_class::STATES[:maintenance])
+        parent_group.update_column(:state, described_class::STATES[:ancestor_inherited])
+
+        expect(child_group.effective_state).to eq(:maintenance)
+      end
+
+      it 'returns closest ancestor state (parent) when multiple ancestors have explicit states' do
+        root_group.update_column(:state, described_class::STATES[:maintenance])
+        parent_group.update_column(:state, described_class::STATES[:archived])
+
+        expect(child_group.effective_state).to eq(:archived)
+      end
+
+      it 'returns ancestor_inherited for top-level namespace with ancestor_inherited state' do
+        root_group.update_column(:state, described_class::STATES[:ancestor_inherited])
+        expect(root_group.effective_state).to eq(:ancestor_inherited)
+      end
+
+      it 'returns nil when ancestor has an invalid state value' do
+        parent_group.update_column(:state, 999)
+        child_group.update_column(:state, described_class::STATES[:ancestor_inherited])
+
+        result = child_group.reload.effective_state
+        expect(result).to be_nil
+      end
+
+      it 'handles deeply nested hierarchies correctly' do
+        grandchild_group = create(:group, parent: child_group)
+        grandchild_group.update_column(:state, described_class::STATES[:ancestor_inherited])
+        root_group.update_column(:state, described_class::STATES[:transfer_in_progress])
+        parent_group.update_column(:state, described_class::STATES[:ancestor_inherited])
+        child_group.update_column(:state, described_class::STATES[:ancestor_inherited])
+
+        expect(grandchild_group.effective_state).to eq(:transfer_in_progress)
+      end
+    end
+
+    context 'for N+1 query prevention' do
+      let_it_be(:root_group) { create(:group, state: described_class::STATES[:archived]) }
+
+      it 'executes only one query per namespace to resolve effective_state' do
+        child_groups = create_list(:group, 3,
+          state: described_class::STATES[:ancestor_inherited],
+          parent: root_group
+        )
+
+        queries = ActiveRecord::QueryRecorder.new do
+          child_groups.each(&:effective_state)
+        end
+
+        # Should execute exactly 3 queries (one per child), not N (where N is ancestor count)
+        # Each query fetches all ancestors at once via WHERE IN
+        expect(queries.count).to eq(3)
+      end
+    end
+
+    context 'for ordering of traversed ancestors' do
+      it 'returns closest ancestor state, not based on ID ordering' do
+        # The group hierarchy is such that: root.id > parent.id > child.id
+        child = create(:group, state: described_class::STATES[:ancestor_inherited])
+        parent = create(:group, state: described_class::STATES[:archived])
+        root = create(:group, state: described_class::STATES[:maintenance])
+
+        # Set the ancestry such that: child.traversal_ids: [root.id, parent.id, child.id]
+        child.parent = parent
+        parent.parent = root
+
+        child.save!
+        parent.save!
+
+        root.reload
+
+        expect(child.effective_state).to eq(:archived) # Parent's state, not root's
+      end
+    end
+  end
 end

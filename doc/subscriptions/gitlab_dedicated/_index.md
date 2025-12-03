@@ -311,7 +311,7 @@ In GitLab Dedicated:
 - Features disabled by default are not available and cannot be enabled.
 
 When a feature becomes generally available, it's available in the same version
-following the [release schedule](maintenance.md) for deployments.
+following the [release schedule](../../administration/dedicated/maintenance.md) for deployments.
 
 ### GitLab Pages
 

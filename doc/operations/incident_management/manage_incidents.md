@@ -303,7 +303,7 @@ To delete an incident:
 
 Alternatively:
 
-1. In an incident, select **Edit title and description** ({{< icon name="pencil" >}}).
+1. In an incident, select **Edit**.
 1. Select **Delete incident**.
 
 ## Other actions

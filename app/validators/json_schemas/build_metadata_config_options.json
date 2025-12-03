@@ -363,6 +363,12 @@
         },
         "variables_override": {
           "$ref": "#/definitions/executionPolicyVariablesOverrideDefinition"
+        },
+        "project_id": {
+          "type": "integer"
+        },
+        "sha": {
+          "type": "string"
         }
       }
     },

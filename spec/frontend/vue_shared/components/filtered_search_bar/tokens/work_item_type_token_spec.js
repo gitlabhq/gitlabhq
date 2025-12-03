@@ -16,16 +16,17 @@ const defaultStubs = {
 };
 
 const mockWorkItemTypes = [
-  { icon: 'work-item-issue', title: 'Issue', value: 'issue' },
-  { icon: 'work-item-incident', title: 'Incident', value: 'incident' },
-  { icon: 'work-item-task', title: 'Task', value: 'task' },
+  { title: 'Issue', value: 'ISSUE' },
+  { title: 'Incident', value: 'INCIDENT' },
+  { title: 'Task', value: 'TASK' },
+  { title: 'Key result', value: 'KEY_RESULT' },
 ];
 
 const mockTypeToken = {
   type: 'type',
   title: 'Type',
-  icon: 'work-item-issue',
   token: WorkItemTypeToken,
+  initialWorkItemTypes: mockWorkItemTypes,
 };
 
 function createComponent(options = {}) {
@@ -48,11 +49,6 @@ function createComponent(options = {}) {
       alignSuggestions: function fakeAlignSuggestions() {},
       suggestionsListClass: () => 'custom-class',
       termsAsTokens: () => false,
-      hasEpicsFeature: false,
-      hasOkrsFeature: false,
-      hasQualityManagementFeature: false,
-      isGroupIssuesList: false,
-      isProject: false,
     },
     stubs,
     listeners,
@@ -69,7 +65,7 @@ describe('WorkItemTypeToken', () => {
   describe('template', () => {
     beforeEach(async () => {
       wrapper = createComponent({
-        value: { data: 'issue' },
+        value: { data: 'ISSUE' },
       });
 
       await nextTick();
@@ -89,10 +85,11 @@ describe('WorkItemTypeToken', () => {
     });
 
     it.each`
-      value         | expectedText
-      ${'issue'}    | ${'Issue'}
-      ${'incident'} | ${'Incident'}
-      ${'task'}     | ${'Task'}
+      value           | expectedText
+      ${'ISSUE'}      | ${'Issue'}
+      ${'INCIDENT'}   | ${'Incident'}
+      ${'TASK'}       | ${'Task'}
+      ${'KEY_RESULT'} | ${'Key result'}
     `('when "$value" is selected, shows "$expectedText"', async ({ value, expectedText }) => {
       wrapper = createComponent({
         value: { data: value, operator: '=' },
@@ -139,9 +136,9 @@ describe('WorkItemTypeToken', () => {
         },
       });
 
-      findBaseToken().vm.$emit('input', [{ data: 'issue', operator: '=' }]);
+      findBaseToken().vm.$emit('input', [{ data: 'ISSUE', operator: '=' }]);
 
-      expect(mockInput).toHaveBeenLastCalledWith([{ data: 'issue', operator: '=' }]);
+      expect(mockInput).toHaveBeenLastCalledWith([{ data: 'ISSUE', operator: '=' }]);
     });
 
     describe('with multi-select support', () => {
@@ -151,11 +148,11 @@ describe('WorkItemTypeToken', () => {
             ...mockTypeToken,
             multiSelect: true,
           },
-          value: { data: ['issue', 'incident'], operator: '||' },
+          value: { data: ['ISSUE', 'INCIDENT'], operator: '||' },
         });
 
         expect(findBaseToken().props('value')).toEqual({
-          data: ['issue', 'incident'],
+          data: ['ISSUE', 'INCIDENT'],
           operator: '||',
         });
       });
@@ -166,13 +163,76 @@ describe('WorkItemTypeToken', () => {
             ...mockTypeToken,
             multiSelect: true,
           },
-          value: { data: ['issue', 'task'], operator: '!=' },
+          value: { data: ['ISSUE', 'TASK'], operator: '!=' },
         });
 
         expect(findBaseToken().props('value')).toEqual({
-          data: ['issue', 'task'],
+          data: ['ISSUE', 'TASK'],
           operator: '!=',
         });
+      });
+    });
+
+    describe('with fetchWorkItemTypes', () => {
+      it('fetches work item types when fetch-suggestions is triggered', async () => {
+        const mockFetch = jest.fn().mockResolvedValue({
+          data: {
+            workspace: {
+              workItemTypes: {
+                nodes: [{ name: 'Epic' }, { name: 'Key result' }],
+              },
+            },
+          },
+        });
+
+        wrapper = createComponent({
+          config: {
+            ...mockTypeToken,
+            initialWorkItemTypes: [],
+            fetchWorkItemTypes: mockFetch,
+          },
+        });
+
+        findBaseToken().trigger('fetch-suggestions');
+
+        await nextTick();
+
+        expect(mockFetch).toHaveBeenCalled();
+      });
+
+      it('transforms fetched work item types correctly', async () => {
+        const mockFetch = jest.fn().mockResolvedValue({
+          data: {
+            workspace: {
+              workItemTypes: {
+                nodes: [{ name: 'Epic' }, { name: 'Key result' }, { name: 'Requirements' }],
+              },
+            },
+          },
+        });
+
+        wrapper = createComponent({
+          config: {
+            ...mockTypeToken,
+            initialWorkItemTypes: [],
+            fetchWorkItemTypes: mockFetch,
+          },
+        });
+
+        findBaseToken().trigger('fetch-suggestions');
+
+        await nextTick();
+
+        await mockFetch.mock.results[0].value;
+
+        await nextTick();
+
+        const baseToken = findBaseToken();
+        expect(baseToken.props('suggestions')).toEqual([
+          { value: 'EPIC', title: 'Epic' },
+          { value: 'KEY_RESULT', title: 'Key result' },
+          { value: 'REQUIREMENTS', title: 'Requirements' },
+        ]);
       });
     });
   });

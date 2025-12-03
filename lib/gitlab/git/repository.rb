@@ -686,13 +686,14 @@ module Gitlab
         end
       end
 
-      def merge(user, source_sha:, target_branch:, message:, target_sha: nil, &block)
+      def merge(user, source_sha:, target_branch:, message:, target_sha: nil, sign: true, &block)
         wrapped_gitaly_errors do
           gitaly_operation_client.user_merge_branch(user,
             source_sha: source_sha,
             target_branch: target_branch,
             message: message,
             target_sha: target_sha,
+            sign: sign,
             &block)
         end
       end

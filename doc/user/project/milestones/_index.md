@@ -291,7 +291,7 @@ To assign or unassign a milestone, you can also:
 
 - Use the `/milestone` [quick action](../quick_actions.md) in a comment or description
 - Drag an issue to a [milestone list](../issue_board.md#milestone-lists) in a board
-- [Bulk edit issues](../issues/managing_issues.md#bulk-edit-issues-from-a-project) from the issues list
+- [Bulk edit issues](../issues/managing_issues.md#bulk-edit-issues) from the issues list
 
 ## Filter issues and merge requests by milestone
 

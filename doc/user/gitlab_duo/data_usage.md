@@ -8,7 +8,11 @@ title: GitLab Duo data usage
 
 GitLab Duo uses generative AI to help increase your velocity and make you more productive. Each AI-native feature operates independently and is not required for other features to function.
 
-GitLab uses the right large language models (LLMs) for specific tasks. These LLMs are [Anthropic Claude](https://www.anthropic.com/product), [Fireworks AI-hosted Codestral](https://mistral.ai/news/codestral-2501), and [Google Vertex AI Models](https://cloud.google.com/vertex-ai/generative-ai/docs/learn/overview#genai-models).
+GitLab uses the right large language models (LLMs) for specific tasks.
+These LLMs are [Anthropic Claude](https://claude.com/product/overview),
+[Fireworks AI-hosted Codestral](https://mistral.ai/news/codestral),
+[Google Vertex AI models](https://docs.cloud.google.com/vertex-ai/generative-ai/docs/learn/overview),
+and [OpenAI models](https://platform.openai.com/docs/models).
 
 ## Progressive enhancement
 
@@ -27,8 +31,8 @@ GitLab Duo AI-native features are powered by a generative AI model. The processi
 The below reflects the current retention periods of GitLab AI model
 [Sub-Processors](https://about.gitlab.com/privacy/subprocessors/#third-party-sub-processors):
 
-GitLab has arranged zero-day data retention with Anthropic, Fireworks AI, AWS,
-and Google for GitLab Duo requests.
+For GitLab Duo requests, GitLab has a zero-day data retention policy
+with Anthropic, Fireworks AI, AWS, and Google.
 
 These vendors discard model input and output data immediately after the output is
 provided and do not store input and output data for abuse monitoring. The exception

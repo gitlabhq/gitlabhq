@@ -52,7 +52,7 @@
   - c.with_body do
     - if current_user.two_factor_otp_enabled?
       .gl-flex.gl-gap-8
-        %div= _("You've already enabled two-factor authentication using a one-time password authenticator. In order to register a different device, you must first delete this authenticator.")
+        %div= _("You've already registered an OTP authenticator. To register a new OTP authenticator, delete the current one.")
         .gl-float-right
           .js-two-factor-action-confirm{ data: delete_otp_authenticator_data(current_password_required?) }
     - else

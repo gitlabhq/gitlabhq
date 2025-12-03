@@ -50,6 +50,27 @@ module Namespaces
         end
       end
 
+      # Returns the effective state for this namespace, considering ancestor inheritance.
+      # If the namespace has its own explicit state (not ancestor_inherited), returns that state.
+      # Otherwise, traverses up the ancestor hierarchy to find the first ancestor with an explicit state.
+      # Returns :ancestor_inherited if no ancestor has an explicit state.
+      #
+      # @return [Symbol] the effective state name
+      def effective_state
+        # Namespace has explicit state of its own or is a root namespace
+        return state_name if !ancestor_inherited? || parent_id.nil?
+
+        # Return state from closest ancestor
+        closest_ancestor_state =
+          self.class
+              .where(id: traversal_ids)
+              .where.not(state: STATES[:ancestor_inherited])
+              .order(Arel.sql("array_length(traversal_ids, 1) DESC"))
+              .pick(:state)
+
+        STATES.key(closest_ancestor_state)&.to_sym
+      end
+
       def update_state_metadata(transition, error: nil)
         options = transition.args.first || {}
         current_user = options[:current_user]

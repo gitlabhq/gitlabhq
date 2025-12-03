@@ -330,13 +330,15 @@ RSpec.describe Gitlab::GitalyClient::OperationService, feature_category: :source
     let(:target_sha) { repository.commit(target_branch).sha }
     let(:source_sha) { '5937ac0a7beb003549fc5fd26fc247adbce4a52e' }
     let(:message) { 'Merge a branch' }
+    let(:sign) { false }
 
     subject do
       client.user_merge_branch(user,
         source_sha: source_sha,
         target_branch: target_branch,
         target_sha: target_sha,
-        message: message
+        message: message,
+        sign: sign
       ) {}
     end
 

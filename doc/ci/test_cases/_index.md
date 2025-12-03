@@ -89,7 +89,7 @@ Prerequisites:
 To edit a test case:
 
 1. [View a test case](#view-a-test-case).
-1. Select **Edit title and description** ({{< icon name="pencil" >}}).
+1. In the upper-right corner, select **Edit**.
 1. Edit the test case's title or description.
 1. Select **Save changes**.
 

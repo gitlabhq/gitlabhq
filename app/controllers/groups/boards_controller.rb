@@ -6,7 +6,6 @@ class Groups::BoardsController < Groups::ApplicationController
   include Gitlab::Utils::StrongMemoize
 
   before_action do
-    push_frontend_feature_flag(:board_multi_select, group)
     push_force_frontend_feature_flag(:work_item_tasks_on_boards,
       !!group&.work_item_tasks_on_boards_feature_flag_enabled?)
     push_frontend_feature_flag(:notifications_todos_buttons, current_user)

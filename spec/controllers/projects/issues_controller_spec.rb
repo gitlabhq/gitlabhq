@@ -936,7 +936,6 @@ RSpec.describe Projects::IssuesController, :request_store, feature_category: :te
       end
 
       it_behaves_like 'restricted action', success: 200
-      it_behaves_like 'update invalid issuable', Issue
 
       context 'changing the assignee' do
         it 'limits the attributes exposed on the assignee' do

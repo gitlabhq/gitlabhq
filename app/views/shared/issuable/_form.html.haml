@@ -16,9 +16,6 @@
     = _('Title (required)')
 
   = render 'shared/issuable/form/title', issuable: issuable, form: form, has_wip_commits: commits && commits.detect(&:draft?)
-#js-suggestions{ data: { project_path: @project.full_path } }
-
-= render 'shared/issuable/form/type_selector', issuable: issuable, form: form
 
 = render 'shared/form_elements/description', model: issuable, form: form, project: project
 
@@ -71,9 +68,6 @@
       - confirm_body = _('You’re about to permanently delete the %{issuableType} ‘%{strongOpen}%{issuableTitle}%{strongClose}’. To avoid data loss, consider %{strongOpen}closing this %{issuableType}%{strongClose} instead. Once deleted, it cannot be undone or recovered.') % { issuableType: issuable.human_class_name, issuableTitle: issuable.title, strongOpen: '<strong>', strongClose: '</strong>' }
       - confirm_primary_btn_text = _('Delete %{issuableType}') % { issuableType: issuable.human_class_name }
       = link_button_to _('Delete'), polymorphic_path([@project, issuable], params: { destroy_confirm: true }), data: { title: confirm_title, confirm: confirm_body, is_html_message: true, confirm_btn_variant: 'danger'}, method: :delete, class: 'gl-float-right js-reset-autosave', "aria-label": confirm_primary_btn_text, variant: :danger, category: :secondary
-
-- if issuable.respond_to?(:issue_type)
-  = form.hidden_field :issue_type
 
 = form.hidden_field :lock_version
 

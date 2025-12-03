@@ -39,6 +39,7 @@ fragment PipelineDetails on Pipeline {
   source
   latest
   yamlErrors
+  yamlErrorMessages
   failureReason
   configSource
   stuck

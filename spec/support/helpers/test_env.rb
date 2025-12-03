@@ -265,8 +265,14 @@ module TestEnv
       task: "gitlab:gitaly:clone",
       fresh_install: ENV.key?('FORCE_GITALY_INSTALL'),
       task_args: [GitalySetup.gitaly_dir, GitalySetup.storage_path, gitaly_url].compact) do
-      GitalySetup.setup_gitaly
+      # In CI, Gitaly is built in the setup-test-env job and saved in the
+      # artifacts. So when tests are started, there's no need to build Gitaly.
+      # Locally, we skip building if GDK has already downloaded precompiled binaries.
+      GitalySetup.build_gitaly unless ENV['CI']
     end
+
+    # Always generate config files even with precompiled binaries
+    GitalySetup.setup_gitaly
   end
 
   def start_gitaly
@@ -282,7 +288,6 @@ module TestEnv
     ENV.fetch('GITALY_REPO_URL', nil)
   end
 
-  # Feature specs are run through Workhorse
   def setup_workhorse
     measure_setup_duration('GitLab Workhorse') do
       # Always rebuild the config file
@@ -557,6 +562,8 @@ module TestEnv
 
     return false if component_ahead_of_target?(component_folder, expected_version)
 
+    return false if gdk_has_matching_binaries?(component_folder, expected_version)
+
     version = File.read(File.join(component_folder, 'VERSION')).strip
 
     # Notice that this will always yield true when using branch versions
@@ -597,6 +604,39 @@ module TestEnv
     return false if exit_status != 0
 
     expected_version == sha.chomp
+  end
+
+  def gdk_has_matching_binaries?(component_folder, expected_version)
+    component_name = File.basename(component_folder)
+    # GDK only downloads gitaly binaries to tmp/tests (workhorse uses skip_compile_workhorse?)
+    return false unless component_name == 'gitaly'
+
+    gdk_root = Rails.root.parent
+    return false unless gdk_root.exist?
+
+    cache_file = gdk_root.join('.cache', '.gitaly_commit_sha')
+    return false unless File.exist?(cache_file)
+
+    begin
+      cached_sha = File.read(cache_file).strip
+    rescue StandardError
+      return false
+    end
+
+    unless cached_sha == expected_version
+      puts "Gitaly SHA mismatch! Cached: #{cached_sha}, Expected: #{expected_version}, will rebuild"
+      return false
+    end
+
+    bin_dir = File.join(component_folder, '_build', 'bin')
+
+    if Dir.exist?(bin_dir) && !Dir.empty?(bin_dir)
+      puts "==> Using precompiled Gitaly binaries from cache"
+      true
+    else
+      puts "Gitaly binary directory missing or empty, will build from source"
+      false
+    end
   end
 end
 

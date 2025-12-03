@@ -14,34 +14,40 @@ description: Monitor credentials through a comprehensive access inventory.
 
 {{< /details >}}
 
-{{< history >}}
-
-- Group access tokens [added](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/102959) in GitLab 15.6.
-
-{{< /history >}}
-
 {{< alert type="note" >}}
 
 For GitLab.com, see [Credentials inventory for GitLab.com](../user/group/credentials_inventory.md).
 
 {{< /alert >}}
 
-Use the credentials inventory to monitor and control access to your instance.
+Use the credentials inventory to monitor credentials for all human users and service accounts
+in your GitLab instance.
 
-As an administrator, you can:
+Prerequisites:
 
-- Revoke personal, project, or group access tokens.
-- Delete SSH keys.
-- Review credential details including:
-  - Ownership.
-  - Access scopes.
-  - Usage patterns.
-  - Expiration dates.
-  - Revocation dates.
+- You must be an administrator.
+
+## View the credentials inventory
+
+You can use the credentials inventory to review credential details for personal access tokens,
+group access tokens, project access tokens, SSH keys, and GPG keys.
+
+You can view details on:
+
+- Ownership.
+- Access scopes.
+- Usage patterns.
+- Expiration dates.
+- Revocation dates.
+
+To view the credentials inventory:
+
+1. On the left sidebar, at the bottom, select **Admin**. If you've [turned on the new navigation](../user/interface_redesign.md), in the upper-right corner, select **Admin**.
+1. Select **Credentials**.
 
 ## Revoke personal access tokens
 
-To revoke a personal access token in your instance:
+To revoke a personal access token:
 
 1. On the left sidebar, at the bottom, select **Admin**. If you've [turned on the new navigation](../user/interface_redesign.md#turn-new-navigation-on-or-off), in the upper-right corner, select **Admin**.
 1. Select **Credentials**.
@@ -52,7 +58,7 @@ The access token is revoked and the user is notified by email.
 
 ## Revoke project or group access tokens
 
-To revoke a project access token in your instance:
+To revoke a project or group access token:
 
 1. On the left sidebar, at the bottom, select **Admin**. If you've [turned on the new navigation](../user/interface_redesign.md#turn-new-navigation-on-or-off), in the upper-right corner, select **Admin**.
 1. Select **Credentials**.
@@ -63,7 +69,7 @@ The access token is revoked and a background process begins to delete the associ
 
 ## Delete SSH keys
 
-To delete an SSH key in your instance:
+To delete an SSH key:
 
 1. On the left sidebar, at the bottom, select **Admin**. If you've [turned on the new navigation](../user/interface_redesign.md#turn-new-navigation-on-or-off), in the upper-right corner, select **Admin**.
 1. Select **Credentials**.
@@ -71,13 +77,3 @@ To delete an SSH key in your instance:
 1. Next to the SSH key, select **Delete**.
 
 The SSH key is deleted and the user is notified.
-
-## View GPG keys
-
-You can see details for each GPG key including the owner, ID, and [verification status](../user/project/repository/signed_commits/gpg.md).
-
-To view information about GPG keys in your instance:
-
-1. On the left sidebar, at the bottom, select **Admin**. If you've [turned on the new navigation](../user/interface_redesign.md#turn-new-navigation-on-or-off), in the upper-right corner, select **Admin**.
-1. Select **Credentials**.
-1. Select the **GPG keys** tab.

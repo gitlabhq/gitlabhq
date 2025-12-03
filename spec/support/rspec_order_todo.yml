@@ -2584,7 +2584,6 @@
 - './spec/features/boards/issue_ordering_spec.rb'
 - './spec/features/boards/keyboard_shortcut_spec.rb'
 - './spec/features/boards/multiple_boards_spec.rb'
-- './spec/features/boards/multi_select_spec.rb'
 - './spec/features/boards/new_issue_spec.rb'
 - './spec/features/boards/reload_boards_on_browser_back_spec.rb'
 - './spec/features/boards/sidebar_assignee_spec.rb'

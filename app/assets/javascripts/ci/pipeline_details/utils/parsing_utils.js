@@ -168,10 +168,7 @@ export const generateColumnsFromLayersListMemoized = memoize(generateColumnsFrom
 
 export const keepLatestDownstreamPipelines = (downstreamPipelines = []) => {
   return downstreamPipelines.filter((pipeline) => {
-    if (pipeline.source_job) {
-      return !pipeline?.source_job?.retried || false;
-    }
-
-    return !pipeline?.sourceJob?.retried || false;
+    const sourceJob = pipeline.source_job ?? pipeline.sourceJob;
+    return !sourceJob?.retried;
   });
 };

@@ -320,16 +320,6 @@ RSpec.describe IssuesHelper, feature_category: :team_planning do
     end
   end
 
-  describe '#issues_form_data' do
-    it 'returns expected result' do
-      expected = {
-        new_issue_path: new_project_issue_path(project)
-      }
-
-      expect(helper.issues_form_data(project)).to include(expected)
-    end
-  end
-
   describe '#issue_repositioning_disabled?' do
     let_it_be(:group) { create(:group) }
     let_it_be(:project) { create(:project, group: group) }

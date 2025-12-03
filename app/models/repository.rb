@@ -970,7 +970,8 @@ class Repository
         source_sha: source_sha,
         target_branch: target_branch,
         message: message,
-        target_sha: target_sha
+        target_sha: target_sha,
+        sign: sign_commits?
       ) do |commit_id|
         yield commit_id if block_given?
       end

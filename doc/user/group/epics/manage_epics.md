@@ -142,21 +142,22 @@ Prerequisites:
 
 To update multiple epics at the same time:
 
-1. In a group, go to **Epics** > **List**.
-1. Select **Bulk edit**. A sidebar on the right appears with editable fields.
+1. On the left sidebar, select **Search or go to** and find your project. If you've [turned on the new navigation](../../interface_redesign.md), this field is on the top bar.
+1. Select **Plan** > **Epics**.
+1. Select **Bulk edit**. On the right, a sidebar with editable fields appears.
 1. Select the checkboxes next to each epic you want to edit.
-1. Select the appropriate fields and their values from the sidebar.
+1. From the sidebar, edit the available fields.
 1. Select **Update selected**.
 
 When bulk editing epics in a group, you can edit the following attributes:
 
 - State (open or closed)
 - [Assignees](#assignees)
-- [Milestone](../../project/milestones/_index.md)
 - [Labels](../../project/labels.md)
 - [Health status](#health-status)
 - [Notification](../../profile/notifications.md) subscription
 - [Confidentiality](#make-an-epic-confidential)
+- [Milestone](../../project/milestones/_index.md)
 - [Parent](#add-a-parent-epic-to-an-epic)
 
 ## Prevent truncating descriptions with **Read more**
@@ -385,6 +386,8 @@ To view epics in a group:
 1. On the left sidebar, select **Search or go to** and find your group. If you've [turned on the new navigation](../../interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
 1. Select **Plan** > **Epics**.
 
+To set which attributes are shown for epics on the epics list, [configure display preferences](../../work_items/_index.md#configure-list-display-preferences).
+
 ### Who can view an epic
 
 {{< history >}}
@@ -400,44 +403,6 @@ the epic's [confidentiality status](#make-an-epic-confidential):
 - Private group and non-confidential epic: You must have at least the Guest role for the group, or be a member of a project in the group or one of its subgroups.
 - Confidential epic (regardless of group visibility): You must have at least the Planner
   role for the group.
-
-### Configure epic display preferences
-
-{{< history >}}
-
-- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/393559) in GitLab 18.2.
-
-{{< /history >}}
-
-You can customize how epics are displayed in the epic list by showing or hiding specific metadata
-fields and configuring view preferences.
-
-GitLab saves your display preferences at different levels:
-
-- **Fields**: Saved per namespace. You can have different field visibility settings for different
-  groups and projects based on your workflow needs. For example, you can show assignee and labels
-  in one group, but hide them in another group.
-- **Your preferences**: Saved globally across all projects and groups. This ensures consistent
-  behavior for how you prefer to view work items.
-
-To configure epic display preferences:
-
-1. On the left sidebar, select **Search or go to** and find your group. If you've [turned on the new navigation](../../interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
-1. Select **Plan** > **Epics**.
-1. In the upper-right corner, select **Display options** ({{< icon name="preferences" >}}).
-1. Under **Fields**, turn on or turn off the metadata you want to display:
-   - **Assignee**: Who the epic is assigned to.
-   - **Labels**: Epic labels.
-   - **Milestone**: Milestone information.
-   - **Dates**: Due dates and date ranges.
-   - **Health**: Health status indicators.
-   - **Blocked/Blocking**: Blocking relationship indicators.
-   - **Comments**: Comment counts.
-   - **Popularity**: Popularity metrics.
-1. Under **Your preferences**, turn on or turn off **Open items in side panel** to choose how
-   epics open when you select them:
-   - On (default): Epics open in a drawer on the right side of the screen.
-   - Off: Epics open in a full page view.
 
 ### Open epics in a drawer
 
@@ -469,20 +434,11 @@ To open an epic in the full page view:
 - Open the epic in a new tab. From the list of epics, either:
   - Right-click the epic and open it in a new browser tab.
   - Hold <kbd>Command</kbd> or <kbd>Control</kbd> and select the epic.
-- Select an epic, and from the drawer, in the upper-left corner, select **Open in full page** ({{< icon name="maximize" >}}).
+- Select an epic, and from the drawer, either:
+  - In the upper-left corner, select the issue reference, for example `my_project#123`.
+  - In the upper-right corner, select **Open in full page** ({{< icon name="maximize" >}}).
 
-#### Set preference whether to open epics in a drawer
-
-To configure how epics open on the Epics page:
-
-1. On the left sidebar, select **Search or go to** and find your group. If you've [turned on the new navigation](../../interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
-1. Select **Plan** > **Epics**.
-1. In the upper-right corner, select **Display options** ({{< icon name="preferences" >}}).
-1. Toggle **Open items in side panel**:
-   - **On** (default): Epics open in a drawer overlay.
-   - **Off**: Epics open in a full page view.
-
-Your preference is saved and remembered across all your sessions and devices.
+To always open issues in full page view, see [set preference whether to open items in a drawer](../../work_items/_index.md#configure-list-display-preferences).
 
 ### Cached epic count
 

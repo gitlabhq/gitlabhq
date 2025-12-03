@@ -2359,7 +2359,6 @@ Layout/LineLength:
     - 'spec/features/boards/board_filters_spec.rb'
     - 'spec/features/boards/boards_spec.rb'
     - 'spec/features/boards/issue_ordering_spec.rb'
-    - 'spec/features/boards/multi_select_spec.rb'
     - 'spec/features/boards/sidebar_assignee_spec.rb'
     - 'spec/features/boards/sidebar_labels_spec.rb'
     - 'spec/features/boards/user_visits_board_spec.rb'

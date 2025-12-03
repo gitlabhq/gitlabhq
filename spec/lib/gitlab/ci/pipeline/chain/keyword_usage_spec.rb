@@ -23,7 +23,7 @@ RSpec.describe Gitlab::Ci::Pipeline::Chain::KeywordUsage, feature_category: :pip
       it 'tracks the usage of the keyword of interest' do
         expect(step).to receive(:track_internal_event)
           .with(a_string_matching(/\Ause_\w+_keyword_in_cicd_yaml\z/), project: project, user: user)
-          .exactly(3).times
+          .exactly(4).times
 
         perform
       end

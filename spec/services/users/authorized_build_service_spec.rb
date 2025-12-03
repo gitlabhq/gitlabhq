@@ -47,6 +47,16 @@ RSpec.describe Users::AuthorizedBuildService, feature_category: :user_management
 
           it { expect(user).to be_human }
         end
+
+        context 'when composite_identity_enforced' do
+          before do
+            params.merge!({ composite_identity_enforced: true })
+          end
+
+          it 'sets composite_identity_enforced' do
+            expect(user.composite_identity_enforced?).to be true
+          end
+        end
       end
     end
   end

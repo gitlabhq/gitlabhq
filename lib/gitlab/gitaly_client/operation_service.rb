@@ -165,7 +165,7 @@ module Gitlab
         response.commit_id
       end
 
-      def user_merge_branch(user, source_sha:, target_branch:, message:, target_sha: nil)
+      def user_merge_branch(user, source_sha:, target_branch:, message:, target_sha: nil, sign: true)
         request_enum = QueueEnumerator.new
         response_enum = gitaly_client_call(
           @repository.storage,
@@ -183,7 +183,8 @@ module Gitlab
             branch: encode_binary(target_branch),
             expected_old_oid: target_sha,
             message: encode_binary(message),
-            timestamp: Google::Protobuf::Timestamp.new(seconds: Time.now.utc.to_i)
+            timestamp: Google::Protobuf::Timestamp.new(seconds: Time.now.utc.to_i),
+            sign: sign
           )
         )
 

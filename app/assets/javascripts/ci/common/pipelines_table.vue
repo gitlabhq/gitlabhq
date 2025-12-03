@@ -143,7 +143,8 @@ export default {
       return pipeline?.failed_builds_count || 0;
     },
     getDownstreamPipelines(pipeline) {
-      const downstream = pipeline.triggered;
+      const downstream = pipeline.triggered || pipeline?.downstream?.nodes;
+
       return keepLatestDownstreamPipelines(downstream);
     },
     getProjectPath(item) {

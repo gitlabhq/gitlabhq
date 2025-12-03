@@ -6,6 +6,8 @@ RSpec.describe Gitlab::TopologyServiceClient::MetricsInterceptor, feature_catego
   let(:cell_id) { '1' }
   let(:topology_service_address) { 'localhost:50051' }
   let(:interceptor) { described_class.new(cell_id: cell_id, topology_service_address: topology_service_address) }
+  let(:call) { double('call') } # rubocop:disable RSpec/VerifiedDoubles -- No concrete class available for gRPC call
+  let(:metadata) { {} }
 
   before do
     allow(::Gitlab::Metrics).to receive(:prometheus_metrics_enabled?).and_return(true)
@@ -45,7 +47,7 @@ RSpec.describe Gitlab::TopologyServiceClient::MetricsInterceptor, feature_catego
       allow(metrics).to receive(:increment_rpc_calls_total)
       allow(metrics).to receive(:observe_rpc_duration)
 
-      interceptor.request_response(request: request, method: method) { response }
+      interceptor.request_response(request: request, call: call, method: method, metadata: metadata) { response }
 
       expect(metrics).to have_received(:build_labels).with(
         service: 'proto.CellService',
@@ -79,7 +81,7 @@ RSpec.describe Gitlab::TopologyServiceClient::MetricsInterceptor, feature_catego
       error = GRPC::BadStatus.new(GRPC::Core::StatusCodes::UNAVAILABLE, 'Service unavailable')
 
       expect do
-        interceptor.request_response(request: request, method: method) { raise error }
+        interceptor.request_response(request: request, call: call, method: method, metadata: metadata) { raise error }
       end.to raise_error(GRPC::BadStatus)
 
       expect(metrics).to have_received(:build_labels).with(
@@ -113,7 +115,7 @@ RSpec.describe Gitlab::TopologyServiceClient::MetricsInterceptor, feature_catego
       error = RuntimeError.new('Unexpected error')
 
       expect do
-        interceptor.request_response(request: request, method: method) { raise error }
+        interceptor.request_response(request: request, call: call, method: method, metadata: metadata) { raise error }
       end.to raise_error(RuntimeError)
 
       expect(metrics).to have_received(:build_labels).with(
@@ -142,7 +144,9 @@ RSpec.describe Gitlab::TopologyServiceClient::MetricsInterceptor, feature_catego
       allow(::Gitlab::Metrics).to receive_messages(prometheus_metrics_enabled?: false, histogram: null_metric,
         counter: null_metric)
 
-      result = interceptor.request_response(request: request, method: method) { response }
+      result = interceptor.request_response(request: request, call: call, method: method, metadata: metadata) do
+        response
+      end
 
       # Verify the call completes successfully
       expect(result).to eq(response)
@@ -324,7 +328,8 @@ RSpec.describe Gitlab::TopologyServiceClient::MetricsInterceptor, feature_catego
       allow(metrics).to receive(:observe_request_size)
       allow(metrics).to receive(:observe_response_size)
 
-      result = interceptor.client_streaming(requests: requests, method: method) do |enum|
+      result = interceptor.client_streaming(requests: requests, call: call, method: method,
+        metadata: metadata) do |enum|
         enum.to_a # Consume the wrapped requests
         response
       end
@@ -362,7 +367,9 @@ RSpec.describe Gitlab::TopologyServiceClient::MetricsInterceptor, feature_catego
       error = GRPC::BadStatus.new(GRPC::Core::StatusCodes::UNAVAILABLE, 'Service unavailable')
 
       expect do
-        interceptor.client_streaming(requests: requests, method: method) { raise error }
+        interceptor.client_streaming(requests: requests, call: call, method: method, metadata: metadata) do
+          raise error
+        end
       end.to raise_error(GRPC::BadStatus)
 
       expect(metrics).to have_received(:increment_failed_calls_total).with(
@@ -391,7 +398,9 @@ RSpec.describe Gitlab::TopologyServiceClient::MetricsInterceptor, feature_catego
       error = RuntimeError.new('Unexpected error')
 
       expect do
-        interceptor.client_streaming(requests: requests, method: method) { raise error }
+        interceptor.client_streaming(requests: requests, call: call, method: method, metadata: metadata) do
+          raise error
+        end
       end.to raise_error(RuntimeError)
 
       expect(metrics).to have_received(:increment_failed_calls_total).with(
@@ -429,7 +438,7 @@ RSpec.describe Gitlab::TopologyServiceClient::MetricsInterceptor, feature_catego
       allow(metrics).to receive(:observe_response_size)
 
       # The method yields responses_enum and we need to consume it
-      result_enum = interceptor.server_streaming(request: request, method: method) do
+      result_enum = interceptor.server_streaming(request: request, call: call, method: method, metadata: metadata) do
         responses.to_enum
       end
       result_enum.to_a # Consume the enumerator to trigger metrics recording
@@ -466,7 +475,7 @@ RSpec.describe Gitlab::TopologyServiceClient::MetricsInterceptor, feature_catego
       error = GRPC::BadStatus.new(GRPC::Core::StatusCodes::UNAVAILABLE, 'Service unavailable')
 
       expect do
-        interceptor.server_streaming(request: request, method: method) { raise error }
+        interceptor.server_streaming(request: request, call: call, method: method, metadata: metadata) { raise error }
       end.to raise_error(GRPC::BadStatus)
 
       expect(metrics).to have_received(:increment_failed_calls_total).with(
@@ -495,7 +504,7 @@ RSpec.describe Gitlab::TopologyServiceClient::MetricsInterceptor, feature_catego
       error = RuntimeError.new('Unexpected error')
 
       expect do
-        interceptor.server_streaming(request: request, method: method) { raise error }
+        interceptor.server_streaming(request: request, call: call, method: method, metadata: metadata) { raise error }
       end.to raise_error(RuntimeError)
 
       expect(metrics).to have_received(:increment_failed_calls_total).with(
@@ -530,7 +539,8 @@ RSpec.describe Gitlab::TopologyServiceClient::MetricsInterceptor, feature_catego
       allow(metrics).to receive(:increment_rpc_calls_total)
       allow(metrics).to receive(:observe_rpc_duration)
 
-      result_enum = interceptor.bidi_streamer(requests: requests, method: method) do |req_enum|
+      result_enum = interceptor.bidi_streamer(requests: requests, call: call, method: method,
+        metadata: metadata) do |req_enum|
         req_enum.to_a # Consume the wrapped requests
         responses.to_enum
       end
@@ -570,7 +580,7 @@ RSpec.describe Gitlab::TopologyServiceClient::MetricsInterceptor, feature_catego
       error = GRPC::BadStatus.new(GRPC::Core::StatusCodes::UNAVAILABLE, 'Service unavailable')
 
       expect do
-        interceptor.bidi_streamer(requests: requests, method: method) { raise error }
+        interceptor.bidi_streamer(requests: requests, call: call, method: method, metadata: metadata) { raise error }
       end.to raise_error(GRPC::BadStatus)
 
       expect(metrics).to have_received(:increment_failed_calls_total).with(
@@ -599,7 +609,7 @@ RSpec.describe Gitlab::TopologyServiceClient::MetricsInterceptor, feature_catego
       error = RuntimeError.new('Unexpected error')
 
       expect do
-        interceptor.bidi_streamer(requests: requests, method: method) { raise error }
+        interceptor.bidi_streamer(requests: requests, call: call, method: method, metadata: metadata) { raise error }
       end.to raise_error(RuntimeError)
 
       expect(metrics).to have_received(:increment_failed_calls_total).with(
@@ -638,7 +648,7 @@ RSpec.describe Gitlab::TopologyServiceClient::MetricsInterceptor, feature_catego
         allow(metrics).to receive(:observe_request_size)
         allow(metrics).to receive(:observe_response_size)
 
-        interceptor.request_response(request: request, method: method) { response }
+        interceptor.request_response(request: request, call: call, method: method, metadata: metadata) { response }
 
         expect(metrics).to have_received(:observe_request_size).with(labels: labels, size_bytes: 100)
         expect(metrics).to have_received(:observe_response_size).with(labels: labels, size_bytes: 200)
@@ -660,7 +670,7 @@ RSpec.describe Gitlab::TopologyServiceClient::MetricsInterceptor, feature_catego
         allow(metrics).to receive(:observe_request_size)
         allow(metrics).to receive(:observe_response_size)
 
-        interceptor.request_response(request: request, method: method) { response }
+        interceptor.request_response(request: request, call: call, method: method, metadata: metadata) { response }
 
         expect(metrics).to have_received(:observe_request_size).with(labels: labels, size_bytes: request.bytesize)
         expect(metrics).to have_received(:observe_response_size).with(labels: labels, size_bytes: response.bytesize)
@@ -682,7 +692,7 @@ RSpec.describe Gitlab::TopologyServiceClient::MetricsInterceptor, feature_catego
         allow(metrics).to receive(:observe_request_size)
         allow(metrics).to receive(:observe_response_size)
 
-        interceptor.request_response(request: request, method: method) { response }
+        interceptor.request_response(request: request, call: call, method: method, metadata: metadata) { response }
 
         expect(metrics).not_to have_received(:observe_request_size)
         expect(metrics).not_to have_received(:observe_response_size)

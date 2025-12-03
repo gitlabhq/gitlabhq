@@ -115,4 +115,102 @@ RSpec.describe Gitlab::HttpResponseParser, feature_category: :importers do
       end
     end
   end
+
+  describe '#xml' do
+    let(:xml_parser) { described_class.new(body, :xml).xml }
+    let(:body) { '<root><item>value</item></root>' }
+
+    it 'parses the response body into a hash' do
+      result = xml_parser
+
+      expect(result).to be_a(Hash)
+      expect(result['root']).to be_a(Hash)
+      expect(result['root']['item']).to eq('value')
+    end
+
+    it 'logs the parse method call with the number of angle brackets' do
+      expect(Gitlab::AppJsonLogger).to receive(:info).with(
+        message: 'HttpResponseParser method called',
+        parse_method: :xml,
+        structural_element_count: 2,
+        caller: anything
+      )
+
+      xml_parser
+    end
+
+    context 'with XML attributes' do
+      let(:body) { '<root><item id="1" type="test">value</item></root>' }
+
+      it 'parses attributes correctly' do
+        result = xml_parser
+
+        expect(result['root']['item']).to be_a(Hash)
+        expect(result['root']['item']['id']).to eq('1')
+        expect(result['root']['item']['type']).to eq('test')
+        expect(result['root']['item']['__content__']).to eq('value')
+      end
+
+      it 'logs the parse method call with the number of angle brackets' do
+        expect(Gitlab::AppJsonLogger).to receive(:info).with(
+          message: 'HttpResponseParser method called',
+          parse_method: :xml,
+          structural_element_count: 4,
+          caller: anything
+        )
+
+        xml_parser
+      end
+    end
+  end
+
+  describe '#csv' do
+    let(:csv_parser) { described_class.new(body, :csv).csv }
+    let(:body) { "name,age,city\nJohn,30,NYC\nJane,25,LA" }
+
+    it 'parses the response body into an array of arrays' do
+      result = csv_parser
+
+      expect(result).to be_an(Array)
+      expect(result.size).to eq(3)
+      expect(result[0]).to eq(%w[name age city])
+      expect(result[1]).to eq(%w[John 30 NYC])
+      expect(result[2]).to eq(%w[Jane 25 LA])
+    end
+
+    it 'logs the parse method call with the number of commas and newlines' do
+      expect(Gitlab::AppJsonLogger).to receive(:info).with(
+        message: 'HttpResponseParser method called',
+        parse_method: :csv,
+        structural_element_count: 8,
+        caller: anything
+      )
+
+      csv_parser
+    end
+
+    context 'with semicolon-separated values' do
+      let(:body) { "name;age;city\nJohn;30;NYC\nJane;25;LA" }
+
+      it 'parses semicolon-separated CSV correctly' do
+        result = csv_parser
+
+        expect(result).to be_an(Array)
+        expect(result.size).to eq(3)
+        expect(result[0]).to eq(['name;age;city'])
+        expect(result[1]).to eq(['John;30;NYC'])
+      end
+
+      it 'counts only newlines when no commas present' do
+        expect(Gitlab::AppJsonLogger).to receive(:info).with(
+          message: 'HttpResponseParser method called',
+          parse_method: :csv,
+          structural_element_count: 2,
+          caller: anything
+        )
+
+        csv_parser
+      end
+    end
+  end
 end

@@ -1,6 +1,9 @@
 <script>
 import { GlIcon, GlIntersperse, GlFilteredSearchSuggestion } from '@gitlab/ui';
-import { getTypeTokenOptions } from 'ee_else_ce/issues/list/utils';
+import { createAlert } from '~/alert';
+import { s__ } from '~/locale';
+import WorkItemTypeIcon from '~/work_items/components/work_item_type_icon.vue';
+
 import BaseToken from './base_token.vue';
 
 export default {
@@ -10,14 +13,8 @@ export default {
     GlIcon,
     GlIntersperse,
     GlFilteredSearchSuggestion,
+    WorkItemTypeIcon,
   },
-  inject: [
-    'hasEpicsFeature',
-    'hasOkrsFeature',
-    'hasQualityManagementFeature',
-    'isGroupIssuesList',
-    'isProject',
-  ],
   props: {
     config: {
       type: Object,
@@ -32,26 +29,49 @@ export default {
       required: true,
     },
   },
-  computed: {
-    workItemTypes() {
-      return getTypeTokenOptions({
-        hasEpicsFeature: this.hasEpicsFeature,
-        hasOkrsFeature: this.hasOkrsFeature,
-        hasQualityManagementFeature: this.hasQualityManagementFeature,
-        isGroupIssuesList: this.isGroupIssuesList,
-        isProject: this.isProject,
-      });
-    },
+  data() {
+    return {
+      workItemTypes: this.config.initialWorkItemTypes || [],
+      loading: false,
+    };
   },
   methods: {
     getActiveType(types, data) {
       return types.find((type) => type.value === data);
     },
     getTypeValue(type) {
-      return type.value;
+      return type?.value ?? '';
     },
     getTypeTitle(type) {
-      return type.title;
+      return type?.title ?? '';
+    },
+    fetchWorkItemTypes() {
+      if (!this.config.fetchWorkItemTypes) {
+        return;
+      }
+
+      this.loading = true;
+      this.config
+        .fetchWorkItemTypes()
+        .then((res) => {
+          const rawTypes = Array.isArray(res) ? res : res.data?.workspace?.workItemTypes?.nodes;
+          if (rawTypes) {
+            this.workItemTypes = rawTypes.map((type) => ({
+              value: type.name.toUpperCase().replace(/\s+/g, '_'), // 'Key Results' -> 'KEY_RESULTS'
+              title: type.name,
+            }));
+          }
+        })
+        .catch(() =>
+          createAlert({
+            message: s__(
+              'WorkItem|Something went wrong when fetching work item types. Please try again',
+            ),
+          }),
+        )
+        .finally(() => {
+          this.loading = false;
+        });
     },
   },
 };
@@ -62,10 +82,12 @@ export default {
     :config="config"
     :value="value"
     :active="active"
+    :suggestions-loading="loading"
     :suggestions="workItemTypes"
     :get-active-token-value="getActiveType"
     :value-identifier="getTypeValue"
     v-bind="$attrs"
+    @fetch-suggestions="fetchWorkItemTypes"
     v-on="$listeners"
   >
     <template #view="{ viewTokenProps: { inputValue, activeTokenValue, selectedTokens } }">
@@ -94,10 +116,11 @@ export default {
             class="gl-mr-3 gl-shrink-0"
             variant="subtle"
           />
-          <div class="gl-flex gl-items-center">
-            <gl-icon :name="type.icon" class="gl-mr-3 gl-shrink-0" />
-            <div>{{ type.title }}</div>
-          </div>
+          <work-item-type-icon
+            :work-item-type="type.title"
+            :show-text="true"
+            class="gl-whitespace-nowrap"
+          />
         </div>
       </gl-filtered-search-suggestion>
     </template>

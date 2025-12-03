@@ -42,29 +42,29 @@ GET /admin/data_management/:model_name
 
 The `:model_name` parameter must be one of:
 
-- `ci_job_artifact`
-- `ci_pipeline_artifact`
-- `ci_secure_file`
-- `container_repository`
-- `dependency_proxy_blob`
-- `dependency_proxy_manifest`
-- `design_management_repository`
-- `group_wiki_repository`
-- `lfs_object`
-- `merge_request_diff`
-- `packages_package_file`
-- `pages_deployment`
-- `project`
-- `projects_wiki_repository`
-- `snippet_repository`
-- `terraform_state_version`
-- `upload`
+- `ci_job_artifacts`
+- `ci_pipeline_artifacts`
+- `ci_secure_files`
+- `container_repositories`
+- `dependency_proxy_blobs`
+- `dependency_proxy_manifests`
+- `design_management_repositories`
+- `group_wiki_repositories`
+- `lfs_objects`
+- `merge_request_diffs`
+- `packages_package_files`
+- `pages_deployments`
+- `projects`
+- `projects_wiki_repositories`
+- `snippet_repositories`
+- `terraform_state_versions`
+- `uploads`
 
 Supported attributes:
 
 | Attribute        | Type   | Required | Description                                                                                                                 |
 |------------------|--------|----------|-----------------------------------------------------------------------------------------------------------------------------|
-| `model_name`     | string | Yes      | The name of the requested model. Must belong to the `:model_name` list above.                                               |
+| `model_name`     | string | Yes      | The pluralized name of the requested model. Must belong to the `:model_name` list above.                                    |
 | `checksum_state` | string | No       | Search by checksum status. Allowed values: pending, started, succeeded, failed, disabled.                                   |
 | `identifiers`    | array  | No       | Filter results with an array of unique identifiers of the requested model, which can be integers or base64 encoded strings. |
 
@@ -82,7 +82,7 @@ response attributes:
 | `record_identifier`    | string or integer | Unique identifier of the record. Can be an integer or a base64 encoded string. |
 
 ```shell
-curl --header "PRIVATE-TOKEN: <your_access_token>" "https://primary.example.com/api/v4/admin/data_management/project?pagination=keyset"
+curl --header "PRIVATE-TOKEN: <your_access_token>" "https://primary.example.com/api/v4/admin/data_management/projects?pagination=keyset"
 ```
 
 Example response:
@@ -128,7 +128,7 @@ PUT /admin/data_management/:model_name/checksum
 
 | Attribute          | Type    | Required | Description                                                                                                                 |
 |--------------------|---------|----------|-----------------------------------------------------------------------------------------------------------------------------|
-| `model_name`       | string  | Yes      | The name of the requested model. Must belong to the `:model_name` list above.                                               |
+| `model_name`       | string  | Yes      | The pluralized name of the requested model. Must belong to the `:model_name` list above.                                    |
 | `checksum_state`   | string  | No       | Filter by checksum status. Allowed values: pending, started, succeeded, failed, disabled.                                   |
 | `identifiers`      | array   | No       | Filter records with an array of unique identifiers of the requested model, which can be integers or base64 encoded strings. |
 
@@ -138,6 +138,12 @@ This endpoint marks all selected records from the model for checksum recalculati
 |-----------|--------|---------------------------------------------------|
 | `message` | string | A information message about the success or error. |
 | `status`  | string | Can be "success" or "error".                      |
+
+```shell
+curl --header "PRIVATE-TOKEN: <your_access_token>" "https://primary.example.com/api/v4/admin/data_management/projects/checksum"
+```
+
+Example response:
 
 ```json
 {
@@ -154,7 +160,7 @@ GET /admin/data_management/:model_name/:id
 
 | Attribute           | Type              | Required | Description                                                                                 |
 |---------------------|-------------------|----------|---------------------------------------------------------------------------------------------|
-| `model_name`        | string            | Yes      | The name of the requested model. Must belong to the `:model_name` list above.               |
+| `model_name`        | string            | Yes      | The pluralized name of the requested model. Must belong to the `:model_name` list above.    |
 | `record_identifier` | string or integer | Yes      | The unique identifier of the requested model. Can be an integer or a base64 encoded string. |
 
 If successful, returns [`200`](../rest/troubleshooting.md#status-codes) and information about the specific model record. It includes the following
@@ -169,7 +175,7 @@ response attributes:
 | `record_identifier`    | string or integer | Unique identifier of the record. Can be an integer or a base64 encoded string. |
 
 ```shell
-curl --header "PRIVATE-TOKEN: <your_access_token>" "https://primary.example.com/api/v4/admin/data_management/project/1"
+curl --header "PRIVATE-TOKEN: <your_access_token>" "https://primary.example.com/api/v4/admin/data_management/projects/1"
 ```
 
 Example response:
@@ -199,10 +205,14 @@ PUT /admin/data_management/:model_name/:record_identifier/checksum
 
 | Attribute           | Type              | Required | Description                                                                                                               |
 |---------------------|-------------------|----------|---------------------------------------------------------------------------------------------------------------------------|
-| `model_name`        | string            | Yes      | The name of the requested model. Must belong to the `:model_name` list above.                                             |
+| `model_name`        | string            | Yes      | The pluralized name of the requested model. Must belong to the `:model_name` list above.                                  |
 | `record_identifier` | string or integer | Yes      | Unique identifier of the record. Can be an integer or a base64 encoded string (taken from the response of the GET query). |
 
 If successful, returns [`200`](../rest/troubleshooting.md#status-codes) and information about the specific model record. The checksum value is a representation of the queried model hashed with the md5 or sha256 algorithm.
+
+```shell
+curl --header "PRIVATE-TOKEN: <your_access_token>" "https://primary.example.com/api/v4/admin/data_management/projects/1/checksum"
+```
 
 Example response:
 

@@ -114,7 +114,7 @@ following blog posts:
 If you run into any issues while trying out this change, you can use the
 [feedback issue](https://gitlab.com/gitlab-org/gitlab/-/issues/494462) to provide more details.
 
-## Work item Markdown reference
+### Work item Markdown reference
 
 {{< history >}}
 

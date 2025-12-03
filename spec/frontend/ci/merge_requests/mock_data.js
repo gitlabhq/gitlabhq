@@ -15,6 +15,7 @@ export const generateMockPipeline = ({
   stuck: false,
   failureReason: null,
   yamlErrors: false,
+  yamlErrorMessages: null,
   latest: true,
   retryable: true,
   cancelable: false,

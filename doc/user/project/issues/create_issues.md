@@ -184,7 +184,7 @@ To build the URL to create an issue with prefilled values, combine:
 | Title                                                                                          | `issue[title]`         | Must be [URL-encoded](../../../api/rest/_index.md#namespaced-paths). |
 | Issue type                                                                                     | `issue[issue_type]`    | Either `incident` or `issue`. |
 | Description template (issues, incidents, and merge requests)                                   | `issuable_template`    | Must be [URL-encoded](../../../api/rest/_index.md#namespaced-paths). |
-| Description template (tasks, OKRs, issues [with the new look](issue_work_items.md), and epics. | `description_template` | Must be [URL-encoded](../../../api/rest/_index.md#namespaced-paths). [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/513095) in GitLab 17.9. |
+| Description template (tasks, OKRs, issues, and epics. | `description_template` | Must be [URL-encoded](../../../api/rest/_index.md#namespaced-paths). [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/513095) in GitLab 17.9. |
 | Description | `issue[description]` | Must be [URL-encoded](../../../api/rest/_index.md#namespaced-paths). If used in combination with `issuable_template` or a [default issue template](../description_templates.md#set-a-default-template-for-merge-requests-and-issues), the `issue[description]` value overwrites the template. |
 | Confidential                                                                                   | `issue[confidential]`  | If `true`, the issue is marked as confidential. |
 | Relate to…                                                                                     | `add_related_issue`    | A numeric issue ID. If present, the issue form shows a [**Relate to** checkbox](#from-another-issue-or-incident) to optionally link the new issue to the specified existing issue. |
@@ -238,10 +238,10 @@ When you're creating a new issue, you can complete the following fields:
 - Checkbox to make the issue [confidential](confidential_issues.md)
 - [Assignees](managing_issues.md#assignees)
 - [Weight](issue_weight.md)
-- [Epic](../../group/epics/_index.md) (named Parent if [the new look for issues](issue_work_items.md) is enabled)
-- [Due date](due_dates.md) (named Dates if [the new look for issues](issue_work_items.md) is enabled)
+- [Parent](../../group/epics/_index.md)
+- [Dates](due_dates.md)
 - [Milestone](../milestones/_index.md)
 - [Labels](../labels.md)
 - [Iteration](../../group/iterations/_index.md)
-- [Health status](managing_issues.md#health-status) ([the new look for issues](issue_work_items.md) must be enabled)
-- [Contacts](../../crm/_index.md) ([the new look for issues](issue_work_items.md) must be enabled)
+- [Health status](managing_issues.md#health-status)
+- [Contacts](../../crm/_index.md)

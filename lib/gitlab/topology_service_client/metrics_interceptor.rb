@@ -11,7 +11,7 @@ module Gitlab
       end
 
       # Intercept unary request-response RPC calls
-      def request_response(request:, method:)
+      def request_response(request: nil, call: nil, method: nil, metadata: nil) # rubocop:disable Lint/UnusedMethodArgument -- all and metadata are unused but required by gRPC interceptor interface
         service_name, method_name = extract_service_and_method(method)
         request_size = estimate_message_size(request)
 
@@ -22,7 +22,7 @@ module Gitlab
       end
 
       # Intercept client streaming RPC calls
-      def client_streaming(requests:, method:)
+      def client_streaming(requests: nil, call: nil, method: nil, metadata: nil) # rubocop:disable Lint/UnusedMethodArgument -- all and metadata are unused but required by gRPC interceptor interface
         service_name, method_name = extract_service_and_method(method)
         request_size = 0
 
@@ -34,13 +34,13 @@ module Gitlab
               yielder.yield request
             end
           end
-          response = yield(requests_enum)
+          response = yield(requests_enum) # Handler consumes wrapped stream, measuring each request
           { response: response, response_size: estimate_message_size(response), request_size: request_size }
         end
       end
 
       # Intercept server streaming RPC calls
-      def server_streaming(request:, method:)
+      def server_streaming(request: nil, call: nil, method: nil, metadata: nil) # rubocop:disable Lint/UnusedMethodArgument -- all and metadata are unused but required by gRPC interceptor interface
         start_time = monotonic_time
         service_name, method_name = extract_service_and_method(method)
         request_size = estimate_message_size(request)
@@ -93,7 +93,7 @@ module Gitlab
       end
 
       # Intercept bidirectional streaming RPC calls
-      def bidi_streamer(requests:, method:)
+      def bidi_streamer(requests: nil, call: nil, method: nil, metadata: nil) # rubocop:disable Lint/UnusedMethodArgument -- all and metadata are unused but required by gRPC interceptor interface
         start_time = monotonic_time
         service_name, method_name = extract_service_and_method(method)
         request_size = { total: 0 } # Use hash to track size by reference
@@ -109,7 +109,7 @@ module Gitlab
           end
 
           # Call the next handler
-          responses_enum = yield(requests_enum)
+          responses_enum = yield(requests_enum) # Handler consumes wrapped stream, measuring each request
 
           # Return enumerator that wraps responses and tracks metrics
           Enumerator.new do |yielder|

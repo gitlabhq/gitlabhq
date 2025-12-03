@@ -418,7 +418,6 @@ export default {
     'ee/app/assets/javascripts/security_inventory/components/sidebar/group_list.vue',
     'ee/app/assets/javascripts/security_orchestration/components/policies/spp_selector.vue',
     'ee/app/assets/javascripts/sidebar/components/health_status/sidebar_health_status_widget.vue',
-    'ee/app/assets/javascripts/sidebar/components/iteration/iteration_dropdown.vue',
     'ee/app/assets/javascripts/sidebar/components/weight/sidebar_weight_widget.vue',
     'ee/app/assets/javascripts/test_case_show/components/test_case_show_root.vue',
     'ee/app/assets/javascripts/usage_quotas/code_suggestions/components/code_suggestions_addon_assignment.vue',

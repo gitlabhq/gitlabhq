@@ -1358,7 +1358,6 @@ export default {
     'ee/app/assets/javascripts/service_accounts/components/delete_service_account_modal.vue',
     'ee/app/assets/javascripts/sidebar/components/health_status/health_status_dropdown.vue',
     'ee/app/assets/javascripts/sidebar/components/health_status/sidebar_health_status_widget.vue',
-    'ee/app/assets/javascripts/sidebar/components/iteration/iteration_dropdown.vue',
     'ee/app/assets/javascripts/sidebar/components/iteration/sidebar_iteration_widget.vue',
     'ee/app/assets/javascripts/sidebar/components/sidebar_dropdown_widget.vue',
     'ee/app/assets/javascripts/sidebar/components/weight/sidebar_weight_widget.vue',

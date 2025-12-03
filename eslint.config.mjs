@@ -454,7 +454,13 @@ export default [
       'vue/no-undef-components': [
         'error',
         {
-          ignorePatterns: ['^router-link$', '^router-view$', '^gl-emoji$', 'fe-island-duo-next'],
+          ignorePatterns: [
+            '^router-link$',
+            '^router-view$',
+            '^gl-emoji$',
+            'fe-island-duo-next',
+            'fe-island-visual-ci-editor',
+          ],
         },
       ],
 

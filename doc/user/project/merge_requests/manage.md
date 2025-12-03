@@ -84,4 +84,4 @@ To update multiple group merge requests at the same time:
 
 ## Related topics
 
-- [Bulk edit issues](../issues/managing_issues.md#bulk-edit-issues-from-a-group)
+- [Bulk edit issues](../issues/managing_issues.md#bulk-edit-issues)

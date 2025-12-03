@@ -104,7 +104,7 @@ The Service Desk issue list more closely matches the regular issue list.
 Available features include:
 
 - The same sorting and ordering options [as on the issue list](../issues/sorting_issue_lists.md).
-- The same filters, including [the OR operator](#filter-with-the-or-operator) and [filtering by issue ID](#filter-issues-by-id).
+- The same filters, including [the OR operator](#filter-the-list-of-issues) and [filtering by issue ID](#filter-issues-by-id).
 
 There is no longer an option to create a new issue from the Service Desk issue list.
 This decision better reflects the nature of Service Desk, where new issues are created by emailing
@@ -127,7 +127,7 @@ a dedicated email address.
 
 ##### Filter with the OR operator
 
-When [filtering with the OR operator](../issues/managing_issues.md#filter-with-the-or-operator) is enabled,
+When [filtering with the OR operator](../issues/managing_issues.md#filter-the-list-of-issues) is enabled,
 you can use **is one of: `||`**
 when you [filter the list of issues](#filter-the-list-of-issues) by:
 

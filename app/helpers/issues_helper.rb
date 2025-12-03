@@ -216,12 +216,6 @@ module IssuesHelper
     }
   end
 
-  def issues_form_data(project)
-    {
-      new_issue_path: new_project_issue_path(project)
-    }
-  end
-
   # Overridden in EE
   def scoped_labels_available?(parent)
     false

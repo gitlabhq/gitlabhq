@@ -1,5 +1,6 @@
 #import "~/graphql_shared/fragments/ci_icon.fragment.graphql"
 #import "~/graphql_shared/fragments/page_info.fragment.graphql"
+#import "~/ci/pipelines_page/graphql/fragments/pipeline_details.fragment.graphql"
 
 query getPipelines(
   $fullPath: ID!
@@ -27,73 +28,30 @@ query getPipelines(
       status: $status
     ) {
       nodes {
-        id
-        iid
-        detailedStatus {
-          ...CiIcon
-          name
-        }
-        createdAt
-        finishedAt
-        duration
-        name
-        ref
-        refPath
-        refText
-        commit {
-          id
-          name
-          sha
-          shortId
-          title
-          webUrl
-          author {
-            id
-            avatarUrl
-            webPath
-            name
-          }
-        }
-        user {
-          id
-          name
-          webPath
-          avatarUrl
-        }
-        source
-        latest
-        yamlErrors
-        yamlErrorMessages
-        failureReason
-        configSource
-        stuck
-        type
-        path
-        retryable
-        cancelable
-        stages {
+        ...PipelineDetails
+        downstream {
           nodes {
             id
+            iid
             name
+            path
             detailedStatus {
               ...CiIcon
               tooltip
+              label
+            }
+            project {
+              id
+              fullPath
+              name
+            }
+            sourceJob {
+              id
+              name
+              retried
             }
           }
         }
-        mergeRequest {
-          id
-          iid
-          webPath
-          title
-        }
-        mergeRequestEventType
-        project {
-          id
-          fullPath
-        }
-        hasManualActions
-        hasScheduledActions
       }
       pageInfo {
         ...PageInfo

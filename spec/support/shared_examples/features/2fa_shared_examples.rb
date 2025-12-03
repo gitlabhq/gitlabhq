@@ -43,8 +43,7 @@ RSpec.shared_examples 'hardware device for 2fa' do |device_type|
       it 'allows registering a new device with a name' do
         visit profile_account_path
         manage_two_factor_authentication
-        expect(page).to have_content(_("You've already enabled two-factor authentication using a one-time password authenticator. In order to register a different device, you must first delete this authenticator."))
-
+        expect(page).to have_content(_("You've already registered an OTP authenticator. To register a new OTP authenticator, delete the current one."))
         device = register_device(device_type, password: user.password)
         expect(page).to have_content("Your #{device_type} device was registered")
         copy_recovery_codes
@@ -56,7 +55,7 @@ RSpec.shared_examples 'hardware device for 2fa' do |device_type|
       it 'allows deleting a device' do
         visit profile_account_path
         manage_two_factor_authentication
-        expect(page).to have_content(_("You've already enabled two-factor authentication using a one-time password authenticator. In order to register a different device, you must first delete this authenticator."))
+        expect(page).to have_content(_("You've already registered an OTP authenticator. To register a new OTP authenticator, delete the current one."))
 
         first_device = register_device(device_type, password: user.password)
         copy_recovery_codes

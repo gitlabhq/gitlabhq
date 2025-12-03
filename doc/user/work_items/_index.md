@@ -168,6 +168,50 @@ To toggle the sorting order between ascending and descending:
 For more information about sorting logic, see
 [Sorting and ordering issue lists](../project/issues/sorting_issue_lists.md).
 
+## Configure list display preferences
+
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/393559) in GitLab 18.2.
+- Support for issues [added](https://gitlab.com/gitlab-org/gitlab/-/issues/520791) in GitLab 18.7.
+
+{{< /history >}}
+
+Customize how work items are displayed on the list pages by showing or hiding specific metadata
+fields and configuring view preferences.
+
+GitLab saves your display preferences at different levels:
+
+- **Fields**: Saved per namespace. You can have different field visibility settings for different
+  groups and projects based on your workflow needs. For example, you can show assignee and labels
+  in one group or project, but hide them in another.
+- **Your preferences**: Saved globally across all projects and groups. This ensures consistent
+  behavior for how you prefer to view work items.
+
+To configure display preferences:
+
+1. On the left sidebar, select **Search or go to** and find your group. If you've [turned on the new navigation](../interface_redesign.md), this field is on the top bar.
+1. Select **Plan** > **Epics** or **Plan** > **Issues**.
+1. In the upper-right corner, select **Display options** ({{< icon name="preferences" >}}).
+1. Under **Fields**, turn on or turn off the metadata you want to display:
+   - Status (for issues)
+   - Assignee
+   - Labels
+   - Weight (for issues)
+   - Milestone
+   - Iteration (for issues)
+   - Dates: Due dates and date ranges
+   - Health: Health status indicators
+   - Blocked/Blocking: Blocking relationship indicators
+   - Comments: Comment counts
+   - Popularity: Popularity metrics
+1. Under **Your preferences**, turn on or turn off **Open items in side panel** to choose how
+   epics open when you select them:
+   - On (default): Items open in a drawer on the right side of the screen.
+   - Off: Items open in a full page view.
+
+Your preference is saved and remembered across all your sessions and devices.
+
 ## Work item Markdown reference
 
 {{< history >}}

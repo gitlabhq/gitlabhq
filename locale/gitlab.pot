@@ -2199,9 +2199,6 @@ msgstr ""
 msgid ":%{startLine} to %{endLine}"
 msgstr ""
 
-msgid "A %{incident_docs_start}modified issue%{incident_docs_end} to guide the resolution of incidents."
-msgstr ""
-
 msgid "A %{linkStart}merge train%{linkEnd} is a queued list of merge requests, each waiting to be merged into the target branch."
 msgstr ""
 
@@ -4816,9 +4813,6 @@ msgstr ""
 msgid "Adds email participants that don't have a GitLab account."
 msgstr ""
 
-msgid "Adds this %{issuable_type} as related to the %{issuable_type} it was created from"
-msgstr ""
-
 msgid "AdherenceReport|%{pendingCount}/%{totalCount} control is pending"
 msgid_plural "AdherenceReport|%{pendingCount}/%{totalCount} controls are pending"
 msgstr[0] ""
@@ -6795,7 +6789,7 @@ msgstr ""
 msgid "AiModelDeprecation|The following models have been deprecated and will stop working after GitLab removes them. Please change to an alternative model before the removal version to avoid disruption."
 msgstr ""
 
-msgid "AiPowered|AI gateway request timeout"
+msgid "AiPowered|AI Gateway request timeout"
 msgstr ""
 
 msgid "AiPowered|AI logs"
@@ -7005,7 +6999,7 @@ msgstr ""
 msgid "AiPowered|Lock tooltip icon"
 msgstr ""
 
-msgid "AiPowered|Maximum time in seconds to wait for responses from the AI gateway (up to 600 seconds).%{br}Increasing this value might result in degraded user experience."
+msgid "AiPowered|Maximum time in seconds to wait for responses from the AI Gateway (up to 600 seconds).%{br}Increasing this value might result in degraded user experience."
 msgstr ""
 
 msgid "AiPowered|Might result in requests having higher latency."
@@ -17270,6 +17264,9 @@ msgstr ""
 msgid "ComplianceReport|Compliance pipelines are deprecated"
 msgstr ""
 
+msgid "ComplianceReport|Control"
+msgstr ""
+
 msgid "ComplianceReport|Controls"
 msgstr ""
 
@@ -17304,6 +17301,9 @@ msgid "ComplianceReport|Failed to update compliance violation status. Please try
 msgstr ""
 
 msgid "ComplianceReport|Failed to update violation status. Please try again."
+msgstr ""
+
+msgid "ComplianceReport|Filter by"
 msgstr ""
 
 msgid "ComplianceReport|For more information, see %{linkStart}how to migrate from compliance pipelines to pipeline execution policies%{linkEnd}."
@@ -17412,6 +17412,9 @@ msgid "ComplianceReport|There are no controls."
 msgstr ""
 
 msgid "ComplianceReport|There are no requirements."
+msgstr ""
+
+msgid "ComplianceReport|There was a problem fetching compliance controls."
 msgstr ""
 
 msgid "ComplianceReport|There was a problem fetching compliance frameworks."
@@ -28548,12 +28551,6 @@ msgstr ""
 msgid "Failed to fetch Namespace: %{fullPath}"
 msgstr ""
 
-msgid "Failed to fetch the iteration for this issue. Please try again."
-msgstr ""
-
-msgid "Failed to fetch the iterations for the group. Please try again."
-msgstr ""
-
 msgid "Failed to find import label for Jira import."
 msgstr ""
 
@@ -28753,9 +28750,6 @@ msgid "Failed to set a reaction. Please try again."
 msgstr ""
 
 msgid "Failed to set due date because the date format is invalid."
-msgstr ""
-
-msgid "Failed to set iteration on this issue. Please try again."
 msgstr ""
 
 msgid "Failed to sign in using smart card authentication."
@@ -29500,13 +29494,7 @@ msgstr ""
 msgid "For files larger than this limit, only index the file name. The file content is neither indexed nor searchable."
 msgstr ""
 
-msgid "For general work"
-msgstr ""
-
 msgid "For individual use, create a separate account under your personal email address, not tied to the Enterprise email domain."
-msgstr ""
-
-msgid "For investigating IT service disruptions or outages"
 msgstr ""
 
 msgid "For more information %{support_link_start}contact support%{link_end}."
@@ -36853,9 +36841,6 @@ msgstr ""
 msgid "Issue published on status page."
 msgstr ""
 
-msgid "Issue types"
-msgstr ""
-
 msgid "Issue update failed"
 msgstr ""
 
@@ -37230,9 +37215,6 @@ msgid "Iterations|No closed iterations."
 msgstr ""
 
 msgid "Iterations|No iteration cadences to show"
-msgstr ""
-
-msgid "Iterations|No iterations found"
 msgstr ""
 
 msgid "Iterations|No iterations in cadence."
@@ -44096,9 +44078,6 @@ msgstr ""
 msgid "No AI gateway available."
 msgstr ""
 
-msgid "No Epic"
-msgstr ""
-
 msgid "No Google Cloud projects - You need at least one Google Cloud project"
 msgstr ""
 
@@ -44262,9 +44241,6 @@ msgid "No issues"
 msgstr ""
 
 msgid "No issues found"
-msgstr ""
-
-msgid "No iteration"
 msgstr ""
 
 msgid "No label"
@@ -51148,6 +51124,9 @@ msgstr ""
 msgid "ProfilesAuthentication|Passkeys sign-in"
 msgstr ""
 
+msgid "ProfilesAuthentication|Passkeys unavailable"
+msgstr ""
+
 msgid "ProfilesAuthentication|Register another 2FA method above to automatically use passkeys as default 2FA."
 msgstr ""
 
@@ -51155,6 +51134,9 @@ msgid "ProfilesAuthentication|Sign in faster with passkeys"
 msgstr ""
 
 msgid "ProfilesAuthentication|To use passkeys as your default two-factor authentication, please register at least one backup 2FA method first below."
+msgstr ""
+
+msgid "ProfilesAuthentication|To use passkeys, an administrator must allow password authentication. %{link_start}Learn more%{link_end}."
 msgstr ""
 
 msgid "ProfilesAuthentication|Use passkey as 2FA"
@@ -55022,9 +55004,6 @@ msgid "Reject"
 msgstr ""
 
 msgid "Rejected (closed)"
-msgstr ""
-
-msgid "Relate to %{issuable_type} %{add_related_issue_link}"
 msgstr ""
 
 msgid "Related"
@@ -62833,9 +62812,6 @@ msgstr ""
 msgid "Select Git revision"
 msgstr ""
 
-msgid "Select Iteration"
-msgstr ""
-
 msgid "Select Profile"
 msgstr ""
 
@@ -62951,9 +62927,6 @@ msgid "Select due date"
 msgstr ""
 
 msgid "Select environment or create wildcard"
-msgstr ""
-
-msgid "Select epic"
 msgstr ""
 
 msgid "Select group"
@@ -78657,7 +78630,7 @@ msgstr ""
 msgid "You're viewing members of %{strong_start}%{group_name}%{strong_end}."
 msgstr ""
 
-msgid "You've already enabled two-factor authentication using a one-time password authenticator. In order to register a different device, you must first delete this authenticator."
+msgid "You've already registered an OTP authenticator. To register a new OTP authenticator, delete the current one."
 msgstr ""
 
 msgid "You've reached your limit of %{limit} projects created. Contact your GitLab administrator."

@@ -1,0 +1,4 @@
+---
+name: update_ai_role_based_permission_settings
+description: Update admin configurable instance AI role based permission settings
+feature_category: duo_agent_platform

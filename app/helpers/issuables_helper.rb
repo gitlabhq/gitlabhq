@@ -192,16 +192,6 @@ module IssuablesHelper
     finder.class.scalar_params.any? { |p| params[p].present? }
   end
 
-  def issuable_type_selector_data(issuable)
-    {
-      selected_type: issuable.issue_type,
-      is_issue_allowed: create_issue_type_allowed?(@project, :issue).to_s,
-      is_incident_allowed: create_issue_type_allowed?(@project, :incident).to_s,
-      issue_path: new_project_issue_path(@project),
-      incident_path: new_project_issue_path(@project, { issuable_template: 'incident', issue: { issue_type: 'incident' } })
-    }
-  end
-
   def issuable_label_selector_data(project, issuable)
     initial_labels = issuable.labels.map do |label|
       {

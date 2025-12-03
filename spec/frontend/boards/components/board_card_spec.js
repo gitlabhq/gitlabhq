@@ -1,4 +1,3 @@
-import { GlLabel } from '@gitlab/ui';
 import Vue, { nextTick } from 'vue';
 import VueApollo from 'vue-apollo';
 import { getIdFromGraphQLId } from '~/graphql_shared/utils';
@@ -8,7 +7,6 @@ import createMockApollo from 'helpers/mock_apollo_helper';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import BoardCard from '~/boards/components/board_card.vue';
 import BoardCardInner from '~/boards/components/board_card_inner.vue';
-import selectedBoardItemsQuery from '~/boards/graphql/client/selected_board_items.query.graphql';
 import activeBoardItemQuery from '~/boards/graphql/client/active_board_item.query.graphql';
 import isShowingLabelsQuery from '~/graphql_shared/client/is_showing_labels.query.graphql';
 import { mockLabelList, mockIssue, DEFAULT_COLOR } from '../mock_data';
@@ -23,11 +21,9 @@ describe('Board card', () => {
   Vue.use(VueApollo);
 
   const mockSetActiveBoardItemResolver = jest.fn();
-  const mockSetSelectedBoardItemsResolver = jest.fn();
   const mockApollo = createMockApollo([], {
     Mutation: {
       setActiveBoardItem: mockSetActiveBoardItemResolver,
-      setSelectedBoardItems: mockSetSelectedBoardItemsResolver,
     },
   });
 
@@ -37,7 +33,6 @@ describe('Board card', () => {
     provide = {},
     stubs = { BoardCardInner },
     item = mockIssue,
-    selectedBoardItems = [],
     activeBoardItem = {},
     mountOptions = {},
   } = {}) => {
@@ -45,12 +40,6 @@ describe('Board card', () => {
       query: isShowingLabelsQuery,
       data: {
         isShowingLabels: true,
-      },
-    });
-    mockApollo.clients.defaultClient.cache.writeQuery({
-      query: selectedBoardItemsQuery,
-      data: {
-        selectedBoardItems,
       },
     });
     mockApollo.clients.defaultClient.cache.writeQuery({
@@ -93,11 +82,6 @@ describe('Board card', () => {
     await nextTick();
   };
 
-  const multiSelectCard = async () => {
-    findBoardCardButton().trigger('click', { ctrlKey: true });
-    await nextTick();
-  };
-
   beforeEach(() => {
     window.gon = { features: {} };
   });
@@ -117,33 +101,10 @@ describe('Board card', () => {
     });
   });
 
-  describe('when GlLabel is clicked in BoardCardInner', () => {
-    it("doesn't call setSelectedBoardItemsMutation", async () => {
-      mountComponent();
-
-      await wrapper.findComponent(GlLabel).trigger('mouseup');
-
-      expect(mockSetSelectedBoardItemsResolver).toHaveBeenCalledTimes(0);
-    });
-  });
-
-  describe('when issuable title is clicked in BoardCardInner to show drawer', () => {
-    it('calls mockSetSelectedBoardItemsResolver', async () => {
-      mountComponent();
-
-      await findBoardCardButton().trigger('click');
-
-      await waitForPromises();
-
-      expect(mockSetActiveBoardItemResolver).toHaveBeenCalledTimes(1);
-    });
-  });
-
   it('should not highlight the card by default', () => {
     mountComponent();
 
     expect(wrapper.classes()).not.toContain('is-active');
-    expect(wrapper.classes()).not.toContain('multi-select');
   });
 
   it('should highlight the card with a correct style when selected', async () => {
@@ -151,14 +112,6 @@ describe('Board card', () => {
     await waitForPromises();
 
     expect(wrapper.classes()).toContain('is-active');
-    expect(wrapper.classes()).not.toContain('multi-select');
-  });
-
-  it('should highlight the card with a correct style when multi-selected', () => {
-    mountComponent({ selectedBoardItems: [mockIssue.id] });
-
-    expect(wrapper.classes()).toContain('multi-select');
-    expect(wrapper.classes()).not.toContain('is-active');
   });
 
   it('render card with unique id', () => {
@@ -174,43 +127,21 @@ describe('Board card', () => {
       mountComponent({ mountOptions: { attachTo: document.body } });
     });
 
-    describe('when not using multi-select', () => {
-      it('set active board item on client when clicking on card', async () => {
-        await selectCard();
-        await waitForPromises();
+    it('set active board item on client when clicking on card', async () => {
+      await selectCard();
+      await waitForPromises();
 
-        expect(mockSetActiveBoardItemResolver).toHaveBeenCalledWith(
-          {},
-          {
-            boardItem: mockIssue,
-            listId: 'gid://gitlab/List/2',
-          },
-          expect.anything(),
-          expect.anything(),
-        );
+      expect(mockSetActiveBoardItemResolver).toHaveBeenCalledWith(
+        {},
+        {
+          boardItem: mockIssue,
+          listId: 'gid://gitlab/List/2',
+        },
+        expect.anything(),
+        expect.anything(),
+      );
 
-        expect(document.activeElement).toEqual(findBoardCardButton().element);
-      });
-    });
-
-    describe('when using multi-select', () => {
-      beforeEach(() => {
-        window.gon = { features: { boardMultiSelect: true } };
-      });
-
-      it('should call setSelectedBoardItemsMutation with correct parameters', async () => {
-        await multiSelectCard();
-
-        expect(mockSetSelectedBoardItemsResolver).toHaveBeenCalledTimes(1);
-        expect(mockSetSelectedBoardItemsResolver).toHaveBeenCalledWith(
-          expect.any(Object),
-          {
-            itemId: mockIssue.id,
-          },
-          expect.anything(),
-          expect.anything(),
-        );
-      });
+      expect(document.activeElement).toEqual(findBoardCardButton().element);
     });
   });
 

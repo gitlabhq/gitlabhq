@@ -461,7 +461,6 @@ Style/GuardClause:
     - 'spec/support/helpers/login_helpers.rb'
     - 'spec/support/helpers/stub_gitlab_calls.rb'
     - 'spec/support/helpers/test_env.rb'
-    - 'spec/support/helpers/wait_helpers.rb'
     - 'spec/support/import_export/export_file_helper.rb'
     - 'spec/support/shared_examples/features/packages_shared_examples.rb'
     - 'spec/tooling/lib/tooling/find_codeowners_spec.rb'

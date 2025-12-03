@@ -236,7 +236,7 @@ Next, you can:
 - Browse issues by priority or severity in issue lists,
   [filtered by each label](../../user/project/issues/managing_issues.md#filter-the-list-of-issues).
   If it's available to you, make use of
-  [the "is one of" filter operator](../../user/project/issues/managing_issues.md#filter-with-the-or-operator).
+  [the "is one of" filter operator](../../user/project/issues/managing_issues.md#filter-the-list-of-issues).
 - Break the issues down into [tasks](../../user/tasks.md).
 - Create policies that help automate issue triage in a project with the [`gitlab-triage` gem](https://gitlab.com/gitlab-org/ruby/gems/gitlab-triage).
   Generate summary reports with heatmaps like the following:
