@@ -494,6 +494,12 @@ module QA
 
       def jobs
         response = get(request_url(api_jobs_path))
+
+        unless response.code == HTTP_STATUS_OK
+          raise Errors::ResourceNotFoundError,
+            "Failed to get jobs for project '#{full_path}'. Request returned (#{response.code}): `#{response}`."
+        end
+
         parse_body(response)
       end
 

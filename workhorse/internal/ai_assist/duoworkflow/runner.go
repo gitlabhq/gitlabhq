@@ -279,7 +279,6 @@ func (r *runner) acquireWorkflowLock(startReq *pb.StartWorkflowRequest) error {
 
 	mutex, err := r.lockManager.acquireLock(r.originalReq.Context(), r.workflowID)
 	if err != nil {
-		log.WithRequest(r.originalReq).WithError(err).Error("Failed to acquire workflow lock")
 		return errFailedToAcquireLockError
 	}
 

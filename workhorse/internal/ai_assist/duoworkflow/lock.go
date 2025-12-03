@@ -45,6 +45,10 @@ func (m *workflowLockManager) acquireLock(ctx context.Context, workflowID string
 	mutex := m.rs.NewMutex(lockKey, redsync.WithExpiry(workflowLockTimeout))
 
 	if err := mutex.TryLockContext(ctx); err != nil {
+		log.WithContextFields(ctx, log.Fields{
+			"workflow_id": workflowID,
+			"lock_key":    lockKey,
+		}).WithError(err).Error("Failed to acquire workflow lock")
 		return nil, fmt.Errorf("failed to acquire workflow lock: %w", err)
 	}
 
