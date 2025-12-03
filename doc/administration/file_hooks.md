@@ -45,7 +45,7 @@ To set up a custom hook:
    `/home/git/gitlab/file_hooks/`. For Linux package installations, the path is usually
    `/opt/gitlab/embedded/service/gitlab-rails/file_hooks`.
 
-   For [configurations with multiple servers](reference_architectures/_index.md), your hook file must exist on each Sidekiq server.
+   For [configurations with multiple servers](reference_architectures/_index.md), your hook file must exist on each GitLab application (Rails) and Sidekiq server.
 
 1. Inside the `file_hooks` directory, create a file with a name of your choice,
    without spaces or special characters.

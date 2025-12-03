@@ -674,8 +674,8 @@ temporarily access external resources.
 
 {{< alert type="note" >}}
 
-These configuration changes do not apply to Container Scanning for Registry because it does not
-reference the `.gitlab-ci.yml` file. To configure automatic Container Scanning for Registry in an
+These configuration changes do not apply to container scanning for registry because it does not
+reference the `.gitlab-ci.yml` file. To configure automatic container scanning for registry in an
 offline environment,
 [define the `CS_ANALYZER_IMAGE` variable in the GitLab UI](#use-with-offline-or-air-gapped-environments)
 instead.
@@ -911,7 +911,7 @@ The EOL detection feature uses Trivy to identify operating systems that are no l
 
 To enable EOL detection, set `CS_REPORT_OS_EOL` to `"true"`.
 
-## Container Scanning for Registry
+## Container scanning for registry
 
 {{< details >}}
 
@@ -930,25 +930,25 @@ To enable EOL detection, set `CS_REPORT_OS_EOL` to `"true"`.
 
 When a container image is pushed with the `latest` tag, a container scanning job is automatically triggered by the security policy bot in a new pipeline against the default branch.
 
-Unlike regular container scanning, the scan results do not include a security report. Instead, Container Scanning for Registry relies on [continuous vulnerability scanning](../continuous_vulnerability_scanning/_index.md) to inspect the components detected by the scan.
+Unlike regular container scanning, the scan results do not include a security report. Instead, container scanning for registry relies on [continuous vulnerability scanning](../continuous_vulnerability_scanning/_index.md) to inspect the components detected by the scan.
 
 When security findings are identified, GitLab populates the vulnerability report with these findings. Vulnerabilities can be viewed under the **Container registry vulnerabilities** tab of the vulnerability report page.
 
 {{< alert type="note" >}}
 
-Container Scanning for Registry populates the vulnerability report only when a new advisory is published to the [GitLab advisory database](../gitlab_advisory_database/_index.md). Support for populating the vulnerability report with all present advisory data, instead of only newly-detected data, is proposed in [epic 11219](https://gitlab.com/groups/gitlab-org/-/epics/11219).
+Container scanning for registry populates the vulnerability report only when a new advisory is published to the [GitLab advisory database](../gitlab_advisory_database/_index.md). Support for populating the vulnerability report with all present advisory data, instead of only newly-detected data, is proposed in [epic 11219](https://gitlab.com/groups/gitlab-org/-/epics/11219).
 
 {{< /alert >}}
 
 ### Prerequisites
 
-- You must have at least the Maintainer role in a project to enable Container Scanning for Registry.
+- You must have at least the Maintainer role in a project to enable container scanning for registry.
 - The project being used must not be empty. If you are utilizing an empty project solely for storing container images, this feature won't function as intended. As a workaround, ensure the project contains an initial commit on the default branch.
 - By default there is a limit of `50` scans per project per day.
 - You must [configure container registry notifications](../../../administration/packages/container_registry.md#configure-container-registry-notifications).
 - You must [configure the Package Metadata Database](../../../administration/settings/security_and_compliance.md#choose-package-registry-metadata-to-sync). This is configured by default on GitLab.com.
 
-### Enabling Container Scanning for Registry
+### Enable container scanning for registry
 
 To enable Container Scanning for the GitLab Container Registry:
 

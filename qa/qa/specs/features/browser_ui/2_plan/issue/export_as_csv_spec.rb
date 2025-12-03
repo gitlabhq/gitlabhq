@@ -14,7 +14,12 @@ module QA
         Page::Project::Menu.perform(&:go_to_work_items)
       end
 
-      it 'successfully exports issues list as CSV', testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/347968' do
+      it 'successfully exports issues list as CSV', testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/347968',
+        quarantine: {
+          issue: 'https://gitlab.com/gitlab-org/quality/test-failure-issues/-/work_items/16738',
+          type: :investigating,
+          only: { subdomain: :staging }
+        } do
         Page::Project::WorkItem::Index.perform do |index|
           index.click_work_items_list_more_actions_dropdown
 

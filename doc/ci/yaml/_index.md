@@ -1039,8 +1039,8 @@ spec:
       default: 'test-user'
     flags:
       default: ''
-title: The pipeline configuration would follow...
 ---
+# The pipeline configuration would follow...
 ```
 
 In this example:
@@ -1083,8 +1083,8 @@ spec:
   inputs:
     flags:
       description: 'Sample description of the `flags` input details.'
-title: The pipeline configuration would follow...
 ---
+# The pipeline configuration would follow...
 ```
 
 ---
@@ -1103,7 +1103,7 @@ The limit is 50 options per input.
 **Keyword type**: Header keyword. `spec` must be declared at the top of the configuration file,
 in a header section.
 
-**Supported values**: An array of input options.
+**Supported values**: An array of input options. Only string and number [`type`](#specinputstype) inputs can be used with options.
 
 **Example of `spec:inputs:options`**:
 
@@ -1115,8 +1115,8 @@ spec:
         - development
         - staging
         - production
-title: The pipeline configuration would follow...
 ---
+# The pipeline configuration would follow...
 ```
 
 In this example:
@@ -1155,8 +1155,8 @@ spec:
   inputs:
     version:
       regex: ^v\d\.\d+(\.\d+)?$
-title: The pipeline configuration would follow...
 ---
+# The pipeline configuration would follow...
 ```
 
 In this example, inputs of `v1.0` or `v1.2.3` match the regular expression and pass validation.
@@ -1204,8 +1204,8 @@ spec:
       type: boolean
     array_input:
       type: array
-title: The pipeline configuration would follow...
 ---
+# The pipeline configuration would follow...
 ```
 
 ---
