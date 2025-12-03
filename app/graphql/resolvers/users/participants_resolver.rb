@@ -6,7 +6,7 @@ module Resolvers
       type Types::UserType.connection_type, null: true
 
       def resolve(**args)
-        object.participants(current_user)
+        object.visible_participants(current_user)
       end
     end
   end

@@ -9,7 +9,7 @@ This page contains information pertaining to GitLab SLSA support.
 
 Related topics:
 
-- [Provenance version 1 buildType specification](provenance_v1.md)
+- [Provenance version 1 `buildType` specification](provenance_v1.md)
 
 ## SLSA provenance generation
 

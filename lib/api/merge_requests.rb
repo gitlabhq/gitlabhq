@@ -189,6 +189,7 @@ module API
       desc 'List merge requests' do
         detail 'Get all merge requests the authenticated user has access to. By default it returns only merge requests created by the current user. To get all merge requests, use parameter `scope=all`.'
         success Entities::MergeRequestBasic
+        is_array true
         failure [
           { code: 401, message: 'Unauthorized' },
           { code: 422, message: 'Unprocessable entity' }
@@ -215,6 +216,7 @@ module API
       desc 'List group merge requests' do
         detail 'Get all merge requests for this group and its subgroups.'
         success Entities::MergeRequestBasic
+        is_array true
         failure [
           { code: 401, message: 'Unauthorized' },
           { code: 404, message: 'Not found' },
@@ -293,6 +295,7 @@ module API
       desc 'List project merge requests' do
         detail 'Get all merge requests for this project.'
         success Entities::MergeRequestBasic
+        is_array true
         failure [
           { code: 401, message: 'Unauthorized' },
           { code: 404, message: 'Not found' },
@@ -440,7 +443,7 @@ module API
       get ':id/merge_requests/:merge_request_iid/participants', feature_category: :code_review_workflow, urgency: :low do
         merge_request = find_merge_request_with_access(params[:merge_request_iid])
 
-        participants = ::Kaminari.paginate_array(merge_request.participants(current_user))
+        participants = ::Kaminari.paginate_array(merge_request.visible_participants(current_user))
 
         present paginate(participants), with: Entities::UserBasic
       end

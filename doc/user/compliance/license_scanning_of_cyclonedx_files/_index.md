@@ -204,7 +204,7 @@ license names.
 | NuGet           | <https://api.nuget.org/v3/catalog0/index.json>                   |
 | Packagist       | <https://packagist.org/packages/list.json>                       |
 | PyPI            | <https://warehouse.pypa.io/api-reference/bigquery-datasets.html> |
-| Rubygems        | <https://rubygems.org/versions>                                  |
+| RubyGems        | <https://rubygems.org/versions>                                  |
 
 ## License expressions
 

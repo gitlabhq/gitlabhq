@@ -473,7 +473,7 @@ The crawler typically begins at the defined target URL and attempts to find furt
 
 #### Make sure requests are not getting blocked
 
-By default DAST only allows requests to the target URL's domain. If your website makes requests to domains other than the target's, use `DAST_SCOPE_ALLOW_HOSTS` to specify such hosts. Example: "example.com" makes an authentication request to "auth.example.com" to renew the authentication token. Because the domain is not allowed, the request gets blocked and the crawler fails to find new pages.
+By default DAST only allows requests to the target URL domain. If your website makes requests to domains other than the target's, use `DAST_SCOPE_ALLOW_HOSTS` to specify such hosts. Example: "example.com" makes an authentication request to "auth.example.com" to renew the authentication token. Because the domain is not allowed, the request gets blocked and the crawler fails to find new pages.
 
 #### Maximum actions and crawler timeout
 

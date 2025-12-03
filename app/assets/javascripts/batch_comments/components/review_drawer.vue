@@ -69,6 +69,7 @@ export default {
   mixins: [glFeatureFlagsMixin()],
   inject: {
     canSummarize: { default: false },
+    diffsPath: { default: '' },
   },
   data() {
     return {
@@ -159,7 +160,9 @@ export default {
       }
 
       if (draft.position && !this.isOnLatestDiff(draft)) {
-        const url = new URL(setUrlParams({ commit_id: draft.position.head_sha }));
+        const url = new URL(
+          setUrlParams({ commit_id: draft.position.head_sha }, { url: this.diffsPath }),
+        );
         url.hash = `draft_${draft.id}`;
         visitUrl(url.toString());
       } else {

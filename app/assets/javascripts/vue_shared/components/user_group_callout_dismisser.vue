@@ -73,6 +73,8 @@ export default {
   data() {
     return {
       currentUser: null,
+      // initialized with true so that apollo does not pre-emptively run the query
+      // until after the created hook checks and sets isDismissedLocal
       isDismissedLocal: true,
       isLoadingMutation: false,
       mutationError: null,

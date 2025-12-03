@@ -174,7 +174,6 @@ Tasks pending/processing by type: (none)
 Feature Flags (Non-Default Values)
 - zoekt_load_balancer:             disabled
 - zoekt_search_meta_project_ids:   disabled
-- zoekt_traversal_id_queries:      disabled
 
 Feature Flags (Default Values)
 - zoekt_too_many_replicas_event: disabled

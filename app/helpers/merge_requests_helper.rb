@@ -463,7 +463,10 @@ module MergeRequestsHelper
   end
 
   def review_bar_data(_merge_request, _user)
-    { new_comment_template_paths: new_comment_template_paths(@project.group, @project).to_json }
+    {
+      diffs_path: diffs_project_merge_request_url(@project, @merge_request),
+      new_comment_template_paths: new_comment_template_paths(@project.group, @project).to_json
+    }
   end
 
   def merge_request_dashboard_role_based_data

@@ -481,25 +481,237 @@ RSpec.describe Organizations::Groups::TransferService, :aggregate_failures, feat
       end
     end
 
-    context 'when transfer validation fails' do
-      let(:validator_error) { "Transfer not allowed" }
+    context 'when group is not root' do
+      let_it_be(:parent_group) { create(:group, organization: old_organization) }
+      let_it_be_with_refind(:subgroup) { create(:group, parent: parent_group, organization: old_organization) }
+      let_it_be_with_refind(:subgroup_user) { create(:user, organization: old_organization) }
+      let(:service) { described_class.new(group: subgroup, new_organization: new_organization, current_user: user) }
 
-      before do
-        allow_next_instance_of(Organizations::Groups::TransferValidator) do |validator|
-          allow(validator).to receive_messages(can_transfer?: false, error_message: validator_error)
-        end
+      it 'returns error ServiceResponse' do
+        result = service.execute
+
+        expect(result).to be_error
+        expect(result.message).to eq(
+          format(
+            s_('TransferOrganization|Group organization transfer failed: %{error_message}'),
+            error_message: s_('TransferOrganization|Only root groups can be transferred to a different organization.')
+          )
+        )
+      end
+
+      it 'does not update organization_id' do
+        original_organization_id = subgroup.organization_id
+
+        service.execute
+
+        expect(subgroup.reload.organization_id).to eq(original_organization_id)
+      end
+    end
+
+    context 'when group is already in the target organization' do
+      let_it_be(:group_in_new_org) { create(:group, organization: new_organization) }
+      let(:service) do
+        described_class.new(group: group_in_new_org, new_organization: new_organization, current_user: user)
+      end
+
+      before_all do
+        group_in_new_org.add_owner(user)
       end
 
       it 'returns error ServiceResponse' do
         result = service.execute
-        expect(result).to be_a(ServiceResponse)
+
         expect(result).to be_error
+        expect(result.message).to eq(
+          format(
+            s_('TransferOrganization|Group organization transfer failed: %{error_message}'),
+            error_message: s_('TransferOrganization|Group is already in the target organization.')
+          )
+        )
       end
 
-      it 'sets formatted error message' do
+      it 'does not update organization_id' do
+        expect { service.execute }.not_to change { group_in_new_org.reload.organization_id }
+      end
+    end
+
+    context 'when user lacks permissions' do
+      context 'when user is not group owner' do
+        let_it_be(:non_group_owner) { create(:user, organization: old_organization) }
+        let(:service) do
+          described_class.new(group: group, new_organization: new_organization, current_user: non_group_owner)
+        end
+
+        before_all do
+          new_organization.add_owner(non_group_owner)
+        end
+
+        it 'returns error ServiceResponse' do
+          result = service.execute
+
+          expect(result).to be_error
+          expect(result.message).to eq(
+            format(
+              s_('TransferOrganization|Group organization transfer failed: %{error_message}'),
+              error_message: s_('TransferOrganization|You must be an owner of both the group and new organization.')
+            )
+          )
+        end
+
+        it 'does not update organization_id' do
+          original_organization_id = group.organization_id
+
+          service.execute
+
+          expect(group.reload.organization_id).to eq(original_organization_id)
+        end
+      end
+
+      context 'when user is not organization owner' do
+        let_it_be(:non_org_owner) { create(:user, organization: old_organization) }
+        let(:service) do
+          described_class.new(group: group, new_organization: new_organization, current_user: non_org_owner)
+        end
+
+        before_all do
+          group.add_owner(non_org_owner)
+        end
+
+        it 'returns error ServiceResponse' do
+          result = service.execute
+
+          expect(result).to be_error
+          expect(result.message).to eq(
+            format(
+              s_('TransferOrganization|Group organization transfer failed: %{error_message}'),
+              error_message: s_('TransferOrganization|You must be an owner of both the group and new organization.')
+            )
+          )
+        end
+
+        it 'does not update organization_id' do
+          original_organization_id = group.organization_id
+
+          service.execute
+
+          expect(group.reload.organization_id).to eq(original_organization_id)
+        end
+      end
+
+      context 'when user is neither group nor organization owner' do
+        let_it_be(:non_owner) { create(:user, organization: old_organization) }
+        let(:service) do
+          described_class.new(group: group, new_organization: new_organization, current_user: non_owner)
+        end
+
+        it 'returns error ServiceResponse' do
+          result = service.execute
+
+          expect(result).to be_error
+          expect(result.message).to eq(
+            format(
+              s_('TransferOrganization|Group organization transfer failed: %{error_message}'),
+              error_message: s_('TransferOrganization|You must be an owner of both the group and new organization.')
+            )
+          )
+        end
+
+        it 'does not update organization_id' do
+          original_organization_id = group.organization_id
+
+          service.execute
+
+          expect(group.reload.organization_id).to eq(original_organization_id)
+        end
+      end
+
+      context 'when user is an admin without admin mode' do
+        let_it_be(:admin_user) { create(:admin) }
+        let(:service) do
+          described_class.new(group: group, new_organization: new_organization, current_user: admin_user)
+        end
+
+        it 'returns error ServiceResponse' do
+          result = service.execute
+
+          expect(result).to be_error
+          expect(result.message).to eq(
+            format(
+              s_('TransferOrganization|Group organization transfer failed: %{error_message}'),
+              error_message: s_('TransferOrganization|You must be an owner of both the group and new organization.')
+            )
+          )
+        end
+
+        it 'does not update organization_id' do
+          original_organization_id = group.organization_id
+
+          service.execute
+
+          expect(group.reload.organization_id).to eq(original_organization_id)
+        end
+      end
+    end
+
+    context 'when user is admin with admin mode enabled', :enable_admin_mode do
+      let_it_be(:admin_user) { create(:admin) }
+      let(:service) do
+        described_class.new(group: group, new_organization: new_organization, current_user: admin_user)
+      end
+
+      it 'allows transfer' do
         result = service.execute
 
-        expect(result.message).to eq("Group organization transfer failed: #{validator_error}")
+        expect(result).to be_success
+        expect(group.reload.organization_id).to eq(new_organization.id)
+      end
+    end
+
+    context 'with nil new_organization' do
+      let(:service) { described_class.new(group: group, new_organization: nil, current_user: user) }
+
+      it 'returns error ServiceResponse' do
+        result = service.execute
+
+        expect(result).to be_error
+        expect(result.message).to eq(
+          format(
+            s_('TransferOrganization|Group organization transfer failed: %{error_message}'),
+            error_message: s_('TransferOrganization|You must be an owner of both the group and new organization.')
+          )
+        )
+      end
+
+      it 'does not update organization_id' do
+        original_organization_id = group.organization_id
+
+        service.execute
+
+        expect(group.reload.organization_id).to eq(original_organization_id)
+      end
+    end
+
+    context 'when users belong to different organizations' do
+      let_it_be(:other_organization) { create(:organization) }
+      let_it_be_with_refind(:user1) { create(:user, organization: old_organization) }
+      let_it_be_with_refind(:user2) { create(:user, organization: other_organization) }
+
+      before_all do
+        group.add_maintainer(user1)
+        group.add_developer(user2)
+      end
+
+      it 'returns error ServiceResponse' do
+        result = service.execute
+
+        expect(result).to be_error
+        expect(result.message).to eq(
+          format(
+            s_('TransferOrganization|Group organization transfer failed: %{error_message}'),
+            error_message: s_('TransferOrganization|Cannot transfer users to a different organization ' \
+              'if all users do not belong to the same organization as the top-level group.')
+          )
+        )
       end
 
       it 'does not update organization_id' do
@@ -510,39 +722,13 @@ RSpec.describe Organizations::Groups::TransferService, :aggregate_failures, feat
         expect(group.reload.organization_id).to eq(original_organization_id)
       end
 
-      it 'does not update organization_id for projects' do
-        project = create(:project, namespace: group, organization: old_organization)
-        original_organization_id = project.organization_id
-
-        service.execute
-
-        expect(project.reload.organization_id).to eq(original_organization_id)
+      it 'does not update user organization_id' do
+        expect { service.execute }.not_to change { user1.reload.organization_id }
+        expect { service.execute }.not_to change { user2.reload.organization_id }
       end
     end
 
-    context 'when user transfer service validation fails' do
-      let(:error) { "User transfer not allowed" }
-
-      before do
-        allow_next_instance_of(Organizations::Groups::TransferValidator) do |validator|
-          allow(validator).to receive_messages(can_transfer_users?: false, cannot_transfer_users_error: error)
-        end
-      end
-
-      it 'returns error ServiceResponse' do
-        result = service.execute
-        expect(result).to be_a(ServiceResponse)
-        expect(result).to be_error
-      end
-
-      it 'sets formatted error message' do
-        result = service.execute
-
-        expect(result.message).to eq("Group organization transfer failed: #{error}")
-      end
-    end
-
-    context 'when user transfer service raises an exception within User.transaction' do
+    context 'when an exception occurs during transfer' do
       let_it_be_with_refind(:subgroup) { create(:group, parent: group, organization: old_organization) }
       let_it_be_with_refind(:nested_subgroup) { create(:group, parent: subgroup, organization: old_organization) }
       let_it_be_with_refind(:project) { create(:project, namespace: group, organization: old_organization) }
@@ -651,20 +837,51 @@ RSpec.describe Organizations::Groups::TransferService, :aggregate_failures, feat
       end
     end
 
-    context 'when transfer validation fails' do
-      let(:validator_error) { "Transfer not allowed" }
+    context 'when group is not root' do
+      let_it_be(:parent_group) { create(:group, organization: old_organization) }
+      let_it_be_with_refind(:subgroup) { create(:group, parent: parent_group, organization: old_organization) }
+      let_it_be_with_refind(:subgroup_user) { create(:user, organization: old_organization) }
+      let(:service) { described_class.new(group: subgroup, new_organization: new_organization, current_user: user) }
 
-      before do
-        allow_next_instance_of(Organizations::Groups::TransferValidator) do |validator|
-          allow(validator).to receive_messages(can_transfer?: false, error_message: validator_error)
-        end
+      before_all do
+        subgroup.add_developer(subgroup_user)
       end
 
       it 'returns error ServiceResponse' do
         result = service.async_execute
 
         expect(result).to be_error
-        expect(result.message).to eq("Group organization transfer failed: #{validator_error}")
+        expect(result.message).to eq(
+          format(
+            s_('TransferOrganization|Group organization transfer failed: %{error_message}'),
+            error_message: s_('TransferOrganization|Only root groups can be transferred to a different organization.')
+          )
+        )
+      end
+
+      it 'does not enqueue the worker' do
+        expect(Organizations::Groups::TransferWorker).not_to receive(:perform_async)
+
+        service.async_execute
+      end
+    end
+
+    context 'when user lacks permissions' do
+      let_it_be(:non_owner_user) { create(:user, organization: old_organization) }
+      let(:service) do
+        described_class.new(group: group, new_organization: new_organization, current_user: non_owner_user)
+      end
+
+      it 'returns error ServiceResponse' do
+        result = service.async_execute
+
+        expect(result).to be_error
+        expect(result.message).to eq(
+          format(
+            s_('TransferOrganization|Group organization transfer failed: %{error_message}'),
+            error_message: s_('TransferOrganization|You must be an owner of both the group and new organization.')
+          )
+        )
       end
 
       it 'does not enqueue the worker' do

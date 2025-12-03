@@ -129,7 +129,7 @@ After adding a new model:
 
 1. Verify the configuration files are syntactically correct (valid YAML)
 1. Test the model selection in the GitLab UI
-1. Ensure the model responds correctly to requests and that the right prompts are being used. You can do this by tailing the logs of the ai_gateway service and GitLab Duo workflow service, using:
+1. Ensure the model responds correctly to requests and that the right prompts are being used. You can do this by tailing the logs of the `ai_gateway` service and GitLab Duo workflow service, using:
 
    ```shell
    gdk tail duo-workflow-service gitlab-ai-gateway

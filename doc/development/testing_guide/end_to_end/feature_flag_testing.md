@@ -51,7 +51,7 @@ If work has been done behind the feature flag but the definition file has not be
 
 If a feature flag value is changed on staging or production through a ChatOps command, a `GitLab ChatOps` message is sent in Slack to the corresponding E2E run channel, either [#e2e-run-staging](https://gitlab.enterprise.slack.com/archives/CBS3YKMGD) or [#e2e-run-production](https://gitlab.enterprise.slack.com/archives/CCNNKFP8B).
 
-![GitLab Chatops Slack message example](img/gitlab-chatops-message_v18_0.png)
+![GitLab ChatOps Slack message example.](img/gitlab-chatops-message_v18_0.png)
 
 Once the pipeline completes, a followup message with the results is sent to the same Slack channel. If the pipeline failed, it includes a link to the debugging instructions below.
 

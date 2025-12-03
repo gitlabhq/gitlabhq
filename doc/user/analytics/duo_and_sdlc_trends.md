@@ -175,6 +175,12 @@ The **GitLab Duo Code Review requests by role** chart displays the number of Git
 
 Higher author adoption indicates teams embracing automated review workflows.
 
+{{< alert type="note" >}}
+
+Usage data for Code Review requests is calculated with data starting from GitLab 18.3.
+
+{{< /alert >}}
+
 ## View GitLab Duo and SDLC trends
 
 Prerequisites:

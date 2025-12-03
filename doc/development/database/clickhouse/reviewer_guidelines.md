@@ -220,7 +220,7 @@ FROM (
 WHERE deleted = false
 ```
 
-In the clickhouse console or in the test cases you may use the `FINAL` modifier.
+In the ClickHouse console or in the test cases you may use the `FINAL` modifier.
 
 ```sql
 SELECT * FROM items FINAL;

@@ -504,8 +504,10 @@ RSpec.describe API::Ci::JobArtifacts, feature_category: :job_artifacts do
       job.success
     end
 
-    def get_for_ref(ref = pipeline.ref, job_name = job.name)
-      get api("/projects/#{project.id}/jobs/artifacts/#{ref}/download", api_user), params: { job: job_name }
+    def get_for_ref(ref = pipeline.ref, job_name = job.name, search_recent_successful_pipelines: false)
+      params = { job: job_name, search_recent_successful_pipelines: search_recent_successful_pipelines }
+
+      get api("/projects/#{project.id}/jobs/artifacts/#{ref}/download", api_user), params: params
     end
 
     it_behaves_like 'enforcing job token policies', :read_jobs do
@@ -629,6 +631,76 @@ RSpec.describe API::Ci::JobArtifacts, feature_category: :job_artifacts do
         end
 
         it_behaves_like 'a valid file'
+      end
+    end
+
+    context 'when search_recent_successful_pipelines parameter is used' do
+      let(:ref_name) { 'master' }
+
+      before do
+        pipeline.reload
+        pipeline.update!(ref: ref_name, sha: project.commit(ref_name).sha, status: :success)
+        stub_const('Ci::Build::MAX_PIPELINES_TO_SEARCH', 2)
+      end
+
+      context 'when feature flag is disabled' do
+        before do
+          stub_feature_flags(ci_search_recent_successful_pipelines: false)
+        end
+
+        it 'returns 404 when search_recent_successful_pipelines is true' do
+          get_for_ref(ref_name, job.name, search_recent_successful_pipelines: true)
+
+          expect(response).to have_gitlab_http_status(:not_found)
+        end
+
+        it 'works normally when search_recent_successful_pipelines is false' do
+          get_for_ref(ref_name, job.name, search_recent_successful_pipelines: false)
+
+          expect(response).to have_gitlab_http_status(:ok)
+        end
+      end
+
+      it 'returns artifacts when build exists within search limit' do
+        # Create older pipeline with artifacts
+        older_pipeline = create(:ci_pipeline, :success, project: project, ref: ref_name,
+          created_at: 2.days.ago)
+        job_with_artifacts = create(:ci_build, :success, :artifacts,
+          name: 'test-job', pipeline: older_pipeline)
+
+        # Create newer pipeline without this job
+        create(:ci_pipeline, :success, project: project, ref: ref_name,
+          created_at: 1.day.ago)
+
+        get_for_ref(ref_name, 'test-job', search_recent_successful_pipelines: true)
+
+        expect(response).to have_gitlab_http_status(:ok)
+        expect(response.headers['X-Sendfile']).to eq(job_with_artifacts.artifacts_file.file.path)
+      end
+
+      it 'returns 404 when build has no artifacts in recent pipelines' do
+        create(:ci_build, :success, name: 'test-job', pipeline: pipeline)
+
+        get_for_ref(ref_name, 'test-job', search_recent_successful_pipelines: true)
+
+        expect(response).to have_gitlab_http_status(:not_found)
+      end
+
+      it 'returns 404 when job exists beyond search limit' do
+        # Create pipeline with artifacts (will be beyond limit)
+        old_pipeline = create(:ci_pipeline, :success, project: project, ref: ref_name,
+          created_at: 5.days.ago)
+        create(:ci_build, :success, :artifacts, name: 'old-job', pipeline: old_pipeline)
+
+        # Create 2 newer successful pipelines without this job (exceeds MAX_PIPELINES_TO_SEARCH=2)
+        2.times do
+          create(:ci_pipeline, :success, project: project, ref: ref_name,
+            created_at: 1.day.ago)
+        end
+
+        get_for_ref(ref_name, 'old-job', search_recent_successful_pipelines: true)
+
+        expect(response).to have_gitlab_http_status(:not_found)
       end
     end
   end

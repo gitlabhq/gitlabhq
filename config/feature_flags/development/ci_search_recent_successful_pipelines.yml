@@ -1,0 +1,9 @@
+---
+name: ci_search_recent_successful_pipelines
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/212882
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/582269
+feature_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/515864
+milestone: '18.7'
+type: development
+group: group::pipeline execution
+default_enabled: false

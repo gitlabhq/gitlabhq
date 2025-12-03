@@ -75,24 +75,24 @@ generic packages to the package registry.
 
 The pipeline consists of the following stages and jobs:
 
-1. prebuild
-   - unit test
-   - Snyk scans
-1. build
-   - build IoS package
-   - build Android package
-1. test
-   - dependency scanning
-   - SAST scanning
-1. functional-test
-   - upload_ios/android_app_to_sauce_labs
-   - automated_test_appium_saucelabs
-1. app-distribution
-   - app_distribution_sauce_android
-   - app_distribution_sauce_ios
-1. beta-release
-   - beta-release-dev
-   - beta-release-approval
+1. `prebuild`
+   - `unit test`
+   - `Snyk scans`
+1. `build`
+   - `build IoS package`
+   - `build Android package`
+1. `test`
+   - `dependency scanning`
+   - `SAST scanning`
+1. `functional-test`
+   - `upload_ios/android_app_to_sauce_labs`
+   - `automated_test_appium_saucelabs`
+1. `app-distribution`
+   - `app_distribution_sauce_android`
+   - `app_distribution_sauce_ios`
+1. `beta-release`
+   - `beta-release-dev`
+   - `beta-release-approval`
 
 ## Prerequisites
 

@@ -1057,6 +1057,8 @@
   - 1
 - - security_scan_execution_policies_rule_schedule
   - 1
+- - security_scan_profiles_process_project_transfer_events
+  - 1
 - - security_scan_result_policies_add_approvers_to_rules
   - 1
 - - security_scan_result_policies_audit_warn_mode_merge_request_approval_settings

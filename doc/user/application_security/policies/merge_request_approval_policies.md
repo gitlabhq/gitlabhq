@@ -770,7 +770,7 @@ Users who have these exceptions can bypass at two levels:
 
 {{< alert type="note" >}}
 
-The `security_policy.bypass_reason` push option works only for branches with push protection from a merge request approval policy configured with [approval_settings](merge_request_approval_policies.md#approval_settings). Pushes to protected branches that are not covered by a merge request approval policy cannot be bypassed with this option.
+The `security_policy.bypass_reason` push option works only for branches with push protection from a merge request approval policy configured with [`approval_settings`](merge_request_approval_policies.md#approval_settings). Pushes to protected branches that are not covered by a merge request approval policy cannot be bypassed with this option.
 
 {{< /alert >}}
 

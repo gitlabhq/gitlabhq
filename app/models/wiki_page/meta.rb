@@ -25,7 +25,8 @@ class WikiPage
 
     validates :title, length: { maximum: 255 }, allow_nil: false
     validate :no_two_metarecords_in_same_container_can_have_same_canonical_slug
-    validate :project_or_namespace_present?
+    validates_with ExactlyOnePresentValidator, fields: [:project_id, :namespace_id],
+      message: ->(_fields) { s_('Wiki|WikiPage::Meta should belong to either project or namespace.') }
 
     participant :notes_with_associations
 
@@ -201,12 +202,6 @@ class WikiPage
     end
 
     private
-
-    def project_or_namespace_present?
-      return unless (project_id.nil? && namespace_id.nil?) || (project_id.present? && namespace_id.present?)
-
-      errors.add(:base, s_('Wiki|WikiPage::Meta should belong to either project or namespace.'))
-    end
 
     def update_wiki_page_attributes(updates)
       # Remove all unnecessary updates:

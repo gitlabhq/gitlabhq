@@ -77,7 +77,7 @@ The following languages and package managers are supported by Libbehave:
   - Reads `**/installed.json` files
   - Reads `**/composer.lock` files
   - Reads `**/php/.registry/.channel.*/*.reg"` files
-- Ruby ([Rubygems](https://rubygems.org))
+- Ruby ([RubyGems](https://rubygems.org))
   - Reads `**/Gemfile.lock` files
   - Reads `**/specifications/**/*.gemspec` files
   - Reads `**/*.gemspec` files

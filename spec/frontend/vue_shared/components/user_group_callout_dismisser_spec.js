@@ -77,7 +77,6 @@ describe('UserGroupCalloutDismisser', () => {
   };
 
   beforeEach(() => {
-    jest.clearAllMocks();
     sessionStorage.clear();
   });
 

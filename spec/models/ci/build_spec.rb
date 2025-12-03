@@ -1521,6 +1521,28 @@ RSpec.describe Ci::Build, feature_category: :continuous_integration, factory_def
           end
         end
 
+        context 'when pipeline is on a protected ref' do
+          before do
+            allow(build.pipeline).to receive(:protected_ref?).and_return(true)
+            allow(build).to receive(:uses_protected_cache?).and_return(false)
+          end
+
+          it 'uses protected cache even for non-maintainer users' do
+            is_expected.to all(a_hash_including(key: a_string_matching(/-protected$/)))
+          end
+
+          context 'and the caches have fallback keys' do
+            let(:options) { options_with_fallback_keys }
+
+            it 'applies protected suffix to both keys and fallback keys' do
+              is_expected.to all(a_hash_including({
+                key: a_string_matching(/-protected$/),
+                fallback_keys: array_including(a_string_matching(/-protected$/))
+              }))
+            end
+          end
+        end
+
         context 'when separated caches are disabled' do
           before do
             allow_any_instance_of(Project).to receive(:ci_separated_caches).and_return(false)
@@ -1676,6 +1698,138 @@ RSpec.describe Ci::Build, feature_category: :continuous_integration, factory_def
       end
 
       it { is_expected.to be_truthy }
+    end
+  end
+
+  describe 'cache protection integration' do
+    let_it_be(:developer_user) { create(:user) }
+    let_it_be(:maintainer_user) { create(:user) }
+
+    before_all do
+      project.add_developer(developer_user)
+      project.add_maintainer(maintainer_user)
+    end
+
+    context 'when ci_separated_caches is enabled' do
+      before do
+        project.update!(ci_separated_caches: true)
+      end
+
+      context 'with protected branch' do
+        let(:protected_branch) { create(:protected_branch, project: project, name: 'main') }
+        let(:protected_pipeline) { create(:ci_pipeline, project: project, ref: protected_branch.name) }
+
+        context 'when developer triggers pipeline on protected branch' do
+          let(:test_build) do
+            create(:ci_build, pipeline: protected_pipeline, user: developer_user, options: { cache: [{ key: 'test-cache' }] })
+          end
+
+          it 'uses protected cache due to branch protection' do
+            expect(test_build.cache).to all(a_hash_including(key: a_string_matching(/-protected$/)))
+          end
+        end
+
+        context 'when maintainer triggers pipeline on protected branch' do
+          let(:test_build) do
+            create(:ci_build, pipeline: protected_pipeline, user: maintainer_user, options: { cache: [{ key: 'test-cache' }] })
+          end
+
+          it 'uses protected cache due to user role' do
+            expect(test_build.cache).to all(a_hash_including(key: a_string_matching(/-protected$/)))
+          end
+        end
+      end
+
+      context 'with non-protected branch' do
+        let(:non_protected_pipeline) { create(:ci_pipeline, project: project, ref: 'feature-branch') }
+
+        context 'when developer triggers pipeline on non-protected branch' do
+          let(:test_build) do
+            create(:ci_build, pipeline: non_protected_pipeline, user: developer_user, options: { cache: [{ key: 'test-cache' }] })
+          end
+
+          it 'uses non-protected cache' do
+            expect(test_build.cache).to all(a_hash_including(key: a_string_matching(/-non_protected$/)))
+          end
+        end
+
+        context 'when maintainer triggers pipeline on non-protected branch' do
+          let(:test_build) do
+            create(:ci_build, pipeline: non_protected_pipeline, user: maintainer_user, options: { cache: [{ key: 'test-cache' }] })
+          end
+
+          it 'uses protected cache due to user role' do
+            expect(test_build.cache).to all(a_hash_including(key: a_string_matching(/-protected$/)))
+          end
+        end
+      end
+
+      context 'when pipeline is nil' do
+        let(:test_build) do
+          build_stubbed(:ci_build, project: project, user: developer_user, options: { cache: [{ key: 'test-cache' }] }).tap do |build|
+            allow(build).to receive(:pipeline).and_return(nil)
+          end
+        end
+
+        it 'uses non-protected cache' do
+          expect(test_build.cache).to all(a_hash_including(key: a_string_matching(/-non_protected$/)))
+        end
+      end
+    end
+
+    context 'when ci_separated_caches is disabled' do
+      before do
+        project.update!(ci_separated_caches: false)
+      end
+
+      context 'with protected branch' do
+        let(:protected_branch) { create(:protected_branch, project: project, name: 'main') }
+        let(:protected_pipeline) { create(:ci_pipeline, project: project, ref: protected_branch.name) }
+
+        context 'when developer triggers pipeline on protected branch' do
+          let(:test_build) do
+            create(:ci_build, pipeline: protected_pipeline, user: developer_user, options: { cache: [{ key: 'test-cache' }] })
+          end
+
+          it 'uses cache without suffix' do
+            expect(test_build.cache).to all(a_hash_including(key: 'test-cache'))
+          end
+        end
+
+        context 'when maintainer triggers pipeline on protected branch' do
+          let(:test_build) do
+            create(:ci_build, pipeline: protected_pipeline, user: maintainer_user, options: { cache: [{ key: 'test-cache' }] })
+          end
+
+          it 'uses cache without suffix' do
+            expect(test_build.cache).to all(a_hash_including(key: 'test-cache'))
+          end
+        end
+      end
+
+      context 'with non-protected branch' do
+        let(:non_protected_pipeline) { create(:ci_pipeline, project: project, ref: 'feature-branch') }
+
+        context 'when developer triggers pipeline on non-protected branch' do
+          let(:test_build) do
+            create(:ci_build, pipeline: non_protected_pipeline, user: developer_user, options: { cache: [{ key: 'test-cache' }] })
+          end
+
+          it 'uses cache without suffix' do
+            expect(test_build.cache).to all(a_hash_including(key: 'test-cache'))
+          end
+        end
+
+        context 'when maintainer triggers pipeline on non-protected branch' do
+          let(:test_build) do
+            create(:ci_build, pipeline: non_protected_pipeline, user: maintainer_user, options: { cache: [{ key: 'test-cache' }] })
+          end
+
+          it 'uses cache without suffix' do
+            expect(test_build.cache).to all(a_hash_including(key: 'test-cache'))
+          end
+        end
+      end
     end
   end
 

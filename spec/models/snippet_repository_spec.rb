@@ -33,7 +33,7 @@ RSpec.describe SnippetRepository, feature_category: :snippets do
             project: project)
 
           expect(snippet_repo).not_to be_valid
-          expect(snippet_repo.errors[:base]).to include('cannot belong to both an organization and a project')
+          expect(snippet_repo.errors[:base]).to include('must belong to either an organization or a project')
         end
       end
 

@@ -29,7 +29,8 @@ class SnippetRepository < ApplicationRecord
 
   before_validation :ensure_sharding_keys
 
-  validate :validate_has_exactly_one_sharding_key
+  validates_with ExactlyOnePresentValidator, fields: :sharding_keys,
+    message: ->(_fields) { _('must belong to either an organization or a project') }
 
   class << self
     def find_snippet(disk_path)
@@ -59,23 +60,16 @@ class SnippetRepository < ApplicationRecord
 
   private
 
-  def compact_sharding_keys
-    [organization, project].compact
+  def sharding_keys
+    [:organization, :project]
   end
 
   def ensure_sharding_keys
+    compact_sharding_keys = sharding_keys.filter_map { |key| public_send(key) } # rubocop:disable GitlabSecurity/PublicSend -- values come from the sharding_keys method, not runtime values
     return if compact_sharding_keys.size == 1
 
     self.organization = snippet&.organization if snippet&.organization_id.present?
     self.project = snippet&.project if snippet&.project_id.present?
-  end
-
-  def validate_has_exactly_one_sharding_key
-    if compact_sharding_keys.empty?
-      errors.add(:base, _('must belong to either an organization or a project'))
-    elsif compact_sharding_keys.size > 1
-      errors.add(:base, _('cannot belong to both an organization and a project'))
-    end
   end
 
   def capture_git_error(&block)

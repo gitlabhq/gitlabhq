@@ -94,6 +94,24 @@ Instead, format the response based on the endpoint response:
 - If the endpoint does not respond with an object, include a status code and message.
   For example, `success code: 204, message: 'Record was deleted'`
 
+### Marking endpoints as deprecated
+
+When deprecating an endpoint, add the following to the `desc` block:
+
+- Add a `deprecated true` [option](https://github.com/ruby-grape/grape-swagger?tab=readme-ov-file#deprecating-routes).
+- Add a note on the deprecation timing to the detail option.
+
+```ruby
+desc 'Get legacy broadcast messages' do
+  detail 'Deprecated in GitLab 17.0. Use /api/v4/broadcast_messages instead.'
+  deprecated true
+  success Entities::System::BroadcastMessage
+  tags ['broadcast_messages']
+end
+```
+
+Together, these make the deprecation programmatically discoverable in the OpenAPI specification.
+
 ### Choosing a tag
 
 Every endpoint must have at least one value defined in `tags` per `desc` block.

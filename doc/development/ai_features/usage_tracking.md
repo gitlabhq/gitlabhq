@@ -100,7 +100,7 @@ If you want to completely remove an event type from GraphQL, you should follow t
 
 All events declared for AI tracking are automatically exposed for external event tracking. That can be useful
 when tracking for events outside of Rails app. For example in IDE extension. External events can be tracked by calling
-`/api/v4/usage_data/track_event` endpoint with corresponding payload in "addition_properties" field. For example:
+`/api/v4/usage_data/track_event` endpoint with corresponding payload in `additional_properties` field. For example:
 
 ```shell
 curl "https://gitlab.com/api/v4/usage_data/track_event" --request POST --header "Authorization: Bearer glpat-XXX" --header 'Content-Type: application/json' --data '{"event": "code_suggestion_accepted_in_ide", "additional_properties": {"language": "javascript", "suggestion_size": 9, "timestamp": "2025-07-02 12:55:11 UTC", "branch_name": "my-new-feature"}, "project_id": 4}'
@@ -108,6 +108,6 @@ curl "https://gitlab.com/api/v4/usage_data/track_event" --request POST --header 
 
 {{< alert type="note" >}}
 
-Since external events can pass any data in additional_properties hash, it's recommended to whitelist related attributes in your event transformation block.
+Since external events can pass any data in `additional_properties` hash, it's recommended to allowlist related attributes in your event transformation block.
 
 {{< /alert >}}

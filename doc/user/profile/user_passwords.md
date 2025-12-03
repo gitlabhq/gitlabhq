@@ -20,6 +20,28 @@ Some organizations require you to meet certain requirements when choosing a pass
 
 Improve the security of your account with [two-factor authentication](account/two_factor_authentication.md).
 
+## Password requirements
+
+Password requirements apply when you:
+
+- Choose a password during registration.
+- Reset your password.
+- Change your password.
+- Have an administrator create or update your account.
+
+By default, GitLab enforces the following requirements:
+
+- Minimum password length: 8 characters.
+- Maximum password length: 128 characters.
+- Must not match a list of 4,500+ known, breached passwords.
+- Must not contain part of your name, username, or email address.
+- Must not contain a predictable word (for example, `gitlab` or `devops`).
+
+On GitLab Self-Managed and GitLab Dedicated, administrators can configure:
+
+- [Custom password length limits](../../security/password_length_limits.md).
+- [Password complexity requirements](../../administration/settings/sign_up_restrictions.md#password-complexity-requirements).
+
 ## Choose your password
 
 You can choose a password when you [create a user account](account/create_accounts.md).
@@ -70,43 +92,3 @@ associated with your account can be verified. However, only the primary email ad
 can be used to sign in once the password is reset.
 
 {{< /alert >}}
-
-## Password requirements
-
-Your passwords must meet a set of requirements when:
-
-- You choose a password during registration.
-- You choose a new password using the forgotten password reset flow.
-- You change your password proactively.
-- You change your password after it expires.
-- An administrator creates your account.
-- An administrator updates your account.
-
-By default GitLab enforces the following password requirements:
-
-- Minimum and maximum password lengths. For example,
-  see [the settings for GitLab.com](../gitlab_com/_index.md#password-requirements).
-- Disallowing [weak passwords](#block-weak-passwords).
-
-GitLab Self-Managed instances can configure the following additional password requirements:
-
-- [Password minimum and maximum length limits](../../security/password_length_limits.md).
-- [Password complexity requirements](../../administration/settings/sign_up_restrictions.md#password-complexity-requirements).
-
-## Block weak passwords
-
-{{< history >}}
-
-- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/23610) in GitLab 15.4 [with a flag](../../administration/feature_flags/_index.md) named `block_weak_passwords`, weak passwords aren't accepted. Disabled by default on GitLab Self-Managed.
-- [Enabled](https://gitlab.com/gitlab-org/gitlab/-/issues/363445) on GitLab.com in GitLab 15.6.
-- [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/363445) and enabled on GitLab Self-Managed in GitLab 15.7. Feature flag `block_weak_passwords` removed.
-
-{{< /history >}}
-
-GitLab disallows weak passwords. Your password is considered weak when it:
-
-- Matches one of 4500+ known, breached passwords.
-- Contains part of your name, username, or email address.
-- Contains a predictable word (for example, `gitlab` or `devops`).
-
-Weak passwords are rejected with the error message: **Password must not contain commonly used combinations of words and letters**.

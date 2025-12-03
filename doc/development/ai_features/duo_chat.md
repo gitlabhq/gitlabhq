@@ -158,7 +158,7 @@ conversation in GitLab Duo Chat towards predefined areas of interest or concern.
 To add a new tool you need to add changes both to [AI gateway](https://gitlab.com/gitlab-org/modelops/applied-ml/code-suggestions/ai-assist)
 and Rails Monolith. The main chat prompt is stored and assembled on AI gateway. Rails side is responsible for assembling
 required parameters of the prompt and sending them to AI gateway. AI gateway is responsible for assembling Chat prompt and
-selecting Chat tools that are available for user based on their subscription and addon.
+selecting Chat tools that are available for user based on their subscription and add-on.
 
 When LLM selects the tool to use, this tool is executed on the Rails side. Tools use different endpoint to make
 a request to AI gateway. When you add a new tool, take into account that AI gateway works with different clients
@@ -493,7 +493,7 @@ query {
 
 #### Starting a new conversation thread
 
-If you don't include a threadId in your aiAction mutation, a new thread will be created:
+If you don't include a `threadId` in your `aiAction` mutation, a new thread will be created:
 
 ```graphql
 mutation {
@@ -513,7 +513,7 @@ mutation {
 
 #### Creating a new message in an existing conversation thread
 
-To add a message to an existing thread, include the threadId in your aiAction mutation:
+To add a message to an existing thread, include the `threadId` in your `aiAction` mutation:
 
 ```graphql
 mutation {
@@ -714,7 +714,7 @@ flow of how we construct a Chat prompt:
       ([code](https://gitlab.com/gitlab-org/modelops/applied-ml/code-suggestions/ai-assist/-/blob/989ead63fae493efab255180a51786b69a403b49/ai_gateway/api/v1/prompts/invoke.py#L41)).
       1. `api.v1.prompts.invoke` gets the correct tool prompt from the tool prompt registry ([code](https://gitlab.com/gitlab-org/modelops/applied-ml/code-suggestions/ai-assist/-/blob/989ead63fae493efab255180a51786b69a403b49/ai_gateway/api/v1/prompts/invoke.py#L49)).
       1. The prompt is called either as a [stream](https://gitlab.com/gitlab-org/modelops/applied-ml/code-suggestions/ai-assist/-/blob/989ead63fae493efab255180a51786b69a403b49/ai_gateway/api/v1/prompts/invoke.py#L86) or as a [non-streamed invocation](https://gitlab.com/gitlab-org/modelops/applied-ml/code-suggestions/ai-assist/-/blob/989ead63fae493efab255180a51786b69a403b49/ai_gateway/api/v1/prompts/invoke.py#L96).
-      1. If the tool answer is not final, the response is added to agent_scratchpad and the loop in `Gitlab::Duo::Chat::ReactExecutor` starts again, adding the additional context to the request. It loops to up to 10 times until a final answer is reached. ([code](https://gitlab.com/gitlab-org/gitlab/-/blob/30817374f2feecdaedbd3a0efaad93feaed5e0a0/ee/lib/gitlab/duo/chat/react_executor.rb#L44))
+      1. If the tool answer is not final, the response is added to `agent_scratchpad` and the loop in `Gitlab::Duo::Chat::ReactExecutor` starts again, adding the additional context to the request. It loops to up to 10 times until a final answer is reached. ([code](https://gitlab.com/gitlab-org/gitlab/-/blob/30817374f2feecdaedbd3a0efaad93feaed5e0a0/ee/lib/gitlab/duo/chat/react_executor.rb#L44))
 
 ## Interpreting GitLab Duo Chat error codes
 

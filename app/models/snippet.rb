@@ -65,7 +65,8 @@ class Snippet < ApplicationRecord
   validates :content, presence: true
   validates :content, bytesize: { maximum: -> { Gitlab::CurrentSettings.snippet_size_limit } }, if: :content_changed?
 
-  validate :validate_belongs_to_project_or_organization
+  validates_with ExactlyOnePresentValidator, fields: [:project, :organization],
+    message: ->(_fields) { _('must belong to either a project or an organization') }
 
   after_create :create_statistics
 
@@ -386,14 +387,6 @@ class Snippet < ApplicationRecord
 
   def hidden_due_to_author_ban?
     author.banned?
-  end
-
-  private
-
-  def validate_belongs_to_project_or_organization
-    return if [project, organization].compact.one?
-
-    errors.add(:base, _('must belong to either a project or an organization'))
   end
 end
 

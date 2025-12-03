@@ -412,7 +412,7 @@ RSpec.describe GroupsController, feature_category: :groups_and_projects do
   end
 
   describe 'POST #export' do
-    context 'step-up authentication enforcement' do
+    context 'step-up authentication enforcement', :clean_gitlab_redis_rate_limiting do
       let_it_be(:group, reload: true) { create(:group) }
       let_it_be(:user, reload: true) { create(:user, owner_of: group) }
       let(:expected_success_status) { :found }

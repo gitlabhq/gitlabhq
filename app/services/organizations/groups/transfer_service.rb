@@ -16,7 +16,7 @@ module Organizations
       end
 
       def async_execute
-        return ServiceResponse.error(message: error) unless transfer_allowed?
+        return ServiceResponse.error(message: transfer_error) unless can_transfer?
 
         Organizations::Groups::TransferWorker.perform_async(
           {
@@ -32,7 +32,7 @@ module Organizations
       end
 
       def execute
-        return ServiceResponse.error(message: error) unless transfer_allowed?
+        return ServiceResponse.error(message: transfer_error) unless can_transfer?
 
         # Find or create bot users before transaction to avoid exclusive lease errors.
         # If the transaction is rolled back, new bots will still exist
@@ -55,10 +55,6 @@ module Organizations
 
       attr_reader :group, :new_organization, :current_user
 
-      def users
-        group.users_with_descendants
-      end
-
       def transfer_namespaces_and_projects
         # `skope: Namespace` ensures we get both Group and ProjectNamespace types
         descendant_ids = group.self_and_descendant_ids(skope: Namespace)
@@ -75,27 +71,9 @@ module Organizations
         end
       end
 
-      def transfer_allowed?
-        transfer_validator.can_transfer?
+      def users
+        group.users_with_descendants
       end
-
-      def error
-        error_message = transfer_validator.error_message
-
-        format(
-          s_("TransferOrganization|Group organization transfer failed: %{error_message}"),
-          error_message: error_message
-        )
-      end
-
-      def transfer_validator
-        Organizations::Groups::TransferValidator.new(
-          group: group,
-          new_organization: new_organization,
-          current_user: current_user
-        )
-      end
-      strong_memoize_attr :transfer_validator
 
       def log_transfer_success
         log_transfer
@@ -122,6 +100,55 @@ module Organizations
         else
           ::Gitlab::AppLogger.error(log_payload)
         end
+      end
+
+      def can_transfer?
+        return true if group_is_root? && !already_transferred? && has_permission? && can_transfer_users?
+
+        false
+      end
+
+      def transfer_error
+        error = localized_error_messages[:group_not_root] unless group_is_root?
+        error ||= localized_error_messages[:already_transferred] if already_transferred?
+        error ||= localized_error_messages[:permission] unless has_permission?
+        error ||= localized_error_messages[:cannot_transfer_users] unless can_transfer_users?
+
+        format(
+          s_("TransferOrganization|Group organization transfer failed: %{error_message}"),
+          error_message: error
+        )
+      end
+
+      def group_is_root?
+        !group.has_parent?
+      end
+
+      def already_transferred?
+        new_organization && new_organization.id == group.organization_id
+      end
+
+      def has_permission?
+        return false unless Ability.allowed?(current_user, :admin_group, group)
+        return false unless Ability.allowed?(current_user, :admin_organization, new_organization)
+
+        true
+      end
+
+      # rubocop:disable CodeReuse/ActiveRecord -- expression that is specific to this service
+      def can_transfer_users?
+        !users.where.not(organization_id: group.organization_id).exists?
+      end
+      # rubocop:enable CodeReuse/ActiveRecord
+
+      def localized_error_messages
+        {
+          group_not_root: s_('TransferOrganization|Only root groups can be transferred to a different organization.'),
+          already_transferred: s_('TransferOrganization|Group is already in the target organization.'),
+          permission: s_("TransferOrganization|You must be an owner of both the group and new organization."),
+          cannot_transfer_users: s_("TransferOrganization|Cannot transfer users to a different organization " \
+            "if all users do not belong to the same organization as the top-level group.")
+        }.freeze
       end
     end
   end

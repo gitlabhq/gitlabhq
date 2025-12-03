@@ -424,7 +424,7 @@ which the queries are or may be executed so that we can determine if the index e
    - This job collects and analyzes queries executed through tests. The output is saved as an artifact: `auto_explain/auto_explain.ndjson.gz`
    - Since we don't always have 100% test coverage, this job may not capture all possible queries and variations.
 
-1. Examine queries recorded in [postgres logs](https://log.gprd.gitlab.net/app/r/s/A55hK) on Kibana.
+1. Examine queries recorded in [PostgreSQL logs](https://log.gprd.gitlab.net/app/r/s/A55hK) on Kibana.
    - Generally, you can filter for `json.sql` values that contain the table name and key column(s) from the index definition. Example KQL:
 
      ```plaintext

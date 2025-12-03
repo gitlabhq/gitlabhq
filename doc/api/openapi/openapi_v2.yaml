@@ -8348,7 +8348,9 @@ paths:
         '200':
           description: List group merge requests
           schema:
-            "$ref": "#/definitions/API_Entities_MergeRequestBasic"
+            type: array
+            items:
+              "$ref": "#/definitions/API_Entities_MergeRequestBasic"
         '401':
           description: Unauthorized
         '404':
@@ -11030,6 +11032,13 @@ paths:
         description: To be used with triggers for multi-project pipelines, available
           only on Premium and Ultimate tiers.
         type: string
+        required: false
+      - in: query
+        name: search_recent_successful_pipelines
+        description: Search across recent successful pipelines instead of just the
+          latest one.
+        type: boolean
+        default: false
         required: false
       responses:
         '200':
@@ -27276,7 +27285,9 @@ paths:
         '200':
           description: List project merge requests
           schema:
-            "$ref": "#/definitions/API_Entities_MergeRequestBasic"
+            type: array
+            items:
+              "$ref": "#/definitions/API_Entities_MergeRequestBasic"
         '401':
           description: Unauthorized
         '404':
@@ -44877,7 +44888,9 @@ paths:
         '200':
           description: List merge requests
           schema:
-            "$ref": "#/definitions/API_Entities_MergeRequestBasic"
+            type: array
+            items:
+              "$ref": "#/definitions/API_Entities_MergeRequestBasic"
         '401':
           description: Unauthorized
         '422':

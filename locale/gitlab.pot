@@ -79442,9 +79442,6 @@ msgstr ""
 msgid "cannot be associated with a subgroup"
 msgstr ""
 
-msgid "cannot be associated with both a Group and a Project"
-msgstr ""
-
 msgid "cannot be blank"
 msgstr ""
 
@@ -79494,9 +79491,6 @@ msgid "cannot be used for user namespace"
 msgstr ""
 
 msgid "cannot be used with wildcard branch rules. Use an exact branch name."
-msgstr ""
-
-msgid "cannot belong to both an organization and a project"
 msgstr ""
 
 msgid "cannot contain HTML/XML tags, including any word between angle brackets (&lt;,&gt;)."

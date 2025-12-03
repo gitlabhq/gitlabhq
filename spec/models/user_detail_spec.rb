@@ -206,6 +206,35 @@ RSpec.describe UserDetail, feature_category: :system_access do
         end
       end
 
+      context 'for experiments' do
+        let(:experiments) { %w[experiment_1 experiment_2] }
+        let(:onboarding_status) do
+          {
+            experiments: experiments
+          }
+        end
+
+        it { is_expected.to allow_value(onboarding_status).for(:onboarding_status) }
+
+        context "when 'experiments' is valid with empty array" do
+          let(:experiments) { [] }
+
+          it { is_expected.to allow_value(onboarding_status).for(:onboarding_status) }
+        end
+
+        context "when 'experiments' is invalid - not an array" do
+          let(:experiments) { 'not_an_array' }
+
+          it { is_expected.not_to allow_value(onboarding_status).for(:onboarding_status) }
+        end
+
+        context "when 'experiments' contains non-string values" do
+          let(:experiments) { ['valid_string', 123, true] }
+
+          it { is_expected.not_to allow_value(onboarding_status).for(:onboarding_status) }
+        end
+      end
+
       context 'when there is no data' do
         let(:onboarding_status) { {} }
 

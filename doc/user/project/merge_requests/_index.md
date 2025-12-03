@@ -221,22 +221,6 @@ a merge request, or:
 
 GitLab adds the merge request to the user's **Assigned merge requests** page.
 
-## Participants
-
-Participants are users who interacted with a merge request.
-They include authors, assignees, reviewers, and users who commented on the merge request,
-added emoji reactions, or were mentioned in comments or descriptions.
-
-### View participants
-
-All users see the same participant list, regardless of their role in the project.
-
-To view participants:
-
-1. On the left sidebar, select **Search or go to** and find your project. If you've [turned on the new navigation](../../interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
-1. Select **Code** > **Merge requests**, then select your merge request to view it.
-1. On the right sidebar, in the **Participants** section, view all users who participated in the merge request.
-
 ## Merge a merge request
 
 During the merge request review process, reviewers provide

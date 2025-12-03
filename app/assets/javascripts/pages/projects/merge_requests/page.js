@@ -94,6 +94,7 @@ const initReviewDrawer = () => {
     apolloProvider,
     provide: {
       newCommentTemplatePaths: JSON.parse(el.dataset.newCommentTemplatePaths),
+      diffsPath: el.dataset.diffsPath,
       canSummarize: parseBoolean(el.dataset.canSummarize),
     },
     render(h) {

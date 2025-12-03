@@ -57,7 +57,14 @@ module Participable
   #
   # Returns an Array of User instances.
   def participants(user = nil)
-    all_participants_hash[user].to_a
+    filtered_participants_hash[user]
+  end
+
+  # Returns only participants visible for the user
+  #
+  # Returns an Array of User instances.
+  def visible_participants(user)
+    filter_by_ability(raw_participants(user, verify_access: true))
   end
 
   # Checks if the user is a participant in a discussion.
@@ -66,7 +73,8 @@ module Participable
   #
   # Returns a Boolean.
   def participant?(user)
-    all_participants_hash[user].include?(user)
+    can_read_participable?(user) &&
+      all_participants_hash[user].include?(user)
   end
 
   private
@@ -77,7 +85,13 @@ module Participable
     end
   end
 
-  def raw_participants(current_user = nil)
+  def filtered_participants_hash
+    @filtered_participants_hash ||= Hash.new do |hash, user|
+      hash[user] = filter_by_ability(all_participants_hash[user])
+    end
+  end
+
+  def raw_participants(current_user = nil, verify_access: false)
     extractor = Gitlab::ReferenceExtractor.new(project, current_user)
 
     # Used to extract references from confidential notes.
@@ -96,6 +110,7 @@ module Participable
         participants << source
       when Participable
         next if skippable_system_notes?(source, participants)
+        next unless !verify_access || source_visible_to_user?(source, current_user)
 
         source.class.participant_attrs.each do |attr|
           if attr.respond_to?(:call)
@@ -134,6 +149,54 @@ module Participable
     return [] unless self.is_a?(Noteable) && self.try(:resource_parent)
 
     Ability.users_that_can_read_internal_notes(extractor.users, self.resource_parent)
+  end
+
+  def source_visible_to_user?(source, user)
+    ability = read_ability_for(source)
+
+    Ability.allowed?(user, ability[:name], ability[:subject])
+  end
+
+  def filter_by_ability(participants)
+    case self
+    when PersonalSnippet
+      Ability.users_that_can_read_personal_snippet(participants.to_a, self)
+    else
+      return Ability.users_that_can_read_project(participants.to_a, project) if project
+
+      # handling group level work items(issues) that would have a namespace,
+      # We need to make sure that scenarios where some models that do not have a project set and also do not have
+      # a namespace are also handled and exceptions are avoided.
+      namespace_level_participable = respond_to?(:namespace) && namespace.present?
+      return Ability.users_that_can_read_group(participants.to_a, namespace) if namespace_level_participable
+
+      []
+    end
+  end
+
+  def can_read_participable?(participant)
+    case self
+    when PersonalSnippet
+      participant.can?(:read_snippet, self)
+    else
+      return participant.can?(:read_project, project) if project
+
+      # handling group level work items(issues) that would have a namespace,
+      # We need to make sure that scenarios where some models that do not have a project set and also do not have
+      # a namespace are also handled and exceptions are avoided.
+      namespace_level_participable = respond_to?(:namespace) && namespace.present?
+      return participant.can?(:read_group, namespace) if namespace_level_participable
+
+      false
+    end
+  end
+
+  # Returns Hash containing ability name and subject needed to read a specific participable.
+  # Should be overridden if a different ability is required.
+  def read_ability_for(participable_source)
+    name =  participable_source.try(:to_ability_name) || participable_source.model_name.element
+
+    { name: :"read_#{name}", subject: participable_source }
   end
 end
 

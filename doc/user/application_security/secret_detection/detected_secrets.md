@@ -22,6 +22,7 @@ Secret detection rules are updated in the [default ruleset](https://gitlab.com/g
 Detected secrets with patterns that have been removed or updated remain open so you can triage them.
 
 <!-- markdownlint-disable MD044 -->
+<!-- vale gitlab_base.Spelling = NO -->
 <!-- vale gitlab_base.SentenceSpacing = NO -->
 
 | Description                                   | ID                                            | Pipeline secret detection | Client-side secret detection | Secret push protection |
@@ -241,4 +242,5 @@ Detected secrets with patterns that have been removed or updated remain open so 
 | Yandex.Cloud IAM cookie v1-3                      | Yandex.Cloud IAM Cookie v1 - 3                | {{< yes >}} | {{< no >}} | {{< no >}} |
 
 <!-- vale gitlab_base.SentenceSpacing = YES -->
+<!-- vale gitlab_base.Spelling = YES -->
 <!-- markdownlint-enable MD044 -->

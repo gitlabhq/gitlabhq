@@ -218,7 +218,7 @@ Check the license specified for the dependency upstream:
 - For C/C++ packages, check [Conancenter](https://conan.io/center).
 - For npm packages, check [npmjs.com](https://www.npmjs.com/).
 - For Python packages, check [PyPI](https://pypi.org/).
-- For NuGet packages, check [Nuget](https://www.nuget.org/packages).
+- For NuGet packages, check [NuGet](https://www.nuget.org/packages).
 - For Go packages, check [pkg.go.dev](https://pkg.go.dev/).
 
 If the license appears as `unknown` upstream, it is expected that GitLab will show the **License** for that dependency to be `unknown` as well.

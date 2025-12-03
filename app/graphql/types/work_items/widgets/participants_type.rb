@@ -3,7 +3,7 @@
 module Types
   module WorkItems
     module Widgets
-      # Participants shown consistently to all users for performance.
+      # Disabling widget level authorization as we scope by `.visible_participants`
       # rubocop:disable Graphql/AuthorizeTypes -- see above
       class ParticipantsType < BaseObject
         graphql_name 'WorkItemWidgetParticipants'
@@ -16,7 +16,7 @@ module Types
           description: 'Participants in the work item.'
 
         def participants
-          object.participants(current_user)
+          object.visible_participants(current_user)
         end
       end
       # rubocop:enable Graphql/AuthorizeTypes

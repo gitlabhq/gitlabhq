@@ -78,7 +78,7 @@ The keep file contains code that:
 
 1. Running the above command will give you useful information about the tables, such as indexes, pk, etc. For example, the `security_scans` table looks like:
 
-    ![Database schema output showing table columns, primary keys, indexes, and foreign key relationships for the security_scans table.](img/security-scans-table_v18_6.png)
+    ![Database schema output showing table columns, primary keys, indexes, and foreign key relationships for the `security_scans` table.](img/security-scans-table_v18_6.png)
 
     The output shows:
     - Table: `public.security_scans`
@@ -120,7 +120,7 @@ The keep file contains code that:
 1. First, generate the changes using keep, then edit the changes.
 1. Open the queue backfill post migrate file and remove all the changes and add new. For example:
 
-    ![Migration code using cursor-based batching with deployment_id and merge_request_id columns.](img/deployment-merge-req-backfill_v18_6.png)
+    ![Migration code using cursor-based batching with `deployment_id` and `merge_request_id` columns.](img/deployment-merge-req-backfill_v18_6.png)
 
     Example MR: [!183738 (merged)](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/183738)
 
@@ -162,15 +162,15 @@ Once the column has been added and the backfill is finished we need to finalize 
 
 - Output will look something like:
 
-  ![Chatops response showing batched background migration status with progress percentage and batch counts.](img/chatops_v18_6.png)
+  ![ChatOps response showing batched background migration status with progress percentage and batch counts.](img/chatops_v18_6.png)
 
-  The chatops output displays:
+  The ChatOps output displays:
   - Job class name
   - Table name
   - Status (e.g., `finished`, `active`, `paused`)
   - Progress percentage
 
-1. Once it’s 100% create a new branch from master and run: `bundle exec rails g post_deployment_migration finalize_<table><sharding_key>`
+1. Once it's 100% create a new branch from master and run: `bundle exec rails g post_deployment_migration finalize_<table><sharding_key>`
 
    This will create a post deployment migration file, edit it. For example, table `subscription_user_add_on_assignments` it will look like:
 
@@ -196,7 +196,7 @@ Once the column has been added and the backfill is finished we need to finalize 
    ```
 
 1. It will be similar for every other table except the `job_class_name`, `table_name`, `column_name`, and `job_arguments`. Make sure the job arguments are correct. You can check the add sharding key & backfill MR to match the job arguments.
-1. Once it’s done, run `bin/rails db:migrate` and update key `finalized_by` in db/docs. Example MR: [!169834](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/169834).
+1. Once it's done, run `bin/rails db:migrate` and update key `finalized_by` in db/docs. Example MR: [!169834](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/169834).
 
 - You are all set. Git commit and create MR 🎉
 
@@ -208,7 +208,7 @@ The last step is to make sure the sharding key has a `NOT NULL` constraint.
 
 1. Create a post deployment migration using `bundle exec rails g post_deployment_migration <table_name>_not_null`
 
-   For example, table subscription_user_add_on_assignments:
+   For example, table `subscription_user_add_on_assignments`:
 
    ```ruby
    class AddSubscriptionUserAddOnAssignmentsOrganizationIdNotNull < Gitlab::Database::Migration[2.2]
@@ -233,17 +233,17 @@ The last step is to make sure the sharding key has a `NOT NULL` constraint.
    organization_id: organizations
    ```
 
-- Example MR: [Add NOT NULL for sharding key on subscription_user_add_on_assignments](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/170136/diffs)
+- Example MR: [Add NOT NULL for sharding key on `subscription_user_add_on_assignments`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/170136/diffs)
 
 **2. Large tables or tables that exceed runtime**
 
-In this case we have to add async validation before we can add the sharding key. It will be a 2 MR process. Let’s take an example of table `packages_package_files`.
+In this case we have to add async validation before we can add the sharding key. It will be a 2 MR process. Let's take an example of table `packages_package_files`.
 
-*Step 1 (MR 1): [Add NOT NULL for sharding key on packages_package_files](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/184630/diffs)*
+*Step 1 (MR 1): [Add NOT NULL for sharding key on `packages_package_files`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/184630/diffs)*
 
 1. Create a [post deployment migration](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/184630/diffs#cf4ce3e2d6f2d05856d6d51ccd69955154aab90e_0_8) to add not null constraint with `validate: false`.
 
-    ![Migration adding an unvalidated not null constraint on project_id for async validation.](img/packages-package-files_v18_6.png)
+    ![Migration adding an unvalidated not null constraint on `project_id` for async validation.](img/packages-package-files_v18_6.png)
 
     ```ruby
     class AddPackagesPackageFilesProjectIdNotNull < Gitlab::Database::Migration[2.2]
@@ -281,7 +281,7 @@ In this case we have to add async validation before we can add the sharding key.
 
 - Run `bin/rails db:migrate` and create the MR with changes.
 
-*Step 2 (MR 2): [Validate project_id NOT NULL on packages_package_files](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/185064/diffs)*
+*Step 2 (MR 2): [Validate `project_id` NOT NULL on `packages_package_files`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/185064/diffs)*
 
 1. Once the MR in Step 1 is merged, wait for a couple of days to prepare, you can check the status on <https://console.postgres.ai/>, just ask the joe instance bot for the table information. Look for `Check constraints`.
 
@@ -292,7 +292,7 @@ In this case we have to add async validation before we can add the sharding key.
      "check_43773f06dc" CHECK (project_id IS NOT NULL) NOT VALID
    ```
 
-1. Once it’s there we can create a new post deployment migration to [validate the not null constraint](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/185064/diffs#6bc3faf674b76d8c4c2766b7e174e99e54bf185e_0_7). It will be a no-op down migration.
+1. Once it's there we can create a new post deployment migration to [validate the not null constraint](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/185064/diffs#6bc3faf674b76d8c4c2766b7e174e99e54bf185e_0_7). It will be a no-op down migration.
 1. Run `bin/rails db:migrate` and remove the following add constraint from `structure.sql` and add it to table definition:
 
    - Remove:
@@ -324,11 +324,11 @@ Pipelines might complain about a missing FK. You must add the FK to `allowed_to_
 
 #### 1. Using Kibana
 
-There will be certain cases where you can get failure notification after queuing the backfill job. One way is to use the [kibana logs](https://log.gprd.gitlab.net/).
+There will be certain cases where you can get failure notification after queuing the backfill job. One way is to use the [Kibana logs](https://log.gprd.gitlab.net/).
 
-> Note: We only store kibana logs for 7 days
+> Note: We only store Kibana logs for 7 days
 
-Let’s take the recent `BackfillPushEventPayloadsProjectId` BBM failure as an example.
+Let's take the recent `BackfillPushEventPayloadsProjectId` BBM failure as an example.
 
 - Failures are also reported as a comment on backfilled original MR. Example: MR [!183123](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/183123#note_2482744925)
 
@@ -336,9 +336,9 @@ Let’s take the recent `BackfillPushEventPayloadsProjectId` BBM failure as an e
 
 - We can also check the status of the job in `#chat-ops-test` Slack channel, using `/chatops run batched_background_migrations list --job-class-name=<desired_sharding_key_migration_job_name>`.
 
-  ![Chatops output indicating a failed batched background migration status.](img/backfill-chatops-failed_v18_6.png)
+  ![ChatOps output indicating a failed batched background migration status.](img/backfill-chatops-failed_v18_6.png)
 
-- Let’s figure out the reason for failure using [kibana dashboard](https://log.gprd.gitlab.net/app/discover).
+- Let's figure out the reason for failure using [Kibana dashboard](https://log.gprd.gitlab.net/app/discover).
 
 1. Make sure the data view is set to `pubsub-sidekiq-inf-gprd*`.
 
@@ -346,9 +346,9 @@ Let’s take the recent `BackfillPushEventPayloadsProjectId` BBM failure as an e
 
 1. On the left side, you can see all the available fields. We only need `json.job_class_name` i.e. desired sharding key migration job name and the `json.new_state: failed`.
 
-    ![Kibana fields panel displaying available log fields including job_class_name and new_state.](img/pubsub-fields_v18_6.png)
+    ![Kibana fields panel displaying available log fields including `job_class_name` and `new_state`.](img/pubsub-fields_v18_6.png)
 
-1. Let’s add those filters to get the desired logs.
+1. Let's add those filters to get the desired logs.
 
     ![Kibana filter interface ready to add search criteria.](img/pubsub-filters_v18_6.png)
 
@@ -364,7 +364,7 @@ Let’s take the recent `BackfillPushEventPayloadsProjectId` BBM failure as an e
 
     ![Kibana logs view showing filtered results for failed migration jobs.](img/kibana-logs_v18_6.png)
 
-1. Let’s expand the logs and find `json.exception_message`.
+1. Let's expand the logs and find `json.exception_message`.
 
     ![Expanded Kibana log entry revealing the exception message and error details.](img/kibana-logs-message_v18_6.png)
 
@@ -374,19 +374,19 @@ Let’s take the recent `BackfillPushEventPayloadsProjectId` BBM failure as an e
 
 #### 2. Using Grafana
 
-Sometimes you won't find anything on kibana since we only store logs up to 7 days. For this, we can use the [Grafana dashboard](https://dashboards.gitlab.net/).
+Sometimes you won't find anything on Kibana since we only store logs up to 7 days. For this, we can use the [Grafana dashboard](https://dashboards.gitlab.net/).
 
-Let’s take the recent `BackfillApprovalMergeRequestRulesUsersProjectId` BBM failure as an example.
+Let's take the recent `BackfillApprovalMergeRequestRulesUsersProjectId` BBM failure as an example.
 
-- You’ll be tagged on the original MR.
+- You'll be tagged on the original MR.
 
   ![Merge request comment tagging team members about the migration failure.](img/bbm-mr-message_v18_6.png)
 
 1. We can also check the status of the job in `#chat-ops-test` Slack channel, using `/chatops run batched_background_migrations list --job-class-name=<desired_sharding_key_migration_job_name>`.
 
-    ![Chatops command output showing the failed migration status and progress details.](img/chatops-failed-status_v18_6.png)
+    ![ChatOps command output showing the failed migration status and progress details.](img/chatops-failed-status_v18_6.png)
 
-1. Let's check the kibana dashboard. There are [no logs](https://log.gprd.gitlab.net/app/discover#/view/07cd7a8b-10bb-457c-8d25-3c6d6269e614?_g=h@9751b81&_a=h@ff28b71) for this job.
+1. Let's check the Kibana dashboard. There are [no logs](https://log.gprd.gitlab.net/app/discover#/view/07cd7a8b-10bb-457c-8d25-3c6d6269e614?_g=h@9751b81&_a=h@ff28b71) for this job.
 1. Let's go to the [Grafana dashboard](https://dashboards.gitlab.net/explore).
 
     ![Grafana homepage with navigation options and the Explore feature.](img/grafana_v18_6.png)
@@ -406,17 +406,17 @@ Let’s take the recent `BackfillApprovalMergeRequestRulesUsersProjectId` BBM fa
   - `relname: approval_merge_request_rules_users`.
 
 1. Timeline: select at least a few days prior to the date of job creation. You can see in the MR that failure was reported on [2025-03-31](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/183354#note_2425371444) and the job was created on **2025-03-11**. I have selected the time range from **2025-03-01** to **2025-04-02**. You can adjust it accordingly.
-1. After running the query a graph will be generated within the selected timeframe.
+1. After running the query a graph will be generated within the selected time frame.
 
     ![Grafana graph showing table size baseline at 90 GB from early March 2025.](img/grafana-output-1_v18_6.png)
 
-1. Let’s make sense of this graph. Backfill job started on **2025-03-11**, you can see a slight increase in table size starting at this date.
+1. Let's make sense of this graph. Backfill job started on **2025-03-11**, you can see a slight increase in table size starting at this date.
 
     ![Graph showing gradual table size increase beginning March 11, 2025 when backfill started.](img/grafana-output-2_v18_6.png)
 
     > This is very normal
 
-1. Let’s see the changes we have added in the [post migration](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/183354/diffs#396732f8126545e4961d048dbb6e81c4746b5557_0_11). First we added the `prepare_async` index. Let’s check the size on [postgres.ai](https://console.postgres.ai/gitlab/gitlab-production-main/sessions/39129/commands/120292) it’s size is 10 GB. It was created on **2025-03-15** at 00:00, as we can see in the spike in the graph.
+1. Let's see the changes we have added in the [post migration](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/183354/diffs#396732f8126545e4961d048dbb6e81c4746b5557_0_11). First we added the `prepare_async` index. Let's check the size on [postgres.ai](https://console.postgres.ai/gitlab/gitlab-production-main/sessions/39129/commands/120292) it's size is 10 GB. It was created on **2025-03-15** at 00:00, as we can see in the spike in the graph.
 
     ![Sharp spike on March 15, 2025 showing 10 GB increase from async index creation.](img/grafana-output-3_v18_6.png)
 

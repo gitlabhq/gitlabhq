@@ -49,6 +49,7 @@ module Ci
     DEGRADATION_THRESHOLD_VARIABLE_NAME = 'DEGRADATION_THRESHOLD'
     RUNNERS_STATUS_CACHE_EXPIRATION = 1.minute
     DEPLOYMENT_NAMES = %w[deploy release rollout].freeze
+    MAX_PIPELINES_TO_SEARCH = 100
 
     TOKEN_PREFIX = 'glcbt-'
 
@@ -291,6 +292,27 @@ module Ci
 
       def supported_keyset_orderings
         { id: [:desc] }
+      end
+
+      def latest_with_artifacts_for_ref(project, job_name, ref_name, limit: MAX_PIPELINES_TO_SEARCH)
+        joins(:pipeline)
+          .joins(:job_artifacts)
+          .where(
+            pipeline: {
+              id: Ci::Pipeline
+                .where(project_id: project.id)
+                .for_ref(ref_name)
+                .success
+                .order(id: :desc)
+                .limit(limit)
+                .select(:id)
+            }
+          )
+          .by_name(job_name)
+          .success
+          .where(job_artifacts: { file_type: Ci::JobArtifact.file_types[:archive] })
+          .order('pipeline.id DESC')
+          .first
       end
     end
 
@@ -1339,7 +1361,11 @@ module Ci
     end
 
     def cache_suffix_for(entry)
-      entry[:unprotect] || !uses_protected_cache? ? 'non_protected' : 'protected'
+      return 'non_protected' if entry[:unprotect]
+      return 'protected' if uses_protected_cache?
+      return 'protected' if pipeline&.protected_ref?
+
+      'non_protected'
     end
 
     def reports_definitions

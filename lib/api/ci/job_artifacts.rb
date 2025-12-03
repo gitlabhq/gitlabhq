@@ -37,6 +37,8 @@ module API
           optional :job_token, type: String,
             desc: 'To be used with triggers for multi-project pipelines, ' \
                   'available only on Premium and Ultimate tiers.'
+          optional :search_recent_successful_pipelines, type: Boolean, default: false,
+            desc: 'Search across recent successful pipelines instead of just the latest one.'
         end
         route_setting :authentication, job_token_allowed: true
         route_setting :authorization, job_token_policies: :read_jobs
@@ -45,7 +47,20 @@ module API
           requirements: { ref_name: /.+/ } do
           authorize_download_artifacts!
 
-          latest_build = user_project.latest_successful_build_for_ref!(params[:job], params[:ref_name])
+          if params[:search_recent_successful_pipelines]
+            not_found! unless Feature.enabled?(:ci_search_recent_successful_pipelines, user_project)
+
+            latest_build = ::Ci::Build.latest_with_artifacts_for_ref(
+              user_project,
+              params[:job],
+              params[:ref_name]
+            )
+
+            not_found!('Job') unless latest_build
+          else
+            latest_build = user_project.latest_successful_build_for_ref!(params[:job], params[:ref_name])
+          end
+
           authorize_read_job_artifacts!(latest_build)
 
           not_found! unless latest_build.artifacts_file&.exists?
