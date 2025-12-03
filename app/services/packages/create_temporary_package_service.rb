@@ -8,15 +8,15 @@ module Packages
       create_package!(
         packages_class,
         name: name,
-        version: "#{PACKAGE_VERSION}-#{uuid}",
+        version: version,
         status: 'processing'
       )
     end
 
     private
 
-    def uuid
-      SecureRandom.uuid
+    def version
+      "#{PACKAGE_VERSION}-#{SecureRandom.uuid}"
     end
   end
 end

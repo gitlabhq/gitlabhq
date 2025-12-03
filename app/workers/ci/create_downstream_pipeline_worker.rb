@@ -7,7 +7,9 @@ module Ci
 
     sidekiq_options retry: 3
     worker_resource_boundary :cpu
+    data_consistency :sticky
     urgency :low
+    deduplicate :until_executed, if_deduplicated: :reschedule_once, including_scheduled: true
 
     def perform(bridge_id)
       Gitlab::QueryLimiting.disable!('https://gitlab.com/gitlab-org/gitlab/-/issues/464668')

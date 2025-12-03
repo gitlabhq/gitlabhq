@@ -10,10 +10,20 @@
   "versions": {
     "1.0.1": {
       "name": "@root/npm-test",
-      "deprecated": "This version is deprecated"
+      "deprecated": "This version is deprecated",
+      "version": "1.0.1",
+      "dist": {
+        "tarball": "http://localhost/tarball.tgz",
+        "shasum": "356a192b7913b04c54574d18c28d46e6395428ab"
+      }
     },
     "1.0.2": {
-      "name": "@root/npm-test"
+      "name": "@root/npm-test",
+      "version": "1.0.2",
+      "dist": {
+        "tarball": "http://localhost/tarball.tgz",
+        "shasum": "da4b9237bacccdf19c0760cab7aec4a8359010b0"
+      }
     }
   }
 }

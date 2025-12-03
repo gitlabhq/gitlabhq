@@ -249,7 +249,6 @@ RSpec.describe Organizations::Groups::TransferService, :aggregate_failures, feat
           # Create todos for all bot types
           ghost_old = Users::Internal.for_organization(old_organization).ghost
           alert_bot_old = Users::Internal.for_organization(old_organization).alert_bot
-          migration_bot_old = Users::Internal.for_organization(old_organization).migration_bot
           security_bot_old = Users::Internal.for_organization(old_organization).security_bot
           automation_bot_old = Users::Internal.for_organization(old_organization).automation_bot
           admin_bot_old = Users::Internal.for_organization(old_organization).admin_bot
@@ -258,7 +257,6 @@ RSpec.describe Organizations::Groups::TransferService, :aggregate_failures, feat
           ghost_todo = create(:todo, user: user1, author: ghost_old, target: issue, project: project)
           support_bot_todo = create(:todo, user: user1, author: support_bot_old, target: issue, project: project)
           alert_bot_todo = create(:todo, user: user1, author: alert_bot_old, target: issue, project: project)
-          migration_bot_todo = create(:todo, user: user2, author: migration_bot_old, target: issue, project: project)
           security_bot_todo = create(:todo, user: user2, author: security_bot_old, target: issue, project: project)
           automation_bot_todo = create(:todo, user: user1, author: automation_bot_old, target: issue, project: project)
           admin_bot_todo = create(:todo, user: user1, author: admin_bot_old, target: issue, project: project)
@@ -270,7 +268,6 @@ RSpec.describe Organizations::Groups::TransferService, :aggregate_failures, feat
           ghost_new = Users::Internal.for_organization(new_organization).ghost
           support_bot_new = Users::Internal.for_organization(new_organization).support_bot
           alert_bot_new = Users::Internal.for_organization(new_organization).alert_bot
-          migration_bot_new = Users::Internal.for_organization(new_organization).migration_bot
           security_bot_new = Users::Internal.for_organization(new_organization).security_bot
           automation_bot_new = Users::Internal.for_organization(new_organization).automation_bot
           admin_bot_new = Users::Internal.for_organization(new_organization).admin_bot
@@ -279,7 +276,6 @@ RSpec.describe Organizations::Groups::TransferService, :aggregate_failures, feat
           expect(ghost_todo.reload.author_id).to eq(ghost_new.id)
           expect(support_bot_todo.reload.author_id).to eq(support_bot_new.id)
           expect(alert_bot_todo.reload.author_id).to eq(alert_bot_new.id)
-          expect(migration_bot_todo.reload.author_id).to eq(migration_bot_new.id)
           expect(security_bot_todo.reload.author_id).to eq(security_bot_new.id)
           expect(automation_bot_todo.reload.author_id).to eq(automation_bot_new.id)
           expect(admin_bot_todo.reload.author_id).to eq(admin_bot_new.id)
@@ -288,7 +284,6 @@ RSpec.describe Organizations::Groups::TransferService, :aggregate_failures, feat
           expect(ghost_todo).to be_valid
           expect(support_bot_todo).to be_valid
           expect(alert_bot_todo).to be_valid
-          expect(migration_bot_todo).to be_valid
           expect(security_bot_todo).to be_valid
           expect(automation_bot_todo).to be_valid
           expect(admin_bot_todo).to be_valid

@@ -60,13 +60,13 @@ module PackagesManagerApiSpecHelpers
     end
   end
 
-  def temp_file(package_tmp, content: nil)
+  def temp_file(package_tmp, **kwargs)
     upload_path = ::Packages::PackageFileUploader.workhorse_local_upload_path
     file_path = "#{upload_path}/#{package_tmp}"
 
     FileUtils.mkdir_p(upload_path)
-    content ? FileUtils.cp(content, file_path) : File.write(file_path, 'test')
+    File.write(file_path, kwargs[:content] || 'test')
 
-    UploadedFile.new(file_path, filename: File.basename(file_path))
+    UploadedFile.new(file_path, filename: File.basename(file_path), **kwargs.except!(:content))
   end
 end

@@ -146,7 +146,8 @@ The Geo primary site needs to checksum every replicable so secondaries can verif
     VERIFICATION_STATE_INDEX_NAME = "index_cool_widget_states_on_verification_state"
     PENDING_VERIFICATION_INDEX_NAME = "index_cool_widget_states_pending_verification"
     FAILED_VERIFICATION_INDEX_NAME = "index_cool_widget_states_failed_verification"
-    NEEDS_VERIFICATION_INDEX_NAME = "index_cool_widget_states_needs_verification"
+    NEEDS_VERIFICATION_INDEX_NAME = "index_cool_widget_states_needs_verification_id"
+    VERIFICATION_STARTED_INDEX_NAME = "index_cool_widget_states_on_verification_started"
 
     def up
       create_table :cool_widget_states do |t|
@@ -171,8 +172,11 @@ The Geo primary site needs to checksum every replicable so secondaries can verif
           where: "(verification_state = 3)",
           order: { verification_retry_at: 'ASC NULLS FIRST' },
           name: FAILED_VERIFICATION_INDEX_NAME
-        t.index :verification_state,
-          where: "(verification_state = 0 OR verification_state = 3)",
+        t.index [:cool_widget_id, :verification_started_at],
+          where: "(verification_state = 1)",
+          name: VERIFICATION_STARTED_INDEX_NAME
+        t.index :cool_widget_id,
+          where: "((verification_state = 0) OR (verification_state = 3))",
           name: NEEDS_VERIFICATION_INDEX_NAME
       end
     end

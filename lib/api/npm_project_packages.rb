@@ -46,6 +46,11 @@ module API
       def project_id_or_nil
         params[:id]
       end
+
+      def npm_command_deprecate?
+        headers['Npm-Command'] == 'deprecate'
+      end
+      strong_memoize_attr :npm_command_deprecate?
     end
 
     params do
@@ -105,7 +110,12 @@ module API
         authorize_upload!(project)
 
         content_type Gitlab::Workhorse::INTERNAL_API_CONTENT_TYPE
-        ::Packages::Npm::PackageFileUploader.workhorse_authorize(has_length: true, maximum_size: user_project.actual_limits.npm_max_file_size)
+
+        if Feature.enabled?(:packages_npm_temp_package, project)
+          ::Packages::PackageFileUploader.workhorse_authorize(has_length: true, maximum_size: project.actual_limits.npm_max_file_size)
+        else
+          ::Packages::Npm::PackageFileUploader.workhorse_authorize(has_length: true, maximum_size: user_project.actual_limits.npm_max_file_size)
+        end
       end
 
       desc 'Create or deprecate NPM package' do
@@ -126,33 +136,55 @@ module API
       route_setting :authentication, job_token_allowed: true, deploy_token_allowed: true
       route_setting :authorization, job_token_policies: :admin_packages
       put ':package_name', requirements: ::API::Helpers::Packages::Npm::NPM_ENDPOINT_REQUIREMENTS do
-        bad_request!('local file not present') unless params['file']&.path
-
-        Oj.load_file(params['file'].path, mode: :rails) do |json_doc|
-          unless json_doc.key?('versions')
-            render_structured_api_error!({ error: 'Versions key is missing from the JSON upload' }, 400)
-          end
-
-          json_doc = json_doc.with_indifferent_access
-          if headers['Npm-Command'] == 'deprecate'
+        if Feature.enabled?(:packages_npm_temp_package, project)
+          if npm_command_deprecate?
             authorize_destroy_package!(project)
-            enqueue_worker_params = params.slice('id', 'package_name').merge('versions' => json_doc['versions'])
-            response = ::Packages::Npm::EnqueueDeprecatePackageWorkerService.new(project, nil, enqueue_worker_params).execute
-
-            if response.error? && response.reason == :no_versions_to_deprecate
-              bad_request_missing_attribute!('package versions to deprecate')
-            end
           else
             authorize_create_package!(project)
-            service_response = ::Packages::Npm::CreatePackageService
-              .new(project, current_user, json_doc.merge(build: current_authenticated_job)).execute
+          end
 
-            if service_response.error?
-              render_structured_api_error!({ message: service_response.message, error: service_response.message }, error_reason_to_http_status(service_response.reason))
+          response = ::Packages::Npm::CreateTemporaryPackageService.new(
+            project,
+            current_user,
+            declared_params.merge(build: current_authenticated_job, deprecate: npm_command_deprecate?)
+          ).execute
+
+          if response.error?
+            render_structured_api_error!({ message: response.message, error: response.message }, error_reason_to_http_status(response.reason))
+          end
+
+          unless npm_command_deprecate?
+            track_package_event('push_package', :npm, category: 'API::NpmPackages', project: project, namespace: project.namespace)
+          end
+
+          response[:package]
+        else
+          Oj.load_file(params['file'].path, mode: :rails) do |json_doc|
+            unless json_doc.key?('versions')
+              render_structured_api_error!({ error: 'Versions key is missing from the JSON upload' }, 400)
             end
 
-            track_package_event('push_package', :npm, category: 'API::NpmPackages', project: project, namespace: project.namespace)
-            break service_response[:package]
+            json_doc = json_doc.with_indifferent_access
+            if headers['Npm-Command'] == 'deprecate'
+              authorize_destroy_package!(project)
+              enqueue_worker_params = params.slice('id', 'package_name').merge('versions' => json_doc['versions'])
+              response = ::Packages::Npm::EnqueueDeprecatePackageWorkerService.new(project, nil, enqueue_worker_params).execute
+
+              if response.error? && response.reason == :no_versions_to_deprecate
+                bad_request_missing_attribute!('package versions to deprecate')
+              end
+            else
+              authorize_create_package!(project)
+              service_response = ::Packages::Npm::CreatePackageService
+                .new(project, current_user, json_doc.merge(build: current_authenticated_job)).execute
+
+              if service_response.error?
+                render_structured_api_error!({ message: service_response.message, error: service_response.message }, error_reason_to_http_status(service_response.reason))
+              end
+
+              track_package_event('push_package', :npm, category: 'API::NpmPackages', project: project, namespace: project.namespace)
+              break service_response[:package]
+            end
           end
         end
       end

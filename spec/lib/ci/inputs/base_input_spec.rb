@@ -107,9 +107,9 @@ RSpec.describe Ci::Inputs::BaseInput, feature_category: :pipeline_composition do
         end
       end
 
-      context 'when there is a fallback rule' do
+      context 'when there is a fallback rule with a default' do
         it 'is not required' do
-          spec = { rules: [{ options: %w[a b] }] }
+          spec = { rules: [{ options: %w[a b], default: 'a' }] }
           input = described_class.new(name: :test, spec: spec)
           expect(input).not_to be_required
         end
@@ -153,6 +153,25 @@ RSpec.describe Ci::Inputs::BaseInput, feature_category: :pipeline_composition do
 
       it 'returns nil' do
         expect(input.rules).to be_nil
+      end
+    end
+  end
+
+  describe 'rules-based inputs without explicit defaults' do
+    let(:input) { described_class.new(name: :test_input, spec: spec) }
+
+    context 'when fallback rule has options but no default' do
+      let(:spec) do
+        {
+          type: 'string',
+          rules: [
+            { options: %w[x y] }
+          ]
+        }
+      end
+
+      it 'is required' do
+        expect(input).to be_required
       end
     end
   end

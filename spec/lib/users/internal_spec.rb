@@ -194,7 +194,6 @@ RSpec.describe Users::Internal, feature_category: :user_profile do
 
   it_behaves_like 'bot users', :alert_bot, 'alert-bot', 'alert@example.com'
   it_behaves_like 'bot users', :support_bot, 'support-bot', 'support@example.com'
-  it_behaves_like 'bot users', :migration_bot, 'migration-bot', 'noreply+gitlab-migration-bot@example.com'
   it_behaves_like 'bot users', :security_bot, 'GitLab-Security-Bot', 'security-bot@example.com'
   it_behaves_like 'bot users', :ghost, 'ghost', 'ghost@example.com'
   it_behaves_like 'bot users', :automation_bot, 'automation-bot', 'automation@example.com'

@@ -63,7 +63,7 @@ module Organizations
 
       def old_organization_bots
         bot_types =
-          %w[ghost support_bot alert_bot migration_bot security_bot automation_bot duo_code_review_bot admin_bot]
+          %w[ghost support_bot alert_bot security_bot automation_bot duo_code_review_bot admin_bot]
 
         bot_types.index_with do |user_type|
           User.with_user_types(user_type).in_organization(group.organization).first

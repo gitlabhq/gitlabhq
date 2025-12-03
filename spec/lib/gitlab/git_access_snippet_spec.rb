@@ -13,7 +13,6 @@ RSpec.describe Gitlab::GitAccessSnippet do
   let_it_be(:user) { create(:user) }
   let_it_be(:project) { create(:project, :public) }
   let_it_be(:snippet) { create(:project_snippet, :public, :repository, project: project) }
-  let_it_be(:migration_bot) { Users::Internal.migration_bot }
 
   let(:repository) { snippet.repository }
   let(:actor) { user }
@@ -41,17 +40,6 @@ RSpec.describe Gitlab::GitAccessSnippet do
 
       expect { push_access_check }.to raise_forbidden(:read_only)
       expect { pull_access_check }.not_to raise_error
-    end
-  end
-
-  shared_examples 'actor is migration bot' do
-    context 'when user is the migration bot' do
-      let(:user) { migration_bot }
-
-      it 'can perform git operations' do
-        expect { push_access_check }.not_to raise_error
-        expect { pull_access_check }.not_to raise_error
-      end
     end
   end
 
@@ -101,12 +89,6 @@ RSpec.describe Gitlab::GitAccessSnippet do
       expect { push_access_check }.not_to raise_error
       expect { pull_access_check }.not_to raise_error
     end
-
-    it_behaves_like 'actor is migration bot' do
-      before do
-        expect(migration_bot.required_terms_not_accepted?).to be_truthy
-      end
-    end
   end
 
   context 'project snippet accessibility', :aggregate_failures do
@@ -143,7 +125,6 @@ RSpec.describe Gitlab::GitAccessSnippet do
 
     context 'when project is public' do
       it_behaves_like 'checks accessibility'
-      it_behaves_like 'actor is migration bot'
     end
 
     context 'when project is public but snippet feature is private' do
@@ -152,7 +133,6 @@ RSpec.describe Gitlab::GitAccessSnippet do
       end
 
       it_behaves_like 'checks accessibility'
-      it_behaves_like 'actor is migration bot'
     end
 
     context 'when project is not accessible' do
@@ -168,8 +148,6 @@ RSpec.describe Gitlab::GitAccessSnippet do
           end
         end
       end
-
-      it_behaves_like 'actor is migration bot'
     end
 
     context 'when project is archived' do
@@ -214,8 +192,6 @@ RSpec.describe Gitlab::GitAccessSnippet do
           end
         end
       end
-
-      it_behaves_like 'actor is migration bot'
     end
 
     context 'when snippet feature is disabled' do
@@ -231,8 +207,6 @@ RSpec.describe Gitlab::GitAccessSnippet do
           end
         end
       end
-
-      it_behaves_like 'actor is migration bot'
     end
   end
 
@@ -261,8 +235,6 @@ RSpec.describe Gitlab::GitAccessSnippet do
           expect { pull_access_check }.to raise_error(error_class)
         end
       end
-
-      it_behaves_like 'actor is migration bot'
     end
   end
 
@@ -302,12 +274,6 @@ RSpec.describe Gitlab::GitAccessSnippet do
     end
 
     it_behaves_like 'snippet checks'
-
-    context 'when user is migration bot' do
-      let(:user) { migration_bot }
-
-      it_behaves_like 'snippet checks'
-    end
   end
 
   describe 'repository size restrictions' do
@@ -319,16 +285,6 @@ RSpec.describe Gitlab::GitAccessSnippet do
     let(:ref) { "refs/heads/snippet/edit-file" }
     let(:changes) { "#{oldrev} #{newrev} #{ref}" }
 
-    shared_examples 'migration bot does not err' do
-      let(:actor) { migration_bot }
-
-      it 'does not err' do
-        expect(snippet.repository_size_checker).not_to receive(:above_size_limit?)
-
-        expect { push_access_check }.not_to raise_error
-      end
-    end
-
     shared_examples_for 'a push to repository already over the limit' do
       it 'errs' do
         expect(snippet.repository_size_checker).to receive(:above_size_limit?).and_return(true)
@@ -337,8 +293,6 @@ RSpec.describe Gitlab::GitAccessSnippet do
           push_access_check
         end.to raise_error(described_class::ForbiddenError, /Your push to this repository cannot be completed/)
       end
-
-      it_behaves_like 'migration bot does not err'
     end
 
     shared_examples_for 'a push to repository below the limit' do
@@ -351,8 +305,6 @@ RSpec.describe Gitlab::GitAccessSnippet do
 
         expect { push_access_check }.not_to raise_error
       end
-
-      it_behaves_like 'migration bot does not err'
     end
 
     shared_examples_for 'a push to repository to make it over the limit' do
@@ -367,8 +319,6 @@ RSpec.describe Gitlab::GitAccessSnippet do
           push_access_check
         end.to raise_error(described_class::ForbiddenError, /Your push to this repository cannot be completed as it would exceed the allocated storage for your project/)
       end
-
-      it_behaves_like 'migration bot does not err'
     end
 
     context 'when GIT_OBJECT_DIRECTORY_RELATIVE env var is set', :request_store do

@@ -70,14 +70,32 @@ RSpec.describe "User views milestone", feature_category: :team_planning do
     end
 
     context 'when issues on milestone are over DISPLAY_ISSUES_LIMIT' do
-      it "limits issues to display and shows warning" do
+      before do
         stub_const('Milestoneish::DISPLAY_ISSUES_LIMIT', 3)
+      end
 
-        visit(project_milestone_path(project, milestone))
+      context 'when work_item_planning_view feature flag is disabled' do
+        it "limits issues to display and shows warning with link to issues path" do
+          visit(project_milestone_path(project, milestone))
 
-        expect(page).to have_selector('#tab-issues li', count: 3)
-        expect(page).to have_selector('#milestone-issue-count-warning', text: 'Showing 3 of 6 items. View all')
-        expect(page).to have_link('View all', href: project_issues_path(project, { milestone_title: milestone.title }))
+          expect(page).to have_selector('#tab-issues li', count: 3)
+          expect(page).to have_selector('#milestone-issue-count-warning', text: 'Showing 3 of 6 items. View all')
+          expect(page).to have_link('View all', href: project_issues_path(project, { milestone_title: milestone.title }))
+        end
+      end
+
+      context 'when work_item_planning_view feature flag is enabled' do
+        before do
+          stub_feature_flags(work_item_planning_view: true)
+        end
+
+        it "limits issues to display and shows warning with link to work items path" do
+          visit(project_milestone_path(project, milestone))
+
+          expect(page).to have_selector('#tab-issues li', count: 3)
+          expect(page).to have_selector('#milestone-issue-count-warning', text: 'Showing 3 of 6 items. View all')
+          expect(page).to have_link('View all', href: project_work_items_path(project, { milestone_title: milestone.title }))
+        end
       end
     end
 

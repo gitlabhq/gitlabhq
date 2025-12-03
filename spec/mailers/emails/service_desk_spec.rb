@@ -338,7 +338,11 @@ RSpec.describe Emails::ServiceDesk, feature_category: :service_desk do
 
     context 'with template' do
       context 'with all-user reference in a an external author comment' do
-        let_it_be(:note) { create(:note_on_issue, noteable: issue, project: project, note: "Hey @all, just a ping", author: Users::Internal.support_bot) }
+        let_it_be(:support_bot) { create(:user, :support_bot, organization: project.organization) }
+        let_it_be(:note) do
+          create(:note_on_issue, noteable: issue, project: project, note: "Hey @all, just a ping", author: support_bot)
+        end
+
         let(:expected_template_html) { 'Hey @all, just a ping' }
 
         let(:template_content) { 'some text %{ NOTE_TEXT  }' }
@@ -539,7 +543,10 @@ RSpec.describe Emails::ServiceDesk, feature_category: :service_desk do
     it_behaves_like 'a custom email verification process email'
 
     it 'uses service bot name and custom email as sender' do
-      expect_sender(Users::Internal.support_bot, sender_email: service_desk_setting.custom_email)
+      expect_sender(
+        create(:support_bot),
+        sender_email: service_desk_setting.custom_email
+      )
     end
 
     it 'forcibly uses SMTP delivery method and has correct settings' do

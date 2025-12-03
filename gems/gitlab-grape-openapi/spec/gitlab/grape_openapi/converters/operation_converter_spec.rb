@@ -409,4 +409,37 @@ RSpec.describe Gitlab::GrapeOpenapi::Converters::OperationConverter do
       end
     end
   end
+
+  context 'with deprecated endpoints' do
+    let(:api_classes) { [TestApis::DeprecatedApi] }
+    let(:schema_registry) { Gitlab::GrapeOpenapi::SchemaRegistry.new }
+
+    context 'with deprecated true directive' do
+      let(:route) { routes.find { |r| r.path.include?('directive') } }
+
+      subject(:operation) { described_class.convert(route, schema_registry) }
+
+      it 'sets deprecated to true' do
+        expect(operation.deprecated).to be true
+      end
+
+      it 'includes deprecated in output' do
+        expect(operation.to_h[:deprecated]).to be true
+      end
+    end
+
+    context 'with non-deprecated endpoint' do
+      let(:route) { routes.find { |r| r.path.include?('normal') } }
+
+      subject(:operation) { described_class.convert(route, schema_registry) }
+
+      it 'does not set deprecated' do
+        expect(operation.deprecated).to be_falsey
+      end
+
+      it 'does not include deprecated key in output' do
+        expect(operation.to_h).not_to have_key(:deprecated)
+      end
+    end
+  end
 end

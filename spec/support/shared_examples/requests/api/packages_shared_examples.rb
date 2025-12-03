@@ -192,13 +192,27 @@ RSpec.shared_examples 'bumping the package last downloaded at field' do
 end
 
 RSpec.shared_examples 'a successful package creation' do
-  it 'creates npm package with file' do
+  it 'creates a temporary npm package with file' do
     expect { subject }
       .to change { ::Packages::Npm::Package.for_projects(project).count }.by(1)
       .and change { Packages::PackageFile.count }.by(1)
-      .and change { Packages::Tag.count }.by(1)
-      .and change { Packages::Npm::Metadatum.count }.by(1)
 
     expect(response).to have_gitlab_http_status(:ok)
+  end
+
+  context 'when packages_npm_temp_package is disabled' do
+    before do
+      stub_feature_flags(packages_npm_temp_package: false)
+    end
+
+    it 'creates npm package with file' do
+      expect { subject }
+        .to change { ::Packages::Npm::Package.for_projects(project).count }.by(1)
+        .and change { Packages::PackageFile.count }.by(1)
+        .and change { Packages::Tag.count }.by(1)
+        .and change { Packages::Npm::Metadatum.count }.by(1)
+
+      expect(response).to have_gitlab_http_status(:ok)
+    end
   end
 end

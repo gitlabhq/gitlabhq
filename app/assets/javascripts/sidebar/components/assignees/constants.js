@@ -8,7 +8,6 @@ export const userTypes = {
   service_user: 'SERVICE_USER',
   ghost: 'GHOST',
   project_bot: 'PROJECT_BOT',
-  migration_bot: 'MIGRATION_BOT',
   security_bot: 'SECURITY_BOT',
   automation_bot: 'AUTOMATION_BOT',
   security_policy_bot: 'SECURITY_POLICY_BOT',

@@ -95,6 +95,8 @@ class Ability
         return result
       end
 
+      return false if composite_id_service_account_outside_origin_group?(user, subject)
+
       result && with_composite_identity_check(user, ability, subject, **opts)
 
     ensure
@@ -199,6 +201,14 @@ class Ability
 
       identity.scoped_user
     end
+
+    # rubocop:disable Gitlab/NoCodeCoverageComment -- Tested in EE; CE stub returns safe default; do call it in CE
+    # :nocov:
+    def composite_id_service_account_outside_origin_group?(_user, _subject)
+      false
+    end
+    # :nocov:
+    # rubocop:enable Gitlab/NoCodeCoverageComment
   end
 end
 

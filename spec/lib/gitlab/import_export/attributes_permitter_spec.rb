@@ -172,7 +172,10 @@ RSpec.describe Gitlab::ImportExport::AttributesPermitter, feature_category: :imp
     }
 
     Gitlab::ImportExport::Config.new.to_h[:included_attributes].each do |relation_sym, permitted_attributes|
-      context "for #{relation_sym}" do
+      context "for #{relation_sym}", quarantine: {
+        type: :broken,
+        issue: 'https://gitlab.com/gitlab-org/quality/engineering-productivity/master-broken-incidents/-/issues/19640'
+      } do
         it_behaves_like 'a permitted attribute', relation_sym, permitted_attributes, additional_attributes[relation_sym]
       end
     end

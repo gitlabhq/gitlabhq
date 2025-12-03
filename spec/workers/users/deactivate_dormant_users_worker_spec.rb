@@ -39,7 +39,6 @@ RSpec.describe Users::DeactivateDormantUsersWorker, feature_category: :seat_cost
         :service_user | 'deactivated'
         :ghost | 'active'
         :project_bot | 'active'
-        :migration_bot | 'active'
         :security_bot | 'active'
         :automation_bot | 'active'
       end

@@ -22,10 +22,25 @@ RSpec.describe Packages::CreatePackageFileService, feature_category: :package_re
         package_file = subject
 
         expect(package_file).to be_valid
-        expect(package_file.file_name).to eq('foo.jar')
+        expect(package_file).to have_attributes(
+          file_name: 'foo.jar',
+          status: 'default'
+        )
       end
 
       it_behaves_like 'assigns build to package file'
+
+      context 'when status is provided' do
+        let(:status) { :processing }
+        let(:params) { super().merge(status:) }
+
+        it 'creates a new package file of status' do
+          package_file = subject
+
+          expect(package_file).to be_valid
+          expect(package_file).to have_attributes(status: status.to_s)
+        end
+      end
     end
 
     context 'file is missing' do

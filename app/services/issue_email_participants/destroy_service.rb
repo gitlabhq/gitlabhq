@@ -43,7 +43,7 @@ module IssueEmailParticipants
     end
 
     def system_note_author
-      Users::Internal.support_bot if unsubscribe_context?
+      Users::Internal.for_organization(project.organization_id).support_bot if unsubscribe_context?
     end
 
     def unsubscribe_context?

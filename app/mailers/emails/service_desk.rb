@@ -90,7 +90,7 @@ module Emails
       @project = @service_desk_setting.project
 
       email_sender = sender(
-        Users::Internal.support_bot.id,
+        Users::Internal.for_organization(@project.organization_id).support_bot.id,
         send_from_user_email: false,
         sender_name: @service_desk_setting.outgoing_name,
         sender_email: @service_desk_setting.custom_email
@@ -146,7 +146,7 @@ module Emails
     def setup_service_desk_mail(issue_id, issue_email_participant = nil)
       @issue = Issue.find(issue_id)
       @project = @issue.project
-      @support_bot = Users::Internal.support_bot
+      @support_bot = Users::Internal.for_organization(@project.organization_id).support_bot
 
       @service_desk_setting = @project.service_desk_setting
 

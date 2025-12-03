@@ -192,6 +192,21 @@ RETURN NEW;
 END
 $$;
 
+CREATE FUNCTION bulk_import_batch_trackers_sharding_key() RETURNS trigger
+    LANGUAGE plpgsql
+    AS $$
+BEGIN
+  IF num_nonnulls(NEW.organization_id, NEW.namespace_id, NEW.project_id) != 1 THEN
+    SELECT "organization_id", "namespace_id", "project_id"
+    INTO NEW."organization_id", NEW."namespace_id", NEW."project_id"
+    FROM "bulk_import_trackers"
+    WHERE "bulk_import_trackers"."id" = NEW."tracker_id";
+  END IF;
+
+  RETURN NEW;
+END
+$$;
+
 CREATE FUNCTION bulk_import_trackers_sharding_key() RETURNS trigger
     LANGUAGE plpgsql
     AS $$
@@ -13925,6 +13940,9 @@ CREATE TABLE bulk_import_batch_trackers (
     fetched_objects_count integer DEFAULT 0 NOT NULL,
     imported_objects_count integer DEFAULT 0 NOT NULL,
     error text,
+    organization_id bigint,
+    namespace_id bigint,
+    project_id bigint,
     CONSTRAINT check_3d6963a51f CHECK ((char_length(error) <= 255))
 );
 
@@ -34873,6 +34891,9 @@ ALTER TABLE ONLY chat_teams
 ALTER TABLE epic_issues
     ADD CONSTRAINT check_048dce81f3 CHECK ((work_item_parent_link_id IS NOT NULL)) NOT VALID;
 
+ALTER TABLE bulk_import_batch_trackers
+    ADD CONSTRAINT check_13004cd9a8 CHECK ((num_nonnulls(namespace_id, organization_id, project_id) = 1)) NOT VALID;
+
 ALTER TABLE workspaces
     ADD CONSTRAINT check_2a89035b04 CHECK ((personal_access_token_id IS NOT NULL)) NOT VALID;
 
@@ -39557,6 +39578,12 @@ CREATE INDEX idx_branch_rules_mr_approval_settings_on_project_id ON projects_bra
 CREATE UNIQUE INDEX idx_branch_rules_mr_approval_settings_on_protected_branch_id ON projects_branch_rules_merge_request_approval_settings USING btree (protected_branch_id);
 
 CREATE INDEX idx_build_artifacts_size_refreshes_state_updated_at ON project_build_artifacts_size_refreshes USING btree (state, updated_at);
+
+CREATE INDEX idx_bulk_import_batch_trackers_on_namespace_id ON bulk_import_batch_trackers USING btree (namespace_id);
+
+CREATE INDEX idx_bulk_import_batch_trackers_on_organization_id ON bulk_import_batch_trackers USING btree (organization_id);
+
+CREATE INDEX idx_bulk_import_batch_trackers_on_project_id ON bulk_import_batch_trackers USING btree (project_id);
 
 CREATE INDEX idx_catalog_resource_cpmt_last_usages_on_cpmt_project_id ON catalog_resource_component_last_usages USING btree (component_project_id);
 
@@ -49390,6 +49417,8 @@ CREATE TRIGGER trigger_b83b7e51e2f5 BEFORE INSERT OR UPDATE ON scan_result_polic
 
 CREATE TRIGGER trigger_b8eecea7f351 BEFORE INSERT OR UPDATE ON dependency_proxy_manifest_states FOR EACH ROW EXECUTE FUNCTION trigger_b8eecea7f351();
 
+CREATE TRIGGER trigger_bulk_import_batch_trackers_sharding_key BEFORE INSERT OR UPDATE ON bulk_import_batch_trackers FOR EACH ROW EXECUTE FUNCTION bulk_import_batch_trackers_sharding_key();
+
 CREATE TRIGGER trigger_bulk_import_trackers_sharding_key BEFORE INSERT OR UPDATE ON bulk_import_trackers FOR EACH ROW EXECUTE FUNCTION bulk_import_trackers_sharding_key();
 
 CREATE TRIGGER trigger_c17a166692a2 BEFORE INSERT OR UPDATE ON audit_events_streaming_headers FOR EACH ROW EXECUTE FUNCTION trigger_c17a166692a2();
@@ -50415,6 +50444,9 @@ ALTER TABLE ONLY issue_assignees
 ALTER TABLE ONLY import_offline_configurations
     ADD CONSTRAINT fk_4c2f23efc7 FOREIGN KEY (organization_id) REFERENCES organizations(id) ON DELETE CASCADE;
 
+ALTER TABLE ONLY bulk_import_batch_trackers
+    ADD CONSTRAINT fk_4cd59701d0 FOREIGN KEY (project_id) REFERENCES projects(id) ON DELETE CASCADE NOT VALID;
+
 ALTER TABLE ONLY packages_conan_recipe_revisions
     ADD CONSTRAINT fk_4d18bd6f82 FOREIGN KEY (project_id) REFERENCES projects(id) ON DELETE CASCADE;
 
@@ -50606,6 +50638,9 @@ ALTER TABLE ONLY project_access_tokens
 
 ALTER TABLE ONLY issue_metrics
     ADD CONSTRAINT fk_5fc5653bb3 FOREIGN KEY (namespace_id) REFERENCES namespaces(id) ON DELETE CASCADE;
+
+ALTER TABLE ONLY bulk_import_batch_trackers
+    ADD CONSTRAINT fk_607aa73b9b FOREIGN KEY (organization_id) REFERENCES organizations(id) ON DELETE CASCADE NOT VALID;
 
 ALTER TABLE ONLY resource_label_events
     ADD CONSTRAINT fk_60a3881b58 FOREIGN KEY (namespace_id) REFERENCES namespaces(id) ON DELETE CASCADE;
@@ -50906,6 +50941,9 @@ ALTER TABLE ONLY issue_customer_relations_contacts
 
 ALTER TABLE ONLY personal_access_tokens
     ADD CONSTRAINT fk_7cea2c7262 FOREIGN KEY (group_id) REFERENCES namespaces(id) ON DELETE SET NULL;
+
+ALTER TABLE ONLY bulk_import_batch_trackers
+    ADD CONSTRAINT fk_7d065b6ad0 FOREIGN KEY (namespace_id) REFERENCES namespaces(id) ON DELETE CASCADE NOT VALID;
 
 ALTER TABLE ONLY slack_integrations
     ADD CONSTRAINT fk_7d173ade7f FOREIGN KEY (group_id) REFERENCES namespaces(id) ON DELETE CASCADE;

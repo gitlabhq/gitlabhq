@@ -13,11 +13,15 @@ FactoryBot.define do
     end
 
     after(:build) do |package_file, evaluator|
-      package_file.file = fixture_file_upload(evaluator.file_fixture)
+      package_file.file = fixture_file_upload(evaluator.file_fixture) if evaluator.file_fixture
     end
 
     trait :pending_destruction do
       status { :pending_destruction }
+    end
+
+    trait :processing do
+      status { :processing }
     end
 
     factory :conan_package_file do

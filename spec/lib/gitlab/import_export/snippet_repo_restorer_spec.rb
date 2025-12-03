@@ -23,36 +23,18 @@ RSpec.describe Gitlab::ImportExport::SnippetRepoRestorer, :clean_gitlab_redis_sh
   end
 
   shared_examples 'no bundle file present' do
-    it 'creates the repository from the database content' do
-      expect(snippet.repository_exists?).to be_falsey
-
-      aggregate_failures do
-        expect do
-          expect(restorer.restore).to be_truthy
-        end.to change { SnippetRepository.count }.by(1)
-
-        snippet.repository.expire_method_caches(%i[exists?])
-        expect(snippet.repository_exists?).to be_truthy
-
-        blob = snippet.repository.blob_at(snippet.default_branch, snippet.file_name)
-        expect(blob).not_to be_nil
-        expect(blob.data).to eq(snippet.content)
-      end
+    it 'returns true and creates an ImportFailure' do
+      expect(restorer.restore).to be true
+      expect(ImportFailure.last).to have_attributes(
+        source: 'SnippetRepoRestorer#restore',
+        relation_key: 'snippets',
+        exception_class: 'MissingBundleFile',
+        project_id: project.id
+      )
     end
 
-    it 'does not call snippet update statistics service' do
-      expect(Snippets::UpdateStatisticsService).not_to receive(:new).with(snippet)
-
-      restorer.restore
-    end
-
-    context 'when the repository creation fails' do
-      it 'returns false' do
-        allow_any_instance_of(Gitlab::BackgroundMigration::BackfillSnippetRepositories).to receive(:perform_by_ids).and_return(nil)
-
-        expect(restorer.restore).to be false
-        expect(shared.errors.first).to match(/Error creating repository for snippet/)
-      end
+    it 'does not create a snippet repository' do
+      expect { restorer.restore }.not_to change { SnippetRepository.count }
     end
   end
 

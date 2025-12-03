@@ -131,10 +131,6 @@ FactoryBot.define do
       email { "#{User::SERVICE_ACCOUNT_PREFIX}_#{generate(:username)}@#{User::NOREPLY_EMAIL_DOMAIN}" }
     end
 
-    trait :migration_bot do
-      user_type { :migration_bot }
-    end
-
     trait :security_bot do
       user_type { :security_bot }
     end
@@ -291,6 +287,7 @@ FactoryBot.define do
 
     factory :support_bot do
       user_type { :support_bot }
+      username { 'support-bot' }
     end
   end
 end

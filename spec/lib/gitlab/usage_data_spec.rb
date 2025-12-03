@@ -325,12 +325,14 @@ RSpec.describe Gitlab::UsageData, :aggregate_failures, feature_category: :servic
   end
 
   describe 'usage_activity_by_stage_plan' do
+    let(:support_bot) { create(:support_bot) }
+
     it 'includes accurate usage_activity_by_stage data' do
       for_defined_days_back do
         user = create(:user)
         project = create(:project, creator: user)
         issue = create(:issue, project: project, author: user)
-        create(:issue, project: project, author: Users::Internal.support_bot)
+        create(:issue, project: project, author: support_bot)
         create(:note, project: project, noteable: issue, author: user)
         create(:todo, project: project, target: issue, author: user)
         create(:jira_integration, active: true, project: create(:project, :jira_dvcs_server, creator: user))
@@ -361,7 +363,7 @@ RSpec.describe Gitlab::UsageData, :aggregate_failures, feature_category: :servic
         user = create(:user)
         project = create(:project, creator: user)
         create(:issue, project: project, author: user)
-        create(:issue, project: project, author: Users::Internal.support_bot)
+        create(:issue, project: project, author: support_bot)
       end
 
       expect(described_class.usage_activity_by_stage_plan({})).to include(issues: 3)
@@ -642,9 +644,10 @@ RSpec.describe Gitlab::UsageData, :aggregate_failures, feature_category: :servic
     subject { described_class.send(:service_desk_counts) }
 
     let(:project) { create(:project, :service_desk_enabled) }
+    let(:support_bot) { Users::Internal.for_organization(project.organization_id).support_bot }
 
     it 'gathers Service Desk data' do
-      create_list(:issue, 2, :confidential, author: Users::Internal.support_bot, project: project)
+      create_list(:issue, 2, :confidential, author: support_bot, project: project)
 
       expect(subject).to eq(service_desk_enabled_projects: 1, service_desk_issues: 2)
     end

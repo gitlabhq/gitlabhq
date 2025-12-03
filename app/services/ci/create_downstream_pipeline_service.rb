@@ -31,7 +31,11 @@ module Ci
 
       return ServiceResponse.error(message: 'Pre-conditions not met') unless ensure_preconditions!(target_ref)
 
-      return ServiceResponse.error(message: 'Can not run the bridge') unless @bridge.run
+      # Allow retrying if the bridge is already running but has no downstream pipeline.
+      # This handles the case where a previous worker was terminated mid-execution.
+      unless @bridge.running? || @bridge.run
+        return ServiceResponse.error(message: "Cannot run the bridge, status: #{@bridge.status}")
+      end
 
       service = ::Ci::CreatePipelineService.new(
         pipeline_params.fetch(:project),

@@ -45,6 +45,11 @@ RSpec.describe 'new tables missing sharding_key', feature_category: :organizatio
   let(:allowed_to_be_missing_not_null) do
     [
       'member_roles.namespace_id', # https://gitlab.com/gitlab-org/gitlab/-/issues/444161
+      *%w[
+        bulk_import_batch_trackers.organization_id
+        bulk_import_batch_trackers.namespace_id
+        bulk_import_batch_trackers.project_id
+      ], # https://gitlab.com/gitlab-org/gitlab/-/merge_requests/213933
       *uploads_and_partitions,
       'security_scans.project_id', # NOT NULL constraint NOT VALID
       'keys.organization_id', # https://gitlab.com/gitlab-org/gitlab/-/issues/577246
@@ -273,7 +278,7 @@ RSpec.describe 'new tables missing sharding_key', feature_category: :organizatio
     work_in_progress = {
       "authentication_events" => "https://gitlab.com/gitlab-org/gitlab/-/issues/561359",
       "snippet_user_mentions" => "https://gitlab.com/gitlab-org/gitlab/-/issues/517825",
-      "bulk_import_trackers" => "https://gitlab.com/gitlab-org/gitlab/-/issues/560846",
+      "bulk_import_batch_trackers" => "https://gitlab.com/gitlab-org/gitlab/-/merge_requests/213933",
       "organization_users" => 'https://gitlab.com/gitlab-org/gitlab/-/issues/476210',
       "push_rules" => 'https://gitlab.com/gitlab-org/gitlab/-/issues/476212',
       "topics" => 'https://gitlab.com/gitlab-org/gitlab/-/issues/463254',

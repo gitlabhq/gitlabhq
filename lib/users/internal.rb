@@ -8,7 +8,7 @@ module Users
       extend Forwardable
 
       def_delegators :new, :bot_avatar, :ghost, :support_bot, :alert_bot,
-        :migration_bot, :security_bot, :automation_bot,
+        :security_bot, :automation_bot,
         :duo_code_review_bot, :admin_bot
 
       def for_organization(organization)
@@ -59,17 +59,6 @@ module Users
         u.bio = 'The GitLab alert bot'
         u.name = 'GitLab Alert Bot'
         u.avatar = bot_avatar(image: 'alert-bot.png')
-        u.confirmed_at = Time.zone.now
-        u.private_profile = true
-      end
-    end
-
-    def migration_bot
-      email_pattern = "noreply+gitlab-migration-bot%s@#{Settings.gitlab.host}"
-
-      unique_internal(User.where(user_type: :migration_bot), 'migration-bot', email_pattern) do |u|
-        u.bio = 'The GitLab migration bot'
-        u.name = 'GitLab Migration Bot'
         u.confirmed_at = Time.zone.now
         u.private_profile = true
       end

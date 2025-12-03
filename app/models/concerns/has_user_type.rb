@@ -11,7 +11,7 @@ module HasUserType
     service_user: 4,
     ghost: 5,
     project_bot: 6,
-    migration_bot: 7,
+    # 7: Deprecated migration_bot type (removed)
     security_bot: 8,
     automation_bot: 9,
     security_policy_bot: 10,
@@ -28,7 +28,6 @@ module HasUserType
     project_bot
     support_bot
     visual_review_bot
-    migration_bot
     security_bot
     automation_bot
     security_policy_bot

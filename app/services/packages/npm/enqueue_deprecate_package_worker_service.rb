@@ -2,6 +2,8 @@
 
 module Packages
   module Npm
+    # TODO: Remove with the rollout of the FF packages_npm_temp_package
+    # https://gitlab.com/gitlab-org/gitlab/-/issues/579369
     class EnqueueDeprecatePackageWorkerService < BaseService
       def execute
         deprecated_versions

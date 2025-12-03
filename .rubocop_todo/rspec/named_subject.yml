@@ -3029,7 +3029,6 @@ RSpec/NamedSubject:
     - 'spec/tasks/gitlab/lfs/migrate_rake_spec.rb'
     - 'spec/tasks/gitlab/pages_rake_spec.rb'
     - 'spec/tasks/gitlab/seed/group_seed_rake_spec.rb'
-    - 'spec/tasks/gitlab/snippets_rake_spec.rb'
     - 'spec/tasks/gitlab/terraform/migrate_rake_spec.rb'
     - 'spec/tasks/gitlab/x509/update_rake_spec.rb'
     - 'spec/tooling/danger/analytics_instrumentation_spec.rb'

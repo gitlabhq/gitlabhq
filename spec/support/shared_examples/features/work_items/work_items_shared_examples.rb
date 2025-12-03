@@ -1169,7 +1169,7 @@ RSpec.shared_examples 'work items linked items' do |is_group = false|
     # Ensure support bot user is created so creation doesn't count towards query limit
     # and we don't try to obtain an exclusive lease within a transaction.
     # See https://gitlab.com/gitlab-org/gitlab/-/issues/509629
-    Users::Internal.support_bot_id
+    create(:support_bot)
   end
 
   it 'are not displayed when issue does not have work item links', :aggregate_failures do

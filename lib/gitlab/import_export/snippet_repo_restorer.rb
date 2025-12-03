@@ -19,11 +19,27 @@ module Gitlab
 
       def restore
         with_progress_tracking(**progress_tracking_options(snippet)) do
-          if File.exist?(path_to_bundle)
-            create_repository_from_bundle
-          else
-            create_repository_from_db
+          unless File.exist?(path_to_bundle)
+            @shared.logger.info(
+              message: '[Snippet Import] Missing repository bundle',
+              project_id: snippet.project_id,
+              relation_key: 'snippets',
+              error_messages: "Repository bundle for snippet #{snippet.id} not found"
+            )
+
+            ::ImportFailure.create(
+              source: 'SnippetRepoRestorer#restore',
+              relation_key: 'snippets',
+              exception_class: 'MissingBundleFile',
+              exception_message: "Repository bundle for snippet #{snippet.id} not found",
+              correlation_id_value: Labkit::Correlation::CorrelationId.current_or_new_id,
+              project_id: snippet.project_id
+            )
+
+            next true
           end
+
+          create_repository_from_bundle
 
           true
         end
@@ -48,14 +64,6 @@ module Gitlab
           raise SnippetRepositoryError, _("Invalid repository bundle for snippet with id %{snippet_id}") % { snippet_id: snippet.id }
         else
           Snippets::UpdateStatisticsService.new(snippet).execute
-        end
-      end
-
-      def create_repository_from_db
-        Gitlab::BackgroundMigration::BackfillSnippetRepositories.new.perform_by_ids([snippet.id])
-
-        unless snippet.reset.snippet_repository
-          raise SnippetRepositoryError, _("Error creating repository for snippet with id %{snippet_id}") % { snippet_id: snippet.id }
         end
       end
 

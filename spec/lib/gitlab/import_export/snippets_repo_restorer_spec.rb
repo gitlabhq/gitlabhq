@@ -21,7 +21,7 @@ RSpec.describe Gitlab::ImportExport::SnippetsRepoRestorer, :clean_gitlab_redis_r
       FileUtils.rm_rf(shared.export_path)
     end
 
-    shared_examples 'imports snippet repositories' do
+    shared_examples 'imports snippet repositories' do |snippet1_has_repository:, snippet2_has_repository:|
       before do
         snippet1.snippet_repository&.delete
         # We need to explicitly invalidate repository.exists? from cache by calling repository.expire_exists_cache.
@@ -51,8 +51,19 @@ RSpec.describe Gitlab::ImportExport::SnippetsRepoRestorer, :clean_gitlab_redis_r
         snippet1.repository.expire_exists_cache
         snippet2.repository.expire_exists_cache
 
-        expect(snippet1.blobs).not_to be_empty
-        expect(snippet2.blobs).not_to be_empty
+        # Snippet 1: should have repository content if it had a bundle
+        if snippet1_has_repository
+          expect(snippet1.blobs).not_to be_empty
+        else
+          expect(snippet1.blobs).to be_empty
+        end
+
+        # Snippet 2: should have repository content if it had a bundle
+        if snippet2_has_repository
+          expect(snippet2.blobs).not_to be_empty
+        else
+          expect(snippet2.blobs).to be_empty
+        end
       end
     end
 
@@ -61,7 +72,8 @@ RSpec.describe Gitlab::ImportExport::SnippetsRepoRestorer, :clean_gitlab_redis_r
         expect(Dir.exist?(bundle_dir)).to be false
       end
 
-      it_behaves_like 'imports snippet repositories'
+      # Neither snippet has a bundle, so neither will have a repository after import
+      it_behaves_like 'imports snippet repositories', snippet1_has_repository: false, snippet2_has_repository: false
     end
 
     context 'when export has snippet repository bundles and snippets without them' do
@@ -75,10 +87,11 @@ RSpec.describe Gitlab::ImportExport::SnippetsRepoRestorer, :clean_gitlab_redis_r
         expect(File.exist?(bundle_path(snippet2))).to be false
       end
 
-      it_behaves_like 'imports snippet repositories'
+      # snippet1 has a bundle and imports successfully, snippet2 has no bundle and is skipped
+      it_behaves_like 'imports snippet repositories', snippet1_has_repository: true, snippet2_has_repository: false
     end
 
-    context 'when export has only snippet bundles' do
+    context 'when all snippets have bundles' do
       let!(:snippet1) { create(:project_snippet, :repository, project: project, author: user) }
       let!(:snippet2) { create(:project_snippet, :repository, project: project, author: user) }
 
@@ -89,7 +102,8 @@ RSpec.describe Gitlab::ImportExport::SnippetsRepoRestorer, :clean_gitlab_redis_r
         expect(File.exist?(bundle_path(snippet2))).to be true
       end
 
-      it_behaves_like 'imports snippet repositories'
+      # Both snippets have bundles and import successfully
+      it_behaves_like 'imports snippet repositories', snippet1_has_repository: true, snippet2_has_repository: true
     end
 
     context 'when any of the snippet repositories cannot be created' do

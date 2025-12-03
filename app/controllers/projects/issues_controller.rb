@@ -461,7 +461,7 @@ class Projects::IssuesController < Projects::ApplicationController
 
     if service_desk?
       options.reject! { |key| key == 'author_username' || key == 'author_id' }
-      options[:author_id] = Users::Internal.support_bot
+      options[:author_id] = Users::Internal.for_organization(project.organization_id).support_bot
     end
 
     options

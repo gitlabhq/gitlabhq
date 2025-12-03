@@ -54,7 +54,7 @@ module Gitlab
         end
 
         def create_note
-          external_author = from_address if author == Users::Internal.support_bot
+          external_author = from_address if author.support_bot?
 
           sent_notification.create_reply(note_message, external_author)
         end
@@ -71,7 +71,7 @@ module Gitlab
 
         def validate_from_address!
           # Recipieint is always set to Support bot for ServiceDesk issues so we should exclude those.
-          return if author == Users::Internal.support_bot
+          return if author.support_bot?
 
           raise UserNotFoundError unless from_address && author.verified_email?(from_address)
         end
@@ -79,12 +79,12 @@ module Gitlab
         def reopen_issue_on_external_participant_note
           return unless noteable.respond_to?(:closed?)
           return unless noteable.closed?
-          return unless author == Users::Internal.support_bot
+          return unless author.support_bot?
           return unless project.service_desk_setting&.reopen_issue_on_external_participant_note?
 
           ::Notes::CreateService.new(
             project,
-            Users::Internal.support_bot,
+            Users::Internal.for_organization(project.organization_id).support_bot,
             noteable: noteable,
             note: build_reopen_message,
             confidential: true

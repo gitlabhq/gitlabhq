@@ -35,7 +35,6 @@ module Tooling
         alert_bot
         visual_review_bot
         ghost
-        migration_bot
         security_bot
         automation_bot
         security_policy_bot

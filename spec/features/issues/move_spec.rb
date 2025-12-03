@@ -5,10 +5,6 @@ require 'spec_helper'
 RSpec.describe 'issue move to another project', :js, feature_category: :team_planning do
   include ListboxHelpers
 
-  # Ensure support bot user is created so creation doesn't count towards query limit
-  # See https://gitlab.com/gitlab-org/gitlab/-/issues/509629
-  let_it_be(:support_bot) { Users::Internal.support_bot }
-
   let(:user) { create(:user) }
   let(:old_project) { create(:project, :repository) }
   let(:text) { 'Some issue description' }
@@ -97,7 +93,8 @@ RSpec.describe 'issue move to another project', :js, feature_category: :team_pla
     let(:namespace) { create(:namespace) }
     let(:regular_project) { create(:project, title: project_title, service_desk_enabled: false) }
     let(:service_desk_project) { build(:project, :private, namespace: namespace, service_desk_enabled: true) }
-    let(:service_desk_issue) { create(:issue, project: service_desk_project, author: ::Users::Internal.support_bot) }
+    let(:support_bot) { Users::Internal.for_organization(service_desk_project.organization_id).support_bot }
+    let(:service_desk_issue) { create(:issue, project: service_desk_project, author: support_bot) }
 
     before do
       allow(Gitlab::Email::IncomingEmail).to receive(:enabled?).and_return(true)

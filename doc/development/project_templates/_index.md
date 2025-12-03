@@ -163,8 +163,6 @@ steps:
   - Defined in `app/services/snippets/repository_validation_service.rb`.
 - `Snippets::UpdateStatisticsService`: Updates statistics for the snippets repository.
   - Defined in `app/services/snippets/update_statistics_service.rb`.
-- `Gitlab::BackgroundMigration::BackfillSnippetRepositories`: Backfills missing snippets in hashed storage.
-  - Defined in `lib/gitlab/background_migration/backfill_snippet_repositories.rb`.
 - `Gitlab::ImportExport::StatisticsRestorer`: Refreshes project statistics.
   - Defined in `lib/gitlab/import_export/importer.rb`.
 - `Gitlab::ImportExport::Project::CustomTemplateRestorer`: Handles additional imports for custom templates.

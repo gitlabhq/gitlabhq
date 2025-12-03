@@ -608,7 +608,6 @@ Style/IfUnlessModifier:
     - 'lib/tasks/gitlab/seed.rake'
     - 'lib/tasks/gitlab/shell.rake'
     - 'lib/tasks/gitlab/sidekiq.rake'
-    - 'lib/tasks/gitlab/snippets.rake'
     - 'lib/tasks/gitlab/update_templates.rake'
     - 'qa/qa/page/mattermost/login.rb'
     - 'qa/qa/page/page_concern.rb'

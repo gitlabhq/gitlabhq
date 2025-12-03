@@ -10,12 +10,15 @@ module Packages
 
     def execute
       package_file = package.package_files.build(
-        file: params[:file],
-        size: params[:size],
-        file_name: params[:file_name],
-        file_sha1: params[:file_sha1],
-        file_sha256: params[:file_sha256],
-        file_md5: params[:file_md5]
+        {
+          file: params[:file],
+          size: params[:size],
+          file_name: params[:file_name],
+          file_sha1: params[:file_sha1],
+          file_sha256: params[:file_sha256],
+          file_md5: params[:file_md5],
+          status: params[:status]
+        }.compact_blank
       )
 
       if params[:build].present?

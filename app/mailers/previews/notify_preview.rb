@@ -660,7 +660,7 @@ class NotifyPreview < ActionMailer::Preview
     # will obtain an exclusive lease.
     # The `cleanup` method wraps the email-generating-block in a transaction.
     # See issue: https://gitlab.com/gitlab-org/gitlab/-/issues/441523
-    Users::Internal.support_bot
+    Users::Internal.for_organization(project.organization_id).support_bot
   end
 
   def ensure_visual_review_bot_exists

@@ -28,8 +28,10 @@ module QA
           click_on 'Delete'
         end
 
-        def highlight_text
-          find_element('content').double_click
+        def double_click_code_token(text)
+          within_element('content') do
+            find('span', text: text, match: :first).double_click
+          end
         end
 
         def explain_code

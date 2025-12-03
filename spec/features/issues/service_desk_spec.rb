@@ -6,7 +6,6 @@ RSpec.describe 'Service Desk Issue Tracker', :js, feature_category: :service_des
   let(:project) { create(:project, :private, service_desk_enabled: true) }
 
   let_it_be(:user) { create(:user) }
-  let_it_be(:support_bot) { Users::Internal.support_bot }
 
   before do
     # TODO: When removing the feature flag,
@@ -37,6 +36,7 @@ RSpec.describe 'Service Desk Issue Tracker', :js, feature_category: :service_des
   end
 
   context 'issue page' do
+    let(:support_bot) { Users::Internal.for_organization(project.organization_id).support_bot }
     let(:service_desk_issue) { create(:issue, project: project, author: support_bot, service_desk_reply_to: 'service.desk@example.com') }
 
     it 'shows service_desk_reply_to in issue header' do
@@ -87,6 +87,7 @@ RSpec.describe 'Service Desk Issue Tracker', :js, feature_category: :service_des
       context 'when there are issues' do
         let_it_be(:project) { create(:project, :private, service_desk_enabled: true) }
         let_it_be(:other_user) { create(:user) }
+        let_it_be(:support_bot) { Users::Internal.for_organization(project.organization_id).support_bot }
         let_it_be(:service_desk_issue) { create(:issue, project: project, title: 'Help from email', author: support_bot, service_desk_reply_to: 'service.desk@example.com') }
         let_it_be(:other_user_issue) { create(:issue, project: project, author: other_user) }
 
@@ -123,6 +124,7 @@ RSpec.describe 'Service Desk Issue Tracker', :js, feature_category: :service_des
     end
 
     context 'for feature flags' do
+      let(:support_bot) { Users::Internal.for_organization(project.organization_id).support_bot }
       let(:service_desk_issue) { create(:issue, project: project, author: support_bot, service_desk_reply_to: 'service.desk@example.com') }
 
       before do

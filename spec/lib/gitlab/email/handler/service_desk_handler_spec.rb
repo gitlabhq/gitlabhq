@@ -26,6 +26,7 @@ RSpec.describe Gitlab::Email::Handler::ServiceDeskHandler, feature_category: :se
 
   context 'when service desk is enabled for the project' do
     let_it_be_with_reload(:project) { create(:project, :repository, :private, group: group, path: 'test', service_desk_enabled: true) }
+    let_it_be(:support_bot) { create(:support_bot) }
 
     let(:confidential_ticket) { true }
 
@@ -43,7 +44,7 @@ RSpec.describe Gitlab::Email::Handler::ServiceDeskHandler, feature_category: :se
 
         new_issue = Issue.last
 
-        expect(new_issue.author).to eql(Users::Internal.support_bot)
+        expect(new_issue.author).to eql(support_bot)
         expect(new_issue.confidential?).to be confidential_ticket
         expect(new_issue.all_references.all).to be_empty
         expect(new_issue.title).to eq(expected_subject)
@@ -292,7 +293,7 @@ RSpec.describe Gitlab::Email::Handler::ServiceDeskHandler, feature_category: :se
 
             expect(notes.count).to eq(1)
             expect(new_note.note).to eq("Service desk reply!\n\n`/label ~label2`")
-            expect(new_note.author).to eql(Users::Internal.support_bot)
+            expect(new_note.author).to eql(support_bot)
           end
 
           it 'does not send thank you email' do
@@ -428,7 +429,7 @@ RSpec.describe Gitlab::Email::Handler::ServiceDeskHandler, feature_category: :se
                 issue = Issue.last
                 expect(issue.description).to include('Text from service_desk2 template')
                 expect(issue.label_ids).to include(label.id)
-                expect(issue.author_id).to eq(Users::Internal.support_bot.id)
+                expect(issue.author_id).to eq(support_bot.id)
                 expect(issue.milestone).to eq(milestone)
               end
             end
@@ -454,7 +455,7 @@ RSpec.describe Gitlab::Email::Handler::ServiceDeskHandler, feature_category: :se
             note = Note.last
 
             expect(note.note).to include("WARNING: The template file unknown.md used for service desk issues is empty or could not be found.")
-            expect(note.author).to eq(Users::Internal.support_bot)
+            expect(note.author).to eq(support_bot)
           end
 
           it 'does not send warning note email', :sidekiq_inline do

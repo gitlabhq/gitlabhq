@@ -323,6 +323,14 @@ RSpec.describe API::NpmProjectPackages, :aggregate_failures, feature_category: :
         end
 
         it_behaves_like 'returning response status with message', status: :forbidden, message: '403 Forbidden'
+
+        context 'when packages_npm_temp_package is disabled' do
+          before do
+            stub_feature_flags(packages_npm_temp_package: false)
+          end
+
+          it_behaves_like 'returning response status with message', status: :forbidden, message: '403 Forbidden'
+        end
       end
 
       context 'with a developer' do
@@ -336,16 +344,66 @@ RSpec.describe API::NpmProjectPackages, :aggregate_failures, feature_category: :
           expect(response).to have_gitlab_http_status(:ok)
           expect(response.media_type).to eq(Gitlab::Workhorse::INTERNAL_API_CONTENT_TYPE)
           expect(json_response).to include(
-            'TempPath' => Packages::Npm::PackageFileUploader.workhorse_local_upload_path,
+            'TempPath' => Packages::PackageFileUploader.workhorse_local_upload_path,
             'MaximumSize' => 1.megabyte
           )
           expect(json_response['RemoteObject']).to be_nil
+        end
+
+        context 'when packages_npm_temp_package is disabled' do
+          before do
+            stub_feature_flags(packages_npm_temp_package: false)
+          end
+
+          it 'authorizes the upload' do
+            request
+
+            expect(response).to have_gitlab_http_status(:ok)
+            expect(response.media_type).to eq(Gitlab::Workhorse::INTERNAL_API_CONTENT_TYPE)
+            expect(json_response).to include(
+              'TempPath' => Packages::Npm::PackageFileUploader.workhorse_local_upload_path,
+              'MaximumSize' => 1.megabyte
+            )
+            expect(json_response['RemoteObject']).to be_nil
+          end
+        end
+      end
+
+      context 'with a job token' do
+        let_it_be(:job) { create(:ci_build, :running, user: user, project: project) }
+
+        let(:headers) { build_token_auth_header(job.token).merge(workhorse_headers) }
+
+        before do
+          project.update!(visibility_level: Gitlab::VisibilityLevel::PRIVATE)
+          project.add_developer(user)
+        end
+
+        context 'valid token' do
+          it_behaves_like 'returning response status', :success
+        end
+
+        context 'with a job token from a different project' do
+          let_it_be(:other_project) { create(:project) }
+          let_it_be(:other_job) { create(:ci_build, :running, user: user, project: other_project) }
+
+          let(:headers) { build_token_auth_header(other_job.token).merge(workhorse_headers) }
+
+          it_behaves_like 'returning response status', :forbidden
         end
       end
     end
 
     context 'without workhorse headers' do
       it_behaves_like 'returning response status with message', status: :forbidden, message: '403 Forbidden'
+
+      context 'when packages_npm_temp_package is disabled' do
+        before do
+          stub_feature_flags(packages_npm_temp_package: false)
+        end
+
+        it_behaves_like 'returning response status with message', status: :forbidden, message: '403 Forbidden'
+      end
     end
   end
 
@@ -390,44 +448,59 @@ RSpec.describe API::NpmProjectPackages, :aggregate_failures, feature_category: :
 
           it_behaves_like 'handling invalid record with 400 error', "Validation failed: Name #{Gitlab::Regex.npm_package_name_regex_message}"
           it_behaves_like 'not a package tracking event'
-        end
 
-        context 'invalid package version' do
-          using RSpec::Parameterized::TableSyntax
+          context 'when packages_npm_temp_package is disabled' do
+            before do
+              stub_feature_flags(packages_npm_temp_package: false)
+            end
 
-          where(:package_version) do
-            [
-              '1',
-              '1.2',
-              '1./2.3',
-              '../../../../../1.2.3',
-              '%2e%2e%2f1.2.3'
-            ]
-          end
-
-          with_them do
-            it_behaves_like 'handling invalid record with 400 error', "Validation failed: Version #{Gitlab::Regex.semver_regex_message}"
+            it_behaves_like 'handling invalid record with 400 error', "Validation failed: Name #{Gitlab::Regex.npm_package_name_regex_message}"
             it_behaves_like 'not a package tracking event'
           end
         end
 
-        context 'invalid package attachment data' do
-          let(:fixture_file_path) { 'npm/payload_with_empty_attachment.json' }
+        context 'when packages_npm_temp_package is disabled' do
+          before do
+            stub_feature_flags(packages_npm_temp_package: false)
+          end
 
-          it_behaves_like 'handling invalid record with 400 error', 'Attachment data is empty.'
-          it_behaves_like 'not a package tracking event'
-        end
+          context 'invalid package version' do
+            using RSpec::Parameterized::TableSyntax
 
-        context 'invalid json document' do
-          let(:fixture_file_content) { 'this_is_not_json' }
+            where(:package_version) do
+              [
+                '1',
+                '1.2',
+                '1./2.3',
+                '../../../../../1.2.3',
+                '%2e%2e%2f1.2.3'
+              ]
+            end
 
-          it_behaves_like 'handling invalid record with 400 error', 'Invalid json'
-        end
+            with_them do
+              it_behaves_like 'handling invalid record with 400 error', "Validation failed: Version #{Gitlab::Regex.semver_regex_message}"
+              it_behaves_like 'not a package tracking event'
+            end
+          end
 
-        context 'missing versions key' do
-          let(:fixture_file_content) { Gitlab::Json.parse(super()).tap { |h| h.delete('versions') }.to_json }
+          context 'invalid package attachment data' do
+            let(:fixture_file_path) { 'npm/payload_with_empty_attachment.json' }
 
-          it_behaves_like 'handling invalid record with 400 error', 'Versions key is missing from the JSON upload'
+            it_behaves_like 'handling invalid record with 400 error', 'Attachment data is empty.'
+            it_behaves_like 'not a package tracking event'
+          end
+
+          context 'invalid json document' do
+            let(:fixture_file_content) { 'this_is_not_json' }
+
+            it_behaves_like 'handling invalid record with 400 error', 'Invalid json'
+          end
+
+          context 'missing versions key' do
+            let(:fixture_file_content) { Gitlab::Json.parse(super()).tap { |h| h.delete('versions') }.to_json }
+
+            it_behaves_like 'handling invalid record with 400 error', 'Versions key is missing from the JSON upload'
+          end
         end
       end
 
@@ -481,135 +554,153 @@ RSpec.describe API::NpmProjectPackages, :aggregate_failures, feature_category: :
           it_behaves_like 'handling upload with different authentications'
         end
 
-        it_behaves_like 'does not enqueue a worker to sync a npm metadata cache'
+        context 'when packages_npm_temp_package is disabled' do
+          before do
+            stub_feature_flags(packages_npm_temp_package: false)
+          end
+
+          it_behaves_like 'does not enqueue a worker to sync a npm metadata cache'
+        end
 
         context 'with an existing package' do
           let_it_be(:second_project) { create(:project, namespace: namespace) }
 
-          context 'following the naming convention' do
-            let_it_be(:second_package) { create(:npm_package, project: second_project, name: "@#{group.path}/test", version: package_version) }
+          context 'when packages_npm_temp_package is disabled' do
+            before do
+              stub_feature_flags(packages_npm_temp_package: false)
+            end
 
-            let(:package_name) { "@#{group.path}/test" }
+            context 'following the naming convention' do
+              let_it_be(:second_package) { create(:npm_package, project: second_project, name: "@#{group.path}/test", version: package_version) }
 
-            it_behaves_like 'handling invalid record with 400 error', 'Validation failed: Package already exists'
-            it_behaves_like 'not a package tracking event'
+              let(:package_name) { "@#{group.path}/test" }
 
-            context 'with a new version' do
-              let_it_be(:package_version) { '4.5.6' }
+              it_behaves_like 'handling invalid record with 400 error', 'Validation failed: Package already exists'
+              it_behaves_like 'not a package tracking event'
+
+              context 'with a new version' do
+                let_it_be(:package_version) { '4.5.6' }
+
+                it_behaves_like 'uploading the package'
+              end
+            end
+
+            context 'not following the naming convention' do
+              let_it_be(:second_package) { create(:npm_package, project: second_project, name: "@any_scope/test", version: package_version) }
+
+              let(:package_name) { "@any_scope/test" }
 
               it_behaves_like 'uploading the package'
             end
           end
-
-          context 'not following the naming convention' do
-            let_it_be(:second_package) { create(:npm_package, project: second_project, name: "@any_scope/test", version: package_version) }
-
-            let(:package_name) { "@any_scope/test" }
-
-            it_behaves_like 'uploading the package'
-          end
         end
       end
 
-      context 'package creation fails' do
+      context 'when packages_npm_temp_package is disabled' do
         before do
-          create(:npm_package, project: project, version: package_version, name: "@#{group.path}/my_package_name")
+          stub_feature_flags(packages_npm_temp_package: false)
         end
 
-        it_behaves_like 'not a package tracking event'
-
-        it 'returns an error if the package already exists' do
-          expect { request }.not_to change { ::Packages::Npm::Package.for_projects(project).count }
-          expect(response).to have_gitlab_http_status(:forbidden)
-          expect(json_response['error']).to eq('Package already exists.')
-        end
-
-        it_behaves_like 'does not enqueue a worker to sync a npm metadata cache'
-      end
-
-      context 'with dependencies' do
-        let(:fixture_file_path) { 'npm/payload_with_duplicated_packages.json' }
-
-        it 'creates npm package with file and dependencies' do
-          expect { request }
-            .to change { ::Packages::Npm::Package.for_projects(project).count }.by(1)
-            .and change { Packages::PackageFile.count }.by(1)
-            .and change { Packages::Dependency.count }.by(4)
-            .and change { Packages::DependencyLink.count }.by(6)
-
-          expect(response).to have_gitlab_http_status(:ok)
-        end
-
-        context 'with existing dependencies' do
+        context 'package creation fails' do
           before do
-            other_name = "@#{group.path}/existing_package"
-            other_url = api("/projects/#{project.id}/packages/npm/#{other_name.sub('/', '%2f')}")
-
-            other_fixture_file_content = fixture_file("packages/npm/payload_with_duplicated_packages.json")
-              .gsub('@root/npm-test', other_name)
-              .gsub('1.0.1', package_version)
-            other_params = { file: temp_file('test-npm-upload', content: other_fixture_file_content) }
-
-            workhorse_finalize(
-              other_url,
-              method: :put,
-              file_key: :file,
-              params: other_params,
-              headers: headers,
-              send_rewritten_field: true
-            )
+            create(:npm_package, project: project, version: package_version, name: "@#{group.path}/my_package_name")
           end
 
-          it 'reuses them' do
+          it_behaves_like 'not a package tracking event'
+
+          it 'returns an error if the package already exists' do
+            expect { request }.not_to change { ::Packages::Npm::Package.for_projects(project).count }
+            expect(response).to have_gitlab_http_status(:forbidden)
+            expect(json_response['error']).to eq('Package already exists.')
+          end
+
+          it_behaves_like 'does not enqueue a worker to sync a npm metadata cache'
+        end
+
+        context 'with dependencies' do
+          let(:fixture_file_path) { 'npm/payload_with_duplicated_packages.json' }
+
+          it 'creates npm package with file and dependencies' do
             expect { request }
               .to change { ::Packages::Npm::Package.for_projects(project).count }.by(1)
               .and change { Packages::PackageFile.count }.by(1)
-              .and not_change { Packages::Dependency.count }
+              .and change { Packages::Dependency.count }.by(4)
               .and change { Packages::DependencyLink.count }.by(6)
+
+            expect(response).to have_gitlab_http_status(:ok)
+          end
+
+          context 'with existing dependencies' do
+            before do
+              other_name = "@#{group.path}/existing_package"
+              other_url = api("/projects/#{project.id}/packages/npm/#{other_name.sub('/', '%2f')}")
+
+              other_fixture_file_content = fixture_file("packages/npm/payload_with_duplicated_packages.json")
+                .gsub('@root/npm-test', other_name)
+                .gsub('1.0.1', package_version)
+              other_params = { file: temp_file('test-npm-upload', content: other_fixture_file_content) }
+
+              workhorse_finalize(
+                other_url,
+                method: :put,
+                file_key: :file,
+                params: other_params,
+                headers: headers,
+                send_rewritten_field: true
+              )
+            end
+
+            it 'reuses them' do
+              expect { request }
+                .to change { ::Packages::Npm::Package.for_projects(project).count }.by(1)
+                .and change { Packages::PackageFile.count }.by(1)
+                .and not_change { Packages::Dependency.count }
+                .and change { Packages::DependencyLink.count }.by(6)
+            end
           end
         end
-      end
 
-      context 'when the lease to create a package is already taken' do
-        let(:lease_key) { "packages:npm:create_package_service:packages:#{project.id}_#{package_name}_#{package_version}" }
+        context 'when the lease to create a package is already taken' do
+          let(:lease_key) { "packages:npm:create_package_service:packages:#{project.id}_#{package_name}_#{package_version}" }
 
-        before do
-          stub_exclusive_lease_taken(lease_key, timeout: Packages::Npm::CreatePackageService::DEFAULT_LEASE_TIMEOUT)
+          before do
+            stub_exclusive_lease_taken(lease_key, timeout: Packages::Npm::CreatePackageService::DEFAULT_LEASE_TIMEOUT)
+          end
+
+          it_behaves_like 'not a package tracking event'
+
+          it 'returns an error' do
+            expect { request }.not_to change { ::Packages::Npm::Package.for_projects(project).count }
+
+            expect(response).to have_gitlab_http_status(:bad_request)
+            expect(response.body).to include('Could not obtain package lease. Please try again.')
+            expect(json_response['error']).to eq('Could not obtain package lease. Please try again.')
+          end
         end
 
-        it_behaves_like 'not a package tracking event'
+        context 'with a too large metadata structure' do
+          ::Packages::Npm::CreatePackageService::PACKAGE_JSON_NOT_ALLOWED_FIELDS.each do |field|
+            context "when a large value for #{field} is set" do
+              let(:fixture_file_content) do
+                Gitlab::Json.parse(fixture_file("packages/#{fixture_file_path}").gsub('@root/npm-test', package_name)).tap do |h|
+                  h['versions'][package_version][field] = 'test' * 10000
+                end.to_json
+              end
 
-        it 'returns an error' do
-          expect { request }.not_to change { ::Packages::Npm::Package.for_projects(project).count }
+              it_behaves_like 'a successful package creation'
+            end
+          end
 
-          expect(response).to have_gitlab_http_status(:bad_request)
-          expect(response.body).to include('Could not obtain package lease. Please try again.')
-          expect(json_response['error']).to eq('Could not obtain package lease. Please try again.')
-        end
-      end
-
-      context 'with a too large metadata structure' do
-        ::Packages::Npm::CreatePackageService::PACKAGE_JSON_NOT_ALLOWED_FIELDS.each do |field|
-          context "when a large value for #{field} is set" do
+          context 'when the large field is not one of the ignored fields' do
             let(:fixture_file_content) do
               Gitlab::Json.parse(fixture_file("packages/#{fixture_file_path}").gsub('@root/npm-test', package_name)).tap do |h|
-                h['versions'][package_version][field] = 'test' * 10000
+                h['versions'][package_version]['test'] = 'test' * 10000
               end.to_json
             end
 
-            it_behaves_like 'a successful package creation'
+            it_behaves_like 'handling invalid record with 400 error', 'Validation failed: Package json structure is too large. Maximum size is 20000 characters'
+            it_behaves_like 'not a package tracking event'
           end
-        end
-
-        context 'when the large field is not one of the ignored fields' do
-          let(:fixture_file_content) do
-            Gitlab::Json.parse(fixture_file("packages/#{fixture_file_path}").gsub('@root/npm-test', package_name)).tap do |h|
-              h['versions'][package_version]['test'] = 'test' * 10000
-            end.to_json
-          end
-
-          it_behaves_like 'handling invalid record with 400 error', 'Validation failed: Package json structure is too large. Maximum size is 20000 characters'
-          it_behaves_like 'not a package tracking event'
         end
       end
 
@@ -622,38 +713,17 @@ RSpec.describe API::NpmProjectPackages, :aggregate_failures, feature_category: :
             project.add_developer(user)
           end
 
-          it 'does not enqueue the deprecate npm packages worker' do
-            expect(::Packages::Npm::DeprecatePackageWorker).not_to receive(:perform_async)
+          it 'does not create a temporary package' do
+            expect(::Packages::Npm::CreateTemporaryPackageService).not_to receive(:new)
 
             request
 
             expect(response).to have_gitlab_http_status(:forbidden)
           end
-        end
 
-        context 'when the user is authorized to deprecate the package' do
-          let(:json_with_deprecated_versions) do
-            Gitlab::Json.parse(fixture_file_content)
-              .slice('package_name', 'versions')
-              .tap { |json| json['versions'].slice!('1.0.1') }
-              .merge('id' => project.id.to_s)
-          end
-
-          before do
-            project.add_maintainer(user)
-          end
-
-          it 'enqueues the deprecate npm packages worker with the correct arguments' do
-            expect(::Packages::Npm::DeprecatePackageWorker).to receive(:perform_async).with(project.id, json_with_deprecated_versions)
-
-            request
-
-            expect(response).to have_gitlab_http_status(:ok)
-          end
-
-          context 'when no package versions contain `deprecate` attribute' do
-            let(:fixture_file_content) do
-              Gitlab::Json.parse(super()).tap { |json| json['versions'].slice!('1.0.2') }.to_json
+          context 'when packages_npm_temp_package is disabled' do
+            before do
+              stub_feature_flags(packages_npm_temp_package: false)
             end
 
             it 'does not enqueue the deprecate npm packages worker' do
@@ -661,15 +731,77 @@ RSpec.describe API::NpmProjectPackages, :aggregate_failures, feature_category: :
 
               request
 
-              expect(response).to have_gitlab_http_status(:bad_request)
-              expect(response.parsed_body).to eq(
-                'message' => '400 Bad request - "package versions to deprecate" not given',
-                'error' => '"package versions to deprecate" not given'
-              )
+              expect(response).to have_gitlab_http_status(:forbidden)
+            end
+          end
+        end
+
+        context 'when the user is authorized to deprecate the package' do
+          before do
+            project.add_maintainer(user)
+          end
+
+          it 'creates a temporary package and enqueues the extract package file worker' do
+            expect(::Packages::Npm::ProcessTemporaryPackageFileWorker).to receive(:perform_async)
+
+            expect { request }
+              .to change { ::Packages::Npm::Package.for_projects(project).count }.by(1)
+              .and change { ::Packages::PackageFile.count }.by(1)
+
+            package = ::Packages::Npm::Package.last
+
+            expect(package.name).to eq(package_name)
+            expect(package.version).to match(/^0\.0\.0-.+$/)
+            expect(package.package_files.first.file.read).to eq(fixture_file_content)
+            expect(response).to have_gitlab_http_status(:ok)
+          end
+
+          context 'when packages_npm_temp_package is disabled' do
+            let(:json_with_deprecated_versions) do
+              Gitlab::Json.parse(fixture_file_content)
+                .slice('package_name', 'versions')
+                .tap { |json| json['versions'].slice!('1.0.1') }
+                .merge('id' => project.id.to_s)
+            end
+
+            before do
+              stub_feature_flags(packages_npm_temp_package: false)
+            end
+
+            it 'enqueues the deprecate npm packages worker with the correct arguments' do
+              expect(::Packages::Npm::DeprecatePackageWorker).to receive(:perform_async).with(project.id, json_with_deprecated_versions)
+
+              request
+
+              expect(response).to have_gitlab_http_status(:ok)
+            end
+
+            context 'when no package versions contain `deprecate` attribute' do
+              let(:fixture_file_content) do
+                Gitlab::Json.parse(super()).tap { |json| json['versions'].slice!('1.0.2') }.to_json
+              end
+
+              it 'does not enqueue the deprecate npm packages worker' do
+                expect(::Packages::Npm::DeprecatePackageWorker).not_to receive(:perform_async)
+
+                request
+
+                expect(response).to have_gitlab_http_status(:bad_request)
+                expect(response.parsed_body).to eq(
+                  'message' => '400 Bad request - "package versions to deprecate" not given',
+                  'error' => '"package versions to deprecate" not given'
+                )
+              end
             end
           end
         end
       end
+    end
+
+    context 'when params are invalid' do
+      let(:params) { {} }
+
+      it_behaves_like 'returning response status with error', status: :bad_request, error: 'file is missing'
     end
 
     def temp_file(filename, content:)

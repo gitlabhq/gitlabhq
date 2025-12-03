@@ -24,13 +24,6 @@ title: Exact code search
 
 {{< /history >}}
 
-{{< alert type="flag" >}}
-
-The availability of this feature is controlled by a feature flag.
-For more information, see the history.
-
-{{< /alert >}}
-
 {{< alert type="warning" >}}
 
 This feature is in [limited availability](../../policy/development_stages_support.md#limited-availability).

@@ -39,25 +39,12 @@ module TimeboxesHelper
   end
 
   def milestones_issues_path(opts = {})
-    if @project
-      project_issues_path(@project, opts)
-    elsif @group
-      issues_group_path(@group, opts)
-    else
-      issues_dashboard_path(opts)
-    end
+    milestones_path_for_type(:issues, opts)
   end
 
   def milestones_browse_issuables_path(milestone, type:, state: nil)
     opts = { milestone_title: milestone.title, state: state }
-
-    if @project
-      polymorphic_path([@project, type], opts)
-    elsif @group
-      polymorphic_url([type, @group], opts)
-    else
-      polymorphic_url([type, :dashboard], opts)
-    end
+    milestones_path_for_type(type, opts)
   end
 
   def milestone_issues_by_label_count(milestone, label, state:)
@@ -284,10 +271,37 @@ module TimeboxesHelper
     message.html_safe
   end
 
+  def milestone_work_items_icon
+    resource_parent = @project || @group
+    resource_parent&.work_items_consolidated_list_enabled?(current_user) ? 'work-items' : 'work-item-issue'
+  end
+
   private
 
   def milestone_visible_issues_count(milestone)
     @milestone_visible_issues_count ||= milestone.issues_visible_to_user(current_user).size
+  end
+
+  def milestones_path_for_type(type, opts)
+    if @project
+      if use_work_items_for_issues?(type, @project)
+        project_work_items_path(@project, opts)
+      else
+        polymorphic_path([@project, type], opts)
+      end
+    elsif @group
+      if use_work_items_for_issues?(type, @group)
+        group_work_items_path(@group, opts)
+      else
+        polymorphic_path([type, @group], opts)
+      end
+    else
+      polymorphic_path([type, :dashboard], opts)
+    end
+  end
+
+  def use_work_items_for_issues?(type, resource_parent)
+    type == :issues && resource_parent&.work_items_consolidated_list_enabled?(current_user)
   end
 end
 

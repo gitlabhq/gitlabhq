@@ -99,7 +99,7 @@ RSpec.describe IssueEmailParticipants::DestroyService, feature_category: :servic
           it_behaves_like 'a successful service execution'
 
           context 'when context option with :unsubscribe is passed' do
-            let(:expected_user) { Users::Internal.support_bot }
+            let(:expected_user) { Users::Internal.for_organization(project.organization_id).support_bot }
             let(:expected_text_part) { 'unsubscribed' }
             let(:options) { { context: :unsubscribe } }
 

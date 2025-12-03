@@ -10,6 +10,8 @@ RSpec.describe Issue, feature_category: :team_planning do
   let_it_be(:user) { create(:user) }
   let_it_be_with_reload(:reusable_project) { create(:project) }
 
+  let_it_be(:support_bot) { create(:support_bot) }
+
   describe "Associations" do
     it { is_expected.to belong_to(:milestone) }
     it { is_expected.to belong_to(:project) }
@@ -1027,7 +1029,7 @@ RSpec.describe Issue, feature_category: :team_planning do
     subject { issue.from_service_desk? }
 
     context 'when issue author is support bot' do
-      let(:issue) { create(:issue, project: reusable_project, author: ::Users::Internal.support_bot) }
+      let(:issue) { create(:issue, project: reusable_project, author: support_bot) }
 
       it { is_expected.to be_truthy }
     end
@@ -1317,8 +1319,6 @@ RSpec.describe Issue, feature_category: :team_planning do
   end
 
   describe '#check_for_spam?' do
-    let_it_be(:support_bot) { ::Users::Internal.support_bot }
-
     where(:support_bot?, :visibility_level, :confidential, :new_attributes, :check_for_spam?) do
       ### non-support-bot cases
       # spammable attributes changing
@@ -1429,7 +1429,8 @@ RSpec.describe Issue, feature_category: :team_planning do
   end
 
   describe '.service_desk' do
-    let_it_be(:service_desk_issue) { create(:issue, project: reusable_project, author: ::Users::Internal.support_bot) }
+    let_it_be(:service_desk_issue) { create(:issue, project: reusable_project, author: support_bot) }
+
     let_it_be(:regular_issue) { create(:issue, project: reusable_project) }
     let_it_be(:ticket) { create(:work_item, :ticket, project: reusable_project, author: user) }
 
@@ -2068,7 +2069,7 @@ RSpec.describe Issue, feature_category: :team_planning do
     subject(:issue_as_work_item) { issue.show_as_work_item? }
 
     context 'with a service desk issue' do
-      let(:issue) { build_stubbed(:issue, project: reusable_project, author: create(:support_bot)) }
+      let(:issue) { build_stubbed(:issue, project: reusable_project, author: support_bot) }
 
       it { is_expected.to be false }
     end

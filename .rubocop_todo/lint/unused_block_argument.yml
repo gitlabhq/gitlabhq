@@ -218,7 +218,6 @@ Lint/UnusedBlockArgument:
     - 'lib/tasks/gitlab/seed.rake'
     - 'lib/tasks/gitlab/seed/group_seed.rake'
     - 'lib/tasks/gitlab/shell.rake'
-    - 'lib/tasks/gitlab/snippets.rake'
     - 'lib/tasks/gitlab/two_factor.rake'
     - 'lib/tasks/gitlab/uploads/sanitize.rake'
     - 'lib/tasks/gitlab/user_management.rake'

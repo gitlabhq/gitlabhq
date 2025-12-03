@@ -10248,6 +10248,35 @@ Input type: `PagesMarkOnboardingCompleteInput`
 | <a id="mutationpagesmarkonboardingcompleteerrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during the mutation. |
 | <a id="mutationpagesmarkonboardingcompleteonboardingcomplete"></a>`onboardingComplete` | [`Boolean!`](#boolean) | Indicates the new onboarding_complete state of the project's Pages metadata. |
 
+### `Mutation.personalAccessTokenCreate`
+
+{{< details >}}
+**Introduced** in GitLab 18.7.
+**Status**: Experiment.
+{{< /details >}}
+
+Creates a personal access token for the current user.
+
+Input type: `PersonalAccessTokenCreateInput`
+
+#### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mutationpersonalaccesstokencreateclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutationpersonalaccesstokencreatedescription"></a>`description` | [`String`](#string) | Description of the token. |
+| <a id="mutationpersonalaccesstokencreateexpiresat"></a>`expiresAt` | [`ISO8601Date`](#iso8601date) | Expiration date of the token. |
+| <a id="mutationpersonalaccesstokencreategranularscopes"></a>`granularScopes` | [`[GranularScopeInput!]!`](#granularscopeinput) | List of granular scopes to assign to the token. |
+| <a id="mutationpersonalaccesstokencreatename"></a>`name` | [`String!`](#string) | Name of the token. |
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mutationpersonalaccesstokencreateclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutationpersonalaccesstokencreateerrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during the mutation. |
+| <a id="mutationpersonalaccesstokencreatetoken"></a>`token` | [`PersonalAccessToken`](#personalaccesstoken) | Created personal access token. |
+
 ### `Mutation.pipelineCancel`
 
 Input type: `PipelineCancelInput`
@@ -53664,7 +53693,6 @@ Possible types of user.
 | <a id="usertypeghost"></a>`GHOST` | Ghost. |
 | <a id="usertypehuman"></a>`HUMAN` | Human. |
 | <a id="usertypeimport_user"></a>`IMPORT_USER` | Import user. |
-| <a id="usertypemigration_bot"></a>`MIGRATION_BOT` | Migration bot. |
 | <a id="usertypeplaceholder"></a>`PLACEHOLDER` | Placeholder. |
 | <a id="usertypeproject_bot"></a>`PROJECT_BOT` | Project bot. |
 | <a id="usertypesecurity_bot"></a>`SECURITY_BOT` | Security bot. |
@@ -57914,6 +57942,18 @@ Labels for the Node Pool of a GKE cluster.
 | ---- | ---- | ----------- |
 | <a id="googlecloudnodepoollabelkey"></a>`key` | [`String!`](#string) | Key of the label. |
 | <a id="googlecloudnodepoollabelvalue"></a>`value` | [`String!`](#string) | Value of the label. |
+
+### `GranularScopeInput`
+
+Attributes for a granular scope of an access token.
+
+#### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="granularscopeinputaccess"></a>`access` | [`AccessTokenGranularScopeAccess!`](#accesstokengranularscopeaccess) | Access to configure for the granular scope. |
+| <a id="granularscopeinputpermissions"></a>`permissions` | [`[String!]!`](#string) | List of permissions for the granular scope. |
+| <a id="granularscopeinputresourceids"></a>`resourceIds` | [`[GlobalID!]`](#globalid) | IDs of groups or projects to associate with each granular scope. |
 
 ### `GroupProjectRequirementComplianceStatusInput`
 

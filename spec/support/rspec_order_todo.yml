@@ -7512,7 +7512,6 @@
 - './spec/tasks/gitlab/shell_rake_spec.rb'
 - './spec/tasks/gitlab/sidekiq_rake_spec.rb'
 - './spec/tasks/gitlab/smtp_rake_spec.rb'
-- './spec/tasks/gitlab/snippets_rake_spec.rb'
 - './spec/tasks/gitlab/terraform/migrate_rake_spec.rb'
 - './spec/tasks/gitlab/update_templates_rake_spec.rb'
 - './spec/tasks/gitlab/uploads/check_rake_spec.rb'

@@ -2583,10 +2583,10 @@ msgstr ""
 msgid "AICatalog|Build agents and flows to automate tasks and solve complex problems."
 msgstr ""
 
-msgid "AICatalog|Can be enabled in other projects, and used in public flows."
+msgid "AICatalog|Can be enabled in other projects."
 msgstr ""
 
-msgid "AICatalog|Can't be enabled in other projects, or used in public flows."
+msgid "AICatalog|Can't be enabled in other projects."
 msgstr ""
 
 msgid "AICatalog|Can't be made public if enabled in a project."
@@ -27373,9 +27373,6 @@ msgid "Error creating new iteration"
 msgstr ""
 
 msgid "Error creating or updating PreScanVerificationStep: %{errors}"
-msgstr ""
-
-msgid "Error creating repository for snippet with id %{snippet_id}"
 msgstr ""
 
 msgid "Error creating the snippet"

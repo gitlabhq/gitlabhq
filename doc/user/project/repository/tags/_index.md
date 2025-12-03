@@ -143,6 +143,7 @@ You can use this variable in job rules and workflow rules to test if a pipeline 
 
 By default, if your CI/CD jobs don't have specific rules in place,
 they are included in a tag pipeline for any newly created tag.
+Tag pipelines are only created when a tag targets a commit.
 
 In your `.gitlab-ci.yml` file for the CI/CD pipeline configuration of your project,
 you can use the `CI_COMMIT_TAG` variable to control pipelines for new tags:

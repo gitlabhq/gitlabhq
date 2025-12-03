@@ -24,7 +24,6 @@ class GroupPolicy < Namespaces::GroupProjectNamespaceSharedPolicy
   condition(:share_with_group_locked, scope: :subject) { @subject.share_with_group_lock? }
   condition(:parent_share_with_group_locked, scope: :subject) { @subject.parent&.share_with_group_lock? }
   condition(:can_change_parent_share_with_group_lock) { can?(:change_share_with_group_lock, @subject.parent) }
-  condition(:migration_bot, scope: :user) { @user&.migration_bot? }
   condition(:can_read_group_member) { can_read_group_member? }
 
   desc "User is a project bot"
@@ -573,11 +572,6 @@ class GroupPolicy < Namespaces::GroupProjectNamespaceSharedPolicy
     prevent :register_group_runners
     prevent :read_runners_registration_token
     prevent :update_runners_registration_token
-  end
-
-  rule { migration_bot }.policy do
-    enable :read_resource_access_tokens
-    enable :destroy_resource_access_tokens
   end
 
   rule { can?(:admin_group) | can?(:admin_runners) }.enable :admin_group_or_admin_runners

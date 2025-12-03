@@ -1136,4 +1136,84 @@ RSpec.describe Ci::CreateDownstreamPipelineService, '#execute', feature_category
       expect(bridge.failure_reason).to eq('data_integrity_failure')
     end
   end
+
+  context 'when bridge is already running but has no downstream pipeline' do
+    let(:bridge) do
+      create(
+        :ci_bridge,
+        status: :running,
+        user: user,
+        options: trigger,
+        pipeline: upstream_pipeline
+      )
+    end
+
+    before do
+      downstream_project.add_developer(user)
+      stub_ci_pipeline_yaml_file(YAML.dump(rspec: { script: 'rspec' }))
+    end
+
+    it 'creates a downstream pipeline without attempting to transition the bridge' do
+      expect(bridge).not_to receive(:run)
+      expect { subject }.to change { Ci::Pipeline.count }.by(1)
+      expect(subject).to be_success
+    end
+
+    it 'creates the downstream pipeline successfully' do
+      expect(pipeline.user).to eq bridge.user
+      expect(pipeline.project).to eq downstream_project
+      expect(bridge.reload.sourced_pipeline.pipeline).to eq pipeline
+      expect(pipeline.triggered_by_pipeline).to eq upstream_pipeline
+      expect(pipeline.source_bridge).to eq bridge
+    end
+
+    it 'updates bridge status when downstream pipeline gets processed' do
+      expect(pipeline.reload).to be_created
+      expect(bridge.reload).to be_success
+    end
+
+    context 'when bridge already has a downstream pipeline' do
+      before do
+        bridge.create_sourced_pipeline!(
+          source_pipeline: bridge.pipeline,
+          source_project: bridge.project,
+          project: bridge.project,
+          pipeline: create(:ci_pipeline, project: bridge.project)
+        )
+      end
+
+      it 'does not create another pipeline' do
+        expect { subject }.not_to change { Ci::Pipeline.count }
+        expect(subject).to be_error
+        expect(subject.message).to eq("Already has a downstream pipeline")
+      end
+    end
+  end
+
+  context 'when bridge cannot transition to running state' do
+    let(:bridge) do
+      create(
+        :ci_bridge,
+        status: :success,
+        user: user,
+        options: trigger,
+        pipeline: upstream_pipeline
+      )
+    end
+
+    before do
+      downstream_project.add_developer(user)
+      stub_ci_pipeline_yaml_file(YAML.dump(rspec: { script: 'rspec' }))
+    end
+
+    it 'returns an error without creating a pipeline' do
+      expect { subject }.not_to change { Ci::Pipeline.count }
+      expect(subject).to be_error
+      expect(subject.message).to eq('Cannot run the bridge, status: success')
+    end
+
+    it 'does not change the bridge status' do
+      expect { subject }.not_to change { bridge.reload.status }
+    end
+  end
 end

@@ -5,8 +5,9 @@ require 'spec_helper'
 RSpec.describe 'unsupported work item types use legacy issue views', :js, feature_category: :team_planning do
   let_it_be(:project) { create(:project, :private) }
   let_it_be(:incident)  { create(:work_item, :incident, project: project) }
+  let_it_be(:support_bot) { create(:support_bot) }
   let_it_be(:service_desk_issue) do
-    create(:issue, author: Users::Internal.support_bot, external_author: 'user@example.com', project: project)
+    create(:issue, author: support_bot, external_author: 'user@example.com', project: project)
   end
 
   let_it_be(:user) { create(:user) }

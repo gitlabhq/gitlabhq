@@ -98,5 +98,23 @@ RSpec.describe Gitlab::GrapeOpenapi::Models::Operation do
         expect(result).not_to have_key(:description)
       end
     end
+
+    context 'with deprecation' do
+      context 'when deprecated is true' do
+        it 'includes deprecated field in output' do
+          operation.deprecated = true
+
+          expect(operation.to_h[:deprecated]).to be true
+        end
+      end
+
+      context 'when deprecated is false' do
+        it 'does not include deprecated field in output' do
+          operation.deprecated = false
+
+          expect(operation.to_h).not_to have_key(:deprecated)
+        end
+      end
+    end
   end
 end

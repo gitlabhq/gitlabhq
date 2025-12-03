@@ -150,7 +150,7 @@ RSpec.describe Admin::UsersController, :with_current_organization, feature_categ
 
       context "when the user is internal" do
         before do
-          user.update!(user_type: :migration_bot)
+          user.update!(user_type: :security_bot)
         end
 
         it 'sets impersonation_error_text' do
@@ -1125,7 +1125,7 @@ RSpec.describe Admin::UsersController, :with_current_organization, feature_categ
 
       context "when the user is internal" do
         before do
-          user.update!(user_type: :migration_bot)
+          user.update!(user_type: :security_bot)
         end
 
         it "shows a notice" do

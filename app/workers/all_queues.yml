@@ -2585,6 +2585,16 @@
   :idempotent: true
   :tags: []
   :queue_namespace: :package_repositories
+- :name: package_repositories:packages_npm_process_temporary_package_file
+  :worker_name: Packages::Npm::ProcessTemporaryPackageFileWorker
+  :feature_category: :package_registry
+  :has_external_dependencies: false
+  :urgency: :low
+  :resource_boundary: :unknown
+  :weight: 1
+  :idempotent: true
+  :tags: []
+  :queue_namespace: :package_repositories
 - :name: package_repositories:packages_nuget_create_symbols
   :worker_name: Packages::Nuget::CreateSymbolsWorker
   :feature_category: :package_registry

@@ -122,7 +122,7 @@ module Ci
         spec[:rules].any? do |rule|
           next false unless rule.is_a?(Hash)
 
-          rule.key?(:default) || !rule.key?(:if)
+          rule.key?(:default)
         end
       end
 
