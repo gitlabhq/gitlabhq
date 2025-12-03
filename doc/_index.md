@@ -6,15 +6,8 @@ description: Learn how to use and administer GitLab, the most scalable Git-based
 title: GitLab Docs
 ---
 
-<!-- markdownlint-disable MD041 MD044-->
-
-<div class="d-none">
-  <h3>Visit <a href="https://docs.gitlab.com/ee/">docs.gitlab.com</a> for the latest version
-  of this help information with enhanced navigation, formatting, and search.</h3>
-</div>
-<!-- the div tag will not display on the docs site but will display on /help -->
-
-<!-- markdownlint-enable MD044 -->
+Visit <https://docs.gitlab.com> for the latest version of this help information with enhanced navigation,
+formatting, and search.
 
 Explore the different areas of the documentation:
 

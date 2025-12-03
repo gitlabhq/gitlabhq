@@ -21,7 +21,6 @@ This table lists the secrets detected by:
 Secret detection rules are updated in the [default ruleset](https://gitlab.com/gitlab-org/security-products/secret-detection/secret-detection-rules/-/tree/main).
 Detected secrets with patterns that have been removed or updated remain open so you can triage them.
 
-<!-- markdownlint-disable MD034 -->
 <!-- markdownlint-disable MD044 -->
 <!-- vale gitlab_base.SentenceSpacing = NO -->
 
@@ -242,5 +241,4 @@ Detected secrets with patterns that have been removed or updated remain open so 
 | Yandex.Cloud IAM cookie v1-3                      | Yandex.Cloud IAM Cookie v1 - 3                | {{< yes >}} | {{< no >}} | {{< no >}} |
 
 <!-- vale gitlab_base.SentenceSpacing = YES -->
-<!-- markdownlint-enable MD034 -->
 <!-- markdownlint-enable MD044 -->

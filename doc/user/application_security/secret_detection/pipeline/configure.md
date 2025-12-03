@@ -5,8 +5,6 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 title: Customize pipeline secret detection
 ---
 
-<!-- markdownlint-disable MD025 -->
-
 {{< details >}}
 
 - Tier: Free, Premium, Ultimate

@@ -71,6 +71,13 @@ Trivy does not scan operating system images that are no longer receiving any upd
 
 Making this visible in the UI is proposed in [issue 433325](https://gitlab.com/gitlab-org/gitlab/-/issues/433325).
 
+## Expected vulnerabilities not detected
+
+Trivy does not report [language-specific findings](_index.md#report-language-specific-findings)
+by default which may result in an empty report when the image does not have any
+vulnerable operating system dependencies. To enable language-specific findings,
+follow the steps in the linked documentation and re-run the scan.
+
 ## Container scanning v6.x: outdated vulnerability database error
 
 Using container scanning with `registry.gitlab.com/security-products/container-scanning/grype:6` and `registry.gitlab.com/security-products/container-scanning/grype:6-fips` analyzer images may fail with an outdated vulnerability database error, for example:

@@ -3434,4 +3434,31 @@ RSpec.describe Gitlab::Git::Repository, feature_category: :source_code_managemen
       end
     end
   end
+
+  describe '#squash' do
+    subject(:squash) do
+      mutable_repository.squash(
+        user,
+        **kwargs
+      )
+    end
+
+    let(:kwargs) do
+      { start_sha: sample_commit.id,
+        end_sha: another_sample_commit.id,
+        author: user,
+        message: 'squashed message' }
+    end
+
+    it 'delegates to OperationService' do
+      expect_next_instance_of(Gitlab::GitalyClient::OperationService) do |instance|
+        expect(instance).to receive(:user_squash).with(
+          user,
+          **kwargs
+        )
+      end
+
+      squash
+    end
+  end
 end

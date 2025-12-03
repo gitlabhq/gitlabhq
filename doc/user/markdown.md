@@ -1210,15 +1210,11 @@ DO NOT change the name of markdown_logo_v17_11.png. This file is used for a test
 spec/controllers/help_controller_spec.rb.
 -->
 
-<!-- markdownlint-disable proper-names -->
-
 ```markdown
 ![GitLab logo](img/markdown_logo_v17_11.png "Title Text")
 ```
 
 > ![GitLab logo](img/markdown_logo_v17_11.png "Title Text")
-
-<!-- markdownlint-enable proper-names -->
 
 In image links:
 

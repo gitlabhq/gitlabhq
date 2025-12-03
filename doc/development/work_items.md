@@ -364,10 +364,9 @@ class AddTicketWorkItemType < Gitlab::Database::Migration[2.1]
 end
 ```
 
-<!-- markdownlint-disable-next-line MD044 -->
-### Update Gitlab::DatabaseImporters::WorkItems::BaseTypeImporter
+### Update `Gitlab::DatabaseImporters::WorkItems::BaseTypeImporter`
 
-The [BaseTypeImporter](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/database_importers/work_items/base_type_importer.rb)
+The [`BaseTypeImporter`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/database_importers/work_items/base_type_importer.rb)
 is where we can clearly visualize the structure of the types we have and what widgets are associated with each of them.
 `BaseTypeImporter` is the single source of truth for fresh GitLab installs and also our test suite. This should always
 reflect what we change with migrations.

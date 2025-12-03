@@ -190,11 +190,7 @@ Each language has its own known issues.
 All package files such as `Gemfile.lock` and `requirements.txt` must provide explicit versions.
 Version ranges are not supported.
 
-<!-- markdownlint-disable MD003 -->
-<!-- markdownlint-disable MD020 -->
 #### C\#
-<!-- markdownlint-disable MD020 -->
-<!-- markdownlint-enable MD003 -->
 
 - Property or variable replacement in `.props` or `.csproj` files do not account for nested project files.
   It replaces any variable that matches a global set of extracted variables and their values.

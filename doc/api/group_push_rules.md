@@ -115,8 +115,6 @@ POST /groups/:id/push_rule
 
 Supported attributes:
 
-<!-- markdownlint-disable MD056 -->
-
 | Attribute                         | Type           | Required | Description |
 |-----------------------------------|----------------|----------|-------------|
 | `id`                              | integer or string | Yes   | ID or [URL-encoded path](rest/_index.md#namespaced-paths) of the group. |
@@ -133,8 +131,6 @@ Supported attributes:
 | `prevent_secrets`                 | boolean        | No       | If `true`, rejects files that are likely to [contain secrets](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/lib/gitlab/checks/files_denylist.yml). |
 | `reject_non_dco_commits`          | boolean        | No       | If `true`, rejects a commit when it's not DCO certified. |
 | `reject_unsigned_commits`         | boolean        | No       | If `true`, rejects a commit when it's not signed. |
-
-<!-- markdownlint-enable MD056 -->
 
 If successful, returns [`201 Created`](rest/troubleshooting.md#status-codes) and the following
 response attributes:
@@ -197,8 +193,6 @@ PUT /groups/:id/push_rule
 
 Supported attributes:
 
-<!-- markdownlint-disable MD056 -->
-
 | Attribute                         | Type           | Required | Description |
 |-----------------------------------|----------------|----------|-------------|
 | `id`                              | integer or string | Yes   | ID or [URL-encoded path](rest/_index.md#namespaced-paths) of the group. |
@@ -215,8 +209,6 @@ Supported attributes:
 | `prevent_secrets`                 | boolean        | No       | If `true`, rejects files that are likely to [contain secrets](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/lib/gitlab/checks/files_denylist.yml). |
 | `reject_non_dco_commits`          | boolean        | No       | If `true`, rejects a commit when it's not DCO certified. |
 | `reject_unsigned_commits`         | boolean        | No       | If `true`, rejects a commit when it's not signed. |
-
-<!-- markdownlint-enable MD056 -->
 
 If successful, returns [`200 OK`](rest/troubleshooting.md#status-codes) and the following
 response attributes:

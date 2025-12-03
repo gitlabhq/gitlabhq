@@ -239,16 +239,14 @@ Variable assignments within `pipelined` and `multi` blocks are not advised as th
 
 ## Step 4: clean up after the migration
 
-<!-- markdownlint-disable MD044 -->
 We may choose to keep the migration paths or remove them, depending on whether
 or not we expect GitLab Self-Managed instances to perform this migration.
-[gitlab-com/gl-infra/scalability#1131](https://gitlab.com/gitlab-com/gl-infra/scalability/-/issues/1131#note_603354746)
+[`gitlab-com/gl-infra/scalability#1131`](https://gitlab.com/gitlab-com/gl-infra/scalability/-/issues/1131#note_603354746)
 contains a discussion on this topic for the trace chunks feature flag. It may
 be - as in that case - that we decide that the maintenance costs of supporting
 the migration code are higher than the benefits of allowing self-managed
 instances to perform this migration seamlessly, if we expect self-managed
 instances to cope without this functional partition.
-<!-- markdownlint-enable MD044 -->
 
 If we decide to keep the migration code:
 

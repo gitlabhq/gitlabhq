@@ -299,8 +299,6 @@ After configuring LDAP, to test the configuration, use the
 
 The following basic settings are available:
 
-<!-- markdownlint-disable MD056 -->
-
 | Setting                         | Required                             | Type                          | Description |
 |---------------------------------|--------------------------------------|-------------------------------|-------------|
 | `label`                         | {{< icon name="check-circle" >}} Yes | String                        | A human-friendly name for your LDAP server. It is displayed on your sign-in page. Example: `'Paris'` or `'Acme, Ltd.'` |
@@ -320,8 +318,6 @@ The following basic settings are available:
 | `user_filter`                   | {{< icon name="dotted-circle" >}} No | String                        | Filter LDAP users. Follows the format of [RFC 4515](https://www.rfc-editor.org/rfc/rfc4515.html). GitLab does not support `omniauth-ldap`'s custom filter syntax. Examples of the `user_filter` field syntax:<br/><br/>- `'(employeeType=developer)'`<br/>- `'(&(objectclass=user)(\|(samaccountname=momo)(samaccountname=toto)))'` |
 | `lowercase_usernames`           | {{< icon name="dotted-circle" >}} No | Boolean                       | If enabled, GitLab converts the name to lowercase. |
 | `retry_empty_result_with_codes` | {{< icon name="dotted-circle" >}} No | Array                         | An array of LDAP query response code that attempt to retry the operation if the result/content is empty. For Google Secure LDAP, set this value to `[80]`. |
-
-<!-- markdownlint-enable MD056 -->
 
 {{< alert type="note" >}}
 

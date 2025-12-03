@@ -1196,7 +1196,7 @@ RSpec.describe Gitlab::GitalyClient::OperationService, feature_category: :source
     let(:response) { Gitaly::UserSquashResponse.new(squash_sha: squash_sha) }
 
     subject do
-      client.user_squash(user, start_sha, end_sha, user, commit_message, time)
+      client.user_squash(user, start_sha: start_sha, end_sha: end_sha, author: user, message: commit_message, time: time)
     end
 
     it 'sends a user_squash message and returns the squash sha' do

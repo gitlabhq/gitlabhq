@@ -12,8 +12,6 @@ Helm chart, or scale your application.
 
 Use these variables to customize and deploy your build.
 
-<!-- markdownlint-disable MD056 -->
-
 | **CI/CD variable**                      | **Description** |
 |-----------------------------------------|-----------------|
 | `ADDITIONAL_HOSTS`                      | Fully qualified domain names specified as a comma-separated list that are added to the Ingress hosts. |
@@ -62,8 +60,6 @@ Use these variables to customize and deploy your build.
 | `ROLLOUT_STATUS_DISABLED`               | Used to disable rollout status check because it does not support all resource types, for example, `cronjob`. |
 | `STAGING_ENABLED`                       | Used to define a [deploy policy for staging and production environments](#deploy-policy-for-staging-and-production-environments). |
 | `TRACE`                                 | Set to any value to make Helm commands produce verbose output. You can use this setting to help diagnose Auto DevOps deployment problems. |
-
-<!-- markdownlint-enable MD056 -->
 
 ## Database variables
 

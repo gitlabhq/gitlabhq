@@ -5,8 +5,6 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 title: Pipeline secret detection
 ---
 
-<!-- markdownlint-disable MD025 -->
-
 {{< details >}}
 
 - Tier: Free, Premium, Ultimate
@@ -547,5 +545,3 @@ Added project directory to Git safe.directory configuration
 ```
 
 This indicates typical security configuration in containerized environments. No action is required.
-
-<!-- markdownlint-enable MD025 -->

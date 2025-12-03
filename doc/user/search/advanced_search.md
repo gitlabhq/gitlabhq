@@ -122,8 +122,6 @@ You can refine user search with `simple_query_string`.
 
 ### Examples
 
-<!-- markdownlint-disable MD044 -->
-
 | Query                                 | Description |
 |---------------------------------------|-------------|
 | `rails -filename:gemfile.lock`        | Returns `rails` in all files except the `gemfile.lock` file. |
@@ -131,8 +129,6 @@ You can refine user search with `simple_query_string`.
 | `bug \| (display +banner)`            | Returns `bug` or both `display` and `banner`. |
 | `helper -extension:yml -extension:js` | Returns `helper` in all files except files with a `.yml` or `.js` extension. |
 | `helper path:lib/git`                 | Returns `helper` in all files with a `lib/git*` path (for example, `spec/lib/gitlab`). |
-
-<!-- markdownlint-enable MD044 -->
 
 ## Known issues
 

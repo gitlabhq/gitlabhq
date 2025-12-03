@@ -2007,7 +2007,6 @@
 - './ee/spec/services/groups/update_service_spec.rb'
 - './ee/spec/services/historical_user_data/csv_service_spec.rb'
 - './ee/spec/services/ide/schemas_config_service_spec.rb'
-- './ee/spec/services/issuable/destroy_label_links_service_spec.rb'
 - './ee/spec/services/issue_feature_flags/list_service_spec.rb'
 - './ee/spec/services/issues/build_service_spec.rb'
 - './ee/spec/services/issues/duplicate_service_spec.rb'

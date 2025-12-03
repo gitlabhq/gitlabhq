@@ -5020,4 +5020,21 @@ RSpec.describe Repository, feature_category: :source_code_management do
       end
     end
   end
+
+  describe '#squash' do
+    let(:merge_request) { build(:merge_request, source_project: project) }
+
+    subject(:squash) { repository.squash(user, merge_request, message) }
+
+    it 'delegates to raw repository' do
+      expect(repository.raw).to receive(:squash).with(user, {
+        start_sha: merge_request.diff_start_sha,
+        end_sha: merge_request.diff_head_sha,
+        author: merge_request.author,
+        message: message
+      })
+
+      squash
+    end
+  end
 end

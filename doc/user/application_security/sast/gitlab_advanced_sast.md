@@ -166,15 +166,10 @@ You can configure GitLab Advanced SAST to reduce scan times and improve performa
 {{< history >}}
 
 - [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/16790) in GitLab 18.5 [with a flag](../../../administration/feature_flags/_index.md) named `vulnerability_partial_scans`. Disabled by default.
-- [Enabled on GitLab.com](https://gitlab.com/gitlab-org/gitlab/-/issues/552051) in GitLab 18.5.
+- [Enabled on GitLab.com, GitLab Self-Managed and GitLab Dedicated](https://gitlab.com/gitlab-org/gitlab/-/issues/552051) in GitLab 18.5.
+- [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/552051) in GitLab 18.6. Feature flag `vulnerability_partial_scans` removed.
 
 {{< /history >}}
-
-{{< alert type="flag" >}}
-
-The availability of this feature is controlled by a feature flag. For more information, see the history.
-
-{{< /alert >}}
 
 Diff-based scanning analyzes only the files modified in a merge request, along with their dependent files. This targeted approach reduces scan times and delivers faster feedback during development.
 
@@ -182,7 +177,7 @@ To ensure complete coverage, a full scan runs on the default branch after the me
 
 When diff-based scanning is enabled:
 
-- Only files that were modified or added in the merge request, along with their dependent files, are scanned in merge request pipelines.
+- Only files that were modified or added in the merge request, along with their dependent files, are scanned.
 - If enabled, you'll see the job log print: `Running differential scan`
   If disabled, it prints: `Running full scan`
 - In the **merge request security widget**, a dedicated **Diff-based** tab shows relevant scan findings.
@@ -190,17 +185,26 @@ When diff-based scanning is enabled:
 
 #### Use diff-based scanning to improve performance
 
-Prerequisites:
-
-- GitLab Advanced SAST must be configured to run on [merge request pipelines](../detect/security_configuration.md#use-security-scanning-tools-with-merge-request-pipelines).
-
-To enable diff-based scanning in merge request pipelines, set these CI/CD variables
+To enable diff-based scanning in merge request pipelines, set this CI/CD variable
 in the project's CI/CD configuration file or in either a scan execution policy or pipeline
 execution policy.
 
 | Variable                     | Value          | Description |
 |------------------------------|----------------|-------------|
 | `ADVANCED_SAST_PARTIAL_SCAN` | `differential` | Enables diff-based scanning mode |
+
+#### Pipeline support and behavior
+
+Diff-based scanning is supported in both merge request pipelines and branch pipelines, under the following conditions.
+
+##### Merge request pipelines
+
+Diff-based scanning occurs when GitLab Advanced SAST is configured to run on [merge request pipelines](../detect/security_configuration.md#use-security-scanning-tools-with-merge-request-pipelines).
+
+##### Branch pipelines
+
+Diff-based scanning occurs when there is exactly one open merge request associated with the branch.
+If there are none or more than one, the scan falls back to a full scan because it cannot determine which commit the branch should be diffed against.
 
 #### Dependent files
 
