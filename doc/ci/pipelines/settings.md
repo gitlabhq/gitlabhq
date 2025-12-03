@@ -65,7 +65,7 @@ To change the pipeline visibility for non-project members:
    - **Everyone With Access**: Non-project members can also view pipelines.
 1. Select **Save changes**.
 
-The [CI/CD permissions table](../../user/permissions.md#cicd)
+The [CI/CD permissions table](../../user/permissions.md#project-cicd)
 lists the pipeline features non-project members can access when **Everyone With Access**
 is selected.
 

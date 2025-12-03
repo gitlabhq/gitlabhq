@@ -435,7 +435,7 @@ export default {
     anchor: 'prerequisites',
   }),
   userPermissionsDocsPath: helpPagePath('user/permissions.md', {
-    anchor: 'cicd',
+    anchor: 'project-cicd',
   }),
   runPipelinesInTheParentProjectHelpPath: helpPagePath(
     '/ci/pipelines/merge_request_pipelines.html',

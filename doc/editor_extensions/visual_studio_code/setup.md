@@ -145,3 +145,10 @@ To install a pre-release build:
 1. Under **Extensions** > **GitLab Workflow**, select **Switch to Pre-release Version**.
 1. Select **Restart Extensions**.
    1. Alternatively **Reload Window** to refresh any outdated webviews after updating.
+
+### Turn off GitLab Duo Chat
+
+To turn off GitLab Duo Chat in VS Code:
+
+1. Go to **Settings** > **Extensions** > **GitLab Workflow**.
+1. Clear the **Enable GitLab Duo Chat assistant** checkbox.

@@ -70,14 +70,14 @@ List only one action (for example, view, create, or delete) per line.
 It's okay to list multiple related objects per line (for example, "View pipelines and pipeline details").
 -->
 
-## Group members permissions
+## Group permissions
 
 Any user can remove themselves from a group, unless they are the only Owner of
 the group.
 
 The following table lists group permissions available for each role:
 
-### Analytics group permissions
+### Group analytics
 
 Group permission for [analytics](analytics/_index.md) features including value streams, product analytics, and insights:
 
@@ -93,7 +93,7 @@ Group permission for [analytics](analytics/_index.md) features including value s
 | View metrics dashboard annotations                                 |       |         |    ✓     |     ✓     |     ✓      |   ✓   |
 | Manage metrics dashboard annotations                               |       |         |          |     ✓     |     ✓      |   ✓   |
 
-### Application security group permissions
+### Group application security
 
 Group permissions for [Application Security](application_security/secure_your_application.md) features including dependency management, security analyzers, security policies, and vulnerability management.
 
@@ -105,7 +105,7 @@ Group permissions for [Application Security](application_security/secure_your_ap
 | Create [security policy project](application_security/policies/_index.md)        |       |         |          |           |            |   ✓   |
 | Assign [security policy project](application_security/policies/_index.md)        |       |         |          |           |            |   ✓   |
 
-### CI/CD group permissions
+### Group CI/CD
 
 Group permissions for [CI/CD](../ci/_index.md) features including runners, variables, and protected environments:
 
@@ -118,7 +118,7 @@ Group permissions for [CI/CD](../ci/_index.md) features including runners, varia
 | Manage group level CI/CD variables    |       |         |          |           |            |   ✓   |
 | Manage group protected environments   |       |         |          |           |            |   ✓   |
 
-### Compliance group permissions
+### Group compliance
 
 Group permissions for [compliance](compliance/_index.md) features including compliance center, audit events, compliance frameworks, and licenses.
 
@@ -135,7 +135,7 @@ Group permissions for [compliance](compliance/_index.md) features including comp
 
 1. Users can view events based on their individual actions only. For more details, see the [prerequisites](compliance/audit_events.md#prerequisites).
 
-### GitLab Duo group permissions
+### Group GitLab Duo
 
 Group permissions for [GitLab Duo](gitlab_duo/_index.md):
 
@@ -153,7 +153,7 @@ Group permissions for [GitLab Duo](gitlab_duo/_index.md):
    [user must be assigned a seat to gain access to that GitLab Duo add-on](../subscriptions/subscription-add-ons.md#assign-gitlab-duo-seats).
    If the user has GitLab Duo Core, there are no other requirements.
 
-### Groups group permissions
+### Groups
 
 Group permissions for [group features](group/_index.md):
 
@@ -195,7 +195,7 @@ Group permissions for [group features](group/_index.md):
 1. Maintainers: Only if users with the Maintainer role [can create subgroups](group/subgroups/_index.md#change-who-can-create-subgroups).
 1. Does not apply to subgroups.
 
-### Project planning group permissions
+### Group planning
 
 | Action                                                                              | Guest | Planner | Reporter | Developer | Maintainer | Owner |
 | ----------------------------------------------------------------------------------- | :---: | :-----: | :------: | :-------: | :--------: | :---: |
@@ -232,7 +232,7 @@ Group permissions for [wikis](project/wiki/group.md):
 1. Guests: In addition, if your group is public or internal, all users who can see the group can also see group wiki pages.
 1. Guests: In addition, if your group is public or internal, all users who can see the group can also search group wiki pages.
 
-### Packages and registries group permissions
+### Group packages and registries
 
 Group permissions for the [package and container registry](packages/_index.md):
 
@@ -263,7 +263,7 @@ Group permissions for [package registry](packages/_index.md):
 | Enable package request forwarding        |       |         |          |           |            |   ✓   |
 | Disable package request forwarding       |       |         |          |           |            |   ✓   |
 
-### Repository group permissions
+### Group repositories
 
 Group permissions for [repository](project/repository/_index.md) features including merge requests, push rules, and deploy tokens.
 
@@ -273,7 +273,7 @@ Group permissions for [repository](project/repository/_index.md) features includ
 | Manage [merge request settings](group/manage.md#group-merge-request-approval-settings) |       |         |          |           |            |   ✓   |
 | Manage [push rules](group/access_and_permissions.md#group-push-rules)                  |       |         |          |           |            |   ✓   |
 
-### User management group permissions
+### Group user management
 
 Group permissions for user management:
 
@@ -285,7 +285,7 @@ Group permissions for user management:
 | Manage group-level custom roles |       |         |          |           |            |   ✓   |
 | Share (invite) groups to groups |       |         |          |           |            |   ✓   |
 
-### Workspace group permissions
+### Group workspaces
 
 Groups permissions for workspaces:
 
@@ -294,7 +294,7 @@ Groups permissions for workspaces:
 | View workspace cluster agents mapped to a group           |       |         |          |           |     ✓      |   ✓   |
 | Map or unmap workspace cluster agents to and from a group |       |         |          |           |            |   ✓   |
 
-## Project members permissions
+## Project permissions
 
 A user's role determines what permissions they have on a project. The Owner role provides all permissions but is
 available only:
@@ -317,7 +317,7 @@ For more information about how to manage project members, see
 
 The following tables list the project permissions available for each role.
 
-### Analytics
+### Project analytics
 
 Project permissions for [analytics](analytics/_index.md) features including value streams, usage trends, product analytics, and insights.
 
@@ -333,7 +333,7 @@ Project permissions for [analytics](analytics/_index.md) features including valu
 | View [Value Streams Dashboard](analytics/value_streams_dashboard.md)                       |       |         |    ✓     |     ✓     |     ✓      |   ✓   |
 | View [GitLab Duo and SDLC trends](analytics/duo_and_sdlc_trends.md)                        |       |         |    ✓     |     ✓     |     ✓      |   ✓   |
 
-### Application security
+### Project application security
 
 Project permissions for [application security](application_security/secure_your_application.md) features including dependency management, security analyzers, security policies, and vulnerability management.
 
@@ -360,7 +360,7 @@ Project permissions for [application security](application_security/secure_your_
 
 1. The `admin_vulnerability` permission was [removed](https://gitlab.com/gitlab-org/gitlab/-/issues/412693) from the Developer role in GitLab 17.0.
 
-### CI/CD
+### Project CI/CD
 
 [GitLab CI/CD](../ci/_index.md) permissions for some roles can be modified by these settings:
 
@@ -473,7 +473,7 @@ Guest users and members with the Reporter role cannot do any of these actions.
 1. Only if the triggering user is a member of the project. See also [Usage of private Docker images with `if-not-present` pull policy](https://docs.gitlab.com/runner/security/#usage-of-private-docker-images-with-if-not-present-pull-policy).
 1. You cannot push container images to other projects.
 
-### Compliance
+### Project compliance
 
 Project permissions for [compliance](compliance/_index.md) features including compliance center, audit events, compliance frameworks, and licenses.
 
@@ -493,7 +493,7 @@ Project permissions for [compliance](compliance/_index.md) features including co
    visibility is not available.
 1. Users can only view events based on their individual actions. For more details, see the [prerequisites](compliance/audit_events.md#prerequisites).
 
-### GitLab Duo
+### Project GitLab Duo
 
 Project permissions for [GitLab Duo](gitlab_duo/_index.md):
 
@@ -506,7 +506,7 @@ Project permissions for [GitLab Duo](gitlab_duo/_index.md):
 
 1. Code Suggestions requires a [user being assigned a seat to gain access to a GitLab Duo add-on](../subscriptions/subscription-add-ons.md#assign-gitlab-duo-seats).
 
-### Machine learning model registry and experiment
+### Project model registry and experiments
 
 Project permissions for [model registry](project/ml/model_registry/_index.md) and [model experiments](project/ml/experiment_tracking/_index.md).
 
@@ -530,7 +530,7 @@ Project permissions for [model registry](project/ml/model_registry/_index.md) an
 1. You can also upload and download artifacts with the package registry API, which uses
    a different set of permissions.
 
-### Monitoring
+### Project monitoring
 
 Project permissions for monitoring including [error tracking](../operations/error_tracking.md) and [incident management](../operations/incident_management/_index.md):
 
@@ -636,7 +636,7 @@ Project permissions for [wikis](project/wiki/_index.md):
 | Edit wiki pages                  |       |    ✓    |          |     ✓     |     ✓      |   ✓   |
 | Delete wiki pages                |       |    ✓    |          |     ✓     |     ✓      |   ✓   |
 
-### Packages and registry
+### Project packages and registries
 
 Project permissions for [container registry](packages/_index.md):
 
@@ -740,7 +740,7 @@ Project permissions for [GitLab Pages](project/pages/_index.md):
 | Manage GitLab Pages domain and certificates                                            |       |         |          |           |     ✓      |   ✓   |
 | Remove GitLab Pages                                                                    |       |         |          |           |     ✓      |   ✓   |
 
-### Repository
+### Project repositories
 
 Project permissions for [repository](project/repository/_index.md) features including source code, branches, push rules, and more:
 
@@ -810,7 +810,7 @@ Project permissions for [repository](project/repository/_index.md) features incl
 
 <!-- markdownlint-enable MD029 -->
 
-### Merge requests
+### Project merge requests
 
 Project permissions for [merge requests](project/merge_requests/_index.md):
 
@@ -845,7 +845,7 @@ Project permissions for [merge requests](project/merge_requests/_index.md):
 1. In projects that accept contributions from external members, users can create, edit, and close their
    own merge requests. They cannot edit some fields, like assignees, reviewers, labels, and milestones.
 
-### User management
+### Project user management
 
 Project permissions for [user management](project/members/_index.md).
 

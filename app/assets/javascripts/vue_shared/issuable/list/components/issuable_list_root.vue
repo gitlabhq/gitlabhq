@@ -15,7 +15,6 @@ import { DRAG_DELAY } from '~/sortable/constants';
 import { getIdFromGraphQLId } from '~/graphql_shared/utils';
 import FilteredSearchBar from '~/vue_shared/components/filtered_search_bar/filtered_search_bar_root.vue';
 import ResourceListsLoadingStateList from '~/vue_shared/components/resource_lists/loading_state_list.vue';
-import issuableEventHub from '~/issues/list/eventhub';
 import { DEFAULT_SKELETON_COUNT, PAGE_SIZE_STORAGE_KEY } from '../constants';
 import IssuableBulkEditSidebar from './issuable_bulk_edit_sidebar.vue';
 import IssuableItem from './issuable_item.vue';
@@ -317,13 +316,10 @@ export default {
     },
     handleIssuableCheckedInput(issuable, value) {
       this.updateCheckedIssuableIds(issuable, value);
-
       this.$emit('update-legacy-bulk-edit');
-      issuableEventHub.$emit('issuables:issuableChecked', issuable, value);
     },
     handleAllIssuablesCheckedInput(value) {
       this.issuables.forEach((issuable) => this.updateCheckedIssuableIds(issuable, value));
-
       this.$emit('update-legacy-bulk-edit');
     },
     handleVueDraggableUpdate({ newIndex, oldIndex }) {

@@ -13,7 +13,7 @@ description: Grant limited access to external members with restricted permission
 
 {{< /details >}}
 
-External users have limited access to internal or private groups and projects in the instance. Unlike regular users, external users must be explicitly added to a group or project. However, like regular users, external users are assigned a member role and gain all the associated [permissions](../user/permissions.md#project-members-permissions).
+External users have limited access to internal or private groups and projects in the instance. Unlike regular users, external users must be explicitly added to a group or project. However, like regular users, external users are assigned a member role and gain all the associated [permissions](../user/permissions.md#project-permissions).
 
 External users:
 

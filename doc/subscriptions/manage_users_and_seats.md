@@ -110,7 +110,7 @@ In the **Ultimate** tier, users who are assigned the Guest role do not consume a
 The user must not be assigned any other role, anywhere in the instance for GitLab Self-Managed or in the namespace for GitLab.com.
 
 - If your project is:
-  - Private or internal, a user with the Guest role has [a set of permissions](../user/permissions.md#project-members-permissions).
+  - Private or internal, a user with the Guest role has [a set of permissions](../user/permissions.md#project-permissions).
   - Public, all users, including those with the Guest role, can access your project.
 - For GitLab.com, if a user with the Guest role creates a project in their personal namespace, the user does not consume a seat.
   The project is under the user's personal namespace and does not relate to the group with the Ultimate subscription.

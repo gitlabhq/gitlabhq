@@ -45,13 +45,15 @@ traverse the entire table which will be time consuming for large/high-traffic ta
 So in almost all cases we have to run them in separate transactions to avoid holding the
 stricter lock and blocking other operations on the tables for a longer time.
 
+### On a new table
+
+1. If the new table is referencing only one other table, it is straightforward. `create_table (t.references, ..., foreign_key: true)` can be used regardless of the referenced table.
+1. If the new table is referencing two other different tables. Please refer to [creating a new table when we have two foreign keys](../migration_style_guide.md#creating-a-new-table-when-we-have-two-foreign-keys).
+
 ### On a new column
 
-If the FK is added while creating the table, it is straight forward and
-`create_table (t.references, ..., foreign_key: true)` can be used.
-
-If you have a new (without much records) or empty table that doesn't reference a
-[high-traffic table](../migration_style_guide.md#high-traffic-tables), either of below approaches can be used.
+If you have a new (without many records) table, either of below approaches can be used. If you need
+to add two foreign keys, please split them in different migrations, to avoid locking more than one table in the same migration.
 
 1. add_reference(... foreign_key: true)
 1. add_column(...) and add_foreign_key(...) in the same transaction.

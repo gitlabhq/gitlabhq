@@ -34,7 +34,9 @@ module Types
           skip_type_authorization: [:read_work_item]
 
         field :has_children, GraphQL::Types::Boolean,
-          null: false, description: 'Indicates if the work item has children.'
+          null: false,
+          scopes: [:api, :read_api, :ai_workflows],
+          description: 'Indicates if the work item has children.'
 
         field :has_parent, GraphQL::Types::Boolean,
           null: false, method: :has_parent?, description: 'Indicates if the work item has a parent.'

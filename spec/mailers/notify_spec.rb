@@ -2182,4 +2182,18 @@ RSpec.describe Notify, feature_category: :code_review_workflow do
       expect(rate_limit_notification).to have_subject(/Notifications temporarily disabled/)
     end
   end
+
+  context 'with SMTP connection errors' do
+    it 'raises an SMTPConnectionError' do
+      expect_next_instance_of(Mail::TestMailer) do |instance|
+        expect(instance).to receive(:deliver!).and_raise(EOFError)
+      end
+
+      expect do
+        perform_enqueued_jobs do
+          described_class.new_issue_email(assignee.id, issue.id).deliver_later
+        end
+      end.to raise_error(ApplicationMailer::SMTPConnectionError)
+    end
+  end
 end

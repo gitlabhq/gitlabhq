@@ -1,6 +1,6 @@
 /* eslint-disable class-methods-use-this, no-new */
 import $ from 'jquery';
-import issuableEventHub from '~/issues/list/eventhub';
+import issuableEventHub from '~/merge_requests/list/eventhub';
 import LabelsSelect from '~/labels/labels_select';
 import {
   mountAssigneesDropdown,
@@ -45,16 +45,8 @@ export default class IssuableBulkUpdateSidebar {
     this.$bulkEditSubmitBtn.on('click', () => this.prepForSubmit());
     this.$checkAllContainer.on('click', () => this.updateFormState());
 
-    // The event hub connects this bulk update logic with `issues_list_app.vue`.
-    // We can remove it once we've refactored the issues list page bulk edit sidebar to Vue.
-    // https://gitlab.com/gitlab-org/gitlab/-/issues/325874
     issuableEventHub.$on('issuables:enableBulkEdit', () => this.toggleBulkEdit(null, true));
     issuableEventHub.$on('issuables:updateBulkEdit', () => this.updateFormState());
-
-    // These events are connected to the logic inside `move_issues_button.vue`,
-    // so that only one action can be performed at a time
-    issuableEventHub.$on('issuables:bulkMoveStarted', () => this.toggleSubmitButtonDisabled(true));
-    issuableEventHub.$on('issuables:bulkMoveEnded', () => this.updateFormState());
   }
 
   initDropdowns() {
@@ -76,8 +68,6 @@ export default class IssuableBulkUpdateSidebar {
     this.updateSelectedIssuableIds();
 
     IssuableBulkUpdateActions.setOriginalDropdownData();
-
-    issuableEventHub.$emit('issuables:selectionChanged', !noCheckedIssues);
   }
 
   prepForSubmit() {

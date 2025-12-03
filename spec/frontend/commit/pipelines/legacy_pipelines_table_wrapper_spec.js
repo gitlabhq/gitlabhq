@@ -184,7 +184,7 @@ describe('Pipelines table in Commits and Merge requests', () => {
           '/help/ci/pipelines/merge_request_pipelines.md#prerequisites',
         );
         expect(findUserPermissionsDocsLink().attributes('href')).toBe(
-          '/help/user/permissions.md#cicd',
+          '/help/user/permissions.md#project-cicd',
         );
         expect(findEmptyState().text()).toContain(
           'To run a merge request pipeline, the jobs in the CI/CD configuration file must be configured to run in merge request pipelines ' +

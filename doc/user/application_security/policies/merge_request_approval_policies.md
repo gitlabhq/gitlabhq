@@ -158,7 +158,7 @@ For parent-child pipelines, policy evaluation considers a maximum of 1,000 child
 
 {{< alert type="note" >}}
 
-Only project Owners have the [permissions](../../permissions.md#project-members-permissions)
+Only project Owners have the [permissions](../../permissions.md#project-permissions)
 to select Security Policy Project.
 
 {{< /alert >}}

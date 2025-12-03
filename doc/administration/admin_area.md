@@ -209,8 +209,8 @@ in groups and projects. It includes this data, and is limited to the first 100,0
 - Email
 - Type
 - Path
-- Access level ([Project](../user/permissions.md#project-members-permissions) and
-  [Group](../user/permissions.md#group-members-permissions))
+- Access level ([Project](../user/permissions.md#project-permissions) and
+  [Group](../user/permissions.md#group-permissions))
 - Date of last activity. For a list of activities that populate this column, see the
   [Users API documentation](../api/users.md#list-a-users-activity).
 

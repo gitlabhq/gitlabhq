@@ -23,7 +23,19 @@ class Projects::MergeRequests::DiffsController < Projects::MergeRequests::Applic
   ]
 
   def show
-    render_diffs
+    respond_to do |format|
+      format.json do
+        render_diffs
+      end
+
+      format.patch do
+        send_git_patch @project.repository, @compare.diff_refs
+      end
+
+      format.diff do
+        send_git_diff @project.repository, @compare.diff_refs
+      end
+    end
   end
 
   def diff_by_file_hash

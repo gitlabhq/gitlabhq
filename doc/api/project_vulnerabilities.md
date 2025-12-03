@@ -44,7 +44,7 @@ status code.
 List all of a project's vulnerabilities.
 
 If an authenticated user does not have permission to
-[use the Project Security Dashboard](../user/permissions.md#project-members-permissions),
+[use the Project Security Dashboard](../user/permissions.md#project-permissions),
 `GET` requests for vulnerabilities of this project result in a `403` status code.
 
 Responses are [paginated](rest/_index.md#pagination) and return 20 results by default.
@@ -119,7 +119,7 @@ Example response:
 Creates a new vulnerability.
 
 If an authenticated user does not have a permission to
-[create a new vulnerability](../user/permissions.md#project-members-permissions),
+[create a new vulnerability](../user/permissions.md#project-permissions),
 this request results in a `403` status code.
 
 ```plaintext

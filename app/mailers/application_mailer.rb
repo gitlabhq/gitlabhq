@@ -6,6 +6,14 @@ class ApplicationMailer < ActionMailer::Base
   helper ApplicationHelper
   helper MarkupHelper
 
+  # Ignore transient SMTP connection errors in our SLIs.
+  # These are transient and are fixed by a retry.
+  SMTPConnectionError = Class.new(Gitlab::SidekiqMiddleware::RetryError)
+
+  rescue_from EOFError do
+    raise SMTPConnectionError
+  end
+
   attr_accessor :current_user
 
   helper_method :current_user, :can?

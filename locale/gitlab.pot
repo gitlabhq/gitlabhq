@@ -2619,6 +2619,9 @@ msgstr ""
 msgid "AICatalog|Connect an agent to automate complex tasks"
 msgstr ""
 
+msgid "AICatalog|Connects to an AI model provider outside GitLab."
+msgstr ""
+
 msgid "AICatalog|Contains dangerous code, exploits, or harmful actions."
 msgstr ""
 
@@ -10614,6 +10617,9 @@ msgstr ""
 msgid "Beta"
 msgstr ""
 
+msgid "BetaBadge|A %{link_start}beta%{link_end} feature is not yet production-ready, but is ready for testing and unlikely to change significantly before it's released."
+msgstr ""
+
 msgid "BetaBadge|A beta feature is not yet production-ready, but is ready for testing and unlikely to change significantly before it's released."
 msgstr ""
 
@@ -10621,6 +10627,9 @@ msgid "BetaBadge|Are subject to the GitLab Testing Agreement."
 msgstr ""
 
 msgid "BetaBadge|Are supported on a commercially-reasonable effort basis."
+msgstr ""
+
+msgid "BetaBadge|Beta"
 msgstr ""
 
 msgid "BetaBadge|Beta features:"
@@ -28050,6 +28059,27 @@ msgid "Experiment"
 msgstr ""
 
 msgid "Experiment features' settings not allowed."
+msgstr ""
+
+msgid "ExperimentBadge|An %{link_start}experiment%{link_end} is not yet production-ready, but is released for initial testing and feedback during development."
+msgstr ""
+
+msgid "ExperimentBadge|Are not supported and might not be documented."
+msgstr ""
+
+msgid "ExperimentBadge|Could be changed or removed at any time."
+msgstr ""
+
+msgid "ExperimentBadge|Experiment"
+msgstr ""
+
+msgid "ExperimentBadge|Experiment features:"
+msgstr ""
+
+msgid "ExperimentBadge|Might be unstable or cause data loss."
+msgstr ""
+
+msgid "ExperimentBadge|What's an experiment?"
 msgstr ""
 
 msgid "ExperimentTracking|Create run using MLflow"

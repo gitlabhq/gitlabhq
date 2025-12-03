@@ -136,10 +136,10 @@ To migrate to the dependency scanning using SBOM method, perform the following s
    - **Recommended**: Use the `v2` dependency scanning CI/CD template `Dependency-Scanning.v2.gitlab-ci.yml` to run the new dependency scanning analyzer:
      1. Ensure your `.gitlab-ci.yml` CI/CD configuration includes the `v2` dependency scanning CI/CD template.
      1. Adjust your project and your CI/CD configuration if needed by following the language-specific instructions below.
-   - Use the [Scan Execution Policies](dependency_scanning_sbom/_index.md#scan-execution-policies) to run the new dependency scanning analyzer:
+   - Use a [scan execution policy](dependency_scanning_sbom/_index.md#enforce-scanning-on-multiple-projects) to run the new dependency scanning analyzer:
      1. Edit the configured scan execution policy for dependency scanning and ensure it uses the `v2` template.
      1. Adjust your project and your CI/CD configuration if needed by following the language-specific instructions below.
-   - Use the [Pipeline Execution Policies](dependency_scanning_sbom/_index.md#pipeline-execution-policies) to run the new dependency scanning analyzer:
+   - Use a [pipeline execution policy](dependency_scanning_sbom/_index.md#enforce-scanning-on-multiple-projects) to run the new dependency scanning analyzer:
      1. Edit the configured pipeline execution policy and ensure it uses the `v2` template.
      1. Adjust your project and your CI/CD configuration if needed by following the language-specific instructions below.
    - Use the [dependency scanning CI/CD component](https://gitlab.com/explore/catalog/components/dependency-scanning) to run the new dependency scanning analyzer:

@@ -289,7 +289,7 @@ performing.
   on groups and projects.
 
 For more details, see
-[Roles and permissions](../../permissions.md#application-security-group-permissions).
+[Roles and permissions](../../permissions.md#group-application-security).
 
 ### Rollout goals
 

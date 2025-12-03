@@ -672,13 +672,13 @@ For more information, see [Wiki-specific Markdown](project/wiki/markdown.md).
 Use heading ID anchors to link to a specific section in a page:
 
 ```markdown
-- This line links to [a section on a different Markdown page, using a `#` and the heading ID](permissions.md#project-members-permissions)
+- This line links to [a section on a different Markdown page, using a `#` and the heading ID](permissions.md#project-permissions)
 - This line links to [a different section on the same page, using a `#` and the heading ID](#heading-ids-and-links)
 ```
 
 When rendered, the examples look similar to:
 
-> - This line links to [a section on a different Markdown page, using a `#` and the heading ID](permissions.md#project-members-permissions)
+> - This line links to [a section on a different Markdown page, using a `#` and the heading ID](permissions.md#project-permissions)
 > - This line links to [a different section on the same page, using a `#` and the heading ID](#heading-ids-and-links)
 
 Using link references:

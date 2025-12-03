@@ -169,7 +169,7 @@ role for the group. For example, the maximum role you can set is:
 - Owner (`50`), if you have the Owner role for the project.
 - Maintainer (`40`), if you have the Maintainer role on the project.
 
-The Owner [role](../../permissions.md#project-members-permissions) can be added for the group only.
+The Owner [role](../../permissions.md#project-permissions) can be added for the group only.
 
 ## View project members
 

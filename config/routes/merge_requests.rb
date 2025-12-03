@@ -34,6 +34,10 @@ resources :merge_requests, concerns: :awardable, except: [:new, :create, :show],
       get :cached_widget, to: 'merge_requests/content#cached_widget'
     end
 
+    scope constraints: ->(req) { req.format == :diff || req.format == :patch } do
+      get :diffs, to: 'merge_requests/diffs#show'
+    end
+
     scope action: :show do
       get :commits, defaults: { tab: 'commits' }
       get :pipelines, defaults: { tab: 'pipelines' }

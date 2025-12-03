@@ -77,7 +77,7 @@ Use the scan execution policy editor to create or edit a scan execution policy.
 
 Prerequisites:
 
-- By default, only group, subgroup, or project Owners have the [permissions](../../permissions.md#application-security)
+- By default, only group, subgroup, or project Owners have the [permissions](../../permissions.md#project-application-security)
   required to create or assign a security policy project. Alternatively, you can create a custom role with the permission to [manage security policy links](../../custom_roles/abilities.md#security-policy-management).
 
 When you create your first scan execution policies, templates help you to get started with some of the most common use cases:

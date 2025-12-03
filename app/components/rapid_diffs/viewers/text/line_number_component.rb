@@ -4,11 +4,10 @@ module RapidDiffs
   module Viewers
     module Text
       class LineNumberComponent < ViewComponent::Base
-        def initialize(line:, line_id:, position:, border: nil)
+        def initialize(line:, line_id:, position:)
           @line = line
           @line_id = line_id
           @position = position
-          @border = border
         end
 
         def line_number
@@ -21,13 +20,6 @@ module RapidDiffs
           return 'added' if @line.added?
 
           'removed' if @line.removed?
-        end
-
-        def border_class
-          case @border
-          when :right then 'rd-line-number-border-right'
-          when :both  then 'rd-line-number-border-both'
-          end
         end
 
         def label

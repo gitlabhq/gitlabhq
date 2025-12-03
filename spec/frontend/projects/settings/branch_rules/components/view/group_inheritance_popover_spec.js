@@ -42,9 +42,7 @@ describe('GroupInheritancePopover', () => {
 
   it('renders the help link with correct href', () => {
     expect(findLink().exists()).toBe(true);
-    expect(findLink().attributes('href')).toBe(
-      '/help/user/permissions#repository-group-permissions',
-    );
+    expect(findLink().attributes('href')).toBe('/help/user/permissions#group-repositories');
   });
 
   describe('when user cannot admin group protected branches', () => {
@@ -56,9 +54,7 @@ describe('GroupInheritancePopover', () => {
     });
 
     it('links to the permissions help documentation', () => {
-      expect(findLink().attributes('href')).toBe(
-        '/help/user/permissions#repository-group-permissions',
-      );
+      expect(findLink().attributes('href')).toBe('/help/user/permissions#group-repositories');
     });
 
     it('renders the trigger button with correct attributes', () => {

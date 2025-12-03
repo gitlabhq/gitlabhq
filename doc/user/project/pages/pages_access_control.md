@@ -23,7 +23,7 @@ title: GitLab Pages access control
 You can enable Pages access control on your project
 if your administrator has [enabled the access control feature](../../../administration/pages/_index.md#access-control)
 on your GitLab instance. When enabled, only authenticated
-[members of your project](../../permissions.md#project-members-permissions)
+[members of your project](../../permissions.md#project-permissions)
 (at least Guest) can access your website, by default:
 
 <i class="fa fa-youtube-play youtube" aria-hidden="true"></i>

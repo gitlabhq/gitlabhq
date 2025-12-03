@@ -4,7 +4,7 @@
 import $ from 'jquery';
 import { difference, isEqual, escape, sortBy, template, union } from 'lodash';
 import initDeprecatedJQueryDropdown from '~/deprecated_jquery_dropdown';
-import IssuableBulkUpdateActions from '~/issuable/issuable_bulk_update_actions';
+import IssuableBulkUpdateActions from '~/merge_requests/list/issuable_bulk_update_actions';
 import { isScopedLabel } from '~/lib/utils/common_utils';
 import { createAlert } from '~/alert';
 import axios from '~/lib/utils/axios_utils';

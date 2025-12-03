@@ -41,7 +41,7 @@ for all projects, so no configuration is required.
 
 Even though the domain is linked to a project, it is available to the entire group hierarchy
 including all nested subgroups and projects. Members in the linked project with
-[at least the Maintainer role](../permissions.md#project-members-permissions) can modify or remove
+[at least the Maintainer role](../permissions.md#project-permissions) can modify or remove
 the domain. If this project is deleted, your associated domains are also removed.
 
 For more information on group domains, see [epic 5299](https://gitlab.com/groups/gitlab-org/-/epics/5299).
@@ -140,7 +140,7 @@ To delete a custom domain for a group:
 
 ## Manage enterprise users
 
-In addition to the standard [group member permissions](../permissions.md#group-members-permissions),
+In addition to the standard [group member permissions](../permissions.md#group-permissions),
 Owners of a top-level group can also manage enterprise users in their group.
 
 You can also [use the API](../../api/group_enterprise_users.md) to interact with enterprise users.

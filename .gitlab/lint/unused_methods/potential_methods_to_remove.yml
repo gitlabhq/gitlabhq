@@ -463,8 +463,6 @@ runner_status_icon:
   file: app/helpers/ci/runners_helper.rb
 runner_link:
   file: app/helpers/ci/runners_helper.rb
-duration_in_numbers:
-  file: app/helpers/time_helper.rb
 offline?:
   file: app/models/bulk_imports/export.rb
 belongs_to_one_project?:

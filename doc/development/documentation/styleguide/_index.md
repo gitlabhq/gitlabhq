@@ -968,7 +968,7 @@ Use sentence case for table headers. For example, `Keyword value` or `Project na
 ### Feature tables
 
 When creating tables of lists of features (such the features
-available to each role on the [Permissions](../../../user/permissions.md#project-members-permissions)
+available to each role on the [Permissions](../../../user/permissions.md#project-permissions)
 page), use these phrases:
 
 | Option | Markdown                                          | Displayed result |

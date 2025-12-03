@@ -30,6 +30,9 @@ You can turn GitLab Duo on or off:
 
 You can also turn GitLab Duo Core (a subset of GitLab Duo features) on or off.
 
+If you turn GitLab Duo on or off, you turn on or off
+GitLab Duo features (like GitLab Duo Chat) as well.
+
 ## Turn GitLab Duo Core on or off
 
 {{< history >}}
@@ -258,19 +261,38 @@ Prerequisites:
 
 To turn on GitLab Duo experiment and beta features for an instance:
 
-1. On the left sidebar, at the bottom, select **Admin area**.
+1. On the left sidebar, at the bottom, select **Admin**. If you've
+   [turned on the new navigation](../interface_redesign.md#turn-new-navigation-on-or-off),
+   in the upper-right corner, select **Admin**.
 1. Select **Settings** > **GitLab Duo**.
 1. Expand **Change configuration**.
-1. Under **Feature Preview**, select **Use experiment and beta GitLab Duo features**.
+1. Under **Feature preview**, select **Use experiment and beta GitLab Duo features**.
 1. Select **Save changes**.
 
 {{< /tab >}}
 
 {{< tab title="In 17.3 and earlier" >}}
 
-To enable GitLab Duo beta and experimental features for GitLab versions
-where GitLab Duo Chat is not yet generally available, see the
-[GitLab Duo Chat documentation](../gitlab_duo_chat/turn_on_off.md#for-gitlab-self-managed).
+Prerequisites:
+
+- Be an administrator.
+- Have [network connectivity](../../administration/gitlab_duo/setup.md) enabled.
+- Have [Silent Mode](../../administration/silent_mode/_index.md) turned off.
+
+To turn on GitLab Duo experiment and beta features for an instance:
+
+1. On the left sidebar, at the bottom, select **Admin**. If you've
+   [turned on the new navigation](../interface_redesign.md#turn-new-navigation-on-or-off),
+   in the upper-right corner, select **Admin**.
+1. Select **Settings** > **GitLab Duo**.
+1. Expand **Change configuration**.
+1. Under **Feature preview**, select **Use experiment and beta GitLab Duo features**.
+1. Select **Save changes**.
+1. For GitLab Duo Chat to work immediately,
+   [manually synchronize your subscription](../../subscriptions/manage_subscription.md#manually-synchronize-subscription-data).
+
+   If you do not manually synchronize your subscription, it might take up to 24
+   hours to activate GitLab Duo Chat on your instance.
 
 {{< /tab >}}
 

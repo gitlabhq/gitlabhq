@@ -20,7 +20,7 @@ You can organize GitLab [groups](../_index.md) into subgroups. You can use subgr
 - Organize large projects. You can use subgroups to manage who can access parts of
   the source code.
 - Manage permissions. Give a user a different
-  [role](../../permissions.md#group-members-permissions) for each group they're [a member of](#subgroup-membership).
+  [role](../../permissions.md#group-permissions) for each group they're [a member of](#subgroup-membership).
 
 Subgroups can:
 
@@ -121,7 +121,7 @@ To change who can create subgroups on a group:
   1. From the **Allowed to create subgroups** dropdown list, select an option.
   1. Select **Save changes**.
 
-For more information, view the [permissions table](../../permissions.md#group-members-permissions).
+For more information, view the [permissions table](../../permissions.md#group-permissions).
 
 ## Subgroup membership
 

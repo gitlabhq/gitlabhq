@@ -45,7 +45,7 @@ When you select a project, the **Project overview** page shows the project conte
 - Creation date
 
 For public projects, and members of internal and private projects
-with [permissions to view the project's code](../permissions.md#project-members-permissions),
+with [permissions to view the project's code](../permissions.md#project-permissions),
 the project overview page shows:
 
 - A [`README` or index file](repository/files/_index.md#readme-and-index-files).

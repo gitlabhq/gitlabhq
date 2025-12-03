@@ -207,7 +207,8 @@
 
 .rd-diff-file-body {
   --rd-content-border-radius: 0 0 var(--rd-diff-file-border-radius) var(--rd-diff-file-border-radius);
-  border: constants.$diff-file-border-width solid var(--gl-border-color-default);
+  --rd-content-border-color: var(--gl-border-color-default);
+  border: constants.$diff-file-border-width solid var(--rd-content-border-color);
   border-top: 0;
   border-radius: var(--rd-content-border-radius);
 }

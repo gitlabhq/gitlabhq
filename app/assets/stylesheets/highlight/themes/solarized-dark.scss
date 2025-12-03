@@ -111,6 +111,8 @@ $solarized-dark-il: #2aa198;
 
   --code-background: #{$solarized-dark-pre-bg};
   --code-empty-background: #{color.adjust($solarized-dark-pre-bg, $lightness: -1.5%)};
+  --code-border-color: #{$gl-color-neutral-700};
+  --code-changed-border-color: #{rgba(255,255,255,0.2)};
 
   --code-line-number-background-color: #{$solarized-dark-line-bg};
   --code-line-number-color: #{$solarized-dark-line-color};

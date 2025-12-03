@@ -17,8 +17,14 @@ export const DOCS_URL = `https://docs.${DOMAIN}`; // docs.gitlab.com
 // About GitLab default host
 export const PROMO_HOST = `about.${DOMAIN}`; // about.gitlab.com
 
+// GitLab Customers Portal host
+export const CUSTOMERS_PORTAL_HOST = `customers.${DOMAIN}`; // customers.gitlab.com
+
 // About Gitlab default url
 export const PROMO_URL = `https://${PROMO_HOST}`;
+
+// GitLab Customers Portal URL
+export const CUSTOMERS_PORTAL_URL = `https://${CUSTOMERS_PORTAL_HOST}`;
 
 // eslint-disable-next-line no-restricted-syntax
 export const DOCS_URL_IN_EE_DIR = `${DOCS_URL}/ee`;

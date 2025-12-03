@@ -440,6 +440,29 @@ curl "https://gitlab.com/gitlab-org/gitlab/-/merge_requests/000000.patch" | git 
 
 The `git am` uses the `-p1` option by default. For more information, see [`git-apply`](https://git-scm.com/docs/git-apply).
 
+### Download older diff versions
+
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/373246) in GitLab 18.7.
+
+{{< /history >}}
+
+To download older diff versions as a patch or diff file:
+
+1. [Compare the diff versions](versions.md#compare-diff-versions) you want to download.
+1. Append `.diff` or `.patch` to the URL path.
+
+For example:
+
+```plaintext
+# As a diff file:
+https://gitlab.com/gitlab-org/gitlab/-/merge_requests/123456/diffs.diff?diff_id=525410&start_sha=a1b2c3d4
+
+# As a patch file:
+https://gitlab.com/gitlab-org/gitlab/-/merge_requests/123456/diffs.patch?diff_id=525410&start_sha=a1b2c3d4
+```
+
 ## Add a comment to a merge request file
 
 {{< history >}}

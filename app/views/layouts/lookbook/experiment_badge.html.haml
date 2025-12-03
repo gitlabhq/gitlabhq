@@ -1,0 +1,16 @@
+%head
+  = universal_stylesheet_link_tag "fonts"
+  - if params[:lookbook][:display][:theme] == "light"
+    = universal_stylesheet_link_tag "application"
+  - else
+    = universal_stylesheet_link_tag "application_dark"
+  = universal_stylesheet_link_tag 'tailwind'
+  = webpack_bundle_tag 'javascripts/entrypoints/lookbook/experiment_badge'
+
+%body
+  .gl-mt-6{ class: (params[:lookbook][:display][:layout] == "fluid" ? "container-fluid" : "container") }
+    - if params[:lookbook][:display][:bg_dark]
+      .bg-dark.rounded.shadow.p-4
+        = yield
+    - else
+      = yield

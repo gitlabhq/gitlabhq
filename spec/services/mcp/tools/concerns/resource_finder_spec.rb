@@ -3,6 +3,13 @@
 require 'spec_helper'
 
 RSpec.describe Mcp::Tools::Concerns::ResourceFinder, feature_category: :mcp_server do
+  let_it_be(:user, freeze: true) { create(:user) }
+  let_it_be(:public_group, freeze: true) { create(:group) }
+  let_it_be(:private_group, freeze: true) { create(:group, :private) }
+  let_it_be(:group) { public_group }
+  let_it_be(:public_project, freeze: true) { create(:project, :public, group: group) }
+  let_it_be(:private_project, freeze: true) { create(:project, :private, group: group) }
+
   let(:test_class) do
     Class.new do
       include Mcp::Tools::Concerns::ResourceFinder
@@ -45,10 +52,9 @@ RSpec.describe Mcp::Tools::Concerns::ResourceFinder, feature_category: :mcp_serv
 
   let(:service) { test_class.new }
 
-  shared_examples 'parent access control' do |parent_type, factory, error_prefix|
-    let_it_be(:user) { create(:user) }
-    let_it_be(:accessible_resource) { create(factory) } # rubocop:disable Rails/SaveBang -- This is a factory, not a Rails method call
-    let_it_be(:inaccessible_resource) { create(factory, :private) }
+  shared_examples 'parent access control' do |parent_type, public_resource, private_resource, error_prefix|
+    let(:accessible_resource) { public_send(public_resource) }
+    let(:inaccessible_resource) { public_send(private_resource) }
     let(:service) { test_class.new(user) }
 
     it 'allows access when user has permission' do
@@ -64,8 +70,8 @@ RSpec.describe Mcp::Tools::Concerns::ResourceFinder, feature_category: :mcp_serv
     end
   end
 
-  shared_examples 'resource finder' do |finder_method, resource_factory|
-    let(:resource) { create(resource_factory) } # rubocop:disable Rails/SaveBang -- This is a factory, not a Rails method call
+  shared_examples 'resource finder' do |finder_method, resource_ref|
+    let(:resource) { public_send(resource_ref) }
 
     it 'finds resource by ID' do
       result = service.send(finder_method, resource.id.to_s)
@@ -89,7 +95,7 @@ RSpec.describe Mcp::Tools::Concerns::ResourceFinder, feature_category: :mcp_serv
   end
 
   describe '#find_project' do
-    it_behaves_like 'resource finder', :test_find_project, :project
+    it_behaves_like 'resource finder', :test_find_project, :public_project
 
     it 'validates input type' do
       expect { service.test_find_project(123) }
@@ -111,37 +117,32 @@ RSpec.describe Mcp::Tools::Concerns::ResourceFinder, feature_category: :mcp_serv
   end
 
   describe '#find_group' do
-    it_behaves_like 'resource finder', :test_find_group, :group
+    it_behaves_like 'resource finder', :test_find_group, :private_group
 
     it 'finds nested groups by full path' do
-      parent = create(:group)
-      nested = create(:group, parent: parent)
+      nested = create(:group, parent: group)
       expect(service.test_find_group(nested.full_path)).to eq(nested)
     end
   end
 
   describe '#find_parent_by_id_or_path' do
     context 'with project parent type' do
-      it_behaves_like 'parent access control', :project, :project, 'Access denied to project'
+      it_behaves_like 'parent access control', :project, :public_project, :private_project, 'Access denied to project'
 
       it 'finds and returns the project by ID' do
-        user = create(:user)
-        project = create(:project, :public)
-        project.add_developer(user)
+        user = create(:user, developer_of: public_project)
         service = test_class.new(user)
 
-        result = service.test_find_parent_by_id_or_path(:project, project.id.to_s)
-        expect(result).to eq(project)
+        result = service.test_find_parent_by_id_or_path(:project, public_project.id.to_s)
+        expect(result).to eq(public_project)
       end
     end
 
     context 'with group parent type' do
-      it_behaves_like 'parent access control', :group, :group, 'Access denied to group'
+      it_behaves_like 'parent access control', :group, :public_group, :private_group, 'Access denied to group'
 
       it 'finds and returns the group by ID' do
-        user = create(:user)
-        group = create(:group)
-        group.add_developer(user)
+        user = create(:user, developer_of: group)
         service = test_class.new(user)
 
         result = service.test_find_parent_by_id_or_path(:group, group.id.to_s)
@@ -151,49 +152,51 @@ RSpec.describe Mcp::Tools::Concerns::ResourceFinder, feature_category: :mcp_serv
   end
 
   describe '#find_work_item_in_parent' do
-    let_it_be(:user) { create(:user) }
-    let_it_be(:project) { create(:project, :public) }
-    let_it_be(:work_item) { create(:work_item, :issue, project: project, iid: 42) }
+    let_it_be(:project) { public_project }
+    let_it_be(:user) { create(:user, developer_of: [project]) }
+    let_it_be(:work_item) { create(:work_item, :issue, project: project) }
+    let(:work_item_iid) { work_item.iid }
     let(:service) { test_class.new(user) }
 
-    before_all do
-      project.add_developer(user)
-    end
+    subject(:find_work_item_in_parent) { service.test_find_work_item_in_parent(project, work_item_iid) }
 
     context 'with project parent' do
       it 'finds work item by iid' do
-        result = service.test_find_work_item_in_parent(project, work_item.iid)
-        expect(result).to eq(work_item)
+        is_expected.to eq(work_item)
       end
 
-      it 'raises error when work item not found' do
-        expect { service.test_find_work_item_in_parent(project, 99999) }
-          .to raise_error(ArgumentError, 'Work item #99999 not found')
+      context 'when work item not found' do
+        let(:work_item_iid) { non_existing_record_iid }
+
+        it 'raises error when work item not found' do
+          expect { find_work_item_in_parent }
+            .to raise_error(ArgumentError, "Work item ##{work_item_iid} not found")
+        end
       end
 
-      it 'restricts access to confidential work items for guests' do
-        confidential_item = create(:work_item, :issue, :confidential, project: project, iid: 99)
-        guest_user = create(:user)
-        project.add_guest(guest_user)
-        guest_service = test_class.new(guest_user)
+      context 'when work item is confidential' do
+        let(:confidential_item) { create(:work_item, :issue, :confidential, project: project) }
+        let(:guest_user) { create(:user, guest_of: project) }
+        let(:work_item_iid) { confidential_item.iid }
+        let(:user) { guest_user }
 
-        expect { guest_service.test_find_work_item_in_parent(project, confidential_item.iid) }
-          .to raise_error(ArgumentError, "Work item ##{confidential_item.iid} not found")
+        it 'restricts access' do
+          expect { find_work_item_in_parent }
+            .to raise_error(ArgumentError, "Work item ##{work_item_iid} not found")
+        end
       end
     end
   end
 
   describe '#build_work_item_finder_params' do
     it 'returns project_id for project parent' do
-      project = create(:project)
-      expect(service.test_build_work_item_finder_params(project))
-        .to eq({ project_id: project.id })
+      expect(service.test_build_work_item_finder_params(public_project))
+        .to eq(project_id: public_project.id)
     end
 
     it 'returns group_id and include_descendants for group parent' do
-      group = create(:group)
       expect(service.test_build_work_item_finder_params(group))
-        .to eq({ group_id: group.id, include_descendants: false })
+        .to eq(group_id: group.id, include_descendants: false)
     end
 
     it 'returns empty hash for unsupported parent type' do
@@ -202,12 +205,11 @@ RSpec.describe Mcp::Tools::Concerns::ResourceFinder, feature_category: :mcp_serv
   end
 
   describe '#authorize_parent_access!' do
-    let_it_be(:user) { create(:user) }
     let(:service) { test_class.new(user) }
 
-    shared_examples 'authorization check' do |parent_type, factory|
-      let_it_be(:accessible) { create(factory) } # rubocop:disable Rails/SaveBang -- This is a factory, not a Rails method call
-      let_it_be(:inaccessible) { create(factory, :private) }
+    shared_examples 'authorization check' do |parent_type, public_resource, private_resource|
+      let(:accessible) { public_send(public_resource) }
+      let(:inaccessible) { public_send(private_resource) }
 
       it 'passes when user has access' do
         accessible.add_developer(user)
@@ -222,21 +224,20 @@ RSpec.describe Mcp::Tools::Concerns::ResourceFinder, feature_category: :mcp_serv
     end
 
     context 'with project parent' do
-      it_behaves_like 'authorization check', :project, :project
+      it_behaves_like 'authorization check', :project, :public_project, :private_project
     end
 
     context 'with group parent' do
-      it_behaves_like 'authorization check', :group, :group
+      it_behaves_like 'authorization check', :group, :public_group, :private_group
     end
   end
 
   describe '#can_read_parent?' do
-    let_it_be(:user) { create(:user) }
     let(:service) { test_class.new(user) }
 
-    shared_examples 'permission check' do |parent_type, factory|
-      let_it_be(:accessible) { create(factory) } # rubocop:disable Rails/SaveBang -- This is a factory, not a Rails method call
-      let_it_be(:inaccessible) { create(factory, :private) }
+    shared_examples 'permission check' do |parent_type, public_resource, private_resource|
+      let(:accessible) { public_send(public_resource) }
+      let(:inaccessible) { public_send(private_resource) }
 
       it 'returns true when user has permission' do
         accessible.add_developer(user)
@@ -249,11 +250,11 @@ RSpec.describe Mcp::Tools::Concerns::ResourceFinder, feature_category: :mcp_serv
     end
 
     context 'with project parent' do
-      it_behaves_like 'permission check', :project, :project
+      it_behaves_like 'permission check', :project, :public_project, :private_project
     end
 
     context 'with group parent' do
-      it_behaves_like 'permission check', :group, :group
+      it_behaves_like 'permission check', :group, :public_group, :private_group
     end
   end
 end

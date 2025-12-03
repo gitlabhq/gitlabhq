@@ -14,15 +14,15 @@ title: GitLab Duo model selection
 
 {{< /details >}}
 
-Every GitLab Duo feature has a pre-selected default large language model (LLM), chosen by GitLab.
+Every GitLab Duo feature has a default large language model, chosen by GitLab.
 
-GitLab can update this default LLM to optimize feature performance. Therefore, a feature's LLM might change without you taking any action.
+GitLab can update this default model to optimize feature performance. Therefore, a feature's model might change without you taking any action.
 
-If you do not want to use the default LLM for each feature, or have specific requirements, you can choose from an array of other available supported LLMs.
+If you do not want to use the default model for each feature, or have specific requirements, you can choose from an array of other available supported models.
 
-If you select a specific LLM for a feature, the feature uses that LLM until you select another.
+If you select a specific model for a feature, the feature uses that model until you select another.
 
-## Select an LLM for a feature
+## Select a model for a feature
 
 {{< history >}}
 
@@ -49,15 +49,15 @@ applies to that feature for all child groups and projects.
 Prerequisites:
 
 - You must have the Owner role for the group.
-- The group that you want to select LLMs for must be a top-level group.
+- The group that you want to select models for must be a top-level group.
 - In GitLab 18.3 or later, you must [assign a default namespace](#assign-a-default-gitlab-duo-namespace) if you belong to multiple GitLab Duo namespaces.
 
-To select a different LLM for a feature:
+To select a different model for a feature:
 
 1. On the left sidebar, select **Search or go to** and find your group. If you've [turned on the new navigation](../interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
 1. Select **Settings** > **GitLab Duo**.
 1. Select **Configure features**.
-1. For the feature you want to configure, select an LLM from the dropdown list.
+1. For the feature you want to configure, select a model from the dropdown list.
 
 ![The GitLab UI for selecting a model at the top-group level.](img/configure_model_selections_v18_1.png)
 
@@ -90,12 +90,12 @@ For more information, see the history.
 
 If you belong to multiple GitLab Duo namespaces, you must choose one as your default namespace.
 
-You must do this because GitLab Duo might not be able to automatically detect the namespace you are working from, and therefore the LLMs you want to use. For example, when:
+You must do this because GitLab Duo might not be able to automatically detect the namespace you are working from, and therefore the models you want to use. For example, when:
 
 - Using GitLab Duo in the CLI.
 - A new project has not been initialized with Git, so the IDE cannot identify an associated namespace.
 
-If this happens, GitLab Duo uses the LLMs you have selected in your default namespace.
+If this happens, GitLab Duo uses the models you have selected in your default namespace.
 
 To select a default namespace:
 
@@ -109,15 +109,15 @@ To select a default namespace:
 
 When selecting models other than the default, you might encounter the following issues.
 
-### LLM is not available
+### Model is not available
 
-If you are using the GitLab Default LLM for a GitLab Duo AI-native feature, GitLab might change the default LLM without notifying the user to maintain optimal performance and reliability.
+If you are using the default GitLab model for a GitLab Duo AI-native feature, GitLab might change the default model without notifying the user to maintain optimal performance and reliability.
 
-If you have selected a specific LLM for a GitLab Duo AI-native feature, and that LLM is not available, there is no automatic fallback, and the feature that uses this LLM is unavailable.
+If you have selected a specific model for a GitLab Duo AI-native feature, and that model is not available, there is no automatic fallback. The feature that uses this model is unavailable.
 
 ### Latency issues with code completion
 
-If you are assigned a seat in a project that has a specific LLM selected for [code completion](../project/repository/code_suggestions/_index.md#code-completion-and-generation):
+If you are assigned a seat in a project that has a specific model selected for [code completion](../project/repository/code_suggestions/_index.md#code-completion-and-generation):
 
 - Your IDE extension disables the [direct connection to the AI gateway](../../administration/gitlab_duo/gateway.md#region-support).
 - Code completion requests go through the GitLab monolith, which then selects the specified model to respond to these requests.
@@ -126,7 +126,7 @@ This might cause increased latency with code completion requests.
 
 ### No default GitLab Duo namespace
 
-When using a GitLab Duo feature with a selected LLM, you might get an error that states that you have not selected a default GitLab Duo namespace. For example, on:
+When using a GitLab Duo feature with a selected model, you might get an error that states that you have not selected a default GitLab Duo namespace. For example, on:
 
 - GitLab Duo Code Suggestions, you might get `Error 422: No default Duo group found. Select a default Duo group in your user preferences and try again.`
 - GitLab Duo Chat, you might get `Error G3002: I'm sorry, you have not selected a default GitLab Duo namespace. Please go to GitLab and in user Preferences - Behavior, select a default namespace for GitLab Duo.`

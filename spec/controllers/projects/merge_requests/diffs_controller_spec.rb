@@ -150,12 +150,12 @@ RSpec.describe Projects::MergeRequests::DiffsController, feature_category: :code
   end
 
   describe 'GET show' do
-    def go(extra_params = {})
+    def go(extra_params = {}, format: 'json')
       params = {
         namespace_id: project.namespace.to_param,
         project_id: project,
         id: merge_request.iid,
-        format: 'json'
+        format: format
       }
 
       get :show, params: params.merge(extra_params)
@@ -173,6 +173,22 @@ RSpec.describe Projects::MergeRequests::DiffsController, feature_category: :code
           end
 
           go
+        end
+
+        describe 'as diff' do
+          it 'triggers workhorse to serve the request' do
+            go(format: :diff)
+
+            expect(response.headers[Gitlab::Workhorse::SEND_DATA_HEADER]).to start_with('git-diff:')
+          end
+        end
+
+        describe 'as patch' do
+          it 'triggers workhorse to serve the request' do
+            go(format: :patch)
+
+            expect(response.headers[Gitlab::Workhorse::SEND_DATA_HEADER]).to start_with('git-format-patch:')
+          end
         end
       end
 

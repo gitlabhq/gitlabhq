@@ -131,7 +131,7 @@ Gemfile.next.checksum
 /ee/lib/gitlab/code_owners/owner_validation/
 !/ee/lib/gitlab/code_owners/owner_validation/process.rb
 
-[Pipeline configuration] @gl-dx/pipeline-maintainers
+^[Pipeline configuration] @gl-dx/pipeline-maintainers
 /.gitlab-ci.yml
 /.gitlab/ci/
 /.gitlab/ci/docs.gitlab-ci.yml @gl-dx/pipeline-maintainers @gitlab-org/technical-writing/tw-docops @gitlab-org/tw-leadership

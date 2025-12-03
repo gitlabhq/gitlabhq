@@ -21,7 +21,7 @@ Use a CI/CD job token to authenticate with certain GitLab features from running 
 The token receives the same access level as the user that triggered the pipeline,
 but has [access to fewer resources](#job-token-access) than a personal access token. A user can cause a job to run
 with an action like pushing a commit, triggering a manual job, or being the owner of a scheduled pipeline.
-This user must have a [role that has the required privileges](../../user/permissions.md#cicd)
+This user must have a [role that has the required privileges](../../user/permissions.md#project-cicd)
 to access the resources.
 
 You can use a job token to authenticate with GitLab to access another group or project's resources (the target project).

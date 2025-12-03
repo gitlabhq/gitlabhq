@@ -46,7 +46,7 @@ configuration. A simulation runs as a Git `push` event on the default branch.
 
 Prerequisites:
 
-- You must have [permissions](../../user/permissions.md#project-members-permissions)
+- You must have [permissions](../../user/permissions.md#project-permissions)
   to create pipelines on this branch to validate with a simulation.
 
 To simulate a pipeline:

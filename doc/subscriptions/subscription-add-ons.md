@@ -43,7 +43,7 @@ you must [turn on features for GitLab Duo Core](../user/gitlab_duo/turn_on_off.m
 
 If you are a new customer in GitLab 18.0 or later, GitLab Duo Core features are automatically turned on and no further action is needed.
 
-To view which roles can access GitLab Duo Core, see [GitLab Duo group permissions](../user/permissions.md#gitlab-duo-group-permissions).
+To view which roles can access GitLab Duo Core, see [GitLab Duo group permissions](../user/permissions.md#group-gitlab-duo).
 
 ### GitLab Duo Self-Hosted
 

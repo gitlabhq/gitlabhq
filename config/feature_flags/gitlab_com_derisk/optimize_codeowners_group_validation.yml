@@ -1,0 +1,10 @@
+---
+name: optimize_codeowners_group_validation
+description: Optimize CODEOWNERS group validation by batching queries and using database-only operations to prevent memory issues
+feature_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/549621
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/210810
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/580286
+milestone: '18.7'
+type: gitlab_com_derisk
+group: group::source code
+default_enabled: false

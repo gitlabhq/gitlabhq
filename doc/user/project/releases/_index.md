@@ -51,7 +51,7 @@ To view a list of releases:
 
   - On public projects, this number is visible to all users.
   - On private projects, this number is visible to users with at least the Reporter
-    [role](../../permissions.md#project-members-permissions).
+    [role](../../permissions.md#project-permissions).
 
 ### Sort releases
 

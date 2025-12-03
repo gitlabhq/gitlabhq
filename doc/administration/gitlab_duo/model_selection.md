@@ -14,13 +14,13 @@ title: Model selection
 
 {{< /details >}}
 
-Every GitLab Duo feature has a pre-selected default large language model (LLM), chosen by GitLab.
+Every GitLab Duo feature has a default large language model (LLM) chosen by GitLab.
 
-GitLab can update this default LLM to optimize feature performance. Therefore, a feature's LLM might change without you taking any action.
+GitLab can update this default model to optimize feature performance. Therefore, a feature's model might change without you taking any action.
 
-If you do not want to use the default LLM for each feature, or have specific requirements, you can choose from an array of other available supported LLMs.
+If you do not want to use the default model for each feature, or have specific requirements, you can choose from an array of other available supported models.
 
-If you select a specific LLM for a feature, the feature uses that LLM until you select another.
+If you select a specific model for a feature, the feature uses that model until you select another.
 
 ## Select a model for the instance
 
@@ -44,4 +44,4 @@ To select a model for a feature:
 1. In the left sidebar, at the bottom, select **Admin**. If you've [turned on the new navigation](../../user/interface_redesign.md#turn-new-navigation-on-or-off), in the upper-right corner, select **Admin**.
 1. Select **GitLab Duo**.
 1. On **Configure AI features**, select **Configure models for GitLab Duo**. If **Configure AI features** is not displayed, verify that the GitLab Duo Enterprise add-on is configured for your instance.
-1. For the feature you want to configure, select an LLM from the dropdown list.
+1. For the feature you want to configure, select a model from the dropdown list.

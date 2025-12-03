@@ -3,8 +3,7 @@ import getMergeRequestsCountsQuery from 'ee_else_ce/merge_requests/list/queries/
 import getMergeRequestsApprovalsQuery from 'ee_else_ce/merge_requests/list/queries/project/get_merge_requests_approvals.query.graphql';
 import { addShortcutsExtension } from '~/behaviors/shortcuts';
 import ShortcutsNavigation from '~/behaviors/shortcuts/shortcuts_navigation';
-import { initBulkUpdateSidebar } from '~/issuable';
-import { mountMergeRequestListsApp } from '~/merge_requests/list';
+import { initBulkUpdateSidebar, mountMergeRequestListsApp } from '~/merge_requests/list';
 
 initBulkUpdateSidebar('merge_request_');
 

@@ -239,7 +239,7 @@ Bot users for projects are [GitLab-created non-billable users](../../../subscrip
 Each time you create a project access token, a bot user is created and added to the project.
 This user is not a billable user, so it does not count toward the license limit.
 
-The bot users for projects have [permissions](../../permissions.md#project-members-permissions) that correspond with the
+The bot users for projects have [permissions](../../permissions.md#project-permissions) that correspond with the
 selected role and [scope](#scopes-for-a-project-access-token) of the project access token.
 
 - The name is set to the name of the token.

@@ -337,7 +337,7 @@ export default {
     },
   ),
   userPermissionsDocsPath: helpPagePath('user/permissions.md', {
-    anchor: 'cicd',
+    anchor: 'project-cicd',
   }),
 };
 </script>
