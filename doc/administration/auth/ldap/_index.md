@@ -48,6 +48,15 @@ If an existing GitLab user wants to enable LDAP sign-in for themselves, they sho
 1. Check that their GitLab email address matches their LDAP email address.
 1. Sign in to GitLab by using their LDAP credentials.
 
+{{< alert type="note" >}}
+
+After a user links an LDAP identity to their GitLab account, they can no longer use the standard
+username and password authentication flow. Instead, users must authenticate with their LDAP
+credentials. Attempts to sign in with their username and password authentication, return
+an [invalid login or password error](ldap-troubleshooting.md#users-see-an-error-invalid-login-or-password).
+
+{{< /alert >}}
+
 ## Security
 
 GitLab verifies if a user is still active in LDAP.

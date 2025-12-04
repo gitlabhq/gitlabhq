@@ -1,9 +1,0 @@
----
-migration_job_name: BackfillRemoteDevelopmentAgentConfigsProjectId
-description: Backfills sharding key `remote_development_agent_configs.project_id`
-  from `cluster_agents`.
-feature_category: remote_development
-introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/154773
-milestone: '17.1'
-queued_migration_version: 20240530122159
-finalized_by: '20241205232740'

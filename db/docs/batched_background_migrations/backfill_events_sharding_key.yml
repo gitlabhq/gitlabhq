@@ -1,8 +1,0 @@
----
-migration_job_name: BackfillEventsShardingKey
-description: Back-fill sharding key for records without group_id or project_id
-feature_category: database
-introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/123
-milestone: '17.5'
-queued_migration_version: 20241008030404
-finalized_by: 20250113222525

@@ -48,7 +48,9 @@ module AutoMerge
       super do
         default_error = AutoMerge::AvailabilityCheck.error
         next default_error if merge_request.project.merge_trains_enabled?
-        next default_error if merge_request.mergeable? && !merge_request.diff_head_pipeline_considered_in_progress?
+
+        next default_error if merge_request.mergeable? && !merge_request.diff_head_pipeline_considered_in_progress? &&
+          !merge_request.pipeline_creating?
 
         AutoMerge::AvailabilityCheck.success
       end

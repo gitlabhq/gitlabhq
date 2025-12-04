@@ -491,6 +491,18 @@ module Gitlab
 
           @execution_message[:ship] = _('Actions to ship this merge request have been scheduled.')
         end
+
+        desc { _('Run a pipeline') }
+        explanation { _('Run a new pipeline for this merge request') }
+        types MergeRequest
+        condition do
+          create_pipeline_service.allowed?(quick_action_target)
+        end
+        command :run_pipeline do
+          create_pipeline_service.execute_async(quick_action_target)
+
+          @execution_message[:run_pipeline] = _('New pipeline has been triggered and will appear shortly.')
+        end
       end
 
       def reviewer_users_sentence(users)
@@ -531,6 +543,13 @@ module Gitlab
 
       def merge_orchestration_service
         @merge_orchestration_service ||= ::MergeRequests::MergeOrchestrationService.new(project, current_user)
+      end
+
+      def create_pipeline_service
+        @create_pipeline_service ||= ::MergeRequests::CreatePipelineService.new(
+          project: quick_action_target.project,
+          current_user: current_user,
+          params: { allow_duplicate: true })
       end
 
       def preferred_auto_merge_strategy(merge_request)

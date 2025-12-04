@@ -1,8 +1,0 @@
----
-migration_job_name: BackfillWikiPageSlugsProjectId
-description: Backfills sharding key `wiki_page_slugs.project_id` from `wiki_page_meta`.
-feature_category: wiki
-introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/154560
-milestone: '17.1'
-queued_migration_version: 20240529112047
-finalized_by: '20250213231429'

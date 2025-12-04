@@ -223,6 +223,78 @@ job:
 
 For more information, see [`cache: policy`](../yaml/_index.md#cachepolicy).
 
+## Cache key names
+
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/330047) in GitLab 15.0.
+- `-protected` suffix for Maintainer role and higher [introduced](https://about.gitlab.com/releases/2025/11/26/patch-release-gitlab-18-6-1-released/) in GitLab 18.4.5.
+
+{{< /history >}}
+
+A suffix is added to the cache key, with the exception of the [global fallback cache key](#global-fallback-key).
+
+Cache keys receive the `-protected` suffix if the pipeline:
+
+- Runs for a protected branch or tag. The user must have permission to merge to the
+  [protected branch](../../user/project/repository/branches/protected.md) or permission to
+  create a [protected tag](../../user/project/protected_tags.md).
+- Was started by a user with at least the Maintainer role.
+
+Keys generated in other pipelines receive the `non_protected` suffix.
+
+For example, if:
+
+- `cache:key` is set to `$CI_COMMIT_REF_SLUG`.
+- `main` is a protected branch.
+- `feature` is an unprotected branch.
+
+| Branch      | Developer role cache key | Maintainer role cache key |
+|-------------|--------------------------|---------------------------|
+| `main`      | `main-protected`         | `main-protected`          |
+| `feature`   | `feature-non_protected`  | `feature-protected`       |
+
+Additionally, for pipelines for tags, the tag's protection status takes precedence for the suffix,
+not the branch where the pipeline executes. This behavior ensures consistent security boundaries,
+because the triggering reference determines cache access permissions.
+
+For example, if:
+
+- `cache:key` is set to `$CI_COMMIT_TAG`.
+- `main` is a protected branch.
+- `feature` is an unprotected branch.
+- `1.0.0` is a protected tag.
+- `1.1.1-rc1` is an unprotected tag.
+
+| Tag         | Branch    | Developer role cache key  | Maintainer role cache key |
+|-------------|-----------|---------------------------|---------------------------|
+| `1.0.0`     | `main`    | `1.0.0-protected`         | `1.0.0-protected`         |
+| `1.0.0`     | `feature` | `1.0.0-protected`         | `1.0.0-protected`         |
+| `1.1.1-rc1` | `main`    | `1.1.1-rc1-non_protected` | `1.1.1-rc1-protected`     |
+| `1.1.1-rc1` | `feature` | `1.1.1-rc1-non_protected` | `1.1.1-rc1-protected`     |
+
+### Use the same cache for all branches
+
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/361643) in GitLab 15.0.
+
+{{< /history >}}
+
+If you do not want to use [cache key names](#cache-key-names),
+you can have all branches (protected and unprotected) use the same cache.
+
+The cache separation with [cache key names](#cache-key-names) is a security feature
+and should only be disabled in an environment where all users with Developer role are highly trusted.
+
+To use the same cache for all branches:
+
+1. On the left sidebar, select **Search or go to** and find your project. If you've [turned on the new navigation](../../user/interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
+1. Select **Settings** > **CI/CD**.
+1. Expand **General pipelines**.
+1. Clear the **Use separate caches for protected branches** checkbox.
+1. Select **Save changes**.
+
 ## Availability of the cache
 
 Caching is an optimization, but it isn't guaranteed to always work. You might need
@@ -248,61 +320,6 @@ is stored on the machine where GitLab Runner is installed. The location also dep
 
 If you use cache and artifacts to store the same path in your jobs, the cache might
 be overwritten because caches are restored before artifacts.
-
-#### Cache key names
-
-{{< history >}}
-
-- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/330047) in GitLab 15.0.
-
-{{< /history >}}
-
-A suffix is added to the cache key, with the exception of the [global fallback cache key](#global-fallback-key).
-
-As an example, assuming that `cache.key` is set to `$CI_COMMIT_REF_SLUG`, and that you have two branches `main`
-and `feature`, then the following table represents the resulting cache keys:
-
-| Branch name | Cache key               |
-|-------------|-------------------------|
-| `main`      | `main-protected`        |
-| `feature`   | `feature-non_protected` |
-
-##### Cache suffix with tag triggers
-
-When a pipeline is triggered by a tag (like `$CI_COMMIT_TAG`), the cache suffix (`-protected` or `-non_protected`)
-is determined by the tag's protection status, not the branch where the pipeline executes.
-
-This behavior ensures consistent security boundaries, because the triggering reference determines cache access permissions.
-
-For example, with tags that trigger pipelines on different branches:
-
-| Trigger type                | Tag protection | Branch                  | Cache suffix     |
-|-----------------------------|----------------|-------------------------|------------------|
-| Tag `0.26.1` (unprotected)  | Unprotected    | `main` (protected)      | `-non_protected` |
-| Tag `1.0.0` (protected)     | Protected      | `main` (protected)      | `-protected`     |
-| Tag `dev-123` (unprotected) | Unprotected    | `feature` (unprotected) | `-non_protected` |
-
-##### Use the same cache for all branches
-
-{{< history >}}
-
-- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/361643) in GitLab 15.0.
-
-{{< /history >}}
-
-If you do not want to use [cache key names](#cache-key-names),
-you can have all branches (protected and unprotected) use the same cache.
-
-The cache separation with [cache key names](#cache-key-names) is a security feature
-and should only be disabled in an environment where all users with Developer role are highly trusted.
-
-To use the same cache for all branches:
-
-1. On the left sidebar, select **Search or go to** and find your project. If you've [turned on the new navigation](../../user/interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
-1. Select **Settings** > **CI/CD**.
-1. Expand **General pipelines**.
-1. Clear the **Use separate caches for protected branches** checkbox.
-1. Select **Save changes**.
 
 ### How archiving and extracting works
 

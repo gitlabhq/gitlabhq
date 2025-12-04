@@ -3445,6 +3445,91 @@ RSpec.describe QuickActions::InterpretService, feature_category: :text_editors d
       end
     end
 
+    describe 'run_pipeline command' do
+      let_it_be(:merge_request) { create(:merge_request, source_project: project) }
+
+      let(:content) { '/run_pipeline' }
+      let(:create_pipeline_service) do
+        instance_double(
+          ::MergeRequests::CreatePipelineService,
+          allowed?: service_allowed,
+          execute_async: service_result
+        )
+      end
+
+      before do
+        allow(::MergeRequests::CreatePipelineService)
+          .to receive(:new)
+          .with(
+            project: merge_request.project,
+            current_user: current_user,
+            params: { allow_duplicate: true }
+          )
+          .and_return(create_pipeline_service)
+      end
+
+      context 'when user is allowed to create pipeline' do
+        let(:service_allowed) { true }
+        let(:service_result) { { status: :success } }
+
+        it 'executes the pipeline creation asynchronously' do
+          expect(create_pipeline_service).to receive(:execute_async).with(merge_request)
+
+          _, _, message = service.execute(content, merge_request)
+
+          expect(message).to eq(_('New pipeline has been triggered and will appear shortly.'))
+        end
+
+        it 'tracks the quick action usage' do
+          expect(Gitlab::UsageDataCounters::QuickActionActivityUniqueCounter)
+            .to receive(:track_unique_action)
+            .with('run_pipeline', args: nil, user: current_user, project: project)
+
+          service.execute(content, merge_request)
+        end
+      end
+
+      context 'when user is not allowed to create pipeline' do
+        let(:service_allowed) { false }
+        let(:service_result) { nil }
+
+        it 'does not execute the pipeline creation' do
+          expect(create_pipeline_service).not_to receive(:execute_async)
+
+          _, _, message = service.execute(content, merge_request)
+
+          expect(message).to eq('Could not apply run_pipeline command.')
+        end
+      end
+
+      context 'when target is an issue' do
+        let(:service_allowed) { false }
+        let(:service_result) { nil }
+
+        it 'does not execute the command' do
+          expect(create_pipeline_service).not_to receive(:execute_async)
+
+          _, _, message = service.execute(content, issue)
+
+          expect(message).to eq('Could not apply run_pipeline command.')
+        end
+      end
+
+      context 'when merge request is not persisted' do
+        let(:merge_request) { build(:merge_request, source_project: project) }
+        let(:service_allowed) { false }
+        let(:service_result) { nil }
+
+        it 'does not execute the command' do
+          expect(create_pipeline_service).not_to receive(:execute_async)
+
+          _, _, message = service.execute(content, merge_request)
+
+          expect(message).to eq('Could not apply run_pipeline command.')
+        end
+      end
+    end
+
     context 'crm_contact commands' do
       let_it_be(:new_contact) { create(:contact, group: group) }
       let_it_be(:another_contact) { create(:contact, group: group) }

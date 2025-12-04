@@ -33,7 +33,8 @@ If you select a specific model for a feature, the feature uses that model until 
 
 {{< /history >}}
 
-On GitLab Self-Managed, you can select a model for a feature that applies to the entire instance. If you don't select a specific model, all GitLab Duo features inherit the default GitLab model.
+You can select a model for a feature that applies to the entire instance. If you don't select a specific model,
+all GitLab Duo features use the default GitLab model.
 
 Prerequisites:
 
@@ -45,3 +46,4 @@ To select a model for a feature:
 1. Select **GitLab Duo**.
 1. On **Configure AI features**, select **Configure models for GitLab Duo**. If **Configure AI features** is not displayed, verify that the GitLab Duo Enterprise add-on is configured for your instance.
 1. For the feature you want to configure, select a model from the dropdown list.
+1. Optional. To apply the model to all features in the section, select **Apply to all**.

@@ -1,4 +1,3 @@
 ---
 Migration/PreventAddingAttrEncryptedColumns:
   Exclude:
-    - 'db/migrate/20250114105214_create_system_hooks.rb'

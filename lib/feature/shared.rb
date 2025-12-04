@@ -98,6 +98,7 @@ module Feature
       type
       group
       default_enabled
+      observed
       intended_to_rollout_by
     ].freeze
 

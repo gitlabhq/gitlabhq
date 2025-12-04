@@ -26,6 +26,7 @@ RSpec.describe Gitlab::BackgroundMigration::MoveCiBuildsMetadata, feature_catego
   let(:environments_table) { table(:environments, database: :main) }
   let(:deployments_table) { table(:deployments, database: :main) }
   let(:job_environments_table) { table(:job_environments, database: :main) }
+  let(:settings_table) { table(:application_settings, database: :main) }
 
   let(:organization) do
     organizations_table.create!(name: 'organization', path: 'organization')
@@ -46,7 +47,9 @@ RSpec.describe Gitlab::BackgroundMigration::MoveCiBuildsMetadata, feature_catego
   let(:pipeline) { pipelines_table.create!(partition_id: 101, project_id: project.id) }
 
   let!(:job_a) do
-    builds_table.create!(partition_id: pipeline.partition_id, project_id: project.id, commit_id: pipeline.id)
+    builds_table.create!(partition_id: pipeline.partition_id, project_id: project.id,
+      commit_id: pipeline.id, created_at: 2.years.ago
+    )
   end
 
   let!(:job_b) do
@@ -75,13 +78,15 @@ RSpec.describe Gitlab::BackgroundMigration::MoveCiBuildsMetadata, feature_catego
     )
   end
 
+  let(:sub_batch_size) { 2 }
+
   let(:migration_attrs) do
     {
       start_id: builds_table.minimum(:id),
       end_id: builds_table.maximum(:id),
       batch_table: 'gitlab_partitions_dynamic.ci_builds_101',
       batch_column: :id,
-      sub_batch_size: 2,
+      sub_batch_size: sub_batch_size,
       pause_ms: 0,
       connection: Ci::ApplicationRecord.connection,
       job_arguments: ['partition_id', 101]
@@ -319,6 +324,121 @@ RSpec.describe Gitlab::BackgroundMigration::MoveCiBuildsMetadata, feature_catego
       end
     end
 
+    context 'when migration cutoff env variable is used' do
+      before do
+        stub_env('GITLAB_DB_CI_JOBS_MIGRATION_CUTOFF', '1y')
+      end
+
+      it 'ignores data created more than 1 year ago' do
+        expect { migration.perform }
+          .to change { definition_instances_table.where(job_id: [job_a.id, job_b.id]).count }.by(1)
+
+        expect(definition_instances_table.where(job_id: job_a.id)).to be_empty
+      end
+    end
+
+    context 'when data processing cutoff env variable is used' do
+      before do
+        stub_env('GITLAB_DB_CI_JOBS_PROCESSING_DATA_CUTOFF', '1y')
+        stub_env('GITLAB_DB_CI_JOBS_MIGRATION_CUTOFF', '5y')
+      end
+
+      it 'ignores data created more than 1 year ago' do
+        expect { migration.perform }
+          .to change { definition_instances_table.where(job_id: [job_a.id, job_b.id]).count }.by(1)
+
+        expect(definition_instances_table.where(job_id: job_a.id)).to be_empty
+      end
+    end
+
+    context 'when pipeline archival is used' do
+      before do
+        settings_table.last&.update!(archive_builds_in_seconds: 13.months.to_i) ||
+          settings_table.create!(archive_builds_in_seconds: 13.months.to_i)
+
+        stub_env('GITLAB_DB_CI_JOBS_MIGRATION_CUTOFF', '5y')
+      end
+
+      it 'ignores data created more than 1 year ago' do
+        expect { migration.perform }
+          .to change { definition_instances_table.where(job_id: [job_a.id, job_b.id]).count }.by(1)
+
+        expect(definition_instances_table.where(job_id: job_a.id)).to be_empty
+      end
+    end
+
+    context 'when migration cutoff env variable is set to an empty value' do
+      before do
+        stub_env('GITLAB_DB_CI_JOBS_MIGRATION_CUTOFF', '')
+      end
+
+      it 'migrates all data' do
+        expect { migration.perform }
+          .to change { definition_instances_table.where(job_id: [job_a.id, job_b.id]).count }.by(2)
+          .and change { definitions_table.count }.by(1)
+      end
+    end
+
+    context 'when different projects have the same checksum' do
+      let(:other_namespace) do
+        namespaces_table.create!(name: "other_namespace", path: "other_namespace", organization_id: organization.id)
+      end
+
+      let(:other_project) do
+        projects_table.create!(
+          namespace_id: other_namespace.id,
+          project_namespace_id: other_namespace.id,
+          organization_id: organization.id
+        )
+      end
+
+      let(:other_pipeline) { pipelines_table.create!(partition_id: 101, project_id: other_project.id) }
+
+      # duplicate of job_a, but in a different project
+      let!(:other_job) do
+        builds_table.create!(partition_id: other_pipeline.partition_id, project_id: other_pipeline.id,
+          commit_id: other_pipeline.id
+        )
+      end
+
+      let!(:other_metadata_a) do
+        builds_metadata_table.create!(
+          partition_id: other_job.partition_id, project_id: other_project.id,
+          build_id: other_job.id, **duplicate_configs
+        )
+      end
+
+      it 'creates unique job definitions by project' do
+        expect { migration.perform }
+          .to change { definition_instances_table.where(job_id: [job_a.id, job_b.id, other_job.id]).count }.by(3)
+          .and change { definitions_table.count }.by(2)
+
+        job_definition = find_definition(job_a)
+        other_job_definition = find_definition(other_job)
+
+        expect(job_definition.checksum).to be_present
+        expect(job_definition.project_id).to eq(job_a.project_id)
+        expect(job_definition.partition_id).to eq(job_a.partition_id)
+
+        expect(other_job_definition.checksum).to be_present
+        expect(other_job_definition.project_id).to eq(other_job.project_id)
+        expect(other_job_definition.partition_id).to eq(other_job.partition_id)
+
+        expect(job_definition.checksum).to eq(other_job_definition.checksum)
+        expect(job_definition.config).to eq(other_job_definition.config)
+      end
+    end
+
+    context 'when all the definitions were created in a previous batch' do
+      let(:sub_batch_size) { 1 }
+
+      it 'creates unique job definitions' do
+        expect { migration.perform }
+          .to change { definition_instances_table.where(job_id: [job_a.id, job_b.id]).count }.by(2)
+          .and change { definitions_table.count }.by(1)
+      end
+    end
+
     context 'if p_ci_builds need to be updated' do
       let!(:job_c) do
         builds_table.create!(
@@ -375,6 +495,35 @@ RSpec.describe Gitlab::BackgroundMigration::MoveCiBuildsMetadata, feature_catego
         expect(job_c.exit_code).to eq(137)
         expect(job_c.debug_trace_enabled).to be(false)
         expect(job_c.scoped_user_id).to eq(10)
+      end
+
+      context 'when migration cutoff env variable is used' do
+        before do
+          stub_env('GITLAB_DB_CI_JOBS_MIGRATION_CUTOFF', '1y')
+        end
+
+        it 'ignores data created more than 1 year ago' do
+          expect { migration.perform }.not_to raise_error
+          [job_a, job_b, job_c].each(&:reload)
+
+          expect(job_a.timeout).to be_nil
+          expect(job_a.timeout_source).to be_nil
+          expect(job_a.exit_code).to be_nil
+          expect(job_a.debug_trace_enabled).to be_nil
+          expect(job_a.scoped_user_id).to be_nil
+
+          expect(job_b.timeout).to eq(1800)
+          expect(job_b.timeout_source).to eq(1)
+          expect(job_b.exit_code).to eq(1)
+          expect(job_b.debug_trace_enabled).to be(false)
+          expect(job_b.scoped_user_id).to eq(50)
+
+          expect(job_c.timeout).to eq(2800)
+          expect(job_c.timeout_source).to eq(2)
+          expect(job_c.exit_code).to eq(137)
+          expect(job_c.debug_trace_enabled).to be(false)
+          expect(job_c.scoped_user_id).to eq(10)
+        end
       end
     end
 
@@ -477,6 +626,39 @@ RSpec.describe Gitlab::BackgroundMigration::MoveCiBuildsMetadata, feature_catego
         expect(artifact_meta_c.exposed_as).to eq('artif_string')
         expect(artifact_meta_c.exposed_paths).to eq(['artif/path/1', 'artif/path/2'])
       end
+
+      context 'when migration cutoff env variable is used' do
+        let!(:job_b) do
+          builds_table.create!(
+            partition_id: pipeline.partition_id, project_id: project.id,
+            commit_id: pipeline.id, created_at: 2.years.ago
+          )
+        end
+
+        before do
+          stub_env('GITLAB_DB_CI_JOBS_MIGRATION_CUTOFF', '1y')
+        end
+
+        it 'ignores data created more than 1 year ago' do
+          expect { migration.perform }.not_to raise_error
+          [artifact_a, artifact_b, artifact_c, artifact_meta_a, artifact_meta_b, artifact_meta_c].each(&:reload)
+
+          expect(artifact_a.exposed_as).to be_nil
+          expect(artifact_a.exposed_paths).to be_nil
+          expect(artifact_meta_a.exposed_as).to be_nil
+          expect(artifact_meta_a.exposed_paths).to be_nil
+
+          expect(artifact_b.exposed_as).to be_nil
+          expect(artifact_b.exposed_paths).to be_nil
+          expect(artifact_meta_b.exposed_as).to be_nil
+          expect(artifact_meta_b.exposed_paths).to be_nil
+
+          expect(artifact_c.exposed_as).to be_nil
+          expect(artifact_c.exposed_paths).to be_nil
+          expect(artifact_meta_c.exposed_as).to eq('artif_string')
+          expect(artifact_meta_c.exposed_paths).to eq(['artif/path/1', 'artif/path/2'])
+        end
+      end
     end
 
     context 'if environments need to be moved' do
@@ -513,7 +695,10 @@ RSpec.describe Gitlab::BackgroundMigration::MoveCiBuildsMetadata, feature_catego
       let!(:pipeline_b) { pipelines_table.create!(partition_id: 101, project_id: project_b.id) }
 
       let!(:job_a) do
-        builds_table.create!(partition_id: pipeline_a.partition_id, commit_id: pipeline_a.id, project_id: project_a.id)
+        builds_table.create!(
+          partition_id: pipeline_a.partition_id, commit_id: pipeline_a.id,
+          project_id: project_a.id, created_at: 2.years.ago
+        )
       end
 
       let!(:job_b) do
@@ -698,6 +883,18 @@ RSpec.describe Gitlab::BackgroundMigration::MoveCiBuildsMetadata, feature_catego
             expanded_environment_name: staging_a.name,
             options: {}
           )
+        end
+
+        context 'when migration cutoff env variable is used' do
+          before do
+            stub_env('GITLAB_DB_CI_JOBS_MIGRATION_CUTOFF', '1y')
+          end
+
+          it 'ignores data created more than 1 year ago' do
+            expect { migration.perform }.to change { job_environments_table.count }.from(1).to(5)
+
+            expect(job_environments_table.where(ci_job_id: job_a.id)).to be_empty
+          end
         end
       end
     end

@@ -4,6 +4,7 @@ class QueueBuildsMetadataMigrationForSelfManaged < Gitlab::Database::Migration[2
   milestone '18.7'
 
   restrict_gitlab_migration gitlab_schema: :gitlab_ci
+  skip_require_disable_ddl_transactions!
 
   MIGRATION = 'MoveCiBuildsMetadataSelfManaged'
   BATCH_SIZE = 1000
@@ -46,7 +47,7 @@ class QueueBuildsMetadataMigrationForSelfManaged < Gitlab::Database::Migration[2
   private
 
   def each_partition
-    Gitlab::Database::PostgresPartitionedTable.each_partition(TABLE_NAME) do |partition|
+    Gitlab::Database::PostgresPartitionedTable.each_partition(TABLE_NAME).to_a.reverse_each do |partition|
       ids = partition.condition.scan(/\d+/).map(&:to_i)
       yield(partition, ids)
     end

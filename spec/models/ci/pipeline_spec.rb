@@ -665,7 +665,7 @@ RSpec.describe Ci::Pipeline, :mailer, factory_default: :keep, feature_category: 
 
       subject { described_class.created_on_or_after(1.day.ago) }
 
-      it 'returns the newer pipeline' do
+      it 'returns the newer pipeline', quarantine: 'https://gitlab.com/gitlab-org/quality/test-failure-issues/-/issues/17341' do
         is_expected.to contain_exactly(new_pipeline, new_pipeline_1)
       end
     end

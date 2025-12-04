@@ -35,7 +35,6 @@ RSpec/RepeatedSubjectCall:
     - 'spec/finders/notes_finder_spec.rb'
     - 'spec/finders/releases/group_releases_finder_spec.rb'
     - 'spec/finders/timelogs/timelogs_finder_spec.rb'
-    - 'spec/lib/gitlab/background_migration/backfill_new_audit_event_tables_spec.rb'
     - 'spec/lib/gitlab/database/query_analyzers/restrict_allowed_schemas_spec.rb'
     - 'spec/lib/gitlab/git_access_wiki_spec.rb'
     - 'spec/lib/gitlab/import_export/project/import_task_spec.rb'

@@ -1,9 +1,0 @@
----
-migration_job_name: BackfillDetectedAtFromCreatedAtColumn
-description: backfills the vulnerabilities table with nil detected_at with values
-  from created_at.
-feature_category: vulnerability_management
-introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/170022
-milestone: '17.9'
-queued_migration_version: 20250211230725
-finalized_by: 20250123112353

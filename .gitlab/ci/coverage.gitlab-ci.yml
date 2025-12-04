@@ -78,7 +78,10 @@ test-coverage:export-rspec-and-e2e:
       - rspec/
     expire_in: 7d
 
-test-coverage:export-jest-and-e2e:
+# Job is temporary disabled as it relies on `process-frontend-coverage` job that
+# was causing master pipeline failures.
+# Example https://gitlab.com/gitlab-org/gitlab/-/jobs/12319670339
+.test-coverage:export-jest-and-e2e:
   extends:
     - .coverage-export-base
     - .with-ci-node-image

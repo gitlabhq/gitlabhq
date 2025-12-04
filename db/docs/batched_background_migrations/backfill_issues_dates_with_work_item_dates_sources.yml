@@ -1,8 +1,0 @@
----
-migration_job_name: BackfillIssuesDatesWithWorkItemDatesSources
-description: Backfill issues dates with data from work_item_dates_sources table
-feature_category: product_planning
-introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/157993
-milestone: '17.2'
-queued_migration_version: 20240702212015
-finalized_by: '20250212025212'

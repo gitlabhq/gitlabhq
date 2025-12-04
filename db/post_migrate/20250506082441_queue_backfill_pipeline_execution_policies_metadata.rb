@@ -9,7 +9,6 @@ class QueueBackfillPipelineExecutionPoliciesMetadata < Gitlab::Database::Migrati
   DELAY_INTERVAL = 10.minutes
   BATCH_SIZE = 50
   SUB_BATCH_SIZE = 10
-  DEPENDENT_BATCHED_BACKGROUND_MIGRATIONS = ['20250205175341']
 
   def up
     queue_batched_background_migration(

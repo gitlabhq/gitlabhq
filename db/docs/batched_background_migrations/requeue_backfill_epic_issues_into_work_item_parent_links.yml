@@ -1,8 +1,0 @@
----
-migration_job_name: RequeueBackfillEpicIssuesIntoWorkItemParentLinks
-description: Migrated epic issues into work_item_parent links again after fixing a bug when importing epic_issues.
-feature_category: team_planning
-introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/172071
-milestone: '17.6'
-queued_migration_version: 20241108124324
-finalized_by: 20250113132806

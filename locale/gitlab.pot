@@ -25330,6 +25330,9 @@ msgstr ""
 msgid "DuoAgentsPlatform|Description"
 msgstr ""
 
+msgid "DuoAgentsPlatform|Developer"
+msgstr ""
+
 msgid "DuoAgentsPlatform|Do not assign the service account a role in your project with higher permissions than the users of that service account."
 msgstr ""
 
@@ -43865,6 +43868,9 @@ msgstr ""
 msgid "New password"
 msgstr ""
 
+msgid "New pipeline has been triggered and will appear shortly."
+msgstr ""
+
 msgid "New project"
 msgstr ""
 
@@ -56497,6 +56503,12 @@ msgid "Run CI/CD pipelines with Jenkins when you push to a repository, or when a
 msgstr ""
 
 msgid "Run CI/CD pipelines with Jenkins."
+msgstr ""
+
+msgid "Run a new pipeline for this merge request"
+msgstr ""
+
+msgid "Run a pipeline"
 msgstr ""
 
 msgid "Run again"

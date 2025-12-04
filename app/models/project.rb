@@ -964,7 +964,7 @@ class Project < ApplicationRecord
   end
 
   scope :with_api_commit_entity_associations, -> {
-    preload(:project_feature, :route, namespace: [:route, :owner])
+    preload(:ci_pipelines, :project_feature, :route, namespace: [:route, :owner])
   }
 
   scope :with_group_child_entity_associations, -> {
@@ -1041,7 +1041,8 @@ class Project < ApplicationRecord
   mount_uploader :bfg_object_map, AttachmentUploader
 
   def self.with_api_entity_associations
-    preload(:project_feature, :route, :topics, :group, :timelogs, namespace: [:route, :owner])
+    with_fork_network_associations
+      .preload(:project_feature, :route, :topics, :group, :timelogs, namespace: [:route, :owner])
   end
 
   def self.with_web_entity_associations

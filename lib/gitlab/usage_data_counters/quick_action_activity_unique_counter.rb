@@ -15,6 +15,7 @@ module Gitlab
           q
           status
           ship
+          run_pipeline
         ].freeze
 
         # Tracks the quick action with name `name`.

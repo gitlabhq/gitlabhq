@@ -52,6 +52,7 @@ This procedure provides detailed status information for all Geo registry types a
        puts "Failed: #{klass.failed.count}"
        puts "Synced: #{klass.synced.count}"
        puts "Pending: #{klass.pending.count}"
+       puts "Started: #{klass.with_state(:started).count}"
 
        if klass.failed.count > 0
           puts "\nSample failed records:"

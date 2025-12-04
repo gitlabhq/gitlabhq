@@ -9031,13 +9031,26 @@ paths:
         type: boolean
         required: false
       - in: query
+        name: include_archived
+        description: Includes archived projects in the search.
+        type: boolean
+        default: false
+        required: false
+      - in: query
         name: fields
-        description: Array of fields you wish to search
+        description: Array of fields you wish to search. Available with advanced search.
         type: array
         items:
           type: string
           enum:
           - title
+        required: false
+      - in: query
+        name: exclude_forks
+        description: Excludes forked projects in the search. Available with exact
+          code search.
+        type: boolean
+        default: true
         required: false
       - in: query
         name: page
@@ -38371,7 +38384,7 @@ paths:
         required: false
       - in: query
         name: fields
-        description: Array of fields you wish to search
+        description: Array of fields you wish to search. Available with advanced search.
         type: array
         items:
           type: string
@@ -45557,13 +45570,26 @@ paths:
         type: boolean
         required: false
       - in: query
+        name: include_archived
+        description: Includes archived projects in the search.
+        type: boolean
+        default: false
+        required: false
+      - in: query
         name: fields
-        description: Array of fields you wish to search
+        description: Array of fields you wish to search. Available with advanced search.
         type: array
         items:
           type: string
           enum:
           - title
+        required: false
+      - in: query
+        name: exclude_forks
+        description: Excludes forked projects in the search. Available with exact
+          code search.
+        type: boolean
+        default: true
         required: false
       - in: query
         name: page

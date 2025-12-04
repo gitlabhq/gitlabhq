@@ -1,8 +1,0 @@
----
-migration_job_name: BackfillEvidencesProjectId
-description: Backfills sharding key `evidences.project_id` from `releases`.
-feature_category: release_evidence
-introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/159580
-milestone: '17.3'
-queued_migration_version: 20240716133952
-finalized_by: '20250218231541'

@@ -590,9 +590,7 @@ export default {
       return this.duoRemoteFlowsAvailability && this.glFeatures.duoWorkflowInCi;
     },
     duoWorkflowDefinition() {
-      return this.glFeatures.duoDeveloperButton
-        ? 'developer/experimental'
-        : 'issue_to_merge_request';
+      return this.glFeatures.duoDeveloperButton ? 'developer/v1' : 'issue_to_merge_request';
     },
     agentPrivileges() {
       return [1, 2, 3, 4, 5];

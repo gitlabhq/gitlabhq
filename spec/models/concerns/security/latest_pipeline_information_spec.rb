@@ -66,6 +66,44 @@ RSpec.describe Security::LatestPipelineInformation, feature_category: :artifact_
         allow(instance).to receive(:latest_security_builds).and_return([sast_build])
         expect(instance.send(:latest_builds_reports)).to match_array([:sast])
       end
+
+      context 'with policy-enforced job names' do
+        let_it_be(:sast_iac_policy_build_numeric) do
+          create(:ci_build, :sast, name: "kics-iac-sast-0", pipeline: pipeline)
+        end
+
+        let_it_be(:sast_iac_policy_build_with_id) do
+          create(:ci_build, :sast, name: "kics-iac-sast:policy-123456-0", pipeline: pipeline)
+        end
+
+        let_it_be(:advanced_sast_policy_build_numeric) do
+          create(:ci_build, :sast, name: "gitlab-advanced-sast-0", pipeline: pipeline)
+        end
+
+        let_it_be(:advanced_sast_policy_build_with_id) do
+          create(:ci_build, :sast, name: "gitlab-advanced-sast:policy-123456-0", pipeline: pipeline)
+        end
+
+        it 'includes :sast_iac for policy-enforced job with numeric suffix' do
+          allow(instance).to receive(:latest_security_builds).and_return([sast_iac_policy_build_numeric])
+          expect(instance.send(:latest_builds_reports)).to match_array([:sast_iac])
+        end
+
+        it 'includes :sast_iac for policy-enforced job with policy ID suffix' do
+          allow(instance).to receive(:latest_security_builds).and_return([sast_iac_policy_build_with_id])
+          expect(instance.send(:latest_builds_reports)).to match_array([:sast_iac])
+        end
+
+        it 'includes :sast and :sast_advanced for policy-enforced advanced sast job with numeric suffix' do
+          allow(instance).to receive(:latest_security_builds).and_return([advanced_sast_policy_build_numeric])
+          expect(instance.send(:latest_builds_reports)).to match_array([:sast, :sast_advanced])
+        end
+
+        it 'includes :sast and :sast_advanced for policy-enforced advanced sast job with policy ID suffix' do
+          allow(instance).to receive(:latest_security_builds).and_return([advanced_sast_policy_build_with_id])
+          expect(instance.send(:latest_builds_reports)).to match_array([:sast, :sast_advanced])
+        end
+      end
     end
   end
 end

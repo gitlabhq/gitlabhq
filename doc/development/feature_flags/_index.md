@@ -304,6 +304,7 @@ Each feature flag is defined in a separate YAML file consisting of a number of f
 | `feature_issue_url` | no       | The URL to the original feature issue.                         |
 | `rollout_issue_url` | no       | The URL to the Issue covering the feature flag rollout.        |
 | `log_state_changes` | no       | Used to log the state of the feature flag                      |
+| `observed`          | no       | When `true`, adds the feature flag to ApplicationContext when enabled, allowing requests to be filtered in Kibana. Maximum of 10 flags can be observed at once. |
 
 {{< alert type="note" >}}
 
@@ -884,6 +885,65 @@ You can see an example in [this](https://log.gprd.gitlab.net/app/discover#/?_g=(
 Only 20% of the requests log the state of the feature flags. This is controlled with the [`feature_flag_state_logs`](https://gitlab.com/gitlab-org/gitlab/-/blob/6deb6ecbc69f05a80d920a295dfc1a6a303fc7a0/config/feature_flags/ops/feature_flag_state_logs.yml) feature flag.
 
 {{< /alert >}}
+
+### Observing feature flags for observability
+
+For infrastructure or performance-related changes that affect many queries or requests, you can use observed feature flags to enable filtering and comparison in Kibana without modifying individual call sites.
+
+When a feature flag is marked with `observed: true`, its state is automatically added to the ApplicationContext when the flag is enabled. This allows you to:
+
+- Filter requests in Kibana by feature flag state.
+- Compare performance metrics between requests with and without the feature flag enabled over the same time window.
+- Segment data for A/B performance analysis.
+
+#### Constraints
+
+- Maximum of 10 feature flags can be marked as `observed: true` at any time
+- This limit is enforced by automated tests
+- Only enabled feature flags are observed (disabled flags are not added to the context)
+
+#### Usage
+
+To mark a feature flag for observation, add `observed: true` to its YAML definition:
+
+```yaml
+---
+name: my_infrastructure_flag
+type: ops
+observed: true
+default_enabled: false
+```
+
+When the feature flag is enabled, it will automatically be added to the ApplicationContext. You can then filter requests in Kibana:
+
+```plaintext
+json.feature_flags: "my_infrastructure_flag"
+```
+
+To compare performance with and without the flag:
+
+```plaintext
+# Requests with the flag enabled
+json.feature_flags: "my_infrastructure_flag"
+
+# Requests without the flag
+NOT json.feature_flags: "my_infrastructure_flag"
+```
+
+#### When to use observed feature flags
+
+Use observed feature flags for:
+
+- Large surface area changes affecting many queries or requests
+- Performance experiments requiring before/after comparison
+- Infrastructure changes where you need to segment observability data
+- Gradual rollouts where you need to monitor impact across different request cohorts
+
+Do not use observed feature flags for:
+
+- Product experiments (use the `experiment` type instead)
+- Simple feature toggles that do not require observability
+- Features that already have adequate monitoring
 
 ## Changelog
 

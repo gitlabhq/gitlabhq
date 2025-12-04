@@ -4,6 +4,9 @@ module Cells
   class OutstandingLease < ApplicationRecord
     self.primary_key = :uuid
 
+    scope :by_uuid, ->(uuid) { where(uuid: uuid) }
+    scope :updated_before, ->(time) { where(updated_at: ...time) }
+
     def self.claim_service
       ::Gitlab::TopologyServiceClient::ClaimService.instance # rubocop:disable CodeReuse/ServiceClass -- this is a gRPC client
     end

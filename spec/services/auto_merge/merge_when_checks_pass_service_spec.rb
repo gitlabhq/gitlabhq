@@ -79,6 +79,24 @@ RSpec.describe AutoMerge::MergeWhenChecksPassService, feature_category: :code_re
 
       it { is_expected.to eq false }
     end
+
+    context 'when pipeline is being created' do
+      before do
+        allow(mr_merge_if_green_enabled).to receive(:pipeline_creating?).and_return(true)
+      end
+
+      it { is_expected.to eq true }
+    end
+
+    context 'when merge request is mergeable and pipeline is not in progress and not being created' do
+      before do
+        allow(mr_merge_if_green_enabled).to receive(:mergeable?).and_return(true)
+        allow(mr_merge_if_green_enabled).to receive(:diff_head_pipeline_considered_in_progress?).and_return(false)
+        allow(mr_merge_if_green_enabled).to receive(:pipeline_creating?).and_return(false)
+      end
+
+      it { is_expected.to eq false }
+    end
   end
 
   describe "#execute" do

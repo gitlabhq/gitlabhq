@@ -3,8 +3,7 @@
 require 'spec_helper'
 
 RSpec.describe Gitlab::BackgroundMigration::BackfillMergeRequestCleanupSchedulesProjectId,
-  feature_category: :code_review_workflow,
-  schema: 20250209012907 do
+  feature_category: :code_review_workflow do
   include_examples 'desired sharding key backfill job' do
     let(:batch_table) { :merge_request_cleanup_schedules }
     let(:backfill_column) { :project_id }

@@ -54,7 +54,24 @@ To deploy GitLab on GCP you must create a virtual machine:
 1. To select the size, type, and desired [operating system](../../install/package/_index.md),
    select **Change** under `Boot disk`. select **Select** when finished.
 
-1. As a last step allow HTTP and HTTPS traffic, then select **Create**. The process finishes in a few seconds.
+1. Required for paid licenses. Under **Labels**, add resource labels based on how you procured your GitLab license:
+   - For Google Cloud Marketplace procurement, add:
+     - Key: `goog-partner-solution`
+     - Value: `isol_plb32_0014m00001h35gdqaq_i4j66u754ivftu3n2bb3vyv7fek76fjo`
+   - For non-marketplace procurement, add:
+     - Key: `goog-partner-solution`
+     - Value: `isol_psn_0014m00001h35gdqaq_gitlab`
+
+   These labels tag the resources as related to a GitLab installation on Google Cloud, as required by the partnership agreement.
+   For more information about resource labels, see the [Google Cloud documentation on labeling resources](https://cloud.google.com/compute/docs/labeling-resources#create_resources_with_labels).
+
+   {{< alert type="note" >}}
+
+   You can also use Terraform to automate the infrastructure creation with the appropriate labels. See the [GitLab installation on Google Cloud Terraform code](https://gitlab.com/gitlab-partners-public/google-cloud/source-code/gitlab-installation-on-google-cloud) for reference.
+
+   {{< /alert >}}
+
+1. Allow HTTP and HTTPS traffic, then select **Create**. The process finishes in a few seconds.
 
 ## Installing GitLab
 

@@ -806,6 +806,9 @@ Settings.cron_jobs['authn_data_retention_oauth_access_grant_archive_worker']['jo
 Settings.cron_jobs['authn_data_retention_oauth_access_token_archive_worker'] ||= {}
 Settings.cron_jobs['authn_data_retention_oauth_access_token_archive_worker']['cron'] ||= '5 6 * * *'
 Settings.cron_jobs['authn_data_retention_oauth_access_token_archive_worker']['job_class'] = 'Authn::DataRetention::OauthAccessTokenArchiveWorker'
+Settings.cron_jobs['lost_transaction_recovery_worker'] ||= {}
+Settings.cron_jobs['lost_transaction_recovery_worker']['cron'] ||= '* * * * *'
+Settings.cron_jobs['lost_transaction_recovery_worker']['job_class'] = 'Cells::LostTransactionRecoveryWorker'
 
 Gitlab.ee do
   Settings.cron_jobs['analytics_devops_adoption_create_all_snapshots_worker'] ||= {}

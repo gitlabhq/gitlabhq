@@ -1,9 +1,0 @@
----
-migration_job_name: BackfillMergeRequestsClosingIssuesProjectId
-description: Backfills sharding key `merge_requests_closing_issues.project_id` from
-  `merge_requests`.
-feature_category: code_review_workflow
-introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/157186
-milestone: '17.2'
-queued_migration_version: 20240624142014
-finalized_by: '20250112233106'

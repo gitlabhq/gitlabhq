@@ -10,10 +10,10 @@ When working with GitLab Duo Chat, you might encounter the following issues.
 ## The **GitLab Duo Chat** button is not displayed
 
 If the button is not visible in the upper right of the UI,
-ensure GitLab Duo Chat [is enabled](turn_on_off.md).
+ensure GitLab Duo Chat [is enabled](../gitlab_duo/turn_on_off.md).
 
 The **GitLab Duo Chat** button is not displayed on
-[groups and projects with GitLab Duo features disabled](turn_on_off.md).
+[groups and projects with GitLab Duo features disabled](../gitlab_duo/turn_on_off.md).
 
 After you enable GitLab Duo Chat, it might take a few minutes for the
 button to appear.
@@ -44,7 +44,7 @@ You might get an error that states
 `I am sorry, I cannot access the information you are asking about. A group or project owner has turned off Duo features in this group or project. Error code: M3002`.
 
 This error occurs when you ask about items that belong to projects or groups with
-GitLab Duo [turned off](turn_on_off.md).
+GitLab Duo [turned off](../gitlab_duo/turn_on_off.md).
 
 If GitLab Duo is not turned on, information about items
 (like issues, epics, and merge requests) in the group or project cannot be processed by GitLab Duo Chat.

@@ -18,7 +18,7 @@ Every GitLab Duo feature has a default large language model, chosen by GitLab.
 
 GitLab can update this default model to optimize feature performance. Therefore, a feature's model might change without you taking any action.
 
-If you do not want to use the default model for each feature, or have specific requirements, you can choose from an array of other available supported models.
+If you don't want to use the default model for each feature, or have specific requirements, you can choose from an array of other available supported models.
 
 If you select a specific model for a feature, the feature uses that model until you select another.
 
@@ -43,21 +43,22 @@ For more information, see the history.
 
 {{< /alert >}}
 
-On GitLab.com, you can select a model for a feature in a top-level group. The model that you select
+You can select a model for a feature in a top-level group. The model that you select
 applies to that feature for all child groups and projects.
 
 Prerequisites:
 
-- You must have the Owner role for the group.
-- The group that you want to select models for must be a top-level group.
-- In GitLab 18.3 or later, you must [assign a default namespace](#assign-a-default-gitlab-duo-namespace) if you belong to multiple GitLab Duo namespaces.
+- You have the Owner role for the group.
+- The group that you select models for is a top-level group.
+- In GitLab 18.3 or later, if you belong to multiple GitLab Duo namespaces, you must [assign a default namespace](#assign-a-default-gitlab-duo-namespace).
 
-To select a different model for a feature:
+To select a model for a feature:
 
 1. On the left sidebar, select **Search or go to** and find your group. If you've [turned on the new navigation](../interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
 1. Select **Settings** > **GitLab Duo**.
 1. Select **Configure features**.
 1. For the feature you want to configure, select a model from the dropdown list.
+1. Optional. To apply the model to all features in the section, select **Apply to all**.
 
 ![The GitLab UI for selecting a model at the top-group level.](img/configure_model_selections_v18_1.png)
 

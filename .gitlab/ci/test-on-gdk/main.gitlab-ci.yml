@@ -155,11 +155,14 @@ process-backend-coverage:
   extends:
     - .process-backend-coverage
 
-process-frontend-coverage:
-  extends:
-    - .process-frontend-coverage
-  needs:
-    - job: gdk-instance
+# Job is temporary disabled as it was causing master pipeline failures.
+# Example https://gitlab.com/gitlab-org/gitlab/-/jobs/12319670339
+#
+# process-frontend-coverage:
+#   extends:
+#     - .process-frontend-coverage
+#   needs:
+#     - job: gdk-instance
 
 notify-slack:
   extends:

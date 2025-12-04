@@ -1,8 +1,0 @@
----
-migration_job_name: DeleteDuplicateIssuableResourceLinks
-description: Remove the duplicates for the production DB.
-feature_category: database
-introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/172230
-milestone: '17.6'
-queued_migration_version: 20241111055711
-finalized_by: 20250123165457

@@ -52,5 +52,5 @@ markdown(<<~MARKDOWN)
     "* `#{file}` contains deprecated tokens: #{tokens.map { |token| "`#{token}`" }.join(', ')}"
   end.join("\n")}
 
-  See https://design.gitlab.com/product-foundations/design-tokens-technical-implementation for more information on semantic design tokens.
+  See https://design.gitlab.com/product-foundations/design-tokens#semantic-design-tokens for more information on semantic design tokens.
 MARKDOWN

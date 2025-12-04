@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Feature::Definition do
+RSpec.describe Feature::Definition, feature_category: :feature_flags do
   let(:attributes) do
     { name: 'feature_flag',
       type: 'development',
@@ -18,6 +18,42 @@ RSpec.describe Feature::Definition do
 
     it 'returns a symbol from name' do
       is_expected.to eq(:feature_flag)
+    end
+  end
+
+  describe '#observed' do
+    let(:attributes) do
+      { name: 'feature_flag',
+        type: 'ops',
+        default_enabled: false }
+    end
+
+    subject { definition.observed }
+
+    context 'when observed is true' do
+      before do
+        attributes[:observed] = true
+      end
+
+      it 'returns true' do
+        is_expected.to eq(true)
+      end
+    end
+
+    context 'when observed is false' do
+      before do
+        attributes[:observed] = false
+      end
+
+      it 'returns false' do
+        is_expected.to eq(false)
+      end
+    end
+
+    context 'when observed is not set' do
+      it 'returns nil' do
+        is_expected.to be_nil
+      end
     end
   end
 
