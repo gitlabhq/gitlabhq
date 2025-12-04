@@ -241,10 +241,6 @@ RSpec.describe NamespaceSetting, feature_category: :groups_and_projects do
       it { is_expected.to allow_value(1.day.ago).for(:enterprise_bypass_expires_at) }
       it { is_expected.to allow_value(Time.current).for(:enterprise_bypass_expires_at) }
     end
-
-    context 'for duo_agent_platform_request_count' do
-      it { is_expected.to validate_numericality_of(:duo_agent_platform_request_count).is_greater_than_or_equal_to(0) }
-    end
   end
 
   describe '#enterprise_placeholder_bypass_enabled?' do

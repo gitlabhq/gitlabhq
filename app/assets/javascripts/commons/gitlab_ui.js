@@ -66,8 +66,6 @@ applyGitLabUIConfig({
     'GlPagination.labelPage': s__('Pagination|Go to page %{page}'),
     'GlPagination.labelPrevPage': LABEL_PREV_PAGE,
     'GlPagination.nav': s__('Pagination|Pagination'),
-    'GlPagination.nextText': NEXT,
-    'GlPagination.prevText': PREV,
     'GlCollapsibleListbox.srOnlyResultsLabel': (count) => n__('%d result', '%d results', count),
     'GlProgressBar.ariaLabel': __('Progress bar'),
   },

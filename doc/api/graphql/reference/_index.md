@@ -53682,7 +53682,6 @@ Name of the feature that the callout is for.
 | <a id="usergroupcalloutfeaturenameci_minutes_limit_alert_exceeded_stage"></a>`CI_MINUTES_LIMIT_ALERT_EXCEEDED_STAGE` | Callout feature name for ci_minutes_limit_alert_exceeded_stage. |
 | <a id="usergroupcalloutfeaturenameci_minutes_limit_alert_warning_stage"></a>`CI_MINUTES_LIMIT_ALERT_WARNING_STAGE` | Callout feature name for ci_minutes_limit_alert_warning_stage. |
 | <a id="usergroupcalloutfeaturenamecompliance_framework_settings_moved_callout"></a>`COMPLIANCE_FRAMEWORK_SETTINGS_MOVED_CALLOUT` | Callout feature name for compliance_framework_settings_moved_callout. |
-| <a id="usergroupcalloutfeaturenameduo_agent_platform_requested"></a>`DUO_AGENT_PLATFORM_REQUESTED` | Callout feature name for duo_agent_platform_requested. |
 | <a id="usergroupcalloutfeaturenameenforcement_at_limit_alert"></a>`ENFORCEMENT_AT_LIMIT_ALERT` | Callout feature name for enforcement_at_limit_alert. |
 | <a id="usergroupcalloutfeaturenameexpired_duo_enterprise_trial_widget"></a>`EXPIRED_DUO_ENTERPRISE_TRIAL_WIDGET` | Callout feature name for expired_duo_enterprise_trial_widget. |
 | <a id="usergroupcalloutfeaturenameexpired_duo_pro_trial_widget"></a>`EXPIRED_DUO_PRO_TRIAL_WIDGET` | Callout feature name for expired_duo_pro_trial_widget. |

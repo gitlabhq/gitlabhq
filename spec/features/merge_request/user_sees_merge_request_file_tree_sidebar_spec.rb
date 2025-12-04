@@ -45,7 +45,7 @@ RSpec.describe 'Merge request > User sees merge request file tree sidebar', :js,
 
     context 'when navigating to the next file' do
       before do
-        click_link 'Next'
+        find_by_testid('gl-pagination-next').click
         wait_for_requests
         # when we click the Next button the viewport will be scrolled a bit into the diffs view
         # this will cause for the file tree sidebar height to be recalculated

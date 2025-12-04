@@ -6936,9 +6936,6 @@ msgstr ""
 msgid "AiPowered|Failed to disable composite identity for GitLab Duo Agent Platform."
 msgstr ""
 
-msgid "AiPowered|Failed to enable GitLab Duo Core."
-msgstr ""
-
 msgid "AiPowered|Failed to enable composite identity for GitLab Duo Agent Platform."
 msgstr ""
 
@@ -25195,18 +25192,6 @@ msgstr ""
 msgid "DuoAgentPlatform|%{linkStart}What are flows%{linkEnd}?"
 msgstr ""
 
-msgid "DuoAgentPlatform|%{pStart}%{firstLine}%{pEnd} %{pStart}When you turn it on, GitLab Duo will process your code and project data. Also, you accept the %{termsStart}GitLab AI Functionality Terms%{linkEnd}, unless your organization has a separate agreement with GitLab governing AI feature usage.%{pEnd} %{pStart}Groups, subgroups, and projects can opt out as needed. Check the %{eligibilityStart}eligibility requirements%{linkEnd} for details.%{pEnd}"
-msgstr ""
-
-msgid "DuoAgentPlatform|%{pStart}Get early access to new GitLab Duo features before they're generally available. Help improve your development workflow and get started now.%{pEnd} By turning on these features, you accept the %{termsStart}GitLab Testing Agreement%{linkEnd}."
-msgstr ""
-
-msgid "DuoAgentPlatform|Access GitLab Duo features throughout this group by turning on GitLab Duo Core."
-msgstr ""
-
-msgid "DuoAgentPlatform|Access the latest GitLab Duo features"
-msgstr ""
-
 msgid "DuoAgentPlatform|Action"
 msgstr ""
 
@@ -25246,19 +25231,10 @@ msgstr ""
 msgid "DuoAgentPlatform|Foundational GitLab Duo Flows"
 msgstr ""
 
-msgid "DuoAgentPlatform|GitLab Duo Core Off"
-msgstr ""
-
-msgid "DuoAgentPlatform|GitLab Duo Core On"
-msgstr ""
-
 msgid "DuoAgentPlatform|Job ID"
 msgstr ""
 
 msgid "DuoAgentPlatform|Remote GitLab Duo Flows"
-msgstr ""
-
-msgid "DuoAgentPlatform|Request has been sent to the group Owner"
 msgstr ""
 
 msgid "DuoAgentPlatform|Session ID"
@@ -25268,15 +25244,6 @@ msgid "DuoAgentPlatform|Session information"
 msgstr ""
 
 msgid "DuoAgentPlatform|Session triggered"
-msgstr ""
-
-msgid "DuoAgentPlatform|Start using GitLab Duo Core"
-msgstr ""
-
-msgid "DuoAgentPlatform|The number of users in your group who have requested access to GitLab Duo Core."
-msgstr ""
-
-msgid "DuoAgentPlatform|Turn on Feature Preview"
 msgstr ""
 
 msgid "DuoAgentPlatform|User messaged agent"
@@ -28758,9 +28725,6 @@ msgstr ""
 msgid "Failed to sign in using smart card authentication."
 msgstr ""
 
-msgid "Failed to submit access request"
-msgstr ""
-
 msgid "Failed to submit your comment. Please try again."
 msgstr ""
 
@@ -28858,9 +28822,6 @@ msgid "Feature flag was successfully removed."
 msgstr ""
 
 msgid "Feature preview"
-msgstr ""
-
-msgid "Feature preview is on"
 msgstr ""
 
 msgid "FeatureFlags|%d user"
@@ -30972,9 +30933,6 @@ msgid "GitLab Duo Chat with Amazon Q"
 msgstr ""
 
 msgid "GitLab Duo Core"
-msgstr ""
-
-msgid "GitLab Duo Core is on"
 msgstr ""
 
 msgid "GitLab Duo Workflow Service at %{host} is not operational."
@@ -66788,9 +66746,6 @@ msgid "Team"
 msgstr ""
 
 msgid "Team domain"
-msgstr ""
-
-msgid "Team requests"
 msgstr ""
 
 msgid "TeamCityIntegration|A user with permissions to trigger a manual build."

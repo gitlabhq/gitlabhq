@@ -151,6 +151,9 @@
 .if-merge-request-labels-skip-undercoverage: &if-merge-request-labels-skip-undercoverage
   if: '($CI_PIPELINE_SOURCE == "merge_request_event" && $CI_MERGE_REQUEST_EVENT_TYPE != "merge_train") && $CI_MERGE_REQUEST_LABELS =~ /pipeline:skip-undercoverage/'
 
+.if-merge-request-labels-skip-check-deprecated-files: &if-merge-request-labels-skip-check-deprecated-files
+  if: '($CI_PIPELINE_SOURCE == "merge_request_event" && $CI_MERGE_REQUEST_EVENT_TYPE != "merge_train") && $CI_MERGE_REQUEST_LABELS =~ /pipeline:skip-check-deprecated-files/'
+
 .if-merge-request-labels-jh-contribution: &if-merge-request-labels-jh-contribution
   if: '($CI_PIPELINE_SOURCE == "merge_request_event" && $CI_MERGE_REQUEST_EVENT_TYPE != "merge_train") && $CI_MERGE_REQUEST_LABELS =~ /JiHu contribution/'
 
@@ -2843,6 +2846,17 @@
       changes: *code-backstage-qa-patterns
     - <<: *if-default-refs
       changes: *docs-patterns
+
+.static-analysis:rules:check-deprecated-files:
+  rules:
+    - <<: *if-merge-request-labels-skip-check-deprecated-files
+      when: never
+    - <<: *if-security-merge-request
+      when: never
+    - <<: *if-merge-request-targeting-stable-branch
+      when: never
+    - <<: *if-merge-request
+      changes: *code-patterns
 
 .semgrep-appsec-custom-rules:rules:
   rules:

@@ -1,8 +1,6 @@
 import { GlPagination } from '@gitlab/ui';
 import { mount } from '@vue/test-utils';
 import {
-  PREV,
-  NEXT,
   LABEL_FIRST_PAGE,
   LABEL_PREV_PAGE,
   LABEL_NEXT_PAGE,
@@ -12,8 +10,6 @@ import PaginationLinks from '~/vue_shared/components/pagination_links.vue';
 
 describe('Pagination links component', () => {
   const translations = {
-    prevText: PREV,
-    nextText: NEXT,
     labelFirstPage: LABEL_FIRST_PAGE,
     labelPrevPage: LABEL_PREV_PAGE,
     labelNextPage: LABEL_NEXT_PAGE,

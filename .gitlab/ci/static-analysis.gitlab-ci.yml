@@ -387,3 +387,13 @@ ping-appsec-for-dependency-review:
   script:
     - docker run --interactive --rm "$DEPENDENCY_REVIEW_BOT_CI_REG:latest" -t "$DEPENDENCY_REVIEW_PAT" -p "$CI_PROJECT_ID" -m "$CI_MERGE_REQUEST_IID" -s "$DISABLE_SCORING" -a "$DISABLE_MENTIONS" -c "$DISABLE_COMMENTING"
   allow_failure: true
+
+check-deprecated-files:
+  extends:
+    - .static-analysis-base
+    - .static-analysis:rules:check-deprecated-files
+  variables:
+    USE_BUNDLE_INSTALL: "false"
+  script:
+    - gem install rainbow --no-document
+    - scripts/lint/check_deprecated_files.rb

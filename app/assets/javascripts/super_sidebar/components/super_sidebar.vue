@@ -42,8 +42,6 @@ export default {
     ScrollScrim,
     TrialWidget: () => import('jh_else_ee/contextual_sidebar/components/trial_widget.vue'),
     TierBadge: () => import('ee_component/vue_shared/components/tier_badge/tier_badge.vue'),
-    DuoAgentPlatformWidget: () =>
-      import('jh_else_ee/contextual_sidebar/components/duo_agent_platform_widget.vue'),
   },
   directives: {
     GlTooltip: GlTooltipDirective,
@@ -54,7 +52,7 @@ export default {
     primaryNavigation: s__('Navigation|Primary navigation'),
     adminArea: s__('Navigation|Admin'),
   },
-  inject: ['showTrialWidget', 'projectStudioEnabled', 'showDuoAgentPlatformWidget'],
+  inject: ['showTrialWidget', 'projectStudioEnabled'],
   provide() {
     return {
       isIconOnly: computed(() => this.isIconOnly),
@@ -303,7 +301,6 @@ export default {
             class="gl-relative gl-mb-1 gl-flex gl-items-center gl-rounded-[.75rem] gl-p-3 gl-leading-normal !gl-text-default !gl-no-underline"
           />
         </div>
-        <duo-agent-platform-widget v-if="showDuoAgentPlatformWidget && !isIconOnly" />
         <help-center
           v-if="canIconOnly"
           ref="helpCenter"

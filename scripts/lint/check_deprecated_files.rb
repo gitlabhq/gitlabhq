@@ -5,8 +5,9 @@ require 'yaml'
 require 'open3'
 require 'rainbow'
 
-# Scans for modifications to deprecated files by comparing local commits against
-# the upstream branch (or "origin/master" as fallback).
+# Scans for modifications to deprecated files by comparing:
+# - Local: commits against the upstream branch (or "origin/master" as fallback)
+# - CI: changes in the merge request (using CI_MERGE_REQUEST_DIFF_BASE_SHA)
 #
 # YAML Configuration Structure (./config/lint/deprecations.yml):
 #
@@ -21,6 +22,11 @@ require 'rainbow'
 # Usage:
 #   Via lefthook (recommended): lefthook run pre-push --command check-deprecated-files
 #   Direct execution: ./scripts/lint/check_deprecated_files.rb
+#
+# CI Environment Variables:
+#   GitLab CI:
+#     - CI_MERGE_REQUEST_DIFF_BASE_SHA: Base SHA for the merge request diff
+#     - GITLAB_CI: Set when running in GitLab CI
 
 class CheckDeprecatedFiles
   FEEDBACK_ISSUE = "https://gitlab.com/gitlab-org/gitlab/-/issues/575249"
@@ -33,10 +39,10 @@ class CheckDeprecatedFiles
     @deprecation_registry = deprecation_registry
   end
 
-  def execute!(modified_files = nil)
+  def execute!(files = nil)
     terminate "#{deprecation_registry} not found" unless File.exist?(deprecation_registry)
 
-    files_to_check = modified_files || modified_files_local
+    files_to_check = files || modified_files
 
     modified_deprecated_files = files_to_check.select { |file| deprecated_files.include?(file) }
     exit 0 if modified_deprecated_files.empty?
@@ -46,6 +52,10 @@ class CheckDeprecatedFiles
   end
 
   private
+
+  def ci?
+    !!ENV['GITLAB_CI']
+  end
 
   def terminate(message)
     warn Rainbow("Error: #{message}").bright.red
@@ -58,7 +68,14 @@ class CheckDeprecatedFiles
     stdout_str.chomp
   end
 
-  def modified_files_local
+  def modified_files
+    base_sha = ci? ? base_sha_ci : base_sha_local
+
+    files = run("git", "diff", "--name-only", "#{base_sha}..HEAD")
+    files.split("\n").map(&:strip).reject(&:empty?)
+  end
+
+  def base_sha_local
     upstream = run("git rev-parse --abbrev-ref --symbolic-full-name @{u}", quiet: true)
 
     base_branch = if upstream && !upstream.empty?
@@ -67,10 +84,11 @@ class CheckDeprecatedFiles
                     DEFAULT_BASE_BRANCH
                   end
 
-    merge_base = run("git", "merge-base", base_branch, "HEAD")
-    modified_files = run("git", "diff", "--name-only", "#{merge_base}..HEAD")
+    run("git", "merge-base", base_branch, "HEAD")
+  end
 
-    modified_files.split("\n").map(&:strip).reject(&:empty?)
+  def base_sha_ci
+    ENV['CI_MERGE_REQUEST_DIFF_BASE_SHA']
   end
 
   def deprecated_files
@@ -82,6 +100,7 @@ class CheckDeprecatedFiles
     terminate "Failed to parse #{deprecation_registry}: #{e.message}"
   end
 
+  # rubocop:disable Metrics/AbcSize -- AbcSize is high because of `Rainbow` calls but method has low complexity
   def display_warning(modified_deprecated_files)
     puts Rainbow("━" * 75).bright.red
     puts Rainbow("⚠️  WARNING: You are modifying deprecated files!  ⚠️").bright.red
@@ -99,12 +118,19 @@ class CheckDeprecatedFiles
     puts "  • Update #{Rainbow(deprecation_registry).bright.green} for removed/moved files"
     puts
     puts "To bypass this check:"
-    puts "  • Push with: #{Rainbow('LEFTHOOK_EXCLUDE=check-deprecated-files git push').bright.cyan}"
+
+    if ci?
+      puts "  • Add #{Rainbow('~"pipeline:skip-check-deprecated-files"').bright.cyan} label to your MR"
+    else
+      puts "  • Push with: #{Rainbow('LEFTHOOK_EXCLUDE=check-deprecated-files git push').bright.cyan}"
+    end
+
     puts
     puts "Deprecation Details: #{Rainbow(deprecation_registry).bright.green}"
     puts "Questions/Feedback: #{Rainbow(FEEDBACK_ISSUE).bright.green}"
     puts Rainbow("━" * 75).bright.red
   end
+  # rubocop:enable Metrics/AbcSize
 end
 
 CheckDeprecatedFiles.new.execute! if __FILE__ == $PROGRAM_NAME
