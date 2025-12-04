@@ -140,6 +140,31 @@ module API
 
           present current_runner.token_with_expiration, with: Entities::Ci::ResetTokenResult
         end
+
+        resource :router do
+          before do
+            authenticate_runner_from_header!
+            Gitlab::ApplicationContext.push(runner: current_runner_from_header)
+          end
+
+          desc 'Discover Job Router information' do
+            detail 'This endpoint can be used by the runner to retrieve information about the Job Router.'
+            success Entities::Ci::JobRouter::DiscoveryInformation
+            failure [
+              { code: 403, message: '403 Forbidden' },
+              { code: 501, message: '501 Not Implemented' }
+            ]
+          end
+          get '/discovery', urgency: :low, feature_category: :runner_core do
+            unless Gitlab::Kas.enabled?
+              render_api_error!('Job Router is not available. Please contact your administrator.', 501)
+            end
+
+            present({
+              server_url: Gitlab::Kas.external_url
+            }, with: Entities::Ci::JobRouter::DiscoveryInformation)
+          end
+        end
       end
 
       resource :jobs do

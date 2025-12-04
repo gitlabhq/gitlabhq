@@ -58362,10 +58362,10 @@ msgstr ""
 msgid "ScanResultPolicy|Customized CI Variables"
 msgstr ""
 
-msgid "ScanResultPolicy|Define branch patterns that can bypass policy requirements using wildcards and regex patterns. Use * for simple wildcards or regex patterns for advanced matching."
+msgid "ScanResultPolicy|Define branch patterns that can bypass policy requirements. Use an asterisk (*) as a wildcard to match any combination of characters."
 msgstr ""
 
-msgid "ScanResultPolicy|Define branch patterns that can bypass policy requirements using wildcards and regex patterns. Use * for simple wildcards or regex patterns for advanced matching. %{linkStart}Learn more%{linkEnd}."
+msgid "ScanResultPolicy|Define branch patterns that can bypass policy requirements. Use an asterisk (*) as a wildcard to match any combination of characters. %{linkStart}Learn more%{linkEnd}."
 msgstr ""
 
 msgid "ScanResultPolicy|Denied"
@@ -71692,6 +71692,9 @@ msgid "UsageBilling|Credits used after all included user credits and monthly com
 msgstr ""
 
 msgid "UsageBilling|Date/Time"
+msgstr ""
+
+msgid "UsageBilling|GitLab Credits"
 msgstr ""
 
 msgid "UsageBilling|GitLab Credits - Monthly Waiver"

@@ -85,6 +85,52 @@ RSpec.describe API::Ci::Helpers::Runner, feature_category: :runner_core do
     end
   end
 
+  describe '#current_runner_from_header', feature_category: :runner_core do
+    let_it_be(:runner) { create(:ci_runner, token: 'foo') }
+    let(:headers_response) { { API::Ci::Helpers::Runner::RUNNER_TOKEN_HEADER => runner.token } }
+
+    subject(:current_runner_from_header) { helper.current_runner_from_header }
+
+    before do
+      allow(helper).to receive(:headers).and_return(headers_response)
+    end
+
+    it 'returns the runner' do
+      allow(helper).to receive(:headers).and_return(API::Ci::Helpers::Runner::RUNNER_TOKEN_HEADER => runner.token)
+
+      is_expected.to eq(runner)
+    end
+
+    it 'handles sticking of a runner' do
+      expect(Ci::Runner.sticking)
+        .to receive(:find_caught_up_replica)
+        .with(:runner, runner.token, hash_id: false)
+
+      current_runner_from_header
+
+      stick_object = env_hash[::Gitlab::Database::LoadBalancing::RackMiddleware::STICK_OBJECT].first
+      expect(stick_object[0]).to eq(Ci::Runner.sticking)
+      expect(stick_object[1]).to eq(:runner)
+      expect(stick_object[2]).to eq(runner.token)
+    end
+
+    context 'when no token is specified' do
+      let(:headers_response) { {} }
+
+      it 'does not handle sticking' do
+        expect(Ci::Runner.sticking).not_to receive(:find_caught_up_replica)
+
+        current_runner_from_header
+      end
+    end
+
+    context 'when specified token is invalid' do
+      let(:headers_response) { { API::Ci::Helpers::Runner::RUNNER_TOKEN_HEADER => 'invalid' } }
+
+      it { is_expected.to be_nil }
+    end
+  end
+
   describe '#current_runner_manager', :freeze_time, feature_category: :fleet_visibility do
     let_it_be(:group) { create(:group) }
 
@@ -156,13 +202,41 @@ RSpec.describe API::Ci::Helpers::Runner, feature_category: :runner_core do
     end
 
     it 'increments gitlab_ci_runner_authentication_failure_total' do
-      allow(helper).to receive(:params).and_return(token: 'invalid')
+      allow(helper).to receive_messages(params: { token: 'invalid' }, headers: {})
 
       success_counter = ::Gitlab::Ci::Runner::Metrics.runner_authentication_success_counter
       failure_counter = ::Gitlab::Ci::Runner::Metrics.runner_authentication_failure_counter
       expect { subject }.to change { failure_counter.get }.by(1)
         .and not_change { success_counter.get(runner_type: 'instance_type') }
         .and not_change { success_counter.get(runner_type: 'project_type') }
+    end
+
+    context 'when token in headers' do
+      it 'increments gitlab_ci_runner_authentication_success_total' do
+        allow(helper).to receive_messages(
+          headers: { API::Ci::Helpers::Runner::RUNNER_TOKEN_HEADER => runner.token },
+          params: {}
+        )
+
+        success_counter = ::Gitlab::Ci::Runner::Metrics.runner_authentication_success_counter
+        failure_counter = ::Gitlab::Ci::Runner::Metrics.runner_authentication_failure_counter
+        expect { subject }.to change { success_counter.get(runner_type: 'instance_type') }.by(1)
+          .and not_change { success_counter.get(runner_type: 'project_type') }
+          .and not_change { failure_counter.get }
+      end
+
+      it 'increments gitlab_ci_runner_authentication_failure_total' do
+        allow(helper).to receive_messages(
+          headers: { API::Ci::Helpers::Runner::RUNNER_TOKEN_HEADER => 'invalid' },
+          params: {}
+        )
+
+        success_counter = ::Gitlab::Ci::Runner::Metrics.runner_authentication_success_counter
+        failure_counter = ::Gitlab::Ci::Runner::Metrics.runner_authentication_failure_counter
+        expect { subject }.to change { failure_counter.get }.by(1)
+          .and not_change { success_counter.get(runner_type: 'instance_type') }
+          .and not_change { success_counter.get(runner_type: 'project_type') }
+      end
     end
   end
 

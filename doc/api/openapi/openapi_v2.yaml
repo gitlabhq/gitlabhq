@@ -40674,6 +40674,25 @@ paths:
       tags:
       - runners
       operationId: postApiV4RunnersResetAuthenticationToken
+  "/api/v4/runners/router/discovery":
+    get:
+      summary: Discover Job Router information
+      description: This endpoint can be used by the runner to retrieve information
+        about the Job Router.
+      produces:
+      - application/json
+      responses:
+        '200':
+          description: Discover Job Router information
+          schema:
+            "$ref": "#/definitions/API_Entities_Ci_JobRouter_DiscoveryInformation"
+        '403':
+          description: 403 Forbidden
+        '501':
+          description: 501 Not Implemented
+      tags:
+      - runners
+      operationId: getApiV4RunnersRouterDiscovery
   "/api/v4/runners/all":
     get:
       summary: List all runners
@@ -68089,6 +68108,13 @@ definitions:
     required:
     - token
     description: Reset runner authentication token with current token
+  API_Entities_Ci_JobRouter_DiscoveryInformation:
+    type: object
+    properties:
+      server_url:
+        type: string
+        example: wss://kas.example.com
+    description: API_Entities_Ci_JobRouter_DiscoveryInformation model
   API_Entities_Ci_RunnerDetails:
     type: object
     properties:

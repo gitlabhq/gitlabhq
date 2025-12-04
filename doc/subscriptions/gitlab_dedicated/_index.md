@@ -267,6 +267,20 @@ Limitations:
 - No SLA commitment.
 - Cannot run newer versions than production.
 
+## Settings managed by GitLab
+
+While you can modify most settings through the Admin area, GitLab automatically manages
+certain settings to ensure system stability and security.
+
+### Rate limits
+
+GitLab configures rate limits based on your instance size and automatically resets them to
+these defaults during maintenance windows to ensure optimal performance.
+These limits prevent any single user or automation from degrading performance for other users on your instance.
+
+For more information about how rate limits work in GitLab Dedicated,
+see [authenticated user rate limits](../../administration/dedicated/user_rate_limits.md).
+
 ## Unavailable features
 
 This section lists the features that are not available for GitLab Dedicated.

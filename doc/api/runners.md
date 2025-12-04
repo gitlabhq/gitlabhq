@@ -1196,3 +1196,44 @@ Example response:
     "token_expires_at": "2021-09-27T21:05:03.203Z"
 }
 ```
+
+## Discover Job Router information
+
+Get Job Router discovery information for a runner.
+
+Prerequisites:
+
+- You must provide a valid runner authentication token.
+
+```plaintext
+GET /runners/router/discovery
+```
+
+```shell
+curl --header "Runner-Token: <runner_authentication_token>" \
+     "https://gitlab.example.com/api/v4/runners/router/discovery"
+```
+
+Response:
+
+The response contains the following fields:
+
+| Attribute    | Type     | Description           |
+|--------------|----------|-----------------------|
+| `server_url` | string   | URL to the Job Router |
+
+The response returns with one of the following status codes:
+
+| Status | Description                                   |
+|--------|-----------------------------------------------|
+| `200`  | Job Router information retrieved successfully |
+| `403`  | Forbidden                                     |
+| `501`  | Job Router is not available                   |
+
+Example response:
+
+```json
+{
+    "server_url": "wss://kas.example.com"
+}
+```

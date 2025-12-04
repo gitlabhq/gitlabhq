@@ -11,6 +11,7 @@ module API
         JOB_TOKEN_HEADER = 'HTTP_JOB_TOKEN'
         JOB_TOKEN_PARAM = :token
         LEGACY_SYSTEM_XID = '<legacy>'
+        RUNNER_TOKEN_HEADER = 'Runner-Token'
 
         def authenticate_runner!(ensure_runner_manager: true, creation_state: nil)
           track_runner_authentication
@@ -21,6 +22,11 @@ module API
 
           runner_details = get_runner_details_from_request
           current_runner_manager&.heartbeat(runner_details)
+        end
+
+        def authenticate_runner_from_header!
+          track_runner_authentication
+          forbidden! unless current_runner_from_header
         end
 
         def get_runner_details_from_request
@@ -53,6 +59,16 @@ module API
           end
         end
 
+        def current_runner_from_header
+          token = headers[RUNNER_TOKEN_HEADER]
+
+          load_balancer_stick_request(::Ci::Runner, :runner, token) if token
+
+          strong_memoize(:current_runner_from_header) do
+            ::Ci::Runner.find_by_token(token.to_s)
+          end
+        end
+
         def current_runner_manager
           strong_memoize(:current_runner_manager) do
             system_xid = params.fetch(:system_id, LEGACY_SYSTEM_XID)
@@ -61,8 +77,10 @@ module API
         end
 
         def track_runner_authentication
-          if current_runner
-            metrics.increment_runner_authentication_success_counter(runner_type: current_runner.runner_type)
+          runner = current_runner || current_runner_from_header
+
+          if runner
+            metrics.increment_runner_authentication_success_counter(runner_type: runner.runner_type)
           else
             metrics.increment_runner_authentication_failure_counter
           end

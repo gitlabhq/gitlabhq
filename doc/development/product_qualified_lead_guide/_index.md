@@ -46,15 +46,7 @@ A hand-raise PQL is a user who requests to speak to sales from within the produc
 
 [HandRaiseLeadButton](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/app/assets/javascripts/hand_raise_leads/hand_raise_lead/components/hand_raise_lead_button.vue) is a reusable component that adds a button and a hand-raise modal to any screen.
 
-You can import a hand-raise lead button in the following ways:
-
-For Haml:
-
-```ruby
-.js-hand-raise-lead-trigger{ data: discover_page_hand_raise_lead_data(group) }
-```
-
-For Vue:
+You can import a hand-raise lead button in the following way:
 
 ```vue
 <script>

@@ -2819,4 +2819,59 @@ RSpec.describe API::Ci::Runners, :aggregate_failures, factory_default: :keep, fe
       let(:request) { delete api(path, personal_access_token: pat) }
     end
   end
+
+  describe 'GET /api/v4/runners/router/discovery' do
+    let(:headers) { { API::Ci::Helpers::Runner::RUNNER_TOKEN_HEADER => project_runner.token } }
+
+    subject(:discovery) { get api('/runners/router/discovery'), headers: headers }
+
+    context 'when no token header is provided' do
+      let(:headers) { {} }
+
+      it 'returns 403 error' do
+        discovery
+
+        expect(response).to have_gitlab_http_status(:forbidden)
+      end
+    end
+
+    context 'when invalid token is provided' do
+      let(:headers) { { API::Ci::Helpers::Runner::RUNNER_TOKEN_HEADER => 'invalid' } }
+
+      it 'returns 403 error' do
+        discovery
+
+        expect(response).to have_gitlab_http_status(:forbidden)
+      end
+    end
+
+    context 'when valid token is provided' do
+      let(:kas_external_url) { 'wss://kas.example.com' }
+
+      before do
+        allow(Gitlab::Kas).to receive_messages(enabled?: true, external_url: kas_external_url)
+      end
+
+      it 'returns discovery information with KAS enabled' do
+        discovery
+
+        expect(response).to have_gitlab_http_status(:ok)
+        expect(json_response).to eq({
+          'server_url' => kas_external_url
+        })
+      end
+
+      context 'when KAS is disabled' do
+        before do
+          allow(Gitlab::Kas).to receive(:enabled?).and_return(false)
+        end
+
+        it 'returns discovery information with KAS disabled' do
+          discovery
+
+          expect(response).to have_gitlab_http_status(:not_implemented)
+        end
+      end
+    end
+  end
 end
