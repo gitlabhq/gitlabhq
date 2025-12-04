@@ -6,8 +6,8 @@ module RapidDiffs
 
     presents ::Commit, as: :resource
 
-    def initialize(subject, diff_view, diff_options, request_params = nil, current_user = nil)
-      super(subject, diff_view, diff_options, request_params)
+    def initialize(subject, diff_view, diff_options, request_params = nil, current_user = nil, environment = nil)
+      super(subject, diff_view, diff_options, request_params, environment)
       @current_user = current_user
     end
 

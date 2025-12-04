@@ -17,13 +17,6 @@ module RuboCop
 
     # List of feature categories which are not defined in config/feature_categories.yml
     # https://docs.gitlab.com/ee/development/feature_categorization/#tooling-feature-category
-    # https://docs.gitlab.com/ee/development/feature_categorization/#shared-feature-category
-    CUSTOM_CATEGORIES = %w[
-      tooling
-      shared
-      test_platform
-    ].to_set.freeze
-
     RSPEC_CATEGORIES = %w[
       tooling
       test_platform
@@ -31,10 +24,6 @@ module RuboCop
 
     def self.available
       @available ||= YAML.load_file(CONFIG_PATH).to_set
-    end
-
-    def self.available_with_custom
-      @available_with_custom ||= available.union(CUSTOM_CATEGORIES)
     end
 
     def self.available_for_rspec

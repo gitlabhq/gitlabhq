@@ -2,7 +2,6 @@ import { shallowMount } from '@vue/test-utils';
 import { nextTick } from 'vue';
 import { EDITOR_READY_EVENT } from '~/editor/constants';
 import Editor from '~/editor/source_editor';
-import { createMockDirective, getBinding } from 'helpers/vue_mock_directive';
 import SourceEditor from '~/vue_shared/components/source_editor.vue';
 import * as helpers from 'jest/editor/helpers';
 
@@ -33,7 +32,7 @@ describe('Source Editor component', () => {
       createInstance: createInstanceMock,
     };
   });
-  function createComponent(props = {}, directives = {}) {
+  function createComponent(props = {}) {
     wrapper = shallowMount(SourceEditor, {
       propsData: {
         value,
@@ -41,7 +40,6 @@ describe('Source Editor component', () => {
         fileGlobalId,
         ...props,
       },
-      directives,
     });
   }
 
@@ -166,12 +164,20 @@ describe('Source Editor component', () => {
       });
     });
 
-    it('applies the v-dynamic-height directive to the editor element', () => {
-      createComponent({}, { DynamicHeight: createMockDirective('dynamic-height') });
-      const editorElement = wrapper.find('[data-testid="source-editor-container"]');
-      const directiveBinding = getBinding(editorElement.element, 'dynamic-height');
+    it('applies the v-dynamic-height directive to the editor element when useDynamicHeight is true', () => {
+      createComponent({ useDynamicHeight: true });
 
-      expect(directiveBinding).toBeDefined();
+      const editorDiv = wrapper.find('[data-testid="source-editor-container"]');
+
+      expect(editorDiv.attributes('dynamicheight')).toBeDefined();
+    });
+
+    it('does not the v-dynamic-height directive to the editor element when useDynamicHeight is false', () => {
+      createComponent({ useDynamicHeight: false });
+
+      const editorDiv = wrapper.find('[data-testid="source-editor-container"]');
+
+      expect(editorDiv.attributes('dynamicheight')).toBeUndefined();
     });
   });
 });

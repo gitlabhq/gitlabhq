@@ -245,9 +245,6 @@ export default {
       return {
         text: __('Hide comments on this file'),
         action: () => this.toggleFileDiscussionWrappers(this.diffFile),
-        extraAttrs: {
-          'data-testid': 'toggle-comments-button',
-        },
       };
     },
 

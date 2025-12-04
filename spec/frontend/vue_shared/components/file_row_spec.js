@@ -275,6 +275,18 @@ describe('File row component', () => {
     });
   });
 
+  it('emits clickSubmodule with webUrl and does not call router.push for submodules', () => {
+    const push = jest.fn();
+    createComponent(
+      { file: { ...file('sub'), submodule: true, webUrl: 'https://ext.com' }, level: 0 },
+      { push, currentRoute: { path: '/different' } },
+    );
+    findFileButton().trigger('click');
+
+    expect(wrapper.emitted('clickSubmodule')[0][0]).toBe('https://ext.com');
+    expect(push).not.toHaveBeenCalled();
+  });
+
   describe('Tree toggle chevron button', () => {
     const findChevronButton = () => wrapper.findByTestId('tree-toggle-button');
     const folderPath = 'path/to/folder';

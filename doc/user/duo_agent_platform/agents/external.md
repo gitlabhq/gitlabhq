@@ -95,7 +95,7 @@ This way, you do not have to manage and rotate API keys yourself.
 
 When you use GitLab-managed credentials:
 
-- Set `injectGatewayToken: true` in your flow configuration file.
+- Set `injectGatewayToken: true` in your external agent configuration.
 - Remove the API key variables (for example, `ANTHROPIC_API_KEY`) from your CI/CD variables.
 - Configure the external agent to use the GitLab AI gateway proxy endpoints.
 
@@ -205,7 +205,7 @@ For more information, see how to [add CI/CD variables to a project's settings](.
 
 ## Create an external agent
 
-Create an external agent and configure it to run on your environment with a flow configuration.
+Create an external agent and configure it to run on your environment.
 
 ### By using the UI
 
@@ -241,25 +241,25 @@ Prerequisites:
 1. Under **Visibility & access**, for **Visibility**, select **Private** or **Public**.
 1. Under **Configuration**:
    1. Select **External**.
-   1. Enter your flow configuration.
-      You can write your own configuration, or edit one of the templates below.
+   1. Enter your external agent configuration.
+      You can write your own YAML, or edit an example configuration.
 1. Select **Create flow**.
 
 The external agent appears in the AI Catalog.
 
-### By using a flow configuration file
+### By using a configuration file
 
-If you create external agents by manually adding flow configuration files,
-you must create a different AI flow configuration file for each external agent.
+If you create external agents by manually adding configuration files,
+you must create a different configuration file for each external agent.
 
 Prerequisites:
 
 - You must have at least the Developer role for the project.
 
-To create a flow configuration file:
+To create a configuration file:
 
 1. In your project, create a YAML file, for example: `.gitlab/duo/flows/claude.yaml`
-1. Populate the file by using [one of the flow configuration file examples](flow_examples.md).
+1. Populate the file by using [one of the configuration file examples](flow_examples.md).
 
 ## Enable an external agent
 
@@ -295,7 +295,7 @@ Prerequisites:
 - To allow the agent to push to workload branches (`workloads/*`), you might have to create [branch rules](../../project/repository/branches/branch_rules.md).
 
 1. In your project, open an issue, merge request, or epic.
-1. Mention, assign, or request a review from the flow service account user.
+1. Mention, assign, or request a review from the service account user.
    For example:
 
    ```plaintext

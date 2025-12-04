@@ -4,6 +4,7 @@ exports[`Source Editor component rendering matches the snapshot 1`] = `
 <div
   data-editor-loading=""
   data-testid="source-editor-container"
+  dynamicheight="[object Object]"
   id="reference-0"
 >
   <pre

@@ -13,7 +13,8 @@ RSpec.describe RapidDiffs::DiffFileComponent, type: :component, feature_category
     it 'renders the default header when no custom header is provided' do
       allow_next_instance_of(
         RapidDiffs::DiffFileHeaderComponent,
-        diff_file: diff_file
+        diff_file: diff_file,
+        environment: nil
       ) do |instance|
         allow(instance).to receive(:render_in).and_return('diff-file-header')
       end
@@ -31,6 +32,25 @@ RSpec.describe RapidDiffs::DiffFileComponent, type: :component, feature_category
       end
 
       expect(result.css('.custom-header').text).to eq('Custom Header')
+    end
+
+    context 'with environment' do
+      let_it_be(:project) { build_stubbed(:project, :repository) }
+      let_it_be(:environment) { build_stubbed(:environment, project: project) }
+
+      it 'renders the default header with environment when no custom header is provided' do
+        allow_next_instance_of(
+          RapidDiffs::DiffFileHeaderComponent,
+          diff_file: diff_file,
+          environment: environment
+        ) do |instance|
+          allow(instance).to receive(:render_in).and_return('diff-file-header-with-env')
+        end
+
+        result = render_component(environment: environment)
+
+        expect(result.to_html).to include('diff-file-header-with-env')
+      end
     end
   end
 

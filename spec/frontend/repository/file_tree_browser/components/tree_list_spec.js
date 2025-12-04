@@ -18,6 +18,7 @@ import { Mousetrap } from '~/lib/mousetrap';
 import { waitForElement } from '~/lib/utils/dom_utils';
 import refQuery from '~/repository/queries/ref.query.graphql';
 import FileTreeBrowserToggle from '~/repository/file_tree_browser/components/file_tree_browser_toggle.vue';
+import { visitUrl } from '~/lib/utils/url_utility';
 import { mockResponse } from '../mock_data';
 
 Vue.use(VueApollo);
@@ -29,6 +30,7 @@ jest.mock('~/lib/utils/url_utility', () => ({
   buildURLwithRefType: jest.fn(({ path, refType }) =>
     refType ? `${path}?ref_type=${refType.toLowerCase()}` : path,
   ),
+  visitUrl: jest.fn(),
 }));
 jest.mock('~/behaviors/shortcuts/shortcuts_toggle');
 jest.mock('~/lib/utils/dom_utils');
@@ -492,6 +494,33 @@ describe('Tree List', () => {
       await waitForPromises();
       expect(getQueryHandlerSuccess).toHaveBeenCalledTimes(2); // root + dir_0
     });
+
+    it('expands path ancestors when route changes', async () => {
+      const treeNode = mockResponse.data.project.repository.paginatedTree.nodes[0];
+      const response = cloneDeep(mockResponse);
+      response.data.project.repository.paginatedTree.nodes[0].trees.nodes = [
+        { ...treeNode.trees.nodes[0], name: 'test_dir', path: 'test_dir', flatPath: 'test_dir' },
+      ];
+
+      getQueryHandlerSuccess = jest.fn().mockResolvedValueOnce(response);
+
+      const route = Vue.observable({ params: {} });
+      wrapper = shallowMountExtended(TreeList, {
+        apolloProvider: createMockApollo([[paginatedTreeQuery, getQueryHandlerSuccess]]),
+        pinia,
+        propsData: { projectPath: 'group/project', currentRef: 'main' },
+        mocks: { $router: { push: jest.fn() }, $route: route },
+      });
+      await waitForPromises();
+
+      route.params = { path: 'test_dir/file.txt' };
+      await nextTick();
+      await waitForPromises();
+
+      expect(getQueryHandlerSuccess).toHaveBeenCalledWith(
+        expect.objectContaining({ path: 'test_dir' }),
+      );
+    });
   });
 
   describe('keyboard navigation', () => {
@@ -711,6 +740,52 @@ describe('Tree List', () => {
 
       expect(fileRows.at(0).props('file').routerPath).toBe('/-/tree/main/dir_1/dir_2');
       expect(fileRows.at(1).props('file').routerPath).toBe('/-/blob/main/dir_1/file.txt');
+    });
+  });
+
+  describe('submodule handling', () => {
+    const webUrl = 'https://example.com/submodule-project';
+    beforeEach(async () => {
+      const response = cloneDeep(mockResponse);
+      response.data.project.repository.paginatedTree.nodes[0].submodules.nodes.push({
+        __typename: 'Submodule',
+        id: 'gid://Submodule123',
+        sha: '1234567890abcdef',
+        name: 'submodule-project',
+        flatPath: 'submodule-project',
+        type: 'commit',
+        path: 'submodule-project',
+        treeUrl: webUrl,
+        webUrl,
+      });
+
+      await createComponent(response);
+    });
+
+    it('renders submodules with correct properties', () => {
+      expect(findFileRows().at(1).props('file')).toMatchObject({ webUrl, submodule: true });
+    });
+
+    it('navigates to submodule when clicked', () => {
+      findFileRows().at(1).vm.$emit('clickSubmodule', webUrl);
+
+      expect(visitUrl).toHaveBeenCalledWith(webUrl);
+    });
+
+    it.each(['Enter', ' '])('navigates to submodule with %s key', async (key) => {
+      findTree().trigger('keydown', { key: 'ArrowDown' });
+      await nextTick();
+      findTree().trigger('keydown', { key });
+
+      expect(visitUrl).toHaveBeenCalledWith(webUrl);
+    });
+
+    it('sorts content in correct order: directories, submodules, then files', () => {
+      const fileRows = findFileRows();
+
+      expect(fileRows.at(0).props('file').path).toBe('/dir_1/dir_2');
+      expect(fileRows.at(1).props('file').path).toBe('/submodule-project');
+      expect(fileRows.at(2).props('file').path).toBe('/dir_1/file.txt');
     });
   });
 });

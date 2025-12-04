@@ -5,9 +5,10 @@ module RapidDiffs
     include ButtonHelper
     include DiffHelper
 
-    def initialize(diff_file:, additional_menu_items: [])
+    def initialize(diff_file:, additional_menu_items: [], environment: nil)
       @diff_file = diff_file
       @additional_menu_items = additional_menu_items
+      @environment = environment
     end
 
     def file_title_chunks
@@ -38,10 +39,11 @@ module RapidDiffs
     def menu_items
       [
         view_file_menu_item,
+        view_on_environment_menu_item,
         *@additional_menu_items
       ]
-      .filter_map { |item| item unless item.nil? }
-      .sort_by { |item| item[:position] || Float::INFINITY }
+                        .compact
+                        .sort_by { |item| item[:position] || Float::INFINITY }
     end
 
     def heading_id
@@ -90,6 +92,26 @@ module RapidDiffs
         href: view_path,
         extraAttrs: { target: '_blank' },
         position: 1
+      }
+    end
+
+    def view_on_environment_menu_item
+      return unless @environment
+
+      file_path = @diff_file.new_path || @diff_file.old_path
+      commit_sha = @diff_file.content_sha
+
+      environment_path = @environment.external_url_for(file_path, commit_sha)
+      return unless environment_path
+
+      {
+        text: helpers.safe_format(
+          s_('RapidDiffs|View on %{environment}'),
+          environment: @environment.formatted_external_url
+        ),
+        href: environment_path,
+        extraAttrs: { target: '_blank', rel: 'noopener noreferrer' },
+        position: 2
       }
     end
   end

@@ -85,12 +85,20 @@ module RapidDiffs
       response.stream.write(diff_files_collection(skipped).render_in(view_context)) unless skipped.empty?
     end
 
+    attr_reader :environment
+
     def diff_file_component(diff_file)
-      ::RapidDiffs::DiffFileComponent.new(diff_file: diff_file, parallel_view: view == :parallel)
+      ::RapidDiffs::DiffFileComponent.new(
+        diff_file: diff_file,
+        parallel_view: view == :parallel,
+        environment: environment)
     end
 
     def diff_files_collection(diff_files)
-      ::RapidDiffs::DiffFileComponent.with_collection(diff_files, parallel_view: view == :parallel)
+      ::RapidDiffs::DiffFileComponent.with_collection(
+        diff_files,
+        parallel_view: view == :parallel,
+        environment: environment)
     end
 
     def stream_diff_blobs(options, view_context)

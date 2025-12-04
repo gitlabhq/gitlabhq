@@ -58,11 +58,21 @@ export default {
       required: false,
       default: CONTENT_UPDATE_DEBOUNCE,
     },
+    useDynamicHeight: {
+      type: Boolean,
+      required: false,
+      default: true,
+    },
   },
   data() {
     return {
       editor: null,
     };
+  },
+  computed: {
+    directives() {
+      return this.useDynamicHeight ? { DynamicHeight } : {};
+    },
   },
   watch: {
     fileName(newVal) {
@@ -107,7 +117,7 @@ export default {
   <div
     :id="`source-editor-${fileGlobalId}`"
     ref="editor"
-    v-dynamic-height
+    v-bind="directives"
     data-editor-loading
     data-testid="source-editor-container"
     @[$options.readyEvent]="$emit($options.readyEvent, $event)"

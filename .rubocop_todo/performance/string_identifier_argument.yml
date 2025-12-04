@@ -111,7 +111,6 @@ Performance/StringIdentifierArgument:
     - 'lib/kramdown/parser/atlassian_document_format.rb'
     - 'lib/sidebars/context.rb'
     - 'qa/qa/page/component/ci_icon.rb'
-    - 'qa/qa/page/component/note.rb'
     - 'qa/qa/resource/integrations/web_hook/smockerable.rb'
     - 'qa/qa/runtime/address.rb'
     - 'qa/qa/support/matchers/have_matcher.rb'

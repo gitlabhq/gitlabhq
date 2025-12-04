@@ -61,11 +61,22 @@ RSpec.describe RapidDiffs::Resource, type: :controller, feature_category: :sourc
 
   describe '#diff_file_component' do
     it 'initializes a DiffFileComponent with the given arguments' do
-      args = { parallel_view: :parallel }
+      args = { diff_file: instance_double(Gitlab::Git::Diff), parallel_view: :parallel }
 
-      expect(RapidDiffs::DiffFileComponent).to receive(:new).with(**args)
+      expect(RapidDiffs::DiffFileComponent).to receive(:new).with(**args, environment: nil)
 
       controller.new.call_diff_file_component(args)
+    end
+
+    context 'when environment is nil' do
+      it 'creates a DiffFileComponent with nil environment' do
+        base_args = { diff_file: instance_double(Gitlab::Git::Diff) }
+
+        expect(::RapidDiffs::DiffFileComponent).to receive(:new)
+                                                     .with(**base_args, environment: nil)
+
+        controller.new.call_diff_file_component(base_args)
+      end
     end
   end
 
@@ -86,6 +97,24 @@ RSpec.describe RapidDiffs::Resource, type: :controller, feature_category: :sourc
 
     it 'calls diffs_resource with merged options and returns the first diff file' do
       expect(controller_instance.call_find_diff_file(extra_options, old_path, new_path)).to eq(diff_file)
+    end
+  end
+
+  describe '#environment' do
+    it 'returns nil by default' do
+      controller_instance = controller.new
+
+      expect(controller_instance.send(:environment)).to be_nil
+    end
+
+    context 'when environment instance variable is set' do
+      it 'returns the environment' do
+        controller_instance = controller.new
+        environment = instance_double(Environment)
+        controller_instance.instance_variable_set(:@environment, environment)
+
+        expect(controller_instance.send(:environment)).to eq(environment)
+      end
     end
   end
 end

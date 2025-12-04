@@ -5,8 +5,6 @@
 # If it turns out that a method you are attempting to remove is in fact in use,
 #   remove it from this file and add it to `excluded_methods.yml`.
 #
-saas_user_caps_i18n_string:
-  file: ee/app/helpers/ee/groups/settings_helper.rb
 discover_page_hand_raise_lead_data:
   file: ee/app/helpers/gitlab_subscriptions/hand_raise_leads_helper.rb
 discover_duo_pro_hand_raise_lead_data:

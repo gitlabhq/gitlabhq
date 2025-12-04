@@ -23,7 +23,8 @@ RSpec.describe RapidDiffs::CommitAppComponent, feature_category: :code_review_wo
       register_path: register_path,
       sign_in_path: sign_in_path,
       report_abuse_path: report_abuse_path,
-      markdown_docs_path: markdown_docs_path
+      markdown_docs_path: markdown_docs_path,
+      environment: nil
     )
   end
 

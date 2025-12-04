@@ -155,6 +155,14 @@ To create a project alias for slash commands in the GitLab for Slack app:
 1. Next to the project path or alias, select **Edit**.
 1. Enter the new alias and select **Save changes**.
 
+If an alias collision occurs in a Slack workspace (for example, multiple projects or groups attempt to use the same alias), GitLab automatically assigns a fallback alias
+in the following format:
+
+- For projects: `p-<project_id>` (for example, `p-12345`)
+- For groups: `g-<group_id>` (for example, `g-67890`)
+
+You can use these fallback aliases in slash commands when the preferred alias is unavailable.
+
 ## Slack notifications
 
 {{< history >}}

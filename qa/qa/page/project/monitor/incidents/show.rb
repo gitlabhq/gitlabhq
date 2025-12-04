@@ -6,7 +6,6 @@ module QA
       module Monitor
         module Incidents
           class Show < Page::Base
-            include Page::Component::Note
             include Page::Component::Issuable::Sidebar
 
             view 'app/assets/javascripts/sidebar/components/severity/sidebar_severity_widget.vue' do

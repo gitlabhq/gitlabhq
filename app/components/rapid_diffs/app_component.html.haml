@@ -40,7 +40,7 @@
               - if diffs_list?
                 = diffs_list
               - else
-                = render RapidDiffs::DiffFileComponent.with_collection(diffs_slice, parallel_view: parallel_view?)
+                = render RapidDiffs::DiffFileComponent.with_collection(diffs_slice, parallel_view: parallel_view?, environment: environment)
             - if diffs_stream_url
               %div{ data: { stream_remaining_diffs: true } }
             - else

@@ -122,7 +122,11 @@ export default {
         this.toggleTreeOpen(this.file.path);
       }
 
-      if (this.$router && !this.hasUrlAtCurrentRoute()) this.$router.push(this.fileRouterUrl);
+      if (this.file.submodule) this.$emit('clickSubmodule', this.file.webUrl);
+
+      if (this.$router && !this.hasUrlAtCurrentRoute() && !this.file.submodule) {
+        this.$router.push(this.fileRouterUrl);
+      }
 
       if (this.isBlob) this.$emit('clickFile', this.file);
     },

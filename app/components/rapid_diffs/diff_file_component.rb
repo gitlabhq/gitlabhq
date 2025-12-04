@@ -7,9 +7,10 @@ module RapidDiffs
 
     renders_one :header
 
-    def initialize(diff_file:, parallel_view: false)
+    def initialize(diff_file:, parallel_view: false, environment: nil)
       @diff_file = diff_file
       @parallel_view = parallel_view
+      @environment = environment
     end
 
     def id
@@ -46,7 +47,10 @@ module RapidDiffs
     end
 
     def default_header
-      render RapidDiffs::DiffFileHeaderComponent.new(diff_file: @diff_file)
+      render RapidDiffs::DiffFileHeaderComponent.new(
+        diff_file: @diff_file,
+        environment: @environment
+      )
     end
 
     # enables virtual rendering through content-visibility: auto, significantly boosts client performance

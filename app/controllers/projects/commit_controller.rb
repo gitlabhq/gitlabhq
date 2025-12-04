@@ -17,6 +17,8 @@ class Projects::CommitController < Projects::ApplicationController
   before_action :authorize_read_pipeline!, only: [:pipelines]
   before_action :commit
   before_action :define_commit_vars, only: [:show, :diff_for_path, :diff_files, :pipelines, :merge_requests]
+  before_action :define_environment,
+    only: [:show, :rapid_diffs, :diff_for_path, :diff_files, :pipelines, :merge_requests]
   before_action :define_commit_box_vars, only: [:show, :pipelines, :rapid_diffs]
   before_action :define_note_vars, only: [:show, :diff_for_path, :diff_files, :discussions]
   before_action :authorize_edit_tree!, only: [:revert, :cherry_pick]
@@ -172,7 +174,8 @@ class Projects::CommitController < Projects::ApplicationController
       diff_view,
       commit_diff_options,
       nil,
-      current_user
+      current_user,
+      define_environment
     )
 
     show
@@ -224,12 +227,6 @@ class Projects::CommitController < Projects::ApplicationController
     return git_not_found! unless commit
 
     @diffs = commit.diffs(commit_diff_options)
-    @environment = ::Environments::EnvironmentsByDeploymentsFinder.new(
-      @project,
-      current_user,
-      commit: @commit,
-      find_latest: true
-    ).execute.last
   end
 
   # rubocop: disable CodeReuse/ActiveRecord
@@ -317,6 +314,15 @@ class Projects::CommitController < Projects::ApplicationController
 
   def email_format_path
     project_commit_path(project, commit, format: :patch)
+  end
+
+  def define_environment
+    @environment ||= ::Environments::EnvironmentsByDeploymentsFinder.new(
+      @project,
+      current_user,
+      commit: @commit,
+      find_latest: true
+    ).execute.last
   end
 end
 

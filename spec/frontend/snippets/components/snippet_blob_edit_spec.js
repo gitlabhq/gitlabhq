@@ -186,6 +186,7 @@ describe('Snippet Blob Edit component', () => {
             value: TEST_BLOB_LOADED.content,
             fileGlobalId: TEST_BLOB_LOADED.id,
             fileName: TEST_BLOB_LOADED.path,
+            useDynamicHeight: true,
           }),
         );
       }

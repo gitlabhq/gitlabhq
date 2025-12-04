@@ -171,7 +171,6 @@ export default {
       :aria-label="$options.i18n.editCommentLabel"
       icon="pencil"
       category="tertiary"
-      data-testid="note-edit-button"
       @click="$emit('startEditing')"
     />
     <gl-button

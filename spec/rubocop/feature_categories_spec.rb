@@ -16,13 +16,13 @@ RSpec.describe RuboCop::FeatureCategories, feature_category: :tooling do
     end
   end
 
-  describe '.available_with_custom' do
+  describe '.available_for_rspec' do
     it 'returns a list of available feature categories' do
-      expect(described_class.available_with_custom).to include(described_class.available)
+      expect(described_class.available_for_rspec).to include(described_class.available)
     end
 
     it 'returns a list containing the custom feature categories' do
-      expect(described_class.available_with_custom).to include(described_class::CUSTOM_CATEGORIES)
+      expect(described_class.available_for_rspec).to include(described_class::RSPEC_CATEGORIES)
     end
   end
 

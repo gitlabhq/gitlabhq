@@ -282,7 +282,6 @@ export default {
     :class="dynamicClasses.timeLineEntryItem"
     :data-note-id="noteId"
     class="note note-wrapper note-comment"
-    data-testid="noteable-note-container"
   >
     <div class="timeline-avatar gl-float-left">
       <gl-avatar-link

@@ -27,6 +27,7 @@ RSpec.describe RapidDiffs::AppComponent, type: :component, feature_category: :co
       diff_files_endpoint: diff_files_endpoint,
       diff_file_endpoint: diff_file_endpoint,
       should_sort_metadata_files?: should_sort_metadata_files,
+      environment: nil,
       lazy?: lazy
     )
   end

@@ -2,7 +2,7 @@
 stage: AI-powered
 group: Agent Foundations
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
-title: Flow configuration examples
+title: External agent configuration examples
 ---
 
 {{< details >}}
@@ -20,13 +20,13 @@ title: Flow configuration examples
 
 {{< /history >}}
 
-Use the following examples to create your flow configuration.
+Use the following examples to create your external agent configuration.
 These examples contain the following variables:
 
 - `AI_FLOW_CONTEXT`: the JSON-serialized parent object, including:
   - In merge requests, the diff and comments (up to a limit)
   - In issues or epics, the comments (up to a limit)
-- `$AI_FLOW_EVENT`: the type of flow event (for example, `mention`)
+- `$AI_FLOW_EVENT`: the type of trigger event (for example, `mention`)
 - `$AI_FLOW_INPUT`: the prompt the user enters as a comment in the merge request, issue, or epic
 
 ## Integrated with GitLab
@@ -176,7 +176,7 @@ Instead of hard-coding your AWS credentials, store them in the AWS Secrets Manag
    Important: Replace the placeholder values with your actual access key ID and secret access key.
 
 1. Grant the GitLab Runner IAM role permission to access AWS Secrets Manager.
-1. Create a flow configuration file like the following.
+1. Create a configuration file like the following.
 
 ```yaml
 image: node:22-slim

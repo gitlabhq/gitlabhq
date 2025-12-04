@@ -226,3 +226,8 @@ On GitLab.com, flows can use:
 
 - [Hosted runners](../../../ci/runners/hosted_runners/_index.md), which GitLab provides.
 - A runner assigned to the top-level group. Flows cannot use runners configured for a subgroup or project.
+
+Flows executed on runners can be secured with runtime sandboxing offering network and filesystem isolation. In order to benefit from sandboxing it is required to:
+
+1. Enable  [privileged](https://docs.gitlab.com/runner/security/#reduce-the-security-risk-of-using-privileged-containers) mode
+1. Use Duo Agent Platform default base [image](#change-the-default-docker-image)

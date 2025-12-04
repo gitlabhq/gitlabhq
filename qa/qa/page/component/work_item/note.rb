@@ -128,14 +128,6 @@ module QA
             end
           end
 
-          def select_comments_only_filter
-            select_filter_with_type('ONLY_COMMENTS')
-
-            wait_until do
-              has_element?('work-item-filter', text: 'Comments only')
-            end
-          end
-
           def select_history_only_filter
             select_filter_with_type('ONLY_HISTORY')
 

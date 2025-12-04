@@ -190,6 +190,33 @@ To use a checkbox without an instance of [ActionView::Helpers::FormBuilder](http
 For the full list of options, see its
 [source](https://gitlab.com/gitlab-org/gitlab/-/blob/master/app/components/pajamas/checkbox_component.rb).
 
+#### Experiment badge
+
+The `Pajamas::ExperimentBadgeComponent` follows the [Pajamas Experiment Badge](https://design.gitlab.com/patterns/feature-management#glexperimentbadge) specification.
+
+**Examples**:
+
+By default this creates an experiment badge:
+
+```ruby
+= render Pajamas::ExperimentBadgeComponent.new
+```
+
+You can also create a beta badge:
+
+```ruby
+= render Pajamas::ExperimentBadgeComponent.new(type: :beta)
+```
+
+The component includes an informative popover that explains what experiment or beta features are. You can customize the popover placement:
+
+```ruby
+= render Pajamas::ExperimentBadgeComponent.new(type: :experiment, popover_placement: 'top')
+```
+
+For the full list of options, see its
+[source](https://gitlab.com/gitlab-org/gitlab/-/blob/master/app/components/pajamas/experiment_badge_component.rb).
+
 #### Toggle
 
 The `Pajamas::ToggleComponent` follows the [Pajamas Toggle](https://design.gitlab.com/components/toggle/) specification.

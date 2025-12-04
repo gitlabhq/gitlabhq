@@ -12235,6 +12235,31 @@ Input type: `SecurityFindingExternalIssueLinkCreateInput`
 | <a id="mutationsecurityfindingexternalissuelinkcreateerrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during the mutation. |
 | <a id="mutationsecurityfindingexternalissuelinkcreateexternalissuelink"></a>`externalIssueLink` | [`VulnerabilityExternalIssueLink`](#vulnerabilityexternalissuelink) | Created external issue link. |
 
+### `Mutation.securityFindingJiraIssueFormUrlCreate`
+
+{{< details >}}
+**Introduced** in GitLab 18.7.
+**Status**: Experiment.
+{{< /details >}}
+
+Input type: `SecurityFindingJiraIssueFormUrlCreateInput`
+
+#### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mutationsecurityfindingjiraissueformurlcreateclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutationsecurityfindingjiraissueformurlcreateproject"></a>`project` | [`ProjectID!`](#projectid) | ID of the project to attach the issue to. |
+| <a id="mutationsecurityfindingjiraissueformurlcreateuuid"></a>`uuid` | [`String!`](#string) | UUID of the security finding to be used to create an issue. |
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mutationsecurityfindingjiraissueformurlcreateclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutationsecurityfindingjiraissueformurlcreateerrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during the mutation. |
+| <a id="mutationsecurityfindingjiraissueformurlcreatejiraissueformurl"></a>`jiraIssueFormUrl` | [`String`](#string) | URL to Jira issue creation form with pre-filled vulnerability data. |
+
 ### `Mutation.securityFindingRevertToDetected`
 
 Input type: `SecurityFindingRevertToDetectedInput`

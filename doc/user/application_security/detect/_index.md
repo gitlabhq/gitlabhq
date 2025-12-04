@@ -14,13 +14,13 @@ To help you manage the risk of vulnerabilities during development:
 - Security scanners run when you push code changes to a branch.
 - You can view details of vulnerabilities detected in the branch. Developers can remediate
   vulnerabilities at this point, fixing them before they reach production.
-- Optionally, you can enforce additional approval on merge requests containing vulnerabilities. For
+- Optionally, you can enforce additional approval on [merge requests containing vulnerabilities](../../project/merge_requests/widgets.md#application-security-scanning). For
   details, see [merge request approval policies](../policies/merge_request_approval_policies.md).
 
 To help manage vulnerabilities outside development:
 
 - Security scanning can be scheduled or run manually.
-- Vulnerabilities detected in the default branch appear in a vulnerability report. Use this report
+- Vulnerabilities detected in the default branch appear in [the vulnerability report](../vulnerability_report/_index.md). Use this report
   to triage, analyze, and remediate vulnerabilities.
 
 ## Security scanning
@@ -39,10 +39,11 @@ repository.
 
 You can also run security scanning by:
 
-- Running a CI/CD pipeline manually.
-- Scheduling security scanning by using a scan execution policy.
-- For DAST only, running an on-demand DAST scan manually or on a schedule.
-- For SAST only, running a scan by using the GitLab Workflow extension for VS Code.
+- [Running a CI/CD pipeline manually](../../../ci/pipelines/_index.md#run-a-pipeline-manually).
+- Scheduling security scanning by using a [scan execution policy](../policies/scan_execution_policies.md).
+- For DAST only, running an [on-demand DAST scan manually](../dast/on-demand_scan.md) or
+  [on a schedule](../../../ci/pipelines/schedules.md).
+- For SAST only, running a scan by using the [GitLab Workflow extension for VS Code](../../../editor_extensions/visual_studio_code/_index.md#perform-sast-scanning).
 
 ### Detection coverage
 
@@ -83,9 +84,9 @@ Behavioral testing tools include:
 Security scanners are enabled for a project by either:
 
 - Adding the scanner's CI/CD template to the `.gitlab-ci.yml` file, either directly or by using
-  AutoDevOps.
+  [AutoDevOps](../../../topics/autodevops/_index.md).
 - Enforcing the scanner by using a scan execution policy, pipeline execution policy, or
-  compliance framework. This enforcement can be applied directly to the project or inherited from
+  [compliance framework](../../compliance/compliance_frameworks/_index.md). This enforcement can be applied directly to the project or inherited from
   the project's parent group.
 
 For more details, see [Security configuration](security_configuration.md).

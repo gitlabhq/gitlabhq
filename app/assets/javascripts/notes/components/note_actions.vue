@@ -367,7 +367,6 @@ export default {
       icon="pencil"
       category="tertiary"
       class="note-action-button js-note-edit"
-      data-testid="note-edit-button"
       @click="onEdit"
     />
     <gl-button

@@ -49,6 +49,150 @@ RSpec.describe RapidDiffs::StreamingResource, type: :controller, feature_categor
     end
   end
 
+  describe '#environment' do
+    let(:controller_instance) { controller.new }
+
+    context 'when environment is set' do
+      let(:environment) { build(:environment) }
+
+      before do
+        controller_instance.instance_variable_set(:@environment, environment)
+      end
+
+      it 'returns the environment' do
+        expect(controller_instance.send(:environment)).to eq(environment)
+      end
+    end
+
+    context 'when environment is not set' do
+      it 'returns nil' do
+        expect(controller_instance.send(:environment)).to be_nil
+      end
+    end
+  end
+
+  describe '#diff_file_component' do
+    let(:controller_instance) { controller.new }
+    let(:diff_file) { build(:diff_file) }
+
+    before do
+      allow(controller_instance).to receive_message_chain(:helpers, :diff_view).and_return(:inline)
+    end
+
+    context 'when environment is nil' do
+      it 'creates a DiffFileComponent with nil environment' do
+        expect(::RapidDiffs::DiffFileComponent).to receive(:new)
+                                                     .with(
+                                                       diff_file: diff_file,
+                                                       parallel_view: false,
+                                                       environment: nil
+                                                     )
+
+        controller_instance.send(:diff_file_component, diff_file)
+      end
+    end
+
+    context 'when environment is set' do
+      let(:environment) { build(:environment) }
+
+      before do
+        controller_instance.instance_variable_set(:@environment, environment)
+      end
+
+      it 'creates a DiffFileComponent with the environment' do
+        expect(::RapidDiffs::DiffFileComponent).to receive(:new)
+                                                     .with(
+                                                       diff_file: diff_file,
+                                                       parallel_view: false,
+                                                       environment: environment
+                                                     )
+
+        controller_instance.send(:diff_file_component, diff_file)
+      end
+    end
+
+    context 'when view is parallel' do
+      let(:environment) { build(:environment) }
+
+      before do
+        allow(controller_instance).to receive_message_chain(:helpers, :diff_view).and_return(:parallel)
+        controller_instance.instance_variable_set(:@environment, environment)
+      end
+
+      it 'creates a DiffFileComponent with parallel_view: true' do
+        expect(::RapidDiffs::DiffFileComponent).to receive(:new)
+                                                     .with(
+                                                       diff_file: diff_file,
+                                                       parallel_view: true,
+                                                       environment: environment
+                                                     )
+
+        controller_instance.send(:diff_file_component, diff_file)
+      end
+    end
+  end
+
+  describe '#diff_files_collection' do
+    let(:controller_instance) { controller.new }
+    let(:diff_files) { [build(:diff_file), build(:diff_file)] }
+
+    before do
+      allow(controller_instance).to receive_message_chain(:helpers, :diff_view).and_return(:inline)
+    end
+
+    context 'when environment is nil' do
+      it 'creates a DiffFileComponent collection with nil environment' do
+        expect(::RapidDiffs::DiffFileComponent).to receive(:with_collection)
+                                                     .with(
+                                                       diff_files,
+                                                       parallel_view: false,
+                                                       environment: nil
+                                                     )
+
+        controller_instance.send(:diff_files_collection, diff_files)
+      end
+    end
+
+    context 'when environment is set' do
+      let(:environment) { build(:environment) }
+
+      before do
+        controller_instance.instance_variable_set(:@environment, environment)
+      end
+
+      it 'creates a DiffFileComponent collection with the environment' do
+        expect(::RapidDiffs::DiffFileComponent).to receive(:with_collection)
+                                                     .with(
+                                                       diff_files,
+                                                       parallel_view: false,
+                                                       environment: environment
+                                                     )
+
+        controller_instance.send(:diff_files_collection, diff_files)
+      end
+    end
+
+    context 'when view is parallel' do
+      let(:environment) { build(:environment) }
+
+      before do
+        allow(controller_instance).to receive_message_chain(:helpers, :diff_view).and_return(:parallel)
+        controller_instance.instance_variable_set(:@environment, environment)
+      end
+
+      it 'creates a DiffFileComponent collection with parallel_view: true' do
+        expect(::RapidDiffs::DiffFileComponent).to receive(:with_collection)
+                                                     .with(
+                                                       diff_files,
+                                                       parallel_view: true,
+                                                       environment: environment
+                                                     )
+
+        controller_instance.send(:diff_files_collection, diff_files)
+      end
+    end
+  end
+
   describe '#diffs' do
     let(:controller_instance) { controller.new }
     let(:mock_resource) { instance_double(::Commit) }

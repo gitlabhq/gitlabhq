@@ -33,6 +33,10 @@ in the ci database.
 
 To view all batched background migrations across all databases:
 
+{{< tabs >}}
+
+{{< tab title="GitLab 18.5 and later" >}}
+
 ```shell
 sudo gitlab-rake gitlab:background_migrations:list
 ```
@@ -51,6 +55,18 @@ ci_1    | ci_runners                                              | MarkAdminBot
 ci_2    | p_ci_build_trace_metadata                               | BackfillUpsertedCiBuildTraceMetadataProjectId               | finalized
 ci_3    | ci_runners                                              | BackfillOrganizationIdOnCiRunners                           | finalized
 ```
+
+{{< /tab >}}
+
+{{< tab title="GitLab 18.4 and earlier" >}}
+
+```shell
+sudo gitlab-rake gitlab:background_migrations:status
+```
+
+{{< /tab >}}
+
+{{< /tabs >}}
 
 ### Show migration details
 

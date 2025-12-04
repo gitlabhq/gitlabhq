@@ -511,11 +511,10 @@ There are no additional steps to migrate a Yarn project to use the dependency sc
 ## Changes to CI/CD variables
 
 Most of the existing CI/CD variables are no longer relevant with the new dependency scanning analyzer so their values will be ignored.
-Unless these are also used to configure other security analyzers (for example: `ADDITIONAL_CA_CERT_BUNDLE`), you should remove them from your CI/CD configuration.
+Unless these are also used to configure other security analyzers you should remove them from your CI/CD configuration.
 
 Remove the following CI/CD variables from your CI/CD configuration:
 
-- `ADDITIONAL_CA_CERT_BUNDLE`
 - `DS_GRADLE_RESOLUTION_POLICY`
 - `DS_IMAGE_SUFFIX`
 - `DS_JAVA_VERSION`

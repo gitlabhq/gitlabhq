@@ -63,9 +63,9 @@ To generate a new Support PIN:
 1. On the left sidebar, select **Account**.
 1. Select **Generate New PIN**.
 
-## Access your Support Pin
+## Access your Support PIN
 
-If you've created a Support Pin previously,
+If you've created a Support PIN previously,
 the PIN is accessible in your profile and expires seven days after creation.
 
 To access your Support PIN:

@@ -53,8 +53,10 @@ module RapidDiffs
       raise NotImplementedError
     end
 
+    attr_reader :environment
+
     def diff_file_component(base_args)
-      ::RapidDiffs::DiffFileComponent.new(**base_args)
+      ::RapidDiffs::DiffFileComponent.new(**base_args, environment: environment)
     end
 
     def find_diff_file(extra_options, old_path, new_path)

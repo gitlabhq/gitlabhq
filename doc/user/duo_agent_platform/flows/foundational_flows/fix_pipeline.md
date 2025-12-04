@@ -81,7 +81,7 @@ To fix a CI/CD pipeline that is not associated with a merge request:
 
 The Fix CI/CD Pipeline Flow examines:
 
-- **Pipeline logs**: Error messages, failed job outputs, and exit codes.
-- **Merge request changes**: Changes that could have caused the failure.
-- **The current repository contents**: For identifying syntax, linting, or import errors.
-- **Script errors**: Command failures, missing executables, or permission issues.
+- Pipeline logs: Error messages, failed job outputs, and exit codes.
+- Merge request changes: Changes that could have caused the failure.
+- The current repository contents: For identifying syntax, linting, or import errors.
+- Script errors: Command failures, missing executables, or permission issues.
