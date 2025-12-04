@@ -16,8 +16,11 @@ module Gitlab
               batch.each do |record|
                 next if already_imported?(record)
 
-                if has_attachments?(record)
-                  Gitlab::GithubImport::ObjectCounter.increment(project, object_type, :fetched)
+                attachments = fetch_attachments(record)
+
+                if attachments.any?
+                  Gitlab::GithubImport::ObjectCounter.increment(project, object_type, :fetched,
+                    value: attachments.collect(&:url).uniq.size)
 
                   yield record
                 end
@@ -57,11 +60,11 @@ module Gitlab
             representation_class.from_db_record(object)
           end
 
-          def has_attachments?(object)
+          def fetch_attachments(object)
             note_text = object_representation(object)
-            return false if note_text.text.blank?
+            return [] if note_text.text.blank?
 
-            Gitlab::GithubImport::MarkdownText.fetch_attachments(note_text.text, client.web_endpoint).present?
+            Gitlab::GithubImport::MarkdownText.fetch_attachments(note_text.text, client.web_endpoint)
           end
         end
       end

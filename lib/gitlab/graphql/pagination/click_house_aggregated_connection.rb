@@ -187,8 +187,11 @@ module Gitlab
         def expression_name(attr)
           attr.expr.respond_to?(:name) ? attr.expr.name.to_s : attr.expr.to_s
         end
-      end
 
+        def execute_query(query)
+          super.map(&:with_indifferent_access)
+        end
+      end
       # rubocop:enable CodeReuse/ActiveRecord
     end
   end

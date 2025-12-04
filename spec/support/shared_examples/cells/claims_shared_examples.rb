@@ -81,25 +81,13 @@ RSpec.shared_context 'with claiming tools' do
   end
 
   def expect_commit_update(success: true)
-    mock = expect(claim_service).to receive(:commit_update).with(
-      Gitlab::Cells::TopologyService::Claims::V1::CommitUpdateRequest.new(
-        lease_uuid: Gitlab::Cells::TopologyService::Types::V1::UUID.new(
-          value: lease_uuid),
-        cell_id: claim_service.cell_id),
-      deadline: deadline
-    )
+    mock = expect(claim_service).to receive(:commit_update).with(lease_uuid, deadline: deadline)
 
     mock.and_raise(fake_error.new) unless success
   end
 
   def expect_rollback_update
-    expect(claim_service).to receive(:rollback_update).with(
-      Gitlab::Cells::TopologyService::Claims::V1::RollbackUpdateRequest.new(
-        lease_uuid: Gitlab::Cells::TopologyService::Types::V1::UUID.new(
-          value: lease_uuid),
-        cell_id: claim_service.cell_id),
-      deadline: deadline
-    )
+    expect(claim_service).to receive(:rollback_update).with(lease_uuid, deadline: deadline)
   end
 
   def expect_abort_commit

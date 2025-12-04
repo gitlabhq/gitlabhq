@@ -3,9 +3,9 @@
 module Mcp
   module Tools
     module WorkItems
-      class GraphqlCreateWorkItemNoteService < GraphqlService
+      class GraphqlGetWorkItemNotesService < GraphqlService
         register_version '0.1.0', {
-          description: 'Create a new note (comment) on a GitLab work item',
+          description: 'Get all comments (notes) for a specific work item',
           input_schema: {
             type: 'object',
             properties: {
@@ -16,7 +16,7 @@ module Mcp
               },
               group_id: {
                 type: 'string',
-                description: 'ID or path of the group. Required if URL and project_path are not provided.'
+                description: 'ID or path of the group. Required if URL and project_id are not provided.'
               },
               project_id: {
                 type: 'string',
@@ -27,32 +27,35 @@ module Mcp
                 description: 'Internal ID of the work item. Required if URL is not provided.'
               },
 
-              # Required field
-              body: {
+              # Pagination parameters
+              after: {
                 type: 'string',
-                description: 'Content of the note/comment (max 1,048,576 characters)',
-                maxLength: 1_048_576
+                description: 'Cursor for forward pagination. Use endCursor from previous response.'
               },
-
-              # Optional fields
-              internal: {
-                type: 'boolean',
-                description: 'Mark note as internal (visible only to project members with Reporter role or higher)',
-                default: false
-              },
-              discussion_id: {
+              before: {
                 type: 'string',
-                description: 'Global ID of the discussion to reply to (format: gid://gitlab/Discussion/<id>)'
+                description: 'Cursor for backward pagination. Use startCursor from previous response.'
+              },
+              first: {
+                type: 'integer',
+                description: 'Number of notes to return after the cursor (forward pagination, max 100)',
+                minimum: 1,
+                maximum: 100
+              },
+              last: {
+                type: 'integer',
+                description: 'Number of notes to return before the cursor (backward pagination, max 100)',
+                minimum: 1,
+                maximum: 100
               }
-            },
-            required: ['body']
+            }
           }
         }
 
         protected
 
         def graphql_tool_class
-          Mcp::Tools::WorkItems::CreateWorkItemNoteTool
+          Mcp::Tools::WorkItems::GetWorkItemNotesTool
         end
 
         def perform_0_1_0(arguments)

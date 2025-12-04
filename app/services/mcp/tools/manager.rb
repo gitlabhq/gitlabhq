@@ -41,7 +41,8 @@ module Mcp
       }.freeze
 
       GRAPHQL_TOOLS = {
-        'create_workitem_note' => ::Mcp::Tools::WorkItems::GraphqlCreateWorkItemNoteService
+        'create_workitem_note' => ::Mcp::Tools::WorkItems::GraphqlCreateWorkItemNoteService,
+        'get_workitem_notes' => ::Mcp::Tools::WorkItems::GraphqlGetWorkItemNotesService
       }.freeze
 
       attr_reader :tools

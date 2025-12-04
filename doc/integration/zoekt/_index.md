@@ -172,7 +172,6 @@ Tasks count:                      10
 Tasks pending/processing by type: (none)
 
 Feature Flags (Non-Default Values)
-- zoekt_load_balancer:             disabled
 - zoekt_search_meta_project_ids:   disabled
 
 Feature Flags (Default Values)

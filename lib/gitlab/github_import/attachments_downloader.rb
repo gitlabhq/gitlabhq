@@ -8,13 +8,17 @@ module Gitlab
       include ::BulkImports::FileDownloads::Validations
 
       DownloadError = Class.new(StandardError)
+      NotRetriableError = Class.new(StandardError)
 
       FILENAME_SIZE_LIMIT = 255 # chars before the extension
       DEFAULT_FILE_SIZE_LIMIT = Gitlab::CurrentSettings.max_attachment_size.megabytes
       TMP_DIR = File.join(Dir.tmpdir, 'github_attachments').freeze
       SUPPORTED_VIDEO_MEDIA_TYPES = %w[mov mp4 webm].freeze
 
-      RATE_LIMIT_HTTP_STATUS = 429
+      REDIRECT_STATUS_CODES = [301, 302, 303, 307, 308].freeze
+      NON_RETRIABLE_ERROR_CODES = [403, 404, 410].freeze
+      SUCCESS_STATUS_CODE = 200
+      RATE_LIMIT_STATUS_CODES = [403, 429].freeze # GitHub sometimes returns rate limit responses as 403s
       RATE_LIMIT_DEFAULT_RESET_IN = 120
 
       attr_reader :file_url, :filename, :file_size_limit, :options, :web_endpoint
@@ -90,15 +94,22 @@ module Gitlab
         file = File.open(filepath, 'wb')
 
         Gitlab::HTTP.perform_request(Net::HTTP::Get, url, stream_body: true) do |chunk|
-          next if [301, 302, 303, 307, 308].include?(chunk.code)
+          next if REDIRECT_STATUS_CODES.include?(chunk.code)
 
           raise_rate_limit_error(chunk) if rate_limited?(chunk)
 
-          raise DownloadError, "Error downloading file from #{url}. Error code: #{chunk.code}" if chunk.code != 200
+          if NON_RETRIABLE_ERROR_CODES.include?(chunk.code)
+            raise NotRetriableError, "Error downloading file from #{url}. Error code: #{chunk.code}"
+          end
+
+          if chunk.code != SUCCESS_STATUS_CODE
+            raise DownloadError, "Error downloading file from #{url}. Error code: #{chunk.code}"
+          end
 
           file.write(chunk)
           validate_size!(file.size)
-        rescue AttachmentsDownloader::DownloadError, Gitlab::GithubImport::RateLimitError
+        rescue AttachmentsDownloader::NotRetriableError, AttachmentsDownloader::DownloadError,
+          Gitlab::GithubImport::RateLimitError
           delete
           raise
         end
@@ -107,7 +118,7 @@ module Gitlab
       end
 
       def rate_limited?(response)
-        response.code == RATE_LIMIT_HTTP_STATUS
+        RATE_LIMIT_STATUS_CODES.include?(response.code)
       end
 
       def raise_rate_limit_error(response)
@@ -118,6 +129,8 @@ module Gitlab
                       else
                         response.http_response&.[]('retry-after')
                       end
+
+        return if retry_after.nil? && response.code == 403
 
         reset_in = retry_after.to_i
         reset_in = RATE_LIMIT_DEFAULT_RESET_IN if reset_in == 0

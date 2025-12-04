@@ -5,16 +5,32 @@ module Gitlab
     class ClaimService < BaseService
       include Singleton
 
-      delegate :begin_update, :commit_update, :rollback_update, to: :client
+      delegate :begin_update, to: :client
+
+      def commit_update(uuid, deadline: nil)
+        request = Gitlab::Cells::TopologyService::Claims::V1::CommitUpdateRequest.new(
+          lease_uuid: Gitlab::Cells::TopologyService::Types::V1::UUID.new(value: uuid),
+          cell_id: cell_id
+        )
+        client.commit_update(request, deadline: deadline)
+      end
+
+      def rollback_update(uuid, deadline: nil)
+        request = Gitlab::Cells::TopologyService::Claims::V1::RollbackUpdateRequest.new(
+          lease_uuid: Gitlab::Cells::TopologyService::Types::V1::UUID.new(value: uuid),
+          cell_id: cell_id
+        )
+        client.rollback_update(request, deadline: deadline)
+      end
 
       def list_leases(cursor: nil, limit: nil, deadline: nil)
-        req = Gitlab::Cells::TopologyService::Claims::V1::ListLeasesRequest.new(
+        request = Gitlab::Cells::TopologyService::Claims::V1::ListLeasesRequest.new(
           cell_id: cell_id,
           next: cursor,
           limit: limit
         )
 
-        client.list_leases(req, deadline: deadline)
+        client.list_leases(request, deadline: deadline)
       end
 
       private

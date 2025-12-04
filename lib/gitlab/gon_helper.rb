@@ -108,6 +108,7 @@ module Gitlab
       push_frontend_feature_flag(:archive_group)
       push_frontend_feature_flag(:accessible_loading_button, current_user)
       push_frontend_feature_flag(:allow_iframes_in_markdown, current_user)
+      push_frontend_feature_flag(:agentic_chat_ga, current_user)
 
       # Expose the Project Studio user preference as if it were a feature flag
       push_force_frontend_feature_flag(:project_studio_enabled, Users::ProjectStudio.new(current_user).enabled?)

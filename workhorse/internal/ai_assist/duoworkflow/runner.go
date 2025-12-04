@@ -35,6 +35,7 @@ const wsStopWorkflowTimeout = 10 * time.Second
 // and gitlab-lsp .
 var ClientCapabilities = []string{
 	"shell_command",
+	"incremental_streaming",
 }
 
 var errFailedToAcquireLockError = errors.New("handleWebSocketMessages: failed to acquire lock")

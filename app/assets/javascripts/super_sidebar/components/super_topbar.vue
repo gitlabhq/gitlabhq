@@ -119,6 +119,8 @@ export default {
       <promo-menu
         v-if="!isLoggedIn"
         :pricing-url="sidebarData.compare_plans_url"
+        :allow-sign-up="allowSignUp"
+        :sign-in-visible="signInVisible"
         class="gl-hidden lg:gl-flex"
       />
 
@@ -191,6 +193,8 @@ export default {
           v-if="!isLoggedIn"
           :sidebar-data="sidebarData"
           :pricing-url="sidebarData.compare_plans_url"
+          :allow-sign-up="allowSignUp"
+          :sign-in-visible="signInVisible"
           class="gl-flex lg:gl-hidden"
         />
       </template>

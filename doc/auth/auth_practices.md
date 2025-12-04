@@ -123,7 +123,7 @@ Periodic access reviews ensure user permissions remain appropriate as roles and 
 Continuous monitoring of access patterns and permission changes helps detect security incidents and maintain compliance. Audit trails provide visibility into who accessed what resources and when.
 
 - Configure [audit event streaming](../administration/compliance/audit_event_streaming.md) to a SIEM tool for real-time security monitoring.
-- Review [credentials inventory](../user/group/credentials_inventory.md) regularly to identify
+- Review [credentials inventory](../administration/credentials_inventory.md) regularly to identify
   unused or overprivileged tokens.
 - Monitor for unauthorized access changes or privilege escalations.
 

@@ -147,7 +147,7 @@ stages:
     expire_in: 7d
     when: always
   rules:
-    - if: '$COVERBAND_ENABLED == "true"'
+    - if: '$COVERBAND_ENABLED == "true" && $GLCI_EXPORT_COVERAGE == "true"'
 
 .process-frontend-coverage:
   extends:
@@ -170,7 +170,7 @@ stages:
     expire_in: 7d
     when: always
   rules:
-    - if: '$BABEL_ENV == "istanbul"'
+    - if: '$BABEL_ENV == "istanbul" && $GLCI_EXPORT_COVERAGE == "true"'
 
 .notify-slack:
   extends:

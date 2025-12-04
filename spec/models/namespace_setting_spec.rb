@@ -724,9 +724,11 @@ RSpec.describe NamespaceSetting, feature_category: :groups_and_projects do
     end
 
     context 'with omniauth providers configured for step-up authentication' do
-      let(:ommiauth_provider_config_with_step_up_auth) do
+      let(:provider_oidc_no_step_up) { GitlabSettings::Options.new(name: 'openid_connect_no_step_up') }
+
+      let(:provider_oidc_step_up) do
         GitlabSettings::Options.new(
-          name: "openid_connect",
+          name: 'openid_connect',
           step_up_auth: {
             namespace: {
               id_token: {
@@ -737,27 +739,59 @@ RSpec.describe NamespaceSetting, feature_category: :groups_and_projects do
         )
       end
 
-      before do
-        stub_omniauth_setting(enabled: true, providers: [ommiauth_provider_config_with_step_up_auth])
-        allow(Devise).to receive(:omniauth_providers).and_return([ommiauth_provider_config_with_step_up_auth.name])
-      end
-
-      it 'validates inclusion' do
-        is_expected.to(
-          validate_inclusion_of(:step_up_auth_required_oauth_provider)
-            .in_array([ommiauth_provider_config_with_step_up_auth.name])
+      let(:provider_oidc_empty_step_up) do
+        GitlabSettings::Options.new(
+          name: 'openid_connect_empty',
+          step_up_auth: {}
         )
       end
 
-      it 'validates allowance' do
-        is_expected
-          .to allow_value(ommiauth_provider_config_with_step_up_auth.name).for(:step_up_auth_required_oauth_provider)
+      let(:provider_oidc_incomplete_step_up) do
+        GitlabSettings::Options.new(
+          name: 'openid_connect_incomplete',
+          step_up_auth: {
+            namespace: {}
+          }
+        )
       end
 
+      let(:providers) do
+        [provider_oidc_step_up, provider_oidc_no_step_up, provider_oidc_empty_step_up, provider_oidc_incomplete_step_up]
+      end
+
+      before do
+        stub_omniauth_setting(enabled: true, providers: providers)
+        allow(Devise).to receive(:omniauth_providers).and_return(providers.map(&:name))
+      end
+
+      it 'validates inclusion' do
+        is_expected.to validate_inclusion_of(:step_up_auth_required_oauth_provider)
+          .in_array([provider_oidc_step_up.name])
+      end
+
+      it { is_expected.to allow_value(provider_oidc_step_up.name).for(:step_up_auth_required_oauth_provider) }
       it { is_expected.to allow_value('').for(:step_up_auth_required_oauth_provider) }
+
+      it 'does not allow provider with no step-up auth capabilities' do
+        is_expected.not_to allow_value(provider_oidc_no_step_up.name)
+          .for(:step_up_auth_required_oauth_provider)
+          .with_message('is not included in the list')
+      end
 
       it 'does not allow an undefined provider' do
         is_expected.not_to allow_value('google_oauth2')
+          .for(:step_up_auth_required_oauth_provider)
+          .with_message('is not included in the list')
+      end
+
+      it 'does not allow provider with empty step_up_auth block' do
+        is_expected.not_to allow_value(provider_oidc_empty_step_up.name)
+          .for(:step_up_auth_required_oauth_provider)
+          .with_message('is not included in the list')
+      end
+
+      it 'does not allow provider with incomplete step_up_auth configuration' do
+        is_expected.not_to allow_value(provider_oidc_incomplete_step_up.name)
           .for(:step_up_auth_required_oauth_provider)
           .with_message('is not included in the list')
       end
@@ -768,11 +802,11 @@ RSpec.describe NamespaceSetting, feature_category: :groups_and_projects do
         subject { subsubgroup.namespace_settings }
 
         before do
-          group.namespace_settings.update!(step_up_auth_required_oauth_provider: 'openid_connect')
+          group.namespace_settings.update!(step_up_auth_required_oauth_provider: provider_oidc_step_up.name)
         end
 
-        it 'does not allow change when inherited from parent group' do
-          is_expected.not_to allow_value('openid_connect')
+        it 'does not allow changing the step-up auth provider of subsubgroup' do
+          is_expected.not_to allow_value(provider_oidc_step_up.name)
             .for(:step_up_auth_required_oauth_provider)
             .with_message("cannot be changed because it is inherited from parent group \"#{group.name}\"")
         end

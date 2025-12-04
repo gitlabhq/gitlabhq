@@ -98,11 +98,7 @@ RSpec.describe Cells::Leases::ReconciliationService, feature_category: :cell do
         end
 
         it 'commits the lease, destroys the record, and returns correct counts' do
-          expected_request = Gitlab::Cells::TopologyService::Claims::V1::CommitUpdateRequest.new(
-            lease_uuid: Gitlab::Cells::TopologyService::Types::V1::UUID.new(value: lease_uuid),
-            cell_id: cell_id
-          )
-          expect(mock_claim_service).to receive(:commit_update).with(expected_request, deadline: anything)
+          expect(mock_claim_service).to receive(:commit_update).with(lease_uuid, deadline: anything)
 
           result = nil
           expect { result = service.execute }.to change { Cells::OutstandingLease.count }.by(-1)
@@ -118,12 +114,7 @@ RSpec.describe Cells::Leases::ReconciliationService, feature_category: :cell do
 
       context 'when lease does not exist locally' do
         it 'rolls back via topology service, logs info, and returns correct counts' do
-          expected_request = Gitlab::Cells::TopologyService::Claims::V1::RollbackUpdateRequest.new(
-            lease_uuid: Gitlab::Cells::TopologyService::Types::V1::UUID.new(value: lease_uuid),
-            cell_id: cell_id
-          )
-
-          expect(mock_claim_service).to receive(:rollback_update).with(expected_request, deadline: anything)
+          expect(mock_claim_service).to receive(:rollback_update).with(lease_uuid, deadline: anything)
           expect(Gitlab::AppLogger).to receive(:info).with(
             hash_including(
               cell_id: cell_id,

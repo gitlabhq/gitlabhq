@@ -486,8 +486,8 @@ func TestRunner_handleWebSocketMessage(t *testing.T) {
 		},
 		{
 			name:               "start request with supported and unsupported ClientCapabilities",
-			message:            []byte(`{"startRequest": {"workflowID": "id-123", "goal": "test goal", "clientCapabilities": ["shell_command", "unsupported_capability"]}}`),
-			clientCapabilities: []string{"shell_command"},
+			message:            []byte(`{"startRequest": {"workflowID": "id-123", "goal": "test goal", "clientCapabilities": ["shell_command", "incremental_streaming", "unsupported_capability"]}}`),
+			clientCapabilities: []string{"shell_command", "incremental_streaming"},
 			expectedErrMsg:     "",
 		},
 	}

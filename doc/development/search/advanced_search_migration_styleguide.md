@@ -211,6 +211,10 @@ Single field example:
 class MigrationName < Elastic::Migration
   include ::Search::Elastic::MigrationBackfillHelper
 
+  batched!
+  batch_size 9_000
+  throttle_delay 1.minute
+
   DOCUMENT_TYPE = Issue
 
   private
@@ -227,6 +231,10 @@ Multiple fields example:
 class MigrationName < Elastic::Migration
   include ::Search::Elastic::MigrationBackfillHelper
 
+  batched!
+  batch_size 9_000
+  throttle_delay 1.minute
+
   DOCUMENT_TYPE = Issue
 
   private
@@ -240,12 +248,14 @@ end
 You can test this migration with the `'migration backfills fields'` shared examples.
 
 ```ruby
-describe 'migration', :elastic_delete_by_query, :sidekiq_inline do
+describe MigrationName, :elastic_delete_by_query, :sidekiq_inline, feature_category: :global_search do
   include_examples 'migration backfills fields' do
+    let_it_be(:project) { create(:project) }
+    let(:version) { 20251204143000 }
     let(:expected_throttle_delay) { 1.minute }
     let(:expected_batch_size) { 9000 }
-    let(:objects) { create_list(:issues, 3) }
-    let(:expected_fields) { schema_version: '25_09' }
+    let(:objects) { create_list(:milestone, 3, project: project) }
+    let(:expected_fields) { { traversal_ids: project.elastic_namespace_ancestry } }
   end
 end
 ```

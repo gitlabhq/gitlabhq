@@ -25258,10 +25258,19 @@ msgstr ""
 msgid "DuoAgenticChat|GitLab Duo Agentic Chat"
 msgstr ""
 
+msgid "DuoAgenticChat|GitLab Duo is already responding to this chat in another tab or location. Start a new chat, or wait for GitLab Duo to finish before sending a new message."
+msgstr ""
+
+msgid "DuoAgenticChat|Invalid chat state provided"
+msgstr ""
+
 msgid "DuoAgenticChat|The agent associated with this conversation is no longer available. You can view the conversation history but cannot send new messages."
 msgstr ""
 
 msgid "DuoAgenticChat|This chat was deleted."
+msgstr ""
+
+msgid "DuoAgenticChat|Unable to connect to workflow service. Please try again."
 msgstr ""
 
 msgid "DuoAgentsPlatform|AI Catalog"
@@ -25520,6 +25529,9 @@ msgid "DuoChat|An administrator has turned off GitLab Duo for this %{reason}"
 msgstr ""
 
 msgid "DuoChat|Ask a question about GitLab"
+msgstr ""
+
+msgid "DuoChat|Chat (Classic)"
 msgstr ""
 
 msgid "DuoChat|Duo Agentic Chat is not available at the moment in this page. To work with Duo Agentic Chat in pages outside the scope of a project please select a %{strong_start}Default GitLab Duo namespace%{strong_end} in your %{preferences_link_start}User Profile Preferences%{preferences_link_end}."
@@ -28456,6 +28468,9 @@ msgid "Failed to check related branches."
 msgstr ""
 
 msgid "Failed to clone this item: wrong parameters."
+msgstr ""
+
+msgid "Failed to connect to Advanced Search cluster: %{error}"
 msgstr ""
 
 msgid "Failed to connect to your device. Try again."
@@ -58062,6 +58077,9 @@ msgstr ""
 msgid "ScanExecutionPolicy|A runner will be selected automatically from those available."
 msgstr ""
 
+msgid "ScanExecutionPolicy|A time window is not set. Setting a time window helps distribute scheduled scans and reduces the load on runner infrastructure. We recommend a time window of at least 6 hours."
+msgstr ""
+
 msgid "ScanExecutionPolicy|Add new CI variable"
 msgstr ""
 
@@ -60550,6 +60568,12 @@ msgstr ""
 msgid "SecurityOrchestration|Authorized business risk acceptance"
 msgstr ""
 
+msgid "SecurityOrchestration|Auto-Dismiss"
+msgstr ""
+
+msgid "SecurityOrchestration|Auto-Resolve"
+msgstr ""
+
 msgid "SecurityOrchestration|Automate %{strongStart}vulnerability management%{strongEnd} workflows."
 msgstr ""
 
@@ -60710,9 +60734,6 @@ msgid "SecurityOrchestration|Details"
 msgstr ""
 
 msgid "SecurityOrchestration|Direct"
-msgstr ""
-
-msgid "SecurityOrchestration|Dismissed"
 msgstr ""
 
 msgid "SecurityOrchestration|Don't show the alert anymore"
@@ -74428,6 +74449,9 @@ msgstr ""
 msgid "VulnerabilityManagement|Add vulnerability finding"
 msgstr ""
 
+msgid "VulnerabilityManagement|Agent session started to resolve vulnerability."
+msgstr ""
+
 msgid "VulnerabilityManagement|An unverified non-confirmed finding"
 msgstr ""
 
@@ -74551,6 +74575,9 @@ msgstr ""
 msgid "VulnerabilityManagement|Something went wrong, could not get user."
 msgstr ""
 
+msgid "VulnerabilityManagement|Something went wrong, could not start Duo agent session."
+msgstr ""
+
 msgid "VulnerabilityManagement|Something went wrong, could not update vulnerability severity."
 msgstr ""
 
@@ -74567,6 +74594,9 @@ msgid "VulnerabilityManagement|Summary, detailed description, steps to reproduce
 msgstr ""
 
 msgid "VulnerabilityManagement|Verified as fixed or mitigated"
+msgstr ""
+
+msgid "VulnerabilityManagement|View agent session"
 msgstr ""
 
 msgid "VulnerabilityManagement|Vulnerability name or type. Ex: Cross-site scripting"

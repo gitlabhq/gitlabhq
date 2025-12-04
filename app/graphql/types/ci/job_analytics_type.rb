@@ -39,6 +39,14 @@ module Types
 
       # rubocop:enable GraphQL/ExtractType
 
+      field :statistics, Types::Ci::JobAnalyticsStatisticsType,
+        null: true,
+        description: 'Statistics for the jobs.'
+
+      def statistics
+        object
+      end
+
       def stage
         return if (stage_id = object['stage_id']).nil? || stage_id.to_i == 0
 

@@ -10,29 +10,61 @@ description: Monitor credentials through a comprehensive access inventory.
 {{< details >}}
 
 - Tier: Ultimate
-- Offering: GitLab Self-Managed, GitLab Dedicated
+- Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
 
 {{< /details >}}
 
-{{< alert type="note" >}}
+{{< history >}}
 
-For GitLab.com, see [Credentials inventory for GitLab.com](../user/group/credentials_inventory.md).
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/297441) on GitLab.com in GitLab 17.5.
+- [Added](https://gitlab.com/gitlab-org/gitlab/-/work_items/498333) group and project token support to GitLab.com in GitLab 17.7.
 
-{{< /alert >}}
+{{< /history >}}
 
-Use the credentials inventory to monitor credentials for all human users and service accounts
-in your GitLab instance.
+Use the credentials inventory to monitor and control access to your organization.
+
+- On GitLab.com, the credentials inventory monitors enterprise users and service
+accounts in a top-level group.
+- On GitLab Self-Managed and GitLab Dedicated, the credentials inventory monitors
+all human users and service accounts across the entire instance.
 
 Prerequisites:
 
-- You must be an administrator.
+- On GitLab.com, you must have the Owner role for a group.
+- On GitLab Self-Managed and GitLab Dedicated, you must be an administrator.
 
 ## View the credentials inventory
 
-You can use the credentials inventory to review credential details for personal access tokens,
-group access tokens, project access tokens, SSH keys, and GPG keys.
+You can use the credentials inventory to view:
 
-You can view details on:
+- Personal access tokens.
+- Group access tokens.
+- Project access tokens.
+- SSH keys.
+- GPG keys (GitLab Self-Managed and GitLab Dedicated only).
+
+To view the credentials inventory:
+
+{{< tabs >}}
+
+{{< tab title="For an instance" >}}
+
+1. On the left sidebar, at the bottom, select **Admin**. If you've [turned on the new navigation](../user/interface_redesign.md), in the upper-right corner, select **Admin**.
+1. Select **Credentials**.
+
+{{< /tab >}}
+
+{{< tab title="For a group" >}}
+
+1. On the left sidebar, select **Search or go to** and find your group. If you've [turned on the new navigation](../user/interface_redesign.md), this field is on the top bar.
+1. On the left sidebar, select **Secure**.
+1. Select **Credentials**.
+
+{{< /tab >}}
+
+{{< /tabs >}}
+
+You can use the inventory to review credential details including:
 
 - Ownership.
 - Access scopes.
@@ -40,40 +72,91 @@ You can view details on:
 - Expiration dates.
 - Revocation dates.
 
-To view the credentials inventory:
-
-1. On the left sidebar, at the bottom, select **Admin**. If you've [turned on the new navigation](../user/interface_redesign.md), in the upper-right corner, select **Admin**.
-1. Select **Credentials**.
-
 ## Revoke personal access tokens
 
 To revoke a personal access token:
 
-1. On the left sidebar, at the bottom, select **Admin**. If you've [turned on the new navigation](../user/interface_redesign.md#turn-new-navigation-on-or-off), in the upper-right corner, select **Admin**.
+{{< tabs >}}
+
+{{< tab title="For an instance" >}}
+
+1. On the left sidebar, at the bottom, select **Admin**. If you've [turned on the new navigation](../user/interface_redesign.md), in the upper-right corner, select **Admin**.
 1. Select **Credentials**.
 1. Next to the personal access token, select **Revoke**.
-   If the token was previously expired or revoked, you'll see the date this happened instead.
+   If the token was previously expired or revoked, the associated date is displayed.
 
 The access token is revoked and the user is notified by email.
+
+{{< /tab >}}
+
+{{< tab title="For a group" >}}
+
+1. On the left sidebar, select **Search or go to** and find your group. If you've [turned on the new navigation](../user/interface_redesign.md), this field is on the top bar.
+1. On the left sidebar, select **Secure**.
+1. Select **Credentials**.
+1. Next to the personal access token, select **Revoke**.
+   If the token was previously expired or revoked, the associated date is displayed.
+
+The access token is revoked and the user is notified by email.
+
+{{< /tab >}}
+
+{{< /tabs >}}
 
 ## Revoke project or group access tokens
 
 To revoke a project or group access token:
 
-1. On the left sidebar, at the bottom, select **Admin**. If you've [turned on the new navigation](../user/interface_redesign.md#turn-new-navigation-on-or-off), in the upper-right corner, select **Admin**.
+{{< tabs >}}
+
+{{< tab title="For an instance" >}}
+
+1. On the left sidebar, at the bottom, select **Admin**. If you've [turned on the new navigation](../user/interface_redesign.md), in the upper-right corner, select **Admin**.
 1. Select **Credentials**.
 1. Select the **Project and group access tokens** tab.
 1. Next to the project access token, select **Revoke**.
 
-The access token is revoked and a background process begins to delete the associated project bot user.
+{{< /tab >}}
+
+{{< tab title="For a group" >}}
+
+1. On the left sidebar, select **Search or go to** and find your group. If you've [turned on the new navigation](../user/interface_redesign.md), this field is on the top bar.
+1. On the left sidebar, select **Secure**.
+1. Select **Credentials**.
+1. Select the **Project and group access tokens** tab.
+1. Next to the project access token, select **Revoke**.
+
+{{< /tab >}}
+
+{{< /tabs >}}
 
 ## Delete SSH keys
 
 To delete an SSH key:
 
-1. On the left sidebar, at the bottom, select **Admin**. If you've [turned on the new navigation](../user/interface_redesign.md#turn-new-navigation-on-or-off), in the upper-right corner, select **Admin**.
+{{< tabs >}}
+
+{{< tab title="For an instance" >}}
+
+1. On the left sidebar, at the bottom, select **Admin**. If you've [turned on the new navigation](../user/interface_redesign.md), in the upper-right corner, select **Admin**.
 1. Select **Credentials**.
 1. Select the **SSH Keys** tab.
 1. Next to the SSH key, select **Delete**.
 
 The SSH key is deleted and the user is notified.
+
+{{< /tab >}}
+
+{{< tab title="For a group" >}}
+
+1. On the left sidebar, select **Search or go to** and find your group. If you've [turned on the new navigation](../user/interface_redesign.md), this field is on the top bar.
+1. On the left sidebar, select **Secure**.
+1. Select **Credentials**.
+1. Select the **SSH Keys** tab.
+1. Next to the SSH key, select **Delete**.
+
+The SSH key is deleted and the user is notified.
+
+{{< /tab >}}
+
+{{< /tabs >}}

@@ -87,7 +87,7 @@ module Cells
         committed_uuids = []
 
         leases.each do |lease|
-          lease.send_commit_update!(deadline: grpc_deadline)
+          claim_service.commit_update(lease.uuid, deadline: grpc_deadline)
           committed_uuids << lease.uuid
         rescue StandardError => e
           track_error(e, lease.uuid)
@@ -98,7 +98,7 @@ module Cells
 
       def rollback_lost_leases(leases)
         leases.count do |lease|
-          send_rollback_to_topology_service(lease.uuid)
+          claim_service.rollback_update(lease.uuid.value, deadline: grpc_deadline)
           log_lease(lease, 'Rolled back stale lost lease')
           true
         rescue StandardError => e
@@ -110,14 +110,6 @@ module Cells
       def fetch_rails_leases(leases)
         lease_uuid_values = leases.map { |lease| lease.uuid.value }
         Cells::OutstandingLease.by_uuid(lease_uuid_values).index_by(&:uuid)
-      end
-
-      def send_rollback_to_topology_service(lease_uuid)
-        request = Gitlab::Cells::TopologyService::Claims::V1::RollbackUpdateRequest.new(
-          lease_uuid: lease_uuid,
-          cell_id: claim_service.cell_id
-        )
-        claim_service.rollback_update(request, deadline: grpc_deadline)
       end
 
       # Deletes local leases that are stale and don't exist in the Topology service.

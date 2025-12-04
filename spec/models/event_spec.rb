@@ -300,16 +300,16 @@ RSpec.describe Event, feature_category: :user_profile do
       end
     end
 
-    context 'when target_id is not present but action is a PROJECT_ACTION' do
-      let(:event) { build(:event, target: nil, project: project, action: :created) }
+    context 'when target_id is not present but target_type is "Project"' do
+      let(:event) { build(:event, target: nil, project: project, target_type: 'Project') }
 
       it 'returns the project_id as fallback' do
         expect(event.target_id).to eq(project.id)
       end
     end
 
-    context 'when target_id is not present and action is not a PROJECT_ACTION' do
-      let(:event) { build(:event, target: nil, project: project, action: :commented) }
+    context 'when target_id is not present and target_type is not "Project"' do
+      let(:event) { build(:event, target: nil, project: project, target_type: 'WorkItem') }
 
       it 'returns nil' do
         expect(event.target_id).to be_nil
@@ -318,7 +318,7 @@ RSpec.describe Event, feature_category: :user_profile do
   end
 
   describe '#target_type' do
-    context 'when target_type is present' do
+    context 'when target is present' do
       let(:issue) { create(:issue, project: project) }
       let(:event) { build(:event, target: issue, project: project) }
 
@@ -327,19 +327,21 @@ RSpec.describe Event, feature_category: :user_profile do
       end
     end
 
-    context 'when target_type is not present but action is a PROJECT_ACTION' do
-      let(:event) { build(:event, target: nil, project: project, action: :joined) }
+    context 'when target is not present' do
+      context 'when action is a PROJECT_ACTION' do
+        let(:event) { build(:event, target: nil, project: project, action: :created) }
 
-      it 'returns Project as fallback' do
-        expect(event.target_type).to eq('Project')
+        it 'returns the project_id as fallback' do
+          expect(event.target_id).to eq(project.id)
+        end
       end
-    end
 
-    context 'when target_type is not present and action is not a PROJECT_ACTION' do
-      let(:event) { build(:event, target: nil, project: project, action: :closed) }
+      context 'when action is not a PROJECT_ACTION' do
+        let(:event) { build(:event, target: nil, project: project, action: :commented) }
 
-      it 'returns nil' do
-        expect(event.target_type).to be_nil
+        it 'returns nil' do
+          expect(event.target_id).to be_nil
+        end
       end
     end
   end

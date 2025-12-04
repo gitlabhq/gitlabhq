@@ -27201,6 +27201,7 @@ Histogram of durations for a group of CI/CD jobs or pipelines.
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
+| <a id="cidurationstatisticsmean"></a>`mean` {{< icon name="warning-solid" >}} | [`Duration`](#duration) | **Introduced** in GitLab 18.7. **Status**: Experiment. Mean (average) duration. |
 | <a id="cidurationstatisticsp50"></a>`p50` {{< icon name="warning-solid" >}} | [`Duration`](#duration) | **Introduced** in GitLab 15.8. **Status**: Experiment. 50th percentile. 50% of the durations are lower than this value. |
 | <a id="cidurationstatisticsp75"></a>`p75` {{< icon name="warning-solid" >}} | [`Duration`](#duration) | **Introduced** in GitLab 15.8. **Status**: Experiment. 75th percentile. 75% of the durations are lower than this value. |
 | <a id="cidurationstatisticsp90"></a>`p90` {{< icon name="warning-solid" >}} | [`Duration`](#duration) | **Introduced** in GitLab 15.8. **Status**: Experiment. 90th percentile. 90% of the durations are lower than this value. |
@@ -27409,6 +27410,43 @@ CI/CD job analytics data.
 | <a id="cijobanalyticsrateoffailed"></a>`rateOfFailed` | [`Float`](#float) | Percentage of failed jobs. |
 | <a id="cijobanalyticsrateofsuccess"></a>`rateOfSuccess` | [`Float`](#float) | Percentage of successful jobs. |
 | <a id="cijobanalyticsstage"></a>`stage` | [`CiStage`](#cistage) | Stage information. |
+| <a id="cijobanalyticsstatistics"></a>`statistics` | [`CiJobAnalyticsStatistics`](#cijobanalyticsstatistics) | Statistics for the jobs. |
+
+### `CiJobAnalyticsStatistics`
+
+Statistics for CI/CD job analytics.
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="cijobanalyticsstatisticsdurationstatistics"></a>`durationStatistics` | [`CiDurationStatistics`](#cidurationstatistics) | Duration statistics for the jobs. |
+
+#### Fields with arguments
+
+##### `CiJobAnalyticsStatistics.count`
+
+Count of jobs, optionally filtered by status.
+
+Returns [`BigInt`](#bigint).
+
+###### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="cijobanalyticsstatisticscountstatus"></a>`status` | [`PipelineAnalyticsJobStatus`](#pipelineanalyticsjobstatus) | Filter job count by status. |
+
+##### `CiJobAnalyticsStatistics.rate`
+
+Percentage of jobs, optionally filtered by status.
+
+Returns [`Float`](#float).
+
+###### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="cijobanalyticsstatisticsratestatus"></a>`status` | [`PipelineAnalyticsJobStatus`](#pipelineanalyticsjobstatus) | Filter job rate by status. If not specified, returns 100.0 (representing all jobs). |
 
 ### `CiJobArtifact`
 

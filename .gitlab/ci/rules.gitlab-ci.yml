@@ -214,6 +214,9 @@
 .if-babel-env-istanbul: &if-babel-env-istanbul
   if: '$BABEL_ENV == "istanbul"'
 
+.if-export-coverage: &if-export-coverage
+  if: '$GLCI_EXPORT_COVERAGE == "true"'
+
 .if-default-branch-schedule-nightly: &if-default-branch-schedule-nightly
   if: '$CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH && $CI_PIPELINE_SOURCE == "schedule" && $SCHEDULE_TYPE == "nightly"'
 
@@ -1726,6 +1729,7 @@
       when: never
     - <<: *if-merge-request
       when: never
+    - <<: *if-export-coverage
     - <<: *if-default-branch-refs
       changes: *code-backstage-patterns
 
@@ -2123,6 +2127,7 @@
 ###############
 .rails:rules:setup-test-env:
   rules:
+    - <<: *if-export-coverage
     - if: '$ENABLE_RSPEC == "true"'
     - <<: *if-default-refs
       changes: *setup-test-env-patterns
@@ -2666,45 +2671,27 @@
       when: never
     - <<: *if-merge-request
       changes: *code-backstage-patterns
+    - <<: *if-export-coverage
     - <<: *if-schedule-maintenance
     - <<: *if-merge-request-labels-run-all-rspec
 
-.rails:rules:coverage-export:
-  rules:
-    - <<: *if-not-ee
-      when: never
-    - <<: *if-missing-clickhouse-coverage-credentials
-      when: never
-    - <<: *if-schedule-maintenance
-
-# Export RSpec-only coverage (skips when E2E coverage is being collected via Coverband)
-.rails:rules:coverage-export-rspec-only:
-  rules:
-    - <<: *if-not-ee
-      when: never
-    - <<: *if-missing-clickhouse-coverage-credentials
-      when: never
-    - <<: *if-coverband-enabled
-      when: never
-    - <<: *if-schedule-maintenance
-
-# Export merged RSpec + E2E coverage (only when Coverband is enabled)
+# Export merged RSpec + E2E coverage to ClickHouse
 .rails:rules:coverage-export-rspec-and-e2e:
   rules:
     - <<: *if-not-ee
       when: never
     - <<: *if-missing-clickhouse-coverage-credentials
       when: never
-    - <<: *if-coverband-enabled
+    - <<: *if-export-coverage
 
-# Export merged Jest + E2E coverage (only when Istanbul is enabled)
+# Export merged Jest + E2E coverage to ClickHouse
 .frontend:rules:coverage-export-jest-and-e2e:
   rules:
     - <<: *if-not-ee
       when: never
     - <<: *if-missing-clickhouse-coverage-credentials
       when: never
-    - <<: *if-babel-env-istanbul
+    - <<: *if-export-coverage
 
 .rails:rules:rspec-undercoverage:
   rules:
@@ -3206,6 +3193,7 @@
 ###################
 .workhorse:rules:workhorse:
   rules:
+    - <<: *if-export-coverage
     - <<: *if-default-refs
       changes: *workhorse-patterns
 
@@ -3215,8 +3203,7 @@
       when: never
     - <<: *if-missing-clickhouse-coverage-credentials
       when: never
-    - <<: *if-schedule-maintenance
-      changes: *workhorse-patterns
+    - <<: *if-export-coverage
 
 #############
 # GDK rules #

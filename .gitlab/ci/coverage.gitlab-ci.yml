@@ -16,39 +16,6 @@
     # Note: GLCI_CLICKHOUSE_METRICS_PASSWORD is read directly from the environment
     # by the test-coverage script and is not passed via CLI for security reasons
 
-test-coverage:export-rspec:
-  extends:
-    - .coverage-export-base
-    - .rails:rules:coverage-export-rspec-only
-  needs:
-    - job: rspec:coverage
-    - job: update-tests-metadata
-  script:
-    - echo "Exporting RSpec coverage to ClickHouse..."
-    - bundle exec test-coverage
-        --test-reports 'rspec/rspec-*.json'
-        --coverage-report 'coverage/lcov/gitlab.lcov'
-        --test-map 'crystalball/packed-mapping.json.gz'
-        --clickhouse-url "${CLICKHOUSE_URL}"
-        --clickhouse-database "${CLICKHOUSE_DATABASE}"
-        --clickhouse-username "${CLICKHOUSE_USERNAME}"
-
-test-coverage:export-jest:
-  extends:
-    - .coverage-export-base
-    - .rails:rules:coverage-export
-  needs:
-    - job: coverage-frontend
-  script:
-    - echo "Exporting Jest coverage to ClickHouse..."
-    - bundle exec test-coverage
-        --test-reports 'jest-reports/**/*.json'
-        --coverage-report 'coverage-frontend/lcov.info'
-        --test-map 'jest-test-mapping/jest-source-to-test.json'
-        --clickhouse-url "${CLICKHOUSE_URL}"
-        --clickhouse-database "${CLICKHOUSE_DATABASE}"
-        --clickhouse-username "${CLICKHOUSE_USERNAME}"
-
 test-coverage:export-rspec-and-e2e:
   extends:
     - .coverage-export-base

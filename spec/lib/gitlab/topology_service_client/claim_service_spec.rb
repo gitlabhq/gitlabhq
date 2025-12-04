@@ -3,12 +3,13 @@
 require 'spec_helper'
 
 RSpec.describe Gitlab::TopologyServiceClient::ClaimService, feature_category: :cell do
+  let(:cell_id) { 1 }
   let(:client_double) { instance_double(Gitlab::Cells::TopologyService::Claims::V1::ClaimService::Stub) }
 
   subject(:service) { described_class.instance }
 
   before do
-    allow(Gitlab.config.cell).to receive(:enabled).and_return(true)
+    stub_config_cell({ enabled: true, id: cell_id })
   end
 
   describe 'Singleton' do
@@ -36,16 +37,6 @@ RSpec.describe Gitlab::TopologyServiceClient::ClaimService, feature_category: :c
       expect(client_double).to receive(:begin_update).with(args)
       service.begin_update(args)
     end
-
-    it 'delegates #commit_update to the client' do
-      expect(client_double).to receive(:commit_update).with(args)
-      service.commit_update(args)
-    end
-
-    it 'delegates #rollback_update to the client' do
-      expect(client_double).to receive(:rollback_update).with(args)
-      service.rollback_update(args)
-    end
   end
 
   describe '#service_class' do
@@ -55,12 +46,82 @@ RSpec.describe Gitlab::TopologyServiceClient::ClaimService, feature_category: :c
     end
   end
 
+  describe '#commit_update' do
+    let(:lease_uuid) { SecureRandom.uuid }
+    let(:request) do
+      Gitlab::Cells::TopologyService::Claims::V1::CommitUpdateRequest.new(
+        lease_uuid: Gitlab::Cells::TopologyService::Types::V1::UUID.new(value: lease_uuid),
+        cell_id: cell_id
+      )
+    end
+
+    let(:mock_response) { Gitlab::Cells::TopologyService::Claims::V1::CommitUpdateResponse.new }
+
+    before do
+      allow(service).to receive(:client).and_return(client_double)
+    end
+
+    it 'calls client.commit_update with the correct parameters' do
+      expect(client_double).to receive(:commit_update).with(request, deadline: nil).and_return(mock_response)
+
+      result = service.commit_update(lease_uuid)
+
+      expect(result).to eq(mock_response)
+    end
+
+    context 'with deadline' do
+      let(:deadline) { GRPC::Core::TimeConsts.from_relative_time(5.0) }
+
+      it 'calls client.commit_update with valid parameters' do
+        expect(client_double).to receive(:commit_update).with(request, deadline: deadline).and_return(mock_response)
+
+        result = service.commit_update(lease_uuid, deadline: deadline)
+
+        expect(result).to eq(mock_response)
+      end
+    end
+  end
+
+  describe '#rollback_update' do
+    let(:lease_uuid) { SecureRandom.uuid }
+    let(:request) do
+      Gitlab::Cells::TopologyService::Claims::V1::RollbackUpdateRequest.new(
+        lease_uuid: Gitlab::Cells::TopologyService::Types::V1::UUID.new(value: lease_uuid),
+        cell_id: cell_id
+      )
+    end
+
+    let(:mock_response) { Gitlab::Cells::TopologyService::Claims::V1::RollbackUpdateResponse.new }
+
+    before do
+      allow(service).to receive(:client).and_return(client_double)
+    end
+
+    it 'calls client.rollback_update with the correct parameters' do
+      expect(client_double).to receive(:rollback_update).with(request, deadline: nil).and_return(mock_response)
+
+      result = service.rollback_update(lease_uuid)
+
+      expect(result).to eq(mock_response)
+    end
+
+    context 'with deadline' do
+      let(:deadline) { GRPC::Core::TimeConsts.from_relative_time(5.0) }
+
+      it 'calls client.rollback_update with valid parameters' do
+        expect(client_double).to receive(:rollback_update).with(request, deadline: deadline).and_return(mock_response)
+
+        result = service.rollback_update(lease_uuid, deadline: deadline)
+
+        expect(result).to eq(mock_response)
+      end
+    end
+  end
+
   describe '#list_leases' do
-    let(:cell_id) { 1 }
     let(:mock_response) { Gitlab::Cells::TopologyService::Claims::V1::ListLeasesResponse.new }
 
     before do
-      stub_config_cell({ enabled: true, id: cell_id })
       allow(service).to receive(:client).and_return(client_double)
     end
 

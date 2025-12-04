@@ -97,12 +97,7 @@ RSpec.describe Cells::OutstandingLease, feature_category: :cell do
     let(:lease) { create(:cells_outstanding_lease, uuid: uuid_value) }
 
     it 'sends a commit_update request with the correct parameters' do
-      expected_request = Gitlab::Cells::TopologyService::Claims::V1::CommitUpdateRequest.new(
-        lease_uuid: Gitlab::Cells::TopologyService::Types::V1::UUID.new(value: uuid_value),
-        cell_id: cell_id
-      )
-
-      expect(mock_service).to receive(:commit_update).with(expected_request, deadline: nil)
+      expect(mock_service).to receive(:commit_update).with(uuid_value, deadline: nil)
 
       lease.send_commit_update!
     end
@@ -111,12 +106,7 @@ RSpec.describe Cells::OutstandingLease, feature_category: :cell do
       let(:deadline) { GRPC::Core::TimeConsts.from_relative_time(5.0) }
 
       it 'sends a commit_update request with the correct parameters' do
-        expected_request = Gitlab::Cells::TopologyService::Claims::V1::CommitUpdateRequest.new(
-          lease_uuid: Gitlab::Cells::TopologyService::Types::V1::UUID.new(value: uuid_value),
-          cell_id: cell_id
-        )
-
-        expect(mock_service).to receive(:commit_update).with(expected_request, deadline: deadline)
+        expect(mock_service).to receive(:commit_update).with(uuid_value, deadline: deadline)
 
         lease.send_commit_update!(deadline: deadline)
       end
@@ -128,12 +118,7 @@ RSpec.describe Cells::OutstandingLease, feature_category: :cell do
       let(:lease) { create(:cells_outstanding_lease, uuid: uuid_value) }
 
       it 'sends a rollback_update request with the correct parameters' do
-        expected_request = Gitlab::Cells::TopologyService::Claims::V1::RollbackUpdateRequest.new(
-          lease_uuid: Gitlab::Cells::TopologyService::Types::V1::UUID.new(value: uuid_value),
-          cell_id: cell_id
-        )
-
-        expect(mock_service).to receive(:rollback_update).with(expected_request, deadline: nil)
+        expect(mock_service).to receive(:rollback_update).with(uuid_value, deadline: nil)
 
         lease.send_rollback_update!
       end
@@ -142,12 +127,7 @@ RSpec.describe Cells::OutstandingLease, feature_category: :cell do
         let(:deadline) { GRPC::Core::TimeConsts.from_relative_time(5.0) }
 
         it 'sends a rollback_update request with the correct parameters' do
-          expected_request = Gitlab::Cells::TopologyService::Claims::V1::RollbackUpdateRequest.new(
-            lease_uuid: Gitlab::Cells::TopologyService::Types::V1::UUID.new(value: uuid_value),
-            cell_id: cell_id
-          )
-
-          expect(mock_service).to receive(:rollback_update).with(expected_request, deadline: deadline)
+          expect(mock_service).to receive(:rollback_update).with(uuid_value, deadline: deadline)
 
           lease.send_rollback_update!(deadline: deadline)
         end

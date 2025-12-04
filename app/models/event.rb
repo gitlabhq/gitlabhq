@@ -248,20 +248,20 @@ class Event < ApplicationRecord
     target_type == 'Project'
   end
 
-  def target_id
-    return project_id if project_as_target?(super)
-
-    super
-  end
-
   def target_type
     return 'Project' if project_as_target?(super)
 
     super
   end
 
+  def target_id
+    return project_id if super.nil? && project?
+
+    super
+  end
+
   def target
-    return project if project_as_target?(super)
+    return project if super.nil? && project?
 
     super
   end
@@ -526,10 +526,9 @@ class Event < ApplicationRecord
     self.class.actions[action]
   end
 
-  def project_as_target?(original_value)
-    return false if original_value.present?
+  def project_as_target?(target_type)
+    return false if target_type.present?
     return false unless project_id
-    return false unless action
 
     PROJECT_ACTIONS.include?(action.to_sym)
   end
