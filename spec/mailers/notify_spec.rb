@@ -554,44 +554,6 @@ RSpec.describe Notify, feature_category: :code_review_workflow do
       end
     end
 
-    describe 'project access changed' do
-      let(:owner) { create(:user, name: "Chang O'Keefe") }
-      let(:project) { create(:project, :public, namespace: owner.namespace) }
-      let(:project_member) { create(:project_member, project: project, user: user) }
-      let(:organization) { project.organization }
-
-      subject { described_class.member_access_granted_email('project', project_member.id) }
-
-      it_behaves_like 'an email sent from GitLab'
-      it_behaves_like 'it should not have Gmail Actions links'
-      it_behaves_like "a user cannot unsubscribe through footer link"
-      it_behaves_like 'appearance header and footer enabled'
-      it_behaves_like 'appearance header and footer not enabled'
-
-      it 'contains all the useful information', :aggregate_failures do
-        is_expected.to have_subject "Access to the #{project.full_name} project was granted"
-        is_expected.to have_body_text project.full_name
-        is_expected.to have_body_text project.web_url
-        is_expected.to have_body_text organization.name
-        is_expected.to have_body_text organization.web_url
-        is_expected.to have_body_text project_member.human_access
-        is_expected.to have_body_text 'leave the project'
-        is_expected.to have_body_text project_url(project, leave: 1)
-      end
-
-      context 'when ui_for_organizations_enabled? is false', :ui_for_organizations_disabled do
-        it 'contains all the useful information', :aggregate_failures do
-          is_expected.to have_subject "Access to the #{project.full_name} project was granted"
-          is_expected.to have_body_text project.full_name
-          is_expected.to have_body_text project.web_url
-          is_expected.to have_body_text project_member.human_access
-          is_expected.to have_body_text 'default role'
-          is_expected.to have_body_text 'leave the project'
-          is_expected.to have_body_text project_url(project, leave: 1)
-        end
-      end
-    end
-
     describe 'pipeline variables migration complete' do
       let(:updated_count) { 5 }
       let(:skipped_count) { 2 }
@@ -1619,43 +1581,6 @@ RSpec.describe Notify, feature_category: :code_review_workflow do
   end
 
   context 'for a group' do
-    describe 'group access changed' do
-      let(:organization) { group.organization }
-      let(:group_member) { create(:group_member, group: group, user: user) }
-      let(:recipient) { user }
-
-      subject { described_class.member_access_granted_email('group', group_member.id) }
-
-      it_behaves_like 'an email sent from GitLab'
-      it_behaves_like 'an email sent to a user'
-      it_behaves_like 'it should not have Gmail Actions links'
-      it_behaves_like "a user cannot unsubscribe through footer link"
-      it_behaves_like 'appearance header and footer enabled'
-      it_behaves_like 'appearance header and footer not enabled'
-
-      it 'contains all the useful information', :aggregate_failures do
-        is_expected.to have_subject "Access to the #{group.name} group was granted"
-        is_expected.to have_body_text group.name
-        is_expected.to have_body_text group.web_url
-        is_expected.to have_body_text organization.name
-        is_expected.to have_body_text organization.web_url
-        is_expected.to have_body_text group_member.human_access
-        is_expected.to have_body_text 'leave the group'
-        is_expected.to have_body_text group_url(group, leave: 1)
-      end
-
-      context 'when ui_for_organizations_enabled? is false', :ui_for_organizations_disabled do
-        it 'contains all the useful information', :aggregate_failures do
-          is_expected.to have_subject "Access to the #{group.name} group was granted"
-          is_expected.to have_body_text group.name
-          is_expected.to have_body_text group.web_url
-          is_expected.to have_body_text group_member.human_access
-          is_expected.to have_body_text 'leave the group'
-          is_expected.to have_body_text group_url(group, leave: 1)
-        end
-      end
-    end
-
     def invite_to_group(group, inviter:, user: nil)
       create(
         :group_member,

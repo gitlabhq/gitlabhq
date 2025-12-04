@@ -32428,6 +32428,7 @@ GitLab Credits used from the Monthly Waiver allocation.
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | <a id="gitlabsubscriptionmonthlywaivercreditsused"></a>`creditsUsed` | [`Float`](#float) | GitLab Credits used from the Monthly Waiver allocation. |
+| <a id="gitlabsubscriptionmonthlywaiverdailyusage"></a>`dailyUsage` | [`[GitlabSubscriptionDailyUsage!]`](#gitlabsubscriptiondailyusage) | Array of daily usage of the Monthly Waiver allocation. |
 | <a id="gitlabsubscriptionmonthlywaivertotalcredits"></a>`totalCredits` | [`Float`](#float) | Total of GitLab Credits allocated as Monthly Waiver. |
 
 ### `GitlabSubscriptionOverage`

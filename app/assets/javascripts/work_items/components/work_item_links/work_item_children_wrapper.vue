@@ -40,11 +40,6 @@ export default {
       required: false,
       default: false,
     },
-    workItemType: {
-      type: String,
-      required: false,
-      default: '',
-    },
     workItemId: {
       type: String,
       required: true,
@@ -242,12 +237,10 @@ export default {
       });
     },
     prefetchWorkItem({ iid }) {
-      if (this.workItemType !== WORK_ITEM_TYPE_NAME_OBJECTIVE) {
-        this.prefetch = setTimeout(
-          () => this.addWorkItemQuery({ iid }),
-          DEFAULT_DEBOUNCE_AND_THROTTLE_MS,
-        );
-      }
+      this.prefetch = setTimeout(
+        () => this.addWorkItemQuery({ iid }),
+        DEFAULT_DEBOUNCE_AND_THROTTLE_MS,
+      );
     },
     clearPrefetching() {
       if (this.prefetch) {

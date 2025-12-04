@@ -710,6 +710,25 @@ class Member < ApplicationRecord
     todo_service.create_member_access_request_todos(self)
   end
 
+  def send_access_granted_notification
+    notifiable_options = case source
+                         when Group
+                           {}
+                         when Project
+                           { skip_read_ability: true }
+                         end
+
+    return true unless notifiable?(:mention, notifiable_options)
+
+    Members::AccessGrantedMailer.with(member: self, member_source_type: real_source_type).email.deliver_later
+  end
+
+  def send_access_level_updated_notification
+    return unless notifiable?(:mention)
+
+    Members::AccessGrantedMailer.with(member: self, member_source_type: real_source_type).email.deliver_later
+  end
+
   def post_create_access_request_hook
     system_hook_service.execute_hooks_for(self, :request)
   end
@@ -720,7 +739,7 @@ class Member < ApplicationRecord
     # but we do not want to trigger notifications to the same person who created the personal project.
     unless source.is_a?(Project) && source.personal_namespace_holder?(user)
       event_service.join_source(source, user)
-      run_after_commit_or_now { notification_service.new_member(self) }
+      run_after_commit_or_now { send_access_granted_notification }
     end
 
     system_hook_service.execute_hooks_for(self, :create)
@@ -728,7 +747,7 @@ class Member < ApplicationRecord
 
   def post_update_hook
     if saved_change_to_access_level?
-      run_after_commit { notification_service.updated_member_access_level(self) }
+      run_after_commit { send_access_level_updated_notification }
     end
 
     if pipeline_schedule_ownership_revoked?

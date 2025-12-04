@@ -148,9 +148,9 @@ describe('WorkItemChildrenWrapper', () => {
   });
 
   it.each`
-    description            | workItemType   | prefetch
-    ${'prefetches'}        | ${'Issue'}     | ${true}
-    ${'does not prefetch'} | ${'Objective'} | ${false}
+    description     | workItemType | prefetch
+    ${'prefetches'} | ${'Issue'}   | ${true}
+    ${'prefetches'} | ${'Epic'}    | ${true}
   `(
     '$description work-item-link-child on mouseover when workItemType is "$workItemType"',
     async ({ workItemType, prefetch }) => {

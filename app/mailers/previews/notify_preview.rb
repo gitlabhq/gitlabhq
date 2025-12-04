@@ -200,10 +200,6 @@ class NotifyPreview < ActionMailer::Preview
     Notify.changed_milestone_merge_request_email(user.id, merge_request.id, milestone, user.id)
   end
 
-  def member_access_granted_email
-    Notify.member_access_granted_email(member.source_type, member.id).message
-  end
-
   def pages_domain_enabled_email
     cleanup do
       Notify.pages_domain_enabled_email(pages_domain, user).message

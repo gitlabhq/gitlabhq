@@ -510,25 +510,6 @@ class NotificationService
     mailer.user_deactivated_email(name, email).deliver_later
   end
 
-  def new_member(member)
-    notifiable_options = case member.source
-                         when Group
-                           {}
-                         when Project
-                           { skip_read_ability: true }
-                         end
-
-    return true unless member.notifiable?(:mention, notifiable_options)
-
-    mailer.member_access_granted_email(member.real_source_type, member.id).deliver_later
-  end
-
-  def updated_member_access_level(member)
-    return true unless member.notifiable?(:mention)
-
-    mailer.member_access_granted_email(member.real_source_type, member.id).deliver_later
-  end
-
   def project_was_moved(project, old_path_with_namespace)
     recipients = project_moved_recipients(project)
     recipients = notifiable_users(recipients, :custom, custom_action: :moved_project, project: project)

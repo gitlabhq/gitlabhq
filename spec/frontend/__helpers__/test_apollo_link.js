@@ -1,7 +1,7 @@
 import { InMemoryCache, ApolloClient, ApolloLink, gql } from '@apollo/client/core';
 
 const FOO_QUERY = gql`
-  query {
+  query getFooQuery {
     foo
   }
 `;

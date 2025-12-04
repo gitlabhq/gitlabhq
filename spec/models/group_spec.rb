@@ -1842,7 +1842,7 @@ RSpec.describe Group, feature_category: :groups_and_projects do
     let(:user) { create(:user) }
 
     before do
-      allow(Notify).to receive(:member_access_granted_email).and_call_original
+      allow(Members::AccessGrantedMailer).to receive_message_chain(:with, :email, :deliver_later)
     end
 
     it 'adds the user' do
@@ -1856,11 +1856,9 @@ RSpec.describe Group, feature_category: :groups_and_projects do
     end
 
     it 'notifies the user of membership' do
-      member = group.add_member(user, GroupMember::MAINTAINER)
+      expect(Members::AccessGrantedMailer).to receive_message_chain(:with, :email, :deliver_later)
 
-      expect(Notify)
-        .to have_received(:member_access_granted_email)
-        .with(member.real_source_type, member.id)
+      group.add_member(user, GroupMember::MAINTAINER)
     end
 
     context 'when importing' do
@@ -1871,19 +1869,15 @@ RSpec.describe Group, feature_category: :groups_and_projects do
       end
 
       it 'does not notify the user of membership' do
-        member = group.add_member(user, GroupMember::MAINTAINER)
+        expect(Members::AccessGrantedMailer).not_to receive(:with)
 
-        expect(Notify)
-          .not_to have_received(:member_access_granted_email)
-          .with(member.real_source_type, member.id)
+        group.add_member(user, GroupMember::MAINTAINER)
       end
 
       it 'notifies the user when invited by a user regardless of importing status' do
-        member = group.add_member(user, GroupMember::MAINTAINER, current_user: owner)
+        expect(Members::AccessGrantedMailer).to receive_message_chain(:with, :email, :deliver_later)
 
-        expect(Notify)
-          .to have_received(:member_access_granted_email)
-          .with(member.real_source_type, member.id)
+        group.add_member(user, GroupMember::MAINTAINER, current_user: owner)
       end
     end
   end

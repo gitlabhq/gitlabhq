@@ -128,32 +128,6 @@ my-job:
 
 Script steps use the `bash` shell, falling back to use `sh` if bash is not found.
 
-### Run a GitHub action
-
-Run GitHub actions with the `action` keyword. Inputs and environment variables are passed directly to the
-action, and action outputs are returned as step outputs. Action steps run in the directory
-defined by the `CI_PROJECT_DIR` [predefined variable](../variables/predefined_variables.md).
-
-Running actions requires the `dind` service. For more information, see
-[Use Docker to build Docker images](../docker/using_docker_build.md).
-
-For example, the following step uses `action` to make `yq` available:
-
-```yaml
-my-job:
-  run:
-    - name: say_hi_again
-      action: mikefarah/yq@master
-      inputs:
-        cmd: echo ["hi ${{job.GITLAB_USER_LOGIN}} again!"] | yq .[0]
-```
-
-#### Known issues
-
-Actions running in GitLab do not support uploading artifacts directly.
-Artifacts must be written to the file system and cache instead, and selected with the
-existing [`artifacts` keyword](../yaml/_index.md#artifacts) and [`cache` keyword](../yaml/_index.md#cache).
-
 ### Step location
 
 Steps are loaded from a relative path on the file system, GitLab.com repositories,

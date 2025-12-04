@@ -38,6 +38,7 @@ RSpec.describe 'Mailer previews', :with_trial_types, feature_category: :shared d
   before_all do
     create(:project_member, :maintainer, source: project, created_by: user)
     create(:project_member, :invited, source: project, created_by: user)
+    create(:group_member, :maintainer, source: group)
     create(:group_member, :access_request, source: group)
     create(:group_member, :access_request, source: create(:group, :private))
   end
