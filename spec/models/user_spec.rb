@@ -49,6 +49,12 @@ RSpec.describe User, :with_current_organization, feature_category: :user_profile
 
   it_behaves_like 'having unique enum values'
 
+  it_behaves_like 'cells claimable model',
+    subject_type: Cells::Claimable::CLAIMS_SUBJECT_TYPE::USER,
+    subject_key: :id,
+    source_type: Cells::Claimable::CLAIMS_SOURCE_TYPE::RAILS_TABLE_USERS,
+    claiming_attributes: [:id, :username]
+
   describe 'modules' do
     subject { described_class }
 

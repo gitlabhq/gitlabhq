@@ -2,6 +2,11 @@
 
 class RedirectRoute < ApplicationRecord
   include CaseSensitivity
+  include Cells::Claimable
+
+  cells_claims_attribute :path, type: CLAIMS_BUCKET_TYPE::REDIRECT_ROUTES
+
+  cells_claims_metadata subject_type: CLAIMS_SUBJECT_TYPE::NAMESPACE, subject_key: :namespace_id
 
   belongs_to :source, polymorphic: true # rubocop:disable Cop/PolymorphicAssociations
 

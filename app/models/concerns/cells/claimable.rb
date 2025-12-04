@@ -21,9 +21,9 @@ module Cells
     end
 
     class_methods do
-      def cells_claims_metadata(subject_type:, subject_key: nil, source_type: nil)
+      def cells_claims_metadata(subject_type:, subject_key:, source_type: nil)
         self.cells_claims_subject_type = subject_type
-        self.cells_claims_subject_key = subject_key || :organization_id
+        self.cells_claims_subject_key = subject_key
         self.cells_claims_source_type = source_type ||
           Gitlab::Cells::TopologyService::Claims::V1::Source::Type
             .const_get("RAILS_TABLE_#{table_name.upcase}", false)
@@ -73,7 +73,7 @@ module Cells
       cells_claims_default_metadata.merge({
         bucket: {
           type: type,
-          value: value
+          value: value.to_s
         }
       })
     end

@@ -22,40 +22,106 @@ RSpec.describe Gitlab::Ci::Pipeline::Chain::ComponentUsage, feature_category: :p
   describe '#perform!' do
     subject(:perform) { step.perform! }
 
+    let(:component_hash) do
+      {
+        project: component.project,
+        sha: version.sha,
+        name: component.name
+      }
+    end
+
     before do
       allow(command).to receive(:yaml_processor_result)
         .and_return(instance_double(Gitlab::Ci::YamlProcessor::Result,
-          included_components: [{
-            project: component.project,
-            sha: version.sha,
-            name: component.name
-          }]
+          included_components: [component_hash]
         ))
     end
 
-    it_behaves_like 'internal event tracking' do
-      let(:event) { 'ci_catalog_component_included' }
-      let(:label) { "#{component.project.full_path}/#{component.name}" }
-      let(:value) { 1 } # Default resource_type
-      let(:property) { component.version.name }
+    it 'enqueues the TrackComponentUsageWorker with all components' do
+      serialized_components = [{
+        'project_id' => component.project.id,
+        'sha' => version.sha,
+        'name' => component.name
+      }]
+
+      expect(::Ci::Catalog::Resources::TrackComponentUsageWorker).to receive(:perform_async)
+        .with(project.id, user.id, serialized_components)
+
+      perform
     end
 
-    it 'creates a component usage record' do
-      expect { perform }.to change { Ci::Catalog::Resources::Components::LastUsage.count }.by(1)
+    it 'does not create component usage records synchronously' do
+      expect { perform }.not_to change { Ci::Catalog::Resources::Components::LastUsage.count }
     end
 
-    context 'when component usage has already been recorded', :freeze_time do
-      let!(:existing_last_usage) do
-        create(:catalog_resource_component_last_usage,
-          component: component, used_by_project_id: project.id, last_used_date: Time.current.to_date - 3.days)
+    context 'when there are multiple components' do
+      let(:component_hash2) do
+        {
+          project: component.project,
+          sha: version.sha,
+          name: 'another_component'
+        }
       end
 
-      it 'updates the last_used_date for the existing last_usage record' do
-        expect { step.perform! }.not_to change { Ci::Catalog::Resources::Components::LastUsage.count }
+      before do
+        allow(command).to receive(:yaml_processor_result)
+          .and_return(instance_double(Gitlab::Ci::YamlProcessor::Result,
+            included_components: [component_hash, component_hash2]
+          ))
+      end
 
-        last_usage = Ci::Catalog::Resources::Components::LastUsage.find_by(component: component,
-          used_by_project_id: project.id)
-        expect(last_usage.last_used_date).to eq(Time.current.to_date)
+      it 'enqueues one worker with all components' do
+        serialized_components = [
+          {
+            'project_id' => component.project.id,
+            'sha' => version.sha,
+            'name' => component.name
+          },
+          {
+            'project_id' => component.project.id,
+            'sha' => version.sha,
+            'name' => 'another_component'
+          }
+        ]
+
+        expect(::Ci::Catalog::Resources::TrackComponentUsageWorker).to receive(:perform_async)
+          .once
+          .with(project.id, user.id, serialized_components)
+
+        perform
+      end
+    end
+
+    context 'when current_user is nil' do
+      let(:command) { Gitlab::Ci::Pipeline::Chain::Command.new(project: project, current_user: nil, dry_run: dry_run) }
+
+      it 'enqueues the worker with nil user_id' do
+        serialized_components = [{
+          'project_id' => component.project.id,
+          'sha' => version.sha,
+          'name' => component.name
+        }]
+
+        expect(::Ci::Catalog::Resources::TrackComponentUsageWorker).to receive(:perform_async)
+          .with(project.id, nil, serialized_components)
+
+        perform
+      end
+    end
+
+    context 'when enqueuing a worker fails' do
+      before do
+        allow(::Ci::Catalog::Resources::TrackComponentUsageWorker).to receive(:perform_async)
+          .and_raise(StandardError.new('Redis error'))
+      end
+
+      it 'tracks the exception to Sentry and continues' do
+        expect(Gitlab::ErrorTracking).to receive(:track_exception).with(
+          instance_of(StandardError),
+          project_id: project.id
+        )
+
+        expect { perform }.not_to raise_error
       end
     end
   end

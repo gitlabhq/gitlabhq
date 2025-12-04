@@ -95,58 +95,102 @@ RSpec.describe Mcp::Tools::Concerns::ResourceFinder, feature_category: :mcp_serv
   end
 
   describe '#find_project' do
+    subject(:find_project) { service.test_find_project(project_id_or_path) }
+
+    let_it_be_with_refind(:project) { create(:project) }
+
+    let(:project_id_or_path) { project.id.to_s }
+
     it_behaves_like 'resource finder', :test_find_project, :public_project
 
-    it 'validates input type' do
-      expect { service.test_find_project(123) }
-        .to raise_error(ArgumentError, "project_id must be a string")
-      expect { service.test_find_project(nil) }
-        .to raise_error(ArgumentError, "project_id must be a string")
+    context 'when validating input type' do
+      context 'with integer input' do
+        let(:project_id_or_path) { 123 }
+
+        it 'raises ArgumentError' do
+          expect { find_project }
+            .to raise_error(ArgumentError, 'project_id must be a string')
+        end
+      end
+
+      context 'with nil input' do
+        let(:project_id_or_path) { nil }
+
+        it 'raises ArgumentError' do
+          expect { find_project }
+            .to raise_error(ArgumentError, 'project_id must be a string')
+        end
+      end
     end
 
-    it 'excludes hidden projects' do
-      hidden_project = create(:project, :hidden)
-      expect { service.test_find_project(hidden_project.id.to_s) }
-        .to raise_error(StandardError, /not found or inaccessible/)
+    context 'when project is hidden' do
+      before do
+        project.update!(hidden: true)
+      end
+
+      it 'raises StandardError' do
+        expect { find_project }.to raise_error(StandardError, /not found or inaccessible/)
+      end
     end
 
-    it 'handles special characters in path' do
-      project = create(:project, path: 'test-project_123')
-      expect(service.test_find_project(project.full_path)).to eq(project)
+    context 'with special characters in path' do
+      before do
+        project.update!(path: 'test-project_123')
+      end
+
+      let(:project_id_or_path) { project.full_path }
+
+      it 'finds the project' do
+        is_expected.to eq(project)
+      end
     end
   end
 
   describe '#find_group' do
+    subject(:find_group) { service.test_find_group(group_full_path) }
+
     it_behaves_like 'resource finder', :test_find_group, :private_group
 
-    it 'finds nested groups by full path' do
-      nested = create(:group, parent: group)
-      expect(service.test_find_group(nested.full_path)).to eq(nested)
+    context 'with nested groups' do
+      let(:nested_group) { create(:group, parent: group) }
+      let(:group_full_path) { nested_group.full_path }
+
+      it 'finds by full path' do
+        is_expected.to eq(nested_group)
+      end
     end
   end
 
   describe '#find_parent_by_id_or_path' do
+    subject(:find_parent_by_id_or_path) do
+      test_class.new(user).test_find_parent_by_id_or_path(parent_type, identifier)
+    end
+
     context 'with project parent type' do
       it_behaves_like 'parent access control', :project, :public_project, :private_project, 'Access denied to project'
 
-      it 'finds and returns the project by ID' do
-        user = create(:user, developer_of: public_project)
-        service = test_class.new(user)
+      context 'when finding by ID' do
+        let(:user) { create(:user, developer_of: public_project) }
+        let(:parent_type) { :project }
+        let(:identifier) { public_project.id.to_s }
 
-        result = service.test_find_parent_by_id_or_path(:project, public_project.id.to_s)
-        expect(result).to eq(public_project)
+        it 'finds and returns the project' do
+          is_expected.to eq(public_project)
+        end
       end
     end
 
     context 'with group parent type' do
       it_behaves_like 'parent access control', :group, :public_group, :private_group, 'Access denied to group'
 
-      it 'finds and returns the group by ID' do
-        user = create(:user, developer_of: group)
-        service = test_class.new(user)
+      context 'when finding by ID' do
+        let(:user) { create(:user, developer_of: group) }
+        let(:parent_type) { :group }
+        let(:identifier) { group.id.to_s }
 
-        result = service.test_find_parent_by_id_or_path(:group, group.id.to_s)
-        expect(result).to eq(group)
+        it 'finds and returns the group' do
+          is_expected.to eq(group)
+        end
       end
     end
   end
@@ -189,18 +233,30 @@ RSpec.describe Mcp::Tools::Concerns::ResourceFinder, feature_category: :mcp_serv
   end
 
   describe '#build_work_item_finder_params' do
-    it 'returns project_id for project parent' do
-      expect(service.test_build_work_item_finder_params(public_project))
-        .to eq(project_id: public_project.id)
+    subject(:build_work_item_finder_params) { service.test_build_work_item_finder_params(parent) }
+
+    context 'with project parent' do
+      let(:parent) { public_project }
+
+      it 'returns project_id' do
+        is_expected.to eq(project_id: public_project.id)
+      end
     end
 
-    it 'returns group_id and include_descendants for group parent' do
-      expect(service.test_build_work_item_finder_params(group))
-        .to eq(group_id: group.id, include_descendants: false)
+    context 'with group parent' do
+      let(:parent) { group }
+
+      it 'returns group_id and include_descendants' do
+        is_expected.to eq(group_id: group.id, include_descendants: false)
+      end
     end
 
-    it 'returns empty hash for unsupported parent type' do
-      expect(service.test_build_work_item_finder_params(Object.new)).to eq({})
+    context 'with unsupported parent type' do
+      let(:parent) { Object.new }
+
+      it 'returns empty hash' do
+        is_expected.to eq({})
+      end
     end
   end
 

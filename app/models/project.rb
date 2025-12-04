@@ -49,6 +49,11 @@ class Project < ApplicationRecord
   include SafelyChangeColumnDefault
   include Todoable
   include Namespaces::AdjournedDeletable
+  include Cells::Claimable
+
+  cells_claims_attribute :id, type: CLAIMS_BUCKET_TYPE::PROJECT_IDS
+
+  cells_claims_metadata subject_type: CLAIMS_SUBJECT_TYPE::PROJECT, subject_key: :id
 
   columns_changing_default :organization_id
 
@@ -200,7 +205,7 @@ class Project < ApplicationRecord
   belongs_to :namespace
   # Sync deletion via DB Trigger to ensure we do not have
   # a project without a project_namespace (or vice-versa)
-  belongs_to :project_namespace, autosave: true, class_name: 'Namespaces::ProjectNamespace', foreign_key: 'project_namespace_id', inverse_of: :project
+  belongs_to :project_namespace, autosave: true, class_name: 'Namespaces::ProjectNamespace', foreign_key: 'project_namespace_id', inverse_of: :project, dependent: :destroy # rubocop:disable Cop/ActiveRecordDependent -- needed to unclaim
   alias_method :parent, :namespace
   alias_attribute :parent_id, :namespace_id
 

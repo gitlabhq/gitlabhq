@@ -2795,6 +2795,16 @@
   :idempotent: true
   :tags: []
   :queue_namespace: :pipeline_creation
+- :name: pipeline_default:ci_catalog_resources_track_component_usage
+  :worker_name: Ci::Catalog::Resources::TrackComponentUsageWorker
+  :feature_category: :pipeline_composition
+  :has_external_dependencies: false
+  :urgency: :throttled
+  :resource_boundary: :unknown
+  :weight: 3
+  :idempotent: true
+  :tags: []
+  :queue_namespace: :pipeline_default
 - :name: pipeline_default:ci_create_downstream_pipeline
   :worker_name: Ci::CreateDownstreamPipelineWorker
   :feature_category: :continuous_integration

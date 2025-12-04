@@ -28,6 +28,11 @@ module WorkItems
       ::IssuesFinder::Params
     end
 
+    def use_cte_for_search?
+      # It's more performant to directly filter on the `issues` table without a CTE
+      use_namespace_traversal_ids_filtering? ? false : super
+    end
+
     private
 
     def filter_items(items)

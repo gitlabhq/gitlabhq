@@ -6,6 +6,12 @@ RSpec.describe RedirectRoute do
   let(:group) { create(:group) }
   let!(:redirect_route) { group.redirect_routes.create!(path: 'gitlabb') }
 
+  it_behaves_like 'cells claimable model',
+    subject_type: Cells::Claimable::CLAIMS_SUBJECT_TYPE::NAMESPACE,
+    subject_key: :namespace_id,
+    source_type: Cells::Claimable::CLAIMS_SOURCE_TYPE::RAILS_TABLE_REDIRECT_ROUTES,
+    claiming_attributes: [:path]
+
   describe 'relationships' do
     it { is_expected.to belong_to(:source) }
   end

@@ -5,6 +5,7 @@ require 'spec_helper'
 RSpec.describe 'Query.work_item(id)', :with_current_organization, feature_category: :team_planning do
   include_context 'with work item request context'
 
+  let_it_be(:user) { create(:user) }
   let(:current_user) { developer }
 
   let_it_be(:child_item1) { create(:work_item, :task, project: project, id: 1200) }
@@ -568,7 +569,7 @@ RSpec.describe 'Query.work_item(id)', :with_current_organization, feature_catego
         end
 
         let_it_be(:other_user_todo) do
-          create(:todo, state: :pending, target: work_item, target_type: work_item.class.name, user: create(:user))
+          create(:todo, state: :pending, target: work_item, target_type: work_item.class.name, user: user)
         end
 
         let(:work_item_fields) do
@@ -683,6 +684,22 @@ RSpec.describe 'Query.work_item(id)', :with_current_organization, feature_catego
               )
             )
           )
+        end
+
+        it 'does not perform read_emoji authorization checks' do
+          expect(Ability).not_to receive(:allowed?).with(
+            current_user, :read_emoji, anything
+          )
+
+          post_graphql(query, current_user: current_user)
+        end
+
+        context 'when user does not have access' do
+          let(:current_user) { user }
+
+          it 'does not return widget information' do
+            expect(work_item_data).to be_nil
+          end
         end
       end
 
@@ -1201,7 +1218,7 @@ RSpec.describe 'Query.work_item(id)', :with_current_organization, feature_catego
           end
 
           context 'when the user is unauthorized' do
-            let(:current_user) { create(:user) }
+            let(:current_user) { user }
 
             it_behaves_like 'a failure to find anything'
           end
@@ -1780,7 +1797,7 @@ RSpec.describe 'Query.work_item(id)', :with_current_organization, feature_catego
   end
 
   context 'when the user can not read the work item' do
-    let(:current_user) { create(:user) }
+    let(:current_user) { user }
 
     before do
       post_graphql(query)

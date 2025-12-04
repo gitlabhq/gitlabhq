@@ -185,10 +185,34 @@ document:
 
 Whenever possible, exclude only the problematic rule and lines.
 
-Ignore statements do not work for Vale rules with the `raw` scope. For more information, see this [issue](https://github.com/errata-ai/vale/issues/194).
-
 For more information on Vale scoping rules, see
 [Vale's documentation](https://vale.sh/docs/topics/scoping/).
+
+### Workaround to disable Vale rules that use the `raw` scope
+
+In general, you cannot disable Vale rules with the
+[`raw` scope](https://gitlab.com/search?search=scope%3A+raw+file%3A%5Edoc%2F.vale&nav_source=navbar&project_id=278964&group_id=9970&search_code=true&repository_ref=master).
+
+However, if a change causes Vale to fail because of a false positive, you can sometimes
+circumvent the by tweaking the formatting around the change. For example, sometimes
+you can add some extra spaces to the start of the line with the false positive.
+Be sure to test that the page continues to render fine, and add an HTML comment describing
+the reason for the special formatting.
+
+For instance (taken from a real [example](https://gitlab.com/gitlab-org/gitlab/-/blob/3d5398e9b2c9693d5a6c032c3352e7155541ea66/doc/user/markdown.md#L692-707)):
+
+```markdown
+<!--
+The following codeblock uses extra spaces to avoid the Vale ReferenceLinks test.
+Do not remove the two-space nesting.
+-->
+
+  - [Use a reference-style link that's normally prohibited][1]
+
+  [1]: https://example.com/
+```
+
+For more information, see this [Vale issue](https://github.com/errata-ai/vale/issues/194).
 
 ## Show Vale warnings on commit or push
 

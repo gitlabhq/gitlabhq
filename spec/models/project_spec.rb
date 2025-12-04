@@ -15,6 +15,12 @@ RSpec.describe Project, factory_default: :keep, feature_category: :groups_and_pr
 
   it_behaves_like 'having unique enum values'
 
+  it_behaves_like 'cells claimable model',
+    subject_type: Cells::Claimable::CLAIMS_SUBJECT_TYPE::PROJECT,
+    subject_key: :id,
+    source_type: Cells::Claimable::CLAIMS_SOURCE_TYPE::RAILS_TABLE_PROJECTS,
+    claiming_attributes: [:id]
+
   context 'when runner registration is allowed' do
     let_it_be(:project) { create(:project, :allow_runner_registration_token) }
 

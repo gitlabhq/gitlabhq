@@ -117,7 +117,9 @@ module PreferencesHelper
     user_application_color_mode == 'gl-system'
   end
 
-  def user_theme_primary_color
+  def user_theme_primary_color(dark = false)
+    return Gitlab::Themes.for_user(current_user).primary_color_dark if dark
+
     Gitlab::Themes.for_user(current_user).primary_color
   end
 

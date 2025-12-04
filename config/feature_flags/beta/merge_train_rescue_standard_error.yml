@@ -1,0 +1,10 @@
+---
+name: merge_train_rescue_standard_error
+description:
+feature_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/496664
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/214211
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/582544
+milestone: '18.7'
+group: group::pipeline execution
+type: beta
+default_enabled: false

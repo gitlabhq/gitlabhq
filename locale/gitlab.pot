@@ -3027,6 +3027,9 @@ msgstr ""
 msgid "AICatalog|This flow specializes in... It can help you with... Best suited for..."
 msgstr ""
 
+msgid "AICatalog|This key dashboard provides visibility into SDLC metrics in the context of AI adoption for projects and groups. %{linkStart}Learn more%{linkEnd}"
+msgstr ""
+
 msgid "AICatalog|Tools"
 msgstr ""
 
@@ -43551,6 +43554,12 @@ msgstr ""
 msgid "Naming, visibility"
 msgstr ""
 
+msgid "Navigate to %{itemLinkStart}%{item_name} in the AI Catalog%{itemLinkEnd}."
+msgstr ""
+
+msgid "Navigate to %{item_name} in the AI Catalog: %{url}."
+msgstr ""
+
 msgid "Navigate to the project to close the milestone."
 msgstr ""
 
@@ -46083,7 +46092,16 @@ msgid_plural "On %{end_date}, your trial will end and %{namespace_name} will be 
 msgstr[0] ""
 msgstr[1] ""
 
+msgid "On the confirmation dialog, choose a deletion method."
+msgstr ""
+
 msgid "On the left sidebar, select %{compliance_center_link} to view them."
+msgstr ""
+
+msgid "On the upper right, select the overflow menu, then select %{strongStart}Delete%{strongEnd}."
+msgstr ""
+
+msgid "On the upper right, select the overflow menu, then select Delete."
 msgstr ""
 
 msgid "On this page"
@@ -62377,10 +62395,13 @@ msgstr ""
 msgid "SecurityReports|Oops, something doesn't seem right."
 msgstr ""
 
+msgid "SecurityReports|Open vulnerability trends over time. To interact with a link in a chart popover, click to pin the popover first."
+msgstr ""
+
 msgid "SecurityReports|Operational vulnerabilities"
 msgstr ""
 
-msgid "SecurityReports|Panels that categorize vulnerabilities as open include those with Needs triage or Confirmed status. To interact with a link in a chart popover, click to pin the popover first. To unstick it, click outside the popover. %{learnMoreStart}Learn more%{learnMoreEnd}"
+msgid "SecurityReports|Panels that categorize vulnerabilities as open include those with Needs triage or Confirmed status. Hover over the info icon (%{infoIcon}) to view more information about the data shown in each panel. To interact with a link in a chart popover, click to pin the popover first. To unstick it, click outside the popover. %{learnMoreStart}Learn more%{learnMoreEnd}"
 msgstr ""
 
 msgid "SecurityReports|Parsing errors and warnings in pipeline"
@@ -62604,9 +62625,6 @@ msgstr ""
 msgid "SecurityReports|Vulnerability report"
 msgstr ""
 
-msgid "SecurityReports|Vulnerability trends over time"
-msgstr ""
-
 msgid "SecurityReports|Vulnerability will be archived on %{date}"
 msgstr ""
 
@@ -62765,6 +62783,12 @@ msgid "See vulnerability %{vulnerability_link} for any Solution details."
 msgstr ""
 
 msgid "Select"
+msgstr ""
+
+msgid "Select %{strongStart}Delete%{strongEnd}."
+msgstr ""
+
+msgid "Select Delete."
 msgstr ""
 
 msgid "Select Git revision"
@@ -69534,6 +69558,9 @@ msgid "To continue, please update your password. After you update, you'll be dir
 msgstr ""
 
 msgid "To continue, you need to select the link in the confirmation email we sent to verify your email address. If you didn't get our email, select %{strongStart}Resend confirmation email.%{strongEnd}"
+msgstr ""
+
+msgid "To delete the item from the UI:"
 msgstr ""
 
 msgid "To disable the setting, set this value to 0."
@@ -77943,6 +77970,9 @@ msgstr ""
 msgid "You can also use group access tokens with Git to authenticate over HTTP(S). %{link_start}Learn more.%{link_end}"
 msgstr ""
 
+msgid "You can also use our GraphQL API to remove an item:"
+msgstr ""
+
 msgid "You can also use project access tokens with Git to authenticate over HTTP(S). %{link_start}Learn more.%{link_end}"
 msgstr ""
 
@@ -78061,9 +78091,6 @@ msgid "You can still use and manage existing tokens. %{link_start}Learn more.%{l
 msgstr ""
 
 msgid "You can unsubscribe from further updates to this ticket. To receive updates in the future, you will have to be added again as a participant."
-msgstr ""
-
-msgid "You can use our GraphQL API to remove an item:"
 msgstr ""
 
 msgid "You can view it in your %{pat_link_start}personal access tokens%{pat_link_end} settings."

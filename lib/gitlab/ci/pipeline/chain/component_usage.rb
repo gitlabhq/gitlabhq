@@ -5,10 +5,12 @@ module Gitlab
     module Pipeline
       module Chain
         class ComponentUsage < Chain::Base
+          include Gitlab::Utils::StrongMemoize
+
           def perform!
-            included_catalog_components.each do |component|
-              track_event(component)
-            end
+            return if included_components.empty?
+
+            enqueue_tracking_job
           end
 
           def break?
@@ -17,28 +19,28 @@ module Gitlab
 
           private
 
-          def track_event(component)
-            Gitlab::InternalEvents.track_event(
-              'ci_catalog_component_included',
-              namespace: project.namespace,
-              project: project,
-              user: current_user,
-              additional_properties: {
-                label: "#{component.project.full_path}/#{component.name}",
-                value: component.component_type_before_type_cast,
-                property: component.version.name
+          def enqueue_tracking_job
+            serialized_components = included_components.map do |component_hash|
+              {
+                'project_id' => component_hash[:project].id,
+                'sha' => component_hash[:sha],
+                'name' => component_hash[:name]
               }
-            )
-
-            ::Ci::Components::Usages::CreateService.new(component, used_by_project: project).execute
-          end
-
-          def included_catalog_components
-            command.yaml_processor_result.included_components.filter_map do |hash|
-              ::Ci::Catalog::ComponentsProject.new(hash[:project], hash[:sha])
-                .find_catalog_component(hash[:name])
             end
+
+            ::Ci::Catalog::Resources::TrackComponentUsageWorker.perform_async(
+              project.id,
+              current_user&.id,
+              serialized_components
+            )
+          rescue StandardError => e
+            Gitlab::ErrorTracking.track_exception(e, project_id: project.id)
           end
+
+          def included_components
+            command.yaml_processor_result.included_components
+          end
+          strong_memoize_attr :included_components
         end
       end
     end

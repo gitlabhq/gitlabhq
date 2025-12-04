@@ -4,6 +4,11 @@ class Route < ApplicationRecord
   include CaseSensitivity
   include Gitlab::SQL::Pattern
   include EachBatch
+  include Cells::Claimable
+
+  cells_claims_attribute :path, type: CLAIMS_BUCKET_TYPE::ROUTES
+
+  cells_claims_metadata subject_type: CLAIMS_SUBJECT_TYPE::NAMESPACE, subject_key: :namespace_id
 
   belongs_to :source, polymorphic: true, inverse_of: :route # rubocop:disable Cop/PolymorphicAssociations
   belongs_to :namespace, inverse_of: :namespace_route

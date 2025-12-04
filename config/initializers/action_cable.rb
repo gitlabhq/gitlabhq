@@ -7,11 +7,30 @@ Rails.application.configure do
 
   config.action_cable.url = Gitlab::Utils.append_path(Gitlab.config.gitlab.relative_url_root, '/-/cable')
   config.action_cable.worker_pool_size = Gitlab::ActionCable::Config.worker_pool_size
-  config.action_cable.allowed_request_origins = [Gitlab.config.gitlab.url] if Rails.env.development? || Rails.env.test?
   if Rails.env.development? || Rails.env.test?
+    config.action_cable.allowed_request_origins = [Gitlab.config.gitlab.url]
     config.action_cable.disable_request_forgery_protection = Gitlab::Utils.to_boolean(
       ENV.fetch('ACTION_CABLE_DISABLE_REQUEST_FORGERY_PROTECTION', false)
     )
+  end
+
+  if Gitlab.config.gitlab.action_cable_allowed_origins.present?
+    # sanitize URLs
+    error_message = 'Invalid URL found in action_cable_allowed_origins configuration. ' \
+      'Please fix this in your gitlab.yml before starting GitLab.'
+
+    allowed_origins = Gitlab.config.gitlab.action_cable_allowed_origins.filter_map do |url|
+      begin
+        uri = URI.parse(url)
+        raise error_message unless uri.is_a?(URI::HTTP) && uri.host.present?
+      rescue URI::InvalidURIError
+        raise error_message
+      end
+
+      url.sub(%r{/+$}, '')
+    end
+
+    config.action_cable.allowed_request_origins = allowed_origins if allowed_origins.present?
   end
 end
 

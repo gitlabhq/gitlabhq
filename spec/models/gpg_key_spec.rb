@@ -5,6 +5,12 @@ require 'spec_helper'
 RSpec.describe GpgKey, feature_category: :source_code_management do
   subject { build(:gpg_key) }
 
+  it_behaves_like 'cells claimable model',
+    subject_type: Cells::Claimable::CLAIMS_SUBJECT_TYPE::USER,
+    subject_key: :user_id,
+    source_type: Cells::Claimable::CLAIMS_SOURCE_TYPE::RAILS_TABLE_GPG_KEYS,
+    claiming_attributes: [:key, :fingerprint, :primary_keyid]
+
   describe "associations" do
     it { is_expected.to belong_to(:user) }
     it { is_expected.to have_many(:subkeys) }

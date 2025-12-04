@@ -23,8 +23,13 @@ class Namespace < ApplicationRecord
   include UseSqlFunctionForPrimaryKeyLookups
   include SafelyChangeColumnDefault
   include Todoable
+  include Cells::Claimable
 
   extend Gitlab::Utils::Override
+
+  cells_claims_attribute :id, type: CLAIMS_BUCKET_TYPE::NAMESPACE_IDS
+
+  cells_claims_metadata subject_type: CLAIMS_SUBJECT_TYPE::NAMESPACE, subject_key: :id
 
   ignore_columns :description, :description_html, :cached_markdown_version, remove_with: '18.3', remove_after: '2025-07-17'
 

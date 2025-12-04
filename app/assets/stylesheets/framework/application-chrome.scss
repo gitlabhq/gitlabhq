@@ -51,7 +51,7 @@
 
   // Super topbar
   .super-topbar {
-    @apply gl-pl-4 gl-pr-5 sm:gl-pr-3;
+    @apply gl-pl-3 sm:gl-pl-4 gl-pr-3;
     height: var(--top-bar-height);
 
     // Placeholder styles
@@ -243,7 +243,7 @@
 
   // Layout
   &.page-with-panels .layout-page {
-    @apply gl-flex gl-gap-0 lg:gl-gap-3 gl-items-stretch gl-justify-start lg:gl-justify-center gl-flex-col lg:gl-flex-row lg:gl-pl-0 gl-pt-3 lg:gl-pb-3 gl-pr-3;
+    @apply gl-flex gl-gap-0 lg:gl-gap-3 gl-items-stretch gl-justify-start lg:gl-justify-center gl-flex-col lg:gl-flex-row lg:gl-pl-0 gl-pt-3 lg:gl-pb-3 sm:gl-pr-3;
     min-height: 0;
     flex: 1;
   }
@@ -308,7 +308,7 @@
 
   // Add some left margin on pages with no left sidebar (like /search)
   .panels-container {
-    @apply gl-ml-3;
+    @apply sm:gl-ml-3;
   }
 
   @include media-breakpoint-up(lg) {
@@ -400,7 +400,7 @@
   // Panel header
   .panel-header .top-bar-fixed,
   .work-item-drawer-header {
-    @apply gl-bg-default gl-shadow-none gl-relative gl-px-3 lg:gl-px-5 #{!important};
+    @apply gl-bg-default gl-shadow-none gl-relative gl-px-4 lg:gl-px-5 #{!important};
     z-index: 99;
     border-bottom: 1px solid var(--super-sidebar-bg);
   }

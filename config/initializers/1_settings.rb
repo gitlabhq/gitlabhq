@@ -276,6 +276,11 @@ Gitlab.ee do
 end
 
 #
+# ActionCable
+#
+Settings.gitlab['action_cable_allowed_origins'] ||= []
+
+#
 # CI
 #
 Settings['gitlab_ci'] ||= {}

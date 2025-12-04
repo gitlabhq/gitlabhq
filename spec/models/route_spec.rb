@@ -6,6 +6,12 @@ RSpec.describe Route do
   let(:group) { create(:group, path: 'git_lab', name: 'git_lab') }
   let(:route) { group.route }
 
+  it_behaves_like 'cells claimable model',
+    subject_type: Cells::Claimable::CLAIMS_SUBJECT_TYPE::NAMESPACE,
+    subject_key: :namespace_id,
+    source_type: Cells::Claimable::CLAIMS_SOURCE_TYPE::RAILS_TABLE_ROUTES,
+    claiming_attributes: [:path]
+
   describe 'relationships' do
     it { is_expected.to belong_to(:source) }
     it { is_expected.to belong_to(:namespace) }

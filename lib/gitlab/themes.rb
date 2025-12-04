@@ -19,17 +19,17 @@ module Gitlab
     ].freeze
 
     # Struct class representing a single Theme
-    Theme = Struct.new(:id, :name, :css_class, :primary_color)
+    Theme = Struct.new(:id, :name, :css_class, :primary_color, :primary_color_dark)
 
     # All available Themes
     def available_themes
       [
-        Theme.new(3, s_('NavigationTheme|Default'), 'ui-neutral', '#ececef'),
-        Theme.new(1, s_('NavigationTheme|Indigo'), 'ui-indigo', '#222261'),
-        Theme.new(4, s_('NavigationTheme|Blue'), 'ui-blue', '#0b2640'),
-        Theme.new(5, s_('NavigationTheme|Green'), 'ui-green', '#0e4328'),
-        Theme.new(9, s_('NavigationTheme|Red'), 'ui-red', '#580d02'),
-        Theme.new(2, s_('NavigationTheme|Gray'), 'ui-gray', '#28272d')
+        Theme.new(3, s_('NavigationTheme|Default'), 'ui-neutral', '#F1F0F6', '#232128'),
+        Theme.new(1, s_('NavigationTheme|Indigo'), 'ui-indigo', '#F4F0FF', '#25202F'),
+        Theme.new(4, s_('NavigationTheme|Blue'), 'ui-blue', '#E9F3FC', '#1B202F'),
+        Theme.new(5, s_('NavigationTheme|Green'), 'ui-green', '#ECF4EE', '#1C2527'),
+        Theme.new(9, s_('NavigationTheme|Red'), 'ui-red', '#FCF1EF', '#2C1D1F'),
+        Theme.new(2, s_('NavigationTheme|Gray'), 'ui-gray', '#ECECEF', '#232227')
       ]
     end
 

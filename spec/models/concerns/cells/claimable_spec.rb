@@ -30,14 +30,6 @@ RSpec.describe Cells::Claimable, feature_category: :cell do
       )
     end
 
-    context 'when subject_key is not provided' do
-      let(:subject_key) { nil }
-
-      it 'uses default subject_key' do
-        expect(test_klass.cells_claims_subject_key).to eq(:organization_id)
-      end
-    end
-
     context 'when custom subject_key is provided' do
       let(:subject_key) { :custom_id }
 

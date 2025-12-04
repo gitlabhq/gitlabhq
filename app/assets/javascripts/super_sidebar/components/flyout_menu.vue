@@ -1,5 +1,6 @@
 <script>
 import { computePosition, autoUpdate, offset, flip, shift } from '@floating-ui/dom';
+import { throttle } from 'lodash';
 import NavItem from './nav_item.vue';
 
 // Flyout menus are shown when the MenuSection's title is hovered with the mouse.
@@ -92,7 +93,12 @@ export default {
   },
   created() {
     const target = document.querySelector(`#${this.targetId}`);
-    target.addEventListener('mousemove', this.onMouseMove);
+
+    // 50ms throttle = ~20fps, which is smooth enough for UI tracking
+    this.onMouseMove = throttle(this.onMouseMove, 50);
+
+    // Add the event listener with the throttled function
+    target.addEventListener('mousemove', this.onMouseMove, { passive: true });
   },
   mounted() {
     const target = document.querySelector(`#${this.targetId}`);
@@ -135,8 +141,20 @@ export default {
     this.cleanup = autoUpdate(target, flyout, updatePosition);
   },
   beforeDestroy() {
-    this.cleanup();
+    // Clean up the autoUpdate listener
+    if (this.cleanup) {
+      this.cleanup();
+    }
+
+    // Clear any pending timeout
     clearTimeout(this.hoverTimeoutId);
+
+    // Cancel any pending throttled calls
+    if (this.onMouseMove && this.onMouseMove.cancel) {
+      this.onMouseMove.cancel();
+    }
+
+    // Remove the event listener
     const target = document.querySelector(`#${this.targetId}`);
     target.removeEventListener('mousemove', this.onMouseMove);
   },

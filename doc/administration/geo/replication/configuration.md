@@ -281,6 +281,30 @@ that the **secondary** site can act on those notifications immediately.
 Be sure the secondary site is running and accessible. You can sign in to the
 secondary site with the same credentials as were used with the primary site.
 
+### Add primary and secondary URLs as allowed ActionCable origins
+
+This step allows websockets to work seamlessly from primary and secondary sites.
+
+1. Collect the **external URLs** of your sites (primary and secondary). You can find them in the Site pages in the Admin area, as mentioned in the section above.
+1. SSH into each Rails and Sidekiq node on your **primary site** and sign in as root:
+
+   ```shell
+   sudo -i
+   ```
+
+1. Edit `/etc/gitlab/gitlab.rb` to add the URLs collected in step 1 to the `action_cable_allowed_origins` setting:
+
+   ```ruby
+   gitlab_rails['action_cable_allowed_origins'] = ['https://secondary.example.com', 'https://primary.example.com']
+   ```
+
+1. To apply the changes, reconfigure each Rails and Sidekiq node and restart the service:
+
+   ```shell
+   gitlab-ctl reconfigure
+   gitlab-ctl restart
+   ```
+
 ## Step 4. (Optional) Using custom certificates
 
 You can safely skip this step if:

@@ -5,13 +5,20 @@ class GpgKey < ApplicationRecord
   KEY_SUFFIX = '-----END PGP PUBLIC KEY BLOCK-----'
 
   include ShaAttribute
+  include Cells::Claimable
+
+  cells_claims_attribute :key, type: CLAIMS_BUCKET_TYPE::GPG_KEYS
+  cells_claims_attribute :fingerprint, type: CLAIMS_BUCKET_TYPE::GPG_KEY_FINGERPRINTS
+  cells_claims_attribute :primary_keyid, type: CLAIMS_BUCKET_TYPE::GPG_KEY_PRIMARY_KEYIDS
+
+  cells_claims_metadata subject_type: CLAIMS_SUBJECT_TYPE::USER, subject_key: :user_id
 
   sha_attribute :primary_keyid
   sha_attribute :fingerprint
 
   belongs_to :user
   has_many :gpg_signatures, class_name: 'CommitSignatures::GpgSignature'
-  has_many :subkeys, class_name: 'GpgKeySubkey'
+  has_many :subkeys, class_name: 'GpgKeySubkey', dependent: :destroy # rubocop:disable Cop/ActiveRecordDependent -- needed to unclaim
 
   scope :with_subkeys, -> { includes(:subkeys) }
   scope :externally_invalid, -> { where(externally_verified: false) }

@@ -185,3 +185,109 @@ It is possible to test the setup locally.
    ```
 
 1. With the changes to `FoundationalChatAgentsDefinitions.rb`, you can now select your foundational agent in the web chat locally.
+
+## Architecture design
+
+[Foundational Chat Agents](../../development/ai_features/glossary.md#agent-types) are developed by GitLab and must be available to all GitLab deployments (GitLab.com, Self-Managed, and Dedicated).
+
+The architecture of how Foundational Agents are made available avoids connecting to AI Catalog to fetch definitions at runtime and allows GitLab engineering teams full control over when they are released.
+
+This design could also be extended to support
+[Foundational flows](../../development/ai_features/glossary.md#flow-types).
+
+### Foundational Agents in Monolith
+
+Defining foundational agents in the monolith serves two purposes: backwards compatibility support and release control.
+
+With [`FoundationalChatAgentsDefinitions`](https://gitlab.com/gitlab-org/gitlab/blob/master/ee/lib/ai/foundational_chat_agents_definitions.rb)
+The [`FoundationalChatAgentsDefinitions`](https://gitlab.com/gitlab-org/gitlab/blob/master/ee/lib/ai/foundational_chat_agents_definitions.rb)
+module manages agent versioning based on the GitLab instance version.
+affecting older GitLab versions, similar to [prompt versioning](https://handbook.gitlab.com/handbook/engineering/architecture/design-documents/prompts_migration/#versioning).
+
+Additionally, on [`FoundationalChatAgentsResolver`](https://gitlab.com/gitlab-org/gitlab/blob/master/ee/app/graphql/resolvers/ai/foundational_chat_agents_resolver.rb),
+teams are able to select which conditions can make a foundational chat agent available, for situations like:
+
+- does the user have Ultimate,
+- is the feature flag enabled,
+- is the agent SaaS exclusive
+
+If we relied exclusively on AI Catalog or Duo Workflow Service, such flexibility wouldn't be possible
+
+#### Version resolution
+
+Agent versions are resolved based on the `version` field in `FoundationalChatAgentsDefinitions.rb`,
+which maps to a
+folder in GitLab Duo Workflow Service (for example, `v1`, `experimental`).
+
+In the future, [version resolution will be based on semantic versioning](https://gitlab.com/gitlab-org/modelops/applied-ml/code-suggestions/ai-assist/-/issues/1577).
+This will allow:
+
+- **Patch and minor updates** (bug fixes, performance improvements, prompt refinements) to be shipped to existing
+  GitLab versions without requiring a GitLab instance update
+- **Major version releases** for breaking changes that require new GitLab features (such as new tools, API changes,
+  or schema modifications) to be shipped only to compatible GitLab versions
+
+This approach ensures backward compatibility while enabling continuous improvement of foundational agents.
+
+### Bundling into GitLab Duo Workflow Service
+
+Bundling agents into GitLab Duo Workflow Service makes agents defined in AI Catalog available on all deployments,
+including self-hosted setups.
+[With semantic versioning support](https://gitlab.com/gitlab-org/modelops/applied-ml/code-suggestions/ai-assist/-/issues/1577),
+the latest version of each major release will be bundled,
+along with specific pinned versions of each foundational
+agent.
+
+The alternative to this would be to ship the YAML definitions themselves as part of GitLab monolith,
+but that comes with
+the downside of not being able to quickly ship fixes to cloud-connected self-managed instances.
+
+Eventually, if labels are implemented on AI Catalog,
+teams wouldn't need to add their entries to the Dockerfile, versions
+could be fetched by the correct labels.
+
+### Creation flow
+
+```mermaid
+%%{init: {"sequence": {"actorMargin": 50}}}%%
+sequenceDiagram
+    accTitle: Foundational agent creation flow
+    accDescr: Sequence diagram showing the process of creating a foundational agent from AI Catalog through to GitLab monolith
+    participant Team
+    participant AI Catalog
+    participant DWS Repo as DWS Repository
+    participant CI
+    participant Monolith
+
+    Team->>AI Catalog: Create foundational agent
+    Team->>DWS Repo: Add agent ID to Dockerfile
+    DWS Repo->>CI: Trigger build
+    CI->>AI Catalog: Pull agent definitions
+    AI Catalog->>CI: Returns all required versions
+    CI->>CI: Store definitions in DWS image
+    CI->>CI: Ships images with definitions
+    Team->>Monolith: Add agent to FoundationalChatAgentsDefinitions.rb
+```
+
+### Usage flow
+
+```mermaid
+%%{init: {"sequence": {"actorMargin": 50}}}%%
+sequenceDiagram
+    accTitle: Foundational agent usage flow
+    accDescr: Sequence diagram showing how users interact with foundational agents through GitLab monolith and Duo Workflow Service
+    participant User
+    participant Monolith
+    participant DWS as GitLab Duo Workflow Service
+
+    User->>Monolith: Request to foundational agent
+    Monolith->>DWS: Request specific agent version
+    DWS->>DWS: Resolve agent version
+    DWS->>DWS: Process request
+    DWS->>Monolith: Return response
+    Monolith->>User: Return response
+```
+
+The execution flows are the same whether the user is using a local monolith, GitLab SaaS,
+the cloud-connected DWS or a
+local installation of DWS.

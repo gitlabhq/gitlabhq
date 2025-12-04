@@ -81,6 +81,14 @@ production: &base
 
     allowed_hosts: []
 
+    # ActionCable allowed request origins
+    # Customize if you browse your GitLab application through multiple URLs
+    # If you have GitLab Geo enabled, then add the external URLs of every site:
+    action_cable_allowed_origins:
+      #- https://unified.url
+      #- https://primary-external.url (if different from the above)
+      #- https://secondary-external.url (if different from the above)
+
     # Trusted Proxies
     # Customize if you have GitLab behind a reverse proxy which is running on a different machine.
     # Add the IP address for your reverse proxy to the list, otherwise users will appear signed in from that address.

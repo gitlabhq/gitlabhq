@@ -10,9 +10,12 @@ require 'test_file_finder'
 # To minimize the chance of this test failing due to unrelated changes,
 # the test files are chosen to be critical files that are unlikely to be deleted in a typical merge request
 
-specs_for_cells_claims_models = %w[
-  spec/cells/claims/organizations/organization_spec.rb
-].freeze
+root_path = "#{__dir__}/../"
+
+specs_for_cells_claims_models =
+  Dir["#{root_path}spec/cells/claims/**/*_spec.rb"].map do |path|
+    path.delete_prefix(root_path)
+  end.freeze
 
 specs_for_all_models = %w[
   spec/models/every_model_spec.rb
