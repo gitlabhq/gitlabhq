@@ -1,0 +1,8 @@
+---
+name: read_pipeline_schedule_variable
+description: Grants the ability to read pipeline schedule variables
+feature_category: continuous_integration
+permissions:
+  - read_pipeline_schedule_variable
+boundaries:
+  - project

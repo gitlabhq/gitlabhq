@@ -20,11 +20,6 @@ module Authz
           all.key?(name.to_sym)
         end
 
-        def available_for_tokens
-          all.values.select(&:available_for_tokens?)
-        end
-        strong_memoize_attr :available_for_tokens
-
         private
 
         def load_all
@@ -65,8 +60,26 @@ module Authz
         definition[:description]
       end
 
-      def available_for_tokens?
-        definition[:available_for_tokens] || false
+      def action
+        return definition[:action] if definition[:action]
+        return name.delete_suffix("_#{resource}") if definition[:resource]
+
+        name.split('_')[0]
+      end
+
+      def resource
+        return definition[:resource] if definition[:resource]
+        return name.delete_prefix("#{action}_") if definition[:action]
+
+        name.split('_', 2)[1]
+      end
+
+      def feature_category
+        definition[:feature_category]
+      end
+
+      def boundaries
+        definition[:boundaries] || []
       end
     end
   end

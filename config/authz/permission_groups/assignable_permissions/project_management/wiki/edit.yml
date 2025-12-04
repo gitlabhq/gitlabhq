@@ -1,0 +1,9 @@
+---
+name: edit_wiki
+description: Grants the ability to edit wikis
+permissions:
+  - update_wiki
+  - upload_wiki_attachment
+boundaries:
+  - group
+  - project

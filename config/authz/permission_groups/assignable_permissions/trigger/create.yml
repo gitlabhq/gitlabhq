@@ -1,0 +1,8 @@
+---
+name: create_trigger
+description: Grants the ability to create pipeline triggers
+feature_category: pipeline_composition
+boundaries:
+  - project
+permissions:
+  - create_trigger

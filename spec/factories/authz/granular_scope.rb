@@ -4,7 +4,7 @@ FactoryBot.define do
   factory :granular_scope, class: 'Authz::GranularScope' do
     organization { namespace&.organization || association(:common_organization) }
     namespace
-    permissions { [:create_issue] }
+    permissions { [:create_member_role] }
 
     trait :personal_projects do
       access { :personal_projects }

@@ -1,7 +1,9 @@
 ---
 name: update_wiki
 description: Grants the ability to update wikis
+feature_category: wiki
+boundaries:
+  - group
+  - project
 permissions:
   - update_wiki
-  - upload_wiki_attachment
-available_for_tokens: true

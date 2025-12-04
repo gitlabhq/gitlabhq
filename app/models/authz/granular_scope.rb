@@ -38,7 +38,8 @@ module Authz
         .where(namespace_id: namespace_ids)
         .or(where(access: :all_memberships))
         .pluck(Arel.sql('DISTINCT jsonb_array_elements_text(permissions)'))
-        .map(&:to_sym)
+        .flat_map { |p| ::Authz::PermissionGroups::Assignable.get(p)&.permissions }
+        .compact.map(&:to_sym)
       # rubocop:enable Database/AvoidUsingPluckWithoutLimit
     end
 

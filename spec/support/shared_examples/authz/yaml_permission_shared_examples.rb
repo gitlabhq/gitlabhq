@@ -2,7 +2,6 @@
 
 # requires the following let variables
 # 1. definition_name - name value from an existing YAML definition file (e.g. :create_issue)
-# 2. definition - hash representing the definition loaded from YAML file
 RSpec.shared_examples 'loadable yaml permission or permission group' do
   describe '.all' do
     it 'loads all definitions' do
@@ -61,10 +60,24 @@ RSpec.shared_examples 'loadable yaml permission or permission group' do
   end
 
   describe 'instance methods' do
-    let(:available_for_tokens) { true }
+    let(:source_file) { 'config/authz/permissions/permission/test.yml' }
+    let(:name) { 'test_permission' }
+    let(:action) { nil }
+    let(:resource) { nil }
+    let(:boundaries) { %w[project] }
+    let(:definition) do
+      {
+        name: name,
+        description: 'Test permission description',
+        feature_category: 'feature_category',
+        action: action,
+        resource: resource,
+        boundaries: boundaries
+      }
+    end
 
     subject(:instance) do
-      described_class.new(definition.merge({ available_for_tokens: available_for_tokens }), 'definition.yml')
+      described_class.new(definition, source_file)
     end
 
     describe '#name' do
@@ -79,15 +92,93 @@ RSpec.shared_examples 'loadable yaml permission or permission group' do
       end
     end
 
-    describe '#available_for_tokens?' do
-      subject { instance.available_for_tokens? }
+    describe '#action' do
+      let(:name) { 'another_test_permission' }
 
-      it { is_expected.to be(true) }
+      subject { instance.action }
 
-      context 'when available_for_tokens is not defined' do
-        let(:available_for_tokens) { nil }
+      it { is_expected.to eq('another') }
 
-        it { is_expected.to be(false) }
+      context 'when an action is defined' do
+        let(:action) { 'another_test' }
+
+        it 'is expected to use the defined action' do
+          is_expected.to eq('another_test')
+        end
+      end
+
+      context 'when a resource is defined' do
+        let(:resource) { 'permission' }
+
+        it 'is expected to infer the action based on the resource' do
+          is_expected.to eq('another_test')
+        end
+      end
+
+      context 'when an action and resource are defined' do
+        let(:action) { 'another_test' }
+        let(:resource) { 'test_permission' }
+
+        it 'is expected use the defined action' do
+          is_expected.to eq('another_test')
+        end
+      end
+    end
+
+    describe '#resource' do
+      let(:name) { 'another_test_permission' }
+
+      subject { instance.resource }
+
+      it { is_expected.to eq('test_permission') }
+
+      context 'when a resource is defined' do
+        let(:resource) { 'permission' }
+
+        it 'is expected to use the defined resource' do
+          is_expected.to eq('permission')
+        end
+      end
+
+      context 'when an action is defined' do
+        let(:action) { 'another_test' }
+
+        it 'is expected to infer the resource based on the action' do
+          is_expected.to eq('permission')
+        end
+      end
+
+      context 'when a resource and action are defined' do
+        let(:action) { 'another_test' }
+        let(:resource) { 'test_permission' }
+
+        it 'is expected use the defined resource' do
+          is_expected.to eq('test_permission')
+        end
+      end
+    end
+
+    describe '#feature_category' do
+      specify do
+        expect(instance.feature_category).to eq(definition[:feature_category])
+      end
+    end
+
+    describe '#boundaries' do
+      subject { instance.boundaries }
+
+      it { is_expected.to eq(boundaries) }
+
+      context 'when boundaries are not defined' do
+        let(:boundaries) { nil }
+
+        it { is_expected.to eq([]) }
+      end
+    end
+
+    describe '#source_file' do
+      specify do
+        expect(instance.source_file).to eq(source_file)
       end
     end
   end

@@ -259,7 +259,7 @@ Prerequisites:
 To create a configuration file:
 
 1. In your project, create a YAML file, for example: `.gitlab/duo/flows/claude.yaml`
-1. Populate the file by using [one of the configuration file examples](flow_examples.md).
+1. Populate the file by using [one of the configuration file examples](external_examples.md).
 
 ## Enable an external agent
 

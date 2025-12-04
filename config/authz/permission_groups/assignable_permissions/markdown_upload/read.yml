@@ -1,0 +1,9 @@
+---
+name: read_markdown_upload
+description: Grants the ability to read markdown uploads
+feature_category: team_planning
+boundaries:
+  - project
+  - group
+permissions:
+  - read_markdown_upload

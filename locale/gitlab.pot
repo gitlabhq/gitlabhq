@@ -2880,6 +2880,9 @@ msgstr ""
 msgid "AICatalog|New flow"
 msgstr ""
 
+msgid "AICatalog|No triggers configured. %{linkStart}Add a trigger%{linkEnd} to make this %{itemType} available."
+msgstr ""
+
 msgid "AICatalog|Only agents enabled in your top-level group are shown."
 msgstr ""
 
@@ -3001,6 +3004,9 @@ msgid "AICatalog|There was a problem fetching flows."
 msgstr ""
 
 msgid "AICatalog|This %{itemType} is private and can only be enabled in the project it was created in or its top-level group. Duplicate the agent to use the same configuration in other projects."
+msgstr ""
+
+msgid "AICatalog|This %{itemType} requires approval from your parent group owner before it can be used"
 msgstr ""
 
 msgid "AICatalog|This YAML configuration file determines the prompts, tools, and capabilities of your flow. Required properties: injectGatewayToken, image, commands"

@@ -26,8 +26,14 @@ RSpec.shared_examples 'authorizing granular token permissions' do |permissions|
   end
 
   context 'when authenticating with a granular personal access token' do
+    let(:assignables) do
+      Array(permissions).map do |permission|
+        ::Authz::PermissionGroups::Assignable.for_permission(permission).first&.name
+      end
+    end
+
     let(:boundary) { ::Authz::Boundary.for(boundary_object) }
-    let(:pat) { create(:granular_pat, user: user, namespace: boundary.namespace, permissions: permissions) }
+    let(:pat) { create(:granular_pat, user: user, namespace: boundary.namespace, permissions: assignables) }
 
     it_behaves_like 'granting access'
 

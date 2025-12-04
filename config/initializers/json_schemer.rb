@@ -8,7 +8,7 @@ JSONSchemer.configure do |config|
     feature_categories.include?(category)
   end
 
-  config.formats['known_permissions'] = proc do |permission, _format|
-    Authz::Permission.defined?(permission)
+  config.formats['known_assignable_permissions'] = proc do |permission, _format|
+    Authz::PermissionGroups::Assignable.defined?(permission)
   end
 end

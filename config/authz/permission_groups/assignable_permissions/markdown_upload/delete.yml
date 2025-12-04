@@ -1,0 +1,9 @@
+---
+name: delete_markdown_upload
+description: Grants the ability to delete markdown uploads
+feature_category: team_planning
+boundaries:
+  - project
+  - group
+permissions:
+  - delete_markdown_upload

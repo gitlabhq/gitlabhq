@@ -24,7 +24,7 @@ module Types
           description: 'List of permissions of a granular scope.'
 
         def permissions
-          object.permissions.filter_map { |permission_name| ::Authz::Permission.get(permission_name) }
+          object.permissions.filter_map { |permission_name| ::Authz::PermissionGroups::Assignable.get(permission_name) }
         end
       end
       # rubocop:enable Graphql/AuthorizeTypes

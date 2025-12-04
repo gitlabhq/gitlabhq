@@ -1,0 +1,9 @@
+---
+name: delete_member_role
+description: Grants the ability to delete member roles
+feature_category: system_access
+boundaries:
+  - group
+  - instance
+permissions:
+  - delete_member_role

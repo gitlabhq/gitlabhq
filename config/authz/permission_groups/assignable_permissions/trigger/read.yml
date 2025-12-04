@@ -1,0 +1,8 @@
+---
+name: read_trigger
+description: Grants the ability to read pipeline triggers
+feature_category: pipeline_composition
+boundaries:
+  - project
+permissions:
+  - read_trigger

@@ -6,7 +6,6 @@ RSpec.describe 'Get a list of personal access tokens that belong to a user', fea
   include GraphqlHelpers
 
   let_it_be(:user) { create(:user) }
-
   let_it_be(:group) { create(:group) }
 
   let_it_be(:legacy_token) do
@@ -19,18 +18,6 @@ RSpec.describe 'Get a list of personal access tokens that belong to a user', fea
   let_it_be(:granular_token) do
     create(:granular_pat, last_used_at: 1.day.ago, permissions: ['read_member_role'], user: user, namespace: group)
   end
-
-  let(:permission_source_file) { 'config/authz/permissions/member_role/read.yml' }
-  let(:permission_definition) do
-    {
-      name: 'read_member_role',
-      description: 'Grants the ability to read member roles',
-      feature_category: 'system_access',
-      available_for_tokens: true
-    }
-  end
-
-  let(:mock_permission) { ::Authz::Permission.new(permission_definition, permission_source_file) }
 
   let(:fields) do
     <<~GQL
@@ -76,10 +63,6 @@ RSpec.describe 'Get a list of personal access tokens that belong to a user', fea
     post_graphql(query, current_user: current_user, token: { personal_access_token: legacy_token })
 
     legacy_token.reload # to load last_used_at
-  end
-
-  before do
-    allow(::Authz::Permission).to receive_messages(all_for_tokens: [mock_permission])
   end
 
   context 'when user is authenticated' do

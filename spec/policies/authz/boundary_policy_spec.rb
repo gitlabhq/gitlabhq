@@ -10,7 +10,7 @@ RSpec.describe Authz::BoundaryPolicy, feature_category: :permissions do
   let_it_be(:user) { create(:user, :with_namespace, developer_of: root_group) }
   let_it_be(:project) { create(:project, namespace: group) }
   let_it_be(:instance) { nil }
-  let_it_be(:permissions) { :create_issue }
+  let_it_be(:permissions) { :update_wiki }
 
   let(:boundary_object) { project }
   let(:boundary) { Authz::Boundary.for(boundary_object) }

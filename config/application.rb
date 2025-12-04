@@ -644,8 +644,10 @@ module Gitlab
     end
 
     # DO NOT PLACE ANY INITIALIZERS AFTER THIS.
-    config.after_initialize do
-      config.active_record.yaml_column_permitted_classes = [
+    config.to_prepare do
+      # Set the permitted classes during boot *and* on reload, otherwise newly reloaded classes won't be permitted.
+      # See https://guides.rubyonrails.org/configuring.html#initialization-events re: `to_prepare`.
+      Rails.application.config.active_record.yaml_column_permitted_classes = [
         Symbol, Date, Time,
         BigDecimal, # https://gitlab.com/gitlab-org/gitlab/issues/368846
         Gitlab::Diff::Position,
@@ -686,8 +688,10 @@ module Gitlab
       # [0]: https://github.com/rails/rails/commit/94d81c3c39e3ddc441c3af3f874e53b197cf3f54
       # [1]: https://salsa.debian.org/ruby-team/rails/-/commit/5663e598b41dc4e2058db22e1ee0d678e5c483ba
       #
-      ActiveRecord.yaml_column_permitted_classes = config.active_record.yaml_column_permitted_classes
+      ActiveRecord.yaml_column_permitted_classes = Rails.application.config.active_record.yaml_column_permitted_classes
+    end
 
+    config.after_initialize do
       # on_master_start yields immediately in unclustered environments and runs
       # when the primary process is done initializing otherwise.
       Gitlab::Cluster::LifecycleEvents.on_master_start do

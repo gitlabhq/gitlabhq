@@ -4,15 +4,11 @@ require 'spec_helper'
 
 RSpec.describe ::Authz::Tokens::AuthorizeGranularScopesService, feature_category: :permissions do
   let_it_be(:boundary) { Authz::Boundary.for(nil) }
-  let_it_be(:granular_pat) { create(:granular_pat, namespace: boundary.namespace, permissions: :create_issue) }
+  let_it_be(:granular_pat) { create(:granular_pat, namespace: boundary.namespace, permissions: :create_member_role) }
   let_it_be(:token) { granular_pat }
-  let_it_be(:permissions) { :create_issue }
+  let_it_be(:permissions) { :create_member_role }
 
   subject(:service) { described_class.new(boundary:, permissions:, token:) }
-
-  before do
-    allow(Authz::Permission).to receive(:all).and_return(create_issue: nil, create_epic: nil, create_project: nil)
-  end
 
   shared_examples 'successful response' do
     it 'returns ServiceResponse.success' do
@@ -44,7 +40,7 @@ RSpec.describe ::Authz::Tokens::AuthorizeGranularScopesService, feature_category
     end
 
     context 'when the passed permissions are not valid' do
-      let(:permissions) { [:a, :b, :create_issue] }
+      let(:permissions) { [:a, :b, :create_member_role] }
 
       it 'raises an InvalidInputError error' do
         expect { service }.to raise_error(Authz::Tokens::AuthorizeGranularScopesService::InvalidInputError,
@@ -99,15 +95,15 @@ RSpec.describe ::Authz::Tokens::AuthorizeGranularScopesService, feature_category
         end
 
         it_behaves_like 'error response', 'Access denied: Your Personal Access Token lacks the required permissions: ' \
-          '[create_issue].'
+          '[create_member_role].'
       end
     end
 
     context 'when the token does not have the required permissions' do
-      let_it_be(:permissions) { [:create_issue, :create_epic, :create_project] }
+      let_it_be(:permissions) { [:create_member_role, :delete_member_role, :read_member_role] }
 
       it_behaves_like 'error response', 'Access denied: Your Personal Access Token lacks the required permissions: ' \
-        '[create_epic, create_project].'
+        '[delete_member_role, read_member_role].'
     end
   end
 end

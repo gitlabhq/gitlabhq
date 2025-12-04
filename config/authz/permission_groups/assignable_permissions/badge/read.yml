@@ -1,0 +1,9 @@
+---
+name: read_badge
+description: Grants the ability to read badges
+feature_category: groups_and_projects
+boundaries:
+  - project
+  - group
+permissions:
+  - read_badge

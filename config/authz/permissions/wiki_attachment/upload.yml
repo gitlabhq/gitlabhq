@@ -3,3 +3,6 @@ name: upload_wiki_attachment
 description: Grants the ability to upload wiki attachments
 feature_category: wiki
 available_for_tokens: true
+boundaries:
+  - group
+  - project

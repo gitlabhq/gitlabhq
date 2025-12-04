@@ -1,0 +1,9 @@
+---
+name: delete_wiki
+description: Grants the ability to delete wikis
+feature_category: wiki
+boundaries:
+  - group
+  - project
+permissions:
+  - delete_wiki
