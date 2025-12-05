@@ -32,6 +32,38 @@ to access them as we do in Rails views), local variables are fine.
 
 Always use an [Entity](https://gitlab.com/gitlab-org/gitlab/-/tree/master/lib/api/entities) to present the endpoint's payload.
 
+### Definining entity fields
+
+Every exposed field in an entity must include or reference a valid type.
+
+#### Valid field types
+
+Field types and entity references must be specified as strings. The following types are accepted:
+
+| Category | Types |
+|----------|-------|
+| Scalar | `Integer`, `Float`, `BigDecimal`, `Numeric`, `Date`, `DateTime`, `Time`, `String`, `Symbol`, `Boolean` |
+| Structures | `Hash`, `Array`, `Set` |
+| Special | `JSON`, `File` |
+| Entity references | Any `API::Entities::*` class (as a string) |
+
+#### Field types definition
+
+When exposing a field that references another entity, use the `using` option:
+
+```ruby
+  expose :project, using: '::API::Entities::BasicProjectDetails'
+```
+
+All other field types should be defined in the `documentation` hash:
+
+```ruby
+  expose :id, documentation: { type: 'Integer', example: 1 }
+  expose :name, documentation: { type: 'String', example: 'John Doe' }
+  expose :active, documentation: { type: 'Boolean', example: true }
+  expose :project, documentation: { type: 'API::Entities::BasicProject'}
+```
+
 ## Documentation
 
 Each new or updated API endpoint must come with documentation.

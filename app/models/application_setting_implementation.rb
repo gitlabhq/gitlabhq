@@ -284,7 +284,7 @@ module ApplicationSettingImplementation
         container_registry_expiration_policies_caching: true,
         kroki_enabled: false,
         kroki_url: nil,
-        kroki_formats: { blockdiag: false, bpmn: false, excalidraw: false },
+        kroki_formats: { blockdiag: false, bpmn: false, excalidraw: false, mermaid: false },
         rate_limiting_response_text: nil,
         whats_new_variant: 0,
         user_deactivation_emails_enabled: true,

@@ -337,7 +337,12 @@
     files:
       - Gemfile.lock
       - Gemfile.checksum
-    prefix: "ruby-gems-${BUILD_OS}-${OS_VERSION}-ruby-${RUBY_VERSION}-gemfile-${BUNDLE_GEMFILE}"
+    # Include the Go, Git, and Rust versions here to ensure that the
+    # Ruby gem cache will be used by a CI image that has the right
+    # version of OpenSSL and other native libraries. We have seen
+    # distributions update the underlying OpenSSL version, which breaks
+    # the Ruby openssl gem.
+    prefix: "ruby-gems-${BUILD_OS}-${OS_VERSION}-ruby-${RUBY_VERSION}-gemfile-${BUNDLE_GEMFILE}-go-${GO_VERSION}-rust-${RUST_VERSION}-git-${GIT_VERSION}"
   paths:
     - vendor/ruby/
   policy: pull

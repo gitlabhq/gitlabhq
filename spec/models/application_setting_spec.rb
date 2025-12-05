@@ -159,7 +159,7 @@ RSpec.describe ApplicationSetting, feature_category: :shared, type: :model do
         invisible_captcha_enabled: false,
         issues_create_limit: 300,
         jira_connect_public_key_storage_enabled: false,
-        kroki_formats: { 'blockdiag' => false, 'bpmn' => false, 'excalidraw' => false },
+        kroki_formats: { 'blockdiag' => false, 'bpmn' => false, 'excalidraw' => false, 'mermaid' => false },
         local_markdown_version: 0,
         lock_maven_package_requests_forwarding: false,
         lock_npm_package_requests_forwarding: false,
@@ -2388,6 +2388,7 @@ RSpec.describe ApplicationSetting, feature_category: :shared, type: :model do
 
     it 'returns false when the diagram type is optional and not enabled' do
       expect(setting.kroki_format_supported?('bpmn')).to be(false)
+      expect(setting.kroki_format_supported?('mermaid')).to be(false)
     end
 
     it 'returns true when the diagram type is enabled by default' do
@@ -2403,10 +2404,11 @@ RSpec.describe ApplicationSetting, feature_category: :shared, type: :model do
 
   describe 'kroki_formats' do
     it 'returns the value for kroki_formats' do
-      setting.kroki_formats = { blockdiag: true, bpmn: false, excalidraw: true }
+      setting.kroki_formats = { blockdiag: true, bpmn: false, excalidraw: true, mermaid: true }
       expect(setting.kroki_formats_blockdiag).to be(true)
       expect(setting.kroki_formats_bpmn).to be(false)
       expect(setting.kroki_formats_excalidraw).to be(true)
+      expect(setting.kroki_formats_mermaid).to be(true)
     end
   end
 

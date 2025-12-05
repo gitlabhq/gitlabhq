@@ -9,31 +9,17 @@ module MergeRequests
       @current_user = current_user
     end
 
-    def execute(log_duration: false)
-      @log_duration = log_duration
-
-      old_diff_refs = measure_duration(:diff_refs) do
-        merge_request.diff_refs
-      end
+    def execute
+      old_diff_refs = merge_request.diff_refs
 
       return if merge_request.reached_versions_limit?
       return if merge_request.reached_diff_commits_limit?
 
-      new_diff = measure_duration(:create_merge_request_diff) do
-        merge_request.create_merge_request_diff(preload_gitaly: true)
-      end
+      new_diff = merge_request.create_merge_request_diff(preload_gitaly: true)
 
-      measure_duration(:clear_cache) do
-        clear_cache(new_diff)
-      end
+      clear_cache(new_diff)
 
-      result = measure_duration(:update_diff_discussion_positions) do
-        update_diff_discussion_positions(old_diff_refs)
-      end
-
-      log_duration_statistics if log_duration_enabled?
-
-      result
+      update_diff_discussion_positions(old_diff_refs)
     end
 
     private
@@ -70,41 +56,6 @@ module MergeRequests
       # There are scenarios where we don't need to request Diff Stats.
       # Mainly when clearing / writing diff caches.
       diff.diffs(include_stats: false)
-    end
-
-    def measure_duration(operation_name)
-      return yield unless log_duration_enabled?
-
-      start_time = current_monotonic_time
-      result = yield
-      duration = (current_monotonic_time - start_time).round(Gitlab::InstrumentationHelper::DURATION_PRECISION)
-      duration_statistics["#{operation_name}_duration_s"] = duration
-      result
-    end
-
-    def duration_statistics
-      @duration_statistics ||= {}
-    end
-
-    def log_duration_enabled?
-      @log_duration && Feature.enabled?(:log_refresh_service_duration, current_user)
-    end
-    strong_memoize_attr :log_duration_enabled?
-
-    def log_duration_statistics
-      total_duration = duration_statistics.values.sum.round(Gitlab::InstrumentationHelper::DURATION_PRECISION)
-      hash_with_total = duration_statistics.merge(
-        'reload_diffs_service_total_duration_s' => total_duration
-      )
-
-      Gitlab::AppJsonLogger.info(
-        'event' => 'merge_requests_reload_diffs_service',
-        **hash_with_total
-      )
-    end
-
-    def current_monotonic_time
-      Gitlab::Metrics::System.monotonic_time
     end
   end
 end

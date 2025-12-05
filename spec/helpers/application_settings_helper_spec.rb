@@ -249,7 +249,8 @@ RSpec.describe ApplicationSettingsHelper, feature_category: :shared do
 
     before do
       helper.instance_variable_set(:@application_setting, application_setting)
-      stub_application_setting(kroki_formats: { 'blockdiag' => true, 'bpmn' => false, 'excalidraw' => false })
+      stub_application_setting(kroki_formats: { 'blockdiag' => true, 'bpmn' => false, 'excalidraw' => false,
+                                                'mermaid' => true })
     end
 
     it 'returns available formats correctly' do
@@ -269,6 +270,11 @@ RSpec.describe ApplicationSettingsHelper, feature_category: :shared do
             name: 'kroki_formats_excalidraw',
             label: 'Excalidraw',
             value: false
+          },
+          {
+            name: 'kroki_formats_mermaid',
+            label: 'Mermaid',
+            value: true
           }
         ])
     end

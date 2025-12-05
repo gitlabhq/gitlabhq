@@ -14,7 +14,12 @@ module Gitlab
       packetdiag
       rackdiag
     ].freeze
-    DIAGRAMS_FORMATS = (::AsciidoctorExtensions::Kroki::SUPPORTED_DIAGRAM_NAMES - %w[mermaid]).freeze
+
+    # We used to explicitly remove 'mermaid' from this list, but now we allow Kroki
+    # to preferentially render them, *if* the administrator has explicitly enabled it
+    # --- Mermaid requires a companion server for Kroki.
+    # See https://gitlab.com/gitlab-org/gitlab/-/work_items/498764.
+    DIAGRAMS_FORMATS = ::AsciidoctorExtensions::Kroki::SUPPORTED_DIAGRAM_NAMES.dup.freeze
     DIAGRAMS_FORMATS_WO_PLANTUML = (DIAGRAMS_FORMATS - %w[plantuml]).freeze
 
     # Get the list of diagram formats that are currently enabled

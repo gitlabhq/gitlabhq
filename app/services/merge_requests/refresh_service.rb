@@ -29,17 +29,9 @@ module MergeRequests
       reload_merge_requests
 
       merge_requests_for_source_branch.each do |mr|
-        measure_duration_aggregated(:outdate_suggestions) do
-          outdate_suggestions(mr)
-        end
-
-        measure_duration_aggregated(:abort_auto_merges) do
-          abort_auto_merges(mr)
-        end
-
-        measure_duration_aggregated(:mark_pending_todos_done) do
-          mark_pending_todos_done(mr)
-        end
+        outdate_suggestions(mr)
+        abort_auto_merges(mr)
+        mark_pending_todos_done(mr)
       end
 
       abort_ff_merge_requests_with_auto_merges
@@ -48,33 +40,20 @@ module MergeRequests
 
       merge_requests_for_source_branch.each do |mr|
         # Leave a system note if a branch was deleted/added
-        if branch_added_or_removed?
-          measure_duration_aggregated(:comment_mr_branch_presence_changed) do
-            comment_mr_branch_presence_changed(mr)
-          end
-        end
+        comment_mr_branch_presence_changed(mr) if branch_added_or_removed?
 
-        measure_duration_aggregated(:notify_about_push) do
-          notify_about_push(mr)
-        end
-
-        measure_duration_aggregated(:mark_mr_as_draft_from_commits) do
-          mark_mr_as_draft_from_commits(mr)
-        end
+        notify_about_push(mr)
+        mark_mr_as_draft_from_commits(mr)
 
         # Call merge request webhook with update branches
-        if Feature.disabled?(:split_refresh_worker_web_hooks, @current_user)
-          execute_mr_web_hooks(mr)
-        end
+        execute_mr_web_hooks(mr) if Feature.disabled?(:split_refresh_worker_web_hooks, @current_user)
 
         if Feature.disabled?(:split_refresh_worker_pipeline, @current_user) && !@push.branch_removed?
           # Run at the end of the loop to avoid any potential contention on the MR object
           refresh_pipelines_on_merge_requests(mr)
         end
 
-        measure_duration_aggregated(:track_mr_including_ci_config) do
-          merge_request_activity_counter.track_mr_including_ci_config(user: mr.author, merge_request: mr)
-        end
+        merge_request_activity_counter.track_mr_including_ci_config(user: mr.author, merge_request: mr)
       end
 
       execute_async_workers
@@ -189,7 +168,7 @@ module MergeRequests
         skip_merge_status_trigger = true
 
         if branch_and_project_match?(merge_request) || @push.force_push?
-          merge_request.reload_diff(current_user, log_duration: true)
+          merge_request.reload_diff(current_user)
           schedule_duo_code_review(merge_request)
           # Clear existing merge error if the push were directed at the
           # source branch. Clearing the error when the target branch
@@ -200,7 +179,7 @@ module MergeRequests
           # when the push if for the MR's source branch and project.
           skip_merge_status_trigger = false
         elsif merge_request.merge_request_diff.includes_any_commits?(push_commit_ids)
-          merge_request.reload_diff(current_user, log_duration: true)
+          merge_request.reload_diff(current_user)
         end
 
         merge_request.skip_merge_status_trigger = skip_merge_status_trigger
@@ -400,48 +379,6 @@ module MergeRequests
           params.slice(:push_options, :gitaly_context).as_json # ensure sidekiq-compatible hash argument
         )
       end
-    end
-
-    def measure_duration_aggregated(operation_name)
-      return yield unless log_refresh_service_duration_enabled?
-
-      start_time = current_monotonic_time
-      result = yield
-      duration = (current_monotonic_time - start_time)
-
-      key = :"#{operation_name}_duration_s"
-      duration_statistics[key] ||= 0
-      duration_statistics[key] += duration
-
-      result
-    end
-
-    def duration_statistics
-      @duration_statisic ||= {}
-    end
-
-    def log_refresh_service_duration_enabled?
-      strong_memoize(:log_refresh_service_duration_enabled) do
-        Feature.enabled?(:log_refresh_service_duration, @current_user)
-      end
-    end
-
-    def log_hash_metadata_on_done(hash)
-      total_duration = hash.values.sum
-      hash_with_total = hash.merge(refresh_service_total_duration_s: total_duration)
-
-      hash_with_total.transform_values! do |duration|
-        duration.round(Gitlab::InstrumentationHelper::DURATION_PRECISION)
-      end
-
-      Gitlab::AppJsonLogger.info(
-        event: 'merge_requests_refresh_service',
-        **hash_with_total
-      )
-    end
-
-    def current_monotonic_time
-      Gitlab::Metrics::System.monotonic_time
     end
   end
 end

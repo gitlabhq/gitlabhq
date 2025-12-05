@@ -8,7 +8,7 @@ import {
   GlTooltipDirective,
   GlPopover,
   GlBadge,
-  GlPagination,
+  GlKeysetPagination,
   GlDisclosureDropdown,
   GlDisclosureDropdownItem,
   GlModalDirective,
@@ -42,7 +42,7 @@ export default {
     GlTooltip,
     GlPopover,
     GlBadge,
-    GlPagination,
+    GlKeysetPagination,
     GlDisclosureDropdown,
     GlDisclosureDropdownItem,
     TimeAgoTooltip,
@@ -77,7 +77,7 @@ export default {
   },
   data() {
     return {
-      currentPage: 1,
+      currentStartIndex: 0,
       limit: this.maxAgents ?? MAX_LIST_COUNT,
       selectedAgent: null,
     };
@@ -143,25 +143,31 @@ export default {
         },
       ];
     },
-    agentsList() {
+    paginatedAgents() {
       if (!this.agents.length) {
         return [];
       }
 
-      return this.agents.map((agent) => {
+      const endIndex = this.currentStartIndex + this.limit;
+      return this.agents.slice(this.currentStartIndex, endIndex);
+    },
+    agentsList() {
+      return this.paginatedAgents.map((agent) => {
         const { versions, warnings } = this.getAgentVersions(agent);
         return { ...agent, versions, warnings };
       });
     },
+    pageInfo() {
+      const totalAgents = this.agents.length;
+      const endIndex = this.currentStartIndex + this.limit;
+
+      return {
+        hasPreviousPage: this.currentStartIndex > 0,
+        hasNextPage: endIndex < totalAgents,
+      };
+    },
     showPagination() {
-      return !this.maxAgents && this.agents.length > this.limit;
-    },
-    prevPage() {
-      return Math.max(this.currentPage - 1, 0);
-    },
-    nextPage() {
-      const nextPage = this.currentPage + 1;
-      return nextPage > Math.ceil(this.agents.length / this.limit) ? null : nextPage;
+      return !this.maxAgents && (this.pageInfo.hasPreviousPage || this.pageInfo.hasNextPage);
     },
     isUserAccessConfigured() {
       return Boolean(this.selectedAgent?.userAccessAuthorizations);
@@ -252,6 +258,12 @@ export default {
 
       return actions;
     },
+    handlePrevPage() {
+      this.currentStartIndex = Math.max(0, this.currentStartIndex - this.limit);
+    },
+    handleNextPage() {
+      this.currentStartIndex += this.limit;
+    },
   },
 };
 </script>
@@ -261,8 +273,6 @@ export default {
     <gl-table
       :items="agentsList"
       :fields="fields"
-      :per-page="limit"
-      :current-page="currentPage"
       stacked="md"
       class="!gl-mb-4"
       data-testid="cluster-agent-list-table"
@@ -434,13 +444,12 @@ export default {
       </template>
     </gl-table>
 
-    <gl-pagination
+    <gl-keyset-pagination
       v-if="showPagination"
-      v-model="currentPage"
-      :prev-page="prevPage"
-      :next-page="nextPage"
-      align="center"
-      class="gl-mt-5"
+      v-bind="pageInfo"
+      class="gl-my-6 gl-flex gl-justify-center"
+      @prev="handlePrevPage"
+      @next="handleNextPage"
     />
 
     <connect-to-agent-modal

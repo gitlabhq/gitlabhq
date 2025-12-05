@@ -1425,10 +1425,10 @@ class MergeRequest < ApplicationRecord
   end
 
   # rubocop: disable CodeReuse/ServiceClass
-  def reload_diff(current_user = nil, log_duration: false)
+  def reload_diff(current_user = nil)
     return unless open?
 
-    MergeRequests::ReloadDiffsService.new(self, current_user).execute(log_duration: log_duration)
+    MergeRequests::ReloadDiffsService.new(self, current_user).execute
   end
 
   def check_mergeability(async: false, sync_retry_lease: false)

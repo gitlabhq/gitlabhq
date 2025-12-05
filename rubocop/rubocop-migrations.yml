@@ -8,6 +8,7 @@ Migration/UpdateLargeTable:
   - :ci_job_artifacts
   - :ci_job_variables
   - :ci_pipeline_messages
+  - :deployment_merge_requests
   - :deployments
   - :description_versions
   - :events
@@ -26,6 +27,7 @@ Migration/UpdateLargeTable:
   - :packages_package_files
   - :project_authorizations
   - :project_authorizations_for_migration
+  - :project_daily_statistics_archived
   - :push_event_payloads
   - :resource_label_events
   - :sbom_occurrences

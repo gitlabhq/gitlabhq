@@ -71,6 +71,9 @@ class ApplicationSetting < ApplicationRecord
       },
       excalidraw: {
         label: 'Excalidraw'
+      },
+      mermaid: {
+        label: 'Mermaid'
       }
     }
   end
@@ -1264,6 +1267,8 @@ class ApplicationSetting < ApplicationRecord
       return kroki_formats_excalidraw
     when 'bpmn'
       return kroki_formats_bpmn
+    when 'mermaid'
+      return kroki_formats_mermaid
     end
 
     return kroki_formats_blockdiag if ::Gitlab::Kroki::BLOCKDIAG_FORMATS.include?(diagram_type)

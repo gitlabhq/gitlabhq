@@ -4,7 +4,7 @@ import {
   GlIcon,
   GlBadge,
   GlTable,
-  GlPagination,
+  GlKeysetPagination,
   GlDisclosureDropdown,
   GlDisclosureDropdownItem,
 } from '@gitlab/ui';
@@ -45,7 +45,7 @@ describe('AgentTable', () => {
   const findTableHeaders = () => wrapper.findAll('thead th').wrappers.map((x) => x.text());
   const findSharedBadgeByRow = (at) => findTableRow(at).findComponent(GlBadge);
   const findDeleteAgentButtonByRow = (at) => findTableRow(at).findComponent(DeleteAgentButton);
-  const findPagination = () => wrapper.findComponent(GlPagination);
+  const findPagination = () => wrapper.findComponent(GlKeysetPagination);
   const findDisclosureDropdown = () => wrapper.findComponent(GlDisclosureDropdown);
   const findDisclosureDropdownItem = () =>
     wrapper.findAllComponents(GlDisclosureDropdownItem).at(0);
@@ -268,6 +268,56 @@ describe('AgentTable', () => {
         });
 
         expect(findPagination().exists()).toBe(false);
+      });
+
+      it('should have correct pagination props when on first page', () => {
+        createWrapper({
+          propsData: { agents: [...clusterAgents, ...clusterAgents, ...clusterAgents] },
+        });
+
+        expect(findPagination().props()).toMatchObject({
+          hasPreviousPage: false,
+          hasNextPage: true,
+        });
+      });
+
+      it('should navigate to next page when next button is clicked', async () => {
+        // Create 50 agents (5 x 10) to ensure we have at least 3 pages (20 per page)
+        const manyAgents = [
+          ...clusterAgents,
+          ...clusterAgents,
+          ...clusterAgents,
+          ...clusterAgents,
+          ...clusterAgents,
+        ];
+        createWrapper({ propsData: { agents: manyAgents } });
+
+        findPagination().vm.$emit('next');
+        await nextTick();
+
+        expect(findPagination().props()).toMatchObject({
+          hasPreviousPage: true,
+          hasNextPage: true,
+        });
+      });
+
+      it('should navigate to previous page when prev button is clicked', async () => {
+        createWrapper({
+          propsData: { agents: [...clusterAgents, ...clusterAgents, ...clusterAgents] },
+        });
+
+        // Go to next page first
+        findPagination().vm.$emit('next');
+        await nextTick();
+
+        // Then go back
+        findPagination().vm.$emit('prev');
+        await nextTick();
+
+        expect(findPagination().props()).toMatchObject({
+          hasPreviousPage: false,
+          hasNextPage: true,
+        });
       });
     });
   });

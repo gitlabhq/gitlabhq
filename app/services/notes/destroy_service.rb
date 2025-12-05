@@ -14,8 +14,17 @@ module Notes
       end
 
       clear_noteable_diffs_cache(note)
-      track_note_removal_usage_for_issues(note) if note.for_issue?
-      track_note_removal_usage_for_design(note) if note.for_design?
+
+      if note.for_issue?
+        track_note_removal_usage_for_issues(note)
+        track_note_removal(note.noteable, Gitlab::WorkItems::Instrumentation::EventActions::NOTE_DESTROY)
+      end
+
+      if note.for_design?
+        track_note_removal_usage_for_design(note)
+        track_note_removal(note.noteable.issue, Gitlab::WorkItems::Instrumentation::EventActions::DESIGN_NOTE_DESTROY)
+      end
+
       track_note_removal_usage_for_wiki(note) if note.for_wiki_page?
     end
 
@@ -37,6 +46,19 @@ module Notes
         author: note.author,
         project: project
       )
+    end
+
+    def track_note_removal(work_item, event)
+      return unless [
+        Gitlab::WorkItems::Instrumentation::EventActions::NOTE_DESTROY,
+        Gitlab::WorkItems::Instrumentation::EventActions::DESIGN_NOTE_DESTROY
+      ].include?(event)
+
+      ::Gitlab::WorkItems::Instrumentation::TrackingService.new(
+        work_item: work_item,
+        current_user: current_user,
+        event: event
+      ).execute
     end
 
     def track_note_removal_usage_for_wiki(note)

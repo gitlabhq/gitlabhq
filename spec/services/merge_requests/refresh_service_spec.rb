@@ -90,16 +90,6 @@ RSpec.describe MergeRequests::RefreshService, feature_category: :code_review_wor
         allow(NotificationService).to receive(:new) { notification_service }
       end
 
-      context 'reload_diff logging' do
-        it 'calls reload_diff with log_duration: true for source branch push' do
-          allow_next_instance_of(MergeRequests::ReloadDiffsService) do |instance|
-            expect(instance).to receive(:execute).with(log_duration: true).and_call_original
-          end
-
-          refresh_service.execute(@oldrev, @newrev, 'refs/heads/master')
-        end
-      end
-
       context 'query count' do
         it 'does not execute a lot of queries' do
           # Hardcoded the query limit since the queries can also be reduced even

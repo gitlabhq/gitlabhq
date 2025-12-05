@@ -20045,6 +20045,43 @@ The edge type for [`MavenRegistry`](#mavenregistry).
 | <a id="mavenregistryedgecursor"></a>`cursor` | [`String!`](#string) | A cursor for use in pagination. |
 | <a id="mavenregistryedgenode"></a>`node` | [`MavenRegistry`](#mavenregistry) | The item at the end of the edge. |
 
+#### `MavenUpstreamCacheEntryConnection`
+
+The connection type for [`MavenUpstreamCacheEntry`](#mavenupstreamcacheentry).
+
+##### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mavenupstreamcacheentryconnectionedges"></a>`edges` | [`[MavenUpstreamCacheEntryEdge]`](#mavenupstreamcacheentryedge) | A list of edges. |
+| <a id="mavenupstreamcacheentryconnectionnodes"></a>`nodes` | [`[MavenUpstreamCacheEntry]`](#mavenupstreamcacheentry) | A list of nodes. |
+| <a id="mavenupstreamcacheentryconnectionpageinfo"></a>`pageInfo` | [`PageInfo!`](#pageinfo) | Information to aid in pagination. |
+
+##### Fields with arguments
+
+###### `MavenUpstreamCacheEntryConnection.count`
+
+Total count of collection. Returns limit + 1 for counts greater than the limit.
+
+Returns [`Int!`](#int).
+
+####### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mavenupstreamcacheentryconnectioncountlimit"></a>`limit` | [`Int`](#int) | Limit applied to the count query, returns limit + 1. When not provided, returns the exact count. |
+
+#### `MavenUpstreamCacheEntryEdge`
+
+The edge type for [`MavenUpstreamCacheEntry`](#mavenupstreamcacheentry).
+
+##### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mavenupstreamcacheentryedgecursor"></a>`cursor` | [`String!`](#string) | A cursor for use in pagination. |
+| <a id="mavenupstreamcacheentryedgenode"></a>`node` | [`MavenUpstreamCacheEntry`](#mavenupstreamcacheentry) | The item at the end of the edge. |
+
 #### `MavenUpstreamConnection`
 
 The connection type for [`MavenUpstream`](#mavenupstream).
@@ -36381,6 +36418,27 @@ Represents a Maven upstream registry.
 | <a id="mavenupstreamurl"></a>`url` {{< icon name="warning-solid" >}} | [`String!`](#string) | **Introduced** in GitLab 18.1. **Status**: Experiment. URL of the upstream registry. |
 | <a id="mavenupstreamusername"></a>`username` {{< icon name="warning-solid" >}} | [`String`](#string) | **Introduced** in GitLab 18.1. **Status**: Experiment. Username to sign in to the upstream registry. |
 
+### `MavenUpstreamCacheEntry`
+
+Represents a cache entry for a Maven upstream.
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mavenupstreamcacheentrycontenttype"></a>`contentType` {{< icon name="warning-solid" >}} | [`String!`](#string) | **Introduced** in GitLab 18.7. **Status**: Experiment. Content type of the cached file. |
+| <a id="mavenupstreamcacheentrycreatedat"></a>`createdAt` {{< icon name="warning-solid" >}} | [`Time!`](#time) | **Introduced** in GitLab 18.7. **Status**: Experiment. Timestamp when the cache entry was created. |
+| <a id="mavenupstreamcacheentrydownloadedat"></a>`downloadedAt` {{< icon name="warning-solid" >}} | [`Time`](#time) | **Introduced** in GitLab 18.7. **Status**: Experiment. Timestamp when the cache entry was last downloaded. |
+| <a id="mavenupstreamcacheentrydownloadscount"></a>`downloadsCount` {{< icon name="warning-solid" >}} | [`Int!`](#int) | **Introduced** in GitLab 18.7. **Status**: Experiment. Number of times the entry has been downloaded. |
+| <a id="mavenupstreamcacheentryfilemd5"></a>`fileMd5` {{< icon name="warning-solid" >}} | [`String`](#string) | **Introduced** in GitLab 18.7. **Status**: Experiment. MD5 hash of the cached file. |
+| <a id="mavenupstreamcacheentryfilesha1"></a>`fileSha1` {{< icon name="warning-solid" >}} | [`String!`](#string) | **Introduced** in GitLab 18.7. **Status**: Experiment. SHA1 hash of the cached file. |
+| <a id="mavenupstreamcacheentryid"></a>`id` {{< icon name="warning-solid" >}} | [`String!`](#string) | **Introduced** in GitLab 18.7. **Status**: Experiment. ID of the cache entry. |
+| <a id="mavenupstreamcacheentryrelativepath"></a>`relativePath` {{< icon name="warning-solid" >}} | [`String!`](#string) | **Introduced** in GitLab 18.7. **Status**: Experiment. Relative path of the cached entry. |
+| <a id="mavenupstreamcacheentrysize"></a>`size` {{< icon name="warning-solid" >}} | [`BigInt!`](#bigint) | **Introduced** in GitLab 18.7. **Status**: Experiment. Size of the cached file in bytes. |
+| <a id="mavenupstreamcacheentryupdatedat"></a>`updatedAt` {{< icon name="warning-solid" >}} | [`Time!`](#time) | **Introduced** in GitLab 18.7. **Status**: Experiment. Timestamp when the cache entry was last updated. |
+| <a id="mavenupstreamcacheentryupstreamcheckedat"></a>`upstreamCheckedAt` {{< icon name="warning-solid" >}} | [`Time`](#time) | **Introduced** in GitLab 18.7. **Status**: Experiment. Timestamp when the upstream was last checked. |
+| <a id="mavenupstreamcacheentryupstreametag"></a>`upstreamEtag` {{< icon name="warning-solid" >}} | [`String`](#string) | **Introduced** in GitLab 18.7. **Status**: Experiment. ETag from the upstream source. |
+
 ### `MavenUpstreamDetails`
 
 Represents Maven upstream registry details.
@@ -36398,6 +36456,29 @@ Represents Maven upstream registry details.
 | <a id="mavenupstreamdetailsregistryupstreams"></a>`registryUpstreams` {{< icon name="warning-solid" >}} | [`[MavenRegistryUpstreamWithRegistry!]!`](#mavenregistryupstreamwithregistry) | **Introduced** in GitLab 18.2. **Status**: Experiment. Represents the upstream registry for the upstream which contains the position data. |
 | <a id="mavenupstreamdetailsurl"></a>`url` {{< icon name="warning-solid" >}} | [`String!`](#string) | **Introduced** in GitLab 18.1. **Status**: Experiment. URL of the upstream registry. |
 | <a id="mavenupstreamdetailsusername"></a>`username` {{< icon name="warning-solid" >}} | [`String`](#string) | **Introduced** in GitLab 18.1. **Status**: Experiment. Username to sign in to the upstream registry. |
+
+#### Fields with arguments
+
+##### `MavenUpstreamDetails.cacheEntries`
+
+{{< details >}}
+**Introduced** in GitLab 18.7.
+**Status**: Experiment.
+{{< /details >}}
+
+Represents cache entries for the upstream.
+
+Returns [`MavenUpstreamCacheEntryConnection`](#mavenupstreamcacheentryconnection).
+
+This field returns a [connection](#connections). It accepts the
+four standard [pagination arguments](#pagination-arguments):
+`before: String`, `after: String`, `first: Int`, and `last: Int`.
+
+###### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mavenupstreamdetailscacheentriessearch"></a>`search` | [`String`](#string) | Search cache entries by relative path. |
 
 ### `MemberApproval`
 
@@ -53745,6 +53826,7 @@ Name of the feature that the callout is for.
 | <a id="usergroupcalloutfeaturenameunlimited_members_during_trial_alert"></a>`UNLIMITED_MEMBERS_DURING_TRIAL_ALERT` | Callout feature name for unlimited_members_during_trial_alert. |
 | <a id="usergroupcalloutfeaturenameusage_quota_trial_alert"></a>`USAGE_QUOTA_TRIAL_ALERT` | Callout feature name for usage_quota_trial_alert. |
 | <a id="usergroupcalloutfeaturenameuser_reached_limit_free_plan_alert"></a>`USER_REACHED_LIMIT_FREE_PLAN_ALERT` | Callout feature name for user_reached_limit_free_plan_alert. |
+| <a id="usergroupcalloutfeaturenamevirtual_registry_permission_change_alert"></a>`VIRTUAL_REGISTRY_PERMISSION_CHANGE_ALERT` | Callout feature name for virtual_registry_permission_change_alert. |
 | <a id="usergroupcalloutfeaturenameweb_hook_disabled"></a>`WEB_HOOK_DISABLED` | Callout feature name for web_hook_disabled. |
 
 ### `UserPromotionStatusType`

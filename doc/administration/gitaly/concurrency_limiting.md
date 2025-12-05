@@ -84,6 +84,129 @@ When these limits are reached, users are disconnected.
 You can observe the behavior of this queue using the Gitaly logs and Prometheus. For more
 information, see the [relevant documentation](monitoring.md#monitor-gitaly-concurrency-limiting).
 
+### Separate limits for unauthenticated requests
+
+{{< history >}}
+
+- Introduced in GitLab 18.7 [with a flag](../../operations/feature_flags.md) named `gitaly_limit_unauthenticated`. Disabled by default.
+
+{{< /history >}}
+
+{{< alert type="note">}}
+The availability of this feature is controlled by a feature flag.
+For more information, see the history.
+
+This feature is available for testing, but not ready for production use.
+{{< /alert >}}
+
+By default, RPC concurrency limits apply to all requests regardless of
+authentication status. However, you can configure separate, more restrictive
+limits for unauthenticated requests to protect your Gitaly server from
+potential abuse or resource exhaustion from anonymous traffic.
+
+When you configure the `unauthenticated` field for an RPC, Gitaly uses
+separate limiters:
+
+- **Authenticated requests** use the main concurrency limits (configured at
+  the top level of the RPC configuration).
+- **Unauthenticated requests** use the limits specified in the
+  `unauthenticated` field.
+
+This separation allows you to:
+
+- Apply stricter limits to unauthenticated traffic while maintaining higher
+  throughput for authenticated users.
+- Protect against denial-of-service scenarios from anonymous clones or pulls.
+- Ensure authenticated users have priority access to Gitaly resources.
+
+If you don't configure the `unauthenticated` field, all requests (both
+authenticated and unauthenticated) share the same concurrency limits.
+
+#### When to use separate unauthenticated limits
+
+Consider configuring separate unauthenticated limits when:
+
+- Your GitLab instance allows public repository access and experiences high
+  anonymous traffic.
+- You want to prioritize authenticated users during periods of high load.
+- You need to protect against potential abuse from unauthenticated sources.
+- You observe resource contention between authenticated and unauthenticated
+  requests.
+
+#### Configure static limits for unauthenticated requests
+
+The following example shows how to configure separate static limits for authenticated
+and unauthenticated requests:
+
+```ruby
+# in /etc/gitlab/gitlab.rb
+gitaly['configuration'] = {
+   # ...
+   concurrency: [
+      {
+         rpc: '/gitaly.SmartHTTPService/PostUploadPackWithSidechannel',
+         # Limits for authenticated requests
+         max_per_repo: 20,
+         max_queue_wait: '1s',
+         max_queue_size: 10,
+         # Separate limits for unauthenticated requests
+         unauthenticated: {
+            max_per_repo: 5,
+            max_queue_wait: '500ms',
+            max_queue_size: 5,
+         },
+      },
+   ],
+}
+```
+
+In this example:
+
+- Authenticated requests can have up to 20 concurrent operations per
+  repository.
+- Unauthenticated requests are limited to 5 concurrent operations per
+  repository.
+- Unauthenticated requests have a shorter queue wait time (500ms vs 1s) and
+  smaller queue (5 vs 10).
+
+#### Configure adaptive limits for unauthenticated requests
+
+The `unauthenticated` field supports both static and adaptive concurrency
+limits, just like the main configuration. You can configure adaptive limits
+for unauthenticated requests:
+
+```ruby
+# in /etc/gitlab/gitlab.rb
+gitaly['configuration'] = {
+   # ...
+   concurrency: [
+      {
+         rpc: '/gitaly.SmartHTTPService/PostUploadPackWithSidechannel',
+         # Adaptive limits for authenticated requests
+         adaptive: true,
+         min_limit: 10,
+         initial_limit: 20,
+         max_limit: 40,
+         max_queue_wait: '1s',
+         max_queue_size: 10,
+         # Adaptive limits for unauthenticated requests
+         unauthenticated: {
+            adaptive: true,
+            min_limit: 2,
+            initial_limit: 5,
+            max_limit: 10,
+            max_queue_wait: '500ms',
+            max_queue_size: 5,
+         },
+      },
+   ],
+}
+```
+
+This configuration allows both authenticated and unauthenticated limits to
+adapt independently based on system resource usage, while maintaining the
+separation between the two traffic types.
+
 ## Limit pack-objects concurrency
 
 Gitaly triggers `git-pack-objects` processes when handling both SSH and HTTPS traffic to clone or pull repositories. These processes generate a `pack-file` and can

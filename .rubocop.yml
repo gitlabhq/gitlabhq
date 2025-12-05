@@ -869,6 +869,12 @@ API/DescriptionTags:
     - 'lib/**/api/**/*.rb'
     - 'ee/lib/**/api/**/*.rb'
 
+API/EntityFieldType:
+  Enabled: true
+  Include:
+    - 'lib/**/api/entities/**/*.rb'
+    - 'ee/lib/**/api/entities/**/*.rb'
+
 API/ParameterDescription:
   Enabled: true
   Include:

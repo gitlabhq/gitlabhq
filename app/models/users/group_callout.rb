@@ -44,7 +44,8 @@ module Users
       # 32 removed in https://gitlab.com/gitlab-org/gitlab/-/merge_requests/214108
       project_premium_message_callout: 33, # EE-only
       repository_premium_message_callout: 34, # EE-only
-      mrs_premium_message_callout: 35 # EE-only
+      mrs_premium_message_callout: 35, # EE-only
+      virtual_registry_permission_change_alert: 36 # EE-only
     }
 
     validates :group, presence: true

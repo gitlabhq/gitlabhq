@@ -73878,6 +73878,9 @@ msgstr ""
 msgid "VirtualRegistry|Description (optional)"
 msgstr ""
 
+msgid "VirtualRegistry|Direct project membership no longer grants access to the Maven virtual registry. To access the virtual registry, you must be a member of the top-level group or an administrator."
+msgstr ""
+
 msgid "VirtualRegistry|Disabling removes access. Existing registries are preserved and available again when re-enabled."
 msgstr ""
 

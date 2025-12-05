@@ -410,5 +410,29 @@ RSpec.describe Notes::UpdateService, feature_category: :team_planning do
         subject(:track_event) { update_note(note: 'edited') }
       end
     end
+
+    context 'instrumentation service for work items' do
+      def execute_update_service
+        described_class.new(project, user, { note: 'new text' }).execute(note)
+      end
+
+      context 'when note is on an issue' do
+        let(:note) { create(:note, project: project, noteable: issue, author: user, note: "Old note") }
+
+        it_behaves_like 'tracks work item event', :issue, :user, Gitlab::WorkItems::Instrumentation::EventActions::NOTE_UPDATE, :execute_update_service
+      end
+
+      context 'when note is not on an issue' do
+        let(:merge_request) { create(:merge_request, source_project: project) }
+        let(:note) { create(:note, project: project, noteable: merge_request, author: user, note: "Old note") }
+
+        it_behaves_like 'does not track work item event', :execute_update_service
+
+        it 'does not attempt to find a work item' do
+          expect(WorkItem).not_to receive(:find)
+          execute_update_service
+        end
+      end
+    end
   end
 end
