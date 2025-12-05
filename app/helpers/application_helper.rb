@@ -131,10 +131,6 @@ module ApplicationHelper
     sanitize(str, tags: %w[a span])
   end
 
-  def project_studio_available?
-    Users::ProjectStudio.new(current_user).available?
-  end
-
   def project_studio_enabled?
     Users::ProjectStudio.new(current_user).enabled?
   end
@@ -145,7 +141,6 @@ module ApplicationHelper
       page_type_id: controller.params[:id],
       group: @group&.path,
       group_full_path: @group&.full_path,
-      project_studio_available: project_studio_available?.to_s,
       project_studio_enabled: project_studio_enabled?.to_s
     }.merge(project_data)
   end

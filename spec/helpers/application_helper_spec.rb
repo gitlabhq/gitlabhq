@@ -512,22 +512,6 @@ RSpec.describe ApplicationHelper do
     end
   end
 
-  describe '#project_studio_available?' do
-    let(:user) { build(:user) }
-
-    before do
-      allow(helper).to receive_messages(current_user: user, cookies: { studio: 'true' })
-    end
-
-    it 'calls ProjectStudio#available?' do
-      expect_next_instance_of(Users::ProjectStudio, user) do |studio|
-        expect(studio).to receive(:available?)
-      end
-
-      helper.project_studio_available?
-    end
-  end
-
   describe '#project_studio_enabled?' do
     let(:user) { build(:user) }
 
@@ -553,7 +537,6 @@ RSpec.describe ApplicationHelper do
             page_type_id: nil,
             group: nil,
             group_full_path: nil,
-            project_studio_available: 'true',
             project_studio_enabled: 'true'
           }
         )
@@ -571,7 +554,6 @@ RSpec.describe ApplicationHelper do
               page_type_id: nil,
               group: group.path,
               group_full_path: group.full_path,
-              project_studio_available: 'true',
               project_studio_enabled: 'true'
             }
           )
@@ -599,7 +581,6 @@ RSpec.describe ApplicationHelper do
             project: project.path,
             project_full_path: project.full_path,
             namespace_id: project.namespace.id,
-            project_studio_available: 'true',
             project_studio_enabled: 'true'
           }
         )
@@ -619,7 +600,6 @@ RSpec.describe ApplicationHelper do
               project: project.path,
               project_full_path: project.full_path,
               namespace_id: project.namespace.id,
-              project_studio_available: 'true',
               project_studio_enabled: 'true'
             }
           )
@@ -647,7 +627,6 @@ RSpec.describe ApplicationHelper do
                 project: issue.project.path,
                 project_full_path: project.full_path,
                 namespace_id: issue.project.namespace.id,
-                project_studio_available: 'true',
                 project_studio_enabled: 'true'
               }
             )

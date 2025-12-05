@@ -30,10 +30,6 @@ module QA
           element 'preferences-item'
         end
 
-        view 'app/assets/javascripts/super_sidebar/components/user_menu_project_studio_section.vue' do
-          element 'toggle-project-studio-link'
-        end
-
         view 'app/assets/javascripts/super_sidebar/components/user_menu_profile_item.vue' do
           element 'user-profile-link'
         end
@@ -118,24 +114,6 @@ module QA
           wait_until(reload: false) do
             !has_css?('#dap_welcome_modal___BV_modal_footer_')
           end
-        end
-
-        def enable_project_studio
-          dismiss_welcome_modal_if_present
-          click_element 'user-avatar-content'
-
-          if find_element('toggle-project-studio-link').find('button[role="switch"]')['aria-checked'] == 'false'
-            QA::Runtime::Logger.info("Enabling Project Studio UI")
-            click_element 'toggle-project-studio-link'
-            dismiss_welcome_modal_if_present
-            expand_sidebar_if_collapsed
-          else
-            QA::Runtime::Logger.info("Project Studio UI already enabled!")
-          end
-
-          # Close user menu
-          click_element 'user-avatar-content' if has_element?('user-profile-link', wait: 0)
-          wait_for_requests
         end
 
         def not_signed_in?

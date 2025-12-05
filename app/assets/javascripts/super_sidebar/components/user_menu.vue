@@ -22,7 +22,6 @@ import * as Sentry from '~/sentry/sentry_browser_wrapper';
 import { logError } from '~/lib/logger';
 import { USER_MENU_TRACKING_DEFAULTS, DROPDOWN_Y_OFFSET } from '../constants';
 import UserMenuProfileItem from './user_menu_profile_item.vue';
-import UserMenuProjectStudioSection from './user_menu_project_studio_section.vue';
 import UserCounts from './user_counts.vue';
 
 // Left offset required for the dropdown to be aligned with the super sidebar
@@ -54,7 +53,6 @@ export default {
     GlButton,
     UserCounts,
     UserMenuProfileItem,
-    UserMenuProjectStudioSection,
     UserMenuUpgradeSubscription,
     DapWelcomeModal,
     SetStatusModal: () =>
@@ -68,7 +66,7 @@ export default {
     GlTooltip: GlTooltipDirective,
   },
   mixins: [Tracking.mixin(), glFeatureFlagsMixin()],
-  inject: ['isImpersonating', 'projectStudioAvailable', 'projectStudioEnabled'],
+  inject: ['isImpersonating', 'projectStudioEnabled'],
   props: {
     data: {
       required: true,
@@ -473,8 +471,6 @@ export default {
           </template>
         </gl-disclosure-dropdown-item>
       </gl-disclosure-dropdown-group>
-
-      <user-menu-project-studio-section v-if="projectStudioAvailable" />
 
       <gl-disclosure-dropdown-group v-if="data.gitlab_com_but_not_canary" bordered>
         <gl-disclosure-dropdown-item :item="gitlabNextItem" data-testid="gitlab-next-item">

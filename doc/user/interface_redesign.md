@@ -18,6 +18,7 @@ description: Learn about an upcoming redesign of GitLab user interface.
 - Introduced in GitLab 18.5 [with a flag](../administration/feature_flags/_index.md) named `paneled_view`.
   Disabled by default.
 - [Enabled on GitLab.com, GitLab Self-Managed, and GitLab Dedicated](https://gitlab.com/gitlab-org/gitlab/-/work_items/574049) in GitLab 18.6.
+- Toggle [removed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/212303) in GitLab 18.7.
 
 {{< /history >}}
 

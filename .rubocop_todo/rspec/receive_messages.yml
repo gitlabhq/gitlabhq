@@ -159,7 +159,6 @@ RSpec/ReceiveMessages:
     - 'ee/spec/views/groups/settings/_enforce_ssh_certificates.html.haml_spec.rb'
     - 'ee/spec/views/groups/settings/_permissions.html.haml_spec.rb'
     - 'ee/spec/views/groups/settings/roles_and_permissions/show.html.haml_spec.rb'
-    - 'ee/spec/views/layouts/_page.html.haml_spec.rb'
     - 'ee/spec/views/layouts/application.html.haml_spec.rb'
     - 'ee/spec/views/layouts/header/_ee_subscribable_banner.html.haml_spec.rb'
     - 'ee/spec/views/projects/project_members/index.html.haml_spec.rb'

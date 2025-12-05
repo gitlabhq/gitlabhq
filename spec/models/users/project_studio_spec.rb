@@ -15,7 +15,6 @@ RSpec.describe Users::ProjectStudio, feature_category: :user_profile do
 
     it "passes" do
       expect(described_class.new(user).enabled?).to be(true)
-      expect(described_class.new(user).available?).to be(true)
       expect(described_class.enabled_for_user?(user)).to be(true)
     end
   end
@@ -62,34 +61,8 @@ RSpec.describe Users::ProjectStudio, feature_category: :user_profile do
           stub_feature_flags(paneled_view: true)
         end
 
-        context "when the user hasn't updated their setting yet" do
-          before do
-            user.user_preference.update!(new_ui_enabled: nil)
-          end
-
-          it 'returns true' do
-            expect(project_studio.enabled?).to be true
-          end
-        end
-
-        context 'when the user has already updated their setting' do
-          before do
-            user.user_preference.update!(new_ui_enabled: new_ui_enabled)
-          end
-
-          where(
-            :new_ui_enabled,
-            :expected_result
-          ) do
-            true  | true
-            false | false
-          end
-
-          with_them do
-            it 'returns expected result' do
-              expect(project_studio.enabled?).to be expected_result
-            end
-          end
+        it 'returns true' do
+          expect(project_studio.enabled?).to be true
         end
       end
     end
@@ -109,99 +82,19 @@ RSpec.describe Users::ProjectStudio, feature_category: :user_profile do
     context 'when user is present' do
       where(
         :paneled_view_flag,
-        :new_ui_enabled,
         :expected_result
       ) do
-        false | false | false
-        true  | false | false
-        false | true  | false
-        true  | true  | false
+        false | false
+        true  | false
       end
 
       with_them do
         before do
-          user.user_preference.update!(new_ui_enabled: new_ui_enabled)
           stub_feature_flags(paneled_view: paneled_view_flag)
         end
 
         it 'returns expected result' do
           expect(described_class.new(user).enabled?).to be expected_result
-        end
-      end
-    end
-  end
-
-  describe '#available?' do
-    context 'when user is nil' do
-      where(:paneled_view_flag, :expected_result) do
-        false | false
-        true  | true
-      end
-
-      with_them do
-        before do
-          stub_feature_flags(paneled_view: paneled_view_flag)
-        end
-
-        it 'returns expected result' do
-          expect(described_class.new(nil).available?).to be expected_result
-        end
-      end
-    end
-
-    context 'when user is present' do
-      where(:paneled_view_flag, :expected_result) do
-        false | false
-        true  | true
-      end
-
-      with_them do
-        before do
-          stub_feature_flags(paneled_view: paneled_view_flag)
-        end
-
-        it 'returns expected result' do
-          expect(described_class.new(user).available?).to be expected_result
-        end
-      end
-    end
-  end
-
-  describe '#available? with GLCI_OVERRIDE_PROJECT_STUDIO_ENABLED set to false' do
-    before do
-      stub_env('GLCI_OVERRIDE_PROJECT_STUDIO_ENABLED', 'false')
-    end
-
-    context 'when user is nil' do
-      where(:paneled_view_flag, :expected_result) do
-        false | false
-        true  | false
-      end
-
-      with_them do
-        before do
-          stub_feature_flags(paneled_view: paneled_view_flag)
-        end
-
-        it 'returns expected result' do
-          expect(described_class.new(nil).available?).to be expected_result
-        end
-      end
-    end
-
-    context 'when user is present' do
-      where(:paneled_view_flag, :expected_result) do
-        false | false
-        true  | false
-      end
-
-      with_them do
-        before do
-          stub_feature_flags(paneled_view: paneled_view_flag)
-        end
-
-        it 'returns expected result' do
-          expect(described_class.new(user).available?).to be expected_result
         end
       end
     end

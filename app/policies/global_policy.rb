@@ -47,7 +47,7 @@ class GlobalPolicy < BasePolicy
   end
 
   condition(:project_studio_available, scope: :user, score: 0) do
-    ::Users::ProjectStudio.new(@user).available?
+    ::Users::ProjectStudio.new(@user).enabled?
   end
 
   rule { bot & ~bot_with_quick_actions_permitted }.policy do

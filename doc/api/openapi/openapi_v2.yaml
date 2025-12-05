@@ -68645,6 +68645,8 @@ definitions:
         type: string
       default_enabled:
         type: string
+      observed:
+        type: string
       intended_to_rollout_by:
         type: string
     description: API_Entities_Feature_Definition model

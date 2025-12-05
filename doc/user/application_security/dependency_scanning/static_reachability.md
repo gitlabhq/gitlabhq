@@ -171,6 +171,10 @@ Dependency scanning generates an SBOM report that identifies all components and 
 dependencies. Static reachability analysis checks each dependency in the SBOM report and adds a
 reachability value to the SBOM report. The enriched SBOM is then ingested by the GitLab instance.
 
+An SBOM is enriched only when both the SBOM file and the source code files belong to the same
+project directory tree. When multiple nested projects exist, the system selects the closest
+(deepest) project path to determine enrichment.
+
 Static reachability analysis relies on [metadata](https://gitlab.com/gitlab-org/security-products/static-reachability-metadata/-/tree/v1?ref_type=heads) that maps package names from SBOMs to their corresponding code import paths for Python and Java packages. This metadata is maintained with weekly updates.
 
 The following are marked as not found:

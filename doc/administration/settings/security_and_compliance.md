@@ -33,7 +33,7 @@ To configure different values for these limits:
 
 ### Choose package registry metadata to sync
 
-To choose the packages you want to synchronize with the GitLab Package Metadata Database for [License Compliance](../../user/compliance/license_scanning_of_cyclonedx_files/_index.md) and [continuous vulnerability scanning](../../user/application_security/continuous_vulnerability_scanning/_index.md):
+To choose the packages you want to synchronize with the GitLab Package Metadata Database (PMDB) for [License Compliance](../../user/compliance/license_scanning_of_cyclonedx_files/_index.md) and [continuous vulnerability scanning](../../user/application_security/continuous_vulnerability_scanning/_index.md):
 
 1. On the left sidebar, at the bottom, select **Admin**. If you've [turned on the new navigation](../../user/interface_redesign.md#turn-new-navigation-on-or-off), in the upper-right corner, select **Admin**.
 1. Select **Settings** > **Security and compliance**.
@@ -43,3 +43,11 @@ To choose the packages you want to synchronize with the GitLab Package Metadata 
 1. Select **Save changes**.
 
 For this data synchronization to work, you must allow outbound network traffic from your GitLab instance to the domain `storage.googleapis.com`. See also the offline setup instructions described in [Enabling the Package Metadata Database](../../topics/offline/quick_start_guide.md#enabling-the-package-metadata-database).
+
+### Security considerations
+
+PMDB is a service that publishes license and advisory data to publicly accessible (read-only) Google Cloud Storage buckets.
+The buckets can be read by anyone, but only authorized GitLab maintainers have write access through IAM controls.
+GitLab continuously ingests data from a secured PostgreSQL database and exports it by using a private service using OIDC authentication.
+GitLab instances sync data from the public buckets, perform schema validation,
+and then upsert the validated data into the GitLab database.

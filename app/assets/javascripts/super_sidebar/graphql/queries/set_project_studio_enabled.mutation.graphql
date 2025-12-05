@@ -1,7 +1,0 @@
-mutation setProjectStudioEnabled($projectStudioEnabled: Boolean) {
-  userPreferencesUpdate(input: { newUiEnabled: $projectStudioEnabled }) {
-    userPreferences {
-      newUiEnabled
-    }
-  }
-}

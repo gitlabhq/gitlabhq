@@ -43692,9 +43692,6 @@ msgstr ""
 msgid "Navigation|Monitor settings"
 msgstr ""
 
-msgid "Navigation|New UI"
-msgstr ""
-
 msgid "Navigation|Observability"
 msgstr ""
 
@@ -43716,9 +43713,6 @@ msgstr ""
 msgid "Navigation|Preferences"
 msgstr ""
 
-msgid "Navigation|Preview new UI"
-msgstr ""
-
 msgid "Navigation|Primary navigation"
 msgstr ""
 
@@ -43726,9 +43720,6 @@ msgid "Navigation|Profile"
 msgstr ""
 
 msgid "Navigation|Projects you visit often will appear here."
-msgstr ""
-
-msgid "Navigation|Provide feedback"
 msgstr ""
 
 msgid "Navigation|Repository settings"
@@ -46820,12 +46811,6 @@ msgid "OperationsDashboard|The operations dashboard provides a summary of each p
 msgstr ""
 
 msgid "Opstrace endpoint for Error Tracking integration"
-msgstr ""
-
-msgid "Opt in to Project Studio"
-msgstr ""
-
-msgid "Opt out of Project Studio"
 msgstr ""
 
 msgid "Optimize repository period"

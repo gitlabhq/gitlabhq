@@ -106,6 +106,12 @@ GitHub Enterprise does not require a public email address, so you might have to 
   - Issues or merge request descriptions, GitLab doesn't create links for any references because their imported
     counterparts might not have been created on the destination yet.
 
+- When importing from GitHub accounts with SAML single sign-on (SSO) enabled, Markdown attachments might fail to import. This issue is caused by a GitHub
+  API limitation where assets cannot be downloaded using a personal access token when SSO is enforced. To workaround the issue, add the GitLab user performing
+  the import as an
+  [Outside Collaborator](https://docs.github.com/en/organizations/managing-user-access-to-your-organizations-repositories/managing-outside-collaborators/adding-outside-collaborators-to-repositories-in-your-organization)
+  to the GitHub repository. This permits access to private attachments during import.
+
 ## Import your GitHub repository into GitLab
 
 You can import your GitHub repository by either:

@@ -85,7 +85,7 @@ module QA
 
           return unless Runtime::Env.project_studio_enabled? && !skip_page_validation
 
-          Page::Main::Menu.perform(&:enable_project_studio)
+          Page::Main::Menu.perform(&:dismiss_welcome_modal_if_present)
         end
 
         def sign_in_using_admin_credentials
@@ -95,7 +95,7 @@ module QA
           end
 
           Page::Main::Menu.perform(&:has_personal_area?)
-          Page::Main::Menu.perform(&:enable_project_studio) if Runtime::Env.project_studio_enabled?
+          Page::Main::Menu.perform(&:dismiss_welcome_modal_if_present)
         end
 
         def sign_in_using_ldap_credentials(user:)
@@ -115,7 +115,7 @@ module QA
 
           dismiss_duo_chat_popup if respond_to?(:dismiss_duo_chat_popup)
 
-          Page::Main::Menu.perform(&:enable_project_studio) if Runtime::Env.project_studio_enabled?
+          Page::Main::Menu.perform(&:dismiss_welcome_modal_if_present)
         end
 
         def has_sign_in_tab?(wait: Capybara.default_max_wait_time)

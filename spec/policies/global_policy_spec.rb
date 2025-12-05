@@ -662,7 +662,7 @@ RSpec.describe GlobalPolicy, feature_category: :shared do
     context 'when ProjectStudio is available' do
       before do
         allow_next_instance_of(Users::ProjectStudio) do |instance|
-          allow(instance).to receive(:available?).and_return(true)
+          allow(instance).to receive(:enabled?).and_return(true)
         end
       end
 
@@ -672,7 +672,7 @@ RSpec.describe GlobalPolicy, feature_category: :shared do
     context 'when ProjectStudio is not available' do
       before do
         allow_next_instance_of(Users::ProjectStudio) do |instance|
-          allow(instance).to receive(:available?).and_return(false)
+          allow(instance).to receive(:enabled?).and_return(false)
         end
       end
 
