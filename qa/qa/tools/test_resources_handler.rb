@@ -42,7 +42,6 @@ module QA
         QA::Resource::UserGPG
         QA::EE::Resource::ComplianceFramework
         QA::EE::Resource::GroupIteration
-        QA::EE::Resource::InstanceAuditEventExternalDestination
         QA::EE::Resource::ScanResultPolicyCommit
         QA::EE::Resource::ScanResultPolicyProject
         QA::EE::Resource::SecurityScanPolicyProject

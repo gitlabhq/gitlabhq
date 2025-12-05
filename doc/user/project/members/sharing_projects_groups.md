@@ -227,12 +227,6 @@ When this setting is disabled:
 - It applies to this group only, not to its subgroups.
 - To disable this setting for all subgroups, you must update each subgroup individually.
 
-{{< alert type="note" >}}
-
-After you [set a user cap for the group](../../group/manage.md#set-a-user-cap-for-a-group) or if you [turn on restricted access](../../group/manage.md#turn-on-restricted-access), you cannot disable this setting.
-
-{{< /alert >}}
-
 ## Sharing groups
 
 When you want another group's members to have access to your group,

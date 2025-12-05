@@ -855,6 +855,13 @@ API/DescriptionSuccessResponse:
     - 'lib/**/api/**/*.rb'
     - 'ee/lib/**/api/**/*.rb'
 
+API/DescriptionSummary:
+  Enabled: true
+  SafeAutoCorrect: false
+  Include:
+    - 'lib/**/api/**/*.rb'
+    - 'ee/lib/**/api/**/*.rb'
+
 API/DescriptionTags:
   Enabled: true
   SafeAutoCorrect: false

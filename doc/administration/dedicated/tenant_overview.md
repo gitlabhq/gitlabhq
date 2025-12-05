@@ -13,14 +13,11 @@ title: View GitLab Dedicated instance details
 
 {{< /details >}}
 
-Monitor your GitLab Dedicated instance details, maintenance windows, and configuration status in Switchboard.
+Use Switchboard to view your GitLab Dedicated instance details, maintenance windows, and configuration status.
 
 ## View your instance details
 
-To access your instance details:
-
-1. Sign in to [Switchboard](https://console.gitlab-dedicated.com/).
-1. Select your tenant.
+To access your instance details, sign in to [Switchboard](https://console.gitlab-dedicated.com/).
 
 The **Overview** page displays:
 
@@ -64,7 +61,7 @@ The **Maintenance windows** section displays the:
 
 {{< alert type="note" >}}
 
-Each Sunday night in UTC, Switchboard updates to display the planned GitLab version upgrades for the upcoming week's maintenance windows. For more information, see [Maintenance windows](maintenance.md#maintenance-windows).
+Every Sunday night in UTC, Switchboard updates to display the planned GitLab version upgrades for the upcoming week's maintenance windows. For more information, see [Maintenance windows](maintenance.md#maintenance-windows).
 
 {{< /alert >}}
 
@@ -80,7 +77,6 @@ needed to configure external services and firewalls to work with your GitLab Ded
 To view your resource access information:
 
 1. Sign in to [Switchboard](https://console.gitlab-dedicated.com/).
-1. Select your tenant.
 1. Select the **Configuration** tab.
 1. Expand **Resource access**.
 1. Under the relevant section, select **Copy to clipboard** ({{< icon name="copy-to-clipboard" >}}) next to the information you need.
@@ -126,6 +122,51 @@ You should use the FQDN instead of IP addresses because:
 - IP addresses for S3 buckets can change over time.
 - FQDNs provide a stable reference point for network configuration.
 
+## Custom domains
+
+The **Custom domains** section displays configuration details for your custom domain setup.
+
+The custom domain details include:
+
+- GitLab instance domain: The custom domain for your GitLab instance.
+- Registry domain: The custom domain for the container registry.
+- KAS domain: The custom domain for the GitLab agent server for Kubernetes (KAS).
+
+Use this information to:
+
+- Verify your current custom domain configuration.
+- Reference domains for external integrations.
+- Copy configuration details for DNS management.
+
+To view your custom domain details:
+
+1. Sign in to [Switchboard](https://console.gitlab-dedicated.com/).
+1. Select the **Configuration** tab.
+1. Expand **Custom domains**.
+
+### DNSSEC details
+
+{{< details >}}
+
+- Tier: Ultimate
+- Offering: GitLab Dedicated for Government
+
+{{< /details >}}
+
+If your custom domain is configured with Cloudflare Web Application Firewall (WAF),
+additional configuration details are displayed including Cloudflare nameservers
+and DNSSEC parameters for FedRAMP compliance.
+
+The additional details include:
+
+- Cloudflare nameservers: DNS nameservers for Cloudflare-managed domains.
+- Key tag: Numeric identifier for the DNSSEC key.
+- Algorithm: Cryptographic algorithm used (typically 13 for ECDSA P-256 with SHA-256).
+- Digest type: Hash algorithm used (typically 2 for SHA-256).
+- Digest: Cryptographic hash of the public key.
+
+Use these values to configure DNS delegation and DNSSEC validation with your DNS provider.
+
 ## Contact information
 
 The **Contact information** section shows the operational email addresses configured for
@@ -135,4 +176,5 @@ your GitLab Dedicated instance. These email addresses receive notifications abou
 - Incidents
 - Other critical updates
 
-To update your operational email addresses, see [manage email addresses for operational contacts](configure_instance/users_notifications.md#manage-email-addresses-for-operational-contacts).
+To update your operational email addresses,
+see [manage email addresses for operational contacts](configure_instance/users_notifications.md#manage-email-addresses-for-operational-contacts).

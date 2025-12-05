@@ -104,6 +104,7 @@ The following settings are available:
 
 - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/501717) in GitLab 17.8.
 - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/523464) in GitLab 18.0.
+- Group sharing settings [changed](https://gitlab.com/gitlab-org/gitlab/-/issues/488451) in GitLab 18.7.
 
 {{< /history >}}
 
@@ -130,11 +131,9 @@ To turn on restricted access:
 1. Expand **Sign-up restrictions**.
 1. Under **Seat control**, select **Restricted access**.
 
-When you turn on restricted access, the following settings are disabled automatically:
+When you turn on restricted access, the setting to [prevent inviting groups outside the group hierarchy](../../user/project/members/sharing_projects_groups.md#prevent-inviting-groups-outside-the-group-hierarchy) is automatically turned on. This setting prevents unexpectedly adding new billable users, which might result in overage fees.
 
-- [Project sharing for the group and its subgroups](../../user/project/members/sharing_projects_groups.md#prevent-a-project-from-being-shared-with-groups).
-- [Inviting groups outside the group hierarchy](../../user/project/members/sharing_projects_groups.md#prevent-inviting-groups-outside-the-group-hierarchy).
-  This setting prevents unexpectedly adding new billable users, which might result in overage fees.
+You can still independently configure [project sharing for the group and its subgroups](../../user/project/members/sharing_projects_groups.md#prevent-a-project-from-being-shared-with-groups) as needed.
 
 ### Known issues
 
@@ -169,11 +168,9 @@ The number of [billable users](../../subscriptions/manage_users_and_seats.md#bil
 The user cap might apply only retrospectively after the cap has already been exceeded.
 If the cap is set to a value below the current number of billable users (for example, `1`), the cap is enabled immediately.
 
-When you set a user cap, the following settings are disabled automatically:
+When you turn on restricted access, the setting to [prevent inviting groups outside the group hierarchy](../../user/project/members/sharing_projects_groups.md#prevent-inviting-groups-outside-the-group-hierarchy) is automatically turned on.
 
-- [Project sharing for the group and its subgroups](../../user/project/members/sharing_projects_groups.md#prevent-a-project-from-being-shared-with-groups).
-- [Inviting groups outside the group hierarchy](../../user/project/members/sharing_projects_groups.md#prevent-inviting-groups-outside-the-group-hierarchy).
-  This setting prevents unexpectedly adding new billable users, which might result in overage fees.
+You can still independently configure [project sharing for the group and its subgroups](../../user/project/members/sharing_projects_groups.md#prevent-a-project-from-being-shared-with-groups) as needed.
 
 You can also set up [user caps for individual groups](../../user/group/manage.md#user-cap-for-groups).
 

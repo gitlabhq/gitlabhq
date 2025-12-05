@@ -14,38 +14,41 @@ title: Merge request pipelines
 {{< /details >}}
 
 You can configure your pipeline to run every time you make changes to the
-source branch in a merge request.
+source branch in a merge request. This type of pipeline is called a merge request pipeline.
 
-This type of pipeline, called a merge request pipeline, runs when you:
+These pipelines run when you:
 
 - Create a new merge request from a source branch that has one or more commits.
 - Push a new commit to the source branch for a merge request.
 - Go to the **Pipelines** tab in a merge request and select **Run pipeline**.
 
-In addition, merge request pipelines:
+Merge request pipelines:
 
-- Have access to [more predefined variables](merge_request_pipelines.md#available-predefined-variables).
-- Can [optionally access protected variables or runners](#control-access-to-protected-variables-and-runners).
+- Run on the contents of the source branch only and ignore the content of the target branch.
+- Display a `merge request` label in pipeline lists.
 
-These pipelines display a `merge request` label in pipeline lists.
-
-Merge request pipelines run on the contents of the source branch only, ignoring the content
-of the target branch. To run a pipeline that tests the result of merging the source
-and target branches together, use merged results pipelines.
+To run a pipeline that tests the result of merging the source and target branches together,
+use [merged results pipelines](merged_results_pipelines.md).
 
 ## Prerequisites
 
 To use merge request pipelines:
 
-- Your project's `.gitlab-ci.yml` file must be
-  [configured with jobs that run in merge request pipelines](#add-jobs-to-merge-request-pipelines).
-- You must have at least the Developer role for the
-  source project to run a merge request pipeline.
+- Your project's `.gitlab-ci.yml` file must include job rules or workflow rules that match `CI_PIPELINE_SOURCE == "merge_request_event"`.
+- You must have at least the Developer role for the source project to run a merge request pipeline.
 - Your repository must be a GitLab repository, not an [external repository](../ci_cd_for_external_repos/_index.md).
 
-## Add jobs to merge request pipelines
+## Configure merge request pipelines
 
-Use the [`rules`](../yaml/_index.md#rules) keyword to configure jobs to run in
+To configure merge request pipelines, you must configure jobs in your
+`.gitlab-ci.yml` file to run when `CI_PIPELINE_SOURCE` equals `merge_request_event`.
+
+You can configure individual jobs with `rules`,
+or use `workflow: rules` to control the entire pipeline.
+
+### Configure individual jobs
+
+Use the [`rules`](../yaml/_index.md#rules) keyword to configure individual jobs to run in
 merge request pipelines. For example:
 
 ```yaml
@@ -53,27 +56,44 @@ job1:
   script:
     - echo "This job runs in merge request pipelines"
   rules:
-    - if: $CI_PIPELINE_SOURCE == 'merge_request_event'
+    - if: $CI_PIPELINE_SOURCE == "merge_request_event"
 ```
 
-You can also use the [`workflow: rules`](../yaml/_index.md#workflowrules) keyword
-to configure the entire pipeline to run in merge request pipelines. For example:
+You can also control when jobs run based on file changes:
+
+```yaml
+test:
+  script:
+    - echo "This job always runs in merge request pipelines"
+  rules:
+    - if: $CI_PIPELINE_SOURCE == "merge_request_event"
+
+lint:
+  script:
+    - echo "This job runs only when JavaScript files change"
+  rules:
+    - if: $CI_PIPELINE_SOURCE == "merge_request_event"
+      changes:
+        - "*.js"
+```
+
+### Configure the entire pipeline
+
+Use the [`workflow: rules`](../yaml/_index.md#workflowrules) keyword
+to configure all jobs in a pipeline to run in merge request pipelines.
+For example:
 
 ```yaml
 workflow:
   rules:
-    - if: $CI_PIPELINE_SOURCE == 'merge_request_event'
+    - if: $CI_PIPELINE_SOURCE == "merge_request_event"
 
 job1:
   script:
     - echo "This job runs in merge request pipelines"
-
-job2:
-  script:
-    - echo "This job also runs in merge request pipelines"
 ```
 
-For common `workflow` examples, see:
+For more `workflow` examples, see:
 
 - [Switch between branch pipelines and merge request pipelines](../yaml/workflow.md#switch-between-branch-pipelines-and-merge-request-pipelines)
 - [Git Flow with merge request pipelines](../yaml/workflow.md#git-flow-with-merge-request-pipelines)
@@ -167,8 +187,13 @@ You can control access to [protected CI/CD variables](../variables/_index.md#pro
 and [protected runners](../runners/configure_runners.md#prevent-runners-from-revealing-sensitive-information)
 from merge request pipelines.
 
-Merge request pipelines can only access these protected resources if both the source and target branches
-of the merge request are [protected](../../user/project/repository/branches/protected.md). Also, the user triggering the pipeline should have push/merge access to the target branch of the Merge Request. Merge request pipelines can only access these protected resources if both the source and target branches belong to the same project. Merge request pipelines from a fork of a repository cannot access these protected resources.
+Merge request pipelines can only access these protected resources when:
+
+- Both the source and target branches are [protected](../../user/project/repository/branches/protected.md).
+- The user triggering the pipeline has push/merge access to the target branch.
+- Both source and target branches belong to the same project.
+
+Merge request pipelines from forked repositories cannot access these protected resources.
 
 Prerequisites:
 
@@ -176,7 +201,9 @@ Prerequisites:
 
 To control access to protected variables and runners:
 
-- Go to **Settings** > **CI/CD**.
-- Expand **Variables**
-- Under **Access protected resources in merge request pipelines**, select or clear
-  the **Allow merge request pipelines to access protected variables and runners** option.
+1. On the left sidebar, select **Search or go to** and find your project.
+   If you've [turned on the new navigation](../../user/interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
+1. Select **Settings** > **CI/CD**.
+1. Expand **Variables**.
+1. Under **Access protected resources in merge request pipelines**, select or clear
+   the **Allow merge request pipelines to access protected variables and runners** checkbox.

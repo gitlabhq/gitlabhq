@@ -97,7 +97,6 @@ Each configuration change has a status:
 To view the configuration change log:
 
 1. Sign in to [Switchboard](https://console.gitlab-dedicated.com/).
-1. Select your tenant.
 1. At the top of the page, select **Configuration change log**.
 
 Each configuration change appears as an entry in the table. Select **View details** to see more information about each change.

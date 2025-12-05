@@ -15,14 +15,14 @@ You can create a new security policy for each project or group, but duplicating 
 You can enforce policies in multiple ways:
 
 - To enforce a policy in a single project or all of the projects in a group, create the policy in that project or group.
-- To enforce a policy across multiple projects, use [security policy projects](security_policy_projects.md). A security policy project is a special type of project used only to contain policies. To enforce the policies from a security policy project in other groups and projects, link to the security policy project from groups or other projects.
+- To enforce a policy across multiple projects, use [security policy projects](security_policy_projects.md). A security policy project is a special type of project where you add policies and nothing else. To enforce the policies from a security policy project onto other groups and projects, link to the security policy project from the groups or projects.
 - To enforce policies and compliance frameworks together across a GitLab Self-Managed instance, instance administrators can use [compliance and security policy management groups](compliance_and_security_policy_groups.md).
 
 ## Policy design guidelines
 
-When designing your policies, your goals should be to:
+When designing policies:
 
-- Design policy enforcement strategies for minimum overhead but maximum coverage
+- Maximize coverage while minimizing management overhead
 - Ensure separation of duties
 
 ### Enforcement
@@ -85,7 +85,7 @@ The following example illustrates two groups and their structure:
 
 Assuming no policies are enforced, consider the following examples:
 
-- If the "SAST" policy is enforced at group Alpha, it applies to its subgroups, Finance and
+- If the "SAST" policy is enforced at group Alpha, the policy applies to both of Alpha's subgroups, Finance and
   Engineering, and all their projects and subgroups. If the "Secret Detection" policy is enforced
   also at subgroup "Accounts receiving", both policies apply to projects B and C. However, only the
   "SAST" policy applies to project A.
@@ -108,31 +108,26 @@ You can refine a policy's scope by:
 
 - Compliance frameworks: Enforce a policy on projects with selected compliance frameworks.
 - Group:
-  - All projects in a group, including all its descendent subgroups and their projects. Optionally
+  - All projects in a group, including all of the group's subgroups and their projects. Optionally
     exclude specific projects.
-  - All projects in multiple groups, including their descendent subgroups and their projects. Only
+  - All projects from multiple groups, including all of the groups' subgroups and their projects. Any
     groups linked to the same security policy project can be listed in the policy. Optionally
     exclude specific projects.
 - Projects: Include or exclude specific projects. Only projects linked to the same security policy
   project can be listed in the policy.
 
-These options can be used together in the same policy. However, exclusion takes precedence over
+You can apply these refinements together in the same policy. However, exclusion takes precedence over
 inclusion.
 
 ## Separation of duties
 
-Separation of duties is vital to successfully implementing policies. Implement policies that achieve
-the necessary compliance and security requirements, while allowing development teams to achieve
-their goals.
+Separation of duties is vital to successfully implementing policies.
+Design policies that achieve the necessary compliance and security requirements while supporting development workflows.
 
-Security and compliance teams:
+When implementing separation of duties:
 
-- Should be responsible for defining policies and working with development teams to ensure the
-  policies meet their needs.
-
-Development teams:
-
-- Should not be able to disable, modify, or circumvent the policies in any way.
+- Define policies centrally and collaborate with development teams to ensure policies support their workflows.
+- Restrict policy modification permissions to authorized roles only.
 
 To enforce a security policy project on a group, subgroup, or project, you must have either:
 

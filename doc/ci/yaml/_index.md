@@ -807,7 +807,7 @@ and the pipeline is for either:
 **Related topics**:
 
 - [Common `if` clauses for `workflow:rules`](workflow.md#common-if-clauses-for-workflowrules).
-- [Use `rules` to run merge request pipelines](../pipelines/merge_request_pipelines.md#add-jobs-to-merge-request-pipelines).
+- [Use `rules` to run merge request pipelines](../pipelines/merge_request_pipelines.md#configure-merge-request-pipelines).
 
 ---
 
@@ -5010,7 +5010,7 @@ job:
 
 - [Common `if` expressions for `rules`](../jobs/job_rules.md#common-if-clauses-with-predefined-variables).
 - [Avoid duplicate pipelines](../jobs/job_rules.md#avoid-duplicate-pipelines).
-- [Use `rules` to run merge request pipelines](../pipelines/merge_request_pipelines.md#add-jobs-to-merge-request-pipelines).
+- [Use `rules` to run merge request pipelines](../pipelines/merge_request_pipelines.md#configure-merge-request-pipelines).
 
 ---
 

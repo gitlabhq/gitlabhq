@@ -398,6 +398,7 @@ For members with `Minimal Access` in the selected group, their `Max Role` and `S
 
 - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/442718) in GitLab 17.5.
 - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/523468) in GitLab 18.0.
+- Group sharing settings [changed](https://gitlab.com/gitlab-org/gitlab/-/issues/488451) in GitLab 18.7.
 
 {{< /history >}}
 
@@ -426,6 +427,12 @@ To turn on restricted access:
 1. On the left sidebar, select **Settings** > **General**.
 1. Expand **Permissions and group features**.
 1. Under **Seat control**, select **Restricted access**.
+
+When you turn on restricted access, the setting to
+[prevent inviting groups outside the group hierarchy](../project/members/sharing_projects_groups.md#prevent-inviting-groups-outside-the-group-hierarchy)
+is automatically turned on.
+
+You can still independently configure [project sharing for the group and its subgroups](../project/members/sharing_projects_groups.md#prevent-a-project-from-being-shared-with-groups) as needed.
 
 ### Known issues
 

@@ -606,7 +606,7 @@ In this example:
 
 - `builds1.yml` is included when `Dockerfile` has changed.
 - `builds2.yml` is included when `Dockerfile` has changed relative to `refs/heads/branch1`.
-- `builds3.yml` is included when `Dockerfile` has changed and the pipeline source is a merge request event. The jobs in `builds3.yml` must also be configured to run for [merge request pipelines](../pipelines/merge_request_pipelines.md#add-jobs-to-merge-request-pipelines).
+- `builds3.yml` is included when `Dockerfile` has changed and the pipeline source is a merge request event. The jobs in `builds3.yml` must also be configured to run for [merge request pipelines](../pipelines/merge_request_pipelines.md#configure-merge-request-pipelines).
 
 ## Use `include:local` with wildcard file paths
 

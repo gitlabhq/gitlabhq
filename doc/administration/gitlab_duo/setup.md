@@ -18,7 +18,7 @@ gitlab_dedicated: no
 - [Turn on beta and experimental features](../../user/gitlab_duo/turn_on_off.md#turn-on-beta-and-experimental-features).
 - Have both outbound and inbound connections allowed.
   Network firewalls might cause delay.
-- [Turn on Silent Mode](../../administration/silent_mode/_index.md#turn-on-silent-mode).
+- [Ensure Silent Mode is turned off](../../administration/silent_mode/_index.md).
 - [Activate your GitLab instance with an activation code](../../administration/license.md#activate-gitlab-ee).
   You cannot use a legacy license.
   Except for [GitLab Duo Self-Hosted](../../administration/gitlab_duo_self_hosted/_index.md),

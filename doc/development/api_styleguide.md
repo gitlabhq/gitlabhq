@@ -46,7 +46,7 @@ Every method must be described using the [Grape DSL](https://github.com/ruby-gra
 (see [`environments.rb`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/api/environments.rb)
 for a good example):
 
-- `desc` for the method summary.
+- `desc` for the method summary. This must include a summary string no more than 120 characters.
 - `detail` for each `desc` block. This must be a string.
 - `success` for each `desc` block. This defines the success response.
 - `tags` for each `desc` block. This should be a string, or array of strings.
@@ -70,6 +70,40 @@ get do
 
   present paginate(messages), with: Entities::System::BroadcastMessage
 end
+```
+
+### Defining endpoint desc
+
+Every endpoint must include a summary string in the `desc` block.
+The summary describes the operation on the REST resource and is used in the generated OpenAPI documentation.
+
+The summary _should_:
+
+- Begin with an action verb aligned to the HTTP method (Get, List, Create, Update, Delete)
+- Identify the resource being operated on
+- Include qualifiers when needed to distinguish similar endpoints
+
+The summary _must_:
+
+- Be a string literal or interpolated string (not a variable or method call)
+- Not exceed 120 characters
+
+A good example is as follows:
+
+```ruby
+  desc 'Get a specific environment' do
+    detail 'Returns environment details. This feature was introduced in GitLab 18.12.'
+    success Entities::Environment
+  end
+```
+
+A bad example is as follows:
+
+```ruby
+  desc 'Get a specific environment. Returns environment details. This feature was introduced in GitLab 18.12.' do
+    detail 'Only available to authenticated project owner.'
+    success Entities::Environment
+  end
 ```
 
 ### Defining endpoint details

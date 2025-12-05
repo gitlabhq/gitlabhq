@@ -39,6 +39,7 @@ module Gitlab
 
             return unless github_url?(url, web_endpoint, media: true)
             return unless whitelisted_type?(url, web_endpoint, media: true)
+            return unless valid_user_attachment_url?(url, web_endpoint)
 
             # we don't have the :alt or :name so we use a default name
             new("media_attachment", url, web_endpoint)
@@ -50,6 +51,7 @@ module Gitlab
             return unless url
             return unless github_url?(url, web_endpoint, media: true)
             return unless whitelisted_type?(url, web_endpoint, media: true)
+            return unless valid_user_attachment_url?(url, web_endpoint)
 
             new(markdown_node.to_plaintext.strip, url, web_endpoint)
           end
@@ -60,6 +62,7 @@ module Gitlab
             return unless url
             return unless github_url?(url, web_endpoint, docs: true)
             return unless whitelisted_type?(url, web_endpoint, docs: true)
+            return unless valid_user_attachment_url?(url, web_endpoint)
 
             new(markdown_node.to_plaintext.strip, url, web_endpoint)
           end
@@ -70,6 +73,7 @@ module Gitlab
             return if img.nil? || img[:src].blank?
             return unless github_url?(img[:src], web_endpoint, media: true)
             return unless whitelisted_type?(img[:src], web_endpoint, media: true)
+            return unless valid_user_attachment_url?(img[:src], web_endpoint)
 
             new(img[:alt], img[:src], web_endpoint)
           end
@@ -82,6 +86,13 @@ module Gitlab
             elsif docs
               url.start_with?(web_endpoint)
             end
+          end
+
+          def valid_user_attachment_url?(url, web_endpoint)
+            return true unless url.start_with?("#{web_endpoint}/user-attachments")
+
+            url != "#{web_endpoint}/user-attachments" &&
+              url != "#{web_endpoint}/user-attachments/"
           end
 
           def whitelisted_type?(url, web_endpoint, docs: false, media: false)
@@ -124,7 +135,9 @@ module Gitlab
         end
 
         def user_attachment?
-          url.start_with?("#{web_endpoint}/user-attachments/")
+          url.start_with?("#{web_endpoint}/user-attachments/") &&
+            url != "#{web_endpoint}/user-attachments/" &&
+            url != "#{web_endpoint}/user-attachments"
         end
 
         def inspect

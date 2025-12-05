@@ -43,7 +43,7 @@ describe('Getting started section', () => {
   it('renders a link to the help page', () => {
     const link = findLink();
     const expectedLink =
-      '/help/ci/pipelines/merge_request_pipelines.html#add-jobs-to-merge-request-pipelines';
+      '/help/ci/pipelines/merge_request_pipelines.html#configure-merge-request-pipelines';
 
     expect(link.exists()).toBe(true);
     expect(link.attributes('href')).toBe(expectedLink);
