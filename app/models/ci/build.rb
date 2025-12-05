@@ -1330,7 +1330,11 @@ module Ci
     end
 
     def cache_suffix_for(entry)
-      entry[:unprotect] || !uses_protected_cache? ? 'non_protected' : 'protected'
+      return 'non_protected' if entry[:unprotect]
+      return 'protected' if uses_protected_cache?
+      return 'protected' if pipeline&.protected_ref?
+
+      'non_protected'
     end
 
     def reports_definitions
