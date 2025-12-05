@@ -25,4 +25,14 @@ RSpec.describe Gitlab::GithubImport::Importer::Attachments::BaseImporter, featur
       end
     end
   end
+
+  describe '#parallel?' do
+    it 'returns true when running in parallel mode' do
+      expect(importer).to be_parallel
+    end
+
+    it 'returns batch configuration with size and delay' do
+      expect(importer.parallel_import_batch).to eq({ size: 100, delay: 1.minute })
+    end
+  end
 end

@@ -9,12 +9,22 @@ RSpec.describe Gitlab::GithubImport::ReschedulingMethods, :clean_gitlab_redis_sh
         'MockImportWorker'
       end
 
+      def object_type
+        :pull_request
+      end
+
+      def parallel_import_batch
+        { size: 1, delay: 1.minute }
+      end
+
       include ApplicationWorker
       include Gitlab::GithubImport::ReschedulingMethods
     end.new
   end
 
   describe '#perform' do
+    let_it_be(:project) { create(:project, import_url: 'https://t0ken@github.com/repo/repo.git') }
+
     context 'with a non-existing project' do
       it 'does not perform any work' do
         expect(worker)
@@ -33,8 +43,6 @@ RSpec.describe Gitlab::GithubImport::ReschedulingMethods, :clean_gitlab_redis_sh
     end
 
     context 'with an existing project' do
-      let(:project) { create(:project, import_url: 'https://t0ken@github.com/repo/repo.git') }
-
       before do
         allow_next_instance_of(Gitlab::GithubImport::Client) do |instance|
           allow(instance).to receive(:rate_limit_resets_in).and_return(14)
@@ -49,7 +57,7 @@ RSpec.describe Gitlab::GithubImport::ReschedulingMethods, :clean_gitlab_redis_sh
             an_instance_of(Gitlab::GithubImport::Client),
             { 'number' => 2 }
           )
-          .and_return(true)
+          .and_return({ success: true })
 
         expect(worker)
           .to receive(:notify_waiter).with('123')
@@ -65,7 +73,7 @@ RSpec.describe Gitlab::GithubImport::ReschedulingMethods, :clean_gitlab_redis_sh
             an_instance_of(Gitlab::GithubImport::Client),
             { 'number' => 2 }
           )
-          .and_return(false)
+          .and_return({ success: false })
 
         expect(worker)
           .not_to receive(:notify_waiter)
@@ -76,9 +84,41 @@ RSpec.describe Gitlab::GithubImport::ReschedulingMethods, :clean_gitlab_redis_sh
 
         expect(worker.class)
           .to receive(:perform_in)
-          .with(15.06, project.id, { 'number' => 2 }, '123')
+          .with(75, project.id, { 'number' => 2 }, '123')
 
         worker.perform(project.id, { 'number' => 2 }, '123')
+      end
+    end
+
+    describe 'rescheduling due to rate limit' do
+      before do
+        allow_next_instance_of(Gitlab::GithubImport::Client) do |instance|
+          allow(instance).to receive(:rate_limit_resets_in).and_return(15)
+        end
+      end
+
+      context 'when rate limit error does not specify reset time' do
+        before do
+          allow(worker).to receive(:import).and_raise(Gitlab::GithubImport::RateLimitError)
+        end
+
+        it 'reschedule using client rate_limit_resets_in' do
+          expect(worker.class).to receive(:perform_in).with(76, project.id, { 'number' => 2 }, '123')
+
+          worker.perform(project.id, { 'number' => 2 }, '123')
+        end
+      end
+
+      context 'when rate limit error specifies custom reset time' do
+        before do
+          allow(worker).to receive(:import).and_raise(Gitlab::GithubImport::RateLimitError.new('Rate limit', 20))
+        end
+
+        it 'reschedule using error reset_in value' do
+          expect(worker.class).to receive(:perform_in).with(81, project.id, { 'number' => 2 }, '123')
+
+          worker.perform(project.id, { 'number' => 2 }, '123')
+        end
       end
     end
   end
@@ -89,7 +129,7 @@ RSpec.describe Gitlab::GithubImport::ReschedulingMethods, :clean_gitlab_redis_sh
         .to receive(:import)
         .with(10, 20)
 
-      expect(worker.try_import(10, 20)).to eq(true)
+      expect(worker.try_import(10, 20)).to eq({ success: true })
     end
 
     it 'returns false when the import fails due to hitting the GitHub API rate limit' do
@@ -98,7 +138,7 @@ RSpec.describe Gitlab::GithubImport::ReschedulingMethods, :clean_gitlab_redis_sh
         .with(10, 20)
         .and_raise(Gitlab::GithubImport::RateLimitError)
 
-      expect(worker.try_import(10, 20)).to eq(false)
+      expect(worker.try_import(10, 20)).to eq({ success: false, reset_in: nil })
     end
 
     it 'returns false when the import fails due to the FailedToObtainLockError' do
@@ -107,7 +147,7 @@ RSpec.describe Gitlab::GithubImport::ReschedulingMethods, :clean_gitlab_redis_sh
         .with(10, 20)
         .and_raise(Gitlab::ExclusiveLeaseHelpers::FailedToObtainLockError)
 
-      expect(worker.try_import(10, 20)).to eq(false)
+      expect(worker.try_import(10, 20)).to eq({ success: false, reset_in: nil })
     end
   end
 
