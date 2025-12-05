@@ -27,33 +27,6 @@ GitLab supports as a second factor of authentication:
 
 If you set up a device, also set up an OTP so you can still access your account if you lose the device.
 
-## Use personal access tokens with two-factor authentication
-
-When 2FA is enabled, you can't use your password to authenticate with Git over HTTPS or the [GitLab API](../../../api/rest/_index.md).
-You can use a [personal access token](../personal_access_tokens.md) instead.
-
-## OAuth credential helpers
-
-The following Git credential helpers authenticate to GitLab using OAuth. This is compatible with two-factor authentication. The first time you authenticate, the helper opens the web browser and GitLab asks you to authorize the app. Subsequent authentication requires no interaction.
-
-### Git Credential Manager
-
-[Git Credential Manager](https://github.com/GitCredentialManager/git-credential-manager) (GCM) authenticates by default using OAuth. GCM supports GitLab.com without any manual configuration. To use GCM with GitLab Self-Managed, see [GitLab support](https://github.com/GitCredentialManager/git-credential-manager/blob/main/docs/gitlab.md).
-
-So you do not need to re-authenticate on every push, GCM supports caching as well as a variety of platform-specific credential stores that persist between sessions. This feature is useful whether you use personal access tokens or OAuth.
-
-Git for Windows includes Git Credential Manager.
-
-Git Credential Manager is developed primarily by GitHub, Inc. It is an open-source project and is supported by the community.
-
-### git-credential-oauth
-
-[git-credential-oauth](https://github.com/hickford/git-credential-oauth) supports GitLab.com and several popular public hosts without any manual configuration needed. To use with GitLab Self-Managed, see the [git-credential-oauth custom hosts documentation](https://github.com/hickford/git-credential-oauth#custom-hosts).
-
-Many Linux distributions include git-credential-oauth as a package.
-
-git-credential-oauth is an open-source project supported by the community.
-
 ## Enable two-factor authentication
 
 You can enable 2FA using a:
@@ -107,6 +80,123 @@ Download them and keep them in a safe place.
 
 If your OTP authenticator supports cloud backups, consider configuring the feature now. For more
 information, see the documentation for your specific authenticator.
+
+### Set up a WebAuthn device
+
+{{< history >}}
+
+- Optional one-time password authentication for WebAuthn devices [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/378844) in GitLab 15.10 [with a feature flag](../../../administration/feature_flags/_index.md) named `webauthn_without_totp`.
+- [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/396931) in GitLab 17.6. Feature flag `webauthn_without_totp` removed.
+
+{{< /history >}}
+
+WebAuthn is [supported by](https://caniuse.com/#search=webauthn) the following:
+
+- Desktop browsers:
+  - Chrome
+  - Edge
+  - Firefox
+  - Opera
+  - Safari
+- Mobile browsers:
+  - Chrome for Android
+  - Firefox for Android
+  - iOS Safari (since iOS 13.3)
+
+To set up 2FA with a WebAuthn-compatible device:
+
+1. Optional. [Set up an OTP authenticator](#enable-a-one-time-password-authenticator).
+1. Access your [**User settings**](../_index.md#access-your-user-settings).
+1. Select **Account**.
+1. Select **Enable Two-Factor Authentication**.
+1. Plug in your WebAuthn device.
+1. Enter a device name and in GitLab 15.10 and later, your GitLab account password.
+   You might not need to enter this password if you have signed in through your
+   identity provider.
+1. Select **Set up New WebAuthn Device**.
+1. Depending on your device, you might have to press a button or touch a sensor.
+
+You should receive a message indicating that you successfully set up your device.
+
+When you set up 2FA with a WebAuthn-compatible device, that device is linked to
+a specific browser on a specific computer. Depending on the browser and WebAuthn
+device, you might be able to configure settings to use the WebAuthn device on a
+different browser or computer.
+
+If this is the first time you have set up 2FA, you
+must [download recovery codes](#recovery-codes) so you can recover access to your
+account if you lose access.
+
+{{< alert type="warning" >}}
+
+You can lose access to your account if you clear your browser data.
+
+{{< /alert >}}
+
+### Enable a one-time password authenticator using Cisco Duo
+
+{{< details >}}
+
+- Offering: GitLab Self-Managed
+
+{{< /details >}}
+
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/15760) in GitLab 15.10.
+
+{{< /history >}}
+
+You can use Cisco Duo as an OTP provider in GitLab.
+
+DUO® is a registered trademark of Cisco Systems, Inc., and/or its affiliates in the United States and certain other countries.
+
+Prerequisites:
+
+- Your account must exist in both Cisco Duo and GitLab, with the same username in both applications.
+- You must have [configured Cisco Duo](https://admin.duosecurity.com/) and have an integration key, secret key, and API hostname.
+
+For more information, see the [Cisco Duo API documentation](https://duo.com/docs/authapi).
+
+1. Open the GitLab configuration file.
+
+   For Linux package installations:
+
+   ```shell
+   sudo editor /etc/gitlab/gitlab.rb
+   ```
+
+   For self-compiled installations:
+
+   ```shell
+   cd /home/git/gitlab
+   sudo -u git -H editor config/gitlab.yml
+   ```
+
+1. Add the provider configuration.
+
+   For Linux package installations:
+
+   ```ruby
+    gitlab_rails['duo_auth_enabled'] = false
+    gitlab_rails['duo_auth_integration_key'] = '<duo_integration_key_value>'
+    gitlab_rails['duo_auth_secret_key'] = '<duo_secret_key_value>'
+    gitlab_rails['duo_auth_hostname'] = '<duo_api_hostname>'
+   ```
+
+   For self-compiled installations:
+
+   ```yaml
+   duo_auth:
+     enabled: true
+     hostname: <duo_api_hostname>
+     integration_key: <duo_integration_key_value>
+     secret_key: <duo_secret_key_value>
+   ```
+
+1. Save the configuration file.
+1. For Linux package installations, [reconfigure GitLab](../../../administration/restart_gitlab.md#reconfigure-a-linux-package-installation).
+   For self-compiled installations, [restart GitLab](../../../administration/restart_gitlab.md#self-compiled-installations).
 
 ### Enable a one-time password authenticator using FortiAuthenticator
 
@@ -179,79 +269,6 @@ Configure FortiAuthenticator in GitLab. On your GitLab server:
    (Linux package installations) or [restart](../../../administration/restart_gitlab.md#self-compiled-installations)
    (self-compiled installations).
 
-### Enable a one-time password authenticator using Cisco Duo
-
-{{< details >}}
-
-- Offering: GitLab Self-Managed
-
-{{< /details >}}
-
-{{< history >}}
-
-- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/15760) in GitLab 15.10.
-
-{{< /history >}}
-
-You can use Cisco Duo as an OTP provider in GitLab.
-
-DUO® is a registered trademark of Cisco Systems, Inc., and/or its affiliates in the United States and certain other countries.
-
-#### Prerequisites
-
-To use Cisco Duo as an OTP provider:
-
-- Your account must exist in both Cisco Duo and GitLab, with the same username in both applications.
-- You must have [configured Cisco Duo](https://admin.duosecurity.com/) and have an integration key, secret key, and API hostname.
-
-For more information, see the [Cisco Duo API documentation](https://duo.com/docs/authapi).
-
-GitLab 15.10 has been tested with Cisco Duo version D261.14
-
-#### Configure Cisco Duo in GitLab
-
-On your GitLab server:
-
-1. Open the configuration file.
-
-   For Linux package installations:
-
-   ```shell
-   sudo editor /etc/gitlab/gitlab.rb
-   ```
-
-   For self-compiled installations:
-
-   ```shell
-   cd /home/git/gitlab
-   sudo -u git -H editor config/gitlab.yml
-   ```
-
-1. Add the provider configuration.
-
-   For Linux package installations:
-
-   ```ruby
-    gitlab_rails['duo_auth_enabled'] = false
-    gitlab_rails['duo_auth_integration_key'] = '<duo_integration_key_value>'
-    gitlab_rails['duo_auth_secret_key'] = '<duo_secret_key_value>'
-    gitlab_rails['duo_auth_hostname'] = '<duo_api_hostname>'
-   ```
-
-   For self-compiled installations:
-
-   ```yaml
-   duo_auth:
-     enabled: true
-     hostname: <duo_api_hostname>
-     integration_key: <duo_integration_key_value>
-     secret_key: <duo_secret_key_value>
-   ```
-
-1. Save the configuration file.
-1. For Linux package installations, [reconfigure GitLab](../../../administration/restart_gitlab.md#reconfigure-a-linux-package-installation).
-   For self-compiled installations, [restart GitLab](../../../administration/restart_gitlab.md#self-compiled-installations).
-
 ### Enable a one-time password authenticator using FortiToken Cloud
 
 {{< details >}}
@@ -317,58 +334,6 @@ Configure FortiToken Cloud in GitLab. On your GitLab server:
 1. [Reconfigure](../../../administration/restart_gitlab.md#reconfigure-a-linux-package-installation) (Linux package installations) or
    [restart](../../../administration/restart_gitlab.md#self-compiled-installations) (self-compiled installations).
 
-### Set up a WebAuthn device
-
-{{< history >}}
-
-- Optional one-time password authentication for WebAuthn devices [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/378844) in GitLab 15.10 [with a feature flag](../../../administration/feature_flags/_index.md) named `webauthn_without_totp`.
-- [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/396931) in GitLab 17.6. Feature flag `webauthn_without_totp` removed.
-
-{{< /history >}}
-
-WebAuthn is [supported by](https://caniuse.com/#search=webauthn) the following:
-
-- Desktop browsers:
-  - Chrome
-  - Edge
-  - Firefox
-  - Opera
-  - Safari
-- Mobile browsers:
-  - Chrome for Android
-  - Firefox for Android
-  - iOS Safari (since iOS 13.3)
-
-To set up 2FA with a WebAuthn-compatible device:
-
-1. Optional. [Set up an OTP authenticator](#enable-a-one-time-password-authenticator).
-1. Access your [**User settings**](../_index.md#access-your-user-settings).
-1. Select **Account**.
-1. Select **Enable Two-Factor Authentication**.
-1. Plug in your WebAuthn device.
-1. Enter a device name and in GitLab 15.10 and later, your GitLab account password.
-   You might not need to enter this password if you have signed in through your
-   identity provider.
-1. Select **Set up New WebAuthn Device**.
-1. Depending on your device, you might have to press a button or touch a sensor.
-
-You should receive a message indicating that you successfully set up your device.
-
-When you set up 2FA with a WebAuthn-compatible device, that device is linked to
-a specific browser on a specific computer. Depending on the browser and WebAuthn
-device, you might be able to configure settings to use the WebAuthn device on a
-different browser or computer.
-
-If this is the first time you have set up 2FA, you
-must [download recovery codes](#recovery-codes) so you can recover access to your
-account if you lose access.
-
-{{< alert type="warning" >}}
-
-You can lose access to your account if you clear your browser data.
-
-{{< /alert >}}
-
 ## Recovery codes
 
 Immediately after successfully enabling 2FA with an OTP authenticator, you're prompted to download
@@ -405,6 +370,11 @@ or pressing its button) after entering your credentials.
 A message displays indicating that your device responded to the authentication request and you're automatically signed
 in.
 
+### Use personal access tokens with two-factor authentication
+
+When 2FA is enabled, you can't use your password to authenticate with Git over HTTPS or the [GitLab API](../../../api/rest/_index.md).
+You can use a [personal access token](../personal_access_tokens.md) instead.
+
 ## Disable two-factor authentication
 
 {{< history >}}
@@ -422,6 +392,28 @@ You can disable the OTP authenticator and WebAuthn devices individually or simul
 1. On the dialog, enter your current password and select **Disable two-factor authentication**.
 
 This clears all your 2FA registrations, including mobile applications and WebAuthn devices.
+
+## OAuth credential helpers
+
+The following Git credential helpers authenticate to GitLab using OAuth. This is compatible with two-factor authentication. The first time you authenticate, the helper opens the web browser and GitLab asks you to authorize the app. Subsequent authentication requires no interaction.
+
+### Git Credential Manager
+
+[Git Credential Manager](https://github.com/GitCredentialManager/git-credential-manager) (GCM) authenticates by default using OAuth. GCM supports GitLab.com without any manual configuration. To use GCM with GitLab Self-Managed, see [GitLab support](https://github.com/GitCredentialManager/git-credential-manager/blob/main/docs/gitlab.md).
+
+So you do not need to re-authenticate on every push, GCM supports caching as well as a variety of platform-specific credential stores that persist between sessions. This feature is useful whether you use personal access tokens or OAuth.
+
+Git for Windows includes Git Credential Manager.
+
+Git Credential Manager is developed primarily by GitHub, Inc. It is an open-source project and is supported by the community.
+
+### git-credential-oauth
+
+[git-credential-oauth](https://github.com/hickford/git-credential-oauth) supports GitLab.com and several popular public hosts without any manual configuration needed. To use with GitLab Self-Managed, see the [git-credential-oauth custom hosts documentation](https://github.com/hickford/git-credential-oauth#custom-hosts).
+
+Many Linux distributions include git-credential-oauth as a package.
+
+git-credential-oauth is an open-source project supported by the community.
 
 ## Information for GitLab administrators
 

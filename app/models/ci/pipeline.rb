@@ -1466,6 +1466,10 @@ module Ci
       merge_request_id.present? && merge_request.present?
     end
 
+    def workload?
+      ::Ci::Workloads::Workload.workload_ref?(ref)
+    end
+
     def merge_request_from_forked_project?
       merge_request? && merge_request.for_fork?
     end
@@ -1565,6 +1569,8 @@ module Ci
         Gitlab::Git::BRANCH_REF_PREFIX + source_ref.to_s
       elsif tag?
         Gitlab::Git::TAG_REF_PREFIX + source_ref.to_s
+      elsif workload?
+        ref
       end
     end
 

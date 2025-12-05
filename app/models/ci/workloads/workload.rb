@@ -21,6 +21,10 @@ module Ci
       validates :project, presence: true
       validates :pipeline, presence: true
 
+      def self.workload_ref?(ref)
+        ref&.start_with?("refs/#{Repository::REF_WORKLOADS}/")
+      end
+
       def logs_url
         first_job = pipeline.builds.order(id: :asc).first
         return unless first_job
@@ -45,12 +49,27 @@ module Ci
           w.run_after_commit do
             event = ::Ci::Workloads::WorkloadFinishedEvent.new(data: { workload_id: w.id, status: w.status_name.to_s })
             ::Gitlab::EventStore.publish(event)
+
+            # Clean up the workload ref after the workload is done
+            w.cleanup_refs
           end
         end
 
         state :created, value: 0
         state :finished, value: 3
         state :failed, value: 4
+      end
+
+      def ref_path
+        branch_name
+      end
+
+      def cleanup_refs
+        return unless self.class.workload_ref?(ref_path) && project.repository.ref_exists?(ref_path)
+
+        project.repository.delete_refs(ref_path)
+      rescue StandardError => e
+        Gitlab::AppLogger.error("Failed to cleanup workload ref #{ref_path}: #{e.message}")
       end
     end
   end

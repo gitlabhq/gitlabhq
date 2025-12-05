@@ -14,6 +14,7 @@ class Repository
   REF_ENVIRONMENTS = 'environments'
   REF_PIPELINES = 'pipelines'
   REF_TMP = 'tmp'
+  REF_WORKLOADS = 'workloads'
 
   ARCHIVE_CACHE_TIME = 60 # Cache archives referred to by a (mutable) ref for 1 minute
   ARCHIVE_CACHE_TIME_IMMUTABLE = 3600 # Cache archives referred to by an immutable reference for 1 hour

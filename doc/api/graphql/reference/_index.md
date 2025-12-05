@@ -17926,6 +17926,43 @@ The edge type for [`ContainerRepositoryTag`](#containerrepositorytag).
 | <a id="containerrepositorytagedgecursor"></a>`cursor` | [`String!`](#string) | A cursor for use in pagination. |
 | <a id="containerrepositorytagedgenode"></a>`node` | [`ContainerRepositoryTag`](#containerrepositorytag) | The item at the end of the edge. |
 
+#### `ContainerUpstreamConnection`
+
+The connection type for [`ContainerUpstream`](#containerupstream).
+
+##### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="containerupstreamconnectionedges"></a>`edges` | [`[ContainerUpstreamEdge]`](#containerupstreamedge) | A list of edges. |
+| <a id="containerupstreamconnectionnodes"></a>`nodes` | [`[ContainerUpstream]`](#containerupstream) | A list of nodes. |
+| <a id="containerupstreamconnectionpageinfo"></a>`pageInfo` | [`PageInfo!`](#pageinfo) | Information to aid in pagination. |
+
+##### Fields with arguments
+
+###### `ContainerUpstreamConnection.count`
+
+Total count of collection. Returns limit + 1 for counts greater than the limit.
+
+Returns [`Int!`](#int).
+
+####### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="containerupstreamconnectioncountlimit"></a>`limit` | [`Int`](#int) | Limit applied to the count query, returns limit + 1. When not provided, returns the exact count. |
+
+#### `ContainerUpstreamEdge`
+
+The edge type for [`ContainerUpstream`](#containerupstream).
+
+##### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="containerupstreamedgecursor"></a>`cursor` | [`String!`](#string) | A cursor for use in pagination. |
+| <a id="containerupstreamedgenode"></a>`node` | [`ContainerUpstream`](#containerupstream) | The item at the end of the edge. |
+
 #### `ContributionAnalyticsContributionConnection`
 
 The connection type for [`ContributionAnalyticsContribution`](#contributionanalyticscontribution).
@@ -29112,6 +29149,22 @@ A tag expiration policy using regex patterns to control which images to keep or 
 | <a id="containertagsexpirationpolicyolderthan"></a>`olderThan` | [`ContainerExpirationPolicyOlderThanEnum`](#containerexpirationpolicyolderthanenum) | Tags older than the given age will expire. |
 | <a id="containertagsexpirationpolicyupdatedat"></a>`updatedAt` | [`Time`](#time) | Timestamp of when the container expiration policy was updated. |
 
+### `ContainerUpstream`
+
+Represents a container upstream registry.
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="containerupstreamcachevalidityhours"></a>`cacheValidityHours` {{< icon name="warning-solid" >}} | [`Int!`](#int) | **Introduced** in GitLab 18.7. **Status**: Experiment. Time before the cache expires for the upstream registry. |
+| <a id="containerupstreamdescription"></a>`description` {{< icon name="warning-solid" >}} | [`String`](#string) | **Introduced** in GitLab 18.7. **Status**: Experiment. Description of the upstream registry. |
+| <a id="containerupstreamid"></a>`id` {{< icon name="warning-solid" >}} | [`ID!`](#id) | **Introduced** in GitLab 18.7. **Status**: Experiment. ID of the upstream registry. |
+| <a id="containerupstreamname"></a>`name` {{< icon name="warning-solid" >}} | [`String!`](#string) | **Introduced** in GitLab 18.7. **Status**: Experiment. Name of the upstream registry. |
+| <a id="containerupstreamregistriescount"></a>`registriesCount` {{< icon name="warning-solid" >}} | [`Int!`](#int) | **Introduced** in GitLab 18.7. **Status**: Experiment. Number of registries using the upstream. |
+| <a id="containerupstreamurl"></a>`url` {{< icon name="warning-solid" >}} | [`String!`](#string) | **Introduced** in GitLab 18.7. **Status**: Experiment. URL of the upstream registry. |
+| <a id="containerupstreamusername"></a>`username` {{< icon name="warning-solid" >}} | [`String`](#string) | **Introduced** in GitLab 18.7. **Status**: Experiment. Username to sign in to the upstream registry. |
+
 ### `ContextPreset`
 
 Presets for GitLab Duo Chat window based on current context.
@@ -34509,6 +34562,27 @@ four standard [pagination arguments](#pagination-arguments):
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | <a id="groupvaluestreamsid"></a>`id` | [`ID`](#id) | Value stream id. |
+
+##### `Group.virtualRegistriesContainerUpstreams`
+
+{{< details >}}
+**Introduced** in GitLab 18.7.
+**Status**: Experiment.
+{{< /details >}}
+
+Container upstreams registered to the group. Returns null if the `container_virtual_registry` feature flag is disabled.
+
+Returns [`ContainerUpstreamConnection`](#containerupstreamconnection).
+
+This field returns a [connection](#connections). It accepts the
+four standard [pagination arguments](#pagination-arguments):
+`before: String`, `after: String`, `first: Int`, and `last: Int`.
+
+###### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="groupvirtualregistriescontainerupstreamsupstreamname"></a>`upstreamName` | [`String`](#string) | Search upstreams by name. |
 
 ##### `Group.virtualRegistriesPackagesMavenUpstreams`
 

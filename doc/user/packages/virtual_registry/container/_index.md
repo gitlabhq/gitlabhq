@@ -57,13 +57,13 @@ with your top-level group.
 To access container images, you must authenticate
 with your group's container virtual registry.
 
-To authenticate manually, run:
+To authenticate manually, run the following command:
 
 ```shell
-echo "$CONTAINER_REGISTRY_PASSWORD" | docker login gitlab.example.com/virtual_registries/container/1 --username my_username --password-stdin
+echo "$CONTAINER_REGISTRY_PASSWORD" | docker login gitlab.example.com/virtual_registries/container/1 --username <your_username> --password-stdin
 ```
 
-You can authenticate using:
+Or, access the virtual registry with one of the following tokens:
 
 - A [personal access token](../../../profile/personal_access_tokens.md).
 - A [group deploy token](../../../project/deploy_tokens/_index.md) for the top-level group hosting the considered virtual registry.
@@ -72,8 +72,8 @@ You can authenticate using:
 
 Tokens need one of the following scopes:
 
-- `api`: Grants full API access.
-- `read_virtual_registry`: Grants read-only access (pull) to container images through the virtual registry.
+- `api`
+- `read_virtual_registry`
 
 Access tokens and the CI/CD job token are resolved to users. The resolved user must be either:
 
@@ -127,7 +127,7 @@ For example:
 When you pull an image, the virtual registry:
 
 1. Checks if the image is already cached.
-   1. If the image is cached and still valid based on the upstream's `cache_validity_hours` setting, the images is served from the cache.
+   1. If the image is cached and still valid based on the upstream's `cache_validity_hours` setting, the image is served from the cache.
    1. If the image is not cached or the cache is invalid, the image is fetched from the configured upstream registry and cached.
 1. Serves the image to your Docker client.
 
@@ -135,9 +135,10 @@ When you pull an image, the virtual registry:
 
 An image tag like `alpine:latest` always pulls the most recent version of the image. The new version contains an updated image manifest. The container virtual registry does not pull a new image when the manifest changes.
 
-Instead, the container virtual registry checks the `cache_validity_hours` setting in the upstream to determine when an image manifest is invalid.
+Instead, the container virtual registry:
 
-The container virtual registry begins all requests with a HEAD request to the upstream. If the manifest is invalid, a new image is pulled.
+1. Checks the `cache_validity_hours` setting in the upstream to determine when an image manifest is invalid.
+1. Sends a HEAD request to the upstream. If the manifest is invalid, a new image is pulled.
 
 For example, if your pipeline pulls `node:latest` and you've set the `cache_validity_period` to 24 hours, the virtual registry caches the image and updates it either when the cache expires or `node:latest` changes in the upstream.
 

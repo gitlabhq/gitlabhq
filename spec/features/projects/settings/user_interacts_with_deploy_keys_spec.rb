@@ -60,7 +60,7 @@ RSpec.describe "User interacts with deploy keys", :js, feature_category: :contin
         wait_for_requests
 
         page.within('.deploy-keys') do
-          expect(page).to have_selector("a[data-testid='gl-pagination-next']")
+          expect(page).to have_testid("gl-pagination-next")
           expect(page).to have_link('2')
         end
       end

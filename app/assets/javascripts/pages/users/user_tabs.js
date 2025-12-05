@@ -74,7 +74,7 @@ export default class UserTabs {
     e.preventDefault();
 
     $('#js-legacy-tabs-container').empty();
-    const endpoint = $(e.target).attr('href');
+    const endpoint = $(e.currentTarget).attr('href');
     const action = this.$legacyTabsContainer.data('action');
     this.loadPage(action, endpoint);
   }

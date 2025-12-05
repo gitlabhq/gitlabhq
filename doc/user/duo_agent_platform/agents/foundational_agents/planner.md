@@ -10,13 +10,13 @@ title: Planner Agent
 - Tier: Premium, Ultimate
 - Add-on: GitLab Duo Core, Pro, or Enterprise
 - Offering: GitLab.com, GitLab Self-Managed
-- Status: Beta
 
 {{< /details >}}
 
 {{< history >}}
 
 - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/576618) in GitLab 18.6.
+- Generally available in GitLab 18.7.
 
 {{< /history >}}
 
@@ -83,30 +83,24 @@ Prerequisites:
 
 ### Example prompts
 
-- "Help me prioritize issues in my backlog with the label (insert label name) by using the RICE framework."
-- "Use MoSCoW to categorize features with the criteria (insert criteria) based on customer impact."
-- "Which of the bugs with a "boards" label should we fix first, considering user impact?"
-- "Rank these epics by strategic value for Q1."
-- "Help me prioritize technical debt against new features."
-- "Compare these features (insert URLs) using an effort versus impact matrix."
-- "Which child items on this epic should I remove from the current scope to meet the deadline?"
-- "Break down this initiative (insert URL) into key features we need to deliver."
-- "Create user stories for this epic (insert URL) with acceptance criteria."
-- "What tasks are needed to implement this user story?"
-- "Suggest a phased approach for this project: (insert URL)"
-- "What would be the MVP version of this feature? (insert URL)"
-- "Identify which features are required for version 1, and which are optional, and explain why: (insert URL)"
-- "Suggest how to organize these 20 issues (insert filter criteria) across Q1 sprints."
-- "What work should we defer in this epic (insert URL) to reduce scope?"
-- "Review this backlog (insert filter criteria) and identify items that need refinement."
-- "How should we sequence the features in this initiative? (insert URL)?"
-- "Group these issues into logical release themes: (insert URL)"
 - "Generate an executive summary of this epic's progress: (insert URL)"
-- "Draft release notes based on issues assigned to (insert relevant milestone or iteration)."
-- "Write a stakeholder update on this initiative's health: (insert URL)"
-- "Summarize blockers and mitigation plans for leadership: (insert URL)"
+- "What tasks are needed to implement this user story?"
+- "What issues have missed their due dates?"
 - "Find stale issues that haven't been updated in 6 months."
 - "Identify duplicate or similar issues in this project."
-- "Which issues are missing estimates or assignees?"
-- "Identify orphaned issues with no parent."
-- "What issues have missed their due dates?"
+- "Break down this initiative (insert URL) into key features we need to deliver."
+- "How should we sequence the features in this initiative? (insert URL)?"
+- "What work should we defer in this epic (insert URL) to reduce scope?"
+- "Suggest how to organize these 20 issues (insert filter criteria) across Q1 sprints."
+- "Summarize blockers and mitigation plans for leadership: (insert URL)"
+- "Which of the bugs with a "boards" label should we fix first, considering user impact?"
+- "Group these issues into logical release themes: (insert URL)"
+- "Identify which features are required for version 1, and which are optional, and explain why: (insert URL)"
+- "Rank these epics by strategic value for Q1."
+- "Suggest a phased approach for this project: (insert URL)"
+- "Help me prioritize issues in my backlog with the label (insert label name) by using the RICE framework."
+- "Which child items on this epic should I remove from the current scope to meet the deadline?"
+- "What would be the MVP version of this feature? (insert URL)"
+- "Help me prioritize technical debt against new features."
+- "Compare these features (insert URLs) using an effort versus impact matrix."
+- "Use MoSCoW to categorize features with the criteria (insert criteria) based on customer impact."

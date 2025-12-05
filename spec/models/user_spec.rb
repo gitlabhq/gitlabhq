@@ -787,6 +787,183 @@ RSpec.describe User, :with_current_organization, feature_category: :user_profile
         end
       end
 
+      describe 'username reserved AI prefix validation' do
+        using RSpec::Parameterized::TableSyntax
+
+        where(:username, :valid, :error_message) do
+          'duo-test'      | false | "Username starting with 'duo-', 'duo_', 'ai-' or 'ai_' is reserved for GitLab AI entities. Please choose a different name."
+          'dUo-Agent'     | false | "Username starting with 'duo-', 'duo_', 'ai-' or 'ai_' is reserved for GitLab AI entities. Please choose a different name."
+          'DUO-Test'      | false | "Username starting with 'duo-', 'duo_', 'ai-' or 'ai_' is reserved for GitLab AI entities. Please choose a different name."
+          'duo_test'      | false | "Username starting with 'duo-', 'duo_', 'ai-' or 'ai_' is reserved for GitLab AI entities. Please choose a different name."
+          'ai-assistant'  | false | "Username starting with 'duo-', 'duo_', 'ai-' or 'ai_' is reserved for GitLab AI entities. Please choose a different name."
+          'Ai-Bot'        | false | "Username starting with 'duo-', 'duo_', 'ai-' or 'ai_' is reserved for GitLab AI entities. Please choose a different name."
+          'aI-Helper'     | false | "Username starting with 'duo-', 'duo_', 'ai-' or 'ai_' is reserved for GitLab AI entities. Please choose a different name."
+          'ai_helper'     | false | "Username starting with 'duo-', 'duo_', 'ai-' or 'ai_' is reserved for GitLab AI entities. Please choose a different name."
+          'duotest'       | true  | nil
+          'aiassistant'   | true  | nil
+          'duo'           | true  | nil
+          'ai'            | true  | nil
+          'myduo-test'    | true  | nil
+          'myai-bot'      | true  | nil
+          'testduo'       | true  | nil
+          'validuser'     | true  | nil
+          'test-user'     | true  | nil
+        end
+
+        with_them do
+          context 'when creating a new user' do
+            let(:user) { build(:user, username: username) }
+
+            it 'validates correctly' do
+              expect(user.valid?).to eq(valid)
+
+              if valid
+                expect(user.errors[:username]).to be_empty
+              else
+                expect(user.errors.full_messages).to contain_exactly(error_message)
+              end
+            end
+          end
+
+          context 'when creating a project bot (user-created)' do
+            let(:project_bot) { build(:user, username: username, user_type: :project_bot) }
+
+            it 'blocks reserved prefixes for user-created bots' do
+              expect(project_bot.valid?).to eq(valid)
+
+              if valid
+                expect(project_bot.errors[:username]).to be_empty
+              else
+                expect(project_bot.errors.full_messages).to contain_exactly(error_message)
+              end
+            end
+          end
+
+          context 'when creating an internal user' do
+            let(:internal_user) { build(:user, username: username, user_type: :alert_bot) }
+
+            it 'allows reserved prefixes for internal GitLab users' do
+              expect(internal_user).to be_valid
+              expect(internal_user.errors[:username]).to be_empty
+            end
+          end
+        end
+      end
+
+      describe 'username reserved AI prefix validation on rename' do
+        using RSpec::Parameterized::TableSyntax
+
+        where(:new_username, :valid, :error_message) do
+          'duo-newname'   | false | "Username starting with 'duo-', 'duo_', 'ai-' or 'ai_' is reserved for GitLab AI entities. Please choose a different name."
+          'ai-newname'    | false | "Username starting with 'duo-', 'duo_', 'ai-' or 'ai_' is reserved for GitLab AI entities. Please choose a different name."
+          'DUO-NewName'   | false | "Username starting with 'duo-', 'duo_', 'ai-' or 'ai_' is reserved for GitLab AI entities. Please choose a different name."
+          'Ai-NewName'    | false | "Username starting with 'duo-', 'duo_', 'ai-' or 'ai_' is reserved for GitLab AI entities. Please choose a different name."
+          'duo_newname'   | false | "Username starting with 'duo-', 'duo_', 'ai-' or 'ai_' is reserved for GitLab AI entities. Please choose a different name."
+          'ai_newname'    | false | "Username starting with 'duo-', 'duo_', 'ai-' or 'ai_' is reserved for GitLab AI entities. Please choose a different name."
+          'duonewname'    | true  | nil
+          'ainewname'     | true  | nil
+          'validnewname'  | true  | nil
+          'new-username'  | true  | nil
+        end
+
+        with_them do
+          context 'when renaming a regular user' do
+            let(:user) { create(:user, username: 'validuser') }
+
+            it 'validates correctly when renaming' do
+              user.username = new_username
+
+              expect(user.valid?).to eq(valid)
+
+              if valid
+                expect(user.errors[:username]).to be_empty
+              else
+                expect(user.errors.full_messages).to contain_exactly(error_message)
+              end
+            end
+          end
+
+          context 'when renaming a project bot (user-created)' do
+            let(:project_bot) { create(:user, username: 'validuser', user_type: :project_bot) }
+
+            it 'blocks reserved prefixes for user-created bots' do
+              project_bot.username = new_username
+
+              expect(project_bot.valid?).to eq(valid)
+
+              if valid
+                expect(project_bot.errors[:username]).to be_empty
+              else
+                expect(project_bot.errors.full_messages).to contain_exactly(error_message)
+              end
+            end
+          end
+
+          context 'when renaming an internal user (GitLab-created)' do
+            let(:internal_user) { create(:user, username: 'validuser', user_type: :alert_bot) }
+
+            it 'allows reserved prefixes for internal GitLab users' do
+              internal_user.username = new_username
+
+              expect(internal_user).to be_valid
+              expect(internal_user.errors[:username]).to be_empty
+            end
+          end
+        end
+      end
+
+      describe 'grandfathered users with reserved AI prefix' do
+        using RSpec::Parameterized::TableSyntax
+
+        let(:user) { create(:user, username: 'testuser') }
+
+        before do
+          user.update_column(:username, 'duo-existing')
+        end
+
+        where(:attribute, :value, :valid) do
+          :email | 'newemail@example.com' | true
+          :name  | 'New Name'             | true
+          :bio   | 'New bio'              | true
+        end
+
+        with_them do
+          it 'allows updating other attributes without changing username' do
+            user.send(:"#{attribute}=", value)
+
+            expect(user).to be_valid
+            expect { user.save! }.not_to raise_error
+            expect(user.reload.username).to eq('duo-existing')
+          end
+        end
+
+        context 'when changing username' do
+          where(:new_username, :valid, :error_message) do
+            'ai-changed'      | false | "Username starting with 'duo-', 'duo_', 'ai-' or 'ai_' is reserved for GitLab AI entities. Please choose a different name."
+            'duo-different'   | false | "Username starting with 'duo-', 'duo_', 'ai-' or 'ai_' is reserved for GitLab AI entities. Please choose a different name."
+            'ai_changed'      | false | "Username starting with 'duo-', 'duo_', 'ai-' or 'ai_' is reserved for GitLab AI entities. Please choose a different name."
+            'duo_different'   | false | "Username starting with 'duo-', 'duo_', 'ai-' or 'ai_' is reserved for GitLab AI entities. Please choose a different name."
+            'validnewname'    | true  | nil
+            'duonewname'      | true  | nil
+          end
+
+          with_them do
+            it 'validates correctly when changing username' do
+              user.username = new_username
+
+              expect(user.valid?).to eq(valid)
+
+              if valid
+                expect(user.errors[:username]).to be_empty
+                expect { user.save! }.not_to raise_error
+              else
+                expect(user.errors.full_messages).to contain_exactly(error_message)
+              end
+            end
+          end
+        end
+      end
+
       Mime::EXTENSION_LOOKUP.keys.each do |type|
         context 'with extension format' do
           let(:username) { "test.#{type}" }

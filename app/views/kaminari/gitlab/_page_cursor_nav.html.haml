@@ -1,5 +1,5 @@
 - data_attribute = local_assigns.fetch(:data, {})
 
 %li
-  = link_to url, rel: rel, remote: local_assigns[:remote], class: 'gl-pagination-item', data: { testid: testid, **data_attribute } do
+  = link_to url, rel: rel, remote: local_assigns[:remote], class: 'gl-pagination-item', data: { testid: testid, **data_attribute }, aria: local_assigns[:aria] do
     = yield

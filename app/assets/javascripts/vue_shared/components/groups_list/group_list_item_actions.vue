@@ -7,7 +7,7 @@ import * as Sentry from '~/sentry/sentry_browser_wrapper';
 import { createAlert } from '~/alert';
 import ListActions from '~/vue_shared/components/list_actions/list_actions.vue';
 import GroupListItemLeaveModal from '~/vue_shared/components/groups_list/group_list_item_leave_modal.vue';
-import GroupListItemDeleteModal from '~/vue_shared/components/groups_list/group_list_item_delete_modal.vue';
+import GroupDeleteModal from '~/groups/components/delete_modal.vue';
 import GroupListItemPreventDeleteModal from '~/vue_shared/components/groups_list/group_list_item_prevent_delete_modal.vue';
 import {
   ACTION_COPY_ID,
@@ -40,7 +40,7 @@ export default {
     ListActions,
     GroupListItemLeaveModal,
     GroupListItemPreventDeleteModal,
-    GroupListItemDeleteModal,
+    GroupDeleteModal,
   },
   mixins: [InternalEvents.mixin()],
   props: {
@@ -207,7 +207,7 @@ export default {
     onDeleteModalChange(isVisible) {
       this.isDeleteModalVisible = isVisible;
     },
-    async onDeleteModalConfirm() {
+    async onDeleteModalPrimary() {
       this.isDeleteModalLoading = true;
 
       try {
@@ -251,15 +251,17 @@ export default {
         :modal-id="deleteModalId"
         @change="onDeleteModalChange"
       />
-      <group-list-item-delete-modal
+      <group-delete-modal
         v-else
-        :visible="isDeleteModalVisible"
-        :modal-id="deleteModalId"
-        :phrase="group.fullName"
+        v-model="isDeleteModalVisible"
+        :confirm-phrase="group.fullPath"
+        :full-name="group.fullName"
         :confirm-loading="isDeleteModalLoading"
-        :group="group"
-        @confirm.prevent="onDeleteModalConfirm"
-        @change="onDeleteModalChange"
+        :subgroups-count="group.descendantGroupsCount"
+        :projects-count="group.projectsCount"
+        :marked-for-deletion="group.markedForDeletion"
+        :permanent-deletion-date="group.permanentDeletionDate"
+        @primary="onDeleteModalPrimary"
       />
     </template>
 

@@ -12,7 +12,7 @@ module Users
     end
 
     def signup_params
-      super + [:skip_confirmation, :external, :bot_namespace, :composite_identity_enforced]
+      super + [:skip_confirmation, :external, :bot_namespace, :composite_identity_enforced, :skip_ai_prefix_validation]
     end
   end
 end

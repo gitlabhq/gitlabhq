@@ -97,5 +97,100 @@ RSpec.describe Ci::Workloads::Workload, feature_category: :continuous_integratio
         expect(workload_for_aasm.can_drop?).to eq(can_drop)
       end
     end
+
+    describe 'cleanup refs after transition to finished or failed' do
+      let_it_be(:project) { create(:project, :repository) }
+      let_it_be(:pipeline) { create(:ci_pipeline, project: project) }
+      let_it_be(:ref_path) { 'refs/workloads/7db' }
+      let_it_be(:workload) { create(:ci_workload, project: project, pipeline: pipeline, branch_name: ref_path) }
+
+      before do
+        project.repository.create_ref(project.commit.id, ref_path)
+      end
+
+      context 'when workload finishes' do
+        it 'cleans up the workload ref' do
+          expect(project.repository).to receive(:delete_refs).with(workload.ref_path)
+
+          workload.finish!
+        end
+      end
+
+      context 'when workload fails' do
+        it 'cleans up the workload ref' do
+          expect(project.repository).to receive(:delete_refs).with(workload.ref_path)
+
+          workload.drop!
+        end
+      end
+    end
+  end
+
+  describe '.workload_ref?' do
+    it 'returns true for workload refs' do
+      expect(described_class.workload_ref?("refs/#{Repository::REF_WORKLOADS}/123")).to be true
+    end
+
+    it 'returns false for non-workload refs' do
+      expect(described_class.workload_ref?('refs/heads/main')).to be false
+      expect(described_class.workload_ref?('refs/tags/v1.0')).to be false
+      expect(described_class.workload_ref?('refs/merge-requests/1/head')).to be false
+    end
+  end
+
+  describe '#cleanup_refs' do
+    let_it_be(:project) { create(:project, :repository) }
+    let_it_be(:pipeline) { create(:ci_pipeline, project: project) }
+    let(:ref_path) { 'refs/workloads/test123' }
+    let(:workload) { create(:ci_workload, project: project, pipeline: pipeline, branch_name: ref_path) }
+
+    context 'when ref exists' do
+      before do
+        project.repository.create_ref(project.commit.id, ref_path)
+      end
+
+      it 'deletes the ref' do
+        expect(project.repository).to receive(:delete_refs).with(ref_path)
+
+        workload.send(:cleanup_refs)
+      end
+    end
+
+    context 'when ref does not exist' do
+      let(:ref_path) { 'refs/workloads/non-existent-ref' }
+
+      it 'returns early without attempting to delete' do
+        expect(project.repository).not_to receive(:delete_refs)
+
+        workload.send(:cleanup_refs)
+      end
+    end
+
+    context 'when ref is a branch' do
+      let(:ref_path) { 'workloads/123' }
+
+      before do
+        project.repository.create_branch(ref_path, project.default_branch)
+      end
+
+      it 'does not delete the branch' do
+        expect(project.repository).not_to receive(:delete_refs).with(ref_path)
+
+        workload.send(:cleanup_refs)
+      end
+    end
+
+    context 'when deletion raises an error' do
+      before do
+        project.repository.create_ref(project.commit.id, ref_path)
+        allow(project.repository).to receive(:delete_refs).and_raise(StandardError, 'Deletion failed')
+      end
+
+      it 'logs the error' do
+        expect(Gitlab::AppLogger).to receive(:error).with("Failed to cleanup workload ref #{ref_path}: Deletion failed")
+
+        workload.send(:cleanup_refs)
+      end
+    end
   end
 end

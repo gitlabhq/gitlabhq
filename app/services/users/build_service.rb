@@ -212,6 +212,7 @@ module Users
         :projects_limit,
         :public_email,
         :remember_me,
+        :skip_ai_prefix_validation,
         :skip_confirmation,
         :theme_id,
         :twitter,

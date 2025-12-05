@@ -95,6 +95,15 @@ func (h *Handler) Build() http.Handler {
 					log.WithRequest(r).WithError(err).Error()
 				}
 			}
+			if errors.Is(err, errUsageQuotaExceededError) {
+				// We close the connection with the specific error
+				// so client can process and inform user about the lack of credits
+				message := websocket.FormatCloseMessage(websocket.ClosePolicyViolation, "Insufficient credits: quota exceeded")
+				err = conn.WriteMessage(websocket.CloseMessage, message)
+				if err != nil {
+					log.WithRequest(r).WithError(err).Error()
+				}
+			}
 		}
 	}, "")
 }

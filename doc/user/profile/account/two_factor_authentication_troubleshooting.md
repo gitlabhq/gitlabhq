@@ -170,12 +170,12 @@ Documentation for common authenticators is available through the following locat
 
 {{< /details >}}
 
-If the previous recovery options do not work, and you still cannot sign in to your account,
-you can create a support request to disable 2FA for your account.
-After 2FA is disabled, re-enable it as soon as possible to keep your account secure.
+If the previous recovery options do not work, you can create a support request to disable 2FA for
+your account. This service is only available for accounts with a GitLab.com subscription.
 
-This service is only available for accounts with a GitLab.com subscription. For more information, see our
-[blog post](https://about.gitlab.com/blog/2020/08/04/gitlab-support-no-longer-processing-mfa-resets-for-free-users/).
+GitLab Support cannot reset 2FA for Free accounts. If you cannot recover your 2FA method, you will
+be permanently locked out of your account and must create a new one. For more information, see the
+[blog announcement](https://about.gitlab.com/blog/2020/08/04/gitlab-support-no-longer-processing-mfa-resets-for-free-users/).
 
 To create a support request:
 
@@ -186,6 +186,8 @@ To create a support request:
 1. In the issue dropdown list, select **GitLab.com user accounts and login issues**.
 1. Complete the fields in the support form.
 1. Select **Submit**.
+
+After you regain access to your account, re-enable 2FA as soon as possible to keep your account secure.
 
 ### Reset 2FA for enterprise users
 

@@ -7,6 +7,7 @@ import (
 	"io"
 	"net/http"
 	"slices"
+	"strings"
 	"sync"
 	"time"
 
@@ -18,6 +19,8 @@ import (
 	"gitlab.com/gitlab-org/gitlab/workhorse/internal/log"
 
 	"github.com/gorilla/websocket"
+	"google.golang.org/grpc/codes"
+	"google.golang.org/grpc/status"
 	"google.golang.org/protobuf/encoding/protojson"
 	"google.golang.org/protobuf/proto"
 )
@@ -39,6 +42,7 @@ var ClientCapabilities = []string{
 }
 
 var errFailedToAcquireLockError = errors.New("handleWebSocketMessages: failed to acquire lock")
+var errUsageQuotaExceededError = errors.New("handleWebSocketMessages: usage quota exceeded")
 
 var normalClosureErrCodes = []int{websocket.CloseGoingAway, websocket.CloseNormalClosure}
 
@@ -171,7 +175,11 @@ func (r *runner) handleAgentMessages(ctx context.Context, errCh chan<- error) {
 			if err == io.EOF {
 				errCh <- nil // Expected error when a workflow ends
 			} else {
-				errCh <- fmt.Errorf("handleAgentMessages: failed to read a gRPC message: %v", err)
+				// Check if this is a RESOURCE_EXHAUSTED error indicating quota exceeded
+				if r.isUsageQuotaExceededError(err) {
+					err = errUsageQuotaExceededError
+				}
+				errCh <- fmt.Errorf("handleAgentMessages: failed to read a gRPC message: %w", err)
 			}
 			return
 		}
@@ -377,6 +385,23 @@ func (r *runner) threadSafeSend(event *pb.ClientEvent) error {
 	r.sendMu.Lock()
 	defer r.sendMu.Unlock()
 	return r.wf.Send(event)
+}
+
+// isUsageQuotaExceededError checks if the error is a gRPC RESOURCE_EXHAUSTED error
+// indicating that the consumer has exceeded their usage quota.
+func (r *runner) isUsageQuotaExceededError(err error) bool {
+	// Extract gRPC status from the error
+	st, ok := status.FromError(err)
+	if !ok {
+		return false
+	}
+
+	// Check if the error code is RESOURCE_EXHAUSTED and contains the quota exceeded message
+	if st.Code() == codes.ResourceExhausted {
+		return strings.Contains(st.Message(), "USAGE_QUOTA_EXCEEDED")
+	}
+
+	return false
 }
 
 func (r *runner) stopWorkflow(reason string, closeErr error) error {

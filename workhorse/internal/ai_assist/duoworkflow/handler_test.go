@@ -325,6 +325,45 @@ func TestHandler_IgnoresLockWhenLockConcurrentFlowDisabled(t *testing.T) {
 	require.NoError(t, err)
 }
 
+func TestHandler_UsageQuotaExceeded(t *testing.T) {
+	testhelper.ConfigureSecret()
+
+	server := setupTestServer(t)
+	server.execWorkflowHandler = func(_ pb.DuoWorkflow_ExecuteWorkflowServer) error {
+		return status.Error(codes.ResourceExhausted, "USAGE_QUOTA_EXCEEDED: Consumer does not have sufficient credits for this request")
+	}
+
+	apiServer, apiClient := setupAPIServer(t, `{
+		"DuoWorkflow": {
+			"ServiceURI": "`+server.Addr+`",
+			"Headers": {"Authorization": "Bearer test"},
+			"Secure": false
+		}
+	}`)
+	defer apiServer.Close()
+
+	httpServer := httptest.NewServer(NewHandler(apiClient, initRdb(t)).Build())
+	defer httpServer.Close()
+
+	wsURL := "ws" + strings.TrimPrefix(httpServer.URL, "http") + "/duo"
+
+	wsDialer := websocket.Dialer{}
+	wsConn, resp, err := wsDialer.Dial(wsURL, nil)
+	if resp != nil {
+		_ = resp.Body.Close()
+	}
+	require.NoError(t, err)
+	defer wsConn.Close()
+
+	testMessage := []byte(`{"startRequest": {"workflowID": "id-123", "goal": "create workflow"}}`)
+	err = wsConn.WriteMessage(websocket.BinaryMessage, testMessage)
+	require.NoError(t, err)
+
+	_, _, err = wsConn.ReadMessage()
+	require.Error(t, err)
+	require.Equal(t, "websocket: close 1008 (policy violation): Insufficient credits: quota exceeded", err.Error())
+}
+
 func waitDone(t *testing.T, done chan bool) {
 	t.Helper()
 	select {

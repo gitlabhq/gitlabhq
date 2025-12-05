@@ -168,6 +168,12 @@ RSpec.describe Gitlab::Ci::Pipeline::Chain::Command, feature_category: :pipeline
         it { is_expected.to eq('1.0.0') }
       end
 
+      context 'for workload ref' do
+        let(:origin_ref) { 'refs/workloads/abc123' }
+
+        it { is_expected.to eq('refs/workloads/abc123') }
+      end
+
       context 'for other refs' do
         let(:origin_ref) { 'refs/merge-requests/11/head' }
 

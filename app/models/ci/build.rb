@@ -39,7 +39,7 @@ module Ci
 
     RUNNER_FEATURES = {
       upload_multiple_artifacts: ->(build) { build.publishes_artifacts_reports? },
-      refspecs: ->(build) { build.merge_request_ref? },
+      refspecs: ->(build) { build.merge_request_ref? || build.workload? },
       artifacts_exclude: ->(build) { build.supports_artifacts_exclude? },
       multi_build_steps: ->(build) { build.multi_build_steps? },
       return_exit_code: ->(build) { build.exit_codes_defined? },

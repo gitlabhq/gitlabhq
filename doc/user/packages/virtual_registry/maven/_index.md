@@ -231,16 +231,16 @@ The virtual registry endpoint can be used by any of following tokens:
 - A [personal access token](../../../profile/personal_access_tokens.md).
 - A [group deploy token](../../../project/deploy_tokens/_index.md) for the top-level group hosting the considered virtual registry.
 - A [group access token](../../../group/settings/group_access_tokens.md) for the top-level group hosting the considered virtual registry.
-- A [CI job token](../../../../ci/jobs/ci_job_token.md).
+- A [CI/CD job token](../../../../ci/jobs/ci_job_token.md).
 
 Tokens need one of the following scopes:
 
 - `api`
 - `read_virtual_registry`
 
-Access tokens and the CI job token are resolved to users. The resolved user must be either:
+Access tokens and the CI/CD job token are resolved to users. The resolved user must be either:
 
-- A direct member of the top-level group with the minimal access level of `guest`.
+- A direct member of the top-level group with at least the Guest role.
 - A GitLab instance administrator.
 - A direct member of one of the projects included in the top-level group.
 
@@ -266,7 +266,7 @@ You should use one of the configurations below for each client.
 | Personal access token | `Private-Token` | Paste token as-is, or define an environment variable to hold the token. |
 | Group deploy token    | `Deploy-Token`  | Paste token as-is, or define an environment variable to hold the token. |
 | Group access token    | `Private-Token` | Paste token as-is, or define an environment variable to hold the token. |
-| CI Job token          | `Job-Token`     | `${CI_JOB_TOKEN}`                                                       |
+| CI/CD Job token          | `Job-Token`     | `${CI_JOB_TOKEN}`                                                       |
 
 Add the following section to your
 [`settings.xml`](https://maven.apache.org/settings.html) file.
@@ -337,7 +337,7 @@ To configure a Maven virtual registry as a replacement of the default registry, 
 | Personal access token | `Private-Token` | Paste token as-is, or define an environment variable to hold the token. |
 | Group deploy token    | `Deploy-Token`  | Paste token as-is, or define an environment variable to hold the token. |
 | Group access token    | `Private-Token` | Paste token as-is, or define an environment variable to hold the token. |
-| CI Job token          | `Job-Token`     | `${CI_JOB_TOKEN}`                                                       |
+| CI/CD Job token          | `Job-Token`     | `${CI_JOB_TOKEN}`                                                       |
 
 In [your `GRADLE_USER_HOME` directory](https://docs.gradle.org/current/userguide/directory_layout.html#dir:gradle_user_home),
 create a file `gradle.properties` with the following content:
@@ -396,7 +396,7 @@ Add a `repositories` section to your
 | Personal access token | The username of the user                                | Paste token as-is, or define an environment variable to hold the token. |
 | Group deploy token    | The username of deploy token                            | Paste token as-is, or define an environment variable to hold the token. |
 | Group access token    | The username of the user linked to the access token     | Paste token as-is, or define an environment variable to hold the token. |
-| CI Job token          | `gitlab-ci-token`                                       | `sys.env.get("CI_JOB_TOKEN").get`                                       |
+| CI/CD Job token          | `gitlab-ci-token`                                       | `sys.env.get("CI_JOB_TOKEN").get`                                       |
 
 Authentication for [SBT](https://www.scala-sbt.org/index.html) is based on
 [basic HTTP Authentication](https://developer.mozilla.org/en-US/docs/Web/HTTP/Authentication).

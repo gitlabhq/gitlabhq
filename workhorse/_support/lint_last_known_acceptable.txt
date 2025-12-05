@@ -20,6 +20,7 @@ internal/imageresizer/image_resizer.go:152:19: Function 'Inject' is too long (61
 internal/upstream/routes.go:292:6: Function 'configureRoutes' is too long (308 > 60) (funlen)
 internal/upstream/upstream.go:92:6: Function 'newUpstream' is too long (63 > 60) (funlen)
 cmd/gitlab-workhorse/main.go:210:1: cognitive complexity 28 of func `run` is high (> 20) (gocognit)
+internal/ai_assist/duoworkflow/handler.go:60:1: cognitive complexity 23 of func `(*Handler).Build` is high (> 20) (gocognit)
 internal/git/archive.go:67:1: cognitive complexity 23 of func `(*archive).Inject` is high (> 20) (gocognit)
 internal/transport/transport.go:147:1: cognitive complexity 59 of func `validateIPAddress` is high (> 20) (gocognit)
 internal/upload/artifacts_upload_test.go:49:1: cognitive complexity 32 of func `testArtifactsUploadServer` is high (> 20) (gocognit)

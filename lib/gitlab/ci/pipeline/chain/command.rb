@@ -46,6 +46,10 @@ module Gitlab
             check_merge_request_ref
           end
 
+          def workload_ref_exists?
+            ::Ci::Workloads::Workload.workload_ref?(origin_ref) && project.repository.ref_exists?(origin_ref)
+          end
+
           def ref
             strong_memoize(:ref) do
               Gitlab::Git.ref_name(origin_ref)

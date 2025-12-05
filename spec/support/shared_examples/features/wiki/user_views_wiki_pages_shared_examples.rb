@@ -66,11 +66,11 @@ RSpec.shared_examples 'User views wiki pages' do
 
     it 'shows pagination controls' do
       page.within('.gl-pagination') do
-        expect(page).to have_text("Prev")
+        expect(page).to have_testid('kaminari-pagination-prev')
         expect(page).to have_link("1")
         expect(page).to have_link("2")
         expect(page).to have_link("3")
-        expect(page).to have_link("Next")
+        expect(page).to have_testid('kaminari-pagination-next')
       end
     end
   end

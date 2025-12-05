@@ -128,16 +128,14 @@ module API
               end
 
               params do
-                with(type: String) do
-                  with(regexp: PACKAGE_COMPONENT_REGEX) do
-                    requires :package_name, desc: 'Package name', documentation: { example: 'my-package' }
-                    requires :package_version, desc: 'Package version', documentation: { example: '1.0' }
-                  end
-                  with(regexp: CONAN_REVISION_USER_CHANNEL_REGEX) do
-                    requires :package_username, desc: 'Package username',
-                      documentation: { example: 'my-group+my-project' }
-                    requires :package_channel, desc: 'Package channel', documentation: { example: 'stable' }
-                  end
+                with(regexp: PACKAGE_COMPONENT_REGEX) do
+                  requires :package_name, type: String, desc: 'Package name', documentation: { example: 'my-package' }
+                  requires :package_version, type: String, desc: 'Package version', documentation: { example: '1.0' }
+                end
+                with(regexp: CONAN_REVISION_USER_CHANNEL_REGEX) do
+                  requires :package_username, type: String, desc: 'Package username',
+                    documentation: { example: 'my-group+my-project' }
+                  requires :package_channel, type: String, desc: 'Package channel', documentation: { example: 'stable' }
                 end
               end
 

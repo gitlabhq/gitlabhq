@@ -16,6 +16,8 @@ import (
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 	pb "gitlab.com/gitlab-org/modelops/applied-ml/code-suggestions/ai-assist/clients/gopb/contract"
+	"google.golang.org/grpc/codes"
+	"google.golang.org/grpc/status"
 
 	"gitlab.com/gitlab-org/gitlab/workhorse/internal/api"
 )
@@ -1109,4 +1111,51 @@ func TestRunner_Execute_ReleasesLock(t *testing.T) {
 	mutex, err := r.lockManager.acquireLock(ctx, "execute-test-123")
 	require.NoError(t, err)
 	require.NotNil(t, mutex)
+}
+
+func TestRunner_isUsageQuotaExceededError(t *testing.T) {
+	tests := []struct {
+		name     string
+		err      error
+		expected bool
+	}{
+		{
+			name:     "resource exhausted with quota exceeded message",
+			err:      status.Error(codes.ResourceExhausted, "USAGE_QUOTA_EXCEEDED: consumer has exceeded their quota"),
+			expected: true,
+		},
+		{
+			name:     "resource exhausted without quota exceeded message",
+			err:      status.Error(codes.ResourceExhausted, "some other resource exhausted error"),
+			expected: false,
+		},
+		{
+			name:     "different error code with quota exceeded message",
+			err:      status.Error(codes.Internal, "USAGE_QUOTA_EXCEEDED: consumer has exceeded their quota"),
+			expected: false,
+		},
+		{
+			name:     "non-gRPC error",
+			err:      errors.New("regular error"),
+			expected: false,
+		},
+		{
+			name:     "nil error",
+			err:      nil,
+			expected: false,
+		},
+		{
+			name:     "OK status",
+			err:      status.Error(codes.OK, "success"),
+			expected: false,
+		},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			r := &runner{}
+			result := r.isUsageQuotaExceededError(tt.err)
+			require.Equal(t, tt.expected, result)
+		})
+	}
 }

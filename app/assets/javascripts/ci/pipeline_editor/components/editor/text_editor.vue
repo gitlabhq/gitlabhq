@@ -40,7 +40,7 @@ export default {
 };
 </script>
 <template>
-  <div class="gl-border-1 !gl-border-t-0 gl-border-solid gl-border-default">
+  <div class="gl-rounded-b-lg gl-border-1 !gl-border-t-0 gl-border-solid gl-border-default gl-pb-1">
     <source-editor
       ref="editor"
       :debounce-value="$options.debounceValue"

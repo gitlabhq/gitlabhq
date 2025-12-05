@@ -60,16 +60,14 @@ module API
           namespace ':id/packages/conan/v2' do
             include ::API::Concerns::Packages::Conan::SharedEndpoints
             params do
-              with(type: String) do
-                requires :package_name, regexp: PACKAGE_COMPONENT_REGEX,
-                  desc: 'Package name', documentation: { example: 'my-package' }
-                requires :package_version, regexp: PACKAGE_COMPONENT_REGEX,
-                  desc: 'Package version', documentation: { example: '1.0' }
-                requires :package_username, regexp: CONAN_REVISION_USER_CHANNEL_REGEX,
-                  desc: 'Package username', documentation: { example: 'my-group+my-project' }
-                requires :package_channel, regexp: CONAN_REVISION_USER_CHANNEL_REGEX,
-                  desc: 'Package channel', documentation: { example: 'stable' }
-              end
+              requires :package_name, type: String, regexp: PACKAGE_COMPONENT_REGEX,
+                desc: 'Package name', documentation: { example: 'my-package' }
+              requires :package_version, type: String, regexp: PACKAGE_COMPONENT_REGEX,
+                desc: 'Package version', documentation: { example: '1.0' }
+              requires :package_username, type: String, regexp: CONAN_REVISION_USER_CHANNEL_REGEX,
+                desc: 'Package username', documentation: { example: 'my-group+my-project' }
+              requires :package_channel, type: String, regexp: CONAN_REVISION_USER_CHANNEL_REGEX,
+                desc: 'Package channel', documentation: { example: 'stable' }
             end
             namespace 'conans/:package_name/:package_version/:package_username/:package_channel',
               requirements: PACKAGE_REQUIREMENTS do

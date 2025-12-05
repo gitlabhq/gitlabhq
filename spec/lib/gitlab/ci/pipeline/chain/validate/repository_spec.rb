@@ -63,6 +63,27 @@ RSpec.describe Gitlab::Ci::Pipeline::Chain::Validate::Repository do
     end
   end
 
+  context 'when origin ref is a workload ref' do
+    let(:command) do
+      Gitlab::Ci::Pipeline::Chain::Command.new(
+        project: project, current_user: user, origin_ref: origin_ref, checkout_sha: project.commit.id)
+    end
+
+    let(:origin_ref) { 'refs/workloads/1234' }
+
+    before_all do
+      project.repository.create_ref(project.commit.id, 'refs/workloads/1234')
+    end
+
+    it 'does not break the chain' do
+      expect(step.break?).to be false
+    end
+
+    it 'does not append pipeline errors' do
+      expect(pipeline.errors).to be_empty
+    end
+  end
+
   context 'when ref is ambiguous' do
     let(:project) do
       create(:project, :repository).tap do |proj|

@@ -20,7 +20,7 @@ RSpec.describe Banzai::Filter::PlaceholdersPostFilter, feature_category: :markdo
   end
 
   def expect_replaces_placeholder(markdown, expected)
-    result = run_pipeline(markdown, project: project, current_user: user)
+    result = run_pipeline(markdown, project: project, current_user: user, ref: current_ref_name, group: group)
 
     if expected
       expect(result).to eq "<p dir=\"auto\">#{expected}</p>"
@@ -34,20 +34,22 @@ RSpec.describe Banzai::Filter::PlaceholdersPostFilter, feature_category: :markdo
     "<span data-placeholder=\"%{gitlab_pages_domain}\">#{Gitlab.config.pages.host}</span>"
   end
 
-  let!(:project_path) { "<span data-placeholder=\"%{project_path}\">#{project.full_path}</span>" }
-  let!(:project_name) { "<span data-placeholder=\"%{project_name}\">#{project.path}</span>" }
-  let!(:project_id) { "<span data-placeholder=\"%{project_id}\">#{project.id}</span>" }
-  let!(:project_namespace) do
+  let(:project_path) { "<span data-placeholder=\"%{project_path}\">#{project.full_path}</span>" }
+  let(:project_name) { "<span data-placeholder=\"%{project_name}\">#{project.path}</span>" }
+  let(:project_id) { "<span data-placeholder=\"%{project_id}\">#{project.id}</span>" }
+  let(:project_namespace) do
     "<span data-placeholder=\"%{project_namespace}\">#{project.project_namespace.to_param}</span>"
   end
 
-  let!(:project_title) { "<span data-placeholder=\"%{project_title}\">#{project.title}</span>" }
-  let!(:group_name) { "<span data-placeholder=\"%{group_name}\">#{project.group&.name}</span>" }
-  let!(:default_branch) { "<span data-placeholder=\"%{default_branch}\">#{project.default_branch}</span>" }
-  let!(:commit_sha) { "<span data-placeholder=\"%{commit_sha}\">#{project.commit&.sha}</span>" }
-  let!(:latest_tag) { "<span data-placeholder=\"%{latest_tag}\">#{project_tag}</span>" }
+  let(:project_title) { "<span data-placeholder=\"%{project_title}\">#{project.title}</span>" }
+  let(:group_name) { "<span data-placeholder=\"%{group_name}\">#{project.group.name}</span>" }
+  let(:default_branch) { "<span data-placeholder=\"%{default_branch}\">#{project.default_branch}</span>" }
+  let!(:current_ref) { "<span data-placeholder=\"%{current_ref}\">#{current_ref_name}</span>" }
+  let(:commit_sha) { "<span data-placeholder=\"%{commit_sha}\">#{project.commit.sha}</span>" }
+  let(:latest_tag) { "<span data-placeholder=\"%{latest_tag}\">#{project_tag}</span>" }
   let!(:empty_span) { "<span data-placeholder=\"%{empty_span}\"></span>" }
-  let!(:project_tag) do
+  let!(:current_ref_name) { 'feature-branch' }
+  let(:project_tag) do
     if project.repository_exists?
       TagsFinder.new(project.repository, per_page: 1, sort: 'updated_desc')&.execute&.first&.name
     end
@@ -64,6 +66,7 @@ RSpec.describe Banzai::Filter::PlaceholdersPostFilter, feature_category: :markdo
       '%{project_namespace}'   | nil
       '%{group_name}'          | ref(:group_name)
       '%{default_branch}'      | nil
+      '%{current_ref}'         | nil
       '%{commit_sha}'          | nil
       '%{latest_tag}'          | nil
     end
@@ -86,6 +89,7 @@ RSpec.describe Banzai::Filter::PlaceholdersPostFilter, feature_category: :markdo
       '%{project_namespace}'   | nil
       '%{group_name}'          | nil
       '%{default_branch}'      | nil
+      '%{current_ref}'         | nil
       '%{commit_sha}'          | nil
       '%{latest_tag}'          | nil
     end
@@ -108,6 +112,7 @@ RSpec.describe Banzai::Filter::PlaceholdersPostFilter, feature_category: :markdo
       '%{project_namespace}'   | ref(:project_namespace)
       '%{group_name}'          | ref(:group_name)
       '%{default_branch}'      | ref(:default_branch)
+      '%{current_ref}'         | ref(:current_ref)
       '%{commit_sha}'          | ref(:commit_sha)
       '%{latest_tag}'          | ref(:latest_tag)
     end
@@ -130,6 +135,7 @@ RSpec.describe Banzai::Filter::PlaceholdersPostFilter, feature_category: :markdo
       '%{project_namespace}'   | ref(:project_namespace)
       '%{group_name}'          | ref(:group_name)
       '%{default_branch}'      | nil
+      '%{current_ref}'         | nil
       '%{commit_sha}'          | nil
       '%{latest_tag}'          | nil
     end
@@ -256,6 +262,15 @@ RSpec.describe Banzai::Filter::PlaceholdersPostFilter, feature_category: :markdo
     let_it_be(:project, reload: true) { create(:project, :public, group: group) }
 
     it_behaves_like 'placeholders with access, no code access'
+  end
+
+  context 'when project is nil' do
+    let_it_be(:user) { create(:user) }
+    let_it_be(:group) { create(:group) }
+    let_it_be(:project) { nil }
+    let_it_be(:group_name) { "<span data-placeholder=\"%{group_name}\">#{group.name}</span>" }
+
+    it_behaves_like 'placeholders with no access'
   end
 
   context 'when placeholders in text' do

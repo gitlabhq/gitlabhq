@@ -10,13 +10,13 @@ title: Security Analyst Agent
 - Tier: Ultimate
 - Add-on: GitLab Duo Core, Pro, or Enterprise
 - Offering: GitLab.com
-- Status: Beta
 
 {{< /details >}}
 
 {{< history >}}
 
 - [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/19659) in GitLab 18.6.
+- Generally available in GitLab 18.7.
 
 {{< /history >}}
 

@@ -56,7 +56,7 @@ Composite identity is used for the following flows:
 
 - [Fix CI/CD Pipeline](flows/fix_pipeline.md)
 - [Convert to GitLab CI/CD](flows/convert_to_gitlab_ci.md)
-- [Issue to Merge Request](flows/issue_to_mr.md)
+- [Developer](flows/issue_to_mr.md)
 - Any flow started through the endpoint `api/v4/ai/duo_workflows/workflows`
 - AI Catalog flows added to top-level groups
 

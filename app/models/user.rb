@@ -79,6 +79,8 @@ class User < ApplicationRecord
   CI_PROJECT_RUNNERS_BATCH_SIZE = 15_000
   CI_RUNNERS_PROJECT_COUNT_LIMIT = 10_000
 
+  RESERVED_AI_USERNAME_PREFIXES = %w[duo- duo_ ai- ai_].freeze
+
   # lib/tasks/tokens.rake needs to be updated when changing mail and feed tokens
   add_authentication_token_field :incoming_email_token, insecure: true, token_generator: -> { self.generate_incoming_mail_token } # rubocop:disable Gitlab/TokenWithoutPrefix -- wontfix: the prefix is in the generator
   add_authentication_token_field :feed_token, insecure: true, format_with_prefix: :prefix_for_feed_token
@@ -146,7 +148,7 @@ class User < ApplicationRecord
   end
   # rubocop: enable CodeReuse/ServiceClass
 
-  attr_accessor :force_random_password
+  attr_accessor :force_random_password, :skip_ai_prefix_validation
 
   # Virtual attribute for authenticating by either username or email
   attr_accessor :login
@@ -336,6 +338,7 @@ class User < ApplicationRecord
     presence: true,
     exclusion: { in: Gitlab::PathRegex::TOP_LEVEL_ROUTES, message: N_('%{value} is a reserved name') }
   validates :username, uniqueness: true, unless: :namespace
+  validate :username_not_reserved_ai_prefix, if: :username_changed?
   validate :username_not_assigned_to_pages_unique_domain, if: :username_changed?
   validates :name, presence: true, length: { maximum: 255 }
   validates :first_name, length: { maximum: 127 }
@@ -3115,6 +3118,15 @@ class User < ApplicationRecord
       # We cannot disclose the Pages unique domain, hence returning generic error message
       errors.add(:username, _('has already been taken'))
     end
+  end
+
+  def username_not_reserved_ai_prefix
+    return if skip_ai_prefix_validation
+    return if internal?
+
+    return unless RESERVED_AI_USERNAME_PREFIXES.any? { |prefix| username.downcase.start_with?(prefix) }
+
+    errors.add(:username, _("starting with 'duo-', 'duo_', 'ai-' or 'ai_' is reserved for GitLab AI entities. Please choose a different name."))
   end
 
   def groups_allowing_project_creation

@@ -65,6 +65,7 @@ To turn off the virtual registry:
 ## Supported package formats
 
 - [Maven packages](maven/_index.md)
+- [Container images](container/_index.md)
 
 ## Virtual registry workflows
 

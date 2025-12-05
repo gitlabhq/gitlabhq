@@ -1403,6 +1403,15 @@ RSpec.describe Ci::Pipeline, :mailer, factory_default: :keep, feature_category: 
         is_expected.to eq(merge_request.source_branch)
       end
     end
+
+    context 'for workload pipeline' do
+      let_it_be(:workload_ref) { 'refs/workloads/abc123' }
+      let(:pipeline) { create(:ci_pipeline, ref: workload_ref) }
+
+      it 'returns the workload ref as-is' do
+        is_expected.to eq(workload_ref)
+      end
+    end
   end
 
   describe '#source_ref_slug' do
@@ -6354,6 +6363,27 @@ RSpec.describe Ci::Pipeline, :mailer, factory_default: :keep, feature_category: 
       let(:pipeline) { create(:ci_pipeline, :tag) }
 
       it { is_expected.to eq(Gitlab::Git::TAG_REF_PREFIX + pipeline.source_ref.to_s) }
+    end
+
+    context 'when pipeline is for a workload' do
+      let_it_be(:workload_ref) { 'refs/workloads/abc123' }
+      let(:pipeline) { create(:ci_pipeline, ref: workload_ref) }
+
+      it 'returns the workload ref as-is' do
+        is_expected.to eq(workload_ref)
+      end
+    end
+
+    context 'when pipeline is neither branch, tag, merge request, nor workload' do
+      let(:pipeline) { build(:ci_pipeline, ref: 'unknown', tag: false) }
+
+      before do
+        allow(pipeline).to receive_messages(branch?: false, tag?: false, merge_request?: false, workload?: false)
+      end
+
+      it 'returns nil' do
+        is_expected.to be_nil
+      end
     end
   end
 

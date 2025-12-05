@@ -349,6 +349,17 @@ RSpec.describe Ci::BuildRunnerPresenter, feature_category: :continuous_integrati
       end
     end
 
+    context 'when pipeline is a workload pipeline' do
+      let_it_be(:workload_ref) { 'refs/workloads/abc123' }
+      let(:build) { create(:ci_build, ref: workload_ref, tag: false) }
+
+      it 'returns the correct refspecs' do
+        is_expected.to contain_exactly(
+          "+refs/pipelines/#{pipeline.id}:refs/pipelines/#{pipeline.id}"
+        )
+      end
+    end
+
     context 'when persistent pipeline ref exists' do
       let(:project) { create(:project, :repository) }
       let(:sha) { project.repository.commit.sha }

@@ -2034,6 +2034,7 @@ The syntax is `%{PLACEHOLDER}`.
 | `%{project_title}`        | `GitLab`            | Title of a project |
 | `%{group_name}`           | `gitlab-org`        | Group of a project |
 | `%{default_branch}`       | `main`              | Default branch name configured for a project's repository |
+| `%{current_ref}`          | `feature-branch`    | Current ref (branch, tag, or commit SHA) being viewed |
 | `%{commit_sha}`           | `ad10e011ce65492322037633ebc054efde37b143` | ID of the most recent commit to the default branch of a project's repository |
 | `%{latest_tag}`           | `v17.10.7-ee`       | Latest tag added to the project's repository |
 

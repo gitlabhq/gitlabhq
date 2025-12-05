@@ -1,11 +1,11 @@
 ---
-redirect_to: 'foundational_flows/issue_to_mr.md'
+redirect_to: 'foundational_flows/developer.md'
 remove_date: '2026-02-07'
 ---
 
 <!-- markdownlint-disable -->
 
-This document was moved to [another location](foundational_flows/issue_to_mr.md).
+This document was moved to [another location](foundational_flows/developer.md).
 
 <!-- This redirect file can be deleted after <2026-02-07>. -->
 <!-- Redirects that point to other docs in the same project expire in three months. -->

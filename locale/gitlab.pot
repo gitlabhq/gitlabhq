@@ -22972,9 +22972,6 @@ msgstr ""
 msgid "Delete group"
 msgstr ""
 
-msgid "Delete group immediately?"
-msgstr ""
-
 msgid "Delete identity"
 msgstr ""
 
@@ -33683,6 +33680,9 @@ msgstr ""
 msgid "Groups|This group can be restored until %{date}. %{linkStart}Learn more%{linkEnd}."
 msgstr ""
 
+msgid "Groups|This process deletes the group, subgroups and project repositories, and all related resources."
+msgstr ""
+
 msgid "Groups|This will create a README.md for project %{path}."
 msgstr ""
 
@@ -33690,6 +33690,9 @@ msgid "Groups|This will create a project %{path} and add a README.md."
 msgstr ""
 
 msgid "Groups|Yes, delete group"
+msgstr ""
+
+msgid "Groups|You are about to delete this group containing:"
 msgstr ""
 
 msgid "Groups|You don't have any active groups yet."
@@ -60940,6 +60943,9 @@ msgstr ""
 msgid "SecurityOrchestration|In each pipeline, a %{boldStart}maximum of 1000%{boldEnd} vulnerabilities that are %{italicStart}no longer detected%{italicEnd} will be set to status %{italicStart}Resolved%{italicEnd} until all have been auto-resolved."
 msgstr ""
 
+msgid "SecurityOrchestration|In warn mode, project approval settings are not overridden by policy and violations are reported, but fixes for the violations are not mandatory. %{linkStart}Learn more%{linkEnd}"
+msgstr ""
+
 msgid "SecurityOrchestration|In warn mode, project approval settings are not overridden by policy and violations are reported, but fixes for the violations are not mandatory. License scanning is not supported in warn mode. %{linkStart}Learn more%{linkEnd}"
 msgstr ""
 
@@ -68621,9 +68627,6 @@ msgstr ""
 msgid "This group and its subgroups are being deleted."
 msgstr ""
 
-msgid "This group can be restored until %{date}. %{linkStart}Learn more%{linkEnd}."
-msgstr ""
-
 msgid "This group can't be deleted because it is linked to a subscription. To delete this group, %{linkStart}link the subscription%{linkEnd} with a different group."
 msgstr ""
 
@@ -68652,9 +68655,6 @@ msgid "This group is not permitted to create compliance violations"
 msgstr ""
 
 msgid "This group is scheduled for deletion on %{date}. This action will permanently delete this group, including its subgroups and projects, %{strongOpen}immediately%{strongClose}. This action cannot be undone."
-msgstr ""
-
-msgid "This group is scheduled to be deleted on %{date}. You are about to delete this group, including its subgroups and projects, immediately. This action cannot be undone."
 msgstr ""
 
 msgid "This group requires additional authentication. Please sign in with your OAuth provider to continue."
@@ -81612,6 +81612,9 @@ msgid "started a discussion on %{design_link}"
 msgstr ""
 
 msgid "started on %{timebox_start_date}"
+msgstr ""
+
+msgid "starting with 'duo-', 'duo_', 'ai-' or 'ai_' is reserved for GitLab AI entities. Please choose a different name."
 msgstr ""
 
 msgid "starts on %{timebox_start_date}"

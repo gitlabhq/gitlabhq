@@ -1114,7 +1114,7 @@ Filtering is different from [searching](#search).
 
 GitLab provides multiple **flows** that are run by [agents](#ai-agent).
 
-Use lowercase for **flow** on its own. Use title case for the flow name, for example, **Issue to Merge Request Flow**.
+Use lowercase for **flow** on its own. Use title case for the flow name, for example, **Convert to CI/CD Pipeline Flow**.
 
 Do not use **agent flow**.
 

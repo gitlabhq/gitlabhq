@@ -26,10 +26,10 @@ Each flow is designed to solve a specific problem or help you with a development
 
 The following foundational flows are available:
 
-- [Software development](software_development.md).
-- [Fix your CI/CD pipeline](fix_pipeline.md).
-- [Convert a Jenkinsfile to `.gitlab-ci.yml` file](convert_to_gitlab_ci.md).
-- [Convert an issue to a merge request](issue_to_mr.md).
+- [Software Development](software_development.md): Create AI-generated solutions for work across the software development lifecycle.
+- [Developer](developer.md): Create actionable merge requests from issues.
+- [Fix CI/CD Pipeline](fix_pipeline.md): Diagnose and repair failed jobs.
+- [Convert to GitLab CI/CD](convert_to_gitlab_ci.md): Migrate Jenkins pipelines to CI/CD.
 
 ## Supported APIs and permissions
 
