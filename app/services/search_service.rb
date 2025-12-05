@@ -7,6 +7,10 @@ class SearchService
   DEFAULT_PER_PAGE = Gitlab::SearchResults::DEFAULT_PER_PAGE
   MAX_PER_PAGE = 200
 
+  def self.supported_search_types
+    %w[basic]
+  end
+
   attr_reader :params
 
   def initialize(current_user, params = {})

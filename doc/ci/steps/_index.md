@@ -2,7 +2,7 @@
 stage: Verify
 group: CI Functions Platform
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
-title: CI/CD steps
+title: GitLab CI/CD Functions
 ---
 
 {{< details >}}
@@ -13,13 +13,13 @@ title: CI/CD steps
 
 {{< /details >}}
 
-Steps are reusable units of a job that when composed together replace the `script` used in a GitLab CI/CD job.
-You are not required to use steps. However, the reusability, composability, testability, and independence
-of steps make it easier to understand and maintain CI/CD pipeline.
+GitLab CI/CD Functions are reusable units of a job that when composed together replace the `script` used in a GitLab CI/CD job.
+You are not required to use functions. However, the reusability, composability, testability, and independence
+of functions make it easier to understand and maintain CI/CD pipeline.
 
-To get started, you can try the [Set up steps tutorial](../../tutorials/setup_steps/_index.md).
-To start creating your own steps, see [Creating your own step](#create-your-own-step). To understand how pipelines can benefit
-from using both CI/CD Components and CI/CD Steps, see [Combine CI/CD Components and CI/CD Steps](#combine-cicd-components-and-cicd-steps).
+To get started, you can try the [set up functions tutorial](../../tutorials/setup_steps/_index.md).
+To start creating your own functions, see [creating your own function](#create-your-own-function). To understand how pipelines can benefit
+from using both CI/CD Components and CI/CD Functions, see [combine CI/CD Components and CI/CD Functions](#combine-cicd-components-and-cicd-functions).
 
 This experimental feature is still in active development and might have breaking
 changes at any time. Review the [changelog](https://gitlab.com/gitlab-org/step-runner/-/blob/main/CHANGELOG.md)
@@ -28,28 +28,28 @@ for full details on any breaking changes.
 {{< alert type="note" >}}
 
 In GitLab Runner 17.11 and later, when you use the Docker executor, GitLab Runner injects the
-step-runner binary into the build container. For all other executors, ensure that the step-runner
+`step-runner` binary into the build container. For all other executors, ensure that the `step-runner`
 binary is in the execution environment. Support for the legacy Docker image
 `registry.gitlab.com/gitlab-org/step-runner:v0`, maintained by the step runner team,
 ends in GitLab 18.0.
 
 {{< /alert >}}
 
-## Step workflow
+## Function workflow
 
-A step either runs a sequence of steps or executes a command. Each step specifies inputs and outputs, and has
+A function either runs a sequence of functions or executes a command. Each function specifies inputs and outputs, and has
 access to CI/CD job variables, environment variables, and resources such as the file
-system and networking. Steps are hosted locally on the file system, in GitLab.com repositories, or in any other Git source.
+system and networking. Functions are hosted locally on the file system, in GitLab.com repositories, or in any other Git source.
 
-Additionally, steps:
+Additionally, functions:
 
-- Run in a Docker container created by the Steps team, you can review the [`Dockerfile`](https://gitlab.com/gitlab-org/step-runner/-/blob/main/Dockerfile).
+- Run in a Docker container created by the GitLab Runner team, you can review the [`Dockerfile`](https://gitlab.com/gitlab-org/step-runner/-/blob/main/Dockerfile).
   Follow [epic 15073](https://gitlab.com/groups/gitlab-org/-/epics/15073) to track
-  when steps will run inside the environment defined by the CI/CD job.
+  when functions will run inside the environment defined by the CI/CD job.
 - Are specific to Linux. Follow [epic 15074](https://gitlab.com/groups/gitlab-org/-/epics/15074)
-  to track when steps supports multiple operating systems.
+  to track when functions supports multiple operating systems.
 
-For example, this job uses the [`run`](../yaml/_index.md#run) CI/CD keyword to run a step:
+For example, this job uses the [`run`](../yaml/_index.md#run) CI/CD keyword to run a function:
 
 ```yaml
 job:
@@ -63,7 +63,7 @@ job:
 ```
 
 When this job runs, the message `hello, Sally` is printed to job log.
-The definition of the echo step is:
+The definition of the echo function is:
 
 ```yaml
 spec:
@@ -78,24 +78,24 @@ exec:
     - echo '${{inputs.message}}'
 ```
 
-## Use CI/CD Steps
+## Use CI/CD Functions
 
-Configure a GitLab CI/CD job to use CI Steps with the `run` keyword. You cannot use `before_script`,
-`after_script`, or `script` in a job when you are running CI/CD Steps.
+Configure a GitLab CI/CD job to use functions with the `run` keyword. You cannot use `before_script`,
+`after_script`, or `script` in a job when you are running CI/CD Functions.
 
-The `run` keyword accepts a list of steps to run. Steps are run one at a time in the order they are defined in the list.
+The `run` keyword accepts a list of functions to run. Functions are run one at a time in the order they are defined in the list.
 Each list item has a `name` and either `step`, `script`, or `action`.
 
 Name must consist only of alphanumeric characters and underscores, and must not start with a number.
 
-### Run a step
+### Run a function
 
-Run a step by providing the [step location](#step-location) using the `step` keyword.
+Run a function by providing the [function location](#function-location) using the `step` keyword.
 
-Inputs and environment variables can be passed to the step, and these can contain expressions that interpolate values.
-Steps run in the directory defined by the `CI_PROJECT_DIR` [predefined variable](../variables/predefined_variables.md).
+Inputs and environment variables can be passed to the function, and these can contain expressions that interpolate values.
+Functions run in the directory defined by the `CI_PROJECT_DIR` [predefined variable](../variables/predefined_variables.md).
 
-For example, the echo step loaded from the Git repository `gitlab.com/components/echo`
+For example, the echo function loaded from the Git repository `gitlab.com/components/echo`
 receives the environment variable `USER: Fred` and the input `message: hello Sally`:
 
 ```yaml
@@ -114,7 +114,7 @@ job:
 ### Run a script
 
 Run a script in a shell with the `script` keyword. Environment variables passed to scripts
-using `env` are set in the shell. Script steps run in the directory defined by the `CI_PROJECT_DIR`
+using `env` are set in the shell. Script functions run in the directory defined by the `CI_PROJECT_DIR`
 [predefined variable](../variables/predefined_variables.md).
 
 For example, the following script prints the GitLab user to the job log:
@@ -126,17 +126,17 @@ my-job:
       script: echo hello ${{job.GITLAB_USER_LOGIN}}
 ```
 
-Script steps use the `bash` shell, falling back to use `sh` if bash is not found.
+Script functions use the `bash` shell, falling back to use `sh` if bash is not found.
 
-### Step location
+### Function location
 
-Steps are loaded from a relative path on the file system, GitLab.com repositories,
+Functions are loaded from a relative path on the file system, GitLab.com repositories,
 or any other Git source.
 
-#### Load a step from the file system
+#### Load a function from the file system
 
-Load a step from the file system using a relative path that starts with a full-stop `.`.
-The folder referenced by the path must contain a `step.yml` step definition file.
+Load a function from the file system using a relative path that starts with a full-stop `.`.
+The folder referenced by the path must contain a `step.yml` function definition file.
 Path separators must always use forward-slashes `/`, regardless of operating system.
 
 For example:
@@ -146,15 +146,15 @@ For example:
   step: ./path/to/my-step
 ```
 
-#### Load a step from a Git repository
+#### Load a function from a Git repository
 
-Load a step from a Git repository by supplying the URL and revision (commit, branch, or tag) of the repository.
-You can also specify the relative directory and filename of the step in the `steps` folder of the repository.
+Load a function from a Git repository by supplying the URL and revision (commit, branch, or tag) of the repository.
+You can also specify the relative directory and filename of the function in the `steps` folder of the repository.
 If the URL is specified without a directory, then `step.yml` is loaded from the `steps` folder.
 
 For example:
 
-- Specify the step with a branch:
+- Specify the function with a branch:
 
   ```yaml
   job:
@@ -163,7 +163,7 @@ For example:
         step: gitlab.com/components/echo@main
   ```
 
-- Specify the step with a tag:
+- Specify the function with a tag:
 
   ```yaml
   job:
@@ -172,7 +172,7 @@ For example:
         step: gitlab.com/components/echo@v1.0.0
   ```
 
-- Specify the step with a directory, filename, and Git commit in a repository:
+- Specify the function with a directory, filename, and Git commit in a repository:
 
   ```yaml
   job:
@@ -200,42 +200,42 @@ To specify a folder or file outside the `steps` folder, use the expanded `step` 
 ### Expressions
 
 Expressions are a mini-language enclosed in double curly-braces `${{ }}`. Expressions are evaluated
-just prior to step execution in the job environment and can be used in:
+just prior to function execution in the job environment and can be used in:
 
 - Input values
 - Environment variable values
-- Step location URL
+- Function location URL
 - The executable command
 - The executable work directory
-- Outputs in a sequence of steps
-- The `script` step
-- The `action` step
+- Outputs in a sequence of functions
+- The `script` function
+- The `action` function
 
 Expressions can reference the following variables:
 
 | Variable                    | Example                                                       | Description |
 |:----------------------------|:--------------------------------------------------------------|:------------|
-| `env`                       | `${{env.HOME}}`                                               | Access environment variables set in the execution environment or in previous steps. |
-| `export_file`               | `echo '{"name":"NAME","value":"Fred"}' >${{export_file}}`     | The path to the [export file](#export-an-environment-variable). Write to this file to export environment variables for use by subsequent running steps. |
-| `inputs`                    | `${{inputs.message}}`                                         | Access the step's inputs. |
+| `env`                       | `${{env.HOME}}`                                               | Access environment variables set in the execution environment or in previous functions. |
+| `export_file`               | `echo '{"name":"NAME","value":"Fred"}' >${{export_file}}`     | The path to the [export file](#export-an-environment-variable). Write to this file to export environment variables for use by subsequent running functions. |
+| `inputs`                    | `${{inputs.message}}`                                         | Access the function's inputs. |
 | `job`                       | `${{job.GITLAB_USER_NAME}}`                                   | Access GitLab CI/CD variables, limited to those starting with `CI_`, `DOCKER_` or `GITLAB_`. |
-| `output_file`               | `echo '{"name":"meaning_life","value":42}' >${{output_file}}` | The path to the [output file](#return-an-output). Write to this file to set output variables from the step. |
-| `step_dir`                  | `work_dir: ${{step_dir}}`                                     | The directory where the step has been downloaded. Use to refer to files in the step, or to set the working directory of an executable step. |
-| `steps.[step_name].outputs` | `${{steps.my_step.outputs.name}}`                             | Access [outputs](#specify-outputs) from previously executed steps. Choose the specific step using the step name. |
-| `work_dir`                  | `${{work_dir}}`                                               | The working directory of an executing step. |
+| `output_file`               | `echo '{"name":"meaning_life","value":42}' >${{output_file}}` | The path to the [output file](#return-an-output). Write to this file to set output variables from the function. |
+| `step_dir`                  | `work_dir: ${{step_dir}}`                                     | The directory where the function has been downloaded. Use to refer to files in the function, or to set the working directory of an executable function. |
+| `steps.[step_name].outputs` | `${{steps.my_step.outputs.name}}`                             | Access [outputs](#specify-outputs) from previously executed functions. Choose the specific function using the function name. |
+| `work_dir`                  | `${{work_dir}}`                                               | The working directory of an executing function. |
 
 Expressions are different from template interpolation which uses double square-brackets (`$[[ ]]`)
 and are evaluated during job generation.
 
 Expressions only have access to CI/CD job variables with names starting with `CI_`, `DOCKER_`,
 or `GITLAB_`. Follow [epic 15073](https://gitlab.com/groups/gitlab-org/-/epics/15073)
-to track when steps can access all CI/CD job variables.
+to track when functions can access all CI/CD job variables.
 
-### Using prior step outputs
+### Using prior function outputs
 
-Step inputs can reference outputs from prior steps by referencing the step name and output variable name.
+Function inputs can reference outputs from prior functions by referencing the function name and output variable name.
 
-For example, if the `gitlab.com/components/random-string` step defined an output variable called `random_value`:
+For example, if the `gitlab.com/components/random-string` function defined an output variable called `random_value`:
 
 ```yaml
 job:
@@ -250,41 +250,41 @@ job:
 
 ### Environment variables
 
-Steps can [set](#set-environment-variables) environment variables, [export](#export-an-environment-variable)
+Functions can [set](#set-environment-variables) environment variables, [export](#export-an-environment-variable)
 environment variables, and environment variables can be passed in when using `step`, `script`, or `action`.
 
 Environment variable precedence, from highest to lowest precedence, are variables set:
 
 1. By using `env` keyword in the `step.yml`.
-1. By using the `env` keyword passed to a step in a sequence of steps.
-1. By using the `env` keyword for all steps in a sequence.
-1. Where a previously run step has written to `${{export_file}}`.
+1. By using the `env` keyword passed to a function in a sequence of functions.
+1. By using the `env` keyword for all functions in a sequence.
+1. Where a previously run function has written to `${{export_file}}`.
 1. By the Runner.
 1. By the container.
 
-## Create your own step
+## Create your own function
 
-Create your own step by performing the following tasks:
+Create your own function by performing the following tasks:
 
 1. Create a GitLab project, a Git repository, or a directory on a file system that is accessible
    when the CI/CD job runs.
 1. Create a `step.yml` file and place it in the root folder of the project, repository, or directory.
-1. Define the [specification](#the-step-specification) for the step in the `step.yml`.
-1. Define the [definition](#the-step-definition) for the step in the `step.yml`.
-1. Add any files that your step uses to the project, repository, or directory.
+1. Define the [specification](#the-function-specification) for the function in the `step.yml`.
+1. Define the [definition](#the-function-definition) for the function in the `step.yml`.
+1. Add any files that your function uses to the project, repository, or directory.
 
-After the step is created, you can [use the step in a job](#run-a-step).
+After the function is created, you can [use the function in a job](#run-a-function).
 
-### The step specification
+### The function specification
 
-The step specification is the first of two documents contained in the step `step.yml`.
-The specification defines inputs and outputs that the step receives and returns.
+The function specification is the first of two documents contained in the function `step.yml`.
+The specification defines inputs and outputs that the function receives and returns.
 
 #### Specify inputs
 
 Input names can only use alphanumeric characters and underscores, and must not start with a number.
 Inputs must have a type, and they can optionally specify a default value. An input with no default value
-is a required input, it must be specified when using the step.
+is a required input, it must be specified when using the function.
 
 Inputs must be one of the following types.
 
@@ -296,7 +296,7 @@ Inputs must be one of the following types.
 | `string`  | `"brown cow"`           | Text.       |
 | `struct`  | `{"k1":"v1","k2":"v2"}` | Structured content. |
 
-For example, to specify that the step accepts an optional input called `greeting` of type `string`:
+For example, to specify that the function accepts an optional input called `greeting` of type `string`:
 
 ```yaml
 spec:
@@ -321,7 +321,7 @@ run:
 
 Similar to inputs, output names can only use alphanumeric characters and underscores,
 and must not start with a number. Outputs must have a type, and they can optionally specify a default value.
-The default value is returned when the step doesn't return the output.
+The default value is returned when the function doesn't return the output.
 
 Outputs must be one of the following types.
 
@@ -333,7 +333,7 @@ Outputs must be one of the following types.
 | `string`     | `"brown cow"`           | Text.       |
 | `struct`     | `{"k1":"v1","k2":"v2"}` | Structured content. |
 
-For example, to specify that the step returns an output called `value` of type `number`:
+For example, to specify that the function returns an output called `value` of type `number`:
 
 ```yaml
 spec:
@@ -357,11 +357,11 @@ run:
 
 #### Specify delegated outputs
 
-Instead of specifying output names and types, outputs can be entirely delegated to a sub-step.
-The outputs returned by the sub-step are returned by your step. The `delegate` keyword
-in the step definition determines which sub-step outputs are returned by the step.
+Instead of specifying output names and types, outputs can be entirely delegated to a specific step.
+The outputs returned by the step are returned by your function. The `delegate` keyword
+in the function definition determines which step outputs are returned by the function.
 
-For example, the following step returns outputs returned by the `random_gen` step.
+For example, the following function returns outputs returned by the `random_gen` function.
 
 ```yaml
 spec:
@@ -375,7 +375,7 @@ delegate: random_generator
 
 #### Specify no inputs or outputs
 
-A step might not require any inputs or return any outputs. This could be when a step
+A function might not require any inputs or return any outputs. This could be when a function
 only writes to disk, sets an environment variable, or prints to STDOUT. In this case,
 `spec:` is empty:
 
@@ -384,21 +384,21 @@ spec:
 ---
 ```
 
-### The step definition
+### The function definition
 
-Steps can:
+Functions can:
 
 - Set environment variables
 - Execute a command
-- Run a sequence of other steps.
+- Run a sequence of other functions.
 
 #### Set environment variables
 
 Set environment variables by using the `env` keyword. Environment variable names can only use
 alphanumeric characters and underscores, and must not start with a number.
 
-Environment variables are made available either to the executable command or to all of the steps
-if running a sequence of steps. For example:
+Environment variables are made available either to the executable command or to all of the functions
+if running a sequence of functions. For example:
 
 ```yaml
 spec:
@@ -410,17 +410,17 @@ run:
   # omitted for brevity
 ```
 
-Steps only have access to a subset of environment variables from the runner environment.
+Functions only have access to a subset of environment variables from the runner environment.
 Follow [epic 15073](https://gitlab.com/groups/gitlab-org/-/epics/15073) to track
-when steps can access all environment variables.
+when functions can access all environment variables.
 
 #### Execute a command
 
-A step declares it executes a command by using the `exec` keyword. The command must be specified,
-but the working directory (`work_dir`) is optional. Environment variables set by the step
+A function declares it executes a command by using the `exec` keyword. The command must be specified,
+but the working directory (`work_dir`) is optional. Environment variables set by the function
 are available to the running process.
 
-For example, the following step prints the step directory to the job log:
+For example, the following function prints the function directory to the job log:
 
 ```yaml
 spec:
@@ -435,18 +435,18 @@ exec:
 
 {{< alert type="note" >}}
 
-Any dependency required by the executing step should also be installed by the step.
-For example, if a step calls `go`, it should first install it.
+Any dependency required by the executing function should also be installed by the function.
+For example, if a function calls `go`, it should first install it.
 
 {{< /alert >}}
 
 ##### Return an output
 
-Executable steps return an output by adding a line to the `${{output_file}}` in JSON Line format.
+Executable functions return an output by adding a line to the `${{output_file}}` in JSON Line format.
 Each line is a JSON object with `name` and `value` key pairs. The `name` must be a string,
-and the `value` must be a type that matches the output type in the step specification:
+and the `value` must be a type that matches the output type in the function specification:
 
-| Step specification type | Expected JSONL value type |
+| Function specification type | Expected JSONL value type |
 |:------------------------|:--------------------------|
 | `array`                 | `array`                   |
 | `boolean`               | `boolean`                 |
@@ -471,7 +471,7 @@ exec:
 
 ##### Export an environment variable
 
-Executable steps export an environment variable by adding a line to the `${{export_file}}` in JSON Line format.
+Executable functions export an environment variable by adding a line to the `${{export_file}}` in JSON Line format.
 Each line is a JSON object with `name` and `value` key pairs. Both `name` and `value` must be strings.
 
 For example, to set the variable `GOPATH` to value `/go`:
@@ -486,14 +486,14 @@ exec:
     - echo '{"name":"GOPATH","value":"/go"}' >${{export_file}}
 ```
 
-#### Run a sequence of steps
+#### Run a sequence of functions
 
-A step declares it runs a sequence of steps using the `steps` keyword. Steps run one at a time
+A function declares it runs a sequence of functions using the `steps` keyword. Functions run one at a time
 in the order they are defined in the list. This syntax is the same as the `run` keyword.
 
-Steps must have a name consisting only of alphanumeric characters and underscores, and must not start with a number.
+Functions must have a name consisting only of alphanumeric characters and underscores, and must not start with a number.
 
-For example, this step installs Go, then runs a second step that expects Go to already
+For example, this function installs Go, then runs a second function that expects Go to already
 have been installed:
 
 ```yaml
@@ -512,11 +512,11 @@ run:
 
 ##### Return an output
 
-Outputs are returned from a sequence of steps by using the `outputs` keyword.
-The type of value in the output must match the type of the output in the step specification.
+Outputs are returned from a sequence of functions by using the `outputs` keyword.
+The type of value in the output must match the type of the output in the function specification.
 
-For example, the following step returns the installed Java version as an output.
-This assumes the `install_java` step returns an output named `java_version`.
+For example, the following function returns the installed Java version as an output.
+This assumes the `install_java` function returns an output named `java_version`.
 
 ```yaml
 spec:
@@ -544,23 +544,23 @@ run:
 delegate: install_java
 ```
 
-## Combine CI/CD Components and CI/CD Steps
+## Combine CI/CD Components and CI/CD Functions
 
 [CI/CD components](../components/_index.md) are reusable single pipeline configuration units. They are included in a pipeline when it is
 created, adding jobs and configuration to the pipeline. Files such as common scripts or programs
 from the component project cannot be referenced from a CI/CD job.
 
-CI/CD Steps are reusable units of a job. When the job runs, the referenced step is downloaded to
-the execution environment or image, bringing along any extra files included with the step.
-Execution of the step replaces the `script` in the job.
+CI/CD Functions are reusable units of a job. When the job runs, the referenced function is downloaded to
+the execution environment or image, bringing along any extra files included with the function.
+Execution of the function replaces the `script` in the job.
 
-Components and steps work well together to create solutions for CI/CD pipelines. Steps handle the complexity of
+Components and functions work well together to create solutions for CI/CD pipelines. Functions handle the complexity of
 how jobs are composed, and automatically retrieve the files necessary to run the job. Components provide
 a method to import job configuration, but hide the underlying job composition from the user.
 
-Steps and components use different syntax for expressions to help differentiate the expression types.
+Functions and components use different syntax for expressions to help differentiate the expression types.
 Component expressions use square brackets `$[[ ]]` and are evaluated during pipeline creation.
-Step expressions use braces `${{ }}` and are evaluated during job execution, just before executing the step.
+Function expressions use braces `${{ }}` and are evaluated during job execution, just before executing the function.
 
 For example, a project could use a component that adds a job to format Go code:
 
@@ -573,7 +573,7 @@ For example, a project could use a component that adds a job to format Go code:
       fmt_packages: "./..."
   ```
 
-- Internally, the component uses CI/CD steps to compose the job, which installs Go then runs
+- Internally, the component uses CI/CD Functions to compose the job, which installs Go then runs
   the formatter. In the component's `templates/go.yml` file:
 
   ```yaml
@@ -595,23 +595,23 @@ For example, a project could use a component that adds a job to format Go code:
       - name: format_code
         step: ./languages/go/go-fmt
         inputs:
-          go_binary: ${{ steps.install_go.outputs.go_binary }} # go_binary set to the value of the go_binary output from the previous step
+          go_binary: ${{ steps.install_go.outputs.go_binary }} # go_binary set to the value of the go_binary output from the previous function
           fmt_packages: $[[ inputs.fmt_packages ]]             # fmt_packages set to the value of the component input fmt_packages
   ```
 
-In this example, the CI/CD component hides the complexity of the steps from the component author.
+In this example, the CI/CD component hides the complexity of the functions from the component author.
 
 ## Troubleshooting
 
-### Fetching steps from an HTTPS URL
+### Fetching functions from an HTTPS URL
 
 An error message such as `tls: failed to verify certificate: x509: certificate signed by unknown authority` indicates
-that the operating system does not recognize or trust the server hosting the step.
+that the operating system does not recognize or trust the server hosting the function.
 
-A common cause is when steps are run in a job with a Docker image that doesn't have any trusted root certificates installed.
+A common cause is when functions are run in a job with a Docker image that doesn't have any trusted root certificates installed.
 Resolve the issue by installing certificates in the container or by baking them into the job `image`.
 
-You can use a `script` step to install dependencies in the container before fetching any steps.
+You can use a `script` function to install dependencies in the container before fetching any functions.
 For example:
 
 ```yaml

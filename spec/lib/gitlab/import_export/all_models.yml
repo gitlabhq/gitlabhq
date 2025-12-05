@@ -1331,3 +1331,4 @@ vulnerability_read:
   - vulnerability
   - scanner
   - vulnerability_occurrence
+  - tracked_context

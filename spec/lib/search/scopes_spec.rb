@@ -104,6 +104,12 @@ RSpec.describe Search::Scopes, feature_category: :global_search do
         expect(scopes).to include('issues', 'merge_requests', 'milestones', 'projects', 'users')
         expect(scopes).not_to include('blobs', 'commits', 'notes', 'wiki_blobs')
       end
+
+      it 'includes scopes when requesting basic as symbol' do
+        scopes = described_class.available_for_context(context: :global, requested_search_type: :basic)
+        expect(scopes).to include('issues', 'merge_requests', 'milestones', 'projects', 'users')
+        expect(scopes).not_to include('blobs', 'commits', 'notes', 'wiki_blobs')
+      end
     end
 
     context 'when requested_search_type is blank' do
@@ -111,6 +117,30 @@ RSpec.describe Search::Scopes, feature_category: :global_search do
         scopes = described_class.available_for_context(context: :global)
         expect(scopes).to include('issues', 'merge_requests', 'milestones', 'projects', 'users')
         expect(scopes).not_to include('blobs', 'commits', 'notes', 'wiki_blobs')
+      end
+
+      it 'includes scopes when explicitly passing nil' do
+        scopes = described_class.available_for_context(context: :global, requested_search_type: nil)
+        expect(scopes).to include('issues', 'merge_requests', 'milestones', 'projects', 'users')
+        expect(scopes).not_to include('blobs', 'commits', 'notes', 'wiki_blobs')
+      end
+    end
+
+    context 'when requested_search_type is invalid' do
+      it 'treats invalid search_type as if no search_type was specified to allow scope determination' do
+        result = described_class.available_for_context(context: :project, requested_search_type: 'invalid_xyz')
+
+        # Should not be empty - allows scope determination to work
+        # The actual validation error will be shown by search_type_errors
+        expect(result).not_to be_empty
+        expect(result).to include('issues', 'merge_requests', 'blobs')
+      end
+
+      it 'allows scope determination for global context with invalid search_type' do
+        result = described_class.available_for_context(context: :global, requested_search_type: 'xyz')
+
+        expect(result).not_to be_empty
+        expect(result).to include('projects', 'issues', 'merge_requests')
       end
     end
   end

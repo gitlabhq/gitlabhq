@@ -709,7 +709,8 @@ class ApplicationSetting < ApplicationRecord
   validates :resource_usage_limits, json_schema: { filename: 'resource_usage_limits' }
 
   jsonb_accessor :resource_access_tokens_settings,
-    inactive_resource_access_tokens_delete_after_days: [:integer, { default: 30 }]
+    inactive_resource_access_tokens_delete_after_days: [:integer, { default: 30 }],
+    authn_data_retention_cleanup_enabled: [:boolean, { default: false }]
 
   validates :resource_access_tokens_settings, json_schema: { filename: 'resource_access_tokens_settings' }
 

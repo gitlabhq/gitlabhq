@@ -45,6 +45,7 @@ module ApplicationSettingImplementation
         allow_local_requests_from_web_hooks_and_services: false,
         allow_possible_spam: false,
         asset_proxy_enabled: false,
+        authn_data_retention_cleanup_enabled: false,
         authorized_keys_enabled: true, # TODO default to false if the instance is configured to use AuthorizedKeysCommand
         autocomplete_users_limit: 300,
         autocomplete_users_unauthenticated_limit: 100,

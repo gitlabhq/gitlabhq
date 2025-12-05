@@ -255,8 +255,8 @@ Import your projects from Bitbucket Cloud to GitLab using by the API.
 
 Prerequisites:
 
-- The [prerequisites for Bitbucket Cloud importer](../user/project/import/bitbucket.md).
-- A [Bitbucket Cloud app password](../user/project/import/bitbucket.md#generate-a-bitbucket-cloud-app-password).
+- The [prerequisites for Bitbucket Cloud importer](../user/import/bitbucket_cloud.md).
+- A [Bitbucket Cloud app password](../user/import/bitbucket_cloud.md#generate-a-bitbucket-cloud-app-password).
 
 ```plaintext
 POST /import/bitbucket

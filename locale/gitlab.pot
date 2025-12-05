@@ -75965,9 +75965,6 @@ msgstr ""
 msgid "Wiki|The page at %{code_start}%{redirected_from}%{code_end} tried to redirect to %{code_start}%{redirected_to}%{code_end}, but it does not exist. You are now editing the page at %{code_start}%{redirected_to}%{code_end}. %{link_start}Edit page at %{code_start}%{redirected_from}%{code_end} instead.%{link_end}"
 msgstr ""
 
-msgid "Wiki|The sidebar failed to load. You can reload the page to try again."
-msgstr ""
-
 msgid "Wiki|There are no pages in this wiki yet."
 msgstr ""
 

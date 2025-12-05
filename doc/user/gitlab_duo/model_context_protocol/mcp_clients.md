@@ -58,9 +58,9 @@ For a click-through demo, see [GitLab Duo Agent Platform - MCP integration](http
 
 - Meet the [prerequisites for the GitLab Duo Agent Platform](../../duo_agent_platform/_index.md#prerequisites).
 
-For VS Code:
+For Visual Studio Code (VS Code) or VSCodium:
 
-- Install [VSCodium](https://vscodium.com/) or [Visual Studio Code](https://code.visualstudio.com/download) (VS Code).
+- Install [VS Code](https://code.visualstudio.com/download) or [VSCodium](https://vscodium.com/).
 - Install and set up the GitLab Workflow extension from the [Open VSX Registry](https://open-vsx.org/extension/GitLab/gitlab-workflow)
   or the [Visual Studio Marketplace](https://marketplace.visualstudio.com/items?itemName=GitLab.gitlab-workflow).
   - For MCP support, install version 6.28.2 and later.
@@ -281,6 +281,45 @@ For more information about available tools, see the
   }
 }
 ```
+
+## View the status of MCP servers
+
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab-vscode-extension/-/work_items/2155) in the GitLab Workflow extension for VS Code 6.55.0.
+
+{{< /history >}}
+
+Prerequisites:
+
+- Have the GitLab Workflow extension for VS Code 6.55.0 or later installed.
+- Have at least one MCP server configured in your user or workspace configuration.
+
+To view the status of your configured MCP servers:
+
+1. In VS Code or VSCodium, open the Command Palette:
+   - On macOS, press <kbd>Command</kbd>+<kbd>Shift</kbd>+<kbd>P</kbd>.
+   - On Windows or Linux, press <kbd>Control</kbd>+<kbd>Shift</kbd>+<kbd>P</kbd>.
+1. Type `GitLab: Show MCP Dashboard` and press <kbd>Enter</kbd>.
+
+The MCP dashboard opens in a new editor tab.
+Use the dashboard to:
+
+- Verify that your MCP servers are properly configured and running.
+- Identify connection issues before you use GitLab Duo features.
+- View which tools are available from each server.
+- Troubleshoot server configuration problems.
+
+### Open MCP configuration files
+
+To open your MCP configuration files:
+
+1. In VS Code or VSCodium, open the Command Palette:
+   - On macOS, press <kbd>Command</kbd>+<kbd>Shift</kbd>+<kbd>P</kbd>.
+   - On Windows or Linux, press <kbd>Control</kbd>+<kbd>Shift</kbd>+<kbd>P</kbd>.
+1. Open the configuration files:
+   - For user configuration, type `GitLab MCP: Open User Settings (JSON)` and press <kbd>Enter</kbd>.
+   - For workspace configuration, type `GitLab MCP: Open Workspace Settings (JSON)` and press <kbd>Enter</kbd>.
 
 ## Use GitLab Duo features with MCP
 

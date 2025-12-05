@@ -109,7 +109,8 @@ module Gitlab
               pause_ms: pause_ms,
               batch_class_name: batch_class_name,
               status: :queued,
-              gitlab_schema: gitlab_schema
+              gitlab_schema: gitlab_schema,
+              total_tuple_count: total_tuple_count(connection, table_name)
             }
 
             operation_attrs.merge!(user_id: user.id, organization_id: user.organization_id) if user.present?
@@ -123,6 +124,12 @@ module Gitlab
               SELECT #{function}(#{Gitlab::Database.quote_column_name(column_name)})
               FROM #{Gitlab::Database.quote_table_name(table_name)}
             SQL
+          end
+
+          def total_tuple_count(connection, table_name)
+            Gitlab::Database::SharedModel.using_connection(connection) do
+              Gitlab::Database::PgClass.for_table(table_name)&.cardinality_estimate
+            end
           end
         end
       end

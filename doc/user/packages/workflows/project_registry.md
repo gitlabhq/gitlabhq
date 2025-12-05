@@ -25,17 +25,17 @@ Use this approach when you want to:
 
 ## Example walkthrough
 
-To effectively organize and manage 
+To effectively organize and manage
 your packages with this approach, you should:
 
-- Create a dedicated top-level group for artifact 
+- Create a dedicated top-level group for artifact
 management with projects organized by package type.
-- Limit the top-level group to only projects with 
+- Limit the top-level group to only projects with
 artifacts to improve performance when consuming packages.
 
 ### Recommended structure
 
-The following example 
+The following example
 provides an overview of how you should
 structure your top-level group and projects:
 
@@ -76,8 +76,8 @@ Create projects for each package type you need:
 1. Set the appropriate visibility level.
 1. Select **Create project**.
 
-Start with the package types your organization uses most, 
-then expand the structure as you adopt additional package formats. 
+Start with the package types your organization uses most,
+then expand the structure as you adopt additional package formats.
 This approach scales naturally while maintaining security and ease of use.
 
 Configure group settings:
@@ -110,7 +110,7 @@ For external systems:
 ### Set up top-level group access
 
 Create a group deploy token for organization-wide package consumption:
-   
+
 1. In your artifact management group, on the left sidebar, select **Settings** > **Repository**.
 1. Expand **Deploy tokens**.
 1. Select **Add token** and complete the fields:
@@ -120,7 +120,7 @@ Create a group deploy token for organization-wide package consumption:
 
 Save the token securely.
 
-If you want to use CI/CD job tokens for publishing, 
+If you want to use CI/CD job tokens for publishing,
 configure the job token allowlist:
 
 1. In each package-specific project, on the left sidebar, select **Settings** > **CI/CD**.
@@ -132,13 +132,13 @@ configure the job token allowlist:
 For each package type project, configure:
 
 - **Lifecycle policies** appropriate for that package type
-- **Protected packages** rules, if needed 
-- **Protected container tag** rules, if needed 
+- **Protected packages** rules, if needed
+- **Protected container tag** rules, if needed
 - **Project access tokens** for specific use cases
 
 ## Publish packages
 
-Teams should publish packages to the appropriate type-specific project registry. 
+Teams should publish packages to the appropriate type-specific project registry.
 See the following examples for each supported package format.
 
 {{< tabs >}}
@@ -306,16 +306,16 @@ For package consumption, you can either:
 
 ### Using the Maven virtual registry (beta)
 
-The Maven virtual registry can enhance your 
-artifact management setup by aggregating 
+The Maven virtual registry can enhance your
+artifact management setup by aggregating
 packages from multiple sources. You can:
 
 - Add internal packages by using your top-level group endpoint for Maven as an upstream (For example, `https://gitlab.example.com/api/v4/groups/artifact-management/-/packages/maven`).
 - Add external upstream registries, like Maven Central or private registries.
 - Add other GitLab projects or groups.
 
-This approach provides a single endpoint that combines 
-internal and external dependencies with intelligent 
+This approach provides a single endpoint that combines
+internal and external dependencies with intelligent
 caching and upstream prioritization.
 
 Use the Maven virtual registry when you:
@@ -350,7 +350,7 @@ For more information, see [Maven virtual registry](../virtual_registry/maven/_in
      </mirror>
    </mirrors>
 ```
-   
+
 The virtual registry supports multiple token types, including personal access tokens, group deploy tokens, group access tokens, and CI/CD job tokens. Each token type uses a different HTTP header name. For complete authentication examples for all token types, see [Authentication with Maven clients](../virtual_registry/maven/_index.md#authentication-with-maven-clients).
 
 The following example implements a personal access token:
@@ -373,7 +373,7 @@ The following example implements a personal access token:
 
 ### Configure a top-level group endpoint
 
-Configure your projects to consume packages from the top-level group endpoint. 
+Configure your projects to consume packages from the top-level group endpoint.
 This approach provides access to all package types through a single configuration:
 
 {{< tabs >}}
@@ -504,7 +504,7 @@ curl --header "DEPLOY-TOKEN: ${DEPLOY_TOKEN}" "https://gitlab.example.com/api/v4
 
 ## Example CI/CD configuration
 
-The following example shows you how a project 
+The following example shows you how a project
 might consume packages from multiple package types:
 
 ```yaml
@@ -519,13 +519,13 @@ before_script:
   # Configure npm registry
   - echo "@company:registry=${CI_API_V4_URL}/groups/artifact-management/-/packages/npm/" >> .npmrc
   - echo "//${CI_SERVER_HOST}/api/v4/groups/artifact-management/-/packages/npm/:_authToken=${CI_JOB_TOKEN}" >> .npmrc
-  
+
 build:
   stage: build
   script:
     # Install npm dependencies from group registry
     - npm install
-    # Build with Maven dependencies from group registry  
+    # Build with Maven dependencies from group registry
     - mvn compile
   cache:
     paths:

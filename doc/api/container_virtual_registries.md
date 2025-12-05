@@ -33,6 +33,9 @@ Use this API to:
 - Configure upstream container registries.
 - Manage cached container images and manifests.
 
+For information about pulling container images through a virtual registry, see
+[Container virtual registry](../user/packages/virtual_registry/container/_index.md).
+
 ## Manage virtual registries
 
 Use the following endpoints to create and manage virtual registries for the container registry.

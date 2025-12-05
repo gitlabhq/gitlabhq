@@ -20,6 +20,10 @@ RSpec.describe Authn::DataRetention::AuthenticationEventArchiveWorker, feature_c
       create(:authentication_event, created_at: cutoff_time + 1.hour)
     end
 
+    before do
+      stub_application_setting(authn_data_retention_cleanup_enabled: true)
+    end
+
     it_behaves_like 'an idempotent worker'
 
     it 'deletes records from the operational authentication_events table' do
@@ -103,6 +107,26 @@ RSpec.describe Authn::DataRetention::AuthenticationEventArchiveWorker, feature_c
                 ))
 
         worker.perform
+      end
+    end
+
+    context 'when application setting is disabled' do
+      before do
+        stub_application_setting(authn_data_retention_cleanup_enabled: false)
+      end
+
+      it 'does not delete any records' do
+        expect { worker.perform }.not_to change { AuthenticationEvent.count }
+      end
+    end
+
+    context 'when feature flag is disabled' do
+      before do
+        stub_feature_flags(archive_authentication_events: false)
+      end
+
+      it 'does not delete any records' do
+        expect { worker.perform }.not_to change { AuthenticationEvent.count }
       end
     end
   end

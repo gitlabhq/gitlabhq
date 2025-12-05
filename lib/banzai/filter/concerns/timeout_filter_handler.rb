@@ -32,7 +32,7 @@ module Banzai
           HTML
 
         def call
-          return super if Gitlab::RenderTimeout.banzai_timeout_disabled?
+          return super if Gitlab::RenderTimeout.banzai_timeout_disabled? || context[:disable_banzai_timeout]
 
           Gitlab::RenderTimeout.timeout(foreground: render_timeout, background: render_timeout) { super }
         rescue Timeout::Error => e

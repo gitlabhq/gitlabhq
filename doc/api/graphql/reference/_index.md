@@ -50034,6 +50034,7 @@ AI features that can be configured through the Duo self-hosted feature settings.
 | <a id="aifeaturescode_completions"></a>`CODE_COMPLETIONS` | Code completion feature setting. |
 | <a id="aifeaturescode_generations"></a>`CODE_GENERATIONS` | Code generation feature setting. |
 | <a id="aifeaturesduo_agent_platform"></a>`DUO_AGENT_PLATFORM` | Duo agent platform feature setting. |
+| <a id="aifeaturesduo_agent_platform_agentic_chat"></a>`DUO_AGENT_PLATFORM_AGENTIC_CHAT` | Duo agent platform agentic chat feature setting. |
 | <a id="aifeaturesduo_chat"></a>`DUO_CHAT` | Duo Chat feature setting. |
 | <a id="aifeaturesduo_chat_explain_code"></a>`DUO_CHAT_EXPLAIN_CODE` | Duo chat explain code feature setting. |
 | <a id="aifeaturesduo_chat_explain_vulnerability"></a>`DUO_CHAT_EXPLAIN_VULNERABILITY` | Duo chat explain vulnerability feature setting. |
@@ -50076,6 +50077,7 @@ AI features that can be configured through the Model Selection feature settings.
 | <a id="aimodelselectionfeaturescode_completions"></a>`CODE_COMPLETIONS` | Code completion feature setting. |
 | <a id="aimodelselectionfeaturescode_generations"></a>`CODE_GENERATIONS` | Code generation feature setting. |
 | <a id="aimodelselectionfeaturesduo_agent_platform"></a>`DUO_AGENT_PLATFORM` | Duo agent platform feature setting. |
+| <a id="aimodelselectionfeaturesduo_agent_platform_agentic_chat"></a>`DUO_AGENT_PLATFORM_AGENTIC_CHAT` | Duo agent platform agentic chat feature setting. |
 | <a id="aimodelselectionfeaturesduo_chat"></a>`DUO_CHAT` | Duo Chat feature setting. |
 | <a id="aimodelselectionfeaturesduo_chat_explain_code"></a>`DUO_CHAT_EXPLAIN_CODE` | Duo chat explain code feature setting. |
 | <a id="aimodelselectionfeaturesduo_chat_explain_vulnerability"></a>`DUO_CHAT_EXPLAIN_VULNERABILITY` | Duo chat explain vulnerability feature setting. |

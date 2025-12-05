@@ -36,7 +36,27 @@ RSpec.describe Authn::DataRetention::OauthAccessGrantArchiveWorker, feature_cate
       Class.new(ApplicationRecord) { self.table_name = 'oauth_access_grant_archived_records' }
     end
 
+    before do
+      stub_application_setting(authn_data_retention_cleanup_enabled: true)
+    end
+
     it_behaves_like 'an idempotent worker'
+
+    context 'when application setting is disabled' do
+      before do
+        stub_application_setting(authn_data_retention_cleanup_enabled: false)
+      end
+
+      it 'does not archive any grants' do
+        expect { worker.perform }.not_to change { oauth_access_grant_archived_record_model.count }
+        expect(OauthAccessGrant.count).to eq(5)
+      end
+
+      it 'does not enqueue another job' do
+        expect(described_class).not_to receive(:perform_in)
+        worker.perform
+      end
+    end
 
     context 'when the feature flag :archive_revoked_access_grants is disabled' do
       before do
@@ -55,10 +75,6 @@ RSpec.describe Authn::DataRetention::OauthAccessGrantArchiveWorker, feature_cate
     end
 
     context 'when the feature flag :archive_revoked_access_grants is enabled', :freeze_time do
-      before do
-        stub_feature_flags(archive_revoked_access_grants: true)
-      end
-
       context 'when there are revoked grants to archive' do
         it 'archives only revoked grants created before cutoff date' do
           old_grant_id = old_revoked_grant.id

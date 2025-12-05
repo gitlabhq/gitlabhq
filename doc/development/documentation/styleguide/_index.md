@@ -1612,6 +1612,17 @@ To convert image files to PNG format:
 If the original was a JPEG file, the converted PNG file might appear larger
 because PNG uses lossless compression while JPEG uses lossy compression.
 
+##### Deleting images
+
+Do not delete image files when you remove references to them from English documentation.
+Localized documentation (for example, Japanese pages) uses the same image files as the English docs.
+Even if an image is no longer referenced in English docs, it might still be in use by translated pages.
+
+The docs site build process checks image paths. If you delete an image that's still in use,
+the `hugo_build` job in your merge request pipeline will fail.
+
+The images not used anywhere are cleaned up as part of the [monthly maintenance](https://handbook.gitlab.com/handbook/product/ux/technical-writing/#regularly-scheduled-tasks).
+
 #### Animated images
 
 Avoid animated images (such as animated GIFs). They can be distracting

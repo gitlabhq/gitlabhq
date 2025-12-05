@@ -155,7 +155,7 @@ If the GUI-based import tool does not work, you can try to:
 - Set up [repository mirroring](../repository/mirror/_index.md).
   It provides verbose error output.
 
-See the [troubleshooting section](bitbucket.md#troubleshooting)
+See the [troubleshooting section](../../import/bitbucket_cloud.md#troubleshooting)
 for Bitbucket Cloud.
 
 ### LFS objects not imported

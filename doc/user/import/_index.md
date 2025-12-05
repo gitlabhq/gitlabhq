@@ -31,7 +31,7 @@ A migration tool is available for some third-party platforms. Some support
 | [Bitbucket Server](../project/import/bitbucket_server.md)                   | {{< no >}}              | {{< yes >}} | {{< yes >}}    | {{< yes >}}       |
 | [GitHub](../project/import/github.md)                                       | {{< no >}}              | {{< yes >}} | {{< yes >}}    | {{< yes >}}       |
 | [Gitea](../project/import/gitea.md)                                         | {{< no >}}              | {{< yes >}} | {{< yes >}}    | {{< yes >}}       |
-| [Bitbucket Cloud](../project/import/bitbucket.md)                           | {{< no >}}              | {{< yes >}} | {{< yes >}}    | {{< no >}}        |
+| [Bitbucket Cloud](bitbucket_cloud.md)                                       | {{< no >}}              | {{< yes >}} | {{< yes >}}    | {{< no >}}        |
 | [FogBugz](../project/import/fogbugz.md)                                     | {{< no >}}              | {{< yes >}} | {{< yes >}}    | {{< no >}}        |
 | Git repository through a [manifest file](../project/import/manifest.md)     | {{< no >}}              | {{< yes >}} | {{< yes >}}    | {{< no >}}        |
 | Git repository through a [repository URL](../project/import/repo_by_url.md) | {{< no >}}              | {{< yes >}} | {{< yes >}}    | {{< no >}}        |

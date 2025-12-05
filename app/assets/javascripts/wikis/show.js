@@ -9,7 +9,6 @@ import { helpPagePath } from '~/helpers/help_page_helper';
 import SidebarResizer from './components/sidebar_resizer.vue';
 import Wikis from './wikis';
 import WikiContentApp from './app.vue';
-import WikiSidebarEntries from './components/wiki_sidebar_entries.vue';
 import WikiSidebar from './components/wiki_sidebar.vue';
 import initCache from './wiki_notes/graphql/cache_init';
 import resolvers from './wiki_notes/graphql/resolvers';
@@ -137,32 +136,7 @@ const mountWikiApp = () => {
   });
 };
 
-export const mountWikiSidebarEntries = () => {
-  const el = document.querySelector('#js-wiki-sidebar-entries');
-  if (!el) return false;
-
-  const { hasCustomSidebar, canCreate, viewAllPagesPath, editing, customSidebarContent } =
-    el.dataset;
-
-  return new Vue({
-    el,
-    provide: {
-      hasCustomSidebar: parseBoolean(hasCustomSidebar),
-      canCreate: parseBoolean(canCreate),
-      sidebarPagesApi: gl.GfmAutoComplete.dataSources.wikis,
-      viewAllPagesPath,
-      editing,
-      customSidebarContent,
-    },
-    render(createElement) {
-      return createElement(WikiSidebarEntries);
-    },
-  });
-};
-
 export const mountWikiSidebar = () => {
-  if (mountWikiSidebarEntries()) return false; // To be removed when the wiki_vue_sidebar FF is removed.
-
   const el = document.querySelector('#js-wiki-sidebar');
   if (!el) return false;
 

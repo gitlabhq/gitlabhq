@@ -132,7 +132,7 @@ For multi-node architectures, the Bitbucket provider configuration must also be 
 ## Bitbucket project import
 
 After the previous configuration is set up, you can use Bitbucket to sign in to
-GitLab and [start importing your projects](../user/project/import/bitbucket.md).
+GitLab and [start importing your projects](../user/import/bitbucket_cloud.md).
 
 If you want to import projects from Bitbucket, but don't want to enable signing in,
 you can [disable Sign-Ins in the **Admin** area](omniauth.md#enable-or-disable-sign-in-with-an-omniauth-provider-without-disabling-import-sources).

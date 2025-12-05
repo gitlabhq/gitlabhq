@@ -274,6 +274,7 @@ module ApplicationSettingsHelper
       :asset_proxy_allowlist,
       :static_objects_external_storage_auth_token,
       :static_objects_external_storage_url,
+      :authn_data_retention_cleanup_enabled,
       :authorized_keys_enabled,
       :auto_devops_enabled,
       :auto_devops_domain,

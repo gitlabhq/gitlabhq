@@ -21,6 +21,7 @@ module Authn
       CUTOFF_INTERVAL = 1.month
 
       def perform(cursor = nil)
+        return unless Gitlab::CurrentSettings.authn_data_retention_cleanup_enabled?
         return unless Feature.enabled?(:archive_revoked_access_tokens, :instance)
 
         runtime_limiter = Gitlab::Metrics::RuntimeLimiter.new(MAX_RUNTIME)

@@ -37,6 +37,7 @@ RSpec.describe ApplicationSetting, feature_category: :shared, type: :model do
         default_search_scope: described_class::SEARCH_SCOPE_SYSTEM_DEFAULT,
         asset_proxy_enabled: false,
         asciidoc_max_includes: 32,
+        authn_data_retention_cleanup_enabled: false,
         authorized_keys_enabled: true,
         autocomplete_users_limit: 300,
         autocomplete_users_unauthenticated_limit: 100,
@@ -1935,6 +1936,26 @@ RSpec.describe ApplicationSetting, feature_category: :shared, type: :model do
         is_expected.not_to allow_value(
           { inactive_resource_access_tokens_delete_after_days: Gitlab::Database::MAX_INT_VALUE + 1 }
         ).for(:resource_access_tokens_settings)
+      end
+
+      it 'allows authn_data_retention_cleanup_enabled with true' do
+        is_expected.to allow_value({ authn_data_retention_cleanup_enabled: true })
+          .for(:resource_access_tokens_settings)
+      end
+
+      it 'allows authn_data_retention_cleanup_enabled with false' do
+        is_expected.to allow_value({ authn_data_retention_cleanup_enabled: false })
+          .for(:resource_access_tokens_settings)
+      end
+
+      it 'does not allow authn_data_retention_cleanup_enabled with string' do
+        is_expected.not_to allow_value({ authn_data_retention_cleanup_enabled: "true" })
+          .for(:resource_access_tokens_settings)
+      end
+
+      it 'does not allow authn_data_retention_cleanup_enabled with integer' do
+        is_expected.not_to allow_value({ authn_data_retention_cleanup_enabled: 1 })
+          .for(:resource_access_tokens_settings)
       end
     end
 

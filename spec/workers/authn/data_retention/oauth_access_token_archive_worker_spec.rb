@@ -29,7 +29,27 @@ RSpec.describe Authn::DataRetention::OauthAccessTokenArchiveWorker, feature_cate
       create(:oauth_access_token, revoked_at: nil)
     end
 
+    before do
+      stub_application_setting(authn_data_retention_cleanup_enabled: true)
+    end
+
     it_behaves_like 'an idempotent worker'
+
+    context 'when application setting is disabled' do
+      before do
+        stub_application_setting(authn_data_retention_cleanup_enabled: false)
+      end
+
+      it 'does not archive any tokens' do
+        expect { worker.perform }.not_to change { Authn::OauthAccessTokenArchivedRecord.count }
+        expect(OauthAccessToken.count).to eq(5)
+      end
+
+      it 'does not enqueue another job' do
+        expect(described_class).not_to receive(:perform_in)
+        worker.perform
+      end
+    end
 
     context 'when the feature flag :archive_revoked_access_tokens is disabled' do
       before do
@@ -48,10 +68,6 @@ RSpec.describe Authn::DataRetention::OauthAccessTokenArchiveWorker, feature_cate
     end
 
     context 'when the feature flag :archive_revoked_access_tokens is enabled', :freeze_time do
-      before do
-        stub_feature_flags(archive_revoked_access_tokens: true)
-      end
-
       context 'when there are revoked tokens to archive' do
         it 'archives only revoked tokens created before cutoff date' do
           old_token_id = old_revoked_token.id

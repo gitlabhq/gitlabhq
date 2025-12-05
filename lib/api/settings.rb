@@ -44,6 +44,7 @@ module API
       optional :asset_proxy_secret_key, type: String, desc: 'Shared secret with the asset proxy server'
       optional :asset_proxy_whitelist, type: Array[String], coerce_with: Validations::Types::CommaSeparatedToArray.coerce, desc: 'Deprecated: Use :asset_proxy_allowlist instead. Assets that match these domain(s) will NOT be proxied. Wildcards allowed. Your GitLab installation URL is automatically whitelisted.'
       optional :asset_proxy_allowlist, type: Array[String], coerce_with: Validations::Types::CommaSeparatedToArray.coerce, desc: 'Assets that match these domain(s) will NOT be proxied. Wildcards allowed. Your GitLab installation URL is automatically allowed.'
+      optional :authn_data_retention_cleanup_enabled, type: Boolean, desc: 'Enable authentication data retention cleanup workers to enforce retention policies'
       optional :container_registry_token_expire_delay, type: Integer, desc: 'Authorization token duration (minutes)'
       optional :decompress_archive_file_timeout, type: Integer, desc: 'Default timeout for decompressing archived files, in seconds. Set to 0 to disable timeouts.'
       optional :default_artifacts_expire_in, type: String, desc: "Set the default expiration time for each job's artifacts"

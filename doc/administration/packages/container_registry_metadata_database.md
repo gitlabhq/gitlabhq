@@ -663,7 +663,7 @@ This gives the registry user the necessary permissions to create tables and run 
 ### Error: `database-in-use and filesystem-in-use lockfiles present`
 
 This error occurs when both the `filesystem-in-use` and `database-in-use`
-lockfiles are present on the configured registry storage and indicates 
+lockfiles are present on the configured registry storage and indicates
 an ambiguous registry state.
 
 To resolve this error, you must determine if your registry is meant to use the
@@ -683,7 +683,7 @@ registry['database'] = {
 ```
 
 After you have confirmed that registry is meant to use the database, delete the
-`filesystem-in-use` lockfile present in the configured registry storage 
+`filesystem-in-use` lockfile present in the configured registry storage
 located at `/docker/registry/lockfiles/filesystem-in-use`.
 
 Alternatively, if the above scenarios are not true, and your registry is meant

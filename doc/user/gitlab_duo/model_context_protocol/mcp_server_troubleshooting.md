@@ -2,7 +2,7 @@
 stage: AI-powered
 group: AI Framework
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
-description: Troubleshoot the GitLab MCP server.
+description: Troubleshoot common issues with the GitLab MCP server.
 title: Troubleshooting the GitLab MCP server
 ---
 
@@ -15,20 +15,7 @@ title: Troubleshooting the GitLab MCP server
 
 {{< /details >}}
 
-{{< history >}}
-
-- Introduced as an [experiment](../../../policy/development_stages_support.md#experiment) in GitLab 18.3 [with flags](../../../administration/feature_flags/_index.md) named `mcp_server` and `oauth_dynamic_client_registration`. Disabled by default.
-- Changed from experiment to [beta](../../../policy/development_stages_support.md#beta) in GitLab 18.6. Feature flags [`mcp_server`](https://gitlab.com/gitlab-org/gitlab/-/issues/556448) and [`oauth_dynamic_client_registration`](https://gitlab.com/gitlab-org/gitlab/-/issues/555942) removed.
-
-{{< /history >}}
-
-{{< alert type="warning" >}}
-
-To provide feedback on this feature, leave a comment on [issue 561564](https://gitlab.com/gitlab-org/gitlab/-/issues/561564).
-
-{{< /alert >}}
-
-When working with GitLab MCP server, you might encounter issues.
+When working with GitLab MCP server, you might encounter the following issues.
 
 ## Error: `Server's protocol version is not supported: 2025-06-18`
 

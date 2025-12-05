@@ -108,6 +108,7 @@ RSpec.describe API::Settings, 'Settings', :do_not_mock_admin_mode_setting, featu
       expect(json_response['terraform_state_encryption_enabled']).to eq(true)
       expect(json_response['iframe_rendering_enabled']).to be(false)
       expect(json_response['iframe_rendering_allowlist']).to eq([])
+      expect(json_response['authn_data_retention_cleanup_enabled']).to eq(false)
     end
   end
 
@@ -283,7 +284,8 @@ RSpec.describe API::Settings, 'Settings', :do_not_mock_admin_mode_setting, featu
               enabled: false,
               preset: 'open_vsx'
             },
-            terraform_state_encryption_enabled: false
+            terraform_state_encryption_enabled: false,
+            authn_data_retention_cleanup_enabled: true
           }
 
         expect(response).to have_gitlab_http_status(:ok)
@@ -379,6 +381,7 @@ RSpec.describe API::Settings, 'Settings', :do_not_mock_admin_mode_setting, featu
         expect(json_response['require_personal_access_token_expiry']).to be(false)
         expect(json_response['vscode_extension_marketplace']).to eq({ "enabled" => false, "preset" => 'open_vsx' })
         expect(json_response['terraform_state_encryption_enabled']).to eq(false)
+        expect(json_response['authn_data_retention_cleanup_enabled']).to eq(true)
       end
     end
 

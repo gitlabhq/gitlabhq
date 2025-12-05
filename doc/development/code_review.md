@@ -541,10 +541,36 @@ Here is a summary, which is also reflected in other sections.
    - Pull common dependencies into the first MRs to avoid excessive rebases.
      - For sequential MRs use [stacked diffs](../user/project/merge_requests/stacked_diffs.md).
      - For dependent MRs (for example, `A` -> `B` -> `C`), have their branches target each other instead of `master`. For example, have `C` target `B`, `B` target `A`, and `A` target `master`. This way each MR will have only their corresponding `diff`.
+   - Split merge request into smaller MRs in a way that only one maintainer is required per MR, for example, by shipping database changes before you implement the feature.
    - ⚠️ Split MRs with caution: MRs that are **too** small increase the number of total reviews, which can cause the opposite effect.
 1. Minimize the number of reviewers in a single MR.
    - Example: A DB reviewer can also review backend and or tests. A FullStack engineer can do both frontend and backend reviews.
    - Using mocks can make the first MRs be `frontend` only, and later we can request `backend` review for the server request (see "splitting MRs" above).
+1. **Know your maintainers.**
+   - Knowing your maintainers will make code review a better experience for you
+     and your maintainers. If you have a small group of maintainers who are
+     usually reviewing your work, over time you will develop intuition for what the
+     maintainer is going to be unhappy about, and how the merge request has to be
+     structured to make the review faster.
+1. **Assign a maintainer who is a domain expert.**
+   - Assigning a maintainer who is a domain expert can significantly reduce the
+     time-to-merge. Maintainers usually prioritize reviewing merge requests
+     changing areas in the codebase they are familiar with. Even a small merge
+     request can wait very long for a review if a maintainer sees it, but concludes
+     that the time investment to understand the code will be significant. In that
+     case, maintainers tend to prioritize reviewing merge requests which are easier
+     for them to understand, because this way they will be more efficient reviewers.
+1. **Structure and write your MRs in a way that they are easy to review.**
+   - Once you know your maintainers and usually assign maintainers who are
+     domain experts, over time you will also develop intuition for how to make
+     your merge request easier to review. What it means that "a merge request
+     is easy to review" depends on who is going to review the merge request, and
+     whether they are domain experts. There are a few universal ways of making
+     a merge request easier to review which are outlined above (like splitting an MR
+     into smaller chunks), but once you become a domain expert, you know your
+     maintainer, and the maintainer is a domain expert as well, you will be able to
+     optimize for making your MRs a pleasure to review, and this will significantly
+     reduce time-to-merge.
 
 ### Having your merge request reviewed
 

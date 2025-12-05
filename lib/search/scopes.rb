@@ -14,8 +14,8 @@ module Search
         label: -> { _('Projects') },
         sort: 1,
         availability: {
-          global: %i[zoekt advanced basic],
-          group: %i[zoekt advanced basic]
+          global: %i[advanced basic],
+          group: %i[advanced basic]
         }
       },
       blobs: {
@@ -32,71 +32,71 @@ module Search
         label: -> { _('Issues') },
         sort: 4,
         availability: {
-          global: %i[zoekt advanced basic],
-          group: %i[zoekt advanced basic],
-          project: %i[zoekt advanced basic]
+          global: %i[advanced basic],
+          group: %i[advanced basic],
+          project: %i[advanced basic]
         }
       },
       merge_requests: {
         label: -> { _('Merge requests') },
         sort: 5,
         availability: {
-          global: %i[zoekt advanced basic],
-          group: %i[zoekt advanced basic],
-          project: %i[zoekt advanced basic]
+          global: %i[advanced basic],
+          group: %i[advanced basic],
+          project: %i[advanced basic]
         }
       },
       wiki_blobs: {
         label: -> { _('Wiki') },
         sort: 6,
         availability: {
-          global: %i[zoekt advanced],
-          group: %i[zoekt advanced],
-          project: %i[zoekt advanced basic]
+          global: %i[advanced],
+          group: %i[advanced],
+          project: %i[advanced basic]
         }
       },
       commits: {
         label: -> { _('Commits') },
         sort: 7,
         availability: {
-          global: %i[zoekt advanced],
-          group: %i[zoekt advanced],
-          project: %i[zoekt advanced basic]
+          global: %i[advanced],
+          group: %i[advanced],
+          project: %i[advanced basic]
         }
       },
       notes: {
         label: -> { _('Comments') },
         sort: 8,
         availability: {
-          global: %i[zoekt advanced],
-          group: %i[zoekt advanced],
-          project: %i[zoekt advanced basic]
+          global: %i[advanced],
+          group: %i[advanced],
+          project: %i[advanced basic]
         }
       },
       milestones: {
         label: -> { _('Milestones') },
         sort: 9,
         availability: {
-          global: %i[zoekt advanced basic],
-          group: %i[zoekt advanced basic],
-          project: %i[zoekt advanced basic]
+          global: %i[advanced basic],
+          group: %i[advanced basic],
+          project: %i[advanced basic]
         }
       },
       users: {
         label: -> { _('Users') },
         sort: 10,
         availability: {
-          global: %i[zoekt advanced basic],
-          group: %i[zoekt advanced basic],
-          project: %i[zoekt advanced basic]
+          global: %i[advanced basic],
+          group: %i[advanced basic],
+          project: %i[advanced basic]
         }
       },
       snippet_titles: {
         label: -> { _('Snippets') },
         sort: 11,
         availability: {
-          global: %i[zoekt advanced basic],
-          group: %i[zoekt advanced basic]
+          global: %i[advanced basic],
+          group: %i[advanced basic]
         }
       }
     }.freeze
@@ -122,6 +122,11 @@ module Search
       # @param requested_search_type [String, Symbol] User's requested search type (optional)
       # @return [Array<String>] Array of scope names available for the context
       def available_for_context(context:, container: nil, requested_search_type: nil)
+        # Normalize invalid search types to nil
+        # This allows scope determination to work even with invalid search_type params
+        # The actual validation of search_type happens later via search_type_errors
+        requested_search_type = normalize_search_type(requested_search_type)
+
         scope_definitions.select do |scope, definition|
           valid_definition?(scope, definition, context, container, requested_search_type)
         end.keys.map(&:to_s)
@@ -159,13 +164,10 @@ module Search
       # @param container [Project, Group, nil] The container being searched
       # @param requested_search_type [String, Symbol] User's explicitly requested search type
       # @return [Boolean] True if the definition is valid
-      def valid_definition?(scope, definition, context, _container, requested_search_type = nil)
+      def valid_definition?(scope, definition, context, _container, _requested_search_type = nil)
         availability = definition[:availability]
         return false if availability[context].blank?
         return false if context == :global && global_search_disabled_for_scope?(scope)
-
-        # Verify if requested_search_type is present then it should be basic
-        return false unless requested_search_type.blank? || requested_search_type.to_sym == :basic
 
         # In CE, only basic search is available
         availability[context].include?(:basic)
@@ -177,6 +179,15 @@ module Search
       def global_search_disabled_for_scope?(scope)
         setting_method = global_search_setting_map[scope.to_s]
         setting_method && !::Gitlab::CurrentSettings.public_send(setting_method) # rubocop:disable GitlabSecurity/PublicSend -- setting_method is validated from GLOBAL_SEARCH_SETTING_MAP
+      end
+
+      # Normalize search type, returning nil for invalid values
+      # This allows scope determination to work even with invalid search_type params
+      # The actual validation of search_type happens later via search_type_errors
+      # @param search_type [String, Symbol, nil] The search type to normalize
+      # @return [Symbol, nil] Normalized search type or nil if invalid
+      def normalize_search_type(search_type)
+        ::SearchService.supported_search_types.include?(search_type.to_s) ? search_type.to_sym : nil
       end
     end
   end
