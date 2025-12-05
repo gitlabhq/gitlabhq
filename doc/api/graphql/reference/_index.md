@@ -1034,6 +1034,27 @@ Returns [`GroupSecretsManager`](#groupsecretsmanager).
 | ---- | ---- | ----------- |
 | <a id="querygroupsecretsmanagergrouppath"></a>`groupPath` | [`ID!`](#id) | Group of the secrets manager. |
 
+### `Query.groupSecretsPermissions`
+
+{{< details >}}
+**Introduced** in GitLab 18.7.
+**Status**: Experiment.
+{{< /details >}}
+
+List group secrets permissions.
+
+Returns [`GroupSecretsPermissionConnection`](#groupsecretspermissionconnection).
+
+This field returns a [connection](#connections). It accepts the
+four standard [pagination arguments](#pagination-arguments):
+`before: String`, `after: String`, `first: Int`, and `last: Int`.
+
+#### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="querygroupsecretspermissionsgrouppath"></a>`groupPath` | [`ID!`](#id) | Group the secrets permission belong to. |
+
 ### `Query.groups`
 
 Find groups.
@@ -7638,6 +7659,26 @@ Input type: `GroupSecretsManagerInitializeInput`
 | <a id="mutationgroupsecretsmanagerinitializeclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
 | <a id="mutationgroupsecretsmanagerinitializeerrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during the mutation. |
 | <a id="mutationgroupsecretsmanagerinitializegroupsecretsmanager"></a>`groupSecretsManager` | [`GroupSecretsManager`](#groupsecretsmanager) | Group secrets manager. |
+
+### `Mutation.groupSecretsPermissionDelete`
+
+Input type: `GroupSecretsPermissionDeleteInput`
+
+#### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mutationgroupsecretspermissiondeleteclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutationgroupsecretspermissiondeletegrouppath"></a>`groupPath` | [`ID!`](#id) | Group permissions for the secret. |
+| <a id="mutationgroupsecretspermissiondeleteprincipal"></a>`principal` | [`PrincipalInput!`](#principalinput) | Whose permission to be deleted. |
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mutationgroupsecretspermissiondeleteclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutationgroupsecretspermissiondeleteerrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during the mutation. |
+| <a id="mutationgroupsecretspermissiondeletesecretspermission"></a>`secretsPermission` | [`GroupSecretsPermission`](#groupsecretspermission) | Deleted Secrets Permission. |
 
 ### `Mutation.groupSecretsPermissionUpdate`
 
@@ -19469,6 +19510,29 @@ The edge type for [`GroupSavedReply`](#groupsavedreply).
 | ---- | ---- | ----------- |
 | <a id="groupsavedreplyedgecursor"></a>`cursor` | [`String!`](#string) | A cursor for use in pagination. |
 | <a id="groupsavedreplyedgenode"></a>`node` | [`GroupSavedReply`](#groupsavedreply) | The item at the end of the edge. |
+
+#### `GroupSecretsPermissionConnection`
+
+The connection type for [`GroupSecretsPermission`](#groupsecretspermission).
+
+##### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="groupsecretspermissionconnectionedges"></a>`edges` | [`[GroupSecretsPermissionEdge]`](#groupsecretspermissionedge) | A list of edges. |
+| <a id="groupsecretspermissionconnectionnodes"></a>`nodes` | [`[GroupSecretsPermission]`](#groupsecretspermission) | A list of nodes. |
+| <a id="groupsecretspermissionconnectionpageinfo"></a>`pageInfo` | [`PageInfo!`](#pageinfo) | Information to aid in pagination. |
+
+#### `GroupSecretsPermissionEdge`
+
+The edge type for [`GroupSecretsPermission`](#groupsecretspermission).
+
+##### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="groupsecretspermissionedgecursor"></a>`cursor` | [`String!`](#string) | A cursor for use in pagination. |
+| <a id="groupsecretspermissionedgenode"></a>`node` | [`GroupSecretsPermission`](#groupsecretspermission) | The item at the end of the edge. |
 
 #### `GroupWikiRepositoryRegistryConnection`
 
@@ -45714,7 +45778,7 @@ JSON structure of each line in a matched chunk.
 
 ### `SecretPermission`
 
-Representation of a secrets permission.
+Representation of a secret permission.
 
 #### Fields
 

@@ -27,7 +27,11 @@ module Snippets
       end
 
       if save_and_commit
-        UserAgentDetailService.new(spammable: @snippet, perform_spam_check: perform_spam_check).create
+        UserAgentDetailService.new(
+          spammable: @snippet,
+          perform_spam_check: perform_spam_check,
+          current_user: current_user
+        ).create
         track_internal_event('create_snippet', project: project, user: current_user)
 
         move_temporary_files

@@ -1,0 +1,17 @@
+diff --git a/node_modules/@vitejs/plugin-vue/dist/index.mjs b/node_modules/@vitejs/plugin-vue/dist/index.mjs
+index 83717e6..1a8d885 100644
+--- a/node_modules/@vitejs/plugin-vue/dist/index.mjs
++++ b/node_modules/@vitejs/plugin-vue/dist/index.mjs
+@@ -46,6 +46,12 @@ function resolveCompiler(root) {
+ function tryResolveCompiler(root) {
+ 	const vueMeta = tryRequire("vue/package.json", root);
+ 	if (vueMeta && vueMeta.version.split(".")[0] >= 3) return tryRequire("vue/compiler-sfc", root);
++
++	// NOTE:
++	// @vitejs/plugin-vue only looks for vue a very specific location and doesn't account for the location of @vue/compat
++	// This patch allows it to find the @vue/compat pacakge and corresponding @vue/compiler-sfc
++	const vueMetaCompat = tryRequire("@vue/compat/package.json", root);
++	if (vueMetaCompat && vueMetaCompat.version.split(".")[0] >= 3) return tryRequire("@vue/compiler-sfc", root);
+ }
+ const _require = createRequire(import.meta.url);
+ function tryRequire(id, from) {

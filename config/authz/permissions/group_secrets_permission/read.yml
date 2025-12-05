@@ -1,0 +1,4 @@
+---
+name: read_group_secrets_permission
+description: Grants the ability to read information about a group's secrets permission.
+feature_category: secrets_management

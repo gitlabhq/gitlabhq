@@ -978,6 +978,26 @@ RSpec.describe ProjectsHelper, feature_category: :source_code_management do
 
       expect(subject).to include(canAddCatalogResource: false)
     end
+
+    context 'when work_items_consolidated_list is disabled' do
+      before do
+        stub_feature_flags(work_item_planning_view: false)
+      end
+
+      it 'includes issuesHelpPath pointing to the issues documentation' do
+        expect(subject).to include(issuesHelpPath: '/help/user/project/issues/_index.md')
+      end
+    end
+
+    context 'when work_items_consolidated_list is enabled' do
+      before do
+        stub_feature_flags(work_item_planning_view: true)
+      end
+
+      it 'includes issuesHelpPath pointing to work items documentation' do
+        expect(subject).to include(issuesHelpPath: '/help/user/work_items/_index.md')
+      end
+    end
   end
 
   describe '#project_classes' do

@@ -11,6 +11,8 @@ const USE_VUE3 = EXPLICIT_VUE_VERSION === '3';
 
 if (USE_VUE3) {
   console.log('[V] Using Vue.js 3');
+} else {
+  console.log('[V] Using Vue.js 2');
 }
 const VUE_LOADER_MODULE = USE_VUE3 ? 'vue-loader-vue3' : 'vue-loader';
 
@@ -256,13 +258,17 @@ const shouldExcludeFromCompiling = (modulePath) => {
 if (USE_VUE3) {
   Object.assign(alias, {
     // ensure we always use the same type of module for Vue
-    vue$: '@vue/compat/dist/vue.runtime.esm-bundler.js',
+    vue: '@vue/compat/dist/vue.runtime.esm-bundler.js',
     vuex: path.join(ROOT_PATH, 'app/assets/javascripts/lib/utils/vue3compat/vuex.js'),
     'vue-apollo': path.join(ROOT_PATH, 'app/assets/javascripts/lib/utils/vue3compat/vue_apollo.js'),
     'vue-router': path.join(ROOT_PATH, 'app/assets/javascripts/lib/utils/vue3compat/vue_router.js'),
+
+    // 'pinia' uses 'vue-demi' to locate the current active version of Vue.
+    // use an alias to ensure vue-demi finds the right version
+    'vue-demi': path.join(ROOT_PATH, 'node_modules/vue-demi/lib/v3/index.mjs'),
   });
 
-  vueLoaderOptions.compiler = require.resolve('./vue3migration/compiler');
+  vueLoaderOptions.compiler = path.join(ROOT_PATH, 'config/vue3migration/compiler.js');
 }
 
 const entriesState = {

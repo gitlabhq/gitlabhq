@@ -25,6 +25,7 @@ describe('wikis/components/wiki_more_dropdown', () => {
         cloneHttpUrl: 'http://clone.url/path',
         templatesUrl: 'https://templates.url/path',
         pagePersisted: true,
+        canCreateNewPage: true,
         ...provide,
       },
       stubs: {
@@ -52,8 +53,8 @@ describe('wikis/components/wiki_more_dropdown', () => {
       expect(findNewItem().text()).toBe('New page');
     });
 
-    it('renders if `newUrl` is set', () => {
-      createComponent({ newUrl: false });
+    it('renders if `canCreateNewPage` is true  and `newUrl` is set', () => {
+      createComponent({ canCreateNewPage: false, newUrl: false });
 
       expect(findNewItem().exists()).toBe(false);
 

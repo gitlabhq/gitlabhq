@@ -24,6 +24,7 @@ export default {
     GlTooltip: GlTooltipDirective,
   },
   inject: {
+    canCreateNewPage: { default: false },
     newUrl: { default: null },
     historyUrl: { default: null },
     templatesUrl: { default: null },
@@ -114,7 +115,7 @@ export default {
       @shown="showDropdown"
       @hidden="hideDropdown"
     >
-      <gl-disclosure-dropdown-item v-if="newUrl" :item="newItem">
+      <gl-disclosure-dropdown-item v-if="newUrl && canCreateNewPage" :item="newItem">
         <template #list-item>
           <gl-icon name="plus" class="gl-mr-2" variant="subtle" />
           {{ newItem.text }}

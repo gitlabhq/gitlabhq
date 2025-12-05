@@ -50,6 +50,11 @@ export default {
     ciCdLabel: __('CI/CD'),
     forksLabel: s__('ProjectSettings|Forks'),
     issuesLabel: s__('ProjectSettings|Issues'),
+    workItemsLabel: s__('ProjectSettings|Work items'),
+    issuesHelpText: s__(
+      'ProjectSettings|Flexible tool to collaboratively develop ideas and plan work in this project.',
+    ),
+    workItemsHelpText: s__('ProjectSettings|Plan and track work with flexible objects and views.'),
     lfsLabel: s__('ProjectSettings|Git Large File Storage (LFS)'),
     mergeRequestsLabel: s__('ProjectSettings|Merge requests'),
     environmentsLabel: s__('ProjectSettings|Environments'),
@@ -355,6 +360,19 @@ export default {
     return { ...defaults, ...this.currentSettings };
   },
   computed: {
+    isPlanningViewsEnabled() {
+      return this.glFeatures.workItemPlanningView;
+    },
+    issuesFeatureLabel() {
+      return this.isPlanningViewsEnabled
+        ? this.$options.i18n.workItemsLabel
+        : this.$options.i18n.issuesLabel;
+    },
+    issuesFeatureHelpText() {
+      return this.isPlanningViewsEnabled
+        ? this.$options.i18n.workItemsHelpText
+        : this.$options.i18n.issuesHelpText;
+    },
     isProjectPrivate() {
       return this.visibilityLevel === VISIBILITY_LEVEL_PRIVATE_INTEGER;
     },
@@ -602,18 +620,14 @@ export default {
       <project-setting-row
         ref="issues-settings"
         :help-path="issuesHelpPath"
-        :label="$options.i18n.issuesLabel"
+        :label="issuesFeatureLabel"
         label-for="issues_access_level"
-        :help-text="
-          s__(
-            'ProjectSettings|Flexible tool to collaboratively develop ideas and plan work in this project.',
-          )
-        "
+        :help-text="issuesFeatureHelpText"
       >
         <project-feature-setting
           id="issues_access_level"
           v-model="issuesAccessLevel"
-          :label="$options.i18n.issuesLabel"
+          :label="issuesFeatureLabel"
           :options="featureAccessLevelOptions"
           :disabled-select-input="isProjectPrivate"
           name="project[project_feature_attributes][issues_access_level]"

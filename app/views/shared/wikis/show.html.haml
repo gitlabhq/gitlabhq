@@ -16,6 +16,7 @@
       page_heading: @page.human_title,
       content_api: wiki_page_render_api_endpoint(@page),
       show_restore_version_button: (can?(current_user, :create_wiki, @wiki.container) && @page.historical?).to_s,
+      can_create_new_page: can?(current_user, :create_wiki, @wiki.container).to_s,
       show_edit_button: (can?(current_user, :create_wiki, @wiki.container) && @page.latest? && @valid_encoding).to_s,
       page_info: wiki_page_info(@page, uploads_path: wiki_attachment_upload_url).to_json,
       is_page_template: @page.template?.to_s,

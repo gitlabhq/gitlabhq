@@ -40,6 +40,12 @@ RSpec.describe Spam::AkismetMarkAsSpamService, feature_category: :instance_resil
         subject.execute
       end
 
+      context 'when an organization is not assigned to the record' do
+        let(:user_agent_detail) { build(:user_agent_detail, organization: nil) }
+
+        it { expect(subject.execute).to be_truthy }
+      end
+
       context 'when Akismet does not consider it spam' do
         it 'does not update the spammable object as spam' do
           allow(fake_akismet_service).to receive(:submit_spam).and_return false

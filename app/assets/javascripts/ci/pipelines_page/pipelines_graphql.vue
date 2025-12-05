@@ -112,7 +112,6 @@ export default {
   apollo: {
     pipelines: {
       query: getPipelinesQuery,
-      notifyOnNetworkStatusChange: true,
       variables() {
         // Map frontend scope to GraphQL scope
         const scopeMap = {
@@ -318,17 +317,6 @@ export default {
     },
     showControls() {
       return this.hasInitiallyLoaded && !this.showEmptyState;
-    },
-  },
-  watch: {
-    scope(newScope, oldScope) {
-      // this avoids having to use CACHE_AND_NETWORK fetch policy
-      // which does not play nice with subscriptions
-      if (newScope === 'all' && oldScope !== 'all') {
-        this.$nextTick(() => {
-          this.$apollo.queries.pipelines.refetch();
-        });
-      }
     },
   },
   methods: {

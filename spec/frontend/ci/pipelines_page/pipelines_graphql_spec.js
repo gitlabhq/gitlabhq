@@ -353,24 +353,6 @@ describe('Pipelines app', () => {
         }
       },
     );
-
-    it('refetches query when scope is null', async () => {
-      createComponent();
-
-      expect(successHandler).toHaveBeenCalledTimes(1);
-
-      findTabs().vm.$emit('onChangeTab', 'finished');
-
-      await waitForPromises();
-
-      expect(successHandler).toHaveBeenCalledTimes(2);
-
-      findTabs().vm.$emit('onChangeTab', 'all');
-
-      await waitForPromises();
-
-      expect(successHandler).toHaveBeenCalledTimes(3);
-    });
   });
 
   describe('nav links', () => {

@@ -52882,6 +52882,9 @@ msgstr ""
 msgid "ProjectSettings|Pipeline execution policies"
 msgstr ""
 
+msgid "ProjectSettings|Plan and track work with flexible objects and views."
+msgstr ""
+
 msgid "ProjectSettings|Prevents direct linking to potentially sensitive media files"
 msgstr ""
 
@@ -53108,6 +53111,9 @@ msgid "ProjectSettings|Wiki"
 msgstr ""
 
 msgid "ProjectSettings|With GitLab Pages you can host your static websites on GitLab. GitLab Pages uses a caching mechanism for efficiency. Your changes may not take effect until that cache is invalidated, which usually takes less than a minute."
+msgstr ""
+
+msgid "ProjectSettings|Work items"
 msgstr ""
 
 msgid "ProjectSettings|Your project is set up. %{instructionsLinkStart}View instrumentation instructions%{instructionsLinkEnd} and %{dashboardsLinkStart}Analytics Dashboards%{dashboardsLinkEnd}."
@@ -77420,6 +77426,9 @@ msgid "WorkItem|Work item not found"
 msgstr ""
 
 msgid "WorkItem|Work items"
+msgstr ""
+
+msgid "WorkItem|Work items settings"
 msgstr ""
 
 msgid "WorkItem|Yes, close %{workItemType}"
