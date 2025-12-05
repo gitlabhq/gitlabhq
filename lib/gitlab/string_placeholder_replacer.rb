@@ -17,7 +17,7 @@ module Gitlab
     end
 
     def self.placeholder_full_regex(placeholder_regex)
-      /%(\{|%7B)(#{placeholder_regex})(\}|%7D)/
+      /%(\{|25%7B)(#{placeholder_regex})(\}|%7D)/
     end
 
     class << self

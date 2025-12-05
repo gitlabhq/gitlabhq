@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-require 'glfm_markdown'
+require 'gitlab-glfm-markdown'
 
 module Banzai
   module Filter

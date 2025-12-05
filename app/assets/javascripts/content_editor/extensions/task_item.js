@@ -46,7 +46,7 @@ export default TaskItem.extend({
         priority: PARSE_HTML_PRIORITY_HIGHEST,
       },
       {
-        tag: 'li.inapplicable > s, li.inapplicable > p:first-of-type > s',
+        tag: 'li.inapplicable s.inapplicable',
         skip: true,
         priority: PARSE_HTML_PRIORITY_HIGHEST,
       },
