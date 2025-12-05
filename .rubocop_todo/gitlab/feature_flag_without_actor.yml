@@ -21,6 +21,7 @@ Gitlab/FeatureFlagWithoutActor:
     - 'app/models/concerns/counter_attribute.rb'
     - 'app/models/concerns/reset_on_column_errors.rb'
     - 'app/models/concerns/web_hooks/auto_disabling.rb'
+    - 'app/models/merge_request.rb'
     - 'app/models/namespace.rb'
     - 'app/models/project.rb'
     - 'app/models/project_setting.rb'

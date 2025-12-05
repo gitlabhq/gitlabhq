@@ -97,7 +97,7 @@ module QA
 
             two_fa_auth.click_copy_and_proceed
 
-            expect(two_fa_auth).to have_text('You have set up 2FA for your account!')
+            expect(two_fa_auth).to have_text('2FA setup complete!')
 
             otp
           end

@@ -416,8 +416,7 @@ export const canRouterNav = ({ fullPath, webUrl, isGroup, issueAsWorkItem }) => 
   const escapedFullPath = escapeRegExp(fullPath);
   // eslint-disable-next-line no-useless-escape
   const groupRegex = new RegExp(`groups\/${escapedFullPath}\/-\/(work_items|epics)\/\\d+`);
-  // eslint-disable-next-line no-useless-escape
-  const projectRegex = new RegExp(`${escapedFullPath}\/-\/(work_items|issues)\/\\d+`);
+  const projectRegex = new RegExp(`${escapedFullPath}/-/(work_items|issues)(/\\d+)?/?$`);
   const canGroupNavigate = groupRegex.test(webUrl) && isGroup;
   const canProjectNavigate = projectRegex.test(webUrl) && issueAsWorkItem;
   return canGroupNavigate || canProjectNavigate;

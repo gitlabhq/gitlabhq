@@ -195,6 +195,8 @@ module Types
 
       field :total_jobs, GraphQL::Types::Int, null: false, method: :total_size, description: "Total number of jobs in the pipeline."
 
+      field :failed_jobs_count, GraphQL::Types::Int, null: false, description: "Number of failed jobs in the pipeline, including trigger jobs and external jobs."
+
       field :failure_reason, GraphQL::Types::String, null: true, description: "Reason why the pipeline failed."
 
       field :triggered_by_path, GraphQL::Types::String, null: true, description: "Path that triggered the pipeline."
@@ -292,6 +294,14 @@ module Types
 
       def has_scheduled_actions?
         object.association(:scheduled_actions).loaded? ? object.scheduled_actions.any? : object.scheduled_actions.exists?
+      end
+
+      def failed_jobs_count
+        BatchLoader::GraphQL.for(object).batch do |pipelines, loader|
+          pipelines.each do |pipeline|
+            loader.call(pipeline, pipeline.limited_failed_jobs.size)
+          end
+        end
       end
 
       alias_method :pipeline, :object

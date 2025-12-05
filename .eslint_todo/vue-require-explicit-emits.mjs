@@ -121,7 +121,6 @@ export default {
     'app/assets/javascripts/ci/pipeline_editor/components/ui/pipeline_editor_empty_state.vue',
     'app/assets/javascripts/ci/pipeline_editor/components/ui/pipeline_editor_messages.vue',
     'app/assets/javascripts/ci/pipeline_mini_graph/downstream_pipelines.vue',
-    'app/assets/javascripts/ci/pipeline_new/components/pipeline_variables_form.vue',
     'app/assets/javascripts/ci/pipeline_new/components/refs_dropdown.vue',
     'app/assets/javascripts/ci/pipeline_new/components/variable_values_listbox.vue',
     'app/assets/javascripts/ci/pipeline_schedules/components/delete_pipeline_schedule_modal.vue',

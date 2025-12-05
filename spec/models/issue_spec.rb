@@ -579,6 +579,90 @@ RSpec.describe Issue, feature_category: :team_planning do
     end
   end
 
+  describe '.non_archived' do
+    let_it_be(:group) { create(:group) }
+    let_it_be(:archived_group) { create(:group, :archived) }
+    let_it_be(:subgroup) { create(:group, parent: archived_group) }
+
+    let_it_be(:non_archived_project) { create(:project, group: group) }
+    let_it_be(:archived_project) { create(:project, :archived, group: group) }
+    let_it_be(:project_in_archived_group) { create(:project, group: archived_group) }
+    let_it_be(:project_in_subgroup_of_archived_group) { create(:project, group: subgroup) }
+
+    let_it_be(:issue_in_non_archived_project) { create(:issue, project: non_archived_project) }
+    let_it_be(:issue_in_archived_project) { create(:issue, project: archived_project) }
+    let_it_be(:issue_in_archived_group) { create(:issue, project: project_in_archived_group) }
+    let_it_be(:issue_in_subgroup_of_archived_group) { create(:issue, project: project_in_subgroup_of_archived_group) }
+    let_it_be(:group_level_issue) { create(:issue, :group_level, namespace: group) }
+    let_it_be(:group_level_issue_in_archived_group) { create(:issue, :group_level, namespace: archived_group) }
+
+    subject { described_class.non_archived }
+
+    it 'returns issues from non-archived projects' do
+      is_expected.to include(issue_in_non_archived_project)
+    end
+
+    it 'returns group-level issues from non-archived groups' do
+      is_expected.to include(group_level_issue)
+    end
+
+    it 'does not return issues from archived projects' do
+      is_expected.not_to include(issue_in_archived_project)
+    end
+
+    it 'does not return issues from projects in archived groups' do
+      is_expected.not_to include(issue_in_archived_group)
+    end
+
+    it 'does not return issues from projects in subgroups of archived groups' do
+      is_expected.not_to include(issue_in_subgroup_of_archived_group)
+    end
+
+    it 'does not return group-level issues from archived groups' do
+      is_expected.not_to include(group_level_issue_in_archived_group)
+    end
+
+    context 'when optimize_issuable_non_archived_scope feature flag is disabled' do
+      before do
+        stub_feature_flags(optimize_issuable_non_archived_scope: false)
+      end
+
+      it 'returns issues from non-archived projects' do
+        is_expected.to include(issue_in_non_archived_project)
+      end
+
+      it 'does not return issues from archived projects' do
+        is_expected.not_to include(issue_in_archived_project)
+      end
+
+      it 'returns issues from projects in archived groups' do
+        is_expected.to include(issue_in_archived_group)
+      end
+
+      it 'returns issues from projects in subgroups of archived groups' do
+        is_expected.to include(issue_in_subgroup_of_archived_group)
+      end
+
+      it 'returns group-level issues from non-archived groups' do
+        is_expected.to include(group_level_issue)
+      end
+
+      it 'returns group-level issues from archived groups' do
+        is_expected.to include(group_level_issue_in_archived_group)
+      end
+
+      context 'with use_existing_join parameter' do
+        it 'reuses the existing join when use_existing_join is true' do
+          relation = described_class.joins(:project)
+          result = relation.non_archived(use_existing_join: true)
+
+          expect(result).to include(issue_in_non_archived_project)
+          expect(result).not_to include(issue_in_archived_project)
+        end
+      end
+    end
+  end
+
   describe '#sort' do
     let(:project) { reusable_project }
 

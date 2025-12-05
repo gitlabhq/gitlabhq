@@ -31,7 +31,7 @@ RSpec.describe 'Two factor auths', feature_category: :system_access do
         click_button 'Copy codes'
         click_link 'Proceed'
 
-        expect(page).to have_text('You have set up 2FA for your account!')
+        expect(page).to have_text(_('2FA setup complete!'))
       end
 
       context 'when user authenticates with an external service' do
@@ -47,7 +47,7 @@ RSpec.describe 'Two factor auths', feature_category: :system_access do
           click_button 'Copy codes'
           click_link 'Proceed'
 
-          expect(page).to have_text('You have set up 2FA for your account!')
+          expect(page).to have_text(_('2FA setup complete!'))
         end
       end
 

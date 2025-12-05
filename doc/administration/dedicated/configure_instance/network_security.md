@@ -13,11 +13,10 @@ title: GitLab Dedicated network access and security
 
 {{< /details >}}
 
-## Bring your own domain (BYOD)
+## Custom domains
 
-By default, your GitLab Dedicated instance is accessible at a URL like `your-tenant.gitlab-dedicated.com`.
-With bring your own domain (BYOD), you can use your own custom domain name to access your GitLab Dedicated instance and its services.
-For example, you could access your instance at `gitlab.company.com` instead of `your-tenant.gitlab-dedicated.com`.
+You can configure a custom domain to access your GitLab Dedicated
+instance instead of the default `your-tenant.gitlab-dedicated.com`.
 
 When you add a custom domain:
 

@@ -49,7 +49,7 @@ After you sign in to Switchboard, follow these steps to create your instance:
 
 1. On the **Configuration** page, choose your environment access, location, and maintenance window settings:
 
-   - **Tenant name**: Enter a name for your tenant. This name is permanent unless you [bring your own domain](../configure_instance/network_security.md#bring-your-own-domain-byod).
+   - **Tenant name**: Enter a name for your tenant. This name is permanent unless you [configure a custom domain](../configure_instance/network_security.md#custom-domains).
 
    - **Tenant URL**: Your instance URL is automatically generated as `<tenant_name>.gitlab-dedicated.com`.
 
@@ -77,7 +77,7 @@ After you sign in to Switchboard, follow these steps to create your instance:
    - Security keys and AWS KMS keys (BYOK) configuration
    - AWS regions (primary, secondary, backup)
    - Total repository capacity (you can increase storage but cannot reduce it)
-   - Tenant name and URL (unless you [bring your own domain](../configure_instance/network_security.md#bring-your-own-domain-byod))
+   - Tenant name and URL (unless you [configure a custom domain](../configure_instance/network_security.md#custom-domains))
 
    {{< /alert >}}
 
@@ -108,7 +108,7 @@ Also plan ahead if you need the following GitLab Dedicated features:
 - [Inbound Private Link](../configure_instance/network_security.md#inbound-private-link)
 - [Outbound Private Link](../configure_instance/network_security.md#outbound-private-link)
 - [SAML SSO](../configure_instance/authentication/saml.md)
-- [Bring your own domain](../configure_instance/network_security.md#bring-your-own-domain-byod)
+- [Custom domains](../configure_instance/network_security.md#custom-domains)
 
 To view all available infrastructure configuration options, see [Configure your GitLab Dedicated instance](../configure_instance/_index.md).
 

@@ -143,6 +143,8 @@ module Ci
       inverse_of: :pipeline
     has_many :limited_failed_builds, ->(pipeline) { in_partition(pipeline).latest.failed.limit(COUNT_FAILED_JOBS_LIMIT) }, foreign_key: :commit_id, class_name: 'Ci::Build',
       inverse_of: :pipeline
+    has_many :limited_failed_jobs, ->(pipeline) { in_partition(pipeline).latest.failed.limit(COUNT_FAILED_JOBS_LIMIT) }, foreign_key: :commit_id, class_name: 'CommitStatus',
+      inverse_of: :pipeline
     has_many :retryable_builds, ->(pipeline) { in_partition(pipeline).latest.failed_or_canceled.includes(:project) }, foreign_key: :commit_id, class_name: 'Ci::Build', inverse_of: :pipeline
     has_many :cancelable_statuses, ->(pipeline) { in_partition(pipeline).cancelable }, foreign_key: :commit_id, class_name: 'CommitStatus',
       inverse_of: :pipeline
@@ -759,7 +761,11 @@ module Ci
     end
 
     def triggered_pipelines_with_preloads
-      triggered_pipelines.preload(:source_job)
+      triggered_pipelines.preload(
+        :source_job,
+        :retryable_builds,
+        project: [:route, { namespace: :route }]
+      )
     end
 
     def valid_commit_sha

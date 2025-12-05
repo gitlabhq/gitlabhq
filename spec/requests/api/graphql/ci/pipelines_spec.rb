@@ -561,7 +561,28 @@ RSpec.describe 'Query.project(fullPath).pipelines', feature_category: :continuou
               nodes {
                 downstream {
                   nodes {
+                    id
                     iid
+                    path
+                    cancelable
+                    retryable
+                    status: detailedStatus {
+                      id
+                      group
+                      label
+                      icon
+                      text
+                    }
+                    sourceJob {
+                      id
+                      name
+                      retried
+                    }
+                    project {
+                      id
+                      name
+                      fullPath
+                    }
                   }
                 }
               }
@@ -589,11 +610,13 @@ RSpec.describe 'Query.project(fullPath).pipelines', feature_category: :continuou
     end
 
     context 'when fetching the downstream pipelines from the pipeline' do
-      it 'avoids N+1 queries' do
+      it 'avoids N+1 queries', :use_sql_query_cache, :request_store do
         first_user = create(:user)
         second_user = create(:user)
 
-        control_count = ActiveRecord::QueryRecorder.new do
+        # warm up
+        post_graphql(query, current_user: first_user)
+        control_count = ActiveRecord::QueryRecorder.new(skip_cached: false) do
           post_graphql(query, current_user: first_user)
         end
 
@@ -607,9 +630,11 @@ RSpec.describe 'Query.project(fullPath).pipelines', feature_category: :continuou
         downsteam_pipeline_3b = create(:ci_pipeline, project: downstream_project, user: first_user)
         create(:ci_sources_pipeline, source_pipeline: pipeline_2, pipeline: downsteam_pipeline_3b)
 
+        # warm up
+        post_graphql(query, current_user: second_user)
         expect do
           post_graphql(query, current_user: second_user)
-        end.not_to exceed_query_limit(control_count)
+        end.to issue_same_number_of_queries_as(control_count)
       end
     end
   end

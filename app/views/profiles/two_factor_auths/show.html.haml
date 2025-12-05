@@ -5,13 +5,15 @@
 - troubleshooting_link = link_to _('Try the troubleshooting steps here.'), help_page_path('user/profile/account/two_factor_authentication_troubleshooting.md'), target: '_blank', rel: 'noopener noreferrer'
 
 - content_for :after_flash_content do
-  - if @error
-    .flash-container.flash-container-page.sticky
+  .flash-container.flash-container-page.sticky
+    - if @error
       = render Pajamas::AlertComponent.new(title: @error[:message],
         variant: :danger,
         dismissible: false) do |c|
         - c.with_body do
           = troubleshooting_link
+
+    = render 'profiles/accounts/two_factor_enabled_alert'
 
 - if Feature.enabled?(:passkeys, current_user)
   = render ::Layouts::SettingsSectionComponent.new(s_("ProfilesAuthentication|Passkeys sign-in")) do |c|

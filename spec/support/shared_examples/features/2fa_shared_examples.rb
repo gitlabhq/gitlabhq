@@ -33,7 +33,6 @@ RSpec.shared_examples 'hardware device for 2fa' do |device_type|
         device = register_device(device_type, password: user.password)
         expect(page).to have_content("Your #{device_type} device was registered")
         copy_recovery_codes
-        manage_two_factor_authentication
 
         expect(page).to have_content(device.name)
       end
@@ -41,25 +40,21 @@ RSpec.shared_examples 'hardware device for 2fa' do |device_type|
 
     describe 'when 2FA via OTP is enabled' do
       it 'allows registering a new device with a name' do
-        visit profile_account_path
-        manage_two_factor_authentication
+        visit profile_two_factor_auth_path
         expect(page).to have_content(_("You've already registered an OTP authenticator. To register a new OTP authenticator, delete the current one."))
         device = register_device(device_type, password: user.password)
         expect(page).to have_content("Your #{device_type} device was registered")
         copy_recovery_codes
-        manage_two_factor_authentication
 
         expect(page).to have_content(device.name)
       end
 
       it 'allows deleting a device' do
-        visit profile_account_path
-        manage_two_factor_authentication
+        visit profile_two_factor_auth_path
         expect(page).to have_content(_("You've already registered an OTP authenticator. To register a new OTP authenticator, delete the current one."))
 
         first_device = register_device(device_type, password: user.password)
         copy_recovery_codes
-        manage_two_factor_authentication
         second_device = register_device(device_type, name: 'My other device', password: user.password)
 
         expect(page).to have_content(first_device.name)
@@ -102,7 +97,7 @@ RSpec.shared_examples 'hardware device for 2fa' do |device_type|
 
     describe 'when a device is registered' do
       before do
-        manage_two_factor_authentication
+        visit profile_two_factor_auth_path
         register_device(device_type, password: user.password)
         gitlab_sign_out
         gitlab_sign_in(user)

@@ -131,22 +131,24 @@ In tenant accounts, GitLab Dedicated uses:
 
 You can access [application logs](../../administration/dedicated/monitor.md) for auditing and observability purposes. These logs provide insights into system activities and user actions, helping you monitor your instance and maintain compliance requirements.
 
-### Bring your own domain
+### Custom domains
 
-You can use your own custom domain to access your GitLab Dedicated instance
-instead of the default `tenant_name.gitlab-dedicated.com` URL.
-For example, you could use `gitlab.company.com` to access your instance.
+By default, your GitLab Dedicated instance is accessible at `tenant_name.gitlab-dedicated.com`.
+You can configure a custom domain to use your own domain name instead, such as `gitlab.company.com`.
 
-Use a custom domain when you need to:
+Use custom domains to:
 
-- Migrate from an existing GitLab Self-Managed instance without changing URLs.
-- Maintain consistent branding across your organization's tools.
+- Keep your existing URLs when migrating from GitLab Self-Managed.
+- Maintain your organization's domain across all tools.
 - Integrate with existing certificate management or domain policies.
 
-You can configure a custom domain for your main GitLab instance and for the bundled
-container registry and GitLab agent server for Kubernetes.
+You can configure custom domains for:
 
-For more information, see [bring your own domain (BYOD)](../../administration/dedicated/configure_instance/network_security.md#bring-your-own-domain-byod).
+- Your main GitLab instance
+- The container registry (for example, `registry.company.com`)
+- The GitLab agent server for Kubernetes (for example, `kas.company.com`)
+
+For more information, see [custom domains](../../administration/dedicated/configure_instance/network_security.md#custom-domains).
 
 {{< alert type="note" >}}
 

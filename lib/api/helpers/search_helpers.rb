@@ -23,7 +23,7 @@ module API
       end
 
       def self.search_param_keys
-        %i[scope search state confidential include_archived search_type page per_page order_by sort]
+        %i[scope search state confidential num_context_lines search_type page per_page order_by sort]
       end
 
       def self.gitlab_search_mcp_params

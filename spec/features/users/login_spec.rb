@@ -1168,8 +1168,8 @@ RSpec.describe 'Login', :with_current_organization, :clean_gitlab_redis_sessions
 
           otp_authenticator_registration_and_copy_codes(current_otp, user.password)
 
-          expect(page).to have_current_path(profile_account_path, ignore_query: true)
-          expect(page).to have_content('You have set up 2FA for your account! If you lose access to your 2FA device, you can use your recovery codes to access your account. Alternatively, if you upload an SSH key, you can use that key to generate additional recovery codes.')
+          expect(page).to have_current_path(profile_two_factor_auth_path, ignore_query: true)
+          expect(page).to have_content(_('2FA setup complete!'))
         end
       end
 

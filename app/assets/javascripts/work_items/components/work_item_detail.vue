@@ -1227,6 +1227,7 @@ export default {
                         :goal="workItem.webUrl"
                         :workflow-definition="duoWorkflowDefinition"
                         :agent-privileges="agentPrivileges"
+                        :work-item-id="workItem.iid"
                         size="medium"
                         >{{ __('Generate MR with Duo') }}</duo-workflow-action
                       >

@@ -343,7 +343,7 @@ describe('PipelineVariablesForm', () => {
       expect(startManualPollingSpy).toHaveBeenCalledTimes(2);
     });
 
-    it('preserves newly added pipeline variables with higher precedence', async () => {
+    it('preserves only newly added pipeline variables', async () => {
       await createComponent({
         props: { pipelineVariables },
         configVariables: configVariablesWithOptions,
@@ -351,8 +351,8 @@ describe('PipelineVariablesForm', () => {
 
       expect(findVariablesForm().props('initialVariables')).toMatchObject([
         { key: configVariablesWithOptions[0].key, value: configVariablesWithOptions[0].value },
-        // value overriden here
-        { key: configVariablesWithOptions[1].key, value: pipelineVariables[1].value },
+        { key: configVariablesWithOptions[1].key, value: configVariablesWithOptions[1].value },
+        // value overridden here
         { key: pipelineVariables[0].key, value: pipelineVariables[0].value },
       ]);
     });

@@ -28,6 +28,7 @@ module Tooling
         :group,
         :type,
         :default_enabled,
+        :observed,
         keyword_init: true
       ) do
         def self.build(path)

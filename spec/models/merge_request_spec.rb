@@ -75,6 +75,21 @@ RSpec.describe MergeRequest, factory_default: :keep, feature_category: :code_rev
         end
       end
     end
+
+    describe '#merge_request_diff' do
+      let!(:merge_request) { create(:merge_request) }
+
+      context 'when a merge_head_diff was previously loaded' do
+        before do
+          merge_request.create_merge_head_diff
+          merge_request.merge_head_diff.head_commit
+        end
+
+        it 'does not return a merge_head_diff' do
+          expect(merge_request.merge_request_diff.diff_type).to eq('regular')
+        end
+      end
+    end
   end
 
   describe '.preload_latest_diff_commit' do

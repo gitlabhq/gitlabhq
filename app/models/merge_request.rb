@@ -81,8 +81,10 @@ class MergeRequest < ApplicationRecord
 
   has_one :merge_request_diff,
     -> { regular.order('merge_request_diffs.id DESC') }, inverse_of: :merge_request
+  # Enabling inverse relationship causes previously cached merge_head_diff to be returned as merge_request_diff
+  # MR: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/214072
   has_one :merge_head_diff,
-    -> { merge_head }, inverse_of: :merge_request, class_name: 'MergeRequestDiff'
+    -> { merge_head }, inverse_of: false, class_name: 'MergeRequestDiff'
   has_one :cleanup_schedule, inverse_of: :merge_request
   has_one :predictions, inverse_of: :merge_request
   delegate :suggested_reviewers, to: :predictions
@@ -360,7 +362,7 @@ class MergeRequest < ApplicationRecord
     includes(:target_project)
   end
   scope :by_commit_sha, ->(project, sha) do
-    if Feature.enabled?(:commit_sha_scope_logger, type: :ops) # rubocop:disable Gitlab/FeatureFlagWithoutActor -- pre-existing ff, ops flag
+    if Feature.enabled?(:commit_sha_scope_logger, type: :ops)
       Gitlab::AppLogger.info(
         event: 'merge_request_by_commit_sha_call',
         message: "MergeRequest.by_commit_sha called via #{caller_locations.reject { |line| line.path.include?('/gems/') }.first}"
@@ -385,7 +387,7 @@ class MergeRequest < ApplicationRecord
     joins(:generated_ref_commits).where(p_generated_ref_commits: { commit_sha: sha })
   end
   scope :by_related_commit_sha, ->(project, sha) do
-    if Feature.enabled?(:commit_sha_scope_logger, type: :ops) # rubocop:disable Gitlab/FeatureFlagWithoutActor -- pre-existing ff, ops flag
+    if Feature.enabled?(:commit_sha_scope_logger, type: :ops)
       Gitlab::AppLogger.info(
         event: 'merge_request_by_related_commit_sha_call',
         message: "MergeRequest.by_related_commit_sha called via #{caller_locations.reject { |line| line.path.include?('/gems/') }.first}"
@@ -428,10 +430,12 @@ class MergeRequest < ApplicationRecord
   scope :references_project, -> { references(:target_project) }
   scope :with_api_entity_associations, -> {
     preload_routables.preload(
-      :assignees, :author, :unresolved_notes, :labels, :milestone, :timelogs, :reviewers, :merge_schedule, :merge_user,
-      latest_merge_request_diff: [:merge_request_diff_commits], target_project: [:project_feature, :project_setting,
-        { namespace: :namespace_settings_with_ancestors_inherited_settings }],
-      metrics: [:latest_closed_by, :merged_by])
+      :assignees, :author, :unresolved_notes, :labels, :milestone,
+      :timelogs, :latest_merge_request_diff, :reviewers,
+      :merge_schedule, :merge_user,
+      target_project: [:project_feature, :project_setting, { namespace: :namespace_settings_with_ancestors_inherited_settings }],
+      metrics: [:latest_closed_by, :merged_by]
+    )
   }
 
   scope :with_csv_entity_associations, -> { preload(:assignees, :approved_by_users, :author, :milestone, metrics: [:merged_by]) }
@@ -872,7 +876,7 @@ class MergeRequest < ApplicationRecord
   end
 
   def self.use_locked_set?
-    Feature.enabled?(:unstick_locked_merge_requests_redis) # rubocop:disable Gitlab/FeatureFlagWithoutActor -- pre-existing feature flag
+    Feature.enabled?(:unstick_locked_merge_requests_redis)
   end
 
   def recent_commits(limit: MergeRequestDiff::COMMITS_SAFE_SIZE, load_from_gitaly: false, page: nil, preload_metadata: false)

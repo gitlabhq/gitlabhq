@@ -263,7 +263,7 @@ class Group < Namespace
     where('id IN (SELECT id FROM accessible_sub_namespace_ids)')
   end
 
-  scope :by_id, ->(groups) { where(id: groups) }
+  scope :by_id, ->(groups) { id_in(groups) }
 
   scope :by_ids_or_paths, ->(ids, paths) do
     return by_id(ids) unless paths.present?

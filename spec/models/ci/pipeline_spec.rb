@@ -249,6 +249,55 @@ RSpec.describe Ci::Pipeline, :mailer, factory_default: :keep, feature_category: 
         expect(pipeline.limited_failed_builds).not_to include(retried_build)
       end
     end
+
+    describe '#limited_failed_jobs' do
+      let_it_be(:pipeline) { create(:ci_pipeline) }
+
+      before do
+        stub_const("#{described_class}::COUNT_FAILED_JOBS_LIMIT", 3)
+      end
+
+      it 'returns the latest failed jobs up to the limit for the pipeline' do
+        over_limit = described_class::COUNT_FAILED_JOBS_LIMIT + 1
+        create_list(:ci_build, over_limit, :failed, pipeline: pipeline)
+        create_list(:ci_build, over_limit, :success, pipeline: pipeline)
+
+        expect(pipeline.limited_failed_jobs.count).to eq(described_class::COUNT_FAILED_JOBS_LIMIT)
+        expect(pipeline.limited_failed_jobs).to all(be_failed)
+        expect(pipeline.limited_failed_jobs).to all(have_attributes(pipeline: pipeline))
+      end
+
+      it 'includes all job types (builds, bridges, and generic statuses)' do
+        create(:ci_build, :failed, pipeline: pipeline)
+        create(:ci_bridge, :failed, pipeline: pipeline)
+        create(:generic_commit_status, :failed, pipeline: pipeline)
+
+        expect(pipeline.limited_failed_jobs.count).to eq(3)
+        expect(pipeline.limited_failed_jobs.map(&:class)).to contain_exactly(
+          Ci::Build, Ci::Bridge, GenericCommitStatus
+        )
+      end
+
+      it 'does not include retried jobs' do
+        retried_build = create(:ci_build, :failed, :retried, pipeline: pipeline)
+        latest_build = create(:ci_build, :failed, pipeline: pipeline)
+        retried_bridge = create(:ci_bridge, :failed, :retried, pipeline: pipeline)
+        latest_bridge = create(:ci_bridge, :failed, pipeline: pipeline)
+
+        expect(pipeline.limited_failed_jobs).to include(latest_build, latest_bridge)
+        expect(pipeline.limited_failed_jobs).not_to include(retried_build, retried_bridge)
+      end
+
+      it 'does not include successful jobs' do
+        create(:ci_build, :failed, pipeline: pipeline)
+        create(:ci_build, :success, pipeline: pipeline)
+        create(:ci_bridge, :failed, pipeline: pipeline)
+        create(:ci_bridge, :success, pipeline: pipeline)
+
+        expect(pipeline.limited_failed_jobs.count).to eq(2)
+        expect(pipeline.limited_failed_jobs).to all(be_failed)
+      end
+    end
   end
 
   describe 'state machine transitions' do

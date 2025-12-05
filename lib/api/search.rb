@@ -95,9 +95,8 @@ module API
 
         Gitlab::InternalEvents.track_event('perform_search', category: 'API::Search', user: current_user)
 
-        preload_search_associations
-
         paginate(@results)
+
       ensure
         # If we raise an error somewhere in the @search_duration_s benchmark block, we will end up here
         # with a 200 status code, but an empty @search_duration_s.
@@ -154,27 +153,8 @@ module API
         end
       end
 
-      def preload_search_associations
-        return unless entity.respond_to?(:execute_batch_counting)
-
-        entity.execute_batch_counting(@results)
-      end
-
-      params :search_params_common do
-        optional :state, type: String, desc: 'Filter results by state', values: Helpers::SearchHelpers.search_states
-        optional :confidential, type: Boolean, desc: 'Filter results by confidentiality'
-      end
-
-      params :search_params_archived_filter do
-        optional :include_archived, type: Boolean, default: false, desc: 'Includes archived projects in the search.'
-      end
-
-      params :search_params_common_ee do
-        # Overridden in EE
-      end
-
-      params :search_params_forks_filter_ee do
-        # Overridden in EE
+      params :search_params_ee do
+        # Overriden in EE
       end
     end
 
@@ -187,16 +167,15 @@ module API
         detail 'This feature was introduced in GitLab 10.5.'
         tags ['search']
       end
-
       params do
         requires :search, type: String, desc: 'The expression it should be searched for'
-        requires :scope, type: String, desc: 'The scope of the search',
+        requires :scope,
+          type: String,
+          desc: 'The scope of the search',
           values: Helpers::SearchHelpers.global_search_scopes
-
-        use :search_params_common
-        use :search_params_archived_filter
-        use :search_params_common_ee
-        use :search_params_forks_filter_ee
+        optional :state, type: String, desc: 'Filter results by state', values: Helpers::SearchHelpers.search_states
+        optional :confidential, type: Boolean, desc: 'Filter results by confidentiality'
+        use :search_params_ee
         use :pagination
       end
       route_setting :mcp, tool_name: :gitlab_search_in_instance,
@@ -215,17 +194,16 @@ module API
         detail 'This feature was introduced in GitLab 10.5.'
         tags %w[search groups]
       end
-
       params do
         requires :id, types: [String, Integer], desc: 'The ID or URL-encoded path of the group'
         requires :search, type: String, desc: 'The expression it should be searched for'
-        requires :scope, type: String, desc: 'The scope of the search',
+        requires :scope,
+          type: String,
+          desc: 'The scope of the search',
           values: Helpers::SearchHelpers.group_search_scopes
-
-        use :search_params_common
-        use :search_params_archived_filter
-        use :search_params_common_ee
-        use :search_params_forks_filter_ee
+        optional :state, type: String, desc: 'Filter results by state', values: Helpers::SearchHelpers.search_states
+        optional :confidential, type: Boolean, desc: 'Filter results by confidentiality'
+        use :search_params_ee
         use :pagination
       end
       route_setting :mcp, tool_name: :gitlab_search_in_group,
@@ -243,18 +221,18 @@ module API
         detail 'This feature was introduced in GitLab 10.5.'
         tags %w[search projects]
       end
-
       params do
         requires :id, types: [String, Integer], desc: 'The ID or URL-encoded path of the project'
         requires :search, type: String, desc: 'The expression it should be searched for'
-        requires :scope, type: String, desc: 'The scope of the search',
+        requires :scope,
+          type: String,
+          desc: 'The scope of the search',
           values: Helpers::SearchHelpers.project_search_scopes
-
         optional :ref, type: String,
           desc: 'The name of a repository branch or tag. If not given, the default branch is used'
-
-        use :search_params_common
-        use :search_params_common_ee
+        optional :state, type: String, desc: 'Filter results by state', values: Helpers::SearchHelpers.search_states
+        optional :confidential, type: Boolean, desc: 'Filter results by confidentiality'
+        use :search_params_ee
         use :pagination
       end
       route_setting :mcp, tool_name: :gitlab_search_in_project,

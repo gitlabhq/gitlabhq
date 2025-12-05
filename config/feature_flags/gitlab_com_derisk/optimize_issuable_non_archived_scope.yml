@@ -1,0 +1,10 @@
+---
+name: optimize_issuable_non_archived_scope
+description: Optimize the non_archived scope for issuables by using merge instead of a subquery to prevent database timeouts
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/214838
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/work_items/582682
+milestone: '18.7'
+observed: true
+group: group::organizations
+type: gitlab_com_derisk
+default_enabled: false

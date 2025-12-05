@@ -528,12 +528,13 @@ class IssuableFinder
 
   def by_non_archived(items)
     if params[:non_archived].present?
-      if use_namespace_filtering?
+      if Feature.enabled?(:optimize_issuable_non_archived_scope, Feature.current_request, type: :gitlab_com_derisk) ||
+          !use_namespace_filtering?
+        items.non_archived
+      else
         # If use_join_strategy_for_project? is true, items has been joined onto project already, and we don't need to
         # perform the join again
         items.non_archived(use_existing_join: use_join_strategy_for_project?)
-      else
-        items.non_archived
       end
     else
       items

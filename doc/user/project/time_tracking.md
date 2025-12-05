@@ -149,15 +149,9 @@ If you type a future date, no time is logged.
 {{< history >}}
 
 - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/16543) in GitLab 18.3 with a flag named `commit_time_tracking`. Disabled by default.
+- [Generally available](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/215244/) in GitLab 18.7. Feature flag `commit_time_tracking` removed.
 
 {{< /history >}}
-
-{{< alert type="flag" >}}
-
-The availability of this feature is controlled by a feature flag.
-For more information, see the history.
-
-{{< /alert >}}
 
 You can record time spent on issues directly in commit messages. This approach is useful when you want to track time as you work, without updating the issue separately.
 

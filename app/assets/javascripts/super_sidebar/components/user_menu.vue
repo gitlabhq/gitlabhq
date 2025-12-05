@@ -318,7 +318,7 @@ export default {
       :title="$options.i18n.stopImpersonating"
       :aria-label="$options.i18n.stopImpersonating"
       icon="incognito"
-      class="-gl-mr-4 !gl-rounded-l-[1rem] !gl-rounded-r-none !gl-pl-3 !gl-pr-5 !gl-text-neutral-0 dark:!gl-text-neutral-800"
+      class="-gl-mr-7 !gl-rounded-full !gl-bg-neutral-800 !gl-pl-3 !gl-pr-8 !gl-text-neutral-0 dark:!gl-bg-alpha-light-24"
       category="tertiary"
       data-method="delete"
       data-testid="stop-impersonation-btn"

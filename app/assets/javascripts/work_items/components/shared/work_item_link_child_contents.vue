@@ -60,6 +60,9 @@ export default {
       from: INJECTION_LINK_CHILD_PREVENT_ROUTER_NAVIGATION,
       default: false,
     },
+    fullPath: {
+      default: '',
+    },
   },
   props: {
     childItem: {
@@ -181,7 +184,7 @@ export default {
       const shouldDefaultNavigate =
         this.preventRouterNav ||
         !canRouterNav({
-          fullPath: this.workItemFullPath,
+          fullPath: this.fullPath,
           webUrl: workItem.webUrl,
           isGroup: this.isGroup,
           issueAsWorkItem: !this.isGroup,
