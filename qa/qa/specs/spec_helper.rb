@@ -60,6 +60,7 @@ RSpec.configure do |config|
     TestMetricsHelper.configure_exporter!(config, QA::Runtime::Env.run_type) do |exporter_config|
       exporter_config.test_retried_proc = ->(_example) { QA::Runtime::Env.rspec_retried? }
       exporter_config.logger = QA::Runtime::Logger.logger
+      exporter_config.spec_file_path_prefix = "qa/"
     end
   end
 
