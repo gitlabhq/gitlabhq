@@ -33,27 +33,47 @@ database credentials, private keys, or similar.
 
 Unlike CI/CD variables, which are always available to jobs by default, secrets must be explicitly requested by a job.
 
-Use the GitLab Secrets Manager to securely store and manage your project's secrets and credentials.
+Use the GitLab Secrets Manager to securely store and manage your group or project's secrets and credentials.
 
 ## Enable GitLab Secrets Manager
+
+### For a project
 
 Prerequisites:
 
 - You must have the Owner role for the project.
 
-To enable GitLab Secrets Manager:
+To enable GitLab Secrets Manager for a project:
 
 1. On the left sidebar, select **Search or go to** and find your project. If you've [turned on the new navigation](../../../user/interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
 1. Select **Settings** > **General**.
 1. Expand **Visibility, project features, permissions**.
 1. Turn on the **Secrets manager** toggle and wait for the secrets manager to be provisioned.
 
+Secrets defined for a project can only be accessed by pipelines from the same project.
+
+### For a group
+
+Prerequisites:
+
+- You must have the Owner role for the group.
+
+To enable GitLab Secrets Manager for a group:
+
+1. On the left sidebar, select **Search or go to** and find your group. If you've [turned on the new navigation](../../../user/interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
+1. Select **Settings** > **General**.
+1. Expand **Permissions and group features**.
+1. Turn on the **Secrets manager** toggle and wait for the secrets manager to be provisioned.
+
+Secrets defined for a group can be accessed by pipelines from all projects in the group
+and its subgroups.
+
 ## Define a secret
 
 You can add secrets to the secrets manager so that it can be used for secure CI/CD pipelines
 and workflows.
 
-1. On the left sidebar, select **Search or go to** and find your project. If you've [turned on the new navigation](../../../user/interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
+1. On the left sidebar, select **Search or go to** and find your project or group. If you've [turned on the new navigation](../../../user/interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
 1. Select **Secure** > **Secrets manager**.
 1. Select **Add secret** and fill in the details:
    - **Name**: Must be unique in the project.

@@ -8,13 +8,13 @@ title: GitLabをOpenID Connect Identity Providerとして使用する
 {{< details >}}
 
 - プラン: Free、Premium、Ultimate
-- 提供形態: GitLab.com、GitLab Self-Managed
+- 提供形態: GitLab.com、GitLab Self-Managed、GitLab Dedicated
 
 {{< /details >}}
 
 GitLabを[OpenID Connect](https://openid.net/developers/how-connect-works/)（OIDC）Identity Providerとして使用し、他のサービスにアクセスすることができます。OIDCは、OpenID 2.0と同様のタスクを数多く実行するアイデンティティレイヤーですが、APIフレンドリーで、ネイティブアプリケーションやモバイルアプリケーションでも使用できます。
 
-クライアントはOIDCを使用して、次のことができます。
+クライアントはOIDCを使用して、次のことができます:
 
 - GitLabによって実行された認証に基づいて、エンドユーザーのアイデンティティを検証する。
 - 相互運用可能でRESTに近い方法により、エンドユーザーの基本的なプロファイル情報を取得する。
@@ -29,16 +29,16 @@ OAuthアプリケーションでOIDCを有効にするには、アプリケー�
 
 ## 設定の検出 {#settings-discovery}
 
-クライアントがディスカバリURLからOIDC設定をインポートできる場合、GitLabはその情報にアクセスするためのエンドポイントを提供します。
+クライアントがディスカバリURLからOIDC設定をインポートできる場合、GitLabはその情報にアクセスするためのエンドポイントを提供します:
 
 - GitLab.comの場合は、`https://gitlab.com/.well-known/openid-configuration`を使用します。
 - GitLab Self-Managedの場合は、`https://<your-gitlab-instance>/.well-known/openid-configuration`を使用します。
 
 ## 共有情報 {#shared-information}
 
-クライアントと共有するユーザー情報は、次のとおりです。
+クライアントと共有するユーザー情報は、次のとおりです:
 
-| クレーム                | タイプ      | 説明 | IDトークンに含まれる | `userinfo`エンドポイントに含まれる |
+| クレーム                | 型      | 説明 | IDトークンに含まれる | `userinfo`エンドポイントに含まれる |
 |:---------------------|:----------|:------------|:---------------------|:------------------------------|
 | `sub`                | `string`  | ユーザーのID | {{< icon name="check-circle" >}}はい | {{< icon name="check-circle" >}}はい |
 | `auth_time`          | `integer` | ユーザーの最終認証のタイムスタンプ | {{< icon name="check-circle" >}}はい | {{< icon name="dotted-circle" >}}いいえ |

@@ -60,5 +60,6 @@
     = render_if_exists 'groups/settings/disable_invite_members', f: f, group: @group
     = render_if_exists 'groups/settings/pages_access_control', f: f, group: @group
     = render_if_exists 'groups/settings/crm', f: f, group: @group
+    = render_if_exists 'groups/settings/secret_manager', f: f, group: @group
 
   = f.submit _('Save changes'), pajamas_button: true, class: 'gl-mt-3', data: { testid: 'save-permissions-changes-button' }

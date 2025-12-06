@@ -54,13 +54,7 @@ module Packages
       end
 
       def dependencies_for_create_dependency_service
-        names_and_versions = @dependencies
-
-        if ::Feature.disabled?(:persist_nuget_packages_empty_target_frameworks, @package.project)
-          names_and_versions.reject! { |dep| dep[:name].start_with?(::Packages::Nuget::EMPTY_DEPENDENCY_PREFIX) }
-        end
-
-        names_and_versions = names_and_versions.to_h do |dependency|
+        names_and_versions = @dependencies.to_h do |dependency|
           [dependency[:name], version_or_empty_string(dependency[:version])]
         end
 

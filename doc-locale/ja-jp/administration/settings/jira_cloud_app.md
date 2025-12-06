@@ -20,17 +20,19 @@ title: GitLab for Jira Cloudアプリの管理
 
 [GitLab for Jira Cloud](https://marketplace.atlassian.com/apps/1221011/gitlab-com-for-jira-cloud?tab=overview&hosting=cloud)アプリを使用すると、GitLabとJira Cloudを接続して、開発情報をリアルタイムで同期できます。この情報は、[Jira開発パネル](../../integration/jira/development_panel.md)で確認できます。
 
-GitLab Self-ManagedインスタンスでGitLab for Jira Cloudアプリをセットアップするには、次のいずれかを実行します。
+GitLab Self-ManagedインスタンスでGitLab for Jira Cloudアプリをセットアップするには、次のいずれかを実行します:
 
 - [Atlassian MarketplaceからGitLab for Jira Cloudアプリをインストールする](#install-the-gitlab-for-jira-cloud-app-from-the-atlassian-marketplace)（GitLab 15.7以降）。
 - [GitLab for Jira Cloudアプリを手動でインストールする](#install-the-gitlab-for-jira-cloud-app-manually)。
 
-<i class="fa fa-youtube-play youtube" aria-hidden="true"></i>概要については、以下を参照してください。
+<i class="fa fa-youtube-play youtube" aria-hidden="true"></i>概要については、以下を参照してください:
 
-- [Installing the GitLab for Jira Cloud app from the Atlassian Marketplace for a GitLab Self-Managed instance](https://youtu.be/RnDw4PzmdW8?list=PL05JrBw4t0Koazgli_PmMQCER2pVH7vUT)（GitLab Self-ManagedインスタンスにAtlassian MarketplaceからGitLab for Jira Cloudアプリをインストールする）
+- [Installing the GitLab for Jira Cloud app from the Atlassian Marketplace for a GitLab Self-Managed instance（GitLab Self-ManagedインスタンスにAtlassian MarketplaceからGitLab for Jira Cloudアプリをインストールする）](https://youtu.be/RnDw4PzmdW8?list=PL05JrBw4t0Koazgli_PmMQCER2pVH7vUT)
   <!-- Video published on 2024-10-30 -->
-- [Installing the GitLab for Jira Cloud app manually for a GitLab Self-Managed instance](https://youtu.be/fs02xS8BElA?list=PL05JrBw4t0Koazgli_PmMQCER2pVH7vUT)（GitLab Self-ManagedインスタンスにGitLab for Jira Cloudアプリを手動でインストールする）
+- [Installing the GitLab for Jira Cloud app manually for a GitLab Self-Managed instance（GitLab Self-ManagedインスタンスにGitLab for Jira Cloudアプリを手動でインストールする）](https://youtu.be/fs02xS8BElA?list=PL05JrBw4t0Koazgli_PmMQCER2pVH7vUT)
   <!-- Video published on 2024-10-30 -->
+
+上記のビデオは、以前の[Universal Plugin Managerインターフェース](https://community.atlassian.com/forums/Community-Announcements-articles/Cloud-admins-we-re-making-app-management-easier/ba-p/2806285)を示していますが、これは新しいJira Cloudインスタンスでは利用できない可能性があります。以下の手順では、新旧両方のアプリ管理インターフェースについて説明します。
 
 [Atlassian MarketplaceからGitLab for Jira Cloudアプリをインストール](#install-the-gitlab-for-jira-cloud-app-from-the-atlassian-marketplace)すると、Atlassianが開発および管理している[プロジェクトツールチェーン](https://support.atlassian.com/jira-software-cloud/docs/what-is-the-connections-feature/)を使用して、[GitLabリポジトリをJiraプロジェクトにリンク](https://support.atlassian.com/jira-software-cloud/docs/link-repositories-to-a-project/#Link-repositories-using-the-toolchain-feature)できます。このプロジェクトツールチェーンは、GitLabとJira Cloud間の開発情報の同期方法には影響しません。
 
@@ -40,12 +42,12 @@ Jira Data CenterまたはJira Serverには、Atlassianが開発および管理�
 
 GitLab for Jira Cloudアプリのインストール方法が[Atlassian Marketplace経由](#install-the-gitlab-for-jira-cloud-app-from-the-atlassian-marketplace)か[手動](#install-the-gitlab-for-jira-cloud-app-manually)かにかかわらず、OAuthアプリケーションを作成する必要があります。
 
-GitLab Self-ManagedインスタンスでOAuthアプリケーションを作成するには、次の手順に従います。
+GitLab Self-ManagedインスタンスでOAuthアプリケーションを作成するには、次の手順に従います:
 
-1. 左側のサイドバーの下部で、**管理者**を選択します。
+1. 左側のサイドバーの下部で、**管理者**を選択します。[新しいナビゲーションをオン](../../user/interface_redesign.md#turn-new-navigation-on-or-off)にしている場合は、右上隅で自分のアバターを選択し、**管理者**を選択します。
 1. **アプリケーション**を選択します。
-1. **新しいアプリケーション**を選択します。
-1. **リダイレクトURI**を次のように設定します。
+1. **New application**（新しいアプリケーション）を選択します。
+1. **Redirect URI**（リダイレクトURI）を次のように設定します:
    - 公式のAtlassian Marketplaceリスティングからアプリをインストールする場合: `https://gitlab.com/-/jira_connect/oauth_callbacks`。
    - アプリを手動でインストールする場合（`<instance_url>`はインスタンスのURLに置き換えます）: `<instance_url>/-/jira_connect/oauth_callbacks`。
 1. **信用済み**チェックボックスと**非公開**チェックボックスをオフにします。
@@ -59,7 +61,7 @@ GitLab Self-ManagedインスタンスでOAuthアプリケーションを作成�
 1. **スコープ**で、`api`チェックボックスのみをオンにします。
 1. **アプリケーションを保存**を選択します。
 1. **アプリケーションID**の値をコピーします。
-1. 左側のサイドバーで、**設定 > 一般**を選択します。
+1. 左側のサイドバーで、**設定** > **一般**を選択します。
 1. **GitLab for Jira App**を展開します。
 1. **アプリケーションID**の値を**Jira接続アプリケーションID**に貼り付けます。
 1. **変更を保存**を選択します。
@@ -72,12 +74,12 @@ GitLab Self-ManagedインスタンスでOAuthアプリケーションを作成�
 
 {{< /history >}}
 
-[Atlassian組織](https://admin.atlassian.com)で、GitLab for Jira Cloudアプリのセットアップに使用するJiraユーザーが、次のいずれかのグループに属していることを確認する必要があります。
+[Atlassian組織](https://admin.atlassian.com)で、GitLab for Jira Cloudアプリのセットアップに使用するJiraユーザーが、次のいずれかのグループに属していることを確認する必要があります:
 
 - 組織管理者（`org-admins`）グループ: 最近作成されたAtlassian組織は[一元化されたユーザー管理](https://support.atlassian.com/user-management/docs/give-users-admin-permissions/#Centralized-user-management-content)を使用しており、これには`org-admins`グループが含まれています。既存のAtlassian組織も、この一元化されたユーザー管理に移行中です。`org-admins`グループが利用可能な場合は、このグループを使用して、GitLab for Jira Cloudアプリを管理できるJiraユーザーを指定する必要があります。または、`site-admins`グループを使用することもできます。
 - サイト管理者（`site-admins`）グループ: `site-admins`グループは、[元のユーザー管理](https://support.atlassian.com/user-management/docs/give-users-admin-permissions/#Original-user-management-content)で使用されていました。
 
-必要に応じて、次の操作を行います。
+必要に応じて、次の操作を行います:
 
 1. [必要なグループを作成](https://support.atlassian.com/user-management/docs/create-groups/)します。
 1. [グループを編集](https://support.atlassian.com/user-management/docs/edit-a-group/)して、Jiraユーザーをグループのメンバーとして追加します。
@@ -93,13 +95,13 @@ GitLab Self-ManagedインスタンスでOAuthアプリケーションを作成�
 
 Atlassian Marketplaceにある公式GitLab for Jira Cloudアプリは、GitLab Self-Managedインスタンスで使用できます。
 
-この方法の概要は次のとおりです。
+この方法の概要は次のとおりです:
 
 - GitLab.comが、Jira Cloudから送信される[インストールとアンインストールのライフサイクルイベントを処理](#gitlabcom-handling-of-app-lifecycle-events)し、それをGitLabインスタンスに転送します。GitLab Self-Managedインスタンスからのすべてのデータは、引き続きJira Cloudに直接送信されます。
 - GitLab.comは、[ブランチ作成リンクをインスタンスにリダイレクトすることで処理](#gitlabcom-handling-of-branch-creation)します。
 - GitLabのバージョンが17.2より前の場合、GitLab Self-ManagedインスタンスでJira Cloudからブランチを作成することはできません。詳細については、[イシュー391432](https://gitlab.com/gitlab-org/gitlab/-/issues/391432)を参照してください。
 
-または、次のような場合は、[GitLab for Jira Cloudアプリを手動でインストール](#install-the-gitlab-for-jira-cloud-app-manually)することもできます。
+または、次のような場合は、[GitLab for Jira Cloudアプリを手動でインストール](#install-the-gitlab-for-jira-cloud-app-manually)することもできます:
 
 - インスタンスが[前提要件](#prerequisites)を満たしていない。
 - 公式のAtlassian Marketplaceリスティングからインストールしたくない。
@@ -112,7 +114,7 @@ Atlassian Marketplaceにある公式GitLab for Jira Cloudアプリは、GitLab S
 - インスタンスは、GitLabバージョン15.7以降である必要があります。
 - [OAuth認証](#set-up-oauth-authentication)をセットアップする必要があります。
 - GitLabインスタンスはHTTPSを使用する必要があります。さらに、GitLabの証明書が公的に信頼されているか、完全なチェーン証明書を含んでいる必要があります。
-- ネットワーク設定では、以下を許可する必要があります。
+- ネットワーク設定では、以下を許可する必要があります:
   - GitLab Self-ManagedインスタンスからJira Cloudへの送信接続（[AtlassianのIPアドレス](https://support.atlassian.com/organization-administration/docs/ip-addresses-and-domains-for-atlassian-cloud-products/#Outgoing-Connections)）
   - GitLab Self-ManagedインスタンスとGitLab.com間の受信および送信接続（[GitLab.comのIPアドレス](../../user/gitlab_com/_index.md#ip-range)）
   - ファイアウォールの内側にあるインスタンスの場合:
@@ -125,10 +127,10 @@ Atlassian Marketplaceにある公式GitLab for Jira Cloudアプリは、GitLab S
 
 [前提要件](#prerequisites)
 
-GitLab 15.7以降でAtlassian MarketplaceインストールのためにGitLab Self-Managedインスタンスをセットアップするには、次の手順に従います。
+GitLab 15.7以降でAtlassian MarketplaceインストールのためにGitLab Self-Managedインスタンスをセットアップするには、次の手順に従います:
 
-1. 左側のサイドバーの下部で、**管理者**を選択します。
-1. **設定 > 一般**を選択します。
+1. 左側のサイドバーの下部で、**管理者**を選択します。[新しいナビゲーションをオン](../../user/interface_redesign.md#turn-new-navigation-on-or-off)にしている場合は、右上隅で自分のアバターを選択し、**管理者**を選択します。
+1. **設定** > **一般**を選択します。
 1. **GitLab for Jira App**を展開します。
 1. **Jira ConnectのプロキシURL**に`https://gitlab.com`と入力して、Atlassian Marketplaceからアプリをインストールします。
 1. **変更を保存**を選択します。
@@ -137,7 +139,7 @@ GitLab 15.7以降でAtlassian MarketplaceインストールのためにGitLab Se
 
 [前提要件](#prerequisites)
 
-GitLab Self-ManagedインスタンスをGitLab for Jira Cloudアプリにリンクするには、次の手順に従います。
+GitLab Self-ManagedインスタンスをGitLab for Jira Cloudアプリにリンクするには、次の手順に従います:
 
 1. [GitLab for Jira Cloudアプリ](https://marketplace.atlassian.com/apps/1221011/gitlab-com-for-jira-cloud?tab=overview&hosting=cloud)をインストールします。
 1. [GitLab for Jira Cloudアプリを設定](../../integration/jira/connect-app.md#configure-the-gitlab-for-jira-cloud-app)します。
@@ -145,7 +147,7 @@ GitLab Self-ManagedインスタンスをGitLab for Jira Cloudアプリにリン�
 
 #### Jira Cloudがリンクされているかを確認する {#check-if-jira-cloud-is-linked}
 
-[Railsコンソール](../operations/rails_console.md#starting-a-rails-console-session)を使用して、Jira Cloudが以下にリンクされているかを確認できます。
+[Railsコンソール](../operations/rails_console.md#starting-a-rails-console-session)を使用して、Jira Cloudが以下にリンクされているかを確認できます:
 
 - 特定のグループ:
 
@@ -178,7 +180,7 @@ GitLab 17.5以前では、GitLab for Jira Cloudアプリを手動でインスト
 
 各Jira Cloudアプリは、1つの場所からインストールする必要があります。Jiraは、指定された場所から[マニフェストファイル](https://developer.atlassian.com/cloud/jira/platform/connect-app-descriptor/)をフェッチします。マニフェストファイルは、アプリに関する情報をシステムに提供します。
 
-GitLab Self-ManagedインスタンスをJira Cloudでサポートするには、次のいずれかを実行します。
+GitLab Self-ManagedインスタンスをJira Cloudでサポートするには、次のいずれかを実行します:
 
 - [アプリを開発モードでインストール](#install-the-app-in-development-mode)する。
 - [Atlassian Marketplaceリスティングを作成](#create-an-atlassian-marketplace-listing)する。
@@ -187,7 +189,7 @@ GitLab Self-ManagedインスタンスをJira Cloudでサポートするには、
 
 - インスタンスを公開している必要があります。
 - [OAuth認証](#set-up-oauth-authentication)をセットアップする必要があります。
-- ネットワーク設定では、以下を許可する必要があります。
+- ネットワーク設定では、以下を許可する必要があります:
   - GitLab Self-ManagedインスタンスとJira Cloud間の受信および送信接続（[AtlassianのIPアドレス](https://support.atlassian.com/organization-administration/docs/ip-addresses-and-domains-for-atlassian-cloud-products/#Outgoing-Connections)）。
   - ファイアウォールの内側にあるインスタンスの場合:
     1. GitLab Self-Managedインスタンスの前面に、インターネットに接続された[リバースプロキシ](#using-a-reverse-proxy)をセットアップします。
@@ -199,10 +201,10 @@ GitLab Self-ManagedインスタンスをJira Cloudでサポートするには、
 
 [前提要件](#prerequisites-1)
 
-GitLab 15.7以降で手動インストールのためにGitLab Self-Managedインスタンスをセットアップするには、次の手順に従います。
+GitLab 15.7以降で手動インストールのためにGitLab Self-Managedインスタンスをセットアップするには、次の手順に従います:
 
-1. 左側のサイドバーの下部で、**管理者**を選択します。
-1. **設定 > 一般**を選択します。
+1. 左側のサイドバーの下部で、**管理者**を選択します。[新しいナビゲーションをオン](../../user/interface_redesign.md#turn-new-navigation-on-or-off)にしている場合は、右上隅で自分のアバターを選択し、**管理者**を選択します。
+1. **設定** > **一般**を選択します。
 1. **GitLab for Jira App**を展開します。
 1. アプリを手動でインストールするには、**Jira ConnectのプロキシURL**を空白のままにします。
 1. **変更を保存**を選択します。
@@ -211,22 +213,38 @@ GitLab 15.7以降で手動インストールのためにGitLab Self-Managedイ�
 
 [前提要件](#prerequisites-1)
 
-Atlassian Marketplaceの外部からアプリをインストールできるようにJiraインスタンスを設定するには、次の手順に従います。
+Atlassian Marketplaceの外部からアプリをインストールできるようにJiraインスタンスを設定するには、次の手順に従います:
 
 1. 管理者としてJiraインスタンスにサインインします。
 1. Jiraインスタンスで[開発モードを有効](https://developer.atlassian.com/cloud/jira/platform/getting-started-with-connect/#step-3--enable-development-mode-in-your-site)にします。
 1. 管理者としてGitLabにサインインします。
-1. [JiraインスタンスからGitLabをインストール](https://developer.atlassian.com/cloud/jira/platform/getting-started-with-connect/#step-3--install-and-test-your-app)します。
-   1. Jiraインスタンスで、**アプリ > アプリを管理**に移動し、**アプリをアップロード**を選択します。
-   1. **アプリ記述子URL**で、インスタンス設定に基づいて、マニフェストファイルの完全なURLを指定します。
+1. Jiraで、**Apps**の横にある水平方向の省略記号（{{< icon name="ellipsis_h" >}}）を選択し、**Manage your apps**を選択します。
+1. 次のいずれかの方法で、[JiraインスタンスからGitLabをインストールします](https://developer.atlassian.com/cloud/jira/platform/getting-started-with-connect/#step-3--install-and-test-your-app):
+
+   **For instances with centralized app management:**（集中アプリ管理インスタンスの場合：）
+
+   1. 「アプリ管理が[管理]に移動しました」と表示された場合は、**Take me there**（ここに移動）を選択します。それ以外の場合は、下記の**For instances with legacy app management**（従来のアプリ管理インスタンスの手順）に従ってください。
+   1. **Install a private app**（プライベートアプリをインストール）を選択します。
+   1. **Choose a product to install this app on**（このアプリをインストールする製品を選択）ドロップダウンリストで、**Jira**を選択します。
+   1. **App descriptor URL**（アプリ記述子URL）で、インスタンス設定に基づいて、マニフェストファイルの完全なURLを指定します。
+
+      デフォルトでは、マニフェストファイルは`/-/jira_connect/app_descriptor.json`にあります。たとえば、インスタンスドメインが`app.pet-store.cloud`の場合、マニフェストファイルは`https://app.pet-store.cloud/-/jira_connect/app_descriptor.json`にあります。
+
+   1. **Install app**（アプリをインストール）を選択します。
+   1. ページを更新します。
+   1. **GitLab for Jira (`<gitlab.example.com>`)**というアプリを見つけ、水平方向の省略記号（{{< icon name="ellipsis_h" >}}）を選択し、**始めましょう**を選択して[GitLab for Jira Cloudアプリを設定](../../integration/jira/connect-app.md#configure-the-gitlab-for-jira-cloud-app)します。
+
+   **For instances with legacy app management:**（従来のアプリ管理インスタンスの場合：）
+
+   1. **Upload app**（アプリをアップロード）を選択します。
+   1. **App descriptor URL**（アプリ記述子URL）で、インスタンス設定に基づいて、マニフェストファイルの完全なURLを指定します。
 
       デフォルトでは、マニフェストファイルは`/-/jira_connect/app_descriptor.json`にあります。たとえば、インスタンスドメインが`app.pet-store.cloud`の場合、マニフェストファイルは`https://app.pet-store.cloud/-/jira_connect/app_descriptor.json`にあります。
 
    1. **アップロード**を選択します。
-   1. **開始**を選択して、インテグレーションを設定します。
-1. Jiraインスタンスで[開発モードを無効](https://developer.atlassian.com/cloud/jira/platform/getting-started-with-connect/#step-3--enable-development-mode-in-your-site)にします。
+   1. **GitLab for Jira (`<gitlab.example.com>`)**というアプリを見つけ、シェブロン（{{< icon name="chevron-right" >}}）を選択し、**始めましょう**を選択して[GitLab for Jira Cloudアプリを設定](../../integration/jira/connect-app.md#configure-the-gitlab-for-jira-cloud-app)します。
 
-これで、**アプリ > アプリの管理**で、**GitLab for Jira Cloud**が表示されるようになりました。**開始する**を選択して、[GitLab for Jira Cloudアプリを設定](../../integration/jira/connect-app.md#configure-the-gitlab-for-jira-cloud-app)することもできます。
+1. Jiraインスタンスで[開発モードを無効](https://developer.atlassian.com/cloud/jira/platform/getting-started-with-connect/#step-3--enable-development-mode-in-your-site)にします。
 
 GitLabのアップグレードによりアプリ記述子が変更された場合は、アプリを再インストールする必要があります。
 
@@ -236,7 +254,7 @@ GitLabのアップグレードによりアプリ記述子が変更された場�
 
 [開発モードを使用](#install-the-app-in-development-mode)したくない場合は、独自のAtlassian Marketplaceリスティングを作成できます。これにより、Atlassian MarketplaceからGitLab for Jira Cloudアプリをインストールできます。
 
-Atlassian Marketplaceリスティングを作成するには、次の手順に従います。
+Atlassian Marketplaceリスティングを作成するには、次の手順に従います:
 
 1. Atlassian Marketplaceのベンダーとして登録します。
 1. アプリ記述子URLを使用してアプリケーションのリスティングを作成します。
@@ -248,23 +266,52 @@ GitLab.comマーケットプレースのリスティングと同様に、この�
 
 Atlassian Marketplaceリスティングの作成の詳細については、[Atlassianのドキュメント](https://developer.atlassian.com/platform/marketplace/listing-connect-apps/#create-your-marketplace-listing)を参照してください。
 
+## 複数のGitLabインスタンスを接続する {#connect-multiple-gitlab-instances}
+
+GitLab for Jiraアプリを使用すると、複数のGitLabインスタンスを単一のJira Cloudインスタンスに接続できます。インストール方法は、接続するインスタンスによって異なります。
+
+前提要件:
+
+- 各インスタンスには、個別のOAuth認証が必要です。
+- 各インストール方法の前提条件を満たしている必要があります。
+
+GitLab.com + GitLab Self-Managedの場合:
+
+- GitLab.comの場合: Atlassian Marketplaceインストールを使用します。
+- GitLab Self-Managedインスタンスの場合: アプリを手動でインストールします。
+
+複数のGitLabセルフマネージドインスタンスの場合:
+
+- 最初のインスタンスでは、次のいずれかを行います: Atlassian Marketplaceインストールを使用するか、アプリを手動でインストールします。
+- 他のインスタンスの場合: アプリを手動でインストールします。
+
+Jira Cloudには、インストールごとにGitLab for Jiraアプリが表示されます。
+
+組織ごとに1つのGitLabインスタンスのみが、公式のAtlassian Marketplaceリストを使用できます。
+
 ## プロキシとして機能するようにGitLabインスタンスを設定する {#configure-your-gitlab-instance-to-serve-as-a-proxy}
+
+{{< alert type="note" >}}
+
+ほとんどのユーザーにとって、この構成は必要ありません。複数のインスタンスを持つJira Cloudの場合、GitLab for Jiraアプリを使用して各インスタンスを接続できます。
+
+{{< /alert >}}
 
 GitLabインスタンスは、GitLab for Jira Cloudアプリを通じて他のGitLabインスタンスのプロキシとして機能できます。複数のGitLabインスタンスを管理していてもアプリの[手動インストール](#install-the-gitlab-for-jira-cloud-app-manually)を一度だけで済ませたい場合は、プロキシを使用することをおすすめします。
 
-プロキシとして機能するようにGitLabインスタンスを設定するには、次の手順に従います。
+プロキシとして機能するようにGitLabインスタンスを設定するには、次の手順に従います:
 
-1. 左側のサイドバーの下部で、**管理者**を選択します。
-1. **設定 > 一般**を選択します。
+1. 左側のサイドバーの下部で、**管理者**を選択します。[新しいナビゲーションをオン](../../user/interface_redesign.md#turn-new-navigation-on-or-off)にしている場合は、右上隅で自分のアバターを選択し、**管理者**を選択します。
+1. **設定** > **一般**を選択します。
 1. **GitLab for Jira App**を展開します。
 1. **公開キーのストレージを有効にする**を選択します。
 1. **変更を保存**を選択します。
-1. [GitLab for Jira Cloudアプリを手動でインストール](#install-the-gitlab-for-jira-cloud-app-manually)します。
+1. [GitLab for Jira Cloudアプリを手動でインストールする](#install-the-gitlab-for-jira-cloud-app-manually)。
 
-プロキシを使用する他のGitLabインスタンスでは、プロキシインスタンスを指すように次の設定を変更する必要があります。
+プロキシを使用する他のGitLabインスタンスでは、プロキシインスタンスを指すように次の設定を変更する必要があります:
 
 - [**Jira ConnectのプロキシURL**](#set-up-your-instance-for-atlassian-marketplace-installation)
-- [**リダイレクトURI**](#set-up-oauth-authentication)
+- [**Redirect URI**（リダイレクトURI）](#set-up-oauth-authentication)
 
 ## セキュリティに関する考慮事項 {#security-considerations}
 
@@ -274,7 +321,7 @@ GitLabインスタンスは、GitLab for Jira Cloudアプリを通じて他のGi
 
 [Atlassian MarketplaceからGitLab for Jira Cloudアプリをインストール](#install-the-gitlab-for-jira-cloud-app-from-the-atlassian-marketplace)すると、GitLab.comはJiraから[ライフサイクルイベント](https://developer.atlassian.com/cloud/jira/platform/connect-app-descriptor/#lifecycle)を受信します。これらのイベントは、アプリがJiraプロジェクトにインストールされたとき、またはJiraプロジェクトからアプリがアンインストールされたときに限定されます。
 
-インストールイベントでは、GitLab.comはJiraから**シークレットトークン**を受信します。GitLab.comは、後でJiraからの受信ライフサイクルイベントを検証するため、`AES256-GCM`で暗号化されたこのトークンを保存します。
+インストールイベントでは、GitLab.comはJiraから**secret token**（シークレットトークン）を受信します。GitLab.comは、後でJiraからの受信ライフサイクルイベントを検証するため、`AES256-GCM`で暗号化されたこのトークンを保存します。
 
 GitLab.comは、インスタンスが同じトークンで[Jiraへのリクエスト](../../integration/jira/connect-app.md#data-sent-from-gitlab-to-jira)を認証できるように、このトークンをGitLab Self-Managedインスタンスに転送します。GitLab Self-Managedインスタンスにも、GitLab for Jira Cloudアプリがインストールまたはアンインストールされたことが通知されます。
 
@@ -307,7 +354,7 @@ GitLabは、Jiraとアクセストークンを共有しません。ただし、�
 
 アクセストークンは、[PKCE](https://www.rfc-editor.org/rfc/rfc7636) OAuthフローを通じて取得され、クライアント側でのみ保存されます。OAuthフローを初期化するアプリのフロントエンドはJavaScriptアプリケーションであり、Jiraのiframeを通じてGitLabから読み込まれます。
 
-OAuthアプリケーションには、APIへの完全な読み取りおよび書き込みアクセスを許可する`api`スコープが必要です。このアクセスには、すべてのグループとプロジェクト、コンテナレジストリ、パッケージレジストリへのアクセスが含まれます。ただし、GitLab for Jira Cloudアプリは、このアクセスを次の目的にのみ使用します。
+OAuthアプリケーションには、APIへの完全な読み取りおよび書き込みアクセスを許可する`api`スコープが必要です。このアクセスには、すべてのグループとプロジェクト、コンテナレジストリ、パッケージレジストリへのアクセスが含まれます。ただし、GitLab for Jira Cloudアプリは、このアクセスを次の目的にのみ使用します:
 
 - リンク可能なグループを表示する。
 - グループをリンクする。
@@ -318,11 +365,11 @@ OAuthを通じたアクセスは、ユーザーがGitLab for Jira Cloudアプリ
 
 可能であれば、GitLab Self-Managedインスタンスの前面にリバースプロキシを配置することは避けてください。代わりに、パブリックIPアドレスを使用し、ファイアウォールでドメインを保護することをおすすめします。
 
-インターネットから直接アクセスできないGitLab Self-Managedインスタンスで、GitLab for Jira Cloudアプリを使用するためにリバースプロキシを配置する必要がある場合は、次の点に注意してください。
+インターネットから直接アクセスできないGitLab Self-Managedインスタンスで、GitLab for Jira Cloudアプリを使用するためにリバースプロキシを配置する必要がある場合は、次の点に注意してください:
 
 - [Atlassian MarketplaceからGitLab for Jira Cloudアプリをインストール](#install-the-gitlab-for-jira-cloud-app-from-the-atlassian-marketplace)する際は、GitLabの内部FQDNとリバースプロキシのFQDNの両方にアクセスできるクライアントを使用してください。
-- [GitLab for Jira Cloudアプリを手動でインストール](#install-the-gitlab-for-jira-cloud-app-manually)する場合は、[OAuth認証をセットアップ](#set-up-oauth-authentication)する際に、**リダイレクトURI**にリバースプロキシのFQDNを使用してください。
-- リバースプロキシは、使用するインストール方法の前提要件を満たしている必要があります。
+- [GitLab for Jira Cloudアプリを手動でインストール](#install-the-gitlab-for-jira-cloud-app-manually)する場合は、[OAuth認証をセットアップ](#set-up-oauth-authentication)する際に、**Redirect URI**（リダイレクトURI）にリバースプロキシのFQDNを使用してください。
+- リバースプロキシは、使用するインストール方法の前提要件を満たしている必要があります:
   - [GitLab for Jira Cloudアプリを接続するための前提要件](#prerequisites)。
   - [GitLab for Jira Cloudアプリを手動でインストールするための前提要件](#prerequisites-1)。
 - [Jira開発パネル](../../integration/jira/development_panel.md)は、リバースプロキシFQDNではなく、GitLabの内部FQDNまたはGitLab.comにリンクする可能性があります。詳細については、[イシュー434085](https://gitlab.com/gitlab-org/gitlab/-/issues/434085)を参照してください。
@@ -332,7 +379,7 @@ OAuthを通じたアクセスは、ユーザーがGitLab for Jira Cloudアプリ
 
 ### 外部NGINX {#external-nginx}
 
-このサーバーブロックは、Jira Cloudと連携するGitLab用リバースプロキシの設定例です。
+このサーバーブロックは、Jira Cloudと連携するGitLab用リバースプロキシの設定例です:
 
 ```nginx
 server {
@@ -370,7 +417,7 @@ server {
 }
 ```
 
-この例では、次のように設定します。
+この例では、次のように設定します:
 
 - `gitlab.mycompany.com`をリバースプロキシのFQDNに、`gitlab.internal`をGitLabの内部FQDNに置き換えます。
 - `ssl_certificate`と`ssl_certificate_key`には有効な証明書を設定します（この例では[Certbot](https://certbot.eff.org/)を使用しています）。
@@ -388,10 +435,10 @@ Jira CloudからGitLabに接続する際は、リバースプロキシのFQDNの
 
 GitLabがJiraからJWTトークンを受信すると、GitLabはJWTのオーディエンスを確認してトークンを検証します。デフォルトでは、オーディエンスはGitLabの内部FQDNから派生します。
 
-一部のリバースプロキシ設定では、リバースプロキシFQDNを追加のJWTオーディエンスとして設定する必要が生じる場合があります。追加のJWTオーディエンスを設定するには、次の手順に従います。
+一部のリバースプロキシ設定では、リバースプロキシFQDNを追加のJWTオーディエンスとして設定する必要が生じる場合があります。追加のJWTオーディエンスを設定するには、次の手順に従います:
 
-1. 左側のサイドバーの下部で、**管理者**を選択します。
-1. **設定 > 一般**を選択します。
+1. 左側のサイドバーの下部で、**管理者**を選択します。[新しいナビゲーションをオン](../../user/interface_redesign.md#turn-new-navigation-on-or-off)にしている場合は、右上隅で自分のアバターを選択し、**管理者**を選択します。
+1. **設定** > **一般**を選択します。
 1. **GitLab for Jira App**を展開します。
 1. **Jira Connectの追加オーディエンスURL**に、追加のオーディエンスを入力します（例: `https://gitlab.mycompany.com`）。
 1. **変更を保存**を選択します。

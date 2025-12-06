@@ -33,7 +33,7 @@ module Webauthn
 
     rescue JSON::ParserError
       ServiceResponse.error(
-        message: _('Your webauthn device did not send a valid JSON response.')
+        message: _('Your WebAuthn device did not send a valid JSON response.')
       )
     rescue ActiveRecord::RecordNotFound
       ServiceResponse.error(

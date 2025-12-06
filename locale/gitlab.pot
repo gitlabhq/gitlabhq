@@ -45616,6 +45616,9 @@ msgstr ""
 msgid "Observability|Application performance monitoring with p99 latency tracking and real-time metrics visualization"
 msgstr ""
 
+msgid "Observability|Apply"
+msgstr ""
+
 msgid "Observability|Are you sure you want to delete the observability service settings? This action cannot be undone."
 msgstr ""
 
@@ -59382,6 +59385,9 @@ msgstr ""
 msgid "SecretsManagerPermissions|Can update details of existing secrets."
 msgstr ""
 
+msgid "SecretsManagerPermissions|Enable the secrets manager to securely store and manage sensitive information for this group."
+msgstr ""
+
 msgid "SecretsManagerPermissions|Enable the secrets manager to securely store and manage sensitive information for this project."
 msgstr ""
 
@@ -59404,6 +59410,9 @@ msgid "SecretsManagerPermissions|Secrets manager"
 msgstr ""
 
 msgid "SecretsManagerPermissions|Secrets manager has been deprovisioned for this project."
+msgstr ""
+
+msgid "SecretsManagerPermissions|Secrets manager has been provisioned for this group."
 msgstr ""
 
 msgid "SecretsManagerPermissions|Secrets manager has been provisioned for this project."
@@ -79153,9 +79162,6 @@ msgid "Your update failed. You must upload a file with the same file name when d
 msgstr ""
 
 msgid "Your username is %{username}."
-msgstr ""
-
-msgid "Your webauthn device did not send a valid JSON response."
 msgstr ""
 
 msgid "Your work"

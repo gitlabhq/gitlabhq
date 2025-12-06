@@ -14,6 +14,12 @@ title: GitLabインストール後の手順
 
 インストール完了後に確認するとよいリソースをいくつかご紹介します。
 
+## 初期サインイン {#initial-sign-in}
+
+GitLabをインストールした後、インストール中に設定したURLにアクセスし、`root`としてサインインできます。
+
+インストール中に独自のパスワードを設定していない場合は、ランダムなパスワードが割り当てられます。`/etc/gitlab/initial_root_password`にある、GitLabをインストールしたサーバーにあります。
+
 ## メールと通知 {#email-and-notifications}
 
 - [SMTP](https://docs.gitlab.com/omnibus/settings/smtp.html): 適切なメール通知をサポートするためにSMTPを設定します。
@@ -21,9 +27,9 @@ title: GitLabインストール後の手順
 
 ## GitLab Duo {#gitlab-duo}
 
-- [GitLab Duo](../user/gitlab_duo/_index.md)：GitLabが提供するAIネイティブな機能と、それらを有効にする方法について説明します。
-- [GitLab Duo Self-Hosted](../administration/gitlab_duo_self_hosted/_index.md)：お好みのGitLabがサポートする大規模言語モデル（LLM）を使用するために、GitLab Duo Self-HostedをDeployします。
-- [GitLab Duo data usage](../user/gitlab_duo/data_usage.md)（GitLab Duoのデータ使用量）：GitLabがAIデータのプライバシーをどのように処理するかについて説明します。
+- [GitLab Duo](../user/gitlab_duo/_index.md): GitLabが提供するAIネイティブな機能と、それらを有効にする方法について説明します。
+- [GitLab Duo Self-Hosted](../administration/gitlab_duo_self_hosted/_index.md): お好みのGitLabがサポートする大規模言語モデル（LLM）を使用するために、GitLab Duo Self-HostedをDeployします。
+- [GitLab Duo data usage](../user/gitlab_duo/data_usage.md)（GitLab Duoのデータ使用量）: GitLabがAIデータのプライバシーをどのように処理するかについて説明します。
 
 ## CI/CD（Runner） {#cicd-runner}
 
@@ -65,9 +71,9 @@ title: GitLabインストール後の手順
 
 ## スケーリングとレプリケーション {#scaling-and-replication}
 
-- [GitLabのスケーリング](../administration/reference_architectures/_index.md): GitLabは、いくつかの異なるタイプのクラスタリングをサポートしています。
-- [ジオレプリケーション](../administration/geo/_index.md): Geoは、広範な分散型開発チーム向けのソリューションです。
+- [GitLabのスケーリング](../administration/reference_architectures/_index.md): GitLabはさまざまなクラスタリングをサポートしています。
+- [Geoレプリケーション](../administration/geo/_index.md): Geoは、広範な分散型開発チーム向けのソリューションです。
 
 ## 製品ドキュメントをインストールする {#install-the-product-documentation}
 
-オプション: ドキュメントを独自のサーバーでホスティングする場合は、[製品ドキュメントをセルフホスティング](../administration/docs_self_host.md)する方法を参照してください。
+オプション。ドキュメントを独自のサーバーでホスティングする場合は、[製品ドキュメントをセルフホスティング](../administration/docs_self_host.md)する方法を参照してください。

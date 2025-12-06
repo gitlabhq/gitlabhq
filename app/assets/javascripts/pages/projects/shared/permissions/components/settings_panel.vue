@@ -1116,6 +1116,7 @@ export default {
       <ci-catalog-settings v-if="canAddCatalogResource" :full-path="confirmationPhrase" />
       <secret-manager-settings
         v-if="isSecretsManagerAvailable"
+        context="project"
         :can-manage-secrets-manager="canManageSecretsManager"
         :project-id="projectId"
         :full-path="confirmationPhrase"

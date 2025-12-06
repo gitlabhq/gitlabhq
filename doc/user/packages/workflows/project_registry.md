@@ -351,7 +351,7 @@ For more information, see [Maven virtual registry](../virtual_registry/maven/_in
    </mirrors>
 ```
 
-The virtual registry supports multiple token types, including personal access tokens, group deploy tokens, group access tokens, and CI/CD job tokens. Each token type uses a different HTTP header name. For complete authentication examples for all token types, see [Authentication with Maven clients](../virtual_registry/maven/_index.md#authentication-with-maven-clients).
+The virtual registry supports multiple token types, including personal access tokens, group deploy tokens, group access tokens, and CI/CD job tokens. Each token type uses a different HTTP header name. For more information, see [Authenticate to the virtual registry](../virtual_registry/_index.md#authenticate-to-the-virtual-registry).
 
 The following example implements a personal access token:
 

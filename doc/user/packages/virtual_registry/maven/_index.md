@@ -52,6 +52,7 @@ For general information about managing virtual registries and upstream registrie
 Before you can use the Maven virtual registry:
 
 - Review the [prerequisites](../_index.md#prerequisites) to use the virtual registry.
+- Configure authentication to the virtual registry. For more information, see [Authenticate to the virtual registry](../_index.md#authenticate-to-the-virtual-registry).
 
 When using the Maven virtual registry, remember the following restrictions:
 
@@ -73,13 +74,6 @@ Manage virtual registries for your group.
 
 You can also [use the API](../../../../api/maven_virtual_registries.md#manage-virtual-registries).
 
-### View the virtual registry
-
-To view the virtual registry:
-
-1. On the left sidebar, select **Search or go to** and find your group. If you've [turned on the new navigation](../../../interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar. This group must be at the top level.
-1. Select **Deploy** > **Virtual registry**.
-
 ### Create a Maven virtual registry
 
 To create a Maven virtual registry:
@@ -90,39 +84,9 @@ To create a Maven virtual registry:
 1. Enter a **Name** and optional **Description**.
 1. Select **Create Maven registry**.
 
-### Edit a virtual registry
-
-To edit an existing virtual registry:
-
-1. On the left sidebar, select **Search or go to** and find your group. If you've [turned on the new navigation](../../../interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar. This group must be at the top level.
-1. Select **Deploy** > **Virtual registry**.
-1. Under **Registry types**, select **View registries**.
-1. In the row of the registry you want to edit, select **Edit** ({{< icon name="pencil" >}}).
-1. Make your changes and select **Save changes**.
-
-### Delete a virtual registry
-
-To delete a virtual registry:
-
-1. On the left sidebar, select **Search or go to** and find your group. If you've [turned on the new navigation](../../../interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar. This group must be at the top level.
-1. Select **Deploy** > **Virtual registry**.
-1. Under **Registry types**, select **View registries**.
-1. Under the **Registries** tab, in the row of the registry you want to delete, select **Edit** ({{< icon name="pencil" >}}).
-1. Select **Delete registry**.
-1. On the confirmation dialog, select **Delete**.
-
 ## Manage upstream registries
 
 Manage upstream registries in a virtual registry.
-
-### View upstream registries
-
-To view upstream registries:
-
-1. On the left sidebar, select **Search or go to** and find your group. If you've [turned on the new navigation](../../../interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar. This group must be at the top level.
-1. Select **Deploy** > **Virtual registry**.
-1. Under **Registry types**, select **View registries**.
-1. Select the **Upstreams** tab to view all available upstreams.
 
 ### Create a Maven upstream registry
 
@@ -163,86 +127,9 @@ If you connect the upstream to Maven Central:
 
 For more information about cache validity settings, see [Set the cache validity period](../../virtual_registry/_index.md#set-the-cache-validity-period).
 
-### Edit an upstream registry
-
-To edit an upstream registry:
-
-1. On the left sidebar, select **Search or go to** and find your group. If you've [turned on the new navigation](../../../interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar. This group must be at the top level.
-1. Select **Deploy** > **Virtual registry**.
-1. Under **Registry types**, select **View registries**.
-1. Select the **Upstreams** tab.
-1. In the row of the upstream you want to edit, select **Edit** ({{< icon name="pencil" >}}).
-1. Make your changes and select **Save changes**.
-
-### Reorder upstream registries
-
-The order of upstream registries determines the priority in which they are queried for packages.
-The virtual registry searches upstreams from top to bottom until it finds the requested package.
-
-To change the order of upstream registries:
-
-1. On the left sidebar, select **Search or go to** and find your group. If you've [turned on the new navigation](../../../interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar. This group must be at the top level.
-1. Select **Deploy** > **Virtual registries**.
-1. Under **Registry types**, select a registry.
-1. Under the **Registries** tab, select a registry.
-1. Under **Upstreams**, select **Move upstream up** or **Move upstream down** to reorder upstreams.
-
-Best practices for upstream ordering:
-
-- Position private registries before public ones to prioritize internal packages.
-- Place faster or more reliable registries higher in the list.
-- Put public registries last as fallbacks for public dependencies.
-
-For more information about the order of upstreams, see [Upstream prioritization](../../virtual_registry/_index.md#upstream-prioritization).
-
-### View cached packages
-
-To view packages that have been cached from upstream registries:
-
-1. On the left sidebar, select **Search or go to** and find your group. If you've [turned on the new navigation](../../../interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar. This group must be at the top level.
-1. Select **Deploy** > **Virtual registry**.
-1. Under **Registry types**, select a registry.
-1. Under the **Upstreams** tab, select an upstream.
-1. View the cache metadata for cached packages.
-
-### Delete cache entries
-
-To delete cache entries:
-
-1. On the left sidebar, select **Search or go to** and find your group. If you've [turned on the new navigation](../../../interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar. This group must be at the top level.
-1. Select **Deploy** > **Virtual registry**.
-1. Under **Registry types**, select a registry.
-1. Under the **Registries** tab, select a registry.
-1. Next to **Upstreams**, select **Clear all caches**.
-   - To delete a specific cache entry, next to an upstream, select **Clear cache**.
-
-When you delete a cache entry, the next time the virtual registry receives a request for that file, it walks the list of upstreams again to find an upstream that can fulfill the request.
-
-For more information about cache entries, see [Caching system](../../virtual_registry/_index.md#caching-system).
-
 ## Use the Maven virtual registry
 
 After you create a virtual registry, you must configure Maven clients to pull dependencies through the virtual registry.
-
-### Authentication with Maven clients
-
-The virtual registry endpoint can be used by any of following tokens:
-
-- A [personal access token](../../../profile/personal_access_tokens.md).
-- A [group deploy token](../../../project/deploy_tokens/_index.md) for the top-level group hosting the considered virtual registry.
-- A [group access token](../../../group/settings/group_access_tokens.md) for the top-level group hosting the considered virtual registry.
-- A [CI/CD job token](../../../../ci/jobs/ci_job_token.md).
-
-Tokens need one of the following scopes:
-
-- `api`
-- `read_virtual_registry`
-
-Access tokens and the CI/CD job token are resolved to users. The resolved user must be either:
-
-- A direct member of the top-level group with at least the Guest role.
-- A GitLab instance administrator.
-- A direct member of one of the projects included in the top-level group.
 
 ### Configure Maven clients
 

@@ -22,7 +22,7 @@ title: CI/CDコンポーネントの例
 
 コンポーネントの機能によっては、[コンポーネントをテストする](_index.md#test-the-component)ために、リポジトリに追加ファイルが必要になる場合があります。
 
-次に示すRustプログラミング言語の「hello world」の例では、簡略化のために`cargo`ツールチェーンを使用しています。
+次に示すRustプログラミング言語の「hello world」の例では、簡略化のために`cargo`ツールチェーンを使用しています:
 
 1. CI/CDコンポーネントのルートディレクトリに移動します。
 1. `cargo init`コマンドを使用して、新しいRustプロジェクトを初期化します。
@@ -45,7 +45,7 @@ title: CI/CDコンポーネントの例
        └── build.yml
    ```
 
-1. Rustソースコードをビルドするジョブがコンポーネントに含まれていることを確認します。その例として、以下に`templates/build.yml`を示します。
+1. Rustソースコードをビルドするジョブがコンポーネントに含まれていることを確認します。その例として、以下に`templates/build.yml`を示します:
 
    ```yaml
    spec:
@@ -65,11 +65,11 @@ title: CI/CDコンポーネントの例
        - cargo build --verbose
    ```
 
-   この例では:
+   この例では、次のように設定します:
 
-   - `stage`と`rust_version`の入力はデフォルト値から変更できます。CI/CDジョブは、`build-`プレフィックスで始まり、`rust_version`入力に基づいて名前を動的に作成します。コマンド`cargo build --verbose`でRustソースコードをコンパイルします。
+   - 入力パラメータ`stage`と`rust_version`はデフォルト値から変更できます。CI/CDジョブは、`build-`プレフィックスで始まり、入力パラメータ`rust_version`に基づいて名前を動的に作成します。コマンド`cargo build --verbose`でRustソースコードをコンパイルします。
 
-1. プロジェクトの`.gitlab-ci.yml`設定ファイルで、コンポーネントの`build`テンプレートをテストします。
+1. プロジェクトの`.gitlab-ci.yml`設定ファイルで、コンポーネントの`build`テンプレートをテストします:
 
    ```yaml
    include:
@@ -101,7 +101,7 @@ title: CI/CDコンポーネントの例
        - cargo test --verbose
    ```
 
-1. `test`コンポーネントテンプレートを含めることで、パイプラインで追加のジョブをテストします。
+1. `test`コンポーネントテンプレートを含めることで、パイプラインで追加のジョブをテストします:
 
    ```yaml
    include:
@@ -124,7 +124,7 @@ title: CI/CDコンポーネントの例
 
 `boolean`型の入力と[`extends`](../yaml/_index.md#extends)機能を組み合わせることで、2つの条件分岐を持つジョブを構成できます。
 
-たとえば、`boolean`入力を使用して複雑なキャッシュ動作を設定するには、次のようにします。
+たとえば、`boolean`入力を使用して複雑なキャッシュ動作を設定するには、次のようにします:
 
 ```yaml
 spec:
@@ -154,7 +154,7 @@ my-job:
 
 複数のオプションを持つジョブを構成し、`if`や`elseif`の条件と同様の動作を実現できます。[`extends`](../yaml/_index.md#extends)に`string`型と複数の`options`を組み合わせることで、任意の数の条件を設定できます。
 
-たとえば、3つの異なるオプションを使用して複雑なキャッシュ動作を設定するには、次のようにします。
+たとえば、3つの異なるオプションを使用して複雑なキャッシュ動作を設定するには、次のようにします:
 
 ```yaml
 spec:
@@ -189,6 +189,68 @@ my-job:
 ```
 
 この例では、`cache_mode`入力は`default`、`aggressive`、`relaxed`のオプションを提供し、それぞれ異なる非表示ジョブに対応しています。`extends: '.my-component:cache_mode:$[[ inputs.cache_mode ]]'`でコンポーネントジョブを拡張することにより、ジョブは選択されたオプションに基づいて正しいキャッシュ設定を動的に継承します。
+
+### バージョニングされた参照リソースを参照するためにコンポーネントコンテキストを使用します {#use-component-context-to-reference-versioned-resources}
+
+{{< history >}}
+
+- GitLab 18.6で、`ci_component_context_interpolation`[という名前のフラグ](../../administration/feature_flags/_index.md)で[導入されました](https://gitlab.com/gitlab-org/gitlab/-/issues/438275)。デフォルトでは無効になっています。
+
+{{< /history >}}
+
+ジョブの参照、コミットSHAなどのコンポーネントメタデータを参照するには、コンポーネントコンテキスト[CI/CD式](../yaml/expressions.md)を使用します。1つのユースケースは、コンポーネントでバージョニングされたリソース（Dockerイメージなど）をビルドおよび公開し、コンポーネントが一致するバージョンを使用するようにすることです。
+
+たとえば、次のことができます:
+
+- コンポーネントのバージョンに一致するタグを使用して、コンポーネントのリリースパイプラインでDockerイメージをビルドします。
+- コンポーネントに、同じDockerイメージのバージョンを参照させます。
+
+コンポーネントプロジェクトのリリースパイプライン（`.gitlab-ci.yml`）内:
+
+```yaml
+build-image:
+  stage: build
+  image: docker:latest
+  script:
+    - docker build -t $CI_REGISTRY_IMAGE/my-tool:$CI_COMMIT_TAG .
+    - docker push $CI_REGISTRY_IMAGE/my-tool:$CI_COMMIT_TAG
+
+create-release:
+  stage: release
+  image: registry.gitlab.com/gitlab-org/cli:latest
+  script: echo "Creating release $CI_COMMIT_TAG"
+  rules:
+    - if: $CI_COMMIT_TAG
+  release:
+    tag_name: $CI_COMMIT_TAG
+    description: "Release $CI_COMMIT_TAG"
+```
+
+コンポーネントテンプレート（`templates/my-component/template.yml`）内:
+
+```yaml
+spec:
+  component: [version, reference]
+  inputs:
+    stage:
+      default: test
+---
+
+run-tool:
+  stage: $[[ inputs.stage ]]
+  image: $CI_REGISTRY_IMAGE/my-tool:$[[ component.version ]]
+  script:
+    - echo "Running tool version $[[ component.version ]]"
+    - echo "Component was included using reference: $[[ component.reference ]]"
+    - my-tool --version
+```
+
+この例では、次のように設定します:
+
+- コンポーネントを`@1.0.0`で含めると、ジョブは`my-tool:1.0.0`のDockerイメージを使用します。
+- コンポーネントを`@1.0`で含めると、最新の`1.0.x`バージョン（たとえば、`1.0.3`）に解決されるため、`my-tool:1.0.3`を使用します。
+- コンポーネントを`@~latest`で含めると、最新のリリースされたバージョンが使用されます。
+- `component.reference`フィールドには、指定した正確な参照（`1.0`、`~latest`、またはSHAなど）が表示されます。この参照は、ログ記録またはデバッグに役立ちます。
 
 ## CI/CDコンポーネントの移行例 {#cicd-component-migration-examples}
 
@@ -230,9 +292,9 @@ compile:
 
 {{< /alert >}}
 
-CI/CDテンプレートを移行するには、次の手順を実行します。
+CI/CDテンプレートを移行するには、次の手順を実行します:
 
-1. CI/CDジョブと依存関係を分析し、移行アクションを定義します。
+1. CI/CDジョブと依存関係を分析し、移行アクションを定義します:
    - `image`設定はグローバルであるため、[ジョブ定義に移動する必要があります](_index.md#avoid-using-global-keywords)。
    - `format`ジョブは、1つのジョブで複数の`go`コマンドを実行します。パイプラインの効率性を高めるために、`go test`コマンドは別のジョブに移動する必要があります。
    - `compile`ジョブは`go build`を実行しているため、`build`に名前を変更する必要があります。
@@ -244,7 +306,7 @@ CI/CDテンプレートを移行するには、次の手順を実行します。
 
    - テンプレートの名前は、`go`コマンドに従う必要があります（例: `format.yml`、`build.yml`、`test.yml`）。
    - 新しいプロジェクトを作成し、Gitリポジトリを初期化し、すべての変更を追加/コミットし、リモートoriginを設定してプッシュします。CI/CDコンポーネントプロジェクトのパスに合わせてURLを変更します。
-   - [コンポーネントを作成する](_index.md#write-a-component)ためのガイダンスで概説されているように、追加のファイルとして`README.md`、`LICENSE.md`、`.gitlab-ci.yml`、`.gitignore`を作成します。次のShellコマンドは、Goコンポーネント構造を初期化します。
+   - [コンポーネントを作成する](_index.md#write-a-component)ためのガイダンスで概説されているように、追加のファイルとして`README.md`、`LICENSE.md`、`.gitlab-ci.yml`、`.gitignore`を作成します。次のShellコマンドは、Goコンポーネント構造を初期化します:
 
    ```shell
    git init
@@ -379,7 +441,7 @@ CI/CDテンプレートを移行するには、次の手順を実行します。
      }
      ```
 
-   - ディレクトリツリーは次のようになります。
+   - ディレクトリツリーは次のようになります:
 
      ```plaintext
      tree
@@ -394,7 +456,7 @@ CI/CDテンプレートを移行するには、次の手順を実行します。
          └── test.yml
      ```
 
-[CI/CDテンプレートをコンポーネントに変換する](_index.md#convert-a-cicd-template-to-a-component)セクションの残りの手順に従って、移行を完了します。
+[CI/CDテンプレートをコンポーネントに変換する](_index.md#convert-a-cicd-template-to-a-component)セクションの残りの手順に従って、移行を完了します:
 
 1. 変更をコミットしてプッシュし、CI/CDパイプラインの結果を検証します。
 1. [コンポーネントを作成する](_index.md#write-a-component)に記載されたガイダンスに従って、`README.md`と`LICENSE.md`ファイルを更新します。

@@ -12,7 +12,7 @@ title: GitLabを復元する
 
 {{< /details >}}
 
-GitLabの復元操作により、バックアップからデータを復元してシステムの継続性を維持し、データ損失から回復できます。この操作では、以下のデータを復元します。
+GitLabの復元操作により、バックアップからデータを復元してシステムの継続性を維持し、データ損失から回復できます。この操作では、以下のデータを復元します:
 
 - データベースレコードと設定
 - Gitリポジトリ、コンテナレジストリイメージ、アップロードされたコンテンツ
@@ -34,27 +34,68 @@ GitLabの復元操作により、バックアップからデータを復元し�
 
 バックアップは、作成時とまったく同じバージョンおよびタイプ（CEまたはEE）のGitLabにのみ復元できます。たとえば、CE 15.1.4などです。
 
-バックアップのバージョンが現在のインストールと異なる場合は、バックアップを復元する前に、GitLabインストールを[ダウングレード](../../update/package/downgrade.md)または[アップグレード](../../update/package/_index.md#upgrade-to-a-specific-version)する必要があります。
+バックアップのバージョンが現在のインストールと異なる場合は、バックアップを復元する前に、GitLabインストールを[ダウングレード](../../update/package/downgrade.md)または[アップグレード](../../update/package/_index.md)する必要があります。
 
 ### GitLabシークレットを復元する必要がある {#gitlab-secrets-must-be-restored}
 
-バックアップを復元するには、GitLabシークレットも復元する必要があります。新しいGitLabインスタンスに移行する場合は、旧サーバーからGitLabのシークレットファイルをコピーしなくてはなりません。これには、データベースの暗号化キー、[CI/CD変数](../../ci/variables/_index.md)、および[2要素認証](../../user/profile/account/two_factor_authentication.md)に使用される変数などが含まれます。キーがないと、[複数の問題が発生](troubleshooting_backup_gitlab.md#when-the-secrets-file-is-lost)します。たとえば、[2要素認証が有効](../../user/profile/account/two_factor_authentication.md)になっているユーザーがアクセスできなくなったり、GitLab Runnerがサインインできなくなったりします。
+バックアップを復元するには、GitLabシークレットも復元する必要があります。新しいGitLabインスタンスに移行する場合は、旧サーバーからGitLabのシークレットファイルをコピーしなくてはなりません。これには、データベース暗号化キー、CI/CD変数、および2要素認証に使用される変数などが含まれます。キーがないと、複数の問題が発生します。たとえば、2要素認証が有効になっているユーザーがアクセスできなくなったり、GitLab Runnerがサインインできなくなったりします。
 
-以下を復元します。
+インストール方法に基づいて、以下を復元する:
 
-- `/etc/gitlab/gitlab-secrets.json`（Linuxパッケージインストール）
-- `/home/git/gitlab/.secret`（自己コンパイルによるインストール）
-- [シークレットを復元する](https://docs.gitlab.com/charts/backup-restore/restore.html#restoring-the-secrets)を参照（クラウドネイティブGitLab）
-  - 必要に応じて、[GitLab HelmチャートのシークレットをLinuxパッケージ形式に変換](https://docs.gitlab.com/charts/installation/migration/helm_to_package.html)できます。
+{{< tabs >}}
+
+{{< tab title="Linuxパッケージ" >}}
+
+```plaintext
+/etc/gitlab/gitlab-secrets.json
+```
+
+{{< /tab >}}
+
+{{< tab title="Helmチャート（Kubernetes）" >}}
+
+[シークレットを復元する](https://docs.gitlab.com/charts/backup-restore/restore.html#restoring-the-secrets)。
+
+必要に応じて、[GitLab HelmチャートのシークレットをLinuxパッケージ形式に変換](https://docs.gitlab.com/charts/installation/migration/helm_to_package.html)できます。
+
+{{< /tab >}}
+
+{{< tab title="Docker" >}}
+
+`/etc/gitlab`を`/srv/gitlab/config`にマウントしている場合:
+
+```plaintext
+/srv/gitlab/config/gitlab-secrets.json
+```
+
+{{< /tab >}}
+
+{{< tab title="自己コンパイル（ソース）" >}}
+
+```plaintext
+/home/git/gitlab/.secret
+```
+
+{{< /tab >}}
+
+{{< /tabs >}}
+
+こちらも参照してください:
+
+- [CI/CD変数](../../ci/variables/_index.md)
+- [2要素認証](../../user/profile/account/two_factor_authentication.md)
+- [シークレットのトラブルシューティングに関するイシュー](troubleshooting_backup_gitlab.md#when-the-secrets-file-is-lost)
 
 ### 特定のGitLabの設定がバックアップ元の環境と一致している必要がある {#certain-gitlab-configuration-must-match-the-original-backed-up-environment}
 
-復元する際は、以前の`/etc/gitlab/gitlab.rb`（Linuxパッケージインストールの場合）または`/home/git/gitlab/config/gitlab.yml`（自己コンパイルによるインストールの場合）、および[TLSキーまたはSSHキーと証明書](backup_gitlab.md#data-not-included-in-a-backup)を個別に復元することがあります。
+復元する際は、以前の`/etc/gitlab/gitlab.rb`（Linuxパッケージインストールの場合）または`/home/git/gitlab/config/gitlab.yml`（セルフコンパイルインストールの場合）と、TLSまたはSSHキーと証明書を個別に復元することがあります。
 
-特定の設定は、PostgreSQLのデータに結び付いています。次に例を示します。
+特定の設定は、PostgreSQLのデータに結び付いています。次に例を示します:
 
 - 元の環境に3つのリポジトリのストレージ（例: `default`、`my-storage-1`、`my-storage-2`）がある場合、復元先の環境にも、それらのストレージ名が設定で定義されている必要があります。
 - 元の環境がローカルストレージを使用している場合、バックアップを復元するとローカルストレージに復元されます。たとえ復元先の環境がオブジェクトストレージを使用している場合でも同様です。オブジェクトストレージへの移行は、復元前または復元後に行う必要があります。
+
+詳細については、[バックアップに含まれないデータ](backup_gitlab.md#data-not-included-in-a-backup)を参照してください。
 
 ### マウントポイントであるディレクトリを復元する {#restoring-directories-that-are-mount-points}
 
@@ -64,7 +105,7 @@ GitLabの復元操作により、バックアップからデータを復元し�
 
 ## LinuxパッケージインストールのGitLabを復元する {#restore-for-linux-package-installations}
 
-この手順では、以下を前提としています。
+この手順では、以下を前提としています:
 
 - バックアップを作成した際とまったく同じバージョンおよびタイプ（CE/EE）のGitLabをインストールしている。
 - `sudo gitlab-ctl reconfigure`を少なくとも1回実行している。
@@ -77,7 +118,7 @@ sudo cp 11493107454_2018_04_25_10.6.4-ce_gitlab_backup.tar /var/opt/gitlab/backu
 sudo chown git:git /var/opt/gitlab/backups/11493107454_2018_04_25_10.6.4-ce_gitlab_backup.tar
 ```
 
-データベースに接続しているプロセスを停止します。その他のGitLabのプロセスは実行したままにします。
+データベースに接続しているプロセスを停止します。その他のGitLabのプロセスは実行したままにします:
 
 ```shell
 sudo gitlab-ctl stop puma
@@ -88,7 +129,7 @@ sudo gitlab-ctl status
 
 次に、[復元の前提要件](#restore-prerequisites)の手順を完了し、元のインストールからGitLabのシークレットファイルをコピーした後、`gitlab-ctl reconfigure`を実行したことを確認します。
 
-続いて、復元するバックアップのIDを指定してバックアップを復元します。
+続いて、復元するバックアップのIDを指定してバックアップを復元します:
 
 {{< alert type="warning" >}}
 
@@ -101,7 +142,7 @@ sudo gitlab-ctl status
 sudo gitlab-backup restore BACKUP=11493107454_2018_04_25_10.6.4-ce
 ```
 
-バックアップのtarファイルと現在インストールされているGitLabのバージョンが一致しない場合、復元コマンドは中止され、次のエラーメッセージが表示されます。
+バックアップのtarファイルと現在インストールされているGitLabのバージョンが一致しない場合、復元コマンドは中止され、次のエラーメッセージが表示されます:
 
 ```plaintext
 GitLab version mismatch:
@@ -110,7 +151,7 @@ GitLab version mismatch:
   version: 16.4.3-ee
 ```
 
-[正しいバージョンのGitLab](https://packages.gitlab.com/gitlab/)をインストールしてから、再度試してください。
+正しいGitLabバージョンをインストールしてから、再度試してください。
 
 {{< alert type="warning" >}}
 
@@ -118,26 +159,26 @@ GitLab version mismatch:
 
 {{< /alert >}}
 
-PostgreSQLノードでreconfigureを実行します。
+PostgreSQLノードでreconfigureを実行します:
 
 ```shell
 sudo gitlab-ctl reconfigure
 ```
 
-次に、GitLabを起動して[確認](../raketasks/maintenance.md#check-gitlab-configuration)します。
+次に、GitLabを起動して確認します:
 
 ```shell
 sudo gitlab-ctl start
 sudo gitlab-rake gitlab:check SANITIZE=true
 ```
 
-特に`/etc/gitlab/gitlab-secrets.json`が復元された場合、または別のサーバーが復元先である場合は、[データベースの値を復号化できる](../raketasks/check.md#verify-database-values-can-be-decrypted-using-the-current-secrets)ことを確認します。
+特に`/etc/gitlab/gitlab-secrets.json`が復元された場合、または別のサーバーが復元先である場合は、データベースの暗号化キーを復号化できることを確認します。
 
 ```shell
 sudo gitlab-rake gitlab:doctor:secrets
 ```
 
-さらに確実性を高めるため、[アップロードされたファイルの整合性チェック](../raketasks/check.md#uploaded-files-integrity)を実行できます。
+さらに確実性を高めるため、復元されたファイルの整合性チェックを実行できます:
 
 ```shell
 sudo gitlab-rake gitlab:artifacts:check
@@ -145,16 +186,22 @@ sudo gitlab-rake gitlab:lfs:check
 sudo gitlab-rake gitlab:uploads:check
 ```
 
-復元が完了したら、データベース統計を生成することが推奨されます。これにより、データベースのパフォーマンスが向上し、UIの不整合を防ぐことができます。
+復元が完了したら、データベース統計を生成することが推奨されます。これにより、データベースのパフォーマンスが向上し、UIの不整合を防ぐことができます:
 
 1. [データベースコンソール](https://docs.gitlab.com/omnibus/settings/database.html#connecting-to-the-postgresql-database)に入ります。
-1. 次を実行します。
+1. 次を実行します:
 
    ```sql
    SET STATEMENT_TIMEOUT=0 ; ANALYZE VERBOSE;
    ```
 
 このコマンドを復元コマンドに統合することについて、現在も議論が続いています。詳細については、[イシュー276184](https://gitlab.com/gitlab-org/gitlab/-/issues/276184)を参照してください。
+
+復元後の検証ガイド:
+
+- [GitLab設定](../raketasks/maintenance.md#check-gitlab-configuration)
+- [データベースの値が復号化できることを確認する](../raketasks/check.md#verify-database-values-can-be-decrypted-using-the-current-secrets)
+- [アップロードされた](../raketasks/check.md#uploaded-files-integrity)ファイルの整合性チェック:
 
 ## DockerイメージインストールおよびGitLab HelmチャートインストールのGitLabを復元する {#restore-for-docker-image-and-gitlab-helm-chart-installations}
 
@@ -170,14 +217,14 @@ GitLab Helmチャートでは、[GitLab Helmチャートインストールを復
 
 [Docker Swarm](../../install/docker/installation.md#install-gitlab-by-using-docker-swarm-mode)を使用している場合、復元プロセス中にPumaがシャットダウンされるため、コンテナのヘルスチェックに失敗し、コンテナが再起動する可能性があります。この問題を回避するには、ヘルスチェックメカニズムを一時的に無効にします。
 
-1. `docker-compose.yml`を編集します。
+1. `docker-compose.yml`を編集します:
 
    ```yaml
    healthcheck:
      disable: true
    ```
 
-1. スタックをデプロイします。
+1. スタックをデプロイします:
 
    ```shell
    docker stack deploy --compose-file docker-compose.yml mystack
@@ -185,7 +232,7 @@ GitLab Helmチャートでは、[GitLab Helmチャートインストールを復
 
 詳細については、[イシュー6846](https://gitlab.com/gitlab-org/omnibus-gitlab/-/issues/6846 "GitLabの復元がgitlab-healthcheckのために失敗する可能性がある")を参照してください。
 
-ホストから復元タスクを実行できます。
+ホストから復元タスクを実行できます:
 
 ```shell
 # Stop the processes that are connected to the database
@@ -207,66 +254,67 @@ docker exec -it <name of container> gitlab-rake gitlab:check SANITIZE=true
 
 ## 自己コンパイルによるインストールのGitLabを復元する {#restore-for-self-compiled-installations}
 
-まず、バックアップのtarファイルが、`gitlab.yml`設定で指定されたバックアップディレクトリにあることを確認します。
+1. まず、バックアップのtarファイルが、`gitlab.yml`設定で指定されたバックアップディレクトリにあることを確認します:
 
-```yaml
-## Backup settings
-backup:
-  path: "tmp/backups"   # Relative paths are relative to Rails.root (default: tmp/backups/)
-```
+   ```yaml
+   ## Backup settings
+   backup:
+     path: "tmp/backups"   # Relative paths are relative to Rails.root (default: tmp/backups/)
+   ```
 
-デフォルトは`/home/git/gitlab/tmp/backups`で、`git`ユーザーが所有している必要があります。これで、バックアップ手順を開始できます。
+   デフォルトは`/home/git/gitlab/tmp/backups`で、`git`ユーザーが所有している必要があります。
 
-```shell
-# Stop processes that are connected to the database
-sudo service gitlab stop
+1. バックアップ手順を開始します:
 
-sudo -u git -H bundle exec rake gitlab:backup:restore RAILS_ENV=production
-```
+   ```shell
+   # Stop processes that are connected to the database
+   sudo service gitlab stop
 
-出力例:
+   sudo -u git -H bundle exec rake gitlab:backup:restore RAILS_ENV=production
+   ```
 
-```plaintext
-Unpacking backup... [DONE]
-Restoring database tables:
--- create_table("events", {:force=>true})
-   -> 0.2231s
-[...]
-- Loading fixture events...[DONE]
-- Loading fixture issues...[DONE]
-- Loading fixture keys...[SKIPPING]
-- Loading fixture merge_requests...[DONE]
-- Loading fixture milestones...[DONE]
-- Loading fixture namespaces...[DONE]
-- Loading fixture notes...[DONE]
-- Loading fixture projects...[DONE]
-- Loading fixture protected_branches...[SKIPPING]
-- Loading fixture schema_migrations...[DONE]
-- Loading fixture services...[SKIPPING]
-- Loading fixture snippets...[SKIPPING]
-- Loading fixture taggings...[SKIPPING]
-- Loading fixture tags...[SKIPPING]
-- Loading fixture users...[DONE]
-- Loading fixture users_projects...[DONE]
-- Loading fixture web_hooks...[SKIPPING]
-- Loading fixture wikis...[SKIPPING]
-Restoring repositories:
-- Restoring repository abcd... [DONE]
-- Object pool 1 ...
-Deleting tmp directories...[DONE]
-```
+   出力例: 
 
-次に、[前述のように](#restore-prerequisites)、必要に応じて`/home/git/gitlab/.secret`を復元します。
+   ```plaintext
+   Unpacking backup... [DONE]
+   Restoring database tables:
+   -- create_table("events", {:force=>true})
+     -> 0.2231s
+   [...]
+   - Loading fixture events...[DONE]
+   - Loading fixture issues...[DONE]
+   - Loading fixture keys...[SKIPPING]
+   - Loading fixture merge_requests...[DONE]
+   - Loading fixture milestones...[DONE]
+   - Loading fixture namespaces...[DONE]
+   - Loading fixture notes...[DONE]
+   - Loading fixture projects...[DONE]
+   - Loading fixture protected_branches...[SKIPPING]
+   - Loading fixture schema_migrations...[DONE]
+   - Loading fixture services...[SKIPPING]
+   - Loading fixture snippets...[SKIPPING]
+   - Loading fixture taggings...[SKIPPING]
+   - Loading fixture tags...[SKIPPING]
+   - Loading fixture users...[DONE]
+   - Loading fixture users_projects...[DONE]
+   - Loading fixture web_hooks...[SKIPPING]
+   - Loading fixture wikis...[SKIPPING]
+   Restoring repositories:
+   - Restoring repository abcd... [DONE]
+   - Object pool 1 ...
+   Deleting tmp directories...[DONE]
+   ```
 
-GitLabを再起動します。
+1. 必要に応じて`/home/git/gitlab/.secret`を復元します。
+1. GitLabを再起動します:
 
-```shell
-sudo service gitlab restart
-```
+   ```shell
+   sudo service gitlab restart
+   ```
 
 ## バックアップから1つまたは少数のプロジェクトまたはグループのみを復元する {#restoring-only-one-or-a-few-projects-or-groups-from-a-backup}
 
-GitLabインスタンスの復元に使用するRakeタスクは、単一のプロジェクトまたはグループの復元をサポートしていません。しかし回避策として、バックアップを別の一時的なGitLabインスタンスに復元し、そこからプロジェクトまたはグループをエクスポートすることが可能です。
+GitLabインスタンスの復元に使用するRakeタスクは、単一のプロジェクトまたはグループの復元をサポートしていません。しかし回避策として、バックアップを別の一時的なGitLabインスタンスに復元し、そこからプロジェクトまたはグループをエクスポートすることが可能です:
 
 1. 復元対象のバックアップされたインスタンスと同じバージョンの[GitLabを新たにインストール](../../install/_index.md)します。
 1. この新しいインスタンスにバックアップを復元し、そこから[プロジェクト](../../user/project/settings/import_export.md)または[グループ](../../user/project/settings/import_export.md#migrate-groups-by-uploading-an-export-file-deprecated)をエクスポートします。エクスポートされる項目とされない項目の詳細については、エクスポート機能のドキュメントを参照してください。
@@ -289,9 +337,9 @@ GitLabインスタンスの復元に使用するRakeタスクは、単一のプ�
 
 ### 復元中にプロンプトを無効にする {#disable-prompts-during-restore}
 
-バックアップからの復元中、復元スクリプトは次のタイミングで確認のプロンプトを表示します。
+バックアップからの復元中、復元スクリプトは次のタイミングで確認のプロンプトを表示します:
 
-- **authorized_keysへの書き込み**設定が有効になっている場合は、復元スクリプトが`authorized_keys`ファイルを削除して再構築する前。
+- **Write to authorized_keys**（authorized_keysへの書き込み）設定が有効になっている場合は、復元スクリプトが`authorized_keys`ファイルを削除して再構築する前。
 - データベースの復元時、復元スクリプトが既存のテーブルをすべて削除する前。
 - データベースの復元後、スキーマの復元でエラーが発生し、続行するとさらに問題が発生する可能性がある場合。
 
@@ -313,7 +361,7 @@ GitLabインスタンスの復元に使用するRakeタスクは、単一のプ�
 
 ### 復元時にタスクを除外する {#excluding-tasks-on-restore}
 
-環境変数`SKIP`を追加して、復元時に特定のタスクを除外できます。この変数の値には、次のオプションのカンマ区切りリストを指定します。
+環境変数`SKIP`を追加して、復元時に特定のタスクを除外できます。この変数の値には、次のオプションのカンマ区切りリストを指定します:
 
 - `db`（データベース）
 - `uploads`（添付ファイル）
@@ -326,7 +374,7 @@ GitLabインスタンスの復元に使用するRakeタスクは、単一のプ�
 - `repositories`（Gitリポジトリデータ）
 - `packages`（パッケージ）
 
-特定のタスクを除外するには、次の手順に従います。
+特定のタスクを除外するには、次の手順に従います:
 
 - Linuxパッケージインストール:
 
@@ -356,7 +404,7 @@ GitLab 17.1以前は、データ損失を引き起こす可能性のある[競�
 
 [複数のリポジトリのストレージ](../repository_storage_paths.md)を使用している場合、`REPOSITORIES_STORAGES`オプションを使用することで、特定のリポジトリのストレージにあるリポジトリを個別に復元できます。このオプションは、カンマ区切りのストレージ名のリストを受け入れます。
 
-次に例を示します。
+次に例を示します:
 
 - Linuxパッケージインストール:
 
@@ -392,7 +440,7 @@ GitLab 17.1以前は、データ損失を引き起こす可能性のある[競�
 
 {{< /alert >}}
 
-たとえば、グループA（`group-a`）内のすべてのプロジェクトのすべてのリポジトリと、グループB（`group-b/project-c`）内のプロジェクトCのリポジトリを復元し、グループA（`group-a/project-d`）内のプロジェクトDをスキップする場合、次のように指定します。
+たとえば、グループA（`group-a`）内のすべてのプロジェクトのすべてのリポジトリと、グループB（`group-b/project-c`）内のプロジェクトCのリポジトリを復元し、グループA（`group-a/project-d`）内のプロジェクトDをスキップする場合、次のように指定します:
 
 - Linuxパッケージインストール:
 
@@ -410,7 +458,7 @@ GitLab 17.1以前は、データ損失を引き起こす可能性のある[競�
 
 [展開済みバックアップ](backup_gitlab.md#skipping-tar-creation)（`SKIP=tar`を使用して作成）が見つかり、`BACKUP=<backup-id>`で特定のバックアップが指定されていない場合は、その展開済みバックアップが使用されます。
 
-次に例を示します。
+次に例を示します:
 
 - Linuxパッケージインストール:
 
@@ -438,7 +486,7 @@ GitLab 17.1以前は、データ損失を引き起こす可能性のある[競�
 サーバー側のバックアップを収集すると、復元プロセスは、[サーバー側のリポジトリのバックアップを作成する](backup_gitlab.md#create-server-side-repository-backups)に示されているサーバー側の復元メカニズムをデフォルトで使用します。各リポジトリをホストするGitalyノードが、必要なバックアップデータをオブジェクトストレージから直接プルできるように、バックアップの復元を設定できます。
 
 1. [Gitalyでサーバー側のバックアップ先を設定](../gitaly/configure_gitaly.md#configure-server-side-backups)します。
-1. サーバー側のバックアップ復元プロセスを開始し、復元する[バックアップのID](backup_archive_process.md#backup-id)を指定します。
+1. サーバー側のバックアップ復元プロセスを開始し、復元する[バックアップのID](backup_archive_process.md#backup-id)を指定します:
 
 {{< tabs >}}
 
@@ -476,7 +524,7 @@ kubectl exec <Toolbox pod name> -it -- backup-utility --restore -t <backup_ID> -
 
 ### Linuxパッケージインストール環境でデータベースバックアップの復元時に出力される警告 {#restoring-database-backup-using-output-warnings-from-a-linux-package-installation}
 
-バックアップの復元手順を使用している場合、次のような警告メッセージが表示されることがあります。
+バックアップの復元手順を使用している場合、次のような警告メッセージが表示されることがあります:
 
 ```plaintext
 ERROR: must be owner of extension pg_trgm
@@ -490,7 +538,7 @@ WARNING:  no privileges were granted for "public" (two occurrences)
 
 Rakeタスクは`gitlab`ユーザーとして実行されますが、このユーザーにはデータベースに対するスーパーユーザーアクセス権がありません。復元が開始される際も同様に`gitlab`ユーザーとして実行されますが、アクセス権のないオブジェクトを変更しようとします。これらのオブジェクトは、データベースのバックアップや復元には影響しませんが、警告メッセージが表示されます。
 
-詳細については、以下を参照してください。
+詳細については、以下を参照してください:
 
 - PostgreSQLイシュートラッカー:
   - [スーパーユーザーではない](https://www.postgresql.org/message-id/201110220712.30886.adrian.klaver@gmail.com)。
@@ -500,13 +548,13 @@ Rakeタスクは`gitlab`ユーザーとして実行されますが、このユ�
 
 ### Gitサーバーフックが原因で復元が失敗する {#restoring-fails-due-to-git-server-hook}
 
-バックアップから復元する際に次の条件に当てはまる場合、エラーが発生することがあります。
+バックアップから復元する際に次の条件に当てはまる場合、エラーが発生することがあります:
 
 - Gitサーバーフック（`custom_hook`）が、[GitLabバージョン15.10以前](../server_hooks.md)の方法で設定されている
 - 使用しているGitLabバージョンが15.11以降である
 - GitLabの管理下にないディレクトリへのシンボリックリンクを作成している
 
-次のようなエラーが出力されます。
+次のようなエラーが出力されます:
 
 ```plaintext
 {"level":"fatal","msg":"restore: pipeline: 1 failures encountered:\n - @hashed/path/to/hashed_repository.git (path/to_project): manager: restore custom hooks, \"@hashed/path/to/hashed_repository/<BackupID>_<GitLabVersion>-ee/001.custom_hooks.tar\": rpc error: code = Internal desc = setting custom hooks: generating prepared vote: walking directory: copying file to hash: read /mnt/gitlab-app/git-data/repositories/+gitaly/tmp/default-repositories.old.<timestamp>.<temporaryfolder>/custom_hooks/compliance-triggers.d: is a directory\n","pid":3256017,"time":"2023-08-10T20:09:44.395Z"}

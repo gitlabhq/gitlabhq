@@ -80,23 +80,5 @@ RSpec.describe Packages::Nuget::CreateDependencyService, feature_category: :pack
         subject
       end
     end
-
-    context 'when persist_nuget_packages_empty_target_frameworks feature flag is disabled' do
-      let(:dependencies) do
-        [
-          { name: 'Moqi', version: '2.5.6' },
-          { name: ::Packages::Nuget::EMPTY_DEPENDENCY_PREFIX, target_framework: '.NETStandard2.0' },
-          { name: 'Newtonsoft.Json', version: '12.0.3', target_framework: 'SomeOtherTargetFramework' }
-        ]
-      end
-
-      before do
-        stub_feature_flags(persist_nuget_packages_empty_target_frameworks: false)
-      end
-
-      it_behaves_like 'creating dependencies, links and nuget metadata for', %w[Moqi Newtonsoft.Json], 2, 2 do
-        let(:dependencies_with_metadata) { [dependencies.last] }
-      end
-    end
   end
 end

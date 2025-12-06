@@ -13,7 +13,7 @@ title: タグAPI
 
 {{< /details >}}
 
-タグAPIを使用して、Gitタグを作成、管理、削除します。このAPIは、署名付きタグのX.509署名情報も返します。
+このAPIを使用して、[Gitタグ](../user/project/repository/tags/_index.md)を管理します。このAPIは、署名付きタグのX.509署名情報も返します。
 
 ## プロジェクトリポジトリタグをリストする {#list-project-repository-tags}
 
@@ -37,20 +37,22 @@ GET /projects/:id/repository/tags
 
 サポートされている属性:
 
-| 属性  | 型              | 必須 | 説明 |
-|------------|-------------------|----------|-------------|
-| `id`       | 整数または文字列 | はい      | プロジェクトのID、または[URLエンコードされたパス](rest/_index.md#namespaced-paths)。 |
-| `order_by` | 文字列            | いいえ       | `name`、`updated`、`version`のいずれかで並べ替えられたタグを返します。デフォルトは`updated`です。 |
-| `search`   | 文字列            | いいえ       | 検索条件に一致するタグの一覧を返します。`^term`と`term$`を使用して、`term`で始まるタグと終わるタグを検索できます。他の正規表現はサポートされていません。 |
-| `sort`     | 文字列            | いいえ       | `asc`または`desc`の順にソートされたタグを返します。デフォルトは`desc`です。 |
+| 属性    | 型              | 必須 | 説明 |
+|--------------|-------------------|----------|-------------|
+| `id`         | 整数または文字列 | はい      | プロジェクトのIDまたは[URLエンコードされたパス](rest/_index.md#namespaced-paths)。 |
+| `order_by`   | 文字列            | いいえ       | `name`、`updated`、または`version`でタグを並べ替えて返します。`version`は、セマンティックバージョン番号で並べ替えます。デフォルトは`updated`です。 |
+| `page`       | 整数           | いいえ       | ページネーションの現在のページ番号。デフォルトは`1`です。 |
+| `page_token` | 文字列            | いいえ       | ページネーションを開始するタグの名前。キーセットページネーションに使用されます。 |
+| `search`     | 文字列            | いいえ       | 検索条件に一致するタグの一覧を返します。`^term`と`term$`を使用して、`term`で始まるタグと終わるタグを検索できます。他の正規表現はサポートされていません。 |
+| `sort`       | 文字列            | いいえ       | `asc`または`desc`の順にソートされたタグを返します。デフォルトは`desc`です。 |
 
-成功した場合は、[`200 OK`](rest/troubleshooting.md#status-codes)と以下のレスポンス属性が返されます。
+成功した場合は、[`200 OK`](rest/troubleshooting.md#status-codes)と以下のレスポンス属性が返されます:
 
 | 属性                | 型    | 説明 |
 |--------------------------|---------|-------------|
 | `commit`                 | オブジェクト  | タグに関連付けられたコミット情報。 |
-| `commit.author_email`    | 文字列  | コミット作成者のメールアドレス。 |
-| `commit.author_name`     | 文字列  | コミット作成者の名前。 |
+| `commit.author_email`    | 文字列  | コミットの作成者のメールアドレス。 |
+| `commit.author_name`     | 文字列  | コミットの作成者名。 |
 | `commit.authored_date`   | 文字列  | コミットがISO 8601形式で作成された日付。 |
 | `commit.committed_date`  | 文字列  | コミットがISO 8601形式でコミットされた日付。 |
 | `commit.committer_email` | 文字列  | コミッターのメールアドレス。 |
@@ -77,7 +79,7 @@ curl --header "PRIVATE-TOKEN: <your_access_token>" \
     --url "https://gitlab.example.com/api/v4/projects/5/repository/tags"
 ```
 
-応答例:
+レスポンス例:
 
 ```json
 [
@@ -129,16 +131,16 @@ GET /projects/:id/repository/tags/:tag_name
 
 | 属性  | 型              | 必須 | 説明 |
 |------------|-------------------|----------|-------------|
-| `id`       | 整数または文字列 | はい      | プロジェクトのID、または[URLエンコードされたパス](rest/_index.md#namespaced-paths)。 |
+| `id`       | 整数または文字列 | はい      | プロジェクトのIDまたは[URLエンコードされたパス](rest/_index.md#namespaced-paths)。 |
 | `tag_name` | 文字列            | はい      | タグの名前。 |
 
-成功した場合は、[`200 OK`](rest/troubleshooting.md#status-codes)と以下のレスポンス属性が返されます。
+成功した場合は、[`200 OK`](rest/troubleshooting.md#status-codes)と以下のレスポンス属性が返されます:
 
 | 属性                | 型    | 説明 |
 |--------------------------|---------|-------------|
 | `commit`                 | オブジェクト  | タグに関連付けられたコミット情報。 |
-| `commit.author_email`    | 文字列  | コミット作成者のメールアドレス。 |
-| `commit.author_name`     | 文字列  | コミット作成者の名前。 |
+| `commit.author_email`    | 文字列  | コミットの作成者のメールアドレス。 |
+| `commit.author_name`     | 文字列  | コミットの作成者名。 |
 | `commit.authored_date`   | 文字列  | コミットがISO 8601形式で作成された日付。 |
 | `commit.committed_date`  | 文字列  | コミットがISO 8601形式でコミットされた日付。 |
 | `commit.committer_email` | 文字列  | コミッターのメールアドレス。 |
@@ -163,7 +165,7 @@ curl --header "PRIVATE-TOKEN: <your_access_token>" \
   --url "https://gitlab.example.com/api/v4/projects/5/repository/tags/v1.0.0"
 ```
 
-応答例:
+レスポンス例:
 
 ```json
 {
@@ -210,18 +212,18 @@ POST /projects/:id/repository/tags
 
 | 属性  | 型              | 必須 | 説明 |
 |------------|-------------------|----------|-------------|
-| `id`       | 整数または文字列 | はい      | プロジェクトのID、または[URLエンコードされたパス](rest/_index.md#namespaced-paths)。 |
+| `id`       | 整数または文字列 | はい      | プロジェクトのIDまたは[URLエンコードされたパス](rest/_index.md#namespaced-paths)。 |
 | `ref`      | 文字列            | はい      | コミットSHA、別のタグ名、またはブランチ名からタグを作成します。 |
 | `tag_name` | 文字列            | はい      | タグの名前。 |
 | `message`  | 文字列            | いいえ       | 注釈付きタグを作成します。 |
 
-成功した場合は、[`201 Created`](rest/troubleshooting.md#status-codes)と以下のレスポンス属性が返されます。
+成功した場合は、[`201 Created`](rest/troubleshooting.md#status-codes)と以下のレスポンス属性が返されます:
 
 | 属性                | 型    | 説明 |
 |--------------------------|---------|-------------|
 | `commit`                 | オブジェクト  | タグに関連付けられたコミット情報。 |
-| `commit.author_email`    | 文字列  | コミット作成者のメールアドレス。 |
-| `commit.author_name`     | 文字列  | コミット作成者の名前。 |
+| `commit.author_email`    | 文字列  | コミットの作成者のメールアドレス。 |
+| `commit.author_name`     | 文字列  | コミットの作成者名。 |
 | `commit.authored_date`   | 文字列  | コミットがISO 8601形式で作成された日付。 |
 | `commit.committed_date`  | 文字列  | コミットがISO 8601形式でコミットされた日付。 |
 | `commit.committer_email` | 文字列  | コミッターのメールアドレス。 |
@@ -247,7 +249,7 @@ curl --request POST \
   --url "https://gitlab.example.com/api/v4/projects/5/repository/tags?tag_name=test&ref=main"
 ```
 
-応答例:
+レスポンス例:
 
 ```json
 {
@@ -276,7 +278,7 @@ curl --request POST \
 }
 ```
 
-作成されたタグの種類によって、`created_at`、`target`、および`message`の内容が決まります。
+作成されたタグの種類によって、`created_at`、`target`、および`message`の内容が決まります:
 
 - 注釈付きタグの場合:
   - `created_at`には、タグ作成時のタイムスタンプが含まれています。
@@ -301,7 +303,7 @@ DELETE /projects/:id/repository/tags/:tag_name
 
 | 属性  | 型              | 必須 | 説明 |
 |------------|-------------------|----------|-------------|
-| `id`       | 整数または文字列 | はい      | プロジェクトのID、または[URLエンコードされたパス](rest/_index.md#namespaced-paths)。 |
+| `id`       | 整数または文字列 | はい      | プロジェクトのIDまたは[URLエンコードされたパス](rest/_index.md#namespaced-paths)。 |
 | `tag_name` | 文字列            | はい      | タグの名前。 |
 
 ## タグのX.509署名を取得する {#get-x509-signature-of-a-tag}
@@ -316,15 +318,15 @@ GET /projects/:id/repository/tags/:tag_name/signature
 
 | 属性  | 型              | 必須 | 説明 |
 |------------|-------------------|----------|-------------|
-| `id`       | 整数または文字列 | はい      | プロジェクトのID、または[URLエンコードされたパス](rest/_index.md#namespaced-paths)。 |
+| `id`       | 整数または文字列 | はい      | プロジェクトのIDまたは[URLエンコードされたパス](rest/_index.md#namespaced-paths)。 |
 | `tag_name` | 文字列            | はい      | タグの名前。 |
 
-成功した場合は、[`200 OK`](rest/troubleshooting.md#status-codes)と以下のレスポンス属性が返されます。
+成功した場合は、[`200 OK`](rest/troubleshooting.md#status-codes)と以下のレスポンス属性が返されます:
 
 | 属性                                             | 型    | 説明 |
 |-------------------------------------------------------|---------|-------------|
 | `signature_type`                                      | 文字列  | 署名のタイプ（`X509`）。 |
-| `verification_status`                                 | 文字列  | 署名の検証ステータス。 |
+| `verification_status`                                 | 文字列  | 署名の検証状態。 |
 | `x509_certificate`                                    | オブジェクト  | X.509証明書情報。 |
 | `x509_certificate.certificate_status`                 | 文字列  | 証明書のステータス。 |
 | `x509_certificate.email`                              | 文字列  | 証明書からのメールアドレス。 |

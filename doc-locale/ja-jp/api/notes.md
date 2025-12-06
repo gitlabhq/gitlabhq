@@ -12,15 +12,15 @@ title: ノートAPI
 
 {{< /details >}}
 
-ノートAPIは、GitLabコンテンツにアタッチされたコメントとシステムレコードを管理します。ノートAPIの機能は次のとおりです。
+このAPIを使用して、GitLabコンテンツに添付されたコメントとシステムレコードを管理します。次のことができます: 
 
-- イシュー、マージリクエスト、エピック、スニペット、コミットに関するコメントを作成したり、変更したりします。
-- オブジェクトの変更に関する[システム生成ノート](../user/project/system_notes.md)を取得します。
-- ソートとページネーションのオプションを提供します。
-- 非公開フラグと内部フラグにより表示レベルを制御します。
-- 不正利用を防ぐために、レート制限をサポートします。
+- イシュー、マージリクエスト、エピック、スニペット、コミットに関するコメントを作成、変更します。
+- オブジェクトの変更に関する[システム生成ノート](../user/project/system_notes.md)を取得する。
+- 結果をソートしてページ分割します。
+- 機密および内部フラグで表示レベルを制御します。
+- レート制限による不正利用を防ぎます。
 
-一部のシステム生成ノートは、個別のリソースイベントとして追跡されます。
+一部のシステム生成ノートは、個別のリソースイベントとして追跡されます:
 
 - [リソースラベルイベント](resource_label_events.md)
 - [リソース状態イベント](resource_state_events.md)
@@ -32,7 +32,7 @@ APIの結果はページネーションされるため、デフォルトでは�
 
 ## リソースイベント {#resource-events}
 
-一部のシステムノートはこのAPIの一部ではありませんが、個別のイベントとして記録されます。
+一部のシステムノートはこのAPIの一部ではありませんが、個別のイベントとして記録されます:
 
 - [リソースラベルイベント](resource_label_events.md)
 - [リソース状態イベント](resource_state_events.md)
@@ -59,14 +59,16 @@ APIの結果はページネーションされるため、デフォルトでは�
 ```plaintext
 GET /projects/:id/issues/:issue_iid/notes
 GET /projects/:id/issues/:issue_iid/notes?sort=asc&order_by=updated_at
+GET /projects/:id/issues/:issue_iid/notes?activity_filter=only_comments
 ```
 
 | 属性   | 型              | 必須 | 説明 |
 |-------------|-------------------|----------|-------------|
 | `id`        | 整数または文字列 | はい      | プロジェクトのIDまたは[URLエンコードされたパス](rest/_index.md#namespaced-paths) |
 | `issue_iid` | 整数           | はい      | イシューのIID |
-| `sort`      | 文字列            | いいえ       | `asc`または`desc`の順にソートされたイシューノートを返します。デフォルトは`desc`です。 |
-| `order_by`  | 文字列            | いいえ       | `created_at`フィールドまたは`updated_at`フィールドで順序付けられたイシューノートを返します。デフォルトは`created_at`です。 |
+| `activity_filter` | 文字列      | いいえ       | アクティビティーの種類でノートをフィルタリングします。有効な値: `all_notes`、`only_comments`、`only_activity`。デフォルトは`all_notes`です |
+| `sort`      | 文字列            | いいえ       | `asc`または`desc`の順にソートされたイシューノートを返します。デフォルトは`desc`です |
+| `order_by`  | 文字列            | いいえ       | `created_at`フィールドまたは`updated_at`フィールドで順序付けられたイシューノートを返します。デフォルトは`created_at`です |
 
 ```json
 [
@@ -159,8 +161,8 @@ POST /projects/:id/issues/:issue_iid/notes
 
 | 属性      | 型              | 必須 | 説明 |
 |----------------|-------------------|----------|-------------|
-| `id`           | 整数または文字列 | はい      | プロジェクトのIDまたは[URLエンコードされたパス](rest/_index.md#namespaced-paths) |
-| `issue_iid`    | 整数           | はい      | イシューのIID |
+| `id`           | 整数または文字列 | はい      | プロジェクトのIDまたは[URLエンコードされたパス](rest/_index.md#namespaced-paths)。 |
+| `issue_iid`    | 整数           | はい      | イシューのIID。 |
 | `body`         | 文字列            | はい      | ノートのコンテンツ。1,000,000文字に制限されています。 |
 | `confidential` | ブール値           | いいえ       | **非推奨**: GitLab 16.0で削除され、`internal`に名称変更される予定です。ノートの非公開フラグ。デフォルトはfalseです。 |
 | `internal`     | ブール値           | いいえ       | ノートの内部フラグ。両方のパラメータが送信された場合、`confidential`を上書きします。デフォルトはfalseです。 |
@@ -183,8 +185,8 @@ PUT /projects/:id/issues/:issue_iid/notes/:note_id
 
 | 属性      | 型              | 必須 | 説明 |
 |----------------|-------------------|----------|-------------|
-| `id`           | 整数または文字列 | はい      | プロジェクトのIDまたは[URLエンコードされたパス](rest/_index.md#namespaced-paths) |
-| `issue_iid`    | 整数           | はい      | イシューのIID |
+| `id`           | 整数または文字列 | はい      | プロジェクトのIDまたは[URLエンコードされたパス](rest/_index.md#namespaced-paths)。 |
+| `issue_iid`    | 整数           | はい      | イシューのIID。 |
 | `note_id`      | 整数           | はい      | ノートのID。 |
 | `body`         | 文字列            | いいえ       | ノートのコンテンツ。1,000,000文字に制限されています。 |
 | `confidential` | ブール値           | いいえ       | **非推奨**: GitLab 16.0で削除される予定です。ノートの非公開フラグ。デフォルトはfalseです。 |
@@ -232,8 +234,8 @@ GET /projects/:id/snippets/:snippet_id/notes?sort=asc&order_by=updated_at
 |--------------|-------------------|----------|-------------|
 | `id`         | 整数または文字列 | はい      | プロジェクトのIDまたは[URLエンコードされたパス](rest/_index.md#namespaced-paths) |
 | `snippet_id` | 整数           | はい      | プロジェクトスニペットのID |
-| `sort`       | 文字列            | いいえ       | `asc`または`desc`の順にソートされたスニペットノートを返します。デフォルトは`desc`です。 |
-| `order_by`   | 文字列            | いいえ       | `created_at`フィールドまたは`updated_at`フィールドで順序付けられたスニペットノートを返します。デフォルトは`created_at`です。 |
+| `sort`       | 文字列            | いいえ       | `asc`または`desc`の順にソートされたスニペットノートを返します。デフォルトは`desc`です |
+| `order_by`   | 文字列            | いいえ       | `created_at`フィールドまたは`updated_at`フィールドで順序付けられたスニペットノートを返します。デフォルトは`created_at`です |
 
 ```shell
 curl --header "PRIVATE-TOKEN: <your_access_token>" \
@@ -368,8 +370,8 @@ GET /projects/:id/merge_requests/:merge_request_iid/notes?sort=asc&order_by=upda
 |---------------------|-------------------|----------|-------------|
 | `id`                | 整数または文字列 | はい      | プロジェクトのIDまたは[URLエンコードされたパス](rest/_index.md#namespaced-paths) |
 | `merge_request_iid` | 整数           | はい      | プロジェクトマージリクエストのIID |
-| `sort`              | 文字列            | いいえ       | `asc`または`desc`の順にソートされたマージリクエストノートを返します。デフォルトは`desc`です。 |
-| `order_by`          | 文字列            | いいえ       | `created_at`フィールドまたは`updated_at`フィールドで順序付けられたマージリクエストノートを返します。デフォルトは`created_at`です。 |
+| `sort`              | 文字列            | いいえ       | `asc`または`desc`の順にソートされたマージリクエストノートを返します。デフォルトは`desc`です |
+| `order_by`          | 文字列            | いいえ       | `created_at`フィールドまたは`updated_at`フィールドで順序付けられたマージリクエストノートを返します。デフォルトは`created_at`です |
 
 ```shell
 curl --header "PRIVATE-TOKEN: <your_access_token>" \
@@ -526,8 +528,8 @@ GET /groups/:id/epics/:epic_id/notes?sort=asc&order_by=updated_at
 |------------|-------------------|----------|-------------|
 | `id`       | 整数または文字列 | はい      | グループのIDまたは[URLエンコードされたパス](rest/_index.md#namespaced-paths) |
 | `epic_id`  | 整数           | はい      | グループエピックのID |
-| `sort`     | 文字列            | いいえ       | `asc`または`desc`の順にソートされたエピックノートを返します。デフォルトは`desc`です。 |
-| `order_by` | 文字列            | いいえ       | `created_at`フィールドまたは`updated_at`フィールドで順序付けられたエピックノートを返します。デフォルトは`created_at`です。 |
+| `sort`     | 文字列            | いいえ       | `asc`または`desc`の順にソートされたエピックノートを返します。デフォルトは`desc`です |
+| `order_by` | 文字列            | いいえ       | `created_at`フィールドまたは`updated_at`フィールドで順序付けられたエピックノートを返します。デフォルトは`created_at`です |
 
 ```shell
 curl --header "PRIVATE-TOKEN: <your_access_token>" \
@@ -672,8 +674,8 @@ GET /projects/:id/wiki_pages/:wiki_page_meta_id/notes?sort=asc&order_by=updated_
 |------------|-------------------|----------|-------------|
 | `id`       | 整数または文字列 | はい      | プロジェクトのIDまたは[URLエンコードされたパス](rest/_index.md#namespaced-paths) |
 | `wiki_page_meta_id`  | 整数           | はい      | WikiページのメタID |
-| `sort`     | 文字列            | いいえ       | `asc`または`desc`の順にソートされたWikiページノートを返します。デフォルトは`desc`です。 |
-| `order_by` | 文字列            | いいえ       | `created_at`フィールドまたは`updated_at`フィールドで順序付けられたWikiページノートを返します。デフォルトは`created_at`です。 |
+| `sort`     | 文字列            | いいえ       | `asc`または`desc`の順にソートされたWikiページノートを返します。デフォルトは`desc`です |
+| `order_by` | 文字列            | いいえ       | `created_at`フィールドまたは`updated_at`フィールドで順序付けられたWikiページノートを返します。デフォルトは`created_at`です |
 
 ```shell
 curl --header "PRIVATE-TOKEN: <your_access_token>" \
@@ -822,8 +824,8 @@ GET /groups/:id/wiki_pages/:wiki_page_meta_id/notes?sort=asc&order_by=updated_at
 |------------|-------------------|----------|-------------|
 | `id`       | 整数または文字列 | はい      | グループのIDまたは[URLエンコードされたパス](rest/_index.md#namespaced-paths) |
 | `wiki_page_meta_id`  | 整数           | はい      | WikiページのメタID |
-| `sort`     | 文字列            | いいえ       | `asc`または`desc`の順にソートされたWikiページノートを返します。デフォルトは`desc`です。 |
-| `order_by` | 文字列            | いいえ       | `created_at`フィールドまたは`updated_at`フィールドで順序付けられたWikiページノートを返します。デフォルトは`created_at`です。 |
+| `sort`     | 文字列            | いいえ       | `asc`または`desc`の順にソートされたWikiページノートを返します。デフォルトは`desc`です |
+| `order_by` | 文字列            | いいえ       | `created_at`フィールドまたは`updated_at`フィールドで順序付けられたWikiページノートを返します。デフォルトは`created_at`です |
 
 ```shell
 curl --header "PRIVATE-TOKEN: <your_access_token>" \

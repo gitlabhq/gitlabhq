@@ -16,7 +16,7 @@ description: データ用のオブジェクトストレージサービスを設�
 
 GitLabでは、さまざまな種類のデータをオブジェクトストレージサービスに保存できます。これはNFSより推奨されており、特に大規模なセットアップではオブジェクトストレージの方が一般的に高い性能、信頼性、そしてスケーラビリティを備えているため、より適しています。
 
-オブジェクトストレージを設定するには、次の2つのオプションがあります。
+オブジェクトストレージを設定するには、次の2つのオプションがあります:
 
 - （推奨）[すべてのオブジェクトタイプに対して単一のストレージ接続を設定する](#configure-a-single-storage-connection-for-all-object-types-consolidated-form): 1つの認証情報がサポートされているすべてのオブジェクトタイプで共有されます。これは、統合形式と呼ばれます。
 - [オブジェクトタイプごとに個別のストレージ接続を設定する](#configure-each-object-type-to-define-its-own-storage-connection-storage-specific-form): オブジェクトごとに、個別のオブジェクトストレージの接続と設定を定義します。これは、ストレージ固有形式と呼ばれます。
@@ -29,9 +29,9 @@ GitLabでは、さまざまな種類のデータをオブジェクトストレ�
 
 GitLabはFogライブラリと緊密に統合されているため、GitLabで使用できる[プロバイダー](https://fog.github.io/about/provider_documentation.html)を確認できます。
 
-具体的には、GitLabは複数のオブジェクトストレージプロバイダー上で、ベンダーおよび顧客によってテストされています。
+具体的には、GitLabは複数のオブジェクトストレージプロバイダー上で、ベンダーおよび顧客によってテストされています:
 
-- [Amazon S3](https://aws.amazon.com/s3/)（[オブジェクトロック](https://docs.aws.amazon.com/AmazonS3/latest/userguide/object-lock.html)はサポートされていません。詳細については、[イシュー335775](https://gitlab.com/gitlab-org/gitlab/-/issues/335775)を参照してください）
+- [Amazon S3](https://aws.amazon.com/s3/) （[オブジェクトロック](https://docs.aws.amazon.com/AmazonS3/latest/userguide/object-lock.html)はサポートされていません。詳細については、[イシュー335775](https://gitlab.com/gitlab-org/gitlab/-/issues/335775)を参照してください）
 - [Google Cloud Storage](https://cloud.google.com/storage)
 - [Digital Ocean Spaces](https://www.digitalocean.com/products/spaces)（S3互換）
 - [Oracle Cloud Infrastructure](https://docs.oracle.com/en-us/iaas/Content/Object/Tasks/s3compatibleapi.htm)
@@ -50,13 +50,13 @@ GitLab Helmチャートを使用している場合は、[統合形式の設定�
 
 {{< /alert >}}
 
-統合形式を使用してオブジェクトストレージを設定すると、次のような利点があります。
+統合形式を使用してオブジェクトストレージを設定すると、次のような利点があります:
 
 - オブジェクトタイプ間で接続の詳細を共有するため、GitLabの設定を簡素化できる。
 - [暗号化されたS3バケット](#encrypted-s3-buckets)を使用できる。
 - [適切な`Content-MD5`ヘッダーを付加して、ファイルをS3にアップロードできる](https://gitlab.com/gitlab-org/gitlab-workhorse/-/issues/222)。
 
-統合形式を使用する場合、直接アップロードが自動的に有効になります。そのため、次のプロバイダーのみを使用できます。
+統合形式を使用する場合、直接アップロードが自動的に有効になります。そのため、次のプロバイダーのみを使用できます:
 
 - [Amazon S3互換プロバイダー](#amazon-s3)
 - [Google Cloud Storage](#google-cloud-storage-gcs)
@@ -64,7 +64,7 @@ GitLab Helmチャートを使用している場合は、[統合形式の設定�
 
 統合形式の設定は、バックアップまたはMattermostには使用できません。バックアップについては、[サーバー側の暗号化](backup_restore/backup_gitlab.md#s3-encrypted-buckets)を個別に設定できます。サポート対象のオブジェクトストレージタイプについては、[こちらの完全な一覧表](#configure-each-object-type-to-define-its-own-storage-connection-storage-specific-form)を参照してください。
 
-統合形式を有効にすると、すべてのオブジェクトタイプに対してオブジェクトストレージが有効になります。すべてのバケットが指定されていない場合、次のようなエラーが表示されることがあります。
+統合形式を有効にすると、すべてのオブジェクトタイプに対してオブジェクトストレージが有効になります。すべてのバケットが指定されていない場合、次のようなエラーが表示されることがあります:
 
 ```plaintext
 Object storage for <object type> must have a bucket specified
@@ -90,9 +90,9 @@ Object storage for <object type> must have a bucket specified
 
 各オブジェクトタイプについて、少なくとも保存先のバケット名を定義する必要があります。
 
-次の表に、使用できる有効な`objects`を示します。
+次の表に、使用できる有効な`objects`を示します:
 
-| 種類               | 説明 |
+| 型               | 説明 |
 |--------------------|-------------|
 | `artifacts`        | [CI/CDジョブアーティファクト](cicd/job_artifacts.md) |
 | `external_diffs`   | [マージリクエストの差分](merge_request_diffs.md) |
@@ -104,11 +104,11 @@ Object storage for <object type> must have a bucket specified
 | `pages`            | [Pages](pages/_index.md) |
 | `ci_secure_files`  | [安全なファイル](cicd/secure_files.md) |
 
-各オブジェクトタイプ内で、3つのパラメータを定義できます。
+各オブジェクトタイプ内で、3つのパラメータを定義できます:
 
 | 設定          | 必須？              | 説明                         |
 |------------------|------------------------|-------------------------------------|
-| `bucket`         | {{< icon name="check-circle" >}} はい* | オブジェクトタイプのバケット名。`enabled`が`false`に設定されている場合は必須ではありません。 |
+| `bucket`         | {{< icon name="check-circle" >}}はい* | オブジェクトタイプのバケット名。`enabled`が`false`に設定されている場合は必須ではありません。 |
 | `enabled`        | {{< icon name="dotted-circle" >}}いいえ | [共通パラメータ](#configure-the-common-parameters)をオーバーライドします。     |
 | `proxy_download` | {{< icon name="dotted-circle" >}}いいえ | [共通パラメータ](#configure-the-common-parameters)をオーバーライドします。     |
 
@@ -116,13 +116,13 @@ Object storage for <object type> must have a bucket specified
 
 #### 特定の機能に対してオブジェクトストレージを無効にする {#disable-object-storage-for-specific-features}
 
-前述のとおり、`enabled`フラグを`false`に設定することで、特定のオブジェクトタイプに対してオブジェクトストレージを無効にできます。たとえば、CIアーティファクトのオブジェクトストレージを無効にするには、次の手順に従います。
+前述のとおり、`enabled`フラグを`false`に設定することで、特定のオブジェクトタイプに対してオブジェクトストレージを無効にできます。たとえば、CIアーティファクトのオブジェクトストレージを無効にするには、次の手順に従います:
 
 ```ruby
 gitlab_rails['object_store']['objects']['artifacts']['enabled'] = false
 ```
 
-機能が完全に無効になっている場合、バケットは必要ありません。たとえば、次の設定によりCIアーティファクトを無効にした場合、バケットは不要です。
+機能が完全に無効になっている場合、バケットは必要ありません。たとえば、次の設定によりCIアーティファクトを無効にした場合、バケットは不要です:
 
 ```ruby
 gitlab_rails['artifacts_enabled'] = false
@@ -140,7 +140,7 @@ gitlab_rails['artifacts_enabled'] = false
 
 {{< /alert >}}
 
-統合形式でサポートされていないストレージタイプについては、次のガイドを参照してください。
+統合形式でサポートされていないストレージタイプについては、次のガイドを参照してください:
 
 | オブジェクトストレージタイプ | 統合形式でサポートされているか？ |
 |---------------------|------------------------------------------|
@@ -164,7 +164,7 @@ gitlab_rails['artifacts_enabled'] = false
 
 ### Amazon S3 {#amazon-s3}
 
-接続設定は、[fog-aws](https://github.com/fog/fog-aws)によって提供されるものと一致します。
+接続設定は、[fog-aws](https://github.com/fog/fog-aws)によって提供されるものと一致します:
 
 | 設定                                     | 説明                        | デフォルト |
 |---------------------------------------------|------------------------------------|---------|
@@ -185,15 +185,15 @@ gitlab_rails['artifacts_enabled'] = false
 
 オブジェクトストレージ設定でAWSアクセスキーとシークレットキーを指定する代わりに、Amazon Identity Access and Management（IAM）ロールを使用して[Amazonインスタンスプロファイル](https://docs.aws.amazon.com/IAM/latest/UserGuide/id_roles_use_switch-role-ec2.html)を設定するようにGitLabを設定できます。これを使用すると、GitLabはS3バケットにアクセスするたびに一時的な認証情報をフェッチするため、設定に値をハードコードする必要はありません。
 
-前提要件:
+前提要件: 
 
 - GitLabが[インスタンスメタデータエンドポイント](https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/instancedata-data-retrieval.html)に接続できる必要があります。
 - GitLabが[インターネットプロキシを使用するように設定されている](https://docs.gitlab.com/omnibus/settings/environment-variables.html)場合、エンドポイントのIPアドレスを`no_proxy`リストに追加する必要があります。
 - IMDS v2にアクセスするには、[ホップ制限](https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/instancedata-data-retrieval.html)が十分であることを確認してください。GitLabがコンテナ内で実行されている場合は、この制限を1から2に引き上げる必要があることがあります。
 
-インスタンスプロファイルを設定するには、次の手順に従います。
+インスタンスプロファイルを設定するには、次の手順に従います:
 
-1. 必要な権限を持つIAMロールを作成します。`test-bucket`という名前のS3バケットのロールの例を次に示します。
+1. 必要な権限を持つIAMロールを作成します。`test-bucket`という名前のS3バケットのロールの例を次に示します:
 
    ```json
    {
@@ -228,14 +228,14 @@ gitlab_rails['artifacts_enabled'] = false
 
 #### サーバーサイド暗号化ヘッダー {#server-side-encryption-headers}
 
-暗号化を有効にする最も簡単な方法はS3バケットでデフォルトの暗号化を設定することですが、[暗号化されたオブジェクトのみがアップロードされるようにバケットポリシーを設定する](https://repost.aws/knowledge-center/s3-bucket-store-kms-encrypted-objects)こともできます。そのためには、`storage_options`設定セクションで適切な暗号化ヘッダーを送信するようにGitLabを設定する必要があります。
+暗号化を有効にする最も簡単な方法はS3バケットでデフォルトの暗号化を設定することですが、[暗号化されたオブジェクトのみがアップロードされるようにバケットポリシーを設定する](https://repost.aws/knowledge-center/s3-bucket-store-kms-encrypted-objects)こともできます。そのためには、`storage_options`設定セクションで適切な暗号化ヘッダーを送信するようにGitLabを設定する必要があります:
 
 | 設定                             | 説明                              |
 |-------------------------------------|------------------------------------------|
 | `server_side_encryption`            | 暗号化モード（`AES256`または`aws:kms`）。 |
 | `server_side_encryption_kms_key_id` | Amazonリソース名。これが必要になるのは`server_side_encryption`で`aws:kms`を使用する場合のみです。[KMS暗号化の使用に関するAmazonのドキュメントを](https://docs.aws.amazon.com/AmazonS3/latest/userguide/UsingKMSEncryption.html)参照してください。 |
 
-デフォルトの暗号化の場合と同様に、これらのオプションは、Workhorse S3クライアントが有効になっている場合にのみ機能します。次の2つの条件のいずれかを満たす必要があります。
+デフォルトの暗号化の場合と同様に、これらのオプションは、Workhorse S3クライアントが有効になっている場合にのみ機能します。次の2つの条件のいずれかを満たす必要があります:
 
 - 接続設定で`use_iam_profile`が`true`に設定されている。
 - 統合形式が使用されている。
@@ -244,14 +244,14 @@ Workhorse S3クライアントを有効にせずにサーバー側の暗号化�
 
 ### Oracle Cloud S3 {#oracle-cloud-s3}
 
-Oracle Cloud S3では、次の設定を必ず使用してください。
+Oracle Cloud S3では、次の設定を必ず使用してください:
 
 | 設定                         | 値   |
 |---------------------------------|---------|
 | `enable_signature_v4_streaming` | `false` |
 | `path_style`                    | `true`  |
 
-`enable_signature_v4_streaming`が`true`に設定されている場合、`production.log`に次のエラーが記録されることがあります。
+`enable_signature_v4_streaming`が`true`に設定されている場合、`production.log`に次のエラーが記録されることがあります:
 
 ```plaintext
 STREAMING-AWS4-HMAC-SHA256-PAYLOAD is not supported
@@ -259,7 +259,7 @@ STREAMING-AWS4-HMAC-SHA256-PAYLOAD is not supported
 
 ### Google Cloud Storage (GCS) {#google-cloud-storage-gcs}
 
-GCSの有効な接続パラメータを次に示します。
+GCSの有効な接続パラメータを次に示します:
 
 | 設定                      | 説明       | 例 |
 |------------------------------|-------------------|---------|
@@ -277,10 +277,10 @@ GitLabは、まず`google_json_key_location`、次に`google_json_key_string`、
 
 [Google Cloudのアプリケーションのデフォルト認証情報（ADC）](https://cloud.google.com/docs/authentication/application-default-credentials)を使用するのは、通常、GitLabでデフォルトのサービスアカウントまたは[Workload Identity連携](https://cloud.google.com/iam/docs/workload-identity-federation)を使用する場合です。`google_application_default`を`true`に設定し、`google_json_key_location`と`google_json_key_string`を省略します。
 
-ADCを使用する場合は、次の点を確認してください。
+ADCを使用する場合は、次の点を確認してください:
 
 - 使用するサービスアカウントに[`iam.serviceAccounts.signBlob`権限](https://cloud.google.com/iam/docs/reference/credentials/rest/v1/projects.serviceAccounts/signBlob)が付与されていること。通常、この権限はサービスアカウントに`Service Account Token Creator`ロールを付与することで設定します。
-- Google Compute仮想マシンを使用している場合は、[Google Cloud APIにアクセスするための適切なアクセススコープ](https://cloud.google.com/compute/docs/access/create-enable-service-accounts-for-instances#changeserviceaccountandscopes)が設定されていること。マシンに適切なスコープが設定されていない場合、エラーログに次のように記録されることがあります。
+- Google Compute仮想マシンを使用している場合は、[Google Cloud APIにアクセスするための適切なアクセススコープ](https://cloud.google.com/compute/docs/access/create-enable-service-accounts-for-instances#changeserviceaccountandscopes)が設定されていること。マシンに適切なスコープが設定されていない場合、エラーログに次のように記録されることがあります:
 
   ```shell
   Google::Apis::ClientError (insufficientPermissions: Request had insufficient authentication scopes.)
@@ -296,7 +296,7 @@ ADCを使用する場合は、次の点を確認してください。
 
 {{< tab title="Linuxパッケージ（Omnibus）" >}}
 
-1. `/etc/gitlab/gitlab.rb`を編集し、必要な値に置き換えて次の行を追加します。
+1. `/etc/gitlab/gitlab.rb`を編集し、必要な値に置き換えて次の行を追加します:
 
    ```ruby
    gitlab_rails['object_store']['connection'] = {
@@ -306,7 +306,7 @@ ADCを使用する場合は、次の点を確認してください。
    }
    ```
 
-   ADCを使用する場合は、代わりに`google_application_default`を使用します。
+   ADCを使用する場合は、代わりに`google_application_default`を使用します:
 
    ```ruby
    gitlab_rails['object_store']['connection'] = {
@@ -316,7 +316,7 @@ ADCを使用する場合は、次の点を確認してください。
    }
    ```
 
-1. ファイルを保存して、GitLabを再設定します。
+1. ファイルを保存して、GitLabを再設定します:
 
    ```shell
    sudo gitlab-ctl reconfigure
@@ -326,7 +326,7 @@ ADCを使用する場合は、次の点を確認してください。
 
 {{< tab title="Helmチャート（Kubernetes）" >}}
 
-1. 次の内容を`object_storage.yaml`ファイルに記述し、[Kubernetesシークレット](https://docs.gitlab.com/charts/charts/globals.html#connection)として使用します。
+1. 次の内容を`object_storage.yaml`ファイルに記述し、[Kubernetesシークレット](https://docs.gitlab.com/charts/charts/globals.html#connection)として使用します:
 
    ```yaml
    provider: Google
@@ -334,7 +334,7 @@ ADCを使用する場合は、次の点を確認してください。
    google_json_key_location: '<FILENAME>'
    ```
 
-   ADCを使用する場合は、代わりに`google_application_default`を使用します。
+   ADCを使用する場合は、代わりに`google_application_default`を使用します:
 
    ```yaml
    provider: Google
@@ -342,19 +342,19 @@ ADCを使用する場合は、次の点を確認してください。
    google_application_default: true
    ```
 
-1. Kubernetesシークレットを作成します。
+1. Kubernetesシークレットを作成します:
 
    ```shell
    kubectl create secret generic -n <namespace> gitlab-object-storage --from-file=connection=object_storage.yaml
    ```
 
-1. Helmの値をエクスポートします。
+1. Helmの値をエクスポートします:
 
    ```shell
    helm get values gitlab > gitlab_values.yaml
    ```
 
-1. `gitlab_values.yaml`を編集します。
+1. `gitlab_values.yaml`を編集します: 
 
    ```yaml
    global:
@@ -386,7 +386,7 @@ ADCを使用する場合は、次の点を確認してください。
           bucket: gitlab-uploads
    ```
 
-1. ファイルを保存して、新しい値を適用します。
+1. ファイルを保存して、新しい値を適用します: 
 
    ```shell
    helm upgrade -f gitlab_values.yaml gitlab gitlab/gitlab
@@ -396,7 +396,7 @@ ADCを使用する場合は、次の点を確認してください。
 
 {{< tab title="Docker" >}}
 
-1. `docker-compose.yml`を編集します。
+1. `docker-compose.yml`を編集します: 
 
    ```yaml
    version: "3.6"
@@ -423,7 +423,7 @@ ADCを使用する場合は、次の点を確認してください。
            gitlab_rails['object_store']['objects']['pages']['bucket'] = 'gitlab-pages'
    ```
 
-   ADCを使用する場合は、代わりに`google_application_default`を使用します。
+   ADCを使用する場合は、代わりに`google_application_default`を使用します:
 
    ```ruby
    gitlab_rails['object_store']['connection'] = {
@@ -433,7 +433,7 @@ ADCを使用する場合は、次の点を確認してください。
    }
    ```
 
-1. ファイルを保存して、GitLabを再起動します。
+1. ファイルを保存して、GitLabを再起動します:
 
    ```shell
    docker compose up -d
@@ -462,7 +462,7 @@ Azureの有効な接続パラメータを次に示します。詳細について
 
 {{< tab title="Linuxパッケージ（Omnibus）" >}}
 
-1. `/etc/gitlab/gitlab.rb`を編集し、必要な値に置き換えて次の行を追加します。
+1. `/etc/gitlab/gitlab.rb`を編集し、必要な値に置き換えて次の行を追加します:
 
    ```ruby
    gitlab_rails['object_store']['connection'] = {
@@ -482,7 +482,7 @@ Azureの有効な接続パラメータを次に示します。詳細について
    gitlab_rails['object_store']['objects']['pages']['bucket'] = 'gitlab-pages'
    ```
 
-   [ワークロードID](#azure-workload-and-managed-identities)を使用している場合は、`azure_storage_access_key`を省略します。
+   [ワークロードID](#azure-workload-and-managed-identities)を使用している場合は、`azure_storage_access_key`を省略します:
 
    ```ruby
    gitlab_rails['object_store']['connection'] = {
@@ -492,7 +492,7 @@ Azureの有効な接続パラメータを次に示します。詳細について
    }
    ```
 
-1. ファイルを保存して、GitLabを再設定します。
+1. ファイルを保存して、GitLabを再設定します:
 
    ```shell
    sudo gitlab-ctl reconfigure
@@ -502,7 +502,7 @@ Azureの有効な接続パラメータを次に示します。詳細について
 
 {{< tab title="Helmチャート（Kubernetes）" >}}
 
-1. 次の内容を`object_storage.yaml`ファイルに記述し、[Kubernetesシークレット](https://docs.gitlab.com/charts/charts/globals.html#connection)として使用します。
+1. 次の内容を`object_storage.yaml`ファイルに記述し、[Kubernetesシークレット](https://docs.gitlab.com/charts/charts/globals.html#connection)として使用します:
 
    ```yaml
    provider: AzureRM
@@ -511,7 +511,7 @@ Azureの有効な接続パラメータを次に示します。詳細について
    azure_storage_domain: blob.core.windows.net
    ```
 
-   [ワークロードIDまたはマネージドID](#azure-workload-and-managed-identities)を使用している場合は、`azure_storage_access_key`を省略します。
+   [ワークロードIDまたはマネージドID](#azure-workload-and-managed-identities)を使用している場合は、`azure_storage_access_key`を省略します:
 
    ```yaml
    provider: AzureRM
@@ -519,19 +519,19 @@ Azureの有効な接続パラメータを次に示します。詳細について
    azure_storage_domain: blob.core.windows.net
    ```
 
-1. Kubernetesシークレットを作成します。
+1. Kubernetesシークレットを作成します:
 
    ```shell
    kubectl create secret generic -n <namespace> gitlab-object-storage --from-file=connection=object_storage.yaml
    ```
 
-1. Helmの値をエクスポートします。
+1. Helmの値をエクスポートします:
 
    ```shell
    helm get values gitlab > gitlab_values.yaml
    ```
 
-1. `gitlab_values.yaml`を編集します。
+1. `gitlab_values.yaml`を編集します: 
 
    ```yaml
    global:
@@ -563,7 +563,7 @@ Azureの有効な接続パラメータを次に示します。詳細について
           bucket: gitlab-uploads
    ```
 
-1. ファイルを保存して、新しい値を適用します。
+1. ファイルを保存して、新しい値を適用します: 
 
    ```shell
    helm upgrade -f gitlab_values.yaml gitlab gitlab/gitlab
@@ -573,7 +573,7 @@ Azureの有効な接続パラメータを次に示します。詳細について
 
 {{< tab title="Docker" >}}
 
-1. `docker-compose.yml`を編集します。
+1. `docker-compose.yml`を編集します: 
 
    ```yaml
    version: "3.6"
@@ -611,7 +611,7 @@ Azureの有効な接続パラメータを次に示します。詳細について
    }
    ```
 
-1. ファイルを保存して、GitLabを再起動します。
+1. ファイルを保存して、GitLabを再起動します:
 
    ```shell
    docker compose up -d
@@ -623,7 +623,7 @@ Azureの有効な接続パラメータを次に示します。詳細について
 
 自己コンパイルによるインストールの場合、WorkhorseにもAzure認証情報を設定する必要があります。Linuxパッケージインストールの場合、Workhorseの設定は以前の設定が引き継がれるため、この作業は不要です。
 
-1. `/home/git/gitlab/config/gitlab.yml`を編集し、次の行を追加または修正します。
+1. `/home/git/gitlab/config/gitlab.yml`を編集し、次の行を追加または修正します:
 
    ```yaml
    production: &base
@@ -655,7 +655,7 @@ Azureの有効な接続パラメータを次に示します。詳細について
            bucket: gitlab-pages
    ```
 
-1. `/home/git/gitlab-workhorse/config.toml`を編集し、次の行を追加または修正します。
+1. `/home/git/gitlab-workhorse/config.toml`を編集し、次の行を追加または修正します:
 
      ```toml
      [object_storage]
@@ -666,9 +666,9 @@ Azureの有効な接続パラメータを次に示します。詳細について
        azure_storage_access_key = "<AZURE STORAGE ACCESS KEY>"
      ```
 
-   カスタムのAzureストレージドメインを使用している場合、Workhorseの設定で`azure_storage_domain`を設定する必要は**ありません**。この情報は、GitLab RailsとWorkhorse間のAPIコールでやり取りされます。
+   カスタムのAzureストレージドメインを使用している場合、Workhorseの設定で`azure_storage_domain`を設定する必要は**not**（ありません）。この情報は、GitLab RailsとWorkhorse間のAPIコールでやり取りされます。
 
-1. ファイルを保存して、GitLabを再起動します。
+1. ファイルを保存して、GitLabを再起動します:
 
    ```shell
    # For systems running systemd
@@ -690,7 +690,7 @@ Azureの有効な接続パラメータを次に示します。詳細について
 
 {{< /history >}}
 
-[AzureワークロードID](https://azure.github.io/azure-workload-identity/docs/)または[マネージドID](https://learn.microsoft.com/en-us/entra/identity/managed-identities-azure-resources/)を使用する場合は、設定から`azure_storage_access_key`を省略します。`azure_storage_access_key`が空の場合、GitLabは次の処理を試みます。
+[AzureワークロードID](https://azure.github.io/azure-workload-identity/docs/)または[マネージドID](https://learn.microsoft.com/en-us/entra/identity/managed-identities-azure-resources/)を使用する場合は、設定から`azure_storage_access_key`を省略します。`azure_storage_access_key`が空の場合、GitLabは次の処理を試みます:
 
 1. [ワークロードID](https://learn.microsoft.com/en-us/entra/workload-id/workload-identities-overview)を使用して一時的な認証情報を取得します。`AZURE_TENANT_ID`、`AZURE_CLIENT_ID`、`AZURE_FEDERATED_TOKEN_FILE`を環境変数に設定しておく必要があります。
 1. ワークロードIDが利用できない場合は、[Azureインスタンスメタデータサービス](https://learn.microsoft.com/en-us/entra/identity/managed-identities-azure-resources/how-to-use-vm-token)に対して認証情報をリクエストします。
@@ -707,7 +707,7 @@ Storj Gatewayは、マルチスレッドコピーを[サポートしていませ
 
 {{< /alert >}}
 
-[Storjネットワーク](https://www.storj.io/)は、S3互換のAPIゲートウェイを提供します。次の設定例を使用してください。
+[Storjネットワーク](https://www.storj.io/)は、S3互換のAPIゲートウェイを提供します。次の設定例を使用してください:
 
 ```ruby
 gitlab_rails['object_store']['connection'] = {
@@ -732,7 +732,7 @@ HCPへの接続時に、次のエラーが返される場合があります。`S
 
 {{< /alert >}}
 
-[HCP](https://docs.hitachivantara.com/r/en-us/content-platform/9.7.x/mk-95hcph001/hcp-management-api-reference/introduction-to-the-hcp-management-api/support-for-the-amazon-s3-api)は、S3互換のAPIを提供しています。次の設定例を使用してください。
+[HCP](https://docs.hitachivantara.com/r/en-us/content-platform/9.7.x/mk-95hcph001/hcp-management-api-reference/introduction-to-the-hcp-management-api/support-for-the-amazon-s3-api)は、S3互換のAPIを提供しています。次の設定例を使用してください:
 
 ```ruby
 gitlab_rails['object_store']['connection'] = {
@@ -750,15 +750,32 @@ gitlab_rails['object_store']['connection'] = {
 gitlab_rails['object_store']['objects']['artifacts']['bucket'] = '<namespace_name>/<bucket_name>'
 ```
 
+### Ceph RGW {#ceph-rgw}
+
+[Ceph RGW](https://docs.ceph.com/en/reef/cephadm/services/rgw/)は、Ceph用のS3互換APIです。次の設定例を使用してください:
+
+```ruby
+gitlab_rails['object_store']['connection'] = {
+  'provider' => 'AWS',
+  'endpoint' => 'https://rgw-ceph.example.com',
+  'region' => 'us-west-1',
+  'aws_access_key_id' => 'ACCESS_KEY',
+  'aws_secret_access_key' => 'SECRET_KEY',
+  'path_style': true
+}
+```
+
+Ceph RGWで[サーバー側の暗号化](#server-side-encryption-headers)を有効にするには、HTTPSを使用して接続する必要があります。Cephは、安全でない接続を介した暗号化リクエストを拒否します。
+
 ## 統合形式とAmazon S3を使用した完全な設定例 {#full-example-using-the-consolidated-form-and-amazon-s3}
 
-次の例では、AWS S3を使用して、サポートされているすべてのサービスに対してオブジェクトストレージを有効にします。
+次の例では、AWS S3を使用して、サポートされているすべてのサービスに対してオブジェクトストレージを有効にします:
 
 {{< tabs >}}
 
 {{< tab title="Linuxパッケージ（Omnibus）" >}}
 
-1. `/etc/gitlab/gitlab.rb`を編集し、必要な値に置き換えて次の行を追加します。
+1. `/etc/gitlab/gitlab.rb`を編集し、必要な値に置き換えて次の行を追加します:
 
    ```ruby
    # Consolidated object storage configuration
@@ -786,7 +803,7 @@ gitlab_rails['object_store']['objects']['artifacts']['bucket'] = '<namespace_nam
    gitlab_rails['object_store']['objects']['pages']['bucket'] = 'gitlab-pages'
    ```
 
-   [AWS IAMプロファイル](#use-amazon-instance-profiles)を使用している場合は、AWSアクセスキーおよびシークレットアクセスキーまたはバリューペアを省略します。次に例を示します。
+   [AWS IAMプロファイル](#use-amazon-instance-profiles)を使用している場合は、AWSアクセスキーおよびシークレットアクセスキーまたはバリューペアを省略します。次に例を示します:
 
    ```ruby
    gitlab_rails['object_store']['connection'] = {
@@ -796,7 +813,7 @@ gitlab_rails['object_store']['objects']['artifacts']['bucket'] = '<namespace_nam
    }
    ```
 
-1. ファイルを保存して、GitLabを再設定します。
+1. ファイルを保存して、GitLabを再設定します:
 
    ```shell
    sudo gitlab-ctl reconfigure
@@ -806,7 +823,7 @@ gitlab_rails['object_store']['objects']['artifacts']['bucket'] = '<namespace_nam
 
 {{< tab title="Helmチャート（Kubernetes）" >}}
 
-1. 次の内容を`object_storage.yaml`ファイルに記述し、[Kubernetesシークレット](https://docs.gitlab.com/charts/charts/globals.html#connection)として使用します。
+1. 次の内容を`object_storage.yaml`ファイルに記述し、[Kubernetesシークレット](https://docs.gitlab.com/charts/charts/globals.html#connection)として使用します:
 
    ```yaml
    provider: AWS
@@ -815,7 +832,7 @@ gitlab_rails['object_store']['objects']['artifacts']['bucket'] = '<namespace_nam
    aws_secret_access_key: <AWS_SECRET_ACCESS_KEY>
    ```
 
-   [AWS IAMプロファイル](#use-amazon-instance-profiles)を使用している場合は、AWSアクセスキーおよびシークレットアクセスキーまたはバリューペアを省略します。次に例を示します。
+   [AWS IAMプロファイル](#use-amazon-instance-profiles)を使用している場合は、AWSアクセスキーおよびシークレットアクセスキーまたはバリューペアを省略します。次に例を示します:
 
    ```yaml
    provider: AWS
@@ -823,19 +840,19 @@ gitlab_rails['object_store']['objects']['artifacts']['bucket'] = '<namespace_nam
    use_iam_profile: true
    ```
 
-1. Kubernetesシークレットを作成します。
+1. Kubernetesシークレットを作成します:
 
    ```shell
    kubectl create secret generic -n <namespace> gitlab-object-storage --from-file=connection=object_storage.yaml
    ```
 
-1. Helmの値をエクスポートします。
+1. Helmの値をエクスポートします:
 
    ```shell
    helm get values gitlab > gitlab_values.yaml
    ```
 
-1. `gitlab_values.yaml`を編集します。
+1. `gitlab_values.yaml`を編集します: 
 
    ```yaml
    global:
@@ -867,7 +884,7 @@ gitlab_rails['object_store']['objects']['artifacts']['bucket'] = '<namespace_nam
           bucket: gitlab-uploads
    ```
 
-1. ファイルを保存して、新しい値を適用します。
+1. ファイルを保存して、新しい値を適用します: 
 
    ```shell
    helm upgrade -f gitlab_values.yaml gitlab gitlab/gitlab
@@ -877,7 +894,7 @@ gitlab_rails['object_store']['objects']['artifacts']['bucket'] = '<namespace_nam
 
 {{< tab title="Docker" >}}
 
-1. `docker-compose.yml`を編集します。
+1. `docker-compose.yml`を編集します: 
 
    ```yaml
    version: "3.6"
@@ -910,7 +927,7 @@ gitlab_rails['object_store']['objects']['artifacts']['bucket'] = '<namespace_nam
            gitlab_rails['object_store']['objects']['pages']['bucket'] = 'gitlab-pages'
    ```
 
-   [AWS IAMプロファイル](#use-amazon-instance-profiles)を使用している場合は、AWSアクセスキーおよびシークレットアクセスキーまたはバリューペアを省略します。次に例を示します。
+   [AWS IAMプロファイル](#use-amazon-instance-profiles)を使用している場合は、AWSアクセスキーおよびシークレットアクセスキーまたはバリューペアを省略します。次に例を示します:
 
    ```ruby
    gitlab_rails['object_store']['connection'] = {
@@ -920,7 +937,7 @@ gitlab_rails['object_store']['objects']['artifacts']['bucket'] = '<namespace_nam
    }
    ```
 
-1. ファイルを保存して、GitLabを再起動します。
+1. ファイルを保存して、GitLabを再起動します:
 
    ```shell
    docker compose up -d
@@ -930,7 +947,7 @@ gitlab_rails['object_store']['objects']['artifacts']['bucket'] = '<namespace_nam
 
 {{< tab title="自己コンパイル（ソース）" >}}
 
-1. `/home/git/gitlab/config/gitlab.yml`を編集し、次の行を追加または修正します。
+1. `/home/git/gitlab/config/gitlab.yml`を編集し、次の行を追加または修正します:
 
    ```yaml
    production: &base
@@ -966,7 +983,7 @@ gitlab_rails['object_store']['objects']['artifacts']['bucket'] = '<namespace_nam
            bucket: gitlab-pages
    ```
 
-   [AWS IAMプロファイル](#use-amazon-instance-profiles)を使用している場合は、AWSアクセスキーおよびシークレットアクセスキーまたはバリューペアを省略します。次に例を示します。
+   [AWS IAMプロファイル](#use-amazon-instance-profiles)を使用している場合は、AWSアクセスキーおよびシークレットアクセスキーまたはバリューペアを省略します。次に例を示します:
 
    ```yaml
    connection:
@@ -975,7 +992,7 @@ gitlab_rails['object_store']['objects']['artifacts']['bucket'] = '<namespace_nam
      use_iam_profile: true
    ```
 
-1. `/home/git/gitlab-workhorse/config.toml`を編集し、次の行を追加または修正します。
+1. `/home/git/gitlab-workhorse/config.toml`を編集し、次の行を追加または修正します:
 
    ```toml
    [object_storage]
@@ -986,14 +1003,14 @@ gitlab_rails['object_store']['objects']['artifacts']['bucket'] = '<namespace_nam
      aws_secret_access_key = "<AWS_SECRET_ACCESS_KEY>"
    ```
 
-   [AWS IAMプロファイル](#use-amazon-instance-profiles)を使用している場合は、AWSアクセスキーおよびシークレットアクセスキーまたはバリューペアを省略します。次に例を示します。
+   [AWS IAMプロファイル](#use-amazon-instance-profiles)を使用している場合は、AWSアクセスキーおよびシークレットアクセスキーまたはバリューペアを省略します。次に例を示します:
 
    ```yaml
    [object_storage.s3]
      use_iam_profile = true
    ```
 
-1. ファイルを保存して、GitLabを再起動します。
+1. ファイルを保存して、GitLabを再起動します:
 
    ```shell
    # For systems running systemd
@@ -1009,7 +1026,7 @@ gitlab_rails['object_store']['objects']['artifacts']['bucket'] = '<namespace_nam
 
 ## オブジェクトストレージに移行する {#migrate-to-object-storage}
 
-既存のローカルデータをオブジェクトストレージに移行するには、次のガイドを参照してください。
+既存のローカルデータをオブジェクトストレージに移行するには、次のガイドを参照してください:
 
 - [ジョブアーティファクト](cicd/job_artifacts.md#migrating-to-object-storage)（アーカイブされたジョブログを含む）
 - [LFSオブジェクト](lfs/_index.md#migrating-to-object-storage)
@@ -1028,7 +1045,7 @@ gitlab_rails['object_store']['objects']['artifacts']['bucket'] = '<namespace_nam
 - CI/CDアーティファクト、LFSファイル、アップロード添付ファイルなど、すべてのオブジェクトタイプに対するオブジェクトストレージの設定は、それぞれ個別に行われます。
 - パスワードやエンドポイントURLなどのオブジェクトストア接続パラメータは、タイプごとに重複することになります。
 
-たとえば、Linuxパッケージインストールでは、次のような設定になることがあります。
+たとえば、Linuxパッケージインストールでは、次のような設定になることがあります:
 
 ```ruby
 # Original object storage configuration
@@ -1054,12 +1071,12 @@ gitlab_rails['uploads_object_store_connection'] = { 'provider' => 'AWS', 'aws_ac
 
 ここでは`uploads`バケットを移行することを前提としていますが、他のバケットでも手順は同じです。
 
-前提要件:
+前提要件: 
 
 - Rcloneを実行するコンピューターを選択します。移行するデータの量によっては、Rcloneを長時間実行する必要があるため、省電力モードになる可能性のあるノートパソコンまたはデスクトップパソコンの使用は避けてください。GitLabサーバーを使用してRcloneを実行できます。
 
 1. Rcloneを[インストール](https://rclone.org/downloads/)します。
-1. 次を実行して、Rcloneを設定します。
+1. 次を実行して、Rcloneを設定します:
 
    ```shell
    rclone config
@@ -1067,7 +1084,7 @@ gitlab_rails['uploads_object_store_connection'] = { 'provider' => 'AWS', 'aws_ac
 
    設定プロセスはインタラクティブです。少なくとも2つの「リモート」を追加します。1つは現在データが保存されているオブジェクトストレージプロバイダー用（`old`）、もう1つは移行先のプロバイダー用（`new`）です。
 
-1. 移行元のデータを読み取れることを確認します。次の例では`uploads`バケットを参照していますが、実際のバケット名は異なる場合があります。
+1. 移行元のデータを読み取れることを確認します。次の例では`uploads`バケットを参照していますが、実際のバケット名は異なる場合があります:
 
    ```shell
    rclone ls old:uploads | head
@@ -1083,14 +1100,14 @@ gitlab_rails['uploads_object_store_connection'] = { 'provider' => 'AWS', 'aws_ac
 
 1. 最初の同期が完了したら、新しいオブジェクトストレージプロバイダーのWeb UIまたはコマンドラインインターフェースを使用して、新しいバケットにオブジェクトが存在することを確認します。オブジェクトが存在しない場合、または`rclone sync`の実行中にエラーが発生した場合は、Rcloneの設定を確認し、再試行してください。
 
-以前の場所から新しい場所へのRcloneコピーが少なくとも1回成功したら、メンテナンスのスケジュールを計画し、GitLabサーバーをオフラインにします。メンテナンス期間中は、次の2つの作業を行う必要があります。
+以前の場所から新しい場所へのRcloneコピーが少なくとも1回成功したら、メンテナンスのスケジュールを計画し、GitLabサーバーをオフラインにします。メンテナンス期間中は、次の2つの作業を行う必要があります:
 
 1. 旧バケットに何も残さないように、ユーザーが新しいオブジェクトを追加できないことを確認したうえで、最後の`rclone sync`を実行します。
 1. `uploads`に新しいプロバイダーを使用するように、GitLabサーバーのオブジェクトストレージ設定を更新します。
 
 ## ファイルシステムストレージの代替手段 {#alternatives-to-file-system-storage}
 
-GitLab実装を[スケールアウト](reference_architectures/_index.md)したり、フォールトトレランスや冗長性を追加したりする場合、ブロックストレージやネットワークファイルシステムへの依存関係をなくすことを検討されているかもしれません。次の関連ガイドを参照してください。
+GitLab実装を[スケールアウト](reference_architectures/_index.md)したり、フォールトトレランスや冗長性を追加したりする場合、ブロックストレージやネットワークファイルシステムへの依存関係をなくすことを検討されているかもしれません。次の関連ガイドを参照してください:
 
 1. [`git`ユーザーのホームディレクトリ](https://docs.gitlab.com/omnibus/settings/configuration.html#move-the-home-directory-for-a-user)がローカルディスク上にあることを確認します。
 1. 共有の`authorized_keys`ファイルの必要性をなくすため、[SSHキーのデータベース検索](operations/fast_ssh_key_lookup.md)を設定します。
@@ -1113,7 +1130,7 @@ Helmベースのインストールでは、[バックアップの復元を処理
 
 ### S3 APIの互換性の問題 {#s3-api-compatibility-issues}
 
-すべてのS3プロバイダーが、GitLabが使用するFogライブラリと[完全に互換性がある](backup_restore/backup_gitlab.md#other-s3-providers)わけではありません。この問題の兆候として、`production.log`に次のエラーが記録されることがあります。
+すべてのS3プロバイダーが、GitLabが使用するFogライブラリと[完全に互換性がある](backup_restore/backup_gitlab.md#other-s3-providers)わけではありません。この問題の兆候として、`production.log`に次のエラーが記録されることがあります:
 
 ```plaintext
 411 Length Required
@@ -1133,27 +1150,27 @@ Helmベースのインストールでは、[バックアップの復元を処理
 
 GitLabにファイルをプロキシ処理させる場合は、`proxy_download`を`true`に設定します。`proxy_download`を`true`に設定すると、GitLabサーバーで大きなパフォーマンスの低下が発生する可能性があります。GitLabサーバーのデプロイでは、`proxy_download`は`false`に設定されています。
 
-`proxy_download`を`false`にすると、GitLabは[有効期限付きの署名付きオブジェクトストレージURLへのHTTP 302リダイレクト](https://gitlab.com/gitlab-org/gitlab/-/issues/32117#note_218532298)を返します。これにより、次の問題が発生する可能性があります。
+`proxy_download`を`false`にすると、GitLabは[有効期限付きの署名付きオブジェクトストレージURLへのHTTP 302リダイレクト](https://gitlab.com/gitlab-org/gitlab/-/issues/32117#note_218532298)を返します。これにより、次の問題が発生する可能性があります:
 
-- GitLabがオブジェクトストレージへのアクセスに非セキュアHTTPを使用している場合、クライアントは`https->http`ダウングレードエラーを生成し、リダイレクトの処理を拒否する可能性があります。この問題の解決策は、GitLabがHTTPSを使用することです。たとえば、LFSは次のエラーを生成します。
+- GitLabがオブジェクトストレージへのアクセスに非セキュアHTTPを使用している場合、クライアントは`https->http`ダウングレードエラーを生成し、リダイレクトの処理を拒否する可能性があります。この問題の解決策は、GitLabがHTTPSを使用することです。たとえば、LFSは次のエラーを生成します:
 
   ```plaintext
   LFS: lfsapi/client: refusing insecure redirect, https->http
   ```
 
-- クライアントが、オブジェクトストレージ証明書を発行した認証局を信頼している必要があります。信頼していない場合、次のような一般的なTLSエラーが返される可能性があります。
+- クライアントが、オブジェクトストレージ証明書を発行した認証局を信頼している必要があります。信頼していない場合、次のような一般的なTLSエラーが返される可能性があります:
 
   ```plaintext
   x509: certificate signed by unknown authority
   ```
 
-- クライアントは、オブジェクトストレージへのネットワークアクセスを必要とします。ネットワークファイアウォールがアクセスをブロックする可能性があります。このアクセスが確立されていない場合、次のようなエラーが発生する可能性があります。
+- クライアントは、オブジェクトストレージへのネットワークアクセスを必要とします。ネットワークファイアウォールがアクセスをブロックする可能性があります。このアクセスが確立されていない場合、次のようなエラーが発生する可能性があります:
 
   ```plaintext
   Received status code 403 from server: Forbidden
   ```
 
-- オブジェクトストレージのバケットが、GitLabインスタンスのURLからのクロスオリジンリソース共有（CORS）アクセスを許可している必要があります。リポジトリページでPDFを読み込もうとすると、次のエラーが表示される場合があります。
+- オブジェクトストレージのバケットが、GitLabインスタンスのURLからのクロスオリジンリソース共有（CORS）アクセスを許可している必要があります。リポジトリページでPDFを読み込もうとすると、次のエラーが表示される場合があります:
 
   ```plaintext
   An error occurred while loading the file. Please try again later.
@@ -1169,7 +1186,7 @@ GitLabにファイルをプロキシ処理させる場合は、`proxy_download`�
 
 #### Amazon S3の暗号化 {#amazon-s3-encryption}
 
-Amazon Web Services S3でこのETag不一致エラーが発生している場合は、[バケットの暗号化設定](https://docs.aws.amazon.com/AmazonS3/latest/API/RESTCommonResponseHeaders.html)が原因である可能性があります。この問題を解決するには、次の2つのオプションがあります。
+Amazon Web Services S3でこのETag不一致エラーが発生している場合は、[バケットの暗号化設定](https://docs.aws.amazon.com/AmazonS3/latest/API/RESTCommonResponseHeaders.html)が原因である可能性があります。この問題を解決するには、次の2つのオプションがあります:
 
 - [統合形式を使用する](#configure-a-single-storage-connection-for-all-object-types-consolidated-form)。
 - [Amazonインスタンスプロファイルを使用する](#use-amazon-instance-profiles)。
@@ -1178,7 +1195,7 @@ MinIOを使用している場合は、最初のオプションをおすすめし
 
 統合形式またはインスタンスプロファイルが有効になっていない場合、GitLab Workhorseは、`Content-MD5` HTTPヘッダーが計算されていない署名付きURLを使用して、ファイルをS3にアップロードします。データが破損していないことを確認するため、Workhorseは、送信されたデータのMD5ハッシュが、S3サーバーから返されたETagヘッダーと一致することを確認します。暗号化が有効になっている場合はこれが当てはまらず、Workhorseはアップロード中に`ETag mismatch`エラーを報告します。
 
-統合形式では、次のようになります。
+統合形式では、次のようになります:
 
 - S3互換のオブジェクトストレージまたはインスタンスプロファイルと一緒に使用する場合、WorkhorseはS3認証情報を持つ内部S3クライアントを使用し、`Content-MD5`ヘッダーを計算できるようにします。これにより、S3サーバーから返されたETagヘッダーを比較する必要がなくなります。
 - S3互換のオブジェクトストレージと一緒に使用していない場合、Workhorseは署名付きURLを使用する方式にフォールバックします。
@@ -1199,7 +1216,7 @@ CMEKを使用する場合は、[統合形式](#configure-a-single-storage-connec
 
 GitLabは、[S3 Upload Part Copy API](https://docs.aws.amazon.com/AmazonS3/latest/API/API_UploadPartCopy.html)を使用して、バケット内のファイルのコピーを高速化しています。[Kraken 11.0.2より前](https://ceph.com/releases/kraken-11-0-2-released/)のCeph S3はこの機能をサポートしておらず、[ファイルのアップロードプロセス中にファイルがコピーされると404エラーを返します](https://gitlab.com/gitlab-org/gitlab/-/issues/300604)。
 
-この機能は、`:s3_multithreaded_uploads`機能フラグを使用して無効にできます。この機能を無効にするには、[Railsコンソールアクセス権](feature_flags/_index.md#how-to-enable-and-disable-features-behind-flags)を持つGitLab管理者に、次のコマンドを実行するよう依頼してください。
+この機能は、`:s3_multithreaded_uploads`機能フラグを使用して無効にできます。この機能を無効にするには、[Railsコンソールアクセス権](feature_flags/_index.md#how-to-enable-and-disable-features-behind-flags)を持つGitLab管理者に、次のコマンドを実行するよう依頼してください:
 
 ```ruby
 Feature.disable(:s3_multithreaded_uploads)
@@ -1210,7 +1227,7 @@ Feature.disable(:s3_multithreaded_uploads)
 状況によっては、Railsコンソールを使用してオブジェクトストレージの設定をテストすると役立つ場合があります。次の例では、指定された一連の接続設定をテストし、テスト用オブジェクトの書き込みを試み、最後にそれを読み取ります。
 
 1. [Railsコンソール](operations/rails_console.md)を起動します。
-1. 次の例の形式で、`/etc/gitlab/gitlab.rb`で設定したのと同じパラメータを使用して、オブジェクトストレージ接続を設定します。
+1. 次の例の形式で、`/etc/gitlab/gitlab.rb`で設定したのと同じパラメータを使用して、オブジェクトストレージ接続を設定します:
 
    既存のアップロード設定を使用した接続の例:
 
@@ -1261,21 +1278,21 @@ Feature.disable(:s3_multithreaded_uploads)
 
 {{< /history >}}
 
-HTTPリクエストを確認するために、追加のデバッグを有効にすることもできます。ログファイルで認証情報が漏洩しないように、この操作は[Railsコンソール](operations/rails_console.md)で行う必要があります。次に、リクエストのデバッグを有効にする方法をプロバイダー別に示します。
+HTTPリクエストを確認するために、追加のデバッグを有効にすることもできます。ログファイルで認証情報が漏洩しないように、この操作は[Railsコンソール](operations/rails_console.md)で行う必要があります。次に、リクエストのデバッグを有効にする方法をプロバイダー別に示します:
 
 {{< tabs >}}
 
 {{< tab title="Amazon S3" >}}
 
-`EXCON_DEBUG`環境変数を設定します。
+`EXCON_DEBUG`環境変数を設定します:
 
 ```ruby
 ENV['EXCON_DEBUG'] = "1"
 ```
 
-また、`AWS_DEBUG`環境変数を`1`に設定することで、GitLab WorkhorseログでS3 HTTPリクエストとレスポンスヘッダーのログの生成を有効にすることもできます。Linuxパッケージ（Omnibus）の場合は、以下の手順に従います。
+また、`AWS_DEBUG`環境変数を`1`に設定することで、GitLab WorkhorseログでS3 HTTPリクエストとレスポンスヘッダーのログの生成を有効にすることもできます。Linuxパッケージ（Omnibus）の場合は、以下の手順に従います:
 
-1. `/etc/gitlab/gitlab.rb`を編集し、次の行を追加します。
+1. `/etc/gitlab/gitlab.rb`を編集し、次の行を追加します:
 
    ```ruby
    gitlab_workhorse['env'] = {
@@ -1283,7 +1300,7 @@ ENV['EXCON_DEBUG'] = "1"
    }
    ```
 
-1. ファイルを保存して、GitLabを再設定します。
+1. ファイルを保存して、GitLabを再設定します:
 
    ```shell
    sudo gitlab-ctl reconfigure
@@ -1295,7 +1312,7 @@ ENV['EXCON_DEBUG'] = "1"
 
 {{< tab title="Google Cloud Storage" >}}
 
-`STDOUT`にログを記録するようにロガーを設定します。
+`STDOUT`にログを記録するようにロガーを設定します:
 
 ```ruby
 Google::Apis.logger = Logger::new(STDOUT)
@@ -1305,7 +1322,7 @@ Google::Apis.logger = Logger::new(STDOUT)
 
 {{< tab title="Azure Blob Storage" >}}
 
-`DEBUG`環境変数を設定します。
+`DEBUG`環境変数を設定します:
 
 ```ruby
 ENV['DEBUG'] = "1"
@@ -1317,7 +1334,7 @@ ENV['DEBUG'] = "1"
 
 ### 完全なオブジェクトの一貫性を確保するためにGeo追跡データベースをリセットする {#reset-the-geo-tracking-database-to-ensure-full-objects-consistency}
 
-次のGeoのシナリオを考えてみましょう。
+次のGeoのシナリオを考えてみましょう:
 
 - 環境は、Geoプライマリノードとセカンダリノードで構成されています。
 - プライマリで[オブジェクトストレージに移行しました](#migrate-to-object-storage)。
@@ -1334,7 +1351,7 @@ ENV['DEBUG'] = "1"
 
 #### Geoを使用する際に不整合を特定する {#identify-inconsistencies-when-using-geo}
 
-次のGeoのシナリオを考えてみましょう。
+次のGeoのシナリオを考えてみましょう:
 
 - 環境は、Geoプライマリノードとセカンダリノードで構成されている
 - 両方のシステムがオブジェクトストレージに移行されている
@@ -1343,14 +1360,14 @@ ENV['DEBUG'] = "1"
 - オブジェクトストレージの移行前に、複数のアップロードが手動で削除された
   - この例では、イシューにアップロードされた2つのイメージ
 
-このようなシナリオでは、セカンダリはプライマリと同じオブジェクトストレージを利用するため、データをレプリケートする必要がなくなります。ただし、一部の不整合により、セカンダリが依然としてデータのレプリケートを試みている様子が管理者に観察されることがあります。
+このようなシナリオでは、セカンダリはプライマリと同じオブジェクトストレージを利用するため、データをレプリケートする必要がなくなります。ただし、一部の不整合により、セカンダリが依然としてデータのレプリケートを試みている様子が管理者に観察されることがあります:
 
-プライマリサイトで次の手順に従います。
+プライマリサイトで次の手順に従います:
 
-1. 左側のサイドバーの下部で、**管理者**を選択します。
-1. **Geo > サイト**を選択します。
-1. **プライマリサイト**を見て、検証情報を確認します。すべてのアップロードが検証済みです。![プライマリの検証が成功していることを示すGeoサイトダッシュボード。](img/geo_primary_uploads_verification_v17_11.png)
-1. **セカンダリサイト**を見て、検証情報を確認します。セカンダリサイトは同じオブジェクトストレージを使用しているはずですが、2つのアップロードがまだ同期中であることに注意してください。つまり、アップロードを同期する必要はありません。![**セカンダリの不整合を示すGeoサイトダッシュボード**。](img/geo_secondary_uploads_inconsistencies_v17_11.png)
+1. 左側のサイドバーの下部で、**管理者**を選択します。[新しいナビゲーションをオン](../user/interface_redesign.md#turn-new-navigation-on-or-off)にしている場合は、右上隅でアバターを選択し、**管理者**を選択します。
+1. **Geo** > **サイト**を選択します。
+1. **primary site**（プライマリサイト）を見て、検証情報を確認します。すべてのアップロードが検証済みです: ![プライマリの検証が成功していることを示すGeoサイトダッシュボード。](img/geo_primary_uploads_verification_v17_11.png)
+1. **secondary site**（セカンダリサイト）を見て、検証情報を確認します。セカンダリサイトは同じオブジェクトストレージを使用しているはずですが、2つのアップロードがまだ同期中であることに注意してください。つまり、アップロードを同期する必要はありません: ![セカンダリの不整合を示すGeoサイトダッシュボード。](img/geo_secondary_uploads_inconsistencies_v17_11.png)
 
 #### 不整合をクリーンアップする {#clean-up-inconsistencies}
 
@@ -1362,7 +1379,7 @@ ENV['DEBUG'] = "1"
 
 前のシナリオに基づいて、複数の**アップロード**が原因で不整合が発生しています（これらの不整合は以下で例として使用されます）。
 
-残っている可能性がある不整合を適切に削除するため、次の手順に従います。
+残っている可能性がある不整合を適切に削除するため、次の手順に従います:
 
 1. 特定された不整合をそれぞれのモデル名にマップします。以降の手順ではモデル名が必要です。
 
@@ -1383,7 +1400,7 @@ ENV['DEBUG'] = "1"
    | Pagesコンテンツ            | `PagesDeployment`                                       |
 
 1. [Railsコンソール](operations/rails_console.md)を起動します。
-1. 前の手順のモデル名に基づいて、（オブジェクトストレージではなく）ローカルにまだ保存されているすべての「ファイル」をクエリします。この場合アップロードが影響を受けるため、モデル名`Upload`が使用されます。`openbao.png`がまだローカルに保存されていることを確認します。
+1. 前の手順のモデル名に基づいて、（オブジェクトストレージではなく）ローカルにまだ保存されているすべての「ファイル」をクエリします。この場合アップロードが影響を受けるため、モデル名`Upload`が使用されます。`openbao.png`がまだローカルに保存されていることを確認します:
 
    ```ruby
    Upload.with_files_stored_locally
@@ -1410,14 +1427,14 @@ ENV['DEBUG'] = "1"
      verification_checksum: nil>]
    ```
 
-1. 特定されたリソースの`id`を使用して、それらを適切に削除します。まず、`find`を使用して正しいリソースであることを確認し、次に`destroy`を実行します。
+1. 特定されたリソースの`id`を使用して、それらを適切に削除します。まず、`find`を使用して正しいリソースであることを確認し、次に`destroy`を実行します:
 
    ```ruby
    Upload.find(108)
    Upload.find(108).destroy
    ```
 
-1. 必要に応じて`find`を再度実行して、リソースが正しく削除されたことを確認します。結果として、リソースは見つからないはずです。
+1. 必要に応じて`find`を再度実行して、リソースが正しく削除されたことを確認します。結果として、リソースは見つからないはずです:
 
    ```ruby
    Upload.find(108)
@@ -1433,13 +1450,13 @@ ENV['DEBUG'] = "1"
 
 複数のRailsノード（WebサービスまたはSidekiqを実行しているサーバー）を持つGitLabインスタンスでは、Runnerから送信された後、すべてのノードでジョブログを利用できるようにするメカニズムが必要です。ジョブログは、ローカルディスクまたはオブジェクトストレージに保存できます。
 
-NFSが使用されておらず、[インクリメンタルログの生成機能](cicd/job_logs.md#incremental-logging)が有効になっていない場合、ジョブログが失われる可能性があります。
+NFSが使用されておらず、[インクリメンタルログの生成機能](cicd/job_logs.md#incremental-logging)が有効になっていない場合、ジョブログが失われる可能性があります:
 
 1. Runnerからログを受信するノードは、ログをローカルディスクに書き込みます。
 1. GitLabがログをアーカイブしようとすると、多くの場合、ジョブはログにアクセスできない別のサーバーで実行されます。
 1. オブジェクトストレージへのアップロードが失敗します。
 
-次のエラーも`/var/log/gitlab/gitlab-rails/exceptions_json.log`にログされる可能性があります。
+次のエラーも`/var/log/gitlab/gitlab-rails/exceptions_json.log`にログされる可能性があります:
 
 ```yaml
 {

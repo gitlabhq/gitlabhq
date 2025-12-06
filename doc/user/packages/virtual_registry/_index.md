@@ -67,18 +67,118 @@ To turn off the virtual registry:
 - [Maven packages](maven/_index.md)
 - [Container images](container/_index.md)
 
-## Virtual registry workflows
+## Authenticate to the virtual registry
+
+The virtual registry endpoint can be used by any of following tokens:
+
+- A [personal access token](../../profile/personal_access_tokens.md).
+- A [group deploy token](../../project/deploy_tokens/_index.md) for the top-level group hosting the considered virtual registry.
+- A [group access token](../../group/settings/group_access_tokens.md) for the top-level group hosting the considered virtual registry.
+- A [CI/CD job token](../../../ci/jobs/ci_job_token.md).
+
+Tokens need one of the following scopes:
+
+- `api`
+- `read_virtual_registry`
+
+Access tokens and the CI/CD job token are resolved to users. The resolved user must be either:
+
+- A direct member of the top-level group with at least the Guest role.
+- A GitLab instance administrator.
+- A direct member of one of the projects included in the top-level group.
+
+## Manage virtual registries
+
+Manage virtual registries for a top-level group.
+
+### Creating a virtual registry
+
+You can create a virtual registry for any of the
+[supported package formats](#supported-package-formats).
 
 When you create a virtual registry:
 
-- The registry is hosted at a top-level Group for a given package format. Projects and subgroups are not supported.
+- The registry is hosted at a top-level group for a given package format. Projects and subgroups are not supported.
 - The virtual registry object links to an ordered list of available upstreams (up to 20). Each upstream points to an external registry.
 - External registries can be public or private. Credentials for private registries are stored in the upstream itself, so you do not need to store them in the package manager configuration.
 
-When a virtual registry receives a request for a package:
+### View a virtual registry
 
-- The registry walks through the ordered list of upstreams to find one that can fulfill the request.
-- If the requested file is found in an upstream, the virtual registry returns that file and caches it for future requests. [Caching](#caching-system) increases the availability of dependencies if you've pulled them at least once through the virtual registry.
+To view a virtual registry:
+
+1. On the left sidebar, select **Search or go to** and find your group. If you've [turned on the new navigation](../../interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar. This group must be at the top level.
+1. Select **Deploy** > **Virtual registry**.
+
+### Edit a virtual registry
+
+To edit an existing virtual registry:
+
+1. On the left sidebar, select **Search or go to** and find your group. If you've [turned on the new navigation](../../interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar. This group must be at the top level.
+1. Select **Deploy** > **Virtual registry**.
+1. Under **Registry types**, select **View registries**.
+1. In the row of the registry you want to edit, select **Edit** ({{< icon name="pencil" >}}).
+1. Make your changes and select **Save changes**.
+
+### Delete a virtual registry
+
+To delete a virtual registry:
+
+1. On the left sidebar, select **Search or go to** and find your group. If you've [turned on the new navigation](../../interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar. This group must be at the top level.
+1. Select **Deploy** > **Virtual registry**.
+1. Under **Registry types**, select **View registries**.
+1. Under the **Registries** tab, in the row of the registry you want to delete, select **Edit** ({{< icon name="pencil" >}}).
+1. Select **Delete registry**.
+1. On the confirmation dialog, select **Delete**.
+
+## Manage upstream registries
+
+Manage upstream registries in a virtual registry
+for a top-level group.
+
+### View upstream registries
+
+To view upstream registries:
+
+1. On the left sidebar, select **Search or go to** and find your group. If you've [turned on the new navigation](../../interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar. This group must be at the top level.
+1. Select **Deploy** > **Virtual registry**.
+1. Under **Registry types**, select **View registries**.
+1. Select the **Upstreams** tab to view all available upstreams.
+
+### Edit an upstream registry
+
+To edit an upstream registry:
+
+1. On the left sidebar, select **Search or go to** and find your group. If you've [turned on the new navigation](../../interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar. This group must be at the top level.
+1. Select **Deploy** > **Virtual registry**.
+1. Under **Registry types**, select **View registries**.
+1. Select the **Upstreams** tab.
+1. In the row of the upstream you want to edit, select **Edit** ({{< icon name="pencil" >}}).
+1. Make your changes and select **Save changes**.
+
+### Reorder upstream registries
+
+The order of upstream registries determines the priority
+in which they are queried for packages.
+
+To change the order of upstream registries:
+
+1. On the left sidebar, select **Search or go to** and find your group. If you've [turned on the new navigation](../../interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar. This group must be at the top level.
+1. Select **Deploy** > **Virtual registries**.
+1. Under **Registry types**, select **View registries**.
+1. Under the **Registries** tab, select a registry.
+1. Under **Upstreams**, select **Move upstream up** or **Move upstream down** to reorder upstreams.
+
+Best practices for upstream ordering:
+
+- Position private registries before public ones to prioritize internal packages.
+- Prioritize registries with the most packages at the top of the list. This approach:
+  - Increases the chances that a high-priority registry can fulfill the request
+  - Prevents walking the entire ordered list to find a valid upstream registry
+- Place faster or more reliable registries higher in the list.
+- Put public registries last as fallbacks for public dependencies.
+- Put registries with the least amount of packages at the bottom of the list.
+
+For more information about the order of upstreams, see [Upstream prioritization](#upstream-prioritization).
 
 ## Caching system
 
@@ -123,7 +223,7 @@ As long as the virtual registry has the response related to
 a request in the cache, that request is fulfilled,
 even when outside the validity period.
 
-#### Set the cache validity period
+### Set the cache validity period
 
 The cache validity period is important in the overall performance of the virtual registry to fulfill requests. Contacting external registries is a costly operation. Smaller validity periods increase the amount of checks, and longer periods decrease them.
 
@@ -132,6 +232,31 @@ You can turn off cache validity checks by setting it to `0`.
 The default value of the cache validity period is `24` hours.
 
 You should set the cache validity period to `0` when the external registry targeted by the upstream is known to have immutable responses. This is often the case with official public registries. For more information, check your [supported package format](#supported-package-formats).
+
+You configure the cache validity period when you create or edit an upstream.
+
+### View cached packages
+
+To view packages that have been cached from upstream registries:
+
+1. On the left sidebar, select **Search or go to** and find your group. If you've [turned on the new navigation](../../interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar. This group must be at the top level.
+1. Select **Deploy** > **Virtual registry**.
+1. Under **Registry types**, select **View registries**.
+1. Under the **Upstreams** tab, select an upstream.
+1. View the cache metadata for cached packages.
+
+### Delete cache entries
+
+To delete cache entries:
+
+1. On the left sidebar, select **Search or go to** and find your group. If you've [turned on the new navigation](../../interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar. This group must be at the top level.
+1. Select **Deploy** > **Virtual registry**.
+1. Under **Registry types**, select **View registries**.
+1. Under the **Registries** tab, select a registry.
+1. Next to **Upstreams**, select **Clear all caches**.
+   - To delete a specific cache entry, next to an upstream, select **Clear cache**.
+
+When you delete a cache entry, the next time the virtual registry receives a request for that file, it walks the list of upstreams again to find an upstream that can fulfill the request.
 
 ### Object storage usage
 
@@ -216,17 +341,14 @@ also support multiple upstream registries and authentication.
 
 ### Upstream prioritization
 
-Upstream registries are organized in ordered lists. Whenever a request is not
-found in a cache, the virtual registry walks the ordered list to find the
+Upstream registries are organized in ordered lists. When a virtual registry receives a request for a package:
+
+- The registry walks through the ordered list of upstreams to find one that can fulfill the request.
+- If the requested file is found in an upstream, the virtual registry returns that file and caches it for future requests. Caching increases the availability of dependencies if you've pulled them at least once through the virtual registry.
+- If a requested file is not found in a cache, the virtual registry walks the ordered list to find the
 upstream with the highest priority that can fulfill the request.
+
 This system noticeably impacts the performance of a virtual registry.
-
-When you manage a list of private upstream registries:
-
-- You should prioritize registries with the most packages at the top of the list. This approach:
-  - Increases the chances that a high-priority registry can fulfill the request
-  - Prevents walking the entire ordered list to find a valid upstream registry
-- You should put registries with the least amount of packages at the bottom of the list.
 
 ### Performance improvements with usage
 

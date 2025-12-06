@@ -13,6 +13,7 @@ GitLabのエンドツーエンドのワークフローについて説明しま�
 - [組織を管理する](../topics/set_up_organization.md)
 - [プロジェクトで作業を整理する](project/organize_work_with_projects.md)
 - [作業を計画および追跡する](../topics/plan_and_track.md)
+- [GitLabの認証と認可を管理する](../auth/_index.md)
 - [Gitを使用する](../topics/git/_index.md)
 - [コードを管理する](../topics/manage_code.md)
 - [CI/CDを使用してアプリケーションをビルドする](../topics/build_your_application.md)

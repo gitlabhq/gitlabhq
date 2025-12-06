@@ -3,7 +3,7 @@ stage: Software Supply Chain Security
 group: Authentication
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 title: SSHキーを使用してGitLabと通信する
-description: セキュアな認証とリポジトリアクセスのためSSHキーをGitLabで使用する方法について説明します。
+description: SSHキーを使用して、GitLabリポジトリとの安全な認証および通信を行います。
 ---
 
 {{< details >}}
@@ -32,7 +32,7 @@ SSHは、公開キーと秘密キーの2つのキーを使用します。
 
 ## 前提要件 {#prerequisites}
 
-SSHを使用してGitLabと通信するには、以下が必要です。
+SSHを使用してGitLabと通信するには、以下が必要です:
 
 - GNU/Linux、macOS、およびWindows 10にプリインストールされているOpenSSHクライアント。
 - SSHバージョン6.5以降。それ以前のバージョンではMD5署名を使用していましたが、これは安全ではありません。
@@ -41,7 +41,7 @@ SSHを使用してGitLabと通信するには、以下が必要です。
 
 ## サポートされているSSHキーの種類 {#supported-ssh-key-types}
 
-GitLabとの通信には、次のSSHキーの種類を使用できます。
+GitLabとの通信には、次のSSHキーの種類を使用できます:
 
 - [ED25519](#ed25519-ssh-keys)
 - [ED25519_SK](#ed25519_sk-ssh-keys)
@@ -53,7 +53,7 @@ GitLabとの通信には、次のSSHキーの種類を使用できます。
 
 ### ED25519 SSHキー {#ed25519-ssh-keys}
 
-[Practical Cryptography With Go](https://leanpub.com/gocrypto/read#leanpub-auto-chapter-5-digital-signatures)（実用的な暗号化とGo）の書籍では、[ED25519](https://ed25519.cr.yp.to/)キーはRSAキーよりも安全で高性能であることが示唆されています。
+[Practical Cryptography With Go](https://leanpub.com/gocrypto/read#leanpub-auto-chapter-5-digital-signatures) （実用的な暗号化とGo）の書籍では、[ED25519](https://ed25519.cr.yp.to/)キーはRSAキーよりも安全で高性能であることが示唆されています。
 
 OpenSSH 6.5は2014年にED25519 SSHキーを導入するなど、ほとんどのオペレーティングシステムで利用可能になっています。
 
@@ -91,7 +91,7 @@ RSAキーを使用する場合、米国立標準技術研究所の[Publication 8
 
 1. ホームディレクトリに移動します。
 1. `.ssh/`サブディレクトリに移動します。`.ssh/`サブディレクトリが存在しない場合は、ホームディレクトリにいないか、以前に`ssh`を使用したことがないかのどちらかです。後者の場合は、[SSHキーペアを生成する](#generate-an-ssh-key-pair)必要があります。
-1. 次のいずれかの形式のファイルが存在するかどうかを確認します。
+1. 次のいずれかの形式のファイルが存在するかどうかを確認します:
 
    | アルゴリズム             | 公開キー | 秘密キー |
    |-----------------------|------------|-------------|
@@ -104,7 +104,7 @@ RSAキーを使用する場合、米国立標準技術研究所の[Publication 8
 
 ## SSHキーペアを生成する {#generate-an-ssh-key-pair}
 
-既存のSSHキーペアがない場合は、新しいキーペアを生成します。
+既存のSSHキーペアがない場合は、新しいキーペアを生成します:
 
 1. ターミナルを開きます。
 1. 末尾にキーの種類とオプションのコメントを付けて`ssh-keygen -t`を実行します。このコメントは、作成される`.pub`ファイルに含まれています。コメントにメールアドレスを使用することもできます。
@@ -121,7 +121,7 @@ RSAキーを使用する場合、米国立標準技術研究所の[Publication 8
    ssh-keygen -t rsa -b 2048 -C "<comment>"
    ```
 
-1. <kbd>Enter</kbd>キーを押します。次のような出力が表示されます。
+1. <kbd>Enter</kbd>キーを押します。次のような出力が表示されます:
 
    ```plaintext
    Generating public/private ed25519 key pair.
@@ -132,7 +132,7 @@ RSAキーを使用する場合、米国立標準技術研究所の[Publication 8
 
    SSHキーペアを[特定のホスト専用](#configure-ssh-to-point-to-a-different-directory)にすることもできます。
 
-1. [パスフレーズ](https://www.ssh.com/academy/ssh/passphrase)を指定します。
+1. [パスフレーズ](https://www.ssh.com/academy/ssh/passphrase)を指定します:
 
    ```plaintext
    Enter passphrase (empty for no passphrase):
@@ -147,14 +147,14 @@ RSAキーを使用する場合、米国立標準技術研究所の[Publication 8
 
 SSHキーペアをデフォルトディレクトリに保存しなかった場合は、秘密キーが保存されているディレクトリを指すようにSSHクライアントを設定します。
 
-1. ターミナルを開き、次のコマンドを実行します。
+1. ターミナルを開き、次のコマンドを実行します:
 
    ```shell
    eval $(ssh-agent -s)
    ssh-add <directory to private SSH key>
    ```
 
-1. これらの設定を`~/.ssh/config`ファイルに保存します。次に例を示します。
+1. これらの設定を`~/.ssh/config`ファイルに保存します。次に例を示します:
 
    ```conf
    # GitLab.com
@@ -181,7 +181,7 @@ SSHキーペアをデフォルトディレクトリに保存しなかった場�
 
 {{< /history >}}
 
-SSHをGitLabで使用するには、公開キーをGitLabアカウントにコピーします。
+SSHをGitLabで使用するには、公開キーをGitLabアカウントにコピーします:
 
 1. 公開キーファイルの内容をコピーします。これは手動で行うことも、スクリプトを使用することもできます。
 
@@ -216,58 +216,52 @@ SSHをGitLabで使用するには、公開キーをGitLabアカウントにコ�
    {{< /tabs >}}
 
 1. GitLabにサインインします。
-1. 左側のサイドバーで、アバターを選択します。
+1. 左側のサイドバーで、自分のアバターを選択します。[新しいナビゲーションをオンにしている](interface_redesign.md#turn-new-navigation-on-or-off)場合、このボタンは右上隅にあります。
 1. **プロファイルの編集**を選択します。
 1. 左側のサイドバーで**SSHキー**を選択します。
 1. **新しいキーを追加**を選択します。
 1. **キー**ボックスに、公開キーの内容を貼り付けます。キーを手動でコピーする場合は、`ssh-rsa`、`ssh-dss`、`ecdsa-sha2-nistp256`、`ecdsa-sha2-nistp384`、`ecdsa-sha2-nistp521`、`ssh-ed25519`、`sk-ecdsa-sha2-nistp256@openssh.com`、または`sk-ssh-ed25519@openssh.com`で始まり、コメントで終わる可能性があるキー全体をコピーしていることを確認してください。
 1. **タイトル**ボックスに、`Work Laptop`や`Home Workstation`などの説明を入力します。
 1. オプション。キーの**使用タイプ**を選択します。`Authentication`（認証）または`Signing`（署名）のいずれか、またはその両方で使用できます。`Authentication & Signing`（認証と署名）がデフォルト値です。
-1. オプション。**有効期限**を更新して、デフォルトの有効期限を変更します。
-   - 管理者は有効期限を確認し、[キーを削除](../administration/credentials_inventory.md#delete-ssh-keys)する際の判断材料として活用できます。
-   - GitLabは毎日午前01:00（UTC）にすべてのSSHキーをチェックします。7日後に有効期限切れになるすべてのSSHキーについて、有効期限をメールで通知します。
-   - GitLabは毎日午前02:00（UTC）にすべてのSSHキーをチェックします。当日有効期限切れになるすべてのSSHキーについて、有効期限をメールで通知します。
+1. オプション。**有効期限**を更新して、デフォルトの有効期限を変更します。詳細については、[SSHキーの有効期限](#ssh-key-expiration)を参照してください。
 1. **キーを追加**を選択します。
 
 ## 接続できることを確認する {#verify-that-you-can-connect}
 
 SSHキーが正しく追加されたことを確認します。
 
-1. 正しいサーバーに接続していることを確認するには、サーバーのSSHホストキーのフィンガープリントを確認してください。詳細は以下の説明を参照してください。
+1. 正しいサーバーに接続していることを確認するため、SSHホストキーのフィンガープリントを特定します。詳細は以下の説明を参照してください:
    - GitLab.comの場合は、[SSHホストキーのフィンガープリント](gitlab_com/_index.md#ssh-host-keys-fingerprints)に関するドキュメントを参照してください。
    - GitLab Self-ManagedまたはGitLab Dedicatedの場合は、`https://gitlab.example.com/help/instance_configuration#ssh-host-keys-fingerprints`を参照してください（`gitlab.example.com`はGitLabインスタンスのURLです）。
-1. ターミナルを開き、このコマンドを実行します。`gitlab.example.com`をGitLabのインスタンスURLに置き換えてください。
+1. ターミナルを開き、このコマンドを実行します。`gitlab.example.com`をGitLabのインスタンスURLに置き換えてください:
 
    ```shell
    ssh -T git@gitlab.example.com
    ```
 
-1. 今回初めて接続する場合は、GitLabホストの信頼性を検証する必要があります。次のようなメッセージが表示された場合:
+   デフォルトでは、接続は`git`ユーザー名を使用しますが、管理者は[ユーザー名を変更](https://docs.gitlab.com/omnibus/settings/configuration.html#change-the-name-of-the-git-user-or-group)できます。
+
+1. 最初の接続時に、GitLabホストの信頼性を確認する必要がある場合があります。次のようなメッセージが表示された場合は、画面の指示に従ってください:
 
    ```plaintext
    The authenticity of host 'gitlab.example.com (35.231.145.151)' can't be established.
    ECDSA key fingerprint is SHA256:HbW3g8zUjNSksFbqTiUWPWg2Bq1x8xdGUrliXFzSnUw.
-   Are you sure you want to continue connecting (yes/no)? yes
-   Warning: Permanently added 'gitlab.example.com' (ECDSA) to the list of known hosts.
+   Are you sure you want to continue connecting (yes/no)?
    ```
 
-   `yes`と入力して<kbd>Enter</kbd>キーを押します。
+   歓迎メッセージが表示されます。
 
-1. `ssh -T git@gitlab.example.com`コマンドをもう一度実行します。_Welcome to GitLab, `@username`!_というメッセージが表示されます。
+   ```plaintext
+   Welcome to GitLab, <username>!
+   ```
 
-ウェルカムメッセージが表示されない場合は、verboseモードで`ssh`を実行して問題を解決します。
-
-```shell
-ssh -Tvvv git@gitlab.example.com
-```
-
-デフォルトでは、GitLabは`git`ユーザー名を使用して認証します。[管理者によって変更](https://docs.gitlab.com/omnibus/settings/configuration.html#change-the-name-of-the-git-user-or-group)されている場合は、異なる可能性があります。
+   メッセージが表示されない場合は、[SSH接続の問題を解決する](ssh_troubleshooting.md#general-ssh-troubleshooting)必要があるかもしれません。
 
 ## SSHキーのパスフレーズを更新する {#update-your-ssh-key-passphrase}
 
-次の手順で、SSHキーのパスフレーズを更新できます。
+次の手順で、SSHキーのパスフレーズを更新できます:
 
-1. ターミナルを開き、次のコマンドを実行します。
+1. ターミナルを開き、次のコマンドを実行します:
 
    ```shell
    ssh-keygen -p -f /path/to/ssh_key
@@ -277,13 +271,13 @@ ssh -Tvvv git@gitlab.example.com
 
 ## RSAキーペアをより安全な形式にアップグレードする {#upgrade-your-rsa-key-pair-to-a-more-secure-format}
 
-OpenSSHのバージョンが6.5 ～ 7.8の場合は、秘密RSA SSHキーをより安全なOpenSSH形式で保存できます。ターミナルを開いて次のコマンドを実行します。
+OpenSSHのバージョンが6.5 ～ 7.8の場合は、秘密RSA SSHキーをより安全なOpenSSH形式で保存できます。ターミナルを開いて次のコマンドを実行します:
 
 ```shell
 ssh-keygen -o -f ~/.ssh/id_rsa
 ```
 
-または、次のコマンドを実行して、より安全な暗号化形式で新しいRSAキーを生成することもできます。
+または、次のコマンドを実行して、より安全な暗号化形式で新しいRSAキーを生成することもできます:
 
 ```shell
 ssh-keygen -o -t rsa -b 4096 -C "<comment>"
@@ -291,7 +285,7 @@ ssh-keygen -o -t rsa -b 4096 -C "<comment>"
 
 ## FIDO2ハードウェアセキュリティキー向けのSSHキーペアを生成する {#generate-an-ssh-key-pair-for-a-fido2-hardware-security-key}
 
-ED25519_SKまたはECDSA_SK SSHキーを生成するには、OpenSSH 8.2以降を使用する必要があります。
+ED25519_SKまたはECDSA_SK SSHキーを生成するには、OpenSSH 8.2以降を使用する必要があります:
 
 1. ハードウェアセキュリティキーをコンピューターに挿入します。
 1. ターミナルを開きます。
@@ -309,7 +303,7 @@ ED25519_SKまたはECDSA_SK SSHキーを生成するには、OpenSSH 8.2以降�
    ssh-keygen -t ecdsa-sk -C "<comment>"
    ```
 
-   セキュリティキーがFIDO2レジデントキーをサポートしている場合は、SSHキーの作成時に有効にできます。
+   セキュリティキーがFIDO2レジデントキーをサポートしている場合は、SSHキーの作成時に有効にできます:
 
    ```shell
    ssh-keygen -t ed25519-sk -O resident -C "<comment>"
@@ -317,7 +311,7 @@ ED25519_SKまたはECDSA_SK SSHキーを生成するには、OpenSSH 8.2以降�
 
    `-O resident`は、キーをFIDO認証システム自体に保存する必要があることを示します。レジデントキーは、[`ssh-add -K`](https://man.openbsd.org/cgi-bin/man.cgi/OpenBSD-current/man1/ssh-add.1#K)または[`ssh-keygen -K`](https://man.openbsd.org/cgi-bin/man.cgi/OpenBSD-current/man1/ssh-keygen#K)を使用してセキュリティキーから直接読み込むことができるため、新しいコンピューターへのインポートが簡単です。
 
-1. <kbd>Enter</kbd>キーを押します。次のような出力が表示されます。
+1. <kbd>Enter</kbd>キーを押します。次のような出力が表示されます:
 
    ```plaintext
    Generating public/private ed25519-sk key pair.
@@ -326,13 +320,13 @@ ED25519_SKまたはECDSA_SK SSHキーを生成するには、OpenSSH 8.2以降�
 
 1. ハードウェアセキュリティキーのボタンを押します。
 
-1. 提案されたファイル名とディレクトリをそのまま使用します。
+1. 提案されたファイル名とディレクトリをそのまま使用します:
 
    ```plaintext
    Enter file in which to save the key (/home/user/.ssh/id_ed25519_sk):
    ```
 
-1. [パスフレーズ](https://www.ssh.com/academy/ssh/passphrase)を指定します。
+1. [パスフレーズ](https://www.ssh.com/academy/ssh/passphrase)を指定します:
 
    ```plaintext
    Enter passphrase (empty for no passphrase):
@@ -345,19 +339,19 @@ ED25519_SKまたはECDSA_SK SSHキーを生成するには、OpenSSH 8.2以降�
 
 ## 1PasswordでSSHキーペアを生成する {#generate-an-ssh-key-pair-with-1password}
 
-[1Password](https://1password.com/)と[1Passwordブラウザ拡張機能](https://support.1password.com/getting-started-browser/)を使用して、次のいずれかを行うことができます。
+[1Password](https://1password.com/)と[1Passwordブラウザ拡張機能](https://support.1password.com/getting-started-browser/)を使用して、次のいずれかを行うことができます:
 
 - 新しいSSHキーを自動的に生成する。
 - 1Password Vaultにある既存のSSHキーを使用してGitLabで認証する。
 
 1. GitLabにサインインします。
-1. 左側のサイドバーで、アバターを選択します。
+1. 左側のサイドバーで、自分のアバターを選択します。[新しいナビゲーションをオンにしている](interface_redesign.md#turn-new-navigation-on-or-off)場合、このボタンは右上隅にあります。
 1. **プロファイルの編集**を選択します。
 1. 左側のサイドバーで**SSHキー**を選択します。
 1. **新しいキーを追加**を選択します。
 1. **キー**を選択すると、1Passwordヘルパーが表示されます。
 1. 1Passwordアイコンを選択し、1Passwordのロックを解除します。
-1. **SSHキーの作成**を選択するか、既存のSSHキーを選択して公開キーを入力できます。
+1. **Create SSH Key**（SSHキーの作成）を選択するか、既存のSSHキーを選択して公開キーを入力できます。
 1. **タイトル**ボックスに、`Work Laptop`や`Home Workstation`などの説明を入力します。
 1. オプション。キーの**使用タイプ**を選択します。`Authentication`（認証）または`Signing`（署名）のいずれか、またはその両方で使用できます。`Authentication & Signing`（認証と署名）がデフォルト値です。
 1. オプション。**有効期限**を更新して、デフォルトの有効期限を変更します。
@@ -369,7 +363,7 @@ ED25519_SKまたはECDSA_SK SSHキーを生成するには、OpenSSH 8.2以降�
 
 リポジトリごとに異なるキーを使用できます。
 
-ターミナルを開き、次のコマンドを実行します。
+ターミナルを開き、次のコマンドを実行します:
 
 ```shell
 git config core.sshCommand "ssh -o IdentitiesOnly=yes -i ~/.ssh/private-key-filename-for-this-repository -F /dev/null"
@@ -379,13 +373,13 @@ git config core.sshCommand "ssh -o IdentitiesOnly=yes -i ~/.ssh/private-key-file
 
 ## SSHキーを表示する {#view-your-ssh-keys}
 
-次の手順でアカウントのSSHキーを表示できます。
+次の手順でアカウントのSSHキーを表示できます:
 
-1. 左側のサイドバーで、アバターを選択します。
+1. 左側のサイドバーで、自分のアバターを選択します。[新しいナビゲーションをオンにしている](interface_redesign.md#turn-new-navigation-on-or-off)場合、このボタンは右上隅にあります。
 1. **プロファイルの編集**を選択します。
 1. 左側のサイドバーで**SSHキー**を選択します。
 
-既存のSSHキーがページの下部に一覧表示されます。情報には次のものが含まれます。
+既存のSSHキーがページの下部に一覧表示されます。情報には次のものが含まれます:
 
 - キーのタイトル
 - 公開フィンガープリント
@@ -410,13 +404,13 @@ SSHキーでコミットに署名している場合、SSHキーを削除する�
 
 SSHキーのセキュリティが侵害された場合は、キーを取り消します。
 
-前提要件:
+前提要件: 
 
 - SSHキーには、`Signing`（署名）または`Authentication & Signing`（認証と署名）の使用タイプが必要です。
 
-次の手順でSSHキーを取り消せます。
+次の手順でSSHキーを取り消せます:
 
-1. 左側のサイドバーで、アバターを選択します。
+1. 左側のサイドバーで、自分のアバターを選択します。[新しいナビゲーションをオンにしている](interface_redesign.md#turn-new-navigation-on-or-off)場合、このボタンは右上隅にあります。
 1. **プロファイルの編集**を選択します。
 1. 左側のサイドバーで**SSHキー**を選択します。
 1. 取り消したいSSHキーの横にある**取り消し**を選択します。
@@ -424,13 +418,26 @@ SSHキーのセキュリティが侵害された場合は、キーを取り消�
 
 ### SSHキーを削除する {#delete-an-ssh-key}
 
-次の手順でSSHキーを削除できます。
+次の手順でSSHキーを削除できます:
 
-1. 左側のサイドバーで、アバターを選択します。
+1. 左側のサイドバーで、自分のアバターを選択します。[新しいナビゲーションをオンにしている](interface_redesign.md#turn-new-navigation-on-or-off)場合、このボタンは右上隅にあります。
 1. **プロファイルの編集**を選択します。
 1. 左側のサイドバーで**SSHキー**を選択します。
 1. 削除したいキーの横にある**削除**（{{< icon name="remove" >}}）を選択します。
 1. **削除**を選択します。
+
+## SSHキーの有効期限 {#ssh-key-expiration}
+
+SSHキーをアカウントに追加する際に、有効期限を設定できます。このオプションの設定は、セキュリティ漏洩のリスクを軽減するのに役立ちます。
+
+SSHキーの有効期限が切れると、それを使用して認証またはコミットに署名することはできなくなります。[新しいSSHキーを生成](#generate-an-ssh-key-pair)し、[アカウントに追加](#add-an-ssh-key-to-your-gitlab-account)する必要があります。
+
+GitLab Self-ManagedおよびGitLab Dedicatedでは、管理者は有効期限を表示し、[キーを削除](../administration/credentials_inventory.md#delete-ssh-keys)する際のガイダンスとして使用できます。
+
+GitLabは、有効期限が切れるSSHキーを毎日チェックし、通知を送信します:
+
+- 有効期限の7日前、UTC午前01:00。
+- 有効期限当日のUTC午前02:00。
 
 ## 単一のGitLabインスタンスで異なるアカウントを使用する {#use-different-accounts-on-a-single-gitlab-instance}
 
@@ -455,13 +462,13 @@ Host <user_2.gitlab.com>
   IdentityFile ~/.ssh/<example_ssh_key2>
 ```
 
-`user_1`のリポジトリをクローンするには、`git clone`コマンドで`user_1.gitlab.com`を使用します。
+`user_1`のリポジトリをクローンするには、`git clone`コマンドで`user_1.gitlab.com`を使用します:
 
 ```shell
 git clone git@<user_1.gitlab.com>:gitlab-org/gitlab.git
 ```
 
-`origin`としてエイリアスされている、以前にクローンしたリポジトリを更新するには、次のコマンドを使用します。
+`origin`としてエイリアスされている、以前にクローンしたリポジトリを更新するには、次のコマンドを使用します:
 
 ```shell
 git remote set-url origin git@<user_1.gitlab.com>:gitlab-org/gitlab.git
@@ -485,7 +492,7 @@ git remote set-url origin git@<user_1.gitlab.com>:gitlab-org/gitlab.git
 
 Windows 10を実行している場合は、`git`と`ssh`の両方がプリインストールされている[WSL 2](https://learn.microsoft.com/en-us/windows/wsl/install#update-to-wsl-2)を備えた[Linux用Windowsサブシステム（WSL）](https://learn.microsoft.com/en-us/windows/wsl/install)を使用するか、[Git for Windows](https://gitforwindows.org)をインストールしてPowerShell経由でSSHを使用できます。
 
-WSLで生成されたSSHキーは、Git for Windowsでは直接利用できません。その逆も同様です。これはホームディレクトリが異なるためです。
+WSLで生成されたSSHキーは、Git for Windowsでは直接利用できません。その逆も同様です。これはホームディレクトリが異なるためです:
 
 - WSL: `/home/<user>`
 - Git for Windows: `C:\Users\<user>`
@@ -494,18 +501,57 @@ WSLで生成されたSSHキーは、Git for Windowsでは直接利用できま�
 
 Windows 11を実行していて、[OpenSSH for Windows](https://learn.microsoft.com/en-us/windows-server/administration/OpenSSH/openssh-overview)を使用している場合は、`HOME`環境変数が正しく設定されていることを確認してください。正しく設定されていない場合、秘密SSHキーが見つからない可能性があります。
 
-代替ツールは次のとおりです。
+代替ツールは次のとおりです:
 
 - [Cygwin](https://www.cygwin.com)
 - [PuTTYgen](https://www.chiark.greenend.org.uk/~sgtatham/putty/latest.html) 0.81以降（以前のバージョンは[情報漏洩攻撃に対して脆弱](https://www.openwall.com/lists/oss-security/2024/04/15/6)です）
+
+## エンタープライズのユーザーに対するSSHキーの無効化 {#disable-ssh-keys-for-enterprise-users}
+
+{{< history >}}
+
+- GitLab 18.6で、`enterprise_disable_ssh_keys`という名前の[フラグ](../administration/feature_flags/_index.md)とともに[導入](https://gitlab.com/gitlab-org/gitlab/-/issues/30343)されました。デフォルトでは無効になっています。
+
+{{< /history >}}
+
+{{< alert type="flag" >}}
+
+この機能の利用可否は、機能フラグによって制御されます。詳細については、履歴を参照してください。
+
+{{< /alert >}}
+
+前提要件: 
+
+- Enterpriseユーザーが所属するグループのオーナーロールを持っている必要があります。
+
+グループの[エンタープライズのユーザー](enterprise_user/_index.md)のSSHキーを無効にすると:
+
+- エンタープライズのユーザーが新しいSSHキーを追加できなくなります。この動作は、エンタープライズユーザーがグループ管理者である場合でも適用されます。
+- エンタープライズのユーザーの既存のSSHキーを無効にします。
+
+{{< alert type="warning" >}}
+
+エンタープライズのユーザーに対するSSHキーを無効にしても、[サービスアカウント](profile/service_accounts.md)のデプロイメントキーは無効になりません。
+
+{{< /alert >}}
+
+エンタープライズのユーザーのSSHキーを無効にするには:
+
+1. 左側のサイドバーで、**検索または移動先**を選択して、グループを見つけます。[新しいナビゲーションをオンにしている](interface_redesign.md#turn-new-navigation-on-or-off)場合、このフィールドは上部のバーにあります。
+1. **設定 > 一般**を選択します。
+1. **権限とグループ機能**を展開します。
+1. **エンタープライズのユーザー**で、**SSHキーを無効にする**を選択します。
+1. **変更を保存**を選択します。
+
+エンタープライズユーザーアカウントを削除またはブロックすると、そのユーザーのパーソナルSSHキーは自動的に失効します。
 
 ## GitLabサーバー上のSSH設定をオーバーライドする {#overriding-ssh-settings-on-the-gitlab-server}
 
 GitLabはシステムにインストールされたSSHデーモンと統合し、すべてのアクセス要求が処理されるユーザー（通常は`git`という名前）を指定します。SSH経由でGitLabサーバーに接続するユーザーは、ユーザー名ではなくSSHキーによって識別されます。
 
-GitLabサーバーで実行されるSSH*クライアント*操作は、このユーザーとして実行されます。このSSH設定は変更できます。たとえば、認証リクエストに使用する秘密SSHキーをこのユーザーに指定できます。ただし、この方法は**サポートされていません**。重大なセキュリティリスクがあるため、きわめて非推奨とされています。
+GitLabサーバーで実行されるSSH*クライアント*操作は、このユーザーとして実行されます。このSSH設定は変更できます。たとえば、認証リクエストに使用する秘密SSHキーをこのユーザーに指定できます。ただし、この方法は**not supported**（サポートされていません）。重大なセキュリティリスクがあるため、きわめて非推奨とされています。
 
-GitLabはこの状態をチェックし、サーバーがこの方法で設定されている場合は、このセクションに誘導します。次に例を示します。
+GitLabはこの状態をチェックし、サーバーがこの方法で設定されている場合は、このセクションに誘導します。次に例を示します:
 
 ```shell
 $ gitlab-rake gitlab:check
@@ -520,17 +566,17 @@ Git user has default SSH configuration? ... no
   Please fix the error above and rerun the checks.
 ```
 
-できるだけ早くカスタム設定を削除してください。これらのカスタマイズは**明示的にサポートされていません**。予告なく動作しなくなる可能性があります。
+できるだけ早くカスタム設定を削除してください。これらのカスタマイズは**explicitly not supported**（明示的にサポートされていません）。予告なく動作しなくなる可能性があります。
 
 ## GitLab SSHの所有権と権限を確認する {#verify-gitlab-ssh-ownership-and-permissions}
 
-GitLab SSHフォルダとファイルには、次の権限が必要です。
+GitLab SSHフォルダーとファイルには、次の権限が必要です:
 
-- `/var/opt/gitlab/.ssh/`フォルダは、`git`グループと`git`ユーザーが所有し、権限は`700`に設定されている必要があります。
+- `/var/opt/gitlab/.ssh/`フォルダーは、`git`グループと`git`ユーザーが所有し、権限は`700`に設定されている必要があります。
 - `authorized_keys`ファイルの権限は`600`に設定されている必要があります。
 - `authorized_keys.lock`ファイルの権限は`644`に設定されている必要があります。
 
-これらの権限が正しいことを確認するには、次のスクリプトを実行します。
+これらの権限が正しいことを確認するには、次のスクリプトを実行します:
 
 ```shell
 stat -c "%a %n" /var/opt/gitlab/.ssh/.
@@ -538,7 +584,7 @@ stat -c "%a %n" /var/opt/gitlab/.ssh/.
 
 ### 権限を設定する {#set-permissions}
 
-権限が間違っている場合は、アプリケーションサーバーにサインインして次を実行します。
+権限が間違っている場合は、アプリケーションサーバーにサインインして次を実行します:
 
 ```shell
 cd /var/opt/gitlab/

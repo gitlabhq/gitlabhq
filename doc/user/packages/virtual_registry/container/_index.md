@@ -63,23 +63,7 @@ To authenticate manually, run the following command:
 echo "$CONTAINER_REGISTRY_PASSWORD" | docker login gitlab.example.com/virtual_registries/container/1 --username <your_username> --password-stdin
 ```
 
-Or, access the virtual registry with one of the following tokens:
-
-- A [personal access token](../../../profile/personal_access_tokens.md).
-- A [group deploy token](../../../project/deploy_tokens/_index.md) for the top-level group hosting the considered virtual registry.
-- A [group access token](../../../group/settings/group_access_tokens.md) for the top-level group hosting the considered virtual registry.
-- A [CI/CD job token](../../../../ci/jobs/ci_job_token.md).
-
-Tokens need one of the following scopes:
-
-- `api`
-- `read_virtual_registry`
-
-Access tokens and the CI/CD job token are resolved to users. The resolved user must be either:
-
-- A direct member of the top-level group with at least the Guest role.
-- A GitLab instance administrator.
-- A direct member of one of the projects included in the top-level group.
+Or, configure authentication with any of the methods described in [Authenticate to the virtual registry](../_index.md#authenticate-to-the-virtual-registry).
 
 The container virtual registry follows the [Docker v2 token authentication flow](https://distribution.github.io/distribution/spec/auth/token/):
 
@@ -131,7 +115,7 @@ When you pull an image, the virtual registry:
    1. If the image is not cached or the cache is invalid, the image is fetched from the configured upstream registry and cached.
 1. Serves the image to your Docker client.
 
-### How the virtual registry validates the cache period for images
+### Virtual registry cache validation for images
 
 An image tag like `alpine:latest` always pulls the most recent version of the image. The new version contains an updated image manifest. The container virtual registry does not pull a new image when the manifest changes.
 
