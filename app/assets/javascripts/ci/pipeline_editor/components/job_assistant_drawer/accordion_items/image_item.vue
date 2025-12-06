@@ -27,6 +27,7 @@ export default {
       required: true,
     },
   },
+  emits: ['update-job'],
   computed: {
     imageEntryPoint() {
       return this.job.image.entrypoint.join('\n');

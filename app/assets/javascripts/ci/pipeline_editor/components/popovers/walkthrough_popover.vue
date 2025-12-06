@@ -19,6 +19,7 @@ export default {
     GlPopover,
     GlSprintf,
   },
+  emits: ['walkthrough-popover-cta-clicked'],
   data() {
     return {
       show: true,

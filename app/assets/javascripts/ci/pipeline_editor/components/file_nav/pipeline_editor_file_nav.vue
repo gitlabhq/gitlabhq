@@ -28,8 +28,11 @@ export default {
       default: false,
     },
   },
+  emits: ['toggle-file-tree'],
+  data() {
+    return { appStatus: '' };
+  },
   apollo: {
-    // eslint-disable-next-line @gitlab/vue-no-undef-apollo-properties
     appStatus: {
       query: getAppStatus,
       update(data) {

@@ -17,6 +17,7 @@ export default {
   },
   inject: ['ciConfigPath'],
   inheritAttrs: false,
+  emits: ['updateCiConfig'],
   created() {
     eventHub.$on(SCROLL_EDITOR_TO_BOTTOM, this.scrollEditorToBottom);
   },

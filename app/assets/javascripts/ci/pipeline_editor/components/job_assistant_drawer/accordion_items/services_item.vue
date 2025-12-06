@@ -29,6 +29,7 @@ export default {
       required: true,
     },
   },
+  emits: ['update-job'],
   computed: {
     canDeleteServices() {
       return this.job.services.length > 1;

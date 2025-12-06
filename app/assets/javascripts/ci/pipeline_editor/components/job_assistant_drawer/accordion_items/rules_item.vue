@@ -34,6 +34,7 @@ export default {
       required: true,
     },
   },
+  emits: ['update-job'],
   data() {
     return {
       startInNumber: 1,

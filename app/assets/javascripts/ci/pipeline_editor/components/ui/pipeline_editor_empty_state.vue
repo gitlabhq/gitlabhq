@@ -12,6 +12,8 @@ export default {
     PipelineEditorFileNav,
     ExternalConfigEmptyState,
   },
+  inject: ['emptyStateIllustrationPath', 'usesExternalConfig', 'newPipelinePath'],
+  emits: ['createEmptyConfigFile'],
   i18n: {
     title: __('Configure a pipeline to automate your builds, tests, and deployments'),
     body: __(
@@ -19,7 +21,6 @@ export default {
     ),
     btnText: __('Configure pipeline'),
   },
-  inject: ['emptyStateIllustrationPath', 'usesExternalConfig', 'newPipelinePath'],
   methods: {
     createEmptyConfigFile() {
       this.$emit('createEmptyConfigFile');

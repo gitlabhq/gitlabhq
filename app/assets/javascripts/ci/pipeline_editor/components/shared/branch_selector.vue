@@ -29,6 +29,7 @@ export default {
       default: BRANCH_PAGINATION_LIMIT,
     },
   },
+  emits: ['select-branch', 'fetch-error'],
   data() {
     return {
       availableBranches: [],

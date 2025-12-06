@@ -55,13 +55,14 @@ export default {
       default: false,
     },
   },
+  emits: ['showError', 'commit', 'updateCommitSha'],
   data() {
     return {
       isSaving: false,
+      currentBranch: '',
     };
   },
   apollo: {
-    // eslint-disable-next-line @gitlab/vue-no-undef-apollo-properties
     currentBranch: {
       query: getCurrentBranch,
       update(data) {

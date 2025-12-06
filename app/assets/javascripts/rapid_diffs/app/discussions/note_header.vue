@@ -4,6 +4,7 @@ import { isGid, getIdFromGraphQLId } from '~/graphql_shared/utils';
 import { s__ } from '~/locale';
 import ImportedBadge from '~/vue_shared/components/imported_badge.vue';
 import TimeAgoTooltip from '~/vue_shared/components/time_ago_tooltip.vue';
+import NoteAuthor from './note_author.vue';
 
 export default {
   name: 'NoteHeader',
@@ -14,6 +15,7 @@ export default {
     GlLoadingIcon,
     GlAvatarLink,
     GlAvatar,
+    NoteAuthor,
   },
   directives: {
     GlTooltip: GlTooltipDirective,
@@ -98,20 +100,7 @@ export default {
           <slot name="avatar-badge"></slot>
         </gl-avatar-link>
       </span>
-      <a
-        :href="author.path || author.webUrl"
-        class="js-user-link gl-overflow-hidden gl-break-words gl-text-default hover:gl-text-link focus:gl-focus"
-        :data-user-id="authorId"
-        :data-username="author.username"
-      >
-        <span class="gl-font-bold" data-testid="author-name" v-text="author.name"></span
-        ><span
-          class="gl-ml-2 gl-inline-block gl-max-w-full gl-truncate gl-whitespace-nowrap gl-align-bottom @max-sm/discussion:gl-hidden"
-        >
-          <span class="gl-text-subtle">@{{ author.username }}</span>
-          <slot name="note-header-info"></slot>
-        </span>
-      </a>
+      <note-author :author="author" />
     </template>
     <span v-else>{{ __('A deleted user') }}</span>
     <span class="gl-flex gl-flex-wrap gl-items-center gl-gap-1 gl-text-subtle">

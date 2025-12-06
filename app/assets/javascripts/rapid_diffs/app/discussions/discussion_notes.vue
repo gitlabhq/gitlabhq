@@ -1,13 +1,12 @@
 <script>
 import ToggleRepliesWidget from '~/notes/components/toggle_replies_widget.vue';
+import SystemNote from './system_note.vue';
 import NoteableNote from './noteable_note.vue';
 
 export default {
   name: 'DiscussionNotes',
   components: {
-    // System note is not migrated yet since we don't need it
-    // Refactor this to static import once the component is migrated
-    SystemNote: () => import('~/vue_shared/components/notes/system_note.vue'),
+    SystemNote,
     NoteableNote,
     ToggleRepliesWidget,
   },

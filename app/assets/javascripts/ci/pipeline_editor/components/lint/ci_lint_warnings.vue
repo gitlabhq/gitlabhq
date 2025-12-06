@@ -24,6 +24,7 @@ export default {
       default: __('The form contains the following warning:'),
     },
   },
+  emits: ['dismiss'],
   computed: {
     totalWarnings() {
       return this.warnings.length;

@@ -34,6 +34,7 @@ export default {
       required: true,
     },
   },
+  emits: ['switch-drawer'],
   computed: {
     editorA11yHelpPagePath() {
       return helpPagePath('ci/pipeline_editor/_index.md', {

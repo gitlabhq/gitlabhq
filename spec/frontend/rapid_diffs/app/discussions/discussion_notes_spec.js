@@ -5,15 +5,6 @@ import NoteableNote from '~/rapid_diffs/app/discussions/noteable_note.vue';
 import SystemNote from '~/vue_shared/components/notes/system_note.vue';
 import ToggleRepliesWidget from '~/notes/components/toggle_replies_widget.vue';
 
-jest.mock('~/vue_shared/components/notes/system_note.vue', () => {
-  return {
-    props: jest.requireActual('~/vue_shared/components/notes/system_note.vue').default.props,
-    render() {
-      return null;
-    },
-  };
-});
-
 describe('DiscussionNotes', () => {
   let wrapper;
 
@@ -28,9 +19,6 @@ describe('DiscussionNotes', () => {
       propsData,
       provide: merge(defaultProvisions, provide),
       scopedSlots,
-      stubs: {
-        SystemNote,
-      },
     });
   };
 

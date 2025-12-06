@@ -43,6 +43,7 @@ export default {
       default: false,
     },
   },
+  emits: ['hide-failure'],
   data() {
     return {
       codeSnippetCopiedFrom: '',

@@ -30,6 +30,7 @@ export default {
       default: false,
     },
   },
+  emits: ['select-branch', 'showError'],
   data() {
     return {
       branchSelected: null,

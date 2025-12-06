@@ -42,6 +42,7 @@ export default {
       default: () => [],
     },
   },
+  emits: ['update-job'],
 };
 </script>
 <template>

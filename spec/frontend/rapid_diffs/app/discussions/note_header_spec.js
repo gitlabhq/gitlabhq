@@ -3,6 +3,7 @@ import { GlAvatar, GlAvatarLink, GlBadge, GlLoadingIcon } from '@gitlab/ui';
 import NoteHeader from '~/rapid_diffs/app/discussions/note_header.vue';
 import ImportedBadge from '~/vue_shared/components/imported_badge.vue';
 import TimeAgoTooltip from '~/vue_shared/components/time_ago_tooltip.vue';
+import NoteAuthor from '~/rapid_diffs/app/discussions/note_author.vue';
 
 describe('NoteHeader', () => {
   let wrapper;
@@ -42,7 +43,7 @@ describe('NoteHeader', () => {
       });
     });
 
-    it('shows author name and username', () => {
+    it('shows author', () => {
       const author = {
         id: 'gid://gitlab/User/123',
         name: 'John Doe',
@@ -50,35 +51,7 @@ describe('NoteHeader', () => {
         path: '/johndoe',
       };
       createComponent({ author });
-      const authorLink = findAuthorLink();
-      expect(authorLink.exists()).toBe(true);
-      expect(authorLink.attributes('href')).toBe('/johndoe');
-      expect(authorLink.attributes('data-user-id')).toBe('123');
-      expect(authorLink.attributes('data-username')).toBe('johndoe');
-      expect(authorLink.text()).toContain('John Doe');
-      expect(authorLink.text()).toContain('@johndoe');
-    });
-
-    it('uses webUrl when path is not available', () => {
-      const author = {
-        id: 'gid://gitlab/User/123',
-        name: 'John Doe',
-        username: 'johndoe',
-        webUrl: 'https://example.com/johndoe',
-      };
-      createComponent({ author });
-      expect(findAuthorLink().attributes('href')).toBe('https://example.com/johndoe');
-    });
-
-    it('shows username', () => {
-      const author = {
-        id: 'gid://gitlab/User/123',
-        name: 'John Doe',
-        username: 'johndoe',
-        path: '/johndoe',
-      };
-      createComponent({ author });
-      expect(wrapper.text()).toContain(author.username);
+      expect(wrapper.findComponent(NoteAuthor).props('author')).toStrictEqual(author);
     });
 
     it('shows deleted user message instead of user link when no author is provided', () => {

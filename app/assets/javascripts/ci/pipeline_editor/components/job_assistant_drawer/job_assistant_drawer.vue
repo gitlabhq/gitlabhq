@@ -47,16 +47,17 @@ export default {
       required: true,
     },
   },
+  emits: ['updateCiConfig', 'switch-drawer'],
   data() {
     return {
       isNameValid: true,
       isScriptValid: true,
       isStartValid: true,
       job: JSON.parse(JSON.stringify(JOB_TEMPLATE)),
+      runners: [],
     };
   },
   apollo: {
-    // eslint-disable-next-line @gitlab/vue-no-undef-apollo-properties
     runners: {
       query: getRunnerTags,
       update(data) {

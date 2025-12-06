@@ -25,6 +25,7 @@ export default {
       default: false,
     },
   },
+  emits: ['on-mouse-enter', 'on-mouse-leave'],
   computed: {
     id() {
       return `${this.jobName}-${this.pipelineId}`;

@@ -34,6 +34,7 @@ export default {
       default: DRAWER_Z_INDEX,
     },
   },
+  emits: ['switch-drawer'],
   computed: {
     getDrawerHeaderHeight() {
       return getContentWrapperHeight();
