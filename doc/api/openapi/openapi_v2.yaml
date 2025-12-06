@@ -48179,6 +48179,11 @@ definitions:
             format: int32
             description: The minimum access level required to execute Duo Agent Platform.
               This field is behind a feature flag.
+          minimum_access_level_execute_async:
+            type: integer
+            format: int32
+            description: The minimum access level required to execute Duo Agent Platform
+              features in CI/CD. This field is behind a feature flag.
           minimum_access_level_manage:
             type: integer
             format: int32
@@ -48403,6 +48408,11 @@ definitions:
             format: int32
             description: The minimum access level required to execute Duo Agent Platform.
               This field is behind a feature flag.
+          minimum_access_level_execute_async:
+            type: integer
+            format: int32
+            description: The minimum access level required to execute Duo Agent Platform
+              features in CI/CD. This field is behind a feature flag.
           minimum_access_level_manage:
             type: integer
             format: int32
