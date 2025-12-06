@@ -14,7 +14,7 @@ module Authn
       end
 
       def execute
-        parsed_device_response = Gitlab::Json.parse(@device_response)
+        parsed_device_response = Gitlab::Json.safe_parse(@device_response)
 
         passkey_credential = WebAuthn::Credential.from_get(parsed_device_response)
         encoded_raw_id = Base64.strict_encode64(passkey_credential.raw_id)

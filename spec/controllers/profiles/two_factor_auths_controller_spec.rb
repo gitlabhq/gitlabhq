@@ -391,6 +391,25 @@ RSpec.describe Profiles::TwoFactorAuthsController, feature_category: :system_acc
 
         post :create_webauthn, params: params_with_password
       end
+
+      context 'when registration fails' do
+        context "with a service error" do
+          let(:device_response) { 'invalid_response' }
+          let(:perform_request) { post :create_webauthn, params: params_with_password }
+
+          it "renders the 2FA profile page with a flash alert from the registration service" do
+            perform_request
+
+            expect(flash[:alert]).to be_present
+          end
+
+          it 'does not change the WebAuthn authenticator count' do
+            perform_request
+
+            expect { response }.not_to change { user.second_factor_webauthn_registrations.count }
+          end
+        end
+      end
     end
 
     context 'when an invalid password is given' do

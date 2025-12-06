@@ -15,7 +15,7 @@ module Authn
         registration = WebauthnRegistration.new
 
         begin
-          passkey_credential = WebAuthn::Credential.from_create(Gitlab::Json.parse(@params[:device_response]))
+          passkey_credential = WebAuthn::Credential.from_create(Gitlab::Json.safe_parse(@params[:device_response]))
           passkey_credential.verify(@challenge)
 
           @passkey_credential = passkey_credential

@@ -5,6 +5,7 @@ require 'spec_helper'
 RSpec.describe SessionsController, feature_category: :system_access do
   include DeviseHelpers
   include LdapHelpers
+  include Authn::WebauthnSpecHelpers
 
   before do
     set_devise_mapping(context: @request)
@@ -719,11 +720,16 @@ RSpec.describe SessionsController, feature_category: :system_access do
       end
 
       context 'with passkeys' do
-        let(:user) { create(:user, :two_factor_via_webauthn, :with_passkey) }
-        let(:device_response) { 'test_response' }
+        let(:user) { create(:user, :two_factor_via_webauthn) }
+        let!(:passkey) { create_passkey(user) }
+
+        let(:device_response) { device_response_after_authentication(user, passkey) }
+
+        let(:session_params) { { otp_user_id: user.id, challenge: challenge } }
+        let(:user_params) { { device_response: device_response } }
 
         def authenticate_2fa_with_passkeys
-          authenticate_2fa(login: user.username, device_response: device_response)
+          post(:create, params: { user: user_params }, session: session_params)
         end
 
         context 'when the :passkeys Feature Flag is enabled' do
@@ -734,39 +740,36 @@ RSpec.describe SessionsController, feature_category: :system_access do
           end
 
           context 'when authenticated with a passkey' do
-            before do
-              allow_next_instance_of(Webauthn::AuthenticateService) do |instance|
-                allow(instance).to receive(:execute).and_return(
-                  ServiceResponse.success(
-                    message: _('Successfully authenticated via passkey.'),
-                    payload: user
-                  )
-                )
-              end
-            end
-
             it 'calls 2 passkey interval events (status: attempt & success)' do
               expect(controller).to receive(:track_passkey_internal_event).twice
 
               authenticate_2fa_with_passkeys
             end
+
+            it 'authenticates successfully' do
+              authenticate_2fa_with_passkeys
+
+              expect(response).to redirect_to(root_path)
+              expect(request.env['warden']).to be_authenticated
+              expect(subject.current_user).to eq user
+            end
           end
 
           context 'when failed to authenticate with a passkey' do
-            before do
-              allow_next_instance_of(Webauthn::AuthenticateService) do |instance|
-                allow(instance).to receive(:execute).and_return(
-                  ServiceResponse.error(
-                    message: _('Failed to authenticate via passkey.')
-                  )
-                )
-              end
-            end
+            let(:device_response) { 'invalid_response' }
 
             it 'calls 2 passkey interval events (status: attempt & failure)' do
               expect(controller).to receive(:track_passkey_internal_event).twice
 
               authenticate_2fa_with_passkeys
+            end
+
+            it 'shows a flash alert from the authenticate service' do
+              authenticate_2fa_with_passkeys
+
+              expect(request.env['warden']).not_to be_authenticated
+              expect(subject.current_user).to be_nil
+              expect(flash[:alert]).to be_present
             end
           end
         end

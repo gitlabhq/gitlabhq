@@ -38,7 +38,7 @@ RSpec.describe Webauthn::RegisterService, feature_category: :system_access do
     end
 
     context 'with valid registrations' do
-      let(:webauthn_credential) { WebAuthn::Credential.from_create(Gitlab::Json.parse(params[:device_response])) }
+      let(:webauthn_credential) { WebAuthn::Credential.from_create(Gitlab::Json.safe_parse(params[:device_response])) }
 
       it_behaves_like 'returns registration success'
 
