@@ -319,6 +319,7 @@ module API
         mount ::API::ProjectClusters
         mount ::API::ProjectContainerRepositories
         mount ::API::ProjectContainerRegistryProtectionRules
+        mount ::API::ProjectContainerRegistryProtectionTagRules
         mount ::API::ProjectDebianDistributions
         mount ::API::ProjectEvents
         mount ::API::ProjectExport

@@ -30289,6 +30289,34 @@ paths:
       tags:
       - projects
       operationId: deleteApiV4ProjectsIdRegistryProtectionRepositoryRulesProtectionRuleId
+  "/api/v4/projects/{id}/registry/protection/tag/rules":
+    get:
+      summary: Gets a list of container protection tag rules for a project
+      description: This feature was introduced in GitLab 18.7.
+      produces:
+      - application/json
+      parameters:
+      - in: path
+        name: id
+        description: The ID or URL-encoded path of the project.
+        type: string
+        required: true
+      responses:
+        '200':
+          description: Gets a list of container protection tag rules for a project
+          schema:
+            type: array
+            items:
+              "$ref": "#/definitions/API_Entities_Projects_ContainerRegistry_Protection_TagRule"
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Not Found
+      tags:
+      - projects
+      operationId: getApiV4ProjectsIdRegistryProtectionTagRules
   "/api/v4/projects/{id}/debian_distributions":
     post:
       summary: Create a Debian Distribution
@@ -63013,6 +63041,27 @@ definitions:
         - admin
         - ''
     description: Update a container protection rule for a project
+  API_Entities_Projects_ContainerRegistry_Protection_TagRule:
+    type: object
+    properties:
+      id:
+        type: integer
+        format: int32
+        example: 1
+      project_id:
+        type: integer
+        format: int32
+        example: 123
+      tag_name_pattern:
+        type: string
+        example: v*-release
+      minimum_access_level_for_push:
+        type: string
+        example: maintainer
+      minimum_access_level_for_delete:
+        type: string
+        example: maintainer
+    description: API_Entities_Projects_ContainerRegistry_Protection_TagRule model
   postApiV4ProjectsIdDebianDistributions:
     type: object
     properties:
