@@ -1,0 +1,58 @@
+From 096b4eed8eae93f2709507aa9d09e09f28120725 Mon Sep 17 00:00:00 2001
+Message-ID: <096b4eed8eae93f2709507aa9d09e09f28120725.1763896577.git.stanhu@gmail.com>
+From: Stan Hu <stanhu@gmail.com>
+Date: Thu, 20 Nov 2025 07:11:43 -0800
+Subject: [PATCH] Add support for configuring Web UI asset paths
+
+We want to serve the Sidekiq Web UI assets from a CDN or another
+container. To do that, we copy the assets to another directory and set
+the backend to use this path:
+
+```ruby
+Sidekiq::Web.assets_path = '/path/to/my/assets'
+```
+---
+ lib/sidekiq/web.rb | 13 +++++++++++--
+ 1 file changed, 11 insertions(+), 2 deletions(-)
+
+diff --git a/lib/sidekiq/web.rb b/lib/sidekiq/web.rb
+index f2b06856..4d1abef8 100644
+--- a/lib/sidekiq/web.rb
++++ b/lib/sidekiq/web.rb
+@@ -23,7 +23,6 @@ module Sidekiq
+     VIEWS = "#{ROOT}/views"
+     LOCALES = ["#{ROOT}/locales"]
+     LAYOUT = "#{VIEWS}/layout.erb"
+-    ASSETS = "#{ROOT}/assets"
+ 
+     DEFAULT_TABS = {
+       "Dashboard" => "",
+@@ -55,6 +54,16 @@ module Sidekiq
+         yield self
+       end
+ 
++      # Upstreamed in https://github.com/sidekiq/sidekiq/pull/6865
++      def assets_path
++        @assets_path ||= "#{ROOT}/assets"
++      end
++
++      # Upstreamed in https://github.com/sidekiq/sidekiq/pull/6865
++      def assets_path=(path)
++        @assets_path = path
++      end
++
+       def settings
+         self
+       end
+@@ -205,7 +214,7 @@ module Sidekiq
+ 
+       ::Rack::Builder.new do
+         use Rack::Static, urls: ["/stylesheets", "/images", "/javascripts"],
+-          root: ASSETS,
++          root: klass.assets_path, # Upstreamed in https://github.com/sidekiq/sidekiq/pull/6865
+           cascade: true,
+           header_rules: rules
+         m.each { |middleware, block| use(*middleware, &block) }
+-- 
+2.51.0
+

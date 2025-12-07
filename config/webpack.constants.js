@@ -1,4 +1,5 @@
 const path = require('path');
+const fs = require('fs');
 
 const ROOT_PATH = path.resolve(__dirname, '..');
 const WEBPACK_OUTPUT_PATH = path.join(ROOT_PATH, 'public/assets/webpack');
@@ -26,6 +27,41 @@ const IS_JH = require('./helpers/is_jh_env');
 const SOURCEGRAPH_PACKAGE = '@sourcegraph/code-host-integration';
 const GITLAB_WEB_IDE_PACKAGE = '@gitlab/web-ide';
 
+// Determine Sidekiq assets path from environment variables.
+// These are set by `rake gitlab:assets:compile` (see lib/tasks/gitlab/assets.rake).
+function getSidekiqAssetsSourcePath() {
+  const assetsPath = process.env.SIDEKIQ_ASSETS_SRC_PATH;
+
+  if (!assetsPath) {
+    return null;
+  }
+
+  if (!fs.existsSync(assetsPath)) {
+    throw new Error(`Sidekiq assets path does not exist: ${assetsPath}`);
+  }
+
+  console.log(`Sidekiq assets path: ${assetsPath}`);
+
+  return assetsPath;
+}
+
+function getSidekiqAssetsDestinationPath() {
+  const sidekiqPath = process.env.SIDEKIQ_ASSETS_DEST_PATH;
+
+  if (!sidekiqPath) {
+    return null;
+  }
+
+  console.log(`Sidekiq destination subpath: ${sidekiqPath}`);
+  const destPath = path.join(ROOT_PATH, sidekiqPath);
+  console.log(`Sidekiq assets destination path: ${destPath}`);
+
+  return destPath;
+}
+
+const SIDEKIQ_ASSETS_SOURCE = getSidekiqAssetsSourcePath();
+const SIDEKIQ_ASSETS_DEST = getSidekiqAssetsDestinationPath();
+
 const copyFilesPatterns = [
   ...pdfJsCopyFilesPatterns,
   {
@@ -39,6 +75,16 @@ const copyFilesPatterns = [
     from: path.join(ROOT_PATH, 'node_modules', GITLAB_WEB_IDE_PACKAGE, 'dist', 'public'),
     to: GITLAB_WEB_IDE_OUTPUT_PATH,
   },
+  // Add Sidekiq assets if both source and destination are available
+  ...(SIDEKIQ_ASSETS_SOURCE && SIDEKIQ_ASSETS_DEST
+    ? [
+        {
+          from: SIDEKIQ_ASSETS_SOURCE,
+          to: SIDEKIQ_ASSETS_DEST,
+          toType: 'dir',
+        },
+      ]
+    : []),
 ];
 
 module.exports = {
