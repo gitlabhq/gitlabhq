@@ -919,10 +919,7 @@ export default {
       if (this.workItemsCount === null) {
         return '';
       }
-      return n__('WorkItem|%d item', 'WorkItem|%d items', this.workItemsCount).replace(
-        '%d',
-        formatNumber(this.workItemsCount),
-      );
+      return n__('WorkItem|%d item', 'WorkItem|%d items', formatNumber(this.workItemsCount));
     },
     workItemTypeId() {
       const workItemTypeName = this.workItemType || WORK_ITEM_TYPE_NAME_ISSUE;
@@ -1605,7 +1602,7 @@ export default {
 
         <template v-if="isPlanningViewsEnabled" #before-list-items>
           <!-- state-count -->
-          <div class="gl-border-b gl-py-3">
+          <div class="gl-border-b gl-py-3" data-testid="work-item-count">
             {{ workItemTotalStateCount }}
           </div>
         </template>

@@ -30,7 +30,7 @@ RSpec.shared_context 'ProjectPolicy context' do
       read_issue_board read_issue read_issue_iid read_issue_link
       read_label read_issue_board_list read_milestone read_note read_project
       read_project_for_iids read_project_member read_project_metadata read_release read_snippet
-      read_wiki upload_file
+      read_wiki upload_file export_work_items
     ]
   end
 
@@ -40,7 +40,7 @@ RSpec.shared_context 'ProjectPolicy context' do
         admin_issue admin_work_item admin_issue_board admin_issue_board_list admin_label
         admin_milestone admin_wiki read_confidential_issues update_issue
         reopen_issue read_internal_note destroy_issue
-        download_wiki_code create_wiki export_work_items
+        download_wiki_code create_wiki
       ]
   end
 
@@ -53,7 +53,7 @@ RSpec.shared_context 'ProjectPolicy context' do
       read_harbor_registry read_deployment read_environment read_merge_request
       read_pipeline read_prometheus
       read_sentry_issue update_issue create_merge_request_in
-      read_external_emails read_internal_note export_work_items
+      read_external_emails read_internal_note
     ]
   end
 

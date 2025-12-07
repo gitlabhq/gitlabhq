@@ -1710,6 +1710,32 @@ describe('group filter', () => {
       );
     });
   });
+
+  describe('work item count display', () => {
+    const findCountDisplay = () => wrapper.findByTestId('work-item-count');
+
+    describe.each`
+      count    | expectedText
+      ${1}     | ${'1 item'}
+      ${0}     | ${'0 items'}
+      ${10245} | ${'10,245 items'}
+    `('when count is $count', ({ count, expectedText }) => {
+      beforeEach(async () => {
+        const mockCountResponse = cloneDeep(workItemCountsOnlyResponse);
+        mockCountResponse.data.namespace.workItems.count = count;
+
+        mountComponent({
+          countsOnlyHandler: jest.fn().mockResolvedValue(mockCountResponse),
+          workItemPlanningView: true,
+        });
+        await waitForPromises();
+      });
+
+      it(`displays "${expectedText}"`, () => {
+        expect(findCountDisplay().text()).toBe(expectedText);
+      });
+    });
+  });
 });
 
 describe('when issue_date_filter is enabled', () => {

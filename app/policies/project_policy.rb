@@ -405,6 +405,7 @@ class ProjectPolicy < BasePolicy
     enable :read_analytics
     enable :read_insights
     enable :read_upload
+    enable :export_work_items
   end
 
   rule { internal_pages & ~anonymous & ~external_user }.policy do
@@ -436,7 +437,6 @@ class ProjectPolicy < BasePolicy
     enable :admin_wiki
     enable :read_internal_note
     enable :read_merge_request
-    enable :export_work_items
     enable :read_code
     enable :download_code
   end
@@ -501,7 +501,6 @@ class ProjectPolicy < BasePolicy
     enable :read_external_emails
     enable :read_internal_note
     enable :read_grafana
-    enable :export_work_items
     enable :create_design
     enable :update_design
     enable :move_design
