@@ -1175,7 +1175,7 @@ RSpec.describe MergeRequests::UpdateService, :mailer, feature_category: :code_re
           allow(GraphqlTriggers).to receive(:work_item_updated).and_call_original
 
           WorkItem.where(id: issues_to_notify).find_each do |work_item|
-            expect(GraphqlTriggers).to receive(:work_item_updated).with(work_item).once.and_call_original
+            expect(GraphqlTriggers).to receive(:work_item_updated).with(work_item).at_least(:once).and_call_original
           end
 
           service.execute(merge_request)

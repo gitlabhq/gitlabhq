@@ -33,7 +33,7 @@ The security center displays:
 
 To view the security center:
 
-1. On the left sidebar, select **Search or go to**. If you've [turned on the new navigation](../../interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
+1. On the left sidebar, select **Search or go to**. If you've [turned on the new navigation](../../interface_redesign.md), this field is on the top bar.
 1. Select **Your work**.
 1. Select **Security** > **Security dashboard**.
 
@@ -43,7 +43,7 @@ The security center is empty by default. You must add one or more projects that 
 
 To add projects:
 
-1. On the left sidebar, select **Search or go to**. If you've [turned on the new navigation](../../interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
+1. On the left sidebar, select **Search or go to**. If you've [turned on the new navigation](../../interface_redesign.md), this field is on the top bar.
 1. Select **Your work**.
 1. Expand **Security**.
 1. Select **Settings**.
@@ -56,7 +56,7 @@ After you add projects, the security dashboard and vulnerability report show the
 
 The security center displays a maximum of 100 projects, so you might need to use the search function to remove a project. To remove projects:
 
-1. On the left sidebar, select **Search or go to**. If you've [turned on the new navigation](../../interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
+1. On the left sidebar, select **Search or go to**. If you've [turned on the new navigation](../../interface_redesign.md), this field is on the top bar.
 1. Select **Your work**.
 1. Expand **Security**.
 1. Select **Settings**.

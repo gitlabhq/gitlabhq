@@ -78,7 +78,7 @@ To update the Git remote URL, determine the existing and new URLs for your repos
 
 1. Get the new URL:
    1. Go to GitLab.
-   1. On the left sidebar, select **Search or go to** and find your project. If you've [turned on the new navigation](../../user/interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
+   1. On the left sidebar, select **Search or go to** and find your project. If you've [turned on the new navigation](../../user/interface_redesign.md), this field is on the top bar.
    1. On the left sidebar, select **Code** > **Repository**, to go to the project's **Repository** page
    1. In the upper-right corner, select **Code**
    1. Depending on which method you use for authentication and cloning with `git`,

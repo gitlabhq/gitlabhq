@@ -64,7 +64,7 @@ Prerequisites:
 
 To view a list of agents associated with your project:
 
-1. On the left sidebar, select **Search or go to** and find your project. If you've [turned on the new navigation](../../interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
+1. On the left sidebar, select **Search or go to** and find your project. If you've [turned on the new navigation](../../interface_redesign.md), this field is on the top bar.
 1. Select **Automate** > **Agents**.
    - To view agents enabled in the project, select the **Enabled** tab.
    - To view agents managed by the project, select the **Managed** tab.
@@ -85,7 +85,7 @@ Prerequisites:
 
 To create an agent:
 
-1. On the left sidebar, select **Search or go to** and find your project. If you've [turned on the new navigation](../../interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
+1. On the left sidebar, select **Search or go to** and find your project. If you've [turned on the new navigation](../../interface_redesign.md), this field is on the top bar.
 1. Select **Automate** > **Agents**.
 1. Select **New agent**.
 1. Under **Basic information**:
@@ -107,7 +107,7 @@ To create an agent:
 
 To create an agent:
 
-1. On the left sidebar, select **Search or go to** > **Explore**. If you've [turned on the new navigation](../../interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
+1. On the left sidebar, select **Search or go to** > **Explore**. If you've [turned on the new navigation](../../interface_redesign.md), this field is on the top bar.
 1. Select **AI Catalog**, then select the **Agents** tab.
 1. Select **New agent**.
 1. Under **Basic information**:
@@ -139,7 +139,7 @@ Prerequisites:
 
 - You must have at least the Maintainer role for the project.
 
-1. On the left sidebar, select **Search or go to** > **Explore**. If you've [turned on the new navigation](../../interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
+1. On the left sidebar, select **Search or go to** > **Explore**. If you've [turned on the new navigation](../../interface_redesign.md), this field is on the top bar.
 1. Select **AI Catalog**, then select the **Agents** tab.
 1. Select the agent you want to enable.
 1. In the upper-right corner, select **Enable in project**.
@@ -158,7 +158,7 @@ Prerequisites:
 
 To disable an agent:
 
-1. On the left sidebar, select **Search or go to** and find your project. If you've [turned on the new navigation](../../interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
+1. On the left sidebar, select **Search or go to** and find your project. If you've [turned on the new navigation](../../interface_redesign.md), this field is on the top bar.
 1. Select **Automate** > **Agents**.
 1. Find the agent you want to disable and select **Actions** ({{< icon name="ellipsis_v" >}}) > **Disable**.
 1. On the confirmation dialog, select **Disable**.
@@ -175,7 +175,7 @@ Prerequisites:
 
 To duplicate an agent:
 
-1. On the left sidebar, select **Search or go to** > **Explore**. If you've [turned on the new navigation](../../interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
+1. On the left sidebar, select **Search or go to** > **Explore**. If you've [turned on the new navigation](../../interface_redesign.md), this field is on the top bar.
 1. Select **AI Catalog**, then select the **Agents** tab.
 1. Select the agent you want to duplicate.
 1. In the upper-right corner, select **Actions** ({{< icon name="ellipsis_v" >}}) > **Duplicate**.
@@ -192,7 +192,7 @@ Prerequisites:
 
 To manage an agent:
 
-1. On the left sidebar, select **Search or go to** > **Explore**. If you've [turned on the new navigation](../../interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
+1. On the left sidebar, select **Search or go to** > **Explore**. If you've [turned on the new navigation](../../interface_redesign.md), this field is on the top bar.
 1. Select **AI Catalog**, then select the **Agents** tab.
 1. Select the agent you want to manage.
    - To edit an agent:
@@ -208,7 +208,7 @@ You can report an agent if it contains potentially offensive material or poses a
 
 To report an agent:
 
-1. On the left sidebar, select **Search or go to** > **Explore**. If you've [turned on the new navigation](../../interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
+1. On the left sidebar, select **Search or go to** > **Explore**. If you've [turned on the new navigation](../../interface_redesign.md), this field is on the top bar.
 1. Select **AI Catalog**, then select the **Agents** tab.
 1. Select the agent you want to report.
 1. In the upper-right corner, select **Actions** ({{< icon name="ellipsis_v" >}}) > **Report to admin**.

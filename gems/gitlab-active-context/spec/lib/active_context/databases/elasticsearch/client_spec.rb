@@ -15,11 +15,18 @@ RSpec.describe ActiveContext::Databases::Elasticsearch::Client do
     before do
       allow(client).to receive(:client).and_return(elasticsearch_client)
       allow(elasticsearch_client).to receive(:search).and_return(search_response)
-      allow(collection).to receive_messages(collection_name: 'test', redact_unauthorized_results!: [[], []])
+      allow(collection).to receive_messages(
+        collection_name: 'test',
+        redact_unauthorized_results!: [[], []],
+        current_embedding_fields: %w[embedding_v1 embedding_v2]
+      )
     end
 
     it 'calls search on the Elasticsearch client' do
-      expect(elasticsearch_client).to receive(:search)
+      expect(elasticsearch_client).to receive(:search).with(
+        index: 'test',
+        body: hash_including(_source: { includes: ['*', 'embedding_v1', 'embedding_v2'] })
+      )
       client.search(collection: collection, query: query, user: user)
     end
   end

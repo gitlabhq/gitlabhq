@@ -248,7 +248,7 @@ You can track the evolution of code coverage for your project or group over time
 
 To view the code coverage history for a project:
 
-1. On the left sidebar, select **Search or go to** and find your project. If you've [turned on the new navigation](../../../user/interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
+1. On the left sidebar, select **Search or go to** and find your project. If you've [turned on the new navigation](../../../user/interface_redesign.md), this field is on the top bar.
 1. Select **Analyze** > **Repository analytics**.
 1. From the dropdown list, select the job you want to view historical data for.
 1. Optional. To view a CSV file of the data, select **Download raw data (.csv)**.
@@ -263,7 +263,7 @@ To view the code coverage history for a project:
 
 To view the code coverage history for all projects in a group:
 
-1. On the left sidebar, select **Search or go to** and find your group. If you've [turned on the new navigation](../../../user/interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
+1. On the left sidebar, select **Search or go to** and find your group. If you've [turned on the new navigation](../../../user/interface_redesign.md), this field is on the top bar.
 1. Select **Analyze** > **Repository analytics**.
 1. Optional. To view a CSV file of the data, select **Download historic test coverage data (.csv)**.
 

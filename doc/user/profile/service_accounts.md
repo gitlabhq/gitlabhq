@@ -73,7 +73,7 @@ The service accounts page displays information about service accounts in your to
 
 To view service accounts for the entire instance:
 
-1. On the left sidebar, at the bottom, select **Admin**. If you've [turned on the new navigation](../interface_redesign.md#turn-new-navigation-on-or-off), in the upper-right corner, select **Admin**.
+1. On the left sidebar, at the bottom, select **Admin**. If you've [turned on the new navigation](../interface_redesign.md), in the upper-right corner, select **Admin**.
 1. Select **Settings** > **Service accounts**.
 
 {{< /tab >}}
@@ -82,7 +82,7 @@ To view service accounts for the entire instance:
 
 To view service accounts for a top-level group:
 
-1. On the left sidebar, select **Search or go to** and find your group. If you've [turned on the new navigation](../interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
+1. On the left sidebar, select **Search or go to** and find your group. If you've [turned on the new navigation](../interface_redesign.md), this field is on the top bar.
 1. Select **Settings** > **Service accounts**.
 
 {{< /tab >}}

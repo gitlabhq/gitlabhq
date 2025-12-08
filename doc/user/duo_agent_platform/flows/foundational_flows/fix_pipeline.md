@@ -57,7 +57,7 @@ To use this flow, you must:
 
 To fix the CI/CD pipeline in a merge request:
 
-1. On the left sidebar, select **Search or go to** and find your project. If you've [turned on the new navigation](../../../interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
+1. On the left sidebar, select **Search or go to** and find your project. If you've [turned on the new navigation](../../../interface_redesign.md), this field is on the top bar.
 1. Select **Code** > **Merge requests** and open your merge request.
 1. To fix the pipeline, you can either:
    - Select the **Overview** tab and under the failing pipeline, select **Fix pipeline with Duo**.

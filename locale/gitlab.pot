@@ -416,11 +416,6 @@ msgid_plural "%d pending comments"
 msgstr[0] ""
 msgstr[1] ""
 
-msgid "%d personal project will be removed and cannot be restored."
-msgid_plural "%d personal projects will be removed and cannot be restored."
-msgstr[0] ""
-msgstr[1] ""
-
 msgid "%d policy violations"
 msgid_plural "%d policy violations"
 msgstr[0] ""
@@ -8284,9 +8279,6 @@ msgstr ""
 msgid "An error occurred while loading commit signatures"
 msgstr ""
 
-msgid "An error occurred while loading designs. Please try again."
-msgstr ""
-
 msgid "An error occurred while loading diff"
 msgstr ""
 
@@ -13554,9 +13546,6 @@ msgid "Category"
 msgstr ""
 
 msgid "Cause identified"
-msgstr ""
-
-msgid "Certain user content will be moved to a system-wide \"Ghost User\" in order to maintain content for posterity. For further information, please refer to the %{link_start}user account deletion documentation.%{link_end}"
 msgstr ""
 
 msgid "Certificate"
@@ -20224,9 +20213,6 @@ msgstr ""
 msgid "Could not fetch training providers. Please refresh the page, or try again later."
 msgstr ""
 
-msgid "Could not find design."
-msgstr ""
-
 msgid "Could not find iteration"
 msgstr ""
 
@@ -20267,9 +20253,6 @@ msgid "Could not update wiki page"
 msgstr ""
 
 msgid "Could not update wiki template"
-msgstr ""
-
-msgid "Could not upload your designs as one or more files uploaded are not supported."
 msgstr ""
 
 msgid "Could not verify device authenticity. Try using a different device."
@@ -24095,9 +24078,6 @@ msgstr ""
 msgid "Design Management files and data"
 msgstr ""
 
-msgid "DesignManagement|%{current_design} of %{designs_count}"
-msgstr ""
-
 msgid "DesignManagement|%{filename} did not change."
 msgid_plural "DesignManagement|The designs you tried uploading did not change."
 msgstr[0] ""
@@ -24240,13 +24220,7 @@ msgstr ""
 msgid "DesignManagement|Requested design version does not exist."
 msgstr ""
 
-msgid "DesignManagement|Requested design version does not exist. Showing latest version instead"
-msgstr ""
-
 msgid "DesignManagement|Resolve thread"
-msgstr ""
-
-msgid "DesignManagement|Resolved Comments"
 msgstr ""
 
 msgid "DesignManagement|Resolved threads"
@@ -24279,28 +24253,16 @@ msgstr ""
 msgid "DesignManagement|The maximum number of designs allowed to be uploaded is %{upload_limit}. Please try again."
 msgstr ""
 
-msgid "DesignManagement|There was an error moving your designs. Please upload your designs below."
-msgstr ""
-
 msgid "DesignManagement|To upload designs, you'll need to enable LFS and have an admin enable hashed storage. %{linkStart}More information%{linkEnd}"
 msgstr ""
 
-msgid "DesignManagement|To upload designs, you'll need to enable LFS and have an admin enable hashed storage. %{requirements_link_start}More information%{requirements_link_end}"
-msgstr ""
-
 msgid "DesignManagement|Unselect the design"
-msgstr ""
-
-msgid "DesignManagement|Upload designs"
 msgstr ""
 
 msgid "DesignManagement|Upload skipped. %{reason}"
 msgstr ""
 
 msgid "DesignManagement|Write a comment or drag your files here…"
-msgstr ""
-
-msgid "DesignManagement|Your designs are being copied and are on their way… Please refresh to update."
 msgstr ""
 
 msgid "DesignManagement|of %{designs_count}"
@@ -25120,9 +25082,6 @@ msgstr ""
 msgid "Drag to reorder prioritized labels and change their relative priority."
 msgstr ""
 
-msgid "Drag your designs here or %{linkStart}click to upload%{linkEnd}."
-msgstr ""
-
 msgid "Drone CI URL (for example, `http://drone.example.com`)."
 msgstr ""
 
@@ -25139,9 +25098,6 @@ msgid "Drop or %{linkStart}upload%{linkEnd} files to attach"
 msgstr ""
 
 msgid "Drop or upload file to attach"
-msgstr ""
-
-msgid "Drop your designs to start your upload."
 msgstr ""
 
 msgid "Drop your files to start your upload."
@@ -28435,11 +28391,6 @@ msgstr ""
 msgid "Failed to approve the current merge request."
 msgstr ""
 
-msgid "Failed to archive a design. Please try again."
-msgid_plural "Failed to archive designs. Please try again."
-msgstr[0] ""
-msgstr[1] ""
-
 msgid "Failed to assign a reviewer because no user was specified."
 msgstr ""
 
@@ -28492,9 +28443,6 @@ msgid "Failed to connect to your device. Try again."
 msgstr ""
 
 msgid "Failed to create a branch for this issue. Please try again."
-msgstr ""
-
-msgid "Failed to create a to-do item for the design."
 msgstr ""
 
 msgid "Failed to create branch target"
@@ -28698,9 +28646,6 @@ msgstr ""
 msgid "Failed to remove a Zoom meeting"
 msgstr ""
 
-msgid "Failed to remove a to-do item for the design."
-msgstr ""
-
 msgid "Failed to remove emoji. Please try again"
 msgstr ""
 
@@ -28762,9 +28707,6 @@ msgid "Failed to sign in using smart card authentication."
 msgstr ""
 
 msgid "Failed to submit your comment. Please try again."
-msgstr ""
-
-msgid "Failed to toggle the to-do status for the design."
 msgstr ""
 
 msgid "Failed to unfollow user"
@@ -43238,6 +43180,9 @@ msgstr ""
 msgid "Moves this item to %{group_or_project}."
 msgstr ""
 
+msgid "Moves your associated user content to a system-wide \"Ghost User\" to maintain data integrity. %{link_start}Learn more%{link_end}."
+msgstr ""
+
 msgid "Moving issue"
 msgstr ""
 
@@ -51217,10 +51162,10 @@ msgstr ""
 msgid "ProfilesAuthentication|You currently use passkeys for secure and faster sign in. %{link_start}Manage passkeys%{link_end}."
 msgstr ""
 
-msgid "Profiles| You are about to permanently delete %{yourAccount}, and all of the issues, merge requests, and groups linked to your account. Once you confirm %{deleteAccount}, it cannot be undone or recovered."
+msgid "Profiles| You are about to permanently delete %{yourAccount}, and all of the issues, merge requests, and groups linked to your account. Once you confirm %{deleteAccount}, your account cannot be recovered."
 msgstr ""
 
-msgid "Profiles| You are about to permanently delete %{yourAccount}, and all of the issues, merge requests, and groups linked to your account. Once you confirm %{deleteAccount}, it cannot be undone or recovered. You might have to wait seven days before creating a new account with the same username or email."
+msgid "Profiles| You are about to permanently delete %{yourAccount}, and all of the issues, merge requests, and groups linked to your account. Once you confirm %{deleteAccount}, your account cannot be recovered. It might take up to seven days before you can create a new account with the same username or email."
 msgstr ""
 
 msgid "Profiles| You are going to change the username %{currentUsernameBold} to %{newUsernameBold}. Profile and projects will be redirected to the %{newUsername} namespace but this redirect will expire once the %{currentUsername} namespace is registered by another user or group. Please update your Git repository remotes as soon as possible."
@@ -51269,6 +51214,9 @@ msgid "Profiles|Add new email"
 msgstr ""
 
 msgid "Profiles|Add new mirror repository"
+msgstr ""
+
+msgid "Profiles|After resetting a password, if the option to delete your account is still not available, %{link_start}submit a request%{link_end} to begin the account deletion process."
 msgstr ""
 
 msgid "Profiles|An error occurred while updating your username, please try again."
@@ -51355,7 +51303,7 @@ msgstr ""
 msgid "Profiles|Delete account successor?"
 msgstr ""
 
-msgid "Profiles|Deleting an account has the following effects:"
+msgid "Profiles|Deleting your account has the following effects:"
 msgstr ""
 
 msgid "Profiles|Designated account beneficiary already deleted."
@@ -51473,9 +51421,6 @@ msgid "Profiles|GitHub"
 msgstr ""
 
 msgid "Profiles|GitLab is unable to verify your identity automatically. For security purposes, you must set a password by %{openingTag}resetting your password%{closingTag} to delete your account."
-msgstr ""
-
-msgid "Profiles|If after setting a password, the option to delete your account is still not available, please %{link_start}submit a request%{link_end} to begin the account deletion process."
 msgstr ""
 
 msgid "Profiles|Include private contributions on your profile"
@@ -55530,6 +55475,11 @@ msgstr ""
 msgid "Removed upload with id %{id}"
 msgstr ""
 
+msgid "Removes %d personal project. This project cannot be restored."
+msgid_plural "Removes %d personal projects. These projects cannot be restored."
+msgstr[0] ""
+msgstr[1] ""
+
 msgid "Removes %{assignee_text} %{assignee_references}."
 msgstr ""
 
@@ -56114,9 +56064,6 @@ msgid "Requested %{time_ago}"
 msgstr ""
 
 msgid "Requested a review from %{reviewer_users_sentence}."
-msgstr ""
-
-msgid "Requested design version does not exist."
 msgstr ""
 
 msgid "Requested review"
@@ -64208,9 +64155,6 @@ msgstr ""
 msgid "Showing first 50 actions."
 msgstr ""
 
-msgid "Showing latest version"
-msgstr ""
-
 msgid "Showing version #%{versionNumber}"
 msgstr ""
 
@@ -64791,12 +64735,6 @@ msgid "Something went wrong trying to load issue contacts."
 msgstr ""
 
 msgid "Something went wrong when deleting a comment. Please try again"
-msgstr ""
-
-msgid "Something went wrong when deleting a comment. Please try again."
-msgstr ""
-
-msgid "Something went wrong when reordering designs. Please try again"
 msgstr ""
 
 msgid "Something went wrong when sending the incident link to Slack."
@@ -68136,9 +68074,6 @@ msgid "There are several size limits in place."
 msgstr ""
 
 msgid "There is already a repository with that name on disk"
-msgstr ""
-
-msgid "There is already a to-do item for this design."
 msgstr ""
 
 msgid "There is no data available."
@@ -71621,9 +71556,6 @@ msgid "Updated %{timeAgo}"
 msgstr ""
 
 msgid "Updated %{updatedAt}"
-msgstr ""
-
-msgid "Updated %{updated_at} by %{updated_by}"
 msgstr ""
 
 msgid "Updated Date"
@@ -79168,12 +79100,6 @@ msgid "Your top-level group is over the user limit and has been placed in a read
 msgstr ""
 
 msgid "Your trial will be applied to this group."
-msgstr ""
-
-msgid "Your update failed. You can only upload one design when dropping onto an existing design."
-msgstr ""
-
-msgid "Your update failed. You must upload a file with the same file name when dropping onto an existing design."
 msgstr ""
 
 msgid "Your username is %{username}."

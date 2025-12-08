@@ -27,8 +27,8 @@ describe('DeleteAccountModal component', () => {
 
   it.each`
     delayUserAccountSelfDeletion | expectedMessage
-    ${false}                     | ${'You are about to permanently delete your account, and all of the issues, merge requests, and groups linked to your account. Once you confirm Delete account, it cannot be undone or recovered.'}
-    ${true}                      | ${'You are about to permanently delete your account, and all of the issues, merge requests, and groups linked to your account. Once you confirm Delete account, it cannot be undone or recovered. You might have to wait seven days before creating a new account with the same username or email.'}
+    ${false}                     | ${'You are about to permanently delete your account, and all of the issues, merge requests, and groups linked to your account. Once you confirm Delete account, your account cannot be recovered.'}
+    ${true}                      | ${'You are about to permanently delete your account, and all of the issues, merge requests, and groups linked to your account. Once you confirm Delete account, your account cannot be recovered. It might take up to seven days before you can create a new account with the same username or email.'}
   `(
     'shows delete message in modal body when delayUserAccountSelfDeletion is $delayUserAccountSelfDeletion',
     ({ delayUserAccountSelfDeletion, expectedMessage }) => {

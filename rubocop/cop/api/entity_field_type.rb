@@ -29,13 +29,13 @@ module RuboCop
       #     expose :relation, documentation: { type: 'UnknownClass', example: 'label' }
       #
       #   # bad
-      #     expose :relation, using: API::Entities::SomeType, documentation: { example: 'label' }
+      #     expose :relation, using: 'API::Entities::SomeType', documentation: { example: 'label' }
       #
       #   # good
       #     expose :relation, documentation: { type: 'String', example: 'label' }
       #
       #   # good
-      #     expose :relation, using: 'API::Entities::SomeType', documentation: { example: 'label' }
+      #     expose :relation, using: API::Entities::SomeType, documentation: { example: 'label' }
       #
       #   # good
       #     expose :relation, documentation: { type: 'API::Entities::SomeType', example: 'label' }
@@ -82,7 +82,7 @@ module RuboCop
             unless valid_using_type?(using_node)
               add_offense(using_node) do |corrector|
                 corrected_value = corrected_using_value(using_node)
-                corrector.replace(using_node, "'#{corrected_value}'") if corrected_value
+                corrector.replace(using_node, corrected_value) if corrected_value
               end
             end
           elsif type_node.nil?
@@ -99,7 +99,9 @@ module RuboCop
         private
 
         def valid_using_type?(node)
-          api_entity_string_type?(node)
+          # using: must be a constant that points to an API::Entities class
+          # the value is used to introsepct
+          node.const_type? && node.source.match?(/\A(::)?API::Entities::/)
         end
 
         def invalid_type?(node)
@@ -133,8 +135,7 @@ module RuboCop
         end
 
         def corrected_using_value(node)
-          # using: can only be API::Entities constants converted to strings
-          return node.source if node.const_type? && node.source.match?(/\A(::)?API::Entities::/)
+          return node.value if node.str_type? && node.value.match?(/\A(::)?API::Entities::/)
 
           nil
         end

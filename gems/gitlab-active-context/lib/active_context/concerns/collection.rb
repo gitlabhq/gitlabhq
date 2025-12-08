@@ -72,6 +72,10 @@ module ActiveContext
         def current_indexing_embedding_versions
           collection_record.indexing_embedding_versions&.filter_map { |version| self::MODELS[version] } || []
         end
+
+        def current_embedding_fields
+          current_indexing_embedding_versions.map { |v| v[:field].to_s }
+        end
       end
 
       attr_reader :object

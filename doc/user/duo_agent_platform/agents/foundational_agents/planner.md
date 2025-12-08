@@ -49,7 +49,7 @@ Prerequisites:
 
 1. On the left sidebar, select **Search or go to** and find your project.
 
-   If you've [turned the new navigation on](../../../interface_redesign.md#turn-new-navigation-on-or-off),
+   If you've [turned the new navigation on](../../../interface_redesign.md),
    this field is on the top bar.
 
 1. Open an issue, epic, or merge request in your project.

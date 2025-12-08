@@ -37,14 +37,14 @@ If you have hidden the left sidebar, you can display it temporarily by hovering 
 
 {{< /alert >}}
 
-If you've [turned on the new navigation](../../user/interface_redesign.md#turn-new-navigation-on-or-off),
+If you've [turned on the new navigation](../../user/interface_redesign.md),
 the shortcuts to create new items, and view your profile, issues, merge requests, and to-do items are in the upper-right corner.
 
 ![Shortcuts in new navigation.](img/top_nav_v18_6.png)
 
 The next area of the left sidebar changes based on the information you're viewing. For example,
 you might be viewing a project, exploring projects or groups, or viewing your profile.
-To switch to other areas of the left sidebar, use **Search or go to**. If you've [turned on the new navigation](../../user/interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
+To switch to other areas of the left sidebar, use **Search or go to**. If you've [turned on the new navigation](../../user/interface_redesign.md), this field is on the top bar.
 
 ![Context switching from the left sidebar.](img/sidebar_middle_v18_3.png)
 
@@ -57,7 +57,7 @@ Now let's go over a few common tasks you'll use the left sidebar for.
 
 To start, we will find the project we want to work on.
 
-1. To explore all available projects, on the left sidebar, select **Search or go to**. If you've [turned on the new navigation](../../user/interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
+1. To explore all available projects, on the left sidebar, select **Search or go to**. If you've [turned on the new navigation](../../user/interface_redesign.md), this field is on the top bar.
 1. Choose from the list of frequently visited projects, or
    type a colon `:` followed by the project name:
 
@@ -89,7 +89,7 @@ The items you pin while you're viewing a project are different than the items yo
 ## Use a more focused view
 
 On the left sidebar, you can also choose a more focused view into the areas you have access to.
-Select **Search or go to** and then select **Your work**. If you've [turned on the new navigation](../../user/interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
+Select **Search or go to** and then select **Your work**. If you've [turned on the new navigation](../../user/interface_redesign.md), this field is on the top bar.
 
 ![The search bar and the Your work item.](img/your_work_v18_3.png)
 
@@ -101,7 +101,7 @@ The **Admin** area is also available on the left sidebar at the bottom:
 
 ![The Admin area button.](img/admin_area_v18_3.png)
 
-If you've [turned on the new navigation](../../user/interface_redesign.md#turn-new-navigation-on-or-off), the **Admin** area is available in the upper-right corner:
+If you've [turned on the new navigation](../../user/interface_redesign.md), the **Admin** area is available in the upper-right corner:
 
 ![The Admin area button in the new navigation.](img/admin_area_v18_6.png)
 

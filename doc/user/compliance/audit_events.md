@@ -51,7 +51,7 @@ Audit events can be viewed at the group, project, instance, and sign-in level. E
 
 Successful sign-in events are the only audit events available at all tiers. To see successful sign-in events:
 
-1. On the left sidebar, select your avatar. If you've [turned on the new navigation](../interface_redesign.md#turn-new-navigation-on-or-off), this button is in the upper-right corner.
+1. On the left sidebar, select your avatar. If you've [turned on the new navigation](../interface_redesign.md), this button is in the upper-right corner.
 1. Select **Edit profile** > **Authentication log**.
 
 After upgrading to a paid tier, you can also see successful sign-in events on audit event pages.
@@ -67,7 +67,7 @@ After upgrading to a paid tier, you can also see successful sign-in events on au
 
 To view a group's audit events:
 
-1. On the left sidebar, select **Search or go to** and find your group. If you've [turned on the new navigation](../interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
+1. On the left sidebar, select **Search or go to** and find your group. If you've [turned on the new navigation](../interface_redesign.md), this field is on the top bar.
 1. Select **Secure** > **Audit events**.
 1. Filter the audit events by the member of the project (user) who performed the action and date range.
 
@@ -82,7 +82,7 @@ Group audit events can also be accessed using the [group audit events API](../..
 
 {{< /details >}}
 
-1. On the left sidebar, select **Search or go to** and find your project. If you've [turned on the new navigation](../interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
+1. On the left sidebar, select **Search or go to** and find your project. If you've [turned on the new navigation](../interface_redesign.md), this field is on the top bar.
 1. Select **Secure** > **Audit events**.
 1. Filter the audit events by the member of the project (user) who performed the action and date range.
 

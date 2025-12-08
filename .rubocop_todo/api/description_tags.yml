@@ -31,7 +31,6 @@ API/DescriptionTags:
     - 'ee/lib/api/iterations.rb'
     - 'ee/lib/api/manage/groups.rb'
     - 'ee/lib/api/managed_licenses.rb'
-    - 'ee/lib/api/merge_trains.rb'
     - 'ee/lib/api/project_google_cloud_integration.rb'
     - 'ee/lib/api/project_mirror.rb'
     - 'ee/lib/api/provider_identity.rb'

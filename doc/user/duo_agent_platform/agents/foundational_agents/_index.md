@@ -49,7 +49,7 @@ Prerequisites:
 
 To duplicate an agent:
 
-1. On the left sidebar, select **Search or go to** > **Explore**. If you've [turned on the new navigation](../../../interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
+1. On the left sidebar, select **Search or go to** > **Explore**. If you've [turned on the new navigation](../../../interface_redesign.md), this field is on the top bar.
 1. Select **AI Catalog**, then select the **Agents** tab.
 1. Select the agent you want to duplicate.
 1. In the upper-right corner, select **Actions** ({{< icon name="ellipsis_v" >}}) > **Duplicate**.
@@ -76,7 +76,7 @@ Prerequisites:
 
 - You must have the Owner role for the group.
 
-1. On the left sidebar, select **Search or go to** and find your group. If you've [turned on the new navigation](../../../interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
+1. On the left sidebar, select **Search or go to** and find your group. If you've [turned on the new navigation](../../../interface_redesign.md), this field is on the top bar.
 1. Select **Settings** > **GitLab Duo**.
 1. Select **Change configuration**.
 1. Under **Foundational agents**, select either:
@@ -99,7 +99,7 @@ Prerequisites:
 
 - You must be an administrator.
 
-1. On the left sidebar, at the bottom, select **Admin**. If you've [turned on the new navigation](../../../interface_redesign.md#turn-new-navigation-on-or-off), in the upper-right corner, select **Admin**.
+1. On the left sidebar, at the bottom, select **Admin**. If you've [turned on the new navigation](../../../interface_redesign.md), in the upper-right corner, select **Admin**.
 1. Select **GitLab Duo**.
 1. Select **Change configuration**.
 1. Under **Foundational agents**, select either:

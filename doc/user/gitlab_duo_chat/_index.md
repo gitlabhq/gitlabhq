@@ -94,7 +94,7 @@ Prerequisites:
   - The **Help** menu.
 
 Instructions are provided for the new navigation and classic navigation.
-Select the tab for your navigation type, or [learn how to switch](../interface_redesign.md#turn-new-navigation-on-or-off).
+Select the tab for your navigation type, or [learn how to switch](../interface_redesign.md).
 
 {{< tabs >}}
 
@@ -433,7 +433,7 @@ Prerequisites:
 
 - You must be an administrator.
 
-1. On the left sidebar, at the bottom, select **Admin**. If you've [turned on the new navigation](../interface_redesign.md#turn-new-navigation-on-or-off), in the upper-right corner, select **Admin**.
+1. On the left sidebar, at the bottom, select **Admin**. If you've [turned on the new navigation](../interface_redesign.md), in the upper-right corner, select **Admin**.
 1. Select **GitLab Duo**.
 1. In the lower-right corner, select **Change configuration**.
 1. In the **GitLab Duo Chat conversation expiration** section, select either of the following options:

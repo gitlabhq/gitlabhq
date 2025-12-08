@@ -47,17 +47,17 @@ your cluster's level.
 
 **Project-level clusters**:
 
-1. On the left sidebar, select **Search or go to** and find your project. If you've [turned on the new navigation](../../../interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
+1. On the left sidebar, select **Search or go to** and find your project. If you've [turned on the new navigation](../../../interface_redesign.md), this field is on the top bar.
 1. Select **Operate** > **Kubernetes clusters**.
 
 **Group-level clusters**:
 
-1. On the left sidebar, select **Search or go to** and find your group. If you've [turned on the new navigation](../../../interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
+1. On the left sidebar, select **Search or go to** and find your group. If you've [turned on the new navigation](../../../interface_redesign.md), this field is on the top bar.
 1. Select **Operate** > **Kubernetes clusters**.
 
 **Instance-level clusters**:
 
-1. On the left sidebar, at the bottom, select **Admin**. If you've [turned on the new navigation](../../../interface_redesign.md#turn-new-navigation-on-or-off), in the upper-right corner, select **Admin**.
+1. On the left sidebar, at the bottom, select **Admin**. If you've [turned on the new navigation](../../../interface_redesign.md), in the upper-right corner, select **Admin**.
 1. Select **Kubernetes**.
 
 ## Security implications for clusters connected with certificates

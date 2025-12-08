@@ -78,7 +78,7 @@ You can also [use the API](../../../../api/maven_virtual_registries.md#manage-vi
 
 To create a Maven virtual registry:
 
-1. On the left sidebar, select **Search or go to** and find your group. If you've [turned on the new navigation](../../../interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar. This group must be at the top level.
+1. On the left sidebar, select **Search or go to** and find your group. If you've [turned on the new navigation](../../../interface_redesign.md), this field is on the top bar. This group must be at the top level.
 1. Select **Deploy** > **Virtual registry**.
 1. Select **Create registry**.
 1. Enter a **Name** and optional **Description**.
@@ -98,7 +98,7 @@ Prerequisites:
 
 To create a Maven upstream registry:
 
-1. On the left sidebar, select **Search or go to** and find your group. If you've [turned on the new navigation](../../../interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar. This group must be at the top level.
+1. On the left sidebar, select **Search or go to** and find your group. If you've [turned on the new navigation](../../../interface_redesign.md), this field is on the top bar. This group must be at the top level.
 1. Select **Deploy** > **Virtual registry**.
 1. Under **Registry types**, select **View registries**.
 1. Under the **Registries** tab, select a registry.

@@ -101,7 +101,7 @@ Prerequisites:
 - Ensure you meet [the prerequisites](../duo_agent_platform/_index.md#prerequisites).
 
 Instructions are provided for the new navigation and classic navigation.
-Select the tab for your navigation type, or [learn how to switch](../interface_redesign.md#turn-new-navigation-on-or-off).
+Select the tab for your navigation type, or [learn how to switch](../interface_redesign.md).
 
 {{< tabs >}}
 

@@ -525,12 +525,17 @@ class ApplicationSetting < ApplicationRecord
     pass: :external_auth_client_key_pass,
     if: ->(setting) { setting.external_auth_client_cert.present? }
 
-  jsonb_accessor :ci_cd_settings,
-    pipeline_variables_default_allowed: [:boolean, { default: true }],
-    ci_job_live_trace_enabled: [:boolean, { default: false }],
-    ci_partitions_size_limit: [::Gitlab::Database::Type::JsonbInteger.new, { default: 100.gigabytes }],
-    ci_delete_pipelines_in_seconds_limit: [:integer, { default: ChronicDuration.parse('1 year') }],
-    git_push_pipeline_limit: [:integer, { default: 4 }]
+  def self.ci_cd_settings_definition
+    {
+      pipeline_variables_default_allowed: [:boolean, { default: true }],
+      ci_job_live_trace_enabled: [:boolean, { default: false }],
+      ci_partitions_size_limit: [::Gitlab::Database::Type::JsonbInteger.new, { default: 100.gigabytes }],
+      ci_delete_pipelines_in_seconds_limit: [:integer, { default: ChronicDuration.parse('1 year') }],
+      git_push_pipeline_limit: [:integer, { default: 4 }]
+    }
+  end
+
+  jsonb_accessor :ci_cd_settings, ci_cd_settings_definition
 
   chronic_duration_attr :ci_delete_pipelines_in_seconds_limit_human_readable, :ci_delete_pipelines_in_seconds_limit
 

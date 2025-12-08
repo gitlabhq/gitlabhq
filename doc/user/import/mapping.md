@@ -164,7 +164,7 @@ Prerequisites:
 Placeholder users are created on the destination instance while a group or project is imported.
 To view placeholder users created during imports to a top-level group and its subgroups:
 
-1. On the left sidebar, select **Search or go to** and find your group. If you've [turned on the new navigation](../interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
+1. On the left sidebar, select **Search or go to** and find your group. If you've [turned on the new navigation](../interface_redesign.md), this field is on the top bar.
    This group must be at the top level.
 1. Select **Manage** > **Members**.
 1. Select the **Placeholders** tab.
@@ -190,7 +190,7 @@ Prerequisites:
 Placeholder users are created on the destination instance while a group or project is imported.
 To filter for placeholder users created during imports for an entire instance:
 
-1. On the left sidebar, at the bottom, select **Admin**. If you've [turned on the new navigation](../interface_redesign.md#turn-new-navigation-on-or-off), in the upper-right corner, select **Admin**.
+1. On the left sidebar, at the bottom, select **Admin**. If you've [turned on the new navigation](../interface_redesign.md), in the upper-right corner, select **Admin**.
 1. Select **Overview** > **Users**.
 1. In the search box, filter users by **type**.
 
@@ -262,7 +262,7 @@ A GitLab administrator can [set a placeholder limit](../../administration/instan
 
 To view your current placeholder user usage and limits:
 
-1. On the left sidebar, select **Search or go to** and find your group. If you've [turned on the new navigation](../interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar. This group must be at the top level.
+1. On the left sidebar, select **Search or go to** and find your group. If you've [turned on the new navigation](../interface_redesign.md), this field is on the top bar. This group must be at the top level.
 1. Select **Settings** > **Usage quotas**.
 1. Select the **Import** tab.
 
@@ -335,7 +335,7 @@ Prerequisites:
 To bypass confirmation for [enterprise users](../enterprise_user/_index.md)
 when you reassign placeholders:
 
-1. On the left sidebar, select **Search or go to** and find your group. If you've [turned on the new navigation](../interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
+1. On the left sidebar, select **Search or go to** and find your group. If you've [turned on the new navigation](../interface_redesign.md), this field is on the top bar.
    This group must be at the top level.
 1. Select **Settings** > **General**.
 1. Expand **Permissions and group features**.
@@ -426,7 +426,7 @@ Prerequisites:
 You can reassign contributions and memberships in the top-level group.
 To request reassignment of contributions and memberships:
 
-1. On the left sidebar, select **Search or go to** and find your group. If you've [turned on the new navigation](../interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
+1. On the left sidebar, select **Search or go to** and find your group. If you've [turned on the new navigation](../interface_redesign.md), this field is on the top bar.
    This group must be at the top level.
 1. Select **Manage** > **Members**.
 1. Select the **Placeholders** tab.
@@ -479,7 +479,7 @@ All other rows are skipped.
 
 To request reassignment of contributions and memberships by using a CSV file:
 
-1. On the left sidebar, select **Search or go to** and find your group. If you've [turned on the new navigation](../interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
+1. On the left sidebar, select **Search or go to** and find your group. If you've [turned on the new navigation](../interface_redesign.md), this field is on the top bar.
 1. Select **Manage** > **Members**.
 1. Select the **Placeholders** tab.
 1. Select **Reassign with CSV**.
@@ -539,7 +539,7 @@ When you reassign contributions in bulk, the entire namespace and users with the
 
 To keep placeholder users one at a time:
 
-1. On the left sidebar, select **Search or go to** and find your group. If you've [turned on the new navigation](../interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
+1. On the left sidebar, select **Search or go to** and find your group. If you've [turned on the new navigation](../interface_redesign.md), this field is on the top bar.
    This group must be at the top level.
 1. Select **Manage** > **Members**.
 1. Select the **Placeholders** tab.
@@ -550,7 +550,7 @@ To keep placeholder users one at a time:
 
 To keep placeholder users in bulk:
 
-1. On the left sidebar, select **Search or go to** and find your group. If you've [turned on the new navigation](../interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
+1. On the left sidebar, select **Search or go to** and find your group. If you've [turned on the new navigation](../interface_redesign.md), this field is on the top bar.
    This group must be at the top level.
 1. Select **Manage** > **Members**.
 1. Select the **Placeholders** tab.
@@ -559,7 +559,7 @@ To keep placeholder users in bulk:
 
 To undo the operation:
 
-1. On the left sidebar, select **Search or go to** and find your group. If you've [turned on the new navigation](../interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
+1. On the left sidebar, select **Search or go to** and find your group. If you've [turned on the new navigation](../interface_redesign.md), this field is on the top bar.
    This group must be at the top level.
 1. Select **Manage** > **Members**.
 1. Select the **Placeholders** tab.
@@ -570,7 +570,7 @@ To undo the operation:
 
 Before a user accepts a reassignment request, you can cancel the request:
 
-1. On the left sidebar, select **Search or go to** and find your group. If you've [turned on the new navigation](../interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
+1. On the left sidebar, select **Search or go to** and find your group. If you've [turned on the new navigation](../interface_redesign.md), this field is on the top bar.
    This group must be at the top level.
 1. Select **Manage** > **Members**.
 1. Select the **Placeholders** tab.
@@ -581,7 +581,7 @@ Before a user accepts a reassignment request, you can cancel the request:
 
 If a user is not acting on a reassignment request, you can prompt them again by sending another email:
 
-1. On the left sidebar, select **Search or go to** and find your group. If you've [turned on the new navigation](../interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
+1. On the left sidebar, select **Search or go to** and find your group. If you've [turned on the new navigation](../interface_redesign.md), this field is on the top bar.
    This group must be at the top level.
 1. Select **Manage** > **Members**.
 1. Select the **Placeholders** tab.
@@ -592,7 +592,7 @@ If a user is not acting on a reassignment request, you can prompt them again by 
 
 To view the reassignment status of all placeholder users:
 
-1. On the left sidebar, select **Search or go to** and find your group. If you've [turned on the new navigation](../interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
+1. On the left sidebar, select **Search or go to** and find your group. If you've [turned on the new navigation](../interface_redesign.md), this field is on the top bar.
    This group must be at the top level.
 1. Select **Manage** > **Members**.
 1. Select the **Placeholders** tab.

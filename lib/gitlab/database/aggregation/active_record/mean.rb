@@ -5,7 +5,7 @@ module Gitlab
     module Aggregation
       module ActiveRecord
         class Mean < Column
-          def initialize(name, type = :float, expression: nil, formatter: nil, description: nil)
+          def initialize(name, type = :float, *args, **kwargs)
             super
           end
 
@@ -14,7 +14,7 @@ module Gitlab
           end
 
           def to_arel(context)
-            arel_node = expression ? expression.call : context[:arel_table][name]
+            arel_node = expression ? expression.call : context[:scope].arel_table[name]
             arel_node.average
           end
         end

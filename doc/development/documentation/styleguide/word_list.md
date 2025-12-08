@@ -1090,7 +1090,7 @@ Instead of:
 However, you can make an exception when you are writing a task and you want to refer to all
 of the fields at once. For example:
 
-1. In the left sidebar, select **Search or go to** and find your project. If you've [turned on the new navigation](../../../user/interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
+1. In the left sidebar, select **Search or go to** and find your project. If you've [turned on the new navigation](../../../user/interface_redesign.md), this field is on the top bar.
 1. Select **Settings** > **CI/CD**.
 1. Expand **General pipelines**.
 1. Complete the fields.
@@ -1480,7 +1480,7 @@ Use **in** as a preposition when describing UI element locations. For example:
 
 - In the left sidebar, select **Settings** > **CI/CD**.
 - In the **Grant permission** dialog, select **Group**.
-- In the upper-right corner, select your avatar. If you've [turned on the new navigation](../../../user/interface_redesign.md#turn-new-navigation-on-or-off), this button is in the upper-right corner.
+- In the upper-right corner, select your avatar. If you've [turned on the new navigation](../../../user/interface_redesign.md), this button is in the upper-right corner.
 
 Use **on** only for:
 
@@ -2463,7 +2463,7 @@ to the GitLab [reference architectures](../../../administration/reference_archit
 ## search
 
 When you search, you type a string in the search box in the left sidebar.
-If you've [turned on the new navigation](../../../user/interface_redesign.md#turn-new-navigation-on-or-off),
+If you've [turned on the new navigation](../../../user/interface_redesign.md),
 this field is on the top bar.
 The search results are displayed on a search page.
 

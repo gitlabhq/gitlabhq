@@ -26,8 +26,4 @@ export function initShow() {
   initSentryErrorStackTrace();
   initSidebarBundle();
   initWorkItemLinks();
-
-  import(/* webpackChunkName: 'design_management' */ '~/design_management')
-    .then((module) => module.default())
-    .catch(() => {});
 }

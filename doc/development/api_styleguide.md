@@ -36,9 +36,20 @@ Always use an [Entity](https://gitlab.com/gitlab-org/gitlab/-/tree/master/lib/ap
 
 Every exposed field in an entity must include or reference a valid type.
 
+#### Referencing another entity
+
+When exposing a field that references another entity, use the `using` option.
+The using option only accepts a constant that points to an API::Entities class.
+A good example is as follows,
+
+```ruby
+  expose :project, using: ::API::Entities::BasicProjectDetails
+```
+
 #### Valid field types
 
-Field types and entity references must be specified as strings. The following types are accepted:
+Field types must be specified as strings.
+The following types are accepted:
 
 | Category | Types |
 |----------|-------|
@@ -49,13 +60,7 @@ Field types and entity references must be specified as strings. The following ty
 
 #### Field types definition
 
-When exposing a field that references another entity, use the `using` option:
-
-```ruby
-  expose :project, using: '::API::Entities::BasicProjectDetails'
-```
-
-All other field types should be defined in the `documentation` hash:
+Field types should be defined in the `documentation` hash:
 
 ```ruby
   expose :id, documentation: { type: 'Integer', example: 1 }

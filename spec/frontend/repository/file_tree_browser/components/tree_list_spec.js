@@ -620,6 +620,45 @@ describe('Tree List', () => {
       expect(items.at(1).attributes('tabindex')).toBe('0');
     });
 
+    it('expands sibling directories at same level with * key', async () => {
+      const response = cloneDeep(mockResponse);
+      const treeNode = response.data.project.repository.paginatedTree.nodes[0];
+      const baseTree = treeNode.trees.nodes[0];
+      treeNode.trees.nodes = [
+        {
+          ...baseTree,
+          id: 'gid://gitlab/Tree/1',
+          name: 'dir_1',
+          path: 'dir_1',
+          flatPath: 'dir_1',
+          webPath: '/dir_1',
+        },
+        {
+          ...baseTree,
+          id: 'gid://gitlab/Tree/2',
+          name: 'dir_2',
+          path: 'dir_2',
+          flatPath: 'dir_2',
+          webPath: '/dir_2',
+        },
+      ];
+      treeNode.blobs.nodes = [];
+      await createComponent(response);
+
+      const emptyResponse = cloneDeep(mockResponse);
+      emptyResponse.data.project.repository.paginatedTree.nodes[0].trees.nodes = [];
+      emptyResponse.data.project.repository.paginatedTree.nodes[0].blobs.nodes = [];
+      getQueryHandlerSuccess.mockResolvedValue(emptyResponse);
+
+      findTree().trigger('keydown', { key: '*' });
+      await waitForPromises();
+
+      const fileRows = findFileRows();
+      expect(fileRows.at(0).props('file').opened).toBe(true);
+      expect(fileRows.at(1).props('file').opened).toBe(true);
+      expect(findTreeItems().at(0).attributes('tabindex')).toBe('0');
+    });
+
     describe('ArrowRight', () => {
       it('opens closed node', async () => {
         await createComponent();

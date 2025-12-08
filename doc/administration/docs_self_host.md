@@ -203,7 +203,7 @@ documentation URL requests as needed. For example, if your GitLab version is
 
 To test the setting, in GitLab, select a **Learn more** link. For example:
 
-1. On the left sidebar, select your avatar. If you've [turned on the new navigation](../user/interface_redesign.md#turn-new-navigation-on-or-off), this button is in the upper-right corner.
+1. On the left sidebar, select your avatar. If you've [turned on the new navigation](../user/interface_redesign.md), this button is in the upper-right corner.
 1. Select **Preferences**.
 1. In the **Syntax highlighting theme** section, select **Learn more**.
 

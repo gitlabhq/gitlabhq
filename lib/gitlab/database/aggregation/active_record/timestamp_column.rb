@@ -5,41 +5,31 @@ module Gitlab
     module Aggregation
       module ActiveRecord
         class TimestampColumn < Column
-          attr_reader :granularities
+          include ParameterizedDefinition
 
-          DEFAULT_GRANULARITY = :month
+          self.supported_parameters = %i[granularity]
 
-          def initialize(
-            name, type, granularities: [DEFAULT_GRANULARITY], expression: nil, formatter: nil, scope_proc: nil,
-            description: nil)
-            @granularities = granularities.to_set.freeze
-            super(name, type, expression:, formatter:, scope_proc:, description:)
-          end
+          GRANULARITIES_MAP = {
+            daily: :day,
+            weekly: :week,
+            monthly: :month,
+            yearly: :year
+          }.with_indifferent_access.freeze
 
-          def identifier
-            :"timestamp_column_#{name}"
-          end
+          DEFAULT_GRANULARITY = :monthly
 
           def to_hash
-            super.merge(
-              kind: :timestamp_column,
-              granularities: granularities.to_a,
-              default_granularity: DEFAULT_GRANULARITY
-            )
-          end
-
-          def instance_key(context)
-            "#{context[:identifier]}_#{context[:granularity]}"
+            super.merge(kind: :timestamp_column)
           end
 
           def to_arel(context)
-            granularity = context.dig(name, :granularity)
-            # TODO: Use ActiveModel validation here
-            raise "Unknown granularity: #{granularity}" unless granularities.include?(granularity)
+            granularity = instance_parameter(:granularity, context[name]) || DEFAULT_GRANULARITY
 
-            quoted_string = context[:scope].model.connection.quote(granularity)
+            # TODO: Validate granularity in query plan!
 
-            expr = expression ? expression.call : context[:arel_table][name]
+            quoted_string = context[:scope].model.connection.quote(GRANULARITIES_MAP[granularity])
+
+            expr = expression ? expression.call : context[:scope].arel_table[name]
             Arel::Nodes::NamedFunction.new('date_trunc', [Arel.sql(quoted_string), expr])
           end
         end

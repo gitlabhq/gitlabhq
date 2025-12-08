@@ -36,10 +36,10 @@ the stages are:
 
 To create a `.gitlab-ci.yml` file:
 
-1. On the left sidebar, select **Search or go to** and find your project. If you've [turned on the new navigation](../../interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
+1. On the left sidebar, select **Search or go to** and find your project. If you've [turned on the new navigation](../../interface_redesign.md), this field is on the top bar.
 1. Select **Code** > **Repository**.
 1. Above the file list, select the branch you want to commit to.
-1. Select **Create new** ({{< icon name="plus" >}}) and **New file**. If you've [turned on the new navigation](../../interface_redesign.md#turn-new-navigation-on-or-off), this button is in the upper-right corner.
+1. Select **Create new** ({{< icon name="plus" >}}) and **New file**. If you've [turned on the new navigation](../../interface_redesign.md), this button is in the upper-right corner.
 1. Name the file `.gitlab-ci.yml`. In the larger window, paste this sample configuration:
 
    ```yaml

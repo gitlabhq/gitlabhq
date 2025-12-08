@@ -20,7 +20,6 @@ import { s__, sprintf, __ } from '~/locale';
 import * as Sentry from '~/sentry/sentry_browser_wrapper';
 import { addHierarchyChild, setNewWorkItemCache } from '~/work_items/graphql/cache_utils';
 import { findWidget } from '~/issues/list/utils';
-import TitleSuggestions from '~/issues/new/components/title_suggestions.vue';
 import { addShortcutsExtension } from '~/behaviors/shortcuts';
 import ZenMode from '~/zen_mode';
 import ShortcutsWorkItems from '~/behaviors/shortcuts/shortcuts_work_items';
@@ -69,6 +68,7 @@ import createWorkItemMutation from '../graphql/create_work_item.mutation.graphql
 import namespaceWorkItemTypesQuery from '../graphql/namespace_work_item_types.query.graphql';
 import workItemByIidQuery from '../graphql/work_item_by_iid.query.graphql';
 import updateNewWorkItemMutation from '../graphql/update_new_work_item.mutation.graphql';
+import TitleSuggestions from './title_suggestions.vue';
 import WorkItemProjectsListbox from './work_item_links/work_item_projects_listbox.vue';
 import WorkItemNamespaceListbox from './shared/work_item_namespace_listbox.vue';
 import WorkItemTitle from './work_item_title.vue';

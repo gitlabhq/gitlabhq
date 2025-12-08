@@ -32,29 +32,29 @@ RSpec.describe Gitlab::Database::Aggregation::ActiveRecord::Engine, feature_cate
     end
   end
 
-  let(:engine) do
+  let(:engine_definition) do
     described_class.build do
       dimensions do
         column :state_id, :integer, description: 'Integer representation of the existing merge request states'
         column :updated_by_id, :integer, description: 'User id value who last updated the the merge request'
         column :project_id, :integer, description: 'ID of the associated project'
-        timestamp_column :created_at, :timestamp, granularities: [:month, :day],
-          description: 'Bucketed creation timestamp (month)'
+        timestamp_column :created_at, :timestamp, description: 'Bucketed creation timestamp (month)',
+          parameters: { granularity: { type: :string, in: %w[monthly daily] } }
         timestamp_column :merged_at,
           :timestamp,
-          granularities: [:month, :week],
-          expression: -> { MergeRequest::Metrics.arel_table[:merged_at] },
+          -> { MergeRequest::Metrics.arel_table[:merged_at] },
+          parameters: { granularity: { type: :string, in: %w[monthly weekly] } },
           scope_proc: ->(scope, _ctx) { scope.joins(:metrics).where.not(merge_request_metrics: { merged_at: nil }) },
           description: 'Bucketed merge timestamp (month or week).'
         timestamp_column :closed_at,
           :timestamp,
-          granularities: [:month, :week],
-          expression: -> { MergeRequest::Metrics.arel_table[:latest_closed_at] },
+          -> { MergeRequest::Metrics.arel_table[:latest_closed_at] },
+          parameters: { granularity: { type: :string, in: %w[monthly weekly] } },
           scope_proc: ->(scope, _ctx) { scope.joins(:metrics) },
           description: 'Bucketed merge timestamp (month or week).'
         column :state,
           :string,
-          expression: -> { MergeRequest.arel_table[:state_id] },
+          -> { MergeRequest.arel_table[:state_id] },
           formatter: ->(v) { MergeRequest.available_states.invert[v] },
           description: 'String representation of the existing merge request states.'
       end
@@ -62,208 +62,154 @@ RSpec.describe Gitlab::Database::Aggregation::ActiveRecord::Engine, feature_cate
       metrics do
         count description: 'Total record count'
         mean :time_estimate, :float, description: 'Mean time estimate'
+        mean :time_estimate_with_block, :float, -> { MergeRequest.arel_table[:time_estimate] }
       end
     end
   end
 
-  let(:ctx) do
-    {
-      scope: MergeRequest.where({}),
-      arel_table: MergeRequest.arel_table
-    }
-  end
+  let(:engine) { engine_definition.new(context: { scope: MergeRequest.all }) }
 
   it 'mean time_estimate by state_id' do
-    plan = Gitlab::Database::Aggregation::Request.new(
-      dimensions: [{ identifier: :column_state_id }],
-      metrics: [{ identifier: :mean_time_estimate }]
+    request = Gitlab::Database::Aggregation::Request.new(
+      dimensions: [{ identifier: :state_id }],
+      metrics: [{ identifier: :mean_time_estimate }, { identifier: :mean_time_estimate_with_block }]
     )
 
-    result = engine.new(context: ctx).execute(plan)
-
-    expect(result).to be_success
-    expect(result.payload[:data]).to eq([{
-      dimensions: [{ integer_value: 1 }],
-      metrics: [{ float_value: 3 }]
-    }])
+    expect(engine).to execute_aggregation(request).and_return([
+      state_id: 1, mean_time_estimate: 3.0, mean_time_estimate_with_block: 3.0
+    ])
   end
 
   it 'count by project_id sorted' do
-    plan = Gitlab::Database::Aggregation::Request.new(
-      dimensions: [{ identifier: :column_project_id }],
-      metrics: [{ identifier: :count }],
-      order: [{ identifier: :count, direction: :desc }]
+    request = Gitlab::Database::Aggregation::Request.new(
+      dimensions: [{ identifier: :project_id }],
+      metrics: [{ identifier: :total_count }],
+      order: [{ identifier: :total_count, direction: :desc }]
     )
 
-    result = engine.new(context: ctx).execute(plan)
-    expect(result.payload[:data]).to eq([
-      {
-        dimensions: [{ integer_value: project.id }],
-        metrics: [{ integer_value: 2 }]
-      },
-      {
-        dimensions: [{ integer_value: merge_request3.project_id }],
-        metrics: [{ integer_value: 1 }]
-      }
+    expect(engine).to execute_aggregation(request).and_return([
+      { project_id: project.id, total_count: 2 },
+      { project_id: merge_request3.project_id, total_count: 1 }
     ])
   end
 
   it 'count by month' do
-    plan = Gitlab::Database::Aggregation::Request.new(
-      dimensions: [{ identifier: :timestamp_column_created_at, granularity: :month }],
-      metrics: [{ identifier: :count }],
-      order: [{ identifier: :timestamp_column_created_at, granularity: :month, direction: :desc }]
+    request = Gitlab::Database::Aggregation::Request.new(
+      dimensions: [{ identifier: :created_at, parameters: { granularity: 'monthly' } }],
+      metrics: [{ identifier: :total_count }],
+      order: [{ identifier: :created_at, parameters: { granularity: 'monthly' }, direction: :desc }]
     )
 
-    result = engine.new(context: ctx).execute(plan)
-    expect(result.payload[:data]).to eq([
-      {
-        dimensions: [{ timestamp_value: merge_request3.created_at.beginning_of_month }],
-        metrics: [{ integer_value: 1 }]
-      },
-      {
-        dimensions: [{ timestamp_value: merge_request1.created_at.beginning_of_month }],
-        metrics: [{ integer_value: 2 }]
-      }
+    expect(engine).to execute_aggregation(request).and_return([
+      { created_at_monthly: merge_request3.created_at.beginning_of_month, total_count: 1 },
+      { created_at_monthly: merge_request1.created_at.beginning_of_month, total_count: 2 }
     ])
   end
 
   it 'group and order by the same timestamp column with different granularity' do
-    plan = Gitlab::Database::Aggregation::Request.new(
+    request = Gitlab::Database::Aggregation::Request.new(
       dimensions: [
-        { identifier: :timestamp_column_created_at, granularity: :month },
-        { identifier: :timestamp_column_created_at, granularity: :day }
+        { identifier: :created_at, parameters: { granularity: 'monthly' } },
+        { identifier: :created_at, parameters: { granularity: 'daily' } }
       ],
-      metrics: [{ identifier: :count }],
+      metrics: [{ identifier: :total_count }],
       order: [
-        { identifier: :timestamp_column_created_at, granularity: :month, direction: :desc },
-        { identifier: :timestamp_column_created_at, granularity: :day, direction: :asc }
+        { identifier: :created_at, parameters: { granularity: 'monthly' }, direction: :desc },
+        { identifier: :created_at, parameters: { granularity: 'daily' }, direction: :asc }
       ]
     )
 
-    result = engine.new(context: ctx).execute(plan)
-    expect(result.payload[:data]).to eq([
+    expect(engine).to execute_aggregation(request).and_return([
       {
-        dimensions: [
-          { timestamp_value: merge_request3.created_at.beginning_of_month },
-          { timestamp_value: merge_request3.created_at.beginning_of_day }
-        ],
-        metrics: [{ integer_value: 1 }]
+        created_at_monthly: merge_request3.created_at.beginning_of_month,
+        created_at_daily: merge_request3.created_at.beginning_of_day,
+        total_count: 1
       },
       {
-        dimensions: [
-          { timestamp_value: merge_request2.created_at.beginning_of_month },
-          { timestamp_value: merge_request2.created_at.beginning_of_day }
-        ],
-        metrics: [{ integer_value: 1 }]
+        created_at_monthly: merge_request2.created_at.beginning_of_month,
+        created_at_daily: merge_request2.created_at.beginning_of_day,
+        total_count: 1
       },
       {
-        dimensions: [
-          { timestamp_value: merge_request1.created_at.beginning_of_month },
-          { timestamp_value: merge_request1.created_at.beginning_of_day }
-        ],
-        metrics: [{ integer_value: 1 }]
+        created_at_monthly: merge_request1.created_at.beginning_of_month,
+        created_at_daily: merge_request1.created_at.beginning_of_day,
+        total_count: 1
       }
     ])
   end
 
   it 'count by state' do
-    plan = Gitlab::Database::Aggregation::Request.new(
-      dimensions: [{ identifier: :column_state }],
-      metrics: [{ identifier: :count }]
+    request = Gitlab::Database::Aggregation::Request.new(
+      dimensions: [{ identifier: :state }],
+      metrics: [{ identifier: :total_count }]
     )
 
-    result = engine.new(context: ctx).execute(plan)
-    expect(result.payload[:data]).to eq([{
-      dimensions: [{ string_value: 'opened' }],
-      metrics: [{ integer_value: 3 }]
-    }])
+    expect(engine).to execute_aggregation(request).and_return([
+      { state: 'opened', total_count: 3 }
+    ])
   end
 
   it 'global count' do
-    plan = Gitlab::Database::Aggregation::Request.new(
+    request = Gitlab::Database::Aggregation::Request.new(
       dimensions: [],
-      metrics: [{ identifier: :count }]
+      metrics: [{ identifier: :total_count }]
     )
 
-    result = engine.new(context: ctx).execute(plan)
-    expect(result.payload[:data]).to eq([{
-      dimensions: [],
-      metrics: [{ integer_value: 3 }]
-    }])
+    expect(engine).to execute_aggregation(request).and_return([
+      { total_count: 3 }
+    ])
   end
 
   it 'count by monthly merged_at' do
-    plan = Gitlab::Database::Aggregation::Request.new(
-      dimensions: [{ identifier: :timestamp_column_merged_at, granularity: :month }],
-      metrics: [{ identifier: :count }]
+    request = Gitlab::Database::Aggregation::Request.new(
+      dimensions: [{ identifier: :merged_at, parameters: { granularity: 'monthly' } }],
+      metrics: [{ identifier: :total_count }]
     )
 
-    result = engine.new(context: ctx).execute(plan)
-    expect(result.payload[:data]).to eq([
-      {
-        dimensions: [{ timestamp_value: merge_request1.metrics.merged_at.beginning_of_month }],
-        metrics: [{ integer_value: 1 }]
-      },
-      {
-        dimensions: [{ timestamp_value: merge_request3.metrics.merged_at.beginning_of_month }],
-        metrics: [{ integer_value: 1 }]
-      }
+    expect(engine).to execute_aggregation(request).and_return([
+      { merged_at_monthly: merge_request1.metrics.merged_at.beginning_of_month, total_count: 1 },
+      { merged_at_monthly: merge_request3.metrics.merged_at.beginning_of_month, total_count: 1 }
     ])
   end
 
   describe 'null value handling' do
     context 'when column with integer type returns null values' do
       it 'groups null values together' do
-        plan = Gitlab::Database::Aggregation::Request.new(
-          dimensions: [{ identifier: :column_updated_by_id }],
-          metrics: [{ identifier: :count }]
+        request = Gitlab::Database::Aggregation::Request.new(
+          dimensions: [{ identifier: :updated_by_id }],
+          metrics: [{ identifier: :total_count }]
         )
 
-        result = engine.new(context: ctx).execute(plan)
-        expect(result.payload[:data]).to eq([
-          {
-            dimensions: [{ integer_value: user.id }],
-            metrics: [{ integer_value: 2 }]
-          },
-          {
-            dimensions: [{ integer_value: nil }],
-            metrics: [{ integer_value: 1 }]
-          }
+        expect(engine).to execute_aggregation(request).and_return([
+          { updated_by_id: user.id, total_count: 2 },
+          { updated_by_id: nil, total_count: 1 }
         ])
       end
     end
 
     context 'when timestamp_column dimension returns null values' do
       it 'groups null values together' do
-        plan = Gitlab::Database::Aggregation::Request.new(
-          dimensions: [{ identifier: :timestamp_column_closed_at, granularity: :month }],
-          metrics: [{ identifier: :count }]
+        request = Gitlab::Database::Aggregation::Request.new(
+          dimensions: [{ identifier: :closed_at, parameters: { granularity: 'monthly' } }],
+          metrics: [{ identifier: :total_count }]
         )
 
-        result = engine.new(context: ctx).execute(plan)
-        expect(result.payload[:data]).to eq([
-          {
-            dimensions: [{ timestamp_value: merge_request2.metrics.latest_closed_at.beginning_of_month }],
-            metrics: [{ integer_value: 1 }]
-          },
-          {
-            dimensions: [{ timestamp_value: nil }],
-            metrics: [{ integer_value: 2 }]
-          }
+        expect(engine).to execute_aggregation(request).and_return([
+          { closed_at_monthly: merge_request2.metrics.latest_closed_at.beginning_of_month, total_count: 1 },
+          { closed_at_monthly: nil, total_count: 2 }
         ])
       end
     end
   end
 
   describe '.to_hash' do
-    it 'exposes the engine definition' do
-      expect(engine.to_hash).to match({
+    it 'exposes the engine_definition definition' do
+      expect(engine_definition.to_hash).to match({
         dimensions: array_including(
-          hash_including({ identifier: :column_state_id, name: :state_id })
+          hash_including({ identifier: :state_id, name: :state_id })
         ),
         metrics: array_including(
-          hash_including({ identifier: :count })
+          hash_including({ identifier: :total_count })
         )
       })
     end
@@ -272,99 +218,98 @@ RSpec.describe Gitlab::Database::Aggregation::ActiveRecord::Engine, feature_cate
   describe 'validations' do
     context 'when metric cannot be found' do
       it 'returns error' do
-        plan = Gitlab::Database::Aggregation::Request.new(
-          dimensions: [{ identifier: :column_state_id }],
+        request = Gitlab::Database::Aggregation::Request.new(
+          dimensions: [{ identifier: :state_id }],
           metrics: [{ identifier: :missing_identfier }]
         )
 
-        result = engine.new(context: ctx).execute(plan)
-        expect(result.payload[:errors][:metrics]).to include(
+        expect(engine).to execute_aggregation(request).with_errors(array_including(
           a_string_matching(/identifier is not available: 'missing_identfier'/)
-        )
+        ))
       end
     end
 
     context 'when dimension cannot be found' do
       it 'returns error' do
-        plan = Gitlab::Database::Aggregation::Request.new(
+        request = Gitlab::Database::Aggregation::Request.new(
           dimensions: [{ identifier: :missing_identfier }],
           metrics: [{ identifier: :mean_time_estimate }]
         )
 
-        result = engine.new(context: ctx).execute(plan)
-        expect(result.payload[:errors][:dimensions]).to include(
+        expect(engine).to execute_aggregation(request).with_errors(array_including(
           a_string_matching(/identifier is not available: 'missing_identfier'/)
-        )
+        ))
       end
     end
 
     context 'when no metric is passed in' do
       it 'returns error' do
-        plan = Gitlab::Database::Aggregation::Request.new(
-          dimensions: [{ identifier: :column_state_id }],
+        request = Gitlab::Database::Aggregation::Request.new(
+          dimensions: [{ identifier: :state_id }],
           metrics: []
         )
 
-        result = engine.new(context: ctx).execute(plan)
-        expect(result.payload[:errors][:metrics]).to include(a_string_matching(/at least one metric is required/))
+        expect(engine).to execute_aggregation(request).with_errors(array_including(
+          a_string_matching(/at least one metric is required/)
+        ))
       end
     end
 
     context 'when dimensions limit is reached' do
       it 'returns error' do
-        plan = Gitlab::Database::Aggregation::Request.new(
+        request = Gitlab::Database::Aggregation::Request.new(
           dimensions: [
-            { identifier: :column_state_id },
-            { identifier: :column_project_id },
-            { identifier: :column_state },
-            { identifier: :timestamp_column_merged_at, default_granularity: :month }
+            { identifier: :state_id },
+            { identifier: :project_id },
+            { identifier: :state },
+            { identifier: :merged_at, parameters: { granularity: 'monthly' } }
           ],
           metrics: [{ identifier: :mean_time_estimate }]
         )
 
-        result = engine.new(context: ctx).execute(plan)
-        expect(result.payload[:errors][:dimensions]).to include(a_string_matching(/maximum two dimensions/))
+        expect(engine).to execute_aggregation(request).with_errors(array_including(
+          a_string_matching(/maximum two dimensions/)
+        ))
       end
     end
 
     context 'when order cannot be found' do
       it 'returns error' do
-        plan = Gitlab::Database::Aggregation::Request.new(
-          dimensions: [{ identifier: :column_state_id }],
+        request = Gitlab::Database::Aggregation::Request.new(
+          dimensions: [{ identifier: :state_id }],
           metrics: [{ identifier: :mean_time_estimate }],
           order: [{ identifier: :unknown, direction: :asc }]
         )
 
-        result = engine.new(context: ctx).execute(plan)
-        expect(result.payload[:errors][:order]).to include(a_string_matching(/identifier is not available/))
+        expect(engine).to execute_aggregation(request).with_errors(array_including(
+          a_string_matching(/identifier is not available/)
+        ))
       end
     end
 
     context 'when duplicated dimensions are passed in' do
       it 'returns error' do
-        plan = Gitlab::Database::Aggregation::Request.new(
-          dimensions: [{ identifier: :column_state_id }, { identifier: :column_state_id }],
+        request = Gitlab::Database::Aggregation::Request.new(
+          dimensions: [{ identifier: :state_id }, { identifier: :state_id }],
           metrics: [{ identifier: :mean_time_estimate }]
         )
 
-        result = engine.new(context: ctx).execute(plan)
-        expect(result.payload[:errors][:dimensions]).to include(
-          a_string_matching(/duplicated identifier found: column_state_id/)
-        )
+        expect(engine).to execute_aggregation(request).with_errors(array_including(
+          a_string_matching(/duplicated identifier found: state_id/)
+        ))
       end
     end
 
     context 'when duplicated metrics are passed in' do
       it 'returns error' do
-        plan = Gitlab::Database::Aggregation::Request.new(
-          dimensions: [{ identifier: :column_state_id }],
+        request = Gitlab::Database::Aggregation::Request.new(
+          dimensions: [{ identifier: :state_id }],
           metrics: [{ identifier: :mean_time_estimate }, { identifier: :mean_time_estimate }]
         )
 
-        result = engine.new(context: ctx).execute(plan)
-        expect(result.payload[:errors][:metrics]).to include(
+        expect(engine).to execute_aggregation(request).with_errors(array_including(
           a_string_matching(/duplicated identifier found: mean_time_estimate/)
-        )
+        ))
       end
     end
   end

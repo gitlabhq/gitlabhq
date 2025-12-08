@@ -922,6 +922,13 @@ class Issue < ApplicationRecord
     )
   end
 
+  def ==(other)
+    return super unless id.present?
+
+    other.is_a?(Issue) && other.id == id
+  end
+  alias_method :eql?, :==
+
   private
 
   def due_date_after_start_date

@@ -163,6 +163,7 @@ export default {
         directoryList.push({
           id: `${treePath}-${tree.id}-${index}`,
           path: treePath,
+          parentPath: path,
           routerPath: buildURLwithRefType({
             path: joinPaths(
               '/-/tree',
@@ -198,6 +199,7 @@ export default {
           id: `${blobPath}-${blob.id}-${index}`,
           fileHash: blob.sha,
           path: blobPath,
+          parentPath: path,
           routerPath: buildURLwithRefType({
             path: joinPaths(
               '/-/blob',
@@ -226,6 +228,7 @@ export default {
           id: `${submodulePath}-${submodule.id}-${index}`,
           fileHash: submodule.sha,
           path: submodulePath,
+          parentPath: path,
           webUrl: submodule.webUrl,
           name: submodule.name,
           submodule: true,
@@ -408,6 +411,14 @@ export default {
         if (item?.submodule && item?.webUrl) visitUrl(item.webUrl);
         if (item?.routerPath && !this.isCurrentPath(item?.path)) this.$router.push(item.routerPath);
         return;
+      }
+
+      // Asterisk (*)
+      if (event.key === '*' && item) {
+        event.preventDefault();
+        items
+          .filter((i) => i.type === 'tree' && !i.opened && i.parentPath === item.parentPath)
+          .forEach((i) => this.toggleDirectory(i.path, { toggleClose: false }));
       }
 
       // Right Arrow

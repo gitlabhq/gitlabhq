@@ -36,7 +36,7 @@ Configure the rate limit for each IP address and user for requests to the follow
 
 To change the rate limit:
 
-1. On the left sidebar, at the bottom, select **Admin**. If you've [turned on the new navigation](../../user/interface_redesign.md#turn-new-navigation-on-or-off), in the upper-right corner, select **Admin**.
+1. On the left sidebar, at the bottom, select **Admin**. If you've [turned on the new navigation](../../user/interface_redesign.md), in the upper-right corner, select **Admin**.
 1. Select **Settings** > **Network**.
 1. Expand **Projects API rate limits**.
 1. Change the value of a rate limit, or set a rate limit to `0` to disable it.
@@ -66,7 +66,7 @@ Configure the rate limit for each project and user for requests to the
 
 To change the rate limit:
 
-1. On the left sidebar, at the bottom, select **Admin**. If you've [turned on the new navigation](../../user/interface_redesign.md#turn-new-navigation-on-or-off), in the upper-right corner, select **Admin**.
+1. On the left sidebar, at the bottom, select **Admin**. If you've [turned on the new navigation](../../user/interface_redesign.md), in the upper-right corner, select **Admin**.
 1. Select **Settings** > **Network**.
 1. Expand **Members API rate limit**.
 1. In the **Maximum requests per minute per group / project** text box, enter a value.
@@ -97,7 +97,7 @@ Configure the rate limit for requests to the
 
 To change the rate limit:
 
-1. On the left sidebar, at the bottom, select **Admin**. If you've [turned on the new navigation](../../user/interface_redesign.md#turn-new-navigation-on-or-off), in the upper-right corner, select **Admin**.
+1. On the left sidebar, at the bottom, select **Admin**. If you've [turned on the new navigation](../../user/interface_redesign.md), in the upper-right corner, select **Admin**.
 1. Select **Settings** > **Network**.
 1. Expand **Projects API**.
 1. In the **Maximum requests to the GET /projects/:id/members/all API per minute per user or IP address** text box, enter a value.

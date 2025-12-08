@@ -2186,4 +2186,67 @@ RSpec.describe Issue, feature_category: :team_planning do
       it { is_expected.to be true }
     end
   end
+
+  describe '#==' do
+    let(:issue) { build_stubbed(:issue, project: reusable_project) }
+
+    it 'returns false when comparing with a non-ActiveRecord object' do
+      expect(issue == :some_symbol).to eq(false)
+    end
+
+    it 'returns false when comparing with an unrelated ActiveRecord object' do
+      user = build_stubbed(:user, id: issue.id)
+
+      expect(issue == user).to eq(false)
+    end
+
+    it 'returns false when issues have different ids' do
+      other_issue = build_stubbed(:issue, project: reusable_project)
+
+      expect(issue == other_issue).to eq(false)
+    end
+
+    it 'returns false when comparing different unpersisted issues' do
+      expect(build(:issue) == build(:issue)).to eq(false)
+    end
+
+    it 'returns true when comparing the same unpersisted issue' do
+      new_issue = build(:issue)
+
+      expect(new_issue == new_issue).to eq(true)
+    end
+
+    it 'returns true when ids are the same' do
+      other_issue_instance = build_stubbed(:issue, project: reusable_project, id: issue.id)
+
+      expect(issue == other_issue_instance).to eq(true)
+    end
+
+    it 'returns true when compared with subclass having the same id' do
+      work_item = build_stubbed(:work_item, project: reusable_project, id: issue.id)
+
+      expect(issue == work_item).to eq(true)
+    end
+  end
+
+  describe '#referenced_mentionables' do
+    let_it_be(:issue) { create(:issue, project: reusable_project) }
+
+    context 'when mentioning an issue from the work item version of itself' do
+      it 'does not include the self-reference' do
+        issue_as_work_item = WorkItem.find(issue.id)
+        issue_as_work_item.description = issue.to_reference
+
+        expect(issue_as_work_item.referenced_mentionables).to be_empty
+      end
+    end
+
+    context 'when mentioning a work item from the issue version of itself' do
+      it 'does not include the self-reference' do
+        issue.description = Gitlab::Routing.url_helpers.project_work_item_url(issue.project, issue)
+
+        expect(issue.referenced_mentionables).to be_empty
+      end
+    end
+  end
 end

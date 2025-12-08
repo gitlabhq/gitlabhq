@@ -78,10 +78,10 @@ export default {
   i18n: {
     textdelay: s__(`Profiles|
 You are about to permanently delete %{yourAccount}, and all of the issues, merge requests, and groups linked to your account.
-Once you confirm %{deleteAccount}, it cannot be undone or recovered. You might have to wait seven days before creating a new account with the same username or email.`),
+Once you confirm %{deleteAccount}, your account cannot be recovered. It might take up to seven days before you can create a new account with the same username or email.`),
     text: s__(`Profiles|
 You are about to permanently delete %{yourAccount}, and all of the issues, merge requests, and groups linked to your account.
-Once you confirm %{deleteAccount}, it cannot be undone or recovered.`),
+Once you confirm %{deleteAccount}, your account cannot be recovered.`),
     inputLabel: s__('Profiles|Type your %{confirmationValue} to confirm:'),
   },
 };

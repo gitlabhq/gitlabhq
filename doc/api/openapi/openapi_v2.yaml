@@ -48192,6 +48192,21 @@ definitions:
       model_prompt_cache_enabled:
         type: boolean
         description: Enable model prompt cache for this group
+      foundational_agents_statuses:
+        type: array
+        description: Whether each foundational agent has been enabled or disabled.
+        items:
+          type: object
+          properties:
+            reference:
+              type: string
+              description: Reference of the foundational agent.
+            enabled:
+              type: boolean
+              description: Whether foundational agent has been enabled or disabled.
+          required:
+          - reference
+          - enabled
       ai_settings_attributes:
         type: object
         description: AI-related settings
@@ -48421,6 +48436,21 @@ definitions:
       model_prompt_cache_enabled:
         type: boolean
         description: Enable model prompt cache for this group
+      foundational_agents_statuses:
+        type: array
+        description: Whether each foundational agent has been enabled or disabled.
+        items:
+          type: object
+          properties:
+            reference:
+              type: string
+              description: Reference of the foundational agent.
+            enabled:
+              type: boolean
+              description: Whether foundational agent has been enabled or disabled.
+          required:
+          - reference
+          - enabled
       ai_settings_attributes:
         type: object
         description: AI-related settings

@@ -223,7 +223,7 @@ This also turns off prompt caching for [GitLab Duo Chat (Agentic)](../../../gitl
 
 On GitLab.com:
 
-1. On the left sidebar, select **Search or go to** and find your group. If you've [turned on the new navigation](../../../interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
+1. On the left sidebar, select **Search or go to** and find your group. If you've [turned on the new navigation](../../../interface_redesign.md), this field is on the top bar.
 1. Select **Settings** > **GitLab Duo**.
 1. Select **Change configuration**.
 1. Disable the **Prompt caching** toggle.
@@ -231,7 +231,7 @@ On GitLab.com:
 
 On GitLab Self-Managed:
 
-1. On the left sidebar, at the bottom, select **Admin**. If you've [turned on the new navigation](../../../interface_redesign.md#turn-new-navigation-on-or-off), in the upper-right corner, select **Admin**.
+1. On the left sidebar, at the bottom, select **Admin**. If you've [turned on the new navigation](../../../interface_redesign.md), in the upper-right corner, select **Admin**.
 1. Select **GitLab Duo**.
 1. Select **Change Configuration**.
 1. Under **Prompt Cache**, clear the **Turn on prompt caching** checkbox.
@@ -279,7 +279,7 @@ Prerequisites:
 
 {{< tab title="In 17.4 and later" >}}
 
-1. On the left sidebar, at the bottom, select **Admin**. If you've [turned on the new navigation](../../../interface_redesign.md#turn-new-navigation-on-or-off), in the upper-right corner, select **Admin**.
+1. On the left sidebar, at the bottom, select **Admin**. If you've [turned on the new navigation](../../../interface_redesign.md), in the upper-right corner, select **Admin**.
 1. Select **Settings** > **General**.
 1. Expand **GitLab Duo features**.
 1. Under **Connection method**, choose an option:
@@ -291,7 +291,7 @@ Prerequisites:
 
 {{< tab title="In 17.3 and earlier" >}}
 
-1. On the left sidebar, at the bottom, select **Admin**. If you've [turned on the new navigation](../../../interface_redesign.md#turn-new-navigation-on-or-off), in the upper-right corner, select **Admin**.
+1. On the left sidebar, at the bottom, select **Admin**. If you've [turned on the new navigation](../../../interface_redesign.md), in the upper-right corner, select **Admin**.
 1. Select **Settings** > **General**.
 1. Expand **AI-native features**.
 1. Choose an option:

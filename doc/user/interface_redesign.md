@@ -35,31 +35,7 @@ This modernized interface centralizes AI interactions in a persistent sidebar, i
 a panel-based layout that accommodates both traditional development tasks and AI-assisted workflows,
 and reduces navigation complexity.
 
-To test this feature on GitLab Self-Managed: Contact your GitLab administrator.
-Provide feedback in [issue 577554](https://gitlab.com/gitlab-org/gitlab/-/issues/577554).
-
 ![Projects page with the new UI.](img/paneled_view_projects_v18_7.png)
-
-## Turn new navigation on or off
-
-Prerequisites:
-
-- Your administrator must have enabled all the related feature flags for your user.
-  For specific flags, see the History section at the top of this page.
-
-You can tell that you're using the older navigation if your user avatar is on the left sidebar.
-
-To turn on the new navigation style:
-
-1. On the left sidebar, select your avatar.
-1. Turn on the **New UI** toggle.
-
-The page refreshes, and you can start exploring the new GitLab UI!
-
-To turn off the new navigation style:
-
-1. In the upper-right corner, select your avatar.
-1. Turn off the **New UI** toggle.
 
 ## What's new
 

@@ -67,7 +67,8 @@ Example response:
     },
     "expires_at": "2012-10-22",
     "access_level": 30,
-    "group_saml_identity": null
+    "group_saml_identity": null,
+    "is_using_seat": true
   },
   {
     "id": 2,

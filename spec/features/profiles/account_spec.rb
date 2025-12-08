@@ -100,7 +100,7 @@ RSpec.describe 'Profile > Account', :js, feature_category: :user_profile do
       let(:number_of_projects) { 0 }
 
       it 'does not show personal projects removal message' do
-        expect(page).not_to have_content(/\d personal projects? will be removed and cannot be restored/)
+        expect(page).to have_no_content(/Removes \d personal project/)
       end
     end
 
@@ -108,7 +108,7 @@ RSpec.describe 'Profile > Account', :js, feature_category: :user_profile do
       let(:number_of_projects) { 1 }
 
       it 'does show personal project removal message' do
-        expect(page).to have_content('1 personal project will be removed and cannot be restored')
+        expect(page).to have_content('Removes 1 personal project. This project cannot be restored.')
       end
     end
 
@@ -116,7 +116,7 @@ RSpec.describe 'Profile > Account', :js, feature_category: :user_profile do
       let(:number_of_projects) { 3 }
 
       it 'shows pluralized personal project removal message' do
-        expect(page).to have_content('3 personal projects will be removed and cannot be restored')
+        expect(page).to have_content('Removes 3 personal projects. These projects cannot be restored.')
       end
     end
   end

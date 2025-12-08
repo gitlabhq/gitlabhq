@@ -549,8 +549,6 @@ export default {
     'app/assets/javascripts/issues/list/components/empty_state_without_any_issues.vue',
     'app/assets/javascripts/issues/list/components/issue_card_statistics.vue',
     'app/assets/javascripts/issues/list/components/issue_card_time_info.vue',
-    'app/assets/javascripts/issues/new/components/title_suggestions.vue',
-    'app/assets/javascripts/issues/new/components/title_suggestions_item.vue',
     'app/assets/javascripts/issues/service_desk/components/empty_state_with_any_issues.vue',
     'app/assets/javascripts/issues/service_desk/components/empty_state_without_any_issues.vue',
     'app/assets/javascripts/issues/service_desk/components/service_desk_list_app.vue',
