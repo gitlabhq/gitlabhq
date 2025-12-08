@@ -106,11 +106,60 @@ RSpec.describe Gitlab::GithubImport::AttachmentsDownloader, feature_category: :i
       end
     end
 
+    context 'when rate limited during download' do
+      let(:http_response) { instance_double(Net::HTTPTooManyRequests, :[] => '60') }
+      let(:chunk_double) { instance_double(HTTParty::ResponseFragment, code: 429, http_response: http_response) }
+
+      before do
+        allow(Gitlab::HTTP).to receive(:perform_request)
+          .with(Net::HTTP::Get, file_url, stream_body: true).and_yield(chunk_double)
+      end
+
+      it 'raises RateLimitError' do
+        expect { downloader.perform }.to raise_error(Gitlab::GithubImport::RateLimitError)
+      end
+
+      it 'includes reset_in from retry-after header' do
+        expect { downloader.perform }.to raise_error(Gitlab::GithubImport::RateLimitError) do |error|
+          expect(error.reset_in).to eq(60)
+        end
+      end
+
+      context 'when retry-after header is missing' do
+        let(:http_response) { instance_double(Net::HTTPTooManyRequests, :[] => nil) }
+
+        it 'sets reset_in to RATE_LIMIT_DEFAULT_RESET_IN' do
+          expect { downloader.perform }.to raise_error(Gitlab::GithubImport::RateLimitError) do |error|
+            expect(error.reset_in).to eq(120)
+          end
+        end
+      end
+
+      context 'when response uses http_response instead of headers' do
+        let(:http_response) { instance_double(Net::HTTPTooManyRequests, :[] => '90') }
+        let(:chunk_double) do
+          instance_double(HTTParty::ResponseFragment, code: 429, http_response: http_response)
+        end
+
+        before do
+          allow(chunk_double).to receive(:respond_to?).with(:headers).and_return(false)
+          allow(Gitlab::HTTP).to receive(:perform_request).with(Net::HTTP::Get, file_url, stream_body: true)
+          .and_yield(chunk_double)
+        end
+
+        it 'raises RateLimitError using http_response retry-after header' do
+          expect { downloader.perform }.to raise_error(Gitlab::GithubImport::RateLimitError) do |error|
+            expect(error.reset_in).to eq(90)
+          end
+        end
+      end
+    end
+
     context 'when attachment is behind a github asset endpoint' do
       let(:file_url) { "https://github.com/test/project/assets/142635249/4b9f9c90-f060-4845-97cf-b24c558bcb11" }
       let(:redirect_url) { "https://github-production-user-asset-6210df.s3.amazonaws.com/142635249/740edb05293e.jpg" }
       let(:sample_response) do
-        instance_double(HTTParty::Response, redirection?: true, headers: { location: redirect_url })
+        instance_double(HTTParty::Response, code: 200, redirection?: true, headers: { location: redirect_url })
       end
 
       it 'gets redirection url' do
@@ -127,6 +176,9 @@ RSpec.describe Gitlab::GithubImport::AttachmentsDownloader, feature_category: :i
 
       context 'when filename includes login redirect' do
         let(:redirect_url) { 'https://example.com/some-text/login?return_to=gpre366' }
+        let(:sample_response) do
+          instance_double(HTTParty::Response, code: 200, redirection?: true, headers: { location: redirect_url })
+        end
 
         it 'returns the original file_url' do
           expect(::Import::Clients::HTTP).to receive(:get).with(file_url, { follow_redirects: false })
@@ -141,7 +193,7 @@ RSpec.describe Gitlab::GithubImport::AttachmentsDownloader, feature_category: :i
         let(:file_url) { "https://github.com/user-attachments/assets/73433gh3" }
         let(:redirect_url) { "https://github-production-user-asset-6210df.s3.amazonaws.com/73433gh3.mov" }
         let(:sample_response) do
-          instance_double(HTTParty::Response, redirection?: true, headers: { location: redirect_url })
+          instance_double(HTTParty::Response, code: 200, redirection?: true, headers: { location: redirect_url })
         end
 
         it 'updates the filename and the filepath' do
@@ -174,6 +226,28 @@ RSpec.describe Gitlab::GithubImport::AttachmentsDownloader, feature_category: :i
           file = downloader.perform
 
           expect(File.exist?(file.path)).to eq(true)
+        end
+      end
+
+      context 'when rate limited during redirect check' do
+        let(:sample_response) do
+          instance_double(HTTParty::Response, code: 429, headers: { 'retry-after': '60' })
+        end
+
+        before do
+          allow(::Import::Clients::HTTP).to receive(:get)
+            .with(file_url, { follow_redirects: false })
+            .and_return(sample_response)
+        end
+
+        it 'raises RateLimitError' do
+          expect { downloader.perform }.to raise_error(Gitlab::GithubImport::RateLimitError)
+        end
+
+        it 'includes reset_in from retry-after header' do
+          expect { downloader.perform }.to raise_error(Gitlab::GithubImport::RateLimitError) do |error|
+            expect(error.reset_in).to eq(60)
+          end
         end
       end
     end

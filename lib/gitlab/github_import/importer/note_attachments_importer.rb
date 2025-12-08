@@ -22,6 +22,7 @@ module Gitlab
           attachments = Gitlab::GithubImport::MarkdownText.fetch_attachments(note_text.text, web_endpoint)
           return if attachments.blank?
 
+          rate_limit_error = nil
           new_text = attachments.reduce(note_text.text) do |text, attachment|
             new_url = gitlab_attachment_link(attachment)
 
@@ -31,9 +32,16 @@ module Gitlab
             else
               text.gsub(attachment.url, new_url)
             end
+          rescue Gitlab::GithubImport::RateLimitError => e
+            # Store the error to re-raise after updating the note
+            rate_limit_error ||= e
+            # Continue with the current text without replacing this attachment
+            text
           end
 
           update_note_record(new_text)
+
+          raise rate_limit_error if rate_limit_error
         end
 
         private
