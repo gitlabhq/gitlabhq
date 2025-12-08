@@ -17,6 +17,10 @@ module Gitlab
         def object_type
           :issue_attachment
         end
+
+        def increment_object_counter?(_object)
+          false
+        end
       end
     end
   end

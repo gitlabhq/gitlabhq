@@ -92,7 +92,11 @@ RSpec.describe Gitlab::GithubImport::AttachmentsDownloader, feature_category: :i
       end
     end
 
-    context 'when chunk download returns an error' do
+    context 'when chunk download does not return a retriable error code' do
+      before do
+        stub_const("#{described_class}::NON_RETRIABLE_ERROR_CODES", [403])
+      end
+
       let(:chunk_double) { instance_double(HTTParty::ResponseFragment, code: 500, http_response: {}) }
 
       it 'raises expected exception' do
@@ -101,6 +105,24 @@ RSpec.describe Gitlab::GithubImport::AttachmentsDownloader, feature_category: :i
 
         expect { downloader.perform }.to raise_exception(
           Gitlab::GithubImport::AttachmentsDownloader::DownloadError,
+          "Error downloading file from #{file_url}. Error code: #{chunk_double.code}"
+        )
+      end
+    end
+
+    context 'when chunk download returns a retriable error code' do
+      before do
+        stub_const("#{described_class}::NON_RETRIABLE_ERROR_CODES", [403])
+      end
+
+      let(:chunk_double) { instance_double(HTTParty::ResponseFragment, code: 403, http_response: {}) }
+
+      it 'raises expected exception' do
+        allow(Gitlab::HTTP).to receive(:perform_request)
+          .with(Net::HTTP::Get, file_url, stream_body: true).and_yield(chunk_double)
+
+        expect { downloader.perform }.to raise_exception(
+          Gitlab::GithubImport::AttachmentsDownloader::NotRetriableError,
           "Error downloading file from #{file_url}. Error code: #{chunk_double.code}"
         )
       end
@@ -125,13 +147,25 @@ RSpec.describe Gitlab::GithubImport::AttachmentsDownloader, feature_category: :i
         end
       end
 
-      context 'when retry-after header is missing' do
+      context 'when retry-after header is missing for 429 response' do
         let(:http_response) { instance_double(Net::HTTPTooManyRequests, :[] => nil) }
 
         it 'sets reset_in to RATE_LIMIT_DEFAULT_RESET_IN' do
           expect { downloader.perform }.to raise_error(Gitlab::GithubImport::RateLimitError) do |error|
             expect(error.reset_in).to eq(120)
           end
+        end
+      end
+
+      context 'when retry-after header is missing for 403 response' do
+        let(:http_response) { instance_double(Net::HTTPTooManyRequests, :[] => nil) }
+        let(:chunk_double) { instance_double(HTTParty::ResponseFragment, code: 403, http_response: http_response) }
+
+        it 'raises NotRetirableError error' do
+          expect { downloader.perform }.to raise_exception(
+            Gitlab::GithubImport::AttachmentsDownloader::NotRetriableError,
+            "Error downloading file from #{file_url}. Error code: #{chunk_double.code}"
+          )
         end
       end
 
