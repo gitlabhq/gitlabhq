@@ -135,7 +135,7 @@ Gitlab::Application.config.to_prepare do
       {
         limit_connection_names: %i[main],
         table_name: 'project_daily_statistics_b8088ecbd2',
-        partitioned_column: :date, strategy: :monthly, retain_for: 3.months
+        partitioned_column: :date, strategy: :monthly
       }
     ]
   )

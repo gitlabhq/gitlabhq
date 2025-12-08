@@ -8,7 +8,7 @@ class BackfillPartitionedProjectDailyStatistics < Gitlab::Database::Migration[2.
 
   restrict_gitlab_migration gitlab_schema: :gitlab_main_org
 
-  START_DATE = Date.new(2025, 8, 1)
+  START_DATE = 3.months.ago.beginning_of_month
   MAX_ATTEMPTS = 40
   MIGRATION = 'BackfillPartitionedProjectDailyStatistics'
 
