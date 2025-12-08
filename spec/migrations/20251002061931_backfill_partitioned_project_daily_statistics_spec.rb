@@ -30,10 +30,18 @@ RSpec.describe BackfillPartitionedProjectDailyStatistics, migration: :gitlab_mai
 
   describe '#up' do
     before do
+      # Ensure default partition exists for test data
+      # This is needed because structure.sql doesn't include dynamic partition tables
+      connection.execute(<<~SQL)
+        CREATE TABLE IF NOT EXISTS gitlab_partitions_dynamic.project_daily_statistics_b8088ecbd2_000000
+        PARTITION OF project_daily_statistics_b8088ecbd2
+        DEFAULT;
+      SQL
+
       connection.execute(<<~SQL)
         INSERT INTO project_daily_statistics (id, project_id, fetch_count, date)
         VALUES
-          (1001, #{project_1_id}, 10, '2025-08-01'),
+          (1001, #{project_1_id}, 10, '2025-07-01'),
           (1002, #{project_1_id}, 20, '2025-08-10'),
           (1003, #{project_2_id}, 20, '2025-08-11'),
           (1004, #{project_1_id}, 30, '2025-08-15')
@@ -43,7 +51,7 @@ RSpec.describe BackfillPartitionedProjectDailyStatistics, migration: :gitlab_mai
     context 'when records exist' do
       before do
         # Override the START_DATE constant to test if it can find the right min date.
-        stub_const("#{described_class}::START_DATE", Date.new(2025, 8, 10))
+        stub_const("#{described_class}::START_DATE", Date.new(2025, 8, 1))
       end
 
       it 'finds the correct min_id and enqueues the migration' do
