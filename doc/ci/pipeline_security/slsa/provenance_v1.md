@@ -7,7 +7,7 @@ title: SLSA provenance specification
 
 {{< details >}}
 
-- Tier: Free, Premium, Ultimate
+- Tier: Ultimate
 - Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
 - Status: Experiment
 

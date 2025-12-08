@@ -6,6 +6,11 @@ RSpec.describe Namespaces::Stateful, feature_category: :groups_and_projects do
   let_it_be(:user) { create(:user) }
   let_it_be_with_reload(:namespace) { create(:namespace) }
 
+  # Helper method to set state bypassing validations
+  def set_state(record, state_symbol)
+    record.update_column(:state, described_class::STATES[state_symbol])
+  end
+
   describe 'STATES constant' do
     it 'defines all expected states' do
       expect(described_class::STATES).to eq({
@@ -37,28 +42,56 @@ RSpec.describe Namespaces::Stateful, feature_category: :groups_and_projects do
       expect(namespace.state_name).to eq(:ancestor_inherited)
     end
 
-    it { is_expected.to handle_events :start_transfer, when: :ancestor_inherited }
-    it { is_expected.to handle_events :complete_transfer, when: :transfer_in_progress }
+    it { is_expected.to handle_events :archive, when: :ancestor_inherited }
+    it { is_expected.to handle_events :unarchive, when: :archived }
+    it { is_expected.to handle_events :schedule_deletion, when: :ancestor_inherited }
+    it { is_expected.to handle_events :schedule_deletion, when: :archived }
+    it { is_expected.to handle_events :start_deletion, when: :deletion_scheduled }
 
-    it 'transitions from ancestor_inherited to transfer_in_progress on start_transfer' do
+    it 'transitions from ancestor_inherited to archived on archive' do
       namespace.state = described_class::STATES[:ancestor_inherited]
-      expect { namespace.start_transfer(current_user: user) }
+      expect { namespace.archive(current_user: user) }
         .to change { namespace.state_name }
         .from(:ancestor_inherited)
-        .to(:transfer_in_progress)
+        .to(:archived)
     end
 
-    it 'transitions from transfer_in_progress to ancestor_inherited on complete_transfer' do
-      namespace.state = described_class::STATES[:transfer_in_progress]
-      expect { namespace.complete_transfer(current_user: user) }
+    it 'transitions from archived to ancestor_inherited on unarchive' do
+      namespace.state = described_class::STATES[:archived]
+      expect { namespace.unarchive(current_user: user) }
         .to change { namespace.state_name }
-        .from(:transfer_in_progress)
+        .from(:archived)
         .to(:ancestor_inherited)
     end
 
-    it { is_expected.to reject_events :start_transfer, when: :archived }
-    it { is_expected.to reject_events :start_transfer, when: :deletion_scheduled }
-    it { is_expected.to reject_events :complete_transfer, when: :ancestor_inherited }
+    it 'transitions from ancestor_inherited to deletion_scheduled on schedule_deletion' do
+      namespace.state = described_class::STATES[:ancestor_inherited]
+      expect { namespace.schedule_deletion(current_user: user) }
+        .to change { namespace.state_name }
+        .from(:ancestor_inherited)
+        .to(:deletion_scheduled)
+    end
+
+    it 'transitions from archived to deletion_scheduled on schedule_deletion' do
+      namespace.state = described_class::STATES[:archived]
+      expect { namespace.schedule_deletion(current_user: user) }
+        .to change { namespace.state_name }
+        .from(:archived)
+        .to(:deletion_scheduled)
+    end
+
+    it 'transitions from deletion_scheduled to deletion_in_progress on start_deletion' do
+      namespace.state = described_class::STATES[:deletion_scheduled]
+      expect { namespace.start_deletion(current_user: user) }
+        .to change { namespace.state_name }
+        .from(:deletion_scheduled)
+        .to(:deletion_in_progress)
+    end
+
+    it { is_expected.to reject_events :archive, when: :archived }
+    it { is_expected.to reject_events :unarchive, when: :ancestor_inherited }
+    it { is_expected.to reject_events :schedule_deletion, when: :deletion_scheduled }
+    it { is_expected.to reject_events :start_deletion, when: :ancestor_inherited }
 
     describe 'state values' do
       described_class::STATES.each do |state_name, state_value|
@@ -67,22 +100,22 @@ RSpec.describe Namespaces::Stateful, feature_category: :groups_and_projects do
     end
 
     describe 'events' do
-      describe '#start_transfer' do
+      describe '#archive' do
         context 'when namespace is in ancestor_inherited state' do
           before do
             namespace.state = described_class::STATES[:ancestor_inherited]
           end
 
-          it 'transitions to transfer_in_progress' do
-            expect { namespace.start_transfer(current_user: user) }
+          it 'transitions to archived' do
+            expect { namespace.archive(current_user: user) }
               .to change { namespace.state_name }
               .from(:ancestor_inherited)
-              .to(:transfer_in_progress)
+              .to(:archived)
           end
 
           it 'updates state_metadata with user and timestamp' do
             freeze_time do
-              namespace.start_transfer(current_user: user)
+              namespace.archive(current_user: user)
 
               namespace.namespace_details.reload
               metadata = namespace.namespace_details.state_metadata
@@ -95,7 +128,7 @@ RSpec.describe Namespaces::Stateful, feature_category: :groups_and_projects do
 
           it 'updates state_metadata without user for system-triggered transitions' do
             freeze_time do
-              namespace.start_transfer
+              namespace.archive
 
               namespace.namespace_details.reload
               metadata = namespace.namespace_details.state_metadata
@@ -114,28 +147,28 @@ RSpec.describe Namespaces::Stateful, feature_category: :groups_and_projects do
           end
 
           it 'does not transition' do
-            expect { namespace.start_transfer(current_user: user) }
+            expect { namespace.archive(current_user: user) }
               .to not_change { namespace.state_name }
           end
         end
       end
 
-      describe '#complete_transfer' do
-        context 'when namespace is in transfer_in_progress state' do
+      describe '#unarchive' do
+        context 'when namespace is in archived state' do
           before do
-            namespace.state = described_class::STATES[:transfer_in_progress]
+            namespace.state = described_class::STATES[:archived]
           end
 
           it 'transitions to ancestor_inherited' do
-            expect { namespace.complete_transfer(current_user: user) }
+            expect { namespace.unarchive(current_user: user) }
               .to change { namespace.state_name }
-              .from(:transfer_in_progress)
+              .from(:archived)
               .to(:ancestor_inherited)
           end
 
           it 'updates state_metadata' do
             freeze_time do
-              namespace.complete_transfer(current_user: user)
+              namespace.unarchive(current_user: user)
 
               namespace.namespace_details.reload
               metadata = namespace.namespace_details.state_metadata
@@ -145,30 +178,74 @@ RSpec.describe Namespaces::Stateful, feature_category: :groups_and_projects do
               expect(metadata['last_error']).to be_nil
             end
           end
-
-          it 'updates state_metadata without user for system-triggered transitions' do
-            freeze_time do
-              namespace.complete_transfer
-
-              namespace.namespace_details.reload
-              metadata = namespace.namespace_details.state_metadata
-
-              expect(metadata['last_changed_by_user_id']).to be_nil
-              expect(metadata['last_updated_at']).to be_present
-              expect(metadata['last_error']).to be_nil
-              expect(metadata['correlation_id']).to be_present
-            end
-          end
         end
+      end
 
-        context 'when namespace is not in transfer_in_progress state' do
+      describe '#schedule_deletion' do
+        context 'when namespace is in ancestor_inherited state' do
           before do
             namespace.state = described_class::STATES[:ancestor_inherited]
           end
 
-          it 'does not transition' do
-            expect { namespace.complete_transfer(current_user: user) }
-              .to not_change { namespace.state_name }
+          it 'transitions to deletion_scheduled' do
+            expect { namespace.schedule_deletion(current_user: user) }
+              .to change { namespace.state_name }
+              .from(:ancestor_inherited)
+              .to(:deletion_scheduled)
+          end
+
+          it 'updates state_metadata' do
+            freeze_time do
+              namespace.schedule_deletion(current_user: user)
+
+              namespace.namespace_details.reload
+              metadata = namespace.namespace_details.state_metadata
+
+              expect(metadata['last_changed_by_user_id']).to eq(user.id)
+              expect(metadata['last_updated_at']).to be_present
+              expect(metadata['last_error']).to be_nil
+            end
+          end
+        end
+
+        context 'when namespace is in archived state' do
+          before do
+            namespace.state = described_class::STATES[:archived]
+          end
+
+          it 'transitions to deletion_scheduled' do
+            expect { namespace.schedule_deletion(current_user: user) }
+              .to change { namespace.state_name }
+              .from(:archived)
+              .to(:deletion_scheduled)
+          end
+        end
+      end
+
+      describe '#start_deletion' do
+        context 'when namespace is in deletion_scheduled state' do
+          before do
+            namespace.state = described_class::STATES[:deletion_scheduled]
+          end
+
+          it 'transitions to deletion_in_progress' do
+            expect { namespace.start_deletion(current_user: user) }
+              .to change { namespace.state_name }
+              .from(:deletion_scheduled)
+              .to(:deletion_in_progress)
+          end
+
+          it 'updates state_metadata' do
+            freeze_time do
+              namespace.start_deletion(current_user: user)
+
+              namespace.namespace_details.reload
+              metadata = namespace.namespace_details.state_metadata
+
+              expect(metadata['last_changed_by_user_id']).to eq(user.id)
+              expect(metadata['last_updated_at']).to be_present
+              expect(metadata['last_error']).to be_nil
+            end
           end
         end
       end
@@ -183,10 +260,18 @@ RSpec.describe Namespaces::Stateful, feature_category: :groups_and_projects do
     it 'saves error message when transition fails' do
       namespace.errors.add(:state, 'invalid transition')
 
-      transition = Struct.new(:args, :event).new(args: [{ current_user: user }], event: :start_transfer)
+      transition = Struct.new(:args, :event, :from_name, :to_name).new(
+        args: [{ current_user: user }],
+        event: :archive,
+        from_name: :ancestor_inherited,
+        to_name: :archived
+      )
       namespace.send(:handle_transition_failure, transition)
 
       metadata = namespace.namespace_details.reload.state_metadata
+      expect(metadata['last_error']).to include(
+        'Cannot transition from ancestor_inherited to archived via archive'
+      )
       expect(metadata['last_error']).to include('invalid transition')
       expect(metadata['last_changed_by_user_id']).to eq(user.id)
     end
@@ -195,10 +280,18 @@ RSpec.describe Namespaces::Stateful, feature_category: :groups_and_projects do
       namespace.namespace_details.update!(state_metadata: { last_changed_by_user_id: user.id })
       namespace.errors.add(:state, 'some error')
 
-      transition = Struct.new(:args, :event).new(args: [{}], event: :start_transfer)
+      transition = Struct.new(:args, :event, :from_name, :to_name).new(
+        args: [{}],
+        event: :unarchive,
+        from_name: :archived,
+        to_name: :ancestor_inherited
+      )
       namespace.send(:handle_transition_failure, transition)
 
       metadata = namespace.namespace_details.reload.state_metadata
+      expect(metadata['last_error']).to include(
+        'Cannot transition from archived to ancestor_inherited via unarchive'
+      )
       expect(metadata['last_error']).to include('some error')
       expect(metadata['last_changed_by_user_id']).to be_nil
     end
@@ -209,11 +302,19 @@ RSpec.describe Namespaces::Stateful, feature_category: :groups_and_projects do
 
       expect(namespace.errors[:state]).to be_empty
 
-      transition = Struct.new(:args, :event).new(args: [{ current_user: user }], event: :start_transfer)
+      transition = Struct.new(:args, :event, :from_name, :to_name).new(
+        args: [{ current_user: user }],
+        event: :schedule_deletion,
+        from_name: :ancestor_inherited,
+        to_name: :deletion_scheduled
+      )
       namespace.send(:handle_transition_failure, transition)
 
       metadata = namespace.namespace_details.reload.state_metadata
-      expect(metadata['last_error']).to eq('Unknown transition failure')
+      expect(metadata['last_error']).to include(
+        'Cannot transition from ancestor_inherited to deletion_scheduled via schedule_deletion'
+      )
+      expect(metadata['last_error']).to include('unknown reason')
     end
   end
 
@@ -221,7 +322,7 @@ RSpec.describe Namespaces::Stateful, feature_category: :groups_and_projects do
     it 'stores custom correlation_id when provided' do
       custom_correlation_id = 'custom-correlation-id-123'
       namespace.state = described_class::STATES[:ancestor_inherited]
-      namespace.start_transfer(current_user: user, correlation_id: custom_correlation_id)
+      namespace.archive(current_user: user, correlation_id: custom_correlation_id)
 
       metadata = namespace.namespace_details.reload.state_metadata
       expect(metadata['correlation_id']).to eq(custom_correlation_id)
@@ -231,7 +332,7 @@ RSpec.describe Namespaces::Stateful, feature_category: :groups_and_projects do
       namespace.state = described_class::STATES[:ancestor_inherited]
 
       allow(Labkit::Correlation::CorrelationId).to receive(:current_id).and_return('auto-correlation-id')
-      namespace.start_transfer(current_user: user)
+      namespace.archive(current_user: user)
 
       metadata = namespace.namespace_details.reload.state_metadata
       expect(metadata['correlation_id']).to eq('auto-correlation-id')
@@ -241,9 +342,11 @@ RSpec.describe Namespaces::Stateful, feature_category: :groups_and_projects do
       custom_correlation_id = 'failure-correlation-id'
       namespace.errors.add(:state, 'test error')
 
-      transition = Struct.new(:args, :event).new(
+      transition = Struct.new(:args, :event, :from_name, :to_name).new(
         args: [{ current_user: user, correlation_id: custom_correlation_id }],
-        event: :start_transfer
+        event: :archive,
+        from_name: :ancestor_inherited,
+        to_name: :archived
       )
       namespace.send(:handle_transition_failure, transition)
 
@@ -261,14 +364,14 @@ RSpec.describe Namespaces::Stateful, feature_category: :groups_and_projects do
           message: 'Namespace state transition',
           namespace_id: namespace.id,
           from_state: :ancestor_inherited,
-          to_state: :transfer_in_progress,
-          event: :start_transfer,
+          to_state: :archived,
+          event: :archive,
           user_id: user.id,
           correlation_id: be_present
         )
       )
 
-      namespace.start_transfer(current_user: user)
+      namespace.archive(current_user: user)
     end
 
     it 'logs successful state transitions without user' do
@@ -279,14 +382,14 @@ RSpec.describe Namespaces::Stateful, feature_category: :groups_and_projects do
           message: 'Namespace state transition',
           namespace_id: namespace.id,
           from_state: :ancestor_inherited,
-          to_state: :transfer_in_progress,
-          event: :start_transfer,
+          to_state: :archived,
+          event: :archive,
           user_id: nil,
           correlation_id: be_present
         )
       )
 
-      namespace.start_transfer
+      namespace.archive
     end
 
     it 'logs failed state transitions' do
@@ -296,15 +399,20 @@ RSpec.describe Namespaces::Stateful, feature_category: :groups_and_projects do
         hash_including(
           message: 'Namespace state transition failed',
           namespace_id: namespace.id,
-          event: :start_transfer,
+          event: :archive,
           current_state: :ancestor_inherited,
-          error: 'test error',
+          error: match(/Cannot transition from ancestor_inherited to archived via archive/),
           user_id: user.id,
           correlation_id: be_present
         )
       )
 
-      transition = Struct.new(:args, :event).new(args: [{ current_user: user }], event: :start_transfer)
+      transition = Struct.new(:args, :event, :from_name, :to_name).new(
+        args: [{ current_user: user }],
+        event: :archive,
+        from_name: :ancestor_inherited,
+        to_name: :archived
+      )
       namespace.send(:handle_transition_failure, transition)
     end
   end
@@ -439,6 +547,171 @@ RSpec.describe Namespaces::Stateful, feature_category: :groups_and_projects do
         root.reload
 
         expect(child.effective_state).to eq(:archived) # Parent's state, not root's
+      end
+    end
+  end
+
+  describe 'ancestor state validations' do
+    using RSpec::Parameterized::TableSyntax
+
+    let_it_be(:parent) { create(:group) }
+    let_it_be(:child) { create(:group, parent: parent) }
+
+    after do
+      set_state(parent, :ancestor_inherited)
+      set_state(child, :ancestor_inherited)
+    end
+
+    describe 'blocks transition when parent in blocking state' do
+      where(:event, :child_from, :parent_state) do
+        :archive           | :ancestor_inherited | :archived
+        :archive           | :ancestor_inherited | :deletion_in_progress
+        :archive           | :ancestor_inherited | :deletion_scheduled
+        :unarchive         | :archived           | :deletion_in_progress
+        :unarchive         | :archived           | :deletion_scheduled
+        :schedule_deletion | :ancestor_inherited | :deletion_in_progress
+        :schedule_deletion | :ancestor_inherited | :deletion_scheduled
+        :schedule_deletion | :archived           | :deletion_in_progress
+        :schedule_deletion | :archived           | :deletion_scheduled
+      end
+
+      with_them do
+        it "prevents #{params[:event]} when parent is #{params[:parent_state]}" do
+          set_state(parent, parent_state)
+          set_state(child, child_from)
+
+          expect { child.public_send(event) }.not_to change { child.reload.state_name }
+          expect(child.errors[:state]).to include(match(/cannot be changed as ancestor ID \d+ is #{parent_state}/))
+        end
+      end
+    end
+
+    describe 'allows transition when parent in allowed state' do
+      where(:event, :child_from, :child_to, :parent_state) do
+        :archive           | :ancestor_inherited | :archived           | :ancestor_inherited
+        :unarchive         | :archived           | :ancestor_inherited | :ancestor_inherited
+        :schedule_deletion | :ancestor_inherited | :deletion_scheduled | :ancestor_inherited
+        :schedule_deletion | :archived           | :deletion_scheduled | :archived
+      end
+
+      with_them do
+        it "allows #{params[:event]} when parent is #{params[:parent_state]}" do
+          set_state(parent, parent_state)
+          set_state(child, child_from)
+
+          expect { child.public_send(event) }
+            .to change { child.reload.state_name }.from(child_from).to(child_to)
+        end
+      end
+    end
+  end
+
+  describe '#validate_ancestors_state' do
+    let_it_be(:parent) { create(:group) }
+    let_it_be(:child) { create(:group, parent: parent) }
+
+    let(:transition) do
+      Struct.new(:event).new(:archive)
+    end
+
+    after do
+      set_state(parent, :ancestor_inherited)
+      set_state(child, :ancestor_inherited)
+    end
+
+    context 'when namespace has no ancestors' do
+      it 'returns true for root namespace' do
+        allow(namespace).to receive(:ancestors).and_return([])
+
+        result = namespace.send(:validate_ancestors_state, transition)
+
+        expect(result).to be true
+      end
+    end
+
+    context 'when forbidden states list is empty' do
+      it 'returns true for events with no forbidden states' do
+        transition = Struct.new(:event).new(:unknown_event)
+
+        result = child.send(:validate_ancestors_state, transition)
+
+        expect(result).to be true
+      end
+    end
+
+    context 'when no ancestor is in forbidden state' do
+      it 'returns true' do
+        set_state(parent, :ancestor_inherited)
+        transition = Struct.new(:event).new(:archive)
+
+        result = child.send(:validate_ancestors_state, transition)
+
+        expect(result).to be true
+      end
+    end
+
+    context 'when an ancestor is in forbidden state' do
+      it 'returns false and adds error' do
+        set_state(parent, :archived)
+        transition = Struct.new(:event).new(:archive)
+
+        result = child.send(:validate_ancestors_state, transition)
+
+        expect(result).to be false
+        expect(child.errors[:state]).to include(
+          "cannot be changed as ancestor ID #{parent.id} is archived"
+        )
+      end
+
+      it 'includes correct ancestor ID and state in error message' do
+        set_state(parent, :deletion_in_progress)
+        transition = Struct.new(:event).new(:unarchive)
+
+        child.send(:validate_ancestors_state, transition)
+
+        expect(child.errors[:state]).to include(
+          "cannot be changed as ancestor ID #{parent.id} is deletion_in_progress"
+        )
+      end
+    end
+  end
+
+  describe '#forbidden_ancestors_states_for' do
+    context 'when event is :archive' do
+      it 'returns forbidden states for archive event' do
+        result = namespace.send(:forbidden_ancestors_states_for, :archive)
+
+        expect(result).to match_array(%i[archived deletion_in_progress deletion_scheduled])
+      end
+    end
+
+    context 'when event is :unarchive' do
+      it 'returns forbidden states for unarchive event' do
+        result = namespace.send(:forbidden_ancestors_states_for, :unarchive)
+
+        expect(result).to match_array(%i[deletion_in_progress deletion_scheduled])
+      end
+    end
+
+    context 'when event is :schedule_deletion' do
+      it 'returns forbidden states for schedule_deletion event' do
+        result = namespace.send(:forbidden_ancestors_states_for, :schedule_deletion)
+
+        expect(result).to match_array(%i[deletion_in_progress deletion_scheduled])
+      end
+    end
+
+    context 'when event is unknown' do
+      it 'returns empty array for unknown events' do
+        result = namespace.send(:forbidden_ancestors_states_for, :unknown_event)
+
+        expect(result).to eq([])
+      end
+
+      it 'returns empty array for nil event' do
+        result = namespace.send(:forbidden_ancestors_states_for, nil)
+
+        expect(result).to eq([])
       end
     end
   end

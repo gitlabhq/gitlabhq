@@ -644,7 +644,7 @@ they are associated with an image and tag.
 
 ### Error: `permission denied for schema public (SQLSTATE 42501)`
 
-During a registry migration, you might get one of the following errors:
+During a registry migration or GitLab upgrade, you might get one of the following errors:
 
 - `ERROR: permission denied for schema public (SQLSTATE 42501)`
 - `ERROR: relation "public.blobs" does not exist (SQLSTATE 42P01)`

@@ -1492,6 +1492,8 @@
     - if: '$ENABLE_COMPILE_PRODUCTION_ASSETS == "true"'
     - <<: *if-tag
     - <<: *if-sync-changes-on-stable-branches
+    - if: '$CI_PIPELINE_SOURCE == "merge_request_event" && $CI_MERGE_REQUEST_EVENT_TYPE != "merge_train" && ($CI_MERGE_REQUEST_LABELS =~ /group::code review/ || $CI_MERGE_REQUEST_LABELS =~ /maintenance::dependency/)'
+      changes: *backend-only-patterns
     - !reference [".frontend:rules:assets-shared", rules]
     # Always build on stable branches to serve release-environments pipeline
     # Do not refer directly to .release-environments:rules:start-release-environments-security-pipeline
@@ -2105,13 +2107,13 @@
     # Do not run for scheduled pipeline for rails-next branch
     - <<: *if-rails-branch-schedule
       when: never
-    - !reference [".qa:rules:e2e-test-never-run", rules]
-    - !reference [".prevent-tier-1", rules]
     - <<: *if-merge-request
       changes: *cng-dependency-patterns
       when: manual
     - if: '$CI_PIPELINE_SOURCE == "merge_request_event" && $CI_MERGE_REQUEST_EVENT_TYPE != "merge_train" && ($CI_MERGE_REQUEST_LABELS =~ /group::code review/ || $CI_MERGE_REQUEST_LABELS =~ /maintenance::dependency/)'
       changes: *backend-only-patterns
+    - !reference [".qa:rules:e2e-test-never-run", rules]
+    - !reference [".prevent-tier-1", rules]
     - <<: *if-dot-com-gitlab-org-schedule
 
 .qa:rules:fulfillment-e2e-quarantine-report:

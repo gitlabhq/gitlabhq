@@ -18,22 +18,27 @@ module Namespaces
 
     included do
       state_machine :state, initial: :ancestor_inherited do
-        state :ancestor_inherited, value: STATES[:ancestor_inherited]
-        state :archived, value: STATES[:archived]
-        state :deletion_scheduled, value: STATES[:deletion_scheduled]
-        state :creation_in_progress, value: STATES[:creation_in_progress]
-        state :deletion_in_progress, value: STATES[:deletion_in_progress]
-        state :transfer_in_progress, value: STATES[:transfer_in_progress]
-        state :maintenance, value: STATES[:maintenance]
-
-        event :start_transfer do
-          transition [:ancestor_inherited] => :transfer_in_progress
+        STATES.each_key do |state_name|
+          state state_name.to_sym, value: STATES[state_name]
         end
 
-        event :complete_transfer do
-          transition [:transfer_in_progress] => :ancestor_inherited
+        event :archive do
+          transition ancestor_inherited: :archived
         end
 
+        event :unarchive do
+          transition archived: :ancestor_inherited
+        end
+
+        event :schedule_deletion do
+          transition %i[ancestor_inherited archived] => :deletion_scheduled
+        end
+
+        event :start_deletion do
+          transition deletion_scheduled: :deletion_in_progress
+        end
+
+        before_transition :validate_ancestors_state
         before_transition :update_state_metadata
         after_failure :handle_transition_failure
 
@@ -71,33 +76,72 @@ module Namespaces
         STATES.key(closest_ancestor_state)&.to_sym
       end
 
+      private
+
+      def validate_ancestors_state(transition)
+        return true if ancestors.empty?
+
+        forbidden_states = forbidden_ancestors_states_for(transition.event)
+        return true if forbidden_states.empty?
+
+        ancestor_in_forbidden_state = ancestors.where(state: state_values(forbidden_states)).first
+        return true unless ancestor_in_forbidden_state
+
+        errors.add(
+          :state,
+          format(
+            "cannot be changed as ancestor ID %{id} is %{state_name}",
+            id: ancestor_in_forbidden_state.id,
+            state_name: ancestor_in_forbidden_state.state_name
+          )
+        )
+
+        false
+      end
+
+      def forbidden_ancestors_states_for(event)
+        case event
+        when :archive
+          %i[archived deletion_in_progress deletion_scheduled]
+        when :unarchive, :schedule_deletion
+          %i[deletion_in_progress deletion_scheduled]
+        else
+          []
+        end
+      end
+
+      def state_values(states)
+        Array.wrap(states).map { |s| STATES[s] }
+      end
+
+      def transition_options(transition)
+        transition.args.first || {}
+      end
+
+      def transition_correlation_id(transition)
+        transition_options(transition)[:correlation_id] || Labkit::Correlation::CorrelationId.current_id
+      end
+
       def update_state_metadata(transition, error: nil)
-        options = transition.args.first || {}
-        current_user = options[:current_user]
-        correlation_id = options[:correlation_id] || Labkit::Correlation::CorrelationId.current_id
+        options = transition_options(transition)
 
         metadata_update = {
           last_updated_at: Time.current,
           last_error: error,
-          last_changed_by_user_id: current_user&.id,
-          correlation_id: correlation_id
+          last_changed_by_user_id: options[:current_user]&.id,
+          correlation_id: transition_correlation_id(transition)
         }
 
         namespace_details.state_metadata.merge!(metadata_update)
       end
 
       def handle_transition_failure(transition)
-        error_message = if errors[:state].present?
-                          errors[:state].join(', ')
-                        else
-                          "Unknown transition failure"
-                        end
+        error_message = build_transition_error_message(transition)
 
         update_state_metadata(transition, error: error_message)
         namespace_details.save!
 
-        options = transition.args.first || {}
-        correlation_id = options[:correlation_id] || Labkit::Correlation::CorrelationId.current_id
+        options = transition_options(transition)
 
         Gitlab::AppLogger.error(
           message: 'Namespace state transition failed',
@@ -106,8 +150,21 @@ module Namespaces
           current_state: state_name,
           error: error_message,
           user_id: options[:current_user]&.id,
-          correlation_id: correlation_id
+          correlation_id: transition_correlation_id(transition)
         )
+      end
+
+      def build_transition_error_message(transition)
+        base_message = "Cannot transition from #{transition.from_name} to #{transition.to_name} via #{transition.event}"
+
+        reasons = []
+        reasons << errors[:state].join(', ') if errors[:state].present?
+
+        if reasons.any?
+          "#{base_message}: #{reasons.join('; ')}"
+        else
+          "#{base_message}: unknown reason"
+        end
       end
     end
   end
