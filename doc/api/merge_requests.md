@@ -2563,7 +2563,7 @@ POST /projects/:id/merge_requests
 | `milestone_id`             | integer           | No       | The global ID of a milestone. |
 | `remove_source_branch`     | boolean           | No       | Flag indicating if a merge request should remove the source branch when merging. |
 | `reviewer_ids`             | integer array     | No       | The ID of the users added as a reviewer to the merge request. If set to `0` or left empty, no reviewers are added. |
-| `squash`                   | boolean           | No       | If `true`, squash all commits into a single commit on merge. [Project settings](../user/project/merge_requests/squash_and_merge.md#configure-squash-options-for-a-project) might override this value. |
+| `squash`                   | boolean           | No       | If `true`, squash all commits into a single commit on merge. When not provided, defaults to the [project's squash option setting](../user/project/merge_requests/squash_and_merge.md#configure-squash-options-for-a-project). Project settings might override this value at merge time. |
 | `target_project_id`        | integer           | No       | Numeric ID of the target project. |
 
 Example response:

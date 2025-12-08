@@ -2632,6 +2632,34 @@ RSpec.describe API::MergeRequests, :aggregate_failures, feature_category: :sourc
           expect(json_response['force_remove_source_branch']).to be_truthy
         end
       end
+
+      context 'with project squash settings' do
+        let(:params) do
+          {
+            title: 'Test merge_request',
+            source_branch: 'feature_conflict',
+            target_branch: 'master'
+          }
+        end
+
+        it 'defaults squash to project setting when not provided' do
+          project.project_setting.update!(squash_option: :default_on)
+
+          post api("/projects/#{project.id}/merge_requests", user), params: params
+
+          expect(response).to have_gitlab_http_status(:created)
+          expect(json_response['squash']).to be true
+        end
+
+        it 'respects explicit squash param over project default' do
+          project.project_setting.update!(squash_option: :default_on)
+
+          post api("/projects/#{project.id}/merge_requests", user), params: params.merge(squash: false)
+
+          expect(response).to have_gitlab_http_status(:created)
+          expect(json_response['squash']).to be false
+        end
+      end
     end
 
     context 'forked projects', :sidekiq_might_not_need_inline do

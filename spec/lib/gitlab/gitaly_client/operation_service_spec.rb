@@ -200,15 +200,16 @@ RSpec.describe Gitlab::GitalyClient::OperationService, feature_category: :source
           expect(options).to be_kind_of(Hash)
           expect(request.to_h).to eq(
             payload.merge({
-              allow_conflicts: false,
-              expected_old_oid: "",
               repository: repository.gitaly_repository.to_h,
               message: message.dup.force_encoding(Encoding::ASCII_8BIT),
               user: Gitlab::Git::User.from_gitlab(user).to_gitaly.to_h,
-              timestamp: { nanos: 0, seconds: Time.current.to_i },
-              sign: false
+              timestamp: { seconds: Time.current.to_i }
             })
           )
+          expect(request.allow_conflicts).to be false
+          expect(request.expected_old_oid).to eq("")
+          expect(request.timestamp.nanos).to eq(0)
+          expect(request.sign).to be false
         end.and_return(response)
 
         client.user_merge_to_ref(user, **payload)
@@ -1158,14 +1159,15 @@ RSpec.describe Gitlab::GitalyClient::OperationService, feature_category: :source
             eq(
               payload.merge(
                 {
-                  expected_old_oid: "",
                   repository: repository.gitaly_repository.to_h,
                   user: Gitlab::Git::User.from_gitlab(user).to_gitaly.to_h,
-                  timestamp: { nanos: 0, seconds: Time.current.to_i }
+                  timestamp: { seconds: Time.current.to_i }
                 }
               )
             )
           )
+          expect(request.expected_old_oid).to eq("")
+          expect(request.timestamp.nanos).to eq(0)
         end.and_return(response)
 
         client.user_rebase_to_ref(user, **payload)

@@ -112,7 +112,7 @@ To check if your instance has artifacts with `unknown` status:
 1. Run the following query:
 
    ```sql
-   select expire_at, file_type, locked, count(*) from ci_job_artifacts
+   select expire_at, file_type, locked, count(*) from p_ci_job_artifacts
    where expire_at is not null and
    file_type != 3
    group by expire_at, file_type, locked having count(*) > 1;
@@ -143,7 +143,7 @@ which allows the automatic cleanup process to handle them:
 
    ```ruby
    # This marks unknown artifacts for immediate cleanup
-   Ci::JobArtifact.where(locked: 2).update_all(artifacts_expire_at: Time.current)
+   Ci::JobArtifact.where(locked: 2).update_all(expire_at: Time.current)
    ```
 
 The automatic housekeeping process will then clean up these artifacts during its next run.

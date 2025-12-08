@@ -35,7 +35,7 @@ module Clusters
 
           track_event(managed_resource, response)
 
-          managed_resource.update!(tracked_objects: response.in_progress.map { |obj| obj.to_h.stringify_keys })
+          managed_resource.update!(tracked_objects: tracked_objects(response.in_progress))
 
           if managed_resource.tracked_objects.any?
             requeue!
@@ -47,6 +47,15 @@ module Clusters
         private
 
         attr_reader :managed_resource, :attempt_count
+
+        def tracked_objects(in_progress_objects)
+          # google-protobuf v4 omits default values in to_h
+          defaults = { group: "", namespace: "" }
+
+          in_progress_objects.map do |obj|
+            defaults.merge(obj.to_h).stringify_keys
+          end
+        end
 
         def requeue!
           if attempt_count >= POLLING_SCHEDULE.length
@@ -91,7 +100,7 @@ module Clusters
         end
 
         def track_event(managed_resource, response)
-          in_progress_objects = response.in_progress.map { |obj| obj.to_h.stringify_keys }
+          in_progress_objects = tracked_objects(response.in_progress)
           deleted_objects = managed_resource.tracked_objects - in_progress_objects
 
           deleted_objects.each do |object|

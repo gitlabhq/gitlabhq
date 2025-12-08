@@ -2,6 +2,7 @@
 stage: Analytics
 group: Platform Insights
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+description: Monitor distributed requests and debug performance issues using OTEL traces in GitLab for analysis and issue creation.
 title: Distributed tracing
 ---
 
