@@ -22,9 +22,19 @@ module Gitlab
           attachments = Gitlab::GithubImport::MarkdownText.fetch_attachments(note_text.text, web_endpoint)
           return if attachments.blank?
 
+          download_errors = []
+          updated_count = 0
+          unmodified_count = 0
+
           rate_limit_error = nil
-          new_text = attachments.reduce(note_text.text) do |text, attachment|
+          new_text = attachments.uniq(&:url).reduce(note_text.text) do |text, attachment|
             new_url = gitlab_attachment_link(attachment)
+
+            if new_url != attachment.url
+              updated_count += 1
+            else
+              unmodified_count += 1
+            end
 
             # we need to update video media file links with the correct markdown format
             if new_url.end_with?(*supported_video_media_types)
@@ -37,14 +47,72 @@ module Gitlab
             rate_limit_error ||= e
             # Continue with the current text without replacing this attachment
             text
+          rescue Gitlab::GithubImport::AttachmentsDownloader::NotRetriableError => e # Rescue 4XX errors
+            download_errors << e
+
+            text
           end
 
-          update_note_record(new_text)
+          if updated_count > 0
+            update_note_record(new_text)
+            Gitlab::GithubImport::ObjectCounter.increment(
+              project, note_text.object_type, :imported, value: updated_count
+            )
+          end
 
           raise rate_limit_error if rate_limit_error
+
+          if unmodified_count > 0
+            Gitlab::GithubImport::ObjectCounter.increment(
+              project, note_text.object_type, :imported, value: unmodified_count
+            )
+          end
+
+          save_download_errors(download_errors)
         end
 
         private
+
+        def save_download_errors(download_errors)
+          download_errors.each do |error|
+            Gitlab::Import::ImportFailureService.track(
+              project_id: project.id,
+              exception: error,
+              error_source: 'Gitlab::GithubImport::AttachmentsDownloader',
+              fail_import: false, # Continue import despite this failure
+              external_identifiers: external_identifiers
+            )
+          end
+        end
+
+        def external_identifiers
+          case note_text.record_type
+          when ::Issue.name
+            {
+              "db_id" => note_text.record_db_id,
+              "object_type" => "issue_attachment",
+              "noteable_iid" => note_text.iid
+            }
+          when ::MergeRequest.name
+            {
+              "db_id" => note_text.record_db_id,
+              "object_type" => "merge_request_attachment",
+              "noteable_iid" => note_text.iid
+            }
+          when ::Note.name
+            {
+              "db_id" => note_text.record_db_id,
+              "object_type" => "note_attachment",
+              "noteable_type" => note_text.noteable_type || 'Note'
+            }
+          when ::Release.name
+            {
+              "db_id" => note_text.record_db_id,
+              "object_type" => "release_attachment",
+              "tag" => note_text.tag
+            }
+          end
+        end
 
         def gitlab_attachment_link(attachment)
           project_import_source = project.import_source

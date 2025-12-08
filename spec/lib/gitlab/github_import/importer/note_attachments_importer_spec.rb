@@ -483,7 +483,7 @@ RSpec.describe Gitlab::GithubImport::Importer::NoteAttachmentsImporter, feature_
             allow(downloader_stub).to receive(:perform).and_raise(rate_limit_error)
           end
 
-          it 'updates the note with unchanged text and re-raises the error' do
+          it 'leaves the note unchanged with original attachment URLs' do
             expect { importer.execute }.to raise_error(Gitlab::GithubImport::RateLimitError)
 
             record.reload
@@ -547,7 +547,333 @@ RSpec.describe Gitlab::GithubImport::Importer::NoteAttachmentsImporter, feature_
             expect(record.note).to include("<img width=\"248\" alt=\"tag-image\" src=\"#{image_tag_url}\"")
             expect(record.note).to include('<img width="200" alt="user-attachment-image" src="/uploads')
           end
+
+          context 'when rate limit is hit after some successful downloads' do
+            subject(:importer) do
+              note_text_with_type = Gitlab::GithubImport::Representation::NoteText.from_db_record(record)
+              note_text_with_type.instance_variable_set(:@object_type, :note_attachment)
+              described_class.new(note_text_with_type, project, client)
+            end
+
+            before do
+              call_count = 0
+              allow(downloader_stub).to receive(:perform) do
+                call_count += 1
+                case call_count
+                when 1 then tmp_stub_doc
+                when 2 then tmp_stub_image
+                when 3 then raise rate_limit_error
+                else tmp_stub_user_attachment
+                end
+              end
+            end
+
+            it 'increments counter for successfully processed attachments before re-raising error' do
+              allow(Gitlab::GithubImport::ObjectCounter).to receive(:increment)
+
+              expect(Gitlab::GithubImport::ObjectCounter)
+                .to receive(:increment)
+                .with(project, :note_attachment, :imported, value: 3)
+
+              expect { importer.execute }.to raise_error(Gitlab::GithubImport::RateLimitError)
+            end
+
+            it 'updates the note with successful uploads before re-raising error' do
+              expect { importer.execute }.to raise_error(Gitlab::GithubImport::RateLimitError)
+
+              record.reload
+              expect(record.note).to include("[special-doc](/uploads/")
+              expect(record.note).to include("![image.jpeg](/uploads/")
+              expect(record.note).to include("src=\"#{image_tag_url}\"") # Not processed yet
+              expect(record.note).to include('<img width="200" alt="user-attachment-image" src="/uploads')
+            end
+          end
         end
+      end
+
+      context 'when NotRetriableError is raised' do
+        let(:record) { create(:note, project: project, note: text) }
+        let(:rate_limit_error) { Gitlab::GithubImport::RateLimitError.new('Rate limit exceeded', 120) }
+        let(:not_retriable_error) do
+          Gitlab::GithubImport::AttachmentsDownloader::NotRetriableError.new(
+            "Error downloading file from #{doc_url}. Error code: 404"
+          )
+        end
+
+        let(:text) do
+          <<-TEXT.split("\n").map(&:strip).join("\n")
+            Some text...
+
+            [special-doc](#{doc_url})
+            ![image.jpeg](#{image_url})
+            <img width=\"248\" alt=\"tag-image\" src="#{image_tag_url}">
+            <img width=\"200\" alt=\"user-attachment-image\" src="#{user_attachment_url}" \/>
+          TEXT
+        end
+
+        context 'when all attachment downloads fail with NotRetriableError' do
+          before do
+            allow(downloader_stub).to receive(:perform).and_raise(not_retriable_error)
+          end
+
+          it 'creates an import failure record for each failed attachment' do
+            expect { importer.execute }
+              .to change { project.import_failures.count }.by(4) # One for each attachment
+          end
+
+          it 'records the failure details with exception class and message' do
+            importer.execute
+
+            failure = project.import_failures.last
+
+            expect(failure.source).to eq('Gitlab::GithubImport::AttachmentsDownloader')
+            expect(failure.exception_class).to eq('Gitlab::GithubImport::AttachmentsDownloader::NotRetriableError')
+            expect(failure.exception_message).to include("Error downloading file")
+            expect(failure.exception_message).to include("Error code: 404")
+            expect(failure.correlation_id_value).to be_present
+            expect(failure.retry_count).to be_nil
+            expect(failure.external_identifiers).to include(note_text.github_identifiers.stringify_keys)
+          end
+
+          it 'leaves the note unchanged with original attachment URLs' do
+            allow(Gitlab::Import::ImportFailureService).to receive(:track)
+
+            importer.execute
+
+            expect(record.note).to eq(text)
+          end
+        end
+
+        context 'when some attachment downloads fail with NotRetriableError and others succeed' do
+          before do
+            call_count = 0
+            allow(downloader_stub).to receive(:perform) do
+              call_count += 1
+              case call_count
+              when 1 then tmp_stub_doc
+              when 2 then raise not_retriable_error
+              when 3 then tmp_stub_image_tag
+              else tmp_stub_user_attachment
+              end
+            end
+          end
+
+          it 'creates an import failure record only for the failed attachment' do
+            expect { importer.execute }
+              .to change { project.import_failures.count }.by(1)
+          end
+
+          it 'updates the note with successful uploads and leaves failed URLs unchanged' do
+            importer.execute
+
+            record.reload
+            expect(record.note).to start_with("Some text...")
+            expect(record.note).to include("[special-doc](/uploads/")
+            expect(record.note).to include("![image.jpeg](#{image_url})")
+            expect(record.note).to include('<img width="248" alt="tag-image" src="/uploads')
+            expect(record.note).to include('<img width="200" alt="user-attachment-image" src="/uploads')
+          end
+        end
+
+        context 'when rate limit error and NotRetriableError occur with some successful downloads' do
+          before do
+            call_count = 0
+            allow(downloader_stub).to receive(:perform) do
+              call_count += 1
+              case call_count
+              when 1 then tmp_stub_doc
+              when 2 then tmp_stub_user_attachment
+              when 3 then raise rate_limit_error
+              else raise not_retriable_error
+              end
+            end
+          end
+
+          it 'does not create import failures as they will be tracked on retry' do
+            expect { importer.execute }.to raise_error(Gitlab::GithubImport::RateLimitError)
+              .and not_change { project.import_failures.count }
+          end
+
+          it 'updates the note with successful uploads only' do
+            allow(Gitlab::Import::ImportFailureService).to receive(:track)
+
+            expect { importer.execute }.to raise_error(Gitlab::GithubImport::RateLimitError)
+
+            record.reload
+            expect(record.note).to include("[special-doc](/uploads/")
+            expect(record.note).to include("![image.jpeg](/uploads/")
+            expect(record.note).to include("<img width=\"248\" alt=\"tag-image\" src=\"#{image_tag_url}\">")
+            expect(record.note).to include(
+              "<img width=\"200\" alt=\"user-attachment-image\" src=\"#{user_attachment_url}\""
+            )
+          end
+        end
+
+        context 'when NotRetriableError occurs after some successful downloads' do
+          subject(:importer) do
+            note_text_with_type = Gitlab::GithubImport::Representation::NoteText.from_db_record(record)
+            note_text_with_type.instance_variable_set(:@object_type, :note_attachment)
+            described_class.new(note_text_with_type, project, client)
+          end
+
+          before do
+            call_count = 0
+            allow(downloader_stub).to receive(:perform) do
+              call_count += 1
+              case call_count
+              when 1 then tmp_stub_doc
+              when 2 then tmp_stub_image
+              when 3 then raise not_retriable_error
+              else tmp_stub_user_attachment
+              end
+            end
+          end
+
+          it 'increments counter for successfully processed attachments' do
+            expect(Gitlab::GithubImport::ObjectCounter)
+              .to receive(:increment)
+              .with(project, :note_attachment, :imported, value: 3)
+
+            importer.execute
+          end
+
+          it 'creates an import failure record only for the failed attachment' do
+            expect { importer.execute }
+              .to change { project.import_failures.count }.by(1)
+          end
+
+          it 'updates the note with successful uploads and leaves failed URLs unchanged' do
+            importer.execute
+
+            record.reload
+            expect(record.note).to include("[special-doc](/uploads/")
+            expect(record.note).to include("![image.jpeg](/uploads/")
+            expect(record.note).to include("src=\"#{image_tag_url}\"") # this is the failure
+            expect(record.note).to include('<img width="200" alt="user-attachment-image" src="/uploads')
+          end
+        end
+
+        context 'when attachment URL appears multiple times in text' do
+          subject(:importer) do
+            note_text_with_type = Gitlab::GithubImport::Representation::NoteText.from_db_record(record)
+            note_text_with_type.instance_variable_set(:@object_type, :note_attachment)
+            described_class.new(note_text_with_type, project, client)
+          end
+
+          let(:text) do
+            <<-TEXT.split("\n").map(&:strip).join("\n")
+              First reference: [special-doc](#{doc_url})
+              Second reference: [special-doc-again](#{doc_url})
+              Image: ![image.jpeg](#{image_url})
+              Failed: <img src="#{image_tag_url}">
+            TEXT
+          end
+
+          let(:record) { create(:note, project: project, note: text) }
+
+          before do
+            call_count = 0
+            allow(downloader_stub).to receive(:perform) do
+              call_count += 1
+              case call_count
+              when 1 then tmp_stub_doc
+              when 2 then tmp_stub_image
+              when 3 then raise not_retriable_error # Fail on image_tag_url
+              else tmp_stub_user_attachment
+              end
+            end
+          end
+
+          it 'increments counter for each text replacement of successful downloads' do
+            expect(Gitlab::GithubImport::ObjectCounter)
+              .to receive(:increment)
+              .with(project, :note_attachment, :imported, value: 2)
+
+            importer.execute
+          end
+
+          it 'replaces all occurrences of successfully downloaded URLs' do
+            importer.execute
+
+            record.reload
+            # doc_url appears twice - both should be replaced
+            expect(record.note.scan(%r{\[special-doc\]\(/uploads/}).count).to eq(1)
+            expect(record.note.scan(%r{\[special-doc-again\]\(/uploads/}).count).to eq(1)
+            # image_url appears once - should be replaced
+            expect(record.note.scan(%r{!\[image\.jpeg\]\(/uploads/}).count).to eq(1)
+            # image_tag_url failed - should remain unchanged
+            expect(record.note).to include("src=\"#{image_tag_url}\"")
+          end
+        end
+      end
+    end
+  end
+
+  describe '#external_identifiers' do
+    context 'when record is an Issue' do
+      let(:record) { create(:issue, project: project, description: text, iid: 42) }
+
+      it 'returns correct identifiers for issue attachment' do
+        identifiers = importer.send(:external_identifiers)
+
+        expect(identifiers).to eq({
+          "db_id" => record.id,
+          "object_type" => "issue_attachment",
+          "noteable_iid" => 42
+        })
+      end
+    end
+
+    context 'when record is a MergeRequest' do
+      let(:record) { create(:merge_request, source_project: project, description: text, iid: 123) }
+
+      it 'returns correct identifiers for merge request attachment' do
+        identifiers = importer.send(:external_identifiers)
+
+        expect(identifiers).to eq({
+          "db_id" => record.id,
+          "object_type" => "merge_request_attachment",
+          "noteable_iid" => 123
+        })
+      end
+    end
+
+    context 'when record is a Note' do
+      let(:issue) { create(:issue, project: project) }
+      let(:record) { create(:note, project: project, noteable: issue, note: text) }
+
+      it 'returns correct identifiers for note attachment' do
+        identifiers = importer.send(:external_identifiers)
+
+        expect(identifiers).to eq({
+          "db_id" => record.id,
+          "object_type" => "note_attachment",
+          "noteable_type" => "Issue"
+        })
+      end
+    end
+
+    context 'when record is a Release' do
+      let(:release) { create(:release, project: project, tag: 'v1.0.0', description: text) }
+      let(:note_text) do
+        Gitlab::GithubImport::Representation::NoteText.new(
+          record_db_id: release.id,
+          record_type: 'Release',
+          text: text,
+          tag: release.tag
+        )
+      end
+
+      let(:importer) { described_class.new(note_text, project, client) }
+
+      it 'returns correct identifiers for release attachment' do
+        identifiers = importer.send(:external_identifiers)
+
+        expect(identifiers).to eq({
+          "db_id" => release.id,
+          "object_type" => "release_attachment",
+          "tag" => release.tag
+        })
       end
     end
   end

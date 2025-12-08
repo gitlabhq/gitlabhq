@@ -47,6 +47,8 @@ module Gitlab
 
         object = representation_class.from_json_hash(hash)
 
+        object.object_type = object_type if object.respond_to?(:object_type=)
+
         # To better express in the logs what object is being imported.
         self.github_identifiers = object.github_identifiers
         info(project.id, message: 'starting importer')
