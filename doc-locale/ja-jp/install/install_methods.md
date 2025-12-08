@@ -21,7 +21,7 @@ Linuxパッケージには、公式の`deb`および`rpm`パッケージが含�
 
 最も成熟したスケーラブルな方法が必要な場合に使用します。このバージョンはGitLab.comでも使用されています。
 
-詳細については、以下を参照してください。
+詳細については、以下を参照してください:
 
 - [Linuxパッケージ](package/_index.md)
 - [リファレンスアーキテクチャ](../administration/reference_architectures/_index.md)
@@ -34,7 +34,7 @@ Linuxパッケージには、公式の`deb`および`rpm`パッケージが含�
 
 インフラストラクチャがKubernetes上にあり、その仕組みを理解している場合に使用します。
 
-このインストール方法を使用する前に、以下を検討してください。
+このインストール方法を使用する前に、以下を検討してください:
 
 - 管理、可観測性、およびその他のいくつかの概念は、従来のデプロイとは異なります。
 - 管理とトラブルシューティングには、Kubernetesの知識が必要です。
@@ -81,7 +81,7 @@ GitLabとそのコンポーネントをゼロからインストールします�
 
 ## サポートされていないLinuxディストリビューションおよびUnix系のオペレーティングシステム {#unsupported-linux-distributions-and-unix-like-operating-systems}
 
-以下のオペレーティングシステムへのGitLabの[セルフコンパイルインストール](installation.md)は可能ですが、サポートはされていません。
+以下のオペレーティングシステムへのGitLabの[セルフコンパイルインストール](installation.md)は可能ですが、サポートはされていません:
 
 - Arch Linux
 - FreeBSD
@@ -90,4 +90,4 @@ GitLabとそのコンポーネントをゼロからインストールします�
 
 ## Microsoft Windows {#microsoft-windows}
 
-GitLabはLinuxベースのオペレーティングシステム向けに開発されています。Microsoft Windows上では**動作しません**。近い将来サポートするプランはありません。最新の開発状態については、こちらの[イシュー](https://gitlab.com/gitlab-org/gitlab/-/issues/22337)を参照してください。仮想マシンを使用してGitLabを実行することを検討してください。
+GitLabはLinuxベースのオペレーティングシステム向けに開発されています。Microsoft Windows上では動作しません。近い将来、サポートする予定はありません。最新の開発状況については、[イシュー22337](https://gitlab.com/gitlab-org/gitlab/-/issues/22337)を参照してください。仮想マシンを使用してGitLabを実行することを検討してください。

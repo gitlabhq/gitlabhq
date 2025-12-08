@@ -78,75 +78,22 @@ follow up issue and attach it to the component implementation epic found in the
 
 A Submit button inside of a form attaches an `onSubmit` event listener on the form element. [This code](https://gitlab.com/gitlab-org/gitlab/-/blob/794c247a910e2759ce9b401356432a38a4535d49/app/assets/javascripts/main.js#L225) adds a `disabled` class selector to the submit button when the form is submitted. To avoid this behavior, add the class `js-no-auto-disable` to the button.
 
-### 5. Should one use a full URL or a full path when referencing backend endpoints?
+### 5. How should I reference URLs or Paths in the Frontend?
 
-It's preferred to use a **full path** like `gon.relative_url_root` over a **full URL** (like `gon.gitlab_url`). This is because the URL uses the hostname configured with
-GitLab which may not match the request. This causes [cross-origin resource sharing issues like this Web IDE example](https://gitlab.com/gitlab-org/gitlab/-/issues/36810).
+#### Public REST APIs
 
-Example:
+We should not generate the URLs manually. Instead we can extend the methods available in [`app/assets/javascripts/api`](https://gitlab.com/gitlab-org/gitlab/-/tree/master/app/assets/javascripts/api).
 
-```javascript
-// bad :(
-// If gitlab is configured with hostname `0.0.0.0`
-// This will cause CORS issues if I request from `localhost`
-axios.get(joinPaths(gon.gitlab_url, '-', 'foo'))
+#### Internal Rails controller APIs
 
-// good :)
-axios.get(joinPaths(gon.relative_url_root, '-', 'foo'))
-```
+When making a JSON request to a Rails controller the API URL should be passed from Rails to the frontend.
+See [Passing URLs with data attributes](../urls_in_gitlab.md#passing-urls-with-data-attributes).
 
-Also, try not to hardcode paths in the Frontend, but instead receive them from the Backend (see next section).
-When referencing Backend rails paths, avoid using `*_url`, and use `*_path` instead.
+#### Routing between pages
 
-Example:
+See [URLs in GitLab](../urls_in_gitlab.md#frontend-guidelines) for more extensive documentation on how to generate routes in the Frontend.
 
-```ruby
--# Bad :(
-#js-foo{ data: { foo_url: some_rails_foo_url } }
-
--# Good :)
-#js-foo{ data: { foo_path: some_rails_foo_path } }
-```
-
-### 6. How should the Frontend reference Backend paths?
-
-We prefer not to add extra coupling by hard-coding paths. If possible,
-add these paths as data attributes to the DOM element being referenced in the JavaScript.
-
-Example:
-
-```javascript
-// Bad :(
-// Here's a Vuex action that hardcodes a path :(
-export const fetchFoos = ({ state }) => {
-  return axios.get(joinPaths(gon.relative_url_root, '-', 'foo'));
-};
-
-// Good :)
-function initFoo() {
-  const el = document.getElementById('js-foo');
-
-  // Path comes from our root element's data which is used to initialize the store :)
-  const store = createStore({
-    fooPath: el.dataset.fooPath
-  });
-
-  Vue.extend({
-    store,
-    el,
-    render(h) {
-      return h(Component);
-    },
-  });
-}
-
-// Vuex action can now reference the path from its state :)
-export const fetchFoos = ({ state }) => {
-  return axios.get(state.settings.fooPath);
-};
-```
-
-### 7. How can one test the production build locally?
+### 6. How can one test the production build locally?
 
 Sometimes it's necessary to test locally what the frontend production build would produce, to do so the steps are:
 
@@ -164,7 +111,7 @@ To return to the standard development mode:
 1. Start webpack again: `gdk start webpack`.
 1. Restart GDK: `gdk restart rails-web`.
 
-### 8. Babel polyfills
+### 7. Babel polyfills
 
 GitLab has enabled the Babel `preset-env` option
 [`useBuiltIns: 'usage'`](https://babeljs.io/docs/babel-preset-env#usebuiltins-usage).
@@ -191,11 +138,11 @@ To see what polyfills are being used:
 
    ![A list of core-js polyfills being loaded, including their count and total size, filtered by the Search modules field](img/webpack_report_v12_8.png)
 
-### 9. Why is my page broken in dark mode?
+### 8. Why is my page broken in dark mode?
 
 See [dark mode docs](dark_mode.md)
 
-### 10. How to render GitLab-flavored Markdown?
+### 9. How to render GitLab-flavored Markdown?
 
 If you need to render [GitLab-flavored Markdown](../gitlab_flavored_markdown/_index.md), then there are two things that you require:
 

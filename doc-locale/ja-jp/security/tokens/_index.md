@@ -3,6 +3,7 @@ stage: Software Supply Chain Security
 group: Authentication
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 title: GitLabトークンの概要
+description: さまざまな認証トークンと、そのセキュリティ上の影響について説明します。
 ---
 
 {{< details >}}
@@ -16,12 +17,12 @@ title: GitLabトークンの概要
 
 ## セキュリティに関する考慮事項 {#security-considerations}
 
-トークンを安全に保つために、次の点に注意してください。
+トークンを安全に保つために、次の点に注意してください:
 
 - トークンはパスワードと同様に扱い、安全に保管してください。
 - スコープ付きトークンを作成する場合は、誤って漏洩した場合の影響を軽減するため、可能な限り最も制限されたスコープを使用してください。
   - 個別のプロセスで異なるスコープ（たとえば、`read`と`write`）が必要な場合は、それぞれのスコープに対応した個別のトークンを使用することを検討してください。そうすれば、1つのトークンが漏洩しても、APIへのフルアクセスのような広いスコープを持つ1つのトークンが漏洩した場合よりもアクセス権が制限されます。
-- トークンを作成する際は、次のようにします。
+- トークンを作成する際は、次のようにします:
   - `GITLAB_API_TOKEN-application1`や`GITLAB_READ_API_TOKEN-application2`のように、トークンを説明する名前を選択してください。`GITLAB_API_TOKEN`、`API_TOKEN`、`default`のような一般的な名前は避けてください。
   - タスク完了時に期限切れになるトークンの設定を検討してください。たとえば、1回限りのインポートを実行する必要がある場合は、数時間後にトークンの有効期限が切れるように設定します。
   - 関連するURLを含む、さらに詳しいコンテキストを提供する説明を追加します。
@@ -32,7 +33,7 @@ title: GitLabトークンの概要
 - トークンは[Git認証情報ストレージ](https://git-scm.com/book/en/v2/Git-Tools-Credential-Storage)を使用して保存できます。
 - すべての種類のアクティブなアクセストークンを定期的に確認し、不要なものはすべて失効させてください。
 
-禁止事項:
+禁止事項: 
 
 - プロジェクト内でトークンをプレーンテキストで保存しないでください。トークンがGitLab CI/CD用の外部シークレットである場合は、[CI/CDでの外部シークレットの使用](../../ci/secrets/_index.md)方法に関する推奨事項を確認してください。
 - イシュー、MRの説明、コメント、またはその他のフリーテキスト入力欄に、コード、コンソールコマンド、ログ出力を貼り付ける際に、トークンを含めないでください。
@@ -40,20 +41,20 @@ title: GitLabトークンの概要
 
 ### CI/CDのトークン {#tokens-in-cicd}
 
-パーソナルアクセストークンはスコープが広いため、可能な限りCI/CD変数として使用することは避けてください。CI/CDジョブから他のリソースへのアクセスが必要な場合は、次のいずれかを使用します（アクセススコープの狭い順）。
+パーソナルアクセストークンはスコープが広いため、可能な限りCI/CD変数として使用することは避けてください。CI/CDジョブから他のリソースへのアクセスが必要な場合は、次のいずれかを使用します（アクセススコープの狭い順）:
 
 1. ジョブトークン（最もアクセススコープが狭い）
 1. プロジェクトトークン
 1. グループトークン
 
-[CI/CD変数のセキュリティ](../../ci/variables/_index.md#cicd-variable-security)に関する追加の推奨事項:
+[CI/CD変数のセキュリティ](../../ci/variables/_index.md#cicd-variable-security)に関する追加の推奨事項: 
 
 - すべての認証情報に[シークレットストレージ](../../ci/pipeline_security/_index.md#secrets-storage)を使用してください。
 - 機密情報を含むCI/CD変数は、[保護](../../ci/variables/_index.md#protect-a-cicd-variable)と[マスキング](../../ci/variables/_index.md#mask-a-cicd-variable)を行い、[非表示](../../ci/variables/_index.md#hide-a-cicd-variable)にする必要があります。
 
 ## パーソナルアクセストークン {#personal-access-tokens}
 
-[パーソナルアクセストークン](../../user/profile/personal_access_tokens.md)を作成し、以下の認証に使用できます。
+[パーソナルアクセストークン](../../user/profile/personal_access_tokens.md)を作成し、以下の認証に使用できます:
 
 - GitLab API。
 - GitLabリポジトリ。
@@ -81,7 +82,7 @@ OAuth 2.0トークンのスコープを制限し、ライフタイムを設定�
 
 ## プロジェクトアクセストークン {#project-access-tokens}
 
-[プロジェクトアクセストークン](../../user/project/settings/project_access_tokens.md)は、プロジェクトにスコープが限定されます。パーソナルアクセストークンと同様に、以下の認証に使用できます。
+[プロジェクトアクセストークン](../../user/project/settings/project_access_tokens.md)は、プロジェクトにスコープが限定されます。パーソナルアクセストークンと同様に、以下の認証に使用できます:
 
 - GitLab API。
 - GitLabリポジトリ。
@@ -95,7 +96,7 @@ OAuth 2.0トークンのスコープを制限し、ライフタイムを設定�
 
 ## グループアクセストークン {#group-access-tokens}
 
-[グループアクセストークン](../../user/group/settings/group_access_tokens.md)は、グループにスコープが限定されます。パーソナルアクセストークンと同様に、以下の認証に使用できます。
+[グループアクセストークン](../../user/group/settings/group_access_tokens.md)は、グループにスコープが限定されます。パーソナルアクセストークンと同様に、以下の認証に使用できます:
 
 - GitLab API。
 - GitLabリポジトリ。
@@ -129,7 +130,7 @@ Runnerとその設定を作成すると、Runnerの登録に使用するRunner�
 
 Runnerは、ジョブキューからジョブを取得する際に、Runner認証トークンを使用してGitLabに対して認証します。RunnerがGitLabで認証されると、Runnerは[ジョブトークン](../../ci/jobs/ci_job_token.md)を受け取り、これを使用してジョブを実行します。
 
-Runner認証トークンはRunnerのマシン上に留まります。次のexecutorの実行環境は、ジョブトークンのみにアクセスでき、Runner認証トークンにはアクセスできません。
+Runner認証トークンはRunnerのマシン上に留まります。次のexecutorの実行環境は、ジョブトークンのみにアクセスでき、Runner認証トークンにはアクセスできません:
 
 - Docker Machine
 - Kubernetes
@@ -141,11 +142,11 @@ Runnerのファイルシステムへの悪意のあるアクセスにより、`c
 
 Runners APIを使用して、[Runner認証トークンをローテーションまたは失効させる](../../api/runners.md#reset-runners-authentication-token-by-using-the-current-token)ことができます。
 
-## Runner登録トークン（非推奨） {#runner-registration-tokens-deprecated}
+## Runner登録トークン（レガシー） {#runner-registration-tokens-legacy}
 
 {{< alert type="warning" >}}
 
-Runner登録トークンを渡すオプションと、特定の設定引数のサポートは、GitLab 15.6で[非推奨](https://gitlab.com/gitlab-org/gitlab/-/issues/380872)となっており、GitLab 20.0で削除される予定です。[Runner作成ワークフロー](https://docs.gitlab.com/runner/register/#register-with-a-runner-authentication-token)を使用して、Runnerを登録するための認証トークンを生成します。このプロセスは、Runnerの所有権の完全なトレーサビリティを提供し、Runnerフリートのセキュリティを強化します。これは破壊的な変更です。GitLabでは新しい[GitLab Runnerトークンアーキテクチャ](../../ci/runners/new_creation_workflow.md)を実装し、新しいRunner登録方法を導入したことで、Runner登録トークンは不要になりました。
+runner登録トークンを渡し、特定の設定引数をサポートするオプションは、レガシーと見なされ、推奨されません。[Runner作成ワークフロー](https://docs.gitlab.com/runner/register/#register-with-a-runner-authentication-token)を使用して、Runnerを登録するための認証トークンを生成します。このプロセスは、Runnerの所有権の完全なトレーサビリティを提供し、Runnerフリートのセキュリティを強化します。GitLabでは新しい[GitLab Runnerトークンアーキテクチャ](../../ci/runners/new_creation_workflow.md)を実装し、新しいRunner登録方法を導入したことで、Runner登録トークンは不要になりました。
 
 {{< /alert >}}
 
@@ -163,12 +164,12 @@ Runner登録トークンは、[Runner](https://docs.gitlab.com/runner/)をGitLab
 
 [Kubernetes向けGitLabエージェントを登録](../../user/clusters/agent/install/_index.md#register-the-agent-with-gitlab)すると、GitLabはそのクラスターエージェントがGitLabに対して認証するためのアクセストークンを生成します。
 
-このクラスターエージェントトークンを失効させるには、次のいずれかを実行します。
+このクラスターエージェントトークンを失効させるには、次のいずれかを実行します:
 
 - [エージェントAPI](../../api/cluster_agents.md#revoke-an-agent-token)でトークンを失効させる。
 - [トークンをリセットする](../../user/clusters/agent/work_with_agent.md#reset-the-agent-token)。
 
-どちらの方法でも、トークン、エージェント、およびプロジェクトIDを知っている必要があります。この情報を確認するには、[Railsコンソール](../../administration/operations/rails_console.md)を使用します。
+どちらの方法でも、トークン、エージェント、およびプロジェクトIDを知っている必要があります。この情報を確認するには、[Railsコンソール](../../administration/operations/rails_console.md)を使用します:
 
 ```ruby
 # Find token ID
@@ -183,7 +184,7 @@ Clusters::AgentToken.find_by_token('glagent-xxx').agent.project_id
 => 12345
 ```
 
-Railsコンソールでトークンを直接失効させることもできます。
+Railsコンソールでトークンを直接失効させることもできます:
 
 ```ruby
 # Revoke token with RevokeService, including generating an audit event
@@ -197,7 +198,7 @@ Clusters::AgentToken.find_by_token('glagent-xxx').revoke!
 
 ### フィードトークン {#feed-token}
 
-各ユーザーには、有効期限のない長期間有効なフィードトークンが付与されています。このトークンは以下の認証に使用できます。
+各ユーザーには、有効期限のない長期間有効なフィードトークンが付与されています。このトークンは以下の認証に使用できます:
 
 - パーソナライズされたRSSフィードを読み込むためのRSSリーダー。
 - パーソナライズされたカレンダーを読み込むためのカレンダーアプリケーション。
@@ -214,8 +215,8 @@ Clusters::AgentToken.find_by_token('glagent-xxx').revoke!
 
 - 管理者である必要があります。
 
-1. 左側のサイドバーの下部で、**管理者**を選択します。
-1. **設定 > 一般**を選択します。
+1. 左側のサイドバーの下部で、**管理者**を選択します。[新しいナビゲーションをオン](../../user/interface_redesign.md#turn-new-navigation-on-or-off)にしている場合は、右上隅で自分のアバターを選択し、**管理者**を選択します。
+1. **設定** > **一般**を選択します。
 1. **表示レベルとアクセス制御**を展開します。
 1. **フィードトークン**で、**フィードトークンを無効にする**チェックボックスをオンにし、**変更を保存**を選択します。
 
@@ -233,7 +234,7 @@ Clusters::AgentToken.find_by_token('glagent-xxx').revoke!
 
 {{< /history >}}
 
-各[workspace](../../user/workspace/_index.md)（ワークスペース）には、期限切れにならない、内部で自動的に管理されるトークンがあります。これにより、ワークスペースとのHTTPおよびSSH通信が可能になります。これは、ワークスペースが**実行中**（実行中）状態になるようにリクエストされた場合に存在し、ワークスペースによって自動的に挿入および使用されます。
+各[workspace](../../user/workspace/_index.md)（ワークスペース）には、期限切れにならない、内部で自動的に管理されるトークンがあります。これにより、ワークスペースとのHTTPおよびSSH通信が可能になります。これは、ワークスペースが**実行中**状態になるようにリクエストされた場合に存在し、ワークスペースによって自動的に挿入および使用されます。
 
 停止したワークスペースを起動すると、新しいワークスペーストークンが作成されます。実行中のワークスペースを再起動すると、既存のトークンが削除され、新しいトークンが作成されます。
 
@@ -258,7 +259,7 @@ Clusters::AgentToken.find_by_token('glagent-xxx').revoke!
 | Runner認証トークン | {{< icon name="dotted-circle" >}}非対応             | {{< icon name="dotted-circle" >}}非対応             | {{< icon name="check-circle-dashed" >}}限定的<sup>3</sup> |
 | ジョブトークン                   | {{< icon name="check-circle-dashed" >}}限定的<sup>4</sup> | {{< icon name="dotted-circle" >}}非対応  | {{< icon name="check-circle" >}}対応 |
 
-**脚注**:
+**Footnotes**（脚注）: 
 
 1. 1つのプロジェクトに限定されます。
 1. 1つのグループに限定されます。

@@ -324,7 +324,7 @@ This operation triggers a full synchronization of data, regardless of whether it
 
 You can schedule a full resync of all resources of one component from the UI:
 
-1. On the left sidebar, at the bottom, select **Admin**. If you've [turned on the new navigation](../../../../user/interface_redesign.md), in the upper-right corner, select **Admin**.
+1. In the upper-right corner, select **Admin**.
 1. Select **Geo** > **Sites**.
 1. Under **Replication details**, select the desired component.
 1. Select **Resync all**.
@@ -416,7 +416,7 @@ This operation triggers a verification of all resources, regardless of whether t
 If you believe the **primary** site checksums are correct, you can schedule a reverification of one
 component on one **secondary** site from the UI:
 
-1. On the left sidebar, at the bottom, select **Admin**. If you've [turned on the new navigation](../../../../user/interface_redesign.md), in the upper-right corner, select **Admin**.
+1. In the upper-right corner, select **Admin**.
 1. Select **Geo** > **Sites**.
 1. Under **Replication details**, select the desired component.
 1. Select **Reverify all**.

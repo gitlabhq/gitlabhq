@@ -57,7 +57,7 @@ There are multiple ways to turn on Silent Mode:
 
 - **Web UI**
 
-  1. On the left sidebar, at the bottom, select **Admin**. If you've [turned on the new navigation](../../user/interface_redesign.md), in the upper-right corner, select **Admin**.
+  1. In the upper-right corner, select **Admin**.
   1. On the left sidebar, select **Settings** > **General**.
   1. Expand **Silent Mode**, and turn on the **Enable Silent Mode** toggle.
   1. Changes are saved immediately.
@@ -86,7 +86,7 @@ There are multiple ways to disable Silent Mode:
 
 - **Web UI**
 
-  1. On the left sidebar, at the bottom, select **Admin**. If you've [turned on the new navigation](../../user/interface_redesign.md), in the upper-right corner, select **Admin**.
+  1. In the upper-right corner, select **Admin**.
   1. On the left sidebar, select **Settings** > **General**.
   1. Expand **Silent Mode**, and turn off the **Enable Silent Mode** toggle.
   1. Changes are saved immediately.

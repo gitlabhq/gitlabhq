@@ -4,11 +4,11 @@ module Authz
   class Permission
     include Authz::Concerns::YamlPermission
 
-    class << self
-      private
+    BASE_PATH = 'config/authz/permissions'
 
+    class << self
       def config_path
-        Rails.root.join("config/authz/permissions/**/*.yml")
+        Rails.root.join(BASE_PATH, '**/*.yml')
       end
     end
   end

@@ -81,23 +81,7 @@ describe('~/security_configuration/components/app', () => {
   const findSecurityTrainingSection = () => wrapper.findByTestId('security-training-section');
   const findTrainingProviderList = () => wrapper.findComponent(TrainingProviderList);
   const findManageViaMRErrorAlert = () => wrapper.findByTestId('manage-via-mr-error-alert');
-  const findLink = ({ href, text, container = wrapper }) => {
-    const selector = `a[href="${href}"]`;
-    const link = container.find(selector);
-
-    if (link.exists() && link.text() === text) {
-      return link;
-    }
-
-    return wrapper.find(`${selector} does not exist`);
-  };
-  const findSecurityViewHistoryLink = () =>
-    findLink({
-      href: gitlabCiHistoryPath,
-      text: i18n.configurationHistory,
-      container: findByTestId('security-testing-tab'),
-    });
-
+  const findSecurityViewHistoryLink = () => wrapper.findByTestId('security-view-history-link');
   const findAutoDevopsAlert = () => wrapper.findComponent(AutoDevopsAlert);
   const findAutoDevopsEnabledAlert = () => wrapper.findComponent(AutoDevopsEnabledAlert);
   const findVulnerabilityManagementTab = () => wrapper.findByTestId('vulnerability-management-tab');

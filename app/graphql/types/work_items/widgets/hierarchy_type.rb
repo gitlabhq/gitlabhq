@@ -39,7 +39,9 @@ module Types
           description: 'Indicates if the work item has children.'
 
         field :has_parent, GraphQL::Types::Boolean,
-          null: false, method: :has_parent?, description: 'Indicates if the work item has a parent.'
+          null: false, method: :has_parent?,
+          scopes: [:api, :read_api, :ai_workflows],
+          description: 'Indicates if the work item has a parent.'
 
         field :rolled_up_counts_by_type, [::Types::WorkItems::WorkItemTypeCountsByStateType],
           null: false, description: 'Counts of descendant work items by work item type and state.',

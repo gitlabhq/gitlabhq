@@ -13,7 +13,7 @@ export const initRecoveryCodes = () => {
     return false;
   }
 
-  const { codes = '[]', profileAccountPath = '' } = el.dataset;
+  const { codes, redirectPath } = el.dataset;
 
   return new Vue({
     el,
@@ -21,7 +21,7 @@ export const initRecoveryCodes = () => {
       return createElement(RecoveryCodes, {
         props: {
           codes: JSON.parse(codes),
-          profileAccountPath,
+          redirectPath,
         },
       });
     },

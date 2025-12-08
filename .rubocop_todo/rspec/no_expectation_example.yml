@@ -46,7 +46,6 @@ RSpec/NoExpectationExample:
     - 'qa/spec/specs/helpers/context_selector_spec.rb'
     - 'qa/spec/specs/helpers/feature_flag_spec.rb'
     - 'qa/spec/specs/helpers/quarantine_spec.rb'
-    - 'qa/spec/support/formatters/test_metrics_formatter_spec.rb'
     - 'spec/benchmarks/banzai_benchmark.rb'
     - 'spec/controllers/import/bitbucket_controller_spec.rb'
     - 'spec/controllers/passwords_controller_spec.rb'

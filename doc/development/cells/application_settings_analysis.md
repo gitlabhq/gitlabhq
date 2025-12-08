@@ -14,12 +14,12 @@ title: Application Settings analysis
 
 ## Statistics
 
-- Number of attributes: 508
+- Number of attributes: 510
 - Number of encrypted attributes: 42 (8.0%)
-- Number of attributes documented: 297 (57.99999999999999%)
+- Number of attributes documented: 298 (57.99999999999999%)
 - Number of attributes on GitLab.com different from the defaults: 224 (44.0%)
-- Number of attributes with `clusterwide` set: 508 (100.0%)
-- Number of attributes with `clusterwide: true` set: 135 (27.0%)
+- Number of attributes with `clusterwide` set: 510 (100.0%)
+- Number of attributes with `clusterwide: true` set: 137 (27.0%)
 
 ## Individual columns
 
@@ -507,6 +507,7 @@ title: Application Settings analysis
 | `update_runner_versions_enabled` | `false` | `boolean` | `boolean` | `true` | `true` | `false` | `false`| `true` |
 | `updated_at` | `false` | `timestamp` | `` | `false` | `null` | `true` | `false`| `false` |
 | `updating_name_disabled_for_users` | `false` | `boolean` | `boolean` | `true` | `false` | `false` | `false`| `true` |
+| `usage_billing` | `false` | `jsonb` | `object` | `true` | `'{}'::jsonb` | `false` | `true`| `true` |
 | `usage_ping_enabled` | `false` | `boolean` | `boolean` | `true` | `true` | `false` | `false`| `true` |
 | `usage_ping_features_enabled` | `false` | `boolean` | `` | `true` | `false` | `false` | `false`| `false` |
 | `usage_ping_generation_enabled` | `false` | `boolean` | `` | `true` | `true` | `false` | `false`| `false` |

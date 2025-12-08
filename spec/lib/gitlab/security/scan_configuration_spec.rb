@@ -106,15 +106,11 @@ RSpec.describe ::Gitlab::Security::ScanConfiguration do
         configuration_help_path: "/help/user/application_security/iac_scanning/_index.md#configuration",
         type: "sast_iac" }
       :dast | {
-        badge: { text: "Available on demand",
-                 tooltip_text: "On-demand scans run outside of the DevOps " \
-                               "cycle and find vulnerabilities in your projects",
-                 variant: "neutral" },
         secondary: {
           type: "dast_profiles",
           name: "DAST profiles",
           description: "Manage profiles for use by DAST scans.",
-          configuration_text: "Manage profiles"
+          configuration_text: "Manage DAST profiles"
         },
         name: "Dynamic Application Security Testing (DAST)",
         short_name: "DAST",

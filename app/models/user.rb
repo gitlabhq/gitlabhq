@@ -164,27 +164,27 @@ class User < ApplicationRecord
   has_one :namespace,
     -> { where(type: Namespaces::UserNamespace.sti_name) },
     required: false,
-    dependent: :destroy, # rubocop:disable Cop/ActiveRecordDependent
+    dependent: :destroy,
     foreign_key: :owner_id,
     inverse_of: :owner,
     autosave: true
 
   # Profile
-  has_many :keys, -> { regular_keys }, dependent: :destroy # rubocop:disable Cop/ActiveRecordDependent
+  has_many :keys, -> { regular_keys }, dependent: :destroy
   has_many :expired_today_and_unnotified_keys, -> { expired_today_and_not_notified }, class_name: 'Key'
   has_many :expiring_soon_and_unnotified_keys, -> { expiring_soon_and_not_notified }, class_name: 'Key'
-  has_many :deploy_keys, -> { where(type: 'DeployKey') }, dependent: :nullify # rubocop:disable Cop/ActiveRecordDependent
-  has_many :gpg_keys, dependent: :destroy # rubocop:disable Cop/ActiveRecordDependent -- needed to unclaim
+  has_many :deploy_keys, -> { where(type: 'DeployKey') }, dependent: :nullify
+  has_many :gpg_keys, dependent: :destroy
 
-  has_many :emails, dependent: :destroy # rubocop:disable Cop/ActiveRecordDependent -- needed to unclaim
-  has_many :personal_access_tokens, dependent: :destroy # rubocop:disable Cop/ActiveRecordDependent
+  has_many :emails, dependent: :destroy
+  has_many :personal_access_tokens, dependent: :destroy
   has_many :expiring_soon_and_unnotified_personal_access_tokens, -> { expiring_and_not_notified_without_impersonation }, class_name: 'PersonalAccessToken'
 
-  has_many :identities, dependent: :destroy, autosave: true # rubocop:disable Cop/ActiveRecordDependent
+  has_many :identities, dependent: :destroy, autosave: true
   has_many :webauthn_registrations
   has_many :passkeys, -> { passkey }, class_name: 'WebauthnRegistration'
   has_many :second_factor_webauthn_registrations, -> { second_factor_authenticator }, class_name: 'WebauthnRegistration'
-  has_many :chat_names, dependent: :destroy # rubocop:disable Cop/ActiveRecordDependent
+  has_many :chat_names, dependent: :destroy
   has_many :saved_replies, class_name: '::Users::SavedReply'
   has_one :user_synced_attributes_metadata, autosave: true
   has_one :aws_role, class_name: 'Aws::Role'
@@ -230,54 +230,54 @@ class User < ApplicationRecord
   has_many :personal_projects,        through: :namespace, source: :projects
   has_many :project_members, -> { where(requested_at: nil) }
   has_many :projects, through: :project_members
-  has_many :created_projects, foreign_key: :creator_id, class_name: 'Project', dependent: :nullify # rubocop:disable Cop/ActiveRecordDependent
+  has_many :created_projects, foreign_key: :creator_id, class_name: 'Project', dependent: :nullify
   has_many :created_namespace_details, foreign_key: :creator_id, class_name: 'Namespace::Detail'
   has_many :projects_with_active_memberships, -> { where(members: { state: ::Member::STATE_ACTIVE }) }, through: :project_members, source: :project
-  has_many :users_star_projects, dependent: :destroy # rubocop:disable Cop/ActiveRecordDependent
+  has_many :users_star_projects, dependent: :destroy
   has_many :starred_projects, through: :users_star_projects, source: :project
-  has_many :project_authorizations, dependent: :delete_all # rubocop:disable Cop/ActiveRecordDependent
+  has_many :project_authorizations, dependent: :delete_all
   has_many :authorized_projects, through: :project_authorizations, source: :project
 
-  has_many :snippets,                 dependent: :destroy, foreign_key: :author_id # rubocop:disable Cop/ActiveRecordDependent
-  has_many :notes,                    dependent: :destroy, foreign_key: :author_id # rubocop:disable Cop/ActiveRecordDependent
-  has_many :issues,                   dependent: :destroy, foreign_key: :author_id # rubocop:disable Cop/ActiveRecordDependent
-  has_many :legacy_assigned_merge_requests, class_name: 'MergeRequest', dependent: :nullify, foreign_key: :assignee_id # rubocop:disable Cop/ActiveRecordDependent
-  has_many :merged_merge_requests, class_name: 'MergeRequest::Metrics', dependent: :nullify, foreign_key: :merged_by_id # rubocop:disable Cop/ActiveRecordDependent
-  has_many :closed_merge_requests, class_name: 'MergeRequest::Metrics', dependent: :nullify, foreign_key: :latest_closed_by_id # rubocop:disable Cop/ActiveRecordDependent
-  has_many :updated_merge_requests, class_name: 'MergeRequest', dependent: :nullify, foreign_key: :updated_by_id # rubocop:disable Cop/ActiveRecordDependent
-  has_many :updated_issues, class_name: 'Issue', dependent: :nullify, foreign_key: :updated_by_id # rubocop:disable Cop/ActiveRecordDependent
-  has_many :closed_issues, class_name: 'Issue', dependent: :nullify, foreign_key: :closed_by_id # rubocop:disable Cop/ActiveRecordDependent
-  has_many :merge_requests,           dependent: :destroy, foreign_key: :author_id # rubocop:disable Cop/ActiveRecordDependent
-  has_many :events,                   dependent: :delete_all, foreign_key: :author_id # rubocop:disable Cop/ActiveRecordDependent
-  has_many :releases,                 dependent: :nullify, foreign_key: :author_id # rubocop:disable Cop/ActiveRecordDependent
-  has_many :subscriptions,            dependent: :destroy # rubocop:disable Cop/ActiveRecordDependent
-  has_many :oauth_applications, class_name: 'Authn::OauthApplication', as: :owner, dependent: :destroy # rubocop:disable Cop/ActiveRecordDependent -- This association is from a third party gem
-  has_many :abuse_reports, dependent: :nullify, foreign_key: :user_id, inverse_of: :user # rubocop:disable Cop/ActiveRecordDependent
-  has_many :reported_abuse_reports,   dependent: :nullify, foreign_key: :reporter_id, class_name: "AbuseReport", inverse_of: :reporter # rubocop:disable Cop/ActiveRecordDependent
+  has_many :snippets,                 dependent: :destroy, foreign_key: :author_id
+  has_many :notes,                    dependent: :destroy, foreign_key: :author_id
+  has_many :issues,                   dependent: :destroy, foreign_key: :author_id
+  has_many :legacy_assigned_merge_requests, class_name: 'MergeRequest', dependent: :nullify, foreign_key: :assignee_id
+  has_many :merged_merge_requests, class_name: 'MergeRequest::Metrics', dependent: :nullify, foreign_key: :merged_by_id
+  has_many :closed_merge_requests, class_name: 'MergeRequest::Metrics', dependent: :nullify, foreign_key: :latest_closed_by_id
+  has_many :updated_merge_requests, class_name: 'MergeRequest', dependent: :nullify, foreign_key: :updated_by_id
+  has_many :updated_issues, class_name: 'Issue', dependent: :nullify, foreign_key: :updated_by_id
+  has_many :closed_issues, class_name: 'Issue', dependent: :nullify, foreign_key: :closed_by_id
+  has_many :merge_requests,           dependent: :destroy, foreign_key: :author_id
+  has_many :events,                   dependent: :delete_all, foreign_key: :author_id
+  has_many :releases,                 dependent: :nullify, foreign_key: :author_id
+  has_many :subscriptions,            dependent: :destroy
+  has_many :oauth_applications, class_name: 'Authn::OauthApplication', as: :owner, dependent: :destroy
+  has_many :abuse_reports, dependent: :nullify, foreign_key: :user_id, inverse_of: :user
+  has_many :reported_abuse_reports,   dependent: :nullify, foreign_key: :reporter_id, class_name: "AbuseReport", inverse_of: :reporter
   has_many :resolved_abuse_reports,   foreign_key: :resolved_by_id, class_name: "AbuseReport", inverse_of: :resolved_by
   has_many :abuse_events,             foreign_key: :user_id, class_name: 'AntiAbuse::Event', inverse_of: :user
-  has_many :spam_logs,                dependent: :destroy # rubocop:disable Cop/ActiveRecordDependent
+  has_many :spam_logs,                dependent: :destroy
   has_many :builds,                   class_name: 'Ci::Build'
   has_many :pipelines,                class_name: 'Ci::Pipeline'
   has_many :pipeline_schedules,       foreign_key: :owner_id, class_name: 'Ci::PipelineSchedule'
-  has_many :todos,                    dependent: :delete_all # rubocop:disable Cop/ActiveRecordDependent -- legacy behavior
-  has_many :authored_todos, class_name: 'Todo', dependent: :destroy, foreign_key: :author_id # rubocop:disable Cop/ActiveRecordDependent
+  has_many :todos,                    dependent: :delete_all
+  has_many :authored_todos, class_name: 'Todo', dependent: :destroy, foreign_key: :author_id
   has_many :notification_settings
-  has_many :award_emoji, dependent: :destroy # rubocop:disable Cop/ActiveRecordDependent
+  has_many :award_emoji, dependent: :destroy
   has_many :triggers, -> { not_expired }, class_name: 'Ci::Trigger', foreign_key: :owner_id
   has_many :audit_events, foreign_key: :author_id, inverse_of: :user
   has_many :uploaded_uploads, class_name: 'Upload', foreign_key: :uploaded_by_user_id
 
   has_many :alert_assignees, class_name: '::AlertManagement::AlertAssignee', inverse_of: :assignee
-  has_many :issue_assignees, inverse_of: :assignee, dependent: :delete_all # rubocop:disable Cop/ActiveRecordDependent -- required by https://gitlab.com/groups/gitlab-org/-/epics/19085
-  has_many :merge_request_assignees, inverse_of: :assignee, dependent: :destroy # rubocop:disable Cop/ActiveRecordDependent
-  has_many :merge_request_reviewers, inverse_of: :reviewer, dependent: :destroy # rubocop:disable Cop/ActiveRecordDependent
+  has_many :issue_assignees, inverse_of: :assignee, dependent: :delete_all
+  has_many :merge_request_assignees, inverse_of: :assignee, dependent: :destroy
+  has_many :merge_request_reviewers, inverse_of: :reviewer, dependent: :destroy
   has_many :assigned_issues, class_name: "Issue", through: :issue_assignees, source: :issue
   has_many :assigned_merge_requests, class_name: "MergeRequest", through: :merge_request_assignees, source: :merge_request
   has_many :created_custom_emoji, class_name: 'CustomEmoji', inverse_of: :creator
 
   has_many :bulk_imports
-  has_many :import_offline_exports, class_name: 'Import::Offline::Export', dependent: :delete_all # rubocop:disable Cop/ActiveRecordDependent -- required by https://gitlab.com/groups/gitlab-org/-/epics/19085, fk cascade delete implemented
+  has_many :import_offline_exports, class_name: 'Import::Offline::Export', dependent: :delete_all
   has_one :namespace_import_user, class_name: 'Import::NamespaceImportUser', inverse_of: :import_user
   has_one :placeholder_user_detail, class_name: 'Import::PlaceholderUserDetail', foreign_key: :placeholder_user_id, inverse_of: :placeholder_user
 
@@ -312,13 +312,14 @@ class User < ApplicationRecord
 
   has_many :timelogs
 
-  has_many :created_saved_views, class_name: 'WorkItems::SavedViews::SavedView', foreign_key: :created_by_id, dependent: :nullify # rubocop:disable Cop/ActiveRecordDependent
-  has_many :user_saved_views, class_name: 'WorkItems::SavedViews::UserSavedView', dependent: :delete_all # rubocop:disable Cop/ActiveRecordDependent
-  has_many :resource_label_events, dependent: :nullify # rubocop:disable Cop/ActiveRecordDependent
-  has_many :resource_state_events, dependent: :nullify # rubocop:disable Cop/ActiveRecordDependent
-  has_many :issue_assignment_events, class_name: 'ResourceEvents::IssueAssignmentEvent', dependent: :nullify # rubocop:disable Cop/ActiveRecordDependent
-  has_many :merge_request_assignment_events, class_name: 'ResourceEvents::MergeRequestAssignmentEvent', dependent: :nullify # rubocop:disable Cop/ActiveRecordDependent
-  has_many :authored_events, class_name: 'Event', dependent: :destroy, foreign_key: :author_id # rubocop:disable Cop/ActiveRecordDependent
+  has_many :created_saved_views, class_name: 'WorkItems::SavedViews::SavedView', foreign_key: :created_by_id, dependent: :nullify
+  has_many :user_saved_views, class_name: 'WorkItems::SavedViews::UserSavedView', dependent: :delete_all
+
+  has_many :resource_label_events, dependent: :nullify
+  has_many :resource_state_events, dependent: :nullify
+  has_many :issue_assignment_events, class_name: 'ResourceEvents::IssueAssignmentEvent', dependent: :nullify
+  has_many :merge_request_assignment_events, class_name: 'ResourceEvents::MergeRequestAssignmentEvent', dependent: :nullify
+  has_many :authored_events, class_name: 'Event', dependent: :destroy, foreign_key: :author_id
   has_many :early_access_program_tracking_events, class_name: 'EarlyAccessProgram::TrackingEvent', inverse_of: :user
   has_many :namespace_commit_emails, class_name: 'Users::NamespaceCommitEmail'
   has_many :user_achievements, class_name: 'Achievements::UserAchievement', inverse_of: :user
@@ -329,7 +330,7 @@ class User < ApplicationRecord
 
   has_many :broadcast_message_dismissals, class_name: 'Users::BroadcastMessageDismissal'
 
-  has_many :lfs_file_locks, dependent: :delete_all # rubocop:disable Cop/ActiveRecordDependent
+  has_many :lfs_file_locks, dependent: :delete_all
   #
   # Validations
   #

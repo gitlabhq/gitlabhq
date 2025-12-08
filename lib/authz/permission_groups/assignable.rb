@@ -16,14 +16,14 @@ module Authz
           definitions.filter { |a| a.permissions.include?(permission) }
         end
 
+        def config_path
+          Rails.root.join(BASE_PATH, '**/*.yml')
+        end
+
         private
 
         def definitions
           all.values
-        end
-
-        def config_path
-          Rails.root.join(BASE_PATH, '**/*.yml')
         end
       end
 

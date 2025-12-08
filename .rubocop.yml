@@ -1443,6 +1443,10 @@ Tailwind/StringInterpolation:
   - '{,ee/,jh/}app/views/**/*.haml'
 
 Cop/ActiveRecordDependent:
+  Exclude:
+    # We need to allow `dependent:` clauses in the `User` model for batched deletion
+    # during `User#destroy`. See: https://gitlab.com/gitlab-org/gitlab/-/issues/378217
+    - app/models/user.rb
   Include:
     - ee/app/models/**/*.rb
 

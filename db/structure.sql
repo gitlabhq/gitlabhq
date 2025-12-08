@@ -12471,6 +12471,7 @@ CREATE TABLE application_settings (
     iframe_rendering_enabled boolean DEFAULT false NOT NULL,
     iframe_rendering_allowlist text,
     database_settings jsonb DEFAULT '{}'::jsonb NOT NULL,
+    usage_billing jsonb DEFAULT '{}'::jsonb NOT NULL,
     CONSTRAINT app_settings_container_reg_cleanup_tags_max_list_size_positive CHECK ((container_registry_cleanup_tags_service_max_list_size >= 0)),
     CONSTRAINT app_settings_dep_proxy_ttl_policies_worker_capacity_positive CHECK ((dependency_proxy_ttl_group_policy_worker_capacity >= 0)),
     CONSTRAINT app_settings_ext_pipeline_validation_service_url_text_limit CHECK ((char_length(external_pipeline_validation_service_url) <= 255)),
@@ -12544,6 +12545,7 @@ CREATE TABLE application_settings (
     CONSTRAINT check_application_settings_sign_in_restrictions_is_hash CHECK ((jsonb_typeof(sign_in_restrictions) = 'object'::text)),
     CONSTRAINT check_application_settings_token_prefixes_is_hash CHECK ((jsonb_typeof(token_prefixes) = 'object'::text)),
     CONSTRAINT check_application_settings_transactional_emails_is_hash CHECK ((jsonb_typeof(transactional_emails) = 'object'::text)),
+    CONSTRAINT check_application_settings_usage_billing_is_hash CHECK ((jsonb_typeof(usage_billing) = 'object'::text)),
     CONSTRAINT check_application_settings_vscode_extension_marketplace_is_hash CHECK ((jsonb_typeof(vscode_extension_marketplace) = 'object'::text)),
     CONSTRAINT check_b8c74ea5b3 CHECK ((char_length(deactivation_email_additional_text) <= 1000)),
     CONSTRAINT check_babd774f3c CHECK ((char_length(secret_detection_service_url) <= 255)),
@@ -21656,9 +21658,11 @@ CREATE TABLE namespace_settings (
     lock_duo_foundational_flows_enabled boolean DEFAULT false NOT NULL,
     duo_sast_fp_detection_enabled boolean,
     lock_duo_sast_fp_detection_enabled boolean DEFAULT false NOT NULL,
+    usage_billing jsonb DEFAULT '{}'::jsonb NOT NULL,
     CONSTRAINT check_0ba93c78c7 CHECK ((char_length(default_branch_name) <= 255)),
     CONSTRAINT check_d9644d516f CHECK ((char_length(step_up_auth_required_oauth_provider) <= 255)),
     CONSTRAINT check_namespace_settings_security_policies_is_hash CHECK ((jsonb_typeof(security_policies) = 'object'::text)),
+    CONSTRAINT check_namespace_settings_usage_billing_is_hash CHECK ((jsonb_typeof(usage_billing) = 'object'::text)),
     CONSTRAINT namespace_settings_unique_project_download_limit_alertlist_size CHECK ((cardinality(unique_project_download_limit_alertlist) <= 100)),
     CONSTRAINT namespace_settings_unique_project_download_limit_allowlist_size CHECK ((cardinality(unique_project_download_limit_allowlist) <= 100))
 );

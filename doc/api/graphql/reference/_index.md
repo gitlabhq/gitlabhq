@@ -36477,6 +36477,7 @@ Represents the Geo sync and verification state of an LFS object.
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | <a id="licensename"></a>`name` | [`String!`](#string) | Name of the license. |
+| <a id="licensepolicyviolations"></a>`policyViolations` | [`[PolicyDismissal!]`](#policydismissal) | Policy dismissals associated with the license for the dependency. |
 | <a id="licensespdxidentifier"></a>`spdxIdentifier` | [`String`](#string) | Name of the SPDX identifier. |
 | <a id="licenseurl"></a>`url` | [`String`](#string) | License URL in relation to SPDX. |
 
@@ -41374,6 +41375,17 @@ Represents the source and target pipelines used for comparison in the policy eva
 | <a id="policycomparisonpipelinesource"></a>`source` | [`[CiPipelineID!]`](#cipipelineid) | Represents the list of pipeline GIDs for the source branch. |
 | <a id="policycomparisonpipelinetarget"></a>`target` | [`[CiPipelineID!]`](#cipipelineid) | Represents the list of pipeline GIDs for the target branch. |
 
+### `PolicyDismissal`
+
+Represents a policy dismissal for a security finding or license occurrence.
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="policydismissalid"></a>`id` | [`ID!`](#id) | ID of the policy dismissal. |
+| <a id="policydismissalsecuritypolicy"></a>`securityPolicy` | [`SecurityPolicy`](#securitypolicy) | Security policy associated with the dismissal. |
+
 ### `PolicyError`
 
 Represents an error that can occur during policy evaluation.
@@ -45895,6 +45907,17 @@ Returns [`VulnerabilitiesPerSeverity`](#vulnerabilitiesperseverity).
 | ---- | ---- | ----------- |
 | <a id="securitymetricsvulnerabilitiesperseverityenddate"></a>`endDate` {{< icon name="warning-solid" >}} | [`ISO8601Date`](#iso8601date) | **Introduced** in GitLab 18.3. **Status**: Experiment. End date for the vulnerability metrics time range. Optional. |
 | <a id="securitymetricsvulnerabilitiesperseveritystartdate"></a>`startDate` {{< icon name="warning-solid" >}} | [`ISO8601Date`](#iso8601date) | **Introduced** in GitLab 18.3. **Status**: Experiment. Start date for the vulnerability metrics time range. Optional. |
+
+### `SecurityPolicy`
+
+Represents a security policy.
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="securitypolicyid"></a>`id` | [`ID!`](#id) | ID of the security policy. |
+| <a id="securitypolicyname"></a>`name` | [`String!`](#string) | Name of the security policy. |
 
 ### `SecurityPolicyType`
 

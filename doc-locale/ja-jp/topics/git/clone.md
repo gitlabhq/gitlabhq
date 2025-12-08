@@ -21,16 +21,16 @@ Gitリポジトリのクローンをローカルコンピューターに作成�
 認証を1回のみにする場合は、SSHを使用してクローンを作成します。
 
 1. [SSHのドキュメント](../../user/ssh.md)の手順に従って、GitLabで認証します。
-1. 左側のサイドバーで、**検索または移動先**を選択して、クローンを作成するプロジェクトを見つけます。
+1. 左側のサイドバーで、**検索または移動先**を選択して、クローンを作成するプロジェクトを見つけます。[新しいナビゲーションをオン](../../user/interface_redesign.md#turn-new-navigation-on-or-off)にしている場合、このフィールドは上部のバーに表示されます。
 1. プロジェクトの概要ページの右上隅で、**コード**を選択し、**SSHでクローン**のURLをコピーします。
 1. ターミナルを開いて、ファイルのクローンを作成するディレクトリに移動します。Gitはリポジトリ名を使用してフォルダーを自動的に作成し、そのフォルダーにファイルをダウンロードします。
-1. 以下のコマンドを実行します。
+1. 以下のコマンドを実行します:
 
    ```shell
    git clone <copied URL>
    ```
 
-1. ファイルを表示するには、次のとおり、新しいディレクトリに移動します。
+1. ファイルを表示するには、次のとおり、新しいディレクトリに移動します:
 
    ```shell
    cd <new directory>
@@ -40,8 +40,8 @@ Gitリポジトリのクローンをローカルコンピューターに作成�
 
 コンピューターとGitLabの間でオペレーションを実行するたびに認証を行う場合は、HTTPSを使用してクローンを作成します。[OAuth認証情報ヘルパー](../../user/profile/account/two_factor_authentication.md#oauth-credential-helpers)を使用すると、手動で認証する回数を低減できるため、HTTPSエクスペリエンスがシームレスになります。
 
-1. 左側のサイドバーで、**検索または移動先**を選択して、クローンを作成するプロジェクトを見つけます。
-1. プロジェクトの概要ページの右上隅で、**コード**を選択し、**HTTPSでクローン**のURLをコピーします。
+1. 左側のサイドバーで、**検索または移動先**を選択して、クローンを作成するプロジェクトを見つけます。[新しいナビゲーションをオン](../../user/interface_redesign.md#turn-new-navigation-on-or-off)にしている場合、このフィールドは上部のバーに表示されます。
+1. プロジェクトの概要ページの右上隅で、**コード**を選択し、**Clone with HTTPS**（HTTPSでクローン）のURLをコピーします。
 1. ターミナルを開いて、ファイルのクローンを作成するディレクトリに移動します。
 1. 以下のコマンドを実行します。Gitはリポジトリ名を使用してフォルダーを自動的に作成し、そのフォルダーにファイルをダウンロードします。
 
@@ -51,14 +51,14 @@ Gitリポジトリのクローンをローカルコンピューターに作成�
 
 1. GitLabがユーザー名とパスワードを要求します。
 
-   アカウントで2要素認証（2FA）を有効にしている場合、アカウントのパスワードは使用できません。代わりに、以下のいずれかを実行できます。
+   アカウントで2要素認証（2FA）を有効にしている場合、アカウントのパスワードは使用できません。代わりに、以下のいずれかを実行できます:
 
    - `read_repository`権限または`write_repository`権限がある[トークンを使用してクローンを作成](#clone-using-a-token)します。
    - [OAuth認証情報ヘルパー](../../user/profile/account/two_factor_authentication.md#oauth-credential-helpers)をインストールします。
 
    2FAを有効にしていない場合は、アカウントのパスワードを使用します。
 
-1. ファイルを表示するには、次のとおり、新しいディレクトリに移動します。
+1. ファイルを表示するには、次のとおり、新しいディレクトリに移動します:
 
    ```shell
    cd <new directory>
@@ -72,19 +72,19 @@ Windowsでパスワードを複数回間違って入力し、`Access denied`メ�
 
 ### トークンを使用してクローンを作成する {#clone-using-a-token}
 
-次の場合、トークンを使用してHTTPSでクローンを作成します。
+次の場合、トークンを使用してHTTPSでクローンを作成します:
 
 - 2FAを使用する場合
 - 単数または複数のリポジトリをスコープとする、取り消し可能な認証情報セットが必要な場合
 
-HTTPS経由でクローンを作成する場合、次のいずれかのトークンを使用して認証できます。
+HTTPS経由でクローンを作成する場合、次のいずれかのトークンを使用して認証できます:
 
 - [パーソナルアクセストークン](../../user/profile/personal_access_tokens.md)
 - [デプロイトークン](../../user/project/deploy_tokens/_index.md)
 - [プロジェクトアクセストークン](../../user/project/settings/project_access_tokens.md)
 - [グループアクセストークン](../../user/group/settings/group_access_tokens.md)
 
-例は次のとおりです。
+例: 
 
 ```shell
 git clone https://<username>:<token>@gitlab.example.com/tanuki/awesome_project.git
@@ -112,7 +112,7 @@ git clone https://<username>:<token>@gitlab.example.com/tanuki/awesome_project.g
 - GitLabインターフェースから:
   1. プロジェクトの概要ページに移動します。
   1. 右上隅で**コード**を選択します。
-  1. **IDEで開く** で、**Visual Studio Code (SSH)** または **Visual Studio Code (HTTPS)** を選択します。
+  1. **IDEで開く**で、**Visual Studio Code (SSH)**または**Visual Studio Code (HTTPS)**を選択します。
   1. プロジェクトのクローンを作成するフォルダーを選択します。
 
      Visual Studio Codeがプロジェクトのクローンを作成すると、作成先のフォルダーが開きます。
@@ -127,29 +127,29 @@ git clone https://<username>:<token>@gitlab.example.com/tanuki/awesome_project.g
 - [IntelliJ IDEA](https://www.jetbrains.com/idea/)がローカルマシンにインストールされている必要があります。
 - [ブラウザをIDEプロトコル用に設定](#configure-browsers-for-ide-protocols)します。
 
-これを行うには、次の手順に従います。
+これを行うには、次の手順に従います:
 
 1. プロジェクトの概要ページに移動します。
 1. 右上隅で**コード**を選択します。
-1. **IDEで開く** で、**IntelliJ IDEA (SSH)** または **IntelliJ IDEA (HTTPS)** を選択します。
+1. **IDEで開く**で、**IntelliJ IDEA (SSH)**または**IntelliJ IDEA (HTTPS)**を選択します。
 
 ## ブラウザーをIDEプロトコル用に設定する {#configure-browsers-for-ide-protocols}
 
-**IDEで開く**機能が動作するようにするには、ブラウザが`vscode://`や`jetbrains://`などのカスタムアプリケーションプロトコルを処理するように設定する必要があります。
+**Open in IDE**（IDEで開く）機能が動作するようにするには、ブラウザが`vscode://`や`jetbrains://`などのカスタムアプリケーションプロトコルを処理するように設定する必要があります。
 
 ### Firefox {#firefox}
 
-必要なアプリケーションがシステムにインストールされている場合、Firefoxはカスタムプロトコルを自動的に処理します。カスタムプロトコルリンクを最初に選択すると、ダイアログが開き、アプリケーションを開くかどうかの確認を求められます。**リンクを開く**を選択して、Firefoxでアプリケーションを開けるようにします。
+必要なアプリケーションがシステムにインストールされている場合、Firefoxはカスタムプロトコルを自動的に処理します。カスタムプロトコルリンクを最初に選択すると、ダイアログが開き、アプリケーションを開くかどうかの確認を求められます。**Open link**（リンクを開く）を選択して、Firefoxでアプリケーションを開けるようにします。
 
 今後プロンプトを表示しないようにするには、チェックボックスをオンにして選択内容を記憶させます。
 
-プロンプトダイアログが開かない場合は、Firefoxを手動で設定する必要があります。
+プロンプトダイアログが開かない場合は、Firefoxを手動で設定する必要があります:
 
 1. Firefoxを開きます。
-1. 右上にある**アプリケーションメニューを開く**（{{< icon name="hamburger" >}}）を選択します。
+1. 右上にある**Open application menu**（アプリケーションメニューを開く）（{{< icon name="hamburger" >}}）を選択します。
 1. **アプリケーション**セクションを検索するか、そこに移動します。
 1. リストから目的のアプリケーションを見つけて選択します。たとえば、`vscode`や`jetbrains`です。
-1. ドロップダウンリストからVisual Studio CodeまたはIntelliJ IDEAを選択するか、**その他を使用...** を選択して実行可能ファイルを見つけます。
+1. ドロップダウンリストからVisual Studio CodeまたはIntelliJ IDEAを選択するか、**Use other...**を選択して実行可能ファイルを見つけます。
 
 優先するIDEがリストにない場合は、対応するリンクを最初に選択したときに、アプリケーションを選択するように求められます。
 
@@ -161,7 +161,7 @@ git clone https://<username>:<token>@gitlab.example.com/tanuki/awesome_project.g
 
 ## クローンのサイズを小さくする {#reduce-clone-size}
 
-Gitリポジトリはサイズが大きくなるにつれて、以下の理由で処理しづらくなる可能性があります。
+Gitリポジトリはサイズが大きくなるにつれて、以下の理由で処理しづらくなる可能性があります:
 
 - ダウンロードが必要な履歴の量が多い。
 - 必要なディスク容量が多い。
@@ -176,13 +176,13 @@ Git 2.22.0以降が必要です。
 
 ファイルサイズでのフィルターを使用して部分的なクローン作成を使用すると、問題のあるサイズの大きいファイルをクローン作成やフェッチ対象から除外することで、この問題を解決できます。Gitは、見つからないファイルがあると、オンデマンドでのダウンロードとして処理します。
 
-リポジトリのクローンを作成する際に、`--filter=blob:limit=<size>`引数を使用します。たとえば、1メガバイトを超えるファイルを除外してリポジトリのクローンを作成するには、以下を実行します。
+リポジトリのクローンを作成する際に、`--filter=blob:limit=<size>`引数を使用します。たとえば、1メガバイトを超えるファイルを除外してリポジトリのクローンを作成するには、以下を実行します:
 
 ```shell
 git clone --filter=blob:limit=1m git@gitlab.com:gitlab-com/www-gitlab-com.git
 ```
 
-これにより、次のとおりの出力が生成されます。
+これにより、次のとおりの出力が生成されます:
 
 ```shell
 Cloning into 'www-gitlab-com'...
@@ -202,7 +202,7 @@ Updating files: 100% (13008/13008), done.
 Filtering content: 100% (3/3), 131.24 MiB | 4.65 MiB/s, done.
 ```
 
-出力が長くなるのは、Gitが以下の処理を行うためです。
+出力が長くなるのは、Gitが以下の処理を行うためです:
 
 1. 1メガバイトを超えるファイルを除外してリポジトリのクローンを作成する。
 1. デフォルトのブランチをチェックアウトするために必要となる、見つからないサイズの大きいファイルをダウンロードする。
@@ -256,7 +256,7 @@ Updating files: 100% (302/302), done.
 
 詳細については、[`rev-list-options`](https://git-scm.com/docs/git-rev-list#Documentation/git-rev-list.txt---filterltfilter-specgt)のGitドキュメントを参照してください。
 
-1. フィルター仕様を作成します。たとえば、数多くのアプリケーションがそれぞれルートのさまざまなサブディレクトリに存在する、モノリシックなリポジトリを想定します。次のとおり`shiny-app/.filterspec`ファイルを作成します。
+1. フィルター仕様を作成します。たとえば、数多くのアプリケーションがそれぞれルートのさまざまなサブディレクトリに存在する、モノリシックなリポジトリを想定します。次のとおり`shiny-app/.filterspec`ファイルを作成します:
 
    ```plaintext
    # Only the paths listed in the file will be downloaded when performing a
@@ -283,7 +283,7 @@ Updating files: 100% (302/302), done.
    # server. WARNING: this step may be very slow!
    git clone --sparse --filter=sparse:oid=master:shiny-app/.gitfilterspec <url>
 
-   # Optional: observe there are missing objects that we have not fetched
+   # Optional: Check for missing objects that have not been fetched
    git rev-list --all --quiet --objects --missing=print | wc -l
    ```
 
@@ -295,11 +295,11 @@ Updating files: 100% (302/302), done.
 
 ### 部分的なクローン作成のフィルタリングを削除する {#remove-partial-clone-filtering}
 
-部分的なクローン作成のフィルタリングを使用したGitリポジトリのフィルタリングは削除できます。フィルタリングを削除するには以下を実行します。
+部分的なクローン作成のフィルタリングを使用したGitリポジトリのフィルタリングは削除できます。フィルタリングを削除するには以下を実行します:
 
 1. フィルターが除外した内容をすべてフェッチして、リポジトリが完全であることを確認します。`git sparse-checkout`を使用している場合は、`git sparse-checkout disable`を使用して無効にします。詳細については、[`disable`のドキュメント](https://git-scm.com/docs/git-sparse-checkout#Documentation/git-sparse-checkout.txt-emdisableem)を参照してください。
 
-   次に、通常どおり`fetch`を実行して、リポジトリが完全であることを確認します。特に`git sparse-checkout`を使用していない場合に、フェッチするオブジェクトが不足していないかを確認します。以下のコマンドを使用できます。
+   次に、通常どおり`fetch`を実行して、リポジトリが完全であることを確認します。特に`git sparse-checkout`を使用していない場合に、フェッチするオブジェクトが不足していないかを確認します。以下のコマンドを使用できます:
 
    ```shell
    # Show missing objects
@@ -315,13 +315,13 @@ Updating files: 100% (302/302), done.
    git rev-list --objects --all --missing=print | grep -e '^\?' | wc -l
    ```
 
-1. すべてをリパックします。これはたとえば、`git repack -a -d`を使用して実行できます。これにより、`.git/objects/pack/`に残るのは以下の3つのファイルのみとなります。
+1. すべてをリパックします。これはたとえば、`git repack -a -d`を使用して実行できます。これにより、`.git/objects/pack/`に残るのは以下の3つのファイルのみとなります:
    - `pack-<SHA1>.pack`ファイル
    - 対応する`pack-<SHA1>.idx`ファイル
    - `pack-<SHA1>.promisor`ファイル
 
 1. `.promisor`ファイルを削除します。上記のステップでは、`pack-<SHA1>.promisor`ファイルが1つだけ残っているはずです。これは空であるはずであり、削除する必要があります。
 
-1. 部分的なクローン作成の設定を削除します。部分的なクローン作成に関連する設定変数は、Git設定ファイルから削除する必要があります。通常、削除する必要がある設定は次のとおりです。
-   - `remote.origin.promisor`
-   - `remote.origin.partialclonefilter`
+1. 部分的なクローン作成の設定を削除します。部分的なクローン作成に関連する設定変数は、Git設定ファイルから削除する必要があります。通常、削除する必要がある設定は次のとおりです:
+   - `remote.origin.promisor`。
+   - `remote.origin.partialclonefilter`。

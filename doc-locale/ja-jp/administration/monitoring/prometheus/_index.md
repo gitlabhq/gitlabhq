@@ -32,10 +32,10 @@ Prometheusは、[各種exporter](#bundled-software-metrics)を介してデータ
 
 デフォルトでは、Prometheusとそのexporterは有効になっています。Prometheusは`gitlab-prometheus`ユーザーとして実行され、`http://localhost:9090`でリッスンします。デフォルトでは、GitLabサーバー自身からのみPrometheusにアクセスできます。各exporterは、個別に無効にしない限り、Prometheusのモニタリング対象として自動的に設定されます。
 
-Prometheusとそのすべてのexporter、さらに将来的に追加されるexporterを無効にするには、次の手順に従います。
+Prometheusとそのすべてのexporter、さらに将来的に追加されるexporterを無効にするには、次の手順に従います:
 
 1. `/etc/gitlab/gitlab.rb`を編集します。
-1. 次の行を追加するか、検索してコメントアウトを解除し、`false`に設定されていることを確認します。
+1. 次の行を追加するか、検索してコメントアウトを解除し、`false`に設定されていることを確認します:
 
    ```ruby
    prometheus_monitoring['enable'] = false
@@ -55,16 +55,16 @@ Prometheusがリッスンするポートは変更できます。ただ、おす�
 
 {{< /alert >}}
 
-GitLabサーバーの外部からPrometheusにアクセスするには、Prometheusがリッスンするアドレスまたはポートを変更します。
+GitLabサーバーの外部からPrometheusにアクセスするには、Prometheusがリッスンするアドレスまたはポートを変更します:
 
 1. `/etc/gitlab/gitlab.rb`を編集します。
-1. 次の行を追加するか、検索してコメントアウトを解除します。
+1. 次の行を追加するか、検索してコメントアウトを解除します:
 
    ```ruby
    prometheus['listen_address'] = 'localhost:9090'
    ```
 
-   `localhost:9090`を、Prometheusにリッスンさせるアドレスまたはポートに置き換えます。`localhost`以外のホストからPrometheusへのアクセスを許可する場合は、ホスト部分を省略するか、`0.0.0.0`を使用してパブリックアクセスを許可します。
+   `localhost:9090`を、Prometheusにリッスンさせるアドレスまたはポートに置き換えます。`localhost`以外のホストからPrometheusへのアクセスを許可する場合は、ホスト部分を省略するか、`0.0.0.0`を使用してパブリックアクセスを許可します:
 
    ```ruby
    prometheus['listen_address'] = ':9090'
@@ -78,7 +78,7 @@ GitLabサーバーの外部からPrometheusにアクセスするには、Prometh
 
 [Prometheusのスクレイプターゲットの設定](https://prometheus.io/docs/prometheus/latest/configuration/configuration/#%3Cscrape_config%3E)の構文を用いて、`/etc/gitlab/gitlab.rb`内の`prometheus['scrape_configs']`を編集することで、LinuxパッケージバンドルのPrometheusに追加のスクレイプターゲットを設定できます。
 
-`http://1.1.1.1:8060/probe?param_a=test&param_b=additional_test`をスクレイプする設定の例を次に示します。
+`http://1.1.1.1:8060/probe?param_a=test&param_b=additional_test`をスクレイプする設定の例を次に示します:
 
 ```ruby
 prometheus['scrape_configs'] = [
@@ -102,12 +102,12 @@ Linuxパッケージを使用して、Prometheusを実行するスタンドア�
 
 [複数ノードのGitLabデプロイ](../../reference_architectures/_index.md)には、スタンドアロンのモニタリングノードの使用が推奨されます。
 
-LinuxパッケージでPrometheusを実行するモニタリングノードを設定するには、以下の手順が最低限必要です。
+LinuxパッケージでPrometheusを実行するモニタリングノードを設定するには、以下の手順が最低限必要です:
 
 1. モニタリングノードにSSHで接続します。
-1. GitLabのダウンロードページにある**手順1と2**を実行し、必要なLinuxパッケージを[インストール](https://about.gitlab.com/install/)します。ただし、それ以降の手順は実行しないでください。
+1. GitLabのダウンロードページにある**steps 1 and 2**（手順1と2）を実行し、必要なLinuxパッケージを[インストール](https://about.gitlab.com/install/)します。ただし、それ以降の手順は実行しないでください。
 1. 次の手順で使用するため、ConsulサーバーノードのIPアドレスまたはDNSレコードを事前に確認してください。
-1. `/etc/gitlab/gitlab.rb`を編集し、次の内容を追加します。
+1. `/etc/gitlab/gitlab.rb`を編集し、次の内容を追加します:
 
    ```ruby
    roles ['monitoring_role']
@@ -131,9 +131,9 @@ LinuxパッケージでPrometheusを実行するモニタリングノードを�
 
 1. `sudo gitlab-ctl reconfigure`を実行して設定をコンパイルします。
 
-次に、モニタリングノードの位置を他のすべてのノードに知らせる手順を実行します。
+次に、モニタリングノードの位置を他のすべてのノードに知らせる手順を実行します:
 
-1. `/etc/gitlab/gitlab.rb`を編集し、次の行を追加するか、検索してコメントアウトを解除します。
+1. `/etc/gitlab/gitlab.rb`を編集し、次の行を追加するか、検索してコメントアウトを解除します:
 
    ```ruby
    # can be FQDN or IP
@@ -144,7 +144,7 @@ LinuxパッケージでPrometheusを実行するモニタリングノードを�
 
 1. ファイルを保存して、[GitLabを再設定](../../restart_gitlab.md#reconfigure-a-linux-package-installation)し、変更を有効にします。
 
-`consul['monitoring_service_discovery'] =  true`を設定してサービスディスカバリによるモニタリングを有効にした後は、`/etc/gitlab/gitlab.rb`で`prometheus['scrape_configs']`を設定しないようにしてください。`/etc/gitlab/gitlab.rb`で`consul['monitoring_service_discovery'] = true`と`prometheus['scrape_configs']`の両方を設定すると、エラーが発生します。
+`consul['monitoring_service_discovery'] = true`を設定してサービスディスカバリによるモニタリングを有効にした後は、`/etc/gitlab/gitlab.rb`で`prometheus['scrape_configs']`を設定しないようにしてください。`/etc/gitlab/gitlab.rb`で`consul['monitoring_service_discovery'] = true`と`prometheus['scrape_configs']`の両方を設定すると、エラーが発生します。
 
 ### 外部のPrometheusサーバーを使用する {#using-an-external-prometheus-server}
 
@@ -156,16 +156,16 @@ Prometheusおよびほとんどのexporterは、認証をサポートしてい�
 
 GitLabを外部のPrometheusサーバーでモニタリングできるようにするには、いくつかの設定変更が必要です。
 
-外部のPrometheusサーバーを使用するには、次の手順に従います。
+外部のPrometheusサーバーを使用するには、次の手順に従います:
 
 1. `/etc/gitlab/gitlab.rb`を編集します。
-1. バンドルされているPrometheusを無効にします。
+1. バンドルされているPrometheusを無効にします:
 
    ```ruby
    prometheus['enable'] = false
    ```
 
-1. バンドルされている各サービスの[exporter](#bundled-software-metrics)がネットワークアドレスでリッスンするように設定します。次に例を示します。
+1. バンドルされている各サービスの[exporter](#bundled-software-metrics)がネットワークアドレスでリッスンするように設定します。次に例を示します:
 
    ```ruby
    node_exporter['listen_address'] = '0.0.0.0:9100'
@@ -197,13 +197,13 @@ GitLabを外部のPrometheusサーバーでモニタリングできるように�
 
 1. 必要に応じて、[公式インストール手順](https://prometheus.io/docs/prometheus/latest/installation/)に従って専用のPrometheusインスタンスをインストールしてセットアップします。
 
-1. **すべて**のGitLab Rails（Puma、Sidekiq）サーバーで、PrometheusサーバーのIPアドレスとリッスンポートを設定します。次に例を示します。
+1. **すべて**のGitLab Rails（Puma、Sidekiq）サーバーで、PrometheusサーバーのIPアドレスとリッスンポートを設定します。例: 
 
    ```ruby
    gitlab_rails['prometheus_address'] = '192.168.0.1:9090'
    ```
 
-1. NGINXメトリクスをスクレイプするには、PrometheusサーバーのIPを許可するようにNGINXを設定する必要もあります。次に例を示します。
+1. NGINXメトリクスをスクレイプするには、PrometheusサーバーのIPを許可するようにNGINXを設定する必要もあります。例: 
 
    ```ruby
    nginx['status']['options'] = {
@@ -214,7 +214,7 @@ GitLabを外部のPrometheusサーバーでモニタリングできるように�
    }
    ```
 
-   Prometheusサーバーが複数ある場合は、複数のIPアドレスを指定することも可能です。
+   Prometheusサーバーが複数ある場合は、複数のIPアドレスを指定することも可能です:
 
    ```ruby
    nginx['status']['options'] = {
@@ -225,7 +225,7 @@ GitLabを外部のPrometheusサーバーでモニタリングできるように�
    }
    ```
 
-1. Prometheusサーバーが[GitLabメトリクス](#gitlab-metrics)のエンドポイントをフェッチできるようにするには、[モニタリング用IP許可リスト](../ip_allowlist.md)にPrometheusサーバーのIPアドレスを追加します。
+1. Prometheusサーバーが[GitLabメトリクス](#gitlab-metrics)のエンドポイントをフェッチできるようにするには、[モニタリング用IP許可リスト](../ip_allowlist.md)にPrometheusサーバーのIPアドレスを追加します:
 
    ```ruby
    gitlab_rails['monitoring_whitelist'] = ['127.0.0.0/8', '192.168.0.1']
@@ -234,7 +234,7 @@ GitLabを外部のPrometheusサーバーでモニタリングできるように�
 1. GitLabでは、バンドルされている各サービスの[exporter](#bundled-software-metrics)がネットワークアドレスでリッスンするように設定しているため、インスタンスのファイアウォールを更新し、有効になっているexporterに対してはPrometheusのIPからのトラフィックのみを許可するようにしてください。exporterサービスと[それぞれの](../../package_information/defaults.md#ports)ポートをまとめた完全なリストは、こちらを参照してください。
 1. 変更を反映させるため、[GitLabを再設定](../../restart_gitlab.md#reconfigure-a-linux-package-installation)します。
 1. Prometheusサーバーの設定ファイルを編集します。
-1. 各ノードのexporterを、Prometheusサーバーの[スクレイプターゲット設定](https://prometheus.io/docs/prometheus/latest/configuration/configuration/#%3Cscrape_config%3E)に追加します。たとえば、`static_configs`を使用したサンプルスニペットは次のとおりです。
+1. 各ノードのexporterを、Prometheusサーバーの[スクレイプターゲット設定](https://prometheus.io/docs/prometheus/latest/configuration/configuration/#%3Cscrape_config%3E)に追加します。たとえば、`static_configs`を使用したサンプルスニペットは次のとおりです:
 
    ```yaml
    scrape_configs:
@@ -298,14 +298,14 @@ GitLabを外部のPrometheusサーバーでモニタリングできるように�
 
 ### ストレージ保持サイズを設定する {#configure-the-storage-retention-size}
 
-Prometheusには、ローカルストレージを設定するためのカスタムフラグがいくつかあります。
+Prometheusには、ローカルストレージを設定するためのカスタムフラグがいくつかあります:
 
 - `storage.tsdb.retention.time`: 古いデータを削除するタイミング。デフォルトは`15d`です。このフラグがデフォルト以外の値に設定されている場合、`storage.tsdb.retention`を上書きします。
 - `storage.tsdb.retention.size`: 保持するストレージブロックの最大バイト数（実験的なフラグ）。最も古いデータから削除されます。デフォルトは`0`（無効）です。このフラグは実験的な機能です。今後のリリースで変更される可能性があります。サポート対象の単位は`B`、`KB`、`MB`、`GB`、`TB`、`PB`、`EB`です。例えば、`512MB`です。
 
-ストレージ保持サイズを設定するには、次の手順に従います。
+ストレージ保持サイズを設定するには、次の手順に従います:
 
-1. `/etc/gitlab/gitlab.rb`を編集します。
+1. `/etc/gitlab/gitlab.rb`を編集します:
 
    ```ruby
    prometheus['flags'] = {
@@ -316,7 +316,7 @@ Prometheusには、ローカルストレージを設定するためのカスタ�
    }
    ```
 
-1. GitLabを再設定します。
+1. GitLabを再設定します:
 
    ```shell
    sudo gitlab-ctl reconfigure
@@ -340,22 +340,22 @@ Prometheusによって収集されたパフォーマンスデータは、Prometh
 
 {{< /alert >}}
 
-- **CPU使用率**: `1 - avg without (mode,cpu) (rate(node_cpu_seconds_total{mode="idle"}[5m]))`
-- **使用可能なメモリの割合**: `((node_memory_MemAvailable_bytes / node_memory_MemTotal_bytes) or ((node_memory_MemFree_bytes + node_memory_Buffers_bytes + node_memory_Cached_bytes) / node_memory_MemTotal_bytes)) * 100`
-- **送信データ量**: `rate(node_network_transmit_bytes_total{device!="lo"}[5m])`
-- **受信データ量**: `rate(node_network_receive_bytes_total{device!="lo"}[5m])`
-- **ディスクの読み取りIOPS**: `sum by (instance) (rate(node_disk_reads_completed_total[1m]))`
-- **ディスクの書き込みIOPS**: `sum by (instance) (rate(node_disk_writes_completed_total[1m]))`
-- **GitLabのトランザクション数に基づくRPS**: `sum(irate(gitlab_transaction_duration_seconds_count{controller!~'HealthController|MetricsController'}[1m])) by (controller, action)`
+- **% CPU utilization**（CPU使用率）: `1 - avg without (mode,cpu) (rate(node_cpu_seconds_total{mode="idle"}[5m]))`
+- **% Memory available**（使用可能なメモリの割合）: `((node_memory_MemAvailable_bytes / node_memory_MemTotal_bytes) or ((node_memory_MemFree_bytes + node_memory_Buffers_bytes + node_memory_Cached_bytes) / node_memory_MemTotal_bytes)) * 100`
+- **Data transmitted**（送信データ量）: `rate(node_network_transmit_bytes_total{device!="lo"}[5m])`
+- **Data received**（受信データ量）: `rate(node_network_receive_bytes_total{device!="lo"}[5m])`
+- **Disk read IOPS**（ディスクの読み取りIOPS）: `sum by (instance) (rate(node_disk_reads_completed_total[1m]))`
+- **Disk write IOPS**（ディスクの書き込みIOPS）: `sum by (instance) (rate(node_disk_writes_completed_total[1m]))`
+- **RPS via GitLab transaction count**（GitLabのトランザクション数に基づくRPS）: `sum(irate(gitlab_transaction_duration_seconds_count{controller!~'HealthController|MetricsController'}[1m])) by (controller, action)`
 
 ## GrafanaデータソースとしてのPrometheus {#prometheus-as-a-grafana-data-source}
 
 Grafanaでは、Prometheusパフォーマンスメトリクスをデータソースとしてインポートし、そのメトリクスをグラフやダッシュボードとして表示できます。これはメトリクスの視覚化に役立ちます。
 
-単一サーバーのGitLabセットアップにPrometheusダッシュボードを追加するには、次の手順に従います。
+単一サーバーのGitLabセットアップにPrometheusダッシュボードを追加するには、次の手順に従います:
 
 1. Grafanaで新しいデータソースを作成します。
-1. **Type**（タイプ）で、`Prometheus`を選択します。
+1. **種類**で、`Prometheus`を選択します。
 1. データソースに名前を付けます（例: GitLab）。
 1. **Prometheus server URL**（PrometheusサーバーのURL）に、Prometheusのリッスンアドレスを入力します。
 1. **HTTP method**（HTTPメソッド）を`GET`に設定します。
@@ -417,37 +417,37 @@ GitLab exporterを使用すると、Redisやデータベースからプルされ
 
 ### `/var/opt/gitlab/prometheus`がディスク容量を過剰に消費する {#varoptgitlabprometheus-consumes-too-much-disk-space}
 
-Prometheusモニタリングを**使用していない場合**:
+Prometheusモニタリングを**not**（使用していない場合）:
 
 1. [Prometheusを無効にします](_index.md#configuring-prometheus)。
 1. `/var/opt/gitlab/prometheus`配下のデータを削除します。
 
 Prometheusモニタリングを使用している場合:
 
-1. Prometheusを停止します（実行中にデータを削除すると、データが破損する可能性があります）。
+1. Prometheusを停止します（実行中にデータを削除すると、データが破損する可能性があります）:
 
    ```shell
    gitlab-ctl stop prometheus
    ```
 
 1. `/var/opt/gitlab/prometheus/data`配下のデータを削除します。
-1. サービスを再起動します。
+1. サービスを再起動します:
 
    ```shell
    gitlab-ctl start prometheus
    ```
 
-1. サービスが起動して実行中であることを確認します。
+1. サービスが起動して実行中であることを確認します:
 
    ```shell
    gitlab-ctl status prometheus
    ```
 
-1. （オプション）[ストレージ保持サイズを設定します](_index.md#configure-the-storage-retention-size)。
+1. オプション。[ストレージ保持サイズを設定します](_index.md#configure-the-storage-retention-size)。
 
 ### モニタリングノードがデータを受信していない {#monitoring-node-not-receiving-data}
 
-モニタリングノードがデータを受信していない場合は、次のようにexporterがデータをキャプチャしていることを確認してください。
+モニタリングノードがデータを受信していない場合は、次のようにexporterがデータをキャプチャしていることを確認してください:
 
 ```shell
 curl "http[s]://localhost:<EXPORTER LISTENING PORT>/metrics"

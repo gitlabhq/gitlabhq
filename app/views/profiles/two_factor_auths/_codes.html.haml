@@ -1,4 +1,4 @@
 - show_success_alert = local_assigns.fetch(:show_success_alert, nil)
 - redirect_path = Feature.enabled?(:passkeys, current_user) ? profile_two_factor_auth_path(two_factor_auth_enabled_successfully: show_success_alert) : profile_account_path(two_factor_auth_enabled_successfully: show_success_alert)
 
-.js-2fa-recovery-codes{ data: { codes: @codes.to_json, profile_account_path: redirect_path } }
+.js-2fa-recovery-codes{ data: { codes: @codes.to_json, redirect_path: redirect_path } }

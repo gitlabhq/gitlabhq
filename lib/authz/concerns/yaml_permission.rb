@@ -61,17 +61,14 @@ module Authz
       end
 
       def action
-        return definition[:action] if definition[:action]
-        return name.delete_suffix("_#{resource}") if definition[:resource]
-
-        name.split('_')[0]
+        File.basename(source_file, '.yml')
       end
 
       def resource
-        return definition[:resource] if definition[:resource]
-        return name.delete_prefix("#{action}_") if definition[:action]
+        # return nil if file is not under a directory
+        return unless File.fnmatch(self.class.config_path.to_s, source_file)
 
-        name.split('_', 2)[1]
+        File.basename(File.dirname(source_file))
       end
 
       def feature_category

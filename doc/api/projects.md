@@ -2513,6 +2513,8 @@ curl --request PUT --header "PRIVATE-TOKEN: <your_access_token>" \
 
 Share a project with a group.
 
+For more information, see [Invite a group to a project](../user/project/members/sharing_projects_groups.md#invite-a-group-to-a-project).
+
 ### Share a project with a group
 
 Share a project with a group.

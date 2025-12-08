@@ -844,6 +844,7 @@ to configure other related settings. These requirements are
 | `iframe_rendering_enabled`               | boolean          | no                                   | Allow rendering of iframes in Markdown. Disabled by default. |
 | `iframe_rendering_allowlist`             | array of strings | no                                   | List of allowed iframe `src` host[:port] entries used for Content Security Policy and sanitization. |
 | `iframe_rendering_allowlist_raw`         | string           | no                                   | Raw newline- or comma-separated list of allowed iframe `src` host[:port] entries. |
+| `usage_billing`                          | object           | no                                   | Usage Billing Settings. Check `ee/app/validators/json_schemas/usage_billing_settings.json` for schema definition |
 
 ### Dormant project settings
 

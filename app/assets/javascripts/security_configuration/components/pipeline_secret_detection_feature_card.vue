@@ -1,5 +1,14 @@
 <script>
-import { GlCard, GlIcon, GlLink, GlButton, GlToggle, GlAlert, GlExperimentBadge } from '@gitlab/ui';
+import {
+  GlCard,
+  GlIcon,
+  GlLink,
+  GlButton,
+  GlToggle,
+  GlAlert,
+  GlPopover,
+  GlExperimentBadge,
+} from '@gitlab/ui';
 import { s__ } from '~/locale';
 import ManageViaMr from '~/vue_shared/security_configuration/components/manage_via_mr.vue';
 import SetValidityChecks from '~/security_configuration/graphql/set_validity_checks.graphql';
@@ -15,8 +24,9 @@ export default {
     GlButton,
     GlToggle,
     GlAlert,
-    GlExperimentBadge,
+    GlPopover,
     ManageViaMr,
+    GlExperimentBadge,
   },
   inject: [
     'projectFullPath',
@@ -147,12 +157,21 @@ export default {
     </p>
 
     <template v-if="pipelineSecretDetectionAvailable">
-      <div class="gl-mt-5 gl-flex gl-justify-between">
+      <gl-alert
+        v-if="shouldShowAlert"
+        class="gl-mt-5"
+        variant="danger"
+        @dismiss="isAlertDismissed = true"
+      >
+        {{ errorMessage }}
+      </gl-alert>
+
+      <div class="gl-mt-5 gl-flex gl-items-center gl-justify-between">
         <manage-via-mr
           v-if="showManageViaMr"
           :feature="feature"
           variant="confirm"
-          category="primary"
+          category="secondary"
           :data-testid="`${hyphenatedFeature}-mr-button`"
           @error="onError"
         />
@@ -164,43 +183,38 @@ export default {
         >
           {{ s__('SecurityConfiguration|Configuration guide') }}
         </gl-button>
-      </div>
 
-      <div v-if="validityChecksAvailable" class="gl-mt-6" data-testid="validity-checks-section">
-        <gl-alert
-          v-if="shouldShowAlert"
-          class="gl-mb-5"
-          variant="danger"
-          @dismiss="isAlertDismissed = true"
-        >
-          {{ errorMessage }}
-        </gl-alert>
-
-        <h4 class="gl-mb-3 gl-text-base gl-font-bold">
-          {{ s__('SecretDetection|Validity checks') }}
-          <gl-experiment-badge type="beta" />
-        </h4>
-
-        <p class="gl-mb-4 gl-text-base">
-          {{
-            s__(
-              'SecretDetection|Validate tokens using third-party API calls. When the pipeline is complete, your tokens are labeled Active, Possibly active, or Inactive. You must have pipeline secret detection enabled.',
-            )
-          }}
-          <gl-link :href="$options.validityChecksHelpUrl" target="_blank">
-            {{ s__('SecretDetection|What are validity checks?') }}
-          </gl-link>
-        </p>
-
-        <div class="gl-flex gl-items-center">
-          <gl-toggle
-            v-model="localValidityChecksEnabled"
-            :label="s__('SecretDetection|Validity checks')"
-            label-position="hidden"
-            data-testid="validity-checks-toggle"
-            :disabled="isToggleDisabled"
-            @change="onValidityChecksToggle"
-          />
+        <div v-if="validityChecksAvailable" data-testid="validity-checks-section">
+          <div class="gl-mb-1 gl-flex gl-items-center gl-gap-2">
+            <span class="gl-font-semibold">
+              {{ s__('SecretDetection|Validity checks') }}
+            </span>
+            <gl-icon id="validity-checks-info" name="information-o" class="gl-text-blue-500" />
+            <gl-popover target="validity-checks-info" placement="top">
+              <p class="gl-mb-2">
+                {{
+                  s__(
+                    'SecretDetection|Validate tokens using third-party API calls. When the pipeline is complete, your tokens are labeled Active, Possibly active, or Inactive. You must have pipeline secret detection enabled.',
+                  )
+                }}
+              </p>
+              <p class="gl-mb-0">
+                <gl-link :href="$options.validityChecksHelpUrl" target="_blank">
+                  {{ s__('SecretDetection|Learn more about validity checks') }}
+                </gl-link>
+              </p>
+            </gl-popover>
+            <gl-experiment-badge type="beta" />
+            <gl-toggle
+              v-model="localValidityChecksEnabled"
+              class="gl-pl-2"
+              :label="s__('SecretDetection|Validity checks')"
+              label-position="hidden"
+              data-testid="validity-checks-toggle"
+              :disabled="isToggleDisabled"
+              @change="onValidityChecksToggle"
+            />
+          </div>
         </div>
       </div>
     </template>

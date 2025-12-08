@@ -19,7 +19,7 @@ RSpec.describe Tasks::Gitlab::Permissions::ValidateTask, feature_category: :perm
       }
     end
 
-    let(:permission) { Authz::Permission.new(permission_definition, permission_source_file) }
+    let(:permission) { Authz::Permission.new(permission_definition, Rails.root.join(permission_source_file).to_s) }
 
     let(:enabled_permissions) { [] }
     let(:mock_policy_class) do
@@ -124,8 +124,6 @@ RSpec.describe Tasks::Gitlab::Permissions::ValidateTask, feature_category: :perm
           name: permission_name,
           description: 'a defined permission',
           feature_category: 'unknown',
-          action: 'defined',
-          resource: 'permission',
           key: 'not allowed'
         }
       end
@@ -162,20 +160,57 @@ RSpec.describe Tasks::Gitlab::Permissions::ValidateTask, feature_category: :perm
       end
     end
 
-    context 'when the permission definition is at the wrong file location' do
-      let(:permission_source_file) { 'config/authz/permissions/defined_permission.yml' }
+    describe 'file path checks' do
+      context 'when the permission definition is not under a resource directory' do
+        let(:permission_source_file) { 'config/authz/permissions/defined_permission.yml' }
 
-      it 'returns an error' do
-        expect { run }.to raise_error(SystemExit).and output(<<~OUTPUT).to_stdout
-          #######################################################################
-          #
-          #  The following permission definitions do not exist at the expected path.
-          #
-          #    - Name: defined_permission
-          #      Expected Path: config/authz/permissions/permission/defined.yml
-          #
-          #######################################################################
-        OUTPUT
+        it 'returns an error' do
+          expect { run }.to raise_error(SystemExit).and output(<<~OUTPUT).to_stdout
+            #######################################################################
+            #
+            #  The following permission definitions do not exist at the expected path.
+            #
+            #    - defined_permission in config/authz/permissions/defined_permission.yml
+            #      Expected path: config/authz/permissions/<resource>/defined_permission.yml
+            #
+            #######################################################################
+          OUTPUT
+        end
+      end
+
+      context 'when the resource directory is not directly under config/authz/permissions/' do
+        let(:permission_source_file) { 'config/authz/permissions/another_dir/resource_dir/defined_permission.yml' }
+
+        it 'returns an error' do
+          expect { run }.to raise_error(SystemExit).and output(<<~OUTPUT).to_stdout
+            #######################################################################
+            #
+            #  The following permission definitions do not exist at the expected path.
+            #
+            #    - defined_permission in config/authz/permissions/another_dir/resource_dir/defined_permission.yml
+            #      Expected path: config/authz/permissions/resource_dir/defined_permission.yml
+            #
+            #######################################################################
+          OUTPUT
+        end
+      end
+
+      context 'when the permission definition path does not match the permission name' do
+        let(:permission_name) { 'action_on_a_resource' } # action: 'action_on', resource: 'a_resource'
+        let(:permission_source_file) { 'config/authz/permissions/wrong_resource_name/wrong_action_name.yml' }
+
+        it 'returns an error' do
+          expect { run }.to raise_error(SystemExit).and output(<<~OUTPUT).to_stdout
+            #######################################################################
+            #
+            #  The following permission definitions do not exist at the expected path.
+            #
+            #    - action_on_a_resource in config/authz/permissions/wrong_resource_name/wrong_action_name.yml
+            #      Path must match 'config/authz/permissions/<resource>/<action>.yml' based on <resource> and <action> values from 'action_on_a_resource' ('<action>_<resource>')
+            #
+            #######################################################################
+          OUTPUT
+        end
       end
     end
 

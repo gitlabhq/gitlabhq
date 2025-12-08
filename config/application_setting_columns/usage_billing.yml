@@ -1,0 +1,13 @@
+---
+api_type: object
+attr: usage_billing
+clusterwide: true
+column: usage_billing
+db_type: jsonb
+default: "'{}'::jsonb"
+description: Usage Billing Settings. Check `ee/app/validators/json_schemas/usage_billing_settings.json`
+  for schema definition
+encrypted: false
+gitlab_com_different_than_default: false
+jihu: false
+not_null: true

@@ -13,13 +13,13 @@ title: イシューAPI
 
 {{< /details >}}
 
-イシューAPIを使用して、プログラムで[GitLabイシュー](../user/project/issues/_index.md)を読み取り、管理します。イシューAPIは次の処理を行います。
+このAPIを使用して、[イシュー](../user/project/issues/_index.md)を管理します。次のことができます: 
 
-- プロジェクトとグループに関するイシューを作成、更新、削除する。
-- 担当者、ラベル、マイルストーン、タイムトラッキングなどのイシューメタデータを管理する。
-- イシューとマージリクエスト間の相互参照をサポートする。
-- プロジェクトとエピック間のイシューの移動とプロモーションを追跡する。
-- 認証チェックによりアクセスと表示レベルを制御する。
+- イシューの作成、更新、削除ができます。
+- 担当者、ラベル、マイルストーン、タイムトラッキングなどのイシューメタデータを管理します。
+- イシューとマージリクエストを相互参照します。
+- プロジェクトとエピック間のイシューの移動とプロモーションを追跡します。
+- 認可チェックでアクセスと表示レベルを制御します。
 
 ユーザーが非公開プロジェクトのメンバーでない場合、そのプロジェクトに対する`GET`リクエストの結果はステータスコード`404`になります。
 
@@ -54,40 +54,40 @@ GET /issues?state=closed
 GET /issues?state=opened
 ```
 
-サポートされている属性は以下のとおりです。
+サポートされている属性は以下のとおりです:
 
-| 属性                       | 型          | 必須   | 説明                                                                                                                                         |
-|---------------------------------|---------------| ---------- | --------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `assignee_id`                   | 整数       | いいえ         | 指定されたユーザー`id`に割り当てられているイシューを返します。`assignee_username`と相互に排他的です。`None`は、未割り当てのイシューを返します。`Any`は、担当者がいるイシューを返します。 |
-| `assignee_username`             | 文字列配列  | いいえ         | 指定された`username`に割り当てられているイシューを返します。`assignee_id`と類似しており、`assignee_id`と相互に排他的です。GitLab Community Edition（CE）では、`assignee_username`配列には単一値のみが含まれている必要があります。そうでない場合には、無効なパラメータエラーが返されます。 |
-| `author_id`                     | 整数       | いいえ         | 指定されたユーザー`id`が作成したイシューを返します。`author_username`と相互に排他的です。`scope=all`または`scope=assigned_to_me`と組み合わせて指定します。 |
-| `author_username`               | 文字列        | いいえ         | 指定された`username`が作成したイシューを返します。`author_id`と類似しており、`author_id`と相互に排他的です。 |
-| `confidential`                  | ブール値       | いいえ         | 非公開イシューまたは公開イシューをフィルタリングします。                                                                                                               |
-| `created_after`                 | 日時      | いいえ         | 指定時刻以降に作成されたイシューを返します。ISO 8601形式で指定します（`2019-03-15T08:00:00Z`）。 |
-| `created_before`                | 日時      | いいえ         | 指定時刻以前に作成されたイシューを返します。ISO 8601形式で指定します（`2019-03-15T08:00:00Z`）。 |
-| `due_date`                      | 文字列        | いいえ         | 期限がないイシュー、期限切れのイシュー、または期日が今週、今月、または2週間前から来月の間にあるイシューを返します。`0`（期限なし）、`any`、`today`、`tomorrow`、`overdue`、`week`、`month`、`next_month_and_previous_two_weeks`を指定できます。 |
-| `epic_id`        | 整数       | いいえ         | 指定されたエピックIDに関連付けられているイシューを返します。`None`は、エピックに関連付けられていないイシューを返します。`Any`は、エピックに関連付けられているイシューを返します。PremiumおよびUltimateのみです。 |
-| `health_status`  | 文字列        | いいえ         | 指定された`health_status`のイシューを返します。_（GitLab 15.4で[導入](https://gitlab.com/gitlab-org/gitlab/-/issues/370721)されました）。_GitLab 15.5[以降](https://gitlab.com/gitlab-org/gitlab/-/issues/370721)では、`None`はヘルスステータスが割り当てられていないイシューを返し、`Any`はヘルスステータスが割り当てられているイシューを返します。Ultimateのみです。 |
-| `iids[]`                        | 整数の配列 | いいえ         | 指定された`iid`を持つイシューのみを返します。                                                                                                       |
-| `in`                            | 文字列        | いいえ         | `search`属性のスコープを変更します（`title`、`description`、またはこれらをカンマで結合した文字列）。デフォルトは`title,description`です。             |
-| `issue_type`                    | 文字列        | いいえ         | 特定の種類のイシューに絞り込みます。`issue`、`incident`、`test_case`、`task`のいずれかです。 |
-| `iteration_id`                  | 整数       | いいえ         | 指定されたイテレーションIDに割り当てられているイシューを返します。`None`は、イテレーションに属していないイシューを返します。`Any`は、イテレーションに属しているイシューを返します。`iteration_title`と相互に排他的です。PremiumおよびUltimateのみです。 |
-| `iteration_title`               | 文字列        | いいえ       | 指定されたタイトルのイテレーションに割り当てられているイシューを返します。`iteration_id`と類似しており、`iteration_id`と相互に排他的です。PremiumおよびUltimateのみです。 |
-| `labels`                        | 文字列        | いいえ         | ラベル名のカンマ区切りリスト。イシューが返されるようにするには、イシューにすべてのラベルが含まれている必要があります。`None`は、ラベルのないすべてのイシューをリストします。`Any`は、1つ以上のラベルがあるすべてのイシューをリストします。`No+Label`（非推奨）は、ラベルのないすべてのイシューをリストします。定義済みの名前では大文字と小文字が区別されません。 |
+| 属性                       | 型          | 必須   | 説明                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            |
+|---------------------------------|---------------| ---------- |------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| `assignee_id`                   | 整数       | いいえ         | 指定されたユーザー`id`に割り当てられているイシューを返します。`assignee_username`と相互に排他的です。`None`は、未割り当てのイシューを返します。`Any`は、担当者がいるイシューを返します。                                                                                                                                                                                                                                                                                                                                                                                                   |
+| `assignee_username`             | 文字列配列  | いいえ         | 指定された`username`に割り当てられているイシューを返します。`assignee_id`と類似しており、`assignee_id`と相互に排他的です。GitLab Community Edition（CE）では、`assignee_username`配列には単一値のみが含まれている必要があります。そうでない場合には、無効なパラメータエラーが返されます。渡されたすべてのユーザーに割り当てられたイシューのみが返されます。 |
+| `author_id`                     | 整数       | いいえ         | 指定されたユーザー`id`が作成したイシューを返します。`author_username`と相互に排他的です。`scope=all`または`scope=assigned_to_me`と組み合わせて指定します。                                                                                                                                                                                                                                                                                                                                                                                                                           |
+| `author_username`               | 文字列        | いいえ         | 指定された`username`が作成したイシューを返します。`author_id`と類似しており、`author_id`と相互に排他的です。                                                                                                                                                                                                                                                                                                                                                                                                                                                         |
+| `confidential`                  | ブール値       | いいえ         | 非公開イシューまたは公開イシューをフィルタリングします。                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                  |
+| `created_after`                 | 日時      | いいえ         | 指定時刻以降に作成されたイシューを返します。ISO 8601形式で指定します（`2019-03-15T08:00:00Z`）。                                                                                                                                                                                                                                                                                                                                                                                                                                                                |
+| `created_before`                | 日時      | いいえ         | 指定時刻以前に作成されたイシューを返します。ISO 8601形式で指定します（`2019-03-15T08:00:00Z`）。                                                                                                                                                                                                                                                                                                                                                                                                                                                               |
+| `due_date`                      | 文字列        | いいえ         | 期限がないイシュー、期限切れのイシュー、または期日が今週、今月、または2週間前から来月の間にあるイシューを返します。`0`（期限なし）、`any`、`today`、`tomorrow`、`overdue`、`week`、`month`、`next_month_and_previous_two_weeks`を指定できます。                                                                                                                                                                                                                                                                                                        |
+| `epic_id`        | 整数       | いいえ         | 指定されたエピックIDに関連付けられているイシューを返します。`None`は、エピックに関連付けられていないイシューを返します。`Any`は、エピックに関連付けられているイシューを返します。PremiumおよびUltimateのみです。                                                                                                                                                                                                                                                                                                                                                                         |
+| `health_status`  | 文字列        | いいえ         | 指定された`health_status`のイシューを返します。_（GitLab 15.4で[導入](https://gitlab.com/gitlab-org/gitlab/-/issues/370721)されました）。_GitLab 15.5[以降](https://gitlab.com/gitlab-org/gitlab/-/issues/370721)では、`None`はヘルスステータスが割り当てられていないイシューを返し、`Any`はヘルスステータスが割り当てられているイシューを返します。Ultimateのみです。                                                                                                                                                                                                                |
+| `iids[]`                        | 整数の配列 | いいえ         | 指定された`iid`を持つイシューのみを返します。                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                         |
+| `in`                            | 文字列        | いいえ         | `search`属性のスコープを変更します（`title`、`description`、またはこれらをカンマで結合した文字列）。デフォルトは`title,description`です。                                                                                                                                                                                                                                                                                                                                                                                                                               |
+| `issue_type`                    | 文字列        | いいえ         | 特定の種類のイシューに絞り込みます。`issue`、`incident`、`test_case`、`task`のいずれかです。                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    |
+| `iteration_id`                  | 整数       | いいえ         | 指定されたイテレーションIDに割り当てられているイシューを返します。`None`は、イテレーションに属していないイシューを返します。`Any`は、イテレーションに属しているイシューを返します。`iteration_title`と相互に排他的です。PremiumおよびUltimateのみです。                                                                                                                                                                                                                                                                                                                                    |
+| `iteration_title`               | 文字列        | いいえ       | 指定されたタイトルのイテレーションに割り当てられているイシューを返します。`iteration_id`と類似しており、と相互に排他的です。PremiumおよびUltimateのみです。                                                                                                                                                                                                                                                                                                                                                                                                         |
+| `labels`                        | 文字列        | いいえ         | ラベル名のカンマ区切りリスト。イシューが返されるようにするには、イシューにすべてのラベルが含まれている必要があります。`None`は、ラベルのないすべてのイシューをリストします。`Any`は、1つ以上のラベルがあるすべてのイシューをリストします。`No+Label`（非推奨）は、ラベルのないすべてのイシューをリストします。定義済みの名前では大文字と小文字が区別されません。                                                                                                                                                                                                                                                                                               |
 | `milestone_id`                  | 文字列        | いいえ         | 指定されたタイムボックス値（`None`、`Any`、`Upcoming`、`Started`）を持つマイルストーンに割り当てられているイシューを返します。`None`は、マイルストーンのないすべてのイシューをリストします。`Any`は、割り当てられているマイルストーンがあるすべてのイシューをリストします。`Upcoming`は、将来に期日があるマイルストーンに割り当てられているすべてのイシューをリストします。`Started`は、開始されたオープンなマイルストーンに割り当てられているすべてのイシューをリストします。`Upcoming`および`Started`のロジックは、[GraphQL API](../user/project/milestones/_index.md#special-milestone-filters)で使用されているロジックとは異なります。`milestone`と`milestone_id`は相互に排他的です。 |
-| `milestone`                     | 文字列        | いいえ         | マイルストーンのタイトル。`None`は、マイルストーンのないすべてのイシューをリストします。`Any`は、割り当てられているマイルストーンがあるすべてのイシューをリストします。`None`または`Any`の使用は、[今後非推奨になる](https://gitlab.com/gitlab-org/gitlab/-/issues/336044)予定です。代わりに`milestone_id`属性を使用してください。`milestone`と`milestone_id`は相互に排他的です。 |
-| `my_reaction_emoji`             | 文字列        | いいえ         | 認証済みユーザーが、指定された`emoji`でリアクションしたイシューを返します。`None`は、リアクションがないイシューを返します。`Any`は、1つ以上のリアクションがあるイシューを返します。 |
-| `non_archived`                  | ブール値       | いいえ         | 非アーカイブ済みプロジェクトのイシューのみを返します。`false`の場合、応答ではアーカイブ済みプロジェクトと非アーカイブ済みプロジェクトの両方のイシューが返されます。デフォルトは`true`です。 |
-| `not`                           | ハッシュ          | いいえ         | 指定されたパラメータに一致しないイシューを返します。`assignee_id`、`assignee_username`、`author_id`、`author_username`、`iids`、`iteration_id`、`iteration_title`、`labels`、`milestone`、`milestone_id`、および`weight`を指定できます。 |
-| `order_by`                      | 文字列        | いいえ         | `created_at`、`due_date`、`label_priority`、`milestone_due`、`popularity`、`priority`、`relative_position`、`title`、`updated_at`、`weight`フィールドで並べ替えられたイシューを返します。デフォルトは`created_at`です。 |
-| `scope`                         | 文字列        | いいえ         | 指定されたスコープ（`created_by_me`、`assigned_to_me`、または`all`）のイシューを返します。デフォルトは`created_by_me`です。 |
-| `search`                        | 文字列        | いいえ         | `title`と`description`でイシューを検索します。                                                                                               |
-| `sort`                          | 文字列        | いいえ         | `asc`または`desc`の順にソートされたイシューを返します。デフォルトは`desc`です。                                                                                    |
-| `state`                         | 文字列        | いいえ         | `all`のイシューを返すか、または`opened`か`closed`のイシューのみを返します。                                                                                       |
-| `updated_after`                 | 日時      | いいえ         | 指定時刻以降に更新されたイシューを返します。ISO 8601形式で指定します（`2019-03-15T08:00:00Z`）。 |
-| `updated_before`                | 日時      | いいえ         | 指定時刻以前に更新されたイシューを返します。ISO 8601形式で指定します（`2019-03-15T08:00:00Z`）。 |
-| `weight`                        | 整数       | いいえ         | 指定された`weight`のイシューを返します。`None`は、ウェイトが割り当てられていないイシューを返します。`Any`は、ウェイトが割り当てられているイシューを返します。PremiumおよびUltimateのみです。   |
-| `with_labels_details`           | ブール値       | いいえ         | `true`の場合、応答では、labelsフィールドの各ラベルの詳細（`:name`、`:color`、`:description`、`:description_html`、`:text_color`）が返されます。デフォルトは`false`です。 |
+| `milestone`                     | 文字列        | いいえ         | マイルストーンのタイトル。`None`は、マイルストーンのないすべてのイシューをリストします。`Any`は、割り当てられているマイルストーンがあるすべてのイシューをリストします。`None`または`Any`の使用は、[今後非推奨になる](https://gitlab.com/gitlab-org/gitlab/-/issues/336044)予定です。代わりに`milestone_id`属性を使用してください。`milestone`と`milestone_id`は相互に排他的です。                                                                                                                                                                                                                                   |
+| `my_reaction_emoji`             | 文字列        | いいえ         | 認証済みユーザーが、指定された`emoji`でリアクションしたイシューを返します。`None`は、リアクションがないイシューを返します。`Any`は、1つ以上のリアクションがあるイシューを返します。                                                                                                                                                                                                                                                                                                                                                                                                    |
+| `non_archived`                  | ブール値       | いいえ         | 非アーカイブ済みプロジェクトのイシューのみを返します。`false`の場合、応答ではアーカイブ済みプロジェクトと非アーカイブ済みプロジェクトの両方のイシューが返されます。デフォルトは`true`です。                                                                                                                                                                                                                                                                                                                                                                                                                |
+| `not`                           | ハッシュ          | いいえ         | 指定されたパラメータに一致しないイシューを返します。`assignee_id`、`assignee_username`、`author_id`、`author_username`、`iids`、`iteration_id`、`iteration_title`、`labels`、`milestone`、`milestone_id`、および`weight`を指定できます。                                                                                                                                                                                                                                                                                                                                   |
+| `order_by`                      | 文字列        | いいえ         | `created_at`、`due_date`、`label_priority`、`milestone_due`、`popularity`、`priority`、`relative_position`、`title`、`updated_at`、`weight`フィールドで並べ替えられたイシューを返します。デフォルトは`created_at`です。                                                                                                                                                                                                                                                                                                                                                               |
+| `scope`                         | 文字列        | いいえ         | 指定されたスコープ（`created_by_me`、`assigned_to_me`、または`all`）のイシューを返します。デフォルトは`created_by_me`です。                                                                                                                                                                                                                                                                                                                                                                                                                                                            |
+| `search`                        | 文字列        | いいえ         | `title`と`description`でイシューを検索します。                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                 |
+| `sort`                          | 文字列        | いいえ         | `asc`または`desc`の順にソートされたイシューを返します。デフォルトは`desc`です。                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      |
+| `state`                         | 文字列        | いいえ         | `all`のイシューを返すか、または`opened`か`closed`のイシューのみを返します。                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                       |
+| `updated_after`                 | 日時      | いいえ         | 指定時刻以降に更新されたイシューを返します。ISO 8601形式で指定します（`2019-03-15T08:00:00Z`）。                                                                                                                                                                                                                                                                                                                                                                                                                                                                |
+| `updated_before`                | 日時      | いいえ         | 指定時刻以前に更新されたイシューを返します。ISO 8601形式で指定します（`2019-03-15T08:00:00Z`）。                                                                                                                                                                                                                                                                                                                                                                                                                                                               |
+| `weight`                        | 整数       | いいえ         | 指定された`weight`のイシューを返します。`None`は、ウェイトが割り当てられていないイシューを返します。`Any`は、ウェイトが割り当てられているイシューを返します。PremiumおよびUltimateのみです。                                                                                                                                                                                                                                                                                                                                                                                                      |
+| `with_labels_details`           | ブール値       | いいえ         | `true`の場合、応答では、labelsフィールドの各ラベルの詳細（`:name`、`:color`、`:description`、`:description_html`、`:text_color`）が返されます。デフォルトは`false`です。                                                                                                                                                                                                                                                                                                                                                                                                |
 
 リクエスト例:
 
@@ -96,7 +96,7 @@ curl --header "PRIVATE-TOKEN: <your_access_token>" \
   --url "https://gitlab.example.com/api/v4/issues"
 ```
 
-応答の例:
+レスポンス例:
 
 ```json
 [
@@ -189,7 +189,7 @@ curl --header "PRIVATE-TOKEN: <your_access_token>" \
 ]
 ```
 
-GitLab PremiumまたはUltimateのユーザーが作成したイシューには、`weight`プロパティが含まれます。
+GitLab PremiumまたはUltimateのユーザーが作成したイシューには、`weight`プロパティが含まれます:
 
 ```json
 [
@@ -202,7 +202,7 @@ GitLab PremiumまたはUltimateのユーザーが作成したイシューには�
 ]
 ```
 
-GitLab PremiumまたはUltimateのユーザーが作成したイシューには、`epic`プロパティが含まれます。
+GitLab PremiumまたはUltimateのユーザーが作成したイシューには、`epic`プロパティが含まれます:
 
 ```json
 {
@@ -220,7 +220,7 @@ GitLab PremiumまたはUltimateのユーザーが作成したイシューには�
 }
 ```
 
-GitLab PremiumまたはUltimateのユーザーが作成したイシューには、`iteration`プロパティが含まれます。
+GitLab PremiumまたはUltimateのユーザーが作成したイシューには、`iteration`プロパティが含まれます:
 
 ```json
 {
@@ -242,7 +242,7 @@ GitLab PremiumまたはUltimateのユーザーが作成したイシューには�
 }
 ```
 
-GitLab Ultimateのユーザーが作成したイシューには、`health_status`プロパティが含まれます。
+GitLab Ultimateのユーザーが作成したイシューには、`health_status`プロパティが含まれます:
 
 ```json
 [
@@ -288,13 +288,13 @@ GET /groups/:id/issues?state=closed
 GET /groups/:id/issues?state=opened
 ```
 
-サポートされている属性は以下のとおりです。
+サポートされている属性は以下のとおりです:
 
 | 属性           | 型             | 必須   | 説明                                                                                                                   |
 | ------------------- | ---------------- | ---------- | ----------------------------------------------------------------------------------------------------------------------------- |
 | `id`                | 整数または文字列   | はい        | グループのグローバルIDまたは[URLエンコードされたパス](rest/_index.md#namespaced-paths)。                 |
 | `assignee_id`       | 整数          | いいえ         | 指定されたユーザー`id`に割り当てられているイシューを返します。`assignee_username`と相互に排他的です。`None`は、未割り当てのイシューを返します。`Any`は、担当者がいるイシューを返します。 |
-| `assignee_username` | 文字列配列     | いいえ         | 指定された`username`に割り当てられているイシューを返します。`assignee_id`と類似しており、`assignee_id`と相互に排他的です。GitLab Community Edition（CE）では、`assignee_username`配列には単一値のみが含まれている必要があります。そうでない場合には、無効なパラメータエラーが返されます。 |
+| `assignee_username` | 文字列配列     | いいえ         | 指定された`username`に割り当てられているイシューを返します。`assignee_id`と類似しており、`assignee_id`と相互に排他的です。GitLab Community Edition（CE）では、`assignee_username`配列には単一値のみが含まれている必要があります。そうでない場合には、無効なパラメータエラーが返されます。渡されたすべてのユーザーに割り当てられたイシューのみが返されます。 |
 | `author_id`         | 整数          | いいえ         | 指定されたユーザー`id`が作成したイシューを返します。`author_username`と相互に排他的です。`scope=all`または`scope=assigned_to_me`と組み合わせて指定します。 |
 | `author_username`   | 文字列           | いいえ         | 指定された`username`が作成したイシューを返します。`author_id`と類似しており、`author_id`と相互に排他的です。 |
 | `confidential`     | ブール値          | いいえ         | 非公開イシューまたは公開イシューをフィルタリングします。                                                                                         |
@@ -305,7 +305,7 @@ GET /groups/:id/issues?state=opened
 | `iids[]`            | 整数の配列    | いいえ         | 指定された`iid`を持つイシューのみを返します。                                                                                 |
 | `issue_type`        | 文字列           | いいえ         | 特定の種類のイシューに絞り込みます。`issue`、`incident`、`test_case`、`task`のいずれかです。 |
 | `iteration_id`      | 整数 | いいえ         | 指定されたイテレーションIDに割り当てられているイシューを返します。`None`は、イテレーションに属していないイシューを返します。`Any`は、イテレーションに属しているイシューを返します。`iteration_title`と相互に排他的です。PremiumおよびUltimateのみです。 |
-| `iteration_title`   | 文字列 | いいえ       | 指定されたタイトルのイテレーションに割り当てられているイシューを返します。`iteration_id`と類似しており、`iteration_id`と相互に排他的です。PremiumおよびUltimateのみです。|
+| `iteration_title`   | 文字列 | いいえ       | 指定されたタイトルのイテレーションに割り当てられているイシューを返します。`iteration_id`と類似しており、と相互に排他的です。PremiumおよびUltimateのみです。|
 | `labels`            | 文字列           | いいえ         | ラベル名のカンマ区切りリスト。イシューが返されるようにするには、イシューにすべてのラベルが含まれている必要があります。`None`は、ラベルのないすべてのイシューをリストします。`Any`は、1つ以上のラベルがあるすべてのイシューをリストします。`No+Label`（非推奨）は、ラベルのないすべてのイシューをリストします。定義済みの名前では大文字と小文字が区別されません。 |
 | `milestone`         | 文字列           | いいえ         | マイルストーンのタイトル。`None`は、マイルストーンのないすべてのイシューをリストします。`Any`は、割り当てられているマイルストーンがあるすべてのイシューをリストします。       |
 | `my_reaction_emoji` | 文字列           | いいえ         | 認証済みユーザーが、指定された`emoji`でリアクションしたイシューを返します。`None`は、リアクションがないイシューを返します。`Any`は、1つ以上のリアクションがあるイシューを返します。 |
@@ -328,7 +328,7 @@ curl --header "PRIVATE-TOKEN: <your_access_token>" \
   --url "https://gitlab.example.com/api/v4/groups/4/issues"
 ```
 
-応答の例:
+レスポンス例:
 
 ```json
 [
@@ -420,7 +420,7 @@ curl --header "PRIVATE-TOKEN: <your_access_token>" \
 ]
 ```
 
-GitLab PremiumまたはUltimateのユーザーが作成したイシューには、`weight`プロパティが含まれます。
+GitLab PremiumまたはUltimateのユーザーが作成したイシューには、`weight`プロパティが含まれます:
 
 ```json
 [
@@ -433,7 +433,7 @@ GitLab PremiumまたはUltimateのユーザーが作成したイシューには�
 ]
 ```
 
-GitLab PremiumまたはUltimateのユーザーが作成したイシューには、`epic`プロパティが含まれます。
+GitLab PremiumまたはUltimateのユーザーが作成したイシューには、`epic`プロパティが含まれます:
 
 ```json
 {
@@ -451,7 +451,7 @@ GitLab PremiumまたはUltimateのユーザーが作成したイシューには�
 }
 ```
 
-GitLab Ultimateのユーザーが作成したイシューには、`health_status`プロパティが含まれます。
+GitLab Ultimateのユーザーが作成したイシューには、`health_status`プロパティが含まれます:
 
 ```json
 [
@@ -503,13 +503,13 @@ GET /projects/:id/issues?state=closed
 GET /projects/:id/issues?state=opened
 ```
 
-サポートされている属性は以下のとおりです。
+サポートされている属性は以下のとおりです:
 
 | 属性             | 型           | 必須 | 説明 |
 | --------------------- | -------------- | -------- | ----------- |
 | `id`                  | 整数または文字列 | はい      | プロジェクトのグローバルIDまたは[URLエンコードされたパス](rest/_index.md#namespaced-paths)。 |
 | `assignee_id`         | 整数        | いいえ       | 指定されたユーザー`id`に割り当てられているイシューを返します。`assignee_username`と相互に排他的です。`None`は、未割り当てのイシューを返します。`Any`は、担当者がいるイシューを返します。 |
-| `assignee_username`   | 文字列配列   | いいえ       | 指定された`username`に割り当てられているイシューを返します。`assignee_id`と類似しており、`assignee_id`と相互に排他的です。GitLab Community Edition（CE）では、`assignee_username`配列には単一値のみが含まれている必要があります。そうでない場合には、無効なパラメータエラーが返されます。 |
+| `assignee_username`   | 文字列配列   | いいえ       | 指定された`username`に割り当てられているイシューを返します。`assignee_id`と類似しており、`assignee_id`と相互に排他的です。GitLab Community Edition（CE）では、`assignee_username`配列には単一値のみが含まれている必要があります。そうでない場合には、無効なパラメータエラーが返されます。渡されたすべてのユーザーに割り当てられたイシューのみが返されます。 |
 | `author_id`           | 整数        | いいえ       | 指定されたユーザー`id`が作成したイシューを返します。`author_username`と相互に排他的です。`scope=all`または`scope=assigned_to_me`と組み合わせて指定します。 |
 | `author_username`     | 文字列         | いいえ       | 指定された`username`が作成したイシューを返します。`author_id`と類似しており、`author_id`と相互に排他的です。 |
 | `confidential`        | ブール値        | いいえ       | 非公開イシューまたは公開イシューをフィルタリングします。 |
@@ -520,7 +520,7 @@ GET /projects/:id/issues?state=opened
 | `iids[]`              | 整数の配列  | いいえ       | 指定された`iid`を持つイシューのみを返します。 |
 | `issue_type`          | 文字列         | いいえ       | 特定の種類のイシューに絞り込みます。`issue`、`incident`、`test_case`、`task`のいずれかです。 |
 | `iteration_id`        | 整数        | いいえ       | 指定されたイテレーションIDに割り当てられているイシューを返します。`None`は、イテレーションに属していないイシューを返します。`Any`は、イテレーションに属しているイシューを返します。`iteration_title`と相互に排他的です。PremiumおよびUltimateのみです。 |
-| `iteration_title`     | 文字列         | いいえ       | 指定されたタイトルのイテレーションに割り当てられているイシューを返します。`iteration_id`と類似しており、`iteration_id`と相互に排他的です。PremiumおよびUltimateのみです。 |
+| `iteration_title`     | 文字列         | いいえ       | 指定されたタイトルのイテレーションに割り当てられているイシューを返します。`iteration_id`と類似しており、と相互に排他的です。PremiumおよびUltimateのみです。 |
 | `labels`              | 文字列         | いいえ       | ラベル名のカンマ区切りリスト。イシューが返されるようにするには、イシューにすべてのラベルが含まれている必要があります。`None`は、ラベルのないすべてのイシューをリストします。`Any`は、1つ以上のラベルがあるすべてのイシューをリストします。`No+Label`（非推奨）は、ラベルのないすべてのイシューをリストします。定義済みの名前では大文字と小文字が区別されません。 |
 | `milestone`           | 文字列         | いいえ       | マイルストーンのタイトル。`None`は、マイルストーンのないすべてのイシューをリストします。`Any`は、割り当てられているマイルストーンがあるすべてのイシューをリストします。 |
 | `my_reaction_emoji`   | 文字列         | いいえ       | 認証済みユーザーが、指定された`emoji`でリアクションしたイシューを返します。`None`は、リアクションがないイシューを返します。`Any`は、1つ以上のリアクションがあるイシューを返します。 |
@@ -547,7 +547,7 @@ curl --header "PRIVATE-TOKEN: <your_access_token>" \
   --url "https://gitlab.example.com/api/v4/projects/4/issues"
 ```
 
-応答の例:
+レスポンス例:
 
 ```json
 [
@@ -646,7 +646,7 @@ curl --header "PRIVATE-TOKEN: <your_access_token>" \
 ]
 ```
 
-GitLab PremiumまたはUltimateのユーザーが作成したイシューには、`weight`プロパティが含まれます。
+GitLab PremiumまたはUltimateのユーザーが作成したイシューには、`weight`プロパティが含まれます:
 
 ```json
 [
@@ -659,7 +659,7 @@ GitLab PremiumまたはUltimateのユーザーが作成したイシューには�
 ]
 ```
 
-GitLab PremiumまたはUltimateのユーザーが作成したイシューには、`epic`プロパティが含まれます。
+GitLab PremiumまたはUltimateのユーザーが作成したイシューには、`epic`プロパティが含まれます:
 
 ```json
 {
@@ -677,7 +677,7 @@ GitLab PremiumまたはUltimateのユーザーが作成したイシューには�
 }
 ```
 
-GitLab Ultimateのユーザーが作成したイシューには、`health_status`プロパティが含まれます。
+GitLab Ultimateのユーザーが作成したイシューには、`health_status`プロパティが含まれます:
 
 ```json
 [
@@ -712,7 +712,7 @@ GitLab Ultimateのユーザーが作成したイシューには、`health_status
 GET /issues/:id
 ```
 
-サポートされている属性は以下のとおりです。
+サポートされている属性は以下のとおりです:
 
 | 属性   | 型    | 必須 | 説明                          |
 |-------------|---------|----------|--------------------------------------|
@@ -725,7 +725,7 @@ curl --header "PRIVATE-TOKEN: <your_access_token>" \
   --url "https://gitlab.example.com/api/v4/issues/41"
 ```
 
-応答の例:
+レスポンス例:
 
 ```json
 {
@@ -820,7 +820,7 @@ curl --header "PRIVATE-TOKEN: <your_access_token>" \
 }
 ```
 
-GitLab PremiumまたはUltimateのユーザーが作成したイシューには、`weight`プロパティが含まれます。
+GitLab PremiumまたはUltimateのユーザーが作成したイシューには、`weight`プロパティが含まれます:
 
 ```json
 {
@@ -831,7 +831,7 @@ GitLab PremiumまたはUltimateのユーザーが作成したイシューには�
 }
 ```
 
-GitLab PremiumまたはUltimateのユーザーが作成したイシューには、`epic`プロパティが含まれます。
+GitLab PremiumまたはUltimateのユーザーが作成したイシューには、`epic`プロパティが含まれます:
 
 ```json
 {
@@ -850,7 +850,7 @@ GitLab PremiumまたはUltimateのユーザーが作成したイシューには�
 }
 ```
 
-[GitLab Ultimate](https://about.gitlab.com/pricing/)のユーザーは、`health_status`プロパティも参照できます。
+[GitLab Ultimate](https://about.gitlab.com/pricing/)のユーザーは、`health_status`プロパティも参照できます:
 
 ```json
 [
@@ -883,7 +883,7 @@ GitLab PremiumまたはUltimateのユーザーが作成したイシューには�
 GET /projects/:id/issues/:issue_iid
 ```
 
-サポートされている属性は以下のとおりです。
+サポートされている属性は以下のとおりです:
 
 | 属性   | 型    | 必須 | 説明                          |
 |-------------|---------|----------|--------------------------------------|
@@ -897,7 +897,7 @@ curl --header "PRIVATE-TOKEN: <your_access_token>" \
   --url "https://gitlab.example.com/api/v4/projects/4/issues/41"
 ```
 
-応答の例:
+レスポンス例:
 
 ```json
 {
@@ -987,7 +987,7 @@ curl --header "PRIVATE-TOKEN: <your_access_token>" \
 }
 ```
 
-GitLab PremiumまたはUltimateのユーザーが作成したイシューには、`weight`プロパティが含まれます。
+GitLab PremiumまたはUltimateのユーザーが作成したイシューには、`weight`プロパティが含まれます:
 
 ```json
 {
@@ -998,7 +998,7 @@ GitLab PremiumまたはUltimateのユーザーが作成したイシューには�
 }
 ```
 
-GitLab PremiumまたはUltimateのユーザーが作成したイシューには、`epic`プロパティが含まれます。
+GitLab PremiumまたはUltimateのユーザーが作成したイシューには、`epic`プロパティが含まれます:
 
 ```json
 {
@@ -1016,7 +1016,7 @@ GitLab PremiumまたはUltimateのユーザーが作成したイシューには�
 }
 ```
 
-[GitLab Ultimate](https://about.gitlab.com/pricing/)のユーザーは、`health_status`プロパティも参照できます。
+[GitLab Ultimate](https://about.gitlab.com/pricing/)のユーザーは、`health_status`プロパティも参照できます:
 
 ```json
 [
@@ -1047,7 +1047,7 @@ GitLab PremiumまたはUltimateのユーザーが作成したイシューには�
 POST /projects/:id/issues
 ```
 
-サポートされている属性は以下のとおりです。
+サポートされている属性は以下のとおりです:
 
 | 属性                                 | 型           | 必須 | 説明  |
 |-------------------------------------------|----------------|----------|--------------|
@@ -1077,7 +1077,7 @@ curl --request POST \
   --url "https://gitlab.example.com/api/v4/projects/4/issues?title=Issues%20with%20auth&labels=bug"
 ```
 
-応答の例:
+レスポンス例:
 
 ```json
 {
@@ -1142,7 +1142,7 @@ curl --request POST \
 }
 ```
 
-GitLab PremiumまたはUltimateのユーザーが作成したイシューには、`weight`プロパティが含まれます。
+GitLab PremiumまたはUltimateのユーザーが作成したイシューには、`weight`プロパティが含まれます:
 
 ```json
 {
@@ -1153,7 +1153,7 @@ GitLab PremiumまたはUltimateのユーザーが作成したイシューには�
 }
 ```
 
-GitLab PremiumまたはUltimateのユーザーが作成したイシューには、`epic`プロパティが含まれます。
+GitLab PremiumまたはUltimateのユーザーが作成したイシューには、`epic`プロパティが含まれます:
 
 ```json
 {
@@ -1171,7 +1171,7 @@ GitLab PremiumまたはUltimateのユーザーが作成したイシューには�
 }
 ```
 
-GitLab Ultimateのユーザーが作成したイシューには、`health_status`プロパティが含まれます。
+GitLab Ultimateのユーザーが作成したイシューには、`health_status`プロパティが含まれます:
 
 ```json
 [
@@ -1202,7 +1202,7 @@ GitLab Ultimateのユーザーが作成したイシューには、`health_status
 
 既存のプロジェクトイシューを更新します。このリクエストは、（`state_event`で）イシューを完了または再オープンするためにも使用されます。
 
-リクエストを成功させるには、以下のパラメータのうち少なくとも1つが必要です。
+リクエストを成功させるには、以下のパラメータのうち少なくとも1つが必要です:
 
 - `:assignee_id`
 - `:assignee_ids`
@@ -1221,7 +1221,7 @@ GitLab Ultimateのユーザーが作成したイシューには、`health_status
 PUT /projects/:id/issues/:issue_iid
 ```
 
-サポートされている属性は以下のとおりです。
+サポートされている属性は以下のとおりです:
 
 | 属性      | 型    | 必須 | 説明                                                                                                |
 |----------------|---------|----------|------------------------------------------------------------------------------------------------------------|
@@ -1252,7 +1252,7 @@ curl --request PUT \
   --url "https://gitlab.example.com/api/v4/projects/4/issues/85?state_event=close"
 ```
 
-応答の例:
+レスポンス例:
 
 ```json
 {
@@ -1324,7 +1324,7 @@ curl --request PUT \
 }
 ```
 
-GitLab PremiumまたはUltimateのユーザーが作成したイシューには、`weight`プロパティが含まれます。
+GitLab PremiumまたはUltimateのユーザーが作成したイシューには、`weight`プロパティが含まれます:
 
 ```json
 {
@@ -1335,7 +1335,7 @@ GitLab PremiumまたはUltimateのユーザーが作成したイシューには�
 }
 ```
 
-GitLab PremiumまたはUltimateのユーザーが作成したイシューには、`epic`プロパティが含まれます。
+GitLab PremiumまたはUltimateのユーザーが作成したイシューには、`epic`プロパティが含まれます:
 
 ```json
 {
@@ -1353,7 +1353,7 @@ GitLab PremiumまたはUltimateのユーザーが作成したイシューには�
 }
 ```
 
-GitLab Ultimateのユーザーが作成したイシューには、`health_status`プロパティが含まれます。
+GitLab Ultimateのユーザーが作成したイシューには、`health_status`プロパティが含まれます:
 
 ```json
 [
@@ -1386,7 +1386,7 @@ GitLab Ultimateのユーザーが作成したイシューには、`health_status
 DELETE /projects/:id/issues/:issue_iid
 ```
 
-サポートされている属性は以下のとおりです。
+サポートされている属性は以下のとおりです:
 
 | 属性   | 型    | 必須 | 説明                          |
 |-------------|---------|----------|--------------------------------------|
@@ -1411,7 +1411,7 @@ curl --request DELETE \
 PUT /projects/:id/issues/:issue_iid/reorder
 ```
 
-サポートされている属性は以下のとおりです。
+サポートされている属性は以下のとおりです:
 
 | 属性   | 型    | 必須 | 説明                          |
 |-------------|---------|----------|--------------------------------------|
@@ -1438,7 +1438,7 @@ curl --request PUT \
 POST /projects/:id/issues/:issue_iid/move
 ```
 
-サポートされている属性は以下のとおりです。
+サポートされている属性は以下のとおりです:
 
 | 属性       | 型    | 必須 | 説明                          |
 |-----------------|---------|----------|--------------------------------------|
@@ -1454,7 +1454,7 @@ curl --header "PRIVATE-TOKEN: <your_access_token>" \
   --url "https://gitlab.example.com/api/v4/projects/4/issues/85/move"
 ```
 
-応答の例:
+レスポンス例:
 
 ```json
 {
@@ -1531,7 +1531,7 @@ curl --header "PRIVATE-TOKEN: <your_access_token>" \
 }
 ```
 
-GitLab PremiumまたはUltimateのユーザーが作成したイシューには、`weight`プロパティが含まれます。
+GitLab PremiumまたはUltimateのユーザーが作成したイシューには、`weight`プロパティが含まれます:
 
 ```json
 {
@@ -1542,7 +1542,7 @@ GitLab PremiumまたはUltimateのユーザーが作成したイシューには�
 }
 ```
 
-GitLab PremiumまたはUltimateのユーザーが作成したイシューには、`epic`プロパティが含まれます。
+GitLab PremiumまたはUltimateのユーザーが作成したイシューには、`epic`プロパティが含まれます:
 
 ```json
 {
@@ -1560,7 +1560,7 @@ GitLab PremiumまたはUltimateのユーザーが作成したイシューには�
 }
 ```
 
-GitLab Ultimateのユーザーが作成したイシューには、`health_status`プロパティが含まれます。
+GitLab Ultimateのユーザーが作成したイシューには、`health_status`プロパティが含まれます:
 
 ```json
 [
@@ -1593,11 +1593,11 @@ GitLab Ultimateのユーザーが作成したイシューには、`health_status
 POST /projects/:id/issues/:issue_iid/clone
 ```
 
-サポートされている属性は以下のとおりです。
+サポートされている属性は以下のとおりです:
 
 | 属性       | 型           | 必須               | 説明                       |
 | --------------- | -------------- | ---------------------- | --------------------------------- |
-| `id`            | 整数または文字列 | はい | プロジェクトのID、または[URLエンコードされたパス](rest/_index.md#namespaced-paths)。 |
+| `id`            | 整数または文字列 | はい | プロジェクトのIDまたは[URLエンコードされたパス](rest/_index.md#namespaced-paths)。 |
 | `issue_iid`     | 整数        | はい | プロジェクトイシューの内部ID。 |
 | `to_project_id` | 整数        | はい | 新しいプロジェクトのID。            |
 | `with_notes`    | ブール値        | いいえ | [ノート](notes.md)付きでイシューをクローンします。デフォルトは`false`です。 |
@@ -1610,7 +1610,7 @@ curl --request POST \
   --url "https://gitlab.example.com/api/v4/projects/5/issues/1/clone?with_notes=true&to_project_id=6"
 ```
 
-応答の例:
+レスポンス例:
 
 ```json
 {
@@ -1709,7 +1709,7 @@ curl --request POST \
 POST /projects/:id/issues/:issue_iid/subscribe
 ```
 
-サポートされている属性は以下のとおりです。
+サポートされている属性は以下のとおりです:
 
 | 属性   | 型    | 必須 | 説明                          |
 |-------------|---------|----------|--------------------------------------|
@@ -1724,7 +1724,7 @@ curl --request POST \
   --url "https://gitlab.example.com/api/v4/projects/5/issues/93/subscribe"
 ```
 
-応答の例:
+レスポンス例:
 
 ```json
 {
@@ -1799,7 +1799,7 @@ curl --request POST \
 }
 ```
 
-GitLab PremiumまたはUltimateのユーザーが作成したイシューには、`weight`プロパティが含まれます。
+GitLab PremiumまたはUltimateのユーザーが作成したイシューには、`weight`プロパティが含まれます:
 
 ```json
 {
@@ -1810,7 +1810,7 @@ GitLab PremiumまたはUltimateのユーザーが作成したイシューには�
 }
 ```
 
-GitLab PremiumまたはUltimateのユーザーが作成したイシューには、`epic`プロパティが含まれます。
+GitLab PremiumまたはUltimateのユーザーが作成したイシューには、`epic`プロパティが含まれます:
 
 ```json
 {
@@ -1828,7 +1828,7 @@ GitLab PremiumまたはUltimateのユーザーが作成したイシューには�
 }
 ```
 
-GitLab Ultimateのユーザーが作成したイシューには、`health_status`プロパティが含まれます。
+GitLab Ultimateのユーザーが作成したイシューには、`health_status`プロパティが含まれます:
 
 ```json
 [
@@ -1859,7 +1859,7 @@ GitLab Ultimateのユーザーが作成したイシューには、`health_status
 POST /projects/:id/issues/:issue_iid/unsubscribe
 ```
 
-サポートされている属性は以下のとおりです。
+サポートされている属性は以下のとおりです:
 
 | 属性   | 型    | 必須 | 説明                          |
 |-------------|---------|----------|--------------------------------------|
@@ -1874,7 +1874,7 @@ curl --request POST \
   --url "https://gitlab.example.com/api/v4/projects/5/issues/93/unsubscribe"
 ```
 
-応答の例:
+レスポンス例:
 
 ```json
 {
@@ -1937,7 +1937,7 @@ curl --request POST \
 POST /projects/:id/issues/:issue_iid/todo
 ```
 
-サポートされている属性は以下のとおりです。
+サポートされている属性は以下のとおりです:
 
 | 属性   | 型    | 必須 | 説明                          |
 |-------------|---------|----------|--------------------------------------|
@@ -1952,7 +1952,7 @@ curl --request POST \
   --url "https://gitlab.example.com/api/v4/projects/5/issues/93/todo"
 ```
 
-応答の例:
+レスポンス例:
 
 ```json
 {
@@ -2071,7 +2071,7 @@ curl --request POST \
 POST /projects/:id/issues/:issue_iid/notes
 ```
 
-サポートされている属性は以下のとおりです。
+サポートされている属性は以下のとおりです:
 
 | 属性   | 型           | 必須 | 説明 |
 | :---------- | :------------- | :------- | :---------- |
@@ -2087,7 +2087,7 @@ curl --request POST \
   --url "https://gitlab.example.com/api/v4/projects/5/issues/11/notes?body=Lets%20promote%20this%20to%20an%20epic%0A%0A%2Fpromote"
 ```
 
-応答の例:
+レスポンス例:
 
 ```json
 {
@@ -2129,11 +2129,11 @@ curl --request POST \
 POST /projects/:id/issues/:issue_iid/time_estimate
 ```
 
-サポートされている属性は以下のとおりです。
+サポートされている属性は以下のとおりです:
 
 | 属性   | 型    | 必須 | 説明                              |
 |-------------|---------|----------|------------------------------------------|
-| `duration`  | 文字列  | はい      | 人間が読める形式での期間。たとえば、`3h30m`などです。 |
+| `duration`  | 文字列  | はい      | 人間が読める形式での期間。たとえば、`3h30m`のようになります。 |
 | `id`        | 整数または文字列 | はい      | プロジェクトのグローバルIDまたは[URLエンコードされたパス](rest/_index.md#namespaced-paths)。      |
 | `issue_iid` | 整数 | はい      | プロジェクトイシューの内部ID。     |
 
@@ -2145,7 +2145,7 @@ curl --request POST \
   --url "https://gitlab.example.com/api/v4/projects/5/issues/93/time_estimate?duration=3h30m"
 ```
 
-応答の例:
+レスポンス例:
 
 ```json
 {
@@ -2164,7 +2164,7 @@ curl --request POST \
 POST /projects/:id/issues/:issue_iid/reset_time_estimate
 ```
 
-サポートされている属性は以下のとおりです。
+サポートされている属性は以下のとおりです:
 
 | 属性   | 型    | 必須 | 説明                          |
 |-------------|---------|----------|--------------------------------------|
@@ -2179,7 +2179,7 @@ curl --request POST \
   --url "https://gitlab.example.com/api/v4/projects/5/issues/93/reset_time_estimate"
 ```
 
-応答の例:
+レスポンス例:
 
 ```json
 {
@@ -2198,7 +2198,7 @@ curl --request POST \
 POST /projects/:id/issues/:issue_iid/add_spent_time
 ```
 
-サポートされている属性は以下のとおりです。
+サポートされている属性は以下のとおりです:
 
 | 属性   | 型    | 必須 | 説明                              |
 |-------------|---------|----------|------------------------------------------|
@@ -2215,7 +2215,7 @@ curl --request POST \
   --url "https://gitlab.example.com/api/v4/projects/5/issues/93/add_spent_time?duration=1h"
 ```
 
-応答の例:
+レスポンス例:
 
 ```json
 {
@@ -2234,7 +2234,7 @@ curl --request POST \
 POST /projects/:id/issues/:issue_iid/reset_spent_time
 ```
 
-サポートされている属性は以下のとおりです。
+サポートされている属性は以下のとおりです:
 
 | 属性   | 型    | 必須 | 説明                          |
 |-------------|---------|----------|--------------------------------------|
@@ -2249,7 +2249,7 @@ curl --request POST \
   --url "https://gitlab.example.com/api/v4/projects/5/issues/93/reset_spent_time"
 ```
 
-応答の例:
+レスポンス例:
 
 ```json
 {
@@ -2270,7 +2270,7 @@ curl --request POST \
 GET /projects/:id/issues/:issue_iid/time_stats
 ```
 
-サポートされている属性は以下のとおりです。
+サポートされている属性は以下のとおりです:
 
 | 属性   | 型    | 必須 | 説明                          |
 |-------------|---------|----------|--------------------------------------|
@@ -2284,7 +2284,7 @@ curl --header "PRIVATE-TOKEN: <your_access_token>" \
   --url "https://gitlab.example.com/api/v4/projects/5/issues/93/time_stats"
 ```
 
-応答の例:
+レスポンス例:
 
 ```json
 {
@@ -2309,7 +2309,7 @@ curl --header "PRIVATE-TOKEN: <your_access_token>" \
 GET /projects/:id/issues/:issue_iid/related_merge_requests
 ```
 
-サポートされている属性は以下のとおりです。
+サポートされている属性は以下のとおりです:
 
 | 属性   | 型    | 必須 | 説明                          |
 |-------------|---------|----------|--------------------------------------|
@@ -2323,7 +2323,7 @@ curl --header "PRIVATE-TOKEN: <your_access_token>" \
   --url "https://gitlab.example.com/api/v4/projects/1/issues/11/related_merge_requests"
 ```
 
-応答の例:
+レスポンス例:
 
 ```json
 [
@@ -2448,7 +2448,8 @@ curl --header "PRIVATE-TOKEN: <your_access_token>" \
         "details_path": "/twitter/flight/pipelines/38",
         "illustration": null,
         "favicon": "https://gitlab.example.com/assets/ci_favicons/favicon_status_success-8451333011eee8ce9f2ab25dc487fe24a8758c694827a582f17f42b0a90446a2.png"
-      }
+      },
+      "archived": false
     },
     "diff_refs": {
       "base_sha": "d052d768f0126e8cddf80afd8b1eb07f406a3fcb",
@@ -2473,7 +2474,7 @@ curl --header "PRIVATE-TOKEN: <your_access_token>" \
 GET /projects/:id/issues/:issue_iid/closed_by
 ```
 
-サポートされている属性は以下のとおりです。
+サポートされている属性は以下のとおりです:
 
 | 属性   | 型           | 必須 | 説明                        |
 | ----------- | ---------------| -------- | ---------------------------------- |
@@ -2487,7 +2488,7 @@ curl --header "PRIVATE-TOKEN: <your_access_token>" \
   --url "https://gitlab.example.com/api/v4/projects/1/issues/11/closed_by"
 ```
 
-応答の例:
+レスポンス例:
 
 ```json
 [
@@ -2556,7 +2557,7 @@ curl --header "PRIVATE-TOKEN: <your_access_token>" \
 GET /projects/:id/issues/:issue_iid/participants
 ```
 
-サポートされている属性は以下のとおりです。
+サポートされている属性は以下のとおりです:
 
 | 属性   | 型    | 必須 | 説明                          |
 |-------------|---------|----------|--------------------------------------|
@@ -2570,7 +2571,7 @@ curl --header "PRIVATE-TOKEN: <your_access_token>" \
   -url "https://gitlab.example.com/api/v4/projects/5/issues/93/participants"
 ```
 
-応答の例:
+レスポンス例:
 
 ```json
 [
@@ -2607,7 +2608,7 @@ curl --header "PRIVATE-TOKEN: <your_access_token>" \
 GET /projects/:id/issues/:issue_iid/user_agent_detail
 ```
 
-サポートされている属性は以下のとおりです。
+サポートされている属性は以下のとおりです:
 
 | 属性   | 型    | 必須 | 説明                          |
 |-------------|---------|----------|--------------------------------------|
@@ -2621,7 +2622,7 @@ curl --header "PRIVATE-TOKEN: <your_access_token>" \
   --url "https://gitlab.example.com/api/v4/projects/5/issues/93/user_agent_detail"
 ```
 
-応答の例:
+レスポンス例:
 
 ```json
 {
@@ -2649,7 +2650,7 @@ curl --header "PRIVATE-TOKEN: <your_access_token>" \
 POST /projects/:id/issues/:issue_iid/metric_images
 ```
 
-サポートされている属性は以下のとおりです。
+サポートされている属性は以下のとおりです:
 
 | 属性   | 型    | 必須 | 説明                          |
 |-------------|---------|----------|--------------------------------------|
@@ -2669,7 +2670,7 @@ curl --header "PRIVATE-TOKEN: <your_access_token>" \
   --url "https://gitlab.example.com/api/v4/projects/5/issues/93/metric_images"
 ```
 
-応答の例:
+レスポンス例:
 
 ```json
 {
@@ -2692,7 +2693,7 @@ curl --header "PRIVATE-TOKEN: <your_access_token>" \
 GET /projects/:id/issues/:issue_iid/metric_images
 ```
 
-サポートされている属性は以下のとおりです。
+サポートされている属性は以下のとおりです:
 
 | 属性   | 型    | 必須 | 説明                          |
 |-------------|---------|----------|--------------------------------------|
@@ -2706,7 +2707,7 @@ curl --header "PRIVATE-TOKEN: <your_access_token>" \
   -url "https://gitlab.example.com/api/v4/projects/5/issues/93/metric_images"
 ```
 
-応答の例:
+レスポンス例:
 
 ```json
 [
@@ -2737,7 +2738,7 @@ curl --header "PRIVATE-TOKEN: <your_access_token>" \
 PUT /projects/:id/issues/:issue_iid/metric_images/:image_id
 ```
 
-サポートされている属性は以下のとおりです。
+サポートされている属性は以下のとおりです:
 
 | 属性   | 型    | 必須 | 説明                          |
 |-------------|---------|----------|--------------------------------------|
@@ -2757,7 +2758,7 @@ curl --header "PRIVATE-TOKEN: <your_access_token>" \
   --url "https://gitlab.example.com/api/v4/projects/5/issues/93/metric_images/1"
 ```
 
-応答の例:
+レスポンス例:
 
 ```json
 {
@@ -2780,7 +2781,7 @@ curl --header "PRIVATE-TOKEN: <your_access_token>" \
 DELETE /projects/:id/issues/:issue_iid/metric_images/:image_id
 ```
 
-サポートされている属性は以下のとおりです。
+サポートされている属性は以下のとおりです:
 
 | 属性   | 型    | 必須 | 説明                          |
 |-------------|---------|----------|--------------------------------------|
@@ -2796,7 +2797,7 @@ curl --header "PRIVATE-TOKEN: <your_access_token>" \
   --url "https://gitlab.example.com/api/v4/projects/5/issues/93/metric_images/1"
 ```
 
-次のステータスコードを返すことができます。
+次のステータスコードを返すことができます:
 
 - 画像が正常に削除された場合は`204 No Content`。
 - 画像を削除できなかった場合は`400 Bad Request`。

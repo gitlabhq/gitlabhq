@@ -4338,6 +4338,9 @@ msgstr ""
 msgid "Add %{linkStart}assets%{linkEnd} to your Release. GitLab automatically includes read-only assets, like source code and release evidence."
 msgstr ""
 
+msgid "Add %{name} to favorites"
+msgstr ""
+
 msgid "Add %{shrug}"
 msgstr ""
 
@@ -4663,6 +4666,9 @@ msgid "Add time entry"
 msgstr ""
 
 msgid "Add to board"
+msgstr ""
+
+msgid "Add to favorites"
 msgstr ""
 
 msgid "Add to merge train"
@@ -10300,9 +10306,6 @@ msgstr ""
 msgid "Available ID"
 msgstr ""
 
-msgid "Available on demand"
-msgstr ""
-
 msgid "Avatar for %{assigneeName}"
 msgstr ""
 
@@ -13486,9 +13489,6 @@ msgid "Cannot push to source branch"
 msgstr ""
 
 msgid "Cannot refer to a group milestone by an internal id!"
-msgstr ""
-
-msgid "Cannot set both system defined status and custom status"
 msgstr ""
 
 msgid "Cannot show preview. For previews on sketch files, they must have the file format introduced by Sketch version 43 and above."
@@ -20754,6 +20754,9 @@ msgid "Created at"
 msgstr ""
 
 msgid "Created branch '%{branch_name}' and a merge request to resolve this issue."
+msgstr ""
+
+msgid "Created by"
 msgstr ""
 
 msgid "Created by:"
@@ -39037,6 +39040,9 @@ msgstr ""
 msgid "Last contact"
 msgstr ""
 
+msgid "Last edited"
+msgstr ""
+
 msgid "Last event"
 msgstr ""
 
@@ -40054,6 +40060,9 @@ msgid "MaintenanceMode|By disabling maintenance mode your banner message will be
 msgstr ""
 
 msgid "MaintenanceMode|There was an error updating the Maintenance Mode Settings"
+msgstr ""
+
+msgid "Make a copy"
 msgstr ""
 
 msgid "Make adjustments to how your GitLab instance is set up."
@@ -46131,9 +46140,6 @@ msgid "On-call Schedules"
 msgstr ""
 
 msgid "On-call schedules"
-msgstr ""
-
-msgid "On-demand scans run outside of the DevOps cycle and find vulnerabilities in your projects"
 msgstr ""
 
 msgid "OnCallScheduless|Any escalation rules that are using this schedule will also be deleted."
@@ -55226,6 +55232,9 @@ msgstr ""
 msgid "Remove %{namespace}"
 msgstr ""
 
+msgid "Remove %{name} from favorites"
+msgstr ""
+
 msgid "Remove %{parent_ref} as this item's parent item."
 msgstr ""
 
@@ -55326,6 +55335,9 @@ msgid "Remove from batch"
 msgstr ""
 
 msgid "Remove from epic"
+msgstr ""
+
+msgid "Remove from favorites"
 msgstr ""
 
 msgid "Remove header logo"
@@ -59201,6 +59213,9 @@ msgstr ""
 msgid "SecretDetection|Configure Secret Detection"
 msgstr ""
 
+msgid "SecretDetection|Learn more about validity checks"
+msgstr ""
+
 msgid "SecretDetection|No exclusions yet"
 msgstr ""
 
@@ -59243,9 +59258,6 @@ msgid "SecretDetection|Warning: Potential secret detected"
 msgid_plural "SecretDetection|Warning: Potential secrets detected"
 msgstr[0] ""
 msgstr[1] ""
-
-msgid "SecretDetection|What are validity checks?"
-msgstr ""
 
 msgid "SecretRotation|%d secret has not been rotated after the configured rotation reminder intervals"
 msgid_plural "SecretRotation|%d secrets have not been rotated after the configured rotation reminder intervals"
@@ -59900,13 +59912,13 @@ msgstr ""
 msgid "SecurityConfiguration|Learn more about vulnerability training"
 msgstr ""
 
+msgid "SecurityConfiguration|Manage DAST profiles"
+msgstr ""
+
 msgid "SecurityConfiguration|Manage corpus"
 msgstr ""
 
 msgid "SecurityConfiguration|Manage corpus files used as seed inputs with coverage-guided fuzzing."
-msgstr ""
-
-msgid "SecurityConfiguration|Manage profiles"
 msgstr ""
 
 msgid "SecurityConfiguration|Manage profiles for use by DAST scans."
@@ -65478,9 +65490,6 @@ msgid "Status checks"
 msgstr ""
 
 msgid "Status checks must pass."
-msgstr ""
-
-msgid "Status list requires either a system defined status or custom status"
 msgstr ""
 
 msgid "Status lists not available with your current license"

@@ -214,7 +214,10 @@ export default {
       <div
         v-if="!isFlyout"
         class="gl-flex gl-h-6 gl-w-6 gl-shrink-0"
-        :class="{ 'gl-w-6 gl-self-start': hasAvatar, '-gl-mr-2': hasAvatar && isIconOnly }"
+        :class="{
+          'gl-w-6 gl-self-start gl-rounded-base gl-bg-default': hasAvatar,
+          '-gl-mr-2': hasAvatar && isIconOnly,
+        }"
       >
         <slot name="icon">
           <gl-icon

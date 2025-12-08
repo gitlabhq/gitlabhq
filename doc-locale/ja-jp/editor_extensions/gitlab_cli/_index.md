@@ -21,7 +21,7 @@ title: GitLab CLI - `glab`
 
 ![コマンドの例](img/glabgettingstarted_v15_7.gif)
 
-GitLab CLIは、`glab <command> <subcommand> [flags]`という形式の構造化されたコマンドを使用して、通常はGitLabのユーザーインターフェースから行う多くの操作を実行できます。
+GitLab CLIは、`glab <command> <subcommand> [flags]`という形式の構造化されたコマンドを使用して、通常はGitLabのユーザーインターフェースから行う多くの操作を実行できます:
 
 ```shell
 # Sign in
@@ -83,10 +83,15 @@ glab mr merge
 - プラン: Premium、Ultimate
 - アドオン: GitLab Duo Enterprise
 - 提供形態: GitLab.com、GitLab Self-Managed、GitLab Dedicated
+
+{{< /details >}}
+
+{{< collapsible title="モデル情報" >}}
+
 - LLM: Anthropic [Claude 3 Haiku](https://console.cloud.google.com/vertex-ai/publishers/anthropic/model-garden/claude-3-haiku)
 - [GitLab Duoセルフホストモデル](../../administration/gitlab_duo_self_hosted/_index.md)で利用可能: はい
 
-{{< /details >}}
+{{< /collapsible >}}
 
 {{< history >}}
 
@@ -95,11 +100,11 @@ glab mr merge
 
 {{< /history >}}
 
-GitLab CLIには、[GitLab Duo](../../user/gitlab_duo/_index.md)を利用する機能が含まれています。たとえば、次の機能があります。
+GitLab CLIには、[GitLab Duo](../../user/gitlab_duo/_index.md)を利用する機能が含まれています。たとえば、次の機能があります:
 
 - [`glab duo ask`](https://gitlab.com/gitlab-org/cli/-/blob/main/docs/source/duo/ask.md)
 
-作業中に`git`コマンドについて質問するには、次のように入力します。
+作業中に`git`コマンドについて質問するには、次のように入力します:
 
 - [`glab duo ask`](https://gitlab.com/gitlab-org/cli/-/blob/main/docs/source/duo/ask.md)
 
@@ -119,7 +124,7 @@ GitLabアカウントに対して認証するには、`glab auth login`を実行
 
 ### ファイルから変数を読み込みCI/CDパイプラインを実行する {#run-a-cicd-pipeline-with-variables-from-a-file}
 
-`glab ci run`コマンドに`-f`（`--variables-from-string`）フラグを指定して実行すると、外部ファイルに格納されている値を使用できます。たとえば、次のコードを`.gitlab-ci.yml`ファイルに追加すると、2つの変数を参照できます。
+`glab ci run`コマンドに`-f`（`--variables-from-string`）フラグを指定して実行すると、外部ファイルに格納されている値を使用できます。たとえば、次のコードを`.gitlab-ci.yml`ファイルに追加すると、2つの変数を参照できます:
 
 ```yaml
 stages:
@@ -134,7 +139,7 @@ build-job:
     - echo $CI_JOB_ID
 ```
 
-次に、これらの変数を格納する`variables.json`というファイルを作成します。
+次に、これらの変数を格納する`variables.json`というファイルを作成します:
 
 ```json
 [
@@ -149,10 +154,10 @@ build-job:
 ]
 ```
 
-`variables.json`の内容を含むCI/CDパイプラインを開始するには、次のコマンドを実行します。必要に応じてファイルのパスを編集してください。
+`variables.json`の内容を含むCI/CDパイプラインを開始するには、次のコマンドを実行します。必要に応じてファイルのパスを編集してください:
 
 ```shell
-$ glab ci run --variables-file /tmp/variables.json`
+$ glab ci run --variables-file /tmp/variables.json
 
 $ echo $EXAMPLE_VARIABLE_1
 example value 1
@@ -164,7 +169,7 @@ $ echo $CI_JOB_ID
 
 ### CLIをDocker認証情報ヘルパーとして使用する {#use-the-cli-as-a-docker-credential-helper}
 
-GitLabの[コンテナレジストリ](../../user/packages/container_registry/_index.md)または[コンテナイメージ依存プロキシ](../../user/packages/dependency_proxy/_index.md)からイメージをプルする場合、CLIを[Docker認証情報ヘルパー](https://docs.docker.com/reference/cli/docker/login/#credential-helpers)として使用できます。認証情報ヘルパーを設定するには、次の手順に従います。
+GitLabの[コンテナレジストリ](../../user/packages/container_registry/_index.md)または[コンテナイメージ依存プロキシ](../../user/packages/dependency_proxy/_index.md)からイメージをプルする場合、CLIを[Docker認証情報ヘルパー](https://docs.docker.com/reference/cli/docker/login/#credential-helpers)として使用できます。認証情報ヘルパーを設定するには、次の手順に従います:
 
 1. `glab auth login`を実行します。
 1. サインインするGitLabインスタンスの種類を選択します。プロンプトが表示されたら、GitLabのホスト名を入力します。
@@ -184,17 +189,21 @@ GitLabの[コンテナレジストリ](../../user/packages/container_registry/_i
 
 ## トラブルシューティング {#troubleshooting}
 
+### `glab` 2.0.0の環境変数の変更点 {#environment-variable-changes-in-glab-200}
+
+`glab`バージョン2.0.0以降、すべての`glab`環境変数には`GLAB_`というプレフィックスが付きます。この非推奨に関する詳細については、[イシュー7999](https://gitlab.com/gitlab-org/cli/-/issues/7999)を参照してください。
+
 ### 1Password Shellプラグインを使用すると`glab completion`コマンドが失敗する {#glab-completion-commands-fail-when-using-the-1password-shell-plugin}
 
-[1Password Shellプラグイン](https://developer.1password.com/docs/cli/shell-plugins/gitlab/)はエイリアス`glab='op plugin run -- glab'`を追加しますが、これは`glab completion`コマンドと干渉する可能性があります。`glab completion`コマンドが失敗する場合は、補完を実行する前にエイリアスが展開されないようにShellを設定します。
+[1Password Shellプラグイン](https://developer.1password.com/docs/cli/shell-plugins/gitlab/)はエイリアス`glab='op plugin run -- glab'`を追加しますが、これは`glab completion`コマンドと干渉する可能性があります。`glab completion`コマンドが失敗する場合は、補完を実行する前にエイリアスが展開されないようにShellを設定します:
 
-- Zshの場合は、`~/.zshrc`ファイルを編集して次の行を追加します。
+- Zshの場合は、`~/.zshrc`ファイルを編集して次の行を追加します:
 
   ```plaintext
   setopt completealiases
   ```
 
-- Bashの場合は、`~/.bashrc`ファイルを編集して次の行を追加します。
+- Bashの場合は、`~/.bashrc`ファイルを編集して次の行を追加します:
 
   ```plaintext
   complete -F _functionname glab
@@ -204,12 +213,12 @@ GitLabの[コンテナレジストリ](../../user/packages/container_registry/_i
 
 ### コマンドが誤ったGitリモートを使用する {#commands-use-the-wrong-git-remote}
 
-Gitリポジトリに複数のリモートがあり、誤ったリモートを選択した場合、コマンドがそのリモートにクエリすると空の結果が返されることがあります。この問題を修正するには、`glab`がそのリポジトリで参照するリモートを変更します。
+Gitリポジトリに複数のリモートがあり、誤ったリモートを選択した場合、コマンドがそのリモートにクエリすると空の結果が返されることがあります。この問題を修正するには、`glab`がそのリポジトリで参照するリモートを変更します:
 
 1. ターミナルから`git config edit`を実行します。
 1. `glab-resolved = base`が含まれる行を検索し、誤っている場合は削除します。
 1. Git設定ファイルへの変更を保存します。
-1. 使用するデフォルトを設定するには、次のコマンドを実行します。例の`origin`を編集し、優先するリモート名に置き換えてください。
+1. 使用するデフォルトを設定するには、次のコマンドを実行します。例の`origin`を編集し、優先するリモート名に置き換えてください:
 
    ```shell
    git config set --append remote.origin.glab-resolved base

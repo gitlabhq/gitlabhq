@@ -4,7 +4,7 @@ module Tasks
   module Gitlab
     module Permissions
       class ValidateTask
-        PERMISSION_DIR = 'config/authz/permissions'
+        PERMISSION_DIR = ::Authz::Permission::BASE_PATH
         PERMISSION_TODO_FILE = "#{PERMISSION_DIR}/definitions_todo.txt".freeze
         JSON_SCHEMA_FILE = 'config/authz/permissions/type_schema.json'
         PERMISSION_NAME_REGEX = /\A[a-z]+_[a-z_]+[a-z]\z/
@@ -146,8 +146,8 @@ module Tasks
 
           out = "#{ERROR_MESSAGES[:file]}\n"
 
-          violations[:file].each do |permission, expected_path|
-            out += "\n  - Name: #{permission}\n    Expected Path: #{expected_path}\n"
+          violations[:file].each do |permission, expected|
+            out += "\n  - #{permission}\n    #{expected}\n"
           end
 
           "#{out}\n"
@@ -192,13 +192,33 @@ module Tasks
         end
 
         def validate_file(permission)
-          # No need to check the file path with an invalid name
-          return unless permission.action && permission.resource
+          source_file = permission.source_file
+          actual_path = source_file[source_file.index(PERMISSION_DIR)..]
+          name = "#{permission.name} in #{actual_path}"
 
-          expected_file = "#{PERMISSION_DIR}/#{permission.resource}/#{permission.action}.yml"
-          return if permission.source_file.ends_with?(expected_file)
+          # ensure file is under a resource directory and has a name
+          unless permission.resource.present? && permission.action.present?
+            expected_action = permission.action.presence || '<action>'
+            expected_resource = permission.resource.presence || '<resource>'
+            expected_path = "#{PERMISSION_DIR}/#{expected_resource}/#{expected_action}.yml"
+            violations[:file][name] = "Expected path: #{expected_path}"
+            return
+          end
 
-          violations[:file][permission.name] = expected_file
+          # ensure there are no extra directories between PERMISSION_DIR and <resource>/<action>.yml
+          expected_path = "#{PERMISSION_DIR}/#{permission.resource}/#{permission.action}.yml"
+          unless expected_path == actual_path
+            violations[:file][name] = "Expected path: #{expected_path}"
+            return
+          end
+
+          # ensure resource and action based on the path matches name field value
+          name_from_path = "#{permission.action}_#{permission.resource}"
+          return if name_from_path == permission.name
+
+          violations[:file][name] =
+            "Path must match '#{PERMISSION_DIR}/<resource>/<action>.yml' based on <resource> and <action> values " \
+              "from '#{permission.name}' ('<action>_<resource>')"
         end
 
         def validate_unknown_permissions

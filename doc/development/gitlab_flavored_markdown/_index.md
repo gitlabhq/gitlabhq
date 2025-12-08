@@ -57,7 +57,7 @@ The [CommonMark forum](https://talk.commonmark.org) is a good place to research 
 - [GitLab Flavored Markdown](../../user/markdown.md)
 - [Rich text editor development guidelines](../fe_guide/content_editor.md)
 - [Emojis](../fe_guide/emojis.md)
-- [How to render GitLab-flavored Markdown on the frontend?](../fe_guide/frontend_faq.md#10-how-to-render-gitlab-flavored-markdown)
+- [How to render GitLab-flavored Markdown on the frontend?](../fe_guide/frontend_faq.md#9-how-to-render-gitlab-flavored-markdown)
 - [Diagrams.net integration](../fe_guide/diagrams_net_integration.md)
 
 Contact the [Plan:Knowledge team](https://handbook.gitlab.com/handbook/engineering/development/dev/plan/knowledge/) if you have any questions.

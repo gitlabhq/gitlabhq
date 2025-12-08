@@ -61,6 +61,20 @@ We recognize that this set of actions is limited and not applicable to every fea
 - `push` is preferred over `upload`
 - `delete` is preferred over `destroy`
 
+#### Avoiding Resource Boundaries in Permission Names
+
+Permissions **should NOT encode the resource boundary** (such as `project`, `group`, or `user`) directly into the permission name.
+
+For example, avoid introducing separate permissions like `read_project_insights_dashboard` and `read_group_insights_dashboard`.  
+Instead, define a single semantic permission that describes the capability itself, such as `read_insights_dashboard`.
+
+Including boundaries like `project` or `group` in the permission name is redundant because passing the **subject** in the `can?` check already determines the scope. For example:
+
+```ruby
+can?(:read_insights_dashboard, project)
+can?(:read_insights_dashboard, group)
+```
+
 #### Exceptions
 
 If you believe a new permission is needed that does not follow these conventions, consult the [Govern:Authorization team](https://handbook.gitlab.com/handbook/engineering/development/sec/govern/authorization/). We're always open to discussion, these guidelines are meant to make the work of Engineers easier, not to complicate it.

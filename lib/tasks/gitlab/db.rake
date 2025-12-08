@@ -100,7 +100,7 @@ namespace :gitlab do
     desc 'GitLab | DB | Configures the database by running migrate, or by loading the schema and seeding if needed'
     task configure: :environment do
       configure_pg_databases
-      configure_clickhouse_databases
+      configure_clickhouse_databases unless Gitlab::Utils.to_boolean(ENV['SKIP_CLICKHOUSE_MIGRATIONS'])
     end
 
     desc 'Bumps up the sequence range for the given sequence_names'

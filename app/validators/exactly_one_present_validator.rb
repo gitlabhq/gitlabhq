@@ -4,12 +4,28 @@
 #
 # Custom validator for ensuring that exactly one of the specified fields is present.
 #
+# The validator supports three types of fields:
+# - ActiveRecord associations (e.g., belongs_to, has_one)
+# - Database columns (e.g., string, integer fields)
+# - Custom methods that return a value (e.g., dynamically defined methods)
+#
 # Examples:
 #
 #   # Using an Array of field names (static fields)
 #   class MyModel < ApplicationRecord
 #     belongs_to :relation, optional: true
 #     validates_with ExactlyOnePresentValidator, fields: %i[relation name url]
+#   end
+#
+#   # Using custom methods alongside associations
+#   class MyModel < ApplicationRecord
+#     belongs_to :custom_status, optional: true
+#     validates_with ExactlyOnePresentValidator, fields: %i[system_defined_status custom_status]
+#
+#     def system_defined_status
+#       # Custom method that returns a value
+#       @system_defined_status ||= SystemStatus.find_by(id: system_status_id)
+#     end
 #   end
 #
 #   # Using a Symbol to call a method that returns fields dynamically
@@ -76,7 +92,7 @@ class ExactlyOnePresentValidator < ActiveModel::Validator # rubocop:disable Gitl
       if record.class.reflect_on_association(symbol_field)
         record.association(symbol_field).reader
       else
-        record[symbol_field].presence
+        record.public_send(symbol_field).presence # rubocop:disable GitlabSecurity/PublicSend -- field comes from class definition
       end
     end
   end

@@ -1,55 +1,52 @@
 import { getByTestId, fireEvent } from '@testing-library/dom';
 import { createWrapper } from '@vue/test-utils';
+import { setHTMLFixture, resetHTMLFixture } from 'helpers/fixtures';
 import setWindowLocation from 'helpers/set_window_location_helper';
 import { initRecoveryCodes, initClose2faSuccessMessage } from '~/authentication/two_factor_auth';
 import RecoveryCodes from '~/authentication/two_factor_auth/components/recovery_codes.vue';
 import * as urlUtils from '~/lib/utils/url_utility';
-import { codesJsonString, codes, profileAccountPath } from './mock_data';
+import { codesJsonString, codes, redirectPath } from './mock_data';
 
 describe('initRecoveryCodes', () => {
-  let el;
   let wrapper;
 
   const findRecoveryCodesComponent = () => wrapper.findComponent(RecoveryCodes);
 
   beforeEach(() => {
-    el = document.createElement('div');
-    el.setAttribute('class', 'js-2fa-recovery-codes');
-    el.dataset.codes = codesJsonString;
-    el.dataset.profileAccountPath = profileAccountPath;
-    document.body.appendChild(el);
-
+    setHTMLFixture(
+      `<div class='js-2fa-recovery-codes' data-codes='${codesJsonString}' data-redirect-path='${redirectPath}'></div>`,
+    );
     wrapper = createWrapper(initRecoveryCodes());
   });
 
   afterEach(() => {
-    document.body.innerHTML = '';
+    resetHTMLFixture();
   });
 
   it('parses `data-codes` and passes to `RecoveryCodes` as `codes` prop', () => {
     expect(findRecoveryCodesComponent().props('codes')).toEqual(codes);
   });
 
-  it('parses `data-profile-account-path` and passes to `RecoveryCodes` as `profileAccountPath` prop', () => {
-    expect(findRecoveryCodesComponent().props('profileAccountPath')).toEqual(profileAccountPath);
+  it('parses `data-profile-account-path` and passes to `RecoveryCodes` as `redirectPath` prop', () => {
+    expect(findRecoveryCodesComponent().props('redirectPath')).toEqual(redirectPath);
   });
 });
 
 describe('initClose2faSuccessMessage', () => {
   beforeEach(() => {
-    document.body.innerHTML = `
+    setHTMLFixture(`
       <button
         data-testid="close-2fa-enabled-success-alert"
         class="js-close-2fa-enabled-success-alert"
       >
       </button>
-    `;
+    `);
 
     initClose2faSuccessMessage();
   });
 
   afterEach(() => {
-    document.body.innerHTML = '';
+    resetHTMLFixture();
   });
 
   describe('when alert is closed', () => {

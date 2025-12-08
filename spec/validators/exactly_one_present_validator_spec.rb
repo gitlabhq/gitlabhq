@@ -403,4 +403,53 @@ RSpec.describe ExactlyOnePresentValidator, feature_category: :shared do
       end.to raise_error(ArgumentError, 'Unknown :fields option type String')
     end
   end
+
+  context 'when validating custom methods that are not associations or columns' do
+    let(:default_error_message) { 'Exactly one of custom_method_a, custom_method_b must be present' }
+    let(:klass) do
+      Class.new(ApplicationRecord) do
+        self.table_name = '_test_exactly_one_present'
+
+        def self.name
+          'TestExactlyOnePresent'
+        end
+
+        validates_with ExactlyOnePresentValidator, fields: %w[custom_method_a custom_method_b]
+
+        def custom_method_a
+          title.presence
+        end
+
+        def custom_method_b
+          color.presence
+        end
+      end
+    end
+
+    it 'raises an error if no methods return present values' do
+      instance_object = klass.new
+
+      expect(instance_object.valid?).to be_falsey
+      expect(instance_object.errors.messages).to eq(base: [default_error_message])
+    end
+
+    it 'validates if exactly one method returns a present value' do
+      instance_object = klass.new(title: 'My Label')
+
+      expect(instance_object.valid?).to be_truthy
+    end
+
+    it 'raises an error if more than one method returns a present value' do
+      instance_object = klass.new(title: 'My Label', color: 'red')
+
+      expect(instance_object.valid?).to be_falsey
+      expect(instance_object.errors.messages).to eq(base: [default_error_message])
+    end
+
+    it 'ignores methods that return blank values' do
+      instance_object = klass.new(title: 'My Label', color: '')
+
+      expect(instance_object.valid?).to be_truthy
+    end
+  end
 end

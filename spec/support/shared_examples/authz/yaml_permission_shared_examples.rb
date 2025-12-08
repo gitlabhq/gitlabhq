@@ -60,18 +60,15 @@ RSpec.shared_examples 'loadable yaml permission or permission group' do
   end
 
   describe 'instance methods' do
-    let(:source_file) { 'config/authz/permissions/permission/test.yml' }
-    let(:name) { 'test_permission' }
-    let(:action) { nil }
-    let(:resource) { nil }
+    let(:file_path) { 'a_resource/do_action.yml' }
+    let(:source_file) { Rails.root.join(described_class::BASE_PATH, file_path).to_s }
+    let(:name) { 'do_action_a_resource' }
     let(:boundaries) { %w[project] }
     let(:definition) do
       {
         name: name,
         description: 'Test permission description',
         feature_category: 'feature_category',
-        action: action,
-        resource: resource,
         boundaries: boundaries
       }
     end
@@ -92,69 +89,27 @@ RSpec.shared_examples 'loadable yaml permission or permission group' do
       end
     end
 
-    describe '#action' do
-      let(:name) { 'another_test_permission' }
-
-      subject { instance.action }
-
-      it { is_expected.to eq('another') }
-
-      context 'when an action is defined' do
-        let(:action) { 'another_test' }
-
-        it 'is expected to use the defined action' do
-          is_expected.to eq('another_test')
-        end
-      end
-
-      context 'when a resource is defined' do
-        let(:resource) { 'permission' }
-
-        it 'is expected to infer the action based on the resource' do
-          is_expected.to eq('another_test')
-        end
-      end
-
-      context 'when an action and resource are defined' do
-        let(:action) { 'another_test' }
-        let(:resource) { 'test_permission' }
-
-        it 'is expected use the defined action' do
-          is_expected.to eq('another_test')
-        end
-      end
-    end
-
     describe '#resource' do
-      let(:name) { 'another_test_permission' }
+      subject(:resource) { instance.resource }
 
-      subject { instance.resource }
+      context 'when the file is under a resource dir' do
+        it 'returns the resource dir name' do
+          expect(resource).to eq('a_resource')
+        end
 
-      it { is_expected.to eq('test_permission') }
+        context 'when the resource dir is under another dir' do
+          let(:file_path) { 'extra_dir/a_resource/do_action.yml' }
 
-      context 'when a resource is defined' do
-        let(:resource) { 'permission' }
-
-        it 'is expected to use the defined resource' do
-          is_expected.to eq('permission')
+          it 'returns the resource dir name' do
+            expect(resource).to eq('a_resource')
+          end
         end
       end
 
-      context 'when an action is defined' do
-        let(:action) { 'another_test' }
+      context 'when file is not under a resource dir' do
+        let(:file_path) { 'do_action.yml' }
 
-        it 'is expected to infer the resource based on the action' do
-          is_expected.to eq('permission')
-        end
-      end
-
-      context 'when a resource and action are defined' do
-        let(:action) { 'another_test' }
-        let(:resource) { 'test_permission' }
-
-        it 'is expected use the defined resource' do
-          is_expected.to eq('test_permission')
-        end
+        it { is_expected.to be_nil }
       end
     end
 

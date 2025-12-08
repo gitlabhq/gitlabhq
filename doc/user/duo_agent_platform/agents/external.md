@@ -183,7 +183,7 @@ Add the following CI/CD variables to your project's settings:
 
 To add or update a variable in the project settings:
 
-1. On the left sidebar, select **Search or go to** and find your project. If you've [turned on the new navigation](../../interface_redesign.md), this field is on the top bar.
+1. On the top bar, select **Search or go to** and find your project.
 1. Select **Settings** > **CI/CD**.
 1. Expand **Variables**.
 1. Select **Add variable** and complete the fields:
@@ -232,7 +232,7 @@ Prerequisites:
 
 - You must have at least the Maintainer role for the project.
 
-1. On the left sidebar, select **Search or go to** and find your project. If you've [turned on the new navigation](../../interface_redesign.md), this field is on the top bar.
+1. On the top bar, select **Search or go to** and find your project.
 1. Select **Automate** > **Flows**.
 1. Select **New flow**.
 1. Under **Basic information**:

@@ -12,9 +12,9 @@ title: GitLab 16アップグレードノート
 
 {{< /details >}}
 
-このページでは、GitLab 16のマイナーバージョンとパッチバージョンのアップグレード情報を提供します。以下について手順を確認してください。
+このページでは、GitLab 16のマイナーバージョンとパッチバージョンのアップグレード情報を提供します。以下について手順を確認してください:
 
-- インストールタイプ。
+- お使いのインストールタイプ。
 - 現在のバージョンと移行先バージョンとの間にあるすべてのバージョン。
 
 Helmチャートインストールに関する追加情報については、[Helmチャート7.0アップグレードノート](https://docs.gitlab.com/charts/releases/7_0.html)を参照してください。
@@ -28,7 +28,7 @@ Helmチャートインストールに関する追加情報については、[Hel
   - [2番目のデータベース接続は無効にできます](#disable-the-second-database-connection)。
 - ほとんどのインストールでは、アップグレードパスで最初に経由する必要があるバージョンが16.3であるため、16.0、16.1、および16.2をスキップできます。すべての場合において、これらの中間バージョンに関するノートを確認する必要があります。
 
-  一部のGitLabインストールでは、使用する機能と環境のサイズに応じて、これらの中間バージョンを経由する必要があります。
+  一部のGitLabインストールでは、使用する機能と環境のサイズに応じて、これらの中間バージョンを経由する必要があります:
 
   - 16.0.8: ユーザーテーブルに多数のレコードを持つインスタンス。詳細については、[長時間実行されるユーザータイプのデータ変更](#long-running-user-type-data-change)を参照してください。
   - [16.1.5](#1610): NPMパッケージレジストリを使用するインスタンス。
@@ -46,9 +46,9 @@ Helmチャートインストールに関する追加情報については、[Hel
 
 - 通常、PgBouncerを使用する環境でのバックアップは、[`GITLAB_BACKUP_`をプレフィックスとする変数を設定してPgBouncerを回避する必要があります](../../administration/backup_restore/backup_gitlab.md#bypassing-pgbouncer)。ただし、[イシュー](https://gitlab.com/gitlab-org/gitlab/-/issues/422163)により、`gitlab-backup`は、オーバーライドで定義された直接接続ではなく、PgBouncerを介して標準のデータベース接続を使用するため、データベースのバックアップは失敗します。回避策は、`pg_dump`を直接使用することです。
 
-    **影響を受けたリリース**:
+    **Affected releases**（影響を受けるリリース）:
 
-  | 影響を受けたマイナーリリース | 影響を受けたパッチリリース | 修正リリース |
+  | 影響を受けるマイナーリリース | 影響を受けるパッチリリース | 修正リリース |
   | ----------------------- | ----------------------- | -------- |
   | 15.11                   |  すべて                    | なし     |
   | 16.0                    |  すべて                    | なし     |
@@ -63,7 +63,7 @@ Helmチャートインストールに関する追加情報については、[Hel
 
 ### Linuxパッケージインストール {#linux-package-installations}
 
-- GitLab 16にアップグレードする前に、GitalyおよびPraefectの設定構造を変更する必要があります。**データ損失を回避するため**、最初にPraefectを再構成し、新しい設定の一部として、メタデータ検証を無効にします。詳細については、以下を参照してください。
+- GitLab 16にアップグレードする前に、GitalyおよびPraefectの設定構造を変更する必要があります。**To avoid data loss**（データ損失を回避するため）、最初にPraefectを再構成し、新しい設定の一部として、メタデータ検証を無効にします。詳細については、以下を参照してください:
 
   - [Praefect設定構造の変更点](#praefect-configuration-structure-change)。
   - [Gitaly設定構造の変更点](#gitaly-configuration-structure-change)。
@@ -83,7 +83,7 @@ Helmチャートインストールに関する追加情報については、[Hel
 
 ### Linuxパッケージインストール {#linux-package-installations-1}
 
-GitLab 16.11では、次の場合を除き、PostgreSQLは自動的に14.xにアップグレードされます。
+GitLab 16.11では、次の場合を除き、PostgreSQLは自動的に14.xにアップグレードされます:
 
 - Patroniを使用して高可用性でデータベースを実行している。
 - データベースノードがGitLab Geo構成の一部である。
@@ -96,9 +96,9 @@ GitLab 16.11では、次の場合を除き、PostgreSQLは自動的に14.xにア
 
 - GitLab 16.5で発生し、17.0で修正されたバグにより、[GitLab Pages](../../administration/pages/_index.md)デプロイファイルがセカンダリGeoサイトで孤立するという事象が発生しています。Pagesのデプロイがローカルに保存されている場合、これにより、残りのストレージがゼロになり、フェイルオーバーが発生した場合にデータが失われる可能性があります。問題の詳細と回避策については、[イシュー457159](https://gitlab.com/gitlab-org/gitlab/-/issues/457159)を参照してください。
 
-  **影響を受けたリリース**:
+  **Affected releases**（影響を受けるリリース）:
 
-  | 影響を受けたマイナーリリース | 影響を受けたパッチリリース | 修正リリース |
+  | 影響を受けるマイナーリリース | 影響を受けるパッチリリース | 修正リリース |
   | ----------------------- | ----------------------- | -------- |
   | 16.5                    |  すべて                    | なし     |
   | 16.6                    |  すべて                    | なし     |
@@ -108,11 +108,11 @@ GitLab 16.11では、次の場合を除き、PostgreSQLは自動的に14.xにア
   | 16.10                   |  16.10.0 - 16.10.6      | 16.10.7  |
   | 16.11                   |  16.11.0 - 16.11.3      | 16.11.4  |
 
-- GitLab 16.11からGitLab 17.2までのバージョンでは、PostgreSQLインデックスが欠落しているため、CPU使用率が高くなったり、ジョブアーティファクトの検証の進行が遅くなったり、Geoメトリクスのステータスアップデートが遅延またはタイムアウトしたりする可能性があります。このインデックスはGitLab 17.3で追加されました。インデックスを手動で追加するには、[Geoトラブルシューティング - ジョブアーティファクトの検証中にプライマリでCPU使用率が高くなる](../../administration/geo/replication/troubleshooting/common.md#high-cpu-usage-on-primary-during-object-verification)を参照してください。
+- GitLab 16.11からGitLab 17.2までのバージョンでは、PostgreSQLインデックスが欠落しているため、CPU使用率が高くなったり、ジョブアーティファクトの検証の進行が遅くなったり、Geoメトリクスのステータスアップデートが遅延またはタイムアウトしたりする可能性があります。インデックスはGitLab 17.3で追加されました。インデックスを手動で追加するには、[Geoトラブルシューティング - ジョブアーティファクトの検証中にプライマリでCPU使用率が高くなる](../../administration/geo/replication/troubleshooting/common.md#high-cpu-usage-on-primary-during-object-verification)を参照してください。
 
-  **影響を受けたリリース**:
+  **Affected releases**（影響を受けるリリース）:
 
-  | 影響を受けたマイナーリリース | 影響を受けたパッチリリース | 修正リリース |
+  | 影響を受けるマイナーリリース | 影響を受けるパッチリリース | 修正リリース |
   | ----------------------- | ----------------------- | -------- |
   | 16.11                   |  すべて                    | なし     |
   | 17.0                    |  すべて                    | なし     |
@@ -121,9 +121,9 @@ GitLab 16.11では、次の場合を除き、PostgreSQLは自動的に14.xにア
 
 - Geoレプリケーションが機能している場合でも、セカンダリサイトのGeoレプリケーションの詳細は空に見えます。[イシュー468509](https://gitlab.com/gitlab-org/gitlab/-/issues/468509)を参照してください。既知の回避策はありません。このバグはGitLab 17.4で修正されました。
 
-  **影響を受けたリリース**:
+  **Affected releases**（影響を受けるリリース）:
 
-  | 影響を受けたマイナーリリース | 影響を受けたパッチリリース | 修正リリース |
+  | 影響を受けるマイナーリリース | 影響を受けるパッチリリース | 修正リリース |
   | ----------------------- | ----------------------- | -------- |
   | 16.11                   |  16.11.5 - 16.11.10     | なし     |
   | 17.0                    |  すべて                    | 17.0.7   |
@@ -133,7 +133,7 @@ GitLab 16.11では、次の場合を除き、PostgreSQLは自動的に14.xにア
 
 ## 16.10.0 {#16100}
 
-GitLab 16.10以降にアップグレードする際に、次のエラーが発生する可能性があります。
+GitLab 16.10以降にアップグレードする際に、次のエラーが発生する可能性があります:
 
 ```plaintext
 PG::UndefinedColumn: ERROR:  column namespace_settings.delayed_project_removal does not exist
@@ -143,25 +143,25 @@ PG::UndefinedColumn: ERROR:  column namespace_settings.delayed_project_removal d
 
 問題を回避するには:
 
-1. 列を一時的に再作成します。`gitlab-psql`を使用するか、データベースに手動で接続して、次を実行します。
+1. 列を一時的に再作成します。`gitlab-psql`を使用するか、データベースに手動で接続して、次を実行します:
 
    ```sql
    ALTER TABLE namespace_settings ADD COLUMN delayed_project_removal BOOLEAN DEFAULT NULL;
    ```
 
-1. 保留中の移行を適用します。
+1. 保留中の移行を適用します:
 
    ```shell
    gitlab-ctl reconfigure
    ```
 
-1. 最終的な確認をします。
+1. 最終的な確認をします:
 
    ```shell
    gitlab-ctl upgrade-check
    ```
 
-1. 列を削除します。`gitlab-psql`を使用するか、データベースに手動で接続して、次を実行します。
+1. 列を削除します。`gitlab-psql`を使用するか、データベースに手動で接続して、次を実行します:
 
    ```sql
    ALTER TABLE namespace_settings DROP COLUMN delayed_project_removal;
@@ -171,7 +171,7 @@ PG::UndefinedColumn: ERROR:  column namespace_settings.delayed_project_removal d
 
 GitLab 16.10のLinuxパッケージインストールには、Patroniの新しいメジャーバージョンへのアップグレード（バージョン2.1.0からバージョン3.0.1）が含まれています。
 
-[高可用性(HA)](../../administration/reference_architectures/_index.md#high-availability-ha)（3,000ユーザー以上）を有効にする[リファレンスアーキテクチャ](../../administration/reference_architectures/_index.md)の1つを使用している場合は、Patroniを使用する[Linuxパッケージインストール用のPostgreSQLレプリケーションとフェイルオーバー](../../administration/postgresql/replication_and_failover.md)を使用しています。
+[高可用性（HA)](../../administration/reference_architectures/_index.md#high-availability-ha) （3,000ユーザー以上）を有効にする[リファレンスアーキテクチャ](../../administration/reference_architectures/_index.md)の1つを使用している場合は、Patroniを使用する[Linuxパッケージインストール用のPostgreSQLレプリケーションとフェイルオーバー](../../administration/postgresql/replication_and_failover.md)を使用しています。
 
 これが該当する場合は、マルチノードインスタンスのアップグレード方法について、[ダウンタイムを伴うマルチノードアップグレード](../with_downtime.md)をお読みください。
 
@@ -181,9 +181,9 @@ GitLab 16.10のLinuxパッケージインストールには、Patroniの新し�
 
 - GitLab 16.5で発生し、17.0で修正されたバグにより、[GitLab Pages](../../administration/pages/_index.md)デプロイファイルがセカンダリGeoサイトで孤立するという事象が発生しています。Pagesのデプロイがローカルに保存されている場合、これにより、残りのストレージがゼロになり、フェイルオーバーが発生した場合にデータが失われる可能性があります。問題の詳細と回避策については、[イシュー457159](https://gitlab.com/gitlab-org/gitlab/-/issues/457159)を参照してください。
 
-  **影響を受けたリリース**:
+  **Affected releases**（影響を受けるリリース）:
 
-  | 影響を受けたマイナーリリース | 影響を受けたパッチリリース | 修正リリース |
+  | 影響を受けるマイナーリリース | 影響を受けるパッチリリース | 修正リリース |
   | ----------------------- | ----------------------- | -------- |
   | 16.5                    |  すべて                    | なし     |
   | 16.6                    |  すべて                    | なし     |
@@ -195,7 +195,7 @@ GitLab 16.10のLinuxパッケージインストールには、Patroniの新し�
 
 ## 16.9.0 {#1690}
 
-GitLab 16.9.0へのアップグレード中に、次のエラーが発生する可能性があります。
+GitLab 16.9.0へのアップグレード中に、次のエラーが発生する可能性があります:
 
 ```plaintext
 PG::UndefinedTable: ERROR:  relation "p_ci_pipeline_variables" does not exist
@@ -205,17 +205,17 @@ PG::UndefinedTable: ERROR:  relation "p_ci_pipeline_variables" does not exist
 
 ### Geoインストール {#geo-installations-2}
 
-- [コンテナレプリケーションのバグ](https://gitlab.com/gitlab-org/gitlab/-/issues/431944)により、誤って設定されたセカンダリが、失敗したコンテナレプリケーションを成功としてマークする可能性があります。後続の検証では、チェックサムの不一致により、コンテナは失敗としてマークされます。回避策は、セカンダリの設定を修正することです。**影響を受けたリリース**:
+- [コンテナレプリケーションのバグ](https://gitlab.com/gitlab-org/gitlab/-/issues/431944)により、誤って設定されたセカンダリが、失敗したコンテナレプリケーションを成功としてマークする可能性があります。後続の検証では、チェックサムの不一致により、コンテナは失敗としてマークされます。回避策は、セカンダリの設定を修正することです。**Affected releases**（影響を受けるリリース）:
 
-  | 影響を受けたマイナーリリース | 影響を受けたパッチリリース | 修正リリース |
+  | 影響を受けるマイナーリリース | 影響を受けるパッチリリース | 修正リリース |
   | ----------------------- | ----------------------- | -------- |
   | すべて                     |  すべて                    | 16.10.2  |
 
 - GitLab 16.5のバグにより、[パーソナルスニペット](../../user/snippets.md)がセカンダリGeoサイトにレプリケートされていません。これにより、Geoフェイルオーバーが発生した場合に、パーソナルスニペットデータが失われる可能性があります。問題の詳細と回避策については、[イシュー439933](https://gitlab.com/gitlab-org/gitlab/-/issues/439933)を参照してください。
 
-  **影響を受けたリリース**:
+  **Affected releases**（影響を受けるリリース）:
 
-  | 影響を受けたマイナーリリース | 影響を受けたパッチリリース | 修正リリース |
+  | 影響を受けるマイナーリリース | 影響を受けるパッチリリース | 修正リリース |
   | ----------------------- | ----------------------- | -------- |
   | 16.5                    |  すべて                    | なし     |
   | 16.6                    |  すべて                    | なし     |
@@ -225,18 +225,18 @@ PG::UndefinedTable: ERROR:  relation "p_ci_pipeline_variables" does not exist
 
 - プライマリサイトとセカンダリサイトのチェックサムが一致しないため、コンテナレジストリイメージのサブセットで検証エラーが発生する可能性があります。[イシュー442667](https://gitlab.com/gitlab-org/gitlab/-/issues/442667)に詳細が記載されています。データはセカンダリサイトに正しくレプリケートされているため、データ損失の直接的なリスクはありませんが、検証は成功していません。現時点では、既知の回避策はありません。
 
-  **影響を受けたリリース**:
+  **Affected releases**（影響を受けるリリース）:
 
-  | 影響を受けたマイナーリリース | 影響を受けたパッチリリース | 修正リリース |
+  | 影響を受けるマイナーリリース | 影響を受けるパッチリリース | 修正リリース |
   | ----------------------- | ----------------------- | -------- |
   | 16.8                    |  16.8.0 - 16.8.3        | 16.8.4   |
   | 16.9                    |  16.9.0 - 16.9.1        | 16.9.2   |
 
 - GitLab 16.5で発生し、17.0で修正されたバグにより、[GitLab Pages](../../administration/pages/_index.md)デプロイファイルがセカンダリGeoサイトで孤立するという事象が発生しています。Pagesのデプロイがローカルに保存されている場合、これにより、残りのストレージがゼロになり、フェイルオーバーが発生した場合にデータが失われる可能性があります。問題の詳細と回避策については、[イシュー457159](https://gitlab.com/gitlab-org/gitlab/-/issues/457159)を参照してください。
 
-  **影響を受けたリリース**:
+  **Affected releases**（影響を受けるリリース）:
 
-  | 影響を受けたマイナーリリース | 影響を受けたパッチリリース | 修正リリース |
+  | 影響を受けるマイナーリリース | 影響を受けるパッチリリース | 修正リリース |
   | ----------------------- | ----------------------- | -------- |
   | 16.5                    |  すべて                    | なし     |
   | 16.6                    |  すべて                    | なし     |
@@ -255,9 +255,9 @@ PG::UndefinedTable: ERROR:  relation "p_ci_pipeline_variables" does not exist
 - GitLab 16.8.0および16.8.1では、一時的にRedis 6.2が必要でした。GitLab 16.8.2では、[Redis 6.0との互換性](https://gitlab.com/gitlab-org/gitlab/-/issues/439418)が復元されました。
 - 通常、PgBouncerを使用する環境でのバックアップは、[`GITLAB_BACKUP_`をプレフィックスとする変数を設定してPgBouncerを回避する必要があります](../../administration/backup_restore/backup_gitlab.md#bypassing-pgbouncer)。ただし、[イシュー](https://gitlab.com/gitlab-org/gitlab/-/issues/422163)により、`gitlab-backup`は、オーバーライドで定義された直接接続ではなく、PgBouncerを介して標準のデータベース接続を使用するため、データベースのバックアップは失敗します。回避策は、`pg_dump`を直接使用することです。
 
-    **影響を受けたリリース**:
+    **Affected releases**（影響を受けるリリース）:
 
-  | 影響を受けたマイナーリリース | 影響を受けたパッチリリース | 修正リリース |
+  | 影響を受けるマイナーリリース | 影響を受けるパッチリリース | 修正リリース |
   | ----------------------- | ----------------------- | -------- |
   | 15.11                   |  すべて                    | なし     |
   | 16.0                    |  すべて                    | なし     |
@@ -272,19 +272,19 @@ PG::UndefinedTable: ERROR:  relation "p_ci_pipeline_variables" does not exist
 
 ### Geoインストール {#geo-installations-3}
 
-- PostgreSQLバージョン14は、GitLab 16.7以降の新規インストールのデフォルトです。既知の問題のため、既存のGeoセカンダリサイトはPostgreSQLバージョン14にアップグレードできません。詳細については、[イシュー7768](https://gitlab.com/gitlab-org/omnibus-gitlab/-/issues/7768#note_1652076255)を参照してください。すべてのGeoサイトは、同じバージョンのPostgreSQLを実行する必要があります。GitLab 16.7から16.8.1で新しいGeoセカンダリサイトを追加するには、設定に基づいて次のいずれかの操作を行う必要があります。
+- PostgreSQLバージョン14は、GitLab 16.7以降の新規インストールのデフォルトです。既知の問題のため、既存のGeoセカンダリサイトはPostgreSQLバージョン14にアップグレードできません。詳細については、[イシュー7768](https://gitlab.com/gitlab-org/omnibus-gitlab/-/issues/7768#note_1652076255)を参照してください。すべてのGeoサイトは、同じバージョンのPostgreSQLを実行する必要があります。GitLab 16.7から16.8.1で新しいGeoセカンダリサイトを追加するには、設定に基づいて次のいずれかの操作を行う必要があります:
 
   - 最初のGeoセカンダリサイトを追加するには: 新しいGeoセカンダリサイトをセットアップする前に、[プライマリサイトをPostgreSQL 14にアップグレードしてください](https://docs.gitlab.com/omnibus/settings/database.html#upgrade-packaged-postgresql-server)。プライマリサイトがすでにPostgreSQL 14を実行している場合は、特別な操作は必要ありません。
   - すでに1つ以上のGeoセカンダリがあるデプロイに新しいGeoセカンダリサイトを追加するには:
     - 既存のすべてのサイトがPostgreSQL 13を実行している場合は、[ピン留めしたPostgreSQLバージョン13](https://docs.gitlab.com/omnibus/settings/database.html#pin-the-packaged-postgresql-version-fresh-installs-only)を使用して新しいGeoセカンダリサイトをインストールします。
-    - 既存のすべてのサイトがPostgreSQL 14を実行している場合は、特別な操作は必要ありません。
+    - 既存のすべてのサイトがPostgreSQL 14を実行している場合は、: 特別な操作は必要ありません。
     - 新しいGeoセカンダリサイトをデプロイに追加する前に、既存のすべてのサイトをGitLab 16.8.2以降およびPostgreSQL 14にアップグレードしてください。
 
 - GitLab 16.5のバグにより、[パーソナルスニペット](../../user/snippets.md)がセカンダリGeoサイトにレプリケートされていません。これにより、Geoフェイルオーバーが発生した場合に、パーソナルスニペットデータが失われる可能性があります。問題の詳細と回避策については、[イシュー439933](https://gitlab.com/gitlab-org/gitlab/-/issues/439933)を参照してください。
 
-  **影響を受けたリリース**:
+  **Affected releases**（影響を受けるリリース）:
 
-  | 影響を受けたマイナーリリース | 影響を受けたパッチリリース | 修正リリース |
+  | 影響を受けるマイナーリリース | 影響を受けるパッチリリース | 修正リリース |
   | ----------------------- | ----------------------- | -------- |
   | 16.5                    |  すべて                    | なし     |
   | 16.6                    |  すべて                    | なし     |
@@ -294,18 +294,18 @@ PG::UndefinedTable: ERROR:  relation "p_ci_pipeline_variables" does not exist
 
 - プライマリサイトとセカンダリサイトのチェックサムが一致しないため、コンテナレジストリイメージのサブセットで検証エラーが発生する可能性があります。[イシュー442667](https://gitlab.com/gitlab-org/gitlab/-/issues/442667)に詳細が記載されています。データはセカンダリサイトに正しくレプリケートされているため、データ損失の直接的なリスクはありませんが、検証は成功していません。現時点では、既知の回避策はありません。
 
-  **影響を受けたリリース**:
+  **Affected releases**（影響を受けるリリース）:
 
-  | 影響を受けたマイナーリリース | 影響を受けたパッチリリース | 修正リリース |
+  | 影響を受けるマイナーリリース | 影響を受けるパッチリリース | 修正リリース |
   | ----------------------- | ----------------------- | -------- |
   | 16.8                    |  16.8.0 - 16.8.3        | 16.8.4   |
   | 16.9                    |  16.9.0 - 16.9.1        | 16.9.2   |
 
 - GitLab 16.5で発生し、17.0で修正されたバグにより、[GitLab Pages](../../administration/pages/_index.md)デプロイファイルがセカンダリGeoサイトで孤立するという事象が発生しています。Pagesのデプロイがローカルに保存されている場合、これにより、残りのストレージがゼロになり、フェイルオーバーが発生した場合にデータが失われる可能性があります。問題の詳細と回避策については、[イシュー457159](https://gitlab.com/gitlab-org/gitlab/-/issues/457159)を参照してください。
 
-  **影響を受けたリリース**:
+  **Affected releases**（影響を受けるリリース）:
 
-  | 影響を受けたマイナーリリース | 影響を受けたパッチリリース | 修正リリース |
+  | 影響を受けるマイナーリリース | 影響を受けるパッチリリース | 修正リリース |
   | ----------------------- | ----------------------- | -------- |
   | 16.5                    |  すべて                    | なし     |
   | 16.6                    |  すべて                    | なし     |
@@ -323,9 +323,9 @@ PG::UndefinedTable: ERROR:  relation "p_ci_pipeline_variables" does not exist
 
 - 通常、PgBouncerを使用する環境でのバックアップは、[`GITLAB_BACKUP_`をプレフィックスとする変数を設定してPgBouncerを回避する必要があります](../../administration/backup_restore/backup_gitlab.md#bypassing-pgbouncer)。ただし、[イシュー](https://gitlab.com/gitlab-org/gitlab/-/issues/422163)により、`gitlab-backup`は、オーバーライドで定義された直接接続ではなく、PgBouncerを介して標準のデータベース接続を使用するため、データベースのバックアップは失敗します。回避策は、`pg_dump`を直接使用することです。
 
-    **影響を受けたリリース**:
+    **Affected releases**（影響を受けるリリース）:
 
-  | 影響を受けたマイナーリリース | 影響を受けたパッチリリース | 修正リリース |
+  | 影響を受けるマイナーリリース | 影響を受けるパッチリリース | 修正リリース |
   | ----------------------- | ----------------------- | -------- |
   | 15.11                   |  すべて                    | なし     |
   | 16.0                    |  すべて                    | なし     |
@@ -340,7 +340,7 @@ PG::UndefinedTable: ERROR:  relation "p_ci_pipeline_variables" does not exist
 
 ### Linuxパッケージインストール {#linux-package-installations-4}
 
-Linuxパッケージのインストールには、次の特定の情報が適用されます。
+Linuxパッケージのインストールには、次の特定の情報が適用されます:
 
 - GitLab 16.7以降、PostgreSQL 14は、Linuxパッケージでインストールされるデフォルトバージョンです。パッケージアップのグレード中に、データベースはPostgreSQL 14にアップグレードされません。PostgreSQL 14へのアップグレードは、[手動で行う必要](https://docs.gitlab.com/omnibus/settings/database.html#upgrade-packaged-postgresql-server)があります。
 
@@ -348,19 +348,19 @@ Linuxパッケージのインストールには、次の特定の情報が適用
 
 ### Geoインストール {#geo-installations-4}
 
-- PostgreSQLバージョン14は、GitLab 16.7以降の新規インストールのデフォルトです。既知の問題のため、既存のGeoセカンダリサイトはPostgreSQLバージョン14にアップグレードできません。詳細については、[イシュー](https://gitlab.com/gitlab-org/omnibus-gitlab/-/issues/7768#note_1652076255)を参照してください。すべてのGeoサイトは、同じバージョンのPostgreSQLを実行する必要があります。GitLab 16.7から16.8.1で新しいGeoセカンダリサイトを追加するには、設定に基づいて次のいずれかの操作を行う必要があります。
+- PostgreSQLバージョン14は、GitLab 16.7以降の新規インストールのデフォルトです。既知の問題のため、既存のGeoセカンダリサイトはPostgreSQLバージョン14にアップグレードできません。詳細については、[イシュー](https://gitlab.com/gitlab-org/omnibus-gitlab/-/issues/7768#note_1652076255)を参照してください。すべてのGeoサイトは、同じバージョンのPostgreSQLを実行する必要があります。GitLab 16.7から16.8.1で新しいGeoセカンダリサイトを追加するには、設定に基づいて次のいずれかの操作を行う必要があります:
 
   - 1つ目のGeoセカンダリサイトを追加する場合: 新しいGeoセカンダリサイトをセットアップする前に、[プライマリサイトをPostgreSQL 14にアップグレード](https://docs.gitlab.com/omnibus/settings/database.html#upgrade-packaged-postgresql-server)してください。プライマリサイトがすでにPostgreSQL 14を実行している場合は、特別な操作は必要ありません。
   - すでに1つ以上のGeoセカンダリがあるデプロイメントに、新しいGeoセカンダリサイトを追加する場合:
-    - 既存のすべてのサイトがPostgreSQL 13を実行している場合は、[ピン留めしたPostgreSQLバージョン13](https://docs.gitlab.com/omnibus/settings/database.html#pin-the-packaged-postgresql-version-fresh-installs-only)を使用して、新しいGeoセカンダリサイトをインストールします。
-    - 既存のすべてのサイトがPostgreSQL 14を実行している場合は、特別な操作は必要ありません。
+    - 既存のすべてのサイトがPostgreSQL 13を実行している場合は、: [ピン留めしたPostgreSQLバージョン13](https://docs.gitlab.com/omnibus/settings/database.html#pin-the-packaged-postgresql-version-fresh-installs-only)を使用して、新しいGeoセカンダリサイトをインストールします。
+    - 既存のすべてのサイトがPostgreSQL 14を実行している場合は、: 特別な操作は必要ありません。
     - 新しいGeoセカンダリサイトをデプロイに追加する前に、既存のすべてのサイトをGitLab 16.8.2以降およびPostgreSQL 14にアップグレードしてください。
 
 - プライマリサイトとセカンダリサイトの間でチェックサムが一致しないため、一部のプロジェクトで検証エラーが発生する可能性があります。詳細は、この[イシュー](https://gitlab.com/gitlab-org/gitlab/-/issues/427493)で追跡されています。データはセカンダリサイトに正しくレプリケートされているため、データ損失のリスクはありません。ユーザーがGeoセカンダリサイトから、影響を受けたプロジェクトをクローンすると、常にプライマリサイトにリダイレクトされます。現時点では、既知の回避策はありません。現在、修正に取り組んでいます。
 
-  **影響を受けたリリース**:
+  **Affected releases**（影響を受けるリリース）:
 
-  | 影響を受けたマイナーリリース | 影響を受けたパッチリリース | 修正リリース |
+  | 影響を受けるマイナーリリース | 影響を受けるパッチリリース | 修正リリース |
   | ----------------------- | ----------------------- | -------- |
   | 16.3                    |  すべて                    | なし     |
   | 16.4                    |  すべて                    | なし     |
@@ -370,9 +370,9 @@ Linuxパッケージのインストールには、次の特定の情報が適用
 
 - GitLab 16.5のバグにより、[パーソナルスニペット](../../user/snippets.md)がセカンダリGeoサイトにレプリケートされていません。これにより、Geoフェイルオーバーが発生した場合に、パーソナルスニペットデータが失われる可能性があります。問題の詳細と回避策については、[イシュー439933](https://gitlab.com/gitlab-org/gitlab/-/issues/439933)を参照してください。
 
-  **影響を受けたリリース**:
+  **Affected releases**（影響を受けるリリース）:
 
-  | 影響を受けたマイナーリリース | 影響を受けたパッチリリース | 修正リリース |
+  | 影響を受けるマイナーリリース | 影響を受けるパッチリリース | 修正リリース |
   | ----------------------- | ----------------------- | -------- |
   | 16.5                    |  すべて                    | なし     |
   | 16.6                    |  すべて                    | なし     |
@@ -382,9 +382,9 @@ Linuxパッケージのインストールには、次の特定の情報が適用
 
 - GitLab 16.5で発生し、17.0で修正されたバグにより、[GitLab Pages](../../administration/pages/_index.md)デプロイファイルがセカンダリGeoサイトで孤立するという事象が発生しています。Pagesのデプロイがローカルに保存されている場合、これにより、残りのストレージがゼロになり、フェイルオーバーが発生した場合にデータが失われる可能性があります。問題の詳細と回避策については、[イシュー457159](https://gitlab.com/gitlab-org/gitlab/-/issues/457159)を参照してください。
 
-  **影響を受けたリリース**:
+  **Affected releases**（影響を受けるリリース）:
 
-  | 影響を受けたマイナーリリース | 影響を受けたパッチリリース | 修正リリース |
+  | 影響を受けるマイナーリリース | 影響を受けるパッチリリース | 修正リリース |
   | ----------------------- | ----------------------- | -------- |
   | 16.5                    |  すべて                    | なし     |
   | 16.6                    |  すべて                    | なし     |
@@ -398,7 +398,7 @@ Linuxパッケージのインストールには、次の特定の情報が適用
 
 - GitLab 16.6では、プライマリキーを64ビットにアップグレードする一環として、CIジョブテーブル（`ci_builds`）のすべての行を書き換えるバックグラウンド移行が導入されています。`ci_builds`は、ほとんどのGitLabインスタンスで最大のテーブルの1つであるため、この移行は通常よりも積極的に実行され、妥当な時間で完了できるようになっています。通常、バックグラウンド移行は行のバッチ間で一時停止しますが、この移行は一時停止しません。
 
-  そのため、Self-Managed環境で次のパフォーマンス問題が発生する可能性があります。
+  そのため、Self-Managed環境で次のパフォーマンス問題が発生する可能性があります:
 
   - ディスクI/Oが通常よりも高くなります。これは、クラウドプロバイダーがホストする、ディスクI/Oが制限されているインスタンスでは特に問題になります。
   - 古い行（デッドタプル）を削除し、その他の関連するハウスキーピングを実行するために、Autovacuumがバックグラウンドでより頻繁に実行される可能性があります。
@@ -407,7 +407,7 @@ Linuxパッケージのインストールには、次の特定の情報が適用
   回避策:
 
   - [**管理者**エリア](../background_migrations.md#from-the-gitlab-ui)で実行中の移行を一時停止します。
-  - 適切なクエリプランが選択されるように、[データベースコンソール](../../administration/troubleshooting/postgresql.md#start-a-database-console)でテーブル統計を手動で再作成します。
+  - 適切なクエリプランが選択されるように、[データベースコンソール](../../administration/troubleshooting/postgresql.md#start-a-database-console)でテーブル統計を手動で再作成します:
 
     ```sql
     SET statement_timeout = 0;
@@ -417,9 +417,9 @@ Linuxパッケージのインストールには、次の特定の情報が適用
 - GitLab 16.6へのアップグレード後、古い[CI環境破棄ジョブが起動する可能性があります](https://gitlab.com/gitlab-org/gitlab/-/issues/433264#)。
 - 通常、PgBouncerを使用する環境でのバックアップは、[`GITLAB_BACKUP_`をプレフィックスとする変数を設定してPgBouncerを回避する必要があります](../../administration/backup_restore/backup_gitlab.md#bypassing-pgbouncer)。ただし、[イシュー](https://gitlab.com/gitlab-org/gitlab/-/issues/422163)により、`gitlab-backup`は、オーバーライドで定義された直接接続ではなく、PgBouncerを介して標準のデータベース接続を使用するため、データベースのバックアップは失敗します。回避策は、`pg_dump`を直接使用することです。
 
-    **影響を受けたリリース**:
+    **Affected releases**（影響を受けるリリース）:
 
-  | 影響を受けたマイナーリリース | 影響を受けたパッチリリース | 修正リリース |
+  | 影響を受けるマイナーリリース | 影響を受けるパッチリリース | 修正リリース |
   | ----------------------- | ----------------------- | -------- |
   | 15.11                   |  すべて                    | なし     |
   | 16.0                    |  すべて                    | なし     |
@@ -436,9 +436,9 @@ Linuxパッケージのインストールには、次の特定の情報が適用
 
 - プライマリサイトとセカンダリサイトの間でチェックサムが一致しないため、一部のプロジェクトで検証エラーが発生する可能性があります。詳細は、この[イシュー](https://gitlab.com/gitlab-org/gitlab/-/issues/427493)で追跡されています。データはセカンダリサイトに正しくレプリケートされているため、データ損失のリスクはありません。ユーザーがGeoセカンダリサイトから、影響を受けたプロジェクトをクローンすると、常にプライマリサイトにリダイレクトされます。現時点では、既知の回避策はありません。現在、修正に取り組んでいます。
 
-  **影響を受けたリリース**:
+  **Affected releases**（影響を受けるリリース）:
 
-  | 影響を受けたマイナーリリース | 影響を受けたパッチリリース | 修正リリース |
+  | 影響を受けるマイナーリリース | 影響を受けるパッチリリース | 修正リリース |
   | ----------------------- | ----------------------- | -------- |
   | 16.3                    |  すべて                    | なし     |
   | 16.4                    |  すべて                    | なし     |
@@ -448,9 +448,9 @@ Linuxパッケージのインストールには、次の特定の情報が適用
 
 - GitLab 16.5のバグにより、[パーソナルスニペット](../../user/snippets.md)がセカンダリGeoサイトにレプリケートされていません。これにより、Geoフェイルオーバーが発生した場合に、パーソナルスニペットデータが失われる可能性があります。問題の詳細と回避策については、[イシュー439933](https://gitlab.com/gitlab-org/gitlab/-/issues/439933)を参照してください。
 
-  **影響を受けたリリース**:
+  **Affected releases**（影響を受けるリリース）:
 
-  | 影響を受けたマイナーリリース | 影響を受けたパッチリリース | 修正リリース |
+  | 影響を受けるマイナーリリース | 影響を受けるパッチリリース | 修正リリース |
   | ----------------------- | ----------------------- | -------- |
   | 16.5                    |  すべて                    | なし     |
   | 16.6                    |  すべて                    | なし     |
@@ -460,9 +460,9 @@ Linuxパッケージのインストールには、次の特定の情報が適用
 
 - GitLab 16.5で発生し、17.0で修正されたバグにより、[GitLab Pages](../../administration/pages/_index.md)デプロイファイルがセカンダリGeoサイトで孤立するという事象が発生しています。Pagesのデプロイがローカルに保存されている場合、これにより、残りのストレージがゼロになり、フェイルオーバーが発生した場合にデータが失われる可能性があります。問題の詳細と回避策については、[イシュー457159](https://gitlab.com/gitlab-org/gitlab/-/issues/457159)を参照してください。
 
-  **影響を受けたリリース**:
+  **Affected releases**（影響を受けるリリース）:
 
-  | 影響を受けたマイナーリリース | 影響を受けたパッチリリース | 修正リリース |
+  | 影響を受けるマイナーリリース | 影響を受けるパッチリリース | 修正リリース |
   | ----------------------- | ----------------------- | -------- |
   | 16.5                    |  すべて                    | なし     |
   | 16.6                    |  すべて                    | なし     |
@@ -477,7 +477,7 @@ Linuxパッケージのインストールには、次の特定の情報が適用
 - GitalyではGit 2.42.0以降が必要です。自己コンパイルされたインストールでは、[Gitalyが提供するGitバージョン](../../install/self_compiled/_index.md#git)を使用する必要があります。
 - リグレッションにより、[グループをナビゲートする際にHTTP 500エラー](https://gitlab.com/gitlab-org/gitlab/-/issues/431659)が発生することがあります。GitLab 16.6以降にアップグレードすると、この問題は解決します。
 - リグレッションにより、[選択されていない高度な検索ファセットが読み込まれない](https://gitlab.com/gitlab-org/gitlab/-/issues/428246)場合があります。16.6以降にアップグレードすると、この問題は解決します。
-- `unique_batched_background_migrations_queued_migration_version`インデックスは16.5で導入され、デプロイ後の移行`DeleteOrphansScanFindingLicenseScanningApprovalRules2`は、ゼロダウンタイムアップグレードを実行中に、この一意の制約を破る可能性があります。エラーを修正する回避策は、[イシュー#437291](https://gitlab.com/gitlab-org/gitlab/-/issues/437291#to-unblock)で入手できます。
+- `unique_batched_background_migrations_queued_migration_version`インデックスは16.5で導入され、デプロイ後の移行`DeleteOrphansScanFindingLicenseScanningApprovalRules2`は、ゼロダウンタイムアップグレードを実行中に、この一意の制約を破る可能性があります。エラーを修正する回避策は、[イシュー#437291](https://gitlab.com/gitlab-org/gitlab/-/issues/437291#to-unblock)で入手できます:
 
   ```plaintext
   PG::UniqueViolation: ERROR:  duplicate key value violates unique constraint
@@ -487,9 +487,9 @@ Linuxパッケージのインストールには、次の特定の情報が適用
 
 - 通常、PgBouncerを使用する環境でのバックアップは、[`GITLAB_BACKUP_`をプレフィックスとする変数を設定してPgBouncerを回避する必要があります](../../administration/backup_restore/backup_gitlab.md#bypassing-pgbouncer)。ただし、[イシュー](https://gitlab.com/gitlab-org/gitlab/-/issues/422163)により、`gitlab-backup`は、オーバーライドで定義された直接接続ではなく、PgBouncerを介して標準のデータベース接続を使用するため、データベースのバックアップは失敗します。回避策は、`pg_dump`を直接使用することです。
 
-    **影響を受けたリリース**:
+    **Affected releases**（影響を受けるリリース）:
 
-  | 影響を受けたマイナーリリース | 影響を受けたパッチリリース | 修正リリース |
+  | 影響を受けるマイナーリリース | 影響を受けるパッチリリース | 修正リリース |
   | ----------------------- | ----------------------- | -------- |
   | 15.11                   |  すべて                    | なし     |
   | 16.0                    |  すべて                    | なし     |
@@ -506,20 +506,20 @@ Linuxパッケージのインストールには、次の特定の情報が適用
 
 - SSHクローンURLは、`/etc/gitlab/gitlab.rb`で`gitlab_rails['gitlab_ssh_host']`を設定することでカスタマイズできます。この設定は、[有効なホスト名](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/132238)である必要があります。以前は、リポジトリクローンURLにカスタムホスト名とポートを表示するために使用される任意の文字列を指定できました。
 
-  たとえば、GitLab 16.5より前は、次の設定が機能していました。
+  たとえば、GitLab 16.5より前は、次の設定が機能していました:
 
   ```ruby
   gitlab_rails['gitlab_ssh_host'] = "gitlab.example.com:2222"
   ```
 
-  GitLab 16.5以降では、ホスト名とポートを個別に指定する必要があります。
+  GitLab 16.5以降では、ホスト名とポートを個別に指定する必要があります:
 
   ```ruby
   gitlab_rails['gitlab_ssh_host'] = "gitlab.example.com"
   gitlab_rails['gitlab_shell_ssh_port'] = 2222
   ```
 
-  設定を変更したら、必ずGitLabを再構成してください。
+  設定を変更したら、必ずGitLabを再構成してください:
 
   ```shell
   sudo gitlab-ctl reconfigure
@@ -527,18 +527,18 @@ Linuxパッケージのインストールには、次の特定の情報が適用
 
 ### Geoインストール {#geo-installations-6}
 
-Geoを使用するインストールには、特定の情報が適用されます。
+Geoを使用するインストールには、特定の情報が適用されます:
 
-- いくつかのPrometheusメトリクスが、16.3.0で誤って削除されました。そのため、ダッシュボードとアラートが中断する可能性があります。
+- いくつかのPrometheusメトリクスが、16.3.0で誤って削除されました。そのため、ダッシュボードとアラートが中断する可能性があります:
 
   | 影響を受けるメトリクス                          | 16.5.2以降で復元されたメトリクス  | 16.3以降で利用可能な代替手段                 |
   | ---------------------------------------- | ------------------------------------ | ---------------------------------------------- |
-  | `geo_repositories_synced`                | はい                                  | `geo_project_repositories_synced`              |
-  | `geo_repositories_failed`                | はい                                  | `geo_project_repositories_failed`              |
-  | `geo_repositories_checksummed`           | はい                                  | `geo_project_repositories_checksummed`         |
-  | `geo_repositories_checksum_failed`       | はい                                  | `geo_project_repositories_checksum_failed`     |
-  | `geo_repositories_verified`              | はい                                  | `geo_project_repositories_verified`            |
-  | `geo_repositories_verification_failed`   | はい                                  | `geo_project_repositories_verification_failed` |
+  | `geo_repositories_synced`                | √                                  | `geo_project_repositories_synced`              |
+  | `geo_repositories_failed`                | √                                  | `geo_project_repositories_failed`              |
+  | `geo_repositories_checksummed`           | √                                  | `geo_project_repositories_checksummed`         |
+  | `geo_repositories_checksum_failed`       | √                                  | `geo_project_repositories_checksum_failed`     |
+  | `geo_repositories_verified`              | √                                  | `geo_project_repositories_verified`            |
+  | `geo_repositories_verification_failed`   | √                                  | `geo_project_repositories_verification_failed` |
   | `geo_repositories_checksum_mismatch`     | いいえ                                   | 利用不可                                 |
   | `geo_repositories_retrying_verification` | いいえ                                   | 利用不可                                 |
 
@@ -553,15 +553,15 @@ Geoを使用するインストールには、特定の情報が適用されま�
 
   [オブジェクトストレージ](../../administration/object_storage.md)を使用するようインストールを構成していて、[GitLab管理のオブジェクトストレージレプリケーション](../../administration/geo/replication/object_storage.md#enabling-gitlab-managed-object-storage-replication)を有効にしている場合、インストールが影響を受ける可能性があります
 
-  これが修正されるまで、回避策としてオブジェクトストレージの検証を無効にします。プライマリサイトのいずれかのRailsノードで、次のコマンドを実行します。
+  これが修正されるまで、回避策としてオブジェクトストレージの検証を無効にします。プライマリサイトのいずれかのRailsノードで、次のコマンドを実行します:
 
   ```shell
   sudo gitlab-rails runner 'Feature.disable(:geo_object_storage_verification)'
   ```
 
-  **影響を受けたリリース**:
+  **Affected releases**（影響を受けるリリース）:
 
-  | 影響を受けたマイナーリリース | 影響を受けたパッチリリース | 修正リリース |
+  | 影響を受けるマイナーリリース | 影響を受けるパッチリリース | 修正リリース |
   | ----------------------- | ----------------------- | -------- |
   | 16.4                    | 16.4.0 - 16.4.2         | 16.4.3   |
   | 16.5                    | 16.5.0 - 16.5.1         | 16.5.2   |
@@ -570,9 +570,9 @@ Geoを使用するインストールには、特定の情報が適用されま�
 
   問題の詳細と回避策については、[イシュー426571](https://gitlab.com/gitlab-org/gitlab/-/issues/426571)を参照してください。
 
-  **影響を受けたリリース**:
+  **Affected releases**（影響を受けるリリース）:
 
-  | 影響を受けたマイナーリリース | 影響を受けたパッチリリース | 修正リリース |
+  | 影響を受けるマイナーリリース | 影響を受けるパッチリリース | 修正リリース |
   | ------ | ------ | ------ |
   | 16.3   | すべて    | なし   |
   | 16.4   | すべて    | なし   |
@@ -580,9 +580,9 @@ Geoを使用するインストールには、特定の情報が適用されま�
 
 - プライマリサイトとセカンダリサイトの間でチェックサムが一致しないため、一部のプロジェクトで検証エラーが発生する可能性があります。詳細は、この[イシュー](https://gitlab.com/gitlab-org/gitlab/-/issues/427493)で追跡されています。データはセカンダリサイトに正しくレプリケートされているため、データ損失のリスクはありません。ユーザーがGeoセカンダリサイトから、影響を受けたプロジェクトをクローンすると、常にプライマリサイトにリダイレクトされます。現時点では、既知の回避策はありません。現在、修正に取り組んでいます。
 
-  **影響を受けたリリース**:
+  **Affected releases**（影響を受けるリリース）:
 
-  | 影響を受けたマイナーリリース | 影響を受けたパッチリリース | 修正リリース |
+  | 影響を受けるマイナーリリース | 影響を受けるパッチリリース | 修正リリース |
   | ----------------------- | ----------------------- | -------- |
   | 16.3                    |  すべて                    | なし     |
   | 16.4                    |  すべて                    | なし     |
@@ -592,9 +592,9 @@ Geoを使用するインストールには、特定の情報が適用されま�
 
 - GitLab 16.5のバグにより、[パーソナルスニペット](../../user/snippets.md)がセカンダリGeoサイトにレプリケートされていません。これにより、Geoフェイルオーバーが発生した場合に、パーソナルスニペットデータが失われる可能性があります。問題の詳細と回避策については、[イシュー439933](https://gitlab.com/gitlab-org/gitlab/-/issues/439933)を参照してください。
 
-  **影響を受けたリリース**:
+  **Affected releases**（影響を受けるリリース）:
 
-  | 影響を受けたマイナーリリース | 影響を受けたパッチリリース | 修正リリース |
+  | 影響を受けるマイナーリリース | 影響を受けるパッチリリース | 修正リリース |
   | ----------------------- | ----------------------- | -------- |
   | 16.5                    |  すべて                    | なし     |
   | 16.6                    |  すべて                    | なし     |
@@ -604,9 +604,9 @@ Geoを使用するインストールには、特定の情報が適用されま�
 
 - GitLab 16.5で発生し、17.0で修正されたバグにより、[GitLab Pages](../../administration/pages/_index.md)デプロイファイルがセカンダリGeoサイトで孤立するという事象が発生しています。Pagesのデプロイがローカルに保存されている場合、これにより、残りのストレージがゼロになり、フェイルオーバーが発生した場合にデータが失われる可能性があります。問題の詳細と回避策については、[イシュー457159](https://gitlab.com/gitlab-org/gitlab/-/issues/457159)を参照してください。
 
-  **影響を受けたリリース**:
+  **Affected releases**（影響を受けるリリース）:
 
-  | 影響を受けたマイナーリリース | 影響を受けたパッチリリース | 修正リリース |
+  | 影響を受けるマイナーリリース | 影響を受けるパッチリリース | 修正リリース |
   | ----------------------- | ----------------------- | -------- |
   | 16.5                    |  すべて                    | なし     |
   | 16.6                    |  すべて                    | なし     |
@@ -622,7 +622,7 @@ Geoを使用するインストールには、特定の情報が適用されま�
 
   16.3より前のバージョンから16.4にアップグレードする場合は、使用する前にデータベースで`ANALYZE packages_packages;`を実行する必要があります。
 
-- GitLab 16.4以降にアップグレードする際に、次のエラーが発生する可能性があります。
+- GitLab 16.4以降にアップグレードする際に、次のエラーが発生する可能性があります:
 
   ```plaintext
   main: == 20230830084959 ValidatePushRulesConstraints: migrating =====================
@@ -639,7 +639,7 @@ Geoを使用するインストールには、特定の情報が適用されま�
   PG::CheckViolation: ERROR:  check constraint "delete_branch_regex_size_constraint" of relation "push_rules" is violated by some row
   ```
 
-  これらの制約により、エラーが返される可能性があります。
+  これらの制約により、エラーが返される可能性があります:
 
   - `author_email_regex_size_constraint`
   - `branch_name_regex_size_constraint`
@@ -656,7 +656,7 @@ Geoを使用するインストールには、特定の情報が適用されま�
   SELECT id FROM push_rules WHERE LENGTH(delete_branch_regex) > 511;
   ```
 
-  プッシュルールがプロジェクト、グループ、インスタンスのいずれに属しているかを確認するには、[Railsコンソール](../../administration/operations/rails_console.md#starting-a-rails-console-session)で次のスクリプトを実行します。
+  プッシュルールがプロジェクト、グループ、インスタンスのいずれに属しているかを確認するには、[Railsコンソール](../../administration/operations/rails_console.md#starting-a-rails-console-session)で次のスクリプトを実行します:
 
   ```ruby
   # replace `delete_branch_regex` with a name of the field used in constraint
@@ -682,9 +682,9 @@ Geoを使用するインストールには、特定の情報が適用されま�
 
 - 通常、PgBouncerを使用する環境でのバックアップは、[`GITLAB_BACKUP_`をプレフィックスとする変数を設定してPgBouncerを回避する必要があります](../../administration/backup_restore/backup_gitlab.md#bypassing-pgbouncer)。ただし、[イシュー](https://gitlab.com/gitlab-org/gitlab/-/issues/422163)により、`gitlab-backup`は、オーバーライドで定義された直接接続ではなく、PgBouncerを介して標準のデータベース接続を使用するため、データベースのバックアップは失敗します。回避策は、`pg_dump`を直接使用することです。
 
-  **影響を受けたリリース**:
+  **Affected releases**（影響を受けるリリース）:
 
-  | 影響を受けたマイナーリリース | 影響を受けたパッチリリース | 修正リリース |
+  | 影響を受けるマイナーリリース | 影響を受けるパッチリリース | 修正リリース |
   | ----------------------- | ----------------------- | -------- |
   | 15.11                   |  すべて                    | なし     |
   | 16.0                    |  すべて                    | なし     |
@@ -699,25 +699,25 @@ Geoを使用するインストールには、特定の情報が適用されま�
 
 ### 自己コンパイルによるインストール {#self-compiled-installations}
 
-- GitLab 16.4以降では、GitLabシークレットとカスタムフックのパスを設定する新しい方法が推奨されています。
-  1. 設定`[gitlab] secret_file`を更新して、GitLabシークレットトークンの[パスを設定](../../administration/gitaly/reference.md)します。
-  1. カスタムフックがある場合は、設定`[hooks] custom_hooks_dir`を更新して、サーバー側のカスタムフックの[パスを設定](../../administration/gitaly/reference.md)します。
+- GitLab 16.4以降では、GitLabシークレットとカスタムフックのパスを設定する新しい方法が推奨されています:
+  1. 設定`[gitlab] secret_file`を更新して、GitLabシークレットトークンのパスを設定します。
+  1. カスタムフックがある場合は、設定`[hooks] custom_hooks_dir`を更新して、サーバー側のカスタムフックのパスを設定します。
   1. `[gitlab-shell] dir`設定を削除します。
 
 ### Geoインストール {#geo-installations-7}
 
-Geoを使用するインストールには、特定の情報が適用されます。
+Geoを使用するインストールには、特定の情報が適用されます:
 
-- いくつかのPrometheusメトリクスが、16.3.0で誤って削除されました。そのため、ダッシュボードとアラートが中断する可能性があります。
+- いくつかのPrometheusメトリクスが、16.3.0で誤って削除されました。そのため、ダッシュボードとアラートが中断する可能性があります:
 
   | 影響を受けるメトリクス                          | 16.5.2以降で復元されたメトリクス  | 16.3以降で利用可能な代替手段                 |
   | ---------------------------------------- | ------------------------------------ | ---------------------------------------------- |
-  | `geo_repositories_synced`                | はい                                  | `geo_project_repositories_synced`              |
-  | `geo_repositories_failed`                | はい                                  | `geo_project_repositories_failed`              |
-  | `geo_repositories_checksummed`           | はい                                  | `geo_project_repositories_checksummed`         |
-  | `geo_repositories_checksum_failed`       | はい                                  | `geo_project_repositories_checksum_failed`     |
-  | `geo_repositories_verified`              | はい                                  | `geo_project_repositories_verified`            |
-  | `geo_repositories_verification_failed`   | はい                                  | `geo_project_repositories_verification_failed` |
+  | `geo_repositories_synced`                | √                                  | `geo_project_repositories_synced`              |
+  | `geo_repositories_failed`                | √                                  | `geo_project_repositories_failed`              |
+  | `geo_repositories_checksummed`           | √                                  | `geo_project_repositories_checksummed`         |
+  | `geo_repositories_checksum_failed`       | √                                  | `geo_project_repositories_checksum_failed`     |
+  | `geo_repositories_verified`              | √                                  | `geo_project_repositories_verified`            |
+  | `geo_repositories_verification_failed`   | √                                  | `geo_project_repositories_verification_failed` |
   | `geo_repositories_checksum_mismatch`     | いいえ                                   | 利用不可                                 |
   | `geo_repositories_retrying_verification` | いいえ                                   | 利用不可                                 |
 
@@ -732,24 +732,24 @@ Geoを使用するインストールには、特定の情報が適用されま�
 
   [オブジェクトストレージ](../../administration/object_storage.md)を使用するようインストールを構成していて、[GitLab管理のオブジェクトストレージレプリケーション](../../administration/geo/replication/object_storage.md#enabling-gitlab-managed-object-storage-replication)を有効にしている場合、インストールが影響を受ける可能性があります
 
-  これが修正されるまで、回避策としてオブジェクトストレージの検証を無効にします。プライマリサイトのいずれかのRailsノードで、次のコマンドを実行します。
+  これが修正されるまで、回避策としてオブジェクトストレージの検証を無効にします。プライマリサイトのいずれかのRailsノードで、次のコマンドを実行します:
 
   ```shell
   sudo gitlab-rails runner 'Feature.disable(:geo_object_storage_verification)'
   ```
 
-  **影響を受けたリリース**:
+  **Affected releases**（影響を受けるリリース）:
 
-  | 影響を受けたマイナーリリース | 影響を受けたパッチリリース | 修正リリース |
+  | 影響を受けるマイナーリリース | 影響を受けるパッチリリース | 修正リリース |
   | ----------------------- | ----------------------- | -------- |
   | 16.4                    | 16.4.0 - 16.4.2         | 16.4.3   |
   | 16.5                    | 16.5.0 - 16.5.1         | 16.5.2   |
 
 - 同期状態が保留状態のままになる[イシュー](https://gitlab.com/gitlab-org/gitlab/-/issues/419370)により、影響を受けるアイテムのレプリケーションが無期限に停止し、フェイルオーバーが発生した場合にデータが失われるリスクがあります。これは主にリポジトリの同期に影響しますが、コンテナレジストリの同期にも影響を与える可能性があります。データ損失のリスクを回避するために、修正済みのバージョンにアップグレードすることをおすすめします。
 
-  **影響を受けたリリース**:
+  **Affected releases**（影響を受けるリリース）:
 
-  | 影響を受けたマイナーリリース | 影響を受けたパッチリリース | 修正リリース |
+  | 影響を受けるマイナーリリース | 影響を受けるパッチリリース | 修正リリース |
   | ------ | ------ | ------ |
   | 16.3   | 16.3.0 - 16.3.5    | 16.3.6   |
   | 16.4   | 16.4.0 - 16.4.1    | 16.4.2   |
@@ -758,9 +758,9 @@ Geoを使用するインストールには、特定の情報が適用されま�
 
   問題の詳細と回避策については、[イシュー426571](https://gitlab.com/gitlab-org/gitlab/-/issues/426571)を参照してください。
 
-  **影響を受けたリリース**:
+  **Affected releases**（影響を受けるリリース）:
 
-  | 影響を受けたマイナーリリース | 影響を受けたパッチリリース | 修正リリース |
+  | 影響を受けるマイナーリリース | 影響を受けるパッチリリース | 修正リリース |
   | ------ | ------ | ------ |
   | 16.3   | すべて    | なし   |
   | 16.4   | すべて    | なし   |
@@ -768,9 +768,9 @@ Geoを使用するインストールには、特定の情報が適用されま�
 
 - プライマリサイトとセカンダリサイトの間でチェックサムが一致しないため、一部のプロジェクトで検証エラーが発生する可能性があります。詳細は、この[イシュー](https://gitlab.com/gitlab-org/gitlab/-/issues/427493)で追跡されています。データはセカンダリサイトに正しくレプリケートされているため、データ損失のリスクはありません。ユーザーがGeoセカンダリサイトから、影響を受けたプロジェクトをクローンすると、常にプライマリサイトにリダイレクトされます。現時点では、既知の回避策はありません。現在、修正に取り組んでいます。
 
-  **影響を受けたリリース**:
+  **Affected releases**（影響を受けるリリース）:
 
-  | 影響を受けたマイナーリリース | 影響を受けたパッチリリース | 修正リリース |
+  | 影響を受けるマイナーリリース | 影響を受けるパッチリリース | 修正リリース |
   | ----------------------- | ----------------------- | -------- |
   | 16.3                    |  すべて                    | なし     |
   | 16.4                    |  すべて                    | なし     |
@@ -780,11 +780,11 @@ Geoを使用するインストールには、特定の情報が適用されま�
 
 ## 16.3.0 {#1630}
 
-- **GitLab 16.3.5以降にアップデート**してください。これにより、GitLab 16.3.3および16.3.4でデータベースのディスクスペースを過剰に使用する[イシュー425971](https://gitlab.com/gitlab-org/gitlab/-/issues/425971)を回避できます。
+- **Update to GitLab 16.3.5 or later**（GitLab 16.3.5以降にアップデート）してください。これにより、GitLab 16.3.3および16.3.4でデータベースのディスクスペースを過剰に使用する[イシュー425971](https://gitlab.com/gitlab-org/gitlab/-/issues/425971)を回避できます。
 
 - データベースに重複したNPMパッケージがないことを保証するために、一意のインデックスが追加されました。重複したNPMパッケージがある場合は、最初に16.1にアップグレードする必要があります。そうしないと、`PG::UniqueViolation: ERROR:  could not create unique index "idx_packages_on_project_id_name_version_unique_when_npm"`のエラーが発生する可能性があります。
 
-- Goアプリケーションの場合、[`crypto/tls`: verifying certificate chains containing large RSA keys is slow (CVE-2023-29409)](https://github.com/golang/go/issues/61460)（crypto/tls: 大規模なRSAキーを含む証明書チェーンの検証が遅い (CVE-2023-29409)）により、RSAキーのハード制限が8192ビットに設定されました。GitLabでのGoアプリケーションのコンテキストでは、RSAキーを以下のために設定できます。
+- Goアプリケーションの場合、[`crypto/tls`: verifying certificate chains containing large RSA keys is slow (CVE-2023-29409)](https://github.com/golang/go/issues/61460)（crypto/tls: 大規模なRSAキーを含む証明書チェーンの検証が遅い (CVE-2023-29409)）により、RSAキーのハード制限が8192ビットに設定されました。GitLabでのGoアプリケーションのコンテキストでは、RSAキーを以下のために設定できます:
 
   - [コンテナレジストリ](../../administration/packages/container_registry.md)
   - [Gitaly](../../administration/gitaly/tls_support.md)
@@ -793,9 +793,9 @@ Geoを使用するインストールには、特定の情報が適用されま�
 
   アップグレードする前に、上記のアプリケーションのいずれかでRSAキーのサイズ（`openssl rsa -in <your-key-file> -text -noout | grep "Key:"`）を確認する必要があります。
 
-- `BackfillCiPipelineVariablesForPipelineIdBigintConversion`バックグラウンド移行は、`EnsureAgainBackfillForCiPipelineVariablesPipelineIdIsFinished`ポストデプロイ移行で完了します。GitLab 16.2.0では、[`ci_pipeline_variables`テーブルの`bigint` `pipeline_id`値をバックフィルする](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/123132)[バッチバックグラウンド移行](../background_migrations.md#check-for-pending-database-background-migrations)が導入されました。この移行は、大規模なGitLabインスタンスでは完了までに長い時間がかかる場合があります（あるケースでは、5,000万行の処理に4時間かかったと報告されています）。アップグレードのダウンタイムが長引くのを避けるために、16.3にアップグレードする前に、移行が正常に完了していることを確認してください。
+- `BackfillCiPipelineVariablesForPipelineIdBigintConversion`バックグラウンド移行は、`EnsureAgainBackfillForCiPipelineVariablesPipelineIdIsFinished`ポストデプロイ移行で完了します。GitLab 16.2.0では、[`ci_pipeline_variables`テーブルの`bigint` `pipeline_id`値をバックフィルする](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/123132) [バッチバックグラウンド移行](../background_migrations.md#check-for-pending-database-background-migrations)が導入されました。この移行は、大規模なGitLabインスタンスでは完了までに長い時間がかかる場合があります（あるケースでは、5,000万行の処理に4時間かかったと報告されています）。アップグレードのダウンタイムが長引くのを避けるために、16.3にアップグレードする前に、移行が正常に完了していることを確認してください。
 
-  [データベースコンソール](../../administration/troubleshooting/postgresql.md#start-a-database-console)で、`ci_pipeline_variables`テーブルのサイズを確認できます。
+  [データベースコンソール](../../administration/troubleshooting/postgresql.md#start-a-database-console)で、`ci_pipeline_variables`テーブルのサイズを確認できます:
 
   ```sql
   select count(*) from ci_pipeline_variables;
@@ -803,9 +803,9 @@ Geoを使用するインストールには、特定の情報が適用されま�
 
 - 通常、PgBouncerを使用する環境でのバックアップは、[`GITLAB_BACKUP_`をプレフィックスとする変数を設定してPgBouncerを回避する必要があります](../../administration/backup_restore/backup_gitlab.md#bypassing-pgbouncer)。ただし、[イシュー](https://gitlab.com/gitlab-org/gitlab/-/issues/422163)により、`gitlab-backup`は、オーバーライドで定義された直接接続ではなく、PgBouncerを介して標準のデータベース接続を使用するため、データベースのバックアップは失敗します。回避策は、`pg_dump`を直接使用することです。
 
-     **影響を受けたリリース**:
+     **Affected releases**（影響を受けるリリース）:
 
-  | 影響を受けたマイナーリリース | 影響を受けたパッチリリース | 修正リリース |
+  | 影響を受けるマイナーリリース | 影響を受けるパッチリリース | 修正リリース |
   | ----------------------- | ----------------------- | -------- |
   | 15.11                   |  すべて                    | なし     |
   | 16.0                    |  すべて                    | なし     |
@@ -820,7 +820,7 @@ Geoを使用するインストールには、特定の情報が適用されま�
 
 ### Linuxパッケージインストール {#linux-package-installations-6}
 
-Linuxパッケージのインストールには、次の特定の情報が適用されます。
+Linuxパッケージのインストールには、次の特定の情報が適用されます:
 
 - GitLab 16.0では、新しいバージョンのOpenSSH Serverを持つ、アップグレードされたベースDockerイメージを[発表](https://about.gitlab.com/releases/2023/05/22/gitlab-16-0-released/#omnibus-improvements)しました。新しいバージョンでは、SSH RSA SHA-1署名の受け入れがデフォルトで無効になるという意図しない結果が生じました。この問題は、非常に古いSSHクライアントを使用しているユーザーにしか影響しないはずです。
 
@@ -830,7 +830,7 @@ Linuxパッケージのインストールには、次の特定の情報が適用
 
   セキュリティのベストプラクティスを促進し、アップストリームの推奨事項に従うため、この環境変数はGitLab 17.0までのみ利用可能になり、その時点でサポートを停止する予定です。
 
-  詳細については、以下を参照してください。
+  詳細については、以下を参照してください:
 
   - [OpenSSH 8.8リリースノート](https://www.openssh.com/txt/release-8.8)。
   - [非公式な説明](https://gitlab.com/gitlab-org/gitlab/-/issues/416714#note_1482388504)。
@@ -838,7 +838,7 @@ Linuxパッケージのインストールには、次の特定の情報が適用
 
 ### Geoインストール {#geo-installations-8}
 
-Geoを使用するインストールには、特定の情報が適用されます。
+Geoを使用するインストールには、特定の情報が適用されます:
 
 - セカンダリGeoサイトに対するgit pullは、そのセカンダリサイトが最新の状態であっても、プライマリGeoサイトにプロキシされます。セカンダリGeoサイトに対してgit pullリクエストを行うリモートユーザーを高速化するためにGeoを使用している場合は、影響を受けます。
 
@@ -849,16 +849,16 @@ Geoを使用するインストールには、特定の情報が適用されま�
 
   詳細については、[イシュー425224](https://gitlab.com/gitlab-org/gitlab/-/issues/425224)を参照してください。
 
-- いくつかのPrometheusメトリクスが、16.3.0で誤って削除されました。そのため、ダッシュボードとアラートが中断する可能性があります。
+- いくつかのPrometheusメトリクスが、16.3.0で誤って削除されました。そのため、ダッシュボードとアラートが中断する可能性があります:
 
   | 影響を受けるメトリクス                          | 16.5.2以降で復元されたメトリクス  | 16.3以降で利用可能な代替手段                 |
   | ---------------------------------------- | ------------------------------------ | ---------------------------------------------- |
-  | `geo_repositories_synced`                | はい                                  | `geo_project_repositories_synced`              |
-  | `geo_repositories_failed`                | はい                                  | `geo_project_repositories_failed`              |
-  | `geo_repositories_checksummed`           | はい                                  | `geo_project_repositories_checksummed`         |
-  | `geo_repositories_checksum_failed`       | はい                                  | `geo_project_repositories_checksum_failed`     |
-  | `geo_repositories_verified`              | はい                                  | `geo_project_repositories_verified`            |
-  | `geo_repositories_verification_failed`   | はい                                  | `geo_project_repositories_verification_failed` |
+  | `geo_repositories_synced`                | √                                  | `geo_project_repositories_synced`              |
+  | `geo_repositories_failed`                | √                                  | `geo_project_repositories_failed`              |
+  | `geo_repositories_checksummed`           | √                                  | `geo_project_repositories_checksummed`         |
+  | `geo_repositories_checksum_failed`       | √                                  | `geo_project_repositories_checksum_failed`     |
+  | `geo_repositories_verified`              | √                                  | `geo_project_repositories_verified`            |
+  | `geo_repositories_verification_failed`   | √                                  | `geo_project_repositories_verification_failed` |
   | `geo_repositories_checksum_mismatch`     | いいえ                                   | 利用不可                                 |
   | `geo_repositories_retrying_verification` | いいえ                                   | 利用不可                                 |
 
@@ -873,9 +873,9 @@ Geoを使用するインストールには、特定の情報が適用されま�
 
 - プライマリサイトとセカンダリサイトの間でチェックサムが一致しないため、一部のプロジェクトで検証エラーが発生する可能性があります。詳細については、[イシュー427493](https://gitlab.com/gitlab-org/gitlab/-/issues/427493)で追跡されています。データはセカンダリサイトに正しくレプリケートされているため、データ損失のリスクはありません。ユーザーがGeoセカンダリサイトから、影響を受けたプロジェクトをクローンすると、常にプライマリサイトにリダイレクトされます。既知の回避策はありません。修正を含むバージョンにアップグレードする必要があります。
 
-  **影響を受けたリリース**:
+  **Affected releases**（影響を受けるリリース）:
 
-  | 影響を受けたマイナーリリース | 影響を受けたパッチリリース | 修正リリース |
+  | 影響を受けるマイナーリリース | 影響を受けるパッチリリース | 修正リリース |
   | ----------------------- | ----------------------- | -------- |
   | 16.3                    |  すべて                    | なし     |
   | 16.4                    |  すべて                    | なし     |
@@ -883,9 +883,9 @@ Geoを使用するインストールには、特定の情報が適用されま�
   | 16.6                    |  16.6.0 - 16.6.5        | 16.6.6   |
   | 16.7                    |  16.7.0 - 16.7.3        | 16.7.4   |
 
-  **影響を受けたリリース**:
+  **Affected releases**（影響を受けるリリース）:
 
-  | 影響を受けたマイナーリリース | 影響を受けたパッチリリース | 修正リリース |
+  | 影響を受けるマイナーリリース | 影響を受けるパッチリリース | 修正リリース |
   | ------ | ------ | ------ |
   | 16.3   | 16.3.0 - 16.3.5    | 16.3.6   |
   | 16.4   | 16.4.0 - 16.4.1    | 16.4.2   |
@@ -894,9 +894,9 @@ Geoを使用するインストールには、特定の情報が適用されま�
 
   問題の詳細と回避策については、[イシュー426571](https://gitlab.com/gitlab-org/gitlab/-/issues/426571)を参照してください。
 
-  **影響を受けたリリース**:
+  **Affected releases**（影響を受けるリリース）:
 
-  | 影響を受けたマイナーリリース | 影響を受けたパッチリリース | 修正リリース |
+  | 影響を受けるマイナーリリース | 影響を受けるパッチリリース | 修正リリース |
   | ------ | ------ | ------ |
   | 16.3   | すべて    | なし   |
   | 16.4   | すべて    | なし   |
@@ -905,7 +905,7 @@ Geoを使用するインストールには、特定の情報が適用されま�
 ## 16.2.0 {#1620}
 
 - 従来のLDAP設定が原因で[`NoMethodError: undefined method 'devise' for User:Class`エラー](https://gitlab.com/gitlab-org/gitlab/-/issues/419485)が発生する場合があります。このエラーは、`tls_options`ハッシュで指定されていないTLSオプション（`ca_file`など）がある場合、または従来の`gitlab_rails['ldap_host']`オプションを使用する場合に発生します。詳細については、[設定の回避策](https://gitlab.com/gitlab-org/gitlab/-/issues/419485#workarounds)を参照してください。
-- GitLabデータベースがバージョン15.11.0 - 15.11.2（両端のバージョンを含む）で作成またはアップグレードされた場合、GitLab 16.2へのアップグレードでは次のエラーで失敗します。
+- GitLabデータベースがバージョン15.11.0 - 15.11.2（両端のバージョンを含む）で作成またはアップグレードされた場合、GitLab 16.2へのアップグレードでは次のエラーで失敗します:
 
   ```plaintext
   PG::UndefinedColumn: ERROR:  column "id_convert_to_bigint" of relation "ci_build_needs" does not exist
@@ -914,7 +914,7 @@ Geoを使用するインストールには、特定の情報が適用されま�
 
   詳細と回避策については、[こちら](#undefined-column-error-upgrading-to-162-or-later)を参照してください。
 
-- GitLab 16.2以降へのアップグレード中に、次のエラーが発生する可能性があります。
+- GitLab 16.2以降へのアップグレード中に、次のエラーが発生する可能性があります:
 
   ```plaintext
   main: == 20230620134708 ValidateUserTypeConstraint: migrating =======================
@@ -926,7 +926,7 @@ Geoを使用するインストールには、特定の情報が適用されま�
 
   詳細については、[イシュー421629](https://gitlab.com/gitlab-org/gitlab/-/issues/421629)を参照してください。
 
-- GitLab 16.2以降にアップグレードした後、次のエラーが発生する可能性があります。
+- GitLab 16.2以降にアップグレードした後、次のエラーが発生する可能性があります:
 
   ```plaintext
   PG::NotNullViolation: ERROR:  null value in column "source_partition_id" of relation "ci_sources_pipelines" violates not-null constraint
@@ -936,9 +936,9 @@ Geoを使用するインストールには、特定の情報が適用されま�
 
 - 通常、PgBouncerを使用する環境でのバックアップは、[`GITLAB_BACKUP_`をプレフィックスとする変数を設定してPgBouncerを回避する必要があります](../../administration/backup_restore/backup_gitlab.md#bypassing-pgbouncer)。ただし、[イシュー](https://gitlab.com/gitlab-org/gitlab/-/issues/422163)により、`gitlab-backup`は、オーバーライドで定義された直接接続ではなく、PgBouncerを介して標準のデータベース接続を使用するため、データベースのバックアップは失敗します。回避策は、`pg_dump`を直接使用することです。
 
-    **影響を受けたリリース**:
+    **Affected releases**（影響を受けるリリース）:
 
-  | 影響を受けたマイナーリリース | 影響を受けたパッチリリース | 修正リリース |
+  | 影響を受けるマイナーリリース | 影響を受けるパッチリリース | 修正リリース |
   | ----------------------- | ----------------------- | -------- |
   | 15.11                   |  すべて                    | なし     |
   | 16.0                    |  すべて                    | なし     |
@@ -953,9 +953,9 @@ Geoを使用するインストールには、特定の情報が適用されま�
 
 ### Linuxパッケージインストール {#linux-package-installations-7}
 
-Linuxパッケージのインストールには、次の特定の情報が適用されます。
+Linuxパッケージのインストールには、次の特定の情報が適用されます:
 
-- GitLab 16.2の時点では、PostgreSQL 13.11と14.8の両方がLinuxパッケージに同梱されています。パッケージアップのグレード中に、データベースはPostgreSQL 14にアップグレードされません。PostgreSQL 14にアップグレードするには、手動でアップグレードする必要があります。
+- GitLab 16.2の時点では、PostgreSQL 13.11と14.8の両方がLinuxパッケージに同梱されています。パッケージアップのグレード中に、データベースはPostgreSQL 14にアップグレードされません。PostgreSQL 14にアップグレードするには、手動でアップグレードする必要があります:
 
   ```shell
   sudo gitlab-ctl pg-upgrade -V 14
@@ -975,10 +975,10 @@ Linuxパッケージのインストールには、次の特定の情報が適用
 
 ### Geoインストール {#geo-installations-9}
 
-Geoを使用するインストールには、特定の情報が適用されます。
+Geoを使用するインストールには、特定の情報が適用されます:
 
 - ジョブアーティファクトがオブジェクトストレージに保存されるように設定され、`direct_upload`が有効になっている場合、新しいジョブアーティファクトはGeoによって複製されません。このバグは、GitLabバージョン16.1.4、16.2.3、16.3.0以降で修正されています。
-  - 影響を受けるバージョン: GitLabバージョン16.1.0 - 16.1.3および16.2.0 - 16.2.2。
+  - 影響を受けるバージョン:GitLabバージョン16.1.0 - 16.1.3および16.2.0 - 16.2.2。
   - 影響を受けるバージョンを実行している場合、同期されたように見えるアーティファクトが、実際にはセカンダリサイトに存在しない可能性があります。影響を受けるアーティファクトは、16.1.5、16.2.5、16.3.1、16.4.0、またはそれ以降にアップグレードすると、自動的に再同期されます。必要に応じて、[影響を受けるジョブアーティファクトを手動で再同期](https://gitlab.com/gitlab-org/gitlab/-/issues/419742#to-fix-data)できます。
 
 #### セカンダリサイトからのLFSオブジェクトのクローン作成で、プライマリサイトからダウンロードされる {#cloning-lfs-objects-from-secondary-site-downloads-from-the-primary-site}
@@ -987,13 +987,13 @@ LFSオブジェクトのGeoプロキシロジックの[バグ](https://gitlab.co
 
 GitLab 15.1では、プロキシがデフォルトで有効になっていました。
 
-次の場合、影響はありません。
+次の場合、影響はありません:
 
 - LFSオブジェクトを使用するようにインストールが設定されていない場合
 - リモートユーザーを高速化するためにGeoを使用していない場合
 - リモートユーザーを高速化するためにGeoを使用しているが、プロキシを無効にしている場合
 
-| 影響を受けたマイナーリリース | 影響を受けたパッチリリース | 修正リリース |
+| 影響を受けるマイナーリリース | 影響を受けるパッチリリース | 修正リリース |
 |-------------------------|-------------------------|----------|
 | 15.1 - 16.2             | すべて                     | 16.3以降    |
 
@@ -1001,11 +1001,11 @@ GitLab 15.1では、プロキシがデフォルトで有効になっていまし
 
 ## 16.1.0 {#1610}
 
-- `BackfillPreparedAtMergeRequests`バックグラウンド移行は、`FinalizeBackFillPreparedAtMergeRequests`ポストデプロイ移行で完了します。GitLab 15.10.0では、[`merge_requests`テーブルの`prepared_at`値をバックフィルする](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/111865)[バッチバックグラウンド移行](../background_migrations.md#check-for-pending-database-background-migrations)が導入されました。この移行は、大規模なGitLabインスタンスでは、完了するまでに数日かかる場合があります。16.1.0にアップグレードする前に、移行が正常に完了していることを確認してください。
+- `BackfillPreparedAtMergeRequests`バックグラウンド移行は、`FinalizeBackFillPreparedAtMergeRequests`ポストデプロイ移行で完了します。GitLab 15.10.0では、[`merge_requests`テーブルの`prepared_at`値をバックフィルする](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/111865) [バッチバックグラウンド移行](../background_migrations.md#check-for-pending-database-background-migrations)が導入されました。この移行は、大規模なGitLabインスタンスでは、完了するまでに数日かかる場合があります。16.1.0にアップグレードする前に、移行が正常に完了していることを確認してください。
 - GitLab 16.1.0には、重複したNPMパッケージを破棄するためにマークする[バッチバックグラウンド移行](../background_migrations.md#check-for-pending-database-background-migrations)`MarkDuplicateNpmPackagesForDestruction`が含まれています。16.3.0以降にアップグレードする前に、移行が正常に完了していることを確認してください。
 - `BackfillCiPipelineVariablesForBigintConversion`バックグラウンド移行は、`EnsureBackfillBigintIdIsCompleted`ポストデプロイ移行で完了します。GitLab 16.0.0では、[`ci_pipeline_variables`テーブルの`bigint` `id`値をバックフィル](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/118878)する[バッチバックグラウンド移行](../background_migrations.md#check-for-pending-database-background-migrations)が導入されました。この移行は、大規模なGitLabインスタンスでは完了までに長い時間がかかる場合があります（あるケースでは、5,000万行の処理に4時間かかったと報告されています）。アップグレードのダウンタイムが長引くのを避けるために、16.1にアップグレードする前に、移行が正常に完了していることを確認してください。
 
-  [データベースコンソール](../../administration/troubleshooting/postgresql.md#start-a-database-console)で、`ci_pipeline_variables`テーブルのサイズを確認できます。
+  [データベースコンソール](../../administration/troubleshooting/postgresql.md#start-a-database-console)で、`ci_pipeline_variables`テーブルのサイズを確認できます:
 
   ```sql
   select count(*) from ci_pipeline_variables;
@@ -1017,9 +1017,9 @@ GitLab 15.1では、プロキシがデフォルトで有効になっていまし
 
 - 通常、PgBouncerを使用する環境でのバックアップは、[`GITLAB_BACKUP_`をプレフィックスとする変数を設定してPgBouncerを回避する必要があります](../../administration/backup_restore/backup_gitlab.md#bypassing-pgbouncer)。ただし、[イシュー](https://gitlab.com/gitlab-org/gitlab/-/issues/422163)により、`gitlab-backup`は、オーバーライドで定義された直接接続ではなく、PgBouncerを介して標準のデータベース接続を使用するため、データベースのバックアップは失敗します。回避策は、`pg_dump`を直接使用することです。
 
-    **影響を受けたリリース**:
+    **Affected releases**（影響を受けるリリース）:
 
-  | 影響を受けたマイナーリリース | 影響を受けたパッチリリース | 修正リリース |
+  | 影響を受けるマイナーリリース | 影響を受けるパッチリリース | 修正リリース |
   | ----------------------- | ----------------------- | -------- |
   | 15.11                   |  すべて                    | なし     |
   | 16.0                    |  すべて                    | なし     |
@@ -1041,20 +1041,20 @@ GitLab 15.1では、プロキシがデフォルトで有効になっていまし
 
 {{< /details >}}
 
-Geoを使用するインストールには、特定の情報が適用されます。
+Geoを使用するインストールには、特定の情報が適用されます:
 
 - 一部のプロジェクトのインポートでは、プロジェクトの作成時にWikiリポジトリが初期化されません。詳細と回避策については、[こちら](#wiki-repositories-not-initialized-on-project-creation)を参照してください。
 - SSFへのプロジェクトデザインの移行により、[存在しないデザインリポジトリに、検証失敗という誤ったフラグが立てられています](https://gitlab.com/gitlab-org/gitlab/-/issues/414279)。この問題は、実際のレプリケーションや検証の失敗の結果ではなく、Geo内にリポジトリが存在しないために起こる内部の無効な状態が原因であり、ログにエラーが記録され、検証の進行状態で、これらのデザインリポジトリが失敗状態としてレポートされます。プロジェクトをインポートしていなくても、この問題の影響を受ける可能性があります。
-  - 影響を受けるバージョン: GitLabバージョン16.1.0 - 16.1.2
-  - 修正を含むバージョン: GitLab 16.1.3以降。
+  - 影響を受けるバージョン:GitLabバージョン16.1.0 - 16.1.2
+  - 修正を含むバージョン:GitLab 16.1.3以降。
 - ジョブアーティファクトがオブジェクトストレージに保存されるように設定され、`direct_upload`が有効になっている場合、新しいジョブアーティファクトはGeoによって複製されません。このバグは、GitLabバージョン16.1.4、16.2.3、16.3.0以降で修正されています。
-  - 影響を受けるバージョン: GitLabバージョン16.1.0 - 16.1.3および16.2.0 - 16.2.2。
+  - 影響を受けるバージョン:GitLabバージョン16.1.0 - 16.1.3および16.2.0 - 16.2.2。
   - 影響を受けるバージョンを実行している場合、同期されたように見えるアーティファクトが、実際にはセカンダリサイトに存在しない可能性があります。影響を受けるアーティファクトは、16.1.5、16.2.5、16.3.1、16.4.0、またはそれ以降にアップグレードすると、自動的に再同期されます。必要に応じて、[影響を受けるジョブアーティファクトを手動で再同期](https://gitlab.com/gitlab-org/gitlab/-/issues/419742#to-fix-data)できます。
   - セカンダリサイトからのLFSオブジェクトのクローン作成では、セカンダリが完全に同期されている場合でも、プライマリサイトからダウンロードされます。詳細と回避策については、[こちら](#cloning-lfs-objects-from-secondary-site-downloads-from-the-primary-site)を参照してください。
 
 #### プロジェクト作成時にWikiリポジトリが初期化されない {#wiki-repositories-not-initialized-on-project-creation}
 
-| 影響を受けたマイナーリリース | 影響を受けたパッチリリース | 修正リリース |
+| 影響を受けるマイナーリリース | 影響を受けるパッチリリース | 修正リリース |
 |-------------------------|-------------------------|----------|
 | 15.11                   | すべて                     | なし     |
 | 16.0                    | すべて                     | なし     |
@@ -1071,9 +1071,9 @@ Geoを使用するインストールには、特定の情報が適用されま�
 
 - 通常、PgBouncerを使用する環境でのバックアップは、[`GITLAB_BACKUP_`をプレフィックスとする変数を設定してPgBouncerを回避する必要があります](../../administration/backup_restore/backup_gitlab.md#bypassing-pgbouncer)。ただし、[イシュー](https://gitlab.com/gitlab-org/gitlab/-/issues/422163)により、`gitlab-backup`は、オーバーライドで定義された直接接続ではなく、PgBouncerを介して標準のデータベース接続を使用するため、データベースのバックアップは失敗します。回避策は、`pg_dump`を直接使用することです。
 
-    **影響を受けたリリース**:
+    **Affected releases**（影響を受けるリリース）:
 
-  | 影響を受けたマイナーリリース | 影響を受けたパッチリリース | 修正リリース |
+  | 影響を受けるマイナーリリース | 影響を受けるパッチリリース | 修正リリース |
   | ----------------------- | ----------------------- | -------- |
   | 15.11                   |  すべて                    | なし     |
   | 16.0                    |  すべて                    | なし     |
@@ -1088,7 +1088,7 @@ Geoを使用するインストールには、特定の情報が適用されま�
 
 ### Linuxパッケージインストール {#linux-package-installations-8}
 
-Linuxパッケージのインストールには、次の特定の情報が適用されます。
+Linuxパッケージのインストールには、次の特定の情報が適用されます:
 
 - PostgreSQL 12のバイナリは削除されました。
 
@@ -1109,14 +1109,14 @@ Linuxパッケージのインストールには、次の特定の情報が適用
 
 有効期限のないアクセストークンは無期限に有効であるため、アクセストークンが漏洩した場合、セキュリティリスクとなります。
 
-GitLab 16.0以降にアップグレードすると、有効期限のない[パーソナルアクセストークン](../../user/profile/personal_access_tokens.md)、[プロジェクトアクセストークン](../../user/project/settings/project_access_tokens.md)、または[グループアクセストークン](../../user/group/settings/group_access_tokens.md)には、アップグレード日から1年後の有効期限が自動的に設定されます。
+GitLab 16.0以降にアップグレードすると、有効期限のない[パーソナルアクセストークン](../../user/profile/personal_access_tokens.md) 、[プロジェクトアクセストークン](../../user/project/settings/project_access_tokens.md) 、または[グループアクセストークン](../../user/group/settings/group_access_tokens.md)には、アップグレード日から1年後の有効期限が自動的に設定されます。
 
-この自動有効期限が適用される前に、混乱を最小限に抑えるため、次の手順を実行してください。
+この自動有効期限が適用される前に、混乱を最小限に抑えるため、次の手順を実行してください:
 
 1. [有効期限のないアクセストークンを特定します](../../security/tokens/token_troubleshooting.md#find-tokens-with-no-expiration-date)。
 1. [それらのトークンに有効期限を付与します](../../security/tokens/token_troubleshooting.md#extend-token-lifetime)。
 
-詳細については、以下を参照してください。
+詳細については、以下を参照してください:
 
 - [非推奨と削除に関するドキュメント](../deprecations.md#non-expiring-access-tokens)。
 - [非推奨に関する問題](https://gitlab.com/gitlab-org/gitlab/-/issues/369122)。
@@ -1130,7 +1130,7 @@ GitLab 16.0以降にアップグレードすると、有効期限のない[パ�
 
 {{< /details >}}
 
-Geoを使用するインストールには、特定の情報が適用されます。
+Geoを使用するインストールには、特定の情報が適用されます:
 
 - 一部のプロジェクトのインポートでは、プロジェクトの作成時にWikiリポジトリが初期化されません。詳細と回避策については、[こちら](#wiki-repositories-not-initialized-on-project-creation)を参照してください。
 - セカンダリサイトからのLFSオブジェクトのクローン作成では、セカンダリが完全に同期されている場合でも、プライマリサイトからダウンロードされます。詳細と回避策については、[こちら](#cloning-lfs-objects-from-secondary-site-downloads-from-the-primary-site)を参照してください。
@@ -1139,7 +1139,7 @@ Geoを使用するインストールには、特定の情報が適用されま�
 
 GitLab 16.0では、LinuxパッケージのGitaly設定構造が[変更](https://gitlab.com/gitlab-org/gitaly/-/issues/4467)され、自己コンパイルによるインストールで使用されるGitaly設定構造と一貫性が保たれるようになりました。
 
-この変更の結果、`gitaly['configuration']`の下の単一のハッシュには、ほとんどのGitaly設定が保持されます。一部の`gitaly['..']`設定オプションは、GitLab 16.0以降でも引き続き使用されます。
+この変更の結果、`gitaly['configuration']`の下の単一のハッシュには、ほとんどのGitaly設定が保持されます。一部の`gitaly['..']`設定オプションは、GitLab 16.0以降でも引き続き使用されます:
 
 - `enable`
 - `dir`
@@ -1152,18 +1152,18 @@ GitLab 16.0では、LinuxパッケージのGitaly設定構造が[変更](https:/
 
 既存の設定を新しい構造に移動して移行します。`git_data_dirs`は、[GitLab 18.0まで](https://gitlab.com/gitlab-org/omnibus-gitlab/-/issues/8786)サポートされています。新しい構造は、GitLab 15.10以降でサポートされています。
 
-**新しい構造に移行する**
+**Migrate to the new structure**（新しい構造に移行する）
 
 {{< alert type="warning" >}}
 
-Gitalyクラスタを実行している場合は、[**最初に**Praefectを新しい設定構造に移行します](#praefect-configuration-structure-change)。この変更をテストしたら、Gitalyノードに進みます。設定構造の変更の一部としてGitalyが誤って設定されている場合、[リポジトリの検証](../../administration/gitaly/praefect/configure.md#repository-verification)によって、[Gitalyクラスター（Praefect）が機能するために必要なメタデータが削除](https://gitlab.com/gitlab-org/gitaly/-/issues/5529)されます。設定の誤りを防ぐために、Praefectでリポジトリの検証を一時的に無効にします。
+Gitalyクラスタを実行している場合は、[**first**（最初に）Praefectを新しい設定構造に移行します](#praefect-configuration-structure-change)。この変更をテストしたら、Gitalyノードに進みます。設定構造の変更の一部としてGitalyが誤って設定されている場合、[リポジトリの検証](../../administration/gitaly/praefect/configure.md#repository-verification)によって、[Gitaly Cluster (Praefect)が機能するために必要なメタデータが削除](https://gitlab.com/gitlab-org/gitaly/-/issues/5529)されます。設定の誤りを防ぐために、Praefectでリポジトリの検証を一時的に無効にします。
 
 {{< /alert >}}
 
-1. Gitalyクラスター（Praefect）を実行している場合は、すべてのPraefectノードでリポジトリの検証が無効になっていることを確認してください。`verification_interval: 0`を設定し、`gitlab-ctl reconfigure`で適用します。
-1. 新しい構造を設定に適用するには、次の手順に従います。
+1. Gitaly Cluster (Praefect)を実行している場合は、すべてのPraefectノードでリポジトリの検証が無効になっていることを確認してください。`verification_interval: 0`を設定し、`gitlab-ctl reconfigure`で適用します。
+1. 新しい構造を設定に適用するには、次の手順に従います:
    1. `...`を古いキーの値に置き換えます。
-   1. `git_data_dirs`を置き換えるように`storage`を設定する場合は、以下のスクリプトに示すように、**`path`の値に`/repositories`を付加**します。このステップを完了しないと、設定が修正されるまでGitリポジトリにアクセスできなくなります。この設定ミスにより、メタデータが削除される可能性があります。
+   1. `git_data_dirs`を置き換えるように`storage`を設定する場合は、以下のスクリプトに示すように、**append `/repositories` to value of `path`**（の値にを付加）します。このステップを完了しないと、設定が修正されるまでGitリポジトリにアクセスできなくなります。この設定ミスにより、メタデータが削除される可能性があります。
    1. 以前に値を設定していないキーはスキップしてください。
    1. （推奨）すべてのハッシュキーに対して末尾のコンマを含め、キーの順序が変更されたり、キーが追加されたりしても、ハッシュが有効な状態を維持できるようにします。
 1. `gitlab-ctl reconfigure`で変更を適用します。
@@ -1319,7 +1319,7 @@ gitaly['configuration'] = {
 
 GitLab 16.0では、LinuxパッケージのPraefect設定構造が[変更](https://gitlab.com/gitlab-org/gitaly/-/issues/4467)され、自己コンパイルによるインストールで使用されるPraefect設定構造と一貫性が保たれるようになりました。
 
-この変更の結果、`praefect['configuration']`の下の単一のハッシュには、ほとんどのPraefect設定が保持されます。一部の`praefect['..']`設定オプションは、GitLab 16.0以降でも引き続き使用されます。
+この変更の結果、`praefect['configuration']`の下の単一のハッシュには、ほとんどのPraefect設定が保持されます。一部の`praefect['..']`設定オプションは、GitLab 16.0以降でも引き続き使用されます:
 
 - `enable`
 - `dir`
@@ -1332,11 +1332,11 @@ GitLab 16.0では、LinuxパッケージのPraefect設定構造が[変更](https
 
 既存の設定を新しい構造に移動して移行します。新しい構造は、GitLab 15.9以降でサポートされています。
 
-**新しい構造に移行する**
+**Migrate to the new structure**（新しい構造に移行する）
 
 {{< alert type="warning" >}}
 
-**最初に**、Praefectを新しい設定構造に移行します。この変更をテストしたら、[Gitalyノードに進みます](#gitaly-configuration-structure-change)。設定構造の変更の一部としてGitalyが誤って設定されている場合、[リポジトリの検証](../../administration/gitaly/praefect/configure.md#repository-verification)によって、[Gitalyクラスター（Praefect）が機能するために必要なメタデータが削除](https://gitlab.com/gitlab-org/gitaly/-/issues/5529)されます。設定の誤りを防ぐために、Praefectでリポジトリの検証を一時的に無効にします。
+**first**（最初に）、Praefectを新しい設定構造に移行します。この変更をテストしたら、[Gitalyノードに進みます](#gitaly-configuration-structure-change)。設定構造の変更の一部としてGitalyが誤って設定されている場合、[リポジトリの検証](../../administration/gitaly/praefect/configure.md#repository-verification)によって、[Gitaly Cluster (Praefect)が機能するために必要なメタデータが削除](https://gitlab.com/gitlab-org/gitaly/-/issues/5529)されます。設定の誤りを防ぐために、Praefectでリポジトリの検証を一時的に無効にします。
 
 {{< /alert >}}
 
@@ -1491,13 +1491,13 @@ PgBouncerをデプロイしている場合:
 - PgBouncerサーバーのフロントエンドプール（ファイルハンドル制限と`max_client_conn`を含む）を、[大きくする必要がある場合があります](../../administration/postgresql/pgbouncer.md#fine-tuning)。
 - PgBouncerはシングルスレッドです。追加の接続により、単一のPgBouncerデーモンが完全に飽和状態になる可能性があります。この問題に対処するためにも、すべてのスケールされたGitLabデプロイに対して、[ロードバランシングされ3台のPgBouncerサーバーを実行することをおすすめします](../../administration/reference_architectures/5k_users.md#configure-pgbouncer)。
 
-インストールタイプに基づく手順に従って、単一のデータベース接続に戻します。
+インストールタイプに基づく手順に従って、単一のデータベース接続に戻します:
 
 {{< tabs >}}
 
 {{< tab title="LinuxパッケージとDocker" >}}
 
-1. この設定を`/etc/gitlab/gitlab.rb`に追加します。
+1. この設定を`/etc/gitlab/gitlab.rb`に追加します:
 
    ```ruby
    gitlab_rails['databases']['ci']['enable'] = false
@@ -1511,7 +1511,7 @@ PgBouncerをデプロイしている場合:
 
 {{< tab title="Helmチャート（Kubernetes）" >}}
 
-`ci.enabled`キーを`false`に設定します。
+`ci.enabled`キーを`false`に設定します:
 
 ```yaml
 global:
@@ -1534,7 +1534,7 @@ global:
 
 GitLab 16.0は、`users`テーブルに多数のレコードを持つ大規模なGitLabインスタンスが経由する必要があるバージョンです。
 
-しきい値は**30,000ユーザー**で、以下が含まれます。
+しきい値は**30,000 users**（30,000ユーザー）で、以下が含まれます:
 
 - アクティブ、ブロック、承認保留中など、あらゆる状態のデベロッパーおよびその他のユーザー。
 - プロジェクトおよびグループアクセストークンのボットアカウント。
@@ -1545,7 +1545,7 @@ GitLab 16.1では、16.0 `MigrateHumanUserType`バックグラウンド移行が
 
 GitLab 16.2では、[`NOT NULL`データベース制約を実装](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/122454)しています。これは、16.0の移行が完了していない場合には失敗します。
 
-16.0がスキップされた場合（または16.0の移行が完了していない場合）、Linuxパッケージ（Omnibus）とDockerの後続のアップグレードが1時間後に失敗する可能性があります。
+16.0がスキップされた場合（または16.0の移行が完了していない場合）、Linuxパッケージ（Omnibus）とDockerの後続のアップグレードが1時間後に失敗する可能性があります:
 
 ```plaintext
 FATAL: Mixlib::ShellOut::CommandTimeout: rails_migration[gitlab-rails]
@@ -1563,7 +1563,7 @@ Mixlib::ShellOut::CommandTimeout: Command timed out after 3600s:
 
 GitLab 15.11のバグにより、Self-Managedインスタンスでのデータベース変更が誤って無効になりました。詳細については、[イシュー408835](https://gitlab.com/gitlab-org/gitlab/-/issues/408835)を参照してください。
 
-GitLabインスタンスが最初に15.11.0、15.11.1、または15.11.2にアップグレードされた場合、データベーススキーマが正しくないため、GitLab 16.2以降へのアップグレードがエラーで失敗します。データベースの変更には、以前の変更が有効になっている必要があります。
+GitLabインスタンスが最初に15.11.0、15.11.1、または15.11.2にアップグレードされた場合、データベーススキーマが正しくないため、GitLab 16.2以降へのアップグレードがエラーで失敗します。データベースの変更には、以前の変更が有効になっている必要があります:
 
 ```plaintext
 PG::UndefinedColumn: ERROR:  column "id_convert_to_bigint" of relation "ci_build_needs" does not exist
@@ -1572,20 +1572,20 @@ LINE 1: ...db_config_name:main*/ UPDATE "ci_build_needs" SET "id_conver...
 
 GitLab 15.11.3でこのバグの修正が提供されましたが、以前の15.11リリースをすでに実行しているインスタンスでは問題は修正されていません。
 
-インスタンスが影響を受けているかどうか不明な場合は、[データベースコンソール](../../administration/troubleshooting/postgresql.md#start-a-database-console)で列を確認してください。
+インスタンスが影響を受けているかどうか不明な場合は、[データベースコンソール](../../administration/troubleshooting/postgresql.md#start-a-database-console)で列を確認してください:
 
 ```sql
 select pg_typeof (id_convert_to_bigint) from public.ci_build_needs limit 1;
 ```
 
-回避策が必要な場合、このクエリは失敗します。
+回避策が必要な場合、このクエリは失敗します:
 
 ```plaintext
 ERROR:  column "id_convert_to_bigintd" does not exist
 LINE 1: select pg_typeof (id_convert_to_bigintd) from public.ci_buil...
 ```
 
-影響を受けていないインスタンスは、以下を返します。
+影響を受けていないインスタンスは、以下を返します:
 
 ```plaintext
  pg_typeof
@@ -1593,7 +1593,7 @@ LINE 1: select pg_typeof (id_convert_to_bigintd) from public.ci_buil...
  bigint
 ```
 
-この問題の回避策は、GitLabインスタンスのデータベーススキーマが最近作成されたかどうかによって異なります。
+この問題の回避策は、GitLabインスタンスのデータベーススキーマが最近作成されたかどうかによって異なります:
 
 | インストールバージョン | 回避策 |
 | -------------------- | ---------- |
@@ -1603,14 +1603,14 @@ LINE 1: select pg_typeof (id_convert_to_bigintd) from public.ci_buil...
 
 ほとんどのインスタンスは、15.9の手順を使用する必要があります。15.10または15.11の手順が必要なのは、ごく最近のインスタンスのみです。バックアップと復元を使用してGitLabを移行した場合、データベーススキーマは元のインスタンスのものです。ソースインスタンスに基づいて回避策を選択します。
 
-次のセクションのコマンドは、Linuxパッケージのインストール用であり、他のインストールタイプとは異なります。
+次のセクションのコマンドは、Linuxパッケージのインストール用であり、他のインストールタイプとは異なります:
 
 {{< tabs >}}
 
 {{< tab title="Docker" >}}
 
 - `sudo`を省略します。
-- GitLabコンテナにShellで接続し、同じコマンドを実行します。
+- GitLabコンテナにShellで接続し、同じコマンドを実行します:
 
   ```shell
   docker exec -it <container-id> bash

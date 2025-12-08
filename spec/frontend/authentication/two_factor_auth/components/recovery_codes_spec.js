@@ -10,7 +10,7 @@ import { RECOVERY_CODE_DOWNLOAD_FILENAME } from '~/authentication/two_factor_aut
 import Tracking from '~/tracking';
 import ClipboardButton from '~/vue_shared/components/clipboard_button.vue';
 import { MOUSETRAP_COPY_KEYBOARD_SHORTCUT } from '~/lib/mousetrap';
-import { codes, codesFormattedString, codesDownloadHref, profileAccountPath } from '../mock_data';
+import { codes, codesFormattedString, codesDownloadHref, redirectPath } from '../mock_data';
 
 describe('RecoveryCodes', () => {
   let wrapper;
@@ -20,7 +20,7 @@ describe('RecoveryCodes', () => {
       mount(RecoveryCodes, {
         propsData: {
           codes,
-          profileAccountPath,
+          redirectPath,
           ...options?.propsData,
         },
         ...options,
@@ -72,7 +72,7 @@ describe('RecoveryCodes', () => {
       expect(proceedButton.props('disabled')).toBe(true);
       expect(proceedButton.attributes()).toMatchObject({
         title: i18n.proceedButton,
-        href: profileAccountPath,
+        href: redirectPath,
       });
     });
 

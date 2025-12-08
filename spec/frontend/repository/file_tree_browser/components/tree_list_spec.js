@@ -620,6 +620,21 @@ describe('Tree List', () => {
       expect(items.at(1).attributes('tabindex')).toBe('0');
     });
 
+    it.each([
+      ['Home', 'dir_2'],
+      ['End', 'file.txt'],
+    ])('moves focus to %s item with %s key', async (key, expectedName) => {
+      await createComponent();
+
+      findTree().trigger('keydown', { key });
+      await nextTick();
+
+      const items = findTreeItems();
+      const focusedItem = items.wrappers.find((item) => item.attributes('tabindex') === '0');
+      const fileRow = focusedItem.findComponent(FileRow);
+      expect(fileRow.props('file').name).toBe(expectedName);
+    });
+
     it('expands sibling directories at same level with * key', async () => {
       const response = cloneDeep(mockResponse);
       const treeNode = response.data.project.repository.paginatedTree.nodes[0];

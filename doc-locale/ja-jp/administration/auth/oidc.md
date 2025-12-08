@@ -136,7 +136,7 @@ OpenID Connect OmniAuthプロバイダーを有効にするには、OpenID Conne
 
    {{< /alert >}}
 
-1. プロバイダーを設定する際は、ご利用のOpenID Connectクライアントの設定に合わせてプロバイダーの値を変更する必要があります。次の情報を参考にしてください。
+1. プロバイダーを設定する際は、ご利用のOpenID Connectクライアントの設定に合わせてプロバイダーの値を変更する必要があります。次の情報を参考にしてください:
 
    - `<your_oidc_label>`は、ログインページに表示されるラベルです。
    - `<custom_provider_icon>`（オプション）は、ログインページに表示されるアイコンです。主要なソーシャルログインプラットフォームのアイコンはGitLabに組み込まれていますが、このパラメータを指定することで、これらのアイコンを上書きできます。GitLabではローカルパスと絶対URLの両方を使用できます。GitLabには、主要なソーシャルログインプラットフォームのほとんどのアイコンが組み込まれていますが、外部URL、または独自のアイコンファイルの絶対パスまたは相対パスを指定することで、これらのアイコンを上書きできます。
@@ -147,9 +147,9 @@ OpenID Connect OmniAuthプロバイダーを有効にするには、OpenID Conne
        - アイコンファイルは`/opt/gitlab/embedded/service/gitlab-rails/public/images/<your-icon>`に保存します。
        - アイコンファイルには`https://gitlab.example.com/images/<your-icon>`でアクセスできます。
    - `<your_oidc_url>`（オプション）は、OpenID Connectプロバイダーを指すURLです（例: `https://example.com/auth/realms/your-realm`）。この値を指定しない場合、URLは`client_options`に基づき次の形式で構築されます。`<client_options.scheme>://<client_options.host>:<client_options.port>`
-   - `discovery`が`true`に設定されている場合、OpenID Connectプロバイダーは`<your_oidc_url>/.well-known/openid-configuration`を使用してクライアントオプションを自動的に検出しようとします。デフォルトは`false`です。
+   - `discovery`が`true`に設定されている場合、OpenID Connectプロバイダーは`<your_oidc_url>/.well-known/openid-configuration`を使用してクライアントオプションを自動的に検出しようとします。`false`がデフォルトです。
    - `client_auth_method`（オプション）は、OpenID Connectプロバイダーに対してクライアントを認証する際に使用する方法を指定します。
-     - サポートされている値は次のとおりです。
+     - サポートされている値は次のとおりです:
        - `basic` - HTTP基本認証。
        - `jwt_bearer` - JWTベースの認証（秘密キーとクライアントシークレットによる署名）。
        - `mtls` - 相互TLSまたはX.509証明書による検証。
@@ -157,20 +157,20 @@ OpenID Connect OmniAuthプロバイダーを有効にするには、OpenID Conne
      - この値を指定しない場合、デフォルトは`basic`です。
    - `<uid_field>`（オプション）は、`user_info.raw_attributes`に含まれるフィールド名で、`uid`の値を定義します（例: `preferred_username`）。この値を指定しない場合、または設定した値を持つフィールドが`user_info.raw_attributes`の詳細に存在しない場合、`uid`には`sub`フィールドを使用します。
    - `send_scope_to_token_endpoint`はデフォルトで`true`であるため、`scope`パラメータは通常、トークンエンドポイントへのリクエストに含まれます。ただし、OpenID Connectプロバイダーがこの種のリクエストで`scope`パラメータを受け付けない場合は、これを`false`に設定します。
-   - `pkce`（オプション）:[Proof Key for Code Exchange](https://www.rfc-editor.org/rfc/rfc7636)（PKCE）を有効にします。
-   - `client_options`は、OpenID Connectクライアント固有のオプションです。具体的には次のとおりです。
+   - `pkce`（オプション）: [Proof Key for Code Exchange](https://www.rfc-editor.org/rfc/rfc7636)を有効にします。
+   - `client_options`は、OpenID Connectクライアント固有のオプションです。具体的には次のとおりです:
      - `identifier`は、OpenID Connectサービスプロバイダーで設定されているクライアント識別子です。
      - `secret`は、OpenID Connectサービスプロバイダーで設定されているクライアントシークレットです。たとえば、[OmniAuth OpenID Connect](https://github.com/omniauth/omniauth_openid_connect)ではこれが必要です。サービスプロバイダーがシークレットを必要としない場合は、任意の値を指定します。その値は無視されます。
      - `redirect_uri`は、ログインに成功した後、ユーザーをリダイレクトするGitLabのURLです（例: `http://example.com/users/auth/openid_connect/callback`）。
      - `end_session_endpoint`（オプション）は、セッションを終了するエンドポイントのURLです。自動検出が無効になっているか失敗した場合は、このURLを指定できます。
-     - 次の`client_options`は、自動検出が無効になっているか失敗した場合を除き、オプションです。
+     - 次の`client_options`は、自動検出が無効になっているか失敗した場合を除き、オプションです:
        - `authorization_endpoint`: エンドユーザーを認可するエンドポイントのURL。
        - `token_endpoint`: アクセストークンを提供するエンドポイントのURL。
        - `userinfo_endpoint`: ユーザー情報を提供するエンドポイントのURL。
        - `jwks_uri`: トークン署名者がキーを公開するエンドポイントのURL。
 
 1. 設定ファイルを保存します。
-1. 変更を有効にするには、次の手順に従います。
+1. 変更を有効にするには、次の手順に従います:
 
    - Linuxパッケージを使用してGitLabをインストールした場合は、[GitLabを再設定](../restart_gitlab.md#reconfigure-a-linux-package-installation)します。
    - GitLabインストールを自分でコンパイルした場合は、[GitLabを再起動](../restart_gitlab.md#self-compiled-installations)します。
@@ -183,7 +183,7 @@ OpenID Connect OmniAuthプロバイダーを有効にするには、OpenID Conne
 
 ### Googleを設定する {#configure-google}
 
-詳細については、[Googleのドキュメント](https://developers.google.com/identity/openid-connect/openid-connect)を参照してください。
+詳細については、[Googleのドキュメント](https://developers.google.com/identity/openid-connect/openid-connect)を参照してください:
 
 ```ruby
 gitlab_rails['omniauth_providers'] = [
@@ -211,7 +211,7 @@ gitlab_rails['omniauth_providers'] = [
 
 ### Microsoft Azureを設定する {#configure-microsoft-azure}
 
-Microsoft AzureにおけるOpenID Connect（OIDC）プロトコルは、[Microsoft IDプラットフォーム（v2）エンドポイント](https://learn.microsoft.com/en-us/previous-versions/azure/active-directory/azuread-dev/azure-ad-endpoint-comparison)を使用します。開始するには、[Azureポータル](https://portal.azure.com)にサインインします。アプリには、次の情報が必要です。
+Microsoft AzureにおけるOpenID Connect（OIDC）プロトコルは、[Microsoft IDプラットフォーム（v2）エンドポイント](https://learn.microsoft.com/en-us/previous-versions/azure/active-directory/azuread-dev/azure-ad-endpoint-comparison)を使用します。開始するには、[Azureポータル](https://portal.azure.com)にサインインします。アプリには、次の情報が必要です:
 
 - テナントID。すでにお持ちの場合もあります。詳細については、[Microsoft Azureのテナント](https://learn.microsoft.com/en-us/entra/identity-platform/quickstart-create-new-tenant)に関するドキュメントを参照してください。
 - クライアントIDとクライアントシークレット。[Microsoftのアプリケーション登録に関するクイックスタート](https://learn.microsoft.com/en-us/entra/identity-platform/quickstart-register-app)ドキュメントの手順に従って、アプリ用のテナントID、クライアントID、クライアントシークレットを取得します。
@@ -254,14 +254,14 @@ Microsoftは、自社のプラットフォームが[OIDCプロトコル](https:/
 
 #### Microsoft Entraのカスタム署名キー {#microsoft-entra-custom-signing-keys}
 
-[SAMLクレームマッピング機能](https://learn.microsoft.com/en-us/entra/identity-platform/saml-claims-customization)を使用しているためにアプリケーションでカスタム署名キーを使用している場合は、OpenIDプロバイダーを次のように設定する必要があります。
+[SAMLクレームマッピング機能](https://learn.microsoft.com/en-us/entra/identity-platform/saml-claims-customization)を使用しているためにアプリケーションでカスタム署名キーを使用している場合は、OpenIDプロバイダーを次のように設定する必要があります:
 
 - `args.discovery`を省略するか、`false`に設定して、OpenID Connectのディスカバリを無効にします。
-- `client_options`で、次のように指定します。
+- `client_options`で、次のように指定します:
   - `appid`クエリパラメータを含む`jwks_uri`: `https://login.microsoftonline.com/<YOUR-TENANT-ID>/discovery/v2.0/keys?appid=<YOUR APP CLIENT ID>`
-  - `end_session_endpoint`
-  - `authorization_endpoint`
-  - `userinfo_endpoint`
+  - `end_session_endpoint`。
+  - `authorization_endpoint`。
+  - `userinfo_endpoint`。
 
 Linuxパッケージインストールにおける設定例:
 
@@ -302,7 +302,7 @@ gitlab_rails['omniauth_providers'] = [
 
 `azure_activedirectory_v2`と`azure_oauth2`のどちらからでも、汎用OpenID Connect設定に移行できます。
 
-まず、`uid_field`を設定します。`uid_field`、および`uid_field`として設定できる`sub`クレームは、プロバイダーによって異なります。`uid_field`を設定せずにサインインすると、GitLab内に別のIDが作成され、手動で変更する必要があります。
+まず、`uid_field`を設定します。`uid_field`、および`uid_field`として設定できる`sub`クレームは、プロバイダーによって異なります。`uid_field`を設定せずにサインインすると、GitLab内に別のIDが作成され、手動で変更する必要があります:
 
 | プロバイダー                                                                                                        | `uid_field` | サポート情報  |
 |-----------------------------------------------------------------------------------------------------------------|-------|-----------------------------------------------------------------------|
@@ -312,7 +312,7 @@ gitlab_rails['omniauth_providers'] = [
 
 汎用OpenID Connect設定に移行するには、設定を更新する必要があります。
 
-Linuxパッケージインストールの場合、次のように設定を更新します。
+Linuxパッケージインストールの場合、次のように設定を更新します:
 
 {{< tabs >}}
 
@@ -378,7 +378,7 @@ gitlab_rails['omniauth_providers'] = [
 
 Helmインストールの場合:
 
-YAMLファイル（例: `provider.yaml`）に[プロバイダーの設定](https://docs.gitlab.com/charts/charts/globals.html#providers)を追加します。
+YAMLファイル（例: `provider.yaml`）に[プロバイダーの設定](https://docs.gitlab.com/charts/charts/globals.html#providers)を追加します:
 
 {{< tabs >}}
 
@@ -446,11 +446,11 @@ YAMLファイル（例: `provider.yaml`）に[プロバイダーの設定](https
 
 GitLab 17.0以降へのアップグレードに伴い、`azure_oauth2`から`omniauth_openid_connect`に移行する際、組織に設定される`sub`クレームの値が異なる場合があります。`azure_oauth2`はMicrosoft V1エンドポイントを使用しますが、`azure_activedirectory_v2`および`omniauth_openid_connect`はどちらも、共通の`sub`値を持つMicrosoft V2エンドポイントを使用します。
 
-- **Entra IDにメールアドレスを登録しているユーザーに対して**、メールアドレスへのフォールバックを許可してユーザーのアイデンティティを更新するには、次のように設定します。
+- **For users with an email address in Entra ID**（Entra IDにメールアドレスを登録しているユーザーに対して）、メールアドレスへのフォールバックを許可してユーザーのアイデンティティを更新するには、次のように設定します:
   - Linuxパッケージインストールの場合: [`omniauth_auto_link_user`](../../integration/omniauth.md#link-existing-users-to-omniauth-users)。
   - Helmインストールの場合: [`autoLinkUser`](https://docs.gitlab.com/charts/charts/globals.html#omniauth)。
 
-- **メールアドレスを持たないユーザーに対して**、管理者は次のいずれかの操作を行う必要があります。
+- **For users with no email address**（メールアドレスを持たないユーザーに対して）、管理者は次のいずれかの操作を行う必要があります:
 
   - 別の認証方法を設定するか、GitLabのユーザー名とパスワードによるサインインを有効にします。ユーザーはその後サインインして、自分のプロファイルを使用してAzureのアイデンティティを手動でリンクできます。
   - 既存の`azure_oauth2`に加えて、OpenID Connectを新しいプロバイダーとして実装します。これにより、ユーザーがOAuth 2.0を通じてサインインし、OpenID Connectのアイデンティティをリンクできるようになります（前述の方法と同様）。この方法は、`auto_link_user`が有効になっている限り、メールアドレスを持つユーザーにも有効です。
@@ -464,26 +464,26 @@ GitLabアカウントのプロビジョニング時に`email`クレームが存�
 
 ### Microsoft Azure Active Directory B2Cを設定する {#configure-microsoft-azure-active-directory-b2c}
 
-GitLabを[Azure Active Directory B2C](https://learn.microsoft.com/en-us/azure/active-directory-b2c/overview)と連携させるには、特別な設定が必要です。開始するには、[Azureポータル](https://portal.azure.com)にサインインします。アプリには、Azureからの次の情報が必要です。
+GitLabを[Azure Active Directory B2C](https://learn.microsoft.com/en-us/azure/active-directory-b2c/overview)と連携させるには、特別な設定が必要です。開始するには、[Azureポータル](https://portal.azure.com)にサインインします。アプリには、Azureからの次の情報が必要です:
 
 - テナントID。すでにお持ちの場合もあります。詳細については、[Microsoft Azureのテナント](https://learn.microsoft.com/en-us/entra/identity-platform/quickstart-create-new-tenant)に関するドキュメントを参照してください。
 - クライアントIDとクライアントシークレット。[Microsoftのチュートリアル](https://learn.microsoft.com/en-us/azure/active-directory-b2c/tutorial-register-applications?tabs=app-reg-ga)ドキュメントの手順に従って、アプリ用のクライアントIDとクライアントシークレットを取得します。
 - ユーザーフローまたはポリシー名。[Microsoftのチュートリアル](https://learn.microsoft.com/en-us/azure/active-directory-b2c/tutorial-create-user-flows?pivots=b2c-user-flow)の手順に従います。
 
-アプリを設定します。
+アプリを設定します:
 
 1. アプリの`Redirect URI`を設定します。たとえば、GitLabドメインが`gitlab.example.com`の場合、アプリの`Redirect URI`を、`https://gitlab.example.com/users/auth/openid_connect/callback`に設定します。
 
 1. [IDトークンを有効にします](https://learn.microsoft.com/en-us/azure/active-directory-b2c/tutorial-register-applications?tabs=app-reg-ga#enable-id-token-implicit-grant)。
 
-1. アプリに次のAPI権限を追加します。
+1. アプリに次のAPI権限を追加します:
 
    - `openid`
    - `offline_access`
 
 #### カスタムポリシーを設定する {#configure-custom-policies}
 
-Azure B2Cは、[ユーザーのログインに関するビジネスロジックを定義する方法を2つ提供しています](https://learn.microsoft.com/en-us/azure/active-directory-b2c/user-flow-overview)。
+Azure B2Cは、[ユーザーのログインに関するビジネスロジックを定義する方法を2つ提供しています](https://learn.microsoft.com/en-us/azure/active-directory-b2c/user-flow-overview):
 
 - [ユーザーフロー](https://learn.microsoft.com/en-us/azure/active-directory-b2c/user-flow-overview#user-flows)
 - [カスタムポリシー](https://learn.microsoft.com/en-us/azure/active-directory-b2c/user-flow-overview#custom-policies)
@@ -492,21 +492,21 @@ Azure B2Cは、[ユーザーのログインに関するビジネスロジック�
 
 まず、[カスタムポリシーを作成します](https://learn.microsoft.com/en-us/azure/active-directory-b2c/tutorial-create-user-flows?pivots=b2c-custom-policy)。
 
-Microsoftの手順では、[カスタムポリシースターターパック](https://learn.microsoft.com/en-us/azure/active-directory-b2c/tutorial-create-user-flows?pivots=b2c-custom-policy#custom-policy-starter-pack)において`SocialAndLocalAccounts`を使用していますが、`LocalAccounts`はローカルActive Directoryアカウントに対して認証を行います。[ポリシーをアップロード](https://learn.microsoft.com/en-us/azure/active-directory-b2c/tutorial-create-user-flows?pivots=b2c-custom-policy#upload-the-policies)する前に、次の操作を行います。
+Microsoftの手順では、[カスタムポリシースターターパック](https://learn.microsoft.com/en-us/azure/active-directory-b2c/tutorial-create-user-flows?pivots=b2c-custom-policy#custom-policy-starter-pack)において`SocialAndLocalAccounts`を使用していますが、`LocalAccounts`はローカルActive Directoryアカウントに対して認証を行います。[ポリシーをアップロード](https://learn.microsoft.com/en-us/azure/active-directory-b2c/tutorial-create-user-flows?pivots=b2c-custom-policy#upload-the-policies)する前に、次の操作を行います:
 
-1. `email`クレームをエクスポートするには、`SignUpOrSignin.xml`を変更します。次の行を置き換えます。
+1. `email`クレームをエクスポートするには、`SignUpOrSignin.xml`を変更します。次の行を置き換えます:
 
    ```xml
    <OutputClaim ClaimTypeReferenceId="email" />
    ```
 
-   変更後は次のようになります。
+   変更後は次のようになります:
 
    ```xml
    <OutputClaim ClaimTypeReferenceId="signInNames.emailAddress" PartnerClaimType="email" />
    ```
 
-1. B2CでOIDCディスカバリを機能させるには、[OIDC仕様](https://openid.net/specs/openid-connect-discovery-1_0.html#rfc.section.4.3)と互換性のある発行者をポリシーに設定します。[トークンの互換性設定](https://learn.microsoft.com/en-us/azure/active-directory-b2c/configure-tokens?pivots=b2c-custom-policy#token-compatibility-settings)を参照してください。`TrustFrameworkBase.xml`の`JwtIssuer`で、`IssuanceClaimPattern`を`AuthorityWithTfp`に設定します。
+1. B2CでOIDCディスカバリを機能させるには、[OIDC仕様](https://openid.net/specs/openid-connect-discovery-1_0.html#rfc.section.4.3)と互換性のある発行者をポリシーに設定します。[トークンの互換性設定](https://learn.microsoft.com/en-us/azure/active-directory-b2c/configure-tokens?pivots=b2c-custom-policy#token-compatibility-settings)を参照してください。`TrustFrameworkBase.xml`の`JwtIssuer`で、`IssuanceClaimPattern`を`AuthorityWithTfp`に設定します:
 
    ```xml
    <ClaimsProvider>
@@ -523,7 +523,7 @@ Microsoftの手順では、[カスタムポリシースターターパック](ht
 
 1. [ポリシーをアップロードします](https://learn.microsoft.com/en-us/azure/active-directory-b2c/tutorial-create-user-flows?pivots=b2c-custom-policy#upload-the-policies)。既存のポリシーを更新する場合は、既存のファイルを上書きします。
 
-1. 発行者URLを指定する際は、サインインポリシーを使用します。発行者URLの形式は次のとおりです。
+1. 発行者URLを指定する際は、サインインポリシーを使用します。発行者URLの形式は次のとおりです:
 
    ```markdown
    https://<YOUR-DOMAIN>/tfp/<YOUR-TENANT-ID>/<YOUR-SIGN-IN-POLICY-NAME>/v2.0/
@@ -533,20 +533,20 @@ Microsoftの手順では、[カスタムポリシースターターパック](ht
 
    末尾にスラッシュを付加してください。
 
-1. OIDCディスカバリURLと発行者URLの動作を確認し、`.well-known/openid-configuration`を発行者URLに付加します。
+1. OIDCディスカバリURLと発行者URLの動作を確認し、`.well-known/openid-configuration`を発行者URLに付加します:
 
    ```markdown
    https://<YOUR-DOMAIN>/tfp/<YOUR-TENANT-ID>/<YOUR-SIGN-IN-POLICY-NAME>/v2.0/.well-known/openid-configuration
    ```
 
-   たとえば、`domain`が`example.b2clogin.com`で、テナントIDが`fc40c736-476c-4da1-b489-ee48cee84386`の場合、`curl`と`jq`を使用して発行者を抽出できます。
+   たとえば、`domain`が`example.b2clogin.com`で、テナントIDが`fc40c736-476c-4da1-b489-ee48cee84386`の場合、`curl`と`jq`を使用して発行者を抽出できます:
 
    ```shell
    $ curl --silent "https://example.b2clogin.com/tfp/fc40c736-476c-4da1-b489-ee48cee84386/b2c_1a_signup_signin/v2.0/.well-known/openid-configuration" | jq .issuer
    "https://example.b2clogin.com/tfp/fc40c736-476c-4da1-b489-ee48cee84386/b2c_1a_signup_signin/v2.0/"
    ```
 
-1. `signup_signin`に使用するカスタムポリシーで、発行者URLを設定します。たとえば、Linuxパッケージインストールで`b2c_1a_signup_signin`のカスタムポリシーを使用した場合の設定は次のとおりです。
+1. `signup_signin`に使用するカスタムポリシーで、発行者URLを設定します。たとえば、Linuxパッケージインストールで`b2c_1a_signup_signin`のカスタムポリシーを使用した場合の設定は次のとおりです:
 
    ```ruby
    gitlab_rails['omniauth_providers'] = [
@@ -576,7 +576,7 @@ Microsoftの手順では、[カスタムポリシースターターパック](ht
 
 - `yourtenant.onmicrosoft.com`、`ProxyIdentityExperienceFrameworkAppId`、`IdentityExperienceFrameworkAppId`のすべての箇所が、B2Cテナントのホスト名およびXMLポリシーファイル内の対応するクライアントIDと一致していることを確認します。
 - アプリのリダイレクトURIとして`https://jwt.ms`を追加し、[カスタムポリシーテスター](https://learn.microsoft.com/en-us/azure/active-directory-b2c/tutorial-create-user-flows?pivots=b2c-custom-policy#test-the-custom-policy)を使用します。ペイロードに、ユーザーのメールアクセスと一致する`email`が含まれていることを確認します。
-- カスタムポリシーを有効にした後、ユーザーがサインインしようとすると、`Invalid username or password`と表示される場合があります。これは、`IdentityExperienceFramework`アプリの設定に問題がある可能性があります。[こちらのMicrosoftのコメント](https://learn.microsoft.com/en-us/answers/questions/50355/unable-to-sign-on-using-custom-policy?childtoview=122370#comment-122370)を参照してください。このコメントでは、アプリのマニフェストに次の設定が含まれているかを確認することが推奨されています。
+- カスタムポリシーを有効にした後、ユーザーがサインインしようとすると、`Invalid username or password`と表示される場合があります。これは、`IdentityExperienceFramework`アプリの設定に問題がある可能性があります。[こちらのMicrosoftのコメント](https://learn.microsoft.com/en-us/answers/questions/50355/unable-to-sign-on-using-custom-policy?childtoview=122370#comment-122370)を参照してください。このコメントでは、アプリのマニフェストに次の設定が含まれているかを確認することが推奨されています:
 
   - `"accessTokenAcceptedVersion": null`
   - `"signInAudience": "AzureADMyOrg"`
@@ -587,13 +587,13 @@ Microsoftの手順では、[カスタムポリシースターターパック](ht
 
 GitLabは、HTTPSを使用するOpenIDプロバイダーと連携します。HTTPを使用するKeycloakサーバーをセットアップすることもできますが、GitLabが通信できるのはHTTPSを使用するKeycloakサーバーのみです。
 
-トークンに署名するために公開キーアルゴリズムを使用するようにKeycloakを構成します。たとえば、HS256またはHS358の代わりにRSA256またはRSA512を使用します。公開キー暗号化アルゴリズムには次の利点があります。
+トークンに署名するために公開キーアルゴリズムを使用するようにKeycloakを構成します。たとえば、HS256またはHS358の代わりにRSA256またはRSA512を使用します。公開キー暗号化アルゴリズムには次の利点があります:
 
 - 簡単に設定できる。
 - 秘密キーが漏えいした場合はセキュリティ上重大な結果を招く可能性があるため、公開キー暗号化アルゴリズムのほうが安全性が高い。
 
 1. Keycloak管理コンソールを開きます。
-1. **Realm Settings（レルム設定） > Tokens（トークン） > Default Signature Algorithm（デフォルト署名アルゴリズム）**を選択します。
+1. **Realm Settings** > **Tokens** > **Default Signature Algorithm**を選択します。
 1. 署名アルゴリズムを設定します。
 
 Linuxパッケージインストールにおける設定ブロックの例:
@@ -630,14 +630,14 @@ gitlab_rails['omniauth_providers'] = [
 
 {{< /alert >}}
 
-対称キー暗号化を使用するには、次の手順に従います。
+対称キー暗号化を使用するには、次の手順に従います:
 
 1. Keycloakデータベースからシークレットキーを抽出します。Keycloakでは、この値をWebインターフェースでは公開していません。Webインターフェースに表示されるクライアントシークレットはOAuth 2.0クライアントシークレットであり、JSON Web Tokenの署名に使用されるシークレットとは異なります。
 
    たとえば、PostgreSQLをKeycloakのバックエンドデータベースとして使用する場合:
 
    - データベースコンソールにサインインします。
-   - 次のSQLクエリを実行して、キーを抽出します。
+   - 次のSQLクエリを実行して、キーを抽出します:
 
      ```sql
      $ psql -U keycloak
@@ -655,7 +655,7 @@ gitlab_rails['omniauth_providers'] = [
 
      この例では、2つの秘密キーがあります。1つはHS256用（`hmac-generated`）、もう1つはHS384用（`fallback-HS384`）です。GitLabの設定には、最初の`value`を使用します。
 
-1. `value`を標準のbase64に変換します。[**Invalid signature with HS256 token**（HS256トークンでの無効な署名）という投稿](https://keycloak.discourse.group/t/invalid-signature-with-hs256-token/3228/9)で説明されているように、`value`は、RFC 4648の[**Base 64 Encoding with URL and Filename Safe Alphabet**（URLおよびファイル名に安全なアルファベットによるBase64エンコーディング）セクション](https://datatracker.ietf.org/doc/html/rfc4648#section-5)の形式でエンコードされています。これは、[RFC 2045で定義されている標準のbase64に変換](https://datatracker.ietf.org/doc/html/rfc2045)する必要があります。次のRubyスクリプトはその変換を行います。
+1. `value`を標準のbase64に変換します。[「HS256トークンでの無効な署名」の投稿](https://keycloak.discourse.group/t/invalid-signature-with-hs256-token/3228/9)で説明されているように、`value`は、RFC 4648の[「URLおよびファイル名に安全なアルファベットを使用したBase 64エンコード」セクション](https://datatracker.ietf.org/doc/html/rfc4648#section-5)でエンコードされています。これは、[RFC 2045で定義されている標準のbase64に変換](https://datatracker.ietf.org/doc/html/rfc2045)する必要があります。次のRubyスクリプトはその変換を行います:
 
    ```ruby
    require 'base64'
@@ -664,13 +664,13 @@ gitlab_rails['omniauth_providers'] = [
    Base64.encode64(Base64.urlsafe_decode64(value))
    ```
 
-   これにより、次のような値が得られます。
+   これにより、次のような値が得られます:
 
    ```markdown
    lo6cqjD6Ika8pk7qc3fpFx9ysrhf7E62+sqGc8drp3XW+wr93zru8PFsQokH\nZZuJJbaUXvmiOftCZM3C4KW3+g==\n
    ```
 
-1. このbase64エンコードされたシークレットを`jwt_secret_base64`に指定します。次に例を示します。
+1. このbase64エンコードされたシークレットを`jwt_secret_base64`に指定します。例は次のとおりです:
 
    ```ruby
    gitlab_rails['omniauth_providers'] = [
@@ -703,7 +703,7 @@ gitlab_rails['omniauth_providers'] = [
 
 GitLabは、HTTPSを使用するOpenIDプロバイダーと連携します。Casdoorを使用してOpenID経由でGitLabに接続するには、HTTPSを使用してください。
 
-アプリに対して、Casdoorで次の手順を実行します。
+アプリに対して、Casdoorで次の手順を実行します:
 
 1. クライアントIDとクライアントシークレットを取得します。
 1. GitLabのリダイレクトURLを追加します。たとえば、GitLabドメインが`gitlab.example.com`の場合、Casdoorアプリに次の`Redirect URI`が設定されていることを確認してください: `https://gitlab.example.com/users/auth/openid_connect/callback`。
@@ -761,7 +761,7 @@ gitlab_rails['omniauth_providers'] = [
 
 複数のOpenID Connect（OIDC）プロバイダーを使用するようにアプリケーションを設定できます。そのためには、設定ファイルで`strategy_class`を明示的に指定します。
 
-これは、次のいずれかのシナリオで行う必要があります。
+これは、次のいずれかのシナリオで行う必要があります:
 
 - [OpenID Connectプロトコルに移行する](#migrate-to-generic-openid-connect-configuration)。
 - 異なるレベルの認証を提供する。
@@ -868,7 +868,7 @@ gitlab_rails['omniauth_providers'] = [
 
 このユースケースでは、社内ディレクトリ内の既知の識別子に基づいて、異なるプロバイダー間で`extern_uid`を同期させたい場合があります。
 
-これを行うには、`uid_field`を設定します。次のコード例は、その設定方法を示しています。
+これを行うには、`uid_field`を設定します。次のコード例は、その設定方法を示しています:
 
 ```python
 def sync_missing_provider(self, user: User, extern_uid: str)
@@ -907,16 +907,16 @@ def sync_missing_provider(self, user: User, extern_uid: str)
 
 {{< /details >}}
 
-OIDCグループメンバーシップを設定して、次のことを行えます。
+OIDCグループメンバーシップを設定して、次のことを行えます:
 
 - ユーザーが特定のグループのメンバーであることを必須にする。
-- グループメンバーシップに基づいて、ユーザーに[外部](../external_users.md)、管理者、[監査担当者](../auditor_users.md)のいずれかのロールを割り当てる。
+- グループメンバーシップに基づいて、ユーザーに[外部](../external_users.md) 、管理者、[監査担当者](../auditor_users.md)のいずれかのロールを割り当てる。
 
-GitLabは、サインインのたびにこれらのグループをチェックし、必要に応じてユーザー属性を更新します。ただし、この機能では、GitLab[グループ](../../user/group/_index.md)にユーザーを自動的に追加することは**できません**。
+GitLabは、サインインのたびにこれらのグループをチェックし、必要に応じてユーザー属性を更新します。ただし、この機能では、GitLab[グループ](../../user/group/_index.md)にユーザーを自動的に追加することは**does not**（できません）。
 
 ### 必須グループ {#required-groups}
 
-Identity Provider（IdP）は、OIDC応答でグループ情報をGitLabに渡す必要があります。この応答を利用して、特定のグループへの所属を必須にする場合は、GitLab側で次の項目を識別するように設定します。
+Identity Provider（IdP）は、OIDC応答でグループ情報をGitLabに渡す必要があります。この応答を利用して、特定のグループへの所属を必須にする場合は、GitLab側で次の項目を識別するように設定します:
 
 - OIDC応答内でグループがある場所（`groups_attribute`設定を使用）。
 - サインインに必要なグループメンバーシップ（`required_groups`設定を使用）。
@@ -927,7 +927,7 @@ Identity Provider（IdP）は、OIDC応答でグループ情報をGitLabに渡�
 
 {{< tab title="Linuxパッケージ（Omnibus）" >}}
 
-1. `/etc/gitlab/gitlab.rb`を編集します。
+1. `/etc/gitlab/gitlab.rb`を編集します:
 
    ```ruby
    gitlab_rails['omniauth_providers'] = [
@@ -962,7 +962,7 @@ Identity Provider（IdP）は、OIDC応答でグループ情報をGitLabに渡�
 
 {{< tab title="自己コンパイル（ソース）" >}}
 
-1. `/home/git/gitlab/config/gitlab.yml`を編集します。
+1. `/home/git/gitlab/config/gitlab.yml`を編集します:
 
    ```yaml
    production: &base
@@ -999,7 +999,7 @@ Identity Provider（IdP）は、OIDC応答でグループ情報をGitLabに渡�
 
 ### 外部グループ {#external-groups}
 
-IdPは、OIDC応答でグループ情報をGitLabに渡す必要があります。この応答を使用して、グループメンバーシップに基づいてユーザーを[外部ユーザー](../external_users.md)として識別するには、次の情報を特定できるようにGitLabを設定します。
+IdPは、OIDC応答でグループ情報をGitLabに渡す必要があります。この応答を使用して、グループメンバーシップに基づいてユーザーを[外部ユーザー](../external_users.md)として識別するには、次の情報を特定できるようにGitLabを設定します:
 
 - OIDC応答内でグループがある場所（`groups_attribute`設定を使用）。
 - どのグループメンバーシップに基づきユーザーを[外部ユーザー](../external_users.md)として識別するか（`external_groups`設定を使用。
@@ -1008,7 +1008,7 @@ IdPは、OIDC応答でグループ情報をGitLabに渡す必要があります�
 
 {{< tab title="Linuxパッケージ（Omnibus）" >}}
 
-1. `/etc/gitlab/gitlab.rb`を編集します。
+1. `/etc/gitlab/gitlab.rb`を編集します:
 
    ```ruby
    gitlab_rails['omniauth_providers'] = [
@@ -1043,7 +1043,7 @@ IdPは、OIDC応答でグループ情報をGitLabに渡す必要があります�
 
 {{< tab title="自己コンパイル（ソース）" >}}
 
-1. `/home/git/gitlab/config/gitlab.yml`を編集します。
+1. `/home/git/gitlab/config/gitlab.yml`を編集します:
 
    ```yaml
    production: &base
@@ -1087,7 +1087,7 @@ IdPは、OIDC応答でグループ情報をGitLabに渡す必要があります�
 
 {{< /details >}}
 
-IdPは、OIDC応答でグループ情報をGitLabに渡す必要があります。この応答を使用して、グループメンバーシップに基づいてユーザーに監査担当者を割り当てるには、次の情報を特定できるようにGitLabを設定します。
+IdPは、OIDC応答でグループ情報をGitLabに渡す必要があります。この応答を使用して、グループメンバーシップに基づいてユーザーに監査担当者を割り当てるには、次の情報を特定できるようにGitLabを設定します:
 
 - OIDC応答内でグループがある場所（`groups_attribute`設定を使用）。
 - どのグループメンバーシップに基づきユーザーに監査担当者アクセス権を付与するか（`auditor_groups`設定を使用）。
@@ -1096,7 +1096,7 @@ IdPは、OIDC応答でグループ情報をGitLabに渡す必要があります�
 
 {{< tab title="Linuxパッケージ（Omnibus）" >}}
 
-1. `/etc/gitlab/gitlab.rb`を編集します。
+1. `/etc/gitlab/gitlab.rb`を編集します:
 
    ```ruby
    gitlab_rails['omniauth_providers'] = [
@@ -1131,7 +1131,7 @@ IdPは、OIDC応答でグループ情報をGitLabに渡す必要があります�
 
 {{< tab title="自己コンパイル（ソース）" >}}
 
-1. `/home/git/gitlab/config/gitlab.yml`を編集します。
+1. `/home/git/gitlab/config/gitlab.yml`を編集します:
 
    ```yaml
    production: &base
@@ -1168,7 +1168,7 @@ IdPは、OIDC応答でグループ情報をGitLabに渡す必要があります�
 
 ### 管理者グループ {#administrator-groups}
 
-IdPは、OIDC応答でグループ情報をGitLabに渡す必要があります。この応答を使用して、グループメンバーシップに基づいてユーザーに管理者を割り当てるには、次の情報を特定できるようにGitLabを設定します。
+IdPは、OIDC応答でグループ情報をGitLabに渡す必要があります。この応答を使用して、グループメンバーシップに基づいてユーザーに管理者を割り当てるには、次の情報を特定できるようにGitLabを設定します:
 
 - OIDC応答内でグループがある場所（`groups_attribute`設定を使用）。
 - どのグループメンバーシップに基づきユーザーに管理者アクセス権を付与するか（`admin_groups`設定を使用）。
@@ -1177,7 +1177,7 @@ IdPは、OIDC応答でグループ情報をGitLabに渡す必要があります�
 
 {{< tab title="Linuxパッケージ（Omnibus）" >}}
 
-1. `/etc/gitlab/gitlab.rb`を編集します。
+1. `/etc/gitlab/gitlab.rb`を編集します:
 
    ```ruby
    gitlab_rails['omniauth_providers'] = [
@@ -1212,7 +1212,7 @@ IdPは、OIDC応答でグループ情報をGitLabに渡す必要があります�
 
 {{< tab title="自己コンパイル（ソース）" >}}
 
-1. `/home/git/gitlab/config/gitlab.yml`を編集します。
+1. `/home/git/gitlab/config/gitlab.yml`を編集します:
 
    ```yaml
    production: &base
@@ -1264,13 +1264,13 @@ IdPは、OIDC応答でグループ情報をGitLabに渡す必要があります�
 
 デフォルトでは、GitLabのIDトークンは120秒で有効期限が切れます。
 
-IDトークンのカスタム有効期間を設定するには、次の手順に従います。
+IDトークンのカスタム有効期間を設定するには、次の手順に従います:
 
 {{< tabs >}}
 
 {{< tab title="Linuxパッケージ（Omnibus）" >}}
 
-1. `/etc/gitlab/gitlab.rb`を編集します。
+1. `/etc/gitlab/gitlab.rb`を編集します:
 
    ```ruby
    gitlab_rails['oidc_provider_openid_id_token_expire_in_seconds'] = 3600
@@ -1282,7 +1282,7 @@ IDトークンのカスタム有効期間を設定するには、次の手順に
 
 {{< tab title="自己コンパイル（ソース）" >}}
 
-1. `/home/git/gitlab/config/gitlab.yml`を編集します。
+1. `/home/git/gitlab/config/gitlab.yml`を編集します:
 
    ```yaml
    production: &base
@@ -1326,7 +1326,7 @@ OIDC標準には、認証コンテキストクラス参照（`ACR`）が含ま�
 
 - GitLab 17.11で`omniauth_step_up_auth_for_admin_mode`[フラグ](../feature_flags/_index.md)とともに[導入](https://gitlab.com/gitlab-org/gitlab/-/issues/474650)されました。デフォルトでは無効になっています。
 
-{{< /history >}}管理者モードでステップアップ認証を有効にするには、次のようにします。
+{{< /history >}}管理者モードでステップアップ認証を有効にするには、次のようにします:
 
 1. GitLab設定ファイル（`gitlab.yml`または`/etc/gitlab/gitlab.rb`）を編集して、特定のOmniAuthプロバイダーに対してステップアップ認証を有効にします。
 
@@ -1399,7 +1399,7 @@ OIDCは標準化されていますが、さまざまなIdentity Provider（IdP�
 
 Keycloakは、認証レベルとカスタムブラウザログインフローを定義することで、ステップアップ認証に対応します。
 
-Keycloakで管理者モードのステップアップ認証を要求するには、次の手順を実行します。
+Keycloakで管理者モードのステップアップ認証を要求するには、次の手順を実行します:
 
 1. GitLabで[Keycloakを設定](#configure-keycloak)します。
 
@@ -1448,14 +1448,14 @@ Keycloakで管理者モードのステップアップ認証を要求するには
 
 Microsoft Entra ID（旧称: Azure Active Directory）は、[条件付きアクセス認証のコンテキスト](https://learn.microsoft.com/en-us/entra/identity-platform/developer-guide-conditional-access-authentication-context)でステップアップ認証をサポートしています。Microsoft Entra IDの管理者と協力して、正しい設定を定義する必要があります。
 
-次の点を考慮してください。
+次の点を考慮してください:
 
 - 認証コンテキストIDは、他のIdentity Providerに使用されるIDトークンクレーム`acr`ではなく、`acrs`クレームのみを介してリクエストされます。
 - 認証コンテキストIDは、`c1`から`c99`までの固定値を使用します。それぞれの値は、条件付きアクセスポリシーが適用された特定の認証コンテキストを表します。
 - デフォルトでは、Microsoft Entra IDはIDトークンに`acrs`クレームを含めません。これを有効にするには、[オプションのクレームを設定する](https://learn.microsoft.com/en-us/entra/identity-platform/optional-claims?tabs=appui#configure-optional-claims-in-your-application)必要があります。
 - ステップアップ認証が成功すると、応答は[`acrs`](https://learn.microsoft.com/en-us/entra/identity-platform/access-token-claims-reference#payload-claims)クレームを文字列のJSON配列として返します。例: `acrs: ["c1", "c2", "c3"]`。
 
-Microsoft Entra IDで管理者モードのステップアップ認証を要求するには、次の手順を実行します。
+Microsoft Entra IDで管理者モードのステップアップ認証を要求するには、次の手順を実行します:
 
 1. GitLabで[Microsoft Entra IDを設定](#configure-microsoft-azure)します。
 
@@ -1463,7 +1463,7 @@ Microsoft Entra IDで管理者モードのステップアップ認証を要求�
 
 1. Microsoft Entra IDで、[IDトークンに含めるオプションの`acrs`クレーム](https://openid.net/specs/openid-connect-core-1_0.html#IDToken)を定義します。
 
-1. GitLab設定ファイル（`gitlab.yml`または`/etc/gitlab/gitlab.rb`）を編集して、Microsoft Entra IDプロバイダー設定でステップアップ認証を有効にします。
+1. GitLab設定ファイル（`gitlab.yml`または`/etc/gitlab/gitlab.rb`）を編集して、Microsoft Entra IDプロバイダー設定でステップアップ認証を有効にします:
 
    ```yaml
    production: &base
@@ -1513,7 +1513,7 @@ Microsoft Entra IDで管理者モードのステップアップ認証を要求�
 
 インスタンス内のすべてのグループが利用できるステップアップ認証プロバイダーを追加することもできます。これにより、グループでステップアップ認証の使用が強制されることはありません。各グループでこの機能を個別に[設定](#force-step-up-authentication-for-a-group)する必要があります。
 
-グループのステップアップ認証プロバイダーを追加するには、次の手順を実行します。
+グループのステップアップ認証プロバイダーを追加するには、次の手順を実行します:
 
 1. GitLab設定ファイル（`gitlab.yml`または`/etc/gitlab/gitlab.rb`）を編集して、特定のOmniAuthプロバイダーに対してステップアップ認証を有効にします。
 
@@ -1584,10 +1584,10 @@ Microsoft Entra IDで管理者モードのステップアップ認証を要求�
 - [インスタンス内のグループのステップアップ認証プロバイダー](#add-a-step-up-authentication-provider-for-groups)。
 - オーナーロールを持っている必要があります。
 
-グループのステップアップ認証を強制するには、次の手順を実行します。
+グループのステップアップ認証を強制するには、次の手順を実行します:
 
-1. 左側のサイドバーで、**検索または移動先**を選択して、グループを見つけます。
-1. **設定 > 一般**を選択します。
+1. 左側のサイドバーで、**検索または移動先**を選択して、グループを見つけます。[新しいナビゲーションをオン](../../user/interface_redesign.md#turn-new-navigation-on-or-off)にしている場合、このフィールドは上部のバーにあります。
+1. **設定** > **一般**を選択します。
 1. **権限とグループ機能**セクションを展開します。
 1. ステップアップ認証で、利用可能な認証プロバイダーを選択します。
 1. **変更を保存**を選択します。
@@ -1596,7 +1596,7 @@ Microsoft Entra IDで管理者モードのステップアップ認証を要求�
 
 ステップアップ認証に失敗した場合、GitLabはカスタムドキュメントへのリンクを表示し、ユーザーが組織の認証要件を理解できるようにします。この機能により、管理者は組織固有のガイダンスを提供し、ユーザーを社内ドキュメントやヘルプリソースへ案内できます。
 
-カスタムドキュメントリンクを追加するには、次の手順を実行します。
+カスタムドキュメントリンクを追加するには、次の手順を実行します:
 
 1. `gitlab.yml`または`/etc/gitlab/gitlab.rb`のGitLabの設定ファイルを編集して、`documentation_link`フィールドを`step_up_auth => admin_mode`に追加します。
 
@@ -1640,4 +1640,4 @@ Microsoft Entra IDで管理者モードのステップアップ認証を要求�
 
 1. `client_auth_method`が未定義の場合、または`basic`に設定されている場合、OpenID ConnectクライアントはHTTP基本認証を使用してOAuth 2.0アクセストークンを送信します。`userinfo`エンドポイントの取得時に401エラーが表示される場合は、OpenID Webサーバーの設定を確認してください。たとえば、[`oauth2-server-php`](https://github.com/bshaffer/oauth2-server-php)の場合、[Apacheに設定パラメータを追加](https://github.com/bshaffer/oauth2-server-php/issues/926#issuecomment-387502778)する必要がある場合があります。
 
-1. **ステップアップ認証のみ**: `step_up_auth => admin_mode => params`で定義されているパラメータが`args => allow_authorize_params`でも定義されていることを確認します。これにより、IdP認証エンドポイントへのリダイレクトに使用されるリクエストクエリパラメータにパラメータが含まれるようになります。
+1. **Step-up authentication only**（ステップアップ認証のみ）: `step_up_auth => admin_mode => params`で定義されているパラメータが`args => allow_authorize_params`でも定義されていることを確認します。これにより、IdP認証エンドポイントへのリダイレクトに使用されるリクエストクエリパラメータにパラメータが含まれるようになります。

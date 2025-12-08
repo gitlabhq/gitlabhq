@@ -16,14 +16,6 @@
       "description": "Feature category of the permission",
       "format": "known_product_category"
     },
-    "action": {
-      "type": "string",
-      "description": "Override for the generated action name"
-    },
-    "resource": {
-      "type": "string",
-      "description": "Override for the generated resource name"
-    },
     "boundaries": {
       "type": "array",
       "items": {

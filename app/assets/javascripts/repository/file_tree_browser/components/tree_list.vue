@@ -413,6 +413,17 @@ export default {
         return;
       }
 
+      // Home/End
+      if (event.key === 'Home' || event.key === 'End') {
+        event.preventDefault();
+        const index = event.key === 'Home' ? 0 : items.length - 1;
+        if (items.length) {
+          this.activeItemId = items[index].id;
+          this.$nextTick(() => this.$refs.activeItem?.[0]?.focus());
+        }
+        return;
+      }
+
       // Asterisk (*)
       if (event.key === '*' && item) {
         event.preventDefault();

@@ -47,7 +47,7 @@ Spamcheck is only available for package-based installations:
 
 ## Configure GitLab to use Spamcheck
 
-1. On the left sidebar, at the bottom, select **Admin**. If you've [turned on the new navigation](../../user/interface_redesign.md), in the upper-right corner, select **Admin**.
+1. In the upper-right corner, select **Admin**.
 1. Select **Settings** > **Reporting**.
 1. Expand **Spam and Anti-bot Protection**.
 1. Update the Spam Check settings:
