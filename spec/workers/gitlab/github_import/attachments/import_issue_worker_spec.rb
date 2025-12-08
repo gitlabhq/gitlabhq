@@ -7,10 +7,7 @@ RSpec.describe Gitlab::GithubImport::Attachments::ImportIssueWorker, feature_cat
 
   describe '#import' do
     let(:import_state) { create(:import_state, :started) }
-
-    let(:project) do
-      instance_double('Project', full_path: 'foo/bar', id: 1, import_state: import_state)
-    end
+    let(:project) { create(:project, import_state: import_state) }
 
     let(:client) { instance_double('Gitlab::GithubImport::Client', web_endpoint: "https://github.com") }
 
@@ -38,8 +35,7 @@ RSpec.describe Gitlab::GithubImport::Attachments::ImportIssueWorker, feature_cat
       end
 
       expect(Gitlab::GithubImport::ObjectCounter)
-        .to receive(:increment)
-        .and_call_original
+        .not_to receive(:increment)
 
       worker.import(project, client, issue_hash)
     end
