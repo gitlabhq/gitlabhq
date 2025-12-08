@@ -13,7 +13,7 @@ title: REST API
 
 {{< /details >}}
 
-GitLab REST APIを使用してワークフローを自動化し、インテグレーションを構築します。
+GitLab REST APIを使用してワークフローを自動化し、インテグレーションを構築します:
 
 - 手動操作なしで、GitLabリソースを大規模に管理するカスタムツールを作成します。
 - GitLabデータをアプリケーションに直接統合することで、コラボレーションを向上させます。
@@ -24,7 +24,7 @@ REST APIでは、既存のツールやシステムとの互換性のために、
 
 ## REST APIリクエストを実行する {#make-a-rest-api-request}
 
-REST APIリクエストを実行するには、次のようにします。
+REST APIリクエストを実行するには、次のようにします:
 
 - REST APIクライアントを使用して、APIエンドポイントにリクエストを送信します。
 - GitLabインスタンスがリクエストに応答します。ステータスコードと、該当する場合はリクエストされたデータが返されます。ステータスコードはリクエストの結果を示し、[トラブルシューティング](troubleshooting.md)の際に役立ちます。
@@ -34,7 +34,7 @@ REST APIリクエストは、ルートエンドポイントとパスで始まる
 - ルートエンドポイントはGitLabホスト名です。
 - パスは`/api/v4`で始まる必要があります（`v4`はAPIバージョンを表します）。
 
-次の例では、APIリクエストでGitLabホスト（`gitlab.example.com`）上のすべてのプロジェクトのリストを取得します。
+次の例では、APIリクエストでGitLabホスト（`gitlab.example.com`）上のすべてのプロジェクトのリストを取得します:
 
 ```shell
 curl --request GET \
@@ -60,7 +60,7 @@ REST APIの応答はJSON形式で返されます。一部のAPIエンドポイ�
 
 ### リクエストペイロード {#request-payload}
 
-APIリクエストでは、[クエリ文字列](https://en.wikipedia.org/wiki/Query_string)または[ペイロード本文](https://datatracker.ietf.org/doc/html/draft-ietf-httpbis-p3-payload-14#section-3.2)として送信されるパラメータを使用できます。通常、GETリクエストはクエリ文字列を送信し、PUTリクエストまたはPOSTリクエストはペイロード本文を送信します。
+APIリクエストでは、[クエリ文字列](https://en.wikipedia.org/wiki/Query_string)または[ペイロード本文](https://datatracker.ietf.org/doc/html/draft-ietf-httpbis-p3-payload-14#section-3.2)として送信されるパラメータを使用できます。通常、GETリクエストはクエリ文字列を送信し、PUTリクエストまたはPOSTリクエストはペイロード本文を送信します:
 
 - クエリ文字列:
 
@@ -77,13 +77,13 @@ APIリクエストでは、[クエリ文字列](https://en.wikipedia.org/wiki/Qu
     --data '{"name":"<example-name>", "description":"<example-description>"}' "https://gitlab.example.com/api/v4/projects"
   ```
 
-URLエンコードされたクエリ文字列の長さには制限があります。リクエストが大きすぎると、`414 Request-URI Too Large`（リクエストURIが長すぎます）というエラーメッセージが生成されます。これは、代わりにペイロード本文を使用することで解決できます。
+URLエンコードされたクエリ文字列の長さには制限があります。リクエストが大きすぎると、`414 Request-URI Too Large`というエラーメッセージが生成されます。これは、代わりにペイロード本文を使用することで解決できます。
 
 ### パスパラメータ {#path-parameters}
 
 エンドポイントにパスパラメータがある場合、ドキュメントでは先頭にコロンを付けて表示します。
 
-例は次のとおりです。
+例:
 
 ```plaintext
 DELETE /projects/:id/share/:group_id
@@ -91,7 +91,7 @@ DELETE /projects/:id/share/:group_id
 
 `:id`パスパラメータはプロジェクトIDに、`:group_id`はグループのIDに置き換える必要があります。コロン（`:`）は含めないでください。
 
-ID `5`のプロジェクトとID `17`のグループに対して送信するcURLリクエストは次のようになります。
+ID `5`のプロジェクトとID `17`のグループに対して送信するcURLリクエストは次のようになります:
 
 ```shell
 curl --request DELETE \
@@ -103,14 +103,14 @@ curl --request DELETE \
 
 ### `id`と`iid`の違い {#id-vs-iid}
 
-一部のAPIリソースには、類似する名前のフィールドが2つあります。たとえば、[イシュー](../issues.md) 、[マージリクエスト](../merge_requests.md) 、[プロジェクトのマイルストーン](../merge_requests.md)などです。これらのフィールドを以下に示します。
+一部のAPIリソースには、類似する名前のフィールドが2つあります。たとえば、[イシュー](../issues.md) 、[マージリクエスト](../merge_requests.md) 、[プロジェクトのマイルストーン](../milestones.md)などです。これらのフィールドを以下に示します:
 
 - `id`: すべてのプロジェクトで一意のID。
 - `iid`: 追加の内部ID（Web UIに表示）。単一プロジェクトのスコープ内で一意。
 
 リソースに`iid`フィールドと`id`フィールドの両方がある場合、通常はリソースをフェッチするために`id`フィールドではなく`iid`フィールドが使用されます。
 
-たとえば、`id: 42`のプロジェクトに`id: 46`と`iid: 5`のイシューがあるとします。この場合、次のようになります。
+たとえば、`id: 42`のプロジェクトに`id: 46`と`iid: 5`のイシューがあるとします。この場合、次のようになります:
 
 - イシューを取得するための有効なAPIリクエストは`GET /projects/42/issues/5`です。
 - イシューを取得するための無効なAPIリクエストは`GET /projects/42/issues/46`です。
@@ -125,19 +125,19 @@ REST APIリクエストを実行する場合、特殊文字とデータ構造を
 
 ネームスペース付きのAPIリクエストを使用する場合は、`NAMESPACE/PROJECT_PATH`がURLエンコードされていることを確認してください。
 
-たとえば、`/`は`%2F`で表されます。
+たとえば、`/`は`%2F`で表されます:
 
 ```plaintext
 GET /api/v4/projects/diaspora%2Fdiaspora
 ```
 
-プロジェクトのパスは、必ずしもその名前と同じではありません。プロジェクトのパスは、プロジェクトのURLまたはプロジェクトの設定の**一般 > 高度な設定 > パスを変更**にあります。
+プロジェクトのパスは、必ずしもその名前と同じではありません。プロジェクトのパスは、プロジェクトのURLまたはプロジェクトの設定の**一般** > **高度な設定** > **パスを変更**にあります。
 
 #### ファイルパス、ブランチ、タグ名 {#file-path-branches-and-tags-name}
 
 ファイルパス、ブランチ、またはタグに`/`が含まれている場合は、URLエンコードされていることを確認してください。
 
-たとえば、`/`は`%2F`で表されます。
+たとえば、`/`は`%2F`で表されます:
 
 ```plaintext
 GET /api/v4/projects/1/repository/files/src%2FREADME.md?ref=master
@@ -147,11 +147,11 @@ GET /api/v4/projects/1/repository/tags/my%2Ftag
 
 #### array（配列）型とhash（ハッシュ）型 {#array-and-hash-types}
 
-`array`型と`hash`型のパラメータを使用してAPIをリクエストできます。
+`array`型と`hash`型のパラメータを使用してAPIをリクエストできます:
 
 ##### `array` {#array}
 
-`import_sources`は`array`型のパラメータです。
+`import_sources`は`array`型のパラメータです:
 
 ```shell
 curl --request POST \
@@ -163,7 +163,7 @@ curl --request POST \
 
 ##### `hash` {#hash}
 
-`override_params`は`hash`型のパラメータです。
+`override_params`は`hash`型のパラメータです:
 
 ```shell
 curl --request POST \
@@ -178,7 +178,7 @@ curl --request POST \
 
 ##### ハッシュの配列 {#array-of-hashes}
 
-`variables`は、ハッシュのキー/値ペア`[{ 'key': 'UPLOAD_TO_S3', 'value': 'true' }]`を含む`array`型のパラメータです。
+`variables`は、ハッシュのキー/値ペア`[{ 'key': 'UPLOAD_TO_S3', 'value': 'true' }]`を含む`array`型のパラメータです:
 
 ```shell
 curl --globoff --request POST \
@@ -194,13 +194,13 @@ curl --request POST \
 
 #### ISO 8601形式の日付での`+`のエンコード {#encoding--in-iso-8601-dates}
 
-[W3の推奨事項](https://www.w3.org/Addressing/URL/4_URI_Recommentations.html)によって`+`がスペースとして解釈されることから、クエリパラメータに`+`を含める必要がある場合は、代わりに`%2B`を使用する必要があります。たとえば、ISO 8601形式の日付で特定の時刻を含める場合、次のようになります。
+[W3の推奨事項](https://www.w3.org/Addressing/URL/4_URI_Recommentations.html)によって`+`がスペースとして解釈されることから、クエリパラメータに`+`を含める必要がある場合は、代わりに`%2B`を使用する必要があります。たとえば、ISO 8601形式の日付で特定の時刻を含める場合、次のようになります:
 
 ```plaintext
 2017-10-17T23:11:13.000+05:30
 ```
 
-クエリパラメータの正しいエンコードは次のようになります。
+クエリパラメータの正しいエンコードは次のようになります:
 
 ```plaintext
 2017-10-17T23:11:13.000%2B05:30
@@ -235,7 +235,7 @@ curl --request GET \
   --url "https://gitlab.example.com/api/v4/projects/gitlab-org%2Fold-path-project"
 ```
 
-応答は次のようになります。
+応答は次のようになります:
 
 ```plaintext
 ...
@@ -246,7 +246,7 @@ This resource has been moved permanently to https://gitlab.example.com/api/v4/pr
 
 ## ページネーション {#pagination}
 
-GitLabは、次のページネーション方法をサポートしています。
+GitLabは、次のページネーション方法をサポートしています:
 
 - オフセットベースのページネーション。デフォルトの方法であり、GitLab 16.5以降で、`users`エンドポイントを除くすべてのエンドポイントで使用できます。
 - キーセットベースのページネーション。一部のエンドポイントに追加され、[段階的にロールアウト](https://gitlab.com/groups/gitlab-org/-/epics/2039)されています。
@@ -262,14 +262,14 @@ GitLabは、次のページネーション方法をサポートしています�
 
 {{< /history >}}
 
-場合によっては、返される結果が複数のページにわたることがあります。リソースを一覧表示するときに、次のパラメータを渡すことができます。
+場合によっては、返される結果が複数のページにわたることがあります。リソースを一覧表示するときに、次のパラメータを渡すことができます:
 
 | パラメータ  | 説明                                                   |
 |:-----------|:--------------------------------------------------------------|
 | `page`     | ページ番号（デフォルトは`1`）。                                   |
 | `per_page` | ページごとに表示するアイテム数（デフォルトは`20`、最大値は`100`）。 |
 
-次の例では、ページごとに50個の[ネームスペース](../namespaces.md)を一覧表示しています。
+次の例では、ページごとに50個の[ネームスペース](../namespaces.md)をリストします:
 
 ```shell
 curl --request GET \
@@ -289,7 +289,7 @@ curl --request GET \
 
 GitLab.comユーザーの場合、[一部のページネーションヘッダーが返されないことがあります](../../user/gitlab_com/_index.md#pagination-response-headers)。
 
-次のcURLの例では、出力をページあたり3アイテム（`per_page=3`）に制限し、プロジェクトID `9`に属するID `8`のイシューの[コメント](../notes.md)の2ページ目（`page=2`）をリクエストしています。
+次のcURLの例では、出力をページあたり3アイテム（`per_page=3`）に制限し、プロジェクトID `9`に属するID `8`のイシューの[コメント](../notes.md)の2ページ目（`page=2`）をリクエストしています:
 
 ```shell
 curl --request GET \
@@ -298,7 +298,7 @@ curl --request GET \
   --url "https://gitlab.example.com/api/v4/projects/9/issues/8/notes?per_page=3&page=2"
 ```
 
-応答は次のようになります。
+応答は次のようになります:
 
 ```http
 HTTP/2 200 OK
@@ -321,7 +321,7 @@ x-total-pages: 3
 
 #### その他のページネーションヘッダー {#other-pagination-headers}
 
-GitLabは、次のページネーションヘッダーも返します。
+GitLabは、次のページネーションヘッダーも返します:
 
 | ヘッダー          | 説明 |
 |:----------------|:------------|
@@ -347,7 +347,7 @@ GitLab.comユーザーの場合、[一部のページネーションヘッダー
 | `order_by`   | はい      | 並べ替えの基準となる列。 |
 | `sort`       | はい      | 並び替え順（`asc`または`desc`） |
 
-次の例では、[プロジェクト](../projects.md)をページあたり50個、`id`の昇順で一覧表示します。
+次の例では、[projects](../projects.md)をページあたり50個、`id`の昇順で一覧表示します。
 
 ```shell
 curl --request GET \
@@ -355,7 +355,7 @@ curl --request GET \
   --url "https://gitlab.example.com/api/v4/projects?pagination=keyset&per_page=50&order_by=id&sort=asc"
 ```
 
-応答ヘッダーには、次のページへのリンクが含まれています。例は次のとおりです。
+応答ヘッダーには、次のページへのリンクが含まれています。例:
 
 ```http
 HTTP/1.1 200 OK
@@ -367,7 +367,7 @@ Status: 200 OK
 
 次のページへのリンクには、すでに取得したレコードを除外する追加のフィルター`id_after=42`が含まれています。
 
-別の例として、次のリクエストは、キーセットページネーションを使用して、[グループ](../groups.md)をページあたり50個、`name`の昇順で一覧表示します。
+別の例として、次のリクエストは、キーセットページネーションを使用して、[グループ](../groups.md)をページあたり50個、`name`の昇順で一覧表示します:
 
 ```shell
 curl --request GET \
@@ -375,7 +375,7 @@ curl --request GET \
   --url "https://gitlab.example.com/api/v4/groups?pagination=keyset&per_page=50&order_by=name&sort=asc"
 ```
 
-応答ヘッダーには、次のページへのリンクが含まれています。
+応答ヘッダーには、次のページへのリンクが含まれています:
 
 ```http
 HTTP/1.1 200 OK
@@ -401,7 +401,7 @@ Status: 200 OK
 
 #### サポートされているリソース {#supported-resources}
 
-キーセットベースのページネーションは、一部のリソースと並べ替えオプションでのみサポートされています。
+キーセットベースのページネーションは、一部のリソースと並べ替えオプションでのみサポートされています:
 
 | リソース                                                                       | オプション                                                                                                                                                                               | 利用可能 |
 | ------------------------------------------------------------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------ |
@@ -419,7 +419,7 @@ Status: 200 OK
 
 ### ページネーション応答ヘッダー {#pagination-response-headers}
 
-パフォーマンス上の理由から、クエリが返すレコードの数が10,000件を超える場合、GitLabは次のヘッダーを返しません。
+パフォーマンス上の理由から、クエリが返すレコードの数が10,000件を超える場合、GitLabは次のヘッダーを返しません:
 
 - `x-total`。
 - `x-total-pages`。
@@ -434,9 +434,9 @@ REST APIのバージョンは、セマンティックバージョニング仕様
 - メジャーAPIバージョンの変更とAPIバージョン全体の削除は、GitLabのメジャーリリースと連動して行われます。
 - バージョン間のすべての非推奨と変更は、ドキュメントに記載されています。
 
-以下は非推奨プロセスの対象外であり、予告なしにいつでも削除される可能性があります。
+以下は非推奨プロセスの対象外であり、予告なしにいつでも削除される可能性があります:
 
 - [REST APIリソース](../api_resources.md)で[実験的またはベータ](../../policy/development_stages_support.md)としてラベル付けされた要素。
 - 機能フラグで制御されており、デフォルトで無効になっているフィールド。
 
-GitLab Self-Managedの場合、EEインスタンスからCEインスタンスに[ダウングレード](../../downgrade_ee_to_ce/_index.md)すると、破壊的な変更が発生します。
+GitLab Self-Managedの場合、EEインスタンスからCEインスタンスに[ダウングレード](../../update/convert_to_ee/revert.md)すると、破壊的な変更が発生します。

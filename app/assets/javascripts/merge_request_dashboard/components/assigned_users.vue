@@ -6,11 +6,11 @@ import {
   GlDisclosureDropdown,
   GlAvatarLink,
 } from '@gitlab/ui';
-import { n__ } from '~/locale';
+import { n__, __ } from '~/locale';
 import { getIdFromGraphQLId } from '~/graphql_shared/utils';
 import UserAvatar from './user_avatar.vue';
 
-const MAX_VISIBLE_USERS = 3;
+const MAX_VISIBLE_USERS = 4;
 const USER_ORDER = {
   REQUESTED_CHANGES: 0,
   APPROVED: 1,
@@ -46,6 +46,13 @@ export default {
 
       return n__('%d additional reviewer', '%d additional reviewers', this.hiddenUsers.length);
     },
+    showAllUsersButtonText() {
+      if (this.type === 'ASSIGNEES') {
+        return __('Show all assignees');
+      }
+
+      return __('Show all reviewers');
+    },
     sortedUsers() {
       return this.users
         .toSorted((a, b) => {
@@ -57,10 +64,18 @@ export default {
         .map((u) => ({ ...u, href: u.webUrl, text: u.name }));
     },
     visibleUsers() {
-      return this.sortedUsers.slice(0, MAX_VISIBLE_USERS);
+      if (this.sortedUsers.length <= MAX_VISIBLE_USERS) {
+        return this.sortedUsers;
+      }
+
+      return this.sortedUsers.slice(0, MAX_VISIBLE_USERS - 1);
     },
     hiddenUsers() {
-      return this.sortedUsers.slice(MAX_VISIBLE_USERS);
+      if (this.sortedUsers.length <= MAX_VISIBLE_USERS) {
+        return [];
+      }
+
+      return this.sortedUsers.slice(MAX_VISIBLE_USERS - 1);
     },
   },
   methods: {
@@ -99,9 +114,10 @@ export default {
           <template #toggle>
             <gl-button
               v-gl-tooltip.top.window.hover
-              :title="__('Show all reviewers')"
+              :title="showAllUsersButtonText"
               :aria-label="usersBadgeSrOnlyText"
               class="!gl-h-[32px] !gl-min-w-[32px] !gl-rounded-full !gl-border-0 !gl-bg-neutral-100 !gl-p-0 !gl-text-sm !gl-text-neutral-700"
+              data-testid="show-all-users"
             >
               +{{ hiddenUsers.length }}
             </gl-button>

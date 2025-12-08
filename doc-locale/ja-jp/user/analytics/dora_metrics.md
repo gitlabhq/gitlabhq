@@ -17,19 +17,19 @@ title: DevOps Research and Assessment（DORA）メトリクス
 
 DORAメトリクスを使用して戦略的な意思決定を行い、ステークホルダーへのプロセス改善投資を正当化したり、チームのパフォーマンスを業界のベンチマークと比較して、競争上の優位性を特定したりできます。
 
-4つのDORAメトリクスは、DevOpsの2つの重要な側面を測定します。
+4つのDORAメトリクスは、DevOpsの2つの重要な側面を測定します:
 
-- **ベロシティメトリクス**: 組織がソフトウェアをどれだけ迅速に配信するかを追跡します。
+- **Velocity metrics**（ベロシティメトリクス）: 組織がソフトウェアをどれだけ迅速に配信するかを追跡します:
   - [デプロイ頻度](#deployment-frequency): コードが本番環境にデプロイされる頻度
   - [変更のリード時間](#lead-time-for-changes): コードが本番環境に到達するまでにかかる時間
 
-- **安定性メトリクス**: ソフトウェアの信頼性を測定します。
+- **Stability metrics**（安定性メトリクス）: ソフトウェアの信頼性を測定します:
   - [変更失敗率](#change-failure-rate): デプロイによって本番環境の障害がどのくらいの頻度で発生するか
   - [サービス復旧時間](#time-to-restore-service): 障害後にサービスがどのくらいの速さで復旧するか
 
 ベロシティと安定性の両方のメトリクスに焦点を当てることで、リーダーは配信ワークフローにおけるスピードと品質の最適なバランスを見つけることができます。
 
-<i class="fa fa-youtube-play youtube" aria-hidden="true"></i> 動画での解説については、[DORA metrics: User analytics](https://www.youtube.com/watch?v=jYQSH4EY6_U)（DORAメトリクス: ユーザー分析）と[GitLab speed run: DORA metrics](https://www.youtube.com/watch?v=1BrcMV6rCDw)（GitLabの高速実行: DORAメトリクス）をご覧ください。
+<i class="fa fa-youtube-play youtube" aria-hidden="true"></i>動画での解説については、[DORA metrics: User analytics](https://www.youtube.com/watch?v=jYQSH4EY6_U)（DORAメトリクス: ユーザー分析）と[GitLab speed run: DORA metrics](https://www.youtube.com/watch?v=1BrcMV6rCDw)（GitLabの高速実行: DORAメトリクス）をご覧ください。
 
 ## デプロイ頻度 {#deployment-frequency}
 
@@ -43,20 +43,6 @@ DORAメトリクスを使用して戦略的な意思決定を行い、ステー�
 
 ソフトウェアリーダーは、デプロイ頻度のメトリクスを使用することで、チームがソフトウェアを本番環境にどれだけ頻繁に正常にデプロイしているか、またチームが顧客のリクエストや新しい市場機会にどれだけ迅速に対応できるかを把握することができます。デプロイ頻度が高いということは、フィードバックをより早く得て、より迅速にイテレーションを行い、改善や機能を提供できることを意味します。
 
-### デプロイ頻度の予測 {#deployment-frequency-forecasting}
-
-{{< details >}}
-
-- プラン: Ultimate
-- 提供形態: GitLab.com、GitLab Self-Managed、GitLab Dedicated
-- ステータス: 実験的機能
-
-{{< /details >}}
-
-デプロイ頻度の予測（以前はバリューストリーム予測と呼ばれていました）は、統計的予測モデルを使用して、生産性メトリクスを予測し、ソフトウェア開発ライフサイクル全体のアノマリを特定します。この情報は、製品およびチームの計画と意思決定を改善するのに役立ちます。
-
-<i class="fa fa-youtube-play youtube" aria-hidden="true"></i> [Value stream forecasting](https://www.youtube.com/watch?v=6u8_8QQ5pEQ&list=PLFGfElNsQthYDx0A_FaNNfUm9NHsK6zED)（バリューストリーム予測）の概要をご覧ください。
-
 ### デプロイ頻度の計算方法 {#how-deployment-frequency-is-calculated}
 
 GitLabでは、デプロイ頻度は、指定された環境への1日あたりの平均デプロイ数として測定され、デプロイの終了時間（`finished_at`プロパティ）に基づいています。GitLabは、指定された日の完了したデプロイの数からデプロイ頻度を計算します。成功したデプロイ（`Deployment.statuses = success`）のみがカウントされます。
@@ -67,13 +53,13 @@ GitLabでは、デプロイ頻度は、指定された環境への1日あたり�
 
 {{< alert type="note" >}}
 
-デプロイ頻度は**平均値**として計算されます。他のDORAメトリクスは中央値を使用します。中央値は推奨される値であり、より正確で信頼性の高いパフォーマンスのビューを提供します。この違いは、DORAフレームワークを採用する前にデプロイ頻度がGitLabに追加され、このメトリクスの計算は他のレポートに組み込まれたときにも変更されなかったことに起因します。[イシュー499591](https://gitlab.com/gitlab-org/gitlab/-/issues/499591)では、各メトリクスの計算方法をカスタマイズし、平均値と中央値を選択するオプションを提供することを提案しています。
+デプロイ頻度は**average (mean)**（平均値）として計算されます。他のDORAメトリクスは中央値を使用します。中央値は推奨される値であり、より正確で信頼性の高いパフォーマンスのビューを提供します。この違いは、DORAフレームワークを採用する前にデプロイ頻度がGitLabに追加され、このメトリクスの計算は他のレポートに組み込まれたときにも変更されなかったことに起因します。[イシュー499591](https://gitlab.com/gitlab-org/gitlab/-/issues/499591)では、各メトリクスの計算方法をカスタマイズし、平均値と中央値を選択するオプションを提供することを提案しています。
 
 {{< /alert >}}
 
 ### デプロイ頻度を改善する方法 {#how-to-improve-deployment-frequency}
 
-最初のステップは、グループとプロジェクト間のコードリリースのケイデンスをベンチマークすることです。次に、以下を検討する必要があります。
+最初のステップは、グループとプロジェクト間のコードリリースのケイデンスをベンチマークすることです。次に、以下を検討する必要があります:
 
 - 自動テストを追加する。
 - 自動コード検証を追加する。
@@ -83,7 +69,7 @@ GitLabでは、デプロイ頻度は、指定された環境への1日あたり�
 
 変更のリード時間とは、コードの変更が本番環境に入るまでにかかる時間です。
 
-**変更のリード時間**は、**リードタイム**と同じではありません。バリューストリーム分析では、リードタイムは、イシューに関する作業がリクエストされた瞬間（イシューの作成）から、その作業が完了して配信された瞬間（イシューの完了）までに要する時間を測定します。
+**変更のリードタイム**は、**リードタイム**と同じではありません。バリューストリーム分析では、リードタイムは、イシューに関する作業がリクエストされた瞬間（イシューの作成）から、その作業が完了して配信された瞬間（イシューの完了）までに要する時間を測定します。
 
 ソフトウェアリーダーにとって、変更のリード時間は、CI/CDパイプラインの効率性を示すとともに、作業が顧客にどれだけ迅速に配信されるかを視覚化するものです。時間の経過とともに、変更のリード時間は短縮され、チームのパフォーマンスは向上するはずです。変更のリード時間が短いということは、CI/CDパイプラインがより効率的であることを意味します。
 
@@ -97,7 +83,7 @@ GitLabは、マージリクエストが本番環境に正常に配信される�
 
 まれに、関連付けられたマージリクエストがマージされる前に、デプロイが完了する場合があります。
 
-このシナリオは、次のような場合に発生する可能性があります。
+このシナリオは、次のような場合に発生する可能性があります:
 
 - デプロイプロセスが、マージワークフローとは無関係にトリガーされる。
 - コードレビューの完了前に、手動によるデプロイが介入する。
@@ -106,7 +92,7 @@ GitLabは、マージリクエストが本番環境に正常に配信される�
 
 ### 変更のリード時間を改善する方法 {#how-to-improve-lead-time-for-changes}
 
-最初のステップは、グループとプロジェクト間のCI/CDパイプラインの効率性をベンチマークすることです。次に、以下を検討する必要があります。
+最初のステップは、グループとプロジェクト間のCI/CDパイプラインの効率性をベンチマークすることです。次に、以下を検討する必要があります:
 
 - バリューストリーム分析を使用して、プロセスのボトルネックを特定する。
 - 変更をより小さなイテレーションに分割する。
@@ -127,7 +113,7 @@ GitLabは、マージリクエストが本番環境に正常に配信される�
 
 ### サービス復旧時間の計算方法 {#how-time-to-restore-service-is-calculated}
 
-GitLabでは、サービス復旧時間は、本番環境でインシデントがオープンになっていた時間の中央値として測定されます。GitLabは、指定された期間に本番環境でインシデントがオープンになっていた秒数を計算します。これは以下を前提としています。
+GitLabでは、サービス復旧時間は、本番環境でインシデントがオープンになっていた時間の中央値として測定されます。GitLabは、指定された期間に本番環境でインシデントがオープンになっていた秒数を計算します。これは以下を前提としています:
 
 - [GitLabインシデント](../../operations/incident_management/incidents.md)が追跡されている。
 - すべてのインシデントが本番環境に関連している。
@@ -135,7 +121,7 @@ GitLabでは、サービス復旧時間は、本番環境でインシデント�
 
 ### サービス復旧時間を改善する方法 {#how-to-improve-time-to-restore-service}
 
-最初のステップは、グループとプロジェクトの間で、サービスの中断および停止に対するチームの対応と、そこからの復旧をベンチマークすることです。次に、以下を検討する必要があります。
+最初のステップは、グループとプロジェクトの間で、サービスの中断および停止に対するチームの対応と、そこからの復旧をベンチマークすることです。次に、以下を検討する必要があります:
 
 - 本番環境に対する可観測性を向上させる。
 - 対応ワークフローを改善する。
@@ -149,7 +135,7 @@ GitLabでは、サービス復旧時間は、本番環境でインシデント�
 
 ### 変更失敗率の計算方法 {#how-change-failure-rate-is-calculated}
 
-GitLabでは、変更失敗率は、指定された期間に本番環境でインシデントを引き起こすデプロイの割合として測定されます。GitLabは、変更失敗率を、インシデント数を本番環境へのデプロイ数で割った数として計算します。この計算は以下を前提としています。
+GitLabでは、変更失敗率は、指定された期間に本番環境でインシデントを引き起こすデプロイの割合として測定されます。GitLabは、変更失敗率を、インシデント数を本番環境へのデプロイ数で割った数として計算します。この計算は以下を前提としています:
 
 - [GitLabインシデント](../../operations/incident_management/incidents.md)が追跡されている。
 - すべてのインシデントは、環境に関係なく、本番環境のインシデントである。
@@ -160,7 +146,7 @@ GitLabでは、変更失敗率は、指定された期間に本番環境でイ�
 
 ### 変更失敗率を改善する方法 {#how-to-improve-change-failure-rate}
 
-最初のステップは、グループとプロジェクトの間で、品質と安定性をベンチマークすることです。次に、以下を検討する必要があります。
+最初のステップは、グループとプロジェクトの間で、品質と安定性をベンチマークすることです。次に、以下を検討する必要があります:
 
 - 安定性とスループット（デプロイ頻度と変更のリード時間）の適切なバランスを見つけ、スピードのために品質を犠牲にしない。
 - コードレビュープロセスの有効性を改善する。
@@ -200,14 +186,14 @@ GitLabでは、変更失敗率は、指定された期間に本番環境でイ�
 
 この機能は、プロジェクトレベルの伝播のみをサポートします。
 
-これを行うには、Railsコンソールで次のコマンドを実行します。
+これを行うには、Railsコンソールで次のコマンドを実行します:
 
 ```ruby
 my_project = Project.find_by_full_path('group/subgroup/project')
 Dora::Configuration.create!(project: my_project, branches_for_lead_time_for_changes: ['master', 'main'])
 ```
 
-既存の設定を更新するには、次のコマンドを実行します。
+既存の設定を更新するには、次のコマンドを実行します:
 
 ```ruby
 my_project = Project.find_by_full_path('group/subgroup/project')
@@ -235,19 +221,19 @@ record.save!
 
 PagerDutyの場合、[Webhookを設定](../../operations/incident_management/manage_incidents.md#using-the-pagerduty-webhook)して、各PagerDutyインシデントに対してGitLabインシデントを自動的に作成できます。この設定では、PagerDutyとGitLabの両方で変更を行う必要があります。
 
-他のインシデント管理ツールの場合、[HTTPインテグレーション](../../operations/incident_management/integrations.md#alerting-endpoints)を設定して、次のことを自動的に行うことができます。
+他のインシデント管理ツールの場合、[HTTPインテグレーション](../../operations/incident_management/integrations.md#alerting-endpoints)を設定して、次のことを自動的に行うことができます:
 
 1. [アラートがトリガーされたときにインシデントを作成する](../../operations/incident_management/manage_incidents.md#automatically-when-an-alert-is-triggered)。
 1. [リカバリーアラートを介してインシデントをクローズする](../../operations/incident_management/manage_incidents.md#automatically-close-incidents-via-recovery-alerts)。
 
 ## 分析機能 {#analytics-features}
 
-DORAメトリクスは、次の分析機能に表示されます。
+DORAメトリクスは、次の分析機能に表示されます:
 
 - [バリューストリームダッシュボード](value_streams_dashboard.md)には、[DORAメトリクスの比較パネル](value_streams_dashboard.md#devsecops-metrics-comparison)と[DORAパフォーマーズスコアパネル](value_streams_dashboard.md#dora-performers-score)が含まれています。
 - [CI/CD分析チャート](ci_cd_analytics.md)には、DORAメトリクスの経時的な履歴が表示されます。
 - [インサイトレポート](../project/insights/_index.md)は、[DORAクエリパラメータ](../project/insights/_index.md#dora-query-parameters)を使用してカスタムチャートを作成するオプションを提供します。
-- [GraphQL API](../../api/graphql/reference/_index.md)（およびインタラクティブな[GraphQLエクスプローラー](../../api/graphql/_index.md#interactive-graphql-explorer)）と[REST API](../../api/dora/metrics.md)は、メトリクスデータの取得をサポートしています。
+- [GraphQL API](../../api/graphql/reference/_index.md) （およびインタラクティブな[GraphQLエクスプローラー](../../api/graphql/_index.md#interactive-graphql-explorer) ）と[REST API](../../api/dora/metrics.md)は、メトリクスデータの取得をサポートしています。
 
 ## プロジェクトとグループの可用性 {#project-and-group-availability}
 

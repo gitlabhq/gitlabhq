@@ -224,6 +224,8 @@ If you don't want to use a shared mount for Sidekiq and GitLab
 Workhorse, you can instead configure a separate `cron` job to delete
 files from this directory.
 
+Alternatively, you can disable the cache entirely:
+
 {{< tabs >}}
 
 {{< tab title="Linux package (Omnibus)" >}}

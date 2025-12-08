@@ -64018,6 +64018,9 @@ msgstr ""
 msgid "Show all activity"
 msgstr ""
 
+msgid "Show all assignees"
+msgstr ""
+
 msgid "Show all comments"
 msgstr ""
 

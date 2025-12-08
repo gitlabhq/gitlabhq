@@ -143,6 +143,13 @@ As we are using [Amazon S3 object storage](#amazon-s3-object-storage), our EC2 i
 
 We use this role when we [create a launch template](#create-a-launch-template) later on.
 
+{{< alert type="note" >}}
+
+GitLab supports AWS Instance Metadata Service Version 2 (IMDSv2). GitLab automatically uses IMDSv2 when available and falls back to IMDSv1 if needed. You can safely require
+IMDSv2 on your EC2 instances for enhanced security.
+
+{{< /alert >}}
+
 ## Configuring the network
 
 We start by creating a VPC for our GitLab cloud infrastructure, then
@@ -754,6 +761,8 @@ Because we're not using NFS for shared storage, we use [Amazon S3](https://aws.a
 {{< alert type="note" >}}
 
 Because we are using the [AWS IAM profile](#create-an-iam-role) we created earlier, be sure to omit the AWS access key and secret access key/value pairs when configuring object storage. Instead, use `'use_iam_profile' => true` in your configuration as shown in the object storage documentation linked previously.
+
+When using IAM roles for S3 access, GitLab supports both IMDSv1 and IMDSv2 and automatically uses IMDSv2 when available.
 
 {{< /alert >}}
 

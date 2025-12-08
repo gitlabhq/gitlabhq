@@ -2,6 +2,7 @@
 stage: AI-powered
 group: Global Search
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+description: GitLabで高度な検索を使用するために、Elasticsearchをセットアップして構成します。
 title: Elasticsearch
 ---
 
@@ -14,7 +15,7 @@ title: Elasticsearch
 
 このページでは、高度な検索を有効にする方法について説明します。有効にすると、高度な検索によって検索応答時間が短縮され、[検索機能が向上](../../user/search/advanced_search.md)します。
 
-高度な検索を有効にするには、次の手順を実行する必要があります。
+高度な検索を有効にするには、次の手順を実行する必要があります:
 
 1. [ElasticsearchまたはAWS OpenSearchクラスターをインストール](#install-an-elasticsearch-or-aws-opensearch-cluster)します。
 1. [高度な検索を有効に](#enable-advanced-search)します。
@@ -30,17 +31,17 @@ title: Elasticsearch
 この用語集では、Elasticsearchに関連する用語の定義を提供します。
 
 - **Lucene**: Javaで記述されたフルテキスト検索ライブラリ。
-- **ほぼリアルタイム（NRT）**: ドキュメントにインデックスを作成してから検索可能になるまでのわずかなレイテンシーを指します。
+- **Near real time (NRT)**（ほぼリアルタイム（NRT））: ドキュメントにインデックスを作成してから検索可能になるまでのわずかなレイテンシーを指します。
 - **クラスター**: すべてのデータを保持するために連携して動作する1つ以上のノードのコレクションであり、インデックス作成機能と検索機能を提供します。
-- **ノード**: クラスターの一部として機能する単一のサーバー。
+- **Node**（ノード）: クラスターの一部として機能する単一のサーバー。
 - **インデックス**: ある程度類似した特性を持つドキュメントのコレクション。
-- **ドキュメント**: インデックスを作成できる情報の基本単位。
-- **シャード**: インデックスの完全に機能する独立したサブディビジョン。各シャードは実際にはLuceneインデックスです。
-- **レプリカ**: インデックスを複製するフェイルオーバーメカニズム。
+- **Document**（ドキュメント）: インデックスを作成できる情報の基本単位。
+- **Shards**（シャード）: インデックスの完全に機能する独立したサブディビジョン。各シャードは実際にはLuceneインデックスです。
+- **Replicas**（レプリカ）: インデックスを複製するフェイルオーバーメカニズム。
 
 ## ElasticsearchまたはAWS OpenSearchクラスターをインストールする {#install-an-elasticsearch-or-aws-opensearch-cluster}
 
-ElasticsearchとAWS OpenSearchはLinuxパッケージに**含まれていません**。検索クラスターを自分でインストールするか、次のようなクラウドホスト型サービスを使用できます。
+ElasticsearchとAWS OpenSearchはLinuxパッケージに**not**（含まれていません）。検索クラスターを自分でインストールするか、次のようなクラウドホスト型サービスを使用できます:
 
 - [Elasticsearch Service](https://www.elastic.co/elasticsearch/service)（Amazon Web Services、Google Cloud Platform、Microsoft Azureで利用可能）
 - [Amazon OpenSearch Service](https://docs.aws.amazon.com/opensearch-service/latest/developerguide/gsg.html)
@@ -127,14 +128,14 @@ Elasticsearchは、ロールベースのアクセス制御を提供して、ク�
 
 #### AWS OpenSearch Serviceのアクセス制御 {#access-control-for-aws-opensearch-service}
 
-前提要件: 
+前提要件:
 
 - OpenSearchドメインを作成するときに、`AWSServiceRoleForAmazonOpenSearchService`という名前のAWSアカウントに[サービスにリンクされたロール](https://docs.aws.amazon.com/opensearch-service/latest/developerguide/slr.html)が必要です。
 - AWS OpenSearchのドメインアクセスポリシーでは、`es:ESHttp*`アクションを許可する必要があります。
 
-`AWSServiceRoleForAmazonOpenSearchService`は、**すべて**のOpenSearchドメインで使用されます。ほとんどの場合、AWS マネジメントコンソールを使用して最初のOpenSearchドメインを作成するときに、このロールは自動的に作成されます。サービスにリンクされたロールを手動で作成するには、[AWSドキュメント](https://docs.aws.amazon.com/opensearch-service/latest/developerguide/slr-aos.html#create-slr)を参照してください。
+`AWSServiceRoleForAmazonOpenSearchService`は、**すべて**のOpenSearchドメインで使用されます。ほとんどの場合、AWSマネジメントコンソールを使用して最初のOpenSearchドメインを作成するときに、このロールは自動的に作成されます。サービスにリンクされたロールを手動で作成するには、[AWSドキュメント](https://docs.aws.amazon.com/opensearch-service/latest/developerguide/slr-aos.html#create-slr)を参照してください。
 
-AWS OpenSearch Serviceには、次の3つの主要なセキュリティレイヤーがあります。
+AWS OpenSearch Serviceには、次の3つの主要なセキュリティレイヤーがあります:
 
 - [ネットワーク](#network)
 - [ドメインアクセスポリシー](#domain-access-policy)
@@ -142,20 +143,20 @@ AWS OpenSearch Serviceには、次の3つの主要なセキュリティレイヤ
 
 ##### ネットワーク {#network}
 
-このセキュリティレイヤを使用すると、ドメインを作成するときに**パブリックアクセス**を選択して、任意のクライアントからのリクエストがドメインエンドポイントに到達できるようにすることができます。**VPCアクセス**を選択した場合、リクエストがエンドポイントに到達するには、クライアントがVPCに接続している必要があります。
+このセキュリティレイヤを使用すると、ドメインを作成するときに**Public access**（パブリックアクセス）を選択して、任意のクライアントからのリクエストがドメインエンドポイントに到達できるようにすることができます。**VPC access**（VPCアクセス）を選択した場合、リクエストがエンドポイントに到達するには、クライアントがVPCに接続している必要があります。
 
 詳細については、[AWSドキュメント](https://docs.aws.amazon.com/opensearch-service/latest/developerguide/fgac.html#fgac-access-policies)を参照してください。
 
 ##### ドメインアクセスポリシー {#domain-access-policy}
 
-GitLabは、AWS OpenSearchのドメインアクセス制御について、次の方法をサポートしています。
+GitLabは、AWS OpenSearchのドメインアクセス制御について、次の方法をサポートしています:
 
-- [**リソースベース（ドメイン）アクセスポリシー**](https://docs.aws.amazon.com/opensearch-service/latest/developerguide/ac.html#ac-types-resource): AWS OpenSearchドメインがIAMポリシーで設定されている場合
-- [**IDベースのポリシー**](https://docs.aws.amazon.com/opensearch-service/latest/developerguide/ac.html#ac-types-identity): クライアントがIAMプリンシパルとポリシーを使用してアクセスを設定する場合
+- [**Resource-based (domain) access policy**（リソースベース（ドメイン）アクセスポリシー）](https://docs.aws.amazon.com/opensearch-service/latest/developerguide/ac.html#ac-types-resource): AWS OpenSearchドメインがIAMポリシーで設定されている場合
+- [**Identity-based policy**（IDベースのポリシー）](https://docs.aws.amazon.com/opensearch-service/latest/developerguide/ac.html#ac-types-identity): クライアントがIAMプリンシパルとポリシーを使用してアクセスを設定する場合
 
 ###### リソースベースのポリシーの例 {#resource-based-policy-examples}
 
-`es:ESHttp*`アクションが許可されているリソースベース（ドメイン）のアクセスポリシーの例は次のとおりです。
+`es:ESHttp*`アクションが許可されているリソースベース（ドメイン）のアクセスポリシーの例は次のとおりです:
 
 ```json
 {
@@ -173,7 +174,7 @@ GitLabは、AWS OpenSearchのドメインアクセス制御について、次の
 }
 ```
 
-特定のIAMプリンシパルに対してのみ`es:ESHttp*`アクションが許可されているリソースベース（ドメイン）のアクセスポリシーの例は次のとおりです。
+特定のIAMプリンシパルに対してのみ`es:ESHttp*`アクションが許可されているリソースベース（ドメイン）のアクセスポリシーの例は次のとおりです:
 
 ```json
 {
@@ -203,7 +204,7 @@ GitLabは、AWS OpenSearchのドメインアクセス制御について、次の
 
 ###### IDベースのポリシーの例 {#identity-based-policy-examples}
 
-`es:ESHttp*`アクションが許可されているIAMプリンシパルにアタッチされたIDベースのアクセスポリシーの例は次のとおりです。
+`es:ESHttp*`アクションが許可されているIAMプリンシパルにアタッチされたIDベースのアクセスポリシーの例は次のとおりです:
 
 ```json
 {
@@ -222,7 +223,7 @@ GitLabは、AWS OpenSearchのドメインアクセス制御について、次の
 
 ##### きめ細かいアクセス制御 {#fine-grained-access-control}
 
-きめ細かいアクセス制御を有効にする場合は、次のいずれかの方法で[マスターユーザー](https://docs.aws.amazon.com/opensearch-service/latest/developerguide/fgac.html#fgac-master-user)を設定する必要があります。
+きめ細かいアクセス制御を有効にする場合は、次のいずれかの方法で[マスターユーザー](https://docs.aws.amazon.com/opensearch-service/latest/developerguide/fgac.html#fgac-master-user)を設定する必要があります:
 
 - [IAM ARNをマスターユーザーとして設定](#set-an-iam-arn-as-a-master-user)します。
 - [マスターユーザーを作成](#create-a-master-user)します。
@@ -231,15 +232,15 @@ GitLabは、AWS OpenSearchのドメインアクセス制御について、次の
 
 IAMプリンシパルをマスターユーザーとして使用する場合、クラスターへのすべてのリクエストは、AWS Signature Version 4で署名する必要があります。EC2インスタンスに割り当てたIAMロールであるIAM ARNを指定することもできます。詳細については、[AWSドキュメント](https://docs.aws.amazon.com/opensearch-service/latest/developerguide/fgac.html#fgac-master-user)を参照してください。
 
-IAM ARNをマスターユーザーとして設定するには、GitLabインスタンスでIAM認証情報を使ってAWS OpenSearch Serviceを使用する必要があります。
+IAM ARNをマスターユーザーとして設定するには、GitLabインスタンスでIAM認証情報を使ってAWS OpenSearch Serviceを使用する必要があります:
 
-1. 左側のサイドバーの下部で、**管理者**を選択します。
-1. **設定 > 検索**を選択します。
+1. 左側のサイドバーの下部で、**管理者**を選択します。[新しいナビゲーションをオン](../../user/interface_redesign.md#turn-new-navigation-on-or-off)にしている場合は、右上隅でアバターを選択し、次に**管理者**を選択します。
+1. **設定** > **検索**を選択します。
 1. **高度な検索**を展開します。
-1. **AWS OpenSearch IAMの認証情報**セクションで、次の手順を実行します。
+1. **AWS OpenSearch IAMの認証情報**セクションで、次の手順を実行します:
    1. **IAM認証情報でAWS OpenSearchを使用します**チェックボックスをオンにします。
    1. **AWSリージョン**に、OpenSearchドメインがあるAWSリージョンを入力します（例: `us-east-1`）。
-   1. **AWSアクセスキー**と**AWSシークレットアクセスキー**に、認証用のアクセスキーを入力します。
+   1. **AWS access key**（AWSアクセスキー）と**AWS secret access key**（AWSシークレットアクセスキー）に、認証用のアクセスキーを入力します。
 
       {{< alert type="note" >}}
 
@@ -253,17 +254,17 @@ IAM ARNをマスターユーザーとして設定するには、GitLabインス�
 
 内部ユーザーデータベースにマスターユーザーを作成する場合は、HTTP基本認証を使用してクラスターにリクエストを行うことができます。詳細については、[AWSドキュメント](https://docs.aws.amazon.com/opensearch-service/latest/developerguide/fgac.html#fgac-master-user)を参照してください。
 
-マスターユーザーを作成するには、GitLabインスタンスでOpenSearchドメインURLとマスターユーザー名およびパスワードを設定する必要があります。
+マスターユーザーを作成するには、GitLabインスタンスでOpenSearchドメインURLとマスターユーザー名およびパスワードを設定する必要があります:
 
-1. 左側のサイドバーの下部で、**管理者**を選択します。
-1. **設定 > 検索**を選択します。
+1. 左側のサイドバーの下部で、**管理者**を選択します。[新しいナビゲーションをオン](../../user/interface_redesign.md#turn-new-navigation-on-or-off)にしている場合は、右上隅でアバターを選択し、次に**管理者**を選択します。
+1. **設定** > **検索**を選択します。
 1. **高度な検索**を展開します。
-1. **OpenSearchドメインURL**に、OpenSearchドメインエンドポイントへのURLを入力します。
+1. **OpenSearch domain URL**（OpenSearchドメインURL）に、OpenSearchドメインエンドポイントへのURLを入力します。
 1. **ユーザー名**に、マスターユーザー名を入力します。
 1. **パスワード**に、マスターパスワードを入力します。
 1. **変更を保存**を選択します。
 
-### 新しいElasticsearchメジャーバージョンにアップグレードする {#upgrade-to-a-new-elasticsearch-major-version}
+### 新しいElasticsearchのバージョンにアップグレードする {#upgrade-to-a-new-elasticsearch-version}
 
 {{< history >}}
 
@@ -271,14 +272,12 @@ IAM ARNをマスターユーザーとして設定するには、GitLabインス�
 
 {{< /history >}}
 
-Elasticsearchをアップグレードしたときに、GitLabの設定を変更する必要はありません。
+前提要件:
 
-Elasticsearchのアップグレード中は、次の操作を行う必要があります。
-
-- 変更が引き続き追跡できるように、[インデックス作成を一時停止](#pause-indexing)します。
 - 検索が`HTTP 500`エラーで失敗しないように、[高度な検索を無効](#disable-search-with-advanced-search)にします。
+- 変更が引き続き追跡できるように、[インデックス作成を一時停止](#pause-indexing)します。
 
-Elasticsearchクラスターが完全にアップグレードされ、アクティブになった場合: 
+Elasticsearchを新しいマイナーまたはメジャーバージョンにアップグレードする場合、GitLabの設定を変更する必要はありません。Elasticsearchクラスターが完全にアップグレードされ、アクティブになった場合: 
 
 1. クラスター接続、インデックス、検索オペレーションを検証します: 
 
@@ -287,6 +286,7 @@ Elasticsearchクラスターが完全にアップグレードされ、アクテ�
    ```
 
 1. [インデックス作成を再開](#resume-indexing)します。
+1. オプション。[インデックス作成状態を確認します](#check-indexing-status)。正しい検索結果を得るためには、インデックス作成が完了していることを確認してください。特に、Elasticsearchインスタンスがしばらくオフラインになっていた場合は注意してください。
 1. [高度な検索で検索を有効にする](#enable-search-with-advanced-search)。
 
 ## Elasticsearchリポジトリインデクサー {#elasticsearch-repository-indexer}
@@ -301,9 +301,9 @@ Gitリポジトリデータにインデックスを作成するために、GitLa
 
 このプロジェクトはテキストエンコードに[International Components for Unicode](https://icu.unicode.org/)（ICU）を使用しているため、`make`を実行する前に、プラットフォームの開発パッケージがインストールされていることを確認する必要があります。
 
-##### Debian/Ubuntu {#debian--ubuntu}
+##### Debian / Ubuntu {#debian--ubuntu}
 
-DebianまたはUbuntuにインストールするには、次のコマンドを実行します。
+DebianまたはUbuntuにインストールするには、次のコマンドを実行します:
 
 ```shell
 sudo apt install libicu-dev
@@ -311,7 +311,7 @@ sudo apt install libicu-dev
 
 ##### CentOS / RHEL {#centos--rhel}
 
-CentOSまたはRHELにインストールするには、次のコマンドを実行します。
+CentOSまたはRHELにインストールするには、次のコマンドを実行します:
 
 ```shell
 sudo yum install libicu-devel
@@ -325,7 +325,7 @@ sudo yum install libicu-devel
 
 {{< /alert >}}
 
-macOSにインストールするには、次のコマンドを実行します。
+macOSにインストールするには、次のコマンドを実行します:
 
 ```shell
 brew install icu4c
@@ -334,7 +334,7 @@ export PKG_CONFIG_PATH="/usr/local/opt/icu4c/lib/pkgconfig:$PKG_CONFIG_PATH"
 
 #### ビルドとインストール {#build-and-install}
 
-インデクサーをビルドしてインストールするには、次のコマンドを実行します。
+インデクサーをビルドしてインストールするには、次のコマンドを実行します:
 
 ```shell
 indexer_path=/home/git/gitlab-elasticsearch-indexer
@@ -368,21 +368,21 @@ PREFIX=/usr sudo -E make install
 
 ## 高度な検索を有効にする {#enable-advanced-search}
 
-前提要件: 
+前提要件:
 
 - インスタンスへの管理者アクセス権が必要です。
 - [インデックスあたりのシャード数](#number-of-elasticsearch-shards)を設定します。
 - [インデックスあたりのレプリカ数](#number-of-elasticsearch-replicas)を設定します。
-- オプション: [大規模インスタンスのインデックス作成](#index-large-instances-efficiently)の準備をします。
+- オプション。[大規模インスタンスのインデックス作成](#index-large-instances-efficiently)の準備をします。
 
-高度な検索を有効にするには、次の手順に従います。
+高度な検索を有効にするには、次の手順に従います:
 
-1. 左側のサイドバーの下部で、**管理者**を選択します。
-1. **設定 > 検索**を選択します。
-1. Elasticsearchクラスターの[高度な検索設定](#advanced-search-configuration)を構成します。まだ**Elasticsearch検索を有効にする**チェックボックスをオンにしないでください。
+1. 左側のサイドバーの下部で、**管理者**を選択します。[新しいナビゲーションをオン](../../user/interface_redesign.md#turn-new-navigation-on-or-off)にしている場合は、右上隅でアバターを選択し、次に**管理者**を選択します。
+1. **設定** > **検索**を選択します。
+1. Elasticsearchクラスターの[高度な検索設定](#advanced-search-configuration)を構成します。まだ**高度な検索で検索**チェックボックスを選択しないでください。
 1. [インスタンスにインデックスを作成します](#index-the-instance)。
-1. オプション: [インデックス作成状態を確認します](#check-indexing-status)。
-1. インデックス作成が完了したら、**Elasticsearch検索を有効にする**チェックボックスをオンにして、**変更を保存**を選択します。
+1. オプション。[インデックス作成状態を確認します](#check-indexing-status)。
+1. インデックス作成が完了したら、**高度な検索で検索**チェックボックスをオンにして、**変更を保存**を選択します。
 
 {{< alert type="note" >}}
 
@@ -402,26 +402,26 @@ Elasticsearchが有効になっているときにElasticsearchクラスターが
 
 {{< /history >}}
 
-前提要件: 
+前提要件:
 
 - インスタンスへの管理者アクセス権が必要です。
 
 ユーザーインターフェースから初期インデックス作成を実行したり、インデックスを再作成したりできます。
 
-高度な検索を有効にして、ユーザーインターフェースからインスタンスにインデックスを作成するは、次の手順に従います。
+高度な検索を有効にして、ユーザーインターフェースからインスタンスにインデックスを作成するは、次の手順に従います:
 
-1. 左側のサイドバーの下部で、**管理者**を選択します。
-1. **設定 > 検索**を選択します。
-1. **Elasticsearchのインデックス作成**チェックボックスをオンにし、**変更を保存**を選択します。
+1. 左側のサイドバーの下部で、**管理者**を選択します。[新しいナビゲーションをオン](../../user/interface_redesign.md#turn-new-navigation-on-or-off)にしている場合は、右上隅でアバターを選択し、次に**管理者**を選択します。
+1. **設定** > **検索**を選択します。
+1. **高度な検索のためのインデックス作成を有効にする**チェックボックスを選択し、**変更を保存**を選択します。
 1. **インスタンスにインデックスを作成**を選択します。
 
 #### Rakeタスクを使用する場合 {#with-a-rake-task}
 
-前提要件: 
+前提要件:
 
 - インスタンスへの管理者アクセス権が必要です。
 
-インスタンス全体にインデックスを作成するには、次のRakeタスクを使用します。
+インスタンス全体にインデックスを作成するには、次のRakeタスクを使用します:
 
 ```shell
 # WARNING: This task deletes all existing indices
@@ -433,11 +433,10 @@ sudo gitlab-rake gitlab:elastic:index
 bundle exec rake gitlab:elastic:index RAILS_ENV=production
 ```
 
-特定のデータにインデックスを作成するには、次のRakeタスクを使用します。
+特定のデータにインデックスを作成するには、次のRakeタスクを使用します:
 
 ```shell
 # For installations that use the Linux package
-sudo gitlab-rake gitlab:elastic:index_epics
 sudo gitlab-rake gitlab:elastic:index_work_items
 sudo gitlab-rake gitlab:elastic:index_group_wikis
 sudo gitlab-rake gitlab:elastic:index_namespaces
@@ -446,7 +445,6 @@ sudo gitlab-rake gitlab:elastic:index_snippets
 sudo gitlab-rake gitlab:elastic:index_users
 
 # For self-compiled installations
-bundle exec rake gitlab:elastic:index_epics RAILS_ENV=production
 bundle exec rake gitlab:elastic:index_work_items RAILS_ENV=production
 bundle exec rake gitlab:elastic:index_group_wikis RAILS_ENV=production
 bundle exec rake gitlab:elastic:index_namespaces RAILS_ENV=production
@@ -457,73 +455,75 @@ bundle exec rake gitlab:elastic:index_users RAILS_ENV=production
 
 ### インデックス作成状態を確認する {#check-indexing-status}
 
-前提要件: 
+前提要件:
 
 - インスタンスへの管理者アクセス権が必要です。
 
-インデックス作成状態を確認するには、次の手順に従います。
+インデックス作成状態を確認するには、次の手順に従います:
 
-1. 左側のサイドバーの下部で、**管理者**を選択します。
-1. **設定 > 検索**を選択します。
-1. **インデックス作成状態**を展開します。
+1. 左側のサイドバーの下部で、**管理者**を選択します。[新しいナビゲーションをオン](../../user/interface_redesign.md#turn-new-navigation-on-or-off)にしている場合は、右上隅でアバターを選択し、次に**管理者**を選択します。
+1. **設定** > **検索**を選択します。
+1. **高度な検索のインデックス作成のステータス**を展開します。
 
-### バックグラウンドジョブの状態をモニタリングする {#monitor-the-status-of-background-jobs}
+#### バックグラウンドジョブの状態をモニタリングする {#monitor-the-status-of-background-jobs}
 
-前提要件: 
+前提要件:
 
 - インスタンスへの管理者アクセス権が必要です。
 
-バックグラウンドジョブの状態をモニタリングするには、次の手順に従います。
+インデックス作成の進捗状況を監視するには、バックグラウンドジョブのステータスを確認することもできます:
 
-1. 左側のサイドバーの下部で、**管理者**を選択します。
-1. **モニタリング > バックグラウンドジョブ**を選択します。
-1. Sidekiqダッシュボードで、**キュー**を選択し、`elastic_commit_indexer`キューと`elastic_wiki_indexer`キューが`0`になるまで待ちます。これらのキューには、プロジェクトとグループのコードおよびWikiデータにインデックスを作成するジョブが含まれています。
+1. 左側のサイドバーの下部で、**管理者**を選択します。[新しいナビゲーションをオン](../../user/interface_redesign.md#turn-new-navigation-on-or-off)にしている場合は、右上隅でアバターを選択し、次に**管理者**を選択します。
+1. **モニタリング** > **バックグラウンドジョブ**を選択します。
+1. Sidekiqダッシュボードで**ビジー**を選択し、次のインデックス作成ジョブを監視します:
+   - コードとコミットの場合は`Search::Elastic::CommitIndexerWorker`。
+   - Wikiデータの場合は`ElasticWikiIndexerWorker`。
 
 ### Elasticsearch検索を有効にする {#enable-search-with-advanced-search}
 
-前提要件: 
+前提要件:
 
 - インスタンスへの管理者アクセス権が必要です。
 
 GitLabで高度な検索による検索を有効にするには: 
 
-1. 左側のサイドバーの下部で、**管理者**を選択します。
-1. **設定 > 検索**を選択します。
-1. **Elasticsearch検索を有効にする**チェックボックスを選択します。
+1. 左側のサイドバーの下部で、**管理者**を選択します。[新しいナビゲーションをオン](../../user/interface_redesign.md#turn-new-navigation-on-or-off)にしている場合は、右上隅でアバターを選択し、次に**管理者**を選択します。
+1. **設定** > **検索**を選択します。
+1. **高度な検索で検索**チェックボックスを選択します。
 1. **変更を保存**を選択します。
 
 ### 高度な検索の設定 {#advanced-search-configuration}
 
-次のElasticsearch設定を使用できます。
+次のElasticsearch設定を使用できます:
 
-| パラメータ                                             | 説明 |
-|-------------------------------------------------------|-------------|
-| `Elasticsearch indexing`                              | Elasticsearchのインデックス作成を有効または無効にし、インデックスがまだ存在しない場合は空のインデックスを作成します。たとえば、インデックスが完全に完成するまでの時間を稼ぐために、インデックス作成を有効にして、検索を無効にすることができます。また、このオプションは、既存のデータには影響を与えないことに加えて、データ変更を追跡して、新しいデータにインデックスが作成されるようにするバックグラウンドインデクサーのみを有効/無効にすることに注意してください。 |
-| `Pause Elasticsearch indexing`                        | インデックス作成の一時停止を有効または無効にします。これは、クラスターの移行/インデックス再作成に役立ちます。すべての変更は引き続き追跡されますが、再開されるまで、Elasticsearchインデックスにコミットされません。 |
-| `Search with Elasticsearch enabled`                   | Elasticsearch検索での使用を有効または無効にします。 |
-| `Requeue indexing workers`                            | インデックス作成ワーカーの自動再キューイングを有効にします。これにより、すべてのドキュメントが処理されるまでSidekiqジョブをエンキューすることで、非コードインデックス作成のスループットが向上します。インデックス作成ワーカーの再キューイングは、より小型のインスタンスや、Sidekiqプロセスがほとんどないインスタンスには推奨されません。 |
-| `URL`                                                 | ElasticsearchインスタンスのURL。コンマ区切りのリストを使用してクラスタリングをサポートします（例: `http://host1, https://host2:9200`）。Elasticsearchインスタンスがパスワードで保護されている場合は、`Username`フィールドと`Password`フィールドを使用します。または、`http://<username>:<password>@<elastic_host>:9200/`などのインライン認証情報を使用します。[OpenSearch](https://docs.aws.amazon.com/opensearch-service/latest/developerguide/vpc.html)を使用する場合、ポート`80`および`443`経由の接続のみが受け入れられます。 |
-| `Username`                                                 | Elasticsearchインスタンスの`username`。 |
-| `Password`                                                 | Elasticsearchインスタンスのパスワード。 |
-| `Number of Elasticsearch shards and replicas per index`    | Elasticsearchインデックスは、パフォーマンス上の理由から複数のシャードに分割されます。通常は、少なくとも5つのシャードを使用してください。数千万件のドキュメントを持つインデックスには、より多くのシャードが必要です（[ガイダンスを参照](#guidance-on-choosing-optimal-cluster-configuration)）。この値を変更しても、インデックスを再作成するまで有効になりません。スケーラビリティと回復性の詳細については、[Elasticsearchドキュメント](https://www.elastic.co/guide/en/elasticsearch/reference/current/scalability.html)を参照してください。各Elasticsearchシャードには、多数のレプリカを設定できます。これらのレプリカはシャードの完全なコピーであり、クエリのパフォーマンスを向上させたり、ハードウェア障害に対する回復性を高めたりできます。この値を大きくすると、インデックスに必要なディスク容量の合計が増加します。各インデックスのシャード数とレプリカ数を設定できます。 |
-| `Limit the amount of namespace and project data to index` | この設定を有効にすると、インデックスを作成するネームスペースとプロジェクトを指定できます。他のすべてのネームスペースとプロジェクトでは、代わりにデータベース検索が使用されます。この設定を有効にしたが、ネームスペースまたはプロジェクトを指定していない場合、プロジェクトレコードのみにインデックスが作成されます。詳細については、[インデックスを作成するネームスペースとプロジェクトデータの量を制限する](#limit-the-amount-of-namespace-and-project-data-to-index)を参照してください。 |
-| `Use AWS OpenSearch Service with IAM credentials` | [AWS IAM認証](https://docs.aws.amazon.com/IAM/latest/UserGuide/id_credentials_access-keys.html)、[AWS EC2インスタンスプロファイル認証情報](https://docs.aws.amazon.com/codedeploy/latest/userguide/getting-started-create-iam-instance-profile.html#getting-started-create-iam-instance-profile-cli)、または[AWS ECSタスク認証情報](https://docs.aws.amazon.com/AmazonECS/latest/userguide/task-iam-roles.html)を使用して、OpenSearchリクエストに署名します。AWSホスト型OpenSearchドメインアクセスポリシーの設定の詳細については、[Identity and Access Management in Amazon OpenSearch Service](https://docs.aws.amazon.com/opensearch-service/latest/developerguide/ac.html)を参照してください。 |
-| `AWS Region`                                          | OpenSearch Serviceが配置されているAWSリージョン。 |
-| `AWS Access Key`                                      | AWSアクセスキー。 |
-| `AWS Secret Access Key`                               | AWSシークレットアクセスキー。 |
-| `Maximum file size indexed`                           | [インスタンス制限の説明](../../administration/instance_limits.md#maximum-file-size-indexed)を参照してください。 |
-| `Maximum field length`                                | [インスタンス制限の説明](../../administration/instance_limits.md#maximum-field-length)を参照してください。 |
-| `Number of shards for non-code indexing` | Indexer作業者のシャード数。これにより、より多くの並列Sidekiqジョブをエンキューすることで、コード以外のインデックス作成のスループットが向上します。シャード数を増やすことは、小規模なインスタンスやSidekiqプロセスが少ないインスタンスには推奨されません。デフォルトは`2`です。 |
-| `Maximum bulk request size (MiB)` | GitLab RubyおよびGoベースのIndexerプロセスで使用されます。この設定は、ElasticsearcバルクAPIにペイロードを送信する前に、特定のインデックス作成プロセスで収集（およびメモリに保存）する必要があるデータ量を指定します。GitLab GoベースのIndexerの場合は、この設定を`Bulk request concurrency`とともに使用する必要があります。`Maximum bulk request size (MiB)`は、`gitlab-rake`コマンドまたはSidekiqタスクからGitLab GoベースのIndexerを実行しているホストとElasticsearchホストの両方のリソース制約に対応する必要があります。 |
-| `Bulk request concurrency`                            | Bulk request concurrencyは、データを収集してからElasticsearchバルクAPIに送信するために、並列実行できるGitLab GoベースのIndexerプロセス（またはスレッド）の数を示します。これにより、インデックス作成のパフォーマンスが向上しますが、Elasticsearchバルクリクエストキューがより速くいっぱいになります。この設定は、`Maximum bulk request size`設定と一緒に使用する必要があり、Elasticsearchホストと、`gitlab-rake`コマンドまたはSidekiqタスクからGitLab Goベースのインデクサーを実行するホストの両方のリソース制約に対応する必要があります。 |
-| `Client request timeout` | Elasticsearch HTTPクライアントリクエストのタイムアウト値（秒）。`0`は、システムのデフォルトタイムアウト値を使用することを意味し、この値は、GitLabアプリケーションの構築に使用されたライブラリによって異なります。 |
-| `Code indexing concurrency` | 同時に実行できるElasticsearchコードインデックス作成バックグラウンドジョブの最大数。これは、リポジトリのインデックス作成オペレーションにのみ適用されます。 |
-| `Retry on failure` | Elasticsearch検索リクエストで可能な最大再試行回数。GitLab 17.6で[導入](https://gitlab.com/gitlab-org/gitlab/-/issues/486935)されました。 |
-| `Index prefix` | Elasticsearchインデックス名のカスタムプレフィックス。デフォルトは`gitlab`です。変更すると、すべてのインデックスは、`gitlab`の代わりにこのプレフィックスを使用します（たとえば、`custom-production-issues`の代わりに`gitlab-production-issues`）。1～100文字で、小文字の英数字、ハイフン、アンダースコアのみを含める必要があり、ハイフンまたはアンダースコアで開始または終了することはできません。GitLab 18.2で[導入されました](https://gitlab.com/gitlab-org/gitlab/-/issues/3421)。 |
+| パラメータ                                                   | 説明 |
+|-------------------------------------------------------------|-------------|
+| **高度な検索のためのインデックス作成を有効にする**                    | インデックス作成をオンまたはオフにし、まだ存在しない場合は空のインデックスを作成します。たとえば、インデックスが完全に完了するまでの時間を確保するために、インデックス作成を有効にして検索を無効にすることができます。また、このオプションは、既存のデータには影響を与えないことに加えて、データ変更を追跡して、新しいデータにインデックスが作成されるようにするバックグラウンドインデクサーのみを有効/無効にすることに注意してください。 |
+| **高度な検索のためのインデックス作成を一時停止**                      | 高度な検索のインデックス作成を一時停止します。これは、クラスターの移行/インデックス再作成に役立ちます。すべての変更は引き続き追跡されますが、再開されるまでインデックスにはコミットされません。 |
+| **高度な検索で検索**をオンまたはオフにします。                             | 検索で高度な検索を使用するかどうかをオンまたはオフにします。 |
+| **インデックス作成ワーカーをキューに再度追加**                                | インデックス作成ワーカーの自動再キューイングを有効にします。これにより、すべてのドキュメントが処理されるまでSidekiqジョブをエンキューすることで、非コードインデックス作成のスループットが向上します。インデックス作成ワーカーの再キューイングは、より小型のインスタンスや、Sidekiqプロセスがほとんどないインスタンスには推奨されません。 |
+| **URL**                                                     | ElasticsearchインスタンスのURL。コンマ区切りのリストを使用してクラスタリングをサポートします（例: `http://host1, https://host2:9200`）。Elasticsearchインスタンスがパスワードで保護されている場合は、`Username`フィールドと`Password`フィールドを使用します。または、`http://<username>:<password>@<elastic_host>:9200/`などのインライン認証情報を使用します。[OpenSearch](https://docs.aws.amazon.com/opensearch-service/latest/developerguide/vpc.html)を使用する場合、ポート`80`および`443`経由の接続のみが受け入れられます。 |
+| **ユーザー名**                                                | Elasticsearchインスタンスの`username`。 |
+| **パスワード**                                                | Elasticsearchインスタンスのパスワード。 |
+| **Number of Elasticsearch shards and replicas per index**（Elasticsearchのシャード数とインデックスごとのレプリカ数）   | Elasticsearchインデックスは、パフォーマンス上の理由から複数のシャードに分割されます。通常は、少なくとも5つのシャードを使用してください。数千万件のドキュメントを持つインデックスには、より多くのシャードが必要です（[ガイダンスを参照](#guidance-on-choosing-optimal-cluster-configuration)）。この値を変更しても、インデックスを再作成するまで有効になりません。スケーラビリティと回復性の詳細については、[Elasticsearchドキュメント](https://www.elastic.co/guide/en/elasticsearch/reference/current/scalability.html)を参照してください。各Elasticsearchシャードには、多数のレプリカを設定できます。これらのレプリカはシャードの完全なコピーであり、クエリのパフォーマンスを向上させたり、ハードウェア障害に対する回復性を高めたりできます。この値を大きくすると、インデックスに必要なディスク容量の合計が増加します。各インデックスのシャード数とレプリカ数を設定できます。 |
+| **インデックスを作成するネームスペースとプロジェクトデータの量を制限する** | この設定を有効にすると、インデックスを作成するネームスペースとプロジェクトを指定できます。他のすべてのネームスペースとプロジェクトでは、代わりにデータベース検索が使用されます。この設定を有効にしたが、ネームスペースまたはプロジェクトを指定していない場合、プロジェクトレコードのみにインデックスが作成されます。詳細については、[インデックスを作成するネームスペースとプロジェクトデータの量を制限する](#limit-the-amount-of-namespace-and-project-data-to-index)を参照してください。 |
+| **IAM認証情報でAWS OpenSearchを使用します**         | [AWS IAM認証](https://docs.aws.amazon.com/IAM/latest/UserGuide/id_credentials_access-keys.html) 、[AWS EC2インスタンスプロファイル認証情報](https://docs.aws.amazon.com/codedeploy/latest/userguide/getting-started-create-iam-instance-profile.html#getting-started-create-iam-instance-profile-cli) 、または[AWS ECSタスク認証情報](https://docs.aws.amazon.com/AmazonECS/latest/userguide/task-iam-roles.html)を使用して、OpenSearchリクエストに署名します。AWSホスト型OpenSearchドメインアクセスポリシーの設定の詳細については、[Identity and Access Management in Amazon OpenSearch Service](https://docs.aws.amazon.com/opensearch-service/latest/developerguide/ac.html)を参照してください。 |
+| **AWSリージョン**                                              | OpenSearch Serviceが配置されているAWSリージョン。 |
+| **AWSアクセスキー**                                          | AWSアクセスキー。 |
+| **AWSシークレットアクセスキー**                                   | AWSシークレットアクセスキー。 |
+| **Maximum file size indexed**（インデックスが作成されるファイルの最大サイズ）                               | [インスタンス制限の説明](../../administration/instance_limits.md#maximum-file-size-indexed)を参照してください。 |
+| **最大フィールド長**                                    | [インスタンス制限の説明](../../administration/instance_limits.md#maximum-field-length)を参照してください。 |
+| **非コードインデックス作成のシャード数**                  | インデックス作成ワーカーのシャード数。これにより、より多くの並列Sidekiqジョブをエンキューすることで、コード以外のインデックス作成のスループットが向上します。シャード数を増やすことは、小規模なインスタンスやSidekiqプロセスが少ないインスタンスには推奨されません。デフォルトは`2`です。 |
+| **最大一括リクエストサイズ (MiB)**                         | GitLab RubyおよびGoベースのインデクサープロセスで使用されます。この設定は、ElasticsearcバルクAPIにペイロードを送信する前に、特定のインデックス作成プロセスで収集（およびメモリに保存）する必要があるデータ量を指定します。GitLab Go言語ベースIndexerの場合、この設定を**バルクリクエストの並列実行**とともに使用する必要があります。**最大一括リクエストサイズ (MiB)**は、`gitlab-rake`コマンドまたはSidekiqタスクのいずれかから、ElasticsearchホストとGitLab Go言語ベースのIndexerを実行しているホストの両方のリソース制約に対応する必要があります。 |
+| **バルクリクエストの並列実行**                                | Bulk request concurrencyは、データを収集してからElasticsearchバルクAPIに送信するために、並列実行できるGitLab Goベースのインデクサープロセス（またはスレッド）の数を示します。これにより、インデックス作成のパフォーマンスが向上しますが、Elasticsearchバルクリクエストキューがより速くいっぱいになります。この設定は、**最大一括リクエストサイズ (MiB)**の設定とともに使用する必要があり、Elasticsearchホストと、`gitlab-rake`コマンドまたはSidekiqタスクからGo言語ベースのインデクサーを実行するホストの両方のリソース制約に対応する必要があります。 |
+| **クライアントリクエストのタイムアウト**                                  | Elasticsearch HTTPクライアントリクエストのタイムアウト値（秒）。`0`は、システムのデフォルトタイムアウト値を使用することを意味し、この値は、GitLabアプリケーションの構築に使用されたライブラリによって異なります。 |
+| **コードインデックスの並行処理**                               | 同時に実行できるElasticsearchコードインデックス作成バックグラウンドジョブの最大数。これは、リポジトリのインデックス作成オペレーションにのみ適用されます。 |
+| **失敗時に再試行**                                        | Elasticsearch検索リクエストで可能な最大再試行回数。GitLab 17.6で[導入](https://gitlab.com/gitlab-org/gitlab/-/issues/486935)されました。 |
+| **Index prefix**（インデックスのプレフィックス）                                            | Elasticsearchインデックス名のカスタムプレフィックス。デフォルトは`gitlab`です。変更すると、すべてのインデックスは、`gitlab`の代わりにこのプレフィックスを使用します（たとえば、`custom-production-issues`の代わりに`gitlab-production-issues`）。1～100文字で、小文字の英数字、ハイフン、アンダースコアのみを含める必要があり、ハイフンまたはアンダースコアで開始または終了することはできません。GitLab 18.2で[導入](https://gitlab.com/gitlab-org/gitlab/-/issues/3421)されました。 |
 
 {{< alert type="warning" >}}
 
-`Maximum bulk request size (MiB)`と`Bulk request concurrency`の値を大きくすると、Sidekiqのパフォーマンスに悪影響を与える可能性があります。Sidekiqログで`scheduling_latency_s`の時間が増加している場合は、デフォルト値に戻してください。詳細については、[イシュー322147](https://gitlab.com/gitlab-org/gitlab/-/issues/322147)を参照してください。
+**最大一括リクエストサイズ (MiB)**と**バルクリクエストの並列実行**の値を大きくすると、Sidekiqのパフォーマンスに悪影響を与える可能性があります。Sidekiqログで`scheduling_latency_s`の時間が増加している場合は、デフォルト値に戻してください。詳細については、[イシュー322147](https://gitlab.com/gitlab-org/gitlab/-/issues/322147)を参照してください。
 
 {{< /alert >}}
 
@@ -546,7 +546,7 @@ GitLabで高度な検索による検索を有効にするには:
 
 **インデックスを作成するネームスペースとプロジェクトデータの量を制限する**チェックボックスをオンにすると、インデックスを作成するネームスペースとプロジェクトを指定できます。ネームスペースがグループの場合、それらのサブグループ内のサブグループとプロジェクトにもインデックスが作成されます。
 
-この設定を有効にすると、次のようになります。
+この設定を有効にすると、次のようになります:
 
 - 完全なインデックス作成を行うには、ネームスペースまたはプロジェクトを指定する必要があります。
 - プロジェクトレコード（プロジェクト名や説明などのメタデータ）は、常にすべてのプロジェクトに対してインデックスが作成されます。
@@ -569,7 +569,7 @@ GitLabで高度な検索による検索を有効にするには:
 
 {{< /history >}}
 
-すべてのネームスペースにインデックスを作成すると、グローバルコードおよびコミット検索で高度な検索を使用できます。一部のネームスペースのみにインデックスを作成する場合:
+すべてのネームスペースにインデックスを作成すると、グローバルコードおよびコミット検索で高度な検索を使用できます。一部のネームスペースのみにインデックスを作成する場合: 
 
 - グローバル検索には、コードまたはコミット検索のスコープは含まれません。
 - コードおよびコミット検索は、インデックスが作成された単一のネームスペースでのみ使用できます。
@@ -580,33 +580,33 @@ GitLabで高度な検索による検索を有効にするには:
 
 制限付きのインデックス作成でグローバル検索を有効にするには: 
 
-1. 左側のサイドバーの下部で、**管理者**を選択します。
-1. **設定 > 検索**を選択します。
+1. 左側のサイドバーの下部で、**管理者**を選択します。[新しいナビゲーションをオン](../../user/interface_redesign.md#turn-new-navigation-on-or-off)にしている場合は、右上隅でアバターを選択し、次に**管理者**を選択します。
+1. **設定** > **検索**を選択します。
 1. **高度な検索**を展開します。
-1. **制限付きのインデックス作成でグローバル検索を有効にする**を選択します。
+1. **Enable global search for limited indexing**（制限付きのインデックス作成でグローバル検索を有効にする）を選択します。
 1. **変更を保存**を選択します。
 1. すでにインスタンスにインデックスを作成している場合は、[再度インスタンスにインデックスを作成](#index-the-instance)する必要があります。これにより、既存の検索データが削除され、フィルタリングが正しく機能するようになります。
 
 ## カスタム言語アナライザーを有効にする {#enable-custom-language-analyzers}
 
-前提要件: 
+前提要件:
 
 - インスタンスへの管理者アクセス権が必要です。
 
 Elasticの[`smartcn`](https://www.elastic.co/guide/en/elasticsearch/plugins/current/analysis-smartcn.html)および[`kuromoji`](https://www.elastic.co/guide/en/elasticsearch/plugins/current/analysis-kuromoji.html)分析プラグインを使用すると、中国語と日本語の言語サポートを改善できます。
 
-カスタム言語アナライザーを有効にするには、次の手順に従います。
+カスタム言語アナライザーを有効にするには、次の手順に従います:
 
 1. 必要なプラグインをインストールします。プラグインのインストール手順については、[Elasticsearchドキュメント](https://www.elastic.co/guide/en/elasticsearch/plugins/7.9/installation.html)を参照してください。プラグインはクラスター内のすべてのノードにインストールする必要があり、インストール後に各ノードを再起動する必要があります。プラグインのリストについては、このセクションの以下のテーブルを参照してください。
-1. 左側のサイドバーの下部で、**管理者**を選択します。
-1. **設定 > 検索**を選択します。
-1. **カスタムアナライザー: 言語サポート**を見つけます。
-1. **インデックス作成**のプラグインサポートを有効にします。
+1. 左側のサイドバーの下部で、**管理者**を選択します。[新しいナビゲーションをオン](../../user/interface_redesign.md#turn-new-navigation-on-or-off)にしている場合は、右上隅でアバターを選択し、次に**管理者**を選択します。
+1. **設定** > **検索**を選択します。
+1. **カスタムアナライザ: 言語サポート**を見つけます。
+1. **Indexing**（インデックス作成）のプラグインサポートを有効にします。
 1. **変更を保存**を選択して、変更を反映させます。
-1. [ゼロダウンタイム インデックス再作成](#zero-downtime-reindexing)をトリガーするか、最初からすべてにインデックスを再作成して、更新されたマッピングで新しいインデックスを作成します。
-1. 前のステップが完了したら、**検索**のプラグインサポートを有効にします。
+1. [ゼロダウンタイムインデックス再作成](#zero-downtime-reindexing)をトリガーするか、最初からすべてにインデックスを再作成して、更新されたマッピングで新しいインデックスを作成します。
+1. 前のステップが完了したら、**検索中**のプラグインサポートを有効にします。
 
-何をインストールするかに関するガイダンスについては、次のElasticsearch言語プラグインオプションを参照してください。
+何をインストールするかに関するガイダンスについては、次のElasticsearch言語プラグインオプションを参照してください:
 
 | パラメータ                                             | 説明 |
 |-------------------------------------------------------|-------------|
@@ -617,17 +617,17 @@ Elasticの[`smartcn`](https://www.elastic.co/guide/en/elasticsearch/plugins/curr
 
 ## 高度な検索を無効にする {#disable-advanced-search}
 
-前提要件: 
+前提要件:
 
 - インスタンスへの管理者アクセス権が必要です。
 
-GitLabで高度な検索を無効にするには、次の手順に従います。
+GitLabで高度な検索を無効にするには、次の手順に従います:
 
-1. 左側のサイドバーの下部で、**管理者**を選択します。
-1. **設定 > 検索**を選択します。
-1. **Elasticsearchのインデックス作成**チェックボックスと**Elasticsearch検索を有効にする**チェックボックスをオフにします。
+1. 左側のサイドバーの下部で、**管理者**を選択します。[新しいナビゲーションをオン](../../user/interface_redesign.md#turn-new-navigation-on-or-off)にしている場合は、右上隅でアバターを選択し、次に**管理者**を選択します。
+1. **設定** > **検索**を選択します。
+1. **高度な検索のためのインデックス作成を有効にする**チェックボックスと**高度な検索で検索**チェックボックスをオフにします。
 1. **変更を保存**を選択します。
-1. オプション: 引き続きオンラインになっているElasticsearchインスタンスの場合は、既存のインデックスを削除します。
+1. オプション。引き続きオンラインになっているElasticsearchインスタンスの場合は、既存のインデックスを削除します:
 
    ```shell
    # For installations that use the Linux package
@@ -639,65 +639,65 @@ GitLabで高度な検索を無効にするには、次の手順に従います�
 
 ### 高度な検索による検索を無効にする {#disable-search-with-advanced-search}
 
-前提要件: 
+前提要件:
 
 - インスタンスへの管理者アクセス権が必要です。
 
 GitLabで高度な検索による検索を無効にするには: 
 
-1. 左側のサイドバーの下部で、**管理者**を選択します。
-1. **設定 > 検索**を選択します。
-1. **Elasticsearch検索を有効にする**チェックボックスをオフにします。
+1. 左側のサイドバーの下部で、**管理者**を選択します。[新しいナビゲーションをオン](../../user/interface_redesign.md#turn-new-navigation-on-or-off)にしている場合は、右上隅でアバターを選択し、次に**管理者**を選択します。
+1. **設定** > **検索**を選択します。
+1. **高度な検索で検索**チェックボックスをオフにします。
 1. **変更を保存**を選択します。
 
 ## インデックス作成の一時停止 {#pause-indexing}
 
-前提要件: 
+前提要件:
 
 - インスタンスへの管理者アクセス権が必要です。
 
 インデックス作成を一時停止するには: 
 
-1. 左側のサイドバーの下部で、**管理者**を選択します。
-1. **設定 > 検索**を選択します。
+1. 左側のサイドバーの下部で、**管理者**を選択します。[新しいナビゲーションをオン](../../user/interface_redesign.md#turn-new-navigation-on-or-off)にしている場合は、右上隅でアバターを選択し、次に**管理者**を選択します。
+1. **設定** > **検索**を選択します。
 1. **高度な検索**を展開します。
-1. **Elasticsearchのインデックス作成を一時停止する**チェックボックスを選択します。
+1. **高度な検索のためのインデックス作成を一時停止**チェックボックスを選択します。
 1. **変更を保存**を選択します。
 
 ## インデックス作成を再開する {#resume-indexing}
 
-前提要件: 
+前提要件:
 
 - インスタンスへの管理者アクセス権が必要です。
 
-Indexerの作成を再開するには、次の手順に従います。
+インデックス作成を再開するには、次の手順に従います:
 
-1. 左側のサイドバーの下部で、**管理者**を選択します。
-1. **設定 > 検索**を選択します。
+1. 左側のサイドバーの下部で、**管理者**を選択します。[新しいナビゲーションをオン](../../user/interface_redesign.md#turn-new-navigation-on-or-off)にしている場合は、右上隅でアバターを選択し、次に**管理者**を選択します。
+1. **設定** > **検索**を選択します。
 1. **高度な検索**を展開します。
-1. **Elasticsearchのインデックス作成を停止**チェックボックスをオフにします。
+1. **高度な検索のためのインデックス作成を一時停止**チェックボックスをオフにします。
 1. **変更を保存**を選択します。
 
 ## ゼロダウンタイムインデックス再作成 {#zero-downtime-reindexing}
 
-このインデックス再作成方法の背後にある考え方は、[Elasticsearchインデックス再作成API](https://www.elastic.co/guide/en/elasticsearch/reference/current/docs-reindex.html)とElasticsearchインデックスエイリアス機能を活用して操作を実行することです。GitLabが読み取り/書き込みに使用する`primary`Indexerに接続するインデックスエイリアスを設定します。インデックス再作成プロセスが開始されると、`primary`Indexerへの書き込みを一時停止します。次に、別のインデックスを作成し、インデックスデータを新しいインデックスに移行するインデックス再作成APIを実行する。インデックス再作成ジョブが完了したら、インデックスエイリアスを新しいインデックス（新しい`primary`Indexerになる）に接続することで、新しいインデックスに切り替えます。最後に、コミットを再開すると、一般的なオペレーションが再開されます。
+このインデックス再作成方法の背後にある考え方は、[Elasticsearch再インデックスAPI](https://www.elastic.co/guide/en/elasticsearch/reference/current/docs-reindex.html)とElasticsearchインデックスエイリアス機能を活用して操作を実行することです。インデックスエイリアスは、GitLabが読み取りと書き込みに使用する`primary`インデックスに接続します。インデックス作成プロセスが開始されると、`primary`インデックスへの書き込みが一時停止されます。次に、別のインデックスが作成され、Reindex APIが実行されて、インデックスデータが新しいインデックスに移行されます。インデックス作成ジョブが完了すると、インデックスエイリアスが新しいインデックスに切り替わり、新しい`primary`インデックスになります。最後に、書き込みが再開され、通常の操作が継続されます。
 
 ### ゼロダウンタイムインデックス再作成を使用する {#using-zero-downtime-reindexing}
 
-ゼロダウンタイムIndexerの再作成を使用して、新しいインデックスを作成して既存のデータをコピーしないと変更できないインデックス設定またはマッピングを設定できます。欠損データを修正するために、ゼロダウンタイムIndexer再作成を使用しないでください。データにまだインデックスが作成されていない場合、ゼロダウンタイムIndexerの再作成では、検索クラスタにデータは追加されません。インデックス再作成を開始する前に、すべての[高度な検索の移行](#advanced-search-migrations)を完了する必要があります。
+ゼロダウンタイムインデックス再作成を使用して、新しいインデックスを作成して既存のデータをコピーしないと変更できないインデックス設定またはマッピングを設定できます。欠損データを修正するために、ゼロダウンタイムインデックス再作成を使用しないでください。データにまだインデックスが作成されていない場合、ゼロダウンタイムインデックス再作成では、検索クラスタにデータは追加されません。インデックス再作成を開始する前に、すべての[高度な検索の移行](#advanced-search-migrations)を完了する必要があります。
 
 ### インデックス再作成をトリガーする {#trigger-reindexing}
 
-前提要件: 
+前提要件:
 
 - インスタンスへの管理者アクセス権が必要です。
 
-インデックス再作成をトリガーするには、次の手順に従います。
+インデックス再作成をトリガーするには、次の手順に従います:
 
 1. 管理者としてGitLabインスタンスにサインインします。
-1. 左側のサイドバーの下部で、**管理者**を選択します。
-1. **設定 > 検索**を選択します。
-1. **Elasticsearchのゼロダウンタイム インデックス再作成**を展開します。
+1. 左側のサイドバーの下部で、**管理者**を選択します。[新しいナビゲーションをオン](../../user/interface_redesign.md#turn-new-navigation-on-or-off)にしている場合は、右上隅でアバターを選択し、次に**管理者**を選択します。
+1. **設定** > **検索**を選択します。
+1. **高度検索のゼロダウンタイムインデックス再作成**を展開します。
 1. **クラスターのインデックス再作成をトリガー**を選択します。
 
 インデックス再作成は、Elasticsearchクラスターのサイズによっては、時間がかかるプロセスになる可能性があります。
@@ -706,17 +706,17 @@ Indexerの作成を再開するには、次の手順に従います。
 
 インデックス再作成の実行中に、その同じセクションで進捗を確認できます。
 
-#### ゼロダウンタイム インデックス再作成をトリガーする {#trigger-zero-downtime-reindexing}
+#### ゼロダウンタイムインデックス再作成をトリガーする {#trigger-zero-downtime-reindexing}
 
-前提要件: 
+前提要件:
 
 - インスタンスへの管理者アクセス権が必要です。
 
-ゼロダウンタイム インデックス再作成をトリガーするには、次の手順に従います。
+ゼロダウンタイムインデックス再作成をトリガーするには、次の手順に従います:
 
-1. 左側のサイドバーの下部で、**管理者**を選択します。
-1. **設定 > 検索**を選択します。
-1. **Elasticsearchのゼロダウンタイム インデックス再作成**を展開します。次の設定を使用できます。
+1. 左側のサイドバーの下部で、**管理者**を選択します。[新しいナビゲーションをオン](../../user/interface_redesign.md#turn-new-navigation-on-or-off)にしている場合は、右上隅でアバターを選択し、次に**管理者**を選択します。
+1. **設定** > **検索**を選択します。
+1. **高度検索のゼロダウンタイムインデックス再作成**を展開します。次の設定を使用できます:
 
    - [スライス乗算](#slice-multiplier)
    - [最大実行スライス数](#maximum-running-slices)
@@ -731,7 +731,7 @@ GitLabでは、[手動スライス](https://www.elastic.co/guide/en/elasticsearc
 
 ##### 最大実行スライス数 {#maximum-running-slices}
 
-最大実行スライス数のパラメーターのデフォルトは`60`で、Elasticsearchのインデックス再作成中に同時に実行できるスライスの最大数に相当します。
+最大実行スライス数のパラメータのデフォルトは`60`で、Elasticsearchのインデックス再作成中に同時に実行できるスライスの最大数に相当します。
 
 この値の設定を高くしすぎると、クラスターが検索と書き込みで過度に飽和状態になる場合があるため、パフォーマンスに悪影響を及ぼす可能性があります。この値を低く設定しすぎると、インデックス再作成プロセスの完了に非常に長い時間がかかる可能性があります。
 
@@ -739,13 +739,13 @@ GitLabでは、[手動スライス](https://www.elastic.co/guide/en/elasticsearc
 
 ### 最新のインデックス再作成ジョブを失敗としてマークし、インデックス作成を再開する {#mark-the-most-recent-reindexing-job-as-failed-and-resume-indexing}
 
-前提要件: 
+前提要件:
 
 - インスタンスへの管理者アクセス権が必要です。
 
-未完了のインデックス再作成ジョブを破棄し、インデックス作成を再開するには、次の手順に従います。
+未完了のインデックス再作成ジョブを破棄し、インデックス作成を再開するには、次の手順に従います:
 
-1. 最新のインデックス再作成ジョブを失敗としてマークします。
+1. 最新のインデックス再作成ジョブを失敗としてマークします:
 
    ```shell
    # For installations that use the Linux package
@@ -755,10 +755,10 @@ GitLabでは、[手動スライス](https://www.elastic.co/guide/en/elasticsearc
    bundle exec rake gitlab:elastic:mark_reindex_failed RAILS_ENV=production
    ```
 
-1. 左側のサイドバーの下部で、**管理者**を選択します。
-1. **設定 > 検索**を選択します。
+1. 左側のサイドバーの下部で、**管理者**を選択します。[新しいナビゲーションをオン](../../user/interface_redesign.md#turn-new-navigation-on-or-off)にしている場合は、右上隅でアバターを選択し、次に**管理者**を選択します。
+1. **設定** > **検索**を選択します。
 1. **高度な検索**を展開します。
-1. **Elasticsearchのインデックス作成を停止**チェックボックスをオフにします。
+1. **高度な検索のためのインデックス作成を一時停止**チェックボックスをオフにします。
 
 ## インデックスの整合性 {#index-integrity}
 
@@ -775,7 +775,7 @@ GitLabでは、[手動スライス](https://www.elastic.co/guide/en/elasticsearc
 
 移行のインデックス再作成はバックグラウンドで実行されるため、再度インスタンスに手動でインデックスを作成する必要はありません。
 
-[GitLab 18.0以降](https://gitlab.com/gitlab-org/gitlab/-/issues/352424)では、`elastic_migration_worker_enabled`アプリケーションを使用して、移行作業者を有効または無効にできます。デフォルトでは、移行作業者が有効になっています。
+[GitLab 18.0以降](https://gitlab.com/gitlab-org/gitlab/-/issues/352424)では、`elastic_migration_worker_enabled`アプリケーションを使用して、移行ワーカーを有効または無効にできます。デフォルトでは、移行ワーカーが有効になっています。
 
 ### 移行ディクショナリファイル {#migration-dictionary-files}
 
@@ -785,7 +785,7 @@ GitLabでは、[手動スライス](https://www.elastic.co/guide/en/elasticsearc
 
 {{< /history >}}
 
-すべての移行では、`ee/elastic/docs/`フォルダーに対応するディクショナリファイルがあり、次の情報が含まれています。
+すべての移行では、`ee/elastic/docs/`フォルダーに対応するディクショナリファイルがあり、次の情報が含まれています:
 
 ```yaml
 name:
@@ -803,13 +803,13 @@ marked_obsolete_in_milestone:
 
 ### 保留中の移行を確認する {#check-for-pending-migrations}
 
-高度な検索の保留中の移行を確認するには、次のコマンドを実行します。
+高度な検索の保留中の移行を確認するには、次のコマンドを実行します:
 
 ```shell
 curl "$CLUSTER_URL/gitlab-production-migrations/_search?size=100&q=*" | jq .
 ```
 
-このコマンドは、次のような結果を返すはずです。
+このコマンドは、次のような結果を返すはずです:
 
 ```json
 {
@@ -850,12 +850,12 @@ curl "$CLUSTER_URL/gitlab-production-migrations/_search?size=100&q=*" | jq .
 
 移行を再試行する前に、[`elasticsearch.log`ファイル](../../administration/logs/_index.md#elasticsearchlog)を確認して、移行が停止した理由をデバッグし、変更を加えることをお勧めします。
 
-失敗の原因を修正できたと考えられる場合は、次の手順を実行してください。
+失敗の原因を修正できたと考えられる場合は、次の手順を実行してください:
 
-1. 左側のサイドバーの下部で、**管理者**を選択します。
-1. **設定 > 検索**を選択します。
+1. 左側のサイドバーの下部で、**管理者**を選択します。[新しいナビゲーションをオン](../../user/interface_redesign.md#turn-new-navigation-on-or-off)にしている場合は、右上隅でアバターを選択し、次に**管理者**を選択します。
+1. **設定** > **検索**を選択します。
 1. **高度な検索**を展開します。
-1. **Elasticsearchの移行が停止しました**アラートボックス内で、**移行を再試行します**を選択します。移行は、バックグラウンドで再試行されるようにスケジュールされます。
+1. **Elasticsearch migration halted**（Elasticsearchの移行が停止しました）アラートボックス内で、**移行を再試行します**を選択します。移行は、バックグラウンドで再試行されるようにスケジュールされます。
 
 移行が成功しない場合は、[インデックスをゼロから再作成するという最後の手段](../elasticsearch/troubleshooting/indexing.md#last-resort-to-recreate-an-index)を検討してください。この手段では、新しく作成されたインデックスがすべての移行をスキップするため、問題をスキップできる場合があります。その理由は、正しい最新のスキーマでインデックスが再作成されたからです。
 
@@ -873,44 +873,46 @@ GitLabのメジャーバージョンにアップグレードする前に、そ�
 
 ## GitLabの高度な検索のRakeタスク {#gitlab-advanced-search-rake-tasks}
 
-Rakeタスクは、次の操作を行うために使用できます。
+Rakeタスクは、次の操作を行うために使用できます:
 
 - インデクサーを[ビルドしてインストール](#build-and-install)する。
 - [Elasticsearchを無効](#disable-advanced-search)にするときにインデックスを削除する。
 - GitLabデータをインデックスに追加する。
 
-使用可能なRakeタスクを次に示します。
+使用可能なRakeタスクを次に示します:
 
-| タスク                                                                                                                                                    | 説明                                                                                                                                                                               |
-|:--------------------------------------------------------------------------------------------------------------------------------------------------------|:------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| [`sudo gitlab-rake gitlab:elastic:info`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/lib/tasks/gitlab/elastic.rake)                            | 高度な検索インテグレーションのデバッグ情報を出力します。 |
-| [`sudo gitlab-rake gitlab:elastic:index`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/lib/tasks/gitlab/elastic.rake)                            | GitLab 17.0以前では、Elasticsearchのインデックス作成を有効にし、`gitlab:elastic:recreate_index`、`gitlab:elastic:clear_index_status`、`gitlab:elastic:index_group_entities`、`gitlab:elastic:index_projects`、`gitlab:elastic:index_snippets`、`gitlab:elastic:index_users`を実行します。<br>GitLab 17.1以降では、バックグラウンドでSidekiqジョブをキューに入れます。最初に、このジョブはElasticsearchのインデックス作成を有効にし、インデックス作成を一時停止して、すべてのインデックスが作成されるようにします。次に、ジョブはすべてのインデックスを再作成し、インデックス作成状態をクリアし、追加のSidekiqジョブをキューに入れ、プロジェクトデータ、グループデータ、スニペット、ユーザーにインデックスを作成します。最後に、Elasticsearchのインデックス作成が再開されて完了します。GitLab 17.1で`elastic_index_use_trigger_indexing`[フラグ](../../administration/feature_flags/_index.md)とともに[導入](https://gitlab.com/gitlab-org/gitlab/-/issues/421298)されました。デフォルトでは有効になっています。GitLab 17.3で[一般提供](https://gitlab.com/gitlab-org/gitlab/-/issues/434580)になりました。機能フラグ`elastic_index_use_trigger_indexing`は削除されました。 |
-| [`sudo gitlab-rake gitlab:elastic:pause_indexing`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/lib/tasks/gitlab/elastic.rake)                            | Elasticsearchのインデックス作成を一時停止します。変更は引き続き追跡されます。クラスター/インデックスの移行に役立ちます。 |
-| [`sudo gitlab-rake gitlab:elastic:resume_indexing`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/lib/tasks/gitlab/elastic.rake)                            | Elasticsearchのインデックス作成を再開します。 |
-| [`sudo gitlab-rake gitlab:elastic:index_and_search_validation`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/lib/tasks/gitlab/elastic.rake) | すべてのインデックスに対して、クラスター接続、インデックス、および検索操作を検証します。GitLab 18.3で[導入](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/200664)されました。 |
-| [`sudo gitlab-rake gitlab:elastic:index_projects`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/lib/tasks/gitlab/elastic.rake)                   | すべてのプロジェクトでイテレーションを行い、Sidekiqジョブをキューに入れて、バックグラウンドでそれらのジョブにインデックスを作成します。インデックスが作成された後にのみ使用できます。                                                                                                      |
-| [`sudo gitlab-rake gitlab:elastic:index_group_entities`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/lib/tasks/gitlab/elastic.rake)                | `gitlab:elastic:index_epics`と`gitlab:elastic:index_group_wikis`を実行します。 |
-| [`sudo gitlab-rake gitlab:elastic:index_epics`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/lib/tasks/gitlab/elastic.rake)                         | Elasticsearchが有効になっているグループのすべてのエピックにインデックスを作成します。 |
-| [`sudo gitlab-rake gitlab:elastic:index_group_wikis`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/lib/tasks/gitlab/elastic.rake)                   | Elasticsearchが有効になっているグループのすべてのWikiにインデックスを作成します。 |
-| [`sudo gitlab-rake gitlab:elastic:index_projects_status`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/lib/tasks/gitlab/elastic.rake)            | すべてのプロジェクトリポジトリデータ（コード、コミット、Wiki）の全体的なインデックス作成状態を判定します。この状態は、インデックスが作成されたプロジェクトの数をプロジェクトの総数で割ってから、100を掛けて計算されます。このタスクには、イシュー、マージリクエスト、マイルストーンなど、リポジトリ以外のデータは含まれていません。 |
-| [`sudo gitlab-rake gitlab:elastic:clear_index_status`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/lib/tasks/gitlab/elastic.rake)               | すべてのプロジェクトについて、IndexStatusのすべてのインスタンスを削除します。このコマンドを実行すると、インデックスが完全に消去されるため、注意して使用する必要があります。                                                                                              |
-| [`sudo gitlab-rake gitlab:elastic:create_empty_index`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/lib/tasks/gitlab/elastic.rake) | 空のインデックス（デフォルトインデックスと個別のイシューインデックス）を生成し、Elasticsearch側で各インデックスにエイリアスを割り当てます（まだ存在しない場合にのみ）。                                                                                                      |
-| [`sudo gitlab-rake gitlab:elastic:delete_index`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/lib/tasks/gitlab/elastic.rake)       | Elasticsearchインスタンス上のGitLabインデックスとエイリアスを削除します（存在する場合）。                                                                                                                                   |
-| [`sudo gitlab-rake gitlab:elastic:recreate_index`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/lib/tasks/gitlab/elastic.rake)     | `gitlab:elastic:delete_index`と`gitlab:elastic:create_empty_index`のラッパータスク。ジョブのはキューに入れません。                                                                       |
-| [`sudo gitlab-rake gitlab:elastic:index_snippets`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/lib/tasks/gitlab/elastic.rake)                   | スニペットデータにインデックスを作成するElasticsearchインポートを実行します。                                                                                                                          |
-| [`sudo gitlab-rake gitlab:elastic:index_users`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/lib/tasks/gitlab/elastic.rake)                   | すべてのユーザーをElasticsearchにインポートします。                                                                                                                 |
-| [`sudo gitlab-rake gitlab:elastic:projects_not_indexed`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/lib/tasks/gitlab/elastic.rake)             | リポジトリデータにインデックスが作成されていないプロジェクトを表示します。このタスクには、イシュー、マージリクエスト、マイルストーンなど、リポジトリ以外のデータは含まれていません。                                                                                                                                    |
-| [`sudo gitlab-rake gitlab:elastic:reindex_cluster`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/lib/tasks/gitlab/elastic.rake)                  | ゼロダウンタイムのクラスターインデックス再作成タスクをスケジュールします。 |
-| [`sudo gitlab-rake gitlab:elastic:mark_reindex_failed`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/lib/tasks/gitlab/elastic.rake)              | 最新のインデックス再作成ジョブを失敗としてマークします。 |
-| [`sudo gitlab-rake gitlab:elastic:list_pending_migrations`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/lib/tasks/gitlab/elastic.rake)          | 保留中の移行をリストします。保留中の移行には、まだ開始されていない移行、開始されたが完了していない移行、および停止している移行が含まれます。 |
-| [`sudo gitlab-rake gitlab:elastic:estimate_cluster_size`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/lib/tasks/gitlab/elastic.rake)            | コードとWikiのインデックスサイズおよび合計リポジトリサイズに基づいて合計サイズの見積もりを取得します。 |
-| [`sudo gitlab-rake gitlab:elastic:estimate_shard_sizes`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/lib/tasks/gitlab/elastic.rake)            | おおよそのデータベースカウントに基づいて、各インデックスのシャードサイズの見積もりを取得します。この見積もりには、リポジトリデータ（コード、コミット、Wiki）は含まれていません。GitLab 16.11で[導入](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/146108)されました。 |
-| [`sudo gitlab-rake gitlab:elastic:enable_search_with_elasticsearch`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/lib/tasks/gitlab/elastic.rake)            | Elasticsearchで高度な検索を有効にします。 |
-| [`sudo gitlab-rake gitlab:elastic:disable_search_with_elasticsearch`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/lib/tasks/gitlab/elastic.rake)            | Elasticsearchで高度な検索を無効にします。 |
+| タスク                                                                                                                                                       | 説明 |
+|:-----------------------------------------------------------------------------------------------------------------------------------------------------------|:------------|
+| [`sudo gitlab-rake gitlab:elastic:info`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/lib/tasks/gitlab/elastic.rake)                              | 高度な検索インテグレーションのデバッグ情報を出力します。 |
+| [`sudo gitlab-rake gitlab:elastic:index`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/lib/tasks/gitlab/elastic.rake)                             | GitLab 17.0以前では、高度な検索のインデックス作成をオンにし、`gitlab:elastic:recreate_index`、`gitlab:elastic:clear_index_status`、`gitlab:elastic:index_group_entities`、`gitlab:elastic:index_projects`、`gitlab:elastic:index_snippets`、および`gitlab:elastic:index_users`を実行します。<br>GitLab 17.1以降では、バックグラウンドでSidekiqジョブをキューに入れます。まず、ジョブは高度な検索のインデックス作成をオンにし、すべてのインデックスが作成されるようにインデックス作成を一時停止します。次に、ジョブはすべてのインデックスを再作成し、インデックス作成状態をクリアし、追加のSidekiqジョブをキューに入れ、プロジェクトデータ、グループデータ、スニペット、ユーザーにインデックスを作成します。最後に、高度な検索のインデックス作成が再開され、完了します。GitLab 17.1で`elastic_index_use_trigger_indexing`[フラグ](../../administration/feature_flags/_index.md)とともに[導入](https://gitlab.com/gitlab-org/gitlab/-/issues/421298)されました。デフォルトでは有効になっています。GitLab 17.3で[一般提供](https://gitlab.com/gitlab-org/gitlab/-/issues/434580)になりました。機能フラグ`elastic_index_use_trigger_indexing`は削除されました。 |
+| [`sudo gitlab-rake gitlab:elastic:pause_indexing`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/lib/tasks/gitlab/elastic.rake)                    | 高度な検索のインデックス作成を一時停止します。変更は引き続き追跡されます。クラスター/インデックスの移行に役立ちます。変更は引き続き追跡されます。クラスター/インデックスの移行に役立ちます。 |
+| [`sudo gitlab-rake gitlab:elastic:resume_indexing`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/lib/tasks/gitlab/elastic.rake)                   | 高度な検索のインデックス作成を再開します。 |
+| [`sudo gitlab-rake gitlab:elastic:index_and_search_validation`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/lib/tasks/gitlab/elastic.rake)       | すべてのインデックスに対して、クラスター接続、インデックス、および検索操作を検証します。GitLab 18.3で[導入](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/200664)されました。 |
+| [`sudo gitlab-rake gitlab:elastic:index_projects`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/lib/tasks/gitlab/elastic.rake)                    | すべてのプロジェクトでイテレーションを行い、Sidekiqジョブをキューに入れて、バックグラウンドでそれらのジョブにインデックスを作成します。インデックスが作成された後にのみ使用できます。 |
+| [`sudo gitlab-rake gitlab:elastic:index_group_entities`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/lib/tasks/gitlab/elastic.rake)              | `gitlab:elastic:index_work_items`と`gitlab:elastic:index_group_wikis`を実行します。 |
+| [`sudo gitlab-rake gitlab:elastic:index_work_items`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/lib/tasks/gitlab/elastic.rake)                   | Elasticsearchが有効になっているグループウィキのすべての作業アイテムにインデックス作成します。 |
+| [`sudo gitlab-rake gitlab:elastic:index_namespaces`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/lib/tasks/gitlab/elastic.rake)                   | すべてのルートネームスペースにインデックスを付けます。 |
+| [`sudo gitlab-rake gitlab:elastic:index_group_wikis`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/lib/tasks/gitlab/elastic.rake)                 | Elasticsearchが有効になっているグループのすべてのWikiにインデックスを作成します。 |
+| [`sudo gitlab-rake gitlab:elastic:index_snippets`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/lib/tasks/gitlab/elastic.rake)                    | スニペットデータにインデックスを作成するElasticsearchインポートを実行します。 |
+| [`sudo gitlab-rake gitlab:elastic:index_users`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/lib/tasks/gitlab/elastic.rake)                       | すべてのユーザーをElasticsearchにインポートします。 |
+| [`sudo gitlab-rake gitlab:elastic:index_vulnerabilities`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/lib/tasks/gitlab/elastic.rake)             | すべての脆弱性にインデックスを付けます。 |
+| [`sudo gitlab-rake gitlab:elastic:index_projects_status`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/lib/tasks/gitlab/elastic.rake)             | すべてのプロジェクトリポジトリデータ（コード、コミット、Wiki）の全体的なインデックス作成状態を判定します。この状態は、インデックスが作成されたプロジェクトの数をプロジェクトの総数で割ってから、100を掛けて計算されます。このタスクには、イシュー、マージリクエスト、マイルストーンなど、リポジトリ以外のデータは含まれていません。 |
+| [`sudo gitlab-rake gitlab:elastic:clear_index_status`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/lib/tasks/gitlab/elastic.rake)                | すべてのプロジェクトについて、IndexStatusのすべてのインスタンスを削除します。このコマンドを実行すると、インデックスが完全に消去されるため、注意して使用する必要があります。 |
+| [`sudo gitlab-rake gitlab:elastic:create_empty_index`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/lib/tasks/gitlab/elastic.rake)                | 空のインデックス（デフォルトインデックスと個別のイシューインデックス）を生成し、Elasticsearch側で各インデックスにエイリアスを割り当てます（まだ存在しない場合にのみ）。 |
+| [`sudo gitlab-rake gitlab:elastic:delete_index`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/lib/tasks/gitlab/elastic.rake)                      | Elasticsearchインスタンス上のGitLabインデックスとエイリアスを削除します（存在する場合）。 |
+| [`sudo gitlab-rake gitlab:elastic:recreate_index`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/lib/tasks/gitlab/elastic.rake)                    | `gitlab:elastic:delete_index`と`gitlab:elastic:create_empty_index`のラッパータスク。ジョブのはキューに入れません。 |
+| [`sudo gitlab-rake gitlab:elastic:projects_not_indexed`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/lib/tasks/gitlab/elastic.rake)              | リポジトリデータにインデックスが作成されていないプロジェクトを表示します。このタスクには、イシュー、マージリクエスト、マイルストーンなど、リポジトリ以外のデータは含まれていません。 |
+| [`sudo gitlab-rake gitlab:elastic:reindex_cluster`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/lib/tasks/gitlab/elastic.rake)                   | ゼロダウンタイムのクラスターインデックス再作成タスクをスケジュールします。 |
+| [`sudo gitlab-rake gitlab:elastic:mark_reindex_failed`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/lib/tasks/gitlab/elastic.rake)               | 最新のインデックス再作成ジョブを失敗としてマークします。 |
+| [`sudo gitlab-rake gitlab:elastic:list_pending_migrations`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/lib/tasks/gitlab/elastic.rake)           | 保留中の移行をリストします。保留中の移行には、まだ開始されていない移行、開始されたが完了していない移行、および停止している移行が含まれます。 |
+| [`sudo gitlab-rake gitlab:elastic:estimate_cluster_size`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/lib/tasks/gitlab/elastic.rake)             | コードとWikiのインデックスサイズおよび合計リポジトリサイズに基づいて合計サイズの見積もりを取得します。 |
+| [`sudo gitlab-rake gitlab:elastic:estimate_shard_sizes`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/lib/tasks/gitlab/elastic.rake)              | おおよそのデータベースカウントに基づいて、各インデックスのシャードサイズの見積もりを取得します。この見積もりには、リポジトリデータ（コード、コミット、Wiki）は含まれていません。GitLab 16.11で[導入](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/146108)されました。 |
+| [`sudo gitlab-rake gitlab:elastic:enable_search_with_elasticsearch`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/lib/tasks/gitlab/elastic.rake)  | Elasticsearchで高度な検索を有効にします。 |
+| [`sudo gitlab-rake gitlab:elastic:disable_search_with_elasticsearch`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/lib/tasks/gitlab/elastic.rake) | Elasticsearchで高度な検索を無効にします。 |
 
 ### 環境変数 {#environment-variables}
 
-Rakeタスクに加えて、プロセスを変更するために使用できるいくつかの環境変数があります。
+Rakeタスクに加えて、プロセスを変更するために使用できるいくつかの環境変数があります:
 
 | 環境変数 | データ型 | 機能                                                                 |
 | -------------------- |:---------:| ---------------------------------------------------------------------------- |
@@ -925,7 +927,7 @@ Rakeタスクに加えて、プロセスを変更するために使用できる�
 root@git:~# sudo gitlab-rake gitlab:elastic:index_projects ID_FROM=1 ID_TO=100
 ```
 
-`ID_FROM`と`ID_TO`は`or equal to`比較を使用するため、両方を同じプロジェクトIDに設定することで、これらの環境変数を使用して、1つのプロジェクトのみにインデックスを作成することができます。
+`ID_FROM`と`ID_TO`は`or equal to`比較を使用するため、両方を同じプロジェクトIDに設定することで、これらの環境変数を使用して、1つのプロジェクトのみにインデックスを作成することができます:
 
 ```shell
 root@git:~# sudo gitlab-rake gitlab:elastic:index_projects ID_FROM=5 ID_TO=5
@@ -935,7 +937,7 @@ I, [2019-03-04T21:27:05.215266 #3384]  INFO -- : Indexing GitLab User / test (ID
 
 ## 高度な検索のインデックススコープ {#advanced-search-index-scopes}
 
-検索を実行するときに、GitLabインデックスは次のスコープを使用します。
+検索を実行するときに、GitLabインデックスは次のスコープを使用します:
 
 | スコープ名       | 検索対象       |
 |------------------|------------------------|
@@ -963,9 +965,9 @@ GitLab.comとGitLab Dedicatedでは、検索以外の機能をサポートする
 - パフォーマンスに影響するため、検索クラスターでHDDストレージを使用することはお勧めしません。SSDストレージ（たとえば、NVMeまたはSATA SSDドライブ）を使用することをお勧めします。
 - 大規模なインスタンスでは、[調整専用ノード](https://www.elastic.co/guide/en/elasticsearch/reference/current/modules-node.html#coordinating-only-node)を使用しないでください。調整専用ノードは[データノード](https://www.elastic.co/guide/en/elasticsearch/reference/current/modules-node.html#data-node)よりも小さいため、パフォーマンスと[高度な検索の移行](#advanced-search-migrations)に影響を与える可能性があります。
 - [GitLab Performance Tool](https://gitlab.com/gitlab-org/quality/performance)を使用して、検索クラスターのさまざまなサイズと設定で検索パフォーマンスのベンチマーク評価を行うことができます。
-- `Heap size`は、物理RAMの50％以下に設定する必要があります。また、ゼロベース圧縮oopsのしきい値よりも大きく設定しないでください。厳密なしきい値は変化しますが、ほとんどのシステムでは26 GBが安全であり、一部のシステムでは30 GBになる可能性があります。詳細については、[ヒープサイズの設定](https://www.elastic.co/guide/en/elasticsearch/reference/current/important-settings.html#heap-size-settings)と[JVMオプションの設定](https://www.elastic.co/guide/en/elasticsearch/reference/current/jvm-options.html)を参照してください。
+- `Heap size`は、物理RAMの50%以下に設定する必要があります。また、ゼロベース圧縮oopsのしきい値よりも大きく設定しないでください。厳密なしきい値は変化しますが、ほとんどのシステムでは26 GBが安全であり、一部のシステムでは30 GBになる可能性があります。詳細については、[ヒープサイズの設定](https://www.elastic.co/guide/en/elasticsearch/reference/current/important-settings.html#heap-size-settings)と[JVMオプションの設定](https://www.elastic.co/guide/en/elasticsearch/reference/current/jvm-options.html)を参照してください。
 - `refresh_interval`はインデックスごとの設定です。リアルタイムでデータが必要ない場合は、デフォルトの`1s`からより大きな値に調整することをお勧めします。これにより、最新の結果がどれくらい速く表示されるかが変わります。リアルタイムであることが重要な場合は、できるだけデフォルト値に近い値のままにする必要があります。
-- ワークロードの高いインデックス作成オペレーションが多い場合は、[`indices.memory.index_buffer_size`](https://www.elastic.co/guide/en/elasticsearch/reference/current/indexing-buffer.html)を30％または40％に増やすことをお勧めします。
+- ワークロードの高いインデックス作成オペレーションが多い場合は、[`indices.memory.index_buffer_size`](https://www.elastic.co/guide/en/elasticsearch/reference/current/indexing-buffer.html)を30%または40%に増やすことをお勧めします。
 
 ### 高度な検索の設定 {#advanced-search-settings}
 
@@ -1002,7 +1004,7 @@ GitLab.comとGitLab Dedicatedでは、検索以外の機能をサポートする
 
 ### 大規模なインスタンスにインデックスを効率的に作成する {#index-large-instances-efficiently}
 
-前提要件: 
+前提要件:
 
 - インスタンスへの管理者アクセス権が必要です。
 
@@ -1012,10 +1014,10 @@ GitLab.comとGitLab Dedicatedでは、検索以外の機能をサポートする
 
 {{< /alert >}}
 
-[高度な検索を有効](#enable-advanced-search)にしたときに、インデックスが作成される大量のデータが原因で問題が発生する場合:
+[高度な検索を有効](#enable-advanced-search)にしたときに、インデックスが作成される大量のデータが原因で問題が発生する場合: 
 
 1. [Elasticsearchホストおよびポートを設定します](#enable-advanced-search)。
-1. 空のインデックスを作成します。
+1. 空のインデックスを作成します:
 
    ```shell
    # For installations that use the Linux package
@@ -1025,7 +1027,7 @@ GitLab.comとGitLab Dedicatedでは、検索以外の機能をサポートする
    bundle exec rake gitlab:elastic:create_empty_index RAILS_ENV=production
    ```
 
-1. これがGitLabインスタンスのインデックス再作成である場合は、インデックスの状態をクリアします。
+1. これがGitLabインスタンスのインデックス再作成である場合は、インデックスの状態をクリアします:
 
    ```shell
    # For installations that use the Linux package
@@ -1035,14 +1037,14 @@ GitLab.comとGitLab Dedicatedでは、検索以外の機能をサポートする
    bundle exec rake gitlab:elastic:clear_index_status RAILS_ENV=production
    ```
 
-1. [**Elasticsearchのインデックス作成**チェックボックスをオンにします](#enable-advanced-search)。
-1. 大規模なGitリポジトリにインデックスを作成するには、しばらく時間がかかることがあります。プロセスを高速化するために、[インデックス作成速度をチューニング](https://www.elastic.co/guide/en/elasticsearch/reference/current/tune-for-indexing-speed.html#tune-for-indexing-speed)できます。
+1. [高度な検索のインデックス作成をオンにするチェックボックスを**高度な検索のためのインデックス作成を有効にする**](#enable-advanced-search)。
+1. 大規模なGitリポジトリにインデックスを作成するには、しばらく時間がかかることがあります。プロセスを高速化するために、[インデックス作成速度をチューニング](https://www.elastic.co/guide/en/elasticsearch/reference/current/tune-for-indexing-speed.html#tune-for-indexing-speed)できます:
 
    - 一時的に[`refresh_interval`](https://www.elastic.co/guide/en/elasticsearch/reference/current/indices-refresh.html)を増やすことができます。
 
    - レプリカの数を0に設定できます。この設定は、インデックスの各プライマリシャードが持つコピーの数を制御します。したがって、レプリカを0にすると、ノード間のシャードのレプリケーションが効果的に無効になり、インデックス作成のパフォーマンスが向上します。これは、信頼性とクエリのパフォーマンスの点で重要なトレードオフになります。最初のインデックス作成が完了したら、レプリカを、考慮された値に設定することが重要です。
 
-   インデックス作成時間が20％短縮されることが予想されます。インデックス作成が完了したら、`refresh_interval`と`number_of_replicas`を目的の値に戻すことができます。
+   インデックス作成時間が20%短縮されることが予想されます。インデックス作成が完了したら、`refresh_interval`と`number_of_replicas`を目的の値に戻すことができます。
 
    {{< alert type="note" >}}
 
@@ -1059,7 +1061,7 @@ GitLab.comとGitLab Dedicatedでは、検索以外の機能をサポートする
           } }'
    ```
 
-1. プロジェクトとそれに関連付けられたデータにインデックスを作成します。
+1. プロジェクトとそれに関連付けられたデータにインデックスを作成します:
 
    ```shell
    # For installations that use the Linux package
@@ -1069,7 +1071,7 @@ GitLab.comとGitLab Dedicatedでは、検索以外の機能をサポートする
    bundle exec rake gitlab:elastic:index_projects RAILS_ENV=production
    ```
 
-   これにより、インデックスを作成する必要がある各プロジェクトに対してSidekiqジョブがエンキューされます。**管理者**エリアの**モニタリング > バックグラウンドジョブ > キュータブ**でジョブを表示し、`elastic_commit_indexer`を選択するか、Rakeタスクを使用してインデックス作成状態をクエリできます。
+   これにより、インデックスを作成する必要がある各プロジェクトに対してSidekiqジョブがエンキューされます。Rakeタスクでインデックス作成のステータスをクエリできます:
 
    ```shell
    # For installations that use the Linux package
@@ -1081,7 +1083,7 @@ GitLab.comとGitLab Dedicatedでは、検索以外の機能をサポートする
    Indexing is 65.55% complete (6555/10000 projects)
    ```
 
-   インデックスをプロジェクトの範囲に制限する場合は、`ID_FROM`パラメータと`ID_TO`パラメータを指定できます。
+   インデックスをプロジェクトの範囲に制限する場合は、`ID_FROM`パラメータと`ID_TO`パラメータを指定できます:
 
    ```shell
    # For installations that use the Linux package
@@ -1101,23 +1103,23 @@ GitLab.comとGitLab Dedicatedでは、検索以外の機能をサポートする
 
    また、`gitlab:elastic:clear_index_status` Rakeタスクを使用して、インデクサーにすべての進捗を「忘れ」させ、インデックス作成プロセスを最初から再試行させることもできます。
 
-1. エピック、グループWiki、パーソナルスニペット、ユーザーはプロジェクトに関連付けられていないため、個別にインデックスを作成する必要があります。
+1. 作業アイテム、グループウィキ、パーソナルスニペット、およびユーザーはプロジェクトに関連付けられていないため、個別にインデックス作成する必要があります:
 
    ```shell
    # For installations that use the Linux package
-   sudo gitlab-rake gitlab:elastic:index_epics
+   sudo gitlab-rake gitlab:elastic:index_work_items
    sudo gitlab-rake gitlab:elastic:index_group_wikis
    sudo gitlab-rake gitlab:elastic:index_snippets
    sudo gitlab-rake gitlab:elastic:index_users
 
    # For self-compiled installations
-   bundle exec rake gitlab:elastic:index_epics RAILS_ENV=production
+   bundle exec rake gitlab:elastic:index_work_items RAILS_ENV=production
    bundle exec rake gitlab:elastic:index_group_wikis RAILS_ENV=production
    bundle exec rake gitlab:elastic:index_snippets RAILS_ENV=production
    bundle exec rake gitlab:elastic:index_users RAILS_ENV=production
    ```
 
-1. インデックス作成後にレプリケーションと更新を再度有効にします（以前に`refresh_interval`を増やした場合のみ）。
+1. インデックス作成後にレプリケーションと更新を再度有効にします（以前に`refresh_interval`を増やした場合のみ）:
 
    ```shell
    curl --request PUT localhost:9200/gitlab-production/_settings --header 'Content-Type: application/json' \
@@ -1130,7 +1132,7 @@ GitLab.comとGitLab Dedicatedでは、検索以外の機能をサポートする
 
    更新を有効にした後、強制マージを呼び出す必要があります。
 
-   Elasticsearch 6.x以降では、強制マージを始める前に、インデックスが読み取り専用モードになっていることを確認してください。
+   Elasticsearch 6.x以降では、強制マージを始める前に、インデックスが読み取り専用モードになっていることを確認してください:
 
    ```shell
    curl --request PUT localhost:9200/gitlab-production/_settings --header 'Content-Type: application/json' \
@@ -1140,13 +1142,13 @@ GitLab.comとGitLab Dedicatedでは、検索以外の機能をサポートする
           } }'
    ```
 
-   その後、強制マージを開始します。
+   その後、強制マージを開始します:
 
    ```shell
    curl --request POST 'localhost:9200/gitlab-production/_forcemerge?max_num_segments=5'
    ```
 
-   次に、インデックスを読み取り/書き込みモードに戻します。
+   次に、インデックスを読み取り/書き込みモードに戻します:
 
    ```shell
    curl --request PUT localhost:9200/gitlab-production/_settings --header 'Content-Type: application/json' \
@@ -1156,19 +1158,19 @@ GitLab.comとGitLab Dedicatedでは、検索以外の機能をサポートする
           } }'
    ```
 
-1. インデックス作成が完了したら、[**Elasticsearch検索を有効にする**チェックボックスをオンにします](#enable-advanced-search)。
+1. インデックス作成が完了したら、[**高度な検索で検索**チェックボックスを切り替えます](#enable-advanced-search)。
 
 ### 削除されたドキュメント {#deleted-documents}
 
 インデックスが作成されたGitLabオブジェクトに変更や削除が加えられるたびに（マージリクエストの説明が変更された、ファイルがリポジトリのデフォルトブランチから削除された、プロジェクトが削除されたなど）、インデックス内のドキュメントが削除されます。ただし、これらは「ソフト」削除であるため、「削除されたドキュメント」の全体的な数、つまり無駄なスペースが増加します。
 
-Elasticsearchは、セグメントのインテリジェントなマージを実行して、これらの削除されたドキュメントを取り除きます。ただし、GitLabインストールのアクティビティーの量と種類によっては、インデックスで最大50％の無駄なスペースが発生する可能性があります。
+Elasticsearchは、セグメントのインテリジェントなマージを実行して、これらの削除されたドキュメントを取り除きます。ただし、GitLabインストールのアクティビティーの量と種類によっては、インデックスで最大50%の無駄なスペースが発生する可能性があります。
 
-一般的には、デフォルト設定でElasticsearchにスペースを自動的にマージして回収させることをお勧めします。[Luceneの削除済みの処理](https://www.elastic.co/blog/lucenes-handling-of-deleted-documents "ドキュメント")」では、_「全体として、おそらく最大セグメントサイズを縮小することに加えて、Luceneのをそのままにして、削除がいつ再利用されるかをあまり気にする必要はありません。_
+通常、Elasticsearchに、デフォルトの設定でスペースを自動的にマージして再利用させる必要があります。[Luceneの削除済みの処理](https://www.elastic.co/blog/lucenes-handling-of-deleted-documents "ドキュメント")」では、_「全体として、おそらく最大セグメントサイズを縮小することに加えて、Luceneのをそのままにして、削除がいつ再利用されるかをあまり気にする必要はありません。_
 
-ただし、一部の大規模なインストールでは、マージポリシー設定を調整したほうがよい場合があります。
+ただし、一部の大規模なインストールでは、マージポリシー設定を調整したほうがよい場合があります:
 
-- `index.merge.policy.max_merged_segment`サイズをデフォルトの5 GBから、たぶん2 GBまたは3 GBに削減することを検討してください。マージは、セグメントに少なくとも50％の削除がある場合にのみ発生します。セグメントサイズが小さいほど、マージの頻度が高くなります。
+- `index.merge.policy.max_merged_segment`サイズをデフォルトの5 GBから、たぶん2 GBまたは3 GBに削減することを検討してください。マージは、セグメントに少なくとも50%の削除がある場合にのみ発生します。セグメントサイズが小さいほど、マージの頻度が高くなります。
 
   ```shell
   curl --request PUT localhost:9200/gitlab-production/_settings ---header 'Content-Type: application/json' \
@@ -1202,16 +1204,16 @@ Elasticsearchは、セグメントのインテリジェントなマージを実�
 
 大規模なインスタンスにインデックスを作成することは、リソースを大量に消費する長時間のプロセスになることがあり、Sidekiqノードおよびプロセスに過負荷をかける可能性があります。これは、GitLabのパフォーマンスと可用性に悪影響を及ぼします。
 
-GitLabでは複数のSidekiqプロセスを開始できるため、一連のキュー（またはキューグループ）にインデックスを作成する専用の追加プロセスを作成できます。これにより、インデックス作成キューに常に専任の作業者を配置し、残りのキューには別の専任の作業者を配置して競合を回避できるようになります。
+GitLabでは複数のSidekiqプロセスを開始できるため、一連のキュー（またはキューグループ）にインデックスを作成する専用の追加プロセスを作成できます。これにより、インデックス作成キューに常に専任のワーカーを配置し、残りのキューには別の専任の作業者を配置して競合を回避できるようになります。
 
-この目的のために、[ルーティングルール](../../administration/sidekiq/processing_specific_job_classes.md#routing-rules)オプションを使用して、[作業者一致クエリ](../../administration/sidekiq/processing_specific_job_classes.md#worker-matching-query)に基づいて、Sidekiqがジョブを特定のキューにルーティングできるようにします。
+この目的のために、[ルーティングルール](../../administration/sidekiq/processing_specific_job_classes.md#routing-rules)オプションを使用して、[ワーカー一致クエリ](../../administration/sidekiq/processing_specific_job_classes.md#worker-matching-query)に基づいて、Sidekiqがジョブを特定のキューにルーティングできるようにします。
 
-これを処理するには、通常、次の2つのオプションのいずれかをお勧めします。次のいずれかを行えます。
+これに対処するために、次の2つのオプションのいずれかを選択できます:
 
 - [1つの単一ノードで2つのキューグループを使用します](#single-node-two-processes)。
 - [2つのキューグループを、各ノードでそれぞれ1つ使用します](#two-nodes-one-process-for-each)。
 
-以下の手順では、`sidekiq['routing_rules']`のエントリを検討してください:
+以下の手順では、`sidekiq['routing_rules']`のエントリを検討してください: 
 
 - `["feature_category=global_search", "global_search"]`: すべてのインデックス作成ジョブが`global_search`キューにルーティングされます。
 - `["*", "default"]`: 他のすべての非インデックス作成ジョブが`default`キューにルーティングされます。
@@ -1232,9 +1234,9 @@ GitLabでは複数のSidekiqプロセスを開始できるため、一連のキ�
 
 ### 単一ノード、2つのプロセス {#single-node-two-processes}
 
-1つのノードにインデックス作成Sidekiqプロセスと非インデックス作成Sidekiqプロセスの両方を作成するには、次の手順に従います。
+1つのノードにインデックス作成Sidekiqプロセスと非インデックス作成Sidekiqプロセスの両方を作成するには、次の手順に従います:
 
-1. Sidekiqノードで、`/etc/gitlab/gitlab.rb`ファイルを次のように変更します。
+1. Sidekiqノードで、`/etc/gitlab/gitlab.rb`ファイルを次のように変更します:
 
    ```ruby
    sidekiq['enable'] = true
@@ -1252,7 +1254,7 @@ GitLabでは複数のSidekiqプロセスを開始できるため、一連のキ�
    sidekiq['concurrency'] = 20
    ```
 
-   GitLab 16.11以前を使用している場合は、[キューセレクター](https://archives.docs.gitlab.com/16.11/ee/administration/sidekiq/processing_specific_job_classes.html#queue-selectors-deprecated)を明示的に無効にします。
+   GitLab 16.11以前を使用している場合は、[キューセレクター](https://archives.docs.gitlab.com/16.11/ee/administration/sidekiq/processing_specific_job_classes.html#queue-selectors-deprecated)を明示的に無効にします:
 
    ```ruby
    sidekiq['queue_selector'] = false
@@ -1260,7 +1262,7 @@ GitLabでは複数のSidekiqプロセスを開始できるため、一連のキ�
 
 1. ファイルを保存して、[GitLabを再設定](../../administration/restart_gitlab.md)し、変更を有効にします。
 1. 他のすべてのRailsおよびSidekiqノードで、`sidekiq['routing_rules']`が前の設定と同じであることを確認します。
-1. Rakeタスクを実行して、[既存のジョブを移行](../../administration/sidekiq/sidekiq_job_migration.md)します。
+1. Rakeタスクを実行して、[既存のジョブを移行](../../administration/sidekiq/sidekiq_job_migration.md)します:
 
 {{< alert type="note" >}}
 
@@ -1270,9 +1272,9 @@ GitLabを再設定したら、すぐにRakeタスクを実行することが重�
 
 ### 2つのノード、各ノードに1つのプロセス {#two-nodes-one-process-for-each}
 
-2つのノードでこれらのキューグループを処理するには、次の手順に従います。
+2つのノードでこれらのキューグループを処理するには、次の手順に従います:
 
-1. インデックス作成Sidekiqプロセスを設定するには、インデックス作成Sidekiqノードで、`/etc/gitlab/gitlab.rb`ファイルを次のように変更します。
+1. インデックス作成Sidekiqプロセスを設定するには、インデックス作成Sidekiqノードで、`/etc/gitlab/gitlab.rb`ファイルを次のように変更します:
 
    ```ruby
    sidekiq['enable'] = true
@@ -1289,7 +1291,7 @@ GitLabを再設定したら、すぐにRakeタスクを実行することが重�
    sidekiq['concurrency'] = 20
    ```
 
-   GitLab 16.11以前を使用している場合は、[キューセレクター](https://archives.docs.gitlab.com/16.11/ee/administration/sidekiq/processing_specific_job_classes.html#queue-selectors-deprecated)を明示的に無効にします。
+   GitLab 16.11以前を使用している場合は、[キューセレクター](https://archives.docs.gitlab.com/16.11/ee/administration/sidekiq/processing_specific_job_classes.html#queue-selectors-deprecated)を明示的に無効にします:
 
    ```ruby
    sidekiq['queue_selector'] = false
@@ -1297,7 +1299,7 @@ GitLabを再設定したら、すぐにRakeタスクを実行することが重�
 
 1. ファイルを保存して、[GitLabを再設定](../../administration/restart_gitlab.md)し、変更を有効にします。
 
-1. 非インデックス作成Sidekiqプロセスを設定するには、非インデックス作成Sidekiqノードで、`/etc/gitlab/gitlab.rb`ファイルを次のように変更します。
+1. 非インデックス作成Sidekiqプロセスを設定するには、非インデックス作成Sidekiqノードで、`/etc/gitlab/gitlab.rb`ファイルを次のように変更します:
 
    ```ruby
    sidekiq['enable'] = true
@@ -1314,7 +1316,7 @@ GitLabを再設定したら、すぐにRakeタスクを実行することが重�
    sidekiq['concurrency'] = 20
    ```
 
-   GitLab 16.11以前を使用している場合は、[キューセレクター](https://archives.docs.gitlab.com/16.11/ee/administration/sidekiq/processing_specific_job_classes.html#queue-selectors-deprecated)を明示的に無効にします。
+   GitLab 16.11以前を使用している場合は、[キューセレクター](https://archives.docs.gitlab.com/16.11/ee/administration/sidekiq/processing_specific_job_classes.html#queue-selectors-deprecated)を明示的に無効にします:
 
    ```ruby
    sidekiq['queue_selector'] = false
@@ -1322,7 +1324,7 @@ GitLabを再設定したら、すぐにRakeタスクを実行することが重�
 
 1. 他のすべてのRailsおよびSidekiqノードで、`sidekiq['routing_rules']`が前の設定と同じであることを確認します。
 1. ファイルを保存して、[GitLabを再設定](../../administration/restart_gitlab.md)し、変更を有効にします。
-1. Rakeタスクを実行して、[既存のジョブを移行](../../administration/sidekiq/sidekiq_job_migration.md)します。
+1. Rakeタスクを実行して、[既存のジョブを移行](../../administration/sidekiq/sidekiq_job_migration.md)します:
 
    ```shell
    sudo gitlab-rake gitlab:sidekiq:migrate_jobs:retry gitlab:sidekiq:migrate_jobs:schedule gitlab:sidekiq:migrate_jobs:queued
@@ -1342,7 +1344,7 @@ Elasticsearchインデックスデータに問題が発生することがあり�
 
 ElasticsearchはGitLabのセカンダリデータストアです。Elasticsearchに保存されているすべてのデータは、他のデータソース、特にPostgreSQLやGitalyから再度派生させることができます。Elasticsearchデータストアが破損した場合は、最初からすべてを再インデックスできます。
 
-Elasticsearchインデックスが大きすぎる場合は、最初からすべてを再インデックスすると、ダウンタイムが長くなりすぎる可能性があります。Elasticsearchインデックスの不一致を自動的に見つけて再同期することはできませんが、ログを調べて不足している更新がないかどうかを確認できます。データをより迅速に回復するには、次の操作を再び行うことができます。
+Elasticsearchインデックスが大きすぎる場合は、最初からすべてを再インデックスすると、ダウンタイムが長くなりすぎる可能性があります。Elasticsearchインデックスの不一致を自動的に見つけて再同期することはできませんが、ログを調べて不足している更新がないかどうかを確認できます。データをより迅速に回復するには、次の操作を再び行うことができます:
 
 1. [`elasticsearch.log`](../../administration/logs/_index.md#elasticsearchlog)で[`track_items`](https://gitlab.com/gitlab-org/gitlab/-/blob/1e60ea99bd8110a97d8fc481e2f41cab14e63d31/ee/app/services/elastic/process_bookkeeping_service.rb#L25)を検索して、同期されたすべての非リポジトリ更新を行います。`::Elastic::ProcessBookkeepingService.track!`を介して、これらのアイテムを再度送信する必要があります。
 1. [`elasticsearch.log`](../../administration/logs/_index.md#elasticsearchlog)で[`indexing_commit_range`](https://gitlab.com/gitlab-org/gitlab/-/blob/6f9d75dd3898536b9ec2fb206e0bd677ab59bd6d/ee/lib/gitlab/elastic/indexer.rb#L41)を検索して、すべてのリポジトリ更新を行います。ログで最も古い`from_sha`に[`IndexStatus#last_commit/last_wiki_commit`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/app/models/index_status.rb)を設定し、[`Search::Elastic::CommitIndexerWorker`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/app/workers/search/elastic/commit_indexer_worker.rb)と[`ElasticWikiIndexerWorker`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/app/workers/elastic_wiki_indexer_worker.rb)を使用して、プロジェクトの別のインデックスをトリガーする必要があります。

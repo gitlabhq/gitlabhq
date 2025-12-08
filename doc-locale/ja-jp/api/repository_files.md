@@ -13,11 +13,11 @@ title: リポジトリファイルAPI
 
 {{< /details >}}
 
-このAPIを使用して、リポジトリ内のファイルをフェッチ、作成、更新、および削除できます。このAPIの[レート制限を設定する](../administration/settings/files_api_rate_limits.md)こともできます。
+このAPIを使用して、[repository files](../user/project/repository/_index.md)を管理します。このAPIの[レート制限を設定する](../administration/settings/files_api_rate_limits.md)こともできます。
 
 ## パーソナルアクセストークンで使用可能なスコープ {#available-scopes-for-personal-access-tokens}
 
-[パーソナルアクセストークン](../user/profile/personal_access_tokens.md)では、次のスコープがサポートされています。
+[パーソナルアクセストークン](../user/profile/personal_access_tokens.md)では、次のスコープがサポートされています:
 
 | スコープ             | 説明 |
 |-------------------|-------------|
@@ -40,10 +40,10 @@ GET /projects/:id/repository/files/:file_path
 | 属性   | 型              | 必須 | 説明 |
 |-------------|-------------------|----------|-------------|
 | `file_path` | 文字列            | はい      | ファイルのURLエンコードされたフルパス（`lib%2Fclass%2Erb`など）。 |
-| `id`        | 整数または文字列 | はい      | プロジェクトのID、または[URLエンコードされたパス](rest/_index.md#namespaced-paths)。 |
+| `id`        | 整数または文字列 | はい      | プロジェクトのIDまたは[URLエンコードされたパス](rest/_index.md#namespaced-paths)。 |
 | `ref`       | 文字列            | はい      | ブランチ、タグ、またはコミットの名前。デフォルトブランチを自動的に使用するには、`HEAD`を使用します。 |
 
-成功した場合は、[`200 OK`](rest/troubleshooting.md#status-codes)と以下のレスポンス属性が返されます。
+成功した場合は、[`200 OK`](rest/troubleshooting.md#status-codes)と以下のレスポンス属性が返されます:
 
 | 属性          | 型    | 説明 |
 |--------------------|---------|-------------|
@@ -64,14 +64,14 @@ curl --header "PRIVATE-TOKEN: <your_access_token>" \
   --url "https://gitlab.example.com/api/v4/projects/13083/repository/files/app%2Fmodels%2Fkey%2Erb?ref=main"
 ```
 
-ブランチ名がわからない場合、またはデフォルトブランチを使用する場合は、`ref`の値として`HEAD`を使用できます。次に例を示します。
+ブランチ名がわからない場合、またはデフォルトブランチを使用する場合は、`ref`の値として`HEAD`を使用できます。次に例を示します: 
 
 ```shell
 curl --header "PRIVATE-TOKEN: " \
   --url "https://gitlab.example.com/api/v4/projects/13083/repository/files/app%2Fmodels%2Fkey%2Erb?ref=HEAD"
 ```
 
-応答の例:
+レスポンス例:
 
 ```json
 {
@@ -91,7 +91,7 @@ curl --header "PRIVATE-TOKEN: " \
 
 ### ファイルメタデータのみを取得する {#get-file-metadata-only}
 
-`HEAD`を使用して、ファイルのメタデータのみをフェッチすることもできます。
+`HEAD`を使用して、ファイルメタデータのみをフェッチすることもできます。
 
 ```plaintext
 HEAD /projects/:id/repository/files/:file_path
@@ -102,7 +102,7 @@ curl --head --header "PRIVATE-TOKEN: <your_access_token>" \
   --url "https://gitlab.example.com/api/v4/projects/13083/repository/files/app%2Fmodels%2Fkey%2Erb?ref=main"
 ```
 
-応答の例:
+レスポンス例:
 
 ```plaintext
 HTTP/1.1 200 OK
@@ -133,13 +133,13 @@ GET /projects/:id/repository/files/:file_path/blame
 | 属性      | 型              | 必須 | 説明 |
 |----------------|-------------------|----------|-------------|
 | `file_path`    | 文字列            | はい      | ファイルのURLエンコードされたフルパス（`lib%2Fclass%2Erb`など）。 |
-| `id`           | 整数または文字列 | はい      | プロジェクトのID、または[URLエンコードされたパス](rest/_index.md#namespaced-paths)。 |
+| `id`           | 整数または文字列 | はい      | プロジェクトのIDまたは[URLエンコードされたパス](rest/_index.md#namespaced-paths)。 |
 | `ref`          | 文字列            | はい      | ブランチ、タグ、またはコミットの名前。デフォルトブランチを自動的に使用するには、`HEAD`を使用します。 |
 | `range`        | ハッシュ              | いいえ       | blame範囲 |
 | `range[end]`   | 整数           | いいえ       | blame対象範囲の最後の行。 |
 | `range[start]` | 整数           | いいえ       | blame対象範囲の最初の行。 |
 
-成功した場合は、[`200 OK`](rest/troubleshooting.md#status-codes)と以下のレスポンス属性が返されます。
+成功した場合は、[`200 OK`](rest/troubleshooting.md#status-codes)と以下のレスポンス属性が返されます:
 
 | 属性 | 型   | 説明 |
 |-----------|--------|-------------|
@@ -151,7 +151,7 @@ curl --header "PRIVATE-TOKEN: <your_access_token>" \
   --url "https://gitlab.example.com/api/v4/projects/13083/repository/files/path%2Fto%2Ffile.rb/blame?ref=main"
 ```
 
-応答の例:
+レスポンス例:
 
 ```json
 [
@@ -178,16 +178,20 @@ curl --header "PRIVATE-TOKEN: <your_access_token>" \
 ]
 ```
 
-### ファイルメタデータのみを取得する {#get-file-metadata-only-1}
+### ファイルのblameメタデータのみを取得する {#get-file-blame-metadata-only}
 
-[リポジトリからファイルを取得する](repository_files.md#get-file-from-repository)場合と同様に、ファイルメタデータのみを返すには、`HEAD`メソッドを使用します。
+`HEAD`メソッドを使用して、blameファイルのメタデータのみを返します。
+
+```plaintext
+HEAD /projects/:id/repository/files/:file_path/blame
+```
 
 ```shell
 curl --head --header "PRIVATE-TOKEN: <your_access_token>" \
   --url "https://gitlab.example.com/api/v4/projects/13083/repository/files/path%2Fto%2Ffile.rb/blame?ref=main"
 ```
 
-応答の例:
+レスポンス例:
 
 ```plaintext
 HTTP/1.1 200 OK
@@ -214,7 +218,7 @@ curl --head --header "PRIVATE-TOKEN: <your_access_token>" \
   --url "https://gitlab.example.com/api/v4/projects/13083/repository/files/path%2Fto%2Ffile.rb/blame?ref=main&range[start]=1&range[end]=2"
 ```
 
-応答の例:
+レスポンス例:
 
 ```json
 [
@@ -251,7 +255,7 @@ GET /projects/:id/repository/files/:file_path/raw
 | 属性   | 型              | 必須 | 説明 |
 |-------------|-------------------|----------|-------------|
 | `file_path` | 文字列            | はい      | ファイルのURLエンコードされたフルパス（`lib%2Fclass%2Erb`など）。 |
-| `id`        | 整数または文字列 | はい      | プロジェクトのID、または[URLエンコードされたパス](rest/_index.md#namespaced-paths)。 |
+| `id`        | 整数または文字列 | はい      | プロジェクトのIDまたは[URLエンコードされたパス](rest/_index.md#namespaced-paths)。 |
 | `lfs`       | ブール値           | いいえ       | `true`の場合、応答をポインターではなく、Git LFSファイルの内容にするかどうかを決定します。ファイルがGit LFSで追跡されていない場合は無視されます。デフォルトは`false`です。 |
 | `ref`       | 文字列            | いいえ       | ブランチ、タグ、またはコミットの名前。デフォルトはプロジェクトの`HEAD`です。 |
 
@@ -282,14 +286,14 @@ POST /projects/:id/repository/files/:file_path
 | `commit_message`   | 文字列            | はい      | コミットメッセージ。 |
 | `content`          | 文字列            | はい      | ファイルの内容。 |
 | `file_path`        | 文字列            | はい      | ファイルのURLエンコードされたフルパス。例: `lib%2Fclass%2Erb`。 |
-| `id`               | 整数または文字列 | はい      | プロジェクトのID、または[URLエンコードされたパス](rest/_index.md#namespaced-paths)。 |
+| `id`               | 整数または文字列 | はい      | プロジェクトのIDまたは[URLエンコードされたパス](rest/_index.md#namespaced-paths)。 |
 | `author_email`     | 文字列            | いいえ       | コミット作成者のメールアドレス。 |
 | `author_name`      | 文字列            | いいえ       | コミット作成者の名前。 |
 | `encoding`         | 文字列            | いいえ       | エンコードを`base64`に変更します。デフォルトは`text`です。 |
 | `execute_filemode` | ブール値           | いいえ       | `true`の場合、ファイルの`execute`フラグが有効になります。`false`の場合、ファイルの`execute`フラグが無効になります。 |
 | `start_branch`     | 文字列            | いいえ       | ブランチの作成元となるベースブランチの名前。 |
 
-成功した場合は、[`201 Created`](rest/troubleshooting.md#status-codes)と以下のレスポンス属性が返されます。
+成功した場合は、[`201 Created`](rest/troubleshooting.md#status-codes)と以下のレスポンス属性が返されます:
 
 | 属性   | 型   | 説明 |
 |-------------|--------|-------------|
@@ -305,7 +309,7 @@ curl --request POST \
   --url "https://gitlab.example.com/api/v4/projects/13083/repository/files/app%2Fproject%2Erb"
 ```
 
-応答の例:
+レスポンス例:
 
 ```json
 {
@@ -330,7 +334,7 @@ PUT /projects/:id/repository/files/:file_path
 | `commit_message` | 文字列            | はい      | コミットメッセージ。 |
 | `content`        | 文字列            | はい      | ファイルの内容。 |
 | `file_path`      | 文字列            | はい      | ファイルのURLエンコードされたフルパス。例: `lib%2Fclass%2Erb`。 |
-| `id`             | 整数または文字列 | はい      | プロジェクトのID、または[URLエンコードされたパス](rest/_index.md#namespaced-paths)  |
+| `id`             | 整数または文字列 | はい      | プロジェクトのIDまたは[URLエンコードされたパス](rest/_index.md#namespaced-paths)  |
 | `author_email`   | 文字列            | いいえ       | コミット作成者のメールアドレス。 |
 | `author_name`    | 文字列            | いいえ       | コミット作成者の名前。 |
 | `encoding`       | 文字列            | いいえ       | エンコードを`base64`に変更します。デフォルトは`text`です。 |
@@ -338,7 +342,7 @@ PUT /projects/:id/repository/files/:file_path
 | `last_commit_id` | 文字列            | いいえ       | 既知の最新のファイルコミットID。 |
 | `start_branch`   | 文字列            | いいえ       | ブランチの作成元となるベースブランチの名前。 |
 
-成功した場合は、[`200 OK`](rest/troubleshooting.md#status-codes)と以下のレスポンス属性が返されます。
+成功した場合は、[`200 OK`](rest/troubleshooting.md#status-codes)と以下のレスポンス属性が返されます:
 
 | 属性   | 型   | 説明 |
 |-------------|--------|-------------|
@@ -354,7 +358,7 @@ curl --request PUT \
   --url "https://gitlab.example.com/api/v4/projects/13083/repository/files/app%2Fproject%2Erb"
 ```
 
-応答の例:
+レスポンス例:
 
 ```json
 {
@@ -363,7 +367,7 @@ curl --request PUT \
 }
 ```
 
-何らかの理由でコミットが失敗した場合は、特定の具体的なエラーメッセージではなく、`400 Bad Request`エラーを返します。コミットが失敗する原因として考えられる状況は次のとおりです。
+何らかの理由でコミットが失敗した場合、APIは特定のエラーメッセージではなく、`400 Bad Request`エラーを返します。コミットが失敗する原因として考えられる状況は次のとおりです:
 
 - `file_path`に`/../`が含まれていた（ディレクトリトラバーサルが試行された）。
 - コミットが空であった。新しいファイルの内容が現在のファイルの内容と同じであった。
@@ -386,7 +390,7 @@ DELETE /projects/:id/repository/files/:file_path
 | `branch`         | 文字列            | はい      | 作成するブランチの名前。コミットはこのブランチに追加されます。 |
 | `commit_message` | 文字列            | はい      | コミットメッセージ。 |
 | `file_path`      | 文字列            | はい      | ファイルのURLエンコードされたフルパス。例: `lib%2Fclass%2Erb`。 |
-| `id`             | 整数または文字列 | はい      | プロジェクトのID、または[URLエンコードされたパス](rest/_index.md#namespaced-paths)。 |
+| `id`             | 整数または文字列 | はい      | プロジェクトのIDまたは[URLエンコードされたパス](rest/_index.md#namespaced-paths)。 |
 | `author_email`   | 文字列            | いいえ       | コミット作成者のメールアドレス。 |
 | `author_name`    | 文字列            | いいえ       | コミット作成者の名前。 |
 | `last_commit_id` | 文字列            | いいえ       | 既知の最新のファイルコミットID。 |

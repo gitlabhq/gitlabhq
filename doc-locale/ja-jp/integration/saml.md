@@ -2,7 +2,8 @@
 stage: Software Supply Chain Security
 group: Authentication
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
-title: GitLab Self-ManagedにおけるSAML SSO
+title: GitLab Self-ManagedのSAML SSO
+description: エンタープライズ認証をSAMLインテグレーションで構成して、シングルサインオンアクセスを実現します。
 ---
 
 {{< details >}}
@@ -22,7 +23,7 @@ GitLab.comについては、[GitLab.comグループのSAML SSO](../user/group/sa
 
 SAMLサービスプロバイダー（SP）として機能するようにGitLabを設定できます。これによりGitLabは、OktaなどのSAML Identity Provider（IdP）が発行したアサーションを利用して、ユーザーを認証できます。
 
-詳細については、次を参照してください。
+詳細については、次を参照してください:
 
 - OmniAuthプロバイダーの設定については、[OmniAuthのドキュメント](omniauth.md)を参照してください。
 - 一般的に使用される用語については、[用語集](#glossary)を参照してください。
@@ -35,14 +36,14 @@ SAMLサービスプロバイダー（SP）として機能するようにGitLab�
 
 1. GitLabで[HTTPSが設定されている](https://docs.gitlab.com/omnibus/settings/ssl/)ことを確認してください。
 1. [共通設定](omniauth.md#configure-common-settings)で、`saml`をシングルサインオンプロバイダーとして追加します。これにより、既存のGitLabアカウントを持たないユーザーに対して、Just-In-Timeアカウントプロビジョニングが有効になります。
-1. ユーザーが最初に手動でアカウントを作成しなくてもSAMLを使用してサインアップできるようにするには、`/etc/gitlab/gitlab.rb`を編集します。
+1. ユーザーが最初に手動でアカウントを作成しなくてもSAMLを使用してサインアップできるようにするには、`/etc/gitlab/gitlab.rb`を編集します:
 
    ```ruby
    gitlab_rails['omniauth_allow_single_sign_on'] = ['saml']
    gitlab_rails['omniauth_block_auto_created_users'] = false
    ```
 
-1. オプション。初回にSAMLでサインインする際に、SAML応答のメールアドレスが既存のGitLabユーザーと一致する場合、これらを自動的にリンクする必要があります。これを行うには、`/etc/gitlab/gitlab.rb`に次の設定を追加します。
+1. オプション。初回にSAMLでサインインする際に、SAML応答のメールアドレスが既存のGitLabユーザーと一致する場合、これらを自動的にリンクする必要があります。これを行うには、`/etc/gitlab/gitlab.rb`に次の設定を追加します:
 
    ```ruby
    gitlab_rails['omniauth_auto_link_saml_user'] = true
@@ -52,14 +53,14 @@ SAMLサービスプロバイダー（SP）として機能するようにGitLab�
 
    または、ユーザーが[既存のユーザーに対してOmniAuthを有効にする](omniauth.md#enable-omniauth-for-an-existing-user)ことで、SAMLアイデンティティを既存のGitLabアカウントに手動でリンクすることも可能です。
 
-1. 次の属性を設定し、SAMLユーザーがこれらを変更できないようにします。
+1. 次の属性を設定し、SAMLユーザーがこれらを変更できないようにします:
 
    - [`NameID`](../user/group/saml_sso/_index.md#manage-user-saml-identity)
    - `Email`（`omniauth_auto_link_saml_user`と併用する場合）。
 
    ユーザーがこれらの属性を変更できる場合、他の認証済みユーザーとしてサインインできてしまいます。これらの属性を変更不可にする方法については、SAML IdPのドキュメントを参照してください。
 
-1. `/etc/gitlab/gitlab.rb`を編集し、プロバイダー設定を追加します。
+1. `/etc/gitlab/gitlab.rb`を編集し、プロバイダー設定を追加します: 
 
    ```ruby
    gitlab_rails['omniauth_providers'] = [
@@ -87,7 +88,7 @@ SAMLサービスプロバイダー（SP）として機能するようにGitLab�
 
    これらの値の詳細については、[OmniAuth SAMLのドキュメント](https://github.com/omniauth/omniauth-saml)を参照してください。その他の設定項目の詳細については、[IdPでSAMLを設定する](#configure-saml-on-your-idp)を参照してください。
 
-1. ファイルを保存して、GitLabを再設定します。
+1. ファイルを保存して、GitLabを再設定します:
 
    ```shell
    sudo gitlab-ctl reconfigure
@@ -99,13 +100,13 @@ SAMLサービスプロバイダー（SP）として機能するようにGitLab�
 
 1. GitLabで[HTTPSが設定されている](https://docs.gitlab.com/charts/installation/tls.html)ことを確認してください。
 1. [共通設定](omniauth.md#configure-common-settings)で、`saml`をシングルサインオンプロバイダーとして追加します。これにより、既存のGitLabアカウントを持たないユーザーに対して、Just-In-Timeアカウントプロビジョニングが有効になります。
-1. Helm値をエクスポートします。
+1. Helm値をエクスポートします: 
 
    ```shell
    helm get values gitlab > gitlab_values.yaml
    ```
 
-1. ユーザーが最初に手動でアカウントを作成しなくてもSAMLを使用してサインアップできるようにするには、`gitlab_values.yaml`を編集します。
+1. ユーザーが最初に手動でアカウントを作成しなくてもSAMLを使用してサインアップできるようにするには、`gitlab_values.yaml`を編集します:
 
    ```yaml
    global:
@@ -116,7 +117,7 @@ SAMLサービスプロバイダー（SP）として機能するようにGitLab�
          blockAutoCreatedUsers: false
    ```
 
-1. オプション。`gitlab_values.yaml`に次の設定を追加すると、SAMLユーザーと既存のGitLabユーザーのメールアドレスが一致する場合に、両者を自動的にリンクできます。
+1. オプション。`gitlab_values.yaml`に次の設定を追加すると、SAMLユーザーと既存のGitLabユーザーのメールアドレスが一致する場合に、両者を自動的にリンクできます:
 
    ```yaml
    global:
@@ -127,14 +128,14 @@ SAMLサービスプロバイダー（SP）として機能するようにGitLab�
 
    または、ユーザーが[既存のユーザーに対してOmniAuthを有効にする](omniauth.md#enable-omniauth-for-an-existing-user)ことで、SAMLアイデンティティを既存のGitLabアカウントに手動でリンクすることも可能です。
 
-1. 次の属性を設定し、SAMLユーザーがこれらを変更できないようにします。
+1. 次の属性を設定し、SAMLユーザーがこれらを変更できないようにします:
 
    - [`NameID`](../user/group/saml_sso/_index.md#manage-user-saml-identity)
    - `Email`（`omniauth_auto_link_saml_user`と併用する場合）。
 
    ユーザーがこれらの属性を変更できる場合、他の認証済みユーザーとしてサインインできてしまいます。これらの属性を変更不可にする方法については、SAML IdPのドキュメントを参照してください。
 
-1. 次の内容を`saml.yaml`ファイルに記述し、[Kubernetes Secret](https://docs.gitlab.com/charts/charts/globals.html#providers)として使用します。
+1. 次の内容を`saml.yaml`ファイルに記述し、[Kubernetes Secret](https://docs.gitlab.com/charts/charts/globals.html#providers)として使用します:
 
    ```yaml
    name: 'saml'
@@ -157,13 +158,13 @@ SAMLサービスプロバイダー（SP）として機能するようにGitLab�
 
    これらの値の詳細については、[OmniAuth SAMLのドキュメント](https://github.com/omniauth/omniauth-saml)を参照してください。その他の設定項目の詳細については、[IdPでSAMLを設定する](#configure-saml-on-your-idp)を参照してください。
 
-1. Kubernetes Secretを作成します。
+1. Kubernetes Secretを作成します:
 
    ```shell
    kubectl create secret generic -n <namespace> gitlab-saml --from-file=provider=saml.yaml
    ```
 
-1. `gitlab_values.yaml`を編集し、プロバイダー設定を追加します。
+1. `gitlab_values.yaml`を編集し、プロバイダー設定を追加します: 
 
    ```yaml
    global:
@@ -173,7 +174,7 @@ SAMLサービスプロバイダー（SP）として機能するようにGitLab�
            - secret: gitlab-saml
    ```
 
-1. ファイルを保存し、新しい値を適用します。
+1. ファイルを保存し、新しい値を適用します: 
 
    ```shell
    helm upgrade -f gitlab_values.yaml gitlab gitlab/gitlab
@@ -185,7 +186,7 @@ SAMLサービスプロバイダー（SP）として機能するようにGitLab�
 
 1. GitLabで[HTTPSが設定されている](https://docs.gitlab.com/omnibus/settings/ssl/)ことを確認してください。
 1. [共通設定](omniauth.md#configure-common-settings)で、`saml`をシングルサインオンプロバイダーとして追加します。これにより、既存のGitLabアカウントを持たないユーザーに対して、Just-In-Timeアカウントプロビジョニングが有効になります。
-1. ユーザーが最初に手動でアカウントを作成しなくてもSAMLを使用してサインアップできるようにするには、`docker-compose.yml`を編集します。
+1. ユーザーが最初に手動でアカウントを作成しなくてもSAMLを使用してサインアップできるようにするには、`docker-compose.yml`を編集します:
 
    ```yaml
    version: "3.6"
@@ -197,7 +198,7 @@ SAMLサービスプロバイダー（SP）として機能するようにGitLab�
            gitlab_rails['omniauth_block_auto_created_users'] = false
    ```
 
-1. オプション。`docker-compose.yml`に次の設定を追加すると、SAMLユーザーと既存のGitLabユーザーのメールアドレスが一致する場合に、両者を自動的にリンクできます。
+1. オプション。`docker-compose.yml`に次の設定を追加すると、SAMLユーザーと既存のGitLabユーザーのメールアドレスが一致する場合に、両者を自動的にリンクできます:
 
    ```yaml
    version: "3.6"
@@ -210,14 +211,14 @@ SAMLサービスプロバイダー（SP）として機能するようにGitLab�
 
    または、ユーザーが[既存のユーザーに対してOmniAuthを有効にする](omniauth.md#enable-omniauth-for-an-existing-user)ことで、SAMLアイデンティティを既存のGitLabアカウントに手動でリンクすることも可能です。
 
-1. 次の属性を設定し、SAMLユーザーがこれらを変更できないようにします。
+1. 次の属性を設定し、SAMLユーザーがこれらを変更できないようにします:
 
    - [`NameID`](../user/group/saml_sso/_index.md#manage-user-saml-identity)
    - `Email`（`omniauth_auto_link_saml_user`と併用する場合）。
 
    ユーザーがこれらの属性を変更できる場合、他の認証済みユーザーとしてサインインできてしまいます。これらの属性を変更不可にする方法については、SAML IdPのドキュメントを参照してください。
 
-1. `docker-compose.yml`を編集し、プロバイダー設定を追加します。
+1. `docker-compose.yml`を編集し、プロバイダー設定を追加します: 
 
    ```yaml
    version: "3.6"
@@ -250,7 +251,7 @@ SAMLサービスプロバイダー（SP）として機能するようにGitLab�
 
    これらの値の詳細については、[OmniAuth SAMLのドキュメント](https://github.com/omniauth/omniauth-saml)を参照してください。その他の設定項目の詳細については、[IdPでSAMLを設定する](#configure-saml-on-your-idp)を参照してください。
 
-1. ファイルを保存して、GitLabを再起動します。
+1. ファイルを保存して、GitLabを再起動します:
 
    ```shell
    docker compose up -d
@@ -262,7 +263,7 @@ SAMLサービスプロバイダー（SP）として機能するようにGitLab�
 
 1. GitLabで[HTTPSが設定されている](../install/self_compiled/_index.md#using-https)ことを確認してください。
 1. [共通設定](omniauth.md#configure-common-settings)で、`saml`をシングルサインオンプロバイダーとして追加します。これにより、既存のGitLabアカウントを持たないユーザーに対して、Just-In-Timeアカウントプロビジョニングが有効になります。
-1. ユーザーが最初に手動でアカウントを作成しなくてもSAMLを使用してサインアップできるようにするには、`/home/git/gitlab/config/gitlab.yml`を編集します。
+1. ユーザーが最初に手動でアカウントを作成しなくてもSAMLを使用してサインアップできるようにするには、`/home/git/gitlab/config/gitlab.yml`を編集します:
 
    ```yaml
    production: &base
@@ -272,7 +273,7 @@ SAMLサービスプロバイダー（SP）として機能するようにGitLab�
        block_auto_created_users: false
    ```
 
-1. オプション。`/home/git/gitlab/config/gitlab.yml`に次の設定を追加すると、SAMLユーザーと既存のGitLabユーザーのメールアドレスが一致する場合に、両者を自動的にリンクできます。
+1. オプション。`/home/git/gitlab/config/gitlab.yml`に次の設定を追加すると、SAMLユーザーと既存のGitLabユーザーのメールアドレスが一致する場合に、両者を自動的にリンクできます:
 
    ```yaml
    production: &base
@@ -282,14 +283,14 @@ SAMLサービスプロバイダー（SP）として機能するようにGitLab�
 
    または、ユーザーが[既存のユーザーに対してOmniAuthを有効にする](omniauth.md#enable-omniauth-for-an-existing-user)ことで、SAMLアイデンティティを既存のGitLabアカウントに手動でリンクすることも可能です。
 
-1. 次の属性を設定し、SAMLユーザーがこれらを変更できないようにします。
+1. 次の属性を設定し、SAMLユーザーがこれらを変更できないようにします:
 
    - [`NameID`](../user/group/saml_sso/_index.md#manage-user-saml-identity)
    - `Email`（`omniauth_auto_link_saml_user`と併用する場合）。
 
    ユーザーがこれらの属性を変更できる場合、他の認証済みユーザーとしてサインインできてしまいます。これらの属性を変更不可にする方法については、SAML IdPのドキュメントを参照してください。
 
-1. `/home/git/gitlab/config/gitlab.yml`を編集し、プロバイダー設定を追加します。
+1. `/home/git/gitlab/config/gitlab.yml`を編集し、プロバイダー設定を追加します: 
 
    ```yaml
    omniauth:
@@ -317,7 +318,7 @@ SAMLサービスプロバイダー（SP）として機能するようにGitLab�
 
    これらの値の詳細については、[OmniAuth SAMLのドキュメント](https://github.com/omniauth/omniauth-saml)を参照してください。その他の設定項目の詳細については、[IdPでSAMLを設定する](#configure-saml-on-your-idp)を参照してください。
 
-1. ファイルを保存して、GitLabを再起動します。
+1. ファイルを保存して、GitLabを再起動します:
 
    ```shell
    # For systems running systemd
@@ -335,19 +336,19 @@ SAMLサービスプロバイダー（SP）として機能するようにGitLab�
 
 1. `issuer`で指定されたアプリケーション名を使用して、SAML IdPにGitLabのSPを登録します。
 
-1. IdPに設定情報を提供するには、アプリケーションのメタデータURLを作成します。GitLabのメタデータURLを作成するには、GitLabインストールのHTTPS URLに`users/auth/saml/metadata`を付加します。次に例を示します。
+1. IdPに設定情報を提供するには、アプリケーションのメタデータURLを作成します。GitLabのメタデータURLを作成するには、GitLabインストールのHTTPS URLに`users/auth/saml/metadata`を付加します。次に例を示します:
 
    ```plaintext
    https://gitlab.example.com/users/auth/saml/metadata
    ```
 
-   IdPは最低限、`email`または`mail`を使用して、ユーザーのメールアドレスを含むクレームを提供する**必要があります**。その他の利用可能なクレームの詳細については、[アサーションを設定する](#configure-assertions)を参照してください。
+   IdPは最低限、`email`または`mail`を使用して、ユーザーのメールアドレスを含むクレームを提供する**must**（必要があります）。その他の利用可能なクレームの詳細については、[アサーションを設定する](#configure-assertions)を参照してください。
 
 1. サインインページでは、標準のサインインフォームの下にSAMLのアイコンが表示されているはずです。そのアイコンを選択すると、認証プロセスが開始されます。認証に成功すると、GitLabに戻り、サインインした状態になります。
 
 ### IdPでSAMLを設定する {#configure-saml-on-your-idp}
 
-IdPでSAMLアプリケーションを設定するには、少なくとも次の情報が必要です。
+IdPでSAMLアプリケーションを設定するには、少なくとも次の情報が必要です:
 
 - アサーションコンシューマサービスURL。
 - 発行者。
@@ -360,10 +361,10 @@ IdPによっては追加の設定が必要になる場合があります。詳�
 
 ### 複数のSAML IdPを使用するようにGitLabを設定する {#configure-gitlab-to-use-multiple-saml-idps}
 
-次の条件を満たす場合、複数のSAML IdPを使用するようにGitLabを設定できます。
+次の条件を満たす場合、複数のSAML IdPを使用するようにGitLabを設定できます:
 
 - 各プロバイダーに、`args`に指定された名前と一致する、一意の名前が設定されている。
-- プロバイダー名を次のように使用している。
+- プロバイダー名を次のように使用している:
   - OmniAuthの設定で、プロバイダー名に基づいてプロパティを設定している。例: `allowBypassTwoFactor`、`allowSingleSignOn`、`syncProfileFromProvider`。
   - プロバイダー名を使用して、既存の各ユーザーに追加のIDとして関連付けている。
 - `assertion_consumer_service_url`がプロバイダー名と一致している。
@@ -375,13 +376,13 @@ IdPによっては追加の設定が必要になる場合があります。詳�
 
 {{< /alert >}}
 
-複数のSAML IdPを設定するには、次の手順に従います。
+複数のSAML IdPを設定するには、次の手順に従います:
 
 {{< tabs >}}
 
 {{< tab title="Linuxパッケージ（Omnibus）" >}}
 
-1. `/etc/gitlab/gitlab.rb`を編集します。
+1. `/etc/gitlab/gitlab.rb`を編集します: 
 
    ```ruby
    gitlab_rails['omniauth_providers'] = [
@@ -408,13 +409,13 @@ IdPによっては追加の設定が必要になる場合があります。詳�
    ]
    ```
 
-   ユーザーがいずれかのプロバイダーから手動でアカウントを作成することなく、SAMLを使用してサインアップできるようにするには、次の値を設定に追加します。
+   ユーザーがいずれかのプロバイダーから手動でアカウントを作成することなく、SAMLを使用してサインアップできるようにするには、次の値を設定に追加します:
 
    ```ruby
    gitlab_rails['omniauth_allow_single_sign_on'] = ['saml', 'saml_2']
    ```
 
-1. ファイルを保存して、GitLabを再設定します。
+1. ファイルを保存して、GitLabを再設定します:
 
    ```shell
    sudo gitlab-ctl reconfigure
@@ -424,7 +425,7 @@ IdPによっては追加の設定が必要になる場合があります。詳�
 
 {{< tab title="Helmチャート（Kubernetes）" >}}
 
-1. 次の内容を`saml.yaml`ファイルに記述し、最初のSAMLプロバイダーの[Kubernetes Secret](https://docs.gitlab.com/charts/charts/globals.html#providers)として使用します。
+1. 次の内容を`saml.yaml`ファイルに記述し、最初のSAMLプロバイダーの[Kubernetes Secret](https://docs.gitlab.com/charts/charts/globals.html#providers)として使用します:
 
    ```yaml
    name: 'saml' # At least one provider must be named 'saml'
@@ -436,7 +437,7 @@ IdPによっては追加の設定が必要になる場合があります。詳�
      # Include all required arguments similar to a single provider
    ```
 
-1. 次の内容を`saml_2.yaml`ファイルに記述し、2番目のSAMLプロバイダーの[Kubernetes Secret](https://docs.gitlab.com/charts/charts/globals.html#providers)として使用します。
+1. 次の内容を`saml_2.yaml`ファイルに記述し、2番目のSAMLプロバイダーの[Kubernetes Secret](https://docs.gitlab.com/charts/charts/globals.html#providers)として使用します:
 
    ```yaml
    name: 'saml_2'
@@ -449,7 +450,7 @@ IdPによっては追加の設定が必要になる場合があります。詳�
    ```
 
 1. オプション。同じ手順に従って、追加のSAMLプロバイダーを設定します。
-1. Kubernetes Secretsを作成します。
+1. Kubernetes Secretsを作成します:
 
    ```shell
    kubectl create secret generic -n <namespace> gitlab-saml \
@@ -457,13 +458,13 @@ IdPによっては追加の設定が必要になる場合があります。詳�
       --from-file=saml_2=saml_2.yaml
    ```
 
-1. Helm値をエクスポートします。
+1. Helm値をエクスポートします: 
 
    ```shell
    helm get values gitlab > gitlab_values.yaml
    ```
 
-1. `gitlab_values.yaml`を編集します。
+1. `gitlab_values.yaml`を編集します: 
 
    ```yaml
    global:
@@ -476,7 +477,7 @@ IdPによっては追加の設定が必要になる場合があります。詳�
              key: saml_2
    ```
 
-   ユーザーがいずれかのプロバイダーから手動でアカウントを作成することなく、SAMLを使用してサインアップできるようにするには、次の値を設定に追加します。
+   ユーザーがいずれかのプロバイダーから手動でアカウントを作成することなく、SAMLを使用してサインアップできるようにするには、次の値を設定に追加します:
 
    ```yaml
    global:
@@ -485,7 +486,7 @@ IdPによっては追加の設定が必要になる場合があります。詳�
          allowSingleSignOn: ['saml', 'saml_2']
    ```
 
-1. ファイルを保存し、新しい値を適用します。
+1. ファイルを保存し、新しい値を適用します: 
 
    ```shell
    helm upgrade -f gitlab_values.yaml gitlab gitlab/gitlab
@@ -495,7 +496,7 @@ IdPによっては追加の設定が必要になる場合があります。詳�
 
 {{< tab title="Docker" >}}
 
-1. `docker-compose.yml`を編集します。
+1. `docker-compose.yml`を編集します: 
 
    ```yaml
    version: "3.6"
@@ -528,7 +529,7 @@ IdPによっては追加の設定が必要になる場合があります。詳�
            ]
    ```
 
-   ユーザーがいずれかのプロバイダーから手動でアカウントを作成することなく、SAMLを使用してサインアップできるようにするには、次の値を設定に追加します。
+   ユーザーがいずれかのプロバイダーから手動でアカウントを作成することなく、SAMLを使用してサインアップできるようにするには、次の値を設定に追加します:
 
    ```yaml
    version: "3.6"
@@ -539,7 +540,7 @@ IdPによっては追加の設定が必要になる場合があります。詳�
            gitlab_rails['omniauth_allow_single_sign_on'] = ['saml', 'saml_2']
    ```
 
-1. ファイルを保存して、GitLabを再起動します。
+1. ファイルを保存して、GitLabを再起動します:
 
    ```shell
    docker compose up -d
@@ -549,7 +550,7 @@ IdPによっては追加の設定が必要になる場合があります。詳�
 
 {{< tab title="自己コンパイル（ソース）" >}}
 
-1. `/home/git/gitlab/config/gitlab.yml`を編集します。
+1. `/home/git/gitlab/config/gitlab.yml`を編集します: 
 
    ```yaml
    production: &base
@@ -577,7 +578,7 @@ IdPによっては追加の設定が必要になる場合があります。詳�
          }
    ```
 
-   ユーザーがいずれかのプロバイダーから手動でアカウントを作成することなく、SAMLを使用してサインアップできるようにするには、次の値を設定に追加します。
+   ユーザーがいずれかのプロバイダーから手動でアカウントを作成することなく、SAMLを使用してサインアップできるようにするには、次の値を設定に追加します:
 
    ```yaml
    production: &base
@@ -585,7 +586,7 @@ IdPによっては追加の設定が必要になる場合があります。詳�
        allow_single_sign_on: ["saml", "saml_2"]
    ```
 
-1. ファイルを保存して、GitLabを再起動します。
+1. ファイルを保存して、GitLabを再起動します:
 
    ```shell
    # For systems running systemd
@@ -608,16 +609,16 @@ GitLabは、OktaやGoogle WorkspaceのIdPの設定に関する次の情報をガ
 ### Oktaを設定する {#set-up-okta}
 
 1. Oktaの管理者セクションで、**アプリケーション**を選択します。
-1. アプリ画面で、**アプリ統合を作成**を選択し、次の画面で**SAML 2.0**を選択します。
+1. アプリ画面で、**Create App Integration**（アプリ統合を作成）を選択し、次の画面で**SAML 2.0**を選択します。
 1. オプション。[GitLab Press](https://about.gitlab.com/press/press-kit/)からロゴを選択して追加します。ロゴをトリミングしてサイズを変更する必要があります。
-1. SAMLの一般設定を入力します。次の項目を設定します。
+1. SAMLの一般設定を入力します。次の項目を設定します:
    - `"Single sign-on URL"`: アサーションコンシューマサービスURLを使用します。
    - `"Audience URI"`: 発行者を使用します。
    - [`NameID`](../user/group/saml_sso/_index.md#manage-user-saml-identity)
    - [アサーション](#configure-assertions)。
 1. フィードバックセクションで、自分が顧客であり、内部使用のためにアプリを作成していることを入力します。
-1. 新しいアプリのプロファイルの上部で、**SAML 2.0設定手順**を選択します。
-1. **Identity Provider Single Sign-On URL（アイデンティティプロバイダのシングルサインオンURL）**をメモします。このURLは、GitLab設定ファイルの`idp_sso_target_url`に使用します。
+1. 新しいアプリのプロファイルの上部で、**SAML 2.0 configuration instructions**（SAML 2.0設定手順）を選択します。
+1. **Identity Provider Single Sign-On URL**（アイデンティティプロバイダのシングルサインオンURL）をメモします。このURLは、GitLab設定ファイルの`idp_sso_target_url`に使用します。
 1. Oktaからサインアウトする前に、ユーザーとグループ（存在する場合）を必ず追加してください。
 
 ### Google Workspaceを設定する {#set-up-google-workspace}
@@ -626,7 +627,7 @@ GitLabは、OktaやGoogle WorkspaceのIdPの設定に関する次の情報をガ
 
 - [Google Workspaceの特権管理者アカウント](https://support.google.com/a/answer/2405986#super_admin)へのアクセス権があることを確認してください。
 
-Google Workspaceを設定するには、次の手順に従います。
+Google Workspaceを設定するには、次の手順に従います:
 
 1. 次の情報を使用し、[Google WorkspaceでカスタムSAMLアプリを設定する](https://support.google.com/a/answer/6087519?hl=en)手順に従います。
 
@@ -641,7 +642,7 @@ Google Workspaceを設定するには、次の手順に従います。
    | お名前(名)       | `first_name`                                       | お名前(名)。GitLabと通信するために必須の値です。                                        |
    | お名前(姓)        | `last_name`                                        | お名前(姓)。GitLabと通信するために必須の値です。                                         |
 
-1. 次のSAML属性マッピングを設定します。
+1. 次のSAML属性マッピングを設定します:
 
    | Googleディレクトリの属性       | アプリケーションの属性 |
    |-----------------------------------|----------------|
@@ -651,7 +652,7 @@ Google Workspaceを設定するには、次の手順に従います。
 
    この情報の一部は、[GitLabでSAMLのサポートを設定する](#configure-saml-support-in-gitlab)際に使用する場合があります。
 
-Google Workspace SAMLアプリケーションを設定する際に、次の情報を記録しておいてください。
+Google Workspace SAMLアプリケーションを設定する際に、次の情報を記録しておいてください:
 
 |                    | 値        | 説明 |
 | ------------------ | ------------ | ----------- |
@@ -667,25 +668,25 @@ Google Workspace管理者は、IdPメタデータ、エンティティID、SHA-2
 1. [ギャラリー以外のアプリケーションを作成](https://learn.microsoft.com/en-us/entra/identity/enterprise-apps/overview-application-gallery#create-your-own-application)します。
 1. [そのアプリケーションのSSOを設定](https://learn.microsoft.com/en-us/entra/identity/enterprise-apps/add-application-portal-setup-sso)します。
 
-   `gitlab.rb`ファイル内の次の設定は、Microsoft Entra IDのフィールドに対応しています。
+   `gitlab.rb`ファイル内の次の設定は、Microsoft Entra IDのフィールドに対応しています:
 
    | `gitlab.rb`の設定                 | Microsoft Entra IDフィールド                       |
    | ------------------------------------| ---------------------------------------------- |
-   | `issuer`                           | **Identifier (Entity ID)（識別子（エンティティID））**                     |
-   | `assertion_consumer_service_url`   | **Reply URL (Assertion Consumer Service URL)（応答URL（アサーションコンシューマサービスURL））** |
-   | `idp_sso_target_url`               | **Login URL（ログインURL）**                                  |
-   | `idp_cert_fingerprint`             | **Thumbprint（サムプリント）**                                 |
+   | `issuer`                           | **Identifier (Entity ID)**（識別子（エンティティID））                     |
+   | `assertion_consumer_service_url`   | **Reply URL (Assertion Consumer Service URL)**（応答URL（アサーションコンシューマサービスURL）） |
+   | `idp_sso_target_url`               | **Login URL**（Login URL（ログインURL））                                  |
+   | `idp_cert_fingerprint`             | **Thumbprint**（Thumbprint（サムプリント））                                 |
 
-1. 次の属性を設定します。
-   - **Unique User Identifier (Name ID)（一意のユーザー識別子（名前ID））**には`user.objectID`を指定します。
-      - **名前識別子形式**を`persistent`にします。詳細については、[ユーザーSAMLアイデンティティの管理](../user/group/saml_sso/_index.md#manage-user-saml-identity)を参照してください。
-   - **Additional claims（追加のクレーム）**には[サポートされている属性](#configure-assertions)を指定します。
+1. 次の属性を設定します:
+   - **Unique User Identifier (Name ID)**（一意のユーザー識別子（名前ID））には`user.objectID`を指定します。
+      - **Name identifier format**（名前識別子形式）を`persistent`にします。詳細については、[ユーザーSAMLアイデンティティの管理](../user/group/saml_sso/_index.md#manage-user-saml-identity)を参照してください。
+   - **Additional claims**（追加のクレーム）には[サポートされている属性](#configure-assertions)を指定します。
 
 詳細については、[設定例のページ](../user/group/saml_sso/example_saml_config.md#azure-active-directory)を参照してください。
 
 ### 他のIdPを設定する {#set-up-other-idps}
 
-一部のIdPには、SAML設定でIdPとして使用する方法に関するドキュメントが用意されています。次に例を示します。
+一部のIdPには、SAML設定でIdPとして使用する方法に関するドキュメントが用意されています。次に例を示します:
 
 - [Active Directory Federation Services（ADFS）](https://learn.microsoft.com/en-us/previous-versions/windows-server/it-pro/windows-server-2012/identity/ad-fs/operations/Create-a-Relying-Party-Trust)
 - [Auth0](https://auth0.com/docs/authenticate/single-sign-on/outbound-single-sign-on/configure-auth0-saml-identity-provider)
@@ -714,12 +715,12 @@ SAML設定におけるIdPの設定方法についてご不明な点がある場�
 
 | フィールド           | サポートされているデフォルトキー                                                                                                                                                         |
 |-----------------|--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| メール（必須）| `email`、`mail`、`http://schemas.xmlsoap.org/ws/2005/05/identity/claims/emailaddress`、`http://schemas.microsoft.com/ws/2008/06/identity/claims/emailaddress`、`http://schemas.xmlsoap.org/ws/2005/05/identity/claims/email`、`http://schemas.microsoft.com/ws/2008/06/identity/claims/email`                  |
-| フルネーム       | `name`、`http://schemas.xmlsoap.org/ws/2005/05/identity/claims/name`、`http://schemas.microsoft.com/ws/2008/06/identity/claims/name`                                           |
-| お名前(名)      | `first_name`、`firstname`、`firstName`、`http://schemas.xmlsoap.org/ws/2005/05/identity/claims/givenname`、`http://schemas.microsoft.com/ws/2008/06/identity/claims/givenname` |
-| お名前(姓)       | `last_name`、`lastname`、`lastName`、`http://schemas.xmlsoap.org/ws/2005/05/identity/claims/surname`、`http://schemas.microsoft.com/ws/2008/06/identity/claims/surname`   |
+| メール（必須）| `email`、`mail`、`http://schemas.xmlsoap.org/ws/2005/05/identity/claims/emailaddress`、`http://schemas.microsoft.com/ws/2008/06/identity/claims/emailaddress`、`http://schemas.xmlsoap.org/ws/2005/05/identity/claims/email`、`http://schemas.microsoft.com/ws/2008/06/identity/claims/email`、`urn:oid:0.9.2342.19200300.100.1.3`                  |
+| フルネーム       | `name`、`http://schemas.xmlsoap.org/ws/2005/05/identity/claims/name`、`http://schemas.microsoft.com/ws/2008/06/identity/claims/name`、`urn:oid:2.16.840.1.113730.3.1.241`、`urn:oid:2.5.4.3`                                           |
+| お名前(名)      | `first_name`、`firstname`、`firstName`、`http://schemas.xmlsoap.org/ws/2005/05/identity/claims/givenname`、`http://schemas.microsoft.com/ws/2008/06/identity/claims/givenname`、`urn:oid:2.5.4.42` |
+| お名前(姓)       | `last_name`、`lastname`、`lastName`、`http://schemas.xmlsoap.org/ws/2005/05/identity/claims/surname`、`http://schemas.microsoft.com/ws/2008/06/identity/claims/surname`、`urn:oid:2.5.4.4`   |
 
-GitLabがSAML SSOプロバイダーからSAML応答を受信すると、GitLabは属性の`name`フィールドで次の値を検索します。
+GitLabがSAML SSOプロバイダーからSAML応答を受信すると、GitLabは属性の`name`フィールドで次の値を検索します:
 
 - `"http://schemas.xmlsoap.org/ws/2005/05/identity/claims/givenname"`
 - `"http://schemas.xmlsoap.org/ws/2005/05/identity/claims/surname"`
@@ -728,7 +729,7 @@ GitLabがSAML SSOプロバイダーからSAML応答を受信すると、GitLab�
 - `lastname`
 - `email`
 
-GitLabがSAML応答を解析できるように、これらの値を属性の`Name`フィールドに正しく含める必要があります。たとえば、GitLabは次のようなSAML応答のスニペットを解析できます。
+GitLabがSAML応答を解析できるように、これらの値を属性の`Name`フィールドに正しく含める必要があります。たとえば、GitLabは次のようなSAML応答のスニペットを解析できます:
 
 - これは、`Name`属性が前の表にある必須値のいずれかに設定されているため、受け入れられます。
 
@@ -758,7 +759,7 @@ GitLabがSAML応答を解析できるように、これらの値を属性の`Nam
            </Attribute>
   ```
 
-ただし、GitLabは次のSAML応答スニペットを解析できません。
+ただし、GitLabは次のSAML応答スニペットを解析できません:
 
 - これは、`Name`属性の値が前の表にあるサポート対象の値のいずれでもないため、受け入れられません。
 
@@ -788,7 +789,7 @@ GitLabがSAML応答を解析できるように、これらの値を属性の`Nam
            </Attribute>
   ```
 
-以下については、[`attribute_statements`を参照してください。](#map-saml-response-attribute-names)
+以下については、[`attribute_statements`を参照してください。](#map-saml-response-attribute-names):
 
 - カスタムアサーション設定の例。
 - カスタムユーザー名属性を設定する方法。
@@ -797,14 +798,14 @@ GitLabがSAML応答を解析できるように、これらの値を属性の`Nam
 
 ## SAMLグループメンバーシップに基づいてユーザーを設定する {#configure-users-based-on-saml-group-membership}
 
-次のことが可能です。
+次のことが可能です:
 
 - ユーザーが特定のグループのメンバーであることを必須にする。
-- グループメンバーシップに基づいて、ユーザーに[外部](../administration/external_users.md)、管理者、[監査担当者](../administration/auditor_users.md)のいずれかのロールを割り当てる。
+- グループメンバーシップに基づいて、ユーザーに[外部](../administration/external_users.md) 、管理者、[監査担当者](../administration/auditor_users.md)のいずれかのロールを割り当てる。
 
-GitLabは、SAMLサインインのたびにこれらのグループをチェックし、必要に応じてユーザー属性を更新します。ただし、この機能では、GitLab[グループ](../user/group/_index.md)にユーザーを自動的に追加することは**できません**。
+GitLabは、SAMLサインインのたびにこれらのグループをチェックし、必要に応じてユーザー属性を更新します。ただし、この機能では、GitLab[グループ](../user/group/_index.md)にユーザーを自動的に追加することは**does not**（できません）。
 
-これらのグループのサポートは、以下に依存します。
+これらのグループのサポートは、以下に依存します:
 
 - お客様の[サブスクリプション](https://about.gitlab.com/pricing/)。
 - [GitLab Enterprise Edition（EE）](https://about.gitlab.com/install/)をインストールしているかどうか。
@@ -818,7 +819,7 @@ GitLabは、SAMLサインインのたびにこれらのグループをチェッ�
 
 前提要件: 
 
-- グループ情報がどこにあるかを、GitLabに指示する必要があります。そのためには、IdPサーバーが標準のSAML応答とともに特定の`AttributeStatement`を送信するように設定してください。次に例を示します。
+- グループ情報がどこにあるかを、GitLabに指示する必要があります。そのためには、IdPサーバーが標準のSAML応答とともに特定の`AttributeStatement`を送信するように設定してください。次に例を示します:
 
   ```xml
   <saml:AttributeStatement>
@@ -835,7 +836,7 @@ GitLabは、SAMLサインインのたびにこれらのグループをチェッ�
 
 ### 必須グループ {#required-groups}
 
-IdPは、SAML応答でグループ情報をGitLabに渡します。この応答を使用するには、以下を識別できるようにGitLabを設定します。
+IdPは、SAML応答でグループ情報をGitLabに渡します。この応答を使用するには、以下を識別できるようにGitLabを設定します:
 
 - SAML応答内でグループがある場所（`groups_attribute`設定を使用）。
 - グループまたはユーザーに関する情報（グループ設定を使用）。
@@ -850,7 +851,7 @@ IdPは、SAML応答でグループ情報をGitLabに渡します。この応答�
 
 {{< tab title="Linuxパッケージ（Omnibus）" >}}
 
-1. `/etc/gitlab/gitlab.rb`を編集します。
+1. `/etc/gitlab/gitlab.rb`を編集します: 
 
    ```ruby
    gitlab_rails['omniauth_providers'] = [
@@ -869,7 +870,7 @@ IdPは、SAML応答でグループ情報をGitLabに渡します。この応答�
    ]
    ```
 
-1. ファイルを保存して、GitLabを再設定します。
+1. ファイルを保存して、GitLabを再設定します:
 
    ```shell
    sudo gitlab-ctl reconfigure
@@ -879,7 +880,7 @@ IdPは、SAML応答でグループ情報をGitLabに渡します。この応答�
 
 {{< tab title="Helmチャート（Kubernetes）" >}}
 
-1. 次の内容を`saml.yaml`ファイルに記述し、[Kubernetes Secret](https://docs.gitlab.com/charts/charts/globals.html#providers)として使用します。
+1. 次の内容を`saml.yaml`ファイルに記述し、[Kubernetes Secret](https://docs.gitlab.com/charts/charts/globals.html#providers)として使用します:
 
    ```yaml
    name: 'saml'
@@ -894,19 +895,19 @@ IdPは、SAML応答でグループ情報をGitLabに渡します。この応答�
      name_identifier_format: 'urn:oasis:names:tc:SAML:2.0:nameid-format:persistent'
    ```
 
-1. Kubernetes Secretを作成します。
+1. Kubernetes Secretを作成します:
 
    ```shell
    kubectl create secret generic -n <namespace> gitlab-saml --from-file=provider=saml.yaml
    ```
 
-1. Helm値をエクスポートします。
+1. Helm値をエクスポートします: 
 
    ```shell
    helm get values gitlab > gitlab_values.yaml
    ```
 
-1. `gitlab_values.yaml`を編集します。
+1. `gitlab_values.yaml`を編集します: 
 
    ```yaml
    global:
@@ -916,7 +917,7 @@ IdPは、SAML応答でグループ情報をGitLabに渡します。この応答�
            - secret: gitlab-saml
    ```
 
-1. ファイルを保存し、新しい値を適用します。
+1. ファイルを保存し、新しい値を適用します: 
 
    ```shell
    helm upgrade -f gitlab_values.yaml gitlab gitlab/gitlab
@@ -926,7 +927,7 @@ IdPは、SAML応答でグループ情報をGitLabに渡します。この応答�
 
 {{< tab title="Docker" >}}
 
-1. `docker-compose.yml`を編集します。
+1. `docker-compose.yml`を編集します: 
 
    ```yaml
    version: "3.6"
@@ -950,7 +951,7 @@ IdPは、SAML応答でグループ情報をGitLabに渡します。この応答�
            ]
    ```
 
-1. ファイルを保存して、GitLabを再起動します。
+1. ファイルを保存して、GitLabを再起動します:
 
    ```shell
    docker compose up -d
@@ -960,7 +961,7 @@ IdPは、SAML応答でグループ情報をGitLabに渡します。この応答�
 
 {{< tab title="自己コンパイル（ソース）" >}}
 
-1. `/home/git/gitlab/config/gitlab.yml`を編集します。
+1. `/home/git/gitlab/config/gitlab.yml`を編集します: 
 
    ```yaml
    production: &base
@@ -980,7 +981,7 @@ IdPは、SAML応答でグループ情報をGitLabに渡します。この応答�
            }
    ```
 
-1. ファイルを保存して、GitLabを再起動します。
+1. ファイルを保存して、GitLabを再起動します:
 
    ```shell
    # For systems running systemd
@@ -996,7 +997,7 @@ IdPは、SAML応答でグループ情報をGitLabに渡します。この応答�
 
 ### 外部グループ {#external-groups}
 
-IdPは、SAML応答でグループ情報をGitLabに渡します。この応答を使用するには、以下を識別できるようにGitLabを設定します。
+IdPは、SAML応答でグループ情報をGitLabに渡します。この応答を使用するには、以下を識別できるようにGitLabを設定します:
 
 - SAML応答内でグループがある場所（`groups_attribute`設定を使用）。
 - グループまたはユーザーに関する情報（グループ設定を使用）。
@@ -1015,7 +1016,7 @@ SAMLは、`external_groups`設定に基づいて、ユーザーを[外部ユー�
 
 {{< tab title="Linuxパッケージ（Omnibus）" >}}
 
-1. `/etc/gitlab/gitlab.rb`を編集します。
+1. `/etc/gitlab/gitlab.rb`を編集します: 
 
    ```ruby
    gitlab_rails['omniauth_providers'] = [
@@ -1038,7 +1039,7 @@ SAMLは、`external_groups`設定に基づいて、ユーザーを[外部ユー�
    ]
    ```
 
-1. ファイルを保存して、GitLabを再設定します。
+1. ファイルを保存して、GitLabを再設定します:
 
    ```shell
    sudo gitlab-ctl reconfigure
@@ -1048,7 +1049,7 @@ SAMLは、`external_groups`設定に基づいて、ユーザーを[外部ユー�
 
 {{< tab title="Helmチャート（Kubernetes）" >}}
 
-1. 次の内容を`saml.yaml`ファイルに記述し、[Kubernetes Secret](https://docs.gitlab.com/charts/charts/globals.html#providers)として使用します。
+1. 次の内容を`saml.yaml`ファイルに記述し、[Kubernetes Secret](https://docs.gitlab.com/charts/charts/globals.html#providers)として使用します:
 
    ```yaml
    name: 'saml'
@@ -1065,19 +1066,19 @@ SAMLは、`external_groups`設定に基づいて、ユーザーを[外部ユー�
      name_identifier_format: 'urn:oasis:names:tc:SAML:2.0:nameid-format:persistent'
    ```
 
-1. Kubernetes Secretを作成します。
+1. Kubernetes Secretを作成します:
 
    ```shell
    kubectl create secret generic -n <namespace> gitlab-saml --from-file=provider=saml.yaml
    ```
 
-1. Helm値をエクスポートします。
+1. Helm値をエクスポートします: 
 
    ```shell
    helm get values gitlab > gitlab_values.yaml
    ```
 
-1. `gitlab_values.yaml`を編集します。
+1. `gitlab_values.yaml`を編集します: 
 
    ```yaml
    global:
@@ -1087,7 +1088,7 @@ SAMLは、`external_groups`設定に基づいて、ユーザーを[外部ユー�
            - secret: gitlab-saml
    ```
 
-1. ファイルを保存し、新しい値を適用します。
+1. ファイルを保存し、新しい値を適用します: 
 
    ```shell
    helm upgrade -f gitlab_values.yaml gitlab gitlab/gitlab
@@ -1097,7 +1098,7 @@ SAMLは、`external_groups`設定に基づいて、ユーザーを[外部ユー�
 
 {{< tab title="Docker" >}}
 
-1. `docker-compose.yml`を編集します。
+1. `docker-compose.yml`を編集します: 
 
    ```yaml
    version: "3.6"
@@ -1121,7 +1122,7 @@ SAMLは、`external_groups`設定に基づいて、ユーザーを[外部ユー�
            ]
    ```
 
-1. ファイルを保存して、GitLabを再起動します。
+1. ファイルを保存して、GitLabを再起動します:
 
    ```shell
    docker compose up -d
@@ -1131,7 +1132,7 @@ SAMLは、`external_groups`設定に基づいて、ユーザーを[外部ユー�
 
 {{< tab title="自己コンパイル（ソース）" >}}
 
-1. `/home/git/gitlab/config/gitlab.yml`を編集します。
+1. `/home/git/gitlab/config/gitlab.yml`を編集します: 
 
    ```yaml
    production: &base
@@ -1151,7 +1152,7 @@ SAMLは、`external_groups`設定に基づいて、ユーザーを[外部ユー�
             }
    ```
 
-1. ファイルを保存して、GitLabを再起動します。
+1. ファイルを保存して、GitLabを再起動します:
 
    ```shell
    # For systems running systemd
@@ -1167,7 +1168,7 @@ SAMLは、`external_groups`設定に基づいて、ユーザーを[外部ユー�
 
 ### 管理者グループ {#administrator-groups}
 
-IdPは、SAML応答でグループ情報をGitLabに渡します。この応答を使用するには、以下を識別できるようにGitLabを設定します。
+IdPは、SAML応答でグループ情報をGitLabに渡します。この応答を使用するには、以下を識別できるようにGitLabを設定します:
 
 - SAML応答内でグループがある場所（`groups_attribute`設定を使用）。
 - グループまたはユーザーに関する情報（グループ設定を使用）。
@@ -1182,7 +1183,7 @@ IdPは、SAML応答でグループ情報をGitLabに渡します。この応答�
 
 {{< tab title="Linuxパッケージ（Omnibus）" >}}
 
-1. `/etc/gitlab/gitlab.rb`を編集します。
+1. `/etc/gitlab/gitlab.rb`を編集します: 
 
    ```ruby
    gitlab_rails['omniauth_providers'] = [
@@ -1204,7 +1205,7 @@ IdPは、SAML応答でグループ情報をGitLabに渡します。この応答�
    ]
    ```
 
-1. ファイルを保存して、GitLabを再設定します。
+1. ファイルを保存して、GitLabを再設定します:
 
    ```shell
    sudo gitlab-ctl reconfigure
@@ -1214,7 +1215,7 @@ IdPは、SAML応答でグループ情報をGitLabに渡します。この応答�
 
 {{< tab title="Helmチャート（Kubernetes）" >}}
 
-1. 次の内容を`saml.yaml`ファイルに記述し、[Kubernetes Secret](https://docs.gitlab.com/charts/charts/globals.html#providers)として使用します。
+1. 次の内容を`saml.yaml`ファイルに記述し、[Kubernetes Secret](https://docs.gitlab.com/charts/charts/globals.html#providers)として使用します:
 
    ```yaml
    name: 'saml'
@@ -1229,19 +1230,19 @@ IdPは、SAML応答でグループ情報をGitLabに渡します。この応答�
      name_identifier_format: 'urn:oasis:names:tc:SAML:2.0:nameid-format:persistent'
    ```
 
-1. Kubernetes Secretを作成します。
+1. Kubernetes Secretを作成します:
 
    ```shell
    kubectl create secret generic -n <namespace> gitlab-saml --from-file=provider=saml.yaml
    ```
 
-1. Helm値をエクスポートします。
+1. Helm値をエクスポートします: 
 
    ```shell
    helm get values gitlab > gitlab_values.yaml
    ```
 
-1. `gitlab_values.yaml`を編集します。
+1. `gitlab_values.yaml`を編集します: 
 
    ```yaml
    global:
@@ -1251,7 +1252,7 @@ IdPは、SAML応答でグループ情報をGitLabに渡します。この応答�
            - secret: gitlab-saml
    ```
 
-1. ファイルを保存し、新しい値を適用します。
+1. ファイルを保存し、新しい値を適用します: 
 
    ```shell
    helm upgrade -f gitlab_values.yaml gitlab gitlab/gitlab
@@ -1261,7 +1262,7 @@ IdPは、SAML応答でグループ情報をGitLabに渡します。この応答�
 
 {{< tab title="Docker" >}}
 
-1. `docker-compose.yml`を編集します。
+1. `docker-compose.yml`を編集します: 
 
    ```yaml
    version: "3.6"
@@ -1285,7 +1286,7 @@ IdPは、SAML応答でグループ情報をGitLabに渡します。この応答�
            ]
    ```
 
-1. ファイルを保存して、GitLabを再起動します。
+1. ファイルを保存して、GitLabを再起動します:
 
    ```shell
    docker compose up -d
@@ -1295,7 +1296,7 @@ IdPは、SAML応答でグループ情報をGitLabに渡します。この応答�
 
 {{< tab title="自己コンパイル（ソース）" >}}
 
-1. `/home/git/gitlab/config/gitlab.yml`を編集します。
+1. `/home/git/gitlab/config/gitlab.yml`を編集します: 
 
    ```yaml
    production: &base
@@ -1315,7 +1316,7 @@ IdPは、SAML応答でグループ情報をGitLabに渡します。この応答�
            }
    ```
 
-1. ファイルを保存して、GitLabを再起動します。
+1. ファイルを保存して、GitLabを再起動します:
 
    ```shell
    # For systems running systemd
@@ -1338,7 +1339,7 @@ IdPは、SAML応答でグループ情報をGitLabに渡します。この応答�
 
 {{< /details >}}
 
-IdPは、SAML応答でグループ情報をGitLabに渡します。この応答を使用するには、以下を識別できるようにGitLabを設定します。
+IdPは、SAML応答でグループ情報をGitLabに渡します。この応答を使用するには、以下を識別できるようにGitLabを設定します:
 
 - SAML応答内でグループがある場所（`groups_attribute`設定を使用）。
 - グループまたはユーザーに関する情報（グループ設定を使用）。
@@ -1353,7 +1354,7 @@ IdPは、SAML応答でグループ情報をGitLabに渡します。この応答�
 
 {{< tab title="Linuxパッケージ（Omnibus）" >}}
 
-1. `/etc/gitlab/gitlab.rb`を編集します。
+1. `/etc/gitlab/gitlab.rb`を編集します: 
 
    ```ruby
    gitlab_rails['omniauth_providers'] = [
@@ -1372,7 +1373,7 @@ IdPは、SAML応答でグループ情報をGitLabに渡します。この応答�
    ]
    ```
 
-1. ファイルを保存して、GitLabを再設定します。
+1. ファイルを保存して、GitLabを再設定します:
 
    ```shell
    sudo gitlab-ctl reconfigure
@@ -1382,7 +1383,7 @@ IdPは、SAML応答でグループ情報をGitLabに渡します。この応答�
 
 {{< tab title="Helmチャート（Kubernetes）" >}}
 
-1. 次の内容を`saml.yaml`ファイルに記述し、[Kubernetes Secret](https://docs.gitlab.com/charts/charts/globals.html#providers)として使用します。
+1. 次の内容を`saml.yaml`ファイルに記述し、[Kubernetes Secret](https://docs.gitlab.com/charts/charts/globals.html#providers)として使用します:
 
    ```yaml
    name: 'saml'
@@ -1397,19 +1398,19 @@ IdPは、SAML応答でグループ情報をGitLabに渡します。この応答�
      name_identifier_format: 'urn:oasis:names:tc:SAML:2.0:nameid-format:persistent'
    ```
 
-1. Kubernetes Secretを作成します。
+1. Kubernetes Secretを作成します:
 
    ```shell
    kubectl create secret generic -n <namespace> gitlab-saml --from-file=provider=saml.yaml
    ```
 
-1. Helm値をエクスポートします。
+1. Helm値をエクスポートします: 
 
    ```shell
    helm get values gitlab > gitlab_values.yaml
    ```
 
-1. `gitlab_values.yaml`を編集します。
+1. `gitlab_values.yaml`を編集します: 
 
    ```yaml
    global:
@@ -1419,7 +1420,7 @@ IdPは、SAML応答でグループ情報をGitLabに渡します。この応答�
            - secret: gitlab-saml
    ```
 
-1. ファイルを保存し、新しい値を適用します。
+1. ファイルを保存し、新しい値を適用します: 
 
    ```shell
    helm upgrade -f gitlab_values.yaml gitlab gitlab/gitlab
@@ -1429,7 +1430,7 @@ IdPは、SAML応答でグループ情報をGitLabに渡します。この応答�
 
 {{< tab title="Docker" >}}
 
-1. `docker-compose.yml`を編集します。
+1. `docker-compose.yml`を編集します: 
 
    ```yaml
    version: "3.6"
@@ -1453,7 +1454,7 @@ IdPは、SAML応答でグループ情報をGitLabに渡します。この応答�
            ]
    ```
 
-1. ファイルを保存して、GitLabを再起動します。
+1. ファイルを保存して、GitLabを再起動します:
 
    ```shell
    docker compose up -d
@@ -1463,7 +1464,7 @@ IdPは、SAML応答でグループ情報をGitLabに渡します。この応答�
 
 {{< tab title="自己コンパイル（ソース）" >}}
 
-1. `/home/git/gitlab/config/gitlab.yml`を編集します。
+1. `/home/git/gitlab/config/gitlab.yml`を編集します: 
 
    ```yaml
    production: &base
@@ -1483,7 +1484,7 @@ IdPは、SAML応答でグループ情報をGitLabに渡します。この応答�
            }
    ```
 
-1. ファイルを保存して、GitLabを再起動します。
+1. ファイルを保存して、GitLabを再起動します:
 
    ```shell
    # For systems running systemd
@@ -1524,7 +1525,7 @@ GitLabグループメンバーシップの自動管理については、[SAMLグ
 
 セッション単位で2要素認証（2FA）としてカウントするようにSAML認証方法を設定するには、`upstream_two_factor_authn_contexts`リストにその方式を登録します。
 
-1. IdPが`AuthnContext`を返すようになっていることを確認してください。次に例を示します。
+1. IdPが`AuthnContext`を返すようになっていることを確認してください。次に例を示します:
 
    ```xml
    <saml:AuthnStatement>
@@ -1540,7 +1541,7 @@ GitLabグループメンバーシップの自動管理については、[SAMLグ
 
    {{< tab title="Linuxパッケージ（Omnibus）" >}}
 
-   1. `/etc/gitlab/gitlab.rb`を編集します。
+   1. `/etc/gitlab/gitlab.rb`を編集します: 
 
       ```ruby
       gitlab_rails['omniauth_providers'] = [
@@ -1563,7 +1564,7 @@ GitLabグループメンバーシップの自動管理については、[SAMLグ
       ]
       ```
 
-   1. ファイルを保存して、GitLabを再設定します。
+   1. ファイルを保存して、GitLabを再設定します:
 
       ```shell
       sudo gitlab-ctl reconfigure
@@ -1573,7 +1574,7 @@ GitLabグループメンバーシップの自動管理については、[SAMLグ
 
    {{< tab title="Helmチャート（Kubernetes）" >}}
 
-   1. 次の内容を`saml.yaml`ファイルに記述し、[Kubernetes Secret](https://docs.gitlab.com/charts/charts/globals.html#providers)として使用します。
+   1. 次の内容を`saml.yaml`ファイルに記述し、[Kubernetes Secret](https://docs.gitlab.com/charts/charts/globals.html#providers)として使用します:
 
       ```yaml
       name: 'saml'
@@ -1590,19 +1591,19 @@ GitLabグループメンバーシップの自動管理については、[SAMLグ
           - 'urn:oasis:names:tc:SAML:2.0:ac:classes:SecondFactorIGTOKEN'
       ```
 
-   1. Kubernetes Secretを作成します。
+   1. Kubernetes Secretを作成します:
 
       ```shell
       kubectl create secret generic -n <namespace> gitlab-saml --from-file=provider=saml.yaml
       ```
 
-   1. Helm値をエクスポートします。
+   1. Helm値をエクスポートします: 
 
       ```shell
       helm get values gitlab > gitlab_values.yaml
       ```
 
-   1. `gitlab_values.yaml`を編集します。
+   1. `gitlab_values.yaml`を編集します: 
 
       ```yaml
       global:
@@ -1612,7 +1613,7 @@ GitLabグループメンバーシップの自動管理については、[SAMLグ
               - secret: gitlab-saml
       ```
 
-   1. ファイルを保存し、新しい値を適用します。
+   1. ファイルを保存し、新しい値を適用します: 
 
       ```shell
       helm upgrade -f gitlab_values.yaml gitlab gitlab/gitlab
@@ -1622,7 +1623,7 @@ GitLabグループメンバーシップの自動管理については、[SAMLグ
 
    {{< tab title="Docker" >}}
 
-   1. `docker-compose.yml`を編集します。
+   1. `docker-compose.yml`を編集します: 
 
       ```yaml
       version: "3.6"
@@ -1650,7 +1651,7 @@ GitLabグループメンバーシップの自動管理については、[SAMLグ
               ]
       ```
 
-   1. ファイルを保存して、GitLabを再起動します。
+   1. ファイルを保存して、GitLabを再起動します:
 
       ```shell
       docker compose up -d
@@ -1660,7 +1661,7 @@ GitLabグループメンバーシップの自動管理については、[SAMLグ
 
    {{< tab title="自己コンパイル（ソース）" >}}
 
-   1. `/home/git/gitlab/config/gitlab.yml`を編集します。
+   1. `/home/git/gitlab/config/gitlab.yml`を編集します: 
 
       ```yaml
       production: &base
@@ -1684,7 +1685,7 @@ GitLabグループメンバーシップの自動管理については、[SAMLグ
               }
       ```
 
-   1. ファイルを保存して、GitLabを再起動します。
+   1. ファイルを保存して、GitLabを再起動します:
 
       ```shell
       # For systems running systemd
@@ -1706,13 +1707,13 @@ IdPは、アサーションが改ざんされていないことを保証する�
 
 ### `idp_cert_fingerprint`を使用する {#using-idp_cert_fingerprint}
 
-`idp_cert_fingerprint`を使用して、レスポンス署名の検証を設定できます。設定例を以下に示します。
+`idp_cert_fingerprint`を使用して、レスポンス署名の検証を設定できます。設定例を以下に示します:
 
 {{< tabs >}}
 
 {{< tab title="Linuxパッケージ（Omnibus）" >}}
 
-1. `/etc/gitlab/gitlab.rb`を編集します。
+1. `/etc/gitlab/gitlab.rb`を編集します: 
 
    ```ruby
    gitlab_rails['omniauth_providers'] = [
@@ -1729,7 +1730,7 @@ IdPは、アサーションが改ざんされていないことを保証する�
    ]
    ```
 
-1. ファイルを保存して、GitLabを再設定します。
+1. ファイルを保存して、GitLabを再設定します:
 
    ```shell
    sudo gitlab-ctl reconfigure
@@ -1739,7 +1740,7 @@ IdPは、アサーションが改ざんされていないことを保証する�
 
 {{< tab title="Helmチャート（Kubernetes）" >}}
 
-1. 次の内容を`saml.yaml`ファイルに記述し、[Kubernetes Secret](https://docs.gitlab.com/charts/charts/globals.html#providers)として使用します。
+1. 次の内容を`saml.yaml`ファイルに記述し、[Kubernetes Secret](https://docs.gitlab.com/charts/charts/globals.html#providers)として使用します:
 
    ```yaml
    name: 'saml'
@@ -1752,19 +1753,19 @@ IdPは、アサーションが改ざんされていないことを保証する�
      name_identifier_format: 'urn:oasis:names:tc:SAML:2.0:nameid-format:persistent'
    ```
 
-1. Kubernetes Secretを作成します。
+1. Kubernetes Secretを作成します:
 
    ```shell
    kubectl create secret generic -n <namespace> gitlab-saml --from-file=provider=saml.yaml
    ```
 
-1. Helm値をエクスポートします。
+1. Helm値をエクスポートします: 
 
    ```shell
    helm get values gitlab > gitlab_values.yaml
    ```
 
-1. `gitlab_values.yaml`を編集します。
+1. `gitlab_values.yaml`を編集します: 
 
    ```yaml
    global:
@@ -1774,7 +1775,7 @@ IdPは、アサーションが改ざんされていないことを保証する�
            - secret: gitlab-saml
    ```
 
-1. ファイルを保存し、新しい値を適用します。
+1. ファイルを保存し、新しい値を適用します: 
 
    ```shell
    helm upgrade -f gitlab_values.yaml gitlab gitlab/gitlab
@@ -1784,7 +1785,7 @@ IdPは、アサーションが改ざんされていないことを保証する�
 
 {{< tab title="Docker" >}}
 
-1. `docker-compose.yml`を編集します。
+1. `docker-compose.yml`を編集します: 
 
    ```yaml
    version: "3.6"
@@ -1806,7 +1807,7 @@ IdPは、アサーションが改ざんされていないことを保証する�
            ]
    ```
 
-1. ファイルを保存して、GitLabを再起動します。
+1. ファイルを保存して、GitLabを再起動します:
 
    ```shell
    docker compose up -d
@@ -1816,7 +1817,7 @@ IdPは、アサーションが改ざんされていないことを保証する�
 
 {{< tab title="自己コンパイル（ソース）" >}}
 
-1. `/home/git/gitlab/config/gitlab.yml`を編集します。
+1. `/home/git/gitlab/config/gitlab.yml`を編集します: 
 
    ```yaml
    production: &base
@@ -1834,7 +1835,7 @@ IdPは、アサーションが改ざんされていないことを保証する�
            }
    ```
 
-1. ファイルを保存して、GitLabを再起動します。
+1. ファイルを保存して、GitLabを再起動します:
 
    ```shell
    # For systems running systemd
@@ -1850,13 +1851,13 @@ IdPは、アサーションが改ざんされていないことを保証する�
 
 ### `idp_cert`を使用する {#using-idp_cert}
 
-`idp_cert`を使用して、GitLabを直接設定することもできます。設定例を以下に示します。
+`idp_cert`を使用して、GitLabを直接設定することもできます。設定例を以下に示します:
 
 {{< tabs >}}
 
 {{< tab title="Linuxパッケージ（Omnibus）" >}}
 
-1. `/etc/gitlab/gitlab.rb`を編集します。
+1. `/etc/gitlab/gitlab.rb`を編集します: 
 
    ```ruby
    gitlab_rails['omniauth_providers'] = [
@@ -1875,7 +1876,7 @@ IdPは、アサーションが改ざんされていないことを保証する�
    ]
    ```
 
-1. ファイルを保存して、GitLabを再設定します。
+1. ファイルを保存して、GitLabを再設定します:
 
    ```shell
    sudo gitlab-ctl reconfigure
@@ -1885,7 +1886,7 @@ IdPは、アサーションが改ざんされていないことを保証する�
 
 {{< tab title="Helmチャート（Kubernetes）" >}}
 
-1. 次の内容を`saml.yaml`ファイルに記述し、[Kubernetes Secret](https://docs.gitlab.com/charts/charts/globals.html#providers)として使用します。
+1. 次の内容を`saml.yaml`ファイルに記述し、[Kubernetes Secret](https://docs.gitlab.com/charts/charts/globals.html#providers)として使用します:
 
    ```yaml
    name: 'saml'
@@ -1901,19 +1902,19 @@ IdPは、アサーションが改ざんされていないことを保証する�
      name_identifier_format: 'urn:oasis:names:tc:SAML:2.0:nameid-format:persistent'
    ```
 
-1. Kubernetes Secretを作成します。
+1. Kubernetes Secretを作成します:
 
    ```shell
    kubectl create secret generic -n <namespace> gitlab-saml --from-file=provider=saml.yaml
    ```
 
-1. Helm値をエクスポートします。
+1. Helm値をエクスポートします: 
 
    ```shell
    helm get values gitlab > gitlab_values.yaml
    ```
 
-1. `gitlab_values.yaml`を編集します。
+1. `gitlab_values.yaml`を編集します: 
 
    ```yaml
    global:
@@ -1923,7 +1924,7 @@ IdPは、アサーションが改ざんされていないことを保証する�
            - secret: gitlab-saml
    ```
 
-1. ファイルを保存し、新しい値を適用します。
+1. ファイルを保存し、新しい値を適用します: 
 
    ```shell
    helm upgrade -f gitlab_values.yaml gitlab gitlab/gitlab
@@ -1933,7 +1934,7 @@ IdPは、アサーションが改ざんされていないことを保証する�
 
 {{< tab title="Docker" >}}
 
-1. `docker-compose.yml`を編集します。
+1. `docker-compose.yml`を編集します: 
 
    ```yaml
    version: "3.6"
@@ -1957,7 +1958,7 @@ IdPは、アサーションが改ざんされていないことを保証する�
            ]
    ```
 
-1. ファイルを保存して、GitLabを再起動します。
+1. ファイルを保存して、GitLabを再起動します:
 
    ```shell
    docker compose up -d
@@ -1967,7 +1968,7 @@ IdPは、アサーションが改ざんされていないことを保証する�
 
 {{< tab title="自己コンパイル（ソース）" >}}
 
-1. `/home/git/gitlab/config/gitlab.yml`を編集します。
+1. `/home/git/gitlab/config/gitlab.yml`を編集します: 
 
    ```yaml
    production: &base
@@ -1987,7 +1988,7 @@ IdPは、アサーションが改ざんされていないことを保証する�
            }
    ```
 
-1. ファイルを保存して、GitLabを再起動します。
+1. ファイルを保存して、GitLabを再起動します:
 
    ```shell
    # For systems running systemd
@@ -2001,7 +2002,7 @@ IdPは、アサーションが改ざんされていないことを保証する�
 
 {{< /tabs >}}
 
-応答署名検証が正しく設定されていない場合は、次のようなエラーメッセージが表示されることがあります。
+応答署名検証が正しく設定されていない場合は、次のようなエラーメッセージが表示されることがあります:
 
 - キー検証エラー。
 - ダイジェストの不一致。
@@ -2019,13 +2020,13 @@ GitLabの設定に`auto_sign_in_with_provider`を付加すると、認証のた�
 
 {{< tab title="Linuxパッケージ（Omnibus）" >}}
 
-1. `/etc/gitlab/gitlab.rb`を編集します。
+1. `/etc/gitlab/gitlab.rb`を編集します: 
 
    ```ruby
    gitlab_rails['omniauth_auto_sign_in_with_provider'] = 'saml'
    ```
 
-1. ファイルを保存して、GitLabを再設定します。
+1. ファイルを保存して、GitLabを再設定します:
 
    ```shell
    sudo gitlab-ctl reconfigure
@@ -2035,13 +2036,13 @@ GitLabの設定に`auto_sign_in_with_provider`を付加すると、認証のた�
 
 {{< tab title="Helmチャート（Kubernetes）" >}}
 
-1. Helm値をエクスポートします。
+1. Helm値をエクスポートします: 
 
    ```shell
    helm get values gitlab > gitlab_values.yaml
    ```
 
-1. `gitlab_values.yaml`を編集します。
+1. `gitlab_values.yaml`を編集します: 
 
    ```yaml
    global:
@@ -2050,7 +2051,7 @@ GitLabの設定に`auto_sign_in_with_provider`を付加すると、認証のた�
          autoSignInWithProvider: 'saml'
    ```
 
-1. ファイルを保存し、新しい値を適用します。
+1. ファイルを保存し、新しい値を適用します: 
 
    ```shell
    helm upgrade -f gitlab_values.yaml gitlab gitlab/gitlab
@@ -2060,7 +2061,7 @@ GitLabの設定に`auto_sign_in_with_provider`を付加すると、認証のた�
 
 {{< tab title="Docker" >}}
 
-1. `docker-compose.yml`を編集します。
+1. `docker-compose.yml`を編集します: 
 
    ```yaml
    version: "3.6"
@@ -2071,7 +2072,7 @@ GitLabの設定に`auto_sign_in_with_provider`を付加すると、認証のた�
            gitlab_rails['omniauth_auto_sign_in_with_provider'] = 'saml'
    ```
 
-1. ファイルを保存して、GitLabを再起動します。
+1. ファイルを保存して、GitLabを再起動します:
 
    ```shell
    docker compose up -d
@@ -2081,7 +2082,7 @@ GitLabの設定に`auto_sign_in_with_provider`を付加すると、認証のた�
 
 {{< tab title="自己コンパイル（ソース）" >}}
 
-1. `/home/git/gitlab/config/gitlab.yml`を編集します。
+1. `/home/git/gitlab/config/gitlab.yml`を編集します: 
 
    ```yaml
    production: &base
@@ -2089,7 +2090,7 @@ GitLabの設定に`auto_sign_in_with_provider`を付加すると、認証のた�
        auto_sign_in_with_provider: 'saml'
    ```
 
-1. ファイルを保存して、GitLabを再起動します。
+1. ファイルを保存して、GitLabを再起動します:
 
    ```shell
    # For systems running systemd
@@ -2107,7 +2108,7 @@ GitLabの設定に`auto_sign_in_with_provider`を付加すると、認証のた�
 
 {{< alert type="note" >}}
 
-自動サインイン設定を回避するには、サインインURLに`?auto_sign_in=false`を付加します。例：`https://gitlab.example.com/users/sign_in?auto_sign_in=false`。
+自動サインイン設定を回避するには、サインインURLに`?auto_sign_in=false`を付加します。例: `https://gitlab.example.com/users/sign_in?auto_sign_in=false`。
 
 {{< /alert >}}
 
@@ -2128,15 +2129,15 @@ GitLabの設定に`auto_sign_in_with_provider`を付加すると、認証のた�
 
 {{< /alert >}}
 
-たとえば、`SAMLResponse`に`EmailAddress`という属性が含まれている場合は、`{ email: ['EmailAddress'] }`を指定することで、属性を`info`ハッシュの対応するキーにマップできます。URI形式の属性もサポートしています。例： `{ email: ['http://schemas.xmlsoap.org/ws/2005/05/identity/claims/emailaddress'] }`
+たとえば、`SAMLResponse`に`EmailAddress`という属性が含まれている場合は、`{ email: ['EmailAddress'] }`を指定することで、属性を`info`ハッシュの対応するキーにマップできます。URI形式の属性もサポートしています。例: `{ email: ['http://schemas.xmlsoap.org/ws/2005/05/identity/claims/emailaddress'] }`
 
-この設定を使用して、アカウントの作成に必要な特定の属性をどこから取得すべきかをGitLabに指示します。たとえば、IdPがユーザーのメールアドレスを`email`ではなく`EmailAddress`として送信する場合は、それを設定することでGitLabに知らせます。
+この設定を使用して、アカウントの作成に必要な特定の属性をどこから取得すべきかをGitLabに指示します。たとえば、IdPがユーザーのメールアドレスを`email`ではなく`EmailAddress`として送信する場合は、それを設定することでGitLabに知らせます:
 
 {{< tabs >}}
 
 {{< tab title="Linuxパッケージ（Omnibus）" >}}
 
-1. `/etc/gitlab/gitlab.rb`を編集します。
+1. `/etc/gitlab/gitlab.rb`を編集します: 
 
    ```ruby
    gitlab_rails['omniauth_providers'] = [
@@ -2154,7 +2155,7 @@ GitLabの設定に`auto_sign_in_with_provider`を付加すると、認証のた�
    ]
    ```
 
-1. ファイルを保存して、GitLabを再設定します。
+1. ファイルを保存して、GitLabを再設定します:
 
    ```shell
    sudo gitlab-ctl reconfigure
@@ -2164,7 +2165,7 @@ GitLabの設定に`auto_sign_in_with_provider`を付加すると、認証のた�
 
 {{< tab title="Helmチャート（Kubernetes）" >}}
 
-1. 次の内容を`saml.yaml`ファイルに記述し、[Kubernetes Secret](https://docs.gitlab.com/charts/charts/globals.html#providers)として使用します。
+1. 次の内容を`saml.yaml`ファイルに記述し、[Kubernetes Secret](https://docs.gitlab.com/charts/charts/globals.html#providers)として使用します:
 
    ```yaml
    name: 'saml'
@@ -2179,19 +2180,19 @@ GitLabの設定に`auto_sign_in_with_provider`を付加すると、認証のた�
        email: ['EmailAddress']
    ```
 
-1. Kubernetes Secretを作成します。
+1. Kubernetes Secretを作成します:
 
    ```shell
    kubectl create secret generic -n <namespace> gitlab-saml --from-file=provider=saml.yaml
    ```
 
-1. Helm値をエクスポートします。
+1. Helm値をエクスポートします: 
 
    ```shell
    helm get values gitlab > gitlab_values.yaml
    ```
 
-1. `gitlab_values.yaml`を編集します。
+1. `gitlab_values.yaml`を編集します: 
 
    ```yaml
    global:
@@ -2201,7 +2202,7 @@ GitLabの設定に`auto_sign_in_with_provider`を付加すると、認証のた�
            - secret: gitlab-saml
    ```
 
-1. ファイルを保存し、新しい値を適用します。
+1. ファイルを保存し、新しい値を適用します: 
 
    ```shell
    helm upgrade -f gitlab_values.yaml gitlab gitlab/gitlab
@@ -2211,7 +2212,7 @@ GitLabの設定に`auto_sign_in_with_provider`を付加すると、認証のた�
 
 {{< tab title="Docker" >}}
 
-1. `docker-compose.yml`を編集します。
+1. `docker-compose.yml`を編集します: 
 
    ```yaml
    version: "3.6"
@@ -2234,7 +2235,7 @@ GitLabの設定に`auto_sign_in_with_provider`を付加すると、認証のた�
            ]
    ```
 
-1. ファイルを保存して、GitLabを再起動します。
+1. ファイルを保存して、GitLabを再起動します:
 
    ```shell
    docker compose up -d
@@ -2244,7 +2245,7 @@ GitLabの設定に`auto_sign_in_with_provider`を付加すると、認証のた�
 
 {{< tab title="自己コンパイル（ソース）" >}}
 
-1. `/home/git/gitlab/config/gitlab.yml`を編集します。
+1. `/home/git/gitlab/config/gitlab.yml`を編集します: 
 
    ```yaml
    production: &base
@@ -2263,7 +2264,7 @@ GitLabの設定に`auto_sign_in_with_provider`を付加すると、認証のた�
            }
    ```
 
-1. ファイルを保存して、GitLabを再起動します。
+1. ファイルを保存して、GitLabを再起動します:
 
    ```shell
    # For systems running systemd
@@ -2281,13 +2282,13 @@ GitLabの設定に`auto_sign_in_with_provider`を付加すると、認証のた�
 
 デフォルトでは、SAML応答内のメールアドレスのローカル部分が、GitLabユーザー名の生成に使用されます。
 
-ユーザーが希望するユーザー名を含む1つ以上の属性を指定するには、`attribute_statements`で[`username`または`nickname`](omniauth.md#per-provider-configuration)を設定します。
+ユーザーが希望するユーザー名を含む1つ以上の属性を指定するには、`attribute_statements`で[`username`または`nickname`](omniauth.md#per-provider-configuration)を設定します:
 
 {{< tabs >}}
 
 {{< tab title="Linuxパッケージ（Omnibus）" >}}
 
-1. `/etc/gitlab/gitlab.rb`を編集します。
+1. `/etc/gitlab/gitlab.rb`を編集します: 
 
    ```ruby
    gitlab_rails['omniauth_providers'] = [
@@ -2305,7 +2306,7 @@ GitLabの設定に`auto_sign_in_with_provider`を付加すると、認証のた�
    ]
    ```
 
-1. ファイルを保存して、GitLabを再設定します。
+1. ファイルを保存して、GitLabを再設定します:
 
    ```shell
    sudo gitlab-ctl reconfigure
@@ -2315,7 +2316,7 @@ GitLabの設定に`auto_sign_in_with_provider`を付加すると、認証のた�
 
 {{< tab title="Helmチャート（Kubernetes）" >}}
 
-1. 次の内容を`saml.yaml`ファイルに記述し、[Kubernetes Secret](https://docs.gitlab.com/charts/charts/globals.html#providers)として使用します。
+1. 次の内容を`saml.yaml`ファイルに記述し、[Kubernetes Secret](https://docs.gitlab.com/charts/charts/globals.html#providers)として使用します:
 
    ```yaml
    name: 'saml'
@@ -2330,19 +2331,19 @@ GitLabの設定に`auto_sign_in_with_provider`を付加すると、認証のた�
        nickname: ['username']
    ```
 
-1. Kubernetes Secretを作成します。
+1. Kubernetes Secretを作成します:
 
    ```shell
    kubectl create secret generic -n <namespace> gitlab-saml --from-file=provider=saml.yaml
    ```
 
-1. Helm値をエクスポートします。
+1. Helm値をエクスポートします: 
 
    ```shell
    helm get values gitlab > gitlab_values.yaml
    ```
 
-1. `gitlab_values.yaml`を編集します。
+1. `gitlab_values.yaml`を編集します: 
 
    ```yaml
    global:
@@ -2352,7 +2353,7 @@ GitLabの設定に`auto_sign_in_with_provider`を付加すると、認証のた�
            - secret: gitlab-saml
    ```
 
-1. ファイルを保存し、新しい値を適用します。
+1. ファイルを保存し、新しい値を適用します: 
 
    ```shell
    helm upgrade -f gitlab_values.yaml gitlab gitlab/gitlab
@@ -2362,7 +2363,7 @@ GitLabの設定に`auto_sign_in_with_provider`を付加すると、認証のた�
 
 {{< tab title="Docker" >}}
 
-1. `docker-compose.yml`を編集します。
+1. `docker-compose.yml`を編集します: 
 
    ```yaml
    version: "3.6"
@@ -2387,7 +2388,7 @@ GitLabの設定に`auto_sign_in_with_provider`を付加すると、認証のた�
            ]
    ```
 
-1. ファイルを保存して、GitLabを再起動します。
+1. ファイルを保存して、GitLabを再起動します:
 
    ```shell
    docker compose up -d
@@ -2397,7 +2398,7 @@ GitLabの設定に`auto_sign_in_with_provider`を付加すると、認証のた�
 
 {{< tab title="自己コンパイル（ソース）" >}}
 
-1. `/home/git/gitlab/config/gitlab.yml`を編集します。
+1. `/home/git/gitlab/config/gitlab.yml`を編集します: 
 
    ```yaml
    production: &base
@@ -2418,7 +2419,7 @@ GitLabの設定に`auto_sign_in_with_provider`を付加すると、認証のた�
            }
    ```
 
-1. ファイルを保存して、GitLabを再起動します。
+1. ファイルを保存して、GitLabを再起動します:
 
    ```shell
    # For systems running systemd
@@ -2444,7 +2445,7 @@ GitLabの設定に`auto_sign_in_with_provider`を付加すると、認証のた�
 
 SAMLプロバイダーからプロファイル情報を同期するには、これらの属性をマップするように`attribute_statements`を設定する必要があります。
 
-サポートされているプロファイル属性は次のとおりです。
+サポートされているプロファイル属性は次のとおりです:
 
 - `job_title`
 - `organization`
@@ -2456,7 +2457,7 @@ SAMLプロバイダーからプロファイル情報を同期するには、こ�
 {{< tab title="Linuxパッケージ（Omnibus）" >}}
 
 1. [目的の属性を同期するようにOmniAuthを設定](omniauth.md#keep-omniauth-user-profiles-up-to-date)します。
-1. `/etc/gitlab/gitlab.rb`を編集します。
+1. `/etc/gitlab/gitlab.rb`を編集します: 
 
    ```ruby
    gitlab_rails['omniauth_providers'] = [
@@ -2477,7 +2478,7 @@ SAMLプロバイダーからプロファイル情報を同期するには、こ�
    ]
    ```
 
-1. ファイルを保存して、GitLabを再設定します。
+1. ファイルを保存して、GitLabを再設定します:
 
    ```shell
    sudo gitlab-ctl reconfigure
@@ -2488,7 +2489,7 @@ SAMLプロバイダーからプロファイル情報を同期するには、こ�
 {{< tab title="Helmチャート（Kubernetes）" >}}
 
 1. [目的の属性を同期するようにOmniAuthを設定](omniauth.md#keep-omniauth-user-profiles-up-to-date)します。
-1. 次のYAMLの内容を`saml.yaml`ファイルに記述して保存し、[Kubernetes Secret](https://docs.gitlab.com/charts/charts/globals.html#providers)として使用します。
+1. 次のYAMLの内容を`saml.yaml`ファイルに記述して保存し、[Kubernetes Secret](https://docs.gitlab.com/charts/charts/globals.html#providers)として使用します:
 
    ```yaml
    name: 'saml'
@@ -2504,19 +2505,19 @@ SAMLプロバイダーからプロファイル情報を同期するには、こ�
        job_title: ['job_title']
    ```
 
-1. Kubernetes Secretを作成します。
+1. Kubernetes Secretを作成します:
 
    ```shell
    kubectl create secret generic -n <namespace> gitlab-saml --from-file=provider=saml.yaml
    ```
 
-1. Helm値をエクスポートします。
+1. Helm値をエクスポートします: 
 
    ```shell
    helm get values gitlab > gitlab_values.yaml
    ```
 
-1. `gitlab_values.yaml`を編集します。
+1. `gitlab_values.yaml`を編集します: 
 
    ```yaml
    global:
@@ -2526,7 +2527,7 @@ SAMLプロバイダーからプロファイル情報を同期するには、こ�
            - secret: gitlab-saml
    ```
 
-1. ファイルを保存し、新しい値を適用します。
+1. ファイルを保存し、新しい値を適用します: 
 
    ```shell
    helm upgrade -f gitlab_values.yaml gitlab gitlab/gitlab
@@ -2537,7 +2538,7 @@ SAMLプロバイダーからプロファイル情報を同期するには、こ�
 {{< tab title="Docker" >}}
 
 1. [目的の属性を同期するようにOmniAuthを設定](omniauth.md#keep-omniauth-user-profiles-up-to-date)します。
-1. `docker-compose.yml`を編集します。
+1. `docker-compose.yml`を編集します: 
 
    ```yaml
    version: "3.6"
@@ -2563,7 +2564,7 @@ SAMLプロバイダーからプロファイル情報を同期するには、こ�
            ]
    ```
 
-1. ファイルを保存して、GitLabを再起動します。
+1. ファイルを保存して、GitLabを再起動します:
 
    ```shell
    docker compose up -d
@@ -2574,7 +2575,7 @@ SAMLプロバイダーからプロファイル情報を同期するには、こ�
 {{< tab title="自己コンパイル（ソース）" >}}
 
 1. [目的の属性を同期するようにOmniAuthを設定](omniauth.md#keep-omniauth-user-profiles-up-to-date)します。
-1. `/home/git/gitlab/config/gitlab.yml`を編集します。
+1. `/home/git/gitlab/config/gitlab.yml`を編集します: 
 
    ```yaml
    production: &base
@@ -2596,7 +2597,7 @@ SAMLプロバイダーからプロファイル情報を同期するには、こ�
            }
    ```
 
-1. ファイルを保存して、GitLabを再起動します。
+1. ファイルを保存して、GitLabを再起動します:
 
    ```shell
    # For systems running systemd
@@ -2618,7 +2619,7 @@ IdPの時刻が、システム時刻よりもわずかに進んでいる場合�
 
 {{< tab title="Linuxパッケージ（Omnibus）" >}}
 
-1. `/etc/gitlab/gitlab.rb`を編集します。
+1. `/etc/gitlab/gitlab.rb`を編集します: 
 
    ```ruby
    gitlab_rails['omniauth_providers'] = [
@@ -2638,7 +2639,7 @@ IdPの時刻が、システム時刻よりもわずかに進んでいる場合�
    ]
    ```
 
-1. ファイルを保存して、GitLabを再設定します。
+1. ファイルを保存して、GitLabを再設定します:
 
    ```shell
    sudo gitlab-ctl reconfigure
@@ -2648,7 +2649,7 @@ IdPの時刻が、システム時刻よりもわずかに進んでいる場合�
 
 {{< tab title="Helmチャート（Kubernetes）" >}}
 
-1. 次の内容を`saml.yaml`ファイルに記述し、[Kubernetes Secret](https://docs.gitlab.com/charts/charts/globals.html#providers)として使用します。
+1. 次の内容を`saml.yaml`ファイルに記述し、[Kubernetes Secret](https://docs.gitlab.com/charts/charts/globals.html#providers)として使用します:
 
    ```yaml
    name: 'saml'
@@ -2664,19 +2665,19 @@ IdPの時刻が、システム時刻よりもわずかに進んでいる場合�
      allowed_clock_drift: 1  # for one second clock drift
    ```
 
-1. Kubernetes Secretを作成します。
+1. Kubernetes Secretを作成します:
 
    ```shell
    kubectl create secret generic -n <namespace> gitlab-saml --from-file=provider=saml.yaml
    ```
 
-1. Helm値をエクスポートします。
+1. Helm値をエクスポートします: 
 
    ```shell
    helm get values gitlab > gitlab_values.yaml
    ```
 
-1. `gitlab_values.yaml`を編集します。
+1. `gitlab_values.yaml`を編集します: 
 
    ```yaml
    global:
@@ -2686,7 +2687,7 @@ IdPの時刻が、システム時刻よりもわずかに進んでいる場合�
            - secret: gitlab-saml
    ```
 
-1. ファイルを保存し、新しい値を適用します。
+1. ファイルを保存し、新しい値を適用します: 
 
    ```shell
    helm upgrade -f gitlab_values.yaml gitlab gitlab/gitlab
@@ -2696,7 +2697,7 @@ IdPの時刻が、システム時刻よりもわずかに進んでいる場合�
 
 {{< tab title="Docker" >}}
 
-1. `docker-compose.yml`を編集します。
+1. `docker-compose.yml`を編集します: 
 
    ```yaml
    version: "3.6"
@@ -2721,7 +2722,7 @@ IdPの時刻が、システム時刻よりもわずかに進んでいる場合�
            ]
    ```
 
-1. ファイルを保存して、GitLabを再起動します。
+1. ファイルを保存して、GitLabを再起動します:
 
    ```shell
    docker compose up -d
@@ -2731,7 +2732,7 @@ IdPの時刻が、システム時刻よりもわずかに進んでいる場合�
 
 {{< tab title="自己コンパイル（ソース）" >}}
 
-1. `/home/git/gitlab/config/gitlab.yml`を編集します。
+1. `/home/git/gitlab/config/gitlab.yml`を編集します: 
 
    ```yaml
    production: &base
@@ -2752,7 +2753,7 @@ IdPの時刻が、システム時刻よりもわずかに進んでいる場合�
            }
    ```
 
-1. ファイルを保存して、GitLabを再起動します。
+1. ファイルを保存して、GitLabを再起動します:
 
    ```shell
    # For systems running systemd
@@ -2770,7 +2771,7 @@ IdPの時刻が、システム時刻よりもわずかに進んでいる場合�
 
 デフォルトでは、ユーザーの`uid`は、SAML応答の`NameID`属性として設定されます。`uid`に別の属性を指定するには、`uid_attribute`を設定します。
 
-`uid`に一意の属性を設定する前に、SAMLユーザーが次の属性を変更できないよう、各属性が変更不可に設定されていることを確認してください。
+`uid`に一意の属性を設定する前に、SAMLユーザーが次の属性を変更できないよう、各属性が変更不可に設定されていることを確認してください:
 
 - [`NameID`](../user/group/saml_sso/_index.md#manage-user-saml-identity)
 - `Email`（`omniauth_auto_link_saml_user`と併用する場合）。
@@ -2781,7 +2782,7 @@ IdPの時刻が、システム時刻よりもわずかに進んでいる場合�
 
 {{< tab title="Linuxパッケージ（Omnibus）" >}}
 
-1. `/etc/gitlab/gitlab.rb`を編集します。
+1. `/etc/gitlab/gitlab.rb`を編集します: 
 
    ```ruby
    gitlab_rails['omniauth_providers'] = [
@@ -2799,7 +2800,7 @@ IdPの時刻が、システム時刻よりもわずかに進んでいる場合�
    ]
    ```
 
-1. ファイルを保存して、GitLabを再設定します。
+1. ファイルを保存して、GitLabを再設定します:
 
    ```shell
    sudo gitlab-ctl reconfigure
@@ -2809,7 +2810,7 @@ IdPの時刻が、システム時刻よりもわずかに進んでいる場合�
 
 {{< tab title="Helmチャート（Kubernetes）" >}}
 
-1. 次の内容を`saml.yaml`ファイルに記述し、[Kubernetes Secret](https://docs.gitlab.com/charts/charts/globals.html#providers)として使用します。
+1. 次の内容を`saml.yaml`ファイルに記述し、[Kubernetes Secret](https://docs.gitlab.com/charts/charts/globals.html#providers)として使用します:
 
    ```yaml
    name: 'saml'
@@ -2825,19 +2826,19 @@ IdPの時刻が、システム時刻よりもわずかに進んでいる場合�
      uid_attribute: 'uid'
    ```
 
-1. Kubernetes Secretを作成します。
+1. Kubernetes Secretを作成します:
 
    ```shell
    kubectl create secret generic -n <namespace> gitlab-saml --from-file=provider=saml.yaml
    ```
 
-1. Helm値をエクスポートします。
+1. Helm値をエクスポートします: 
 
    ```shell
    helm get values gitlab > gitlab_values.yaml
    ```
 
-1. `gitlab_values.yaml`を編集します。
+1. `gitlab_values.yaml`を編集します: 
 
    ```yaml
    global:
@@ -2847,7 +2848,7 @@ IdPの時刻が、システム時刻よりもわずかに進んでいる場合�
            - secret: gitlab-saml
    ```
 
-1. ファイルを保存し、新しい値を適用します。
+1. ファイルを保存し、新しい値を適用します: 
 
    ```shell
    helm upgrade -f gitlab_values.yaml gitlab gitlab/gitlab
@@ -2857,7 +2858,7 @@ IdPの時刻が、システム時刻よりもわずかに進んでいる場合�
 
 {{< tab title="Docker" >}}
 
-1. `docker-compose.yml`を編集します。
+1. `docker-compose.yml`を編集します: 
 
    ```yaml
    version: "3.6"
@@ -2882,7 +2883,7 @@ IdPの時刻が、システム時刻よりもわずかに進んでいる場合�
            ]
    ```
 
-1. ファイルを保存して、GitLabを再起動します。
+1. ファイルを保存して、GitLabを再起動します:
 
    ```shell
    docker compose up -d
@@ -2892,7 +2893,7 @@ IdPの時刻が、システム時刻よりもわずかに進んでいる場合�
 
 {{< tab title="自己コンパイル（ソース）" >}}
 
-1. `/home/git/gitlab/config/gitlab.yml`を編集します。
+1. `/home/git/gitlab/config/gitlab.yml`を編集します: 
 
    ```yaml
    production: &base
@@ -2913,7 +2914,7 @@ IdPの時刻が、システム時刻よりもわずかに進んでいる場合�
            }
    ```
 
-1. ファイルを保存して、GitLabを再起動します。
+1. ファイルを保存して、GitLabを再起動します:
 
    ```shell
    # For systems running systemd
@@ -2945,7 +2946,7 @@ SAMLアサーションを暗号化するには、GitLab SAML設定で秘密キ�
 
 {{< tab title="Linuxパッケージ（Omnibus）" >}}
 
-1. `/etc/gitlab/gitlab.rb`を編集します。
+1. `/etc/gitlab/gitlab.rb`を編集します: 
 
    ```ruby
    gitlab_rails['omniauth_providers'] = [
@@ -2972,7 +2973,7 @@ SAMLアサーションを暗号化するには、GitLab SAML設定で秘密キ�
    ]
    ```
 
-1. ファイルを保存して、GitLabを再設定します。
+1. ファイルを保存して、GitLabを再設定します:
 
    ```shell
    sudo gitlab-ctl reconfigure
@@ -2982,7 +2983,7 @@ SAMLアサーションを暗号化するには、GitLab SAML設定で秘密キ�
 
 {{< tab title="Helmチャート（Kubernetes）" >}}
 
-1. 次の内容を`saml.yaml`ファイルに記述し、[Kubernetes Secret](https://docs.gitlab.com/charts/charts/globals.html#providers)として使用します。
+1. 次の内容を`saml.yaml`ファイルに記述し、[Kubernetes Secret](https://docs.gitlab.com/charts/charts/globals.html#providers)として使用します:
 
    ```yaml
    name: 'saml'
@@ -3005,19 +3006,19 @@ SAMLアサーションを暗号化するには、GitLab SAML設定で秘密キ�
      -----END PRIVATE KEY-----
    ```
 
-1. Kubernetes Secretを作成します。
+1. Kubernetes Secretを作成します:
 
    ```shell
    kubectl create secret generic -n <namespace> gitlab-saml --from-file=provider=saml.yaml
    ```
 
-1. Helm値をエクスポートします。
+1. Helm値をエクスポートします: 
 
    ```shell
    helm get values gitlab > gitlab_values.yaml
    ```
 
-1. `gitlab_values.yaml`を編集します。
+1. `gitlab_values.yaml`を編集します: 
 
    ```yaml
    global:
@@ -3027,7 +3028,7 @@ SAMLアサーションを暗号化するには、GitLab SAML設定で秘密キ�
            - secret: gitlab-saml
    ```
 
-1. ファイルを保存し、新しい値を適用します。
+1. ファイルを保存し、新しい値を適用します: 
 
    ```shell
    helm upgrade -f gitlab_values.yaml gitlab gitlab/gitlab
@@ -3037,7 +3038,7 @@ SAMLアサーションを暗号化するには、GitLab SAML設定で秘密キ�
 
 {{< tab title="Docker" >}}
 
-1. `docker-compose.yml`を編集します。
+1. `docker-compose.yml`を編集します: 
 
    ```yaml
    version: "3.6"
@@ -3069,7 +3070,7 @@ SAMLアサーションを暗号化するには、GitLab SAML設定で秘密キ�
            ]
    ```
 
-1. ファイルを保存して、GitLabを再起動します。
+1. ファイルを保存して、GitLabを再起動します:
 
    ```shell
    docker compose up -d
@@ -3079,7 +3080,7 @@ SAMLアサーションを暗号化するには、GitLab SAML設定で秘密キ�
 
 {{< tab title="自己コンパイル（ソース）" >}}
 
-1. `/home/git/gitlab/config/gitlab.yml`を編集します。
+1. `/home/git/gitlab/config/gitlab.yml`を編集します: 
 
    ```yaml
    production: &base
@@ -3101,7 +3102,7 @@ SAMLアサーションを暗号化するには、GitLab SAML設定で秘密キ�
            }
    ```
 
-1. ファイルを保存して、GitLabを再起動します。
+1. ファイルを保存して、GitLabを再起動します:
 
    ```shell
    # For systems running systemd
@@ -3119,16 +3120,16 @@ SAMLアサーションを暗号化するには、GitLab SAML設定で秘密キ�
 
 SAML認証リクエストに署名するようにGitLabを設定できます。GitLab SAMLリクエストはSAMLリダイレクトバインディングを使用しているため、この設定はオプションです。
 
-署名を実装するには、次の手順に従います。
+署名を実装するには、次の手順に従います:
 
 1. SAMLに使用するGitLabインスタンスの秘密キーと公開証明書ペアを作成します。
-1. 設定の`security`セクションで署名に関する設定を行います。次に例を示します。
+1. 設定の`security`セクションで署名に関する設定を行います。次に例を示します:
 
    {{< tabs >}}
 
    {{< tab title="Linuxパッケージ（Omnibus）" >}}
 
-   1. `/etc/gitlab/gitlab.rb`を編集します。
+   1. `/etc/gitlab/gitlab.rb`を編集します: 
 
       ```ruby
       gitlab_rails['omniauth_providers'] = [
@@ -3155,7 +3156,7 @@ SAML認証リクエストに署名するようにGitLabを設定できます。G
       ]
       ```
 
-   1. ファイルを保存して、GitLabを再設定します。
+   1. ファイルを保存して、GitLabを再設定します:
 
       ```shell
       sudo gitlab-ctl reconfigure
@@ -3165,7 +3166,7 @@ SAML認証リクエストに署名するようにGitLabを設定できます。G
 
    {{< tab title="Helmチャート（Kubernetes）" >}}
 
-   1. 次の内容を`saml.yaml`ファイルに記述し、[Kubernetes Secret](https://docs.gitlab.com/charts/charts/globals.html#providers)として使用します。
+   1. 次の内容を`saml.yaml`ファイルに記述し、[Kubernetes Secret](https://docs.gitlab.com/charts/charts/globals.html#providers)として使用します:
 
       ```yaml
       name: 'saml'
@@ -3187,19 +3188,19 @@ SAML認証リクエストに署名するようにGitLabを設定できます。G
           digest_method: 'http://www.w3.org/2001/04/xmlenc#sha256'
       ```
 
-   1. Kubernetes Secretを作成します。
+   1. Kubernetes Secretを作成します:
 
       ```shell
       kubectl create secret generic -n <namespace> gitlab-saml --from-file=provider=saml.yaml
       ```
 
-   1. Helm値をエクスポートします。
+   1. Helm値をエクスポートします: 
 
       ```shell
       helm get values gitlab > gitlab_values.yaml
       ```
 
-   1. `gitlab_values.yaml`を編集します。
+   1. `gitlab_values.yaml`を編集します: 
 
       ```yaml
       global:
@@ -3209,7 +3210,7 @@ SAML認証リクエストに署名するようにGitLabを設定できます。G
               - secret: gitlab-saml
       ```
 
-   1. ファイルを保存し、新しい値を適用します。
+   1. ファイルを保存し、新しい値を適用します: 
 
       ```shell
       helm upgrade -f gitlab_values.yaml gitlab gitlab/gitlab
@@ -3219,7 +3220,7 @@ SAML認証リクエストに署名するようにGitLabを設定できます。G
 
    {{< tab title="Docker" >}}
 
-   1. `docker-compose.yml`を編集します。
+   1. `docker-compose.yml`を編集します: 
 
       ```yaml
       version: "3.6"
@@ -3251,7 +3252,7 @@ SAML認証リクエストに署名するようにGitLabを設定できます。G
               ]
       ```
 
-   1. ファイルを保存して、GitLabを再起動します。
+   1. ファイルを保存して、GitLabを再起動します:
 
       ```shell
       docker compose up -d
@@ -3261,7 +3262,7 @@ SAML認証リクエストに署名するようにGitLabを設定できます。G
 
    {{< tab title="自己コンパイル（ソース）" >}}
 
-   1. `/home/git/gitlab/config/gitlab.yml`を編集します。
+   1. `/home/git/gitlab/config/gitlab.yml`を編集します: 
 
       ```yaml
       production: &base
@@ -3289,7 +3290,7 @@ SAML認証リクエストに署名するようにGitLabを設定できます。G
               }
       ```
 
-   1. ファイルを保存して、GitLabを再起動します。
+   1. ファイルを保存して、GitLabを再起動します:
 
       ```shell
       # For systems running systemd
@@ -3303,7 +3304,7 @@ SAML認証リクエストに署名するようにGitLabを設定できます。G
 
    {{< /tabs >}}
 
-その後、GitLabは次の処理を行います。
+その後、GitLabは次の処理を行います:
 
 - 指定された秘密キーでリクエストに署名します。
 - 受信したリクエストの署名をIdPが検証できるよう、設定された公開x500証明書をIdPのメタデータに含めます。
@@ -3322,9 +3323,9 @@ SAMLのリダイレクトバインディングは、SAMLのPOSTバインディ�
 
 GitLabは、[SAMLを通じて作成されたユーザーに対して、パスワードを生成して設定](../security/passwords_for_integrated_authentication_methods.md)します。
 
-SSOまたはSAMLで認証されたユーザーは、HTTPS経由でのGitオペレーションにパスワードを使用してはなりません。代わりに、次のいずれかが可能です。
+SSOまたはSAMLで認証されたユーザーは、HTTPS経由でのGitオペレーションにパスワードを使用してはなりません。代わりに、次のいずれかが可能です:
 
-- [パーソナル](../user/profile/personal_access_tokens.md)、[プロジェクト](../user/project/settings/project_access_tokens.md)、または[グループ](../user/group/settings/group_access_tokens.md)アクセストークンを設定する。
+- [パーソナル](../user/profile/personal_access_tokens.md) 、[プロジェクト](../user/project/settings/project_access_tokens.md) 、または[グループ](../user/group/settings/group_access_tokens.md)アクセストークンを設定する。
 - [OAuth認証情報ヘルパー](../user/profile/account/two_factor_authentication.md#oauth-credential-helpers)を使用します。
 
 ## 既存のユーザーにSAMLアイデンティティをリンクする {#link-saml-identity-for-an-existing-user}
@@ -3344,21 +3345,21 @@ SSOまたはSAMLで認証されたユーザーは、HTTPS経由でのGitオペ�
 
 GitLab Self-Managedインスタンスで複数のSAML IdPを通じてアクセスを許可する必要がある場合は、グループSAML SSOを使用します。
 
-グループSAML SSOを設定するには、次の手順に従います。
+グループSAML SSOを設定するには、次の手順に従います:
 
 {{< tabs >}}
 
 {{< tab title="Linuxパッケージ（Omnibus）" >}}
 
 1. GitLabで[HTTPSが設定されている](https://docs.gitlab.com/omnibus/settings/ssl/)ことを確認してください。
-1. `/etc/gitlab/gitlab.rb`を編集して、OmniAuthと`group_saml`プロバイダーを有効にします。
+1. `/etc/gitlab/gitlab.rb`を編集して、OmniAuthと`group_saml`プロバイダーを有効にします:
 
    ```ruby
    gitlab_rails['omniauth_enabled'] = true
    gitlab_rails['omniauth_providers'] = [{ name: 'group_saml' }]
    ```
 
-1. ファイルを保存して、GitLabを再設定します。
+1. ファイルを保存して、GitLabを再設定します:
 
    ```shell
    sudo gitlab-ctl reconfigure
@@ -3369,25 +3370,25 @@ GitLab Self-Managedインスタンスで複数のSAML IdPを通じてアクセ�
 {{< tab title="Helmチャート（Kubernetes）" >}}
 
 1. GitLabで[HTTPSが設定されている](https://docs.gitlab.com/charts/installation/tls.html)ことを確認してください。
-1. 次の内容を`group_saml.yaml`ファイルに記述し、[Kubernetes Secret](https://docs.gitlab.com/charts/charts/globals.html#providers)として使用します。
+1. 次の内容を`group_saml.yaml`ファイルに記述し、[Kubernetes Secret](https://docs.gitlab.com/charts/charts/globals.html#providers)として使用します:
 
    ```yaml
    name: 'group_saml'
    ```
 
-1. Kubernetes Secretを作成します。
+1. Kubernetes Secretを作成します:
 
    ```shell
    kubectl create secret generic -n <namespace> gitlab-group-saml --from-file=provider=group_saml.yaml
    ```
 
-1. Helm値をエクスポートします。
+1. Helm値をエクスポートします: 
 
    ```shell
    helm get values gitlab > gitlab_values.yaml
    ```
 
-1. `gitlab_values.yaml`を編集して、OmniAuthと`group_saml`プロバイダーを有効にします。
+1. `gitlab_values.yaml`を編集して、OmniAuthと`group_saml`プロバイダーを有効にします:
 
    ```yaml
    global:
@@ -3398,7 +3399,7 @@ GitLab Self-Managedインスタンスで複数のSAML IdPを通じてアクセ�
            - secret: gitlab-group-saml
    ```
 
-1. ファイルを保存し、新しい値を適用します。
+1. ファイルを保存し、新しい値を適用します: 
 
    ```shell
    helm upgrade -f gitlab_values.yaml gitlab gitlab/gitlab
@@ -3409,7 +3410,7 @@ GitLab Self-Managedインスタンスで複数のSAML IdPを通じてアクセ�
 {{< tab title="Docker" >}}
 
 1. GitLabで[HTTPSが設定されている](https://docs.gitlab.com/omnibus/settings/ssl/)ことを確認してください。
-1. `docker-compose.yml`を編集して、OmniAuthと`group_saml`プロバイダーを有効にします。
+1. `docker-compose.yml`を編集して、OmniAuthと`group_saml`プロバイダーを有効にします:
 
    ```yaml
    version: "3.6"
@@ -3421,7 +3422,7 @@ GitLab Self-Managedインスタンスで複数のSAML IdPを通じてアクセ�
            gitlab_rails['omniauth_providers'] = [{ name: 'group_saml' }]
    ```
 
-1. ファイルを保存して、GitLabを再起動します。
+1. ファイルを保存して、GitLabを再起動します:
 
    ```shell
    docker compose up -d
@@ -3432,7 +3433,7 @@ GitLab Self-Managedインスタンスで複数のSAML IdPを通じてアクセ�
 {{< tab title="自己コンパイル（ソース）" >}}
 
 1. GitLabで[HTTPSが設定されている](../install/self_compiled/_index.md#using-https)ことを確認してください。
-1. `/home/git/gitlab/config/gitlab.yml`を編集して、OmniAuthと`group_saml`プロバイダーを有効にします。
+1. `/home/git/gitlab/config/gitlab.yml`を編集して、OmniAuthと`group_saml`プロバイダーを有効にします:
 
    ```yaml
    production: &base
@@ -3442,7 +3443,7 @@ GitLab Self-Managedインスタンスで複数のSAML IdPを通じてアクセ�
          - { name: 'group_saml' }
    ```
 
-1. ファイルを保存して、GitLabを再起動します。
+1. ファイルを保存して、GitLabを再起動します:
 
    ```shell
    # For systems running systemd
@@ -3456,7 +3457,7 @@ GitLab Self-Managedインスタンスで複数のSAML IdPを通じてアクセ�
 
 {{< /tabs >}}
 
-マルチテナントソリューションであるため、GitLab Self-ManagedにおけるグループSAMLは、推奨される[インスタンス全体のSAML](saml.md)と比べて機能が制限されています。以下の機能を活用するには、インスタンス全体のSAMLを使用してください。
+マルチテナントソリューションであるため、GitLab Self-ManagedにおけるグループSAMLは、推奨される[インスタンス全体のSAML](saml.md)と比べて機能が制限されています。以下の機能を活用するには、インスタンス全体のSAMLを使用してください:
 
 - [LDAPとの互換性](../administration/auth/ldap/_index.md)。
 - [LDAPグループ同期](../user/group/access_and_permissions.md#manage-group-memberships-with-ldap)。
@@ -3466,12 +3467,12 @@ GitLab Self-Managedインスタンスで複数のSAML IdPを通じてアクセ�
 
 ## IdPにおけるSAMLアプリ用の追加の設定 {#additional-configuration-for-saml-apps-on-your-idp}
 
-IdPでSAMLアプリを設定する場合、次のような追加の設定が必要になる場合があります。
+IdPでSAMLアプリを設定する場合、次のような追加の設定が必要になる場合があります:
 
 | フィールド | 値 | 備考 |
 |-------|-------|-------|
 | SAMLプロファイル | WebブラウザSSOプロファイル | GitLabはSAMLを使用して、ユーザーをブラウザ経由でサインインさせます。IdPに直接リクエストが送信されることはありません。 |
-| SAMLリクエストバインディング | HTTPリダイレクト | GitLab（SP）はbase64でエンコードされた`SAMLRequest` HTTPパラメーターを使用して、ユーザーをIdPにリダイレクトします。 |
+| SAMLリクエストバインディング | HTTPリダイレクト | GitLab（SP）はbase64でエンコードされた`SAMLRequest` HTTPパラメータを使用して、ユーザーをIdPにリダイレクトします。 |
 | SAML応答バインディング | HTTP POST | IdPによるSAMLトークンの送信方法を指定します。これには、ユーザーのブラウザがGitLabに送り返す`SAMLResponse`を含みます。 |
 | SAML応答の署名 | 必須 | 改ざんを防止します。 |
 | 応答内のX.509証明書 | 必須 | 応答に署名し、指定されたフィンガープリントと照合して応答をチェックします。 |

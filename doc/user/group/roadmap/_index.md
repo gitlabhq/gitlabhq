@@ -162,7 +162,7 @@ these layout presets:
 
 ### Quarters
 
-![roadmap date range in quarters](img/roadmap_timeline_quarters_v11_10.png)
+![Timeline header showing quarters and months for 6 quarters, highlighting the time scale.](img/roadmap_timeline_quarters_v11_10.png)
 
 In the **Quarters** preset, roadmap shows epics and milestones which have start or due dates
 **falling within** currently selected date range preset,
@@ -172,7 +172,7 @@ the timeline header represent the month of the quarter.
 
 ### Months
 
-![roadmap date range in months](img/roadmap_timeline_months_v11_10.png)
+![Timeline header showing months with weekly date markers beneath each month.](img/roadmap_timeline_months_v11_10.png)
 
 In the **Months** preset, roadmap shows epics and milestones which have start or
 due dates **falling within** or **going through** currently selected date range

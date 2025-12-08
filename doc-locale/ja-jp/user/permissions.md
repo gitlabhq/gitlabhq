@@ -3,6 +3,7 @@ stage: Software Supply Chain Security
 group: Authorization
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 title: ロールと権限
+description: GitLabの各ユーザーロールで使用できる権限と機能について説明します。
 ---
 
 {{< details >}}
@@ -12,21 +13,9 @@ title: ロールと権限
 
 {{< /details >}}
 
-ユーザーをプロジェクトまたはグループに追加する際に、ロールを割り当てます。このロールによって、GitLabでユーザーが実行できる操作が決まります。
+ロールは、グループまたはプロジェクトにおけるユーザーの権限を定義します。
 
-プロジェクトが属するグループとプロジェクト自体の両方にユーザーを追加した場合、より上位の権限を持つロールが適用されます。
-
-GitLab[管理者](../administration/_index.md)は、すべての権限を持っています。
-
-<!-- Keep these tables sorted according the following rules in order:
-1. By minimum role.
-2. By the object being accessed (for example, issue, security dashboard, or pipeline)
-3. By the action: view, create, change, edit, manage, run, delete, all others
-4. Alphabetically.
-
-List only one action (for example, view, create, or delete) per line.
-It's okay to list multiple related objects per line (for example, "View pipelines and pipeline details").
--->
+[管理者アクセス](../administration/_index.md)を持つユーザーは、すべての権限を持ち、あらゆる操作を実行できます。
 
 ## ロール {#roles}
 
@@ -36,21 +25,43 @@ It's okay to list multiple related objects per line (for example, "View pipeline
 
 {{< /history >}}
 
-ユーザーには、デフォルトロールまたは[カスタムロール](custom_roles/_index.md)を割り当てることができます。
+ユーザーをプロジェクトまたはグループに追加する際に、ロールを割り当てます。ロールによって、ユーザーの権限が決まります。[デフォルトロール](#default-roles)または[カスタムロール](custom_roles/_index.md)のいずれかを割り当てます。
 
-利用可能なデフォルトロールは次のとおりです:
+ユーザーは、グループおよびプロジェクトごとに異なるロールを持つことができます。ユーザーは常に、自分のロールのうち最も高いロールの権限を継承します。たとえば、ユーザーが以下を持っているとします:
 
-- ゲスト（このロールは[非公開プロジェクトおよび内部プロジェクト](public_access.md)にのみ適用されます。）
-- プランナー
-- レポーター
-- デベロッパー
-- メンテナー
-- オーナー
-- 最小アクセス（トップレベルグループのみ利用可能）
+- 親グループのメンテナーロール
+- そのグループ内のプロジェクトのデベロッパーロール
 
-ゲストロールが割り当てられたユーザーは最も権限が少なく、オーナーは最も権限が多くなります。
+ユーザーは、プロジェクト内でメンテナーロールの権限を継承します。
 
-デフォルトでは、すべてのユーザーがトップレベルグループを作成し、ユーザー名を変更できます。GitLab管理者は、GitLabインスタンスの[この動作を変更](../administration/user_settings.md)できます。
+割り当てられたロールを表示するには、[グループ](group/_index.md#view-group-members)または[プロジェクト](project/members/_index.md#view-project-members)の**メンバー**ページに移動します。
+
+### デフォルトロール {#default-roles}
+
+次のデフォルトロールを使用できます:
+
+| ロール           | 説明 |
+| -------------- | ----------- |
+| 最小アクセス | プロジェクトへのアクセスなしに、制限されたグループ情報を表示します。詳しくは、[最小アクセス](#users-with-minimal-access)のユーザーを参照してください。 |
+| ゲスト          | イシューとエピックを表示し、コメントします。コードをプッシュしたり、リポジトリにアクセスしたりすることはできません。ゲスト（このロールは[非公開プロジェクトおよび内部プロジェクト](public_access.md)にのみ適用されます）。 |
+| プランナー        | イシュー、エピック、マイルストーン、およびイテレーションを作成および管理します。コードにアクセスせずに、プロジェクトの計画と追跡に焦点を当てます。 |
+| レポーター       | コードの表示、イシューの作成、およびレポートの生成を行います。コードをプッシュしたり、保護ブランチを管理したりすることはできません。 |
+| デベロッパー      | 保護ブランチ以外のブランチにコードをプッシュし、マージリクエストを作成して、CI/CDパイプラインを実行します。プロジェクト設定を管理することはできません。 |
+| メンテナー     | ブランチ、マージリクエスト、CI/CD設定、およびプロジェクトメンバーを管理します。プロジェクトを削除することはできません。 |
+| オーナー          | 削除や表示レベル設定など、プロジェクトまたはグループに対する完全な制御。 |
+
+デフォルトでは、すべてのユーザーがトップレベルグループを作成し、ユーザー名を変更できます。[管理者アクセス](../administration/user_settings.md)を持つユーザーは、この動作を変更できます。
+
+<!--
+Sort these permissions according the following rules in order:
+1. By minimum role.
+2. By the object being accessed (for example, issue, security dashboard, or pipeline)
+3. By the action: view, create, change, edit, manage, run, delete, all others
+4. Alphabetically.
+
+List only one action (for example, view, create, or delete) per line.
+It's okay to list multiple related objects per line (for example, "View pipelines and pipeline details").
+-->
 
 ## グループメンバーの権限 {#group-members-permissions}
 
@@ -112,9 +123,9 @@ Runner、変数、保護環境などの[CI/CD](../ci/_index.md)機能のグル�
 | [コンプライアンスフレームワーク](compliance/compliance_frameworks/_index.md)をプロジェクトに割り当て |       |         |          |           |            |   ✓   |
 | [監査ストリーム](compliance/audit_event_streaming.md)を管理                            |       |         |          |           |            |   ✓   |
 
-**脚注**
+**Footnotes**（脚注）
 
-1. ユーザーは、個々のアクションに基づいたイベントのみを表示できます。詳細については、[前提要件](compliance/audit_events.md#prerequisites)を参照してください。
+1. ユーザーは、個々のアクションに基づいたイベントのみを閲覧できます。詳細については、[前提要件](compliance/audit_events.md#prerequisites)を参照してください。
 
 ### GitLab Duoグループの権限 {#gitlab-duo-group-permissions}
 
@@ -122,13 +133,13 @@ Runner、変数、保護環境などの[CI/CD](../ci/_index.md)機能のグル�
 
 | アクション                                                                                                     | 非メンバー | ゲスト | プランナー | レポーター | デベロッパー | メンテナー | オーナー |
 | ---------------------------------------------------------------------------------------------------------- | :--------: | :---: | :-----: | :------: | :-------: | :--------: | :---: |
-| GitLab Duoの機能を使用<sup>1</sup>                                                                       |            |       |         |    ✓     |     ✓     |     ✓      |   ✓   |
+| GitLab Duo機能を使用<sup>1</sup>                                                                       |            |       |     ✓   |    ✓     |     ✓     |     ✓      |   ✓   |
 | [GitLab Duo機能の可用性](gitlab_duo/turn_on_off.md#for-a-group-or-subgroup)を設定             |            |       |         |          |           |     ✓      |   ✓   |
 | [GitLab Duo Self Hosted](../administration/gitlab_duo_self_hosted/configure_duo_features.md)を設定     |            |       |         |          |           |            |   ✓   |
 | [ベータ版および実験的機能](gitlab_duo/turn_on_off.md#turn-on-beta-and-experimental-features)を有効化  |            |       |         |          |           |            |   ✓   |
 | [GitLab Duoシート](../subscriptions/subscription-add-ons.md#purchase-additional-gitlab-duo-seats)を購入 |            |       |         |          |           |            |   ✓   |
 
-**脚注**
+**Footnotes**（脚注）
 
 1. ユーザーがGitLab Duo ProまたはGitLab Duo Enterpriseを使用している場合、[そのGitLab Duoアドオンにアクセスするには、ユーザーにシートを割り当てる必要があります](../subscriptions/subscription-add-ons.md#assign-gitlab-duo-seats)。ユーザーがGitLab Duo Coreを使用している場合、他の要件はありません。
 
@@ -149,8 +160,9 @@ Runner、変数、保護環境などの[CI/CD](../ci/_index.md)機能のグル�
 | [請求](../subscriptions/manage_subscription.md#view-subscription)を表示<sup>4</sup>      |       |         |          |           |            |   ✓   |
 | グループの[使用量クォータ](storage_usage_quotas.md)ページを表示<sup>4</sup>                        |       |         |          |           |            |   ✓   |
 | [グループを移行](group/import/_index.md)                                                     |       |         |          |           |            |   ✓   |
-| グループをアーカイブ                                                                                |       |         |          |           |            |   ✓   |
+| グループをアーカイブ                                                                               |       |         |          |           |            |   ✓   |
 | グループを削除                                                                                |       |         |          |           |            |   ✓   |
+| グループの譲渡                                                                              |       |         |          |           |            |   ✓   |
 | [サブスクリプション、ストレージ、コンピューティング時間](../subscriptions/gitlab_com/_index.md)を管理 |       |         |          |           |            |   ✓   |
 | [グループアクセストークン](group/settings/group_access_tokens.md)を管理                         |       |         |          |           |            |   ✓   |
 | グループの表示レベルを変更                                                               |       |         |          |           |            |   ✓   |
@@ -160,9 +172,9 @@ Runner、変数、保護環境などの[CI/CD](../ci/_index.md)機能のグル�
 | 通知メールを無効化                                                                 |       |         |          |           |            |   ✓   |
 | [プロジェクト](project/settings/import_export.md)をインポート                                         |       |         |          |           |     ✓      |   ✓   |
 
-**脚注**
+**Footnotes**（脚注）
 
-1. デベロッパーとメンテナーは、個々のアクションに基づいたイベントのみを表示できます。詳細については、[前提要件](compliance/audit_events.md#prerequisites)を参照してください。
+1. 開発者とメンテナーは、個々のアクションに基づいたイベントのみを閲覧できます。詳細については、[前提要件](compliance/audit_events.md#prerequisites)を参照してください。
 1. デベロッパー、メンテナー、オーナー: [インスタンス](../administration/settings/visibility_and_access_controls.md#define-which-roles-can-create-projects)または[グループ](group/_index.md#specify-who-can-add-projects-to-a-group)にプロジェクト作成ロールが設定されている場合にのみ適用されます。
    <br>デベロッパー: デベロッパーは、[デフォルトブランチ保護](group/manage.md#change-the-default-branch-protection-of-a-group)が「部分的に保護されている」または「保護されていない」に設定されている場合にのみ、新しいプロジェクトのデフォルトブランチにコミットをプッシュできます。
 1. メンテナー: メンテナーロールを持つユーザーが[サブグループを作成できる](group/subgroups/_index.md#change-who-can-create-subgroups)場合にのみ適用されます。
@@ -176,17 +188,19 @@ Runner、変数、保護環境などの[CI/CD](../ci/_index.md)機能のグル�
 | エピックを[検索](search/_index.md)<sup>1</sup>                                       |   ✓   |    ✓    |    ✓     |     ✓     |     ✓      |   ✓   |
 | [エピック](group/epics/_index.md)にイシューを追加<sup>2</sup>                         |   ✓   |    ✓    |    ✓     |     ✓     |     ✓      |   ✓   |
 | [子エピック](group/epics/manage_epics.md#multi-level-child-epics)を追加<sup>3</sup> |   ✓   |    ✓    |    ✓     |     ✓     |     ✓      |   ✓   |
+| 親エピックの追加<sup>4</sup>                                                        |   ✓   |    ✓    |    ✓     |     ✓     |     ✓      |   ✓   |
 | 内部メモを追加                                                                  |       |    ✓    |    ✓     |     ✓     |     ✓      |   ✓   |
 | エピックを作成                                                                        |       |    ✓    |    ✓     |     ✓     |     ✓      |   ✓   |
 | エピックの詳細を更新                                                                 |       |    ✓    |    ✓     |     ✓     |     ✓      |   ✓   |
 | [エピックボード](group/epics/epic_boards.md)を管理                                    |       |    ✓    |    ✓     |     ✓     |     ✓      |   ✓   |
 | エピックを削除                                                                        |       |    ✓    |          |           |            |   ✓   |
 
-**脚注**
+**Footnotes**（脚注）
 
 1. [エピックを表示](group/epics/manage_epics.md#who-can-view-an-epic)する権限が必要です。
 1. [エピックを表示](group/epics/manage_epics.md#who-can-view-an-epic)し、イシューを編集する権限が必要です。
 1. 親エピックと子エピックを[表示](group/epics/manage_epics.md#who-can-view-an-epic)する権限が必要です。
+1. エピックを[表示](group/epics/manage_epics.md#who-can-view-an-epic)するには、権限が必要です。
 
 [Wiki](project/wiki/group.md)のグループ権限:
 
@@ -198,22 +212,24 @@ Runner、変数、保護環境などの[CI/CD](../ci/_index.md)機能のグル�
 | グループWikiページを編集                               |       |    ✓    |          |     ✓     |     ✓      |   ✓   |
 | グループWikiページを削除                             |       |    ✓    |          |     ✓     |     ✓      |   ✓   |
 
-**脚注**
+**Footnotes**（脚注）
 
 1. ゲスト: さらに、グループが公開または内部の場合、グループを表示できるすべてのユーザーは、グループWikiページも表示できます。
 1. ゲスト: さらに、グループが公開または内部の場合、グループを表示できるすべてのユーザーは、グループWikiページも表示できます。
 
 ### パッケージとレジストリのグループ権限 {#packages-and-registries-group-permissions}
 
-[コンテナレジストリ](packages/_index.md)のグループ権限:
+[パッケージおよびコンテナレジストリ](packages/_index.md)のグループ権限:
 
 | アクション                                          | ゲスト | プランナー | レポーター | デベロッパー | メンテナー | オーナー |
 | ----------------------------------------------- | :---: | :-----: | :------: | :-------: | :--------: | :---: |
 | コンテナレジストリイメージをプル<sup>1</sup>     |   ✓   |    ✓    |    ✓     |     ✓     |     ✓      |   ✓   |
 | 依存プロキシでコンテナイメージをプル |   ✓   |    ✓    |    ✓     |     ✓     |     ✓      |   ✓   |
 | コンテナレジストリイメージを削除                |       |         |          |     ✓     |     ✓      |   ✓   |
+| 仮想レジストリを構成する                    |       |         |          |           |     ✓      |   ✓   |
+| 仮想レジストリからアーティファクトをプルする        |   ✓   |         |    ✓     |     ✓     |     ✓      |   ✓   |
 
-**脚注**
+**Footnotes**（脚注）
 
 1. ゲストは、個々のアクションに基づいたイベントのみを表示できます。
 
@@ -275,6 +291,8 @@ Runner、変数、保護環境などの[CI/CD](../ci/_index.md)機能のグル�
 - ネームスペース内のプロジェクトではメンテナーロールとして表示されますが、実際にはオーナーロールと同じ権限を持っています。
 - ネームスペース内の新しいプロジェクトでは、オーナーロールとして表示されます。
 
+[保護されたブランチの設定](project/repository/branches/protection_rules.md)を構成するときに、ロールを選択すると、そのロール以上のすべてのロールを持つユーザーにアクセス権が付与されます。たとえば、保護ブランチの設定で**メンテナー**を選択した場合、メンテナーとオーナーの両方のロールを持つユーザーがアクションを実行できます。
+
 プロジェクトメンバーの管理方法の詳細については、[プロジェクトのメンバー](project/members/_index.md)を参照してください。
 
 次の表に、ロールごとに使用できるプロジェクト権限を示します。
@@ -292,7 +310,8 @@ Runner、変数、保護環境などの[CI/CD](../ci/_index.md)機能のグル�
 | [DORAメトリクス](analytics/ci_cd_analytics.md)を表示                                          |       |         |    ✓     |     ✓     |     ✓      |   ✓   |
 | [マージリクエスト分析](analytics/merge_request_analytics.md)を表示                       |       |         |    ✓     |     ✓     |     ✓      |   ✓   |
 | [リポジトリの分析](analytics/repository_analytics.md)を表示                             |       |         |    ✓     |     ✓     |     ✓      |   ✓   |
-| [バリューストリームダッシュボードとAIインパクト分析](analytics/value_streams_dashboard.md)を表示 |       |         |    ✓     |     ✓     |     ✓      |   ✓   |
+| [Value Streams Dashboard](analytics/value_streams_dashboard.md)を表示                       |       |         |    ✓     |     ✓     |     ✓      |   ✓   |
+| [GitLab Duo](analytics/duo_and_sdlc_trends.md)とSDLCの傾向を表示                        |       |         |    ✓     |     ✓     |     ✓      |   ✓   |
 
 ### アプリケーションセキュリティ {#application-security}
 
@@ -317,7 +336,7 @@ Runner、変数、保護環境などの[CI/CD](../ci/_index.md)機能のグル�
 | [セキュリティポリシープロジェクト](application_security/policies/_index.md)を割り当て                                                           |       |         |          |           |            |   ✓   |
 | [セキュリティ設定](application_security/detect/security_configuration.md)を管理                                             |       |         |          |           |     ✓      |   ✓   |
 
-**脚注**
+**Footnotes**（脚注）
 
 1. `admin_vulnerability`権限は、GitLab 17.0でデベロッパーロールから[削除](https://gitlab.com/gitlab-org/gitlab/-/issues/412693)されました。
 
@@ -326,9 +345,9 @@ Runner、変数、保護環境などの[CI/CD](../ci/_index.md)機能のグル�
 一部のロールに対する[GitLab CI/CD](../ci/_index.md)権限は、次の設定で変更できます:
 
 - [プロジェクトベースのパイプラインの表示レベル](../ci/pipelines/settings.md#change-which-users-can-view-your-pipelines): 公開に設定すると、特定のCI/CD機能へのアクセスがゲストプロジェクトメンバーに許可されます。
-- [パイプラインの表示レベル](../ci/pipelines/settings.md#change-pipeline-visibility-for-non-project-members-in-public-projects): **アクセスできるすべてのユーザー**に設定すると、特定のCI/CD「表示」機能へのアクセスがプロジェクトメンバー以外のユーザーに許可されます。
+- [パイプラインの表示レベル](../ci/pipelines/settings.md#change-pipeline-visibility-for-non-project-members-in-public-projects): **Everyone with Access**（アクセスできるすべてのユーザー）に設定すると、特定のCI/CD「表示」機能へのアクセスがプロジェクトメンバー以外のユーザーに許可されます。
 
-プロジェクトオーナーはリストされているすべてのアクションを実行でき、パイプラインを削除できます。
+プロジェクトオーナーはリストされているすべてのアクションを実行でき、パイプラインを削除できます:
 
 | アクション                                                                                                      | 非メンバー | ゲスト | プランナー | レポーター | デベロッパー | メンテナー |
 | ----------------------------------------------------------------------------------------------------------- | :--------: | :---: | :-----: | :------: | :-------: | :--------: |
@@ -371,18 +390,24 @@ Runner、変数、保護環境などの[CI/CD](../ci/_index.md)機能のグル�
 | プロジェクトRunnerをプロジェクトに追加<sup>11</sup>                                                                |            |       |         |          |           |     ✓      |
 | Runnerキャッシュを手動でクリア                                                                                |            |       |         |          |           |     ✓      |
 | プロジェクトでインスタンスRunnerを有効化                                                                          |            |       |         |          |           |     ✓      |
+| パイプラインスケジュールを作成<sup>12</sup>                                                                     |            |       |         |          |     ✓     |     ✓      |
+| 自分のパイプラインスケジュールの編集<sup>12</sup>                                                                   |            |       |         |          |     ✓     |     ✓      |
+| 自分のパイプラインスケジュールを削除                                                                               |            |       |         |          |     ✓     |     ✓      |
+| パイプラインスケジュールを手動で実行<sup>13</sup>                                                               |            |       |         |          |     ✓     |     ✓      |
+| パイプラインスケジュールの所有権を取得                                                                        |            |       |         |          |           |     ✓      |
+| 他のユーザーのパイプラインスケジュールを削除する                                                                           |            |       |         |          |           |     ✓      |
 
-**脚注**
+**Footnotes**（脚注）
 
 <!-- Disable ordered list rule https://github.com/DavidAnson/markdownlint/blob/main/doc/Rules.md#md029---ordered-list-item-prefix -->
 <!-- markdownlint-disable MD029 -->
 
 1. 非メンバーとゲスト: プロジェクトが公開の場合のみ。
-2. 非メンバー: プロジェクトが公開されており、**プロジェクトベースのパイプラインの表示レベル**が**プロジェクトの設定 > CI/CD**で有効になっている場合のみ。
-   <br>ゲスト: **プロジェクトベースのパイプラインの表示レベル**が**プロジェクトの設定 > CI/CD**で有効になっている場合のみ。
-3. 非メンバー: プロジェクトが公開されており、**プロジェクトベースのパイプラインの表示レベル**が**プロジェクトの設定 > CI/CD**で有効になっており、[`artifacts:public: false`](../ci/yaml/_index.md#artifactspublic)がジョブに設定されていない場合のみ。
-   <br>ゲスト: **プロジェクトベースのパイプラインの表示レベル**が**プロジェクトの設定 > CI/CD**で有効になっており、`artifacts:public: false`がジョブに設定されていない場合のみ。<br>レポーター: `artifacts:public: false`がジョブに設定されていない場合のみ。
-4. ゲスト: **プロジェクトベースのパイプラインの表示レベル**が**プロジェクトの設定 > CI/CD**で有効になっている場合のみ。
+2. 非メンバー: プロジェクトが公開されており、**プロジェクトベースのパイプラインの表示レベル**が有効になっている場合のみ。
+   <br>ゲスト: **プロジェクトベースのパイプラインの表示レベル**が有効な場合のみ。
+3. 非メンバー: プロジェクトが公開されており、**プロジェクトベースのパイプラインの表示レベル**が有効になっていて、ジョブで[`artifacts:public: false`](../ci/yaml/_index.md#artifactspublic)が設定されていない場合のみ。
+   <br>ゲスト: **プロジェクトベースのパイプラインの表示レベル**が有効で、`artifacts:public: false`がジョブに設定されていない場合にのみ。<br>レポーター: `artifacts:public: false`がジョブに設定されていない場合のみ。
+4. ゲスト: **プロジェクトベースのパイプラインの表示レベル**が有効な場合のみ。
 5. レポーター: ユーザーが[保護環境へのアクセス権を持つグループのメンバー](../ci/environments/protected_environments.md#deployment-only-access-to-protected-environments)である場合のみ。
    <br>デベロッパーとメンテナー: ユーザーが[保護環境へのデプロイを許可されている](../ci/environments/protected_environments.md#protecting-environments)場合のみ。
 6. デベロッパーとメンテナー: ユーザーが[保護ブランチへのマージまたはプッシュを許可されている](../ci/pipelines/_index.md#pipeline-security-on-protected-branches)場合のみ。
@@ -391,6 +416,8 @@ Runner、変数、保護環境などの[CI/CD](../ci/_index.md)機能のグル�
 9. メンテナー: Runnerに関連付けられたプロジェクトのメンテナーロールが必要です。
 10. メンテナー: [オーナープロジェクト](../ci/runners/runners_scope.md#project-runner-ownership)（Runnerに最初に関連付けられたプロジェクト）のメンテナーロールが必要です。
 11. メンテナー: 追加されるプロジェクトと、すでにRunnerに関連付けられたプロジェクトのメンテナーロールが必要です。
+12. デベロッパー: ユーザーにマージ権限があるブランチのみ。保護ブランチの場合は、ターゲットブランチに対するマージ権限が必要です。保護タグの場合、ユーザーは保護タグを作成できる必要があります。これらの権限要件は、スケジュールの作成または編集時に適用され、ブランチ保護ルールが時間の経過とともに変化する可能性があるため、動的にチェックされます。
+13. 手動で実行すると、パイプラインは、スケジュールオーナーの権限ではなく、トリガーするユーザーの権限で実行されます。
 
 <!-- markdownlint-enable MD029 -->
 
@@ -410,7 +437,7 @@ Runner、変数、保護環境などの[CI/CD](../ci/_index.md)機能のグル�
 | 非公開プロジェクトからコンテナイメージをプル<sup>2</sup>  |     ✓     |     ✓      |
 | 現在のプロジェクトにコンテナイメージをプッシュ<sup>3</sup>     |     ✓     |     ✓      |
 
-**脚注**
+**Footnotes**（脚注）
 
 1. デベロッパーとメンテナー: トリガーユーザーが外部ユーザーでない場合のみ。
 1. トリガーユーザーがプロジェクトのメンバーである場合のみ。[プルポリシー`if-not-present`での非公開Dockerイメージの使用](https://docs.gitlab.com/runner/security/#usage-of-private-docker-images-with-if-not-present-pull-policy)も参照してください。
@@ -427,7 +454,7 @@ Runner、変数、保護環境などの[CI/CD](../ci/_index.md)機能のグル�
 | [依存関係リスト](application_security/dependency_list/_index.md)のライセンスを表示                              |       |         |          |     ✓     |     ✓      |   ✓   |
 | [監査ストリーム](compliance/audit_event_streaming.md)を管理                                                     |       |         |          |           |            |   ✓   |
 
-**脚注**
+**Footnotes**（脚注）
 
 1. GitLab Self-Managedでは、ゲストロールを持つユーザーは、公開および内部プロジェクトでのみこのアクションを実行できます（非公開プロジェクトでは実行できません）。[外部ユーザー](../administration/external_users.md)は、プロジェクトが内部であっても、少なくともレポーターロールを持っている必要があります。GitLab.comのゲストロールを持つユーザーは、内部の表示レベルが利用できないため、公開プロジェクトでのみこのアクションを実行できます。
 1. ユーザーは、個々のアクションに基づいたイベントのみを表示できます。詳細については、[前提要件](compliance/audit_events.md#prerequisites)を参照してください。
@@ -441,7 +468,7 @@ Runner、変数、保護環境などの[CI/CD](../ci/_index.md)機能のグル�
 | GitLab Duo機能を使用<sup>1</sup>                                                 |            |   ✓   |    ✓    |    ✓     |     ✓     |     ✓      |   ✓   |
 | [GitLab Duo機能の可用性](gitlab_duo/turn_on_off.md#for-a-project)を設定 |            |       |         |          |           |     ✓      |   ✓   |
 
-**脚注**
+**Footnotes**（脚注）
 
 1. コード提案では、[ユーザーがGitLab Duoアドオンにアクセスするためのシートが割り当て済みである](../subscriptions/subscription-add-ons.md#assign-gitlab-duo-seats)必要があります。
 
@@ -460,10 +487,10 @@ Runner、変数、保護環境などの[CI/CD](../ci/_index.md)機能のグル�
 | 実験と候補を編集                                                 |       |         |          |     ✓     |     ✓      |   ✓   |
 | 実験と候補を削除                                               |       |         |          |     ✓     |     ✓      |   ✓   |
 
-**脚注**
+**Footnotes**（脚注）
 
-1. 非メンバーは**アクセスできるすべてのユーザー**の表示レベルで、公開プロジェクトのモデルとバージョンのみを表示できます。非メンバーはログインしていても内部プロジェクトを表示できません。
-1. 非メンバーは**アクセスできるすべてのユーザー**の表示レベルで、公開プロジェクトのモデル実験のみを表示できます。非メンバーはログインしていても内部プロジェクトを表示できません。
+1. 非メンバーは**Everyone with access**（アクセスできるすべてのユーザー）の表示レベルで、公開プロジェクトのモデルとバージョンのみを表示できます。非メンバーはログインしていても内部プロジェクトを表示できません。
+1. 非メンバーは**Everyone with access**（アクセスできるすべてのユーザー）の表示レベルで、公開プロジェクトのモデル実験のみを表示できます。非メンバーはログインしていても内部プロジェクトを表示できません。
 1. パッケージレジストリAPIを使用して、アーティファクトをアップロードおよびダウンロードすることもできます。これには別の権限セットが使用されます。
 
 ### モニタリング {#monitoring}
@@ -515,10 +542,10 @@ Runner、変数、保護環境などの[CI/CD](../ci/_index.md)機能のグル�
 | [テストケース](../ci/test_cases/_index.md)を再開                                   |       |    ✓    |    ✓     |     ✓     |     ✓      |   ✓   |
 | イシューをCSVファイルから[インポート](project/issues/csv_import.md)                     |       |    ✓    |          |     ✓     |     ✓      |   ✓   |
 | イシューをCSVファイルに[エクスポート](project/issues/csv_export.md)                       |   ✓   |    ✓    |    ✓     |     ✓     |     ✓      |   ✓   |
-| イシューを削除                                                                     |       |         |          |           |            |   ✓   |
+| イシューを削除                                                                     |       |    ✓    |          |           |            |   ✓   |
 | [機能フラグ](../operations/feature_flags.md)を管理                            |       |         |          |     ✓     |     ✓      |   ✓   |
 
-**脚注**
+**Footnotes**（脚注）
 
 1. メタデータには、ラベル、担当者、マイルストーン、エピック、ウェイト、公開設定、タイムトラッキングなどが含まれます。ゲストユーザーは、イシューの作成時にのみメタデータを設定できます。既存のイシューのメタデータは変更できません。ゲストユーザーは、作成したイシューまたは割り当て済みのイシューのタイトルと説明を変更できます。
 1. ゲストユーザーは、作成したイシューまたは割り当て済みのイシューに対して、完了および再開が可能です。
@@ -539,7 +566,7 @@ Runner、変数、保護環境などの[CI/CD](../ci/_index.md)機能のグル�
 | 内部メモを追加                                                                |       |    ✓    |    ✓     |     ✓     |     ✓      |   ✓   |
 | タスクを削除<sup>2</sup>                                                        |       |    ✓    |          |           |            |   ✓   |
 
-**脚注**
+**Footnotes**（脚注）
 
 1. ゲストユーザーは、作成したイシューまたは割り当て済みのイシューのタイトルと説明を変更できます。
 1. プランナーまたはオーナーのロールを持たないユーザーは、自分が作成したタスクを削除できます。
@@ -582,7 +609,7 @@ Runner、変数、保護環境などの[CI/CD](../ci/_index.md)機能のグル�
 | [タグ保護](packages/container_registry/protected_container_tags.md)ルールを作成           |       |         |          |           |     ✓      |   ✓   |
 | [イミュータブルタグ保護](packages/container_registry/immutable_container_tags.md)ルールを作成 |       |         |          |           |            |   ✓   |
 
-**脚注**:
+**Footnotes**（脚注）:
 
 1. コンテナレジストリの表示およびイメージのプルは、[コンテナレジストリの表示レベル権限](packages/container_registry/_index.md#container-registry-visibility-permissions)によって制御されます。ゲストロールには、非公開プロジェクトでの表示またはプルの権限がありません。
 
@@ -595,7 +622,7 @@ Runner、変数、保護環境などの[CI/CD](../ci/_index.md)機能のグル�
 | パッケージを削除                         |       |         |          |           |     ✓      |   ✓   |
 | パッケージに関連付けられたファイルを削除  |       |         |          |           |     ✓      |   ✓   |
 
-**脚注**
+**Footnotes**（脚注）
 
 1. GitLab Self-Managedでは、ゲストロールを持つユーザーは、公開および内部プロジェクトでのみこのアクションを実行できます（非公開プロジェクトでは実行できません）。[外部ユーザー](../administration/external_users.md)には、プロジェクトが内部であっても、明示的なアクセス権（少なくとも**レポーター**ロール）を付与する必要があります。GitLab.comのゲストロールのユーザーは、内部表示レベルを利用できないため、公開プロジェクトでのみこのアクションを実行できます。
 
@@ -637,7 +664,7 @@ Runner、変数、保護環境などの[CI/CD](../ci/_index.md)機能のグル�
 | 通知メールを無効化                                                            |       |         |          |           |            |   ✓   |
 | プロジェクトを移行                                                                       |       |         |          |           |            |   ✓   |
 
-**脚注**
+**Footnotes**（脚注）
 
 <!-- Disable ordered list rule https://github.com/DavidAnson/markdownlint/blob/main/doc/Rules.md#md029---ordered-list-item-prefix -->
 <!-- markdownlint-disable MD029 -->
@@ -687,7 +714,7 @@ Runner、変数、保護環境などの[CI/CD](../ci/_index.md)機能のグル�
 | フォーク関係を削除                                              |       |         |          |           |            |   ✓   |
 | 保護ブランチに強制プッシュ<sup>6</sup>                         |       |         |          |           |            |       |
 
-**脚注**
+**Footnotes**（脚注）
 
 <!-- Disable ordered list rule https://github.com/DavidAnson/markdownlint/blob/main/doc/Rules.md#md029---ordered-list-item-prefix -->
 <!-- markdownlint-disable MD029 -->
@@ -709,20 +736,22 @@ Runner、変数、保護環境などの[CI/CD](../ci/_index.md)機能のグル�
 | ----------------------------------------------------------------------------------------- | :---: | :-----: | :------: | :-------: | :--------: | :---: |
 | マージリクエストを[表示](project/merge_requests/_index.md#view-merge-requests)<sup>1</sup> |   ✓   |    ✓    |    ✓     |     ✓     |     ✓      |   ✓   |
 | マージリクエストとコメントを[検索](search/_index.md)<sup>1</sup>                       |   ✓   |         |    ✓     |     ✓     |     ✓      |   ✓   |
+| マージリクエストを[承認](project/merge_requests/approvals/_index.md)<sup>2</sup>         |       |    ✓    |    ✓     |     ✓     |     ✓      |   ✓   |
 | 内部メモを追加                                                                         |       |    ✓    |    ✓     |     ✓     |     ✓      |   ✓   |
 | コメントおよび提案を追加                                                               |       |    ✓    |    ✓     |     ✓     |     ✓      |   ✓   |
 | [スニペット](snippets.md)を作成                                                            |       |         |    ✓     |     ✓     |     ✓      |   ✓   |
-| [マージリクエスト](project/merge_requests/creating_merge_requests.md)を作成<sup>2</sup>    |       |         |          |     ✓     |     ✓      |   ✓   |
-| マージリクエストの詳細を更新<sup>3</sup>                                                 |       |         |          |     ✓     |     ✓      |   ✓   |
+| [マージリクエスト](project/merge_requests/creating_merge_requests.md)を作成<sup>3</sup>    |       |         |          |     ✓     |     ✓      |   ✓   |
+| マージリクエストの詳細を更新<sup>4</sup>                                                 |       |         |          |     ✓     |     ✓      |   ✓   |
 | [マージリクエストの設定](project/merge_requests/approvals/settings.md)を管理             |       |         |          |           |     ✓      |   ✓   |
 | [マージリクエスト承認ルール](project/merge_requests/approvals/rules.md)を管理          |       |         |          |           |     ✓      |   ✓   |
 | マージリクエストを削除                                                                      |       |         |          |           |            |   ✓   |
 
-**脚注**
+**Footnotes**（脚注）
 
 1. GitLab Self-Managedでは、ゲストロールを持つユーザーは、公開および内部プロジェクトでのみこのアクションを実行できます（非公開プロジェクトでは実行できません）。[外部ユーザー](../administration/external_users.md)には、プロジェクトが内部であっても、明示的なアクセス権（少なくとも**レポーター**ロール）を付与する必要があります。GitLab.comのゲストロールのユーザーは、内部表示レベルを利用できないため、公開プロジェクトでのみこのアクションを実行できます。
-1. 外部メンバーからのコントリビュートを受け入れるプロジェクトでは、ユーザーは自分のマージリクエストを作成、編集、および完了できます。**非公開**プロジェクトの場合、ゲストロールは[非公開プロジェクトをクローンできない](public_access.md#private-projects-and-groups)ため除外されます。**内部**プロジェクトの場合、[内部プロジェクトをクローンできる](public_access.md#internal-projects-and-groups)ため、プロジェクトへの読み取り専用アクセス権を持つユーザーが含まれます。
-1. マージリクエストの適格な承認者については、[適格な承認者](project/merge_requests/approvals/rules.md#eligible-approvers)を参照してください。
+1. プランナーとレポーターロールからの承認は、[プロジェクトで有効](project/merge_requests/approvals/rules.md#enable-approval-permissions-for-additional-users)な場合にのみ使用できます。
+1. 外部メンバーからのコントリビュートを受け入れるプロジェクトでは、ユーザーは自分のマージリクエストを作成、編集、および完了できます。**非公開**プロジェクトの場合、ゲストロールは[非公開プロジェクトをクローンできない](public_access.md#private-projects-and-groups)ため除外されます。**internal**（内部）プロジェクトの場合、[内部プロジェクトをクローンできる](public_access.md#internal-projects-and-groups)ため、プロジェクトへの読み取り専用アクセス権を持つユーザーが含まれます。
+1. 外部メンバーからのコントリビュートを受け入れるプロジェクトでは、ユーザーは自分のマージリクエストを作成、編集、および完了できます。担当者、レビュアー、ラベル、マイルストーンなど、一部のフィールドは編集できません。
 
 ### ユーザー管理 {#user-management}
 
@@ -732,9 +761,9 @@ Runner、変数、保護環境などの[CI/CD](../ci/_index.md)機能のグル�
 | ---------------------------------------------------------------- | :---: | :-----: | :------: | :-------: | :--------: | :---: |
 | メンバーの2FAステータスを表示                                       |       |         |          |           |     ✓      |   ✓   |
 | [プロジェクトメンバー](project/members/_index.md)を管理<sup>1</sup> |       |         |          |           |     ✓      |   ✓   |
-| グループとプロジェクトを共有（招待）<sup>2</sup>                 |       |         |          |           |     ✓      |   ✓   |
+| グループとプロジェクトを共有（招待）<sup>2</sup>                 |       |         |          |           |            |   ✓   |
 
-**脚注**
+**Footnotes**（脚注）
 
 1. メンテナーは、オーナーを作成、降格、または削除することはできず、ユーザーをオーナーロールにプロモートすることもできません。また、オーナーロールのアクセスリクエストを承認することもできません。
 1. [グループ共有ロック](project/members/sharing_projects_groups.md#prevent-a-project-from-being-shared-with-groups)が有効になっている場合、プロジェクトを他のグループと共有することはできません。グループとグループの間の共有には影響しません。
@@ -769,8 +798,8 @@ Runner、変数、保護環境などの[CI/CD](../ci/_index.md)機能のグル�
 
 [GitLab.comグループのSAML SSO](group/saml_sso/_index.md)で最小アクセスロールを使用して、グループ階層内のグループおよびプロジェクトへのアクセスを制御できます。SSOを介してトップレベルグループに自動的に追加されたメンバーのデフォルトロールを最小アクセスに設定できます。
 
-1. 左側のサイドバーで、**検索または移動先**を選択して、グループを見つけます。
-1. **設定 > SAML SSO**を選択します。
+1. 左側のサイドバーで、**検索または移動先**を選択して、グループを見つけます。[新しいナビゲーションをオンにしている](interface_redesign.md#turn-new-navigation-on-or-off)場合、このフィールドは上部のバーにあります。
+1. **設定** > **SAML SSO**を選択します。
 1. **デフォルトのメンバーシップロール**ドロップダウンリストから、**最小アクセス**を選択します。
 1. **変更を保存**を選択します。
 
@@ -781,7 +810,7 @@ Runner、変数、保護環境などの[CI/CD](../ci/_index.md)機能のグル�
 - 標準のWeb認証でサインインすると、親グループにアクセスするときに`404`エラーが表示されます。
 - グループSSOでサインインすると、親グループページにリダイレクトされるため、すぐに`404`エラーが表示されます。
 
-この問題を回避するには、これらのユーザーに親グループ内の任意のプロジェクトまたはサブグループに対するゲストロール以上を付与します。ゲストユーザーは、Premiumプランではライセンスシートを消費しますが、Ultimateプランでは消費しません。
+この問題を回避するには、これらのユーザーに、親グループ内の任意のプロジェクトまたはサブグループに対して、少なくともゲストロールを付与します。ゲストユーザーは、Premiumプランではライセンスシートを消費しますが、Ultimateプランでは消費しません。
 
 ## 関連トピック {#related-topics}
 
