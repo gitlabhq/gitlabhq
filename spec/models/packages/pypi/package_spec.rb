@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Packages::Pypi::Package, type: :model, feature_category: :package_registry do
+RSpec.describe Packages::Pypi::Package, :aggregate_failures, feature_category: :package_registry do
   using RSpec::Parameterized::TableSyntax
 
   describe 'relationships' do
@@ -80,21 +80,36 @@ RSpec.describe Packages::Pypi::Package, type: :model, feature_category: :package
     end
   end
 
-  describe '.with_normalized_pypi_name' do
-    let_it_be(:pypi_package) { create(:pypi_package, name: 'Foo.bAr---BAZ_buz') }
+  describe 'scopes' do
+    describe '.with_normalized_pypi_name' do
+      let_it_be(:pypi_package) { create(:pypi_package, name: 'Foo.bAr---BAZ_buz') }
 
-    subject { described_class.with_normalized_pypi_name('foo-bar-baz-buz') }
+      subject { described_class.with_normalized_pypi_name('foo-bar-baz-buz') }
 
-    it { is_expected.to match_array([pypi_package]) }
-  end
+      it { is_expected.to match_array([pypi_package]) }
+    end
 
-  describe '.preload_pypi_metadatum' do
-    let_it_be(:pypi_package) { create(:pypi_package) }
+    describe '.preload_pypi_metadatum' do
+      let_it_be(:pypi_package) { create(:pypi_package) }
 
-    subject(:packages) { described_class.preload_pypi_metadatum }
+      subject(:packages) { described_class.preload_pypi_metadatum }
 
-    it 'loads pypi metadatum' do
-      expect(packages.first.association(:pypi_metadatum)).to be_loaded
+      it 'loads pypi metadatum' do
+        expect(packages.first.association(:pypi_metadatum)).to be_loaded
+      end
+    end
+
+    describe '.preload_files_and_file_metadatum' do
+      let_it_be(:package) { create(:pypi_package) }
+      let_it_be(:package_file) { create(:package_file, package:) }
+      let_it_be(:pypi_file_metadatum) { create(:pypi_file_metadatum, package_file:) }
+
+      subject(:packages) { described_class.preload_files_and_file_metadatum }
+
+      it 'preloads package files and pypi file metadatum' do
+        expect(packages.first.association(:installable_package_files)).to be_loaded
+        expect(packages.first.installable_package_files.first.association(:pypi_file_metadatum)).to be_loaded
+      end
     end
   end
 

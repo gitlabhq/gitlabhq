@@ -4419,6 +4419,80 @@ RSpec.describe Project, factory_default: :keep, feature_category: :groups_and_pr
     end
   end
 
+  describe '#latest_pipeline_for_ci_and_security_orchestration' do
+    let_it_be(:project) { create(:project, :repository) }
+
+    let_it_be(:push_pipeline) do
+      create(:ci_pipeline, project: project, sha: project.commit.id, ref: project.default_branch, source: :push)
+    end
+
+    let_it_be(:security_policy_pipeline) do
+      create(:ci_pipeline, project: project, sha: project.commit.id, ref: project.default_branch,
+        source: :security_orchestration_policy)
+    end
+
+    let_it_be(:parent_pipeline) do
+      create(:ci_pipeline, project: project, sha: project.commit.id, ref: project.default_branch,
+        source: :parent_pipeline)
+    end
+
+    let_it_be(:webide_pipeline) do
+      create(:ci_pipeline, project: project, sha: project.commit.id, ref: project.default_branch,
+        source: :webide)
+    end
+
+    let_it_be(:ondemand_dast_pipeline) do
+      create(:ci_pipeline, project: project, sha: project.commit.id, ref: project.default_branch,
+        source: :ondemand_dast_scan)
+    end
+
+    context 'when retrieving latest pipeline for default branch' do
+      subject { project.latest_pipeline_for_ci_and_security_orchestration }
+
+      it 'returns the latest CI or security orchestration pipeline' do
+        expect(subject).to eq(security_policy_pipeline)
+      end
+
+      it 'excludes parent_pipeline source' do
+        expect(subject).not_to eq(parent_pipeline)
+      end
+
+      it 'excludes webide source' do
+        expect(subject).not_to eq(webide_pipeline)
+      end
+
+      it 'excludes ondemand_dast_scan source' do
+        expect(subject).not_to eq(ondemand_dast_pipeline)
+      end
+    end
+
+    context 'with specified ref' do
+      let(:second_branch) { project.repository.branches[2] }
+
+      let!(:pipeline_for_second_branch) do
+        create(:ci_pipeline, project: project, sha: second_branch.target, ref: second_branch.name, source: :push)
+      end
+
+      subject { project.latest_pipeline_for_ci_and_security_orchestration(second_branch.name) }
+
+      it 'returns the latest pipeline for the specified ref' do
+        expect(subject).to eq(pipeline_for_second_branch)
+      end
+    end
+
+    context 'when only dangling pipelines exist' do
+      before do
+        Ci::Pipeline.where(source: [:push, :security_orchestration_policy]).delete_all
+      end
+
+      subject { project.latest_pipeline_for_ci_and_security_orchestration }
+
+      it 'returns nil' do
+        expect(subject).to be_nil
+      end
+    end
+  end
+
   describe '#latest_successful_build_for_sha' do
     let_it_be(:project) { create(:project, :repository) }
     let_it_be(:pipeline) { create_pipeline(project) }

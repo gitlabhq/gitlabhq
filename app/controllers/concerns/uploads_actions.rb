@@ -153,9 +153,15 @@ module UploadsActions
   end
 
   def bypass_auth_checks_on_uploads?
-    return false if target_project && !target_project.public? && target_project.enforce_auth_checks_on_uploads?
+    return false if private_project_with_auth_checks?
 
     action_name == 'show' && embeddable?
+  end
+
+  def private_project_with_auth_checks?
+    target_project &&
+      !target_project.public? &&
+      target_project.enforce_auth_checks_on_uploads?
   end
 
   def upload_version_at_least?(version)

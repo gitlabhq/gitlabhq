@@ -47363,6 +47363,9 @@ msgstr ""
 msgid "Package type must be NuGet"
 msgstr ""
 
+msgid "Package type must be PyPI"
+msgstr ""
+
 msgid "PackageRegistry|%{count} selected"
 msgid_plural "PackageRegistry|%{count} selected"
 msgstr[0] ""

@@ -43,11 +43,20 @@ RSpec.describe Packages::Pypi::CreatePackageService, :aggregate_failures, featur
       expect { subject }.to change { Packages::Package.pypi.count }.by(1)
                         .and change { Packages::PackageFile.count }.by(1)
                         .and change { Packages::Pypi::Metadatum.count }.by(1)
+                        .and change { Packages::Pypi::FileMetadatum.count }.by(1)
 
       expect(created_package).to have_attributes(expected_package_attrs)
       expect(created_package.pypi_metadatum).to have_attributes(expected_pypi_metadata)
       expect(created_package.package_files.size).to eq 1
       expect(created_package.package_files.first).to have_attributes(expected_package_file_attrs)
+
+      package_file = created_package.package_files.first
+
+      expect(package_file.pypi_file_metadatum).to be_present
+      expect(package_file.pypi_file_metadatum).to have_attributes(
+        required_python: created_package.pypi_metadatum.required_python,
+        project_id: project.id
+      )
     end
   end
 

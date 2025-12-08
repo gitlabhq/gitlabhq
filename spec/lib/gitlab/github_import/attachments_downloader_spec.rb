@@ -316,7 +316,7 @@ RSpec.describe Gitlab::GithubImport::AttachmentsDownloader, feature_category: :i
         file = downloader.perform
 
         expect(File.exist?(file.path)).to eq(true)
-        expect(File.basename(file.path)).not_to include('/')
+        expect(File.basename(file.path)).to eq('file_with_slashes.txt')
       end
     end
 
@@ -339,7 +339,7 @@ RSpec.describe Gitlab::GithubImport::AttachmentsDownloader, feature_category: :i
         file = downloader.perform
 
         expect(File.exist?(file.path)).to eq(true)
-        expect(File.basename(file.path)).not_to start_with('.')
+        expect(File.basename(file.path)).to eq('hidden-file.txt')
       end
     end
 
@@ -350,7 +350,18 @@ RSpec.describe Gitlab::GithubImport::AttachmentsDownloader, feature_category: :i
         file = downloader.perform
 
         expect(File.exist?(file.path)).to eq(true)
-        expect(File.basename(file.path)).not_to be_empty
+        expect(File.basename(file.path)).to eq('attachment')
+      end
+    end
+
+    context 'when filename is only special characters that get sanitized away' do
+      let(:file_url) { 'https://example.com/%2F' }
+
+      it 'uses attachment as fallback filename' do
+        file = downloader.perform
+
+        expect(File.exist?(file.path)).to eq(true)
+        expect(File.basename(file.path)).to eq('attachment')
       end
     end
   end

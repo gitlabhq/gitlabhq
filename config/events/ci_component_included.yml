@@ -1,0 +1,22 @@
+---
+description: When any CI component is included in a pipeline, regardless of whether it is published to the CI/CD Catalog.
+internal_events: true
+action: ci_component_included
+additional_properties:
+  label:
+    description: Full path and name of the component being included
+  value:
+    description: Type of the component being included
+  property:
+    description: Version or SHA of the component being included
+identifiers:
+- project
+- namespace
+- user
+product_group: pipeline_authoring
+milestone: '18.7'
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/issues/579780
+tiers:
+- free
+- premium
+- ultimate

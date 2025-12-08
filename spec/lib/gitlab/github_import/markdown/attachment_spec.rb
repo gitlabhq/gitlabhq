@@ -64,6 +64,14 @@ RSpec.describe Gitlab::GithubImport::Markdown::Attachment, feature_category: :im
 
       it_behaves_like 'rejects base user-attachments URLs'
 
+      context 'when URL is invalid user-attachments base path' do
+        let(:url) { "#{web_endpoint}/user-attachments/" }
+
+        it 'returns nil' do
+          expect(described_class.from_markdown(markdown_node, web_endpoint)).to be_nil
+        end
+      end
+
       context "when it's a doc attachment from GHE" do
         let(:web_endpoint) { 'https://gce.kitty.com' }
         let(:url) { "#{web_endpoint}/nickname/public-test-repo/files/3/git-cheat-sheet.pdf" }

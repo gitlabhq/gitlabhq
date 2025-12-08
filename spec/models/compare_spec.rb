@@ -195,7 +195,7 @@ RSpec.describe Compare, feature_category: :source_code_management do
       let(:straight) { true }
 
       it 'returns the range between start and head commits' do
-        is_expected.to eq(from: start_commit.id, to: head_commit.id)
+        is_expected.to eq(from: start_commit.id, to: head_commit.id, straight: true)
       end
     end
 

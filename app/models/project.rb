@@ -1658,6 +1658,10 @@ class Project < ApplicationRecord
     latest_pipelines(ref: ref, sha: sha, source: source).take
   end
 
+  def latest_pipeline_for_ci_and_security_orchestration(ref = default_branch)
+    all_pipelines.ci_and_security_orchestration_sources.newest_first(ref: ref).take
+  end
+
   def merge_base_commit(first_commit_id, second_commit_id)
     strong_memoize(:"merge_base_commit_#{first_commit_id}_#{second_commit_id}") do
       sha = repository.merge_base(first_commit_id, second_commit_id)

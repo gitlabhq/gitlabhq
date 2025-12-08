@@ -1,5 +1,5 @@
 ---
-description: When a CI/CD Catalog component is included in a pipeline.
+description: When a component that has been published to the CI/CD Catalog is included in a pipeline.
 internal_events: true
 action: ci_catalog_component_included
 additional_properties:

@@ -31,7 +31,9 @@ class Compare
     {
       from: @straight ? start_commit_sha : (base_commit_sha || start_commit_sha),
       to: head_commit_sha
-    }
+    }.tap do |params|
+      params[:straight] = true if @straight
+    end
   end
 
   def cache_key

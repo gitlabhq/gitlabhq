@@ -32,14 +32,30 @@ module Ci
           component_project = Project.find_by_id(component_hash['project_id'])
           return unless component_project
 
+          track_all_components_event(component_hash, component_project, project, user)
+
           component = ::Ci::Catalog::ComponentsProject.new(component_project, component_hash['sha'])
             .find_catalog_component(component_hash['name'])
           return unless component
 
-          track_event(component, component_project, project, user)
+          track_catalog_component_event(component, component_project, project, user)
         end
 
-        def track_event(component, component_project, project, user)
+        def track_all_components_event(component_hash, component_project, project, user)
+          Gitlab::InternalEvents.track_event(
+            'ci_component_included',
+            namespace: project.namespace,
+            project: project,
+            user: user,
+            additional_properties: {
+              label: "#{component_project.full_path}/#{component_hash['name']}",
+              value: component_type,
+              property: component_hash['sha']
+            }
+          )
+        end
+
+        def track_catalog_component_event(component, component_project, project, user)
           Gitlab::InternalEvents.track_event(
             'ci_catalog_component_included',
             namespace: project.namespace,
@@ -53,6 +69,10 @@ module Ci
           )
 
           ::Ci::Components::Usages::CreateService.new(component, used_by_project: project).execute
+        end
+
+        def component_type
+          ::Ci::Catalog::Resources::Component.component_types[:template]
         end
       end
     end

@@ -32,7 +32,12 @@ module Packages
 
           Packages::Pypi::Metadatum.upsert(meta.attributes)
 
-          ::Packages::CreatePackageFileService.new(created_package, file_params).execute
+          package_file = ::Packages::CreatePackageFileService.new(created_package, file_params).execute
+
+          package_file.create_pypi_file_metadatum(
+            required_python: meta.required_python,
+            project_id: package_file.project_id
+          )
 
           ServiceResponse.success(payload: { package: created_package })
         end

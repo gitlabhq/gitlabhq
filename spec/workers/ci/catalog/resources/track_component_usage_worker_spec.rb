@@ -28,8 +28,32 @@ RSpec.describe Ci::Catalog::Resources::TrackComponentUsageWorker, feature_catego
     it_behaves_like 'an idempotent worker' do
       let(:job_args) { [project.id, user.id, [component_hash]] }
 
-      it 'tracks the component usage event' do
-        expect { perform }.to trigger_internal_events('ci_catalog_component_included')
+      it 'tracks ci_component_included event with correct properties' do
+        expect { perform }
+          .to trigger_internal_events('ci_component_included')
+          .with(
+            category: 'InternalEventTracking',
+            project: project,
+            namespace: project.namespace,
+            user: user,
+            label: "#{component.project.full_path}/#{component.name}",
+            value: 1,
+            property: version.sha
+          )
+      end
+
+      it 'tracks ci_catalog_component_included event with correct properties' do
+        expect { perform }
+          .to trigger_internal_events('ci_catalog_component_included')
+          .with(
+            category: 'InternalEventTracking',
+            project: project,
+            namespace: project.namespace,
+            user: user,
+            label: "#{component.project.full_path}/#{component.name}",
+            value: 1,
+            property: component.version.name
+          )
       end
 
       it 'creates a component usage record' do
@@ -64,18 +88,41 @@ RSpec.describe Ci::Catalog::Resources::TrackComponentUsageWorker, feature_catego
       end
     end
 
-    context 'when component does not exist' do
-      let(:invalid_component_hash) do
+    context 'when component does not exist in the catalog' do
+      let_it_be(:non_catalog_project) { create(:project, :public) }
+
+      let(:non_catalog_component_hash) do
         {
-          'project_id' => component.project.id,
-          'sha' => version.sha,
-          'name' => 'nonexistent_component'
+          'project_id' => non_catalog_project.id,
+          'sha' => 'abc123',
+          'name' => 'my_component'
         }
       end
 
-      it 'does not track usage' do
+      it 'tracks ci_component_included event with correct properties' do
         expect do
-          described_class.new.perform(project.id, user.id, [invalid_component_hash])
+          described_class.new.perform(project.id, user.id, [non_catalog_component_hash])
+        end.to trigger_internal_events('ci_component_included')
+          .with(
+            category: 'InternalEventTracking',
+            project: project,
+            namespace: project.namespace,
+            user: user,
+            label: "#{non_catalog_project.full_path}/my_component",
+            value: 1,
+            property: 'abc123'
+          )
+      end
+
+      it 'does not track ci_catalog_component_included event' do
+        expect do
+          described_class.new.perform(project.id, user.id, [non_catalog_component_hash])
+        end.not_to trigger_internal_events('ci_catalog_component_included')
+      end
+
+      it 'does not create a component usage record' do
+        expect do
+          described_class.new.perform(project.id, user.id, [non_catalog_component_hash])
         end.not_to change { Ci::Catalog::Resources::Components::LastUsage.count }
       end
     end

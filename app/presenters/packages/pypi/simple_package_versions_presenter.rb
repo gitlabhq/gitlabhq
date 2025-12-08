@@ -14,7 +14,7 @@ module Packages
         refs = []
 
         available_packages.each_batch do |relation|
-          batch = relation.preload_files
+          batch = relation.preload_files_and_file_metadatum
                           .preload_pypi_metadatum
 
           batch.each do |package|
@@ -22,8 +22,9 @@ module Packages
 
             package_files.each do |file|
               url = build_pypi_package_file_path(file)
+              required_python = file.pypi_file_metadatum&.required_python || package.pypi_metadatum.required_python
 
-              refs << package_link(url, package.pypi_metadatum.required_python, file.file_name)
+              refs << package_link(url, required_python, file.file_name)
             end
           end
         end

@@ -517,6 +517,7 @@ RSpec.describe API::Repositories, feature_category: :source_code_management do
         expect(json_response['commits']).to be_present
         expect(json_response['diffs']).to be_present
         expect(json_response['web_url']).to be_present
+        expect(json_response['web_url']).to include('...')
       end
 
       it "compares branches with explicit merge-base mode" do
@@ -529,6 +530,7 @@ RSpec.describe API::Repositories, feature_category: :source_code_management do
         expect(json_response['commits']).to be_present
         expect(json_response['diffs']).to be_present
         expect(json_response['web_url']).to be_present
+        expect(json_response['web_url']).to include('...')
       end
 
       it "compares branches with explicit straight mode" do
@@ -541,6 +543,7 @@ RSpec.describe API::Repositories, feature_category: :source_code_management do
         expect(json_response['commits']).to be_present
         expect(json_response['diffs']).to be_present
         expect(json_response['web_url']).to be_present
+        expect(json_response['web_url']).to include('..').and exclude('...')
       end
 
       it "compares tags" do

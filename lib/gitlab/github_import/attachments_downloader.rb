@@ -76,8 +76,8 @@ module Gitlab
         sanitized = filename.gsub(ALLOWED_FILENAME_CHARACTERS, '_')
         # Remove leading dots to prevent hidden files
         sanitized = sanitized.sub(/^\.+/, '')
-        # Provide fallback if empty
-        sanitized.empty? ? 'attachment' : sanitized
+        # Provide fallback if empty or only underscore characters
+        sanitized.empty? || sanitized.match?(/\A_+\z/) ? 'attachment' : sanitized
       end
 
       def raise_error(message)

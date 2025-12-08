@@ -103,7 +103,7 @@ module RuboCop
 
           return [:missing_key, { key: :introduced_by_url }] unless bbm_dictionary.introduced_by_url.present?
 
-          return [:invalid_url, { key: :introduced_by_url }] unless valid_url?(bbm_dictionary.introduced_by_url)
+          [:invalid_url, { key: :introduced_by_url }] unless valid_url?(bbm_dictionary.introduced_by_url)
         end
 
         def rails_root

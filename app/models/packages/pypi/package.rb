@@ -19,6 +19,7 @@ module Packages
       end
 
       scope :preload_pypi_metadatum, -> { preload(:pypi_metadatum) }
+      scope :preload_files_and_file_metadatum, -> { preload(installable_package_files: :pypi_file_metadatum) }
 
       # As defined in PEP 503 https://peps.python.org/pep-0503/#normalized-names
       def normalized_pypi_name

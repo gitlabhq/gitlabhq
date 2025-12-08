@@ -91,7 +91,13 @@ module Gitlab
       def compare_url(compare, **options)
         return '' unless compare.project
 
-        instance.project_compare_url(compare.project, **options.merge(compare.to_param))
+        compare_params = compare.to_param
+
+        if compare_params[:straight] == true
+          instance.project_compare_with_two_dots_url(compare.project, **options.merge(compare_params))
+        else
+          instance.project_compare_url(compare.project, **options.merge(compare_params))
+        end
       end
 
       def note_url(note, **options)

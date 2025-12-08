@@ -30,6 +30,11 @@ RSpec.describe Packages::PackageFile, feature_category: :package_registry do
       is_expected.to have_one(:helm_file_metadatum).inverse_of(:package_file)
         .class_name('Packages::Helm::FileMetadatum')
     end
+
+    it 'has one pypi file metadatum' do
+      is_expected.to have_one(:pypi_file_metadatum).inverse_of(:package_file)
+        .class_name('Packages::Pypi::FileMetadatum')
+    end
   end
 
   describe 'included modules' do

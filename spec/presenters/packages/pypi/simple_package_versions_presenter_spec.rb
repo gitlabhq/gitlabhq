@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe ::Packages::Pypi::SimplePackageVersionsPresenter, :aggregate_failures do
+RSpec.describe ::Packages::Pypi::SimplePackageVersionsPresenter, :aggregate_failures, feature_category: :package_registry do
   using RSpec::Parameterized::TableSyntax
 
   let_it_be(:group) { create(:group) }
@@ -38,7 +38,7 @@ RSpec.describe ::Packages::Pypi::SimplePackageVersionsPresenter, :aggregate_fail
       end
 
       it 'avoids N+1 database queries' do
-        control = ActiveRecord::QueryRecorder.new { subject }
+        control = ActiveRecord::QueryRecorder.new { described_class.new(packages, project_or_group).body }
 
         create(:pypi_package, project: project, name: package_name)
 
@@ -69,6 +69,46 @@ RSpec.describe ::Packages::Pypi::SimplePackageVersionsPresenter, :aggregate_fail
       let(:project_or_group) { project }
 
       it { is_expected.not_to include(package_file_pending_destruction.file_name) }
+    end
+
+    context 'with pypi_file_metadatum required_python' do
+      let(:project_or_group) { project }
+      let(:package) { package1 }
+      let(:file_required_python) { '>=3.8' }
+      let(:package_required_python) { '>=2.7' }
+
+      before do
+        package.pypi_metadatum.update_column(:required_python, package_required_python)
+        package2.pypi_metadatum.update_column(:required_python, '>=3.0')
+        create(:pypi_file_metadatum, package_file: file, required_python: file_required_python)
+      end
+
+      it 'uses required_python from pypi_file_metadatum when available' do
+        expected_link = "<a href=\"http://localhost/api/v4/projects/#{project.id}/packages/pypi/files/" \
+          "#{file.file_sha256}/#{filename}#sha256=#{file.file_sha256}\" " \
+          "data-requires-python=\"&gt;=3.8\">#{filename}</a>"
+
+        expect(presenter).to include(expected_link)
+        expect(presenter).not_to include('data-requires-python="&gt;=2.7"')
+      end
+    end
+
+    context 'without pypi_file_metadatum required_python' do
+      let(:project_or_group) { project }
+      let(:package) { package1 }
+      let(:package_required_python) { '>=2.7' }
+
+      before do
+        package.pypi_metadatum.update_column(:required_python, package_required_python)
+      end
+
+      it 'falls back to required_python from package pypi_metadatum' do
+        expected_link = "<a href=\"http://localhost/api/v4/projects/#{project.id}/packages/pypi/files/" \
+          "#{file.file_sha256}/#{filename}#sha256=#{file.file_sha256}\" " \
+          "data-requires-python=\"&gt;=2.7\">#{filename}</a>"
+
+        expect(presenter).to include(expected_link)
+      end
     end
   end
 end

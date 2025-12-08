@@ -31,6 +31,7 @@ module Packages
     has_many :pipelines, through: :package_file_build_infos, disable_joins: true
     has_one :debian_file_metadatum, inverse_of: :package_file, class_name: 'Packages::Debian::FileMetadatum'
     has_one :helm_file_metadatum, inverse_of: :package_file, class_name: 'Packages::Helm::FileMetadatum'
+    has_one :pypi_file_metadatum, inverse_of: :package_file, class_name: 'Packages::Pypi::FileMetadatum'
 
     accepts_nested_attributes_for :conan_file_metadatum
     accepts_nested_attributes_for :debian_file_metadatum
