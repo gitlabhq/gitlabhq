@@ -28,33 +28,38 @@ module Gitlab
 
         client = GithubImport.new_client_for(project, parallel: true)
 
-        if try_import(project, client, hash)
+        import_result = try_import(project, client, hash)
+
+        if import_result[:success]
           notify_waiter(notify_key)
         else
-          reschedule_job(project, client, hash, notify_key)
+          reschedule_job(project, client, hash, notify_key, import_result[:reset_in])
         end
       end
 
       def try_import(...)
         import(...)
-        true
-      rescue RateLimitError, UserFinder::FailedToObtainLockError
-        false
+        { success: true }
+      rescue RateLimitError => e
+        { success: false, reset_in: e.reset_in }
+      rescue UserFinder::FailedToObtainLockError
+        { success: false, reset_in: nil }
       end
 
       def notify_waiter(key = nil)
         JobWaiter.notify(key, jid, ttl: Gitlab::Import::JOB_WAITER_TTL) if key
       end
 
-      def reschedule_job(project, client, hash, notify_key)
+      def reschedule_job(project, client, hash, notify_key, reset_in = nil)
         # In the event of hitting the rate limit we want to reschedule the job
         # so its retried after our rate limit has been reset with additional delay
         # to spread the load.
         enqueued_job_count_key = format(ENQUEUED_JOB_COUNT, project: project.id, collection: object_type)
-        enqueued_job_counter =
-          Gitlab::Cache::Import::Caching.increment(enqueued_job_count_key, timeout: client.rate_limit_resets_in)
+        rate_limit_resets_in = reset_in || client.rate_limit_resets_in
+        enqueued_job_counter = Gitlab::Cache::Import::Caching.increment(enqueued_job_count_key,
+          timeout: [rate_limit_resets_in, Gitlab::Cache::Import::Caching::TIMEOUT].max)
 
-        job_delay = client.rate_limit_resets_in + calculate_job_delay(enqueued_job_counter)
+        job_delay = rate_limit_resets_in + calculate_job_delay(enqueued_job_counter)
 
         self.class.perform_in(job_delay, project.id, hash.deep_stringify_keys, notify_key.to_s)
       end

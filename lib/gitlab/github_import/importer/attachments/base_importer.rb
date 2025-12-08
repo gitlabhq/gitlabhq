@@ -37,6 +37,12 @@ module Gitlab
             NoteAttachmentsImporter
           end
 
+          # To avoid hitting rate limits, we use a smaller limit for attachments than the one defined in the
+          # application settings.
+          def parallel_import_batch
+            { size: 100, delay: 1.minute }
+          end
+
           private
 
           def collection

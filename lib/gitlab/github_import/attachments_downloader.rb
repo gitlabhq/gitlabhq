@@ -14,6 +14,9 @@ module Gitlab
       TMP_DIR = File.join(Dir.tmpdir, 'github_attachments').freeze
       SUPPORTED_VIDEO_MEDIA_TYPES = %w[mov mp4 webm].freeze
 
+      RATE_LIMIT_HTTP_STATUS = 429
+      RATE_LIMIT_DEFAULT_RESET_IN = 120
+
       attr_reader :file_url, :filename, :file_size_limit, :options, :web_endpoint
 
       def initialize(
@@ -70,6 +73,8 @@ module Gitlab
         options[:follow_redirects] = false
         response = ::Import::Clients::HTTP.get(file_url, options)
 
+        raise_rate_limit_error(response) if rate_limited?(response)
+
         if response.redirection?
           response.headers[:location]
         else
@@ -87,16 +92,37 @@ module Gitlab
         Gitlab::HTTP.perform_request(Net::HTTP::Get, url, stream_body: true) do |chunk|
           next if [301, 302, 303, 307, 308].include?(chunk.code)
 
+          raise_rate_limit_error(chunk) if rate_limited?(chunk)
+
           raise DownloadError, "Error downloading file from #{url}. Error code: #{chunk.code}" if chunk.code != 200
 
           file.write(chunk)
           validate_size!(file.size)
-        rescue Gitlab::GithubImport::AttachmentsDownloader::DownloadError
+        rescue AttachmentsDownloader::DownloadError, Gitlab::GithubImport::RateLimitError
           delete
           raise
         end
 
         file
+      end
+
+      def rate_limited?(response)
+        response.code == RATE_LIMIT_HTTP_STATUS
+      end
+
+      def raise_rate_limit_error(response)
+        # HTTParty::Response (redirect check) uses headers method with symbol keys
+        # HTTParty::ResponseFragment (streaming) uses http_response which is Net::HTTPResponse
+        retry_after = if response.respond_to?(:headers)
+                        response.headers&.[](:'retry-after')
+                      else
+                        response.http_response&.[]('retry-after')
+                      end
+
+        reset_in = retry_after.to_i
+        reset_in = RATE_LIMIT_DEFAULT_RESET_IN if reset_in == 0
+
+        raise RateLimitError.new("Rate limit exceeded. Response code: #{response.code}", reset_in)
       end
 
       def filepath

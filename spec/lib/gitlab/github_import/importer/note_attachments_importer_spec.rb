@@ -462,6 +462,93 @@ RSpec.describe Gitlab::GithubImport::Importer::NoteAttachmentsImporter, feature_
         end
         # rubocop:enable RSpec/MultipleMemoizedHelpers
       end
+
+      context 'when rate limit error is raised' do
+        let(:record) { create(:note, project: project, note: text) }
+        let(:rate_limit_error) { Gitlab::GithubImport::RateLimitError.new('Rate limit exceeded', 120) }
+
+        let(:text) do
+          <<-TEXT.split("\n").map(&:strip).join("\n")
+            Some text...
+
+            [special-doc](#{doc_url})
+            ![image.jpeg](#{image_url})
+            <img width=\"248\" alt=\"tag-image\" src="#{image_tag_url}">
+            <img width=\"200\" alt=\"user-attachment-image\" src="#{user_attachment_url}" \/>
+          TEXT
+        end
+
+        context 'when rate limit is hit on first attachment' do
+          before do
+            allow(downloader_stub).to receive(:perform).and_raise(rate_limit_error)
+          end
+
+          it 'updates the note with unchanged text and re-raises the error' do
+            expect { importer.execute }.to raise_error(Gitlab::GithubImport::RateLimitError)
+
+            record.reload
+            expect(record.note).to eq(text)
+          end
+        end
+
+        context 'when rate limit is hit on second attachment' do
+          before do
+            call_count = 0
+            allow(downloader_stub).to receive(:perform) do
+              call_count += 1
+              case call_count
+              when 1 then tmp_stub_doc
+              when 2 then raise rate_limit_error
+              when 3 then tmp_stub_image_tag
+              else tmp_stub_user_attachment
+              end
+            end
+          end
+
+          it 'updates the note with partially processed text and re-raises the error' do
+            expect { importer.execute }.to raise_error(Gitlab::GithubImport::RateLimitError)
+
+            record.reload
+            expect(record.note).to start_with("Some text...")
+            expect(record.note).to include("[special-doc](/uploads/")
+            expect(record.note).to include("![image.jpeg](#{image_url})")
+            expect(record.note).to include('<img width="248" alt="tag-image" src="/uploads')
+            expect(record.note).to include('<img width="200" alt="user-attachment-image" src="/uploads')
+          end
+        end
+
+        context 'when rate limit is hit multiple times' do
+          let(:first_error) { Gitlab::GithubImport::RateLimitError.new('First error', 60) }
+          let(:second_error) { Gitlab::GithubImport::RateLimitError.new('Second error', 120) }
+
+          before do
+            call_count = 0
+            allow(downloader_stub).to receive(:perform) do
+              call_count += 1
+              case call_count
+              when 1 then tmp_stub_doc
+              when 2 then raise first_error
+              when 3 then raise second_error
+              else tmp_stub_user_attachment
+              end
+            end
+          end
+
+          it 'stores only the first error and re-raises it' do
+            expect { importer.execute }.to raise_error(Gitlab::GithubImport::RateLimitError) do |error|
+              expect(error.message).to eq('First error')
+              expect(error.reset_in).to eq(60)
+            end
+
+            record.reload
+            expect(record.note).to start_with("Some text...")
+            expect(record.note).to include("[special-doc](/uploads/")
+            expect(record.note).to include("![image.jpeg](#{image_url})")
+            expect(record.note).to include("<img width=\"248\" alt=\"tag-image\" src=\"#{image_tag_url}\"")
+            expect(record.note).to include('<img width="200" alt="user-attachment-image" src="/uploads')
+          end
+        end
+      end
     end
   end
 end
