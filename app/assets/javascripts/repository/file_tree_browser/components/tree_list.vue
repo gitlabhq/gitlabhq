@@ -410,6 +410,39 @@ export default {
         return;
       }
 
+      // Right Arrow
+      if (event.key === 'ArrowRight') {
+        event.preventDefault();
+        if (item?.type === 'tree' && !item.opened) {
+          this.toggleDirectory(item.path, { toggleClose: false });
+          return;
+        }
+        const child = items[current + 1];
+        if (item?.type === 'tree' && child?.level > item.level) {
+          this.activeItemId = child.id;
+          this.$nextTick(() => this.$refs.activeItem?.[0]?.focus());
+        }
+        return;
+      }
+
+      // Left Arrow
+      if (event.key === 'ArrowLeft') {
+        event.preventDefault();
+        if (item?.type === 'tree' && item.opened) {
+          this.toggleDirectory(item.path);
+          return;
+        }
+        const parent = items
+          .slice(0, current)
+          .reverse()
+          .find((i) => i.level === item.level - 1);
+        if (parent) {
+          this.activeItemId = parent.id;
+          this.$nextTick(() => this.$refs.activeItem?.[0]?.focus());
+        }
+        return;
+      }
+
       // Arrow keys (Up/Down)
       if (event.key !== 'ArrowDown' && event.key !== 'ArrowUp') return;
 

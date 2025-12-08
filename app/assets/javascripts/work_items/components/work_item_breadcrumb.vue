@@ -46,6 +46,17 @@ export default {
 
       return __('Issues');
     },
+    breadcrumbType() {
+      if (this.isWorkItemPlanningViewEnabled) {
+        return 'work_items';
+      }
+
+      if (this.isEpicsList) {
+        return 'epics';
+      }
+
+      return 'issues';
+    },
     shouldUseRouterNavigation() {
       // NOTE: task are redirected to /issues -> /work_items from BE
       // When clicking breadcrumb, we navigate to the list view using the same path prefix.
@@ -63,7 +74,11 @@ export default {
       };
 
       if (this.shouldUseRouterNavigation) {
-        indexCrumb.to = { name: ROUTES.index, query: this.$route.query };
+        indexCrumb.to = {
+          name: ROUTES.index,
+          query: this.$route.query,
+          params: { type: this.breadcrumbType },
+        };
       } else {
         indexCrumb.href = this.listPath;
       }
@@ -73,14 +88,20 @@ export default {
       if (this.$route.name === ROUTES.new) {
         crumbs.push({
           text: BREADCRUMB_LABELS[ROUTES.new],
-          to: ROUTES.new,
+          to: { name: ROUTES.new, params: { type: this.breadcrumbType } },
         });
       }
 
       if (this.$route.name === ROUTES.workItem) {
         crumbs.push({
           text: `#${this.$route.params.iid}`,
-          to: this.$route.path,
+          to: {
+            name: ROUTES.workItem,
+            params: {
+              type: this.$route.params.type,
+              iid: this.$route.params.iid,
+            },
+          },
         });
       }
 

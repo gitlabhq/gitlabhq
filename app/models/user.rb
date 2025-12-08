@@ -2885,25 +2885,6 @@ class User < ApplicationRecord
     block
   end
 
-  def ban_and_report
-    msg = 'Potential spammer account deletion'
-    attrs = { user_id: id, reporter: Users::Internal.for_organization(organization).security_bot, category: 'spam' }
-    abuse_report = AbuseReport.find_by(attrs)
-
-    if abuse_report.nil?
-      # rubocop: disable CodeReuse/ServiceClass -- TODO: this is legacy code
-      response = AntiAbuse::AbuseReport::CreateService.new(attrs.merge(message: msg)).execute
-      # rubocop: enable CodeReuse/ServiceClass
-      abuse_report = response.payload
-    else
-      abuse_report.update(message: "#{abuse_report.message}\n\n#{msg}")
-    end
-
-    UserCustomAttribute.set_banned_by_abuse_report(abuse_report)
-
-    ban
-  end
-
   def has_possible_spam_contributions?
     events
       .for_action('commented')

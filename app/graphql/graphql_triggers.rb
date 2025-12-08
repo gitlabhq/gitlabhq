@@ -17,6 +17,11 @@ module GraphqlTriggers
     GitlabSchema.subscriptions.trigger(:ci_job_status_updated, { job_id: job.to_gid }, job)
   end
 
+  def self.ci_stage_updated(job)
+    stage_gid = GlobalID.new("gid://gitlab/Ci::Stage/#{job.stage_id}")
+    GitlabSchema.subscriptions.trigger(:ci_stage_updated, { stage_id: stage_gid }, job)
+  end
+
   def self.ci_pipeline_status_updated(pipeline)
     GitlabSchema.subscriptions.trigger(:ci_pipeline_status_updated, { pipeline_id: pipeline.to_gid }, pipeline)
   end

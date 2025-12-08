@@ -1,0 +1,6 @@
+---
+name: read_page
+description: Grants the ability to read pages
+feature_category: pages
+boundaries:
+  - project

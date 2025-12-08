@@ -262,7 +262,7 @@ if (USE_VUE3) {
     vuex: path.join(ROOT_PATH, 'app/assets/javascripts/lib/utils/vue3compat/vuex.js'),
     'vue-apollo': path.join(ROOT_PATH, 'app/assets/javascripts/lib/utils/vue3compat/vue_apollo.js'),
     'vue-router': path.join(ROOT_PATH, 'app/assets/javascripts/lib/utils/vue3compat/vue_router.js'),
-
+    'portal-vue': path.join(ROOT_PATH, 'app/assets/javascripts/lib/utils/vue3compat/portal_vue.js'),
     // 'pinia' uses 'vue-demi' to locate the current active version of Vue.
     // use an alias to ensure vue-demi finds the right version
     'vue-demi': path.join(ROOT_PATH, 'node_modules/vue-demi/lib/v3/index.mjs'),

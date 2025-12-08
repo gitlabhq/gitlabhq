@@ -5,8 +5,7 @@ require "spec_helper"
 RSpec.describe API::Pages, feature_category: :pages do
   let_it_be(:project) { create(:project) }
   let_it_be(:admin) { create(:admin) }
-
-  let(:user) { create(:user) }
+  let_it_be(:user) { create(:user) }
 
   before do
     stub_pages_setting(enabled: true)
@@ -19,14 +18,21 @@ RSpec.describe API::Pages, feature_category: :pages do
   end
 
   describe "GET /projects/:id/pages" do
-    let(:user) { create(:user) }
+    context 'when user is a maintiner' do
+      before_all do
+        project.add_maintainer(user)
+      end
+      it "returns the :ok for project maintainers (and above)" do
+        get api("/projects/#{project.id}/pages", user)
+        expect(response).to have_gitlab_http_status(:ok)
+      end
 
-    it "returns the :ok for project maintainers (and above)" do
-      project.add_maintainer(user)
-
-      get api("/projects/#{project.id}/pages", user)
-
-      expect(response).to have_gitlab_http_status(:ok)
+      it_behaves_like 'authorizing granular token permissions', :read_page do
+        let(:boundary_object) { project }
+        let(:request) do
+          get api("/projects/#{project.id}/pages", personal_access_token: pat)
+        end
+      end
     end
 
     it "returns the :forbidden for project developers (and below)" do
@@ -99,13 +105,24 @@ RSpec.describe API::Pages, feature_category: :pages do
 
     context 'when the user is authorized' do
       context 'and the update succeeds' do
-        it 'updates the pages settings and returns 200' do
-          project.add_maintainer(user)
-          patch api(path, user), params: params
+        context 'when user is a maintainer' do
+          before_all do
+            project.add_maintainer(user)
+          end
+          it 'updates the pages settings and returns 200' do
+            patch api(path, user), params: params
 
-          expect(response).to have_gitlab_http_status(:ok)
-          expect(json_response['force_https']).to eq(true)
-          expect(json_response['is_unique_domain_enabled']).to eq(true)
+            expect(response).to have_gitlab_http_status(:ok)
+            expect(json_response['force_https']).to eq(true)
+            expect(json_response['is_unique_domain_enabled']).to eq(true)
+          end
+
+          it_behaves_like 'authorizing granular token permissions', :update_page do
+            let(:boundary_object) { project }
+            let(:request) do
+              patch api(path, personal_access_token: pat), params: params
+            end
+          end
         end
       end
 
@@ -218,6 +235,23 @@ RSpec.describe API::Pages, feature_category: :pages do
 
         expect(response).to have_gitlab_http_status(:ok)
         expect(json_response['pages_primary_domain']).to eq(nil)
+      end
+    end
+  end
+
+  describe 'DELETE /projects/:id/pages' do
+    let(:path) { "/projects/#{project.id}/pages" }
+
+    context 'when user is authorized' do
+      it_behaves_like 'authorizing granular token permissions', :delete_page do
+        let(:boundary_object) { project }
+        let(:request) do
+          delete api(path, personal_access_token: pat)
+        end
+
+        before_all do
+          project.add_maintainer(user)
+        end
       end
     end
   end

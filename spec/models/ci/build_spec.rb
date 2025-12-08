@@ -350,6 +350,41 @@ RSpec.describe Ci::Build, feature_category: :continuous_integration, factory_def
         end
       end
     end
+
+    describe 'stage jobs updated subscription trigger' do
+      let(:stage) { create(:ci_stage, pipeline: pipeline, project: project, name: 'deploy') }
+      let(:build_with_stage) { create(:ci_build, pipeline: pipeline, ci_stage: stage) }
+
+      %w[cancel! drop! run! skip! success!].each do |action|
+        shared_examples "when build receives #{action} event" do
+          it 'triggers GraphQL subscription ciStageUpdated' do
+            expect(GraphqlTriggers).to receive(:ci_stage_updated).with(build_with_stage)
+
+            build_with_stage.public_send(action)
+          end
+        end
+
+        it_behaves_like "when build receives #{action} event"
+      end
+
+      context 'with ci_stage_subscription feature flag disabled' do
+        before do
+          stub_feature_flags(ci_stage_subscription: false)
+        end
+
+        %w[cancel! drop! run! skip! success!].each do |action|
+          shared_examples "when build receives #{action} event" do
+            it 'does not trigger GraphQL subscription ciStageUpdated' do
+              expect(GraphqlTriggers).not_to receive(:ci_stage_updated).with(build_with_stage)
+
+              build_with_stage.public_send(action)
+            end
+          end
+
+          it_behaves_like "when build receives #{action} event"
+        end
+      end
+    end
   end
 
   describe 'status' do

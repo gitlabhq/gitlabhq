@@ -21454,6 +21454,25 @@ CREATE TABLE namespace_details (
     CONSTRAINT check_namespace_details_state_metadata_is_hash CHECK ((jsonb_typeof(state_metadata) = 'object'::text))
 );
 
+CREATE TABLE namespace_foundational_agent_statuses (
+    id bigint NOT NULL,
+    namespace_id bigint NOT NULL,
+    reference text NOT NULL,
+    enabled boolean NOT NULL,
+    created_at timestamp with time zone NOT NULL,
+    updated_at timestamp with time zone NOT NULL,
+    CONSTRAINT check_6c51d38425 CHECK ((char_length(reference) <= 255))
+);
+
+CREATE SEQUENCE namespace_foundational_agent_statuses_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+ALTER SEQUENCE namespace_foundational_agent_statuses_id_seq OWNED BY namespace_foundational_agent_statuses.id;
+
 CREATE TABLE namespace_import_users (
     id bigint NOT NULL,
     user_id bigint NOT NULL,
@@ -32636,6 +32655,8 @@ ALTER TABLE ONLY namespace_cluster_agent_mappings ALTER COLUMN id SET DEFAULT ne
 
 ALTER TABLE ONLY namespace_commit_emails ALTER COLUMN id SET DEFAULT nextval('namespace_commit_emails_id_seq'::regclass);
 
+ALTER TABLE ONLY namespace_foundational_agent_statuses ALTER COLUMN id SET DEFAULT nextval('namespace_foundational_agent_statuses_id_seq'::regclass);
+
 ALTER TABLE ONLY namespace_import_users ALTER COLUMN id SET DEFAULT nextval('namespace_import_users_id_seq'::regclass);
 
 ALTER TABLE ONLY namespace_isolations ALTER COLUMN id SET DEFAULT nextval('namespace_isolations_id_seq'::regclass);
@@ -36006,6 +36027,9 @@ ALTER TABLE ONLY namespace_commit_emails
 
 ALTER TABLE ONLY namespace_details
     ADD CONSTRAINT namespace_details_pkey PRIMARY KEY (namespace_id);
+
+ALTER TABLE ONLY namespace_foundational_agent_statuses
+    ADD CONSTRAINT namespace_foundational_agent_statuses_pkey PRIMARY KEY (id);
 
 ALTER TABLE ONLY namespace_import_users
     ADD CONSTRAINT namespace_import_users_pkey PRIMARY KEY (id);
@@ -42892,6 +42916,8 @@ CREATE INDEX index_namespaces_on_type_and_id ON namespaces USING btree (type, id
 CREATE INDEX index_namespaces_public_groups_name_id ON namespaces USING btree (name, id) WHERE (((type)::text = 'Group'::text) AND (visibility_level = 20));
 
 CREATE INDEX index_namespaces_sync_events_on_namespace_id ON namespaces_sync_events USING btree (namespace_id);
+
+CREATE UNIQUE INDEX index_nfas_on_namespaced_id_on_reference ON namespace_foundational_agent_statuses USING btree (namespace_id, reference);
 
 CREATE INDEX index_non_requested_project_members_on_source_id_and_type ON members USING btree (source_id, source_type) WHERE ((requested_at IS NULL) AND ((type)::text = 'ProjectMember'::text));
 
@@ -53169,6 +53195,9 @@ ALTER TABLE ONLY group_ssh_certificates
 
 ALTER TABLE ONLY events
     ADD CONSTRAINT fk_rails_61fbf6ca48 FOREIGN KEY (group_id) REFERENCES namespaces(id) ON DELETE CASCADE;
+
+ALTER TABLE ONLY namespace_foundational_agent_statuses
+    ADD CONSTRAINT fk_rails_62ffd76883 FOREIGN KEY (namespace_id) REFERENCES namespaces(id) ON DELETE CASCADE;
 
 ALTER TABLE ONLY container_repository_states
     ADD CONSTRAINT fk_rails_63436c99ce FOREIGN KEY (container_repository_id) REFERENCES container_repositories(id) ON DELETE CASCADE;

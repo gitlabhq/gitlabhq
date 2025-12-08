@@ -42,6 +42,7 @@ describe('WorkItemBreadcrumb', () => {
           to: {
             name: 'workItemList',
             query: undefined,
+            params: { type: 'work_items' },
           },
         },
       ]);
@@ -56,6 +57,7 @@ describe('WorkItemBreadcrumb', () => {
           to: {
             name: 'workItemList',
             query: undefined,
+            params: { type: 'issues' },
           },
         },
       ]);
@@ -70,6 +72,7 @@ describe('WorkItemBreadcrumb', () => {
           to: {
             name: 'workItemList',
             query: undefined,
+            params: { type: 'epics' },
           },
         },
       ]);
@@ -87,6 +90,7 @@ describe('WorkItemBreadcrumb', () => {
             to: {
               name: 'workItemList',
               query: undefined,
+              params: { type: 'issues' },
             },
           },
         ]);
@@ -116,13 +120,13 @@ describe('WorkItemBreadcrumb', () => {
     createComponent({ $route: { name: 'new' } });
 
     expect(findBreadcrumb().props('items')).toEqual(
-      expect.arrayContaining([{ text: 'New', to: 'new' }]),
+      expect.arrayContaining([{ text: 'New', to: { name: 'new', params: { type: 'issues' } } }]),
     );
   });
 
   it('combines static and dynamic breadcrumbs', () => {
     createComponent({
-      $route: { name: 'workItem', params: { iid: '1' }, path: '/1' },
+      $route: { name: 'workItem', params: { iid: '1', type: 'issues' }, path: '/1' },
       props: {
         staticBreadcrumbs: [{ text: 'Static', href: '/static' }],
       },
@@ -130,16 +134,23 @@ describe('WorkItemBreadcrumb', () => {
 
     expect(findBreadcrumb().props('items')).toEqual([
       { text: 'Static', href: '/static' },
-      { text: 'Issues', to: { name: 'workItemList', query: undefined } },
-      { text: '#1', to: '/1' },
+      {
+        text: 'Issues',
+        to: { name: 'workItemList', query: undefined, params: { type: 'issues' } },
+      },
+      { text: '#1', to: { name: 'workItem', params: { type: 'issues', iid: '1' } } },
     ]);
   });
 
   it('renders work item iid breadcrumb on work item detail page', () => {
-    createComponent({ $route: { name: 'workItem', params: { iid: '1' }, path: '/1' } });
+    createComponent({
+      $route: { name: 'workItem', params: { iid: '1', type: 'issues' }, path: '/1' },
+    });
 
     expect(findBreadcrumb().props('items')).toEqual(
-      expect.arrayContaining([{ text: '#1', to: '/1' }]),
+      expect.arrayContaining([
+        { text: '#1', to: { name: 'workItem', params: { type: 'issues', iid: '1' } } },
+      ]),
     );
   });
 });

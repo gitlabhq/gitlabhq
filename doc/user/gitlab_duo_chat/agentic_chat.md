@@ -16,7 +16,7 @@ title: GitLab Duo Chat (Agentic)
 
 {{< collapsible title="Model information" >}}
 
-- Default LLM: Anthropic [Claude Sonnet 4.5](https://console.cloud.google.com/vertex-ai/publishers/anthropic/model-garden/claude-sonnet-4-5)
+- Default LLM: Anthropic [Claude Haiku 4.5](https://console.cloud.google.com/vertex-ai/publishers/anthropic/model-garden/claude-haiku-4-5)
 - Available on [GitLab Duo with self-hosted models](../../administration/gitlab_duo_self_hosted/_index.md)
 
 {{< /collapsible >}}
@@ -36,6 +36,7 @@ title: GitLab Duo Chat (Agentic)
 - GitLab Duo Agent Platform on GitLab Self-Managed changed from experiment to [beta](https://gitlab.com/groups/gitlab-org/-/epics/19402) in GitLab 18.5.
 - [Updated default LLM](https://gitlab.com/gitlab-org/modelops/applied-ml/code-suggestions/ai-assist/-/issues/1541) to Claude Sonnet 4.5 in GitLab 18.6.
 - Feature flag `self_hosted_agent_platform` [enabled](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/208951) in GitLab 18.7.
+- [Updated default LLM](https://gitlab.com/groups/gitlab-org/-/epics/19998) to Claude Haiku 4.5 in GitLab 18.7.
 
 {{< /history >}}
 
@@ -460,8 +461,8 @@ you can select a specific agent for Chat to use.
 
 Prerequisites:
 
-- You must [enable an agent in your project](../duo_agent_platform/agents/custom.md#enable-an-agent)
-  from the AI Catalog.
+- In your project, [an agent from the AI Catalog must be enabled](../duo_agent_platform/agents/custom.md#enable-an-agent).
+- You must be a member of the project the agent is enabled in.
 - For VS Code, [install and configure the GitLab Workflow extension for VS Code](../../editor_extensions/visual_studio_code/setup.md) version 6.49.12 or later.
 - For a JetBrains IDE, [install and configure the GitLab plugin for JetBrains](../../editor_extensions/jetbrains_ide/setup.md) version 3.22.0 or later.
 

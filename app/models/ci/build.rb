@@ -456,6 +456,7 @@ module Ci
         build.run_after_commit do
           trigger_job_status_change_subscription
           trigger_job_processed_subscriptions
+          trigger_stage_subscription
         end
       end
     end
@@ -540,6 +541,12 @@ module Ci
 
     def trigger_job_status_change_subscription
       GraphqlTriggers.ci_job_status_updated(self)
+    end
+
+    def trigger_stage_subscription
+      return unless Feature.enabled?(:ci_stage_subscription, project)
+
+      GraphqlTriggers.ci_stage_updated(self)
     end
 
     def ci_job_processed_rate_limited?

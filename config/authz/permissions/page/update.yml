@@ -1,0 +1,6 @@
+---
+name: update_page
+description: Grants the ability to update pages
+feature_category: pages
+boundaries:
+  - project

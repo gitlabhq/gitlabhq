@@ -524,6 +524,17 @@ describe('Tree List', () => {
   });
 
   describe('keyboard navigation', () => {
+    const mockDir = (items = []) => {
+      const response = cloneDeep(mockResponse);
+      response.data.project.repository.paginatedTree.nodes[0].trees.nodes = items.filter(
+        (i) => !i.sha,
+      );
+      response.data.project.repository.paginatedTree.nodes[0].blobs.nodes = items.filter(
+        (i) => i.sha,
+      );
+      return response;
+    };
+
     it.each([
       ['ArrowDown', 1],
       ['ArrowUp', 0],
@@ -607,6 +618,89 @@ describe('Tree List', () => {
       await nextTick();
 
       expect(items.at(1).attributes('tabindex')).toBe('0');
+    });
+
+    describe('ArrowRight', () => {
+      it('opens closed node', async () => {
+        await createComponent();
+        getQueryHandlerSuccess.mockResolvedValueOnce(mockDir());
+        findTree().trigger('keydown', { key: 'ArrowRight' });
+        await waitForPromises();
+
+        expect(findFileRows().at(0).props('file').opened).toBe(true);
+      });
+
+      it('moves to first child on open node', async () => {
+        await createComponent();
+        getQueryHandlerSuccess.mockResolvedValueOnce(
+          mockDir([
+            { id: 'gid://child', name: 'child_dir', path: 'dir_1/dir_2/child_dir', webPath: '...' },
+          ]),
+        );
+        findTree().trigger('keydown', { key: 'ArrowRight' });
+        await waitForPromises();
+        triggerIntersectionForAll();
+        await nextTick();
+
+        findTree().trigger('keydown', { key: 'ArrowRight' });
+        await nextTick();
+
+        expect(findTreeItems().at(1).attributes('tabindex')).toBe('0');
+      });
+
+      it('does nothing on end node', async () => {
+        await createComponent();
+        findTree().trigger('keydown', { key: 'ArrowDown' });
+        findTree().trigger('keydown', { key: 'ArrowRight' });
+        await nextTick();
+
+        expect(findTreeItems().at(1).attributes('tabindex')).toBe('0');
+      });
+    });
+
+    describe('ArrowLeft', () => {
+      it('closes open node', async () => {
+        await createComponent();
+        getQueryHandlerSuccess.mockResolvedValueOnce(mockDir());
+        findTree().trigger('keydown', { key: 'ArrowRight' });
+        await waitForPromises();
+
+        findTree().trigger('keydown', { key: 'ArrowLeft' });
+        await nextTick();
+
+        expect(findFileRows().at(0).props('file').opened).toBe(false);
+      });
+
+      it('moves to parent from child node', async () => {
+        await createComponent();
+        getQueryHandlerSuccess.mockResolvedValueOnce(
+          mockDir([
+            { id: 'gid://child', name: 'child_dir', path: 'dir_1/dir_2/child_dir', webPath: '...' },
+          ]),
+        );
+        findTree().trigger('keydown', { key: 'ArrowRight' });
+        await waitForPromises();
+        triggerIntersectionForAll();
+        await nextTick();
+
+        findTree().trigger('keydown', { key: 'ArrowRight' });
+        await nextTick();
+
+        expect(findTreeItems().at(1).attributes('tabindex')).toBe('0'); // Verify we're on child
+
+        findTree().trigger('keydown', { key: 'ArrowLeft' });
+        await nextTick();
+
+        expect(findTreeItems().at(0).attributes('tabindex')).toBe('0'); // Should be back on parent
+      });
+
+      it('does nothing on root node', async () => {
+        await createComponent();
+        findTree().trigger('keydown', { key: 'ArrowLeft' });
+        await nextTick();
+
+        expect(findTreeItems().at(0).attributes('tabindex')).toBe('0');
+      });
     });
   });
 

@@ -12,6 +12,11 @@ module Types
       subscription: Subscriptions::Ci::Jobs::StatusUpdated, null: true,
       description: 'Triggered when a job status is updated.'
 
+    field :ci_stage_updated,
+      subscription: Subscriptions::Ci::Stages::JobsUpdated, null: true,
+      description: 'Triggered when jobs in a stage are updated.',
+      experiment: { milestone: '18.7' }
+
     field :ci_pipeline_creation_requests_updated,
       subscription: Subscriptions::Ci::PipelineCreationRequestsUpdated, null: true,
       description: 'Triggered when pipeline creation requests are updated for a merge request.'

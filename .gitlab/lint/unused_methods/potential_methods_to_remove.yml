@@ -479,5 +479,3 @@ head_pipeline_active?:
   file: app/models/merge_request.rb
 not_isolated?:
   file: app/models/organizations/isolation_record.rb
-ban_and_report:
-  file: app/models/user.rb

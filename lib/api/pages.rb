@@ -22,6 +22,7 @@ module API
         ]
         tags %w[pages]
       end
+      route_setting :authorization, permissions: :delete_page, boundary_type: :project
       delete ':id/pages' do
         authorize! :remove_pages, user_project
 
@@ -44,6 +45,7 @@ module API
         optional :pages_https_only, type: Boolean, desc: 'Whether to force HTTPS'
         optional :pages_primary_domain, type: String, desc: 'Set pages primary domain'
       end
+      route_setting :authorization, permissions: :update_page, boundary_type: :project
       patch ':id/pages' do
         authorize! :update_pages, user_project
 
@@ -74,6 +76,7 @@ module API
         ]
         tags %w[pages]
       end
+      route_setting :authorization, permissions: :read_page, boundary_type: :project
       get ':id/pages' do
         authorize! :read_pages, user_project
 

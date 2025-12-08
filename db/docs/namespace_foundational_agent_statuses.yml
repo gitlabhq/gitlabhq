@@ -1,0 +1,13 @@
+---
+table_name: namespace_foundational_agent_statuses
+classes:
+- Ai::NamespaceFoundationalAgentStatus
+feature_categories:
+- ai_abstraction_layer
+description: Stores the enabled/disabled status for foundational agents at the namespace level
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/213911
+milestone: '18.7'
+gitlab_schema: gitlab_main_org
+sharding_key:
+  namespace_id: namespaces
+table_size: small
