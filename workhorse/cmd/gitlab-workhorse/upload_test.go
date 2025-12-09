@@ -609,3 +609,24 @@ func TestTerraformStateUpload(t *testing.T) {
 		testPackageFileUpload(t, r.method, r.resource)
 	}
 }
+
+func TestRepositoryCommitsAndFilesUpload(t *testing.T) {
+	routes := []struct {
+		method   string
+		resource string
+	}{
+		{"POST", "/api/v4/projects/9001/repository/commits"},
+		{"POST", "/api/v4/projects/group%2Fproject/repository/commits"},
+		{"POST", "/api/v4/projects/group%2Fsubgroup%2Fproject/repository/commits"},
+		{"POST", "/api/v4/projects/9001/repository/files/README.md"},
+		{"POST", "/api/v4/projects/group%2Fproject/repository/files/README.md"},
+		{"POST", "/api/v4/projects/group%2Fsubgroup%2Fproject/repository/files/path%2Fto%2Ffile.txt"},
+		{"PUT", "/api/v4/projects/9001/repository/files/README.md"},
+		{"PUT", "/api/v4/projects/group%2Fproject/repository/files/README.md"},
+		{"PUT", "/api/v4/projects/group%2Fsubgroup%2Fproject/repository/files/path%2Fto%2Ffile.txt"},
+	}
+
+	for _, r := range routes {
+		testPackageFileUpload(t, r.method, r.resource)
+	}
+}

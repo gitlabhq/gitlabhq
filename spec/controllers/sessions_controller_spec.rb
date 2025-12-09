@@ -488,125 +488,205 @@ RSpec.describe SessionsController, feature_category: :system_access do
         end
       end
 
-      # See issue gitlab-org/gitlab#20302.
-      context 'when otp_user_id is stale' do
+      context 'when login and stale session[:otp_user_id] are provided' do
         render_views
 
-        it 'favors login over otp_user_id when password is present and does not authenticate the user' do
+        let(:stale_user) { create(:user, :two_factor) }
+
+        # See issue https://gitlab.com/gitlab-org/gitlab/-/issues/20302
+        it "favors login over session[:otp_user_id] when password is present and does not authenticate the user", :aggregate_failures do
           authenticate_2fa(
-            login: 'random_username',
+            login: 'non_existing_login',
             password: user.password,
             otp_user_id: user.id
           )
 
           expect(controller).to set_flash.now[:alert].to(/Invalid login or password/)
+          expect(@request.env['warden']).not_to be_authenticated
+        end
+
+        # See issue https://gitlab.com/gitlab-org/gitlab/-/issues/20302
+        it "favors login over session[:otp_user_id] and removes the user's id from the session if invalid password is provided", :aggregate_failures do
+          authenticate_2fa(
+            login: user.username,
+            password: 'invalid_password',
+            otp_user_id: stale_user.id
+          )
+
+          expect(controller).to set_flash.now[:alert].to(/Invalid login or password/)
+          expect(session[:otp_user_id]).to be_nil
+          expect(@request.env['warden']).not_to be_authenticated
+        end
+
+        # See issue https://gitlab.com/gitlab-org/gitlab/-/issues/577847
+        it "favors login over session[:otp_user_id] and updates the user's id in the session, but does not authenticates the user if valid password is provided", :aggregate_failures do
+          authenticate_2fa(
+            login: user.username,
+            password: user.password,
+            otp_user_id: stale_user.id
+          )
+
+          expect(session[:otp_user_id]).to eq(user.id)
+          expect(@request.env['warden']).not_to be_authenticated
+          expect(subject.current_user).to be_nil
+        end
+
+        # See issue https://gitlab.com/gitlab-org/gitlab/-/issues/577847
+        it "favors login over session[:otp_user_id] and updates the user's id in the session, but does not authenticates the user if valid password of the user and otp of stale user are provided", :aggregate_failures do
+          authenticate_2fa(
+            login: user.username,
+            password: user.password,
+            otp_attempt: stale_user.current_otp,
+            otp_user_id: stale_user.id
+          )
+
+          expect(session[:otp_user_id]).to eq(user.id)
+          expect(@request.env['warden']).not_to be_authenticated
+          expect(subject.current_user).to be_nil
         end
       end
 
-      ##
-      # See issue gitlab-org/gitlab-foss#14900
-      #
+      context 'when authenticating with OTP' do
+        context 'when OTP is valid' do
+          it 'authenticates correctly', :aggregate_failures do
+            authenticate_2fa(otp_attempt: user.current_otp)
+
+            expect(@request.env['warden']).to be_authenticated
+            expect(subject.current_user).to eq user
+          end
+        end
+
+        context 'when OTP is invalid' do
+          let(:code) { 'invalid' }
+
+          it 'does not authenticate', :aggregate_failures do
+            authenticate_2fa(otp_attempt: code)
+
+            expect(@request.env['warden']).not_to be_authenticated
+            expect(subject.current_user).not_to eq user
+          end
+
+          it 'warns about invalid OTP code', :aggregate_failures do
+            authenticate_2fa(otp_attempt: code)
+
+            expect(controller).to set_flash.now[:alert]
+              .to(/Invalid two-factor code/)
+
+            expect(@request.env['warden']).not_to be_authenticated
+          end
+
+          it 'sends an email to the user informing about the attempt to sign in with a wrong OTP code' do
+            controller.request.remote_addr = '1.2.3.4'
+
+            expect_next_instance_of(NotificationService) do |instance|
+              expect(instance).to receive(:two_factor_otp_attempt_failed).with(user, '1.2.3.4')
+            end
+
+            authenticate_2fa(otp_attempt: code)
+          end
+        end
+
+        context 'when OTP is an array' do
+          let(:code) { %w[000000 000001] }
+
+          it 'does not authenticate', :aggregate_failures do
+            authenticate_2fa(otp_attempt: code)
+
+            expect(@request.env['warden']).not_to be_authenticated
+            expect(subject.current_user).not_to eq user
+          end
+        end
+
+        context 'when the user is on their last attempt' do
+          before do
+            user.update!(failed_attempts: User.maximum_attempts.pred)
+          end
+
+          context 'when OTP is valid' do
+            it 'authenticates correctly', :aggregate_failures do
+              authenticate_2fa(otp_attempt: user.current_otp)
+
+              expect(@request.env['warden']).to be_authenticated
+              expect(subject.current_user).to eq user
+            end
+          end
+
+          context 'when OTP is invalid' do
+            before do
+              authenticate_2fa(otp_attempt: 'invalid')
+            end
+
+            it 'does not authenticate', :aggregate_failures do
+              expect(@request.env['warden']).not_to be_authenticated
+              expect(subject.current_user).not_to eq user
+            end
+
+            it 'warns about invalid login' do
+              expect(flash[:alert]).to eq('Your account is locked.')
+            end
+
+            it 'locks the user' do
+              expect(user.reload).to be_access_locked
+            end
+
+            it 'keeps the user locked on future login attempts' do
+              post(:create, params: { user: { login: user.username, password: user.password } })
+
+              expect(flash[:alert]).to eq('Your account is locked.')
+            end
+          end
+        end
+      end
+
+      # See issue https://gitlab.com/gitlab-org/gitlab-foss/-/issues/14900
       context 'when authenticating with login and OTP of another user' do
         context 'when another user has 2FA enabled' do
           let(:another_user) { create(:user, :two_factor) }
 
           context 'when OTP is valid for another user' do
-            it 'does not authenticate' do
+            it "does not authenticate and removes the user's id from the session", :aggregate_failures do
               authenticate_2fa(login: another_user.username, otp_attempt: another_user.current_otp)
 
+              expect(controller).to set_flash.now[:alert].to(/Invalid login or password/)
+              expect(@request.env['warden']).not_to be_authenticated
               expect(subject.current_user).not_to eq another_user
+              expect(session[:otp_user_id]).to be_nil
             end
           end
 
           context 'when OTP is invalid for another user' do
-            it 'does not authenticate' do
+            it "does not authenticate and removes the user's id from the session", :aggregate_failures do
               authenticate_2fa(login: another_user.username, otp_attempt: 'invalid')
 
+              expect(controller).to set_flash.now[:alert].to(/Invalid login or password/)
+              expect(@request.env['warden']).not_to be_authenticated
+              expect(subject.current_user).not_to eq another_user
+              expect(session[:otp_user_id]).to be_nil
+            end
+          end
+
+          context 'when another user does not have 2FA enabled' do
+            let(:another_user) { create(:user) }
+
+            it "does not authenticate", :aggregate_failures do
+              authenticate_2fa(login: another_user.username, otp_attempt: 'invalid')
+
+              expect(controller).to set_flash.now[:alert].to(/Invalid login or password/)
+              expect(@request.env['warden']).not_to be_authenticated
               expect(subject.current_user).not_to eq another_user
             end
-          end
 
-          context 'when authenticating with OTP' do
-            context 'when OTP is valid' do
-              it 'authenticates correctly' do
-                authenticate_2fa(otp_attempt: user.current_otp)
-
-                expect(subject.current_user).to eq user
-              end
-            end
-
-            context 'when OTP is invalid' do
-              let(:code) { 'invalid' }
-
-              it 'does not authenticate' do
-                authenticate_2fa(otp_attempt: code)
-
-                expect(subject.current_user).not_to eq user
-              end
-
-              it 'warns about invalid OTP code' do
-                authenticate_2fa(otp_attempt: code)
-
-                expect(controller).to set_flash.now[:alert]
-                  .to(/Invalid two-factor code/)
-              end
-
-              it 'sends an email to the user informing about the attempt to sign in with a wrong OTP code' do
-                controller.request.remote_addr = '1.2.3.4'
-
-                expect_next_instance_of(NotificationService) do |instance|
-                  expect(instance).to receive(:two_factor_otp_attempt_failed).with(user, '1.2.3.4')
-                end
-
-                authenticate_2fa(otp_attempt: code)
-              end
-            end
-
-            context 'when OTP is an array' do
-              let(:code) { %w[000000 000001] }
-
-              it 'does not authenticate' do
-                authenticate_2fa(otp_attempt: code)
-
-                expect(subject.current_user).not_to eq user
-              end
-            end
-          end
-
-          context 'when the user is on their last attempt' do
-            before do
-              user.update!(failed_attempts: User.maximum_attempts.pred)
-            end
-
-            context 'when OTP is valid' do
-              it 'authenticates correctly' do
-                authenticate_2fa(otp_attempt: user.current_otp)
-
-                expect(subject.current_user).to eq user
-              end
-            end
-
-            context 'when OTP is invalid' do
+            context 'with username/password authentication is disabled' do
               before do
-                authenticate_2fa(otp_attempt: 'invalid')
+                stub_application_setting(password_authentication_enabled_for_web: false)
               end
 
-              it 'does not authenticate' do
-                expect(subject.current_user).not_to eq user
-              end
+              it "does not authenticate", :aggregate_failures do
+                authenticate_2fa(login: another_user.username, otp_attempt: 'invalid')
 
-              it 'warns about invalid login' do
-                expect(flash[:alert]).to eq('Your account is locked.')
-              end
-
-              it 'locks the user' do
-                expect(user.reload).to be_access_locked
-              end
-
-              it 'keeps the user locked on future login attempts' do
-                post(:create, params: { user: { login: user.username, password: user.password } })
-
-                expect(flash[:alert]).to eq('Your account is locked.')
+                expect(response).to have_gitlab_http_status(:forbidden)
+                expect(@request.env['warden']).not_to be_authenticated
+                expect(subject.current_user).not_to eq another_user
               end
             end
           end
