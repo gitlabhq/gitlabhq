@@ -19,8 +19,7 @@ RSpec.describe InternalId do
       it 'sets an error' do
         internal_id = described_class.new
         expect(internal_id.valid?).to be(false)
-        expect(internal_id.errors.full_messages).to include("both project and namespace can't be blank")
-        expect(internal_id.errors.full_messages).not_to include("both project and namespace can't be set")
+        expect(internal_id.errors.full_messages).to include("Exactly one of project, namespace must be present")
       end
     end
 
@@ -29,8 +28,7 @@ RSpec.describe InternalId do
         internal_id = described_class.new
         internal_id.project = project
         expect(internal_id.valid?).to be(false)
-        expect(internal_id.errors.full_messages).not_to include("both project and namespace can't be blank")
-        expect(internal_id.errors.full_messages).not_to include("both project and namespace can't be set")
+        expect(internal_id.errors.full_messages).not_to include("Exactly one of project, namespace must be present")
       end
     end
 
@@ -40,8 +38,7 @@ RSpec.describe InternalId do
         internal_id.project = project
         internal_id.namespace = project.project_namespace
         expect(internal_id.valid?).to be(false)
-        expect(internal_id.errors.full_messages).not_to include("both project and namespace can't be blank")
-        expect(internal_id.errors.full_messages).to include("both project and namespace can't be set")
+        expect(internal_id.errors.full_messages).to include("Exactly one of project, namespace must be present")
       end
     end
 
@@ -50,8 +47,7 @@ RSpec.describe InternalId do
         internal_id = described_class.new
         internal_id.namespace = project.project_namespace
         expect(internal_id.valid?).to be(false)
-        expect(internal_id.errors.full_messages).not_to include("both project and namespace can't be blank")
-        expect(internal_id.errors.full_messages).not_to include("both project and namespace can't be set")
+        expect(internal_id.errors.full_messages).not_to include("Exactly one of project, namespace must be present")
       end
     end
   end

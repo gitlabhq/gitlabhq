@@ -24,7 +24,7 @@ class InternalId < ApplicationRecord
   enum :usage, Enums::InternalId.usage_resources
 
   validates :usage, presence: true
-  validate :one_of_project_or_namespace_is_present
+  validates_with ExactlyOnePresentValidator, fields: [:project, :namespace]
 
   scope :filter_by, ->(scope, usage) do
     where(**scope, usage: usage)
@@ -202,13 +202,5 @@ class InternalId < ApplicationRecord
     def usage_value
       @usage_value ||= InternalId.usages[usage.to_s]
     end
-  end
-
-  private
-
-  def one_of_project_or_namespace_is_present
-    errors.add(:base, "both project and namespace can't be blank") if project.blank? && namespace.blank?
-
-    errors.add(:base, "both project and namespace can't be set") if project.present? && namespace.present?
   end
 end

@@ -95,7 +95,7 @@ RSpec.describe Participable, feature_category: :team_planning do
       end
     end
 
-    context 'participable is a personal snippet' do
+    context 'when participable is a personal snippet' do
       let(:model) { PersonalSnippet }
       let(:instance) { model.new(author: user1) }
 
@@ -116,7 +116,7 @@ RSpec.describe Participable, feature_category: :team_planning do
       end
     end
 
-    context 'participable is a group level object' do
+    context 'when participable is a group level object' do
       it 'returns the list of participants' do
         model.participant(:foo)
         model.participant(:bar)
@@ -140,7 +140,7 @@ RSpec.describe Participable, feature_category: :team_planning do
       end
     end
 
-    context 'participable is neither a project nor a group level object' do
+    context 'when participable is neither a project nor a group level object' do
       it 'returns no participants' do
         model.participant(:foo)
 
@@ -312,7 +312,7 @@ RSpec.describe Participable, feature_category: :team_planning do
       instance.participant?(user1)
     end
 
-    context 'participable is a personal snippet' do
+    context 'when participable is a personal snippet' do
       let(:model) { PersonalSnippet }
       let(:instance) { model.new(author: user1) }
 

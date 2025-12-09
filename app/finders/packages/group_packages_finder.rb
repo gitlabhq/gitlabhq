@@ -1,5 +1,7 @@
 # frozen_string_literal: true
 
+# TODO: remove with the rollout of FF packages_projects_finder
+# https://gitlab.com/gitlab-org/gitlab/-/issues/582301
 module Packages
   class GroupPackagesFinder
     include ::Packages::FinderHelper

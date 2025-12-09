@@ -36,7 +36,7 @@ For more information about Ona, see the Ona [features](https://ona.com/) and
 
 With the Ona integration enabled for your GitLab instance, to enable it for yourself:
 
-1. On the left sidebar, select your avatar. If you've [turned on the new navigation](../user/interface_redesign.md), this button is in the upper-right corner.
+1. In the upper-right corner, select your avatar.
 1. Select **Preferences**.
 1. Under **Preferences**, locate the **Integrations** section.
 1. Select the **Enable Ona integration** checkbox and select **Save changes**.
@@ -53,7 +53,7 @@ With the Ona integration enabled for your GitLab instance, to enable it for your
 For GitLab Self-Managed, a GitLab administrator must:
 
 1. Enable the Ona integration in GitLab:
-   1. On the left sidebar, at the bottom, select **Admin**. If you've [turned on the new navigation](../user/interface_redesign.md), in the upper-right corner, select **Admin**.
+   1. In the upper-right corner, select **Admin**.
    1. On the left sidebar, select **Settings** > **General**.
    1. Expand the **Ona** configuration section.
    1. Select the **Enable Ona integration** checkbox.
@@ -69,7 +69,7 @@ After you [enable Ona](#enable-ona-in-your-user-preferences),
 you can launch it from GitLab in one of these ways:
 
 - From a project repository:
-  1. On the left sidebar, select **Search or go to** and find your project. If you've [turned on the new navigation](../user/interface_redesign.md), this field is on the top bar.
+  1. On the top bar, select **Search or go to** and find your project.
   1. In the upper right, select **Code** > **Ona**.
 
 - From a merge request:

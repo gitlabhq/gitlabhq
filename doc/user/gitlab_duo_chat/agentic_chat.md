@@ -86,6 +86,7 @@ You can use GitLab Duo Chat in:
 
 - Ability for Chat to remember your most recent conversation [added](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/203653) in GitLab 18.4.
 - New navigation and GitLab Duo sidebar introduced on GitLab.com in GitLab 18.6 with a [flag](../../administration/feature_flags/_index.md) named `paneled_view`. Enabled by default.
+- Classic navigation instructions removed in GitLab 18.7.
 
 {{< /history >}}
 
@@ -100,15 +101,12 @@ Prerequisites:
 
 - Ensure you meet [the prerequisites](../duo_agent_platform/_index.md#prerequisites).
 
-Instructions are provided for the new navigation and classic navigation.
-Select the tab for your navigation type, or [learn how to switch](../interface_redesign.md).
-
-{{< tabs >}}
-
-{{< tab title="New navigation" >}}
+To use Chat in the GitLab UI:
 
 1. On the top bar, select **Search or go to** and find your project.
-1. On the GitLab Duo sidebar, select either **New GitLab Duo Chat** ({{< icon name="pencil-square" >}}) or **Current GitLab Duo Chat** ({{< icon name="duo-chat" >}}).
+1. On the GitLab Duo sidebar, select either **New GitLab Duo Chat**
+   ({{< icon name="pencil-square" >}}) or **Current GitLab Duo Chat**
+   ({{< icon name="duo-chat" >}}).
    A Chat conversation opens in the GitLab Duo sidebar on the right side of your screen.
 1. Under the chat text box, turn on the **Agentic mode (Beta)** toggle.
 1. Enter your question in the chat text box and press <kbd>Enter</kbd> or select **Send**.
@@ -117,25 +115,6 @@ Select the tab for your navigation type, or [learn how to switch](../interface_r
 1. Optional. You can:
    - Ask a follow-up question.
    - Start [another conversation](#have-multiple-conversations).
-
-{{< /tab >}}
-
-{{< tab title="Classic navigation" >}}
-
-1. On the left sidebar, select **Search or go to** and find your project.
-1. In the upper-right corner, select **Open GitLab Duo Chat** ({{< icon name="duo-chat" >}}).
-   A drawer opens on the right side of your screen.
-1. Under the chat text box, turn on the **Agentic mode (Beta)** toggle.
-1. Enter your question in the chat text box and press <kbd>Enter</kbd> or select **Send**.
-   - You can provide additional [context](../gitlab_duo/context.md#gitlab-duo-chat) for your chat.
-   - It might take a few seconds for the interactive AI chat to produce an answer.
-1. Optional. You can:
-   - Ask a follow-up question.
-   - Start [another conversation](#have-multiple-conversations).
-
-{{< /tab >}}
-
-{{< /tabs >}}
 
 If you reload the webpage you are on, or go to another webpage, Chat remembers your
 most recent conversation, and that conversation is still active in the Chat drawer.
@@ -210,23 +189,8 @@ Then, to use GitLab Duo Chat:
 
 To view your chat history:
 
-- In the GitLab UI:
-
-  {{< tabs >}}
-
-  {{< tab title="New navigation" >}}
-
-  On the GitLab Duo sidebar, select **GitLab Duo Chat history** ({{< icon name="history" >}}).
-
-  {{< /tab >}}
-
-  {{< tab title="Classic navigation" >}}
-
-  In the upper-right corner of the Chat, select **Chat history** ({{< icon name="history" >}}).
-
-  {{< /tab >}}
-
-  {{< /tabs >}}
+- In the GitLab UI, on the GitLab Duo sidebar, select **GitLab Duo Chat history**
+  ({{< icon name="history" >}}).
 
 - In your IDE, in the upper-right corner of the message box, select
   **Chat history** ({{< icon name="history" >}}).
@@ -251,32 +215,12 @@ Your conversations synchronize across GitLab Duo Chat in the GitLab UI and your 
 1. Enter your question and press <kbd>Enter</kbd> or select **Send**.
 1. Create a new Chat conversation:
 
-   - In the GitLab UI:
-
-     {{< tabs >}}
-
-     {{< tab title="New navigation" >}}
-
-     You can do either of the following:
-     - On the GitLab Duo sidebar, select **New GitLab Duo Chat** ({{< icon name="pencil-square" >}}).
+   - In the GitLab UI, you can do either of the following:
+     - On the GitLab Duo sidebar, select **New GitLab Duo Chat**
+       ({{< icon name="pencil-square" >}}).
      - In the message box, type `/new` and press <kbd>Enter</kbd> or select **Send**.
-        A new Chat conversation replaces the previous one.
-
-     {{< /tab >}}
-
-     {{< tab title="Classic navigation" >}}
-
-     1. In the upper-right corner, select **Open GitLab Duo Chat** ({{< icon name="duo-chat" >}}). A drawer opens on the right side of your screen.
-     1. Create a new Chat conversation by doing either of the following:
-        - In the upper-right corner of an existing conversation, select **New chat** ({{< icon name="duo-chat-new" >}}).
-        - In the message box, type `/new` and press <kbd>Enter</kbd> or select **Send**.
-        A new Chat conversation replaces the previous one.
-
-     {{< /tab >}}
-
-     {{< /tabs >}}
-
-   - In your IDE: In the upper-right corner of the message box, select **New chat**
+       A new Chat conversation replaces the previous one.
+   - In your IDE, in the upper-right corner of the message box, select **New chat**
      ({{< icon name="plus" >}}).
 
 1. Enter your question and press <kbd>Enter</kbd> or select **Send**.

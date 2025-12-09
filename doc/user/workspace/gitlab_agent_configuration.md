@@ -86,7 +86,7 @@ Prerequisites:
 
 To allow a cluster agent for workspaces in a group:
 
-1. On the left sidebar, select **Search or go to** and find your group. If you've [turned on the new navigation](../interface_redesign.md), this field is on the top bar.
+1. On the top bar, select **Search or go to** and find your group.
 1. On the left sidebar, select **Settings** > **Workspaces**.
 1. In the **Group agents** section, select the **All agents** tab.
 1. From the list of available agents, find the agent with status **Blocked**, and select **Allow**.
@@ -103,7 +103,7 @@ Prerequisites:
 
 To remove an allowed cluster agent from a group:
 
-1. On the left sidebar, select **Search or go to** and find your group. If you've [turned on the new navigation](../interface_redesign.md), this field is on the top bar.
+1. On the top bar, select **Search or go to** and find your group.
 1. On the left sidebar, select **Settings** > **Workspaces**.
 1. In the **Group agents** section, select the **Allowed agents** tab.
 1. From the list of allowed agents, find the agent you want to remove, and select **Block**.
@@ -134,7 +134,7 @@ Prerequisites:
 
 To allow a cluster agent for workspaces on the instance:
 
-1. On the left sidebar, at the bottom, select **Admin**. If you've [turned on the new navigation](../interface_redesign.md), in the upper-right corner, select **Admin**.
+1. In the upper-right corner, select **Admin**.
 1. On the left sidebar, select **Settings** > **General**.
 1. Expand **Available agents for workspaces**.
 1. From the list of agents with workspaces enabled, find the agent you want to allow, and select the
@@ -154,7 +154,7 @@ Prerequisites:
 
 To remove an allowed cluster agent from the instance:
 
-1. On the left sidebar, at the bottom, select **Admin**. If you've [turned on the new navigation](../interface_redesign.md), in the upper-right corner, select **Admin**.
+1. In the upper-right corner, select **Admin**.
 1. On the left sidebar, select **Settings** > **General**.
 1. Expand **Available agents for workspaces**.
 1. From the list of allowed agents, find the agent you want to remove, and clear the availability toggle.

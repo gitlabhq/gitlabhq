@@ -8,11 +8,10 @@ product_categories:
 value_type: number
 status: active
 time_frame: 28d
-data_source: redis_hll
-instrumentation_class: RedisHLLMetric
-options:
-  events:
-  - i_quickactions_approve
+data_source: internal_events
+events:
+  - name: i_quickactions_approve
+    unique: user.id
 tiers:
 - free
 - premium

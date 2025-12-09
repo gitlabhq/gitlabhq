@@ -1,6 +1,5 @@
 ---
 API/ParameterDescription:
-  Details: grace period
   Exclude:
     - 'ee/lib/api/admin/data_management.rb'
     - 'ee/lib/api/audit_events.rb'

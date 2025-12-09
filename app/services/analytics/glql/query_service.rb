@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-module Integrations
+module Analytics
   module Glql
     # Service for handling GLQL queries with rate limiting, complexity tracking, and logging
     # Used by both Glql::BaseController and API::Glql

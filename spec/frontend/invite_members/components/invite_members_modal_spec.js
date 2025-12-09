@@ -14,6 +14,7 @@ import UserLimitNotification from '~/invite_members/components/user_limit_notifi
 import {
   MEMBERS_MODAL_CELEBRATE_INTRO,
   MEMBERS_MODAL_CELEBRATE_TITLE,
+  MEMBERS_MODAL_ROLE_SELECT_LABEL,
   MEMBERS_PLACEHOLDER,
   MEMBERS_TO_PROJECT_CELEBRATE_INTRO_TEXT,
   EXPANDED_ERRORS,
@@ -182,6 +183,12 @@ describe('InviteMembersModal', () => {
       expect(findBase().props('accessLevels')).toMatchObject({
         validRoles: propsData.accessLevels,
       });
+    });
+
+    it('sets the group role select label', () => {
+      createInviteMembersToProjectWrapper();
+
+      expect(findBase().props('roleSelectLabel')).toBe(MEMBERS_MODAL_ROLE_SELECT_LABEL);
     });
 
     describe('when inviting users to a project', () => {

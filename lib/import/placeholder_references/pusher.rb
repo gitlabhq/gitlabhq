@@ -11,6 +11,9 @@ module Import
         # Do not create a reference if the object is already associated with a real user.
         return if source_user_mapped_to_human?(record, attribute, source_user)
 
+        # Do not create a reference for reference-free reassignment
+        return if ::Import::DirectReassignService.supported?(record.class, attribute, source_user)
+
         ::Import::PlaceholderReferences::PushService.from_record(
           import_source: import_type,
           import_uid: project.import_state.id,
@@ -30,6 +33,9 @@ module Import
 
           next if source_user.nil?
           next if source_user.accepted_status?
+
+          # Do not create a reference for reference-free reassignment
+          next if ::Import::DirectReassignService.supported?(model, attribute, source_user)
 
           ::Import::PlaceholderReferences::PushService.new(
             import_source: import_type,
@@ -51,6 +57,9 @@ module Import
 
         # Do not create a reference if the object is already associated with a real user.
         return if source_user_mapped_to_human?(record, attribute, source_user)
+
+        # Do not create a reference for reference-free reassignment
+        return if ::Import::DirectReassignService.supported?(record.class, attribute, source_user)
 
         ::Import::PlaceholderReferences::PushService.new(
           import_source: import_type,

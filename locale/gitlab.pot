@@ -3118,7 +3118,7 @@ msgstr ""
 msgid "AICatalog|You are an expert in [domain]. Your communication style is [style]. When helping users, you should always... Your key strengths include... You approach problems by..."
 msgstr ""
 
-msgid "AICatalog|You can use the GraphQL API to delete items."
+msgid "AICatalog|You can also use the GraphQL API to delete items."
 msgstr ""
 
 msgid "AICatalog|You must have the Owner role to add a flow to a group. Only top-level groups are shown."
@@ -31012,6 +31012,9 @@ msgstr ""
 msgid "GitLab Community Edition"
 msgstr ""
 
+msgid "GitLab Credits"
+msgstr ""
+
 msgid "GitLab Duo"
 msgstr ""
 
@@ -36628,6 +36631,9 @@ msgstr ""
 msgid "InviteMembersModal|Select a group to invite"
 msgstr ""
 
+msgid "InviteMembersModal|Select a role"
+msgstr ""
+
 msgid "InviteMembersModal|Select from GitLab usernames or enter email addresses"
 msgstr ""
 
@@ -36895,9 +36901,6 @@ msgid "Issue label"
 msgstr ""
 
 msgid "Issue number %{itemIid}: %{title}"
-msgstr ""
-
-msgid "Issue or merge request ID is required"
 msgstr ""
 
 msgid "Issue published on status page."
@@ -43399,9 +43402,6 @@ msgstr ""
 msgid "Namespace must be provided."
 msgstr ""
 
-msgid "Namespace or project is required"
-msgstr ""
-
 msgid "Namespace reached its allowed limit of %{limit} extra deployments. Learn more: %{docs_link}"
 msgstr ""
 
@@ -46672,9 +46672,6 @@ msgstr ""
 msgid "Only HTTP(S)"
 msgstr ""
 
-msgid "Only Issue ID or merge request ID is required"
-msgstr ""
-
 msgid "Only Merge Requests are allowed as a noteable to resolve discussions of at the moment."
 msgstr ""
 
@@ -46706,9 +46703,6 @@ msgid "Only members of this group can access the wiki."
 msgstr ""
 
 msgid "Only one security policy bot is allowed per project"
-msgstr ""
-
-msgid "Only one source is required but both were provided"
 msgstr ""
 
 msgid "Only policy:"
@@ -62376,6 +62370,9 @@ msgstr ""
 msgid "SecurityReports|Either you don't have permission to view this dashboard or the dashboard has not been setup. Please check your permission settings with your administrator or check your dashboard configurations to proceed."
 msgstr ""
 
+msgid "SecurityReports|Enhanced dashboard available"
+msgstr ""
+
 msgid "SecurityReports|Ensure that %{trackingStart}issue tracking%{trackingEnd} is enabled for this project and you have %{permissionsStart}permission to create new issues%{permissionsEnd}."
 msgstr ""
 
@@ -62410,6 +62407,12 @@ msgid "SecurityReports|Filter results..."
 msgstr ""
 
 msgid "SecurityReports|GitLab Duo (AI)"
+msgstr ""
+
+msgid "SecurityReports|GitLab Duo SAST false positive detection - available for a limited time in free Beta"
+msgstr ""
+
+msgid "SecurityReports|GitLab Duo automatically reviews critical and high severity SAST vulnerabilities to identify potential false positives. GitLab Duo assigns each false positive a confidence score and you can bulk dismiss the identified false positives in the vulnerability report. The service is enabled by default for free during the beta. You can adjust or turn off this feature in the GitLab Duo settings."
 msgstr ""
 
 msgid "SecurityReports|Go to policies"
@@ -62460,6 +62463,9 @@ msgstr ""
 msgid "SecurityReports|KEV:"
 msgstr ""
 
+msgid "SecurityReports|Learn more"
+msgstr ""
+
 msgid "SecurityReports|Learn more about security configuration"
 msgstr ""
 
@@ -62479,6 +62485,9 @@ msgid "SecurityReports|Manage and track vulnerabilities identified in your proje
 msgstr ""
 
 msgid "SecurityReports|Manage and track vulnerabilities identified in your selected projects. Vulnerabilities for selected projects are shown here when security testing is configured and a pipeline has been run on the default branch."
+msgstr ""
+
+msgid "SecurityReports|Manage settings"
 msgstr ""
 
 msgid "SecurityReports|Maximum selected projects limit reached"
@@ -62591,6 +62600,9 @@ msgstr ""
 msgid "SecurityReports|Reachable:"
 msgstr ""
 
+msgid "SecurityReports|Read more about the new dashboards"
+msgstr ""
+
 msgid "SecurityReports|Recommendation: Auto-resolve when no longer detected"
 msgstr ""
 
@@ -62690,6 +62702,9 @@ msgid "SecurityReports|The following SBOM reports could not be parsed. Therefore
 msgstr ""
 
 msgid "SecurityReports|The following security reports contain one or more vulnerability findings that could not be parsed and were not recorded. To investigate a report, download the artifacts in the job output. Ensure the security report conforms to the relevant %{helpPageLinkStart}JSON schema%{helpPageLinkEnd}."
+msgstr ""
+
+msgid "SecurityReports|The new security dashboards offer additional insights including risk scores for projects and groups, the median age of open vulnerabilities, vulnerability report integration, and more. You do not have advanced search enabled, which is required to access all of the new features. %{linkStart}How do I enable advanced search?%{linkEnd}"
 msgstr ""
 
 msgid "SecurityReports|The security report for this pipeline has %{helpPageLinkStart}expired%{helpPageLinkEnd}. Re-run the pipeline to generate a new security report."

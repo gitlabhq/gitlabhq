@@ -1,0 +1,10 @@
+---
+name: packages_projects_finder
+description: Replace the group packages finder with the projects and packages finders
+feature_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/569886
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/214548
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/582301
+milestone: '18.7'
+group: group::package registry
+type: gitlab_com_derisk
+default_enabled: false

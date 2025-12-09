@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-module Integrations
+module Analytics
   module Glql
     # Service for logging GLQL/GraphQL execution metrics and performance data
     # Logs to GraphQL logger for monitoring, optimization, and debugging
@@ -59,6 +59,8 @@ module Integrations
         if glql_query
           data[:glql_query] = glql_query
           data[:generated_graphql] = generated_graphql
+          data[:fields] = fields
+          data[:context] = context
         end
 
         data

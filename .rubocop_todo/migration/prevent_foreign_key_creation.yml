@@ -1,6 +1,5 @@
 ---
 Migration/PreventForeignKeyCreation:
-  Details: grace period
   Exclude:
     - 'db/post_migrate/20250708131241_add_builds_foreign_key_to_ci_job_inputs.rb'
     - 'db/post_migrate/20250725125327_add_fk_to_ci_builds_from_definition_instances.rb'

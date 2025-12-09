@@ -21,6 +21,7 @@ const mode = (value, options) => {
       history = createMemoryHistory();
       break;
   }
+
   return { history };
 };
 
@@ -65,7 +66,11 @@ const transformers = {
   scrollBehavior,
 };
 
-const transformOptions = (options = {}) => {
+const transformOptions = (rawOptions = {}) => {
+  const options = {
+    mode: 'hash',
+    ...rawOptions,
+  };
   const defaultConfig = {
     routes: [
       {
@@ -77,7 +82,6 @@ const transformOptions = (options = {}) => {
         },
       },
     ],
-    history: createWebHashHistory(),
   };
   return Object.keys(options).reduce((acc, key) => {
     const value = options[key];
@@ -133,10 +137,36 @@ export default class VueRouterCompat {
           // for example, from router stubs. We need to maintain it
           const originalRouterLink = this.$.appContext.components.RouterLink;
           delete this.$.appContext.components.RouterLink;
+          const originalGlobalProperties = app.config.globalProperties;
+          const fakeGlobalProperties = {};
+          app.config.globalProperties = fakeGlobalProperties;
           this.$.appContext.app.use(this.$options.router);
+
+          app.config.globalProperties = originalGlobalProperties;
+          app.config.globalProperties.$router = fakeGlobalProperties.$router;
+
           if (originalRouterLink) {
             this.$.appContext.components.RouterLink = originalRouterLink;
           }
+
+          Object.defineProperty(app.config.globalProperties, '$route', {
+            enumerable: true,
+            get: () => {
+              const originalValue = fakeGlobalProperties.$route;
+              if (!originalValue) return originalValue;
+              const { params } = originalValue;
+              return {
+                ...originalValue,
+                params: params
+                  ? {
+                      ...params,
+                      // Vue-router 3 returns path as string
+                      path: Array.isArray(params.path) ? params.path.join('/') : params.path,
+                    }
+                  : params,
+              };
+            },
+          });
         }
       },
     });

@@ -118,6 +118,18 @@ RSpec.describe Gitlab::GithubImport::Importer::PullRequestImporter, :clean_gitla
       ])
     end
 
+    context 'when direct reassignment is supported' do
+      before do
+        allow(Import::DirectReassignService).to receive(:supported?).and_return(true)
+      end
+
+      it 'does not push any placeholder references' do
+        importer.execute
+
+        expect(user_references).to be_empty
+      end
+    end
+
     context 'when importing into a personal namespace' do
       let_it_be(:user_namespace) { create(:namespace) }
 

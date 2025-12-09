@@ -7,6 +7,13 @@ RSpec.describe API::Settings, 'Settings', :do_not_mock_admin_mode_setting, featu
 
   let_it_be(:admin) { create(:admin) }
 
+  let_it_be(:default_organization) { create(:organization) }
+
+  before do
+    stub_env('IN_MEMORY_APPLICATION_SETTINGS', 'false')
+    allow(::Organizations::Organization).to receive(:default_organization).and_return(default_organization)
+  end
+
   describe "GET /application/settings" do
     before do
       # Testing config file config/gitlab.yml becomes SSOT for this API

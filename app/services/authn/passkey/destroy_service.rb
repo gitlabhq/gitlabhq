@@ -16,6 +16,8 @@ module Authn
 
         passkey.destroy!
 
+        notify_on_success(user, passkey.name)
+
         ServiceResponse.success(
           message: _("Passkey has been deleted!")
         )
@@ -26,6 +28,12 @@ module Authn
       def authorized?
         current_user.can?(:disable_passkey, user)
       end
+
+      def notify_on_success(user, device_name)
+        notification_service.disabled_two_factor(user, :passkey, { device_name: device_name })
+      end
     end
   end
 end
+
+Authn::Passkey::DestroyService.prepend_mod

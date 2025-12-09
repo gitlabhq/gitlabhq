@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Integrations::Glql::QueryService, feature_category: :integrations do
+RSpec.describe Analytics::Glql::QueryService, feature_category: :custom_dashboards_foundation do
   let_it_be(:user) { create(:user) }
   let(:query) { 'query { __typename }' }
   let(:original_query) { 'type = issue' }
@@ -55,8 +55,8 @@ RSpec.describe Integrations::Glql::QueryService, feature_category: :integrations
       end
 
       it 'calls LoggingService to log execution metrics' do
-        logging_service = instance_double(Integrations::Glql::LoggingService)
-        expect(Integrations::Glql::LoggingService).to receive(:new).with(
+        logging_service = instance_double(Analytics::Glql::LoggingService)
+        expect(Analytics::Glql::LoggingService).to receive(:new).with(
           current_user: user,
           result: hash_including(
             data: { '__typename' => 'Query' },
@@ -126,6 +126,32 @@ RSpec.describe Integrations::Glql::QueryService, feature_category: :integrations
       end
     end
 
+    context 'when GraphQL execution returns partial data with errors' do
+      let(:graphql_result) do
+        {
+          'data' => { 'user' => { 'id' => '1' } },
+          'errors' => [{ 'message' => 'Field error' }]
+        }
+      end
+
+      before do
+        allow(GitlabSchema).to receive(:execute).and_return(graphql_result)
+        allow(RequestStore).to receive(:store).and_return({ graphql_logs: [{ complexity: 8 }] })
+      end
+
+      it 'returns both data and errors' do
+        result = service.execute(query: query, variables: variables, context: context)
+
+        expect(result).to include(
+          data: { 'user' => { 'id' => '1' } },
+          errors: [{ 'message' => 'Field error' }],
+          complexity_score: 8,
+          timeout_occurred: false,
+          rate_limited: false
+        )
+      end
+    end
+
     context 'when ActiveRecord::QueryAborted is raised' do
       before do
         allow(GitlabSchema).to receive(:execute).and_raise(ActiveRecord::QueryAborted)
@@ -153,8 +179,8 @@ RSpec.describe Integrations::Glql::QueryService, feature_category: :integrations
         allow(Gitlab::ApplicationRateLimiter).to receive(:peek).and_return(false)
         allow(Gitlab::ApplicationRateLimiter).to receive(:throttled?)
 
-        logging_service = instance_double(Integrations::Glql::LoggingService)
-        expect(Integrations::Glql::LoggingService).to receive(:new).with(
+        logging_service = instance_double(Analytics::Glql::LoggingService)
+        expect(Analytics::Glql::LoggingService).to receive(:new).with(
           current_user: user,
           result: hash_including(
             timeout_occurred: true,
@@ -251,52 +277,96 @@ RSpec.describe Integrations::Glql::QueryService, feature_category: :integrations
         )
       end
     end
-  end
 
-  describe '#query_sha' do
-    it 'generates SHA256 hash of original query' do
-      expected_sha = Digest::SHA256.hexdigest(original_query)
-
-      expect(service.send(:query_sha)).to eq(expected_sha)
-    end
-  end
-
-  describe '#build_graphql_context' do
-    it 'builds context with base fields' do
-      context = service.send(:build_graphql_context, { custom_field: 'value' })
-
-      expect(context).to include(
-        current_user: user,
-        current_organization: nil,
-        request: request,
-        custom_field: 'value'
-      )
-    end
-  end
-
-  describe '#extract_complexity_score' do
-    context 'when graphql_logs are present in RequestStore' do
+    context 'when graphql_logs are empty' do
       before do
+        allow(GitlabSchema).to receive(:execute).and_return(
+          { 'data' => { '__typename' => 'Query' }, 'errors' => nil }
+        )
+        allow(RequestStore).to receive(:store).and_return({ graphql_logs: [] })
+      end
+
+      it 'returns result with nil complexity_score' do
+        result = service.execute(query: query, variables: variables, context: context)
+
+        expect(result).to include(
+          data: { '__typename' => 'Query' },
+          complexity_score: nil,
+          timeout_occurred: false,
+          rate_limited: false
+        )
+      end
+    end
+
+    context 'when graphql_logs have no complexity field' do
+      before do
+        allow(GitlabSchema).to receive(:execute).and_return(
+          { 'data' => { '__typename' => 'Query' }, 'errors' => nil }
+        )
         allow(RequestStore).to receive(:store).and_return({
-          graphql_logs: [
-            { complexity: 10 },
-            { complexity: 15 }
-          ]
+          graphql_logs: [{ other_field: 'value' }]
         })
       end
 
-      it 'returns complexity from last log entry' do
-        expect(service.send(:extract_complexity_score)).to eq(15)
+      it 'returns result with nil complexity_score' do
+        result = service.execute(query: query, variables: variables, context: context)
+
+        expect(result).to include(
+          data: { '__typename' => 'Query' },
+          complexity_score: nil,
+          timeout_occurred: false,
+          rate_limited: false
+        )
       end
     end
 
-    context 'when no graphql_logs in RequestStore' do
+    context 'when no graphql_logs in RequestStore during execution' do
       before do
+        allow(GitlabSchema).to receive(:execute).and_return(
+          { 'data' => { '__typename' => 'Query' }, 'errors' => nil }
+        )
         allow(RequestStore).to receive(:store).and_return({ graphql_logs: nil })
       end
 
-      it 'returns nil' do
-        expect(service.send(:extract_complexity_score)).to be_nil
+      it 'does not raise error' do
+        expect do
+          service.execute(query: query, variables: variables, context: context)
+        end.not_to raise_error
+      end
+    end
+
+    context 'when request has referer header' do
+      let(:request_with_referer) do
+        instance_double(ActionDispatch::Request, headers: { 'Referer' => 'https://example.com/dashboard' })
+      end
+
+      let(:service_with_referer) do
+        described_class.new(
+          current_user: user,
+          original_query: original_query,
+          request: request_with_referer,
+          current_organization: nil
+        )
+      end
+
+      before do
+        allow(GitlabSchema).to receive(:execute).and_return(
+          { 'data' => { '__typename' => 'Query' }, 'errors' => nil }
+        )
+        allow(RequestStore).to receive(:store).and_return({
+          graphql_logs: [{ complexity: 5 }]
+        })
+      end
+
+      it 'executes successfully with referer header' do
+        result = service_with_referer.execute(query: query, variables: variables, context: context)
+
+        expect(result).to include(
+          data: { '__typename' => 'Query' },
+          complexity_score: 5,
+          timeout_occurred: false,
+          rate_limited: false
+        )
       end
     end
   end

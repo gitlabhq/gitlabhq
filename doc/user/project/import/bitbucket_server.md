@@ -42,6 +42,8 @@ However, to help estimate the duration of your import, a project comprised of th
 
 {{< /history >}}
 
+- Bitbucket Server must be accessible from the GitLab instance. The Bitbucket Server URL must be
+  publicly resolvable or accessible on the network where GitLab is running.
 - [Bitbucket Server import source](../../../administration/settings/import_and_export_settings.md#configure-allowed-import-sources)
   must be enabled. If not enabled, ask your GitLab administrator to enable it. The Bitbucket Server import source is enabled
   by default on GitLab.com.

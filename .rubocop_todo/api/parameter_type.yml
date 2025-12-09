@@ -1,6 +1,5 @@
 ---
 API/ParameterType:
-  Details: grace period
   Exclude:
     - 'ee/lib/api/virtual_registries/container/registry_upstreams.rb'
     - 'lib/api/discussions.rb'

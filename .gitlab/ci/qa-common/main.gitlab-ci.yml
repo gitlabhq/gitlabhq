@@ -141,9 +141,13 @@ stages:
     - echo "Collecting E2E Coverband coverage files..."
     - mkdir -p coverage-e2e-backend
     - cp qa/tmp/coverband-coverage-*.json coverage-e2e-backend/ 2>/dev/null || echo "No Coverband files found"
+    - echo "Collecting E2E test mapping files..."
+    - mkdir -p e2e-test-mapping
+    - cp qa/tmp/test-code-paths-mapping-*.json e2e-test-mapping/ 2>/dev/null || echo "No test mapping files found"
   artifacts:
     paths:
       - coverage-e2e-backend/
+      - e2e-test-mapping/
     expire_in: 7d
     when: always
   rules:

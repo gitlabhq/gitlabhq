@@ -28,13 +28,21 @@ test-coverage:export-rspec-and-e2e:
   script:
     - ruby scripts/coverage/download_e2e_coverage_from_child_pipeline.rb
     - ruby scripts/coverage/merge_backend_coverage.rb
-    - echo "Exporting merged RSpec + E2E coverage to ClickHouse..."
-    - bundle exec test-coverage
-        --test-reports 'rspec/rspec-*.json'
-        --coverage-report 'coverage-backend/coverage.lcov'
-        --test-map 'crystalball/packed-mapping.json.gz'
-        --clickhouse-url "${CLICKHOUSE_URL}"
-        --clickhouse-database "${CLICKHOUSE_DATABASE}"
+    - echo "Merging E2E test mappings with Crystalball mappings..."
+    - ruby scripts/coverage/merge_e2e_backend_test_mapping.rb
+    - |
+      if [ ! -f "crystalball/merged-mapping.json.gz" ]; then
+        echo "Merged test mapping not found. Skipping export to ClickHouse..."
+        exit 0
+      fi
+
+      echo "Exporting merged RSpec + E2E coverage to ClickHouse..."
+      bundle exec test-coverage \
+        --test-reports 'rspec/rspec-*.json,e2e-test-reports/rspec-*.json' \
+        --coverage-report 'coverage-backend/coverage.lcov' \
+        --test-map 'crystalball/merged-mapping.json.gz' \
+        --clickhouse-url "${CLICKHOUSE_URL}" \
+        --clickhouse-database "${CLICKHOUSE_DATABASE}" \
         --clickhouse-username "${CLICKHOUSE_USERNAME}"
   artifacts:
     paths:
@@ -43,6 +51,7 @@ test-coverage:export-rspec-and-e2e:
       - coverage/
       - crystalball/
       - rspec/
+      - e2e-test-reports/
     expire_in: 7d
 
 # Job is temporary disabled as it relies on `process-frontend-coverage` job that

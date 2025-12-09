@@ -3,6 +3,10 @@ Migration/PreventIndexCreation:
   Details: grace period
   Exclude:
     - 'db/migrate/20250506140822_add_index_project_id_on_project_authorizations_for_migration.rb'
+    - 'db/migrate/20251014142227_add_fk_on_sbom_occurrence_refs_for_sbom_occurrences.rb'
+    - 'db/migrate/20251014143930_add_fk_to_sbom_occurrence_refs_for_security_project_tracked_contexts.rb'
+    - 'db/migrate/20251014144050_add_index_on_sbom_occurrence_refs_for_projects.rb'
+    - 'db/migrate/20251014170619_add_index_on_sbom_occurrence_refs_for_pipelines.rb'
     - 'db/post_migrate/20250512110339_replace_tmp_idx_on_maven_packages_with_uniq_idx.rb'
     - 'db/post_migrate/20250520214740_readd_index_users_for_auditors_for_gitlab_com.rb'
     - 'db/post_migrate/20250529231801_async_add_index_ci_build_report_results_on_build_id_partition_id.rb'

@@ -28,12 +28,14 @@ RSpec.describe Timelog, feature_category: :team_planning do
       subject.attributes = { issue: nil, merge_request: nil }
 
       expect(subject).to be_invalid
+      expect(subject.errors.full_messages).to include('Exactly one of issue, merge_request must be present')
     end
 
     it 'is invalid if issue_id and merge_request_id are set' do
       subject.attributes = { issue: issue, merge_request: merge_request }
 
       expect(subject).to be_invalid
+      expect(subject.errors.full_messages).to include('Exactly one of issue, merge_request must be present')
     end
 
     it 'is valid if only issue_id is set' do

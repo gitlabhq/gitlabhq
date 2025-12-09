@@ -67,6 +67,27 @@ module Import
       MODEL_LIST
     end
 
+    # Determines if reassignment without placeholder references can be used for the given model, attribute and
+    # source user.
+    #
+    # @param model_class [Class] The model class (e.g., Issue, MergeRequest)
+    # @param attribute [String] The model attribute/database column name
+    # @param source_user [Import::SourceUser] The source user being reassigned
+    #
+    # @return [Boolean] true if direct reassignment is supported, false otherwise
+    #
+    # == Decision Logic
+    #
+    # Direct reassignment is *not supported* when:
+    # 1. The placeholder user is an import_user type
+    # 2. The model class and attribute are excluded from the model list
+    def self.supported?(model_class, attribute, source_user)
+      return false if source_user.placeholder_user.import_user?
+
+      model_attributes = model_list[model_class.base_class.name]
+      !!model_attributes&.include?(attribute.to_s)
+    end
+
     def initialize(import_source_user, reassignment_throttling:, sleep_time: BATCH_SLEEP)
       @import_source_user = import_source_user
       @reassigned_by_user = import_source_user.reassigned_by_user
@@ -93,8 +114,8 @@ module Import
 
     attr_accessor :import_source_user, :reassigned_by_user, :sleep_time, :execution_tracker, :reassignment_throttling
 
-    # @param model [String]
-    # @param column [String]
+    # @param model [String] - Model name as string
+    # @param column [String] - Model attribute/db column
     def direct_reassign_model_user_references(model, column)
       model_class = model.constantize
 
@@ -123,8 +144,8 @@ module Import
       end
     end
 
-    # @param model [String]
-    # @param column [String]
+    # @param model_class [Class] - Model class, for example Issue
+    # @param column [String] - Model attribute/db column
     # rubocop:disable CodeReuse/ActiveRecord -- this query is performed in several distinct model
     def find_batch_of_contributions(model_class, column)
       model_class.where(column => import_source_user.placeholder_user_id)

@@ -396,6 +396,7 @@ export default {
     :root-group-id="rootId"
     :users-limit-dataset="usersLimitDataset"
     :full-path="fullPath"
+    :role-select-label="$options.labels.roleSelectLabel"
     v-bind="baseBindingAttributes"
     @close="onClose"
     @cancel="onCancel"

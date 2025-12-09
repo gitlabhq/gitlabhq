@@ -32,24 +32,24 @@ You can access the Web IDE through several methods.
 
 ### With a keyboard shortcut
 
-1. On the left sidebar, select **Search or go to** and find your project. If you've [turned on the new navigation](../../interface_redesign.md), this field is on the top bar.
+1. On the top bar, select **Search or go to** and find your project.
 1. Use the <kbd>.</kbd> keyboard shortcut.
 
 ### From a directory
 
-1. On the left sidebar, select **Search or go to** and find your project. If you've [turned on the new navigation](../../interface_redesign.md), this field is on the top bar.
+1. On the top bar, select **Search or go to** and find your project.
 1. Go to your directory.
 1. Select **Code** > **Open in Web IDE**.
 
 ### From a file
 
-1. On the left sidebar, select **Search or go to** and find your project. If you've [turned on the new navigation](../../interface_redesign.md), this field is on the top bar.
+1. On the top bar, select **Search or go to** and find your project.
 1. Go to your file.
 1. Select **Edit** > **Open in Web IDE**.
 
 ### From a merge request
 
-1. On the left sidebar, select **Search or go to** and find your project. If you've [turned on the new navigation](../../interface_redesign.md), this field is on the top bar.
+1. On the top bar, select **Search or go to** and find your project.
 1. Go to your merge request.
 1. In the upper right, select **Code** > **Open in Web IDE**.
 
@@ -403,7 +403,7 @@ To resolve this issue, you must update the OAuth callback URL to match the URL u
 
 To update the OAuth callback URL:
 
-1. On the left sidebar, at the bottom, select **Admin**. If you've [turned on the new navigation](../../interface_redesign.md), in the upper-right corner, select **Admin**.
+1. In the upper-right corner, select **Admin**.
 1. Select **Applications**.
 1. For **GitLab Web IDE**, select **Edit**.
 1. Enter the OAuth callback URL.

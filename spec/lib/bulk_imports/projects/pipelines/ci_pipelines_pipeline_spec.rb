@@ -66,11 +66,11 @@ RSpec.describe BulkImports::Projects::Pipelines::CiPipelinesPipeline, feature_ca
 
       allow(context).to receive(:importer_user_mapping_enabled?).and_return(importer_user_mapping_enabled)
       allow(Import::PlaceholderReferences::PushService).to receive(:from_record).and_call_original
-
-      pipeline.run
     end
 
     it 'imports Ci::Pipeline into destination project' do
+      pipeline.run
+
       expect(project.all_pipelines.count).to eq(2)
       expect(project.ci_pipelines.first.sha).to eq('fakesha')
       expect(project.ci_pipelines.second.sha).to eq('fakesha2')
@@ -102,6 +102,8 @@ RSpec.describe BulkImports::Projects::Pipelines::CiPipelinesPipeline, feature_ca
       end
 
       it 'imports pipeline with notes' do
+        pipeline.run
+
         note = project.all_pipelines.first.notes.first
         expect(note.note).to include('test note')
         expect(note.events.first.action).to eq('created')
@@ -133,6 +135,8 @@ RSpec.describe BulkImports::Projects::Pipelines::CiPipelinesPipeline, feature_ca
       end
 
       it 'imports pipeline with notes' do
+        pipeline.run
+
         stage = project.all_pipelines.first.stages.first
         expect(stage.name).to eq('test stage')
         expect(stage.statuses.first.name).to eq('first status')
@@ -158,6 +162,8 @@ RSpec.describe BulkImports::Projects::Pipelines::CiPipelinesPipeline, feature_ca
       end
 
       it 'imports pipeline with external pull request' do
+        pipeline.run
+
         pull_request = project.all_pipelines.first.external_pull_request
         expect(pull_request.source_branch).to eq('test source branch')
         expect(pull_request.status).to eq('open')
@@ -185,6 +191,8 @@ RSpec.describe BulkImports::Projects::Pipelines::CiPipelinesPipeline, feature_ca
       end
 
       it 'imports pipeline with external pull request' do
+        pipeline.run
+
         merge_request = project.all_pipelines.first.merge_request
         expect(merge_request.source_branch).to eq('test source branch')
         expect(merge_request.description).to eq('test merge request')
@@ -197,7 +205,8 @@ RSpec.describe BulkImports::Projects::Pipelines::CiPipelinesPipeline, feature_ca
           import_type: ::Import::SOURCE_DIRECT_TRANSFER,
           namespace: group,
           source_user_identifier: 101,
-          source_hostname: bulk_import.configuration.url
+          source_hostname: bulk_import.configuration.url,
+          placeholder_user: create(:user, :import_user)
         )
       end
 
@@ -259,21 +268,35 @@ RSpec.describe BulkImports::Projects::Pipelines::CiPipelinesPipeline, feature_ca
       end
 
       it 'imports ci pipelines and map user references to placeholder users', :aggregate_failures do
+        pipeline.run
+
         ci_pipeline = project.all_pipelines.first
         stage = project.all_pipelines.first.stages.first
         build = stage.builds.first
         generic_commit_status = stage.generic_commit_statuses.first
         bridge = stage.bridges.first
 
-        expect(ci_pipeline.user).to be_placeholder
-        expect(build.user).to be_placeholder
-        expect(generic_commit_status.user).to be_placeholder
-        expect(bridge.user).to be_placeholder
+        expect(ci_pipeline.user).to be_import_user
+        expect(build.user).to be_import_user
+        expect(generic_commit_status.user).to be_import_user
+        expect(bridge.user).to be_import_user
 
         source_user = Import::SourceUser.find_by(source_user_identifier: 101)
-        expect(source_user.placeholder_user).to be_placeholder
+        expect(source_user.placeholder_user).to be_import_user
 
         expect(Import::PlaceholderReferences::PushService).to have_received(:from_record).exactly(4).times
+      end
+
+      context 'when direct reassignment is supported' do
+        before do
+          allow(Import::DirectReassignService).to receive(:supported?).and_return(true)
+        end
+
+        it 'does not push any placeholder references' do
+          pipeline.run
+
+          expect(Import::PlaceholderReferences::PushService).not_to have_received(:from_record)
+        end
       end
 
       context 'when merge request is present in the extract data' do
@@ -297,6 +320,8 @@ RSpec.describe BulkImports::Projects::Pipelines::CiPipelinesPipeline, feature_ca
         end
 
         it 'pushes placeholder references for the merge request' do
+          pipeline.run
+
           expect(Import::PlaceholderReferences::PushService).to have_received(:from_record).with(a_hash_including(
             record: an_instance_of(MergeRequest)
           ))
@@ -306,6 +331,8 @@ RSpec.describe BulkImports::Projects::Pipelines::CiPipelinesPipeline, feature_ca
           let_it_be(:merge_request) { create(:merge_request, source_project: project, iid: 1) }
 
           it 'does not push placeholder references for the merge request' do
+            pipeline.run
+
             expect(Import::PlaceholderReferences::PushService).not_to have_received(:from_record).with(a_hash_including(
               record: an_instance_of(MergeRequest)
             ))

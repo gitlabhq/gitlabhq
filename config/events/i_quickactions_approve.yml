@@ -1,0 +1,23 @@
+---
+description: When the quickaction /approve is executed
+internal_events: true
+status: active
+action: i_quickactions_approve
+identifiers:
+- project
+- namespace
+- user
+additional_properties:
+  pending_comments:
+    description: Number of pending review comments
+  is_reviewer:
+    description: Is the user a reviewer?
+product_group: source_code
+product_categories:
+- code_review_workflow
+milestone: '18.7'
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/214827
+tiers:
+- free
+- premium
+- ultimate

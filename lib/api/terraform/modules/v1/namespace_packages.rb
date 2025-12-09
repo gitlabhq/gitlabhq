@@ -46,6 +46,17 @@ module API
             end
             strong_memoize_attr :module_namespace
 
+            def projects
+              ::Packages::ProjectsFinder.new(
+                current_user: current_user,
+                group: module_namespace,
+                params: { within_public_package_registry: true }
+              ).execute
+            end
+
+            # TODO: remove `within_public_package_registry` with the rollout
+            # of FF packages_projects_finder since it won't be used anymore.
+            # https://gitlab.com/gitlab-org/gitlab/-/issues/582301
             def finder_params
               {
                 package_type: :terraform_module,
@@ -57,11 +68,15 @@ module API
             end
 
             def packages
-              ::Packages::GroupPackagesFinder.new(
-                current_user,
-                module_namespace,
-                finder_params
-              ).execute
+              if Feature.enabled?(:packages_projects_finder, module_namespace)
+                ::Packages::PackagesFinder.new(projects, finder_params).execute
+              else
+                ::Packages::GroupPackagesFinder.new(
+                  current_user,
+                  module_namespace,
+                  finder_params
+                ).execute
+              end
             end
             strong_memoize_attr :packages
 

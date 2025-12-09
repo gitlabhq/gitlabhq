@@ -258,6 +258,9 @@ module BulkImports
             # with a real user.
             next if source_user.accepted_status? && object[attribute] == source_user.reassign_to_user_id
 
+            # Do not create a reference for reference-free reassignment
+            next if ::Import::DirectReassignService.supported?(object.class, attribute, source_user)
+
             ::Import::PlaceholderReferences::PushService.from_record(
               import_source: ::Import::SOURCE_DIRECT_TRANSFER,
               import_uid: context.bulk_import_id,

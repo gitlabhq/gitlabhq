@@ -254,9 +254,11 @@ module Gitlab
           quick_action_target.persisted? && quick_action_target.eligible_for_approval_by?(current_user) && !quick_action_target.merged?
         end
         command :approve do
+          pending_comments_count = quick_action_target.draft_notes.authored_by(current_user).count
+
           @execution_message[:approve] = []
 
-          if quick_action_target.draft_notes.authored_by(current_user).any? && params[:review_id].blank?
+          if pending_comments_count > 0 && params[:review_id].blank?
             result = DraftNotes::PublishService.new(quick_action_target, current_user).execute
 
             @execution_message[:approve] = if result[:status] == :success
@@ -269,6 +271,11 @@ module Gitlab
           success = ::MergeRequests::ApprovalService.new(project: quick_action_target.project, current_user: current_user).execute(quick_action_target)
 
           next unless success
+
+          @additional_properties[:approve] = {
+            is_reviewer: quick_action_target.find_reviewer(current_user).present?.to_s,
+            pending_comments: pending_comments_count
+          }
 
           @execution_message[:approve] << _('Approved the current merge request.')
         end

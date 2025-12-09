@@ -2584,15 +2584,15 @@ RSpec.describe QuickActions::InterpretService, feature_category: :text_editors d
 
       expect(Gitlab::UsageDataCounters::QuickActionActivityUniqueCounter)
         .to receive(:track_unique_action)
-        .with('shrug', args: 'test', user: developer, project: project)
+        .with('shrug', args: 'test', user: developer, project: project, additional_properties: nil)
 
       expect(Gitlab::UsageDataCounters::QuickActionActivityUniqueCounter)
         .to receive(:track_unique_action)
-        .with('assign', args: 'me', user: developer, project: project)
+        .with('assign', args: 'me', user: developer, project: project, additional_properties: nil)
 
       expect(Gitlab::UsageDataCounters::QuickActionActivityUniqueCounter)
         .to receive(:track_unique_action)
-        .with('milestone', args: '%4', user: developer, project: project)
+        .with('milestone', args: '%4', user: developer, project: project, additional_properties: nil)
 
       service.execute(content, issue)
     end
@@ -3305,6 +3305,23 @@ RSpec.describe QuickActions::InterpretService, feature_category: :text_editors d
           expect(message).to eq("Approved the current merge request.")
         end
 
+        it 'sends additional properties to internal tracking' do
+          merge_request.reviewers << developer
+
+          create(:draft_note, merge_request: merge_request, author: developer)
+
+          expect(Gitlab::UsageDataCounters::QuickActionActivityUniqueCounter)
+            .to receive(:track_unique_action)
+            .with(
+              'approve',
+              args: nil,
+              user: developer,
+              project: project,
+              additional_properties: { is_reviewer: 'true', pending_comments: 1 })
+
+          service.execute(content, merge_request)
+        end
+
         context 'when the draft note has /approve quick action' do
           it 'submits the users current review' do
             draft_note = create(:draft_note, merge_request: merge_request, author: developer, note: 'Test\n/approve')
@@ -3483,7 +3500,7 @@ RSpec.describe QuickActions::InterpretService, feature_category: :text_editors d
         it 'tracks the quick action usage' do
           expect(Gitlab::UsageDataCounters::QuickActionActivityUniqueCounter)
             .to receive(:track_unique_action)
-            .with('run_pipeline', args: nil, user: current_user, project: project)
+            .with('run_pipeline', args: nil, user: current_user, project: project, additional_properties: nil)
 
           service.execute(content, merge_request)
         end

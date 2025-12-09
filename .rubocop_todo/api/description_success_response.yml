@@ -1,6 +1,5 @@
 ---
 API/DescriptionSuccessResponse:
-  Details: grace period
   Exclude:
     - 'ee/lib/api/admin/search/migrations.rb'
     - 'ee/lib/api/admin/search/zoekt.rb'

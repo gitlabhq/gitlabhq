@@ -1,6 +1,5 @@
 ---
 Gitlab/PreventOrganizationFirst:
-  Details: grace period
   Exclude:
     - 'app/helpers/admin/users_helper.rb'
     - 'app/workers/gitlab_service_ping_worker.rb'

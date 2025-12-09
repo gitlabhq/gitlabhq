@@ -99,6 +99,8 @@ tags:
   description: Operations about runner_controllers
 - name: events
   description: Operations about events
+- name: glql
+  description: Operations about glqls
 - name: keys
   description: Operations about keys
 - name: markdown
@@ -2297,7 +2299,7 @@ paths:
           schema:
             type: array
             items:
-              "$ref": "#/definitions/EE_API_Entities_AuditEvent"
+              "$ref": "#/definitions/API_Entities_AuditEvent"
       tags:
       - groups
       operationId: getApiV4GroupsIdAuditEvents
@@ -2322,7 +2324,7 @@ paths:
         '200':
           description: Get a specific audit event in this group.
           schema:
-            "$ref": "#/definitions/EE_API_Entities_AuditEvent"
+            "$ref": "#/definitions/API_Entities_AuditEvent"
       tags:
       - groups
       operationId: getApiV4GroupsIdAuditEventsAuditEventId
@@ -2500,7 +2502,7 @@ paths:
           schema:
             type: array
             items:
-              "$ref": "#/definitions/EE_API_Entities_SshCertificate"
+              "$ref": "#/definitions/API_Entities_SshCertificate"
         '401':
           description: Unauthorized
         '403':
@@ -2532,7 +2534,7 @@ paths:
         '201':
           description: Create a ssh certificate for a group.
           schema:
-            "$ref": "#/definitions/EE_API_Entities_SshCertificate"
+            "$ref": "#/definitions/API_Entities_SshCertificate"
         '400':
           description: Bad request
         '401':
@@ -7898,7 +7900,7 @@ paths:
           description: Get the direct memberships of a billable user of a top-level
             group.
           schema:
-            "$ref": "#/definitions/EE_API_Entities_BillableMembership"
+            "$ref": "#/definitions/API_Entities_BillableMembership"
       tags:
       - groups
       operationId: getApiV4GroupsIdBillableMembersUserIdMemberships
@@ -7941,7 +7943,7 @@ paths:
           description: Get the indirect memberships of a billable user of a top-level
             group.
           schema:
-            "$ref": "#/definitions/EE_API_Entities_BillableMembership"
+            "$ref": "#/definitions/API_Entities_BillableMembership"
       tags:
       - groups
       operationId: getApiV4GroupsIdBillableMembersUserIdIndirect
@@ -25930,7 +25932,7 @@ paths:
         '201':
           description: Upload a metric image for an issue
           schema:
-            "$ref": "#/definitions/EE_API_Entities_IssuableMetricImage"
+            "$ref": "#/definitions/API_Entities_IssuableMetricImage"
       tags:
       - projects
       operationId: postApiV4ProjectsIdIssuesIssueIidMetricImages
@@ -25988,7 +25990,7 @@ paths:
         '200':
           description: Update a metric image for an issue
           schema:
-            "$ref": "#/definitions/EE_API_Entities_IssuableMetricImage"
+            "$ref": "#/definitions/API_Entities_IssuableMetricImage"
       tags:
       - projects
       operationId: putApiV4ProjectsIdIssuesIssueIidMetricImagesMetricImageId
@@ -26017,7 +26019,7 @@ paths:
         '200':
           description: Remove a metric image for an issue
           schema:
-            "$ref": "#/definitions/EE_API_Entities_IssuableMetricImage"
+            "$ref": "#/definitions/API_Entities_IssuableMetricImage"
       tags:
       - projects
       operationId: deleteApiV4ProjectsIdIssuesIssueIidMetricImagesMetricImageId
@@ -28116,7 +28118,7 @@ paths:
           description: 'Deprecated in 16.0: Use the merge request approvals API instead.
             Change approval-related configuration'
           schema:
-            "$ref": "#/definitions/EE_API_Entities_ApprovalState"
+            "$ref": "#/definitions/API_Entities_ApprovalState"
       tags:
       - projects
       operationId: postApiV4ProjectsIdMergeRequestsMergeRequestIidApprovals
@@ -28237,7 +28239,7 @@ paths:
         '200':
           description: Get approval state of merge request
           schema:
-            "$ref": "#/definitions/EE_API_Entities_MergeRequestApprovalState"
+            "$ref": "#/definitions/API_Entities_MergeRequestApprovalState"
       tags:
       - projects
       operationId: getApiV4ProjectsIdMergeRequestsMergeRequestIidApprovalState
@@ -36209,7 +36211,7 @@ paths:
           schema:
             type: array
             items:
-              "$ref": "#/definitions/EE_API_Entities_AuditEvent"
+              "$ref": "#/definitions/API_Entities_AuditEvent"
       tags:
       - projects
       operationId: getApiV4ProjectsIdAuditEvents
@@ -36234,7 +36236,7 @@ paths:
         '200':
           description: Get a specific audit event in this project.
           schema:
-            "$ref": "#/definitions/EE_API_Entities_AuditEvent"
+            "$ref": "#/definitions/API_Entities_AuditEvent"
       tags:
       - projects
       operationId: getApiV4ProjectsIdAuditEventsAuditEventId
@@ -43914,7 +43916,7 @@ paths:
         '200':
           description: Posts the current node status to the primary site
           schema:
-            "$ref": "#/definitions/EE_API_Entities_GeoNodeStatus"
+            "$ref": "#/definitions/API_Entities_GeoNodeStatus"
         '400':
           description: 400 Bad Request
         '401':
@@ -44052,6 +44054,36 @@ paths:
       tags:
       - geo
       operationId: postApiV4GeoNodeProxyIdGraphql
+  "/api/v4/glql":
+    post:
+      summary: Execute GLQL query
+      description: Execute a GLQL (GitLab Query Language) query
+      produces:
+      - application/json
+      consumes:
+      - application/json
+      parameters:
+      - name: postApiV4Glql
+        in: body
+        required: true
+        schema:
+          "$ref": "#/definitions/postApiV4Glql"
+      responses:
+        '200':
+          description: Execute GLQL query
+        '400':
+          description: Bad request
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '429':
+          description: Too Many Requests
+        '500':
+          description: Internal server error
+      tags:
+      - glql
+      operationId: postApiV4Glql
   "/api/v4/integrations/slack/events":
     post:
       description: Receive Slack events
@@ -47882,7 +47914,7 @@ definitions:
       ldap_group_links:
         "$ref": "#/definitions/EE_API_Entities_LdapGroupLink"
       saml_group_links:
-        "$ref": "#/definitions/EE_API_Entities_SamlGroupLink"
+        "$ref": "#/definitions/API_Entities_SamlGroupLink"
       file_template_project_id:
         type: string
       wiki_access_level:
@@ -47973,7 +48005,7 @@ definitions:
         type: integer
         format: int32
         example: 12
-  EE_API_Entities_SamlGroupLink:
+  API_Entities_SamlGroupLink:
     type: object
     properties:
       name:
@@ -48673,7 +48705,7 @@ definitions:
       ldap_group_links:
         "$ref": "#/definitions/EE_API_Entities_LdapGroupLink"
       saml_group_links:
-        "$ref": "#/definitions/EE_API_Entities_SamlGroupLink"
+        "$ref": "#/definitions/API_Entities_SamlGroupLink"
       file_template_project_id:
         type: string
       wiki_access_level:
@@ -49385,7 +49417,7 @@ definitions:
     required:
     - token
     description: Revoke a single token
-  EE_API_Entities_AuditEvent:
+  API_Entities_AuditEvent:
     type: object
     properties:
       id:
@@ -49402,7 +49434,7 @@ definitions:
         type: string
       created_at:
         type: string
-    description: EE_API_Entities_AuditEvent model
+    description: API_Entities_AuditEvent model
   API_Entities_UserPublic:
     type: object
     properties:
@@ -49548,7 +49580,7 @@ definitions:
         type: string
       active:
         type: string
-  EE_API_Entities_SshCertificate:
+  API_Entities_SshCertificate:
     type: object
     properties:
       id:
@@ -49564,7 +49596,7 @@ definitions:
         type: string
         format: date-time
         example: '2022-01-31T15:10:45.080Z'
-    description: EE_API_Entities_SshCertificate model
+    description: API_Entities_SshCertificate model
   postApiV4GroupsIdSshCertificates:
     type: object
     properties:
@@ -52953,7 +52985,7 @@ definitions:
     required:
     - state
     description: Changes the state of the memberships of a user in the group
-  EE_API_Entities_BillableMembership:
+  API_Entities_BillableMembership:
     type: object
     properties:
       id:
@@ -52977,7 +53009,7 @@ definitions:
             type: string
           custom_role:
             type: string
-    description: EE_API_Entities_BillableMembership model
+    description: API_Entities_BillableMembership model
   API_Entities_MergeRequestBasic:
     type: object
     properties:
@@ -61584,7 +61616,7 @@ definitions:
     required:
     - file
     description: Upload a metric image for an issue
-  EE_API_Entities_IssuableMetricImage:
+  API_Entities_IssuableMetricImage:
     type: object
     properties:
       id:
@@ -61599,7 +61631,7 @@ definitions:
         type: string
       url_text:
         type: string
-    description: EE_API_Entities_IssuableMetricImage model
+    description: API_Entities_IssuableMetricImage model
   putApiV4ProjectsIdIssuesIssueIidMetricImagesMetricImageId:
     type: object
     properties:
@@ -62405,7 +62437,7 @@ definitions:
           auth on approval
         example: secret
     description: Approve a merge request
-  EE_API_Entities_MergeRequestApprovalState:
+  API_Entities_MergeRequestApprovalState:
     type: object
     properties:
       approval_rules_overwritten:
@@ -62413,9 +62445,9 @@ definitions:
       rules:
         type: array
         items:
-          "$ref": "#/definitions/EE_API_Entities_MergeRequestApprovalStateRule"
-    description: EE_API_Entities_MergeRequestApprovalState model
-  EE_API_Entities_MergeRequestApprovalStateRule:
+          "$ref": "#/definitions/API_Entities_MergeRequestApprovalStateRule"
+    description: API_Entities_MergeRequestApprovalState model
+  API_Entities_MergeRequestApprovalStateRule:
     type: object
     properties:
       id:
@@ -62452,7 +62484,7 @@ definitions:
         type: string
         example: Backend
       source_rule:
-        "$ref": "#/definitions/EE_API_Entities_MergeRequestApprovalRule_SourceRule"
+        "$ref": "#/definitions/API_Entities_MergeRequestApprovalRule_SourceRule"
       overridden:
         type: boolean
       code_owner:
@@ -62463,7 +62495,7 @@ definitions:
           "$ref": "#/definitions/API_Entities_UserBasic"
       approved:
         type: boolean
-  EE_API_Entities_MergeRequestApprovalRule_SourceRule:
+  API_Entities_MergeRequestApprovalRule_SourceRule:
     type: object
     properties:
       approvals_required:
@@ -62483,7 +62515,7 @@ definitions:
     - approvals_required
     description: 'Deprecated in 16.0: Use the merge request approvals API instead.
       Change approval-related configuration'
-  EE_API_Entities_ApprovalState:
+  API_Entities_ApprovalState:
     type: object
     properties:
       id:
@@ -62549,7 +62581,7 @@ definitions:
       approval_rules_left:
         type: array
         items:
-          "$ref": "#/definitions/EE_API_Entities_ApprovalRuleShort"
+          "$ref": "#/definitions/API_Entities_ApprovalRuleShort"
       has_approval_rules:
         type: boolean
       merge_request_approvers_available:
@@ -62559,9 +62591,9 @@ definitions:
       invalid_approvers_rules:
         type: array
         items:
-          "$ref": "#/definitions/EE_API_Entities_ApprovalRuleShort"
-    description: EE_API_Entities_ApprovalState model
-  EE_API_Entities_ApprovalRuleShort:
+          "$ref": "#/definitions/API_Entities_ApprovalRuleShort"
+    description: API_Entities_ApprovalState model
+  API_Entities_ApprovalRuleShort:
     type: object
     properties:
       id:
@@ -69376,7 +69408,7 @@ definitions:
         required:
         - geo_node_id
     description: Posts the current node status to the primary site
-  EE_API_Entities_GeoNodeStatus:
+  API_Entities_GeoNodeStatus:
     type: object
     properties:
       geo_node_id:
@@ -69882,7 +69914,7 @@ definitions:
             type: string
           node:
             type: string
-    description: EE_API_Entities_GeoNodeStatus model
+    description: API_Entities_GeoNodeStatus model
   StorageShardEntity:
     type: object
     properties:
@@ -70002,6 +70034,15 @@ definitions:
     description: |-
       Responsible for making HTTP POST /repo.git/info/refs?service=git-receive-pack
                         request from secondary gitlab-shell to primary
+  postApiV4Glql:
+    type: object
+    properties:
+      glql_yaml:
+        type: string
+        description: The full GLQL code block containing YAML configuration and query
+    required:
+    - glql_yaml
+    description: Execute GLQL query
   postApiV4IntegrationsSlackEvents:
     type: object
     properties:

@@ -64,7 +64,6 @@ Database/JsonbSizeLimit:
     - 'ee/app/models/sbom/occurrence.rb'
     - 'ee/app/models/sbom/source.rb'
     - 'ee/app/models/search/elastic/reindexing_task.rb'
-    - 'ee/app/models/search/zoekt/enabled_namespace.rb'
     - 'ee/app/models/search/zoekt/index.rb'
     - 'ee/app/models/search/zoekt/node.rb'
     - 'ee/app/models/security/approval_policy_rule.rb'

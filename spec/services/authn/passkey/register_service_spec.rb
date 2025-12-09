@@ -26,32 +26,27 @@ RSpec.describe Authn::Passkey::RegisterService, feature_category: :system_access
   let(:device_name) { 'My WebAuthn Authenticator (Passkey)' }
   let(:params) { { device_response: device_response, name: device_name } }
 
-  # Main service
-  subject(:register_service) { described_class.new(user, params, challenge).execute }
-
   describe '#execute' do
-    shared_examples 'returns registration failure' do
+    subject(:execute) { described_class.new(user, params, challenge).execute }
+
+    shared_examples 'registration failure' do
+      it 'does not send notification email' do
+        allow(NotificationService).to receive(:new)
+        expect(NotificationService).not_to receive(:new)
+
+        execute
+      end
+
       it 'returns a Service.error' do
-        expect(register_service).to be_a(ServiceResponse)
-        expect(register_service).to be_error
-        expect(register_service.message).to be_present
+        expect(execute).to be_a(ServiceResponse)
+        expect(execute).to be_error
+        expect(execute.message).to be_present
       end
     end
 
-    shared_examples 'returns registration success' do
-      it 'returns a Service.success' do
-        expect(register_service).to be_a(ServiceResponse)
-        expect(register_service).to be_success
-      end
-    end
-
-    context 'with valid registrations' do
-      let(:webauthn_credential) { WebAuthn::Credential.from_create(Gitlab::Json.safe_parse(params[:device_response])) }
-
-      it_behaves_like 'returns registration success'
-
+    shared_examples 'registration success' do
       it 'updates the required webauthn_registration columns' do
-        registration = register_service.payload
+        registration = execute.payload
 
         expect(registration.credential_xid).to eq(Base64.strict_encode64(webauthn_credential.raw_id))
         expect(registration.public_key).to eq(webauthn_credential.public_key)
@@ -62,6 +57,27 @@ RSpec.describe Authn::Passkey::RegisterService, feature_category: :system_access
         expect(registration.passkey_eligible).to be_truthy
         expect(registration.last_used_at).to be_present
       end
+
+      it 'sends the user notification email' do
+        expect_next_instance_of(NotificationService) do |notification|
+          expect(notification).to receive(:enabled_two_factor).with(
+            user, :passkey, { device_name: device_name }
+          )
+        end
+
+        execute
+      end
+
+      it 'returns a Service.success' do
+        expect(execute).to be_a(ServiceResponse)
+        expect(execute).to be_success
+      end
+    end
+
+    context 'with valid registrations' do
+      let(:webauthn_credential) { WebAuthn::Credential.from_create(Gitlab::Json.safe_parse(params[:device_response])) }
+
+      it_behaves_like 'registration success'
     end
 
     context 'with invalid registrations' do
@@ -76,13 +92,13 @@ RSpec.describe Authn::Passkey::RegisterService, feature_category: :system_access
           )
         end
 
-        it_behaves_like 'returns registration failure'
+        it_behaves_like 'registration failure'
       end
 
       context 'with an invalid JSON response' do
         let(:device_response) { 'bad response' }
 
-        it_behaves_like 'returns registration failure'
+        it_behaves_like 'registration failure'
       end
 
       context 'with a tampered origin (origin spoofing)' do
@@ -95,13 +111,13 @@ RSpec.describe Authn::Passkey::RegisterService, feature_category: :system_access
           )
         end
 
-        it_behaves_like 'returns registration failure'
+        it_behaves_like 'registration failure'
       end
 
       context 'with an invalid device name' do
         let(:device_name) { nil }
 
-        it_behaves_like 'returns registration failure'
+        it_behaves_like 'registration failure'
       end
     end
   end

@@ -231,6 +231,18 @@ RSpec.describe Gitlab::GithubImport::Importer::DiffNoteImporter, :aggregate_fail
             end
           end
 
+          context 'when direct reassignment is supported' do
+            before do
+              allow(Import::DirectReassignService).to receive(:supported?).and_return(true)
+            end
+
+            it 'does not push any placeholder references' do
+              subject.execute
+
+              expect(cached_references).to be_empty
+            end
+          end
+
           context 'when importing into a personal namespace' do
             let_it_be(:user_namespace) { create(:namespace) }
 
@@ -260,6 +272,18 @@ RSpec.describe Gitlab::GithubImport::Importer::DiffNoteImporter, :aggregate_fail
             expect(note_representation).to receive(:line_code).and_return(nil)
 
             expect { subject.execute }.to raise_error(ActiveRecord::RecordInvalid)
+          end
+        end
+
+        context 'when direct reassignment is supported' do
+          before do
+            allow(Import::DirectReassignService).to receive(:supported?).and_return(true)
+          end
+
+          it 'does not push any placeholder references' do
+            subject.execute
+
+            expect(cached_references).to be_empty
           end
         end
 

@@ -11,7 +11,11 @@ module Resolvers
     def resolve(name:)
       return false unless current_user.present?
 
-      Feature.enabled?(name.to_sym, current_user)
+      key = name.to_sym
+
+      return false unless Feature::Definition.has_definition?(key)
+
+      Feature.enabled?(key, current_user)
     end
   end
 end

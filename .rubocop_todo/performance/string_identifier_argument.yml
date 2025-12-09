@@ -57,7 +57,6 @@ Performance/StringIdentifierArgument:
     - 'ee/spec/lib/gitlab/insights/reducers/count_per_period_reducer_spec.rb'
     - 'ee/spec/models/ee/namespace_spec.rb'
     - 'ee/spec/models/ee/project_spec.rb'
-    - 'ee/spec/models/gitlab_subscription_spec.rb'
     - 'ee/spec/models/namespace_setting_spec.rb'
     - 'ee/spec/models/project_import_data_spec.rb'
     - 'ee/spec/policies/audit_events/group/namespace_filter_policy_spec.rb'

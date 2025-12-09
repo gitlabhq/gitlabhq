@@ -16,7 +16,8 @@ RSpec.describe BulkImports::NdjsonPipeline, feature_category: :importers do
       import_type: ::Import::SOURCE_DIRECT_TRANSFER,
       namespace: group,
       source_user_identifier: 101,
-      source_hostname: bulk_import.configuration.url
+      source_hostname: bulk_import.configuration.url,
+      placeholder_user: create(:user, :import_user)
     )
   end
 
@@ -25,7 +26,8 @@ RSpec.describe BulkImports::NdjsonPipeline, feature_category: :importers do
       import_type: ::Import::SOURCE_DIRECT_TRANSFER,
       namespace: group,
       source_user_identifier: 102,
-      source_hostname: bulk_import.configuration.url
+      source_hostname: bulk_import.configuration.url,
+      placeholder_user: create(:user, :import_user)
     )
   end
 
@@ -35,6 +37,16 @@ RSpec.describe BulkImports::NdjsonPipeline, feature_category: :importers do
       namespace: group,
       source_user_identifier: 103,
       source_hostname: bulk_import.configuration.url
+    )
+  end
+
+  let_it_be(:source_user_placeholder_user) do
+    create(:import_source_user,
+      import_type: ::Import::SOURCE_DIRECT_TRANSFER,
+      namespace: group,
+      source_user_identifier: 120,
+      source_hostname: bulk_import.configuration.url,
+      placeholder_user: create(:user, :placeholder)
     )
   end
 
@@ -162,7 +174,7 @@ RSpec.describe BulkImports::NdjsonPipeline, feature_category: :importers do
       it 'creates for each user reference in relation hash an Import::SourceUser object if they do not exist' do
         expect { subject.deep_transform_relation!(relation_hash, 'test', relation_definition) { |a, _b| a } }
           .to change { Import::SourceUser.count }.by(5).and change { User.count }.by(5)
-        expect(Import::SourceUser.pluck(:source_user_identifier)).to match_array(%w[101 102 103 104 105 106 107 108])
+        expect(Import::SourceUser.pluck(:source_user_identifier)).to match_array(%w[101 102 103 104 105 106 107 108 120])
       end
 
       context 'when relation hash includes attributes that placeholder user creation should be ignored' do
@@ -176,7 +188,7 @@ RSpec.describe BulkImports::NdjsonPipeline, feature_category: :importers do
         it 'does not create a source user for the ignored user references' do
           subject.deep_transform_relation!(relation_hash, 'test', relation_definition) { |a, _b| a }
 
-          expect(Import::SourceUser.pluck(:source_user_identifier)).to match_array(%w[101 102 103 104 105 106])
+          expect(Import::SourceUser.pluck(:source_user_identifier)).to match_array(%w[101 102 103 104 105 106 120])
         end
       end
 
@@ -425,6 +437,8 @@ RSpec.describe BulkImports::NdjsonPipeline, feature_category: :importers do
       end
 
       it 'pushes a placeholder reference for the persisted objects' do
+        expect(Import::DirectReassignService).to receive(:supported?).at_least(:once).and_call_original
+
         merge_request = build(:merge_request,
           source_project: project,
           target_project: project,
@@ -514,6 +528,46 @@ RSpec.describe BulkImports::NdjsonPipeline, feature_category: :importers do
           }
 
           expect(::Import::PlaceholderReferences::PushService).not_to receive(:from_record)
+
+          subject.load(nil, [merge_request, original_users_map])
+        end
+      end
+
+      context 'when source user is mapped to a placeholder user' do
+        it 'pushes placeholder references when direct reassignment is not supported' do
+          merge_request = build(:merge_request,
+            source_project: project,
+            target_project: project,
+            author: source_user_placeholder_user.mapped_user,
+            updated_by: source_user_placeholder_user.mapped_user
+          )
+
+          note = build(:note,
+            project: project,
+            author: source_user_placeholder_user.mapped_user,
+            updated_by: source_user_placeholder_user.mapped_user
+          )
+
+          original_users_map = {}.compare_by_identity
+          original_users_map[merge_request] = {
+            'author_id' => source_user_placeholder_user.source_user_identifier,
+            'updated_by_id' => source_user_placeholder_user.source_user_identifier
+          }
+          original_users_map[note] = {
+            'author_id' => source_user_placeholder_user.source_user_identifier,
+            'updated_by_id' => source_user_placeholder_user.source_user_identifier
+          }
+
+          merge_request.notes << note
+
+          # Note#updated_by_id does not support direct reassignment
+          expect(Import::PlaceholderReferences::PushService).to receive(:from_record).with(
+            import_source: ::Import::SOURCE_DIRECT_TRANSFER,
+            import_uid: context.bulk_import_id,
+            record: note,
+            user_reference_column: :updated_by_id,
+            source_user: source_user_placeholder_user
+          ).and_call_original
 
           subject.load(nil, [merge_request, original_users_map])
         end

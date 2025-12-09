@@ -11,6 +11,7 @@ module Gitlab
           @tags = []
           @request_body = {}
           @parameters = []
+          @deprecated = false
         end
 
         def to_h
@@ -24,7 +25,7 @@ module Gitlab
             responses: responses
           }.compact
 
-          o[:deprecated] = true if deprecated
+          o[:deprecated] = deprecated if deprecated
           o[:parameters] = parameters.map(&:to_h) if parameters.any?
           o[:requestBody] = request_body if request_body.keys.any?
 

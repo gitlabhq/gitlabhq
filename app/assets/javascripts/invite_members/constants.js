@@ -24,6 +24,7 @@ export const INVITE_MEMBER_MODAL_TRACKING_CATEGORY = 'invite_members_modal';
 export const IMPORT_PROJECT_MEMBERS_MODAL_TRACKING_CATEGORY = 'invite_project_members_modal';
 export const IMPORT_PROJECT_MEMBERS_MODAL_TRACKING_LABEL = 'project-members-page';
 export const MEMBERS_MODAL_DEFAULT_TITLE = s__('InviteMembersModal|Invite members');
+export const MEMBERS_MODAL_ROLE_SELECT_LABEL = s__('InviteMembersModal|Select a role');
 export const MEMBERS_MODAL_CELEBRATE_TITLE = s__(
   'InviteMembersModal|GitLab is better with colleagues!',
 );
@@ -46,6 +47,7 @@ export const MEMBERS_PLACEHOLDER = s__(
 );
 
 export const GROUP_MODAL_DEFAULT_TITLE = s__('InviteMembersModal|Invite a group');
+export const GROUP_MODAL_ROLE_SELECT_LABEL = s__('InviteMembersModal|Select maximum role');
 export const GROUP_MODAL_TO_GROUP_DEFAULT_INTRO_TEXT = s__(
   "InviteMembersModal|You're inviting a group to the %{strongStart}%{name}%{strongEnd} group.",
 );
@@ -75,7 +77,6 @@ export const GROUP_MODAL_TO_PROJECT_ALERT_LINK = helpPagePath(
 export const GROUP_SEARCH_FIELD = s__('InviteMembersModal|Select a group to invite');
 export const GROUP_PLACEHOLDER = s__('InviteMembersModal|Search for a group to invite');
 
-export const ACCESS_LEVEL = s__('InviteMembersModal|Select maximum role');
 export const ACCESS_EXPIRE_DATE = s__('InviteMembersModal|Access expiration date (optional)');
 export const MEMBER_INVITE_MESSAGE_SUCCESSFUL = s__(
   'InviteMembersModal|Members were successfully added.',
@@ -134,6 +135,7 @@ export const MEMBER_MODAL_LABELS = {
   collapsedErrors: COLLAPSED_ERRORS,
   expandedErrors: EXPANDED_ERRORS,
   emptyInvitesAlertText: EMPTY_INVITES_ALERT_TEXT,
+  roleSelectLabel: MEMBERS_MODAL_ROLE_SELECT_LABEL,
 };
 
 export const GROUP_MODAL_LABELS = {
@@ -151,6 +153,7 @@ export const GROUP_MODAL_LABELS = {
   searchField: GROUP_SEARCH_FIELD,
   placeHolder: GROUP_PLACEHOLDER,
   toastMessageSuccessful: GROUP_INVITE_MESSAGE_SUCCESSFUL,
+  roleSelectLabel: GROUP_MODAL_ROLE_SELECT_LABEL,
 };
 
 export const ON_SHOW_TRACK_LABEL = 'over_limit_modal_viewed';

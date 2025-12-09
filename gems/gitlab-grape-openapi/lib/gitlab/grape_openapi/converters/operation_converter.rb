@@ -95,7 +95,7 @@ module Gitlab
         end
 
         def extract_deprecated
-          options.dig(:settings, :description, :deprecated)
+          !!options.dig(:settings, :description, :deprecated)
         end
 
         def path_segments

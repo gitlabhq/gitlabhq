@@ -1,6 +1,7 @@
 ---
 # Cop supports --autocorrect.
 Layout/LineLength:
+  Details: grace period
   Exclude:
     - 'app/controllers/application_controller.rb'
     - 'app/controllers/groups/milestones_controller.rb'
@@ -720,6 +721,10 @@ Layout/LineLength:
     - 'ee/lib/analytics/productivity_analytics_request_params.rb'
     - 'ee/lib/api/audit_events.rb'
     - 'ee/lib/api/dependencies.rb'
+    - 'ee/lib/api/entities/dependency.rb'
+    - 'ee/lib/api/entities/epic.rb'
+    - 'ee/lib/api/entities/merge_request_approval_settings.rb'
+    - 'ee/lib/api/entities/project_approval_rule.rb'
     - 'ee/lib/api/epic_issues.rb'
     - 'ee/lib/api/epic_links.rb'
     - 'ee/lib/api/group_hooks.rb'
@@ -739,12 +744,9 @@ Layout/LineLength:
     - 'ee/lib/api/vulnerability_issue_links.rb'
     - 'ee/lib/ee/api/deployments.rb'
     - 'ee/lib/ee/api/entities/application_setting.rb'
-    - 'ee/lib/ee/api/entities/dependency.rb'
-    - 'ee/lib/ee/api/entities/epic.rb'
     - 'ee/lib/ee/api/entities/member.rb'
     - 'ee/lib/ee/api/entities/namespace.rb'
     - 'ee/lib/ee/api/entities/project.rb'
-    - 'ee/lib/ee/api/entities/project_approval_rule.rb'
     - 'ee/lib/ee/api/geo.rb'
     - 'ee/lib/ee/api/helpers/groups_helpers.rb'
     - 'ee/lib/ee/api/helpers/issues_helpers.rb'
@@ -1067,6 +1069,7 @@ Layout/LineLength:
     - 'ee/spec/lib/analytics/merge_request_metrics_calculator_spec.rb'
     - 'ee/spec/lib/analytics/merge_request_metrics_refresh_spec.rb'
     - 'ee/spec/lib/analytics/productivity_analytics_request_params_spec.rb'
+    - 'ee/spec/lib/api/entities/vulnerability_export_spec.rb'
     - 'ee/spec/lib/audit/details_spec.rb'
     - 'ee/spec/lib/banzai/filter/jira_private_image_link_filter_spec.rb'
     - 'ee/spec/lib/banzai/filter/references/iterations_cadence_reference_filter_spec.rb'
@@ -1077,7 +1080,6 @@ Layout/LineLength:
     - 'ee/spec/lib/compliance_management/merge_request_approval_settings/resolver_spec.rb'
     - 'ee/spec/lib/container_registry/client_spec.rb'
     - 'ee/spec/lib/ee/api/entities/deployment_extended_spec.rb'
-    - 'ee/spec/lib/ee/api/entities/vulnerability_export_spec.rb'
     - 'ee/spec/lib/ee/api/helpers_spec.rb'
     - 'ee/spec/lib/ee/banzai/filter/references/epic_reference_filter_spec.rb'
     - 'ee/spec/lib/ee/banzai/filter/references/label_reference_filter_spec.rb'
@@ -1275,7 +1277,6 @@ Layout/LineLength:
     - 'ee/spec/models/geo/package_file_registry_spec.rb'
     - 'ee/spec/models/geo/secondary_usage_data_spec.rb'
     - 'ee/spec/models/geo_node_spec.rb'
-    - 'ee/spec/models/gitlab_subscription_spec.rb'
     - 'ee/spec/models/gitlab_subscriptions/features_spec.rb'
     - 'ee/spec/models/historical_data_spec.rb'
     - 'ee/spec/models/incident_management/escalation_policy_spec.rb'

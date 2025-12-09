@@ -43,7 +43,6 @@ RSpec/ContainExactly:
     - 'ee/spec/models/ee/group_spec.rb'
     - 'ee/spec/models/ee/members/members_with_parents_spec.rb'
     - 'ee/spec/models/geo/event_log_spec.rb'
-    - 'ee/spec/models/gitlab_subscription_spec.rb'
     - 'ee/spec/models/gitlab_subscriptions/features_spec.rb'
     - 'ee/spec/models/iteration_spec.rb'
     - 'ee/spec/models/merge_trains/train_spec.rb'

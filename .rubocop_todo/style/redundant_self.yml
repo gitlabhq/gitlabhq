@@ -1,6 +1,7 @@
 ---
 # Cop supports --autocorrect.
 Style/RedundantSelf:
+  Details: grace period
   Exclude:
     - 'app/models/ci/group.rb'
     - 'app/models/ci/job_artifact.rb'
@@ -143,7 +144,6 @@ Style/RedundantSelf:
     - 'ee/app/models/concerns/approval_rule_like.rb'
     - 'ee/app/models/concerns/custom_model_naming.rb'
     - 'ee/app/models/concerns/ee/issuable_link.rb'
-    - 'ee/app/models/concerns/ee/participable.rb'
     - 'ee/app/models/concerns/elastic/application_versioned_search.rb'
     - 'ee/app/models/concerns/elasticsearch_indexed_container.rb'
     - 'ee/app/models/ee/audit_event.rb'

@@ -279,6 +279,7 @@ module API
         mount ::API::GroupPackages
         mount ::API::GroupPlaceholderReassignments
         mount ::API::GroupVariables
+        mount ::API::Glql
         mount ::API::HelmPackages
         mount ::API::ImportBitbucket
         mount ::API::ImportBitbucketServer

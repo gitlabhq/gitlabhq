@@ -1,5 +1,4 @@
 ---
 API/DescriptionSummary:
-  Details: grace period
   Exclude:
     - 'lib/api/members.rb'

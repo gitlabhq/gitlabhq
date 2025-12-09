@@ -1,7 +1,6 @@
 ---
 # Cop supports --autocorrect.
 API/DescriptionTags:
-  Details: grace period
   Exclude:
     - 'ee/lib/api/admin/ai/active_context.rb'
     - 'ee/lib/api/admin/search/migrations.rb'

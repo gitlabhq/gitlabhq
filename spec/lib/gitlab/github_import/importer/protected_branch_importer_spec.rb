@@ -279,6 +279,8 @@ RSpec.describe Gitlab::GithubImport::Importer::ProtectedBranchImporter, feature_
           it_behaves_like 'create branch protection by the strictest ruleset'
 
           it 'pushes placeholder references' do
+            allow(Import::DirectReassignService).to receive(:supported?).and_return(false)
+
             importer.execute
 
             imported_push_access_level = project.protected_branches.first.push_access_levels.first
@@ -291,6 +293,18 @@ RSpec.describe Gitlab::GithubImport::Importer::ProtectedBranchImporter, feature_
             expect(user_references).to match_array([
               ['ProtectedBranch::PushAccessLevel', imported_push_access_level.id, 'user_id', source_user.id]
             ])
+          end
+
+          context 'when direct reassignment is supported' do
+            before do
+              allow(Import::DirectReassignService).to receive(:supported?).and_return(true)
+            end
+
+            it 'does not push any placeholder references' do
+              importer.execute
+
+              expect(user_references).to be_empty
+            end
           end
 
           context 'when importing into a personal namespace' do

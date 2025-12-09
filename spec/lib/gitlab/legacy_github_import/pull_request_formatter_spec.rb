@@ -24,7 +24,8 @@ RSpec.describe Gitlab::LegacyGithubImport::PullRequestFormatter, :clean_gitlab_r
       source_user_identifier: octocat[:id],
       namespace: project.root_ancestor,
       source_hostname: 'https://gitea.com',
-      import_type: ::Import::SOURCE_GITEA
+      import_type: ::Import::SOURCE_GITEA,
+      placeholder_user: create(:user, :import_user)
     )
   end
 
@@ -565,6 +566,17 @@ RSpec.describe Gitlab::LegacyGithubImport::PullRequestFormatter, :clean_gitlab_r
 
     context 'when the pull_request references deleted users in Gitea' do
       let(:raw_data) { base_data.merge(user: ghost_user, assignee: ghost_user) }
+
+      it 'does not push any placeholder references' do
+        pull_request.create!
+        expect(cached_references).to be_empty
+      end
+    end
+
+    context 'when direct reassignment is supported' do
+      before do
+        allow(Import::DirectReassignService).to receive(:supported?).and_return(true)
+      end
 
       it 'does not push any placeholder references' do
         pull_request.create!

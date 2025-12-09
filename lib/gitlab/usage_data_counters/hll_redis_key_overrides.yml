@@ -336,3 +336,4 @@
 'view_merge_request_widget-filter:[label:terraform]-user': i_code_review_merge_request_widget_terraform_view
 'view_merge_request_widget-filter:[label:test_summary]-user': i_code_review_merge_request_widget_test_summary_view
 'visit_compliance_credential_inventory-user': i_compliance_credential_inventory
+'i_quickactions_approve-user': i_quickactions_approve

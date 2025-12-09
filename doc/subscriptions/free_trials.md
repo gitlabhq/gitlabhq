@@ -49,7 +49,7 @@ Prerequisites:
 
 To start a trial:
 
-1. In the left sidebar, select **Search or go to** and find your group. If you've [turned on the new navigation](../user/interface_redesign.md), this field is on the top bar.
+1. On the top bar, select **Search or go to** and find your group.
 1. Select **Settings** > **Billing**.
 1. Select **Start free trial**.
 1. Complete the fields.
@@ -80,7 +80,7 @@ To start a trial on GitLab Self-Managed:
 To activate your trial, you must manually apply the license file you received by email to your GitLab instance.
 
 1. Sign in to GitLab as an administrator.
-1. In the left sidebar, at the bottom, select **Admin**. If you've [turned on the new navigation](../user/interface_redesign.md), this button is in the upper-right corner.
+1. In the upper-right corner, select **Admin**.
 1. Select **Settings** > **General**.
 1. In the **Add License** area, add a license by either uploading the file or entering the key.
 1. Select the **Terms of Service** checkbox.
@@ -92,6 +92,6 @@ The trial automatically synchronizes to your instance in 24 hours.
 
 You can keep track of your remaining trial period time to help you plan for a subscription upgrade.
 
-1. In the left sidebar, select **Search or go to** and find your group. If you've [turned on the new navigation](../user/interface_redesign.md), this field is on the top bar.
+1. On the top bar, select **Search or go to** and find your group.
 1. In the left sidebar, at the bottom, a widget displays your trial type and the remaining days in your trial.
 1. On GitLab Self-Managed, to access information about features available when you upgrade, select **Learn more**.

@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Integrations::Glql::LoggingService, feature_category: :integrations do
+RSpec.describe Analytics::Glql::LoggingService, feature_category: :custom_dashboards_foundation do
   let_it_be(:user) { create(:user) }
 
   let(:glql_query) { 'type = issue and state = opened' }
@@ -64,6 +64,8 @@ RSpec.describe Integrations::Glql::LoggingService, feature_category: :integratio
             message: 'GLQL GraphQL query timeout',
             glql_query: glql_query,
             generated_graphql: generated_graphql,
+            fields: fields,
+            context: context,
             complexity_score: 150,
             user_id: user.id
           )
@@ -91,6 +93,8 @@ RSpec.describe Integrations::Glql::LoggingService, feature_category: :integratio
             message: 'GLQL high complexity query detected - Duo optimization needed',
             glql_query: glql_query,
             generated_graphql: generated_graphql,
+            fields: fields,
+            context: context,
             complexity_score: 150,
             duration_s: 2.0,
             user_id: user.id,
@@ -144,6 +148,8 @@ RSpec.describe Integrations::Glql::LoggingService, feature_category: :integratio
             message: 'GLQL slow query detected - Duo optimization needed',
             glql_query: glql_query,
             generated_graphql: generated_graphql,
+            fields: fields,
+            context: context,
             complexity_score: 50,
             duration_s: 6.5,
             user_id: user.id

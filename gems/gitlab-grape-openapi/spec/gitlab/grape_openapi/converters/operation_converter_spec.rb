@@ -436,10 +436,6 @@ RSpec.describe Gitlab::GrapeOpenapi::Converters::OperationConverter do
       it 'does not set deprecated' do
         expect(operation.deprecated).to be_falsey
       end
-
-      it 'does not include deprecated key in output' do
-        expect(operation.to_h).not_to have_key(:deprecated)
-      end
     end
   end
 end

@@ -45,6 +45,7 @@ module QuickActions
       @quick_action_target = quick_action_target
       @updates = {}
       @execution_message = {}
+      @additional_properties = {}
 
       content, commands = extractor.extract_commands(content, only: only)
       extract_updates(commands)
@@ -245,7 +246,8 @@ module QuickActions
         quick_action_name.to_s,
         args: arg&.strip,
         user: current_user,
-        project: project
+        project: project,
+        additional_properties: @additional_properties[quick_action_name]
       )
     end
 

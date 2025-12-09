@@ -751,3 +751,5 @@ gem "i18n_data", "~> 0.13.1", feature_category: :system_access
 gem "gitlab-cloud-connector", "~> 1.35", require: 'gitlab/cloud_connector', feature_category: :plan_provisioning
 
 gem "gvltools", "~> 0.4.0", feature_category: :shared # rubocop:todo Gemfile/MissingFeatureCategory -- https://gitlab.com/gitlab-org/gitlab/-/issues/581839
+
+gem 'gitlab_query_language', '~> 0.20.11', feature_category: :integrations

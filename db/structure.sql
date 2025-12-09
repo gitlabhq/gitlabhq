@@ -22351,6 +22351,25 @@ CREATE TABLE organization_details (
     CONSTRAINT check_9fbd483b51 CHECK ((char_length(avatar) <= 255))
 );
 
+CREATE TABLE organization_foundational_agent_statuses (
+    id bigint NOT NULL,
+    organization_id bigint NOT NULL,
+    reference text NOT NULL,
+    enabled boolean NOT NULL,
+    created_at timestamp with time zone NOT NULL,
+    updated_at timestamp with time zone NOT NULL,
+    CONSTRAINT check_81fef9b9a6 CHECK ((char_length(reference) <= 255))
+);
+
+CREATE SEQUENCE organization_foundational_agent_statuses_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+ALTER SEQUENCE organization_foundational_agent_statuses_id_seq OWNED BY organization_foundational_agent_statuses.id;
+
 CREATE TABLE organization_isolations (
     id bigint NOT NULL,
     organization_id bigint NOT NULL,
@@ -32746,6 +32765,8 @@ ALTER TABLE ONLY operations_user_lists ALTER COLUMN id SET DEFAULT nextval('oper
 
 ALTER TABLE ONLY organization_cluster_agent_mappings ALTER COLUMN id SET DEFAULT nextval('organization_cluster_agent_mappings_id_seq'::regclass);
 
+ALTER TABLE ONLY organization_foundational_agent_statuses ALTER COLUMN id SET DEFAULT nextval('organization_foundational_agent_statuses_id_seq'::regclass);
+
 ALTER TABLE ONLY organization_isolations ALTER COLUMN id SET DEFAULT nextval('organization_isolations_id_seq'::regclass);
 
 ALTER TABLE ONLY organization_push_rules ALTER COLUMN id SET DEFAULT nextval('organization_push_rules_id_seq'::regclass);
@@ -36178,6 +36199,9 @@ ALTER TABLE ONLY organization_detail_uploads
 
 ALTER TABLE ONLY organization_details
     ADD CONSTRAINT organization_details_pkey PRIMARY KEY (organization_id);
+
+ALTER TABLE ONLY organization_foundational_agent_statuses
+    ADD CONSTRAINT organization_foundational_agent_statuses_pkey PRIMARY KEY (id);
 
 ALTER TABLE ONLY organization_isolations
     ADD CONSTRAINT organization_isolations_pkey PRIMARY KEY (id);
@@ -43047,6 +43071,8 @@ CREATE INDEX index_observability_metrics_issues_connections_on_namespace_id ON o
 CREATE INDEX index_observability_metrics_issues_connections_on_project_id ON observability_metrics_issues_connections USING btree (project_id);
 
 CREATE INDEX index_observability_traces_issues_connections_on_project_id ON observability_traces_issues_connections USING btree (project_id);
+
+CREATE UNIQUE INDEX index_ofas_organization_id_on_reference ON organization_foundational_agent_statuses USING btree (organization_id, reference);
 
 CREATE UNIQUE INDEX index_on_deploy_keys_id_and_type_and_public ON keys USING btree (id, type) WHERE (public = true);
 
@@ -54093,6 +54119,9 @@ ALTER TABLE ONLY vulnerability_finding_links
 
 ALTER TABLE ONLY namespace_details
     ADD CONSTRAINT fk_rails_cc11a451f8 FOREIGN KEY (namespace_id) REFERENCES namespaces(id) ON DELETE CASCADE;
+
+ALTER TABLE ONLY organization_foundational_agent_statuses
+    ADD CONSTRAINT fk_rails_cc4ca0090e FOREIGN KEY (organization_id) REFERENCES organizations(id) ON DELETE CASCADE;
 
 ALTER TABLE ONLY operations_strategies_user_lists
     ADD CONSTRAINT fk_rails_ccb7e4bc0b FOREIGN KEY (user_list_id) REFERENCES operations_user_lists(id) ON DELETE CASCADE;

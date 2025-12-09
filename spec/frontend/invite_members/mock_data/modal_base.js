@@ -9,6 +9,7 @@ export const propsData = {
   labelIntroText: '_label_intro_text_',
   labelSearchField: '_label_search_field_',
   formGroupDescription: '_form_group_description_',
+  roleSelectLabel: 'Select maximum role',
 };
 
 export const membersPath = '/members_path';

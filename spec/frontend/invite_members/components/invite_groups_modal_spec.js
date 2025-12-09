@@ -13,6 +13,7 @@ import {
   reloadOnGroupInvitationSuccess,
 } from '~/invite_members/utils/trigger_successful_invite_alert';
 import {
+  GROUP_MODAL_ROLE_SELECT_LABEL,
   GROUP_MODAL_TO_GROUP_ALERT_BODY,
   GROUP_MODAL_TO_GROUP_ALERT_LINK,
   GROUP_MODAL_TO_PROJECT_ALERT_BODY,
@@ -85,6 +86,12 @@ describe('InviteGroupsModal', () => {
       expect(findBase().props('accessLevels')).toMatchObject({
         validRoles: propsData.accessLevels,
       });
+    });
+
+    it('sets the group role select label', () => {
+      createInviteGroupToProjectWrapper();
+
+      expect(findBase().props('roleSelectLabel')).toBe(GROUP_MODAL_ROLE_SELECT_LABEL);
     });
 
     describe('when inviting a group to a project', () => {

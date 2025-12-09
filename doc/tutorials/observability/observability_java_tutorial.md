@@ -26,7 +26,7 @@ To follow along this tutorial, you must have:
 
 First, create a GitLab project and a corresponding access token.
 
-1. On the left sidebar, at the top, select **Create new** ({{< icon name="plus" >}}) and **New project/repository**. If you've [turned on the new navigation](../../user/interface_redesign.md), this button is in the upper-right corner.
+1. In the upper-right corner, select **Create new** ({{< icon name="plus" >}}) and **New project/repository**.
 1. Select **Create from template**.
 1. Select **Spring** and then **Use template**.
 1. Enter the project details.
@@ -118,5 +118,5 @@ The OpenTelemetry autoconfigure libraries read their configuration from environm
 
 To view the exported information from your test project:
 
-1. On the left sidebar, select **Search or go to** and find your project. If you've [turned on the new navigation](../../user/interface_redesign.md), this field is on the top bar.
+1. On the top bar, select **Search or go to** and find your project.
 1. Select **Monitor**, then either **Logs**, **Metrics**, or **Traces**.

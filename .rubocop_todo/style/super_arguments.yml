@@ -108,7 +108,6 @@ Style/SuperArguments:
     - 'ee/lib/ee/api/snippets.rb'
     - 'ee/lib/ee/banzai/filter/sanitization_filter.rb'
     - 'ee/lib/ee/gitlab/quick_actions/users_extractor.rb'
-    - 'ee/lib/elastic/latest/git_class_proxy.rb'
     - 'ee/lib/gitlab/ci/reports/license_scanning/license.rb'
     - 'ee/lib/gitlab/llm/chain/utils/chat_authorizer.rb'
     - 'ee/lib/google_cloud/artifact_registry/client.rb'

@@ -1,5 +1,6 @@
 ---
 RSpec/ContextWording:
+  Details: grace period
   Exclude:
     - 'ee/spec/controllers/admin/audit_logs_controller_spec.rb'
     - 'ee/spec/controllers/admin/dev_ops_report_controller_spec.rb'
@@ -244,13 +245,13 @@ RSpec/ContextWording:
     - 'ee/spec/helpers/web_hooks/web_hooks_helper_spec.rb'
     - 'ee/spec/initializers/1_settings_spec.rb'
     - 'ee/spec/initializers/session_store_spec.rb'
+    - 'ee/spec/lib/api/entities/geo_node_status_spec.rb'
     - 'ee/spec/lib/audit/details_spec.rb'
     - 'ee/spec/lib/banzai/filter/references/iteration_reference_filter_spec.rb'
     - 'ee/spec/lib/banzai/filter/references/vulnerability_reference_filters_spec.rb'
     - 'ee/spec/lib/banzai/reference_parser/iteration_parser_spec.rb'
     - 'ee/spec/lib/container_registry/client_spec.rb'
     - 'ee/spec/lib/ee/api/entities/analytics/group_activity_spec.rb'
-    - 'ee/spec/lib/ee/api/entities/geo_node_status_spec.rb'
     - 'ee/spec/lib/ee/api/entities/project_spec.rb'
     - 'ee/spec/lib/ee/api/entities/user_with_admin_spec.rb'
     - 'ee/spec/lib/ee/api/helpers/variables_helpers_spec.rb'
@@ -390,7 +391,6 @@ RSpec/ContextWording:
     - 'ee/spec/models/geo/container_repository_registry_spec.rb'
     - 'ee/spec/models/geo/secondary_usage_data_spec.rb'
     - 'ee/spec/models/geo_node_spec.rb'
-    - 'ee/spec/models/gitlab_subscription_spec.rb'
     - 'ee/spec/models/group_wiki_repository_spec.rb'
     - 'ee/spec/models/incident_management/escalation_rule_spec.rb'
     - 'ee/spec/models/incident_management/oncall_rotation_spec.rb'
@@ -1855,7 +1855,6 @@ RSpec/ContextWording:
     - 'spec/models/concerns/milestoneable_spec.rb'
     - 'spec/models/concerns/noteable_spec.rb'
     - 'spec/models/concerns/nullify_if_blank_spec.rb'
-    - 'spec/models/concerns/participable_spec.rb'
     - 'spec/models/concerns/reactive_caching_spec.rb'
     - 'spec/models/concerns/resolvable_note_spec.rb'
     - 'spec/models/concerns/triggerable_hooks_spec.rb'

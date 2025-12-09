@@ -83,6 +83,14 @@ RSpec.describe API::Terraform::Modules::V1::NamespacePackages, feature_category:
 
     it_behaves_like 'accessing a public/internal project with another project\'s job token'
     it_behaves_like 'allowing anyone to pull public terraform modules'
+
+    context 'with packages_projects_finder is disabled' do
+      before do
+        stub_feature_flags(packages_projects_finder: false)
+      end
+
+      it_behaves_like 'returns terraform module packages', :developer, :success, true
+    end
   end
 
   describe 'GET /api/v4/packages/terraform/modules/v1/:module_namespace/:module_name/:module_system/download' do

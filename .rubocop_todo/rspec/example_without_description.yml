@@ -39,7 +39,7 @@ RSpec/ExampleWithoutDescription:
     - 'ee/spec/helpers/ee/users/callouts_helper_spec.rb'
     - 'ee/spec/helpers/users_helper_spec.rb'
     - 'ee/spec/lib/api/entities/clusters/receptive_agent_spec.rb'
-    - 'ee/spec/lib/ee/api/entities/experiment_spec.rb'
+    - 'ee/spec/lib/api/entities/experiment_spec.rb'
     - 'ee/spec/lib/ee/gitlab/auth/ldap/access_levels_spec.rb'
     - 'ee/spec/lib/ee/gitlab/ci/project_config_spec.rb'
     - 'ee/spec/lib/ee/gitlab/ci/variables/builder/scan_execution_policies_spec.rb'

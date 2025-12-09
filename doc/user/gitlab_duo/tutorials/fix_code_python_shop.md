@@ -62,37 +62,16 @@ Depending on your subscription add-on, you can use Chat in the GitLab UI, the We
 
 #### Use Chat in the GitLab UI
 
-Instructions are provided for the new navigation and classic navigation.
-Select the tab for your navigation type, or [learn how to switch](../../interface_redesign.md).
-
-{{< tabs >}}
-
-{{< tab title="New navigation" >}}
-
 1. On the top bar, select **Search or go to** and find your project.
 1. On the GitLab Duo sidebar, select either **New GitLab Duo Chat** ({{< icon name="pencil-square" >}}) or **Current GitLab Duo Chat** ({{< icon name="duo-chat" >}}).
    A Chat conversation opens in the GitLab Duo sidebar on the right side of your screen.
 1. Enter your question in the chat text box and press <kbd>Enter</kbd> or select **Send**.
    It might take a few seconds for the interactive AI chat to produce an answer.
 
-{{< /tab >}}
-
-{{< tab title="Classic navigation" >}}
-
-1. On the left sidebar, select **Search or go to** and find your project.
-1. In the upper-right corner, select **Open GitLab Duo Chat** ({{< icon name="duo-chat" >}}).
-   A drawer opens on the right side of your screen.
-1. Enter your question in the chat text box and press <kbd>Enter</kbd> or select **Send**.
-   It might take a few seconds for the interactive AI chat to produce an answer.
-
-{{< /tab >}}
-
-{{< /tabs >}}
-
 #### Use Chat in the Web IDE
 
 1. Open the Web IDE:
-   1. In the GitLab UI, on the left sidebar, select **Search or go to** and find your project. If you've [turned on the new navigation](../../interface_redesign.md), this field is on the top bar.
+   1. In the GitLab UI, on the top bar, select **Search or go to** and find your project.
    1. Select a file. Then in the upper right, select **Edit** > **Open in Web IDE**.
 1. Open Chat by using one of these methods:
    - On the left sidebar, select **GitLab Duo Chat**.

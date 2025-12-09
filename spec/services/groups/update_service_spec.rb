@@ -364,6 +364,15 @@ RSpec.describe Groups::UpdateService, feature_category: :groups_and_projects do
 
         it_behaves_like 'not allowing a path update'
         it_behaves_like 'allowing an update', on: :name
+
+        context 'with packages_projects_finder is disabled' do
+          before do
+            stub_feature_flags(packages_projects_finder: false)
+          end
+
+          it_behaves_like 'not allowing a path update'
+          it_behaves_like 'allowing an update', on: :name
+        end
       end
 
       context 'updating the subgroup' do

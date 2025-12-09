@@ -54,11 +54,16 @@ module Groups
 
       # we have a path change on a root group:
       # check that we don't have any npm package with a scope set to the group path
-      npm_packages = ::Packages::GroupPackagesFinder
-                       .new(current_user, group, preload_pipelines: false,
-                         package_type: :npm)
-                       .execute
-                       .with_npm_scope(group.path)
+      npm_packages = if Feature.enabled?(:packages_projects_finder, group)
+                       projects = ::Packages::ProjectsFinder.new(current_user: current_user, group: group).execute
+                       ::Packages::PackagesFinder
+                         .new(projects, preload_pipelines: false, package_type: :npm)
+                         .execute
+                     else
+                       ::Packages::GroupPackagesFinder
+                         .new(current_user, group, preload_pipelines: false, package_type: :npm)
+                         .execute
+                     end.with_npm_scope(group.path)
 
       return true unless npm_packages.exists?
 
