@@ -15,11 +15,6 @@ const getSandboxFrameSrc = () => {
   const absoluteUrl = relativePathToAbsolute(path, getBaseURL());
   const displayOperationId = getParameterByName('displayOperationId');
   const params = { displayOperationId };
-
-  if (window.gon?.relative_url_root) {
-    params.relativeRootPath = window.gon.relative_url_root;
-  }
-
   return setUrlParams(params, absoluteUrl);
 };
 
@@ -47,6 +42,13 @@ export default async (el = document.getElementById('js-openapi-viewer')) => {
   wrapperEl.appendChild(sandboxEl);
 
   sandboxEl.addEventListener('load', () => {
-    if (spec) sandboxEl.contentWindow.postMessage(JSON.stringify(spec), '*');
+    // pass information via postMessage instead of query parameter to prevent the user from modifying query parameter
+    const message = {
+      type: 'swagger-init',
+      spec,
+      relativeRootPath: window.gon?.relative_url_root || null,
+    };
+
+    if (spec) sandboxEl.contentWindow.postMessage(JSON.stringify(message), '*');
   });
 };

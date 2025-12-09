@@ -57,6 +57,16 @@ required upgrade stops occur at versions:
   Rails.cache.delete_matched("pipeline:*:create_persistent_ref_service")
   ```
 
+## 18.6.2
+
+GitLab 18.6.2, 18.5.4, and 18.4.6 introduced size and rate limits on requests made to the following endpoints:
+
+- `POST /projects/:id/repository/commits` - [Create a commit with multiple files and actions](../../api/commits.md#create-a-commit-with-multiple-files-and-actions)
+- `POST /projects/:id/repository/files/:file_path` - [Create new file in repository](../../api/repository_files.md#create-new-file-in-repository)
+- `PUT /projects/:id/repository/files/:file_path` - [Update existing file in repository](../../api/repository_files.md#update-existing-file-in-repository)
+
+GitLab responds to requests that exceed the size limit with a `413 Entity Too large` status, and requests that exceed the rate limit with a `429 Too Many Requests` status. For more information, see [Commits and Files API limits](../../administration/instance_limits.md#commits-and-files-api-limits)
+
 ## 18.5.0
 
 - A [post deployment migration](../../development/database/post_deployment_migrations.md)
