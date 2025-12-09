@@ -38,7 +38,7 @@ GET /projects/:id/pipelines
 
 | 属性        | 型           | 必須 | 説明 |
 |------------------|----------------|----------|-------------|
-| `id`             | 整数または文字列 | はい      | プロジェクトのID、または[URLエンコードされたパス](rest/_index.md#namespaced-paths) |
+| `id`             | 整数または文字列 | はい      | プロジェクトのIDまたは[URLエンコードされたパス](rest/_index.md#namespaced-paths) |
 | `name`           | 文字列         | いいえ       | 指定された名前のパイプラインを返します。 |
 | `order_by`       | 文字列         | いいえ       | パイプラインを、`id`、`status`、`ref`、`updated_at`、または`user_id`で並べ替えます（デフォルト: `id`）。 |
 | `ref`            | 文字列         | いいえ       | パイプラインのref |
@@ -55,10 +55,12 @@ GET /projects/:id/pipelines
 | `yaml_errors`    | ブール値        | いいえ       | 無効な設定のパイプラインを返します。 |
 
 ```shell
-curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects/1/pipelines"
+curl \
+  --header "PRIVATE-TOKEN: <your_access_token>" \
+  --url "https://gitlab.example.com/api/v4/projects/1/pipelines"
 ```
 
-応答の例
+レスポンス例
 
 ```json
 [
@@ -112,14 +114,16 @@ GET /projects/:id/pipelines/:pipeline_id
 
 | 属性     | 型           | 必須 | 説明 |
 |---------------|----------------|----------|-------------|
-| `id`          | 整数または文字列 | はい      | プロジェクトのID、または[URLエンコードされたパス](rest/_index.md#namespaced-paths) |
+| `id`          | 整数または文字列 | はい      | プロジェクトのIDまたは[URLエンコードされたパス](rest/_index.md#namespaced-paths) |
 | `pipeline_id` | 整数        | はい      | パイプラインのID |
 
 ```shell
-curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects/1/pipelines/46"
+curl \
+  --header "PRIVATE-TOKEN: <your_access_token>" \
+  --url "https://gitlab.example.com/api/v4/projects/1/pipelines/46"
 ```
 
-応答の例
+レスポンス例
 
 ```json
 {
@@ -161,7 +165,8 @@ curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/a
     "details_path": "/test-group/test-project/-/pipelines/287",
     "illustration": null,
     "favicon": "/assets/ci_favicons/favicon_status_success-8451333011eee8ce9f2ab25dc487fe24a8758c694827a582f17f42b0a90446a2.png"
-  }
+  },
+  "archived": false
 }
 ```
 
@@ -187,10 +192,12 @@ GET /projects/:id/pipelines/latest
 | `ref`     | 文字列 | いいえ       | 最新のパイプラインを確認するブランチまたはタグ。指定しない場合、デフォルトのブランチがデフォルトになります。 |
 
 ```shell
-curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects/1/pipelines/latest"
+curl \
+  --header "PRIVATE-TOKEN: <your_access_token>" \
+  --url "https://gitlab.example.com/api/v4/projects/1/pipelines/latest"
 ```
 
-応答の例
+レスポンス例
 
 ```json
 {
@@ -232,7 +239,8 @@ curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/a
         "details_path": "/test-group/test-project/-/pipelines/287",
         "illustration": null,
         "favicon": "/assets/ci_favicons/favicon_status_success-8451333011eee8ce9f2ab25dc487fe24a8758c694827a582f17f42b0a90446a2.png"
-    }
+    },
+    "archived": false
 }
 ```
 
@@ -248,14 +256,16 @@ GET /projects/:id/pipelines/:pipeline_id/variables
 
 | 属性     | 型           | 必須 | 説明 |
 |---------------|----------------|----------|-------------|
-| `id`          | 整数または文字列 | はい      | プロジェクトのID、または[URLエンコードされたパス](rest/_index.md#namespaced-paths) |
+| `id`          | 整数または文字列 | はい      | プロジェクトのIDまたは[URLエンコードされたパス](rest/_index.md#namespaced-paths) |
 | `pipeline_id` | 整数        | はい      | パイプラインのID |
 
 ```shell
-curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects/1/pipelines/46/variables"
+curl \
+  --header "PRIVATE-TOKEN: <your_access_token>" \
+  --url "https://gitlab.example.com/api/v4/projects/1/pipelines/46/variables"
 ```
 
-応答の例
+レスポンス例
 
 ```json
 [
@@ -287,13 +297,15 @@ GET /projects/:id/pipelines/:pipeline_id/test_report
 
 | 属性     | 型           | 必須 | 説明 |
 |---------------|----------------|----------|-------------|
-| `id`          | 整数または文字列 | はい      | プロジェクトのID、または[URLエンコードされたパス](rest/_index.md#namespaced-paths) |
+| `id`          | 整数または文字列 | はい      | プロジェクトのIDまたは[URLエンコードされたパス](rest/_index.md#namespaced-paths) |
 | `pipeline_id` | 整数        | はい      | パイプラインのID |
 
 リクエストのサンプル:
 
 ```shell
-curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects/1/pipelines/46/test_report"
+curl \
+  --header "PRIVATE-TOKEN: <your_access_token>" \
+  --url "https://gitlab.example.com/api/v4/projects/1/pipelines/46/test_report"
 ```
 
 応答のサンプル:
@@ -346,13 +358,15 @@ GET /projects/:id/pipelines/:pipeline_id/test_report_summary
 
 | 属性     | 型           | 必須 | 説明 |
 |---------------|----------------|----------|-------------|
-| `id`          | 整数または文字列 | はい      | プロジェクトのID、または[URLエンコードされたパス](rest/_index.md#namespaced-paths) |
+| `id`          | 整数または文字列 | はい      | プロジェクトのIDまたは[URLエンコードされたパス](rest/_index.md#namespaced-paths) |
 | `pipeline_id` | 整数        | はい      | パイプラインのID |
 
 リクエストのサンプル:
 
 ```shell
-curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects/1/pipelines/46/test_report_summary"
+curl \
+  --header "PRIVATE-TOKEN: <your_access_token>" \
+  --url "https://gitlab.example.com/api/v4/projects/1/pipelines/46/test_report_summary"
 ```
 
 応答のサンプル:
@@ -402,7 +416,7 @@ POST /projects/:id/pipeline
 
 | 属性   | 型           | 必須 | 説明 |
 |-------------|----------------|----------|-------------|
-| `id`        | 整数または文字列 | はい      | プロジェクトのID、または[URLエンコードされたパス](rest/_index.md#namespaced-paths) |
+| `id`        | 整数または文字列 | はい      | プロジェクトのIDまたは[URLエンコードされたパス](rest/_index.md#namespaced-paths) |
 | `ref`       | 文字列         | はい      | パイプラインを実行するブランチまたはタグ。マージリクエストパイプラインの場合は、[マージリクエストエンドポイント](merge_requests.md#create-merge-request-pipeline)を使用します。 |
 | `variables` | 配列          | いいえ       | 構造`[{ 'key': 'UPLOAD_TO_S3', 'variable_type': 'file', 'value': 'true' }, {'key': 'TEST', 'value': 'test variable'}]`と一致する、パイプライン使用可能な変数を含む[ハッシュの配列](rest/_index.md#array-of-hashes)。`variable_type`が除外されている場合、デフォルトは`env_var`になります。 |
 | `inputs`    | ハッシュ           | いいえ       | パイプラインの作成時に使用するインプットが、キーと値のペアとして含まれている[ハッシュ](rest/_index.md#hash)。 |
@@ -410,7 +424,9 @@ POST /projects/:id/pipeline
 基本的な例:
 
 ```shell
-curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects/1/pipeline?ref=main"
+curl --request POST \
+  --header "PRIVATE-TOKEN: <your_access_token>" \
+  --url "https://gitlab.example.com/api/v4/projects/1/pipeline?ref=main"
 ```
 
 [インプット](../ci/inputs/_index.md)を使用したリクエストの例:
@@ -423,7 +439,7 @@ curl --request POST \
   "https://gitlab.example.com/api/v4/projects/1/pipeline?ref=main"
 ```
 
-応答の例
+レスポンス例
 
 ```json
 {
@@ -452,7 +468,8 @@ curl --request POST \
   "duration": null,
   "queued_duration": 0.010,
   "coverage": null,
-  "web_url": "https://example.com/foo/bar/pipelines/61"
+  "web_url": "https://example.com/foo/bar/pipelines/61",
+  "archived": false
 }
 ```
 
@@ -472,11 +489,13 @@ POST /projects/:id/pipelines/:pipeline_id/retry
 
 | 属性     | 型           | 必須 | 説明 |
 |---------------|----------------|----------|-------------|
-| `id`          | 整数または文字列 | はい      | プロジェクトのID、または[URLエンコードされたパス](rest/_index.md#namespaced-paths) |
+| `id`          | 整数または文字列 | はい      | プロジェクトのIDまたは[URLエンコードされたパス](rest/_index.md#namespaced-paths) |
 | `pipeline_id` | 整数        | はい      | パイプラインのID |
 
 ```shell
-curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects/1/pipelines/46/retry"
+curl --request POST \
+  --header "PRIVATE-TOKEN: <your_access_token>" \
+  --url "https://gitlab.example.com/api/v4/projects/1/pipelines/46/retry"
 ```
 
 応答:
@@ -508,7 +527,8 @@ curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" "https://gitla
   "duration": null,
   "queued_duration": 0.010,
   "coverage": null,
-  "web_url": "https://example.com/foo/bar/pipelines/46"
+  "web_url": "https://example.com/foo/bar/pipelines/46",
+  "archived": false
 }
 ```
 
@@ -526,11 +546,13 @@ POST /projects/:id/pipelines/:pipeline_id/cancel
 
 | 属性     | 型           | 必須 | 説明 |
 |---------------|----------------|----------|-------------|
-| `id`          | 整数または文字列 | はい      | プロジェクトのID、または[URLエンコードされたパス](rest/_index.md#namespaced-paths) |
+| `id`          | 整数または文字列 | はい      | プロジェクトのIDまたは[URLエンコードされたパス](rest/_index.md#namespaced-paths) |
 | `pipeline_id` | 整数        | はい      | パイプラインのID |
 
 ```shell
-curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects/1/pipelines/46/cancel"
+curl --request POST \
+  --header "PRIVATE-TOKEN: <your_access_token>" \
+  --url "https://gitlab.example.com/api/v4/projects/1/pipelines/46/cancel"
 ```
 
 応答:
@@ -562,13 +584,14 @@ curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" "https://gitla
   "duration": null,
   "queued_duration": 0.010,
   "coverage": null,
-  "web_url": "https://example.com/foo/bar/pipelines/46"
+  "web_url": "https://example.com/foo/bar/pipelines/46",
+  "archived": false
 }
 ```
 
 ## パイプラインを削除する {#delete-a-pipeline}
 
-パイプラインを削除すると、すべてのパイプラインキャッシュが期限切れになり、ビルド、ログ、アーティファクト、トリガーなど、直接関連するすべてのオブジェクトが削除されます。**この操作は元に戻すことができません。**
+パイプラインを削除すると、すべてのパイプラインキャッシュが期限切れになり、ビルド、ログ、アーティファクト、トリガーなど、直接関連するすべてのオブジェクトが削除されます。**This action cannot be undone**（この操作は元に戻すことができません。）
 
 パイプラインを削除しても、[子パイプライン](../ci/pipelines/downstream_pipelines.md#parent-child-pipelines)は自動的に削除されません。詳細については、[関連イシュー](https://gitlab.com/gitlab-org/gitlab/-/issues/39503)を参照してください。
 
@@ -578,11 +601,13 @@ DELETE /projects/:id/pipelines/:pipeline_id
 
 | 属性     | 型           | 必須 | 説明 |
 |---------------|----------------|----------|-------------|
-| `id`          | 整数または文字列 | はい      | プロジェクトのID、または[URLエンコードされたパス](rest/_index.md#namespaced-paths) |
+| `id`          | 整数または文字列 | はい      | プロジェクトのIDまたは[URLエンコードされたパス](rest/_index.md#namespaced-paths) |
 | `pipeline_id` | 整数        | はい      | パイプラインのID |
 
 ```shell
-curl --header "PRIVATE-TOKEN: <your_access_token>" --request "DELETE" "https://gitlab.example.com/api/v4/projects/1/pipelines/46"
+curl --request DELETE \
+  --header "PRIVATE-TOKEN: <your_access_token>" \
+  --url "https://gitlab.example.com/api/v4/projects/1/pipelines/46"
 ```
 
 ## パイプラインのメタデータを更新する {#update-pipeline-metadata}
@@ -595,7 +620,7 @@ PUT /projects/:id/pipelines/:pipeline_id/metadata
 
 | 属性     | 型           | 必須 | 説明 |
 |---------------|----------------|----------|-------------|
-| `id`          | 整数または文字列 | はい      | プロジェクトのID、または[URLエンコードされたパス](rest/_index.md#namespaced-paths) |
+| `id`          | 整数または文字列 | はい      | プロジェクトのIDまたは[URLエンコードされたパス](rest/_index.md#namespaced-paths) |
 | `name`        | 文字列         | はい      | パイプラインの新しい名前 |
 | `pipeline_id` | 整数        | はい      | パイプラインのID |
 
@@ -635,6 +660,7 @@ curl --request PUT --header "PRIVATE-TOKEN: <your_access_token>" --data "name=So
   "queued_duration": 0.010,
   "coverage": null,
   "web_url": "https://example.com/foo/bar/pipelines/46",
-  "name": "Some new pipeline name"
+  "name": "Some new pipeline name",
+  "archived": false
 }
 ```

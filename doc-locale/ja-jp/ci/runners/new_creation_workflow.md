@@ -1,6 +1,6 @@
 ---
 stage: Verify
-group: Runner
+group: Runner Core
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 title: 新しいRunner登録ワークフローに移行する
 ---
@@ -14,7 +14,7 @@ title: 新しいRunner登録ワークフローに移行する
 
 {{< alert type="disclaimer" />}}
 
-GitLab 16.0で、Runner認証トークンを使用してRunnerを登録する新しいRunner作成ワークフローが導入されました。登録トークンを使用する従来のワークフローは非推奨になり、GitLab 20.0で削除される予定です。代わりに[Runner作成ワークフロー](https://docs.gitlab.com/runner/register/#register-with-a-runner-authentication-token)を使用してください。
+GitLab 16.0では、新しいRunner作成ワークフローが導入され、Runner認証トークンを使用してRunnerを登録します。登録トークンを使用する従来のワークフローは推奨されません。代わりに[Runner作成ワークフロー](https://docs.gitlab.com/runner/register/#register-with-a-runner-authentication-token)を使用してください。
 
 新しいワークフローの現在の開発状況については、[エピック7663](https://gitlab.com/groups/gitlab-org/-/epics/7663)を参照してください。
 
@@ -24,13 +24,13 @@ GitLab 16.0で、Runner認証トークンを使用してRunnerを登録する新
 
 ## 新しいRunner登録ワークフロー {#the-new-runner-registration-workflow}
 
-新しいRunner登録ワークフローでは、次のことを行います。
+新しいRunner登録ワークフローでは、次のことを行います:
 
 1. GitLab UIで直接、または[プログラム](#creating-runners-programmatically)で[Runnerを作成](runners_scope.md)します。
 1. Runner認証トークンを受信します。
 1. この設定でRunnerを登録する場合は、登録トークンの代わりにRunner認証トークンを使用します。複数のホストに登録されているRunnerマネージャーは、GitLab UIの同じRunnerに表示されますが、識別システムIDが付きます。
 
-新しいRunner登録ワークフローには、次の利点があります。
+新しいRunner登録ワークフローには、次の利点があります:
 
 - Runnerの所有権レコードを保持し、ユーザーへの影響を最小限に抑えました。
 - 一意のシステムIDを追加すると、複数のRunnerで同じ認証トークンを再利用できるようになります。詳細については、[GitLab Runner設定の再利用](https://docs.gitlab.com/runner/fleet_scaling/#reusing-a-gitlab-runner-configuration)を参照してください。
@@ -38,30 +38,23 @@ GitLab 16.0で、Runner認証トークンを使用してRunnerを登録する新
 ## 計画された変更の推定時期 {#estimated-time-frame-for-planned-changes}
 
 - GitLab 15.10以降で、新しいRunner登録ワークフローを使用できます。
-- GitLab 20.0で、Runner登録トークンを無効にする予定です。
 
 ## Runner登録ワークフローが中断しないようにする {#prevent-your-runner-registration-workflow-from-breaking}
 
 GitLab 16.11以前では、従来のRunner登録ワークフローを使用できます。
 
-GitLab 17.0では、従来のRunner登録ワークフローはデフォルトで無効になっています。従来のRunner登録ワークフローは、一時的に再有効化できます。詳細については、[GitLab 17.0以降で登録トークンを使用する](#using-registration-tokens-after-gitlab-170)を参照してください。
+GitLab 17.0以降、レガシーRunnerの登録トークンのワークフローは、インスタンスの管理者またはグループオーナーが無効にできます。詳細については、[GitLab 17.0以降で登録トークンを使用する](#using-registration-tokens-after-gitlab-170)を参照してください。
 
-GitLab 17.0へのアップグレード時に新しいワークフローに移行しない場合、Runner登録が中断し、`gitlab-runner register`コマンドが`410 Gone - runner registration disallowed`エラーを返します。
+新しいワークフローに移行せずにRunnerを登録すると、Runnerの登録トークンが中断し、`gitlab-runner register`コマンドが`410 Gone - runner registration disallowed`エラーを返します。
 
-ワークフローの中断を回避するには、次の操作を行います。
+ワークフローの中断を回避するには、次の操作を行います:
 
 1. [Runnerを作成し](runners_scope.md)、認証トークンを取得します。
 1. Runner登録ワークフローの登録トークンを、認証トークンに置き換えます。
 
-{{< alert type="warning" >}}
-
-GitLab 17.0以降では、Runner登録トークンは無効になっています。保存されたRunner登録トークンを使用して新しいRunnerを登録するには、[トークンを有効にする](../../administration/settings/continuous_integration.md#control-runner-registration)必要があります。
-
-{{< /alert >}}
-
 ## GitLab 17.0以降で登録トークンを使用する {#using-registration-tokens-after-gitlab-170}
 
-GitLab 17.0以降で登録トークンを引き続き使用するには、次のようにします。
+GitLab 17.0以降で登録トークンを引き続き使用するには、次のようにします:
 
 - GitLab.comでは、トップレベルグループ設定で[従来のRunner登録プロセスを手動で有効化できます](runners_scope.md#enable-use-of-runner-registration-tokens-in-projects-and-groups)。
 - GitLab Self-Managedでは、**管理者**エリアの設定で[従来のRunner登録プロセスを手動で有効化できます](../../administration/settings/continuous_integration.md#control-runner-registration)。
@@ -70,13 +63,13 @@ GitLab 17.0以降で登録トークンを引き続き使用するには、次の
 
 既存のRunnerは、GitLab 17.0にアップグレードした後も通常どおり動作します。この変更は、新しいRunnerの登録にのみ影響します。
 
-[GitLab Runner Helmチャート](https://docs.gitlab.com/runner/install/kubernetes.html)は、ジョブが実行されるたびに新しいRunnerポッドを生成します。これらのRunnerについては、[従来のRunner登録を有効にする](#using-registration-tokens-after-gitlab-170)と、登録トークンを使用できます。GitLab 20.0以降では、[新しいRunner登録ワークフロー](#the-new-runner-registration-workflow)に移行する必要があります。
+[GitLab Runner Helmチャート](https://docs.gitlab.com/runner/install/kubernetes.html)は、ジョブが実行されるたびに新しいRunnerポッドを生成します。これらのRunnerについては、[従来のRunner登録を有効にする](#using-registration-tokens-after-gitlab-170)と、登録トークンを使用できます。
 
 ## `gitlab-runner register`コマンド構文の変更 {#changes-to-the-gitlab-runner-register-command-syntax}
 
-`gitlab-runner register`コマンドは、登録トークンの代わりにRunner認証トークンを受け入れます。トークンは、**管理者**エリアの**Runner**ページから生成できます。Runner認証トークンは、`glrt-`プレフィックスで認識できます。
+`gitlab-runner register`コマンドは、登録トークンの代わりにRunner認証トークンを受け入れます。トークンは、**管理者**エリアの**Runners**ページから生成できます。Runner認証トークンは、`glrt-`プレフィックスで認識できます。
 
-GitLab UIでRunnerを作成する場合は、設定値を指定します。これは以前、`gitlab-runner register`コマンドでプロンプト表示されるコマンドラインオプションでした。これらのコマンドラインオプションは、今後非推奨になる予定です。
+GitLab UIでRunnerを作成する場合は、設定値を指定します。これは以前、`gitlab-runner register`コマンドでプロンプト表示されるコマンドラインオプションでした。
 
 Runner認証トークンを次のように指定した場合:
 
@@ -86,7 +79,7 @@ Runner認証トークンを次のように指定した場合:
 | トークン                                  | 登録コマンド |
 |----------------------------------------|----------------------|
 | Runner認証トークン            | `gitlab-runner register --token $RUNNER_AUTHENTICATION_TOKEN` |
-| Runner登録トークン（非推奨） | `gitlab-runner register --registration-token $RUNNER_REGISTRATION_TOKEN <runner configuration arguments>` |
+| Runner登録トークン（レガシー）     | `gitlab-runner register --registration-token $RUNNER_REGISTRATION_TOKEN <runner configuration arguments>` |
 
 認証トークンのプレフィックスは`glrt-`です。
 
@@ -108,7 +101,7 @@ gitlab-runner register \
 
 GitLab 15.10以降では、Runnerの作成や、タグリスト、ロックされたステータス、アクセスレベルなどの属性の設定をUIで実行できます。GitLab 15.11以降では、`glrt-`プレフィックスが付いたRunner認証トークンが指定されている場合、これらの属性は`register`への引数として受け入れられなくなりました。
 
-新しいコマンドの例を次に示します。
+新しいコマンドの例を次に示します:
 
 ```shell
 gitlab-runner register \
@@ -130,15 +123,14 @@ Runnerの作成と登録を自動化する方法については、チュート�
 
 ## Helmチャートを使用してGitLab Runnerをインストールする {#installing-gitlab-runner-with-helm-chart}
 
-一部のRunner設定オプションは、Runnerの登録中に設定できません。これらのオプションは、次の場合にのみ設定できます。
+Runner登録トークンが無効になっている場合、いくつかのRunner設定オプションは、Runnerの登録中に設定できません。これらのオプションは、次の場合にのみ設定できます:
 
 - UIでRunnerを作成する場合。
 - `user/runners` REST APIエンドポイントを使用する場合。
 
-次の設定オプションは、[`values.yaml`](https://gitlab.com/gitlab-org/charts/gitlab-runner/-/blob/main/values.yaml)ではサポートされなくなりました。
+そのシナリオでは、次の設定オプションは[`values.yaml`](https://gitlab.com/gitlab-org/charts/gitlab-runner/-/blob/main/values.yaml)でサポートされていません:
 
 ```yaml
-## All these fields are DEPRECATED and the runner WILL FAIL TO START with GitLab Runner 20.0 and later if you specify them.
 ## If a runner authentication token is specified in runnerRegistrationToken, the registration will succeed, however the
 ## other values will be ignored.
 runnerRegistrationToken: ""
@@ -149,11 +141,11 @@ runUntagged: true
 protected: true
 ```
 
-Kubernetes上のGitLab Runnerの場合、HelmデプロイはRunner認証トークンをRunnerワーカーポッドに渡し、Runner設定を作成します。GitLab 17.0以降では、GitLab.comにアタッチされたKubernetesホスト型Runnerで`runnerRegistrationToken`トークンフィールドを使用する場合、Runnerワーカーポッドは、作成時にサポートされていない登録APIメソッドを使用しようとします。
+Kubernetes上のGitLab Runnerの場合、HelmデプロイはRunner認証トークンをRunnerワーカーポッドに渡し、Runner設定を作成します。GitLab 17.0以降、`runnerRegistrationToken`トークンフィールドをGitLab.comに接続されているKubernetesホスト型Runnerで使用する場合、Runnerワーカーポッドは、作成時にレガシーAPI登録メソッドを使用しようとします。
 
 無効な`runnerRegistrationToken`フィールドを`runnerToken`フィールドに置き換えます。`secrets`に保存されているRunner認証トークンも変更する必要があります。
 
-従来のRunner登録ワークフローでは、フィールドは次のように指定されていました。
+従来のRunner登録ワークフローでは、フィールドは次のように指定されていました:
 
 ```yaml
 apiVersion: v1
@@ -166,7 +158,7 @@ data:
   runner-token: ""
 ```
 
-新しいRunner登録ワークフローでは、代わりに`runner-token`を使用する必要があります。
+新しいRunner登録ワークフローでは、代わりに`runner-token`を使用する必要があります:
 
 ```yaml
 apiVersion: v1
@@ -199,7 +191,7 @@ data:
 
 #### GitLab Operatorでのトークンローテーション {#token-rotation-in-gitlab-operator}
 
-GitLab Operatorを使用して新しいワークフローでRunnerを登録する際に、カスタムリソース定義のRunner認証トークンはトークンローテーション中に更新されません。これは次の場合に発生します。
+GitLab Operatorを使用して新しいワークフローでRunnerを登録する際に、カスタムリソース定義のRunner認証トークンはトークンローテーション中に更新されません。これは次の場合に発生します:
 
 - [カスタムリソース定義によって参照される](https://docs.gitlab.com/runner/install/operator.html#install-gitlab-runner)シークレットで、Runner認証トークン（`glrt-`プレフィックス付き）を使用している。
 - Runner認証トークンに有効期限がある。Runner認証トークンの有効期限の詳細については、[認証トークンのセキュリティ](configure_runners.md#authentication-token-security)を参照してください。

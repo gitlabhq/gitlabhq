@@ -967,17 +967,17 @@ Use sentence case for table headers. For example, `Keyword value` or `Project na
 
 ### Feature tables
 
-When creating tables of lists of features (such the features
+When creating tables of lists of features (such as the features
 available to each role on the [Permissions](../../../user/permissions.md#project-permissions)
-page), use these phrases:
+page), use these shortcodes:
 
-| Option | Markdown                                          | Displayed result |
-|--------|---------------------------------------------------|------------------|
-| No     | `{{</* no */>}}`          |  Hidden `span` for accessibility: `<span class="gl-sr-only">no</span>` |
-| Yes    | `{{</* yes */>}}` | {{< yes >}} |
+| Option | Markdown          | Renders     | Notes |
+|--------|-------------------|-------------|-------|
+| No     | `{{</* no */>}}`  | {{< no >}}  | Renders a hidden `span` for screen readers: `<span class="gl-sr-only">no</span>` |
+| Yes    | `{{</* yes */>}}` | {{< yes >}} | Renders a visible checkmark icon and a hidden `span` for screen readers: `<span class="gl-sr-only">yes</span>` |
 
-Do not use these SVG icons in API documentation.
-Instead, follow the [API topic template](../restful_api_styleguide.md#api-topic-template).
+Do not use these shortcodes in API documentation or inline text. For API documentation, follow
+the [API topic template](../restful_api_styleguide.md#api-topic-template).
 
 ### Footnotes
 

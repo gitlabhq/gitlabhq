@@ -185,7 +185,7 @@ POST /projects/:id/trigger/pipeline
 
 | 属性   | 型           | 必須 | 説明 |
 |-------------|----------------|----------|-------------|
-| `id`        | 整数または文字列 | はい      | プロジェクトのID、または[URLエンコードされたパス](rest/_index.md#namespaced-paths)。 |
+| `id`        | 整数または文字列 | はい      | プロジェクトのIDまたは[URLエンコードされたパス](rest/_index.md#namespaced-paths)。 |
 | `ref`       | 文字列         | はい      | パイプラインを実行するブランチまたはタグ。 |
 | `token`     | 文字列         | はい      | トリガートークンまたはCI/CDジョブトークン。 |
 | `variables` | ハッシュ           | いいえ       | パイプライン変数を含むキーと値の文字列のマップ。例: `{ VAR1: "value1", VAR2: "value2" }`。 |
@@ -209,7 +209,7 @@ curl --request POST \
   --url "https://gitlab.example.com/api/v4/projects/123/trigger/pipeline?token=2cb1840fb9dfc9fb0b7b1609cd29cb&ref=main"
 ```
 
-応答の例:
+レスポンス例:
 
 ```json
 {
@@ -250,6 +250,7 @@ curl --request POST \
     "details_path": "/test-group/test-project/-/pipelines/257",
     "illustration": null,
     "favicon": "/assets/ci_favicons/favicon_status_created-4b975aa976d24e5a3ea7cd9a5713e6ce2cd9afd08b910415e96675de35f64955.png"
-  }
+  },
+  "archived": false
 }
 ```

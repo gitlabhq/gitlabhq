@@ -5,6 +5,14 @@ info: Any user with at least the Maintainer role can merge updates to this conte
 title: Claiming an attribute for a cell
 ---
 
+{{< alert type="flag" >}}
+
+Both [cells](https://gitlab.com/gitlab-org/gitlab-development-kit/-/blob/main/doc/howto/cells.md#setting-up-cells-locally)
+and feature flag `Feature.enabled?(:cells_unique_claims)` have to be enabled
+for this to take effect.
+
+{{< /alert >}}
+
 ## Why we need to claim attributes
 
 Some attributes must be globally unique across the entire cluster. For
@@ -65,8 +73,12 @@ The `subject_type` and `subject_key` identify which record owns the claimed
 attribute. This often matches the sharding key, but not always. Use your
 judgment when the sharding key doesn't apply.
 
-NOTE: Changes to associations are also claimed automatically in the same
+{{< alert type="note" >}}
+
+Changes to associations are also claimed automatically in the same
 transaction when saving.
+
+{{< /alert >}}
 
 #### Tests
 
@@ -162,3 +174,20 @@ Here's the workflow to make new types available for Rails:
   `scripts/update-topology-service-gem.sh` in the merge request branch
 - After it's reviewed and merged, it should be available in the GitLab
   default branch
+
+## Validation
+
+After defining claims attributes, Rails automatically claims attributes when
+creating, updating, or deleting records. These claims are sent to Topology
+Service, which stores them in its database. In GDK, Topology Service uses
+the local PostgreSQL database by default. We can access the `psql` console by
+running `gdk psql -d topology_service`. As an example, we can use this
+command to list all the claims:
+
+```shell
+gdk psql -d topology_service -c "SELECT * FROM claims;"
+```
+
+You can play around and create, update, and delete a few records by using
+the web UI, and then run this command from time to time to verify it's
+working as expected.

@@ -13,18 +13,18 @@ title: コミットAPI
 
 {{< /details >}}
 
-[Gitコミット](https://git-scm.com/book/en/v2/Git-Basics-Recording-Changes-to-the-Repository)をGitLabリポジトリで管理するには、commits APIを使用します。
+このAPIを使用して、[Gitコミット](../user/project/repository/commits/_index.md)を管理します。
 
 ## 応答 {#responses}
 
-このAPIからの応答に含まれる日付フィールドの一部で、情報が重複しているか、またはそのように見えることがあります。
+このAPIからの応答に含まれる日付フィールドの一部で、情報が重複しているか、またはそのように見えることがあります:
 
 - `created_at`フィールドは、他のGitLab APIとの整合性だけを目的として存在しています。常に`committed_date`フィールドと同一です。
 - `committed_date`フィールドと`authored_date`フィールドは異なるソースから生成されるため、同一ではない場合があります。
 
 ### ページネーションレスポンスヘッダー {#pagination-response-headers}
 
-パフォーマンス上の理由から、GitLabはコミットAPIのレスポンスで以下のヘッダーを返しません。
+パフォーマンス上の理由から、GitLabはコミットAPIのレスポンスで以下のヘッダーを返しません:
 
 - `x-total`
 - `x-total-pages`
@@ -53,7 +53,7 @@ GET /projects/:id/repository/commits
 | `until`        | 文字列         | いいえ       | この日付以前のコミットのみがISO 8601形式（`YYYY-MM-DDTHH:MM:SSZ`）で返されます。 |
 | `with_stats`   | ブール値        | いいえ       | `true`の場合、各コミットに関する統計情報を取得します。 |
 
-成功した場合は、[`200 OK`](rest/troubleshooting.md#status-codes)と以下のレスポンス属性が返されます。
+成功した場合は、[`200 OK`](rest/troubleshooting.md#status-codes)と以下のレスポンス属性が返されます:
 
 | 属性           | 型   | 説明 |
 |---------------------|--------|-------------|
@@ -153,14 +153,14 @@ POST /projects/:id/repository/commits
 | `actions[]`属性 | 型    | 必須 | 説明 |
 |-----------------------|---------|----------|-------------|
 | `action`              | 文字列  | はい      | 実行するアクション: `create`、`delete`、`move`、`update`、または`chmod`。 |
-| `file_path`           | 文字列  | はい      | ファイルのフルパス。たとえば、`lib/class.rb`などです。 |
+| `file_path`           | 文字列  | はい      | ファイルのフルパス。例: `lib/class.rb`。 |
 | `content`             | 文字列  | いいえ       | ファイルの内容。`delete`、`chmod`、`move`を除くすべての場合に必須です。移動アクションで`content`が指定されていない場合、既存のファイルコンテンツが保持されます。`content`以外の値の場合、ファイルの内容が上書きされます。 |
 | `encoding`            | 文字列  | いいえ       | `text`または`base64`。`text`がデフォルトです。 |
 | `execute_filemode`    | ブール値 | いいえ       | `true`の場合、ファイルの実行フラグを有効にします。`false`の場合、無効になります。`chmod`アクションの場合のみ考慮されます。 |
 | `last_commit_id`      | 文字列  | いいえ       | 既知の最新のファイルコミットID。update、move、およびdeleteアクションでのみ考慮されます。 |
-| `previous_path`       | 文字列  | いいえ       | 移動されるファイルの元のフルパス。たとえば、`lib/class1.rb`などです。`move`アクションの場合のみ考慮されます。 |
+| `previous_path`       | 文字列  | いいえ       | 移動されるファイルの元のフルパス。例: `lib/class1.rb`。`move`アクションの場合のみ考慮されます。 |
 
-成功した場合は、[`201 Created`](rest/troubleshooting.md#status-codes)と以下のレスポンス属性が返されます。
+成功した場合は、[`201 Created`](rest/troubleshooting.md#status-codes)と以下のレスポンス属性が返されます:
 
 | 属性         | 型   | 説明 |
 |-------------------|--------|-------------|
@@ -250,7 +250,7 @@ curl --request POST \
 }
 ```
 
-GitLabは[フォームエンコード](rest/_index.md#array-and-hash-types)をサポートしています。次に、フォームエンコードでCommits APIを使用する例を示します。
+GitLabは[フォームエンコード](rest/_index.md#array-and-hash-types)をサポートしています。次に、フォームエンコードでCommits APIを使用する例を示します:
 
 ```shell
 curl --request POST \
@@ -284,7 +284,7 @@ curl --request POST \
 GET /projects/:id/repository/commits/:sha
 ```
 
-パラメータは以下のとおりです。
+パラメータは以下のとおりです:
 
 | 属性 | 型           | 必須 | 説明 |
 |-----------|----------------|----------|-------------|
@@ -292,7 +292,7 @@ GET /projects/:id/repository/commits/:sha
 | `sha`     | 文字列         | はい      | リポジトリのブランチまたはタグのコミットハッシュまたは名前。 |
 | `stats`   | ブール値        | いいえ       | コミット統計を含めます。デフォルトは`true`です。 |
 
-成功した場合は、[`200 OK`](rest/troubleshooting.md#status-codes)と以下のレスポンス属性が返されます。
+成功した場合は、[`200 OK`](rest/troubleshooting.md#status-codes)と以下のレスポンス属性が返されます:
 
 | 属性         | 型   | 説明 |
 |-------------------|--------|-------------|
@@ -360,7 +360,7 @@ curl --header "PRIVATE-TOKEN: <your_access_token>" \
 GET /projects/:id/repository/commits/:sha/refs
 ```
 
-パラメータは以下のとおりです。
+パラメータは以下のとおりです:
 
 | 属性 | 型           | 必須 | 説明 |
 |-----------|----------------|----------|-------------|
@@ -368,7 +368,7 @@ GET /projects/:id/repository/commits/:sha/refs
 | `sha`     | 文字列         | はい      | コミットハッシュ。 |
 | `type`    | 文字列         | いいえ       | コミットのスコープ。使用可能な値は`branch`、`tag`、`all`です。デフォルトは`all`です。 |
 
-成功した場合は、[`200 OK`](rest/troubleshooting.md#status-codes)と以下のレスポンス属性が返されます。
+成功した場合は、[`200 OK`](rest/troubleshooting.md#status-codes)と以下のレスポンス属性が返されます:
 
 | 属性 | 型   | 説明 |
 |-----------|--------|-------------|
@@ -419,7 +419,7 @@ curl --header "PRIVATE-TOKEN: <your_access_token>" \
 GET /projects/:id/repository/commits/:sha/sequence
 ```
 
-パラメータは以下のとおりです。
+パラメータは以下のとおりです:
 
 | 属性      | 型           | 必須 | 説明 |
 |----------------|----------------|----------|-------------|
@@ -427,7 +427,7 @@ GET /projects/:id/repository/commits/:sha/sequence
 | `sha`          | 文字列         | はい      | コミットハッシュ。 |
 | `first_parent` | ブール値        | いいえ       | `true`の場合、マージコミットが確認されたら、最初の親コミットのみをフォローします。 |
 
-成功した場合は、[`200 OK`](rest/troubleshooting.md#status-codes)と以下のレスポンス属性が返されます。
+成功した場合は、[`200 OK`](rest/troubleshooting.md#status-codes)と以下のレスポンス属性が返されます:
 
 | 属性 | 型 | 説明 |
 | --------- | ---- | ----------- |
@@ -456,7 +456,7 @@ curl --header "PRIVATE-TOKEN: <your_access_token>" \
 POST /projects/:id/repository/commits/:sha/cherry_pick
 ```
 
-パラメータは以下のとおりです。
+パラメータは以下のとおりです:
 
 | 属性 | 型           | 必須 | 説明 |
 |-----------|----------------|----------|-------------|
@@ -466,7 +466,7 @@ POST /projects/:id/repository/commits/:sha/cherry_pick
 | `dry_run` | ブール値        | いいえ       | `true`の場合、変更をコミットしません。デフォルトは`false`です。 |
 | `message` | 文字列         | いいえ       | 新しいコミットに使用するカスタムコミットメッセージ。 |
 
-成功した場合は、[`201 Created`](rest/troubleshooting.md#status-codes)と以下のレスポンス属性が返されます。
+成功した場合は、[`201 Created`](rest/troubleshooting.md#status-codes)と以下のレスポンス属性が返されます:
 
 | 属性         | 型   | 説明 |
 |-------------------|--------|-------------|
@@ -513,7 +513,7 @@ curl --request POST \
 }
 ```
 
-チェリーピックが失敗した場合、応答はその理由に関するコンテキストを提供します。
+チェリーピックが失敗した場合、応答はその理由に関するコンテキストを提供します:
 
 ```json
 {
@@ -524,7 +524,7 @@ curl --request POST \
 
 ここでは、チェンジセットが空であるためにチェリーピックが失敗しています。そして、コミットがターゲットブランチにすでに存在する可能性を示しています。エラーコードとして返される可能性があるもう1つのものは`conflict`です。これはマージコンフリクトが発生していたことを示します。
 
-`dry_run`が有効になっている場合、サーバーはチェリーピックの適用を試みます_が、実際には結果の変更をコミットしません_。チェリーピックが正常に適用されると、APIは`200 OK`で応答します。
+`dry_run`が有効になっている場合、サーバーはチェリーピックの適用を試みます_が、実際には結果の変更をコミットしません_。チェリーピックが正常に適用されると、APIは`200 OK`で応答します:
 
 ```json
 {
@@ -542,7 +542,7 @@ curl --request POST \
 POST /projects/:id/repository/commits/:sha/revert
 ```
 
-パラメータは以下のとおりです。
+パラメータは以下のとおりです:
 
 | 属性 | 型           | 必須 | 説明 |
 |-----------|----------------|----------|-------------|
@@ -551,7 +551,7 @@ POST /projects/:id/repository/commits/:sha/revert
 | `sha`     | 文字列         | はい      | リバートするコミットSHA。 |
 | `dry_run` | ブール値        | いいえ       | `true`の場合、変更をコミットしません。デフォルトは`false`です。 |
 
-成功した場合は、[`201 Created`](rest/troubleshooting.md#status-codes)と以下のレスポンス属性が返されます。
+成功した場合は、[`201 Created`](rest/troubleshooting.md#status-codes)と以下のレスポンス属性が返されます:
 
 | 属性         | 型   | 説明 |
 |-------------------|--------|-------------|
@@ -598,7 +598,7 @@ curl --request POST \
 }
 ```
 
-リバートが失敗した場合、応答はその理由に関するコンテキストを提供します。
+リバートが失敗した場合、応答はその理由に関するコンテキストを提供します:
 
 ```json
 {
@@ -609,7 +609,7 @@ curl --request POST \
 
 上記の例では、試行されたリバートによってマージコンフリクトが発生したためにリバートが失敗しました。返される可能性があるもう1つのエラーコードは`empty`です。これは、変更がすでにリバートされているために、チェンジセットが空であることを示しています。
 
-`dry_run`が有効になっている場合、サーバーはリバートの適用を試みますが、_実際には結果の変更をコミットしません_。リバートが正常に適用されると、APIは`200 OK`で応答します。
+`dry_run`が有効になっている場合、サーバーはリバートの適用を試みますが、_実際には結果の変更をコミットしません_。リバートが正常に適用されると、APIは`200 OK`で応答します:
 
 ```json
 {
@@ -633,7 +633,7 @@ curl --request POST \
 GET /projects/:id/repository/commits/:sha/diff
 ```
 
-パラメータは以下のとおりです。
+パラメータは以下のとおりです:
 
 | 属性 | 型           | 必須 | 説明 |
 |-----------|----------------|----------|-------------|
@@ -641,7 +641,13 @@ GET /projects/:id/repository/commits/:sha/diff
 | `sha`     | 文字列         | はい      | リポジトリのブランチまたはタグのコミットハッシュまたは名前。 |
 | `unidiff` | ブール値        | いいえ       | `true`の場合、[unified diff](https://www.gnu.org/software/diffutils/manual/html_node/Detailed-Unified.html)形式で差分を表示します。デフォルトは`false`です。GitLab 16.5で[導入](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/130610)されました。 |
 
-成功した場合は、[`200 OK`](rest/troubleshooting.md#status-codes)と以下のレスポンス属性が返されます。
+{{< alert type="note" >}}
+
+このエンドポイントには、[差分の制限](../administration/diff_limits.md)が適用されます。コミットが構成された最大ファイル数を超えると、ページネーションが停止し、制限を超えて追加のファイルが返されなくなります。GitLab.com固有の制限については、[差分の表示制限](../user/gitlab_com/_index.md#diff-display-limits)を参照してください。
+
+{{< /alert >}}
+
+成功した場合は、[`200 OK`](rest/troubleshooting.md#status-codes)と以下のレスポンス属性が返されます:
 
 | 属性      | 型    | 説明 |
 |----------------|---------|-------------|
@@ -659,7 +665,7 @@ curl --header "PRIVATE-TOKEN: <your_access_token>" \
   --url "https://gitlab.example.com/api/v4/projects/5/repository/commits/main/diff"
 ```
 
-成功した場合は、[`200 OK`](rest/troubleshooting.md#status-codes)と以下のレスポンス属性が返されます。
+成功した場合は、[`200 OK`](rest/troubleshooting.md#status-codes)と以下のレスポンス属性が返されます:
 
 | 属性      | 型    | 説明 |
 |----------------|---------|-------------|
@@ -701,14 +707,14 @@ curl --header "PRIVATE-TOKEN: <your_access_token>" \
 GET /projects/:id/repository/commits/:sha/comments
 ```
 
-パラメータは以下のとおりです。
+パラメータは以下のとおりです:
 
 | 属性 | 型           | 必須 | 説明 |
 |-----------|----------------|----------|-------------|
 | `id`      | 整数または文字列 | はい      | プロジェクトの[IDまたはURLエンコードされたパス](rest/_index.md#namespaced-paths)。 |
 | `sha`     | 文字列         | はい      | リポジトリのブランチまたはタグのコミットハッシュまたは名前。 |
 
-成功した場合は、[`200 OK`](rest/troubleshooting.md#status-codes)と以下のレスポンス属性が返されます。
+成功した場合は、[`200 OK`](rest/troubleshooting.md#status-codes)と以下のレスポンス属性が返されます:
 
 | 属性 | 型   | 説明 |
 |-----------|--------|-------------|
@@ -744,7 +750,7 @@ curl --header "PRIVATE-TOKEN: <your_access_token>" \
 
 特定のファイルの特定の行にコメントを投稿するには、完全なコミットSHA、`path`、`line`を指定する必要があり、`line_type`は`new`である必要があります。
 
-以下の1つ以上のケースに該当する場合、コメントは最終コミットの終わりに追加されます。
+以下の1つ以上のケースに該当する場合、コメントは最終コミットの終わりに追加されます:
 
 - ブランチまたはタグの代わりに`sha`があり、`line`または`path`が無効である。
 - `line`番号が無効である（存在しない）。
@@ -752,7 +758,7 @@ curl --header "PRIVATE-TOKEN: <your_access_token>" \
 
 上記のいずれの場合も、`line`、`line_type`、`path`の応答は`null`に設定されます。
 
-マージリクエストへコメントするその他の方法については、Notes APIの[新しいマージリクエストノートを作成する](notes.md#create-new-merge-request-note)、およびDiscussions APIの[マージリクエスト差分に新しいスレッドを作成する](discussions.md#create-a-new-thread-in-the-merge-request-diff)を参照してください。
+マージリクエストへコメントするその他の方法については、Notes APIの[新しいマージリクエストノートを作成する](notes.md#create-new-merge-request-note) 、およびDiscussions APIの[マージリクエスト差分に新しいスレッドを作成する](discussions.md#create-a-new-thread-in-the-merge-request-diff)を参照してください。
 
 ```plaintext
 POST /projects/:id/repository/commits/:sha/comments
@@ -767,7 +773,7 @@ POST /projects/:id/repository/commits/:sha/comments
 | `line_type` | 文字列         | いいえ       | 行のタイプ。引数として`new`または`old`を取ります。 |
 | `path`      | 文字列         | いいえ       | リポジトリを基準とした相対的なパス。 |
 
-成功した場合は、[`201 Created`](rest/troubleshooting.md#status-codes)と以下のレスポンス属性が返されます。
+成功した場合は、[`201 Created`](rest/troubleshooting.md#status-codes)と以下のレスポンス属性が返されます:
 
 | 属性    | 型    | 説明 |
 |--------------|---------|-------------|
@@ -816,14 +822,14 @@ curl --request POST \
 GET /projects/:id/repository/commits/:sha/discussions
 ```
 
-パラメータは以下のとおりです。
+パラメータは以下のとおりです:
 
 | 属性 | 型 | 必須 | 説明 |
 | --------- | ---- | -------- | ----------- |
 | `id`      | 整数または文字列 | はい | プロジェクトの[IDまたはURLエンコードされたパス](rest/_index.md#namespaced-paths)。 |
 | `sha`     | 文字列 | はい | リポジトリのブランチまたはタグのコミットハッシュまたは名前。 |
 
-成功した場合は、[`200 OK`](rest/troubleshooting.md#status-codes)と以下のレスポンス属性が返されます。
+成功した場合は、[`200 OK`](rest/troubleshooting.md#status-codes)と以下のレスポンス属性が返されます:
 
 | 属性         | 型    | 説明 |
 |-------------------|---------|-------------|
@@ -892,7 +898,7 @@ GET /projects/:id/repository/commits/:sha/statuses
 
 | 属性     | 型              | 必須 | 説明 |
 |---------------|-------------------|----------|-------------|
-| `id`          | 整数または文字列 | はい      | プロジェクトのID、または[URLエンコードされたパス](rest/_index.md#namespaced-paths)。 |
+| `id`          | 整数または文字列 | はい      | プロジェクトのIDまたは[URLエンコードされたパス](rest/_index.md#namespaced-paths)。 |
 | `sha`         | 文字列            | はい      | コミットのハッシュ。 |
 | `all`         | ブール値           | いいえ       | `true`の場合、最新のステータスだけでなく、すべてのステータスを含めます。デフォルトは`false`です。 |
 | `name`        | 文字列            | いいえ       | [ジョブ名](../ci/yaml/_index.md#job-keywords)でステータスをフィルタリングします。たとえば`bundler:audit`などです。 |
@@ -902,7 +908,7 @@ GET /projects/:id/repository/commits/:sha/statuses
 | `sort`        | 文字列            | いいえ       | ステータスを昇順または降順でソートします。有効な値は`asc`と`desc`です。デフォルトは`asc`です。 |
 | `stage`       | 文字列            | いいえ       | [Buildステージ](../ci/yaml/_index.md#stages)でステータスをフィルタリングします。たとえば`test`などです。 |
 
-成功した場合は、[`200 OK`](rest/troubleshooting.md#status-codes)と以下のレスポンス属性が返されます。
+成功した場合は、[`200 OK`](rest/troubleshooting.md#status-codes)と以下のレスポンス属性が返されます:
 
 | 属性       | 型    | 説明 |
 |-----------------|---------|-------------|
@@ -977,12 +983,27 @@ curl --header "PRIVATE-TOKEN: <your_access_token>" \
 
 ### コミットパイプラインステータスを設定 {#set-commit-pipeline-status}
 
-コミットのパイプラインステータスを追加または更新します。コミットがマージリクエストに関連付けられている場合、APIコールのターゲットはマージリクエストのソースブランチのコミットである必要があります。
+`external`ステージングのジョブによって表されるコミットのステータスを追加または更新します。コミットがマージリクエストに関連付けられている場合、ターゲットはマージリクエストのソースブランチのコミットにしてください。
 
-[1つのパイプラインのジョブ最大数制限](../administration/instance_limits.md#maximum-number-of-jobs-in-a-pipeline)をすでに超えているパイプラインが存在する場合は、以下のとおりとなります。
+コミットステータスを設定する場合:
+
+- 既存のパイプラインが最初に検索され、ジョブが追加されます。
+- 適切なパイプラインが存在しない場合、`CI_PIPELINE_SOURCE: external`を指定して新しいパイプラインが作成されます。
+
+詳細については、[外部コミットステータス](../ci/ci_cd_for_external_repos/external_commit_statuses.md)を参照してください。
+
+{{< alert type="note" >}}
+
+同じコミットに対して重複するパイプラインが存在する場合、どのパイプラインが外部ステータスを受信するかが不明確になる可能性があります。[重複を避ける](../ci/jobs/job_rules.md#avoid-duplicate-pipelines)ようにパイプラインを構成します。
+
+{{< /alert >}}
+
+[1つのパイプラインのジョブ最大数制限](../administration/instance_limits.md#maximum-number-of-jobs-in-a-pipeline)をすでに超えているパイプラインが存在する場合は、以下のとおりとなります:
 
 - `pipeline_id`が指定されている場合は`422`エラー（`The number of jobs has exceeded the limit`）が返されます。
 - それ以外の場合は、新しいパイプラインが作成されます。
+
+SHA/refsの組み合わせに対して更新が既に進行中の場合、`409`エラーが返されます。このエラーを処理するには、リクエストを再試行してください。
 
 ```plaintext
 POST /projects/:id/statuses/:sha
@@ -1000,7 +1021,7 @@ POST /projects/:id/statuses/:sha
 | `ref`               | 文字列            | いいえ       | ステータスが参照する`ref`（ブランチまたはタグ）。255文字以下にする必要があります。 |
 | `target_url`        | 文字列            | いいえ       | このステータスに関連付けるターゲットURL。255文字以下にする必要があります。 |
 
-成功した場合は、[`201 Created`](rest/troubleshooting.md#status-codes)と以下のレスポンス属性が返されます。
+成功した場合は、[`201 Created`](rest/troubleshooting.md#status-codes)と以下のレスポンス属性が返されます:
 
 | 属性       | 型    | 説明 |
 |-----------------|---------|-------------|
@@ -1071,7 +1092,7 @@ GET /projects/:id/repository/commits/:sha/merge_requests
 | `sha`     | 文字列            | はい      | コミットSHA。 |
 | `state`   | 文字列            | いいえ       | 指定された状態（`opened`、`closed`、`locked`、または`merged`）のマージリクエストを返します。このパラメータを省略すると、状態に関係なく、すべてのマージリクエストが取得されます。 |
 
-成功した場合は、[`200 OK`](rest/troubleshooting.md#status-codes)と以下のレスポンス属性が返されます。
+成功した場合は、[`200 OK`](rest/troubleshooting.md#status-codes)と以下のレスポンス属性が返されます:
 
 | 属性                      | 型    | 説明 |
 |--------------------------------|---------|-------------|
@@ -1172,14 +1193,14 @@ curl --header "PRIVATE-TOKEN: <your_access_token>" \
 GET /projects/:id/repository/commits/:sha/signature
 ```
 
-パラメータは以下のとおりです。
+パラメータは以下のとおりです:
 
 | 属性 | 型              | 必須 | 説明 |
 |-----------|-------------------|----------|-------------|
 | `id`      | 整数または文字列 | はい      | プロジェクトの[IDまたはURLエンコードされたパス](rest/_index.md#namespaced-paths)。 |
 | `sha`     | 文字列            | はい      | リポジトリのブランチまたはタグのコミットハッシュまたは名前。 |
 
-成功した場合は、[`200 OK`](rest/troubleshooting.md#status-codes)と以下のレスポンス属性が返されます。
+成功した場合は、[`200 OK`](rest/troubleshooting.md#status-codes)と以下のレスポンス属性が返されます:
 
 | 属性               | 型    | 説明 |
 |-------------------------|---------|-------------|

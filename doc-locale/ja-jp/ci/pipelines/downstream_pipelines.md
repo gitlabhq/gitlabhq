@@ -52,7 +52,7 @@ title: ダウンストリームパイプライン
 - ダウンストリームプロジェクトのパイプラインリストに表示されます。
 - 独立しているため、ネストの制限はありません。
 
-パブリックプロジェクトからプライベートプロジェクトのダウンストリームパイプラインをトリガーする場合は、機密性の問題がないことを確認してください。アップストリームプロジェクトのパイプラインページには、常に以下が表示されます。
+パブリックプロジェクトからプライベートプロジェクトのダウンストリームパイプラインをトリガーする場合は、機密性の問題がないことを確認してください。アップストリームプロジェクトのパイプラインページには、常に以下が表示されます:
 
 - ダウンストリームプロジェクトの名前。
 - パイプラインのステータス。
@@ -61,7 +61,7 @@ title: ダウンストリームパイプライン
 
 `.gitlab-ci.yml`ファイルで[`trigger`](../yaml/_index.md#trigger)キーワードを使用して、ダウンストリームパイプラインをトリガーするジョブを作成します。このジョブは、トリガージョブと呼ばれます。
 
-次に例を示します。
+次に例を示します:
 
 {{< tabs >}}
 
@@ -94,12 +94,12 @@ trigger_job:
 
 CI/CD変数または[`rules`](../yaml/_index.md#rulesif)キーワードを使用して、ダウンストリームパイプラインの[ジョブの動作を制御](../jobs/job_control.md)します。
 
-[`trigger`](../yaml/_index.md#trigger)キーワードでダウンストリームパイプラインをトリガーすると、すべてのジョブにおける[`$CI_PIPELINE_SOURCE`定義済み変数](../variables/predefined_variables.md)の値は次のようになります。
+[`trigger`](../yaml/_index.md#trigger)キーワードでダウンストリームパイプラインをトリガーすると、すべてのジョブにおける[`$CI_PIPELINE_SOURCE`定義済み変数](../variables/predefined_variables.md)の値は次のようになります:
 
 - マルチプロジェクトパイプラインの場合: `pipeline`。
 - 親子パイプラインの場合: `parent_pipeline`。
 
-たとえば、マージリクエストパイプラインも実行するプロジェクトでマルチプロジェクトパイプラインのジョブを制御するには、次のようになります。
+たとえば、マージリクエストパイプラインも実行するプロジェクトでマルチプロジェクトパイプラインのジョブを制御するには、次のようになります:
 
 ```yaml
 job1:
@@ -121,7 +121,7 @@ job3:
 
 ### 別のプロジェクトで子パイプライン設定ファイルを使用する {#use-a-child-pipeline-configuration-file-in-a-different-project}
 
-トリガージョブで[`include:project`](../yaml/_index.md#includeproject)を使用して、別のプロジェクトの設定ファイルで子パイプラインをトリガーできます。
+トリガージョブで[`include:project`](../yaml/_index.md#includeproject)を使用して、別のプロジェクトの設定ファイルで子パイプラインをトリガーできます:
 
 ```yaml
 microservice_a:
@@ -134,7 +134,7 @@ microservice_a:
 
 ### 複数の子パイプライン設定ファイルを結合する {#combine-multiple-child-pipeline-configuration-files}
 
-子パイプラインを定義するときに、最大3つの設定ファイルを含めることができます。子パイプラインの設定は、マージされたすべての設定ファイルで構成されます。
+子パイプラインを定義するときに、最大3つの設定ファイルを含めることができます。子パイプラインの設定は、マージされたすべての設定ファイルで構成されます:
 
 ```yaml
 microservice_a:
@@ -159,9 +159,9 @@ microservice_a:
 
 #### 動的な子パイプラインをトリガーする {#trigger-a-dynamic-child-pipeline}
 
-動的に生成された設定ファイルから子パイプラインをトリガーするには、次の手順に従います。
+動的に生成された設定ファイルから子パイプラインをトリガーするには、次の手順に従います:
 
-1. ジョブ内で設定ファイルを生成し、[アーティファクト](../yaml/_index.md#artifactspaths)として保存します。
+1. ジョブ内で設定ファイルを生成し、[アーティファクト](../yaml/_index.md#artifactspaths)として保存します:
 
    ```yaml
    generate-config:
@@ -172,7 +172,7 @@ microservice_a:
          - generated-config.yml
    ```
 
-1. 設定ファイルを生成したジョブの後に実行するように、トリガージョブを設定します。`include: artifact`には生成されたアーティファクトを指定し、`include: job`にはアーティファクトを生成したジョブを指定します。
+1. 設定ファイルを生成したジョブの後に実行するように、トリガージョブを設定します。`include: artifact`には生成されたアーティファクトを指定し、`include: job`にはアーティファクトを生成したジョブを指定します:
 
    ```yaml
    child-pipeline:
@@ -187,13 +187,13 @@ microservice_a:
 
 アーティファクトのパスはRunnerではなくGitLabによって解析されるため、パスはGitLabを実行しているOSの構文に一致している必要があります。GitLabがLinuxで実行されていても、テストにWindows Runnerを使用している場合、トリガージョブのパス区切り文字は`/`になります。スクリプトなど、Windows Runnerを使用するジョブの他のCI/CD設定では、` \ `を使用します。
 
-動的な子パイプラインの設定の`include`セクションでは、CI/CD変数を使用できません。[イシュー378717](https://gitlab.com/gitlab-org/gitlab/-/issues/378717)はこの問題の修正を提案しています。
+動的な子パイプラインの設定の`include`セクションでは、CI/CD変数を使用できません。
 
 ### マージリクエストパイプラインで子パイプラインを実行する {#run-child-pipelines-with-merge-request-pipelines}
 
-[`rules`](../yaml/_index.md#rules)も[`workflow:rules`](../yaml/_index.md#workflowrules)も使用しない場合、子パイプラインを含むパイプラインは、デフォルトでブランチパイプラインとして実行されます。[マージリクエスト（親）パイプライン](merge_request_pipelines.md)からトリガーされたときに実行するように子パイプラインを設定するには、`rules`または`workflow:rules`を使用します。たとえば、`rules`を使用する場合は次のようになります。
+[`rules`](../yaml/_index.md#rules)も[`workflow:rules`](../yaml/_index.md#workflowrules)も使用しない場合、子パイプラインを含むパイプラインは、デフォルトでブランチパイプラインとして実行されます。[マージリクエスト（親）パイプライン](merge_request_pipelines.md)からトリガーされたときに実行するように子パイプラインを設定するには、`rules`または`workflow:rules`を使用します。たとえば、`rules`を使用する場合は次のようになります:
 
-1. マージリクエストで実行するように親パイプラインのトリガージョブを設定します。
+1. マージリクエストで実行するように親パイプラインのトリガージョブを設定します:
 
    ```yaml
    trigger-child-pipeline-job:
@@ -203,7 +203,7 @@ microservice_a:
        - if: $CI_PIPELINE_SOURCE == "merge_request_event"
    ```
 
-1. `rules`を使用して、親パイプラインによってトリガーされたときに実行するように子パイプラインのジョブを設定します。
+1. `rules`を使用して、親パイプラインによってトリガーされたときに実行するように子パイプラインのジョブを設定します:
 
    ```yaml
    job1:
@@ -217,14 +217,14 @@ microservice_a:
        - if: $CI_MERGE_REQUEST_ID
    ```
 
-子パイプラインでは、`$CI_PIPELINE_SOURCE`の値は常に`parent_pipeline`になるため、次のようになります。
+子パイプラインでは、`$CI_PIPELINE_SOURCE`の値は常に`parent_pipeline`になるため、次のようになります:
 
 - `if: $CI_PIPELINE_SOURCE == "parent_pipeline"`を使用して、子パイプラインのジョブを常に実行させることができます。
 - `if: $CI_PIPELINE_SOURCE == "merge_request_event"`を使用して、マージリクエストパイプラインで実行するように子パイプラインのジョブを設定することはできません。代わりに、`if: $CI_MERGE_REQUEST_ID`を使用して、親パイプラインがマージリクエストパイプラインである場合にのみ実行するように子パイプラインのジョブを設定します。親パイプラインの[`CI_MERGE_REQUEST_*`定義済み変数](../variables/predefined_variables.md#predefined-variables-for-merge-request-pipelines)は、子パイプラインのジョブに渡されます。
 
 ### マルチプロジェクトパイプラインのブランチを指定する {#specify-a-branch-for-multi-project-pipelines}
 
-マルチプロジェクトパイプラインをトリガーするときに、使用するブランチを指定できます。GitLabは、ブランチのヘッドのコミットを使用して、ダウンストリームパイプラインを作成します。次に例を示します。
+マルチプロジェクトパイプラインをトリガーするときに、使用するブランチを指定できます。GitLabは、ブランチのヘッドのコミットを使用して、ダウンストリームパイプラインを作成します。次に例を示します:
 
 ```yaml
 staging:
@@ -243,7 +243,7 @@ staging:
 
 [パイプライントリガーAPIエンドポイント](../../api/pipeline_triggers.md#trigger-a-pipeline-with-a-token)で[CI/CDジョブトークン（`CI_JOB_TOKEN`）](../jobs/ci_job_token.md)を使用して、CI/CDジョブ内からマルチプロジェクトパイプラインをトリガーできます。GitLabは、ジョブトークンでトリガーされたパイプラインを、APIコールを行ったジョブを含むパイプラインのダウンストリームパイプラインとして設定します。
 
-次に例を示します。
+次に例を示します:
 
 ```yaml
 trigger_pipeline:
@@ -257,7 +257,7 @@ trigger_pipeline:
 
 ## ダウンストリームパイプラインを表示する {#view-a-downstream-pipeline}
 
-[パイプラインの詳細ページ](_index.md#pipeline-details)では、ダウンストリームパイプラインは、グラフの右側にカードのリストとして表示されます。このビューでは、次のことができます。
+[パイプラインの詳細ページ](_index.md#pipeline-details)では、ダウンストリームパイプラインは、グラフの右側にカードのリストとして表示されます。このビューでは、次のことができます:
 
 - トリガージョブを選択して、トリガーされたダウンストリームパイプラインのジョブを表示する。
 - パイプラインカードで**ジョブを展開**{{< icon name="chevron-lg-right" >}}を選択し、そのダウンストリームパイプラインのジョブを展開して表示する。同時に表示できるのは1つのダウンストリームパイプラインのみです。
@@ -272,7 +272,7 @@ trigger_pipeline:
 
 {{< /history >}}
 
-失敗およびキャンセルされたジョブを再試行するには、次の場所で**再試行**（{{< icon name="retry" >}}）を選択します。
+失敗およびキャンセルされたジョブを再試行するには、次の場所で**再試行**（{{< icon name="retry" >}}）を選択します:
 
 - ダウンストリームパイプラインの詳細ページ。
 - パイプライングラフビューのパイプラインカード上。
@@ -288,7 +288,7 @@ trigger_pipeline:
 
 対応するトリガージョブを再試行することで、ダウンストリームパイプラインを再作成できます。新しく作成されたダウンストリームパイプラインは、パイプライングラフ内の現在のダウンストリームパイプラインを置き換えます。
 
-次の方法で、ダウンストリームパイプラインを再作成できます。
+次の方法で、ダウンストリームパイプラインを再作成できます:
 
 - パイプライングラフビューでトリガージョブのカードの**再実行**（{{< icon name="retry" >}}）を選択する。
 
@@ -301,7 +301,7 @@ trigger_pipeline:
 
 {{< /history >}}
 
-まだ実行中のダウンストリームパイプラインをキャンセルするには、次の場所で**キャンセル**（{{< icon name="cancel" >}}）を選択します。
+まだ実行中のダウンストリームパイプラインをキャンセルするには、次の場所で**キャンセル**（{{< icon name="cancel" >}}）を選択します:
 
 - ダウンストリームパイプラインの詳細ページ。
 - パイプライングラフビューのパイプラインカード上。
@@ -310,12 +310,12 @@ trigger_pipeline:
 
 いずれかのジョブが失敗した時点で[自動キャンセル](../yaml/_index.md#workflowauto_cancelon_job_failure)されるように子パイプラインを設定できます。
 
-子パイプラインのジョブが失敗したときに親パイプラインが自動キャンセルされるのは、次の場合のみです。
+子パイプラインのジョブが失敗したときに親パイプラインが自動キャンセルされるのは、次の場合のみです:
 
 - 親パイプラインもジョブの失敗時に自動キャンセルするように設定されている。
-- トリガージョブが[`strategy: depend`](../yaml/_index.md#triggerstrategy)で設定されている。
+- トリガージョブが[`strategy: mirror`](../yaml/_index.md#triggerstrategy)で設定されている。
 
-次に例を示します。
+次に例を示します:
 
 - `.gitlab-ci.yml`の内容:
 
@@ -327,7 +327,7 @@ trigger_pipeline:
   trigger_job:
     trigger:
       include: child-pipeline.yml
-      strategy: depend
+      strategy: mirror
 
   job3:
     script:
@@ -351,7 +351,7 @@ trigger_pipeline:
       - exit 1
   ```
 
-この例では:
+この例では、次のようになります:
 
 1. 親パイプラインは子パイプラインと`job3`を同時にトリガーします。
 1. 子パイプラインからの`job2`が失敗し、子パイプラインがキャンセルされ、`job1`も停止します。
@@ -359,7 +359,7 @@ trigger_pipeline:
 
 ### トリガージョブでダウンストリームパイプラインのステータスをミラーリングする {#mirror-the-status-of-a-downstream-pipeline-in-the-trigger-job}
 
-[`strategy: mirror`](../yaml/_index.md#triggerstrategy)を使用して、トリガージョブでダウンストリームパイプラインのステータスをミラーリングできます。
+[`strategy: mirror`](../yaml/_index.md#triggerstrategy)を使用して、トリガージョブでダウンストリームパイプラインのステータスをミラーリングできます:
 
 {{< tabs >}}
 
@@ -400,6 +400,41 @@ trigger_job:
 
 [パイプラインミニグラフ](_index.md#pipeline-mini-graphs)では、ダウンストリームパイプラインはミニグラフの右側に表示されます。
 
+## 子パイプラインのレポートをマージリクエストで表示する {#view-child-pipeline-reports-in-merge-requests}
+
+{{< history >}}
+
+- GitLab 18.6で[導入](https://gitlab.com/groups/gitlab-org/-/epics/18311)されました。
+
+{{< /history >}}
+
+マージリクエストウィジェットで子パイプラインからのレポートを表示できます。これにより、複数のパイプラインを手動でナビゲートして障害を特定しなくても、パイプライン階層全体のテスト結果と品質チェックの統一されたビューが提供されます。
+
+次のレポートタイプが子パイプラインからサポートされています:
+
+- 単体テストレポート（Junit）
+- Code Qualityレポート
+- Terraformレポート
+- メトリクスレポート
+
+子パイプラインからのテスト結果は、親パイプラインの**テスト**タブにも表示されます。
+
+マージリクエストウィジェットで完全なレポート情報を確認するには、[アーティファクトレポート](../yaml/artifacts_reports.md)を生成する子パイプラインで、[`strategy: depend`](../yaml/_index.md#triggerstrategy)または[`strategy: mirror`](../yaml/_index.md#triggerstrategy)を使用する必要があります。
+
+次に例を示します:
+
+```yaml
+test-backend:
+  trigger:
+    include: backend-tests.yml
+    strategy: depend
+
+test-frontend:
+  trigger:
+    include: frontend-tests.yml
+    strategy: depend
+```
+
 ## アップストリームパイプラインからアーティファクトをフェッチする {#fetch-artifacts-from-an-upstream-pipeline}
 
 {{< details >}}
@@ -413,9 +448,9 @@ trigger_job:
 
 {{< tab title="親子パイプライン" >}}
 
-[`needs:pipeline:job`](../yaml/_index.md#needspipelinejob)を使用して、アップストリームパイプラインからアーティファクトをフェッチします。
+[`needs:pipeline:job`](../yaml/_index.md#needspipelinejob)を使用して、アップストリームパイプラインからアーティファクトをフェッチします:
 
-1. アップストリームパイプラインで、[`artifacts`](../yaml/_index.md#artifacts)キーワードを使用してジョブにアーティファクトを保存し、トリガージョブでダウンストリームパイプラインをトリガーします。
+1. アップストリームパイプラインで、[`artifacts`](../yaml/_index.md#artifacts)キーワードを使用してジョブにアーティファクトを保存し、トリガージョブでダウンストリームパイプラインをトリガーします:
 
    ```yaml
    build_artifacts:
@@ -453,10 +488,10 @@ trigger_job:
 
 {{< tab title="マルチプロジェクトパイプライン" >}}
 
-[`needs:project`](../yaml/_index.md#needsproject)を使用して、アップストリームパイプラインからアーティファクトをフェッチします。
+[`needs:project`](../yaml/_index.md#needsproject)を使用して、アップストリームパイプラインからアーティファクトをフェッチします:
 
 1. GitLab 15.9以降では、アップストリームプロジェクトの[ジョブトークンスコープの許可リストにダウンストリームプロジェクトを追加](../jobs/ci_job_token.md#add-a-group-or-project-to-the-job-token-allowlist)します。
-1. アップストリームパイプラインで、[`artifacts`](../yaml/_index.md#artifacts)キーワードを使用してジョブにアーティファクトを保存し、トリガージョブでダウンストリームパイプラインをトリガーします。
+1. アップストリームパイプラインで、[`artifacts`](../yaml/_index.md#artifacts)キーワードを使用してジョブにアーティファクトを保存し、トリガージョブでダウンストリームパイプラインをトリガーします:
 
    ```yaml
    build_artifacts:
@@ -486,7 +521,7 @@ trigger_job:
          artifacts: true
    ```
 
-   以下を設定します。
+   以下を設定します:
 
    - `job`に、アーティファクトを作成したアップストリームパイプラインのジョブを指定します。
    - `ref`にブランチを指定します。
@@ -502,11 +537,11 @@ trigger_job:
 
 [マージリクエストパイプライン](merge_request_pipelines.md)の場合、`ref`の値は`refs/merge-requests/<id>/head`の形式になります。`id`はマージリクエストIDです。このrefは、[`CI_MERGE_REQUEST_REF_PATH`](../variables/predefined_variables.md#predefined-variables-for-merge-request-pipelines) CI/CD変数で取得できます。マージリクエストパイプラインで`ref`としてブランチ名を使用しないでください。そうすると、ダウンストリームパイプラインが最新のブランチパイプラインからアーティファクトをフェッチしようとしてしまいます。
 
-`branch`パイプラインではなく、アップストリームの`merge request`パイプラインからアーティファクトをフェッチするには、[変数の継承](#pass-yaml-defined-cicd-variables)を使用して、`CI_MERGE_REQUEST_REF_PATH`をダウンストリームパイプラインに渡します。
+`branch`パイプラインではなく、アップストリームの`merge request`パイプラインからアーティファクトをフェッチするには、[変数の継承](#pass-yaml-defined-cicd-variables)を使用して、`CI_MERGE_REQUEST_REF_PATH`をダウンストリームパイプラインに渡します:
 
 1. GitLab 15.9以降では、アップストリームプロジェクトの[ジョブトークンスコープの許可リストにダウンストリームプロジェクトを追加](../jobs/ci_job_token.md#add-a-group-or-project-to-the-job-token-allowlist)します。
 1. アップストリームパイプラインのジョブで、[`artifacts`](../yaml/_index.md#artifacts)キーワードを使用してアーティファクトを保存します。
-1. ダウンストリームパイプラインをトリガーするジョブで、`$CI_MERGE_REQUEST_REF_PATH`変数を渡します。
+1. ダウンストリームパイプラインをトリガーするジョブで、`$CI_MERGE_REQUEST_REF_PATH`変数を渡します:
 
    ```yaml
    build_artifacts:
@@ -529,7 +564,7 @@ trigger_job:
        branch: my-branch
    ```
 
-1. ダウンストリームパイプラインのジョブで、`needs:project`を使用して、渡された変数を`ref`として使用し、アップストリームパイプラインからアーティファクトをフェッチします。
+1. ダウンストリームパイプラインのジョブで、`needs:project`を使用して、渡された変数を`ref`として使用し、アップストリームパイプラインからアーティファクトをフェッチします:
 
    ```yaml
    test:
@@ -549,7 +584,7 @@ trigger_job:
 
 [`inputs`](../inputs/_index.md)キーワードを使用すると、入力値をダウンストリームパイプラインに渡すことができます。変数と比べて入力には、型チェック、さまざまなオプションによる検証、説明、デフォルト値など、多くのメリットがあります。
 
-まず、対象の設定ファイルで、`spec:inputs`を使用して入力パラメータを定義します。
+まず、対象の設定ファイルで、`spec:inputs`を使用して入力パラメータを定義します:
 
 ```yaml
 # Target pipeline configuration
@@ -563,7 +598,7 @@ spec:
       description: "Application version"
 ```
 
-次に、パイプラインをトリガーする際に値を指定します。
+次に、パイプラインをトリガーする際に値を指定します:
 
 {{< tabs >}}
 
@@ -602,11 +637,15 @@ staging:
 
 ### YAMLで定義されたCI/CD変数を渡す {#pass-yaml-defined-cicd-variables}
 
-_注: パイプラインの設定には、変数よりも入力を使用することが推奨されます。入力の方がセキュリティと柔軟性に優れているためです。_
+{{< alert type="note" >}}
+
+パイプラインの設定には、変数よりも入力を使用することが推奨されます。入力の方がセキュリティと柔軟性に優れているためです。
+
+{{< /alert >}}
 
 `variables`キーワードを使用すると、CI/CD変数をダウンストリームパイプラインに渡すことができます。これらの変数は、[変数の優先順位](../variables/_index.md#cicd-variable-precedence)においてパイプライン変数です。
 
-次に例を示します。
+次に例を示します:
 
 {{< tabs >}}
 
@@ -652,7 +691,7 @@ staging:
 
 [`inherit:variables`](../yaml/_index.md#inheritvariables)を使用して、デフォルトのCI/CD変数がダウンストリームパイプラインに到達しないようにすることができます。継承する特定の変数のリストを指定するか、すべてのデフォルト変数をブロックできます。
 
-次に例を示します。
+次に例を示します:
 
 {{< tabs >}}
 
@@ -696,7 +735,7 @@ trigger-job:
 
 ### 定義済み変数を渡す {#pass-a-predefined-variable}
 
-[定義済みCI/CD変数](../variables/predefined_variables.md)を使用してアップストリームパイプラインに関する情報を渡すには、補間を使用します。定義済み変数をトリガージョブの新しいジョブ変数として保存し、ダウンストリームパイプラインに渡します。次に例を示します。
+[定義済みCI/CD変数](../variables/predefined_variables.md)を使用してアップストリームパイプラインに関する情報を渡すには、補間を使用します。定義済み変数をトリガージョブの新しいジョブ変数として保存し、ダウンストリームパイプラインに渡します。次に例を示します:
 
 {{< tabs >}}
 
@@ -745,7 +784,7 @@ trigger-job:
 
 [`dotenv`変数の継承](../variables/job_scripts.md#pass-an-environment-variable-to-another-job)を使用して、変数をダウンストリームパイプラインに渡すことができます。
 
-たとえば、[マルチプロジェクトパイプライン](#multi-project-pipelines)では次のようになります。
+たとえば、[マルチプロジェクトパイプライン](#multi-project-pipelines)では次のようになります:
 
 1. `.env`ファイルに変数を保存します。
 1. `.env`ファイルを`dotenv`レポートとして保存します。
@@ -765,7 +804,7 @@ trigger-job:
      trigger: my/downstream_project
    ```
 
-1. ダウンストリームパイプラインの`test`ジョブを、`needs`を使用してアップストリームプロジェクトの`build_vars`ジョブから変数を継承するように設定します。`test`ジョブは`dotenv`レポートの変数を継承し、スクリプトで`BUILD_VERSION`にアクセスできます。
+1. ダウンストリームパイプラインの`test`ジョブを、`needs`を使用してアップストリームプロジェクトの`build_vars`ジョブから変数を継承するように設定します。`test`ジョブは`dotenv`レポートの変数を継承し、スクリプトで`BUILD_VERSION`にアクセスできます:
 
    ```yaml
    test:
@@ -806,7 +845,7 @@ deploy:
 
 ### 高度な例 {#advanced-example}
 
-この設定例の動作は、次のようになります。
+この設定例の動作は、次のようになります:
 
 - アップストリームプロジェクトは、ブランチ名に基づいて環境名を動的に構成します。
 - アップストリームプロジェクトは、`UPSTREAM_*`変数を使用して、デプロイのコンテキストをダウンストリームプロジェクトに渡します。

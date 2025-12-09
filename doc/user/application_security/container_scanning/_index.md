@@ -682,26 +682,36 @@ instead.
 
 {{< /alert >}}
 
-For each project that uses container scanning, apply the following changes:
+For all projects using container scanning, edit the CI/CD configuration in all locations where it's
+applied. This might include:
 
-1. [Override the container scanning template](#overriding-the-container-scanning-template) in your
-   `.gitlab-ci.yml` file to refer to the container images hosted on your local container registry:
+- Individual project `.gitlab-ci.yml` files
+- Pipeline execution policy
+- Scan execution policy
+
+Update your container scanning configuration with the following variables:
+
+1. Optional. If the container scanning template is not already included, add it.
+1. Set `CS_ANALYZER_IMAGE` to the container scanning image in your local container registry.
+1. Optional. If using a non-GitLab container registry, set `CS_REGISTRY_USER` and
+   `CS_REGISTRY_PASSWORD` to match your registry credentials.
+1. Optional. If using a self-signed certificate for your local container registry, set
+   `CS_DOCKER_INSECURE: "true"`.
+
+Example `.gitlab-ci.yml` configuration for an offline environment:
 
    ```yaml
    include:
      - template: Jobs/Container-Scanning.gitlab-ci.yml
 
    container_scanning:
-     image: $CI_REGISTRY/namespace/container-scanning
+     variables:
+       # Container scanning-specific variables
+       CS_ANALYZER_IMAGE: <hostname>:<port>/analyzers/container-scanning:8
+       CS_REGISTRY_USER: <username>
+       CS_REGISTRY_PASSWORD: <password>
+       CS_DOCKER_INSECURE: "true"
    ```
-
-1. If you're using a non-GitLab container registry, update the `CI_REGISTRY` value and configure
-   authentication by setting `CI_REGISTRY_USER` and `CI_REGISTRY_PASSWORD` variables to match your
-   local registry credentials.
-
-1. If your local container registry is running securely over `HTTPS`, but you're using a
-   self-signed certificate, then you must set `CS_DOCKER_INSECURE: "true"` in the
-   `container_scanning` section of your `.gitlab-ci.yml`.
 
 #### Update local container image
 

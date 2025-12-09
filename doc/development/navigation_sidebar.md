@@ -12,10 +12,6 @@ sidebar.
 These guidelines reflect the current state of the navigation sidebar. However,
 the sidebar is a work in progress, and so is this documentation.
 
-## Enable the new navigation sidebar
-
-To enable the new navigation sidebar, select your avatar, then turn on the **New navigation** toggle. If you've [turned on the new navigation](../user/interface_redesign.md), this button is in the upper-right corner.
-
 ## Adding items to the sidebar
 
 Before adding an item to the sidebar, ensure you review and follow the

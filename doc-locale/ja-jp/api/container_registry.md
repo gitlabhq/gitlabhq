@@ -13,7 +13,7 @@ description: GitLabコンテナレジストリをREST APIで管理します。
 
 {{< /details >}}
 
-これらのAPIエンドポイントを使用して、[GitLabコンテナレジストリ](../user/packages/container_registry/_index.md)を操作します。
+このAPIを使用して、[GitLab](../user/packages/container_registry/_index.md)コンテナレジストリを管理します。
 
 CI/CDジョブからこれらのエンドポイントで認証するには、[`$CI_JOB_TOKEN`](../ci/jobs/ci_job_token.md)変数を`JOB-TOKEN`ヘッダーとして渡します。ジョブトークンは、パイプラインを作成したプロジェクトのコンテナレジストリにのみアクセスできます。
 
@@ -48,7 +48,7 @@ curl --request PUT "https://gitlab.example.com/api/v4/projects/5/" \
   }'
 ```
 
-応答の例:
+レスポンス例:
 
 ```json
 {
@@ -84,7 +84,7 @@ curl --header "PRIVATE-TOKEN: <your_access_token>" \
   --url "https://gitlab.example.com/api/v4/projects/5/registry/repositories"
 ```
 
-応答の例:
+レスポンス例:
 
 ```json
 [
@@ -134,7 +134,7 @@ curl --header "PRIVATE-TOKEN: <your_access_token>" \
   --url "https://gitlab.example.com/api/v4/groups/2/registry/repositories"
 ```
 
-応答の例:
+レスポンス例:
 
 ```json
 [
@@ -179,7 +179,7 @@ curl --header "PRIVATE-TOKEN: <your_access_token>" \
   --url "https://gitlab.example.com/api/v4/registry/repositories/2?tags=true&tags_count=true&size=true"
 ```
 
-応答の例:
+レスポンス例:
 
 ```json
 {
@@ -215,7 +215,7 @@ DELETE /projects/:id/registry/repositories/:repository_id
 
 | 属性       | 型           | 必須 | 説明 |
 |-----------------|----------------|----------|-------------|
-| `id`            | 整数または文字列 | はい      | プロジェクトのID、または[URLエンコードされたパス](rest/_index.md#namespaced-paths)。 |
+| `id`            | 整数または文字列 | はい      | プロジェクトのIDまたは[URLエンコードされたパス](rest/_index.md#namespaced-paths)。 |
 | `repository_id` | 整数        | はい      | レジストリリポジトリのID。 |
 
 ```shell
@@ -256,7 +256,7 @@ curl --header "PRIVATE-TOKEN: <your_access_token>" \
   --url "https://gitlab.example.com/api/v4/projects/5/registry/repositories/2/tags"
 ```
 
-応答の例:
+レスポンス例:
 
 ```json
 [
@@ -292,7 +292,7 @@ curl --header "PRIVATE-TOKEN: <your_access_token>" \
   --url "https://gitlab.example.com/api/v4/projects/5/registry/repositories/2/tags/v10.0.0"
 ```
 
-応答の例:
+レスポンス例:
 
 ```json
 {
@@ -319,7 +319,7 @@ DELETE /projects/:id/registry/repositories/:repository_id/tags/:tag_name
 
 | 属性       | 型           | 必須 | 説明 |
 |-----------------|----------------|----------|-------------|
-| `id`            | 整数または文字列 | はい      | プロジェクトのID、または[URLエンコードされたパス](rest/_index.md#namespaced-paths)。 |
+| `id`            | 整数または文字列 | はい      | プロジェクトのIDまたは[URLエンコードされたパス](rest/_index.md#namespaced-paths)。 |
 | `repository_id` | 整数        | はい      | レジストリリポジトリのID。 |
 | `tag_name`      | 文字列         | はい      | タグの名前。 |
 
@@ -343,15 +343,15 @@ DELETE /projects/:id/registry/repositories/:repository_id/tags
 
 | 属性           | 型           | 必須 | 説明 |
 |---------------------|----------------|----------|-------------|
-| `id`                | 整数または文字列 | はい      | プロジェクトのID、または[URLエンコードされたパス](rest/_index.md#namespaced-paths)。 |
+| `id`                | 整数または文字列 | はい      | プロジェクトのIDまたは[URLエンコードされたパス](rest/_index.md#namespaced-paths)。 |
 | `repository_id`     | 整数        | はい      | レジストリリポジトリのID。 |
 | `keep_n`            | 整数        | いいえ       | 保持する指定された名前の最新のタグの数。 |
-| `name_regex`        | 文字列         | いいえ       | 削除する名前の[re2](https://github.com/google/re2/wiki/Syntax)正規表現。すべてのタグを削除するには、`.*`を指定します。**注**: `name_regex`は非推奨となり、`name_regex_delete`が推奨されます。このフィールドは検証されます。 |
+| `name_regex`        | 文字列         | いいえ       | 削除する名前の[re2](https://github.com/google/re2/wiki/Syntax)正規表現。すべてのタグを削除するには、`.*`を指定します。注： `name_regex`は非推奨となり、`name_regex_delete`が推奨されます。このフィールドは検証されます。 |
 | `name_regex_delete` | 文字列         | はい      | 削除する名前の[re2](https://github.com/google/re2/wiki/Syntax)正規表現。すべてのタグを削除するには、`.*`を指定します。このフィールドは検証されます。 |
 | `name_regex_keep`   | 文字列         | いいえ       | 保持する名前の[re2](https://github.com/google/re2/wiki/Syntax)正規表現。この値は、`name_regex_delete`からの一致を上書きします。このフィールドは検証されます。注: `.*`に設定すると、何も実行されません。 |
 | `older_than`        | 文字列         | いいえ       | 指定された時刻より前の削除対象のタグ。`1h`、`1d`、`1month`など、人間が読める形式で記述されています。 |
 
-このAPIは成功した場合、[HTTP応答ステータスコード202](https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/202)を返し、次の操作を実行します。
+このAPIは成功した場合、[HTTP応答ステータスコード202](https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/202)を返し、次の操作を実行します:
 
 - すべてのタグを作成日順に並べ替えます。作成日は、タグのプッシュ時刻ではなく、manifestの作成時刻です。
 - 指定された`name_regex_delete`（または非推奨の`name_regex`）に一致するタグのみを削除し、`name_regex_keep`に一致するものは保持します。
@@ -373,7 +373,7 @@ GitLab.comではコンテナレジストリの規模により、このAPIで削�
 
 例:
 
-- 正規表現（Git SHA）に一致するタグ名を削除し、常に少なくとも5個を保持し、2日以上経過したものを削除します。
+- 正規表現（Git SHA）に一致するタグ名を削除し、常に少なくとも5個を保持し、2日以上経過したものを削除します:
 
   ```shell
   curl --request DELETE \
@@ -384,7 +384,7 @@ GitLab.comではコンテナレジストリの規模により、このAPIで削�
     --url "https://gitlab.example.com/api/v4/projects/5/registry/repositories/2/tags"
   ```
 
-- すべてのタグを削除しますが、常に最新の5個を保持します。
+- すべてのタグを削除しますが、常に最新の5個を保持します:
 
   ```shell
   curl --request DELETE \
@@ -394,7 +394,7 @@ GitLab.comではコンテナレジストリの規模により、このAPIで削�
     --url "https://gitlab.example.com/api/v4/projects/5/registry/repositories/2/tags"
   ```
 
-- すべてのタグを削除しますが、`stable`で始まるタグを常に保持します。
+- すべてのタグを削除しますが、`stable`で始まるタグを常に保持します:
 
   ```shell
   curl --request DELETE \
@@ -404,7 +404,7 @@ GitLab.comではコンテナレジストリの規模により、このAPIで削�
     --url "https://gitlab.example.com/api/v4/projects/5/registry/repositories/2/tags"
   ```
 
-- 1か月以上経過したすべてのタグを削除します。
+- 1か月以上経過したすべてのタグを削除します:
 
   ```shell
   curl --request DELETE \
@@ -416,7 +416,7 @@ GitLab.comではコンテナレジストリの規模により、このAPIで削�
 
 ### `+`を含む正規表現でcURLを使用する {#use-curl-with-a-regular-expression-that-contains-}
 
-cURLを使用する場合、GitLab Railsバックエンドで正しく処理されるように、正規表現の`+`文字は[URLエンコード](https://curl.se/docs/manpage.html#--data-urlencode)する必要があります。例は次のとおりです。
+cURLを使用する場合、GitLab Railsバックエンドで正しく処理されるように、正規表現の`+`文字は[URLエンコード](https://curl.se/docs/manpage.html#--data-urlencode)する必要があります。例は次のとおりです:
 
 ```shell
 curl --request DELETE \
@@ -441,7 +441,7 @@ curl --request DELETE \
 GET ${CI_SERVER_URL}/jwt/auth?service=container_registry&scope=*
 ```
 
-有効なトークンを取得するには、正しい[スコープとアクション](https://distribution.github.io/distribution/spec/auth/scope/)を指定する必要があります。
+有効なトークンを取得するには、正しい[スコープとアクション](https://distribution.github.io/distribution/spec/auth/scope/)を指定する必要があります:
 
 ```shell
 $ SCOPE="repository:${CI_REGISTRY_IMAGE}:delete" #or push,pull
@@ -479,7 +479,7 @@ $ curl --request DELETE \
 GET http(s)://${CI_REGISTRY}/v2/_catalog
 ```
 
-GitLabインスタンス上のすべてのコンテナリポジトリのリストを取得するには、管理者の認証情報が必要です。
+GitLabインスタンス上のすべてのコンテナリポジトリのリストを取得するには、管理者の認証情報が必要です:
 
 ```shell
 $ SCOPE="registry:catalog:*"

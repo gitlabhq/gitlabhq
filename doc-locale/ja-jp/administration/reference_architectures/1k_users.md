@@ -16,21 +16,21 @@ title: 'リファレンスアーキテクチャ: 最大20 RPSまたは1,000ユ�
 
 リファレンスアーキテクチャの完全なリストについては、[利用可能なリファレンスアーキテクチャ](_index.md#available-reference-architectures)を参照してください。
 
-- **目標負荷**: API: 20 RPS、Web: 2 RPS、Git（プル）: 2 RPS、Git（プッシュ）: 1 RPS
-- **高可用性**: いいえ。高可用性環境については、変更された[3Kリファレンスアーキテクチャ](3k_users.md#supported-modifications-for-lower-user-counts-ha)に従ってください。
-- **クラウドネイティブハイブリッド**: いいえ。クラウドネイティブハイブリッド環境の場合は、[変更されたハイブリッドリファレンスアーキテクチャ](#cloud-native-hybrid-reference-architecture-with-helm-charts)に従うことができます。
-- **どのリファレンスアーキテクチャを使用すればよいかわからない場合:** 詳細については、[どのアーキテクチャで始めるかを決定する](_index.md#deciding-which-architecture-to-start-with)を参照してください。
+- **Target Load**（目標負荷）: API: 20 RPS、Web: 2 RPS、Git（プル）: 2 RPS、Git（プッシュ）: 1 RPS
+- **High Availability**（高可用性）: いいえ。高可用性環境については、変更された[3Kリファレンスアーキテクチャ](3k_users.md#supported-modifications-for-lower-user-counts-ha)に従ってください。
+- **Cloud Native Hybrid**（クラウドネイティブハイブリッド）: いいえ。クラウドネイティブハイブリッド環境の場合は、[変更されたハイブリッドリファレンスアーキテクチャ](#cloud-native-hybrid-reference-architecture-with-helm-charts)に従うことができます。
+- **Unsure which Reference Architecture to use**（どのリファレンスアーキテクチャを使用すればよいかわからない場合）は、アーキテクチャの選択を参照してください。詳細については、[どのアーキテクチャで始めるかを決定する](_index.md#deciding-which-architecture-to-start-with)を参照してください。
 
 | ユーザー        | 設定        | GCPの例<sup>1</sup> | AWSの例<sup>1</sup> | Azureの例<sup>1</sup> |
 |--------------|----------------------|----------------|--------------|----------|
-| 最大1,000または20 RPS | 8 vCPU、16 GBメモリ | `n1-standard-8`<sup>2</sup> | `c5.2xlarge` | `F8s v2` |
+| 最大1,000または20 RPS | 8 vCPU、16 GBメモリ | `n1-standard-8`<sup>2</sup> | `c5.2xlarge` | `F8s v2` |
 
-**脚注**:
+**Footnotes**（脚注）:
 
 <!-- Disable ordered list rule https://github.com/DavidAnson/markdownlint/blob/main/doc/Rules.md#md029---ordered-list-item-prefix -->
 <!-- markdownlint-disable MD029 -->
 1. マシンタイプの例は、説明目的で提供されています。これらのタイプは、[検証とテスト](_index.md#validation-and-test-results)で使用されていますが、推奨されるデフォルトとして意図されたものではありません。リストされている要件を満たす他のマシンタイプへの切り替え（利用可能な場合はARMバリアントを含む）がサポートされています。詳細については、[サポートされているマシンタイプ](_index.md#supported-machine-types)を参照してください。
-2. GCPの場合、8 vCPUおよび16 GBのRAMの推奨要件に一致する、もっとも近い同等の標準マシンタイプが選択されています。必要に応じて、[カスタムマシンタイプ](https://cloud.google.com/compute/docs/instances/creating-instance-with-custom-machine-type)も使用できます。
+2. GCPの場合、8 vCPUおよび16 GBのRAMの推奨要件に一致する、もっとも近い同等の標準マシンタイプが選択されています。必要に応じて、[カスタムマシンタイプ](https://cloud.google.com/compute/docs/instances/creating-instance-with-custom-machine-type)も使用できます。
 <!-- markdownlint-enable MD029 -->
 
 次の図では、GitLabを1台のサーバーにインストールしているものの、内部では複数のサービスで構成されていることを示しています。インスタンスがスケールすると、これらのサービスは分離され、特定の要求に応じて個別にスケールされます。
@@ -77,13 +77,13 @@ monitor .[#7FFFD4,norank]--> redis
 
 {{< alert type="warning" >}}
 
-**ノードの仕様は、正常に稼働する環境での利用パターンとリポジトリサイズの上位パーセンタイルに基づいています**。**ただし、（数ギガバイトを超える）[大規模なモノレポ](_index.md#large-monorepos)または[追加のワークロード](_index.md#additional-workloads)がある場合、環境のパフォーマンスに大きな影響を与える可能性があります。**これが当てはまる場合は、[さらに調整が必要になる場合があります](_index.md#scaling-an-environment)。リンク先のドキュメントを参照し、必要に応じてお問い合わせください。
+ノードの仕様は、正常に稼働する環境での利用パターンとリポジトリサイズの上位パーセンタイルに基づいています。ただし、数ギガバイトを超える[大規模なモノレポ](_index.md#large-monorepos)や[追加のワークロード](_index.md#additional-workloads)がある場合は、環境のパフォーマンスに大きな影響を与える可能性があります。これが当てはまる場合は、[さらに調整が必要になる場合があります](_index.md#scaling-an-environment)。リンク先のドキュメントを参照し、必要に応じてお問い合わせください。
 
 {{< /alert >}}
 
 ## テスト手法 {#testing-methodology}
 
-20 RPS/1,000ユーザーのリファレンスアーキテクチャは、もっとも一般的なワークフローに対応するように設計されています。GitLabは、次のエンドポイントスループットの目標に対して、定期的にスモークテストとパフォーマンステストを実施しています。
+20 RPS/1,000ユーザーのリファレンスアーキテクチャは、もっとも一般的なワークフローに対応するように設計されています。GitLabは、次のエンドポイントスループットの目標に対して、定期的にスモークテストとパフォーマンステストを実施しています:
 
 | エンドポイントの種類 | 目標スループット |
 | ------------- | ----------------- |
@@ -98,7 +98,7 @@ monitor .[#7FFFD4,norank]--> redis
 
 ### パフォーマンスに関する考慮事項 {#performance-considerations}
 
-環境に次の要素がある場合、追加の調整が必要になるかもしれません。
+環境に次の要素がある場合、追加の調整が必要になるかもしれません:
 
 - リスト上の目標よりも一貫して高いスループット
 - [大規模なモノレポ](_index.md#large-monorepos)
@@ -129,7 +129,7 @@ Elasticsearchクラスターの設計と要件は、データによって異な�
 
 クラウドネイティブハイブリッドリファレンスアーキテクチャのセットアップでは、選択したステートレスコンポーネントは、公式の[Helm Chart](https://docs.gitlab.com/charts/)を使用してKubernetesにデプロイされます。ステートフルコンポーネントは、Linuxパッケージを使用してコンピューティング仮想マシンにデプロイされます。
 
-Kubernetesで使用できる最小のリファレンスアーキテクチャは、[2,000または40 RPS GitLabクラウドネイティブハイブリッド](2k_users.md#cloud-native-hybrid-reference-architecture-with-helm-charts-alternative)（非HA）と[3,000または60 RPS GitLabクラウドネイティブハイブリッド](3k_users.md#cloud-native-hybrid-reference-architecture-with-helm-charts-alternative)（HA）です。
+Kubernetesで使用できる最小のリファレンスアーキテクチャは、[2,000または40 RPS GitLabクラウドネイティブハイブリッド](2k_users.md#cloud-native-hybrid-reference-architecture-with-helm-charts-alternative) （非HA）と[3,000または60 RPS GitLabクラウドネイティブハイブリッド](3k_users.md#cloud-native-hybrid-reference-architecture-with-helm-charts-alternative)（HA）です。
 
 ユーザー数またはRPSが少ない環境の場合は、ノードの仕様を下げることができます。ユーザー数に応じて、提案されたすべてのノード仕様を必要に応じて下げることができます。ただし、[一般要件](../../install/requirements.md)を下回ることは避けてください。
 

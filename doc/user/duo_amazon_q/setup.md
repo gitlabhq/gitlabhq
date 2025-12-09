@@ -81,7 +81,7 @@ Prerequisites:
 - You must be an administrator.
 
 1. Sign in to GitLab.
-1. On the left sidebar, at the bottom, select **Admin**. If you've [turned on the new navigation](../interface_redesign.md), in the upper-right corner, select **Admin**.
+1. In the upper-right corner, select **Admin**.
 1. Select **Settings** > **General**.
 1. Expand **GitLab Duo with Amazon Q**.
 1. Select **View configuration setup**.
@@ -227,7 +227,7 @@ Prerequisites:
 To finish setting up GitLab Duo with Amazon Q:
 
 1. Sign in to GitLab.
-1. On the left sidebar, at the bottom, select **Admin**. If you've [turned on the new navigation](../interface_redesign.md), in the upper-right corner, select **Admin**.
+1. In the upper-right corner, select **Admin**.
 1. Select **Settings** > **General**.
 1. Expand **GitLab Duo with Amazon Q**.
 1. Select **View configuration setup**.
@@ -330,7 +330,7 @@ Prerequisites:
 To turn off GitLab Duo with Amazon Q for the instance:
 
 1. Sign in to GitLab.
-1. On the left sidebar, at the bottom, select **Admin**. If you've [turned on the new navigation](../interface_redesign.md), in the upper-right corner, select **Admin**.
+1. In the upper-right corner, select **Admin**.
 1. Select **Settings** > **General**.
 1. Expand **GitLab Duo with Amazon Q**.
 1. Select **View configuration setup**.
@@ -345,7 +345,7 @@ Prerequisites:
 
 To turn off GitLab Duo with Amazon Q for a group:
 
-1. On the left sidebar, select **Search or go to** and find your group. If you've [turned on the new navigation](../interface_redesign.md), this field is on the top bar.
+1. On the top bar, select **Search or go to** and find your group.
 1. Select **Settings** > **General**.
 1. Expand **Amazon Q**.
 1. Choose an option:
@@ -361,7 +361,7 @@ Prerequisites:
 
 To turn off GitLab Duo with Amazon Q for a project:
 
-1. On the left sidebar, select **Search or go to** and find your group. If you've [turned on the new navigation](../interface_redesign.md), this field is on the top bar.
+1. On the top bar, select **Search or go to** and find your group.
 1. Select **Settings** > **General**.
 1. Expand **Visibility, project features, permissions**.
 1. Under **Amazon Q**, turn the toggle off.

@@ -75,7 +75,7 @@ For JetBrains IDEs:
 
 To turn MCP on or off for your group:
 
-1. On the left sidebar, select **Search or go to** and find your group. If you've [turned on the new navigation](../../interface_redesign.md), this field is on the top bar.
+1. On the top bar, select **Search or go to** and find your group.
 1. Select **Settings** > **GitLab Duo**.
 1. Select **Change configuration**.
 1. Under **Model Context Protocol**, select or clear the

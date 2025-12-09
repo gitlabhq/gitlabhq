@@ -13,10 +13,12 @@ description: YAMLアンカー、!referenceタグ、`extends`キーワードを�
 
 {{< /details >}}
 
-次の機能やキーワードを使用すると、GitLab CI/CD設定ファイルにおける複雑さや重複した設定を軽減できます。
+次の機能やキーワードを使用すると、GitLab CI/CD設定ファイルにおける複雑さや重複した設定を軽減できます:
 
 - [アンカー（`&`）](#anchors)、エイリアス（`*`）、マップのマージ（`<<`）などのYAML固有の機能。さまざまな[YAMLの機能](https://learnxinyminutes.com/docs/yaml/)について、詳細をご覧ください。
 - より柔軟で読みやすい[`extends`キーワード](#use-extends-to-reuse-configuration-sections)。可能な場合は`extends`の使用が推奨されます。
+
+複数の類似したジョブを作成するものの、異なる変数の値を使用するには、[\`parallel:matrix](../jobs/job_control.md#run-a-matrix-of-parallel-trigger-jobs)を使用します。
 
 ## アンカー {#anchors}
 
@@ -24,7 +26,7 @@ YAMLには「アンカー」という機能があり、ドキュメント全体�
 
 アンカーを使用して、プロパティを複製または継承できます。[非表示ジョブ](../jobs/_index.md#hide-a-job)でアンカーを使用して、ジョブのテンプレートを提供できます。重複するキーがある場合、最後に追加されたキーが優先され、その他のキーはオーバーライドされます。
 
-特定のケース（[スクリプトのYAMLアンカー](#yaml-anchors-for-scripts)を参照）では、YAMLアンカーを使用して、他の場所で定義された複数のコンポーネントを含む配列を作成できます。次に例を示します。
+特定のケース（[スクリプトのYAMLアンカー](#yaml-anchors-for-scripts)を参照）では、YAMLアンカーを使用して、他の場所で定義された複数のコンポーネントを含む配列を作成できます。例は次のとおりです:
 
 ```yaml
 .default_scripts: &default_scripts
@@ -39,7 +41,7 @@ job1:
 
 [`include`キーワード](_index.md#include)を使用する場合、複数のファイルにまたがってYAMLアンカーを使用することはできません。アンカーは、定義されたファイル内でのみ有効です。異なるYAMLファイルから設定を再利用するには、[`!reference`タグ](#reference-tags)または[`extends`キーワード](#use-extends-to-reuse-configuration-sections)を使用します。
 
-次の例では、アンカーとマップのマージを使用します。`test1`と`test2`の2つのジョブを作成します。これらのジョブは`.job_template`設定を継承し、それぞれに独自のカスタム`script`が定義されています。
+次の例では、アンカーとマップのマージを使用します。`test1`と`test2`の2つのジョブを作成します。これらのジョブは`.job_template`設定を継承し、それぞれに独自のカスタム`script`が定義されています:
 
 ```yaml
 .job_template: &job_configuration  # Hidden yaml configuration that defines an anchor named 'job_configuration'
@@ -59,7 +61,7 @@ test2:
     - test2 project
 ```
 
-`&`はアンカーの名前（`job_configuration`）を設定します。`<<`は「指定されたハッシュを現在のハッシュにマージする」ことを意味し、`*`は名前付きアンカー（この場合も`job_configuration`）を含めます。この例を[展開](../pipeline_editor/_index.md#view-full-configuration)すると次のようになります。
+`&`はアンカーの名前（`job_configuration`）を設定します。`<<`は「指定されたハッシュを現在のハッシュにマージする」ことを意味し、`*`は名前付きアンカー（この場合も`job_configuration`）を含めます。この例を[展開](../pipeline_editor/_index.md#view-full-configuration)すると次のようになります:
 
 ```yaml
 .job_template:
@@ -85,7 +87,7 @@ test2:
     - test2 project
 ```
 
-アンカーを使用して、2つのサービスセットを定義できます。たとえば、`test:postgres`と`test:mysql`は`.job_template`に定義された`script`を共有しますが、`.postgres_services`と`.mysql_services`に定義された異なる`services`を使用します。
+アンカーを使用して、2つのサービスセットを定義できます。たとえば、`test:postgres`と`test:mysql`は`.job_template`に定義された`script`を共有しますが、`.postgres_services`と`.mysql_services`に定義された異なる`services`を使用します:
 
 ```yaml
 .job_template: &job_configuration
@@ -115,7 +117,7 @@ test:mysql:
   services: *mysql_configuration
 ```
 
-[展開](../pipeline_editor/_index.md#view-full-configuration)すると次のようになります。
+[展開](../pipeline_editor/_index.md#view-full-configuration)すると次のようになります:
 
 ```yaml
 .job_template:
@@ -163,7 +165,7 @@ test:mysql:
 
 {{< /history >}}
 
-[YAMLアンカー](#anchors)を[script](_index.md#script)、[`before_script`](_index.md#before_script)、[`after_script`](_index.md#after_script)とともに使用すると、複数のジョブで定義済みコマンドを使用できます。
+[YAMLアンカー](#anchors)を[script](_index.md#script) 、[`before_script`](_index.md#before_script) 、[`after_script`](_index.md#after_script)とともに使用すると、複数のジョブで定義済みコマンドを使用できます:
 
 ```yaml
 .some-script-before: &some-script-before
@@ -197,7 +199,7 @@ job2:
 
 [`extends`キーワード](_index.md#extends)を使用して、複数のジョブで設定を再利用できます。[YAMLアンカー](#anchors)と似ていますが、よりシンプルで、[`extends`は`includes`とともに使用](#use-extends-and-include-together)できます。
 
-`extends`は、複数レベルの継承をサポートしています。複雑さが増すため、3レベルを超えて使用するのは避けるべきですが、最大で11レベルまで使用できます。次の例では、2レベルの継承を使用しています。
+`extends`は、複数レベルの継承をサポートしています。複雑さが増すため、3レベルを超えて使用するのは避けるべきですが、最大で11レベルまで使用できます。次の例では、2レベルの継承を使用しています:
 
 ```yaml
 .tests:
@@ -225,7 +227,7 @@ spinach:
 
 ### `extends`からキーを除外する {#exclude-a-key-from-extends}
 
-拡張された内容からキーを除外するには、そのキーに`null`を割り当てる必要があります。次に例を示します。
+拡張された内容からキーを除外するには、そのキーに`null`を割り当てる必要があります。次に例を示します:
 
 ```yaml
 .base:
@@ -282,9 +284,9 @@ test4:
 
 異なる設定ファイルから設定を再利用するには、`extends`と[`include`](_index.md#include)を組み合わせます。
 
-次の例では、`included.yml`ファイルで`script`が定義されています。次に、`.gitlab-ci.yml`ファイルで`extends`がその`script`の内容を参照します。
+次の例では、`included.yml`ファイルで`script`が定義されています。次に、`.gitlab-ci.yml`ファイルで`extends`がその`script`の内容を参照します:
 
-- `included.yml`:
+- `included.yml`: 
 
   ```yaml
   .template:
@@ -292,7 +294,7 @@ test4:
       - echo Hello!
   ```
 
-- `.gitlab-ci.yml`:
+- `.gitlab-ci.yml`: 
 
   ```yaml
   include: included.yml
@@ -304,7 +306,7 @@ test4:
 
 ### マージの詳細 {#merge-details}
 
-`extends`を使用すると、ハッシュをマージできますが、配列はマージできません。キーが重複している場合、GitLabはキーに基づいて逆方向のディープマージを実行します。最後のメンバーで定義されたキーが、他のレベルで定義された内容を常にオーバーライドします。次に例を示します。
+`extends`を使用すると、ハッシュをマージできますが、配列はマージできません。キーが重複している場合、GitLabはキーに基づいて逆方向のディープマージを実行します。最後のメンバーで定義されたキーが、他のレベルで定義された内容を常にオーバーライドします。例は次のとおりです:
 
 ```yaml
 .only-important:
@@ -336,7 +338,7 @@ rspec:
     - rake rspec
 ```
 
-結果は、このような`rspec`ジョブになります。
+結果は、このような`rspec`ジョブになります:
 
 ```yaml
 rspec:
@@ -364,9 +366,9 @@ rspec:
 
 カスタムYAMLタグ`!reference`を使用して、その他のジョブセクションからキーワード設定を選択し、現在のセクションで再利用できます。[YAMLアンカー](#anchors)とは異なり、`!reference`タグを使用して[インクルードされた](_index.md#include)設定ファイルから設定を再利用することもできます。
 
-次の例では、2つの異なる場所にある`script`と`after_script`を`test`ジョブ内で再利用しています。
+次の例では、2つの異なる場所にある`script`と`after_script`を`test`ジョブ内で再利用しています:
 
-- `configs.yml`:
+- `configs.yml`: 
 
   ```yaml
   .setup:
@@ -374,7 +376,7 @@ rspec:
       - echo creating environment
   ```
 
-- `.gitlab-ci.yml`:
+- `.gitlab-ci.yml`: 
 
   ```yaml
   include:
@@ -414,6 +416,8 @@ test-vars-2:
 
 `!reference`タグを[`parallel:matrix`キーワード](_index.md#parallelmatrix)とともに使用する場合、[既知のイシュー](../debugging.md#config-should-be-an-array-of-hashes-error-message)が存在します。
 
+[CI/CD入力](../inputs/_index.md)は`!reference`タグでは使用できません。`!reference`タグは入力補間の前に評価されるためです。
+
 ### `script`、`before_script`、`after_script`内で`!reference`タグをネストする {#nest-reference-tags-in-script-before_script-and-after_script}
 
 {{< history >}}
@@ -422,7 +426,7 @@ test-vars-2:
 
 {{< /history >}}
 
-`script`、`before_script`、`after_script`セクションでは、`!reference`タグを最大10レベルの深さまでネストできます。より複雑なスクリプトを構築する場合は、ネストされたタグを使用して再利用可能なセクションを定義します。次に例を示します。
+`script`、`before_script`、`after_script`セクションでは、`!reference`タグを最大10レベルの深さまでネストできます。より複雑なスクリプトを構築する場合は、ネストされたタグを使用して再利用可能なセクションを定義します。例は次のとおりです:
 
 ```yaml
 .snippets:
@@ -444,9 +448,9 @@ nested-references:
 
 ### `!reference`タグをサポートするようにIDEを設定する {#configure-your-ide-to-support-reference-tags}
 
-[パイプラインエディタ](../pipeline_editor/_index.md)は`!reference`タグをサポートしています。ただし、`!reference`のようなカスタムYAMLタグのスキーマルールは、デフォルトではエディタによって無効と見なされる場合があります。一部のエディタでは、`!reference`タグを受け入れるように設定できます。次に例を示します。
+[パイプラインエディタ](../pipeline_editor/_index.md)は`!reference`タグをサポートしています。ただし、`!reference`のようなカスタムYAMLタグのスキーマルールは、デフォルトではエディタによって無効と見なされる場合があります。一部のエディタでは、`!reference`タグを受け入れるように設定できます。例は次のとおりです:
 
-- VS Codeでは、`settings.json`ファイル内で、`customTags`を解析するように`vscode-yaml`を設定できます。
+- VS Codeでは、`settings.json`ファイル内で、`customTags`を解析するように`vscode-yaml`を設定できます:
 
   ```json
   "yaml.customTags": [
@@ -454,7 +458,7 @@ nested-references:
   ]
   ```
 
-- Sublime Textで`LSP-yaml`パッケージを使用している場合は、`LSP-yaml`ユーザー設定で`customTags`を設定できます。
+- Sublime Textで`LSP-yaml`パッケージを使用している場合は、`LSP-yaml`ユーザー設定で`customTags`を設定できます:
 
   ```json
   {

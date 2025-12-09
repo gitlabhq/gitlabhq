@@ -433,7 +433,7 @@ Prerequisites:
 
 - You must be an administrator.
 
-1. On the left sidebar, at the bottom, select **Admin**. If you've [turned on the new navigation](../interface_redesign.md), in the upper-right corner, select **Admin**.
+1. In the upper-right corner, select **Admin**.
 1. Select **GitLab Duo**.
 1. In the lower-right corner, select **Change configuration**.
 1. In the **GitLab Duo Chat conversation expiration** section, select either of the following options:
