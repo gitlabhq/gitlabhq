@@ -78,6 +78,7 @@ func processRequestBody(h http.Handler, p Preparer, w http.ResponseWriter, r *ht
 	for k, v := range fields {
 		data.Set(k, v)
 	}
+	data.Set("Content-Type", r.Header.Get("Content-Type"))
 
 	// Hijack body
 	body := data.Encode()
