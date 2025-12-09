@@ -81,7 +81,10 @@ This writes the downloaded file to `my_gem-1.0.0.gem` in the current directory.
 
 ## Fetch a list of dependencies
 
-Fetch a list of dependencies for a list of gems:
+Fetch a list of dependencies for a list of gems.
+
+The response is a marshalled array of hashes for all versions of the requested gems.
+Because the response is marshalled, you can store it in a file.
 
 ```plaintext
 GET projects/:id/packages/rubygems/api/v1/dependencies
@@ -97,14 +100,14 @@ curl --header "Authorization:<personal_access_token>" \
   --url "https://gitlab.example.com/api/v4/projects/1/packages/rubygems/api/v1/dependencies?gems=my_gem,foo"
 ```
 
-This endpoint returns a marshalled array of hashes for all versions of the requested gems. Because the
-response is marshalled, you can store it in a file. If Ruby is installed, you can use the following
+If Ruby is installed, you can use the following
 Ruby command to read the response. For this to work, you must
-[set your credentials in `~/.gem/credentials`](../../user/packages/rubygems_registry/_index.md#authenticate-to-the-package-registry):
+either [set your credentials in `~/.gem/credentials`](../../user/packages/rubygems_registry/_index.md#authenticate-to-the-package-registry),
+or pass your access token to the request:
 
 ```shell
 $ ruby -ropen-uri -rpp -e \
-  'pp Marshal.load(open("https://gitlab.example.com/api/v4/projects/1/packages/rubygems/api/v1/dependencies?gems=my_gem,rails,foo"))'
+  'pp Marshal.load(URI.open("https://gitlab.example.com/api/v4/projects/1/packages/rubygems/api/v1/dependencies?gems=my_gem,rails,foo", "Authorization" => <personal_access_token>))'
 
 [{:name=>"my_gem", :number=>"0.0.1", :platform=>"ruby", :dependencies=>[]},
  {:name=>"my_gem",
@@ -130,8 +133,6 @@ $ ruby -ropen-uri -rpp -e \
     ["dependency_2", "= 3.0.0"],
     ["dependency_4", ">= 0"]]}]
 ```
-
-This writes the downloaded file to `mypkg-1.0-SNAPSHOT.jar` in the current directory.
 
 ## Upload a gem
 

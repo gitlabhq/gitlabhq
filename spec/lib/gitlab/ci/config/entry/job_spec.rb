@@ -958,6 +958,7 @@ RSpec.describe Gitlab::Ci::Config::Entry::Job, feature_category: :pipeline_compo
       :pages | { pages: { publish: 'public' }, artifacts: { paths: ['public'] } } | { paths: ["public"] }
       :pages | { artifacts: {} } | { paths: ["public"] }
       :pages | { artifacts: { paths: [] } } | { paths: ["public"] }
+      :pages | { artifacts: { paths: nil } } | { paths: ["public"] }
       :pages | { pages: false } | nil
       :'non-pages' | {} | nil
       :custom | { pages: { publish: 'foo' } } | { paths: ["foo"] }

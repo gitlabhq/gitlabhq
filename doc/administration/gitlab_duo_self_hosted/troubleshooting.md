@@ -372,6 +372,30 @@ If you are experiencing issues accessing Code Suggestions after setup, try the f
    ::Ai::FeatureSetting.code_suggestions_self_hosted? # Should be true
    ```
 
+## Error A1000
+
+When using GitLab Duo features with self-hosted models, you might encounter the following error:
+
+`I'm sorry, I couldn't respond in time. Please try again. Error code: A1000`
+
+This issue occurs when the request to your model might be taking longer than the configured timeout period.
+
+Common causes include:
+
+- Large context windows or complex prompts
+- Model performance limitations
+- Network latency between the AI gateway and the model endpoint
+- Cross-region inference delays (for AWS Bedrock deployments)
+
+To resolve timeout errors:
+
+1. [Configure a higher AI gateway timeout value](configure_duo_features.md#configure-timeout-for-the-ai-gateway). You can set the timeout between 60 and 600 seconds (10 minutes).
+1. Monitor your logs after adjusting the timeout to verify the errors are resolved.
+1. If timeout errors persist even with a higher timeout value:
+   - Check your model's performance and resource allocation.
+   - Verify network connectivity between the AI gateway and model endpoint.
+   - Consider using a more performant model or deployment configuration.
+
 ## Verify GitLab setup
 
 To verify your GitLab Self-Managed setup, run the following command:

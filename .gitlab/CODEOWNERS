@@ -146,7 +146,7 @@ Gemfile.next.checksum
 /.gitlab/ci/release-environments/ @gl-dx/pipeline-maintainers @gitlab-org/delivery
 /gems/gem.gitlab-ci.yml
 
-[Tooling] @gl-dx/tooling-maintainers
+^[Tooling] @gl-dx/tooling-maintainers
 Dangerfile
 /danger/
 /tooling/ @gl-dx/tooling-maintainers @gitlab-org/maintainers/rails-backend

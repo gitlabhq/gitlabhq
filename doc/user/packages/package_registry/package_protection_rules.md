@@ -61,7 +61,7 @@ Prerequisites:
 
 To protect a package:
 
-1. On the left sidebar, select **Search or go to** and find your project. If you've [turned on the new navigation](../../interface_redesign.md), this field is on the top bar.
+1. On the top bar, select **Search or go to** and find your project.
 1. Select **Settings** > **Packages and registries**.
 1. Expand **Package registry**.
 1. Under **Protected packages**, select **Add protection rule**.
@@ -104,7 +104,7 @@ Prerequisites:
 
 To unprotect a package:
 
-1. On the left sidebar, select **Search or go to** and find your project. If you've [turned on the new navigation](../../interface_redesign.md), this field is on the top bar.
+1. On the top bar, select **Search or go to** and find your project.
 1. Select **Settings** > **Packages and registries**.
 1. Expand **Package registry**.
 1. Under **Protected packages**, next to the protection rule you want to delete, select **Delete** ({{< icon name="remove" >}}).

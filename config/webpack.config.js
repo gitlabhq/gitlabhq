@@ -258,7 +258,9 @@ const shouldExcludeFromCompiling = (modulePath) => {
 if (USE_VUE3) {
   Object.assign(alias, {
     // ensure we always use the same type of module for Vue
-    vue: '@vue/compat/dist/vue.runtime.esm-bundler.js',
+    '@vue/compat': '@vue/compat/dist/vue.runtime.esm-bundler.js',
+    vue: path.join(ROOT_PATH, 'app/assets/javascripts/lib/utils/vue3compat/vue.js'),
+
     vuex: path.join(ROOT_PATH, 'app/assets/javascripts/lib/utils/vue3compat/vuex.js'),
     'vue-apollo': path.join(ROOT_PATH, 'app/assets/javascripts/lib/utils/vue3compat/vue_apollo.js'),
     'vue-router': path.join(ROOT_PATH, 'app/assets/javascripts/lib/utils/vue3compat/vue_router.js'),

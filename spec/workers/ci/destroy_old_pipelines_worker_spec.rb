@@ -19,22 +19,6 @@ RSpec.describe Ci::DestroyOldPipelinesWorker, :clean_gitlab_redis_shared_state, 
 
     subject(:perform) { worker.perform_work }
 
-    context 'when ci_optimized_old_pipelines_query FF is disabled' do
-      before do
-        # This context tests the legacy pipeline query behavior
-        stub_feature_flags(ci_optimized_old_pipelines_query: false)
-        stub_const("#{described_class.name}::LIMIT", 1)
-      end
-
-      it 'destroys the configured amount of pipelines' do
-        expect(worker).to receive(:log_extra_metadata_on_done).with(:removed_count, 1)
-        expect(worker).to receive(:log_extra_metadata_on_done).with(:project, project.full_path)
-
-        expect { perform }.to change { project.all_pipelines.count }.by(-1)
-        expect(new_pipeline.reload).to be_present
-      end
-    end
-
     it 'loops thought the available pipelines' do
       stub_const("#{described_class.name}::LIMIT", 3)
 

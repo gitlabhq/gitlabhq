@@ -32777,6 +32777,7 @@ Describes a usage event for the subscription.
 | ---- | ---- | ----------- |
 | <a id="gitlabsubscriptionusageusereventcreditsused"></a>`creditsUsed` | [`Float`](#float) | GitLab Credits consumed on the date. |
 | <a id="gitlabsubscriptionusageusereventeventtype"></a>`eventType` | [`String`](#string) | Event type. |
+| <a id="gitlabsubscriptionusageusereventflowtype"></a>`flowType` | [`String`](#string) | User-friendly display name for the event flow type. |
 | <a id="gitlabsubscriptionusageusereventlocation"></a>`location` | [`GitlabSubscriptionUsageEventLocation`](#gitlabsubscriptionusageeventlocation) | Event location: project or namespace. |
 | <a id="gitlabsubscriptionusageusereventtimestamp"></a>`timestamp` | [`ISO8601DateTime`](#iso8601datetime) | Date and time of the event. |
 

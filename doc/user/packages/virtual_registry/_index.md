@@ -58,7 +58,7 @@ Prerequisites:
 
 To turn off the virtual registry:
 
-1. On the left sidebar, select **Search or go to** and find your group. If you've [turned on the new navigation](../../interface_redesign.md), this field is on the top bar. This group must be at the top level.
+1. On the top bar, select **Search or go to** and find your group. This group must be at the top level.
 1. Select **Settings** > **Packages and registries**.
 1. Under **Virtual Registry**, turn off the **Enable Virtual Registry** toggle.
 
@@ -106,14 +106,14 @@ When you create a virtual registry:
 
 To view a virtual registry:
 
-1. On the left sidebar, select **Search or go to** and find your group. If you've [turned on the new navigation](../../interface_redesign.md), this field is on the top bar. This group must be at the top level.
+1. On the top bar, select **Search or go to** and find your group. This group must be at the top level.
 1. Select **Deploy** > **Virtual registry**.
 
 ### Edit a virtual registry
 
 To edit an existing virtual registry:
 
-1. On the left sidebar, select **Search or go to** and find your group. If you've [turned on the new navigation](../../interface_redesign.md), this field is on the top bar. This group must be at the top level.
+1. On the top bar, select **Search or go to** and find your group. This group must be at the top level.
 1. Select **Deploy** > **Virtual registry**.
 1. Under **Registry types**, select **View registries**.
 1. In the row of the registry you want to edit, select **Edit** ({{< icon name="pencil" >}}).
@@ -123,7 +123,7 @@ To edit an existing virtual registry:
 
 To delete a virtual registry:
 
-1. On the left sidebar, select **Search or go to** and find your group. If you've [turned on the new navigation](../../interface_redesign.md), this field is on the top bar. This group must be at the top level.
+1. On the top bar, select **Search or go to** and find your group. This group must be at the top level.
 1. Select **Deploy** > **Virtual registry**.
 1. Under **Registry types**, select **View registries**.
 1. Under the **Registries** tab, in the row of the registry you want to delete, select **Edit** ({{< icon name="pencil" >}}).
@@ -139,7 +139,7 @@ for a top-level group.
 
 To view upstream registries:
 
-1. On the left sidebar, select **Search or go to** and find your group. If you've [turned on the new navigation](../../interface_redesign.md), this field is on the top bar. This group must be at the top level.
+1. On the top bar, select **Search or go to** and find your group. This group must be at the top level.
 1. Select **Deploy** > **Virtual registry**.
 1. Under **Registry types**, select **View registries**.
 1. Select the **Upstreams** tab to view all available upstreams.
@@ -148,7 +148,7 @@ To view upstream registries:
 
 To edit an upstream registry:
 
-1. On the left sidebar, select **Search or go to** and find your group. If you've [turned on the new navigation](../../interface_redesign.md), this field is on the top bar. This group must be at the top level.
+1. On the top bar, select **Search or go to** and find your group. This group must be at the top level.
 1. Select **Deploy** > **Virtual registry**.
 1. Under **Registry types**, select **View registries**.
 1. Select the **Upstreams** tab.
@@ -162,7 +162,7 @@ in which they are queried for packages.
 
 To change the order of upstream registries:
 
-1. On the left sidebar, select **Search or go to** and find your group. If you've [turned on the new navigation](../../interface_redesign.md), this field is on the top bar. This group must be at the top level.
+1. On the top bar, select **Search or go to** and find your group. This group must be at the top level.
 1. Select **Deploy** > **Virtual registries**.
 1. Under **Registry types**, select **View registries**.
 1. Under the **Registries** tab, select a registry.
@@ -239,7 +239,7 @@ You configure the cache validity period when you create or edit an upstream.
 
 To view packages that have been cached from upstream registries:
 
-1. On the left sidebar, select **Search or go to** and find your group. If you've [turned on the new navigation](../../interface_redesign.md), this field is on the top bar. This group must be at the top level.
+1. On the top bar, select **Search or go to** and find your group. This group must be at the top level.
 1. Select **Deploy** > **Virtual registry**.
 1. Under **Registry types**, select **View registries**.
 1. Under the **Upstreams** tab, select an upstream.
@@ -249,7 +249,7 @@ To view packages that have been cached from upstream registries:
 
 To delete cache entries:
 
-1. On the left sidebar, select **Search or go to** and find your group. If you've [turned on the new navigation](../../interface_redesign.md), this field is on the top bar. This group must be at the top level.
+1. On the top bar, select **Search or go to** and find your group. This group must be at the top level.
 1. Select **Deploy** > **Virtual registry**.
 1. Under **Registry types**, select **View registries**.
 1. Under the **Registries** tab, select a registry.

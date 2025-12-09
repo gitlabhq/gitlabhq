@@ -64,11 +64,8 @@ When you enable this feature, it:
 - Adds **Plan** > **Work items** to the left sidebar.
 - Pins **Work items** on the left sidebar for projects and groups, if you had previously pinned
   **Plan** > **Issues** or **Plan** > **Epics**.
-
-Prerequisites:
-
-- In the Free tier, your administrator must enable the [flag](../../administration/feature_flags/_index.md) named `namespace_level_work_items`.
-- In the Premium and Ultimate tiers, your administrator must enable the [flag](../../administration/feature_flags/_index.md) named `work_item_epics`.
+- Removes **Settings** > **Issues** from the left sidebar in groups.
+- Adds **Settings** > **Work items** to the left sidebar in groups.
 
 To view work items for a project or group:
 

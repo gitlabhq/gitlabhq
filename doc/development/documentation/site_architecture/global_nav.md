@@ -169,7 +169,7 @@ For example:
     - title: Find your way around GitLab
       url: 'tutorials/gitlab_navigation/'
       submenu:
-        - title: 'Tutorial: Use the left sidebar to navigate GitLab'
+        - title: 'Tutorial: Navigate the GitLab interface'
           url: 'tutorials/left_sidebar/'
 ```
 

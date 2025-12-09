@@ -67,9 +67,7 @@ image: node:20-alpine
 If you use a custom Docker image, ensure that the following commands are available for the agent to function correctly:
 
 - `git`
-- `wget`
-- `tar`
-- `chmod`
+- `npm`
 
 Most base images include these commands by default. However, minimal images (like `alpine` variants)
 might require you to install them explicitly. If needed, you can install missing commands in the
@@ -82,7 +80,7 @@ For example, if you use an Alpine-based image:
 ```yaml
 image: python:3.11-alpine
 setup_script:
-  - apk add --no-cache git wget tar bash
+  - apk add --update git nodejs npm
 ```
 
 ### Configure setup scripts

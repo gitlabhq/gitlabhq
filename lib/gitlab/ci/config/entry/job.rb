@@ -239,7 +239,7 @@ module Gitlab
             return artifacts_value unless pages_job?
 
             artifacts = artifacts_value || {}
-            artifacts = artifacts.reverse_merge(paths: [])
+            artifacts[:paths] ||= []
 
             return artifacts if artifacts[:paths].include?(pages_publish_path)
 

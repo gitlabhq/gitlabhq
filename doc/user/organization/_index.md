@@ -54,7 +54,7 @@ see [epic 9265](https://gitlab.com/groups/gitlab-org/-/epics/9265).
 
 {{< /history >}}
 
-1. On the left sidebar, at the top, select **Create new** ({{< icon name="plus" >}}) and **New organization**. If you've [turned on the new navigation](../interface_redesign.md), this button is in the upper-right corner.
+1. In the upper-right corner, select **Create new** ({{< icon name="plus" >}}) and **New organization**.
 1. In the **Organization name** text box, enter a name for the organization.
 1. In the **Organization URL** text box, enter a path for the organization.
 1. In the **Organization description** text box, enter a description for the organization. Supports a [limited subset of Markdown](#supported-markdown-for-organization-description).

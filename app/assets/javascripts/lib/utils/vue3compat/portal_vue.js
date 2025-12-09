@@ -47,7 +47,7 @@ export const MountingPortal = {
   render() {
     const rawResult = this.$scopedSlots.default();
     const result = Array.isArray(rawResult) && rawResult.length === 1 ? rawResult[0] : rawResult;
-    return h(Teleport, { to: this.teleportTarget }, result);
+    return h(Teleport, { to: this.teleportTarget, defer: true }, result);
   },
 };
 
@@ -84,7 +84,7 @@ export const Portal = {
   render() {
     const rawResult = this.$scopedSlots.default();
     const result = Array.isArray(rawResult) && rawResult.length === 1 ? rawResult[0] : rawResult;
-    return h(Teleport, { to: this.targetSelector }, result);
+    return h(Teleport, { to: this.targetSelector, defer: true }, result);
   },
 };
 

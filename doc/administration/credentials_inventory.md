@@ -49,14 +49,14 @@ To view the credentials inventory:
 
 {{< tab title="For an instance" >}}
 
-1. On the left sidebar, at the bottom, select **Admin**. If you've [turned on the new navigation](../user/interface_redesign.md), in the upper-right corner, select **Admin**.
+1. In the upper-right corner, select **Admin**.
 1. Select **Credentials**.
 
 {{< /tab >}}
 
 {{< tab title="For a group" >}}
 
-1. On the left sidebar, select **Search or go to** and find your group. If you've [turned on the new navigation](../user/interface_redesign.md), this field is on the top bar.
+1. On the top bar, select **Search or go to** and find your group.
 1. On the left sidebar, select **Secure**.
 1. Select **Credentials**.
 
@@ -80,7 +80,7 @@ To revoke a personal access token:
 
 {{< tab title="For an instance" >}}
 
-1. On the left sidebar, at the bottom, select **Admin**. If you've [turned on the new navigation](../user/interface_redesign.md), in the upper-right corner, select **Admin**.
+1. In the upper-right corner, select **Admin**.
 1. Select **Credentials**.
 1. Next to the personal access token, select **Revoke**.
    If the token was previously expired or revoked, the associated date is displayed.
@@ -91,7 +91,7 @@ The access token is revoked and the user is notified by email.
 
 {{< tab title="For a group" >}}
 
-1. On the left sidebar, select **Search or go to** and find your group. If you've [turned on the new navigation](../user/interface_redesign.md), this field is on the top bar.
+1. On the top bar, select **Search or go to** and find your group.
 1. On the left sidebar, select **Secure**.
 1. Select **Credentials**.
 1. Next to the personal access token, select **Revoke**.
@@ -111,7 +111,7 @@ To revoke a project or group access token:
 
 {{< tab title="For an instance" >}}
 
-1. On the left sidebar, at the bottom, select **Admin**. If you've [turned on the new navigation](../user/interface_redesign.md), in the upper-right corner, select **Admin**.
+1. In the upper-right corner, select **Admin**.
 1. Select **Credentials**.
 1. Select the **Project and group access tokens** tab.
 1. Next to the project access token, select **Revoke**.
@@ -120,7 +120,7 @@ To revoke a project or group access token:
 
 {{< tab title="For a group" >}}
 
-1. On the left sidebar, select **Search or go to** and find your group. If you've [turned on the new navigation](../user/interface_redesign.md), this field is on the top bar.
+1. On the top bar, select **Search or go to** and find your group.
 1. On the left sidebar, select **Secure**.
 1. Select **Credentials**.
 1. Select the **Project and group access tokens** tab.
@@ -138,7 +138,7 @@ To delete an SSH key:
 
 {{< tab title="For an instance" >}}
 
-1. On the left sidebar, at the bottom, select **Admin**. If you've [turned on the new navigation](../user/interface_redesign.md), in the upper-right corner, select **Admin**.
+1. In the upper-right corner, select **Admin**.
 1. Select **Credentials**.
 1. Select the **SSH Keys** tab.
 1. Next to the SSH key, select **Delete**.
@@ -149,7 +149,7 @@ The SSH key is deleted and the user is notified.
 
 {{< tab title="For a group" >}}
 
-1. On the left sidebar, select **Search or go to** and find your group. If you've [turned on the new navigation](../user/interface_redesign.md), this field is on the top bar.
+1. On the top bar, select **Search or go to** and find your group.
 1. On the left sidebar, select **Secure**.
 1. Select **Credentials**.
 1. Select the **SSH Keys** tab.

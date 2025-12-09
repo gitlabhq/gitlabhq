@@ -79,7 +79,7 @@ with up to 365 days of historical data for a given project. The dashboard is a h
 
 To view a project's security dashboard:
 
-1. On the left sidebar, select **Search or go to** and find your project. If you've [turned on the new navigation](../../interface_redesign.md), this field is on the top bar.
+1. On the top bar, select **Search or go to** and find your project.
 1. Select **Secure** > **Security dashboard**.
 1. Filter and search for what you need.
    - To filter the chart by severity, select the legend name.
@@ -96,7 +96,7 @@ You can download an image of the vulnerability chart from the Project Security D
 to use in documentation, presentations, and so on. To download the image of the vulnerability
 chart:
 
-1. On the left sidebar, select **Search or go to** and find your project. If you've [turned on the new navigation](../../interface_redesign.md), this field is on the top bar.
+1. On the top bar, select **Search or go to** and find your project.
 1. Select **Secure** > **Security dashboard**.
 1. Select **Save chart as an image** ({{< icon name="download" >}}).
 
@@ -121,7 +121,7 @@ supplies the following:
 
 To view group security dashboard:
 
-1. On the left sidebar, select **Search or go to** and find your group. If you've [turned on the new navigation](../../interface_redesign.md), this field is on the top bar.
+1. On the top bar, select **Search or go to** and find your group.
 1. Select **Security** > **Security dashboard**.
 1. Hover over the **Vulnerabilities over time** chart to get more details about vulnerabilities.
    - You can display the vulnerability trends over a 30, 60, or 90-day time frame (the default is 90 days).

@@ -696,7 +696,6 @@ bundle-size-review:
     - .default-retry
     - .default-before_script
     - .assets-compile-cache-pull
-    - .repo-from-artifacts
     - .frontend:rules:bundle-size-review
   stage: test-frontend
   needs:

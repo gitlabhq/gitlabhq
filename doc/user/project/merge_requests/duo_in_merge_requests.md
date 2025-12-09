@@ -914,3 +914,42 @@ You can learn about more custom review instructions use cases in the following p
 
 - [Control GitLab Duo availability](../../gitlab_duo/turn_on_off.md)
 - [All GitLab Duo features](../../gitlab_duo/_index.md)
+
+## Troubleshooting
+
+When working with GitLab Duo in Merge Requests, you might encounter the following issues.
+
+### Response not received
+
+If you ask GitLab Duo for a review by mentioning or replying to `@GitLabDuo`,
+and do not receive a response, this might be because you do not have the
+appropriate GitLab Duo add-on.
+
+To check your GitLab Duo add-on, ask your group Owner to check the group's
+[GitLab Duo seat assignments](../../../subscriptions/subscription-add-ons.md#view-assigned-gitlab-duo-users).
+
+To change your GitLab Duo add-on, contact your administrator.
+
+### Unable to assign GitLab Duo to review
+
+If you cannot assign GitLab Duo as a reviewer, it might be because you do not
+have the appropriate GitLab Duo add-on.
+
+To check your GitLab Duo add-on, ask your group Owner to check the group's
+[GitLab Duo seat assignments](../../../subscriptions/subscription-add-ons.md#view-assigned-gitlab-duo-users).
+
+To change your GitLab Duo add-on, contact your administrator.
+
+### Error: `GitLab Duo Code Review was not automatically added...`
+
+If you try to create a merge request with automatic reviews from GitLab Duo
+turned on, you might get the following error message:
+
+```plaintext
+GitLab Duo Code Review was not automatically added because your account requires
+GitLab Duo Enterprise. Contact your administrator to upgrade your account.
+```
+
+Contact your administrator to ask them to
+[purchase a GitLab Duo Enterprise seat](../../../subscriptions/subscription-add-ons.md#purchase-gitlab-duo)
+and assign it to you.
