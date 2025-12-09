@@ -128,10 +128,10 @@ db:migrate:multi-version-upgrade:
       bundle exec rake gitlab:db:configure
 
 # Validate PG version supported by GitLab
-db:migrate:multi-version-upgrade-pg17:
+db:migrate:multi-version-upgrade-pg18:
   extends:
     - db:migrate:multi-version-upgrade
-    - .use-pg17
+    - .use-pg18
 
 .db:migrate:reset:
   extends: .db-job-base

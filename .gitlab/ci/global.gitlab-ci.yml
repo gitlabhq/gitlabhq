@@ -114,6 +114,17 @@
     REDIS_VERSION: "7.0"
     REDIS_CLUSTER_VERSION: "7.0.11"
 
+.use-pg18:
+  extends:
+    - .pg-base-variables
+  services:
+    - !reference [.db-services-with-auto-explain, services]
+  variables:
+    PG_VERSION: "18"
+    REDIS_VERSION: "7.0"
+    REDIS_CLUSTER_VERSION: "7.0.11"
+
+
 .es7-services:
   services:
     - name: elasticsearch:7.17.6
@@ -129,6 +140,13 @@
 .use-pg17-es7-ee:
   extends:
     - .use-pg17
+  services:
+    - !reference [.db-services-with-auto-explain, services]
+    - !reference [.es7-services, services]
+
+.use-pg18-es7-ee:
+  extends:
+    - .use-pg18
   services:
     - !reference [.db-services-with-auto-explain, services]
     - !reference [.es7-services, services]
@@ -154,6 +172,14 @@
 .use-pg17-es8-ee:
   extends:
     - .use-pg17
+    - .es8-variables
+  services:
+    - !reference [.db-services-with-auto-explain, services]
+    - !reference [.es8-services, services]
+
+.use-pg18-es8-ee:
+  extends:
+    - .use-pg18
     - .es8-variables
   services:
     - !reference [.db-services-with-auto-explain, services]
@@ -210,6 +236,13 @@
     - !reference [.db-services-with-auto-explain, services]
     - !reference [.os1-services, services]
 
+.use-pg18-opensearch1-ee:
+  extends:
+    - .use-pg18
+  services:
+    - !reference [.db-services-with-auto-explain, services]
+    - !reference [.os1-services, services]
+
 .os2-services:
   services:
     - name: opensearchproject/opensearch:2.15.0
@@ -226,6 +259,13 @@
 .use-pg17-opensearch2-ee:
   extends:
     - .use-pg17
+  services:
+    - !reference [.db-services-with-auto-explain, services]
+    - !reference [.os2-services, services]
+
+.use-pg18-opensearch2-ee:
+  extends:
+    - .use-pg18
   services:
     - !reference [.db-services-with-auto-explain, services]
     - !reference [.os2-services, services]

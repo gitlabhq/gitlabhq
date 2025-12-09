@@ -84,23 +84,31 @@ RSpec.describe Search::Scopes, feature_category: :global_search do
       end
     end
 
-    context 'when requested_search_type is not basic or blank' do
-      it 'excludes scopes for advanced search type in CE' do
+    context 'when requested_search_type is not basic or blank', unless: Gitlab.ee? do
+      it 'includes scopes available for basic search when advanced search type is requested in CE' do
         scopes = described_class.available_for_context(context: :global, requested_search_type: :advanced)
-        # In CE without advanced search, no scopes should be available for advanced type
-        expect(scopes).to be_empty
+        # In CE, when advanced is requested, fall back to basic search scopes
+        expect(scopes).to include('projects', 'issues', 'merge_requests', 'milestones', 'users', 'snippet_titles')
+        expect(scopes).not_to include('blobs', 'commits', 'notes', 'wiki_blobs')
       end
 
-      it 'excludes scopes for zoekt search type in CE' do
+      it 'includes scopes available for basic search when zoekt search type is requested in CE' do
         scopes = described_class.available_for_context(context: :global, requested_search_type: :zoekt)
-        # In CE without zoekt, no scopes should be available for zoekt type
-        expect(scopes).to be_empty
+        # In CE, when zoekt is requested, fall back to basic search scopes
+        expect(scopes).to include('projects', 'issues', 'merge_requests', 'milestones', 'users', 'snippet_titles')
+        expect(scopes).not_to include('blobs', 'commits', 'notes', 'wiki_blobs')
       end
     end
 
     context 'when requested_search_type is basic as string' do
       it 'includes scopes when explicitly requesting basic as string' do
         scopes = described_class.available_for_context(context: :global, requested_search_type: 'basic')
+        expect(scopes).to include('issues', 'merge_requests', 'milestones', 'projects', 'users')
+        expect(scopes).not_to include('blobs', 'commits', 'notes', 'wiki_blobs')
+      end
+
+      it 'includes scopes when requesting basic as symbol' do
+        scopes = described_class.available_for_context(context: :global, requested_search_type: :basic)
         expect(scopes).to include('issues', 'merge_requests', 'milestones', 'projects', 'users')
         expect(scopes).not_to include('blobs', 'commits', 'notes', 'wiki_blobs')
       end
@@ -111,6 +119,28 @@ RSpec.describe Search::Scopes, feature_category: :global_search do
         scopes = described_class.available_for_context(context: :global)
         expect(scopes).to include('issues', 'merge_requests', 'milestones', 'projects', 'users')
         expect(scopes).not_to include('blobs', 'commits', 'notes', 'wiki_blobs')
+      end
+
+      it 'includes scopes when explicitly passing nil' do
+        scopes = described_class.available_for_context(context: :global, requested_search_type: nil)
+        expect(scopes).to include('issues', 'merge_requests', 'milestones', 'projects', 'users')
+        expect(scopes).not_to include('blobs', 'commits', 'notes', 'wiki_blobs')
+      end
+    end
+
+    context 'when requested_search_type is invalid' do
+      it 'treats invalid search_type as if no search_type was specified to allow scope determination' do
+        result = described_class.available_for_context(context: :project, requested_search_type: 'invalid_xyz')
+
+        # Should not be empty - allows scope determination to work
+        # The actual validation error will be shown by search_type_errors
+        expect(result).to include('issues', 'merge_requests', 'blobs')
+      end
+
+      it 'allows scope determination for global context with invalid search_type' do
+        result = described_class.available_for_context(context: :global, requested_search_type: 'xyz')
+
+        expect(result).to include('projects', 'issues', 'merge_requests')
       end
     end
   end

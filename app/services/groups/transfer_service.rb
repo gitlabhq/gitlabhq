@@ -72,6 +72,10 @@ module Groups
         end
       end
 
+      # There is a risk that the request times out and the event would never get published, even though the
+      # namespace got transferred. Publishing the event first to improve this consistency.
+      publish_event(old_root_ancestor_id)
+
       transfer_labels
       transfer_status_data(old_root_ancestor_id)
       remove_paid_features_for_projects(old_root_ancestor_id)
@@ -97,7 +101,6 @@ module Groups
     def post_update_hooks(updated_project_ids, old_root_ancestor_id)
       refresh_project_authorizations
       refresh_descendant_groups if @new_parent_group
-      publish_event(old_root_ancestor_id)
     end
 
     # Overridden in EE

@@ -280,6 +280,11 @@ include:
     - .rspec-base
     - .use-pg17
 
+.rspec-base-pg18:
+  extends:
+    - .rspec-base
+    - .use-pg18
+
 .rspec-ee-base-pg16:
   needs:
     - !reference [.rspec-base, needs]
@@ -322,6 +327,11 @@ include:
     - .rspec-base
     - .use-pg17-es7-ee
 
+.rspec-ee-base-pg18:
+  extends:
+    - .rspec-base
+    - .use-pg18-es7-ee
+
 .ci-config-validation-base:
   extends:
     - .rspec-base-pg16
@@ -333,7 +343,7 @@ include:
   extends:
     - .rails-job-base
     - .rails:rules:ee-and-foss-migration
-    - .use-pg16
+    - .use-pg17
   stage: test
   needs: ["setup-test-env"]
 # rspec job base specs

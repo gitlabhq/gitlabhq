@@ -733,7 +733,7 @@ Ruby version only:
 Our test suite runs against PostgreSQL 16 as GitLab.com runs on PostgreSQL 16 and
 [Omnibus defaults to PG14 for new installs and upgrades](../../administration/package_information/postgresql_versions.md).
 
-We run our test suite against PostgreSQL 16, and 17 on nightly scheduled pipelines.
+We run our test suite against PostgreSQL 16, 17 and 18 on nightly scheduled pipelines.
 
 NOTE: With the addition of PG17, we are close to the limit of nightly jobs, with 1946 out of 2000 jobs per pipeline. Adding new job families could cause the nightly pipeline to fail.
 
@@ -745,7 +745,7 @@ NOTE: With the addition of PG17, we are close to the limit of nightly jobs, with
 | `master` branch commits                                                                         | 16 (default version)                | 3.2 (default version) |
 | `maintenance` scheduled pipelines for the `master` branch (every even-numbered hour at XX:05)   | 16 (default version)                | 3.2 (default version) |
 | `maintenance` scheduled pipelines for the `ruby-next` branch (every odd-numbered hour at XX:10) | 16 (default version)                | 3.3                   |
-| `nightly` scheduled pipelines for the `master` branch                                           | 16 (default version) and 17         | 3.2 (default version) |
+| `nightly` scheduled pipelines for the `master` branch                                           | 16 (default version), 17 and 18     | 3.2 (default version) |
 | `weekly` scheduled pipelines for the `master` branch                                            | 16 (default version)                | 3.2 (default version) |
 
 For the next Ruby versions we're testing against with, we run

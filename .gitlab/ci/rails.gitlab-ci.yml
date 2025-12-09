@@ -1120,6 +1120,40 @@ rspec system pg17:
     - !reference [".rails:rules:only-run-system-if-medium-runners-available", rules]
     - !reference [".rails:rules:default-branch-schedule-nightly--code-backstage", rules]
 
+# PG18
+rspec migration pg18:
+  extends:
+    - .rspec-base-pg18
+    - .rspec-base-migration
+    - .rails:rules:default-branch-schedule-nightly--code-backstage
+    - .rspec-migration-parallel
+
+rspec background_migration pg18:
+  extends:
+    - .rspec-base-pg18
+    - .rspec-base-migration
+    - .rails:rules:default-branch-schedule-nightly--code-backstage
+    - .rspec-background-migration-parallel
+
+rspec unit pg18:
+  extends:
+    - .rspec-base-pg18
+    - .rails:rules:default-branch-schedule-nightly--code-backstage
+    - .rspec-unit-parallel
+
+rspec integration pg18:
+  extends:
+    - .rspec-base-pg18
+    - .rails:rules:default-branch-schedule-nightly--code-backstage
+    - .rspec-integration-parallel
+
+rspec system pg18:
+  extends:
+    - .rspec-base-pg18
+    - .rspec-system-parallel
+  rules:
+    - !reference [".rails:rules:only-run-system-if-medium-runners-available", rules]
+    - !reference [".rails:rules:default-branch-schedule-nightly--code-backstage", rules]
 # EE/FOSS: default branch nightly scheduled jobs #
 ##########################################
 
@@ -1203,6 +1237,43 @@ rspec-ee integration pg17:
 rspec-ee system pg17:
   extends:
     - .rspec-ee-base-pg17
+    - .rspec-ee-system-parallel
+  rules:
+    - !reference [".rails:rules:only-run-system-if-medium-runners-available", rules]
+    - !reference [".rails:rules:default-branch-schedule-nightly--code-backstage-ee-only", rules]
+
+# PG18
+# Note: PG17 brought us close to the limit of nightly jobs, with 1946 out of 2000.
+# Adding new job families can cause the nightly pipeline to fail.
+rspec-ee migration pg18:
+  extends:
+    - .rspec-ee-base-pg18
+    - .rspec-base-migration
+    - .rails:rules:default-branch-schedule-nightly--code-backstage-ee-only
+    - .rspec-ee-migration-parallel
+
+rspec-ee background_migration pg18:
+  extends:
+    - .rspec-ee-base-pg18
+    - .rspec-base-migration
+    - .rails:rules:default-branch-schedule-nightly--code-backstage-ee-only
+    - .rspec-ee-background-migration-parallel
+
+rspec-ee unit pg18:
+  extends:
+    - .rspec-ee-base-pg18
+    - .rails:rules:default-branch-schedule-nightly--code-backstage-ee-only
+    - .rspec-ee-unit-parallel
+
+rspec-ee integration pg18:
+  extends:
+    - .rspec-ee-base-pg18
+    - .rails:rules:default-branch-schedule-nightly--code-backstage-ee-only
+    - .rspec-ee-integration-parallel
+
+rspec-ee system pg18:
+  extends:
+    - .rspec-ee-base-pg18
     - .rspec-ee-system-parallel
   rules:
     - !reference [".rails:rules:only-run-system-if-medium-runners-available", rules]
