@@ -1025,7 +1025,10 @@ module API
     def handle_job_token_failure!(project)
       if current_user&.from_ci_job_token? && current_user.ci_job_token_scope
         source_project = current_user.ci_job_token_scope.current_project
-        error_message = format("Authentication by CI/CD job token not allowed from %{source_project_path} to %{target_project_path}.", source_project_path: source_project.path, target_project_path: project.path)
+
+        error_message = format("Authentication by CI/CD job token not allowed from %{source_project_path} to project #%{target_project_id}.",
+          source_project_path: source_project.path,
+          target_project_id: project.id)
 
         forbidden!(error_message)
       else
@@ -1047,13 +1050,13 @@ module API
       when 0
         'This action is unauthorized for CI/CD job tokens.'
       when 1
-        format("Insufficient permissions to access this resource in project %{project}. " \
+        format("Insufficient permissions to access this resource in project #%{project_id}. " \
           "The following token permission is required: %{policy}.",
-          project: project.path, policy: policies[0])
+          project_id: project.id, policy: policies[0])
       else
-        format("Insufficient permissions to access this resource in project %{project}. " \
+        format("Insufficient permissions to access this resource in project #%{project_id}. " \
           "The following token permissions are required: %{policies}.",
-          project: project.path, policies: policies.to_sentence)
+          project_id: project.id, policies: policies.to_sentence)
       end
     end
 

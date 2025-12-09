@@ -23,8 +23,8 @@ module Gitlab
       deploy_key_upload: 'This deploy key does not have write access to this project.',
       no_repo: 'A repository for this project does not exist yet.',
       project_not_found: "The project you were looking for could not be found or you don't have permission to view it.",
-      auth_by_job_token_forbidden: 'Insufficient permissions to pull from the repository of project %{target_project_path}.',
-      auth_by_job_token_project_not_in_allowlist: 'Authentication by CI/CD job token not allowed from %{source_project_path} to %{target_project_path}.',
+      auth_by_job_token_forbidden: 'Insufficient permissions to pull from the repository of project #%{target_project_id}.',
+      auth_by_job_token_project_not_in_allowlist: 'Authentication by CI/CD job token not allowed from %{source_project_path} to project #%{target_project_id}.',
       command_not_allowed: "The command you're trying to execute is not allowed.",
       upload_pack_disabled_over_http: 'Pulling over HTTP is not allowed.',
       receive_pack_disabled_over_http: 'Pushing over HTTP is not allowed.',
@@ -252,11 +252,14 @@ module Gitlab
         policy = ProjectPolicy.new(user, project)
 
         if policy.project_allowed_for_job_token?
-          raise ForbiddenError, format(error_message(:auth_by_job_token_forbidden), target_project_path: project.path)
+          raise ForbiddenError, format(error_message(:auth_by_job_token_forbidden),
+            target_project_id: project.id)
         else
           source_project = user.ci_job_token_scope.current_project
 
-          raise ForbiddenError, format(error_message(:auth_by_job_token_project_not_in_allowlist), source_project_path: source_project.path, target_project_path: project.path)
+          raise ForbiddenError, format(error_message(:auth_by_job_token_project_not_in_allowlist),
+            source_project_path: source_project.path,
+            target_project_id: project.id)
         end
       else
         raise NotFoundError, not_found_message

@@ -224,8 +224,8 @@ RSpec.describe API::Helpers, feature_category: :shared do
               allow(user).to receive(:ci_job_token_scope).and_return(user.set_ci_job_token_scope!(job))
             end
 
-            it 'returns forbidden' do
-              expect(helper).to receive(:forbidden!).with("Authentication by CI/CD job token not allowed from #{project.path} to #{outside_project.path}.")
+            it 'returns forbidden without exposing project name' do
+              expect(helper).to receive(:forbidden!).with("Authentication by CI/CD job token not allowed from #{project.path} to project ##{outside_project.id}.")
 
               helper.find_project!(outside_project.id)
             end
@@ -300,7 +300,7 @@ RSpec.describe API::Helpers, feature_category: :shared do
           it 'returns forbidden' do
             expect(helper)
               .to receive(:forbidden!)
-              .with("Insufficient permissions to access this resource in project #{project.path}. " \
+              .with("Insufficient permissions to access this resource in project ##{project.id}. " \
                 'The following token permission is required: not_allowed_policy.')
 
             find_project!
@@ -312,7 +312,7 @@ RSpec.describe API::Helpers, feature_category: :shared do
             it 'returns forbidden' do
               expect(helper)
                 .to receive(:forbidden!)
-                .with("Insufficient permissions to access this resource in project #{project.path}. " \
+                .with("Insufficient permissions to access this resource in project ##{project.id}. " \
                   'The following token permissions are required: policy_1 and policy_2.')
 
               find_project!
