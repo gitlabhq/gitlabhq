@@ -16,25 +16,28 @@ module Banzai
           h.project_merge_request_url(project, mr, only_path: context[:only_path])
         end
 
-        def object_link_text_extras(object, matches)
+        def object_link_content_html_extras(object, matches)
           extras = super
 
           if commit_ref = object_link_commit_ref(object, matches)
             klass = reference_class(:commit, tooltip: false)
-            commit_ref_tag = %(<span class="#{klass}">#{commit_ref}</span>)
 
-            return extras.unshift(commit_ref_tag)
+            commit_ref_tag = doc.document.create_element("span")
+            commit_ref_tag['class'] = klass
+            commit_ref_tag.content = commit_ref
+
+            return extras.unshift(commit_ref_tag.to_html)
           end
 
           path = matches[:path] if matches.names.include?("path")
 
           case path
           when '/diffs'
-            extras.unshift "diffs"
+            extras.unshift CGI.escapeHTML("diffs")
           when '/commits'
-            extras.unshift "commits"
+            extras.unshift CGI.escapeHTML("commits")
           when '/builds'
-            extras.unshift "builds"
+            extras.unshift CGI.escapeHTML("builds")
           end
 
           extras
