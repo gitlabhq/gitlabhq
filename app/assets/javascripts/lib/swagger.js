@@ -4,27 +4,31 @@ import { isObject } from '~/lib/utils/type_utility';
 import { getParameterByName } from '~/lib/utils/url_utility';
 import { resetServiceWorkersPublicPath } from '~/lib/utils/webpack';
 
-const resetWebpackPublicPath = () => {
-  window.gon = { relative_url_root: getParameterByName('relativeRootPath') };
+const resetWebpackPublicPath = (relativeRootPath) => {
+  if (!relativeRootPath || !relativeRootPath.startsWith('/') || relativeRootPath.startsWith('//')) {
+    return;
+  }
+
+  window.gon = { relative_url_root: relativeRootPath };
   resetServiceWorkersPublicPath();
 };
 
-const renderSwaggerUI = (value) => {
+const renderSwaggerUI = (spec, relativeRootPath) => {
   /* SwaggerUIBundle accepts openapi definition
    * in only JSON format, so we convert the YAML
    * config to JSON if it's not JSON value
    */
-  let spec = value;
-  if (!isObject(spec)) {
-    spec = safeLoad(spec, { json: true });
+  let parsedSpec = spec;
+  if (!isObject(parsedSpec)) {
+    parsedSpec = safeLoad(parsedSpec, { json: true });
   }
 
-  resetWebpackPublicPath();
+  resetWebpackPublicPath(relativeRootPath);
 
   Promise.all([import(/* webpackChunkName: 'openapi' */ 'swagger-ui-dist/swagger-ui.css')])
     .then(() => {
       SwaggerUIBundle({
-        spec,
+        spec: parsedSpec,
         dom_id: '#swagger-ui',
         deepLinking: true,
         displayOperationId: Boolean(getParameterByName('displayOperationId')),
@@ -42,7 +46,21 @@ const addInitHook = () => {
       if (event.origin !== window.location.origin) {
         return;
       }
-      renderSwaggerUI(event.data);
+
+      let message;
+
+      try {
+        message = JSON.parse(event.data);
+      } catch (e) {
+        return;
+      }
+
+      if (message.type !== 'swagger-init' || !message.spec) {
+        return;
+      }
+
+      const { relativeRootPath } = message;
+      renderSwaggerUI(message.spec, relativeRootPath);
     },
     false,
   );
