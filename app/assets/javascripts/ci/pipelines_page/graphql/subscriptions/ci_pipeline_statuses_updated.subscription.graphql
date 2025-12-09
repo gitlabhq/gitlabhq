@@ -1,29 +1,29 @@
 #import "~/graphql_shared/fragments/ci_icon.fragment.graphql"
+#import "~/ci/pipelines_page/graphql/fragments/pipeline_details.fragment.graphql"
 
 subscription pipelineStatusesUpdated($projectId: ProjectID!) {
   ciPipelineStatusesUpdated(projectId: $projectId) {
-    id
-    iid
-    detailedStatus {
-      ...CiIcon
-      name
-      label
-      hasDetails
-    }
-    finishedAt
-    duration
-    retryable
-    cancelable
-    stuck
-    yamlErrors
-    failureReason
-    stages {
+    ...PipelineDetails
+    downstream {
       nodes {
         id
+        iid
         name
+        path
         detailedStatus {
           ...CiIcon
           tooltip
+          label
+        }
+        project {
+          id
+          fullPath
+          name
+        }
+        sourceJob {
+          id
+          name
+          retried
         }
       }
     }

@@ -29,7 +29,7 @@ RSpec.describe Ci::Observability::ExportService, feature_category: :observabilit
     end
 
     before do
-      allow(Observability::GroupO11ySetting).to receive(:observability_settings_for)
+      allow(Observability::GroupO11ySetting).to receive(:observability_setting_for)
         .with(project)
         .and_return(observability_settings)
     end
@@ -57,7 +57,7 @@ RSpec.describe Ci::Observability::ExportService, feature_category: :observabilit
     context 'when observability settings are not present' do
       before do
         allow(service).to receive(:should_export?).and_return(true)
-        allow(Observability::GroupO11ySetting).to receive(:observability_settings_for)
+        allow(Observability::GroupO11ySetting).to receive(:observability_setting_for)
           .with(project)
           .and_return(nil)
       end

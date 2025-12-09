@@ -16,7 +16,6 @@ Style/FormatString:
     - 'app/helpers/search_helper.rb'
     - 'app/helpers/ssh_keys_helper.rb'
     - 'app/helpers/tags_helper.rb'
-    - 'app/helpers/time_helper.rb'
     - 'app/helpers/timeboxes_helper.rb'
     - 'app/helpers/tree_helper.rb'
     - 'app/helpers/users_helper.rb'

@@ -296,8 +296,8 @@ export default {
           .querySelector('.params-description')
           ?.textContent.trim();
 
-        for await (const workItemType of this.workItemTypes) {
-          await setNewWorkItemCache({
+        for (const workItemType of this.workItemTypes) {
+          setNewWorkItemCache({
             fullPath: this.inputNamespacePath,
             context: this.creationContext,
             widgetDefinitions: workItemType?.widgetDefinitions,

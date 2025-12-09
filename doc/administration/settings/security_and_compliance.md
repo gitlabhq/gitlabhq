@@ -23,7 +23,7 @@ with [predefined limits](../instance_limits.md#dependency-scanning-using-sbom-li
 
 To configure different values for these limits:
 
-1. On the left sidebar, at the bottom, select **Admin**. If you've [turned on the new navigation](../../user/interface_redesign.md), in the upper-right corner, select **Admin**.
+1. In the upper-right corner, select **Admin**.
 1. Select **Settings** > **Security and compliance**.
 1. Expand **Dependency Scanning**.
 1. Change the value of any rate limit, or set a rate limit to `0` to disable it.
@@ -35,7 +35,7 @@ To configure different values for these limits:
 
 To choose the packages you want to synchronize with the GitLab Package Metadata Database (PMDB) for [License Compliance](../../user/compliance/license_scanning_of_cyclonedx_files/_index.md) and [continuous vulnerability scanning](../../user/application_security/continuous_vulnerability_scanning/_index.md):
 
-1. On the left sidebar, at the bottom, select **Admin**. If you've [turned on the new navigation](../../user/interface_redesign.md), in the upper-right corner, select **Admin**.
+1. In the upper-right corner, select **Admin**.
 1. Select **Settings** > **Security and compliance**.
 1. Expand **License Compliance**.
 1. In **Package registry metadata to sync**, select or clear checkboxes for the

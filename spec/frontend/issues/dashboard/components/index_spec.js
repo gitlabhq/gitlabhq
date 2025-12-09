@@ -14,7 +14,7 @@ describe('IssueDashboardRoot', () => {
     resetHTMLFixture();
   });
 
-  it('mounts without errors and vue warnings', async () => {
-    await expect(mountIssuesDashboardApp()).resolves.toBeTruthy();
+  it('mounts without errors and vue warnings', () => {
+    expect(mountIssuesDashboardApp()).toBeDefined();
   });
 });

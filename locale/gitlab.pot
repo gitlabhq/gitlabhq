@@ -60485,6 +60485,12 @@ msgstr ""
 msgid "SecurityOrchestration|A scan execution policy exceeds the limit of %{maxScanExecutionPolicySchedules} scheduled rules per policy. Remove or consolidate rules across policies to reduce the total number of rules."
 msgstr ""
 
+msgid "SecurityOrchestration|A vulnerability management policy can contain only one action."
+msgstr ""
+
+msgid "SecurityOrchestration|A vulnerability management policy can contain only rules of same type."
+msgstr ""
+
 msgid "SecurityOrchestration|API request"
 msgstr ""
 
@@ -60498,6 +60504,9 @@ msgid "SecurityOrchestration|Accounts exceptions (%{count})"
 msgstr ""
 
 msgid "SecurityOrchestration|Actions"
+msgstr ""
+
+msgid "SecurityOrchestration|Actions and rules must be an array."
 msgstr ""
 
 msgid "SecurityOrchestration|Add a numeric suffix to ensure unique job names."
@@ -61802,6 +61811,12 @@ msgid "SecurityOrchestration|You can add a maximum of 3 criteria."
 msgstr ""
 
 msgid "SecurityOrchestration|You can select this option only once."
+msgstr ""
+
+msgid "SecurityOrchestration|You can use auto-dismiss actions only with detected rules."
+msgstr ""
+
+msgid "SecurityOrchestration|You can use auto-resolve actions only with no longer detected rules."
 msgstr ""
 
 msgid "SecurityOrchestration|You can't change the default branch because its protection is enforced by one or more %{security_policies_link_start}security policies%{security_policies_link_end}. %{learn_more_link_start}Learn more%{learn_more_link_end}."

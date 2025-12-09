@@ -51,6 +51,7 @@ export default {
       default: false,
     },
   },
+  emits: ['actionButtonClicked', 'showActionConfirmationModal', 'pipelineActionRequestComplete'],
   data() {
     return {
       isDisabled: false,

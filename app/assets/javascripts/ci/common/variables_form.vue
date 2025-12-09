@@ -60,6 +60,7 @@ export default {
       required: true,
     },
   },
+  emits: ['validity-change', 'update-variables'],
   data() {
     return {
       variables: [...this.initialVariables],

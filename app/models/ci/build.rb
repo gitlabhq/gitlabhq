@@ -53,6 +53,13 @@ module Ci
 
     TOKEN_PREFIX = 'glcbt-'
 
+    INTEGRATION_TYPES = %w[
+      Integrations::Harbor
+      Integrations::AppleAppStore
+      Integrations::GooglePlay
+      Integrations::DiffblueCover
+    ].freeze
+
     has_one :pending_state, class_name: 'Ci::BuildPendingState', foreign_key: :build_id, inverse_of: :build
     has_one :queuing_entry, class_name: 'Ci::PendingBuild', foreign_key: :build_id, inverse_of: :build
     has_one :runtime_metadata, class_name: 'Ci::RunningBuild', foreign_key: :build_id, inverse_of: :build
@@ -139,10 +146,6 @@ module Ci
     delegate :terminal_specification, to: :runner_session, allow_nil: true
     delegate :service_specification, to: :runner_session, allow_nil: true
     delegate :gitlab_deploy_token, to: :project
-    delegate :harbor_integration, to: :project
-    delegate :apple_app_store_integration, to: :project
-    delegate :google_play_integration, to: :project
-    delegate :diffblue_cover_integration, to: :project
     delegate :ensure_persistent_ref, to: :pipeline
 
     serialize :options # rubocop:disable Cop/ActiveRecordSerialize
@@ -1334,6 +1337,22 @@ module Ci
       project.team.max_member_access(user.id) >= Gitlab::Access::MAINTAINER
     end
 
+    def harbor_integration
+      project_integrations['Integrations::Harbor']
+    end
+
+    def apple_app_store_integration
+      project_integrations['Integrations::AppleAppStore']
+    end
+
+    def google_play_integration
+      project_integrations['Integrations::GooglePlay']
+    end
+
+    def diffblue_cover_integration
+      project_integrations['Integrations::DiffblueCover']
+    end
+
     protected
 
     def run_status_commit_hooks!
@@ -1521,6 +1540,15 @@ module Ci
     def runner_ack_queue
       @runner_ack_queue ||= Gitlab::Ci::Build::RunnerAckQueue.new(self)
     end
+
+    def project_integrations
+      return {} unless project
+
+      project.integrations
+        .where(type_new: INTEGRATION_TYPES)
+        .index_by(&:type_new)
+    end
+    strong_memoize_attr :project_integrations
   end
 end
 

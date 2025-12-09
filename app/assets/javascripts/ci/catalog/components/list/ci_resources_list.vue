@@ -19,6 +19,7 @@ export default {
       required: true,
     },
   },
+  emits: ['onNextPage', 'onPrevPage'],
 };
 </script>
 <template>

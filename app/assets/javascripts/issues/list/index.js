@@ -1,10 +1,10 @@
 import Vue from 'vue';
 import VueApollo from 'vue-apollo';
+import { apolloProvider } from '~/graphql_shared/issuable_client';
 import { parseBoolean } from '~/lib/utils/common_utils';
 import JiraIssuesImportStatusApp from './components/jira_issues_import_status_app.vue';
-import { gqlClient } from './graphql';
 
-export async function mountJiraIssuesListApp() {
+export function mountJiraIssuesListApp() {
   const el = document.querySelector('.js-jira-issues-import-status-root');
 
   if (!el) {
@@ -24,9 +24,7 @@ export async function mountJiraIssuesListApp() {
   return new Vue({
     el,
     name: 'JiraIssuesImportStatusRoot',
-    apolloProvider: new VueApollo({
-      defaultClient: await gqlClient(),
-    }),
+    apolloProvider,
     render(createComponent) {
       return createComponent(JiraIssuesImportStatusApp, {
         props: {

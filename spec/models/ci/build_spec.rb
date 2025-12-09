@@ -6486,6 +6486,24 @@ RSpec.describe Ci::Build, feature_category: :continuous_integration, factory_def
     end
   end
 
+  describe '#project_integrations' do
+    context 'when project is nil' do
+      before do
+        build.project = nil
+      end
+
+      it 'returns nil for integration accessors' do
+        expect(build.harbor_integration).to be_nil
+      end
+    end
+
+    context 'when project exists' do
+      it 'executes the query path through integration accessors' do
+        expect(build.harbor_integration).to be_nil
+      end
+    end
+  end
+
   describe '.fabricate' do
     let(:tag_list) { %w[ruby docker postgres] }
     let(:build_attributes) do

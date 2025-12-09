@@ -140,7 +140,6 @@ RSpec/ReceiveMessages:
     - 'ee/spec/services/work_items/parent_links/create_service_spec.rb'
     - 'ee/spec/support/helpers/ee/geo_helpers.rb'
     - 'ee/spec/support/shared_contexts/requests/api/graphql/security_orchestration/policies_shared_contexts.rb'
-    - 'ee/spec/support/shared_contexts/secrets_check_shared_contexts.rb'
     - 'ee/spec/support/shared_examples/controllers/namespace_storage_limit_alert_shared_examples.rb'
     - 'ee/spec/support/shared_examples/graphql/mutations/work_items/update_status_widget_shared_examples.rb'
     - 'ee/spec/support/shared_examples/graphql/mutations/work_items/update_weight_widget_shared_examples.rb'

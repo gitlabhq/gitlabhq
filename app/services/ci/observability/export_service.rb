@@ -39,7 +39,7 @@ module Ci
       end
 
       def observability_settings
-        ::Observability::GroupO11ySetting.observability_settings_for(pipeline.project)
+        ::Observability::GroupO11ySetting.observability_setting_for(pipeline.project)
       end
       strong_memoize_attr :observability_settings
 

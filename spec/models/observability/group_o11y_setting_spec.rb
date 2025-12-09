@@ -291,18 +291,18 @@ RSpec.describe Observability::GroupO11ySetting, feature_category: :observability
     end
   end
 
-  describe '.observability_settings_for' do
+  describe '.observability_setting_for' do
     context 'when resource is nil or invalid' do
       it 'returns nil for nil' do
-        expect(described_class.observability_settings_for(nil)).to be_nil
+        expect(described_class.observability_setting_for(nil)).to be_nil
       end
 
       it 'returns nil for non-Project/Group resource' do
-        expect(described_class.observability_settings_for(build_stubbed(:user))).to be_nil
+        expect(described_class.observability_setting_for(build_stubbed(:user))).to be_nil
       end
 
       it 'returns nil for Project without group' do
-        expect(described_class.observability_settings_for(build_stubbed(:project, group: nil))).to be_nil
+        expect(described_class.observability_setting_for(build_stubbed(:project, group: nil))).to be_nil
       end
     end
 
@@ -315,23 +315,33 @@ RSpec.describe Observability::GroupO11ySetting, feature_category: :observability
       it "returns setting when #{resource_type} group has setting" do
         setting = create(:observability_group_o11y_setting, group: child_group)
 
-        expect(described_class.observability_settings_for(resource)).to eq(setting)
+        expect(described_class.observability_setting_for(resource)).to eq(setting)
       end
 
       it "returns setting when parent has setting" do
         setting = create(:observability_group_o11y_setting, group: parent_group)
 
-        expect(described_class.observability_settings_for(resource)).to eq(setting)
+        expect(described_class.observability_setting_for(resource)).to eq(setting)
       end
 
       it "returns setting when root ancestor has setting" do
         setting = create(:observability_group_o11y_setting, group: root_group)
 
-        expect(described_class.observability_settings_for(resource)).to eq(setting)
+        expect(described_class.observability_setting_for(resource)).to eq(setting)
       end
 
       it "returns nil when no group in hierarchy has setting" do
-        expect(described_class.observability_settings_for(resource)).to be_nil
+        expect(described_class.observability_setting_for(resource)).to be_nil
+      end
+    end
+
+    context 'when ancestor_ids is empty' do
+      let(:group) { create(:group) }
+
+      it 'returns nil when ancestor_ids is empty' do
+        allow(group).to receive(:traversal_ids).and_return([])
+
+        expect(described_class.observability_setting_for(group)).to be_nil
       end
     end
 

@@ -9,5 +9,4 @@ API/ParameterDescription:
     - 'ee/lib/gitlab_subscriptions/api/internal/namespaces.rb'
     - 'ee/lib/gitlab_subscriptions/api/internal/namespaces/provision.rb'
     - 'ee/lib/gitlab_subscriptions/api/internal/upcoming_reconciliations.rb'
-    - 'lib/api/concerns/packages/nuget/public_endpoints.rb'
     - 'lib/api/settings.rb'

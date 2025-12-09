@@ -19,6 +19,7 @@ export default {
       required: true,
     },
   },
+  emits: ['close'],
   computed: {
     getDrawerHeaderHeight() {
       return getContentWrapperHeight();

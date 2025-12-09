@@ -185,6 +185,13 @@ export default {
       default: () => {},
     },
   },
+  emits: [
+    'add-variable',
+    'close-form',
+    'delete-variable',
+    'search-environment-scope',
+    'update-variable',
+  ],
   data() {
     return {
       isMutationAlertVisible: false,

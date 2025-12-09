@@ -410,6 +410,15 @@ module Ci
         end
       end
 
+      after_transition any => ::Ci::Pipeline.completed_statuses do |pipeline|
+        pipeline.run_after_commit do
+          # If this pipeline is not configured to export to observability, skip the export
+          next unless ::Observability::GroupO11ySetting.observability_setting_for(pipeline.project).present?
+
+          Ci::Observability::ExportWorker.perform_async(pipeline.id)
+        end
+      end
+
       # This needs to be kept in sync with `Ci::PipelineRef#should_delete?`
       after_transition any => ::Ci::Pipeline.stopped_statuses do |pipeline|
         pipeline.run_after_commit do

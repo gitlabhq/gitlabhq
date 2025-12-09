@@ -23,6 +23,7 @@ export default {
       type: String,
     },
   },
+  emits: ['update-search-term', 'update-sorting'],
   data() {
     return {
       currentSortOption: SORT_OPTION_POPULARITY,

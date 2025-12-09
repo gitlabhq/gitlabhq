@@ -1,7 +1,7 @@
 import Vue from 'vue';
 import { GlToast } from '@gitlab/ui';
 import VueApollo from 'vue-apollo';
-import { getApolloProvider } from '~/issues/list/issue_client';
+import { apolloProvider } from '~/graphql_shared/issuable_client';
 import { convertObjectPropsToCamelCase, parseBoolean } from '~/lib/utils/common_utils';
 import { JS_TOGGLE_EXPAND_CLASS, CONTEXT_NAMESPACE_GROUPS } from './constants';
 import createStore from './components/global_search/store';
@@ -96,7 +96,7 @@ export const getSuperSidebarData = () => {
   };
 };
 
-export const initSuperSidebar = async ({
+export const initSuperSidebar = ({
   el,
   rootPath,
   currentPath,
@@ -128,7 +128,7 @@ export const initSuperSidebar = async ({
   return new Vue({
     el,
     name: 'SuperSidebarRoot',
-    apolloProvider: await getApolloProvider(),
+    apolloProvider,
     provide: {
       rootPath,
       currentPath,
@@ -206,7 +206,7 @@ export const initSuperSidebarToggle = () => {
  * TODO: When we clean up the `paneled_view` feature flag, we should remove the unused args from
  * both functions.
  */
-export const initSuperTopbar = async ({
+export const initSuperTopbar = ({
   rootPath,
   sidebarData,
   searchPath,
@@ -232,7 +232,7 @@ export const initSuperTopbar = async ({
 
   return new Vue({
     el,
-    apolloProvider: await getApolloProvider(),
+    apolloProvider,
     provide: {
       rootPath,
       isImpersonating,

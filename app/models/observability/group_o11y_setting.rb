@@ -38,16 +38,23 @@ module Observability
       HUMANIZED_ATTRIBUTES[attribute.to_sym] || super
     end
 
-    def self.observability_settings_for(resource)
+    def self.observability_setting_for(resource)
       return unless resource
 
       group = resource.is_a?(Project) ? resource.group : resource
       return unless group.is_a?(Group)
 
-      group.self_and_ancestors(hierarchy_order: :asc)
-           .lazy
-           .filter_map(&:observability_group_o11y_setting)
-           .first
+      ancestor_ids = group.traversal_ids.reverse
+      return if ancestor_ids.empty?
+
+      # Find the first setting matching any ancestor, maintaining hierarchy order
+      # by using array_position to preserve the order from ancestor_ids
+      group_id_attribute = arel_table[:group_id]
+      array_sql = "array_position(ARRAY[#{ancestor_ids.join(',')}]::bigint[], " \
+        "#{group_id_attribute.relation.name}.#{group_id_attribute.name})"
+      where(group_id: ancestor_ids)
+        .order(Arel.sql(array_sql))
+        .first
     end
 
     def o11y_service_name

@@ -77,6 +77,7 @@ export default {
       },
     },
   },
+  emits: ['cancel-pipeline', 'refresh-pipelines-table', 'retry-pipeline'],
   computed: {
     tableFields() {
       return [

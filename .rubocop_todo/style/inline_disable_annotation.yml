@@ -2185,7 +2185,6 @@ Style/InlineDisableAnnotation:
     - 'spec/services/security/merge_reports_service_spec.rb'
     - 'spec/services/system_notes/issuables_service_spec.rb'
     - 'spec/services/todos/destroy/destroyed_issuable_service_spec.rb'
-    - 'spec/services/user_agent_detail_service_spec.rb'
     - 'spec/services/users/migrate_records_to_ghost_user_service_spec.rb'
     - 'spec/services/users/set_namespace_commit_email_service_spec.rb'
     - 'spec/sidekiq/cron/job_gem_dependency_spec.rb'

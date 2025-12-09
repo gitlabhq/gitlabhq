@@ -123,7 +123,6 @@ Style/SymbolProc:
     - 'spec/factories/ci/builds.rb'
     - 'spec/factories/oauth_openid_requests.rb'
     - 'spec/factories/pool_repositories.rb'
-    - 'spec/features/merge_request/user_creates_image_diff_notes_spec.rb'
     - 'spec/features/merge_request/user_resolves_conflicts_spec.rb'
     - 'spec/features/merge_request/user_resolves_diff_notes_and_discussions_resolve_spec.rb'
     - 'spec/features/merge_request/user_sees_pipelines_spec.rb'

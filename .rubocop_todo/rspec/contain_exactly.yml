@@ -67,7 +67,6 @@ RSpec/ContainExactly:
     - 'ee/spec/services/click_house/data_ingestion/ci_finished_builds_sync_service_spec.rb'
     - 'ee/spec/services/ee/ip_restrictions/update_service_spec.rb'
     - 'ee/spec/services/security/security_orchestration_policies/policy_branches_service_spec.rb'
-    - 'ee/spec/services/vulnerabilities/update_service_spec.rb'
     - 'ee/spec/services/vulnerability_exports/exporters/csv_service_spec.rb'
     - 'ee/spec/support/helpers/search_results_helpers.rb'
     - 'ee/spec/support/shared_examples/models/vulnerability_and_finding_shared_examples.rb'

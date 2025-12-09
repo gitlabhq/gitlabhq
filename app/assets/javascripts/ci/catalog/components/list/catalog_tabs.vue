@@ -21,6 +21,7 @@ export default {
       required: true,
     },
   },
+  emits: ['setScope'],
   computed: {
     tabs() {
       return [

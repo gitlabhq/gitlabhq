@@ -2536,6 +2536,51 @@ RSpec.describe Ci::Pipeline, :mailer, factory_default: :keep, feature_category: 
       end
     end
 
+    describe 'observability export' do
+      let_it_be_with_reload(:pipeline) { create(:ci_pipeline, :running, status: :running, project: project) }
+      let(:observability_setting) { instance_double(Observability::GroupO11ySetting) }
+
+      shared_context 'with observability settings' do
+        before do
+          allow(Observability::GroupO11ySetting).to receive(:observability_setting_for)
+            .with(project)
+            .and_return(observability_setting)
+        end
+      end
+
+      shared_context 'without observability settings' do
+        before do
+          allow(Observability::GroupO11ySetting).to receive(:observability_setting_for)
+            .with(project)
+            .and_return(nil)
+        end
+      end
+
+      shared_examples 'does not enqueue ExportWorker' do
+        it 'does not enqueue ExportWorker' do
+          expect(Ci::Observability::ExportWorker).not_to receive(:perform_async)
+          pipeline.succeed!
+        end
+      end
+
+      context 'when transitioning to completed status' do
+        include_context 'with observability settings'
+
+        %i[drop! skip! succeed! cancel!].each do |command|
+          it "enqueues ExportWorker on transition to #{command}" do
+            expect(Ci::Observability::ExportWorker).to receive(:perform_async).with(pipeline.id)
+            pipeline.send(command)
+          end
+        end
+      end
+
+      context 'when observability settings are not present' do
+        include_context 'without observability settings'
+
+        it_behaves_like 'does not enqueue ExportWorker'
+      end
+    end
+
     describe 'merge request metrics' do
       let(:pipeline) { create(:ci_empty_pipeline, status: from_status) }
 

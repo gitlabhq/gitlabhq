@@ -386,7 +386,6 @@ Style/GuardClause:
     - 'lib/gitlab/import_export/importer.rb'
     - 'lib/gitlab/import_export/project/relation_factory.rb'
     - 'lib/gitlab/import_export/repo_restorer.rb'
-    - 'lib/gitlab/import_export/snippet_repo_restorer.rb'
     - 'lib/gitlab/import_export/version_checker.rb'
     - 'lib/gitlab/instrumentation/global_search_api.rb'
     - 'lib/gitlab/instrumentation/rate_limiting_gates.rb'

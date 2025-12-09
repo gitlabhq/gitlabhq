@@ -3,7 +3,6 @@ API/ParameterType:
   Details: grace period
   Exclude:
     - 'ee/lib/api/virtual_registries/container/registry_upstreams.rb'
-    - 'ee/lib/api/virtual_registries/packages/maven/registry_upstreams.rb'
     - 'lib/api/discussions.rb'
     - 'lib/api/helpers/merge_requests_helpers.rb'
     - 'lib/api/integrations.rb'

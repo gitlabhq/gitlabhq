@@ -36,6 +36,7 @@ export default {
       default: false,
     },
   },
+  emits: ['filterJobsBySearch'],
   computed: {
     tokens() {
       const tokens = [

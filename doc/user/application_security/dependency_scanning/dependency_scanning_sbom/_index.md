@@ -634,6 +634,7 @@ These variables can replace spec inputs and are also compatible with the beta `l
 
 | CI/CD variables             | Description |
 | ----------------------------|------------ |
+| `ADDITIONAL_CA_CERT_BUNDLE` | Bundle of CA certificates to trust. The bundle of certificates provided here is added to the system's certificates and also used by other tools during the scanning process. For more details, see [Custom TLS certificate authority](#custom-tls-certificate-authority). |
 | `ANALYZER_ARTIFACT_DIR`     | Directory where CycloneDX reports (SBOMs) are saved. Default `${CI_PROJECT_DIR}/sca-artifacts`. |
 | `DS_EXCLUDED_ANALYZERS`     | Specify the analyzers (by name) to exclude from dependency scanning. |
 | `DS_EXCLUDED_PATHS`         | Exclude files and directories from the scan based on the paths. A comma-separated list of patterns. Patterns can be globs (see [`doublestar.Match`](https://pkg.go.dev/github.com/bmatcuk/doublestar/v4@v4.0.2#Match) for supported patterns), or file or folder paths (for example, `doc,spec`). See [Exclusion patterns](#exclusion-patterns) for matching rules. This is a pre-filter which is applied before the scan is executed. Applies both for dependency detection and static reachability. Default: `"**/spec,**/test,**/tests,**/tmp,**/node_modules,**/.bundle,**/vendor,**/.git"`. |
@@ -648,6 +649,29 @@ These variables can replace spec inputs and are also compatible with the beta `l
 | `DS_API_TIMEOUT` | Dependency scanning SBOM API request timeout in seconds (minimum: `5`, maximum: `300`) Default: `10` |
 | `DS_API_SCAN_DOWNLOAD_DELAY` | Initial delay in seconds before downloading scan results (minimum: 1, maximum: 120) Default: `3` |
 | `SECURE_LOG_LEVEL` | Log level. Default: `"info"`. |
+
+### Custom TLS certificate authority
+
+Dependency scanning allows for use of custom TLS certificates for SSL/TLS connections instead of the
+default shipped with the analyzer container image.
+
+#### Using a custom TLS certificate authority
+
+To use a custom TLS certificate authority, assign the
+[text representation of the X.509 PEM public-key certificate](https://www.rfc-editor.org/rfc/rfc7468#section-5.1)
+to the CI/CD variable `ADDITIONAL_CA_CERT_BUNDLE`.
+
+For example, to configure the certificate in the `.gitlab-ci.yml` file:
+
+```yaml
+variables:
+  ADDITIONAL_CA_CERT_BUNDLE: |
+      -----BEGIN CERTIFICATE-----
+      MIIGqTCCBJGgAwIBAgIQI7AVxxVwg2kch4d56XNdDjANBgkqhkiG9w0BAQsFADCB
+      ...
+      jWgmPqF3vUbZE0EyScetPJquRFRKIesyJuBFMAs=
+      -----END CERTIFICATE-----
+```
 
 ## How it scans an application
 

@@ -807,7 +807,6 @@ RSpec/VerifiedDoubles:
     - 'spec/support/shared_examples/metrics/sampler_shared_examples.rb'
     - 'spec/support/shared_examples/models/chat_integration_shared_examples.rb'
     - 'spec/support/shared_examples/models/concerns/integrations/slack_mattermost_notifier_shared_examples.rb'
-    - 'spec/support/shared_examples/models/members_notifications_shared_example.rb'
     - 'spec/support/shared_examples/models/project_ci_cd_settings_shared_examples.rb'
     - 'spec/support/shared_examples/namespaces/hierarchy_examples.rb'
     - 'spec/support/shared_examples/requests/api/composer_packages_shared_examples.rb'

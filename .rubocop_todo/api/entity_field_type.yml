@@ -1,4 +1,5 @@
 ---
+# Cop supports --autocorrect.
 API/EntityFieldType:
   Details: grace period
   Exclude:
