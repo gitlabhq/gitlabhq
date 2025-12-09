@@ -1,4 +1,6 @@
 <script>
+import { normalizeRender } from '~/lib/utils/vue3compat/normalize_render';
+
 /**
  * A utility component that attaches event listeners to DOM elements matching a CSS selector.
  *
@@ -18,7 +20,7 @@
  *   @click="handleClick"
  * />
  */
-export default {
+export default normalizeRender({
   props: {
     /**
      * CSS selector string to target DOM elements.
@@ -95,5 +97,5 @@ export default {
   render() {
     return this.$scopedSlots.default?.();
   },
-};
+});
 </script>

@@ -482,8 +482,35 @@
   - "**/*.rb"
   - "**/*.ru"
 
+# Spec files only (for Rspec predictive pipeline)
+.spec-only-patterns: &spec-only-patterns
+  - "{,ee/,jh/}spec/**/*_spec.rb"
+
 # Backend patterns + .ci-patterns
 .backend-patterns: &backend-patterns
+  - "{,jh/}Gemfile{,.lock}"
+  - "{,jh/}Gemfile.next{,.lock}"
+  - "Rakefile"
+  - "config.ru"
+  - "keeps/**/*"
+  # List explicitly all the app/ dirs that are backend (i.e. all except app/assets).
+  - "{,ee/,jh/}{app/channels,app/components,app/controllers,app/finders,app/graphql,app/helpers,app/mailers,app/models,app/policies,app/presenters,app/serializers,app/services,app/uploaders,app/validators,app/views,app/workers}/**/*"
+  - "{,ee/,jh/}{bin,config,db,elastic,gems,generator_templates,lib}/**/*"
+  # Spec support files
+  - "{,ee/,jh/}spec/{support,factories,fixtures,tooling/fixtures}/**/*"
+  - "{,ee/,jh/}spec/{*.rb,.rspec}"
+  # CI changes
+  - "{,jh/}.gitlab-ci.yml"
+  - "{,jh/}.gitlab/ci/**/*"
+  - "*_VERSION"
+  - "scripts/rspec_helpers.sh"
+  # Mapped patterns (see tests.yml)
+  - "data/whats_new/*.yml"
+  - "doc/_index.md"
+  - "doc/api/settings.md"
+
+# .backend-patterns + .ci-patterns + .spec-only-patterns
+.backend-spec-patterns: &backend-spec-patterns
   - "{,jh/}Gemfile{,.lock}"
   - "{,jh/}Gemfile.next{,.lock}"
   - "Rakefile"
@@ -583,9 +610,10 @@
   - "danger/**/*"
   - "{,ee/,jh/}fixtures/**/*"
   - "{,ee/,jh/}rubocop/**/*"
-  - "{,ee/,jh/}spec/**/*"
+  - "{,ee/,jh/}spec/{support,factories,fixtures,tooling/fixtures}/**/*"
+  - "{,ee/,jh/}spec/{*.rb,.rspec}"
   - "scripts/**/*"
-  - "{,spec/}tooling/**/*"
+  - "tooling/**/*"
 
 .qa-patterns: &qa-patterns
   - ".dockerignore"
@@ -659,6 +687,52 @@
 
 # .code-patterns + .backstage-patterns
 .code-backstage-patterns: &code-backstage-patterns
+  - ".{gitattributes,nvmrc,prettierrc,stylelintrc,yamllint}"
+  - "eslint.config.mjs"
+  - ".eslint_todo/*.mjs"
+  - ".browserslistrc"
+  - ".stylelintrc"
+  - "{,ee/,jh/}{app,bin,config,db,elastic,generator_templates,gems,haml_lint,lib,locale,public,scripts,sidekiq_cluster,storybook,symbol,vendor}/**/*"
+  - "{,jh/}Gemfile{,.lock}"
+  - "{,jh/}Gemfile.next{,.lock}"
+  - "{package.json,yarn.lock}"
+  - "*_VERSION"
+  - "babel.config.js"
+  - "vite.config.js"
+  - "config.ru"
+  - "Dockerfile.assets"
+  - "jest.config.{base,integration,unit}.js"
+  - "keeps/**/*"
+  - "Rakefile"
+  - "tests.yml"
+  - "vendor/assets/**/*"
+  # Auto-generated files
+  - "doc/api/graphql/reference/*"
+  # CI changes
+  - "{,jh/}.gitlab-ci.yml"
+  - "{,jh/}.gitlab/ci/**/*"
+  # Mapped patterns (see tests.yml)
+  - "data/whats_new/*.yml"
+  - "doc/_index.md"
+  - "doc/api/settings.md"
+  # Backstage changes
+  - "Dangerfile"
+  - "danger/**/*"
+  - "{,ee/,jh/}fixtures/**/*"
+  - "{,ee/,jh/}rubocop/**/*"
+  - "scripts/**/*"
+  - "tooling/**/*"
+  - "{,ee/,jh/}spec/{support,factories,fixtures,tooling/fixtures}/**/*"
+  - "{,ee/,jh/}spec/{*.rb,.rspec}"
+  # FE island changes
+  - "ee/frontend_islands/{apps,packages}/**/package.json"
+  - "ee/frontend_islands/{apps,packages}/**/tsconfig*.json"
+  - "ee/frontend_islands/apps/**/*.config.{js,ts,cjs,mjs}"
+  - "ee/frontend_islands/apps/**/components.json"
+  - "ee/frontend_islands/packages/**/index.{js,json}"
+
+# .code-patterns + .backstage-patterns + .spec-only-patterns
+.code-backstage-spec-patterns: &code-backstage-spec-patterns
   - ".{gitattributes,nvmrc,prettierrc,stylelintrc,yamllint}"
   - "eslint.config.mjs"
   - ".eslint_todo/*.mjs"
@@ -780,9 +854,10 @@
   - "danger/**/*"
   - "{,ee/,jh/}fixtures/**/*"
   - "{,ee/,jh/}rubocop/**/*"
-  - "{,ee/,jh/}spec/**/*"
   - "scripts/**/*"
-  - "{,spec/}tooling/**/*"
+  - "tooling/**/*"
+  - "{,ee/,jh/}spec/{support,factories,fixtures,tooling/fixtures}/**/*"
+  - "{,ee/,jh/}spec/{*.rb,.rspec}"
   # QA changes
   - ".dockerignore"
   - "{,jh/}qa/**/*"
@@ -829,7 +904,7 @@
   - "data/whats_new/*.yml"
   - "doc/_index.md"
   - "doc/api/settings.md"
-  # Backstage changes
+  # Backstage and spec changes
   - "Dangerfile"
   - "danger/**/*"
   - "{,ee/,jh/}fixtures/**/*"
@@ -984,7 +1059,7 @@
 .rails:rules:ee-and-foss-default-rules:
   rules:
     - <<: *if-fork-merge-request
-      changes: *code-backstage-patterns
+      changes: *code-backstage-spec-patterns
       when: never
     - <<: *if-merge-request-labels-pipeline-expedite
       when: never
@@ -1065,7 +1140,7 @@
       changes: *ci-patterns
       when: never
     - <<: *if-merge-request
-      changes: *code-backstage-patterns
+      changes: *code-backstage-spec-patterns
 
 .rails:rules:ee-and-foss-migration:predictive:
   rules:
@@ -1083,34 +1158,34 @@
   rules:
     - !reference [".rails:rules:ee-and-foss-migration:predictive", rules]
     - <<: *if-merge-request
-      changes: *backend-patterns
+      changes: *backend-spec-patterns
 
 .rails:rules:ee-and-foss-unit:predictive:
   rules:
     - <<: *if-fork-merge-request
-      changes: *backend-patterns
+      changes: *backend-spec-patterns
     - !reference [".rails:rules:predictive-default-rules", rules]
     - !reference [".rails:rules:unit-integration:predictive-default-rules", rules]
     - <<: *if-merge-request
-      changes: *backend-patterns
+      changes: *backend-spec-patterns
     - <<: *if-merge-request
       changes: *backstage-patterns
 
 .rails:rules:ee-and-foss-integration:predictive:
   rules:
     - <<: *if-fork-merge-request
-      changes: *backend-patterns
+      changes: *backend-spec-patterns
     - !reference [".rails:rules:predictive-default-rules", rules]
     - !reference [".rails:rules:unit-integration:predictive-default-rules", rules]
     - <<: *if-merge-request
-      changes: *backend-patterns
+      changes: *backend-spec-patterns
 
 # TODO: Why is this rule unused? It seems .rails:rules:rspec-predictive:pipeline-generate superseded it, but that provides no way to selectively target system tests
 .rails:rules:ee-and-foss-system:predictive:
   rules:
     - !reference [".rails:rules:only-run-system-if-medium-runners-available", rules]
     - <<: *if-fork-merge-request
-      changes: *code-backstage-patterns
+      changes: *code-backstage-spec-patterns
     - !reference [".rails:rules:predictive-default-rules", rules]
     - !reference [".rails:rules:system:predictive-default-rules", rules]
 
@@ -1130,18 +1205,18 @@
   rules:
     - !reference [".rails:rules:ee-only-migration:predictive", rules]
     - <<: *if-merge-request
-      changes: *backend-patterns
+      changes: *backend-spec-patterns
 
 .rails:rules:ee-only-unit:predictive:
   rules:
     - <<: *if-not-ee
       when: never
     - <<: *if-fork-merge-request
-      changes: *backend-patterns
+      changes: *backend-spec-patterns
     - !reference [".rails:rules:predictive-default-rules", rules]
     - !reference [".rails:rules:unit-integration:predictive-default-rules", rules]
     - <<: *if-merge-request
-      changes: *backend-patterns
+      changes: *backend-spec-patterns
 
 # TODO: Why is this rule unused? It seems .rails:rules:rspec-predictive:pipeline-generate superseded it, but that provides no way to selectively target system tests
 .rails:rules:ee-only-integration:predictive:
@@ -1149,11 +1224,11 @@
     - <<: *if-not-ee
       when: never
     - <<: *if-fork-merge-request
-      changes: *backend-patterns
+      changes: *backend-spec-patterns
     - !reference [".rails:rules:predictive-default-rules", rules]
     - !reference [".rails:rules:unit-integration:predictive-default-rules", rules]
     - <<: *if-merge-request
-      changes: *backend-patterns
+      changes: *backend-spec-patterns
 
 # TODO: Why is this rule unused? It seems .rails:rules:rspec-predictive:pipeline-generate superseded it, but that provides no way to selectively target system tests
 .rails:rules:ee-only-system:predictive:
@@ -1162,7 +1237,7 @@
       when: never
     - !reference [".rails:rules:only-run-system-if-medium-runners-available", rules]
     - <<: *if-fork-merge-request
-      changes: *code-backstage-patterns
+      changes: *code-backstage-spec-patterns
     - !reference [".rails:rules:predictive-default-rules", rules]
     - !reference [".rails:rules:system:predictive-default-rules", rules]
 
@@ -1397,6 +1472,8 @@
       when: never
     - <<: *if-default-refs
       changes: *code-backstage-qa-patterns
+    - <<: *if-default-refs
+      changes: *spec-only-patterns
 
 ##################
 # OpenAPI rules  #
@@ -1512,7 +1589,7 @@
     - <<: *if-merge-request-labels-run-all-rspec
     - <<: *if-default-branch-schedule-weekly
     - <<: *if-merge-request
-      changes: *backend-patterns
+      changes: *backend-spec-patterns
     - <<: *if-default-refs
       changes: *code-backstage-qa-patterns
     - <<: *if-default-refs
@@ -2332,7 +2409,7 @@
 .rails:rules:rspec-predictive:pipeline-generate:
   rules:
     - <<: *if-fork-merge-request
-      changes: *code-backstage-patterns
+      changes: *code-backstage-spec-patterns
     - <<: *if-merge-request-labels-pipeline-expedite
       when: never
     - if: '$ENABLE_RSPEC_PREDICTIVE_PIPELINE_GENERATE == "true"'
@@ -2352,9 +2429,10 @@
       changes: *backend-patterns
       when: never
     - <<: *if-merge-request-approved
+      changes: *code-backstage-patterns
       when: never
     - <<: *if-merge-request
-      changes: *code-backstage-patterns
+      changes: *code-backstage-spec-patterns
 
 # Inverse rules compared to .rails:rules:ee-and-foss-default-rules
 #
@@ -2362,7 +2440,7 @@
 .rails:rules:rspec-predictive:
   rules:
     - <<: *if-fork-merge-request
-      changes: *code-backstage-patterns
+      changes: *code-backstage-spec-patterns
     - <<: *if-merge-request-labels-pipeline-expedite
       when: never
     - if: '$ENABLE_RSPEC_PREDICTIVE_TRIGGER == "true"'
@@ -2378,9 +2456,10 @@
       changes: *backend-patterns
       when: never
     - <<: *if-merge-request-approved
+      changes: *code-backstage-patterns
       when: never
     - <<: *if-merge-request
-      changes: *code-backstage-patterns
+      changes: *code-backstage-spec-patterns
 
 # Inverse rules compared to .rails:rules:single-db
 #
@@ -2513,7 +2592,7 @@
     - if: '$ENABLE_RSPEC_FAST_SPEC_HELPER == "true"'
     - <<: *if-merge-request-labels-run-all-rspec
     - <<: *if-merge-request
-      changes: *backend-patterns
+      changes: *backend-spec-patterns
     - <<: *if-default-refs
       changes: *core-backend-patterns
 
@@ -2634,6 +2713,8 @@
     - <<: *if-merge-request
       changes: *code-backstage-qa-patterns
     - <<: *if-merge-request
+      changes: *spec-only-patterns
+    - <<: *if-merge-request
       changes: *workhorse-patterns
     - <<: *if-merge-request
       changes: *rubocop-patterns
@@ -2653,9 +2734,9 @@
     - <<: *if-merge-request-labels-skip-rspec-fail-fast
       when: never
     - <<: *if-security-merge-request
-      changes: *code-backstage-patterns
+      changes: *code-backstage-spec-patterns
     - <<: *if-dot-com-gitlab-org-merge-request
-      changes: *code-backstage-patterns
+      changes: *code-backstage-spec-patterns
 
 .rails:rules:fail-pipeline-early:
   rules:
@@ -2664,10 +2745,10 @@
     - <<: *if-merge-request-labels-skip-rspec-fail-fast
       when: never
     - <<: *if-security-merge-request
-      changes: *code-backstage-patterns
+      changes: *code-backstage-spec-patterns
       when: on_failure
     - <<: *if-dot-com-gitlab-org-merge-request
-      changes: *code-backstage-patterns
+      changes: *code-backstage-spec-patterns
       when: on_failure
 
 .rails:rules:rspec-coverage:
@@ -2759,7 +2840,7 @@
     - <<: *if-merge-request-labels-pipeline-expedite
       when: never
     - <<: *if-default-refs
-      changes: *code-backstage-patterns
+      changes: *code-backstage-spec-patterns
 
 .rails:rules:flaky-tests-report:
   rules:
@@ -2770,7 +2851,7 @@
     - if: '$FAST_QUARANTINE == "false" && $RETRY_FAILED_TESTS_IN_NEW_PROCESS != "true"'
       when: never
     - <<: *if-default-branch-refs
-      changes: *code-backstage-patterns
+      changes: *code-backstage-spec-patterns
       when: always
 
 .rails:rules:rails-next-dependency-check:
@@ -2838,6 +2919,8 @@
       changes: *static-analysis-patterns
     - <<: *if-default-refs
       changes: *code-backstage-qa-patterns
+    - <<: *if-default-refs
+      changes: *spec-only-patterns
     - <<: *if-default-refs
       changes: *docs-patterns
 
@@ -3072,7 +3155,7 @@
     - <<: *if-merge-request-labels-pipeline-expedite
       when: never
     - <<: *if-default-refs
-      changes: *code-backstage-patterns
+      changes: *code-backstage-spec-patterns
 
 .setup:rules:jh-contribution:
   rules:
@@ -3110,14 +3193,14 @@
     - <<: *if-not-foss
       when: never
     - <<: *if-default-refs
-      changes: *code-backstage-patterns
+      changes: *code-backstage-spec-patterns
 
 .preflight:rules:no-jh-check:
   rules:
     - <<: *if-jh
       when: never
     - <<: *if-default-refs
-      changes: *code-backstage-patterns
+      changes: *code-backstage-spec-patterns
 
 .preflight:rules:pipeline-tier-1:
   rules:
@@ -3156,7 +3239,7 @@
   rules:
     - if: '$ENABLE_RSPEC == "true"'
     - <<: *if-default-refs
-      changes: *code-backstage-patterns
+      changes: *code-backstage-spec-patterns
     - <<: *if-default-refs
       changes: *workhorse-patterns
     - <<: *if-default-branch-refs
@@ -3165,7 +3248,7 @@
     - <<: *if-merge-request-labels-frontend-and-feature-flag
       changes: *setup-test-env-patterns
     - <<: *if-merge-request
-      changes: *backend-patterns
+      changes: *backend-spec-patterns
     - <<: *if-default-branch-schedule-weekly
 
 .test-metadata:rules:update-tests-metadata:
@@ -3291,9 +3374,9 @@
     - <<: *if-automated-merge-request
       changes: *backend-patterns
     - <<: *if-automated-merge-request
-      changes: *code-backstage-patterns
+      changes: *code-backstage-spec-patterns
     - <<: *if-security-merge-request
-      changes: *backend-patterns
+      changes: *backend-spec-patterns
     - <<: *if-security-merge-request
       changes: *code-backstage-qa-patterns
     - <<: *if-security-merge-request
@@ -3302,6 +3385,8 @@
       changes: *setup-test-env-patterns
     - <<: *if-merge-request
       changes: *code-backstage-qa-patterns
+    - <<: *if-merge-request
+      changes: *spec-only-patterns
     - <<: *if-merge-request
       changes: *nodejs-patterns
     - <<: *if-merge-request

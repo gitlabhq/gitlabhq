@@ -98,7 +98,6 @@ The generator creates a template. Fill in all required fields:
 name: read_job
 description: Grants the ability to read CI/CD jobs
 feature_category: continuous_integration
-available_for_tokens: true
 boundaries:
   - group
   - project
@@ -111,16 +110,13 @@ boundaries:
 | `name` | Permission name (auto-populated) | Matches the permission name |
 | `description` | Human-readable description of what the permission allows | Describe the capability granted |
 | `feature_category` | GitLab feature category | Found in `lib/api/<resource>.rb` - search for `feature_category` |
-| `available_for_tokens` | Indicates if this permission can be assigned to a granular token | Set to `true` for granular PAT permissions |
 | `boundaries` | List of organizational levels where the permission applies | Determined by the route pattern - `project` for `/projects/:id/...`, `group` for `/groups/:id/...`, `user` for `/users/:id/...`, `instance` for no prefix |
 
-### Step 4: Define Permission Groups (Optional)
+### Step 4: Assign permissions to Permission Groups
 
-**Goal:** Group related permissions together for easier token configuration.
+Permission groups bundle one or more permissions that can be enabled for a granular PAT. They maintain granularity at the API endpoint level while providing a simpler, more user-friendly experience in the UI. Instead of presenting users with many individual permissions, permission groups enable them to grant multiple related capabilities at once.
 
-Permission groups allow you to bundle multiple related permissions under a single logical group. This is useful when you want to maintain granularity at the API endpoint level while providing a simpler, more user-friendly experience in the UI. Instead of presenting users with many individual permissions, you can offer broader permission groups that grant multiple related capabilities at once.
-
-You can define permission groups in `config/authz/permission_groups/<resource>/<action>.yml`. The following example shows a YAML file for the `config/authz/permission_groups/job/run.yml` permission group:
+Define permission groups in `config/authz/permission_groups/assignable_permissions/<category>/<resource>/<action>.yml`. The following example shows a YAML file for the `config/authz/permission_groups/assignable_permissions/ci_cd/job/run.yml` permission group:
 
 ```yaml
 ---
@@ -129,13 +125,12 @@ description: Grants the ability to run jobs
 permissions:
   - play_job
   - retry_job
-available_for_tokens: true
 boundaries:
   - group
   - project
 ```
 
-Each permission included in the group should exist as an individual permission, with a `false` value for the `available_for_tokens` key.
+Each permission included in the group should exist as an individual permission. Only permissions assigned to permission group(s) can be used to authorize API requests using granular PATs.
 
 ### Step 5: Add Authorization Decorators to API Endpoints
 

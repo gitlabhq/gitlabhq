@@ -1,7 +1,8 @@
 <script>
+import { normalizeRender } from '~/lib/utils/vue3compat/normalize_render';
 import { getExperimentVariant } from '../utils';
 
-export default {
+export default normalizeRender({
   props: {
     name: {
       type: String,
@@ -11,5 +12,5 @@ export default {
   render() {
     return this.$scopedSlots?.[getExperimentVariant(this.name)]?.();
   },
-};
+});
 </script>

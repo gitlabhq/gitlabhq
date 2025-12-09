@@ -54,7 +54,7 @@ However, to help estimate the duration of your import, a project comprised of th
 To import your Bitbucket repositories:
 
 1. Sign in to GitLab.
-1. In the upper-right corner, select **Create new** ({{< icon name=\"plus\" >}}) and **New project/repository**.
+1. In the upper-right corner, select **Create new** ({{< icon name="plus" >}}) and **New project/repository**.
 1. Select **Import project**.
 1. Select **Bitbucket Server**.
 1. Sign in to Bitbucket and grant GitLab access to your Bitbucket account.

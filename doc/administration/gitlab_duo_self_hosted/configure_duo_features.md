@@ -43,7 +43,7 @@ To configure your GitLab instance to access the available self-hosted models in 
 
 To configure access between your GitLab instance and your local AI Gateway:
 
-1. On the left sidebar, at the bottom, select **Admin**. If you've [turned on the new navigation](../../user/interface_redesign.md), in the upper-right corner, select **Admin**.
+1. In the upper-right corner, select **Admin**.
 1. Select **GitLab Duo**.
 1. Select **Change configuration**.
 1. Under **Local AI Gateway URL**, enter your AI Gateway URL.
@@ -80,7 +80,7 @@ For more information, see the history.
 
 To access the Agent Platform service from your GitLab instance:
 
-1. On the left sidebar, at the bottom, select **Admin**. If you've [turned on the new navigation](../../user/interface_redesign.md), in the upper-right corner, select **Admin**.
+1. In the upper-right corner, select **Admin**.
 1. Select **GitLab Duo**.
 1. Select **Change configuration**.
 1. Under **Local URL for the GitLab Duo Agent Platform service**, enter the URL for the local Agent Platform service.
@@ -98,7 +98,7 @@ You must add a self-hosted model to your GitLab instance to use it with GitLab D
 
 To add a self-hosted model:
 
-1. On the left sidebar, at the bottom, select **Admin**. If you've [turned on the new navigation](../../user/interface_redesign.md), in the upper-right corner, select **Admin**.
+1. In the upper-right corner, select **Admin**.
 1. Select **GitLab Duo**.
 1. Select **Configure GitLab Duo Self-Hosted**.
    - If **Configure GitLab Duo Self-Hosted** is not available, synchronize your
@@ -151,7 +151,7 @@ Turning on beta self-hosted models and features also accepts the [GitLab Testing
 
 To enable self-hosted beta models and features:
 
-1. On the left sidebar, at the bottom, select **Admin**. If you've [turned on the new navigation](../../user/interface_redesign.md), in the upper-right corner, select **Admin**.
+1. In the upper-right corner, select **Admin**.
 1. Select **GitLab Duo**.
 1. Select **Change configuration**.
 1. Under **Self-hosted beta models and features**, select the **Use beta models and features in GitLab Duo Self-Hosted** checkbox.
@@ -161,7 +161,7 @@ To enable self-hosted beta models and features:
 
 ### View configured features
 
-1. On the left sidebar, at the bottom, select **Admin**. If you've [turned on the new navigation](../../user/interface_redesign.md), in the upper-right corner, select **Admin**.
+1. In the upper-right corner, select **Admin**.
 1. Select **GitLab Duo**.
 1. Select **Configure GitLab Duo Self-Hosted**.
    - If **Configure GitLab Duo Self-Hosted** is not available, synchronize your
@@ -175,7 +175,7 @@ To enable self-hosted beta models and features:
 
 Configure a GitLab Duo feature and sub-feature to send queries to the self-hosted model:
 
-1. On the left sidebar, at the bottom, select **Admin**. If you've [turned on the new navigation](../../user/interface_redesign.md), in the upper-right corner, select **Admin**.
+1. In the upper-right corner, select **Admin**.
 1. Select **GitLab Duo**.
 1. Select **Configure GitLab Duo Self-Hosted**.
 1. Select the **AI-native features** tab.
@@ -215,7 +215,7 @@ For more information, see the history.
 
 You can configure a GitLab Duo feature to use the GitLab AI vendor model, even if you use a self-hosted AI gateway and models.
 
-1. On the left sidebar, at the bottom, select **Admin**. If you've [turned on the new navigation](../../user/interface_redesign.md), in the upper-right corner, select **Admin**.
+1. In the upper-right corner, select **Admin**.
 1. Select **GitLab Duo**.
 1. Select **Configure GitLab Duo Self-Hosted**.
 1. Select the **AI-native features** tab.
@@ -229,7 +229,7 @@ GitLab Duo features remain turned on even if you have not chosen a model for a s
 
 To disable a GitLab Duo feature or sub-feature:
 
-1. On the left sidebar, at the bottom, select **Admin**. If you've [turned on the new navigation](../../user/interface_redesign.md), in the upper-right corner, select **Admin**.
+1. In the upper-right corner, select **Admin**.
 1. Select **GitLab Duo**.
 1. Select **Configure GitLab Duo Self-Hosted**.
 1. Select the **AI-native features** tab.

@@ -1317,6 +1317,7 @@ vulnerability_finding:
   - triggered_workflows
   - flip_guard
   - detection_transitions
+  - project_tracked_context
 scanner:
   - findings
   - security_findings

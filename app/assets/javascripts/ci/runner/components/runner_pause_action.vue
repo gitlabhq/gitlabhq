@@ -2,6 +2,7 @@
 import runnerTogglePausedMutation from '~/ci/runner/graphql/shared/runner_toggle_paused.mutation.graphql';
 import { createAlert } from '~/alert';
 import { captureException } from '~/ci/runner/sentry_utils';
+import { normalizeRender } from '~/lib/utils/vue3compat/normalize_render';
 
 /**
  * Renderless component that wraps a GraphQL pause mutation for the
@@ -23,7 +24,7 @@ import { captureException } from '~/ci/runner/sentry_utils';
  * ```
  *
  */
-export default {
+export default normalizeRender({
   name: 'RunnerPauseAction',
   props: {
     runner: {
@@ -80,5 +81,5 @@ export default {
       loading: this.loading,
     });
   },
-};
+});
 </script>

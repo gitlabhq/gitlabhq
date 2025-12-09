@@ -1,12 +1,13 @@
 <script>
 import { normalizeChildren } from '~/lib/utils/vue3compat/normalize_children';
+import { normalizeRender } from '~/lib/utils/vue3compat/normalize_render';
 /**
  * Wrapper for discussion notes replies section.
  *
  * This is a functional component using the render method because in some cases
  * the wrapper is not needed and we want to simply render along the children.
  */
-export default {
+export default normalizeRender({
   functional: true,
   props: {
     isDiffDiscussion: {
@@ -29,5 +30,5 @@ export default {
 
     return normalizeChildren(children);
   },
-};
+});
 </script>

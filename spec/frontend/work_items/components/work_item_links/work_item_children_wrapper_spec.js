@@ -148,24 +148,19 @@ describe('WorkItemChildrenWrapper', () => {
   });
 
   it.each`
-    description     | workItemType | prefetch
-    ${'prefetches'} | ${'Issue'}   | ${true}
-    ${'prefetches'} | ${'Epic'}    | ${true}
+    description     | workItemType
+    ${'prefetches'} | ${'Issue'}
+    ${'prefetches'} | ${'Epic'}
   `(
     '$description work-item-link-child on mouseover when workItemType is "$workItemType"',
-    async ({ workItemType, prefetch }) => {
+    async ({ workItemType }) => {
       createComponent({ workItemType });
       findFirstWorkItemLinkChildItem().vm.$emit('mouseover', childrenWorkItems[0]);
       await nextTick();
       await waitForPromises();
 
       jest.advanceTimersByTime(DEFAULT_DEBOUNCE_AND_THROTTLE_MS);
-
-      if (prefetch) {
-        expect(getWorkItemQueryHandler).toHaveBeenCalled();
-      } else {
-        expect(getWorkItemQueryHandler).not.toHaveBeenCalled();
-      }
+      expect(getWorkItemQueryHandler).toHaveBeenCalled();
     },
   );
 

@@ -1,5 +1,7 @@
 <script>
-export default {
+import { normalizeRender } from '~/lib/utils/vue3compat/normalize_render';
+
+export default normalizeRender({
   name: 'OrderedLayout',
   props: {
     slotKeys: {
@@ -23,5 +25,5 @@ export default {
         .filter((slot) => slot),
     );
   },
-};
+});
 </script>

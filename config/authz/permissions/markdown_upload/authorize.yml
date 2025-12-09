@@ -4,4 +4,3 @@ description: Grants the ability to authorize markdown upload
 feature_category: team_planning
 boundaries:
   - project
-available_for_tokens: true

@@ -108,7 +108,7 @@ Prerequisites:
 
 - You must have the Owner role.
 
-1. On the left sidebar, select **Search or go to** and find your group. If you've [turned on the new navigation](../user/interface_redesign.md), this field is on the top bar.
+1. On the top bar, select **Search or go to** and find your group.
 1. Select **Settings** > **GitLab Duo**.
 1. By **Seat utilization**, select **Assign seats**.
 1. Select **Purchase seats**.
@@ -151,7 +151,7 @@ Prerequisites:
 
 To use GitLab Duo features in any project or group, you must assign the user to a seat in at least one top-level group.
 
-1. On the left sidebar, select **Search or go to** and find your group. If you've [turned on the new navigation](../user/interface_redesign.md), this field is on the top bar.
+1. On the top bar, select **Search or go to** and find your group.
 1. Select **Settings** > **GitLab Duo**.
 1. By **Seat utilization**, select **Assign seats**.
 1. To the right of the user, turn on the toggle to assign a GitLab Duo seat.
@@ -164,7 +164,7 @@ Prerequisites:
 
 - You must be an administrator.
 
-1. On the left sidebar, at the bottom, select **Admin**. If you've [turned on the new navigation](../user/interface_redesign.md), in the upper-right corner, select **Admin**.
+1. In the upper-right corner, select **Admin**.
 1. Select **GitLab Duo**.
    - If the **GitLab Duo** menu item is not available, synchronize your subscription
      after purchase:
@@ -192,7 +192,7 @@ GitLab.com groups can use SAML Group Sync to [manage GitLab Duo seat assignments
 
 ### For GitLab.com
 
-1. On the left sidebar, select **Search or go to** and find your group. If you've [turned on the new navigation](../user/interface_redesign.md), this field is on the top bar.
+1. On the top bar, select **Search or go to** and find your group.
 1. Select **Settings** > **GitLab Duo**.
 1. On the bottom right, you can adjust the page display to show **50** or **100** items to increase the number of users available for selection.
 1. Select the users to assign or remove seats for:
@@ -209,7 +209,7 @@ Prerequisites:
 - You must be an administrator.
 - You must have GitLab 17.5 or later.
 
-1. On the left sidebar, at the bottom, select **Admin**. If you've [turned on the new navigation](../user/interface_redesign.md), in the upper-right corner, select **Admin**.
+1. In the upper-right corner, select **Admin**.
 1. Select **GitLab Duo**.
 1. On the bottom right, you can adjust the page display to show **50** or **100** items to increase the number of users available for selection.
 1. Select the users to assign or remove seats for:
@@ -265,7 +265,7 @@ Prerequisites:
 
 - You must have the Owner role.
 
-1. On the left sidebar, select **Search or go to** and find your group. If you've [turned on the new navigation](../user/interface_redesign.md), this field is on the top bar.
+1. On the top bar, select **Search or go to** and find your group.
 1. Select **Settings** > **GitLab Duo**.
 1. By **Seat utilization**, select **Assign seats**.
 1. From the filter bar, select **Assigned seat** and **Yes**.
@@ -278,7 +278,7 @@ Prerequisites:
 - You must be an administrator.
 - You must have GitLab 17.5 or later.
 
-1. On the left sidebar, at the bottom, select **Admin**. If you've [turned on the new navigation](../user/interface_redesign.md), in the upper-right corner, select **Admin**.
+1. In the upper-right corner, select **Admin**.
 1. Select **GitLab Duo**.
    - If the **GitLab Duo** menu item is not available, synchronize your subscription
      after purchase:

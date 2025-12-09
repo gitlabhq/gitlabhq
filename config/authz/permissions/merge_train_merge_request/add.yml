@@ -2,6 +2,5 @@
 name: add_merge_train_merge_request
 description: Grants the ability to add merge requests to merge trains
 feature_category: continuous_integration
-available_for_tokens: true
 boundaries:
   - project

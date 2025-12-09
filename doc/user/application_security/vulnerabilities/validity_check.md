@@ -49,7 +49,7 @@ Prerequisites:
 
 To enable validity checks for a project:
 
-1. On the left sidebar, select **Search or go to** and find your project. If you've [turned on the new navigation](../../interface_redesign.md), this field is on the top bar.
+1. On the top bar, select **Search or go to** and find your project.
 1. Select **Secure** > **Security configuration**.
 1. Under **Pipeline Secret Detection**, turn on the **Validity checks** toggle.
 
@@ -93,7 +93,6 @@ Validity checks support the following secret types:
 - AWS IAM secret access keys
 - GCP API keys
 - GCP OAuth client secrets
-- Google (GCP) service account keys
 - Postman API tokens
 
 ## Validity check workflow

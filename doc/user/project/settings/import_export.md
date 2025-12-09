@@ -287,7 +287,7 @@ may be possible for an attacker to steal your sensitive data.
 
 To import a project:
 
-1. In the upper-right corner, select **Create new** ({{< icon name=\"plus\" >}}) and **New project/repository**.
+1. In the upper-right corner, select **Create new** ({{< icon name="plus" >}}) and **New project/repository**.
 1. Select **Import project**.
 1. In **Import project from**, select **GitLab export**.
 1. Enter your project name and URL. Then select the file you exported previously.
@@ -472,7 +472,7 @@ To export the contents of a group:
 
 To import the group:
 
-1. In the upper-right corner, select **Create new** ({{< icon name=\"plus\" >}}) and **New group**.
+1. In the upper-right corner, select **Create new** ({{< icon name="plus" >}}) and **New group**.
 1. Select **Import group**.
 1. In the **Import group from file** section, enter a group name and accept or modify the associated group URL.
 1. Select **Choose file**.

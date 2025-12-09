@@ -5,6 +5,7 @@ import { getIdFromGraphQLId, isGid, convertToGraphQLId } from '~/graphql_shared/
 import { TYPENAME_GROUP } from '~/graphql_shared/constants';
 import * as Sentry from '~/sentry/sentry_browser_wrapper';
 import { logError } from '~/lib/logger';
+import { normalizeRender } from '~/lib/utils/vue3compat/normalize_render';
 
 /**
  * A renderless component for querying/dismissing Users::GroupCallouts via GraphQL.
@@ -53,7 +54,7 @@ import { logError } from '~/lib/logger';
  *    - `true` if the query has loaded without error, and the user is logged in, and
  *      the callout has not been dismissed yet; `false` otherwise
  */
-export default {
+export default normalizeRender({
   name: 'UserGroupCalloutDismisser',
   props: {
     groupId: {
@@ -189,5 +190,5 @@ export default {
   render() {
     return this.$scopedSlots.default(this.slotProps);
   },
-};
+});
 </script>

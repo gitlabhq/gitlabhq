@@ -209,11 +209,12 @@ RSpec.describe 'Database schema',
       users: %w[color_mode_id color_scheme_id created_by_id theme_id managing_group_id accepted_term_id],
       user_preferences: %w[dark_color_scheme_id],
       users_star_projects: %w[user_id],
+      vulnerabilities: %w[partition_id],
       vulnerability_finding_links: %w[project_id],
       vulnerability_flags: %w[project_id workflow_id],
       vulnerability_historical_statistics: %w[security_project_tracked_context_id], # cannot be a foreign key yet
-      vulnerability_identifiers: %w[external_id],
-      vulnerability_occurrences: %w[security_project_tracked_context_id], # cannot be a foreign key yet
+      vulnerability_identifiers: %w[external_id partition_id],
+      vulnerability_occurrences: %w[security_project_tracked_context_id partition_id], # cannot be a foreign key yet
       vulnerability_occurrence_identifiers: %w[project_id],
       vulnerability_scanners: %w[external_id],
       vulnerability_statistics: %w[security_project_tracked_context_id], # cannot be a foreign key yet
@@ -242,7 +243,7 @@ RSpec.describe 'Database schema',
       backup_vulnerability_severity_overrides: %w[vulnerability_id], # having a FK on this table prevents partitions from being detached
       backup_vulnerability_state_transitions: %w[vulnerability_id], # having a FK on this table prevents partitions from being detached
       backup_vulnerability_user_mentions: %w[vulnerability_id], # having a FK on this table prevents partitions from being detached
-      vulnerability_reads: %w[cluster_agent_id security_project_tracked_context_id vulnerability_occurrence_id], # tracked_contexts cannot be a foreign key yet. vulnerability_occurrence_id foreign key will be added at a later date
+      vulnerability_reads: %w[cluster_agent_id security_project_tracked_context_id vulnerability_occurrence_id partition_id], # tracked_contexts cannot be a foreign key yet. vulnerability_occurrence_id foreign key will be added at a later date
       # See: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/87584
       # Fixes performance issues with the deletion of web-hooks with many log entries
       web_hook_logs: %w[web_hook_id],
@@ -274,7 +275,8 @@ RSpec.describe 'Database schema',
       security_trainings: %w[training_provider_id provider_id], # training_provider_id is a fixed items model reference.
       background_operation_jobs_cell_local: %w[worker_id], # background operation workers partitions have to dropped independently.
       background_operation_jobs: %w[worker_id], # background operation workers partitions have to dropped independently.
-      sbom_occurrence_refs: %w[pipeline_id project_id]
+      sbom_occurrence_refs: %w[pipeline_id project_id],
+      sbom_occurrences: %w[partition_id]
     }.with_indifferent_access.freeze
   end
 

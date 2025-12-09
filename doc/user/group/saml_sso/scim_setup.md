@@ -36,7 +36,7 @@ Prerequisites:
 
 To configure GitLab SAML SSO SCIM:
 
-1. On the left sidebar, select **Search or go to** and find your group. If you've [turned on the new navigation](../../interface_redesign.md), this field is on the top bar.
+1. On the top bar, select **Search or go to** and find your group.
 1. Select **Settings** > **SAML SSO**.
 1. Select **Generate a SCIM token**.
 1. For configuration of your identity provider, save the:
@@ -211,7 +211,7 @@ Prerequisites:
 To configure Okta for SCIM:
 
 1. Sign in to Okta.
-1. In the upper-right corner, select **Admin**. If you've [turned on the new navigation](../../interface_redesign.md), in the upper-right corner, select **Admin**. The button is not visible from the **Admin** area.
+1. In the upper-right corner, select **Admin**. The button is not visible from the **Admin** area.
 1. In the **Application** tab, select **Browse App Catalog**.
 1. Search for **GitLab**, find and select the **GitLab** application.
 1. On the GitLab application overview page, select **Add**.

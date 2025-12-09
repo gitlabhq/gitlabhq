@@ -91,7 +91,7 @@ Prerequisites:
 
 To see the status of your GitLab.com subscription:
 
-1. On the left sidebar, select **Search or go to** and find your group. If you've [turned on the new navigation](../user/interface_redesign.md), this field is on the top bar.
+1. On the top bar, select **Search or go to** and find your group.
 1. Select **Settings** > **Billing**.
 
 The following information is displayed:
@@ -120,7 +120,7 @@ Prerequisites:
 
 You can view the status of your subscription:
 
-1. On the left sidebar, at the bottom, select **Admin**. If you've [turned on the new navigation](../user/interface_redesign.md), in the upper-right corner, select **Admin**.
+1. In the upper-right corner, select **Admin**.
 1. Select **Subscription**.
 
 The **Subscription** page includes the following information:
@@ -415,7 +415,7 @@ also automated.
 
 You can also manually synchronize subscription data at any time.
 
-1. On the left sidebar, at the bottom, select **Admin**. If you've [turned on the new navigation](../user/interface_redesign.md), in the upper-right corner, select **Admin**.
+1. In the upper-right corner, select **Admin**.
 1. Select **Subscription**.
 1. In the **Subscription details** section, select **Sync** ({{< icon name="retry" >}}).
 

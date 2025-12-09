@@ -141,12 +141,30 @@ The GitLab [incoming email](../administration/incoming_email.md) feature does no
 
 ### 2FA in subgroups
 
-By default, each subgroup can configure 2FA requirements that might differ from the parent group.
+By default, each subgroup can configure 2FA requirements that might differ from the top-level group.
+
+When a user is a member of multiple groups in a hierarchy, the most restrictive 2FA requirement applies across all levels.
+
+For example, when 2FA is enforced in a top-level group:
+
+- All members of the top-level group must use 2FA.
+- All members of descendant subgroups must use 2FA.
+
+When 2FA is not enforced in a top-level group:
+
+- If **Allow more restrictive 2FA enforcement for subgroups** is enabled, each subgroup
+  can enforce a 2FA requirement independently.
+  If a subgroup enables a 2FA requirement:
+  - All members of the top-level group must use 2FA.
+  - All members of any sibling subgroups must use 2FA.
+
+- If **Allow more restrictive 2FA enforcement for subgroups** is disabled, subgroups
+  cannot enforce a 2FA requirement independently. 2FA is not required for any members in the hierarchy.
 
 {{< alert type="note" >}}
 
-Inherited members might also have different 2FA requirements applied at higher levels in the hierarchy.
-In such cases, the most restrictive requirement takes precedence.
+When **All users in this group must set up two-factor authentication** is enabled, it always
+takes precedence over **Allow more restrictive 2FA enforcement for subgroups**.
 
 {{< /alert >}}
 
@@ -154,7 +172,7 @@ To prevent subgroups from setting individual 2FA requirements:
 
 1. Go to the top-level group's **Settings** > **General**.
 1. Expand the **Permissions and group features** section.
-1. Clear the **Allow subgroups to set up their own two-factor authentication rule** checkbox.
+1. Clear the **Allow more restrictive 2FA enforcement for subgroups** checkbox.
 
 ### 2FA in projects
 

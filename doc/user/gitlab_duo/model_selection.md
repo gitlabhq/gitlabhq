@@ -54,7 +54,7 @@ Prerequisites:
 
 To select a model for a feature:
 
-1. On the left sidebar, select **Search or go to** and find your group. If you've [turned on the new navigation](../interface_redesign.md), this field is on the top bar.
+1. On the top bar, select **Search or go to** and find your group.
 1. Select **Settings** > **GitLab Duo**.
 1. Select **Configure features**.
 1. For the feature you want to configure, select a model from the dropdown list.
@@ -101,7 +101,7 @@ If this happens, GitLab Duo uses the models you have selected in your default na
 
 To select a default namespace:
 
-1. In GitLab.com, on the left sidebar, select your avatar. If you've [turned on the new navigation](../interface_redesign.md), this button is in the upper-right corner.
+1. In GitLab.com, in the upper-right corner, select your avatar.
 1. Select **Preferences**.
 1. Go to the **Behavior** section.
 1. From the **Default GitLab Duo namespace** dropdown list, select the namespace to set as your default.

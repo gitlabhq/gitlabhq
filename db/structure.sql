@@ -26530,6 +26530,7 @@ CREATE TABLE sbom_occurrences (
     traversal_ids bigint[] DEFAULT '{}'::bigint[] NOT NULL,
     ancestors jsonb DEFAULT '[]'::jsonb NOT NULL,
     reachability smallint DEFAULT 0,
+    partition_id bigint DEFAULT 1,
     CONSTRAINT check_3f2d2c7ffc CHECK ((char_length(package_manager) <= 255)),
     CONSTRAINT check_9b29021fa8 CHECK ((char_length(component_name) <= 255)),
     CONSTRAINT check_e6b8437cfe CHECK ((char_length(input_file_path) <= 1024))
@@ -29335,6 +29336,7 @@ CREATE TABLE vulnerabilities (
     auto_resolved boolean DEFAULT false NOT NULL,
     uuid uuid,
     solution text,
+    partition_id bigint DEFAULT 1,
     CONSTRAINT check_4d8a873f1f CHECK ((finding_id IS NOT NULL))
 );
 
@@ -29723,7 +29725,8 @@ CREATE TABLE vulnerability_identifiers (
     external_type character varying NOT NULL,
     external_id character varying NOT NULL,
     name character varying NOT NULL,
-    url text
+    url text,
+    partition_id bigint DEFAULT 1
 );
 
 CREATE SEQUENCE vulnerability_identifiers_id_seq
@@ -29894,6 +29897,7 @@ CREATE TABLE vulnerability_occurrences (
     security_project_tracked_context_id bigint,
     detected_at timestamp with time zone DEFAULT now(),
     new_uuid uuid,
+    partition_id bigint DEFAULT 1,
     CONSTRAINT check_4a3a60f2ba CHECK ((char_length(solution) <= 7000)),
     CONSTRAINT check_ade261da6b CHECK ((char_length(description) <= 15000)),
     CONSTRAINT check_f602da68dd CHECK ((char_length(cve) <= 48400))
@@ -29943,6 +29947,7 @@ CREATE TABLE vulnerability_reads (
     auto_resolved boolean DEFAULT false NOT NULL,
     security_project_tracked_context_id bigint,
     vulnerability_occurrence_id bigint,
+    partition_id bigint DEFAULT 1,
     CONSTRAINT check_380451bdbe CHECK ((char_length(location_image) <= 2048)),
     CONSTRAINT check_4b1a1bf5ea CHECK ((has_merge_request IS NOT NULL)),
     CONSTRAINT check_a105eb825a CHECK ((char_length(cluster_agent_id) <= 10)),

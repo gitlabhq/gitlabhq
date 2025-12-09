@@ -1,9 +1,10 @@
 <script>
 import { captureException } from '~/sentry/sentry_browser_wrapper';
 import { I18N_ROLE_SAVE_SUCCESS, I18N_ROLE_SAVE_ERROR } from '~/members/constants';
+import { normalizeRender } from '~/lib/utils/vue3compat/normalize_render';
 import { callRoleUpdateApi, setMemberRole } from './utils';
 
-export default {
+export default normalizeRender({
   props: {
     member: {
       type: Object,
@@ -47,5 +48,5 @@ export default {
       saveRole: this.saveRole,
     });
   },
-};
+});
 </script>

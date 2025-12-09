@@ -1,5 +1,6 @@
 <script>
 import { debounce } from 'lodash';
+import { normalizeRender } from '~/lib/utils/vue3compat/normalize_render';
 import { ALERT_EVENT, KEYDOWN_EVENT } from '../constants';
 
 export const tiptapToComponentMap = {
@@ -14,7 +15,7 @@ export const eventHubEvents = [ALERT_EVENT, KEYDOWN_EVENT];
 
 const getComponentEventName = (tiptapEventName) => tiptapToComponentMap[tiptapEventName];
 
-export default {
+export default normalizeRender({
   inject: ['tiptapEditor', 'eventHub'],
   props: {
     debounce: {
@@ -57,5 +58,5 @@ export default {
   render() {
     return this.$scopedSlots.default?.();
   },
-};
+});
 </script>

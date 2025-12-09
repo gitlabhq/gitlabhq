@@ -33,7 +33,8 @@ module RuboCop
         #   attributes set by that trait.
         #
         class AvoidCreateDefaultOrganization < RuboCop::Cop::Base
-          MSG = "Do not use the `:default` trait when creating organizations"
+          MSG = "Do not use the `:default` trait when creating organizations. " \
+            "See https://docs.gitlab.com/development/organization/#the-default-organization."
 
           FACTORY_BOT_METHODS = %i[
             build build_list build_pair build_stubbed build_stubbed_list

@@ -1,6 +1,7 @@
 <script>
 import dismissUserCalloutMutation from '~/graphql_shared/mutations/dismiss_user_callout.mutation.graphql';
 import getUserCalloutsQuery from '~/graphql_shared/queries/get_user_callouts.query.graphql';
+import { normalizeRender } from '~/lib/utils/vue3compat/normalize_render';
 
 /**
  * A renderless component for querying/dismissing UserCallouts via GraphQL.
@@ -51,7 +52,7 @@ import getUserCalloutsQuery from '~/graphql_shared/queries/get_user_callouts.que
  * like cleaning up/unmounting the component if the callout shouldn't be
  * displayed.
  */
-export default {
+export default normalizeRender({
   name: 'UserCalloutDismisser',
   props: {
     featureName: {
@@ -141,5 +142,5 @@ export default {
   render() {
     return this.$scopedSlots.default(this.slotProps);
   },
-};
+});
 </script>

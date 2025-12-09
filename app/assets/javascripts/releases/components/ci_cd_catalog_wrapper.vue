@@ -1,6 +1,7 @@
 <script>
 import { s__ } from '~/locale';
 import { createAlert } from '~/alert';
+import { normalizeRender } from '~/lib/utils/vue3compat/normalize_render';
 import getCiCatalogSettingsQuery from '~/ci/catalog/graphql/queries/get_ci_catalog_settings.query.graphql';
 import catalogReleasesQuery from '../graphql/queries/catalog_releases.query.graphql';
 
@@ -23,7 +24,7 @@ import catalogReleasesQuery from '../graphql/queries/catalog_releases.query.grap
  *
  */
 
-export default {
+export default normalizeRender({
   name: 'CiCdCatalogWrapper',
   i18n: {
     catalogResourceQueryError: s__(
@@ -95,5 +96,5 @@ export default {
       detailsPagePath: this.detailsPagePath,
     });
   },
-};
+});
 </script>

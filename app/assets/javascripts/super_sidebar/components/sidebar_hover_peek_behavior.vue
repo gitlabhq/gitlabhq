@@ -1,5 +1,6 @@
 <script>
 import { getCssClassDimensions } from '~/lib/utils/css_utils';
+import { normalizeRender } from '~/lib/utils/vue3compat/normalize_render';
 import Tracking from '~/tracking';
 import {
   JS_TOGGLE_EXPAND_CLASS,
@@ -11,7 +12,7 @@ import {
   SUPER_SIDEBAR_PEEK_STATE_WILL_CLOSE as STATE_WILL_CLOSE,
 } from '../constants';
 
-export default {
+export default normalizeRender({
   name: 'SidebarHoverPeek',
   mixins: [Tracking.mixin()],
   props: {
@@ -122,5 +123,5 @@ export default {
   render() {
     return null;
   },
-};
+});
 </script>

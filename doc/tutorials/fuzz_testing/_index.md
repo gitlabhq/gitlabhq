@@ -76,7 +76,7 @@ a random buffer as a parameter.
 
 To create the two fuzz target files:
 
-1. On the left sidebar, select **Search or go to** and find the `fuzz-testing-demo` project. If you've [turned on the new navigation](../../user/interface_redesign.md), this field is on the top bar.
+1. On the top bar, select **Search or go to**.
 1. Create a file in the root directory of the project.
 1. Name the file `fuzz-sayhello.js` and add the following code:
 

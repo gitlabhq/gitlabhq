@@ -1,8 +1,9 @@
 <script>
 import { DEFAULT_DEBOUNCE_AND_THROTTLE_MS } from '~/lib/utils/constants';
+import { normalizeRender } from '~/lib/utils/vue3compat/normalize_render';
 import workItemByIidQuery from '../graphql/work_item_by_iid.query.graphql';
 
-export default {
+export default normalizeRender({
   name: 'WorkItemPrefetch',
   inject: {
     fullPath: {
@@ -27,7 +28,6 @@ export default {
     };
   },
   apollo: {
-    // eslint-disable-next-line @gitlab/vue-no-undef-apollo-properties
     workItem: {
       query() {
         return workItemByIidQuery;
@@ -65,5 +65,5 @@ export default {
       clearPrefetching: this.clearPrefetching,
     });
   },
-};
+});
 </script>

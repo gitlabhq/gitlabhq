@@ -3193,6 +3193,9 @@ msgstr ""
 msgid "AI|Autocomplete"
 msgstr ""
 
+msgid "AI|Check for false positive"
+msgstr ""
+
 msgid "AI|Create issue description based on a short prompt"
 msgstr ""
 
@@ -3206,6 +3209,9 @@ msgid "AI|Discard suggestion"
 msgstr ""
 
 msgid "AI|Enable Auto Review"
+msgstr ""
+
+msgid "AI|Error occurred when starting the AI False Positive Detection workflow."
 msgstr ""
 
 msgid "AI|Explain or Resolve with AI"
@@ -3233,6 +3239,9 @@ msgid "AI|Generate issue description"
 msgstr ""
 
 msgid "AI|GitLab Duo"
+msgstr ""
+
+msgid "AI|GitLab Duo False Positive Detection workflow started successfully"
 msgstr ""
 
 msgid "AI|GitLab Duo has generated a merge request with a suggested solution."
@@ -3311,6 +3320,9 @@ msgid "AI|To help improve the quality of the content, send your feedback to GitL
 msgstr ""
 
 msgid "AI|Troubleshoot this broken pipeline."
+msgstr ""
+
+msgid "AI|Use GitLab Duo to check if this vulnerability might be false positive."
 msgstr ""
 
 msgid "AI|Use GitLab Duo to generate a merge request with a suggested solution."
@@ -4898,6 +4910,9 @@ msgid "AdherenceReport|To show a status here, you must %{linkStart}create a comp
 msgstr ""
 
 msgid "Adjust how frequently the GitLab UI polls for updates."
+msgstr ""
+
+msgid "Admin"
 msgstr ""
 
 msgid "Admin Mode"
@@ -6856,6 +6871,9 @@ msgstr ""
 msgid "AiPowered|AI logs"
 msgstr ""
 
+msgid "AiPowered|Agent & Flow Permissions"
+msgstr ""
+
 msgid "AiPowered|Allow GitLab Duo agents to execute flows for the instance. %{linkStart}What are flows%{linkEnd}?"
 msgstr ""
 
@@ -6949,10 +6967,16 @@ msgstr ""
 msgid "AiPowered|Control whether GitLab can process your code and project data to provide context to AI-powered features."
 msgstr ""
 
+msgid "AiPowered|Define the minimum role level to perform each of the following actions"
+msgstr ""
+
 msgid "AiPowered|Direct connections"
 msgstr ""
 
 msgid "AiPowered|Early Access Program banner dismissed. You will not see it again for 7 days."
+msgstr ""
+
+msgid "AiPowered|Enable"
 msgstr ""
 
 msgid "AiPowered|Enable AI logs"
@@ -6974,6 +6998,9 @@ msgid "AiPowered|Enter the URL for your Duo Agent Platform service. This endpoin
 msgstr ""
 
 msgid "AiPowered|Enter the URL for your local AI Gateway. This endpoint is used for GitLab Duo Self-Hosted requests.%{br}The URL must be a complete URL, including either the \"http://\" or \"https://\" protocol. For example \"http://EXAMPLE-URL\".%{br}For more information, see how to %{linkStart}install the GitLab AI Gateway.%{linkEnd}"
+msgstr ""
+
+msgid "AiPowered|Execute"
 msgstr ""
 
 msgid "AiPowered|Experiment and beta features"
@@ -7057,10 +7084,22 @@ msgstr ""
 msgid "AiPowered|Lock tooltip icon"
 msgstr ""
 
+msgid "AiPowered|Manage"
+msgstr ""
+
 msgid "AiPowered|Maximum time in seconds to wait for responses from the AI Gateway (up to 600 seconds).%{br}Increasing this value might result in degraded user experience."
 msgstr ""
 
 msgid "AiPowered|Might result in requests having higher latency."
+msgstr ""
+
+msgid "AiPowered|Minimum role required to create, duplicate, edit, delete, and show agents and flows."
+msgstr ""
+
+msgid "AiPowered|Minimum role required to enable agents and flows on projects."
+msgstr ""
+
+msgid "AiPowered|Minimum role required to execute agents and flows."
 msgstr ""
 
 msgid "AiPowered|Model Selection"
@@ -7698,6 +7737,9 @@ msgid "Allow job retries even if the deployment job is outdated."
 msgstr ""
 
 msgid "Allow job retries for rollback deployments"
+msgstr ""
+
+msgid "Allow more restrictive 2FA enforcement for subgroups"
 msgstr ""
 
 msgid "Allow new users to create top-level groups"
@@ -65858,9 +65900,6 @@ msgstr ""
 msgid "Subgroups and projects"
 msgstr ""
 
-msgid "Subgroups can set up their own two-factor authentication rules"
-msgstr ""
-
 msgid "Subject Key Identifier:"
 msgstr ""
 
@@ -70929,6 +70968,9 @@ msgstr ""
 msgid "Turn on confidentiality: Limit visibility to project members with at least the Planner role."
 msgstr ""
 
+msgid "Turning this setting off disables all subgroup 2FA settings. This is a destructive change and cannot be reversed. Read %{link_start}more%{link_end}."
+msgstr ""
+
 msgid "Two-Factor Authentication"
 msgstr ""
 
@@ -71752,6 +71794,12 @@ msgstr ""
 msgid "UsageBilling|Date/Time"
 msgstr ""
 
+msgid "UsageBilling|Enable on-demand billing"
+msgstr ""
+
+msgid "UsageBilling|Enable on-demand billing to keep GitLab Duo features active when monthly GitLab Credits run out. Without these terms, users lose GitLab Duo access after exhausting their included GitLab Credits. Learn about %{linkStart}overage billing%{linkEnd}."
+msgstr ""
+
 msgid "UsageBilling|GitLab Credits"
 msgstr ""
 
@@ -71777,6 +71825,9 @@ msgid "UsageBilling|Increase monthly commitment"
 msgstr ""
 
 msgid "UsageBilling|Increase monthly credit commitment"
+msgstr ""
+
+msgid "UsageBilling|Keep your team's GitLab Duo features unblocked"
 msgstr ""
 
 msgid "UsageBilling|Last event transaction at:"

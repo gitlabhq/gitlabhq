@@ -1,10 +1,11 @@
 <!-- eslint-disable vue/multi-word-component-names -->
 <script>
 import { getLocationHash } from '~/lib/utils/url_utility';
+import { normalizeRender } from '~/lib/utils/vue3compat/normalize_render';
 import { linkRegex } from './utils';
 import LineNumber from './line_number.vue';
 
-export default {
+export default normalizeRender({
   name: 'LogLine',
   functional: true,
   props: {
@@ -101,5 +102,5 @@ export default {
       ],
     );
   },
-};
+});
 </script>

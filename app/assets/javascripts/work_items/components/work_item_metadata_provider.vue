@@ -1,9 +1,10 @@
 <script>
 import { computed } from 'vue';
 import { TYPENAME_GROUP } from '~/graphql_shared/constants';
+import { normalizeRender } from '~/lib/utils/vue3compat/normalize_render';
 import workItemMetadataQuery from 'ee_else_ce/work_items/graphql/work_item_metadata.query.graphql';
 
-export default {
+export default normalizeRender({
   name: 'WorkItemMetadataProvider',
   provide() {
     // We provide the metadata values as computed properties
@@ -83,5 +84,5 @@ export default {
   render() {
     return this.$scopedSlots.default?.();
   },
-};
+});
 </script>

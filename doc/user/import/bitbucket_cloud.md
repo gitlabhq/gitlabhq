@@ -112,7 +112,7 @@ To generate a Bitbucket Cloud app password:
 
 ## Import your Bitbucket repositories
 
-1. In the upper-right corner, select **Create new** ({{< icon name=\"plus\" >}}) and **New project/repository**.
+1. In the upper-right corner, select **Create new** ({{< icon name="plus" >}}) and **New project/repository**.
 1. Select **Import project**.
 1. Select **Bitbucket Cloud**.
 1. Sign in to Bitbucket, then select **Grant access** to give GitLab access to your Bitbucket account.

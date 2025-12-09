@@ -2,6 +2,5 @@
 name: read_merge_train_merge_request
 description: Grants the ability to read merge train status for a specific merge request
 feature_category: continuous_integration
-available_for_tokens: true
 boundaries:
   - project

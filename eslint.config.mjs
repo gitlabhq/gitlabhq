@@ -104,6 +104,57 @@ const restrictedImportsPatterns = {
   },
 };
 
+const baseNoRestrictedSyntax = [
+  {
+    selector: "ImportSpecifier[imported.name='GlSkeletonLoading']",
+    message: 'Migrate to GlSkeletonLoader, or import GlDeprecatedSkeletonLoading.',
+  },
+  {
+    selector: "ImportSpecifier[imported.name='GlSafeHtmlDirective']",
+    message: 'Use directive at ~/vue_shared/directives/safe_html.js instead.',
+  },
+  {
+    selector: "ImportSpecifier[imported.name='GlBreakpointInstance']",
+    message:
+      'GlBreakpointInstance only checks viewport breakpoints. You may want the breakpoints of a panel. Use PanelBreakpointInstance at ~/panel_breakpoint_instance instead (or add eslint-ignore here).',
+  },
+  {
+    selector: 'Literal[value=/docs.gitlab.+\\u002Fee/]',
+    message: 'No hard coded url, use `DOCS_URL_IN_EE_DIR` in `jh_else_ce/lib/utils/url_utility`',
+  },
+  {
+    selector: 'TemplateElement[value.cooked=/docs.gitlab.+\\u002Fee/]',
+    message: 'No hard coded url, use `DOCS_URL_IN_EE_DIR` in `jh_else_ce/lib/utils/url_utility`',
+  },
+  {
+    selector: 'Literal[value=/(?=.*docs.gitlab.*)(?!.*\\u002Fee\\b.*)/]',
+    message: 'No hard coded url, use `DOCS_URL` in `jh_else_ce/lib/utils/url_utility`',
+  },
+  {
+    selector: 'TemplateElement[value.cooked=/(?=.*docs.gitlab.*)(?!.*\\u002Fee\\b.*)/]',
+    message: 'No hard coded url, use `DOCS_URL` in `jh_else_ce/lib/utils/url_utility`',
+  },
+  {
+    selector: 'Literal[value=/(?=.*about.gitlab.*)(?!.*\\u002Fblog\\b.*)/]',
+    message: 'No hard coded url, use `PROMO_URL` in `jh_else_ce/lib/utils/url_utility`',
+  },
+  {
+    selector: 'TemplateElement[value.cooked=/(?=.*about.gitlab.*)(?!.*\\u002Fblog\\b.*)/]',
+    message: 'No hard coded url, use `PROMO_URL` in `jh_else_ce/lib/utils/url_utility`',
+  },
+  {
+    selector:
+      'TemplateLiteral[expressions.0.name=DOCS_URL] > TemplateElement[value.cooked=/\\u002Fjh|\\u002Fee/]',
+    message:
+      '`/ee` or `/jh` path found in docs url, use `DOCS_URL_IN_EE_DIR` in `jh_else_ce/lib/utils/url_utility`',
+  },
+  {
+    selector: "MemberExpression[object.type='ThisExpression'][property.name=/(\\$delete|\\$set)/]",
+    message:
+      "Vue 2's set/delete methods are not available in Vue 3. Create/assign new objects with the desired properties instead.",
+  },
+];
+
 export default [
   {
     ignores: [
@@ -289,60 +340,7 @@ export default [
         },
       ],
 
-      'no-restricted-syntax': [
-        'error',
-        {
-          selector: "ImportSpecifier[imported.name='GlSkeletonLoading']",
-          message: 'Migrate to GlSkeletonLoader, or import GlDeprecatedSkeletonLoading.',
-        },
-        {
-          selector: "ImportSpecifier[imported.name='GlSafeHtmlDirective']",
-          message: 'Use directive at ~/vue_shared/directives/safe_html.js instead.',
-        },
-        {
-          selector: "ImportSpecifier[imported.name='GlBreakpointInstance']",
-          message:
-            'GlBreakpointInstance only checks viewport breakpoints. You may want the breakpoints of a panel. Use PanelBreakpointInstance at ~/panel_breakpoint_instance instead (or add eslint-ignore here).',
-        },
-        {
-          selector: 'Literal[value=/docs.gitlab.+\\u002Fee/]',
-          message:
-            'No hard coded url, use `DOCS_URL_IN_EE_DIR` in `jh_else_ce/lib/utils/url_utility`',
-        },
-        {
-          selector: 'TemplateElement[value.cooked=/docs.gitlab.+\\u002Fee/]',
-          message:
-            'No hard coded url, use `DOCS_URL_IN_EE_DIR` in `jh_else_ce/lib/utils/url_utility`',
-        },
-        {
-          selector: 'Literal[value=/(?=.*docs.gitlab.*)(?!.*\\u002Fee\\b.*)/]',
-          message: 'No hard coded url, use `DOCS_URL` in `jh_else_ce/lib/utils/url_utility`',
-        },
-        {
-          selector: 'TemplateElement[value.cooked=/(?=.*docs.gitlab.*)(?!.*\\u002Fee\\b.*)/]',
-          message: 'No hard coded url, use `DOCS_URL` in `jh_else_ce/lib/utils/url_utility`',
-        },
-        {
-          selector: 'Literal[value=/(?=.*about.gitlab.*)(?!.*\\u002Fblog\\b.*)/]',
-          message: 'No hard coded url, use `PROMO_URL` in `jh_else_ce/lib/utils/url_utility`',
-        },
-        {
-          selector: 'TemplateElement[value.cooked=/(?=.*about.gitlab.*)(?!.*\\u002Fblog\\b.*)/]',
-          message: 'No hard coded url, use `PROMO_URL` in `jh_else_ce/lib/utils/url_utility`',
-        },
-        {
-          selector:
-            'TemplateLiteral[expressions.0.name=DOCS_URL] > TemplateElement[value.cooked=/\\u002Fjh|\\u002Fee/]',
-          message:
-            '`/ee` or `/jh` path found in docs url, use `DOCS_URL_IN_EE_DIR` in `jh_else_ce/lib/utils/url_utility`',
-        },
-        {
-          selector:
-            "MemberExpression[object.type='ThisExpression'][property.name=/(\\$delete|\\$set)/]",
-          message:
-            "Vue 2's set/delete methods are not available in Vue 3. Create/assign new objects with the desired properties instead.",
-        },
-      ],
+      'no-restricted-syntax': ['error', ...baseNoRestrictedSyntax],
 
       'no-restricted-properties': [
         'error',
@@ -469,6 +467,15 @@ export default [
       'vue/custom-event-name-casing': ['error', 'kebab-case'],
       'vue/no-deprecated-v-on-native-modifier': 'error',
       'vue/require-explicit-emits': 'error',
+      'no-restricted-syntax': [
+        'error',
+        ...baseNoRestrictedSyntax,
+        {
+          selector: 'ExportDefaultDeclaration > ObjectExpression > Property[key.name="render"]',
+          message:
+            'Renderless components must be wrapped in normalizeRender(...) to ensure Vue.js 3 compatibility, e.g. export default normalizeRender({ ... }).',
+        },
+      ],
     },
   },
   {

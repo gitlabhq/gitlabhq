@@ -54,8 +54,13 @@ RSpec.describe '.gitlab/ci/rules.gitlab-ci.yml', :unlimited_max_formatted_output
           # exception: `.if-merge-request-not-approved` in the base should be `.if-merge-request-approved` in derived.
           #            The base wants to run when the MR is approved, and the derived wants to run if it's not approved,
           #            and both are specifying this with `when: never`.
+          #            For rspec-predictive, the derived also includes `changes: *code-backstage-patterns` to limit
+          #            when to skip.
           if base['if'] == config['.if-merge-request-not-approved']['if']
-            expect(derived).to eq(base.merge(config['.if-merge-request-approved']))
+            expected = base.merge(config['.if-merge-request-approved'])
+            # Some predictive rules (like rspec-predictive) include changes condition, others don't
+            expected = expected.merge('changes' => derived['changes']) if derived['changes']
+            expect(derived).to eq(expected)
             expect(derived['when']).to eq('never')
 
             # The following rules should match exactly, because after the
@@ -93,10 +98,10 @@ RSpec.describe '.gitlab/ci/rules.gitlab-ci.yml', :unlimited_max_formatted_output
         end
       end
 
-      it 'contains an additional allow rule about code-backstage-patterns not present in the base' do
+      it 'contains an additional allow rule about code-backstage-spec-patterns not present in the base' do
         expected_rule = {
           'if' => config['.if-merge-request']['if'],
-          'changes' => config['.code-backstage-patterns']
+          'changes' => config['.code-backstage-spec-patterns']
         }
 
         expect(base_rules).not_to include(expected_rule)

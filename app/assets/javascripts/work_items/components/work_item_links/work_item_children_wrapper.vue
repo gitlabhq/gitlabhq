@@ -224,21 +224,25 @@ export default {
         this.updateInProgress = false;
       }
     },
-    addWorkItemQuery({ iid }) {
-      this.$apollo.addSmartQuery('prefetchedWorkItem', {
-        query: workItemByIidQuery,
-        variables: {
-          fullPath: this.fullPath,
-          iid,
-        },
-        update(data) {
-          return data.workspace?.workItem;
-        },
-      });
+    fetchChildWorkItem({ iid }) {
+      this.$apollo
+        .query({
+          query: workItemByIidQuery,
+          variables: {
+            fullPath: this.fullPath,
+            iid,
+          },
+          update(data) {
+            return data.workspace?.workItem;
+          },
+        })
+        .catch((error) => {
+          Sentry.captureException(error);
+        });
     },
     prefetchWorkItem({ iid }) {
       this.prefetch = setTimeout(
-        () => this.addWorkItemQuery({ iid }),
+        () => this.fetchChildWorkItem({ iid }),
         DEFAULT_DEBOUNCE_AND_THROTTLE_MS,
       );
     },

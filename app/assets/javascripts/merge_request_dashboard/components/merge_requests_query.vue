@@ -3,13 +3,14 @@ import { clamp } from 'lodash';
 import { fetchPolicies } from '~/lib/graphql';
 import { HTTP_STATUS_SERVICE_UNAVAILABLE } from '~/lib/utils/http_status';
 import * as Sentry from '~/sentry/sentry_browser_wrapper';
+import { normalizeRender } from '~/lib/utils/vue3compat/normalize_render';
 import { QUERIES } from '../constants';
 import eventHub from '../event_hub';
 
 const PER_PAGE = 20;
 const RETRY_COUNT = 3;
 
-export default {
+export default normalizeRender({
   apollo: {
     mergeRequests: {
       query() {
@@ -259,5 +260,5 @@ export default {
       draftsCount: this.draftsCount,
     });
   },
-};
+});
 </script>

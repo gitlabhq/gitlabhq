@@ -5,4 +5,3 @@ feature_category: team_planning
 boundaries:
   - project
   - group
-available_for_tokens: true

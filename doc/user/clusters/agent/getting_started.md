@@ -45,7 +45,7 @@ flux -v
 To authenticate with the Flux CLI, create a personal access token with
 the `api` scope:
 
-1. On the left sidebar, select your avatar. If you've [turned on the new navigation](../../interface_redesign.md), this button is in the upper-right corner.
+1. In the upper-right corner, select your avatar.
 1. Select **Edit profile**.
 1. Select **Personal access tokens**.
 1. Enter a name and optional expiry date for the token.
@@ -135,7 +135,7 @@ The `glab cluster agent bootstrap` created an environment within GitLab and [con
 
 To view your dashboard:
 
-1. On the left sidebar, select **Search or go to** and find your project. If you've [turned on the new navigation](../../interface_redesign.md), this field is on the top bar.
+1. On the top bar, select **Search or go to** and find your project.
 1. Select **Operate** > **Environments**.
 1. Select your environment. For example, `flux-system/gitlab-agent`.
 1. Select the **Kubernetes overview** tab.

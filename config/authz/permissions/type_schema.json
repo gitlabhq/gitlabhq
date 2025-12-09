@@ -29,10 +29,6 @@
       },
       "minItems": 1,
       "description": "List of resource types that the permission can be applied to"
-    },
-    "available_for_tokens": {
-      "type": "boolean",
-      "description": "If set to `true`, allows the permission to be added to granular scopes for tokens"
     }
   },
   "required": [

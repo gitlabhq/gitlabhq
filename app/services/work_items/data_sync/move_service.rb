@@ -9,6 +9,7 @@ module WorkItems
 
           close_original_work_item(current_user, new_work_item, original_work_item)
           move_system_notes(current_user, new_work_item, original_work_item)
+          track_work_item_move(original_work_item, current_user)
         end
 
         private
@@ -43,6 +44,14 @@ module WorkItems
             )
             close_service.execute(context[:original], notifications: false, system_note: true)
           end
+        end
+
+        def track_work_item_move(work_item, current_user)
+          Gitlab::WorkItems::Instrumentation::TrackingService.new(
+            work_item: work_item,
+            current_user: current_user,
+            event: Gitlab::WorkItems::Instrumentation::EventActions::MOVE
+          ).execute
         end
       end
 

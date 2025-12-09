@@ -2,6 +2,7 @@
 import { fetchPolicies } from '~/lib/graphql';
 import allRunnersCountQuery from 'ee_else_ce/ci/runner/graphql/list/all_runners_count.query.graphql';
 import groupRunnersCountQuery from 'ee_else_ce/ci/runner/graphql/list/group_runners_count.query.graphql';
+import { normalizeRender } from '~/lib/utils/vue3compat/normalize_render';
 
 import { captureException } from '../../sentry_utils';
 import { INSTANCE_TYPE, GROUP_TYPE } from '../../constants';
@@ -28,7 +29,7 @@ import { INSTANCE_TYPE, GROUP_TYPE } from '../../constants';
  * Use `:skip="true"` to prevent data from being fetched and
  * even rendered.
  */
-export default {
+export default normalizeRender({
   name: 'RunnerCount',
   props: {
     scope: {
@@ -92,7 +93,6 @@ export default {
     },
 
     // Component API
-    // eslint-disable-next-line vue/no-unused-properties
     refetch() {
       // Parent components can use this method to refresh the count
       this.$apollo.queries.count.refetch();
@@ -103,5 +103,5 @@ export default {
       count: this.count,
     });
   },
-};
+});
 </script>

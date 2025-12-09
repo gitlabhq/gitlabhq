@@ -107,7 +107,7 @@ export default {
       'is-draggable': isListDraggable,
       '-gl-mr-3': !canAdminList && last,
     }"
-    class="board-column gl-inline-flex gl-h-full gl-align-top"
+    class="board-column gl-relative gl-inline-flex gl-h-full gl-px-1 gl-align-top"
     :data-list-id="list.id"
     data-testid="board-list"
   >
@@ -144,12 +144,12 @@ export default {
           @cannot-find-active-item="$emit('cannot-find-active-item')"
         />
       </div>
-      <div
-        v-if="showAddNewListBetween"
-        class="gl-absolute gl-bottom-0 gl-right-0 gl-top-0 gl-z-1 gl-translate-x-1/2"
-      >
-        <board-add-new-column-between @setAddColumnFormVisibility="setShowNewListAfter" />
-      </div>
+    </div>
+    <div
+      v-if="showAddNewListBetween"
+      class="gl-absolute gl-bottom-0 gl-right-0 gl-top-0 gl-z-1 gl-translate-x-4"
+    >
+      <board-add-new-column-between @setAddColumnFormVisibility="setShowNewListAfter" />
     </div>
     <div v-if="showNewListForm" class="gl-pl-2 gl-pr-3">
       <board-add-new-column
