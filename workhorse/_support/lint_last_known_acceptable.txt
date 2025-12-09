@@ -42,7 +42,7 @@ internal/upload/destination/objectstore/test/objectstore_stub.go:4:2: G501: Bloc
 internal/upload/destination/objectstore/test/objectstore_stub.go:169:13: G401: Use of weak cryptographic primitive (gosec)
 internal/upload/destination/objectstore/uploader.go:5:2: G501: Blocklisted import crypto/md5: weak cryptographic primitive (gosec)
 internal/upload/destination/objectstore/uploader.go:95:12: G401: Use of weak cryptographic primitive (gosec)
-internal/upload/exif/exif.go:103:10: G204: Subprocess launched with variable (gosec)
+internal/upload/exif/exif.go:146:10: G204: Subprocess launched with variable (gosec)
 internal/zipartifacts/metadata.go:118:54: G115: integer overflow conversion int -> uint32 (gosec)
 cmd/gitlab-zip-metadata/limit/reader.go:24:5: redefines-builtin-id: redefinition of the built-in function max (revive)
 internal/git/blob.go:21:5: exported: exported var SendBlob should have comment or be unexported (revive)

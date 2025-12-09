@@ -4,6 +4,11 @@ import { buildApiUrl } from '~/api/api_utils';
 import * as Sentry from '~/sentry/sentry_browser_wrapper';
 
 const dismissUserBroadcastMessage = (id, expireDate, dismissalPath) => {
+  if (dismissalPath !== window?.gon?.broadcast_message_dismissal_path) {
+    // eslint-disable-next-line @gitlab/require-i18n-strings
+    return Promise.reject(new Error('Dismissal path mismatch for broadcast message'));
+  }
+
   return axios.post(buildApiUrl(dismissalPath), {
     broadcast_message_id: id,
     expires_at: expireDate,
